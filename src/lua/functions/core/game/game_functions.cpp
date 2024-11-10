@@ -108,6 +108,8 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "getSecretAchievements", GameFunctions::luaGameGetSecretAchievements);
 	Lua::registerMethod(L, "Game", "getPublicAchievements", GameFunctions::luaGameGetPublicAchievements);
 	Lua::registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
+
+	Lua::registerMethod(L, "Game", "getAllAttachedeffects", GameFunctions::getAllAttachedeffects); // delete before push
 }
 
 // Game

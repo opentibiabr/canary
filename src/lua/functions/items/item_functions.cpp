@@ -92,6 +92,10 @@ void ItemFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Item", "canReceiveAutoCarpet", ItemFunctions::luaItemCanReceiveAutoCarpet);
 
+	Lua::registerMethod(L, "Item", "setShader", ItemFunctions::luaItemSetShader);
+	Lua::registerMethod(L, "Item", "getShader", ItemFunctions::luaItemGetShader);
+	Lua::registerMethod(L, "Item", "hasShader", ItemFunctions::luaItemHasShader);
+
 	ContainerFunctions::init(L);
 	ImbuementFunctions::init(L);
 	ItemTypeFunctions::init(L);
@@ -1124,40 +1128,40 @@ int ItemFunctions::luaItemHasOwner(lua_State* L) {
 
 int ItemFunctions::luaItemHasShader(lua_State* L) {
 	// item:hasShader()
-	const auto &item = getUserdataShared<Item>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 1);
 	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		return 1;
 	}
 
-	pushBoolean(L, item->hasShader());
+	Lua::pushBoolean(L, item->hasShader());
 	return 1;
 }
 
 int ItemFunctions::luaItemGetShader(lua_State* L) {
 	// item:getShader()
-	const auto &item = getUserdataShared<Item>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 1);
 	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
-	pushString(L, item->getShader());
+	Lua::pushString(L, item->getShader());
 	return 1;
 }
 
 int ItemFunctions::luaItemSetShader(lua_State* L) {
 	// item:setShader(shaderName)
-	const auto &item = getUserdataShared<Item>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 1);
 	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
-	item->setShader(getString(L, 2));
+	item->setShader(Lua::getString(L, 2));
 	g_game().refreshItem(item);
-	pushBoolean(L, true);
+	Lua::pushBoolean(L, true);
 	return 1;
 }

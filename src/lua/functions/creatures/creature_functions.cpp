@@ -88,6 +88,11 @@ void CreatureFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Creature", "getIcons", CreatureFunctions::luaCreatureGetIcons);
 	Lua::registerMethod(L, "Creature", "removeIcon", CreatureFunctions::luaCreatureRemoveIcon);
 	Lua::registerMethod(L, "Creature", "clearIcons", CreatureFunctions::luaCreatureClearIcons);
+	Lua::registerMethod(L, "Creature", "attachEffectById", CreatureFunctions::luaCreatureAttachEffectById);
+	Lua::registerMethod(L, "Creature", "detachEffectById", CreatureFunctions::luaCreatureDetachEffectById);
+	Lua::registerMethod(L, "Creature", "getAttachedEffects", CreatureFunctions::luaCreatureGetAttachedEffects);
+	Lua::registerMethod(L, "Creature", "getShader", CreatureFunctions::luaCreatureGetShader);
+	Lua::registerMethod(L, "Creature", "setShader", CreatureFunctions::luaCreatureSetShader);
 
 	CombatFunctions::init(L);
 	MonsterFunctions::init(L);
@@ -1189,14 +1194,14 @@ int CreatureFunctions::luaCreatureClearIcons(lua_State* L) {
 
 int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
 	// creature:attachEffectById(effectId, [temporary])
-	const auto &creature = getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
-	uint16_t id = getNumber<uint16_t>(L, 2);
-	bool temp = getBoolean(L, 3, false);
+	uint16_t id = Lua::getNumber<uint16_t>(L, 2);
+	bool temp = Lua::getBoolean(L, 3, false);
 	if (temp) {
 		g_game().sendAttachedEffect(creature, id);
 	} else {
@@ -1207,22 +1212,22 @@ int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
 
 int CreatureFunctions::luaCreatureDetachEffectById(lua_State* L) {
 	// creature:detachEffectById(effectId)
-	const auto &creature = getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
-	uint16_t id = getNumber<uint16_t>(L, 2);
+	uint16_t id = Lua::getNumber<uint16_t>(L, 2);
 	creature->detachEffectById(id);
 	return 1;
 }
 
 int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
 	// creature:getAttachedEffects()
-	const auto &creature = getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		lua_pushnil(L);
 		return 1;
 	}
@@ -1238,28 +1243,28 @@ int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetShader(lua_State* L) {
 	// creature:getShader()
-	const auto &creature = getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
-	pushString(L, creature->getShader());
+	Lua::pushString(L, creature->getShader());
 
 	return 1;
 }
 
 int CreatureFunctions::luaCreatureSetShader(lua_State* L) {
 	// creature:setShader(shaderName)
-	const auto &creature = getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
-	creature->setShader(getString(L, 2));
+	creature->setShader(Lua::getString(L, 2));
 	g_game().updateCreatureShader(creature);
-	pushBoolean(L, true);
+	Lua::pushBoolean(L, true);
 	return 1;
 }

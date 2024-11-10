@@ -9,6 +9,7 @@
 
 #include "lua/functions/creatures/player/player_functions.hpp"
 
+#include "account/account.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"

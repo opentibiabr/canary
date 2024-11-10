@@ -488,9 +488,9 @@ public:
 
 	virtual void turnToCreature(const std::shared_ptr<Creature> &creature);
 
-	void onAddTileItem(const std::shared_ptr<Tile> &tile, const Position &pos);
-	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType);
-	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item);
+	void onAddTileItem(const std::shared_ptr<Tile> & /*tile*/, const Position & /*pos*/) { }
+	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) { }
+	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) { }
 
 	virtual void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin);
 	virtual void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout);
@@ -559,8 +559,6 @@ public:
 	std::shared_ptr<Tile> getTile() override final {
 		return m_tile.lock();
 	}
-
-	int32_t getWalkCache(const Position &pos);
 
 	const Position &getLastPosition() const {
 		return lastPosition;
@@ -699,18 +697,9 @@ protected:
 		Pathfinder = 1 << 3
 	};
 
-	virtual bool useCacheMap() const {
-		return false;
-	}
-
 	virtual bool isDead() const {
 		return false;
 	}
-
-	static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
-	static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
-	static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
-	static constexpr int32_t maxWalkCacheHeight = (mapWalkHeight - 1) / 2;
 
 	Position position;
 
@@ -775,9 +764,7 @@ protected:
 	std::atomic_bool creatureCheck = false;
 	std::atomic_bool inCheckCreaturesVector = false;
 
-	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
-	bool isMapLoaded = false;
 	bool isUpdatingPath = false;
 	bool skillLoss = true;
 	bool lootDrop = true;
@@ -801,9 +788,6 @@ protected:
 	bool hasEventRegistered(CreatureEventType_t event) const;
 	CreatureEventList getCreatureEvents(CreatureEventType_t type) const;
 
-	void updateMapCache();
-	void updateTileCache(const std::shared_ptr<Tile> &tile, int32_t dx, int32_t dy);
-	void updateTileCache(const std::shared_ptr<Tile> &tile, const Position &pos);
 	void onCreatureDisappear(const std::shared_ptr<Creature> &creature, bool isLogout);
 	virtual void doAttacking(uint32_t) { }
 	virtual bool hasExtraSwing() {

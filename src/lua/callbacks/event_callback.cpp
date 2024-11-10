@@ -154,33 +154,6 @@ ReturnValue EventCallback::creatureOnTargetCombat(const std::shared_ptr<Creature
 	return returnValue;
 }
 
-void EventCallback::creatureOnHear(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &speaker, const std::string &words, SpeakClasses type) const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("[EventCallback::creatureOnHear - "
-		                 "Creature {} speaker {}] "
-		                 "Call stack overflow. Too many lua script calls being nested.",
-		                 creature->getName(), speaker->getName());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Creature>(L, creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-
-	LuaScriptInterface::pushUserdata<Creature>(L, speaker);
-	LuaScriptInterface::setCreatureMetatable(L, -1, speaker);
-
-	LuaScriptInterface::pushString(L, words);
-	lua_pushnumber(L, type);
-
-	getScriptInterface()->callVoidFunction(4);
-}
-
 void EventCallback::creatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[EventCallback::creatureOnDrainHealth - "
@@ -1160,63 +1133,6 @@ void EventCallback::monsterPostDropLoot(const std::shared_ptr<Monster> &monster,
 	LuaScriptInterface::setMetatable(L, -1, "Container");
 
 	return getScriptInterface()->callVoidFunction(2);
-}
-
-void EventCallback::monsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position) const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("{} - "
-		                 "Position {}"
-		                 ". Call stack overflow. Too many lua script calls being nested.",
-		                 __FUNCTION__, position.toString());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	LuaScriptInterface::setMetatable(L, -1, "Monster");
-	LuaScriptInterface::pushPosition(L, position);
-
-	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
-		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
-	} else {
-		lua_pop(L, 1);
-	}
-
-	LuaScriptInterface::resetScriptEnv();
-}
-
-// Npc
-void EventCallback::npcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position) const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("{} - "
-		                 "Position {}"
-		                 ". Call stack overflow. Too many lua script calls being nested.",
-		                 __FUNCTION__, position.toString());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Npc>(L, npc);
-	LuaScriptInterface::setMetatable(L, -1, "Npc");
-	LuaScriptInterface::pushPosition(L, position);
-
-	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
-		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
-	} else {
-		lua_pop(L, 1);
-	}
-
-	LuaScriptInterface::resetScriptEnv();
 }
 
 bool EventCallback::zoneBeforeCreatureEnter(const std::shared_ptr<Zone> &zone, const std::shared_ptr<Creature> &creature) const {

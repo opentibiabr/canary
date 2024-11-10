@@ -1591,6 +1591,10 @@ LightInfo Creature::getCreatureLight() const {
 	return internalLight;
 }
 
+uint16_t Creature::getSpeed() const {
+	return std::clamp(baseSpeed + varSpeed, 0, static_cast<int>(std::numeric_limits<uint16_t>::max()));
+}
+
 void Creature::setSpeed(int32_t varSpeedDelta) {
 	// Prevents creatures from not exceeding the maximum allowed speed
 	if (getSpeed() >= PLAYER_MAX_SPEED) {
@@ -2004,13 +2008,15 @@ void Creature::sendAsyncTasks() {
 
 void Creature::safeCall(std::function<void(void)> &&action) const {
 	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<const SharedObject>(shared_from_this()), action = std::move(action)] {
-			if (weak_self.lock()) {
-				action();
+		g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
+			if (const auto self = weak_self.lock()) {
+				if (!self->isInternalRemoved) {
+					action();
+				}
 			}
 		},
 		                        g_dispatcher().context().getName());
-	} else {
+	} else if (!isInternalRemoved) {
 		action();
 	}
 }

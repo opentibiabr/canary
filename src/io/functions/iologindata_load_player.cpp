@@ -9,8 +9,10 @@
 
 #include "io/functions/iologindata_load_player.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
+#include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
@@ -29,6 +31,7 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {

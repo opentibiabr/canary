@@ -108,6 +108,17 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 	return descriptionText
 end
 
+local function handleTaskHuntingDescription(inspectedThing, lookDistance)
+	local descriptionText = inspectedThing:getDescription(lookDistance)
+
+	if inspectedThing:isPlayer() then
+		local playerRank = inspectedThing:getRankTask() or "Newbie"
+		descriptionText = descriptionText .."\n Rank Task: [".. playerRank.."]"
+	end
+
+	return descriptionText
+end
+
 local callback = EventCallback("PlayerOnLookBaseEvent")
 
 function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDistance)
@@ -117,6 +128,7 @@ function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDi
 		descriptionText = handleItemDescription(inspectedThing, lookDistance)
 	elseif inspectedThing:isCreature() then
 		descriptionText = handleCreatureDescription(inspectedThing, lookDistance)
+		descriptionText = handleTaskHuntingDescription(inspectedThing, lookDistance)
 	end
 
 	if player:getGroup():getAccess() then

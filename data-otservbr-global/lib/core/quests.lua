@@ -6633,5 +6633,34 @@ if not Quests then
 				},
 			},
 		},
+		[50] = {
+			name = "Hunting Tasks",
+			startStorageId = 176601,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "Stage: xxxxx",
+					storageId = 176609,
+					missionId = 10500,
+					startValue = 0,
+					endValue = 1,
+					states = {
+						[0] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(taskSystem_storages[3]) < 0 and 0 or player:getStorageValue(taskSystem_storages[3]))
+							local count = taskSystem[player:getTaskMission()].count 
+							return string.format(
+								"You need to kill ".. count  .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[1] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[player:getTaskMission()].count .." ".. getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list) ..". You can repeat this hunting task."
+							)
+						end,
+					},
+				},
+			},
+		},
 	}
 end

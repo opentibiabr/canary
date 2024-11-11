@@ -101,19 +101,10 @@ custom_exp_damage_effect:register()
 
 ---------------------------------------------------------------------------------------
 
+--[[
 local monsterSpawnExpBoostEvent = EventCallback("monsterSpawnExpBoostEvent")
 
 monsterSpawnExpBoostEvent.monsterOnSpawn = function(monster, position)
-	--[[ --Config for specific monsters 
-    if table.contains({ "rotworm", "demon", "cyclops" }, monster:getName():lower()) then
-        monster:registerEvent("custom_exp_damage_effect")
-	end
-    ]]--
-
-    -- All monsters will drop exp
-    --monster:registerEvent("custom_exp_damage_effect")
-
-    -- Only common monsters will drop exp
     if monster:getType():isRewardBoss() then
         return true
     else
@@ -124,6 +115,7 @@ monsterSpawnExpBoostEvent.monsterOnSpawn = function(monster, position)
 end
 
 monsterSpawnExpBoostEvent:register()
+]]--
 
 ---------------------------------------------------------------------------------------
 

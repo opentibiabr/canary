@@ -2,6 +2,7 @@
 
 ---------------------------------------------------------------------------------------
 
+--[[
 local monsterSpawnHuntKill = EventCallback("monsterSpawnHuntKill")
 
 monsterSpawnHuntKill.monsterOnSpawn = function(monster, position)
@@ -10,7 +11,7 @@ monsterSpawnHuntKill.monsterOnSpawn = function(monster, position)
 end
 
 monsterSpawnHuntKill:register()
-
+]]--
 ---------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------

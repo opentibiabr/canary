@@ -3,7 +3,7 @@
 =========================================================================================================================================
 
 ACTUAL ACTION/UNIQ = 90003
-ACTUAL IN GAME = 62000
+ACTUAL IN GAME ACTION/UNIQ = 62001
 Hunt Refiller Item ID = 6579
 Stamina Refill Item ID = 14053
 flask para usar = 14055
@@ -22,4 +22,4 @@ Loot Seller Item ID = 30316
 
 - Free Bless for VIPS 1x Day
 - Recharge items with silver token (right button)
-- 
+- Task System - Falta testar Daily Task, Ajustar os Rankings, configurar entrada das salas, ajustar quest tracker

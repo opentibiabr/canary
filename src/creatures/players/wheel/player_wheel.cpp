@@ -9,6 +9,8 @@
 
 #include "creatures/players/wheel/player_wheel.hpp"
 
+#include "map/spectators.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
@@ -2609,35 +2611,7 @@ bool PlayerWheel::checkBattleInstinct() {
 	setOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT, OTSYS_TIME() + 2000);
 	bool updateClient = false;
 	m_creaturesNearby = 0;
-	uint16_t creaturesNearby = 0;
-	for (int offsetX = -1; offsetX <= 1; offsetX++) {
-		if (creaturesNearby >= 8) {
-			break;
-		}
-		for (int offsetY = -1; offsetY <= 1; offsetY++) {
-			if (creaturesNearby >= 8) {
-				break;
-			}
-
-			const auto playerPositionOffSet = Position(
-				m_player.getPosition().x + offsetX,
-				m_player.getPosition().y + offsetY,
-				m_player.getPosition().z
-			);
-			const auto &tile = g_game().map.getTile(playerPositionOffSet);
-			if (!tile) {
-				continue;
-			}
-
-			const auto &creature = tile->getTopVisibleCreature(m_player.getPlayer());
-			if (!creature || creature == m_player.getPlayer() || (creature->getMaster() && creature->getMaster()->getPlayer() == m_player.getPlayer())) {
-				continue;
-			}
-
-			creaturesNearby++;
-		}
-	}
-
+	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1).excludePlayerMaster().size();
 	if (creaturesNearby >= 5) {
 		m_creaturesNearby = creaturesNearby;
 		creaturesNearby -= 4;
@@ -2661,31 +2635,7 @@ bool PlayerWheel::checkPositionalTactics() {
 	setOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS, OTSYS_TIME() + 2000);
 	m_creaturesNearby = 0;
 	bool updateClient = false;
-	uint16_t creaturesNearby = 0;
-	for (int offsetX = -1; offsetX <= 1; offsetX++) {
-		if (creaturesNearby > 0) {
-			break;
-		}
-		for (int offsetY = -1; offsetY <= 1; offsetY++) {
-			const auto playerPositionOffSet = Position(
-				m_player.getPosition().x + offsetX,
-				m_player.getPosition().y + offsetY,
-				m_player.getPosition().z
-			);
-			const auto &tile = g_game().map.getTile(playerPositionOffSet);
-			if (!tile) {
-				continue;
-			}
-
-			const auto &creature = tile->getTopVisibleCreature(m_player.getPlayer());
-			if (!creature || creature == m_player.getPlayer() || !creature->getMonster() || (creature->getMaster() && creature->getMaster()->getPlayer())) {
-				continue;
-			}
-
-			creaturesNearby++;
-			break;
-		}
-	}
+	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1).excludePlayerMaster().size();
 	constexpr uint16_t holyMagicSkill = 3;
 	constexpr uint16_t healingMagicSkill = 3;
 	constexpr uint16_t distanceSkill = 3;

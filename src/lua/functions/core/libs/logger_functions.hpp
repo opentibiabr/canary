@@ -9,9 +9,7 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class LoggerFunctions final : public LuaScriptInterface {
+class LoggerFunctions {
 public:
 	static void init(lua_State* L);
 

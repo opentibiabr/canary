@@ -103,6 +103,24 @@ local config = {
 		},
 		effect = CONST_ME_BUBBLES,
 	},
+	[21333] = { -- Belongings of a Deceased (The Ravager) - Dark Trails Quest
+		chances = {
+			{ from = 1, to = 2500, itemId = 3043 }, -- crystal coins
+			{ from = 2501, to = 5000, itemId = 3041 }, -- blue gem
+			{ from = 5001, to = 7500, itemId = 3038 }, -- green gem
+			{ from = 7501, to = 10001, itemId = 3331 }, -- ravager's axe
+		},
+		effect = CONST_ME_MAGIC_GREEN,
+	},
+	[21334] = { -- Belongings of a Deceased (Death Priest Shargon) - Dark Trails Quest
+		chances = {
+			{ from = 1, to = 2500, itemId = 3043 }, -- crystal coins
+			{ from = 2501, to = 5000, itemId = 5741 }, -- skull helmet
+			{ from = 5001, to = 7500, itemId = 3324 }, -- skull staff
+			{ from = 7501, to = 10001, itemId = 9056 }, -- black skull
+		},
+		effect = CONST_ME_MAGIC_GREEN,
+	},
 	[22763] = { -- shaggy ogre bag
 		chances = {
 			{ from = 1, to = 1440, itemId = 22187, count = 5 },
@@ -151,6 +169,13 @@ local config = {
 			{ from = 9894, to = 9929, itemId = 22737 },
 			{ from = 9930, to = 9958, itemId = 23536 },
 			{ from = 9959, to = 10001, itemId = 22731 },
+		},
+		effect = CONST_ME_CRAPS,
+	},
+	[26186] = { -- mystery box
+		chances = {
+			{ from = 0, to = 5001, itemId = 25361 }, -- blood of the mountain
+			{ from = 5002, to = 10001, itemId = 25360 }, -- heart of the mountain
 		},
 		effect = CONST_ME_CRAPS,
 	},

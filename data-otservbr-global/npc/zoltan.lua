@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "yenny the gentle") then
 		npcHandler:say("Ah, Yenny the Gentle was one of the founders of the druid order called Crunor's Caress, that has been originated in her hometown Carlin.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
-	elseif MsgContains(message, "crunors caress") then
+	elseif MsgContains(message, "crunor's caress") then
 		if player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.TheFearedHugo) == 1 then
 			-- Questlog: The Feared Hugo (Padreia)
 			player:setStorageValue(Storage.Quest.U7_24.TheParadoxTower.TheFearedHugo, 2)
@@ -76,13 +76,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getSex() == PLAYERSEX_MALE and not player:hasOutfit(130, 2) then
 			if MsgContains(message, "yes") then
 				if player:getItemCount(5903) == 1 then
-					npcHandler:say("Sorry you don't have the Ferumbras' hat.", npc, creature)
-				else
 					npcHandler:say("I bow to you, player, and hereby grant you the right to wear Ferumbras' hat as accessory. Congratulations!", npc, creature)
 					player:removeItem(5903, 1)
 					player:addOutfitAddon(130, 2) -- male mage addon
-					player:addOutfitAddon(133, 2) -- male summoner addon
+					player:addOutfitAddon(141, 2) -- female summoner addon
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
+				else
+					npcHandler:say("Sorry you don't have the Ferumbras' hat.", npc, creature)
 				end
 			else
 				npcHandler:say("This task is only available for male players who don't already have the addon.", npc, creature)

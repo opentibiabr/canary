@@ -10,7 +10,6 @@
 #pragma once
 
 #include "game/movement/position.hpp"
-#include "items/tile.hpp"
 
 class Npc;
 class NpcType;
@@ -23,28 +22,26 @@ struct spawnBlockNpc_t {
 	Direction direction;
 };
 
-class SpawnNpc : public SharedObject {
+class SpawnNpc final : public SharedObject {
 public:
 	SpawnNpc(Position initPos, int32_t initRadius) :
 		centerPos(initPos), radius(initRadius) { }
-	~SpawnNpc();
+	~SpawnNpc() override;
 
 	// non-copyable
 	SpawnNpc(const SpawnNpc &) = delete;
 	SpawnNpc &operator=(const SpawnNpc &) = delete;
 
 	bool addNpc(const std::string &name, const Position &pos, Direction dir, uint32_t interval);
-	void removeNpc(std::shared_ptr<Npc> npc);
+	void removeNpc(const std::shared_ptr<Npc> &npc);
 
-	uint32_t getInterval() const {
-		return interval;
-	}
+	uint32_t getInterval() const;
 	void startup();
 
 	void startSpawnNpcCheck();
 	void stopEvent();
 
-	bool isInSpawnNpcZone(const Position &pos);
+	bool isInSpawnNpcZone(const Position &pos) const;
 	void cleanup();
 
 private:
@@ -76,27 +73,15 @@ public:
 	void startup();
 	void clear();
 
-	bool isStarted() const {
-		return started;
-	}
-	bool setStarted(bool setStarted) {
-		return started = setStarted;
-	}
+	bool isStarted() const;
+	bool setStarted(bool setStarted);
 
-	bool isLoaded() const {
-		return loaded;
-	}
-	bool setLoaded(bool setLoaded) {
-		return loaded = setLoaded;
-	}
+	bool isLoaded() const;
+	bool setLoaded(bool setLoaded);
 
-	std::string setFileName(std::string setName) {
-		return fileName = std::move(setName);
-	}
+	std::string setFileName(std::string setName);
 
-	std::vector<std::shared_ptr<SpawnNpc>> &getSpawnNpcList() {
-		return spawnNpcList;
-	}
+	std::vector<std::shared_ptr<SpawnNpc>> &getSpawnNpcList();
 
 private:
 	std::vector<std::shared_ptr<SpawnNpc>> spawnNpcList;

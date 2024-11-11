@@ -9,37 +9,6 @@
 
 #pragma once
 
-// Enums
-enum Icons_t {
-	ICON_POISON = 1 << 0,
-	ICON_BURN = 1 << 1,
-	ICON_ENERGY = 1 << 2,
-	ICON_DRUNK = 1 << 3,
-	ICON_MANASHIELD = 1 << 4,
-	ICON_PARALYZE = 1 << 5,
-	ICON_HASTE = 1 << 6,
-	ICON_SWORDS = 1 << 7,
-	ICON_DROWNING = 1 << 8,
-	ICON_FREEZING = 1 << 9,
-	ICON_DAZZLED = 1 << 10,
-	ICON_CURSED = 1 << 11,
-	ICON_PARTY_BUFF = 1 << 12,
-	ICON_REDSWORDS = 1 << 13,
-	ICON_PIGEON = 1 << 14,
-	ICON_BLEEDING = 1 << 15,
-	ICON_LESSERHEX = 1 << 16,
-	ICON_INTENSEHEX = 1 << 17,
-	ICON_GREATERHEX = 1 << 18,
-	ICON_ROOTED = 1 << 19,
-	ICON_FEARED = 1 << 20,
-	ICON_GOSHNAR1 = 1 << 21,
-	ICON_GOSHNAR2 = 1 << 22,
-	ICON_GOSHNAR3 = 1 << 23,
-	ICON_GOSHNAR4 = 1 << 24,
-	ICON_GOSHNAR5 = 1 << 25,
-	ICON_NEWMANASHIELD = 1 << 26,
-};
-
 enum WieldInfo_t {
 	WIELDINFO_NONE = 0,
 	WIELDINFO_LEVEL = 1 << 0,
@@ -48,7 +17,7 @@ enum WieldInfo_t {
 	WIELDINFO_PREMIUM = 1 << 3,
 };
 
-enum SpawnType_t {
+enum SpawnType_t : uint8_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,
 	RESPAWN_IN_NIGHT = 2,
@@ -379,23 +348,25 @@ enum Fluids_t : uint8_t {
 	FLUID_NONE = 0, /* Blue */
 	FLUID_WATER = 1, /* Blue */
 	FLUID_WINE = 2, /* Purple */
-	FLUID_BEER = 3, /* Brown */
-	FLUID_MUD = 4, /* Brown */
+	FLUID_BEER = 3, /* Orange */
+	FLUID_MUD = 4, /* Orange */
 	FLUID_BLOOD = 5, /* Red */
 	FLUID_SLIME = 6, /* Green */
-	FLUID_OIL = 7, /* Brown */
+	FLUID_OIL = 7, /* Orange */
 	FLUID_URINE = 8, /* Yellow */
 	FLUID_MILK = 9, /* White */
 	FLUID_MANA = 10, /* Purple */
 	FLUID_LIFE = 11, /* Red */
 	FLUID_LEMONADE = 12, /* Yellow */
-	FLUID_RUM = 13, /* Brown */
+	FLUID_RUM = 13, /* Orange */
 	FLUID_FRUITJUICE = 14, /* Yellow */
 	FLUID_COCONUTMILK = 15, /* White */
-	FLUID_MEAD = 16, /* Brown */
-	FLUID_TEA = 17, /* Brown */
-	FLUID_INK = 18 /* Black */
-	// 12.85 last fluid is 18, 19+ is a loop from 0 to 18 over and over again
+	FLUID_MEAD = 16, /* Orange */
+	FLUID_TEA = 17, /* Orange */
+	FLUID_INK = 18, /* Black */
+	FLUID_CANDY = 19, /* Red with white pieces */
+	FLUID_CHOCOLATE = 20, /* Brown */
+	// 13.40 last fluid is 20, 21+ is a loop from 0 to 20 over and over again
 };
 
 enum SquareColor_t : uint8_t {
@@ -660,6 +631,9 @@ enum ItemID_t : uint16_t {
 	ITEM_BATHTUB_FILLED = 26077,
 	ITEM_BATHTUB_FILLED_NOTMOVABLE = 26100,
 
+	ITEM_LESSER_FRAGMENT = 46625,
+	ITEM_GREATER_FRAGMENT = 46626,
+
 	ITEM_NONE = 0
 };
 
@@ -765,5 +739,6 @@ enum Screenshot_t : uint8_t {
 	SCREENSHOT_TYPE_PLAYERKILL = 9,
 	SCREENSHOT_TYPE_PLAYERATTACKING = 10,
 	SCREENSHOT_TYPE_TREASUREFOUND = 11,
-	SCREENSHOT_TYPE_SKILLUP = 12
+	SCREENSHOT_TYPE_SKILLUP = 12,
+	SCREENSHOT_TYPE_GIFTOFLIFE = 13,
 };

@@ -10,19 +10,16 @@
 #pragma once
 
 #include "account/account.hpp"
-#include "lua/global/baseevents.hpp"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
-#include "lua/scripts/luascript.hpp"
-#include "lua/scripts/scripts.hpp"
 
+class Player;
+class LuaScriptInterface;
 class TalkAction;
 using TalkAction_ptr = std::shared_ptr<TalkAction>;
 
-class TalkAction : public Script {
+class TalkAction final {
 public:
-	using Script::Script;
-
 	const std::string &getWords() const {
 		return m_word;
 	}
@@ -36,31 +33,44 @@ public:
 		}
 	}
 
+	const std::string &getDescription() const {
+		return m_description;
+	}
+
+	void setDescription(const std::string &stringDescription) {
+		m_description = stringDescription;
+	}
+
 	std::string getSeparator() const {
 		return separator;
 	}
 	void setSeparator(std::string sep) {
-		separator = sep;
+		separator = std::move(sep);
 	}
 
 	// scripting
-	bool executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const;
+	bool executeSay(const std::shared_ptr<Player> &player, const std::string &words, const std::string &param, SpeakClasses type) const;
 	//
 
 	void setGroupType(uint8_t newGroupType);
 	const uint8_t &getGroupType() const;
 
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
+
 private:
-	std::string getScriptTypeName() const override {
-		return "onSay";
-	}
+	int32_t m_scriptId {};
 
 	std::string m_word;
+	std::string m_description;
 	std::string separator = "\"";
 	uint8_t m_groupType = 0;
 };
 
-class TalkActions final : public Scripts {
+class TalkActions {
 public:
 	TalkActions();
 	~TalkActions();
@@ -69,12 +79,10 @@ public:
 	TalkActions(const TalkActions &) = delete;
 	TalkActions &operator=(const TalkActions &) = delete;
 
-	static TalkActions &getInstance() {
-		return inject<TalkActions>();
-	}
+	static TalkActions &getInstance();
 
-	bool checkWord(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const;
-	TalkActionResult_t checkPlayerCanSayTalkAction(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words) const;
+	bool checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, std::string_view word, const TalkAction_ptr &talkActionPtr) const;
+	TalkActionResult_t checkPlayerCanSayTalkAction(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words) const;
 
 	bool registerLuaEvent(const TalkAction_ptr &talkAction);
 	void clear();

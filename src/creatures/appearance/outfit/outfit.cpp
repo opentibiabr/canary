@@ -7,12 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "creatures/appearance/outfit/outfit.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/players/player.hpp"
+#include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
-#include "game/game.hpp"
+
+std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
 
 Outfits &Outfits::getInstance() {
 	return inject<Outfits>();
@@ -27,7 +31,7 @@ bool Outfits::reload() {
 
 bool Outfits::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/XML/outfits.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
@@ -58,7 +62,7 @@ bool Outfits::loadFromXml() {
 		}
 
 		if (auto lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-		    g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS, __FUNCTION__) && lookType != 0
+		    g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
 		    && !g_game().isLookTypeRegistered(lookType)) {
 			g_logger().warn("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was ignored to prevent client crash.", lookType);
 			continue;
@@ -101,5 +105,19 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const
 	if (it != outfits[sex].end()) {
 		return *it;
 	}
+	return nullptr;
+}
+
+const std::vector<std::shared_ptr<Outfit>> &Outfits::getOutfits(PlayerSex_t sex) const {
+	return outfits[sex];
+}
+
+std::shared_ptr<Outfit> Outfits::getOutfitByName(PlayerSex_t sex, const std::string &name) const {
+	for (const auto &outfit : outfits[sex]) {
+		if (outfit->name == name) {
+			return outfit;
+		}
+	}
+
 	return nullptr;
 }

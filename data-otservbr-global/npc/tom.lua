@@ -62,13 +62,13 @@ local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 	local player = Player(creature)
 	-- Starting mission 6
-	if player:getStorageValue(Storage.TheRookieGuard.Mission06) == 1 then
+	if player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) == 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey there, |PLAYERNAME|. Did Vascalir send you to me for a {mission}?")
 		-- Not finished mission 6
-	elseif player:getStorageValue(Storage.TheRookieGuard.Mission06) > 1 and player:getStorageValue(Storage.TheRookieGuard.Mission06) < 6 then
+	elseif player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) > 1 and player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) < 6 then
 		npcHandler:setMessage(MESSAGE_GREET, "Now, now - we can't work with that. Go back to that wolf den and fulfil your mission! Unless there is anything else I can help you with.")
 		-- Finishing mission 6
-	elseif player:getStorageValue(Storage.TheRookieGuard.Mission06) == 6 then
+	elseif player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) == 6 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey there, |PLAYERNAME|. You look... exhausted. Did you run a lot? And more importantly, were you able to find some war wolf leather?")
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Hey there, |PLAYERNAME|. I'm Tom the tanner. If you have fresh {corpses}, leather, paws or other animal body parts, {trade} with me.")
@@ -101,7 +101,7 @@ local mission6 = keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 		"That's why I wouldn't call it 'stealing', what an ugly word... anyway, if you bring the skin back to me, I'll make some great war wolf boots from them. What do you say?",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission06) == 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) == 1
 end)
 keywordHandler:addAliasKeyword({ "mission" })
 
@@ -110,7 +110,7 @@ keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Alright. Can I help you with something else then?",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission06) == 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) == 1
 end)
 
 -- Mission 6: Accept
@@ -124,7 +124,7 @@ mission6:addChildKeyword(
 	},
 	nil,
 	function(player)
-		player:setStorageValue(Storage.TheRookieGuard.Mission06, 2)
+		player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06, 2)
 		player:addMapMark({ x = 32138, y = 32132, z = 7 }, MAPMARK_GREENSOUTH, "War Wolf Den")
 	end
 )
@@ -147,9 +147,9 @@ keywordHandler:addKeyword({ "yes" }, StdModule.say, {
 		"You can also tame creatures to ride on that will also increase your speed. So don't worry if you're out of breath now - you won't always be that slow. Now off with you and back to Vascalir, I have work to do.",
 	},
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission06) == 6 and player:getItemCount(12740) >= 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) == 6 and player:getItemCount(12740) >= 1
 end, function(player)
-	player:setStorageValue(Storage.TheRookieGuard.Mission06, 7)
+	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06, 7)
 	player:removeItem(12740, 1)
 	player:addItemEx(Game.createItem(3552, 1), true, CONST_SLOT_WHEREEVER)
 end)
@@ -159,7 +159,7 @@ keywordHandler:addKeyword({ "no" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Are you sure? I think I see some war wolf leather on you. You should reply with {yes}.",
 }, function(player)
-	return player:getStorageValue(Storage.TheRookieGuard.Mission06) == 6 and player:getItemCount(12740) >= 1
+	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission06) == 6 and player:getItemCount(12740) >= 1
 end)
 
 -- Basic keywords

@@ -52,9 +52,9 @@ end
 
 function Player.getInquisitionGold(self)
 	local v = {
-		math.max(0, self:getStorageValue(ROSHAMUUL_MORTAR_THROWN)) * 100,
-		math.max(0, self:getStorageValue(ROSHAMUUL_KILLED_FRAZZLEMAWS)),
-		math.max(0, self:getStorageValue(ROSHAMUUL_KILLED_SILENCERS)),
+		math.max(0, self:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Mortar_Thrown)) * 100,
+		math.max(0, self:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Killed_Frazzlemaws)),
+		math.max(0, self:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Killed_Silencers)),
 	}
 	return v[1] + v[2] + v[3]
 end
@@ -102,9 +102,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getInquisitionGold() > 0 then
 				npcHandler:setTopic(playerId, 4)
 				npcHandler:say({
-					"Alright, so you mixed and delivered " .. math.max(0, player:getStorageValue(ROSHAMUUL_MORTAR_THROWN)) .. " mortar and ...",
-					"You killed " .. math.max(0, player:getStorageValue(ROSHAMUUL_KILLED_FRAZZLEMAWS)) .. " frazzlemaws and ...",
-					"You also hunted " .. math.max(0, player:getStorageValue(ROSHAMUUL_KILLED_SILENCERS)) .. " silencers. That would equal " .. player:getInquisitionGold() .. " of inquisition gold - BUT we are currently short of this valuable metal so... do you want me to add this amount to my {books} for now or {trade} it for something else.",
+					"Alright, so you mixed and delivered " .. math.max(0, player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Mortar_Thrown)) .. " mortar and ...",
+					"You killed " .. math.max(0, player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Killed_Frazzlemaws)) .. " frazzlemaws and ...",
+					"You also hunted " .. math.max(0, player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Killed_Silencers)) .. " silencers. That would equal " .. player:getInquisitionGold() .. " of inquisition gold - BUT we are currently short of this valuable metal so... do you want me to add this amount to my {books} for now or {trade} it for something else.",
 				}, npc, creature)
 			else
 				npcHandler:setTopic(playerId, nil)
@@ -112,7 +112,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif npcHandler:getTopic(playerId) == 4 then
-		local v = math.max(0, player:getStorageValue(ROSHAMUUL_GOLD_RECORD))
+		local v = math.max(0, player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record))
 		if MsgContains(message, "book") or MsgContains(message, "books") then
 			npcHandler:setTopic(playerId, 5)
 			npcHandler:say({
@@ -126,21 +126,21 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Good. Registered as... " .. player:getName() .. "... with... about " .. player:getInquisitionGold() .. " of righteously earned inquisition gold added. There. Thanks for your help! ..",
 				"Good. Ask me any time in case you want to know your current {record}. If you have time, Remember you can also {trade} your earnings into some of these... probably far more valuable, ahem... cluster... things, yes.",
 			}, npc, creature)
-			player:setStorageValue(ROSHAMUUL_GOLD_RECORD, player:getInquisitionGold())
-			player:setStorageValue(ROSHAMUUL_MORTAR_THROWN, 0)
-			player:setStorageValue(ROSHAMUUL_KILLED_FRAZZLEMAWS, 0)
-			player:setStorageValue(ROSHAMUUL_KILLED_SILENCERS, 0)
+			player:setStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record, player:getInquisitionGold())
+			player:setStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Mortar_Thrown, 0)
+			player:setStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Killed_Frazzlemaws, 0)
+			player:setStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Killed_Silencers, 0)
 			npcHandler:setTopic(playerId, nil)
 		end
 	elseif MsgContains(message, "record") then
-		local v = player:getStorageValue(ROSHAMUUL_GOLD_RECORD)
+		local v = player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record)
 		if v > 0 then
 			npcHandler:say("You have " .. v .. " inquisition gold registered in my book.", npc, creature)
 		else
 			npcHandler:say("I do not see inquisition gold registered in my book from you.", npc, creature)
 		end
 	elseif MsgContains(message, "trade") then
-		local v = player:getStorageValue(ROSHAMUUL_GOLD_RECORD)
+		local v = player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record)
 		if v >= 100 then
 			npcHandler:setTopic(playerId, 6)
 			npcHandler:say("Ah yes, you currently have " .. v .. " of righteously earned inquisition gold in my book. 100 inquisition gold equals one cluster. How many clusters do you want in exchange?", npc, creature)
@@ -154,15 +154,15 @@ local function creatureSayCallback(npc, creature, type, message)
 			return npcHandler:say("You should tell me a real number.", npc, creature)
 		end
 
-		local max = math.floor(player:getStorageValue(ROSHAMUUL_GOLD_RECORD) / 100)
+		local max = math.floor(player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record) / 100)
 		if v > max then
 			return npcHandler:say("You do not have enough inquisition gold for that, so far you can ask for up to " .. max .. " clusters.", npc, creature)
 		end
 
 		player:addItem(20062, v)
 		npcHandler:setTopic(playerId, nil)
-		player:setStorageValue(ROSHAMUUL_GOLD_RECORD, player:getStorageValue(ROSHAMUUL_GOLD_RECORD) - (v * 100))
-		npcHandler:say("There you are. Now I register " .. player:getStorageValue(ROSHAMUUL_GOLD_RECORD) .. " inquisition gold of yours in my book.", npc, creature)
+		player:setStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record, player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record) - (v * 100))
+		npcHandler:say("There you are. Now I register " .. player:getStorageValue(Storage.Quest.U10_30.RoshamuulQuest.Roshamuul_Gold_Record) .. " inquisition gold of yours in my book.", npc, creature)
 	end
 
 	if MsgContains(message, "bucket") or MsgContains(message, "supplies") then

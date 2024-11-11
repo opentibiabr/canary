@@ -7,9 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/iomapserialize.hpp"
+
+#include "config/configmanager.hpp"
 #include "io/iologindata.hpp"
 #include "game/game.hpp"
 #include "items/bed.hpp"
@@ -48,7 +48,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		while (item_count--) {
 			if (auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile)) {
 				const auto &house = houseTile->getHouse();
-				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 				if (!isTransferOnRestart && house->getOwner() == 0) {
 					g_logger().trace("Skipping load item from house id: {}, position: {}, house does not have owner", house->getId(), house->getEntryPosition().toString());
 					house->clearHouseInfo(false);
@@ -110,7 +110,7 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	return true;
 }
 
-bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Container> container) {
+bool IOMapSerialize::loadContainer(PropStream &propStream, const std::shared_ptr<Container> &container) {
 	while (container->serializationCount > 0) {
 		if (!loadItem(propStream, container)) {
 			g_logger().warn("Deserialization error for container item: {}", container->getID());
@@ -127,7 +127,7 @@ bool IOMapSerialize::loadContainer(PropStream &propStream, std::shared_ptr<Conta
 	return true;
 }
 
-bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> parent, bool isHouseItem /*= false*/) {
+bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cylinder> &parent, bool isHouseItem /*= false*/) {
 	uint16_t id;
 	if (!propStream.read<uint16_t>(id)) {
 		return false;
@@ -216,8 +216,8 @@ bool IOMapSerialize::loadItem(PropStream &propStream, std::shared_ptr<Cylinder> 
 	return true;
 }
 
-void IOMapSerialize::saveItem(PropWriteStream &stream, std::shared_ptr<Item> item) {
-	std::shared_ptr<Container> container = item->getContainer();
+void IOMapSerialize::saveItem(PropWriteStream &stream, const std::shared_ptr<Item> &item) {
+	const auto &container = item->getContainer();
 
 	// Write ID & props
 	stream.write<uint16_t>(item->getID());
@@ -235,27 +235,25 @@ void IOMapSerialize::saveItem(PropWriteStream &stream, std::shared_ptr<Item> ite
 	stream.write<uint8_t>(0x00); // attr end
 }
 
-void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> tile) {
+void IOMapSerialize::saveTile(PropWriteStream &stream, const std::shared_ptr<Tile> &tile) {
 	const TileItemVector* tileItems = tile->getItemList();
 	if (!tileItems) {
 		return;
 	}
 
-	std::vector<std::shared_ptr<Item>> items;
-	items.reserve(32);
-
+	std::list<std::shared_ptr<Item>> items;
 	uint16_t count = 0;
 	for (auto &item : *tileItems) {
 		if (item->getID() == ITEM_BATHTUB_FILLED_NOTMOVABLE) {
 			std::shared_ptr<Item> tub = Item::CreateItem(ITEM_BATHTUB_FILLED);
-			items.emplace_back(tub);
+			items.push_front(tub);
 			++count;
 			continue;
 		} else if (!item->isSavedToHouses()) {
 			continue;
 		}
 
-		items.emplace_back(item);
+		items.push_front(item);
 		++count;
 	}
 
@@ -266,7 +264,7 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, std::shared_ptr<Tile> til
 		stream.write<uint8_t>(tilePosition.z);
 
 		stream.write<uint32_t>(count);
-		for (std::shared_ptr<Item> item : items) {
+		for (const std::shared_ptr<Item> &item : items) {
 			saveItem(stream, item);
 		}
 	}
@@ -284,10 +282,10 @@ bool IOMapSerialize::loadHouseInfo() {
 		auto houseId = result->getNumber<uint32_t>("id");
 		const auto house = g_game().map.houses.getHouse(houseId);
 		if (house) {
-			uint32_t owner = result->getNumber<uint32_t>("owner");
-			int32_t newOwner = result->getNumber<int32_t>("new_owner");
+			auto owner = result->getNumber<uint32_t>("owner");
+			auto newOwner = result->getNumber<int32_t>("new_owner");
 			// Transfer house owner
-			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART, __FUNCTION__);
+			auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 			if (isTransferOnRestart && newOwner >= 0) {
 				g_game().setTransferPlayerHouseItems(houseId, owner);
 				if (newOwner == 0) {
@@ -372,7 +370,7 @@ bool IOMapSerialize::SaveHouseInfoGuard() {
 			listText.clear();
 		}
 
-		for (std::shared_ptr<Door> door : house->getDoors()) {
+		for (const std::shared_ptr<Door> &door : house->getDoors()) {
 			if (door->getAccessList(listText) && !listText.empty()) {
 				query << house->getId() << ',' << door->getDoorId() << ',' << db.escapeString(listText) << ',' << version;
 				if (!listUpdate.addRow(query)) {

@@ -50,11 +50,29 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function greetCallback(npc, creature)
-	local playerId = creature:getId()
-	npcHandler:setTopic(playerId, 0)
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 35 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.ScaredKazzan) ~= 1 and player:getOutfit().lookType == 65 then
+		player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.ScaredKazzan, 1)
+		npcHandler:say("WAAAAAHHH!!!", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	npcHandler:say("Feel welcome in the lands of the children of the enlightened Daraman, |PLAYERNAME|.", npc, creature)
+	npcHandler:setInteraction(npc, creature)
+
 	return true
 end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -63,12 +81,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	-- Pegando a quest
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) < 1 then
 		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor) < 1 and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor) < 1 then
-			npcHandler:say({
-				"Do you know the location of the djinn fortresses in the mountains south of here?",
-			}, npc, creature)
+			npcHandler:say("Do you know the location of the djinn fortresses in the mountains south of here?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 and MsgContains(message, "yes") then
@@ -82,24 +97,17 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Very good. I hope you are able to convince one of the fractions to stand on our side. If you haven't done yet, you should first go and look for old Melchior in Ankrahmun. ...",
 			"He knows many things about the djinn race and he may have some hints for you.",
 		}, npc, creature)
-		if player:getStorageValue(Storage.TibiaTales.DefaultStart) <= 0 then
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 		end
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, 1)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, 1)
 		-- Entregando
-	elseif player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) == 3 then
-		npcHandler:say({
-			"Well, I don't blame you for that. I am sure you did your best. Now we can just hope that peace remains. Here, take this small gratification for your effort to help and Daraman may bless you!",
-		}, npc, creature)
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) + 1)
+	elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) == 3 then
+		npcHandler:say("Well, I don't blame you for that. I am sure you did your best. Now we can just hope that peace remains. Here, take this small gratification for your effort to help and Daraman may bless you!", npc, creature)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) + 1)
 		player:addItem(3035, 20)
 	end
 
-	if player:getStorageValue(Storage.WhatAFoolish.Questline) == 35 and player:getStorageValue(Storage.WhatAFoolish.ScaredKazzan) ~= 1 and player:getOutfit().lookType == 65 then
-		player:setStorageValue(Storage.WhatAFoolish.ScaredKazzan, 1)
-		npcHandler:say("WAAAAAHHH!!!", npc, creature)
-		return false
-	end
 	return true
 end
 

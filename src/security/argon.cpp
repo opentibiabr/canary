@@ -7,51 +7,61 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "security/argon.hpp"
 
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
-#include "security/argon.hpp"
 
 #include <argon2.h>
-
-const std::regex Argon2::re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
-const std::string Argon2::base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 Argon2::Argon2() {
 	updateConstants();
 }
 
 void Argon2::updateConstants() {
-	m_const_str = g_configManager().getString(M_CONST, __FUNCTION__);
+	m_const_str = g_configManager().getString(M_CONST);
 	m_cost = parseBitShift(m_const_str);
-	t_cost = g_configManager().getNumber(T_CONST, __FUNCTION__);
-	parallelism = g_configManager().getNumber(PARALLELISM, __FUNCTION__);
+	t_cost = g_configManager().getNumber(T_CONST);
+	parallelism = g_configManager().getNumber(PARALLELISM);
 }
 
 uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
-	std::stringstream ss(bitShiftStr);
-	int base;
-	int shift;
-	char op1;
-	char op2;
+	static const std::regex pattern(R"(^\s*(\d+)\s*<<\s*(\d+)\s*$)", std::regex_constants::ECMAScript | std::regex_constants::icase);
+	std::smatch match;
 
-	if (!(ss >> base >> op1 >> op2 >> shift) || op1 != '<' || op2 != '<') {
-		g_logger().warn("Invalid bit shift string");
+	if (!std::regex_match(bitShiftStr, match, pattern)) {
+		g_logger().warn("Invalid bit shift string format: '{}'", bitShiftStr);
+		return 0;
 	}
 
-	return base << shift;
+	int base = 0;
+	int shift = 0;
+	try {
+		base = std::stoi(match[1].str());
+		shift = std::stoi(match[2].str());
+	} catch (const std::exception &e) {
+		g_logger().warn("Error parsing bit shift string: '{}'", e.what());
+		return 0;
+	}
+
+	if (shift < 0 || shift >= 32) {
+		g_logger().warn("Shift value out of bounds: '{}'", shift);
+		return 0;
+	}
+
+	return static_cast<uint32_t>(base) << shift;
 }
 
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
+	const std::regex re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 	std::smatch match;
 	if (!std::regex_search(phash, match, re)) {
 		g_logger().debug("No argon2 hash found in string");
 		return false;
 	}
 
-	std::vector<uint8_t> salt = base64_decode(match[1]);
-	std::vector<uint8_t> hash = base64_decode(match[2]);
+	const std::vector<uint8_t> salt = base64_decode(match[1]);
+	const std::vector<uint8_t> hash = base64_decode(match[2]);
 
 	// Hash the password
 	std::vector<uint8_t> computed_hash(hash.size());
@@ -64,16 +74,17 @@ bool Argon2::verifyPassword(const std::string &password, const std::string &phas
 	return computed_hash == hash;
 }
 
-std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
+std::vector<uint8_t> Argon2::base64_decode(const std::string &input) {
+	const std::string base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	std::vector<uint8_t> ret;
 	int i = 0;
 	uint32_t val = 0;
-	for (char c : input) {
+	for (const char c : input) {
 		if (isspace(c) || c == '=') {
 			continue;
 		}
 
-		size_t pos = base64_chars.find(c);
+		const size_t pos = base64_chars.find(c);
 		if (pos == std::string::npos) {
 			g_logger().warn("Invalid character in base64 string");
 		} else if (pos > std::numeric_limits<uint32_t>::max()) {
@@ -83,9 +94,9 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 		}
 
 		if (++i % 4 == 0) {
-			ret.push_back((val >> 16) & 0xFF);
-			ret.push_back((val >> 8) & 0xFF);
-			ret.push_back(val & 0xFF);
+			ret.emplace_back((val >> 16) & 0xFF);
+			ret.emplace_back((val >> 8) & 0xFF);
+			ret.emplace_back(val & 0xFF);
 		}
 	}
 
@@ -94,11 +105,11 @@ std::vector<uint8_t> Argon2::base64_decode(const std::string &input) const {
 			g_logger().warn("Invalid length for base64 string");
 			break;
 		case 2:
-			ret.push_back((val >> 4) & 0xFF);
+			ret.emplace_back((val >> 4) & 0xFF);
 			break;
 		case 3:
-			ret.push_back((val >> 10) & 0xFF);
-			ret.push_back((val >> 2) & 0xFF);
+			ret.emplace_back((val >> 10) & 0xFF);
+			ret.emplace_back((val >> 2) & 0xFF);
 			break;
 		default:
 			g_logger().warn("Unexpected remainder when dividing string length by 4");

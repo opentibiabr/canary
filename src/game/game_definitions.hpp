@@ -54,7 +54,7 @@ enum Faction_t {
 	FACTION_LAST = FACTION_FAFNAR,
 };
 
-enum LightState_t {
+enum LightState_t : uint8_t {
 	LIGHT_STATE_DAY,
 	LIGHT_STATE_NIGHT,
 	LIGHT_STATE_SUNSET,
@@ -94,23 +94,12 @@ enum class HighscoreCategories_t : uint8_t {
 	SHIELDING = 6,
 	FISHING = 7,
 	MAGIC_LEVEL = 8,
-	LOYALTY = 9,
+	LOYALTY_POINTS = 9,
 	ACHIEVEMENTS = 10,
 	CHARMS = 11,
 	DROME = 12,
 	GOSHNAR = 13,
 	BOSS_POINTS = 14,
-};
-
-enum Blessings_t : uint8_t {
-	TWIST_OF_FATE = 1,
-	WISDOM_OF_SOLITUDE = 2,
-	SPARK_OF_THE_PHOENIX = 3,
-	FIRE_OF_THE_SUNS = 4,
-	SPIRITUAL_SHIELDING = 5,
-	EMBRACE_OF_TIBIA = 6,
-	BLOOD_OF_THE_MOUNTAIN = 7,
-	HEARTH_OF_THE_MOUNTAIN = 8,
 };
 
 enum HighscoreType_t : uint8_t {

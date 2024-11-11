@@ -65,7 +65,7 @@ local function addTravelKeyword(keyword, text, cost, destination)
 
 	if keyword == "yalahar" then
 		keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry but we don't serve this route." }, function(player)
-			return player:getStorageValue(Storage.TheWayToYalahar.QuestLine) < 1
+			return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.TheWayToYalahar) < 1
 		end)
 	end
 
@@ -75,7 +75,7 @@ local function addTravelKeyword(keyword, text, cost, destination)
 end
 
 addTravelKeyword("calassa", "Should I bring you to Calassa for 200 gold?", 200, Position(31911, 32710, 6))
-addTravelKeyword("yalahar", "That is quite a long unprofitable travel. I'll bring you to Yalahar for 400 gold though. Is that ok with you?", 400, Position(32816, 31272, 6))
+addTravelKeyword("yalahar", "That is quite a long unprofitable travel. I'll bring you to Yalahar for 400 gold though. Is that ok with you?", 400, Position(32804, 31270, 6))
 
 keywordHandler:addKeyword({ "sail" }, StdModule.say, { npcHandler = npcHandler, text = "Welcome on board, noble |PLAYERNAME|. I can bring you to {Calassa} or {Yalahar}, but only if you have the according mission from {Berenice} or {Wyrdin}." })
 keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Welcome on board, noble |PLAYERNAME|. I can bring you to {Calassa} or {Yalahar}, but only if you have the according mission from {Berenice} or {Wyrdin}." })

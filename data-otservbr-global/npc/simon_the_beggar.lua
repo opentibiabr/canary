@@ -230,7 +230,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "cookie") then
-		if player:getStorageValue(Storage.WhatAFoolish.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 31 and player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.SimonTheBeggar) ~= 1 then
 			npcHandler:say("Have you brought a cookie for the poor?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
 		end
@@ -239,12 +239,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 9)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 8 then
-			if not player:removeItem(130, 8) then
+			if not player:removeItem(130, 1) then
 				npcHandler:say("You have no cookie that I'd like.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true
 			end
-			player:setStorageValue(Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar, 1)
+
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.CookieDelivery.SimonTheBeggar, 1)
 			if player:getCookiesDelivered() == 10 then
 				player:addAchievement("Allow Cookies?")
 			end

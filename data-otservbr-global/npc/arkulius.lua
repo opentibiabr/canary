@@ -102,7 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "mission") or MsgContains(message, "quest") then
-		local value = player:getStorageValue(Storage.ElementalSphere.QuestLine)
+		local value = player:getStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine)
 		if value < 1 then
 			if player:getLevel() >= 80 then
 				if player:isSorcerer() then
@@ -142,7 +142,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		elseif value == 1 then
 			if player:getItemCount(player:isSorcerer() and 946 or player:isDruid() and 947 or player:isPaladin() and 942 or player:isKnight() and 948) > 0 then
-				player:setStorageValue(Storage.ElementalSphere.QuestLine, 2)
+				player:setStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine, 2)
 				npcHandler:say({
 					"Impressive!! Let me take a look.......Ahh, "
 						.. (
@@ -159,14 +159,14 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:setTopic(playerId, 0)
 		elseif value == 2 then
-			if player:removeItem(954, 1) and player:getStorageValue(Storage.ElementalSphere.QuestLine) < 3 then
+			if player:removeItem(954, 1) and player:getStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine) < 3 then
 				npcHandler:say("AMAZING!! I'm going to start immediately with the research. If it turns out the way I expect it, Alverus will be revived soon!! Here, take this as a reward and try to collect more of this substance. I'll make you a good offer, I promise. ", npc, creature)
 				player:addItem(player:isSorcerer() and 8039 or player:isDruid() and 8041 or player:isPaladin() and 8025 or player:isKnight() and 8055, 1)
-				player:setStorageValue(Storage.ElementalSphere.QuestLine, 3)
+				player:setStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine, 3)
 			end
 		end
 	elseif npcHandler:getTopic(playerId) == 1 and MsgContains(message, "yes") then
-		player:setStorageValue(Storage.ElementalSphere.QuestLine, 1)
+		player:setStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine, 1)
 		npcHandler:say("Good, don't waste time! Come back here when you have the elemental object!", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	end

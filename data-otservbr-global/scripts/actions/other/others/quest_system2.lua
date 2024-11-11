@@ -9,17 +9,11 @@ local config = {
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_BLUE,
 	},
-	[2286] = {
-		items = {
-			{ itemId = 3205 },
-		},
-		storage = Storage.QuestChests.FamilyBrooch,
-	},
 	[3018] = {
 		items = {
 			{ itemId = 3219 },
 		},
-		storage = Storage.Postman.Mission08,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission08,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -27,7 +21,7 @@ local config = {
 		items = {
 			{ itemId = 145 },
 		},
-		storage = Storage.TravellingTrader.Mission02,
+		storage = Storage.Quest.U8_1.TheTravellingTrader.Mission02,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -41,44 +35,32 @@ local config = {
 		needItem = { itemId = 3231 },
 		effect = CONST_ME_MAGIC_RED,
 	},
-	[3062] = {
-		items = {
-			{ itemId = 7528 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet1,
-	},
-	[3064] = {
-		items = {
-			{ itemId = 7530 },
-		},
-		storage = Storage.QuestChests.KosheiAmulet2,
-	},
 	[3084] = {
 		items = {
 			{ itemId = 8829 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3085] = {
 		items = {
 			{ itemId = 8828 },
 		},
-		storage = Storage.InServiceofYalahar.MatrixReward,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.MatrixReward,
 	},
 	[3112] = {
 		items = {
 			{ itemId = 2820, text = "<the paper is old and tattered, you can only make out a signature:> Tylaf, apprentice of Hjaern" },
 		},
-		storage = Storage.TheIceIslands.Questline,
+		storage = Storage.Quest.U8_0.TheIceIslands.Questline,
 		formerValue = 35,
 		newValue = 36,
-		missionStorage = { key = Storage.TheIceIslands.Mission09, value = 2 },
+		missionStorage = { key = Storage.Quest.U8_0.TheIceIslands.Mission09, value = 2 },
 	},
 	[3116] = {
 		items = {
 			{ itemId = 3217 },
 		},
-		storage = Storage.Postman.Mission09,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission09,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -86,7 +68,7 @@ local config = {
 		items = {
 			{ itemId = 3218 },
 		},
-		storage = Storage.Postman.Mission05,
+		storage = Storage.Quest.U7_24.ThePostmanMissions.Mission05,
 		formerValue = 1,
 		newValue = 2,
 	},
@@ -94,7 +76,7 @@ local config = {
 		items = {
 			{ itemId = 637 },
 		},
-		storage = Storage.ChildrenoftheRevolution.Questline,
+		storage = Storage.Quest.U8_54.ChildrenOfTheRevolution.Questline,
 		formerValue = 1,
 		newValue = 2,
 		say = "A batch of documents has been stashed in the shelf. These might be of interest to Zalamon.",
@@ -110,7 +92,7 @@ local config = {
 		items = {
 			{ itemId = 2972, actionId = 3980 },
 		},
-		storage = Storage.QuestChests.DeeperFibulaKey,
+		storage = Storage.Quest.U5_0.DeeperFibulaKey,
 	},
 	[9226] = {
 		items = {
@@ -138,7 +120,7 @@ local config = {
 		items = {
 			{ itemId = 10159 },
 		},
-		storage = Storage.UnnaturalSelection.Mission01,
+		storage = Storage.Quest.U8_54.UnnaturalSelection.Mission01,
 		formerValue = 1,
 		newValue = 2,
 		say = "You dig out a skull from the pile of bones. That must be the skull Lazaran talked about.",
@@ -147,7 +129,7 @@ local config = {
 		items = {
 			{ itemId = 7936 },
 		},
-		storage = Storage.ThievesGuild.Mission06,
+		storage = Storage.Quest.U8_2.TheThievesGuildQuest.Mission06,
 		formerValue = 2,
 		newValue = 3,
 		say = "To buy some time you replace the fish with a piece of carrot.",
@@ -156,19 +138,19 @@ local config = {
 		items = {
 			{ itemId = 652 },
 		},
-		storage = Storage.SecretService.RottenTree,
+		storage = Storage.Quest.U8_1.SecretService.RottenTree,
 	},
 	[50112] = {
 		items = {
 			{ itemId = 3725, count = 10 },
 		},
-		storage = Storage.HiddenCityOfBeregar.BrownMushrooms,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.BrownMushrooms,
 	},
 	[50125] = {
 		items = {
 			{ itemId = 8777 },
 		},
-		storage = Storage.HiddenCityOfBeregar.JusticeForAll,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll,
 		formerValue = 3,
 		newValue = 4,
 	},
@@ -221,7 +203,7 @@ So they decided to recruit Augur on their own. This way most of our forefathers 
 				name = "History of the Augur, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesPalimuth,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesPalimuth,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -252,7 +234,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 				name = "Manifest of the Yalahari, Part I",
 			},
 		},
-		storage = Storage.InServiceofYalahar.NotesAzerus,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -260,7 +242,7 @@ To some extent, we have to work like a gardener. The rotten parts have to be cut
 		items = {
 			{ itemId = 8818 },
 		},
-		storage = Storage.InServiceofYalahar.AlchemistFormula,
+		storage = Storage.Quest.U8_4.InServiceOfYalahar.AlchemistFormula,
 		formerValue = 0,
 		newValue = 1,
 	},
@@ -298,7 +280,7 @@ Gromward Hammerfist]],
 				name = "Tunnelling Guide",
 			},
 		},
-		storage = Storage.HiddenCityOfBeregar.TunnellingGuide,
+		storage = Storage.Quest.U8_4.TheHiddenCityOfBeregar.TunnellingGuide,
 	},
 	[20003] = {
 		items = {
@@ -310,7 +292,7 @@ The map shows the original floor plan of this mine. You recognise your position 
 (In the lower right corner someone scribbled a note how to use the hoist on the first mine floor.)]],
 			},
 		},
-		storage = Storage.QuestChests.FormorgarMinesHoistSkeleton,
+		storage = Storage.Quest.U8_0.TheIceIslands.FormorgarMinesHoistSkeleton,
 	},
 	[14041] = {
 		items = {
@@ -327,7 +309,7 @@ This page seems to be part of a book about ancient rituals, mystic incantations 
 				name = "Falcon Bastion Access",
 			},
 		},
-		storage = Storage.TheSecretLibrary.FalconBastionAccess,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionAccess,
 	},
 	[20002] = {
 		items = {
@@ -369,7 +351,7 @@ the parchment is destroyed. It seems
 that is was torn by a big paw ...]],
 			},
 		},
-		storage = Storage.LionsRock.OuterSanctum.Skeleton,
+		storage = Storage.Quest.U10_70.LionsRock.OuterSanctum.Skeleton,
 	},
 	-- 65203 reservado
 }

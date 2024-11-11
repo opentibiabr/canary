@@ -67,7 +67,7 @@ addTravelKeyword("port hope", 80, Position(32527, 32784, 6))
 addTravelKeyword("liberty bay", 90, Position(32285, 32892, 6))
 addTravelKeyword("darashia", 100, Position(33289, 32480, 6))
 addTravelKeyword("yalahar", 230, Position(32816, 31272, 6), function(player)
-	return player:getStorageValue(Storage.SearoutesAroundYalahar.Ankrahmun) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5
+	return player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.Ankrahmun) ~= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SearoutesAroundYalahar.TownsCounter) < 5
 end)
 
 -- Kick

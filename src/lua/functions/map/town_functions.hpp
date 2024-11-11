@@ -9,22 +9,12 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class TownFunctions final : LuaScriptInterface {
+class TownFunctions {
 public:
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Town", "", TownFunctions::luaTownCreate);
-		registerMetaMethod(L, "Town", "__eq", TownFunctions::luaUserdataCompare);
-
-		registerMethod(L, "Town", "getId", TownFunctions::luaTownGetId);
-		registerMethod(L, "Town", "getName", TownFunctions::luaTownGetName);
-		registerMethod(L, "Town", "getTemplePosition", TownFunctions::luaTownGetTemplePosition);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaTownCreate(lua_State* L);
-
 	static int luaTownGetId(lua_State* L);
 	static int luaTownGetName(lua_State* L);
 	static int luaTownGetTemplePosition(lua_State* L);

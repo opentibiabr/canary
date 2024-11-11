@@ -151,7 +151,7 @@ npcConfig.shop = {
 	{ itemName = "club ring", clientId = 3093, buy = 500, sell = 100 },
 	{ itemName = "elven amulet", clientId = 3082, buy = 500, sell = 100, count = 50 },
 	{ itemName = "garlic necklace", clientId = 3083, buy = 100, sell = 50 },
-	{ itemName = "life crystal", clientId = 4840, sell = 50 },
+	{ itemName = "life crystal", clientId = 3061, sell = 50 },
 	{ itemName = "magic light wand", clientId = 3046, buy = 120, sell = 35 },
 	{ itemName = "mind stone", clientId = 3062, sell = 100 },
 	{ itemName = "orb", clientId = 3060, sell = 750 },

@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include "creatures/creatures_definitions.hpp"
-
 enum WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
 	SLOT_GREEN_TOP_150 = 2,
@@ -94,7 +92,7 @@ enum class WheelStage_t : uint8_t {
 	AVATAR_OF_STORM = 11,
 	DIVINE_GRENADE = 12,
 
-	TOTAL_COUNT = 13
+	STAGE_COUNT = 13
 };
 
 enum class WheelOnThink_t : uint8_t {
@@ -156,7 +154,7 @@ enum class WheelInstant_t : uint8_t {
 	RUNIC_MASTERY = 5,
 	FOCUS_MASTERY = 6,
 
-	TOTAL_COUNT = 7
+	INSTANT_COUNT = 7
 };
 
 enum class WheelAvatarSkill_t : uint8_t {
@@ -253,6 +251,7 @@ struct PlayerWheelMethodsBonusData {
 	Stages stages;
 	Avatar avatar;
 
+	float momentum = 0;
 	float mitigation = 0;
 	std::vector<std::string> spells;
 };

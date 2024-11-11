@@ -8,12 +8,58 @@ LeverAction = {
 			{ x = 32848, y = 32277, z = 9 },
 		},
 	},
+	-- The Gravedigger of Drefia Quest
+	[4650] = {
+		itemId = 9110,
+		itemPos = {
+			{ x = 32972, y = 32412, z = 11 },
+		},
+	},
+	-- The Secret Library Quest
+	[4906] = {
+		itemId = false,
+		itemPos = {
+			{ x = 33251, y = 32039, z = 8 },
+			{ x = 33218, y = 32096, z = 10 },
+		},
+	},
+	-- Cults of Tibia Quest
+	[5500] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33095, y = 31942, z = 15 },
+		},
+	},
+	[5501] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33138, y = 31952, z = 15 },
+		},
+	},
+	[5520] = {
+		itemId = 9110,
+		itemPos = {
+			{ x = 33299, y = 32144, z = 10 },
+		},
+	},
+	-- The Pits of Inferno Quest
 	[7799] = {
 		itemId = 431,
 		itemPos = {
 			{ x = 32842, y = 32274, z = 9 },
 			{ x = 32842, y = 32275, z = 9 },
 			{ x = 32842, y = 32276, z = 9 },
+		},
+	},
+	-- Children of the Revolution Quest
+	[8013] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33349, y = 31123, z = 5 },
+			{ x = 33349, y = 31124, z = 5 },
+			{ x = 33349, y = 31125, z = 5 },
+			{ x = 33349, y = 31126, z = 5 },
+			{ x = 33349, y = 31127, z = 5 },
 		},
 	},
 	-- Dreamer's Challenge Quest
@@ -74,6 +120,26 @@ LeverAction = {
 			{ x = 32775, y = 32583, z = 11 },
 			{ x = 32756, y = 32494, z = 11 },
 			{ x = 32799, y = 32556, z = 11 },
+		},
+	},
+	-- Secret Service
+	[12574] = {
+		itemId = 2772,
+		itemPos = {
+			{ x = 32576, y = 31862, z = 14 },
+		},
+	},
+	-- Forgotten Knowledge Quest
+	[26663] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 32792, y = 32820, z = 13 },
+		},
+	},
+	[26664] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 32840, y = 32820, z = 13 },
 		},
 	},
 	-- Dawnport bridge lever
@@ -145,16 +211,150 @@ LeverAction = {
 			{ x = 32600, y = 32105, z = 14 },
 		},
 	},
+	-- Ferumbras' Ascension Quest
+	[34305] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32665, z = 12 },
+		},
+	},
+	[34306] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32665, z = 12 },
+		},
+	},
+	[34307] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32683, z = 12 },
+		},
+	},
+	[34308] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32683, z = 12 },
+		},
+	},
+	[34309] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32701, z = 12 },
+		},
+	},
+	[34310] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32701, z = 12 },
+		},
+	},
+	[34311] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32719, z = 12 },
+		},
+	},
+	[34312] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33631, y = 32719, z = 12 },
+		},
+	},
+	[34324] = {
+		itemId = 9125,
+		itemPos = {
+			{ x = 33628, y = 32616, z = 11 },
+			{ x = 33671, y = 32623, z = 11 },
+		},
+	},
 	-- The Pits of Inferno Quest
 	[50160] = {
 		itemId = 2772,
-		itemPos = {
-			{ x = 32853, y = 32318, z = 9 },
-		},
+		itemPos = { x = 32853, y = 32318, z = 9 },
+	},
+	-- The Pits of Inferno Quest
+	[57234] = {
+		itemId = 2772,
+		itemPos = { x = 33841, y = 32080, z = 14 },
 	},
 }
 
 LeverUnique = {
+	-- The Inquisiton Quest
+	[1006] = {
+		itemId = 2772,
+		itemPos = { x = 33240, y = 31722, z = 11 },
+	},
+	[1007] = {
+		itemId = 2772,
+		itemPos = { x = 33224, y = 31722, z = 11 },
+	},
+	[1008] = {
+		itemId = 2772,
+		itemPos = { x = 33224, y = 31734, z = 11 },
+	},
+	[1009] = {
+		itemId = 2772,
+		itemPos = { x = 33240, y = 31734, z = 11 },
+	},
+	-- Against the Spider Cult Quest
+	[1017] = {
+		itemId = 2772,
+		itemPos = { x = 33172, y = 31896, z = 8 },
+	},
+	-- Ferumbras' Ascension Quest
+	[1022] = {
+		itemId = 8911,
+		itemPos = { x = 33229, y = 31499, z = 13 },
+	},
+	[1023] = {
+		itemId = 8911,
+		itemPos = { x = 33455, y = 32356, z = 13 },
+	},
+	[1024] = {
+		itemId = 8911,
+		itemPos = { x = 33385, y = 32455, z = 14 },
+	},
+	[1025] = {
+		itemId = 8911,
+		itemPos = { x = 33593, y = 32643, z = 14 },
+	},
+	[1026] = {
+		itemId = 8911,
+		itemPos = { x = 33680, y = 32740, z = 11 },
+	},
+	[1027] = {
+		itemId = 8911,
+		itemPos = { x = 33418, y = 32848, z = 11 },
+	},
+	[1028] = {
+		itemId = 8911,
+		itemPos = { x = 33434, y = 32784, z = 13 },
+	},
+	[1029] = {
+		itemId = 8911,
+		itemPos = { x = 33402, y = 32465, z = 13 },
+	},
+	[1030] = {
+		itemId = 8911,
+		itemPos = { x = 33202, y = 31475, z = 11 },
+	},
+	[1031] = {
+		itemId = 8911,
+		itemPos = { x = 33385, y = 32410, z = 14 },
+	},
+	[1032] = {
+		itemId = 8911,
+		itemPos = { x = 33403, y = 32391, z = 14 },
+	},
+	[1033] = {
+		itemId = 8911,
+		itemPos = { x = 33410, y = 32441, z = 14 },
+	},
+	[1034] = {
+		itemId = 8911,
+		itemPos = { x = 33430, y = 32418, z = 14 },
+	},
 	-- The Pits of Inferno
 	[1037] = {
 		itemId = 2772,
@@ -168,6 +368,11 @@ LeverUnique = {
 	[1041] = {
 		itemId = 2772,
 		itemPos = { x = 32862, y = 32555, z = 11 },
+	},
+	-- Wrath of the Emperor Quest
+	[1053] = {
+		itemId = 2772,
+		itemPos = { x = 32801, y = 32640, z = 15 },
 	},
 	-- Dreamers Challenge Quest
 	[2004] = {
@@ -289,6 +494,15 @@ LeverUnique = {
 		itemId = 2772,
 		itemPos = { x = 32833, y = 32224, z = 14 },
 	},
+	-- Wrath of the Emperor Quest
+	[3184] = {
+		itemId = 2772,
+		itemPos = { x = 33078, y = 31079, z = 13 },
+	},
+	[3185] = {
+		itemId = 2772,
+		itemPos = { x = 33082, y = 31109, z = 2 },
+	},
 	-- The Pits of Inferno Quest
 	[3300] = {
 		itemId = 2772,
@@ -316,12 +530,6 @@ LeverUnique = {
 	[30002] = {
 		itemId = 2773,
 		itemPos = { x = 33582, y = 31844, z = 10 },
-	},
-	-- The first dragon quest lever
-	-- Path: data\scripts\actions\quests\first_dragon\lever.lua
-	[30003] = {
-		itemId = 8911,
-		itemPos = { x = 33583, y = 30992, z = 14 },
 	},
 	-- Thais lighthouse quest
 	-- Path: data\scripts\quests\thais_lighthouse\action-lever.lua

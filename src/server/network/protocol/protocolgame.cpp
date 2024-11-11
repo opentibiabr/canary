@@ -48,6 +48,7 @@
 #include "lua/modules/modules.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "utils/tools.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_group_type.hpp"

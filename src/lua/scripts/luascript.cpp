@@ -16,8 +16,8 @@ ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
 std::multimap<ScriptEnvironment*, std::shared_ptr<Item>> ScriptEnvironment::tempItems;
 
-ScriptEnvironment LuaFunctionsLoader::scriptEnv[16];
-int32_t LuaFunctionsLoader::scriptEnvIndex = -1;
+ScriptEnvironment Lua::scriptEnv[16];
+int32_t Lua::scriptEnvIndex = -1;
 
 LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) :
 	interfaceName(std::move(initInterfaceName)) {
@@ -28,7 +28,6 @@ LuaScriptInterface::~LuaScriptInterface() {
 }
 
 bool LuaScriptInterface::reInitState() {
-	g_luaEnvironment().clearCombatObjects(this);
 	g_luaEnvironment().clearAreaObjects(this);
 
 	closeState();

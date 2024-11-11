@@ -8,27 +8,28 @@
  */
 
 #include "lua/functions/core/libs/logger_functions.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
 
 void LoggerFunctions::init(lua_State* L) {
 	// Kept for compatibility purposes only, it's deprecated
-	registerTable(L, "Spdlog");
-	registerMethod(L, "Spdlog", "info", LoggerFunctions::luaSpdlogInfo);
-	registerMethod(L, "Spdlog", "warn", LoggerFunctions::luaSpdlogWarn);
-	registerMethod(L, "Spdlog", "error", LoggerFunctions::luaSpdlogError);
-	registerMethod(L, "Spdlog", "debug", LoggerFunctions::luaSpdlogDebug);
+	Lua::registerTable(L, "Spdlog");
+	Lua::registerMethod(L, "Spdlog", "info", LoggerFunctions::luaSpdlogInfo);
+	Lua::registerMethod(L, "Spdlog", "warn", LoggerFunctions::luaSpdlogWarn);
+	Lua::registerMethod(L, "Spdlog", "error", LoggerFunctions::luaSpdlogError);
+	Lua::registerMethod(L, "Spdlog", "debug", LoggerFunctions::luaSpdlogDebug);
 
-	registerTable(L, "logger");
-	registerMethod(L, "logger", "info", LoggerFunctions::luaLoggerInfo);
-	registerMethod(L, "logger", "warn", LoggerFunctions::luaLoggerWarn);
-	registerMethod(L, "logger", "error", LoggerFunctions::luaLoggerError);
-	registerMethod(L, "logger", "debug", LoggerFunctions::luaLoggerDebug);
-	registerMethod(L, "logger", "trace", LoggerFunctions::luaLoggerTrace);
+	Lua::registerTable(L, "logger");
+	Lua::registerMethod(L, "logger", "info", LoggerFunctions::luaLoggerInfo);
+	Lua::registerMethod(L, "logger", "warn", LoggerFunctions::luaLoggerWarn);
+	Lua::registerMethod(L, "logger", "error", LoggerFunctions::luaLoggerError);
+	Lua::registerMethod(L, "logger", "debug", LoggerFunctions::luaLoggerDebug);
+	Lua::registerMethod(L, "logger", "trace", LoggerFunctions::luaLoggerTrace);
 }
 
 int LoggerFunctions::luaSpdlogInfo(lua_State* L) {
 	// Spdlog.info(text)
-	if (isString(L, 1)) {
-		g_logger().info(getString(L, 1));
+	if (Lua::isString(L, 1)) {
+		g_logger().info(Lua::getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -37,8 +38,8 @@ int LoggerFunctions::luaSpdlogInfo(lua_State* L) {
 
 int LoggerFunctions::luaSpdlogWarn(lua_State* L) {
 	// Spdlog.warn(text)
-	if (isString(L, 1)) {
-		g_logger().warn(getString(L, 1));
+	if (Lua::isString(L, 1)) {
+		g_logger().warn(Lua::getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -47,8 +48,8 @@ int LoggerFunctions::luaSpdlogWarn(lua_State* L) {
 
 int LoggerFunctions::luaSpdlogError(lua_State* L) {
 	// Spdlog.error(text)
-	if (isString(L, 1)) {
-		g_logger().error(getString(L, 1));
+	if (Lua::isString(L, 1)) {
+		g_logger().error(Lua::getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -57,8 +58,8 @@ int LoggerFunctions::luaSpdlogError(lua_State* L) {
 
 int LoggerFunctions::luaSpdlogDebug(lua_State* L) {
 	// Spdlog.debug(text)
-	if (isString(L, 1)) {
-		g_logger().debug(getString(L, 1));
+	if (Lua::isString(L, 1)) {
+		g_logger().debug(Lua::getString(L, 1));
 	} else {
 		lua_pushnil(L);
 	}
@@ -68,30 +69,30 @@ int LoggerFunctions::luaSpdlogDebug(lua_State* L) {
 // Logger
 int LoggerFunctions::luaLoggerInfo(lua_State* L) {
 	// logger.info(text)
-	if (isString(L, 1)) {
-		g_logger().info(getFormatedLoggerMessage(L));
+	if (Lua::isString(L, 1)) {
+		g_logger().info(Lua::getFormatedLoggerMessage(L));
 	} else {
-		reportErrorFunc("First parameter needs to be a string");
+		Lua::reportErrorFunc("First parameter needs to be a string");
 	}
 	return 1;
 }
 
 int LoggerFunctions::luaLoggerWarn(lua_State* L) {
 	// logger.warn(text)
-	if (isString(L, 1)) {
-		g_logger().warn(getFormatedLoggerMessage(L));
+	if (Lua::isString(L, 1)) {
+		g_logger().warn(Lua::getFormatedLoggerMessage(L));
 	} else {
-		reportErrorFunc("First parameter needs to be a string");
+		Lua::reportErrorFunc("First parameter needs to be a string");
 	}
 	return 1;
 }
 
 int LoggerFunctions::luaLoggerError(lua_State* L) {
 	// logger.error(text)
-	if (isString(L, 1)) {
-		g_logger().error(getFormatedLoggerMessage(L));
+	if (Lua::isString(L, 1)) {
+		g_logger().error(Lua::getFormatedLoggerMessage(L));
 	} else {
-		reportErrorFunc("First parameter needs to be a string");
+		Lua::reportErrorFunc("First parameter needs to be a string");
 	}
 
 	return 1;
@@ -99,20 +100,20 @@ int LoggerFunctions::luaLoggerError(lua_State* L) {
 
 int LoggerFunctions::luaLoggerDebug(lua_State* L) {
 	// logger.debug(text)
-	if (isString(L, 1)) {
-		g_logger().debug(getFormatedLoggerMessage(L));
+	if (Lua::isString(L, 1)) {
+		g_logger().debug(Lua::getFormatedLoggerMessage(L));
 	} else {
-		reportErrorFunc("First parameter needs to be a string");
+		Lua::reportErrorFunc("First parameter needs to be a string");
 	}
 	return 1;
 }
 
 int LoggerFunctions::luaLoggerTrace(lua_State* L) {
 	// logger.trace(text)
-	if (isString(L, 1)) {
-		g_logger().trace(getFormatedLoggerMessage(L));
+	if (Lua::isString(L, 1)) {
+		g_logger().trace(Lua::getFormatedLoggerMessage(L));
 	} else {
-		reportErrorFunc("First parameter needs to be a string");
+		Lua::reportErrorFunc("First parameter needs to be a string");
 	}
 	return 1;
 }

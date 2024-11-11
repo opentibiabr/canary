@@ -14,6 +14,7 @@
 #include "game/zones/zone.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
+#include "lua/scripts/scripts.hpp"
 
 /**
  * @class EventCallback
@@ -24,8 +25,42 @@
  *
  * @see Script
  */
-EventCallback::EventCallback(LuaScriptInterface* scriptInterface, const std::string &callbackName, bool skipDuplicationCheck) :
-	Script(scriptInterface), m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck) {
+EventCallback::EventCallback(const std::string &callbackName, bool skipDuplicationCheck) :
+	m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck) { }
+
+LuaScriptInterface* EventCallback::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool EventCallback::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[EventCallback::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+std::string EventCallback::getScriptTypeName() const {
+	return m_scriptTypeName;
+}
+
+void EventCallback::setScriptTypeName(std::string_view newName) {
+	m_scriptTypeName = newName;
+}
+
+int32_t EventCallback::getScriptId() const {
+	return m_scriptId;
+}
+
+void EventCallback::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool EventCallback::isLoadedScriptId() const {
+	return m_scriptId != 0;
 }
 
 std::string EventCallback::getName() const {
@@ -34,14 +69,6 @@ std::string EventCallback::getName() const {
 
 bool EventCallback::skipDuplicationCheck() const {
 	return m_skipDuplicationCheck;
-}
-
-std::string EventCallback::getScriptTypeName() const {
-	return m_scriptTypeName;
-}
-
-void EventCallback::setScriptTypeName(const std::string_view newName) {
-	m_scriptTypeName = newName;
 }
 
 EventCallback_t EventCallback::getType() const {

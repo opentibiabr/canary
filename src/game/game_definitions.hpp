@@ -54,7 +54,7 @@ enum Faction_t {
 	FACTION_LAST = FACTION_FAFNAR,
 };
 
-enum LightState_t {
+enum LightState_t : uint8_t {
 	LIGHT_STATE_DAY,
 	LIGHT_STATE_NIGHT,
 	LIGHT_STATE_SUNSET,

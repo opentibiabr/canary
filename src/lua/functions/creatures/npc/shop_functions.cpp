@@ -13,21 +13,35 @@
 
 #include "items/item.hpp"
 #include "utils/tools.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
+
+void ShopFunctions::init(lua_State* L) {
+	Lua::registerSharedClass(L, "Shop", "", ShopFunctions::luaCreateShop);
+	Lua::registerMethod(L, "Shop", "setId", ShopFunctions::luaShopSetId);
+	Lua::registerMethod(L, "Shop", "setIdFromName", ShopFunctions::luaShopSetIdFromName);
+	Lua::registerMethod(L, "Shop", "setNameItem", ShopFunctions::luaShopSetNameItem);
+	Lua::registerMethod(L, "Shop", "setCount", ShopFunctions::luaShopSetCount);
+	Lua::registerMethod(L, "Shop", "setBuyPrice", ShopFunctions::luaShopSetBuyPrice);
+	Lua::registerMethod(L, "Shop", "setSellPrice", ShopFunctions::luaShopSetSellPrice);
+	Lua::registerMethod(L, "Shop", "setStorageKey", ShopFunctions::luaShopSetStorageKey);
+	Lua::registerMethod(L, "Shop", "setStorageValue", ShopFunctions::luaShopSetStorageValue);
+	Lua::registerMethod(L, "Shop", "addChildShop", ShopFunctions::luaShopAddChildShop);
+}
 
 int ShopFunctions::luaCreateShop(lua_State* L) {
 	// Shop() will create a new shop item
-	pushUserdata<Shop>(L, std::make_shared<Shop>());
-	setMetatable(L, -1, "Shop");
+	Lua::pushUserdata<Shop>(L, std::make_shared<Shop>());
+	Lua::setMetatable(L, -1, "Shop");
 	return 1;
 }
 
 int ShopFunctions::luaShopSetId(lua_State* L) {
 	// shop:setId(id)
 
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		if (isNumber(L, 2)) {
-			shop->shopBlock.itemId = getNumber<uint16_t>(L, 2);
-			pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		if (Lua::isNumber(L, 2)) {
+			shop->shopBlock.itemId = Lua::getNumber<uint16_t>(L, 2);
+			Lua::pushBoolean(L, true);
 		} else {
 			g_logger().warn("[ShopFunctions::luaShopSetId] - "
 			                "Unknown shop item shop, int value expected");
@@ -41,9 +55,9 @@ int ShopFunctions::luaShopSetId(lua_State* L) {
 
 int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 	// shop:setIdFromName(name)
-	const auto &shop = getUserdataShared<Shop>(L, 1);
-	if (shop && isString(L, 2)) {
-		auto name = getString(L, 2);
+	const auto &shop = Lua::getUserdataShared<Shop>(L, 1);
+	if (shop && Lua::isString(L, 2)) {
+		auto name = Lua::getString(L, 2);
 		const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
 
 		if (ids.first == Item::items.nameToItems.cend()) {
@@ -63,7 +77,7 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 		}
 
 		shop->shopBlock.itemId = ids.first->second;
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, true);
 	} else {
 		g_logger().warn("[ShopFunctions::luaShopSetIdFromName] - "
 		                "Unknown shop item shop, string value expected");
@@ -74,9 +88,9 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 
 int ShopFunctions::luaShopSetNameItem(lua_State* L) {
 	// shop:setNameItem(name)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemName = getString(L, 2);
-		pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.itemName = Lua::getString(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -85,9 +99,9 @@ int ShopFunctions::luaShopSetNameItem(lua_State* L) {
 
 int ShopFunctions::luaShopSetCount(lua_State* L) {
 	// shop:setCount(count)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemSubType = getNumber<uint32_t>(L, 2);
-		pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.itemSubType = Lua::getNumber<uint32_t>(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -96,9 +110,9 @@ int ShopFunctions::luaShopSetCount(lua_State* L) {
 
 int ShopFunctions::luaShopSetBuyPrice(lua_State* L) {
 	// shop:setBuyPrice(price)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemBuyPrice = getNumber<uint32_t>(L, 2);
-		pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.itemBuyPrice = Lua::getNumber<uint32_t>(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -107,9 +121,9 @@ int ShopFunctions::luaShopSetBuyPrice(lua_State* L) {
 
 int ShopFunctions::luaShopSetSellPrice(lua_State* L) {
 	// shop:setSellPrice(chance)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemSellPrice = getNumber<uint32_t>(L, 2);
-		pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.itemSellPrice = Lua::getNumber<uint32_t>(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -118,9 +132,9 @@ int ShopFunctions::luaShopSetSellPrice(lua_State* L) {
 
 int ShopFunctions::luaShopSetStorageKey(lua_State* L) {
 	// shop:setStorageKey(storage)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemStorageKey = getNumber<uint32_t>(L, 2);
-		pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.itemStorageKey = Lua::getNumber<uint32_t>(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -129,9 +143,9 @@ int ShopFunctions::luaShopSetStorageKey(lua_State* L) {
 
 int ShopFunctions::luaShopSetStorageValue(lua_State* L) {
 	// shop:setStorageValue(value)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.itemStorageValue = getNumber<uint32_t>(L, 2);
-		pushBoolean(L, true);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.itemStorageValue = Lua::getNumber<uint32_t>(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -140,8 +154,8 @@ int ShopFunctions::luaShopSetStorageValue(lua_State* L) {
 
 int ShopFunctions::luaShopAddChildShop(lua_State* L) {
 	// shop:addChildShop(shop)
-	if (const auto &shop = getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.childShop.push_back(getUserdataShared<Shop>(L, 2)->shopBlock);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+		shop->shopBlock.childShop.push_back(Lua::getUserdataShared<Shop>(L, 2)->shopBlock);
 	} else {
 		lua_pushnil(L);
 	}

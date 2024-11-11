@@ -9,73 +9,11 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
+struct ShopBlock;
 
-class NpcTypeFunctions final : LuaScriptInterface {
+class NpcTypeFunctions {
 public:
-	explicit NpcTypeFunctions(lua_State* L) :
-		LuaScriptInterface("NpcTypeFunctions") {
-		init(L);
-	}
-	~NpcTypeFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "NpcType", "", NpcTypeFunctions::luaNpcTypeCreate);
-		registerMetaMethod(L, "NpcType", "__eq", NpcTypeFunctions::luaUserdataCompare);
-
-		registerMethod(L, "NpcType", "isPushable", NpcTypeFunctions::luaNpcTypeIsPushable);
-		registerMethod(L, "NpcType", "floorChange", NpcTypeFunctions::luaNpcTypeFloorChange);
-
-		registerMethod(L, "NpcType", "canSpawn", NpcTypeFunctions::luaNpcTypeCanSpawn);
-
-		registerMethod(L, "NpcType", "canPushItems", NpcTypeFunctions::luaNpcTypeCanPushItems);
-		registerMethod(L, "NpcType", "canPushCreatures", NpcTypeFunctions::luaNpcTypeCanPushCreatures);
-
-		registerMethod(L, "NpcType", "name", NpcTypeFunctions::luaNpcTypeName);
-
-		registerMethod(L, "NpcType", "nameDescription", NpcTypeFunctions::luaNpcTypeNameDescription);
-
-		registerMethod(L, "NpcType", "health", NpcTypeFunctions::luaNpcTypeHealth);
-		registerMethod(L, "NpcType", "maxHealth", NpcTypeFunctions::luaNpcTypeMaxHealth);
-
-		registerMethod(L, "NpcType", "getVoices", NpcTypeFunctions::luaNpcTypeGetVoices);
-		registerMethod(L, "NpcType", "addVoice", NpcTypeFunctions::luaNpcTypeAddVoice);
-
-		registerMethod(L, "NpcType", "getCreatureEvents", NpcTypeFunctions::luaNpcTypeGetCreatureEvents);
-		registerMethod(L, "NpcType", "registerEvent", NpcTypeFunctions::luaNpcTypeRegisterEvent);
-
-		registerMethod(L, "NpcType", "eventType", NpcTypeFunctions::luaNpcTypeEventType);
-		registerMethod(L, "NpcType", "onThink", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onAppear", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onDisappear", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onMove", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onSay", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onCloseChannel", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onBuyItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onSellItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-		registerMethod(L, "NpcType", "onCheckItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-
-		registerMethod(L, "NpcType", "outfit", NpcTypeFunctions::luaNpcTypeOutfit);
-		registerMethod(L, "NpcType", "baseSpeed", NpcTypeFunctions::luaNpcTypeBaseSpeed);
-		registerMethod(L, "NpcType", "walkInterval", NpcTypeFunctions::luaNpcTypeWalkInterval);
-		registerMethod(L, "NpcType", "walkRadius", NpcTypeFunctions::luaNpcTypeWalkRadius);
-		registerMethod(L, "NpcType", "light", NpcTypeFunctions::luaNpcTypeLight);
-
-		registerMethod(L, "NpcType", "yellChance", NpcTypeFunctions::luaNpcTypeYellChance);
-		registerMethod(L, "NpcType", "yellSpeedTicks", NpcTypeFunctions::luaNpcTypeYellSpeedTicks);
-
-		registerMethod(L, "NpcType", "respawnTypePeriod", NpcTypeFunctions::luaNpcTypeRespawnTypePeriod);
-		registerMethod(L, "NpcType", "respawnTypeIsUnderground", NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground);
-		registerMethod(L, "NpcType", "speechBubble", NpcTypeFunctions::luaNpcTypeSpeechBubble);
-		registerMethod(L, "NpcType", "currency", NpcTypeFunctions::luaNpcTypeCurrency);
-
-		registerMethod(L, "NpcType", "addShopItem", NpcTypeFunctions::luaNpcTypeAddShopItem);
-
-		registerMethod(L, "NpcType", "soundChance", NpcTypeFunctions::luaNpcTypeSoundChance);
-		registerMethod(L, "NpcType", "soundSpeedTicks", NpcTypeFunctions::luaNpcTypeSoundSpeedTicks);
-		registerMethod(L, "NpcType", "addSound", NpcTypeFunctions::luaNpcTypeAddSound);
-		registerMethod(L, "NpcType", "getSounds", NpcTypeFunctions::luaNpcTypeGetSounds);
-	}
+	static void init(lua_State* L);
 
 private:
 	static void createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector);
@@ -83,7 +21,6 @@ private:
 	static int luaNpcTypeIsPushable(lua_State* L);
 	static int luaNpcTypeFloorChange(lua_State* L);
 
-	static int luaNpcTypeRespawnType(lua_State* L);
 	static int luaNpcTypeCanSpawn(lua_State* L);
 
 	static int luaNpcTypeCanPushItems(lua_State* L);

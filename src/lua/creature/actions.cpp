@@ -19,9 +19,15 @@
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "lib/di/container.hpp"
 
 Actions::Actions() = default;
 Actions::~Actions() = default;
+
+Actions &Actions::getInstance() {
+	return inject<Actions>();
+}
 
 void Actions::clear() {
 	useItemMap.clear();
@@ -273,7 +279,7 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, cons
 	}
 
 	if (action != nullptr) {
-		if (action->isLoadedCallback()) {
+		if (action->isLoadedScriptId()) {
 			if (action->executeUse(player, item, pos, nullptr, pos, isHotkey)) {
 				return RETURNVALUE_NOERROR;
 			}
@@ -495,8 +501,34 @@ void Actions::showUseHotkeyMessage(const std::shared_ptr<Player> &player, const 
 */
 
 // Action constructor
-Action::Action(LuaScriptInterface* interface) :
-	Script(interface) { }
+Action::Action() = default;
+
+LuaScriptInterface* Action::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool Action::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t Action::getScriptId() const {
+	return m_scriptId;
+}
+
+void Action::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool Action::isLoadedScriptId() const {
+	return m_scriptId != 0;
+}
 
 ReturnValue Action::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
 	if (!allowFarUse) {

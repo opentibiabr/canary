@@ -9,24 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class ResultFunctions final : LuaScriptInterface {
+class ResultFunctions {
 public:
-	explicit ResultFunctions(lua_State* L) :
-		LuaScriptInterface("ResultFunctions") {
-		init(L);
-	}
-	~ResultFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerTable(L, "Result");
-		registerMethod(L, "Result", "getNumber", ResultFunctions::luaResultGetNumber);
-		registerMethod(L, "Result", "getString", ResultFunctions::luaResultGetString);
-		registerMethod(L, "Result", "getStream", ResultFunctions::luaResultGetStream);
-		registerMethod(L, "Result", "next", ResultFunctions::luaResultNext);
-		registerMethod(L, "Result", "free", ResultFunctions::luaResultFree);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaResultFree(lua_State* L);

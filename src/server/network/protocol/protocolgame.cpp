@@ -5881,7 +5881,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 				separator = true;
 			}
 
-			ss << fmt::format("{} {:+}%", getSkillName(i), skills / 100.0);
+			ss << fmt::format("{} {:+}%", getSkillName(i), skills * 100.0);
 		}
 
 		if (it.abilities->stats[STAT_MAGICPOINTS] != 0) {

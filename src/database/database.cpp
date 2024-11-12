@@ -61,23 +61,23 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	return true;
 }
 
-void Database::createDatabaseBackup() const {
+void Database::createDatabaseBackup(bool compress) const {
 	if (!g_configManager().getBoolean(MYSQL_DB_BACKUP)) {
 		return;
 	}
 
-	std::time_t now = getTimeNow();
-	std::string formattedTime = fmt::format("{:%Y-%m-%d_%H-%M-%S}", fmt::localtime(now));
+	// Get current time for formatting
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+	std::string formattedDate = fmt::format("{:%Y-%m-%d}", fmt::localtime(now_c));
+	std::string formattedTime = fmt::format("{:%H-%M-%S}", fmt::localtime(now_c));
 
-	if (formattedTime.empty()) {
-		g_logger().error("Failed to format time for database backup.");
-		return;
-	}
-
-	std::string backupDir = "database_backup/";
+	// Create a backup directory based on the current date
+	std::string backupDir = fmt::format("database_backup/{}/", formattedDate);
 	std::filesystem::create_directories(backupDir);
-	std::string backupFileName = fmt::format("{}/backup_{}.sql", backupDir, formattedTime);
+	std::string backupFileName = fmt::format("{}backup_{}.sql", backupDir, formattedTime);
 
+	// Create a temporary configuration file for MySQL credentials
 	std::string tempConfigFile = "database_backup.cnf";
 	std::ofstream configFile(tempConfigFile);
 	if (configFile.is_open()) {
@@ -92,19 +92,78 @@ void Database::createDatabaseBackup() const {
 		return;
 	}
 
+	// Execute mysqldump command to create backup file
 	std::string command = fmt::format(
 		"mysqldump --defaults-extra-file={} {} > {}",
 		tempConfigFile, g_configManager().getString(MYSQL_DB), backupFileName
 	);
 
 	int result = std::system(command.c_str());
-
 	std::filesystem::remove(tempConfigFile);
 
 	if (result != 0) {
 		g_logger().error("Failed to create database backup using mysqldump.");
+		return;
+	}
+
+	// Compress the backup file if requested
+	std::string compressedFileName;
+	if (compress) {
+		compressedFileName = backupFileName + ".gz";
+		gzFile gzFile = gzopen(compressedFileName.c_str(), "wb9");
+		if (!gzFile) {
+			g_logger().error("Failed to open gzip file for compression.");
+			return;
+		}
+
+		std::ifstream backupFile(backupFileName, std::ios::binary);
+		if (!backupFile.is_open()) {
+			g_logger().error("Failed to open backup file for compression: {}", backupFileName);
+			gzclose(gzFile);
+			return;
+		}
+
+		char buffer[8192];
+		while (backupFile.read(buffer, sizeof(buffer)) || backupFile.gcount() > 0) {
+			gzwrite(gzFile, buffer, backupFile.gcount());
+		}
+
+		backupFile.close();
+		gzclose(gzFile);
+		std::filesystem::remove(backupFileName);
+
+		g_logger().info("Database backup successfully compressed to: {}", compressedFileName);
 	} else {
 		g_logger().info("Database backup successfully created at: {}", backupFileName);
+	}
+
+	// Delete old backups
+	auto twentyFourHoursAgo = std::chrono::system_clock::now() - std::chrono::hours(24);
+	auto sevenDaysAgo = std::chrono::system_clock::now() - std::chrono::hours(24 * 7);
+	for (const auto& entry : std::filesystem::directory_iterator("database_backup")) {
+		if (entry.is_directory()) {
+			auto dirTime = std::filesystem::last_write_time(entry);
+			if (!compress && dirTime.time_since_epoch() < sevenDaysAgo.time_since_epoch()) {
+				try {
+					std::filesystem::remove_all(entry);
+					g_logger().info("Deleted old backup directory (7 days): {}", entry.path().string());
+				} catch (const std::filesystem::filesystem_error& e) {
+					g_logger().error("Failed to delete old backup directory: {}. Error: {}", entry.path().string(), e.what());
+				}
+			}
+			if (compress && dirTime.time_since_epoch() < twentyFourHoursAgo.time_since_epoch()) {
+				for (const auto& file : std::filesystem::directory_iterator(entry)) {
+					if (file.path().extension() == ".gz") {
+						try {
+							std::filesystem::remove(file);
+							g_logger().info("Deleted compressed backup file (24 hours): {}", file.path().string());
+						} catch (const std::filesystem::filesystem_error& e) {
+							g_logger().error("Failed to delete compressed backup file: {}. Error: {}", file.path().string(), e.what());
+						}
+					}
+				}
+			}
+		}
 	}
 }
 

@@ -25,6 +25,8 @@ SaveManager &SaveManager::getInstance() {
 }
 
 void SaveManager::saveAll() {
+	g_database().createDatabaseBackup(true);
+
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
 	const auto players = game.getPlayers();

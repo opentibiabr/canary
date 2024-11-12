@@ -1704,9 +1704,6 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	const auto wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {
 		auto value = wheelSlots[i];
-		if (value == 0) {
-			continue;
-		}
 
 		stream.write<uint8_t>(i);
 		stream.write<uint16_t>(value);

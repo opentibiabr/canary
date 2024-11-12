@@ -4,6 +4,7 @@
 ---@field private createBoss function
 ---@field private timeToFightAgain number
 ---@field private timeToDefeat number
+---@field private minPlayers number
 ---@field private timeAfterKill number
 ---@field private requiredLevel number
 ---@field private disabled boolean
@@ -29,6 +30,7 @@ local config = {
 	}
 	requiredLevel = 250,
 	timeToFightAgain = 10 * 60 * 60, -- In seconds
+	minPlayers = 4,
 	playerPositions = {
 		{ pos = Position(33638, 32562, 13), teleport = Position(33617, 32567, 13) },
 		{ pos = Position(33639, 32562, 13), teleport = Position(33617, 32567, 13) },
@@ -40,7 +42,7 @@ local config = {
 		from = Position(33607, 32553, 13),
 		to = Position(33627, 32570, 13)
 	},
-	onUseExtra = function(player)
+	onUseExtra = function(player, infoPositions)
 		player:teleportTo(Position(33618, 32523, 15))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end,
@@ -56,7 +58,7 @@ setmetatable(BossLever, {
 			error("BossLever: boss is required")
 		end
 		return setmetatable({
-			name = boss.name,
+			name = boss.name:lower(),
 			encounter = config.encounter,
 			bossPosition = boss.position,
 			timeToFightAgain = config.timeToFightAgain or configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN),
@@ -65,6 +67,7 @@ setmetatable(BossLever, {
 			requiredLevel = config.requiredLevel or 0,
 			createBoss = boss.createFunction,
 			disabled = config.disabled,
+			minPlayers = config.minPlayers or 1,
 			playerPositions = config.playerPositions,
 			onUseExtra = config.onUseExtra or function() end,
 			exitTeleporter = config.exitTeleporter,
@@ -182,8 +185,8 @@ function BossLever:onUse(player)
 			return false
 		end
 
+		local infoPositions = lever:getInfoPositions()
 		if creature:getGroup():getId() < GROUP_TYPE_GOD and isAccountNormal and self:lastEncounterTime(creature) > os.time() then
-			local infoPositions = lever:getInfoPositions()
 			for _, posInfo in pairs(infoPositions) do
 				local currentPlayer = posInfo.creature
 				if currentPlayer then
@@ -206,11 +209,18 @@ function BossLever:onUse(player)
 			return false
 		end
 
-		self.onUseExtra(creature)
-		return true
+		return self.onUseExtra(creature, infoPositions) ~= false
 	end)
 
 	lever:checkPositions()
+	if #lever:getPlayers() < self.minPlayers then
+		lever:executeOnPlayers(function(creature)
+			local message = string.format("You need %d qualified players for this challenge.", self.minPlayers)
+			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+			creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+		end)
+		return false
+	end
 	if lever:checkConditions() then
 		zone:removeMonsters()
 		for _, monster in pairs(self.monsters) do

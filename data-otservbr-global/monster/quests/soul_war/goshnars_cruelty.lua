@@ -144,16 +144,6 @@ mType.onThink = function(monster, interval)
 	end
 end
 
-mType.onAppear = function(monster, creature) end
-
-mType.onSpawn = function(monsterCallback)
-	if monsterCallback:getType():isRewardBoss() then
-		monsterCallback:setReward(true)
-	end
-
-	firstTime = 0
-end
-
 mType.onDisappear = function(monster, creature)
 	if creature:getName() == "Goshnar's Cruelty" then
 		local eyeCreature = Creature("A Greedy Eye")
@@ -162,9 +152,5 @@ mType.onDisappear = function(monster, creature)
 		end
 	end
 end
-
-mType.onMove = function(monster, creature, fromPosition, toPosition) end
-
-mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

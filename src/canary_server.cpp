@@ -9,15 +9,21 @@
 
 #include "canary_server.hpp"
 
-#include "declarations.hpp"
+#include "core.hpp"
+#include "config/configmanager.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "creatures/players/grouping/familiars.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "database/databasemanager.hpp"
+#include "declarations.hpp"
 #include "game/game.hpp"
-#include "game/zones/zone.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/zones/zone.hpp"
+#include "io/io_bosstiary.hpp"
 #include "io/iomarket.hpp"
+#include "io/ioprey.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
@@ -26,10 +32,7 @@
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
-#include "io/ioprey.hpp"
-#include "io/io_bosstiary.hpp"
-
-#include "core.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -319,6 +322,7 @@ void CanaryServer::initializeDatabase() {
 	    && !DatabaseManager::optimizeTables()) {
 		logger.debug("No tables were optimized");
 	}
+	g_logger().info("Database connection established!");
 }
 
 void CanaryServer::loadModules() {

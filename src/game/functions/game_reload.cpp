@@ -10,15 +10,26 @@
 #include "game/functions/game_reload.hpp"
 
 #include "config/configmanager.hpp"
-#include "lua/creature/events.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/interactions/chat.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "lua/scripts/lua_environment.hpp"
-#include "lua/modules/modules.hpp"
-#include "lua/scripts/scripts.hpp"
+#include "game/game.hpp"
 #include "game/zones/zone.hpp"
+#include "lib/di/container.hpp"
+#include "lua/creature/events.hpp"
+#include "lua/modules/modules.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
+
+GameReload &GameReload::getInstance() {
+	return inject<GameReload>();
+}
 
 bool GameReload::init(Reload_t reloadTypes) {
 	switch (reloadTypes) {
@@ -126,7 +137,7 @@ bool GameReload::reloadOutfits() {
 }
 
 bool GameReload::reloadMounts() {
-	const bool result = g_game().mounts.reload();
+	const bool result = g_game().mounts->reload();
 	logReloadStatus("Mounts", result);
 	return result;
 }

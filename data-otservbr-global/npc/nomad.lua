@@ -82,14 +82,10 @@ keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, 
 keywordHandler:addAliasKeyword({ "help" })
 
 -- Basic
-keywordHandler:addKeyword(
-	{ "blessing" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Besides the {enhanced} blessing available from me, I know of one other, granted by a solitary {nomad} far west of Svargrond. There are also five different other blessings available, each in a sacred place. ...\nThese blessings are: the {spiritual} shielding, the spark of the {phoenix}, the {embrace} of Tibia, the fire of the {suns} and the wisdom of {solitude}.",
-	}
-)
+keywordHandler:addKeyword({ "blessing" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Besides the {enhanced} blessing available from me, I know of one other, granted by a solitary {nomad} far west of Svargrond. There are also five different other blessings available, each in a sacred place. ...\nThese blessings are: the {spiritual} shielding, the spark of the {phoenix}, the {embrace} of Tibia, the fire of the {suns} and the wisdom of {solitude}.",
+})
 
 keywordHandler:addKeyword({ "pilgrimage" }, StdModule.say, { npcHandler = npcHandler, text = "Well, as I am quite in a {fix} currently, my only hope to escape this situation may be to grant you {healing} or an {enhanced} blessing if you wish. You must desire SOMETHING, right? Sure you do." })
 keywordHandler:addAliasKeyword({ "job" })

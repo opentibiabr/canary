@@ -53,35 +53,35 @@ taskSystem = {
     [47] = {name = "Gazer Spectre", start = 176201, monsters_list = {"Gazer Spectre"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
     [48] = {name = "Werelion", start = 176201, monsters_list = {"Werelion", "Werelioness"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
     -- v3
-    [49] = {name = "Summer Court", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [50] = {name = "Winter Court", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [51] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [52] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [53] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [54] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [55] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [56] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [57] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [58] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [59] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [60] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [61] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [62] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [63] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [64] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [65] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [66] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [67] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [68] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [69] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [70] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [71] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
-    [72] = {name = "XXXXXXX", start = 176201, monsters_list = {"XXXXXXX"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [49] = {name = "Summer Court", start = 176201, monsters_list = {"Crazed Summer Rearguard", "Crazed Summer Vanguard"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [50] = {name = "Winter Court", start = 176201, monsters_list = {"Crazed Winter Rearguard", "Crazed Winter Vanguard"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [51] = {name = "Demon Fields", start = 176201, monsters_list = {"Demon", "Fire Elemental"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [52] = {name = "Draken's Tomb", start = 176201, monsters_list = {"Draken Elite", "Draken Abomination", "Draken Spellweaver"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [53] = {name = "Flimsy Lost Soul", start = 176201, monsters_list = {"Flimsy Lost Soul"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [54] = {name = "Ghastly Dragon", start = 176201, monsters_list = {"Ghastly Dragon"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [55] = {name = "Grim Reaper", start = 176201, monsters_list = {"Grim Reaper"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [56] = {name = "Iks Friends", start = 176201, monsters_list = {"Iks Ahpututu", "Iks Yapunac", "Iks Aucar", "Iks Chuka", "Iks Churrascan", "Iks Pututu"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [57] = {name = "Lamassu", start = 176201, monsters_list = {"Lamassu", "Sphinx"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [58] = {name = "Medusa's Lair", start = 176201, monsters_list = {"Medusa"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [59] = {name = "Naga's Dream", start = 176201, monsters_list = {"Naga Archer", "Naga Warrior"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [60] = {name = "Usurper's Law", start = 176201, monsters_list = {"Usurper Archer", "Usurper Knight", "Usurper Warlock"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [61] = {name = "True Dawnfire Asura", start = 176201, monsters_list = {"True Dawnfire Asura"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [62] = {name = "True Midnight Asura", start = 176201, monsters_list = {"True Midnight Asura"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [63] = {name = "Undead Dragon", start = 176201, monsters_list = {"Undead Dragon"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [64] = {name = "Vexclaw", start = 176201, monsters_list = {"Vexclaw", "Grimeleech", "Hellflayer"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [65] = {name = "Cursed Prospector", start = 176201, monsters_list = {"Cursed Prospector"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [66] = {name = "Evil Prospector", start = 176201, monsters_list = {"Evil Prospector"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [67] = {name = "Falcon's Ordeal", start = 176201, monsters_list = {"Falcon Knight", "Falcon Paladin"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [68] = {name = "Freakish Lost Soul", start = 176201, monsters_list = {"Freakish Lost Soul"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [69] = {name = "Guzzlemaw's Valley", start = 176201, monsters_list = {"Guzzlemaw", "Frazzlemaw"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [70] = {name = "Hellhound's Fate", start = 176201, monsters_list = {"Hellhound", "Blightwalker"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [71] = {name = "Quara's Revenge", start = 176201, monsters_list = {"Quara Plunderer", "Quara Raider", "Quara Looter"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
+    [72] = {name = "Sight of Surrender", start = 176201, monsters_list = {"Sight of Surrender"}, level = 1, count = 10, points = 1, items = {}, reward = {{7643, 100}}, exp = 300000, money = 300000},
 }
 
 dailyTasks = {
-    [73] = {name = "Daily Rat" ,monsters_list = {"Rat"}, count = 10, points = 3, reward = {{2674, 5}}, exp = 100, money = 10},
-    [74] = {name = "Daily Cave Rat" ,monsters_list = {"Cave Rat"}, count = 50, points = 3, reward = {{2173, 1}}, exp = 130, money = 20},
+    [73] = {name = "Daily Bugs" ,monsters_list = {"Bug"}, count = 2, points = 3, items = {}, reward = {{37317, 5}}, exp = 100, money = 10},
+    [74] = {name = "Daily Cave Rat" ,monsters_list = {"Cave Rat"}, count = 50, points = 3, items = {}, reward = {{37317, 1}}, exp = 130, money = 20},
 }
                    -- task, points, count, daily task, daily count, daily time , daily start, contador, questracker(0 running, 1 complete)
 taskSystem_storages = {176601, 176602, 176603, 176604, 176605, 176606, 176607, 176608, 176609}
@@ -100,18 +100,18 @@ end
 
 function Player:randomDailyTask()
     local t = {
-        [{1, 49}] = {100, 105},
-        [{50, 100}] = {106, 110},
-        [{101, 200}] = {111, 115},
-        [{201, 300}] = {111, 115},
-        [{301, 400}] = {111, 115},
-        [{401, 600}] = {111, 115},
-        [{601, 800}] = {111, 115},
+        [{1, 49}] = {73, 80},
+        [{50, 100}] = {81, 85},
+        [{101, 200}] = {86, 90},
+        [{201, 300}] = {91, 95},
+        [{301, 400}] = {96, 100},
+        [{401, 600}] = {101, 105},
+        [{601, 800}] = {106, 110},
         [{801, 1100}] = {111, 115},
-        [{1101, 1300}] = {111, 115},
-        [{1301, 1600}] = {111, 115},
-        [{1601, 2000}] = {111, 115},
-        [{2001, math.huge}] = {115, 200} -- 115 a 200 eh o numero da task na dailyTasks
+        [{1101, 1300}] = {116, 120},
+        [{1301, 1600}] = {121, 125},
+        [{1601, 2000}] = {126, 130},
+        [{2001, math.huge}] = {131, 200} -- 115 a 200 eh o numero da task na dailyTasks
     }
     for a, b in pairs(t) do
         if self:getLevel() >= a[1] and self:getLevel() <= a[2] then
@@ -123,14 +123,19 @@ end
 
 function Player:getRankTask()
     local ranks = {
-        [{1, 20}] = "Huntsman",
-        [{21, 50}] = "Ranger",
-        [{51, 100}] = "Big Game Hunter",
-        [{101, 200}] = "Trophy Hunter",
-        [{201, math.huge}] = "Elite Hunter"
+        [{1, 20}] = "Novice Adventurer",
+        [{21, 40}] = "Apprentice Explorer",
+        [{41, 60}] = "Seasoned Traveler",
+        [{61, 80}] = "Skilled Warrior",
+        [{81, 100}] = "Masterful Duelist",
+        [{101, 120}] = "Legendary Hero",
+        [{121, 140}] = "Godlike Champion",
+        [{141, 160}] = "Immortal Guardian",
+        [{161, 180}] = "Supreme Overlord",
+        [{200, math.huge}] = "Eternal Deity"
     }
 
-    local defaultRank = "Private"
+    local defaultRank = "Newbie"
 
     for v, r in pairs(ranks) do
         if self:getTaskPoints() >= v[1] and self:getTaskPoints() <= v[2] then

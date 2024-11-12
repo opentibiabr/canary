@@ -185,7 +185,7 @@
 		<monster name="Naga Archer" x="0" y="0" z="6" spawntime="60" />
 	</monster>
 	<monster centerx="31902" centery="33480" centerz="6" radius="1">
-		<monster name="Sphinx" x="0" y="0" z="6" spawntime="60" />
+		<monster name="Usurper Archer" x="0" y="0" z="6" spawntime="60" />
 	</monster>
 	<monster centerx="31856" centery="33484" centerz="6" radius="1">
 		<monster name="Deepling Brawler" x="0" y="0" z="6" spawntime="60" />
@@ -289,11 +289,8 @@
 	<monster centerx="31884" centery="33504" centerz="6" radius="1">
 		<monster name="Black Knight" x="0" y="0" z="6" spawntime="60" />
 	</monster>
-	<monster centerx="31892" centery="33504" centerz="6" radius="1">
-		<monster name="Insane Siren" x="0" y="0" z="6" spawntime="60" />
-	</monster>
 	<monster centerx="31902" centery="33504" centerz="6" radius="1">
-		<monster name="Lava Lurker" x="0" y="0" z="6" spawntime="60" />
+		<monster name="Sight Of Surrender" x="0" y="0" z="6" spawntime="60" />
 	</monster>
 	<monster centerx="32878" centery="33617" centerz="6" radius="5">
 		<monster name="Elf" x="-1" y="-2" z="6" spawntime="60" />

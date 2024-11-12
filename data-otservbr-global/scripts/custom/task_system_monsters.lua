@@ -31,7 +31,7 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
     --local outfit = outfits[math.random(1, #outfits)]
     --local addon = math.random(1, 2)
 
-	local task, daily, hours = player:getTaskMission(), player:getDailyTaskMission(), 24
+	local task, hours = player:getTaskMission(), 20
 
 	-- Aceitar Task Comum
 	if taskSystem[config[item.actionid]] then
@@ -102,28 +102,6 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
 
 			return true
 		end
-	-- aceitar daily task
-	elseif dailyTasks[config[item.actionid]] then
-		if player:getStorageValue(taskSystem_storages[6]) - os.time() > 0 then
-            player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, you must wait until %s to start a new daily task!", os.date("%d %B %Y %X ", player:getStorageValue(taskSystem_storages[6]))))
-            return true
-        elseif dailyTasks[config[item.actionid]] and player:getStorageValue(taskSystem_storages[5]) >= dailyTasks[config[item.actionid]].count then
-            player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Sorry, you already did your daily tasks!")
-            return true
-        end
-        local r = player:randomDailyTask()
-        if r == 0 then
-            player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Sorry, but you don't have the level to complete any daily tasks.")
-            return true
-        end
-        player:setStorageValue(taskSystem_storages[4], r)
-        player:setStorageValue(taskSystem_storages[6], os.time() + hours * 3600)
-        player:setStorageValue(taskSystem_storages[7], 1)
-        player:setStorageValue(taskSystem_storages[5], 0)
-        local dtask = dailyTasks[r]
-		player:setStorageValue(taskSystem_storages[9], 0)
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Congratulations, you are now participating in the Daily Task of %s and shall kill %d monsters from this list: %s up until %s. Good luck!" , dtask.name, dtask.count, getMonsterFromList(dtask.monsters_list), os.date("%d %B %Y %X ", player:getStorageValue(taskSystem_storages[6]))))
-		--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Sorry, no tasks available!"))
 	end
     return true
 end
@@ -132,3 +110,84 @@ for index, value in pairs(config) do
 	tasksystemMonsters:aid(index)
 end
 tasksystemMonsters:register()
+
+
+local tasksystemDaily = Action("tasksystemDaily")
+
+function tasksystemDaily.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local daily, hours = player:getDailyTaskMission(), 20
+	-- check if player is doing a daily
+	if daily == null or daily <= 0 then
+		-- check if able to take the daily task
+		if player:getStorageValue(taskSystem_storages[6]) - os.time() > 0 then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, you must wait until %s to start a new daily task!", os.date("%d %B %Y %X ", player:getStorageValue(taskSystem_storages[6]))))
+			return true
+		end
+		-- able then select a random daily task
+		local r = player:randomDailyTask()
+		if r == 0 then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Sorry, but you don't have the level to complete any daily tasks.")
+			return true
+		end
+		-- set all the storages necessary
+		player:setStorageValue(taskSystem_storages[4], r)
+		--set time to start again (24h)
+		player:setStorageValue(taskSystem_storages[6], os.time() + hours * 3600)
+		--Set daily start 1
+		player:setStorageValue(taskSystem_storages[7], 1)
+		--daily count
+		player:setStorageValue(taskSystem_storages[5], 0)
+
+		local dtask = dailyTasks[r]
+		--atualiza o hunting task quest tracker
+		player:setStorageValue(taskSystem_storages[9], 0)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Congratulations, you are now participating in the Daily Task of %s and shall kill %d monsters from this list: %s up until %s. Good luck!" , dtask.name, dtask.count, getMonsterFromList(dtask.monsters_list), os.date("%d %B %Y %X ", player:getStorageValue(taskSystem_storages[6]))))
+
+	else
+		-- already doing a daily, verify and deliver reward
+		local v = dailyTasks[daily]
+		if player:getStorageValue(taskSystem_storages[5]) >= v.count then
+			if #v.items > 0 and not player:doRemoveItemsFromList(v.items) then
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Sorry, but you also need to deliver the items on this list: %s"), getItemsFromList(v.items))
+				return true
+			end
+
+			local str = ""
+
+			if v.exp > 0 then
+				player:addExperience(v.exp)
+				str = str.." "..v.exp.." experience,"
+			end
+			if v.points > 0 then
+				player:setStorageValue(taskSystem_storages[2], (player:getTaskPoints() + v.points))
+				str = str.." "..v.points.." task points,"
+			end
+			if v.money > 0 then
+				player:addMoney(v.money)
+				str = str.." "..v.money.." gold coins,"
+			end
+			if table.maxn(v.reward) > 0 then
+				player:giveRewardsTask(v.reward)
+				str = str.." and "..getItemsFromList(v.reward).."."
+			end
+
+			-- set all the storages necessary
+			player:setStorageValue(taskSystem_storages[4], -1)
+			--Set daily start 1
+			player:setStorageValue(taskSystem_storages[7], -1)
+			--daily count
+			player:setStorageValue(taskSystem_storages[5], -1)
+
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name))
+
+			return true
+		else
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(taskSystem_storages[5]) < 0 and v.count or -(player:getStorageValue(taskSystem_storages[5]) - v.count)).." of these terrible monsters!", v.name))
+			return true
+		end
+	end
+	return true
+end
+
+tasksystemDaily:aid(62073)
+tasksystemDaily:register()

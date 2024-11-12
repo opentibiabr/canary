@@ -6639,7 +6639,7 @@ if not Quests then
 			startStorageValue = 1,
 			missions = {
 				[1] = {
-					name = "Stage: xxxxx",
+					name = "The First Room",
 					storageId = 176609,
 					missionId = 10500,
 					startValue = 0,

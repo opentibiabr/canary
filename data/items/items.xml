@@ -4433,15 +4433,15 @@
 	</item>
 	<item id="2139" name="RESERVED SPRITE"/>
 	<item id="2140" name="ashes">
-        <attribute key="primarytype" value="fields"/>
-        <attribute key="type" value="magicfield"/>
-        <attribute key="field" value="fire">
-        	<attribute key="damage" value="0"/>
-        </attribute>
-        <attribute key="replaceable" value="0"/>
-        <attribute key="duration" value="5"/>
-        <attribute key="decayTo" value="2137"/>
-    </item>
+		<attribute key="primarytype" value="fields"/>
+		<attribute key="type" value="magicfield"/>
+		<attribute key="field" value="fire">
+			<attribute key="damage" value="0"/>
+		</attribute>
+		<attribute key="replaceable" value="0"/>
+		<attribute key="duration" value="5"/>
+		<attribute key="decayTo" value="2137"/>
+	</item>
 	<item id="2141" name="RESERVED SPRITE"/>
 	<item id="2142" name="RESERVED SPRITE"/>
 	<item id="2143" name="RESERVED SPRITE"/>
@@ -79731,4 +79731,3 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="100"/>
 	</item>
 </items>
-

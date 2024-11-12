@@ -93,11 +93,11 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
 		g_dispatcher().addWalkEvent([=] {
 			g_game().map.moveCreature(creature, destTile);
+			if (effect != CONST_ME_NONE) {
+				g_game().addMagicEffect(origPos, effect);
+				g_game().addMagicEffect(destTile->getPosition(), effect);
+			}
 		});
-		if (effect != CONST_ME_NONE) {
-			g_game().addMagicEffect(origPos, effect);
-			g_game().addMagicEffect(destTile->getPosition(), effect);
-		}
 	} else if (const auto &item = thing->getItem()) {
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(destTile->getPosition(), effect);

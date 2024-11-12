@@ -98,6 +98,8 @@ private:
 
 	std::vector<std::shared_ptr<Creature>> creature_list;
 	std::vector<std::shared_ptr<Creature>> player_list;
+	std::vector<std::shared_ptr<Creature>> monster_list;
+	std::vector<std::shared_ptr<Creature>> npc_list;
 
 	mutable std::mutex floors_mutex;
 

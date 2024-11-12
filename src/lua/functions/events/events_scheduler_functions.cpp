@@ -10,6 +10,17 @@
 #include "lua/functions/events/events_scheduler_functions.hpp"
 
 #include "game/scheduling/events_scheduler.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
+
+void EventsSchedulerFunctions::init(lua_State* L) {
+	Lua::registerTable(L, "EventsScheduler");
+
+	Lua::registerMethod(L, "EventsScheduler", "getEventSLoot", EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot);
+	Lua::registerMethod(L, "EventsScheduler", "getEventSBossLoot", EventsSchedulerFunctions::luaEventsSchedulergetEventSBossLoot);
+	Lua::registerMethod(L, "EventsScheduler", "getEventSSkill", EventsSchedulerFunctions::luaEventsSchedulergetEventSSkill);
+	Lua::registerMethod(L, "EventsScheduler", "getEventSExp", EventsSchedulerFunctions::luaEventsSchedulergetEventSExp);
+	Lua::registerMethod(L, "EventsScheduler", "getSpawnMonsterSchedule", EventsSchedulerFunctions::luaEventsSchedulergetSpawnMonsterSchedule);
+}
 
 int EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot(lua_State* L) {
 	// EventsScheduler.getEventSLoot

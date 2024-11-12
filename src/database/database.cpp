@@ -140,24 +140,24 @@ void Database::createDatabaseBackup(bool compress) const {
 	// Delete old backups
 	auto twentyFourHoursAgo = std::chrono::system_clock::now() - std::chrono::hours(24);
 	auto sevenDaysAgo = std::chrono::system_clock::now() - std::chrono::hours(24 * 7);
-	for (const auto& entry : std::filesystem::directory_iterator("database_backup")) {
+	for (const auto &entry : std::filesystem::directory_iterator("database_backup")) {
 		if (entry.is_directory()) {
 			auto dirTime = std::filesystem::last_write_time(entry);
 			if (!compress && dirTime.time_since_epoch() < sevenDaysAgo.time_since_epoch()) {
 				try {
 					std::filesystem::remove_all(entry);
 					g_logger().info("Deleted old backup directory (7 days): {}", entry.path().string());
-				} catch (const std::filesystem::filesystem_error& e) {
+				} catch (const std::filesystem::filesystem_error &e) {
 					g_logger().error("Failed to delete old backup directory: {}. Error: {}", entry.path().string(), e.what());
 				}
 			}
 			if (compress && dirTime.time_since_epoch() < twentyFourHoursAgo.time_since_epoch()) {
-				for (const auto& file : std::filesystem::directory_iterator(entry)) {
+				for (const auto &file : std::filesystem::directory_iterator(entry)) {
 					if (file.path().extension() == ".gz") {
 						try {
 							std::filesystem::remove(file);
 							g_logger().info("Deleted compressed backup file (24 hours): {}", file.path().string());
-						} catch (const std::filesystem::filesystem_error& e) {
+						} catch (const std::filesystem::filesystem_error &e) {
 							g_logger().error("Failed to delete compressed backup file: {}. Error: {}", file.path().string(), e.what());
 						}
 					}

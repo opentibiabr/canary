@@ -42,9 +42,9 @@ public:
 	 *
 	 * This function generates a backup of the database, with options for compression.
 	 * The backup can be triggered periodically or during specific events like server loading.
-	 * 
-	 * The backup operation will only execute if the configuration option `MYSQL_DB_BACKUP` 
-	 * is set to true in the `config.lua` file. If this configuration is disabled, the function 
+	 *
+	 * The backup operation will only execute if the configuration option `MYSQL_DB_BACKUP`
+	 * is set to true in the `config.lua` file. If this configuration is disabled, the function
 	 * will return without performing any action.
 	 *
 	 * @param compress Indicates whether the backup should be compressed.

@@ -675,17 +675,11 @@ void ItemParse::parseFieldCombatDamage(const std::shared_ptr<ConditionDamage> &c
 void ItemParse::parseField(const std::string &stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (stringValue == "field") {
 		CombatType_t combatType = COMBAT_NONE;
-		std::shared_ptr<ConditionDamage> conditionDamage = nullptr;
-
 		// Parse fields conditions (fire/energy/poison/drown/physical)
 		combatType = parseFieldCombatType(valueAttribute);
 		auto [conditionId, conditionType] = parseFieldConditions(valueAttribute);
-
 		if (combatType != COMBAT_NONE) {
-			if (conditionDamage) {
-			}
-
-			conditionDamage = std::make_shared<ConditionDamage>(conditionId, conditionType);
+			auto conditionDamage = std::make_shared<ConditionDamage>(conditionId, conditionType);
 
 			itemType.combatType = combatType;
 			itemType.conditionDamage = conditionDamage;

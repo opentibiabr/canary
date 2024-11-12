@@ -9,36 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class ContainerFunctions final : LuaScriptInterface {
+class ContainerFunctions {
 private:
-	explicit ContainerFunctions(lua_State* L) :
-		LuaScriptInterface("ContainerFunctions") {
-		init(L);
-	}
-	~ContainerFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Container", "Item", ContainerFunctions::luaContainerCreate);
-		registerMetaMethod(L, "Container", "__eq", ContainerFunctions::luaUserdataCompare);
-
-		registerMethod(L, "Container", "getSize", ContainerFunctions::luaContainerGetSize);
-		registerMethod(L, "Container", "getMaxCapacity", ContainerFunctions::luaContainerGetMaxCapacity);
-		registerMethod(L, "Container", "getCapacity", ContainerFunctions::luaContainerGetCapacity);
-		registerMethod(L, "Container", "getEmptySlots", ContainerFunctions::luaContainerGetEmptySlots);
-		registerMethod(L, "Container", "getContentDescription", ContainerFunctions::luaContainerGetContentDescription);
-		registerMethod(L, "Container", "getItems", ContainerFunctions::luaContainerGetItems);
-		registerMethod(L, "Container", "getItemHoldingCount", ContainerFunctions::luaContainerGetItemHoldingCount);
-		registerMethod(L, "Container", "getItemCountById", ContainerFunctions::luaContainerGetItemCountById);
-
-		registerMethod(L, "Container", "getItem", ContainerFunctions::luaContainerGetItem);
-		registerMethod(L, "Container", "hasItem", ContainerFunctions::luaContainerHasItem);
-		registerMethod(L, "Container", "addItem", ContainerFunctions::luaContainerAddItem);
-		registerMethod(L, "Container", "addItemEx", ContainerFunctions::luaContainerAddItemEx);
-		registerMethod(L, "Container", "getCorpseOwner", ContainerFunctions::luaContainerGetCorpseOwner);
-		registerMethod(L, "Container", "registerReward", ContainerFunctions::luaContainerRegisterReward);
-	}
+	static void init(lua_State* L);
 
 	static int luaContainerCreate(lua_State* L);
 

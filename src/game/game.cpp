@@ -62,6 +62,7 @@
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 #include "utils/wildcardtree.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -7429,7 +7430,6 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 			if (targetMonster->israndomStepping()) {
 				targetMonster->setIgnoreFieldDamage(true);
-				targetMonster->updateMapCache();
 			}
 		}
 
@@ -8243,8 +8243,8 @@ void Game::checkPlayersRecord() {
 		uint32_t previousRecord = playersRecord;
 		playersRecord = playersOnline;
 
-		for (auto &[key, it] : g_globalEvents().getEventMap(GLOBALEVENT_RECORD)) {
-			it->executeRecord(playersRecord, previousRecord);
+		for (const auto &[key, globalEvent] : g_globalEvents().getEventMap(GLOBALEVENT_RECORD)) {
+			globalEvent->executeRecord(playersRecord, previousRecord);
 		}
 		updatePlayersRecord();
 	}

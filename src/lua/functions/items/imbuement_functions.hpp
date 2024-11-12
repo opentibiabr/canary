@@ -9,29 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class ImbuementFunctions final : LuaScriptInterface {
+class ImbuementFunctions {
 public:
-	explicit ImbuementFunctions(lua_State* L) :
-		LuaScriptInterface("ImbuementFunctions") {
-		init(L);
-	}
-	~ImbuementFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerClass(L, "Imbuement", "", ImbuementFunctions::luaCreateImbuement);
-		registerMetaMethod(L, "Imbuement", "__eq", ImbuementFunctions::luaUserdataCompare);
-
-		registerMethod(L, "Imbuement", "getName", ImbuementFunctions::luaImbuementGetName);
-		registerMethod(L, "Imbuement", "getId", ImbuementFunctions::luaImbuementGetId);
-		registerMethod(L, "Imbuement", "getItems", ImbuementFunctions::luaImbuementGetItems);
-		registerMethod(L, "Imbuement", "getBase", ImbuementFunctions::luaImbuementGetBase);
-		registerMethod(L, "Imbuement", "getCategory", ImbuementFunctions::luaImbuementGetCategory);
-		registerMethod(L, "Imbuement", "isPremium", ImbuementFunctions::luaImbuementIsPremium);
-		registerMethod(L, "Imbuement", "getElementDamage", ImbuementFunctions::luaImbuementGetElementDamage);
-		registerMethod(L, "Imbuement", "getCombatType", ImbuementFunctions::luaImbuementGetCombatType);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreateImbuement(lua_State* L);

@@ -6,7 +6,6 @@ Blessings.Credits = {
 	lastUpdate = "08/04/2020",
 	todo = {
 		"Insert & Select query in blessings_history",
-		"Add data \\movements\\scripts\\quests\\cults of tibia\\icedeath.lua blessing information",
 	},
 }
 

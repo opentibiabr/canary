@@ -1419,7 +1419,7 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 		return;
 	}
 
-	std::shared_ptr<Creature> movingCreature = getCreatureByID(movingCreatureId);
+	const auto &movingCreature = getCreatureByID(movingCreatureId);
 	if (!movingCreature) {
 		return;
 	}
@@ -1667,7 +1667,7 @@ void Game::playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, 
 
 void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder) {
 	if (!player->canDoAction()) {
-		uint32_t delay = player->getNextActionTime();
+		const uint32_t delay = player->getNextActionTime();
 		const auto &task = createPlayerTask(
 			delay,
 			[this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
@@ -1742,7 +1742,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	// check if we can move this item
-	if (ReturnValue ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item, toPos); ret != RETURNVALUE_NOERROR) {
+	if (auto ret = checkMoveItemToCylinder(player, fromCylinder, toCylinder, item, toPos); ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return;
 	}
@@ -1774,8 +1774,8 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		return;
 	}
 
-	std::shared_ptr<Tile> toCylinderTile = toCylinder->getTile();
-	const Position &mapToPos = toCylinderTile->getPosition();
+	const auto toCylinderTile = toCylinder->getTile();
+	const auto &mapToPos = toCylinderTile->getPosition();
 
 	// hangable item specific code
 	if (item->isHangable() && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
@@ -1794,14 +1794,14 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		}
 
 		if (!Position::areInRange<1, 1, 0>(playerPos, mapToPos)) {
-			Position walkPos = mapToPos;
+			auto walkPos = mapToPos;
 			if (vertical) {
 				walkPos.x++;
 			} else {
 				walkPos.y++;
 			}
 
-			Position itemPos = fromPos;
+			auto itemPos = fromPos;
 			uint8_t itemStackPos = fromStackPos;
 
 			if (fromPos.x != 0xFFFF && Position::areInRange<1, 1>(mapFromPos, playerPos)
@@ -1809,7 +1809,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 				// need to pickup the item first
 				std::shared_ptr<Item> moveItem = nullptr;
 
-				ReturnValue ret = internalMoveItem(fromCylinder, player, INDEX_WHEREEVER, item, count, &moveItem);
+				const auto ret = internalMoveItem(fromCylinder, player, INDEX_WHEREEVER, item, count, &moveItem);
 				if (ret != RETURNVALUE_NOERROR) {
 					player->sendCancelMessage(ret);
 					return;
@@ -1837,7 +1837,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		}
 	}
 
-	auto throwRange = item->getThrowRange();
+	const auto throwRange = item->getThrowRange();
 	if ((Position::getDistanceX(playerPos, mapToPos) > throwRange) || (Position::getDistanceY(playerPos, mapToPos) > throwRange) || (Position::getDistanceZ(mapFromPos, mapToPos) * 4 > throwRange)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		return;
@@ -1866,8 +1866,8 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	if (item->isWrapable() || item->isStoreItem() || (item->hasOwner() && !item->isOwner(player))) {
-		auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
-		auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
+		const auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
+		const auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
 		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
 			player->sendCancelMessage("You cannot move this item out of this house.");
 			return;
@@ -1882,12 +1882,14 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
-	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
+
+	const auto ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	} else if (toCylinder->getContainer() && fromCylinder->getContainer() && fromCylinder->getContainer()->countsToLootAnalyzerBalance() && toCylinder->getContainer()->getTopParent() == player) {
 		player->sendLootStats(item, count);
 	}
+
 	player->cancelPush();
 
 	item->checkDecayMapItemOnMove();
@@ -1916,7 +1918,9 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 			}
 		}
 
-		if (containerID == ITEM_GOLD_POUCH) {
+		const auto containerToStow = isTryingToStow(toPos, toCylinder);
+
+		if (containerID == ITEM_GOLD_POUCH && !containerToStow) {
 			if (g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY)) {
 				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
 			}
@@ -1942,7 +1946,7 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 			return RETURNVALUE_NOTBOUGHTINSTORE;
 		}
 
-		if (item->isStoreItem()) {
+		if (item->isStoreItem() && !containerToStow) {
 			bool isValidMoveItem = false;
 			auto fromHouseTile = fromCylinder->getTile();
 			auto house = fromHouseTile ? fromHouseTile->getHouse() : nullptr;
@@ -1973,7 +1977,7 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 
 		if (item->getContainer() && !item->isStoreItem()) {
 			for (const std::shared_ptr<Item> &containerItem : item->getContainer()->getItems(true)) {
-				if (containerItem->isStoreItem() && ((containerID != ITEM_GOLD_POUCH && containerID != ITEM_DEPOT && containerID != ITEM_STORE_INBOX) || (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (!topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() != ITEM_STORE_INBOX)))) {
+				if (containerItem->isStoreItem() && !containerToStow && ((containerID != ITEM_GOLD_POUCH && containerID != ITEM_DEPOT && containerID != ITEM_STORE_INBOX) || (topParentContainer->getParent() && topParentContainer->getParent()->getContainer() && (!topParentContainer->getParent()->getContainer()->isDepotChest() || topParentContainer->getParent()->getContainer()->getID() != ITEM_STORE_INBOX)))) {
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
@@ -5451,7 +5455,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
 		return;
 	}
 
-	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
+	const auto &creature = getCreatureByID(creatureId);
 	if (!creature) {
 		return;
 	}
@@ -5863,7 +5867,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 		return;
 	}
 
-	std::shared_ptr<Creature> attackCreature = getCreatureByID(creatureId);
+	const auto &attackCreature = getCreatureByID(creatureId);
 	if (!attackCreature) {
 		player->setAttackedCreature(nullptr);
 		player->sendCancelTarget();
@@ -7002,7 +7006,7 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 		if (damage.secondary.value != 0) {
 			damage.secondary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
 		}
-		if (damage.instantSpellName == "Twin Burst") {
+		if (damage.instantSpellName == "Ice Burst" || damage.instantSpellName == "Terra Burst") {
 			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
 			if (damageBonus != 0) {
 				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
@@ -9424,7 +9428,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 }
 
 void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionType, ConditionId_t conditionId) {
-	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
+	const auto &creature = getCreatureByID(creatureId);
 	if (!creature) {
 		return;
 	}
@@ -9834,7 +9838,7 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}

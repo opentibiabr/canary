@@ -97,7 +97,7 @@ enum class WheelStage_t : uint8_t {
 
 enum class WheelOnThink_t : uint8_t {
 	BATTLE_INSTINCT = 0,
-	POSITIONAL_TATICS = 1,
+	POSITIONAL_TACTICS = 1,
 	BALLISTIC_MASTERY = 2,
 	COMBAT_MASTERY = 3,
 	FOCUS_MASTERY = 4,
@@ -148,7 +148,7 @@ enum class WheelMajor_t : uint8_t {
 enum class WheelInstant_t : uint8_t {
 	BATTLE_INSTINCT = 0,
 	BATTLE_HEALING = 1,
-	POSITIONAL_TATICS = 2,
+	POSITIONAL_TACTICS = 2,
 	BALLISTIC_MASTERY = 3,
 	HEALING_LINK = 4,
 	RUNIC_MASTERY = 5,
@@ -217,7 +217,7 @@ struct PlayerWheelMethodsBonusData {
 	struct Instant {
 		bool battleInstinct = false; // Knight
 		bool battleHealing = false; // Knight
-		bool positionalTatics = false; // Paladin
+		bool positionalTactics = false; // Paladin
 		bool ballisticMastery = false; // Paladin
 		bool healingLink = false; // Druid
 		bool runicMastery = false; // Druid/sorcerer
@@ -282,7 +282,7 @@ namespace WheelSpells {
 	struct Decrease {
 		int cooldown = 0;
 		int manaCost = 0;
-		uint8_t secondaryGroupCooldown = 0;
+		int secondaryGroupCooldown = 0;
 	};
 
 	struct Leech {

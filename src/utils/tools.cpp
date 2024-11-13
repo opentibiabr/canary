@@ -1145,12 +1145,12 @@ CombatType_t getCombatTypeByName(const std::string &combatname) {
 	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
 }
 
-size_t combatTypeToIndex(CombatType_t combatType) {
+size_t combatTypeToIndex(CombatType_t combatType, std::source_location location) {
 	const auto enum_index_opt = magic_enum::enum_index(combatType);
 	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
 		return enum_index_opt.value();
 	} else {
-		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		g_logger().error("[{}] Combat type {} is out of range, called line '{}:{}' in '{}'", __FUNCTION__, fmt::underlying(combatType), location.line(), location.column(), location.function_name());
 		// Uncomment for catch the function call with debug
 		// throw std::out_of_range("Combat is out of range");
 	}
@@ -1582,6 +1582,12 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
 	}
 	if (tmpStr == "ultimatestrikes" || tmpStr == "8") {
 		return SPELLGROUP_ULTIMATESTRIKES;
+	}
+	if (tmpStr == "burstsofnature" || tmpStr == "9") {
+		return SPELLGROUP_BURSTS_OF_NATURE;
+	}
+	if (tmpStr == "greatbeams" || tmpStr == "10") {
+		return SPELLGROUP_GREAT_BEAMS;
 	}
 
 	return SPELLGROUP_NONE;
@@ -2078,4 +2084,45 @@ const std::map<uint8_t, uint16_t> &getMaxValuePerSkill() {
 	};
 
 	return maxValuePerSkill;
+}
+
+float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer /* = false*/) {
+	float lossPercent = 0;
+	switch (blessingAmount) {
+		case 0:
+			lossPercent = 10;
+			break;
+		case 1:
+			lossPercent = 7;
+			break;
+		case 2:
+			lossPercent = 4.5;
+			break;
+		case 3:
+			lossPercent = 2.5;
+			break;
+		case 4:
+			lossPercent = 1;
+			break;
+		default:
+			// Blessing Amount >= 5
+			lossPercent = 0;
+			break;
+	}
+
+	return isContainer ? lossPercent * 10 : lossPercent;
+}
+
+uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted /* = false*/) {
+	uint8_t result = 80 + (2 * blessCount) - (blessCount / 3);
+
+	if (blessCount == 5) {
+		result -= 1;
+	}
+
+	if (isPromoted) {
+		result += 6;
+	}
+
+	return result;
 }

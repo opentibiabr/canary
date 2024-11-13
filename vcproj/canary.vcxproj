@@ -137,7 +137,6 @@
     <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\modal_window_functions.hpp" />
-    <ClInclude Include="..\src\lua\functions\core\libs\bit_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\core_libs_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\kv_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\libs\db_functions.hpp" />
@@ -336,7 +335,6 @@
     <ClCompile Include="..\src\lua\functions\core\game\zone_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\lua_enums.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\modal_window_functions.cpp" />
-    <ClCompile Include="..\src\lua\functions\core\libs\bit_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\kv_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\db_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\libs\result_functions.cpp" />

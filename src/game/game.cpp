@@ -7002,7 +7002,7 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 		if (damage.secondary.value != 0) {
 			damage.secondary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
 		}
-		if (damage.instantSpellName == "Twin Burst") {
+		if (damage.instantSpellName == "Ice Burst" || damage.instantSpellName == "Terra Burst") {
 			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
 			if (damageBonus != 0) {
 				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
@@ -9834,7 +9834,7 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}

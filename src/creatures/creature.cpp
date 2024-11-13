@@ -96,10 +96,6 @@ int32_t Creature::getWalkSize() {
 
 void Creature::onThink(uint32_t interval) {
 	metrics::method_latency measure(__METHOD_NAME__);
-	if (!isMapLoaded && useCacheMap()) {
-		isMapLoaded = true;
-		updateMapCache();
-	}
 
 	const auto &followCreature = getFollowCreature();
 	const auto &master = getMaster();
@@ -290,113 +286,11 @@ void Creature::stopEventWalk() {
 	}
 }
 
-void Creature::updateMapCache() {
-	if (!useCacheMap()) {
-		return;
-	}
-
-	metrics::method_latency measure(__METHOD_NAME__);
-	std::shared_ptr<Tile> newTile;
-	const Position &myPos = getPosition();
-	Position pos(0, 0, myPos.z);
-
-	for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-		for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-			pos.x = myPos.getX() + x;
-			pos.y = myPos.getY() + y;
-			newTile = g_game().map.getTile(pos);
-			updateTileCache(newTile, pos);
-		}
-	}
-}
-
-void Creature::updateTileCache(const std::shared_ptr<Tile> &newTile, int32_t dx, int32_t dy) {
-	metrics::method_latency measure(__METHOD_NAME__);
-	if (std::abs(dx) <= maxWalkCacheWidth && std::abs(dy) <= maxWalkCacheHeight) {
-		localMapCache[maxWalkCacheHeight + dy][maxWalkCacheWidth + dx] = newTile && newTile->queryAdd(0, getCreature(), 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR;
-	}
-}
-
-void Creature::updateTileCache(const std::shared_ptr<Tile> &upTile, const Position &pos) {
-	const Position &myPos = getPosition();
-	if (pos.z == myPos.z) {
-		int32_t dx = Position::getOffsetX(pos, myPos);
-		int32_t dy = Position::getOffsetY(pos, myPos);
-		updateTileCache(upTile, dx, dy);
-	}
-}
-
-int32_t Creature::getWalkCache(const Position &pos) {
-	metrics::method_latency measure(__METHOD_NAME__);
-	if (!useCacheMap()) {
-		return 2;
-	}
-
-	const Position &myPos = getPosition();
-	if (myPos.z != pos.z) {
-		return 0;
-	}
-
-	if (pos == myPos) {
-		return 1;
-	}
-
-	int32_t dx = Position::getOffsetX(pos, myPos);
-	if (std::abs(dx) <= maxWalkCacheWidth) {
-		int32_t dy = Position::getOffsetY(pos, myPos);
-		if (std::abs(dy) <= maxWalkCacheHeight) {
-			return localMapCache[maxWalkCacheHeight + dy][maxWalkCacheWidth + dx];
-		}
-	}
-
-	// out of range
-	return 2;
-}
-
-void Creature::onAddTileItem(const std::shared_ptr<Tile> &tileItem, const Position &pos) {
-	if (isMapLoaded && pos.z == getPosition().z) {
-		updateTileCache(tileItem, pos);
-	}
-}
-
-void Creature::onUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &, const ItemType &oldType, const std::shared_ptr<Item> &, const ItemType &newType) {
-	if (!isMapLoaded) {
-		return;
-	}
-
-	if (oldType.blockSolid || oldType.blockPathFind || newType.blockPathFind || newType.blockSolid) {
-		if (pos.z == getPosition().z) {
-			updateTileCache(updateTile, pos);
-		}
-	}
-}
-
-void Creature::onRemoveTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &) {
-	if (!isMapLoaded) {
-		return;
-	}
-
-	if (iType.blockSolid || iType.blockPathFind || iType.isGroundTile()) {
-		if (pos.z == getPosition().z) {
-			updateTileCache(updateTile, pos);
-		}
-	}
-}
-
 void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	if (creature.get() == this) {
-		if (useCacheMap()) {
-			isMapLoaded = true;
-			updateMapCache();
-		}
-
 		if (isLogin) {
 			setLastPosition(getPosition());
-		}
-	} else if (isMapLoaded) {
-		if (creature->getPosition().z == getPosition().z) {
-			updateTileCache(creature->getTile(), creature->getPosition());
 		}
 	}
 }
@@ -404,11 +298,6 @@ void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool 
 void Creature::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool) {
 	metrics::method_latency measure(__METHOD_NAME__);
 	onCreatureDisappear(creature, true);
-	if (creature && creature != getCreature() && isMapLoaded) {
-		if (creature->getPosition().z == getPosition().z) {
-			updateTileCache(creature->getTile(), creature->getPosition());
-		}
-	}
 
 	// Update player from monster target list (avoid memory usage after clean)
 	if (const auto &monster = getMonster(); monster && monster->getAttackedCreature() == creature) {
@@ -525,101 +414,6 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 
 		if (newTile->getZoneType() != oldTile->getZoneType()) {
 			onChangeZone(getZoneType());
-		}
-
-		// update map cache
-		if (isMapLoaded) {
-			if (teleport || oldPos.z != newPos.z) {
-				updateMapCache();
-			} else {
-				const Position &myPos = getPosition();
-
-				if (oldPos.y > newPos.y) { // north
-					// shift y south
-					for (int32_t y = mapWalkHeight - 1; --y >= 0;) {
-						std::ranges::copy(std::span(localMapCache[y]), localMapCache[y + 1]);
-					}
-
-					// update 0
-					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						const auto &cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() - maxWalkCacheHeight), myPos.z);
-						updateTileCache(cacheTile, x, -maxWalkCacheHeight);
-					}
-				} else if (oldPos.y < newPos.y) { // south
-					// shift y north
-					for (int32_t y = 0; y <= mapWalkHeight - 2; ++y) {
-						std::ranges::copy(std::span(localMapCache[y + 1]), localMapCache[y]);
-					}
-
-					// update mapWalkHeight - 1
-					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						const auto &cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() + maxWalkCacheHeight), myPos.z);
-						updateTileCache(cacheTile, x, maxWalkCacheHeight);
-					}
-				}
-
-				if (oldPos.x < newPos.x) { // east
-					// shift y west
-					int32_t starty = 0;
-					int32_t endy = mapWalkHeight - 1;
-					int32_t dy = Position::getDistanceY(oldPos, newPos);
-
-					if (dy < 0) {
-						endy += dy;
-					} else if (dy > 0) {
-						starty = dy;
-					}
-
-					for (int32_t y = starty; y <= endy; ++y) {
-						for (int32_t x = 0; x <= mapWalkWidth - 2; ++x) {
-							localMapCache[y][x] = localMapCache[y][x + 1];
-						}
-					}
-
-					// update mapWalkWidth - 1
-					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						const auto &cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
-						updateTileCache(cacheTile, maxWalkCacheWidth, y);
-					}
-				} else if (oldPos.x > newPos.x) { // west
-					// shift y east
-					int32_t starty = 0;
-					int32_t endy = mapWalkHeight - 1;
-					int32_t dy = Position::getDistanceY(oldPos, newPos);
-
-					if (dy < 0) {
-						endy += dy;
-					} else if (dy > 0) {
-						starty = dy;
-					}
-
-					for (int32_t y = starty; y <= endy; ++y) {
-						for (int32_t x = mapWalkWidth - 1; --x >= 0;) {
-							localMapCache[y][x + 1] = localMapCache[y][x];
-						}
-					}
-
-					// update 0
-					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						const auto &cacheTile = g_game().map.getTile(myPos.x - maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
-						updateTileCache(cacheTile, -maxWalkCacheWidth, y);
-					}
-				}
-
-				updateTileCache(oldTile, oldPos);
-			}
-		}
-	} else {
-		if (isMapLoaded) {
-			const Position &myPos = getPosition();
-
-			if (newPos.z == myPos.z) {
-				updateTileCache(newTile, newPos);
-			}
-
-			if (oldPos.z == myPos.z) {
-				updateTileCache(oldTile, oldPos);
-			}
 		}
 	}
 
@@ -1589,6 +1383,10 @@ int64_t Creature::getEventStepTicks(bool onlyDelay) {
 
 LightInfo Creature::getCreatureLight() const {
 	return internalLight;
+}
+
+uint16_t Creature::getSpeed() const {
+	return std::clamp(baseSpeed + varSpeed, 0, static_cast<int>(std::numeric_limits<uint16_t>::max()));
 }
 
 void Creature::setSpeed(int32_t varSpeedDelta) {

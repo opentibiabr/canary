@@ -9,84 +9,11 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
 #include "lua/functions/items/item_classification_functions.hpp"
 
-class ItemTypeFunctions final : LuaScriptInterface {
+class ItemTypeFunctions {
 public:
-	explicit ItemTypeFunctions(lua_State* L) :
-		LuaScriptInterface("ItemTypeFunctions") {
-		init(L);
-	}
-	~ItemTypeFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerClass(L, "ItemType", "", ItemTypeFunctions::luaItemTypeCreate);
-		registerMetaMethod(L, "ItemType", "__eq", ItemTypeFunctions::luaUserdataCompare);
-
-		registerMethod(L, "ItemType", "isCorpse", ItemTypeFunctions::luaItemTypeIsCorpse);
-		registerMethod(L, "ItemType", "isDoor", ItemTypeFunctions::luaItemTypeIsDoor);
-		registerMethod(L, "ItemType", "isContainer", ItemTypeFunctions::luaItemTypeIsContainer);
-		registerMethod(L, "ItemType", "isFluidContainer", ItemTypeFunctions::luaItemTypeIsFluidContainer);
-		registerMethod(L, "ItemType", "isMovable", ItemTypeFunctions::luaItemTypeIsMovable);
-		registerMethod(L, "ItemType", "isRune", ItemTypeFunctions::luaItemTypeIsRune);
-		registerMethod(L, "ItemType", "isStackable", ItemTypeFunctions::luaItemTypeIsStackable);
-		registerMethod(L, "ItemType", "isStowable", ItemTypeFunctions::luaItemTypeIsStowable);
-		registerMethod(L, "ItemType", "isReadable", ItemTypeFunctions::luaItemTypeIsReadable);
-		registerMethod(L, "ItemType", "isWritable", ItemTypeFunctions::luaItemTypeIsWritable);
-		registerMethod(L, "ItemType", "isBlocking", ItemTypeFunctions::luaItemTypeIsBlocking);
-		registerMethod(L, "ItemType", "isGroundTile", ItemTypeFunctions::luaItemTypeIsGroundTile);
-		registerMethod(L, "ItemType", "isMagicField", ItemTypeFunctions::luaItemTypeIsMagicField);
-		registerMethod(L, "ItemType", "isMultiUse", ItemTypeFunctions::luaItemTypeIsMultiUse);
-		registerMethod(L, "ItemType", "isPickupable", ItemTypeFunctions::luaItemTypeIsPickupable);
-		registerMethod(L, "ItemType", "isKey", ItemTypeFunctions::luaItemTypeIsKey);
-		registerMethod(L, "ItemType", "isQuiver", ItemTypeFunctions::luaItemTypeIsQuiver);
-
-		registerMethod(L, "ItemType", "getType", ItemTypeFunctions::luaItemTypeGetType);
-		registerMethod(L, "ItemType", "getId", ItemTypeFunctions::luaItemTypeGetId);
-		registerMethod(L, "ItemType", "getName", ItemTypeFunctions::luaItemTypeGetName);
-		registerMethod(L, "ItemType", "getPluralName", ItemTypeFunctions::luaItemTypeGetPluralName);
-		registerMethod(L, "ItemType", "getArticle", ItemTypeFunctions::luaItemTypeGetArticle);
-		registerMethod(L, "ItemType", "getDescription", ItemTypeFunctions::luaItemTypeGetDescription);
-		registerMethod(L, "ItemType", "getSlotPosition", ItemTypeFunctions::luaItemTypeGetSlotPosition);
-
-		registerMethod(L, "ItemType", "getCharges", ItemTypeFunctions::luaItemTypeGetCharges);
-		registerMethod(L, "ItemType", "getFluidSource", ItemTypeFunctions::luaItemTypeGetFluidSource);
-		registerMethod(L, "ItemType", "getCapacity", ItemTypeFunctions::luaItemTypeGetCapacity);
-		registerMethod(L, "ItemType", "getWeight", ItemTypeFunctions::luaItemTypeGetWeight);
-		registerMethod(L, "ItemType", "getStackSize", ItemTypeFunctions::luaItemTypeGetStackSize);
-
-		registerMethod(L, "ItemType", "getHitChance", ItemTypeFunctions::luaItemTypeGetHitChance);
-		registerMethod(L, "ItemType", "getShootRange", ItemTypeFunctions::luaItemTypeGetShootRange);
-
-		registerMethod(L, "ItemType", "getAttack", ItemTypeFunctions::luaItemTypeGetAttack);
-		registerMethod(L, "ItemType", "getDefense", ItemTypeFunctions::luaItemTypeGetDefense);
-		registerMethod(L, "ItemType", "getExtraDefense", ItemTypeFunctions::luaItemTypeGetExtraDefense);
-		registerMethod(L, "ItemType", "getImbuementSlot", ItemTypeFunctions::luaItemTypeGetImbuementSlot);
-		registerMethod(L, "ItemType", "getArmor", ItemTypeFunctions::luaItemTypeGetArmor);
-		registerMethod(L, "ItemType", "getWeaponType", ItemTypeFunctions::luaItemTypeGetWeaponType);
-
-		registerMethod(L, "ItemType", "getElementType", ItemTypeFunctions::luaItemTypeGetElementType);
-		registerMethod(L, "ItemType", "getElementDamage", ItemTypeFunctions::luaItemTypeGetElementDamage);
-
-		registerMethod(L, "ItemType", "getTransformEquipId", ItemTypeFunctions::luaItemTypeGetTransformEquipId);
-		registerMethod(L, "ItemType", "getTransformDeEquipId", ItemTypeFunctions::luaItemTypeGetTransformDeEquipId);
-		registerMethod(L, "ItemType", "getDestroyId", ItemTypeFunctions::luaItemTypeGetDestroyId);
-		registerMethod(L, "ItemType", "getDecayId", ItemTypeFunctions::luaItemTypeGetDecayId);
-		registerMethod(L, "ItemType", "getRequiredLevel", ItemTypeFunctions::luaItemTypeGetRequiredLevel);
-		registerMethod(L, "ItemType", "getAmmoType", ItemTypeFunctions::luaItemTypeGetAmmoType);
-
-		registerMethod(L, "ItemType", "getDecayTime", ItemTypeFunctions::luaItemTypeGetDecayTime);
-		registerMethod(L, "ItemType", "getShowDuration", ItemTypeFunctions::luaItemTypeGetShowDuration);
-		registerMethod(L, "ItemType", "getWrapableTo", ItemTypeFunctions::luaItemTypeGetWrapableTo);
-		registerMethod(L, "ItemType", "getSpeed", ItemTypeFunctions::luaItemTypeGetSpeed);
-		registerMethod(L, "ItemType", "getBaseSpeed", ItemTypeFunctions::luaItemTypeGetBaseSpeed);
-		registerMethod(L, "ItemType", "getVocationString", ItemTypeFunctions::luaItemTypeGetVocationString);
-
-		registerMethod(L, "ItemType", "hasSubType", ItemTypeFunctions::luaItemTypeHasSubType);
-
-		ItemClassificationFunctions::init(L);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaItemTypeCreate(lua_State* L);

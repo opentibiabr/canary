@@ -9,25 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class EventsSchedulerFunctions final : private LuaScriptInterface {
+class EventsSchedulerFunctions {
 public:
-	explicit EventsSchedulerFunctions(lua_State* L) :
-		LuaScriptInterface("EventsSchedulerFunctions") {
-		init(L);
-	}
-	~EventsSchedulerFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerTable(L, "EventsScheduler");
-
-		registerMethod(L, "EventsScheduler", "getEventSLoot", EventsSchedulerFunctions::luaEventsSchedulergetEventSLoot);
-		registerMethod(L, "EventsScheduler", "getEventSBossLoot", EventsSchedulerFunctions::luaEventsSchedulergetEventSBossLoot);
-		registerMethod(L, "EventsScheduler", "getEventSSkill", EventsSchedulerFunctions::luaEventsSchedulergetEventSSkill);
-		registerMethod(L, "EventsScheduler", "getEventSExp", EventsSchedulerFunctions::luaEventsSchedulergetEventSExp);
-		registerMethod(L, "EventsScheduler", "getSpawnMonsterSchedule", EventsSchedulerFunctions::luaEventsSchedulergetSpawnMonsterSchedule);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaEventsSchedulergetEventSLoot(lua_State* L);

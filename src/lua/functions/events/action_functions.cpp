@@ -12,105 +12,119 @@
 #include "lua/creature/actions.hpp"
 #include "game/game.hpp"
 #include "items/item.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
+
+void ActionFunctions::init(lua_State* L) {
+	Lua::registerSharedClass(L, "Action", "", ActionFunctions::luaCreateAction);
+	Lua::registerMethod(L, "Action", "onUse", ActionFunctions::luaActionOnUse);
+	Lua::registerMethod(L, "Action", "register", ActionFunctions::luaActionRegister);
+	Lua::registerMethod(L, "Action", "id", ActionFunctions::luaActionItemId);
+	Lua::registerMethod(L, "Action", "aid", ActionFunctions::luaActionActionId);
+	Lua::registerMethod(L, "Action", "uid", ActionFunctions::luaActionUniqueId);
+	Lua::registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
+	Lua::registerMethod(L, "Action", "allowFarUse", ActionFunctions::luaActionAllowFarUse);
+	Lua::registerMethod(L, "Action", "blockWalls", ActionFunctions::luaActionBlockWalls);
+	Lua::registerMethod(L, "Action", "checkFloor", ActionFunctions::luaActionCheckFloor);
+	Lua::registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
+}
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
-	const auto action = std::make_shared<Action>(getScriptEnv()->getScriptInterface());
-	pushUserdata<Action>(L, action);
-	setMetatable(L, -1, "Action");
+	const auto action = std::make_shared<Action>();
+	Lua::pushUserdata<Action>(L, action);
+	Lua::setMetatable(L, -1, "Action");
 	return 1;
 }
 
 int ActionFunctions::luaActionOnUse(lua_State* L) {
 	// action:onUse(callback)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
-		if (!action->loadCallback()) {
-			pushBoolean(L, false);
+		if (!action->loadScriptId()) {
+			Lua::pushBoolean(L, false);
 			return 1;
 		}
-		action->setLoadedCallback(true);
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
 
 int ActionFunctions::luaActionRegister(lua_State* L) {
 	// action:register()
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
-		if (!action->isLoadedCallback()) {
-			pushBoolean(L, false);
+		if (!action->isLoadedScriptId()) {
+			Lua::pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_actions().registerLuaEvent(action));
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, g_actions().registerLuaEvent(action));
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
 
 int ActionFunctions::luaActionItemId(lua_State* L) {
 	// action:id(ids)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
 		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->setItemIdsVector(getNumber<uint16_t>(L, 2 + i));
+				action->setItemIdsVector(Lua::getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->setItemIdsVector(getNumber<uint16_t>(L, 2));
+			action->setItemIdsVector(Lua::getNumber<uint16_t>(L, 2));
 		}
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
 
 int ActionFunctions::luaActionActionId(lua_State* L) {
 	// action:aid(aids)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
 		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->setActionIdsVector(getNumber<uint16_t>(L, 2 + i));
+				action->setActionIdsVector(Lua::getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->setActionIdsVector(getNumber<uint16_t>(L, 2));
+			action->setActionIdsVector(Lua::getNumber<uint16_t>(L, 2));
 		}
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
 
 int ActionFunctions::luaActionUniqueId(lua_State* L) {
 	// action:uid(uids)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
 		const int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->setUniqueIdsVector(getNumber<uint16_t>(L, 2 + i));
+				action->setUniqueIdsVector(Lua::getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->setUniqueIdsVector(getNumber<uint16_t>(L, 2));
+			action->setUniqueIdsVector(Lua::getNumber<uint16_t>(L, 2));
 		}
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -121,20 +135,20 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	 * @param itemId or @param itemName = if item id or string name is set, the item is created on position (if not exists), this variable is nil by default
 	 * action:position(positions, itemId or name)
 	 */
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (!action) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
-	const Position position = getPosition(L, 2);
+	const Position position = Lua::getPosition(L, 2);
 	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
-	// isNumber(L, 2) is for skip the itemId
+	// Lua::isNumber(L, 2) is for skip the itemId
 	if (const int parameters = lua_gettop(L) - 1;
-	    parameters > 1 && isNumber(L, 2)) {
+	    parameters > 1 && Lua::isNumber(L, 2)) {
 		for (int i = 0; i < parameters; ++i) {
-			action->setPositionsVector(getPosition(L, 2 + i));
+			action->setPositionsVector(Lua::getPosition(L, 2 + i));
 		}
 	} else {
 		action->setPositionsVector(position);
@@ -142,14 +156,14 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 
 	uint16_t itemId;
 	bool createItem = false;
-	if (isNumber(L, 3)) {
-		itemId = getNumber<uint16_t>(L, 3);
+	if (Lua::isNumber(L, 3)) {
+		itemId = Lua::getNumber<uint16_t>(L, 3);
 		createItem = true;
-	} else if (isString(L, 3)) {
-		itemId = Item::items.getItemIdByName(getString(L, 3));
+	} else if (Lua::isString(L, 3)) {
+		itemId = Item::items.getItemIdByName(Lua::getString(L, 3));
 		if (itemId == 0) {
-			reportErrorFunc("Not found item with name: " + getString(L, 3));
-			pushBoolean(L, false);
+			Lua::reportErrorFunc("Not found item with name: " + Lua::getString(L, 3));
+			Lua::pushBoolean(L, false);
 			return 1;
 		}
 
@@ -158,8 +172,8 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 
 	if (createItem) {
 		if (!Item::items.hasItemType(itemId)) {
-			reportErrorFunc("Not found item with id: " + itemId);
-			pushBoolean(L, false);
+			Lua::reportErrorFunc("Not found item with id: " + itemId);
+			Lua::pushBoolean(L, false);
 			return 1;
 		}
 
@@ -172,45 +186,45 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 		g_game().setCreateLuaItems(position, itemId);
 	}
 
-	pushBoolean(L, true);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 
 int ActionFunctions::luaActionAllowFarUse(lua_State* L) {
 	// action:allowFarUse(bool)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
-		action->setAllowFarUse(getBoolean(L, 2));
-		pushBoolean(L, true);
+		action->setAllowFarUse(Lua::getBoolean(L, 2));
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
 
 int ActionFunctions::luaActionBlockWalls(lua_State* L) {
 	// action:blockWalls(bool)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
-		action->setCheckLineOfSight(getBoolean(L, 2));
-		pushBoolean(L, true);
+		action->setCheckLineOfSight(Lua::getBoolean(L, 2));
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }
 
 int ActionFunctions::luaActionCheckFloor(lua_State* L) {
 	// action:checkFloor(bool)
-	const auto &action = getUserdataShared<Action>(L, 1);
+	const auto &action = Lua::getUserdataShared<Action>(L, 1);
 	if (action) {
-		action->setCheckFloor(getBoolean(L, 2));
-		pushBoolean(L, true);
+		action->setCheckFloor(Lua::getBoolean(L, 2));
+		Lua::pushBoolean(L, true);
 	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 	}
 	return 1;
 }

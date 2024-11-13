@@ -1145,12 +1145,12 @@ CombatType_t getCombatTypeByName(const std::string &combatname) {
 	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
 }
 
-size_t combatTypeToIndex(CombatType_t combatType) {
+size_t combatTypeToIndex(CombatType_t combatType, std::source_location location) {
 	const auto enum_index_opt = magic_enum::enum_index(combatType);
 	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
 		return enum_index_opt.value();
 	} else {
-		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
+		g_logger().error("[{}] Combat type {} is out of range, called line '{}:{}' in '{}'", __FUNCTION__, fmt::underlying(combatType), location.line(), location.column(), location.function_name());
 		// Uncomment for catch the function call with debug
 		// throw std::out_of_range("Combat is out of range");
 	}
@@ -1582,6 +1582,12 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
 	}
 	if (tmpStr == "ultimatestrikes" || tmpStr == "8") {
 		return SPELLGROUP_ULTIMATESTRIKES;
+	}
+	if (tmpStr == "burstsofnature" || tmpStr == "9") {
+		return SPELLGROUP_BURSTS_OF_NATURE;
+	}
+	if (tmpStr == "greatbeams" || tmpStr == "10") {
+		return SPELLGROUP_GREAT_BEAMS;
 	}
 
 	return SPELLGROUP_NONE;

@@ -16,6 +16,7 @@
 #include "io/iologindata.hpp"
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
+#include "creatures/players/player.hpp"
 
 SaveManager::SaveManager(ThreadPool &threadPool, KVStore &kvStore, Logger &logger, Game &game) :
 	threadPool(threadPool), kv(kvStore), logger(logger), game(game) { }

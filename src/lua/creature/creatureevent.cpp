@@ -11,6 +11,8 @@
 
 #include "creatures/players/player.hpp"
 #include "items/item.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "lib/di/container.hpp"
 
 void CreatureEvents::clear() {
 	for (const auto &[name, event] : creatureEvents) {
@@ -104,8 +106,34 @@ bool CreatureEvents::playerAdvance(
  =======================
 */
 
-CreatureEvent::CreatureEvent(LuaScriptInterface* interface) :
-	Script(interface) { }
+CreatureEvent::CreatureEvent() = default;
+
+LuaScriptInterface* CreatureEvent::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool CreatureEvent::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t CreatureEvent::getScriptId() const {
+	return m_scriptId;
+}
+
+void CreatureEvent::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool CreatureEvent::isLoadedScriptId() const {
+	return m_scriptId != 0;
+}
 
 void CreatureEvents::removeInvalidEvents() {
 	std::erase_if(creatureEvents, [](const auto &pair) {
@@ -160,15 +188,11 @@ std::string CreatureEvent::getScriptTypeName() const {
 
 void CreatureEvent::copyEvent(const std::shared_ptr<CreatureEvent> &creatureEvent) {
 	setScriptId(creatureEvent->getScriptId());
-	setScriptInterface(creatureEvent->getScriptInterface());
-	setLoadedCallback(creatureEvent->isLoadedCallback());
 	loaded = creatureEvent->loaded;
 }
 
 void CreatureEvent::clearEvent() {
 	setScriptId(0);
-	setScriptInterface(nullptr);
-	setLoadedCallback(false);
 	loaded = false;
 }
 

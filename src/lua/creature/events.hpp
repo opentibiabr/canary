@@ -41,7 +41,6 @@ class Events {
 		int32_t creatureOnChangeOutfit = -1;
 		int32_t creatureOnAreaCombat = -1;
 		int32_t creatureOnTargetCombat = -1;
-		int32_t creatureOnHear = -1;
 		int32_t creatureOnDrainHealth = -1;
 
 		// Party
@@ -78,10 +77,6 @@ class Events {
 
 		// Monster
 		int32_t monsterOnDropLoot = -1;
-		int32_t monsterOnSpawn = -1;
-
-		// Npc
-		int32_t npcOnSpawn = -1;
 	};
 
 public:
@@ -99,7 +94,6 @@ public:
 	bool eventCreatureOnChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit);
 	ReturnValue eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, bool aggressive);
 	ReturnValue eventCreatureOnTargetCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target);
-	void eventCreatureOnHear(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &speaker, const std::string &words, SpeakClasses type);
 	void eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 
 	// Party
@@ -135,10 +129,6 @@ public:
 
 	// Monster
 	void eventMonsterOnDropLoot(const std::shared_ptr<Monster> &monster, const std::shared_ptr<Container> &corpse);
-	void eventMonsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position);
-
-	// Monster
-	void eventNpcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position);
 
 private:
 	LuaScriptInterface scriptInterface;

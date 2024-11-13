@@ -137,7 +137,7 @@ CombatType_t getCombatTypeByName(const std::string &combatname);
  * @return The corresponding index of the CombatType_t enumeration.
  * If the CombatType_t is out of range, this function will log an error and return an empty size_t.
  */
-size_t combatTypeToIndex(CombatType_t combatType);
+size_t combatTypeToIndex(CombatType_t combatType, std::source_location location = std::source_location::current());
 
 /**
  * @brief Convert the CombatType_t enumeration to its corresponding string representation.

@@ -9,49 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class VocationFunctions final : LuaScriptInterface {
+class VocationFunctions {
 public:
-	explicit VocationFunctions(lua_State* L) :
-		LuaScriptInterface("VocationFunctions") {
-		init(L);
-	}
-	~VocationFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Vocation", "", VocationFunctions::luaVocationCreate);
-		registerMetaMethod(L, "Vocation", "__eq", VocationFunctions::luaUserdataCompare);
-
-		registerMethod(L, "Vocation", "getId", VocationFunctions::luaVocationGetId);
-		registerMethod(L, "Vocation", "getClientId", VocationFunctions::luaVocationGetClientId);
-		registerMethod(L, "Vocation", "getBaseId", VocationFunctions::luaVocationGetBaseId);
-		registerMethod(L, "Vocation", "getName", VocationFunctions::luaVocationGetName);
-		registerMethod(L, "Vocation", "getDescription", VocationFunctions::luaVocationGetDescription);
-
-		registerMethod(L, "Vocation", "getRequiredSkillTries", VocationFunctions::luaVocationGetRequiredSkillTries);
-		registerMethod(L, "Vocation", "getRequiredManaSpent", VocationFunctions::luaVocationGetRequiredManaSpent);
-
-		registerMethod(L, "Vocation", "getCapacityGain", VocationFunctions::luaVocationGetCapacityGain);
-
-		registerMethod(L, "Vocation", "getHealthGain", VocationFunctions::luaVocationGetHealthGain);
-		registerMethod(L, "Vocation", "getHealthGainTicks", VocationFunctions::luaVocationGetHealthGainTicks);
-		registerMethod(L, "Vocation", "getHealthGainAmount", VocationFunctions::luaVocationGetHealthGainAmount);
-
-		registerMethod(L, "Vocation", "getManaGain", VocationFunctions::luaVocationGetManaGain);
-		registerMethod(L, "Vocation", "getManaGainTicks", VocationFunctions::luaVocationGetManaGainTicks);
-		registerMethod(L, "Vocation", "getManaGainAmount", VocationFunctions::luaVocationGetManaGainAmount);
-
-		registerMethod(L, "Vocation", "getMaxSoul", VocationFunctions::luaVocationGetMaxSoul);
-		registerMethod(L, "Vocation", "getSoulGainTicks", VocationFunctions::luaVocationGetSoulGainTicks);
-
-		registerMethod(L, "Vocation", "getBaseAttackSpeed", VocationFunctions::luaVocationGetBaseAttackSpeed);
-		registerMethod(L, "Vocation", "getAttackSpeed", VocationFunctions::luaVocationGetAttackSpeed);
-		registerMethod(L, "Vocation", "getBaseSpeed", VocationFunctions::luaVocationGetBaseSpeed);
-
-		registerMethod(L, "Vocation", "getDemotion", VocationFunctions::luaVocationGetDemotion);
-		registerMethod(L, "Vocation", "getPromotion", VocationFunctions::luaVocationGetPromotion);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaVocationCreate(lua_State* L);

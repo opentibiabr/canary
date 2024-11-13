@@ -11,6 +11,10 @@
 
 #include "io/iologindata.hpp"
 
+class Player;
+class DBResult;
+using DBResult_ptr = std::shared_ptr<DBResult>;
+
 class IOLoginDataLoad : public IOLoginData {
 public:
 	static bool loadPlayerBasicInfo(const std::shared_ptr<Player> &player, const DBResult_ptr &result);

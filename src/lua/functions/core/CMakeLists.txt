@@ -6,7 +6,6 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     game/lua_enums.cpp
     game/modal_window_functions.cpp
     game/zone_functions.cpp
-    libs/bit_functions.cpp
     libs/db_functions.cpp
     libs/result_functions.cpp
     libs/logger_functions.cpp

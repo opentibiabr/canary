@@ -7,12 +7,20 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lua/creature/talkaction.hpp"
+
+#include "utils/tools.hpp"
+#include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
 #include "lua/scripts/scripts.hpp"
-#include "lua/creature/talkaction.hpp"
+#include "lib/di/container.hpp"
 
 TalkActions::TalkActions() = default;
 TalkActions::~TalkActions() = default;
+
+TalkActions &TalkActions::getInstance() {
+	return inject<TalkActions>();
+}
 
 void TalkActions::clear() {
 	talkActions.clear();
@@ -23,29 +31,29 @@ bool TalkActions::registerLuaEvent(const TalkAction_ptr &talkAction) {
 	return inserted;
 }
 
-bool TalkActions::checkWord(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words, const std::string_view &word, const TalkAction_ptr &talkActionPtr) const {
-	auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
-	std::string firstWord = words.substr(0, spacePos - words.begin());
+bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words, std::string_view word, const TalkAction_ptr &talkActionPtr) const {
+	const auto spacePos = std::ranges::find_if(words.begin(), words.end(), ::isspace);
+	const std::string firstWord = words.substr(0, spacePos - words.begin());
 
 	// Check for exact equality from saying word and talkaction stored word
 	if (firstWord != word) {
 		return false;
 	}
 
-	auto groupId = player->getGroup()->id;
+	const auto groupId = player->getGroup()->id;
 	if (groupId < talkActionPtr->getGroupType()) {
 		return false;
 	}
 
 	std::string param;
-	size_t wordPos = words.find(word);
-	size_t talkactionLength = word.length();
+	const size_t wordPos = words.find(word);
+	const size_t talkactionLength = word.length();
 	if (wordPos != std::string::npos && wordPos + talkactionLength < words.length()) {
 		param = words.substr(wordPos + talkactionLength);
 		trim_left(param, ' ');
 	}
 
-	std::string separator = talkActionPtr->getSeparator();
+	const std::string separator = talkActionPtr->getSeparator();
 	if (separator != " ") {
 		if (!param.empty()) {
 			if (param != separator) {
@@ -59,7 +67,7 @@ bool TalkActions::checkWord(std::shared_ptr<Player> player, SpeakClasses type, c
 	return talkActionPtr->executeSay(player, words, param, type);
 }
 
-TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(std::shared_ptr<Player> player, SpeakClasses type, const std::string &words) const {
+TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &words) const {
 	for (const auto &[talkactionWords, talkActionPtr] : talkActions) {
 		if (talkactionWords.find(',') != std::string::npos) {
 			auto wordsList = split(talkactionWords);
@@ -77,16 +85,43 @@ TalkActionResult_t TalkActions::checkPlayerCanSayTalkAction(std::shared_ptr<Play
 	return TALKACTION_CONTINUE;
 }
 
-bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &words, const std::string &param, SpeakClasses type) const {
+LuaScriptInterface* TalkAction::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool TalkAction::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t TalkAction::getScriptId() const {
+	return m_scriptId;
+}
+
+void TalkAction::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool TalkAction::isLoadedScriptId() const {
+	return m_scriptId != 0;
+}
+
+bool TalkAction::executeSay(const std::shared_ptr<Player> &player, const std::string &words, const std::string &param, SpeakClasses type) const {
 	// onSay(player, words, param, type)
-	if (!getScriptInterface()->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[TalkAction::executeSay - Player {} words {}] "
 		                 "Call stack overflow. Too many lua script calls being nested. Script name {}",
 		                 player->getName(), getWords(), getScriptInterface()->getLoadingScriptName());
 		return false;
 	}
 
-	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
 	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -98,7 +133,7 @@ bool TalkAction::executeSay(std::shared_ptr<Player> player, const std::string &w
 
 	LuaScriptInterface::pushString(L, words);
 	LuaScriptInterface::pushString(L, param);
-	lua_pushnumber(L, type);
+	LuaScriptInterface::pushNumber(L, static_cast<lua_Number>(type));
 
 	return getScriptInterface()->callFunction(4);
 }

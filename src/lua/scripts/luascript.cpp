@@ -8,6 +8,7 @@
  */
 
 #include "lua/scripts/luascript.hpp"
+
 #include "lua/scripts/lua_environment.hpp"
 #include "lib/metrics/metrics.hpp"
 
@@ -15,19 +16,18 @@ ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
 std::multimap<ScriptEnvironment*, std::shared_ptr<Item>> ScriptEnvironment::tempItems;
 
-ScriptEnvironment LuaFunctionsLoader::scriptEnv[16];
-int32_t LuaFunctionsLoader::scriptEnvIndex = -1;
+ScriptEnvironment Lua::scriptEnv[16];
+int32_t Lua::scriptEnvIndex = -1;
 
 LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) :
 	interfaceName(std::move(initInterfaceName)) {
 }
 
 LuaScriptInterface::~LuaScriptInterface() {
-	closeState();
+	LuaScriptInterface::closeState();
 }
 
 bool LuaScriptInterface::reInitState() {
-	g_luaEnvironment().clearCombatObjects(this);
 	g_luaEnvironment().clearAreaObjects(this);
 
 	closeState();
@@ -156,7 +156,7 @@ const std::string &LuaScriptInterface::getFileById(int32_t scriptId) {
 		return loadingFile;
 	}
 
-	auto it = cacheFiles.find(scriptId);
+	const auto it = cacheFiles.find(scriptId);
 	if (it == cacheFiles.end()) {
 		static const std::string &unk = "(Unknown scriptfile)";
 		return unk;
@@ -164,7 +164,7 @@ const std::string &LuaScriptInterface::getFileById(int32_t scriptId) {
 	return it->second;
 }
 
-std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
+std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) const {
 	lua_getglobal(luaState, "debug");
 	if (!isTable(luaState, -1)) {
 		lua_pop(luaState, 1);
@@ -193,7 +193,7 @@ std::string LuaScriptInterface::getStackTrace(const std::string &error_desc) {
 	return stackTrace;
 }
 
-bool LuaScriptInterface::pushFunction(int32_t functionId) {
+bool LuaScriptInterface::pushFunction(int32_t functionId) const {
 	lua_rawgeti(luaState, LUA_REGISTRYINDEX, eventTableRef);
 	if (!isTable(luaState, -1)) {
 		return false;
@@ -235,7 +235,8 @@ bool LuaScriptInterface::closeState() {
 	return true;
 }
 
-std::string LuaScriptInterface::getMetricsScope() {
+std::string LuaScriptInterface::getMetricsScope() const {
+#ifdef FEATURE_METRICS
 	metrics::method_latency measure(__METHOD_NAME__);
 	int32_t scriptId;
 	int32_t callbackId;
@@ -253,19 +254,22 @@ std::string LuaScriptInterface::getMetricsScope() {
 		if (name.empty()) {
 			return "unknown";
 		}
-		auto pos = name.find("data");
+		const auto pos = name.find("data");
 		if (pos != std::string::npos) {
 			name = name.substr(pos);
 		}
 	}
 
 	return fmt::format("{}:{}", name, timerEvent ? "timer" : "<direct>");
+#else
+	return {};
+#endif
 }
 
-bool LuaScriptInterface::callFunction(int params) {
+bool LuaScriptInterface::callFunction(int params) const {
 	metrics::lua_latency measure(getMetricsScope());
 	bool result = false;
-	int size = lua_gettop(luaState);
+	const int size = lua_gettop(luaState);
 	if (protectedCall(luaState, params, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::getString(luaState, -1));
 	} else {
@@ -281,9 +285,9 @@ bool LuaScriptInterface::callFunction(int params) {
 	return result;
 }
 
-void LuaScriptInterface::callVoidFunction(int params) {
+void LuaScriptInterface::callVoidFunction(int params) const {
 	metrics::lua_latency measure(getMetricsScope());
-	int size = lua_gettop(luaState);
+	const int size = lua_gettop(luaState);
 	if (protectedCall(luaState, params, 0) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(luaState));
 	}

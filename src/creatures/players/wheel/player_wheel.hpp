@@ -9,17 +9,28 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
-#include "enums/player_wheel.hpp"
+#include "creatures/creatures_definitions.hpp"
 #include "creatures/players/wheel/wheel_definitions.hpp"
-#include "kv/kv_definitions.hpp"
 
-class Spell;
-class Player;
 class Creature;
-class NetworkMessage;
+class IOWheel;
 class KV;
+class NetworkMessage;
+class Player;
+class Spell;
 class WheelModifierContext;
+class ValueWrapper;
+
+struct CombatDamage;
+
+enum class WheelFragmentType_t : uint8_t;
+enum class WheelGemAffinity_t : uint8_t;
+enum class WheelGemBasicModifier_t : uint8_t;
+enum class WheelGemQuality_t : uint8_t;
+enum class WheelGemSupremeModifier_t : uint8_t;
+enum CombatType_t : uint8_t;
+enum skills_t : int8_t;
+enum Vocation_t : uint16_t;
 
 struct PlayerWheelGem {
 	std::string uuid;
@@ -30,9 +41,7 @@ struct PlayerWheelGem {
 	WheelGemBasicModifier_t basicModifier2;
 	WheelGemSupremeModifier_t supremeModifier;
 
-	std::string toString() const {
-		return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
-	}
+	std::string toString() const;
 
 	void save(const std::shared_ptr<KV> &kv) const;
 
@@ -81,7 +90,9 @@ public:
 	void saveSlotPointsOnPressSaveButton(NetworkMessage &msg);
 	void addPromotionScrolls(NetworkMessage &msg) const;
 	void addGems(NetworkMessage &msg) const;
-	void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const;
+	void addGradeModifiers(NetworkMessage &msg) const;
+	void improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos);
+	void sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId);
 	void sendGiftOfLifeCooldown() const;
 
 	/*
@@ -95,6 +106,9 @@ public:
 	int getSpellAdditionalTarget(const std::string &spellName) const;
 	int getSpellAdditionalDuration(const std::string &spellName) const;
 	bool getSpellAdditionalArea(const std::string &spellName) const;
+
+	bool handleTwinBurstsCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const;
+	bool handleBeamMasteryCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const;
 
 	/*
 	 * Functions for manage slots
@@ -121,11 +135,9 @@ public:
 	uint8_t getMaxPointsPerSlot(WheelSlots_t slot) const;
 	uint16_t getUnusedPoints() const;
 
-	void resetPlayerBonusData();
-
 	void setPlayerCombatStats(CombatType_t type, int32_t leechAmount);
 
-	void reloadPlayerData();
+	void reloadPlayerData() const;
 
 	void registerPlayerBonusData();
 
@@ -143,9 +155,13 @@ public:
 
 	WheelStageEnum_t getPlayerSliceStage(const std::string &color) const;
 
+	std::tuple<int, int> getLesserGradeCost(uint8_t grade) const;
+	std::tuple<int, int> getGreaterGradeCost(uint8_t grade) const;
+
 	void printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonusData &bonusData) const;
 
 private:
+	void addInitialGems();
 	/*
 	 * Open wheel functions helpers
 	 */
@@ -174,6 +190,8 @@ private:
 	uint8_t getOptions(uint32_t ownerId) const;
 
 	std::shared_ptr<KV> gemsKV() const;
+	std::shared_ptr<KV> gemsGradeKV(WheelFragmentType_t quality, uint8_t pos) const;
+	uint8_t getGemGrade(WheelFragmentType_t quality, uint8_t pos) const;
 
 	std::vector<PlayerWheelGem> getRevealedGems() const;
 	std::vector<PlayerWheelGem> getActiveGems() const;
@@ -181,6 +199,8 @@ private:
 	static uint64_t getGemRotateCost(WheelGemQuality_t quality);
 
 	static uint64_t getGemRevealCost(WheelGemQuality_t quality);
+
+	void resetPlayerData();
 
 	// Members variables
 	const uint16_t m_minLevelToStartCountPoints = 50;
@@ -192,22 +212,22 @@ public:
 	void checkAbilities();
 	void checkGiftOfLife();
 	bool checkBattleInstinct();
-	bool checkPositionalTatics();
+	bool checkPositionalTactics();
 	bool checkBallisticMastery();
 	bool checkCombatMastery();
 	bool checkDivineEmpowerment();
-	int32_t checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const;
+	int32_t checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const;
 	int32_t checkBeamMasteryDamage() const;
 	int32_t checkBattleHealingAmount() const;
-	int32_t checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const;
-	int32_t checkTwinBurstByTarget(std::shared_ptr<Creature> target) const;
-	int32_t checkExecutionersThrow(std::shared_ptr<Creature> target) const;
-	int32_t checkDivineGrenade(std::shared_ptr<Creature> target) const;
+	int32_t checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const;
+	int32_t checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const;
+	int32_t checkExecutionersThrow(const std::shared_ptr<Creature> &target) const;
+	int32_t checkDivineGrenade(const std::shared_ptr<Creature> &target) const;
 	int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 	int32_t checkFocusMasteryDamage();
 	int32_t checkElementSensitiveReduction(CombatType_t type) const;
 	// Wheel of destiny - General functions:
-	void reduceAllSpellsCooldownTimer(int32_t value);
+	void reduceAllSpellsCooldownTimer(int32_t value) const;
 	void resetUpgradedSpells();
 	void upgradeSpell(const std::string &name);
 	void downgradeSpell(const std::string &name);
@@ -242,6 +262,16 @@ public:
 	 * @param value The value to set for the major stat.
 	 */
 	void setMajorStat(WheelMajor_t type, int32_t value);
+
+	/**
+	 * @brief Sets the value of a specific specialized magic in the Wheel of Destiny.
+	 *
+	 * This function sets the value of the specified specialized magic in the Wheel of Destiny to the provided value.
+	 *
+	 * @param type The type of the combat to set the specialized magic.
+	 * @param value The value to set for the specialized magic.
+	 */
+	void setSpecializedMagic(CombatType_t type, int32_t value);
 
 	/**
 	 * @brief Sets the value of a specific instant in the Wheel of Destiny.
@@ -289,15 +319,16 @@ public:
 	// Wheel of destiny - Header get:
 	bool getInstant(WheelInstant_t type) const;
 	bool getHealingLinkUpgrade(const std::string &spell) const;
-	uint8_t getStage(const std::string name) const;
+	uint8_t getStage(std::string_view name) const;
 	uint8_t getStage(WheelStage_t type) const;
 	WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 	int32_t getMajorStat(WheelMajor_t type) const;
+	int32_t getSpecializedMagic(CombatType_t type) const;
 	int32_t getStat(WheelStat_t type) const;
 	int32_t getResistance(CombatType_t type) const;
 	int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
 	int64_t getOnThinkTimer(WheelOnThink_t type) const;
-	bool getInstant(const std::string name) const;
+	bool getInstant(std::string_view name) const;
 	double getMitigationMultiplier() const;
 
 	// Wheel of destiny - Specific functions
@@ -356,73 +387,29 @@ public:
 	PlayerWheelGem getGem(uint16_t index) const;
 	PlayerWheelGem getGem(const std::string &uuid) const;
 	uint16_t getGemIndex(const std::string &uuid) const;
-	void revealGem(WheelGemQuality_t quality);
-	void destroyGem(uint16_t index);
-	void switchGemDomain(uint16_t index);
-	void toggleGemLock(uint16_t index);
-	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index);
-	void removeActiveGem(WheelGemAffinity_t affinity);
-	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
-		m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;
-	}
-	void resetRevelationBonus() {
-		m_bonusRevelationPoints = { 0, 0, 0, 0 };
-	}
+	void revealGem(WheelGemQuality_t quality) const;
+	void destroyGem(uint16_t index) const;
+	void switchGemDomain(uint16_t index) const;
+	void toggleGemLock(uint16_t index) const;
+	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index) const;
+	void removeActiveGem(WheelGemAffinity_t affinity) const;
+	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points);
+	void resetRevelationBonus();
+	void addSpellBonus(const std::string &spellName, const WheelSpells::Bonus &bonus);
 
-	void addSpellBonus(const std::string &spellName, WheelSpells::Bonus bonus) {
-		if (m_spellsBonuses.contains(spellName)) {
-			m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
-			m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
-			m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-			m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
-			m_spellsBonuses[spellName].increase.area = bonus.increase.area;
-			m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
-			m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
-			m_spellsBonuses[spellName].increase.damage += bonus.increase.damage;
-			m_spellsBonuses[spellName].increase.damageReduction += bonus.increase.damageReduction;
-			m_spellsBonuses[spellName].increase.duration += bonus.increase.duration;
-			m_spellsBonuses[spellName].increase.heal += bonus.increase.heal;
-			m_spellsBonuses[spellName].leech.life += bonus.leech.life;
-			m_spellsBonuses[spellName].leech.mana += bonus.leech.mana;
-			return;
-		}
-		m_spellsBonuses[spellName] = bonus;
-	}
-
-	int32_t getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const {
-		if (!m_spellsBonuses.contains(spellName)) {
-			return 0;
-		}
-		auto bonus = m_spellsBonuses.at(spellName);
-		switch (boost) {
-			case WheelSpellBoost_t::COOLDOWN:
-				return bonus.decrease.cooldown;
-			case WheelSpellBoost_t::MANA:
-				return bonus.decrease.manaCost;
-			case WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN:
-				return bonus.decrease.secondaryGroupCooldown;
-			case WheelSpellBoost_t::CRITICAL_CHANCE:
-				return bonus.increase.criticalChance;
-			case WheelSpellBoost_t::CRITICAL_DAMAGE:
-				return bonus.increase.criticalDamage;
-			case WheelSpellBoost_t::DAMAGE:
-				return bonus.increase.damage;
-			case WheelSpellBoost_t::DAMAGE_REDUCTION:
-				return bonus.increase.damageReduction;
-			case WheelSpellBoost_t::HEAL:
-				return bonus.increase.heal;
-			case WheelSpellBoost_t::LIFE_LEECH:
-				return bonus.leech.life;
-			case WheelSpellBoost_t::MANA_LEECH:
-				return bonus.leech.mana;
-			default:
-				return 0;
-		}
-	}
+	int32_t getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const;
 
 	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
 
 private:
+	void resetRevelationState();
+	void processActiveGems();
+	void applyStageBonuses();
+	void applyStageBonusForColor(const std::string &color);
+	void applyRedStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+	void applyPurpleStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+	void applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnum);
+
 	friend class Player;
 	// Reference to the player
 	Player &m_player;
@@ -434,15 +421,17 @@ private:
 	PlayerWheelMethodsBonusData m_playerBonusData;
 	std::unique_ptr<WheelModifierContext> m_modifierContext;
 
-	std::array<uint8_t, static_cast<size_t>(WheelStage_t::TOTAL_COUNT)> m_stages = { 0 };
+	std::array<uint8_t, static_cast<size_t>(WheelStage_t::STAGE_COUNT)> m_stages = { 0 };
 	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
 	std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> m_stats = { 0 };
 	std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
-	std::array<bool, static_cast<size_t>(WheelInstant_t::TOTAL_COUNT)> m_instant = { false };
+	std::array<bool, static_cast<size_t>(WheelInstant_t::INSTANT_COUNT)> m_instant = { false };
 	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
+	std::array<int32_t, COMBAT_COUNT> m_specializedMagic = { 0 };
 
 	int32_t m_creaturesNearby = 0;
 	std::map<std::string, WheelSpellGrade_t> m_spellsSelected;
 	std::vector<std::string> m_learnedSpellsSelected;
 	std::unordered_map<std::string, WheelSpells::Bonus> m_spellsBonuses;
+	std::unordered_set<std::string> m_beamMasterySpells;
 };

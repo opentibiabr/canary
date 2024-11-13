@@ -8,8 +8,8 @@
  */
 
 #pragma once
-#include "utils/tools.hpp"
-#include <unordered_set>
+
+class Dispatcher;
 
 class Task {
 public:
@@ -24,34 +24,30 @@ public:
 			if (++LAST_EVENT_ID == 0) {
 				LAST_EVENT_ID = 1;
 			}
-
 			id = LAST_EVENT_ID;
 		}
-
 		return id;
 	}
 
-	uint32_t getDelay() const {
+	[[nodiscard]] uint32_t getDelay() const {
 		return delay;
 	}
 
-	std::string_view getContext() const {
+	[[nodiscard]] std::string_view getContext() const {
 		return context;
 	}
 
-	auto getTime() const {
+	[[nodiscard]] auto getTime() const {
 		return utime;
 	}
 
-	bool hasExpired() const {
-		return expiration != 0 && expiration < OTSYS_TIME();
-	}
+	[[nodiscard]] bool hasExpired() const;
 
-	bool isCycle() const {
+	[[nodiscard]] bool isCycle() const {
 		return cycle;
 	}
 
-	bool isCanceled() const {
+	[[nodiscard]] bool isCanceled() const {
 		return func == nullptr;
 	}
 
@@ -64,54 +60,53 @@ public:
 private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
-	void updateTime() {
-		utime = OTSYS_TIME() + delay;
-	}
+	void updateTime();
 
 	bool hasTraceableContext() const {
-		const static auto tasksContext = std::unordered_set<std::string_view>({ "Decay::checkDecay",
-		                                                                        "Dispatcher::asyncEvent",
-		                                                                        "Game::checkCreatureAttack",
-		                                                                        "Game::checkCreatureWalk",
-		                                                                        "Game::checkCreatures",
-		                                                                        "Game::checkImbuements",
-		                                                                        "Game::checkLight",
-		                                                                        "Game::createFiendishMonsters",
-		                                                                        "Game::createInfluencedMonsters",
-		                                                                        "Game::updateCreatureWalk",
-		                                                                        "Game::updateForgeableMonsters",
-		                                                                        "GlobalEvents::think",
-		                                                                        "LuaEnvironment::executeTimerEvent",
-		                                                                        "Modules::executeOnRecvbyte",
-		                                                                        "OutputMessagePool::sendAll",
-		                                                                        "ProtocolGame::addGameTask",
-		                                                                        "ProtocolGame::parsePacketFromDispatcher",
-		                                                                        "Raids::checkRaids",
-		                                                                        "SpawnMonster::checkSpawnMonster",
-		                                                                        "SpawnMonster::scheduleSpawn",
-		                                                                        "SpawnMonster::startup",
-		                                                                        "SpawnNpc::checkSpawnNpc",
-		                                                                        "Webhook::run",
-		                                                                        "Protocol::sendRecvMessageCallback" });
+		const static std::unordered_set<std::string_view> tasksContext = {
+			"Decay::checkDecay",
+			"Dispatcher::asyncEvent",
+			"Game::checkCreatureAttack",
+			"Game::checkCreatureWalk",
+			"Game::checkCreatures",
+			"Game::checkImbuements",
+			"Game::checkLight",
+			"Game::createFiendishMonsters",
+			"Game::createInfluencedMonsters",
+			"Game::updateCreatureWalk",
+			"Game::updateForgeableMonsters",
+			"GlobalEvents::think",
+			"LuaEnvironment::executeTimerEvent",
+			"Modules::executeOnRecvbyte",
+			"OutputMessagePool::sendAll",
+			"ProtocolGame::addGameTask",
+			"ProtocolGame::parsePacketFromDispatcher",
+			"Raids::checkRaids",
+			"SpawnMonster::checkSpawnMonster",
+			"SpawnMonster::scheduleSpawn",
+			"SpawnMonster::startup",
+			"SpawnNpc::checkSpawnNpc",
+			"Webhook::run",
+			"Protocol::sendRecvMessageCallback",
+			"Player::addInFightTicks"
+		};
 
 		return tasksContext.contains(context);
 	}
 
 	struct Compare {
 		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
-			return a->utime < b->utime;
+			return a->getTime() < b->getTime();
 		}
 	};
 
-	std::function<void(void)> func = nullptr;
+	std::function<void(void)> func;
 	std::string context;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;
-
 	uint64_t id = 0;
 	uint32_t delay = 0;
-
 	bool cycle = false;
 	bool log = true;
 

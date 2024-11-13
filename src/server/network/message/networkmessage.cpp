@@ -8,6 +8,7 @@
  */
 
 #include "server/network/message/networkmessage.hpp"
+
 #include "items/containers/container.hpp"
 
 int32_t NetworkMessage::decodeHeader() {
@@ -160,8 +161,7 @@ void NetworkMessage::addString(const std::string &value, const std::source_locat
 	auto len = static_cast<uint16_t>(stringLen);
 	add<uint16_t>(len);
 	// Using to copy the string into the buffer
-	auto it = std::ranges::copy(value, buffer.begin() + info.position);
-	g_logger().trace("First value copied from sourceSpan: {}, second value copied from sourceSpan: {}", *it.in, *it.out);
+	std::ranges::copy(value, buffer.begin() + info.position);
 	info.position += stringLen;
 	info.length += stringLen;
 }
@@ -211,8 +211,7 @@ void NetworkMessage::addBytes(const char* bytes, size_t size) {
 		return;
 	}
 
-	auto it = std::ranges::copy(bytes, bytes + size, buffer.begin() + info.position);
-	g_logger().trace("First value copied from sourceSpan: {}, second value copied from sourceSpan: {}", *it.in, *it.out);
+	std::ranges::copy(std::span(bytes, size), buffer.begin() + info.position);
 	info.position += size;
 	info.length += size;
 }
@@ -293,13 +292,10 @@ void NetworkMessage::append(const NetworkMessage &other) {
 		return;
 	}
 
-	// Create a span for the source data (from the other message)
-	std::span<const unsigned char> sourceSpan(other.getBuffer() + otherStartPos, otherLength);
-	// Create a span for the destination in the current buffer
-	std::span<unsigned char> destSpan(buffer.data() + info.position, otherLength);
-	// Copy the data from the source span to the destination span
-	auto it = std::ranges::copy(sourceSpan, destSpan.begin());
-	g_logger().trace("First value copied from sourceSpan: {}, second value copied from sourceSpan: {}", *it.in, *it.out);
+	std::ranges::copy(
+		std::span<const unsigned char>(other.getBuffer() + otherStartPos, otherLength),
+		buffer.data() + info.position
+	);
 
 	// Update the buffer information
 	info.length += otherLength;

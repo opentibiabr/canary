@@ -9,10 +9,6 @@
 
 #pragma once
 
-#include "game/game.hpp"
-
-class Game;
-
 enum class Reload_t : uint8_t {
 	RELOAD_TYPE_NONE,
 	RELOAD_TYPE_ALL,
@@ -37,7 +33,7 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_LAST
 };
 
-class GameReload : public Game {
+class GameReload {
 public:
 	GameReload();
 	~GameReload();
@@ -46,9 +42,7 @@ public:
 	GameReload(const GameReload &) = delete;
 	GameReload &operator=(const GameReload &) = delete;
 
-	static GameReload &getInstance() {
-		return inject<GameReload>();
-	}
+	static GameReload &getInstance();
 
 	static bool init(Reload_t reloadType);
 	static uint8_t getReloadNumber(Reload_t reloadTypes);

@@ -1,7 +1,7 @@
 local UniqueTable = {
 	-- Tazhadur entrance
 	[35001] = {
-		storage = Storage.FirstDragon.DragonCounter,
+		storage = Storage.Quest.U11_02.TheFirstDragon.DragonCounter,
 		value = 200,
 		range = 10,
 		newPos = { x = 32015, y = 32466, z = 8 },
@@ -10,8 +10,8 @@ local UniqueTable = {
 	},
 	-- Kalyassa entrance
 	[35002] = {
-		storage = Storage.FirstDragon.ChestCounter,
-		value = 5,
+		storage = Storage.Quest.U11_02.TheFirstDragon.ChestCounter,
+		value = 4,
 		range = 10,
 		newPos = { x = 32078, y = 32456, z = 8 },
 		bossName = "Kalyassa",
@@ -19,7 +19,7 @@ local UniqueTable = {
 	},
 	-- Zorvorax entrance
 	[35003] = {
-		storage = Storage.FirstDragon.SecretsCounter,
+		storage = Storage.Quest.U11_02.TheFirstDragon.SecretsCounter,
 		value = 3,
 		range = 10,
 		newPos = { x = 32008, y = 32396, z = 8 },
@@ -28,7 +28,7 @@ local UniqueTable = {
 	},
 	-- Gelidrazah entrance
 	[35004] = {
-		storage = Storage.FirstDragon.GelidrazahAccess,
+		storage = Storage.Quest.U11_02.TheFirstDragon.GelidrazahAccess,
 		value = 1,
 		range = 10,
 		newPos = { x = 32076, y = 32402, z = 8 },
@@ -65,7 +65,7 @@ function entranceTeleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if player:getStorageValue(Storage.FirstDragon.Questline) < 1 or player:getStorageValue(setting.storage) < setting.value then
+	if player:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.Questline) < 1 or player:getStorageValue(setting.storage) < setting.value then
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

@@ -19,10 +19,11 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 	g_kv().scoped("eventscheduler")->remove("double-bestiary");
 	g_kv().scoped("eventscheduler")->remove("double-bosstiary");
 	g_kv().scoped("eventscheduler")->remove("fast-exercise");
+	g_kv().scoped("eventscheduler")->remove("boss-cooldown");
 
 	using json = nlohmann::json;
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	auto folder = coreFolder + "/json/events.json";
+	auto folder = coreFolder + "/json/eventscheduler/events.json";
 	std::ifstream file(folder);
 	if (!file.is_open()) {
 		g_logger().error("{} - Unable to open file '{}'", __FUNCTION__, folder);
@@ -56,8 +57,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		}
 
 		int startYear, startMonth, startDay, endYear, endMonth, endDay;
-		if (sscanf(event["startdate"].get<std::string>().c_str(), "%d/%d/%d", &startMonth, &startDay, &startYear) != 3 ||
-			sscanf(event["enddate"].get<std::string>().c_str(), "%d/%d/%d", &endMonth, &endDay, &endYear) != 3) {
+		if (sscanf(event["startdate"].get<std::string>().c_str(), "%d/%d/%d", &startMonth, &startDay, &startYear) != 3 || sscanf(event["enddate"].get<std::string>().c_str(), "%d/%d/%d", &endMonth, &endDay, &endYear) != 3) {
 			g_logger().warn("{} - Invalid date format for event '{}'", __FUNCTION__, eventName);
 			continue;
 		}
@@ -94,7 +94,12 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("lootrate") ? event["ingame"].value("lootrate", 100) : 100),
 			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("bosslootrate") ? event["ingame"].value("bosslootrate", 100) : 100),
 			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("spawnrate") ? event["ingame"].value("spawnrate", 100) : 100),
-			static_cast<uint16_t>(event.contains("ingame") && event["ingame"].contains("skillrate") ? event["ingame"].value("skillrate", 100) : 100)
+			static_cast<uint16_t>(event.contains("ingame") && event["ingame"].contains("skillrate") ? event["ingame"].value("skillrate", 100) : 100),
+			static_cast<uint8_t>(event.contains("ingame") && event["ingame"].contains("forgechance") ? event["ingame"].value("forge-chance", 100) : 100),
+			static_cast<uint8_t>(event.contains("ingame") && event["ingame"].contains("bosscooldown") ? event["ingame"].value("bosscooldown", 100) : 100),
+			event.contains("ingame") && event["ingame"].contains("doublebestiary") ? event["ingame"].value("doublebestiary", false) : false,
+			event.contains("ingame") && event["ingame"].contains("doublebosstiary") ? event["ingame"].value("doublebosstiary", false) : false,
+			event.contains("ingame") && event["ingame"].contains("fastexercise") ? event["ingame"].value("fastexercise", false) : false,
 		};
 
 		for (const auto &[existingEventName, rates] : eventsOnSameDay) {
@@ -102,18 +107,49 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 
 			if (rates.exprate != 100 && currentEventRates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
 				modifiedRates.emplace_back("exprate");
+				g_eventsScheduler().setExpSchedule(rates.exprate);
 			}
 			if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
 				modifiedRates.emplace_back("lootrate");
+				g_eventsScheduler().setLootSchedule(rates.lootrate);
 			}
 			if (rates.bosslootrate != 100 && currentEventRates.bosslootrate != 100 && rates.bosslootrate == currentEventRates.bosslootrate) {
 				modifiedRates.emplace_back("bosslootrate");
+				g_eventsScheduler().setBossLootSchedule(rates.bosslootrate);
 			}
 			if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
 				modifiedRates.emplace_back("spawnrate");
+				g_eventsScheduler().setSpawnMonsterSchedule(rates.spawnrate);
 			}
 			if (rates.skillrate != 100 && currentEventRates.skillrate != 100 && rates.skillrate == currentEventRates.skillrate) {
 				modifiedRates.emplace_back("skillrate");
+				g_eventsScheduler().setSkillSchedule(rates.skillrate);
+			}
+
+			// KV changes
+			if (rates.forgeChance != 100 && currentEventRates.forgeChance != 100 && rates.forgeChance == currentEventRates.forgeChance) {
+				modifiedRates.emplace_back("forge-chance");
+				g_kv().scoped("eventscheduler")->set("forge-chance", rates.forgeChance - 100);
+			}
+
+			if (rates.doubleBestiary != false && currentEventRates.doubleBestiary != false && rates.doubleBestiary == currentEventRates.doubleBestiary) {
+				modifiedRates.emplace_back("double-bestiary");
+				g_kv().scoped("eventscheduler")->set("double-bestiary", true);
+			}
+
+			if (rates.doubleBossTiary != false && currentEventRates.doubleBossTiary != false && rates.doubleBossTiary == currentEventRates.doubleBossTiary) {
+				modifiedRates.emplace_back("double-bosstiary");
+				g_kv().scoped("eventscheduler")->set("double-bosstiary", true);
+			}
+
+			if (rates.fastExercise != false && currentEventRates.fastExercise != false && rates.fastExercise == currentEventRates.fastExercise) {
+				modifiedRates.emplace_back("fast-exercise");
+				g_kv().scoped("eventscheduler")->set("fast-exercise", true);
+			}
+
+			if (rates.bosscooldown != 100 && currentEventRates.bosscooldown != 100 && rates.bosscooldown == currentEventRates.bosscooldown) {
+				modifiedRates.emplace_back("bosscooldown");
+				g_kv().scoped("eventscheduler")->set("boss-cooldown", rates.bosscooldown - 100);
 			}
 
 			if (!modifiedRates.empty()) {

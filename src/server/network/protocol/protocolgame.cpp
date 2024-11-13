@@ -9131,7 +9131,15 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 		if (!timerValue || !timerValue.has_value()) {
 			continue;
 		}
+
+		auto scheduleTimerOpt = g_kv().scoped("eventscheduler")->get("boss-cooldown");
+		uint8_t schedulePercentage = 0;
+		if (scheduleTimerOpt) {
+			schedulePercentage = static_cast<uint8_t>(scheduleTimerOpt->getNumber());
+		}
+
 		auto timer = timerValue->getNumber();
+		timer = static_cast<uint32_t>(timer * schedulePercentage / 100);
 		uint64_t sendTimer = timer > 0 ? static_cast<uint64_t>(timer) : 0;
 		msg.add<uint32_t>(bossRaceId); // bossRaceId
 		msg.add<uint64_t>(sendTimer); // Boss cooldown in seconds

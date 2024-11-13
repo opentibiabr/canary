@@ -377,7 +377,7 @@ void CanaryServer::loadModules() {
 
 	// It needs to be loaded after the revscript is read in order to use the scripting interface
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
-	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromJson(), "json/events.json");
+	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromJson(), "json/eventscheduler/events.json");
 
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();

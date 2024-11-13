@@ -3493,7 +3493,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 		// Charm bless bestiary
 		if (lastHitCreature && lastHitCreature->getMonster() && charmRuneBless != 0) {
-			const auto mType = g_monsters().getMonsterType(lastHitCreature->getName());
+			const auto &mType = g_monsters().getMonsterType(lastHitCreature->getName());
 			if (mType && mType->info.raceid == charmRuneBless) {
 				deathLossPercent = (deathLossPercent * 90) / 100;
 			}

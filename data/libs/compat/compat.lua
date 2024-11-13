@@ -572,8 +572,8 @@ function isPremium(cid)
 	return p ~= nil and p:isPremium() or false
 end
 
-function getBlessingsCost(level, byCommand)
-	return Blessings.getBlessingsCost(level, byCommand)
+function getBlessingCost(level, byCommand, blessId)
+	return Blessings.getBlessingCost(level, byCommand, blessId)
 end
 
 function getPvpBlessingCost(level, byCommand)

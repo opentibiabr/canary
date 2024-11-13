@@ -17,6 +17,9 @@
 #include "map/house/house.hpp"
 #include "utils/tools.hpp"
 
+HouseTile::HouseTile(const Position &position, std::shared_ptr<House> newHouse) :
+	DynamicTile(position.x, position.y, position.z), house(std::move(newHouse)) { }
+
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, std::shared_ptr<House> initHouse) :
 	DynamicTile(initX, initY, initZ), house(std::move(initHouse)) { }
 

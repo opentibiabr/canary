@@ -1089,7 +1089,7 @@ bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::s
 		auto delay = i * std::max<int32_t>(50, g_configManager().getNumber(COMBAT_CHAIN_DELAY));
 		++i;
 		for (const auto &to : toVector) {
-			auto nextTarget = g_game().getCreatureByID(to);
+			const auto &nextTarget = g_game().getCreatureByID(to);
 			if (!nextTarget) {
 				continue;
 			}
@@ -1279,11 +1279,6 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 			}
 		}
 		combatTileEffects(spectators.data(), caster, tile, params);
-	}
-
-	// Wheel of destiny update beam mastery damage
-	if (casterPlayer) {
-		casterPlayer->wheel()->updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
 	}
 
 	postCombatEffects(caster, origin, pos, params);

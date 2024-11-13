@@ -137,7 +137,7 @@ CombatType_t getCombatTypeByName(const std::string &combatname);
  * @return The corresponding index of the CombatType_t enumeration.
  * If the CombatType_t is out of range, this function will log an error and return an empty size_t.
  */
-size_t combatTypeToIndex(CombatType_t combatType);
+size_t combatTypeToIndex(CombatType_t combatType, std::source_location location = std::source_location::current());
 
 /**
  * @brief Convert the CombatType_t enumeration to its corresponding string representation.
@@ -212,3 +212,6 @@ bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t
 void printStackTrace();
 
 const std::map<uint8_t, uint16_t> &getMaxValuePerSkill();
+
+float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer = false);
+uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted = false);

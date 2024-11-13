@@ -35,7 +35,7 @@ local explodeGrenade = function(position, playerId)
 	end
 
 	local var = {}
-	var.instantName = "Divine Grenade Explode"
+	var.instantName = "Divine Grenade"
 	var.runeName = ""
 	var.type = 2 -- VARIANT_POSITION
 	var.pos = position

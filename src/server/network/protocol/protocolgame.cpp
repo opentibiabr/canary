@@ -65,16 +65,6 @@
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 	template <typename T>
-	uint16_t getIterationIncreaseCount(T &map) {
-		uint16_t totalIterationCount = 0;
-		for ([[maybe_unused]] const auto &[first, second] : map) {
-			totalIterationCount++;
-		}
-
-		return totalIterationCount;
-	}
-
-	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
 		for ([[maybe_unused]] const auto &vectorIteration : vector) {
@@ -4374,6 +4364,10 @@ void ProtocolGame::sendBlessingWindow() {
 	// Start at "The Wisdom Of Solitude"
 	uint8_t blessCount = 0;
 	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (bless == Blessings::TwistOfFate) {
+			continue;
+		}
+
 		if (player->hasBlessing(enumToValue(bless))) {
 			blessCount++;
 		}
@@ -5552,8 +5546,8 @@ void ProtocolGame::sendOpenForge() {
 	msg.add<uint16_t>(convergenceFusionCount);
 	msg.setBufferPosition(transferTotalCountPosition);
 
-	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
-	msg.addByte(static_cast<uint8_t>(transferTotalCount));
+	auto transferTotalCount = donorTierItemMap.size();
+	msg.addByte(transferTotalCount);
 	if (transferTotalCount > 0) {
 		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
 			// Let's access the itemType to check the item's (donator of tier) classification level
@@ -5565,7 +5559,7 @@ void ProtocolGame::sendOpenForge() {
 			}
 
 			// Total count of item (donator of tier)
-			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
+			auto donorTierTotalItemsCount = tierAndCountMap.size();
 			msg.add<uint16_t>(donorTierTotalItemsCount);
 			for (const auto &[donorItemTier, donorItemCount] : tierAndCountMap) {
 				msg.add<uint16_t>(itemId);
@@ -5750,8 +5744,7 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 void ProtocolGame::sendForgeHistory(uint8_t page) {
 	page = page + 1;
 	auto historyVector = player->getForgeHistory();
-	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
-
+	auto historyVectorLen = historyVector.size();
 	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
 	uint16_t currentPage = (lastPage < page) ? lastPage : page;
 
@@ -5762,8 +5755,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page) {
 		historyPerPage.emplace_back(historyVector[entry - 1]);
 	}
 
-	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
-
+	auto historyPageToSend = historyPerPage.size();
 	NetworkMessage msg;
 	msg.addByte(0x88);
 	msg.add<uint16_t>(currentPage - 1); // Current page

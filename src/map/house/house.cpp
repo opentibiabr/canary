@@ -472,7 +472,7 @@ std::shared_ptr<HouseTransferItem> House::getTransferItem() {
 
 void House::resetTransferItem() {
 	if (transferItem) {
-		const auto &tmpItem = transferItem;
+		auto tmpItem = transferItem;
 		transferItem = nullptr;
 		transfer_container->resetParent();
 		transfer_container->removeThing(tmpItem, tmpItem->getItemCount());

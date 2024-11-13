@@ -1522,7 +1522,7 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 				continue;
 			}
 			// We need to protect party players from removing
-			std::shared_ptr<Creature> creature = g_game().getCreatureByID(*it);
+			const auto &creature = g_game().getCreatureByID(*it);
 			if (std::shared_ptr<Player> checkPlayer;
 			    creature && (checkPlayer = creature->getPlayer()) != nullptr) {
 				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {

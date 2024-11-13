@@ -1089,7 +1089,7 @@ bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::s
 		auto delay = i * std::max<int32_t>(50, g_configManager().getNumber(COMBAT_CHAIN_DELAY));
 		++i;
 		for (const auto &to : toVector) {
-			auto nextTarget = g_game().getCreatureByID(to);
+			const auto &nextTarget = g_game().getCreatureByID(to);
 			if (!nextTarget) {
 				continue;
 			}

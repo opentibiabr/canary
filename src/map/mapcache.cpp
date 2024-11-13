@@ -132,10 +132,6 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 
 	auto pos = Position(x, y, z);
 
-	for (const auto &creature : oldCreatureList) {
-		tile->internalAddThing(creature);
-	}
-
 	if (cachedTile->ground != nullptr) {
 		tile->internalAddThing(createItem(cachedTile->ground, pos));
 	}
@@ -146,7 +142,11 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
-	tile->safeCall([tile, pos] {
+	tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
+		for (const auto &creature : movedOldCreatureList) {
+			tile->internalAddThing(creature);
+		}
+
 		for (const auto &zone : Zone::getZones(pos)) {
 			tile->addZone(zone);
 		}

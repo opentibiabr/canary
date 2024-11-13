@@ -288,6 +288,8 @@ class DynamicTile : public Tile {
 	CreatureVector creatures;
 
 public:
+	explicit DynamicTile(const Position &position) :
+		Tile(position.x, position.y, position.z) { }
 	DynamicTile(uint16_t x, uint16_t y, uint8_t z) :
 		Tile(x, y, z) { }
 
@@ -323,6 +325,8 @@ class StaticTile final : public Tile {
 	std::unique_ptr<CreatureVector> creatures;
 
 public:
+	explicit StaticTile(const Position &position) :
+		Tile(position.x, position.y, position.z) { }
 	StaticTile(uint16_t x, uint16_t y, uint8_t z) :
 		Tile(x, y, z) { }
 

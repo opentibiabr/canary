@@ -1,4 +1,5 @@
 local bathtubDrain = Action()
+
 function bathtubDrain.onUse(player, item, fromPosition, itemEx, toPosition)
 	local tile = Tile(fromPosition)
 	if tile:getTopCreature() then

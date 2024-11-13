@@ -466,7 +466,10 @@ private:
 	void AddPlayerStats(NetworkMessage &msg);
 	void AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount = true);
 	void AddPlayerSkills(NetworkMessage &msg);
+	// Blessing
+	void sendBlessingWindow();
 	void sendBlessStatus();
+	// End Blessing
 	void sendPremiumTrigger();
 	void sendMessageDialog(const std::string &message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);

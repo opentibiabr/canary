@@ -249,6 +249,7 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "addTransferableCoins", PlayerFunctions::luaPlayerAddTransferableCoins);
 	Lua::registerMethod(L, "Player", "removeTransferableCoins", PlayerFunctions::luaPlayerRemoveTransferableCoins);
 
+	Lua::registerMethod(L, "Player", "sendBlessStatus", PlayerFunctions::luaPlayerSendBlessStatus);
 	Lua::registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 	Lua::registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 	Lua::registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -3078,6 +3079,20 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 
 	Lua::pushBoolean(L, true);
 
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendBlessStatus(lua_State* L) {
+	// player:sendBlessStatus()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1);
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 0;
+	}
+
+	player->sendBlessStatus();
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

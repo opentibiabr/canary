@@ -1,25 +1,20 @@
+local skillMap = {
+	club = SKILL_CLUB,
+	sword = SKILL_SWORD,
+	axe = SKILL_AXE,
+	dist = SKILL_DISTANCE,
+	shield = SKILL_SHIELD,
+	fish = SKILL_FISHING,
+}
+
 local function getSkillId(skillName)
-	if skillName == "club" then
-		return SKILL_CLUB
-	elseif skillName == "sword" then
-		return SKILL_SWORD
-	elseif skillName == "axe" then
-		return SKILL_AXE
-	elseif skillName:sub(1, 4) == "dist" then
-		return SKILL_DISTANCE
-	elseif skillName:sub(1, 6) == "shield" then
-		return SKILL_SHIELD
-	elseif skillName:sub(1, 4) == "fish" then
-		return SKILL_FISHING
-	else
-		return SKILL_FIST
-	end
+	return skillMap[skillName:match("^%a+")] or SKILL_FIST
 end
 
 local addSkill = TalkAction("/addskill")
 
 function addSkill.onSay(player, words, param)
-	-- create log
+	-- Create log
 	logCommand(player, words, param)
 
 	if param == "" then
@@ -28,39 +23,51 @@ function addSkill.onSay(player, words, param)
 	end
 
 	local split = param:split(",")
-	if not split[2] then
-		player:sendCancelMessage("Insufficient parameters.")
+	if #split < 2 then
+		player:sendCancelMessage("Usage: /addskill <playername>, <skill or 'level'/'magic'>, [amount]")
 		return true
 	end
 
-	local target = Player(split[1])
-	if not target then
-		player:sendCancelMessage("A player with that name is not online.")
+	local targetPlayerName = split[1]:trim()
+	local targetPlayer = Player(targetPlayerName)
+
+	if not targetPlayer then
+		player:sendCancelMessage("Player not found.")
 		return true
 	end
 
-	split[2] = split[2]:trimSpace()
+	local skillParam = split[2]:trim()
+	local skillIncreaseAmount = tonumber(split[3]) or 1
+	local skillPrefix = skillParam:sub(1, 1)
 
-	local count = 1
-	if split[3] then
-		count = tonumber(split[3])
-	end
+	if skillPrefix == "l" then
+		local targetNewLevel = targetPlayer:getLevel() + skillIncreaseAmount
+		local targetNewExp = Game.getExperienceForLevel(targetNewLevel)
+		local experienceToAdd = targetNewExp - targetPlayer:getExperience()
+		local levelText = (skillIncreaseAmount > 1) and "levels" or "level"
 
-	local ch = split[2]:sub(1, 1)
-	if ch == "l" or ch == "e" then
-		targetLevel = target:getLevel() + count
-		targetExp = Game.getExperienceForLevel(targetLevel)
-		addExp = targetExp - target:getExperience()
-		target:addExperience(addExp, false)
-	elseif ch == "m" then
-		for i = 1, count do
-			target:addManaSpent(target:getVocation():getRequiredManaSpent(target:getBaseMagicLevel() + 1) - target:getManaSpent(), true)
+		targetPlayer:addExperience(experienceToAdd, false)
+		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added %d %s to you.", player:getName(), skillIncreaseAmount, levelText))
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added %d %s to player %s.", skillIncreaseAmount, levelText, targetPlayer:getName()))
+	elseif skillPrefix == "m" then
+		for _ = 1, skillIncreaseAmount do
+			local requiredManaSpent = targetPlayer:getVocation():getRequiredManaSpent(targetPlayer:getBaseMagicLevel() + 1)
+			targetPlayer:addManaSpent(requiredManaSpent - targetPlayer:getManaSpent(), true)
 		end
+
+		local magicText = (skillIncreaseAmount > 1) and "magic levels" or "magic level"
+		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added %d %s to you.", player:getName(), skillIncreaseAmount, magicText))
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added %d %s to player %s.", skillIncreaseAmount, magicText, targetPlayer:getName()))
 	else
-		local skillId = getSkillId(split[2])
-		for i = 1, count do
-			target:addSkillTries(skillId, target:getVocation():getRequiredSkillTries(skillId, target:getSkillLevel(skillId) + 1) - target:getSkillTries(skillId), true)
+		local skillId = getSkillId(skillParam)
+		for _ = 1, skillIncreaseAmount do
+			local requiredSkillTries = targetPlayer:getVocation():getRequiredSkillTries(skillId, targetPlayer:getSkillLevel(skillId) + 1)
+			targetPlayer:addSkillTries(skillId, requiredSkillTries - targetPlayer:getSkillTries(skillId), true)
 		end
+
+		local skillText = (skillIncreaseAmount > 1) and "skill levels" or "skill level"
+		targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added %d %s %s to you.", player:getName(), skillIncreaseAmount, skillParam, skillText))
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added %d %s %s to player %s.", skillIncreaseAmount, skillParam, skillText, targetPlayer:getName()))
 	end
 	return true
 end

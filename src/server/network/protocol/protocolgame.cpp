@@ -66,16 +66,6 @@
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 	template <typename T>
-	uint16_t getIterationIncreaseCount(T &map) {
-		uint16_t totalIterationCount = 0;
-		for ([[maybe_unused]] const auto &[first, second] : map) {
-			totalIterationCount++;
-		}
-
-		return totalIterationCount;
-	}
-
-	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
 		for ([[maybe_unused]] const auto &vectorIteration : vector) {
@@ -1035,23 +1025,23 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0x1E:
 			g_game().playerReceivePing(player->getID());
 			break;
-		case 0x2a:
-			parseCyclopediaMonsterTracker(msg);
-			break;
-		case 0x2B:
-			parsePartyAnalyzerAction(msg);
-			break;
-		case 0x2c:
-			parseLeaderFinderWindow(msg);
-			break;
-		case 0x2d:
-			parseMemberFinderWindow(msg);
-			break;
 		case 0x28:
 			parseStashWithdraw(msg);
 			break;
 		case 0x29:
 			parseRetrieveDepotSearch(msg);
+			break;
+		case 0x2A:
+			parseCyclopediaMonsterTracker(msg);
+			break;
+		case 0x2B:
+			parsePartyAnalyzerAction(msg);
+			break;
+		case 0x2C:
+			parseLeaderFinderWindow(msg);
+			break;
+		case 0x2D:
+			parseMemberFinderWindow(msg);
 			break;
 		case 0x32:
 			parseExtendedOpcode(msg);
@@ -1300,6 +1290,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xCD:
 			parseInspectionObject(msg);
 			break;
+		case 0xCF:
+			sendBlessingWindow();
+			break;
 		case 0xD2:
 			g_game().playerRequestOutfit(player->getID());
 			break;
@@ -1547,9 +1540,9 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 				continue;
 			}
 			// We need to protect party players from removing
-			std::shared_ptr<Creature> creature = g_game().getCreatureByID(*it);
-			if (std::shared_ptr<Player> checkPlayer;
-			    creature && (checkPlayer = creature->getPlayer()) != nullptr) {
+			const auto &creature = g_game().getCreatureByID(*it);
+			const auto &checkPlayer = creature ? creature->getPlayer() : nullptr;
+			if (checkPlayer) {
 				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
 					removedKnown = *it;
 					knownCreatureSet.erase(it);
@@ -2347,7 +2340,7 @@ void ProtocolGame::parseBestiarysendRaces() {
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0xd5);
+	msg.addByte(0xD5);
 	msg.add<uint16_t>(BESTY_RACE_LAST);
 	std::map<uint16_t, std::string> mtype_list = g_game().getBestiaryList();
 	for (uint8_t i = BESTY_RACE_FIRST; i <= BESTY_RACE_LAST; i++) {
@@ -2379,7 +2372,7 @@ void ProtocolGame::sendBestiaryEntryChanged(uint16_t raceid) {
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0xd9);
+	msg.addByte(0xD9);
 	msg.add<uint16_t>(raceid);
 	writeToOutputBuffer(msg);
 }
@@ -2413,7 +2406,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	uint8_t currentLevel = g_iobestiary().getKillStatus(mtype, killCounter);
 
 	NetworkMessage newmsg;
-	newmsg.addByte(0xd7);
+	newmsg.addByte(0xD7);
 	newmsg.add<uint16_t>(raceId);
 	newmsg.addString(Class);
 
@@ -2475,7 +2468,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		}
 
 		newmsg.addByte(attackmode);
-		newmsg.addByte(0x2);
+		newmsg.addByte(0x02);
 		newmsg.add<uint32_t>(mtype->info.healthMax);
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
@@ -2952,7 +2945,7 @@ void ProtocolGame::BestiarysendCharms() {
 		removeRuneCost = (removeRuneCost * 75) / 100;
 	}
 	NetworkMessage msg;
-	msg.addByte(0xd8);
+	msg.addByte(0xD8);
 	msg.add<uint32_t>(player->getCharmPoints());
 
 	const auto charmList = g_game().getCharmList();
@@ -3031,7 +3024,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		text = raceName;
 	}
 	NetworkMessage newmsg;
-	newmsg.addByte(0xd6);
+	newmsg.addByte(0xD6);
 	newmsg.addString(text);
 	newmsg.add<uint16_t>(race.size());
 	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
@@ -4377,28 +4370,96 @@ void ProtocolGame::sendBasicData() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendBlessStatus() {
+void ProtocolGame::sendBlessingWindow() {
 	if (!player) {
 		return;
 	}
 
 	NetworkMessage msg;
-	// uint8_t maxClientBlessings = (player->operatingSystem == CLIENTOS_NEW_WINDOWS) ? 8 : 6; (compartability for the client 10)
-	// Ignore ToF (bless 1)
-	uint8_t blessCount = 0;
-	uint16_t flag = 0;
-	uint16_t pow2 = 2;
-	for (int i = 1; i <= 8; i++) {
-		if (player->hasBlessing(i)) {
-			if (i > 1) {
-				blessCount++;
-			}
+	msg.addByte(0x9B);
 
-			flag |= pow2;
+	bool isRetro = g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO);
+
+	msg.addByte(isRetro ? 0x07 : 0x08);
+	for (auto blessing : magic_enum::enum_values<Blessings>()) {
+		if (isRetro && blessing == Blessings::TwistOfFate) {
+			continue;
+		}
+
+		const auto blessingValue = enumToValue(blessing);
+		const auto blessingId = 1 << blessingValue;
+		msg.add<uint16_t>(blessingId);
+		msg.addByte(player->getBlessingCount(blessingValue));
+		msg.addByte(player->getBlessingCount(blessingValue, true));
+	}
+
+	// Start at "The Wisdom Of Solitude"
+	uint8_t blessCount = 0;
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (bless == Blessings::TwistOfFate) {
+			continue;
+		}
+
+		if (player->hasBlessing(enumToValue(bless))) {
+			blessCount++;
 		}
 	}
 
+	const auto isPromoted = player->isPromoted();
+	const auto factor = (isRetro ? 6.31 : 8);
+	const auto skillReduction = factor * blessCount;
+	const auto promotionReduction = (isPromoted ? 30 : 0);
+	const auto minReduction = skillReduction + promotionReduction;
+	const auto maxLossPvpDeath = calculateMaxPvpReduction(blessCount, isPromoted);
+
+	msg.addByte(isPromoted);
+	msg.addByte(30); // Reduction bonus with promotion
+	msg.addByte(minReduction);
+	msg.addByte(isRetro ? minReduction : maxLossPvpDeath);
+	msg.addByte(minReduction);
+
+	const auto playerSkull = player->getSkull();
+	const auto &playerAmulet = player->getThing(CONST_SLOT_NECKLACE);
+	bool hasSkull = (playerSkull == Skulls_t::SKULL_RED || playerSkull == Skulls_t::SKULL_BLACK);
+	bool usingAol = (playerAmulet && playerAmulet->getItem()->getID() == ITEM_AMULETOFLOSS);
+	if (hasSkull) {
+		msg.addByte(100);
+		msg.addByte(100);
+	} else if (usingAol) {
+		msg.addByte(0);
+		msg.addByte(0);
+	} else {
+		msg.addByte(calculateEquipmentLoss(blessCount, true));
+		msg.addByte(calculateEquipmentLoss(blessCount, true));
+	}
+
+	msg.addByte(hasSkull);
+	msg.addByte(usingAol);
+
+	msg.addByte(0x00);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendBlessStatus() {
+	if (!player) {
+		return;
+	}
+
+	// Ignore Twist of Fate (Id 1)
+	uint8_t blessCount = 0;
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (bless == Blessings::TwistOfFate) {
+			continue;
+		}
+		if (player->hasBlessing(enumToValue(bless))) {
+			blessCount++;
+		}
+	}
+
+	NetworkMessage msg;
 	msg.addByte(0x9C);
+
 	if (oldProtocol) {
 		msg.add<uint16_t>(blessCount >= 5 ? 0x01 : 0x00);
 	} else {
@@ -4411,16 +4472,20 @@ void ProtocolGame::sendBlessStatus() {
 }
 
 void ProtocolGame::sendPremiumTrigger() {
-	if (!g_configManager().getBoolean(FREE_PREMIUM) && !g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
-		NetworkMessage msg;
-		msg.addByte(0x9E);
-		msg.addByte(16);
-		for (uint16_t i = 0; i <= 15; i++) {
-			// PREMIUM_TRIGGER_TRAIN_OFFLINE = false, PREMIUM_TRIGGER_XP_BOOST = false, PREMIUM_TRIGGER_MARKET = false, PREMIUM_TRIGGER_VIP_LIST = false, PREMIUM_TRIGGER_DEPOT_SPACE = false, PREMIUM_TRIGGER_INVITE_PRIVCHAT = false
-			msg.addByte(0x01);
-		}
-		writeToOutputBuffer(msg);
+	if (g_configManager().getBoolean(FREE_PREMIUM) || g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
+		return;
 	}
+
+	NetworkMessage msg;
+	msg.addByte(0x9E);
+
+	msg.addByte(16);
+	for (uint16_t i = 0; i <= 15; i++) {
+		// PREMIUM_TRIGGER_TRAIN_OFFLINE = false, PREMIUM_TRIGGER_XP_BOOST = false, PREMIUM_TRIGGER_MARKET = false, PREMIUM_TRIGGER_VIP_LIST = false, PREMIUM_TRIGGER_DEPOT_SPACE = false, PREMIUM_TRIGGER_INVITE_PRIVCHAT = false
+		msg.addByte(0x01);
+	}
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendTextMessage(const TextMessage &message) {
@@ -5513,8 +5578,8 @@ void ProtocolGame::sendOpenForge() {
 	msg.add<uint16_t>(convergenceFusionCount);
 	msg.setBufferPosition(transferTotalCountPosition);
 
-	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
-	msg.addByte(static_cast<uint8_t>(transferTotalCount));
+	auto transferTotalCount = donorTierItemMap.size();
+	msg.addByte(transferTotalCount);
 	if (transferTotalCount > 0) {
 		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
 			// Let's access the itemType to check the item's (donator of tier) classification level
@@ -5526,7 +5591,7 @@ void ProtocolGame::sendOpenForge() {
 			}
 
 			// Total count of item (donator of tier)
-			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
+			auto donorTierTotalItemsCount = tierAndCountMap.size();
 			msg.add<uint16_t>(donorTierTotalItemsCount);
 			for (const auto &[donorItemTier, donorItemCount] : tierAndCountMap) {
 				msg.add<uint16_t>(itemId);
@@ -5711,8 +5776,7 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 void ProtocolGame::sendForgeHistory(uint8_t page) {
 	page = page + 1;
 	auto historyVector = player->getForgeHistory();
-	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
-
+	auto historyVectorLen = historyVector.size();
 	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
 	uint16_t currentPage = (lastPage < page) ? lastPage : page;
 
@@ -5723,8 +5787,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page) {
 		historyPerPage.emplace_back(historyVector[entry - 1]);
 	}
 
-	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
-
+	auto historyPageToSend = historyPerPage.size();
 	NetworkMessage msg;
 	msg.addByte(0x88);
 	msg.add<uint16_t>(currentPage - 1); // Current page

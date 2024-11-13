@@ -229,6 +229,7 @@ class PlayerFunctions {
 	static int luaPlayerAddTransferableCoins(lua_State* L);
 	static int luaPlayerRemoveTransferableCoins(lua_State* L);
 
+	static int luaPlayerSendBlessStatus(lua_State* L);
 	static int luaPlayerHasBlessing(lua_State* L);
 	static int luaPlayerAddBlessing(lua_State* L);
 	static int luaPlayerRemoveBlessing(lua_State* L);

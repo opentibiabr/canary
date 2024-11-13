@@ -1419,7 +1419,7 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 		return;
 	}
 
-	std::shared_ptr<Creature> movingCreature = getCreatureByID(movingCreatureId);
+	const auto &movingCreature = getCreatureByID(movingCreatureId);
 	if (!movingCreature) {
 		return;
 	}
@@ -5455,7 +5455,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
 		return;
 	}
 
-	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
+	const auto &creature = getCreatureByID(creatureId);
 	if (!creature) {
 		return;
 	}
@@ -5867,7 +5867,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 		return;
 	}
 
-	std::shared_ptr<Creature> attackCreature = getCreatureByID(creatureId);
+	const auto &attackCreature = getCreatureByID(creatureId);
 	if (!attackCreature) {
 		player->setAttackedCreature(nullptr);
 		player->sendCancelTarget();
@@ -9428,7 +9428,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 }
 
 void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionType, ConditionId_t conditionId) {
-	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
+	const auto &creature = getCreatureByID(creatureId);
 	if (!creature) {
 		return;
 	}

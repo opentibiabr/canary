@@ -332,13 +332,6 @@ private:
 	uint16_t getLookCorpse() const override;
 	void dropLoot(const std::shared_ptr<Container> &corpse, const std::shared_ptr<Creature> &lastHitCreature) override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
-	bool useCacheMap() const override {
-		// return !randomStepping;
-		//  As the map cache is done synchronously for each movement that a monster makes, it is better to disable it,
-		//  as the pathfinder, which is one of the resources that uses this cache the most,
-		//  is multithreding and thus the processing cost is divided between the threads.
-		return false;
-	}
 
 	friend class MonsterFunctions;
 	friend class Map;

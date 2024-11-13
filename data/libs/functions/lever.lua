@@ -5,6 +5,7 @@ setmetatable(Lever, {
 		local lever_data = {
 			positions = {},
 			info_positions = nil,
+			players = {},
 			condition = function()
 				return true
 			end,
@@ -49,6 +50,19 @@ end
 ---@return nil
 function Lever.getInfoPositions(self)
 	return self.info_positions
+end
+
+---@return table
+function Lever.getPlayers(self)
+	return self.players
+end
+
+---@param player Player
+---@return nil
+function Lever.addPlayer(self, player)
+	if player and player:isPlayer() then
+		table.insert(self.players, player)
+	end
 end
 
 --[[
@@ -109,6 +123,7 @@ function Lever:checkPositions()
 		local ground = tile:getGround()
 		local actionID = ground:getActionId()
 		local uniqueID = ground:getUniqueId()
+		self:addPlayer(creature)
 		table.insert(array, {
 			tile = tile,
 			creature = creature,
@@ -138,6 +153,12 @@ function Lever.checkConditions(self) -- It will check the conditions defined in 
 		end
 	end
 	return true
+end
+
+function Lever.executeOnPlayers(self, func)
+	for _, player in pairs(self:getPlayers()) do
+		func(player)
+	end
 end
 
 ---@return nil

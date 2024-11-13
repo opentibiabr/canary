@@ -138,12 +138,6 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
-
 local intervalBetweenExecutions = 10000
 
 local zone = Zone.getByName("boss.goshnar's-megalomania-purple")

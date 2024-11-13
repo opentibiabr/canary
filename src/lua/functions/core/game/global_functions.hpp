@@ -9,16 +9,8 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class GlobalFunctions final : LuaScriptInterface {
+class GlobalFunctions {
 public:
-	explicit GlobalFunctions(lua_State* L) :
-		LuaScriptInterface("GlobalFunctions") {
-		init(L);
-	}
-	~GlobalFunctions() override = default;
-
 	static void init(lua_State* L);
 
 private:

@@ -1,57 +1,23 @@
 local config = {
-	centerRoom = Position(33215, 31456, 12),
-	BossPosition = Position(33220, 31460, 12),
-	playerPositions = {
-		Position(33197, 31475, 11),
-		Position(33198, 31475, 11),
-		Position(33199, 31475, 11),
-		Position(33200, 31475, 11),
-		Position(33201, 31475, 11),
+	boss = {
+		name = "The Lord of the Lice",
+		position = Position(33220, 31460, 12),
 	},
-	newPosition = Position(33215, 31470, 12),
+	timeToFightAgain = 2 * 24 * 60 * 60,
+	playerPositions = {
+		{ pos = Position(33201, 31475, 11), teleport = Position(33215, 31470, 12) },
+		{ pos = Position(33197, 31475, 11), teleport = Position(33215, 31470, 12) },
+		{ pos = Position(33198, 31475, 11), teleport = Position(33215, 31470, 12) },
+		{ pos = Position(33199, 31475, 11), teleport = Position(33215, 31470, 12) },
+		{ pos = Position(33200, 31475, 11), teleport = Position(33215, 31470, 12) },
+	},
+	specPos = {
+		from = Position(33187, 31429, 12),
+		to = Position(33242, 31487, 12),
+	},
+	exit = Position(33319, 32318, 13),
 }
 
-local ferumbrasAscendantRatLever = Action()
-
-function ferumbrasAscendantRatLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if item.itemid == 8911 then
-		if player:getPosition() ~= Position(33201, 31475, 11) then
-			item:transform(8912)
-			return true
-		end
-	end
-
-	if item.itemid == 8911 then
-		local playersTable = {}
-		if player:doCheckBossRoom("The Lord of the Lice", Position(33187, 31429, 12), Position(33242, 31487, 12)) then
-			local specs, spec = Game.getSpectators(config.centerRoom, false, false, 30, 30, 30, 30)
-			for i = 1, #specs do
-				spec = specs[i]
-				if spec:isPlayer() then
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting with The Lord of The Lice.")
-					return true
-				end
-			end
-			Game.createMonster("the lord of the lice", config.BossPosition, true, true)
-			for x = 33197, 33201 do
-				local playerTile = Tile(Position(x, 31475, 11)):getTopCreature()
-				if playerTile and playerTile:isPlayer() then
-					playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
-					playerTile:teleportTo(config.newPosition)
-					playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-					playerTile:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceTimer, os.time() + 60 * 60 * 2 * 24)
-					table.insert(playersTable, playerTile:getId())
-				end
-			end
-			addEvent(kickPlayersAfterTime, 30 * 60 * 1000, playersTable, Position(33187, 31429, 12), Position(33242, 31487, 12), Position(33319, 32318, 13))
-			item:transform(8912)
-		end
-	elseif item.itemid == 8912 then
-		item:transform(8911)
-	end
-
-	return true
-end
-
-ferumbrasAscendantRatLever:uid(1030)
-ferumbrasAscendantRatLever:register()
+local leverLordOfTheLice = BossLever(config)
+leverLordOfTheLice:position(Position(33202, 31475, 11))
+leverLordOfTheLice:register()

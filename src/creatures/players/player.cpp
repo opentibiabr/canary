@@ -8017,7 +8017,7 @@ void sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<Item
 	}
 }
 
-void Player::stowItem(const std::shared_ptr<Item> &item uint32_t count, bool allItems) {
+void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems) {
 	if (!item || (!item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH)) {
 		sendCancelMessage("This item cannot be stowed here.");
 		return;

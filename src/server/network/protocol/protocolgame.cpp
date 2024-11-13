@@ -4373,8 +4373,8 @@ void ProtocolGame::sendBlessingWindow() {
 
 	// Start at "The Wisdom Of Solitude"
 	uint8_t blessCount = 0;
-	for (int i = 2; i <= 8; i++) {
-		if (player->hasBlessing(i)) {
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (player->hasBlessing(enumToValue(bless))) {
 			blessCount++;
 		}
 	}
@@ -4422,8 +4422,11 @@ void ProtocolGame::sendBlessStatus() {
 
 	// Ignore Twist of Fate (Id 1)
 	uint8_t blessCount = 0;
-	for (int i = 2; i <= 8; i++) {
-		if (player->hasBlessing(i)) {
+	for (auto bless : magic_enum::enum_values<Blessings>()) {
+		if (bless == Blessings::TwistOfFate) {
+			continue;
+		}
+		if (player->hasBlessing(enumToValue(bless))) {
 			blessCount++;
 		}
 	}

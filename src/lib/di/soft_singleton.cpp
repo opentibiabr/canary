@@ -7,7 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 #include "lib/di/soft_singleton.hpp"
-
 #include "utils/tools.hpp"
 
 SoftSingleton::SoftSingleton(std::string id) :

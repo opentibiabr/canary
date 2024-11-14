@@ -119,7 +119,7 @@ struct Position {
 namespace std {
 	template <>
 	struct hash<Position> {
-		std::size_t operator()(const Position &p) const noexcept {
+		std::size_t operator()(const Position &p) const {
 			return static_cast<std::size_t>(p.x) | (static_cast<std::size_t>(p.y) << 16) | (static_cast<std::size_t>(p.z) << 32);
 		}
 	};

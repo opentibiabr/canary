@@ -9,6 +9,9 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
+#include "enums/player_cyclopedia.hpp"
+
 class Player;
 class KV;
 
@@ -25,18 +28,18 @@ class PlayerCyclopedia {
 public:
 	explicit PlayerCyclopedia(Player &player);
 
-	Summary getSummary() const;
+	Summary getSummary();
 
-	void loadSummaryData() const;
-	void loadDeathHistory(uint16_t page, uint16_t entriesPerPage) const;
-	void loadRecentKills(uint16_t page, uint16_t entriesPerPage) const;
+	void loadSummaryData();
+	void loadDeathHistory(uint16_t page, uint16_t entriesPerPage);
+	void loadRecentKills(uint16_t page, uint16_t entriesPerPage);
 
-	void updateStoreSummary(uint8_t type, uint16_t amount = 1, const std::string &id = "") const;
-	uint16_t getAmount(uint8_t type) const;
-	void updateAmount(uint8_t type, uint16_t amount = 1) const;
+	void updateStoreSummary(uint8_t type, uint16_t amount = 1, const std::string &id = "");
+	uint16_t getAmount(uint8_t type);
+	void updateAmount(uint8_t type, uint16_t amount = 1);
 
 	[[nodiscard]] std::map<uint16_t, uint16_t> getResult(uint8_t type) const;
-	void insertValue(uint8_t type, uint16_t amount = 1, const std::string &id = "") const;
+	void insertValue(uint8_t type, uint16_t amount = 1, const std::string &id = "");
 
 private:
 	Player &m_player;

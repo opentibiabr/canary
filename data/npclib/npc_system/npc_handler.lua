@@ -511,7 +511,13 @@ if NpcHandler == nil then
 		local callback = self:getCallback(CALLBACK_ON_MOVE)
 		if callback == nil or callback(npc, player, fromPosition, toPosition) then
 			if self:processModuleCallback(CALLBACK_ON_MOVE, npc, player, fromPosition, toPosition) then
-				return true
+				if self:checkInteraction(npc, player) then
+					if not self:isInRange(npc, player) then
+						self:onWalkAway(npc, player)
+					else
+						self:updateInteraction(npc, player)
+					end
+				end
 			end
 		end
 	end

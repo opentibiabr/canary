@@ -28,22 +28,12 @@ ThreadPool::ThreadPool(Logger &logger) :
 	start();
 }
 
-void ThreadPool::start() const {
+void ThreadPool::start() {
 	logger.info("Running with {} threads.", get_thread_count());
 }
 
 void ThreadPool::shutdown() {
-	if (stopped) {
-		return;
-	}
-
 	logger.info("Shutting down thread pool...");
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		stopped = true;
-		condition.notify_all();
-	}
-
+	stopped = true;
 	wait();
-	logger.info("Thread pool shutdown complete.");
 }

@@ -9,9 +9,14 @@
 
 #pragma once
 
-class WebhookFunctions {
+#include "lua/scripts/luascript.hpp"
+
+class WebhookFunctions final : LuaScriptInterface {
 public:
-	static void init(lua_State* L);
+	static void init(lua_State* L) {
+		registerTable(L, "Webhook");
+		registerMethod(L, "Webhook", "sendMessage", WebhookFunctions::luaWebhookSendMessage);
+	}
 
 private:
 	static int luaWebhookSendMessage(lua_State* L);

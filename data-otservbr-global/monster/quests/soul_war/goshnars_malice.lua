@@ -18,8 +18,8 @@ monster.events = {
 	"Goshnar's-Malice",
 }
 
-monster.health = 3000000
-monster.maxHealth = 3000000
+monster.health = 1000000
+monster.maxHealth = 1000000
 monster.race = "undead"
 monster.corpse = 33871
 monster.speed = 150
@@ -96,7 +96,7 @@ monster.loot = {
 	{ name = "spectral horseshoe", chance = 400 },
 	{ name = "the skull of a beast", chance = 400 },
 	{ name = "figurine of malice", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ name = "bag you desire", chance = 400 },
 }
 
 monster.attacks = {
@@ -146,5 +146,17 @@ mType.onThink = function(monster, interval)
 		accumulatedTime = 0
 	end
 end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

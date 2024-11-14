@@ -17,8 +17,8 @@ monster.events = {
 	"DreamCourtsBossDeath",
 }
 
-monster.health = 320000
-monster.maxHealth = 320000
+monster.health = 13200000
+monster.maxHealth = 13200000
 monster.race = "blood"
 monster.corpse = 30155
 monster.speed = 125
@@ -117,11 +117,11 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -200, maxDamage = -1000 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -700, maxDamage = -2000, range = 7, length = 6, spread = 0, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -700, range = 3, length = 6, spread = 0, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -200, maxDamage = -500, range = 3, length = 6, spread = 0, effect = CONST_ME_HITBYFIRE, target = false },
-	{ name = "stone shower rune", interval = 2000, chance = 10, minDamage = -230, maxDamage = -450, range = 7, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -1000, maxDamage = -2000 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -1700, maxDamage = -2700, range = 7, length = 6, spread = 0, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -2400, maxDamage = -3700, range = 3, length = 6, spread = 0, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_FIREDAMAGE, minDamage = -2200, maxDamage = -3500, range = 3, length = 6, spread = 0, effect = CONST_ME_HITBYFIRE, target = false },
+	{ name = "stone shower rune", interval = 2000, chance = 10, minDamage = -1230, maxDamage = -1450, range = 7, target = false },
 }
 
 monster.defenses = {
@@ -149,5 +149,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

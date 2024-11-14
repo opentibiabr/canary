@@ -63,7 +63,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_30.png" },
 				name = string.format("30 Days of %s", premiumOfferName),
-				price = 500,
+				price = 750,
 				id = 3030,
 				validUntil = 30,
 				description = premiumDescription,
@@ -72,7 +72,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_90.png" },
 				name = string.format("90 Days of %s", premiumOfferName),
-				price = 1500,
+				price = 1850,
 				id = 3090,
 				validUntil = 90,
 				description = premiumDescription,
@@ -81,7 +81,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_180.png" },
 				name = string.format("180 Days of %s", premiumOfferName),
-				price = 2700,
+				price = 3850,
 				id = 3180,
 				validUntil = 180,
 				description = premiumDescription,
@@ -90,7 +90,7 @@ GameStore.Categories = {
 			{
 				icons = { "Premium_Time_360.png" },
 				name = string.format("360 Days of %s", premiumOfferName),
-				price = 5000,
+				price = 7500,
 				id = 3360,
 				validUntil = 360,
 				description = premiumDescription,
@@ -354,7 +354,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35286,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your axe fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your axe fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -364,7 +364,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35288,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your distance fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your distance fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -374,7 +374,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35287,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your club fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your club fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -384,7 +384,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35289,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -394,7 +394,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35285,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your sword fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your sword fighting skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -404,7 +404,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 35290,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your magic level on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your magic level\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -414,7 +414,7 @@ GameStore.Categories = {
 				price = 20,
 				itemtype = 44067,
 				charges = 14400,
-				coinType = GameStore.CoinType.Coin,
+                                coinType = GameStore.CoinType.Coin,
 				description = "<i>Use it to train your shielding skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your shielding skill\n{info} usable 14400 times a piece",
 				type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 			},
@@ -6276,7 +6276,7 @@ GameStore.Categories = {
 			{
 				icons = { "Permanent_Prey_Slot.png" },
 				name = "Permanent Prey Slot",
-				price = 900,
+				price = 250,
 				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
 				description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT,
@@ -6624,7 +6624,7 @@ GameStore.Categories = {
 		icons = { "Category_Tournament.png" },
 		name = "Item VIP",
 		rookgaard = true,
-		subclasses = { "Weapon", "Armors", "Refil" },
+		subclasses = { "Weapon", "Armors","Refil" },
 	},
 	-- Item VIP ~ weapons
 	{
@@ -6636,54 +6636,54 @@ GameStore.Categories = {
 		offers = {
 			{
 				icons = { "Baby_Brain_Squid.png" },
-				name = "Grand Sanguine Blade",
-				price = 1500,
-				itemtype = 43865,
+				name = "Navega Sword",
+				price = 2000,
+				itemtype = 49301,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
 				icons = { "Baby_Vulcongra.png" },
-				name = "Grand Sanguine Bow",
-				price = 1500,
-				itemtype = 43878,
+				name = "Navega Bow",
+				price = 2000,
+				itemtype = 49302,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
 				icons = { "Carved_Table.png" },
-				name = "Grand Sanguine Coil",
-				price = 1500,
-				itemtype = 43883,
+				name = "Navega Wand",
+				price = 2000,
+				itemtype = 49304,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
 				icons = { "Carved_Table.png" },
-				name = "Grand Sanguine Crossbow",
-				price = 1500,
-				itemtype = 43880,
+				name = "Navega Crossbow",
+				price = 2000,
+				itemtype = 49300,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
 				icons = { "Carved_Table.png" },
-				name = "Grand Sanguine Hatchet",
-				price = 1500,
-				itemtype = 43869,
+				name = "Navega Hatchet",
+				price = 2000,
+				itemtype = 49307,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
 				icons = { "Carved_Table.png" },
-				name = "Grand Sanguine Rod",
-				price = 1500,
-				itemtype = 43886,
+				name = "Navega Rod",
+				price = 2000,
+				itemtype = 49305,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
@@ -6697,11 +6697,30 @@ GameStore.Categories = {
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
+		
 			{
 				icons = { "Carved_Table.png" },
 				name = "Navega Mage Book",
 				price = 2000,
 				itemtype = 49289,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Carved_Table.png" },
+				name = "Navega Sword Duo",
+				price = 2000,
+				itemtype = 49306,
+				count = 1,
+				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			{
+				icons = { "Carved_Table.png" },
+				name = "Navega Battleaxe",
+				price = 2000,
+				itemtype = 49303,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
@@ -6716,7 +6735,7 @@ GameStore.Categories = {
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
-
+			
 			{
 				icons = { "Carved_Table_Centre.png" },
 				name = "Navega Paladin Helmet",
@@ -6766,7 +6785,7 @@ GameStore.Categories = {
 				icons = { "Carved_Table_Centre.png" },
 				name = "Navega Kina Helmet",
 				price = 2000,
-				itemtype = 49288,
+				itemtype = 49299,
 				count = 1,
 				description = "Elite Knight",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
@@ -6780,6 +6799,16 @@ GameStore.Categories = {
 				description = "Elite Knight",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
+			{
+				icons = { "Carved_Table_Centre.png" },
+				name = "Navega Kina Armor",
+				price = 2000,
+				itemtype = 49296,
+				count = 1,
+				description = "Elite Knight",
+				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
+			},
+			
 		},
 	},
 	-- item VIP ~ refil
@@ -6790,7 +6819,7 @@ GameStore.Categories = {
 		rookgaard = true,
 		state = GameStore.States.STATE_NONE,
 		offers = {
-
+			
 			{
 				icons = { "Carved_Table_Centre.png" },
 				name = "Refil Stamina",
@@ -6809,15 +6838,9 @@ GameStore.Categories = {
 				description = "Drinking this potion temporarily doubles the loot from every regular monster you kill",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
-			{
-				icons = { "Baby_Vulcongra.png" },
-				name = "Bag You Covet",
-				price = 250,
-				itemtype = 43895,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
+			
+			
+			
 		},
 	},
 	-- Pontos online
@@ -6855,8 +6878,11 @@ GameStore.Categories = {
 				description = "{house}\n{box}\n{storeinbox}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
+			
 		},
 	},
+	
+	
 }
 
 -- Each outfit must be uniquely identified to distinguish between addons.

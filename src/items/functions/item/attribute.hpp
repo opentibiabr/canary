@@ -11,10 +11,11 @@
 
 #include "enums/item_attribute.hpp"
 #include "items/functions/item/custom_attribute.hpp"
+#include "utils/tools.hpp"
 
 class ItemAttributeHelper {
 public:
-	static bool isAttributeInteger(ItemAttribute_t type) {
+	bool isAttributeInteger(ItemAttribute_t type) const {
 		switch (type) {
 			case ItemAttribute_t::STORE:
 			case ItemAttribute_t::ACTIONID:
@@ -47,7 +48,7 @@ public:
 		}
 	}
 
-	static bool isAttributeString(ItemAttribute_t type) {
+	bool isAttributeString(ItemAttribute_t type) const {
 		switch (type) {
 			case ItemAttribute_t::DESCRIPTION:
 			case ItemAttribute_t::TEXT:
@@ -87,9 +88,10 @@ public:
 	}
 
 	std::variant<int64_t, std::shared_ptr<std::string>> getDefaultValueForType(ItemAttribute_t attributeType) const {
-		if (ItemAttributeHelper::isAttributeInteger(attributeType)) {
+		ItemAttributeHelper helper;
+		if (helper.isAttributeInteger(attributeType)) {
 			return 0;
-		} else if (ItemAttributeHelper::isAttributeString(attributeType)) {
+		} else if (helper.isAttributeString(attributeType)) {
 			return std::make_shared<std::string>();
 		} else {
 			return {};
@@ -114,7 +116,7 @@ public:
 		return emptyValue;
 	}
 
-	std::shared_ptr<std::string> getString() const {
+	const std::shared_ptr<std::string> getString() const {
 		if (std::holds_alternative<std::shared_ptr<std::string>>(value)) {
 			return std::get<std::shared_ptr<std::string>>(value);
 		}
@@ -136,10 +138,10 @@ public:
 	// CustomAttribute object methods
 	const CustomAttribute* getCustomAttribute(const std::string &attributeName) const;
 
-	void setCustomAttribute(const std::string &key, int64_t value);
+	void setCustomAttribute(const std::string &key, const int64_t value);
 	void setCustomAttribute(const std::string &key, const std::string &value);
-	void setCustomAttribute(const std::string &key, double value);
-	void setCustomAttribute(const std::string &key, bool value);
+	void setCustomAttribute(const std::string &key, const double value);
+	void setCustomAttribute(const std::string &key, const bool value);
 
 	void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute);
 	bool removeCustomAttribute(const std::string &attributeName);
@@ -156,9 +158,12 @@ public:
 	}
 
 	bool hasAttribute(ItemAttribute_t type) const {
-		return std::ranges::any_of(attributeVector, [type](const auto &attr) {
-			return attr.getAttributeType() == type;
-		});
+		for (const auto &attr : attributeVector) {
+			if (attr.getAttributeType() == type) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	const Attributes* getAttribute(ItemAttribute_t type) const;

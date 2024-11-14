@@ -13,7 +13,7 @@ function onBossDeath.onDeath(creature)
 		return true
 	end
 
-	local bossLever = BossLever[name:lower()]
+	local bossLever = BossLever[name]
 	if not bossLever then
 		return true
 	end

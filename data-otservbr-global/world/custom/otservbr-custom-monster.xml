@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 <monsters>
+	<monster centerx="1047" centery="951" centerz="7" radius="1">
+		<monster name="Darkfang" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1049" centery="951" centerz="7" radius="1">
+		<monster name="Bloodback" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1051" centery="951" centerz="7" radius="1">
+		<monster name="The Pale Worm" x="0" y="0" z="7" spawntime="60" />
+	</monster>
 	<monster centerx="1053" centery="951" centerz="7" radius="1">
 		<monster name="Goshnar's Malice" x="0" y="0" z="7" spawntime="60" />
 	</monster>
@@ -45,6 +54,12 @@
 	<monster centerx="1081" centery="951" centerz="7" radius="1">
 		<monster name="Magma Bubble" x="0" y="0" z="7" spawntime="60" />
 	</monster>
+	<monster centerx="1048" centery="960" centerz="7" radius="1">
+		<monster name="Black Vixen" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1050" centery="960" centerz="7" radius="1">
+		<monster name="Sharpclaw" x="0" y="0" z="7" spawntime="60" />
+	</monster>
 	<monster centerx="1052" centery="960" centerz="7" radius="1">
 		<monster name="The Dread Maiden" x="0" y="0" z="7" spawntime="60" />
 	</monster>
@@ -72,6 +87,30 @@
 	<monster centerx="1070" centery="960" centerz="7" radius="1">
 		<monster name="King Zelos" x="0" y="0" z="7" spawntime="60" />
 	</monster>
+	<monster centerx="1072" centery="960" centerz="7" radius="1">
+		<monster name="Fungosaurus" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1074" centery="960" centerz="7" radius="1">
+		<monster name="Scarlett Etzel" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1076" centery="960" centerz="7" radius="1">
+		<monster name="Neferi the Spy" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1078" centery="960" centerz="7" radius="1">
+		<monster name="Amenef the Burning" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1080" centery="960" centerz="7" radius="1">
+		<monster name="Urmahlullu the Weakened" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1056" centery="969" centerz="7" radius="1">
+		<monster name="Wandering Pillar" x="-1" y="0" z="7" spawntime="60" />
+		<monster name="Converter" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Darklight Emitter" x="1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1057" centery="969" centerz="7" radius="1">
+		<monster name="Darklight Construct" x="1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1058" centery="969" centerz="7" radius="1" />
 	<monster centerx="1060" centery="969" centerz="7" radius="1">
 		<monster name="Dragon Lord" x="0" y="0" z="7" spawntime="60" />
 	</monster>

@@ -17,8 +17,8 @@ monster.events = {
 	"SoulWarBossesDeath",
 }
 
-monster.health = 3000000
-monster.maxHealth = 3000000
+monster.health = 1000000
+monster.maxHealth = 1000000
 monster.race = "undead"
 monster.corpse = 33867
 monster.speed = 150
@@ -132,5 +132,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -1,5 +1,4 @@
 local dangerousDepthPesticide = Action()
-
 function dangerousDepthPesticide.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not player then
 		return true
@@ -18,15 +17,15 @@ function dangerousDepthPesticide.onUse(player, item, fromPosition, target, toPos
 	local posTarget = target:getPosition()
 
 	if target:getId() == corpseId then
-		if player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.Diremaw) == 1 and player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.DiremawsCount) < 20 then
+		if player:getStorageValue(Storage.DangerousDepths.Scouts.Diremaw) == 1 and player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) < 20 then
 			if r <= 50 then
 				posTarget:sendMagicEffect(CONST_ME_POISONAREA)
 				local diremaw = Game.createMonster("Diremaw", target:getPosition())
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.DiremawsCount) + 1)
+				player:setStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) + 1)
 				target:transform(30730)
 			else
 				posTarget:sendMagicEffect(CONST_ME_POISONAREA)
-				player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.DiremawsCount) + 1)
+				player:setStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount, player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount) + 1)
 				target:transform(30730)
 			end
 		end
@@ -38,5 +37,5 @@ function dangerousDepthPesticide.onUse(player, item, fromPosition, target, toPos
 	return true
 end
 
-dangerousDepthPesticide:id(27498)
+dangerousDepthPesticide:id(30733)
 dangerousDepthPesticide:register()

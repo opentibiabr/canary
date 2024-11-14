@@ -1,5 +1,4 @@
 local timeMachine = Action()
-
 function timeMachine.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getPosition() == Position(32870, 32723, 15) then
 		player:teleportTo(Position(32870, 32724, 14))

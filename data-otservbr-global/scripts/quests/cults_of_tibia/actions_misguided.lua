@@ -39,26 +39,22 @@ local function changeMap(mapName)
 end
 
 local cultsOfTibiaMisguided = Action()
-
 function cultsOfTibiaMisguided.onUse(player, item, position, target, targetPosition)
-	local creature = Creature(target)
-	if not creature then
+	local monster = Monster(target)
+	if not monster then
 		return false
 	end
-
 	local map = (type(Game.getStorageValue("cultsMap")) == "string" and Game.getStorageValue("cultsMap") or "illusion")
-	if creature:getName():lower() == "misguided bully" or creature:getName():lower() == "misguided thief" then
-		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Monsters, 0)
+	if monster:getName():lower() == "misguided bully" or monster:getName():lower() == "misguided thief" then
+		player:setStorageValue(Storage.CultsOfTibia.Misguided.Monsters, 0)
 		item:remove(1)
-		local pos = creature:getPosition()
+		local pos = monster:getPosition()
 		Game.createItem(25298, 1, pos)
-		creature:remove()
-
-		local newCreature = Game.createMonster("Misguided Shadow", pos)
-		if newCreature then
-			newCreature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		monster:remove()
+		local newMonster = Game.createMonster("Misguided Shadow", pos)
+		if newMonster then
+			newMonster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		end
-
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You paralyse the bully and the amulet reveals the true face of the creature behind the possession of this misguided creature.")
 		local it = player:addItem(25296, 1)
 		if map == "illusion" then
@@ -66,7 +62,6 @@ function cultsOfTibiaMisguided.onUse(player, item, position, target, targetPosit
 		end
 		it:decay()
 	end
-
 	return true
 end
 

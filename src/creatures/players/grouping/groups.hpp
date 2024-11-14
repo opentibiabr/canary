@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "utils/utils_definitions.hpp"
+#include "declarations.hpp"
 
 struct Group {
 	std::string name;
@@ -27,7 +27,9 @@ public:
 	static bool reload();
 	bool load();
 	[[nodiscard]] std::shared_ptr<Group> getGroup(uint16_t id) const;
-	std::vector<std::shared_ptr<Group>> &getGroups();
+	std::vector<std::shared_ptr<Group>> &getGroups() {
+		return groups_vector;
+	}
 
 private:
 	std::vector<std::shared_ptr<Group>> groups_vector;

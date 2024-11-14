@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"ghuloshThink",
+	"SecretLibraryBossDeath",
 }
 
 monster.bosstiary = {
@@ -22,8 +22,8 @@ monster.bosstiary = {
 	bossRace = RARITY_ARCHFOE,
 }
 
-monster.health = 300000
-monster.maxHealth = 300000
+monster.health = 30000000
+monster.maxHealth = 30000000
 monster.race = "blood"
 monster.corpse = 26133
 monster.speed = 50
@@ -70,7 +70,7 @@ monster.voices = {
 
 monster.loot = {
 	{ name = "platinum coin", chance = 90000, maxCount = 53 },
-	{ name = "crystal coin", chance = 90000, maxCount = 12 },
+	{ name = "crystal coin", chance = 90000, maxCount = 90 },
 	{ name = "great spirit potion", chance = 90000, maxCount = 8 },
 	{ name = "supreme health potion", chance = 90000, maxCount = 8 },
 	{ name = "ultimate mana potion", chance = 90000, maxCount = 10 },
@@ -101,14 +101,15 @@ monster.loot = {
 	{ name = "epaulette", chance = 500 },
 	{ name = "giant emerald", chance = 500 },
 	{ name = "unliving demonbone", chance = 500 },
+       
 }
 
 monster.attacks = {
 	{ name = "melee", interval = 1000, chance = 100, skill = 150, attack = 280 },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -900, maxDamage = -1500, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -210, maxDamage = -600, range = 7, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -1500, maxDamage = -2000, range = 7, radius = 3, effect = CONST_ME_DRAWBLOOD, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -1900, maxDamage = -2500, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -1210, maxDamage = -1600, length = 8, spread = 0, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_DEATHDAMAGE, minDamage = -1210, maxDamage = -1600, range = 7, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", interval = 2000, chance = 12, type = COMBAT_LIFEDRAIN, minDamage = -2500, maxDamage = -3000, range = 7, radius = 3, effect = CONST_ME_DRAWBLOOD, target = false },
 }
 
 monster.defenses = {
@@ -136,5 +137,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

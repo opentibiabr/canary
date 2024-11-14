@@ -8,7 +8,6 @@
  */
 
 #include "server/network/message/networkmessage.hpp"
-
 #include "items/containers/container.hpp"
 
 int32_t NetworkMessage::decodeHeader() {

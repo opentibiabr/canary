@@ -87,7 +87,7 @@ private:
 
 	std::vector<EventScheduler> eventScheduler;
 
-	static std::string join(const std::vector<std::string> &vec, const std::string &delim);
+	std::string join(const std::vector<std::string> &vec, const std::string &delim);
 };
 
 constexpr auto g_eventsScheduler = EventsScheduler::getInstance;

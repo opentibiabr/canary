@@ -9,9 +9,23 @@
 
 #pragma once
 
-class ActionFunctions {
+#include "lua/scripts/luascript.hpp"
+
+class ActionFunctions final : LuaScriptInterface {
 public:
-	static void init(lua_State* L);
+	static void init(lua_State* L) {
+		registerSharedClass(L, "Action", "", ActionFunctions::luaCreateAction);
+		registerMethod(L, "Action", "onUse", ActionFunctions::luaActionOnUse);
+		registerMethod(L, "Action", "register", ActionFunctions::luaActionRegister);
+		registerMethod(L, "Action", "id", ActionFunctions::luaActionItemId);
+		registerMethod(L, "Action", "aid", ActionFunctions::luaActionActionId);
+		registerMethod(L, "Action", "uid", ActionFunctions::luaActionUniqueId);
+		registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
+		registerMethod(L, "Action", "allowFarUse", ActionFunctions::luaActionAllowFarUse);
+		registerMethod(L, "Action", "blockWalls", ActionFunctions::luaActionBlockWalls);
+		registerMethod(L, "Action", "checkFloor", ActionFunctions::luaActionCheckFloor);
+		registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
+	}
 
 private:
 	static int luaCreateAction(lua_State* L);

@@ -9,9 +9,32 @@
 
 #pragma once
 
-class PositionFunctions {
+#include "lua/scripts/luascript.hpp"
+
+class PositionFunctions final : LuaScriptInterface {
 public:
-	static void init(lua_State* L);
+	static void init(lua_State* L) {
+		registerClass(L, "Position", "", PositionFunctions::luaPositionCreate);
+		registerMetaMethod(L, "Position", "__add", PositionFunctions::luaPositionAdd);
+		registerMetaMethod(L, "Position", "__sub", PositionFunctions::luaPositionSub);
+		registerMetaMethod(L, "Position", "__eq", PositionFunctions::luaPositionCompare);
+
+		registerMethod(L, "Position", "getDistance", PositionFunctions::luaPositionGetDistance);
+		registerMethod(L, "Position", "getPathTo", PositionFunctions::luaPositionGetPathTo);
+		registerMethod(L, "Position", "isSightClear", PositionFunctions::luaPositionIsSightClear);
+
+		registerMethod(L, "Position", "getTile", PositionFunctions::luaPositionGetTile);
+		registerMethod(L, "Position", "getZones", PositionFunctions::luaPositionGetZones);
+
+		registerMethod(L, "Position", "sendMagicEffect", PositionFunctions::luaPositionSendMagicEffect);
+		registerMethod(L, "Position", "removeMagicEffect", PositionFunctions::luaPositionRemoveMagicEffect);
+		registerMethod(L, "Position", "sendDistanceEffect", PositionFunctions::luaPositionSendDistanceEffect);
+
+		registerMethod(L, "Position", "sendSingleSoundEffect", PositionFunctions::luaPositionSendSingleSoundEffect);
+		registerMethod(L, "Position", "sendDoubleSoundEffect", PositionFunctions::luaPositionSendDoubleSoundEffect);
+
+		registerMethod(L, "Position", "toString", PositionFunctions::luaPositionToString);
+	}
 
 private:
 	static int luaPositionCreate(lua_State* L);

@@ -4,8 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
 combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 2.403) + 8
-	local max = (level / 5) + (maglevel * 3.203) + 13
+	local min = (level / 5) + (maglevel * 2.403) + 13
+	local max = (level / 5) + (maglevel * 3.203) + 18
 	return -min, -max
 end
 

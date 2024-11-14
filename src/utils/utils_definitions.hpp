@@ -17,7 +17,7 @@ enum WieldInfo_t {
 	WIELDINFO_PREMIUM = 1 << 3,
 };
 
-enum SpawnType_t : uint8_t {
+enum SpawnType_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,
 	RESPAWN_IN_NIGHT = 2,
@@ -630,9 +630,6 @@ enum ItemID_t : uint16_t {
 
 	ITEM_BATHTUB_FILLED = 26077,
 	ITEM_BATHTUB_FILLED_NOTMOVABLE = 26100,
-
-	ITEM_LESSER_FRAGMENT = 46625,
-	ITEM_GREATER_FRAGMENT = 46626,
 
 	ITEM_NONE = 0
 };

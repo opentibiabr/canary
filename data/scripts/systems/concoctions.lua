@@ -5,7 +5,7 @@ local configs = {
 	--- tickTypeOverride = ConcoctionTickType.Experience,
 
 	[Concoction.Ids.StaminaExtension] = {
-		amount = 60, -- minutes
+		amount = 180, -- minutes
 		callback = function(player, config)
 			player:setStamina(player:getStamina() + config.amount)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been granted " .. config.amount .. " minutes of stamina.")

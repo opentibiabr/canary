@@ -30,7 +30,6 @@ npcConfig.shop = { -- Sellable items
 	{ itemName = "candlestick", clientId = 2917, buy = 2 },
 	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
-	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "cup", clientId = 2881, buy = 2 },
 	{ itemName = "deed of ownership", clientId = 7866, buy = 1000 },
 	{ itemName = "document", clientId = 2818, buy = 12 },
@@ -179,7 +178,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, "Be mourned pilgrim in flesh. I'm selling general goods. Just ask me for a {trade}.")
+npcHandler:setMessage(MESSAGE_GREET, "Be mourned pilgrim in flesh. I'm selling general goods.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

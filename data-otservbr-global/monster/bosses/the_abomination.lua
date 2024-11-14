@@ -18,8 +18,8 @@ monster.bosstiary = {
 	bossRace = RARITY_NEMESIS,
 }
 
-monster.health = 750000
-monster.maxHealth = 750000
+monster.health = 75000000
+monster.maxHealth = 75000000
 monster.race = "venom"
 monster.corpse = 36612
 monster.speed = 170
@@ -88,14 +88,15 @@ monster.loot = {
 	{ id = 3035, chance = 10000, maxCount = 3 }, -- platinum coin
 	{ id = 6499, chance = 2857 }, -- demonic essence
 	{ id = 5944, chance = 2500 }, -- soul orb
+	{ id = 34109, chance = 100000 }, -- bag you desire
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 120 },
+	{ name = "melee", interval = 2000, chance = 100, skill = 90, attack = 1020 },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = -800, radius = 6, effect = CONST_ME_POISONAREA, target = false, duration = 10000 },
-	{ name = "combat", interval = 1000, chance = 9, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -650, radius = 4, effect = CONST_ME_POISONAREA, target = false },
-	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -900, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SOUND_GREEN, target = true },
-	{ name = "combat", interval = 2000, chance = 19, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -850, length = 7, spread = 0, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = false },
+	{ name = "combat", interval = 1000, chance = 9, type = COMBAT_EARTHDAMAGE, minDamage = -2000, maxDamage = -6500, radius = 4, effect = CONST_ME_POISONAREA, target = false },
+	{ name = "combat", interval = 1000, chance = 11, type = COMBAT_LIFEDRAIN, minDamage = -4000, maxDamage = -9000, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_SOUND_GREEN, target = true },
+	{ name = "combat", interval = 2000, chance = 19, type = COMBAT_PHYSICALDAMAGE, minDamage = -3500, maxDamage = -8500, length = 7, spread = 0, shootEffect = CONST_ANI_POISON, effect = CONST_ME_HITBYPOISON, target = false },
 }
 
 monster.defenses = {
@@ -124,5 +125,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

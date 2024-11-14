@@ -9,12 +9,9 @@
 
 #pragma once
 
-class Player;
-class Item;
-class DBResult;
-
-struct VIPEntry;
-struct VIPGroupEntry;
+#include "account/account.hpp"
+#include "creatures/players/player.hpp"
+#include "database/database.hpp"
 
 using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
@@ -22,10 +19,11 @@ class IOLoginData {
 public:
 	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol, const uint32_t ip);
 	static uint8_t getAccountType(uint32_t accountId);
-	static bool loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo = true);
-	static bool loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo = true);
-	static bool loadPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result, bool disableIrrelevantInfo = false);
-	static bool savePlayer(const std::shared_ptr<Player> &player);
+	static void updateOnlineStatus(uint32_t guid, bool login);
+	static bool loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo = true);
+	static bool loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo = true);
+	static bool loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disableIrrelevantInfo = false);
+	static bool savePlayer(std::shared_ptr<Player> player);
 	static uint32_t getGuidByName(const std::string &name);
 	static bool getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name);
 	static std::string getNameByGuid(uint32_t guid);
@@ -46,5 +44,5 @@ public:
 	static void removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid);
 
 private:
-	static bool savePlayerGuard(const std::shared_ptr<Player> &player);
+	static bool savePlayerGuard(std::shared_ptr<Player> player);
 };

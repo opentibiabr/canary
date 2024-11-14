@@ -8,14 +8,13 @@
  */
 
 #include "kv/value_wrapper.hpp"
-
 #include "utils/tools.hpp"
 
 ValueWrapper::ValueWrapper(uint64_t timestamp) :
 	timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
-ValueWrapper::ValueWrapper(ValueVariant value, uint64_t timestamp) :
-	data_(std::move(value)), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
+ValueWrapper::ValueWrapper(const ValueVariant &value, uint64_t timestamp) :
+	data_(value), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
 ValueWrapper::ValueWrapper(const std::string &value, uint64_t timestamp) :
 	data_(value), timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
@@ -38,7 +37,7 @@ ValueWrapper::ValueWrapper(const std::initializer_list<std::pair<const std::stri
 	timestamp_(timestamp == 0 ? getTimeMsNow() : timestamp) { }
 
 std::optional<ValueWrapper> ValueWrapper::get(const std::string &key) const {
-	const auto pval = std::get_if<MapType>(&data_);
+	auto pval = std::get_if<MapType>(&data_);
 	if (!pval) {
 		return std::nullopt;
 	}
@@ -56,7 +55,7 @@ std::optional<ValueWrapper> ValueWrapper::get(const std::string &key) const {
 }
 
 std::optional<ValueWrapper> ValueWrapper::get(size_t index) const {
-	if (const auto pval = std::get_if<ArrayType>(&data_)) {
+	if (auto pval = std::get_if<ArrayType>(&data_)) {
 		if (index < pval->size()) {
 			return (*pval)[index];
 		}

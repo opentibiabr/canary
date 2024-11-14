@@ -25,9 +25,7 @@ function deathFirstDragon.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 		if spec:isPlayer() then
 			spec:teleportTo(Position(33617, 31020, 13))
 			spec:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			if spec:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.Feathers) < 1 then
-				spec:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.Feathers, 1)
-			end
+			spec:setStorageValue(Storage.FirstDragon.Feathers, 1)
 		end
 	end
 	return true

@@ -9,13 +9,13 @@
 
 #pragma once
 
-#include "creatures/creatures_definitions.hpp"
-#include "game/movement/position.hpp"
-#include "items/items_definitions.hpp"
+#include "config/configmanager.hpp"
 #include "utils/utils_definitions.hpp"
-#include "enums/item_attribute.hpp"
+#include "declarations.hpp"
+#include "game/movement/position.hpp"
 
 struct Abilities {
+public:
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};
 
@@ -65,26 +65,35 @@ struct Abilities {
 		healthGain = value;
 	}
 
-	uint32_t getHealthGain() const;
+	uint32_t getHealthGain() const {
+		return healthGain * g_configManager().getFloat(RATE_HEALTH_REGEN);
+	}
 
 	void setHealthTicks(uint32_t value) {
 		healthTicks = value;
 	}
 
-	uint32_t getHealthTicks() const;
+	uint32_t getHealthTicks() const {
+		return healthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
+	}
 
 	void setManaGain(uint32_t value) {
 		manaGain = value;
 	}
 
-	uint32_t getManaGain() const;
+	uint32_t getManaGain() const {
+		return manaGain * g_configManager().getFloat(RATE_MANA_REGEN);
+	}
 
 	void setManaTicks(uint32_t value) {
 		manaTicks = value;
 	}
 
-	uint32_t getManaTicks() const;
+	uint32_t getManaTicks() const {
+		return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
+	}
 
+private:
 	uint32_t healthGain = 0;
 	uint32_t healthTicks = 0;
 	uint32_t manaGain = 0;
@@ -101,7 +110,7 @@ public:
 	ItemType(const ItemType &other) = delete;
 	ItemType &operator=(const ItemType &other) = delete;
 
-	ItemType(ItemType &&other) noexcept = default;
+	ItemType(ItemType &&other) = default;
 	ItemType &operator=(ItemType &&other) = default;
 
 	bool isGroundTile() const {
@@ -246,9 +255,14 @@ public:
 	std::string parseAugmentDescription(bool inspect = false) const;
 	std::string getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const;
 
-	void addAugment(std::string spellName, Augment_t augmentType, int32_t value);
+	void addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
+		auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
+		augments.emplace_back(augmentInfo);
+	}
 
-	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier);
+	void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
+		imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
+	}
 
 	ItemGroup_t group = ITEM_GROUP_NONE;
 	ItemTypes_t type = ITEM_TYPE_NONE;
@@ -401,7 +415,7 @@ public:
 
 	uint16_t getItemIdByName(const std::string &name);
 
-	ItemTypes_t getLootType(const std::string &strValue) const;
+	ItemTypes_t getLootType(const std::string &strValue);
 
 	bool loadFromXml();
 	void parseItemNode(const pugi::xml_node &itemNode, uint16_t id);
@@ -431,7 +445,7 @@ public:
 		return dummys;
 	}
 
-	static std::string getAugmentNameByType(Augment_t augmentType);
+	static const std::string getAugmentNameByType(Augment_t augmentType);
 
 	static bool isAugmentWithoutValueDescription(Augment_t augmentType) {
 		static std::vector<Augment_t> vector = {
@@ -440,7 +454,7 @@ public:
 			Augment_t::StrongImpact,
 		};
 
-		return std::ranges::find(vector, augmentType) != vector.end();
+		return std::find(vector.begin(), vector.end(), augmentType) != vector.end();
 	}
 
 private:

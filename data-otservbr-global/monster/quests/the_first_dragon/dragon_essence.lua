@@ -20,10 +20,6 @@ monster.corpse = 0
 monster.speed = 125
 monster.manaCost = 0
 
-monster.events = {
-	"DragonEssenceDeath",
-}
-
 monster.changeTarget = {
 	interval = 2000,
 	chance = 5,

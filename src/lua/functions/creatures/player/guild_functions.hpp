@@ -9,9 +9,28 @@
 
 #pragma once
 
-class GuildFunctions {
+#include "lua/scripts/luascript.hpp"
+
+class GuildFunctions final : LuaScriptInterface {
 public:
-	static void init(lua_State* L);
+	static void init(lua_State* L) {
+		registerSharedClass(L, "Guild", "", GuildFunctions::luaGuildCreate);
+		registerMetaMethod(L, "Guild", "__eq", GuildFunctions::luaUserdataCompare);
+
+		registerMethod(L, "Guild", "getId", GuildFunctions::luaGuildGetId);
+		registerMethod(L, "Guild", "getName", GuildFunctions::luaGuildGetName);
+		registerMethod(L, "Guild", "getMembersOnline", GuildFunctions::luaGuildGetMembersOnline);
+
+		registerMethod(L, "Guild", "getBankBalance", GuildFunctions::luaGuildGetBankBalance);
+		registerMethod(L, "Guild", "setBankBalance", GuildFunctions::luaGuildSetBankBalance);
+
+		registerMethod(L, "Guild", "addRank", GuildFunctions::luaGuildAddRank);
+		registerMethod(L, "Guild", "getRankById", GuildFunctions::luaGuildGetRankById);
+		registerMethod(L, "Guild", "getRankByLevel", GuildFunctions::luaGuildGetRankByLevel);
+
+		registerMethod(L, "Guild", "getMotd", GuildFunctions::luaGuildGetMotd);
+		registerMethod(L, "Guild", "setMotd", GuildFunctions::luaGuildSetMotd);
+	}
 
 private:
 	static int luaGuildCreate(lua_State* L);

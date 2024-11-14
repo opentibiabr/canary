@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 100000000
-monster.maxHealth = 100000000
+monster.health = 190000000
+monster.maxHealth = 190000000
 monster.race = "blood"
 monster.corpse = 37704
 monster.speed = 530
@@ -75,7 +75,7 @@ monster.summons = {}
 monster.loot = {
 	{ id = 3043, chance = 60000, maxCount = 100 }, -- crystal coin
 	{ id = 39546, chance = 100000, maxCount = 3 }, -- primal bag
-	{ id = 34109, chance = 40000, maxCount = 3 }, -- bag you desire
+	{ id = 34109, chance = 100000, maxCount = 3 }, -- bag you desire
 	--{ id = 7643, chance = 30000, maxCount = 100 }, -- Ultimate Health Potion
 	--{ id = 23374, chance = 30000, maxCount = 100 }, -- Ultimate Spirit Potion
 	{ id = 37810, chance = 100000 }, -- Morshabaal's Extract
@@ -97,20 +97,20 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -2500, maxDamage = -8500, length = 8, spread = 0, effect = CONST_ME_WHITE_ENERGY_SPARK },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -6000, maxDamage = -30000, effect = CONST_ME_ICEATTACK },
-	{ name = "melee", interval = 2000, chance = 100, skill = 200, attack = 250 },
-	{ name = "combat", interval = 1000, chance = 7, type = COMBAT_MANADRAIN, minDamage = -800, maxDamage = -1300, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_POFF, target = false },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -2300, maxDamage = -4500, length = 8, spread = 0, effect = CONST_ME_WHITE_ENERGY_SPARK },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_ICEDAMAGE, minDamage = -2500, maxDamage = -5000, effect = CONST_ME_ICEATTACK },
+	{ name = "melee", interval = 2000, chance = 100, skill = 200, attack = 550 },
+	{ name = "combat", interval = 1000, chance = 7, type = COMBAT_MANADRAIN, minDamage = -3000, maxDamage = -5000, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_POFF, target = false },
 	{ name = "drunk", interval = 1000, chance = 7, range = 7, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYAREA, target = false },
 	{ name = "strength", interval = 1000, chance = 9, range = 7, shootEffect = CONST_ANI_LARGEROCK, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -800, maxDamage = -1100, radius = 8, effect = CONST_ME_LOSEENERGY, target = false },
-	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -800, maxDamage = -1300, radius = 8, effect = CONST_ME_MAGIC_GREEN, target = false },
+	{ name = "combat", interval = 1000, chance = 13, type = COMBAT_LIFEDRAIN, minDamage = -2000, maxDamage = -5000, radius = 8, effect = CONST_ME_LOSEENERGY, target = false },
+	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -2000, maxDamage = -5000, radius = 8, effect = CONST_ME_MAGIC_GREEN, target = false },
 	{ name = "speed", interval = 1000, chance = 12, speedChange = -1900, radius = 6, effect = CONST_ME_POISONAREA, target = false, duration = 60000 },
 	{ name = "strength", interval = 1000, chance = 8, radius = 5, effect = CONST_ME_HITAREA, target = false },
 	{ name = "outfit", interval = 1000, chance = 2, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitMonster = "demon" },
 	{ name = "outfit", interval = 1000, chance = 2, radius = 8, effect = CONST_ME_LOSEENERGY, target = false, duration = 5000, outfitItem = 3058 },
-	{ name = "combat", interval = 1000, chance = 34, type = COMBAT_FIREDAMAGE, minDamage = -500, maxDamage = -1200, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -500, maxDamage = -850, length = 8, spread = 0, effect = CONST_ME_MAGIC_RED, target = false },
+	{ name = "combat", interval = 1000, chance = 34, type = COMBAT_FIREDAMAGE, minDamage = -2000, maxDamage = -5200, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
+	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -900, maxDamage = -1500, length = 8, spread = 0, effect = CONST_ME_MAGIC_RED, target = false },
 }
 
 monster.defenses = {
@@ -144,5 +144,11 @@ monster.immunities = {
 	{ type = "drunk", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
 
 mType:register(monster)

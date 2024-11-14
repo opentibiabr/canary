@@ -8,11 +8,9 @@
  */
 
 #include "config/configmanager.hpp"
-
 #include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "server/network/webhook/webhook.hpp"
-#include "utils/tools.hpp"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen

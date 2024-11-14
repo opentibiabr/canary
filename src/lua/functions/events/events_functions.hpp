@@ -20,12 +20,6 @@
 
 class EventFunctions final : LuaScriptInterface {
 public:
-	explicit EventFunctions(lua_State* L) :
-		LuaScriptInterface("EventFunctions") {
-		init(L);
-	}
-	~EventFunctions() override = default;
-
 	static void init(lua_State* L) {
 		ActionFunctions::init(L);
 		CreatureEventFunctions::init(L);
@@ -36,4 +30,6 @@ public:
 		EventCallbackFunctions::init(L);
 		/* Move, Creature, Talk, Global events goes all here */
 	}
+
+private:
 };

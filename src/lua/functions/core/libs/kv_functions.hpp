@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "lua/scripts/luascript.hpp"
+
 class ValueWrapper;
 
 #ifndef USE_PRECOMPILED_HEADERS
@@ -23,9 +25,23 @@ using MapType = phmap::flat_hash_map<std::string, std::shared_ptr<ValueWrapper>>
 
 struct lua_State;
 
-class KVFunctions {
+class KVFunctions final : LuaScriptInterface {
 public:
-	static void init(lua_State* L);
+	static void init(lua_State* L) {
+		registerTable(L, "kv");
+		registerMethod(L, "kv", "scoped", KVFunctions::luaKVScoped);
+		registerMethod(L, "kv", "set", KVFunctions::luaKVSet);
+		registerMethod(L, "kv", "get", KVFunctions::luaKVGet);
+		registerMethod(L, "kv", "keys", KVFunctions::luaKVKeys);
+		registerMethod(L, "kv", "remove", KVFunctions::luaKVRemove);
+
+		registerClass(L, "KV", "");
+		registerMethod(L, "KV", "scoped", KVFunctions::luaKVScoped);
+		registerMethod(L, "KV", "set", KVFunctions::luaKVSet);
+		registerMethod(L, "KV", "get", KVFunctions::luaKVGet);
+		registerMethod(L, "KV", "keys", KVFunctions::luaKVKeys);
+		registerMethod(L, "KV", "remove", KVFunctions::luaKVRemove);
+	}
 
 private:
 	static int luaKVScoped(lua_State* L);

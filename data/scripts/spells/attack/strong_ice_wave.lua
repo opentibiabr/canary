@@ -4,8 +4,8 @@ combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ICEAREA)
 combat:setArea(createCombatArea(AREA_SHORTWAVE3))
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 4.5) + 20
-	local max = (level / 5) + (maglevel * 7.6) + 48
+	local min = (level / 5) + (maglevel * 4.5) + 25
+	local max = (level / 5) + (maglevel * 7.6) + 53
 	return -min, -max
 end
 

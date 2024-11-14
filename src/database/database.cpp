@@ -7,9 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "database/database.hpp"
-
 #include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
 
@@ -98,11 +97,11 @@ bool Database::commit() {
 	return true;
 }
 
-bool Database::isRecoverableError(unsigned int error) {
+bool Database::isRecoverableError(unsigned int error) const {
 	return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 }
 
-bool Database::retryQuery(std::string_view query, int retries) {
+bool Database::retryQuery(const std::string_view &query, int retries) {
 	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query.substr(0, 256));
 		g_logger().error("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
@@ -120,7 +119,7 @@ bool Database::retryQuery(std::string_view query, int retries) {
 	return true;
 }
 
-bool Database::executeQuery(std::string_view query) {
+bool Database::executeQuery(const std::string_view &query) {
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -139,7 +138,7 @@ bool Database::executeQuery(std::string_view query) {
 	return success;
 }
 
-DBResult_ptr Database::storeQuery(std::string_view query) {
+DBResult_ptr Database::storeQuery(const std::string_view &query) {
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
@@ -222,10 +221,10 @@ std::string DBResult::getString(const std::string &s) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
 		g_logger().error("Column '{}' does not exist in result set", s);
-		return {};
+		return std::string();
 	}
 	if (row[it->second] == nullptr) {
-		return {};
+		return std::string();
 	}
 	return std::string(row[it->second]);
 }
@@ -247,7 +246,7 @@ const char* DBResult::getStream(const std::string &s, unsigned long &size) const
 	return row[it->second];
 }
 
-uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) {
+uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const {
 	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
 	if (result > std::numeric_limits<uint8_t>::max()) {
 		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
@@ -257,7 +256,7 @@ uint8_t DBResult::getU8FromString(const std::string &string, const std::string &
 	return result;
 }
 
-int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) {
+int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const {
 	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
 	if (result > std::numeric_limits<int8_t>::max()) {
 		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);

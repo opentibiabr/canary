@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `posx` int(11) NOT NULL DEFAULT '0',
     `posy` int(11) NOT NULL DEFAULT '0',
     `posz` int(11) NOT NULL DEFAULT '0',
-    `conditions` mediumblob NOT NULL,
+    `conditions` blob NOT NULL,
     `cap` int(11) NOT NULL DEFAULT '0',
     `sex` int(11) NOT NULL DEFAULT '0',
     `pronoun` int(11) NOT NULL DEFAULT '0',

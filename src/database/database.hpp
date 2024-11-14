@@ -15,7 +15,6 @@
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>
 	#include <mutex>
-	#include <utility>
 #endif
 
 class DBResult;
@@ -38,10 +37,10 @@ public:
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
-	bool retryQuery(std::string_view query, int retries);
-	bool executeQuery(std::string_view query);
+	bool retryQuery(const std::string_view &query, int retries);
+	bool executeQuery(const std::string_view &query);
 
-	DBResult_ptr storeQuery(std::string_view query);
+	DBResult_ptr storeQuery(const std::string_view &query);
 
 	std::string escapeString(const std::string &s) const;
 
@@ -64,7 +63,7 @@ private:
 	bool rollback();
 	bool commit();
 
-	static bool isRecoverableError(unsigned int error);
+	bool isRecoverableError(unsigned int error) const;
 
 	MYSQL* handle = nullptr;
 	std::recursive_mutex databaseLock;
@@ -96,19 +95,8 @@ public:
 			return T();
 		}
 
-		T data {};
+		T data = 0;
 		try {
-			// Check if the type T is a enum
-			if constexpr (std::is_enum_v<T>) {
-				using underlying_type = std::underlying_type_t<T>;
-				underlying_type value = 0;
-				if constexpr (std::is_signed_v<underlying_type>) {
-					value = static_cast<underlying_type>(std::stoll(row[it->second]));
-				} else {
-					value = static_cast<underlying_type>(std::stoull(row[it->second]));
-				}
-				return static_cast<T>(value);
-			}
 			// Check if the type T is signed or unsigned
 			if constexpr (std::is_signed_v<T>) {
 				// Check if the type T is int8_t or int16_t
@@ -161,8 +149,8 @@ public:
 
 	std::string getString(const std::string &s) const;
 	const char* getStream(const std::string &s, unsigned long &size) const;
-	static uint8_t getU8FromString(const std::string &string, const std::string &function);
-	static int8_t getInt8FromString(const std::string &string, const std::string &function);
+	uint8_t getU8FromString(const std::string &string, const std::string &function) const;
+	int8_t getInt8FromString(const std::string &string, const std::string &function) const;
 
 	size_t countResults() const;
 	bool hasNext() const;
@@ -184,7 +172,7 @@ class DBInsert {
 public:
 	explicit DBInsert(std::string query);
 	void upsert(const std::vector<std::string> &columns);
-	bool addRow(std::string_view row);
+	bool addRow(const std::string_view row);
 	bool addRow(std::ostringstream &row);
 	bool execute();
 
@@ -211,20 +199,16 @@ public:
 
 	template <typename Func>
 	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();
-		if (changesExpected) {
-			DBTransaction transaction;
-			try {
-				transaction.begin();
-				transaction.commit();
-				return changesExpected;
-			} catch (const std::exception &exception) {
-				transaction.rollback();
-				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
-				return false;
-			}
-		} else {
-			return true;
+		DBTransaction transaction;
+		try {
+			transaction.begin();
+			bool result = toBeExecuted();
+			transaction.commit();
+			return result;
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred committing transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 
@@ -296,10 +280,10 @@ private:
 
 class DatabaseException : public std::exception {
 public:
-	explicit DatabaseException(std::string message) :
-		message(std::move(message)) { }
+	explicit DatabaseException(const std::string &message) :
+		message(message) { }
 
-	const char* what() const noexcept override {
+	virtual const char* what() const throw() {
 		return message.c_str();
 	}
 

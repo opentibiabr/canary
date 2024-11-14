@@ -7,9 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/scheduling/events_scheduler.hpp"
-
 #include "config/configmanager.hpp"
+#include "game/scheduling/events_scheduler.hpp"
 #include "lua/scripts/scripts.hpp"
 
 bool EventsScheduler::loadScheduleEventFromXml() {

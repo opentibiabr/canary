@@ -9,35 +9,52 @@
 
 #pragma once
 
-class Creature;
-class LuaScriptInterface;
+#include "creatures/creature.hpp"
 
-struct Position;
+class Creature;
 
 class CreatureCallback {
 public:
-	CreatureCallback(LuaScriptInterface* scriptInterface, const std::shared_ptr<Creature> &targetCreature) :
+	CreatureCallback(LuaScriptInterface* scriptInterface, std::shared_ptr<Creature> targetCreature) :
 		scriptInterface(scriptInterface), m_targetCreature(targetCreature) {};
-	~CreatureCallback() = default;
+	~CreatureCallback() { }
 
 	bool startScriptInterface(int32_t scriptId);
 
-	void pushSpecificCreature(const std::shared_ptr<Creature> &creature);
+	void pushSpecificCreature(std::shared_ptr<Creature> creature);
 
-	bool persistLuaState() const;
+	bool persistLuaState() {
+		return params > 0 && scriptInterface->callFunction(params);
+	}
 
-	void pushCreature(const std::shared_ptr<Creature> &creature);
+	void pushCreature(std::shared_ptr<Creature> creature) {
+		params++;
+		LuaScriptInterface::pushUserdata<Creature>(L, creature);
+		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	}
 
-	void pushPosition(const Position &position, int32_t stackpos = 0);
+	void pushPosition(const Position &position, int32_t stackpos = 0) {
+		params++;
+		LuaScriptInterface::pushPosition(L, position, stackpos);
+	}
 
-	void pushNumber(int32_t number);
+	void pushNumber(int32_t number) {
+		params++;
+		lua_pushnumber(L, number);
+	}
 
-	void pushString(const std::string &str);
+	void pushString(const std::string &str) {
+		params++;
+		LuaScriptInterface::pushString(L, str);
+	}
 
-	void pushBoolean(const bool str);
+	void pushBoolean(const bool str) {
+		params++;
+		LuaScriptInterface::pushBoolean(L, str);
+	}
 
 protected:
-	static std::string getCreatureClass(const std::shared_ptr<Creature> &creature);
+	static std::string getCreatureClass(std::shared_ptr<Creature> creature);
 
 private:
 	LuaScriptInterface* scriptInterface;

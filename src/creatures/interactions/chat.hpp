@@ -9,9 +9,9 @@
 
 #pragma once
 
+#include "utils/utils_definitions.hpp"
+#include "lib/di/container.hpp"
 #include "lua/scripts/luascript.hpp"
-
-enum SpeakClasses : uint8_t;
 
 class Party;
 class Player;
@@ -22,30 +22,44 @@ using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 class ChatChannel {
 public:
 	ChatChannel() = default;
-	ChatChannel(uint16_t channelId, std::string channelName);
+	ChatChannel(uint16_t channelId, std::string channelName) :
+		name(std::move(channelName)),
+		id(channelId) { }
 
 	virtual ~ChatChannel() = default;
 
 	bool addUser(const std::shared_ptr<Player> &player);
 	bool removeUser(const std::shared_ptr<Player> &player);
-	bool hasUser(const std::shared_ptr<Player> &player) const;
+	bool hasUser(const std::shared_ptr<Player> &player);
 
-	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text) const;
+	bool talk(const std::shared_ptr<Player> &fromPlayer, SpeakClasses type, const std::string &text);
 	void sendToAll(const std::string &message, SpeakClasses type) const;
 
-	const std::string &getName() const;
-	uint16_t getId() const;
-	const UsersMap &getUsers() const;
-	virtual const InvitedMap* getInvitedUsers() const;
+	const std::string &getName() const {
+		return name;
+	}
+	uint16_t getId() const {
+		return id;
+	}
+	const UsersMap &getUsers() const {
+		return users;
+	}
+	virtual const InvitedMap* getInvitedUsers() const {
+		return nullptr;
+	}
 
-	virtual uint32_t getOwner() const;
+	virtual uint32_t getOwner() const {
+		return 0;
+	}
 
-	bool isPublicChannel() const;
+	bool isPublicChannel() const {
+		return publicChannel;
+	}
 
-	bool executeOnJoinEvent(const std::shared_ptr<Player> &player) const;
-	bool executeCanJoinEvent(const std::shared_ptr<Player> &player) const;
-	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player) const;
-	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message) const;
+	bool executeOnJoinEvent(const std::shared_ptr<Player> &player);
+	bool executeCanJoinEvent(const std::shared_ptr<Player> &player);
+	bool executeOnLeaveEvent(const std::shared_ptr<Player> &player);
+	bool executeOnSpeakEvent(const std::shared_ptr<Player> &player, SpeakClasses &type, const std::string &message);
 
 protected:
 	UsersMap users;
@@ -65,10 +79,15 @@ protected:
 
 class PrivateChatChannel final : public ChatChannel {
 public:
-	PrivateChatChannel(uint16_t channelId, [[maybe_unused]] std::string channelName);
+	PrivateChatChannel(uint16_t channelId, [[maybe_unused]] std::string channelName) :
+		ChatChannel(channelId, std::move(channelName)) { }
 
-	uint32_t getOwner() const override;
-	void setOwner(uint32_t newOwner);
+	uint32_t getOwner() const override {
+		return owner;
+	}
+	void setOwner(uint32_t newOwner) {
+		this->owner = newOwner;
+	}
 
 	bool isInvited(uint32_t guid) const;
 
@@ -79,7 +98,9 @@ public:
 
 	void closeChannel() const;
 
-	[[nodiscard]] const InvitedMap* getInvitedUsers() const override;
+	[[nodiscard]] const InvitedMap* getInvitedUsers() const override {
+		return &invites;
+	}
 
 private:
 	InvitedMap invites;
@@ -96,7 +117,9 @@ public:
 	Chat(const Chat &) = delete;
 	Chat &operator=(const Chat &) = delete;
 
-	static Chat &getInstance();
+	static Chat &getInstance() {
+		return inject<Chat>();
+	}
 
 	bool load();
 
@@ -114,9 +137,11 @@ public:
 	std::shared_ptr<ChatChannel> getChannel(const std::shared_ptr<Player> &player, uint16_t channelId);
 	std::shared_ptr<ChatChannel> getChannelById(uint16_t channelId);
 	std::shared_ptr<ChatChannel> getGuildChannelById(uint32_t guildId);
-	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player) const;
+	std::shared_ptr<PrivateChatChannel> getPrivateChannel(const std::shared_ptr<Player> &player);
 
-	LuaScriptInterface* getScriptInterface();
+	LuaScriptInterface* getScriptInterface() {
+		return &scriptInterface;
+	}
 
 private:
 	std::map<uint16_t, std::shared_ptr<ChatChannel>> normalChannels;

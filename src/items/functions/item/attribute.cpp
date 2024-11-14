@@ -9,8 +9,6 @@
 
 #include "items/functions/item/attribute.hpp"
 
-#include "utils/tools.hpp"
-
 /*
 =============================
 * ItemAttribute class (Attributes methods)
@@ -22,12 +20,12 @@ const std::string &ItemAttribute::getAttributeString(ItemAttribute_t type) const
 		return emptyString;
 	}
 
-	const auto attribute = getAttribute(type);
+	auto attribute = getAttribute(type);
 	if (!attribute) {
 		return emptyString;
 	}
 
-	return *attribute->getString();
+	return *attribute->getString().get();
 }
 
 const int64_t &ItemAttribute::getAttributeValue(ItemAttribute_t type) const {
@@ -36,7 +34,7 @@ const int64_t &ItemAttribute::getAttributeValue(ItemAttribute_t type) const {
 		return emptyInt;
 	}
 
-	const auto attribute = getAttribute(type);
+	auto attribute = getAttribute(type);
 	if (!attribute) {
 		return emptyInt;
 	}
@@ -119,22 +117,22 @@ const CustomAttribute* ItemAttribute::getCustomAttribute(const std::string &attr
 }
 
 void ItemAttribute::setCustomAttribute(const std::string &key, const int64_t value) {
-	const CustomAttribute attribute(key, value);
+	CustomAttribute attribute(key, value);
 	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
 void ItemAttribute::setCustomAttribute(const std::string &key, const std::string &value) {
-	const CustomAttribute attribute(key, value);
+	CustomAttribute attribute(key, value);
 	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
 void ItemAttribute::setCustomAttribute(const std::string &key, const double value) {
-	const CustomAttribute attribute(key, value);
+	CustomAttribute attribute(key, value);
 	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
 void ItemAttribute::setCustomAttribute(const std::string &key, const bool value) {
-	const CustomAttribute attribute(key, value);
+	CustomAttribute attribute(key, value);
 	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
@@ -143,7 +141,7 @@ void ItemAttribute::addCustomAttribute(const std::string &key, const CustomAttri
 }
 
 bool ItemAttribute::removeCustomAttribute(const std::string &attributeName) {
-	const auto it = customAttributeMap.find(asLowerCaseString(attributeName));
+	auto it = customAttributeMap.find(asLowerCaseString(attributeName));
 	if (it == customAttributeMap.end()) {
 		return false;
 	}

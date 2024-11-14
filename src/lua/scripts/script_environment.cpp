@@ -7,11 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lua/scripts/script_environment.hpp"
-
-#include "creatures/creature.hpp"
 #include "game/game.hpp"
 #include "lua/scripts/luascript.hpp"
+#include "lua/scripts/script_environment.hpp"
 
 ScriptEnvironment::ScriptEnvironment() {
 	resetEnv();
@@ -29,10 +27,10 @@ void ScriptEnvironment::resetEnv() {
 	localMap.clear();
 	tempResults.clear();
 
-	const auto [fst, snd] = tempItems.equal_range(this);
-	auto it = fst;
-	while (it != snd) {
-		const auto item = it->second;
+	auto pair = tempItems.equal_range(this);
+	auto it = pair.first;
+	while (it != pair.second) {
+		std::shared_ptr<Item> item = it->second;
 		it = tempItems.erase(it);
 	}
 }
@@ -41,7 +39,7 @@ bool ScriptEnvironment::setCallbackId(int32_t newCallbackId, LuaScriptInterface*
 	if (this->callbackId != 0) {
 		// nested callbacks are not allowed
 		if (interface) {
-			LuaScriptInterface::reportErrorFunc("Nested callbacks!");
+			interface->reportErrorFunc("Nested callbacks!");
 		}
 		return false;
 	}
@@ -58,24 +56,24 @@ void ScriptEnvironment::getEventInfo(int32_t &retScriptId, LuaScriptInterface*&r
 	retTimerEvent = this->timerEvent;
 }
 
-uint32_t ScriptEnvironment::addThing(const std::shared_ptr<Thing> &thing) {
+uint32_t ScriptEnvironment::addThing(std::shared_ptr<Thing> thing) {
 	if (!thing || thing->isRemoved()) {
 		return 0;
 	}
 
-	const auto &creature = thing->getCreature();
+	std::shared_ptr<Creature> creature = thing->getCreature();
 	if (creature) {
 		return creature->getID();
 	}
 
-	const auto &item = thing->getItem();
+	std::shared_ptr<Item> item = thing->getItem();
 	if (item && item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		return item->getAttribute<uint32_t>(ItemAttribute_t::UNIQUEID);
 	}
 
-	for (const auto &[itemId, itemPtr] : localMap) {
-		if (itemPtr == item) {
-			return itemId;
+	for (const auto &it : localMap) {
+		if (it.second == item) {
+			return it.first;
 		}
 	}
 
@@ -84,8 +82,8 @@ uint32_t ScriptEnvironment::addThing(const std::shared_ptr<Thing> &thing) {
 }
 
 void ScriptEnvironment::insertItem(uint32_t uid, std::shared_ptr<Item> item) {
-	const auto [fst, snd] = localMap.emplace(uid, item);
-	if (!snd) {
+	auto result = localMap.emplace(uid, item);
+	if (!result.second) {
 		g_logger().error("Thing uid already taken: {}", uid);
 	}
 }
@@ -96,16 +94,16 @@ std::shared_ptr<Thing> ScriptEnvironment::getThingByUID(uint32_t uid) {
 	}
 
 	if (uid <= std::numeric_limits<uint16_t>::max()) {
-		const auto &item = g_game().getUniqueItem(static_cast<uint16_t>(uid));
+		std::shared_ptr<Item> item = g_game().getUniqueItem(static_cast<uint16_t>(uid));
 		if (item && !item->isRemoved()) {
 			return item;
 		}
 		return nullptr;
 	}
 
-	const auto it = localMap.find(uid);
+	auto it = localMap.find(uid);
 	if (it != localMap.end()) {
-		const auto &item = it->second;
+		std::shared_ptr<Item> item = it->second;
 		if (!item->isRemoved()) {
 			return item;
 		}
@@ -114,7 +112,7 @@ std::shared_ptr<Thing> ScriptEnvironment::getThingByUID(uint32_t uid) {
 }
 
 std::shared_ptr<Item> ScriptEnvironment::getItemByUID(uint32_t uid) {
-	const auto &thing = getThingByUID(uid);
+	std::shared_ptr<Thing> thing = getThingByUID(uid);
 	if (!thing) {
 		return nullptr;
 	}
@@ -122,7 +120,7 @@ std::shared_ptr<Item> ScriptEnvironment::getItemByUID(uint32_t uid) {
 }
 
 std::shared_ptr<Container> ScriptEnvironment::getContainerByUID(uint32_t uid) {
-	const auto &item = getItemByUID(uid);
+	std::shared_ptr<Item> item = getItemByUID(uid);
 	if (!item) {
 		return nullptr;
 	}
@@ -135,17 +133,17 @@ void ScriptEnvironment::removeItemByUID(uint32_t uid) {
 		return;
 	}
 
-	const auto it = localMap.find(uid);
+	auto it = localMap.find(uid);
 	if (it != localMap.end()) {
 		localMap.erase(it);
 	}
 }
 
-void ScriptEnvironment::addTempItem(const std::shared_ptr<Item> &item) {
+void ScriptEnvironment::addTempItem(std::shared_ptr<Item> item) {
 	tempItems.emplace(this, item);
 }
 
-void ScriptEnvironment::removeTempItem(const std::shared_ptr<Item> &item) {
+void ScriptEnvironment::removeTempItem(std::shared_ptr<Item> item) {
 	for (auto it = tempItems.begin(), end = tempItems.end(); it != end; ++it) {
 		if (it->second == item) {
 			tempItems.erase(it);
@@ -155,12 +153,12 @@ void ScriptEnvironment::removeTempItem(const std::shared_ptr<Item> &item) {
 }
 
 uint32_t ScriptEnvironment::addResult(DBResult_ptr res) {
-	tempResults[++lastResultId] = std::move(res);
+	tempResults[++lastResultId] = res;
 	return lastResultId;
 }
 
 bool ScriptEnvironment::removeResult(uint32_t id) {
-	const auto it = tempResults.find(id);
+	auto it = tempResults.find(id);
 	if (it == tempResults.end()) {
 		return false;
 	}
@@ -170,7 +168,7 @@ bool ScriptEnvironment::removeResult(uint32_t id) {
 }
 
 DBResult_ptr ScriptEnvironment::getResultByID(uint32_t id) {
-	const auto it = tempResults.find(id);
+	auto it = tempResults.find(id);
 	if (it == tempResults.end()) {
 		return nullptr;
 	}

@@ -68,8 +68,8 @@ monster.events = {
 	"ThePrimeOrdealBossDeath",
 }
 
-monster.health = 400000
-monster.maxHealth = 400000
+monster.health = 1000000
+monster.maxHealth = 1000000
 monster.race = "blood"
 monster.corpse = 39530
 monster.speed = 180
@@ -162,6 +162,16 @@ local function initialize(monster)
 end
 
 -- Functions for the fight
+mType.onAppear = function(monster, creature)
+	if monster:getId() == creature:getId() then
+		initialize(monster)
+	end
+
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
 local function getHazardPoints(monster)
 	local hazard = Hazard.getByName("hazard.gnomprona-gardens")
 	if not hazard then

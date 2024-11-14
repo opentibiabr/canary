@@ -371,17 +371,9 @@ end
 
 function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
 	if IsRunningGlobalDatapack() then
-		-- The Secret Library Quest
-		if toPosition == Position(32460, 32928, 7) and item.itemid == 3578 then
-			toPosition:sendMagicEffect(CONST_ME_HEARTS)
-			self:say("You feed the turtle, now you may pass.", TALKTYPE_MONSTER_SAY)
-			Game.setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Turtle, os.time() + 10 * 60)
-			item:remove(1)
-		end
-
 		-- Cults of Tibia begin
-		local frompos = Position(33023, 31904, 14)
-		local topos = Position(33052, 31932, 15)
+		local frompos = Position(33023, 31904, 14) -- Checagem
+		local topos = Position(33052, 31932, 15) -- Checagem
 		local removeItem = false
 		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
 			local tile = Tile(toPosition)
@@ -535,17 +527,20 @@ function Player:onGainExperience(target, exp, rawExp)
 		self:addCondition(soulCondition)
 	end
 
-	-- Apply XP Boost (Store or Daily Reward)
-	useStaminaXpBoost(self)
+	-- XP Boost Bonus
+	useStaminaXpBoost(self) -- Use stamina XP boost (store or daily reward)
 
 	local xpBoostTimeLeft = self:getXpBoostTime()
-	local hasXpBoost = xpBoostTimeLeft > 0
-	local xpBoostPercent = hasXpBoost and self:getXpBoostPercent() or 0
+	local stillHasXpBoost = xpBoostTimeLeft > 0
+	local xpBoostPercent = stillHasXpBoost and self:getXpBoostPercent() or 0
+
+	self:setXpBoostPercent(xpBoostPercent)
 
 	-- Stamina Bonus
 	local staminaBonusXp = 1
-	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
-		useStamina(self, true)
+	local isStaminaEnabled = configManager.getBoolean(configKeys.STAMINA_SYSTEM)
+	useStamina(self, isStaminaEnabled)
+	if isStaminaEnabled then
 		staminaBonusXp = self:getFinalBonusStamina()
 		self:setStaminaXpBoost(staminaBonusXp * 100)
 	end
@@ -553,12 +548,12 @@ function Player:onGainExperience(target, exp, rawExp)
 	-- Concoction System
 	useConcoctionTime(self)
 
-	-- Apply Boosted Creature Bonus
-	if target:getName():lower() == Game.getBoostedCreature():lower() then
+	-- Boosted creature
+	if target:getName():lower() == (Game.getBoostedCreature()):lower() then
 		exp = exp * 2
 	end
 
-	-- Prey System
+	-- Prey system
 	if configManager.getBoolean(configKeys.PREY_ENABLED) then
 		local monsterType = target:getType()
 		if monsterType and monsterType:raceId() > 0 then
@@ -566,20 +561,18 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
-	-- VIP Bonus Experience
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
 		local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
 		if vipBonusExp > 0 and self:isVip() then
-			exp = exp * (1 + math.min(vipBonusExp, 100) / 100)
+			vipBonusExp = (vipBonusExp > 100 and 100) or vipBonusExp
+			exp = exp * (1 + (vipBonusExp / 100))
 		end
 	end
 
-	-- Final Adjustments: Low Level Bonus and Base Rate
-	local lowLevelBonusExp = self:getFinalLowLevelBonus()
-	local baseRateExp = self:getFinalBaseRateExperience()
+	local lowLevelBonuxExp = self:getFinalLowLevelBonus()
+	local baseRate = self:getFinalBaseRateExperience()
 
-	-- Return final experience value
-	return (exp * (1 + xpBoostPercent / 100 + lowLevelBonusExp / 100)) * staminaBonusXp * baseRateExp
+	return (exp + (exp * (xpBoostPercent / 100) + (exp * (lowLevelBonuxExp / 100)))) * staminaBonusXp * baseRate
 end
 
 function Player:onLoseExperience(exp)
@@ -591,35 +584,42 @@ function Player:onGainSkillTries(skill, tries)
 	if IsRunningGlobalDatapack() and isSkillGrowthLimited(self, skill) then
 		return 0
 	end
-
 	if not APPLY_SKILL_MULTIPLIER then
 		return tries
 	end
 
-	-- Default skill rate settings
-	local rateSkillStages = configManager.getBoolean(configKeys.RATE_USE_STAGES) and skillsStages or nil
-	local currentSkillLevel = self:getSkillLevel(skill)
-	local baseRate = configManager.getNumber(configKeys.RATE_SKILL)
+	-- Event scheduler skill rate
+	local STAGES_DEFAULT = nil
+	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+		STAGES_DEFAULT = skillsStages
+	end
+	local SKILL_DEFAULT = self:getSkillLevel(skill)
+	local RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
 
-	-- Special case for magic level
 	if skill == SKILL_MAGLEVEL then
-		rateSkillStages = configManager.getBoolean(configKeys.RATE_USE_STAGES) and magicLevelStages or nil
-		currentSkillLevel = self:getBaseMagicLevel()
-		baseRate = configManager.getNumber(configKeys.RATE_MAGIC)
+		-- Magic Level
+		if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+			STAGES_DEFAULT = magicLevelStages
+		end
+		SKILL_DEFAULT = self:getBaseMagicLevel()
+		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end
 
-	-- Calculate skill rate from stages and schedule
-	local skillRate = getRateFromTable(rateSkillStages, currentSkillLevel, baseRate)
-	skillRate = (SCHEDULE_SKILL_RATE ~= 100) and (skillRate * SCHEDULE_SKILL_RATE / 100) or skillRate
+	local skillOrMagicRate = getRateFromTable(STAGES_DEFAULT, SKILL_DEFAULT, RATE_DEFAULT)
 
-	-- Apply VIP boost if applicable
-	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and self:isVip() then
-		local vipBonusSkill = math.min(configManager.getNumber(configKeys.VIP_BONUS_SKILL), 100)
-		skillRate = skillRate + (skillRate * (vipBonusSkill / 100))
+	if SCHEDULE_SKILL_RATE ~= 100 then
+		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
 	end
 
-	-- Calculate and return the final experience gain
-	return tries * skillRate
+	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
+		local vipBoost = configManager.getNumber(configKeys.VIP_BONUS_SKILL)
+		if vipBoost > 0 and self:isVip() then
+			vipBoost = (vipBoost > 100 and 100) or vipBoost
+			skillOrMagicRate = skillOrMagicRate + (skillOrMagicRate * (vipBoost / 100))
+		end
+	end
+
+	return tries / 100 * (skillOrMagicRate * 100)
 end
 
 function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDamage, secondaryType)
@@ -670,3 +670,24 @@ function Player:onChangeZone(zone)
 end
 
 function Player:onInventoryUpdate(item, slot, equip) end
+
+function Player:getURL()
+	local playerLink = string.gsub(self:getName(), "%s+", "+")
+	local serverURL = configManager.getString(configKeys.URL)
+	return serverURL .. "/characters/" .. playerLink
+end
+
+function Player:getMarkdownLink()
+	local vocation = self:vocationAbbrev()
+	local emoji = ":school_satchel:"
+	if self:isKnight() then
+		emoji = ":crossed_swords:"
+	elseif self:isPaladin() then
+		emoji = ":bow_and_arrow:"
+	elseif self:isDruid() then
+		emoji = ":herb:"
+	elseif self:isSorcerer() then
+		emoji = ":crystal_ball:"
+	end
+	return "**[" .. self:getName() .. "](" .. self:getURL() .. ")** " .. emoji .. " [_" .. vocation .. "_]"
+end

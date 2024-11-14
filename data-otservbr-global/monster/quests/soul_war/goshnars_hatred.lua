@@ -18,8 +18,8 @@ monster.events = {
 	"SoulWarBossesDeath",
 }
 
-monster.health = 3000000
-monster.maxHealth = 3000000
+monster.health = 1000000
+monster.maxHealth = 1000000
 monster.race = "undead"
 monster.corpse = 33875
 monster.speed = 150
@@ -95,7 +95,7 @@ monster.loot = {
 	{ name = "spectral horseshoe", chance = 400 },
 	{ name = "spectral horse tack", chance = 400 },
 	{ name = "bracelet of strengthening", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ name = "bag you desire", chance = 400 },
 }
 
 monster.attacks = {
@@ -133,6 +133,18 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature) end
+
+mType.onSpawn = function(monster)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+
+	monster:resetHatredDamageMultiplier()
+end
+
 mType.onDisappear = function(monster, creature)
 	if creature:getName() == "Goshnar's Hatred" then
 		for _, monsterName in pairs(SoulWarQuest.burningHatredMonsters) do
@@ -143,5 +155,9 @@ mType.onDisappear = function(monster, creature)
 		end
 	end
 end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

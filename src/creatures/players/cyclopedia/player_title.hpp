@@ -9,9 +9,11 @@
 
 #pragma once
 
-#include "enums/player_cyclopedia.hpp"
+#include <utility>
 
-enum PlayerSex_t : uint8_t;
+#include "creatures/creatures_definitions.hpp"
+#include "enums/player_cyclopedia.hpp"
+#include "enums/account_group_type.hpp"
 
 class Player;
 class KV;
@@ -58,12 +60,14 @@ struct Title {
 	}
 };
 
-template <>
-struct std::hash<Title> {
-	std::size_t operator()(const Title &t) const noexcept {
-		return hash<uint8_t>()(t.m_id);
-	}
-};
+namespace std {
+	template <>
+	struct hash<Title> {
+		std::size_t operator()(const Title &t) const {
+			return hash<uint8_t>()(t.m_id);
+		}
+	};
+}
 
 class PlayerTitle {
 public:
@@ -74,24 +78,24 @@ public:
 	void remove(const Title &title);
 	const std::vector<std::pair<Title, uint32_t>> &getUnlockedTitles();
 	[[nodiscard]] uint8_t getCurrentTitle() const;
-	void setCurrentTitle(uint8_t id) const;
-	std::string getCurrentTitleName() const;
+	void setCurrentTitle(uint8_t id);
+	std::string getCurrentTitleName();
 	static const std::string &getNameBySex(PlayerSex_t sex, const std::string &male, const std::string &female);
 	void checkAndUpdateNewTitles();
 	void loadUnlockedTitles();
 	const std::shared_ptr<KV> &getUnlockedKV();
 
 	// Title Calculate Functions
-	bool checkGold(uint32_t amount) const;
-	bool checkMount(uint32_t amount) const;
-	bool checkOutfit(uint32_t amount) const;
-	bool checkLevel(uint32_t amount) const;
-	bool checkHighscore(uint8_t skill) const;
-	bool checkBestiary(const std::string &name, uint16_t race, bool isBoss = false, uint32_t amount = 0) const;
-	bool checkLoginStreak(uint32_t amount) const;
-	bool checkTask(uint32_t amount) const;
-	bool checkMap(uint32_t amount) const;
-	bool checkOther(const std::string &name) const;
+	bool checkGold(uint32_t amount);
+	bool checkMount(uint32_t amount);
+	bool checkOutfit(uint32_t amount);
+	bool checkLevel(uint32_t amount);
+	bool checkHighscore(uint8_t skill);
+	bool checkBestiary(const std::string &name, uint16_t race, bool isBoss = false, uint32_t amount = 0);
+	bool checkLoginStreak(uint32_t amount);
+	bool checkTask(uint32_t amount);
+	bool checkMap(uint32_t amount);
+	bool checkOther(const std::string &name);
 
 private:
 	// {title ID, time when it was unlocked}

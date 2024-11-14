@@ -7,9 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "security/rsa.hpp"
-
 #include "lib/di/container.hpp"
+#include "security/rsa.hpp"
 
 RSA::RSA(Logger &logger) :
 	logger(logger) {
@@ -27,8 +26,8 @@ RSA &RSA::getInstance() {
 }
 
 void RSA::start() {
-	const auto p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
-	const auto q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
 	try {
 		if (!loadPEM("key.pem")) {
 			// file doesn't exist - switch to base10-hardcoded keys
@@ -108,17 +107,13 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 	auto posOfCharacter = [](const uint8_t chr) -> uint16_t {
 		if (chr >= 'A' && chr <= 'Z') {
 			return chr - 'A';
-		}
-		if (chr >= 'a' && chr <= 'z') {
+		} else if (chr >= 'a' && chr <= 'z') {
 			return chr - 'a' + ('Z' - 'A') + 1;
-		}
-		if (chr >= '0' && chr <= '9') {
+		} else if (chr >= '0' && chr <= '9') {
 			return chr - '0' + ('Z' - 'A') + ('z' - 'a') + 2;
-		}
-		if (chr == '+' || chr == '-') {
+		} else if (chr == '+' || chr == '-') {
 			return 62;
-		}
-		if (chr == '/' || chr == '_') {
+		} else if (chr == '/' || chr == '_') {
 			return 63;
 		}
 		g_logger().error("[RSA::base64Decrypt] - Invalid base6409");
@@ -126,19 +121,19 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 	};
 
 	if (input.empty()) {
-		return {};
+		return std::string();
 	}
 
-	const size_t length = input.length();
+	size_t length = input.length();
 	size_t pos = 0;
 
 	std::string output;
 	output.reserve(length / 4 * 3);
 	while (pos < length) {
-		const uint16_t pos1 = posOfCharacter(input[pos + 1]);
+		uint16_t pos1 = posOfCharacter(input[pos + 1]);
 		output.push_back(static_cast<std::string::value_type>(((posOfCharacter(input[pos])) << 2) + ((pos1 & 0x30) >> 4)));
 		if (input[pos + 2] != '=' && input[pos + 2] != '.') {
-			const uint16_t pos2 = posOfCharacter(input[pos + 2]);
+			uint16_t pos2 = posOfCharacter(input[pos + 2]);
 			output.push_back(static_cast<std::string::value_type>(((pos1 & 0x0f) << 4) + ((pos2 & 0x3c) >> 2)));
 			if (input[pos + 3] != '=' && input[pos + 3] != '.') {
 				output.push_back(static_cast<std::string::value_type>(((pos2 & 0x03) << 6) + posOfCharacter(input[pos + 3])));
@@ -192,7 +187,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
 	output.reserve(static_cast<size_t>(length) * 2);
 	for (uint16_t i = 0; i < length; ++i) {
-		const auto hex = static_cast<uint8_t>(*pos++);
+		auto hex = static_cast<uint8_t>(*pos++);
 		output.push_back("0123456789ABCDEF"[(hex >> 4) & 15]);
 		output.push_back("0123456789ABCDEF"[hex & 15]);
 	}

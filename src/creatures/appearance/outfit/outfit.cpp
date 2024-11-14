@@ -8,15 +8,9 @@
  */
 
 #include "creatures/appearance/outfit/outfit.hpp"
-
-#include "config/configmanager.hpp"
-#include "creatures/players/player.hpp"
-#include "game/game.hpp"
-#include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
-
-std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
+#include "game/game.hpp"
 
 Outfits &Outfits::getInstance() {
 	return inject<Outfits>();
@@ -105,19 +99,5 @@ std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const
 	if (it != outfits[sex].end()) {
 		return *it;
 	}
-	return nullptr;
-}
-
-const std::vector<std::shared_ptr<Outfit>> &Outfits::getOutfits(PlayerSex_t sex) const {
-	return outfits[sex];
-}
-
-std::shared_ptr<Outfit> Outfits::getOutfitByName(PlayerSex_t sex, const std::string &name) const {
-	for (const auto &outfit : outfits[sex]) {
-		if (outfit->name == name) {
-			return outfit;
-		}
-	}
-
 	return nullptr;
 }

@@ -16,13 +16,13 @@
 #include "server/network/message/networkmessage.hpp"
 
 class Module;
-using Module_ptr = std::shared_ptr<Module>;
+using Module_ptr = std::unique_ptr<Module>;
 
 class Module final : public Event {
 public:
 	explicit Module(LuaScriptInterface* interface);
 
-	bool configureEvent(const pugi::xml_node &node) override;
+	bool configureEvent(const pugi::xml_node &node) final;
 
 	ModuleType_t getEventType() const {
 		return type;
@@ -32,26 +32,26 @@ public:
 	}
 
 	void clearEvent();
-	void copyEvent(const Module_ptr &creatureEvent);
+	void copyEvent(Module* creatureEvent);
 
 	// scripting
-	void executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg) const;
+	void executeOnRecvbyte(std::shared_ptr<Player> player, NetworkMessage &msg);
 	//
 
-	uint8_t getRecvbyte() const {
+	uint8_t getRecvbyte() {
 		return recvbyte;
 	}
 
-	int16_t getDelay() const {
+	int16_t getDelay() {
 		return delay;
 	}
 
 protected:
-	std::string getScriptEventName() const override;
+	std::string getScriptEventName() const final;
 
 	ModuleType_t type;
-	uint8_t recvbyte {};
-	int16_t delay {};
+	uint8_t recvbyte;
+	int16_t delay;
 	bool loaded;
 };
 
@@ -68,16 +68,16 @@ public:
 	}
 
 	void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;
-	Module_ptr getEventByRecvbyte(uint8_t recvbyte, bool force);
+	Module* getEventByRecvbyte(uint8_t recvbyte, bool force);
 
 protected:
 	LuaScriptInterface &getScriptInterface() override;
 	std::string getScriptBaseName() const override;
 	Event_ptr getEvent(const std::string &nodeName) override;
-	bool registerEvent(const Event_ptr &event, const pugi::xml_node &node) override;
-	void clear() override;
+	bool registerEvent(Event_ptr event, const pugi::xml_node &node) override;
+	void clear(bool) override final;
 
-	using ModulesList = std::map<uint8_t, Module_ptr>;
+	typedef std::map<uint8_t, Module> ModulesList;
 	ModulesList recvbyteList;
 
 	LuaScriptInterface scriptInterface;

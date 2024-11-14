@@ -1,7 +1,3 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 47 (fix: creature speed and conditions)")
-
-	db.query("ALTER TABLE `players` MODIFY `conditions` mediumblob NOT NULL;")
-
-	return true
+	return false -- true = There are others migrations file | false = this is the last migration file
 end

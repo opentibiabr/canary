@@ -17,8 +17,8 @@ monster.events = {
 	"SoulWarBossesDeath",
 }
 
-monster.health = 3000000
-monster.maxHealth = 3000000
+monster.health = 1000000
+monster.maxHealth = 1000000
 monster.race = "undead"
 monster.corpse = 33863
 monster.speed = 200
@@ -184,5 +184,9 @@ mType.onDisappear = function(monster, creature)
 		end
 	end
 end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

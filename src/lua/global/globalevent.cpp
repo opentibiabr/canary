@@ -8,19 +8,12 @@
  */
 
 #include "lua/global/globalevent.hpp"
-
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lua/scripts/scripts.hpp"
-#include "lib/di/container.hpp"
 
 GlobalEvents::GlobalEvents() = default;
 GlobalEvents::~GlobalEvents() = default;
-
-GlobalEvents &GlobalEvents::getInstance() {
-	return inject<GlobalEvents>();
-}
 
 void GlobalEvents::clear() {
 	// Stop events
@@ -35,9 +28,9 @@ void GlobalEvents::clear() {
 	timerMap.clear();
 }
 
-bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent) {
+bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent) {
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
-		const auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
+		auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
 				timerEventId = g_dispatcher().scheduleEvent(
@@ -47,12 +40,12 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 			return true;
 		}
 	} else if (globalEvent->getEventType() != GLOBALEVENT_NONE) {
-		const auto result = serverMap.emplace(globalEvent->getName(), globalEvent);
+		auto result = serverMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			return true;
 		}
 	} else { // think event
-		const auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
+		auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (thinkEventId == 0) {
 				thinkEventId = g_dispatcher().scheduleEvent(
@@ -80,13 +73,13 @@ void GlobalEvents::save() const {
 }
 
 void GlobalEvents::timer() {
-	const time_t now = time(nullptr);
+	time_t now = time(nullptr);
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 
 	auto it = timerMap.begin();
 	while (it != timerMap.end()) {
-		const auto &globalEvent = it->second;
+		const auto globalEvent = it->second;
 
 		int64_t nextExecutionTime = globalEvent->getNextExecution() - now;
 		if (nextExecutionTime > 0) {
@@ -121,7 +114,7 @@ void GlobalEvents::timer() {
 }
 
 void GlobalEvents::think() {
-	const int64_t now = OTSYS_TIME();
+	int64_t now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 	for (const auto &[globalEventName, globalEvent] : thinkMap) {
@@ -150,7 +143,7 @@ void GlobalEvents::think() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		const auto delay = static_cast<uint32_t>(nextScheduledTime);
+		auto delay = static_cast<uint32_t>(nextScheduledTime);
 		thinkEventId = g_dispatcher().scheduleEvent(
 			delay, [this] { think(); }, "GlobalEvents::think"
 		);
@@ -190,34 +183,8 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	}
 }
 
-GlobalEvent::GlobalEvent() = default;
-
-LuaScriptInterface* GlobalEvent::getScriptInterface() const {
-	return &g_scripts().getScriptInterface();
-}
-
-bool GlobalEvent::loadScriptId() {
-	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
-	m_scriptId = luaInterface.getEvent();
-	if (m_scriptId == -1) {
-		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
-		return false;
-	}
-
-	return true;
-}
-
-int32_t GlobalEvent::getScriptId() const {
-	return m_scriptId;
-}
-
-void GlobalEvent::setScriptId(int32_t newScriptId) {
-	m_scriptId = newScriptId;
-}
-
-bool GlobalEvent::isLoadedScriptId() const {
-	return m_scriptId != 0;
-}
+GlobalEvent::GlobalEvent(LuaScriptInterface* interface) :
+	Script(interface) { }
 
 std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {
@@ -237,20 +204,20 @@ std::string GlobalEvent::getScriptTypeName() const {
 			return "onSave";
 		default:
 			g_logger().error("[GlobalEvent::getScriptTypeName] - Invalid event type");
-			return {};
+			return std::string();
 	}
 }
 
 bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightInfo) const {
 	// onPeriodChange(lightState, lightTime)
-	if (!LuaScriptInterface::reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executePeriodChange - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -261,16 +228,16 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 	return getScriptInterface()->callFunction(2);
 }
 
-bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) const {
+bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 	// onRecord(current, old)
-	if (!LuaScriptInterface::reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeRecord - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -282,14 +249,14 @@ bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) const {
 }
 
 bool GlobalEvent::executeEvent() const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[GlobalEvent::executeEvent - {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());

@@ -9,9 +9,18 @@
 
 #pragma once
 
-class ResultFunctions {
+#include "lua/scripts/luascript.hpp"
+
+class ResultFunctions final : LuaScriptInterface {
 public:
-	static void init(lua_State* L);
+	static void init(lua_State* L) {
+		registerTable(L, "Result");
+		registerMethod(L, "Result", "getNumber", ResultFunctions::luaResultGetNumber);
+		registerMethod(L, "Result", "getString", ResultFunctions::luaResultGetString);
+		registerMethod(L, "Result", "getStream", ResultFunctions::luaResultGetStream);
+		registerMethod(L, "Result", "next", ResultFunctions::luaResultNext);
+		registerMethod(L, "Result", "free", ResultFunctions::luaResultFree);
+	}
 
 private:
 	static int luaResultFree(lua_State* L);

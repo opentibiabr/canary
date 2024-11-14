@@ -9,7 +9,11 @@
 
 #pragma once
 
-class LuaEnums {
+#include "account/account.hpp"
+#include "declarations.hpp"
+#include "lua/scripts/luascript.hpp"
+
+class LuaEnums final : LuaScriptInterface {
 public:
 	static void init(lua_State* L);
 

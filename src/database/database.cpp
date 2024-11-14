@@ -123,9 +123,9 @@ void Database::createDatabaseBackup(bool compress) const {
 			return;
 		}
 
-		char buffer[8192];
-		while (backupFile.read(buffer, sizeof(buffer)) || backupFile.gcount() > 0) {
-			gzwrite(gzFile, buffer, backupFile.gcount());
+		std::string buffer(8192, '\0');
+		while (backupFile.read(&buffer[0], buffer.size()) || backupFile.gcount() > 0) {
+			gzwrite(gzFile, buffer.data(), backupFile.gcount());
 		}
 
 		backupFile.close();

@@ -792,10 +792,16 @@
 	<npc centerx="32204" centery="32292" centerz="6" radius="1">
 		<npc name="Jorge" x="0" y="0" z="6" spawntime="60" />
 	</npc>
+	<npc centerx="31875" centery="33450" centerz="6" radius="1">
+		<npc name="Juliet" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="32192" centery="32294" centerz="6" radius="1">
+		<npc name="Joel the Hunter" x="0" y="0" z="6" spawntime="60" />
+	</npc>
 	<npc centerx="32210" centery="32296" centerz="6" radius="1">
 		<npc name="Charos" x="0" y="0" z="6" spawntime="60" />
 	</npc>
-	<npc centerx="32193" centery="32297" centerz="6" radius="1">
+	<npc centerx="32192" centery="32299" centerz="6" radius="1">
 		<npc name="Kepar" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32200" centery="32304" centerz="6" radius="1">

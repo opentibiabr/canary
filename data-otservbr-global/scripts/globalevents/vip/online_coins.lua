@@ -4,13 +4,13 @@ local config = {
 	checkDuplicateIps = true,
 	enableGods = true,
 
-	interval = 60 * 1000, -- minutos * 1000
+	interval = 1 * 1000, -- horas * 1000
 
 	-- per hour | system will calculate how many coins will be given and when
 	-- put 0 in coinsPerHour.free to disable free from receiving coins
 	coinsPerHour = {
-		free = 3,
-		vip = 5,
+		free = 5,
+		vip = 10,
 	},
 
 	-- system will distribute when the player accumulate x coins

@@ -3,7 +3,7 @@
 =========================================================================================================================================
 
 ACTUAL ACTION/UNIQ = 90003
-ACTUAL IN GAME ACTION/UNIQ = 62001
+ACTUAL IN GAME ACTION/UNIQ = 62077
 Hunt Refiller Item ID = 6579
 Stamina Refill Item ID = 14053
 flask para usar = 14055

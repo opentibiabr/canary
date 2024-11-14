@@ -287,7 +287,7 @@
 		<monster name="Gazer Spectre" x="0" y="0" z="6" spawntime="60" />
 	</monster>
 	<monster centerx="31884" centery="33504" centerz="6" radius="1">
-		<monster name="Black Knight" x="0" y="0" z="6" spawntime="60" />
+		<monster name="Werelion" x="0" y="0" z="6" spawntime="60" />
 	</monster>
 	<monster centerx="31902" centery="33504" centerz="6" radius="1">
 		<monster name="Sight Of Surrender" x="0" y="0" z="6" spawntime="60" />

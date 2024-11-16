@@ -5746,8 +5746,10 @@ void ProtocolGame::sendForgeHistory(uint8_t page) {
 	auto historyVector = player->getForgeHistory();
 	auto historyVectorLen = historyVector.size();
 
-	uint16_t currentPage, lastPage = 1;
-	uint16_t pageFirstEntry, pageLastEntry = 0;
+	uint16_t currentPage = 1;
+	uint16_t lastPage = 1;
+	uint16_t pageFirstEntry = 0;
+	uint16_t pageLastEntry = 0;
 
 	std::vector<ForgeHistory> historyPerPage;
 	if (historyVectorLen > 0) {

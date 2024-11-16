@@ -2739,12 +2739,20 @@ uint16_t Player::getGrindingXpBoost() const {
 	return grindingXpBoost;
 }
 
+uint16_t Player::getDisplayGrindingXpBoost() const {
+	return std::clamp<uint16_t>(grindingXpBoost * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
+}
+
 void Player::setGrindingXpBoost(uint16_t value) {
 	grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 }
 
 uint16_t Player::getXpBoostPercent() const {
 	return xpBoostPercent;
+}
+
+uint16_t Player::getDisplayXpBoostPercent() const {
+	return std::clamp<uint16_t>(xpBoostPercent * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
 }
 
 void Player::setXpBoostPercent(uint16_t percent) {

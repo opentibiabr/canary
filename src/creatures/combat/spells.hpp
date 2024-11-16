@@ -10,9 +10,7 @@
 #pragma once
 
 #include "lua/creature/actions.hpp"
-
-enum class WheelSpellBoost_t : uint8_t;
-enum class WheelSpellGrade_t : uint8_t;
+#include "creatures/players/wheel/wheel_definitions.hpp"
 
 class InstantSpell;
 class RuneSpell;
@@ -256,6 +254,8 @@ protected:
 	bool pzLocked = false;
 
 	bool whellOfDestinyUpgraded = false;
+	std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
+	std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
 
 private:
 	uint32_t mana = 0;

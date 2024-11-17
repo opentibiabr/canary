@@ -3517,7 +3517,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		}
 
 		// Level loss
-		auto expLoss = static_cast<uint64_t>(std::ceil((experience * deathLossPercent) / 100.));
+		auto expLoss = static_cast<uint64_t>(std::ceil(experience * deathLossPercent));
 		g_logger().debug("[{}] - experience lost {}", __FUNCTION__, expLoss);
 
 		g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), expLoss);
@@ -6323,9 +6323,9 @@ double Player::getLostPercent() const {
 		g_logger().debug("[{}] - after promotion {}", __FUNCTION__, percentReduction);
 	}
 
-	g_logger().debug("[{}] - total lost percent {}", __FUNCTION__, lossPercent - (lossPercent * percentReduction));
+	g_logger().debug("[{}] - total lost percent {}", __FUNCTION__, (lossPercent * (1 - percentReduction)) / 100.);
 
-	return lossPercent - (lossPercent * percentReduction);
+	return (lossPercent * (1 - percentReduction)) / 100.;
 }
 
 [[nodiscard]] const std::string &Player::getGuildNick() const {

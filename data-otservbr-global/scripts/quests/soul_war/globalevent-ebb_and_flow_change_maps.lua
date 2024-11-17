@@ -18,7 +18,7 @@ local function updateWaterPoolsSize()
 end
 
 local function loadMapEmpty()
-local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
+	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
 	if playersInZone > 0 or monstersInZone > 0 then
 		local creatures = SoulWarQuest.ebbAndFlow.getZone():getCreatures()

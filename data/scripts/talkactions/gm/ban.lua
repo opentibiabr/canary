@@ -19,7 +19,7 @@ function ban.onSay(player, words, param)
 		return true
 	end
 
-	local accountId = getAccountNumberByPlayerName(playerName)
+	local accountId = Game.getPlayerAccountId(playerName)
 	if accountId == 0 then
 		return true
 	end

@@ -250,7 +250,7 @@ local setting = {
 local destroy = Action()
 
 function destroy.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return ActionsLib.destroyItem(player, target, toPosition)
+	return destroyItem(player, target, toPosition)
 end
 
 for index, value in ipairs(setting) do

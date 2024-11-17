@@ -1,9 +1,9 @@
-local setting = { 1948, 1968, 5542, 20474, 20475, 28656, 31262 }
+local ladderTable = Game.getLadderIds()
 
 local ladder = Action()
 
 function ladder.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains(setting, item.itemid) then
+	if table.contains(ladderTable, item.itemid) then
 		fromPosition:moveUpstairs()
 	else
 		fromPosition.z = fromPosition.z + 1
@@ -14,12 +14,9 @@ function ladder.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	end
 
-	player:teleportTo(fromPosition, false)
+	player:teleportTo(fromPosition, true)
 	return true
 end
 
-for index, value in ipairs(setting) do
-	ladder:id(value)
-end
-
+ladder:id(435, unpack(ladderTable))
 ladder:register()

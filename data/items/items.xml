@@ -4435,6 +4435,9 @@
 	<item id="2140" name="ashes">
 		<attribute key="primarytype" value="fields"/>
 		<attribute key="type" value="magicfield"/>
+		<attribute key="field" value="fire">
+			<attribute key="damage" value="0"/>
+		</attribute>
 		<attribute key="replaceable" value="0"/>
 		<attribute key="duration" value="5"/>
 		<attribute key="decayTo" value="2137"/>

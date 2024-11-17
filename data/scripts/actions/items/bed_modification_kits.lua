@@ -20,7 +20,7 @@ local bedModificationKits = Action()
 
 function bedModificationKits.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local newBed = setting[item:getId()]
-	if not newBed or type(target) ~= "userdata" or not target:isItem() then
+	if not newBed or not target or not target:isItem() then
 		return false
 	end
 
@@ -35,7 +35,7 @@ function bedModificationKits.onUse(player, item, fromPosition, target, toPositio
 		return true
 	end
 
-	for index, value in pairs(setting) do
+	for _, value in pairs(setting) do
 		if value[1][1] == targetItemId or table.contains({ 2491, 5501, 15506 }, targetItemId) then
 			toPosition:sendMagicEffect(CONST_ME_POFF)
 			toPosition.y = toPosition.y + 1
@@ -51,8 +51,8 @@ function bedModificationKits.onUse(player, item, fromPosition, target, toPositio
 	return true
 end
 
-for index, value in pairs(setting) do
-	bedModificationKits:id(index)
+for id in pairs(setting) do
+	bedModificationKits:id(id)
 end
 
 bedModificationKits:register()

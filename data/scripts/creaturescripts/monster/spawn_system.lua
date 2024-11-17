@@ -1,4 +1,5 @@
 local monsterDeath = CreatureEvent("monsterDeath")
+
 function monsterDeath.onDeath(creature, corpse, killer, mostDamage, unjustified, mostDamageUnjustified)
 	if creature and creature:isMonster() then
 		local self = creature:getStorageValue(MonsterStorage.Spawn.monster_spawn_object)
@@ -12,6 +13,7 @@ end
 monsterDeath:register()
 
 local monsterDeathBoss = CreatureEvent("monsterDeathBoss")
+
 function monsterDeathBoss.onDeath(creature, corpse, killer, mostDamage, unjustified, mostDamageUnjustified)
 	if creature and creature:isMonster() then
 		local self = creature:getStorageValue(MonsterStorage.Spawn.monster_spawn_object)

@@ -104,7 +104,7 @@
 	</monster>
 	<monster centerx="1056" centery="969" centerz="7" radius="1">
 		<monster name="Wandering Pillar" x="-1" y="0" z="7" spawntime="60" />
-		<monster name="Converter" x="0" y="0" z="7" spawntime="60" />
+		<monster name="" x="0" y="0" z="7" spawntime="60" />
 		<monster name="Darklight Emitter" x="1" y="0" z="7" spawntime="60" />
 	</monster>
 	<monster centerx="1057" centery="969" centerz="7" radius="1">
@@ -168,6 +168,15 @@
 		<monster name="Vibrant Phantom" x="-1" y="0" z="7" spawntime="60" />
 		<monster name="Cloak of Terror" x="0" y="0" z="7" spawntime="60" />
 	</monster>
+	<monster centerx="1056" centery="979" centerz="7" radius="1">
+		<monster name="Darklight Matter" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Darklight Striker" x="1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1058" centery="979" centerz="7" radius="1">
+		<monster name="Darklight Source" x="0" y="0" z="7" spawntime="60" />
+		<monster name="Walking Pillar" x="1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="1059" centery="979" centerz="7" radius="1" />
 	<monster centerx="1061" centery="979" centerz="7" radius="1">
 		<monster name="Pirate Cutthroat" x="0" y="0" z="7" spawntime="60" />
 	</monster>

@@ -237,7 +237,7 @@ bool LuaScriptInterface::closeState() {
 
 std::string LuaScriptInterface::getMetricsScope() const {
 #ifdef FEATURE_METRICS
-	metrics::method_latency measure(__METHOD_NAME__);
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	int32_t scriptId;
 	int32_t callbackId;
 	bool timerEvent;

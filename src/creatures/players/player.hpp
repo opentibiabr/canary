@@ -17,6 +17,7 @@
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
 
+// Player components are decoupled to reduce complexity. Keeping includes here aids in clarity and maintainability, but avoid including player.hpp in headers to prevent circular dependencies.
 #include "creatures/players/components/player_achievement.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"

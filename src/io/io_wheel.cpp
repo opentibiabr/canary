@@ -79,7 +79,6 @@ namespace InternalPlayerWheel {
 			// Decrease data
 			const auto decreaseData = spellData.decrease;
 			if (decreaseData.cooldown > 0) {
-				g_logger().info("Registering spell {}, grade {}, cooldown {}", name, gradeType, decreaseData.cooldown);
 				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, gradeType, decreaseData.cooldown * 1000);
 			}
 			if (decreaseData.manaCost > 0) {

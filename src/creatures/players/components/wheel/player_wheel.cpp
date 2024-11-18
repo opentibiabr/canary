@@ -7,16 +7,15 @@
  * Website: https://docs.opentibiabr.org/
  */
 
-#include "creatures/players/wheel/player_wheel.hpp"
+// Player.hpp already includes the wheel
+#include "creatures/players/player.hpp"
 
 #include "map/spectators.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
-#include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
 #include "enums/player_wheel.hpp"
 #include "game/game.hpp"
 #include "io/io_wheel.hpp"
@@ -24,6 +23,7 @@
 #include "kv/kv_definitions.hpp"
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
@@ -883,8 +883,8 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", std::source_location::current().function_name(), vocationBaseId);
 	}
 
-	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		totalPoints -= getPointsBySlotType(static_cast<WheelSlots_t>(i));
+	for (auto slot : magic_enum::enum_values<WheelSlots_t>()) {
+		totalPoints -= getPointsBySlotType(slot);
 	}
 
 	return totalPoints;
@@ -1513,8 +1513,8 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
 
 	msg.add<uint16_t>(getWheelPoints(false)); // Points (false param for not send extra points)
 	msg.add<uint16_t>(getExtraPoints()); // Extra points
-	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		msg.add<uint16_t>(getPointsBySlotType(i));
+	for (auto slot : magic_enum::enum_values<WheelSlots_t>()) {
+		msg.add<uint16_t>(getPointsBySlotType(slot));
 	}
 	addPromotionScrolls(msg);
 	addGems(msg);
@@ -1603,7 +1603,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	// Creates a vector to store slot information in order.
 	std::vector<SlotInfo> sortedTable;
 	// Iterates over all slots, getting the points for each slot from the message. If the slot points exceed
-	for (uint8_t slot = WheelSlots_t::SLOT_FIRST; slot <= WheelSlots_t::SLOT_LAST; ++slot) {
+	for (auto slot : magic_enum::enum_values<WheelSlots_t>()) {
 		auto slotPoints = msg.get<uint16_t>(); // Points per Slot
 		auto maxPointsPerSlot = getMaxPointsPerSlot(static_cast<WheelSlots_t>(slot));
 		if (slotPoints > maxPointsPerSlot) {
@@ -1619,7 +1619,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 		}
 
 		// The slot information is then added to the vector in order.
-		sortedTable.emplace_back(order, slot, slotPoints);
+		sortedTable.emplace_back(order, enumToValue(slot), slotPoints);
 	}
 
 	// After iterating over all slots, the vector is sorted according to the slot order.
@@ -1991,16 +1991,6 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.divineGrenade; ++i) {
 			setSpellInstant("Divine Grenade", true);
 		}
-		if (m_playerBonusData.stages.divineGrenade >= 2) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 4 * 1000;
-			addSpellBonus("Divine Grenade", bonus);
-		}
-		if (m_playerBonusData.stages.divineGrenade >= 3) {
-			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 6 * 1000;
-			addSpellBonus("Divine Grenade", bonus);
-		}
 	} else {
 		setSpellInstant("Divine Grenade", false);
 	}
@@ -2313,11 +2303,11 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 		return;
 	}
 
-	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		const uint16_t points = getPointsBySlotType(static_cast<WheelSlots_t>(i));
+	for (auto slot : magic_enum::enum_values<WheelSlots_t>()) {
+		const uint16_t points = getPointsBySlotType(slot);
 		if (points > 0) {
 			VocationBonusFunction internalData = nullptr;
-			auto it = wheelFunctions.find(static_cast<WheelSlots_t>(i));
+			auto it = wheelFunctions.find(slot);
 			if (it != wheelFunctions.end()) {
 				internalData = it->second;
 			}
@@ -3632,9 +3622,9 @@ void PlayerWheel::sendOpenWheelWindow(uint32_t ownerId) const {
 	}
 }
 
-uint16_t PlayerWheel::getPointsBySlotType(uint8_t slotType) const {
+uint16_t PlayerWheel::getPointsBySlotType(WheelSlots_t slotType) const {
 	try {
-		return m_wheelSlots.at(slotType);
+		return m_wheelSlots.at(static_cast<std::size_t>(slotType));
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}]. Index {} is out of range, invalid slot type. Error message: {}", __FUNCTION__, slotType, e.what());
 		return 0;

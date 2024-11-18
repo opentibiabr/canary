@@ -11,8 +11,8 @@
 
 #include "enums/player_wheel.hpp"
 #include "kv/kv.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
 
@@ -79,6 +79,7 @@ namespace InternalPlayerWheel {
 			// Decrease data
 			const auto decreaseData = spellData.decrease;
 			if (decreaseData.cooldown > 0) {
+				g_logger().info("Registering spell {}, grade {}, cooldown {}", name, gradeType, decreaseData.cooldown);
 				spell->setWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, gradeType, decreaseData.cooldown * 1000);
 			}
 			if (decreaseData.manaCost > 0) {
@@ -206,7 +207,7 @@ int8_t IOWheel::getSlotPrioritaryOrder(WheelSlots_t slot) const {
 		return 4;
 	}
 
-	g_logger().error("[{}] unknown whell slot type': {}", __FUNCTION__, std::to_string(slot));
+	g_logger().error("[{}] unknown wheel slot type': {}", __FUNCTION__, slot);
 	return -1;
 }
 
@@ -310,7 +311,7 @@ void IOWheel::initializeSorcererSpells() {
 }
 
 bool IOWheel::isMaxPointAddedToSlot(const std::shared_ptr<Player> &player, uint16_t points, WheelSlots_t slotType) const {
-	return points == player->wheel()->getPointsBySlotType(slotType) && points == player->wheel()->getMaxPointsPerSlot(slotType);
+	return points == player->wheel().getPointsBySlotType(slotType) && points == player->wheel().getMaxPointsPerSlot(slotType);
 }
 
 bool IOWheel::isKnight(uint8_t vocationId) const {

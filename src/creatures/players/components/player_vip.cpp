@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/vip/player_vip.hpp"
+// Player.hpp already includes the vip
+#include "creatures/players/player.hpp"
 
 #include "account/account.hpp"
 #include "creatures/players/grouping/groups.hpp"
-#include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 

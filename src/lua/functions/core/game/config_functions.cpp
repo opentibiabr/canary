@@ -83,7 +83,7 @@ int ConfigFunctions::luaConfigManagerGetFloat(lua_State* L) {
 	float value = g_configManager().getFloat(key);
 	double finalValue = shouldRound ? static_cast<double>(std::round(value * 100.0) / 100.0) : value;
 
-	g_logger().debug("[{}] key: {}, finalValue: {}, shouldRound: {}", __METHOD_NAME__, magic_enum::enum_name(key), finalValue, shouldRound);
+	g_logger().debug("[{}] key: {}, finalValue: {}, shouldRound: {}", __FUNCTION__, magic_enum::enum_name(key), finalValue, shouldRound);
 	lua_pushnumber(L, finalValue);
 	return 1;
 }

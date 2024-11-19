@@ -22,9 +22,6 @@
 #include "lua/scripts/scripts.hpp"
 #include "lib/di/container.hpp"
 
-std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
-std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
-
 Spells::Spells() = default;
 Spells::~Spells() = default;
 

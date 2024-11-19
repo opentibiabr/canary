@@ -494,11 +494,11 @@ private:
 	PlayerWheelMethodsBonusData m_playerBonusData;
 	std::unique_ptr<WheelModifierContext> m_modifierContext;
 
-	std::array<uint8_t, magic_enum::enum_count<WheelStage_t>()> m_stages = { 0 };
-	std::array<int64_t, magic_enum::enum_count<WheelOnThink_t>()> m_onThink = { 0 };
-	std::array<int32_t, magic_enum::enum_count<WheelStat_t>()> m_stats = { 0 };
-	std::array<int32_t, magic_enum::enum_count<WheelMajor_t>()> m_majorStats = { 0 };
-	std::array<bool, magic_enum::enum_count<WheelInstant_t>()> m_instant = { false };
+	std::array<uint8_t, magic_enum::enum_count<WheelStage_t>() + 1> m_stages = { 0 };
+	std::array<int64_t, magic_enum::enum_count<WheelOnThink_t>() + 1> m_onThink = { 0 };
+	std::array<int32_t, magic_enum::enum_count<WheelStat_t>() + 1> m_stats = { 0 };
+	std::array<int32_t, magic_enum::enum_count<WheelMajor_t>() + 1> m_majorStats = { 0 };
+	std::array<bool, magic_enum::enum_count<WheelInstant_t>() + 1> m_instant = { false };
 	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 	std::array<int32_t, COMBAT_COUNT> m_specializedMagic = { 0 };
 

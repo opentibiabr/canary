@@ -180,8 +180,6 @@ enum class WheelSpellBoost_t : uint8_t {
 	HEAL = 10,
 	CRITICAL_DAMAGE = 11,
 	CRITICAL_CHANCE = 12,
-
-	TOTAL_COUNT = 13
 };
 
 /**

@@ -58,7 +58,7 @@ namespace InternalPlayerWheel {
 			return;
 		}
 
-		auto spell = g_spells().getInstantSpellByName(name);
+		const auto &spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
 			g_logger().trace("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
 			// Increase data
@@ -127,7 +127,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	// Register spells for druid
 	for (const auto &data : getWheelBonusData().spells.druid) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto grade = data.grade[i];
+			const auto &grade = data.grade[i];
 			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}

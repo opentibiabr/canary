@@ -972,8 +972,10 @@ public:
 	uint16_t getVoucherXpBoost() const;
 	void setVoucherXpBoost(uint16_t value);
 	uint16_t getGrindingXpBoost() const;
+	uint16_t getDisplayGrindingXpBoost() const;
 	void setGrindingXpBoost(uint16_t value);
 	uint16_t getXpBoostPercent() const;
+	uint16_t getDisplayXpBoostPercent() const;
 	void setXpBoostPercent(uint16_t percent);
 	uint16_t getStaminaXpBoost() const;
 	void setStaminaXpBoost(uint16_t value);

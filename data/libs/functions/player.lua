@@ -929,6 +929,12 @@ function Player.getMarkdownLink(self)
 	return string.format("**[%s](%s)** %s [_%s_]", self:getName(), playerURL, emoji, vocation)
 end
 
+function Player.getCustomMarkdown(self)
+	local playerURL = self:getURL()
+
+	return string.format("**[%s](%s)**", self:getName(), playerURL)
+end
+
 function Player.findItemInInbox(self, itemId, name)
 	local inbox = self:getStoreInbox()
 	local items = inbox:getItems()

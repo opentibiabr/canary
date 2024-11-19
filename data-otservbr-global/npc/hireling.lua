@@ -428,7 +428,7 @@ function createHirelingType(HirelingName)
 		FOOD = [[Hmm, yes! A variety of fine food awaits! However, a small expense of 15000 gold is expected to make these delicious masterpieces happen.
 	For 90000 gold I will also serve you a specific dish. Just tell me what it shall be: a {specific} meal or a little {surprise}.]],
 		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!",
-	}	
+	}
 
 	local function getHirelingSkills()
 		local skills = {}
@@ -549,7 +549,7 @@ function createHirelingType(HirelingName)
 
 	local function handleFoodActions(npc, creature, message)
 		local playerId = creature:getId()
-	
+
 		if npcHandler:getTopic(playerId) == TOPIC.FOOD then
 			if MsgContains(message, "specific") then
 				npcHandler:setTopic(playerId, TOPIC_FOOD.SPECIFIC)
@@ -568,7 +568,6 @@ function createHirelingType(HirelingName)
 				npcHandler:setTopic(playerId, TOPIC.SERVICES)
 				npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
 			end
-	
 		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE then
 			if MsgContains(message, "magic") then
 				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MAGIC, 15000)
@@ -581,7 +580,6 @@ function createHirelingType(HirelingName)
 			else
 				npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding}, or {distance} skill?", npc, creature)
 			end
-	
 		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC then
 			local specificFoodOptions = {
 				["chilli con carniphila"] = 29412,
@@ -591,9 +589,9 @@ function createHirelingType(HirelingName)
 				["roasted wyvern wings"] = 29408,
 				["carrot pie"] = 29409,
 				["tropical marinated tiger"] = 29410,
-				["delicatessen salad"] = 29411
+				["delicatessen salad"] = 29411,
 			}
-	
+
 			if specificFoodOptions[message:lower()] then
 				deliverFood(npc, creature, specificFoodOptions[message:lower()], 90000)
 			else

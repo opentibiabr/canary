@@ -1991,6 +1991,16 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.divineGrenade; ++i) {
 			setSpellInstant("Divine Grenade", true);
 		}
+		if (m_playerBonusData.stages.divineGrenade >= 2) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 4 * 1000;
+			addSpellBonus("Divine Grenade", bonus);
+		}
+		if (m_playerBonusData.stages.divineGrenade >= 3) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 6 * 1000;
+			addSpellBonus("Divine Grenade", bonus);
+		}
 	} else {
 		setSpellInstant("Divine Grenade", false);
 	}

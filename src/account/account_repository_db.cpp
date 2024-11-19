@@ -53,8 +53,8 @@ bool AccountRepositoryDB::save(const std::unique_ptr<AccountInfo> &accInfo) {
 			accInfo->premiumLastDay,
 			accInfo->creationTime,
 			accInfo->premiumDaysPurchased,
-			accInfo->id,
-			accInfo->houseBidId
+			accInfo->houseBidId,
+			accInfo->id
 		)
 	);
 

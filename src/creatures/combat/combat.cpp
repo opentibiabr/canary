@@ -1066,7 +1066,7 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 }
 
 bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive) const {
-	metrics::method_latency measure(__METHOD_NAME__);
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (!params.chainCallback) {
 		return false;
 	}
@@ -1469,7 +1469,7 @@ void Combat::setRuneSpellName(const std::string &value) {
 
 std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive, const std::shared_ptr<Creature> &initialTarget /* = nullptr */) {
 	Benchmark bm_pickChain;
-	metrics::method_latency measure(__METHOD_NAME__);
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (!caster) {
 		return {};
 	}
@@ -1512,7 +1512,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 		}
 
 		if (closestSpectator) {
-			g_logger().trace("[{}] closestSpectator: {}", __METHOD_NAME__, closestSpectator->getName());
+			g_logger().trace("[{}] closestSpectator: {}", __FUNCTION__, closestSpectator->getName());
 
 			bool found = false;
 			for (auto &[pos, vec] : resultMap) {
@@ -1531,7 +1531,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 			continue;
 		}
 		if (backtracking) {
-			g_logger().debug("[{}] backtracking", __METHOD_NAME__);
+			g_logger().debug("[{}] backtracking", __FUNCTION__);
 			targets.pop_back();
 			backtrackingAttempts--;
 			continue;
@@ -1539,7 +1539,7 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 		break;
 	}
 
-	g_logger().debug("[{}] resultMap: {} in {} ms", __METHOD_NAME__, resultMap.size(), bm_pickChain.duration());
+	g_logger().debug("[{}] resultMap: {} in {} ms", __FUNCTION__, resultMap.size(), bm_pickChain.duration());
 	return resultMap;
 }
 
@@ -2221,7 +2221,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 }
 
 void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, CombatDamage &damage, const CombatParams &params) {
-	metrics::method_latency measure(__METHOD_NAME__);
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (damage.extension || !caster || damage.primary.type == COMBAT_HEALING) {
 		return;
 	}

@@ -107,6 +107,9 @@ public:
 	int getSpellAdditionalDuration(const std::string &spellName) const;
 	bool getSpellAdditionalArea(const std::string &spellName) const;
 
+	bool handleTwinBurstsCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const;
+	bool handleBeamMasteryCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const;
+
 	/*
 	 * Functions for manage slots
 	 */
@@ -209,7 +212,7 @@ public:
 	void checkAbilities();
 	void checkGiftOfLife();
 	bool checkBattleInstinct();
-	bool checkPositionalTatics();
+	bool checkPositionalTactics();
 	bool checkBallisticMastery();
 	bool checkCombatMastery();
 	bool checkDivineEmpowerment();
@@ -261,6 +264,16 @@ public:
 	void setMajorStat(WheelMajor_t type, int32_t value);
 
 	/**
+	 * @brief Sets the value of a specific specialized magic in the Wheel of Destiny.
+	 *
+	 * This function sets the value of the specified specialized magic in the Wheel of Destiny to the provided value.
+	 *
+	 * @param type The type of the combat to set the specialized magic.
+	 * @param value The value to set for the specialized magic.
+	 */
+	void setSpecializedMagic(CombatType_t type, int32_t value);
+
+	/**
 	 * @brief Sets the value of a specific instant in the Wheel of Destiny.
 	 *
 	 * This function sets the value of the specified instant in the Wheel of Destiny to the provided toggle value.
@@ -310,6 +323,7 @@ public:
 	uint8_t getStage(WheelStage_t type) const;
 	WheelSpellGrade_t getSpellUpgrade(const std::string &name) const;
 	int32_t getMajorStat(WheelMajor_t type) const;
+	int32_t getSpecializedMagic(CombatType_t type) const;
 	int32_t getStat(WheelStat_t type) const;
 	int32_t getResistance(CombatType_t type) const;
 	int32_t getMajorStatConditional(const std::string &instant, WheelMajor_t major) const;
@@ -379,63 +393,11 @@ public:
 	void toggleGemLock(uint16_t index) const;
 	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index) const;
 	void removeActiveGem(WheelGemAffinity_t affinity) const;
-	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
-		m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;
-	}
-	void resetRevelationBonus() {
-		m_bonusRevelationPoints = { 0, 0, 0, 0 };
-	}
+	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points);
+	void resetRevelationBonus();
+	void addSpellBonus(const std::string &spellName, const WheelSpells::Bonus &bonus);
 
-	void addSpellBonus(const std::string &spellName, const WheelSpells::Bonus &bonus) {
-		if (m_spellsBonuses.contains(spellName)) {
-			m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
-			m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
-			m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-			m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
-			m_spellsBonuses[spellName].increase.area = bonus.increase.area;
-			m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
-			m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
-			m_spellsBonuses[spellName].increase.damage += bonus.increase.damage;
-			m_spellsBonuses[spellName].increase.damageReduction += bonus.increase.damageReduction;
-			m_spellsBonuses[spellName].increase.duration += bonus.increase.duration;
-			m_spellsBonuses[spellName].increase.heal += bonus.increase.heal;
-			m_spellsBonuses[spellName].leech.life += bonus.leech.life;
-			m_spellsBonuses[spellName].leech.mana += bonus.leech.mana;
-			return;
-		}
-		m_spellsBonuses[spellName] = bonus;
-	}
-
-	int32_t getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const {
-		if (!m_spellsBonuses.contains(spellName)) {
-			return 0;
-		}
-		auto [leech, increase, decrease] = m_spellsBonuses.at(spellName);
-		switch (boost) {
-			case WheelSpellBoost_t::COOLDOWN:
-				return decrease.cooldown;
-			case WheelSpellBoost_t::MANA:
-				return decrease.manaCost;
-			case WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN:
-				return decrease.secondaryGroupCooldown;
-			case WheelSpellBoost_t::CRITICAL_CHANCE:
-				return increase.criticalChance;
-			case WheelSpellBoost_t::CRITICAL_DAMAGE:
-				return increase.criticalDamage;
-			case WheelSpellBoost_t::DAMAGE:
-				return increase.damage;
-			case WheelSpellBoost_t::DAMAGE_REDUCTION:
-				return increase.damageReduction;
-			case WheelSpellBoost_t::HEAL:
-				return increase.heal;
-			case WheelSpellBoost_t::LIFE_LEECH:
-				return leech.life;
-			case WheelSpellBoost_t::MANA_LEECH:
-				return leech.mana;
-			default:
-				return 0;
-		}
-	}
+	int32_t getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const;
 
 	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
 
@@ -465,9 +427,11 @@ private:
 	std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
 	std::array<bool, static_cast<size_t>(WheelInstant_t::INSTANT_COUNT)> m_instant = { false };
 	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
+	std::array<int32_t, COMBAT_COUNT> m_specializedMagic = { 0 };
 
 	int32_t m_creaturesNearby = 0;
 	std::map<std::string, WheelSpellGrade_t> m_spellsSelected;
 	std::vector<std::string> m_learnedSpellsSelected;
 	std::unordered_map<std::string, WheelSpells::Bonus> m_spellsBonuses;
+	std::unordered_set<std::string> m_beamMasterySpells;
 };

@@ -459,7 +459,7 @@ void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
 	int64_t currentTime = OTSYS_TIME();
 	int64_t elapsedTime = currentTime - m_lastUpdateTime;
 
-	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); ++slotid) {
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 			continue;

@@ -29,6 +29,7 @@
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 #include "creatures/players/player.hpp"
@@ -516,6 +517,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 	ItemsMap inventoryItems;
 	std::vector<std::pair<uint8_t, std::shared_ptr<Container>>> openContainersList;
 	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
+	std::vector<std::shared_ptr<Item>> itemsToStartDecayImbuement;
 
 	try {
 		if ((result = g_database().storeQuery(query))) {
@@ -543,11 +545,17 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 						container->internalAddThing(item);
 						// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
 						itemsToStartDecaying.emplace_back(item);
+						if (container->hasImbuements()) {
+							itemsToStartDecayImbuement.emplace_back(container);
+						}
 					}
 				}
 
 				const std::shared_ptr<Container> &itemContainer = item->getContainer();
 				if (itemContainer) {
+					if (itemContainer->hasImbuements()) {
+						itemsToStartDecayImbuement.emplace_back(itemContainer);
+					}
 					if (!oldProtocol) {
 						auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
 						if (cid > 0) {
@@ -573,6 +581,11 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 		// Now that all items and containers have been added and parent chain is established, start decay
 		for (const auto &item : itemsToStartDecaying) {
 			item->startDecaying();
+		}
+
+		// Start imbuement decay on login for backpacks
+		for (const auto &item : itemsToStartDecayImbuement) {
+			g_imbuementDecay().startImbuementDecay(item);
 		}
 
 		if (!oldProtocol) {

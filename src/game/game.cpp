@@ -542,9 +542,6 @@ void Game::start(ServiceManager* manager) {
 		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
 	);
 	g_dispatcher().cycleEvent(
-		EVENT_IMBUEMENT_INTERVAL, [this] { checkImbuements(); }, "Game::checkImbuements"
-	);
-	g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
 	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES);
@@ -8005,16 +8002,6 @@ void Game::addDistanceEffect(const CreatureVector &spectators, const Position &f
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
 		}
-	}
-}
-
-void Game::checkImbuements() const {
-	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
-		if (!mapPlayer) {
-			continue;
-		}
-
-		mapPlayer->updateInventoryImbuement();
 	}
 }
 

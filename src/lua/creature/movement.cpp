@@ -17,6 +17,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/item.hpp"
@@ -554,6 +555,8 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 			continue;
 		}
 
+		g_imbuementDecay().startImbuementDecay(item);
+
 		player->addItemImbuementStats(imbuementInfo.imbuement);
 	}
 
@@ -652,6 +655,7 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 			continue;
 		}
 
+		g_imbuementDecay().stopImbuementDecay(item);
 		player->removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 

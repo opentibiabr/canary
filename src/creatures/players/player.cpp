@@ -47,6 +47,7 @@
 #include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
@@ -676,63 +677,6 @@ void Player::updateInventoryWeight() {
 		const auto &item = inventory[i];
 		if (item) {
 			inventoryWeight += item->getWeight();
-		}
-	}
-}
-
-void Player::updateInventoryImbuement() {
-	// Get the tile the player is currently on
-	const auto &playerTile = getTile();
-	// Check if the player is in a protection zone
-	const bool &isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
-	// Check if the player is in fight mode
-	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
-	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
-
-	// Iterate through all items in the player's inventory
-	for (const auto &[slodNumber, item] : getAllSlotItems()) {
-		// Iterate through all imbuement slots on the item
-		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-			ImbuementInfo imbuementInfo;
-			// Get the imbuement information for the current slot
-			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-				// If no imbuement is found, continue to the next slot
-				continue;
-			}
-
-			// Imbuement from imbuementInfo, this variable reduces code complexity
-			const auto imbuement = imbuementInfo.imbuement;
-			// Get the category of the imbuement
-			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
-			// Parent of the imbued item
-			const auto &parent = item->getParent();
-			const bool &isInBackpack = parent && parent->getContainer();
-			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
-				continue;
-			}
-			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
-			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != getPlayer()) {
-				continue;
-			}
-
-			// If the imbuement's duration is 0, remove its stats and continue to the next slot
-			if (imbuementInfo.duration == 0) {
-				removeItemImbuementStats(imbuement);
-				updateImbuementTrackerStats();
-				continue;
-			}
-
-			g_logger().trace("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
-			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
-			const uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
-			// Update the imbuement's duration in the item
-			item->decayImbuementTime(slotid, imbuement->getID(), duration);
-
-			if (duration == 0) {
-				removeItemImbuementStats(imbuement);
-				updateImbuementTrackerStats();
-			}
 		}
 	}
 }
@@ -2338,6 +2282,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		addItemImbuementStats(imbuement);
 	}
 
+	g_imbuementDecay().startImbuementDecay(item);
 	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }

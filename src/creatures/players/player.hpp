@@ -1283,11 +1283,6 @@ private:
 	void removeExperience(uint64_t exp, bool sendText = false);
 
 	void updateInventoryWeight();
-	/**
-	 * @brief Starts checking the imbuements in the item so that the time decay is performed
-	 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
-	 */
-	void updateInventoryImbuement();
 
 	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);

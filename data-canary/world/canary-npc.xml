@@ -1,10 +1,19 @@
 <?xml version="1.0"?>
 <npcs>
+	<npc centerx="4962" centery="5016" centerz="5" radius="1">
+		<npc name="Gorn" x="0" y="0" z="5" spawntime="60" />
+	</npc>
 	<npc centerx="5854" centery="5300" centerz="5" radius="6">
 		<npc name="Canary" x="0" y="-2" z="5" spawntime="60" />
 	</npc>
 	<npc centerx="4974" centery="5302" centerz="5" radius="6">
 		<npc name="Canary" x="0" y="-2" z="5" spawntime="60" />
+	</npc>
+	<npc centerx="4991" centery="4981" centerz="6" radius="1">
+		<npc name="King Tibianus" x="0" y="0" z="6" spawntime="60" />
+	</npc>
+	<npc centerx="4962" centery="5004" centerz="6" radius="1">
+		<npc name="Frodo" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="5521" centery="5124" centerz="6" radius="3">
 		<npc name="Canary" x="0" y="0" z="6" spawntime="60" />
@@ -12,8 +21,17 @@
 	<npc centerx="1943" centery="1345" centerz="7" radius="6">
 		<npc name="Canary" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="4981" centery="4993" centerz="7" radius="1">
+		<npc name="Archery" x="0" y="0" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="5004" centery="4998" centerz="7" radius="1">
 		<npc name="Canary" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="4962" centery="5007" centerz="7" radius="1">
+		<npc name="Archery" x="0" y="0" z="7" spawntime="60" />
+	</npc>
+	<npc centerx="4994" centery="5025" centerz="7" radius="1">
+		<npc name="Archery" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="4804" centery="5089" centerz="7" radius="3">
 		<npc name="Canary" x="0" y="-1" z="7" spawntime="60" />

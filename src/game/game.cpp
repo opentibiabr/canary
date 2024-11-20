@@ -7428,10 +7428,6 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 		target->drainHealth(attacker, realDamage);
 		if (realDamage > 0 && targetMonster) {
-			if (attackerPlayer && attackerPlayer->getPlayer()) {
-				attackerPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
-			}
-
 			if (targetMonster->israndomStepping()) {
 				targetMonster->setIgnoreFieldDamage(true);
 			}

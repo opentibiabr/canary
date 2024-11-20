@@ -65,11 +65,7 @@ size_t Party::getInvitationCount() const {
 uint8_t Party::getUniqueVocationsCount() const {
 	std::unordered_set<uint8_t> uniqueVocations;
 
-	if (const auto &leader = getLeader(); leader && leader->getVocation()) {
-		uniqueVocations.insert(leader->getVocation()->getBaseId());
-	}
-
-	for (const auto &player : memberList) {
+	for (const auto &player : getPlayers()) {
 		if (uniqueVocations.size() >= 4) {
 			break;
 		}

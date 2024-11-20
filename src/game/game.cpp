@@ -3409,18 +3409,22 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	const auto &slotItem = player->getInventoryItem(slot);
 	const auto &equipItem = searchForItem(backpack, it.id, hasTier, tier);
 	ReturnValue ret = RETURNVALUE_NOERROR;
+
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
 		ret = internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 		g_logger().debug("Item {} was unequipped", slotItem->getName());
 	} else if (equipItem) {
 		// Shield slot item
 		const auto &rightItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+
 		// Check Ammo item
 		if (it.weaponType == WEAPON_AMMO) {
 			if (rightItem && rightItem->isQuiver()) {
 				ret = internalMoveItem(equipItem->getParent(), rightItem->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
 			}
 		} else {
+			const auto &leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
+
 			const int32_t &slotPosition = equipItem->getSlotPosition();
 			// Checks if a two-handed item is being equipped in the left slot when the right slot is already occupied and move to backpack
 			if (
@@ -3429,8 +3433,33 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 				&& rightItem
 				&& !(it.weaponType == WEAPON_DISTANCE)
 				&& !rightItem->isQuiver()
+				&& (!leftItem || leftItem->getWeaponType() != WEAPON_DISTANCE)
 			) {
 				ret = internalCollectManagedItems(player, rightItem, getObjectCategory(rightItem), false);
+			}
+
+			// Check if trying to equip a quiver while another quiver is already equipped in the right slot
+			if (slot == CONST_SLOT_RIGHT && rightItem && rightItem->isQuiver() && it.isQuiver()) {
+				// Replace the existing quiver with the new one
+				ret = internalMoveItem(rightItem->getParent(), player, INDEX_WHEREEVER, rightItem, rightItem->getItemCount(), nullptr);
+				if (ret == RETURNVALUE_NOERROR) {
+					g_logger().debug("Quiver {} was unequipped to equip new quiver", rightItem->getName());
+				} else {
+					player->sendCancelMessage(ret);
+					return;
+				}
+			} else {
+				// Check if trying to equip a shield while a two-handed weapon is equipped in the left slot
+				if (slot == CONST_SLOT_RIGHT && leftItem && leftItem->getSlotPosition() & SLOTP_TWO_HAND) {
+					// Unequip the two-handed weapon from the left slot
+					ret = internalMoveItem(leftItem->getParent(), player, INDEX_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+					if (ret == RETURNVALUE_NOERROR) {
+						g_logger().debug("Two-handed weapon {} was unequipped to equip shield", leftItem->getName());
+					} else {
+						player->sendCancelMessage(ret);
+						return;
+					}
+				}
 			}
 
 			if (slotItem) {

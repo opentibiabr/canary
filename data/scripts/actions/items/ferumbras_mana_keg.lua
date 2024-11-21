@@ -1,4 +1,5 @@
 local ferumbrasAscendantManaKeg = Action()
+
 function ferumbrasAscendantManaKeg.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 22769 then
 		player:addItem("ultimate mana potion", 10)

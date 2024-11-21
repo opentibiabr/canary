@@ -9,16 +9,8 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class MetricsFunctions final : public LuaScriptInterface {
+class MetricsFunctions {
 public:
-	explicit MetricsFunctions(lua_State* L) :
-		LuaScriptInterface("MetricsFunctions") {
-		init(L);
-	}
-	~MetricsFunctions() override = default;
-
 	static void init(lua_State* L);
 
 private:

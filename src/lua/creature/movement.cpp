@@ -9,6 +9,7 @@
 
 #include "lua/creature/movement.hpp"
 
+#include "lib/di/container.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
@@ -16,6 +17,14 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "items/item.hpp"
+#include "lua/functions/events/move_event_functions.hpp"
+
+MoveEvents &MoveEvents::getInstance() {
+	return inject<MoveEvents>();
+}
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();
@@ -384,8 +393,8 @@ uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, const std::sh
  MoveEvent class
 ================
 */
-MoveEvent::MoveEvent(LuaScriptInterface* interface) :
-	Script(interface) { }
+
+MoveEvent::MoveEvent() = default;
 
 std::string MoveEvent::getScriptTypeName() const {
 	switch (eventType) {
@@ -409,6 +418,33 @@ std::string MoveEvent::getScriptTypeName() const {
 			);
 			return {};
 	}
+}
+
+LuaScriptInterface* MoveEvent::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool MoveEvent::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t MoveEvent::getScriptId() const {
+	return m_scriptId;
+}
+
+void MoveEvent::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool MoveEvent::isLoadedScriptId() const {
+	return m_scriptId != 0;
 }
 
 uint32_t MoveEvent::StepInField(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &item, const Position &) {
@@ -676,7 +712,7 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 }
 
 uint32_t MoveEvent::fireStepEvent(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &item, const Position &pos) const {
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		return executeStep(creature, item, pos);
 	} else {
 		return stepFunction(creature, item, pos);
@@ -714,23 +750,24 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, const std
 		return false;
 	}
 
+	const auto scriptInterface = getScriptInterface();
 	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
-	env->setScriptId(getScriptId(), getScriptInterface());
+	env->setScriptId(getScriptId(), scriptInterface);
 
-	lua_State* L = getScriptInterface()->getLuaState();
+	lua_State* L = scriptInterface->getLuaState();
 
-	getScriptInterface()->pushFunction(getScriptId());
+	scriptInterface->pushFunction(getScriptId());
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, pos);
 	LuaScriptInterface::pushPosition(L, fromPosition);
 
-	return getScriptInterface()->callFunction(4);
+	return scriptInterface->callFunction(4);
 }
 
 uint32_t MoveEvent::fireEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t toSlot, bool isCheck) {
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		if (!equipFunction || equipFunction(static_self_cast<MoveEvent>(), player, item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {
 				return 1;
@@ -768,7 +805,7 @@ bool MoveEvent::executeEquip(const std::shared_ptr<Player> &player, const std::s
 }
 
 uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &fromTile, const Position &pos) const {
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
 		return moveFunction(item, fromTile, pos);
@@ -800,7 +837,7 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const std::
 }
 
 uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const Position &pos) const {
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		return executeAddRemItem(item, pos);
 	} else {
 		return moveFunction(item, nullptr, pos);
@@ -828,4 +865,9 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Posit
 	LuaScriptInterface::pushPosition(L, pos);
 
 	return getScriptInterface()->callFunction(2);
+}
+
+void MoveEvent::addVocEquipMap(const std::string &vocName) {
+	const uint16_t vocationId = g_vocations().getVocationId(vocName);
+	vocEquipMap[vocationId] = true;
 }

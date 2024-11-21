@@ -17,6 +17,7 @@ class HouseTile final : public DynamicTile {
 public:
 	using Tile::addThing;
 
+	HouseTile(const Position &position, std::shared_ptr<House> house);
 	HouseTile(int32_t x, int32_t y, int32_t z, std::shared_ptr<House> house);
 
 	// cylinder implementations

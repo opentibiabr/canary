@@ -32,6 +32,10 @@ local transformItems = {
 	[2663] = 2662, -- cuckoo clock
 	[2772] = 2773,
 	[2773] = 2772, -- lever
+	[2907] = 2908,
+	[2908] = 2907, -- wall lamp
+	[2909] = 2910,
+	[2910] = 2909, -- wall lamp
 	[2911] = 2912,
 	[2912] = 2911, -- candelabrum
 	[2914] = 2915,
@@ -50,6 +54,12 @@ local transformItems = {
 	[2931] = 2930, -- torch bearer
 	[2934] = 2935,
 	[2935] = 2934, -- table lamp
+	[2936] = 2937,
+	[2937] = 2936, -- wall lamp
+	[2938] = 2939,
+	[2939] = 2938, -- wall lamp
+	[2944] = 2945,
+	[2945] = 2944, -- wall lamp
 	[2977] = 2978,
 	[2978] = 2977, -- pumpkinhead
 	[3046] = 3047,
@@ -95,8 +105,6 @@ local transformItems = {
 	[20504] = 20503, -- candle
 	[22153] = 22154,
 	[22154] = 22153, -- skull
-	[22764] = 22765,
-	[22765] = 22764, -- ferumbras staff
 	[23434] = 23436,
 	[23436] = 23434, -- predador lamp
 	[23435] = 23437,
@@ -393,6 +401,18 @@ local transformItems = {
 	[38525] = 38523, -- naga lamp
 	[38526] = 38528,
 	[38528] = 38526, -- basin with a glowing flower
+	[38529] = 38530,
+	[38530] = 38529, -- wall lamp
+	[38531] = 38532,
+	[38532] = 38531, -- wall lamp
+	[38533] = 38534,
+	[38534] = 38533, -- wall lamp
+	[38535] = 38536,
+	[38536] = 38535, -- wall lamp
+	[38623] = 38624,
+	[38624] = 38623, -- wall lamp
+	[38625] = 38626,
+	[38626] = 38625, -- wall lamp
 	[38677] = 38680,
 	[38704] = 38705, -- beaver of wisdom
 	[38827] = 38828,
@@ -406,6 +426,10 @@ local transformItems = {
 	[39443] = 39444,
 	[39444] = 39445, -- knightly fire bowl
 	[39445] = 39443, -- knightly fire bowl
+	[39446] = 39447,
+	[39447] = 39446, -- knightly wall lamp
+	[39496] = 39497,
+	[39497] = 39496, -- knightly sword lamp
 	[39498] = 39499,
 	[39499] = 39498, -- knightly candelabra
 	[39500] = 39501,
@@ -462,23 +486,27 @@ local transformItems = {
 	[42365] = 42366, -- djinn lamp
 }
 
-local transformTo = Action()
+local decayTo = Action()
 
-function transformTo.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if voices[item:getId()] then
+function decayTo.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	local itemId = item:getId()
+	if voices[itemId] then
 		local spectators = Game.getSpectators(fromPosition, false, true, 3, 3)
-		for i = 1, #spectators do
-			player:say(voices[item:getId()], TALKTYPE_MONSTER_SAY, false, spectators[i], fromPosition)
+		for _, spectator in ipairs(spectators) do
+			player:say(voices[itemId], TALKTYPE_MONSTER_SAY, false, spectator, fromPosition)
 		end
 	end
 
-	item:transform(transformItems[item.itemid])
-	item:decay()
+	local newItemId = transformItems[itemId]
+	if newItemId then
+		item:transform(newItemId)
+		item:decay()
+	end
 	return true
 end
 
-for index, value in pairs(transformItems) do
-	transformTo:id(index)
+for index in pairs(transformItems) do
+	decayTo:id(index)
 end
 
-transformTo:register()
+decayTo:register()

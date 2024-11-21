@@ -80,29 +80,27 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 	// Prevent infinity loop
 	if (checkInfinityLoop(destTile)) {
 		const Position &pos = getPosition();
-		g_logger().warn("[Teleport:addThing] - "
-		                "Infinity loop teleport at position: {}",
-		                pos.toString());
+		g_logger().warn("[Teleport:addThing] - Infinity loop teleport at position: {}", pos.toString());
 		return;
 	}
 
 	const MagicEffectClasses effect = Item::items[id].magicEffect;
 
-	if (const std::shared_ptr<Creature> &creature = thing->getCreature()) {
+	if (const auto &creature = thing->getCreature()) {
 		Position origPos = creature->getPosition();
 		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
-		g_dispatcher().addWalkEvent([=] {
-			g_game().map.moveCreature(creature, destTile);
-			if (effect != CONST_ME_NONE) {
-				g_game().addMagicEffect(origPos, effect);
-				g_game().addMagicEffect(destTile->getPosition(), effect);
-			}
-		});
+		g_game().map.moveCreature(creature, destTile);
+
+		if (effect != CONST_ME_NONE) {
+			g_game().addMagicEffect(origPos, effect);
+			g_game().addMagicEffect(destTile->getPosition(), effect);
+		}
 	} else if (const auto &item = thing->getItem()) {
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(destTile->getPosition(), effect);
 			g_game().addMagicEffect(item->getPosition(), effect);
 		}
+
 		g_game().internalMoveItem(getTile(), destTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
 	}
 }

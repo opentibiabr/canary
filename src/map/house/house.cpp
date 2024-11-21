@@ -18,6 +18,7 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "utils/pugicast.hpp"
+#include "creatures/players/player.hpp"
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -471,7 +472,7 @@ std::shared_ptr<HouseTransferItem> House::getTransferItem() {
 
 void House::resetTransferItem() {
 	if (transferItem) {
-		const auto &tmpItem = transferItem;
+		auto tmpItem = transferItem;
 		transferItem = nullptr;
 		transfer_container->resetParent();
 		transfer_container->removeThing(tmpItem, tmpItem->getItemCount());

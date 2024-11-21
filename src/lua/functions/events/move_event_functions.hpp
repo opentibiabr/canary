@@ -9,36 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class MoveEventFunctions final : LuaScriptInterface {
+class MoveEventFunctions {
 public:
-	explicit MoveEventFunctions(lua_State* L) :
-		LuaScriptInterface("MoveEventFunctions") {
-		init(L);
-	}
-	~MoveEventFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "MoveEvent", "", MoveEventFunctions::luaCreateMoveEvent);
-		registerMethod(L, "MoveEvent", "type", MoveEventFunctions::luaMoveEventType);
-		registerMethod(L, "MoveEvent", "register", MoveEventFunctions::luaMoveEventRegister);
-		registerMethod(L, "MoveEvent", "level", MoveEventFunctions::luaMoveEventLevel);
-		registerMethod(L, "MoveEvent", "magicLevel", MoveEventFunctions::luaMoveEventMagLevel);
-		registerMethod(L, "MoveEvent", "slot", MoveEventFunctions::luaMoveEventSlot);
-		registerMethod(L, "MoveEvent", "id", MoveEventFunctions::luaMoveEventItemId);
-		registerMethod(L, "MoveEvent", "aid", MoveEventFunctions::luaMoveEventActionId);
-		registerMethod(L, "MoveEvent", "uid", MoveEventFunctions::luaMoveEventUniqueId);
-		registerMethod(L, "MoveEvent", "position", MoveEventFunctions::luaMoveEventPosition);
-		registerMethod(L, "MoveEvent", "premium", MoveEventFunctions::luaMoveEventPremium);
-		registerMethod(L, "MoveEvent", "vocation", MoveEventFunctions::luaMoveEventVocation);
-		registerMethod(L, "MoveEvent", "onEquip", MoveEventFunctions::luaMoveEventOnCallback);
-		registerMethod(L, "MoveEvent", "onDeEquip", MoveEventFunctions::luaMoveEventOnCallback);
-		registerMethod(L, "MoveEvent", "onStepIn", MoveEventFunctions::luaMoveEventOnCallback);
-		registerMethod(L, "MoveEvent", "onStepOut", MoveEventFunctions::luaMoveEventOnCallback);
-		registerMethod(L, "MoveEvent", "onAddItem", MoveEventFunctions::luaMoveEventOnCallback);
-		registerMethod(L, "MoveEvent", "onRemoveItem", MoveEventFunctions::luaMoveEventOnCallback);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreateMoveEvent(lua_State* L);

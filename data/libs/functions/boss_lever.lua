@@ -177,8 +177,8 @@ function BossLever:onUse(player)
 			return true
 		end
 
-		local isBelowGameMaster = creature:getAccountType() < ACCOUNT_TYPE_GAMEMASTER
-		if isBelowGameMaster and creature:getLevel() < self.requiredLevel then
+		local isAccountNormal = creature:getAccountType() < ACCOUNT_TYPE_GAMEMASTER
+		if isAccountNormal and creature:getLevel() < self.requiredLevel then
 			local message = "All players need to be level " .. self.requiredLevel .. " or higher."
 			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)

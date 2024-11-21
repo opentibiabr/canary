@@ -89,7 +89,7 @@ function SayEvent(npcId, playerId, messageDelayed, npcHandler, textType)
 	local parseInfo = {
 		[TAG_PLAYERNAME] = player:getName(),
 		[TAG_TIME] = getFormattedWorldTime(),
-		[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false),
+		[TAG_BLESSCOST] = Blessings.getBlessingCost(player:getLevel(), false, (npc:getName() == "Kais" or npc:getName() == "Nomad") and true),
 		[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 	}
 	npc:say(npcHandler:parseMessage(messageDelayed, parseInfo), textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())

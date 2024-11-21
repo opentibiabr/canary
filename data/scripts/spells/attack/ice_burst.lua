@@ -14,50 +14,27 @@ combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	if not creature or not creature:isPlayer() then
-		return false
-	end
-
 	local grade = creature:revelationStageWOD("Twin Burst")
 	if grade == 0 then
-		creature:sendCancelMessage("You cannot cast this spell")
+		creature:sendCancelMessage("You need to learn this spell first")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
-	local cooldown = 0
-	if grade >= 3 then
-		cooldown = 14
-	elseif grade >= 2 then
-		cooldown = 18
-	elseif grade >= 1 then
-		cooldown = 22
-	end
-
-	var.instantName = "Twin Burst"
-	if combat:execute(creature, var) then
-		-- Ice cooldown
-		local condition1 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 262)
-		condition1:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-		creature:addCondition(condition1)
-		-- Earth cooldown
-		local condition2 = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 263)
-		condition2:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-		creature:addCondition(condition2)
-		return true
-	end
-	return false
+	return combat:execute(creature, var)
 end
 
-spell:group("attack")
+spell:group("attack", "burstsofnature")
 spell:id(262)
 spell:name("Ice Burst")
 spell:words("exevo ulus frigo")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_ETERNAL_WINTER)
 spell:level(300)
 spell:mana(230)
 spell:isPremium(true)
-spell:cooldown(1000) -- Cooldown is calculated on the casting
-spell:groupCooldown(2 * 1000)
+spell:isSelfTarget(true)
+spell:cooldown(22 * 1000)
+spell:groupCooldown(2 * 1000, 22 * 1000)
 spell:needLearn(true)
 spell:vocation("druid;true", "elder druid;true")
 spell:register()

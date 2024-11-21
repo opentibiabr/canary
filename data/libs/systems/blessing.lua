@@ -258,8 +258,9 @@ Blessings.BuyAllBlesses = function(player)
 	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
 	local missingBless = player:getBlessings(nil, donthavefilter)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
-	local totalCost
-	for i, bless in ipairs(missingBless) do
+	local totalCost = 0
+
+	for _, bless in ipairs(missingBless) do
 		totalCost = totalCost + Blessings.getBlessingCost(player:getLevel(), true, bless.id >= 7)
 	end
 
@@ -274,19 +275,19 @@ Blessings.BuyAllBlesses = function(player)
 	end
 
 	if player:removeMoneyBank(totalCost) then
-		metrics.addCounter("balance_decrease", remainsPrice, {
+		metrics.addCounter("balance_decrease", totalCost, {
 			player = player:getName(),
 			context = "blessings",
 		})
 
-		for i, v in ipairs(missingBless) do
-			player:addBlessing(v.id, 1)
+		for _, bless in ipairs(missingBless) do
+			player:addBlessing(bless.id, 1)
 		end
 
-		player:sendCancelMessage("You received the remaining " .. missingBlessAmt .. " blesses for a total of " .. totalCost .. " gold.")
+		player:sendCancelMessage(string.format("You received the remaining %d blesses for a total of %d gold.", missingBlessAmt, totalCost))
 		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 	else
-		player:sendCancelMessage("You don't have enough money. You need " .. totalCost .. " to buy all blesses.", cid)
+		player:sendCancelMessage(string.format("You don't have enough money. You need %d to buy all blesses.", totalCost))
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 	end
 

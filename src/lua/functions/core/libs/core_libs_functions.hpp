@@ -10,7 +10,6 @@
 #pragma once
 
 #include "lua/scripts/luascript.hpp"
-#include "lua/functions/core/libs/bit_functions.hpp"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/functions/core/libs/result_functions.hpp"
 #include "lua/functions/core/libs/logger_functions.hpp"
@@ -26,7 +25,6 @@ public:
 	~CoreLibsFunctions() override = default;
 
 	static void init(lua_State* L) {
-		BitFunctions::init(L);
 		DBFunctions::init(L);
 		ResultFunctions::init(L);
 		LoggerFunctions::init(L);

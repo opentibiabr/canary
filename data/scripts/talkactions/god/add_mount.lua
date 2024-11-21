@@ -1,13 +1,7 @@
---[[
-	/addmount playername, mount
-]]
+local addmount = TalkAction("/addmount")
 
-local printConsole = true
-
-local addOutfit = TalkAction("/addmount")
-
-function addOutfit.onSay(player, words, param)
-	-- create log
+function addmount.onSay(player, words, param)
+	-- Create log
 	logCommand(player, words, param)
 
 	if param == "" then
@@ -16,23 +10,41 @@ function addOutfit.onSay(player, words, param)
 	end
 
 	local split = param:split(",")
-	local name = split[1]
-
-	local target = Player(name)
-	if target then
-		local mount = tonumber(split[2])
-		target:addMount(mount)
-		target:sendTextMessage(MESSAGE_ADMINISTRATOR, "" .. player:getName() .. " has been added a new mount for you.")
-		player:sendTextMessage(MESSAGE_ADMINISTRATOR, "You have sucessfull added mount " .. mount .. " to the player " .. target:getName() .. ".")
-		if printConsole then
-			logger.info("[addOutfit.onSay] - Player: {} has been added mount: {} to the player: {}", player:getName(), lookType, target:getName())
-		end
+	if #split < 2 then
+		player:sendCancelMessage("Usage: /addmount <playername>, <mount id or 'all'>")
 		return true
 	end
-	player:sendCancelMessage("Player not found.")
+
+	local playerName = split[1]
+	local target = Player(playerName)
+
+	if not target then
+		player:sendCancelMessage("Player not found.")
+		return true
+	end
+
+	local mountParam = string.trim(split[2])
+	if mountParam == "all" then
+		for mountId = 1, 231 do
+			target:addMount(mountId)
+		end
+
+		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added all mounts to you.", player:getName()))
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added all mounts to player %s.", target:getName()))
+	else
+		local mountId = tonumber(mountParam)
+		if not mountId then
+			player:sendCancelMessage("Invalid mount ID.")
+			return true
+		end
+
+		target:addMount(mountId)
+		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("%s has added a new mount for you.", player:getName()))
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have successfully added mount %d to player %s.", mountId, target:getName()))
+	end
 	return true
 end
 
-addOutfit:separator(" ")
-addOutfit:groupType("god")
-addOutfit:register()
+addmount:separator(" ")
+addmount:groupType("god")
+addmount:register()

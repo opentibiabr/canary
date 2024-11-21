@@ -640,17 +640,6 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 		return nullptr;
 	}
 
-	const int32_t walkCache = creature->getWalkCache(pos);
-
-	if (walkCache == 0) {
-		return nullptr;
-	}
-
-	if (walkCache == 1) {
-		return getTile(pos.x, pos.y, pos.z);
-	}
-
-	// used for non-cached tiles
 	const auto &tile = getTile(pos.x, pos.y, pos.z);
 	if (creature->getTile() != tile) {
 		if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {

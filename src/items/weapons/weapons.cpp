@@ -13,11 +13,18 @@
 #include "creatures/combat/combat.hpp"
 #include "game/game.hpp"
 #include "lua/creature/events.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "lib/di/container.hpp"
+#include "lua/scripts/scripts.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "creatures/players/player.hpp"
 
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
+
+Weapons &Weapons::getInstance() {
+	return inject<Weapons>();
+}
 
 WeaponShared_ptr Weapons::getWeapon(const std::shared_ptr<Item> &item) const {
 	if (!item) {
@@ -75,6 +82,35 @@ int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t
 	} else {
 		return static_cast<int32_t>(std::round((0.09 * attackFactor * attackValue * attackSkill) + (level / 5)));
 	}
+}
+
+Weapon::Weapon() = default;
+
+LuaScriptInterface* Weapon::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool Weapon::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t Weapon::getScriptId() const {
+	return m_scriptId;
+}
+
+void Weapon::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool Weapon::isLoadedScriptId() const {
+	return m_scriptId != 0;
 }
 
 void Weapon::configureWeapon(const ItemType &it) {
@@ -203,7 +239,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		}
 	}
 
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		if (cleavePercent != 0) {
 			return;
 		}
@@ -259,7 +295,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 }
 
 void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const {
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		LuaVariant var;
 		var.type = VARIANT_TARGETPOSITION;
 		var.pos = tile->getPosition();
@@ -424,8 +460,31 @@ bool Weapon::calculateSkillFormula(const std::shared_ptr<Player> &player, int32_
 	return shouldCalculateSecondaryDamage;
 }
 
-WeaponMelee::WeaponMelee(LuaScriptInterface* interface) :
-	Weapon(interface) {
+void Weapon::addVocWeaponMap(const std::string &vocName) {
+	const int32_t vocationId = g_vocations().getVocationId(vocName);
+	if (vocationId != -1) {
+		vocWeaponMap[vocationId] = true;
+	}
+}
+
+std::shared_ptr<Combat> Weapon::getCombat() const {
+	if (!m_combat) {
+		g_logger().error("Weapon::getCombat() - m_combat is nullptr");
+		return nullptr;
+	}
+
+	return m_combat;
+}
+
+std::shared_ptr<Combat> Weapon::getCombat() {
+	if (!m_combat) {
+		m_combat = std::make_shared<Combat>();
+	}
+
+	return m_combat;
+}
+
+WeaponMelee::WeaponMelee() {
 	// Add combat type and blocked attributes to the weapon
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
@@ -573,8 +632,7 @@ int32_t WeaponMelee::getWeaponDamage(const std::shared_ptr<Player> &player, cons
 	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->meleeDamageMultiplier)));
 }
 
-WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
-	Weapon(interface) {
+WeaponDistance::WeaponDistance() {
 	// Add combat type and distance effect to the weapon
 	params.blockedByArmor = true;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
@@ -874,6 +932,8 @@ bool WeaponDistance::getSkillType(const std::shared_ptr<Player> &player, const s
 	return true;
 }
 
+WeaponWand::WeaponWand() = default;
+
 void WeaponWand::configureWeapon(const ItemType &it) {
 	params.distanceEffect = it.shootType;
 	const_cast<ItemType &>(it).combatType = params.combatType;
@@ -882,35 +942,7 @@ void WeaponWand::configureWeapon(const ItemType &it) {
 }
 
 int32_t WeaponWand::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &, const std::shared_ptr<Item> &, bool maxDamage /* = false*/) const {
-	if (!g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM)) {
-		// Returns maximum damage or a random value between minChange and maxChange
-		return maxDamage ? -maxChange : -normal_random(minChange, maxChange);
-	}
-
-	// If chain system is enabled, calculates magic-based damage
-	int32_t attackSkill = 0;
-	int32_t attackValue = 0;
-	float attackFactor = 0.0;
-	[[maybe_unused]] int16_t elementAttack = 0;
-	[[maybe_unused]] CombatDamage combatDamage;
-	calculateSkillFormula(player, attackSkill, attackValue, attackFactor, elementAttack, combatDamage);
-
-	const auto magLevel = player->getMagicLevel();
-	const auto level = player->getLevel();
-
-	// Check if level is greater than zero before performing division
-	const auto levelDivision = level > 0 ? level / 5.0 : 0.0;
-
-	const auto totalAttackValue = magLevel + attackValue;
-
-	// Check if magLevel is greater than zero before performing division
-	const auto magicLevelDivision = totalAttackValue > 0 ? totalAttackValue / 3.0 : 0.0;
-
-	const double min = levelDivision + magicLevelDivision;
-	const double max = levelDivision + totalAttackValue;
-
-	// Returns the calculated maximum damage or a random value between the calculated minimum and maximum
-	return maxDamage ? -max : -normal_random(min, max);
+	return maxDamage ? -maxChange : -normal_random(minChange, maxChange);
 }
 
 int16_t WeaponWand::getElementDamageValue() const {

@@ -315,7 +315,8 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	end
 
 	-- Reward System
-	if toPosition.x == CONTAINER_POSITION then
+	local containerThing = tile and tile:getItemByType(ITEM_TYPE_CONTAINER)
+	if containerThing and toPosition.x == CONTAINER_POSITION then
 		local containerId = toPosition.y - 64
 		local container = self:getContainerById(containerId)
 		if not container then

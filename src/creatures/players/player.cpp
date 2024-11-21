@@ -62,6 +62,7 @@
 #include "lua/creature/events.hpp"
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -977,8 +978,6 @@ void Player::closeContainer(uint8_t cid) {
 		removeEmptyRewards();
 	}
 	openContainers.erase(it);
-	if (container && container->getID() == ITEM_BROWSEFIELD) {
-	}
 }
 
 void Player::removeEmptyRewards() {
@@ -2740,12 +2739,20 @@ uint16_t Player::getGrindingXpBoost() const {
 	return grindingXpBoost;
 }
 
+uint16_t Player::getDisplayGrindingXpBoost() const {
+	return std::clamp<uint16_t>(grindingXpBoost * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
+}
+
 void Player::setGrindingXpBoost(uint16_t value) {
 	grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 }
 
 uint16_t Player::getXpBoostPercent() const {
 	return xpBoostPercent;
+}
+
+uint16_t Player::getDisplayXpBoostPercent() const {
+	return std::clamp<uint16_t>(xpBoostPercent * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
 }
 
 void Player::setXpBoostPercent(uint16_t percent) {
@@ -3451,7 +3458,6 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 	g_game().sendSingleSoundEffect(static_self_cast<Player>()->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, getPlayer());
 	if (skillLoss) {
-		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
 		int othersDmg = 0;
 		uint32_t sumLevels = 0;
@@ -3468,10 +3474,13 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 				}
 			}
 		}
+
 		bool pvpDeath = false;
 		if (playerDmg > 0 || othersDmg > 0) {
 			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + static_cast<double>(othersDmg)) >= 0.05);
 		}
+
+		uint8_t unfairFightReduction = 100;
 		if (pvpDeath && sumLevels > level) {
 			double reduce = level / static_cast<double>(sumLevels);
 			unfairFightReduction = std::max<uint8_t>(20, std::floor((reduce * 100) + 0.5));
@@ -3481,7 +3490,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		uint64_t sumMana = 0;
 		uint64_t lostMana = 0;
 
-		// sum up all the mana
+		// Sum up all the mana
 		for (uint32_t i = 1; i <= magLevel; ++i) {
 			sumMana += vocation->getReqMana(i);
 		}
@@ -3491,12 +3500,10 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		double deathLossPercent = getLostPercent() * (unfairFightReduction / 100.);
 
 		// Charm bless bestiary
-		if (lastHitCreature && lastHitCreature->getMonster()) {
-			if (charmRuneBless != 0) {
-				const auto mType = g_monsters().getMonsterType(lastHitCreature->getName());
-				if (mType && mType->info.raceid == charmRuneBless) {
-					deathLossPercent = (deathLossPercent * 90) / 100;
-				}
+		if (lastHitCreature && lastHitCreature->getMonster() && charmRuneBless != 0) {
+			const auto &mType = g_monsters().getMonsterType(lastHitCreature->getName());
+			if (mType && mType->info.raceid == charmRuneBless) {
+				deathLossPercent = (deathLossPercent * 90) / 100;
 			}
 		}
 
@@ -3518,7 +3525,9 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		}
 
 		// Level loss
-		auto expLoss = static_cast<uint64_t>(experience * deathLossPercent);
+		auto expLoss = static_cast<uint64_t>(std::ceil(experience * deathLossPercent));
+		g_logger().debug("[{}] - experience lost {}", __FUNCTION__, expLoss);
+
 		g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), expLoss);
 		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), expLoss);
 
@@ -3527,9 +3536,9 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		lostExp << "You lost " << expLoss << " experience.";
 
 		// Skill loss
-		for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) { // for each skill
+		for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) { // For each skill
 			uint64_t sumSkillTries = 0;
-			for (uint16_t c = 11; c <= skills[i].level; ++c) { // sum up all required tries for all skill levels
+			for (uint16_t c = 11; c <= skills[i].level; ++c) { // Sum up all required tries for all skill levels
 				sumSkillTries += vocation->getReqSkillTries(i, c);
 			}
 
@@ -3605,13 +3614,20 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			bless.empty() ? blessOutput << "You weren't protected with any blessings."
 						  : blessOutput << "You were blessed with " << bless;
 
-			// Make player lose bless
+			const auto playerSkull = getSkull();
+			bool hasSkull = (playerSkull == Skulls_t::SKULL_RED || playerSkull == Skulls_t::SKULL_BLACK);
 			uint8_t maxBlessing = 8;
-			if (pvpDeath && hasBlessing(1)) {
+			if (!hasSkull && pvpDeath && hasBlessing(1)) {
 				removeBlessing(1, 1); // Remove TOF only
 			} else {
 				for (int i = 2; i <= maxBlessing; i++) {
 					removeBlessing(i, 1);
+				}
+
+				const auto &playerAmulet = getThing(CONST_SLOT_NECKLACE);
+				bool usingAol = (playerAmulet && playerAmulet->getItem()->getID() == ITEM_AMULETOFLOSS);
+				if (usingAol) {
+					removeItemOfType(ITEM_AMULETOFLOSS, 1, -1);
 				}
 			}
 		}
@@ -5022,8 +5038,8 @@ ItemsTierCountList Player::getDepotChestItemsId() const {
 ItemsTierCountList Player::getDepotInboxItemsId() const {
 	ItemsTierCountList itemMap;
 
-	const auto &inbox = getInbox();
-	const auto &container = inbox->getContainer();
+	const auto &inboxPtr = getInbox();
+	const auto &container = inboxPtr->getContainer();
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;
@@ -6294,21 +6310,30 @@ double Player::getLostPercent() const {
 		return std::max<int32_t>(0, deathLosePercent) / 100.;
 	}
 
+	bool isRetro = g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO);
+	const auto factor = (isRetro ? 6.31 : 8);
+	double percentReduction = (blessingCount * factor) / 100.;
+
 	double lossPercent;
 	if (level >= 24) {
 		const double tmpLevel = level + (levelPercent / 100.);
 		lossPercent = ((tmpLevel + 50) * 50 * ((tmpLevel * tmpLevel) - (5 * tmpLevel) + 8)) / experience;
 	} else {
-		lossPercent = 5;
+		percentReduction = (percentReduction >= 0.40 ? 0.50 : percentReduction);
+		lossPercent = 10;
 	}
 
-	double percentReduction = 0;
+	g_logger().debug("[{}] - lossPercent {}", __FUNCTION__, lossPercent);
+	g_logger().debug("[{}] - before promotion {}", __FUNCTION__, percentReduction);
+
 	if (isPromoted()) {
-		percentReduction += 30;
+		percentReduction += 30 / 100.;
+		g_logger().debug("[{}] - after promotion {}", __FUNCTION__, percentReduction);
 	}
 
-	percentReduction += blessingCount * 8;
-	return lossPercent * (1 - (percentReduction / 100.)) / 100.;
+	g_logger().debug("[{}] - total lost percent {}", __FUNCTION__, (lossPercent * (1 - percentReduction)) / 100.);
+
+	return (lossPercent * (1 - percentReduction)) / 100.;
 }
 
 [[nodiscard]] const std::string &Player::getGuildNick() const {
@@ -6340,7 +6365,7 @@ uint32_t Player::getMagicLevel() const {
 	uint32_t magic = std::max<int32_t>(0, getLoyaltyMagicLevel() + varStats[STAT_MAGICPOINTS]);
 	// Wheel of destiny magic bonus
 	magic += m_wheelPlayer->getStat(WheelStat_t::MAGIC); // Regular bonus
-	magic += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::MAGIC); // Revelation bonus
+	magic += m_wheelPlayer->getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC); // Revelation bonus
 	return magic;
 }
 
@@ -6398,12 +6423,12 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MELEE);
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Battle Instinct", WheelMajor_t::MELEE);
 	} else if (skill == SKILL_DISTANCE) {
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::DISTANCE);
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tactics", WheelMajor_t::DISTANCE);
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::DISTANCE);
 	} else if (skill == SKILL_SHIELD) {
 		skillLevel += m_wheelPlayer->getMajorStatConditional("Battle Instinct", WheelMajor_t::SHIELD);
 	} else if (skill == SKILL_MAGLEVEL) {
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tatics", WheelMajor_t::MAGIC);
+		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC);
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MAGIC);
 	} else if (skill == SKILL_LIFE_LEECH_AMOUNT) {
 		skillLevel += m_wheelPlayer->getStat(WheelStat_t::LIFE_LEECH);
@@ -6505,7 +6530,7 @@ void Player::setPerfectShotDamage(uint8_t range, int32_t damage) {
 }
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
-	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
+	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)] + m_wheelPlayer->getSpecializedMagic(combat);
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
@@ -8019,7 +8044,7 @@ void sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<Item
 }
 
 void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems) {
-	if (!item || !item->isItemStorable()) {
+	if (!item || (!item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH)) {
 		sendCancelMessage("This item cannot be stowed here.");
 		return;
 	}
@@ -8821,8 +8846,6 @@ void Player::triggerTranscendance() {
 }
 
 // Forge system
-// Forge system
-
 void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint8_t tier, uint16_t secondItemId, bool success, bool reduceTierLoss, bool convergence, uint8_t bonus, uint8_t coreCount) {
 	if (getFreeBackpackSlots() == 0) {
 		sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);

@@ -575,12 +575,63 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
+		-- Soul War XP Boost Taints
+	local taints = {
+		"taints-teleport", -- Taint 1
+		"taints-spawn", -- Taint 2
+		"taints-damage", -- Taint 3
+		"taints-heal", -- Taint 4
+		"taints-loss", -- Taint 5
+		xpboost = {
+			[1] = 5,
+			[2] = 10,
+			[3] = 15,
+			[4] = 20,
+			[5] = 25
+		},
+		monsters = {
+			"Aspect of Power", "Dreadful Harvester", "Goshnar's Cruelty", "Goshnar's Greed","Goshnar's Hatred",
+			"Goshnar's Malice","Goshnar's Megalomania Blue", "Goshnar's Megalomania Green","Goshnar's Megalomania Purple",
+			"Goshnar's Spite","Malicious Soul","Mean Maw","Mirror Image","Soul Cage","Spiteful Spitter",
+			"Bony Sea Devil", "Brachiodemon", "Branchy Crawler","Capricious Phantom","Distorted Phantom",
+			"Druid's Apparition", "Hateful Soul", "Infernal Demon", "Infernal Phantom", "Knight's Apparition",
+			"Many Faces", "Mould Phantom", "Paladin's Apparition", "Rotten Golem", "Sorcerer's Apparition",
+			"Turbulent Elemental", "Cloak of Terror", "Courage Leech", "Vibrant Phantom",
+		}
+	}
+	local function contains(table, element)
+		for _, value in ipairs(table) do
+			if value == element then
+				return true
+			end
+		end
+		return false
+	end
+	
+	local monsterName = target:getName()
+	local taintLevel = self:getTaintLevel()
+	local taints_xpboost = 0
+	
+	if contains(taints.monsters, monsterName) and taintLevel and taintLevel > 0 then
+		local count = 0
+		for index = 1, taintLevel do
+			local taintName = taints[index]
+			if taintName then
+				count = count + 1
+			end
+		end
+		
+		if count > 0 then
+			taints_xpboost = taints.xpboost[count]
+		end
+	end
+
 	-- Final Adjustments: Low Level Bonus and Base Rate
 	local lowLevelBonusExp = self:getFinalLowLevelBonus()
 	local baseRateExp = self:getFinalBaseRateExperience()
 
 	-- Return final experience value
-	return (exp * (1 + xpBoostPercent / 100 + lowLevelBonusExp / 100)) * staminaBonusXp * baseRateExp
+	return (exp * (1 + xpBoostPercent / 100 + lowLevelBonusExp / 100)) + (exp * (taints_xpboost / 100)) * staminaBonusXp * baseRateExp
 end
 
 function Player:onLoseExperience(exp)

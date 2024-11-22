@@ -38,14 +38,12 @@ namespace pugi {
 		// If the string could not be parsed as the specified type
 		if (errorCode == std::errc::invalid_argument) {
 			// Throw an exception indicating that the argument is invalid
-			logError(fmt::format("Invalid argument {}", str));
-			throw std::invalid_argument("Invalid argument: " + std::string(str));
+			logError(fmt::format("[{}] Invalid argument {}", __FUNCTION__, str));
 		}
 		// If the parsed value is out of range for the specified type
 		else if (errorCode == std::errc::result_out_of_range) {
 			// Throw an exception indicating that the result is out of range
-			logError(fmt::format("Result out of range: {}", str));
-			throw std::out_of_range("Result out of range: " + std::string(str));
+			logError(fmt::format("[{}] Result out of range: {}", __FUNCTION__, str));
 		}
 
 		// Return a default value if no exception is thrown

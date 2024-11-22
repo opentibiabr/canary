@@ -95,6 +95,12 @@ local itemFunctions = {
 			return item:setAttribute(ITEM_ATTRIBUTE_EXTRADEFENSE, target)
 		end,
 	},
+	["element"] = {
+		isActive = true,
+		targetFunction = function(item, target)
+			return item:setAttribute(ITEM_ATTRIBUTE_ELEMENT, target)
+		end,
+	},
 	["charge"] = {
 		isActive = true,
 		targetFunction = function(item, target)

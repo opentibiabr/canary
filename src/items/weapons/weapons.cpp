@@ -598,9 +598,9 @@ int32_t WeaponMelee::getElementDamage(const std::shared_ptr<Player> &player, con
 	if (elementType == COMBAT_NONE) {
 		return 0;
 	}
-
+	const int32_t element = item->getElementDamage();
 	const int32_t attackSkill = player->getWeaponSkill(item);
-	const int32_t attackValue = elementDamage;
+	const int32_t attackValue = (element > 0) ? element : elementDamage;
 	const float attackFactor = player->getAttackFactor();
 	const uint32_t level = player->getLevel();
 
@@ -833,8 +833,8 @@ int32_t WeaponDistance::getElementDamage(const std::shared_ptr<Player> &player, 
 	if (elementType == COMBAT_NONE) {
 		return 0;
 	}
-
-	int32_t attackValue = elementDamage;
+	int32_t element = item->getElementDamage();
+	int32_t attackValue = (element > 0) ? element : elementDamage;
 	if (item && player && item->getWeaponType() == WEAPON_AMMO) {
 		const auto &weapon = player->getWeapon(true);
 		if (weapon) {

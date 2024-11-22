@@ -590,64 +590,48 @@ function Player:onGainExperience(target, exp, rawExp)
 			[5] = 25,
 		},
 		monsters = {
-			"Aspect of Power",
-			"Dreadful Harvester",
-			"Goshnar's Cruelty",
-			"Goshnar's Greed",
-			"Goshnar's Hatred",
-			"Goshnar's Malice",
-			"Goshnar's Megalomania Blue",
-			"Goshnar's Megalomania Green",
-			"Goshnar's Megalomania Purple",
-			"Goshnar's Spite",
-			"Malicious Soul",
-			"Mean Maw",
-			"Mirror Image",
-			"Soul Cage",
-			"Spiteful Spitter",
-			"Bony Sea Devil",
-			"Brachiodemon",
-			"Branchy Crawler",
-			"Capricious Phantom",
-			"Distorted Phantom",
-			"Druid's Apparition",
-			"Hateful Soul",
-			"Infernal Demon",
-			"Infernal Phantom",
-			"Knight's Apparition",
-			"Many Faces",
-			"Mould Phantom",
-			"Paladin's Apparition",
-			"Rotten Golem",
-			"Sorcerer's Apparition",
-			"Turbulent Elemental",
-			"Cloak of Terror",
-			"Courage Leech",
-			"Vibrant Phantom",
-		},
+			["Aspect of Power"] = true,
+			["Dreadful Harvester"] = true,
+			["Goshnar's Cruelty"] = true,
+			["Goshnar's Greed"] = true,
+			["Goshnar's Hatred"] = true,
+			["Goshnar's Malice"] = true,
+			["Goshnar's Megalomania Blue"] = true,
+			["Goshnar's Megalomania Green"] = true,
+			["Goshnar's Megalomania Purple"] = true,
+			["Goshnar's Spite"] = true,
+			["Malicious Soul"] = true,
+			["Mean Maw"] = true,
+			["Mirror Image"] = true,
+			["Soul Cage"] = true,
+			["Spiteful Spitter"] = true,
+			["Bony Sea Devil"] = true,
+			["Brachiodemon"] = true,
+			["Branchy Crawler"] = true,
+			["Capricious Phantom"] = true,
+			["Distorted Phantom"] = true,
+			["Druid's Apparition"] = true,
+			["Hateful Soul"] = true,
+			["Infernal Demon"] = true,
+			["Infernal Phantom"] = true,
+			["Knight's Apparition"] = true,
+			["Many Faces"] = true,
+			["Mould Phantom"] = true,
+			["Paladin's Apparition"] = true,
+			["Rotten Golem"] = true,
+			["Sorcerer's Apparition"] = true,
+			["Turbulent Elemental"] = true,
+			["Cloak of Terror"] = true,
+			["Courage Leech"] = true,
+			["Vibrant Phantom"] = true,
+		}
 	}
-	local function contains(table, element)
-		for _, value in ipairs(table) do
-			if value == element then
-				return true
-			end
-		end
-		return false
-	end
 
 	local monsterName = target:getName()
 	local taintLevel = self:getTaintLevel()
 	local taints_xpboost = 0
-
-	if contains(taints.monsters, monsterName) and taintLevel and taintLevel > 0 then
-		local count = 0
-		for index = 1, taintLevel do
-			local taintName = taints[index]
-			if taintName then
-				count = count + 1
-			end
-		end
-
+	if taints.monsters[monsterName] and taintLevel and taintLevel > 0 then
+		local count = math.min(taintLevel, #taints)
 		if count > 0 then
 			taints_xpboost = taints.xpboost[count]
 		end

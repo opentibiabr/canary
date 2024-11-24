@@ -63,7 +63,7 @@ bool PlayerForgeHistory::save() {
 
 	auto playerGUID = m_player.getGUID();
 
-	Database& db = Database::getInstance();
+	Database &db = Database::getInstance();
 
 	if (!m_removedHistoryIds.empty()) {
 		std::string idsToDelete = fmt::format("{}", fmt::join(m_removedHistoryIds, ", "));
@@ -83,14 +83,8 @@ bool PlayerForgeHistory::save() {
 	DBInsert insertQuery("INSERT INTO `forge_history` (`id`, `player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES ");
 	insertQuery.upsert({ "action_type", "description", "done_at", "is_success" });
 
-	for (const auto& history : m_modifiedHistory) {
-		auto row = fmt::format("{}, {}, {}, {}, {}, {}", 
-							   history.id, 
-							   playerGUID, 
-							   history.actionType, 
-							   db.escapeString(history.description), 
-							   history.createdAt, 
-							   history.success ? 1 : 0);
+	for (const auto &history : m_modifiedHistory) {
+		auto row = fmt::format("{}, {}, {}, {}, {}, {}", history.id, playerGUID, history.actionType, db.escapeString(history.description), history.createdAt, history.success ? 1 : 0);
 
 		if (!insertQuery.addRow(row)) {
 			g_logger().warn("Failed to add forge history entry for player with ID: {}", playerGUID);

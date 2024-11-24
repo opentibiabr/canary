@@ -95,7 +95,7 @@ bool PlayerStash::save() {
 	DBInsert insertQuery("INSERT INTO `player_stash` (`player_id`, `item_id`, `item_count`) VALUES ");
 	insertQuery.upsert({ "item_count" });
 
-	for (const auto& [itemId, itemCount] : m_modifiedItems) {
+	for (const auto &[itemId, itemCount] : m_modifiedItems) {
 		auto row = fmt::format("{}, {}, {}", playerGUID, itemId, itemCount);
 		if (!insertQuery.addRow(row)) {
 			g_logger().warn("[PlayerStash::save] - Failed to add row for stash item: {}", itemId);

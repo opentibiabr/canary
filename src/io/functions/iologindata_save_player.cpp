@@ -317,7 +317,7 @@ bool IOLoginDataSave::savePlayerSpells(const std::shared_ptr<Player> &player) {
 
 	// Populate spells list with player's learned spells
 	auto playerGUID = player->getGUID();
-	for (const std::string& spellName : player->learnedInstantSpellList) {
+	for (const std::string &spellName : player->learnedInstantSpellList) {
 		auto row = fmt::format("{}, {}", playerGUID, g_database().escapeString(spellName));
 		if (!spellsQuery.addRow(row)) {
 			g_logger().warn("[IOLoginDataSave::savePlayerSpells] - Failed to add spell data for player: {}", player->getName());
@@ -344,7 +344,7 @@ bool IOLoginDataSave::savePlayerKills(const std::shared_ptr<Player> &player) {
 
 	// Add rows for each kill entry
 	auto playerGUID = player->getGUID();
-	for (const auto& kill : player->unjustifiedKills) {
+	for (const auto &kill : player->unjustifiedKills) {
 		auto row = fmt::format("{}, {}, {}, {}", playerGUID, kill.target, kill.time, kill.unavenged);
 		if (!killsQuery.addRow(row)) {
 			g_logger().warn("[IOLoginDataSave::savePlayerKills] - Failed to add kill data for player: {}", player->getName());
@@ -552,10 +552,10 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 	}
 
 	DBInsert preyQuery("INSERT INTO player_prey "
-						   "(`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, "
-						   "`bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES ");
+	                   "(`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, "
+	                   "`bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES ");
 	preyQuery.upsert({ "state", "raceid", "option", "bonus_type", "bonus_rarity",
-						   "bonus_percentage", "bonus_time", "free_reroll", "monster_list" });
+	                   "bonus_percentage", "bonus_time", "free_reroll", "monster_list" });
 
 	auto playerGUID = player->getGUID();
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
@@ -597,10 +597,10 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 		return false;
 	}
 	DBInsert taskHuntQuery("INSERT INTO `player_taskhunt` "
-							   "(`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, "
-							   "`kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES ");
+	                       "(`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, "
+	                       "`kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES ");
 	taskHuntQuery.upsert({ "state", "raceid", "upgrade", "rarity", "kills", "disabled_time",
-							   "free_reroll", "monster_list" });
+	                       "free_reroll", "monster_list" });
 
 	auto playerGUID = player->getGUID();
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
@@ -640,7 +640,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 
 	// Use UPSERT to avoid the DELETE operation
 	DBInsert insertQuery("INSERT INTO `player_bosstiary` "
-						 "(`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`, `tracker`) VALUES ");
+	                     "(`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `removeTimes`, `tracker`) VALUES ");
 	insertQuery.upsert({ "bossIdSlotOne", "bossIdSlotTwo", "removeTimes", "tracker" });
 
 	// Prepare tracker data using PropWriteStream

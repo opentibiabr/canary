@@ -675,7 +675,8 @@ CREATE TABLE IF NOT EXISTS `player_kills` (
     `player_id` int(11) NOT NULL,
     `time` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `target` int(11) NOT NULL,
-    `unavenged` tinyint(1) NOT NULL DEFAULT '0'
+    `unavenged` tinyint(1) NOT NULL DEFAULT '0',
+    PRIMARY KEY (`player_id`, `target`, `time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_namelocks`

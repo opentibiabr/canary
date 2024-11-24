@@ -33,25 +33,7 @@ public:
 	bool savePlayer(std::shared_ptr<Player> player);
 	void saveGuild(std::shared_ptr<Guild> guild);
 
-	void addTask(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
-
 private:
-	struct ThreadTask {
-		ThreadTask();
-
-		std::vector<Task> tasks;
-		std::mutex mutex;
-	};
-
-	void executeTasks();
-
-	const auto &getThreadTask() const {
-		return m_threads[ThreadPool::getThreadId()];
-	}
-
-	std::vector<std::unique_ptr<ThreadTask>> m_threads;
-	std::vector<Task> m_tasks;
-
 	void saveMap();
 	void saveKV();
 

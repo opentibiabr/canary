@@ -104,61 +104,43 @@ bool PlayerStorage::save() {
 		return true;
 	}
 
-	auto playerGUID = m_player.getGUID();
-	auto playerName = m_player.getName();
-	auto removedKeys = m_removedKeys;
-	auto modifiedKeys = m_modifiedKeys;
-	auto storageMap = m_storageMap;
+	if (!m_removedKeys.empty()) {
+		std::string keysList = fmt::format("{}", fmt::join(m_removedKeys, ", "));
+		std::string deleteQuery = fmt::format(
+			"DELETE FROM `player_storage` WHERE `player_id` = {} AND `key` IN ({})",
+			m_player.getGUID(), keysList
+		);
 
-	auto deleteStorageKeys = [playerGUID, playerName, removedKeys]() mutable {
-		if (!removedKeys.empty()) {
-			std::string keysList = fmt::format("{}", fmt::join(removedKeys, ", "));
-			std::string deleteQuery = fmt::format(
-				"DELETE FROM `player_storage` WHERE `player_id` = {} AND `key` IN ({})",
-				playerGUID, keysList
-			);
-
-			if (!g_database().executeQuery(deleteQuery)) {
-				g_logger().error("[{}] failed to delete storage keys for player: {}", std::source_location::current().function_name(), playerName);
-				return false;
-			}
+		if (!g_database().executeQuery(deleteQuery)) {
+			g_logger().error("[PlayerStorage::save] - Falha ao deletar as chaves de storage para o jogador: {}", m_player.getName());
+			return false;
 		}
-		return true;
-	};
 
-	auto insertModifiedStorageKeys = [this, playerGUID, playerName, modifiedKeys, storageMap]() mutable {
+		m_removedKeys.clear();
+	}
+
+	if (!m_modifiedKeys.empty()) {
 		getReservedRange();
-		if (!modifiedKeys.empty()) {
-			DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-			storageQuery.upsert({ "value" });
+		DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
+		storageQuery.upsert({ "value" });
 
-			for (const auto &key : modifiedKeys) {
-				auto row = fmt::format("{}, {}, {}", playerGUID, key, storageMap.at(key));
-				if (!storageQuery.addRow(row)) {
-					g_logger().warn("[{}] failed to add row for player storage: {}", std::source_location::current().function_name(), playerName);
-					return false;
-				}
-			}
-
-			if (!storageQuery.execute()) {
-				g_logger().error("[{}] failed to execute storage insertion for player: {}", std::source_location::current().function_name(), playerName);
+		auto playerGUID = m_player.getGUID();
+		for (const auto &key : m_modifiedKeys) {
+			auto row = fmt::format("{}, {}, {}", playerGUID, key, m_storageMap.at(key));
+			if (!storageQuery.addRow(row)) {
+				g_logger().warn("[PlayerStorage::save] - Failed to add row for player storage: {}", m_player.getName());
 				return false;
 			}
 		}
-		return true;
-	};
 
-	auto saveTask = [deleteStorageKeys, insertModifiedStorageKeys]() mutable {
-		if (!deleteStorageKeys()) {
-			return;
+		if (!storageQuery.execute()) {
+			g_logger().error("[PlayerStorage::save] - Failed to execute storage insertion for player: {}", m_player.getName());
+			return false;
 		}
 
-		if (!insertModifiedStorageKeys()) {
-			return;
-		}
-	};
+		m_modifiedKeys.clear();
+	}
 
-	g_saveManager().addTask(saveTask, "PlayerStorage::save - playerStorageSaveTask");
 	return true;
 }
 

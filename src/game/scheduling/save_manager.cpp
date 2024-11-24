@@ -16,37 +16,52 @@
 #include "io/iologindata.hpp"
 #include "kv/kv.hpp"
 #include "lib/di/container.hpp"
-#include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/task.hpp"
 
 SaveManager::SaveManager(ThreadPool &threadPool, KVStore &kvStore, Logger &logger, Game &game) :
 	threadPool(threadPool), kv(kvStore), logger(logger), game(game) {
-	m_threads.reserve(threadPool.get_thread_count() + 1);
-	for (uint_fast16_t i = 0; i < m_threads.capacity(); ++i) {
-		m_threads.emplace_back(std::make_unique<ThreadTask>());
-	}
 }
 
 SaveManager &SaveManager::getInstance() {
 	return inject<SaveManager>();
 }
 
+const auto ASYNC_SAVE = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+
 void SaveManager::saveAll() {
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
-
-	const auto async = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
-
 	Benchmark bm_players;
+	const auto &players = game.getPlayers();
+	std::vector<std::future<void>> futures;
+	logger.info("Saving {} players... (Async: {})", players.size(), ASYNC_SAVE ? "Enabled" : "Disabled");
+	for (const auto &[_, player] : players) {
+		player->loginPosition = player->getPosition();
 
-	const auto &players = std::vector<std::pair<uint32_t, std::shared_ptr<Player>>>(game.getPlayers().begin(), game.getPlayers().end());
-	logger.info("Saving {} players... (Async: {})", players.size(), async ? "Enabled" : "Disabled");
+		auto promise = std::make_shared<std::promise<void>>();
+		futures.push_back(promise->get_future());
 
-	g_dispatcher().asyncWait(players.size(), [this, &players](size_t i) {
-		if (const auto &player = players[i].second) {
-			player->loginPosition = player->getPosition();
-			doSavePlayer(player);
+		threadPool.detach_task([this, player, promise]() {
+			try {
+				doSavePlayer(player);
+				promise->set_value();
+			} catch (const std::exception &e) {
+				logger.error("Exception occurred while saving player {}: {}", player->getName(), e.what());
+				promise->set_exception(std::current_exception());
+			} catch (...) {
+				logger.error("Unknown error occurred while saving player {}.", player->getName());
+				promise->set_exception(std::current_exception());
+			}
+		});
+	}
+
+	for (auto &future : futures) {
+		try {
+			future.get();
+		} catch (const std::exception &e) {
+			logger.error("Failed to save player due to exception: {}", e.what());
 		}
-	});
+	}
 
 	double duration_players = bm_players.duration();
 	if (duration_players > 1000.0) {
@@ -56,13 +71,10 @@ void SaveManager::saveAll() {
 	}
 
 	Benchmark bm_guilds;
-	const auto &guilds = std::vector<std::pair<uint32_t, std::shared_ptr<Guild>>>(game.getGuilds().begin(), game.getGuilds().end());
-	g_dispatcher().asyncWait(guilds.size(), [this, &guilds](size_t i) {
-		if (const auto &guild = guilds[i].second) {
-			saveGuild(guild);
-		}
-	});
-
+	const auto &guilds = game.getGuilds();
+	for (const auto &[_, guild] : guilds) {
+		saveGuild(guild);
+	}
 	double duration_guilds = bm_guilds.duration();
 	if (duration_guilds > 1000.0) {
 		logger.info("Guilds saved in {:.2f} seconds.", duration_guilds / 1000.0);
@@ -110,8 +122,6 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 	bool saveSuccess = IOLoginData::savePlayer(player);
 	if (!saveSuccess) {
 		logger.error("Failed to save player {}.", player->getName());
-	} else {
-		executeTasks();
 	}
 
 	auto duration = bm_savePlayer.duration();
@@ -174,39 +184,4 @@ void SaveManager::saveKV() {
 	} else {
 		logger.info("KV store saved in {} milliseconds.", duration_kv);
 	}
-}
-
-void SaveManager::addTask(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs /* = 0*/) {
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
-	thread->tasks.emplace_back(expiresAfterMs, std::move(f), context);
-}
-
-SaveManager::ThreadTask::ThreadTask() {
-	tasks.reserve(2000);
-}
-
-void SaveManager::executeTasks() {
-	for (const auto &thread : m_threads) {
-		std::scoped_lock lock(thread->mutex);
-		auto &threadTasks = thread->tasks;
-		if (!threadTasks.empty()) {
-			m_tasks.insert(m_tasks.end(), make_move_iterator(thread->tasks.begin()), make_move_iterator(thread->tasks.end()));
-			threadTasks.clear();
-		}
-	}
-
-	auto executeTasks = [tasks = std::move(m_tasks)]() {
-		for (const auto &task : tasks) {
-			task.execute();
-		}
-	};
-
-	if (g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
-		threadPool.detach_task(executeTasks);
-	} else {
-		executeTasks();
-	}
-
-	m_tasks.clear();
 }

@@ -357,7 +357,7 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 		addAsyncTask([this, creature_weak = std::weak_ptr<Creature>(creature)] {
 			if (const auto creature = creature_weak.lock()) { 
 				onCreatureLeave(creature);
-		}});
+		} });
 	}
 }
 

@@ -2739,12 +2739,20 @@ uint16_t Player::getGrindingXpBoost() const {
 	return grindingXpBoost;
 }
 
+uint16_t Player::getDisplayGrindingXpBoost() const {
+	return std::clamp<uint16_t>(grindingXpBoost * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
+}
+
 void Player::setGrindingXpBoost(uint16_t value) {
 	grindingXpBoost = std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), value);
 }
 
 uint16_t Player::getXpBoostPercent() const {
 	return xpBoostPercent;
+}
+
+uint16_t Player::getDisplayXpBoostPercent() const {
+	return std::clamp<uint16_t>(xpBoostPercent * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
 }
 
 void Player::setXpBoostPercent(uint16_t percent) {
@@ -3517,7 +3525,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		}
 
 		// Level loss
-		auto expLoss = static_cast<uint64_t>(std::ceil((experience * deathLossPercent) / 100.));
+		auto expLoss = static_cast<uint64_t>(std::ceil(experience * deathLossPercent));
 		g_logger().debug("[{}] - experience lost {}", __FUNCTION__, expLoss);
 
 		g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), expLoss);
@@ -6323,9 +6331,9 @@ double Player::getLostPercent() const {
 		g_logger().debug("[{}] - after promotion {}", __FUNCTION__, percentReduction);
 	}
 
-	g_logger().debug("[{}] - total lost percent {}", __FUNCTION__, lossPercent - (lossPercent * percentReduction));
+	g_logger().debug("[{}] - total lost percent {}", __FUNCTION__, (lossPercent * (1 - percentReduction)) / 100.);
 
-	return lossPercent - (lossPercent * percentReduction);
+	return (lossPercent * (1 - percentReduction)) / 100.;
 }
 
 [[nodiscard]] const std::string &Player::getGuildNick() const {

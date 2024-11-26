@@ -3480,8 +3480,8 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
 	msg.add<uint16_t>(player->getBaseXpGain()); // BaseXPGainRate
-	msg.add<uint16_t>(player->getGrindingXpBoost()); // LowLevelBonus
-	msg.add<uint16_t>(player->getXpBoostPercent()); // XPBoost
+	msg.add<uint16_t>(player->getDisplayGrindingXpBoost()); // LowLevelBonus
+	msg.add<uint16_t>(player->getDisplayXpBoostPercent()); // XPBoost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // StaminaMultiplier(100=x1.0)
 	msg.add<uint16_t>(player->getXpBoostTime()); // xpBoostRemainingTime
 	msg.addByte(player->getXpBoostTime() > 0 ? 0x00 : 0x01); // canBuyXpBoost
@@ -5745,14 +5745,23 @@ void ProtocolGame::sendForgeHistory(uint8_t page) {
 	page = page + 1;
 	auto historyVector = player->getForgeHistory();
 	auto historyVectorLen = historyVector.size();
-	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
-	uint16_t currentPage = (lastPage < page) ? lastPage : page;
+
+	uint16_t currentPage = 1;
+	uint16_t lastPage = 1;
+	uint16_t pageFirstEntry = 0;
+	uint16_t pageLastEntry = 0;
 
 	std::vector<ForgeHistory> historyPerPage;
-	uint16_t pageFirstEntry = (0 < historyVectorLen - (currentPage - 1) * 9) ? historyVectorLen - (currentPage - 1) * 9 : 0;
-	uint16_t pageLastEntry = (0 < historyVectorLen - currentPage * 9) ? historyVectorLen - currentPage * 9 : 0;
-	for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
-		historyPerPage.emplace_back(historyVector[entry - 1]);
+	if (historyVectorLen > 0) {
+		lastPage = std::clamp<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1, 0, std::numeric_limits<uint16_t>::max());
+		currentPage = (lastPage < page) ? lastPage : page;
+
+		pageFirstEntry = std::clamp<uint16_t>(historyVectorLen - (currentPage - 1) * 9, 0, std::numeric_limits<uint16_t>::max());
+		pageLastEntry = historyVectorLen > currentPage * 9 ? std::clamp<uint16_t>(historyVectorLen - currentPage * 9, 0, std::numeric_limits<uint16_t>::max()) : 0;
+
+		for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
+			historyPerPage.emplace_back(historyVector[entry - 1]);
+		}
 	}
 
 	auto historyPageToSend = historyPerPage.size();
@@ -7840,8 +7849,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 		msg.add<uint16_t>(player->getVoucherXpBoost()); // xp voucher
 	}
 
-	msg.add<uint16_t>(player->getGrindingXpBoost()); // low level bonus
-	msg.add<uint16_t>(player->getXpBoostPercent()); // xp boost
+	msg.add<uint16_t>(player->getDisplayGrindingXpBoost()); // low level bonus
+	msg.add<uint16_t>(player->getDisplayXpBoostPercent()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
 	if (!oldProtocol) {

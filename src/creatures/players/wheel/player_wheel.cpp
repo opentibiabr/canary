@@ -1200,9 +1200,6 @@ void PlayerWheel::destroyGem(uint16_t index) const {
 		return;
 	}
 
-	const auto &backpack = m_player.getInventoryItem(CONST_SLOT_BACKPACK);
-	const auto &mainBackpack = backpack ? backpack->getContainer() : nullptr;
-
 	uint8_t lesserFragments = 0;
 	uint8_t greaterFragments = 0;
 
@@ -1663,8 +1660,8 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	// Gem Vessels
 	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
 		const bool hasGem = msg.getByte();
+		removeActiveGem(affinity);
 		if (!hasGem) {
-			removeActiveGem(affinity);
 			continue;
 		}
 		const auto gemIndex = msg.get<uint16_t>();
@@ -1673,6 +1670,8 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 
 	// Player's bonus data is loaded, initialized, registered, and the function logs
 	loadPlayerBonusData();
+
+	sendOpenWheelWindow(m_player.getID());
 
 	g_logger().debug("Player: {} is saved the all slots info in: {} milliseconds", m_player.getName(), bm_saveSlot.duration());
 }

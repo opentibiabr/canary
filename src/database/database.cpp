@@ -137,23 +137,24 @@ void Database::createDatabaseBackup(bool compress) const {
 		g_logger().info("Database backup successfully created at: {}", backupFileName);
 	}
 
-	// Delete old backups
-	auto twentyFourHoursAgo = std::chrono::system_clock::now() - std::chrono::hours(24);
-	auto sevenDaysAgo = std::chrono::system_clock::now() - std::chrono::hours(24 * 7);
-	for (const auto &entry : std::filesystem::directory_iterator("database_backup")) {
+	// Delete backups older than 7 days
+	auto nowTime = std::chrono::system_clock::now();
+	auto sevenDaysAgo = nowTime - std::chrono::hours(7 * 24); // 7 days in hours
+	for (const auto& entry : std::filesystem::directory_iterator("database_backup")) {
 		if (entry.is_directory()) {
 			try {
-				auto dirTime = std::filesystem::last_write_time(entry);
-				if (dirTime.time_since_epoch() < sevenDaysAgo.time_since_epoch()) {
-					// Instead of deleting the entire directory, delete only specific files
-					for (const auto &file : std::filesystem::directory_iterator(entry)) {
-						if (file.path().extension() == ".gz" || file.path().extension() == ".sql") {
+				for (const auto& file : std::filesystem::directory_iterator(entry)) {
+					if (file.path().extension() == ".gz") {
+						auto fileTime = std::filesystem::last_write_time(file);
+						auto fileTimeSystemClock = std::chrono::clock_cast<std::chrono::system_clock>(fileTime);
+
+						if (fileTimeSystemClock < sevenDaysAgo) {
 							std::filesystem::remove(file);
 							g_logger().info("Deleted old backup file: {}", file.path().string());
 						}
 					}
 				}
-			} catch (const std::filesystem::filesystem_error &e) {
+			} catch (const std::filesystem::filesystem_error& e) {
 				g_logger().error("Failed to check or delete files in backup directory: {}. Error: {}", entry.path().string(), e.what());
 			}
 		}

@@ -55,7 +55,9 @@ jobs:
       - name: Switch to gcc-13 on Ubuntu 22.04
         if: matrix.os == 'ubuntu-22.04'
         run: |
-          sudo apt install gcc-13 g++-13
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt-get update
+          sudo apt install gcc-13 g++-13 -y
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-12
           sudo update-alternatives --set gcc /usr/bin/gcc-13
 

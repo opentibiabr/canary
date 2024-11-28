@@ -131,6 +131,8 @@ private:
 	static int luaMonsterTypeBossRace(lua_State* L);
 	static int luaMonsterTypeBossRaceId(lua_State* L);
 
+	static int luaMonsterTypeSoulCore(lua_State* L);
+
 	static int luaMonsterTypeSoundChance(lua_State* L);
 	static int luaMonsterTypeSoundSpeedTicks(lua_State* L);
 	static int luaMonsterTypeAddSound(lua_State* L);

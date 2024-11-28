@@ -139,4 +139,6 @@ private:
 	static int luaMonsterTypeCritChance(lua_State* L);
 
 	static int luaMonsterTypeVariant(lua_State* L);
+	static int luaMonsterTypeGetMonstersByRace(lua_State* L);
+	static int luaMonsterTypeGetMonstersByBestiaryStars(lua_State* L);
 };

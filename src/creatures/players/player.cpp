@@ -5039,10 +5039,14 @@ ItemsTierCountList Player::getDepotInboxItemsId() const {
 	ItemsTierCountList itemMap;
 
 	const auto &inboxPtr = getInbox();
-	const auto &container = inboxPtr->getContainer();
+	const auto &container = inboxPtr ? inboxPtr->getContainer() : nullptr;
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;
+			if (!item) {
+				continue;
+			}
+
 			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		}
 	}
@@ -9073,7 +9077,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 
 	returnValue = g_game().internalAddItem(static_self_cast<Player>(), exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		g_logger().error("Failed to add exaltation chest to player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
+		g_logger().error("Failed to add exaltation chest to player with name {}", getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;

@@ -1883,7 +1883,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetMonstersByRace(lua_State* L) {
 
 	lua_createtable(L, monstersByRace.size(), 0);
 	int index = 0;
-	for (const auto& monsterType : monstersByRace) {
+	for (const auto &monsterType : monstersByRace) {
 		Lua::pushUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}
@@ -1897,7 +1897,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetMonstersByBestiaryStars(lua_State* L)
 
 	lua_createtable(L, monstersByStars.size(), 0);
 	int index = 0;
-	for (const auto& monsterType : monstersByStars) {
+	for (const auto &monsterType : monstersByStars) {
 		Lua::pushUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}

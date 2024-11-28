@@ -660,6 +660,22 @@ int MonsterTypeFunctions::luaMonsterTypeRaceid(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeSoulCore(lua_State* L) {
+	// get: monsterType:luaMonsterTypeSoulCore() set: monsterType:luaMonsterTypeSoulCore(id)
+	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.soulCore);
+		} else {
+			monsterType->info.soulCore = Lua::getNumber<uint16_t>(L, 2);
+			Lua::pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeBestiarytoKill(lua_State* L) {
 	// get: monsterType:BestiarytoKill() set: monsterType:BestiarytoKill(value)
 	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1);

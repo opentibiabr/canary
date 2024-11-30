@@ -588,3 +588,11 @@ metricsPrometheusAddress = "0.0.0.0:9464"
 --- OStream
 metricsEnableOstream = false
 metricsOstreamInterval = 1000
+
+-- Graylog
+-- NOTE set graylogLevel: trace, debug, info, warning, error, critical, off (default: info).
+graylogEnabled = true
+graylogHostNameOrAddress = "10.94.50.11"
+graylogSource = "Canary Localhost"
+graylogPort = 12201
+graylogLevel = "trace"

@@ -592,7 +592,7 @@ metricsOstreamInterval = 1000
 -- Graylog
 -- NOTE set graylogLevel: trace, debug, info, warning, error, critical, off (default: info).
 graylogEnabled = true
-graylogHostNameOrAddress = "10.94.50.11"
-graylogSource = "Canary Localhost"
+graylogHostNameOrAddress = "127.0.0.1"
+graylogSource = "Canary"
 graylogPort = 12201
 graylogLevel = "trace"

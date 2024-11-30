@@ -9,6 +9,7 @@
 #pragma once
 
 #include "utils/transparent_string_hash.hpp"
+#include "gray_log_sink_options.hpp"
 
 namespace spdlog {
 	class logger;
@@ -25,6 +26,7 @@ public:
 
 	virtual void setLevel(const std::string &name) const = 0;
 	virtual std::string getLevel() const = 0;
+	virtual void enableGraylogSink(const GrayLogSinkOptions options) const = 0;
 
 	/**
 	 * @brief Logs the execution time of a given operation to a profile log file.

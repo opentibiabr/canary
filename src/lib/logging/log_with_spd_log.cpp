@@ -9,6 +9,9 @@
 
 #include <spdlog/spdlog.h>
 #include "lib/di/container.hpp"
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include "gray_log_sink_options.hpp"
+#include "gray_log_sink.hpp"
 
 LogWithSpdLog::LogWithSpdLog() {
 	setLevel("info");
@@ -48,6 +51,24 @@ void LogWithSpdLog::error(const std::string &msg) const {
 
 void LogWithSpdLog::critical(const std::string &msg) const {
 	SPDLOG_CRITICAL(msg);
+}
+
+void LogWithSpdLog::enableGraylogSink(const GrayLogSinkOptions options) const {
+
+	// Criação do sink do console (já existente no logger padrão)
+	auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+
+	// Criação do sink Graylog
+	auto graylog_sink = std::make_shared<GrayLogSink>(options);
+
+	// Combinar os dois sinks em um logger
+	auto combined_logger = std::make_shared<spdlog::logger>(
+		"",
+		spdlog::sinks_init_list { console_sink, graylog_sink }
+	);
+
+	// Registrar o logger combinado como o logger padrão
+	spdlog::set_default_logger(combined_logger);
 }
 
 #if defined(DEBUG_LOG)

@@ -25,6 +25,8 @@ public:
 	void error(const std::string &msg) const override;
 	void critical(const std::string &msg) const override;
 
+	void enableGraylogSink(const GrayLogSinkOptions options) const override;
+
 #if defined(DEBUG_LOG)
 	void debug(const std::string &msg) const override;
 	void trace(const std::string &msg) const override;

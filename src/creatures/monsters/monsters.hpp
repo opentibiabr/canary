@@ -267,8 +267,8 @@ public:
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
 	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType);
 	bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "") const;
-	std::vector<std::shared_ptr<MonsterType>> Monsters::getMonstersByRace(BestiaryType_t race) const;
-	std::vector<std::shared_ptr<MonsterType>> Monsters::getMonstersByBestiaryStars(uint8_t stars) const;
+	std::vector<std::shared_ptr<MonsterType>> getMonstersByRace(BestiaryType_t race) const;
+	std::vector<std::shared_ptr<MonsterType>> getMonstersByBestiaryStars(uint8_t stars) const;
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;

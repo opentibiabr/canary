@@ -863,7 +863,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	g_dispatcher().addEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__);
 }
 
-void ProtocolGame::onConnect() {
+void ProtocolGame::sendLoginChallenge() {
 	auto output = OutputMessagePool::getOutputMessage();
 	static std::random_device rd;
 	static std::ranlux24 generator(rd());

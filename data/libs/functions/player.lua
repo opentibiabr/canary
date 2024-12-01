@@ -459,17 +459,6 @@ function Player.getSubjectVerb(self, past)
 	return Pronouns.getPlayerSubjectVerb(self:getPronoun(), past)
 end
 
-function Player.findItemInInbox(self, itemId)
-	local inbox = self:getStoreInbox()
-	local items = inbox:getItems()
-	for _, item in pairs(items) do
-		if item:getId() == itemId then
-			return item
-		end
-	end
-	return nil
-end
-
 function Player.updateHazard(self)
 	local zones = self:getZones()
 	if not zones or #zones == 0 then
@@ -618,28 +607,6 @@ function Player:setFiendish()
 	return false
 end
 
-function Player:findItemInInbox(itemId, name)
-	local inbox = self:getStoreInbox()
-	local items = inbox:getItems()
-	for _, item in pairs(items) do
-		if item:getId() == itemId and (not name or item:getName() == name) then
-			return item
-		end
-	end
-	return nil
-end
-
-function Player:sendColoredMessage(message)
-	local grey = 3003
-	local blue = 3043
-	local green = 3415
-	local purple = 36792
-	local yellow = 34021
-
-	local msg = message:gsub("{grey|", "{" .. grey .. "|"):gsub("{blue|", "{" .. blue .. "|"):gsub("{green|", "{" .. green .. "|"):gsub("{purple|", "{" .. purple .. "|"):gsub("{yellow|", "{" .. yellow .. "|")
-	return self:sendTextMessage(MESSAGE_LOOT, msg)
-end
-
 function Player:showInfoModal(title, message, buttonText)
 	local modal = ModalWindow({
 		title = title,
@@ -746,15 +713,6 @@ function Player.getNextRewardTime(self)
 	return math.max(self:getStorageValue(DailyReward.storages.nextRewardTime), 0)
 end
 
-function Player.isRestingAreaBonusActive(self)
-	local levelStreak = self:getStreakLevel()
-	if levelStreak > 1 then
-		return true
-	else
-		return false
-	end
-end
-
 function Player.getActiveDailyRewardBonusesName(self)
 	local msg = ""
 	local streakLevel = self:getStreakLevel()
@@ -844,45 +802,6 @@ function Player.inBossFight(self)
 		end
 	end
 	return false
-end
-
--- For use of data/events/scripts/player.lua
-function Player:executeRewardEvents(item, toPosition)
-	if toPosition.x == CONTAINER_POSITION then
-		local containerId = toPosition.y - 64
-		local container = self:getContainerById(containerId)
-		if not container then
-			return true
-		end
-
-		-- Do not let the player insert items into either the Reward Container or the Reward Chest
-		local itemId = container:getId()
-		if itemId == ITEM_REWARD_CONTAINER or itemId == ITEM_REWARD_CHEST then
-			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-			return false
-		end
-
-		-- The player also shouldn't be able to insert items into the boss corpse
-		local tileCorpse = Tile(container:getPosition())
-		for index, value in ipairs(tileCorpse:getItems() or {}) do
-			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
-				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-				return false
-			end
-		end
-	end
-	-- Do not let the player move the boss corpse.
-	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		return false
-	end
-	-- Players cannot throw items on reward chest
-	local tileChest = Tile(toPosition)
-	if tileChest and tileChest:getItemById(ITEM_REWARD_CHEST) then
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		self:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return false
-	end
 end
 
 do
@@ -1008,4 +927,16 @@ function Player.getMarkdownLink(self)
 	local playerURL = self:getURL()
 
 	return string.format("**[%s](%s)** %s [_%s_]", self:getName(), playerURL, emoji, vocation)
+end
+
+function Player.findItemInInbox(self, itemId, name)
+	local inbox = self:getStoreInbox()
+	local items = inbox:getItems()
+
+	for _, item in pairs(items) do
+		if item:getId() == itemId and (not name or item:getName() == name) then
+			return item
+		end
+	end
+	return nil
 end

@@ -26,18 +26,6 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	local cooldown = 0
-	if grade >= 3 then
-		cooldown = 24
-	elseif grade >= 2 then
-		cooldown = 28
-	elseif grade >= 1 then
-		cooldown = 32
-	end
-	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 268)
-	condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-	creature:addCondition(condition)
-
 	local position = creature:getPosition()
 	for x = -1, 1 do
 		for y = -1, 1 do
@@ -63,7 +51,7 @@ spell:isPremium(true)
 spell:range(7)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
-spell:cooldown(1000) -- Cooldown is calculated on the casting
+spell:cooldown(32 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:needLearn(true)
 spell:vocation("paladin;true", "royal paladin;true")

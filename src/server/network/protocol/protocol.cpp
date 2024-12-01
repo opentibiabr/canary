@@ -215,8 +215,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 		return false;
 	}
 
-	g_logger().warn("length header {}", msg.getLengthHeader());
-	msg.setLength(paddingSize);
+	msg.setLength(messageLength - paddingSize);
 	return true;
 }
 

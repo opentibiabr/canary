@@ -29,7 +29,7 @@ public:
 	void writePaddingAmount() {
 		uint8_t paddingAmount = 8 - (info.length % 8) - 1;
 		addPaddingBytes(paddingAmount);
-		add_header(static_cast<uint8_t>(paddingAmount));
+		add_header(paddingAmount);
 	}
 
 	void writeMessageLength() {

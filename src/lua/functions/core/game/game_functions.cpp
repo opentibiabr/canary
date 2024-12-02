@@ -107,6 +107,8 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "getSecretAchievements", GameFunctions::luaGameGetSecretAchievements);
 	Lua::registerMethod(L, "Game", "getPublicAchievements", GameFunctions::luaGameGetPublicAchievements);
 	Lua::registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
+
+	Lua::registerMethod(L, "Game", "getSoulCoreItems", GameFunctions::luaGameGetSoulCoreItems);
 }
 
 // Game
@@ -992,5 +994,27 @@ int GameFunctions::luaGameGetAchievements(lua_State* L) {
 		Lua::setField(L, "secret", achievement_it.second.secret);
 		lua_rawseti(L, -2, ++index);
 	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetSoulCoreItems(lua_State* L) {
+	// Game.getSoulCoreItems()
+	std::vector<const ItemType*> soulCoreItems;
+
+	for (const auto &itemType : Item::items.getItems()) {
+		if (itemType.m_primaryType == "SoulCores" || itemType.type == ITEM_TYPE_SOULCORES) {
+			soulCoreItems.emplace_back(&itemType);
+		}
+	}
+
+	lua_createtable(L, soulCoreItems.size(), 0);
+
+	int index = 0;
+	for (const auto *itemType : soulCoreItems) {
+		Lua::pushUserdata<const ItemType>(L, itemType);
+		Lua::setMetatable(L, -1, "ItemType");
+		lua_rawseti(L, -2, ++index);
+	}
+
 	return 1;
 }

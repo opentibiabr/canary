@@ -4663,7 +4663,7 @@ void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, cons
 void ProtocolGame::sendIconBakragore(const IconBakragore icon) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
-	msg.add<uint32_t>(0); // Send empty normal icons
+	msg.add<uint64_t>(0); // Send empty normal icons
 	msg.addByte(enumToValue(icon));
 	writeToOutputBuffer(msg);
 }

@@ -13,16 +13,16 @@ end
 function Player:sendNormalIcons(icons)
 	local msg = NetworkMessage()
 	msg:addByte(0xA2)
-	msg:addU32(icons)
+	msg:addU64(icons)
 	msg:addByte(0)
 	msg:sendToPlayer(self)
 end
 
 function Player:sendIconBakragore(specialIcon)
 	local msg = NetworkMessage()
-	msg:addByte(0xA3)
-	msg:addU32(specialIcon)
-	msg:addByte(0)
+	msg:addByte(0xA2)
+	msg:addU64(0)
+	msg:addByte(specialIcon)
 	msg:sendToPlayer(self)
 end
 

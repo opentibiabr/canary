@@ -12,7 +12,6 @@
 #include "declarations.hpp"
 // TODO: Remove circular includes (maybe shared_ptr?)
 #include "server/network/message/networkmessage.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
 static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;

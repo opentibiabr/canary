@@ -15,6 +15,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 
@@ -104,8 +105,7 @@ void Connection::closeSocket() {
 
 void Connection::accept(Protocol_ptr protocolPtr) {
 	connectionState = CONNECTION_STATE_IDENTIFYING;
-	protocol = std::move(protocolPtr);
-	g_dispatcher().addEvent([protocol = protocol] { protocol->sendLoginChallenge(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+	g_dispatcher().addEvent([protocol = std::move(protocolPtr)] { protocol->sendLoginChallenge(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 
 	acceptInternal(false);
 }

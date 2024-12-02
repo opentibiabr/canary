@@ -1010,7 +1010,7 @@ int GameFunctions::luaGameGetSoulCoreItems(lua_State* L) {
 	lua_createtable(L, soulCoreItems.size(), 0);
 
 	int index = 0;
-	for (const auto *itemType : soulCoreItems) {
+	for (const auto* itemType : soulCoreItems) {
 		Lua::pushUserdata<const ItemType>(L, itemType);
 		Lua::setMetatable(L, -1, "ItemType");
 		lua_rawseti(L, -2, ++index);

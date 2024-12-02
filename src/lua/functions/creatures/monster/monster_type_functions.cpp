@@ -1881,6 +1881,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetMonstersByRace(lua_State* L) {
 	int index = 0;
 	for (const auto &monsterType : monstersByRace) {
 		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

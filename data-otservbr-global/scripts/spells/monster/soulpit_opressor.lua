@@ -25,7 +25,7 @@ local combats = { combatRoot, combatFear }
 local zone = Zone("soulpit")
 
 function spell.onCastSpell(creature, var)
-	if creature:getForgeStack() ~= 40 or not zone:isInZone(creature:getPosition()) then
+	if not zone:isInZone(creature:getPosition()) or creature:getForgeStack() ~= 40 then
 		return true
 	end
 

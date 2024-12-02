@@ -11,7 +11,7 @@ local spell = Spell("instant")
 local zone = Zone("soulpit")
 
 function spell.onCastSpell(creature, var)
-	if creature:getForgeStack() ~= 40 or not zone:isInZone(creature:getPosition()) then
+	if not zone:isInZone(creature:getPosition()) or creature:getForgeStack() ~= 40 then
 		return true
 	end
 
@@ -21,6 +21,6 @@ end
 spell:name("soulpit powerless")
 spell:words("###939")
 spell:blockWalls(true)
-spell:needTarget(false)
+spell:needTarget(true)
 spell:needLearn(true)
 spell:register()

@@ -12,26 +12,26 @@ local config = {
 		[1] = {
 			stacks = {
 				[1] = 7,
-			}
+			},
 		},
 		[2] = {
 			stacks = {
 				[1] = 4,
 				[5] = 3,
-			}
+			},
 		},
 		[3] = {
 			stacks = {
 				[1] = 5,
 				[15] = 2,
-			}
+			},
 		},
 		[4] = {
 			stacks = {
 				[1] = 3,
 				[5] = 3,
 				[40] = 1,
-			}
+			},
 		},
 	},
 	effects = {
@@ -212,9 +212,11 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	for i = 1, #config.waves do
-		encounter:addStage({
-		start = waveStart,
-		}):autoAdvance({ delay = config.checkMonstersDelay, monstersKilled = true })
+		encounter
+			:addStage({
+				start = waveStart,
+			})
+			:autoAdvance({ delay = config.checkMonstersDelay, monstersKilled = true })
 	end
 
 	function encounter:onReset(position)

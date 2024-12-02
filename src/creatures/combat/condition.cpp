@@ -260,6 +260,10 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_MUTED:
 		case CONDITION_CHANNELMUTEDTICKS:
 		case CONDITION_YELLTICKS:
+		case CONDITION_POWERLESS:
+		case CONDITION_LESSERHEX:
+		case CONDITION_INTENSEHEX:
+		case CONDITION_GREATERHEX:
 		case CONDITION_PACIFIED:
 			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
 		case CONDITION_BAKRAGORE:
@@ -461,6 +465,23 @@ std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
 		case CONDITION_ROOTED:
 			icons.insert(PlayerIcon::Rooted);
 			break;
+
+		case CONDITION_LESSERHEX:
+			icons.insert(PlayerIcon::LesserHex);
+			break;
+
+		case CONDITION_INTENSEHEX:
+			icons.insert(PlayerIcon::IntenseHex);
+			break;
+
+		case CONDITION_GREATERHEX:
+			icons.insert(PlayerIcon::GreaterHex);
+			break;
+
+		case CONDITION_POWERLESS:
+			icons.insert(PlayerIcon::Powerless);
+			break;
+
 		case CONDITION_GOSHNARTAINT:
 			switch (subId) {
 				case 1:

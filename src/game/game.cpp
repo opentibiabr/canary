@@ -3380,6 +3380,21 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		return;
 	}
 
+	if (!player->canDoAction()) {
+		uint32_t delay = player->getNextActionTime() - OTSYS_TIME();
+		if (delay > 0) {
+			const auto &task = createPlayerTask(
+				delay,
+				[this, playerId, itemId, hasTier, tier] {
+					playerEquipItem(playerId, itemId, hasTier, tier);
+				},
+				__FUNCTION__
+			);
+			player->setNextActionTask(task);
+		}
+		return;
+	}
+
 	if (player->hasCondition(CONDITION_FEARED)) {
 		/*
 		 *	When player is feared the player can´t equip any items.
@@ -3477,6 +3492,8 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	}
+
+	player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 }
 
 void Game::playerMove(uint32_t playerId, Direction direction) {

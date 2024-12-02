@@ -105,7 +105,8 @@ void Connection::closeSocket() {
 
 void Connection::accept(Protocol_ptr protocolPtr) {
 	connectionState = CONNECTION_STATE_IDENTIFYING;
-	g_dispatcher().addEvent([protocol = std::move(protocolPtr)] { protocol->sendLoginChallenge(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+	protocol = std::move(protocolPtr);
+	g_dispatcher().addEvent([eventProtocol = protocol] { eventProtocol->sendLoginChallenge(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 
 	acceptInternal(false);
 }

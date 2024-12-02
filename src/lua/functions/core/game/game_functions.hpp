@@ -88,4 +88,6 @@ private:
 	static int luaGameGetSecretAchievements(lua_State* L);
 	static int luaGameGetPublicAchievements(lua_State* L);
 	static int luaGameGetAchievements(lua_State* L);
+
+	static int luaGameGetSoulCoreItems(lua_State* L);
 };

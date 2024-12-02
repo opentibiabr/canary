@@ -1332,6 +1332,7 @@ enum class CreatureIconModifications_t {
 	Influenced,
 	Fiendish,
 	ReducedHealth,
+	ReducedHealthExclamation,
 };
 
 enum class CreatureIconQuests_t {

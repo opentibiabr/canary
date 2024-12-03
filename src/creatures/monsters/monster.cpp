@@ -687,7 +687,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 }
 
 uint64_t Monster::getLostExperience() const {
-	return skillLoss ? mType->info.experience : 0;
+	float extraExperience = forgeStack <= 15 ? (forgeStack + 10) / 10 : 28;
+	return skillLoss ? static_cast<uint64_t>(std::round(mType->info.experience * extraExperience)) : 0;
 }
 
 uint16_t Monster::getLookCorpse() const {
@@ -2508,6 +2509,15 @@ void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, Fin
 	}
 }
 
+void Monster::applyStacks() {
+	// Change health based in stacks
+	const auto percentToIncrement = 1 + (15 * forgeStack + 35) / 100.f;
+	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
+
+	healthMax = newHealth;
+	health = newHealth;
+}
+
 void Monster::configureForgeSystem() {
 	if (!canBeForgeMonster()) {
 		return;
@@ -2523,13 +2533,6 @@ void Monster::configureForgeSystem() {
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());
 	}
-
-	// Change health based in stacks
-	const auto percentToIncrement = 1 + (15 * forgeStack + 35) / 100.f;
-	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
-
-	healthMax = newHealth;
-	health = newHealth;
 
 	// Event to give Dusts
 	const std::string &Eventname = "ForgeSystemMonster";
@@ -2556,6 +2559,7 @@ uint16_t Monster::getForgeStack() const {
 
 void Monster::setForgeStack(uint16_t stack) {
 	forgeStack = stack;
+	applyStacks();
 }
 
 ForgeClassifications_t Monster::getMonsterForgeClassification() const {

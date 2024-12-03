@@ -187,6 +187,8 @@ public:
 
 	static uint32_t monsterAutoID;
 
+	void applyStacks();
+
 	void configureForgeSystem();
 
 	bool canBeForgeMonster() const;

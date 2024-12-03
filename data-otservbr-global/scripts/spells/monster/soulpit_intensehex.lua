@@ -8,14 +8,12 @@ combat:addCondition(condition)
 
 local spell = Spell("instant")
 
-local zone = Zone("soulpit")
-
 function spell.onCastSpell(creature, var)
-	if not zone:isInZone(creature:getPosition()) or creature:getForgeStack() ~= 40 then
-		return true
+	if table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
+		return combat:execute(creature, var)
 	end
 
-	return combat:execute(creature, var)
+	return true
 end
 
 spell:name("soulpit intensehex")

@@ -2,20 +2,18 @@ local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONHIT)
 combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_NONE)
 
-local condition = Condition(CONDITION_ROOTED)
+local condition = Condition(CONDITION_POWERLESS)
 condition:setParameter(CONDITION_PARAM_TICKS, 3000)
 combat:addCondition(condition)
 
 local spell = Spell("instant")
 
-local zone = Zone("soulpit")
-
 function spell.onCastSpell(creature, var)
-	if not zone:isInZone(creature:getPosition()) or creature:getForgeStack() ~= 40 then
-		return true
+	if table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
+		return combat:execute(creature, var)
 	end
 
-	return combat:execute(creature, var)
+	return true
 end
 
 spell:name("soulpit powerless")

@@ -95,7 +95,6 @@ monster.loot = {
 	{ name = "butcher's axe", chance = 1000 },
 	{ name = "dreaded cleaver", chance = 1000 },
 	{ name = "mercenary sword", chance = 1000 },
-	{ id = 28341, chance = 1000 }, -- tessellated wall
 	{ name = "slightly rusted shield", chance = 5880 },
 	{ name = "slightly rusted helmet", chance = 35290 },
 	{ name = "epaulette", chance = 500 },

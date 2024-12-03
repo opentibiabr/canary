@@ -10,6 +10,9 @@ function zoneEvent.afterLeave(zone, creature)
 			SoulPit.encounter:reset()
 			SoulPit.encounter = nil
 		end
+		if SoulPit.kickEvent then
+			stopEvent(SoulPit.kickEvent)
+		end
 	end
 
 	for abilityName, abilityInfo in pairs(SoulPit.bossAbilities) do
@@ -79,6 +82,22 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 		zone = SoulPit.zone,
 	})
 
+	function encounter:onReset(position)
+		SoulPit.zone:removeMonsters()
+
+		for _, player in pairs(SoulPit.zone:getPlayers()) do
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have defeated the core of the %s soul and unlocked its animus mastery!", monsterName))
+			-- Add the monster animus mastery for the player.
+		end
+
+		SoulPit.kickEvent = addEvent(function()
+			SoulPit.encounter = nil
+			for _, player in pairs(SoulPit.zone:getPlayers()) do
+				player:teleportTo(SoulPit.exit)
+			end
+		end, SoulPit.timeToKick)
+	end
+
 	SoulPit.encounter = encounter
 
 	local function waveStart()
@@ -121,22 +140,6 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 				start = waveStart,
 			})
 			:autoAdvance({ delay = SoulPit.checkMonstersDelay, monstersKilled = true })
-	end
-
-	function encounter:onReset(position)
-		SoulPit.zone:removeMonsters()
-
-		for _, player in pairs(SoulPit.zone:getPlayers()) do
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have defeated the core of the %s soul and unlocked its animus mastery!", monsterName))
-			-- Add the monster animus mastery for the player.
-		end
-
-		addEvent(function()
-			SoulPit.encounter = nil
-			for _, player in pairs(SoulPit.zone:getPlayers()) do
-				player:teleportTo(SoulPit.exit)
-			end
-		end, SoulPit.timeToKick)
 	end
 
 	encounter:start()

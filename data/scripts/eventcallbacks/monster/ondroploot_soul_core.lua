@@ -40,7 +40,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 			lootTable = {
 				[soulCoreId] = {
 					count = 1,
-				}
+				},
 			}
 		else
 			return {}

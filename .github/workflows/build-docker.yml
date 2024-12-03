@@ -73,6 +73,8 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
+          secrets: |
+            DEBUG=1
 
       - name: Image digest
         if: ${{ github.event_name == 'push' }}

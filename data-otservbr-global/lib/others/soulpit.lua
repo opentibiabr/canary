@@ -1,5 +1,6 @@
 SoulPit = {
 	encounter = nil,
+	kickEvent = nil,
 	soulCores = Game.getSoulCoreItems(),
 	requiredLevel = 8,
 	playerPositions = {

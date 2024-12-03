@@ -15,7 +15,7 @@ local combatFear = Combat()
 combatFear:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_BLUE_GHOST)
 
 local area = createCombatArea(AREA_FEAR_OPRESSOR)
-combatRoot:setArea(area)
+combatFear:setArea(area)
 
 local condition = Condition(CONDITION_FEARED)
 condition:setParameter(CONDITION_PARAM_TICKS, 3000)

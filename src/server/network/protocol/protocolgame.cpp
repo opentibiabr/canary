@@ -1612,7 +1612,7 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	uint8_t numdirs = msg.getByte();
-	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 8)) {
+	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 6)) {
 		return;
 	}
 

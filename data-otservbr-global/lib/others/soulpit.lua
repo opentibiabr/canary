@@ -13,8 +13,7 @@ SoulPit = {
 	waves = {
 		[1] = {
 			stacks = {
-				[1] = 6,
-				[40] = 1,
+				[1] = 7,
 			},
 		},
 		[2] = {
@@ -66,6 +65,9 @@ SoulPit = {
 	checkMonstersDelay = 4.5 * 1000, -- 4.5 seconds | The check delay should never be less than the timeToSpawnMonsters.
 	timeToSpawnMonsters = 4 * 1000, -- 4 seconds
 	totalMonsters = 7,
+	obeliskActive = 49175,
+	obeliskInactive = 49174,
+	obeliskPosition = Position(32371, 31154, 8),
 	bossPosition = Position(32372, 31135, 8),
 	exit = Position(32371, 31164, 8),
 	zone = Zone("soulpit"),

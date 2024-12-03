@@ -1320,13 +1320,15 @@ void Monster::onThinkDefense(uint32_t interval) {
 			}
 
 			const auto &summon = Monster::createMonster(summonName);
-			if (summon) {
-				if (g_game().placeCreature(summon, getPosition(), false, summonForce)) {
-					summon->setMaster(static_self_cast<Monster>(), true);
-					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
-					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
-					g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, getMonster());
+			if (summon && g_game().placeCreature(summon, getPosition(), false, summonForce)) {
+				if (getSoulPit()) {
+					const auto stack = getForgeStack();
+					summon->setSoulPitStack(stack, true);
 				}
+				summon->setMaster(static_self_cast<Monster>(), true);
+				g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
+				g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
+				g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, getMonster());
 			}
 		}
 	}
@@ -2183,6 +2185,24 @@ bool Monster::getHazardSystemDefenseBoost() const {
 
 void Monster::setHazardSystemDefenseBoost(bool value) {
 	hazardDefenseBoost = value;
+}
+
+bool Monster::getSoulPit() const {
+	return soulPit;
+}
+
+void Monster::setSoulPit(bool value) {
+	soulPit = value;
+}
+
+void Monster::setSoulPitStack(uint8_t stack, bool isSummon /* = false */) {
+	const bool isBoss = stack == 40;
+	const CreatureIconModifications_t icon = isBoss ? CreatureIconModifications_t::ReducedHealthExclamation : CreatureIconModifications_t::ReducedHealth;
+	setForgeStack(stack);
+	setIcon("soulpit", CreatureIcon(icon, isBoss ? 0 : stack));
+	setSoulPit(true);
+	setDropLoot(false);
+	setSkillLoss(isBoss && !isSummon);
 }
 
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {

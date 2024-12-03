@@ -179,6 +179,10 @@ public:
 	void setHazardSystemDefenseBoost(bool value);
 	// Hazard end
 
+	bool getSoulPit() const;
+	void setSoulPit(bool value);
+	void setSoulPitStack(uint8_t stack, bool isSummon = false);
+
 	void updateTargetList();
 	void clearTargetList();
 	void clearFriendList();
@@ -291,6 +295,8 @@ private:
 	bool hazardDodge = false;
 	bool hazardDamageBoost = false;
 	bool hazardDefenseBoost = false;
+
+	bool soulPit = false;
 
 	bool m_isDead = false;
 	bool m_isImmune = false;

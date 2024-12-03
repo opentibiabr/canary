@@ -12,6 +12,7 @@ function zoneEvent.afterLeave(zone, creature)
 		end
 		if SoulPit.kickEvent then
 			stopEvent(SoulPit.kickEvent)
+			SoulPit.obeliskPosition:transformItem(SoulPit.obeliskActive, SoulPit.obeliskInactive)
 		end
 	end
 
@@ -25,7 +26,8 @@ zoneEvent:register()
 
 local soulPitAction = Action()
 function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or target:getId() ~= 49174 then
+	logger.warn(item:getName())
+	if not target or target:getId() ~= SoulPit.obeliskInactive then
 		return false
 	end
 
@@ -66,6 +68,7 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 	lever:checkPositions()
 	if lever:checkConditions() then
 		lever:teleportPlayers()
+		SoulPit.obeliskPosition:transformItem(SoulPit.obeliskInactive, SoulPit.obeliskActive)
 	end
 
 	local monsterName = string.gsub(item:getName(), " soul core", "")
@@ -95,6 +98,7 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 			for _, player in pairs(SoulPit.zone:getPlayers()) do
 				player:teleportTo(SoulPit.exit)
 			end
+			SoulPit.obeliskPosition:transformItem(SoulPit.obeliskActive, SoulPit.obeliskInactive)
 		end, SoulPit.timeToKick)
 	end
 

@@ -569,12 +569,8 @@ int GameFunctions::luaGameCreateSoulPitMonster(lua_State* L) {
 	const uint8_t stack = Lua::getNumber<uint8_t>(L, 3, 1);
 	const bool extended = Lua::getBoolean(L, 4, false);
 	const bool force = Lua::getBoolean(L, 5, false);
-	const CreatureIconModifications_t icon = stack < 40 ? CreatureIconModifications_t::ReducedHealth : CreatureIconModifications_t::ReducedHealthExclamation;
 	if (g_game().placeCreature(monster, position, extended, force)) {
-		monster->setSkillLoss(stack == 40);
-		monster->setForgeStack(stack);
-		monster->setDropLoot(false);
-		monster->setIcon("soulpit", CreatureIcon(icon, stack < 40 ? stack : 0));
+		monster->setSoulPitStack(stack);
 		monster->onSpawn();
 		const auto &mtype = monster->getMonsterType();
 		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {

@@ -1,5 +1,4 @@
 local callback = EventCallback("MonsterOnDropLootSoulCore")
-local soulCores = Game.getSoulCoreItems()
 
 function callback.monsterOnDropLoot(monster, corpse)
 	if not monster or not corpse then
@@ -14,11 +13,11 @@ function callback.monsterOnDropLoot(monster, corpse)
 	end
 
 	local soulCoreId = nil
-	local trySameMonsterSoulCore = math.random() <= 0.3 -- 30% of chance to drop the same monster soul core | WIP: Externalize this to a lib like libs/soulpit.lua
+	local trySameMonsterSoulCore = math.random(100) <= SoulPit.SoulCoresConfiguration.chanceToGetSameMonsterSoulCore
 	local mType = monster:getType()
 	local lootTable = {}
 
-	if math.random() < 0.5 then -- WIP: Externalize this to a lib like libs/soulpit.lua
+	if math.random(100) < SoulPit.SoulCoresConfiguration.chanceToDropSoulCore then
 		if trySameMonsterSoulCore then
 			local itemName = monster:getName():lower() .. " soul core"
 			soulCoreId = getItemIdByName(itemName)

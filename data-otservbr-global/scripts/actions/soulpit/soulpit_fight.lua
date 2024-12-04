@@ -153,6 +153,8 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 end
 
 for _, itemType in pairs(SoulPit.soulCores) do
-	soulPitAction:id(itemType:getId())
+	if itemType:getId() ~= 49164 then -- TO-DO: currently Game.getSoulCoreItems() it's returning soul prism item in the results, we don't want this.
+		soulPitAction:id(itemType:getId())
+	end
 end
 soulPitAction:register()

@@ -1900,6 +1900,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetMonstersByBestiaryStars(lua_State* L)
 	int index = 0;
 	for (const auto &monsterType : monstersByStars) {
 		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

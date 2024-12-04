@@ -80126,5 +80126,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
 		<attribute key="weight" value="100"/>
 	</item>
+	<item id="49164" article="a" name="soul prism">
+		<attribute key="description" value="Focalises the soul within a core. Can be used to turn a soul core into a greater version"/>
+		<attribute key="weight" value="100"/>
+	</item>
 </items>
 

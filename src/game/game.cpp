@@ -72,7 +72,7 @@
 
 #include <appearances.pb.h>
 
-std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
+phmap::parallel_flat_hash_map_m<uint8_t, std::shared_ptr<Creature>> checkCreatureLists;
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
@@ -6469,7 +6469,7 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 	creature->inCheckCreaturesVector.store(true);
 
 	creature->safeCall([this, creature] {
-		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
+		checkCreatureLists.emplace(uniform_random(0, EVENT_CREATURECOUNT - 1), creature);
 	});
 }
 
@@ -6484,7 +6484,12 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
+	phmap::erase_if(checkCreatureLists, [](const auto &pair) {
+		const auto creature = pair.second;
+		if (pair.first != index) {
+			return false;
+		}
+
 		if (creature->creatureCheck && creature->isAlive()) {
 			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);

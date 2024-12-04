@@ -9,7 +9,8 @@ combat:addCondition(condition)
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	if table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
+	local monster = creature:getMonster()
+	if monster and monster:soulPit() and table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
 		return combat:execute(creature, var)
 	end
 

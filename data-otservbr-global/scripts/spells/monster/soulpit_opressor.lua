@@ -26,7 +26,8 @@ local spell = Spell("instant")
 local combats = { combatRoot, combatFear }
 
 function spell.onCastSpell(creature, var)
-	if table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
+	local monster = creature:getMonster()
+	if monster and monster:soulPit() and table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
 		for _, combat in pairs(combats) do
 			combat:execute(creature, var)
 		end

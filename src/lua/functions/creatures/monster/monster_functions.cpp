@@ -66,6 +66,8 @@ void MonsterFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Monster", "hazardDamageBoost", MonsterFunctions::luaMonsterHazardDamageBoost);
 	Lua::registerMethod(L, "Monster", "hazardDefenseBoost", MonsterFunctions::luaMonsterHazardDefenseBoost);
 
+	Lua::registerMethod(L, "Monster", "soulPit", MonsterFunctions::luaMonsterSoulPit);
+
 	Lua::registerMethod(L, "Monster", "addReflectElement", MonsterFunctions::luaMonsterAddReflectElement);
 	Lua::registerMethod(L, "Monster", "addDefense", MonsterFunctions::luaMonsterAddDefense);
 	Lua::registerMethod(L, "Monster", "getDefense", MonsterFunctions::luaMonsterGetDefense);
@@ -693,6 +695,23 @@ int MonsterFunctions::luaMonsterHazardDefenseBoost(lua_State* L) {
 		} else {
 			monster->setHazardSystemDefenseBoost(hazardDefenseBoost);
 			Lua::pushBoolean(L, monster->getHazardSystemDefenseBoost());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterSoulPit(lua_State* L) {
+	// get: monster:soulPit() ; set: monster:soulPit(hazard)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const bool soulPit = Lua::getBoolean(L, 2, false);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monster->getSoulPit());
+		} else {
+			monster->setSoulPit(soulPit);
+			Lua::pushBoolean(L, monster->getSoulPit());
 		}
 	} else {
 		lua_pushnil(L);

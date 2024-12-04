@@ -5744,7 +5744,9 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 		return false;
 	}
 	addHuntingTaskKill(mType);
-	addBestiaryKill(mType);
+	if (!monster->getSoulPit()) {
+		addBestiaryKill(mType);
+	}
 	addBosstiaryKill(mType);
 	return false;
 }

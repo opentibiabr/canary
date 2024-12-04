@@ -28,7 +28,7 @@ local function getSoulCoreItemForMonster(monsterName)
 			return newSoulCoreId
 		end
 	else
-		local newMonsterSoulCore = monsterName .. " soul core"
+		local newMonsterSoulCore = string.format("%s soul core", monsterName)
 		local newSoulCoreId = getItemIdByName(newMonsterSoulCore)
 		if newSoulCoreId then
 			return newSoulCoreId
@@ -67,7 +67,7 @@ function soulPrism.onUse(player, item, fromPosition, target, toPosition, isHotke
 	end
 
 	if #nextDifficultyMonsters == 0 then
-		player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "No monsters available for the next difficulty level. Please contact an administrator.")
+		player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "No monsters available for the next difficulty level.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
@@ -77,7 +77,7 @@ function soulPrism.onUse(player, item, fromPosition, target, toPosition, isHotke
 	if not newSoulCoreItem then -- Retry a second time.
 		newSoulCoreItem = getSoulCoreItemForMonster(newMonsterType:getName())
 		if not newSoulCoreItem then
-			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "Failed to generate a Soul Core. Please contact an administrator.")
+			player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "Failed to generate a Soul Core.")
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return false
 		end
@@ -95,7 +95,7 @@ function soulPrism.onUse(player, item, fromPosition, target, toPosition, isHotke
 	else
 		player:addItem(newSoulCoreItem, 1)
 		player:removeItem(target:getId(), 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received a " .. newMonsterType:getName() .. " soul core.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received a %s soul core.", newMonsterType:getName()))
 	end
 	player:removeItem(item:getId(), 1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)

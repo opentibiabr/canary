@@ -72,7 +72,7 @@
 
 #include <appearances.pb.h>
 
-std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
+std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
@@ -6461,15 +6461,13 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->creatureCheck.store(true);
 
-	if (creature->inCheckCreaturesVector.load()) {
+	if (creature->inCheckCreaturesVector.exchange(true)) {
 		// already in a vector
 		return;
 	}
 
-	creature->inCheckCreaturesVector.store(true);
-
-	creature->safeCall([this, creature] {
-		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
+	creature->safeCall([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
+		checkCreatureLists[index].emplace_back(creature);
 	});
 }
 
@@ -6484,15 +6482,18 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
-		if (creature->creatureCheck && creature->isAlive()) {
-			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-			creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
-			return false;
+	std::erase_if(checkCreatureLists[index], [this](const std::weak_ptr<Creature>& weak) {
+		if (const auto creature = weak.lock()) { 
+			if (creature->creatureCheck && creature->isAlive()) {
+				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
+				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+				return false;
+			}
+
+			creature->inCheckCreaturesVector = false;
 		}
 
-		creature->inCheckCreaturesVector = false;
 		return true;
 	});
 

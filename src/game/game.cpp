@@ -10882,3 +10882,32 @@ void Game::updatePlayersOnline() const {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
 	}
 }
+
+std::map<uint32_t, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() {
+	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupedPlayers;
+
+	for (const auto &player : g_game().getPlayers() | std::views::values) {
+		uint32_t ip = player->getIP();
+		if (ip != 0 && player->idleTime <= 900000) {
+			groupedPlayers[ip].emplace_back(player);
+		}
+	}
+
+	return groupedPlayers;
+}
+
+PlayerStats Game::getPlayerStats() {
+	auto groupedPlayers = groupPlayersByIP();
+
+	uint32_t totalUniqueIPs = 0;
+	uint32_t totalPlayers = 0;
+
+	for (const auto &players : groupedPlayers | std::views::values) {
+		totalUniqueIPs++;
+
+		int activePlayers = std::min(static_cast<int>(players.size()), 4);
+		totalPlayers += activePlayers;
+	}
+
+	return { totalPlayers, totalUniqueIPs };
+}

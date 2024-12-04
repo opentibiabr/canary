@@ -85,6 +85,11 @@ struct HighscoreCacheEntry {
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
+struct PlayerStats {
+	uint32_t totalPlayers;
+	uint32_t totalUniqueIPs;
+};
+
 class Game {
 public:
 	Game();
@@ -713,6 +718,8 @@ public:
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
 
+	PlayerStats getPlayerStats();
+
 private:
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
@@ -948,6 +955,7 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
+	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP();
 };
 
 constexpr auto g_game = Game::getInstance;

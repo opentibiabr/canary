@@ -37,6 +37,5 @@ end
 overpower:register()
 
 local opressor = CreatureEvent("opressorSoulPit")
-function opressor.onThink()
-end
+function opressor.onThink() end
 opressor:register()

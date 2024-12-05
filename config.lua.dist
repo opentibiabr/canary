@@ -506,7 +506,7 @@ rateSpellCooldown = 1.0
 rateAttackSpeed = 1.0
 rateOfflineTrainingSpeed = rateAttackSpeed
 rateExerciseTrainingSpeed = rateAttackSpeed
-ratePlayerAttack = 1
+ratePlayerAttack = 1.0
 
 -- Monster rates
 rateMonsterHealth = 1.0

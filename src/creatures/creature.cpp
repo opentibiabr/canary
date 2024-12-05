@@ -875,7 +875,7 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
 	if (!hasAsyncTaskFlag(Pathfinder) && onComplete) {
-		g_dispatcher().addEvent(std::move(onComplete), "goToFollowCreature_async");
+		g_dispatcher().addEvent(std::move(onComplete), "Creature::goToFollowCreature_async");
 	}
 
 	setAsyncTaskFlag(Pathfinder, true);

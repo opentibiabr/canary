@@ -69,7 +69,6 @@ private:
 			"Game::checkCreatureAttack",
 			"Game::checkCreatureWalk",
 			"Game::checkCreatures",
-			"Game::checkImbuements",
 			"Game::checkLight",
 			"Game::createFiendishMonsters",
 			"Game::createInfluencedMonsters",
@@ -89,7 +88,9 @@ private:
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"Protocol::sendRecvMessageCallback",
-			"Player::addInFightTicks"
+			"Player::addInFightTicks",
+			"Map::moveCreature",
+			"Creature::goToFollowCreature_async"
 		};
 
 		return tasksContext.contains(context);

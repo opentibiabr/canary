@@ -116,6 +116,17 @@ SoulPit = {
 	bossPosition = Position(32372, 31135, 8),
 	exit = Position(32371, 31164, 8),
 	zone = Zone("soulpit"),
+
+	getMonsterVariationNameBySoulCore = function(searchName)
+		for mTypeName, soulCoreName in pairs(SoulPit.SoulCoresConfiguration.monsterVariationsSoulCore) do
+			if soulCoreName == searchName then
+				return mTypeName
+			end
+		end
+
+		return nil
+	end,
 }
 
 SoulPit.zone:addArea(Position(32365, 31134, 8), Position(32382, 31152, 8))
+SoulPit.zone:setRemoveDestination(SoulPit.exit)

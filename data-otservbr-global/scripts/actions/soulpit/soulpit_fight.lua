@@ -1,3 +1,5 @@
+SoulPit.zone:blockFamiliars()
+
 local zoneEvent = ZoneEvent(SoulPit.zone)
 function zoneEvent.afterLeave(zone, creature)
 	local player = creature:getPlayer()
@@ -27,6 +29,10 @@ zoneEvent:register()
 local soulPitAction = Action()
 function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	logger.warn(item:getName())
+	if target and target:getId() == SoulPit.obeliskActive then
+		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting in the soulpit!")
+		return false
+	end
 	if not target or target:getId() ~= SoulPit.obeliskInactive then
 		return false
 	end
@@ -49,12 +55,6 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 			return true
 		end
 
-		if not table.empty(SoulPit.zone:getPlayers()) then
-			local message = "Someone is fighting in the arena!"
-			creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
-			return false
-		end
-
 		local isAccountNormal = creature:getAccountType() < ACCOUNT_TYPE_GAMEMASTER
 		if isAccountNormal and creature:getLevel() < SoulPit.requiredLevel then
 			local message = string.format("All players need to be level %s or higher.", SoulPit.requiredLevel)
@@ -72,8 +72,8 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	local monsterName = string.gsub(item:getName(), " soul core", "")
-
-	logger.warn("monster name: " .. monsterName)
+	local monsterVariationName = SoulPit.getMonsterVariationNameBySoulCore(item:getName())
+	monsterName = monsterVariationName and monsterVariationName or monsterName
 
 	SoulPit.zone:removeMonsters()
 
@@ -95,9 +95,7 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 
 		SoulPit.kickEvent = addEvent(function()
 			SoulPit.encounter = nil
-			for _, player in pairs(SoulPit.zone:getPlayers()) do
-				player:teleportTo(SoulPit.exit)
-			end
+			SoulPit.zone:removePlayers()
 			SoulPit.obeliskPosition:transformItem(SoulPit.obeliskActive, SoulPit.obeliskInactive)
 		end, SoulPit.timeToKick)
 	end
@@ -106,8 +104,6 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 
 	local function waveStart()
 		for stack, amount in pairs(SoulPit.waves[encounter.currentStage].stacks) do
-			logger.warn("stack: " .. stack)
-			logger.warn("amount: " .. amount)
 			for i = 1, amount do
 				local position = stack ~= 40 and SoulPit.zone:randomPosition() or SoulPit.bossPosition
 				for i = 1, SoulPit.timeToSpawnMonsters / 1000 do
@@ -125,7 +121,6 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 						return false
 					end
 					if stack == 40 then
-						logger.warn("ability name: {}", bossAbilityName)
 						if bossAbility.monster then
 							monster:registerEvent(bossAbilityName)
 						end

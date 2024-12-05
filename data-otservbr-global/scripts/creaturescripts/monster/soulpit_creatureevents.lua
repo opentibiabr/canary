@@ -1,6 +1,6 @@
 local enrage = CreatureEvent("enrageSoulPit")
 function enrage.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
-	if not creature or not creature:isMonster() then
+	if not creature or not creature:isMonster() and creature:getMaster() then
 		return true
 	end
 
@@ -26,7 +26,7 @@ enrage:register()
 
 local overpower = CreatureEvent("overpowerSoulPit")
 function overpower.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
-	if creature and attacker and attacker:isMonster() and attacker:getForgeStack() == 40 then
+	if creature and attacker and attacker:isMonster() and attacker:getForgeStack() == 40 and not attacker:getMaster() then
 		primaryDamage = primaryDamage * 1.1
 		secondaryDamage = secondaryDamage * 1.1
 		creature:getPosition():sendMagicEffect(CONST_ME_CRITICAL_DAMAGE)

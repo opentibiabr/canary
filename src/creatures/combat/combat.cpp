@@ -2279,6 +2279,11 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		damage.primary.value *= monster->getAttackMultiplier();
 		damage.secondary.value *= monster->getAttackMultiplier();
 	}
+
+	const double globalMultiplier = g_configManager().getFloat(RATE_PLAYER_ATTACK);
+
+	damage.primary.value = static_cast<int32_t>(damage.primary.value * globalMultiplier);
+	damage.secondary.value = static_cast<int32_t>(damage.secondary.value * globalMultiplier);
 }
 
 MagicField::MagicField(uint16_t type) :

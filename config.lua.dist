@@ -494,6 +494,7 @@ rateKillingInTheNameOfPoints = 1
 
 -- Today regeneration condition over an loop every 1 second,
 -- So values which should regenerated less then 1 second or won't will work
+-- ratePlayerAttack: multiplies the player's base damage
 rateHealthRegen = 1.0
 rateHealthRegenSpeed = 1.0
 rateManaRegen = 1.0
@@ -505,6 +506,7 @@ rateSpellCooldown = 1.0
 rateAttackSpeed = 1.0
 rateOfflineTrainingSpeed = rateAttackSpeed
 rateExerciseTrainingSpeed = rateAttackSpeed
+ratePlayerAttack = 1
 
 -- Monster rates
 rateMonsterHealth = 1.0

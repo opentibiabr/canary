@@ -100,10 +100,10 @@ SoulPit = {
 		},
 		enrageSoulPit = {
 			bounds = {
-				[{0.8, 0.6}] = 0.9, -- 10% damage reduction
-				[{0.6, 0.4}] = 0.75, -- 25% damage reduction
-				[{0.4, 0.2}] = 0.6, -- 40% damage reduction
-				[{0.0, 0.2}] = 0.4, -- 60% damage reduction
+				[{ 0.8, 0.6 }] = 0.9, -- 10% damage reduction
+				[{ 0.6, 0.4 }] = 0.75, -- 25% damage reduction
+				[{ 0.4, 0.2 }] = 0.6, -- 40% damage reduction
+				[{ 0.0, 0.2 }] = 0.4, -- 60% damage reduction
 			},
 			player = false,
 			monster = true,

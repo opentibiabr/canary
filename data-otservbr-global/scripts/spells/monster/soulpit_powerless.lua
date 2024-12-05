@@ -10,7 +10,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
 	local monster = creature:getMonster()
-	if monster and monster:soulPit() and table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
+	if monster and monster:soulPit() and not monster:getMaster() and table.contains(creature:getEvents(CREATURE_EVENT_THINK), "opressorSoulPit") then
 		return combat:execute(creature, var)
 	end
 

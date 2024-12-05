@@ -6466,9 +6466,9 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 		return;
 	}
 
-	creature->safeCall([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
+	g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
 		checkCreatureLists[index].emplace_back(creature);
-	});
+	}, "Game::addCreatureCheck");
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {

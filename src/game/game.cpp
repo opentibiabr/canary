@@ -6468,7 +6468,8 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
 		checkCreatureLists[index].emplace_back(creature);
-	}, "Game::addCreatureCheck");
+	},
+	                        "Game::addCreatureCheck");
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
@@ -6482,8 +6483,8 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::weak_ptr<Creature>& weak) {
-		if (const auto creature = weak.lock()) { 
+	std::erase_if(checkCreatureLists[index], [this](const std::weak_ptr<Creature> &weak) {
+		if (const auto creature = weak.lock()) {
 			if (creature->creatureCheck && creature->isAlive()) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);

@@ -18,7 +18,7 @@
 
 #include <lib/logging/log_with_spd_log.hpp>
 
-Protocol::Protocol(Connection_ptr initConnection) :
+Protocol::Protocol(const Connection_ptr &initConnection) :
 	connectionPtr(initConnection) { }
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {

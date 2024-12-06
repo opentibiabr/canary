@@ -80130,5 +80130,11 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="Focalises the soul within a core. Can be used to turn a soul core into a greater version"/>
 		<attribute key="weight" value="100"/>
 	</item>
+	<item id="49174" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
+	</item>
+	<item id="49175" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
+	</item>
 </items>
 

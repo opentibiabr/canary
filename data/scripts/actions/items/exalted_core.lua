@@ -31,7 +31,7 @@ end
 
 function exaltedCore.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local itemName = target:getName()
-	local monsterName = itemName:match("^(.-) soul core")
+	local monsterName = SoulPit.getSoulCoreMonster(itemName)
 
 	if not monsterName then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can only use Exalted Core with a Soul Core.")

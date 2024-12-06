@@ -27,7 +27,11 @@ end
 zoneEvent:register()
 
 local soulPitAction = Action()
-function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)	
+	if SoulPit.onFuseSoulCores(player, item, target) then
+		return true
+	end
+
 	logger.warn(item:getName())
 	if target and target:getId() == SoulPit.obeliskActive then
 		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting in the soulpit!")
@@ -148,8 +152,8 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 end
 
 for _, itemType in pairs(SoulPit.soulCores) do
-	if itemType:getId() ~= 49164 then -- TO-DO: currently Game.getSoulCoreItems() it's returning soul prism item in the results, we don't want this.
-		soulPitAction:id(itemType:getId())
-	end
+	-- if itemType:getId() ~= 49164 then -- TO-DO: currently Game.getSoulCoreItems() it's returning soul prism item in the results, we don't want this.
+	soulPitAction:id(itemType:getId())
+	-- end
 end
 soulPitAction:register()

@@ -9,14 +9,11 @@
 
 #pragma once
 
-#include "items/cylinder.hpp"
-#include "items/thing.hpp"
 #include "enums/item_attribute.hpp"
-#include "items/items.hpp"
-#include "items/functions/item/attribute.hpp"
-#include "lua/scripts/luascript.hpp"
-#include "utils/tools.hpp"
 #include "io/fileloader.hpp"
+#include "items/functions/item/attribute.hpp"
+#include "items/items.hpp"
+#include "items/thing.hpp"
 
 class Creature;
 class Player;
@@ -30,6 +27,7 @@ class MagicField;
 class BedItem;
 class Imbuement;
 class Item;
+class Cylinder;
 
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
@@ -56,7 +54,7 @@ public:
 
 		return attributePtr->hasAttribute(type);
 	}
-	void removeAttribute(ItemAttribute_t type) {
+	void removeAttribute(ItemAttribute_t type) const {
 		if (attributePtr) {
 			attributePtr->removeAttribute(type);
 		}
@@ -76,13 +74,7 @@ public:
 	}
 
 	// Custom Attributes
-	const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const {
-		static std::map<std::string, CustomAttribute, std::less<>> map = {};
-		if (!attributePtr) {
-			return map;
-		}
-		return attributePtr->getCustomAttributeMap();
-	}
+	const std::map<std::string, CustomAttribute, std::less<>> &getCustomAttributeMap() const;
 	const CustomAttribute* getCustomAttribute(const std::string &attributeName) const {
 		if (!attributePtr) {
 			return nullptr;
@@ -104,7 +96,7 @@ public:
 		return !getCustomAttributeMap().empty();
 	}
 
-	bool removeCustomAttribute(const std::string &attributeName) {
+	bool removeCustomAttribute(const std::string &attributeName) const {
 		if (!attributePtr) {
 			return false;
 		}
@@ -116,14 +108,7 @@ public:
 		return getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 	}
 
-	int32_t getDuration() const {
-		ItemDecayState_t decayState = getDecaying();
-		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
-			return std::max<int32_t>(0, getAttribute<int32_t>(ItemAttribute_t::DURATION_TIMESTAMP) - static_cast<int32_t>(OTSYS_TIME()));
-		} else {
-			return getAttribute<int32_t>(ItemAttribute_t::DURATION);
-		}
-	}
+	int32_t getDuration() const;
 
 	bool isStoreItem() const {
 		return getAttribute<int64_t>(ItemAttribute_t::STORE) > 0;
@@ -215,27 +200,27 @@ private:
 class Item : virtual public Thing, public ItemProperties, public SharedObject {
 public:
 	// Factory member to create item of right type based on type
-	static std::shared_ptr<Item> CreateItem(const uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
-	static std::shared_ptr<Container> CreateItemAsContainer(const uint16_t type, uint16_t size);
+	static std::shared_ptr<Item> CreateItem(uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
+	static std::shared_ptr<Container> CreateItemAsContainer(uint16_t type, uint16_t size);
 	static std::shared_ptr<Item> CreateItem(uint16_t itemId, Position &itemPosition);
 	static Items items;
 
 	// Constructor for items
-	Item(const uint16_t type, uint16_t count = 0);
-	Item(const std::shared_ptr<Item> &i);
+	explicit Item(uint16_t type, uint16_t count = 0);
+	explicit Item(const std::shared_ptr<Item> &i);
 	virtual std::shared_ptr<Item> clone() const;
 
-	virtual ~Item() = default;
+	~Item() override = default;
 
 	// non-assignable
 	Item &operator=(const Item &) = delete;
 
-	bool equals(std::shared_ptr<Item> compareItem) const;
+	bool equals(const std::shared_ptr<Item> &compareItem) const;
 
-	std::shared_ptr<Item> getItem() override final {
+	std::shared_ptr<Item> getItem() final {
 		return static_self_cast<Item>();
 	}
-	std::shared_ptr<const Item> getItem() const override final {
+	std::shared_ptr<const Item> getItem() const final {
 		return static_self_cast<Item>();
 	}
 	virtual std::shared_ptr<Teleport> getTeleport() {
@@ -259,13 +244,13 @@ public:
 
 	bool isSavedToHouses();
 
-	SoundEffect_t getMovementSound(std::shared_ptr<Cylinder> toCylinder) const;
+	SoundEffect_t getMovementSound(const std::shared_ptr<Cylinder> &toCylinder) const;
 
 	void setIsLootTrackeable(bool value) {
 		isLootTrackeable = value;
 	}
 
-	bool getIsLootTrackeable() {
+	bool getIsLootTrackeable() const {
 		return isLootTrackeable;
 	}
 
@@ -273,7 +258,7 @@ public:
 		setAttribute(ItemAttribute_t::OWNER, owner);
 	}
 
-	void setOwner(std::shared_ptr<Creature> owner);
+	void setOwner(const std::shared_ptr<Creature> &owner);
 
 	virtual uint32_t getOwnerId() const;
 
@@ -281,7 +266,7 @@ public:
 
 	std::string getOwnerName() const;
 
-	bool isOwner(std::shared_ptr<Creature> owner) const;
+	bool isOwner(const std::shared_ptr<Creature> &owner) const;
 
 	bool hasOwner() const {
 		return getOwnerId() != 0;
@@ -291,24 +276,24 @@ public:
 		return isStoreItem() || hasOwner();
 	}
 
-	static std::string parseAugmentDescription(std::shared_ptr<Item> item, bool inspect = false) {
+	static std::string parseAugmentDescription(const std::shared_ptr<Item> &item, bool inspect = false) {
 		if (!item) {
 			return "";
 		}
 		return items[item->getID()].parseAugmentDescription(inspect);
 	}
-	static std::string parseImbuementDescription(std::shared_ptr<Item> item);
+	static std::string parseImbuementDescription(const std::shared_ptr<Item> &item);
 	static std::string parseShowDurationSpeed(int32_t speed, bool &begin);
-	static std::string parseShowDuration(std::shared_ptr<Item> item);
-	static std::string parseShowAttributesDescription(std::shared_ptr<Item> item, const uint16_t itemId);
-	static std::string parseClassificationDescription(std::shared_ptr<Item> item);
+	static std::string parseShowDuration(const std::shared_ptr<Item> &item);
+	static std::string parseShowAttributesDescription(const std::shared_ptr<Item> &item, uint16_t itemId);
+	static std::string parseClassificationDescription(const std::shared_ptr<Item> &item);
 
-	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, std::shared_ptr<Item> item = nullptr);
-	static std::string getDescription(const ItemType &it, int32_t lookDistance, std::shared_ptr<Item> item = nullptr, int32_t subType = -1, bool addArticle = true);
-	static std::string getNameDescription(const ItemType &it, std::shared_ptr<Item> item = nullptr, int32_t subType = -1, bool addArticle = true);
+	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item = nullptr);
+	static std::string getDescription(const ItemType &it, int32_t lookDistance, const std::shared_ptr<Item> &item = nullptr, int32_t subType = -1, bool addArticle = true);
+	static std::string getNameDescription(const ItemType &it, const std::shared_ptr<Item> &item = nullptr, int32_t subType = -1, bool addArticle = true);
 	static std::string getWeightDescription(const ItemType &it, uint32_t weight, uint32_t count = 1);
 
-	std::string getDescription(int32_t lookDistance) override final;
+	std::string getDescription(int32_t lookDistance) final;
 	std::string getNameDescription();
 	std::string getWeightDescription() const;
 
@@ -319,10 +304,10 @@ public:
 
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
 
-	bool isPushable() override final {
+	bool isPushable() final {
 		return isMovable();
 	}
-	int32_t getThrowRange() const override final {
+	int32_t getThrowRange() const final {
 		return (isPickupable() ? 15 : 2);
 	}
 
@@ -366,13 +351,9 @@ public:
 		return items[id].abilities->perfectShotRange;
 	}
 
-	int32_t getReflectionFlat(CombatType_t combatType) const {
-		return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
-	}
+	int32_t getReflectionFlat(CombatType_t combatType) const;
 
-	int32_t getReflectionPercent(CombatType_t combatType) const {
-		return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
-	}
+	int32_t getReflectionPercent(CombatType_t combatType) const;
 
 	int16_t getMagicShieldCapacityPercent() const {
 		return items[id].abilities->magicShieldCapacityPercent;
@@ -382,22 +363,20 @@ public:
 		return items[id].abilities->magicShieldCapacityFlat;
 	}
 
-	int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-		return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
-	}
+	int32_t getSpecializedMagicLevel(CombatType_t combat) const;
 
 	int32_t getSpeed() const {
-		int32_t value = items[id].getSpeed();
+		const int32_t value = items[id].getSpeed();
 		return value;
 	}
 
 	int32_t getSkill(skills_t skill) const {
-		int32_t value = items[id].getSkill(skill);
+		const int32_t value = items[id].getSkill(skill);
 		return value;
 	}
 
 	int32_t getStat(stats_t stat) const {
-		int32_t value = items[id].getStat(stat);
+		const int32_t value = items[id].getStat(stat);
 		return value;
 	}
 
@@ -430,7 +409,7 @@ public:
 	}
 	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellNameAndType(const std::string &spellName, Augment_t augmentType) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
-		for (auto &augment : items[id].augments) {
+		for (const auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0 && augment->type == augmentType) {
 				augments.push_back(augment);
 			}
@@ -440,7 +419,7 @@ public:
 	}
 	std::vector<std::shared_ptr<AugmentInfo>> getAugmentsBySpellName(const std::string &spellName) const {
 		std::vector<std::shared_ptr<AugmentInfo>> augments;
-		for (auto &augment : items[id].augments) {
+		for (const auto &augment : items[id].augments) {
 			if (strcasecmp(augment->spellName.c_str(), spellName.c_str()) == 0) {
 				augments.push_back(augment);
 			}
@@ -565,7 +544,7 @@ public:
 		}
 		return items[id].name;
 	}
-	const std::string getPluralName() const {
+	std::string getPluralName() const {
 		if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
 			return getString(ItemAttribute_t::PLURALNAME);
 		}
@@ -616,7 +595,7 @@ public:
 	void addUniqueId(uint16_t uniqueId);
 
 	void setDefaultDuration() {
-		uint32_t duration = getDefaultDuration();
+		const uint32_t duration = getDefaultDuration();
 		if (duration != 0) {
 			setDuration(duration);
 		}
@@ -634,7 +613,7 @@ public:
 		return true;
 	}
 	virtual void onRemoved();
-	virtual void onTradeEvent(TradeEvents_t, std::shared_ptr<Player>) { }
+	virtual void onTradeEvent(TradeEvents_t, const std::shared_ptr<Player> &) { }
 
 	virtual void startDecaying();
 	virtual void stopDecaying();
@@ -662,13 +641,7 @@ public:
 	}
 	std::shared_ptr<Cylinder> getTopParent();
 	std::shared_ptr<Tile> getTile() override;
-	bool isRemoved() override {
-		auto parent = getParent();
-		if (parent) {
-			return parent->isRemoved();
-		}
-		return true;
-	}
+	bool isRemoved() override;
 
 	bool isInsideDepot(bool includeInbox = false);
 
@@ -695,8 +668,8 @@ public:
 	void clearImbuement(uint8_t slot, uint16_t imbuementId) {
 		return setImbuement(slot, imbuementId, 0);
 	}
-	bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) {
-		auto it = items[id].imbuementTypes.find(imbuementType);
+	bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
+		const auto it = items[id].imbuementTypes.find(imbuementType);
 		if (it != items[id].imbuementTypes.end()) {
 			return (it->second >= imbuementTier);
 		}
@@ -714,78 +687,16 @@ public:
 		return false;
 	}
 
-	double getDodgeChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_A),
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_B),
-			g_configManager().getFloat(RUSE_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getDodgeChance() const;
 
-	double getFatalChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_A),
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_B),
-			g_configManager().getFloat(ONSLAUGHT_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getFatalChance() const;
 
-	double getMomentumChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_A),
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_B),
-			g_configManager().getFloat(MOMENTUM_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getMomentumChance() const;
 
-	double getTranscendenceChance() const {
-		if (getTier() == 0) {
-			return 0;
-		}
-		return quadraticPoly(
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_A),
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_B),
-			g_configManager().getFloat(TRANSCENDANCE_CHANCE_FORMULA_C),
-			getTier()
-		);
-	}
+	double getTranscendenceChance() const;
 
-	uint8_t getTier() const {
-		if (!hasAttribute(ItemAttribute_t::TIER)) {
-			return 0;
-		}
-
-		auto tier = getAttribute<uint8_t>(ItemAttribute_t::TIER);
-		if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
-			g_logger().error("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
-			return 0;
-		}
-
-		return tier;
-	}
-	void setTier(uint8_t tier) {
-		auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
-		if (tier > configTier) {
-			g_logger().error("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
-			return;
-		}
-
-		if (items[id].upgradeClassification) {
-			setAttribute(ItemAttribute_t::TIER, tier);
-		}
-	}
+	uint8_t getTier() const;
+	void setTier(uint8_t tier);
 	uint8_t getClassification() const {
 		return items[id].upgradeClassification;
 	}

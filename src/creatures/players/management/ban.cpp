@@ -8,6 +8,7 @@
  */
 
 #include "creatures/players/management/ban.hpp"
+
 #include "database/database.hpp"
 #include "database/databasetasks.hpp"
 #include "utils/tools.hpp"
@@ -15,7 +16,7 @@
 bool Ban::acceptConnection(uint32_t clientIP) {
 	std::scoped_lock<std::recursive_mutex> lockClass(lock);
 
-	uint64_t currentTime = OTSYS_TIME();
+	const uint64_t currentTime = OTSYS_TIME();
 
 	auto it = ipConnectMap.find(clientIP);
 	if (it == ipConnectMap.end()) {
@@ -29,7 +30,7 @@ bool Ban::acceptConnection(uint32_t clientIP) {
 		return false;
 	}
 
-	int64_t timeDiff = currentTime - connectBlock.lastAttempt;
+	const int64_t timeDiff = currentTime - connectBlock.lastAttempt;
 	connectBlock.lastAttempt = currentTime;
 	if (timeDiff <= 5000) {
 		if (++connectBlock.count > 5) {
@@ -51,12 +52,12 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo &banInfo) {
 	std::ostringstream query;
 	query << "SELECT `reason`, `expires_at`, `banned_at`, `banned_by`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `account_bans` WHERE `account_id` = " << accountId;
 
-	DBResult_ptr result = db.storeQuery(query.str());
+	const DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
 		return false;
 	}
 
-	int64_t expiresAt = result->getNumber<int64_t>("expires_at");
+	const auto expiresAt = result->getNumber<int64_t>("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		// Move the ban to history if it has expired
 		query.str(std::string());
@@ -85,12 +86,12 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo &banInfo) {
 	std::ostringstream query;
 	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = " << clientIP;
 
-	DBResult_ptr result = db.storeQuery(query.str());
+	const DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
 		return false;
 	}
 
-	int64_t expiresAt = result->getNumber<int64_t>("expires_at");
+	const auto expiresAt = result->getNumber<int64_t>("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		query.str(std::string());
 		query << "DELETE FROM `ip_bans` WHERE `ip` = " << clientIP;

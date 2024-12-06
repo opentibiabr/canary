@@ -403,7 +403,7 @@ local function revertTree()
 		tree:getPosition():sendMagicEffect(CONST_ME_POFF)
 		tree:transform(6189)
 	end
-	Game.setStorageValue(GlobalStorage.ForgottenKnowledge.ActiveTree, 0)
+	Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.ActiveTree, 0)
 	for v = 1, #dry do
 		Game.createItem(dry[v].itemid, 1, dry[v].position)
 		local pos = Position(dry[v].position)
@@ -429,16 +429,16 @@ function forgottenKnowledgePlant.onUse(player, item, fromPosition, target, toPos
 			target:getPosition():sendMagicEffect(CONST_ME_SMALLPLANTS)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The birch grows as you pour the sparkling water from the phial over it.")
 			addEvent(revertItem, 10 * 60 * 1000, target:getPosition(), 26483, 26482)
-			if player:getStorageValue(Storage.ForgottenKnowledge.PlantCounter) < 0 then
-				player:setStorageValue(Storage.ForgottenKnowledge.PlantCounter, 0)
+			if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter) < 0 then
+				player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter, 0)
 			end
-			player:setStorageValue(Storage.ForgottenKnowledge.PlantCounter, player:getStorageValue(Storage.ForgottenKnowledge.PlantCounter) + 1)
+			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter, player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter) + 1)
 		elseif target.itemid == 6180 and target:getPosition() == Position(32737, 32116, 10) then
-			if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.ActiveTree) >= 1 then
+			if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.ActiveTree) >= 1 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You cannot use the phial while the trees still have life and colour.")
 				return true
 			end
-			if player:getStorageValue(Storage.ForgottenKnowledge.PlantCounter) < 5 or player:getStorageValue(Storage.ForgottenKnowledge.BirdCounter) < 3 then
+			if player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter) < 5 or player:getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter) < 3 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Seems that you don't make grow enough trees or not free the parrots.")
 				return true
 			end
@@ -477,7 +477,7 @@ function forgottenKnowledgePlant.onUse(player, item, fromPosition, target, toPos
 					end
 				end
 			end
-			Game.setStorageValue(GlobalStorage.ForgottenKnowledge.ActiveTree, 1)
+			Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.ActiveTree, 1)
 			addEvent(revertTree, 1 * 60 * 1000)
 			Game.createItem(11108, 1, Position(32736, 32117, 10))
 			local teleport = Game.createItem(775, 1, Position(32736, 32117, 10))

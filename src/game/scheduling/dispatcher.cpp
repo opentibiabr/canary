@@ -8,6 +8,7 @@
  */
 
 #include "game/scheduling/dispatcher.hpp"
+
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
@@ -243,25 +244,13 @@ void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 }
 
 void Dispatcher::stopEvent(uint64_t eventId) {
-	const auto &it = scheduledTasksRef.find(eventId);
+	auto it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {
 		it->second->cancel();
 		scheduledTasksRef.erase(it);
 	}
 }
 
-void DispatcherContext::addEvent(std::function<void(void)> &&f, std::string_view context) const {
-	g_dispatcher().addEvent(std::move(f), context);
-}
-
-void DispatcherContext::tryAddEvent(std::function<void(void)> &&f, std::string_view context) const {
-	if (!f) {
-		return;
-	}
-
-	if (isAsync()) {
-		g_dispatcher().addEvent(std::move(f), context);
-	} else {
-		f();
-	}
+bool DispatcherContext::isOn() {
+	return OTSYS_TIME() != 0;
 }

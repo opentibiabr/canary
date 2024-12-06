@@ -10,7 +10,7 @@
 #pragma once
 
 namespace pugi {
-	class xml_parse_result;
+	struct xml_parse_result;
 }
 
 struct Position;
@@ -29,7 +29,7 @@ enum MoveEvent_t : uint8_t;
 enum NameEval_t : uint8_t;
 enum BedItemPart_t : uint8_t;
 enum ObjectCategory_t : uint8_t;
-enum ItemAttribute_t : uint64_t;
+enum class ItemAttribute_t : uint64_t;
 enum ReturnValue : uint16_t;
 enum SpellGroup_t : uint8_t;
 enum Cipbia_Elementals_t : uint8_t;
@@ -77,7 +77,7 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
-BedItemPart_t getBedPart(const std::string_view string);
+BedItemPart_t getBedPart(std::string_view string);
 Direction getDirection(const std::string &string);
 Position getNextPosition(Direction direction, Position pos);
 
@@ -137,7 +137,7 @@ CombatType_t getCombatTypeByName(const std::string &combatname);
  * @return The corresponding index of the CombatType_t enumeration.
  * If the CombatType_t is out of range, this function will log an error and return an empty size_t.
  */
-size_t combatTypeToIndex(CombatType_t combatType);
+size_t combatTypeToIndex(CombatType_t combatType, std::source_location location = std::source_location::current());
 
 /**
  * @brief Convert the CombatType_t enumeration to its corresponding string representation.
@@ -155,7 +155,7 @@ const char* getReturnMessage(ReturnValue value);
 
 void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
-void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore);
+void capitalizeWordsIgnoringString(std::string &source, const std::string &stringToIgnore);
 void consoleHandlerExit();
 NameEval_t validateName(const std::string &name);
 
@@ -208,3 +208,10 @@ EnumType enumFromValue(UnderlyingType value) {
 }
 
 bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t length = std::string_view::npos);
+
+void printStackTrace();
+
+const std::map<uint8_t, uint16_t> &getMaxValuePerSkill();
+
+float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer = false);
+uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted = false);

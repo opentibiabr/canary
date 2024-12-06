@@ -57,7 +57,7 @@ enum class LuaData_t : uint8_t {
 	ItemClassification,
 };
 
-enum CreatureEventType_t {
+enum CreatureEventType_t : uint8_t {
 	CREATURE_EVENT_NONE,
 	CREATURE_EVENT_LOGIN,
 	CREATURE_EVENT_LOGOUT,
@@ -99,7 +99,7 @@ enum TalkActionResult_t {
 	TALKACTION_FAILED,
 };
 
-enum GlobalEvent_t {
+enum GlobalEvent_t : uint8_t {
 	GLOBALEVENT_NONE,
 	GLOBALEVENT_TIMER,
 

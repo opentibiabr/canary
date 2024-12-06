@@ -27,7 +27,7 @@ end
 zoneEvent:register()
 
 local soulPitAction = Action()
-function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)	
+function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if SoulPit.onFuseSoulCores(player, item, target) then
 		return true
 	end

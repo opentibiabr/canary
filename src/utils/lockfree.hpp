@@ -1,50 +1,50 @@
 /**
  * Lock-free Memory Management Implementation
  * ----------------------------------------
- * 
+ *
  * This implementation provides a high-performance, lock-free memory management system
  * optimized for multi-threaded environments. It uses a combination of thread-local
  * caching and lock-free queues to minimize contention and maximize throughput.
- * 
+ *
  * Key Features:
  * - Lock-free operations using atomic queues
  * - Thread-local caching for fast allocation/deallocation
  * - Memory prefetching for improved performance
  * - Cache-line alignment to prevent false sharing
  * - Batch operations for efficient memory management
- * 
+ *
  * Flow:
  * 1. Allocation:
  *    - First tries to get memory from thread-local cache
  *    - If local cache is empty, refills it from the global free list
  *    - If global free list is empty, triggers growth
- * 
+ *
  * 2. Deallocation:
  *    - First attempts to store in thread-local cache
  *    - If local cache is full, flushes half to global free list
  *    - Maintains balance between local and global storage
- * 
+ *
  * Usage Examples:
- * 
+ *
  * 1. Basic Raw Pointer Usage:
  * @code
  *     // Define a lock-free pool for MyClass with capacity 1000
  *     using MyPool = LockfreeFreeList<MyClass, 1000>;
- * 
+ *
  *     // Pre-allocate some objects
  *     MyPool::preallocate(100);
- * 
+ *
  *     // Allocate an object
  *     MyClass* obj = MyPool::fast_allocate();
  *     if (obj) {
  *         // Use the object
  *         // ...
- *         
+ *
  *         // Deallocate when done
  *         MyPool::fast_deallocate(obj);
  *     }
  * @endcode
- * 
+ *
  * 2. Integration with Smart Pointers and Allocators:
  * @code
  *     // Define custom allocator using the lock-free pool
@@ -57,22 +57,22 @@
  *             LockfreeFreeList<T, 1000>::fast_deallocate(static_cast<T*>(p));
  *         }
  *     };
- *     
+ *
  *     // Create an allocator
  *     PoolAllocator<Message> messageAllocator;
- *     
+ *
  *     // Use with shared_ptr
  *     Message_ptr getMessage() {
  *         return std::allocate_shared<Message>(messageAllocator);
  *     }
  * @endcode
- * 
+ *
  * 3. Using with Custom Memory Resource:
  * @code
  *     // Create a custom memory resource
  *     class CustomResource : public std::pmr::memory_resource {
  *         using Pool = LockfreeFreeList<char, 1000>;
- *         
+ *
  *         void* do_allocate(size_t bytes, size_t alignment) override {
  *             return Pool::fast_allocate();
  *         }
@@ -80,18 +80,18 @@
  *             Pool::fast_deallocate(static_cast<char*>(p));
  *         }
  *     };
- *     
+ *
  *     // Use with polymorphic allocator
  *     std::pmr::polymorphic_allocator<Message> polyAlloc{&customResource};
  *     auto msg = std::allocate_shared<Message>(polyAlloc);
  * @endcode
- * 
+ *
  * Performance Considerations:
  * - Uses CACHE_LINE_SIZE alignment to prevent false sharing
  * - Implements prefetching for better cache utilization
  * - Batch operations reduce contention on the global free list
  * - Thread-local caching minimizes inter-thread synchronization
- * 
+ *
  * Memory Management:
  * - DEFAULT_BATCH_SIZE controls the size of thread-local caches
  * - STATIC_PREALLOCATION_SIZE sets initial pool size

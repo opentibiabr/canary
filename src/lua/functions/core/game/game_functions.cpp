@@ -1047,6 +1047,9 @@ int GameFunctions::luaGameGetSoulCoreItems(lua_State* L) {
 	std::vector<const ItemType*> soulCoreItems;
 
 	for (const auto &itemType : Item::items.getItems()) {
+		if (itemType.m_primaryType.empty() && itemType.type == ITEM_TYPE_NONE) {
+			continue;
+		}
 		if (itemType.m_primaryType == "SoulCores" || itemType.type == ITEM_TYPE_SOULCORES) {
 			soulCoreItems.emplace_back(&itemType);
 		}

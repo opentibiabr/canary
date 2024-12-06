@@ -72,7 +72,7 @@
 
 #include <appearances.pb.h>
 
-std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
+std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
@@ -6461,16 +6461,15 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->creatureCheck.store(true);
 
-	if (creature->inCheckCreaturesVector.load()) {
+	if (creature->inCheckCreaturesVector.exchange(true)) {
 		// already in a vector
 		return;
 	}
 
-	creature->inCheckCreaturesVector.store(true);
-
-	creature->safeCall([this, creature] {
-		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
-	});
+	g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
+		checkCreatureLists[index].emplace_back(creature);
+	},
+	                        "Game::addCreatureCheck");
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
@@ -6484,27 +6483,28 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
-		if (creature->creatureCheck && creature->isAlive()) {
-			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-
-			if (creature->getMonster()) {
-				// The monster's onThink is executed asynchronously,
-				// so the target is updated later, so we need to postpone the actions below.
-				g_dispatcher().addEvent([creature] {
-					if (creature->isAlive()) {
-						creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-						creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
-					} }, __METHOD_NAME__);
-			} else {
-				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+	std::erase_if(checkCreatureLists[index], [this](const std::weak_ptr<Creature> &weak) {
+		if (const auto creature = weak.lock()) {
+			if (creature->creatureCheck && creature->isAlive()) {
+				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
+				if (creature->getMonster()) {
+					// The monster's onThink is executed asynchronously,
+					// so the target is updated later, so we need to postpone the actions below.
+					g_dispatcher().addEvent([creature] {
+						if (creature->isAlive()) {
+							creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+							creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+						} }, __FUNCTION__);
+				} else {
+					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+				}
+				return false;
 			}
 
-			return false;
+			creature->inCheckCreaturesVector = false;
 		}
 
-		creature->inCheckCreaturesVector = false;
 		return true;
 	});
 
@@ -9037,7 +9037,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			return;
 		}
 
-		std::shared_ptr<DepotLocker> depotLocker = player->getDepotLocker(player->getLastDepotId());
+		const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
 		if (depotLocker == nullptr) {
 			offerStatus << "Depot locker is nullptr for player " << player->getName();
 			return;
@@ -9120,6 +9120,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
+	const auto &playerInbox = player->getInbox();
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
 		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
@@ -9136,10 +9137,11 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			player->getAccount()->addCoins(CoinType::Transferable, offer.amount, "");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
+
 			while (tmpAmount > 0) {
 				int32_t stackCount = std::min<int32_t>(it.stackSize, tmpAmount);
 				const auto &item = Item::CreateItem(it.id, stackCount);
-				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+				if (internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					break;
 				}
 
@@ -9159,7 +9161,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 			for (uint16_t i = 0; i < offer.amount; ++i) {
 				const auto &item = Item::CreateItem(it.id, subType);
-				if (internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+				if (internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					break;
 				}
 
@@ -9217,35 +9219,41 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
+	const auto &playerInbox = player->getInbox();
+
 	uint64_t totalPrice = offer.price * amount;
 
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
-		std::shared_ptr<DepotLocker> depotLocker = player->getDepotLocker(player->getLastDepotId());
+		const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
 		if (depotLocker == nullptr) {
 			offerStatus << "Depot locker is nullptr";
 			return;
 		}
 
-		std::shared_ptr<Player> buyerPlayer = getPlayerByGUID(offer.playerId, true);
+		const std::shared_ptr<Player> &buyerPlayer = getPlayerByGUID(offer.playerId, true);
 		if (!buyerPlayer) {
 			offerStatus << "Failed to load buyer player " << player->getName();
 			return;
 		}
 
-		if (!buyerPlayer->getAccount()) {
+		const auto &buyerPlayerAccount = buyerPlayer->getAccount();
+		if (!buyerPlayerAccount) {
 			player->sendTextMessage(MESSAGE_MARKET, "Cannot accept offer.");
 			return;
 		}
 
-		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
+		const auto &playerAccount = player->getAccount();
+		if (player == buyerPlayer || playerAccount == buyerPlayerAccount) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
 
+		const auto &buyerPlayerInbox = buyerPlayer->getInbox();
+
 		if (it.id == ITEM_STORE_COIN) {
-			auto [transferableCoins, error] = player->getAccount()->getCoins(CoinType::Transferable);
+			auto [transferableCoins, error] = playerAccount->getCoins(CoinType::Transferable);
 
 			if (error != AccountErrors_t::Ok) {
 				offerStatus << "Failed to load transferable coins for player " << player->getName();
@@ -9257,7 +9265,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				return;
 			}
 
-			player->getAccount()->removeCoins(
+			playerAccount->removeCoins(
 				CoinType::Transferable,
 				amount,
 				"Sold on Market"
@@ -9292,7 +9300,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			while (tmpAmount > 0) {
 				uint16_t stackCount = std::min<uint16_t>(it.stackSize, tmpAmount);
 				const auto &item = Item::CreateItem(it.id, stackCount);
-				if (internalAddItem(buyerPlayer->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+				if (internalAddItem(buyerPlayerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					offerStatus << "Failed to add player inbox stackable item for buy offer for player " << player->getName();
 
 					break;
@@ -9314,7 +9322,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 			for (uint16_t i = 0; i < amount; ++i) {
 				const auto &item = Item::CreateItem(it.id, subType);
-				if (internalAddItem(buyerPlayer->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+				if (internalAddItem(buyerPlayerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 					offerStatus << "Failed to add player inbox item for buy offer for player " << player->getName();
 
 					break;
@@ -9365,7 +9373,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				const auto &item = Item::CreateItem(it.id, stackCount);
 				if (
 					// Init-statement
-					auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+					auto ret = internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 					// Condition
 					ret != RETURNVALUE_NOERROR
 				) {
@@ -9393,7 +9401,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				const auto &item = Item::CreateItem(it.id, subType);
 				if (
 					// Init-statement
-					auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+					auto ret = internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 					// Condition
 					ret != RETURNVALUE_NOERROR
 				) {

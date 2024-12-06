@@ -399,6 +399,7 @@ mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
 mysqlDatabase = "otservbr-global"
+mysqlDatabaseBackup = false
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"

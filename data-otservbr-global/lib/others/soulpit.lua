@@ -151,7 +151,7 @@ SoulPit = {
 		end
 
 		return false
-	end
+	end,
 }
 
 SoulPit.zone:addArea(Position(32365, 31134, 8), Position(32382, 31152, 8))

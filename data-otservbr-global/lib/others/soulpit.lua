@@ -133,6 +133,25 @@ SoulPit = {
 
 		return nil
 	end,
+	getSoulCoreMonster = function(name)
+		return name:match("^(.-) soul core")
+	end,
+	onFuseSoulCores = function(player, item, target)
+		local itemName = item:getName()
+		local targetItemName = target:getName()
+
+		if SoulPit.getSoulCoreMonster(itemName) and SoulPit.getSoulCoreMonster(targetItemName) then
+			local randomSoulCore = SoulPit.soulCores[math.random(#SoulPit.soulCores)]
+			player:addItem(randomSoulCore:getId(), 1)
+			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received a %s soul core.", randomSoulCore:getName()))
+			item:remove(1)
+			target:remove(1)
+			return true
+		end
+
+		return false
+	end
 }
 
 SoulPit.zone:addArea(Position(32365, 31134, 8), Position(32382, 31152, 8))

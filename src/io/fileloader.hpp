@@ -86,6 +86,18 @@ public:
 		return true;
 	}
 
+	template <typename T>
+	T read() {
+		T ret;
+		if (size() < sizeof(T)) {
+			return false;
+		}
+
+		memcpy(&ret, p, sizeof(T));
+		p += sizeof(T);
+		return ret;
+	}
+
 	bool readString(std::string &ret) {
 		uint16_t strLen;
 		if (!read<uint16_t>(strLen)) {
@@ -105,6 +117,22 @@ public:
 		p += strLen;
 
 		return true;
+	}
+
+	std::string readString() {
+		std::string ret;
+		uint16_t strLen;
+
+		if (read<uint16_t>(strLen) && size() >= strLen) {
+			char* str = new char[strLen + 1];
+			memcpy(str, p, strLen);
+			str[strLen] = 0;
+			ret.assign(str, strLen);
+			delete[] str;
+			p += strLen;
+		}
+
+		return ret;
 	}
 
 	bool skip(size_t n) {

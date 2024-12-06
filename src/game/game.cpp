@@ -1320,7 +1320,12 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	// Parsing all items into ItemType
-	Item::items.loadFromProtobuf();
+	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
+		Item::items.loadFromDat();
+	}
+	else {
+		Item::items.loadFromProtobuf();
+	}
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {

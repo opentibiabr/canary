@@ -1448,8 +1448,13 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 			return;
 	}
 
+	if (value == 0 && quantity == 0) {
+		g_logger().error("[{}] Player {} trying to upgrade gem to grade greater than 3", std::source_location::current().function_name(), m_player.getName());
+		return;
+	}
+
 	if (!m_player.hasItemCountById(fragmentId, quantity, true)) {
-		g_logger().error("[{}] Player {} does not have the required {} fragments with id {}", __FUNCTION__, m_player.getName(), quantity, fragmentId);
+		g_logger().error("[{}] Player {} does not have the required {} fragments with id {}", std::source_location::current().function_name(), m_player.getName(), quantity, fragmentId);
 		return;
 	}
 
@@ -1477,7 +1482,7 @@ std::tuple<int, int> PlayerWheel::getLesserGradeCost(uint8_t grade) const {
 		case 3:
 			return std::make_tuple(30000000, 30);
 		default:
-			throw std::invalid_argument("Invalid level for Lesser Fragment.");
+			return {};
 	}
 }
 
@@ -1490,7 +1495,7 @@ std::tuple<int, int> PlayerWheel::getGreaterGradeCost(uint8_t grade) const {
 		case 3:
 			return std::make_tuple(75000000, 30);
 		default:
-			throw std::invalid_argument("Invalid level for Greater Fragment.");
+			return {};
 	}
 }
 

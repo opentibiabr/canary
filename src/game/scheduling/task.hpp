@@ -74,6 +74,7 @@ private:
 			"Game::createFiendishMonsters",
 			"Game::createInfluencedMonsters",
 			"Game::updateForgeableMonsters",
+			"Game::addCreatureCheck",
 			"GlobalEvents::think",
 			"LuaEnvironment::executeTimerEvent",
 			"Modules::executeOnRecvbyte",

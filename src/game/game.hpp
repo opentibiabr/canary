@@ -38,6 +38,7 @@ class IOWheel;
 class ItemClassification;
 class Guild;
 class Mounts;
+class Attachedeffects;
 class Spectators;
 class Player;
 class Account;
@@ -560,6 +561,7 @@ public:
 	Map map;
 	std::unique_ptr<Mounts> mounts;
 	[[no_unique_address]] Outfits outfits;
+	std::unique_ptr<Attachedeffects> attachedeffects;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
@@ -712,6 +714,11 @@ public:
 	const std::map<uint8_t, std::string> &getBlessingNames();
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
+	void playerSetTyping(uint32_t playerId, uint8_t typing);
+	void refreshItem(const std::shared_ptr<Item> &item);
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;

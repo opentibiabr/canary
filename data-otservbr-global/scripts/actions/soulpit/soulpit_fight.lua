@@ -93,8 +93,8 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 		SoulPit.zone:removeMonsters()
 
 		for _, player in pairs(SoulPit.zone:getPlayers()) do
+			player:addAnimusMastery(monsterName)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have defeated the core of the %s soul and unlocked its animus mastery!", monsterName))
-			-- Add the monster animus mastery for the player.
 		end
 
 		SoulPit.kickEvent = addEvent(function()

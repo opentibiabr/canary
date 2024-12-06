@@ -19,6 +19,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
@@ -77,6 +78,7 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
 	m_playerCyclopedia = std::make_unique<PlayerCyclopedia>(*this);
 	m_playerTitle = std::make_unique<PlayerTitle>(*this);
+	m_animusMastery = std::make_unique<AnimusMastery>(*this);
 }
 
 Player::~Player() {
@@ -10248,6 +10250,15 @@ const std::unique_ptr<PlayerTitle> &Player::title() const {
 	return m_playerTitle;
 }
 
+// Cyclopedia interface
+std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
+	return m_playerCyclopedia;
+}
+
+const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
+	return m_playerCyclopedia;
+}
+
 // VIP interface
 std::unique_ptr<PlayerVIP> &Player::vip() {
 	return m_playerVIP;
@@ -10257,13 +10268,13 @@ const std::unique_ptr<PlayerVIP> &Player::vip() const {
 	return m_playerVIP;
 }
 
-// Cyclopedia
-std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
-	return m_playerCyclopedia;
+// Animus Mastery interface
+std::unique_ptr<AnimusMastery> &Player::animusMastery() {
+	return m_animusMastery;
 }
 
-const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
-	return m_playerCyclopedia;
+const std::unique_ptr<AnimusMastery> &Player::animusMastery() const {
+	return m_animusMastery;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

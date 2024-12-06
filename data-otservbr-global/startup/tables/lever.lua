@@ -129,6 +129,31 @@ LeverAction = {
 			{ x = 32576, y = 31862, z = 14 },
 		},
 	},
+	-- Grave Danger Quest
+	[14557] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33454, y = 31413, z = 13 },
+		},
+	},
+	[14558] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33515, y = 31444, z = 13 },
+		},
+	},
+	[14561] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33421, y = 31493, z = 13 },
+		},
+	},
+	[14568] = {
+		itemId = 8911,
+		itemPos = {
+			{ x = 33484, y = 31546, z = 13 },
+		},
+	},
 	-- Forgotten Knowledge Quest
 	[26663] = {
 		itemId = 9125,

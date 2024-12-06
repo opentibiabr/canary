@@ -20,6 +20,10 @@ monster.corpse = 0
 monster.speed = 110
 monster.manaCost = 0
 
+monster.events = {
+	"dreamCourtsDeath",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10,

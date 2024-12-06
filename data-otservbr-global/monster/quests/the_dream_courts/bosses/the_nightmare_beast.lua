@@ -13,16 +13,16 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"DreamCourtsBossDeath",
-}
-
 monster.health = 850000
 monster.maxHealth = 850000
 monster.race = "blood"
 monster.corpse = 30159
 monster.speed = 125
 monster.manaCost = 0
+
+monster.events = {
+	"dreamCourtsDeath",
+}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -32,7 +32,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1718,
 	bossRace = RARITY_ARCHFOE,
-	storage = Storage.Quest.U12_00.TheDreamCourts.NightmareBeastTimer,
 }
 
 monster.strategiesTarget = {

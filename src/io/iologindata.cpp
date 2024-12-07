@@ -113,6 +113,9 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		// load conditions
 		IOLoginDataLoad::loadPlayerConditions(player, result);
 
+		// load animus mastery
+		IOLoginDataLoad::loadPlayerAnimusMastery(player, result);
+
 		// load default outfit
 		IOLoginDataLoad::loadPlayerDefaultOutfit(player, result);
 

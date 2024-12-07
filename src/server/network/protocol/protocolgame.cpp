@@ -19,6 +19,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -2383,8 +2384,8 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	newmsg.addByte(currentLevel);
 
-	newmsg.add<uint16_t>(0); // Animus Mastery Bonus
-	newmsg.add<uint16_t>(0); // Animus Mastery Points
+	newmsg.add<uint16_t>(static_cast<uint16_t>((player->animusMastery()->getExperienceMultiplier() - 1) * 1000)); // Animus Mastery Bonus
+	newmsg.add<uint16_t>(player->animusMastery()->getPoints()); // Animus Mastery Points
 
 	newmsg.add<uint32_t>(killCounter);
 

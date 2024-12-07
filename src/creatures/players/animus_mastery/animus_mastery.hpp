@@ -10,19 +10,26 @@
 #pragma once
 
 class Player;
+class PropStream;
+class PropWriteStream;
 
 class AnimusMastery {
 public:
 	explicit AnimusMastery(Player &player);
 
-	void add(std::string_view addMonsterType);
-	void remove(std::string_view removeMonsterType);
+	void add(const std::string &addMonsterType);
+	void remove(const std::string &removeMonsterType);
 
-	bool has(std::string_view searchMonsterType) const;
+	bool has(const std::string &searchMonsterType) const;
 
 	float getExperienceMultiplier() const;
 
+	uint16_t getPoints() const;
+
 	const std::vector<std::string> &getAnimusMasteries() const;
+
+	void serialize(PropWriteStream &propWriteStream) const;
+	bool unserialize(PropStream &propStream);
 
 private:
 	Player &m_player;

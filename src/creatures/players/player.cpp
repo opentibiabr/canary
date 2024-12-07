@@ -3078,6 +3078,14 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getFloat(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
 	}
 
+	const bool handleAnimusMastery = monster && animusMastery()->has(monster->getMonsterType()->name);
+	float animusMasteryMultiplier = 0;
+
+	if (handleAnimusMastery) {
+		animusMasteryMultiplier = animusMastery()->getExperienceMultiplier();
+		exp *= animusMasteryMultiplier;
+	}
+
 	experience += exp;
 
 	if (sendText) {
@@ -3087,6 +3095,10 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 			if (expPercent > 0) {
 				expString = expString + fmt::format(" (VIP bonus {}%)", expPercent > 100 ? 100 : expPercent);
 			}
+		}
+
+		if (handleAnimusMastery) {
+			expString = fmt::format("{} (animus mastery bonus {:.1f}%)", expString, (animusMasteryMultiplier - 1) * 100);
 		}
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));

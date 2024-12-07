@@ -8,7 +8,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 	if not player or not player:canReceiveLoot() then
 		return
 	end
-	if monster:getMonsterForgeClassification() == FORGE_NORMAL_MONSTER then
+	if monster:getMonsterForgeClassification() ~= FORGE_FIENDISH_MONSTER then
 		return
 	end
 
@@ -36,13 +36,20 @@ function callback.monsterOnDropLoot(monster, corpse)
 		end
 
 		if soulCoreId then
-			lootTable = {
-				[soulCoreId] = {
-					count = 1,
-				},
+			lootTable[soulCoreId] = {
+				count = 1,
 			}
 		else
 			return {}
+		end
+	end
+
+	if math.random(100) < SoulPit.SoulCoresConfiguration.chanceToDropSoulPrism then
+		local soulPrismId = getItemIdByName("soul prism")
+		if soulPrismId then
+			lootTable[soulPrismId] = {
+				count = 1,
+			}
 		end
 	end
 	corpse:addLoot(mType:generateLootRoll({}, lootTable, player))

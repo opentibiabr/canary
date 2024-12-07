@@ -90,7 +90,7 @@ local itemTierClassifications = {
 	},
 }
 
--- Item tier with gold price for uprading it
+-- Item tier with gold price for upgrading it
 for classificationId, classificationTable in ipairs(itemTierClassifications) do
 	local itemClassification = Game.createItemClassification(classificationId)
 	local classification = {}

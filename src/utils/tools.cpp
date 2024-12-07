@@ -2085,3 +2085,44 @@ const std::map<uint8_t, uint16_t> &getMaxValuePerSkill() {
 
 	return maxValuePerSkill;
 }
+
+float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer /* = false*/) {
+	float lossPercent = 0;
+	switch (blessingAmount) {
+		case 0:
+			lossPercent = 10;
+			break;
+		case 1:
+			lossPercent = 7;
+			break;
+		case 2:
+			lossPercent = 4.5;
+			break;
+		case 3:
+			lossPercent = 2.5;
+			break;
+		case 4:
+			lossPercent = 1;
+			break;
+		default:
+			// Blessing Amount >= 5
+			lossPercent = 0;
+			break;
+	}
+
+	return isContainer ? lossPercent * 10 : lossPercent;
+}
+
+uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted /* = false*/) {
+	uint8_t result = 80 + (2 * blessCount) - (blessCount / 3);
+
+	if (blessCount == 5) {
+		result -= 1;
+	}
+
+	if (isPromoted) {
+		result += 6;
+	}
+
+	return result;
+}

@@ -63,7 +63,7 @@ public:
 	static void setCreatureMetatable(lua_State* L, int32_t index, const std::shared_ptr<Creature> &creature);
 
 	template <typename T>
-	static T getNumber(lua_State* L, int32_t arg) {
+	static T getNumber(lua_State* L, int32_t arg, std::source_location location = std::source_location::current()) {
 		auto number = lua_tonumber(L, arg);
 
 		if constexpr (std::is_enum_v<T>) {
@@ -73,7 +73,7 @@ public:
 		if constexpr (std::is_integral_v<T>) {
 			if constexpr (std::is_unsigned_v<T>) {
 				if (number < 0) {
-					g_logger().debug("[{}] overflow, setting to default unsigned value (0)", __FUNCTION__);
+					g_logger().debug("[{}] overflow, setting to default unsigned value (0), called line: {}:{}, in {}", __FUNCTION__, location.line(), location.column(), location.function_name());
 					return T(0);
 				}
 			}

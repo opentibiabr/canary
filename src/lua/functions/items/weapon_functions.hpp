@@ -9,56 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class WeaponFunctions final : LuaScriptInterface {
+class WeaponFunctions {
 public:
-	explicit WeaponFunctions(lua_State* L) :
-		LuaScriptInterface("WeaponFunctions") {
-		init(L);
-	}
-	~WeaponFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
-		registerMethod(L, "Weapon", "action", WeaponFunctions::luaWeaponAction);
-		registerMethod(L, "Weapon", "register", WeaponFunctions::luaWeaponRegister);
-		registerMethod(L, "Weapon", "id", WeaponFunctions::luaWeaponId);
-		registerMethod(L, "Weapon", "level", WeaponFunctions::luaWeaponLevel);
-		registerMethod(L, "Weapon", "magicLevel", WeaponFunctions::luaWeaponMagicLevel);
-		registerMethod(L, "Weapon", "mana", WeaponFunctions::luaWeaponMana);
-		registerMethod(L, "Weapon", "manaPercent", WeaponFunctions::luaWeaponManaPercent);
-		registerMethod(L, "Weapon", "health", WeaponFunctions::luaWeaponHealth);
-		registerMethod(L, "Weapon", "healthPercent", WeaponFunctions::luaWeaponHealthPercent);
-		registerMethod(L, "Weapon", "soul", WeaponFunctions::luaWeaponSoul);
-		registerMethod(L, "Weapon", "breakChance", WeaponFunctions::luaWeaponBreakChance);
-		registerMethod(L, "Weapon", "premium", WeaponFunctions::luaWeaponPremium);
-		registerMethod(L, "Weapon", "wieldUnproperly", WeaponFunctions::luaWeaponUnproperly);
-		registerMethod(L, "Weapon", "vocation", WeaponFunctions::luaWeaponVocation);
-		registerMethod(L, "Weapon", "onUseWeapon", WeaponFunctions::luaWeaponOnUseWeapon);
-		registerMethod(L, "Weapon", "element", WeaponFunctions::luaWeaponElement);
-		registerMethod(L, "Weapon", "attack", WeaponFunctions::luaWeaponAttack);
-		registerMethod(L, "Weapon", "defense", WeaponFunctions::luaWeaponDefense);
-		registerMethod(L, "Weapon", "range", WeaponFunctions::luaWeaponRange);
-		registerMethod(L, "Weapon", "charges", WeaponFunctions::luaWeaponCharges);
-		registerMethod(L, "Weapon", "duration", WeaponFunctions::luaWeaponDuration);
-		registerMethod(L, "Weapon", "decayTo", WeaponFunctions::luaWeaponDecayTo);
-		registerMethod(L, "Weapon", "transformEquipTo", WeaponFunctions::luaWeaponTransformEquipTo);
-		registerMethod(L, "Weapon", "transformDeEquipTo", WeaponFunctions::luaWeaponTransformDeEquipTo);
-		registerMethod(L, "Weapon", "slotType", WeaponFunctions::luaWeaponSlotType);
-		registerMethod(L, "Weapon", "hitChance", WeaponFunctions::luaWeaponHitChance);
-		registerMethod(L, "Weapon", "extraElement", WeaponFunctions::luaWeaponExtraElement);
-
-		// exclusively for distance weapons
-		registerMethod(L, "Weapon", "ammoType", WeaponFunctions::luaWeaponAmmoType);
-		registerMethod(L, "Weapon", "maxHitChance", WeaponFunctions::luaWeaponMaxHitChance);
-
-		// exclusively for wands
-		registerMethod(L, "Weapon", "damage", WeaponFunctions::luaWeaponWandDamage);
-
-		// exclusively for wands & distance weapons
-		registerMethod(L, "Weapon", "shootType", WeaponFunctions::luaWeaponShootType);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreateWeapon(lua_State* L);

@@ -20,10 +20,8 @@
 #include "game/game.hpp"
 #include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/luascript.hpp"
-
-std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
-std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
+#include "lua/scripts/scripts.hpp"
+#include "lib/di/container.hpp"
 
 Spells::Spells() = default;
 Spells::~Spells() = default;
@@ -156,7 +154,7 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 				"[{}] duplicate registered rune with id: {}, for script: {}",
 				__FUNCTION__,
 				id,
-				rune->getScriptInterface()->getLoadingScriptName()
+				rune->getRuneSpellScriptInterface()->getLoadingScriptName()
 			);
 		}
 		return inserted;
@@ -275,29 +273,45 @@ Position Spells::getCasterPosition(const std::shared_ptr<Creature> &creature, Di
 	return getNextPosition(dir, creature->getPosition());
 }
 
+LuaScriptInterface* BaseSpell::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool BaseSpell::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_spellScriptId = luaInterface.getEvent();
+	if (m_spellScriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t BaseSpell::getScriptId() const {
+	return m_spellScriptId;
+}
+
+void BaseSpell::setScriptId(int32_t newScriptId) {
+	m_spellScriptId = newScriptId;
+}
+
+bool BaseSpell::isLoadedScriptId() const {
+	return m_spellScriptId != 0;
+}
+
 CombatSpell::CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection) :
-	Script(&g_spells().getScriptInterface()),
 	m_combat(newCombat),
 	needDirection(newNeedDirection),
 	needTarget(newNeedTarget) {
-	// Empty
-}
-
-bool CombatSpell::loadScriptCombat() {
-	m_combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
-	return m_combat != nullptr;
 }
 
 std::shared_ptr<Combat> CombatSpell::getCombat() const {
 	return m_combat;
 }
 
-std::string CombatSpell::getScriptTypeName() const {
-	return "onCastSpell";
-}
-
 bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature) {
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		LuaVariant var;
 		var.type = VARIANT_POSITION;
 
@@ -344,7 +358,7 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature, const std
 		return false;
 	}
 
-	if (isLoadedCallback()) {
+	if (isLoadedScriptId()) {
 		LuaVariant var;
 		if (combat->hasArea()) {
 			var.type = VARIANT_POSITION;
@@ -409,6 +423,8 @@ bool CombatSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, co
 
 	return getScriptInterface()->callFunction(2);
 }
+
+Spell::Spell() = default;
 
 bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
@@ -680,7 +696,9 @@ void Spell::getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDa
 				if (augment->value == 0) {
 					continue;
 				}
-				if (augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact) {
+				if (
+					augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact || augment->type == Augment_t::Base
+				) {
 					const float augmentPercent = augment->value / 100.0;
 					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
 					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
@@ -726,7 +744,10 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
 		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
 		spellCooldown -= augmentCooldownReduction;
+		const int32_t halfBaseCooldown = cooldown / 2;
+		spellCooldown = halfBaseCooldown > spellCooldown ? halfBaseCooldown : spellCooldown; // The cooldown should never be reduced less than half (50%) of its base cooldown
 		if (spellCooldown > 0) {
+			player->wheel()->handleTwinBurstsCooldown(player, name, spellCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
 		}
@@ -748,7 +769,9 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		if (isUpgraded) {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
+		spellSecondaryGroupCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN);
 		if (spellSecondaryGroupCooldown > 0) {
+			player->wheel()->handleBeamMasteryCooldown(player, name, spellSecondaryGroupCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}
@@ -1026,6 +1049,8 @@ void Spell::setLockedPZ(bool b) {
 	pzLocked = b;
 }
 
+InstantSpell::InstantSpell() = default;
+
 bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
 	if (!playerSpellCheck(player)) {
 		return false;
@@ -1155,10 +1180,6 @@ bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, cons
 		return false;
 	}
 	return true;
-}
-
-std::string InstantSpell::getScriptTypeName() const {
-	return "onCastSpell";
 }
 
 bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
@@ -1291,6 +1312,33 @@ bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
 	return false;
 }
 
+LuaScriptInterface* RuneSpell::getRuneSpellScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool RuneSpell::loadRuneSpellScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_runeSpellScriptId = luaInterface.getEvent();
+	if (m_runeSpellScriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t RuneSpell::getRuneSpellScriptId() const {
+	return m_runeSpellScriptId;
+}
+
+void RuneSpell::setRuneSpellScriptId(int32_t newScriptId) {
+	m_runeSpellScriptId = newScriptId;
+}
+
+bool RuneSpell::isRuneSpellLoadedScriptId() const {
+	return m_runeSpellScriptId != 0;
+}
+
 ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return RETURNVALUE_CANNOTUSETHISOBJECT;
@@ -1326,7 +1374,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 	}
 
 	// If script not loaded correctly, return
-	if (!isLoadedCallback()) {
+	if (!isRuneSpellLoadedScriptId()) {
 		return false;
 	}
 
@@ -1388,13 +1436,9 @@ bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::
 	return internalCastSpell(creature, var, false);
 }
 
-std::string RuneSpell::getScriptTypeName() const {
-	return "onCastSpell";
-}
-
 bool RuneSpell::internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const {
 	bool result;
-	if (isLoadedCallback()) {
+	if (isRuneSpellLoadedScriptId()) {
 		result = executeCastSpell(creature, var, isHotkey);
 	} else {
 		result = false;
@@ -1412,11 +1456,11 @@ bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, cons
 	}
 
 	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
-	env->setScriptId(getScriptId(), getScriptInterface());
+	env->setScriptId(getRuneSpellScriptId(), getRuneSpellScriptInterface());
 
-	lua_State* L = getScriptInterface()->getLuaState();
+	lua_State* L = getRuneSpellScriptInterface()->getLuaState();
 
-	getScriptInterface()->pushFunction(getScriptId());
+	getRuneSpellScriptInterface()->pushFunction(getRuneSpellScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
@@ -1425,7 +1469,7 @@ bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, cons
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
 
-	return getScriptInterface()->callFunction(3);
+	return getRuneSpellScriptInterface()->callFunction(3);
 }
 
 bool RuneSpell::isInstant() const {

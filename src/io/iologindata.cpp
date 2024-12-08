@@ -9,12 +9,15 @@
 
 #include "io/iologindata.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/player.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"
@@ -23,7 +26,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
+	if (AccountErrors_t::Ok != account.load()) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
@@ -43,13 +46,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		return false;
 	}
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
+	if (AccountErrors_t::Ok != account.load()) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
+	if (AccountErrors_t::Ok != result) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}

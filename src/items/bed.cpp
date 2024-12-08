@@ -16,6 +16,7 @@
 #include "game/scheduling/save_manager.hpp"
 #include "io/iologindata.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "creatures/players/player.hpp"
 
 BedItem::BedItem(uint16_t id) :
 	Item(id) {

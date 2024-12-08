@@ -15,6 +15,7 @@
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
 #include "utils/pugicast.hpp"
+#include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
 
 #include <appearances.pb.h>
@@ -95,7 +96,7 @@ std::string ItemType::parseAugmentDescription(bool inspect /*= false*/) const {
 }
 
 std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
-	const std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	const auto augmentName = Items::getAugmentNameByType(augmentInfo->type);
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
 
@@ -105,7 +106,11 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
 	} else if (augmentInfo->type == Augment_t::Cooldown) {
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
+	} else if (augmentInfo->type == Augment_t::Base) {
+		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
+		return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
 	}
+
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
 }
 

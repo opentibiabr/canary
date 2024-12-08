@@ -14,6 +14,7 @@ struct AccountInfo;
 enum class CoinType : uint8_t;
 enum class CoinTransactionType : uint8_t;
 enum class AccountErrors_t : uint8_t;
+enum AccountType : uint8_t;
 
 class Account {
 public:
@@ -68,14 +69,14 @@ public:
 	 *
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	uint8_t save() const;
+	AccountErrors_t save() const;
 
 	/**
 	 * @brief Load Account Information.
 	 *
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	uint8_t load();
+	AccountErrors_t load();
 
 	/**
 	 * @brief Re-Load Account Information to get update information(mainly the
@@ -83,7 +84,7 @@ public:
 	 *
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
-	uint8_t reload();
+	AccountErrors_t reload();
 
 	/***************************************************************************
 	 * Setters and Getters
@@ -111,12 +112,12 @@ public:
 
 	[[nodiscard]] time_t getPremiumLastDay() const;
 
-	uint8_t setAccountType(const uint8_t &accountType);
-	[[nodiscard]] uint8_t getAccountType() const;
+	AccountErrors_t setAccountType(AccountType accountType);
+	[[nodiscard]] AccountType getAccountType() const;
 
 	void updatePremiumTime();
 
-	std::tuple<phmap::flat_hash_map<std::string, uint64_t>, uint8_t> getAccountPlayers() const;
+	std::tuple<phmap::flat_hash_map<std::string, uint64_t>, AccountErrors_t> getAccountPlayers() const;
 
 	// Old protocol compat
 	void setProtocolCompat(bool toggle);

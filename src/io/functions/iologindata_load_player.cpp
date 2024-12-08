@@ -9,8 +9,10 @@
 
 #include "io/functions/iologindata_load_player.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
+#include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
@@ -29,6 +31,7 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
@@ -179,10 +182,28 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->setOfflineTrainingSkill(skill);
 	const auto &town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
 	if (!town) {
-		g_logger().error("Player {} has town id {} which doesn't exist", player->name, result->getNumber<uint16_t>("town_id"));
-		return false;
+		g_logger().error("Player {} has invalid town id {}. Attempting to set the correct town.", player->name, result->getNumber<uint16_t>("town_id"));
+
+		const auto &thaisTown = g_game().map.towns.getTown("Thais");
+		if (thaisTown) {
+			player->town = thaisTown;
+			g_logger().warn("Assigned town 'Thais' to player {}", player->name);
+		} else {
+			for (const auto &[townId, currentTown] : g_game().map.towns.getTowns()) {
+				if (townId != 0 && currentTown) {
+					player->town = currentTown;
+					g_logger().warn("Assigned first valid town {} (id: {}) to player {}", currentTown->getName(), townId, player->name);
+				}
+			}
+
+			if (!player->town) {
+				g_logger().error("Player {} has invalid town id {}. No valid town found to assign.", player->name, result->getNumber<uint16_t>("town_id"));
+				return false;
+			}
+		}
+	} else {
+		player->town = town;
 	}
-	player->town = town;
 
 	const Position &loginPos = player->loginPosition;
 	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {
@@ -658,8 +679,14 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 		ItemsMap inboxItems;
 		loadItems(inboxItems, result, player);
 
-		for (auto it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
-			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
+		const auto &playerInbox = player->getInbox();
+		if (!playerInbox) {
+			g_logger().warn("[{}] - Player inbox nullptr", __FUNCTION__);
+			return;
+		}
+
+		for (const auto &it : std::ranges::reverse_view(inboxItems)) {
+			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it.second;
 			const auto &item = pair.first;
 			if (!item) {
 				continue;
@@ -667,7 +694,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 
 			int32_t pid = pair.second;
 			if (pid >= 0 && pid < 100) {
-				player->getInbox()->internalAddThing(item);
+				playerInbox->internalAddThing(item);
 				item->startDecaying();
 			} else {
 				auto inboxIt = inboxItems.find(pid);

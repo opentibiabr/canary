@@ -44,27 +44,43 @@ std::shared_ptr<Container> Container::create(uint16_t type, uint16_t size, bool 
 	return std::make_shared<Container>(type, size, unlocked, pagination);
 }
 
-std::shared_ptr<Container> Container::create(const std::shared_ptr<Tile> &tile) {
-	auto container = std::make_shared<Container>(ITEM_BROWSEFIELD, 30, false, true);
+std::shared_ptr<Container> Container::createBrowseField(const std::shared_ptr<Tile> &tile) {
+	const auto &newContainer = create(ITEM_BROWSEFIELD, 30, false, true);
+	if (!newContainer || !tile) {
+		return nullptr;
+	}
+
 	const TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
 		for (const auto &item : *itemVector) {
-			if (((item->getContainer() || item->hasProperty(CONST_PROP_MOVABLE)) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) && !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-				container->itemlist.push_front(item);
-				item->setParent(container);
+			if (!item) {
+				continue;
 			}
+
+			// Checks if the item has an internal container, is movable, or is packable without blocking the path.
+			bool isItemValid = item->getContainer() || item->hasProperty(CONST_PROP_MOVABLE) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH));
+
+			// If the item has a unique ID or is not valid, skip to the next item.
+			if (item->hasAttribute(ItemAttribute_t::UNIQUEID) || !isItemValid) {
+				continue;
+			}
+
+			// Add the item to the new container and set its parent.
+			newContainer->itemlist.push_front(item);
+			item->setParent(newContainer);
 		}
 	}
 
-	container->setParent(tile);
-	return container;
+	// Set the parent of the new container to be the tile.
+	newContainer->setParent(tile);
+	return newContainer;
 }
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
-		auto parent = getParent();
+		const auto &parent = getParent();
 		if (parent) {
-			auto tile = parent->getTile();
+			const auto &tile = parent->getTile();
 			if (tile) {
 				auto browseField = g_game().browseFields.find(tile);
 				if (browseField != g_game().browseFields.end()) {
@@ -369,7 +385,12 @@ uint32_t Container::getContainerHoldingCount() {
 
 bool Container::isHoldingItem(const std::shared_ptr<Item> &item) {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		if (*it == item) {
+		const auto &compareItem = *it;
+		if (!compareItem || !item) {
+			continue;
+		}
+
+		if (compareItem == item) {
 			return true;
 		}
 	}
@@ -379,6 +400,10 @@ bool Container::isHoldingItem(const std::shared_ptr<Item> &item) {
 bool Container::isHoldingItemWithId(const uint16_t id) {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const auto &item = *it;
+		if (!item) {
+			continue;
+		}
+
 		if (item && item->getID() == id) {
 			return true;
 		}
@@ -1008,9 +1033,9 @@ void ContainerIterator::advance() {
 		return;
 	}
 
-	auto currentItem = container->itemlist[top.index];
+	const auto &currentItem = container->itemlist[top.index];
 	if (currentItem) {
-		auto subContainer = currentItem->getContainer();
+		const auto &subContainer = currentItem->getContainer();
 		if (subContainer && !subContainer->itemlist.empty()) {
 			size_t newDepth = top.depth + 1;
 			if (newDepth <= maxTraversalDepth) {

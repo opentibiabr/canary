@@ -14,6 +14,7 @@
 #include "game/zones/zone.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
+#include "lua/scripts/scripts.hpp"
 
 /**
  * @class EventCallback
@@ -24,8 +25,42 @@
  *
  * @see Script
  */
-EventCallback::EventCallback(LuaScriptInterface* scriptInterface, const std::string &callbackName, bool skipDuplicationCheck) :
-	Script(scriptInterface), m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck) {
+EventCallback::EventCallback(const std::string &callbackName, bool skipDuplicationCheck) :
+	m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck) { }
+
+LuaScriptInterface* EventCallback::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool EventCallback::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[EventCallback::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+std::string EventCallback::getScriptTypeName() const {
+	return m_scriptTypeName;
+}
+
+void EventCallback::setScriptTypeName(std::string_view newName) {
+	m_scriptTypeName = newName;
+}
+
+int32_t EventCallback::getScriptId() const {
+	return m_scriptId;
+}
+
+void EventCallback::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool EventCallback::isLoadedScriptId() const {
+	return m_scriptId != 0;
 }
 
 std::string EventCallback::getName() const {
@@ -34,14 +69,6 @@ std::string EventCallback::getName() const {
 
 bool EventCallback::skipDuplicationCheck() const {
 	return m_skipDuplicationCheck;
-}
-
-std::string EventCallback::getScriptTypeName() const {
-	return m_scriptTypeName;
-}
-
-void EventCallback::setScriptTypeName(const std::string_view newName) {
-	m_scriptTypeName = newName;
 }
 
 EventCallback_t EventCallback::getType() const {
@@ -152,33 +179,6 @@ ReturnValue EventCallback::creatureOnTargetCombat(const std::shared_ptr<Creature
 
 	LuaScriptInterface::resetScriptEnv();
 	return returnValue;
-}
-
-void EventCallback::creatureOnHear(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &speaker, const std::string &words, SpeakClasses type) const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("[EventCallback::creatureOnHear - "
-		                 "Creature {} speaker {}] "
-		                 "Call stack overflow. Too many lua script calls being nested.",
-		                 creature->getName(), speaker->getName());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Creature>(L, creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-
-	LuaScriptInterface::pushUserdata<Creature>(L, speaker);
-	LuaScriptInterface::setCreatureMetatable(L, -1, speaker);
-
-	LuaScriptInterface::pushString(L, words);
-	lua_pushnumber(L, type);
-
-	getScriptInterface()->callVoidFunction(4);
 }
 
 void EventCallback::creatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary) const {
@@ -1160,63 +1160,6 @@ void EventCallback::monsterPostDropLoot(const std::shared_ptr<Monster> &monster,
 	LuaScriptInterface::setMetatable(L, -1, "Container");
 
 	return getScriptInterface()->callVoidFunction(2);
-}
-
-void EventCallback::monsterOnSpawn(const std::shared_ptr<Monster> &monster, const Position &position) const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("{} - "
-		                 "Position {}"
-		                 ". Call stack overflow. Too many lua script calls being nested.",
-		                 __FUNCTION__, position.toString());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	LuaScriptInterface::setMetatable(L, -1, "Monster");
-	LuaScriptInterface::pushPosition(L, position);
-
-	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
-		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
-	} else {
-		lua_pop(L, 1);
-	}
-
-	LuaScriptInterface::resetScriptEnv();
-}
-
-// Npc
-void EventCallback::npcOnSpawn(const std::shared_ptr<Npc> &npc, const Position &position) const {
-	if (!LuaScriptInterface::reserveScriptEnv()) {
-		g_logger().error("{} - "
-		                 "Position {}"
-		                 ". Call stack overflow. Too many lua script calls being nested.",
-		                 __FUNCTION__, position.toString());
-		return;
-	}
-
-	ScriptEnvironment* scriptEnvironment = LuaScriptInterface::getScriptEnv();
-	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
-
-	lua_State* L = getScriptInterface()->getLuaState();
-	getScriptInterface()->pushFunction(getScriptId());
-
-	LuaScriptInterface::pushUserdata<Npc>(L, npc);
-	LuaScriptInterface::setMetatable(L, -1, "Npc");
-	LuaScriptInterface::pushPosition(L, position);
-
-	if (LuaScriptInterface::protectedCall(L, 2, 1) != 0) {
-		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
-	} else {
-		lua_pop(L, 1);
-	}
-
-	LuaScriptInterface::resetScriptEnv();
 }
 
 bool EventCallback::zoneBeforeCreatureEnter(const std::shared_ptr<Zone> &zone, const std::shared_ptr<Creature> &creature) const {

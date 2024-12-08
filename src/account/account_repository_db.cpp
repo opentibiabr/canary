@@ -164,7 +164,7 @@ bool AccountRepositoryDB::registerCoinsTransaction(
 	return successful;
 }
 
-bool AccountRepositoryDB::loadAccountPlayers(std::unique_ptr<AccountInfo> &acc) {
+bool AccountRepositoryDB::loadAccountPlayers(std::unique_ptr<AccountInfo> &acc) const {
 	auto result = g_database().storeQuery(
 		fmt::format("SELECT `name`, `deletion` FROM `players` WHERE `account_id` = {} ORDER BY `name` ASC", acc->id)
 	);
@@ -193,7 +193,7 @@ bool AccountRepositoryDB::load(const std::string &query, std::unique_ptr<Account
 	}
 
 	acc->id = result->getNumber<uint32_t>("id");
-	acc->accountType = result->getNumber<uint16_t>("type");
+	acc->accountType = result->getNumber<AccountType>("type");
 	acc->premiumLastDay = result->getNumber<time_t>("lastday");
 	acc->sessionExpires = result->getNumber<time_t>("expires");
 	acc->premiumDaysPurchased = result->getNumber<uint32_t>("premdays_purchased");

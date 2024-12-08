@@ -38,8 +38,9 @@ public:
 	) override;
 
 private:
-	const std::map<uint8_t, std::string> coinTypeToColumn;
+	std::unordered_map<CoinType, std::string> coinTypeToColumn {};
+
 	bool load(const std::string &query, std::unique_ptr<AccountInfo> &acc);
-	bool loadAccountPlayers(std::unique_ptr<AccountInfo> &acc);
+	bool loadAccountPlayers(std::unique_ptr<AccountInfo> &acc) const;
 	void setupLoyaltyInfo(std::unique_ptr<AccountInfo> &acc);
 };

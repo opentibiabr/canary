@@ -170,20 +170,5 @@ format_as(E e) {
 
 #include "lua/global/shared_object.hpp"
 
-constexpr std::string_view methodName(const char* s) {
-	const std::string_view prettyFunction(s);
-	const size_t bracket = prettyFunction.rfind('(');
-	const size_t space = prettyFunction.rfind(' ', bracket) + 1;
-	return prettyFunction.substr(space, bracket - space);
-}
-
-#if defined(__GNUC__) || defined(__clang__)
-	#define __METHOD_NAME__ methodName(__PRETTY_FUNCTION__)
-#elif defined(_MSC_VER)
-	#define __METHOD_NAME__ methodName(__FUNCSIG__)
-#else
-	#error "Compiler not supported"
-#endif
-
 #include "account/account_info.hpp"
 #include "config/config_enums.hpp"

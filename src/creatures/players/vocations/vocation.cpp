@@ -16,13 +16,15 @@
 #include "utils/tools.hpp"
 #include "enums/player_wheel.hpp"
 
-bool Vocations::reload() {
-	vocationsMap.clear();
-	return loadFromXml();
-}
+#include <creatures/players/wheel/wheel_gems.hpp>
 
 Vocations &Vocations::getInstance() {
 	return inject<Vocations>();
+}
+
+bool Vocations::reload() {
+	vocationsMap.clear();
+	return loadFromXml();
 }
 
 bool Vocations::loadFromXml() {

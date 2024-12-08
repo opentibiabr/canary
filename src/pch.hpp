@@ -116,7 +116,7 @@ format_as(E e) {
  */
 #define MAGIC_ENUM_RANGE_MIN -500
 #define MAGIC_ENUM_RANGE_MAX 500
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 // Memory Mapped File
 #include <mio/mmap.hpp>

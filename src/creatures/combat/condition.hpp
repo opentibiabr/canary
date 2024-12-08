@@ -96,13 +96,13 @@ public:
 	void endCondition(std::shared_ptr<Creature> creature) final;
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) final;
 
-	bool setParam(ConditionParam_t param, int32_t value) final;
+	bool setParam(ConditionParam_t param, int32_t value) override;
 
 	std::shared_ptr<Condition> clone() const override;
 
 	// serialization
-	void serialize(PropWriteStream &propWriteStream) final;
-	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
+	void serialize(PropWriteStream &propWriteStream) override;
+	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
 private:
 	// Helpers

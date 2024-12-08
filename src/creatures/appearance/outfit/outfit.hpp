@@ -13,15 +13,15 @@ enum PlayerSex_t : uint8_t;
 class Player;
 
 struct OutfitEntry {
-	constexpr explicit OutfitEntry(uint16_t initLookType, uint8_t initAddons) :
+	constexpr explicit OutfitEntry(const uint16_t initLookType, const uint8_t initAddons) :
 		lookType(initLookType), addons(initAddons) { }
 
-	uint16_t lookType;
-	uint8_t addons;
+	uint16_t lookType {};
+	uint8_t addons {};
 };
 
 struct Outfit {
-	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :
+	Outfit(std::string initName, const uint16_t initLookType, const bool initPremium, const bool initUnlocked, std::string initFrom) :
 		name(std::move(initName)), lookType(initLookType), premium(initPremium), unlocked(initUnlocked), from(std::move(initFrom)) { }
 
 	std::string name;
@@ -32,7 +32,7 @@ struct Outfit {
 };
 
 struct ProtocolOutfit {
-	ProtocolOutfit(const std::string &initName, uint16_t initLookType, uint8_t initAddons) :
+	ProtocolOutfit(const std::string &initName, const uint16_t initLookType, const uint8_t initAddons) :
 		name(initName), lookType(initLookType), addons(initAddons) { }
 
 	const std::string &name;

@@ -135,7 +135,7 @@ bool ChatChannel::addUser(const std::shared_ptr<Player> &player) {
 }
 
 bool ChatChannel::removeUser(const std::shared_ptr<Player> &player) {
-	auto iter = users.find(player->getID());
+	const auto iter = users.find(player->getID());
 	if (iter == users.end()) {
 		return false;
 	}
@@ -347,9 +347,9 @@ Chat &Chat::getInstance() {
 
 bool Chat::load() {
 	pugi::xml_document doc;
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	auto folder = coreFolder + "/chatchannels/chatchannels.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	const auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	const auto folder = coreFolder + "/chatchannels/chatchannels.xml";
+	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
@@ -358,7 +358,7 @@ bool Chat::load() {
 	for (const auto &channelNode : doc.child("channels").children()) {
 		auto channelId = pugi::cast<uint16_t>(channelNode.attribute("id").value());
 		std::string channelName = channelNode.attribute("name").as_string();
-		bool isPublic = channelNode.attribute("public").as_bool();
+		const bool isPublic = channelNode.attribute("public").as_bool();
 		pugi::xml_attribute scriptAttribute = channelNode.attribute("script");
 
 		auto it = normalChannels.find(channelId);
@@ -468,7 +468,7 @@ bool Chat::deleteChannel(const std::shared_ptr<Player> &player, uint16_t channel
 				return false;
 			}
 
-			auto it = guildChannels.find(guild->getId());
+			const auto it = guildChannels.find(guild->getId());
 			if (it == guildChannels.end()) {
 				return false;
 			}
@@ -483,7 +483,7 @@ bool Chat::deleteChannel(const std::shared_ptr<Player> &player, uint16_t channel
 				return false;
 			}
 
-			auto it = partyChannels.find(party);
+			const auto it = partyChannels.find(party);
 			if (it == partyChannels.end()) {
 				return false;
 			}
@@ -493,7 +493,7 @@ bool Chat::deleteChannel(const std::shared_ptr<Player> &player, uint16_t channel
 		}
 
 		default: {
-			auto it = privateChannels.find(channelId);
+			const auto it = privateChannels.find(channelId);
 			if (it == privateChannels.end()) {
 				return false;
 			}

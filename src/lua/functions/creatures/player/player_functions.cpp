@@ -2239,7 +2239,7 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 			item->setTier(tier);
 		}
 
-		ReturnValue ret = g_game().internalPlayerAddItem(player, item, canDropOnMap, slot);
+		const ReturnValue ret = g_game().internalPlayerAddItem(player, item, canDropOnMap, slot);
 		if (ret != RETURNVALUE_NOERROR) {
 			if (!hasTable) {
 				lua_pushnil(L);

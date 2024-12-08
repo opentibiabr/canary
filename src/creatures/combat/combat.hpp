@@ -167,7 +167,7 @@ public:
 
 private:
 	std::unique_ptr<MatrixArea> createArea(const std::list<uint32_t> &list, uint32_t rows);
-	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const;
+	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, const MatrixOperation_t &op) const;
 
 	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const;
 

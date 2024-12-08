@@ -409,7 +409,7 @@ bool Actions::useItem(const std::shared_ptr<Player> &player, const Position &pos
 		showUseHotkeyMessage(player, item, player->getItemTypeCount(item->getID(), subType != item->getItemCount() ? subType : -1));
 	}
 
-	ReturnValue ret = internalUseItem(player, pos, index, item, isHotkey);
+	const ReturnValue ret = internalUseItem(player, pos, index, item, isHotkey);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return false;
@@ -443,7 +443,7 @@ bool Actions::useItemEx(const std::shared_ptr<Player> &player, const Position &f
 		return false;
 	}
 
-	ReturnValue ret = action->canExecuteAction(player, toPos);
+	const ReturnValue ret = action->canExecuteAction(player, toPos);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		return false;

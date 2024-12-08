@@ -439,7 +439,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 				return 1;
 			}
 
-			ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			const ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			if (ret != RETURNVALUE_NOERROR) {
 				if (!hasTable) {
 					lua_pushnil(L);

@@ -214,7 +214,7 @@ void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 			return;
 		}
 
-		ReturnValue ret = g_game().internalRemoveItem(item);
+		const ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			g_logger().error("[Decay::internalDecayItem] - internalDecayItem failed, "
 			                 "error code: {}, item id: {}",

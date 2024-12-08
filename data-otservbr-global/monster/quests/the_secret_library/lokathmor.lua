@@ -100,7 +100,6 @@ monster.loot = {
 	{ name = "dreaded cleaver", chance = 30000 },
 	{ name = "slightly rusted shield", chance = 26670 },
 	{ name = "wand of inferno", chance = 30000 },
-	{ id = 28341, chance = 1000 }, -- tessellated wall
 	{ name = "sturdy book", chance = 1000 },
 }
 

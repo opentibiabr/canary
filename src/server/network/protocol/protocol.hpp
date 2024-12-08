@@ -94,6 +94,7 @@ private:
 	OutputMessage_ptr outputBuffer;
 
 	const ConnectionWeak_ptr connectionPtr;
+	std::array<uint32_t, 4> key = {};
 	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;

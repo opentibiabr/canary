@@ -187,7 +187,7 @@ Spells &Spells::getInstance() {
 	return inject<Spells>();
 }
 
-std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
+std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) const {
 	std::shared_ptr<Spell> spell = getRuneSpellByName(name);
 	if (!spell) {
 		spell = getInstantSpellByName(name);

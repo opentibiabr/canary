@@ -286,99 +286,6 @@ void Creature::stopEventWalk() {
 	}
 }
 
-void Creature::updateMapCache() {
-	if (!useCacheMap()) {
-		return;
-	}
-
-	metrics::method_latency measure(__METHOD_NAME__);
-	std::shared_ptr<Tile> newTile;
-	const Position &myPos = getPosition();
-	Position pos(0, 0, myPos.z);
-
-	for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-		for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-			pos.x = myPos.getX() + x;
-			pos.y = myPos.getY() + y;
-			newTile = g_game().map.getTile(pos);
-			updateTileCache(newTile, pos);
-		}
-	}
-}
-
-void Creature::updateTileCache(const std::shared_ptr<Tile> &newTile, int32_t dx, int32_t dy) {
-	metrics::method_latency measure(__METHOD_NAME__);
-	if (std::abs(dx) <= maxWalkCacheWidth && std::abs(dy) <= maxWalkCacheHeight) {
-		localMapCache[maxWalkCacheHeight + dy][maxWalkCacheWidth + dx] = newTile && newTile->queryAdd(0, getCreature(), 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR;
-	}
-}
-
-void Creature::updateTileCache(const std::shared_ptr<Tile> &upTile, const Position &pos) {
-	const Position &myPos = getPosition();
-	if (pos.z == myPos.z) {
-		int32_t dx = Position::getOffsetX(pos, myPos);
-		int32_t dy = Position::getOffsetY(pos, myPos);
-		updateTileCache(upTile, dx, dy);
-	}
-}
-
-int32_t Creature::getWalkCache(const Position &pos) {
-	metrics::method_latency measure(__METHOD_NAME__);
-	if (!useCacheMap()) {
-		return 2;
-	}
-
-	const Position &myPos = getPosition();
-	if (myPos.z != pos.z) {
-		return 0;
-	}
-
-	if (pos == myPos) {
-		return 1;
-	}
-
-	const int32_t dx = Position::getOffsetX(pos, myPos);
-	if (std::abs(dx) <= maxWalkCacheWidth) {
-		const int32_t dy = Position::getOffsetY(pos, myPos);
-		if (std::abs(dy) <= maxWalkCacheHeight) {
-			return localMapCache[maxWalkCacheHeight + dy][maxWalkCacheWidth + dx];
-		}
-	}
-
-	// out of range
-	return 2;
-}
-
-void Creature::onAddTileItem(const std::shared_ptr<Tile> &tileItem, const Position &pos) {
-	if (isMapLoaded && pos.z == getPosition().z) {
-		updateTileCache(tileItem, pos);
-	}
-}
-
-void Creature::onUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &, const ItemType &oldType, const std::shared_ptr<Item> &, const ItemType &newType) {
-	if (!isMapLoaded) {
-		return;
-	}
-
-	if (oldType.blockSolid || oldType.blockPathFind || newType.blockPathFind || newType.blockSolid) {
-		if (pos.z == getPosition().z) {
-			updateTileCache(updateTile, pos);
-		}
-	}
-}
-
-void Creature::onRemoveTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &) {
-	if (!isMapLoaded) {
-		return;
-	}
-
-	if (iType.blockSolid || iType.blockPathFind || iType.isGroundTile()) {
-		if (pos.z == getPosition().z) {
-			updateTileCache(updateTile, pos);
-		}
-	}
-}
-
 void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (creature.get() == this) {
@@ -1304,7 +1211,7 @@ bool Creature::addCombatCondition(const std::shared_ptr<Condition> &condition, b
 }
 
 void Creature::removeCondition(ConditionType_t type) {
-	metrics::method_latency measure(__METHOD_NAME__);
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	auto it = conditions.begin();
 	const auto end = conditions.end();
 	while (it != end) {
@@ -1404,7 +1311,7 @@ std::vector<std::shared_ptr<Condition>> Creature::getConditionsByType(ConditionT
 }
 
 void Creature::executeConditions(uint32_t interval) {
-	metrics::method_latency measure(__METHOD_NAME__);
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	auto it = conditions.begin();
 	const auto end = conditions.end();
 	while (it != end) {

@@ -27,10 +27,6 @@ bool Vocations::reload() {
 	return loadFromXml();
 }
 
-Vocations &Vocations::getInstance() {
-	return inject<Vocations>();
-}
-
 bool Vocations::loadFromXml() {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/vocations.xml";

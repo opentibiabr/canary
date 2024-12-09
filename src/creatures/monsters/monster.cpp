@@ -1143,7 +1143,7 @@ void Monster::doAttacking(uint32_t interval) {
 		bool inRange = false;
 
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
-				continue;
+			continue;
 		}
 
 		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
@@ -1157,7 +1157,7 @@ void Monster::doAttacking(uint32_t interval) {
 				maxCombatValue = spellBlock.maxCombatValue;
 
 				if (spellBlock.spell == nullptr) {
-						continue;
+					continue;
 				}
 
 				spellBlock.spell->castSpell(getMonster(), attackedCreature);

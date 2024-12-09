@@ -3,4 +3,3 @@ function onUpdateDatabase()
 
 	db.query("ALTER TABLE `players` MODIFY `conditions` mediumblob NOT NULL;")
 end
-

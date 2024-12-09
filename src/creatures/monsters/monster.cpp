@@ -354,7 +354,9 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 
 		setIdle(true);
 	} else {
-		onCreatureLeave(creature);
+		addAsyncTask([this, creature] {
+			onCreatureLeave(creature);
+		});
 	}
 }
 
@@ -421,27 +423,13 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 							const auto &topCreature = nextTile->getTopCreature();
 							if (followCreature != topCreature && isOpponent(topCreature)) {
-								g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), topCreatureWeak = std::weak_ptr(topCreature)] {
-									const auto &self = selfWeak.lock();
-									const auto &topCreature = topCreatureWeak.lock();
-									if (self && topCreature) {
-										self->selectTarget(topCreature);
-									}
-								},
-								                        "Monster::onCreatureMove");
+								selectTarget(topCreature);
 							}
 						}
 					}
 				} else if (isOpponent(creature)) {
 					// we have no target lets try pick this one
-					g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), creatureWeak = std::weak_ptr(creature)] {
-						const auto &self = selfWeak.lock();
-						const auto &creaturePtr = creatureWeak.lock();
-						if (self && creaturePtr) {
-							self->selectTarget(creaturePtr);
-						}
-					},
-					                        "Monster::onCreatureMove");
+					selectTarget(creature);
 				}
 			}
 		};
@@ -602,7 +590,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateTargetList, true);
 		return;
 	}
@@ -952,7 +940,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+			checkCreatureAttack();
 		}
 	}
 	return setFollowCreature(creature);
@@ -967,7 +955,6 @@ void Monster::setIdle(bool idle) {
 
 	if (!isIdle) {
 		g_game().addCreatureCheck(getMonster());
-
 	} else {
 		onIdleStatus();
 		clearTargetList();
@@ -977,7 +964,7 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
@@ -1015,10 +1002,7 @@ void Monster::onAddCondition(ConditionType_t type) {
 	onConditionStatusChange(type);
 }
 
-void Monster::onConditionStatusChange(ConditionType_t type) {
-	if (type == CONDITION_FIRE || type == CONDITION_ENERGY || type == CONDITION_POISON) {
-		updateMapCache();
-	}
+void Monster::onConditionStatusChange(ConditionType_t /*type*/) {
 	updateIdleStatus();
 }
 
@@ -1075,8 +1059,11 @@ void Monster::onThink(uint32_t interval) {
 	}
 
 	updateIdleStatus();
+	setAsyncTaskFlag(OnThink, true);
+}
 
-	if (isIdle) {
+void Monster::onThink_async() {
+	if (isIdle) { // updateIdleStatus(); is executed before this method
 		return;
 	}
 
@@ -1111,10 +1098,13 @@ void Monster::onThink(uint32_t interval) {
 		}
 	}
 
-	onThinkTarget(interval);
-	onThinkYell(interval);
-	onThinkDefense(interval);
-	onThinkSound(interval);
+	onThinkTarget(EVENT_CREATURE_THINK_INTERVAL);
+
+	safeCall([this] {
+		onThinkYell(EVENT_CREATURE_THINK_INTERVAL);
+		onThinkDefense(EVENT_CREATURE_THINK_INTERVAL);
+		onThinkSound(EVENT_CREATURE_THINK_INTERVAL);
+	});
 }
 
 void Monster::doAttacking(uint32_t interval) {
@@ -1518,7 +1508,6 @@ void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result
 	} else {
 		if (ignoreFieldDamage) {
 			ignoreFieldDamage = false;
-			updateMapCache();
 		}
 
 		int32_t distance = std::max<int32_t>(Position::getDistanceX(position, masterPos), Position::getDistanceY(position, masterPos));
@@ -1544,7 +1533,6 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 	} else {
 		if (ignoreFieldDamage) {
 			ignoreFieldDamage = false;
-			updateMapCache();
 		}
 		// target dancing
 		const auto &attackedCreature = getAttackedCreature();
@@ -2226,10 +2214,6 @@ void Monster::setHazardSystemDefenseBoost(bool value) {
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	pos = getNextPosition(moveDirection, pos);
 	if (isInSpawnRange(pos)) {
-		if (getWalkCache(pos) == 0) {
-			return false;
-		}
-
 		const auto &tile = g_game().map.getTile(pos);
 		if (tile && tile->getTopVisibleCreature(getMonster()) == nullptr && tile->queryAdd(0, getMonster(), 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 			return true;
@@ -2406,7 +2390,6 @@ void Monster::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t dam
 
 	if (damage > 0 && randomStepping) {
 		ignoreFieldDamage = true;
-		updateMapCache();
 	}
 
 	if (isInvisible()) {
@@ -2669,5 +2652,9 @@ void Monster::onExecuteAsyncTasks() {
 
 	if (hasAsyncTaskFlag(UpdateIdleStatus)) {
 		updateIdleStatus();
+	}
+
+	if (hasAsyncTaskFlag(OnThink)) {
+		onThink_async();
 	}
 }

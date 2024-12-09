@@ -13,95 +13,9 @@
 #include "lua/functions/items/imbuement_functions.hpp"
 #include "lua/functions/items/item_type_functions.hpp"
 #include "lua/functions/items/weapon_functions.hpp"
-#include "lua/scripts/luascript.hpp"
-
-class ItemFunctions final : LuaScriptInterface {
+class ItemFunctions {
 public:
-	explicit ItemFunctions(lua_State* L) :
-		LuaScriptInterface("ItemFunctions") {
-		init(L);
-	}
-	~ItemFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Item", "", ItemFunctions::luaItemCreate);
-		registerMetaMethod(L, "Item", "__eq", ItemFunctions::luaUserdataCompare);
-
-		registerMethod(L, "Item", "isItem", ItemFunctions::luaItemIsItem);
-
-		registerMethod(L, "Item", "getContainer", ItemFunctions::luaItemGetContainer);
-		registerMethod(L, "Item", "getParent", ItemFunctions::luaItemGetParent);
-		registerMethod(L, "Item", "getTopParent", ItemFunctions::luaItemGetTopParent);
-
-		registerMethod(L, "Item", "getId", ItemFunctions::luaItemGetId);
-
-		registerMethod(L, "Item", "clone", ItemFunctions::luaItemClone);
-		registerMethod(L, "Item", "split", ItemFunctions::luaItemSplit);
-		registerMethod(L, "Item", "remove", ItemFunctions::luaItemRemove);
-
-		registerMethod(L, "Item", "getUniqueId", ItemFunctions::luaItemGetUniqueId);
-		registerMethod(L, "Item", "getActionId", ItemFunctions::luaItemGetActionId);
-		registerMethod(L, "Item", "setActionId", ItemFunctions::luaItemSetActionId);
-
-		registerMethod(L, "Item", "getCount", ItemFunctions::luaItemGetCount);
-		registerMethod(L, "Item", "getCharges", ItemFunctions::luaItemGetCharges);
-		registerMethod(L, "Item", "getFluidType", ItemFunctions::luaItemGetFluidType);
-		registerMethod(L, "Item", "getWeight", ItemFunctions::luaItemGetWeight);
-
-		registerMethod(L, "Item", "getSubType", ItemFunctions::luaItemGetSubType);
-
-		registerMethod(L, "Item", "getName", ItemFunctions::luaItemGetName);
-		registerMethod(L, "Item", "getPluralName", ItemFunctions::luaItemGetPluralName);
-		registerMethod(L, "Item", "getArticle", ItemFunctions::luaItemGetArticle);
-
-		registerMethod(L, "Item", "getPosition", ItemFunctions::luaItemGetPosition);
-		registerMethod(L, "Item", "getTile", ItemFunctions::luaItemGetTile);
-
-		registerMethod(L, "Item", "hasAttribute", ItemFunctions::luaItemHasAttribute);
-		registerMethod(L, "Item", "getAttribute", ItemFunctions::luaItemGetAttribute);
-		registerMethod(L, "Item", "setAttribute", ItemFunctions::luaItemSetAttribute);
-		registerMethod(L, "Item", "removeAttribute", ItemFunctions::luaItemRemoveAttribute);
-		registerMethod(L, "Item", "getCustomAttribute", ItemFunctions::luaItemGetCustomAttribute);
-		registerMethod(L, "Item", "setCustomAttribute", ItemFunctions::luaItemSetCustomAttribute);
-		registerMethod(L, "Item", "removeCustomAttribute", ItemFunctions::luaItemRemoveCustomAttribute);
-		registerMethod(L, "Item", "canBeMoved", ItemFunctions::luaItemCanBeMoved);
-
-		registerMethod(L, "Item", "setOwner", ItemFunctions::luaItemSetOwner);
-		registerMethod(L, "Item", "getOwnerId", ItemFunctions::luaItemGetOwnerId);
-		registerMethod(L, "Item", "isOwner", ItemFunctions::luaItemIsOwner);
-		registerMethod(L, "Item", "getOwnerName", ItemFunctions::luaItemGetOwnerName);
-		registerMethod(L, "Item", "hasOwner", ItemFunctions::luaItemHasOwner);
-
-		registerMethod(L, "Item", "moveTo", ItemFunctions::luaItemMoveTo);
-		registerMethod(L, "Item", "transform", ItemFunctions::luaItemTransform);
-		registerMethod(L, "Item", "decay", ItemFunctions::luaItemDecay);
-
-		registerMethod(L, "Item", "serializeAttributes", ItemFunctions::luaItemSerializeAttributes);
-		registerMethod(L, "Item", "moveToSlot", ItemFunctions::luaItemMoveToSlot);
-
-		registerMethod(L, "Item", "getDescription", ItemFunctions::luaItemGetDescription);
-
-		registerMethod(L, "Item", "hasProperty", ItemFunctions::luaItemHasProperty);
-
-		registerMethod(L, "Item", "getImbuementSlot", ItemFunctions::luaItemGetImbuementSlot);
-		registerMethod(L, "Item", "getImbuement", ItemFunctions::luaItemGetImbuement);
-
-		registerMethod(L, "Item", "setDuration", ItemFunctions::luaItemSetDuration);
-
-		registerMethod(L, "Item", "isInsideDepot", ItemFunctions::luaItemIsInsideDepot);
-		registerMethod(L, "Item", "isContainer", ItemFunctions::luaItemIsContainer);
-
-		registerMethod(L, "Item", "getTier", ItemFunctions::luaItemGetTier);
-		registerMethod(L, "Item", "setTier", ItemFunctions::luaItemSetTier);
-		registerMethod(L, "Item", "getClassification", ItemFunctions::luaItemGetClassification);
-
-		registerMethod(L, "Item", "canReceiveAutoCarpet", ItemFunctions::luaItemCanReceiveAutoCarpet);
-
-		ContainerFunctions::init(L);
-		ImbuementFunctions::init(L);
-		ItemTypeFunctions::init(L);
-		WeaponFunctions::init(L);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaItemCreate(lua_State* L);

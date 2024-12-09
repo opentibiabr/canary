@@ -1455,7 +1455,7 @@ function Player:getSoulWarZoneMonster()
 	return zoneMonsterName
 end
 
-function Player:isInBoatSpot()
+function Creature:isInBoatSpot()
 	-- Get ebb and flow zone and check if player is in zone
 	local zone = SoulWarQuest.ebbAndFlow.getZone()
 	local tile = Tile(self:getPosition())
@@ -1464,11 +1464,11 @@ function Player:isInBoatSpot()
 		groundId = tile:getGround():getId()
 	end
 	if zone and zone:isInZone(self:getPosition()) and tile and groundId == SoulWarQuest.ebbAndFlow.boatId then
-		logger.trace("Player {} is in boat spot", self:getName())
+		logger.trace("Creature {} is in boat spot", self:getName())
 		return true
 	end
 
-	logger.trace("Player {} is not in boat spot", self:getName())
+	logger.trace("Creature {} is not in boat spot", self:getName())
 	return false
 end
 

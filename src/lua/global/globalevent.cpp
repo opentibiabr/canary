@@ -12,9 +12,15 @@
 #include "utils/tools.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "lib/di/container.hpp"
 
 GlobalEvents::GlobalEvents() = default;
 GlobalEvents::~GlobalEvents() = default;
+
+GlobalEvents &GlobalEvents::getInstance() {
+	return inject<GlobalEvents>();
+}
 
 void GlobalEvents::clear() {
 	// Stop events
@@ -184,8 +190,34 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	}
 }
 
-GlobalEvent::GlobalEvent(LuaScriptInterface* interface) :
-	Script(interface) { }
+GlobalEvent::GlobalEvent() = default;
+
+LuaScriptInterface* GlobalEvent::getScriptInterface() const {
+	return &g_scripts().getScriptInterface();
+}
+
+bool GlobalEvent::loadScriptId() {
+	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == -1) {
+		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+int32_t GlobalEvent::getScriptId() const {
+	return m_scriptId;
+}
+
+void GlobalEvent::setScriptId(int32_t newScriptId) {
+	m_scriptId = newScriptId;
+}
+
+bool GlobalEvent::isLoadedScriptId() const {
+	return m_scriptId != 0;
+}
 
 std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {

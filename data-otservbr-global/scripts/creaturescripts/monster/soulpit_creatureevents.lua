@@ -16,19 +16,6 @@ function enrage.onHealthChange(creature, attacker, primaryDamage, primaryType, s
 end
 enrage:register()
 
-local overpower = CreatureEvent("overpowerSoulPit")
-function overpower.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
-	if creature and attacker and attacker:isMonster() and attacker:getForgeStack() == 40 and not attacker:getMaster() then
-		local bonusCriticalDamage = SoulPit.bossAbilities.overpowerSoulPit.bonusCriticalDamage
-		primaryDamage = primaryDamage * bonusCriticalDamage
-		secondaryDamage = secondaryDamage * bonusCriticalDamage
-		creature:getPosition():sendMagicEffect(CONST_ME_CRITICAL_DAMAGE)
-	end
-
-	return primaryDamage, primaryType, secondaryDamage, secondaryType
-end
-overpower:register()
-
 local opressor = CreatureEvent("opressorSoulPit")
 function opressor.onThink() end
 opressor:register()

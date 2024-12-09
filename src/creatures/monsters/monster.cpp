@@ -248,8 +248,20 @@ bool Monster::canSeeInvisibility() const {
 	return isImmune(CONDITION_INVISIBLE);
 }
 
-uint16_t Monster::critChance() const {
-	return mType->info.critChance;
+void Monster::setCriticalDamage(uint16_t damage) {
+	criticalDamage = damage;
+}
+
+uint16_t Monster::getCriticalDamage() const {
+	return criticalDamage;
+}
+
+void Monster::setCriticalChance(uint16_t chance) {
+	criticalChance = chance;
+}
+
+uint16_t Monster::getCriticalChance() const {
+	return mType->info.critChance + criticalChance;
 }
 
 uint32_t Monster::getManaCost() const {
@@ -1131,7 +1143,7 @@ void Monster::doAttacking(uint32_t interval) {
 		bool inRange = false;
 
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
-			continue;
+				continue;
 		}
 
 		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
@@ -1145,7 +1157,7 @@ void Monster::doAttacking(uint32_t interval) {
 				maxCombatValue = spellBlock.maxCombatValue;
 
 				if (spellBlock.spell == nullptr) {
-					continue;
+						continue;
 				}
 
 				spellBlock.spell->castSpell(getMonster(), attackedCreature);

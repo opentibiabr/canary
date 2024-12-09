@@ -73,7 +73,6 @@ public:
 	bool isHostile() const;
 	bool isFamiliar() const;
 	bool canSeeInvisibility() const override;
-	uint16_t critChance() const;
 	uint32_t getManaCost() const;
 	RespawnType getRespawnType() const;
 	void setSpawnMonster(const std::shared_ptr<SpawnMonster> &newSpawnMonster);
@@ -227,6 +226,12 @@ public:
 
 	void setDead(bool isDead);
 
+	void setCriticalChance(uint16_t chance);
+	uint16_t getCriticalChance() const;
+
+	void setCriticalDamage(uint16_t damage);
+	uint16_t getCriticalDamage() const;
+
 protected:
 	void onExecuteAsyncTasks() override;
 
@@ -256,6 +261,9 @@ private:
 	int64_t lastMeleeAttack = 0;
 
 	uint16_t totalPlayersOnScreen = 0;
+
+	uint16_t criticalChance = 0;
+	uint16_t criticalDamage = 0;
 
 	uint32_t attackTicks = 0;
 	uint32_t targetChangeTicks = 0;

@@ -2254,7 +2254,8 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			}
 		}
 	} else if (monster) {
-		chance = monster->critChance() * 100;
+		chance = monster->getCriticalChance() * 100;
+		bonus = monster->getCriticalDamage() * 100;
 	}
 
 	bonus += damage.criticalDamage;

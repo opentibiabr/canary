@@ -42,6 +42,8 @@ function leaveHouse.onSay(player, words, param)
 	return true
 end
 
-leaveHouse:separator(" ")
-leaveHouse:groupType("normal")
-leaveHouse:register()
+if not configManager.getBoolean(configKeys.CYCLOPEDIA_HOUSE_AUCTION) then
+	leaveHouse:separator(" ")
+	leaveHouse:groupType("normal")
+	leaveHouse:register()
+end

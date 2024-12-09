@@ -300,3 +300,10 @@ uint32_t Account::getAccountAgeInDays() const {
 [[nodiscard]] time_t Account::getPremiumLastDay() const {
 	return m_account->premiumLastDay;
 }
+
+uint32_t Account::getHouseBidId() const {
+	return m_account->houseBidId;
+}
+void Account::setHouseBidId(uint32_t houseId) {
+	m_account->houseBidId = houseId;
+}

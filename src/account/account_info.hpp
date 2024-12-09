@@ -28,4 +28,5 @@ struct AccountInfo {
 	time_t sessionExpires = 0;
 	uint32_t premiumDaysPurchased = 0;
 	uint32_t creationTime = 0;
+	uint32_t houseBidId = 0;
 };

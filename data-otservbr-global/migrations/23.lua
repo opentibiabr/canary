@@ -16,5 +16,4 @@ function onUpdateDatabase()
 			FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
-	return true
 end

@@ -6,6 +6,4 @@ function onUpdateDatabase()
 		MODIFY `xpboost_stamina` smallint(5) UNSIGNED DEFAULT NULL,
 		MODIFY `xpboost_value` tinyint(4) UNSIGNED DEFAULT NULL
 	]])
-
-	return true
 end

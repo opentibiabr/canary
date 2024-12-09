@@ -48,6 +48,4 @@ function onUpdateDatabase()
 			`monster_list` BLOB NULL
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
-
-	return true
 end

@@ -23,5 +23,4 @@ function onUpdateDatabase()
 		`bossIdSlotTwo` int NOT NULL DEFAULT 0,
 		`removeTimes` int NOT NULL DEFAULT 1
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
-	return true
 end

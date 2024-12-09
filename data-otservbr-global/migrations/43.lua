@@ -7,6 +7,4 @@ function onUpdateDatabase()
 			ADD `payment` bigint(13) UNSIGNED NOT NULL DEFAULT '0',
 			ADD `duration_days` tinyint(3) UNSIGNED NOT NULL DEFAULT '0'
 		]])
-
-	return true
 end

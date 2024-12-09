@@ -13,5 +13,4 @@ function onUpdateDatabase()
 	db.query([[
 		ALTER TABLE `accounts` MODIFY `password` TEXT NOT NULL;
 	]])
-	return true
 end

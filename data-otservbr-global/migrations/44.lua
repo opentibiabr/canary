@@ -6,6 +6,4 @@ function onUpdateDatabase()
     	MODIFY COLUMN `manashield` INT UNSIGNED NOT NULL DEFAULT '0',
     	MODIFY COLUMN `max_manashield` INT UNSIGNED NOT NULL DEFAULT '0';
 	]])
-
-	return true
 end

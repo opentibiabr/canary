@@ -12,6 +12,4 @@ function onUpdateDatabase()
 		ALTER TABLE `house_lists` 
 		MODIFY `version` bigint(20) NOT NULL DEFAULT '0';
 	]])
-
-	return true
 end

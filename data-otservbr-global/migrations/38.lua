@@ -8,5 +8,4 @@ function onUpdateDatabase()
 			PRIMARY KEY (`key_name`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
-	return true
 end

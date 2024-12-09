@@ -82,6 +82,6 @@ private:
 	static int luaMonsterImmune(lua_State* L);
 	static int luaMonsterCriticalChance(lua_State* L);
 	static int luaMonsterCriticalDamage(lua_State* L);
-	
+
 	friend class CreatureFunctions;
 };

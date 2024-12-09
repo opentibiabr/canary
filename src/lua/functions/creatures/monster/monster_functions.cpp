@@ -77,7 +77,7 @@ void MonsterFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Monster", "criticalChance", MonsterFunctions::luaMonsterCriticalChance);
 	Lua::registerMethod(L, "Monster", "criticalDamage", MonsterFunctions::luaMonsterCriticalDamage);
-	
+
 	CharmFunctions::init(L);
 	LootFunctions::init(L);
 	MonsterSpellFunctions::init(L);

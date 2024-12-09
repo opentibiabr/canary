@@ -316,6 +316,8 @@ void CanaryServer::initializeDatabase() {
 		));
 	}
 
+	g_database().createDatabaseBackup(false);
+
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)

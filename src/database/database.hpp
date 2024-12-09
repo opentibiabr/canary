@@ -37,6 +37,23 @@ public:
 
 	bool connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock);
 
+	/**
+	 * @brief Creates a backup of the database.
+	 *
+	 * This function generates a backup of the database, with options for compression.
+	 * The backup can be triggered periodically or during specific events like server loading.
+	 *
+	 * The backup operation will only execute if the configuration option `MYSQL_DB_BACKUP`
+	 * is set to true in the `config.lua` file. If this configuration is disabled, the function
+	 * will return without performing any action.
+	 *
+	 * @param compress Indicates whether the backup should be compressed.
+	 * - If `compress` is true, the backup is created during an interval-based save, which occurs every 2 hours.
+	 *   This helps prevent excessive growth in the number of backup files.
+	 * - If `compress` is false, the backup is created during the global save, which is triggered once a day when the server loads.
+	 */
+	void createDatabaseBackup(bool compress) const;
+
 	bool retryQuery(std::string_view query, int retries);
 	bool executeQuery(std::string_view query);
 

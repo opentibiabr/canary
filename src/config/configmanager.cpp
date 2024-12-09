@@ -71,6 +71,7 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");
 		loadStringConfig(L, MAP_NAME, "mapName", "canary");
 		loadStringConfig(L, MYSQL_DB, "mysqlDatabase", "canary");
+		loadBoolConfig(L, MYSQL_DB_BACKUP, "mysqlDatabaseBackup", false);
 		loadStringConfig(L, MYSQL_HOST, "mysqlHost", "127.0.0.1");
 		loadStringConfig(L, MYSQL_PASS, "mysqlPass", "");
 		loadStringConfig(L, MYSQL_SOCK, "mysqlSock", "");

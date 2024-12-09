@@ -75,6 +75,9 @@ void MonsterFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Monster", "isDead", MonsterFunctions::luaMonsterIsDead);
 	Lua::registerMethod(L, "Monster", "immune", MonsterFunctions::luaMonsterImmune);
 
+	Lua::registerMethod(L, "Monster", "criticalChance", MonsterFunctions::luaMonsterCriticalChance);
+	Lua::registerMethod(L, "Monster", "criticalDamage", MonsterFunctions::luaMonsterCriticalDamage);
+	
 	CharmFunctions::init(L);
 	LootFunctions::init(L);
 	MonsterSpellFunctions::init(L);
@@ -789,5 +792,39 @@ int MonsterFunctions::luaMonsterImmune(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, monster->isImmune());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterCriticalChance(lua_State* L) {
+	// get: monster:criticalChance(); set: monster:criticalChance(critical)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const auto critical = Lua::getNumber<uint16_t>(L, 2, 0);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monster->getCriticalChance());
+		} else {
+			monster->setCriticalChance(critical);
+			Lua::pushBoolean(L, monster->getCriticalChance());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterCriticalDamage(lua_State* L) {
+	// get: monster:criticalDamage(); set: monster:criticalDamage(damage)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const auto damage = Lua::getNumber<uint16_t>(L, 2, 0);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monster->getCriticalDamage());
+		} else {
+			monster->setCriticalDamage(damage);
+			Lua::pushBoolean(L, monster->getCriticalDamage());
+		}
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }

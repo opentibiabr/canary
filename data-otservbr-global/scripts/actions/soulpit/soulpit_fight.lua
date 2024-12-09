@@ -17,12 +17,6 @@ function zoneEvent.afterLeave(zone, creature)
 			SoulPit.obeliskPosition:transformItem(SoulPit.obeliskActive, SoulPit.obeliskInactive)
 		end
 	end
-
-	for abilityName, abilityInfo in pairs(SoulPit.bossAbilities) do
-		if abilityInfo.player then
-			player:unregisterEvent(abilityName)
-		end
-	end
 end
 zoneEvent:register()
 
@@ -32,7 +26,6 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 		return true
 	end
 
-	logger.warn(item:getName())
 	if target and target:getId() == SoulPit.obeliskActive then
 		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting in the soulpit!")
 		return false
@@ -69,11 +62,26 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 		local infoPositions = lever:getInfoPositions()
 		return true
 	end)
+
 	lever:checkPositions()
-	if lever:checkConditions() then
-		lever:teleportPlayers()
-		SoulPit.obeliskPosition:transformItem(SoulPit.obeliskInactive, SoulPit.obeliskActive)
+	if not lever:checkConditions() then
+		return true
 	end
+
+	item:remove(1)
+
+	if SoulPit.kickEvent then
+		stopEvent(SoulPit.kickEvent)
+	end
+
+	lever:teleportPlayers()
+	SoulPit.obeliskPosition:transformItem(SoulPit.obeliskInactive, SoulPit.obeliskActive)
+	SoulPit.kickEvent = addEvent(function()
+		SoulPit.kickEvent = nil
+		SoulPit.encounter = nil
+		SoulPit.zone:removePlayers()
+		SoulPit.obeliskPosition:transformItem(SoulPit.obeliskActive, SoulPit.obeliskInactive)
+	end, SoulPit.timeToKick)
 
 	local monsterName = string.gsub(item:getName(), " soul core", "")
 	local monsterVariationName = SoulPit.getMonsterVariationNameBySoulCore(item:getName())
@@ -97,11 +105,7 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have defeated the core of the %s soul and unlocked its animus mastery!", monsterName))
 		end
 
-		SoulPit.kickEvent = addEvent(function()
-			SoulPit.encounter = nil
-			SoulPit.zone:removePlayers()
-			SoulPit.obeliskPosition:transformItem(SoulPit.obeliskActive, SoulPit.obeliskInactive)
-		end, SoulPit.timeToKick)
+		SoulPit.zone:removePlayers()
 	end
 
 	SoulPit.encounter = encounter
@@ -125,12 +129,7 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 						return false
 					end
 					if stack == 40 then
-						if bossAbility.monster then
-							monster:registerEvent(bossAbilityName)
-						end
-						if bossAbility.player then
-							player:registerEvent(bossAbilityName)
-						end
+						bossAbility.apply(monster)
 					end
 				end, SoulPit.timeToSpawnMonsters, monsterName, stack, position, randomAbility, chosenBossAbility)
 			end
@@ -152,8 +151,8 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 end
 
 for _, itemType in pairs(SoulPit.soulCores) do
-	-- if itemType:getId() ~= 49164 then -- TO-DO: currently Game.getSoulCoreItems() it's returning soul prism item in the results, we don't want this.
-	soulPitAction:id(itemType:getId())
-	-- end
+	if itemType:getId() ~= 49164 then -- Exclude soul prism
+		soulPitAction:id(itemType:getId())
+	end
 end
 soulPitAction:register()

@@ -1,4 +1,5 @@
 SoulPit = {
+	registeredMonstersSpell = {},
 	SoulCoresConfiguration = {
 		chanceToGetSameMonsterSoulCore = 30, -- 30%
 		chanceToDropSoulCore = 50, -- 50%
@@ -94,9 +95,12 @@ SoulPit = {
 	},
 	bossAbilities = {
 		overpowerSoulPit = {
-			bonusCriticalDamage = 1.1,
-			player = true,
-			monster = false,
+			criticalChance = 50, -- 50%
+			criticalDamage = 25, -- 25%
+			apply = function(monster)
+				monster:criticalChance(SoulPit.bossAbilities.overpowerSoulPit.criticalChance)
+				monster:criticalDamage(SoulPit.bossAbilities.overpowerSoulPit.criticalDamage)
+			end,
 		},
 		enrageSoulPit = {
 			bounds = {
@@ -105,15 +109,38 @@ SoulPit = {
 				[{ 0.4, 0.2 }] = 0.6, -- 40% damage reduction
 				[{ 0.0, 0.2 }] = 0.4, -- 60% damage reduction
 			},
-			player = false,
-			monster = true,
+			apply = function(monster)
+				monster:registerEvent("enrageSoulPit")
+			end,
 		},
 		opressorSoulPit = {
-			player = false,
-			monster = true,
+			spells = {
+				{ name = "soulpit opressor", interval = 2000, chance = 25, minDamage = 0, maxDamage = 0 },
+				{ name = "soulpit powerless", interval = 2000, chance = 30, minDamage = 0, maxDamage = 0 },
+				{ name = "soulpit intensehex", interval = 2000, chance = 15, minDamage = 0, maxDamage = 0 },
+			},
+			apply = function(monster)
+				monster:registerEvent("opressorSoulPit")
+				local monsterType = monster:getType()
+				local monsterTypeName = monsterType:name()
+
+				-- Checking spells
+				if SoulPit.registeredMonstersSpell[monsterTypeName] then
+					return true
+				end
+
+				-- Applying spells
+				for _, spell in pairs(SoulPit.bossAbilities.opressorSoulPit.spells) do
+					monsterType:addAttack(readSpell(spell, monsterType))
+				end
+
+				SoulPit.registeredMonstersSpell[monsterTypeName] = true
+
+				return true
+			end,
 		},
 	},
-	timeToKick = 3 * 1000, -- 3 seconds
+	timeToKick = 10 * 60 * 1000, -- 10 minutes
 	checkMonstersDelay = 4.5 * 1000, -- 4.5 seconds | The check delay should never be less than the timeToSpawnMonsters.
 	timeToSpawnMonsters = 4 * 1000, -- 4 seconds
 	totalMonsters = 7,

@@ -48,7 +48,7 @@ end
 
 local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDamageName, byPlayerMostDamage, unjustified, mostDamageUnjustified)
 	local query = string.format(
-		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) " .. "VALUES (%d, %d, %d, '%s', %d, '%s', %d, %d, %d)",
+		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) " .. "VALUES (%d, %d, %d, %s, %d, %s, %d, %d, %d)",
 		playerGuid,
 		os.time(),
 		player:getLevel(),
@@ -60,23 +60,6 @@ local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDam
 		mostDamageUnjustified and 1 or 0
 	)
 	db.query(query)
-end
-
-local function handleGuildWar(player, killer, mostDamageKiller, killerName, mostDamageName)
-	local deathRecords = getDeathRecords(player:getGuid())
-
-	if deathRecords > 0 then
-		local targetGuildId = player:getGuild() and player:getGuild():getId() or 0
-		local killerGuildId = killer:getGuild() and killer:getGuild():getId() or 0
-
-		if targetGuildId ~= 0 and killerGuildId ~= 0 and targetGuildId ~= killerGuildId then
-			local warId = checkForGuildWar(targetGuildId, killerGuildId)
-			if warId then
-				recordGuildWarKill(killer, player, killerGuildId, targetGuildId, warId)
-				checkAndUpdateGuildWarScore(warId, targetGuildId, killerGuildId, player:getName(), killerName, mostDamageName)
-			end
-		end
-	end
 end
 
 local function getDeathRecords(playerGuid)
@@ -92,6 +75,27 @@ local function getDeathRecords(playerGuid)
 	end
 
 	return deathRecords
+end
+
+local function handleGuildWar(player, killer, mostDamageKiller, killerName, mostDamageName)
+	if not player or not killer or not killer:isPlayer() or not player:getGuild() or not killer:getGuild() then
+		return
+	end
+
+	local playerGuildId = player:getGuild():getId()
+	local killerGuildId = killer:getGuild():getId()
+
+	if playerGuildId == killerGuildId then
+		return
+	end
+
+	if getDeathRecords(player:getGuid()) > 0 then
+		local warId = checkForGuildWar(playerGuildId, killerGuildId)
+		if warId then
+			recordGuildWarKill(killer, player, killerGuildId, playerGuildId, warId)
+			checkAndUpdateGuildWarScore(warId, playerGuildId, killerGuildId, player:getName(), killerName, mostDamageName)
+		end
+	end
 end
 
 local function checkForGuildWar(targetGuildId, killerGuildId)

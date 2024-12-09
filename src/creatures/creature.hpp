@@ -194,9 +194,7 @@ public:
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
 	}
-	uint16_t getSpeed() const {
-		return static_cast<uint16_t>(baseSpeed + varSpeed);
-	}
+	uint16_t getSpeed() const;
 	void setSpeed(int32_t varSpeedDelta);
 
 	void setBaseSpeed(uint16_t newBaseSpeed) {
@@ -314,6 +312,9 @@ public:
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
 
+	void updateCreatureWalk() {
+		goToFollowCreature_async();
+	}
 	void goToFollowCreature_async(std::function<void()> &&onComplete = nullptr);
 	virtual void goToFollowCreature();
 
@@ -484,15 +485,18 @@ public:
 	void setCreatureLight(LightInfo lightInfo);
 
 	virtual void onThink(uint32_t interval);
+
+	void checkCreatureAttack(bool now = false);
+
 	void onAttacking(uint32_t interval);
 	virtual void onCreatureWalk();
 	virtual bool getNextStep(Direction &dir, uint32_t &flags);
 
 	virtual void turnToCreature(const std::shared_ptr<Creature> &creature);
 
-	void onAddTileItem(const std::shared_ptr<Tile> &tile, const Position &pos);
-	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType);
-	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item);
+	void onAddTileItem(const std::shared_ptr<Tile> & /*tile*/, const Position & /*pos*/) { }
+	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) { }
+	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) { }
 
 	virtual void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin);
 	virtual void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout);
@@ -561,8 +565,6 @@ public:
 	std::shared_ptr<Tile> getTile() override final {
 		return m_tile.lock();
 	}
-
-	int32_t getWalkCache(const Position &pos);
 
 	const Position &getLastPosition() const {
 		return lastPosition;
@@ -698,21 +700,13 @@ protected:
 		AsyncTaskRunning = 1 << 0,
 		UpdateTargetList = 1 << 1,
 		UpdateIdleStatus = 1 << 2,
-		Pathfinder = 1 << 3
+		Pathfinder = 1 << 3,
+		OnThink = 1 << 4,
 	};
-
-	virtual bool useCacheMap() const {
-		return false;
-	}
 
 	virtual bool isDead() const {
 		return false;
 	}
-
-	static constexpr int32_t mapWalkWidth = MAP_MAX_VIEW_PORT_X * 2 + 1;
-	static constexpr int32_t mapWalkHeight = MAP_MAX_VIEW_PORT_Y * 2 + 1;
-	static constexpr int32_t maxWalkCacheWidth = (mapWalkWidth - 1) / 2;
-	static constexpr int32_t maxWalkCacheHeight = (mapWalkHeight - 1) / 2;
 
 	Position position;
 
@@ -777,9 +771,7 @@ protected:
 	std::atomic_bool creatureCheck = false;
 	std::atomic_bool inCheckCreaturesVector = false;
 
-	bool localMapCache[mapWalkHeight][mapWalkWidth] = { { false } };
 	bool isInternalRemoved = false;
-	bool isMapLoaded = false;
 	bool isUpdatingPath = false;
 	bool skillLoss = true;
 	bool lootDrop = true;
@@ -803,9 +795,6 @@ protected:
 	bool hasEventRegistered(CreatureEventType_t event) const;
 	CreatureEventList getCreatureEvents(CreatureEventType_t type) const;
 
-	void updateMapCache();
-	void updateTileCache(const std::shared_ptr<Tile> &tile, int32_t dx, int32_t dy);
-	void updateTileCache(const std::shared_ptr<Tile> &tile, const Position &pos);
 	void onCreatureDisappear(const std::shared_ptr<Creature> &creature, bool isLogout);
 	virtual void doAttacking(uint32_t) { }
 	virtual bool hasExtraSwing() {
@@ -847,6 +836,9 @@ protected:
 	}
 
 	virtual void onExecuteAsyncTasks() {};
+
+	// This method maintains safety in asynchronous calls, avoiding competition between threads.
+	void safeCall(std::function<void(void)> &&action) const;
 
 private:
 	bool canFollowMaster() const;

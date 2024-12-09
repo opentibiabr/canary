@@ -16,7 +16,6 @@ Event callbacks are available for several categories of game entities, such as `
 - `(bool)` `creatureOnChangeOutfit`
 - `(ReturnValue)` `creatureOnAreaCombat`
 - `(ReturnValue)` `creatureOnTargetCombat`
-- `(void)` `creatureOnHear`
 - `(void)` `creatureOnDrainHealth`
 - `(void)` `creatureOnCombat`
 - `(bool)` `partyOnJoin`
@@ -51,8 +50,6 @@ Event callbacks are available for several categories of game entities, such as `
 - `(void)` `playerOnWalk`
 - `(void)` `monsterOnDropLoot`
 - `(void)` `monsterPostDropLoot`
-- `(void)` `monsterOnSpawn`
-- `(void)` `npcOnSpawn`
 
 ## Event Callback Usage
 
@@ -102,20 +99,8 @@ callback:register()
 ```lua
 local callback = EventCallback("UniqueCallbackName")
 
-function callback.monsterOnSpawn(monster, position)
-	-- custom behavior when a monster spawns
-end
-
-callback:register()
-```
-
-### Npc Callback
-
-```lua
-local callback = EventCallback("UniqueCallbackName")
-
-function callback.npcOnSpawn(npc, position)
-	-- custom behavior when a npc spawns
+function callback.monsterOnDropLoot(monster, corpse)
+	logger.info("Monster {} has corpse {}", monster:getName(), corpse:getName());
 end
 
 callback:register()

@@ -13,92 +13,9 @@
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 #include "lua/functions/creatures/player/player_functions.hpp"
-#include "lua/scripts/luascript.hpp"
-
-class CreatureFunctions final : LuaScriptInterface {
+class CreatureFunctions {
 public:
-	explicit CreatureFunctions(lua_State* L) :
-		LuaScriptInterface("CreatureFunctions") {
-		init(L);
-	}
-	~CreatureFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Creature", "", CreatureFunctions::luaCreatureCreate);
-		registerMetaMethod(L, "Creature", "__eq", CreatureFunctions::luaUserdataCompare);
-		registerMethod(L, "Creature", "getEvents", CreatureFunctions::luaCreatureGetEvents);
-		registerMethod(L, "Creature", "registerEvent", CreatureFunctions::luaCreatureRegisterEvent);
-		registerMethod(L, "Creature", "unregisterEvent", CreatureFunctions::luaCreatureUnregisterEvent);
-		registerMethod(L, "Creature", "isRemoved", CreatureFunctions::luaCreatureIsRemoved);
-		registerMethod(L, "Creature", "isCreature", CreatureFunctions::luaCreatureIsCreature);
-		registerMethod(L, "Creature", "isInGhostMode", CreatureFunctions::luaCreatureIsInGhostMode);
-		registerMethod(L, "Creature", "isHealthHidden", CreatureFunctions::luaCreatureIsHealthHidden);
-		registerMethod(L, "Creature", "isImmune", CreatureFunctions::luaCreatureIsImmune);
-		registerMethod(L, "Creature", "canSee", CreatureFunctions::luaCreatureCanSee);
-		registerMethod(L, "Creature", "canSeeCreature", CreatureFunctions::luaCreatureCanSeeCreature);
-		registerMethod(L, "Creature", "getParent", CreatureFunctions::luaCreatureGetParent);
-		registerMethod(L, "Creature", "getId", CreatureFunctions::luaCreatureGetId);
-		registerMethod(L, "Creature", "getName", CreatureFunctions::luaCreatureGetName);
-		registerMethod(L, "Creature", "getTypeName", CreatureFunctions::luaCreatureGetTypeName);
-		registerMethod(L, "Creature", "getTarget", CreatureFunctions::luaCreatureGetTarget);
-		registerMethod(L, "Creature", "setTarget", CreatureFunctions::luaCreatureSetTarget);
-		registerMethod(L, "Creature", "getFollowCreature", CreatureFunctions::luaCreatureGetFollowCreature);
-		registerMethod(L, "Creature", "setFollowCreature", CreatureFunctions::luaCreatureSetFollowCreature);
-		registerMethod(L, "Creature", "reload", CreatureFunctions::luaCreatureReload);
-		registerMethod(L, "Creature", "getMaster", CreatureFunctions::luaCreatureGetMaster);
-		registerMethod(L, "Creature", "setMaster", CreatureFunctions::luaCreatureSetMaster);
-		registerMethod(L, "Creature", "getLight", CreatureFunctions::luaCreatureGetLight);
-		registerMethod(L, "Creature", "setLight", CreatureFunctions::luaCreatureSetLight);
-		registerMethod(L, "Creature", "getSpeed", CreatureFunctions::luaCreatureGetSpeed);
-		registerMethod(L, "Creature", "setSpeed", CreatureFunctions::luaCreatureSetSpeed);
-		registerMethod(L, "Creature", "getBaseSpeed", CreatureFunctions::luaCreatureGetBaseSpeed);
-		registerMethod(L, "Creature", "changeSpeed", CreatureFunctions::luaCreatureChangeSpeed);
-		registerMethod(L, "Creature", "setDropLoot", CreatureFunctions::luaCreatureSetDropLoot);
-		registerMethod(L, "Creature", "setSkillLoss", CreatureFunctions::luaCreatureSetSkillLoss);
-		registerMethod(L, "Creature", "getPosition", CreatureFunctions::luaCreatureGetPosition);
-		registerMethod(L, "Creature", "getTile", CreatureFunctions::luaCreatureGetTile);
-		registerMethod(L, "Creature", "getDirection", CreatureFunctions::luaCreatureGetDirection);
-		registerMethod(L, "Creature", "setDirection", CreatureFunctions::luaCreatureSetDirection);
-		registerMethod(L, "Creature", "getHealth", CreatureFunctions::luaCreatureGetHealth);
-		registerMethod(L, "Creature", "setHealth", CreatureFunctions::luaCreatureSetHealth);
-		registerMethod(L, "Creature", "addHealth", CreatureFunctions::luaCreatureAddHealth);
-		registerMethod(L, "Creature", "getMaxHealth", CreatureFunctions::luaCreatureGetMaxHealth);
-		registerMethod(L, "Creature", "setMaxHealth", CreatureFunctions::luaCreatureSetMaxHealth);
-		registerMethod(L, "Creature", "setHiddenHealth", CreatureFunctions::luaCreatureSetHiddenHealth);
-		registerMethod(L, "Creature", "isMoveLocked", CreatureFunctions::luaCreatureIsMoveLocked);
-		registerMethod(L, "Creature", "isDirectionLocked", CreatureFunctions::luaCreatureIsDirectionLocked);
-		registerMethod(L, "Creature", "setMoveLocked", CreatureFunctions::luaCreatureSetMoveLocked);
-		registerMethod(L, "Creature", "setDirectionLocked", CreatureFunctions::luaCreatureSetDirectionLocked);
-		registerMethod(L, "Creature", "getSkull", CreatureFunctions::luaCreatureGetSkull);
-		registerMethod(L, "Creature", "setSkull", CreatureFunctions::luaCreatureSetSkull);
-		registerMethod(L, "Creature", "getOutfit", CreatureFunctions::luaCreatureGetOutfit);
-		registerMethod(L, "Creature", "setOutfit", CreatureFunctions::luaCreatureSetOutfit);
-		registerMethod(L, "Creature", "getCondition", CreatureFunctions::luaCreatureGetCondition);
-		registerMethod(L, "Creature", "addCondition", CreatureFunctions::luaCreatureAddCondition);
-		registerMethod(L, "Creature", "removeCondition", CreatureFunctions::luaCreatureRemoveCondition);
-		registerMethod(L, "Creature", "hasCondition", CreatureFunctions::luaCreatureHasCondition);
-		registerMethod(L, "Creature", "remove", CreatureFunctions::luaCreatureRemove);
-		registerMethod(L, "Creature", "teleportTo", CreatureFunctions::luaCreatureTeleportTo);
-		registerMethod(L, "Creature", "say", CreatureFunctions::luaCreatureSay);
-		registerMethod(L, "Creature", "getDamageMap", CreatureFunctions::luaCreatureGetDamageMap);
-		registerMethod(L, "Creature", "getSummons", CreatureFunctions::luaCreatureGetSummons);
-		registerMethod(L, "Creature", "hasBeenSummoned", CreatureFunctions::luaCreatureHasBeenSummoned);
-		registerMethod(L, "Creature", "getDescription", CreatureFunctions::luaCreatureGetDescription);
-		registerMethod(L, "Creature", "getPathTo", CreatureFunctions::luaCreatureGetPathTo);
-		registerMethod(L, "Creature", "move", CreatureFunctions::luaCreatureMove);
-		registerMethod(L, "Creature", "getZoneType", CreatureFunctions::luaCreatureGetZoneType);
-		registerMethod(L, "Creature", "getZones", CreatureFunctions::luaCreatureGetZones);
-		registerMethod(L, "Creature", "setIcon", CreatureFunctions::luaCreatureSetIcon);
-		registerMethod(L, "Creature", "getIcon", CreatureFunctions::luaCreatureGetIcon);
-		registerMethod(L, "Creature", "getIcons", CreatureFunctions::luaCreatureGetIcons);
-		registerMethod(L, "Creature", "removeIcon", CreatureFunctions::luaCreatureRemoveIcon);
-		registerMethod(L, "Creature", "clearIcons", CreatureFunctions::luaCreatureClearIcons);
-
-		CombatFunctions::init(L);
-		MonsterFunctions::init(L);
-		NpcFunctions::init(L);
-		PlayerFunctions::init(L);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreatureCreate(lua_State* L);

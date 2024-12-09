@@ -13,45 +13,62 @@
 
 #include "kv/kv.hpp"
 #include "lua/scripts/lua_environment.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
+
+void KVFunctions::init(lua_State* L) {
+	Lua::registerTable(L, "kv");
+	Lua::registerMethod(L, "kv", "scoped", KVFunctions::luaKVScoped);
+	Lua::registerMethod(L, "kv", "set", KVFunctions::luaKVSet);
+	Lua::registerMethod(L, "kv", "get", KVFunctions::luaKVGet);
+	Lua::registerMethod(L, "kv", "keys", KVFunctions::luaKVKeys);
+	Lua::registerMethod(L, "kv", "remove", KVFunctions::luaKVRemove);
+
+	Lua::registerClass(L, "KV", "");
+	Lua::registerMethod(L, "KV", "scoped", KVFunctions::luaKVScoped);
+	Lua::registerMethod(L, "KV", "set", KVFunctions::luaKVSet);
+	Lua::registerMethod(L, "KV", "get", KVFunctions::luaKVGet);
+	Lua::registerMethod(L, "KV", "keys", KVFunctions::luaKVKeys);
+	Lua::registerMethod(L, "KV", "remove", KVFunctions::luaKVRemove);
+}
 
 int KVFunctions::luaKVScoped(lua_State* L) {
 	// KV.scoped(key) | KV:scoped(key)
-	const auto key = getString(L, -1);
+	const auto key = Lua::getString(L, -1);
 
-	if (isUserdata(L, 1)) {
-		const auto &scopedKV = getUserdataShared<KV>(L, 1);
+	if (Lua::isUserdata(L, 1)) {
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
 		const auto &newScope = scopedKV->scoped(key);
-		pushUserdata<KV>(L, newScope);
-		setMetatable(L, -1, "KV");
+		Lua::pushUserdata<KV>(L, newScope);
+		Lua::setMetatable(L, -1, "KV");
 		return 1;
 	}
 
 	const auto &scopedKV = g_kv().scoped(key);
-	pushUserdata<KV>(L, scopedKV);
-	setMetatable(L, -1, "KV");
+	Lua::pushUserdata<KV>(L, scopedKV);
+	Lua::setMetatable(L, -1, "KV");
 	return 1;
 }
 
 int KVFunctions::luaKVSet(lua_State* L) {
 	// KV.set(key, value) | scopedKV:set(key, value)
-	const auto key = getString(L, -2);
+	const auto key = Lua::getString(L, -2);
 	const auto &valueWrapper = getValueWrapper(L);
 
 	if (!valueWrapper) {
 		g_logger().warn("[{}] invalid param type", __FUNCTION__);
-		pushBoolean(L, false);
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
-	if (isUserdata(L, 1)) {
-		const auto &scopedKV = getUserdataShared<KV>(L, 1);
+	if (Lua::isUserdata(L, 1)) {
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
 		scopedKV->set(key, valueWrapper.value());
-		pushBoolean(L, true);
+		Lua::pushBoolean(L, true);
 		return 1;
 	}
 
 	g_kv().set(key, valueWrapper.value());
-	pushBoolean(L, true);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 
@@ -59,13 +76,13 @@ int KVFunctions::luaKVGet(lua_State* L) {
 	// KV.get(key[, forceLoad = false]) | scopedKV:get(key[, forceLoad = false])
 	std::optional<ValueWrapper> valueWrapper;
 	bool forceLoad = false;
-	auto key = getString(L, -1);
-	if (isBoolean(L, -1)) {
-		forceLoad = getBoolean(L, -1);
-		key = getString(L, -2);
+	auto key = Lua::getString(L, -1);
+	if (Lua::isBoolean(L, -1)) {
+		forceLoad = Lua::getBoolean(L, -1);
+		key = Lua::getString(L, -2);
 	}
-	if (isUserdata(L, 1)) {
-		const auto &scopedKV = getUserdataShared<KV>(L, 1);
+	if (Lua::isUserdata(L, 1)) {
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
 		valueWrapper = scopedKV->get(key, forceLoad);
 	} else {
 		valueWrapper = g_kv().get(key, forceLoad);
@@ -81,9 +98,9 @@ int KVFunctions::luaKVGet(lua_State* L) {
 
 int KVFunctions::luaKVRemove(lua_State* L) {
 	// KV.remove(key) | scopedKV:remove(key)
-	const auto key = getString(L, -1);
-	if (isUserdata(L, 1)) {
-		const auto &scopedKV = getUserdataShared<KV>(L, 1);
+	const auto key = Lua::getString(L, -1);
+	if (Lua::isUserdata(L, 1)) {
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
 		scopedKV->remove(key);
 	} else {
 		g_kv().remove(key);
@@ -97,12 +114,12 @@ int KVFunctions::luaKVKeys(lua_State* L) {
 	std::unordered_set<std::string> keys;
 	std::string prefix;
 
-	if (isString(L, -1)) {
-		prefix = getString(L, -1);
+	if (Lua::isString(L, -1)) {
+		prefix = Lua::getString(L, -1);
 	}
 
-	if (isUserdata(L, 1)) {
-		const auto &scopedKV = getUserdataShared<KV>(L, 1);
+	if (Lua::isUserdata(L, 1)) {
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
 		keys = scopedKV->keys();
 	} else {
 		keys = g_kv().keys(prefix);
@@ -111,24 +128,24 @@ int KVFunctions::luaKVKeys(lua_State* L) {
 	int index = 0;
 	lua_createtable(L, static_cast<int>(keys.size()), 0);
 	for (const auto &key : keys) {
-		pushString(L, key);
+		Lua::pushString(L, key);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
 }
 
 std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
-	if (isBoolean(L, -1)) {
-		return ValueWrapper(getBoolean(L, -1));
+	if (Lua::isBoolean(L, -1)) {
+		return ValueWrapper(Lua::getBoolean(L, -1));
 	}
-	if (isNumber(L, -1)) {
-		return ValueWrapper(getNumber<double>(L, -1));
+	if (Lua::isNumber(L, -1)) {
+		return ValueWrapper(Lua::getNumber<double>(L, -1));
 	}
-	if (isString(L, -1)) {
-		return ValueWrapper(getString(L, -1));
+	if (Lua::isString(L, -1)) {
+		return ValueWrapper(Lua::getString(L, -1));
 	}
 
-	if (isTable(L, -1) && lua_objlen(L, -1) > 0) {
+	if (Lua::isTable(L, -1) && lua_objlen(L, -1) > 0) {
 		ArrayType array;
 		for (int i = 1; i <= lua_objlen(L, -1); ++i) {
 			lua_rawgeti(L, -1, i);
@@ -143,7 +160,7 @@ std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
 		return ValueWrapper(array);
 	}
 
-	if (isTable(L, -1)) {
+	if (Lua::isTable(L, -1)) {
 		MapType map;
 		lua_pushnil(L);
 		while (lua_next(L, -2) != 0) {
@@ -152,13 +169,13 @@ std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
 				g_logger().warn("[{}] invalid param type", __FUNCTION__);
 				return std::nullopt;
 			}
-			map[getString(L, -2)] = std::make_shared<ValueWrapper>(value.value());
+			map[Lua::getString(L, -2)] = std::make_shared<ValueWrapper>(value.value());
 			lua_pop(L, 1);
 		}
 		return ValueWrapper(map);
 	}
 
-	if (isNil(L, -1)) {
+	if (Lua::isNil(L, -1)) {
 		return std::nullopt;
 	}
 
@@ -167,7 +184,7 @@ std::optional<ValueWrapper> KVFunctions::getValueWrapper(lua_State* L) {
 }
 
 void KVFunctions::pushStringValue(lua_State* L, const StringType &value) {
-	pushString(L, value);
+	Lua::pushString(L, value);
 }
 
 void KVFunctions::pushIntValue(lua_State* L, const IntType &value) {
@@ -201,7 +218,7 @@ void KVFunctions::pushValueWrapper(lua_State* L, const ValueWrapper &valueWrappe
 			if constexpr (std::is_same_v<T, StringType>) {
 				pushStringValue(L, arg);
 			} else if constexpr (std::is_same_v<T, BooleanType>) {
-				pushBoolean(L, arg);
+				Lua::pushBoolean(L, arg);
 			} else if constexpr (std::is_same_v<T, IntType>) {
 				pushIntValue(L, arg);
 			} else if constexpr (std::is_same_v<T, DoubleType>) {

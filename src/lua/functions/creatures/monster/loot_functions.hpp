@@ -9,38 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class LootFunctions final : LuaScriptInterface {
+class LootFunctions {
 public:
-	explicit LootFunctions(lua_State* L) :
-		LuaScriptInterface("LootFunctions") {
-		init(L);
-	}
-	~LootFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Loot", "", LootFunctions::luaCreateLoot);
-
-		registerMethod(L, "Loot", "setId", LootFunctions::luaLootSetId);
-		registerMethod(L, "Loot", "setIdFromName", LootFunctions::luaLootSetIdFromName);
-		registerMethod(L, "Loot", "setMinCount", LootFunctions::luaLootSetMinCount);
-		registerMethod(L, "Loot", "setMaxCount", LootFunctions::luaLootSetMaxCount);
-		registerMethod(L, "Loot", "setSubType", LootFunctions::luaLootSetSubType);
-		registerMethod(L, "Loot", "setChance", LootFunctions::luaLootSetChance);
-		registerMethod(L, "Loot", "setActionId", LootFunctions::luaLootSetActionId);
-		registerMethod(L, "Loot", "setText", LootFunctions::luaLootSetText);
-		registerMethod(L, "Loot", "setNameItem", LootFunctions::luaLootSetNameItem);
-		registerMethod(L, "Loot", "setArticle", LootFunctions::luaLootSetArticle);
-		registerMethod(L, "Loot", "setAttack", LootFunctions::luaLootSetAttack);
-		registerMethod(L, "Loot", "setDefense", LootFunctions::luaLootSetDefense);
-		registerMethod(L, "Loot", "setExtraDefense", LootFunctions::luaLootSetExtraDefense);
-		registerMethod(L, "Loot", "setArmor", LootFunctions::luaLootSetArmor);
-		registerMethod(L, "Loot", "setShootRange", LootFunctions::luaLootSetShootRange);
-		registerMethod(L, "Loot", "setHitChance", LootFunctions::luaLootSetHitChance);
-		registerMethod(L, "Loot", "setUnique", LootFunctions::luaLootSetUnique);
-		registerMethod(L, "Loot", "addChildLoot", LootFunctions::luaLootAddChildLoot);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaCreateLoot(lua_State* L);

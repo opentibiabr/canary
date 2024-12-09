@@ -14,6 +14,7 @@
 #include "utils/tools.hpp"
 #include "items/item.hpp"
 #include "creatures/players/player.hpp"
+#include "lua/functions/lua_functions_loader.hpp"
 
 /**
  * @class EventCallbackFunctions
@@ -26,33 +27,33 @@
  */
 
 void EventCallbackFunctions::init(lua_State* luaState) {
-	registerSharedClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
-	registerMethod(luaState, "EventCallback", "type", EventCallbackFunctions::luaEventCallbackType);
-	registerMethod(luaState, "EventCallback", "register", EventCallbackFunctions::luaEventCallbackRegister);
+	Lua::registerSharedClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
+	Lua::registerMethod(luaState, "EventCallback", "type", EventCallbackFunctions::luaEventCallbackType);
+	Lua::registerMethod(luaState, "EventCallback", "register", EventCallbackFunctions::luaEventCallbackRegister);
 }
 
 int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
-	const auto &callbackName = getString(luaState, 2);
+	const auto &callbackName = Lua::getString(luaState, 2);
 	if (callbackName.empty()) {
-		reportErrorFunc("Invalid callback name");
+		Lua::reportErrorFunc("Invalid callback name");
 		return 1;
 	}
 
-	bool skipDuplicationCheck = getBoolean(luaState, 3, false);
-	const auto eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface(), callbackName, skipDuplicationCheck);
-	pushUserdata<EventCallback>(luaState, eventCallback);
-	setMetatable(luaState, -1, "EventCallback");
+	bool skipDuplicationCheck = Lua::getBoolean(luaState, 3, false);
+	const auto eventCallback = std::make_shared<EventCallback>(callbackName, skipDuplicationCheck);
+	Lua::pushUserdata<EventCallback>(luaState, eventCallback);
+	Lua::setMetatable(luaState, -1, "EventCallback");
 	return 1;
 }
 
 int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
-	const auto &callback = getUserdataShared<EventCallback>(luaState, 1);
+	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
-		reportErrorFunc("EventCallback is nil");
+		Lua::reportErrorFunc("EventCallback is nil");
 		return 0;
 	}
 
-	auto typeName = getString(luaState, 2);
+	auto typeName = Lua::getString(luaState, 2);
 	auto lowerTypeName = asLowerCaseString(typeName);
 	bool found = false;
 	for (auto enumValue : magic_enum::enum_values<EventCallback_t>()) {
@@ -69,46 +70,45 @@ int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
 
 	if (!found) {
 		g_logger().error("[{}] No valid event name: {}", __func__, typeName);
-		pushBoolean(luaState, false);
+		Lua::pushBoolean(luaState, false);
 	}
 
-	pushBoolean(luaState, true);
+	Lua::pushBoolean(luaState, true);
 	return 1;
 }
 
 int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
-	const auto &callback = getUserdataShared<EventCallback>(luaState, 1);
+	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
 		return 0;
 	}
 
-	if (!callback->isLoadedCallback()) {
+	if (!callback->isLoadedScriptId()) {
 		return 0;
 	}
 
 	if (g_callbacks().isCallbackRegistered(callback)) {
-		reportErrorFunc(fmt::format("EventCallback is duplicated for event with name: {}", callback->getName()));
+		Lua::reportErrorFunc(fmt::format("EventCallback is duplicated for event with name: {}", callback->getName()));
 		return 0;
 	}
 
 	g_callbacks().addCallback(callback);
-	pushBoolean(luaState, true);
+	Lua::pushBoolean(luaState, true);
 	return 1;
 }
 
 // Callback functions
 int EventCallbackFunctions::luaEventCallbackLoad(lua_State* luaState) {
-	const auto &callback = getUserdataShared<EventCallback>(luaState, 1);
+	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
 		return 1;
 	}
 
-	if (!callback->loadCallback()) {
-		reportErrorFunc("Cannot load callback");
+	if (!callback->loadScriptId()) {
+		Lua::reportErrorFunc("Cannot load callback");
 		return 1;
 	}
 
-	callback->setLoadedCallback(true);
-	pushBoolean(luaState, true);
+	Lua::pushBoolean(luaState, true);
 	return 1;
 }

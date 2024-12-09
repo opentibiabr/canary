@@ -10,12 +10,17 @@
 #pragma once
 
 #include "utils/utils_definitions.hpp"
-#include "lua/scripts/scripts.hpp"
+#include "lua/lua_definitions.hpp"
 
+class LuaScriptInterface;
 class GlobalEvent;
 using GlobalEventMap = std::map<std::string, std::shared_ptr<GlobalEvent>>;
 
-class GlobalEvents final : public Scripts {
+enum LightState_t : uint8_t;
+
+struct LightInfo;
+
+class GlobalEvents {
 public:
 	GlobalEvents();
 	~GlobalEvents();
@@ -24,9 +29,7 @@ public:
 	GlobalEvents(const GlobalEvents &) = delete;
 	GlobalEvents &operator=(const GlobalEvents &) = delete;
 
-	static GlobalEvents &getInstance() {
-		return inject<GlobalEvents>();
-	}
+	static GlobalEvents &getInstance();
 
 	void startup() const;
 	void shutdown() const;
@@ -43,14 +46,15 @@ public:
 
 private:
 	GlobalEventMap thinkMap, serverMap, timerMap;
-	uint64_t thinkEventId = 0, timerEventId = 0;
+	uint64_t thinkEventId = 0;
+	uint64_t timerEventId = 0;
 };
 
 constexpr auto g_globalEvents = GlobalEvents::getInstance;
 
-class GlobalEvent final : public Script {
+class GlobalEvent {
 public:
-	explicit GlobalEvent(LuaScriptInterface* interface);
+	explicit GlobalEvent();
 
 	bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const;
 	bool executeRecord(uint32_t current, uint32_t old) const;
@@ -83,10 +87,17 @@ public:
 		nextExecution = time;
 	}
 
-private:
-	GlobalEvent_t eventType = GLOBALEVENT_NONE;
+	std::string getScriptTypeName() const;
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
 
-	std::string getScriptTypeName() const override;
+private:
+	int32_t m_scriptId {};
+
+	GlobalEvent_t eventType = GLOBALEVENT_NONE;
 
 	std::string name;
 	int64_t nextExecution = 0;

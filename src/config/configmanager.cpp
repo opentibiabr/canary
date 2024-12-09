@@ -363,6 +363,12 @@ bool ConfigManager::load() {
 	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
 	loadStringConfig(L, LOGLEVEL, "logLevel", "info");
 
+	loadBoolConfig(L, GRAYLOG_ENABLED, "graylogEnabled", false);
+	loadStringConfig(L, GRAYLOG_HOSTNAME_OR_ADDRESS, "graylogHostNameOrAddress", "127.0.0.1");
+	loadStringConfig(L, GRAYLOG_SOURCE, "graylogSource", "Canary");
+	loadStringConfig(L, GRAYLOG_LEVEL, "graylogLevel", "info");
+	loadIntConfig(L, GRAYLOG_PORT, "graylogPort", 12201);
+
 	loaded = true;
 	lua_close(L);
 	return true;

@@ -23,11 +23,12 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
 
-		msg->writeMessageLength();
-
 		if (!encryptionEnabled) {
+			msg->writeMessageLength();
 			return;
 		}
+
+		msg->writePaddingAmount();
 
 		XTEA_encrypt(*msg);
 		if (checksumMethod == CHECKSUM_METHOD_NONE) {
@@ -209,12 +210,12 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 
 	XTEA_transform(buffer, messageLength, false);
 
-	uint16_t innerLength = msg.get<uint16_t>();
-	if (std::cmp_greater(innerLength, msgLength - 2)) {
+	uint8_t paddingSize = msg.getByte();
+	if (std::cmp_greater(paddingSize, msgLength - 1)) {
 		return false;
 	}
 
-	msg.setLength(innerLength);
+	msg.setLength(messageLength - paddingSize);
 	return true;
 }
 

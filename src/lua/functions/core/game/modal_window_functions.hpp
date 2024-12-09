@@ -9,44 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class ModalWindowFunctions final : LuaScriptInterface {
+class ModalWindowFunctions {
 public:
-	explicit ModalWindowFunctions(lua_State* L) :
-		LuaScriptInterface("ModalWindowFunctions") {
-		init(L);
-	}
-	~ModalWindowFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerSharedClass(L, "ModalWindow", "", ModalWindowFunctions::luaModalWindowCreate);
-		registerMetaMethod(L, "ModalWindow", "__eq", ModalWindowFunctions::luaUserdataCompare);
-
-		registerMethod(L, "ModalWindow", "getId", ModalWindowFunctions::luaModalWindowGetId);
-		registerMethod(L, "ModalWindow", "getTitle", ModalWindowFunctions::luaModalWindowGetTitle);
-		registerMethod(L, "ModalWindow", "getMessage", ModalWindowFunctions::luaModalWindowGetMessage);
-
-		registerMethod(L, "ModalWindow", "setTitle", ModalWindowFunctions::luaModalWindowSetTitle);
-		registerMethod(L, "ModalWindow", "setMessage", ModalWindowFunctions::luaModalWindowSetMessage);
-
-		registerMethod(L, "ModalWindow", "getButtonCount", ModalWindowFunctions::luaModalWindowGetButtonCount);
-		registerMethod(L, "ModalWindow", "getChoiceCount", ModalWindowFunctions::luaModalWindowGetChoiceCount);
-
-		registerMethod(L, "ModalWindow", "addButton", ModalWindowFunctions::luaModalWindowAddButton);
-		registerMethod(L, "ModalWindow", "addChoice", ModalWindowFunctions::luaModalWindowAddChoice);
-
-		registerMethod(L, "ModalWindow", "getDefaultEnterButton", ModalWindowFunctions::luaModalWindowGetDefaultEnterButton);
-		registerMethod(L, "ModalWindow", "setDefaultEnterButton", ModalWindowFunctions::luaModalWindowSetDefaultEnterButton);
-
-		registerMethod(L, "ModalWindow", "getDefaultEscapeButton", ModalWindowFunctions::luaModalWindowGetDefaultEscapeButton);
-		registerMethod(L, "ModalWindow", "setDefaultEscapeButton", ModalWindowFunctions::luaModalWindowSetDefaultEscapeButton);
-
-		registerMethod(L, "ModalWindow", "hasPriority", ModalWindowFunctions::luaModalWindowHasPriority);
-		registerMethod(L, "ModalWindow", "setPriority", ModalWindowFunctions::luaModalWindowSetPriority);
-
-		registerMethod(L, "ModalWindow", "sendToPlayer", ModalWindowFunctions::luaModalWindowSendToPlayer);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaModalWindowCreate(lua_State* L);

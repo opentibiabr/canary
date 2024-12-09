@@ -110,21 +110,6 @@ function getRateFromTable(t, level, default)
 	return default
 end
 
-function getAccountNumberByPlayerName(name)
-	local player = Player(name)
-	if player ~= nil then
-		return player:getAccountId()
-	end
-
-	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
-	if resultId ~= false then
-		local accountId = Result.getNumber(resultId, "account_id")
-		Result.free(resultId)
-		return accountId
-	end
-	return 0
-end
-
 function getMoneyCount(string)
 	local b, e = string:find("%d+")
 	local money = b and e and tonumber(string:sub(b, e)) or -1

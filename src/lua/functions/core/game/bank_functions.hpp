@@ -9,29 +9,11 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
 class Bank;
 
-class BankFunctions final : LuaScriptInterface {
+class BankFunctions {
 public:
-	explicit BankFunctions(lua_State* L) :
-		LuaScriptInterface("BankFunctions") {
-		init(L);
-	}
-	~BankFunctions() override = default;
-
-	static void init(lua_State* L) {
-		registerTable(L, "Bank");
-		registerMethod(L, "Bank", "credit", BankFunctions::luaBankCredit);
-		registerMethod(L, "Bank", "debit", BankFunctions::luaBankDebit);
-		registerMethod(L, "Bank", "balance", BankFunctions::luaBankBalance);
-		registerMethod(L, "Bank", "hasBalance", BankFunctions::luaBankHasBalance);
-		registerMethod(L, "Bank", "transfer", BankFunctions::luaBankTransfer);
-		registerMethod(L, "Bank", "transferToGuild", BankFunctions::luaBankTransferToGuild);
-		registerMethod(L, "Bank", "withdraw", BankFunctions::luaBankWithdraw);
-		registerMethod(L, "Bank", "deposit", BankFunctions::luaBankDeposit);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaBankCredit(lua_State* L);

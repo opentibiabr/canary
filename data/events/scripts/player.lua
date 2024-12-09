@@ -575,12 +575,74 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
+	-- Soul War XP Boost Taints
+	local taints = {
+		"taints-teleport", -- Taint 1
+		"taints-spawn", -- Taint 2
+		"taints-damage", -- Taint 3
+		"taints-heal", -- Taint 4
+		"taints-loss", -- Taint 5
+		xpboost = {
+			[1] = 5,
+			[2] = 10,
+			[3] = 15,
+			[4] = 20,
+			[5] = 25,
+		},
+		monsters = {
+			["Aspect of Power"] = true,
+			["Dreadful Harvester"] = true,
+			["Goshnar's Cruelty"] = true,
+			["Goshnar's Greed"] = true,
+			["Goshnar's Hatred"] = true,
+			["Goshnar's Malice"] = true,
+			["Goshnar's Megalomania Blue"] = true,
+			["Goshnar's Megalomania Green"] = true,
+			["Goshnar's Megalomania Purple"] = true,
+			["Goshnar's Spite"] = true,
+			["Malicious Soul"] = true,
+			["Mean Maw"] = true,
+			["Mirror Image"] = true,
+			["Soul Cage"] = true,
+			["Spiteful Spitter"] = true,
+			["Bony Sea Devil"] = true,
+			["Brachiodemon"] = true,
+			["Branchy Crawler"] = true,
+			["Capricious Phantom"] = true,
+			["Distorted Phantom"] = true,
+			["Druid's Apparition"] = true,
+			["Hateful Soul"] = true,
+			["Infernal Demon"] = true,
+			["Infernal Phantom"] = true,
+			["Knight's Apparition"] = true,
+			["Many Faces"] = true,
+			["Mould Phantom"] = true,
+			["Paladin's Apparition"] = true,
+			["Rotten Golem"] = true,
+			["Sorcerer's Apparition"] = true,
+			["Turbulent Elemental"] = true,
+			["Cloak of Terror"] = true,
+			["Courage Leech"] = true,
+			["Vibrant Phantom"] = true,
+		},
+	}
+
+	local monsterName = target:getName()
+	local taintLevel = self:getTaintLevel()
+	local taints_xpboost = 0
+	if taints.monsters[monsterName] and taintLevel and taintLevel > 0 then
+		local count = math.min(taintLevel, #taints)
+		if count > 0 then
+			taints_xpboost = taints.xpboost[count]
+		end
+	end
+
 	-- Final Adjustments: Low Level Bonus and Base Rate
 	local lowLevelBonusExp = self:getFinalLowLevelBonus()
 	local baseRateExp = self:getFinalBaseRateExperience()
 
 	-- Return final experience value
-	return (exp * (1 + xpBoostPercent / 100 + lowLevelBonusExp / 100)) * staminaBonusXp * baseRateExp
+	return (exp * (1 + xpBoostPercent / 100 + lowLevelBonusExp / 100)) + (exp * (taints_xpboost / 100)) * staminaBonusXp * baseRateExp
 end
 
 function Player:onLoseExperience(exp)

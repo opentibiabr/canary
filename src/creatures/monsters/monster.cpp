@@ -354,7 +354,9 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 
 		setIdle(true);
 	} else {
-		onCreatureLeave(creature);
+		addAsyncTask([this, creature] {
+			onCreatureLeave(creature);
+		});
 	}
 }
 

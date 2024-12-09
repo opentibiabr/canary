@@ -423,27 +423,13 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 							const auto &topCreature = nextTile->getTopCreature();
 							if (followCreature != topCreature && isOpponent(topCreature)) {
-								g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), topCreatureWeak = std::weak_ptr(topCreature)] {
-									const auto &self = selfWeak.lock();
-									const auto &topCreature = topCreatureWeak.lock();
-									if (self && topCreature) {
-										self->selectTarget(topCreature);
-									}
-								},
-								                        "Monster::onCreatureMove");
+								selectTarget(topCreature);
 							}
 						}
 					}
 				} else if (isOpponent(creature)) {
 					// we have no target lets try pick this one
-					g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), creatureWeak = std::weak_ptr(creature)] {
-						const auto &self = selfWeak.lock();
-						const auto &creaturePtr = creatureWeak.lock();
-						if (self && creaturePtr) {
-							self->selectTarget(creaturePtr);
-						}
-					},
-					                        "Monster::onCreatureMove");
+					selectTarget(creature);
 				}
 			}
 		};
@@ -978,7 +964,7 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
@@ -1073,8 +1059,11 @@ void Monster::onThink(uint32_t interval) {
 	}
 
 	updateIdleStatus();
+	setAsyncTaskFlag(OnThink, true);
+}
 
-	if (isIdle) {
+void Monster::onThink_async() {
+	if (isIdle) { // updateIdleStatus(); is executed before this method
 		return;
 	}
 
@@ -1109,10 +1098,13 @@ void Monster::onThink(uint32_t interval) {
 		}
 	}
 
-	onThinkTarget(interval);
-	onThinkYell(interval);
-	onThinkDefense(interval);
-	onThinkSound(interval);
+	onThinkTarget(EVENT_CREATURE_THINK_INTERVAL);
+
+	safeCall([this] {
+		onThinkYell(EVENT_CREATURE_THINK_INTERVAL);
+		onThinkDefense(EVENT_CREATURE_THINK_INTERVAL);
+		onThinkSound(EVENT_CREATURE_THINK_INTERVAL);
+	});
 }
 
 void Monster::doAttacking(uint32_t interval) {
@@ -2660,5 +2652,9 @@ void Monster::onExecuteAsyncTasks() {
 
 	if (hasAsyncTaskFlag(UpdateIdleStatus)) {
 		updateIdleStatus();
+	}
+
+	if (hasAsyncTaskFlag(OnThink)) {
+		onThink_async();
 	}
 }

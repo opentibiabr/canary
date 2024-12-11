@@ -26,5 +26,4 @@ function onUpdateDatabase()
 `UsedRunesBit` VARCHAR(250) NULL ,
 `UnlockedRunesBit` VARCHAR(250) NULL,
 `tracker list` BLOB NULL ) ENGINE = InnoDB DEFAULT CHARSET=utf8;]])
-	return true -- true = There are others migrations file | false = this is the last migration file
 end

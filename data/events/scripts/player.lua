@@ -370,52 +370,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	return true
 end
 
-function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-	if IsRunningGlobalDatapack() then
-		-- The Secret Library Quest
-		if toPosition == Position(32460, 32928, 7) and item.itemid == 3578 then
-			toPosition:sendMagicEffect(CONST_ME_HEARTS)
-			self:say("You feed the turtle, now you may pass.", TALKTYPE_MONSTER_SAY)
-			Game.setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Turtle, os.time() + 10 * 60)
-			item:remove(1)
-		end
-
-		-- Cults of Tibia begin
-		local frompos = Position(33023, 31904, 14)
-		local topos = Position(33052, 31932, 15)
-		local removeItem = false
-		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
-			local tile = Tile(toPosition)
-			if tile then
-				local tileBoss = tile:getTopCreature()
-				if tileBoss and tileBoss:isMonster() then
-					if tileBoss:getName():lower() == "the remorseless corruptor" then
-						tileBoss:addHealth(-17000)
-						tileBoss:remove()
-						local monster = Game.createMonster("The Corruptor of Souls", toPosition)
-						if not monster then
-							return false
-						end
-						removeItem = true
-						monster:registerEvent("CheckTile")
-						if Game.getStorageValue("healthSoul") > 0 then
-							monster:addHealth(-(monster:getHealth() - Game.getStorageValue("healthSoul")))
-						end
-						Game.setStorageValue("CheckTile", os.time() + 30)
-					elseif tileBoss:getName():lower() == "the corruptor of souls" then
-						Game.setStorageValue("CheckTile", os.time() + 30)
-						removeItem = true
-					end
-				end
-			end
-			if removeItem then
-				item:remove(1)
-			end
-		end
-		-- Cults of Tibia end
-	end
-	return true
-end
+function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder) end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
 	local player = creature:getPlayer()
@@ -426,82 +381,8 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 	return true
 end
 
-local function hasPendingReport(playerGuid, targetName, reportType)
-	local player = Player(playerGuid)
-	if not player then
-		return false
-	end
-	local name = player:getName():gsub("%s+", "_")
-	FS.mkdir_p(string.format("%s/reports/players/%s", CORE_DIRECTORY, name))
-	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
-	if file then
-		io.close(file)
-		return true
-	end
-	return false
-end
-
-function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
-	local name = self:getName()
-	if hasPendingReport(self:getGuid(), targetName, reportType) then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
-		return
-	end
-
-	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "a")
-	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
-		return
-	end
-
-	io.output(file)
-	io.write("------------------------------\n")
-	io.write("Reported by: " .. name .. "\n")
-	io.write("Target: " .. targetName .. "\n")
-	io.write("Type: " .. reportType .. "\n")
-	io.write("Reason: " .. reportReason .. "\n")
-	io.write("Comment: " .. comment .. "\n")
-	if reportType ~= REPORT_TYPE_BOT then
-		io.write("Translation: " .. translation .. "\n")
-	end
-	io.write("------------------------------\n")
-	io.close(file)
-	self:sendTextMessage(
-		MESSAGE_EVENT_ADVANCE,
-		string.format(
-			"Thank you for reporting %s. Your report \z
-	will be processed by %s team as soon as possible.",
-			targetName,
-			configManager.getString(configKeys.SERVER_NAME)
-		)
-	)
-	return
-end
-
-function Player:onReportBug(message, position, category)
-	local name = self:getName():gsub("%s+", "_")
-	FS.mkdir_p(string.format("%s/reports/bugs/%s", CORE_DIRECTORY, name))
-	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
-
-	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
-		return true
-	end
-
-	io.output(file)
-	io.write("------------------------------\n")
-	io.write("Name: " .. name)
-	if category == BUG_CATEGORY_MAP then
-		io.write(" [Map position: " .. position.x .. ", " .. position.y .. ", " .. position.z .. "]")
-	end
-	local playerPosition = self:getPosition()
-	io.write(" [Player Position: " .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. "]\n")
-	io.write("Comment: " .. message .. "\n")
-	io.close(file)
-
-	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
-	return true
-end
+function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation) end
+function Player:onReportBug(message, position, category) end
 
 function Player:onTurn(direction)
 	if self:getGroup():getAccess() and self:getDirection() == direction then

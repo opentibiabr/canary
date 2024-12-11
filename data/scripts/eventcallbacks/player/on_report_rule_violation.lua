@@ -1,25 +1,16 @@
-local function hasPendingReport(name, targetName, reportType)
-	local filePath = string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType)
-	local file = io.open(filePath, "r")
-	if file then
-		io.close(file)
-		return true
-	end
-	return false
-end
-
 local callback = EventCallback("PlayerOnReportRuleViolation")
 
 function callback.playerOnReportRuleViolation(player, targetName, reportType, reportReason, comment, translation)
 	local name = player:getName()
-
-	if hasPendingReport(name, targetName, reportType) then
+	local filePath = string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType)
+	local file = io.open(filePath, "r")
+	if file then
+		io.close(file)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report is being processed.")
 		return
 	end
 
-	local filePath = string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType)
-	local file = io.open(filePath, "a")
+	file = io.open(filePath, "a")
 	if not file then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
 		return

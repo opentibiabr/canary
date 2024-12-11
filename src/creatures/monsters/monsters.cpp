@@ -346,9 +346,7 @@ void Monsters::clear() {
 std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
-	    it != monsters.end()
-	    // We will only return the MonsterType if it match the exact name of the monster
-	    && it->first.find(lowerCaseName) != std::basic_string<char>::npos) {
+	    it != monsters.end()) {
 		return it->second;
 	}
 	if (!silent) {

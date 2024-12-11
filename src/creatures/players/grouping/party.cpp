@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
 #include "lua/callbacks/event_callback.hpp"
@@ -59,6 +60,25 @@ size_t Party::getMemberCount() const {
 
 size_t Party::getInvitationCount() const {
 	return inviteList.size();
+}
+
+uint8_t Party::getUniqueVocationsCount() const {
+	std::unordered_set<uint8_t> uniqueVocations;
+
+	for (const auto &player : getPlayers()) {
+		if (uniqueVocations.size() >= 4) {
+			break;
+		}
+
+		const auto &vocation = player->getVocation();
+		if (!vocation) {
+			continue;
+		}
+
+		uniqueVocations.insert(vocation->getBaseId());
+	}
+
+	return uniqueVocations.size();
 }
 
 void Party::disband() {
@@ -504,9 +524,11 @@ void Party::shareExperience(uint64_t experience, const std::shared_ptr<Creature>
 	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, getParty(), std::ref(shareExperience));
 
 	for (const auto &member : getMembers()) {
-		member->onGainSharedExperience(shareExperience, target);
+		const auto memberStaminaBoost = static_cast<float>(member->getStaminaXpBoost()) / 100;
+		member->onGainSharedExperience(shareExperience * memberStaminaBoost, target);
 	}
-	leader->onGainSharedExperience(shareExperience, target);
+	const auto leaderStaminaBoost = static_cast<float>(leader->getStaminaXpBoost()) / 100;
+	leader->onGainSharedExperience(shareExperience * leaderStaminaBoost, target);
 }
 
 bool Party::canUseSharedExperience(const std::shared_ptr<Player> &player) {

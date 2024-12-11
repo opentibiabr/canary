@@ -11,8 +11,9 @@
 
 #include "server/network/protocol/protocolgame.hpp"
 #include "creatures/players/player.hpp"
-#include "server/network/protocol/protocolstatus.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
+
+#include <server/network/message/networkmessage.hpp>
 
 void NetworkMessageFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "NetworkMessage", "", NetworkMessageFunctions::luaNetworkMessageCreate);

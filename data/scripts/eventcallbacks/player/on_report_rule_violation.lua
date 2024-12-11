@@ -30,7 +30,7 @@ function callback.playerOnReportRuleViolation(player, targetName, reportType, re
 	file:write("------------------------------\n")
 	file:close()
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Thank you for reporting %s. Your report will be processed by %s team as soon as possible.", targetName, configManager.getString(configKeys.SERVER_NAME)))
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Thank you for reporting %s. Your report will be processed by %s team as soon as possible.", targetName, SERVER_NAME))
 end
 
 callback:register()

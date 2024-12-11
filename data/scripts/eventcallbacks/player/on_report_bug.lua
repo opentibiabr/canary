@@ -23,7 +23,7 @@ function callback.playerOnReportBug(player, message, position, category)
 	file:write("------------------------------\n")
 	file:close()
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Your report has been sent to %s.", configManager.getString(configKeys.SERVER_NAME)))
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Your report has been sent to %s.", SERVER_NAME))
 	return true
 end
 

@@ -117,7 +117,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		ReturnValue ret = g_game().internalPlayerAddItem(player, newItem, canDropOnMap);
+		const ReturnValue ret = g_game().internalPlayerAddItem(player, newItem, canDropOnMap);
 		if (ret != RETURNVALUE_NOERROR) {
 			Lua::pushBoolean(L, false);
 			return 1;
@@ -203,7 +203,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		ReturnValue ret = g_game().internalAddItem(container, newItem);
+		const ReturnValue ret = g_game().internalAddItem(container, newItem);
 		if (ret != RETURNVALUE_NOERROR) {
 			Lua::pushBoolean(L, false);
 			return 1;

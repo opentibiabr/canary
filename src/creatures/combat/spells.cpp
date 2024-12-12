@@ -31,7 +31,7 @@ TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player,
 	const auto &tile = player->getTile();
 	if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
-		auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+		const auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 		int countOutsizePZ = 0;
 		for (const auto &accountPlayer : accountPlayers) {
 			if (accountPlayer == player || accountPlayer->isOffline()) {
@@ -163,18 +163,16 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 	return false;
 }
 
-std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
+std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) const {
 	std::list<uint16_t> spellsList;
-	VocSpellMap vocSpells;
-	std::map<uint16_t, bool>::const_iterator vocSpellsIt;
 
-	for (const auto &it : instants) {
-		vocSpells = it.second->getVocMap();
-		vocSpellsIt = vocSpells.find(vocationId);
+	for (const auto &[name, spell] : instants) {
+		const VocSpellMap &vocSpells = spell->getVocMap();
+		const auto &vocSpellsIt = vocSpells.find(vocationId);
 
 		if (vocSpellsIt != vocSpells.end()
 		    && vocSpellsIt->second) {
-			spellsList.push_back(it.second->getSpellId());
+			spellsList.emplace_back(spell->getSpellId());
 		}
 	}
 
@@ -189,7 +187,7 @@ Spells &Spells::getInstance() {
 	return inject<Spells>();
 }
 
-std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
+std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) const {
 	std::shared_ptr<Spell> spell = getRuneSpellByName(name);
 	if (!spell) {
 		spell = getInstantSpellByName(name);
@@ -198,36 +196,36 @@ std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
 }
 
 std::shared_ptr<RuneSpell> Spells::getRuneSpell(uint16_t id) {
-	auto it = runes.find(id);
-	if (it == runes.end()) {
-		for (auto &rune : runes) {
-			if (rune.second->getRuneItemId() == id) {
-				return rune.second;
-			}
-		}
-		return nullptr;
+	const auto it = runes.find(id);
+	if (it != runes.end()) {
+		return it->second;
 	}
-	return it->second;
-}
 
-std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) {
-	for (auto &it : runes) {
-		if (strcasecmp(it.second->getName().c_str(), name.c_str()) == 0) {
-			return it.second;
+	return nullptr;
+}
+std::shared_ptr<RuneSpell> Spells::getRuneSpellByName(const std::string &name) const {
+	for (const auto &[runeId, runeSpell] : runes) {
+		if (caseInsensitiveCompare(runeSpell->getName(), name)) {
+			return runeSpell;
 		}
 	}
 	return nullptr;
 }
 
-std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) {
+std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) const {
 	std::shared_ptr<InstantSpell> result = nullptr;
 
-	for (auto &it : instants) {
-		const std::string &instantSpellWords = it.second->getWords();
-		size_t spellLen = instantSpellWords.length();
-		if (strncasecmp(instantSpellWords.c_str(), words.c_str(), spellLen) == 0) {
+	for (const auto &[spellName, instantSpell] : instants) {
+		const std::string &instantSpellWords = instantSpell->getWords();
+		const size_t spellLen = instantSpellWords.length();
+
+		if (words.length() < spellLen) {
+			continue;
+		}
+
+		if (caseInsensitiveCompare(instantSpellWords, words, spellLen)) {
 			if (!result || spellLen > result->getWords().length()) {
-				result = it.second;
+				result = instantSpell;
 				if (words.length() == spellLen) {
 					break;
 				}
@@ -242,30 +240,30 @@ std::shared_ptr<InstantSpell> Spells::getInstantSpell(const std::string &words) 
 				return nullptr;
 			}
 
-			size_t spellLen = resultWords.length();
-			size_t paramLen = words.length() - spellLen;
+			const size_t spellLen = resultWords.length();
+			const size_t paramLen = words.length() - spellLen;
 			if (paramLen < 2 || words[spellLen] != ' ') {
 				return nullptr;
 			}
 		}
-		return result;
 	}
-	return nullptr;
+
+	return result;
 }
 
-std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) {
-	for (auto &it : instants) {
-		if (it.second->getSpellId() == spellId) {
-			return it.second;
+std::shared_ptr<InstantSpell> Spells::getInstantSpellById(uint16_t spellId) const {
+	for (const auto &[spellName, instantSpell] : instants) {
+		if (instantSpell->getSpellId() == spellId) {
+			return instantSpell;
 		}
 	}
 	return nullptr;
 }
 
-std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &name) {
-	for (auto &it : instants) {
-		if (strcasecmp(it.second->getName().c_str(), name.c_str()) == 0) {
-			return it.second;
+std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &name) const {
+	for (const auto &[spellName, instantSpell] : instants) {
+		if (caseInsensitiveCompare(instantSpell->getName(), name)) {
+			return instantSpell;
 		}
 	}
 	return nullptr;
@@ -550,7 +548,7 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 
 	const auto &tile = g_game().map.getOrCreateTile(toPos);
 
-	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
+	const ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -605,7 +603,7 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 		return false;
 	}
 
-	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
+	const ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -691,7 +689,7 @@ void Spell::setSeparator(std::string_view newSeparator) {
 
 void Spell::getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage) const {
 	if (!(damage.instantSpellName).empty()) {
-		const auto equippedAugmentItems = player->getEquippedAugmentItems();
+		const auto &equippedAugmentItems = player->getEquippedAugmentItems();
 		for (const auto &item : equippedAugmentItems) {
 			const auto &augments = item->getAugmentsBySpellName(damage.instantSpellName);
 			for (auto &augment : augments) {
@@ -850,8 +848,8 @@ uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
 	}
 
 	if (manaPercent != 0) {
-		uint32_t maxMana = player->getMaxMana();
-		uint32_t manaCost = (maxMana * manaPercent) / 100;
+		const uint32_t maxMana = player->getMaxMana();
+		const uint32_t manaCost = (maxMana * manaPercent) / 100;
 		if (manaRedution > manaCost) {
 			return 0;
 		}
@@ -1070,7 +1068,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 		bool useDirection = false;
 
 		if (hasParam) {
-			ReturnValue ret = g_game().getPlayerByNameWildcard(param, playerTarget);
+			const ReturnValue ret = g_game().getPlayerByNameWildcard(param, playerTarget);
 
 			if (playerTarget && playerTarget->isAccessPlayer() && !player->isAccessPlayer()) {
 				playerTarget = nullptr;
@@ -1126,7 +1124,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 		var.type = VARIANT_STRING;
 
 		if (getHasPlayerNameParam()) {
-			ReturnValue ret = g_game().getPlayerByNameWildcard(param, playerTarget);
+			const ReturnValue ret = g_game().getPlayerByNameWildcard(param, playerTarget);
 
 			if (ret != RETURNVALUE_NOERROR) {
 				applyCooldownConditions(player);
@@ -1161,13 +1159,13 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 		return false;
 	}
 
-	auto worldType = g_game().getWorldType();
+	const auto worldType = g_game().getWorldType();
 	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
 		player->addInFightTicks(true);
 		player->updateLastAggressiveAction();
 	}
 
-	bool result = executeCastSpell(player, var);
+	const bool result = executeCastSpell(player, var);
 	if (result) {
 		postCastSpell(player);
 	}
@@ -1202,7 +1200,8 @@ bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 		}
 
 		return false;
-	} else if (needDirection) {
+	}
+	if (needDirection) {
 		var.type = VARIANT_POSITION;
 		var.pos = Spells::getCasterPosition(creature, creature->getDirection());
 	} else {
@@ -1345,7 +1344,7 @@ ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, c
 		return RETURNVALUE_CANNOTUSETHISOBJECT;
 	}
 
-	ReturnValue ret = Action::canExecuteAction(player, toPos);
+	const ReturnValue ret = Action::canExecuteAction(player, toPos);
 	if (ret != RETURNVALUE_NOERROR) {
 		return ret;
 	}
@@ -1407,12 +1406,12 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 
 	postCastSpell(player);
 	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES)) {
-		int32_t newCount = std::max<int32_t>(0, item->getItemCount() - 1);
+		const int32_t newCount = std::max<int32_t>(0, item->getItemCount() - 1);
 		g_game().transformItem(item, item->getID(), newCount);
 		player->updateSupplyTracker(item);
 	}
 
-	auto worldType = g_game().getWorldType();
+	const auto worldType = g_game().getWorldType();
 	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
 		player->addInFightTicks(true);
 		player->updateLastAggressiveAction();

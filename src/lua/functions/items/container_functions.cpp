@@ -182,7 +182,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	const auto index = Lua::getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
 	const auto flags = Lua::getNumber<uint32_t>(L, 5, 0);
 
-	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
+	const ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		Lua::pushUserdata<Item>(L, item);
 		Lua::setItemMetatable(L, -1, item);

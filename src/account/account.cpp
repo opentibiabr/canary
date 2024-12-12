@@ -225,10 +225,10 @@ void Account::updatePremiumTime() {
 	time_t lastDay = m_account->premiumLastDay;
 	uint32_t remainingDays = m_account->premiumRemainingDays;
 
-	time_t currentTime = getTimeNow();
+	const time_t currentTime = getTimeNow();
 
-	auto daysLeft = static_cast<int32_t>((lastDay - currentTime) / 86400);
-	auto timeLeft = static_cast<int32_t>((lastDay - currentTime) % 86400);
+	const auto daysLeft = static_cast<int32_t>((lastDay - currentTime) / 86400);
+	const auto timeLeft = static_cast<int32_t>((lastDay - currentTime) % 86400);
 
 	m_account->premiumRemainingDays = daysLeft > 0 ? daysLeft : 0;
 
@@ -281,7 +281,7 @@ bool Account::authenticateSession() {
 }
 
 bool Account::authenticatePassword(const std::string &password) {
-	if (Argon2 {}.argon(password.c_str(), getPassword())) {
+	if (Argon2().argon(password, getPassword())) {
 		return true;
 	}
 

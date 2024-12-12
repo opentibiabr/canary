@@ -77,16 +77,16 @@ public:
 	static constexpr double speedB = 261.29;
 	static constexpr double speedC = -4795.01;
 
-	virtual ~Creature();
+	~Creature() override;
 
 	// non-copyable
 	Creature(const Creature &) = delete;
 	Creature &operator=(const Creature &) = delete;
 
-	std::shared_ptr<Creature> getCreature() override final {
+	std::shared_ptr<Creature> getCreature() final {
 		return static_self_cast<Creature>();
 	}
-	std::shared_ptr<const Creature> getCreature() const override final {
+	std::shared_ptr<const Creature> getCreature() const final {
 		return static_self_cast<Creature>();
 	}
 	std::shared_ptr<Player> getPlayer() override {
@@ -168,13 +168,13 @@ public:
 		directionLocked = locked;
 	}
 
-	int32_t getThrowRange() const override final {
+	int32_t getThrowRange() const final {
 		return 1;
 	}
 	bool isPushable() override {
 		return getWalkDelay() <= 0;
 	}
-	bool isRemoved() override final {
+	bool isRemoved() final {
 		return isInternalRemoved;
 	}
 	virtual bool canSeeInvisibility() const {
@@ -289,17 +289,17 @@ public:
 
 	void iconChanged();
 
-	const Outfit_t getCurrentOutfit() const {
+	Outfit_t getCurrentOutfit() const {
 		return currentOutfit;
 	}
-	void setCurrentOutfit(Outfit_t outfit) {
+	void setCurrentOutfit(const Outfit_t &outfit) {
 		currentOutfit = outfit;
 	}
-	const Outfit_t getDefaultOutfit() const {
+	Outfit_t getDefaultOutfit() const {
 		return defaultOutfit;
 	}
 	bool isWearingSupportOutfit() const {
-		auto outfit = currentOutfit.lookType;
+		const auto outfit = currentOutfit.lookType;
 		return outfit == 75 || outfit == 266 || outfit == 302;
 	}
 	bool isInvisible() const;
@@ -558,11 +558,11 @@ public:
 
 	void setParent(std::weak_ptr<Cylinder> cylinder) final;
 
-	const Position &getPosition() override final {
+	const Position &getPosition() final {
 		return position;
 	}
 
-	std::shared_ptr<Tile> getTile() override final {
+	std::shared_ptr<Tile> getTile() final {
 		return m_tile.lock();
 	}
 

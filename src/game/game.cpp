@@ -5983,7 +5983,7 @@ void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::str
 		return;
 	}
 
-	player->vip()->edit(guid, description, icon, notify, vipGroupsId);
+	player->vip()->edit(guid, description, icon, notify, std::move(vipGroupsId));
 }
 
 void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {
@@ -6996,7 +6996,7 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 		}
 
 		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(std::move(target))) / 100.;
 		}
 	}
 }

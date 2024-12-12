@@ -8,7 +8,6 @@
  */
 
 #include "creatures/players/storages/storages.hpp"
-
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 

@@ -24,5 +24,4 @@ function onUpdateDatabase()
 		ALTER TABLE `player_wheeldata`
 		ADD PRIMARY KEY (`player_id`);
 	]])
-	return true
 end

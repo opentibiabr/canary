@@ -109,6 +109,4 @@ function onUpdateDatabase()
 						ON DELETE CASCADE
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 	]])
-
-	return true
 end

@@ -7,7 +7,6 @@ function callback.onItemMoved(item, count, fromPosition, toPosition, fromCylinde
 		Game.setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Turtle, os.time() + 10 * 60)
 		item:remove(1)
 	end
-	return true
 end
 
 callback:register()

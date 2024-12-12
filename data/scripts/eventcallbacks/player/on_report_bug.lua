@@ -24,7 +24,6 @@ function callback.playerOnReportBug(player, message, position, category)
 	file:close()
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Your report has been sent to %s.", SERVER_NAME))
-	return true
 end
 
 callback:register()

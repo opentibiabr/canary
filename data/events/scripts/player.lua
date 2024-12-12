@@ -370,7 +370,9 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	return true
 end
 
-function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder) end
+function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	return true
+end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
 	local player = creature:getPlayer()
@@ -381,8 +383,12 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 	return true
 end
 
-function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation) end
-function Player:onReportBug(message, position, category) end
+function Player:onReportRuleViolation(targetName, reportType, reportReason, comment, translation)
+	return
+end
+function Player:onReportBug(message, position, category)
+	return true
+end
 
 function Player:onTurn(direction)
 	if self:getGroup():getAccess() and self:getDirection() == direction then

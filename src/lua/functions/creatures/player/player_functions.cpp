@@ -4502,6 +4502,26 @@ int PlayerFunctions::luaPlayerGetWheelSpellAdditionalDuration(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerWheelUnlockScroll(lua_State* L) {
+	// player:wheelUnlockScroll(scrollName)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1);
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 0;
+	}
+
+	const auto scrollName = Lua::getString(L, 2);
+	if (scrollName.empty()) {
+		Lua::reportErrorFunc("Scroll name is empty");
+		Lua::pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushboolean(L, player->wheel()->unlockScroll(scrollName));
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerUpdateConcoction(lua_State* L) {
 	// player:updateConcoction(itemid, timeLeft)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1);

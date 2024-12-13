@@ -266,6 +266,11 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
 
+	player->wheel()->saveRevealedGems();
+	player->wheel()->saveActiveGems();
+	player->wheel()->saveKVModGrades();
+	player->wheel()->saveKVScrolls();
+
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}

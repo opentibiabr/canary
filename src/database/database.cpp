@@ -108,34 +108,30 @@ void Database::createDatabaseBackup(bool compress) const {
 
 	// Compress the backup file if requested
 	std::string compressedFileName;
-	if (compress) {
-		compressedFileName = backupFileName + ".gz";
-		gzFile gzFile = gzopen(compressedFileName.c_str(), "wb9");
-		if (!gzFile) {
-			g_logger().error("Failed to open gzip file for compression.");
-			return;
-		}
-
-		std::ifstream backupFile(backupFileName, std::ios::binary);
-		if (!backupFile.is_open()) {
-			g_logger().error("Failed to open backup file for compression: {}", backupFileName);
-			gzclose(gzFile);
-			return;
-		}
-
-		std::string buffer(8192, '\0');
-		while (backupFile.read(&buffer[0], buffer.size()) || backupFile.gcount() > 0) {
-			gzwrite(gzFile, buffer.data(), backupFile.gcount());
-		}
-
-		backupFile.close();
-		gzclose(gzFile);
-		std::filesystem::remove(backupFileName);
-
-		g_logger().info("Database backup successfully compressed to: {}", compressedFileName);
-	} else {
-		g_logger().info("Database backup successfully created at: {}", backupFileName);
+	compressedFileName = backupFileName + ".gz";
+	gzFile gzFile = gzopen(compressedFileName.c_str(), "wb9");
+	if (!gzFile) {
+		g_logger().error("Failed to open gzip file for compression.");
+		return;
 	}
+
+	std::ifstream backupFile(backupFileName, std::ios::binary);
+	if (!backupFile.is_open()) {
+		g_logger().error("Failed to open backup file for compression: {}", backupFileName);
+		gzclose(gzFile);
+		return;
+	}
+
+	std::string buffer(8192, '\0');
+	while (backupFile.read(&buffer[0], buffer.size()) || backupFile.gcount() > 0) {
+		gzwrite(gzFile, buffer.data(), backupFile.gcount());
+	}
+
+	backupFile.close();
+	gzclose(gzFile);
+	std::filesystem::remove(backupFileName);
+
+	g_logger().info("Database backup successfully compressed to: {}", compressedFileName);
 
 	// Delete backups older than 7 days
 	auto nowTime = std::chrono::system_clock::now();

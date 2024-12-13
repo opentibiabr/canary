@@ -316,8 +316,6 @@ void CanaryServer::initializeDatabase() {
 		));
 	}
 
-	g_database().createDatabaseBackup(false);
-
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
@@ -392,6 +390,7 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void CanaryServer::shutdown() {
+	g_database().createDatabaseBackup(true);
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
 	inject<ThreadPool>().shutdown();

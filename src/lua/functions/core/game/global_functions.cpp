@@ -263,7 +263,8 @@ int GlobalFunctions::luaGetWorldLight(lua_State* L) {
 
 int GlobalFunctions::luaGetWorldUpTime(lua_State* L) {
 	// getWorldUpTime()
-	const uint64_t uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;
+	const auto now = std::chrono::steady_clock::now();
+	const auto uptime = std::chrono::duration_cast<std::chrono::seconds>(now - ProtocolStatus::start).count();
 	lua_pushnumber(L, uptime);
 	return 1;
 }

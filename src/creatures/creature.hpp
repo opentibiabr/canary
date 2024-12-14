@@ -312,6 +312,9 @@ public:
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
 
+	void updateCreatureWalk() {
+		goToFollowCreature_async();
+	}
 	void goToFollowCreature_async(std::function<void()> &&onComplete = nullptr);
 	virtual void goToFollowCreature();
 
@@ -482,6 +485,9 @@ public:
 	void setCreatureLight(LightInfo lightInfo);
 
 	virtual void onThink(uint32_t interval);
+
+	void checkCreatureAttack(bool now = false);
+
 	void onAttacking(uint32_t interval);
 	virtual void onCreatureWalk();
 	virtual bool getNextStep(Direction &dir, uint32_t &flags);
@@ -694,7 +700,8 @@ protected:
 		AsyncTaskRunning = 1 << 0,
 		UpdateTargetList = 1 << 1,
 		UpdateIdleStatus = 1 << 2,
-		Pathfinder = 1 << 3
+		Pathfinder = 1 << 3,
+		OnThink = 1 << 4,
 	};
 
 	virtual bool isDead() const {

@@ -13,16 +13,17 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"GraveDangerBossDeath",
-	"zelosDeath",
-}
-
 monster.health = 480000
 monster.maxHealth = 480000
 monster.race = "venom"
 monster.corpse = 31611
 monster.speed = 212
+
+monster.events = {
+	"zelos_damage",
+	"zelos_init",
+	"grave_danger_death",
+}
 
 monster.bosstiary = {
 	bossRaceId = 1784,

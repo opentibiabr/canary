@@ -41,6 +41,50 @@ TeleportAction = {
 			{ x = 33449, y = 32241, z = 7 },
 		},
 	},
+	-- Grave Danger Quest
+	[14562] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 32190, y = 31817, z = 8 },
+		},
+	},
+	[14563] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 32345, y = 32168, z = 12 },
+		},
+	},
+	[14564] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 33288, y = 32472, z = 9 },
+		},
+	},
+	[14565] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 33261, y = 31984, z = 8 },
+		},
+	},
+	[14566] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 33196, y = 31694, z = 8 },
+		},
+	},
+	[14567] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 32174, y = 31916, z = 8 },
+		},
+	},
+	-- Grave Danger Quest
+	[14579] = {
+		itemId = 22761,
+		itemPos = {
+			{ x = 33443, y = 31532, z = 13 },
+		},
+	},
 	-- Barbarian Test - Temple Citizen Svargrond
 	[30032] = {
 		itemId = 1949,
@@ -416,6 +460,127 @@ TeleportUnique = {
 		itemId = 775,
 		itemPos = { x = 33640, y = 32559, z = 13 },
 		destination = { x = 33618, y = 32523, z = 15 },
+		effect = CONST_ME_TELEPORT,
+	},
+	-- Grave Dange Quest
+	[39009] = {
+		itemId = 22761,
+		itemPos = { x = 33451, y = 31562, z = 13 },
+		destination = { x = 33456, y = 31564, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39010] = {
+		itemId = 22761,
+		itemPos = { x = 33465, y = 31570, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39011] = {
+		itemId = 22761,
+		itemPos = { x = 33463, y = 31553, z = 13 },
+		destination = { x = 33462, y = 31548, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39012] = {
+		itemId = 22761,
+		itemPos = { x = 33454, y = 31562, z = 13 },
+		destination = { x = 33449, y = 31561, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39013] = {
+		itemId = 22761,
+		itemPos = { x = 33463, y = 31541, z = 13 },
+		destination = { x = 33465, y = 31536, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39014] = {
+		itemId = 22761,
+		itemPos = { x = 33463, y = 31538, z = 13 },
+		destination = { x = 33462, y = 31543, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39015] = {
+		itemId = 22761,
+		itemPos = { x = 33454, y = 31529, z = 13 },
+		destination = { x = 33449, y = 31530, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39016] = {
+		itemId = 22761,
+		itemPos = { x = 33465, y = 31521, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39017] = {
+		itemId = 22761,
+		itemPos = { x = 33451, y = 31529, z = 13 },
+		destination = { x = 33456, y = 31531, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39018] = {
+		itemId = 32415,
+		itemPos = { x = 33443, y = 31539, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39019] = {
+		itemId = 22761,
+		itemPos = { x = 33435, y = 31529, z = 13 },
+		destination = { x = 33430, y = 31531, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39020] = {
+		itemId = 22761,
+		itemPos = { x = 33432, y = 31529, z = 13 },
+		destination = { x = 33437, y = 31530, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39021] = {
+		itemId = 22761,
+		itemPos = { x = 33421, y = 31521, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39022] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31538, z = 13 },
+		destination = { x = 33424, y = 31543, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39023] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31541, z = 13 },
+		destination = { x = 33425, y = 31536, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39024] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31551, z = 13 },
+		destination = { x = 33425, y = 31556, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39025] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31554, z = 13 },
+		destination = { x = 33424, y = 31549, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39026] = {
+		itemId = 22761,
+		itemPos = { x = 33421, y = 31570, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39027] = {
+		itemId = 22761,
+		itemPos = { x = 33432, y = 31562, z = 13 },
+		destination = { x = 33437, y = 31563, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39028] = {
+		itemId = 22761,
+		itemPos = { x = 33435, y = 31562, z = 13 },
+		destination = { x = 33430, y = 31564, z = 13 },
 		effect = CONST_ME_TELEPORT,
 	},
 }

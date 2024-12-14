@@ -1487,67 +1487,74 @@ GameStore.canChangeToName = function(name)
 	local result = {
 		ability = false,
 	}
-	if name:len() < 3 or name:len() > 18 then
-		result.reason = "The length of your new name must be between 3 and 18 characters."
+
+	if name:len() < 3 or name:len() > 29 then
+		result.reason = "The length of your new name must be between 3 and 29 characters."
 		return result
 	end
 
 	local match = name:gmatch("%s+")
 	local count = 0
-	for v in match do
+	for _ in match do
 		count = count + 1
 	end
 
 	local matchtwo = name:match("^%s+")
 	if matchtwo then
-		result.reason = "Your new name can't have whitespace at begin."
+		result.reason = "Your new name can't have whitespace at the beginning."
 		return result
 	end
 
-	if count > 1 then
-		result.reason = "Your new name have more than 1 whitespace."
+	if count > 2 then
+		result.reason = "Your new name can't have more than 2 spaces."
+		return result
+	end
+
+	if name:match("%s%s") then
+		result.reason = "Your new name can't have consecutive spaces."
 		return result
 	end
 
 	-- just copied from znote aac.
 	local words = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "adm", "cm", "gm", "tutor", "counsellor" }
 	local split = name:split(" ")
-	for k, word in ipairs(words) do
-		for k, nameWord in ipairs(split) do
+	for _, word in ipairs(words) do
+		for _, nameWord in ipairs(split) do
 			if nameWord:lower() == word then
-				result.reason = "You can't use word \"" .. word .. '" in your new name.'
+				result.reason = "You can't use the word '" .. word .. "' in your new name."
 				return result
 			end
 		end
 	end
 
 	local tmpName = name:gsub("%s+", "")
-	for i = 1, #words do
-		if tmpName:lower():find(words[i]) then
-			result.reason = "You can't use word \"" .. words[i] .. '" with whitespace in your new name.'
+	for _, word in ipairs(words) do
+		if tmpName:lower():find(word) then
+			result.reason = "You can't use the word '" .. word .. "' even with spaces in your new name."
 			return result
 		end
 	end
 
 	if MonsterType(name) then
-		result.reason = 'Your new name "' .. name .. "\" can't be a monster's name."
+		result.reason = "Your new name '" .. name .. "' can't be a monster's name."
 		return result
 	elseif Npc(name) then
-		result.reason = 'Your new name "' .. name .. "\" can't be a npc's name."
+		result.reason = "Your new name '" .. name .. "' can't be an NPC's name."
 		return result
 	end
 
 	local letters = "{}|_*+-=<>0123456789@#%^&()/*'\\.,:;~!\"$"
 	for i = 1, letters:len() do
 		local c = letters:sub(i, i)
-		for i = 1, name:len() do
-			local m = name:sub(i, i)
+		for j = 1, name:len() do
+			local m = name:sub(j, j)
 			if m == c then
-				result.reason = "You can't use this letter \"" .. c .. '" in your new name.'
+				result.reason = "You can't use this character '" .. c .. "' in your new name."
 				return result
 			end
 		end
 	end
+
 	result.ability = true
 	return result
 end

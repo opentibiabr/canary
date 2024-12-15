@@ -112,6 +112,8 @@
     <ClInclude Include="..\src\lib\di\runtime_provider.hpp" />
     <ClInclude Include="..\src\lib\di\shared.hpp" />
     <ClInclude Include="..\src\lib\di\soft_singleton.hpp" />
+    <ClInclude Include="..\src\lib\logging\gray_log_sink.hpp" />
+    <ClInclude Include="..\src\lib\logging\gray_log_sink_options.hpp" />
     <ClInclude Include="..\src\lib\logging\logger.hpp" />
     <ClInclude Include="..\src\lib\logging\log_with_spd_log.hpp" />
     <ClInclude Include="..\src\lib\metrics\metrics.hpp" />
@@ -315,6 +317,7 @@
     <ClCompile Include="..\src\kv\kv_sql.cpp" />
     <ClCompile Include="..\src\kv\kv.cpp" />
     <ClCompile Include="..\src\lib\di\soft_singleton.cpp" />
+    <ClCompile Include="..\src\lib\logging\gray_log_sink.cpp" />
     <ClCompile Include="..\src\lib\logging\logger.cpp" />
     <ClCompile Include="..\src\lib\logging\log_with_spd_log.cpp" />
     <ClCompile Include="..\src\lib\metrics\metrics.cpp" />

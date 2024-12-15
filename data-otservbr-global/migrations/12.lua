@@ -7,5 +7,4 @@ function onUpdateDatabase()
 	db.query("ALTER TABLE boosted_creature ADD `lookbody` int(11) NOT NULL DEFAULT 0;")
 	db.query("ALTER TABLE boosted_creature ADD `lookaddons` int(11) NOT NULL DEFAULT 0;")
 	db.query("ALTER TABLE boosted_creature ADD `lookmount` int(11) DEFAULT 0;")
-	return true
 end

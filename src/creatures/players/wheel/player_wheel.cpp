@@ -967,7 +967,7 @@ bool PlayerWheel::handleBeamMasteryCooldown(const std::shared_ptr<Player> &playe
 
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
 	msg.add<uint16_t>(m_unlockedScrolls.size());
-	for (const auto& [itemId, name, extraPoints] : m_unlockedScrolls) {
+	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
 		msg.add<uint16_t>(itemId);
 	}
 }
@@ -1018,7 +1018,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 	std::vector<PlayerWheelGem> activeGems;
 	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
 		const auto &gem = m_activeGems[static_cast<uint8_t>(affinity)];
-		
+
 		if (!gem) {
 			continue;
 		}
@@ -1644,7 +1644,7 @@ void PlayerWheel::loadActiveGems() {
 			continue;
 		}
 
-		auto it = std::ranges::find_if(m_revealedGems, [&uuid](const auto& gem) {
+		auto it = std::ranges::find_if(m_revealedGems, [&uuid](const auto &gem) {
 			return gem.uuid == uuid;
 		});
 

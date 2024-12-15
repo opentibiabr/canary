@@ -383,6 +383,7 @@ public:
 	void clear();
 
 	void loadFromProtobuf();
+	bool loadFromDat();
 
 	const ItemType &operator[](size_t id) const {
 		return getItemType(id);

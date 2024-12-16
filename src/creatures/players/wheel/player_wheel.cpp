@@ -307,7 +307,7 @@ namespace {
 		return 0;
 	}
 
-	static std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
+	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
 		{ 43946, "abridged", 3 },
 		{ 43947, "basic", 5 },
 		{ 43948, "revised", 9 },
@@ -996,7 +996,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 		sortedUnlockedGemGUIDs.emplace_back(uuid);
 	}
 
-	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
+	std::ranges::sort(sortedUnlockedGemGUIDs, [](const std::string &a, const std::string &b) {
 		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
 			return std::stoull(a) < std::stoull(b);
 		} else {
@@ -1101,7 +1101,7 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 	g_logger().debug("[{}] {}", __FUNCTION__, gem.toString());
 	m_revealedGems.emplace_back(gem);
 
-	std::sort(m_revealedGems.begin(), m_revealedGems.end(), [](const auto &gem1, const auto &gem2) {
+	std::ranges::sort(m_revealedGems, [](const auto &gem1, const auto &gem2) {
 		if (std::ranges::all_of(gem1.uuid, ::isdigit) && std::ranges::all_of(gem2.uuid, ::isdigit)) {
 			return std::stoull(gem1.uuid) < std::stoull(gem2.uuid);
 		} else {
@@ -1243,7 +1243,7 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
 }
 
 void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) {
-	m_activeGems[static_cast<uint8_t>(affinity)] = {};
+	m_activeGems[static_cast<uint8_t>(affinity)] = emptyGem;
 }
 
 void PlayerWheel::addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
@@ -1627,14 +1627,9 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 }
 
 void PlayerWheel::loadActiveGems() {
-	const auto &activeGemScope = gemsKV()->scoped("active");
-	if (!activeGemScope) {
-		return;
-	}
-
 	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
 		std::string key(magic_enum::enum_name(affinity));
-		auto uuidKV = activeGemScope->get(key);
+		auto uuidKV = gemsKV()->scoped("active")->get(key);
 		if (!uuidKV.has_value()) {
 			continue;
 		}
@@ -1657,18 +1652,13 @@ void PlayerWheel::loadActiveGems() {
 }
 
 void PlayerWheel::saveActiveGems() const {
-	const auto &activeGemScope = gemsKV()->scoped("active");
-	if (!activeGemScope) {
-		return;
-	}
-
-	for (auto gemAffinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		const std::string key(magic_enum::enum_name(gemAffinity));
-		const auto &gem = m_activeGems[static_cast<uint8_t>(gemAffinity)];
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		const std::string key(magic_enum::enum_name(affinity));
+		const auto &gem = m_activeGems[static_cast<uint8_t>(affinity)];
 		if (gem) {
-			activeGemScope->set(key, gem.uuid);
+			gemsKV()->scoped("active")->set(key, gem.uuid);
 		} else {
-			activeGemScope->remove(key);
+			gemsKV()->scoped("active")->remove(key);
 		}
 	}
 }
@@ -1684,7 +1674,7 @@ void PlayerWheel::loadRevealedGems() {
 		sortedUnlockedGemGUIDs.emplace_back(uuid);
 	}
 
-	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
+	std::ranges::sort(sortedUnlockedGemGUIDs, [](const std::string &a, const std::string &b) {
 		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
 			return std::stoull(a) < std::stoull(b);
 		} else {
@@ -1711,8 +1701,8 @@ void PlayerWheel::saveRevealedGems() const {
 	}
 }
 
-bool PlayerWheel::hasScroll(const std::string &scrollName) {
-	auto it = std::ranges::find_if(m_unlockedScrolls, [scrollName](const PromotionScroll &promotionScroll) {
+bool PlayerWheel::scrollAccquired(const std::string &scrollName) {
+	auto it = std::ranges::find_if(m_unlockedScrolls, [&scrollName](const PromotionScroll &promotionScroll) {
 		return scrollName == promotionScroll.name;
 	});
 
@@ -1720,15 +1710,17 @@ bool PlayerWheel::hasScroll(const std::string &scrollName) {
 }
 
 bool PlayerWheel::unlockScroll(const std::string &scrollName) {
-	if (hasScroll(scrollName)) {
+	if (scrollAccquired(scrollName)) {
 		return false;
 	}
 
-	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
-		if (scrollName == name) {
-			m_unlockedScrolls.emplace_back(itemId, name, extraPoints);
-			return true;
-		}
+	auto it = std::ranges::find_if(WheelOfDestinyPromotionScrolls, [&scrollName](const auto& scroll) {
+		return scroll.name == scrollName;
+	});
+
+	if (it != WheelOfDestinyPromotionScrolls.end()) {
+		m_unlockedScrolls.emplace_back(*it);
+		return true;
 	}
 
 	return false;

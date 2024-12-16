@@ -74,7 +74,7 @@ public:
 	void loadRevealedGems();
 	void saveRevealedGems() const;
 
-	bool hasScroll(const std::string &scrollName);
+	bool scrollAccquired(const std::string &scrollName);
 	bool unlockScroll(const std::string &scrollName);
 	void loadKVScrolls();
 	void saveKVScrolls() const;

@@ -1714,7 +1714,7 @@ bool PlayerWheel::unlockScroll(const std::string &scrollName) {
 		return false;
 	}
 
-	auto it = std::ranges::find_if(WheelOfDestinyPromotionScrolls, [&scrollName](const auto& scroll) {
+	auto it = std::ranges::find_if(WheelOfDestinyPromotionScrolls, [&scrollName](const auto &scroll) {
 		return scroll.name == scrollName;
 	});
 

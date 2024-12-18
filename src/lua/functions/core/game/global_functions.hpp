@@ -46,7 +46,6 @@ private:
 	static int luaRawGetMetatable(lua_State* L);
 	static int luaCreateTable(lua_State* L);
 	static int luaSystemTime(lua_State* L);
-	static int luaGetFormattedTimeRemaining(lua_State* L);
 	static int luaReportError(lua_State* L);
 
 	static bool getArea(lua_State* L, std::list<uint32_t> &list, uint32_t &rows);

@@ -142,7 +142,6 @@ void Decay::checkDecay() {
 			item->setDuration(item->getDuration());
 			item->setDecaying(DECAYING_FALSE);
 		} else {
-			item->setDecaying(DECAYING_FALSE);
 			internalDecayItem(item);
 		}
 	}
@@ -161,9 +160,9 @@ void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 
 	const ItemType &it = Item::items[item->getID()];
 	// Remove the item and halt the decay process if a player triggers a bug where the item's decay ID matches its equip or de-equip transformation ID
+	const auto &player = item->getHoldingPlayer();
 	if (it.id == it.transformEquipTo || it.id == it.transformDeEquipTo) {
 		g_game().internalRemoveItem(item);
-		const auto &player = item->getHoldingPlayer();
 		if (player) {
 			g_logger().error("[{}] - internalDecayItem failed to player {}, item id is same from transform equip/deequip, "
 			                 " item id: {}, equip to id: '{}', deequip to id '{}'",
@@ -173,7 +172,6 @@ void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 	}
 
 	if (it.decayTo != 0) {
-		const auto &player = item->getHoldingPlayer();
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {

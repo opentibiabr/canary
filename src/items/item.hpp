@@ -705,6 +705,9 @@ public:
 	bool canBeMoved() const;
 	void checkDecayMapItemOnMove();
 
+	void sendUpdateQuiver();
+	void playerUpdateSupplyTracker();
+
 protected:
 	std::weak_ptr<Cylinder> m_parent;
 

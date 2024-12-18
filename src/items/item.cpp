@@ -3465,3 +3465,28 @@ int32_t ItemProperties::getDuration() const {
 		return getAttribute<int32_t>(ItemAttribute_t::DURATION);
 	}
 }
+void Item::sendUpdateQuiver() {
+	const auto &player = getHoldingPlayer();
+	const auto &item = static_self_cast<Item>();
+	const auto &inventoryItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+	if (player && isQuiver() && inventoryItem == item) {
+		player->sendInventoryItem(CONST_SLOT_RIGHT, item);
+	}
+}
+
+void Item::playerUpdateSupplyTracker() {
+	const auto &player = getHoldingPlayer();
+	if (!player) {
+		return;
+	}
+
+	static const std::array<Slots_t, 2> slotsToCheck = { CONST_SLOT_NECKLACE, CONST_SLOT_RING };
+	const auto &item = static_self_cast<Item>();
+	for (const Slots_t slot : slotsToCheck) {
+		const auto &inventoryItem = player->getInventoryItem(slot);
+		if (inventoryItem && inventoryItem == item) {
+			player->updateSupplyTracker(item);
+			break;
+		}
+	}
+}

@@ -2397,6 +2397,7 @@ ReturnValue Game::internalRemoveItem(const std::shared_ptr<Item> &items, int32_t
 	}
 
 	if (!test) {
+		item->playerUpdateSupplyTracker();
 		int32_t index = cylinder->getThingIndex(item);
 		// remove the item
 		cylinder->removeThing(item, count);
@@ -2840,10 +2841,12 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 
 			auto decaying = item->getDecaying();
 			// If the item is decaying, we need to transform it to the new item
-			if (decaying > DECAYING_FALSE && item->getDuration() <= 1 && newType.decayTo) {
+			const auto &itemDuration = item->getDuration();
+			if (decaying > DECAYING_FALSE && itemDuration == 0 && newType.decayTo) {
 				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
 				g_logger().debug("Decay duration new type decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
 				itemId = newType.decayTo;
+				item->playerUpdateSupplyTracker();
 			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();
@@ -2859,11 +2862,9 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 			cylinder->updateThing(item, itemId, count);
 			cylinder->postAddNotification(item, cylinder, itemIndex);
 
-			std::shared_ptr<Item> quiver = cylinder->getItem();
-			if (quiver && quiver->isQuiver()
-			    && quiver->getHoldingPlayer()
-			    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-				quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+			const auto &cylinderItem = cylinder->getItem();
+			if (cylinderItem) {
+				cylinderItem->sendUpdateQuiver();
 			}
 			item->startDecaying();
 
@@ -2871,11 +2872,9 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 		}
 	}
 
-	std::shared_ptr<Item> quiver = cylinder->getItem();
-	if (quiver && quiver->isQuiver()
-	    && quiver->getHoldingPlayer()
-	    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+	const auto &cylinderItem = cylinder->getItem();
+	if (cylinderItem) {
+		cylinderItem->sendUpdateQuiver();
 	}
 
 	// Replacing the the old item with the new while maintaining the old position

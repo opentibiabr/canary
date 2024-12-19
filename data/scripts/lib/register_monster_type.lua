@@ -161,6 +161,11 @@ registerMonsterType.enemyFactions = function(mtype, mask)
 	end
 end
 registerMonsterType.flags = function(mtype, mask)
+	-- Try register hazard monsters
+	mtype.onSpawn = function(monster, spawnPosition)
+		HazardMonster.onSpawn(monster, spawnPosition)
+	end
+
 	if mask.flags then
 		if mask.flags.attackable ~= nil then
 			mtype:isAttackable(mask.flags.attackable)
@@ -194,7 +199,7 @@ registerMonsterType.flags = function(mtype, mask)
 		end
 		if mask.flags.rewardBoss then
 			mtype:isRewardBoss(mask.flags.rewardBoss)
-			mtype.onSpawn = function(monster)
+			mtype.onSpawn = function(monster, spawnPosition)
 				monster:setRewardBoss()
 			end
 		end

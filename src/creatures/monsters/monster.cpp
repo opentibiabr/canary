@@ -354,7 +354,9 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 
 		setIdle(true);
 	} else {
-		onCreatureLeave(creature);
+		addAsyncTask([this, creature] {
+			onCreatureLeave(creature);
+		});
 	}
 }
 
@@ -421,27 +423,13 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 							const auto &topCreature = nextTile->getTopCreature();
 							if (followCreature != topCreature && isOpponent(topCreature)) {
-								g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), topCreatureWeak = std::weak_ptr(topCreature)] {
-									const auto &self = selfWeak.lock();
-									const auto &topCreature = topCreatureWeak.lock();
-									if (self && topCreature) {
-										self->selectTarget(topCreature);
-									}
-								},
-								                        "Monster::onCreatureMove");
+								selectTarget(topCreature);
 							}
 						}
 					}
 				} else if (isOpponent(creature)) {
 					// we have no target lets try pick this one
-					g_dispatcher().addEvent([selfWeak = std::weak_ptr(getMonster()), creatureWeak = std::weak_ptr(creature)] {
-						const auto &self = selfWeak.lock();
-						const auto &creaturePtr = creatureWeak.lock();
-						if (self && creaturePtr) {
-							self->selectTarget(creaturePtr);
-						}
-					},
-					                        "Monster::onCreatureMove");
+					selectTarget(creature);
 				}
 			}
 		};
@@ -603,7 +591,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateTargetList, true);
 		return;
 	}
@@ -953,7 +941,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+			checkCreatureAttack();
 		}
 	}
 	return setFollowCreature(creature);
@@ -977,7 +965,7 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
@@ -1072,8 +1060,11 @@ void Monster::onThink(uint32_t interval) {
 	}
 
 	updateIdleStatus();
+	setAsyncTaskFlag(OnThink, true);
+}
 
-	if (isIdle) {
+void Monster::onThink_async() {
+	if (isIdle) { // updateIdleStatus(); is executed before this method
 		return;
 	}
 
@@ -1108,10 +1099,13 @@ void Monster::onThink(uint32_t interval) {
 		}
 	}
 
-	onThinkTarget(interval);
-	onThinkYell(interval);
-	onThinkDefense(interval);
-	onThinkSound(interval);
+	onThinkTarget(EVENT_CREATURE_THINK_INTERVAL);
+
+	safeCall([this] {
+		onThinkYell(EVENT_CREATURE_THINK_INTERVAL);
+		onThinkDefense(EVENT_CREATURE_THINK_INTERVAL);
+		onThinkSound(EVENT_CREATURE_THINK_INTERVAL);
+	});
 }
 
 void Monster::doAttacking(uint32_t interval) {
@@ -1588,73 +1582,44 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	uint32_t centerToDist = std::max<uint32_t>(distance_x, distance_y);
 
 	// monsters not at targetDistance shouldn't dancestep
-	if (centerToDist < (uint32_t)targetDistance) {
+	if (centerToDist < static_cast<uint32_t>(targetDistance)) {
 		return false;
 	}
 
 	std::vector<Direction> dirList;
-	if (!keepDistance || offset_y >= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() - 1) - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_NORTH)) {
+	auto tryAddDirection = [&](Direction direction, int_fast32_t newX, int_fast32_t newY) {
+		uint32_t tmpDist = std::max<uint32_t>(std::abs(newX - centerPos.getX()), std::abs(newY - centerPos.getY()));
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, direction)) {
 			bool result = true;
 
 			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y - 1, creaturePos.z), attackedCreature));
+				result = (!canDoAttackNow || canUseAttack(Position(newX, newY, creaturePos.z), attackedCreature));
 			}
 
 			if (result) {
-				dirList.push_back(DIRECTION_NORTH);
+				dirList.emplace_back(direction);
 			}
 		}
+	};
+
+	if (!keepDistance || offset_y >= 0) {
+		tryAddDirection(DIRECTION_NORTH, creaturePos.getX(), creaturePos.getY() - 1);
 	}
 
 	if (!keepDistance || offset_y <= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() + 1) - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_SOUTH)) {
-			bool result = true;
-
-			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y + 1, creaturePos.z), attackedCreature));
-			}
-
-			if (result) {
-				dirList.push_back(DIRECTION_SOUTH);
-			}
-		}
+		tryAddDirection(DIRECTION_SOUTH, creaturePos.getX(), creaturePos.getY() + 1);
 	}
 
 	if (!keepDistance || offset_x <= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(std::abs((creaturePos.getX() + 1) - centerPos.getX()), distance_y);
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_EAST)) {
-			bool result = true;
-
-			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x + 1, creaturePos.y, creaturePos.z), attackedCreature));
-			}
-
-			if (result) {
-				dirList.push_back(DIRECTION_EAST);
-			}
-		}
+		tryAddDirection(DIRECTION_EAST, creaturePos.getX() + 1, creaturePos.getY());
 	}
 
 	if (!keepDistance || offset_x >= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(std::abs((creaturePos.getX() - 1) - centerPos.getX()), distance_y);
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_WEST)) {
-			bool result = true;
-
-			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x - 1, creaturePos.y, creaturePos.z), attackedCreature));
-			}
-
-			if (result) {
-				dirList.push_back(DIRECTION_WEST);
-			}
-		}
+		tryAddDirection(DIRECTION_WEST, creaturePos.getX() - 1, creaturePos.getY());
 	}
 
 	if (!dirList.empty()) {
-		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+		std::ranges::shuffle(dirList, getRandomGenerator());
 		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
 		return true;
 	}
@@ -2659,5 +2624,9 @@ void Monster::onExecuteAsyncTasks() {
 
 	if (hasAsyncTaskFlag(UpdateIdleStatus)) {
 		updateIdleStatus();
+	}
+
+	if (hasAsyncTaskFlag(OnThink)) {
+		onThink_async();
 	}
 }

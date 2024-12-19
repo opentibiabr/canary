@@ -4,5 +4,4 @@ function onUpdateDatabase()
 	db.query("ALTER TABLE `market_history` ADD `tier` tinyint UNSIGNED NOT NULL DEFAULT '0';")
 	db.query("ALTER TABLE `players` ADD `forge_dusts` bigint(21) NOT NULL DEFAULT '0';")
 	db.query("ALTER TABLE `players` ADD `forge_dust_level` bigint(21) UNSIGNED NOT NULL DEFAULT '100';")
-	return true
 end

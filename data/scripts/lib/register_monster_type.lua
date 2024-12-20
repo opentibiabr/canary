@@ -17,6 +17,10 @@ end
 registerMonsterType.name = function(mtype, mask)
 	if mask.name then
 		mtype:name(mask.name)
+		-- Try register hazard monsters
+		mtype.onSpawn = function(monster, spawnPosition)
+			HazardMonster.onSpawn(monster, spawnPosition)
+		end
 	end
 end
 registerMonsterType.description = function(mtype, mask)
@@ -161,11 +165,6 @@ registerMonsterType.enemyFactions = function(mtype, mask)
 	end
 end
 registerMonsterType.flags = function(mtype, mask)
-	-- Try register hazard monsters
-	mtype.onSpawn = function(monster, spawnPosition)
-		HazardMonster.onSpawn(monster, spawnPosition)
-	end
-
 	if mask.flags then
 		if mask.flags.attackable ~= nil then
 			mtype:isAttackable(mask.flags.attackable)

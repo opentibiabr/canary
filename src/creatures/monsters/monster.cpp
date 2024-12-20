@@ -1581,73 +1581,44 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	uint32_t centerToDist = std::max<uint32_t>(distance_x, distance_y);
 
 	// monsters not at targetDistance shouldn't dancestep
-	if (centerToDist < (uint32_t)targetDistance) {
+	if (centerToDist < static_cast<uint32_t>(targetDistance)) {
 		return false;
 	}
 
 	std::vector<Direction> dirList;
-	if (!keepDistance || offset_y >= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() - 1) - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_NORTH)) {
+	auto tryAddDirection = [&](Direction direction, int_fast32_t newX, int_fast32_t newY) {
+		uint32_t tmpDist = std::max<uint32_t>(std::abs(newX - centerPos.getX()), std::abs(newY - centerPos.getY()));
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, direction)) {
 			bool result = true;
 
 			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y - 1, creaturePos.z), attackedCreature));
+				result = (!canDoAttackNow || canUseAttack(Position(newX, newY, creaturePos.z), attackedCreature));
 			}
 
 			if (result) {
-				dirList.push_back(DIRECTION_NORTH);
+				dirList.emplace_back(direction);
 			}
 		}
+	};
+
+	if (!keepDistance || offset_y >= 0) {
+		tryAddDirection(DIRECTION_NORTH, creaturePos.getX(), creaturePos.getY() - 1);
 	}
 
 	if (!keepDistance || offset_y <= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() + 1) - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_SOUTH)) {
-			bool result = true;
-
-			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x, creaturePos.y + 1, creaturePos.z), attackedCreature));
-			}
-
-			if (result) {
-				dirList.push_back(DIRECTION_SOUTH);
-			}
-		}
+		tryAddDirection(DIRECTION_SOUTH, creaturePos.getX(), creaturePos.getY() + 1);
 	}
 
 	if (!keepDistance || offset_x <= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(std::abs((creaturePos.getX() + 1) - centerPos.getX()), distance_y);
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_EAST)) {
-			bool result = true;
-
-			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x + 1, creaturePos.y, creaturePos.z), attackedCreature));
-			}
-
-			if (result) {
-				dirList.push_back(DIRECTION_EAST);
-			}
-		}
+		tryAddDirection(DIRECTION_EAST, creaturePos.getX() + 1, creaturePos.getY());
 	}
 
 	if (!keepDistance || offset_x >= 0) {
-		uint32_t tmpDist = std::max<uint32_t>(std::abs((creaturePos.getX() - 1) - centerPos.getX()), distance_y);
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, DIRECTION_WEST)) {
-			bool result = true;
-
-			if (keepAttack) {
-				result = (!canDoAttackNow || canUseAttack(Position(creaturePos.x - 1, creaturePos.y, creaturePos.z), attackedCreature));
-			}
-
-			if (result) {
-				dirList.push_back(DIRECTION_WEST);
-			}
-		}
+		tryAddDirection(DIRECTION_WEST, creaturePos.getX() - 1, creaturePos.getY());
 	}
 
 	if (!dirList.empty()) {
-		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+		std::ranges::shuffle(dirList, getRandomGenerator());
 		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
 		return true;
 	}

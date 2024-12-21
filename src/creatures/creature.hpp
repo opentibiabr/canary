@@ -216,7 +216,6 @@ public:
 		return health <= 0;
 	}
 
-
 	virtual int32_t getMaxHealth() const {
 		return healthMax;
 	}

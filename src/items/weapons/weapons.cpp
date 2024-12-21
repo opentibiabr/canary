@@ -17,6 +17,7 @@
 #include "lib/di/container.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "lua/global/lua_variant.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "creatures/players/player.hpp"
 
 Weapons::Weapons() = default;

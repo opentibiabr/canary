@@ -221,6 +221,11 @@ public:
 
 	void setDead(bool isDead);
 
+	std::map<CombatType_t, int32_t> calculateElementalDamage(
+		CombatType_t weaponElement,
+		int32_t baseDamage
+	) const;
+
 protected:
 	void onExecuteAsyncTasks() override;
 

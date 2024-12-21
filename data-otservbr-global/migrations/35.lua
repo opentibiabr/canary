@@ -12,7 +12,6 @@ function onUpdateDatabase()
 		until not Result.next(resultQuery)
 		Result.free(resultQuery)
 	end
-	return true
 end
 
 function getNewValue(premDays, lastDay)

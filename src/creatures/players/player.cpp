@@ -3430,9 +3430,10 @@ void Player::doAttacking(uint32_t interval) {
 		}
 
 		const auto &task = createPlayerTask(
-			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); },
-			__FUNCTION__
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
+					creature->checkCreatureAttack(true);
+				} }, __FUNCTION__
 		);
 
 		if (!classicSpeed) {
@@ -5039,10 +5040,14 @@ ItemsTierCountList Player::getDepotInboxItemsId() const {
 	ItemsTierCountList itemMap;
 
 	const auto &inboxPtr = getInbox();
-	const auto &container = inboxPtr->getContainer();
+	const auto &container = inboxPtr ? inboxPtr->getContainer() : nullptr;
 	if (container) {
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;
+			if (!item) {
+				continue;
+			}
+
 			(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		}
 	}
@@ -5292,7 +5297,7 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+		checkCreatureAttack();
 	}
 	return true;
 }
@@ -9073,7 +9078,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 
 	returnValue = g_game().internalAddItem(static_self_cast<Player>(), exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		g_logger().error("Failed to add exaltation chest to player with name {}", fmt::underlying(ITEM_EXALTATION_CHEST), getName());
+		g_logger().error("Failed to add exaltation chest to player with name {}", getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -9831,7 +9836,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
+		updateCreatureWalk();
 	}
 
 	if (creature != getPlayer()) {

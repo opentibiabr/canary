@@ -261,7 +261,6 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 
 		// Define the primary and secondary damage types
 		damage.primary.type = params.combatType;
-		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		damage.secondary.type = getElementType();
 
 		// Step 1: Calculate total damage

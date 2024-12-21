@@ -3773,17 +3773,41 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	const auto &corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
-		if (lastHitCreature) {
-			std::string subjectPronoun = getSubjectPronoun();
-			capitalizeWords(subjectPronoun);
-			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
+		std::string subjectPronoun = getSubjectPronoun();
+		capitalizeWords(subjectPronoun);
+
+		if (!damageMap.empty()) {
+			ss << fmt::format("You recognize {}. {} was killed by ", getNameDescription(), subjectPronoun);
+
+			std::vector<std::string> killers;
+			for (const auto& [creatureId, damageInfo] : damageMap) {
+				const auto& [totalDamage, ticks] = damageInfo;
+				const auto& damageDealer = g_game().getCreatureByID(creatureId);
+				if (damageDealer) {
+					killers.push_back(damageDealer->getNameDescription());
+				}
+			}
+
+			if (!killers.empty()) {
+				for (size_t i = 0; i < killers.size(); ++i) {
+					if (i > 0) {
+						ss << (i == killers.size() - 1 ? " and " : ", ");
+					}
+					ss << killers[i];
+				}
+			} else {
+				ss << "an unknown attacker";
+			}
+			ss << '.';
 		} else {
-			ss << "You recognize " << getNameDescription() << '.';
+			ss << fmt::format("You recognize {}.", getNameDescription());
 		}
 
 		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
+		return corpse;
 	}
-	return corpse;
+
+	return nullptr;
 }
 
 void Player::addInFightTicks(bool pzlock /*= false*/) {

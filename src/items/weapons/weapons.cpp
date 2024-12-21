@@ -258,11 +258,26 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 			damage.origin = ORIGIN_MELEE;
 		}
 
+		// Define the primary and secondary damage types
 		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		damage.secondary.type = getElementType();
 
-		// Cleave damage
+		// Step 1: Calculate total damage
+		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+		if (damage.secondary.type != COMBAT_NONE) {
+			// Step 2: Use the helper function to distribute the damage
+			auto [physicalDamage, elementalDamage] = calculateDamageDistribution(target, totalDamage);
+			// Step 3: Assign the calculated values to the damage object
+			damage.primary.value = physicalDamage;
+			damage.secondary.value = elementalDamage;
+		} else {
+			// Step 2: Assign the total damage to the primary value
+			damage.primary.value = totalDamage;
+			damage.secondary.value = 0;
+		}
+
+		// Apply cleave adjustments if applicable
 		uint16_t damagePercent = 100;
 		if (cleavePercent != 0) {
 			damage.extension = true;
@@ -271,16 +286,11 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 				damage.exString += ", ";
 			}
 			damage.exString += "cleave damage";
+			damage.primary.value = (damage.primary.value * damagePercent) / 100;
+			damage.secondary.value = (damage.secondary.value * damagePercent) / 100;
 		}
 
-		if (damage.secondary.type == COMBAT_NONE) {
-			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
-			damage.secondary.value = 0;
-		} else {
-			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
-			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier / 100) * damagePercent / 100;
-		}
-
+		// Handle chain system
 		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM) && params.chainCallback) {
 			m_combat->doCombatChain(player, target, params.aggressive);
 			g_logger().debug("Weapon::internalUseWeapon - Chain callback executed.");
@@ -484,6 +494,43 @@ std::shared_ptr<Combat> Weapon::getCombat() {
 	return m_combat;
 }
 
+std::pair<int32_t, int32_t> Weapon::calculateDamageDistribution(
+	const std::shared_ptr<Creature> &target, 
+	int32_t totalDamage
+) const {
+	// Default damage distribution percentages
+	constexpr float DEFAULT_ELEMENTAL_PERCENTAGE = 0.666f; // 2/3 elemental damage
+	constexpr float DEFAULT_PHYSICAL_PERCENTAGE = 1.0f - DEFAULT_ELEMENTAL_PERCENTAGE;
+	// Initialize damage percentages
+	float elementalPercentage = DEFAULT_ELEMENTAL_PERCENTAGE;
+	float physicalPercentage = DEFAULT_PHYSICAL_PERCENTAGE;
+	// Check if the target is a player
+	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
+	if (targetPlayer) {
+		// Players have no weaknesses, damage is split 50/50
+		elementalPercentage = 0.5f;
+		physicalPercentage = 0.5f;
+	}
+	// Calculate base physical and elemental damage
+	int32_t physicalDamage = static_cast<int32_t>(totalDamage * physicalPercentage);
+	int32_t elementalDamage = static_cast<int32_t>(totalDamage * elementalPercentage);
+	// Apply resistance/weakness modifiers for monsters only
+	if (!targetPlayer && target) {
+		const auto &targetMonster = target->getMonster();
+		// Use the Monster::calculateElementalDamage function
+		if (targetMonster) {
+			auto elementType = getElementType();
+			auto elementDamageMap = targetMonster->calculateElementalDamage(elementType, elementalDamage);
+			auto it = elementDamageMap.find(elementType);
+			if (it != elementDamageMap.end()) {
+				elementalDamage = it->second; // Update elemental damage with calculated value
+			}
+		}
+	}
+	// Return the calculated damage distribution
+	return {physicalDamage, elementalDamage};
+}
+
 WeaponMelee::WeaponMelee() {
 	// Add combat type and blocked attributes to the weapon
 	params.blockedByArmor = true;
@@ -629,7 +676,7 @@ int32_t WeaponMelee::getWeaponDamage(const std::shared_ptr<Player> &player, cons
 		return -maxValue;
 	}
 
-	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->meleeDamageMultiplier)));
+	return -normal_random(minValue, maxValue);
 }
 
 WeaponDistance::WeaponDistance() {

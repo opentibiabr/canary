@@ -20,6 +20,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "items/weapons/weapons.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -2659,4 +2660,20 @@ void Monster::onExecuteAsyncTasks() {
 	if (hasAsyncTaskFlag(UpdateIdleStatus)) {
 		updateIdleStatus();
 	}
+}
+
+std::map<CombatType_t, int32_t> Monster::calculateElementalDamage(CombatType_t weaponElement, int32_t baseDamage
+) const {
+	std::map<CombatType_t, int32_t> damageByElement;
+	// Start with the base damage assigned to the weapon's element type
+	int32_t elementDamage = baseDamage;
+	// Check the monster's resistance/weakness for the element type
+	auto it = mType->info.elementMap.find(weaponElement);
+	if (it != mType->info.elementMap.end()) {
+		int32_t elementMod = it->second; // Monster's resistance or weakness
+		elementDamage = static_cast<int32_t>(std::round(elementDamage * ((100 - elementMod) / 100.0)));
+	}
+	// Add the calculated damage to the result map
+	damageByElement[weaponElement] = elementDamage;
+	return damageByElement;
 }

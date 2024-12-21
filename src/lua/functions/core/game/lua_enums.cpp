@@ -772,14 +772,22 @@ void LuaEnums::initCreatureTypeEnums(lua_State* L) {
 }
 
 void LuaEnums::initClientOsEnums(lua_State* L) {
+	registerEnum(L, CLIENTOS_NONE);
 	registerEnum(L, CLIENTOS_LINUX);
 	registerEnum(L, CLIENTOS_WINDOWS);
 	registerEnum(L, CLIENTOS_FLASH);
+	registerEnum(L, CLIENTOS_NEW_LINUX);
 	registerEnum(L, CLIENTOS_NEW_WINDOWS);
 	registerEnum(L, CLIENTOS_NEW_MAC);
 	registerEnum(L, CLIENTOS_OTCLIENT_LINUX);
 	registerEnum(L, CLIENTOS_OTCLIENT_WINDOWS);
 	registerEnum(L, CLIENTOS_OTCLIENT_MAC);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_LINUX);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_WINDOWS);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_MAC);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_ANDROID);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_IOS);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_WEB);
 }
 
 void LuaEnums::initFightModeEnums(lua_State* L) {

@@ -2176,7 +2176,7 @@ void ProtocolGame::parseTaskHuntingAction(NetworkMessage &msg) {
 
 	uint8_t slot = msg.getByte();
 	uint8_t action = msg.getByte();
-	bool upgrade = msg.getByte() != 0;
+	bool upgrade = msg.getByte(true) != 0;
 	auto raceId = msg.get<uint16_t>();
 
 	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {

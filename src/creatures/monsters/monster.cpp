@@ -1508,6 +1508,11 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 }
 
 void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {
+	if (totalPlayersOnScreen > 0) {
+		isWalkingBack = false;
+		return;
+	}
+
 	result = Creature::getNextStep(nextDirection, flags);
 	if (result) {
 		flags |= FLAG_PATHFINDING;

@@ -209,8 +209,13 @@ public:
 	}
 
 	bool isAlive() const {
-		return !isDead();
+		return !isLifeless();
 	}
+
+	bool isLifeless() const {
+		return health <= 0;
+	}
+
 
 	virtual int32_t getMaxHealth() const {
 		return healthMax;

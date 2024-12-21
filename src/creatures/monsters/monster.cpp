@@ -1109,7 +1109,7 @@ void Monster::onThink_async() {
 
 void Monster::doAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
-	if (!attackedCreature || (isSummon() && attackedCreature.get() == this)) {
+	if (!attackedCreature || attackedCreature->isLifeless() || (isSummon() && attackedCreature.get() == this)) {
 		return;
 	}
 

@@ -1,6 +1,7 @@
 target_sources(${PROJECT_NAME}_lib PRIVATE
     appearance/mounts/mounts.cpp
     appearance/outfit/outfit.cpp
+    appearance/attachedeffects/attachedeffects.cpp
     combat/combat.cpp
     combat/condition.cpp
     combat/spells.cpp

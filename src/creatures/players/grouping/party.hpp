@@ -40,6 +40,7 @@ public:
 	std::vector<std::shared_ptr<Player>> getInvitees();
 	size_t getMemberCount() const;
 	size_t getInvitationCount() const;
+	uint8_t getUniqueVocationsCount() const;
 
 	void disband();
 	bool invitePlayer(const std::shared_ptr<Player> &player);

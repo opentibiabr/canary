@@ -36,6 +36,7 @@ void GameFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 	Lua::registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);
+	Lua::registerMethod(L, "Game", "getMonsterTypeByName", GameFunctions::luaGameGetMonsterTypeByName);
 
 	Lua::registerMethod(L, "Game", "getSpectators", GameFunctions::luaGameGetSpectators);
 
@@ -162,6 +163,24 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 	return NpcTypeFunctions::luaNpcTypeCreate(L);
+}
+
+int GameFunctions::luaGameGetMonsterTypeByName(lua_State* L) {
+	if (!isString(L, 1)) {
+		reportErrorFunc("First argument must be a string");
+		return 1;
+	}
+
+	const auto name = getString(L, 1);
+	const auto &mType = g_monsters().getMonsterType(name);
+	if (!mType) {
+		reportErrorFunc(fmt::format("MonsterType with name {} not found", name));
+		return 1;
+	}
+
+	pushUserdata<MonsterType>(L, mType);
+	setMetatable(L, -1, "MonsterType");
+	return 1;
 }
 
 int GameFunctions::luaGameGetSpectators(lua_State* L) {

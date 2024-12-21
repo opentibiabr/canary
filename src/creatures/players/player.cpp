@@ -8873,7 +8873,6 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 
 	auto returnValue = queryAdd(CONST_SLOT_BACKPACK, exaltationContainer, 1, 0);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		g_logger().error("[Log 1] Failed to add forge item {} from player with name {}", firstItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
@@ -9124,7 +9123,6 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 
 	auto returnValue = queryAdd(CONST_SLOT_BACKPACK, exaltationContainer, 1, 0);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		g_logger().error("[Log 1] Failed to add forge item {} from player with name {}", donorItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;

@@ -3780,9 +3780,9 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 			ss << fmt::format("You recognize {}. {} was killed by ", getNameDescription(), subjectPronoun);
 
 			std::vector<std::string> killers;
-			for (const auto& [creatureId, damageInfo] : damageMap) {
-				const auto& [totalDamage, ticks] = damageInfo;
-				const auto& damageDealer = g_game().getCreatureByID(creatureId);
+			for (const auto &[creatureId, damageInfo] : damageMap) {
+				const auto &[totalDamage, ticks] = damageInfo;
+				const auto &damageDealer = g_game().getCreatureByID(creatureId);
 				if (damageDealer) {
 					killers.push_back(damageDealer->getNameDescription());
 				}

@@ -495,7 +495,7 @@ std::shared_ptr<Combat> Weapon::getCombat() {
 }
 
 std::pair<int32_t, int32_t> Weapon::calculateDamageDistribution(
-	const std::shared_ptr<Creature> &target, 
+	const std::shared_ptr<Creature> &target,
 	int32_t totalDamage
 ) const {
 	// Default damage distribution percentages
@@ -528,7 +528,7 @@ std::pair<int32_t, int32_t> Weapon::calculateDamageDistribution(
 		}
 	}
 	// Return the calculated damage distribution
-	return {physicalDamage, elementalDamage};
+	return { physicalDamage, elementalDamage };
 }
 
 WeaponMelee::WeaponMelee() {

@@ -2662,8 +2662,7 @@ void Monster::onExecuteAsyncTasks() {
 	}
 }
 
-std::map<CombatType_t, int32_t> Monster::calculateElementalDamage(CombatType_t weaponElement, int32_t baseDamage
-) const {
+std::map<CombatType_t, int32_t> Monster::calculateElementalDamage(CombatType_t weaponElement, int32_t baseDamage) const {
 	std::map<CombatType_t, int32_t> damageByElement;
 	// Start with the base damage assigned to the weapon's element type
 	int32_t elementDamage = baseDamage;

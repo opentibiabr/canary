@@ -1713,14 +1713,14 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseToggleMount(NetworkMessage &msg) {
-	bool mount = msg.getByte() != 0;
+	bool mount = msg.getByte(true) != 0;
 	g_game().playerToggleMount(player->getID(), mount);
 }
 
 void ProtocolGame::parseApplyImbuement(NetworkMessage &msg) {
 	uint8_t slot = msg.getByte();
 	auto imbuementId = msg.get<uint32_t>();
-	bool protectionCharm = msg.getByte() != 0x00;
+	bool protectionCharm = msg.getByte(true) != 0x00;
 	g_game().playerApplyImbuement(player->getID(), imbuementId, slot, protectionCharm);
 }
 
@@ -1967,8 +1967,8 @@ void ProtocolGame::parsePlayerBuyOnShop(NetworkMessage &msg) {
 	auto id = msg.get<uint16_t>();
 	uint8_t count = msg.getByte();
 	uint16_t amount = oldProtocol ? static_cast<uint16_t>(msg.getByte()) : msg.get<uint16_t>();
-	bool ignoreCap = msg.getByte() != 0;
-	bool inBackpacks = msg.getByte() != 0;
+	bool ignoreCap = msg.getByte(true) != 0;
+	bool inBackpacks = msg.getByte(true) != 0;
 	g_game().playerBuyItem(player->getID(), id, count, amount, ignoreCap, inBackpacks);
 }
 
@@ -1976,7 +1976,7 @@ void ProtocolGame::parsePlayerSellOnShop(NetworkMessage &msg) {
 	auto id = msg.get<uint16_t>();
 	uint8_t count = std::max(msg.getByte(), (uint8_t)1);
 	uint16_t amount = oldProtocol ? static_cast<uint16_t>(msg.getByte()) : msg.get<uint16_t>();
-	bool ignoreEquipped = msg.getByte() != 0;
+	bool ignoreEquipped = msg.getByte(true) != 0;
 
 	g_game().playerSellItem(player->getID(), id, count, amount, ignoreEquipped);
 }
@@ -2010,7 +2010,7 @@ void ProtocolGame::parseEditVip(NetworkMessage &msg) {
 	auto guid = msg.get<uint32_t>();
 	const std::string description = msg.getString();
 	uint32_t icon = std::min<uint32_t>(10, msg.get<uint32_t>()); // 10 is max icon in 9.63
-	bool notify = msg.getByte() != 0;
+	bool notify = msg.getByte(true) != 0;
 	uint8_t groupsAmount = msg.getByte();
 	for (uint8_t i = 0; i < groupsAmount; ++i) {
 		uint8_t groupId = msg.getByte();
@@ -3141,7 +3141,7 @@ void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg) {
 
 	auto amount = msg.get<uint16_t>();
 	uint64_t price = oldProtocol ? static_cast<uint64_t>(msg.get<uint32_t>()) : msg.get<uint64_t>();
-	bool anonymous = (msg.getByte() != 0);
+	bool anonymous = (msg.getByte(true) != 0);
 	if (amount > 0 && price > 0) {
 		g_game().playerCreateMarketOffer(player->getID(), type, itemId, amount, price, itemTier, anonymous);
 	}

@@ -164,7 +164,7 @@ enum {
 	CRYPT_RSA_ASN1_BITSTRING = 3
 };
 
-uint16_t RSA::decodeLength(char*& pos) const {
+uint16_t RSA::decodeLength(char*&pos) const {
 	std::array<uint8_t, 4> buffer = { 0 };
 	uint16_t length = static_cast<uint8_t>(*pos++);
 	if (length & 0x80) {

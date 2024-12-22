@@ -501,9 +501,9 @@ void Monster::onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer) 
 	}
 }
 
-void Monster::onSpawn() {
+void Monster::onSpawn(const Position &position) {
 	if (mType->info.spawnEvent != -1) {
-		// onSpawn(self)
+		// onSpawn(self, spawnPosition)
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
@@ -520,8 +520,9 @@ void Monster::onSpawn() {
 
 		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
 		LuaScriptInterface::setMetatable(L, -1, "Monster");
+		LuaScriptInterface::pushPosition(L, position);
 
-		scriptInterface->callVoidFunction(1);
+		scriptInterface->callVoidFunction(2);
 	}
 }
 
@@ -1109,7 +1110,7 @@ void Monster::onThink_async() {
 
 void Monster::doAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
-	if (!attackedCreature || (isSummon() && attackedCreature.get() == this)) {
+	if (!attackedCreature || attackedCreature->isLifeless() || (isSummon() && attackedCreature.get() == this)) {
 		return;
 	}
 

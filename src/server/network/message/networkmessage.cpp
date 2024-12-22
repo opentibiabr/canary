@@ -45,10 +45,12 @@ int32_t NetworkMessage::decodeHeader() {
 }
 
 // Simply read functions for incoming message
-uint8_t NetworkMessage::getByte(const std::source_location &location /*= std::source_location::current()*/) {
+uint8_t NetworkMessage::getByte(bool suppresLog /*= false*/, const std::source_location &location /*= std::source_location::current()*/) {
 	// Check if there is at least 1 byte to read
 	if (!canRead(1)) {
-		g_logger().error("[{}] Not enough data to read a byte. Current position: {}, Length: {}. Called line {}:{} in {}", __FUNCTION__, info.position, info.length, location.line(), location.column(), location.function_name());
+		if (!suppresLog) {
+			g_logger().error("[{}] Not enough data to read a byte. Current position: {}, Length: {}. Called line {}:{} in {}", __FUNCTION__, info.position, info.length, location.line(), location.column(), location.function_name());
+		}
 		return {};
 	}
 
@@ -113,7 +115,7 @@ Position NetworkMessage::getPosition() {
 	Position pos;
 	pos.x = get<uint16_t>();
 	pos.y = get<uint16_t>();
-	pos.z = getByte();
+	pos.z = getByte(true);
 	return pos;
 }
 

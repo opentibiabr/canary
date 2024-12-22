@@ -5,6 +5,4 @@ function onUpdateDatabase()
 		ALTER TABLE `guildwar_kills`
 		DROP INDEX `guildwar_kills_unique`
 	]])
-
-	return true
 end

@@ -1701,7 +1701,7 @@ void PlayerWheel::saveRevealedGems() const {
 	}
 }
 
-bool PlayerWheel::scrollAccquired(const std::string &scrollName) {
+bool PlayerWheel::scrollAcquired(const std::string &scrollName) {
 	auto it = std::ranges::find_if(m_unlockedScrolls, [&scrollName](const PromotionScroll &promotionScroll) {
 		return scrollName == promotionScroll.name;
 	});
@@ -1710,7 +1710,7 @@ bool PlayerWheel::scrollAccquired(const std::string &scrollName) {
 }
 
 bool PlayerWheel::unlockScroll(const std::string &scrollName) {
-	if (scrollAccquired(scrollName)) {
+	if (scrollAcquired(scrollName)) {
 		return false;
 	}
 

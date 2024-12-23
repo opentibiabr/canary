@@ -6633,5 +6633,1682 @@ if not Quests then
 				},
 			},
 		},
+		[50] = {
+			name = "EnaraOT - Hunting System",
+			-- This storage goes from 1 to 72 (Task Hunting)
+			startStorageId = Storage.HuntingTasks.Questline,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "Learning the truth",
+					--Storage of this quest
+					storageId = Storage.HuntingTasks.Steps.LearningTheTruth,
+					missionId = 10500,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						--Players will see this message when connecting
+						[1] = "There are some rumors over the city that some hunting rules gona change! Talk with Joel to understand the situation.",
+						[2] = "Joel told you to meet with Juliet over the teleport, she may have more information.",
+						[3] = "You found the new hunting tasks and the time machine. Enjoy hunting!",
+					},
+				},
+				[2] = {
+					name = "Rats Infestation",
+					storageId = Storage.HuntingTasks.Steps.RatsInfestation,
+					missionId = 10501,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count 
+							return string.format(
+								"You need to kill ".. count  .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[2].count .." ".. getMonsterFromList(taskSystem[2].monsters_list) .."."
+							)
+						end,
+					},
+				},
+				
+				[3] = {
+					name = "Orc Fortress",
+					storageId = Storage.HuntingTasks.Steps.OrcFortress,
+					missionId = 10502,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[3].count .." ".. getMonsterFromList(taskSystem[3].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[4] = {
+					name = "Goblins Invasion",
+					storageId = Storage.HuntingTasks.Steps.GoblinsInvasion,
+					missionId = 10503,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[4].count .." ".. getMonsterFromList(taskSystem[4].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[5] = {
+					name = "Amazon's Camp",
+					storageId = Storage.HuntingTasks.Steps.AmazonCamp,
+					missionId = 10504,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[5].count .." ".. getMonsterFromList(taskSystem[5].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[6] = {
+					name = "Minotaur Fortress",
+					storageId = Storage.HuntingTasks.Steps.MinotaurFortress,
+					missionId = 10505,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[6].count .." ".. getMonsterFromList(taskSystem[6].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[7] = {
+					name = "Cyclops Rocks",
+					storageId = Storage.HuntingTasks.Steps.CyclopsRocks,
+					missionId = 10506,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[7].count .." ".. getMonsterFromList(taskSystem[7].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[8] = {
+					name = "Dragon's Tale I",
+					storageId = Storage.HuntingTasks.Steps.DragonsTaleOne,
+					missionId = 10507,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[8].count .." ".. getMonsterFromList(taskSystem[8].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[9] = {
+					name = "Coryms",
+					storageId = Storage.HuntingTasks.Steps.Coryms,
+					missionId = 10508,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[9].count .." ".. getMonsterFromList(taskSystem[9].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[10] = {
+					name = "Elf The Elders",
+					storageId = Storage.HuntingTasks.Steps.ElfTheElders,
+					missionId = 10509,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[10].count .." ".. getMonsterFromList(taskSystem[10].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[11] = {
+					name = "Nomad's Camp",
+					storageId = Storage.HuntingTasks.Steps.NomadsCamp,
+					missionId = 10510,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[11].count .." ".. getMonsterFromList(taskSystem[11].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[12] = {
+					name = "Behemoth Lands",
+					storageId = Storage.HuntingTasks.Steps.BehemothLands,
+					missionId = 10511,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[12].count .." ".. getMonsterFromList(taskSystem[12].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[13] = {
+					name = "The Djinns",
+					storageId = Storage.HuntingTasks.Steps.TheDjinns,
+					missionId = 10512,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[13].count .." ".. getMonsterFromList(taskSystem[13].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[14] = {
+					name = "Deeplings",
+					storageId = Storage.HuntingTasks.Steps.Deeplings,
+					missionId = 10513,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[14].count .." ".. getMonsterFromList(taskSystem[14].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[15] = {
+					name = "Dragons Tale II",
+					storageId = Storage.HuntingTasks.Steps.DragonTaleTwo,
+					missionId = 10514,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[15].count .." ".. getMonsterFromList(taskSystem[15].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[16] = {
+					name = "Exotic Cave",
+					storageId = Storage.HuntingTasks.Steps.ExoticCave,
+					missionId = 10515,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[16].count .." ".. getMonsterFromList(taskSystem[16].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[17] = {
+					name = "Glooth Envy",
+					storageId = Storage.HuntingTasks.Steps.GloothEnvy,
+					missionId = 10516,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[17].count .." ".. getMonsterFromList(taskSystem[17].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[18] = {
+					name = "Hero Cave",
+					storageId = Storage.HuntingTasks.Steps.HeroCave,
+					missionId = 10517,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[18].count .." ".. getMonsterFromList(taskSystem[18].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[19] = {
+					name = "Hydra Jungle",
+					storageId = Storage.HuntingTasks.Steps.HydraJungle,
+					missionId = 10518,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[19].count .." ".. getMonsterFromList(taskSystem[19].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[20] = {
+					name = "Lizard Walls",
+					storageId = Storage.HuntingTasks.Steps.LizardWalls,
+					missionId = 10519,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[20].count .." ".. getMonsterFromList(taskSystem[20].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[21] = {
+					name = "Lumbering Carnivor",
+					storageId = Storage.HuntingTasks.Steps.LumberingCarn,
+					missionId = 10520,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[21].count .." ".. getMonsterFromList(taskSystem[21].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[22] = {
+					name = "Elementals I",
+					storageId = Storage.HuntingTasks.Steps.ElementalsOne,
+					missionId = 10521,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[22].count .." ".. getMonsterFromList(taskSystem[22].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[23] = {
+					name = "Asura's Palace",
+					storageId = Storage.HuntingTasks.Steps.AsuraPalace,
+					missionId = 10522,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[23].count .." ".. getMonsterFromList(taskSystem[23].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[24] = {
+					name = "Mutated Animals",
+					storageId = Storage.HuntingTasks.Steps.MutatedAnimals,
+					missionId = 10523,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[24].count .." ".. getMonsterFromList(taskSystem[24].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[25] = {
+					name = "Ogre Island",
+					storageId = Storage.HuntingTasks.Steps.OgreIsland,
+					missionId = 10524,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[25].count .." ".. getMonsterFromList(taskSystem[25].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[26] = {
+					name = "Pirat Stolen",
+					storageId = Storage.HuntingTasks.Steps.PiratStolen,
+					missionId = 10525,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[26].count .." ".. getMonsterFromList(taskSystem[26].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[27] = {
+					name = "Quara's Determine",
+					storageId = Storage.HuntingTasks.Steps.QuaraDetermine,
+					missionId = 10526,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[27].count .." ".. getMonsterFromList(taskSystem[27].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[28] = {
+					name = "Renegade Knight",
+					storageId = Storage.HuntingTasks.Steps.RenegadeKnight,
+					missionId = 10527,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[28].count .." ".. getMonsterFromList(taskSystem[28].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[29] = {
+					name = "Serpent Spawn",
+					storageId = Storage.HuntingTasks.Steps.SerpentSpawn,
+					missionId = 10528,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[29].count .." ".. getMonsterFromList(taskSystem[29].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[30] = {
+					name = "Spidris",
+					storageId = Storage.HuntingTasks.Steps.Spidris,
+					missionId = 10529,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[30].count .." ".. getMonsterFromList(taskSystem[30].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[31] = {
+					name = "Stabilizing I",
+					storageId = Storage.HuntingTasks.Steps.StabilizingOne,
+					missionId = 10530,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[31].count .." ".. getMonsterFromList(taskSystem[31].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[32] = {
+					name = "The Shaper's",
+					storageId = Storage.HuntingTasks.Steps.TheSphaper,
+					missionId = 10531,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[32].count .." ".. getMonsterFromList(taskSystem[32].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[33] = {
+					name = "The Vampire's Diary",
+					storageId = Storage.HuntingTasks.Steps.TheVampireDiar,
+					missionId = 10532,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[33].count .." ".. getMonsterFromList(taskSystem[33].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[34] = {
+					name = "Warlock's Magic",
+					storageId = Storage.HuntingTasks.Steps.WarlocksMagic,
+					missionId = 10533,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[34].count .." ".. getMonsterFromList(taskSystem[34].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[35] = {
+					name = "Were Monsters",
+					storageId = Storage.HuntingTasks.Steps.WereMonsters,
+					missionId = 10534,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[35].count .." ".. getMonsterFromList(taskSystem[35].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[36] = {
+					name = "Wyrms",
+					storageId = Storage.HuntingTasks.Steps.Wyrms,
+					missionId = 10535,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[36].count .." ".. getMonsterFromList(taskSystem[36].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[37] = {
+					name = "Golems",
+					storageId = Storage.HuntingTasks.Steps.Golems,
+					missionId = 10536,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[37].count .." ".. getMonsterFromList(taskSystem[37].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[38] = {
+					name = "Island of Goanna's",
+					storageId = Storage.HuntingTasks.Steps.IslandOfGoannas,
+					missionId = 10537,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[38].count .." ".. getMonsterFromList(taskSystem[38].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[39] = {
+					name = "Bashmu",
+					storageId = Storage.HuntingTasks.Steps.Bashmu,
+					missionId = 10538,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[39].count .." ".. getMonsterFromList(taskSystem[39].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[40] = {
+					name = "Fire Library",
+					storageId = Storage.HuntingTasks.Steps.FireLibrary,
+					missionId = 10539,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[40].count .." ".. getMonsterFromList(taskSystem[40].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[41] = {
+					name = "Energy Library",
+					storageId = Storage.HuntingTasks.Steps.EnergyLibrary,
+					missionId = 10540,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[41].count .." ".. getMonsterFromList(taskSystem[41].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[42] = {
+					name = "Earth Library",
+					storageId = Storage.HuntingTasks.Steps.EarthLibrary,
+					missionId = 10541,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[42].count .." ".. getMonsterFromList(taskSystem[42].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[43] = {
+					name = "Ice Library",
+					storageId = Storage.HuntingTasks.Steps.IceLibrary,
+					missionId = 10542,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[43].count .." ".. getMonsterFromList(taskSystem[43].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[44] = {
+					name = "Burster Spectre",
+					storageId = Storage.HuntingTasks.Steps.BursterSpectre,
+					missionId = 10543,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[44].count .." ".. getMonsterFromList(taskSystem[44].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[45] = {
+					name = "Choking Fear",
+					storageId = Storage.HuntingTasks.Steps.ChokingFear,
+					missionId = 10544,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[45].count .." ".. getMonsterFromList(taskSystem[45].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[46] = {
+					name = "Ripper Spectre",
+					storageId = Storage.HuntingTasks.Steps.RipperSpectre,
+					missionId = 10545,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[46].count .." ".. getMonsterFromList(taskSystem[46].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[47] = {
+					name = "Cobra's Island",
+					storageId = Storage.HuntingTasks.Steps.CobrasIsland,
+					missionId = 10546,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[47].count .." ".. getMonsterFromList(taskSystem[47].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[48] = {
+					name = "Gazer Spectre",
+					storageId = Storage.HuntingTasks.Steps.GazerSpectre,
+					missionId = 10547,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[48].count .." ".. getMonsterFromList(taskSystem[48].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[49] = {
+					name = "Werelion",
+					storageId = Storage.HuntingTasks.Steps.Werelion,
+					missionId = 10548,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[49].count .." ".. getMonsterFromList(taskSystem[49].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[50] = {
+					name = "Summer Court",
+					storageId = Storage.HuntingTasks.Steps.SummerCourt,
+					missionId = 10549,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[50].count .." ".. getMonsterFromList(taskSystem[50].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[51] = {
+					name = "Winter Court",
+					storageId = Storage.HuntingTasks.Steps.WinterCourt,
+					missionId = 10550,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[51].count .." ".. getMonsterFromList(taskSystem[51].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[52] = {
+					name = "Demon Fields",
+					storageId = Storage.HuntingTasks.Steps.DemonFields,
+					missionId = 10551,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[52].count .." ".. getMonsterFromList(taskSystem[52].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[53] = {
+					name = "Draken's Tomb",
+					storageId = Storage.HuntingTasks.Steps.DrakensTomb,
+					missionId = 10552,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[53].count .." ".. getMonsterFromList(taskSystem[53].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[54] = {
+					name = "Flimsy Lost Soul",
+					storageId = Storage.HuntingTasks.Steps.FlimsyLostSoul,
+					missionId = 10553,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[54].count .." ".. getMonsterFromList(taskSystem[54].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[55] = {
+					name = "Ghastly Dragon",
+					storageId = Storage.HuntingTasks.Steps.GhastlyDragon,
+					missionId = 10554,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[55].count .." ".. getMonsterFromList(taskSystem[55].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[56] = {
+					name = "Grim Reaper",
+					storageId = Storage.HuntingTasks.Steps.GrimReaper,
+					missionId = 10555,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[56].count .." ".. getMonsterFromList(taskSystem[56].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[57] = {
+					name = "Iks Friends",
+					storageId = Storage.HuntingTasks.Steps.IksFriends,
+					missionId = 10556,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[57].count .." ".. getMonsterFromList(taskSystem[57].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[58] = {
+					name = "Lamassu",
+					storageId = Storage.HuntingTasks.Steps.Lamassu,
+					missionId = 10557,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[58].count .." ".. getMonsterFromList(taskSystem[58].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[59] = {
+					name = "Medusa's Lair",
+					storageId = Storage.HuntingTasks.Steps.MedusaLair,
+					missionId = 10558,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[59].count .." ".. getMonsterFromList(taskSystem[59].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[60] = {
+					name = "Naga's Dream",
+					storageId = Storage.HuntingTasks.Steps.NagaDream,
+					missionId = 10559,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[60].count .." ".. getMonsterFromList(taskSystem[60].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[61] = {
+					name = "Usurper's Law",
+					storageId = Storage.HuntingTasks.Steps.UsurperLaw,
+					missionId = 10560,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[61].count .." ".. getMonsterFromList(taskSystem[61].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[62] = {
+					name = "True Dawnfire Asura",
+					storageId = Storage.HuntingTasks.Steps.TrueDawnfire,
+					missionId = 10561,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[62].count .." ".. getMonsterFromList(taskSystem[62].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[63] = {
+					name = "True Midnight Asura",
+					storageId = Storage.HuntingTasks.Steps.TrueMidnight,
+					missionId = 10562,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[63].count .." ".. getMonsterFromList(taskSystem[63].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[64] = {
+					name = "Undead Dragon",
+					storageId = Storage.HuntingTasks.Steps.UndeadDragon,
+					missionId = 10563,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[64].count .." ".. getMonsterFromList(taskSystem[64].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[65] = {
+					name = "Vexclaw",
+					storageId = Storage.HuntingTasks.Steps.Vexclaw,
+					missionId = 10564,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[65].count .." ".. getMonsterFromList(taskSystem[65].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[66] = {
+					name = "Cursed Prospector",
+					storageId = Storage.HuntingTasks.Steps.CursedProspector,
+					missionId = 10565,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[66].count .." ".. getMonsterFromList(taskSystem[66].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[67] = {
+					name = "Evil Prospector",
+					storageId = Storage.HuntingTasks.Steps.EvilProspector,
+					missionId = 10566,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[67].count .." ".. getMonsterFromList(taskSystem[67].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[68] = {
+					name = "Falcon's Ordeal",
+					storageId = Storage.HuntingTasks.Steps.FalconsOrdeal,
+					missionId = 10567,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[68].count .." ".. getMonsterFromList(taskSystem[68].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[69] = {
+					name = "Freakish Lost Soul",
+					storageId = Storage.HuntingTasks.Steps.FreakishLostSoul,
+					missionId = 10568,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[69].count .." ".. getMonsterFromList(taskSystem[69].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[70] = {
+					name = "Guzzlemaw's Valley",
+					storageId = Storage.HuntingTasks.Steps.GuzzlemawValley,
+					missionId = 10569,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[70].count .." ".. getMonsterFromList(taskSystem[70].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[71] = {
+					name = "Hellhound's Fate",
+					storageId = Storage.HuntingTasks.Steps.HellhoundFate,
+					missionId = 10570,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[71].count .." ".. getMonsterFromList(taskSystem[71].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[72] = {
+					name = "Quara's Revenge",
+					storageId = Storage.HuntingTasks.Steps.QuaraRevenge,
+					missionId = 10571,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[72].count .." ".. getMonsterFromList(taskSystem[72].monsters_list) .."."
+							)
+						end,
+					},
+				},
+	
+				[73] = {
+					name = "Sight of Surrender",
+					storageId = Storage.HuntingTasks.Steps.SightOfSurrender,
+					missionId = 10572,
+					startValue = 2,
+					endValue = 3,
+					states = {
+						[2] = function(player)
+							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
+							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
+							local count = taskSystem[player:getTaskMission()].count
+							return string.format(
+								"You need to kill ".. count .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
+							)
+						end,
+						[3] = function(player)
+							return string.format(
+								"You succesfully killed ".. taskSystem[73].count .." ".. getMonsterFromList(taskSystem[73].monsters_list) .."."
+							)
+						end,
+					},
+				},
+			},
+		},
 	}
 end

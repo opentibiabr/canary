@@ -9,6 +9,9 @@ function updatePlayerOnAdvancedLevel.onAdvance(player, skill, oldLevel, newLevel
 	player:addMana(player:getMaxMana())
 	player:getFinalLowLevelBonus()
 	player:save()
+
+	Webhook.sendMessage(player:getMarkdownLink() .. " new level **"..newLevel.."** Congratulations.", announcementChannels["player-levels"])
+
 	return true
 end
 

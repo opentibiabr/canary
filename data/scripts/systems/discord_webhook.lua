@@ -4,11 +4,13 @@
 
 if not announcementChannels then
 	announcementChannels = {
-		["serverAnnouncements"] = "", -- Used for an announcement channel on your discord
-		["raids"] = "", -- Used to isolate raids on your discord
-		["player-kills"] = "", -- Self-explaining
-		["player-levels"] = "", -- Self-explaining
-		["reports"] = "",
+		["serverAnnouncements"] = "https://discord.com/api/webhooks/1307043463581274183/mCcAUq8Ng2oGWEcOQZ5eo4slsPeTZMcCJdUm84e5hfhzVmlsOSkUBWRhmlMA_3fT8Al4", -- Used for an announcement channel on your discord
+		["raids"] = "https://discord.com/api/webhooks/1307752397430460417/9RNxW6FSt75UuzQH5vmgcJSlVTO5j4_UdETcsO18TJY74xcJkQ96EprERtvtbq1DkHgM", -- Used to isolate raids on your discord
+		["player-kills"] = "https://discord.com/api/webhooks/1307754047154946109/8aG9q_m__bfteMFiGqwMfr4C-NuITg0I6BWumAGjz6t_UuGxwL4NFEA6UQJBE5g4ObhO", -- Self-explaining
+		["player-levels"] = "https://discord.com/api/webhooks/1307752225895878686/wBYj0stqfKMrf6fHNxSIXc-SJXfatSQuDuwswGWQxw-REZhJVqKFkEnZky8nH570fvdE", -- Self-explaining
+		["logs"] = "https://discord.com/api/webhooks/1307754232463622155/YsePOAsRNuVW3iIGyBFXRyhkTY7MoQ5zpSwZilXXjbqx8dHM6KVEA7YSWRq4qlUrnWKV",
+		["punishments"] = "https://discord.com/api/webhooks/1307759545577111744/n55co_NG4a4MViK2A1MX8fSaw7RJ90kRbXpxbfD8ZLzANw0QTJ04XSs8bA0VVJzxut0E",
+		["reports"] = "https://discord.com/api/webhooks/1307769122486091856/N3L3BOcCgEcPTyvNStbCQBFjOZoA4899nD3UP-lORGUkLTCo3fftbKhxlD6HQFsSv9n4",
 	}
 end
 

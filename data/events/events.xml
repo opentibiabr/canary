@@ -25,7 +25,7 @@ Therefore, we strongly encourage avoiding the use of this file when possible, as
 	<event class="Player" method="onItemMoved" enabled="1" />
 	<event class="Player" method="onInventoryUpdate" enabled="1" />
 	<event class="Player" method="onLookInBattleList" enabled="1" />
-	<event class="Player" method="onLoseExperience" enabled="0" />
+	<event class="Player" method="onLoseExperience" enabled="1" />
 	<event class="Player" method="onMoveCreature" enabled="1" />
 	<event class="Player" method="onMoveItem" enabled="1" />
 	<event class="Player" method="onReportBug" enabled="1" />

@@ -1,0 +1,288 @@
+========================================================================================================
+==============================================REV.1.0===================================================
+===================================TUTORIAL P/ UBUNTU 18.04 - OTSERV====================================
+========================================================================================================
+
+Liberando acesso SSH:
+
+apt-get update
+apt-get upgrade
+apt-get install ssh
+cd /etc/ssh
+nano /etc/ssh/sshd_config
+remove # from PermitRootLogin, and set to YES
+remove # from PasswordNeed line
+
+========================================================================================================
+
+Instalando APACHE, MYSQL e PHPMYADMIN
+apt-get update
+apt-get upgrade
+apt-get install apache2
+cd /var/www
+sudo add-apt-repository ppa:ondrej/php
+sudo apt-get update
+php -v (CHECK VERSION INSTALLED)
+sudo apt-get install php8.1
+sudo apt-get install php7.3-<entension-name> (INSTALL EXTENSIONS)
+EXAMPLE 8.1: sudo apt install php8.1-cli php8.1-fpm php8.1-json php8.1-pdo php8.1-mysql php8.1-zip php8.1-gd  php8.1-mbstring php8.1-curl php8.1-xml php8.1-bcmath php8.1-json -y
+apt-get install php8.1
+sudo apt install php7.3-{bcmath,xml,fpm,mysql,zip,intl,ldap,gd,cli,bz2,pdo,curl,mbstring,pgsql,opcache,soap,cgi}
+sudo apt install php7.4-{bcmath,xml,fpm,mysql,zip,intl,ldap,gd,cli,bz2,pdo,curl,mbstring,pgsql,opcache,soap,cgi}
+
+a2dismod php7.3
+a2enmod php7.4
+
+sudo systemctl restart apache2
+/etc/init.d/apache2 restart
+apt-get install mysql-server
+apt-get install libapache2-mod-auth-mysql
+apt-get install php-mysql
+apt-get install phpmyadmin
+echo "include /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
+
+========================================================================================================
+
+LIBS para Compilar
+apt-get install libboost-all-dev -y
+apt-get install subversion autoconf build-essential pkg-config libboost-dev libgmp3-dev libxml2-dev liblua5.1-0-dev libmysqlclient-dev libcrypto++-dev ccache libboost-filesystem-dev libboost-regex-dev libboost-system-dev libboost-thread-dev screen libssl-dev -y
+apt-get install libcurl4-openssl-dev -y
+apt-get install screen
+
+sudo apt install cmake build-essential libluajit-5.1-dev libmysqlclient-dev libboost-system-dev libboost-iostreams-dev libboost-filesystem-dev libpugixml-dev libcrypto++-dev libfmt-dev libboost-date-time-dev -y
+
+sudo apt-get install subversion autoconf build-essential pkg-config libboost-dev libgmp3-dev libxml2-dev liblua5.1-0-dev libmariadbclient-dev-compat ccache libboost-filesystem-dev libboost-regex-dev libboost-system-dev libboost-thread-dev screen libssl-dev libboost-iostreams-dev -y
+
+========================================================================================================
+
+
+IF NEEDED REINSTALL APACHE2, EXECUTE:
+
+sudo a2dismod mpm_event && sudo a2enmod mpm_prefork && sudo a2enmod php7
+
+sudo ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+========================================================================================================
+
+Enable MOD REWRITE
+sudo a2enmod rewrite
+cd /etc/apache2/
+nano apache2.conf
+
+
+<Directory /var/www/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+#       AllowOverride None
+        Require all granted
+</Directory>
+
+service apache2 restart
+
+========================================================================================================
+
+PROBLEMA COM PHPMYADMIN N O ABRINDO
+HTTP ERROR 500
+
+apachectl configtest -> retornara os problemas encontrados
+
+https://medium.com/enekochan/solve-the-alias-directive-in-will-probably-never-match-because-ir-overlaps-an-earlier-alias-87e96e1c0d2a
+
+--
+apachectl configtest -> erro: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message
+
+Solu  o: 
+nano /etc/apache2/apache2.conf
+
+add-> ServerName localhost
+
+https://askubuntu.com/questions/256013/apache-error-could-not-reliably-determine-the-servers-fully-qualified-domain-n
+
+========================================================================================================
+
+CORRE  O DO PRIMEIRO ACESSO NO PHPMYADMIN COM O ROOT
+
+sudo mysql -u root
+
+mysql> USE mysql;
+mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+mysql> FLUSH PRIVILEGES;
+
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '62164257';
+mysql> FLUSH PRIVILEGES;
+mysql> exit;
+
+sudo service mysql restart
+
+
+mysql -u root -p mysql -> para acessar a base MYSQL
+
+
+========================================================================================================
+
+Engine TFS
+
+sudo apt-get update
+sudo apt-get dist-upgrade
+sudo apt-get install git cmake build-essential libluajit-5.1-dev ca-certificates curl zip unzip tar pkg-config
+
+git clone https://github.com/microsoft/vcpkg
+cd vcpkg
+./bootstrap-vcpkg.sh
+cd ..
+
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake 
+.. make -j`nproc`
+
+cmake --build linux-release
+
+========================================================================================================
+---------------------------------------------CANARY ----------------------------------------------------
+
+sudo apt-get update 
+sudo apt-get dist-upgrade
+sudo apt-get install git cmake build-essential autoconf libtool ca-certificates curl zip unzip tar pkg-config ninja-build ccache linux-headers-$(uname -r) -y
+sudo apt install git cmake build-essential autoconf libtool ca-certificates curl zip unzip tar pkg-config ninja-build ccache linux-headers-$(uname -r)
+
+
+sudo apt remove --purge cmake
+hash -r
+sudo apt install snapd
+sudo snap install cmake --classic
+cmake --version
+
+
+git clone https://github.com/microsoft/vcpkg
+cd vcpkg
+./bootstrap-vcpkg.sh
+cd ..
+
+TO UPDATE VCPKG:
+
+cd D:/vcpkg
+git pull
+.\vcpkg upgrade
+.\vcpkg upgrade --no-dry-run
+.\bootstrap-vcpkg.bat
+.\vcpkg install --triplet x64-windows asio pugixml spdlog curl jsoncpp protobuf parallel-hashmap magic-enum mio luajit libmariadb mpir abseil argon2 eventpp bext-di
+
+
+LINUX:
+./vcpkg install --triplet x64-linux asio pugixml spdlog curl jsoncpp protobuf parallel-hashmap magic-enum mio luajit libmariadb abseil argon2 eventpp bext-di ninja
+
+git clone --depth 1 https://github.com/opentibiabr/canary.git
+cd canary
+mkdir build && cd build
+
+using root:
+cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+cmake --build linux-release
+
+using gus:
+cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+cmake --build linux-release
+
+cmake --build linux-release -j4
+
+Problemas com Ninja?
+sudo chmod -R 755 /home/your_user
+
+cd ~
+cd canary
+cp -r build/linux-release/bin/canary .
+
+========================================================================================================
+
+
+FIX PROBLEMS WITH RELOAD SERVER
+
+./start.sh
+
+sed -i -e 's/\r$//' start.sh
+
+sed -i -e 's/\r$//' key.pem
+
+sed -i -e 's/\r$//' recompile.sh
+
+
+========================================================================================================
+
+ATT DO GCC e G++
+
+
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+sudo apt update
+sudo apt install gcc-11 g++-11
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
+sudo update-alternatives --set gcc /usr/bin/gcc-11
+gcc-11 --version
+g++-11 --version
+
+========================================================================================================
+
+Atualizar o CMAKE para o mais novo
+
+sudo apt remove --purge --auto-remove cmake
+
+sudo apt update && \
+sudo apt install -y software-properties-common lsb-release && \
+sudo apt clean all
+
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+
+sudo apt-add-repository "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
+
+sudo apt update
+sudo apt install kitware-archive-keyring
+sudo rm /etc/apt/trusted.gpg.d/kitware.gpg
+
+sudo apt update
+sudo apt install cmake
+
+========================================================================================================
+
+
+https://github.com/opentibiabr/canary/wiki/Compiling-on-Ubuntu-20.04
+
+https://majestyotbr.gitbook.io/opentibiabr/home/introduction
+
+https://forums.otserv.com.br/index.php?/forums/topic/167933-otservbr-global-cliente-tibia-12/
+
+https://github.com/opentibiabr/client-editor
+
+https://linuxize.com/post/how-to-set-or-change-timezone-on-ubuntu-18-04/
+
+=========================================================================================================
+
+Gerar monsters.xml para RME
+
+Install python
+
+Install lib
+pip install lxml
+
+Fix path to folder monster
+
+
+
+====================================================================================================
+
+df -h
+sudo pvs
+sudo pvresize /dev/sda3
+sudo growpart /dev/sda 3
+sudo pvs
+sudo lvextend -r -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+
+or 
+lvm
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+exit
+
+
+rm -rf /var/cache/apt/*
+
+
+
+====================================================================================================

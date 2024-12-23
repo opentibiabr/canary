@@ -127,7 +127,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					doPlayerAddItem(creature, items[i].id, 1)
 					npcHandler:say("You just swapped 20 silver raid tokens for 1 " .. items[i].name .. ".", npc, creature)
 				else
-					npcHandler:say("I'm sorry, I need at least 20 silver tokens for that. Please come back when you have them.", npc, creature)
+					npcHandler:say("I'm sorry, I need at least 20 silver raid tokens for that. Please come back when you have them.", npc, creature)
 				end
 				npcHandler:setTopic(playerId, 0) -- Reset topic after processing
 				return true

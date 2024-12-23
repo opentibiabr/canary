@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 15/11/2024 às 14:25
+-- Tempo de geração: 24/12/2024 às 04:53
 -- Versão do servidor: 5.7.43-log
 -- Versão do PHP: 8.3.10
 
@@ -65,8 +65,8 @@ CREATE TABLE `accounts` (
 
 INSERT INTO `accounts` (`id`, `name`, `password`, `email`, `created`, `rlname`, `location`, `country`, `web_lastlogin`, `web_flags`, `email_hash`, `email_new`, `email_new_time`, `email_code`, `email_next`, `email_verified`, `phone`, `key`, `premdays`, `premdays_purchased`, `lastday`, `type`, `coins`, `coins_transferable`, `tournament_coins`, `creation`, `recruiter`, `vote`, `authToken`) VALUES
 (1, 'god', '21298df8a3277357ee55b01df9530b535cf08ec1', '@god', 0, '', '', '', 0, 0, '', '', 0, '', 0, 0, NULL, '', 0, 0, 0, 5, 0, 0, 0, 1726091667, 0, 0, '0'),
-(2, 'EnaraOTomelhor2024', '9c6391a317a45c1bc8ca9a4b7cb901d2985e3d63', 'admin@enaraot.com', 1726085760, 'EnaraOT', 'Vancouver', 'ca', 1731002897, 3, '', '', 0, '', 0, 0, '11111111111', 'I3FDBYDVEAMH2I8365WW', 431, 451, 1768946647, 6, 99999, 96554, 0, 1726091668, 0, 0, '1'),
-(3, 'test998877', '1d874ccaa12a98ec96fd31eb160c257e56e423c6', 'almeidaliber@gmail.com', 1726279524, '', '', 'br', 1729187679, 0, '', '', 0, '', 0, 0, NULL, '', 99, 0, 1737756247, 1, 0, 0, 0, 1726279613, 0, 0, '0');
+(2, 'EnaraOTomelhor2024', '9c6391a317a45c1bc8ca9a4b7cb901d2985e3d63', 'admin@enaraot.com', 1726085760, 'EnaraOT', 'Vancouver', 'ca', 1731002897, 3, '', '', 0, '', 0, 0, '11111111111', 'I3FDBYDVEAMH2I8365WW', 399, 451, 1768946647, 6, 99999, 96584, 0, 1726091668, 0, 0, '1'),
+(3, 'test998877', '9c6391a317a45c1bc8ca9a4b7cb901d2985e3d63', 'almeidaliber@gmail.com', 1726279524, '', '', 'br', 1734387645, 0, '', '', 0, '', 0, 0, NULL, '', 38, 68, 1737756247, 1, 0, 30, 0, 1726279613, 0, 0, '0');
 
 --
 -- Acionadores `accounts`
@@ -220,7 +220,7 @@ CREATE TABLE `boosted_boss` (
 --
 
 INSERT INTO `boosted_boss` (`boostname`, `date`, `raceid`, `looktypeEx`, `looktype`, `lookfeet`, `looklegs`, `lookhead`, `lookbody`, `lookaddons`, `lookmount`) VALUES
-('Outburst', '14', '1227', 0, 876, 3, 94, 79, 3, 3, 0);
+('Ravenous Hunger', '17', '1427', 0, 556, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -246,7 +246,7 @@ CREATE TABLE `boosted_creature` (
 --
 
 INSERT INTO `boosted_creature` (`boostname`, `date`, `raceid`, `looktype`, `lookfeet`, `looklegs`, `lookhead`, `lookbody`, `lookaddons`, `lookmount`) VALUES
-('Terrified Elephant', '14', '771', 211, 0, 0, 0, 0, 0, 0);
+('Vampire Pig', '17', '558', 60, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -295,7 +295,9 @@ INSERT INTO `coins_transactions` (`id`, `account_id`, `type`, `coin_type`, `amou
 (24, 2, 1, 3, 5, 'ADD Coins', '2024-11-15 02:38:07'),
 (25, 2, 1, 3, 5, 'ADD Coins', '2024-11-15 03:38:07'),
 (26, 2, 1, 3, 5, 'ADD Coins', '2024-11-15 04:38:11'),
-(27, 2, 1, 3, 5, 'ADD Coins', '2024-11-15 05:38:17');
+(27, 2, 1, 3, 5, 'ADD Coins', '2024-11-15 05:38:17'),
+(28, 2, 1, 3, 30, 'ADD Coins', '2024-11-16 04:26:46'),
+(29, 3, 1, 3, 30, 'ADD Coins', '2024-11-18 01:09:22');
 
 -- --------------------------------------------------------
 
@@ -322,7 +324,10 @@ INSERT INTO `daily_reward_history` (`id`, `daystreak`, `player_id`, `timestamp`,
 (4, 0, 8, 1726866097, 'Claimed reward no. 1. Picked items: 10x supreme health potion.'),
 (5, 3, 7, 1726867869, 'Claimed reward no. 4. Picked items: 20x ultimate mana potion.'),
 (6, 4, 7, 1729891640, 'Claimed reward no. 5. Picked reward: 2x Prey bonus reroll(s).'),
-(7, 5, 7, 1731646891, 'Claimed reward no. 6. Picked items: 2x training wand.');
+(7, 5, 7, 1731646891, 'Claimed reward no. 6. Picked items: 2x training wand.'),
+(8, 0, 10, 1731868865, 'Claimed reward no. 1. Picked items: 10x mana potion.'),
+(9, 6, 7, 1732051022, 'Claimed reward no. 7. Picked reward: XP Bonus for 30 minutes.'),
+(10, 0, 9, 1732051037, 'Claimed reward no. 1. Picked items: 10x ultimate mana potion.');
 
 -- --------------------------------------------------------
 
@@ -359,7 +364,7 @@ CREATE TABLE `global_storage` (
 --
 
 INSERT INTO `global_storage` (`key`, `value`) VALUES
-('14110', '1731621601'),
+('14110', '1732053901'),
 ('40000', '4');
 
 -- --------------------------------------------------------
@@ -1632,8 +1637,10 @@ INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES
 ('migrations.20241708485868_move_some_storages_to_kv', 1726091669843, 0x3001),
 ('migrations.20241715984279_move_wheel_scrolls_from_storagename_to_kv', 1726091670334, 0x3001),
 ('migrations.20241715984294_quests_storages_to_kv', 1726091670835, 0x3001),
+('player.10.account.vip-system', 1731868719944, 0x3001),
 ('player.10.combat-protection', 1726871115432, 0x19000000000000f03f),
-('player.10.daily-reward.streak', 1726868251612, 0x190000000000000000),
+('player.10.daily-reward.streak', 1732054199728, 0x190000000000000000),
+('player.10.exhaustion.training-exhaustion', 1732055003602, 0x19000040f943cfd941),
 ('player.10.summary.hirelings.amount', 1726868251463, 0x1000),
 ('player.10.titles.unlocked.Prince Charming', 1726935475328, 0x10b3e3bbb706),
 ('player.2.daily-reward.streak', 1730510412635, 0x190000000000000000),
@@ -1644,40 +1651,41 @@ INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES
 ('player.7.achievements.points', 1730949296656, 0x1001),
 ('player.7.achievements.Snowbunny-progress', 1731308125708, 0x190000000000000840),
 ('player.7.achievements.unlocked.Si, Ariki!', 1730949296656, 0x10b0e1b0b906),
-('player.7.badges.unlocked.Global Player (Grade 1)', 1731631048192, 0x10c8afdab906),
-('player.7.badges.unlocked.Global Player (Grade 2)', 1731631048190, 0x10c8afdab906),
-('player.7.badges.unlocked.Global Player (Grade 3)', 1731631048188, 0x10c8afdab906),
+('player.7.badges.unlocked.Global Player (Grade 1)', 1734457655200, 0x10b7f286bb06),
+('player.7.badges.unlocked.Global Player (Grade 2)', 1734457655200, 0x10b7f286bb06),
+('player.7.badges.unlocked.Global Player (Grade 3)', 1734457655200, 0x10b7f286bb06),
 ('player.7.boss.cooldown.1727', 1731214630081, 0x190000809955ccd941),
 ('player.7.boss.cooldown.1758', 1731214226210, 0x190000803455ccd941),
 ('player.7.boss.cooldown.1804', 1731214164299, 0x190000002555ccd941),
 ('player.7.combat-protection', 1726169981260, 0x19000000000000f03f),
-('player.7.daily-reward.streak', 1731646891140, 0x19000000000000f03f),
-('player.7.exhaustion.itemSellerExhaustion', 1731609688268, 0x190000c01991cdd941),
+('player.7.daily-reward-xp-boost', 1732051022458, 0x190000000000003e40),
+('player.7.daily-reward.streak', 1732051022524, 0x19000000000000f03f),
+('player.7.exhaustion.itemSellerExhaustion', 1731694035689, 0x1900008078e3cdd941),
 ('player.7.exhaustion.training-exhaustion', 1731647484076, 0x1900008001b6cdd941),
 ('player.7.features.autoloot', 1730825645820, 0x19000000000000f03f),
 ('player.7.last-mount', 1731535438658, 0x10e601),
 ('player.7.roulette-finishes', 1730787245229, 0x19000000000000f0bf),
 ('player.7.summary.hirelings.amount', 1726092239281, 0x1000),
 ('player.7.summary.xp-boosts.amount', 1726265619671, 0x1001),
-('player.7.titles.unlocked.Admirer of the Crown', 1731631048194, 0x10c8afdab906),
-('player.7.titles.unlocked.Beaststrider (Grade 1)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Beaststrider (Grade 2)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Beaststrider (Grade 3)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Beaststrider (Grade 4)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Beaststrider (Grade 5)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Big Spender', 1731631048194, 0x10c8afdab906),
+('player.7.titles.unlocked.Admirer of the Crown', 1734457655201, 0x10b7f286bb06),
+('player.7.titles.unlocked.Beaststrider (Grade 1)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Beaststrider (Grade 2)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Beaststrider (Grade 3)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Beaststrider (Grade 4)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Beaststrider (Grade 5)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Big Spender', 1734457655201, 0x10b7f286bb06),
 ('player.7.titles.unlocked.Creature of Habit (Grade 1)', 1726433021434, 0x10fd8d9db706),
-('player.7.titles.unlocked.Cyclopscamper', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Demondoom', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Dragondouser', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Drakenbane', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Exalted', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Guild Leader', 1731631048194, 0x10c8afdab906),
-('player.7.titles.unlocked.Royal Bounacean Advisor', 1731631048194, 0x10c8afdab906),
-('player.7.titles.unlocked.Silencer', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Tibia\'s Topmodel (Grade 1)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Tibia\'s Topmodel (Grade 2)', 1731631048217, 0x10c8afdab906),
-('player.7.titles.unlocked.Trolltrasher', 1731631048217, 0x10c8afdab906),
+('player.7.titles.unlocked.Cyclopscamper', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Demondoom', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Dragondouser', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Drakenbane', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Exalted', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Guild Leader', 1734457655201, 0x10b7f286bb06),
+('player.7.titles.unlocked.Royal Bounacean Advisor', 1734457655201, 0x10b7f286bb06),
+('player.7.titles.unlocked.Silencer', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Tibia\'s Topmodel (Grade 1)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Tibia\'s Topmodel (Grade 2)', 1734457655208, 0x10b7f286bb06),
+('player.7.titles.unlocked.Trolltrasher', 1734457655208, 0x10b7f286bb06),
 ('player.8.achievements.Bluebarian-progress', 1726279820642, 0x19000000000000f03f),
 ('player.8.combat-protection', 1726284479378, 0x19000000000000f03f),
 ('player.8.daily-reward.streak', 1726867830196, 0x190000000000000000),
@@ -1687,79 +1695,79 @@ INSERT INTO `kv_store` (`key_name`, `timestamp`, `value`) VALUES
 ('player.8.titles.unlocked.Legend of the Shield', 1727467187787, 0x10b39ddcb706),
 ('player.8.titles.unlocked.Prince Charming', 1726880828261, 0x10bcb8b8b706),
 ('player.9.account.vip-system', 1730510205203, 0x3001),
-('player.9.badges.unlocked.Global Player (Grade 1)', 1731531268017, 0x1084a4d4b906),
-('player.9.badges.unlocked.Global Player (Grade 2)', 1731531268016, 0x1084a4d4b906),
-('player.9.badges.unlocked.Global Player (Grade 3)', 1731531268016, 0x1084a4d4b906),
+('player.9.badges.unlocked.Global Player (Grade 1)', 1732051233221, 0x10a182f4b906),
+('player.9.badges.unlocked.Global Player (Grade 2)', 1732051233220, 0x10a182f4b906),
+('player.9.badges.unlocked.Global Player (Grade 3)', 1732051233218, 0x10a182f4b906),
 ('player.9.combat-protection', 1731001469439, 0x19000000000000f03f),
-('player.9.daily-reward.streak', 1731515240500, 0x190000000000000000),
-('player.9.exhaustion.training-exhaustion', 1731531432023, 0x19000080ac44cdd941),
+('player.9.daily-reward.streak', 1732051037158, 0x19000000000000f03f),
+('player.9.exhaustion.training-exhaustion', 1731881389413, 0x190000c06d9aced941),
 ('player.9.features.autoloot', 1731515422555, 0x19000000000000f03f),
 ('player.9.summary.hirelings.amount', 1731001469397, 0x1000),
-('player.9.titles.unlocked.Legend of Magic', 1731531268024, 0x1084a4d4b906),
-('quest.soul-war.ebb-and-flow-maps.is-active', 1731651045324, 0x3001),
-('quest.soul-war.ebb-and-flow-maps.is-loaded-empty-map', 1731651045324, 0x3000),
-('raids.ankrahmun.the-welter.checks-today', 1731651105341, 0x1900000000009dc340),
-('raids.ankrahmun.the-welter.failed-attempts', 1731651105341, 0x190000000000d5c040),
+('player.9.titles.unlocked.Legend of Magic', 1732051233238, 0x10a182f4b906),
+('quest.soul-war.ebb-and-flow-maps.is-active', 1734461943819, 0x3001),
+('quest.soul-war.ebb-and-flow-maps.is-loaded-empty-map', 1734461943819, 0x3000),
+('raids.ankrahmun.the-welter.checks-today', 1734462003817, 0x190000000000edc640),
+('raids.ankrahmun.the-welter.failed-attempts', 1734462003817, 0x19000000000025c440),
 ('raids.ankrahmun.the-welter.last-occurrence', 1726868270734, 0x19000080cb7abbd941),
 ('raids.ankrahmun.the-welter.trigger-when-possible', 1726868270734, 0x3000),
-('raids.darashia.tyrn.checks-today', 1731537920254, 0x19000000000014b740),
-('raids.darashia.tyrn.failed-attempts', 1731537860305, 0x190000000000807140),
-('raids.darashia.tyrn.last-occurrence', 1731515768106, 0x190000005e35cdd941),
-('raids.darashia.tyrn.trigger-when-possible', 1731651105341, 0x3001),
+('raids.darashia.tyrn.checks-today', 1734462003817, 0x19000000000018bb40),
+('raids.darashia.tyrn.failed-attempts', 1734462003817, 0x190000000000109040),
+('raids.darashia.tyrn.last-occurrence', 1731868746739, 0x19000080128eced941),
+('raids.darashia.tyrn.trigger-when-possible', 1731868746739, 0x3000),
 ('raids.drefia.arachir.checks-today', 1730693358674, 0x19000000000044ab40),
 ('raids.drefia.arachir.failed-attempts', 1730693298671, 0x1900000000004ea440),
 ('raids.drefia.arachir.last-occurrence', 1726868270665, 0x19000080cb7abbd941),
-('raids.drefia.arachir.trigger-when-possible', 1731651105340, 0x3001),
+('raids.drefia.arachir.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.drefia.the-pale-count.checks-today', 1730662789913, 0x19000000000039b340),
 ('raids.drefia.the-pale-count.failed-attempts', 1730662729936, 0x19000000000038b340),
-('raids.drefia.the-pale-count.trigger-when-possible', 1731651105341, 0x3001),
+('raids.drefia.the-pale-count.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.edron.valorcrest.checks-today', 1731374410326, 0x190000000080b3c140),
 ('raids.edron.valorcrest.failed-attempts', 1731374350325, 0x190000000000b3c140),
-('raids.edron.valorcrest.trigger-when-possible', 1731651105341, 0x3001),
+('raids.edron.valorcrest.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.edron.weakened-shlorg.checks-today', 1731216520095, 0x190000000000f0ba40),
 ('raids.edron.weakened-shlorg.failed-attempts', 1731216460095, 0x19000000000044b440),
 ('raids.edron.weakened-shlorg.last-occurrence', 1726868270692, 0x19000080cb7abbd941),
-('raids.edron.weakened-shlorg.trigger-when-possible', 1731651105341, 0x3001),
+('raids.edron.weakened-shlorg.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.edron.white-pale.checks-today', 1730923301774, 0x19000000000008b940),
 ('raids.edron.white-pale.failed-attempts', 1730923300295, 0x19000000000007b940),
-('raids.edron.white-pale.trigger-when-possible', 1731651105340, 0x3001),
-('raids.farmine.draptor.checks-today', 1731651105341, 0x19000000000068bf40),
-('raids.farmine.draptor.failed-attempts', 1731651105341, 0x190000000000c88b40),
-('raids.farmine.draptor.last-occurrence', 1731515768106, 0x190000005e35cdd941),
-('raids.farmine.draptor.trigger-when-possible', 1731515768106, 0x3000),
-('raids.folda.yeti.checks-today', 1731651105340, 0x19000000008088c540),
-('raids.folda.yeti.failed-attempts', 1731651105340, 0x19000000000022c040),
+('raids.edron.white-pale.trigger-when-possible', 1734462003812, 0x3001),
+('raids.farmine.draptor.checks-today', 1734462003817, 0x19000000000036c240),
+('raids.farmine.draptor.failed-attempts', 1734462003817, 0x190000000000805840),
+('raids.farmine.draptor.last-occurrence', 1732054250123, 0x190000803a43cfd941),
+('raids.farmine.draptor.trigger-when-possible', 1732054250123, 0x3000),
+('raids.folda.yeti.checks-today', 1734462003812, 0x190000000080d8c840),
+('raids.folda.yeti.failed-attempts', 1734462003812, 0x19000000000072c340),
 ('raids.folda.yeti.last-occurrence', 1726869410903, 0x19000080e87bbbd941),
 ('raids.folda.yeti.trigger-when-possible', 1726869410903, 0x3000),
-('raids.fury-gates.furiosa.checks-today', 1731651105341, 0x19000000008089c440),
-('raids.fury-gates.furiosa.failed-attempts', 1731651105341, 0x190000000000d5c040),
+('raids.fury-gates.furiosa.checks-today', 1731870546735, 0x190000000080cbc540),
+('raids.fury-gates.furiosa.failed-attempts', 1731870486735, 0x19000000008016c240),
 ('raids.fury-gates.furiosa.last-occurrence', 1726868270712, 0x19000080cb7abbd941),
-('raids.fury-gates.furiosa.trigger-when-possible', 1726868270712, 0x3000),
+('raids.fury-gates.furiosa.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.muggy_plains.battlemaster_zunzu.checks-today', 1730689218705, 0x190000000000b2b440),
 ('raids.muggy_plains.battlemaster_zunzu.failed-attempts', 1730689158704, 0x190000000000b1b440),
-('raids.muggy_plains.battlemaster_zunzu.trigger-when-possible', 1731651105340, 0x3001),
+('raids.muggy_plains.battlemaster_zunzu.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.nargor.diblis.checks-today', 1731110216472, 0x190000000000ebbd40),
 ('raids.nargor.diblis.failed-attempts', 1731110156472, 0x190000000000eabd40),
-('raids.nargor.diblis.trigger-when-possible', 1731651105340, 0x3001),
-('raids.roshamuul.mawhawk.checks-today', 1729920757548, 0x1900000000002bb040),
-('raids.roshamuul.mawhawk.failed-attempts', 1729920697545, 0x19000000000072a040),
-('raids.roshamuul.mawhawk.last-occurrence', 1726847169051, 0x190000403066bbd941),
-('raids.roshamuul.mawhawk.trigger-when-possible', 1731651105340, 0x3001),
+('raids.nargor.diblis.trigger-when-possible', 1734462003817, 0x3001),
+('raids.roshamuul.mawhawk.checks-today', 1734462003817, 0x1900000000002fb440),
+('raids.roshamuul.mawhawk.failed-attempts', 1734462003817, 0x190000000000109040),
+('raids.roshamuul.mawhawk.last-occurrence', 1731868746737, 0x19000080128eced941),
+('raids.roshamuul.mawhawk.trigger-when-possible', 1731868746736, 0x3000),
 ('raids.svargrond.hirintror.checks-today', 1731315017448, 0x1900000000000fc140),
 ('raids.svargrond.hirintror.failed-attempts', 1731314957451, 0x1900000000800ec140),
-('raids.svargrond.hirintror.trigger-when-possible', 1731651105341, 0x3001),
-('raids.thais.rats.checks-today', 1731651105341, 0x19000000000011b140),
-('raids.thais.rats.failed-attempts', 1731651105341, 0x190000000000005840),
+('raids.svargrond.hirintror.trigger-when-possible', 1734462003817, 0x3001),
+('raids.thais.rats.checks-today', 1734462003817, 0x190000000000b1b740),
+('raids.thais.rats.failed-attempts', 1734462003817, 0x190000000000009c40),
 ('raids.thais.rats.last-occurrence', 1731515768105, 0x190000005e35cdd941),
 ('raids.thais.rats.trigger-when-possible', 1731515768105, 0x3000),
 ('raids.thais.wild-horses.checks-today', 1726091734796, 0x190000000000000040),
 ('raids.thais.wild-horses.failed-attempts', 1726091734796, 0x190000000000000040),
 ('raids.tiquanda.midnight-panther.checks-today', 1729910677550, 0x1900000000004cb140),
 ('raids.tiquanda.midnight-panther.failed-attempts', 1729910617546, 0x1900000000004bb140),
-('raids.tiquanda.midnight-panther.trigger-when-possible', 1731651105341, 0x3001),
+('raids.tiquanda.midnight-panther.trigger-when-possible', 1734462003817, 0x3001),
 ('raids.venore.the-old-widow.checks-today', 1731216880098, 0x1900000000001abf40),
 ('raids.venore.the-old-widow.failed-attempts', 1731216820098, 0x19000000000019bf40),
-('raids.venore.the-old-widow.trigger-when-possible', 1731651105340, 0x3001);
+('raids.venore.the-old-widow.trigger-when-possible', 1734462003817, 0x3001);
 
 -- --------------------------------------------------------
 
@@ -1838,7 +1846,17 @@ INSERT INTO `lottery` (`id`, `name`, `item`, `qnt`, `item_name`, `date`) VALUES
 (55, 'Administrator', '35288', 1, 'lasting exercise bow', '13/11/2024 - 19:08:32'),
 (56, 'Administrator', '3043', 100, 'crystal coin', '14/11/2024 - 08:59:02'),
 (57, 'Administrator', '3043', 70, 'crystal coin', '14/11/2024 - 13:18:11'),
-(58, 'Administrator', '35287', 1, 'lasting exercise club', '14/11/2024 - 19:08:45');
+(58, 'Administrator', '35287', 1, 'lasting exercise club', '14/11/2024 - 19:08:45'),
+(59, 'Administrator', '35288', 1, 'lasting exercise bow', '15/11/2024 - 18:07:38'),
+(60, 'Administrator', '35287', 1, 'lasting exercise club', '15/11/2024 - 19:09:38'),
+(61, 'Administrator', '3043', 20, 'crystal coin', '15/11/2024 - 20:32:38'),
+(62, 'Administrator', '35289', 1, 'lasting exercise rod', '15/11/2024 - 21:36:38'),
+(63, 'Administrator', '35290', 1, 'lasting exercise wand', '17/11/2024 - 13:25:40'),
+(64, 'Administrator', '35285', 1, 'lasting exercise sword', '19/11/2024 - 11:01:26'),
+(65, 'Administrator', '35290', 1, 'lasting exercise wand', '19/11/2024 - 12:09:41'),
+(66, 'Administrator', '35288', 1, 'lasting exercise bow', '19/11/2024 - 13:14:41'),
+(67, 'Administrator', '35288', 1, 'lasting exercise bow', '19/11/2024 - 14:34:50'),
+(68, 'Administrator', '35289', 1, 'lasting exercise rod', '17/12/2024 - 10:22:03');
 
 -- --------------------------------------------------------
 
@@ -2012,11 +2030,11 @@ INSERT INTO `myaac_config` (`id`, `name`, `value`) VALUES
 (2, 'status_online', ''),
 (3, 'status_players', '0'),
 (4, 'status_playersMax', '0'),
-(5, 'status_lastCheck', '1731643388'),
-(6, 'status_uptime', '21742'),
-(7, 'status_monsters', '81543'),
-(8, 'views_counter', '1258'),
-(9, 'status_uptimeReadable', 'month, day, 03h 02m'),
+(5, 'status_lastCheck', '1734457630'),
+(6, 'status_uptime', '127'),
+(7, 'status_monsters', '81222'),
+(8, 'views_counter', '1281'),
+(9, 'status_uptimeReadable', '12 months, 31 days, 21h 02m'),
 (10, 'status_motd', 'EnaraOT Global!'),
 (11, 'status_mapAuthor', 'OpenTibiaBR'),
 (12, 'status_mapName', 'otservbr'),
@@ -2433,7 +2451,7 @@ CREATE TABLE `myaac_visitors` (
 --
 
 INSERT INTO `myaac_visitors` (`ip`, `lastvisit`, `page`) VALUES
-('10.0.0.136', 1731296870, '/?huntingTasks');
+('192.168.1.70', 1734986846, '/');
 
 -- --------------------------------------------------------
 
@@ -2574,10 +2592,10 @@ INSERT INTO `players` (`id`, `name`, `group_id`, `account_id`, `level`, `vocatio
 (4, 'Paladin Sample', 1, 1, 8, 3, 185, 185, 4200, 113, 115, 95, 39, 129, 0, 0, 90, 90, 0, 0, 8, 32369, 32241, 7, '', 470, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, ''),
 (5, 'Knight Sample', 1, 1, 8, 4, 185, 185, 4200, 113, 115, 95, 39, 129, 0, 0, 90, 90, 0, 0, 8, 32369, 32241, 7, '', 470, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, ''),
 (6, 'GOD', 6, 1, 2, 0, 155, 155, 100, 113, 115, 95, 39, 733, 0, 0, 60, 60, 0, 0, 8, 32369, 32233, 7, 0x011a02ffffffff03000000001b001c000000001f00001e00002300fe, 410, 1, 0, 1730510420, 2281701386, 1, 0, 0, 1730510438, 0, 1, 1, 1, 1, 1, 1, 1, 1, 18, 0, 0, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 100, 0, 0, 0, 0, ''),
-(7, 'Administrator', 6, 2, 2000, 1, 135, 135, 132948302150, 94, 94, 94, 107, 1094, 3, 120, 135, 135, 0, 100, 8, 32197, 32295, 6, '', 70, 0, 0, 1731643390, 2281701386, 1, 0, 0, 1731651130, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1099063, 0, 37961, 43200, -1, 2520, 120, 0, 120, 0, 120, 0, 120, 0, 120, 0, 120, 0, 120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3600, 50, 0, -1, 0, 4, 0, 1, 0, 0, 0, 0, 1367, 0, 0, 0, 0, 100, 0, 10, 1726085760, 0, ''),
+(7, 'Administrator', 6, 2, 2000, 1, 135, 135, 132948302150, 94, 94, 94, 107, 1094, 3, 120, 135, 135, 0, 100, 8, 31880, 33450, 6, '', 70, 0, 0, 1734457655, 3355551936, 1, 0, 0, 1734462024, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1242404, 0, 38928, 43200, -1, 2520, 120, 0, 120, 0, 120, 0, 120, 0, 120, 0, 120, 0, 120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5400, 50, 0, -1, 0, 4, 0, 1, 0, 0, 0, 0, 1367, 1, 0, 0, 0, 100, 0, 10, 1726085760, 0, ''),
 (8, 'Test Chars', 1, 3, 29, 4, 500, 500, 346810, 113, 115, 95, 39, 131, 0, 1, 195, 195, 3500, 10, 8, 32369, 32237, 7, '', 995, 1, 0, 1727467187, 2281701386, 1, 0, 0, 1727468478, 0, 1, 1, 1, 1, 1, 1, 1, 1, 68656, 0, 113, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 70, 7279, 10, 0, 69, 23740, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 991, 1, 0, 1, 0, 100, 0, 0, 1726279524, 0, ''),
-(9, 'Test Ms', 1, 2, 12, 1, 205, 205, 21518, 113, 115, 95, 39, 129, 0, 71, 208, 210, 876879, 0, 8, 32199, 32297, 6, '', 510, 1, 0, 1731533344, 2281701386, 1, 0, 0, 1731535200, 0, 1, 1, 1, 1, 1, 1, 1, 1, 28219, 0, 13, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 14, 84, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, 0, 994, 1, 0, 0, 0, 100, 0, 0, 1726868107, 0, ''),
-(10, 'Test Ed', 1, 3, 12, 2, 176, 205, 17700, 63, 87, 91, 85, 143, 0, 4, 210, 210, 1995, 0, 8, 32369, 32241, 7, '', 510, 1, 0, 1727467171, 2281701386, 1, 0, 0, 1727468449, 0, 1, 1, 1, 1, 1, 1, 1, 1, 16744, 0, 11, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 14, 163, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 993, 1, 0, 0, 0, 100, 0, 0, 1726868191, 0, '');
+(9, 'Test Ms', 1, 2, 19, 1, 240, 240, 87593, 113, 115, 95, 39, 129, 0, 82, 420, 420, 3669405, 0, 8, 32370, 32240, 7, '', 580, 1, 0, 1732051233, 2281701386, 1, 0, 0, 1732051344, 0, 1, 1, 1, 1, 1, 1, 1, 1, 87951, 0, 100, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 16, 419, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, 0, 994, 1, 0, 0, 0, 100, 0, 0, 1726868107, 0, ''),
+(10, 'Test Ed', 1, 3, 14, 2, 215, 215, 34035, 63, 87, 91, 85, 143, 0, 81, 270, 270, 856486, 0, 8, 32369, 32241, 7, '', 530, 1, 0, 1734457633, 3355551936, 1, 0, 0, 1734457636, 0, 1, 1, 1, 1, 1, 1, 1, 1, 155759, 0, 11, 43200, -1, 2520, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 14, 451, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 993, 1, 0, 0, 0, 100, 0, 0, 1726868191, 0, '');
 
 --
 -- Acionadores `players`
@@ -2622,11 +2640,11 @@ INSERT INTO `player_bosstiary` (`player_id`, `bossIdSlotOne`, `bossIdSlotTwo`, `
 (3, 0, 0, 1, ''),
 (4, 0, 0, 1, ''),
 (5, 0, 0, 1, ''),
-(10, 0, 0, 1, ''),
 (8, 0, 0, 1, ''),
 (2, 0, 0, 1, ''),
 (6, 0, 0, 1, ''),
 (9, 0, 0, 1, ''),
+(10, 0, 0, 1, ''),
 (7, 0, 0, 1, '');
 
 -- --------------------------------------------------------
@@ -2829,29 +2847,29 @@ INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `att
 (6, 101, 103, 3457, 1, ''),
 (6, 101, 104, 3003, 1, ''),
 (7, 1, 101, 28714, 1, ''),
-(7, 3, 102, 2854, 1, 0x24002c00000080),
+(7, 3, 102, 2854, 1, 0x24052c00000080),
 (7, 4, 103, 3366, 1, ''),
 (7, 6, 104, 3296, 1, 0x1ce7030000),
-(7, 8, 105, 9020, 1, ''),
-(7, 10, 106, 3035, 80, 0x0f50),
-(7, 11, 107, 23396, 1, 0x2401),
-(7, 102, 108, 3031, 85, 0x0f55),
-(7, 102, 109, 35287, 14400, 0x164038),
-(7, 102, 110, 3043, 96, 0x0f60),
+(7, 8, 105, 6530, 1, ''),
+(7, 11, 106, 23396, 1, 0x2401),
+(7, 102, 107, 3035, 60, 0x0f3c),
+(7, 102, 108, 3043, 15, 0x0f0f),
+(7, 102, 109, 3031, 85, 0x0f55),
+(7, 102, 110, 3043, 100, 0x0f64),
 (7, 102, 111, 37317, 1, 0x0f01),
 (7, 102, 112, 16277, 1, ''),
 (7, 102, 113, 30316, 1, ''),
 (7, 102, 114, 2854, 1, 0x2404),
 (7, 102, 115, 6579, 1, ''),
-(7, 102, 116, 2854, 1, 0x2403),
+(7, 102, 116, 2854, 1, 0x2400),
 (7, 102, 117, 3457, 1, ''),
 (7, 102, 118, 3003, 1, ''),
-(7, 107, 119, 35284, 18188, 0x01af730afe92010000160c47046400076600596f7520776f6e207468697320657865726369736520776561706f6e20617320612072657761726420746f206265206120456e6172614f5420706c617965722e2055736520697420696e20612064756d6d79210a486176652061206e6963652067616d652e2e),
-(7, 107, 120, 23721, 1, 0x01b47205fb92010000240226000000c02b07000000),
-(7, 107, 121, 23373, 20, 0x0193905811920100000f14),
-(7, 107, 122, 23373, 10, 0x0153816df7910100000f0a),
-(7, 107, 123, 23373, 10, 0x01034febe7910100000f0a),
-(7, 114, 124, 6529, 1, 0x10f6b4db00),
+(7, 106, 119, 35284, 18188, 0x01af730afe92010000160c47046400076600596f7520776f6e207468697320657865726369736520776561706f6e20617320612072657761726420746f206265206120456e6172614f5420706c617965722e2055736520697420696e20612064756d6d79210a486176652061206e6963652067616d652e2e),
+(7, 106, 120, 23721, 1, 0x01b47205fb92010000240226000000c02b07000000),
+(7, 106, 121, 23373, 20, 0x0193905811920100000f14),
+(7, 106, 122, 23373, 10, 0x0153816df7910100000f0a),
+(7, 106, 123, 23373, 10, 0x01034febe7910100000f0a),
+(7, 114, 124, 9019, 1, ''),
 (7, 114, 125, 37317, 68, 0x0f44),
 (7, 114, 126, 3079, 1, ''),
 (7, 114, 127, 14053, 1, 0x0f01),
@@ -2884,21 +2902,23 @@ INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `att
 (9, 7, 107, 3559, 1, ''),
 (9, 8, 108, 3552, 1, ''),
 (9, 11, 109, 23396, 1, 0x2403),
-(9, 103, 110, 35289, 14400, 0x164038),
-(9, 103, 111, 35290, 14400, 0x164038),
+(9, 103, 110, 3607, 8, 0x0f08),
+(9, 103, 111, 35289, 14400, 0x164038),
 (9, 103, 112, 35290, 14400, 0x164038),
-(9, 103, 113, 35288, 14400, 0x164038),
-(9, 103, 114, 2854, 1, 0x2402),
-(9, 103, 115, 5710, 1, ''),
-(9, 103, 116, 3003, 1, ''),
-(9, 109, 117, 35284, 16583, 0x01304a5d269301000016c740046400076600596f7520776f6e207468697320657865726369736520776561706f6e20617320612072657761726420746f206265206120456e6172614f5420706c617965722e2055736520697420696e20612064756d6d79210a486176652061206e6963652067616d652e2e),
-(9, 114, 118, 3362, 1, ''),
-(9, 114, 119, 7992, 1, ''),
-(9, 114, 120, 7991, 1, ''),
-(9, 114, 121, 3074, 1, ''),
-(9, 114, 122, 3059, 1, ''),
-(9, 114, 123, 16277, 1, ''),
-(9, 114, 124, 2819, 1, 0x067d01427261766520616476656e74757265722c0a0a74686520416476656e74757265727327204775696c64206269647320796f752077656c636f6d652061732061206e6577206865726f206f6620746865206c616e642e0a0a54616b65207468697320616476656e747572657227732073746f6e6520616e642075736520697420696e20616e7920636974792074656d706c6520746f20696e7374616e746c792074726176656c20746f206f7572206775696c642068616c6c2e20496620796f752073686f756c642065766572206c6f736520796f757220616476656e747572657227732073746f6e652c20796f752063616e207265706c6163652069742062792074616c6b696e6720746f20612070726965737420696e207468652074656d706c652e0a4920686f706520796f752077696c6c206265207669736974696e6720757320736f6f6e2e0a0a4b696e6420726567617264732c0a526f74656d2c2048656164206f662074686520416476656e74757265727327204775696c640a),
+(9, 103, 113, 35290, 14400, 0x164038),
+(9, 103, 114, 35288, 14400, 0x164038),
+(9, 103, 115, 2854, 1, 0x2402),
+(9, 103, 116, 5710, 1, ''),
+(9, 103, 117, 3003, 1, ''),
+(9, 109, 118, 23373, 10, 0x01c16b4946930100000f0a),
+(9, 109, 119, 35284, 8412, 0x01304a5d269301000016dc20046400076600596f7520776f6e207468697320657865726369736520776561706f6e20617320612072657761726420746f206265206120456e6172614f5420706c617965722e2055736520697420696e20612064756d6d79210a486176652061206e6963652067616d652e2e),
+(9, 115, 120, 3362, 1, ''),
+(9, 115, 121, 7992, 1, ''),
+(9, 115, 122, 7991, 1, ''),
+(9, 115, 123, 3074, 1, ''),
+(9, 115, 124, 3059, 1, ''),
+(9, 115, 125, 16277, 1, ''),
+(9, 115, 126, 2819, 1, 0x067d01427261766520616476656e74757265722c0a0a74686520416476656e74757265727327204775696c64206269647320796f752077656c636f6d652061732061206e6577206865726f206f6620746865206c616e642e0a0a54616b65207468697320616476656e747572657227732073746f6e6520616e642075736520697420696e20616e7920636974792074656d706c6520746f20696e7374616e746c792074726176656c20746f206f7572206775696c642068616c6c2e20496620796f752073686f756c642065766572206c6f736520796f757220616476656e747572657227732073746f6e652c20796f752063616e207265706c6163652069742062792074616c6b696e6720746f20612070726965737420696e207468652074656d706c652e0a4920686f706520796f752077696c6c206265207669736974696e6720757320736f6f6e2e0a0a4b696e6420726567617264732c0a526f74656d2c2048656164206f662074686520416476656e74757265727327204775696c640a),
 (10, 1, 101, 7992, 1, ''),
 (10, 2, 102, 3572, 1, ''),
 (10, 3, 103, 2854, 1, 0x240026000000802c00000080),
@@ -2906,22 +2926,23 @@ INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `att
 (10, 5, 105, 3059, 1, ''),
 (10, 6, 106, 3066, 1, ''),
 (10, 7, 107, 3362, 1, ''),
-(10, 11, 108, 23396, 1, 0x2400),
+(10, 11, 108, 23396, 1, 0x2402),
 (10, 103, 109, 35290, 14400, 0x164038),
 (10, 103, 110, 35288, 14400, 0x164038),
 (10, 103, 111, 3607, 2, 0x0f02),
-(10, 103, 112, 2854, 1, 0x2400),
+(10, 103, 112, 2854, 1, 0x2401),
 (10, 103, 113, 5710, 1, ''),
 (10, 103, 114, 3003, 1, ''),
-(10, 108, 115, 35283, 20000, 0x01e852a2119201000016204e046400076a00596f7520776f6e207468697320657865726369736520776561706f6e20617320612072657761726420746f206265206120456e6172614f542073763120706c617965722e2055736520697420696e20612064756d6d79210a486176652061206e6963652067616d652e2e),
-(10, 112, 116, 7992, 1, ''),
-(10, 112, 117, 7991, 1, ''),
-(10, 112, 118, 3559, 1, ''),
-(10, 112, 119, 3552, 1, ''),
-(10, 112, 120, 3066, 1, ''),
-(10, 112, 121, 3059, 1, ''),
-(10, 112, 122, 16277, 1, ''),
-(10, 112, 123, 2819, 1, 0x067d01427261766520616476656e74757265722c0a0a74686520416476656e74757265727327204775696c64206269647320796f752077656c636f6d652061732061206e6577206865726f206f6620746865206c616e642e0a0a54616b65207468697320616476656e747572657227732073746f6e6520616e642075736520697420696e20616e7920636974792074656d706c6520746f20696e7374616e746c792074726176656c20746f206f7572206775696c642068616c6c2e20496620796f752073686f756c642065766572206c6f736520796f757220616476656e747572657227732073746f6e652c20796f752063616e207265706c6163652069742062792074616c6b696e6720746f20612070726965737420696e207468652074656d706c652e0a4920686f706520796f752077696c6c206265207669736974696e6720757320736f6f6e2e0a0a4b696e6420726567617264732c0a526f74656d2c2048656164206f662074686520416476656e74757265727327204775696c640a);
+(10, 108, 115, 268, 10, 0x01d5b46d3b930100000f0a),
+(10, 108, 116, 35283, 10747, 0x01e852a2119201000016fb29046400076a00596f7520776f6e207468697320657865726369736520776561706f6e20617320612072657761726420746f206265206120456e6172614f542073763120706c617965722e2055736520697420696e20612064756d6d79210a486176652061206e6963652067616d652e2e),
+(10, 112, 117, 7992, 1, ''),
+(10, 112, 118, 7991, 1, ''),
+(10, 112, 119, 3559, 1, ''),
+(10, 112, 120, 3552, 1, ''),
+(10, 112, 121, 3066, 1, ''),
+(10, 112, 122, 3059, 1, ''),
+(10, 112, 123, 16277, 1, ''),
+(10, 112, 124, 2819, 1, 0x067d01427261766520616476656e74757265722c0a0a74686520416476656e74757265727327204775696c64206269647320796f752077656c636f6d652061732061206e6577206865726f206f6620746865206c616e642e0a0a54616b65207468697320616476656e747572657227732073746f6e6520616e642075736520697420696e20616e7920636974792074656d706c6520746f20696e7374616e746c792074726176656c20746f206f7572206775696c642068616c6c2e20496620796f752073686f756c642065766572206c6f736520796f757220616476656e747572657227732073746f6e652c20796f752063616e207265706c6163652069742062792074616c6b696e6720746f20612070726965737420696e207468652074656d706c652e0a4920686f706520796f752077696c6c206265207669736974696e6720757320736f6f6e2e0a0a4b696e6420726567617264732c0a526f74656d2c2048656164206f662074686520416476656e74757265727327204775696c640a);
 
 -- --------------------------------------------------------
 
@@ -3257,13 +3278,13 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (7, 12332, 13),
 (7, 12333, 3),
 (7, 12450, 6),
-(7, 13412, 1731621601),
-(7, 13413, 1731621601),
-(7, 13414, 11),
-(7, 14897, 6),
-(7, 14899, 1731711601),
+(7, 13412, 1731967500),
+(7, 13413, 1731967500),
+(7, 13414, 12),
+(7, 14897, 0),
+(7, 14899, 1732057500),
 (7, 14900, 1),
-(7, 14903, 0),
+(7, 14903, 1),
 (7, 20001, 1),
 (7, 20002, 1731051175),
 (7, 30057, 1),
@@ -3701,6 +3722,7 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (7, 61305251, 22),
 (7, 61305463, 6),
 (7, 61305464, 8),
+(7, 61305465, 12),
 (7, 61305509, 2),
 (7, 61305516, 2),
 (7, 61305733, 46),
@@ -4071,6 +4093,7 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (8, 61305021, 42),
 (8, 61305026, 80),
 (8, 61305032, 2),
+(9, 6000, 1731864918),
 (9, 10134, 1),
 (9, 10135, 1),
 (9, 10136, 2),
@@ -4079,8 +4102,11 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (9, 12332, 13),
 (9, 12333, 3),
 (9, 12450, 6),
-(9, 13413, 1731448801),
+(9, 13412, 1731967500),
+(9, 13413, 1731967500),
 (9, 13414, 11),
+(9, 14897, 1),
+(9, 14899, 1732057500),
 (9, 14900, 1),
 (9, 14903, 0),
 (9, 30057, 1),
@@ -4230,6 +4256,8 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (9, 42004, 1),
 (9, 42006, 1),
 (9, 42166, 0),
+(9, 42225, 2),
+(9, 42476, 2),
 (9, 42601, 21),
 (9, 42602, 2),
 (9, 42603, 3),
@@ -4398,7 +4426,6 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (9, 50406, 1),
 (9, 50960, 1),
 (9, 51680, 1),
-(9, 52130, 8),
 (9, 52148, 1),
 (9, 52273, 1),
 (9, 52279, 1),
@@ -4409,15 +4436,18 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (9, 891644, 0),
 (9, 10001001, 16449536),
 (9, 10001002, 16515072),
-(9, 10003001, 65142784),
-(9, 61305021, 28),
+(9, 61305021, 72),
+(9, 61305025, 6),
 (9, 61305032, 2),
 (10, 12330, 1),
 (10, 12332, 13),
 (10, 12333, 3),
 (10, 12450, 6),
-(10, 13413, 1726866301),
-(10, 13414, 9),
+(10, 13412, 1731621601),
+(10, 13413, 1732053901),
+(10, 13414, 12),
+(10, 14897, 1),
+(10, 14899, 1731711601),
 (10, 14900, 1),
 (10, 14903, 1),
 (10, 20000, 1),
@@ -4753,6 +4783,7 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (10, 52031, 1),
 (10, 52032, 2),
 (10, 52033, 1),
+(10, 52130, 8),
 (10, 52146, 2),
 (10, 52148, 1),
 (10, 52149, 3),
@@ -4761,9 +4792,11 @@ INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES
 (10, 55047, 1),
 (10, 100157, 1),
 (10, 150002, 0),
+(10, 891642, 0),
+(10, 891644, 0),
 (10, 10001001, 16449536),
 (10, 10001002, 16515072),
-(10, 61305021, 20);
+(10, 61305021, 42);
 
 -- --------------------------------------------------------
 
@@ -4812,6 +4845,15 @@ CREATE TABLE `player_wheeldata` (
   `player_id` int(11) NOT NULL,
   `slot` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Despejando dados para a tabela `player_wheeldata`
+--
+
+INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES
+(7, 0x0100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f00001000001100001200001300001400001500001600001700001800001900001a00001b00001c00001d00001e00001f0000200000210000220000230000240000),
+(9, 0x0100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f00001000001100001200001300001400001500001600001700001800001900001a00001b00001c00001d00001e00001f0000200000210000220000230000240000),
+(10, 0x0100000200000300000400000500000600000700000800000900000a00000b00000c00000d00000e00000f00001000001100001200001300001400001500001600001700001800001900001a00001b00001c00001d00001e00001f0000200000210000220000230000240000);
 
 -- --------------------------------------------------------
 
@@ -4895,7 +4937,9 @@ INSERT INTO `store_history` (`id`, `account_id`, `mode`, `description`, `coin_ty
 (19, 2, 0, '[ONLINE REWARD] - Reward', 1, 5, 1731638287, 0, 0),
 (20, 2, 0, '[ONLINE REWARD] - Reward', 1, 5, 1731641887, 0, 0),
 (21, 2, 0, '[ONLINE REWARD] - Reward', 1, 5, 1731645491, 0, 0),
-(22, 2, 0, '[ONLINE REWARD] - Reward', 1, 5, 1731649098, 0, 0);
+(22, 2, 0, '[ONLINE REWARD] - Reward', 1, 5, 1731649098, 0, 0),
+(23, 2, 0, '[ONLINE REWARD] - Reward', 1, 30, 1731731206, 0, 0),
+(24, 3, 0, '[ONLINE REWARD] - Reward', 1, 30, 1731892162, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -5961,13 +6005,13 @@ ALTER TABLE `account_vipgroups`
 -- AUTO_INCREMENT de tabela `coins_transactions`
 --
 ALTER TABLE `coins_transactions`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de tabela `daily_reward_history`
 --
 ALTER TABLE `daily_reward_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `forge_history`
@@ -6009,7 +6053,7 @@ ALTER TABLE `houses`
 -- AUTO_INCREMENT de tabela `lottery`
 --
 ALTER TABLE `lottery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT de tabela `market_history`
@@ -6153,7 +6197,7 @@ ALTER TABLE `status`
 -- AUTO_INCREMENT de tabela `store_history`
 --
 ALTER TABLE `store_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de tabela `towns`

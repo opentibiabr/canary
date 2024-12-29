@@ -729,7 +729,10 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		-- The Pits of Inferno Quest
 		if toPosition == Position(32808, 32334, 11) then
 			for i = 1, #lava do
-				Game.createItem(5815, 1, lava[i])
+				local lavaTile = Tile(lava[i]):getItemById(21477)
+				if lavaTile then
+					lavaTile:transform(5815)
+				end
 			end
 			target:transform(3141)
 			toPosition:sendMagicEffect(CONST_ME_SMOKE)

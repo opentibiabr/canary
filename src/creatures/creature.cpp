@@ -140,6 +140,20 @@ void Creature::onThink(uint32_t interval) {
 	onThink();
 }
 
+void Creature::checkCreatureAttack(bool now) {
+	if (now) {
+		if (isAlive()) {
+			onAttacking(0);
+		}
+		return;
+	}
+
+	g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+		if (const auto &creature = self.lock()) {
+			creature->checkCreatureAttack(true);
+		} }, "Creature::checkCreatureAttack");
+}
+
 void Creature::onAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
 	if (!attackedCreature) {
@@ -162,7 +176,7 @@ void Creature::onIdleStatus() {
 }
 
 void Creature::onCreatureWalk() {
-	if (checkingWalkCreature) {
+	if (checkingWalkCreature || isRemoved() || isDead()) {
 		return;
 	}
 
@@ -170,7 +184,11 @@ void Creature::onCreatureWalk() {
 
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 
-	g_dispatcher().addWalkEvent([self = getCreature(), this] {
+	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(getCreature()), this] {
+		if (!self.lock()) {
+			return;
+		}
+
 		checkingWalkCreature = false;
 		if (isRemoved()) {
 			return;
@@ -269,12 +287,16 @@ void Creature::addEventWalk(bool firstStep) {
 	safeCall([this, ticks]() {
 		// Take first step right away, but still queue the next
 		if (ticks == 1) {
-			g_game().checkCreatureWalk(getID());
+			onCreatureWalk();
 		}
 
 		eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks),
-			[creatureId = getID()] { g_game().checkCreatureWalk(creatureId); }, "Game::checkCreatureWalk"
+			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
+					creature->onCreatureWalk();
+				}
+			},
+			"Game::checkCreatureWalk"
 		);
 	});
 }
@@ -421,7 +443,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 	if (followCreature && (creature.get() == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
+			updateCreatureWalk();
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -436,7 +458,7 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		} else {
 			if (hasExtraSwing()) {
 				// our target is moving lets see if we can get in hit
-				g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, "Game::checkCreatureAttack");
+				checkCreatureAttack();
 			}
 
 			if (newTile->getZoneType() != oldTile->getZoneType()) {
@@ -689,6 +711,10 @@ std::shared_ptr<Item> Creature::getCorpse(const std::shared_ptr<Creature> &, con
 }
 
 void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {
+	if (isLifeless()) {
+		return;
+	}
+
 	int32_t oldHealth = health;
 
 	if (healthChange > 0) {
@@ -701,7 +727,13 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().executeDeath(creatureId); }, "Game::executeDeath");
+		g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+			if (const auto &creature = self.lock()) {
+				if (!creature->isRemoved()) {
+					g_game().afterCreatureZoneChange(creature, creature->getZones(), {});
+					creature->onDeath();
+				}
+			} }, "Game::executeDeath");
 	}
 }
 
@@ -874,6 +906,10 @@ void Creature::getPathSearchParams(const std::shared_ptr<Creature> &, FindPathPa
 }
 
 void Creature::goToFollowCreature_async(std::function<void()> &&onComplete) {
+	if (isDead()) {
+		return;
+	}
+
 	if (!hasAsyncTaskFlag(Pathfinder) && onComplete) {
 		g_dispatcher().addEvent(std::move(onComplete), "goToFollowCreature_async");
 	}
@@ -1781,7 +1817,7 @@ void Creature::sendAsyncTasks() {
 	setAsyncTaskFlag(AsyncTaskRunning, true);
 	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
-			if (!creature->isRemoved()) {
+			if (!creature->isRemoved() && creature->isAlive()) {
 				for (const auto &task : creature->asyncTasks) {
 					task();
 				}

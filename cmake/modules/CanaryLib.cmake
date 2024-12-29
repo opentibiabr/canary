@@ -86,6 +86,7 @@ target_link_libraries(${PROJECT_NAME}_lib
         unofficial::argon2::libargon2
         unofficial::libmariadb
         protobuf
+        nlohmann_json::nlohmann_json
 )
 
 if(FEATURE_METRICS)

@@ -8,6 +8,7 @@
  */
 
 #include "io/iomap.hpp"
+
 #include "game/movement/teleport.hpp"
 #include "game/game.hpp"
 #include "io/filestream.hpp"
@@ -134,7 +135,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			const uint16_t x = base_x + tileCoordsX + pos.x;
 			const uint16_t y = base_y + tileCoordsY + pos.y;
-			const uint8_t z = static_cast<uint8_t>(base_z + pos.z);
+			const auto z = static_cast<uint8_t>(base_z + pos.z);
 
 			if (tileType == OTBM_HOUSETILE) {
 				tile->houseId = stream.getU32();

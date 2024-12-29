@@ -13,6 +13,8 @@
 	#define __FUNCTION__ __func__
 #endif
 
+#define __METRICS_METHOD_NAME__ std::source_location::current().function_name()
+
 #ifndef _CRT_SECURE_NO_WARNINGS
 	#define _CRT_SECURE_NO_WARNINGS
 #endif

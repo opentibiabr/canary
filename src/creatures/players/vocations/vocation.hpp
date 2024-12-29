@@ -9,99 +9,57 @@
 
 #pragma once
 
-#include "declarations.hpp"
-#include "items/item.hpp"
-#include "lib/di/container.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
+#include "creatures/creatures_definitions.hpp"
+
+enum class WheelGemQuality_t : uint8_t;
+enum class WheelGemSupremeModifier_t : uint8_t;
 
 class Vocation {
 public:
 	explicit Vocation(uint16_t initId) :
 		id(initId) { }
 
-	const std::string &getVocName() const {
-		return name;
-	}
-	const std::string &getVocDescription() const {
-		return description;
-	}
+	const std::string &getVocName() const;
+	const std::string &getVocDescription() const;
 	absl::uint128 getTotalSkillTries(uint8_t skill, uint16_t level);
 	uint64_t getReqSkillTries(uint8_t skill, uint16_t level);
 	absl::uint128 getTotalMana(uint32_t magLevel);
 	uint64_t getReqMana(uint32_t magLevel);
 
-	uint16_t getId() const {
-		return id;
-	}
+	uint16_t getId() const;
 
-	uint8_t getClientId() const {
-		return clientId;
-	}
+	uint8_t getClientId() const;
 
-	uint8_t getBaseId() const {
-		return baseId;
-	}
+	uint8_t getBaseId() const;
 
-	uint16_t getAvatarLookType() const {
-		return avatarLookType;
-	}
+	uint16_t getAvatarLookType() const;
 
-	uint32_t getHPGain() const {
-		return gainHP;
-	}
-	uint32_t getManaGain() const {
-		return gainMana;
-	}
-	uint32_t getCapGain() const {
-		return gainCap;
-	}
+	uint32_t getHPGain() const;
+	uint32_t getManaGain() const;
+	uint32_t getCapGain() const;
 
-	uint32_t getManaGainTicks() const {
-		return gainManaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
-	}
+	uint32_t getManaGainTicks() const;
 
-	uint32_t getManaGainAmount() const {
-		return gainManaAmount * g_configManager().getFloat(RATE_MANA_REGEN);
-	}
+	uint32_t getManaGainAmount() const;
 
-	uint32_t getHealthGainTicks() const {
-		return gainHealthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
-	}
+	uint32_t getHealthGainTicks() const;
 
-	uint32_t getHealthGainAmount() const {
-		return gainHealthAmount * g_configManager().getFloat(RATE_HEALTH_REGEN);
-	}
+	uint32_t getHealthGainAmount() const;
 
-	uint8_t getSoulMax() const {
-		return soulMax;
-	}
+	uint8_t getSoulMax() const;
 
-	uint32_t getSoulGainTicks() const {
-		return gainSoulTicks / g_configManager().getFloat(RATE_SOUL_REGEN_SPEED);
-	}
+	uint32_t getSoulGainTicks() const;
 
-	uint32_t getBaseAttackSpeed() const {
-		return attackSpeed;
-	}
+	uint32_t getBaseAttackSpeed() const;
 
-	uint32_t getAttackSpeed() const {
-		return attackSpeed / g_configManager().getFloat(RATE_ATTACK_SPEED);
-	}
+	uint32_t getAttackSpeed() const;
 
-	uint32_t getBaseSpeed() const {
-		return baseSpeed;
-	}
+	uint32_t getBaseSpeed() const;
 
-	uint32_t getFromVocation() const {
-		return fromVocation;
-	}
+	uint32_t getFromVocation() const;
 
-	bool getMagicShield() const {
-		return magicShield;
-	}
-	bool canCombat() const {
-		return combat;
-	}
+	bool getMagicShield() const;
+	bool canCombat() const;
 
 	float meleeDamageMultiplier = 1.0f;
 	float distDamageMultiplier = 1.0f;
@@ -117,13 +75,7 @@ public:
 
 	std::vector<WheelGemSupremeModifier_t> getSupremeGemModifiers();
 
-	uint16_t getWheelGemId(WheelGemQuality_t quality) {
-		if (!wheelGems.contains(quality)) {
-			return 0;
-		}
-		const auto &name = wheelGems[quality];
-		return Item::items.getItemIdByName(name);
-	}
+	uint16_t getWheelGemId(WheelGemQuality_t quality);
 
 private:
 	friend class Vocations;
@@ -174,17 +126,13 @@ public:
 	Vocations(const Vocations &) = delete;
 	void operator=(const Vocations &) = delete;
 
-	static Vocations &getInstance() {
-		return inject<Vocations>();
-	}
+	static Vocations &getInstance();
 
 	bool loadFromXml();
 	bool reload();
 
 	std::shared_ptr<Vocation> getVocation(uint16_t id);
-	const std::map<uint16_t, std::shared_ptr<Vocation>> &getVocations() const {
-		return vocationsMap;
-	}
+	const std::map<uint16_t, std::shared_ptr<Vocation>> &getVocations() const;
 	uint16_t getVocationId(const std::string &name) const;
 	uint16_t getPromotedVocation(uint16_t vocationId) const;
 

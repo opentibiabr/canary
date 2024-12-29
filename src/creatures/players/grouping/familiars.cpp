@@ -8,10 +8,14 @@
  */
 
 #include "creatures/players/grouping/familiars.hpp"
-#include "lib/di/container.hpp"
+
 #include "config/configmanager.hpp"
+#include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
+#include <creatures/creatures_definitions.hpp>
+
+std::vector<std::shared_ptr<Familiar>> familiars[VOCATION_LAST + 1];
 
 Familiars &Familiars::getInstance() {
 	return inject<Familiars>();
@@ -24,23 +28,27 @@ bool Familiars::reload() {
 	return loadFromXml();
 }
 
+std::vector<std::shared_ptr<Familiar>> &Familiars::getFamiliars(uint16_t vocation) {
+	return familiars[vocation];
+}
+
 bool Familiars::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/familiars.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	const auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/familiars.xml";
+	const pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		g_logger().error("Failed to load Familiars");
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
-	for (auto familiarsNode : doc.child("familiars").children()) {
+	for (const auto &familiarsNode : doc.child("familiars").children()) {
 		pugi::xml_attribute attr;
-		if ((attr = familiarsNode.attribute("enabled")) && !attr.as_bool()) {
+		if ((attr = familiarsNode.attribute("enabled") && !attr.as_bool())) {
 			continue;
 		}
 
-		if (!(attr = familiarsNode.attribute("vocation"))) {
+		if (!((attr = familiarsNode.attribute("vocation")))) {
 			g_logger().warn("[Familiars::loadFromXml] - Missing familiar vocation.");
 			continue;
 		}
@@ -72,7 +80,7 @@ bool Familiars::loadFromXml() {
 }
 
 std::shared_ptr<Familiar> Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	if (auto it = std::find_if(familiars[vocation].begin(), familiars[vocation].end(), [lookType](auto familiar_it) {
+	if (auto it = std::ranges::find_if(familiars[vocation], [lookType](const auto &familiar_it) {
 			return familiar_it->lookType == lookType;
 		});
 	    it != familiars[vocation].end()) {

@@ -11,5 +11,4 @@ function onUpdateDatabase()
 		PRIMARY KEY (`id`),
 		UNIQUE KEY `name` (`name`))
 	]])
-	return true
 end

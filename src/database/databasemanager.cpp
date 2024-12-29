@@ -13,6 +13,19 @@
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.hpp"
 
+namespace InternalDBManager {
+	int32_t extractVersionFromFilename(const std::string &filename) {
+		std::regex versionRegex(R"((\d+)\.lua)");
+		std::smatch match;
+
+		if (std::regex_search(filename, match, versionRegex) && match.size() > 1) {
+			return std::stoi(match.str(1));
+		}
+
+		return -1;
+	}
+}
+
 bool DatabaseManager::optimizeTables() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
@@ -73,48 +86,62 @@ int32_t DatabaseManager::getDatabaseVersion() {
 }
 
 void DatabaseManager::updateDatabase() {
+	Benchmark bm;
 	lua_State* L = luaL_newstate();
 	if (!L) {
 		return;
 	}
 
 	luaL_openlibs(L);
-
 	CoreLibsFunctions::init(L);
 
-	int32_t version = getDatabaseVersion();
-	do {
-		std::ostringstream ss;
-		ss << g_configManager().getString(DATA_DIRECTORY) + "/migrations/" << version << ".lua";
-		if (luaL_dofile(L, ss.str().c_str()) != 0) {
-			g_logger().error("DatabaseManager::updateDatabase - Version: {}"
-			                 "] {}",
-			                 version, lua_tostring(L, -1));
-			break;
-		}
+	int32_t currentVersion = getDatabaseVersion();
+	std::string migrationDirectory = g_configManager().getString(DATA_DIRECTORY) + "/migrations/";
 
-		if (!LuaScriptInterface::reserveScriptEnv()) {
-			break;
-		}
+	std::vector<std::pair<int32_t, std::string>> migrations;
 
-		lua_getglobal(L, "onUpdateDatabase");
-		if (lua_pcall(L, 0, 1, 0) != 0) {
+	for (const auto &entry : std::filesystem::directory_iterator(migrationDirectory)) {
+		if (entry.is_regular_file()) {
+			std::string filename = entry.path().filename().string();
+			int32_t fileVersion = InternalDBManager::extractVersionFromFilename(filename);
+			migrations.emplace_back(fileVersion, entry.path().string());
+		}
+	}
+
+	std::sort(migrations.begin(), migrations.end());
+
+	for (const auto &[fileVersion, scriptPath] : migrations) {
+		if (fileVersion > currentVersion) {
+			if (!LuaScriptInterface::reserveScriptEnv()) {
+				break;
+			}
+
+			if (luaL_dofile(L, scriptPath.c_str()) != 0) {
+				g_logger().error("DatabaseManager::updateDatabase - Version: {}] {}", fileVersion, lua_tostring(L, -1));
+				continue;
+			}
+
+			lua_getglobal(L, "onUpdateDatabase");
+			if (lua_pcall(L, 0, 1, 0) != 0) {
+				LuaScriptInterface::resetScriptEnv();
+				g_logger().warn("[DatabaseManager::updateDatabase - Version: {}] {}", fileVersion, lua_tostring(L, -1));
+				continue;
+			}
+
+			currentVersion = fileVersion;
+			g_logger().info("Database has been updated to version {}", currentVersion);
+			registerDatabaseConfig("db_version", currentVersion);
+
 			LuaScriptInterface::resetScriptEnv();
-			g_logger().warn("[DatabaseManager::updateDatabase - Version: {}] {}", version, lua_tostring(L, -1));
-			break;
 		}
+	}
 
-		if (!LuaScriptInterface::getBoolean(L, -1, false)) {
-			LuaScriptInterface::resetScriptEnv();
-			break;
-		}
-
-		version++;
-		g_logger().info("Database has been updated to version {}", version);
-		registerDatabaseConfig("db_version", version);
-
-		LuaScriptInterface::resetScriptEnv();
-	} while (true);
+	double duration = bm.duration();
+	if (duration < 1000.0) {
+		g_logger().debug("Database update completed in {:.2f} ms", duration);
+	} else {
+		g_logger().debug("Database update completed in {:.2f} seconds", duration / 1000.0);
+	}
 	lua_close(L);
 }
 

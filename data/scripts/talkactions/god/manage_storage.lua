@@ -5,7 +5,7 @@ function Player.getStorageValueTalkaction(self, param)
 	if not HasValidTalkActionParams(self, param, "Usage: /getstorage <playername>, <storage key or name>") then
 		return true
 	end
-	
+
 	local split = param:split(",")
 	if split[2] == nil then
 		player:sendCancelMessage("Insufficient parameters.")
@@ -18,8 +18,8 @@ function Player.getStorageValueTalkaction(self, param)
 		return true
 	end
 
-	storageStringToVar = loadstring("return " .. split[2])()
-	
+	storageStringToActualVar = loadstring("return " .. split[2])()
+
 	-- Try to convert the second parameter to a number. If it's not a number, treat it as a storage name
 	local storageKey = tonumber(split[2])
 	if storageKey == nil then

@@ -1,6 +1,6 @@
 -- Script for set teleport destination
 -- /pullPlayer playerName
-local pullPlayerToCurrentLocation = TalkAction("/pullPlayer", "/pp")
+local pullPlayerToCurrentLocation = TalkAction("/pullplayer", "/pp")
 
 function pullPlayerToCurrentLocation.onSay(player, words, param)
 	-- create log

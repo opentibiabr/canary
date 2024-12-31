@@ -11,6 +11,7 @@
 
 #include "declarations.hpp"
 
+// TODO: move to .cpp for avoid circular dependencies
 #include "config/configmanager.hpp"
 #include "map/house/house.hpp"
 #include "items/item.hpp"
@@ -32,7 +33,7 @@ public:
 		if (map->monsterfile.empty()) {
 			// OTBM file doesn't tell us about the monsterfile,
 			// Lets guess it is mapname-monster.xml.
-			map->monsterfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->monsterfile = g_configManager().getString(MAP_NAME);
 			map->monsterfile += "-monster.xml";
 		}
 
@@ -48,7 +49,7 @@ public:
 		if (map->zonesfile.empty()) {
 			// OTBM file doesn't tell us about the zonesfile,
 			// Lets guess it is mapname-zone.xml.
-			map->zonesfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->zonesfile = g_configManager().getString(MAP_NAME);
 			map->zonesfile += "-zones.xml";
 		}
 
@@ -64,7 +65,7 @@ public:
 		if (map->npcfile.empty()) {
 			// OTBM file doesn't tell us about the npcfile,
 			// Lets guess it is mapname-npc.xml.
-			map->npcfile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->npcfile = g_configManager().getString(MAP_NAME);
 			map->npcfile += "-npc.xml";
 		}
 
@@ -80,7 +81,7 @@ public:
 		if (map->housefile.empty()) {
 			// OTBM file doesn't tell us about the housefile,
 			// Lets guess it is mapname-house.xml.
-			map->housefile = g_configManager().getString(MAP_NAME, __FUNCTION__);
+			map->housefile = g_configManager().getString(MAP_NAME);
 			map->housefile += "-house.xml";
 		}
 
@@ -157,8 +158,8 @@ private:
 
 class IOMapException : public std::exception {
 public:
-	explicit IOMapException(const std::string &msg) :
-		message(msg) { }
+	explicit IOMapException(std::string msg) :
+		message(std::move(msg)) { }
 
 	const char* what() const noexcept override {
 		return message.c_str();

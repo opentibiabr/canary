@@ -181,14 +181,13 @@ ChestUnique = {
 		reward = { { 2970, 1 } },
 		storage = Storage.Quest.Key.ID3899,
 	},
+	-- The Secret Library Quest
 	[5012] = {
 		isKey = true,
 		itemId = 23740,
 		itemPos = { x = 33377, y = 31321, z = 1 },
 		reward = { { 2969, 1 } },
 		storage = Storage.Quest.Key.ID0909,
-		timerStorage = Storage.TheSecretLibrary.FalconBastionChestsTimer.Key0909,
-		time = 24, -- hour
 	},
 	-- Bear Room Quest (rookgaard) key 4601
 	[5013] = {
@@ -1064,14 +1063,14 @@ ChestUnique = {
 		itemPos = { x = 32782, y = 32910, z = 8 },
 		reward = { { 4827, 1 } },
 		weight = 0.20,
-		storage = Storage.QuestChests.WhisperMoss,
+		storage = Storage.Quest.U7_6.WhisperMoss,
 	},
 	[6103] = { -- Ape city
 		itemId = 2473,
 		itemPos = { x = 32935, y = 32886, z = 7 },
 		reward = { { 4831, 1 } },
 		weight = 2.00,
-		storage = Storage.QuestChests.OldParchment,
+		storage = Storage.Quest.U7_6.OldParchment,
 	},
 	[6104] = {
 		itemId = 2472,
@@ -1080,12 +1079,13 @@ ChestUnique = {
 		weight = 15.00,
 		storage = Storage.Quest.U8_54.TomesOfKnowledge.TopTower,
 	},
+	-- The Secret Library Quest
 	[6105] = {
 		itemId = 23741,
 		itemPos = { x = 33352, y = 31318, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.Coast,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Coast,
 		time = 24, -- hour
 	},
 	[6106] = {
@@ -1093,7 +1093,7 @@ ChestUnique = {
 		itemPos = { x = 33384, y = 31285, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.Island,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Island,
 		time = 24, -- hour
 	},
 	[6107] = {
@@ -1101,7 +1101,7 @@ ChestUnique = {
 		itemPos = { x = 33366, y = 31323, z = 5 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.ThroneHall,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.ThroneHall,
 		time = 24, -- hour
 	},
 	[6108] = {
@@ -1109,7 +1109,7 @@ ChestUnique = {
 		itemPos = { x = 33374, y = 31340, z = 4 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.Shortcut,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Shortcut,
 		time = 24, -- hour
 	},
 	[6109] = {
@@ -1117,7 +1117,7 @@ ChestUnique = {
 		itemPos = { x = 33324, y = 31268, z = 8 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.LowerBastion,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.LowerBastion,
 		time = 24, -- hour
 	},
 	[6110] = {
@@ -1125,7 +1125,7 @@ ChestUnique = {
 		itemPos = { x = 33308, y = 31304, z = 9 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionChestsTimer.UndergroundBastion,
+		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.UndergroundBastion,
 		time = 24, -- hour
 	},
 	-- Blood Herb Quest
@@ -1770,20 +1770,22 @@ ChestUnique = {
 	},
 	-- Witch House Quest
 	[6188] = {
+		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32867, y = 31909, z = 8 },
 		weight = 23.30,
 		container = 2853,
 		reward = { { 3027, 2 }, { 3008, 1 }, { 3031, 100 } },
-		storage = Storage.QuestChests.WitchHouseQuest,
+		questName = "WitchHouseQuest",
 	},
 	-- Simon The Beggar's Favorite Staff
 	[6189] = {
+		useKV = true,
 		itemId = 2482,
 		itemPos = { x = 33167, y = 31600, z = 15 },
 		weight = 38.00,
 		reward = { { 6107, 1 } },
-		storage = Storage.QuestChests.SimonTheBeggarsFavoriteStaff,
+		questName = "SimonTheBeggarsFavoriteStaff",
 	},
 	-- Druid Outfit Quest - Wolf Tooth Chain
 	[6190] = {
@@ -2267,14 +2269,14 @@ ChestUnique = {
 		itemPos = { x = 32591, y = 31647, z = 3 },
 		reward = { { 3425, 1 } },
 		weight = 55.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.DwarvenShield,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.DwarvenShield,
 	},
 	[6254] = {
 		itemId = 2472,
 		itemPos = { x = 32590, y = 31647, z = 3 },
 		reward = { { 3282, 1 } },
 		weight = 54.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.MorningStar,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.MorningStar,
 	},
 	[6255] = {
 		itemId = 2434,
@@ -2282,7 +2284,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 237, 1 }, { 3147, 1 }, { 3059, 1 } },
 		weight = 31.00,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.BP1,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP1,
 	},
 	[6256] = {
 		itemId = 2434,
@@ -2290,7 +2292,7 @@ ChestUnique = {
 		container = 2853,
 		reward = { { 3028, 2 }, { 3031, 100 } },
 		weight = 18.20,
-		storage = Storage.TibiaTales.ToBlindTheEnemy.BP2,
+		storage = Storage.Quest.U8_1.ToBlindTheEnemy.BP2,
 	},
 	-- To Outfox a Fox Quest
 	[6257] = {
@@ -2298,7 +2300,7 @@ ChestUnique = {
 		itemPos = { x = 32467, y = 31970, z = 5 },
 		reward = { { 139, 1 } },
 		weight = 7.00,
-		storage = Storage.TibiaTales.ToOutfoxAFoxQuest.MiningHelmet,
+		storage = Storage.Quest.U8_1.ToOutfoxAFoxQuest.MiningHelmet,
 	},
 	-- Waterfall Quest
 	[6258] = {
@@ -2523,7 +2525,7 @@ ChestUnique = {
 		itemPos = { x = 33004, y = 31530, z = 10 },
 		reward = { { 11699, 1 } },
 		weight = 15.00,
-		storage = Storage.TibiaTales.AnInterestInBotany.BotanyAlmanach,
+		storage = Storage.Quest.U8_6.AnInterestInBotany.BotanyAlmanach,
 	},
 	-- Wrath of the Emperor Quest
 	[6297] = {
@@ -2563,6 +2565,215 @@ ChestUnique = {
 		itemPos = { x = 32138, y = 32171, z = 3 },
 		reward = { { 3725, 5 } },
 		questName = "Rookgaard05BrownMushrooms",
+	},
+	-- Dark Trails Quest
+	[6302] = {
+		itemId = 2469,
+		itemPos = { x = 33457, y = 32073, z = 8 },
+		reward = { { 11450, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_50.DarkTrails.RewardSmallNotebook,
+	},
+	[6303] = {
+		itemId = 2478,
+		itemPos = { x = 33468, y = 32083, z = 8 },
+		container = 2853,
+		reward = { { 21203, 5 }, { 21333, 1 } },
+		weight = 189.00,
+		storage = Storage.Quest.U10_50.DarkTrails.Reward05GlothAndBelongings,
+	},
+	[6304] = {
+		itemId = 2478,
+		itemPos = { x = 33487, y = 32085, z = 9 },
+		container = 2853,
+		reward = { { 21203, 10 }, { 21334, 1 } },
+		weight = 338.00,
+		storage = Storage.Quest.U10_50.DarkTrails.Reward10GlothAndBelongings,
+	},
+	-- Nightmare Teddy Quest
+	[6305] = {
+		useKV = true,
+		itemId = 2433,
+		itemPos = { x = 33444, y = 32605, z = 11 },
+		reward = { { 21982, 1 } },
+		weight = 6.00,
+		questName = "NightmareTeddyQuest",
+	},
+	-- Ferumbras' Ascension Quest
+	[6306] = {
+		itemId = 1983,
+		itemPos = { x = 33384, y = 32323, z = 12 },
+		reward = { { 22160, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TheRiteOfEternalNight,
+	},
+	[6307] = {
+		itemId = 1986,
+		itemPos = { x = 33393, y = 32373, z = 11 },
+		reward = { { 22158, 1 } },
+		weight = 15.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.StoneCoffinsBones,
+	},
+	[6309] = {
+		itemId = 21818,
+		itemPos = { x = 33408, y = 32396, z = 11 },
+		reward = { { 9685, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.VampireTeeth,
+	},
+	-- Forgotten Knowledge Quest
+	[6310] = {
+		useKV = true,
+		itemId = 23736,
+		itemPos = { x = 32825, y = 31664, z = 9 },
+		reward = { { 23734, 1 } },
+		weight = 6.00,
+		questName = "GhostsilverLanternQuest",
+	},
+	[6311] = {
+		useKV = true,
+		itemId = 21858,
+		itemPos = { x = 32883, y = 31686, z = 10 },
+		reward = { { 23732, 1 } },
+		weight = 4.00,
+		questName = "PaintingOfAGirlQuest",
+	},
+	[6312] = {
+		useKV = true,
+		itemId = 9253,
+		itemPos = { x = 33026, y = 31662, z = 14 },
+		reward = { { 24964, 1 } },
+		weight = 3.00,
+		questName = "ImbuingCrystalQuest",
+	},
+	-- Cults of Tibia Quest
+	[6313] = {
+		useKV = true,
+		itemId = 2472,
+		itemPos = { x = 32739, y = 31426, z = 8 },
+		reward = { { 10420, 5 } },
+		weight = 8.00,
+		questName = "PetrifiedScreamQuest",
+	},
+	-- The Secret Library Quest
+	[6314] = {
+		itemId = 2472,
+		itemPos = { x = 33231, y = 32017, z = 8 },
+		reward = { { 27874, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.SampleBlood,
+	},
+	[6315] = {
+		itemId = 2472,
+		itemPos = { x = 33212, y = 32081, z = 9 },
+		reward = { { 27847, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BonyRod,
+	},
+	[6316] = {
+		itemId = 2472,
+		itemPos = { x = 33342, y = 32120, z = 10 },
+		reward = { { 25746, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.BrokenCompass,
+	},
+	[6317] = {
+		itemId = 28517,
+		itemPos = { x = 32826, y = 32772, z = 10 },
+		reward = { { 28518, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.SkeletonNotes,
+	},
+	[6318] = {
+		itemId = 28522,
+		itemPos = { x = 32828, y = 32772, z = 10 },
+		reward = { { 28490, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.StrandHair,
+	},
+	[6319] = {
+		itemId = 1992,
+		itemPos = { x = 32874, y = 32760, z = 10 },
+		reward = { { 28476, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.LotusKey,
+	},
+	[6320] = {
+		itemId = 27490,
+		itemPos = { x = 32836, y = 32820, z = 10 },
+		reward = { { 28477, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.EyeKey,
+	},
+	[6321] = {
+		itemId = 6560,
+		itemPos = { x = 32872, y = 32817, z = 10 },
+		reward = { { 28515, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.ScribbledNotes,
+	},
+	[6322] = {
+		itemId = 4077,
+		itemPos = { x = 32877, y = 32795, z = 11 },
+		reward = { { 28491, 1 } },
+		weight = 9.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.EbonyPiece,
+	},
+	[6323] = {
+		itemId = 23741,
+		itemPos = { x = 32833, y = 32759, z = 11 },
+		reward = { { 28710, 1 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.PeacockBallad,
+	},
+	[6324] = {
+		itemId = 9794,
+		itemPos = { x = 32890, y = 32768, z = 9 },
+		reward = { { 28494, 1 } },
+		weight = 3.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.SilverChimes,
+	},
+	[6325] = {
+		itemId = 23741,
+		itemPos = { x = 32852, y = 32744, z = 11 },
+		reward = { { 28489, 1 } },
+		weight = 20.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.Asuras.BlackSkull,
+	},
+	[6326] = {
+		itemId = 28828,
+		itemPos = { x = 32013, y = 32447, z = 8 },
+		reward = { { 28650, 1 } },
+		weight = 2.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Parchment,
+	},
+	[6327] = {
+		itemId = 2523,
+		itemPos = { x = 32096, y = 31757, z = 8 },
+		reward = { { 675, 2 } },
+		weight = 1.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Sapphire,
+	},
+	[6328] = {
+		itemId = 4242,
+		itemPos = { x = 32460, y = 32934, z = 8 },
+		reward = { { 3483, 1 } },
+		weight = 9.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Fishing,
+	},
+	[6329] = {
+		itemId = 6560,
+		itemPos = { x = 32460, y = 32940, z = 7 },
+		reward = { { 3457, 1 } },
+		weight = 35.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Shovel,
+	},
+	[6330] = {
+		itemId = 5951,
+		itemPos = { x = 32025, y = 32469, z = 7 },
+		reward = { { 28707, 1 } },
+		weight = 6.00,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Hawser,
 	},
 	-- Reward of others scrips files (varied rewards)
 	-- The First dragon Quest

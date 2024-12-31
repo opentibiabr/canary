@@ -9,49 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class GlobalFunctions final : LuaScriptInterface {
+class GlobalFunctions {
 public:
-	static void init(lua_State* L) {
-		lua_register(L, "addEvent", GlobalFunctions::luaAddEvent);
-		lua_register(L, "cleanMap", GlobalFunctions::luaCleanMap);
-		lua_register(L, "createCombatArea", GlobalFunctions::luaCreateCombatArea);
-		lua_register(L, "debugPrint", GlobalFunctions::luaDebugPrint);
-		lua_register(L, "doAddContainerItem", GlobalFunctions::luaDoAddContainerItem);
-		lua_register(L, "doAreaCombatCondition", GlobalFunctions::luaDoAreaCombatCondition);
-		lua_register(L, "doAreaCombatDispel", GlobalFunctions::luaDoAreaCombatDispel);
-		lua_register(L, "doAreaCombatHealth", GlobalFunctions::luaDoAreaCombatHealth);
-		lua_register(L, "doAreaCombatMana", GlobalFunctions::luaDoAreaCombatMana);
-		lua_register(L, "doChallengeCreature", GlobalFunctions::luaDoChallengeCreature);
-		lua_register(L, "doPlayerAddItem", GlobalFunctions::luaDoPlayerAddItem);
-		lua_register(L, "doTargetCombatCondition", GlobalFunctions::luaDoTargetCombatCondition);
-		lua_register(L, "doTargetCombatDispel", GlobalFunctions::luaDoTargetCombatDispel);
-		lua_register(L, "doTargetCombatHealth", GlobalFunctions::luaDoTargetCombatHealth);
-		lua_register(L, "doTargetCombatMana", GlobalFunctions::luaDoTargetCombatMana);
-		lua_register(L, "getDepotId", GlobalFunctions::luaGetDepotId);
-		lua_register(L, "getWaypointPositionByName", GlobalFunctions::luaGetWaypointPositionByName);
-		lua_register(L, "getWorldLight", GlobalFunctions::luaGetWorldLight);
-		lua_register(L, "getWorldTime", GlobalFunctions::luaGetWorldTime);
-		lua_register(L, "getWorldUpTime", GlobalFunctions::luaGetWorldUpTime);
-		lua_register(L, "isDepot", GlobalFunctions::luaIsDepot);
-		lua_register(L, "isInWar", GlobalFunctions::luaIsInWar);
-		lua_register(L, "isMovable", GlobalFunctions::luaIsMovable);
-		lua_register(L, "isValidUID", GlobalFunctions::luaIsValidUID);
-		lua_register(L, "saveServer", GlobalFunctions::luaSaveServer);
-		lua_register(L, "sendChannelMessage", GlobalFunctions::luaSendChannelMessage);
-		lua_register(L, "sendGuildChannelMessage", GlobalFunctions::luaSendGuildChannelMessage);
-		lua_register(L, "stopEvent", GlobalFunctions::luaStopEvent);
-
-		registerGlobalVariable(L, "INDEX_WHEREEVER", INDEX_WHEREEVER);
-		registerGlobalBoolean(L, "VIRTUAL_PARENT", true);
-		registerGlobalMethod(L, "isType", GlobalFunctions::luaIsType);
-		registerGlobalMethod(L, "rawgetmetatable", GlobalFunctions::luaRawGetMetatable);
-		registerGlobalMethod(L, "createTable", GlobalFunctions::luaCreateTable);
-		registerGlobalMethod(L, "systemTime", GlobalFunctions::luaSystemTime);
-		registerGlobalMethod(L, "getFormattedTimeRemaining", GlobalFunctions::luaGetFormattedTimeRemaining);
-		registerGlobalMethod(L, "reportError", GlobalFunctions::luaReportError);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaAddEvent(lua_State* L);

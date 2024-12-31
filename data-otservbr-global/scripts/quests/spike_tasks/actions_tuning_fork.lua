@@ -1,6 +1,6 @@
 local spikeTasksFork = Action()
 function spikeTasksFork.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({ -1, 7 }, player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN)) then
+	if table.contains({ -1, 7 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main)) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 
@@ -8,8 +8,8 @@ function spikeTasksFork.onUse(player, item, fromPosition, target, toPosition, is
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 
-	local sum = player:getStorageValue(SPIKE_UPPER_PACIFIER_MAIN) + 1
-	player:setStorageValue(SPIKE_UPPER_PACIFIER_MAIN, sum)
+	local sum = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main) + 1
+	player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Upper_Pacifier_Main, sum)
 
 	if sum == 7 then
 		item:remove()

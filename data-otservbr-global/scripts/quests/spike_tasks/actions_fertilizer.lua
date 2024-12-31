@@ -4,7 +4,7 @@ end
 
 local spikeTasksFertilizer = Action()
 function spikeTasksFertilizer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if table.contains({ -1, 4 }, player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN)) then
+	if table.contains({ -1, 4 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Mushroom_Main)) then
 		return false
 	end
 
@@ -22,8 +22,8 @@ function spikeTasksFertilizer.onUse(player, item, fromPosition, target, toPositi
 	end
 
 	table.insert(FERTILIZED_MUSHROOMS[player:getGuid()], mushPos)
-	local sum = player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN) + 1
-	player:setStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN, sum)
+	local sum = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Mushroom_Main) + 1
+	player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Mushroom_Main, sum)
 
 	if sum == 4 then
 		item:remove()

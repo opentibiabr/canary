@@ -63,20 +63,20 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("Do you want to buy a bottle of cough syrup for 50 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TibiaTales.TheExterminator) == -1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.TheExterminator) == -1 then
 			npcHandler:say({
 				"Oh " .. player:getName() .. ", thank god you came to me. Last night, I had a vision about an upcoming plague here in Carlin. ...",
 				"It will originate from slimes that will swarm out of the sewers and infect every citizen with a deadly disease. Are you willing to help me save Carlin?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.TibiaTales.TheExterminator) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.TheExterminator) == 1 then
 			npcHandler:say("You MUST find that slime pool immediately or life here in Carlin will not be the same anymore.", npc, creature)
-		elseif player:getStorageValue(Storage.TibiaTales.TheExterminator) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.TheExterminator) == 2 then
 			local itemId = { 3033, 3032, 3030, 3029 }
 			for i = 1, #itemId do
 				player:addItem(itemId[i], 1)
 			end
-			player:setStorageValue(Storage.TibiaTales.TheExterminator, 3)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.TheExterminator, 3)
 			npcHandler:say("You did it! Even if only few of the Carliners will ever know about that, you saved all of their lives. Here, take this as a reward. Farewell!", npc, creature)
 		else
 			npcHandler:say("Maybe the guards have something to do for you or know someone who could need some help.", npc, creature)
@@ -92,7 +92,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addItem(4828, 1)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			player:addItem(135, 1)
-			player:setStorageValue(Storage.TibiaTales.TheExterminator, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.TheExterminator, 1)
 			npcHandler:say({
 				"I knew I could count on you. Take this highly intensified vermin poison. In my vision, I saw some kind of 'pool' where these slimes came from. ...",
 				"Pour the poison in the water to stop the demise of Carlin. Tell me about your mission after you fulfilled your task.",

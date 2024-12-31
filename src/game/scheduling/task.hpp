@@ -13,9 +13,9 @@ class Dispatcher;
 
 class Task {
 public:
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, const std::source_location &location = std::source_location::current());
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context);
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true, const std::source_location &location = std::source_location::current());
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true);
 
 	~Task() = default;
 
@@ -35,10 +35,6 @@ public:
 
 	[[nodiscard]] std::string_view getContext() const {
 		return context;
-	}
-
-	[[nodiscard]] std::string_view getFunctionName() const {
-		return functionName;
 	}
 
 	[[nodiscard]] auto getTime() const {
@@ -70,15 +66,15 @@ private:
 		const static std::unordered_set<std::string_view> tasksContext = {
 			"Decay::checkDecay",
 			"Dispatcher::asyncEvent",
-			"Game::checkCreatureAttack",
+			"Creature::checkCreatureAttack",
 			"Game::checkCreatureWalk",
 			"Game::checkCreatures",
 			"Game::checkImbuements",
 			"Game::checkLight",
 			"Game::createFiendishMonsters",
 			"Game::createInfluencedMonsters",
-			"Game::updateCreatureWalk",
 			"Game::updateForgeableMonsters",
+			"Game::addCreatureCheck",
 			"GlobalEvents::think",
 			"LuaEnvironment::executeTimerEvent",
 			"Modules::executeOnRecvbyte",
@@ -106,7 +102,6 @@ private:
 
 	std::function<void(void)> func;
 	std::string context;
-	std::string functionName;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;

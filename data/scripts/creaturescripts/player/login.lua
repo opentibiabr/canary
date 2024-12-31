@@ -80,7 +80,7 @@ function playerLoginGlobal.onLogin(player)
 	end
 
 	-- Send Recruiter Outfit
-	local resultId = db.storeQuery("SELECT `recruiter` FROM `accounts` WHERE `id`= " .. getAccountNumberByPlayerName(getPlayerName(player)))
+	local resultId = db.storeQuery("SELECT `recruiter` FROM `accounts` WHERE `id`= " .. Game.getPlayerAccountId(getPlayerName(player)))
 	if resultId then
 		local recruiterStatus = Result.getNumber(resultId, "recruiter")
 		local sex = player:getSex()
@@ -118,19 +118,19 @@ function playerLoginGlobal.onLogin(player)
 
 	-- Updates the player's VIP status and executes corresponding actions if applicable.
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-		local isVipNow = player:isVip()
-		local wasVip = player:kv():scoped("account"):get("vip-system") or false
+		local isCurrentlyVip = player:isVip()
+		local hadVipStatus = player:kv():scoped("account"):get("vip-system") or false
 
-		if wasVip ~= isVipNow then
-			if wasVip then
+		if hadVipStatus ~= isCurrentlyVip then
+			if hadVipStatus then
 				player:onRemoveVip()
 			else
 				player:onAddVip(player:getVipDays())
 			end
 		end
 
-		if isVipNow then
-			CheckPremiumAndPrint(player, MESSAGE_LOGIN)
+		if isCurrentlyVip then
+			player:sendVipStatus()
 		end
 	end
 

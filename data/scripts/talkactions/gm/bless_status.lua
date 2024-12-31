@@ -1,4 +1,4 @@
-dofile(CORE_DIRECTORY .. "/modules/scripts/blessings/blessings.lua")
+dofile(CORE_DIRECTORY .. "/libs/systems/blessing.lua")
 
 local blessStatus = TalkAction("/bless")
 
@@ -6,7 +6,7 @@ function blessStatus.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	Blessings.sendBlessStatus(player)
+	player:sendBlessStatus()
 	return true
 end
 

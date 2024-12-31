@@ -259,6 +259,9 @@ public:
 		}
 	}
 
+	// This method maintains safety in asynchronous calls, avoiding competition between threads.
+	void safeCall(std::function<void(void)> &&action) const;
+
 private:
 	void onAddTileItem(const std::shared_ptr<Item> &item);
 	void onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType);
@@ -285,6 +288,8 @@ class DynamicTile : public Tile {
 	CreatureVector creatures;
 
 public:
+	explicit DynamicTile(const Position &position) :
+		Tile(position.x, position.y, position.z) { }
 	DynamicTile(uint16_t x, uint16_t y, uint8_t z) :
 		Tile(x, y, z) { }
 
@@ -320,6 +325,8 @@ class StaticTile final : public Tile {
 	std::unique_ptr<CreatureVector> creatures;
 
 public:
+	explicit StaticTile(const Position &position) :
+		Tile(position.x, position.y, position.z) { }
 	StaticTile(uint16_t x, uint16_t y, uint8_t z) :
 		Tile(x, y, z) { }
 

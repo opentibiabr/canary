@@ -9,8 +9,10 @@
 
 #include "io/functions/iologindata_load_player.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
+#include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
@@ -30,6 +32,7 @@
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
+#include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
@@ -677,8 +680,14 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 		ItemsMap inboxItems;
 		loadItems(inboxItems, result, player);
 
-		for (auto it = inboxItems.rbegin(), end = inboxItems.rend(); it != end; ++it) {
-			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
+		const auto &playerInbox = player->getInbox();
+		if (!playerInbox) {
+			g_logger().warn("[{}] - Player inbox nullptr", __FUNCTION__);
+			return;
+		}
+
+		for (const auto &it : std::ranges::reverse_view(inboxItems)) {
+			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it.second;
 			const auto &item = pair.first;
 			if (!item) {
 				continue;
@@ -686,7 +695,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 
 			int32_t pid = pair.second;
 			if (pid >= 0 && pid < 100) {
-				player->getInbox()->internalAddThing(item);
+				playerInbox->internalAddThing(item);
 				item->startDecaying();
 			} else {
 				auto inboxIt = inboxItems.find(pid);

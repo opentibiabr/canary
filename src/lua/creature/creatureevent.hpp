@@ -9,14 +9,21 @@
 
 #pragma once
 
-#include "lua/scripts/scripts.hpp"
+#include "lua/lua_definitions.hpp"
 
 class CreatureEvent;
 class LuaScriptInterface;
+class Creature;
+class Player;
+class Item;
 
-class CreatureEvent final : public Script {
+struct CombatDamage;
+
+enum skills_t : int8_t;
+
+class CreatureEvent {
 public:
-	explicit CreatureEvent(LuaScriptInterface* interface);
+	explicit CreatureEvent();
 
 	CreatureEventType_t getEventType() const {
 		return type;
@@ -53,17 +60,23 @@ public:
 	void executeHealthChange(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatDamage &damage) const;
 	void executeManaChange(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatDamage &damage) const;
 	void executeExtendedOpcode(const std::shared_ptr<Player> &player, uint8_t opcode, const std::string &buffer) const;
-	//
+
+	std::string getScriptTypeName() const;
+	LuaScriptInterface* getScriptInterface() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
 
 private:
-	std::string getScriptTypeName() const override;
+	int32_t m_scriptId {};
 
 	std::string eventName;
 	CreatureEventType_t type = CREATURE_EVENT_NONE;
 	bool loaded = false;
 };
 
-class CreatureEvents final : public Scripts {
+class CreatureEvents {
 public:
 	CreatureEvents() = default;
 

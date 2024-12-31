@@ -27,8 +27,6 @@ local setting = {
 	[2966] = { effect = CONST_ME_SOUND_RED }, -- war drum
 	[3103] = { effect = CONST_ME_SOUND_YELLOW, itemId = 3592, itemCount = 10, chance = 80, remove = true }, -- cornucopia
 	[5786] = { effects = { failure = CONST_ME_SOUND_RED, success = CONST_ME_SOUND_YELLOW }, monster = "war wolf", chance = 60, remove = true }, -- wooden whistle
-	[6572] = { effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 6573, decayId = 6572 }, -- party trumpet
-	[6573] = { effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 6572, decayId = 6573 }, -- party trumpet
 	[12602] = { effect = CONST_ME_SOUND_BLUE }, -- small whistle (actual effect is unknown)
 	[23725] = { effect = CONST_ME_SOUND_WHITE }, -- small crystal bell
 }

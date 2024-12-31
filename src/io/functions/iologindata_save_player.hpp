@@ -12,6 +12,7 @@
 #include "io/iologindata.hpp"
 
 class PropWriteStream;
+class DBInsert;
 
 class IOLoginDataSave : public IOLoginData {
 public:

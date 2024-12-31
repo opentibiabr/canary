@@ -173,7 +173,6 @@ public:
 	bool placeCreature(const std::shared_ptr<Creature> &creature, const Position &pos, bool extendedPos = false, bool force = false);
 
 	bool removeCreature(const std::shared_ptr<Creature> &creature, bool isLogout = true);
-	void executeDeath(uint32_t creatureId);
 
 	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
 	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
@@ -289,6 +288,17 @@ public:
 
 	void playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 	static std::string getSkillNameById(uint8_t &skill);
+
+	// House Auction
+	void playerCyclopediaHousesByTown(uint32_t playerId, const std::string &townName);
+	void playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue);
+	void playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
+	void playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, uint32_t timestamp, const std::string &newOwnerName, uint64_t bidValue);
+	void playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t houseId);
+	bool processBankAuction(std::shared_ptr<Player> player, const std::shared_ptr<House> &house, uint64_t bid, bool replace = false);
 
 	void updatePlayerSaleItems(uint32_t playerId);
 
@@ -437,9 +447,6 @@ public:
 	void setGameState(GameState_t newState);
 
 	// Events
-	void checkCreatureWalk(uint32_t creatureId);
-	void updateCreatureWalk(uint32_t creatureId);
-	void checkCreatureAttack(uint32_t creatureId);
 	void checkCreatures();
 	void checkLight();
 

@@ -10911,7 +10911,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 		case OfferTypes_t::BLESSINGS: {
 			auto blessId = offer->getID();
 			if (!magic_enum::enum_contains<Blessings>(blessId)) {
-				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, player->getName());
+				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __FUNCTION__, blessId, player->getName());
 				break;
 			}
 
@@ -11063,7 +11063,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 
 		auto offerAmount = offer->getCount();
 		auto pricePerItem = offerPrice ? offerPrice / offerAmount : 0;
-		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __METHOD_NAME__, offerPrice, offerAmount, pricePerItem);
+		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __FUNCTION__, offerPrice, offerAmount, pricePerItem);
 		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_SELL, offer->getName());
 	} else {
 		player->sendStoreError(StoreErrors_t::PURCHASE, errorMessage);

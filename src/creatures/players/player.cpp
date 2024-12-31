@@ -9748,7 +9748,7 @@ bool Player::canBuyStoreOffer(const Offer* offer) {
 			auto blessId = offer->getID();
 			if (!magic_enum::enum_contains<Blessings>(blessId)) {
 				sendStoreError(StoreErrors_t::PURCHASE, "An error has occurred, please contact your administrator.");
-				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __METHOD_NAME__, blessId, getName());
+				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __FUNCTION__, blessId, getName());
 				break;
 			}
 

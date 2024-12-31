@@ -48,6 +48,7 @@ class Container;
 class KV;
 class BedItem;
 class Npc;
+class Offer;
 
 struct ModalWindow;
 struct Achievement;
@@ -61,9 +62,13 @@ struct Group;
 struct Outfit_t;
 struct TextMessage;
 struct HighscoreCharacter;
+struct StoreDetail;
+struct StoreHistory;
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
+enum class StoreErrors_t : uint8_t;
+enum class StoreDetailType : uint8_t;
 enum ObjectCategory_t : uint8_t;
 enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;
@@ -166,6 +171,12 @@ public:
 	}
 	void setName(const std::string &name) {
 		this->name = name;
+	}
+	const std::string &getNewName() const {
+		return m_newName;
+	}
+	void setNewName(const std::string &newName) {
+		this->m_newName = newName;
 	}
 	const std::string &getTypeName() const override {
 		return name;
@@ -879,7 +890,7 @@ public:
 	void sendChannelsDialog() const;
 	void sendOpenPrivateChannel(const std::string &receiver) const;
 	void sendExperienceTracker(int64_t rawExp, int64_t finalExp) const;
-	void sendOutfitWindow() const;
+	void sendOutfitWindow(uint16_t tryOutfit = 0, uint16_t tryMount = 0) const;
 	// Imbuements
 	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm);
 	void onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot);
@@ -1264,6 +1275,20 @@ public:
 
 	uint16_t getPlayerVocationEnum() const;
 
+	// Store functions
+	void openStore();
+	void sendStoreHistory(uint32_t page) const;
+	void sendStoreSuccess(const std::string &successMessage);
+	void sendStoreError(StoreErrors_t errorType, const std::string &errorMessage);
+	std::vector<StoreHistory> &getStoreHistory();
+	void setStoreHistory(const StoreHistory &history);
+	void addStoreHistory(bool fromMarket, const std::string &playerName, time_t createdAt, uint32_t coinAmount, StoreDetailType type, MarketAction_t action, const std::string &description, uint64_t totalPrice = 0);
+	void addStoreDetail(const std::string &description, int32_t coinAmount, int createdAt, bool isGold = false) const;
+	std::vector<std::pair<std::string, StoreDetail>> getStoreHistoryDetails(int32_t createdAt) const;
+	std::shared_ptr<KV> getStoreHistoryScope(int32_t createdAt) const;
+	std::shared_ptr<KV> getStoreDetailScope(int32_t createdAt) const;
+	bool canBuyStoreOffer(const Offer* offer);
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1350,6 +1375,7 @@ private:
 
 	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
 	std::vector<ForgeHistory> forgeHistoryVector;
+	std::vector<StoreHistory> storeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;
 
@@ -1371,6 +1397,7 @@ private:
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
 	std::string name;
+	std::string m_newName;
 	std::string guildNick;
 	std::string loyaltyTitle;
 

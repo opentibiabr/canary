@@ -88,7 +88,7 @@ public:
 		auto it = listNames.find(s);
 		if (it == listNames.end()) {
 			g_logger().error("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-			return T();
+			return {};
 		}
 
 		if (row[it->second] == nullptr) {
@@ -154,7 +154,6 @@ public:
 			g_logger().error("Column '{}' has a value out of range, error code: {}", s, e.what());
 			data = T();
 		}
-
 		return data;
 	}
 

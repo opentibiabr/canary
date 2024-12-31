@@ -9,13 +9,22 @@
 
 #pragma once
 
-enum class CoinTransactionType : uint8_t {
-	Add = 1,
-	Remove = 2
-};
+#include "kv/value_wrapper_proto.hpp"
 
-enum class CoinType : uint8_t {
-	Normal = 0,
-	Transferable = 1,
-	Tournament = 2
+class ValueWrapper;
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string>
+	#include <cstdint>
+#endif
+
+struct StoreDetail {
+	std::string description;
+	int32_t coinAmount {};
+	int createdAt {};
+	bool isGold {};
+
+	std::string toString() const;
+	ValueWrapper serialize() const;
+	static StoreDetail deserialize(const ValueWrapper &val);
 };

@@ -131,7 +131,7 @@ AccountErrors_t Account::removeCoins(CoinType type, const uint32_t &amount, cons
 	}
 
 	if (coins < amount) {
-		g_logger().info("Account doesn't have enough coins! current[{}], remove:[{}]", coins, amount);
+		g_logger().info("Account {} doesn't have enough coins! current[{}], remove:[{}]", getID(), coins, amount);
 		return RemoveCoins;
 	}
 
@@ -158,6 +158,24 @@ void Account::registerCoinTransaction(CoinTransactionType transactionType, CoinT
 			"Failed to register transaction: 'account:[{}], transaction "
 			"type:[{}], coins:[{}], coin type:[{}], description:[{}]",
 			m_account->id, transactionType, amount, type, detail
+		);
+	}
+}
+
+void Account::registerStoreTransaction(CoinTransactionType type, const uint32_t &amount, CoinType coinType, const std::string &description, const time_t &time) {
+	if (!m_accLoaded) {
+		return;
+	}
+
+	if (description.empty()) {
+		return;
+	}
+
+	if (!g_accountRepository().registerStoreTransaction(m_account->id, type, amount, coinType, description, time)) {
+		g_logger().error(
+			"Failed to register transaction: 'account:[{}], transaction "
+			"type:[{}], coins:[{}], coin type:[{}], description:[{}], time:[{}]",
+			m_account->id, type, amount, type, description, time
 		);
 	}
 }

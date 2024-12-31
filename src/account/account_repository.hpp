@@ -43,6 +43,15 @@ public:
 		CoinType coinType,
 		const std::string &description
 	) = 0;
+
+	virtual bool registerStoreTransaction(
+		const uint32_t &id,
+		CoinTransactionType type,
+		uint32_t amount,
+		CoinType coinType,
+		const std::string &description,
+		const time_t &time
+	) = 0;
 };
 
 constexpr auto g_accountRepository = AccountRepository::getInstance;

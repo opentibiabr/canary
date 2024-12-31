@@ -29,6 +29,7 @@ enum Slots_t : uint8_t;
 enum CombatType_t : uint8_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
+enum class StoreErrors_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -47,6 +48,8 @@ class Party;
 class Creature;
 class MonsterType;
 class Npc;
+class Offer;
+class Category;
 
 struct ModalWindow;
 struct Position;
@@ -59,6 +62,8 @@ struct ShopBlock;
 struct MarketOfferEx;
 struct HistoryMarketOffer;
 struct LightInfo;
+struct StoreDetail;
+struct StoreHistoryDetail;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
@@ -133,6 +138,7 @@ private:
 
 	// Parse methods
 	void parseAutoWalk(NetworkMessage &msg);
+	void parseGetOutfit(NetworkMessage &msg);
 	void parseSetOutfit(NetworkMessage &msg);
 	void parseSay(NetworkMessage &msg);
 	void parseLookAt(NetworkMessage &msg);
@@ -174,7 +180,6 @@ private:
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
-	void parseOfferDescription(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
@@ -304,6 +309,27 @@ private:
 	void sendBosstiaryCooldownTimer();
 	void sendBosstiaryEntryChanged(uint32_t bossid);
 
+	// Store Functions
+	void parseOpenStore();
+	void parseOfferDescription(NetworkMessage &msg);
+	void parseCoinTransfer(NetworkMessage &msg);
+	void parseRequestStoreOffers(NetworkMessage &msg);
+	void parseBuyStoreOffer(NetworkMessage &msg);
+	void parseOpenStoreHistory(NetworkMessage &msg);
+	void parseRequestStoreHistory(NetworkMessage &msg);
+
+	void openStore();
+	void sendStoreHome();
+	void sendOfferBytes(NetworkMessage &msg, const Offer* offer);
+	void sendCategoryOffers(const Category* category, uint32_t redirectId = 0, std::string collectionRedirect = "");
+	void sendFoundOffers(std::vector<Offer> foundOffers);
+	void sendOfferDescription(const Offer* offer);
+	void sendStoreHistory(uint32_t page);
+	void sendStoreSuccess(std::string successMessage);
+	void sendStoreError(StoreErrors_t errorType, std::string errorMessage);
+	void requestPurchaseData(uint32_t offerId, uint8_t offerType);
+	// End Store Functions
+
 	void sendAllowBugReport();
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);
 	void sendMagicEffect(const Position &pos, uint16_t type);
@@ -382,7 +408,7 @@ private:
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
-	void sendOutfitWindow();
+	void sendOutfitWindow(uint16_t tryOutfit, uint16_t tryMount);
 	void sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos);
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
@@ -506,6 +532,8 @@ private:
 	void sendOpenWheelWindow(uint32_t ownerId);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
+	void parseStoreDetail(NetworkMessage &msg);
+	void sendStoreDetail(const StoreHistoryDetail &storeDetail);
 
 	friend class Player;
 	friend class PlayerWheel;

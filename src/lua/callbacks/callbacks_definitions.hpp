@@ -23,8 +23,8 @@ enum class EventCallback_t : uint16_t {
 	creatureOnChangeOutfit,
 	creatureOnAreaCombat,
 	creatureOnTargetCombat,
-	creatureOnHear,
 	creatureOnDrainHealth,
+	creatureOnCombat,
 	// Party
 	partyOnJoin,
 	partyOnLeave,
@@ -57,15 +57,14 @@ enum class EventCallback_t : uint16_t {
 	playerOnInventoryUpdate,
 	playerOnRotateItem,
 	playerOnWalk,
+	playerOnThink,
 	// Monster
 	monsterOnDropLoot,
 	monsterPostDropLoot,
-	monsterOnSpawn,
-	// Npc
-	npcOnSpawn,
 	// Zone
 	zoneBeforeCreatureEnter,
 	zoneBeforeCreatureLeave,
 	zoneAfterCreatureEnter,
 	zoneAfterCreatureLeave,
+	mapOnLoad,
 };

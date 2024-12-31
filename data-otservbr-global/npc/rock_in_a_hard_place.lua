@@ -109,6 +109,7 @@ local itemsTable = {
 		{ itemName = "candlestick", clientId = 2917, buy = 2 },
 		{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 		{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+		{ itemName = "crusher", clientId = 46627, buy = 500 },
 		{ itemName = "deepling axe", clientId = 13991, sell = 40000 },
 		{ itemName = "deepling squelcher", clientId = 14250, sell = 7000 },
 		{ itemName = "deepling staff", clientId = 13987, sell = 4000 },
@@ -274,15 +275,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 
 	if categoryTable then
-		npcHandler:say("Here, have a look", npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -292,7 +289,7 @@ local function onTradeRequest(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	npcHandler:say("You would be surprised how many things are washed ashore here. I trade {magic stuff}, {local equipment}, {weapons}, {armor}, {ammunition}, {post things} and {creature products}.", npc, creature)
+	npcHandler:say("You would be surprised how many things are washed ashore here. I trade " .. GetFormattedShopCategoryNames(itemsTable) .. ".", npc, creature)
 	return true
 end
 

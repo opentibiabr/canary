@@ -14,6 +14,7 @@
 #endif
 
 enum AccountType : uint8_t {
+	ACCOUNT_TYPE_NONE = 0,
 	ACCOUNT_TYPE_NORMAL = 1,
 	ACCOUNT_TYPE_TUTOR = 2,
 	ACCOUNT_TYPE_SENIORTUTOR = 3,

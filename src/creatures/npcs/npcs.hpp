@@ -9,8 +9,10 @@
 
 #pragma once
 
-#include "creatures/creature.hpp"
-#include "lib/di/container.hpp"
+#include "creatures/creatures_definitions.hpp"
+#include "utils/utils_definitions.hpp"
+
+class LuaScriptInterface;
 
 class Shop {
 public:
@@ -23,7 +25,7 @@ public:
 	ShopBlock shopBlock;
 };
 
-class NpcType : public SharedObject {
+class NpcType final : public SharedObject {
 	struct NpcInfo {
 		LuaScriptInterface* scriptInterface {};
 
@@ -90,7 +92,7 @@ public:
 	void loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBlock);
 
 	bool loadCallback(LuaScriptInterface* scriptInterface);
-	bool canSpawn(const Position &pos);
+	bool canSpawn(const Position &pos) const;
 };
 
 class Npcs {
@@ -100,9 +102,7 @@ public:
 	Npcs(const Npcs &) = delete;
 	Npcs &operator=(const Npcs &) = delete;
 
-	static Npcs &getInstance() {
-		return inject<Npcs>();
-	}
+	static Npcs &getInstance();
 
 	std::shared_ptr<NpcType> getNpcType(const std::string &name, bool create = false);
 

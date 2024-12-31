@@ -7,14 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "game/zones/zone.hpp"
 
-#include "zone.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/pugicast.hpp"
+#include "kv/kv.hpp"
 
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Zone>> Zone::zonesByID = {};
@@ -122,6 +122,10 @@ std::vector<std::shared_ptr<Item>> Zone::getItems() {
 void Zone::removePlayers() {
 	for (const auto &player : getPlayers()) {
 		g_game().internalTeleport(player, getRemoveDestination(player));
+		// Remove icon from player (soul war quest)
+		if (player->hasIcon("goshnars-hatred-damage")) {
+			player->removeIcon("goshnars-hatred-damage");
+		}
 	}
 }
 
@@ -250,11 +254,11 @@ void Zone::refresh() {
 void Zone::setMonsterVariant(const std::string &variant) {
 	monsterVariant = variant;
 	g_logger().debug("Zone {} monster variant set to {}", name, variant);
-	for (auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
-		if (!contains(spawnMonster.getCenterPos())) {
+	for (const auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
+		if (!contains(spawnMonster->getCenterPos())) {
 			continue;
 		}
-		spawnMonster.setMonsterVariant(variant);
+		spawnMonster->setMonsterVariant(variant);
 	}
 
 	removeMonsters();

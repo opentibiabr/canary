@@ -7,15 +7,17 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/io_bosstiary.hpp"
 
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "utils/tools.hpp"
-#include "items/item.hpp"
+
+IOBosstiary &IOBosstiary::getInstance() {
+	return inject<IOBosstiary>();
+}
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
@@ -27,7 +29,7 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	uint16_t date = result->getNumber<uint16_t>("date");
+	auto date = result->getNumber<uint16_t>("date");
 	auto timeNow = getTimeNow();
 	auto time = localtime(&timeNow);
 	auto today = time->tm_mday;
@@ -61,12 +63,12 @@ void IOBosstiary::loadBoostedBoss() {
 	}
 
 	// Check if not have archfoe registered boss
-	if (bossInfo.size() == 0) {
+	if (bossInfo.empty()) {
 		g_logger().error("Failed to boost a boss. There is no boss registered with the Archfoe Rarity.");
 		return;
 	}
 
-	uint16_t oldBossRace = result->getNumber<uint16_t>("raceid");
+	auto oldBossRace = result->getNumber<uint16_t>("raceid");
 	while (true) {
 		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
 		auto it = std::next(bossInfo.begin(), randomIndex);
@@ -137,7 +139,7 @@ const std::map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
 	return bosstiaryMap;
 }
 
-void IOBosstiary::setBossBoostedName(const std::string_view &name) {
+void IOBosstiary::setBossBoostedName(std::string_view name) {
 	boostedBoss = name;
 }
 
@@ -169,7 +171,7 @@ std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t ra
 	return nullptr;
 }
 
-void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount /*= 1*/) const {
+void IOBosstiary::addBosstiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) const {
 	if (!player || !mtype) {
 		return;
 	}
@@ -249,6 +251,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const std::shared_ptr<Pl
 
 		const auto mType = g_monsters().getMonsterType(bossName);
 		if (!mType) {
+			g_logger().error("[{}] Boss with id {} and name {} not found in boss map", __FUNCTION__, bossId, bossName);
 			continue;
 		}
 
@@ -268,7 +271,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const std::shared_ptr<Pl
 	return unlockedMonsters.data();
 }
 
-uint8_t IOBosstiary::getBossCurrentLevel(std::shared_ptr<Player> player, uint16_t bossId) const {
+uint8_t IOBosstiary::getBossCurrentLevel(const std::shared_ptr<Player> &player, uint16_t bossId) const {
 	if (bossId == 0 || !player) {
 		return 0;
 	}

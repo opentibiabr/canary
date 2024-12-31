@@ -11,10 +11,10 @@ function geomanticCharges.onStepIn(creature, item, position, fromPosition)
 	end
 
 	local tasksLoaded = {}
-	if not table.contains({ -1, 8 }, player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN)) then
+	if not table.contains({ -1, 8 }, player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Nest_Main)) then
 		tasksLoaded["NEST"] = true
 	end
-	if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == 1 then
+	if player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main) == 1 then
 		tasksLoaded["CHARGE"] = true
 	end
 
@@ -34,7 +34,7 @@ function geomanticCharges.onStepIn(creature, item, position, fromPosition)
 
 	if tasksLoaded["CHARGE"] then
 		player:getPosition():sendMagicEffect(12)
-		player:setStorageValue(SPIKE_MIDDLE_CHARGE_MAIN, 2)
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main, 2)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have charged your body with geomantic energy and can report about it.")
 	end
 	return true

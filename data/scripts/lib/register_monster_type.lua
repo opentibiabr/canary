@@ -194,6 +194,9 @@ registerMonsterType.flags = function(mtype, mask)
 		end
 		if mask.flags.rewardBoss then
 			mtype:isRewardBoss(mask.flags.rewardBoss)
+			mtype.onSpawn = function(monster)
+				monster:setRewardBoss()
+			end
 		end
 		if mask.flags.familiar then
 			mtype:familiar(mask.flags.familiar)
@@ -940,8 +943,8 @@ function readSpell(incomingLua, mtype)
 			if incomingLua.effect then
 				spell:setCombatEffect(incomingLua.effect)
 			end
-			if incomingLua.shootEffect then
-				spell:setCombatShootEffect(incomingLua.shootEffect)
+			if incomingLua.shootEffect or incomingLua.shooteffect then
+				spell:setCombatShootEffect(incomingLua.shootEffect or incomingLua.shooteffect)
 			end
 		end
 

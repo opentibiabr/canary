@@ -46,15 +46,15 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local playerLastResp = {}
+
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) == 13 then
+	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) == 13 then
 		npcHandler:setMessage(MESSAGE_GREET, "Enter answers for the following {questions}:")
-		npcHandler:setTopic(playerId, 1)
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings.")
 	end
@@ -63,31 +63,31 @@ end
 
 local quiz1 = {
 	[1] = {
-		p = "The sum of first and second digit?",
+		p = "The sum of the first and second digit?",
 		r = function(player)
-			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2))
-			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone2))
+			return player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer)
 		end,
 	},
 	[2] = {
-		p = "The sum of second and third digit?",
+		p = "The sum of the second and third digit?",
 		r = function(player)
-			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
-			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone3))
+			return player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer)
 		end,
 	},
 	[3] = {
-		p = "The sum of first and third digit?",
+		p = "The sum of the first and third digit?",
 		r = function(player)
-			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
-			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone3))
+			return player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer)
 		end,
 	},
 	[4] = {
-		p = "The digit sum?",
+		p = "The total digit sum?",
 		r = function(player)
-			player:setStorageValue(Storage.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
-			return player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer, player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone1) + player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone2) + player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone3))
+			return player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer)
 		end,
 	},
 }
@@ -96,7 +96,7 @@ local quiz2 = {
 	[1] = {
 		p = "Is the number prime?",
 		r = function(player)
-			local stg = player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			local stg = player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer)
 			if stg < 1 then
 				return 0
 			end
@@ -113,9 +113,9 @@ local quiz2 = {
 		end,
 	},
 	[2] = {
-		p = "Does the number belong to a prime twing?",
+		p = "Does the number belong to a twin prime?",
 		r = function(player)
-			local stg = player:getStorageValue(Storage.CultsOfTibia.MotA.Answer)
+			local stg = player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer)
 			if stg < 2 then
 				return 0
 			end
@@ -131,23 +131,23 @@ local quiz2 = {
 			return (incr == 2 and 1 or 0)
 		end,
 	},
-	-- [2] = {p = "", r = ""}
 }
 
 local quiz3 = {
 	[1] = {
 		p = "Is the number divisible by 3?",
 		r = function(player)
-			return (player:getStorageValue(Storage.CultsOfTibia.MotA.Answer) % 3 == 0 and 1 or 0)
+			return (player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer) % 3 == 0 and 1 or 0)
 		end,
 	},
 	[2] = {
 		p = "Is the number divisible by 2?",
 		r = function(player)
-			return (player:getStorageValue(Storage.CultsOfTibia.MotA.Answer) % 2 == 0 and 1 or 0)
+			return (player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Answer) % 2 == 0 and 1 or 0)
 		end,
 	},
 }
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -156,33 +156,29 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	-- Começou a quest
-	if MsgContains(message, "questions") and npcHandler:getTopic(playerId) == 1 then
+	-- Quest started
+	if MsgContains(message, "questions") and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) == 13 then
 		npcHandler:say("Ready to {start}?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
-		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "start") and npcHandler:getTopic(playerId) == 2 then
-		local perguntaid = math.random(#quiz1)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.QuestionId, perguntaid)
-		npcHandler:say(quiz1[perguntaid].p, npc, creature)
-		npcHandler:setTopic(playerId, 3)
+		local questionId = math.random(#quiz1)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId, questionId)
+		npcHandler:say(quiz1[questionId].p, npc, creature)
 		npcHandler:setTopic(playerId, 3)
 	elseif npcHandler:getTopic(playerId) == 3 then
 		npcHandler:say(string.format("Your answer is %s, do you want to continue?", message), npc, creature)
 		playerLastResp[playerId] = tonumber(message)
 		npcHandler:setTopic(playerId, 4)
-		npcHandler:setTopic(playerId, 4)
 	elseif npcHandler:getTopic(playerId) == 4 then
 		if MsgContains(message, "yes") then
-			local resposta = quiz1[player:getStorageValue(Storage.CultsOfTibia.MotA.QuestionId)].r
-			if playerLastResp[playerId] ~= (tonumber(resposta(player))) then
+			local answer = quiz1[player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId)].r
+			if playerLastResp[playerId] ~= (tonumber(answer(player))) then
 				npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
 				npcHandler:resetNpc(creature)
 				npcHandler:removeInteraction(npc, creature)
 				return false
 			else
 				npcHandler:say("Correct. {Next} question?", npc, creature)
-				npcHandler:setTopic(playerId, 5)
 				npcHandler:setTopic(playerId, 5)
 			end
 		elseif MsgContains(message, "no") then
@@ -192,22 +188,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			return false
 		end
 	elseif MsgContains(message, "next") and npcHandler:getTopic(playerId) == 5 then
-		local perguntaid = math.random(#quiz2)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.QuestionId, perguntaid)
-		npcHandler:say(quiz2[perguntaid].p, npc, creature)
-		npcHandler:setTopic(playerId, 6)
+		local questionId = math.random(#quiz2)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId, questionId)
+		npcHandler:say(quiz2[questionId].p, npc, creature)
 		npcHandler:setTopic(playerId, 6)
 	elseif npcHandler:getTopic(playerId) == 6 then
-		local resp = 0
+		local response = 0
 		if MsgContains(message, "no") then
-			resp = 0
+			response = 0
 		elseif MsgContains(message, "yes") then
-			resp = 1
+			response = 1
 		end
-		local resposta = quiz2[player:getStorageValue(Storage.CultsOfTibia.MotA.QuestionId)].r
-		if resp == resposta(player) then
+		local answer = quiz2[player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId)].r
+		if response == answer(player) then
 			npcHandler:say("Correct. {Next} question?", npc, creature)
-			npcHandler:setTopic(playerId, 7)
 			npcHandler:setTopic(playerId, 7)
 		else
 			npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
@@ -216,22 +210,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			return false
 		end
 	elseif npcHandler:getTopic(playerId) == 7 and MsgContains(message, "next") then
-		local perguntaid = math.random(#quiz3)
-		player:setStorageValue(Storage.CultsOfTibia.MotA.QuestionId, perguntaid)
-		npcHandler:say(quiz3[perguntaid].p, npc, creature)
-		npcHandler:setTopic(playerId, 8)
+		local questionId = math.random(#quiz3)
+		player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId, questionId)
+		npcHandler:say(quiz3[questionId].p, npc, creature)
 		npcHandler:setTopic(playerId, 8)
 	elseif npcHandler:getTopic(playerId) == 8 then
-		local resp = 0
+		local response = 0
 		if MsgContains(message, "no") then
-			resp = 0
+			response = 0
 		elseif MsgContains(message, "yes") then
-			resp = 1
+			response = 1
 		end
-		local resposta = quiz3[player:getStorageValue(Storage.CultsOfTibia.MotA.QuestionId)].r
-		if resp == resposta(player) then
+		local answer = quiz3[player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId)].r
+		if response == answer(player) then
 			npcHandler:say("Correct. {Last} question?", npc, creature)
-			npcHandler:setTopic(playerId, 9)
 			npcHandler:setTopic(playerId, 9)
 		else
 			npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
@@ -242,15 +234,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 9 and MsgContains(message, "last") then
 		npcHandler:say("Tell me the correct number?", npc, creature)
 		npcHandler:setTopic(playerId, 10)
-		npcHandler:setTopic(playerId, 10)
 	elseif npcHandler:getTopic(playerId) == 10 then
 		npcHandler:say(string.format("Your answer is %s, do you want to continue?", message), npc, creature)
 		playerLastResp[playerId] = tonumber(message)
 		npcHandler:setTopic(playerId, 11)
-		npcHandler:setTopic(playerId, 11)
 	elseif npcHandler:getTopic(playerId) == 11 then
 		if MsgContains(message, "yes") then
-			local correct = string.format("%d%d%d", player:getStorageValue(Storage.CultsOfTibia.MotA.Stone1), player:getStorageValue(Storage.CultsOfTibia.MotA.Stone2), player:getStorageValue(Storage.CultsOfTibia.MotA.Stone3))
+			local correct = string.format("%d%d%d", player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone1), player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone2), player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone3))
 			if tonumber(playerLastResp[playerId]) ~= (tonumber(correct)) then
 				npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
 				npcHandler:resetNpc(creature)
@@ -258,8 +248,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				return false
 			else
 				npcHandler:say("Correct. The lower door is now open. The druid of Crunor lies.", npc, creature)
-				player:setStorageValue(Storage.CultsOfTibia.MotA.Mission, player:getStorageValue(Storage.CultsOfTibia.MotA.Mission) + 1)
-				player:setStorageValue(Storage.CultsOfTibia.MotA.AccessDoorDenominator)
+				player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission, player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) + 1)
+				player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorDenominator)
 			end
 		elseif MsgContains(message, "no") then
 			npcHandler:say("SHUT DOWN.", npc, creature)

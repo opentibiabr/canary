@@ -6,10 +6,8 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#pragma once
 
-#include <iostream>
-#include "lib/logging/log_with_spd_log.hpp"
+#pragma once
 
 class SoftSingleton {
 public:

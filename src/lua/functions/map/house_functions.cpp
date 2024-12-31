@@ -9,6 +9,7 @@
 
 #include "lua/functions/map/house_functions.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "items/bed.hpp"
 #include "game/game.hpp"

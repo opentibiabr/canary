@@ -64,11 +64,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:removeInteraction(npc, creature)
 		npcHandler:resetNpc(creature)
 	elseif MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TibiaTales.AgainstTheSpiderCult) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult) < 1 then
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:say("Very good, we need heroes like you to go on a suici.....er....to earn respect of the authorities here AND in addition get a great reward for it. Are you interested in the job?", npc, creature)
-		elseif player:getStorageValue(Storage.TibiaTales.AgainstTheSpiderCult) == 5 then
-			player:setStorageValue(Storage.TibiaTales.AgainstTheSpiderCult, 6)
+		elseif player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult) == 5 then
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult, 6)
 			npcHandler:setTopic(playerId, 0)
 			player:addItem(814, 1)
 			npcHandler:say("What? YOU DID IT?!?! That's...that's...er....<drops a piece of paper. You see the headline 'death certificate'> like I expected!! Here is your reward.", npc, creature)
@@ -173,8 +173,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
-			player:setStorageValue(Storage.TibiaTales.AgainstTheSpiderCult, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult, 1)
 			npcHandler:say({
 				"Very well, maybe you know that the orcs here in Edron learnt to raise giant spiders. It is going to become a serious threat. ...",
 				"The mission is simple: go to the orcs and destroy all spider eggs that are hatched by the giant spider they have managed to catch. The orcs are located in the south of the western part of the island.",

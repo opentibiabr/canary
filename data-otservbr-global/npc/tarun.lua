@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local theLostBrotherStorage = player:getStorageValue(Storage.AdventurersGuild.TheLostBrother)
+	local theLostBrotherStorage = player:getStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest)
 	if MsgContains(message, "mission") then
 		if theLostBrotherStorage < 1 then
 			npcHandler:say({
@@ -80,16 +80,16 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:addItem(3039, 1)
 			player:addExperience(3000, true)
-			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 3)
+			player:setStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest, 3)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
 			npcHandler:say("I thank you! This is more than I could hope!", npc, creature)
 			if theLostBrotherStorage < 1 then
-				player:setStorageValue(Storage.AdventurersGuild.QuestLine, 1)
+				player:setStorageValue(Storage.Quest.U9_80.AdventurersGuild.QuestLine, 1)
 			end
-			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 1)
+			player:setStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("As you wish.", npc, creature)
 		end
@@ -106,7 +106,7 @@ local function onTradeRequest(npc, creature)
 	end
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) ~= 3 then
+	if player:getStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest) ~= 3 then
 		return false
 	end
 

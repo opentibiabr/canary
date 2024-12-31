@@ -9,7 +9,7 @@
 
 #pragma once
 
-enum ObjectCategory_t {
+enum ObjectCategory_t : uint8_t {
 	OBJECTCATEGORY_NONE = 0,
 	OBJECTCATEGORY_ARMORS = 1,
 	OBJECTCATEGORY_NECKLACES = 2,

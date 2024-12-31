@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "security/rsa.hpp"
 
 #include "lib/di/container.hpp"
-#include "security/rsa.hpp"
 
 RSA::RSA(Logger &logger) :
 	logger(logger) {
@@ -28,8 +27,8 @@ RSA &RSA::getInstance() {
 }
 
 void RSA::start() {
-	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
-	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
+	const auto p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const auto q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
 	try {
 		if (!loadPEM("key.pem")) {
 			// file doesn't exist - switch to base10-hardcoded keys
@@ -97,8 +96,9 @@ void RSA::decrypt(char* msg) const {
 	// m = c^d mod n
 	mpz_powm(m, c, d, n);
 
-	size_t count = (mpz_sizeinbase(m, 2) + 7) / 8;
-	memset(msg, 0, 128 - count);
+	const size_t count = (mpz_sizeinbase(m, 2) + 7) / 8;
+	std::fill(msg, msg + (128 - count), 0);
+
 	mpz_export(msg + (128 - count), nullptr, 1, 1, 0, 0, m);
 
 	mpz_clear(c);
@@ -109,13 +109,17 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 	auto posOfCharacter = [](const uint8_t chr) -> uint16_t {
 		if (chr >= 'A' && chr <= 'Z') {
 			return chr - 'A';
-		} else if (chr >= 'a' && chr <= 'z') {
+		}
+		if (chr >= 'a' && chr <= 'z') {
 			return chr - 'a' + ('Z' - 'A') + 1;
-		} else if (chr >= '0' && chr <= '9') {
+		}
+		if (chr >= '0' && chr <= '9') {
 			return chr - '0' + ('Z' - 'A') + ('z' - 'a') + 2;
-		} else if (chr == '+' || chr == '-') {
+		}
+		if (chr == '+' || chr == '-') {
 			return 62;
-		} else if (chr == '/' || chr == '_') {
+		}
+		if (chr == '/' || chr == '_') {
 			return 63;
 		}
 		g_logger().error("[RSA::base64Decrypt] - Invalid base6409");
@@ -123,19 +127,19 @@ std::string RSA::base64Decrypt(const std::string &input) const {
 	};
 
 	if (input.empty()) {
-		return std::string();
+		return {};
 	}
 
-	size_t length = input.length();
+	const size_t length = input.length();
 	size_t pos = 0;
 
 	std::string output;
 	output.reserve(length / 4 * 3);
 	while (pos < length) {
-		uint16_t pos1 = posOfCharacter(input[pos + 1]);
+		const uint16_t pos1 = posOfCharacter(input[pos + 1]);
 		output.push_back(static_cast<std::string::value_type>(((posOfCharacter(input[pos])) << 2) + ((pos1 & 0x30) >> 4)));
 		if (input[pos + 2] != '=' && input[pos + 2] != '.') {
-			uint16_t pos2 = posOfCharacter(input[pos + 2]);
+			const uint16_t pos2 = posOfCharacter(input[pos + 2]);
 			output.push_back(static_cast<std::string::value_type>(((pos1 & 0x0f) << 4) + ((pos2 & 0x3c) >> 2)));
 			if (input[pos + 3] != '=' && input[pos + 3] != '.') {
 				output.push_back(static_cast<std::string::value_type>(((pos2 & 0x03) << 6) + posOfCharacter(input[pos + 3])));
@@ -161,27 +165,33 @@ enum {
 };
 
 uint16_t RSA::decodeLength(char*&pos) const {
-	uint8_t buffer[4] = { 0 };
-	auto length = static_cast<uint16_t>(static_cast<uint8_t>(*pos++));
+	std::array<uint8_t, 4> buffer = { 0 };
+	uint16_t length = static_cast<uint8_t>(*pos++);
 	if (length & 0x80) {
-		length &= 0x7F;
-		if (length > 4) {
-			g_logger().error("[RSA::loadPEM] - Invalid 'length'");
+		uint8_t numLengthBytes = length & 0x7F;
+		if (numLengthBytes > 4) {
+			g_logger().error("[RSA::decodeLength] - Invalid 'length'");
 			return 0;
 		}
-		switch (length) {
-			case 4:
-				buffer[3] = static_cast<uint8_t>(*pos++);
-			case 3:
-				buffer[2] = static_cast<uint8_t>(*pos++);
-			case 2:
-				buffer[1] = static_cast<uint8_t>(*pos++);
-			case 1:
-				buffer[0] = static_cast<uint8_t>(*pos++);
-			default:
-				break;
+		// Adjust the copy destination to ensure it doesn't overflow
+		auto destIt = buffer.begin() + (4 - numLengthBytes);
+		if (destIt < buffer.begin() || destIt + numLengthBytes > buffer.end()) {
+			g_logger().error("[RSA::decodeLength] - Invalid copy range");
+			return 0;
 		}
-		std::memcpy(&length, buffer, sizeof(length));
+		// Copy 'numLengthBytes' bytes from 'pos' into 'buffer'
+		std::copy_n(pos, numLengthBytes, destIt);
+		pos += numLengthBytes;
+		// Reconstruct 'length' from 'buffer' (big-endian)
+		uint32_t tempLength = 0;
+		for (size_t i = 0; i < numLengthBytes; ++i) {
+			tempLength = (tempLength << 8) | buffer[4 - numLengthBytes + i];
+		}
+		if (tempLength > UINT16_MAX) {
+			g_logger().error("[RSA::decodeLength] - Length too large");
+			return 0;
+		}
+		length = static_cast<uint16_t>(tempLength);
 	}
 	return length;
 }
@@ -189,7 +199,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
 	output.reserve(static_cast<size_t>(length) * 2);
 	for (uint16_t i = 0; i < length; ++i) {
-		auto hex = static_cast<uint8_t>(*pos++);
+		const auto hex = static_cast<uint8_t>(*pos++);
 		output.push_back("0123456789ABCDEF"[(hex >> 4) & 15]);
 		output.push_back("0123456789ABCDEF"[hex & 15]);
 	}

@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 28 (bosstiary system)")
+	logger.info("Updating database to version 27 (bosstiary system)")
 	db.query("ALTER TABLE `players` ADD `boss_points` int NOT NULL DEFAULT '0';")
 	db.query([[
 	CREATE TABLE IF NOT EXISTS `boosted_boss` (
@@ -23,5 +23,4 @@ function onUpdateDatabase()
 		`bossIdSlotTwo` int NOT NULL DEFAULT 0,
 		`removeTimes` int NOT NULL DEFAULT 1
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;]])
-	return true
 end

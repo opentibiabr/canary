@@ -42,15 +42,25 @@ npcType.onThink = function(npc, interval)
 	npcHandler:onThink(npc, interval)
 end
 
-local function greetCallback(npc, creature)
-	local playerId = creature:getId()
-	npcHandler:setMessage(MESSAGE_GREET, "Another pesky mortal who believes his gold outweighs his nutrition value.")
-	return true
+local function isDateWithinEvent()
+	local currentDate = os.date("*t")
+	local startDate = { day = 14, month = 1 }
+	local endDate = { day = 12, month = 2 }
+
+	if (currentDate.month == startDate.month and currentDate.day >= startDate.day) or (currentDate.month == endDate.month and currentDate.day <= endDate.day) or (currentDate.month > startDate.month and currentDate.month < endDate.month) then
+		return true
+	end
+	return false
 end
 
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
+
+	if not isDateWithinEvent() then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can only discuss the First Dragon between January 14 and February 12.")
+		return true
+	end
 
 	if MsgContains(message, "first dragon") then
 		npcHandler:say("The First Dragon? The first of all of us? The Son of Garsharak? I'm surprised you heard about him. It is such a long time that he wandered Tibia. Yet, there are some {rumours}.", npc, creature)
@@ -86,15 +96,22 @@ local function creatureSayCallback(npc, creature, type, message)
 			"And finally an amethyst teleporter in undead-infested caverns underneath Edron allows you to enter the lair of Zorvorax.",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 0)
-		player:setStorageValue(Storage.FirstDragon.Questline, 1)
-		player:setStorageValue(Storage.FirstDragon.DragonCounter, 0)
-		player:setStorageValue(Storage.FirstDragon.ChestCounter, 0)
-		player:setStorageValue(Storage.FirstDragon.GelidrazahAccess, 0)
-		player:setStorageValue(Storage.FirstDragon.SecretsCounter, 0)
+		if player:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.Questline) < 1 then
+			player:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.Questline, 1)
+		end
+		if player:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.ChestCounter) < 0 then
+			player:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.ChestCounter, 0)
+		end
+		player:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.DragonCounter, 0)
+		player:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.GelidrazahAccess, 0)
+		player:setStorageValue(Storage.Quest.U11_02.TheFirstDragon.SecretsCounter, 0)
 	end
+
 	return true
 end
-npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+
+npcHandler:setMessage(MESSAGE_GREET, "Another pesky mortal who believes his gold outweighs his nutrition value.")
+
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
@@ -107,6 +124,7 @@ npcConfig.shop = {
 	{ itemName = "white gem", clientId = 32769, sell = 12000 },
 	{ itemName = "yellow gem", clientId = 3037, sell = 1000 },
 }
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

@@ -52,19 +52,19 @@ end
 
 -- Mission (Tibia Tales: Rest In Hallowed Ground)
 local startMissionKeyword = keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "Well, I would do it myself but I can't leave town for a longer time. Would you be so kind to bring me a vial of holy water from the White Raven Monastery?" }, function(player)
-	return player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) == -1
+	return player:getStorageValue(Storage.Quest.U8_1.RestInHallowedGround.Questline) == -1
 end)
 startMissionKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "I thank you a lot in advance. The power of the holy water from the White Raven Monastery is legendary. For my task it is indispensable. We talk about that when you get back.", reset = true }, nil, function(player)
-	player:setStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline, 1)
+	player:setStorageValue(Storage.Quest.U8_1.RestInHallowedGround.Questline, 1)
 end)
 startMissionKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "It's your decision. I will ask the next believing mind that visits the temple of Banor's blood.", reset = true })
 
 local function addMissionKeyword(text, value, newValue, addItem)
 	keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = text }, function(player)
-		return player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) == value
+		return player:getStorageValue(Storage.Quest.U8_1.RestInHallowedGround.Questline) == value
 	end, function(player)
 		if newValue then
-			player:setStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline, newValue)
+			player:setStorageValue(Storage.Quest.U8_1.RestInHallowedGround.Questline, newValue)
 		end
 
 		if addItem then
@@ -100,11 +100,11 @@ keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = 
 end)
 
 local stoneKeyword = keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, you want to replace your adventurer's stone for free?" }, function(player)
-	return player:getStorageValue(Storage.AdventurersGuild.FreeStone.Amanda) ~= 1
+	return player:getStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Amanda) ~= 1
 end)
 stoneKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you are. Take care.", reset = true }, nil, function(player)
 	player:addItem(16277, 1)
-	player:setStorageValue(Storage.AdventurersGuild.FreeStone.Amanda, 1)
+	player:setStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Amanda, 1)
 end)
 
 local stoneKeyword = keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, you want to replace your adventurer's stone for 30 gold?" })

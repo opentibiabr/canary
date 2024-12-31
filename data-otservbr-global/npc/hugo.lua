@@ -115,17 +115,17 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "uniforms") then
-		if player:getStorageValue(Storage.Postman.Mission06) == 1 then
+		if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission06) == 1 then
 			npcHandler:say("A new uniform for the post officers? I am sorry but my dog ate the last dress pattern we used. You need to supply us with a new dress pattern.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "dress pattern") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("It was ... wonderous beyond wildest imaginations! I have no clue where Kevin Postner got it from. Better ask him.", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission06, 2)
-		elseif player:getStorageValue(Storage.Postman.Mission06) == 11 then
+			player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission06, 2)
+		elseif player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission06) == 11 then
 			npcHandler:say("By the gods of fashion! Didn't it do that I fed the last dress pattern to my poor dog? Will this mocking of all which is taste and fashion never stop?? Ok, ok, you will get those ugly, stinking uniforms and now get lost, fashion terrorist.", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission06, 12)
+			player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission06, 12)
 		end
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "outfit") then

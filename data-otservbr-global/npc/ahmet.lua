@@ -30,6 +30,7 @@ npcConfig.shop = { -- Sellable items
 	{ itemName = "candlestick", clientId = 2917, buy = 2 },
 	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "cup", clientId = 2881, buy = 2 },
 	{ itemName = "deed of ownership", clientId = 7866, buy = 1000 },
 	{ itemName = "document", clientId = 2818, buy = 12 },
@@ -115,13 +116,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "mission") or MsgContains(message, "quest") then
-		if player:getStorageValue(Storage.QuestChests.StealFromThieves) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.StealFromThieves) < 1 then
 			npcHandler:say({
 				"What are you talking about?? I was robbed!!!! Someone catch those filthy thieves!!!!! GUARDS! ...",
 				"<nothing happens>....<SIGH> Like usual, they hide at the slightest sign of trouble! YOU! Want to earn some quick money?",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.QuestChests.StealFromThieves) == 1 or player:getStorageValue(Storage.QuestChests.StealFromThieves) == 2 then
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.StealFromThieves) == 1 or player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.StealFromThieves) == 2 then
 			npcHandler:say("Did you find my stuff?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -144,11 +145,11 @@ local function creatureSayCallback(npc, creature, type, message)
 				" I saw them running out of town and then to the north. Maybe they hide at the oasis.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.QuestChests.StealFromThieves, 1)
+			player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.StealFromThieves, 1)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(235, 1) then
 				npcHandler:say("GREAT! If you ever need a job as my personal security guard, let me know. Here is the reward I promised you.", npc, creature)
-				player:setStorageValue(Storage.QuestChests.StealFromThieves, 3)
+				player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.StealFromThieves, 3)
 				player:addItem(3031, 100)
 				player:addItem(3725, 100)
 				npcHandler:setTopic(playerId, 0)
@@ -178,7 +179,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-npcHandler:setMessage(MESSAGE_GREET, "Be mourned pilgrim in flesh. I'm selling general goods.")
+npcHandler:setMessage(MESSAGE_GREET, "Be mourned pilgrim in flesh. I'm selling general goods. Just ask me for a {trade}.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

@@ -46,7 +46,7 @@ QuestDoorAction = {
 		itemPos = { { x = 32455, y = 31967, z = 14 } },
 	},
 	-- To Outfox a Fox Quest, mining helmet door
-	[Storage.TibiaTales.ToOutfoxAFoxQuest.Questline] = {
+	[Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline] = {
 		itemId = false,
 		itemPos = { { x = 32467, y = 31969, z = 5 } },
 	},
@@ -69,26 +69,6 @@ QuestDoorAction = {
 			{ x = 33567, y = 31951, z = 14 },
 			{ x = 33569, y = 31951, z = 14 },
 		},
-	},
-	-- Secret library quest door
-	[Storage.TheSecretLibrary.Mota] = {
-		itemId = false,
-		itemPos = {
-			{ x = 33208, y = 32071, z = 8 },
-			{ x = 33246, y = 32122, z = 8 },
-		},
-	},
-	[Storage.TheSecretLibrary.MotaDoor] = {
-		itemId = false,
-		itemPos = { { x = 33208, y = 32074, z = 8 } },
-	},
-	[Storage.TheSecretLibrary.BasinDoor] = {
-		itemId = false,
-		itemPos = { { x = 33341, y = 32117, z = 10 } },
-	},
-	[Storage.TheSecretLibrary.SkullDoor] = {
-		itemId = false,
-		itemPos = { { x = 33344, y = 32120, z = 10 } },
 	},
 	-- Koshei the deathless quest door
 	[Storage.Quest.U8_1.KosheiTheDeathless.RewardDoor] = {
@@ -203,70 +183,72 @@ QuestDoorAction = {
 		itemPos = { { x = 32067, y = 31896, z = 3 } },
 	},
 	-- Cults of tibia door
-	[Storage.CultsOfTibia.Minotaurs.EntranceAccessDoor] = {
-		itemId = false,
-		itemPos = { { x = 31950, y = 32501, z = 8 } },
-	},
-	[Storage.CultsOfTibia.Minotaurs.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Minotaurs.BossAccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 31957, y = 32468, z = 9 } },
 	},
-	[Storage.CultsOfTibia.MotA.AccessDoorInvestigation] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Minotaurs.AccessDoor] = {
+		itemId = false,
+		itemPos = { { x = 31950, y = 32501, z = 8 } },
+	},
+	[Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorInvestigation] = {
 		itemId = false,
 		itemPos = { { x = 33273, y = 32172, z = 8 } },
 	},
-	[Storage.CultsOfTibia.MotA.AccessDoorGareth] = {
+	[Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorGareth] = {
 		itemId = false,
 		itemPos = { { x = 33220, y = 32147, z = 9 } },
 	},
-	[Storage.CultsOfTibia.MotA.AccessDoorDenominator] = {
+	[Storage.Quest.U11_40.CultsOfTibia.MotA.AccessDoorDenominator] = {
 		itemId = false,
 		itemPos = { { x = 33220, y = 32149, z = 9 } },
 	},
-	[Storage.CultsOfTibia.Barkless.TrialAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.TrialAccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32688, y = 31543, z = 9 } },
 	},
-	[Storage.CultsOfTibia.Barkless.TarAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.TarAccessDoor] = {
 		itemId = false,
-		itemPos = {
-			{ x = 32747, y = 31462, z = 8 },
-			{ x = 32678, y = 31506, z = 8 },
-		},
+		itemPos = { { x = 32747, y = 31462, z = 8 } },
 	},
-	[Storage.CultsOfTibia.Barkless.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.SulphurAccessDoor] = {
+		itemId = false,
+		itemPos = { { x = 32678, y = 31506, z = 8 } },
+	},
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.AccessDoor] = {
 		itemId = false,
 		itemPos = {
-			{ x = 32742, y = 31408, z = 8 },
 			{ x = 32686, y = 31430, z = 8 },
+			{ x = 32746, y = 31423, z = 8 },
+			{ x = 32754, y = 31442, z = 8 },
 		},
 	},
-	[Storage.CultsOfTibia.Barkless.BossAccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Barkless.BossAccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32672, y = 31543, z = 9 } },
 	},
-	[Storage.CultsOfTibia.Life.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Life.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 33295, y = 32271, z = 12 } },
 	},
-	[Storage.CultsOfTibia.Misguided.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.Misguided.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32508, y = 32370, z = 9 } },
 	},
-	[Storage.CultsOfTibia.FinalBoss.AccessDoor] = {
+	[Storage.Quest.U11_40.CultsOfTibia.FinalBoss.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 33452, y = 32241, z = 7 } },
 	},
 	-- Ferumbras ascension door
-	[Storage.FerumbrasAscension.FirstDoor] = {
+	[Storage.Quest.U10_90.FerumbrasAscension.FirstDoor] = {
 		itemId = false,
 		itemPos = { { x = 33479, y = 32782, z = 11 } },
 	},
-	[Storage.FerumbrasAscension.MonsterDoor] = {
+	[Storage.Quest.U10_90.FerumbrasAscension.MonsterDoor] = {
 		itemId = false,
 		itemPos = { { x = 33482, y = 32786, z = 11 } },
 	},
-	[Storage.FerumbrasAscension.TarbazDoor] = {
+	[Storage.Quest.U10_90.FerumbrasAscension.TarbazDoor] = {
 		itemId = false,
 		itemPos = { { x = 33470, y = 32786, z = 11 } },
 	},
@@ -289,19 +271,19 @@ QuestDoorAction = {
 		itemPos = { { x = 33046, y = 31302, z = 7 } },
 	},
 	-- Dark trails/oramond door
-	[Storage.Oramond.DoorBeggarKing] = {
+	[Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Door] = {
 		itemId = false,
 		itemPos = { { x = 33573, y = 31982, z = 7 } },
 	},
-	[Storage.Oramond.DoorAbandonedSewer] = {
+	[Storage.Quest.U10_50.OramondQuest.TheAncientSewers.Door] = {
 		itemId = false,
 		itemPos = { { x = 33549, y = 31974, z = 10 } },
 	},
-	[Storage.DarkTrails.DoorQuandon] = {
+	[Storage.Quest.U10_50.DarkTrails.DoorQuandon] = {
 		itemId = false,
 		itemPos = { { x = 33573, y = 31953, z = 7 } },
 	},
-	[Storage.DarkTrails.DoorHideout] = {
+	[Storage.Quest.U10_50.DarkTrails.DoorHideout] = {
 		itemId = false,
 		itemPos = { { x = 33666, y = 31924, z = 7 } },
 	},
@@ -481,19 +463,19 @@ QuestDoorAction = {
 		itemPos = { { x = 32982, y = 31439, z = 3 } },
 	},
 	-- Postman door
-	[Storage.Postman.Mission05] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Mission05] = {
 		itemId = false,
 		itemPos = { { x = 32567, y = 32023, z = 6 } },
 	},
-	[Storage.Postman.Mission08] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Mission08] = {
 		itemId = false,
 		itemPos = { { x = 32515, y = 32248, z = 8 } },
 	},
-	[Storage.Postman.Mission09] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Mission09] = {
 		itemId = false,
 		itemPos = { { x = 32569, y = 32023, z = 6 } },
 	},
-	[Storage.Postman.Door] = {
+	[Storage.Quest.U7_24.ThePostmanMissions.Door] = {
 		itemId = false,
 		itemPos = {
 			{ x = 31921, y = 32652, z = 8 },
@@ -592,11 +574,11 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32608, y = 31516, z = 14 } },
 	},
-	[Storage.TibiaTales.AnInterestInBotany.ChestDoor] = {
+	[Storage.Quest.U8_6.AnInterestInBotany.ChestDoor] = {
 		itemId = false,
 		itemPos = { { x = 33007, y = 31536, z = 10 } },
 	},
-	[Storage.TibiaTales.AritosTaskDoor] = {
+	[Storage.Quest.U8_1.TibiaTales.AritosTaskDoor] = {
 		itemId = false,
 		itemPos = { { x = 33247, y = 32534, z = 8 } },
 	},
@@ -656,7 +638,7 @@ QuestDoorAction = {
 		},
 	},
 	-- Fathers burden door
-	[Storage.FathersBurden.QuestLog] = {
+	[Storage.Quest.U8_6.AFathersBurden.QuestLog] = {
 		itemId = false,
 		itemPos = {
 			{ x = 31989, y = 31225, z = 7 },
@@ -678,7 +660,7 @@ QuestDoorAction = {
 		itemPos = { { x = 32316, y = 31757, z = 9 } },
 	},
 	-- White raven monastery door
-	[Storage.WhiteRavenMonastery.Door] = {
+	[Storage.Quest.U7_24.TheWhiteRavenMonastery.Door] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32171, y = 31936, z = 7 },
@@ -794,43 +776,27 @@ QuestDoorAction = {
 			{ x = 32012, y = 31565, z = 7 },
 		},
 	},
-	[Storage.TheSecretLibrary.MiniBosses.PreceptorLazare] = {
-		itemId = 6260,
-		itemPos = { { x = 33376, y = 31335, z = 3 } },
-	},
-	[Storage.TheSecretLibrary.LowerBastionAccess] = {
-		itemId = 6260,
-		itemPos = {
-			{ x = 33371, y = 31349, z = 4 },
-			{ x = 33375, y = 31346, z = 5 },
-		},
-	},
-	[Storage.TheSecretLibrary.UndergroundBastionAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 33366, y = 31343, z = 7 },
-			{ x = 33363, y = 31346, z = 7 },
-			{ x = 32191, y = 31823, z = 8 },
-		},
-	},
 	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor] = {
 		itemId = false,
 		itemPos = { { x = 32173, y = 31922, z = 8 } },
-	},
-	[Storage.Quest.U11_80.TheSecretLibrary.ScourgeOfOblivionDoor] = {
-		itemId = false,
-		itemPos = { { x = 32480, y = 32591, z = 15 } },
 	},
 	[Storage.Quest.U12_70.AdventuresOfGalthen.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32466, y = 32494, z = 8 } },
 	},
-	[Storage.Quest.U10_80.Grimvale.AncientFeudDoors] = {
+	[Storage.Quest.U10_80.GrimvaleQuest.AncientFeudDoors] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33124, y = 32261, z = 10 },
 			{ x = 33123, y = 32230, z = 12 },
 			{ x = 33159, y = 32322, z = 12 },
+		},
+	},
+	[Storage.Quest.U10_90.FerumbrasAscension.TarbazDoor] = {
+		itemId = 22508,
+		itemPos = {
+			{ x = 33476, y = 32791, z = 11 },
+			{ x = 33470, y = 32786, z = 11 },
 		},
 	},
 	[Storage.Kilmaresh.AccessDoor] = {

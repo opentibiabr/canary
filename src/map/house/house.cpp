@@ -95,7 +95,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 		Database &db = Database::getInstance();
 
 		std::ostringstream query;
-		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `bid` = 0, `bid_end` = 0, `last_bid` = 0, `highest_bidder` = 0  WHERE `id` = " << id;
+		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `paid` = 0, `bidder` = 0, `bidder_name` = '', `highest_bid` = 0, `internal_bid` = 0, `bid_end_date` = 0, `state` = " << (guid > 0 ? 2 : 0) << " WHERE `id` = " << id;
 		db.executeQuery(query.str());
 	}
 
@@ -107,7 +107,9 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 
 	if (owner != 0) {
 		tryTransferOwnership(player, false);
-	} else {
+	}
+
+	if (guid != 0) {
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 		time_t currentTime = time(nullptr);
 		if (strRentPeriod == "yearly") {
@@ -123,6 +125,8 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 		}
 
 		paidUntil = currentTime;
+	} else {
+		paidUntil = 0;
 	}
 
 	rentWarnings = 0;
@@ -141,6 +145,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 			owner = guid;
 			ownerName = name;
 			ownerAccountId = result->getNumber<uint32_t>("account_id");
+			m_state = CyclopediaHouseState::Rented;
 		}
 	}
 
@@ -155,15 +160,17 @@ void House::updateDoorDescription() const {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
 	}
 
-	ss << " It is " << getSize() << " square meters.";
-	const int32_t housePrice = getPrice();
-	if (housePrice != -1) {
-		if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
-			ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
-		}
-		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
-		if (strRentPeriod != "never") {
-			ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		ss << " It is " << getSize() << " square meters.";
+		const int32_t housePrice = getPrice();
+		if (housePrice != -1) {
+			if (g_configManager().getBoolean(HOUSE_PURSHASED_SHOW_PRICE) || owner == 0) {
+				ss << " It costs " << formatNumber(getPrice()) << " gold coins.";
+			}
+			std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
+			if (strRentPeriod != "never") {
+				ss << " The rent cost is " << formatNumber(getRent()) << " gold coins and it is billed " << strRentPeriod << ".";
+			}
 		}
 	}
 
@@ -479,6 +486,43 @@ void House::resetTransferItem() {
 	}
 }
 
+void House::calculateBidEndDate(uint8_t daysToEnd) {
+	auto currentTimeMs = std::chrono::system_clock::now().time_since_epoch();
+
+	auto now = std::chrono::system_clock::time_point(
+		std::chrono::duration_cast<std::chrono::milliseconds>(currentTimeMs)
+	);
+
+	// Truncate to whole days since epoch
+	days daysSinceEpoch = std::chrono::duration_cast<days>(now.time_since_epoch());
+
+	// Get today's date at 00:00:00 UTC
+	auto todayMidnight = std::chrono::system_clock::time_point(daysSinceEpoch);
+
+	std::chrono::system_clock::time_point targetDay = todayMidnight + days(daysToEnd);
+
+	const auto serverSaveTime = g_configManager().getString(GLOBAL_SERVER_SAVE_TIME);
+
+	std::vector<int32_t> params = vectorAtoi(explodeString(serverSaveTime, ":"));
+	int32_t hour = params.front();
+	int32_t min = 0;
+	int32_t sec = 0;
+	if (params.size() > 1) {
+		min = params[1];
+
+		if (params.size() > 2) {
+			sec = params[2];
+		}
+	}
+	std::chrono::system_clock::time_point targetTime = targetDay + std::chrono::hours(hour) + std::chrono::minutes(min) + std::chrono::seconds(sec);
+
+	std::time_t resultTime = std::chrono::system_clock::to_time_t(targetTime);
+	std::tm* localTime = std::localtime(&resultTime);
+	auto bidEndDate = static_cast<uint32_t>(std::mktime(localTime));
+
+	this->m_bidEndDate = bidEndDate;
+}
+
 std::shared_ptr<HouseTransferItem> HouseTransferItem::createHouseTransferItem(const std::shared_ptr<House> &house) {
 	auto transferItem = std::make_shared<HouseTransferItem>(house);
 	transferItem->setID(ITEM_DOCUMENT_RO);
@@ -725,6 +769,35 @@ std::shared_ptr<House> Houses::getHouseByPlayerId(uint32_t playerId) const {
 	return nullptr;
 }
 
+std::vector<std::shared_ptr<House>> Houses::getAllHousesByPlayerId(uint32_t playerId) {
+	std::vector<std::shared_ptr<House>> playerHouses;
+	for (const auto &[id, house] : houseMap) {
+		if (house->getOwner() == playerId) {
+			playerHouses.emplace_back(house);
+		}
+	}
+	return playerHouses;
+}
+
+std::shared_ptr<House> Houses::getHouseByBidderName(const std::string &bidderName) {
+	for (const auto &[id, house] : houseMap) {
+		if (house->getBidderName() == bidderName) {
+			return house;
+		}
+	}
+	return nullptr;
+}
+
+uint16_t Houses::getHouseCountByAccount(uint32_t accountId) {
+	uint16_t count = 0;
+	for (const auto &[id, house] : houseMap) {
+		if (house->getOwnerAccountId() == accountId) {
+			++count;
+		}
+	}
+	return count;
+}
+
 bool Houses::loadHousesXML(const std::string &filename) {
 	pugi::xml_document doc;
 	const pugi::xml_parse_result result = doc.load_file(filename.c_str());
@@ -764,6 +837,13 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		house->setRent(pugi::cast<uint32_t>(houseNode.attribute("rent").value()));
 		house->setSize(pugi::cast<uint32_t>(houseNode.attribute("size").value()));
 		house->setTownId(pugi::cast<uint32_t>(houseNode.attribute("townid").value()));
+		house->setClientId(pugi::cast<uint32_t>(houseNode.attribute("clientid").value()));
+
+		auto guildhallAttr = houseNode.attribute("guildhall");
+		if (!guildhallAttr.empty()) {
+			house->setGuildhall(static_cast<bool>(guildhallAttr.as_bool()));
+		}
+
 		auto maxBedsAttr = houseNode.attribute("beds");
 		int32_t maxBeds = -1;
 		if (!maxBedsAttr.empty()) {
@@ -772,6 +852,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		house->setMaxBeds(maxBeds);
 
 		house->setOwner(0, false);
+		addHouseClientId(house->getClientId(), house);
 	}
 	return true;
 }

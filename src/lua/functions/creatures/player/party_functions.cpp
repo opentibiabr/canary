@@ -24,6 +24,7 @@ void PartyFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Party", "getMemberCount", PartyFunctions::luaPartyGetMemberCount);
 	Lua::registerMethod(L, "Party", "getInvitees", PartyFunctions::luaPartyGetInvitees);
 	Lua::registerMethod(L, "Party", "getInviteeCount", PartyFunctions::luaPartyGetInviteeCount);
+	Lua::registerMethod(L, "Party", "getUniqueVocationsCount", PartyFunctions::luaPartyGetUniqueVocationsCount);
 	Lua::registerMethod(L, "Party", "addInvite", PartyFunctions::luaPartyAddInvite);
 	Lua::registerMethod(L, "Party", "removeInvite", PartyFunctions::luaPartyRemoveInvite);
 	Lua::registerMethod(L, "Party", "addMember", PartyFunctions::luaPartyAddMember);
@@ -156,6 +157,17 @@ int PartyFunctions::luaPartyGetInviteeCount(lua_State* L) {
 	const auto &party = Lua::getUserdataShared<Party>(L, 1);
 	if (party) {
 		lua_pushnumber(L, party->getInvitationCount());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PartyFunctions::luaPartyGetUniqueVocationsCount(lua_State* L) {
+	// party:getUniqueVocationsCount()
+	const auto &party = Lua::getUserdataShared<Party>(L, 1);
+	if (party) {
+		lua_pushnumber(L, party->getUniqueVocationsCount());
 	} else {
 		lua_pushnil(L);
 	}

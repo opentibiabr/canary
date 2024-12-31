@@ -9,6 +9,7 @@
 
 #include "lua/functions/map/house_functions.hpp"
 
+#include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "items/bed.hpp"
 #include "game/game.hpp"
@@ -238,7 +239,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	if (IOLoginData::hasBiddedOnHouse(tradePartner->getGUID())) {
+	if (tradePartner->getAccount()->getHouseBidId() != 0) {
 		lua_pushnumber(L, RETURNVALUE_TRADEPLAYERHIGHESTBIDDER);
 		return 1;
 	}

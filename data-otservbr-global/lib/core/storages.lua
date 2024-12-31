@@ -923,6 +923,7 @@ Storage = {
 				NoblemanSecondAddon = 41308,
 				FormorgarMinesHoistSkeleton = 41309,
 				FormorgarMinesHoistChest = 41310,
+				PickAmount = 41311,
 			},
 		},
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650

@@ -31,7 +31,6 @@ public:
 	static std::string getNameByGuid(uint32_t guid);
 	static bool formatPlayerName(std::string &name);
 	static void increaseBankBalance(uint32_t guid, uint64_t bankBalance);
-	static bool hasBiddedOnHouse(uint32_t guid);
 
 	static std::vector<VIPEntry> getVIPEntries(uint32_t accountId);
 	static void addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);

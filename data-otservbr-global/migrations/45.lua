@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 46 (feat: vip groups)")
+	logger.info("Updating database to version 45 (feat: vip groups)")
 
 	db.query([[
 		CREATE TABLE IF NOT EXISTS `account_vipgroups` (

@@ -13,10 +13,13 @@
 #include "declarations.hpp"
 #include "map/house/housetile.hpp"
 #include "game/movement/position.hpp"
+#include "enums/player_cyclopedia.hpp"
 
 class House;
 class BedItem;
 class Player;
+
+using days = std::chrono::duration<int64_t, std::ratio<86400>>;
 
 class AccessList {
 public:
@@ -233,6 +236,84 @@ public:
 	bool hasNewOwnership() const;
 	void setNewOwnership();
 
+	void setClientId(uint32_t newClientId) {
+		this->m_clientId = newClientId;
+	}
+	uint32_t getClientId() const {
+		return m_clientId;
+	}
+
+	void setBidder(int32_t bidder) {
+		this->m_bidder = bidder;
+	}
+	int32_t getBidder() const {
+		return m_bidder;
+	}
+
+	void setBidderName(const std::string &bidderName) {
+		this->m_bidderName = bidderName;
+	}
+	std::string getBidderName() const {
+		return m_bidderName;
+	}
+
+	void setHighestBid(uint64_t bidValue) {
+		this->m_highestBid = bidValue;
+	}
+	uint64_t getHighestBid() const {
+		return m_highestBid;
+	}
+
+	void setInternalBid(uint64_t bidValue) {
+		this->m_internalBid = bidValue;
+	}
+	uint64_t getInternalBid() const {
+		return m_internalBid;
+	}
+
+	void setBidHolderLimit(uint64_t bidValue) {
+		this->m_bidHolderLimit = bidValue;
+	}
+	uint64_t getBidHolderLimit() const {
+		return m_bidHolderLimit;
+	}
+
+	void calculateBidEndDate(uint8_t daysToEnd);
+	void setBidEndDate(uint32_t bidEndDate) {
+		this->m_bidEndDate = bidEndDate;
+	};
+	uint32_t getBidEndDate() const {
+		return m_bidEndDate;
+	}
+
+	void setState(CyclopediaHouseState state) {
+		this->m_state = state;
+	}
+	CyclopediaHouseState getState() const {
+		return m_state;
+	}
+
+	void setTransferStatus(bool transferStatus) {
+		this->m_transferStatus = transferStatus;
+	}
+	bool getTransferStatus() const {
+		return m_transferStatus;
+	}
+
+	void setOwnerAccountId(uint32_t accountId) {
+		this->ownerAccountId = accountId;
+	}
+	uint32_t getOwnerAccountId() const {
+		return ownerAccountId;
+	}
+
+	void setGuildhall(bool isGuildHall) {
+		this->guildHall = isGuildHall;
+	}
+	bool isGuildhall() const {
+		return guildHall;
+	}
+
 private:
 	bool transferToDepot() const;
 
@@ -263,8 +344,20 @@ private:
 	uint32_t townId = 0;
 	uint32_t maxBeds = 4;
 	int32_t bedsCount = -1;
+	bool guildHall = false;
 
 	Position posEntry = {};
+
+	// House Auction
+	uint32_t m_clientId;
+	int32_t m_bidder = 0;
+	std::string m_bidderName = "";
+	uint64_t m_highestBid = 0;
+	uint64_t m_internalBid = 0;
+	uint64_t m_bidHolderLimit = 0;
+	uint32_t m_bidEndDate = 0;
+	CyclopediaHouseState m_state = CyclopediaHouseState::Available;
+	bool m_transferStatus = false;
 
 	bool isLoaded = false;
 
@@ -299,7 +392,26 @@ public:
 		return it->second;
 	}
 
+	void addHouseClientId(uint32_t clientId, std::shared_ptr<House> house) {
+		if (auto it = houseMapClientId.find(clientId); it != houseMapClientId.end()) {
+			return;
+		}
+
+		houseMapClientId.emplace(clientId, house);
+	}
+
+	std::shared_ptr<House> getHouseByClientId(uint32_t clientId) {
+		auto it = houseMapClientId.find(clientId);
+		if (it == houseMapClientId.end()) {
+			return nullptr;
+		}
+		return it->second;
+	}
+
 	std::shared_ptr<House> getHouseByPlayerId(uint32_t playerId) const;
+	std::vector<std::shared_ptr<House>> getAllHousesByPlayerId(uint32_t playerId);
+	std::shared_ptr<House> getHouseByBidderName(const std::string &bidderName);
+	uint16_t getHouseCountByAccount(uint32_t accountId);
 
 	bool loadHousesXML(const std::string &filename);
 
@@ -311,4 +423,5 @@ public:
 
 private:
 	HouseMap houseMap;
+	HouseMap houseMapClientId;
 };

@@ -119,6 +119,9 @@ public:
 
 	std::tuple<phmap::flat_hash_map<std::string, uint64_t>, AccountErrors_t> getAccountPlayers() const;
 
+	void setHouseBidId(uint32_t houseId);
+	uint32_t getHouseBidId() const;
+
 	// Old protocol compat
 	void setProtocolCompat(bool toggle);
 

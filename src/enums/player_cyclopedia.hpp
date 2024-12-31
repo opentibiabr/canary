@@ -60,3 +60,61 @@ enum class CyclopediaMapData_t : uint8_t {
 	Donations = 9,
 	SetCurrentArea = 10,
 };
+
+enum class CyclopediaHouseState : uint8_t {
+	Available = 0,
+	Rented = 2,
+	Transfer = 3,
+	MoveOut = 4,
+};
+
+enum class HouseAuctionType : uint8_t {
+	Bid = 1,
+	MoveOut = 2,
+	Transfer = 3,
+	CancelMoveOut = 4,
+	CancelTransfer = 5,
+	AcceptTransfer = 6,
+	RejectTransfer = 7,
+};
+
+enum class BidSuccessMessage : uint8_t {
+	BidSuccess = 0,
+	LowerBid = 1,
+};
+
+enum class BidErrorMessage : uint8_t {
+	NoError = 0,
+	Rookgaard = 3,
+	Premium = 5,
+	Guildhall = 6,
+	OnlyOneBid = 7,
+	NotEnoughMoney = 17,
+	NotEnoughGuildMoney = 21,
+	Internal = 24,
+};
+
+// Bytes to:
+// Move Out, Transfer
+// Cancel Move Out/Transfer
+enum class TransferErrorMessage : uint8_t {
+	Success = 0,
+	NotHouseOwner = 2,
+	CharacterNotExist = 4,
+	Premium = 7,
+	Rookgaard = 16,
+	AlreadyTheOwner = 19,
+	OnlyOneBid = 25,
+	Internal = 32,
+};
+
+enum class AcceptTransferErrorMessage : uint8_t {
+	Success = 0,
+	NotNewOwner = 2,
+	AlreadyBid = 3,
+	AlreadyAccepted = 7,
+	Rookgaard = 8,
+	Premium = 9,
+	Frozen = 15,
+	Internal = 19,
+};

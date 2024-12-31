@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 27 (towns)")
+	logger.info("Updating database to version 26 (towns)")
 
 	db.query([[
 	CREATE TABLE IF NOT EXISTS `towns` (

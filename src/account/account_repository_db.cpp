@@ -47,12 +47,13 @@ bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, std::uniq
 bool AccountRepositoryDB::save(const std::unique_ptr<AccountInfo> &accInfo) {
 	bool successful = g_database().executeQuery(
 		fmt::format(
-			"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {} WHERE `id` = {}",
+			"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {}, `house_bid_id` = {} WHERE `id` = {}",
 			accInfo->accountType,
 			accInfo->premiumRemainingDays,
 			accInfo->premiumLastDay,
 			accInfo->creationTime,
 			accInfo->premiumDaysPurchased,
+			accInfo->houseBidId,
 			accInfo->id
 		)
 	);

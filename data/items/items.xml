@@ -74883,21 +74883,12 @@ Granted by TibiaGoals.com"/>
 	<item id="42632" name="stairs">
 		<attribute key="floorchange" value="east"/>
 	</item>
-	<item id="42964" name="stairs"/>
-	<item id="42965" name="stairs">
-		<attribute key="floorchange" value="north"/>
+	<item id="42744" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
 	</item>
-	<item id="42966" name="stairs"/>
-	<item id="42967" name="stairs">
-		<attribute key="floorchange" value="west"/>
-	</item>
-	<item id="42968" name="stairs"/>
-	<item id="42969" name="stairs">
-		<attribute key="floorchange" value="east"/>
-	</item>
-	<item id="42970" name="stairs"/>
-	<item id="42971" name="stairs">
-		<attribute key="floorchange" value="south"/>
+	<item id="42745" article="a" name="open door">
+		<attribute key="type" value="door"/>
 	</item>
 	<item id="43952" article="a" name="closed door">
 		<attribute key="type" value="door"/>
@@ -74916,6 +74907,22 @@ Granted by TibiaGoals.com"/>
 	<item id="43955" article="a" name="open door">
 		<attribute key="type" value="door"/>
 		<attribute key="transformOnUse" value="43953"/>
+	</item>
+		<item id="42964" name="stairs"/>
+	<item id="42965" name="stairs">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="42966" name="stairs"/>
+	<item id="42967" name="stairs">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="42968" name="stairs"/>
+	<item id="42969" name="stairs">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="42970" name="stairs"/>
+	<item id="42971" name="stairs">
+		<attribute key="floorchange" value="south"/>
 	</item>
 	<item id="43129" name="stairs"/>
 	<item id="43130" name="stairs">
@@ -74946,6 +74953,190 @@ Granted by TibiaGoals.com"/>
 	<item id="43517" article="a" name="shield of destiny">
 		<attribute key="description" value="Souvenir from Thais Museum."/>
 		<attribute key="weight" value="6800"/>
+	</item>
+	<item id="43552" article="a" name="dead mycobiontic beetle">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43553" article="a" name="dead mycobiontic beetle">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43552"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43554" article="a" name="dead mycobiontic beetle">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43553"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43555" article="a" name="dead mycobiontic beetle">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43554"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43556" article="a" name="dead meandering mushroom">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43557" article="a" name="dead meandering mushroom">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43556"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43558" article="a" name="dead meandering mushroom">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43557"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43559" article="a" name="dead meandering mushroom">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43558"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43560" article="a" name="dead darklight construct">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43561" article="a" name="dead darklight construct">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43560"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43562" article="a" name="dead darklight construct">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43561"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43563" article="a" name="dead darklight construct">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43562"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43564" article="a" name="dead converter">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43565" article="a" name="dead converter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43564"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43566" article="a" name="dead converter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43565"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43567" article="a" name="dead converter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43566"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43568" article="a" name="dead darklight matter">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43569" article="a" name="dead darklight matter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43568"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43570" article="a" name="dead darklight matter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43569"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43571" article="a" name="dead darklight matter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43570"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43572" article="a" name="dead oozing corpus">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43573" article="a" name="dead oozing corpus">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43572"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43574" article="a" name="dead oozing corpus">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43573"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43575" article="a" name="dead oozing corpus">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43574"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43576" article="a" name="dead oozing carcass">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43577" article="a" name="dead oozing carcass">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43576"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43578" article="a" name="dead oozing carcass">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43577"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43579" article="a" name="dead oozing carcass">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43578"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43580" article="a" name="dead darklight emitter">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43581" article="a" name="dead darklight emitter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43580"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43582" article="a" name="dead darklight emitter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43581"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43583" article="a" name="dead darklight emitter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43582"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
 	</item>
 	<item id="43729" name="werecrocodile tongue">
 		<attribute key="primarytype" value="creature products"/>
@@ -75116,6 +75307,196 @@ Granted by TibiaGoals.com"/>
 		<attribute key="decayTo" value="43815"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43817" article="a" name="dead rotten man-maggots">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43818" article="a" name="dead rotten man-maggots">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43817"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43819" article="a" name="dead rotten man-maggots">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43818"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43820" article="a" name="dead rotten man-maggots">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43819"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43821" article="a" name="dead walking pillar">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43822" article="a" name="dead walking pillar">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43821"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43823" article="a" name="dead walking pillar">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43822"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43824" article="a" name="dead walking pillar">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43823"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43825" article="a" name="dead wandering pillar">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43826" article="a" name="dead wandering pillar">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43825"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43827" article="a" name="dead wandering pillar">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43826"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43828" article="a" name="dead wandering pillar">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43827"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43829" article="a" name="dead sopping carcass">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43830" article="a" name="dead sopping carcass">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43829"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43831" article="a" name="dead sopping carcass">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43830"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43832" article="a" name="dead sopping carcass">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43831"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43833" article="a" name="dead sopping corpus">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43834" article="a" name="dead sopping corpus">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43833"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43835" article="a" name="dead sopping corpus">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43834"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43836" article="a" name="dead sopping corpus">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43835"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43837" article="a" name="dead darklight source">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43838" article="a" name="dead darklight source">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43837"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43839" article="a" name="dead darklight source">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43838"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43840" article="a" name="dead darklight source">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43839"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43841" article="a" name="dead darklight striker">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43842" article="a" name="dead darklight striker">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43841"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43843" article="a" name="dead darklight striker">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43842"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43844" article="a" name="dead darklight striker">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="43843"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="43845" name="RESERVED SPRITE"/>
+	<item id="43846" article="a" name="decayed finger bone">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="43847" name="RESERVED SPRITE"/>
+	<item id="43848" name="RESERVED SPRITE"/>
+	<item id="43849" article="a" name="rotten roots">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="43850" article="a" name="dark obsidian splinter">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="43851" name="RESERVED SPRITE"/>
+	<item id="43852" article="a" name="darklight basalt chunk">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="43853" article="a" name="darklight core">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
 	</item>
 	<item id="43863" article="a" name="conch shell horn">
 		<attribute key="primarytype" value="quest items"/>
@@ -75849,6 +76230,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="feet"/>
 			<attribute key="vocation" value="Druid;true, Elder Druid"/>
 		</attribute>
+	</item>
+	<item id="43891" article="a" name="sacrificial plate">
+		<attribute key="primarytype" value="shrines and altars"/>
 	</item>
 	<item id="43895" article="a" name="bag you covet">
 		<attribute key="primarytype" value="valuables"/>

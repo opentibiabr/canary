@@ -72,7 +72,7 @@
 
 #include <appearances.pb.h>
 
-std::vector<std::shared_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
+std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
@@ -1092,7 +1092,7 @@ std::string Game::getPlayerNameByGUID(const uint32_t &guid) {
 
 ReturnValue Game::getPlayerByNameWildcard(const std::string &s, std::shared_ptr<Player> &player) {
 	size_t strlen = s.length();
-	if (strlen == 0 || strlen > 20) {
+	if (strlen == 0 || strlen > 29) {
 		return RETURNVALUE_PLAYERWITHTHISNAMEISNOTONLINE;
 	}
 
@@ -1253,15 +1253,6 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 	}
 
 	return true;
-}
-
-void Game::executeDeath(uint32_t creatureId) {
-	metrics::method_latency measure(__METRICS_METHOD_NAME__);
-	std::shared_ptr<Creature> creature = getCreatureByID(creatureId);
-	if (creature && !creature->isRemoved()) {
-		afterCreatureZoneChange(creature, creature->getZones(), {});
-		creature->onDeath();
-	}
 }
 
 void Game::playerTeleport(uint32_t playerId, const Position &newPosition) {
@@ -5912,7 +5903,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	updateCreatureWalk(player->getID()); // internally uses addEventWalk.
+	player->updateCreatureWalk();
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
@@ -5922,7 +5913,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(nullptr);
-	updateCreatureWalk(player->getID()); // internally uses addEventWalk.
+	player->updateCreatureWalk();
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 
@@ -6433,27 +6424,6 @@ bool Game::internalCreatureSay(const std::shared_ptr<Creature> &creature, SpeakC
 	return true;
 }
 
-void Game::checkCreatureWalk(uint32_t creatureId) {
-	const auto &creature = getCreatureByID(creatureId);
-	if (creature && creature->getHealth() > 0) {
-		creature->onCreatureWalk();
-	}
-}
-
-void Game::updateCreatureWalk(uint32_t creatureId) {
-	const auto &creature = getCreatureByID(creatureId);
-	if (creature && creature->getHealth() > 0) {
-		creature->goToFollowCreature_async();
-	}
-}
-
-void Game::checkCreatureAttack(uint32_t creatureId) {
-	const auto &creature = getCreatureByID(creatureId);
-	if (creature && creature->getHealth() > 0) {
-		creature->onAttacking(0);
-	}
-}
-
 void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 	if (creature->isRemoved()) {
 		return;
@@ -6461,16 +6431,15 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 	creature->creatureCheck.store(true);
 
-	if (creature->inCheckCreaturesVector.load()) {
+	if (creature->inCheckCreaturesVector.exchange(true)) {
 		// already in a vector
 		return;
 	}
 
-	creature->inCheckCreaturesVector.store(true);
-
-	creature->safeCall([this, creature] {
-		checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].emplace_back(creature);
-	});
+	g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
+		checkCreatureLists[index].emplace_back(creature);
+	},
+	                        "Game::addCreatureCheck");
 }
 
 void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
@@ -6484,15 +6453,28 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::shared_ptr<Creature> creature) {
-		if (creature->creatureCheck && creature->isAlive()) {
-			creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-			creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-			creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
-			return false;
+	std::erase_if(checkCreatureLists[index], [this](const std::weak_ptr<Creature> &weak) {
+		if (const auto creature = weak.lock()) {
+			if (creature->creatureCheck && creature->isAlive()) {
+				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
+				if (creature->getMonster()) {
+					// The monster's onThink is executed asynchronously,
+					// so the target is updated later, so we need to postpone the actions below.
+					g_dispatcher().addEvent([creature] {
+						if (creature->isAlive()) {
+							creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+							creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+						} }, __FUNCTION__);
+				} else {
+					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+				}
+				return false;
+			}
+
+			creature->inCheckCreaturesVector = false;
 		}
 
-		creature->inCheckCreaturesVector = false;
 		return true;
 	});
 
@@ -7436,7 +7418,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		}
 
 		auto targetHealth = target->getHealth();
-		realDamage = damage.primary.value + damage.secondary.value;
+		realDamage = std::min<int32_t>(targetHealth, damage.primary.value + damage.secondary.value);
 		if (realDamage == 0) {
 			return true;
 		} else if (realDamage >= targetHealth) {
@@ -10881,4 +10863,355 @@ void Game::updatePlayersOnline() const {
 	if (!success) {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
 	}
+}
+
+void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &townName) {
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	HouseMap houses;
+	if (!townName.empty()) {
+		const auto &housesList = g_game().map.houses.getHouses();
+		for (const auto &it : housesList) {
+			const auto &house = it.second;
+			const auto &town = g_game().map.towns.getTown(house->getTownId());
+			if (!town) {
+				return;
+			}
+
+			const std::string &houseTown = town->getName();
+			if (houseTown == townName) {
+				houses.emplace(house->getClientId(), house);
+			}
+		}
+	} else {
+		auto playerHouses = g_game().map.houses.getAllHousesByPlayerId(player->getGUID());
+		if (playerHouses.size()) {
+			for (const auto &playerHouse : playerHouses) {
+				if (!playerHouse) {
+					continue;
+				}
+				houses.emplace(playerHouse->getClientId(), playerHouse);
+			}
+		}
+
+		const auto house = g_game().map.houses.getHouseByBidderName(player->getName());
+		if (house) {
+			houses.emplace(house->getClientId(), house);
+		}
+	}
+	player->sendCyclopediaHouseList(houses);
+}
+
+void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return;
+	}
+
+	auto ret = player->canBidHouse(houseId);
+	if (ret != BidErrorMessage::NoError) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+	}
+	ret = BidErrorMessage::NotEnoughMoney;
+	auto retSuccess = BidSuccessMessage::BidSuccess;
+
+	if (house->getBidderName().empty()) {
+		if (!processBankAuction(player, house, bidValue)) {
+			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+			return;
+		}
+		house->setHighestBid(0);
+		house->setInternalBid(bidValue);
+		house->setBidHolderLimit(bidValue);
+		house->setBidderName(player->getName());
+		house->setBidder(player->getGUID());
+		house->calculateBidEndDate(g_configManager().getNumber(DAYS_TO_CLOSE_BID));
+	} else if (house->getBidderName() == player->getName()) {
+		if (!processBankAuction(player, house, bidValue, true)) {
+			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+			return;
+		}
+		house->setInternalBid(bidValue);
+		house->setBidHolderLimit(bidValue);
+	} else if (bidValue <= house->getInternalBid()) {
+		house->setHighestBid(bidValue);
+		retSuccess = BidSuccessMessage::LowerBid;
+	} else {
+		if (!processBankAuction(player, house, bidValue)) {
+			player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(ret));
+			return;
+		}
+		house->setHighestBid(house->getInternalBid() + 1);
+		house->setInternalBid(bidValue);
+		house->setBidHolderLimit(bidValue);
+		house->setBidderName(player->getName());
+		house->setBidder(player->getGUID());
+	}
+
+	const auto &town = g_game().map.towns.getTown(house->getTownId());
+	if (!town) {
+		return;
+	}
+
+	const std::string houseTown = town->getName();
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::Bid, enumToValue(retSuccess), true);
+	playerCyclopediaHousesByTown(playerId, houseTown);
+}
+
+void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uint32_t timestamp) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getState() != CyclopediaHouseState::Rented) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	if (house->getOwner() != player->getGUID()) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::NotHouseOwner));
+		return;
+	}
+
+	house->setBidEndDate(timestamp);
+	house->setState(CyclopediaHouseState::MoveOut);
+
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::Success));
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getState() != CyclopediaHouseState::MoveOut) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	if (house->getOwner() != player->getGUID()) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::NotHouseOwner));
+		return;
+	}
+
+	house->setBidEndDate(0);
+	house->setState(CyclopediaHouseState::Rented);
+
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::Success));
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, uint32_t timestamp, const std::string &newOwnerName, uint64_t bidValue) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &owner = getPlayerByID(playerId);
+	if (!owner) {
+		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	const std::shared_ptr<Player> &newOwner = getPlayerByName(newOwnerName, true);
+	if (!newOwner) {
+		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::CharacterNotExist));
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getState() != CyclopediaHouseState::Rented) {
+		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	auto ret = owner->canTransferHouse(houseId, newOwner->getGUID());
+	if (ret != TransferErrorMessage::Success) {
+		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(ret));
+		return;
+	}
+
+	house->setBidderName(newOwnerName);
+	house->setBidder(newOwner->getGUID());
+	house->setInternalBid(bidValue);
+	house->setBidEndDate(timestamp);
+	house->setState(CyclopediaHouseState::Transfer);
+
+	owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(ret));
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
+	if (!player) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getState() != CyclopediaHouseState::Transfer) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	if (house->getOwner() != player->getGUID()) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::NotHouseOwner));
+		return;
+	}
+
+	if (house->getTransferStatus()) {
+		const auto &newOwner = getPlayerByGUID(house->getBidder());
+		const auto amountPaid = house->getInternalBid() + house->getRent();
+		if (newOwner) {
+			newOwner->setBankBalance(newOwner->getBankBalance() + amountPaid);
+			newOwner->sendResourceBalance(RESOURCE_BANK, newOwner->getBankBalance());
+		} else {
+			IOLoginData::increaseBankBalance(house->getBidder(), amountPaid);
+		}
+	}
+
+	house->setBidderName("");
+	house->setBidder(0);
+	house->setInternalBid(0);
+	house->setBidEndDate(0);
+	house->setState(CyclopediaHouseState::Rented);
+	house->setTransferStatus(false);
+
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::Success));
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
+	if (!player) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Internal));
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getState() != CyclopediaHouseState::Transfer) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Internal));
+		return;
+	}
+
+	auto ret = player->canAcceptTransferHouse(houseId);
+	if (ret != AcceptTransferErrorMessage::Success) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(ret));
+		return;
+	}
+
+	if (!processBankAuction(player, house, house->getInternalBid())) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Frozen));
+		return;
+	}
+
+	house->setTransferStatus(true);
+
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(ret));
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+void Game::playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t houseId) {
+	if (!g_configManager().getBoolean(CYCLOPEDIA_HOUSE_AUCTION)) {
+		return;
+	}
+
+	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
+	if (!player) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		return;
+	}
+
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house || house->getBidder() != player->getGUID() || house->getState() != CyclopediaHouseState::Transfer) {
+		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::NotHouseOwner));
+		return;
+	}
+
+	if (house->getTransferStatus()) {
+		const auto &newOwner = getPlayerByGUID(house->getBidder());
+		const auto amountPaid = house->getInternalBid() + house->getRent();
+		if (newOwner) {
+			newOwner->setBankBalance(newOwner->getBankBalance() + amountPaid);
+			newOwner->sendResourceBalance(RESOURCE_BANK, newOwner->getBankBalance());
+		} else {
+			IOLoginData::increaseBankBalance(house->getBidder(), amountPaid);
+		}
+	}
+
+	house->setBidderName("");
+	house->setBidder(0);
+	house->setInternalBid(0);
+	house->setBidEndDate(0);
+	house->setState(CyclopediaHouseState::Rented);
+	house->setTransferStatus(false);
+
+	player->sendHouseAuctionMessage(houseId, HouseAuctionType::RejectTransfer, enumToValue(TransferErrorMessage::Success));
+	playerCyclopediaHousesByTown(playerId, "");
+}
+
+bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_ptr<House> &house, uint64_t bid, bool replace /* = false*/) {
+	if (!replace && player->getBankBalance() < (house->getRent() + bid)) {
+		return false;
+	}
+
+	if (player->getBankBalance() < bid) {
+		return false;
+	}
+
+	uint64_t balance = player->getBankBalance();
+	if (replace) {
+		player->setBankBalance(balance - (bid - house->getInternalBid()));
+	} else {
+		player->setBankBalance(balance - (house->getRent() + bid));
+	}
+
+	player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+
+	if (house->getBidderName() != player->getName()) {
+		const auto otherPlayer = g_game().getPlayerByName(house->getBidderName());
+		if (!otherPlayer) {
+			uint32_t bidderGuid = IOLoginData::getGuidByName(house->getBidderName());
+			IOLoginData::increaseBankBalance(bidderGuid, (house->getBidHolderLimit() + house->getRent()));
+		} else {
+			otherPlayer->setBankBalance(otherPlayer->getBankBalance() + (house->getBidHolderLimit() + house->getRent()));
+			otherPlayer->sendResourceBalance(RESOURCE_BANK, otherPlayer->getBankBalance());
+		}
+	}
+
+	return true;
 }

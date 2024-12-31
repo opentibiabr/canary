@@ -37,6 +37,7 @@
 #include "enums/object_category.hpp"
 #include "enums/player_blessings.hpp"
 #include "enums/player_icons.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -2264,6 +2265,22 @@ void Player::sendOutfitWindow() const {
 	}
 }
 
+void Player::sendCyclopediaHouseList(const HouseMap &houses) const {
+	if (client) {
+		client->sendCyclopediaHouseList(houses);
+	}
+}
+void Player::sendResourceBalance(Resource_t resourceType, uint64_t value) const {
+	if (client) {
+		client->sendResourceBalance(resourceType, value);
+	}
+}
+void Player::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) const {
+	if (client) {
+		client->sendHouseAuctionMessage(houseId, type, index, bidSuccess);
+	}
+}
+
 // Imbuements
 
 void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm) {
@@ -3430,9 +3447,10 @@ void Player::doAttacking(uint32_t interval) {
 		}
 
 		const auto &task = createPlayerTask(
-			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); },
-			__FUNCTION__
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
+					creature->checkCreatureAttack(true);
+				} }, __FUNCTION__
 		);
 
 		if (!classicSpeed) {
@@ -5296,7 +5314,7 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+		checkCreatureAttack();
 	}
 	return true;
 }
@@ -9835,7 +9853,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
+		updateCreatureWalk();
 	}
 
 	if (creature != getPlayer()) {
@@ -10445,4 +10463,109 @@ uint16_t Player::getPlayerVocationEnum() const {
 	}
 
 	return Vocation_t::VOCATION_NONE;
+}
+
+BidErrorMessage Player::canBidHouse(uint32_t houseId) {
+	using enum BidErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (!isPremium()) {
+		return Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return OnlyOneBid;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getHighestBid())) {
+		return NotEnoughMoney;
+	}
+
+	if (house->isGuildhall()) {
+		if (getGuildRank() && getGuildRank()->level != 3) {
+			return Guildhall;
+		}
+
+		if (getGuild() && getGuild()->getBankBalance() < (house->getRent() + house->getHighestBid())) {
+			return NotEnoughGuildMoney;
+		}
+	}
+
+	return NoError;
+}
+
+TransferErrorMessage Player::canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID) {
+	using enum TransferErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getGUID() != house->getOwner()) {
+		return NotHouseOwner;
+	}
+
+	if (getGUID() == newOwnerGUID) {
+		return AlreadyTheOwner;
+	}
+
+	const auto newOwner = g_game().getPlayerByGUID(newOwnerGUID, true);
+	if (!newOwner) {
+		return CharacterNotExist;
+	}
+
+	if (newOwner->getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (!newOwner->isPremium()) {
+		return Premium;
+	}
+
+	if (newOwner->getAccount()->getHouseBidId() != 0) {
+		return OnlyOneBid;
+	}
+
+	return Success;
+}
+
+AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
+	using enum AcceptTransferErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getGUID() != house->getBidder()) {
+		return NotNewOwner;
+	}
+
+	if (!isPremium()) {
+		return Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return AlreadyBid;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getInternalBid())) {
+		return Frozen;
+	}
+
+	if (house->getTransferStatus()) {
+		return AlreadyAccepted;
+	}
+
+	return Success;
 }

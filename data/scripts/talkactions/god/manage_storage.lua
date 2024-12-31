@@ -18,14 +18,15 @@ function Player.getStorageValueTalkaction(self, param)
 		return true
 	end
 
-	storageStringToVar = loadstring("return " .. split[2])()
+	split[2] = split[2]:trimSpace()
 
 	-- Try to convert the second parameter to a number. If it's not a number, treat it as a storage name
 	local storageKey = tonumber(split[2])
 	if storageKey == nil then
 		-- Get the key for this storage name
-		local storageValue = target:getStorageValue(storageStringToVar)
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
+		local storageName = tostring(split[2])
+		local storageValue = target:getStorageValueByName(storageName)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageName .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
 	else
 		local storageValue = target:getStorageValue(storageKey)
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageKey .. " from player " .. split[1] .. " is: " .. storageValue .. ".")

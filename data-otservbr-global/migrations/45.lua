@@ -51,6 +51,4 @@ function onUpdateDatabase()
 		INSERT INTO `account_vipgroups` (`id`, `account_id`, `name`, `customizable`)
 		SELECT 3, id, 'Trading Partners', 0 FROM `accounts`;
 	]])
-
-	return true
 end

@@ -8,7 +8,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-	#include "metrics.hpp"
+	#include "lib/metrics/metrics.hpp"
+
 	#include "lib/di/container.hpp"
 
 using namespace metrics;
@@ -87,7 +88,7 @@ void Metrics::shutdown() {
 	metrics_api::Provider::SetMeterProvider(none);
 }
 
-ScopedLatency::ScopedLatency(const std::string_view &name, const std::string &histogramName, const std::string &scopeKey) :
+ScopedLatency::ScopedLatency(std::string_view name, const std::string &histogramName, const std::string &scopeKey) :
 	ScopedLatency(name, g_metrics().latencyHistograms[histogramName], { { scopeKey, std::string(name) } }, g_metrics().defaultContext) {
 	if (histogram == nullptr) {
 		stopped = true;

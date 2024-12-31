@@ -25,6 +25,11 @@ monster.corpse = 28625
 monster.speed = 115
 monster.manaCost = 0
 
+monster.events = {
+	"killingLibrary",
+	"oberonImmune",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10,
@@ -125,20 +130,6 @@ mType.onThink = function(monster, interval)
 		end
 	end
 end
-
-mType.onAppear = function(monster, creature)
-	if monster:getId() == creature:getId() then
-		monster:setStorageValue(GrandMasterOberonConfig.Storage.Asking, 1)
-		monster:setStorageValue(GrandMasterOberonConfig.Storage.Life, 1)
-	end
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
-
-mType.onDisappear = function(monster, creature) end
-
-mType.onMove = function(monster, creature, fromPosition, toPosition) end
 
 mType.onSay = function(monster, creature, type, message)
 	if type ~= TALKTYPE_SAY then

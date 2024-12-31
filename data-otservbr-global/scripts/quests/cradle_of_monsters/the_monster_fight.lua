@@ -196,6 +196,7 @@ local function setShields(creature, count)
 end
 
 local monsterHealth = CreatureEvent("fight.the-monster.TheMonsterHealth")
+
 function monsterHealth.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType)
 	if not creature then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType

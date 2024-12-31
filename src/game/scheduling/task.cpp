@@ -7,15 +7,17 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "task.hpp"
+#include "game/scheduling/task.hpp"
 
-#include "lib/logging/log_with_spd_log.hpp"
 #include "lib/metrics/metrics.hpp"
+
+#include "utils/tools.hpp"
 
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
 Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-	func(std::move(f)), context(context), utime(OTSYS_TIME()), expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
+	func(std::move(f)), context(context), utime(OTSYS_TIME()),
+	expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
 	if (this->context.empty()) {
 		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
 		return;
@@ -25,13 +27,18 @@ Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_v
 }
 
 Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/) :
-	func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay), cycle(cycle), log(log) {
+	func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay),
+	cycle(cycle), log(log) {
 	if (this->context.empty()) {
 		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
 		return;
 	}
 
 	assert(!this->context.empty() && "Context cannot be empty!");
+}
+
+[[nodiscard]] bool Task::hasExpired() const {
+	return expiration != 0 && expiration < OTSYS_TIME();
 }
 
 bool Task::execute() const {
@@ -54,6 +61,9 @@ bool Task::execute() const {
 	}
 
 	func();
-
 	return true;
+}
+
+void Task::updateTime() {
+	utime = OTSYS_TIME() + delay;
 }

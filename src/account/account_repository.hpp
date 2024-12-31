@@ -11,6 +11,9 @@
 
 struct AccountInfo;
 
+enum class CoinType : uint8_t;
+enum class CoinTransactionType : uint8_t;
+
 class AccountRepository {
 public:
 	AccountRepository() = default;
@@ -22,22 +25,22 @@ public:
 
 	static AccountRepository &getInstance();
 
-	virtual bool loadByID(const uint32_t &id, AccountInfo &acc) = 0;
-	virtual bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, AccountInfo &acc) = 0;
-	virtual bool loadBySession(const std::string &email, AccountInfo &acc) = 0;
-	virtual bool save(const AccountInfo &accInfo) = 0;
+	virtual bool loadByID(const uint32_t &id, std::unique_ptr<AccountInfo> &acc) = 0;
+	virtual bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, std::unique_ptr<AccountInfo> &acc) = 0;
+	virtual bool loadBySession(const std::string &email, std::unique_ptr<AccountInfo> &acc) = 0;
+	virtual bool save(const std::unique_ptr<AccountInfo> &accInfo) = 0;
 
 	virtual bool getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) = 0;
 
 	virtual bool getPassword(const uint32_t &id, std::string &password) = 0;
 
-	virtual bool getCoins(const uint32_t &id, const uint8_t &type, uint32_t &coins) = 0;
-	virtual bool setCoins(const uint32_t &id, const uint8_t &type, const uint32_t &amount) = 0;
+	virtual bool getCoins(const uint32_t &id, CoinType coinType, uint32_t &coins) = 0;
+	virtual bool setCoins(const uint32_t &id, CoinType coinType, const uint32_t &amount) = 0;
 	virtual bool registerCoinsTransaction(
 		const uint32_t &id,
-		uint8_t type,
+		CoinTransactionType type,
 		uint32_t coins,
-		const uint8_t &coinType,
+		CoinType coinType,
 		const std::string &description
 	) = 0;
 };

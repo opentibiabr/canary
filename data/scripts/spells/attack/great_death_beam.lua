@@ -17,6 +17,7 @@ end
 local combat1 = createCombat(initCombat, AREA_BEAM6)
 local combat2 = createCombat(initCombat, AREA_BEAM7)
 local combat3 = createCombat(initCombat, AREA_BEAM8)
+local combat = { combat1, combat2, combat3 }
 
 local spell = Spell("instant")
 
@@ -28,32 +29,15 @@ function spell.onCastSpell(creature, var)
 
 	local grade = creature:upgradeSpellsWOD("Great Death Beam")
 	if grade == WHEEL_GRADE_NONE then
-		creature:sendCancelMessage("You cannot cast this spell")
+		creature:sendCancelMessage("You need to learn this spell first")
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
-	local cooldown = { 10, 8, 6 }
-	var.runeName = "Beam Mastery"
-	local executed = false
-
-	local combat = { combat1, combat2, combat3 }
-
-	executed = combat[grade]:execute(creature, var)
-
-	if executed then
-		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 260)
-		local executedCooldown = cooldown[grade]
-		if executedCooldown ~= nil then
-			condition:setTicks((executedCooldown * 1000))
-		end
-		creature:addCondition(condition)
-		return true
-	end
-	return false
+	return combat[grade]:execute(creature, var)
 end
 
-spell:group("attack")
+spell:group("attack", "greatbeams")
 spell:id(260)
 spell:name("Great Death Beam")
 spell:words("exevo max mort")
@@ -62,8 +46,8 @@ spell:mana(140)
 spell:isPremium(false)
 spell:needDirection(true)
 spell:blockWalls(true)
-spell:cooldown(1000) -- Cooldown is calculated on the casting
-spell:groupCooldown(2 * 1000)
+spell:cooldown(10 * 1000)
+spell:groupCooldown(2 * 1000, 6 * 1000)
 spell:needLearn(true)
 spell:vocation("sorcerer;true", "master sorcerer;true")
 spell:register()

@@ -7,13 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "declarations.hpp"
 #include "lua/scripts/lua_environment.hpp"
+
+#include "declarations.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 #include "lua/global/lua_timer_event_descr.hpp"
+#include "lib/di/container.hpp"
 
 bool LuaEnvironment::shuttingDown = false;
+
+LuaEnvironment &LuaEnvironment::getInstance() {
+	return inject<LuaEnvironment>();
+}
 
 static const std::unique_ptr<AreaCombat> &AreaCombatNull {};
 
@@ -42,7 +48,7 @@ lua_State* LuaEnvironment::getLuaState() {
 
 bool LuaEnvironment::initState() {
 	luaState = luaL_newstate();
-	LuaFunctionsLoader::load(luaState);
+	Lua::load(luaState);
 	runningEventId = EVENT_ID_USER;
 
 	return true;
@@ -59,23 +65,18 @@ bool LuaEnvironment::closeState() {
 		return false;
 	}
 
-	for (const auto &combatEntry : combatIdMap) {
-		clearCombatObjects(combatEntry.first);
-	}
-
 	for (const auto &areaEntry : areaIdMap) {
 		clearAreaObjects(areaEntry.first);
 	}
 
 	for (auto &timerEntry : timerEvents) {
 		LuaTimerEventDesc timerEventDesc = std::move(timerEntry.second);
-		for (int32_t parameter : timerEventDesc.parameters) {
+		for (const int32_t parameter : timerEventDesc.parameters) {
 			luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
 		}
 		luaL_unref(luaState, LUA_REGISTRYINDEX, timerEventDesc.function);
 	}
 
-	combatIdMap.clear();
 	areaIdMap.clear();
 	timerEvents.clear();
 	cacheFiles.clear();
@@ -93,33 +94,8 @@ LuaScriptInterface* LuaEnvironment::getTestInterface() {
 	return testInterface;
 }
 
-std::shared_ptr<Combat> LuaEnvironment::getCombatObject(uint32_t id) const {
-	auto it = combatMap.find(id);
-	if (it == combatMap.end()) {
-		return nullptr;
-	}
-	return it->second;
-}
-
-std::shared_ptr<Combat> LuaEnvironment::createCombatObject(LuaScriptInterface* interface) {
-	auto combat = std::make_shared<Combat>();
-	combatMap[++lastCombatId] = combat;
-	combatIdMap[interface].push_back(lastCombatId);
-	return combat;
-}
-
-void LuaEnvironment::clearCombatObjects(LuaScriptInterface* interface) {
-	auto it = combatIdMap.find(interface);
-	if (it == combatIdMap.end()) {
-		return;
-	}
-
-	it->second.clear();
-	combatMap.clear();
-}
-
 const std::unique_ptr<AreaCombat> &LuaEnvironment::getAreaObject(uint32_t id) const {
-	auto it = areaMap.find(id);
+	const auto it = areaMap.find(id);
 	if (it == areaMap.end()) {
 		return AreaCombatNull;
 	}
@@ -133,7 +109,7 @@ uint32_t LuaEnvironment::createAreaObject(LuaScriptInterface* interface) {
 }
 
 void LuaEnvironment::clearAreaObjects(LuaScriptInterface* interface) {
-	auto it = areaIdMap.find(interface);
+	const auto it = areaIdMap.find(interface);
 	if (it == areaIdMap.end()) {
 		return;
 	}
@@ -148,7 +124,7 @@ void LuaEnvironment::clearAreaObjects(LuaScriptInterface* interface) {
 }
 
 void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
-	auto it = timerEvents.find(eventIndex);
+	const auto it = timerEvents.find(eventIndex);
 	if (it == timerEvents.end()) {
 		return;
 	}
@@ -160,7 +136,7 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 	lua_rawgeti(luaState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	// push parameters
-	for (auto parameter : std::views::reverse(timerEventDesc.parameters)) {
+	for (const auto parameter : std::views::reverse(timerEventDesc.parameters)) {
 		lua_rawgeti(luaState, LUA_REGISTRYINDEX, parameter);
 	}
 
@@ -178,7 +154,7 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 
 	// free resources
 	luaL_unref(luaState, LUA_REGISTRYINDEX, timerEventDesc.function);
-	for (auto parameter : timerEventDesc.parameters) {
+	for (const auto parameter : timerEventDesc.parameters) {
 		luaL_unref(luaState, LUA_REGISTRYINDEX, parameter);
 	}
 }

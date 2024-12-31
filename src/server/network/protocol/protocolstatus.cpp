@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "core.hpp"
-
 #include "server/network/protocol/protocolstatus.hpp"
 
 #include "config/configmanager.hpp"
+#include "core.hpp"
+#include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/outputmessage.hpp"
@@ -24,11 +24,11 @@ std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
-	uint32_t ip = getIP();
+	const uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
-		std::string ipStr = convertIPToString(ip);
+		const std::string ipStr = convertIPToString(ip);
 		if (ipStr != g_configManager().getString(IP)) {
-			std::map<uint32_t, int64_t>::const_iterator it = ipConnectMap.find(ip);
+			const auto it = ipConnectMap.find(ip);
 			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
 				disconnect();
 				return;
@@ -55,7 +55,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 
 		// Another ServerInfo protocol
 		case 0x01: {
-			uint16_t requestedInfo = msg.get<uint16_t>(); // only a Byte is necessary, though we could add new info here
+			auto requestedInfo = msg.get<uint16_t>(); // only a Byte is necessary, though we could add new info here
 			std::string characterName;
 			if (requestedInfo & REQUEST_PLAYER_STATUS_INFO) {
 				characterName = msg.getString();
@@ -77,7 +77,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 }
 
 void ProtocolStatus::sendStatusString() {
-	auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	setRawMessages(true);
 
@@ -90,7 +90,7 @@ void ProtocolStatus::sendStatusString() {
 	tsqp.append_attribute("version") = "1.0";
 
 	pugi::xml_node serverinfo = tsqp.append_child("serverinfo");
-	uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
+	const uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
 	serverinfo.append_attribute("ip") = g_configManager().getString(IP).c_str();
 	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME).c_str();
@@ -154,14 +154,14 @@ void ProtocolStatus::sendStatusString() {
 	std::ostringstream ss;
 	doc.save(ss, "", pugi::format_raw);
 
-	std::string data = ss.str();
+	const std::string data = ss.str();
 	output->addBytes(data.c_str(), data.size());
 	send(output);
 	disconnect();
 }
 
-void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) {
-	auto output = OutputMessagePool::getOutputMessage();
+void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) const {
+	const auto output = OutputMessagePool::getOutputMessage();
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);

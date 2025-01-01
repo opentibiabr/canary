@@ -17,10 +17,7 @@
 constexpr size_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
-static LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY> &getOutputMessageAllocator() {
-	static LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY> allocator;
-	return allocator;
-}
+static inline LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY> outputMessageAllocator;
 
 OutputMessagePool &OutputMessagePool::getInstance() {
 	return inject<OutputMessagePool>();
@@ -64,8 +61,7 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 }
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	auto &allocator = getOutputMessageAllocator();
-	OutputMessage* rawPtr = allocator.allocate(1);
+	OutputMessage* rawPtr = outputMessageAllocator.allocate(1);
 
 	if (!rawPtr) {
 		g_logger().error("Failed to allocate OutputMessage");
@@ -74,15 +70,13 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	try {
 		rawPtr->resetMessage();
 	} catch (...) {
-		allocator.deallocate(rawPtr, 1);
+		outputMessageAllocator.deallocate(rawPtr, 1);
 		throw;
 	}
 
-	// Retorna o ponteiro com um deleter que usa o alocador encapsulado
 	return { rawPtr, [](OutputMessage* ptr) {
 				if (ptr != nullptr) {
-					const auto &allocator = getOutputMessageAllocator();
-					allocator.deallocate(ptr, 1);
+					outputMessageAllocator.deallocate(ptr, 1);
 				}
 			} };
 }

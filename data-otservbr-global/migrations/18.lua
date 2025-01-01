@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 19 (Prey system rework + Task hunting system)")
+	logger.info("Updating database to version 18 (Prey system rework + Task hunting system)")
 	db.query([[
 		ALTER TABLE `players`
 			DROP `prey_stamina_1`,

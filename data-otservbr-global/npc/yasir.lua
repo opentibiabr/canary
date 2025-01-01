@@ -175,6 +175,7 @@ npcConfig.shop = {
 	{ itemName = "dandelion seeds", clientId = 25695, sell = 200 },
 	{ itemName = "dangerous proto matter", clientId = 23515, sell = 300 },
 	{ itemName = "dark bell", clientId = 32596, sell = 310000 },
+	{ itemName = "darklight matter", clientId = 43851, sell = 5500 },
 	{ itemName = "dark obsidian splinter", clientId = 43850, sell = 4400 },
 	{ itemName = "dark rosary", clientId = 10303, sell = 48 },
 	{ itemName = "darklight core", clientId = 43853, sell = 4100 },

@@ -28,26 +28,26 @@
  *
  * 1. Basic Raw Pointer Usage:
  * @code
- *     // Define a lock-free pool for MyClass with capacity 1000
+ *     Define a lock-free pool for MyClass with capacity 1000
  *     using MyPool = LockfreeFreeList<MyClass, 1000>;
  *
- *     // Pre-allocate some objects
+ *     Pre-allocate some objects
  *     MyPool::preallocate(100);
  *
- *     // Allocate an object
+ *     Allocate an object
  *     MyClass* obj = MyPool::fast_allocate();
  *     if (obj) {
- *         // Use the object
- *         // ...
+ *          Use the object
+ *          ...
  *
- *         // Deallocate when done
+ *          Deallocate when done
  *         MyPool::fast_deallocate(obj);
  *     }
  * @endcode
  *
  * 2. Integration with Smart Pointers and Allocators:
  * @code
- *     // Define custom allocator using the lock-free pool
+ *      Define custom allocator using the lock-free pool
  *     template<typename T>
  *     class PoolAllocator : public std::pmr::memory_resource {
  *         void* do_allocate(size_t bytes, size_t alignment) override {
@@ -58,10 +58,10 @@
  *         }
  *     };
  *
- *     // Create an allocator
+ *      Create an allocator
  *     PoolAllocator<Message> messageAllocator;
  *
- *     // Use with shared_ptr
+ *      Use with shared_ptr
  *     Message_ptr getMessage() {
  *         return std::allocate_shared<Message>(messageAllocator);
  *     }
@@ -69,7 +69,7 @@
  *
  * 3. Using with Custom Memory Resource:
  * @code
- *     // Create a custom memory resource
+ *      Create a custom memory resource
  *     class CustomResource : public std::pmr::memory_resource {
  *         using Pool = LockfreeFreeList<char, 1000>;
  *
@@ -81,7 +81,7 @@
  *         }
  *     };
  *
- *     // Use with polymorphic allocator
+ *      Use with polymorphic allocator
  *     std::pmr::polymorphic_allocator<Message> polyAlloc{&customResource};
  *     auto msg = std::allocate_shared<Message>(polyAlloc);
  * @endcode
@@ -122,11 +122,8 @@ struct LockfreeFreeList {
 	static constexpr size_t PREFETCH_DISTANCE = 4;
 
 	struct alignas(CACHE_LINE_SIZE) AlignedCounters {
-		std::atomic<size_t> count;
+		std::atomic<size_t> count { 0 };
 		char padding[CACHE_LINE_SIZE - sizeof(std::atomic<size_t>)] {};
-
-		AlignedCounters() :
-			count(0) { }
 	};
 
 	static AlignedCounters allocated_count;
@@ -137,12 +134,12 @@ struct LockfreeFreeList {
 
 	struct MemoryBlock {
 		T* start;
-		size_t used;
+		size_t used = 0;
 		size_t capacity;
 
 		MemoryBlock(const size_t block_size, std::pmr::memory_resource* resource) :
 			start(static_cast<T*>(resource->allocate(block_size * sizeof(T), alignof(T)))),
-			used(0), capacity(block_size) { }
+			capacity(block_size) { }
 
 		~MemoryBlock() = default;
 
@@ -182,6 +179,7 @@ struct LockfreeFreeList {
 				if (!batch[i]) {
 					break;
 				}
+				PREFETCH(batch[i]);
 			}
 
 			for (size_t i = 0; i < batchSize; ++i) {
@@ -210,6 +208,7 @@ struct LockfreeFreeList {
 			if (!freeList.try_pop(item)) {
 				break;
 			}
+			PREFETCH(item);
 			local_cache[fetched++] = item;
 		}
 
@@ -225,6 +224,7 @@ struct LockfreeFreeList {
 
 		size_t half = DEFAULT_BATCH_SIZE / 2;
 		for (size_t i = 0; i < half; ++i) {
+			PREFETCH(local_cache[i]);
 			if (!get_sharded_list().try_push(local_cache[i])) {
 				return false;
 			}

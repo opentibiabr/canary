@@ -104,26 +104,13 @@
 #include <atomic_queue/atomic_queue.h>
 #include <memory_resource>
 
-// Cache line size to avoid false sharing
-#define CACHE_LINE_SIZE 64
-
-// Prefetch optimization
 #ifdef _MSC_VER
-	#include <intrin.h>
 	#define PREFETCH(addr) _mm_prefetch((const char*)(addr), _MM_HINT_T0)
 #else
 	#define PREFETCH(addr) __builtin_prefetch(addr)
 #endif
 
-// Compiler optimizations
-#if defined(__GNUC__) || defined(__clang__)
-	#define LIKELY(x) __builtin_expect(!!(x), 1)
-	#define UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-	#define LIKELY(x) (x)
-	#define UNLIKELY(x) (x)
-#endif
-
+constexpr size_t CACHE_LINE_SIZE = 64;
 constexpr size_t STATIC_PREALLOCATION_SIZE = 500;
 constexpr size_t NUM_SHARDS = 4;
 
@@ -153,7 +140,7 @@ struct LockfreeFreeList {
 		size_t used;
 		size_t capacity;
 
-		MemoryBlock(size_t block_size, std::pmr::memory_resource* resource) :
+		MemoryBlock(const size_t block_size, std::pmr::memory_resource* resource) :
 			start(static_cast<T*>(resource->allocate(block_size * sizeof(T), alignof(T)))),
 			used(0), capacity(block_size) { }
 
@@ -175,39 +162,44 @@ struct LockfreeFreeList {
 	static std::pmr::memory_resource* default_resource;
 
 	static FreeList &get_sharded_list() noexcept {
-		static thread_local size_t shard_id = std::hash<std::thread::id> {}(std::this_thread::get_id()) % NUM_SHARDS;
+		thread_local size_t shard_id = std::hash<std::thread::id> {}(std::this_thread::get_id()) % NUM_SHARDS;
 		static std::array<FreeList, NUM_SHARDS> freeLists;
 		return freeLists[shard_id];
 	}
 
 	static void preallocate(const size_t count, std::pmr::memory_resource* resource = std::pmr::get_default_resource()) noexcept {
-		size_t batchSize = DEFAULT_BATCH_SIZE;
-		memory_blocks.emplace_back(batchSize, resource);
+		size_t remaining = count;
 
-		T* batch[DEFAULT_BATCH_SIZE];
-		size_t successful = 0;
+		while (remaining > 0) {
+			size_t batchSize = std::min(DEFAULT_BATCH_SIZE, remaining);
+			memory_blocks.emplace_back(batchSize, resource);
 
-		for (size_t i = 0; i < batchSize; ++i) {
-			batch[i] = memory_blocks.back().allocate();
-			if (!batch[i]) {
-				break;
+			std::vector<T*> batch(batchSize);
+			size_t successful = 0;
+
+			for (size_t i = 0; i < batchSize; ++i) {
+				batch[i] = memory_blocks.back().allocate();
+				if (!batch[i]) {
+					break;
+				}
 			}
-		}
 
-		for (size_t i = 0; i < batchSize; ++i) {
-			if (UNLIKELY(!get_sharded_list().try_push(batch[i]))) {
-				resource->deallocate(batch[i], sizeof(T), alignof(T));
-				failed_allocations.count.fetch_add(1, std::memory_order_relaxed);
-				return;
+			for (size_t i = 0; i < batchSize; ++i) {
+				if (!get_sharded_list().try_push(batch[i])) [[unlikely]] {
+					resource->deallocate(batch[i], sizeof(T), alignof(T));
+					failed_allocations.count.fetch_add(1, std::memory_order_relaxed);
+					return;
+				}
+				++successful;
 			}
-			++successful;
-		}
 
-		allocated_count.count.fetch_add(successful, std::memory_order_release);
+			allocated_count.count.fetch_add(successful, std::memory_order_release);
+			remaining -= successful;
+		}
 	}
 
 	[[nodiscard]] static T* fast_allocate() noexcept {
-		if (LIKELY(local_cache_size > 0)) {
+		if (local_cache_size > 0) [[likely]] {
 			return local_cache[--local_cache_size];
 		}
 
@@ -226,7 +218,7 @@ struct LockfreeFreeList {
 	}
 
 	static bool fast_deallocate(T* ptr) noexcept {
-		if (LIKELY(local_cache_size < DEFAULT_BATCH_SIZE)) {
+		if (local_cache_size < DEFAULT_BATCH_SIZE) [[likely]] {
 			local_cache[local_cache_size++] = ptr;
 			return true;
 		}
@@ -293,8 +285,8 @@ public:
 	template <typename U>
 	explicit LockfreePoolingAllocator(const LockfreePoolingAllocator<U, CAPACITY> &) noexcept { }
 
-	[[nodiscard]] T* allocate(std::size_t n) {
-		if (LIKELY(n == 1)) {
+	[[nodiscard]] T* allocate(const std::size_t n) {
+		if (n == 1) [[likely]] {
 			if (T* p = LockfreeFreeList<T, CAPACITY>::fast_allocate()) {
 				return p;
 			}
@@ -307,8 +299,8 @@ public:
 		return static_cast<T*>(std::pmr::get_default_resource()->allocate(n * sizeof(T), alignof(T)));
 	}
 
-	void deallocate(T* p, std::size_t n) noexcept {
-		if (LIKELY(n == 1)) {
+	void deallocate(T* p, const std::size_t n) const noexcept {
+		if (n == 1) [[likely]] {
 			if (LockfreeFreeList<T, CAPACITY>::fast_deallocate(p)) {
 				return;
 			}

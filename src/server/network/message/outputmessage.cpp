@@ -62,8 +62,12 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	OutputMessage* rawPtr = outputMessageAllocator.allocate(1);
 
+	if (!rawPtr) {
+		throw std::runtime_error("Failed to allocate OutputMessage");
+	}
+
 	try {
-		new (rawPtr) OutputMessage();
+		rawPtr->reset(); // Reutiliza o objeto
 	} catch (...) {
 		outputMessageAllocator.deallocate(rawPtr, 1);
 		throw;
@@ -71,7 +75,6 @@ OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 
 	return { rawPtr, [](OutputMessage* ptr) {
 				if (ptr != nullptr) {
-					ptr->~OutputMessage();
 					outputMessageAllocator.deallocate(ptr, 1);
 				}
 			} };

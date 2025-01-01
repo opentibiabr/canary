@@ -75475,8 +75475,16 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="creature products"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="43847" name="RESERVED SPRITE"/>
-	<item id="43848" name="RESERVED SPRITE"/>
+	<item id="43847" article="a" name="rotten vermin ichor">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="43848" article="a" name="worm sponge">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
 	<item id="43849" article="a" name="rotten roots">
 		<attribute key="loottype" value="creature products"/>
 		<attribute key="primarytype" value="creature products"/>
@@ -75487,7 +75495,11 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="creature products"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="43851" name="RESERVED SPRITE"/>
+	<item id="43851" article="a" name="darklight matter">
+		<attribute key="loottype" value="creature products"/>
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+	</item>
 	<item id="43852" article="a" name="darklight basalt chunk">
 		<attribute key="loottype" value="creature products"/>
 		<attribute key="primarytype" value="creature products"/>

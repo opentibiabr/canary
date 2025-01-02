@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 41 (optimize house_lists)")
+	logger.info("Updating database to version 40 (optimize house_lists)")
 
 	db.query([[
 			ALTER TABLE `house_lists`

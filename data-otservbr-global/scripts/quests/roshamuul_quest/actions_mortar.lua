@@ -1,6 +1,6 @@
 local lowerRoshamuulMortar = Action()
 function lowerRoshamuulMortar.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (target == nil) or not target:isItem() then
+	if not target or type(target) ~= "userdata" or not target:isItem() then
 		return false
 	end
 

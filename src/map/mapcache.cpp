@@ -120,20 +120,21 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 
 	std::shared_ptr<Tile> tile = nullptr;
 
-	if (cachedTile->isHouse()) {
-		const auto &house = map->houses.getHouse(cachedTile->houseId);
-		tile = std::make_shared<HouseTile>(x, y, z, house);
-		house->addTile(std::static_pointer_cast<HouseTile>(tile));
-	} else if (cachedTile->isStatic) {
-		tile = std::make_shared<StaticTile>(x, y, z);
-	} else {
-		tile = std::make_shared<DynamicTile>(x, y, z);
-	}
-
 	auto pos = Position(x, y, z);
 
-	for (const auto &creature : oldCreatureList) {
-		tile->internalAddThing(creature);
+	if (cachedTile->isHouse()) {
+		if (const auto &house = map->houses.getHouse(cachedTile->houseId)) {
+			tile = std::make_shared<HouseTile>(pos, house);
+			tile->safeCall([tile] {
+				tile->getHouse()->addTile(tile->static_self_cast<HouseTile>());
+			});
+		} else {
+			g_logger().error("[{}] house not found for houseId {}", std::source_location::current().function_name(), cachedTile->houseId);
+		}
+	} else if (cachedTile->isStatic) {
+		tile = std::make_shared<StaticTile>(pos);
+	} else {
+		tile = std::make_shared<DynamicTile>(pos);
 	}
 
 	if (cachedTile->ground != nullptr) {
@@ -146,7 +147,11 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
-	tile->safeCall([tile, pos] {
+	tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
+		for (const auto &creature : movedOldCreatureList) {
+			tile->internalAddThing(creature);
+		}
+
 		for (const auto &zone : Zone::getZones(pos)) {
 			tile->addZone(zone);
 		}

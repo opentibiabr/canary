@@ -242,7 +242,7 @@ local function addFerumbrasAscendantReward(player, target, toPosition)
 end
 
 function onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or target == nil or type(target) ~= "userdata" or not target:isItem() then
+	if not target or type(target) ~= "userdata" or not target:isItem() then
 		return false
 	end
 
@@ -651,6 +651,7 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		--The Ice Islands Quest, Nibelor 1: Breaking the Ice
 		local missionProgress = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission02)
 		local pickAmount = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.PickAmount)
+
 		if missionProgress < 1 or pickAmount >= 3 or player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) ~= 3 then
 			return false
 		end
@@ -704,7 +705,10 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		-- The Pits of Inferno Quest
 		if toPosition == Position(32808, 32334, 11) then
 			for i = 1, #lava do
-				Game.createItem(5815, 1, lava[i])
+				local lavaTile = Tile(lava[i]):getItemById(21477)
+				if lavaTile then
+					lavaTile:transform(5815)
+				end
 			end
 			target:transform(3141)
 			toPosition:sendMagicEffect(CONST_ME_SMOKE)

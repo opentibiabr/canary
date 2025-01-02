@@ -58,7 +58,7 @@ namespace InternalPlayerWheel {
 			return;
 		}
 
-		auto spell = g_spells().getInstantSpellByName(name);
+		const auto &spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
 			g_logger().trace("[{}] registering instant spell with name {}", __FUNCTION__, spell->getName());
 			// Increase data
@@ -127,7 +127,7 @@ bool IOWheel::initializeGlobalData(bool reload /* = false*/) {
 	// Register spells for druid
 	for (const auto &data : getWheelBonusData().spells.druid) {
 		for (size_t i = 1; i < 3; ++i) {
-			const auto grade = data.grade[i];
+			const auto &grade = data.grade[i];
 			InternalPlayerWheel::registerWheelSpellTable(grade, data.name, static_cast<WheelSpellGrade_t>(i));
 		}
 	}
@@ -181,7 +181,7 @@ const VocationBonusMap &IOWheel::getWheelMapFunctions() const {
 
 std::pair<int, int> IOWheel::getRevelationStatByStage(WheelStageEnum_t stageType) const {
 	// Let's remove one, because the std::array starts with 0 and the stages with 1
-	auto array = m_wheelBonusData.revelation.stats[static_cast<uint8_t>(stageType) - 1];
+	const auto &array = m_wheelBonusData.revelation.stats[static_cast<uint8_t>(stageType) - 1];
 	return std::make_pair(array.damage, array.healing);
 }
 
@@ -222,32 +222,32 @@ void IOWheel::initializeMapData() {
 void IOWheel::initializeDruidSpells() {
 	m_wheelBonusData.spells.druid[0].name = "Strong Ice Wave";
 	m_wheelBonusData.spells.druid[0].grade[1].leech.mana = 3;
-	m_wheelBonusData.spells.druid[0].grade[2].increase.damage = 30;
+	m_wheelBonusData.spells.druid[0].grade[2].increase.damage = 10;
 
 	m_wheelBonusData.spells.druid[1].name = "Mass Healing";
-	m_wheelBonusData.spells.druid[1].grade[1].increase.heal = 10;
+	m_wheelBonusData.spells.druid[1].grade[1].increase.heal = 4;
 	m_wheelBonusData.spells.druid[1].grade[2].increase.area = true;
 
 	m_wheelBonusData.spells.druid[2].name = "Nature's Embrace";
-	m_wheelBonusData.spells.druid[2].grade[1].increase.heal = 10;
+	m_wheelBonusData.spells.druid[2].grade[1].increase.heal = 11;
 	m_wheelBonusData.spells.druid[2].grade[2].decrease.cooldown = 10;
 
 	m_wheelBonusData.spells.druid[3].name = "Terra Wave";
-	m_wheelBonusData.spells.druid[3].grade[1].increase.damage = 25;
+	m_wheelBonusData.spells.druid[3].grade[1].increase.damage = static_cast<int>(std::round(6.5));
 	m_wheelBonusData.spells.druid[3].grade[2].leech.life = 5;
 
 	m_wheelBonusData.spells.druid[4].name = "Heal Friend";
 	m_wheelBonusData.spells.druid[4].grade[1].decrease.manaCost = 10;
-	m_wheelBonusData.spells.druid[4].grade[2].increase.heal = 10;
+	m_wheelBonusData.spells.druid[4].grade[2].increase.heal = static_cast<int>(std::round(5.5));
 }
 
 void IOWheel::initializeKnightSpells() {
 	m_wheelBonusData.spells.knight[0].name = "Front Sweep";
 	m_wheelBonusData.spells.knight[0].grade[1].leech.life = 5;
-	m_wheelBonusData.spells.knight[0].grade[2].increase.damage = 30;
+	m_wheelBonusData.spells.knight[0].grade[2].increase.damage = 14;
 
 	m_wheelBonusData.spells.knight[1].name = "Groundshaker";
-	m_wheelBonusData.spells.knight[1].grade[1].increase.damage = 25;
+	m_wheelBonusData.spells.knight[1].grade[1].increase.damage = static_cast<int>(std::round(12.5));
 	m_wheelBonusData.spells.knight[1].grade[2].decrease.cooldown = 2;
 
 	m_wheelBonusData.spells.knight[2].name = "Chivalrous Challenge";
@@ -255,12 +255,12 @@ void IOWheel::initializeKnightSpells() {
 	m_wheelBonusData.spells.knight[2].grade[2].increase.aditionalTarget = 1;
 
 	m_wheelBonusData.spells.knight[3].name = "Intense Wound Cleansing";
-	m_wheelBonusData.spells.knight[3].grade[1].increase.heal = 10;
+	m_wheelBonusData.spells.knight[3].grade[1].increase.heal = 125;
 	m_wheelBonusData.spells.knight[3].grade[2].decrease.cooldown = 300;
 
 	m_wheelBonusData.spells.knight[4].name = "Fierce Berserk";
 	m_wheelBonusData.spells.knight[4].grade[1].decrease.manaCost = 30;
-	m_wheelBonusData.spells.knight[4].grade[2].increase.damage = 25;
+	m_wheelBonusData.spells.knight[4].grade[2].increase.damage = 10;
 }
 
 void IOWheel::initializePaladinSpells() {
@@ -270,7 +270,7 @@ void IOWheel::initializePaladinSpells() {
 
 	m_wheelBonusData.spells.paladin[1].name = "Strong Ethereal Spear";
 	m_wheelBonusData.spells.paladin[1].grade[1].decrease.cooldown = 2;
-	m_wheelBonusData.spells.paladin[1].grade[2].increase.damage = 25;
+	m_wheelBonusData.spells.paladin[1].grade[2].increase.damage = 380;
 
 	m_wheelBonusData.spells.paladin[2].name = "Divine Dazzle";
 	m_wheelBonusData.spells.paladin[2].grade[1].increase.aditionalTarget = 1;
@@ -283,7 +283,7 @@ void IOWheel::initializePaladinSpells() {
 
 	m_wheelBonusData.spells.paladin[4].name = "Divine Caldera";
 	m_wheelBonusData.spells.paladin[4].grade[1].decrease.manaCost = 20;
-	m_wheelBonusData.spells.paladin[4].grade[2].increase.damage = 25;
+	m_wheelBonusData.spells.paladin[4].grade[2].increase.damage = static_cast<int>(std::round(8.5));
 }
 
 void IOWheel::initializeSorcererSpells() {
@@ -292,19 +292,19 @@ void IOWheel::initializeSorcererSpells() {
 
 	m_wheelBonusData.spells.sorcerer[1].name = "Sap Strength";
 	m_wheelBonusData.spells.sorcerer[1].grade[1].increase.area = true;
-	m_wheelBonusData.spells.sorcerer[1].grade[2].increase.damageReduction = 10;
+	m_wheelBonusData.spells.sorcerer[1].grade[2].increase.damageReduction = 1;
 
 	m_wheelBonusData.spells.sorcerer[2].name = "Energy Wave";
-	m_wheelBonusData.spells.sorcerer[2].grade[1].increase.damage = 25;
+	m_wheelBonusData.spells.sorcerer[2].grade[1].increase.damage = 5;
 	m_wheelBonusData.spells.sorcerer[2].grade[2].increase.area = true;
 
 	m_wheelBonusData.spells.sorcerer[3].name = "Great Fire Wave";
 	m_wheelBonusData.spells.sorcerer[3].grade[1].increase.criticalDamage = 15;
 	m_wheelBonusData.spells.sorcerer[3].grade[1].increase.criticalChance = 10;
-	m_wheelBonusData.spells.sorcerer[3].grade[2].increase.damage = 25;
+	m_wheelBonusData.spells.sorcerer[3].grade[2].increase.damage = 5;
 
 	m_wheelBonusData.spells.sorcerer[4].name = "Any_Focus_Mage_Spell";
-	m_wheelBonusData.spells.sorcerer[4].grade[1].increase.damage = 25;
+	m_wheelBonusData.spells.sorcerer[4].grade[1].increase.damage = 5;
 	m_wheelBonusData.spells.sorcerer[4].grade[2].decrease.cooldown = 4;
 	m_wheelBonusData.spells.sorcerer[4].grade[2].decrease.secondaryGroupCooldown = 4;
 }
@@ -399,7 +399,7 @@ void IOWheel::slotGreen200(const std::shared_ptr<Player> &player, uint16_t point
 		bonusData.stats.health += 2 * points;
 		bonusData.stats.mana += 3 * points;
 		if (pointsInSlot) {
-			bonusData.instant.positionalTatics = true;
+			bonusData.instant.positionalTactics = true;
 		}
 	} else {
 		bonusData.stats.health += 1 * points;

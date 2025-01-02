@@ -18,7 +18,7 @@ function Player.getStorageValueTalkaction(self, param)
 		return true
 	end
 
-	storageStringToActualVar = loadstring("return " .. split[2])()
+	storageStringToVar = loadstring("return " .. split[2])()
 
 	-- Try to convert the second parameter to a number. If it's not a number, treat it as a storage name
 	local storageKey = tonumber(split[2])

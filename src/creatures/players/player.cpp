@@ -886,7 +886,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 
 	skills[skill].tries += count;
 
-	uint32_t newPercent;
+	double_t newPercent;
 	if (nextReqTries > currReqTries) {
 		newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
 	} else {

@@ -57,5 +57,5 @@ function Player.sendVipStatus(self)
 		return true
 	end
 
-	self:sendTextMessage(MESSAGE_LOGIN, string.format("You have %s of VIP time remaining.", getFormattedTimeRemaining(playerVipTime)))
+	self:sendTextMessage(MESSAGE_LOGIN, string.format("You have %s of VIP time remaining.", Game.getFormattedTimeRemaining(playerVipTime)))
 end

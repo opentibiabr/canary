@@ -162,6 +162,10 @@ local function initialize(monster)
 end
 
 -- Functions for the fight
+mType.onSpawn = function(monster, spawnPosition)
+	initialize(monster)
+end
+
 local function getHazardPoints(monster)
 	local hazard = Hazard.getByName("hazard.gnomprona-gardens")
 	if not hazard then

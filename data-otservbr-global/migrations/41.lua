@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 42 (fix xpboost types)")
+	logger.info("Updating database to version 41 (fix xpboost types)")
 
 	db.query([[
 		ALTER TABLE `players`

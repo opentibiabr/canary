@@ -133,7 +133,7 @@ end
 local exerciseTraining = Action()
 
 function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or type(target) == "table" or not target:getId() then
+	if not target or type(target) ~= "userdata" or not target:isItem() then
 		return true
 	end
 

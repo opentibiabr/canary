@@ -711,6 +711,10 @@ std::shared_ptr<Item> Creature::getCorpse(const std::shared_ptr<Creature> &, con
 }
 
 void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = true*/) {
+	if (isLifeless()) {
+		return;
+	}
+
 	int32_t oldHealth = health;
 
 	if (healthChange > 0) {

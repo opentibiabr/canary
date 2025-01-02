@@ -29,6 +29,7 @@ enum Slots_t : uint8_t;
 enum CombatType_t : uint8_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
+enum class HouseAuctionType : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -68,6 +69,7 @@ using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
 using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 using StashItemList = std::map<uint16_t, uint32_t>;
+using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
 struct TextMessage {
 	TextMessage() = default;
@@ -352,6 +354,11 @@ private:
 	void sendCyclopediaCharacterInspection();
 	void sendCyclopediaCharacterBadges();
 	void sendCyclopediaCharacterTitles();
+
+	void sendHousesInfo();
+	void parseCyclopediaHouseAuction(NetworkMessage &msg);
+	void sendCyclopediaHouseList(HouseMap houses);
+	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess);
 
 	void sendCreatureWalkthrough(const std::shared_ptr<Creature> &creature, bool walkthrough);
 	void sendCreatureShield(const std::shared_ptr<Creature> &creature);

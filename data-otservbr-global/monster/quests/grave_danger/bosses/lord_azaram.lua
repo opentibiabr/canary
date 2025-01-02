@@ -14,7 +14,8 @@ monster.outfit = {
 }
 
 monster.events = {
-	"GraveDangerBossDeath",
+	"azaram_health",
+	"azaram_summon",
 }
 
 monster.health = 300000

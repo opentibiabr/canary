@@ -55707,6 +55707,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="primarytype" value="tools"/>
 	</item>
 	<item id="29950" article="an" name="acid resistant fishing rod">
+		<attribute key="primarytype" value="tools"/>
 		<attribute key="primarytype" value="quest items"/>
 		<attribute key="weight" value="850"/>
 	</item>

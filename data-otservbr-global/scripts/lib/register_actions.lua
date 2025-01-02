@@ -74,6 +74,13 @@ local secret_library = {
 	items = { 27867, 27868, 27869 },
 }
 
+local oldTable = { Position(32005, 32002, 14), Position(32005, 32003, 14), Position(32006, 32002, 14), Position(32006, 32003, 14) }
+local foundItems = {
+	{ id = 29992, quantity = 1 },
+	{ id = 953, quantity = 4 },
+}
+local storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Lock
+
 local function revertItem(position, itemId, transformId)
 	local item = Tile(position):getItemById(itemId)
 	if item then
@@ -520,8 +527,26 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
-	-- The Secret Library Quest
 	local tPos = toPosition
+
+	-- The Dream Courts Quest
+	for i = 1, #oldTable do
+		if tPos == oldTable[i] then
+			if player:getStorageValue(storage) < 1 then
+				for j = 1, #foundItems do
+					player:addItem(foundItems[j].id, foundItems[j].quantity)
+				end
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This table is made of several old doors. One of them has a noticeable ornate lock. Perhaps you could lever it out with a tool.")
+				player:setStorageValue(storage, 1)
+			else
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already removed the old lock.")
+			end
+
+			return true
+		end
+	end
+
+	-- The Secret Library Quest
 	for _, j in pairs(secret_library.crystals) do
 		if tPos == j.position then
 			if player:getStorageValue(j.storage) < os.time() then
@@ -1014,8 +1039,26 @@ function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHot
 		return false
 	end
 
-	-- The Secret Library Quest
 	local tPos = toPosition
+
+	-- The Dream Courts Quest
+	for i = 1, #oldTable do
+		if tPos == oldTable[i] then
+			if player:getStorageValue(storage) < 1 then
+				for j = 1, #foundItems do
+					player:addItem(foundItems[j].id, foundItems[j].quantity)
+				end
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This table is made of several old doors. One of them has a noticeable ornate lock. Perhaps you could lever it out with a tool.")
+				player:setStorageValue(storage, 1)
+			else
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already removed the old lock.")
+			end
+
+			return true
+		end
+	end
+
+	-- The Secret Library Quest
 	for _, j in pairs(secret_library.crystals) do
 		if tPos == j.position then
 			if player:getStorageValue(j.storage) < os.time() then

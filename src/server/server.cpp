@@ -44,9 +44,14 @@ void ServiceManager::stop() {
 
 	running = false;
 
-	for (auto &servicePortIt : acceptors) {
+	for (auto &val : acceptors | std::views::values) {
 		try {
-			io_service.post([servicePort = servicePortIt.second] { servicePort->onStopServer(); });
+			auto weakServicePort = std::weak_ptr(val);
+			io_service.post([weakServicePort] {
+				if (const auto servicePort = weakServicePort.lock()) {
+					servicePort->onStopServer();
+				}
+			});
 		} catch (const std::system_error &e) {
 			g_logger().warn("[ServiceManager::stop] - Network error: {}", e.what());
 		}
@@ -56,7 +61,9 @@ void ServiceManager::stop() {
 
 	death_timer.expires_from_now(std::chrono::seconds(3));
 	death_timer.async_wait([this](const std::error_code &err) {
-		die();
+		if (!err) {
+			die();
+		}
 	});
 }
 
@@ -88,7 +95,11 @@ void ServicePort::accept() {
 	}
 
 	auto connection = ConnectionManager::getInstance().createConnection(io_service, shared_from_this());
-	acceptor->async_accept(connection->getSocket(), [self = shared_from_this(), connection](const std::error_code &error) { self->onAccept(connection, error); });
+	acceptor->async_accept(connection->getSocket(), [weakSelf = std::weak_ptr<ServicePort>(shared_from_this()), connection](const std::error_code &error) {
+		if (const auto self = weakSelf.lock()) {
+			self->onAccept(connection, error);
+		}
+	});
 }
 
 void ServicePort::onAccept(const Connection_ptr &connection, const std::error_code &error) {
@@ -114,8 +125,15 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
+
+			auto weakSelf = std::weak_ptr(shared_from_this());
 			g_dispatcher().scheduleEvent(
-				15000, [self = shared_from_this(), serverPort = serverPort] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort); }, "ServicePort::openAcceptor"
+				15000, [weakSelf, serverPort = serverPort] {
+					if (auto self = weakSelf.lock()) {
+						openAcceptor(weakSelf, serverPort);
+					}
+				},
+				"ServicePort::openAcceptor"
 			);
 		}
 	}
@@ -123,12 +141,8 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 
 Protocol_ptr ServicePort::make_protocol(bool checksummed, NetworkMessage &msg, const Connection_ptr &connection) const {
 	const uint8_t protocolID = msg.getByte();
-	for (auto &service : services) {
-		if (protocolID != service->get_protocol_identifier()) {
-			continue;
-		}
-
-		if ((checksummed && service->is_checksummed()) || !service->is_checksummed()) {
+	for (const auto &service : services) {
+		if (protocolID == service->get_protocol_identifier() && ((checksummed && service->is_checksummed()) || !service->is_checksummed())) {
 			return service->make_protocol(connection);
 		}
 	}
@@ -152,22 +166,27 @@ void ServicePort::open(uint16_t port) {
 	pendingStart = false;
 
 	try {
-		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort));
-		} else {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
-		}
+		auto endpoint = g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)
+			? asio::ip::tcp::endpoint(asio::ip::address::from_string(g_configManager().getString(IP)), serverPort)
+			: asio::ip::tcp::endpoint(asio::ip::tcp::v4(), serverPort);
 
+		acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, endpoint);
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
 
 		accept();
 	} catch (const std::system_error &e) {
-		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
+		g_logger().warn("[ServicePort::open] - Failed to open acceptor, error: {}", e.what());
 
 		pendingStart = true;
+		auto weakSelf = std::weak_ptr(shared_from_this());
 		g_dispatcher().scheduleEvent(
 			15000,
-			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor"
+			[weakSelf, port] {
+				if (auto self = weakSelf.lock()) {
+					openAcceptor(weakSelf, port);
+				}
+			},
+			"ServicePort::openAcceptor"
 		);
 	}
 }
@@ -176,6 +195,9 @@ void ServicePort::close() const {
 	if (acceptor && acceptor->is_open()) {
 		std::error_code error;
 		acceptor->close(error);
+		if (error) {
+			g_logger().warn("[ServicePort::close] - Failed to close acceptor: {}", error.message());
+		}
 	}
 }
 

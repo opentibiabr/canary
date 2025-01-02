@@ -53,9 +53,9 @@ end
 
 -- Travel
 local function addTravelKeyword(keyword, cost, destination, text, action, discount)
-  local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text or "Do you seek a ride to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = discount or "postman" })
-  travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = discount or "postman", destination = destination, text = "Full steam ahead!" }, nil, action)
-  travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Then not", reset = true })
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text or "Do you seek a ride to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = discount or "postman" })
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = discount or "postman", destination = destination, text = "Full steam ahead!" }, nil, action)
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Then not", reset = true })
 end
 
 addTravelKeyword("kazordoon", 210, Position(32659, 31957, 15))

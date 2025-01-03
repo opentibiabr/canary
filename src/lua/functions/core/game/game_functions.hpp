@@ -88,5 +88,4 @@ private:
 	static int luaGameGetSecretAchievements(lua_State* L);
 	static int luaGameGetPublicAchievements(lua_State* L);
 	static int luaGameGetAchievements(lua_State* L);
-	static int getAllAttachedeffects(lua_State* L); // delete before push
 };

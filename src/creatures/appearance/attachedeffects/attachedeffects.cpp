@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/Appearance/attachedeffects/attachedeffects.hpp"
+#include "creatures/appearance/attachedeffects/attachedeffects.hpp"
 
 #include "config/configmanager.hpp"
 #include "game/game.hpp"

@@ -21,6 +21,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolgame.hpp"
+#include "utils/object_pool.hpp"
 
 /**
  *  Condition
@@ -215,41 +216,41 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_DAZZLED:
 		case CONDITION_CURSED:
 		case CONDITION_BLEEDING:
-			return std::make_shared<ConditionDamage>(id, type, buff, subId);
+			return ObjectPool<ConditionDamage, 1024>::allocateShared(id, type, buff, subId);
 
 		case CONDITION_HASTE:
 		case CONDITION_PARALYZE:
-			return std::make_shared<ConditionSpeed>(id, type, ticks, buff, subId, param);
+			return ObjectPool<ConditionSpeed, 1024>::allocateShared(id, type, ticks, buff, subId, param);
 
 		case CONDITION_INVISIBLE:
-			return std::make_shared<ConditionInvisible>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionInvisible, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_OUTFIT:
-			return std::make_shared<ConditionOutfit>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionOutfit, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_LIGHT:
-			return std::make_shared<ConditionLight>(id, type, ticks, buff, subId, param & 0xFF, (param & 0xFF00) >> 8);
+			return ObjectPool<ConditionLight, 1024>::allocateShared(id, type, ticks, buff, subId, param & 0xFF, (param & 0xFF00) >> 8);
 
 		case CONDITION_REGENERATION:
-			return std::make_shared<ConditionRegeneration>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionRegeneration, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_SOUL:
-			return std::make_shared<ConditionSoul>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionSoul, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_ATTRIBUTES:
-			return std::make_shared<ConditionAttributes>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionAttributes, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_SPELLCOOLDOWN:
-			return std::make_shared<ConditionSpellCooldown>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionSpellCooldown, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_SPELLGROUPCOOLDOWN:
-			return std::make_shared<ConditionSpellGroupCooldown>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionSpellGroupCooldown, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_MANASHIELD:
-			return std::make_shared<ConditionManaShield>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionManaShield, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_FEARED:
-			return std::make_shared<ConditionFeared>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionFeared, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_ROOTED:
 		case CONDITION_INFIGHT:
@@ -261,11 +262,13 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_CHANNELMUTEDTICKS:
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
-			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionGeneric, 1024>::allocateShared(id, type, ticks, buff, subId);
+
 		case CONDITION_BAKRAGORE:
-			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId, isPersistent);
+			return ObjectPool<ConditionGeneric, 1024>::allocateShared(id, type, ticks, buff, subId, isPersistent);
+
 		case CONDITION_GOSHNARTAINT:
-			return std::make_shared<ConditionGeneric>(id, type, ticks, buff, subId);
+			return ObjectPool<ConditionGeneric, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		default:
 			return nullptr;

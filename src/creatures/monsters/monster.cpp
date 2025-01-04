@@ -35,6 +35,7 @@ std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 }
 
 Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
+	m_lowerName(asLowerCaseString(mType->name)),
 	nameDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
 	defaultOutfit = mType->info.outfit;

@@ -808,7 +808,7 @@ void Npc::removeShopPlayer(uint32_t playerGUID) {
 }
 
 void Npc::closeAllShopWindows() {
-	for (const auto &playerGUID : shopPlayers | std::views::keys) {
+	for (const auto playerGUID : shopPlayers | std::views::keys) {
 		const auto &player = g_game().getPlayerByGUID(playerGUID);
 		if (player) {
 			player->closeShopWindow();

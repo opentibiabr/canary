@@ -283,6 +283,17 @@ int ItemTypeFunctions::luaItemTypeIsQuiver(lua_State* L) {
 	return 1;
 }
 
+int ItemTypeFunctions::luaItemTypeIsPodium(lua_State* L) {
+	// itemType:isPodium()
+	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		Lua::pushBoolean(L, itemType->isPodium);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int ItemTypeFunctions::luaItemTypeGetType(lua_State* L) {
 	// itemType:getType()
 	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);

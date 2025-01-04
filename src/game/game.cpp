@@ -8511,7 +8511,7 @@ std::string Game::generateHighscoreQueryForEntries(const std::string &categoryNa
 	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
 	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
 
-	Database& db = Database::getInstance();
+	Database &db = Database::getInstance();
 	std::string escapedCategoryName = db.escapeString(categoryName);
 
 	std::string query = fmt::format(
@@ -8536,7 +8536,7 @@ std::string Game::generateHighscoreQueryForEntries(const std::string &categoryNa
 }
 
 std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation) {
-	Database& db = Database::getInstance();
+	Database &db = Database::getInstance();
 	std::string escapedCategoryName = db.escapeString(categoryName);
 	std::string entriesStr = std::to_string(entriesPerPage);
 

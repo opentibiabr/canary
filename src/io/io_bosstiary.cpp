@@ -21,9 +21,8 @@ IOBosstiary &IOBosstiary::getInstance() {
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT * FROM `boosted_boss`";
-	DBResult_ptr result = database.storeQuery(query.str());
+	auto query = fmt::format("SELECT `date`, `boostname`, `raceid` FROM `boosted_boss`");
+	DBResult_ptr result = database.storeQuery(query);
 	if (!result) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
 		return;
@@ -86,37 +85,49 @@ void IOBosstiary::loadBoostedBoss() {
 		break;
 	}
 
-	query.str(std::string());
-	query << "UPDATE `boosted_boss` SET ";
-	query << "`date` = '" << today << "',";
-	query << "`boostname` = " << database.escapeString(bossName) << ",";
-	if (const auto bossType = getMonsterTypeByBossRaceId(bossId);
-	    bossType) {
-		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
-		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
-		query << "`lookfeet` = " << static_cast<int>(bossType->info.outfit.lookFeet) << ",";
-		query << "`looklegs` = " << static_cast<int>(bossType->info.outfit.lookLegs) << ",";
-		query << "`lookhead` = " << static_cast<int>(bossType->info.outfit.lookHead) << ",";
-		query << "`lookbody` = " << static_cast<int>(bossType->info.outfit.lookBody) << ",";
-		query << "`lookaddons` = " << static_cast<int>(bossType->info.outfit.lookAddons) << ",";
-		query << "`lookmount` = " << static_cast<int>(bossType->info.outfit.lookMount) << ",";
+	query = fmt::format(
+		"UPDATE `boosted_boss` SET `date` = '{}', `boostname` = {}, `raceid` = '{}', ",
+		today, database.escapeString(bossName), bossId
+	);
+
+	if (const auto bossType = getMonsterTypeByBossRaceId(bossId); bossType) {
+		query += fmt::format(
+			"`looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, "
+			"`lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, ",
+			static_cast<int>(bossType->info.outfit.lookTypeEx),
+			static_cast<int>(bossType->info.outfit.lookType),
+			static_cast<int>(bossType->info.outfit.lookFeet),
+			static_cast<int>(bossType->info.outfit.lookLegs),
+			static_cast<int>(bossType->info.outfit.lookHead),
+			static_cast<int>(bossType->info.outfit.lookBody),
+			static_cast<int>(bossType->info.outfit.lookAddons),
+			static_cast<int>(bossType->info.outfit.lookMount)
+		);
 	}
-	query << "`raceid` = '" << bossId << "'";
-	if (!database.executeQuery(query.str())) {
+
+	query += fmt::format("`raceid` = '{}'", bossId);
+
+	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 03)", __FUNCTION__);
 		return;
 	}
 
-	query.str(std::string());
-	query << "UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = " << bossId;
-	if (!database.executeQuery(query.str())) {
+	query = fmt::format(
+		"UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}",
+		bossId
+	);
+
+	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}
 
-	query.str(std::string());
-	query << "UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = " << bossId;
-	if (!database.executeQuery(query.str())) {
-		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
+	query = fmt::format(
+		"UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}",
+		bossId
+	);
+
+	if (!database.executeQuery(query)) {
+		g_logger().error("[{}] Failed to reset players selected boss slot 2. (CODE 03)", __FUNCTION__);
 	}
 
 	setBossBoostedName(bossName);

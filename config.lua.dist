@@ -344,9 +344,11 @@ Setting this to false may pose risks; if a house is abandoned and contains a lar
 ]]
 -- Periods: daily/weekly/monthly/yearly/never
 -- Base: sqm,rent,sqm+rent
+toggleCyclopediaHouseAuction = true
+daysToCloseBid = 7
 housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
-houseRentPeriod = "never"
+houseRentPeriod = "monthly"
 houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
@@ -399,6 +401,7 @@ mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
 mysqlDatabase = "otservbr-global"
+mysqlDatabaseBackup = false
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"

@@ -1170,18 +1170,22 @@ int MonsterTypeFunctions::luaMonsterTypeGetCreatureEvents(lua_State* L) {
 int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	// monsterType:registerEvent(name)
 	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1);
-	if (monsterType) {
-		const auto eventName = Lua::getString(L, 2);
-		monsterType->info.scripts.insert(eventName);
-		for (const auto &[_, monster] : g_game().getMonsters()) {
-			if (monster->getMonsterType() == monsterType) {
-				monster->registerCreatureEvent(eventName);
-			}
-		}
-		Lua::pushBoolean(L, true);
-	} else {
+	if (!monsterType) {
 		lua_pushnil(L);
+		return 1;
 	}
+
+	const auto eventName = Lua::getString(L, 2);
+	monsterType->info.scripts.insert(eventName);
+
+	for (const auto &monster : g_game().getMonsters()) {
+		const auto monsterTypeCompare = monster->getMonsterType();
+		if (monsterTypeCompare == monsterType) {
+			monster->registerCreatureEvent(eventName);
+		}
+	}
+
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

@@ -97,6 +97,10 @@ void Npc::setName(std::string newName) const {
 	npcType->name = std::move(newName);
 }
 
+const std::string &Npc::getLowerName() const {
+	return npcType->m_lowerName;
+}
+
 CreatureType_t Npc::getType() const {
 	return CREATURETYPE_NPC;
 }

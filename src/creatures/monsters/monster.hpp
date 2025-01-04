@@ -49,6 +49,10 @@ public:
 	void setNameDescription(std::string_view nameDescription);
 	std::string getDescription(int32_t) override;
 
+	const std::string &getLowerName() const {
+		return m_lowerName;
+	}
+
 	CreatureType_t getType() const override;
 
 	const Position &getMasterPos() const;
@@ -244,6 +248,7 @@ private:
 	ForgeClassifications_t monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
 	std::string name;
+	std::string m_lowerName;
 	std::string nameDescription;
 
 	std::shared_ptr<MonsterType> mType;

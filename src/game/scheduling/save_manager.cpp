@@ -26,15 +26,14 @@ SaveManager &SaveManager::getInstance() {
 	return inject<SaveManager>();
 }
 
-const auto ASYNC_SAVE = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
-
 void SaveManager::saveAll() {
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
 	Benchmark bm_players;
 	const auto &players = game.getPlayers();
 	std::vector<std::future<void>> futures;
-	logger.info("Saving {} players... (Async: {})", players.size(), ASYNC_SAVE ? "Enabled" : "Disabled");
+	const auto asyncSave = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+	logger.info("Saving {} players... (Async: {})", players.size(), asyncSave ? "Enabled" : "Disabled");
 	for (const auto &[_, player] : players) {
 		player->loginPosition = player->getPosition();
 

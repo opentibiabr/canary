@@ -1772,6 +1772,10 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 }
 
 bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) const {
+	if (owner == 0) {
+		return false;
+	}
+
 	const auto &attacker = g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner);
 	bool isPlayer = attacker && attacker->getPlayer();
 	if (creature->isSuppress(getType(), isPlayer)) {

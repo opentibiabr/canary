@@ -28,11 +28,6 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	auto date = result->getNumber<uint16_t>("date");
-	auto timeNow = getTimeNow();
-	auto time = localtime(&timeNow);
-	auto today = time->tm_mday;
-
 	const auto &bossMap = getBosstiaryMap();
 	if (bossMap.size() <= 1) {
 		g_logger().error("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
@@ -42,6 +37,9 @@ void IOBosstiary::loadBoostedBoss() {
 	if (!result) {
 		g_logger().warn("[{}] No boosted boss found in g_database(). A new one will be selected.", __FUNCTION__);
 	} else {
+		auto timeNow = getTimeNow();
+		auto time = localtime(&timeNow);
+		auto today = time->tm_mday;
 		auto date = result->getNumber<uint16_t>("date");
 		if (date == today) {
 			std::string bossName = result->getString("boostname");

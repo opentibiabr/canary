@@ -206,8 +206,6 @@ bool Condition::executeCondition(const std::shared_ptr<Creature> &creature, int3
 }
 
 std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
-
-	std::shared_ptr<ConditionAttributes> conditionAttributes = nullptr;
 	switch (type) {
 		case CONDITION_POISON:
 		case CONDITION_FIRE:
@@ -238,6 +236,9 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_SOUL:
 			return std::make_shared<ConditionSoul>(id, type, ticks, buff, subId);
 
+		case CONDITION_LESSERHEX:
+		case CONDITION_INTENSEHEX:
+		case CONDITION_GREATERHEX:
 		case CONDITION_ATTRIBUTES:
 			return std::make_shared<ConditionAttributes>(id, type, ticks, buff, subId);
 
@@ -252,24 +253,6 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 
 		case CONDITION_FEARED:
 			return std::make_shared<ConditionFeared>(id, type, ticks, buff, subId);
-
-		case CONDITION_LESSERHEX:
-			conditionAttributes = std::make_shared<ConditionAttributes>(id, type, ticks, buff, subId);
-			conditionAttributes->setParam(CONDITION_PARAM_BUFF_HEALINGRECEIVED, 50);
-			return conditionAttributes;
-
-		case CONDITION_INTENSEHEX:
-			conditionAttributes = std::make_shared<ConditionAttributes>(id, type, ticks, buff, subId);
-			conditionAttributes->setParam(CONDITION_PARAM_BUFF_HEALINGRECEIVED, 50);
-			conditionAttributes->setParam(CONDITION_PARAM_BUFF_DAMAGEDEALT, 50);
-			return conditionAttributes;
-
-		case CONDITION_GREATERHEX:
-			conditionAttributes = std::make_shared<ConditionAttributes>(id, type, ticks, buff, subId);
-			conditionAttributes->setParam(CONDITION_PARAM_BUFF_HEALINGRECEIVED, 50);
-			conditionAttributes->setParam(CONDITION_PARAM_BUFF_DAMAGEDEALT, 50);
-			conditionAttributes->setParam(CONDITION_PARAM_STAT_MAXHITPOINTSPERCENT, 60);
-			return conditionAttributes;
 
 		case CONDITION_ROOTED:
 		case CONDITION_INFIGHT:

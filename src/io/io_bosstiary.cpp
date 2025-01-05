@@ -34,12 +34,13 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
+	auto timeNow = getTimeNow();
+	auto time = localtime(&timeNow);
+	auto today = time->tm_mday;
+
 	if (!result) {
 		g_logger().warn("[{}] No boosted boss found in g_database(). A new one will be selected.", __FUNCTION__);
 	} else {
-		auto timeNow = getTimeNow();
-		auto time = localtime(&timeNow);
-		auto today = time->tm_mday;
 		auto date = result->getNumber<uint16_t>("date");
 		if (date == today) {
 			std::string bossName = result->getString("boostname");

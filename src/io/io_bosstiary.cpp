@@ -33,32 +33,34 @@ void IOBosstiary::loadBoostedBoss() {
 	auto time = localtime(&timeNow);
 	auto today = time->tm_mday;
 
-	auto bossMap = getBosstiaryMap();
+	const auto &bossMap = getBosstiaryMap();
 	if (bossMap.size() <= 1) {
 		g_logger().error("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
 		return;
 	}
 
-	std::string bossName;
-	uint16_t bossId = 0;
-	if (date == today) {
-		bossName = result->getString("boostname");
-		bossId = result->getNumber<uint16_t>("raceid");
-		setBossBoostedName(bossName);
-		setBossBoostedId(bossId);
-		g_logger().info("Boosted boss: {}", bossName);
-		return;
+	if (!result) {
+		g_logger().warn("[{}] No boosted boss found in g_database(). A new one will be selected.", __FUNCTION__);
+	} else {
+		auto date = result->getNumber<uint16_t>("date");
+		if (date == today) {
+			std::string bossName = result->getString("boostname");
+			uint16_t bossId = result->getNumber<uint16_t>("raceid");
+			setBossBoostedName(bossName);
+			setBossBoostedId(bossId);
+			g_logger().info("Boosted boss: {}", bossName);
+			return;
+		}
 	}
 
 	// Filter only archfoe bosses
-	std::map<uint16_t, std::string> bossInfo;
-	for (auto [infoBossRaceId, infoBossName] : bossMap) {
-		const auto mType = getMonsterTypeByBossRaceId(infoBossRaceId);
+	std::vector<std::pair<uint16_t, std::string>> bossInfo;
+	for (const auto &[infoBossRaceId, infoBossName] : bossMap) {
+		const auto &mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}
-
-		bossInfo.try_emplace(infoBossRaceId, infoBossName);
+		bossInfo.emplace_back(infoBossRaceId, infoBossName);
 	}
 
 	// Check if not have archfoe registered boss
@@ -67,23 +69,9 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	auto oldBossRace = result->getNumber<uint16_t>("raceid");
-	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
-		auto it = std::next(bossInfo.begin(), randomIndex);
-		if (it == bossInfo.end()) {
-			break;
-		}
-
-		const auto &[randomBossId, randomBossName] = *it;
-		if (randomBossId == oldBossRace) {
-			continue;
-		}
-
-		bossName = randomBossName;
-		bossId = randomBossId;
-		break;
-	}
+	const auto &[randomBossId, randomBossName] = bossInfo[uniform_random(0, static_cast<int32_t>(bossInfo.size() - 1))];
+	std::string bossName = randomBossName;
+	uint16_t bossId = randomBossId;
 
 	query = fmt::format(
 		"UPDATE `boosted_boss` SET `date` = '{}', `boostname` = {}, `raceid` = '{}', ",
@@ -128,6 +116,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 2. (CODE 03)", __FUNCTION__);
+    return;
 	}
 
 	setBossBoostedName(bossName);

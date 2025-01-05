@@ -116,7 +116,7 @@ void IOBosstiary::loadBoostedBoss() {
 
 	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 2. (CODE 03)", __FUNCTION__);
-    return;
+		return;
 	}
 
 	setBossBoostedName(bossName);

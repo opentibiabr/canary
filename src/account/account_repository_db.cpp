@@ -76,7 +76,7 @@ bool AccountRepositoryDB::getCharacterByAccountIdAndName(const uint32_t &id, con
 }
 
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {
-	auto result = g_database().storeQuery(fmt::format("SELECT * FROM `accounts` WHERE `id` = {}", id));
+	auto result = g_database().storeQuery(fmt::format("SELECT `password` FROM `accounts` WHERE `id` = {}", id));
 	if (!result) {
 		g_logger().error("Failed to get account:[{}] password!", id);
 		return false;

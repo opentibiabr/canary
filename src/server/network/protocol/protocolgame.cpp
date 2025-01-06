@@ -9547,6 +9547,9 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 			msg.addString(aura->name);
 			++auraSize;
 		}
+		if (auraSize == limitAuras) {
+			break;
+		}
 	}
 	auto endAuras = msg.getBufferPosition();
 	msg.setBufferPosition(startAuras);
@@ -9563,6 +9566,9 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 			msg.add<uint16_t>(effect->id);
 			msg.addString(effect->name);
 			++effectSize;
+		}
+		if (effectSize == limitEffects) {
+			break;
 		}
 	}
 	auto endEffects = msg.getBufferPosition();

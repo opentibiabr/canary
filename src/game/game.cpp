@@ -8537,26 +8537,24 @@ std::string Game::generateHighscoreQueryForEntries(const std::string &categoryNa
 	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
 	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
 
-	Database &db = Database::getInstance();
-	std::string escapedCategoryName = db.escapeString(categoryName);
+	std::string escapedCategoryName = g_database().escapeString(categoryName);
 
 	std::string query = fmt::format(
 		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `entries`, {} AS `page` FROM ("
-		"SELECT `id`, `name`, `level`, `vocation`, `{}` AS `points`, "
-		"@curRank := IF(@prevRank = `{}`, @curRank, IF(@prevRank := `{}`, @curRank + 1, @curRank + 1)) AS `rank`, "
-		"(@row := @row + 1) AS `entries` FROM ("
-		"SELECT `id`, `name`, `level`, `vocation`, `{}` FROM `players` `p`, "
-		"(SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` "
-		"WHERE `group_id` < {} ORDER BY `{}` DESC"
-		") `t`",
-		page, escapedCategoryName, escapedCategoryName, escapedCategoryName, escapedCategoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), escapedCategoryName
+		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, (@row := @row + 1) AS `entries` FROM ("
+		"SELECT `id`, `name`, `level`, `vocation`, {} AS `points`, "
+		"@curRank := IF(@prevRank = {}, @curRank, IF(@prevRank := {}, @curRank + 1, @curRank + 1)) AS `rank` "
+		"FROM `players` p, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) r "
+		"WHERE `group_id` < {} ORDER BY {} DESC"
+		") t",
+		page, categoryName, escapedCategoryName, escapedCategoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), escapedCategoryName
 	);
 
 	if (vocation != 0xFFFFFFFF) {
 		query += generateVocationConditionHighscore(vocation);
 	}
 
-	query += fmt::format(") `T` WHERE `entries` > {} AND `entries` <= {}", startPage, endPage);
+	query += fmt::format(") T WHERE `entries` > {} AND `entries` <= {}", startPage, endPage);
 
 	return query;
 }

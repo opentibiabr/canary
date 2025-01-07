@@ -116,7 +116,10 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 				local position = stack ~= 40 and SoulPit.zone:randomPosition() or SoulPit.bossPosition
 				for i = 1, SoulPit.timeToSpawnMonsters / 1000 do
 					encounter:addEvent(function(position)
-						position:sendMagicEffect(SoulPit.effects[stack])
+						local effect = SoulPit.effects[stack]
+						if effect then
+							position:sendMagicEffect(effect)
+						end
 					end, i * 1000, position)
 				end
 
@@ -128,9 +131,12 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 					if not monster then
 						return false
 					end
-					if stack == 40 then
-						bossAbility.apply(monster)
+
+					if stack ~= 40 then
+						return false
 					end
+
+					bossAbility.apply(monster)
 				end, SoulPit.timeToSpawnMonsters, monsterName, stack, position, randomAbility, chosenBossAbility)
 			end
 		end

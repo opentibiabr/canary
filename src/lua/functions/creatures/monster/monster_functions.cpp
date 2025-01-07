@@ -78,6 +78,9 @@ void MonsterFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Monster", "criticalChance", MonsterFunctions::luaMonsterCriticalChance);
 	Lua::registerMethod(L, "Monster", "criticalDamage", MonsterFunctions::luaMonsterCriticalDamage);
 
+	Lua::registerMethod(L, "Monster", "addAttackSpell", MonsterFunctions::luaMonsterAddAttackSpell);
+	Lua::registerMethod(L, "Monster", "addDefenseSpell", MonsterFunctions::luaMonsterAddDefenseSpell);
+
 	CharmFunctions::init(L);
 	LootFunctions::init(L);
 	MonsterSpellFunctions::init(L);
@@ -822,6 +825,50 @@ int MonsterFunctions::luaMonsterCriticalDamage(lua_State* L) {
 		} else {
 			monster->setCriticalDamage(damage);
 			Lua::pushBoolean(L, monster->getCriticalDamage());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterAddAttackSpell(lua_State* L) {
+	// monster:addAttackSpell(monsterspell)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	if (monster) {
+		const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 2);
+		if (spell) {
+			spellBlock_t sb;
+			const auto &monsterName = monster->getName();
+			if (g_monsters().deserializeSpell(spell, sb, monsterName)) {
+				monster->attackSpells.push_back(std::move(sb));
+			} else {
+				g_logger().warn("Monster: {}, cant load spell: {}", monsterName, spell->name);
+			}
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterAddDefenseSpell(lua_State* L) {
+	// monster:addDefenseSpell(monsterspell)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	if (monster) {
+		const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 2);
+		if (spell) {
+			spellBlock_t sb;
+			const auto &monsterName = monster->getName();
+			if (g_monsters().deserializeSpell(spell, sb, monsterName)) {
+				monster->defenseSpells.push_back(std::move(sb));
+			} else {
+				g_logger().warn("Monster: {}, Cant load spell: {}", monsterName, spell->name);
+			}
+		} else {
+			lua_pushnil(L);
 		}
 	} else {
 		lua_pushnil(L);

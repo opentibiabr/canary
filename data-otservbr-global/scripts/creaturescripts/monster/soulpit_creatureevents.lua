@@ -15,7 +15,3 @@ function enrage.onHealthChange(creature, attacker, primaryDamage, primaryType, s
 	return primaryDamage, primaryType, secondaryDamage, secondaryType
 end
 enrage:register()
-
-local opressor = CreatureEvent("opressorSoulPit")
-function opressor.onThink() end
-opressor:register()

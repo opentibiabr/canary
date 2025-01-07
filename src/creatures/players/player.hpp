@@ -945,6 +945,10 @@ public:
 	void setNextPotionAction(int64_t time);
 	bool canDoPotionAction() const;
 
+	void setLoginProtection();
+	bool isLoginProtected() const;
+	void resetLoginProtection();
+
 	void cancelPush();
 
 	void setModuleDelay(uint8_t byteortype, int16_t delay);
@@ -1421,6 +1425,7 @@ private:
 	int64_t nextPotionAction = 0;
 	int64_t lastQuickLootNotification = 0;
 	int64_t lastWalking = 0;
+	int64_t loginProtectionTime = 0;
 	uint64_t asyncOngoingTasks = 0;
 
 	std::vector<Kill> unjustifiedKills;

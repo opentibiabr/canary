@@ -614,6 +614,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		player->lastIP = player->getIP();
 		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+		player->loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
 		acceptPackets = true;
 	} else {
 		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN)) {
@@ -666,6 +667,7 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+	player->setLoginProtection();
 	player->resetIdleTime();
 	acceptPackets = true;
 }

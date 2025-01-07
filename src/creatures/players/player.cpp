@@ -2930,6 +2930,16 @@ bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
 }
 
+void Player::setLoginProtection() {
+	loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
 void Player::cancelPush() {
 	if (actionTaskEventPush != 0) {
 		g_dispatcher().stopEvent(actionTaskEventPush);

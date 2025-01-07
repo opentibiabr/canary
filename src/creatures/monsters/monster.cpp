@@ -47,6 +47,8 @@ Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
 	targetDistance = mType->info.targetDistance;
+	attackSpells = mType->info.attackSpells;
+	defenseSpells = mType->info.defenseSpells;
 
 	// Register creature events
 	for (const std::string &scriptName : mType->info.scripts) {
@@ -1139,7 +1141,7 @@ void Monster::doAttacking(uint32_t interval) {
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
-	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
+	for (const spellBlock_t &spellBlock : attackSpells) {
 		bool inRange = false;
 
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
@@ -1191,7 +1193,7 @@ bool Monster::canUseAttack(const Position &pos, const std::shared_ptr<Creature> 
 	if (isHostile()) {
 		const Position &targetPos = target->getPosition();
 		uint32_t distance = std::max<uint32_t>(Position::getDistanceX(pos, targetPos), Position::getDistanceY(pos, targetPos));
-		for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
+		for (const spellBlock_t &spellBlock : attackSpells) {
 			if (spellBlock.range != 0 && distance <= spellBlock.range) {
 				return g_game().isSightClear(pos, targetPos, true);
 			}
@@ -1286,7 +1288,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 	bool resetTicks = true;
 	defenseTicks += interval;
 
-	for (const spellBlock_t &spellBlock : mType->info.defenseSpells) {
+	for (const spellBlock_t &spellBlock : defenseSpells) {
 		if (spellBlock.speed > defenseTicks) {
 			resetTicks = false;
 			continue;

@@ -572,14 +572,6 @@ int GameFunctions::luaGameCreateSoulPitMonster(lua_State* L) {
 	if (g_game().placeCreature(monster, position, extended, force)) {
 		monster->setSoulPitStack(stack);
 		monster->onSpawn();
-		const auto &mtype = monster->getMonsterType();
-		if (mtype && mtype->info.raceid > 0 && mtype->info.bosstiaryRace == BosstiaryRarity_t::RARITY_ARCHFOE) {
-			for (const auto &spectator : Spectators().find<Player>(monster->getPosition(), true)) {
-				if (const auto &tmpPlayer = spectator->getPlayer()) {
-					tmpPlayer->sendBosstiaryCooldownTimer();
-				}
-			}
-		}
 
 		Lua::pushUserdata<Monster>(L, monster);
 		Lua::setMetatable(L, -1, "Monster");

@@ -1,5 +1,4 @@
 SoulPit = {
-	registeredMonstersSpell = {},
 	SoulCoresConfiguration = {
 		chanceToGetSameMonsterSoulCore = 15, -- 15%
 		chanceToDropSoulCore = 10, -- 10%
@@ -34,27 +33,22 @@ SoulPit = {
 		{
 			pos = Position(32371, 31155, 8),
 			teleport = Position(32373, 31138, 8),
-			effect = CONST_ME_TELEPORT,
 		},
 		{
 			pos = Position(32371, 31156, 8),
 			teleport = Position(32373, 31138, 8),
-			effect = CONST_ME_TELEPORT,
 		},
 		{
 			pos = Position(32371, 31157, 8),
 			teleport = Position(32373, 31138, 8),
-			effect = CONST_ME_TELEPORT,
 		},
 		{
 			pos = Position(32371, 31158, 8),
 			teleport = Position(32373, 31138, 8),
-			effect = CONST_ME_TELEPORT,
 		},
 		{
 			pos = Position(32371, 31159, 8),
 			teleport = Position(32373, 31138, 8),
-			effect = CONST_ME_TELEPORT,
 		},
 	},
 	waves = {
@@ -121,21 +115,10 @@ SoulPit = {
 				{ name = "soulpit intensehex", interval = 2000, chance = 15, minDamage = 0, maxDamage = 0 },
 			},
 			apply = function(monster)
-				monster:registerEvent("opressorSoulPit")
-				local monsterType = monster:getType()
-				local monsterTypeName = monsterType:name()
-
-				-- Checking spells
-				if SoulPit.registeredMonstersSpell[monsterTypeName] then
-					return true
-				end
-
 				-- Applying spells
 				for _, spell in pairs(SoulPit.bossAbilities.opressorSoulPit.spells) do
-					monsterType:addAttack(readSpell(spell, monsterType))
+					monster:addAttackSpell(readSpell(spell, monster:getType()))
 				end
-
-				SoulPit.registeredMonstersSpell[monsterTypeName] = true
 
 				return true
 			end,

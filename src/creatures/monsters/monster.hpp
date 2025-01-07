@@ -283,6 +283,9 @@ private:
 
 	std::unordered_map<CombatType_t, int32_t> m_reflectElementMap;
 
+	std::vector<spellBlock_t> attackSpells;
+	std::vector<spellBlock_t> defenseSpells;
+
 	Position masterPos;
 
 	bool isWalkingBack = false;

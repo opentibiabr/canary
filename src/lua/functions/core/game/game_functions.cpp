@@ -110,6 +110,9 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
 
 	Lua::registerMethod(L, "Game", "getSoulCoreItems", GameFunctions::luaGameGetSoulCoreItems);
+
+	Lua::registerMethod(L, "Game", "getMonstersByRace", GameFunctions::luaGameGetMonstersByRace);
+	Lua::registerMethod(L, "Game", "getMonstersByBestiaryStars", GameFunctions::luaGameGetMonstersByBestiaryStars);
 }
 
 // Game
@@ -1053,5 +1056,35 @@ int GameFunctions::luaGameGetSoulCoreItems(lua_State* L) {
 		lua_rawseti(L, -2, ++index);
 	}
 
+	return 1;
+}
+
+int GameFunctions::luaGameGetMonstersByRace(lua_State* L) {
+	// Game.getMonstersByRace(race)
+	const BestiaryType_t race = Lua::getNumber<BestiaryType_t>(L, 1);
+	const auto monstersByRace = g_monsters().getMonstersByRace(race);
+
+	lua_createtable(L, monstersByRace.size(), 0);
+	int index = 0;
+	for (const auto &monsterType : monstersByRace) {
+		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetMonstersByBestiaryStars(lua_State* L) {
+	// Game.getMonstersByBestiaryStars(stars)
+	const uint8_t stars = Lua::getNumber<uint8_t>(L, 1);
+	const auto monstersByStars = g_monsters().getMonstersByBestiaryStars(stars);
+
+	lua_createtable(L, monstersByStars.size(), 0);
+	int index = 0;
+	for (const auto &monsterType : monstersByStars) {
+		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
+		lua_rawseti(L, -2, ++index);
+	}
 	return 1;
 }

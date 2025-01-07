@@ -91,4 +91,7 @@ private:
 	static int luaGameGetAchievements(lua_State* L);
 
 	static int luaGameGetSoulCoreItems(lua_State* L);
+
+	static int luaGameGetMonstersByRace(lua_State* L);
+	static int luaGameGetMonstersByBestiaryStars(lua_State* L);
 };

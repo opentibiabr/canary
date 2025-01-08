@@ -669,7 +669,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return creature != master;
 	}
 
-	if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player && player->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
 	}
 
@@ -679,7 +680,7 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 
 	const auto &creatureMaster = creature->getMaster();
 	const auto &creaturePlayer = creatureMaster ? creatureMaster->getPlayer() : nullptr;
-	if (creature->getPlayer() || creaturePlayer) {
+	if (player || creaturePlayer) {
 		return true;
 	}
 
@@ -913,7 +914,8 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (!isSummon()) {
-		if (creature->getPlayer() && creature->getPlayer()->isDisconnected()) {
+		const auto &player = creature ? creature->getPlayer() : nullptr;
+		if (player && player->isDisconnected()) {
 			return false;
 		}
 
@@ -934,7 +936,8 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	if (creature && creature->getPlayer()->isLoginProtected()) {
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player && player->isLoginProtected()) {
 		return false;
 	}
 
@@ -1092,7 +1095,8 @@ void Monster::onThink_async() {
 			setFollowCreature(master);
 		}
 	} else if (!targetList.empty()) {
-		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
+		const auto &attackedCreaturePlayer = attackedCreature ? attackedCreature->getPlayer() : nullptr;
+		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreaturePlayer && attackedCreaturePlayer->isDisconnected();
 		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
 		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
 		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {

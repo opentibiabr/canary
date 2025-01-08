@@ -3387,7 +3387,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-				if (totalAbsorbPercent > 0) {
+				if (totalAbsorbPercent != 0) {
 					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
 
 					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);

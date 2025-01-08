@@ -30,7 +30,7 @@ SoulPit = {
 	soulCores = Game.getSoulCoreItems(),
 	requiredLevel = 8,
 	playerPositions = {
-		{ 
+		{
 			pos = Position(32375, 31158, 8),
 			teleport = Position(32373, 31151, 8),
 		},

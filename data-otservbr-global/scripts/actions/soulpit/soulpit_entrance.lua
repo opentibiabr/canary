@@ -4,12 +4,12 @@ local config = {
 			Position(32350, 31030, 3),
 			Position(32349, 31030, 3),
 		},
-		destination = Position(32374, 31171, 8)
+		destination = Position(32374, 31171, 8),
 	},
 	exit = {
 		position = Position(32374, 31173, 8),
-		destination = Position(32349, 31032, 3)
-	}
+		destination = Position(32349, 31032, 3),
+	},
 }
 
 local soulpitEntrance = MoveEvent()
@@ -34,7 +34,6 @@ for value in pairs(config.entrance.positions) do
 	soulpitEntrance:position(config.entrance.positions[value])
 end
 soulpitEntrance:register()
-
 
 local soulpitExit = MoveEvent()
 

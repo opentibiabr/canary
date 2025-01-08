@@ -945,9 +945,12 @@ public:
 	void setNextPotionAction(int64_t time);
 	bool canDoPotionAction() const;
 
-	void setLoginProtection();
+	void setLoginProtection(int64_t time);
 	bool isLoginProtected() const;
 	void resetLoginProtection();
+
+	void setProtection(bool status);
+	bool isProtected();
 
 	void cancelPush();
 
@@ -1566,6 +1569,7 @@ private:
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
 	bool shouldForceLogout = true;
+	bool connProtected = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

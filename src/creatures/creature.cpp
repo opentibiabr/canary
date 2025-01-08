@@ -160,6 +160,14 @@ void Creature::onAttacking(uint32_t interval) {
 		return;
 	}
 
+	if (attackedCreature->getType() == CreatureType_t::CREATURETYPE_PLAYER) {
+		const auto &player = attackedCreature->getPlayer();
+		if (player && player->isDisconnected() && !player->isProtected()) {
+			player->setProtection(true);
+			player->setLoginProtection(30000);
+		}
+	}
+
 	onAttacked();
 	attackedCreature->onAttacked();
 

@@ -667,7 +667,12 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
-	player->setLoginProtection();
+	if (player->isProtected()) {
+		player->setProtection(false);
+		player->resetLoginProtection();
+	} else {
+		player->setLoginProtection(g_configManager().getNumber(LOGIN_PROTECTION_TIME));
+	}
 	player->resetIdleTime();
 	acceptPackets = true;
 }

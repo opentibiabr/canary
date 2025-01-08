@@ -2934,14 +2934,21 @@ bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
 }
 
-void Player::setLoginProtection() {
-	loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
 }
 bool Player::isLoginProtected() const {
 	return loginProtectionTime > OTSYS_TIME();
 }
 void Player::resetLoginProtection() {
 	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
 }
 
 void Player::cancelPush() {

@@ -914,11 +914,6 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (!isSummon()) {
-		const auto &player = creature ? creature->getPlayer() : nullptr;
-		if (player && player->isDisconnected()) {
-			return false;
-		}
-
 		if (getFaction() != FACTION_DEFAULT) {
 			return isEnemyFaction(creature->getFaction());
 		}
@@ -1095,12 +1090,10 @@ void Monster::onThink_async() {
 			setFollowCreature(master);
 		}
 	} else if (!targetList.empty()) {
-		const auto &attackedCreaturePlayer = attackedCreature ? attackedCreature->getPlayer() : nullptr;
-		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreaturePlayer && attackedCreaturePlayer->isDisconnected();
 		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
 		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
-		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
-			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
+		if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
+			if (!followCreature || !hasFollowPath) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
 				searchTarget(TARGETSEARCH_DEFAULT);
@@ -1120,6 +1113,11 @@ void Monster::onThink_async() {
 void Monster::doAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
 	if (!attackedCreature || attackedCreature->isLifeless() || (isSummon() && attackedCreature.get() == this)) {
+		return;
+	}
+
+	const auto &player = attackedCreature->getPlayer();
+	if (player && player->isLoginProtected()) {
 		return;
 	}
 

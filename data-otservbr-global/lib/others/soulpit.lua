@@ -30,25 +30,25 @@ SoulPit = {
 	soulCores = Game.getSoulCoreItems(),
 	requiredLevel = 8,
 	playerPositions = {
-		{
-			pos = Position(32371, 31155, 8),
-			teleport = Position(32373, 31138, 8),
+		{ 
+			pos = Position(32375, 31158, 8),
+			teleport = Position(32373, 31151, 8),
 		},
 		{
-			pos = Position(32371, 31156, 8),
-			teleport = Position(32373, 31138, 8),
+			pos = Position(32375, 31159, 8),
+			teleport = Position(32374, 31151, 8),
 		},
 		{
-			pos = Position(32371, 31157, 8),
-			teleport = Position(32373, 31138, 8),
+			pos = Position(32375, 31160, 8),
+			teleport = Position(32375, 31151, 8),
 		},
 		{
-			pos = Position(32371, 31158, 8),
-			teleport = Position(32373, 31138, 8),
+			pos = Position(32375, 31161, 8),
+			teleport = Position(32376, 31151, 8),
 		},
 		{
-			pos = Position(32371, 31159, 8),
-			teleport = Position(32373, 31138, 8),
+			pos = Position(32375, 31162, 8),
+			teleport = Position(32377, 31151, 8),
 		},
 	},
 	waves = {
@@ -128,11 +128,11 @@ SoulPit = {
 	checkMonstersDelay = 4.5 * 1000, -- 4.5 seconds | The check delay should never be less than the timeToSpawnMonsters.
 	timeToSpawnMonsters = 4 * 1000, -- 4 seconds
 	totalMonsters = 7,
-	obeliskActive = 49175,
-	obeliskInactive = 49174,
-	obeliskPosition = Position(32371, 31154, 8),
-	bossPosition = Position(32372, 31135, 8),
-	exit = Position(32371, 31164, 8),
+	obeliskActive = 47379,
+	obeliskInactive = 47367,
+	obeliskPosition = Position(32375, 31157, 8),
+	bossPosition = Position(32376, 31144, 8),
+	exit = Position(32373, 31158, 8),
 	zone = Zone("soulpit"),
 
 	getMonsterVariationNameBySoulCore = function(searchName)
@@ -165,5 +165,5 @@ SoulPit = {
 	end,
 }
 
-SoulPit.zone:addArea(Position(32365, 31134, 8), Position(32382, 31152, 8))
+SoulPit.zone:addArea(Position(32362, 31132, 8), Position(32390, 31153, 8))
 SoulPit.zone:setRemoveDestination(SoulPit.exit)

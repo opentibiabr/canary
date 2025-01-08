@@ -3371,7 +3371,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			//
+			// Absorb Percent
 			const ItemType &it = Item::items[item->getID()];
 			if (it.abilities) {
 				int totalAbsorbPercent = 0;
@@ -9938,9 +9938,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-// container
-// container
-
+// Container
 void Player::onAddContainerItem(const std::shared_ptr<Item> &item) {
 	checkTradeState(item);
 }

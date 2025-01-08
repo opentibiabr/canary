@@ -574,7 +574,7 @@ int GameFunctions::luaGameCreateSoulPitMonster(lua_State* L) {
 	const bool force = Lua::getBoolean(L, 5, false);
 	if (g_game().placeCreature(monster, position, extended, force)) {
 		monster->setSoulPitStack(stack);
-		monster->onSpawn();
+		monster->onSpawn(position);
 
 		Lua::pushUserdata<Monster>(L, monster);
 		Lua::setMetatable(L, -1, "Monster");

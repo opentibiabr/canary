@@ -1565,6 +1565,7 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	bool shouldForceLogout = true;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

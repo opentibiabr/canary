@@ -1,6 +1,6 @@
-local Morguthiswall = Action()
+local morguthiswall = Action()
 
-function Morguthiswall.onUse(player, item, fromPosition, target, toPosition)
+function morguthiswall.onUse(player, item, fromPosition, target, toPosition)
 	local wallPosition = Position(33211, 32698, 13)
 	local wallId = 1306
 
@@ -35,5 +35,5 @@ function Morguthiswall.onUse(player, item, fromPosition, target, toPosition)
 	return true
 end
 
-Morguthiswall:aid(10808)
-Morguthiswall:register()
+morguthisWall:position(Position(33212, 32693, 13))
+morguthisWall:register()

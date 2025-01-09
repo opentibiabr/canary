@@ -32,28 +32,28 @@ bool Attachedeffects::loadFromXml() {
 	}
 
 	for (auto auraNode : doc.child("attachedeffects").children("aura")) {
-		auras.emplace(std::make_shared<Aura>(
+		auras.push_back(std::make_shared<Aura>(
 			pugi::cast<uint16_t>(auraNode.attribute("id").value()),
 			auraNode.attribute("name").as_string()
 		));
 	}
 
 	for (auto shaderNode : doc.child("attachedeffects").children("shader")) {
-		shaders.emplace(std::make_shared<Shader>(
+		shaders.push_back(std::make_shared<Shader>(
 			pugi::cast<uint16_t>(shaderNode.attribute("id").value()),
 			shaderNode.attribute("name").as_string()
 		));
 	}
 
 	for (auto effectNode : doc.child("attachedeffects").children("effect")) {
-		effects.emplace(std::make_shared<Effect>(
+		effects.push_back(std::make_shared<Effect>(
 			pugi::cast<uint16_t>(effectNode.attribute("id").value()),
 			effectNode.attribute("name").as_string()
 		));
 	}
 
 	for (auto wingNode : doc.child("attachedeffects").children("wing")) {
-		wings.emplace(std::make_shared<Wing>(
+		wings.push_back(std::make_shared<Wing>(
 			pugi::cast<uint16_t>(wingNode.attribute("id").value()),
 			wingNode.attribute("name").as_string()
 		));

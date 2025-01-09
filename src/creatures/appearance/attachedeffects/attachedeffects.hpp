@@ -12,7 +12,7 @@
 struct Aura {
 	Aura(uint16_t initId, const std::string &name) :
 		id(initId), name(name) { }
-	uint8_t id;
+	uint16_t id;
 	std::string name;
 };
 
@@ -26,14 +26,14 @@ struct Shader {
 struct Effect {
 	Effect(uint16_t initId, const std::string &name) :
 		id(initId), name(name) { }
-	uint8_t id;
+	uint16_t id;
 	std::string name;
 };
 
 struct Wing {
 	Wing(uint16_t initId, const std::string &name) :
 		id(initId), name(name) { }
-	uint8_t id;
+	uint16_t id;
 	std::string name;
 };
 
@@ -52,22 +52,22 @@ public:
 	std::shared_ptr<Effect> getEffectByName(const std::string &name);
 	std::shared_ptr<Wing> getWingByName(const std::string &name);
 
-	[[nodiscard]] const phmap::parallel_flat_hash_set<std::shared_ptr<Aura>> &getAuras() const {
+	[[nodiscard]] const std::vector<std::shared_ptr<Aura>> &getAuras() const {
 		return auras;
 	}
-	[[nodiscard]] const phmap::parallel_flat_hash_set<std::shared_ptr<Shader>> &getShaders() const {
+	[[nodiscard]] const std::vector<std::shared_ptr<Shader>> &getShaders() const {
 		return shaders;
 	}
-	[[nodiscard]] const phmap::parallel_flat_hash_set<std::shared_ptr<Effect>> &getEffects() const {
+	[[nodiscard]] const std::vector<std::shared_ptr<Effect>> &getEffects() const {
 		return effects;
 	}
-	[[nodiscard]] const phmap::parallel_flat_hash_set<std::shared_ptr<Wing>> &getWings() const {
+	[[nodiscard]] const std::vector<std::shared_ptr<Wing>> &getWings() const {
 		return wings;
 	}
 
 private:
-	phmap::parallel_flat_hash_set<std::shared_ptr<Aura>> auras;
-	phmap::parallel_flat_hash_set<std::shared_ptr<Shader>> shaders;
-	phmap::parallel_flat_hash_set<std::shared_ptr<Effect>> effects;
-	phmap::parallel_flat_hash_set<std::shared_ptr<Wing>> wings;
+	std::vector<std::shared_ptr<Aura>> auras;
+	std::vector<std::shared_ptr<Shader>> shaders;
+	std::vector<std::shared_ptr<Effect>> effects;
+	std::vector<std::shared_ptr<Wing>> wings;
 };

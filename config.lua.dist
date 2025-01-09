@@ -26,6 +26,7 @@ maintainModeMessage = ""
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
+-- NOTE: loginProtectionTime in MS
 worldType = "pvp"
 hotkeyAimbotEnabled = true
 protectionLevel = 7
@@ -47,6 +48,7 @@ monthKillsToRedSkull = 10
 redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
+loginProtectionTime = 10 * 1000
 
 cleanProtectionZones = false
 

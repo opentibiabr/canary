@@ -287,6 +287,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
+	loadIntConfig(L, LOGIN_PROTECTION_TIME, "loginProtectionTime", 10000);
 	loadIntConfig(L, PARALLELISM, "parallelism", 2);
 	loadIntConfig(L, PARTY_LIST_MAX_DISTANCE, "partyListMaxDistance", 0);
 	loadIntConfig(L, PREY_BONUS_REROLL_PRICE, "preyBonusRerollPrice", 1);

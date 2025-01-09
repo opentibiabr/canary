@@ -2054,16 +2054,20 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
 		setAttackedCreature(nullptr);
 	}
 
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
-		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
-		if (client) {
-			client->logout(true, true);
+	if (noPongTime >= 60000 && shouldForceLogout) {
+		if (canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+			g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
+			if (client) {
+				client->logout(true, true);
+			} else {
+				g_game().removeCreature(static_self_cast<Player>(), true);
+			}
 		} else {
-			g_game().removeCreature(static_self_cast<Player>(), true);
+			shouldForceLogout = false;
 		}
 	}
 }
@@ -2939,6 +2943,23 @@ bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
 }
 
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
+}
+
 void Player::cancelPush() {
 	if (actionTaskEventPush != 0) {
 		g_dispatcher().stopEvent(actionTaskEventPush);
@@ -3380,7 +3401,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			//
+			// Absorb Percent
 			const ItemType &it = Item::items[item->getID()];
 			if (it.abilities) {
 				int totalAbsorbPercent = 0;
@@ -3396,7 +3417,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-				if (totalAbsorbPercent > 0) {
+				if (totalAbsorbPercent != 0) {
 					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
 
 					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
@@ -10753,9 +10774,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-// container
-// container
-
+// Container
 void Player::onAddContainerItem(const std::shared_ptr<Item> &item) {
 	checkTradeState(item);
 }

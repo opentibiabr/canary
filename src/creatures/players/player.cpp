@@ -2047,16 +2047,20 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
 		setAttackedCreature(nullptr);
 	}
 
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
-		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
-		if (client) {
-			client->logout(true, true);
+	if (noPongTime >= 60000 && shouldForceLogout) {
+		if (canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+			g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
+			if (client) {
+				client->logout(true, true);
+			} else {
+				g_game().removeCreature(static_self_cast<Player>(), true);
+			}
 		} else {
-			g_game().removeCreature(static_self_cast<Player>(), true);
+			shouldForceLogout = false;
 		}
 	}
 }
@@ -2930,6 +2934,23 @@ void Player::setNextPotionAction(int64_t time) {
 
 bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
+}
+
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
 }
 
 void Player::cancelPush() {

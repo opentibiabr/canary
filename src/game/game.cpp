@@ -3505,6 +3505,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
@@ -3518,6 +3519,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
@@ -3693,6 +3695,7 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 	player->startAutoWalk(listDir, false);
@@ -3709,6 +3712,7 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &
 	player->sendCancelTarget();
 	player->setFollowCreature(nullptr);
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 
@@ -3842,6 +3846,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		player->setNextPotionActionTask(nullptr);
@@ -3963,6 +3968,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextActionTask(nullptr);
 
@@ -4127,6 +4133,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		player->setNextPotionActionTask(nullptr);
@@ -5911,6 +5918,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	if (player->getAttackedCreature() && creatureId == 0) {
+		player->resetLoginProtection();
 		player->setAttackedCreature(nullptr);
 		player->sendCancelTarget();
 		return;
@@ -6085,6 +6093,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	internalCreatureTurn(player, dir);
 }
@@ -6208,6 +6217,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 
 	if (playerSaySpell(player, type, text)) {

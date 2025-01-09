@@ -34,6 +34,7 @@ void ItemTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "ItemType", "isPickupable", ItemTypeFunctions::luaItemTypeIsPickupable);
 	Lua::registerMethod(L, "ItemType", "isKey", ItemTypeFunctions::luaItemTypeIsKey);
 	Lua::registerMethod(L, "ItemType", "isQuiver", ItemTypeFunctions::luaItemTypeIsQuiver);
+	Lua::registerMethod(L, "ItemType", "isPodium", ItemTypeFunctions::luaItemTypeIsPodium);
 
 	Lua::registerMethod(L, "ItemType", "getType", ItemTypeFunctions::luaItemTypeGetType);
 	Lua::registerMethod(L, "ItemType", "getId", ItemTypeFunctions::luaItemTypeGetId);

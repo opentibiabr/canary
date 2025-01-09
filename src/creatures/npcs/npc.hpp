@@ -51,6 +51,8 @@ public:
 
 	void setName(std::string newName) const;
 
+	const std::string &getLowerName() const;
+
 	CreatureType_t getType() const override;
 
 	const Position &getMasterPos() const;

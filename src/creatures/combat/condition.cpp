@@ -1775,12 +1775,11 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 }
 
 bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) const {
-	if (owner) {
-		const auto &attacker = g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner);
-		bool isPlayer = attacker && attacker->getPlayer();
-		if (creature->isSuppress(getType(), isPlayer)) {
-			return true;
-		}
+	// Only perform checks and assign attacker if owner is not 0, keeping a const reference to the shared_ptr
+	const auto &attacker = (owner != 0) ? (g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner)) : nullptr;
+	const auto &attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
+	if (creature->isSuppress(getType(), attackerPlayer != nullptr)) {
+		return true;
 	}
 
 	CombatDamage damage;
@@ -1788,7 +1787,7 @@ bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_
 	damage.primary.value = healthChange;
 	damage.primary.type = Combat::ConditionToDamageType(conditionType);
 
-	if (field && creature->getPlayer() && attacker && attacker->getPlayer()) {
+	if (field && creature->getPlayer() && attackerPlayer) {
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
 	}
 

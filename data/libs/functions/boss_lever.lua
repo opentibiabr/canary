@@ -14,7 +14,7 @@
 ---@field private _aid number
 ---@field private playerPositions {pos: Position, teleport: Position}[]
 ---@field private area {from: Position, to: Position}
----@field private monsters {name: string, pos: Position}[]
+---@field private monsters {name: string, pos: Position, delay: number}[]
 ---@field private exitTeleporter Position
 ---@field private exit Position
 ---@field private encounter Encounter
@@ -42,6 +42,10 @@ local config = {
 		from = Position(33607, 32553, 13),
 		to = Position(33627, 32570, 13)
 	},
+	monsters = {
+        { name = "rat", pos = Position(33615, 32563, 13) },
+        { name = "rat", pos = Position(33615, 32563, 13), delay = 5000 },
+    },
 	onUseExtra = function(player, infoPositions)
 		player:teleportTo(Position(33618, 32523, 15))
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -223,9 +227,6 @@ function BossLever:onUse(player)
 	end
 	if lever:checkConditions() then
 		zone:removeMonsters()
-		for _, monster in pairs(self.monsters) do
-			Game.createMonster(monster.name, monster.pos, true, true)
-		end
 		if self.createBoss then
 			if not self.createBoss() then
 				return true
@@ -237,6 +238,13 @@ function BossLever:onUse(player)
 				return true
 			end
 			monster:registerEvent("BossLeverOnDeath")
+		end
+		for _, monster in pairs(self.monsters) do
+			if monster.delay then
+				addEvent(Game.createMonster, monster.delay, monster.name, monster.pos, true, true)
+			else
+				Game.createMonster(monster.name, monster.pos, true, true)
+			end
 		end
 		lever:teleportPlayers()
 		if self.encounter then

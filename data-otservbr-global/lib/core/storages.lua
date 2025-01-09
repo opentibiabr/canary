@@ -854,6 +854,7 @@ Storage = {
 				NoblemanSecondAddon = 41308,
 				FormorgarMinesHoistSkeleton = 41309,
 				FormorgarMinesHoistChest = 41310,
+				PickAmount = 41311,
 			},
 		},
 		U8_1 = { -- update 8.1 - Reserved Storages 41351 - 41650
@@ -2943,6 +2944,11 @@ Storage = {
 					Monster = 47904,
 					MutatedAbomination = 47905,
 				},
+			},
+		},
+		U13_20 = { -- update 13.20 - Reserved Storages 47952 - 47970
+			RottenBlood = {
+				AccessDoor = 47952,
 			},
 		},
 	},

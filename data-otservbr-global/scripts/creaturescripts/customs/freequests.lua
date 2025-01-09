@@ -173,6 +173,7 @@ local questTable = {
 	{ storageName = "TheIceIslands.Mission10", storage = Storage.Quest.U8_0.TheIceIslands.Mission10, storageValue = 2 },
 	{ storageName = "TheIceIslands.Mission11", storage = Storage.Quest.U8_0.TheIceIslands.Mission11, storageValue = 2 },
 	{ storageName = "TheIceIslands.Mission12", storage = Storage.Quest.U8_0.TheIceIslands.Mission12, storageValue = 6 },
+	{ storageName = "TheIceIslands.PickAmount", storage = Storage.Quest.U8_0.TheIceIslands.PickAmount, storageValue = 3 },
 	{ storageName = "TheIceIslands.yakchalDoor", storage = Storage.Quest.U8_0.TheIceIslands.yakchalDoor, storageValue = 1 },
 	{ storageName = "TheInquisitionQuest.Questline", storage = Storage.Quest.U8_2.TheInquisitionQuest.Questline, storageValue = 25 },
 	{ storageName = "TheInquisitionQuest.Mission01", storage = Storage.Quest.U8_2.TheInquisitionQuest.Mission01, storageValue = 7 },

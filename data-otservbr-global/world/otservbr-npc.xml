@@ -1896,6 +1896,9 @@
 	<npc centerx="33231" centery="32423" centerz="7" radius="1">
 		<npc name="Ishina" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="33033" centery="32425" centerz="7" radius="2">
+		<npc name="Torkada" x="0" y="0" z="7" spawntime="60" direction="2"/>
+	</npc>
 	<npc centerx="32168" centery="32428" centerz="7" radius="1">
 		<npc name="Eddy" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -2454,6 +2457,9 @@
 	<npc centerx="33277" centery="32390" centerz="9" radius="1">
 		<npc name="Mazarius" x="0" y="0" z="9" spawntime="60" />
 	</npc>
+	<npc centerx="32956" centery="32397" centerz="9" radius="1">
+		<npc name="Bloodshade Sacrifice" x="0" y="0" z="9" spawntime="60"/>
+	</npc>
 	<npc centerx="33020" centery="32454" centerz="9" radius="1">
 		<npc name="Omrabas" x="0" y="0" z="9" spawntime="60" />
 	</npc>
@@ -2871,6 +2877,9 @@
 	</npc>
 	<npc centerx="33533" centery="31950" centerz="14" radius="1">
 		<npc name="Strange Pipe" x="0" y="0" z="14" spawntime="60" />
+	</npc>
+	<npc centerx="34069" centery="31981" centerz="14" radius="3">
+		<npc name="Bloodshade Rotten" x="0" y="1" z="14" spawntime="60"/>
 	</npc>
 	<npc centerx="32683" centery="31987" centerz="14" radius="1">
 		<npc name="Rapanaio" x="0" y="0" z="14" spawntime="60" />

@@ -1886,7 +1886,8 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 		return;
 	}
 
-	uint32_t centerY, centerX;
+	uint32_t centerY;
+	uint32_t centerX;
 	area->getCenter(centerY, centerX);
 
 	const uint32_t rows = area->getRows();

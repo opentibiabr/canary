@@ -10004,8 +10004,8 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 	player->updateUIExhausted();
+	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 }
 
 void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {

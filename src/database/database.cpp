@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/tools.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -58,6 +59,102 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
 	return true;
+}
+
+void Database::createDatabaseBackup(bool compress) const {
+	if (!g_configManager().getBoolean(MYSQL_DB_BACKUP)) {
+		return;
+	}
+
+	// Get current time for formatting
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+	std::string formattedDate = fmt::format("{:%Y-%m-%d}", fmt::localtime(now_c));
+	std::string formattedTime = fmt::format("{:%H-%M-%S}", fmt::localtime(now_c));
+
+	// Create a backup directory based on the current date
+	std::string backupDir = fmt::format("database_backup/{}/", formattedDate);
+	std::filesystem::create_directories(backupDir);
+	std::string backupFileName = fmt::format("{}backup_{}.sql", backupDir, formattedTime);
+
+	// Create a temporary configuration file for MySQL credentials
+	std::string tempConfigFile = "database_backup.cnf";
+	std::ofstream configFile(tempConfigFile);
+	if (configFile.is_open()) {
+		configFile << "[client]\n";
+		configFile << "user=" << g_configManager().getString(MYSQL_USER) << "\n";
+		configFile << "password=" << g_configManager().getString(MYSQL_PASS) << "\n";
+		configFile << "host=" << g_configManager().getString(MYSQL_HOST) << "\n";
+		configFile << "port=" << g_configManager().getNumber(SQL_PORT) << "\n";
+		configFile.close();
+	} else {
+		g_logger().error("Failed to create temporary MySQL configuration file.");
+		return;
+	}
+
+	// Execute mysqldump command to create backup file
+	std::string command = fmt::format(
+		"mysqldump --defaults-extra-file={} {} > {}",
+		tempConfigFile, g_configManager().getString(MYSQL_DB), backupFileName
+	);
+
+	int result = std::system(command.c_str());
+	std::filesystem::remove(tempConfigFile);
+
+	if (result != 0) {
+		g_logger().error("Failed to create database backup using mysqldump.");
+		return;
+	}
+
+	// Compress the backup file if requested
+	std::string compressedFileName;
+	compressedFileName = backupFileName + ".gz";
+	gzFile gzFile = gzopen(compressedFileName.c_str(), "wb9");
+	if (!gzFile) {
+		g_logger().error("Failed to open gzip file for compression.");
+		return;
+	}
+
+	std::ifstream backupFile(backupFileName, std::ios::binary);
+	if (!backupFile.is_open()) {
+		g_logger().error("Failed to open backup file for compression: {}", backupFileName);
+		gzclose(gzFile);
+		return;
+	}
+
+	std::string buffer(8192, '\0');
+	while (backupFile.read(&buffer[0], buffer.size()) || backupFile.gcount() > 0) {
+		gzwrite(gzFile, buffer.data(), backupFile.gcount());
+	}
+
+	backupFile.close();
+	gzclose(gzFile);
+	std::filesystem::remove(backupFileName);
+
+	g_logger().info("Database backup successfully compressed to: {}", compressedFileName);
+
+	// Delete backups older than 7 days
+	auto nowTime = std::chrono::system_clock::now();
+	auto sevenDaysAgo = nowTime - std::chrono::hours(7 * 24); // 7 days in hours
+	for (const auto &entry : std::filesystem::directory_iterator("database_backup")) {
+		if (entry.is_directory()) {
+			try {
+				for (const auto &file : std::filesystem::directory_iterator(entry)) {
+					if (file.path().extension() == ".gz") {
+						auto fileTime = std::filesystem::last_write_time(file);
+						auto fileTimeSystemClock = std::chrono::clock_cast<std::chrono::system_clock>(fileTime);
+
+						if (fileTimeSystemClock < sevenDaysAgo) {
+							std::filesystem::remove(file);
+							g_logger().info("Deleted old backup file: {}", file.path().string());
+						}
+					}
+				}
+			} catch (const std::filesystem::filesystem_error &e) {
+				g_logger().error("Failed to check or delete files in backup directory: {}. Error: {}", entry.path().string(), e.what());
+			}
+		}
+	}
 }
 
 bool Database::beginTransaction() {

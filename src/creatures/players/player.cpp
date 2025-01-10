@@ -38,6 +38,7 @@
 #include "enums/object_category.hpp"
 #include "enums/player_blessings.hpp"
 #include "enums/player_icons.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -886,7 +887,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 
 	skills[skill].tries += count;
 
-	uint32_t newPercent;
+	double_t newPercent;
 	if (nextReqTries > currReqTries) {
 		newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
 	} else {
@@ -2046,16 +2047,20 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
 		setAttackedCreature(nullptr);
 	}
 
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
-		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
-		if (client) {
-			client->logout(true, true);
+	if (noPongTime >= 60000 && shouldForceLogout) {
+		if (canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+			g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
+			if (client) {
+				client->logout(true, true);
+			} else {
+				g_game().removeCreature(static_self_cast<Player>(), true);
+			}
 		} else {
-			g_game().removeCreature(static_self_cast<Player>(), true);
+			shouldForceLogout = false;
 		}
 	}
 }
@@ -2263,6 +2268,22 @@ void Player::sendExperienceTracker(int64_t rawExp, int64_t finalExp) const {
 void Player::sendOutfitWindow() const {
 	if (client) {
 		client->sendOutfitWindow();
+	}
+}
+
+void Player::sendCyclopediaHouseList(const HouseMap &houses) const {
+	if (client) {
+		client->sendCyclopediaHouseList(houses);
+	}
+}
+void Player::sendResourceBalance(Resource_t resourceType, uint64_t value) const {
+	if (client) {
+		client->sendResourceBalance(resourceType, value);
+	}
+}
+void Player::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) const {
+	if (client) {
+		client->sendHouseAuctionMessage(houseId, type, index, bidSuccess);
 	}
 }
 
@@ -2915,6 +2936,23 @@ bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
 }
 
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
+}
+
 void Player::cancelPush() {
 	if (actionTaskEventPush != 0) {
 		g_dispatcher().stopEvent(actionTaskEventPush);
@@ -3368,7 +3406,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			//
+			// Absorb Percent
 			const ItemType &it = Item::items[item->getID()];
 			if (it.abilities) {
 				int totalAbsorbPercent = 0;
@@ -3384,7 +3422,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-				if (totalAbsorbPercent > 0) {
+				if (totalAbsorbPercent != 0) {
 					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
 
 					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
@@ -3444,9 +3482,10 @@ void Player::doAttacking(uint32_t interval) {
 		}
 
 		const auto &task = createPlayerTask(
-			std::max<uint32_t>(SCHEDULER_MINTICKS, delay),
-			[playerId = getID()] { g_game().checkCreatureAttack(playerId); },
-			__FUNCTION__
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
+					creature->checkCreatureAttack(true);
+				} }, __FUNCTION__
 		);
 
 		if (!classicSpeed) {
@@ -5310,7 +5349,7 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addEvent([creatureId = getID()] { g_game().checkCreatureAttack(creatureId); }, __FUNCTION__);
+		checkCreatureAttack();
 	}
 	return true;
 }
@@ -9851,7 +9890,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	const auto &followCreature = getFollowCreature();
 	if (hasFollowPath && (creature == followCreature || (creature.get() == this && followCreature))) {
 		isUpdatingPath = false;
-		g_game().updateCreatureWalk(getID()); // internally uses addEventWalk.
+		updateCreatureWalk();
 	}
 
 	if (creature != getPlayer()) {
@@ -9936,9 +9975,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-// container
-// container
-
+// Container
 void Player::onAddContainerItem(const std::shared_ptr<Item> &item) {
 	checkTradeState(item);
 }
@@ -10470,4 +10507,109 @@ uint16_t Player::getPlayerVocationEnum() const {
 	}
 
 	return Vocation_t::VOCATION_NONE;
+}
+
+BidErrorMessage Player::canBidHouse(uint32_t houseId) {
+	using enum BidErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (!isPremium()) {
+		return Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return OnlyOneBid;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getHighestBid())) {
+		return NotEnoughMoney;
+	}
+
+	if (house->isGuildhall()) {
+		if (getGuildRank() && getGuildRank()->level != 3) {
+			return Guildhall;
+		}
+
+		if (getGuild() && getGuild()->getBankBalance() < (house->getRent() + house->getHighestBid())) {
+			return NotEnoughGuildMoney;
+		}
+	}
+
+	return NoError;
+}
+
+TransferErrorMessage Player::canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID) {
+	using enum TransferErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getGUID() != house->getOwner()) {
+		return NotHouseOwner;
+	}
+
+	if (getGUID() == newOwnerGUID) {
+		return AlreadyTheOwner;
+	}
+
+	const auto newOwner = g_game().getPlayerByGUID(newOwnerGUID, true);
+	if (!newOwner) {
+		return CharacterNotExist;
+	}
+
+	if (newOwner->getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (!newOwner->isPremium()) {
+		return Premium;
+	}
+
+	if (newOwner->getAccount()->getHouseBidId() != 0) {
+		return OnlyOneBid;
+	}
+
+	return Success;
+}
+
+AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
+	using enum AcceptTransferErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getGUID() != house->getBidder()) {
+		return NotNewOwner;
+	}
+
+	if (!isPremium()) {
+		return Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return AlreadyBid;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getInternalBid())) {
+		return Frozen;
+	}
+
+	if (house->getTransferStatus()) {
+		return AlreadyAccepted;
+	}
+
+	return Success;
 }

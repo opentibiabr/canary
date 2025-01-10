@@ -19,7 +19,7 @@ function cultsOfTibiaCounter.onUse(player, item, fromPosition, target, toPositio
 		return true
 	end
 
-	if not target:isItem() then
+	if not target or type(target) ~= "userdata" or not target:isItem() then
 		return false
 	end
 

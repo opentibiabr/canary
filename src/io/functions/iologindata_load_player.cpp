@@ -869,14 +869,18 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 }
 
 void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result) {
-	if (!result || !player) {
-		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+	if (!player) {
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
-	std::ostringstream query;
-	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if ((result = Database::getInstance().storeQuery(query.str()))) {
+	auto playerGUID = player->getGUID();
+
+	auto query = fmt::format(
+		"SELECT id, action_type, description, done_at, is_success FROM forge_history WHERE player_id = {}",
+		playerGUID
+	);
+	if ((result = Database::getInstance().storeQuery(query))) {
 		do {
 			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;

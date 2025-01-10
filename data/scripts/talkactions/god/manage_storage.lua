@@ -2,44 +2,44 @@ function Player.getStorageValueTalkaction(self, param)
 	-- Sanity check for parameters
 	-- Example: /getstorage god, wheel.scroll.abridged
 	-- Example: /getstorage god, 10000
-    if not HasValidTalkActionParams(self, param, "Usage: /getstorage <playername>, <storage key or name>") then
-        return true
-    end
+	if not HasValidTalkActionParams(self, param, "Usage: /getstorage <playername>, <storage key or name>") then
+		return true
+	end
 
-    local split = param:split(",")
-    if not split[2] then
-        self:sendCancelMessage("Insufficient parameters.")
-        return true
-    end
+	local split = param:split(",")
+	if not split[2] then
+		self:sendCancelMessage("Insufficient parameters.")
+		return true
+	end
 
-    local target = Player(split[1]:trim())
-    if not target then
-        self:sendCancelMessage("A player with that name is not online.")
-        return true
-    end
+	local target = Player(split[1]:trim())
+	if not target then
+		self:sendCancelMessage("A player with that name is not online.")
+		return true
+	end
 
-    -- Storage key Validation
-    local storageKey = tonumber(split[2]) or split[2]:trim()
-    if not storageKey then
-        self:sendCancelMessage("Invalid storage key or name.")
-        return true
-    end
+	-- Storage key Validation
+	local storageKey = tonumber(split[2]) or split[2]:trim()
+	if not storageKey then
+		self:sendCancelMessage("Invalid storage key or name.")
+		return true
+	end
 
-    -- Get the storage key
-    local storageValue = target:getStorageValue(storageKey)
-    if storageValue == nil then
-        self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " does not exist or is not set for player " .. target:getName() .. ".")
-    else
-        self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " from player " .. target:getName() .. " is: " .. storageValue .. ".")
-    end
+	-- Get the storage key
+	local storageValue = target:getStorageValue(storageKey)
+	if storageValue == nil then
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " does not exist or is not set for player " .. target:getName() .. ".")
+	else
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " from player " .. target:getName() .. " is: " .. storageValue .. ".")
+	end
 
-    return true
+	return true
 end
 
 local storageGet = TalkAction("/getstorage")
 
 function storageGet.onSay(player, words, param)
-    return player:getStorageValueTalkaction(param)
+	return player:getStorageValueTalkaction(param)
 end
 
 storageGet:separator(" ")

@@ -25,7 +25,7 @@ function callback.monsterOnDropLoot(monster, corpse)
 
 		if not soulCoreId and not trySameMonsterSoulCore then
 			local race = mType:Bestiaryrace()
-			local monstersInCategory = mType:getMonstersByRace(race)
+			local monstersInCategory = Game.getMonstersByRace(race)
 
 			if monstersInCategory and #monstersInCategory > 0 then
 				local randomMonster = monstersInCategory[math.random(#monstersInCategory)]

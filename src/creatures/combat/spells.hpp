@@ -150,7 +150,7 @@ public:
 	[[nodiscard]] const VocSpellMap &getVocMap() const;
 	void addVocMap(uint16_t vocationId, bool b);
 
-	SpellGroup_t getGroup();
+	SpellGroup_t getGroup() const;
 	void setGroup(SpellGroup_t g);
 	SpellGroup_t getSecondaryGroup();
 	void setSecondaryGroup(SpellGroup_t g);
@@ -280,7 +280,7 @@ private:
 class InstantSpell final : public Spell {
 public:
 	InstantSpell();
-	bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param);
+	bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const;
 
 	bool castSpell(const std::shared_ptr<Creature> &creature) override;
 	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;

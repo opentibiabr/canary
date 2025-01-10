@@ -287,7 +287,7 @@ void IOLoginDataLoad::loadPlayerAnimusMastery(const std::shared_ptr<Player> &pla
 	PropStream propStream;
 	propStream.init(attr, attrSize);
 
-	player->animusMastery()->unserialize(propStream);
+	player->animusMastery().unserialize(propStream);
 }
 
 void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {

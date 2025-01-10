@@ -931,7 +931,7 @@ void Spell::addVocMap(uint16_t vocationId, bool b) {
 	vocSpellMap[vocationId] = b;
 }
 
-SpellGroup_t Spell::getGroup() {
+SpellGroup_t Spell::getGroup() const {
 	return group;
 }
 
@@ -1053,7 +1053,7 @@ void Spell::setLockedPZ(bool b) {
 
 InstantSpell::InstantSpell() = default;
 
-bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) {
+bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}

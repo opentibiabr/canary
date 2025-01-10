@@ -4863,7 +4863,7 @@ int PlayerFunctions::luaPlayerAddAnimusMastery(lua_State* L) {
 	}
 
 	const std::string &monsterType = Lua::getString(L, 2);
-	player->animusMastery()->add(monsterType);
+	player->animusMastery().add(monsterType);
 
 	return 1;
 }
@@ -4875,7 +4875,7 @@ int PlayerFunctions::luaPlayerRemoveAnimusMastery(lua_State* L) {
 	}
 
 	const std::string &monsterType = Lua::getString(L, 2);
-	player->animusMastery()->remove(monsterType);
+	player->animusMastery().remove(monsterType);
 
 	return 1;
 }
@@ -4888,7 +4888,7 @@ int PlayerFunctions::luaPlayerHasAnimusMastery(lua_State* L) {
 
 	const std::string &monsterType = Lua::getString(L, 2);
 
-	bool has = player->animusMastery()->has(monsterType);
+	bool has = player->animusMastery().has(monsterType);
 	Lua::pushBoolean(L, has);
 
 	return 1;

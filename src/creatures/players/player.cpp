@@ -72,14 +72,14 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::move(p)) {
+	client(std::move(p)),
+	m_animusMastery(*this) {
 	m_playerVIP = std::make_unique<PlayerVIP>(*this);
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
 	m_playerBadge = std::make_unique<PlayerBadge>(*this);
 	m_playerCyclopedia = std::make_unique<PlayerCyclopedia>(*this);
 	m_playerTitle = std::make_unique<PlayerTitle>(*this);
-	m_animusMastery = std::make_unique<AnimusMastery>(*this);
 }
 
 Player::~Player() {
@@ -3116,11 +3116,11 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getFloat(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
 	}
 
-	const bool handleAnimusMastery = monster && animusMastery()->has(monster->getMonsterType()->name);
+	const bool handleAnimusMastery = monster && animusMastery().has(monster->getMonsterType()->name);
 	float animusMasteryMultiplier = 0;
 
 	if (handleAnimusMastery) {
-		animusMasteryMultiplier = animusMastery()->getExperienceMultiplier();
+		animusMasteryMultiplier = animusMastery().getExperienceMultiplier();
 		exp *= animusMasteryMultiplier;
 	}
 
@@ -10318,11 +10318,11 @@ const std::unique_ptr<PlayerVIP> &Player::vip() const {
 }
 
 // Animus Mastery interface
-std::unique_ptr<AnimusMastery> &Player::animusMastery() {
+AnimusMastery &Player::animusMastery() {
 	return m_animusMastery;
 }
 
-const std::unique_ptr<AnimusMastery> &Player::animusMastery() const {
+const AnimusMastery &Player::animusMastery() const {
 	return m_animusMastery;
 }
 

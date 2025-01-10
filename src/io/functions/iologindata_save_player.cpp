@@ -249,7 +249,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	// serialize animus mastery
 	PropWriteStream propAnimusMasteryStream;
-	player->animusMastery()->serialize(propAnimusMasteryStream);
+	player->animusMastery().serialize(propAnimusMasteryStream);
 	size_t animusMasterySize;
 	const char* animusMastery = propAnimusMasteryStream.getStream(animusMasterySize);
 

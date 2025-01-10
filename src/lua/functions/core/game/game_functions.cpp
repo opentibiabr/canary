@@ -581,7 +581,6 @@ int GameFunctions::luaGameCreateSoulPitMonster(lua_State* L) {
 	} else {
 		if (isSummon) {
 			monster->setMaster(nullptr);
-		} else {
 		}
 		lua_pushnil(L);
 	}

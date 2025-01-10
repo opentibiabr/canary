@@ -1,4 +1,13 @@
-local exaltedCore = Action()
+local soulPrism = Action()
+
+local function getNextDifficultyLevel(currentLevel)
+	for level, value in pairs(SoulPit.SoulCoresConfiguration.monstersDifficulties) do
+		if value == currentLevel + 1 then
+			return level
+		end
+	end
+	return nil
+end
 
 local function getPreviousDifficultyLevel(currentLevel)
 	for level, value in pairs(SoulPit.SoulCoresConfiguration.monstersDifficulties) do
@@ -29,12 +38,12 @@ local function getSoulCoreItemForMonster(monsterName)
 	return false
 end
 
-function exaltedCore.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+function soulPrism.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local itemName = target:getName()
 	local monsterName = SoulPit.getSoulCoreMonster(itemName)
 
 	if not monsterName then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can only use Exalted Core with a Soul Core.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can only use Soul Prism with a Soul Core.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
@@ -46,24 +55,24 @@ function exaltedCore.onUse(player, item, fromPosition, target, toPosition, isHot
 		return false
 	end
 
-	local currentDifficulty = monsterType:getBestiaryStars()
-	local previousDifficultyLevel = getPreviousDifficultyLevel(currentDifficulty)
-	local previousDifficultyMonsters = nil
+	local currentDifficulty = monsterType:BestiaryStars()
+	local nextDifficultyLevel = getNextDifficultyLevel(currentDifficulty)
+	local nextDifficultyMonsters = nil
 
-	if previousDifficultyLevel then
-		previousDifficultyMonsters = monsterType:getMonstersByBestiaryStars(SoulPit.SoulCoresConfiguration.monstersDifficulties[previousDifficultyLevel])
+	if nextDifficultyLevel then
+		nextDifficultyMonsters = Game.getMonstersByBestiaryStars(SoulPit.SoulCoresConfiguration.monstersDifficulties[nextDifficultyLevel])
 	else
-		previousDifficultyLevel = currentDifficulty
-		previousDifficultyMonsters = monsterType:getMonstersByBestiaryStars(SoulPit.SoulCoresConfiguration.monstersDifficulties[currentDifficulty])
+		nextDifficultyLevel = currentDifficulty
+		nextDifficultyMonsters = Game.getMonstersByBestiaryStars(SoulPit.SoulCoresConfiguration.monstersDifficulties[currentDifficulty])
 	end
 
-	if #previousDifficultyMonsters == 0 then
-		player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "No monsters available for the previous difficulty level.")
+	if #nextDifficultyMonsters == 0 then
+		player:sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "No monsters available for the next difficulty level.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
-	local newMonsterType = previousDifficultyMonsters[math.random(#previousDifficultyMonsters)]
+	local newMonsterType = nextDifficultyMonsters[math.random(#nextDifficultyMonsters)]
 	local newSoulCoreItem = getSoulCoreItemForMonster(newMonsterType:getName())
 	if not newSoulCoreItem then -- Retry a second time.
 		newSoulCoreItem = getSoulCoreItemForMonster(newMonsterType:getName())
@@ -80,13 +89,18 @@ function exaltedCore.onUse(player, item, fromPosition, target, toPosition, isHot
 		return false
 	end
 
-	player:addItem(newSoulCoreItem, 1)
-	player:removeItem(target:getId(), 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received a %s soul core.", newMonsterType:getName()))
+	if math.random(100) <= SoulPit.SoulCoresConfiguration.chanceToGetOminousSoulCore then
+		player:addItem(49163, 1)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received an Ominous Soul Core.")
+	else
+		player:addItem(newSoulCoreItem, 1)
+		player:removeItem(target:getId(), 1)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received a %s soul core.", newMonsterType:getName()))
+	end
 	player:removeItem(item:getId(), 1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	return true
 end
 
-exaltedCore:id(37110)
-exaltedCore:register()
+soulPrism:id(49164)
+soulPrism:register()

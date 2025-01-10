@@ -7,9 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/animus_mastery/animus_mastery.hpp"
+// Player.hpp already includes the animus mastery
 #include "creatures/players/player.hpp"
+
 #include "config/configmanager.hpp"
+#include "io/fileloader.hpp"
+#include "utils/tools.hpp"
 
 AnimusMastery::AnimusMastery(Player &player) :
 	m_player(player) {
@@ -65,4 +68,5 @@ bool AnimusMastery::unserialize(PropStream &propStream) {
 	while (propStream.readString(monsterName)) {
 		animusMasteries.emplace_back(monsterName);
 	}
+	return true;
 }

@@ -1878,33 +1878,33 @@ AreaCombat::~AreaCombat() {
 	clear();
 }
 
-void AreaCombat::getList(const Position& centerPos, const Position& targetPos, std::vector<std::shared_ptr<Tile>>& list, const Direction dir) const {
-    auto casterPos = getNextPosition(dir, targetPos);
+void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const {
+	auto casterPos = getNextPosition(dir, targetPos);
 
-    const std::unique_ptr<MatrixArea>& area = getArea(centerPos, targetPos);
-    if (!area) {
-        return;
-    }
+	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
+	if (!area) {
+		return;
+	}
 
-    uint32_t centerY, centerX;
-    area->getCenter(centerY, centerX);
+	uint32_t centerY, centerX;
+	area->getCenter(centerY, centerX);
 
-    const uint32_t rows = area->getRows();
-    const uint32_t cols = area->getCols();
+	const uint32_t rows = area->getRows();
+	const uint32_t cols = area->getCols();
 
-    list.reserve(rows * cols);
-    Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
+	list.reserve(rows * cols);
+	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
 
-    for (uint32_t y = 0; y < rows; ++y) {
-        for (uint32_t x = 0; x < cols; ++x) {
-            if (area->getValue(y, x) != 0 && g_game().isSightClear(casterPos, tmpPos, true)) {
-                list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
-            }
-            ++tmpPos.x;
-        }
-        ++tmpPos.y;
-        tmpPos.x -= cols;
-    }
+	for (uint32_t y = 0; y < rows; ++y) {
+		for (uint32_t x = 0; x < cols; ++x) {
+			if (area->getValue(y, x) != 0 && g_game().isSightClear(casterPos, tmpPos, true)) {
+				list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
+			}
+			++tmpPos.x;
+		}
+		++tmpPos.y;
+		tmpPos.x -= cols;
+	}
 }
 
 void AreaCombat::copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const {

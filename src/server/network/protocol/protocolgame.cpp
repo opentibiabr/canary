@@ -9527,7 +9527,7 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	uint16_t limitWings = std::numeric_limits<uint16_t>::max();
 	uint16_t wingSize = 0;
 	msg.skipBytes(1);
-	const auto wings = g_game().attachedeffects->getWings();
+	const auto &wings = g_game().attachedeffects->getWings();
 	for (const auto &wing : wings) {
 		if (player->hasWing(wing)) {
 			msg.add<uint16_t>(wing->id);
@@ -9547,7 +9547,7 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	uint16_t limitAuras = std::numeric_limits<uint16_t>::max();
 	uint16_t auraSize = 0;
 	msg.skipBytes(1);
-	const auto auras = g_game().attachedeffects->getAuras();
+	const auto &auras = g_game().attachedeffects->getAuras();
 	for (const auto &aura : auras) {
 		if (player->hasAura(aura)) {
 			msg.add<uint16_t>(aura->id);
@@ -9567,7 +9567,7 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	uint16_t limitEffects = std::numeric_limits<uint16_t>::max();
 	uint16_t effectSize = 0;
 	msg.skipBytes(1);
-	const auto effects = g_game().attachedeffects->getEffects();
+	const auto &effects = g_game().attachedeffects->getEffects();
 	for (const auto &effect : effects) {
 		if (player->hasEffect(effect)) {
 			msg.add<uint16_t>(effect->id);

@@ -1197,7 +1197,6 @@ int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
 	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		Lua::pushBoolean(L, false);
 		return 1;
 	}
 	uint16_t id = Lua::getNumber<uint16_t>(L, 2);
@@ -1215,7 +1214,6 @@ int CreatureFunctions::luaCreatureDetachEffectById(lua_State* L) {
 	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		Lua::pushBoolean(L, false);
 		return 1;
 	}
 	uint16_t id = Lua::getNumber<uint16_t>(L, 2);
@@ -1228,7 +1226,6 @@ int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
 	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		lua_pushnil(L);
 		return 1;
 	}
 
@@ -1246,7 +1243,6 @@ int CreatureFunctions::luaCreatureGetShader(lua_State* L) {
 	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
@@ -1260,7 +1256,6 @@ int CreatureFunctions::luaCreatureSetShader(lua_State* L) {
 	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-		Lua::pushBoolean(L, false);
 		return 1;
 	}
 	creature->setShader(Lua::getString(L, 2));

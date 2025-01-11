@@ -1455,9 +1455,6 @@ private:
 	std::vector<uint16_t> quickLootListItemIds;
 
 	std::vector<OutfitEntry> outfits;
-	std::unordered_set<uint16_t> wings;
-	std::unordered_set<uint16_t> auras;
-	std::unordered_set<uint16_t> effects;
 	std::unordered_set<uint16_t> shaders;
 	std::vector<FamiliarEntry> familiars;
 

@@ -7084,7 +7084,8 @@ uint8_t Player::getLastWing() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-wing")->get<int>());
+	auto wingOpt = kv()->get("last-wing");
+	return static_cast<uint8_t>(wingOpt ? wingOpt->get<int>() : 0);
 }
 
 uint8_t Player::getCurrentWing() const {
@@ -7108,16 +7109,23 @@ bool Player::hasAnyWing() const {
 
 uint8_t Player::getRandomWingId() const {
 	std::vector<uint8_t> availableWings;
-	const auto wings = g_game().attachedeffects->getWings();
+	const auto &wings = g_game().attachedeffects->getWings();
 	for (const auto &wing : wings) {
 		if (hasWing(wing)) {
 			availableWings.emplace_back(wing->id);
 		}
 	}
 
-	const auto availableWingsSize = static_cast<int32_t>(availableWings.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, availableWingsSize));
-	return availableWings.at(randomIndex);
+	if (availableWings.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(availableWings.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < availableWings.size()) {
+		return availableWings[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleWing(bool wing) {
@@ -7181,7 +7189,8 @@ bool Player::toggleWing(bool wing) {
 }
 
 bool Player::tameWing(uint8_t wingId) {
-	if (!g_game().attachedeffects->getWingByID(wingId)) {
+	const auto &wingPtr = g_game().attachedeffects->getWingByID(wingId);
+	if (!wingPtr) {
 		return false;
 	}
 
@@ -7200,7 +7209,8 @@ bool Player::tameWing(uint8_t wingId) {
 }
 
 bool Player::untameWing(uint8_t wingId) {
-	if (!g_game().attachedeffects->getWingByID(wingId)) {
+	const auto &wingPtr = g_game().attachedeffects->getWingByID(wingId);
+	if (!wingPtr) {
 		return false;
 	}
 
@@ -7244,7 +7254,6 @@ bool Player::hasWing(const std::shared_ptr<Wing> &wing) const {
 }
 
 void Player::diswing() {
-	const auto &wing = g_game().attachedeffects->getWingByID(getCurrentWing());
 	defaultOutfit.lookWing = 0;
 }
 
@@ -7255,7 +7264,8 @@ uint8_t Player::getLastAura() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-aura")->get<int>());
+	auto auraOpt = kv()->get("last-aura");
+	return static_cast<uint8_t>(auraOpt ? auraOpt->get<int>() : 0);
 }
 
 uint8_t Player::getCurrentAura() const {
@@ -7279,16 +7289,23 @@ bool Player::hasAnyAura() const {
 
 uint8_t Player::getRandomAuraId() const {
 	std::vector<uint8_t> playerAuras;
-	const auto auras = g_game().attachedeffects->getAuras();
+	const auto &auras = g_game().attachedeffects->getAuras();
 	for (const auto &aura : auras) {
 		if (hasAura(aura)) {
 			playerAuras.emplace_back(aura->id);
 		}
 	}
 
-	const auto playerAurasSize = static_cast<int32_t>(playerAuras.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerAurasSize));
-	return playerAuras.at(randomIndex);
+	if (playerAuras.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(playerAuras.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < playerAuras.size()) {
+		return playerAuras[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleAura(bool aura) {
@@ -7352,7 +7369,8 @@ bool Player::toggleAura(bool aura) {
 }
 
 bool Player::tameAura(uint8_t auraId) {
-	if (!g_game().attachedeffects->getAuraByID(auraId)) {
+	const auto &auraPtr = g_game().attachedeffects->getAuraByID(auraId);
+	if (!auraPtr) {
 		return false;
 	}
 
@@ -7371,7 +7389,8 @@ bool Player::tameAura(uint8_t auraId) {
 }
 
 bool Player::untameAura(uint8_t auraId) {
-	if (!g_game().attachedeffects->getAuraByID(auraId)) {
+	const auto &auraPtr = g_game().attachedeffects->getAuraByID(auraId);
+	if (!auraPtr) {
 		return false;
 	}
 
@@ -7414,7 +7433,6 @@ bool Player::hasAura(const std::shared_ptr<Aura> &aura) const {
 }
 
 void Player::disaura() {
-	const auto &aura = g_game().attachedeffects->getAuraByID(getCurrentAura());
 	defaultOutfit.lookAura = 0;
 }
 
@@ -7425,7 +7443,8 @@ uint8_t Player::getLastEffect() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-effect")->get<int>());
+	auto effectOpt = kv()->get("last-effect");
+	return static_cast<uint8_t>(effectOpt ? effectOpt->get<int>() : 0);
 }
 
 uint8_t Player::getCurrentEffect() const {
@@ -7449,16 +7468,23 @@ bool Player::hasAnyEffect() const {
 
 uint8_t Player::getRandomEffectId() const {
 	std::vector<uint8_t> playerEffects;
-	const auto effects = g_game().attachedeffects->getEffects();
+	const auto &effects = g_game().attachedeffects->getEffects();
 	for (const auto &effect : effects) {
 		if (hasEffect(effect)) {
 			playerEffects.emplace_back(effect->id);
 		}
 	}
 
-	const auto playerEffectsSize = static_cast<int32_t>(playerEffects.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerEffectsSize));
-	return playerEffects.at(randomIndex);
+	if (playerEffects.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(playerEffects.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < playerEffects.size()) {
+		return playerEffects[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleEffect(bool effect) {
@@ -7522,7 +7548,8 @@ bool Player::toggleEffect(bool effect) {
 }
 
 bool Player::tameEffect(uint8_t effectId) {
-	if (!g_game().attachedeffects->getEffectByID(effectId)) {
+	const auto &effectPtr = g_game().attachedeffects->getEffectByID(effectId);
+	if (!effectPtr) {
 		return false;
 	}
 
@@ -7541,7 +7568,8 @@ bool Player::tameEffect(uint8_t effectId) {
 }
 
 bool Player::untameEffect(uint8_t effectId) {
-	if (!g_game().attachedeffects->getEffectByID(effectId)) {
+	const auto &effectPtr = g_game().attachedeffects->getEffectByID(effectId);
+	if (!effectPtr) {
 		return false;
 	}
 
@@ -7585,7 +7613,6 @@ bool Player::hasEffect(const std::shared_ptr<Effect> &effect) const {
 }
 
 void Player::diseffect() {
-	const auto &effect = g_game().attachedeffects->getEffectByID(getCurrentEffect());
 	defaultOutfit.lookEffect = 0;
 }
 
@@ -7683,7 +7710,7 @@ bool Player::tameShader(uint16_t shaderId) {
 }
 
 bool Player::untameShader(uint16_t shaderId) {
-	auto shaderPtr = g_game().attachedeffects->getShaderByID(shaderId);
+	const auto &shaderPtr = g_game().attachedeffects->getShaderByID(shaderId);
 	if (!shaderPtr) {
 		return false;
 	}
@@ -7748,25 +7775,25 @@ bool Player::addCustomOutfit(const std::string &type, const std::variant<uint16_
 		const std::string &name = std::get<std::string>(idOrName);
 
 		if (type == "wing") {
-			auto element = g_game().attachedeffects->getWingByName(name);
+			const auto &element = g_game().attachedeffects->getWingByName(name);
 			if (!element) {
 				return false;
 			}
 			elementId = element->id;
 		} else if (type == "aura") {
-			auto element = g_game().attachedeffects->getAuraByName(name);
+			const auto &element = g_game().attachedeffects->getAuraByName(name);
 			if (!element) {
 				return false;
 			}
 			elementId = element->id;
 		} else if (type == "effect") {
-			auto element = g_game().attachedeffects->getEffectByName(name);
+			const auto &element = g_game().attachedeffects->getEffectByName(name);
 			if (!element) {
 				return false;
 			}
 			elementId = element->id;
 		} else if (type == "shader") {
-			auto element = g_game().attachedeffects->getShaderByName(name);
+			const auto &element = g_game().attachedeffects->getShaderByName(name);
 			if (!element) {
 				return false;
 			}
@@ -7797,25 +7824,25 @@ bool Player::removeCustomOutfit(const std::string &type, const std::variant<uint
 		const std::string &name = std::get<std::string>(idOrName);
 
 		if (type == "wings") {
-			auto element = g_game().attachedeffects->getWingByName(name);
+			const auto &element = g_game().attachedeffects->getWingByName(name);
 			if (!element) {
 				return false;
 			}
 			elementId = element->id;
 		} else if (type == "aura") {
-			auto element = g_game().attachedeffects->getAuraByName(name);
+			const auto &element = g_game().attachedeffects->getAuraByName(name);
 			if (!element) {
 				return false;
 			}
 			elementId = element->id;
 		} else if (type == "effect") {
-			auto element = g_game().attachedeffects->getEffectByName(name);
+			const auto &element = g_game().attachedeffects->getEffectByName(name);
 			if (!element) {
 				return false;
 			}
 			elementId = element->id;
 		} else if (type == "shader") {
-			auto element = g_game().attachedeffects->getShaderByName(name);
+			const auto &element = g_game().attachedeffects->getShaderByName(name);
 			if (!element) {
 				return false;
 			}

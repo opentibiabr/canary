@@ -6195,7 +6195,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 	// @  wings
 	if (outfit.lookWing != 0) {
-		const auto wing = attachedeffects->getWingByID(outfit.lookWing);
+		const auto &wing = attachedeffects->getWingByID(outfit.lookWing);
 		if (!wing) {
 			return;
 		}
@@ -6213,7 +6213,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	// @
 	// @  Effect
 	if (outfit.lookEffect != 0) {
-		const auto effect = attachedeffects->getEffectByID(outfit.lookEffect);
+		const auto &effect = attachedeffects->getEffectByID(outfit.lookEffect);
 		if (!effect) {
 			return;
 		}
@@ -6231,7 +6231,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	// @
 	// @  Aura
 	if (outfit.lookAura != 0) {
-		const auto aura = attachedeffects->getAuraByID(outfit.lookAura);
+		const auto &aura = attachedeffects->getAuraByID(outfit.lookAura);
 		if (!aura) {
 			return;
 		}
@@ -6248,7 +6248,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 	// @
 	/// shaders
 	if (outfit.lookShader != 0) {
-		const auto shaderPtr = attachedeffects->getShaderByID(outfit.lookShader);
+		const auto &shaderPtr = attachedeffects->getShaderByID(outfit.lookShader);
 		if (!shaderPtr) {
 			return;
 		}
@@ -11107,10 +11107,13 @@ void Game::playerSetTyping(uint32_t playerId, uint8_t typing) {
 }
 
 void Game::refreshItem(const std::shared_ptr<Item> &item) {
-	if (!item || !item->getParent()) {
+	if (!item) {
 		return;
 	}
 	const auto &parent = item->getParent();
+	if (!parent) {
+		return;
+	}
 	if (const auto &creature = parent->getCreature()) {
 		if (const auto &player = creature->getPlayer()) {
 			int32_t index = player->getThingIndex(item);
@@ -11126,7 +11129,11 @@ void Game::refreshItem(const std::shared_ptr<Item> &item) {
 			const auto spectators = Spectators().find<Player>(container->getPosition(), false, 2, 2, 2, 2);
 			// send to client
 			for (const auto &spectator : spectators) {
-				spectator->getPlayer()->sendUpdateContainerItem(container, static_cast<uint16_t>(index), item);
+				const auto &player = spectator->getPlayer();
+				if (!player) {
+					continue;
+				}
+				player->sendUpdateContainerItem(container, static_cast<uint16_t>(index), item);
 			}
 		}
 		return;
@@ -11135,7 +11142,11 @@ void Game::refreshItem(const std::shared_ptr<Item> &item) {
 		const auto spectators = Spectators().find<Player>(tile->getPosition(), true);
 		// send to client
 		for (const auto &spectator : spectators) {
-			spectator->getPlayer()->sendUpdateTileItem(tile, tile->getPosition(), item);
+			const auto &player = spectator->getPlayer();
+			if (!player) {
+				continue;
+			}
+			player->sendUpdateTileItem(tile, tile->getPosition(), item);
 		}
 		return;
 	}

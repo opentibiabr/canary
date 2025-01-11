@@ -373,8 +373,8 @@ bool ConfigManager::load() {
 
 bool ConfigManager::reload() {
 	m_configString.clear();
-	m_configInt.clear();
-	m_configBool.clear();
+	m_configInteger.clear();
+	m_configBoolean.clear();
 	m_configFloat.clear();
 	const bool result = load();
 	if (transformToSHA1(getString(SERVER_MOTD)) != g_game().getMotdHash()) {

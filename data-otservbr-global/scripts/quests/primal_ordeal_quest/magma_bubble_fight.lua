@@ -208,7 +208,7 @@ function chargedFlameAction.onUse(player, item, fromPosition, target, toPosition
 	if not player then
 		return false
 	end
-	if not target or not target:isItem() then
+	if not target or type(target) ~= "userdata" or not target:isItem() then
 		return false
 	end
 	if target:getId() ~= config.cooledCrystalId then

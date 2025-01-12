@@ -34,7 +34,7 @@ public:
 	}
 
 	// simply read functions for incoming message
-	uint8_t getByte(const std::source_location &location = std::source_location::current());
+	uint8_t getByte(bool suppresLog = false, const std::source_location &location = std::source_location::current());
 
 	uint8_t getPreviousByte();
 

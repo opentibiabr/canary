@@ -42,7 +42,12 @@ public:
 	[[nodiscard]] float getFloat(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
 
 private:
-	phmap::flat_hash_map<ConfigKey_t, ConfigValue> configs;
+	mutable std::unordered_map<ConfigKey_t, std::string> m_configString;
+	mutable std::unordered_map<ConfigKey_t, bool> m_configBoolean;
+	mutable std::unordered_map<ConfigKey_t, int32_t> m_configInteger;
+	mutable std::unordered_map<ConfigKey_t, float> m_configFloat;
+
+	std::unordered_map<ConfigKey_t, ConfigValue> configs;
 	std::string loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue);
 	int32_t loadIntConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const int32_t &defaultValue);
 	bool loadBoolConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const bool &defaultValue);

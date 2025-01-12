@@ -6909,9 +6909,16 @@ uint8_t Player::getRandomMountId() const {
 		}
 	}
 
-	const auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
-	return playerMounts.at(randomIndex);
+	if (playerMounts.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(playerMounts.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < playerMounts.size()) {
+		return playerMounts[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleMount(bool mount) {

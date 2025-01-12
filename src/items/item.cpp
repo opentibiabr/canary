@@ -278,7 +278,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	const ItemType &it = items[id];
 	const auto itemCharges = it.charges;
 	if (it.isFluidContainer() || it.isSplash()) {
-		const auto fluidType = std::clamp<uint16_t>(itemCount, 1, FLUID_INK);
+		const auto fluidType = std::clamp<uint16_t>(itemCount, 0, magic_enum::enum_count<Fluids_t>());
 		setAttribute(ItemAttribute_t::FLUIDTYPE, fluidType);
 	} else if (it.stackable) {
 		if (itemCount != 0) {

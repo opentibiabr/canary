@@ -9143,12 +9143,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	uint64_t totalPrice = price * amount;
-	uint64_t totalFee = totalPrice * 0.02;
-	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee);
-	uint64_t fee = std::max<uint64_t>(20, totalFee);
+	uint64_t totalFee = totalPrice * 0.02; // 2% fee
+	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee); // Max fee is 1kk
+	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
 	if (type == MARKETACTION_SELL) {
-		if (fee > (player->getBankBalance() + player->getMoney())) {
+		uint64_t totalPriceWithFee = totalPrice + fee;
+		if (totalPriceWithFee > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money";
 			return;
 		}

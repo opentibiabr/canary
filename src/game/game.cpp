@@ -10066,6 +10066,19 @@ void Game::removeMonster(const std::shared_ptr<Monster> &monster) {
 	}
 }
 
+void Game::updateMonster(const std::shared_ptr<Monster> &monster, const std::string &oldName, uint32_t oldId) {
+	if (!monster) {
+		return;
+	}
+
+	const auto &newName = monster->getLowerName();
+	monstersNameIndex.erase(oldName);
+	monstersNameIndex[newName] = monsters.size() - 1;
+
+	monstersIdIndex.erase(oldId);
+	monstersIdIndex[monster->getID()] = monsters.size() - 1;
+}
+
 std::shared_ptr<Guild> Game::getGuild(uint32_t id, bool allowOffline /* = flase */) const {
 	auto it = guilds.find(id);
 	if (it == guilds.end()) {

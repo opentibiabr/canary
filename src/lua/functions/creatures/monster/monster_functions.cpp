@@ -138,6 +138,12 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 				g_logger().warn("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
 		}
+
+		// Update created monster
+		const std::string oldName = monster->getLowerName();
+		uint32_t oldId = monster->getID();
+		g_game().updateMonster(monster, oldName, oldId);
+
 		// Assign new MonsterType
 		monster->mType = mType;
 		monster->nameDescription = asLowerCaseString(mType->nameDescription);

@@ -10440,27 +10440,23 @@ void Player::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint1
 		return;
 	}
 
-	if (creature->getPlayer()) {
-		client->sendAttachedEffect(creature, effectId);
-	}
+	client->sendAttachedEffect(creature, effectId);
 }
 
 void Player::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) const {
 	if (!client || !creature) {
 		return;
 	}
-	if (creature->getPlayer()) {
-		client->sendDetachEffect(creature, effectId);
-	}
+
+	client->sendDetachEffect(creature, effectId);
 }
 
 void Player::sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName) const {
 	if (!client || !creature) {
 		return;
 	}
-	if (creature->getPlayer()) {
-		client->sendShader(creature, shaderName);
-	}
+
+	client->sendShader(creature, shaderName);
 }
 
 void Player::sendMapShader(const std::string &shaderName) const {

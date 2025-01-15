@@ -595,7 +595,7 @@ metricsEnableOstream = false
 metricsOstreamInterval = 1000
 
 -- OTC Features
--- NOTE: Features added in this list will be forced to be used on the client
+-- NOTE: Features added in this list will be forced to be used on OTCR
 -- These features can be found in "modules/gamelib/const.lua"
 OTCRFeatures = {
     enableFeature = { 

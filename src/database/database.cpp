@@ -82,8 +82,8 @@ void Database::createDatabaseBackup(bool compress) const {
 	std::ofstream configFile(tempConfigFile);
 	if (configFile.is_open()) {
 		configFile << "[client]\n";
-		configFile << "user=" << g_configManager().getString(MYSQL_USER) << "\n";
-		configFile << "password=" << g_configManager().getString(MYSQL_PASS) << "\n";
+		configFile << "user=\"" << g_configManager().getString(MYSQL_USER) << "\"\n";
+		configFile << "password=\"" << g_configManager().getString(MYSQL_PASS) << "\"\n";
 		configFile << "host=" << g_configManager().getString(MYSQL_HOST) << "\n";
 		configFile << "port=" << g_configManager().getNumber(SQL_PORT) << "\n";
 		configFile.close();

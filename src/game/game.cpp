@@ -10999,7 +10999,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 			const auto &house = it.second;
 			const auto &town = g_game().map.towns.getTown(house->getTownId());
 			if (!town) {
-				return;
+				continue;
 			}
 
 			const std::string &houseTown = town->getName();

@@ -9074,12 +9074,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	uint64_t totalPrice = price * amount;
-	uint64_t totalFee = totalPrice * 0.02;
-	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee);
-	uint64_t fee = std::max<uint64_t>(20, totalFee);
+	uint64_t totalFee = totalPrice * 0.02; // 2% fee
+	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee); // Max fee is 1kk
+	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
 	if (type == MARKETACTION_SELL) {
-		if (fee > (player->getBankBalance() + player->getMoney())) {
+		uint64_t totalPriceWithFee = totalPrice + fee;
+		if (totalPriceWithFee > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money";
 			return;
 		}
@@ -9935,8 +9936,8 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 	player->updateUIExhausted();
+	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 }
 
 void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
@@ -11008,7 +11009,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 			const auto &house = it.second;
 			const auto &town = g_game().map.towns.getTown(house->getTownId());
 			if (!town) {
-				return;
+				continue;
 			}
 
 			const std::string &houseTown = town->getName();

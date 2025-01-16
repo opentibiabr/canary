@@ -150,4 +150,15 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
+mType.onSpawn = function(monster, spawnPosition)
+	if monster:getType():isRewardBoss() then
+		-- reset global storage state to default / ensure sqm's reset for the next team
+		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.Deaths, -1)
+		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.StepsOn, -1)
+		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.ResetSteps, 1)
+		monster:registerEvent("facelessBaneImmunity")
+		monster:setReward(true)
+	end
+end
+
 mType:register(monster)

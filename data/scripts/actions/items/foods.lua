@@ -140,7 +140,11 @@ function food.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	player:say(itemFood[2], TALKTYPE_MONSTER_SAY)
 	player:updateSupplyTracker(item)
 	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_EAT, player:isInGhostMode() and nil or player)
-	item:remove(1)
+	local removeFoodInTrainers = false
+	local playerInTrainers = player:getPosition():isInRange(Position(1015, 1109, 7), Position(1094, 1738, 7))
+	if removeFoodInTrainers or (not removeFoodInTrainers and not playerInTrainers) then
+		item:remove(1)
+	end
 	return true
 end
 

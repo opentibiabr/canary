@@ -1,7 +1,7 @@
 <imbuements>
 	<base id="1" name="Basic" price="5000" protectionPrice="10000" percent="90" removecost="15000" duration="72000" />
-	<base id="2" name="Intricate" price="30000" protectionPrice="30000" percent="70" removecost="15000" duration="72000" />
-	<base id="3" name="Powerful" price="200000" protectionPrice="50000" percent="50" removecost="15000" duration="72000" />
+	<base id="2" name="Intricate" price="25000" protectionPrice="30000" percent="70" removecost="15000" duration="72000" />
+	<base id="3" name="Powerful" price="100000" protectionPrice="50000" percent="50" removecost="15000" duration="72000" />
 
 	<!-- Category Names -->
 	<category id="0" name="Elemental Damage" agressive="1" />
@@ -135,19 +135,19 @@
 	</imbuement>
 	<!-- Mana Leech Imbuement -->
 	<imbuement name="Void" base="1" category="2" iconid="49" premium="0" storage="0">
-		<attribute key="description" value="Converts 3% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="300" chance="100" />
+		<attribute key="description" value="Converts 5% of damage to MP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="manaleech" bonus="500" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 	</imbuement>
 	<imbuement name="Void" base="2" category="2" iconid="49" premium="1" storage="0">
-		<attribute key="description" value="Converts 5% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="500" chance="100" />
+		<attribute key="description" value="Converts 7% of damage to MP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="manaleech" bonus="700" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 	</imbuement>
 	<imbuement name="Void" base="3" category="2" iconid="49" premium="1" storage="50494">
-		<attribute key="description" value="Converts 8% of damage to MP with a chance of 100%." />
-		<attribute key="effect" type="skill" value="manaleech" bonus="800" chance="100" />
+		<attribute key="description" value="Converts 10% of damage to MP with a chance of 100%." />
+		<attribute key="effect" type="skill" value="manaleech" bonus="1000" chance="100" />
 		<attribute key="item" value="11492" count="25" />
 		<attribute key="item" value="20200" count="25" />
 		<attribute key="item" value="22730" count="5" />

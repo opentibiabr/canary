@@ -42,6 +42,7 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -77,7 +78,7 @@ monster.immunities = {
 local intervalBetweenExecutions = 3000
 
 mType.onThink = function(monsterCallback, interval)
-	monsterCallback:onThinkGoshnarTormentCounter(interval, 30, intervalBetweenExecutions, SoulWarQuest.levers.goshnarsHatred.boss.position, "Goshnar's Hatred")
+	monsterCallback:onThinkGoshnarTormentCounter(interval, 30, intervalBetweenExecutions, SoulWarQuest.levers.goshnarsHatred.boss.position)
 end
 
 mType:register(monster)

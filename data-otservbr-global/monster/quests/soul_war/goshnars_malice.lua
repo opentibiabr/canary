@@ -60,6 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -96,7 +97,6 @@ monster.loot = {
 	{ name = "spectral horseshoe", chance = 400 },
 	{ name = "the skull of a beast", chance = 400 },
 	{ name = "figurine of malice", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -146,5 +146,17 @@ mType.onThink = function(monster, interval)
 		accumulatedTime = 0
 	end
 end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

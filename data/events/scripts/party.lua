@@ -66,14 +66,25 @@ function Party:onDisband()
 end
 
 function Party:onShareExperience(exp)
-	local uniqueVocationsCount = self:getUniqueVocationsCount()
-	local partySize = self:getMemberCount() + 1
+	local sharedExperienceMultiplier = 1.40 --40%
+	local vocationsIds = {}
 
-	-- Formula to calculate the % based on the vocations amount
-	local sharedExperienceMultiplier = ((0.1 * (uniqueVocationsCount ^ 2)) - (0.2 * uniqueVocationsCount) + 1.3)
-	-- Since the formula its non linear, we need to subtract 0.1 if all vocations are present,
-	-- because on all vocations the multiplier is 2.1 and it should be 2.0
-	sharedExperienceMultiplier = partySize < 4 and sharedExperienceMultiplier or sharedExperienceMultiplier - 0.1
+	local vocationId = self:getLeader():getVocation():getBase():getId()
+	if vocationId ~= VOCATION_NONE then
+		table.insert(vocationsIds, vocationId)
+	end
 
-	return math.ceil((exp * sharedExperienceMultiplier) / partySize)
+	for _, member in ipairs(self:getMembers()) do
+		vocationId = member:getVocation():getBase():getId()
+		if not table.contains(vocationsIds, vocationId) and vocationId ~= VOCATION_NONE then
+			table.insert(vocationsIds, vocationId)
+		end
+	end
+
+	local size = #vocationsIds
+	if size > 1 then
+		sharedExperienceMultiplier = 1.9 + ((size * (5 * (size - 1) + 10)) / 100)
+	end
+
+	return math.ceil((exp * sharedExperienceMultiplier) / (#self:getMembers() + 3))
 end

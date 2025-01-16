@@ -35,7 +35,7 @@ local explodeGrenade = function(position, playerId)
 	end
 
 	local var = {}
-	var.instantName = "Divine Grenade"
+	var.instantName = "Divine Grenade Explode"
 	var.runeName = ""
 	var.type = 2 -- VARIANT_POSITION
 	var.pos = position
@@ -102,7 +102,7 @@ spell:range(7)
 spell:needTarget(true)
 spell:blockWalls(true)
 spell:cooldown(1000) -- Cooldown is calculated on the casting
-spell:groupCooldown(2 * 1000)
+spell:groupCooldown(DEFAULT_COOLDOWN.SPELL_GROUP)
 spell:needLearn(true)
 spell:vocation("paladin;true", "royal paladin;true")
 spell:register()

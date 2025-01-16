@@ -1,7 +1,7 @@
 -- return a dictionary of itemId => { count, gut }
 ---@param config { factor: number, gut: boolean, filter?: fun(itemType: ItemType, unique: boolean): boolean }
 ---@return LootItems
-function MonsterType:generateLootRoll(config, resultTable, player)
+function MonsterType:generateLootRoll(config, resultTable)
 	if configManager.getNumber(configKeys.RATE_LOOT) <= 0 then
 		return resultTable or {}
 	end
@@ -28,11 +28,6 @@ function MonsterType:generateLootRoll(config, resultTable, player)
 		end
 
 		local chance = item.chance
-		if SoulWarQuest and iType:getId() == SoulWarQuest.bagYouDesireItemId then
-			result[item.itemId].chance = self:calculateBagYouDesireChance(player, chance)
-			logger.debug("Final chance for bag you desire: {}, original chance: {}", result[item.itemId].chance, chance)
-		end
-
 		if config.gut and iType:getType() == ITEM_TYPE_CREATUREPRODUCT then
 			chance = math.ceil((chance * GLOBAL_CHARM_GUT) / 100)
 		end

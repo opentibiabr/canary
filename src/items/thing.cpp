@@ -7,12 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/thing.hpp"
+#include "pch.hpp"
 
+#include "items/thing.hpp"
 #include "items/tile.hpp"
 
 const Position &Thing::getPosition() {
-	const auto &tile = getTile();
+	std::shared_ptr<Tile> tile = getTile();
 	if (!tile) {
 		return Tile::nullptr_tile->getPosition();
 	}

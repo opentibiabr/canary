@@ -27,7 +27,7 @@ namespace stdext {
 		bool erase(const T &v) {
 			update();
 
-			auto it = std::ranges::lower_bound(container, v);
+			const auto &it = std::ranges::lower_bound(container, v);
 			if (it == container.end()) {
 				return false;
 			}

@@ -7,21 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/npcs/npcs.hpp"
+#include "pch.hpp"
 
-#include "config/configmanager.hpp"
-#include "game/game.hpp"
+#include "declarations.hpp"
+#include "creatures/combat/combat.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/luascript.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "lua/scripts/scripts.hpp"
-#include "lib/di/container.hpp"
+#include "game/game.hpp"
 
-NpcType::NpcType(const std::string &initName) :
-	name(initName), m_lowerName(asLowerCaseString(initName)), typeName(initName), nameDescription(initName) {};
-
-bool NpcType::canSpawn(const Position &pos) const {
+bool NpcType::canSpawn(const Position &pos) {
 	bool canSpawn = true;
-	const bool isDay = g_game().gameIsDay();
+	bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) || (!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
@@ -32,7 +30,7 @@ bool NpcType::canSpawn(const Position &pos) const {
 }
 
 bool NpcType::loadCallback(LuaScriptInterface* scriptInterface) {
-	const int32_t id = scriptInterface->getEvent();
+	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		g_logger().warn("[NpcType::loadCallback] - Event not found");
 		return false;
@@ -86,32 +84,32 @@ void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBl
 	}
 
 	// Check if the item already exists in the shop vector and ignore it
-	if (std::ranges::any_of(npcType->info.shopItemVector, [&shopBlock](const auto &shopIterator) {
+	if (std::any_of(npcType->info.shopItemVector.begin(), npcType->info.shopItemVector.end(), [&shopBlock](const auto &shopIterator) {
 			return shopIterator == shopBlock;
 		})) {
 		return;
 	}
 
 	if (shopBlock.childShop.empty()) {
-		const bool &isContainer = iType.isContainer();
+		bool isContainer = iType.isContainer();
 		if (isContainer) {
 			for (const ShopBlock &child : shopBlock.childShop) {
 				shopBlock.childShop.push_back(child);
 			}
 		}
 	}
-	npcType->info.shopItemVector.emplace_back(shopBlock);
+	npcType->info.shopItemVector.push_back(shopBlock);
 
 	info.speechBubble = SPEECHBUBBLE_TRADE;
 }
 
 bool Npcs::load(bool loadLibs /* = true*/, bool loadNpcs /* = true*/, bool reloading /* = false*/) const {
 	if (loadLibs) {
-		const auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
 		return g_luaEnvironment().loadFile(coreFolder + "/npclib/load.lua", "load.lua") == 0;
 	}
 	if (loadNpcs) {
-		const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+		auto datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
 		return g_scripts().loadScripts(datapackFolder + "/npc", false, reloading);
 	}
 	return false;
@@ -133,12 +131,8 @@ bool Npcs::reload() {
 	return false;
 }
 
-Npcs &Npcs::getInstance() {
-	return inject<Npcs>();
-}
-
 std::shared_ptr<NpcType> Npcs::getNpcType(const std::string &name, bool create /* = false*/) {
-	const std::string key = asLowerCaseString(name);
+	std::string key = asLowerCaseString(name);
 	auto it = npcs.find(key);
 
 	if (it != npcs.end()) {

@@ -162,8 +162,14 @@ local function initialize(monster)
 end
 
 -- Functions for the fight
-mType.onSpawn = function(monster, spawnPosition)
-	initialize(monster)
+mType.onAppear = function(monster, creature)
+	if monster:getId() == creature:getId() then
+		initialize(monster)
+	end
+
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
 end
 
 local function getHazardPoints(monster)

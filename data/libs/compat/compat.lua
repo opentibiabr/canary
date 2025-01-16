@@ -572,8 +572,8 @@ function isPremium(cid)
 	return p ~= nil and p:isPremium() or false
 end
 
-function getBlessingCost(level, byCommand, blessId)
-	return Blessings.getBlessingCost(level, byCommand, blessId)
+function getBlessingsCost(level, byCommand)
+	return Blessings.getBlessingsCost(level, byCommand)
 end
 
 function getPvpBlessingCost(level, byCommand)
@@ -618,7 +618,18 @@ function getPlayerGUIDByName(name)
 end
 
 function getAccountNumberByPlayerName(name)
-	return Game.getPlayerAccountId(name)
+	local player = Player(name)
+	if player then
+		return player:getAccountId()
+	end
+
+	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
+	if resultId ~= false then
+		local accountId = Result.getNumber(resultId, "account_id")
+		Result.free(resultId)
+		return accountId
+	end
+	return 0
 end
 
 getPlayerAccountBalance = getPlayerBalance

@@ -82,7 +82,7 @@ monster.loot = {
 	{ name = "unstable darklight matter", chance = 9060, maxCount = 1 },
 	{ name = "darklight core", chance = 12887, maxCount = 1 },
 	{ name = "ultimate health potion", chance = 6553, maxCount = 6 },
-	{ id = 3039, chance = 1430 }, -- red gem
+	{ id = 3039, chance = 5852, maxCount = 1 }, -- red gem
 	{ name = "darklight matter", chance = 8849, maxCount = 1 },
 	{ name = "rubber cap", chance = 7180, maxCount = 1 },
 	{ id = 23544, chance = 3500, maxCount = 1 }, -- collar of red plasma

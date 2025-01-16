@@ -10,26 +10,12 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
-#include "game/movement/position.hpp"
-#include "utils/utils_definitions.hpp"
-
-enum class PlayerIcon : uint8_t;
-enum class IconBakragore : uint8_t;
-enum class ForgeAction_t : uint8_t;
-enum MessageClasses : uint8_t;
-enum ReturnValue : uint16_t;
-enum TextColor_t : uint8_t;
-enum OperatingSystem_t : uint8_t;
-enum ChannelEvent_t : uint8_t;
-enum CyclopediaCharacterInfoType_t : uint8_t;
-enum Resource_t : uint8_t;
-enum class VipStatus_t : uint8_t;
-enum SpellGroup_t : uint8_t;
-enum Slots_t : uint8_t;
-enum CombatType_t : uint8_t;
-enum SoundEffect_t : uint16_t;
-enum class SourceEffect_t : uint8_t;
-enum class HouseAuctionType : uint8_t;
+#include "creatures/interactions/chat.hpp"
+#include "creatures/creature.hpp"
+#include "enums/forge_conversion.hpp"
+#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
+#include "creatures/players/cyclopedia/player_title.hpp"
 
 class NetworkMessage;
 class Player;
@@ -39,37 +25,18 @@ class House;
 class Container;
 class Tile;
 class Connection;
+class Quest;
 class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
-class Item;
-class Party;
-class Creature;
-class MonsterType;
-class Npc;
 
 struct ModalWindow;
-struct Position;
-struct Outfit_t;
-struct RecentDeathEntry;
-struct RecentPvPKillEntry;
 struct Achievement;
-struct MarketOffer;
-struct ShopBlock;
-struct MarketOfferEx;
-struct HistoryMarketOffer;
-struct LightInfo;
+struct Badge;
+struct Title;
 
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
-using ItemVector = std::vector<std::shared_ptr<Item>>;
-using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
-using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
-using MarketOfferList = std::list<MarketOffer>;
-using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
-using StashItemList = std::map<uint16_t, uint32_t>;
-using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
 struct TextMessage {
 	TextMessage() = default;
@@ -79,10 +46,10 @@ struct TextMessage {
 	MessageClasses type = MESSAGE_STATUS;
 	std::string text;
 	Position position;
-	uint16_t channelId {};
+	uint16_t channelId;
 	struct
 	{
-		int32_t value {};
+		int32_t value = 0;
 		TextColor_t color = TEXTCOLOR_NONE;
 	} primary, secondary;
 };
@@ -99,13 +66,13 @@ public:
 		return "gameworld protocol";
 	}
 
-	explicit ProtocolGame(const Connection_ptr &initConnection);
+	explicit ProtocolGame(Connection_ptr initConnection);
 
 	void login(const std::string &name, uint32_t accnumber, OperatingSystem_t operatingSystem);
 	void logout(bool displayEffect, bool forced);
 
-	void AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item);
-	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const;
+	void AddItem(NetworkMessage &msg, std::shared_ptr<Item> item);
+	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier);
 
 	uint16_t getVersion() const {
 		return version;
@@ -124,12 +91,12 @@ private:
 	void checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &removedKnown);
 
 	bool canSee(int32_t x, int32_t y, int32_t z) const;
-	bool canSee(const std::shared_ptr<Creature> &) const;
+	bool canSee(std::shared_ptr<Creature>) const;
 	bool canSee(const Position &pos) const;
 
 	// we have all the parse methods
 	void parsePacket(NetworkMessage &msg) override;
-	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
+	void parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
 	void onConnect() override;
 
@@ -162,7 +129,7 @@ private:
 
 	void sendSessionEndInformation(SessionEndInformations information);
 
-	void sendItemInspection(uint16_t itemId, uint8_t itemCount, const std::shared_ptr<Item> &item, bool cyclopedia);
+	void sendItemInspection(uint16_t itemId, uint8_t itemCount, std::shared_ptr<Item> item, bool cyclopedia);
 	void parseInspectionObject(NetworkMessage &msg);
 
 	void parseFriendSystemAction(NetworkMessage &msg);
@@ -176,7 +143,7 @@ private:
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
-	void parseOfferDescription(NetworkMessage &msg);
+	void parseDebugAssert(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
@@ -195,6 +162,7 @@ private:
 	void parseSendBuyCharmRune(NetworkMessage &msg);
 	void parseBestiarysendMonsterData(NetworkMessage &msg);
 	void parseCyclopediaMonsterTracker(NetworkMessage &msg);
+	void parseObjectInfo(NetworkMessage &msg);
 
 	void parseTeleport(NetworkMessage &msg);
 	void parseThrow(NetworkMessage &msg);
@@ -272,14 +240,13 @@ private:
 	void sendChannel(uint16_t channelId, const std::string &channelName, const UsersMap* channelUsers, const InvitedMap* invitedUsers);
 	void sendOpenPrivateChannel(const std::string &receiver);
 	void sendExperienceTracker(int64_t rawExp, int64_t finalExp);
-	void sendToChannel(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, uint16_t channelId);
-	void sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text);
-	void sendIcons(const std::unordered_set<PlayerIcon> &iconSet, const IconBakragore iconBakragore);
-	void sendIconBakragore(const IconBakragore icon);
+	void sendToChannel(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, uint16_t channelId);
+	void sendPrivateMessage(std::shared_ptr<Player> speaker, SpeakClasses type, const std::string &text);
+	void sendIcons(uint32_t icons);
 	void sendFYIBox(const std::string &message);
 
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
-	void sendImbuementResult(const std::string &message);
+	void openImbuementWindow(std::shared_ptr<Item> item);
+	void sendImbuementResult(const std::string message);
 	void closeImbuementWindow();
 
 	void sendItemsPrice();
@@ -287,11 +254,18 @@ private:
 	// Forge System
 	void sendForgingData();
 	void sendOpenForge();
-	void sendForgeError(ReturnValue returnValue);
+	void sendForgeError(const ReturnValue returnValue);
 	void closeForgeWindow();
 	void parseForgeEnter(NetworkMessage &msg);
 	void parseForgeBrowseHistory(NetworkMessage &msg);
-
+	void sendForgeFusionItem(
+		uint16_t itemId,
+		uint8_t tier,
+		bool success,
+		uint8_t bonus,
+		uint8_t coreCount,
+		bool convergence
+	);
 	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence);
 	void sendForgeHistory(uint8_t page);
 	void sendForgeSkillStats(NetworkMessage &msg) const;
@@ -301,7 +275,7 @@ private:
 	void parseSendBosstiarySlots();
 	void parseBosstiarySlot(NetworkMessage &msg);
 	void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
-	void sendMonsterPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackPos);
+	void sendMonsterPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 	void parseSetMonsterPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
 	void sendBosstiaryEntryChanged(uint32_t bossid);
@@ -311,28 +285,28 @@ private:
 	void sendMagicEffect(const Position &pos, uint16_t type);
 	void removeMagicEffect(const Position &pos, uint16_t type);
 	void sendRestingStatus(uint8_t protection);
-	void sendCreatureHealth(const std::shared_ptr<Creature> &creature);
-	void sendPartyCreatureUpdate(const std::shared_ptr<Creature> &target);
-	void sendPartyCreatureShield(const std::shared_ptr<Creature> &target);
-	void sendPartyCreatureSkull(const std::shared_ptr<Creature> &target);
-	void sendPartyCreatureHealth(const std::shared_ptr<Creature> &target, uint8_t healthPercent);
-	void sendPartyPlayerMana(const std::shared_ptr<Player> &target, uint8_t manaPercent);
-	void sendPartyCreatureShowStatus(const std::shared_ptr<Creature> &target, bool showStatus);
-	void sendPartyPlayerVocation(const std::shared_ptr<Player> &target);
-	void sendPlayerVocation(const std::shared_ptr<Player> &target);
+	void sendCreatureHealth(std::shared_ptr<Creature> creature);
+	void sendPartyCreatureUpdate(std::shared_ptr<Creature> target);
+	void sendPartyCreatureShield(std::shared_ptr<Creature> target);
+	void sendPartyCreatureSkull(std::shared_ptr<Creature> target);
+	void sendPartyCreatureHealth(std::shared_ptr<Creature> target, uint8_t healthPercent);
+	void sendPartyPlayerMana(std::shared_ptr<Player> target, uint8_t manaPercent);
+	void sendPartyCreatureShowStatus(std::shared_ptr<Creature> target, bool showStatus);
+	void sendPartyPlayerVocation(std::shared_ptr<Player> target);
+	void sendPlayerVocation(std::shared_ptr<Player> target);
 	void sendSkills();
 	void sendPing();
 	void sendPingBack();
-	void sendCreatureTurn(const std::shared_ptr<Creature> &creature, uint32_t stackpos);
-	void sendCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr);
+	void sendCreatureTurn(std::shared_ptr<Creature> creature, uint32_t stackpos);
+	void sendCreatureSay(std::shared_ptr<Creature> creature, SpeakClasses type, const std::string &text, const Position* pos = nullptr);
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
 
 	void sendCancelWalk();
-	void sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint16_t speed);
+	void sendChangeSpeed(std::shared_ptr<Creature> creature, uint16_t speed);
 	void sendCancelTarget();
-	void sendCreatureOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit);
+	void sendCreatureOutfit(std::shared_ptr<Creature> creature, const Outfit_t &outfit);
 	void sendStats();
 	void sendBasicData();
 	void sendTextMessage(const TextMessage &message);
@@ -347,7 +321,7 @@ private:
 	void sendCyclopediaCharacterCombatStats();
 	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries);
 	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries);
-	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const std::vector<std::pair<Achievement, uint32_t>> &achievementsUnlocked);
+	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
 	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems);
 	void sendCyclopediaCharacterOutfitsMounts();
 	void sendCyclopediaCharacterStoreSummary();
@@ -355,18 +329,13 @@ private:
 	void sendCyclopediaCharacterBadges();
 	void sendCyclopediaCharacterTitles();
 
-	void sendHousesInfo();
-	void parseCyclopediaHouseAuction(NetworkMessage &msg);
-	void sendCyclopediaHouseList(HouseMap houses);
-	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess);
+	void sendCreatureWalkthrough(std::shared_ptr<Creature> creature, bool walkthrough);
+	void sendCreatureShield(std::shared_ptr<Creature> creature);
+	void sendCreatureEmblem(std::shared_ptr<Creature> creature);
+	void sendCreatureSkull(std::shared_ptr<Creature> creature);
+	void sendCreatureType(std::shared_ptr<Creature> creature, uint8_t creatureType);
 
-	void sendCreatureWalkthrough(const std::shared_ptr<Creature> &creature, bool walkthrough);
-	void sendCreatureShield(const std::shared_ptr<Creature> &creature);
-	void sendCreatureEmblem(const std::shared_ptr<Creature> &creature);
-	void sendCreatureSkull(const std::shared_ptr<Creature> &creature);
-	void sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType);
-
-	void sendShop(const std::shared_ptr<Npc> &npc);
+	void sendShop(std::shared_ptr<Npc> npc);
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
@@ -382,15 +351,15 @@ private:
 	void sendMarketCancelOffer(const MarketOfferEx &offer);
 	void sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers);
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
-	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack);
+	void sendTradeItemRequest(const std::string &traderName, std::shared_ptr<Item> item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> party);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
-	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
+	void sendTextWindow(uint32_t windowTextId, std::shared_ptr<Item> item, uint16_t maxlen, bool canWrite);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 	void sendOutfitWindow();
-	void sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos);
+	void sendPodiumWindow(std::shared_ptr<Item> podium, const Position &position, uint16_t itemId, uint8_t stackpos);
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
@@ -401,13 +370,13 @@ private:
 
 	void sendFightModes();
 
-	void sendCreatureLight(const std::shared_ptr<Creature> &creature);
-	void sendCreatureIcon(const std::shared_ptr<Creature> &creature);
-	void sendUpdateCreature(const std::shared_ptr<Creature> &creature);
+	void sendCreatureLight(std::shared_ptr<Creature> creature);
+	void sendCreatureIcon(std::shared_ptr<Creature> creature);
+	void sendUpdateCreature(std::shared_ptr<Creature> creature);
 	void sendWorldLight(const LightInfo &lightInfo);
 	void sendTibiaTime(int32_t time);
 
-	void sendCreatureSquare(const std::shared_ptr<Creature> &creature, SquareColor_t color);
+	void sendCreatureSquare(std::shared_ptr<Creature> creature, SquareColor_t color);
 
 	void sendSpellCooldown(uint16_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
@@ -422,46 +391,46 @@ private:
 	// tiles
 	void sendMapDescription(const Position &pos);
 
-	void sendAddTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
-	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
+	void sendAddTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
+	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, std::shared_ptr<Item> item);
 	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
-	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> &creature);
-	void sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos);
+	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> creature);
+	void sendUpdateTile(std::shared_ptr<Tile> tile, const Position &pos);
 
-	void sendAddCreature(const std::shared_ptr<Creature> &creature, const Position &pos, int32_t stackpos, bool isLogin);
-	void sendMoveCreature(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport);
+	void sendAddCreature(std::shared_ptr<Creature> creature, const Position &pos, int32_t stackpos, bool isLogin);
+	void sendMoveCreature(std::shared_ptr<Creature> creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport);
 
 	// containers
-	void sendAddContainerItem(uint8_t cid, uint16_t slot, const std::shared_ptr<Item> &item);
-	void sendUpdateContainerItem(uint8_t cid, uint16_t slot, const std::shared_ptr<Item> &item);
-	void sendRemoveContainerItem(uint8_t cid, uint16_t slot, const std::shared_ptr<Item> &lastItem);
+	void sendAddContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item);
+	void sendUpdateContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> item);
+	void sendRemoveContainerItem(uint8_t cid, uint16_t slot, std::shared_ptr<Item> lastItem);
 
-	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex);
+	void sendContainer(uint8_t cid, std::shared_ptr<Container> container, bool hasParent, uint16_t firstIndex);
 	void sendCloseContainer(uint8_t cid);
 
 	// quickloot
 	void sendLootContainers();
-	void sendLootStats(const std::shared_ptr<Item> &item, uint8_t count);
+	void sendLootStats(std::shared_ptr<Item> item, uint8_t count);
 
 	// inventory
-	void sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &item);
+	void sendInventoryItem(Slots_t slot, std::shared_ptr<Item> item);
 	void sendInventoryIds();
 
 	// messages
 	void sendModalWindow(const ModalWindow &modalWindow);
 
 	// analyzers
-	void sendKillTrackerUpdate(const std::shared_ptr<Container> &corpse, const std::string &name, Outfit_t creatureOutfit);
-	void sendUpdateSupplyTracker(const std::shared_ptr<Item> &item);
+	void sendKillTrackerUpdate(std::shared_ptr<Container> corpse, const std::string &name, const Outfit_t creatureOutfit);
+	void sendUpdateSupplyTracker(std::shared_ptr<Item> item);
 	void sendUpdateImpactTracker(CombatType_t type, int32_t amount);
-	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, const std::string &target);
+	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target);
 
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);
 
 	// Help functions
 	// translate a tile to clientreadable format
-	void GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
+	void GetTileDescription(std::shared_ptr<Tile> tile, NetworkMessage &msg);
 
 	// translate a floor to clientreadable format
 	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);
@@ -469,26 +438,23 @@ private:
 	// translate a map area to clientreadable format
 	void GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, NetworkMessage &msg);
 
-	void AddCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, bool known, uint32_t remove);
+	void AddCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, bool known, uint32_t remove);
 	void AddPlayerStats(NetworkMessage &msg);
 	void AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount = true);
 	void AddPlayerSkills(NetworkMessage &msg);
-	// Blessing
-	void sendBlessingWindow();
 	void sendBlessStatus();
-	// End Blessing
 	void sendPremiumTrigger();
 	void sendMessageDialog(const std::string &message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);
-	void AddCreatureLight(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
+	void AddCreatureLight(NetworkMessage &msg, std::shared_ptr<Creature> creature);
 
 	// tiles
 	static void RemoveTileThing(NetworkMessage &msg, const Position &pos, uint32_t stackpos);
 
 	void sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &slot);
 
-	void MoveUpCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, const Position &newPos, const Position &oldPos);
-	void MoveDownCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, const Position &newPos, const Position &oldPos);
+	void MoveUpCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, const Position &newPos, const Position &oldPos);
+	void MoveDownCreature(NetworkMessage &msg, std::shared_ptr<Creature> creature, const Position &newPos, const Position &oldPos);
 
 	// shop
 	void AddHiddenShopItem(NetworkMessage &msg);
@@ -501,12 +467,12 @@ private:
 	void sendFeatures();
 
 	void parseInventoryImbuements(NetworkMessage &msg);
-	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
+	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> items);
 
 	// reloadCreature
-	void reloadCreature(const std::shared_ptr<Creature> &creature);
+	void reloadCreature(std::shared_ptr<Creature> creature);
 
-	void getForgeInfoMap(const std::shared_ptr<Item> &item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
+	void getForgeInfoMap(std::shared_ptr<Item> item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const;
 
 	// Wheel
 	void parseOpenWheel(NetworkMessage &msg);
@@ -537,20 +503,19 @@ private:
 	bool oldProtocol = false;
 
 	uint16_t otclientV8 = 0;
-	bool isOTC = false;
 
+	void sendInventory();
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
 	void addBless();
 	void parsePacketDead(uint8_t recvbyte);
-	void addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
+	void addCreatureIcon(NetworkMessage &msg, std::shared_ptr<Creature> creature);
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 	void sendHotkeyPreset();
-	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();
 
 	uint8_t m_playerDeathTime = 0;

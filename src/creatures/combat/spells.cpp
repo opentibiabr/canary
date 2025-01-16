@@ -7,30 +7,28 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/combat/spells.hpp"
+#include "pch.hpp"
 
-#include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
-#include "creatures/combat/condition.hpp"
-#include "creatures/players/player.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/wheel/wheel_definitions.hpp"
-#include "enums/account_group_type.hpp"
-#include "enums/account_type.hpp"
+#include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"
-#include "lua/global/lua_variant.hpp"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.hpp"
-#include "lib/di/container.hpp"
+#include "creatures/players/wheel/player_wheel.hpp"
+
+#include "lua/global/lua_variant.hpp"
+
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
-TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player, std::string &words) {
-	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
-	const auto &tile = player->getTile();
+TalkActionResult_t Spells::playerSaySpell(std::shared_ptr<Player> player, std::string &words) {
+	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT, __FUNCTION__);
+	auto tile = player->getTile();
 	if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
+		auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, __FUNCTION__);
 		auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
 		int countOutsizePZ = 0;
 		for (const auto &accountPlayer : accountPlayers) {
@@ -56,7 +54,7 @@ TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player,
 	// strip trailing spaces
 	trimString(str_words);
 
-	const auto &instantSpell = getInstantSpell(str_words);
+	const std::shared_ptr<InstantSpell> instantSpell = getInstantSpell(str_words);
 	if (!instantSpell) {
 		return TALKACTION_CONTINUE;
 	}
@@ -116,11 +114,7 @@ bool Spells::hasInstantSpell(const std::string &word) const {
 	return false;
 }
 
-void Spells::setInstantSpell(const std::string &word, const std::shared_ptr<InstantSpell> &instant) {
-	instants.try_emplace(word, instant);
-}
-
-bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant) {
+bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> instant) {
 	if (instant) {
 		// If the spell not have the "spell:words()" return a error message
 		const std::string &instantName = instant->getName();
@@ -139,25 +133,24 @@ bool Spells::registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instan
 		}
 		// Register spell word in the map
 		setInstantSpell(words, instant);
-		return true;
 	}
 
 	return false;
 }
 
-bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
+bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> rune) {
 	if (rune) {
 		uint16_t id = rune->getRuneItemId();
-		const auto &[iter, inserted] = runes.try_emplace(rune->getRuneItemId(), rune);
-		if (!inserted) {
+		auto result = runes.emplace(rune->getRuneItemId(), rune);
+		if (!result.second) {
 			g_logger().warn(
 				"[{}] duplicate registered rune with id: {}, for script: {}",
 				__FUNCTION__,
 				id,
-				rune->getRuneSpellScriptInterface()->getLoadingScriptName()
+				rune->getScriptInterface()->getLoadingScriptName()
 			);
 		}
-		return inserted;
+		return result.second;
 	}
 
 	return false;
@@ -179,14 +172,6 @@ std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
 	}
 
 	return spellsList;
-}
-
-const std::map<std::string, std::shared_ptr<InstantSpell>> &Spells::getInstantSpells() const {
-	return instants;
-}
-
-Spells &Spells::getInstance() {
-	return inject<Spells>();
 }
 
 std::shared_ptr<Spell> Spells::getSpellByName(const std::string &name) {
@@ -271,73 +256,45 @@ std::shared_ptr<InstantSpell> Spells::getInstantSpellByName(const std::string &n
 	return nullptr;
 }
 
-Position Spells::getCasterPosition(const std::shared_ptr<Creature> &creature, Direction dir) {
+Position Spells::getCasterPosition(std::shared_ptr<Creature> creature, Direction dir) {
 	return getNextPosition(dir, creature->getPosition());
 }
 
-LuaScriptInterface* BaseSpell::getScriptInterface() const {
-	return &g_scripts().getScriptInterface();
-}
-
-bool BaseSpell::loadScriptId() {
-	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
-	m_spellScriptId = luaInterface.getEvent();
-	if (m_spellScriptId == -1) {
-		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
-		return false;
-	}
-
-	return true;
-}
-
-int32_t BaseSpell::getScriptId() const {
-	return m_spellScriptId;
-}
-
-void BaseSpell::setScriptId(int32_t newScriptId) {
-	m_spellScriptId = newScriptId;
-}
-
-bool BaseSpell::isLoadedScriptId() const {
-	return m_spellScriptId != 0;
-}
-
-CombatSpell::CombatSpell(const std::shared_ptr<Combat> &newCombat, bool newNeedTarget, bool newNeedDirection) :
+CombatSpell::CombatSpell(const std::shared_ptr<Combat> newCombat, bool newNeedTarget, bool newNeedDirection) :
+	Script(&g_spells().getScriptInterface()),
 	m_combat(newCombat),
 	needDirection(newNeedDirection),
 	needTarget(newNeedTarget) {
+	// Empty
 }
 
-std::shared_ptr<Combat> CombatSpell::getCombat() const {
-	return m_combat;
+bool CombatSpell::loadScriptCombat() {
+	m_combat = g_luaEnvironment().getCombatObject(g_luaEnvironment().lastCombatId);
+	return m_combat != nullptr;
 }
 
-bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature) {
-	if (isLoadedScriptId()) {
+bool CombatSpell::castSpell(std::shared_ptr<Creature> creature) {
+	if (isLoadedCallback()) {
 		LuaVariant var;
 		var.type = VARIANT_POSITION;
 
-		if (creature) {
-			if (needDirection) {
-				var.pos = Spells::getCasterPosition(creature, creature->getDirection());
-			} else {
-				var.pos = creature->getPosition();
-			}
+		if (needDirection) {
+			var.pos = Spells::getCasterPosition(creature, creature->getDirection());
+		} else {
+			var.pos = creature->getPosition();
 		}
 
 		return executeCastSpell(creature, var);
 	}
 
 	Position pos;
-	if (creature) {
-		if (needDirection) {
-			pos = Spells::getCasterPosition(creature, creature->getDirection());
-		} else {
-			pos = creature->getPosition();
-		}
+	if (needDirection) {
+		pos = Spells::getCasterPosition(creature, creature->getDirection());
+	} else {
+		pos = creature->getPosition();
 	}
 
-	const auto &combat = getCombat();
+	auto combat = getCombat();
 	if (!combat) {
 		return false;
 	}
@@ -354,25 +311,23 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 	return true;
 }
 
-bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) {
-	const auto &combat = getCombat();
+bool CombatSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) {
+	auto combat = getCombat();
 	if (!combat) {
 		return false;
 	}
 
-	if (isLoadedScriptId()) {
+	if (isLoadedCallback()) {
 		LuaVariant var;
 		if (combat->hasArea()) {
 			var.type = VARIANT_POSITION;
 
-			if (needTarget && target) {
+			if (needTarget) {
 				var.pos = target->getPosition();
-			} else if (needDirection && creature) {
+			} else if (needDirection) {
 				var.pos = Spells::getCasterPosition(creature, creature->getDirection());
 			} else {
-				if (creature) {
-					var.pos = creature->getPosition();
-				}
+				var.pos = creature->getPosition();
 			}
 		} else {
 			var.type = VARIANT_NUMBER;
@@ -391,7 +346,7 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature, const std
 	}
 
 	if (combat->hasArea()) {
-		if (needTarget && target) {
+		if (needTarget) {
 			combat->doCombat(creature, target->getPosition());
 		} else {
 			return castSpell(creature);
@@ -402,16 +357,16 @@ bool CombatSpell::castSpell(const std::shared_ptr<Creature> &creature, const std
 	return true;
 }
 
-bool CombatSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const {
+bool CombatSpell::executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var) const {
 	// onCastSpell(creature, var)
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[CombatSpell::executeCastSpell - Creature {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 creature->getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -426,9 +381,7 @@ bool CombatSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, co
 	return getScriptInterface()->callFunction(2);
 }
 
-Spell::Spell() = default;
-
-bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
+bool Spell::playerSpellCheck(std::shared_ptr<Player> player) const {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
@@ -532,7 +485,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 	return true;
 }
 
-bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const {
+bool Spell::playerInstantSpellCheck(std::shared_ptr<Player> player, const Position &toPos) const {
 	if (toPos.x == 0xFFFF) {
 		return true;
 	}
@@ -548,7 +501,7 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 		return false;
 	}
 
-	const auto &tile = g_game().map.getOrCreateTile(toPos);
+	const auto tile = g_game().map.getOrCreateTile(toPos);
 
 	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
 	if (ret != RETURNVALUE_NOERROR) {
@@ -572,7 +525,7 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 	return true;
 }
 
-bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Position &toPos) const {
+bool Spell::playerRuneSpellCheck(std::shared_ptr<Player> player, const Position &toPos) {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}
@@ -592,14 +545,14 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 		return false;
 	}
 
-	const auto &tile = g_game().map.getTile(toPos);
+	std::shared_ptr<Tile> tile = g_game().map.getTile(toPos);
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 
-	if (range != -1 && !g_game().canThrowObjectTo(playerPos, toPos, SightLine_CheckSightLineAndFloor, range, range)) {
+	if (range != -1 && !g_game().canThrowObjectTo(playerPos, toPos, true, range, range)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -612,8 +565,12 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 		return false;
 	}
 
-	const auto &topVisibleCreature = tile->getBottomVisibleCreature(player);
-	if ((blockingCreature && topVisibleCreature) || (blockingSolid && tile->hasFlag(TILESTATE_BLOCKSOLID) && !topVisibleCreature)) {
+	const std::shared_ptr<Creature> topVisibleCreature = tile->getBottomVisibleCreature(player);
+	if (blockingCreature && topVisibleCreature) {
+		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		return false;
+	} else if (blockingSolid && tile->hasFlag(TILESTATE_BLOCKSOLID) && !topVisibleCreature) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -626,7 +583,7 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 	}
 
 	if (aggressive && needTarget && topVisibleCreature && player->hasSecureMode()) {
-		const auto &targetPlayer = topVisibleCreature->getPlayer();
+		const std::shared_ptr<Player> targetPlayer = topVisibleCreature->getPlayer();
 		if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
 			player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -673,34 +630,16 @@ void Spell::setWheelOfDestinyBoost(WheelSpellBoost_t boost, WheelSpellGrade_t gr
 	}
 }
 
-const std::string &Spell::getWords() const {
-	return m_words;
-}
-
-void Spell::setWords(std::string_view newWord) {
-	m_words = newWord.data();
-}
-
-const std::string &Spell::getSeparator() const {
-	return m_separator;
-}
-
-void Spell::setSeparator(std::string_view newSeparator) {
-	m_separator = newSeparator.data();
-}
-
-void Spell::getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDamage &damage) const {
+void Spell::getCombatDataAugment(std::shared_ptr<Player> player, CombatDamage &damage) {
 	if (!(damage.instantSpellName).empty()) {
 		const auto equippedAugmentItems = player->getEquippedAugmentItems();
 		for (const auto &item : equippedAugmentItems) {
-			const auto &augments = item->getAugmentsBySpellName(damage.instantSpellName);
+			const auto augments = item->getAugmentsBySpellName(damage.instantSpellName);
 			for (auto &augment : augments) {
 				if (augment->value == 0) {
 					continue;
 				}
-				if (
-					augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact || augment->type == Augment_t::Base
-				) {
+				if (augment->type == Augment_t::IncreasedDamage || augment->type == Augment_t::PowerfulImpact || augment->type == Augment_t::StrongImpact) {
 					const float augmentPercent = augment->value / 100.0;
 					damage.primary.value += static_cast<int32_t>(damage.primary.value * augmentPercent);
 					damage.secondary.value += static_cast<int32_t>(damage.secondary.value * augmentPercent);
@@ -715,12 +654,12 @@ void Spell::getCombatDataAugment(const std::shared_ptr<Player> &player, CombatDa
 	}
 };
 
-int32_t Spell::calculateAugmentSpellCooldownReduction(const std::shared_ptr<Player> &player) const {
+int32_t Spell::calculateAugmentSpellCooldownReduction(std::shared_ptr<Player> player) const {
 	int32_t spellCooldown = 0;
-	const auto &equippedAugmentItems = player->getEquippedAugmentItemsByType(Augment_t::Cooldown);
+	const auto equippedAugmentItems = player->getEquippedAugmentItemsByType(Augment_t::Cooldown);
 	for (const auto &item : equippedAugmentItems) {
 		const auto augments = item->getAugmentsBySpellNameAndType(getName(), Augment_t::Cooldown);
-		for (const auto &augment : augments) {
+		for (auto &augment : augments) {
 			spellCooldown += augment->value;
 		}
 	}
@@ -728,11 +667,11 @@ int32_t Spell::calculateAugmentSpellCooldownReduction(const std::shared_ptr<Play
 	return spellCooldown;
 }
 
-void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const {
+void Spell::applyCooldownConditions(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
 	// Safety check to prevent division by zero
-	auto rateCooldown = g_configManager().getFloat(RATE_SPELL_COOLDOWN);
+	auto rateCooldown = g_configManager().getFloat(RATE_SPELL_COOLDOWN, __FUNCTION__);
 	if (std::abs(rateCooldown) < std::numeric_limits<float>::epsilon()) {
 		rateCooldown = 0.1; // Safe minimum value
 	}
@@ -746,11 +685,8 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
 		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
 		spellCooldown -= augmentCooldownReduction;
-		const int32_t halfBaseCooldown = cooldown / 2;
-		spellCooldown = halfBaseCooldown > spellCooldown ? halfBaseCooldown : spellCooldown; // The cooldown should never be reduced less than half (50%) of its base cooldown
 		if (spellCooldown > 0) {
-			player->wheel()->handleTwinBurstsCooldown(player, name, spellCooldown, rateCooldown);
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
 		}
 	}
@@ -761,7 +697,7 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 			spellGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::GROUP_COOLDOWN, spellGrade);
 		}
 		if (spellGroupCooldown > 0) {
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rateCooldown, 0, false, group);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellGroupCooldown / rateCooldown, 0, false, group);
 			player->addCondition(condition);
 		}
 	}
@@ -771,32 +707,14 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		if (isUpgraded) {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
-		spellSecondaryGroupCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN);
 		if (spellSecondaryGroupCooldown > 0) {
-			player->wheel()->handleBeamMasteryCooldown(player, name, spellSecondaryGroupCooldown, rateCooldown);
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
+			std::shared_ptr<Condition> condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}
 	}
 }
 
-const std::string &Spell::getName() const {
-	return name;
-}
-
-void Spell::setName(std::string n) {
-	name = std::move(n);
-}
-
-uint16_t Spell::getSpellId() const {
-	return m_spellId;
-}
-
-void Spell::setSpellId(uint16_t id) {
-	m_spellId = id;
-}
-
-void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
+void Spell::postCastSpell(std::shared_ptr<Player> player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
 	if (finishedCast) {
 		if (!player->hasFlag(PlayerFlags_t::HasNoExhaustion)) {
 			applyCooldownConditions(player);
@@ -813,11 +731,11 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCa
 	}
 
 	if (payCost) {
-		postCastSpell(player, getManaCost(player), getSoulCost());
+		Spell::postCastSpell(player, getManaCost(player), getSoulCost());
 	}
 }
 
-void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost) {
+void Spell::postCastSpell(std::shared_ptr<Player> player, uint32_t manaCost, uint32_t soulCost) {
 	if (manaCost > 0) {
 		player->addManaSpent(manaCost);
 		player->changeMana(-static_cast<int32_t>(manaCost));
@@ -830,11 +748,7 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCo
 	}
 }
 
-bool Spell::isLearnable() const {
-	return learnable;
-}
-
-uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
+uint32_t Spell::getManaCost(std::shared_ptr<Player> player) const {
 	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
 	uint32_t manaRedution = 0;
 	if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
@@ -861,199 +775,7 @@ uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
 	return 0;
 }
 
-uint32_t Spell::getSoulCost() const {
-	return soul;
-}
-
-void Spell::setSoulCost(uint32_t s) {
-	soul = s;
-}
-
-uint32_t Spell::getLevel() const {
-	return level;
-}
-
-void Spell::setLevel(uint32_t lvl) {
-	level = lvl;
-}
-
-uint32_t Spell::getMagicLevel() const {
-	return magLevel;
-}
-
-void Spell::setMagicLevel(uint32_t lvl) {
-	magLevel = lvl;
-}
-
-uint32_t Spell::getMana() const {
-	return mana;
-}
-
-void Spell::setMana(uint32_t m) {
-	mana = m;
-}
-
-uint32_t Spell::getManaPercent() const {
-	return manaPercent;
-}
-
-void Spell::setManaPercent(uint32_t m) {
-	manaPercent = m;
-}
-
-bool Spell::isPremium() const {
-	return premium;
-}
-
-void Spell::setPremium(bool p) {
-	premium = p;
-}
-
-bool Spell::isEnabled() const {
-	return enabled;
-}
-
-void Spell::setEnabled(bool e) {
-	enabled = e;
-}
-
-const VocSpellMap &Spell::getVocMap() const {
-	return vocSpellMap;
-}
-
-void Spell::addVocMap(uint16_t vocationId, bool b) {
-	if (vocationId == 0XFFFF) {
-		g_logger().error("Vocation overflow for spell: {}", getName());
-		return;
-	}
-
-	g_logger().trace("Adding spell: {} to voc id: {}", getName(), vocationId);
-	vocSpellMap[vocationId] = b;
-}
-
-SpellGroup_t Spell::getGroup() {
-	return group;
-}
-
-void Spell::setGroup(SpellGroup_t g) {
-	group = g;
-}
-
-SpellGroup_t Spell::getSecondaryGroup() {
-	return secondaryGroup;
-}
-
-void Spell::setSecondaryGroup(SpellGroup_t g) {
-	secondaryGroup = g;
-}
-
-uint32_t Spell::getCooldown() const {
-	return cooldown;
-}
-
-void Spell::setCooldown(uint32_t cd) {
-	cooldown = cd;
-}
-
-uint32_t Spell::getSecondaryCooldown() const {
-	return secondaryGroupCooldown;
-}
-
-void Spell::setSecondaryCooldown(uint32_t cd) {
-	secondaryGroupCooldown = cd;
-}
-
-uint32_t Spell::getGroupCooldown() const {
-	return groupCooldown;
-}
-
-void Spell::setGroupCooldown(uint32_t cd) {
-	groupCooldown = cd;
-}
-
-int32_t Spell::getRange() const {
-	return range;
-}
-
-void Spell::setRange(int32_t r) {
-	range = r;
-}
-
-bool Spell::getNeedTarget() const {
-	return needTarget;
-}
-
-void Spell::setNeedTarget(bool n) {
-	needTarget = n;
-}
-
-bool Spell::getNeedWeapon() const {
-	return needWeapon;
-}
-
-void Spell::setNeedWeapon(bool n) {
-	needWeapon = n;
-}
-
-bool Spell::getNeedLearn() const {
-	return learnable;
-}
-
-void Spell::setNeedLearn(bool n) {
-	learnable = n;
-}
-
-bool Spell::getSelfTarget() const {
-	return selfTarget;
-}
-
-void Spell::setSelfTarget(bool s) {
-	selfTarget = s;
-}
-
-bool Spell::getBlockingSolid() const {
-	return blockingSolid;
-}
-
-void Spell::setBlockingSolid(bool b) {
-	blockingSolid = b;
-}
-
-bool Spell::getBlockingCreature() const {
-	return blockingCreature;
-}
-
-void Spell::setBlockingCreature(bool b) {
-	blockingCreature = b;
-}
-
-bool Spell::getAggressive() const {
-	return aggressive;
-}
-
-void Spell::setAggressive(bool a) {
-	aggressive = a;
-}
-
-bool Spell::getAllowOnSelf() const {
-	return allowOnSelf;
-}
-
-void Spell::setAllowOnSelf(bool s) {
-	allowOnSelf = s;
-}
-
-bool Spell::getLockedPZ() const {
-	return pzLocked;
-}
-
-void Spell::setLockedPZ(bool b) {
-	pzLocked = b;
-}
-
-InstantSpell::InstantSpell() = default;
-
-bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
+bool InstantSpell::playerCastInstant(std::shared_ptr<Player> player, std::string &param) {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}
@@ -1175,21 +897,21 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	return result;
 }
 
-bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const {
+bool InstantSpell::canThrowSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) const {
 	const Position &fromPos = creature->getPosition();
 	const Position &toPos = target->getPosition();
-	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {
+	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight, range, range))) {
 		return false;
 	}
 	return true;
 }
 
-bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
+bool InstantSpell::castSpell(std::shared_ptr<Creature> creature) {
 	LuaVariant var;
 	var.instantName = getName();
 
 	if (casterTargetOrDirection) {
-		const auto &target = creature->getAttackedCreature();
+		std::shared_ptr<Creature> target = creature->getAttackedCreature();
 		if (target && target->getHealth() > 0) {
 			if (!canThrowSpell(creature, target)) {
 				return false;
@@ -1213,26 +935,27 @@ bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 	return executeCastSpell(creature, var);
 }
 
-bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) {
+bool InstantSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) {
 	if (needTarget) {
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
 		return executeCastSpell(creature, var);
+	} else {
+		return castSpell(creature);
 	}
-	return castSpell(creature);
 }
 
-bool InstantSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var) const {
+bool InstantSpell::executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var) const {
 	// onCastSpell(creature, var)
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[InstantSpell::executeCastSpell - Creature {} words {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 creature->getName(), getWords());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
 	env->setScriptId(getScriptId(), getScriptInterface());
 
 	lua_State* L = getScriptInterface()->getLuaState();
@@ -1247,51 +970,7 @@ bool InstantSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, c
 	return getScriptInterface()->callFunction(2);
 }
 
-bool InstantSpell::isInstant() const {
-	return true;
-}
-
-bool InstantSpell::getHasParam() const {
-	return hasParam;
-}
-
-void InstantSpell::setHasParam(bool p) {
-	hasParam = p;
-}
-
-bool InstantSpell::getHasPlayerNameParam() const {
-	return hasPlayerNameParam;
-}
-
-void InstantSpell::setHasPlayerNameParam(bool p) {
-	hasPlayerNameParam = p;
-}
-
-bool InstantSpell::getNeedDirection() const {
-	return needDirection;
-}
-
-void InstantSpell::setNeedDirection(bool n) {
-	needDirection = n;
-}
-
-bool InstantSpell::getNeedCasterTargetOrDirection() const {
-	return casterTargetOrDirection;
-}
-
-void InstantSpell::setNeedCasterTargetOrDirection(bool d) {
-	casterTargetOrDirection = d;
-}
-
-bool InstantSpell::getBlockWalls() const {
-	return checkLineOfSight;
-}
-
-void InstantSpell::setBlockWalls(bool w) {
-	checkLineOfSight = w;
-}
-
-bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
+bool InstantSpell::canCast(std::shared_ptr<Player> player) const {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
@@ -1313,34 +992,7 @@ bool InstantSpell::canCast(const std::shared_ptr<Player> &player) const {
 	return false;
 }
 
-LuaScriptInterface* RuneSpell::getRuneSpellScriptInterface() const {
-	return &g_scripts().getScriptInterface();
-}
-
-bool RuneSpell::loadRuneSpellScriptId() {
-	LuaScriptInterface &luaInterface = g_scripts().getScriptInterface();
-	m_runeSpellScriptId = luaInterface.getEvent();
-	if (m_runeSpellScriptId == -1) {
-		g_logger().error("[MoveEvent::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
-		return false;
-	}
-
-	return true;
-}
-
-int32_t RuneSpell::getRuneSpellScriptId() const {
-	return m_runeSpellScriptId;
-}
-
-void RuneSpell::setRuneSpellScriptId(int32_t newScriptId) {
-	m_runeSpellScriptId = newScriptId;
-}
-
-bool RuneSpell::isRuneSpellLoadedScriptId() const {
-	return m_runeSpellScriptId != 0;
-}
-
-ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, const Position &toPos) {
+ReturnValue RuneSpell::canExecuteAction(std::shared_ptr<Player> player, const Position &toPos) {
 	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return RETURNVALUE_CANNOTUSETHISOBJECT;
 	}
@@ -1361,21 +1013,13 @@ ReturnValue RuneSpell::canExecuteAction(const std::shared_ptr<Player> &player, c
 	return RETURNVALUE_NOERROR;
 }
 
-bool RuneSpell::hasOwnErrorHandler() {
-	return true;
-}
-
-std::shared_ptr<Thing> RuneSpell::getTarget(const std::shared_ptr<Player> &, const std::shared_ptr<Creature> &targetCreature, const Position &, uint8_t) const {
-	return targetCreature;
-}
-
-bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey) {
+bool RuneSpell::executeUse(std::shared_ptr<Player> player, std::shared_ptr<Item> item, const Position &, std::shared_ptr<Thing> target, const Position &toPosition, bool isHotkey) {
 	if (!playerRuneSpellCheck(player, toPosition)) {
 		return false;
 	}
 
 	// If script not loaded correctly, return
-	if (!isRuneSpellLoadedScriptId()) {
+	if (!isLoadedCallback()) {
 		return false;
 	}
 
@@ -1386,9 +1030,9 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 		var.type = VARIANT_NUMBER;
 
 		if (target == nullptr) {
-			const auto &toTile = g_game().map.getTile(toPosition);
+			std::shared_ptr<Tile> toTile = g_game().map.getTile(toPosition);
 			if (toTile) {
-				const auto &visibleCreature = toTile->getBottomVisibleCreature(player);
+				std::shared_ptr<Creature> visibleCreature = toTile->getBottomVisibleCreature(player);
 				if (visibleCreature) {
 					var.number = visibleCreature->getID();
 				}
@@ -1406,7 +1050,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 	}
 
 	postCastSpell(player);
-	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES)) {
+	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES, __FUNCTION__)) {
 		int32_t newCount = std::max<int32_t>(0, item->getItemCount() - 1);
 		g_game().transformItem(item, item->getID(), newCount);
 		player->updateSupplyTracker(item);
@@ -1421,7 +1065,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 	return true;
 }
 
-bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature) {
+bool RuneSpell::castSpell(std::shared_ptr<Creature> creature) {
 	LuaVariant var;
 	var.type = VARIANT_NUMBER;
 	var.number = creature->getID();
@@ -1429,7 +1073,7 @@ bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 	return internalCastSpell(creature, var, false);
 }
 
-bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) {
+bool RuneSpell::castSpell(std::shared_ptr<Creature> creature, std::shared_ptr<Creature> target) {
 	LuaVariant var;
 	var.type = VARIANT_NUMBER;
 	var.number = target->getID();
@@ -1437,31 +1081,31 @@ bool RuneSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::
 	return internalCastSpell(creature, var, false);
 }
 
-bool RuneSpell::internalCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const {
+bool RuneSpell::internalCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var, bool isHotkey) {
 	bool result;
-	if (isRuneSpellLoadedScriptId()) {
-		result = executeCastSpell(creature, var, isHotkey);
+	if (isLoadedCallback()) {
+		result = executeCastSpell(std::move(creature), var, isHotkey);
 	} else {
 		result = false;
 	}
 	return result;
 }
 
-bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, const LuaVariant &var, bool isHotkey) const {
+bool RuneSpell::executeCastSpell(std::shared_ptr<Creature> creature, const LuaVariant &var, bool isHotkey) const {
 	// onCastSpell(creature, var, isHotkey)
-	if (!LuaEnvironment::reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		g_logger().error("[RuneSpell::executeCastSpell - Creature {} runeId {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 creature->getName(), getRuneItemId());
 		return false;
 	}
 
-	ScriptEnvironment* env = LuaEnvironment::getScriptEnv();
-	env->setScriptId(getRuneSpellScriptId(), getRuneSpellScriptInterface());
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = getRuneSpellScriptInterface()->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	getRuneSpellScriptInterface()->pushFunction(getRuneSpellScriptId());
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
@@ -1470,28 +1114,5 @@ bool RuneSpell::executeCastSpell(const std::shared_ptr<Creature> &creature, cons
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
 
-	return getRuneSpellScriptInterface()->callFunction(3);
-}
-
-bool RuneSpell::isInstant() const {
-	return false;
-}
-
-uint16_t RuneSpell::getRuneItemId() const {
-	return runeId;
-}
-
-void RuneSpell::setRuneItemId(uint16_t i) {
-	runeId = i;
-}
-
-uint32_t RuneSpell::getCharges() const {
-	return charges;
-}
-
-void RuneSpell::setCharges(uint32_t c) {
-	if (c > 0) {
-		hasCharges = true;
-	}
-	charges = c;
+	return getScriptInterface()->callFunction(3);
 }

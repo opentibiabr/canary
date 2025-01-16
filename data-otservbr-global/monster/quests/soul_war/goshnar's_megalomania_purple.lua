@@ -48,6 +48,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -108,6 +109,8 @@ mType.onSpawn = function(monster)
 	if SoulWarQuest.changePurpleEvent then
 		stopEvent(SoulWarQuest.changePurpleEvent)
 	end
+
+	SoulWarQuest.changeBlueEvent = addEvent(SoulWarQuest.changeMegalomaniaBlue, 6 * 60 * 1000)
 
 	local bossKV = monster:getSoulWarKV()
 	bossKV:set("aspect-of-power-death-count", 0)

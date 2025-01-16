@@ -12,8 +12,8 @@ end
 function Npc:parseBankMessages(message, npc, creature, npcHandler)
 	local messagesTable = {
 		["money"] = "We can {change} money for you. You can also access your {bank account}",
-		["change"] = "There are three different coin types in Tibia: \z
-                        100 gold coins equal 1 platinum coin, 100 platinum coins equal 1 crystal coin. \z
+		["change"] = "There are four different coin types in Tibia: \z
+                        100 gold coins equal 1 platinum coin, 100 platinum coins equal 1 crystal coin, 100 crystal coins equal 1 ruby coin. \z
                         So if you'd like to change 100 gold into 1 platinum, \z
                         simply say '{change gold}' and then '1 platinum'",
 		["bank"] = "We can {change} money for you. You can also access your {bank account}",

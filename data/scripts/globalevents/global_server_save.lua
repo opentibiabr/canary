@@ -49,3 +49,12 @@ end
 
 globalServerSave:time(configManager.getString(configKeys.GLOBAL_SERVER_SAVE_TIME))
 globalServerSave:register()
+
+-----------------------------
+----- save before SS
+local saveBeforeSS = GlobalEvent("SaveBeforeSS")
+function saveBeforeSS.onTime(interval)
+	saveServer()
+end
+saveBeforeSS:time("17:50")
+saveBeforeSS:register()

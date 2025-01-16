@@ -5,7 +5,6 @@ function familiarOnLogin.onLogin(player)
 		return false
 	end
 
-	player:registerEvent("FamiliarAdvance")
 	local vocation = FAMILIAR_ID[player:getVocation():getBaseId()]
 
 	local familiarName

@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"lokathmorDeath",
+	"SecretLibraryBossDeath",
 }
 
 monster.bosstiary = {
@@ -100,6 +100,7 @@ monster.loot = {
 	{ name = "dreaded cleaver", chance = 30000 },
 	{ name = "slightly rusted shield", chance = 26670 },
 	{ name = "wand of inferno", chance = 30000 },
+	{ id = 28341, chance = 1000 }, -- tessellated wall
 	{ name = "sturdy book", chance = 1000 },
 }
 
@@ -138,5 +139,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

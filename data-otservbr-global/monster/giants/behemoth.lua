@@ -97,9 +97,9 @@ monster.loot = {
 	{ name = "steel boots", chance = 380 },
 	{ name = "meat", chance = 30000, maxCount = 6 },
 	{ name = "perfect behemoth fang", chance = 1090 },
-	{ name = "behemoth claw", chance = 860 },
+	{ name = "behemoth claw", chance = 1860 },
 	{ name = "assassin star", chance = 9750, maxCount = 5 },
-	{ id = 7396, chance = 170 }, -- behemoth trophy
+	{ id = 7396, chance = 1070 }, -- behemoth trophy
 	{ name = "titan axe", chance = 90 },
 	{ name = "great health potion", chance = 5120 },
 	{ name = "battle stone", chance = 14000 },

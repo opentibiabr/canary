@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "lib/di/container.hpp"
+
 class Storages {
 public:
 	Storages() = default;
@@ -17,7 +19,9 @@ public:
 	Storages(const Storages &) = delete;
 	void operator=(const Storages &) = delete;
 
-	static Storages &getInstance();
+	static Storages &getInstance() {
+		return inject<Storages>();
+	}
 
 	bool loadFromXML();
 

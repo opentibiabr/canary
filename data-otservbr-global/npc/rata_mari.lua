@@ -47,7 +47,7 @@ end
 
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
-	if Player(creature):getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02) == -1 then
+	if Player(creature):getStorageValue(Storage.DjinnWar.MaridFaction.Mission02) == -1 then
 		return false
 	end
 	return true
@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "spy report") then
-		local reportProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.RataMari)
+		local reportProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.RataMari)
 		if reportProgress < 1 then
 			npcHandler:say({
 				"You have come for the report? Great! I have been working hard on it during the last months. And nobody came to pick it up. I thought everybody had forgotten about me! ...",
@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"All right - listen - I know Fa'hradin would not approve of this, but I can't help it. I need some cheese! I need it now! ...",
 				"And I will not give the report to you until you get me some! Meep!",
 			}, npc, creature)
-			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.RataMari, 1)
+			player:setStorageValue(Storage.DjinnWar.MaridFaction.RataMari, 1)
 		elseif reportProgress == 1 then
 			npcHandler:say("Ok, have you brought me the cheese, I've asked for?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -84,7 +84,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("No cheese - no report.", npc, creature)
 				return true
 			end
-			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.RataMari, 2)
+			player:setStorageValue(Storage.DjinnWar.MaridFaction.RataMari, 2)
 			player:addItem(3232, 1)
 			npcHandler:say("Meep! Meep! Great! Here is the spyreport for you!", npc, creature)
 		else

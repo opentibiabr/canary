@@ -60,7 +60,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- Mission 1 - The Supply Thief
 	if MsgContains(message, "job") then
-		if Player(creature):getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01) == 2 then
+		if Player(creature):getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01) == 2 then
 			npcHandler:say("What do you think? I am the sheriff of Carlin.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Obviously he wasn't pleased with this place, because he headed for Thais the next day. ...",
 				"Something tells me that he won't stay out of trouble for too long.",
 			}, npc, creature)
-			Player(creature):setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission01, 3)
+			Player(creature):setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 3)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

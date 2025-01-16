@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"GlowingRubbishAmuletDeath",
+}
+
 monster.health = 3000
 monster.maxHealth = 3000
 monster.race = "blood"
@@ -30,10 +34,6 @@ monster.strategiesTarget = {
 	health = 10,
 	damage = 10,
 	random = 10,
-}
-
-monster.events = {
-	"GlowingRubbishAmuletDeath",
 }
 
 monster.flags = {

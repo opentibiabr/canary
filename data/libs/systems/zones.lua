@@ -15,24 +15,12 @@ function Zone:randomPosition()
 		logger.error("Zone:randomPosition() - Zone {} has no positions", self:getName())
 		return nil
 	end
-
-	local validPositions = {}
-	for _, position in ipairs(positions) do
-		local tile = position:getTile()
-		if tile and tile:isWalkable(false, false, false, false, true) then
-			table.insert(validPositions, position)
-		else
-			logger.debug("Zone:randomPosition() - Position {} is invalid (Tile: {}, Walkable: {})", position, tile or "nil", tile and tile:isWalkable(false, false, false, false, true) or "false")
-		end
+	local destination = positions[math.random(1, #positions)]
+	local tile = destination:getTile()
+	while not tile or not tile:isWalkable(false, false, false, false, true) do
+		destination = positions[math.random(1, #positions)]
+		tile = destination:getTile()
 	end
-
-	if #validPositions == 0 then
-		logger.error("Zone:randomPosition() - No valid positions in Zone {}", self:getName())
-		return nil
-	end
-
-	local destination = validPositions[math.random(1, #validPositions)]
-	logger.debug("Zone:randomPosition() - Selected valid position: {}", destination)
 	return destination
 end
 
@@ -160,7 +148,7 @@ function ZoneEvent:register()
 	end
 
 	if self.onSpawn then
-		local afterEnter = EventCallback("ZoneEventAfterEnterOnSpawn", true)
+		local afterEnter = EventCallback("ZoneEventAfterEnter", true)
 		function afterEnter.zoneAfterCreatureEnter(zone, creature)
 			if zone ~= self.zone then
 				return true

@@ -11,7 +11,7 @@
 
 #include "declarations.hpp"
 
-class WildcardTreeNode final : public SharedObject {
+class WildcardTreeNode : public SharedObject {
 public:
 	explicit WildcardTreeNode(bool initBreakpoint) :
 		breakpoint(initBreakpoint) { }

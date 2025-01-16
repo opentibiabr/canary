@@ -9,7 +9,9 @@
 
 #pragma once
 
-enum PlayerSex_t : uint8_t;
+#include "declarations.hpp"
+#include "lib/di/container.hpp"
+
 class Player;
 
 struct OutfitEntry {
@@ -48,7 +50,20 @@ public:
 	bool loadFromXml();
 
 	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit = false) const;
-	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const;
+	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const {
+		return outfits[sex];
+	}
 
-	std::shared_ptr<Outfit> getOutfitByName(PlayerSex_t sex, const std::string &name) const;
+	std::shared_ptr<Outfit> getOutfitByName(PlayerSex_t sex, const std::string &name) const {
+		for (const auto &outfit : outfits[sex]) {
+			if (outfit->name == name) {
+				return outfit;
+			}
+		}
+
+		return nullptr;
+	}
+
+private:
+	std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
 };

@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 30000
-monster.maxHealth = 30000
+monster.health = 10000
+monster.maxHealth = 10000
 monster.race = "fire"
 monster.corpse = 0
 monster.speed = 238
@@ -61,9 +61,9 @@ monster.voices = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -750, maxDamage = -1700 },
-	{ name = "unchained fire beam", interval = 3100, chance = 38, minDamage = -1000, maxDamage = -1750 },
-	{ name = "unchained fire explosion", interval = 5100, chance = 35, minDamage = -900, maxDamage = -1400 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -700 },
+	{ name = "unchained fire beam", interval = 3100, chance = 38, minDamage = -700, maxDamage = -1750 },
+	{ name = "unchained fire explosion", interval = 5100, chance = 35, minDamage = -600, maxDamage = -1400 },
 }
 
 monster.defenses = {

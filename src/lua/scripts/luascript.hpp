@@ -9,10 +9,11 @@
 
 #pragma once
 
+#include "lib/logging/log_with_spd_log.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 
-class LuaScriptInterface : public Lua {
+class LuaScriptInterface : public LuaFunctionsLoader {
 public:
 	explicit LuaScriptInterface(std::string interfaceName);
 	virtual ~LuaScriptInterface();
@@ -57,12 +58,12 @@ public:
 		return luaState;
 	}
 
-	bool pushFunction(int32_t functionId) const;
+	bool pushFunction(int32_t functionId);
 
-	bool callFunction(int params) const;
-	void callVoidFunction(int params) const;
+	bool callFunction(int params);
+	void callVoidFunction(int params);
 
-	std::string getStackTrace(const std::string &error_desc) const;
+	std::string getStackTrace(const std::string &error_desc);
 
 protected:
 	virtual bool closeState();
@@ -72,7 +73,7 @@ protected:
 	std::map<int32_t, std::string> cacheFiles;
 
 private:
-	std::string getMetricsScope() const;
+	std::string getMetricsScope();
 
 	std::string lastLuaError;
 	std::string interfaceName;

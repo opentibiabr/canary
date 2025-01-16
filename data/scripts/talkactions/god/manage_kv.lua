@@ -16,7 +16,7 @@ get:register()
 local set = TalkAction("/setkv")
 
 function set.onSay(player, words, param)
-	local key, value = string.splitFirst(param, ",") -- With a space some KV's are not able to be edited due to spaces within the key names, changed to a comma (,) to overcome this issue
+	local key, value = string.splitFirst(param, " ")
 	value = load("return " .. value)()
 	kv.set(key, value)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "kv[" .. key .. "] = " .. PrettyString(value))

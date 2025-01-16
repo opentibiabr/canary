@@ -10,5 +10,11 @@ dofile(DATA_DIRECTORY .. "/lib/quests/quest.lua")
 -- Tables library
 dofile(DATA_DIRECTORY .. "/lib/tables/load.lua")
 
--- Functions library
-dofile(DATA_DIRECTORY .. "/lib/functions/load.lua")
+-- Castle War Library
+dofile(DATA_DIRECTORY .. "/lib/castlewar/castle_lib.lua")
+
+-- Magic Wall Custom
+dofile(DATA_DIRECTORY .. "/lib/custom/wallscustom_lib.lua")
+
+-- Task Custom
+dofile(DATA_DIRECTORY.. '/scripts/custom/load.lua')

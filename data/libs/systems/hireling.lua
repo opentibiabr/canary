@@ -312,7 +312,7 @@ function Hireling:save()
 
 	sql = sql .. " WHERE `id`=" .. tostring(self.id)
 
-	return db.query(sql)
+	db.query(sql)
 end
 
 function Hireling:spawn()
@@ -390,7 +390,7 @@ function SaveHirelings()
 	local failedCount = 0
 
 	for _, hireling in ipairs(HIRELINGS) do
-		local success = hireling:save() or false
+		local success = hireling:save()
 
 		if not success then
 			failedCount = failedCount + 1

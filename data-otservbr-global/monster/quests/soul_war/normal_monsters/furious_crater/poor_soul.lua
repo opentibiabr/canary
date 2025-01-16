@@ -51,6 +51,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -83,6 +84,7 @@ monster.loot = {
 	{ id = 33932, chance = 3520 }, -- head
 	{ name = "glacial rod", chance = 620 },
 	{ id = 34024, chance = 650 }, -- gruesome fan
+	{ id = 34109, chance = 1 }, -- bag you desire
 }
 
 monster.attacks = {

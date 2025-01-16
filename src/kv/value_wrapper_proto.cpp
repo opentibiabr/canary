@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "kv/value_wrapper_proto.hpp"
 
 #include "kv/value_wrapper.hpp"
@@ -31,14 +33,14 @@ namespace ProtoHelpers {
 	}
 
 	void setProtoArrayValue(Canary::protobuf::kv::ValueWrapper &protoValue, const ArrayType &arg) {
-		const auto arrayValue = protoValue.mutable_array_value();
+		auto arrayValue = protoValue.mutable_array_value();
 		for (const auto &elem : arg) {
 			*arrayValue->add_values() = ProtoSerializable::toProto(elem);
 		}
 	}
 
 	void setProtoMapValue(Canary::protobuf::kv::ValueWrapper &protoValue, const MapType &arg) {
-		const auto mapValue = protoValue.mutable_map_value();
+		auto mapValue = protoValue.mutable_map_value();
 		for (const auto &[key, value] : arg) {
 			auto* elem = mapValue->add_items();
 			elem->set_key(key);

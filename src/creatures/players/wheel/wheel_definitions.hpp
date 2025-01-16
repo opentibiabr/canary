@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
+
 enum WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
 	SLOT_GREEN_TOP_150 = 2,
@@ -92,12 +94,12 @@ enum class WheelStage_t : uint8_t {
 	AVATAR_OF_STORM = 11,
 	DIVINE_GRENADE = 12,
 
-	STAGE_COUNT = 13
+	TOTAL_COUNT = 13
 };
 
 enum class WheelOnThink_t : uint8_t {
 	BATTLE_INSTINCT = 0,
-	POSITIONAL_TACTICS = 1,
+	POSITIONAL_TATICS = 1,
 	BALLISTIC_MASTERY = 2,
 	COMBAT_MASTERY = 3,
 	FOCUS_MASTERY = 4,
@@ -148,13 +150,13 @@ enum class WheelMajor_t : uint8_t {
 enum class WheelInstant_t : uint8_t {
 	BATTLE_INSTINCT = 0,
 	BATTLE_HEALING = 1,
-	POSITIONAL_TACTICS = 2,
+	POSITIONAL_TATICS = 2,
 	BALLISTIC_MASTERY = 3,
 	HEALING_LINK = 4,
 	RUNIC_MASTERY = 5,
 	FOCUS_MASTERY = 6,
 
-	INSTANT_COUNT = 7
+	TOTAL_COUNT = 7
 };
 
 enum class WheelAvatarSkill_t : uint8_t {
@@ -217,7 +219,7 @@ struct PlayerWheelMethodsBonusData {
 	struct Instant {
 		bool battleInstinct = false; // Knight
 		bool battleHealing = false; // Knight
-		bool positionalTactics = false; // Paladin
+		bool positionalTatics = false; // Paladin
 		bool ballisticMastery = false; // Paladin
 		bool healingLink = false; // Druid
 		bool runicMastery = false; // Druid/sorcerer
@@ -251,7 +253,6 @@ struct PlayerWheelMethodsBonusData {
 	Stages stages;
 	Avatar avatar;
 
-	float momentum = 0;
 	float mitigation = 0;
 	std::vector<std::string> spells;
 };
@@ -282,7 +283,7 @@ namespace WheelSpells {
 	struct Decrease {
 		int cooldown = 0;
 		int manaCost = 0;
-		int secondaryGroupCooldown = 0;
+		uint8_t secondaryGroupCooldown = 0;
 	};
 
 	struct Leech {

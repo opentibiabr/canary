@@ -7,15 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/cyclopedia/player_title.hpp"
+#include "pch.hpp"
 
-#include "creatures/appearance/mounts/mounts.hpp"
-#include "creatures/monsters/monsters.hpp"
+#include "player_title.hpp"
+
 #include "creatures/players/player.hpp"
-#include "enums/account_group_type.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
-#include "enums/account_group_type.hpp"
 
 PlayerTitle::PlayerTitle(Player &player) :
 	m_player(player) { }
@@ -25,7 +23,7 @@ bool PlayerTitle::isTitleUnlocked(uint8_t id) const {
 		return false;
 	}
 
-	if (auto it = std::ranges::find_if(m_titlesUnlocked, [id](auto title_it) {
+	if (auto it = std::find_if(m_titlesUnlocked.begin(), m_titlesUnlocked.end(), [id](auto title_it) {
 			return title_it.first.m_id == id;
 		});
 	    it != m_titlesUnlocked.end()) {
@@ -67,7 +65,7 @@ void PlayerTitle::remove(const Title &title) {
 		return;
 	}
 
-	auto it = std::ranges::find_if(m_titlesUnlocked, [id](auto title_it) {
+	auto it = std::find_if(m_titlesUnlocked.begin(), m_titlesUnlocked.end(), [id](auto title_it) {
 		return title_it.first.m_id == id;
 	});
 
@@ -86,21 +84,21 @@ const std::vector<std::pair<Title, uint32_t>> &PlayerTitle::getUnlockedTitles() 
 }
 
 uint8_t PlayerTitle::getCurrentTitle() const {
-	const auto title = m_player.kv()->scoped("titles")->get("current-title");
+	auto title = m_player.kv()->scoped("titles")->get("current-title");
 	return title ? static_cast<uint8_t>(title->getNumber()) : 0;
 }
 
-void PlayerTitle::setCurrentTitle(uint8_t id) const {
+void PlayerTitle::setCurrentTitle(uint8_t id) {
 	m_player.kv()->scoped("titles")->set("current-title", id != 0 && isTitleUnlocked(id) ? id : 0);
 }
 
-std::string PlayerTitle::getCurrentTitleName() const {
-	const auto currentTitle = getCurrentTitle();
+std::string PlayerTitle::getCurrentTitleName() {
+	auto currentTitle = getCurrentTitle();
 	if (currentTitle == 0) {
 		return "";
 	}
 
-	const auto &title = g_game().getTitleById(currentTitle);
+	auto title = g_game().getTitleById(currentTitle);
 	if (title.m_id == 0) {
 		return "";
 	}
@@ -180,13 +178,13 @@ const std::shared_ptr<KV> &PlayerTitle::getUnlockedKV() {
 }
 
 // Title Calculate Functions
-bool PlayerTitle::checkGold(uint32_t amount) const {
+bool PlayerTitle::checkGold(uint32_t amount) {
 	return m_player.getBankBalance() >= amount;
 }
 
-bool PlayerTitle::checkMount(uint32_t amount) const {
+bool PlayerTitle::checkMount(uint32_t amount) {
 	uint8_t total = 0;
-	for (const auto &mount : g_game().mounts->getMounts()) {
+	for (const auto &mount : g_game().mounts.getMounts()) {
 		if (m_player.hasMount(mount)) {
 			total++;
 		}
@@ -194,15 +192,15 @@ bool PlayerTitle::checkMount(uint32_t amount) const {
 	return total >= amount;
 }
 
-bool PlayerTitle::checkOutfit(uint32_t amount) const {
+bool PlayerTitle::checkOutfit(uint32_t amount) {
 	return m_player.outfits.size() >= amount;
 }
 
-bool PlayerTitle::checkLevel(uint32_t amount) const {
+bool PlayerTitle::checkLevel(uint32_t amount) {
 	return m_player.getLevel() >= amount;
 }
 
-bool PlayerTitle::checkHighscore(uint8_t skill) const {
+bool PlayerTitle::checkHighscore(uint8_t skill) {
 	Database &db = Database::getInstance();
 	std::string query;
 	std::string fieldCheck = "id";
@@ -224,15 +222,13 @@ bool PlayerTitle::checkHighscore(uint8_t skill) const {
 		default:
 			std::string skillName = g_game().getSkillNameById(skill);
 			query = fmt::format(
-				"SELECT `id` FROM `players` "
-				"WHERE `group_id` < {} AND `{}` > 10 "
-				"ORDER BY `{}` DESC LIMIT 1",
+				"SELECT * FROM `players` WHERE `group_id` < {} AND `{}` > 10 ORDER BY `{}` DESC LIMIT 1",
 				static_cast<int>(GROUP_TYPE_GAMEMASTER), skillName, skillName
 			);
 			break;
 	}
 
-	const DBResult_ptr result = db.storeQuery(query);
+	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
 		return false;
 	}
@@ -243,7 +239,7 @@ bool PlayerTitle::checkHighscore(uint8_t skill) const {
 	return resultValue == m_player.getGUID();
 }
 
-bool PlayerTitle::checkBestiary(const std::string &name, uint16_t race, bool isBoss /* = false*/, uint32_t amount) const {
+bool PlayerTitle::checkBestiary(const std::string &name, uint16_t race, bool isBoss /* = false*/, uint32_t amount) {
 	if (race == 0) {
 		if (name == "Executioner") {
 			// todo check if player has unlocked all bestiary
@@ -259,23 +255,23 @@ bool PlayerTitle::checkBestiary(const std::string &name, uint16_t race, bool isB
 	return m_player.isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(race, isBoss));
 }
 
-bool PlayerTitle::checkLoginStreak(uint32_t amount) const {
-	const auto streakKV = m_player.kv()->scoped("daily-reward")->get("streak");
+bool PlayerTitle::checkLoginStreak(uint32_t amount) {
+	auto streakKV = m_player.kv()->scoped("daily-reward")->get("streak");
 	return streakKV && streakKV.has_value() && static_cast<uint8_t>(streakKV->getNumber()) >= amount;
 }
 
-bool PlayerTitle::checkTask(uint32_t amount) const {
+bool PlayerTitle::checkTask(uint32_t amount) {
 	return m_player.getTaskHuntingPoints() >= amount;
 }
 
-bool PlayerTitle::checkMap(uint32_t amount) const {
+bool PlayerTitle::checkMap(uint32_t amount) {
 	// todo cyclopledia
 	return false;
 }
 
-bool PlayerTitle::checkOther(const std::string &name) const {
+bool PlayerTitle::checkOther(const std::string &name) {
 	if (name == "Guild Leader") {
-		const auto &rank = m_player.getGuildRank();
+		auto rank = m_player.getGuildRank();
 		return rank && rank->level == 3;
 	} else if (name == "Proconsul of Iksupan") {
 		// Win Ancient Aucar Outfits complete so fight with Atab and be teleported to the arena.

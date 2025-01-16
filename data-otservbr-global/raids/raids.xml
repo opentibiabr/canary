@@ -39,7 +39,7 @@
 	<raid name="GoFemor" file="kazordoon/goblins.xml" interval2="500" margin="70" />
 	<raid name="Horned Fox" file="kazordoon/horned.xml" interval2="1440" margin="180" />
 	<!-- Liberty Bay -->
-	<!-- <raid name="Ferumbras" file="liberty_bay/ferumbras.xml" interval2="1440" margin="120" /> -->
+	<raid name="Ferumbras" file="liberty_bay/ferumbras.xml" interval2="1440" margin="120" />
 	<raid name="Morgaroth" file="liberty_bay/morgaroth.xml" interval2="1440" margin="90" />
 	<raid name="Quaras" file="liberty_bay/quaras.xml" interval2="500" margin="50" />
 	<raid name="Tigers" file="liberty_bay/tigers.xml" interval2="500" margin="100" />

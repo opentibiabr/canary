@@ -7,30 +7,29 @@ function Player.getStorageValueTalkaction(self, param)
 	end
 
 	local split = param:split(",")
-	if not split[2] then
-		self:sendCancelMessage("Insufficient parameters.")
+	if split[2] == nil then
+		player:sendCancelMessage("Insufficient parameters.")
 		return true
 	end
 
-	local target = Player(split[1]:trim())
-	if not target then
+	local target = Player(split[1])
+	if target == nil then
 		self:sendCancelMessage("A player with that name is not online.")
 		return true
 	end
 
-	-- Storage key Validation
-	local storageKey = tonumber(split[2]) or split[2]:trim()
-	if not storageKey then
-		self:sendCancelMessage("Invalid storage key or name.")
-		return true
-	end
+	split[2] = split[2]:trimSpace()
 
-	-- Get the storage key
-	local storageValue = target:getStorageValue(storageKey)
-	if storageValue == nil then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " does not exist or is not set for player " .. target:getName() .. ".")
+	-- Try to convert the second parameter to a number. If it's not a number, treat it as a storage name
+	local storageKey = tonumber(split[2])
+	if storageKey == nil then
+		-- Get the key for this storage name
+		local storageName = tostring(split[2])
+		local storageValue = target:getStorageValueByName(storageName)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageName .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
 	else
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. split[2] .. " from player " .. target:getName() .. " is: " .. storageValue .. ".")
+		local storageValue = target:getStorageValue(storageKey)
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The storage with id: " .. storageKey .. " from player " .. split[1] .. " is: " .. storageValue .. ".")
 	end
 
 	return true
@@ -45,6 +44,7 @@ end
 storageGet:separator(" ")
 storageGet:groupType("gamemaster")
 storageGet:register()
+
 ---------------- // ----------------
 function Player.setStorageValueTalkaction(self, param)
 	-- Sanity check for parameters

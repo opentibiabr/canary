@@ -147,10 +147,12 @@ local towns = {
 	[TOWNS_LIST.SVARGROND] = {
 		name = "Svargrond",
 		about = {
-			"Negative, can't bring you there. You gotta pass some sort of Barbarian test \z
+			"The ice town.. You gotta pass some sort of Barbarian test \z
 			before they let you live there. Still, you should go there sometime, I heard it's quite interesting.",
 		},
-		canBeSailed = false,
+		message = "So it's Svargrond, the city you chose as your new home?",
+		canBeSailed = true,
+		destination = { x = 32212, y = 31132, z = 7 },
 	},
 	[TOWNS_LIST.THAIS] = {
 		name = "Thais",
@@ -180,10 +182,11 @@ local towns = {
 		name = "Yalahar",
 		about = {
 			"Now that must be one of the biggest cities I've ever seen. \z
-			Might be not cosy for a newcomer like yourself, though. And I can't sail there anyway... \z
-			they don't let everyone enter their fine pretty harbour, they're a bit particular.",
+			Might be not cosy for a newcomer like yourself, though.",
 		},
-		canBeSailed = false,
+		message = "So it's Yalahar, the city you chose as your new home?",
+		canBeSailed = true,
+		destination = { x = 32787, y = 31276, z = 7 },
 	},
 }
 

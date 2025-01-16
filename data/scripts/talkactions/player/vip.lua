@@ -1,10 +1,12 @@
 local vip = TalkAction("!checkvip", "!vip")
 
 function vip.onSay(player, words, param)
-	if player:isVip() then
-		player:sendVipStatus()
+	if not player:isVip() then
+		local msg = "You do not have VIP on your account."
+		player:sendCancelMessage(msg)
+		player:sendTextMessage(MESSAGE_STATUS, msg)
 	else
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You do not have VIP on your account.")
+		CheckPremiumAndPrint(player, MESSAGE_STATUS)
 	end
 	return true
 end

@@ -208,7 +208,7 @@ function chargedFlameAction.onUse(player, item, fromPosition, target, toPosition
 	if not player then
 		return false
 	end
-	if not target or type(target) ~= "userdata" or not target:isItem() then
+	if not target or not target:isItem() then
 		return false
 	end
 	if target:getId() ~= config.cooledCrystalId then
@@ -258,9 +258,9 @@ function theEndOfDaysHealth.onHealthChange(creature, attacker, primaryDamage, pr
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
 	local newHealth = creature:getHealth() - primaryDamage - secondaryDamage
-	if newHealth <= creature:getMaxHealth() * 0.5 then
+	if newHealth <= creature:getMaxHealth() * 0.2 then
 		creature:setHealth(creature:getMaxHealth())
-		encounter:spawnMonsters({ name = "Lava Creature", amount = 8 })
+		encounter:spawnMonsters({ name = "Lava Creature", amount = 1 })
 		return false
 	end
 	return primaryDamage, primaryType, secondaryDamage, secondaryType

@@ -577,9 +577,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		}
 		if container and container:getSize() > 0 then
 			for i = 0, container:getSize() do
-				if player:getMoney() > 21465 then
-					player:removeMoney(math.abs(21465 - player:getMoney()))
-				end
+				--if player:getMoney() > 21465 then
+				--	player:removeMoney(math.abs(21465 - player:getMoney()))
+				--end
 				local item = container:getItem(i)
 				if item then
 					---@diagnostic disable-next-line: undefined-field

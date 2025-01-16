@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"GlowingRubbishAmuletDeath",
+}
+
 monster.raceId = 1412
 monster.Bestiary = {
 	class = "Humanoid",
@@ -43,10 +47,6 @@ monster.strategiesTarget = {
 	health = 10,
 	damage = 10,
 	random = 10,
-}
-
-monster.events = {
-	"GlowingRubbishAmuletDeath",
 }
 
 monster.flags = {

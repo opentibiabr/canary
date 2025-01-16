@@ -151,7 +151,7 @@ npcConfig.shop = {
 	{ itemName = "violet crystal shard", clientId = 16120, sell = 1500 },
 	{ itemName = "watermelon tourmaline", clientId = 33780, sell = 230000 },
 	{ itemName = "wedding ring", clientId = 3004, buy = 990 },
-	{ itemName = "white pearl", clientId = 3026, buy = 320, sell = 160 },
+	{ itemName = "white pearl", clientId = 3026, buy = 320 },
 	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
 }
 

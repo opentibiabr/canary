@@ -10,7 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
-// TODO: Remove circular includes (maybe shared_ptr?)
+#include "lib/di/container.hpp"
 #include "server/network/message/networkmessage.hpp"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
@@ -28,15 +28,16 @@ using Service_ptr = std::shared_ptr<ServiceBase>;
 class ServicePort;
 using ServicePort_ptr = std::shared_ptr<ServicePort>;
 using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
-class NetworkMessage;
 
 class ConnectionManager {
 public:
 	ConnectionManager() = default;
 
-	static ConnectionManager &getInstance();
+	static ConnectionManager &getInstance() {
+		return inject<ConnectionManager>();
+	}
 
-	Connection_ptr createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort);
+	Connection_ptr createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort);
 	void releaseConnection(const Connection_ptr &connection);
 	void closeAll();
 
@@ -85,6 +86,8 @@ private:
 		return socket;
 	}
 
+	NetworkMessage msg;
+
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
 
@@ -96,8 +99,6 @@ private:
 	Protocol_ptr protocol;
 
 	asio::ip::tcp::socket socket;
-
-	NetworkMessage m_msg;
 
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;

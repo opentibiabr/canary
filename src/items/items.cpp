@@ -7,16 +7,14 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "items/items.hpp"
+#include "pch.hpp"
 
-#include "config/configmanager.hpp"
-#include "game/game.hpp"
 #include "items/functions/item/item_parse.hpp"
+#include "items/items.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
+#include "game/game.hpp"
 #include "utils/pugicast.hpp"
-#include "creatures/combat/spells.hpp"
-#include "utils/tools.hpp"
 
 #include <appearances.pb.h>
 
@@ -27,7 +25,7 @@ void Items::clear() {
 	ladders.clear();
 	dummys.clear();
 	nameToItems.clear();
-	g_moveEvents().clear();
+	g_moveEvents().clear(true);
 	g_weapons().clear(true);
 }
 
@@ -61,15 +59,15 @@ LootTypeNames lootTypeNames = {
 	{ "unassigned", ITEM_TYPE_UNASSIGNED },
 };
 
-ItemTypes_t Items::getLootType(const std::string &strValue) const {
-	const auto lootType = lootTypeNames.find(strValue);
+ItemTypes_t Items::getLootType(const std::string &strValue) {
+	auto lootType = lootTypeNames.find(strValue);
 	if (lootType != lootTypeNames.end()) {
 		return lootType->second;
 	}
 	return ITEM_TYPE_NONE;
 }
 
-std::string Items::getAugmentNameByType(Augment_t augmentType) {
+const std::string Items::getAugmentNameByType(Augment_t augmentType) {
 	std::string augmentTypeName = magic_enum::enum_name(augmentType).data();
 	augmentTypeName = toStartCaseWithSpace(augmentTypeName);
 	if (!isAugmentWithoutValueDescription(augmentType)) {
@@ -96,7 +94,7 @@ std::string ItemType::parseAugmentDescription(bool inspect /*= false*/) const {
 }
 
 std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<AugmentInfo> &augmentInfo) const {
-	const auto augmentName = Items::getAugmentNameByType(augmentInfo->type);
+	const std::string augmentName = Items::getAugmentNameByType(augmentInfo->type);
 	std::string augmentSpellNameCapitalized = augmentInfo->spellName;
 	capitalizeWordsIgnoringString(augmentSpellNameCapitalized, " of ");
 
@@ -106,21 +104,8 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
 	} else if (augmentInfo->type == Augment_t::Cooldown) {
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
-	} else if (augmentInfo->type == Augment_t::Base) {
-		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
-		return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
 	}
-
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
-}
-
-void ItemType::addAugment(std::string spellName, Augment_t augmentType, int32_t value) {
-	auto augmentInfo = std::make_shared<AugmentInfo>(spellName, augmentType, value);
-	augments.emplace_back(augmentInfo);
-}
-
-void ItemType::setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
-	imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
 }
 
 bool Items::reload() {
@@ -137,7 +122,7 @@ bool Items::reload() {
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
-	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL);
+	bool supportAnimation = g_configManager().getBoolean(OLD_PROTOCOL, __FUNCTION__);
 	for (uint32_t it = 0; it < g_game().m_appearancesPtr->object_size(); ++it) {
 		Appearance object = g_game().m_appearancesPtr->object(it);
 
@@ -170,7 +155,7 @@ void Items::loadFromProtobuf() {
 		// This attribute is only used on 10x protocol, so we should not waste our time iterating it when it's disabled.
 		if (supportAnimation) {
 			for (uint32_t frame_it = 0; frame_it < object.frame_group_size(); ++frame_it) {
-				const FrameGroup &objectFrame = object.frame_group(frame_it);
+				FrameGroup objectFrame = object.frame_group(frame_it);
 				if (!objectFrame.has_sprite_info()) {
 					continue;
 				}
@@ -253,14 +238,14 @@ void Items::loadFromProtobuf() {
 
 bool Items::loadFromXml() {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
+	auto folder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/items/items.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
-	for (const auto itemNode : doc.child("items").children()) {
+	for (auto itemNode : doc.child("items").children()) {
 		if (auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
@@ -280,8 +265,8 @@ bool Items::loadFromXml() {
 			continue;
 		}
 
-		auto id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		const auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		uint16_t id = pugi::cast<uint16_t>(fromIdAttribute.value());
+		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
 		while (id <= toId) {
 			parseItemNode(itemNode, id++);
 		}
@@ -297,7 +282,7 @@ void Items::buildInventoryList() {
 		}
 	}
 	inventory.shrink_to_fit();
-	std::ranges::sort(inventory);
+	std::sort(inventory.begin(), inventory.end());
 }
 
 void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
@@ -316,10 +301,10 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		return;
 	}
 
-	if (const std::string xmlName = itemNode.attribute("name").as_string();
+	if (std::string xmlName = itemNode.attribute("name").as_string();
 	    !xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
-			if (const auto it = std::ranges::find_if(nameToItems, [id](const auto nameMapIt) {
+			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
 				});
 			    it != nameToItems.end()) {
@@ -332,28 +317,28 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 	}
 
 	itemType.loaded = true;
-	const pugi::xml_attribute articleAttribute = itemNode.attribute("article");
+	pugi::xml_attribute articleAttribute = itemNode.attribute("article");
 	if (articleAttribute) {
 		itemType.article = articleAttribute.as_string();
 	}
 
-	const pugi::xml_attribute pluralAttribute = itemNode.attribute("plural");
+	pugi::xml_attribute pluralAttribute = itemNode.attribute("plural");
 	if (pluralAttribute) {
 		itemType.pluralName = pluralAttribute.as_string();
 	}
 
-	for (const auto &attributeNode : itemNode.children()) {
-		const pugi::xml_attribute keyAttribute = attributeNode.attribute("key");
+	for (auto attributeNode : itemNode.children()) {
+		pugi::xml_attribute keyAttribute = attributeNode.attribute("key");
 		if (!keyAttribute) {
 			continue;
 		}
 
-		const pugi::xml_attribute valueAttribute = attributeNode.attribute("value");
+		pugi::xml_attribute valueAttribute = attributeNode.attribute("value");
 		if (!valueAttribute) {
 			continue;
 		}
 
-		const std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
+		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
 		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
 		if (parseAttribute != ItemParseAttributesMap.end()) {
 			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);
@@ -383,7 +368,7 @@ const ItemType &Items::getItemType(size_t id) const {
 }
 
 uint16_t Items::getItemIdByName(const std::string &name) {
-	const auto result = nameToItems.find(asLowerCaseString(name));
+	auto result = nameToItems.find(asLowerCaseString(name));
 
 	if (result == nameToItems.end()) {
 		return 0;
@@ -397,20 +382,4 @@ bool Items::hasItemType(size_t hasId) const {
 		return true;
 	}
 	return false;
-}
-
-uint32_t Abilities::getHealthGain() const {
-	return healthGain * g_configManager().getFloat(RATE_HEALTH_REGEN);
-}
-
-uint32_t Abilities::getHealthTicks() const {
-	return healthTicks / g_configManager().getFloat(RATE_HEALTH_REGEN_SPEED);
-}
-
-uint32_t Abilities::getManaGain() const {
-	return manaGain * g_configManager().getFloat(RATE_MANA_REGEN);
-}
-
-uint32_t Abilities::getManaTicks() const {
-	return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
 }

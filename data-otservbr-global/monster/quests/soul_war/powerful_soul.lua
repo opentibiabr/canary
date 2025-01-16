@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a powerful soul"
 monster.experience = 0
 monster.outfit = {
-	lookType = 568,
+	lookType = 48,
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,
@@ -101,7 +101,7 @@ mType.onThink = function(monster, interval)
 				boss:addReflectElement(elementType, reflectPercent)
 			end
 			boss:addDefense(10)
-			boss:setMaxHealth(boss:getMaxHealth() + 10000)
+			boss:setMaxHealth(boss:getHealth() + 10000)
 			boss:addHealth(10000)
 		end
 		transformTimeCount = 0

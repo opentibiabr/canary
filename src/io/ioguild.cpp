@@ -7,10 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "io/ioguild.hpp"
+#include "pch.hpp"
 
 #include "database/database.hpp"
 #include "creatures/players/grouping/guild.hpp"
+#include "io/ioguild.hpp"
 
 std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	Database &db = Database::getInstance();
@@ -32,7 +33,7 @@ std::shared_ptr<Guild> IOGuild::loadGuild(uint32_t guildId) {
 	return nullptr;
 }
 
-void IOGuild::saveGuild(const std::shared_ptr<Guild> &guild) {
+void IOGuild::saveGuild(const std::shared_ptr<Guild> guild) {
 	if (!guild) {
 		return;
 	}
@@ -67,7 +68,7 @@ void IOGuild::getWarList(uint32_t guildId, GuildWarVector &guildWarVector) {
 	}
 
 	do {
-		auto guild1 = result->getNumber<uint32_t>("guild1");
+		uint32_t guild1 = result->getNumber<uint32_t>("guild1");
 		if (guildId != guild1) {
 			guildWarVector.push_back(guild1);
 		} else {

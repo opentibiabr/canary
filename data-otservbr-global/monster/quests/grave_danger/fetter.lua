@@ -20,10 +20,6 @@ monster.corpse = 0
 monster.speed = 140
 monster.manaCost = 0
 
-monster.events = {
-	"fetter_death",
-}
-
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10,

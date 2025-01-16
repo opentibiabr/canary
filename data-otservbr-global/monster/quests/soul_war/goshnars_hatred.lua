@@ -60,6 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -95,7 +96,6 @@ monster.loot = {
 	{ name = "spectral horseshoe", chance = 400 },
 	{ name = "spectral horse tack", chance = 400 },
 	{ name = "bracelet of strengthening", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -133,19 +133,22 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onDisappear = function(monster, creature)
-	if creature:getName() == "Goshnar's Hatred" then
-		for _, monsterName in pairs(SoulWarQuest.burningHatredMonsters) do
-			local ashesCreature = Creature(monsterName)
-			if ashesCreature then
-				ashesCreature:remove()
-			end
-		end
-	end
-end
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature) end
 
 mType.onSpawn = function(monster)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+
 	monster:resetHatredDamageMultiplier()
 end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

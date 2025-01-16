@@ -58,13 +58,23 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if player:getSex() == PLAYERSEX_FEMALE and MsgContains(message, "outfit") and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheOrcPowder) >= 34 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) >= 44 then
-		if player:getStorageValue(Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon) < 1 then
+	if MsgContains(message, "outfit") then
+		if player:getSex() == PLAYERSEX_MALE then
+			npcHandler:say("My jewelled belt? <giggles> That's not very manly. Maybe you'd prefer a scimitar like Habdel has.", npc, creature)
+			return true
+		end
+
+		if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) < 1 then
 			npcHandler:say("My jewelled belt? Of course I could make one for you, but I have a small request. Would you fulfil a task for me?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif player:getSex() == PLAYERSEX_FEMALE and MsgContains(message, "comb") then
-		if player:getStorageValue(Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon) == 1 then
+	elseif MsgContains(message, "comb") then
+		if player:getSex() == PLAYERSEX_MALE then
+			npcHandler:say("Comb? This is a jewellery shop.", npc, creature)
+			return true
+		end
+
+		if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) == 1 then
 			npcHandler:say("Have you brought me a mermaid's comb?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -76,11 +86,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
-			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
-				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
-			end
-			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon, 1)
-			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.OrientalDoor, 1)
+			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+			player:setStorageValue(Storage.OutfitQuest.firstOrientalAddon, 1)
 			npcHandler:say("Yay! I will wait for you to return with a mermaid's comb then.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
@@ -90,8 +97,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.Quest.U7_8.OrientalOutfits.FirstOrientalAddon, 2)
-			player:addOutfitAddon(150, 1) -- female addon
+			player:setStorageValue(Storage.OutfitQuest.firstOrientalAddon, 2)
+			player:addOutfitAddon(150, 1)
+			player:addOutfitAddon(146, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			npcHandler:say("Yeah! That's it! I can't wait to comb my hair! Oh - but first, I'll fulfil my promise: Here is your jewelled belt! Thanks again!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
@@ -179,7 +187,7 @@ npcConfig.shop = {
 	{ itemName = "unicorn figurine", clientId = 30054, sell = 50000 },
 	{ itemName = "violet crystal shard", clientId = 16120, sell = 1500 },
 	{ itemName = "wedding ring", clientId = 3004, buy = 990 },
-	{ itemName = "white pearl", clientId = 3026, buy = 320, sell = 160 },
+	{ itemName = "white pearl", clientId = 3026, buy = 320 },
 	{ itemName = "white silk flower", clientId = 34008, sell = 9000 },
 }
 

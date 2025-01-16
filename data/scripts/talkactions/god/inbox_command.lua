@@ -32,6 +32,5 @@ function inboxCommand.onSay(player, words, param)
 end
 
 inboxCommand:separator(" ")
-inboxCommand:setDescription("[Usage]: /inbox {PlayerName},{add|remove},{itemId}")
 inboxCommand:groupType("god")
 inboxCommand:register()

@@ -26,7 +26,7 @@ monster.speed = 105
 monster.manaCost = 0
 
 monster.events = {
-	"killingLibrary",
+	"GrandChaplainGaunderDeath",
 }
 
 monster.changeTarget = {
@@ -83,11 +83,11 @@ monster.loot = {
 	{ name = "patch of fine cloth", chance = 1800 },
 	{ name = "spiked squelcher", chance = 3200 },
 	{ name = "titan axe", chance = 2400 },
-	{ name = "falcon battleaxe", chance = 200 },
-	{ name = "falcon longsword", chance = 200 },
-	{ name = "falcon mace", chance = 210 },
-	{ name = "falcon plate", chance = 100 },
-	{ name = "falcon shield", chance = 100 },
+	{ name = "falcon battleaxe", chance = 200},
+	{ name = "falcon longsword", chance = 20 },
+	{ name = "falcon mace", chance = 21 },
+	{ name = "falcon plate", chance = 10 },
+	{ name = "falcon shield", chance = 10 },
 }
 
 monster.attacks = {
@@ -125,5 +125,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

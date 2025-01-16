@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/zones/zone.hpp"
+#include "pch.hpp"
 
+#include "zone.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/npcs/npc.hpp"
@@ -254,11 +255,11 @@ void Zone::refresh() {
 void Zone::setMonsterVariant(const std::string &variant) {
 	monsterVariant = variant;
 	g_logger().debug("Zone {} monster variant set to {}", name, variant);
-	for (const auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
-		if (!contains(spawnMonster->getCenterPos())) {
+	for (auto &spawnMonster : g_game().map.spawnsMonster.getspawnMonsterList()) {
+		if (!contains(spawnMonster.getCenterPos())) {
 			continue;
 		}
-		spawnMonster->setMonsterVariant(variant);
+		spawnMonster.setMonsterVariant(variant);
 	}
 
 	removeMonsters();

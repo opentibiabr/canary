@@ -54,6 +54,7 @@ GameStore.SubActions = {
 	CHARM_EXPANSION = 13,
 	TASKHUNTING_THIRDSLOT = 14,
 	PREY_THIRDSLOT_REDIRECT = 15,
+	PREY_WILDCARD2 = 16,
 }
 
 GameStore.ActionType = {
@@ -68,6 +69,7 @@ GameStore.ActionType = {
 GameStore.CoinType = {
 	Coin = 0,
 	Transferable = 1,
+	Tournament = 2,
 }
 
 GameStore.Storages = {
@@ -180,11 +182,11 @@ GameStore.RecivedPackets = {
 }
 
 GameStore.ExpBoostValues = {
-	[1] = 30,
-	[2] = 45,
-	[3] = 90,
-	[4] = 180,
-	[5] = 360,
+	[1] = 15,
+	[2] = 30,
+	[3] = 60,
+	[4] = 120,
+	[5] = 240,
 }
 
 GameStore.DefaultValues = {
@@ -207,7 +209,7 @@ GameStore.DefaultDescriptions = {
 }
 
 GameStore.ItemLimit = {
-	PREY_WILDCARD = 50,
+	PREY_WILDCARD = 100,
 	INSTANT_REWARD_ACCESS = 90,
 	EXPBOOST = 6,
 	HIRELING = 10,
@@ -548,11 +550,6 @@ end
 
 -- Both functions use same formula!
 function parseOpenTransactionHistory(playerId, msg)
-	local player = Player(playerId)
-	if not player then
-		return
-	end
-
 	local page = 1
 	GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE = msg:getByte()
 	sendStoreTransactionHistory(playerId, page, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
@@ -560,11 +557,6 @@ function parseOpenTransactionHistory(playerId, msg)
 end
 
 function parseRequestTransactionHistory(playerId, msg)
-	local player = Player(playerId)
-	if not player then
-		return
-	end
-
 	local page = msg:getU32()
 	sendStoreTransactionHistory(playerId, page + 1, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
 	player:updateUIExhausted()
@@ -1487,74 +1479,67 @@ GameStore.canChangeToName = function(name)
 	local result = {
 		ability = false,
 	}
-
-	if name:len() < 3 or name:len() > 29 then
-		result.reason = "The length of your new name must be between 3 and 29 characters."
+	if name:len() < 3 or name:len() > 18 then
+		result.reason = "The length of your new name must be between 3 and 18 characters."
 		return result
 	end
 
 	local match = name:gmatch("%s+")
 	local count = 0
-	for _ in match do
+	for v in match do
 		count = count + 1
 	end
 
 	local matchtwo = name:match("^%s+")
 	if matchtwo then
-		result.reason = "Your new name can't have whitespace at the beginning."
+		result.reason = "Your new name can't have whitespace at begin."
 		return result
 	end
 
 	if count > 2 then
-		result.reason = "Your new name can't have more than 2 spaces."
-		return result
-	end
-
-	if name:match("%s%s") then
-		result.reason = "Your new name can't have consecutive spaces."
+		result.reason = "Your new name have more than 2 whitespace."
 		return result
 	end
 
 	-- just copied from znote aac.
 	local words = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "adm", "cm", "gm", "tutor", "counsellor" }
 	local split = name:split(" ")
-	for _, word in ipairs(words) do
-		for _, nameWord in ipairs(split) do
+	for k, word in ipairs(words) do
+		for k, nameWord in ipairs(split) do
 			if nameWord:lower() == word then
-				result.reason = "You can't use the word '" .. word .. "' in your new name."
+				result.reason = "You can't use word \"" .. word .. '" in your new name.'
 				return result
 			end
 		end
 	end
 
 	local tmpName = name:gsub("%s+", "")
-	for _, word in ipairs(words) do
-		if tmpName:lower():find(word) then
-			result.reason = "You can't use the word '" .. word .. "' even with spaces in your new name."
+	for i = 1, #words do
+		if tmpName:lower():find(words[i]) then
+			result.reason = "You can't use word \"" .. words[i] .. '" with whitespace in your new name.'
 			return result
 		end
 	end
 
 	if MonsterType(name) then
-		result.reason = "Your new name '" .. name .. "' can't be a monster's name."
+		result.reason = 'Your new name "' .. name .. "\" can't be a monster's name."
 		return result
 	elseif Npc(name) then
-		result.reason = "Your new name '" .. name .. "' can't be an NPC's name."
+		result.reason = 'Your new name "' .. name .. "\" can't be a npc's name."
 		return result
 	end
 
 	local letters = "{}|_*+-=<>0123456789@#%^&()/*'\\.,:;~!\"$"
 	for i = 1, letters:len() do
 		local c = letters:sub(i, i)
-		for j = 1, name:len() do
-			local m = name:sub(j, j)
+		for i = 1, name:len() do
+			local m = name:sub(i, i)
 			if m == c then
-				result.reason = "You can't use this character '" .. c .. "' in your new name."
+				result.reason = "You can't use this letter \"" .. c .. '" in your new name.'
 				return result
 			end
 		end
 	end
-
 	result.ability = true
 	return result
 end
@@ -1779,7 +1764,7 @@ function GameStore.processExpBoostPurchase(player)
 	player:setXpBoostPercent(50)
 	player:setXpBoostTime(currentXpBoostTime + 3600)
 
-	if expBoostCount == -1 or expBoostCount == 6 then
+	if expBoostCount == -1 or expBoostCount == GameStore.ItemLimit.EXPBOOST then
 		expBoostCount = 1
 	end
 
@@ -1809,6 +1794,10 @@ function GameStore.processPreyBonusReroll(player, offerCount)
 end
 
 function GameStore.processTempleTeleportPurchase(player)
+	if player:getGroup():getId() < GROUP_TYPE_SENIORTUTOR and player:inPrison() then
+		return error({ code = 0, message = "You can't use this item, because you are in JAIL!" })
+	end
+
 	local inPz = player:getTile():hasFlag(TILESTATE_PROTECTIONZONE)
 	local inFight = player:isPzLocked() or player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT)
 	if not inPz and inFight then

@@ -1,7 +1,8 @@
 local config = {
 	[ITEM_GOLD_COIN] = { changeTo = ITEM_PLATINUM_COIN },
 	[ITEM_PLATINUM_COIN] = { changeBack = ITEM_GOLD_COIN, changeTo = ITEM_CRYSTAL_COIN },
-	[ITEM_CRYSTAL_COIN] = { changeBack = ITEM_PLATINUM_COIN },
+	[ITEM_CRYSTAL_COIN] = { changeBack = ITEM_PLATINUM_COIN, changeTo = ITEM_RUBY_COIN },
+	[ITEM_RUBY_COIN] = { changeBack = ITEM_CRYSTAL_COIN },
 }
 
 local goldConverter = Action()

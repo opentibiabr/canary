@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "lua/functions/events/event_callback_functions.hpp"
 
 #include "lua/callbacks/event_callback.hpp"
@@ -14,7 +16,6 @@
 #include "utils/tools.hpp"
 #include "items/item.hpp"
 #include "creatures/players/player.hpp"
-#include "lua/functions/lua_functions_loader.hpp"
 
 /**
  * @class EventCallbackFunctions
@@ -27,33 +28,33 @@
  */
 
 void EventCallbackFunctions::init(lua_State* luaState) {
-	Lua::registerSharedClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
-	Lua::registerMethod(luaState, "EventCallback", "type", EventCallbackFunctions::luaEventCallbackType);
-	Lua::registerMethod(luaState, "EventCallback", "register", EventCallbackFunctions::luaEventCallbackRegister);
+	registerSharedClass(luaState, "EventCallback", "", EventCallbackFunctions::luaEventCallbackCreate);
+	registerMethod(luaState, "EventCallback", "type", EventCallbackFunctions::luaEventCallbackType);
+	registerMethod(luaState, "EventCallback", "register", EventCallbackFunctions::luaEventCallbackRegister);
 }
 
 int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
-	const auto &callbackName = Lua::getString(luaState, 2);
+	const auto &callbackName = getString(luaState, 2);
 	if (callbackName.empty()) {
-		Lua::reportErrorFunc("Invalid callback name");
+		reportErrorFunc("Invalid callback name");
 		return 1;
 	}
 
-	bool skipDuplicationCheck = Lua::getBoolean(luaState, 3, false);
-	const auto eventCallback = std::make_shared<EventCallback>(callbackName, skipDuplicationCheck);
-	Lua::pushUserdata<EventCallback>(luaState, eventCallback);
-	Lua::setMetatable(luaState, -1, "EventCallback");
+	bool skipDuplicationCheck = getBoolean(luaState, 3, false);
+	const auto eventCallback = std::make_shared<EventCallback>(getScriptEnv()->getScriptInterface(), callbackName, skipDuplicationCheck);
+	pushUserdata<EventCallback>(luaState, eventCallback);
+	setMetatable(luaState, -1, "EventCallback");
 	return 1;
 }
 
 int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
-	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
+	auto callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
-		Lua::reportErrorFunc("EventCallback is nil");
+		reportErrorFunc("EventCallback is nil");
 		return 0;
 	}
 
-	auto typeName = Lua::getString(luaState, 2);
+	auto typeName = getString(luaState, 2);
 	auto lowerTypeName = asLowerCaseString(typeName);
 	bool found = false;
 	for (auto enumValue : magic_enum::enum_values<EventCallback_t>()) {
@@ -70,45 +71,48 @@ int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
 
 	if (!found) {
 		g_logger().error("[{}] No valid event name: {}", __func__, typeName);
-		Lua::pushBoolean(luaState, false);
+		pushBoolean(luaState, false);
 	}
 
-	Lua::pushBoolean(luaState, true);
+	pushBoolean(luaState, true);
 	return 1;
 }
 
 int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
-	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
+	auto callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
+		reportErrorFunc("EventCallback is nil, failed to register script");
 		return 0;
 	}
 
-	if (!callback->isLoadedScriptId()) {
+	if (!callback->isLoadedCallback()) {
 		return 0;
 	}
 
 	if (g_callbacks().isCallbackRegistered(callback)) {
-		Lua::reportErrorFunc(fmt::format("EventCallback is duplicated for event with name: {}", callback->getName()));
+		reportErrorFunc(fmt::format("EventCallback is duplicated for event with name: {}", callback->getName()));
 		return 0;
 	}
 
 	g_callbacks().addCallback(callback);
-	Lua::pushBoolean(luaState, true);
+	pushBoolean(luaState, true);
 	return 1;
 }
 
 // Callback functions
 int EventCallbackFunctions::luaEventCallbackLoad(lua_State* luaState) {
-	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
+	auto callback = getUserdataShared<EventCallback>(luaState, 1);
 	if (!callback) {
+		reportErrorFunc("EventCallback is nil");
 		return 1;
 	}
 
-	if (!callback->loadScriptId()) {
-		Lua::reportErrorFunc("Cannot load callback");
+	if (!callback->loadCallback()) {
+		reportErrorFunc("Cannot load callback");
 		return 1;
 	}
 
-	Lua::pushBoolean(luaState, true);
+	callback->setLoadedCallback(true);
+	pushBoolean(luaState, true);
 	return 1;
 }

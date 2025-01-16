@@ -90,6 +90,91 @@ function Player.addManaSpent(...)
 end
 
 -- Functions From OTServBR-Global
+function Player.getCookiesDelivered(self)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
+	local storage, amount =
+		{
+			Storage.WhatAFoolish.CookieDelivery.SimonTheBeggar,
+			Storage.WhatAFoolish.CookieDelivery.Markwin,
+			Storage.WhatAFoolish.CookieDelivery.Ariella,
+			Storage.WhatAFoolish.CookieDelivery.Hairycles,
+			Storage.WhatAFoolish.CookieDelivery.Djinn,
+			Storage.WhatAFoolish.CookieDelivery.AvarTar,
+			Storage.WhatAFoolish.CookieDelivery.OrcKing,
+			Storage.WhatAFoolish.CookieDelivery.Lorbas,
+			Storage.WhatAFoolish.CookieDelivery.Wyda,
+			Storage.WhatAFoolish.CookieDelivery.Hjaern,
+		}, 0
+	for i = 1, #storage do
+		if self:getStorageValue(storage[i]) == 1 then
+			amount = amount + 1
+		end
+	end
+	return amount
+end
+
+function Player.checkGnomeRank(self)
+	if not IsRunningGlobalDatapack() then
+		return true
+	end
+
+	local points = self:getStorageValue(Storage.BigfootBurden.Rank)
+	local questProgress = self:getStorageValue(Storage.BigfootBurden.QuestLine)
+	if points >= 30 and points < 120 then
+		if questProgress <= 25 then
+			self:setStorageValue(Storage.BigfootBurden.QuestLine, 26)
+			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			self:addAchievement("Gnome Little Helper")
+		end
+	elseif points >= 120 and points < 480 then
+		if questProgress <= 26 then
+			self:setStorageValue(Storage.BigfootBurden.QuestLine, 27)
+			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+		end
+	elseif points >= 480 and points < 1440 then
+		if questProgress <= 27 then
+			self:setStorageValue(Storage.BigfootBurden.QuestLine, 28)
+			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+			self:addAchievement("Gnomelike")
+		end
+	elseif points >= 1440 then
+		if questProgress <= 29 then
+			self:setStorageValue(Storage.BigfootBurden.QuestLine, 30)
+			self:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			self:addAchievement("Gnome Little Helper")
+			self:addAchievement("Gnome Friend")
+			self:addAchievement("Gnomelike")
+			self:addAchievement("Honorary Gnome")
+		end
+	end
+	return true
+end
+
+function Player.addFamePoint(self)
+	local points = self:getStorageValue(SPIKE_FAME_POINTS)
+	local current = math.max(0, points)
+	self:setStorageValue(SPIKE_FAME_POINTS, current + 1)
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received a fame point.")
+end
+
+function Player.getFamePoints(self)
+	local points = self:getStorageValue(SPIKE_FAME_POINTS)
+	return math.max(0, points)
+end
+
+function Player.removeFamePoints(self, amount)
+	local points = self:getStorageValue(SPIKE_FAME_POINTS)
+	local current = math.max(0, points)
+	self:setStorageValue(SPIKE_FAME_POINTS, current - amount)
+end
+
 function Player.depositMoney(self, amount)
 	return Bank.deposit(self, amount)
 end
@@ -113,30 +198,43 @@ function Player.withdrawMoney(self, amount)
 	return Bank.withdraw(self, amount)
 end
 
-function Player.removeMoneyBank(self, amount)
-	local inventoryMoney = self:getMoney()
-	local bankBalance = self:getBankBalance()
+-- player:removeMoneyBank(money)
+function Player:removeMoneyBank(amount)
+	if type(amount) == "string" then
+		amount = tonumber(amount)
+	end
 
-	if amount <= inventoryMoney then
+	local moneyCount = self:getMoney()
+	local bankCount = self:getBankBalance()
+
+	-- The player have all the money with him
+	if amount <= moneyCount then
+		-- Removes player inventory money
 		self:removeMoney(amount)
+
 		if amount > 0 then
 			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
 		end
 		return true
-	end
 
-	if amount <= (inventoryMoney + bankBalance) then
-		local remainingAmount = amount
+		-- The player doens't have all the money with him
+	elseif amount <= (moneyCount + bankCount) then
+		-- Check if the player has some money
+		if moneyCount ~= 0 then
+			-- Removes player inventory money
+			self:removeMoney(moneyCount)
+			local remains = amount - moneyCount
 
-		if inventoryMoney > 0 then
-			self:removeMoney(inventoryMoney)
-			remainingAmount = remainingAmount - inventoryMoney
+			-- Removes player bank money
+			Bank.debit(self, remains)
+
+			if amount > 0 then
+				self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(moneyCount), FormatNumber(amount - moneyCount), FormatNumber(self:getBankBalance())))
+			end
+			return true
 		end
-
-		Bank.debit(self, remainingAmount)
-
-		self:setBankBalance(bankBalance - remainingAmount)
-		self:sendTextMessage(MESSAGE_TRADE, ("Paid %s from inventory and %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount - remainingAmount), FormatNumber(remainingAmount), FormatNumber(self:getBankBalance())))
+		self:setBankBalance(bankCount - amount)
+		self:sendTextMessage(MESSAGE_TRADE, ("Paid %s gold from bank account. Your account balance is now %s gold."):format(FormatNumber(amount), FormatNumber(self:getBankBalance())))
 		return true
 	end
 	return false
@@ -374,6 +472,17 @@ function Player.getSubjectVerb(self, past)
 	return Pronouns.getPlayerSubjectVerb(self:getPronoun(), past)
 end
 
+function Player.findItemInInbox(self, itemId)
+	local inbox = self:getStoreInbox()
+	local items = inbox:getItems()
+	for _, item in pairs(items) do
+		if item:getId() == itemId then
+			return item
+		end
+	end
+	return nil
+end
+
 function Player.updateHazard(self)
 	local zones = self:getZones()
 	if not zones or #zones == 0 then
@@ -522,6 +631,28 @@ function Player:setFiendish()
 	return false
 end
 
+function Player:findItemInInbox(itemId, name)
+	local inbox = self:getStoreInbox()
+	local items = inbox:getItems()
+	for _, item in pairs(items) do
+		if item:getId() == itemId and (not name or item:getName() == name) then
+			return item
+		end
+	end
+	return nil
+end
+
+function Player:sendColoredMessage(message)
+	local grey = 3003
+	local blue = 3043
+	local green = 3415
+	local purple = 36792
+	local yellow = 34021
+
+	local msg = message:gsub("{grey|", "{" .. grey .. "|"):gsub("{blue|", "{" .. blue .. "|"):gsub("{green|", "{" .. green .. "|"):gsub("{purple|", "{" .. purple .. "|"):gsub("{yellow|", "{" .. yellow .. "|")
+	return self:sendTextMessage(MESSAGE_LOOT, msg)
+end
+
 function Player:showInfoModal(title, message, buttonText)
 	local modal = ModalWindow({
 		title = title,
@@ -628,6 +759,15 @@ function Player.getNextRewardTime(self)
 	return math.max(self:getStorageValue(DailyReward.storages.nextRewardTime), 0)
 end
 
+function Player.isRestingAreaBonusActive(self)
+	local levelStreak = self:getStreakLevel()
+	if levelStreak > 1 then
+		return true
+	else
+		return false
+	end
+end
+
 function Player.getActiveDailyRewardBonusesName(self)
 	local msg = ""
 	local streakLevel = self:getStreakLevel()
@@ -717,6 +857,45 @@ function Player.inBossFight(self)
 		end
 	end
 	return false
+end
+
+-- For use of data/events/scripts/player.lua
+function Player:executeRewardEvents(item, toPosition)
+	if toPosition.x == CONTAINER_POSITION then
+		local containerId = toPosition.y - 64
+		local container = self:getContainerById(containerId)
+		if not container then
+			return true
+		end
+
+		-- Do not let the player insert items into either the Reward Container or the Reward Chest
+		local itemId = container:getId()
+		if itemId == ITEM_REWARD_CONTAINER or itemId == ITEM_REWARD_CHEST then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			return false
+		end
+
+		-- The player also shouldn't be able to insert items into the boss corpse
+		local tileCorpse = Tile(container:getPosition())
+		for index, value in ipairs(tileCorpse:getItems() or {}) do
+			if value:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 and value:getName() == container:getName() then
+				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+				return false
+			end
+		end
+	end
+	-- Do not let the player move the boss corpse.
+	if item:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER) == 2 ^ 31 - 1 then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
+	-- Players cannot throw items on reward chest
+	local tileChest = Tile(toPosition)
+	if tileChest and tileChest:getItemById(ITEM_REWARD_CHEST) then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		self:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
 end
 
 do
@@ -820,38 +999,4 @@ function Player:canGetReward(rewardId, questName)
 	end
 
 	return true
-end
-
-function Player.getURL(self)
-	local playerName = self:getName():gsub("%s+", "+")
-	local serverURL = configManager.getString(configKeys.URL)
-
-	return serverURL .. "/characters/" .. playerName
-end
-
-local emojiMap = {
-	["knight"] = ":crossed_swords:",
-	["paladin"] = ":bow_and_arrow:",
-	["druid"] = ":herb:",
-	["sorcerer"] = ":crystal_ball:",
-}
-
-function Player.getMarkdownLink(self)
-	local vocation = self:vocationAbbrev()
-	local emoji = emojiMap[self:getVocation():getName():lower()] or ":school_satchel:"
-	local playerURL = self:getURL()
-
-	return string.format("**[%s](%s)** %s [_%s_]", self:getName(), playerURL, emoji, vocation)
-end
-
-function Player.findItemInInbox(self, itemId, name)
-	local inbox = self:getStoreInbox()
-	local items = inbox:getItems()
-
-	for _, item in pairs(items) do
-		if item:getId() == itemId and (not name or item:getName() == name) then
-			return item
-		end
-	end
-	return nil
 end

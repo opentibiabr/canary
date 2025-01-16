@@ -1,19 +1,19 @@
 local config = {
 	enabled = false,
 	storage = Storage.VipSystem.OnlineCoinsGain,
-	checkDuplicateIps = false,
+	checkDuplicateIps = true,
 
-	interval = 60 * 1000,
+	interval = 120 * 1000,
 
 	-- per hour | system will calculate how many coins will be given and when
 	-- put 0 in coinsPerHour.free to disable free from receiving coins
 	coinsPerHour = {
-		free = 1,
-		vip = 5,
+		free = 5,
+		vip = 10,
 	},
 
 	-- system will distribute when the player accumulate x coins
-	awardOn = 5,
+	awardOn = 1,
 }
 
 local onlineCoinsEvent = GlobalEvent("GainCoinInterval")
@@ -35,6 +35,10 @@ function onlineCoinsEvent.onThink(interval)
 			goto continue
 		end
 
+		if player:inPrison() then
+			goto continue
+		end
+
 		local ip = player:getIp()
 		if ip ~= 0 and (not config.checkDuplicateIps or not checkIp[ip]) then
 			checkIp[ip] = true
@@ -43,8 +47,8 @@ function onlineCoinsEvent.onThink(interval)
 			player:setStorageValue(config.storage, coins * 10000000)
 			if coins >= config.awardOn then
 				local coinsMath = math.floor(coins)
-				player:addTibiaCoins(coinsMath, true)
-				player:sendTextMessage(MESSAGE_FAILURE, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), coinsMath, "tibia coins"))
+				player:addTibiaCoins(coinsMath)
+				player:sendTextMessage(MESSAGE_STATUS_SMALL, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), coinsMath, "tibia coins"))
 				player:setStorageValue(config.storage, (coins - coinsMath) * 10000000)
 			end
 		end

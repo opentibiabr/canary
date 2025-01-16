@@ -45,17 +45,17 @@ function Player.onAddVip(self, days, silent)
 	self:kv():scoped("account"):set("vip-system", true)
 end
 
-function Player.sendVipStatus(self)
-	if self:getVipDays() == 0xFFFF then
-		self:sendTextMessage(MESSAGE_LOGIN, "You have unlimited VIP status.")
+function CheckPremiumAndPrint(player, msgType)
+	if player:getVipDays() == 0xFFFF then
+		player:sendTextMessage(msgType, "You have an unlimited VIP status.")
 		return true
 	end
 
-	local playerVipTime = self:getVipTime()
+	local playerVipTime = player:getVipTime()
 	if playerVipTime < os.time() then
-		self:sendTextMessage(MESSAGE_STATUS, "Your VIP status is currently inactive.")
+		player:sendTextMessage(msgType, "Your VIP status is currently inactive.")
 		return true
 	end
 
-	self:sendTextMessage(MESSAGE_LOGIN, string.format("You have %s of VIP time remaining.", getFormattedTimeRemaining(playerVipTime)))
+	player:sendTextMessage(msgType, string.format("You have %s of VIP time remaining.", getFormattedTimeRemaining(playerVipTime)))
 end

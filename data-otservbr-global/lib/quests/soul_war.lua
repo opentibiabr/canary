@@ -30,13 +30,14 @@ SoulWarQuest = {
 
 	timeToReturnImmuneMegalomania = 70, -- In seconds
 
-	bagYouDesireChancePerTaint = 10, -- Increases % per taint
+	baseBagYouDesireChance = 1, -- 1% base chance
+	bagYouDesireChancePerTaint = 1, -- Increases 1% per taint
 	bagYouDesireMonsters = {
 		"Bony Sea Devil",
 		"Brachiodemon",
 		"Branchy Crawler",
 		"Capricious Phantom",
-		"Cloak of Terror",
+		"Cloak Of Terror",
 		"Courage Leech",
 		"Distorted Phantom",
 		"Druid's Apparition",
@@ -49,8 +50,7 @@ SoulWarQuest = {
 		"Rotten Golem",
 		"Sorcerer's Apparition",
 		"Turbulent Elemental",
-		"Vibrant Phantom",
-		"Hazardous Phantom",
+		"Vibrant Phantom.",
 		"Goshnar's Cruelty",
 		"Goshnar's Spite",
 		"Goshnar's Malice",
@@ -267,22 +267,6 @@ SoulWarQuest = {
 				from = Position(33734, 31624, 14),
 				to = Position(33751, 31640, 14),
 			},
-			onUseExtra = function(player)
-				local zone = Zone("boss.goshnar's-spite")
-				if zone then
-					local positions = zone:getPositions()
-					for _, pos in ipairs(positions) do
-						local tile = Tile(pos)
-						if tile then
-							local item = tile:getItemById(SoulWarQuest.weepingSoulCorpseId)
-							if item then
-								logger.debug("Weeping Soul Corpse removed from position: {}", pos)
-								item:remove()
-							end
-						end
-					end
-				end
-			end,
 			exit = Position(33621, 31427, 10),
 			timeToFightAgain = 20 * 60 * 60, -- 20 hours
 		},
@@ -387,7 +371,6 @@ SoulWarQuest = {
 			timeToFightAgain = 20 * 60 * 60, -- 20 hours
 			onUseExtra = function(player)
 				SoulWarQuest.kvSoulWar:remove("greedy-maw-action")
-				SoulWarQuest.kvSoulWar:remove("goshnars-cruelty-defense-drain")
 				player:soulWarQuestKV():scoped("furious-crater"):remove("greedy-maw-action")
 			end,
 		},
@@ -434,13 +417,6 @@ SoulWarQuest = {
 		{ 135, "Spark of Burning Hatred" },
 		{ 90, "Flame of Burning Hatred" },
 		{ 45, "Blaze of Burning Hatred" },
-	},
-
-	burningHatredMonsters = {
-		"Ashes of Burning Hatred",
-		"Spark of Burning Hatred",
-		"Flame of Burning Hatred",
-		"Blaze of Burning Hatred",
 	},
 
 	requiredCountPerApparition = 25,
@@ -1089,36 +1065,42 @@ function Monster:createSoulWarWhiteTiles(centerRoomPosition, zonePositions, exec
 	addEvent(revertTilesAndApplyDamage, executeInterval or 3000, zonePositions)
 end
 
-function MonsterType:calculateBagYouDesireChance(player, itemChance)
+function Monster:generateBagYouDesireLoot(player)
 	local playerTaintLevel = player:getTaintLevel()
 	if not playerTaintLevel or playerTaintLevel == 0 then
-		return itemChance
+		return {}
 	end
 
 	local monsterName = self:getName()
 	local isMonsterValid = table.contains(SoulWarQuest.bagYouDesireMonsters, monsterName)
 	if not isMonsterValid then
-		return itemChance
+		return {}
 	end
 
+	local loot = {}
+	local totalChance = SoulWarQuest.baseBagYouDesireChance
 	local soulWarQuest = player:soulWarQuestKV()
 	local megalomaniaKills = soulWarQuest:scoped("megalomania-kills"):get("count") or 0
 
 	if monsterName == "Goshnar's Megalomania" then
 		-- Special handling for Goshnar's Megalomania
-		itemChance = itemChance + megalomaniaKills * SoulWarQuest.bagYouDesireChancePerTaint
+		totalChance = totalChance + megalomaniaKills * SoulWarQuest.bagYouDesireChancePerTaint
 	else
 		-- General handling for other monsters (bosses and non-bosses)
-		itemChance = itemChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
+		totalChance = totalChance + (playerTaintLevel * SoulWarQuest.bagYouDesireChancePerTaint)
 	end
 
-	logger.debug("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, itemChance)
+	logger.trace("Player {} killed {} with {} taints, loot chance {}", player:getName(), monsterName, playerTaintLevel, totalChance)
 
-	if math.random(1, 100000) <= itemChance then
-		logger.debug("Player {} killed {} and got a bag you desire with drop chance {}", player:getName(), monsterName, itemChance)
-		if monsterName == "Goshnar's Megalomania" then
-			-- Reset kill count on successful drop
-			soulWarQuest:scoped("megalomania-kills"):set("count", 0)
+	if math.random(1, 100) <= totalChance then
+		local itemType = ItemType(SoulWarQuest.bagYouDesireItemId)
+		if itemType then
+			loot[itemType:getId()] = { count = 1 }
+			logger.debug("Player {} killed {} and got a bag you desire with drop chance {}", player:getName(), monsterName, totalChance)
+			if monsterName == "Goshnar's Megalomania" then
+				-- Reset kill count on successful drop
+				soulWarQuest:scoped("megalomania-kills"):set("count", 0)
+			end
 		end
 	else
 		if monsterName == "Goshnar's Megalomania" then
@@ -1127,7 +1109,7 @@ function MonsterType:calculateBagYouDesireChance(player, itemChance)
 		end
 	end
 
-	return itemChance
+	return loot
 end
 
 local intervalBetweenExecutions = 10000
@@ -1213,15 +1195,7 @@ function Player:resetTaints(skipCheckTime)
 		end
 		self:resetTaintConditions()
 		soulWarQuest:remove("firstTaintTime")
-		local resetMessage = "Your Goshnar's taints have been reset."
-		if not skipCheckTime then
-			resetMessage = resetMessage .. " You didn't finish the quest in 14 days."
-		end
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, resetMessage)
-
-		for bossName, _ in pairs(SoulWarQuest.miniBosses) do
-			soulWarQuest:remove(bossName)
-		end
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your goshnar's taints have been reset. You didn't finish the quest in 14 days")
 	end
 end
 
@@ -1294,7 +1268,7 @@ end
 
 function Monster:increaseHatredDamageMultiplier(multiplierCount)
 	local attackMultiplier = self:getHatredDamageMultiplier()
-	self:getSoulWarKV():set("burning-hatred-empowered", attackMultiplier + multiplierCount)
+	self:getSoulWarKV():set("burning-hatred-empowered", attackMultiplier + multiplierCount or 10)
 end
 
 function Monster:resetHatredDamageMultiplier()
@@ -1347,12 +1321,6 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 	for i = 1, #spectators do
 		local player = spectators[i]
 		local tormentCounter = player:getGoshnarSymbolTormentCounter()
-		local goshnarsHatred = Creature(bossName or "Goshnar's Megalomania")
-		if not goshnarsHatred then
-			player:resetGoshnarSymbolTormentCounter()
-			goto continue
-		end
-
 		if tormentCounter <= maxLimit then
 			player:increaseGoshnarSymbolTormentCounter(maxLimit)
 			logger.trace("Player {} has {} damage counter", player:getName(), tormentCounter)
@@ -1380,8 +1348,6 @@ function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetwee
 		elseif tormentCounter == 36 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The dread's torment is now lethal!")
 		end
-
-		::continue::
 	end
 end
 
@@ -1395,7 +1361,6 @@ function Monster:increaseAspectOfPowerDeathCount()
 		self:setType("Goshnar's Megalomania Green")
 		self:say("THE DEATH OF ASPECTS DIMINISHES GOSHNAR'S POWER AND HE TURNS VULNERABLE!")
 		bossKV:set("aspect-of-power-death-count", 0)
-		SoulWarQuest.changeBlueEvent = addEvent(SoulWarQuest.changeMegalomaniaBlue, 1 * 60 * 1000)
 		logger.trace("Aspect of Power defeated all and Megalomania is now vulnerable, reseting death count.")
 		SoulWarQuest.changePurpleEvent = addEvent(function()
 			local boss = Creature("Goshnar's Megalomania")
@@ -1414,31 +1379,15 @@ function Monster:goshnarsDefenseIncrease(kvName)
 	local lastItemUseTime = SoulWarQuest.kvSoulWar:get(kvName) or 0
 	-- Checks if more than config time have passed since the item was last used.
 	if currentTime >= lastItemUseTime + SoulWarQuest.timeToIncreaseCrueltyDefense then
+		logger.trace("{} old defense {}", self:getName(), self:getDefense())
 		self:addDefense(SoulWarQuest.goshnarsCrueltyDefenseChange)
-		-- Register the drain callback to modify the damage for goshnar's cruelty
-		local newValue = SoulWarQuest.kvSoulWar:get("goshnars-cruelty-defense-drain") or SoulWarQuest.goshnarsCrueltyDefenseChange
-		SoulWarQuest.kvSoulWar:set("goshnars-cruelty-defense-drain", newValue + 1) -- Increment the value to track usage or modifications
+		logger.trace("{} new defense {}", self:getName(), self:getDefense())
 
 		--- Updates the KV to reflect the timing of the increase to maintain control.
 		SoulWarQuest.kvSoulWar:set(kvName, currentTime)
 	else
 		-- If config time have not passed, logs the increase has been skipped.
 		logger.trace("{} skips increase cooldown due to recent item use.", self:getName())
-	end
-end
-
-function Monster:removeGoshnarsMegalomaniaMonsters(zone)
-	if self:getName() ~= "Goshnar's Megalomania" then
-		return
-	end
-
-	if zone then
-		local creatures = zone:getCreatures()
-		for _, creature in ipairs(creatures) do
-			if creature:getMonster() then
-				creature:remove()
-			end
-		end
 	end
 end
 
@@ -1455,7 +1404,7 @@ function Player:getSoulWarZoneMonster()
 	return zoneMonsterName
 end
 
-function Creature:isInBoatSpot()
+function Player:isInBoatSpot()
 	-- Get ebb and flow zone and check if player is in zone
 	local zone = SoulWarQuest.ebbAndFlow.getZone()
 	local tile = Tile(self:getPosition())
@@ -1464,11 +1413,11 @@ function Creature:isInBoatSpot()
 		groundId = tile:getGround():getId()
 	end
 	if zone and zone:isInZone(self:getPosition()) and tile and groundId == SoulWarQuest.ebbAndFlow.boatId then
-		logger.trace("Creature {} is in boat spot", self:getName())
+		logger.trace("Player {} is in boat spot", self:getName())
 		return true
 	end
 
-	logger.trace("Creature {} is not in boat spot", self:getName())
+	logger.trace("Player {} is not in boat spot", self:getName())
 	return false
 end
 
@@ -1528,8 +1477,6 @@ function Zone:getRandomPlayer()
 	return players[randomIndex]
 end
 
-local conditionOutfit = Condition(CONDITION_OUTFIT)
-
 local function delayedCastSpell(cid, var, combat, targetId)
 	local creature = Creature(cid)
 	if not creature then
@@ -1539,7 +1486,6 @@ local function delayedCastSpell(cid, var, combat, targetId)
 	local target = Player(targetId)
 	if target then
 		combat:execute(creature, positionToVariant(target:getPosition()))
-		target:removeCondition(conditionOutfit)
 	end
 end
 
@@ -1560,12 +1506,31 @@ function Creature:applyZoneEffect(var, combat, zoneName)
 		return true
 	end
 
-	conditionOutfit:setTicks(outfitConfig.time)
-	conditionOutfit:setOutfit(outfitConfig.outfit)
-	target:addCondition(conditionOutfit)
+	local condition = Condition(CONDITION_OUTFIT)
+	condition:setTicks(outfitConfig.time)
+	condition:setOutfit(outfitConfig.outfit)
+	target:addCondition(condition)
 	target:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 
 	addEvent(delayedCastSpell, SoulWarQuest.goshnarsCrueltyWaveInterval * 1000, self:getId(), var, combat, target:getId())
 
 	return true
+end
+
+function string.toPosition(str)
+	local patterns = {
+		-- table format
+		"{%s*x%s*=%s*(%d+)%s*,%s*y%s*=%s*(%d+)%s*,%s*z%s*=%s*(%d+)%s*}",
+		-- Position format
+		"Position%s*%((%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
+		-- x, y, z format
+		"(%d+)%s*,%s*(%d+)%s*,%s*(%d+)",
+	}
+
+	for _, pattern in ipairs(patterns) do
+		local x, y, z = string.match(str, pattern)
+		if x and y and z then
+			return Position(tonumber(x), tonumber(y), tonumber(z))
+		end
+	end
 end

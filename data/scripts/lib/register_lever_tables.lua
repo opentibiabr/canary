@@ -1,4 +1,5 @@
 AscendingFerumbrasConfig = {
+	mortalShell = "Ferumbras Mortal Shell",
 	bossName = "Ascending Ferumbras",
 	summonName = "Rift Invader",
 	maxSummon = 15,

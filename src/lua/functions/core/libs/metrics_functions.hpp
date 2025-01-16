@@ -9,7 +9,9 @@
 
 #pragma once
 
-class MetricsFunctions {
+#include "lua/scripts/luascript.hpp"
+
+class MetricsFunctions final : public LuaScriptInterface {
 public:
 	static void init(lua_State* L);
 

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "lua/scripts/luascript.hpp"
+
 /**
  * @class EventCallbackFunctions
  * @brief Provides a set of static functions for working with Event Callbacks in Lua.
@@ -16,7 +18,7 @@
  * @details This class encapsulates the Lua binding functions related to event callbacks,
  * allowing for interaction between the C++ codebase and Lua scripts.
  */
-class EventCallbackFunctions {
+class EventCallbackFunctions : public LuaScriptInterface {
 public:
 	/**
 	 * @brief Initializes the Lua state with the event callback functions.

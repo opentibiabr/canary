@@ -111,7 +111,10 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onSpawn = function(monster, spawnPosition)
+mType.onAppear = function(monster, creature)
+	if monster ~= creature then
+		return true
+	end
 	for i = 1, 5 do
 		local sum = Game.createMonster(monster:getType():getSummonList()[math.random(1, #monster:getType():getSummonList())].name, monster:getPosition(), true)
 		if sum then

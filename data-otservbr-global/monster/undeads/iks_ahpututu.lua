@@ -15,7 +15,7 @@ monster.outfit = {
 
 monster.raceId = 2349
 monster.Bestiary = {
-	class = "Undead",
+	class = "Iks",
 	race = BESTY_RACE_UNDEAD,
 	toKill = 5,
 	FirstUnlock = 1,

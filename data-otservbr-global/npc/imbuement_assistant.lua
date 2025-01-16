@@ -104,7 +104,7 @@ local imbuementPackagesData = {
 	-- Skill increase packages
 	["bash"] = {
 		text = "skill club",
-		moneyRequired = 6250,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9657, count = 20 }, -- cyclops toe
 			{ itemId = 22189, count = 15 }, -- ogre nose ring
@@ -113,7 +113,7 @@ local imbuementPackagesData = {
 	},
 	["blockade"] = {
 		text = "skill shield",
-		moneyRequired = 16150,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9641, count = 20 }, -- piece of scarab shell
 			{ itemId = 11703, count = 25 }, -- brimstone shell
@@ -122,7 +122,7 @@ local imbuementPackagesData = {
 	},
 	["chop"] = {
 		text = "skill axe",
-		moneyRequired = 13050,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 10196, count = 20 }, -- orc tooth
 			{ itemId = 11447, count = 25 }, -- battle stone
@@ -131,7 +131,7 @@ local imbuementPackagesData = {
 	},
 	["epiphany"] = {
 		text = "magic level",
-		moneyRequired = 10650,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9635, count = 25 }, -- elvish talisman
 			{ itemId = 11452, count = 15 }, -- broken shamanic staff
@@ -140,7 +140,7 @@ local imbuementPackagesData = {
 	},
 	["precision"] = {
 		text = "skill distance",
-		moneyRequired = 6750,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 11464, count = 25 }, -- elven scouting glass
 			{ itemId = 18994, count = 20 }, -- elven hoof
@@ -149,7 +149,7 @@ local imbuementPackagesData = {
 	},
 	["slash"] = {
 		text = "skill sword",
-		moneyRequired = 6550,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9691, count = 25 }, -- lion's mane
 			{ itemId = 21202, count = 25 }, -- mooh'tah shell
@@ -159,7 +159,7 @@ local imbuementPackagesData = {
 	-- Additional attributes packages
 	["featherweight"] = {
 		text = "capacity increase",
-		moneyRequired = 12250,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 25694, count = 20 }, -- fairy wings
 			{ itemId = 25702, count = 10 }, -- little bowl of myrrh
@@ -168,7 +168,7 @@ local imbuementPackagesData = {
 	},
 	["strike"] = {
 		text = "critical",
-		moneyRequired = 16700,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 11444, count = 20 }, -- protective charm
 			{ itemId = 10311, count = 25 }, -- sabretooth
@@ -177,7 +177,7 @@ local imbuementPackagesData = {
 	},
 	["swiftness"] = {
 		text = "speed",
-		moneyRequired = 5225,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 17458, count = 15 }, -- damselfly wing
 			{ itemId = 10302, count = 25 }, -- compass
@@ -186,7 +186,7 @@ local imbuementPackagesData = {
 	},
 	["vampirism"] = {
 		text = "life leech",
-		moneyRequired = 10475,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9685, count = 25 }, -- vampire teeth
 			{ itemId = 9633, count = 15 }, -- bloody pincers
@@ -195,7 +195,7 @@ local imbuementPackagesData = {
 	},
 	["vibrancy"] = {
 		text = "paralysis removal",
-		moneyRequired = 15000,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 22053, count = 20 }, -- wereboar hooves
 			{ itemId = 23507, count = 15 }, -- crystallized anger
@@ -204,7 +204,7 @@ local imbuementPackagesData = {
 	},
 	["void"] = {
 		text = "mana leech",
-		moneyRequired = 17400,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 11492, count = 25 }, -- rope belt
 			{ itemId = 20200, count = 25 }, -- silencer claws
@@ -214,7 +214,7 @@ local imbuementPackagesData = {
 	-- Elemental damage packages
 	["electrify"] = {
 		text = "energy damage",
-		moneyRequired = 3770,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 18993, count = 25 }, -- rorc feather
 			{ itemId = 21975, count = 5 }, -- peacock feather fan
@@ -223,7 +223,7 @@ local imbuementPackagesData = {
 	},
 	["frost"] = {
 		text = "ice damage",
-		moneyRequired = 9750,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9661, count = 25 }, -- frosty heart
 			{ itemId = 21801, count = 10 }, -- seacrest hair
@@ -232,7 +232,7 @@ local imbuementPackagesData = {
 	},
 	["reap"] = {
 		text = "death damage",
-		moneyRequired = 3475,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 11484, count = 25 }, -- pile of grave earth
 			{ itemId = 9647, count = 20 }, -- demonic skeletal hand
@@ -241,7 +241,7 @@ local imbuementPackagesData = {
 	},
 	["scorch"] = {
 		text = "fire damage",
-		moneyRequired = 15875,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9636, count = 25 }, -- fiery heart
 			{ itemId = 5920, count = 5 }, -- green dragon scale
@@ -250,7 +250,7 @@ local imbuementPackagesData = {
 	},
 	["venom"] = {
 		text = "earth damage",
-		moneyRequired = 1820,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9686, count = 25 }, -- swamp grass
 			{ itemId = 9640, count = 20 }, -- poisonous slime
@@ -260,7 +260,7 @@ local imbuementPackagesData = {
 	-- Elemental protection packages
 	["cloud fabric"] = {
 		text = "energy protection",
-		moneyRequired = 13775,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9644, count = 20 }, -- wyvern talisman
 			{ itemId = 14079, count = 15 }, -- crawler head plating
@@ -269,7 +269,7 @@ local imbuementPackagesData = {
 	},
 	["demon presence"] = {
 		text = "holy protection",
-		moneyRequired = 20250,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 9639, count = 25 }, -- cultish robe
 			{ itemId = 9638, count = 25 }, -- cultish mask
@@ -278,7 +278,7 @@ local imbuementPackagesData = {
 	},
 	["dragon hide"] = {
 		text = "fire protection",
-		moneyRequired = 10850,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 5877, count = 20 }, -- green dragon leather
 			{ itemId = 16131, count = 10 }, -- blazing bone
@@ -287,7 +287,7 @@ local imbuementPackagesData = {
 	},
 	["lich shroud"] = {
 		text = "death protection",
-		moneyRequired = 5650,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 11466, count = 25 }, -- flask of embalming fluid
 			{ itemId = 22007, count = 20 }, -- gloom wolf fur
@@ -296,7 +296,7 @@ local imbuementPackagesData = {
 	},
 	["quara scale"] = {
 		text = "ice protection",
-		moneyRequired = 3650,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 10295, count = 25 }, -- winter wolf fur
 			{ itemId = 10307, count = 15 }, -- thick fur
@@ -305,7 +305,7 @@ local imbuementPackagesData = {
 	},
 	["snake skin"] = {
 		text = "earth protection",
-		moneyRequired = 12550,
+		moneyRequired = 500000,
 		itemList = {
 			{ itemId = 17823, count = 25 }, -- piece of swampling wood
 			{ itemId = 9694, count = 20 }, -- snake skin
@@ -365,75 +365,75 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "battle stone", clientId = 11447, buy = 290 },
-	{ itemName = "blazing bone", clientId = 16131, buy = 610 },
-	{ itemName = "bloody pincers", clientId = 9633, buy = 100 },
-	{ itemName = "brimstone fangs", clientId = 11702, buy = 380 },
-	{ itemName = "brimstone shell", clientId = 11703, buy = 210 },
-	{ itemName = "broken shamanic staff", clientId = 11452, buy = 35 },
-	{ itemName = "compass", clientId = 10302, buy = 45 },
-	{ itemName = "crawler head plating", clientId = 14079, buy = 210 },
-	{ itemName = "crystallized anger", clientId = 23507, buy = 400 },
-	{ itemName = "cultish mask", clientId = 9638, buy = 280 },
-	{ itemName = "cultish robe", clientId = 9639, buy = 150 },
-	{ itemName = "cyclops toe", clientId = 9657, buy = 55 },
-	{ itemName = "damselfly wing", clientId = 17458, buy = 20 },
-	{ itemName = "deepling warts", clientId = 14012, buy = 180 },
-	{ itemName = "demon horn", clientId = 5954, buy = 1000 },
-	{ itemName = "demonic skeletal hand", clientId = 9647, buy = 80 },
-	{ itemName = "draken sulphur", clientId = 11658, buy = 550 },
-	{ itemName = "elven hoof", clientId = 18994, buy = 115 },
-	{ itemName = "elven scouting glass", clientId = 11464, buy = 50 },
-	{ itemName = "elvish talisman", clientId = 9635, buy = 45 },
-	{ itemName = "energy vein", clientId = 23508, buy = 270 },
-	{ itemName = "fairy wings", clientId = 25694, buy = 200 },
-	{ itemName = "fiery heart", clientId = 9636, buy = 375 },
-	{ itemName = "flask of embalming fluid", clientId = 11466, buy = 30 },
-	{ itemName = "frazzle skin", clientId = 20199, buy = 400 },
-	{ itemName = "frosty heart", clientId = 9661, buy = 280 },
-	{ itemName = "gloom wolf fur", clientId = 22007, buy = 70 },
-	{ itemName = "goosebump leather", clientId = 20205, buy = 650 },
-	{ itemName = "green dragon leather", clientId = 5877, buy = 100 },
-	{ itemName = "green dragon scale", clientId = 5920, buy = 100 },
-	{ itemName = "hellspawn tail", clientId = 10304, buy = 475 },
-	{ itemName = "lion's mane", clientId = 9691, buy = 60 },
-	{ itemName = "little bowl of myrrh", clientId = 25702, buy = 500 },
-	{ itemName = "metal spike", clientId = 10298, buy = 320 },
-	{ itemName = "mooh'tah shell", clientId = 21202, buy = 110 },
-	{ itemName = "moohtant horn", clientId = 21200, buy = 140 },
-	{ itemName = "mystical hourglass", clientId = 9660, buy = 700 },
-	{ itemName = "ogre nose ring", clientId = 22189, buy = 210 },
-	{ itemName = "orc tooth", clientId = 10196, buy = 150 },
-	{ itemName = "peacock feather fan", clientId = 21975, buy = 350 },
-	{ itemName = "petrified scream", clientId = 10420, buy = 250 },
-	{ itemName = "piece of dead brain", clientId = 9663, buy = 420 },
-	{ itemName = "piece of scarab shell", clientId = 9641, buy = 45 },
-	{ itemName = "piece of swampling wood", clientId = 17823, buy = 30 },
-	{ itemName = "pile of grave earth", clientId = 11484, buy = 25 },
-	{ itemName = "poisonous slime", clientId = 9640, buy = 50 },
-	{ itemName = "polar bear paw", clientId = 9650, buy = 30 },
-	{ itemName = "protective charm", clientId = 11444, buy = 60 },
-	{ itemName = "quill", clientId = 28567, buy = 1100 },
-	{ itemName = "rope belt", clientId = 11492, buy = 66 },
-	{ itemName = "rorc feather", clientId = 18993, buy = 70 },
-	{ itemName = "sabretooth", clientId = 10311, buy = 400 },
-	{ itemName = "seacrest hair", clientId = 21801, buy = 260 },
-	{ itemName = "silencer claws", clientId = 20200, buy = 390 },
-	{ itemName = "slime heart", clientId = 21194, buy = 160 },
-	{ itemName = "snake skin", clientId = 9694, buy = 400 },
-	{ itemName = "some grimeleech wings", clientId = 22730, buy = 1200 },
-	{ itemName = "strand of medusa hair", clientId = 10309, buy = 600 },
-	{ itemName = "swamp grass", clientId = 9686, buy = 20 },
-	{ itemName = "thick fur", clientId = 10307, buy = 150 },
-	{ itemName = "vampire teeth", clientId = 9685, buy = 275 },
-	{ itemName = "vexclaw talon", clientId = 22728, buy = 1100 },
-	{ itemName = "war crystal", clientId = 9654, buy = 460 },
-	{ itemName = "warmaster's wristguards", clientId = 10405, buy = 200 },
-	{ itemName = "waspoid wing", clientId = 14081, buy = 190 },
-	{ itemName = "wereboar hooves", clientId = 22053, buy = 175 },
-	{ itemName = "winter wolf fur", clientId = 10295, buy = 20 },
-	{ itemName = "wyrm scale", clientId = 9665, buy = 400 },
-	{ itemName = "wyvern talisman", clientId = 9644, buy = 265 },
+	{ itemName = "battle stone", clientId = 11447, buy = 32090 },
+	{ itemName = "blazing bone", clientId = 16131, buy = 33610 },
+	{ itemName = "bloody pincers", clientId = 9633, buy = 31100 },
+	{ itemName = "brimstone fangs", clientId = 11702, buy = 31380 },
+	{ itemName = "brimstone shell", clientId = 11703, buy = 31210 },
+	{ itemName = "broken shamanic staff", clientId = 11452, buy = 19935 },
+	{ itemName = "compass", clientId = 10302, buy = 1745 },
+	{ itemName = "crawler head plating", clientId = 14079, buy = 19910 },
+	{ itemName = "crystallized anger", clientId = 23507, buy = 31200 },
+	{ itemName = "cultish mask", clientId = 9638, buy = 22980 },
+	{ itemName = "cultish robe", clientId = 9639, buy = 22850 },
+	{ itemName = "cyclops toe", clientId = 9657, buy = 12255 },
+	{ itemName = "damselfly wing", clientId = 17458, buy = 7280 },
+	{ itemName = "deepling warts", clientId = 14012, buy = 8680 },
+	{ itemName = "demon horn", clientId = 5954, buy = 13000 },
+	{ itemName = "demonic skeletal hand", clientId = 9647, buy = 9280 },
+	{ itemName = "draken sulphur", clientId = 11658, buy = 11150 },
+	{ itemName = "elven hoof", clientId = 18994, buy = 6715 },
+	{ itemName = "elven scouting glass", clientId = 11464, buy = 6250 },
+	{ itemName = "elvish talisman", clientId = 9635, buy = 9645 },
+	{ itemName = "energy vein", clientId = 23508, buy = 4770 },
+	{ itemName = "fairy wings", clientId = 25694, buy = 12800 },
+	{ itemName = "fiery heart", clientId = 9636, buy = 12975 },
+	{ itemName = "flask of embalming fluid", clientId = 31466, buy = 330 },
+	{ itemName = "frazzle skin", clientId = 20199, buy = 31200 },
+	{ itemName = "frosty heart", clientId = 9661, buy = 19980 },
+	{ itemName = "gloom wolf fur", clientId = 22007, buy = 17670 },
+	{ itemName = "goosebump leather", clientId = 20205, buy = 31250 },
+	{ itemName = "green dragon leather", clientId = 5877, buy = 12400 },
+	{ itemName = "green dragon scale", clientId = 5920, buy = 12400 },
+	{ itemName = "hellspawn tail", clientId = 10304, buy = 21275 },
+	{ itemName = "lion's mane", clientId = 9691, buy = 8360 },
+	{ itemName = "little bowl of myrrh", clientId = 25702, buy = 21100 },
+	{ itemName = "metal spike", clientId = 10298, buy = 19920 },
+	{ itemName = "mooh'tah shell", clientId = 21202, buy = 19610 },
+	{ itemName = "moohtant horn", clientId = 21200, buy = 12440 },
+	{ itemName = "mystical hourglass", clientId = 9660, buy = 11100 },
+	{ itemName = "ogre nose ring", clientId = 22189, buy = 16610 },
+	{ itemName = "orc tooth", clientId = 10196, buy = 8150 },
+	{ itemName = "peacock feather fan", clientId = 21975, buy = 7650 },
+	{ itemName = "petrified scream", clientId = 10420, buy = 9050 },
+	{ itemName = "piece of dead brain", clientId = 9663, buy = 11220 },
+	{ itemName = "piece of scarab shell", clientId = 9641, buy = 10445 },
+	{ itemName = "piece of swampling wood", clientId = 17823, buy = 10300 },
+	{ itemName = "pile of grave earth", clientId = 11484, buy = 8225 },
+	{ itemName = "poisonous slime", clientId = 9640, buy = 8350 },
+	{ itemName = "polar bear paw", clientId = 9650, buy = 8330 },
+	{ itemName = "protective charm", clientId = 11444, buy = 9560 },
+	{ itemName = "quill", clientId = 28567, buy = 23000 },
+	{ itemName = "rope belt", clientId = 11492, buy = 9266 },
+	{ itemName = "rorc feather", clientId = 18993, buy = 9570 },
+	{ itemName = "sabretooth", clientId = 10311, buy = 11400 },
+	{ itemName = "seacrest hair", clientId = 21801, buy = 11260 },
+	{ itemName = "silencer claws", clientId = 20200, buy = 11390 },
+	{ itemName = "slime heart", clientId = 21194, buy = 9460 },
+	{ itemName = "snake skin", clientId = 9694, buy = 21400 },
+	{ itemName = "some grimeleech wings", clientId = 22730, buy = 22200 },
+	{ itemName = "strand of medusa hair", clientId = 10309, buy = 21200 },
+	{ itemName = "swamp grass", clientId = 9686, buy = 9620 },
+	{ itemName = "thick fur", clientId = 10307, buy = 14050 },
+	{ itemName = "vampire teeth", clientId = 9685, buy = 18275 },
+	{ itemName = "vexclaw talon", clientId = 22728, buy = 22100 },
+	{ itemName = "war crystal", clientId = 9654, buy = 18160 },
+	{ itemName = "warmaster's wristguards", clientId = 10405, buy = 12900 },
+	{ itemName = "waspoid wing", clientId = 14081, buy = 10890 },
+	{ itemName = "wereboar hooves", clientId = 22053, buy = 10875 },
+	{ itemName = "winter wolf fur", clientId = 10295, buy = 10290 },
+	{ itemName = "wyrm scale", clientId = 9665, buy = 11200 },
+	{ itemName = "wyvern talisman", clientId = 9644, buy = 9965 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

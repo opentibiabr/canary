@@ -91,23 +91,14 @@ local config = {
 	},
 }
 
-local function endConversationWithDelay(npcHandler, npc, creature)
-	addEvent(function()
-		npcHandler:unGreet(npc, creature)
-	end, 1000)
-end
-
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
-	if Player(creature):getCondition(CONDITION_DRUNK) and player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) < 1 then
+	if Player(creature):getCondition(CONDITION_DRUNK) then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey t-there, you look like someone who enjoys a good {booze}.")
-		npcHandler:setInteraction(npc, creature)
 	else
 		npcHandler:say("Oh, two t-trolls. Hellooo, wittle twolls. <hicks>", npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
 		return false
 	end
-
 	return true
 end
 
@@ -119,36 +110,29 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "sober") then
-		if player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) < 1 then
-			npcHandler:say("I wish there was like a {potion} which makes you sober in an instant. Dwarven rings wear off so fast. <hicks>", npc, creature)
+	if MsgContains(message, "potion") then
+		if player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) < 1 then
+			npcHandler:say("It's so hard to know the exact time when to stop drinking. <hicks> C-could you help me to brew such a potion?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, "potion") then
-		if npcHandler:getTopic(playerId) == 1 then
-			if player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) < 1 then
-				npcHandler:say("It's so hard to know the exact time when to stop drinking. <hicks> C-could you help me to brew such a potion?", npc, creature)
-				npcHandler:setTopic(playerId, 2)
-			end
-		end
 	elseif config[message] and npcHandler:getTopic(playerId) == 0 then
-		if player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) == config[message].storageValue then
+		if player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) == config[message].storageValue then
 			npcHandler:say(config[message].text[1], npc, creature)
-			npcHandler:setTopic(playerId, 4)
+			npcHandler:setTopic(playerId, 3)
 			topic[playerId] = message
 		else
 			npcHandler:say(config[message].text[2], npc, creature)
 		end
 	elseif MsgContains(message, "secret") then
-		if player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) == 8 then
+		if player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) == 8 then
 			npcHandler:say("Right. <hicks> Since you helped me to b-brew that potion and thus ensured the high quality of my work <hicks>, I'll give you my old assassin costume. It lacks the head part, but it's almost like new. Don't pretend to be me though, 'kay? <hicks>", npc, creature)
 			player:addOutfit(156)
 			player:addOutfit(152)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
-			player:setStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit, 9)
+			player:setStorageValue(Storage.OutfitQuest.AssassinBaseOutfit, 9)
 		end
 	elseif MsgContains(message, "yes") then
-		if npcHandler:getTopic(playerId) == 2 then
+		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
 				"You're a true buddy. I promise I will t-try to avoid killing you even if someone asks me to. <hicks> ...",
 				"Listen, I have this old formula from my grandma. <hicks> It says... 30 {bonelord eyes}... 10 {red dragon scales}. ...",
@@ -156,15 +140,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Add 20 ounces of {vampire dust}, 10 ounces of {demon dust} and mix well with one flask of {warrior's sweat}. <hicks> ...",
 				"Okayyy, this is a lot... we'll take this step by step. <hicks> Will you help me gathering 30 {bonelord eyes}?",
 			}, npc, creature)
-			npcHandler:setTopic(playerId, 3)
-		elseif npcHandler:getTopic(playerId) == 3 then
+			npcHandler:setTopic(playerId, 2)
+		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
 				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			end
-			player:setStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit, 1)
+			player:setStorageValue(Storage.OutfitQuest.AssassinBaseOutfit, 1)
 			npcHandler:say("G-good. Go get them, I'll have a beer in the meantime.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-		elseif npcHandler:getTopic(playerId) == 4 then
+		elseif npcHandler:getTopic(playerId) == 3 then
 			local targetMessage = config[topic[playerId]]
 			local count = targetMessage.count or 1
 			if not player:removeItem(targetMessage.itemId, count) then
@@ -173,14 +157,14 @@ local function creatureSayCallback(npc, creature, type, message)
 				return true
 			end
 
-			player:setStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit, player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) + 1)
+			player:setStorageValue(Storage.OutfitQuest.AssassinBaseOutfit, player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) + 1)
 			npcHandler:say(targetMessage.text[3], npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "no") then
-		if npcHandler:getTopic(playerId) ~= 4 then
+		if npcHandler:getTopic(playerId) ~= 3 then
 			npcHandler:say("Then not <hicks>.", npc, creature)
-		elseif npcHandler:getTopic(playerId) == 4 then
+		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("H-hurry up! <hicks> I have to start working soon.", npc, creature)
 		end
 		npcHandler:setTopic(playerId, 0)
@@ -192,6 +176,14 @@ local function onReleaseFocus(npc, creature)
 	local playerId = creature:getId()
 	topic[playerId] = nil
 end
+
+keywordHandler:addKeyword({ "addon" }, StdModule.say, { npcHandler = npcHandler, text = "I can give you a <hicks> scar as an addon. Nyahahah." })
+keywordHandler:addKeyword({ "booze" }, StdModule.say, { npcHandler = npcHandler, text = "Did I say booze? I meant, {flamingo}. <hicks> Pink birds are kinda cool, don't you think? Especially on a painting." })
+keywordHandler:addKeyword({ "flamingo" }, StdModule.say, { npcHandler = npcHandler, text = "You have to enjoy the word. Like, {flayyyminnngoooo}. Say it with me. <hicks>" })
+keywordHandler:addKeyword({ "flayyyminnngoooo" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, you got it! Hahaha, we understand each other. Good {job}. <hicks>" })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a killer! Yeshindeed! A masterful assassin. I prefer that too 'Peekay'. <hicks>" })
+keywordHandler:addKeyword({ "outfit" }, StdModule.say, { npcHandler = npcHandler, text = "O-outfit? You already have a t-troll outfit. That's good enough for you. <hicks>" })
+keywordHandler:addKeyword({ "sober" }, StdModule.say, { npcHandler = npcHandler, text = "I wish there was like a {potion} which makes you sober in an instant. Dwarven rings wear off so fast. <hicks>" })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "T-time for another b-beer. <hicks>")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Oh, two t-trolls. Hellooo, wittle twolls. <hicks>")

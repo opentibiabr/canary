@@ -50,21 +50,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function creatureSayCallback(npc, creature, type, message)
-	local player = Player(creature)
-	local playerId = player:getId()
-
-	if not npcHandler:checkInteraction(npc, creature) then
-		return false
-	end
-
-	if MsgContains(message, "cough syrup") then
-		npcHandler:say("The only person who might have some cough syrup is this druid Ustan. You find him in the tavern. Hmmm the tavern ... <hicks>", npc, creature)
-	end
-
-	return true
-end
-
 -- Twist of Fate
 local blessKeyword = keywordHandler:addKeyword({ "twist of fate" }, StdModule.say, {
 	npcHandler = npcHandler,
@@ -84,11 +69,11 @@ keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = 
 end)
 
 local stoneKeyword = keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, you want to replace your adventurer's stone for free?" }, function(player)
-	return player:getStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Brewster) ~= 1
+	return player:getStorageValue(Storage.AdventurersGuild.FreeStone.Brewster) ~= 1
 end)
 stoneKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you are. Take care.", reset = true }, nil, function(player)
 	player:addItem(16277, 1)
-	player:setStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Brewster, 1)
+	player:setStorageValue(Storage.AdventurersGuild.FreeStone.Brewster, 1)
 end)
 stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "No problem.", reset = true })
 
@@ -105,23 +90,23 @@ stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, t
 
 -- Wooden Stake
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "I think you have forgotten to bring your stake, pilgrim." }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 9 and player:getItemCount(5941) == 0
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 9 and player:getItemCount(5941) == 0
 end)
 
 local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, I have been informed and haven't yet drunk enough to forget, so you can count yourself lucky. Are you prepared to <hicks> receive my line of the prayer?" }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 9
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 9
 end)
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "So receive my prayer: 'Your hand shall be guided - your feet shall walk in <hicks> harmony'. Now, take your stake to Tyrias in <hicks> Liberty Bay for the next line of the prayer. I shall let him know what he is to do.", reset = true }, nil, function(player)
-	player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake, 10)
+	player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 10)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 end)
 stakeKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "I'll wait for you.", reset = true })
 
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You should visit Tyrias in Liberty Bay now." }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 10
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 10
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You have already received my line of the prayer. Don't make me do more work than necessary!" }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) > 10
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) > 10
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "A blessed stake? That's a <hicks> strange request. Maybe Quentin knows more, he is one of the oldest monks after all." })
 
@@ -185,8 +170,6 @@ keywordHandler:addAliasKeyword({ "wisdom" })
 npcHandler:setMessage(MESSAGE_GREET, "Welcome, young |PLAYERNAME|! If you are heavily wounded or poisoned, I can {heal} you for free.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Remember: If you are heavily wounded or poisoned, I can heal you for free.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "May the gods bless you, |PLAYERNAME|!")
-
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

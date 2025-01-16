@@ -112,7 +112,7 @@ monster.loot = {
 	{ name = "mysterious remains", chance = 100000 },
 	{ name = "cobra crown", chance = 400 },
 	{ name = "silver token", chance = 2500 },
-	{ name = "elven mail", chance = 3000 },
+	{ name = "elven mail", chance = 1200 },
 }
 
 monster.attacks = {
@@ -144,5 +144,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

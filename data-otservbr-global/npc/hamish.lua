@@ -162,6 +162,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+	local formattedCategoryNames = {}
+	for categoryName, _ in pairs(itemsTable) do
+		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
+	end
+
 	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "dawnport") then
 		npcHandler:say({
@@ -186,8 +191,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				He even has a crush on lady Oressa. Cute. <chuckles>",
 		}, npc, creature, 200)
 	elseif categoryTable then
-		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
-		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
+		npcHandler:say("Take your pick!", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -199,8 +203,6 @@ npcHandler:setMessage(
 	"Hi there, fellow adventurer. \z
 	What's your need? Say {trade} and we'll soon get you fixed up. Or ask me about {potions}, {wands}, or {runes}."
 )
-
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Use your runes wisely!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Use your runes wisely!")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Take your pick! Or maybe you want to look only at {potions}, {wands} or {runes}?")

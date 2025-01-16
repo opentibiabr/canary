@@ -386,7 +386,7 @@ AREA_RING1_BURST3 = {
 	{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
 	{ 0, 1, 1, 1, 1, 1, 1, 1, 0 },
 	{ 1, 1, 1, 0, 0, 0, 1, 1, 1 },
-	{ 1, 1, 1, 0, 2, 0, 1, 1, 1 },
+	{ 1, 1, 1, 0, 3, 0, 1, 1, 1 },
 	{ 1, 1, 1, 0, 0, 0, 1, 1, 1 },
 	{ 0, 1, 1, 1, 1, 1, 1, 1, 0 },
 	{ 0, 0, 1, 1, 1, 1, 1, 0, 0 },
@@ -421,6 +421,14 @@ RANGE = {
 	[17] = { 1, 2 },
 	[18] = { 1, 2 },
 	[19] = { 1, 2 },
+}
+
+DEFAULT_COOLDOWN = {
+	RUNE = 3 * 1000, -- 3 secs
+	RUNE_GROUP = 2 * 1000, -- 2 secs
+
+	SPELL = 3 * 1000, -- 3 secs
+	SPELL_GROUP = 2 * 1000, -- 2 secs
 }
 
 function Creature:addDamageCondition(target, conditionType, listType, damage, time, rounds)

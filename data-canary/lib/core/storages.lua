@@ -21,6 +21,7 @@ Reserved player action storage key ranges (const.hpp)
 	Questline = Storage through the Quest
 ]]
 
+--[[
 Storage = {
 	Quest = {
 		Key = {
@@ -35,6 +36,7 @@ Storage = {
 	DelayLargeSeaShell = 30002,
 	Imbuement = 30004,
 }
+]]
 
 GlobalStorage = {
 	ExampleQuest = {

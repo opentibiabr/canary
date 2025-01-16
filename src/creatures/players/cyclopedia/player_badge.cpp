@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/cyclopedia/player_badge.hpp"
+#include "pch.hpp"
 
-#include "account/account.hpp"
+#include "player_badge.hpp"
+
 #include "creatures/players/player.hpp"
-#include "enums/account_errors.hpp"
-#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
 
@@ -24,7 +23,7 @@ bool PlayerBadge::hasBadge(uint8_t id) const {
 		return false;
 	}
 
-	if (auto it = std::ranges::find_if(m_badgesUnlocked, [id](auto badge_it) {
+	if (auto it = std::find_if(m_badgesUnlocked.begin(), m_badgesUnlocked.end(), [id](auto badge_it) {
 			return badge_it.first.m_id == id;
 		});
 	    it != m_badgesUnlocked.end()) {
@@ -108,61 +107,30 @@ const std::shared_ptr<KV> &PlayerBadge::getUnlockedKV() {
 }
 
 // Badge Calculate Functions
-bool PlayerBadge::accountAge(uint8_t amount) const {
+bool PlayerBadge::accountAge(uint8_t amount) {
 	return std::floor(m_player.getLoyaltyPoints() / 365) >= amount;
 }
 
-bool PlayerBadge::loyalty(uint8_t amount) const {
+bool PlayerBadge::loyalty(uint8_t amount) {
 	return m_player.getLoyaltyPoints() >= amount;
 }
 
-std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const std::shared_ptr<Account> &acc) const {
-	const auto [accountPlayers, error] = acc->getAccountPlayers();
-	if (error != AccountErrors_t::Ok || accountPlayers.empty()) {
-		return {};
-	}
-
-	std::string namesList;
-	for (const auto &[name, _] : accountPlayers) {
-		if (!namesList.empty()) {
-			namesList += ", ";
-		}
-		std::string escapedName = g_database().escapeString(name);
-		namesList += fmt::format("{}", escapedName);
-	}
-
-	auto query = fmt::format("SELECT name, level, vocation FROM players WHERE name IN ({})", namesList);
-	std::vector<std::shared_ptr<Player>> players;
-	DBResult_ptr result = g_database().storeQuery(query);
-	if (result) {
-		do {
-			auto player = std::make_shared<Player>(nullptr);
-			player->setName(result->getString("name"));
-			player->setLevel(result->getNumber<uint32_t>("level"));
-			player->setVocation(result->getNumber<uint16_t>("vocation"));
-			players.push_back(player);
-		} while (result->next());
-	}
-
-	return players;
-}
-
-bool PlayerBadge::accountAllLevel(uint8_t amount) const {
-	auto players = getPlayersInfoByAccount(m_player.getAccount());
+bool PlayerBadge::accountAllLevel(uint8_t amount) {
+	const auto &players = g_game().getPlayersByAccount(m_player.getAccount(), true);
 	uint16_t total = std::accumulate(players.begin(), players.end(), 0, [](uint16_t sum, const std::shared_ptr<Player> &player) {
 		return sum + player->getLevel();
 	});
 	return total >= amount;
 }
 
-bool PlayerBadge::accountAllVocations(uint8_t amount) const {
+bool PlayerBadge::accountAllVocations(uint8_t amount) {
 	auto knight = false;
 	auto paladin = false;
 	auto druid = false;
 	auto sorcerer = false;
-	for (const auto &player : getPlayersInfoByAccount(m_player.getAccount())) {
+	for (const auto &player : g_game().getPlayersByAccount(m_player.getAccount(), true)) {
 		if (player->getLevel() >= amount) {
-			const auto &vocationEnum = player->getPlayerVocationEnum();
+			auto vocationEnum = player->getPlayerVocationEnum();
 			if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 				knight = true;
 			} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
@@ -177,12 +145,12 @@ bool PlayerBadge::accountAllVocations(uint8_t amount) const {
 	return knight && paladin && druid && sorcerer;
 }
 
-bool PlayerBadge::tournamentParticipation(uint8_t skill) const {
+bool PlayerBadge::tournamentParticipation(uint8_t skill) {
 	// todo check if is used
 	return false;
 }
 
-bool PlayerBadge::tournamentPoints(uint8_t race) const {
+bool PlayerBadge::tournamentPoints(uint8_t race) {
 	// todo check if is used
 	return false;
 }

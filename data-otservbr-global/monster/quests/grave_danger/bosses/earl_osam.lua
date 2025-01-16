@@ -14,8 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"earl_osam_transform",
-	"grave_danger_death",
+	"GraveDangerBossDeath",
 }
 
 monster.health = 75000
@@ -98,10 +97,10 @@ monster.loot = {
 	{ name = "guardian axe", chance = 6400 },
 	{ name = "gold ingot", minCount = 0, maxCount = 1, chance = 10000 },
 	{ name = "young lich worm", chance = 5800 },
-	{ name = "embrace of nature", chance = 1600 },
+	{ name = "embrace of nature", chance = 800 },
 	{ name = "token of love", chance = 1200 },
 	{ name = "rotten heart", chance = 1700 },
-	{ name = "terra helmet", chance = 730 },
+	{ name = "terra helmet", chance = 700 },
 	{ name = "final judgement", chance = 440 },
 }
 
@@ -138,5 +137,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

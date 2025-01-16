@@ -20,10 +20,6 @@ monster.corpse = 18174
 monster.speed = 105
 monster.manaCost = 0
 
-monster.events = {
-	"NecromancerServantDeath",
-}
-
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8,
@@ -63,14 +59,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-	{ name = "gold coin", chance = 74230, maxCount = 70 },
-	{ name = "poison arrow", chance = 74230, maxCount = 5 },
-	{ name = "book of necromantic rituals", chance = 74230 },
-	{ name = "incantation fragment", chance = 100000 },
-	{ name = "necromantic robe", chance = 54230 },
-	{ name = "boots of haste", chance = 5000 },
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45 },

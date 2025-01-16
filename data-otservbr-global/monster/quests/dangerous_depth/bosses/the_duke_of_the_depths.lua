@@ -106,12 +106,12 @@ monster.loot = {
 	{ name = "muck rod", chance = 10420 },
 	{ name = "gold token", chance = 10420 },
 	{ name = "crystal coin", chance = 6250 },
-	{ name = "gnome shield", chance = 4170 },
+	{ name = "gnome shield", chance = 1170 },
 	{ name = "crystalline armor", chance = 4170 },
-	{ name = "gnome sword", chance = 4170 },
+	{ name = "gnome sword", chance = 2170 },
 	{ name = "terra mantle", chance = 2080 },
 	{ name = "violet gem", chance = 2080 },
-	{ name = "gnome legs", chance = 3390 },
+	{ name = "gnome legs", chance = 890 },
 }
 
 monster.attacks = {
@@ -151,5 +151,19 @@ monster.immunities = {
 monster.heals = {
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -18,25 +18,17 @@ local function updateWaterPoolsSize()
 end
 
 local function loadMapEmpty()
-	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
-	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
-	if playersInZone > 0 or monstersInZone > 0 then
-		local creatures = SoulWarQuest.ebbAndFlow.getZone():getCreatures()
-		for _, creature in ipairs(creatures) do
-			local creatureMaster = creature:getMaster()
-			local player = creature:getPlayer()
-			if creature:isPlayer() or (creature:isMonster() and creatureMaster and creatureMaster:getPlayer()) then
-				if creature:getPosition().z == 8 then
-					if creature:isInBoatSpot() then
-						local teleportPosition = creature:getPosition()
-						teleportPosition.z = 9
-						creature:teleportTo(teleportPosition)
-						logger.trace("Teleporting player to down.")
-					end
-					if player then
-						player:sendCreatureAppear()
-					end
+	if SoulWarQuest.ebbAndFlow.getZone():countPlayers() > 0 then
+		local players = SoulWarQuest.ebbAndFlow.getZone():getPlayers()
+		for _, player in ipairs(players) do
+			if player:getPosition().z == 8 then
+				if player:isInBoatSpot() then
+					local teleportPosition = player:getPosition()
+					teleportPosition.z = 9
+					player:teleportTo(teleportPosition)
+					logger.trace("Teleporting player to down.")
 				end
+				player:sendCreatureAppear()
 			end
 		end
 	end
@@ -45,7 +37,7 @@ local function loadMapEmpty()
 	SoulWarQuest.ebbAndFlow.setLoadedEmptyMap(true)
 	SoulWarQuest.ebbAndFlow.setActive(false)
 
-	local updatePlayers = EventCallback("UpdatePlayersEmptyEbbFlowMap", true)
+	local updatePlayers = EventCallback("UpdatePlayersEmptyEbbFlowMap")
 	function updatePlayers.mapOnLoad(mapPath)
 		if mapPath ~= SoulWarQuest.ebbAndFlow.mapsPath.empty then
 			return
@@ -80,30 +72,22 @@ local function findNearestRoomPosition(playerPosition)
 end
 
 local function loadMapInundate()
-	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
-	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
-	if playersInZone > 0 or monstersInZone > 0 then
-		local creatures = SoulWarQuest.ebbAndFlow.getZone():getCreatures()
-		for _, creature in ipairs(creatures) do
-			local creatureMaster = creature:getMaster()
-			local player = creature:getPlayer()
-			if creature:isPlayer() or (creature:isMonster() and creatureMaster and creatureMaster:getPlayer()) then
-				local creaturePosition = creature:getPosition()
-				if creaturePosition.z == 9 then
-					if creature:isInBoatSpot() then
-						local nearestCenterPosition = findNearestRoomPosition(creaturePosition)
-						creature:teleportTo(nearestCenterPosition)
-						logger.trace("Teleporting player to the near center position room and updating tile.")
-					else
-						creature:teleportTo(SoulWarQuest.ebbAndFlow.waitPosition)
-						logger.trace("Teleporting player to wait position and updating tile.")
-					end
-					creaturePosition:sendMagicEffect(CONST_ME_TELEPORT)
+	if SoulWarQuest.ebbAndFlow.getZone():countPlayers() > 0 then
+		local players = SoulWarQuest.ebbAndFlow.getZone():getPlayers()
+		for _, player in ipairs(players) do
+			local playerPosition = player:getPosition()
+			if playerPosition.z == 9 then
+				if player:isInBoatSpot() then
+					local nearestCenterPosition = findNearestRoomPosition(playerPosition)
+					player:teleportTo(nearestCenterPosition)
+					logger.trace("Teleporting player to the near center position room and updating tile.")
+				else
+					player:teleportTo(SoulWarQuest.ebbAndFlow.waitPosition)
+					logger.trace("Teleporting player to wait position and updating tile.")
 				end
-				if player then
-					player:sendCreatureAppear()
-				end
+				playerPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			end
+			player:sendCreatureAppear()
 		end
 	end
 
@@ -111,7 +95,7 @@ local function loadMapInundate()
 	SoulWarQuest.ebbAndFlow.setLoadedEmptyMap(false)
 	SoulWarQuest.ebbAndFlow.setActive(true)
 
-	local updatePlayers = EventCallback("UpdatePlayersInundateEbbFlowMap", true)
+	local updatePlayers = EventCallback("UpdatePlayersInundateEbbFlowMap")
 	function updatePlayers.mapOnLoad(mapPath)
 		if mapPath ~= SoulWarQuest.ebbAndFlow.mapsPath.inundate then
 			return

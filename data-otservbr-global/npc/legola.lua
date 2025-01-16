@@ -88,7 +88,7 @@ addGloveKeyword({
 	"Maybe another time.",
 	"Alright! Here is your money, thank you very much.",
 }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove) == 1
+	return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == 1
 end, function(player)
 	player:removeItem(5875, 1)
 	player:addMoney(2000)
@@ -100,10 +100,10 @@ addGloveKeyword({
 	"No problem, maybe another time.",
 	"Great! I hereby grant you the right to wear the sniper gloves as an accessory. Congratulations!",
 }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove) == -1
+	return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == -1
 end, function(player)
 	player:removeItem(5875, 1)
-	player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove, 1)
+	player:setStorageValue(Storage.OutfitQuest.Hunter.AddonGlove, 1)
 	player:addOutfitAddon(129, 2)
 	player:addOutfitAddon(137, 1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)

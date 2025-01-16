@@ -20,10 +20,6 @@ monster.corpse = 775
 monster.speed = 150
 monster.manaCost = 0
 
-monster.events = {
-	"FallenDeath",
-}
-
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8,

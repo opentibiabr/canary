@@ -18,12 +18,6 @@
 
 class MapFunctions final : LuaScriptInterface {
 public:
-	explicit MapFunctions(lua_State* L) :
-		LuaScriptInterface("MapFunctions") {
-		init(L);
-	}
-	~MapFunctions() override = default;
-
 	static void init(lua_State* L) {
 		HouseFunctions::init(L);
 		PositionFunctions::init(L);
@@ -31,4 +25,6 @@ public:
 		TileFunctions::init(L);
 		TownFunctions::init(L);
 	}
+
+private:
 };

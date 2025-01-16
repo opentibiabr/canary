@@ -25,14 +25,11 @@ npcConfig.flags = {
 
 local config = {
 	bet = {
-		min = 10000, -- gold coins // 30k
-		max = 10000000000,
+		min = 10000, -- gold coins // 10k
+		max = 10000000000, -- 10kk
 		win = 180, -- 170% high/low
 		winNum = 500, -- 300% numbers
 	},
-	playerPosition = Position(32352, 32226, 7), -- NpcPos(x-2) player must stay on this position to talk with npc
-	dicerCounter = Position(32352, 32225, 7), --	NpcPos(x-1, y-1) 	counter position
-	diePos = Position(32354, 32225, 7), --NpcPos(y-1)
 }
 
 local keywordHandler = KeywordHandler:new()
@@ -62,6 +59,18 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function hydrateValue(value)
+	local result = value / 1000 --10000000 --10000000000
+	if result >= 1000 then
+		local result2 = result / 1000
+		return string.format("%dkk", result2 >= 1000 and result2 / 1000 or result)
+	else
+		return string.format("%dk", result)
+	end
+end
+
+local function checkPositionByType(type, position) end
+
 local function getCoinValue(id)
 	if id == 3043 then
 		return 10000
@@ -73,9 +82,9 @@ local function getCoinValue(id)
 	return 0
 end
 
-local function getBetValue()
+local function getBetValue(amountPos)
 	local value = 0
-	local tile = Tile(config.dicerCounter)
+	local tile = Tile(amountPos)
 	if tile then
 		local items = tile:getItems()
 		if not items or #items == 0 then
@@ -90,7 +99,8 @@ local function getBetValue()
 			end
 		end
 
-		if value >= config.bet.min and value <= config.bet.max then -- valid bet
+		-- valid bet
+		if value >= config.bet.min and value <= config.bet.max then
 			for _, item in pairs(tempMoney) do
 				item:remove()
 			end
@@ -124,10 +134,17 @@ local function createMoney(money)
 end
 
 local function greetCallback(npc, creature)
-	local player = Player(creature)
-	local playerId = player:getId()
+	--logger.info("npc at position: x {}, y {} , z {}", npc:getPosition().x, npc:getPosition().y, npc:getPosition().z)
 
-	if player:getPosition() ~= config.playerPosition then
+	local player = Player(creature)
+	--logger.info("player at position: x {}, y {} , z {}", player:getPosition().x, player:getPosition().y, player:getPosition().z)
+
+	local npcPos = npc:getPosition()
+
+	local positionToVerify = Position(npcPos.x - 2, npcPos.y, npcPos.z)
+	--logger.info("player need be at position: x {}, y {} , z {}", positionToVerify.x, positionToVerify.y, positionToVerify.z)
+
+	if player:getPosition() ~= positionToVerify then
 		npcHandler:say("If you want to play with me please come near me.", npc, creature)
 		npcHandler:removeInteraction(npc, creature)
 		return false
@@ -143,14 +160,18 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if player:getPosition() ~= config.playerPosition then
+	local npcPos = npc:getPosition()
+	local positionToVerify = Position(npcPos.x - 2, npcPos.y, npcPos.z)
+	if player:getPosition() ~= positionToVerify then
 		npcHandler:unGreet(npc, creature)
 		return false
 	end
+
+	local amountPos = Position(npcPos.x - 1, npcPos.y - 1, npcPos.z)
 	if table.contains({ "low", "high", "h", "l", "1", "2", "3", "4", "5", "6", "odd", "impar", "par", "even" }, message) then
-		local bet = getBetValue()
+		local bet = getBetValue(amountPos)
 		if not bet then
-			npcHandler:say("Your bet is lower than the min {" .. config.bet.min .. "}gps or higher than the max {" .. config.bet.max .. "}gps bet.", npc, creature)
+			npcHandler:say("Your bet is lower than the min " .. hydrateValue(config.bet.min) .. " or higher than the max " .. hydrateValue(config.bet.max) .. " bet.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 			return true
 		end
@@ -160,8 +181,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		local dadimid = { 5792, 5793, 5794, 5795, 5796, 5797 }
 		local daddd = 0
 		local haveDie = false
+		local diePos = Position(npcPos.x, npcPos.y - 1, npcPos.z)
 		for x = 1, 6 do
-			daddd = Tile(config.diePos):getItemById(dadimid[x])
+			daddd = Tile(diePos):getItemById(dadimid[x])
 			if daddd then
 				haveDie = true
 				break
@@ -170,64 +192,64 @@ local function creatureSayCallback(npc, creature, type, message)
 		if haveDie then
 			daddd:transform(dadimid[number])
 		else
-			Game.createItem((5791 + number), 1, config.diePos)
+			Game.createItem((5791 + number), 1, diePos)
 		end
-		npc:say(npc:getName() .. " rolled a " .. number .. ".", TALKTYPE_MONSTER_SAY, false, true, config.diePos)
-		config.diePos:sendMagicEffect(CONST_ME_CRAPS)
+		npc:say(npc:getName() .. " rolled a " .. number .. ".", TALKTYPE_MONSTER_SAY, false, true, diePos)
+		diePos:sendMagicEffect(CONST_ME_CRAPS)
 		if table.contains({ "low", "l" }, message) then
 			if table.contains({ 1, 2, 3 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
-				config.dicerCounter:sendMagicEffect(math.random(29, 31))
+				npc:say("You won! Here's your " .. hydrateValue(wonMoney) .. " gold coins.", TALKTYPE_SAY)
+				amountPos:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
-					Game.createItem(coin[1], coin[2], config.dicerCounter)
+					Game.createItem(coin[1], coin[2], amountPos)
 				end
 			else
-				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
+				npc:say("You have lost your " .. hydrateValue(bet) .. " gold coins.", TALKTYPE_SAY)
 			end
 		elseif table.contains({ "high", "h" }, message) then
 			if table.contains({ 4, 5, 6 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
-				config.dicerCounter:sendMagicEffect(math.random(29, 31))
+				npc:say("You won! Here's your " .. hydrateValue(wonMoney) .. " gold coins.", TALKTYPE_SAY)
+				amountPos:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
-					Game.createItem(coin[1], coin[2], config.dicerCounter)
+					Game.createItem(coin[1], coin[2], amountPos)
 				end
 			else
-				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
+				npc:say("You have lost your " .. hydrateValue(bet) .. " gold coins.", TALKTYPE_SAY)
 			end
 		elseif table.contains({ "odd", "impar" }, message) then
 			if table.contains({ 1, 3, 5 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
-				config.dicerCounter:sendMagicEffect(math.random(29, 31))
+				npc:say("You won! Here's your " .. hydrateValue(wonMoney) .. " gold coins.", TALKTYPE_SAY)
+				amountPos:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
-					Game.createItem(coin[1], coin[2], config.dicerCounter)
+					Game.createItem(coin[1], coin[2], amountPos)
 				end
 			else
-				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
+				npc:say("You have lost your " .. hydrateValue(bet) .. " gold coins.", TALKTYPE_SAY)
 			end
 		elseif table.contains({ "par", "even" }, message) then
 			if table.contains({ 2, 4, 6 }, number) then
 				local wonMoney = math.ceil(bet * (config.bet.win / 100))
-				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
-				config.dicerCounter:sendMagicEffect(math.random(29, 31))
+				npc:say("You won! Here's your " .. hydrateValue(wonMoney) .. " gold coins.", TALKTYPE_SAY)
+				amountPos:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
-					Game.createItem(coin[1], coin[2], config.dicerCounter)
+					Game.createItem(coin[1], coin[2], amountPos)
 				end
 			else
-				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
+				npc:say("You have lost your " .. hydrateValue(bet) .. " gold coins.", TALKTYPE_SAY)
 			end
 		elseif table.contains({ "1", "2", "3", "4", "5", "6" }, message) then
 			if number == tonumber(message) then
 				local wonMoney = math.ceil(bet * (config.bet.winNum / 100))
-				npc:say("You won! Here's your " .. wonMoney .. " gold coins.", TALKTYPE_SAY)
-				config.dicerCounter:sendMagicEffect(math.random(29, 31))
+				npc:say("You won! Here's your " .. hydrateValue(wonMoney) .. " gold coins.", TALKTYPE_SAY)
+				amountPos:sendMagicEffect(math.random(29, 31))
 				for _, coin in pairs(createMoney(wonMoney)) do
-					Game.createItem(coin[1], coin[2], config.dicerCounter)
+					Game.createItem(coin[1], coin[2], amountPos)
 				end
 			else
-				npc:say("You have lost your " .. bet .. " gold coins.", TALKTYPE_SAY)
+				npc:say("You have lost your " .. hydrateValue(bet) .. " gold coins.", TALKTYPE_SAY)
 			end
 		end
 	end
@@ -235,7 +257,9 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 local function creatureMoveCallback(npc, player, fromPosition, toPosition)
-	local tile = Tile(config.playerPosition)
+	local npcPos = npc:getPosition()
+	local positionToVerify = Position(npcPos.x - 2, npcPos.y, npcPos.z)
+	local tile = Tile(positionToVerify)
 	if tile then
 		local playerTile = tile:getTopCreature()
 		if not playerTile then

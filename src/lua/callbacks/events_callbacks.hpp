@@ -11,6 +11,7 @@
 
 #include "lua/callbacks/callbacks_definitions.hpp"
 #include "lua/callbacks/event_callback.hpp"
+#include "lua/scripts/luascript.hpp"
 
 class EventCallback;
 
@@ -62,6 +63,19 @@ public:
 	void addCallback(const std::shared_ptr<EventCallback> &callback);
 
 	/**
+	 * @brief Gets all registered event callbacks.
+	 * @return Vector of pointers to EventCallback objects.
+	 */
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> getCallbacks() const;
+
+	/**
+	 * @brief Gets event callbacks by their type.
+	 * @param type The type of callbacks to retrieve.
+	 * @return Vector of pointers to EventCallback objects of the specified type.
+	 */
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> getCallbacksByType(EventCallback_t type) const;
+
+	/**
 	 * @brief Clears all registered event callbacks.
 	 */
 	void clear();
@@ -74,18 +88,18 @@ public:
 	 */
 	template <typename CallbackFunc, typename... Args>
 	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		auto it = m_callbacks.find(eventType);
-		if (it == m_callbacks.end()) {
-			return;
-		}
-
-		for (const auto &entry : it->second) {
-			if (entry.callback && entry.callback->isLoadedScriptId()) {
-				std::invoke(callbackFunc, *entry.callback, args...);
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
+			auto argsCopy = std::make_tuple(args...);
+			if (callback && callback->isLoadedCallback()) {
+				std::apply(
+					[&callback, &callbackFunc](auto &&... args) {
+						((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
+					},
+					argsCopy
+				);
 			}
 		}
 	}
-
 	/**
 	 * @brief Checks if all registered callbacks of the specified event type succeed.
 	 * @param eventType The type of event to check.
@@ -95,20 +109,22 @@ public:
 	 */
 	template <typename CallbackFunc, typename... Args>
 	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		auto it = m_callbacks.find(eventType);
-		if (it == m_callbacks.end()) {
-			return RETURNVALUE_NOERROR;
-		}
-
-		for (const auto &entry : it->second) {
-			if (entry.callback && entry.callback->isLoadedScriptId()) {
-				ReturnValue callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
+		ReturnValue res = RETURNVALUE_NOERROR;
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
+			auto argsCopy = std::make_tuple(args...);
+			if (callback && callback->isLoadedCallback()) {
+				ReturnValue callbackResult = std::apply(
+					[&callback, &callbackFunc](auto &&... args) {
+						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
+					},
+					argsCopy
+				);
 				if (callbackResult != RETURNVALUE_NOERROR) {
 					return callbackResult;
 				}
 			}
 		}
-		return RETURNVALUE_NOERROR;
+		return res;
 	}
 
 	/**
@@ -121,28 +137,25 @@ public:
 	template <typename CallbackFunc, typename... Args>
 	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
 		bool allCallbacksSucceeded = true;
-		auto it = m_callbacks.find(eventType);
-		if (it == m_callbacks.end()) {
-			return allCallbacksSucceeded;
-		}
 
-		for (const auto &entry : it->second) {
-			if (entry.callback && entry.callback->isLoadedScriptId()) {
-				bool callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
-				allCallbacksSucceeded &= callbackResult;
+		for (const auto &[name, callback] : getCallbacksByType(eventType)) {
+			auto argsCopy = std::make_tuple(args...);
+			if (callback && callback->isLoadedCallback()) {
+				bool callbackResult = std::apply(
+					[&callback, &callbackFunc](auto &&... args) {
+						return ((*callback).*callbackFunc)(std::forward<decltype(args)>(args)...);
+					},
+					argsCopy
+				);
+				allCallbacksSucceeded = allCallbacksSucceeded && callbackResult;
 			}
 		}
 		return allCallbacksSucceeded;
 	}
 
 private:
-	struct EventCallbackEntry {
-		std::string name;
-		std::shared_ptr<EventCallback> callback;
-	};
-
 	// Container for storing registered event callbacks.
-	phmap::flat_hash_map<EventCallback_t, std::vector<EventCallbackEntry>> m_callbacks;
+	std::unordered_map<std::string, std::shared_ptr<EventCallback>> m_callbacks;
 };
 
 constexpr auto g_callbacks = EventsCallbacks::getInstance;

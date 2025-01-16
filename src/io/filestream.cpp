@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "io/filestream.hpp"
 
 #include "io/fileloader.hpp"
@@ -17,8 +19,7 @@ uint32_t FileStream::tell() const {
 
 void FileStream::seek(uint32_t pos) {
 	if (pos > m_data.size()) {
-		g_logger().error("Seek failed");
-		return;
+		throw std::ios_base::failure("Seek failed");
 	}
 	m_pos = pos;
 }
@@ -30,8 +31,7 @@ void FileStream::skip(uint32_t len) {
 uint32_t FileStream::size() const {
 	std::size_t size = m_data.size();
 	if (size > std::numeric_limits<uint32_t>::max()) {
-		g_logger().error("File size exceeds uint32_t range");
-		return {};
+		throw std::overflow_error("File size exceeds uint32_t range");
 	}
 
 	return static_cast<uint32_t>(size);
@@ -39,31 +39,27 @@ uint32_t FileStream::size() const {
 
 template <typename T>
 bool FileStream::read(T &ret, bool escape) {
-	static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
-
 	const auto size = sizeof(T);
 
 	if (m_pos + size > m_data.size()) {
-		g_logger().error("Read failed");
-		return false;
+		throw std::ios_base::failure("Read failed");
 	}
 
 	std::array<uint8_t, sizeof(T)> array;
 	if (escape) {
-		for (int_fast8_t i = 0; i < size; ++i) {
+		for (int_fast8_t i = -1; ++i < size;) {
 			if (m_data[m_pos] == OTB::Node::ESCAPE) {
 				++m_pos;
 			}
 			array[i] = m_data[m_pos];
 			++m_pos;
 		}
+		memcpy(&ret, array.data(), size);
 	} else {
-		std::span<const uint8_t> sourceSpan(m_data.data() + m_pos, size);
-		std::ranges::copy(sourceSpan, array.begin());
+		memcpy(&ret, &m_data[m_pos], size);
 		m_pos += size;
 	}
 
-	ret = std::bit_cast<T>(array);
 	return true;
 }
 
@@ -71,8 +67,7 @@ uint8_t FileStream::getU8() {
 	uint8_t v = 0;
 
 	if (m_pos + 1 > m_data.size()) {
-		g_logger().error("Failed to getU8");
-		return {};
+		throw std::ios_base::failure("Failed to getU8");
 	}
 
 	// Fast Escape Val
@@ -108,14 +103,13 @@ std::string FileStream::getString() {
 	std::string str;
 	if (const uint16_t len = getU16(); len > 0 && len < 8192) {
 		if (m_pos + len > m_data.size()) {
-			g_logger().error("[FileStream::getString] - Read failed");
-			return {};
+			throw std::ios_base::failure("[FileStream::getString] - Read failed");
 		}
 
 		str = { (char*)&m_data[m_pos], len };
 		m_pos += len;
 	} else if (len != 0) {
-		g_logger().error("[FileStream::getString] - Read failed because string is too big");
+		throw std::ios_base::failure("[FileStream::getString] - Read failed because string is too big");
 	}
 	return str;
 }

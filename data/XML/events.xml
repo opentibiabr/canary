@@ -1,15 +1,189 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <events>
-	<event name="Otservbr example 1" startdate="11/03/2020" enddate="12/30/2023" script="example.lua" >
-		<ingame exprate="100" lootrate="100" bosslootrate="100" spawnrate="100" skillrate="100" />
+	<event name="Abertura do Server" startdate="02/07/2025" enddate="02/10/2025">
+		<description description="Inauguração do Taberna Server"/>
+		<colors colordark="#78020e" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<!--<event name="Double Coins" startdate="02/01/2024" enddate="03/01/2024">
+		<description description="Aproveite nossas promoções de coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP Event, Rapid Respawn and Loot" startdate="02/24/2024" enddate="02/26/2024">
+		<ingame exprate="200" lootrate="150" spawnrate="150"/>
+		<description description="XP Event! Killing monsters yields more experience. Monsters respawn at a faster rate."/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Skill Event" startdate="03/06/2024" enddate="03/08/2024">
+		<ingame skillrate="200"/>
+		<description description="Double Skill Event!"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP Event and Rapid Respawn" startdate="03/08/2024" enddate="03/10/2024">
+		<ingame exprate="200" spawnrate="150"/>
+		<description description="XP Event! Killing monsters yields more experience. Monsters respawn at a faster rate."/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="03/15/2024" enddate="03/19/2024">
+		<description description="Aproveite nossas promoções de coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP/Skill Event" startdate="03/15/2024" enddate="03/18/2024">
+		<ingame exprate="200" skillrate="200"/>
+		<description description="XP and Double Skill Event! Killing monsters yields more experience"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="03/28/2024" enddate="03/31/2024">
+		<description description="Aproveite nossas promoções de coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Rapid Respawn and Loot" startdate="03/28/2024" enddate="03/31/2024">
+		<ingame lootrate="200" bosslootrate="150" spawnrate="200"/>
+		<description description="Monsters respawn at a faster rate. Monsters and Bosses are with improved loot."/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="3" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP/Skill Event" startdate="03/31/2024" enddate="04/01/2024">
+		<ingame exprate="200" skillrate="200"/>
+		<description description="XP and Double Skill Event! Killing monsters yields more experience."/>
+		<colors colordark="#272961" colorlight="#555aed"/>
+		<details displaypriority="1" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP/Skill Event" startdate="04/06/2024" enddate="04/08/2024">
+		<ingame exprate="200" skillrate="200"/>
+		<description description="XP and Double Skill Event! Killing monsters yields more experience."/>
+		<colors colordark="#272961" colorlight="#555aed"/>
+		<details displaypriority="1" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="04/05/2024" enddate="04/08/2024">
+		<description description="Take advantage of our coins promotions! Donates more than R$49,99 will triple.."/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP/Skill Event" startdate="04/19/2024" enddate="04/21/2024">
+		<ingame exprate="200" skillrate="200"/>
+		<description description="XP and Double Skill Event! Killing monsters yields more experience."/>
+		<colors colordark="#272961" colorlight="#555aed"/>
+		<details displaypriority="1" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="04/19/2024" enddate="04/21/2024">
+		<description description="Take advantage of our coins promotions! Donates more than R$49,99 will triple.."/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="XP/Skill Event" startdate="04/30/2024" enddate="05/02/2024">
+		<ingame exprate="200" skillrate="200"/>
+		<description description="XP and Double Skill Event! Killing monsters yields more experience."/>
+		<colors colordark="#272961" colorlight="#555aed"/>
+		<details displaypriority="1" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="04/30/2024" enddate="05/02/2024">
+		<description description="Take advantage of our coins promotions! Donates more than R$79,99 will triple.."/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>-->
+	<!--<event name="Rapid Respawn" startdate="12/31/2023" enddate="01/02/2024">
+		<ingame lootrate="110" spawnrate="200"/>
+		<description description="Monsters respawn at a faster rate. Monsters yields 10% more loot."/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>-->
+	<!--<event name="Boss Surpresa" startdate="10/22/2023" enddate="10/22/2023">
+		<description
+			description="O servidor receberá a visita de um boss surpresa as 22:00 (horário brasilia), se prepare e venha aproveitar!"/>
+		<colors colordark="#2060B6" colorlight="#6B94D2"/>
+		<details displaypriority="6" isseasonal="0" specialevent="1"/>
+	</event>
+	<event name="Double Coins" startdate="10/27/2023" enddate="10/29/2023">
+		<description description="Aproveite nossas promoções de double coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="1"/>
+	</event>
+	<event name="Triple XP, Triple Skill, More Spawn and Loot" startdate="11/01/2023" enddate="11/04/2023">
+		<ingame exprate="250" skillrate="250" lootrate="120" spawnrate="150"/>
+		<description description="Triple exp, triple skill, more spawn and loot"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="1"/>
+	</event>
+	<event name="Double XP + Skill" startdate="11/05/2023" enddate="11/07/2023">
+		<ingame exprate="200" skillrate="200"/>
+		<description description="Double exp, double skill, regular spawn and loot"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="1"/>
+	</event>
+	<event name="XP/Skill Event, Rapid Respawn and Loot" startdate="11/08/2023" enddate="11/08/2023">
+		<ingame exprate="200" skillrate="200" spawnrate="150" lootrate="140"/>
+		<description
+			description="XP/Skill Event! Killing monsters yields more experience and skill points. Monsters respawn at a faster rate. Monsters yields 40% more loot."/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="11/01/2023" enddate="11/08/2023">
+		<description description="Aproveite nossas promoções de double coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="11/10/2023" enddate="11/12/2023">
+		<description description="Aproveite nossas promoções de double coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="More XP, Spawn and Loot" startdate="11/10/2023" enddate="11/12/2023">
+		<ingame exprate="120" lootrate="110" spawnrate="140"/>
+		<description description="more xp, more spawn (4x) and loot (10%)"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="More XP, Spawn and Loot" startdate="11/14/2023" enddate="11/16/2023">
+		<ingame exprate="150" lootrate="140" spawnrate="120"/>
+		<description description="more xp (50%+), more spawn (4x) and loot (20%+)"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="11/17/2023" enddate="11/19/2023">
+		<description description="Aproveite nossas promoções de double coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="More XP, Spawn and Loot" startdate="11/25/2023" enddate="11/26/2023">
+		<ingame exprate="200" lootrate="150" spawnrate="150"/>
+		<description description="double more xp, more spawn (5x) and loot (50%+)"/>
+		<colors colordark="#235c00" colorlight="#2d7400"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="11/24/2023" enddate="11/26/2023">
+		<description description="Aproveite nossas promoções de double coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Rapid Respawn and Loot" startdate="12/01/2023" enddate="12/03/2023">
+		<ingame spawnrate="150" lootrate="120"/>
+		<description description="Spawn Rate Event! Monsters respawn at a faster rate. Monsters yields 20% more loot."/>
+		<colors colordark="#24657B" colorlight="#24657B"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>
+	<event name="Double Coins" startdate="12/01/2023" enddate="12/03/2023">
+		<description description="Aproveite nossas promoções de double coins!"/>
+		<colors colordark="#735D10" colorlight="#8B6D05"/>
+		<details displaypriority="6" isseasonal="0" specialevent="0"/>
+	</event>-->
+	<!--<event name="Otservbr example 1" startdate="11/03/2020" enddate="12/30/2023" script="example.lua" >
+		<ingame exprate="100" lootrate="100" spawnrate="100" skillrate="100" />
 		<description description="Otserver br example 1 description double exp and a half, double loot !chance!, regular spawn and double skill" />
 		<colors colordark="#235c00" colorlight="#2d7400" />
 		<details displaypriority="6" isseasonal="0" specialevent="0" />
 	</event>
 	<event name="Otservbr example 2" startdate="2/2/2022" enddate="12/31/2023" script="" >
-		<ingame exprate="100" lootrate="100" bosslootrate="100" spawnrate="100" skillrate="100" />
+		<ingame exprate="100" lootrate="100" spawnrate="100" skillrate="100" />
 		<description description="Otserver br example 2 description 50% less exp, triple loot !chance!, 50% faster spawn and regular skill" />
 		<colors colordark="#735D10" colorlight="#8B6D05" />
 		<details displaypriority="6" isseasonal="0" specialevent="0" />
-	</event>
+	</event>-->
 </events>

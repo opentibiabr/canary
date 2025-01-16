@@ -59,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "join") then
-		if player:getStorageValue(Storage.Quest.U7_9.NightmareOutfits.Outfits) < 1 and player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) < 1 then
+		if player:getStorageValue(Storage.OutfitQuest.NightmareOutfit) < 1 and player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) < 1 then
 			npcHandler:say({
 				"The Brotherhood of Bones has suffered greatly in the past, but we did survive as we always will ...",
 				"You have proven resourceful by beating the silly riddles the Nightmare Knights set up to test their candidates ...",
@@ -69,13 +69,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "advancement") or MsgContains(message, "demonic") or MsgContains(message, "essence") then
-		if player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) == 1 then
+		if player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) == 1 then
 			npcHandler:say("So you want to advance to a {Hyaena} rank? Did you bring 500 demonic essences with you?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
-		elseif player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) == 2 then
+		elseif player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) == 2 then
 			npcHandler:say("So you want to advance to a {Death Dealer} rank? Did you bring 1000 demonic essences with you?", npc, creature)
 			npcHandler:setTopic(playerId, 4)
-		elseif player:getStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits) == 3 then
+		elseif player:getStorageValue(Storage.OutfitQuest.BrotherhoodOutfit) == 3 then
 			npcHandler:say("So you want to advance to a {Dread Lord} rank? Did you bring 1500 demonic essences with you?", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
@@ -92,14 +92,14 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Take it, if you are up to that challenge ... or perish in agony if you deserve this fate ...",
 				"You can always ask me about your current rank and about the privileges the ranks grant to those who hold them.",
 			}, npc, creature)
-			player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits, 1)
+			player:setStorageValue(Storage.OutfitQuest.BrotherhoodOutfit, 1)
 			player:addAchievement("Bone Brother")
 			npcHandler:setTopic(playerId, 0)
 			player:addItem(768, 1)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(6499, 500) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits, 2)
+				player:setStorageValue(Storage.OutfitQuest.BrotherhoodOutfit, 2)
 				player:addItem(769, 1)
 				npcHandler:say("You advanced to {Hyaena} rank! You are now able to use teleports of second floor of Knightwatch Tower.", npc, creature)
 			else
@@ -109,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:removeItem(6499, 1000) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits, 3)
+				player:setStorageValue(Storage.OutfitQuest.BrotherhoodOutfit, 3)
 				player:addItem(770, 1)
 				player:addItem(6432, 1)
 				player:addAchievement("Skull and Bones")
@@ -121,9 +121,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			if player:removeItem(6499, 1500) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits, 4)
-				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Door, 1)
-				player:setStorageValue(Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor, 1)
+				player:setStorageValue(Storage.OutfitQuest.BrotherhoodOutfit, 4)
+				player:setStorageValue(Storage.OutfitQuest.BrotherhoodDoor, 1)
+				player:setStorageValue(Storage.KnightwatchTowerDoor, 1)
 				player:addAchievement("Dread Lord")
 				npcHandler:say("You advanced to {Dread Lord} rank! You are now able to use teleports of fourth floor of Knightwatch Tower and to create addon scrolls.", npc, creature)
 			else
@@ -134,9 +134,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
-
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to my little realm.")
-npcHandler:setMessage(MESSAGE_FAREWELL, "We will meet again.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

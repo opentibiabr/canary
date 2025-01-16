@@ -6,11 +6,11 @@ useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"
 -- Don't change this unless you know what you're doing
 coreDirectory = "data"
+tournamentCoinsName = "Tournament Coins"
 
 -- Set log level
 -- It can be trace, debug, info, warning, error, critical, off (default: info).
--- NOTE: It will only be valid after the server starts up and only display logs with level higher or equal the one set.
--- NOTE: Debug and trace logs are only available if compiled in debug mode.
+-- NOTE: Will only display logs with level higher or equal the one set.
 logLevel = "info"
 
 --- Toggles the server's maintenance mode.
@@ -26,7 +26,6 @@ maintainModeMessage = ""
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
--- NOTE: loginProtectionTime in MS
 worldType = "pvp"
 hotkeyAimbotEnabled = true
 protectionLevel = 7
@@ -48,7 +47,6 @@ monthKillsToRedSkull = 10
 redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
-loginProtectionTime = 10 * 1000
 
 cleanProtectionZones = false
 
@@ -69,6 +67,8 @@ serverMotd = "Welcome to the OTServBR-Global!"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
+maxItem = 2000
+maxContainer = 100
 maxPlayersOnlinePerAccount = 1
 maxPlayersOutsidePZPerAccount = 1
 
@@ -81,12 +81,6 @@ packetCompressionLevel = 6
 freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
-
--- Item and containers limit
--- NOTE: 'maxContainerDepth' defines the maximum depth to which containers can be nested
-maxItem = 5000
-maxContainer = 500
-maxContainerDepth = 200
 
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
@@ -148,7 +142,7 @@ forgeAmountMultiplier = 3
 forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300
-forgeFiendishLimit = 4
+forgeFiendishLimit = 3
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 
@@ -246,7 +240,6 @@ onlyPremiumAccount = false
 
 -- Customs
 -- NOTE: stashMoving = true, stow an container inside your stash
--- NOTE: stashItemCount, the maximum items quantity in stash
 -- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
@@ -261,10 +254,9 @@ onlyPremiumAccount = false
 -- NOTE: enablePlayerPutItemInAmmoSlot = true, will enable players to put any items on ammo slot, more used in custom shopping system
 -- NOTE: startStreakLevel will make a reward streak level for new players who never logged in
 -- NOTE: if showLootsInBestiary is true, will cause all loots to be shown in the bestiary even if the player has not reached the required number of kills
--- NOTE: minTownIdToBankTransferFromMain blocks towns less than defined from receiving money transfers
+-- NOTE: minTownIdToBankTransfer blocks towns less than defined from receiving money transfers
 -- NOTE: enableSupportOutfit enable GODS and GMS to select support outfit (gamemaster, customer support or community manager)
 stashMoving = false
-stashItemCount = 5000
 depotChest = 4
 autoLoot = false
 autoBank = false
@@ -282,7 +274,7 @@ storeInboxMaxLimit = 2000
 enablePlayerPutItemInAmmoSlot = false
 startStreakLevel = 0
 showLootsInBestiary = false
-minTownIdToBankTransferFromMain = 4
+minTownIdToBankTransfer = 3
 enableSupportOutfit = true
 
 -- Teleport summon
@@ -346,11 +338,9 @@ Setting this to false may pose risks; if a house is abandoned and contains a lar
 ]]
 -- Periods: daily/weekly/monthly/yearly/never
 -- Base: sqm,rent,sqm+rent
-toggleCyclopediaHouseAuction = true
-daysToCloseBid = 7
 housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
-houseRentPeriod = "monthly"
+houseRentPeriod = "never"
 houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
@@ -403,7 +393,6 @@ mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
 mysqlDatabase = "otservbr-global"
-mysqlDatabaseBackup = false
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
@@ -516,9 +505,6 @@ rateMonsterHealth = 1.0
 rateMonsterAttack = 1.0
 rateMonsterDefense = 1.0
 
--- Npc rates
-rateNpcHealth = 1.0
-
 -- Boss rates
 rateBossHealth = 1.0
 rateBossAttack = 1.0
@@ -556,7 +542,6 @@ location = "South America"
 -- Leave empty if you wish to disable.
 discordWebhookURL = ""
 discordSendFooter = true
-discordWebhookDelayMs = 1000
 
 -- Vip System (Get more info in: https://github.com/opentibiabr/canary/pull/1063)
 -- NOTE: set vipSystemEnabled to true to enable the vip system functionalities (this overrides premium checks)

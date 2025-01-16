@@ -23,8 +23,8 @@ monster.bosstiary = {
 	bossRace = RARITY_ARCHFOE,
 }
 
-monster.health = 450000
-monster.maxHealth = 450000
+monster.health = 150000
+monster.maxHealth = 150000
 monster.race = "undead"
 monster.corpse = 36847
 monster.speed = 0
@@ -81,21 +81,21 @@ monster.loot = {
 	{ name = "giant emerald", chance = 4082 },
 	{ name = "giant sapphire", chance = 2041 },
 	{ name = "giant topaz", chance = 2041 },
-	{ name = "fiery tear", chance = 1000 },
-	{ name = "arboreal tome", chance = 250 },
-	{ name = "arboreal crown", chance = 250 },
-	{ name = "spiritthorn armor", id = 39147, chance = 250 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
-	{ name = "alicorn headguard", chance = 250 },
-	{ name = "alicorn quiver", chance = 250 },
-	{ name = "arcanomancer regalia", chance = 250 },
-	{ name = "arcanomancer folio", chance = 250 },
-	{ id = 39183, chance = 250 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
-	{ name = "portable flame", chance = 250 },
-	{ name = "firefighting axe", chance = 250 },
+	{ name = "fiery tear", chance = 500 },
+	{ name = "arboreal tome", chance = 100 },
+	{ name = "arboreal crown", chance = 100 },
+	{ name = "spiritthorn armor", id = 39147, chance = 100 },
+	{ name = "spiritthorn helmet", id = 39148, chance = 100 },
+	{ name = "alicorn headguard", chance = 100 },
+	{ name = "alicorn quiver", chance = 100 },
+	{ name = "arcanomancer regalia", chance = 100 },
+	{ name = "arcanomancer folio", chance = 100 },
+	{ id = 39183, chance = 100 }, -- name = "charged arcanomancer sigil"
+	{ id = 39186, chance = 100 }, -- name = "charged arboreal ring"
+	{ id = 39180, chance = 100 }, -- name = "charged alicorn ring"
+	{ id = 39177, chance = 100 }, -- name = "charged spiritthorn ring"
+	{ name = "portable flame", chance = 500 },
+	{ name = "firefighting axe", chance = 500 },
 }
 
 monster.attacks = {
@@ -132,5 +132,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

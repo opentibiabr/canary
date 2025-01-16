@@ -114,6 +114,7 @@ npcConfig.shop = {
 	{ itemName = "drum", clientId = 14253, buy = 140 },
 	{ itemName = "lute", clientId = 2950, buy = 195 },
 	{ itemName = "lyre", clientId = 2949, buy = 120 },
+	{ itemName = "poem scroll", clientId = 6119, buy = 200 },
 	{ itemName = "simple fanfare", clientId = 2954, buy = 150 },
 }
 -- On buy npc shop message

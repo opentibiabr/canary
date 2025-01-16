@@ -7,31 +7,28 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "io/iologindata.hpp"
+#include "pch.hpp"
 
-#include "account/account.hpp"
-#include "config/configmanager.hpp"
-#include "database/database.hpp"
+#include "io/iologindata.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/player.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const uint32_t ip) {
+bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol) {
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (AccountErrors_t::Ok != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
 
-	if (g_configManager().getString(AUTH_TYPE) == "session") {
+	if (g_configManager().getString(AUTH_TYPE, __FUNCTION__) == "session") {
 		if (!account.authenticate()) {
 			return false;
 		}
@@ -41,18 +38,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
-		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
-		return false;
-	}
-
-	if (AccountErrors_t::Ok != account.load()) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (AccountErrors_t::Ok != result) {
+	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}
@@ -78,22 +70,41 @@ uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 	return result->getNumber<uint8_t>("type");
 }
 
+void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
+	static phmap::flat_hash_map<uint32_t, bool> updateOnline;
+	if ((login && updateOnline.find(guid) != updateOnline.end()) || guid <= 0) {
+		return;
+	}
+
+	std::ostringstream query;
+	if (login) {
+		g_metrics().addUpDownCounter("players_online", 1);
+		query << "INSERT INTO `players_online` VALUES (" << guid << ')';
+		updateOnline[guid] = true;
+	} else {
+		g_metrics().addUpDownCounter("players_online", -1);
+		query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;
+		updateOnline.erase(guid);
+	}
+	Database::getInstance().executeQuery(query.str());
+}
+
 // The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
-bool IOLoginData::loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
+bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
 	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
+bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `name` = " << db.escapeString(name);
 	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result, bool disableIrrelevantInfo /* = false*/) {
+bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disableIrrelevantInfo /* = false*/) {
 	if (!result || !player) {
 		std::string nullptrType = !result ? "Result" : "Player";
 		g_logger().warn("[{}] - {} is nullptr", __FUNCTION__, nullptrType);
@@ -102,7 +113,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 	try {
 		// First
-		IOLoginDataLoad::loadPlayerBasicInfo(player, result);
+		IOLoginDataLoad::loadPlayerFirst(player, result);
 
 		// Experience load
 		IOLoginDataLoad::loadPlayerExperience(player, result);
@@ -187,25 +198,19 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 	}
 }
 
-bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
-	try {
-		bool success = DBTransaction::executeWithinTransaction([player]() {
-			return savePlayerGuard(player);
-		});
+bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {
+	bool success = DBTransaction::executeWithinTransaction([player]() {
+		return savePlayerGuard(player);
+	});
 
-		if (!success) {
-			g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
-		}
-
-		return success;
-	} catch (const DatabaseException &e) {
-		g_logger().error("[{}] Exception occurred: {}", __FUNCTION__, e.what());
+	if (!success) {
+		g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
 	}
 
-	return false;
+	return success;
 }
 
-bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
+bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 	if (!player) {
 		throw DatabaseException("Player nullptr in function: " + std::string(__FUNCTION__));
 	}
@@ -266,11 +271,6 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
 
-	player->wheel()->saveRevealedGems();
-	player->wheel()->saveActiveGems();
-	player->wheel()->saveKVModGrades();
-	player->wheel()->saveKVScrolls();
-
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}
@@ -283,7 +283,7 @@ std::string IOLoginData::getNameByGuid(uint32_t guid) {
 	query << "SELECT `name` FROM `players` WHERE `id` = " << guid;
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (!result) {
-		return {};
+		return std::string();
 	}
 	return result->getString("name");
 }
@@ -341,14 +341,23 @@ void IOLoginData::increaseBankBalance(uint32_t guid, uint64_t bankBalance) {
 	Database::getInstance().executeQuery(query.str());
 }
 
-std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
-	std::string query = fmt::format("SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {}", accountId);
-	std::vector<VIPEntry> entries;
+bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
+	Database &db = Database::getInstance();
 
-	if (const auto &result = Database::getInstance().storeQuery(query)) {
-		entries.reserve(result->countResults());
+	std::ostringstream query;
+	query << "SELECT `id` FROM `houses` WHERE `highest_bidder` = " << guid << " LIMIT 1";
+	return db.storeQuery(query.str()).get() != nullptr;
+}
+
+std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
+	std::forward_list<VIPEntry> entries;
+
+	std::string query = fmt::format("SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = {}", accountId);
+
+	DBResult_ptr result = Database::getInstance().storeQuery(query);
+	if (result) {
 		do {
-			entries.emplace_back(
+			entries.emplace_front(
 				result->getNumber<uint32_t>("player_id"),
 				result->getString("name"),
 				result->getString("description"),
@@ -357,7 +366,6 @@ std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 			);
 		} while (result->next());
 	}
-
 	return entries;
 }
 
@@ -380,16 +388,15 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid) {
 	g_database().executeQuery(query);
 }
 
-std::vector<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accountId, uint32_t guid) {
+std::forward_list<VIPGroupEntry> IOLoginData::getVIPGroupEntries(uint32_t accountId, uint32_t guid) {
+	std::forward_list<VIPGroupEntry> entries;
+
 	std::string query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
 
-	std::vector<VIPGroupEntry> entries;
-
-	if (const auto &result = g_database().storeQuery(query)) {
-		entries.reserve(result->countResults());
-
+	DBResult_ptr result = g_database().storeQuery(query);
+	if (result) {
 		do {
-			entries.emplace_back(
+			entries.emplace_front(
 				result->getNumber<uint8_t>("id"),
 				result->getString("name"),
 				result->getNumber<uint8_t>("customizable") == 0 ? false : true

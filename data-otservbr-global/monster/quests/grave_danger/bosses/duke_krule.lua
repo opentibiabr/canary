@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"grave_danger_death",
+	"GraveDangerBossDeath",
 }
 
 monster.health = 75000
@@ -94,11 +94,11 @@ monster.loot = {
 	{ name = "terra hood", chance = 7800 },
 	{ name = "yellow gem", chance = 9500 },
 	{ name = "young lich worm", chance = 5800 },
-	{ name = "bear skin", chance = 1800 },
-	{ name = "noble amulet", chance = 1100 },
-	{ name = "rotten heart", chance = 1700 },
-	{ name = "terra helmet", chance = 700 },
-	{ name = "final judgement", chance = 460 },
+	{ name = "bear skin", chance = 1000 },
+	{ name = "noble amulet", chance = 800 },
+	{ name = "rotten heart", chance = 700 },
+	{ name = "terra helmet", chance = 500 },
+	{ name = "final judgement", chance = 400 },
 }
 
 monster.attacks = {
@@ -134,5 +134,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

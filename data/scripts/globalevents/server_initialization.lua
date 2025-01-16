@@ -27,6 +27,29 @@ local function moveExpiredBansToHistory()
 	end
 end
 
+-- Function to check and process house auctions
+local function processHouseAuctions()
+	local resultId = db.storeQuery("SELECT `id`, `highest_bidder`, `last_bid`, " .. "(SELECT `balance` FROM `players` WHERE `players`.`id` = `highest_bidder`) AS `balance` " .. "FROM `houses` WHERE `owner` = 0 AND `bid_end` != 0 AND `bid_end` < " .. os.time())
+	if resultId then
+		repeat
+			local house = House(Result.getNumber(resultId, "id"))
+			if house then
+				local highestBidder = Result.getNumber(resultId, "highest_bidder")
+				local balance = Result.getNumber(resultId, "balance")
+				local lastBid = Result.getNumber(resultId, "last_bid")
+				if balance >= lastBid then
+					db.query("UPDATE `players` SET `balance` = " .. (balance - lastBid) .. " WHERE `id` = " .. highestBidder)
+					house:setOwnerGuid(highestBidder)
+				end
+
+				db.asyncQuery("UPDATE `houses` SET `last_bid` = 0, `bid_end` = 0, `highest_bidder` = 0, `bid` = 0 " .. "WHERE `id` = " .. house:getId())
+			end
+		until not Result.next(resultId)
+
+		Result.free(resultId)
+	end
+end
+
 -- Function to store towns in the database
 local function storeTownsInDatabase()
 	db.query("TRUNCATE TABLE `towns`")
@@ -119,6 +142,16 @@ local function resetAccountSessions()
 	end
 end
 
+-- Function to create barriers on dawnport (before start server)
+local function addBarriersOnDawnport()
+	-- add barriers on dawnport (remove with command: /barrier off)
+	local positions = { Position(32074, 31899, 6), Position(32074, 31900, 6), Position(32074, 31901, 6), Position(32074, 31902, 6) }
+	for i, position in pairs(positions) do
+		Game.createItem(15467, 1, position)
+	end
+	logger.info("Barrier were added on dawnport!")
+end
+
 local serverInitialization = GlobalEvent("Server Initialization")
 
 function serverInitialization.onStartup()
@@ -127,11 +160,14 @@ function serverInitialization.onStartup()
 
 	cleanupDatabase()
 	moveExpiredBansToHistory()
+	processHouseAuctions()
 	storeTownsInDatabase()
 	checkAndLogDuplicateValues({ "Global", "GlobalStorage", "Storage" })
 	updateEventRates()
 	HirelingsInit()
 	resetAccountSessions()
+	addBarriersOnDawnport()
+	snowballLoadEvent()
 end
 
 serverInitialization:register()

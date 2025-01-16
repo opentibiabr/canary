@@ -11,27 +11,27 @@
 
 #include "items/containers/container.hpp"
 
-class Reward final : public Container {
+class Reward : public Container {
 public:
 	explicit Reward();
 
-	std::shared_ptr<Reward> getReward() override {
+	std::shared_ptr<Reward> getReward() final {
 		return static_self_cast<Reward>();
 	}
 
 	// cylinder implementations
-	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
+	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, std::shared_ptr<Creature> actor = nullptr) final;
 
-	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
+	void postAddNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
+	void postRemoveNotification(std::shared_ptr<Thing> thing, std::shared_ptr<Cylinder> newParent, int32_t index, CylinderLink_t link = LINK_OWNER) final;
 
 	// overrides
-	bool canRemove() const override {
+	bool canRemove() const final {
 		return true;
 	}
 
-	std::shared_ptr<Cylinder> getParent() override;
-	std::shared_ptr<Cylinder> getRealParent() override {
+	std::shared_ptr<Cylinder> getParent() final;
+	std::shared_ptr<Cylinder> getRealParent() final {
 		return m_parent.lock();
 	}
 };

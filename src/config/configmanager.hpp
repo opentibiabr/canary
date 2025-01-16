@@ -26,8 +26,6 @@ public:
 	bool load();
 	bool reload();
 
-	void missingConfigWarning(const char* identifier);
-
 	const std::string &setConfigFileLua(const std::string &what) {
 		configFileLua = { what };
 		return configFileLua;
@@ -36,18 +34,13 @@ public:
 		return configFileLua;
 	};
 
-	[[nodiscard]] const std::string &getString(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
-	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
-	[[nodiscard]] bool getBoolean(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
-	[[nodiscard]] float getFloat(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
+	[[nodiscard]] const std::string &getString(const ConfigKey_t &key, std::string_view context) const;
+	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key, std::string_view context) const;
+	[[nodiscard]] bool getBoolean(const ConfigKey_t &key, std::string_view context) const;
+	[[nodiscard]] float getFloat(const ConfigKey_t &key, std::string_view context) const;
 
 private:
-	mutable std::unordered_map<ConfigKey_t, std::string> m_configString;
-	mutable std::unordered_map<ConfigKey_t, bool> m_configBoolean;
-	mutable std::unordered_map<ConfigKey_t, int32_t> m_configInteger;
-	mutable std::unordered_map<ConfigKey_t, float> m_configFloat;
-
-	std::unordered_map<ConfigKey_t, ConfigValue> configs;
+	phmap::flat_hash_map<ConfigKey_t, ConfigValue> configs;
 	std::string loadStringConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const std::string &defaultValue);
 	int32_t loadIntConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const int32_t &defaultValue);
 	bool loadBoolConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const bool &defaultValue);

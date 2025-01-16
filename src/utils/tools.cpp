@@ -7,17 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "utils/tools.hpp"
+#include "pch.hpp"
 
 #include "core.hpp"
-#include "enums/object_category.hpp"
 #include "items/item.hpp"
-#include "lua/lua_definitions.hpp"
-#include "utils/const.hpp"
-#include "config/configmanager.hpp"
-
-#include "absl/debugging/stacktrace.h"
-#include "absl/debugging/symbolize.h"
+#include "utils/tools.hpp"
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -31,14 +25,14 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 	uint32_t currentLine = 1;
 	std::string line;
 
-	const auto offset = static_cast<size_t>(result.offset);
+	size_t offset = static_cast<size_t>(result.offset);
 	size_t lineOffsetPosition = 0;
 	size_t index = 0;
 	size_t bytes;
 	do {
 		bytes = fread(buffer, 1, 32768, file);
 		for (size_t i = 0; i < bytes; ++i) {
-			const char ch = buffer[i];
+			char ch = buffer[i];
 			if (ch == '\n') {
 				if ((index + i) >= offset) {
 					lineOffsetPosition = line.length() - ((index + i) - offset);
@@ -141,7 +135,7 @@ std::string transformToSHA1(const std::string &input) {
 
 	uint32_t length_low = 0;
 	uint32_t length_high = 0;
-	for (const char ch : input) {
+	for (char ch : input) {
 		messageBlock[index++] = ch;
 
 		length_low += 8;
@@ -183,7 +177,7 @@ std::string transformToSHA1(const std::string &input) {
 	processSHA1MessageBlock(messageBlock, H);
 
 	char hexstring[41];
-	static constexpr char hexDigits[] = { "0123456789abcdef" };
+	static const char hexDigits[] = { "0123456789abcdef" };
 	for (int hashByte = 20; --hashByte >= 0;) {
 		const uint8_t byte = H[hashByte >> 2] >> (((3 - hashByte) & 3) << 3);
 		index = hashByte << 1;
@@ -193,10 +187,10 @@ std::string transformToSHA1(const std::string &input) {
 	return std::string(hexstring, 40);
 }
 
-uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {
+uint16_t getStashSize(StashItemList itemList) {
 	uint16_t size = 0;
-	for (const auto &[itemId, itemCount] : itemList) {
-		size += ceil(itemCount / static_cast<float_t>(Item::items[itemId].stackSize));
+	for (auto item : itemList) {
+		size += ceil(item.second / (float_t)Item::items[item.first].stackSize);
 	}
 	return size;
 }
@@ -232,14 +226,14 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 	message.assign(transformToSHA1(oKeyPad));
 
 	// calculate hmac offset
-	const auto offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
+	uint32_t offset = static_cast<uint32_t>(std::stol(message.substr(39, 1), nullptr, 16) & 0xF);
 
 	// get truncated hash
-	const uint32_t truncHash = std::stol(message.substr(2 * offset, 8), nullptr, 16) & 0x7FFFFFFF;
+	uint32_t truncHash = std::stol(message.substr(2 * offset, 8), nullptr, 16) & 0x7FFFFFFF;
 	message.assign(std::to_string(truncHash));
 
 	// return only last AUTHENTICATOR_DIGITS (default 6) digits, also asserts exactly 6 digits
-	const uint32_t hashLen = message.length();
+	uint32_t hashLen = message.length();
 	message.assign(message.substr(hashLen - std::min(hashLen, AUTHENTICATOR_DIGITS)));
 	message.insert(0, AUTHENTICATOR_DIGITS - std::min(hashLen, AUTHENTICATOR_DIGITS), '0');
 	return message;
@@ -264,7 +258,7 @@ void trim_left(std::string &source, char t) {
 }
 
 std::string keepFirstWordOnly(std::string &str) {
-	const size_t spacePos = str.find(' ');
+	size_t spacePos = str.find(' ');
 	if (spacePos != std::string::npos) {
 		str.erase(spacePos);
 	}
@@ -273,7 +267,7 @@ std::string keepFirstWordOnly(std::string &str) {
 }
 
 void toLowerCaseString(std::string &source) {
-	std::ranges::transform(source, source.begin(), tolower);
+	std::transform(source.begin(), source.end(), source.begin(), tolower);
 }
 
 std::string asLowerCaseString(std::string source) {
@@ -282,7 +276,7 @@ std::string asLowerCaseString(std::string source) {
 }
 
 std::string asUpperCaseString(std::string source) {
-	std::ranges::transform(source, source.begin(), toupper);
+	std::transform(source.begin(), source.end(), source.begin(), toupper);
 	return source;
 }
 
@@ -290,7 +284,7 @@ std::string toCamelCase(const std::string &str) {
 	std::string result;
 	bool capitalizeNext = false;
 
-	for (const char ch : str) {
+	for (char ch : str) {
 		if (ch == '_' || std::isspace(ch) || ch == '-') {
 			capitalizeNext = true;
 		} else {
@@ -310,7 +304,7 @@ std::string toPascalCase(const std::string &str) {
 	std::string result;
 	bool capitalizeNext = true;
 
-	for (const char ch : str) {
+	for (char ch : str) {
 		if (ch == '_' || std::isspace(ch) || ch == '-') {
 			capitalizeNext = true;
 		} else {
@@ -328,7 +322,7 @@ std::string toPascalCase(const std::string &str) {
 
 std::string toSnakeCase(const std::string &str) {
 	std::string result;
-	for (const char ch : str) {
+	for (char ch : str) {
 		if (std::isupper(ch)) {
 			result += '_';
 			result += std::tolower(ch);
@@ -344,7 +338,7 @@ std::string toSnakeCase(const std::string &str) {
 
 std::string toKebabCase(const std::string &str) {
 	std::string result;
-	for (const char ch : str) {
+	for (char ch : str) {
 		if (std::isupper(ch)) {
 			result += '-';
 			result += std::tolower(ch);
@@ -361,7 +355,7 @@ std::string toKebabCase(const std::string &str) {
 std::string toStartCaseWithSpace(const std::string &str) {
 	std::string result;
 	for (size_t i = 0; i < str.length(); ++i) {
-		const char ch = str[i];
+		char ch = str[i];
 		if (i == 0 || std::isupper(ch)) {
 			if (i > 0) {
 				result += ' ';
@@ -405,8 +399,7 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber) {
 	static std::uniform_int_distribution<int32_t> uniformRand;
 	if (minNumber == maxNumber) {
 		return minNumber;
-	}
-	if (minNumber > maxNumber) {
+	} else if (minNumber > maxNumber) {
 		std::swap(minNumber, maxNumber);
 	}
 	return uniformRand(getRandomGenerator(), std::uniform_int_distribution<int32_t>::param_type(minNumber, maxNumber));
@@ -434,12 +427,9 @@ void trimString(std::string &str) {
 }
 
 std::string convertIPToString(uint32_t ip) {
-	std::array<char, 16> buffer;
-	auto result = fmt::format_to_n(buffer.data(), buffer.size() - 1, "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
-
-	buffer[std::min(result.size, buffer.size() - 1)] = '\0';
-
-	return std::string(buffer.data());
+	char buffer[17];
+	fmt::format_to_n(buffer, sizeof(buffer), "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+	return buffer;
 }
 
 std::string formatDate(time_t time) {
@@ -471,8 +461,8 @@ std::string formatTime(time_t time) {
 
 std::string formatEnumName(std::string_view name) {
 	std::string result { name.begin(), name.end() };
-	std::ranges::replace(result, '_', ' ');
-	std::ranges::transform(result, result.begin(), [](unsigned char c) { return std::tolower(c); });
+	std::replace(result.begin(), result.end(), '_', ' ');
+	std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c) { return std::tolower(c); });
 	return result;
 }
 
@@ -481,20 +471,19 @@ std::time_t getTimeNow() {
 }
 
 int64_t getTimeMsNow() {
-	const auto duration = std::chrono::system_clock::now().time_since_epoch();
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
 
 int64_t getTimeUsNow() {
-	const auto duration = std::chrono::system_clock::now().time_since_epoch();
+	auto duration = std::chrono::system_clock::now().time_since_epoch();
 	return std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
 }
 
 BedItemPart_t getBedPart(const std::string_view string) {
 	if (string == "pillow" || string == "1") {
 		return BED_PILLOW_PART;
-	}
-	if (string == "blanket" || string == "2") {
+	} else if (string == "blanket" || string == "2") {
 		return BED_BLANKET_PART;
 	}
 	return BED_NONE_PART;
@@ -570,12 +559,12 @@ Position getNextPosition(Direction direction, Position pos) {
 }
 
 Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
-	const int_fast32_t dx = Position::getOffsetX(from, to);
-	const int_fast32_t dy = Position::getOffsetY(from, to);
+	int_fast32_t dx = Position::getOffsetX(from, to);
+	int_fast32_t dy = Position::getOffsetY(from, to);
 
 	if (exactDiagonalOnly) {
-		const int_fast32_t absDx = std::abs(dx);
-		const int_fast32_t absDy = std::abs(dy);
+		int_fast32_t absDx = std::abs(dx);
+		int_fast32_t absDy = std::abs(dy);
 
 		/*
 		 * Only consider diagonal if dx and dy are equal (exact diagonal).
@@ -896,7 +885,7 @@ SpawnTypeNames spawnTypeNames = {
 };
 
 MagicEffectClasses getMagicEffect(const std::string &strValue) {
-	const auto magicEffect = magicEffectNames.find(strValue);
+	auto magicEffect = magicEffectNames.find(strValue);
 	if (magicEffect != magicEffectNames.end()) {
 		return magicEffect->second;
 	}
@@ -904,7 +893,7 @@ MagicEffectClasses getMagicEffect(const std::string &strValue) {
 }
 
 ShootType_t getShootType(const std::string &strValue) {
-	const auto shootType = shootTypeNames.find(strValue);
+	auto shootType = shootTypeNames.find(strValue);
 	if (shootType != shootTypeNames.end()) {
 		return shootType->second;
 	}
@@ -912,7 +901,7 @@ ShootType_t getShootType(const std::string &strValue) {
 }
 
 Ammo_t getAmmoType(const std::string &strValue) {
-	const auto ammoType = ammoTypeNames.find(strValue);
+	auto ammoType = ammoTypeNames.find(strValue);
 	if (ammoType != ammoTypeNames.end()) {
 		return ammoType->second;
 	}
@@ -920,7 +909,7 @@ Ammo_t getAmmoType(const std::string &strValue) {
 }
 
 WeaponAction_t getWeaponAction(const std::string &strValue) {
-	const auto weaponAction = weaponActionNames.find(strValue);
+	auto weaponAction = weaponActionNames.find(strValue);
 	if (weaponAction != weaponActionNames.end()) {
 		return weaponAction->second;
 	}
@@ -928,7 +917,7 @@ WeaponAction_t getWeaponAction(const std::string &strValue) {
 }
 
 Skulls_t getSkullType(const std::string &strValue) {
-	const auto skullType = skullNames.find(strValue);
+	auto skullType = skullNames.find(strValue);
 	if (skullType != skullNames.end()) {
 		return skullType->second;
 	}
@@ -936,7 +925,7 @@ Skulls_t getSkullType(const std::string &strValue) {
 }
 
 ImbuementTypes_t getImbuementType(const std::string &strValue) {
-	const auto imbuementType = imbuementTypeNames.find(strValue);
+	auto imbuementType = imbuementTypeNames.find(strValue);
 	if (imbuementType != imbuementTypeNames.end()) {
 		return imbuementType->second;
 	}
@@ -948,7 +937,7 @@ ImbuementTypes_t getImbuementType(const std::string &strValue) {
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
 SpawnType_t getSpawnType(const std::string &strValue) {
-	const auto spawnType = spawnTypeNames.find(strValue);
+	auto spawnType = spawnTypeNames.find(strValue);
 	if (spawnType != spawnTypeNames.end()) {
 		return spawnType->second;
 	}
@@ -1012,7 +1001,7 @@ uint32_t adlerChecksum(const uint8_t* data, size_t length) {
 		return 0;
 	}
 
-	constexpr uint16_t adler = 65521;
+	const uint16_t adler = 65521;
 
 	uint32_t a = 1, b = 0;
 
@@ -1043,7 +1032,7 @@ std::string ucfirst(std::string str) {
 }
 
 std::string ucwords(std::string str) {
-	const size_t strLength = str.length();
+	size_t strLength = str.length();
 	if (strLength == 0) {
 		return str;
 	}
@@ -1063,7 +1052,7 @@ bool booleanString(const std::string &str) {
 		return false;
 	}
 
-	const char ch = tolower(str.front());
+	char ch = tolower(str.front());
 	return ch != 'f' && ch != 'n' && ch != '0';
 }
 
@@ -1084,7 +1073,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 		case WEAPON_MISSILE:
 			return "missile";
 		default:
-			return {};
+			return std::string();
 	}
 }
 
@@ -1101,7 +1090,7 @@ WeaponType_t getWeaponType(const std::string &name) {
 		{ "missile", WeaponType_t::WEAPON_MISSILE }
 	};
 
-	const auto it = type_mapping.find(name);
+	auto it = type_mapping.find(name);
 	if (it != type_mapping.end()) {
 		return it->second;
 	}
@@ -1121,7 +1110,7 @@ MoveEvent_t getMoveEventType(const std::string &name) {
 		{ "removeitemitemtile", MOVE_EVENT_REMOVE_ITEM_ITEMTILE }
 	};
 
-	const auto it = move_event_type_mapping.find(name);
+	auto it = move_event_type_mapping.find(name);
 	if (it != move_event_type_mapping.end()) {
 		return it->second;
 	}
@@ -1130,7 +1119,7 @@ MoveEvent_t getMoveEventType(const std::string &name) {
 }
 
 std::string getCombatName(CombatType_t combatType) {
-	const auto combatName = combatTypeNames.find(combatType);
+	auto combatName = combatTypeNames.find(combatType);
 	if (combatName != combatTypeNames.end()) {
 		return combatName->second;
 	}
@@ -1138,19 +1127,19 @@ std::string getCombatName(CombatType_t combatType) {
 }
 
 CombatType_t getCombatTypeByName(const std::string &combatname) {
-	const auto it = std::ranges::find_if(combatTypeNames, [&combatname](const std::pair<CombatType_t, std::string> &pair) {
+	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](const std::pair<CombatType_t, std::string> &pair) {
 		return pair.second == combatname;
 	});
 
 	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
 }
 
-size_t combatTypeToIndex(CombatType_t combatType, std::source_location location) {
-	const auto enum_index_opt = magic_enum::enum_index(combatType);
+size_t combatTypeToIndex(CombatType_t combatType) {
+	auto enum_index_opt = magic_enum::enum_index(combatType);
 	if (enum_index_opt.has_value() && enum_index_opt.value() < COMBAT_COUNT) {
 		return enum_index_opt.value();
 	} else {
-		g_logger().error("[{}] Combat type {} is out of range, called line '{}:{}' in '{}'", __FUNCTION__, fmt::underlying(combatType), location.line(), location.column(), location.function_name());
+		g_logger().error("[{}] Combat type {} is out of range", __FUNCTION__, fmt::underlying(combatType));
 		// Uncomment for catch the function call with debug
 		// throw std::out_of_range("Combat is out of range");
 	}
@@ -1159,7 +1148,7 @@ size_t combatTypeToIndex(CombatType_t combatType, std::source_location location)
 }
 
 std::string combatTypeToName(CombatType_t combatType) {
-	const std::string_view name = magic_enum::enum_name(combatType);
+	std::string_view name = magic_enum::enum_name(combatType);
 	if (!name.empty() && combatType < COMBAT_COUNT) {
 		return formatEnumName(name);
 	} else {
@@ -1178,86 +1167,59 @@ CombatType_t indexToCombatType(size_t v) {
 ItemAttribute_t stringToItemAttribute(const std::string &str) {
 	if (str == "store") {
 		return ItemAttribute_t::STORE;
-	}
-	if (str == "aid") {
+	} else if (str == "aid") {
 		return ItemAttribute_t::ACTIONID;
-	}
-	if (str == "uid") {
+	} else if (str == "uid") {
 		return ItemAttribute_t::UNIQUEID;
-	}
-	if (str == "description") {
+	} else if (str == "description") {
 		return ItemAttribute_t::DESCRIPTION;
-	}
-	if (str == "text") {
+	} else if (str == "text") {
 		return ItemAttribute_t::TEXT;
-	}
-	if (str == "date") {
+	} else if (str == "date") {
 		return ItemAttribute_t::DATE;
-	}
-	if (str == "writer") {
+	} else if (str == "writer") {
 		return ItemAttribute_t::WRITER;
-	}
-	if (str == "name") {
+	} else if (str == "name") {
 		return ItemAttribute_t::NAME;
-	}
-	if (str == "article") {
+	} else if (str == "article") {
 		return ItemAttribute_t::ARTICLE;
-	}
-	if (str == "pluralname") {
+	} else if (str == "pluralname") {
 		return ItemAttribute_t::PLURALNAME;
-	}
-	if (str == "weight") {
+	} else if (str == "weight") {
 		return ItemAttribute_t::WEIGHT;
-	}
-	if (str == "attack") {
+	} else if (str == "attack") {
 		return ItemAttribute_t::ATTACK;
-	}
-	if (str == "defense") {
+	} else if (str == "defense") {
 		return ItemAttribute_t::DEFENSE;
-	}
-	if (str == "extradefense") {
+	} else if (str == "extradefense") {
 		return ItemAttribute_t::EXTRADEFENSE;
-	}
-	if (str == "armor") {
+	} else if (str == "armor") {
 		return ItemAttribute_t::ARMOR;
-	}
-	if (str == "hitchance") {
+	} else if (str == "hitchance") {
 		return ItemAttribute_t::HITCHANCE;
-	}
-	if (str == "shootrange") {
+	} else if (str == "shootrange") {
 		return ItemAttribute_t::SHOOTRANGE;
-	}
-	if (str == "owner") {
+	} else if (str == "owner") {
 		return ItemAttribute_t::OWNER;
-	}
-	if (str == "duration") {
+	} else if (str == "duration") {
 		return ItemAttribute_t::DURATION;
-	}
-	if (str == "decaystate") {
+	} else if (str == "decaystate") {
 		return ItemAttribute_t::DECAYSTATE;
-	}
-	if (str == "corpseowner") {
+	} else if (str == "corpseowner") {
 		return ItemAttribute_t::CORPSEOWNER;
-	}
-	if (str == "charges") {
+	} else if (str == "charges") {
 		return ItemAttribute_t::CHARGES;
-	}
-	if (str == "fluidtype") {
+	} else if (str == "fluidtype") {
 		return ItemAttribute_t::FLUIDTYPE;
-	}
-	if (str == "doorid") {
+	} else if (str == "doorid") {
 		return ItemAttribute_t::DOORID;
-	}
-	if (str == "timestamp") {
+	} else if (str == "timestamp") {
 		return ItemAttribute_t::DURATION_TIMESTAMP;
-	}
-	if (str == "amount") {
+	} else if (str == "amount") {
 		return ItemAttribute_t::AMOUNT;
-	}
-	if (str == "tier") {
+	} else if (str == "tier") {
 		return ItemAttribute_t::TIER;
-	}
-	if (str == "lootmessagesuffix") {
+	} else if (str == "lootmessagesuffix") {
 		return ItemAttribute_t::LOOTMESSAGE_SUFFIX;
 	}
 
@@ -1553,41 +1515,26 @@ void UPDATE_OTSYS_TIME() {
 	OTSYSTIME = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-int64_t OTSYS_TIME(bool useTime) {
-	if (useTime) {
-		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	}
+int64_t OTSYS_TIME() {
 	return OTSYSTIME;
 }
 
 SpellGroup_t stringToSpellGroup(const std::string &value) {
-	const std::string tmpStr = asLowerCaseString(value);
+	std::string tmpStr = asLowerCaseString(value);
 	if (tmpStr == "attack" || tmpStr == "1") {
 		return SPELLGROUP_ATTACK;
-	}
-	if (tmpStr == "healing" || tmpStr == "2") {
+	} else if (tmpStr == "healing" || tmpStr == "2") {
 		return SPELLGROUP_HEALING;
-	}
-	if (tmpStr == "support" || tmpStr == "3") {
+	} else if (tmpStr == "support" || tmpStr == "3") {
 		return SPELLGROUP_SUPPORT;
-	}
-	if (tmpStr == "special" || tmpStr == "4") {
+	} else if (tmpStr == "special" || tmpStr == "4") {
 		return SPELLGROUP_SPECIAL;
-	}
-	if (tmpStr == "crippling" || tmpStr == "6") {
+	} else if (tmpStr == "crippling" || tmpStr == "6") {
 		return SPELLGROUP_CRIPPLING;
-	}
-	if (tmpStr == "focus" || tmpStr == "7") {
+	} else if (tmpStr == "focus" || tmpStr == "7") {
 		return SPELLGROUP_FOCUS;
-	}
-	if (tmpStr == "ultimatestrikes" || tmpStr == "8") {
+	} else if (tmpStr == "ultimatestrikes" || tmpStr == "8") {
 		return SPELLGROUP_ULTIMATESTRIKES;
-	}
-	if (tmpStr == "burstsofnature" || tmpStr == "9") {
-		return SPELLGROUP_BURSTS_OF_NATURE;
-	}
-	if (tmpStr == "greatbeams" || tmpStr == "10") {
-		return SPELLGROUP_GREAT_BEAMS;
 	}
 
 	return SPELLGROUP_NONE;
@@ -1601,20 +1548,20 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
  */
 void capitalizeWords(std::string &source) {
 	toLowerCaseString(source);
-	const auto size = static_cast<uint8_t>(source.size());
+	uint8_t size = (uint8_t)source.size();
 	for (uint8_t i = 0; i < size; i++) {
 		if (i == 0) {
-			source[i] = static_cast<char>(toupper(source[i]));
+			source[i] = (char)toupper(source[i]);
 		} else if (source[i - 1] == ' ' || source[i - 1] == '\'') {
 			source[i] = (char)toupper(source[i]);
 		}
 	}
 }
 
-void capitalizeWordsIgnoringString(std::string &source, const std::string &stringToIgnore) {
+void capitalizeWordsIgnoringString(std::string &source, const std::string stringToIgnore) {
 	toLowerCaseString(source);
-	const auto size = static_cast<uint8_t>(source.size());
-	const auto indexFound = source.find(stringToIgnore);
+	auto size = static_cast<uint8_t>(source.size());
+	auto indexFound = source.find(stringToIgnore);
 
 	for (uint8_t i = 0; i < size; i++) {
 		if (indexFound != std::string::npos && indexFound > 0 && std::cmp_greater(i, static_cast<uint8_t>(indexFound - 1)) && i < (indexFound + stringToIgnore.size())) {
@@ -1636,32 +1583,31 @@ void consoleHandlerExit() {
 	if (isatty(STDIN_FILENO)) {
 		getchar();
 	}
+	return;
 }
 
 NameEval_t validateName(const std::string &name) {
 	StringVector prohibitedWords = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god" };
 	StringVector toks;
-	const std::regex regexValidChars("^[a-zA-Z' ]+$");
+	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
 	std::stringstream ss(name);
-	const std::istream_iterator<std::string> begin(ss);
-	const std::istream_iterator<std::string> end;
+	std::istream_iterator<std::string> begin(ss);
+	std::istream_iterator<std::string> end;
 	std::copy(begin, end, std::back_inserter(toks));
 
 	if (name.length() < 3 || name.length() > 18) {
 		return INVALID_LENGTH;
 	}
 
-	if (!std::regex_match(name, regexValidChars)) {
+	if (!std::regex_match(name, regexValidChars)) { // invalid chars in name
 		return INVALID_CHARACTER;
 	}
 
-	for (const std::string &str : toks) {
+	for (std::string str : toks) {
 		if (str.length() < 2) {
 			return INVALID_TOKEN_LENGTH;
-		}
-
-		if (std::ranges::find(prohibitedWords, str) != prohibitedWords.end()) {
+		} else if (std::find(prohibitedWords.begin(), prohibitedWords.end(), str) != prohibitedWords.end()) { // searching for prohibited words
 			return INVALID_FORBIDDEN;
 		}
 	}
@@ -1728,7 +1674,7 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 		case OBJECTCATEGORY_DEFAULT:
 			return "Unassigned Loot";
 		default:
-			return {};
+			return std::string();
 	}
 }
 
@@ -1771,31 +1717,31 @@ uint8_t forgeBonus(int32_t number) {
 		return 0;
 	}
 	// Dust not consumed
-	if (number >= 7400 && number < 9000) {
+	else if (number >= 7400 && number < 9000) {
 		return 1;
 	}
 	// Cores not consumed
-	if (number >= 9000 && number < 9500) {
+	else if (number >= 9000 && number < 9500) {
 		return 2;
 	}
 	// Gold not consumed
-	if (number >= 9500 && number < 9525) {
+	else if (number >= 9500 && number < 9525) {
 		return 3;
 	}
 	// Second item retained with decreased tier
-	if (number >= 9525 && number < 9550) {
+	else if (number >= 9525 && number < 9550) {
 		return 4;
 	}
 	// Second item retained with unchanged tier
-	if (number >= 9550 && number < 9950) {
+	else if (number >= 9550 && number < 9950) {
 		return 5;
 	}
 	// Second item retained with increased tier
-	if (number >= 9950 && number < 9975) {
+	else if (number >= 9950 && number < 9975) {
 		return 6;
 	}
 	// Gain two tiers
-	if (number >= 9975) {
+	else if (number >= 9975) {
 		return 7;
 	}
 
@@ -1803,9 +1749,9 @@ uint8_t forgeBonus(int32_t number) {
 }
 
 std::string formatPrice(std::string price, bool space /* = false*/) {
-	std::ranges::reverse(price);
+	std::ranges::reverse(price.begin(), price.end());
 	price = std::regex_replace(price, std::regex("000"), "k");
-	std::ranges::reverse(price);
+	std::ranges::reverse(price.begin(), price.end());
 	if (space) {
 		price = std::regex_replace(price, std::regex("k"), " k", std::regex_constants::format_first_only);
 	}
@@ -1926,9 +1872,9 @@ std::vector<std::string> split(const std::string &str, char delimiter /* = ','*/
 }
 
 std::string getFormattedTimeRemaining(uint32_t time) {
-	const time_t timeRemaining = time - getTimeNow();
+	time_t timeRemaining = time - getTimeNow();
 
-	const int days = static_cast<int>(std::floor(timeRemaining / 86400));
+	int days = static_cast<int>(std::floor(timeRemaining / 86400));
 
 	std::stringstream output;
 	if (days > 1) {
@@ -1936,9 +1882,9 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 		return output.str();
 	}
 
-	const auto hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
-	const auto minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
-	const auto seconds = static_cast<int>(timeRemaining % 60);
+	int hours = static_cast<int>(std::floor((timeRemaining % 86400) / 3600));
+	int minutes = static_cast<int>(std::floor((timeRemaining % 3600) / 60));
+	int seconds = static_cast<int>(timeRemaining % 60);
 
 	if (hours == 0 && minutes == 0 && seconds > 0) {
 		output << " less than 1 minute";
@@ -1957,39 +1903,6 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 unsigned int getNumberOfCores() {
 	static auto cores = std::thread::hardware_concurrency();
 	return cores;
-}
-
-Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
-	switch (combatType) {
-		case COMBAT_PHYSICALDAMAGE:
-			return CIPBIA_ELEMENTAL_PHYSICAL;
-		case COMBAT_ENERGYDAMAGE:
-			return CIPBIA_ELEMENTAL_ENERGY;
-		case COMBAT_EARTHDAMAGE:
-			return CIPBIA_ELEMENTAL_EARTH;
-		case COMBAT_FIREDAMAGE:
-			return CIPBIA_ELEMENTAL_FIRE;
-		case COMBAT_LIFEDRAIN:
-			return CIPBIA_ELEMENTAL_LIFEDRAIN;
-		case COMBAT_HEALING:
-			return CIPBIA_ELEMENTAL_HEALING;
-		case COMBAT_DROWNDAMAGE:
-			return CIPBIA_ELEMENTAL_DROWN;
-		case COMBAT_ICEDAMAGE:
-			return CIPBIA_ELEMENTAL_ICE;
-		case COMBAT_HOLYDAMAGE:
-			return CIPBIA_ELEMENTAL_HOLY;
-		case COMBAT_DEATHDAMAGE:
-			return CIPBIA_ELEMENTAL_DEATH;
-		case COMBAT_MANADRAIN:
-			return CIPBIA_ELEMENTAL_MANADRAIN;
-		case COMBAT_AGONYDAMAGE:
-			return CIPBIA_ELEMENTAL_AGONY;
-		case COMBAT_NEUTRALDAMAGE:
-			return CIPBIA_ELEMENTAL_AGONY;
-		default:
-			return CIPBIA_ELEMENTAL_UNDEFINED;
-	}
 }
 
 /**
@@ -2018,10 +1931,8 @@ void sleep_for(uint64_t ms) {
  */
 std::string toKey(const std::string &str) {
 	std::string key = asLowerCaseString(str);
-	std::ranges::replace(key, ' ', '-');
-	std::erase_if(key, [](char c) {
-		return std::isspace(c);
-	});
+	std::replace(key.begin(), key.end(), ' ', '-');
+	key.erase(std::remove_if(key.begin(), key.end(), [](char c) { return std::isspace(c); }), key.end());
 	return key;
 }
 
@@ -2039,90 +1950,4 @@ uint8_t convertWheelGemAffinityToDomain(uint8_t affinity) {
 			g_logger().error("Failed to get gem affinity {}", affinity);
 			return 0;
 	}
-}
-
-bool caseInsensitiveCompare(std::string_view str1, std::string_view str2, size_t length /*= std::string_view::npos*/) {
-	if (length == std::string_view::npos) {
-		if (str1.size() != str2.size()) {
-			return false;
-		}
-		length = str1.size();
-	} else {
-		length = std::min({ length, str1.size(), str2.size() });
-	}
-
-	return std::equal(str1.begin(), str1.begin() + length, str2.begin(), [](char c1, char c2) {
-		return std::tolower(static_cast<unsigned char>(c1)) == std::tolower(static_cast<unsigned char>(c2));
-	});
-}
-
-void printStackTrace() {
-	if (g_logger().getLevel() == "info") {
-		return;
-	}
-
-	constexpr int kMaxFrames = 64;
-	std::array<void*, kMaxFrames> stack;
-	int numFrames = absl::GetStackTrace(stack.data(), kMaxFrames, 0);
-	absl::InitializeSymbolizer("");
-	g_logger().info("Stack trace captured:");
-	for (int i = 0; i < numFrames; ++i) {
-		char symbolBuffer[1024];
-		if (absl::Symbolize(stack[i], symbolBuffer, sizeof(symbolBuffer))) {
-			g_logger().info("{}: {}", i, symbolBuffer);
-		} else {
-			g_logger().info("{}: [Unknown function]", i);
-		}
-	}
-}
-
-const std::map<uint8_t, uint16_t> &getMaxValuePerSkill() {
-	static std::map<uint8_t, uint16_t> maxValuePerSkill = {
-		{ SKILL_LIFE_LEECH_CHANCE, 100 },
-		{ SKILL_MANA_LEECH_CHANCE, 100 },
-		{ SKILL_CRITICAL_HIT_CHANCE, 100 * g_configManager().getNumber(CRITICALCHANCE) }
-	};
-
-	return maxValuePerSkill;
-}
-
-float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer /* = false*/) {
-	float lossPercent = 0;
-	switch (blessingAmount) {
-		case 0:
-			lossPercent = 10;
-			break;
-		case 1:
-			lossPercent = 7;
-			break;
-		case 2:
-			lossPercent = 4.5;
-			break;
-		case 3:
-			lossPercent = 2.5;
-			break;
-		case 4:
-			lossPercent = 1;
-			break;
-		default:
-			// Blessing Amount >= 5
-			lossPercent = 0;
-			break;
-	}
-
-	return isContainer ? lossPercent * 10 : lossPercent;
-}
-
-uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted /* = false*/) {
-	uint8_t result = 80 + (2 * blessCount) - (blessCount / 3);
-
-	if (blessCount == 5) {
-		result -= 1;
-	}
-
-	if (isPromoted) {
-		result += 6;
-	}
-
-	return result;
 }

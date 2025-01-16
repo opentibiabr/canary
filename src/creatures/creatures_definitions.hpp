@@ -11,7 +11,6 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <string>
-	#include <utility>
 	#include <vector>
 	#include <map>
 	#include <list>
@@ -72,7 +71,6 @@ enum ConditionAttr_t {
 	CONDITIONATTR_ABSORBS,
 	CONDITIONATTR_INCREASES,
 	CONDITIONATTR_CHARM_CHANCE_MODIFIER,
-	CONDITIONATTR_PERSISTENT,
 
 	// reserved for serialization
 	CONDITIONATTR_END = 254,
@@ -114,11 +112,10 @@ enum ConditionType_t : uint8_t {
 	CONDITION_LESSERHEX = 31,
 	CONDITION_INTENSEHEX = 32,
 	CONDITION_GREATERHEX = 33,
-	CONDITION_BAKRAGORE = 34,
-	CONDITION_GOSHNARTAINT = 35,
+	CONDITION_GOSHNARTAINT = 34,
 
 	// Need the last ever
-	CONDITION_COUNT
+	CONDITION_COUNT = 39
 };
 
 // constexpr definiting suppressible conditions
@@ -706,8 +703,6 @@ enum SpellGroup_t : uint8_t {
 	SPELLGROUP_CRIPPLING = 6,
 	SPELLGROUP_FOCUS = 7,
 	SPELLGROUP_ULTIMATESTRIKES = 8,
-	SPELLGROUP_BURSTS_OF_NATURE = 9,
-	SPELLGROUP_GREAT_BEAMS = 10,
 };
 
 enum ChannelEvent_t : uint8_t {
@@ -1371,7 +1366,7 @@ struct CreatureIcon {
 	explicit constexpr CreatureIcon(CreatureIconQuests_t quest, uint16_t count = 0) :
 		category(CreatureIconCategory_t::Quests), quest(quest), count(count) { }
 
-	CreatureIconCategory_t category {};
+	CreatureIconCategory_t category;
 	CreatureIconModifications_t modification = CreatureIconModifications_t::None;
 	CreatureIconQuests_t quest = CreatureIconQuests_t::None;
 	uint16_t count = 0;
@@ -1400,7 +1395,7 @@ struct CreatureIcon {
 struct Position;
 
 struct VIPEntry {
-	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
+	VIPEntry(uint32_t initGuid, const std::string &initName, const std::string &initDescription, uint32_t initIcon, bool initNotify) :
 		guid(initGuid),
 		name(std::move(initName)),
 		description(std::move(initDescription)),
@@ -1408,20 +1403,20 @@ struct VIPEntry {
 		notify(initNotify) { }
 
 	uint32_t guid = 0;
-	std::string name;
-	std::string description;
+	std::string name = "";
+	std::string description = "";
 	uint32_t icon = 0;
 	bool notify = false;
 };
 
 struct VIPGroupEntry {
-	VIPGroupEntry(uint8_t initId, std::string initName, bool initCustomizable) :
+	VIPGroupEntry(uint8_t initId, const std::string &initName, bool initCustomizable) :
 		id(initId),
 		name(std::move(initName)),
 		customizable(initCustomizable) { }
 
 	uint8_t id = 0;
-	std::string name;
+	std::string name = "";
 	bool customizable = false;
 };
 
@@ -1488,7 +1483,7 @@ struct MarketOffer {
 
 struct MarketOfferEx {
 	MarketOfferEx() = default;
-	MarketOfferEx(MarketOfferEx &&other) noexcept :
+	MarketOfferEx(MarketOfferEx &&other) :
 		id(other.id),
 		playerId(other.playerId),
 		timestamp(other.timestamp),
@@ -1500,15 +1495,15 @@ struct MarketOfferEx {
 		tier(other.tier),
 		playerName(std::move(other.playerName)) { }
 
-	uint32_t id {};
-	uint32_t playerId {};
-	uint32_t timestamp {};
-	uint64_t price {};
-	uint16_t amount {};
-	uint16_t counter {};
-	uint16_t itemId {};
-	MarketAction_t type {};
-	uint8_t tier {};
+	uint32_t id;
+	uint32_t playerId;
+	uint32_t timestamp;
+	uint64_t price;
+	uint16_t amount;
+	uint16_t counter;
+	uint16_t itemId;
+	MarketAction_t type;
+	uint8_t tier;
 	std::string playerName;
 };
 
@@ -1586,6 +1581,8 @@ struct RespawnType {
 	bool underground;
 };
 
+struct LootBlock;
+
 struct LootBlock {
 	uint16_t id;
 	uint32_t countmax;
@@ -1626,16 +1623,17 @@ struct LootBlock {
 };
 
 struct ShopBlock {
-	uint16_t itemId {};
+	uint16_t itemId;
 	std::string itemName;
-	int32_t itemSubType {};
-	uint32_t itemBuyPrice {};
-	uint32_t itemSellPrice {};
-	int32_t itemStorageKey {};
-	int32_t itemStorageValue {};
+	int32_t itemSubType;
+	uint32_t itemBuyPrice;
+	uint32_t itemSellPrice;
+	int32_t itemStorageKey;
+	int32_t itemStorageValue;
 
 	std::vector<ShopBlock> childShop;
-	ShopBlock() = default;
+	ShopBlock() :
+		itemId(0), itemName(""), itemSubType(0), itemBuyPrice(0), itemSellPrice(0), itemStorageKey(0), itemStorageValue(0) { }
 
 	explicit ShopBlock(uint16_t newItemId, std::string newName = "", int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0) :
 		itemId(newItemId), itemName(std::move(newName)), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue) { }

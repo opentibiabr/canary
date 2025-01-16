@@ -14,7 +14,7 @@
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "BUILD_STATIC_LIBRARY": "ON",
-        "SPEED_UP_BUILD_UNITY": "ON",
+        "SPEED_UP_BUILD_UNITY": "OFF",
         "OPTIONS_ENABLE_SCCACHE": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
@@ -83,21 +83,9 @@
       "description": "Build Debug Mode",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "DEBUG_LOG": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF"
-      }
-    },
-    {
-      "name": "linux-debug-asan",
-      "inherits": "linux-release",
-      "displayName": "Linux - Debug Build",
-      "description": "Build Debug Mode With ASAN Enable",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "DEBUG_LOG": "ON",
-        "ASAN_ENABLED": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF"
+        "SPEED_UP_BUILD_UNITY": "OFF",
+        "ASAN_ENABLED": "ON"
       }
     },
     {

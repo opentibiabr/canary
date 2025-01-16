@@ -9,11 +9,10 @@
 
 #pragma once
 
-#include "lua/global/baseevents.hpp"
-#include "lua/scripts/luascript.hpp"
 #include "utils/utils_definitions.hpp"
-
-struct Position;
+#include "declarations.hpp"
+#include "game/movement/position.hpp"
+#include "lua/global/baseevents.hpp"
 
 struct MonsterSpawn {
 	MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :
@@ -57,11 +56,11 @@ public:
 	std::shared_ptr<Raid> getRunning() {
 		return running;
 	}
-	void setRunning(const std::shared_ptr<Raid> &newRunning) {
+	void setRunning(const std::shared_ptr<Raid> newRunning) {
 		running = newRunning;
 	}
 
-	std::shared_ptr<Raid> getRaidByName(const std::string &name) const;
+	std::shared_ptr<Raid> getRaidByName(const std::string &name);
 
 	uint64_t getLastRaidEnd() const {
 		return lastRaidEnd;
@@ -101,7 +100,7 @@ public:
 
 	void startRaid();
 
-	void executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent);
+	void executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent);
 	void resetRaid();
 
 	std::shared_ptr<RaidEvent> getNextRaidEvent();
@@ -151,7 +150,7 @@ public:
 	}
 
 private:
-	uint32_t delay {};
+	uint32_t delay;
 };
 
 class AnnounceEvent final : public RaidEvent {
@@ -203,7 +202,7 @@ public:
 		return scriptName;
 	}
 	void setScriptName(std::string name) {
-		scriptName = std::move(name);
+		scriptName = name;
 	}
 
 	bool executeEvent() override;

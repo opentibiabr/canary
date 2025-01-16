@@ -55,6 +55,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -93,7 +94,6 @@ monster.loot = {
 	{ name = "figurine of megalomania", chance = 400 },
 	{ name = "megalomania's skull", chance = 400 },
 	{ name = "megalomania's essence", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -127,6 +127,12 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
 local intervalBetweenExecutions = 10000
 
 local zone = Zone.getByName("boss.goshnar's-megalomania-purple")
@@ -136,10 +142,6 @@ mType.onThink = function(monsterCallback, interval)
 	monsterCallback:onThinkGoshnarTormentCounter(interval, 36, intervalBetweenExecutions, SoulWarQuest.levers.goshnarsMegalomania.boss.position)
 	monsterCallback:onThinkMegalomaniaWhiteTiles(interval, zonePositions, 8000)
 	monsterCallback:goshnarsDefenseIncrease("cleansed-sanity-action")
-end
-
-mType.onDisappear = function(monster, creature)
-	creature:removeGoshnarsMegalomaniaMonsters(zone)
 end
 
 mType:register(monster)

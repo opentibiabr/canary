@@ -13,16 +13,12 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 512000
-monster.maxHealth = 512000
+monster.health = 500000
+monster.maxHealth = 500000
 monster.race = "blood"
 monster.corpse = 0
 monster.speed = 95
 monster.manaCost = 0
-
-monster.events = {
-	"UrmahlulluChanges",
-}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -61,6 +57,9 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
+monster.events = {
+	"UrmahlulluChanges",
+}
 monster.light = {
 	level = 0,
 	color = 0,

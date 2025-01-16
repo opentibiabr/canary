@@ -16,11 +16,11 @@ raid
 	:addSpawnMonsters({
 		{
 			name = "Rat",
-			amount = 10,
+			amount = 15,
 		},
 		{
 			name = "Cave Rat",
-			amount = 10,
+			amount = 15,
 		},
 	})
 	:autoAdvance("10m")
@@ -29,11 +29,11 @@ raid
 	:addSpawnMonsters({
 		{
 			name = "Rat",
-			amount = 20,
+			amount = 30,
 		},
 		{
 			name = "Cave Rat",
-			amount = 20,
+			amount = 30,
 		},
 	})
 	:autoAdvance("10m")

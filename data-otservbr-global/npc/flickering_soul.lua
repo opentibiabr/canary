@@ -182,13 +182,9 @@ local function playerSayCallback(npc, player, type, message)
 		end
 		npcHandler:say(message, npc, player)
 	elseif MsgContains(message, "taints") or MsgContains(message, "penalties") then
-		if player:getTaintLevel() ~= nil then
-			player:resetTaints(true)
-			npcHandler:say("I have cleansed you from the taints that you carried with you. You are now free from the burden that you should not have to bear.", npc, player)
-			return
+		if player:getTaintLevel() == nil then
+			player:resetTaints()
 		end
-
-		npcHandler:say("You are not tainted by the darkness of the world. You are pure and free from the burdens that others carry.", npc, player)
 	end
 	return true
 end

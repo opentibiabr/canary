@@ -101,7 +101,7 @@ local topic = {}
 
 local function greetCallback(npc, creature)
 	local playerId = creature:getId()
-	npcHandler:setMessage(MESSAGE_GREET, "Welcome back, knight |PLAYERNAME|!")
+	npcHandler:setMessage(MESSAGE_GREET, "Salutations, |PLAYERNAME|. What can I do for you?")
 	topic[playerId] = nil
 	return true
 end
@@ -114,18 +114,33 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local player, storage = Player(creature), Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon
+	local player, storage = Player(creature), Storage.OutfitQuest.WarriorShoulderAddon
 	if npcHandler:getTopic(playerId) == 0 then
 		if table.contains({ "outfit", "addon" }, message) then
-			npcHandler:say("Are you talking about my spiky shoulder pad? You can't buy one of these. They have to be {earned}.", npc, creature)
+			npcHandler:say(
+				"Are you talking about my spiky shoulder pad? You can't buy one of these. \z
+				They have to be {earned}.",
+				npc,
+				creature
+			)
 		elseif MsgContains(message, "earn") then
 			if player:getStorageValue(storage) < 1 then
-				npcHandler:say("I'm not sure if you are enough of a hero to earn them. You could try, though. What do you think?", npc, creature)
+				npcHandler:say(
+					"I'm not sure if you are enough of a hero to earn them. \z
+					You could try, though. What do you think?",
+					npc,
+					creature
+				)
 				npcHandler:setTopic(playerId, 1)
 			elseif player:getStorageValue(storage) >= 1 and player:getStorageValue(storage) < 5 then
 				npcHandler:say("Before I can nominate you for an award, please complete your task.", npc, creature)
 			elseif player:getStorageValue(storage) == 5 then
-				npcHandler:say("You did it! I have seldom seen a man as courageous as you. I really have to say that you deserve to wear a spike. Go ask Cornelia to adorn your armour.", npc, creature)
+				npcHandler:say(
+					"You did it! I have seldom seen a man as courageous as you. \z
+					I really have to say that you deserve to wear a spike. Go ask Cornelia to adorn your armour.",
+					npc,
+					creature
+				)
 			end
 		elseif config[message:lower()] then
 			local targetMessage = config[message:lower()]
@@ -143,7 +158,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"Okay, who knows, maybe you have a chance. A really small one though. Listen up: ...",
 				"First, you have to prove your guts by bringing me 100 hardened bones. ...",
-				"Next, if you actually managed to collect that many, please complete a small task for our guild and bring us 100 turtle shells. ...",
+				"Next, if you actually managed to collect that many, please complete a small task for \z
+					our guild and bring us 100 turtle shells. ...",
 				"It is said that excellent shields can be created from these. ...",
 				"Alright, um, afterwards show me that you have fighting spirit. Any true hero needs plenty of that. ...",
 				"The last task is the hardest. You will need to bring me a claw from a mighty dragon king. ...",

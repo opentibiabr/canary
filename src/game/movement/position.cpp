@@ -7,8 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/movement/position.hpp"
+#include "pch.hpp"
 
+#include "game/movement/position.hpp"
 #include "utils/tools.hpp"
 
 double Position::getEuclideanDistance(const Position &p1, const Position &p2) {

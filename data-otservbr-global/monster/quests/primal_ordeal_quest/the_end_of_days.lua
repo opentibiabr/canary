@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 90000
-monster.maxHealth = 90000
+monster.health = 30000
+monster.maxHealth = 30000
 monster.race = "undead"
 monster.corpse = 0
 monster.speed = 250
@@ -37,7 +37,7 @@ monster.flags = {
 	attackable = true,
 	hostile = true,
 	convinceable = false,
-	pushable = false,
+	pushable = true,
 	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
@@ -65,9 +65,9 @@ monster.voices = {
 monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -750, maxDamage = -1750 },
-	{ name = "combat", interval = 2700, chance = 37, type = COMBAT_FIREDAMAGE, minDamage = -950, maxDamage = -2000, length = 8, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
-	{ name = "combat", interval = 3300, chance = 37, type = COMBAT_PHYSICALDAMAGE, minDamage = -1100, maxDamage = -1600, length = 8, spread = 0, effect = CONST_ME_EXPLOSIONHIT, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -750 },
+	{ name = "combat", interval = 2700, chance = 37, type = COMBAT_FIREDAMAGE, minDamage = -50, maxDamage = -200, length = 8, spread = 3, effect = CONST_ME_HITBYFIRE, target = false },
+	{ name = "combat", interval = 3300, chance = 37, type = COMBAT_PHYSICALDAMAGE, minDamage = -100, maxDamage = -600, length = 8, spread = 0, effect = CONST_ME_EXPLOSIONHIT, target = false },
 }
 
 monster.defenses = {

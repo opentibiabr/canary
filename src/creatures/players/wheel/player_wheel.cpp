@@ -7,27 +7,17 @@
  * Website: https://docs.opentibiabr.org/
  */
 
+#include "pch.hpp"
+
 #include "creatures/players/wheel/player_wheel.hpp"
 
-#include "map/spectators.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "config/configmanager.hpp"
-#include "creatures/combat/condition.hpp"
-#include "creatures/combat/spells.hpp"
-#include "creatures/players/player.hpp"
-#include "creatures/players/vocations/vocation.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
-#include "enums/player_wheel.hpp"
-#include "game/game.hpp"
 #include "io/io_wheel.hpp"
-#include "kv/kv.hpp"
-#include "kv/kv_definitions.hpp"
-#include "server/network/message/networkmessage.hpp"
-#include "server/network/protocol/protocolgame.hpp"
 
-static PlayerWheelGem emptyGem = {};
+#include "game/game.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/combat/spells.hpp"
 
-std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
+#include "config/configmanager.hpp"
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,
@@ -85,175 +75,6 @@ const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot2Allowed = {
 	WheelGemBasicModifier_t::General_MitigationMultiplier,
 };
 
-const static std::vector<WheelGemBasicModifier_t> modsBasicPosition = {
-	WheelGemBasicModifier_t::General_PhysicalResistance,
-	WheelGemBasicModifier_t::General_HolyResistance,
-	WheelGemBasicModifier_t::General_DeathResistance,
-	WheelGemBasicModifier_t::General_FireResistance,
-	WheelGemBasicModifier_t::General_EarthResistance,
-	WheelGemBasicModifier_t::General_IceResistance,
-	WheelGemBasicModifier_t::General_EnergyResistance,
-
-	WheelGemBasicModifier_t::General_HolyResistance_DeathWeakness,
-	WheelGemBasicModifier_t::General_DeathResistance_HolyWeakness,
-	WheelGemBasicModifier_t::General_FireResistance_EarthResistance,
-	WheelGemBasicModifier_t::General_FireResistance_IceResistance,
-	WheelGemBasicModifier_t::General_FireResistance_EnergyResistance,
-	WheelGemBasicModifier_t::General_EarthResistance_IceResistance,
-	WheelGemBasicModifier_t::General_EarthResistance_EnergyResistance,
-	WheelGemBasicModifier_t::General_IceResistance_EnergyResistance,
-
-	WheelGemBasicModifier_t::General_FireResistance_EarthWeakness,
-	WheelGemBasicModifier_t::General_FireResistance_IceWeakness,
-	WheelGemBasicModifier_t::General_FireResistance_EnergyWeakness,
-	WheelGemBasicModifier_t::General_EarthResistance_FireWeakness,
-	WheelGemBasicModifier_t::General_EarthResistance_IceWeakness,
-	WheelGemBasicModifier_t::General_EarthResistance_EnergyWeakness,
-	WheelGemBasicModifier_t::General_IceResistance_EarthWeakness,
-	WheelGemBasicModifier_t::General_IceResistance_FireWeakness,
-	WheelGemBasicModifier_t::General_IceResistance_EnergyWeakness,
-	WheelGemBasicModifier_t::General_EnergyResistance_EarthWeakness,
-	WheelGemBasicModifier_t::General_EnergyResistance_IceWeakness,
-	WheelGemBasicModifier_t::General_EnergyResistance_FireWeakness,
-	WheelGemBasicModifier_t::General_ManaDrainResistance,
-	WheelGemBasicModifier_t::General_LifeDrainResistance,
-	WheelGemBasicModifier_t::General_ManaDrainResistance_LifeDrainResistance,
-	WheelGemBasicModifier_t::General_MitigationMultiplier,
-
-	WheelGemBasicModifier_t::Vocation_Health,
-	WheelGemBasicModifier_t::Vocation_Mana_FireResistance,
-	WheelGemBasicModifier_t::Vocation_Mana_EnergyResistance,
-	WheelGemBasicModifier_t::Vocation_Mana_Earth_Resistance,
-	WheelGemBasicModifier_t::Vocation_Mana_Ice_Resistance,
-	WheelGemBasicModifier_t::Vocation_Mana,
-	WheelGemBasicModifier_t::Vocation_Health_FireResistance,
-	WheelGemBasicModifier_t::Vocation_Health_EnergyResistance,
-	WheelGemBasicModifier_t::Vocation_Health_EarthResistance,
-	WheelGemBasicModifier_t::Vocation_Health_IceResistance,
-
-	WheelGemBasicModifier_t::Vocation_Capacity_FireResistance,
-	WheelGemBasicModifier_t::Vocation_Capacity_EnergyResistance,
-	WheelGemBasicModifier_t::Vocation_Capacity_EarthResistance,
-	WheelGemBasicModifier_t::Vocation_Capacity_IceResistance,
-	WheelGemBasicModifier_t::Vocation_Capacity,
-};
-
-const static std::vector<WheelGemSupremeModifier_t> modsSupremeKnightPosition = {
-	WheelGemSupremeModifier_t::General_Dodge,
-	WheelGemSupremeModifier_t::General_CriticalDamage,
-	WheelGemSupremeModifier_t::General_LifeLeech,
-	WheelGemSupremeModifier_t::General_ManaLeech,
-	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
-
-	WheelGemSupremeModifier_t::Knight_AvatarOfSteel_Cooldown,
-	WheelGemSupremeModifier_t::Knight_ExecutionersThrow_Cooldown,
-	WheelGemSupremeModifier_t::Knight_ExecutionersThrow_DamageIncrease,
-	WheelGemSupremeModifier_t::Knight_ExecutionersThrow_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Knight_Fierce_Berserk_DamageIncrease,
-	WheelGemSupremeModifier_t::Knight_Fierce_Berserk_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Knight_Berserk_DamageIncrease,
-	WheelGemSupremeModifier_t::Knight_Berserk_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Knight_Front_Sweep_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Knight_Front_Sweep_DamageIncrease,
-	WheelGemSupremeModifier_t::Knight_Groundshaker_DamageIncrease,
-	WheelGemSupremeModifier_t::Knight_Groundshaker_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Knight_Annihilation_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Knight_Annihilation_DamageIncrease,
-	WheelGemSupremeModifier_t::Knight_FairWoundCleansing_HealingIncrease,
-	WheelGemSupremeModifier_t::Knight_RevelationMastery_AvatarOfSteel,
-	WheelGemSupremeModifier_t::Knight_RevelationMastery_ExecutionersThrow,
-	WheelGemSupremeModifier_t::Knight_RevelationMastery_CombatMastery,
-};
-
-const static std::vector<WheelGemSupremeModifier_t> modsSupremePaladinPosition = {
-	WheelGemSupremeModifier_t::General_Dodge,
-	WheelGemSupremeModifier_t::General_CriticalDamage,
-	WheelGemSupremeModifier_t::General_LifeLeech,
-	WheelGemSupremeModifier_t::General_ManaLeech,
-	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
-
-	WheelGemSupremeModifier_t::Paladin_AvatarOfLight_Cooldown,
-	WheelGemSupremeModifier_t::Paladin_DivineDazzle_Cooldown,
-	WheelGemSupremeModifier_t::Paladin_DivineGrenade_DamageIncrease,
-	WheelGemSupremeModifier_t::Paladin_DivineGrenade_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Paladin_DivineCaldera_DamageIncrease,
-	WheelGemSupremeModifier_t::Paladin_DivineCaldera_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Paladin_DivineMissile_DamageIncrease,
-	WheelGemSupremeModifier_t::Paladin_DivineMissile_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Paladin_EtherealSpear_DamageIncrease,
-	WheelGemSupremeModifier_t::Paladin_EtherealSpear_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Paladin_StrongEtherealSpear_DamageIncrease,
-	WheelGemSupremeModifier_t::Paladin_StrongEtherealSpear_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Paladin_DivineEmpowerment_Cooldown,
-	WheelGemSupremeModifier_t::Paladin_DivineGrenade_Cooldown,
-	WheelGemSupremeModifier_t::Paladin_Salvation_HealingIncrease,
-	WheelGemSupremeModifier_t::Paladin_RevelationMastery_AvatarOfLight,
-	WheelGemSupremeModifier_t::Paladin_RevelationMastery_DivineGrenade,
-	WheelGemSupremeModifier_t::Paladin_RevelationMastery_DivineEmpowerment,
-};
-
-const static std::vector<WheelGemSupremeModifier_t> modsSupremeSorcererPosition = {
-	WheelGemSupremeModifier_t::General_Dodge,
-	WheelGemSupremeModifier_t::General_CriticalDamage,
-	WheelGemSupremeModifier_t::General_LifeLeech,
-	WheelGemSupremeModifier_t::General_ManaLeech,
-	WheelGemSupremeModifier_t::SorcererDruid_UltimateHealing,
-	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
-
-	WheelGemSupremeModifier_t::Sorcerer_AvatarOfStorm_Cooldown,
-	WheelGemSupremeModifier_t::Sorcerer_EnergyWave_Cooldown,
-	WheelGemSupremeModifier_t::Sorcerer_GreatDeathBeam_DamageIncrease,
-	WheelGemSupremeModifier_t::Sorcerer_GreatDeathBeam_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Sorcerer_HellsCore_DamageIncrease,
-	WheelGemSupremeModifier_t::Sorcerer_HellsCore_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Sorcerer_EnergyWave_DamageIncrease,
-	WheelGemSupremeModifier_t::Sorcerer_EnergyWave_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Sorcerer_GreatFireWave_DamageIncrease,
-	WheelGemSupremeModifier_t::Sorcerer_GreatFireWave_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Sorcerer_RageOfTheSkies_DamageIncrease,
-	WheelGemSupremeModifier_t::Sorcerer_RageOfTheSkies_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Sorcerer_GreatEnergyBeam_DamageIncrease,
-	WheelGemSupremeModifier_t::Sorcerer_GreatEnergyBeam_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Sorcerer_RevelationMastery_AvatarOfStorm,
-	WheelGemSupremeModifier_t::Sorcerer_RevelationMastery_BeamMastery,
-	WheelGemSupremeModifier_t::Sorcerer_RevelationMastery_DrainBody,
-};
-
-const static std::vector<WheelGemSupremeModifier_t> modsSupremeDruidPosition = {
-	WheelGemSupremeModifier_t::General_Dodge,
-	WheelGemSupremeModifier_t::General_CriticalDamage,
-	WheelGemSupremeModifier_t::General_LifeLeech,
-	WheelGemSupremeModifier_t::General_ManaLeech,
-	WheelGemSupremeModifier_t::SorcererDruid_UltimateHealing,
-	WheelGemSupremeModifier_t::General_RevelationMastery_GiftOfLife,
-
-	WheelGemSupremeModifier_t::Druid_AvatarOfNature_Cooldown,
-	WheelGemSupremeModifier_t::Druid_NaturesEmbrace_Cooldown,
-	WheelGemSupremeModifier_t::Druid_TerraBurst_DamageIncrease,
-	WheelGemSupremeModifier_t::Druid_TerraBurst_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Druid_IceBurst_DamageIncrease,
-	WheelGemSupremeModifier_t::Druid_IceBurst_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Druid_EternalWinter_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Druid_EternalWinter_DamageIncrease,
-	WheelGemSupremeModifier_t::Druid_TerraWave_DamageIncrease,
-	WheelGemSupremeModifier_t::Druid_TerraWave_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Druid_StrongIceWave_DamageIncrease,
-	WheelGemSupremeModifier_t::Druid_StrongIceWave_CriticalExtraDamage,
-	WheelGemSupremeModifier_t::Druid_HealFriend_HealingIncrease,
-	WheelGemSupremeModifier_t::Druid_MassHealing_HealingIncrease,
-	WheelGemSupremeModifier_t::Druid_RevelationMastery_AvatarOfNature,
-	WheelGemSupremeModifier_t::Druid_RevelationMastery_BlessingOfTheGrove,
-	WheelGemSupremeModifier_t::Druid_RevelationMastery_TwinBursts,
-};
-
-// Using reference wrapper to avoid copying the vector to the map
-const static std::unordered_map<uint8_t, std::reference_wrapper<const std::vector<WheelGemSupremeModifier_t>>> modsSupremePositionByVocation = {
-	{ 1, std::cref(modsSupremeSorcererPosition) },
-	{ 2, std::cref(modsSupremeDruidPosition) },
-	{ 3, std::cref(modsSupremePaladinPosition) },
-	{ 4, std::cref(modsSupremeKnightPosition) }
-};
-
 // To avoid conflict in other files that might use a function with the same name
 // Here are built-in helper functions
 namespace {
@@ -276,7 +97,7 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, std::string_view spellName, uint8_t stage) {
+	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, const std::string_view &spellName, uint8_t stage) {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell target stage {}, grade {}", stage, size);
@@ -292,7 +113,7 @@ namespace {
 	}
 
 	template <typename SpellType>
-	int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, std::string_view spellName, uint8_t stage) {
+	int checkSpellAdditionalDuration(const std::array<SpellType, 5> &spellsTable, const std::string_view &spellName, uint8_t stage) {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell duration stage {}, grade {}", stage, size);
@@ -307,6 +128,12 @@ namespace {
 		return 0;
 	}
 
+	struct PromotionScroll {
+		uint16_t itemId;
+		std::string name;
+		uint8_t extraPoints;
+	};
+
 	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
 		{ 43946, "abridged", 3 },
 		{ 43947, "basic", 5 },
@@ -317,11 +144,13 @@ namespace {
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
-	m_pointsPerLevel(g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL)), m_player(initPlayer) {
+	m_player(initPlayer) {
+	auto pointsPerLevel = (uint16_t)g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL, __FUNCTION__);
+	m_pointsPerLevel = pointsPerLevel > 0 ? pointsPerLevel : 1;
 }
 
 bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) const {
-	const auto playerPoints = getWheelPoints();
+	auto playerPoints = getWheelPoints();
 	// Green quadrant
 	if (slot == WheelSlots_t::SLOT_GREEN_200) {
 		if (playerPoints < 375u) {
@@ -843,12 +672,9 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 
 uint16_t PlayerWheel::getUnusedPoints() const {
 	auto totalPoints = getWheelPoints();
-
 	if (totalPoints == 0) {
 		return 0;
 	}
-
-	totalPoints += m_modsMaxGrade;
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
 		totalPoints -= getPointsBySlotType(static_cast<WheelSlots_t>(i));
@@ -858,22 +684,19 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 }
 
 bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
-	const auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
 	if (stage == 0) {
 		return false;
 	}
 
-	const auto vocationEnum = m_player.getPlayerVocationEnum();
+	auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.paladin, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.druid, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		return checkSpellArea(g_game().getIOWheel()->getWheelBonusData().spells.sorcerer, spellName, stage);
 	}
 
@@ -881,22 +704,19 @@ bool PlayerWheel::getSpellAdditionalArea(const std::string &spellName) const {
 }
 
 int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
-	const auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
 	if (stage == 0) {
 		return 0;
 	}
 
-	const auto vocationEnum = m_player.getPlayerVocationEnum();
+	auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.paladin, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.druid, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		return checkSpellAdditionalTarget(g_game().getIOWheel()->getWheelBonusData().spells.sorcerer, spellName, stage);
 	}
 
@@ -904,70 +724,42 @@ int PlayerWheel::getSpellAdditionalTarget(const std::string &spellName) const {
 }
 
 int PlayerWheel::getSpellAdditionalDuration(const std::string &spellName) const {
-	const auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
+	auto stage = static_cast<uint8_t>(getSpellUpgrade(spellName));
 	if (stage == 0) {
 		return 0;
 	}
 
-	const auto vocationEnum = m_player.getPlayerVocationEnum();
+	auto vocationEnum = m_player.getPlayerVocationEnum();
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.knight, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.paladin, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.druid, spellName, stage);
-	}
-	if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		return checkSpellAdditionalDuration(g_game().getIOWheel()->getWheelBonusData().spells.sorcerer, spellName, stage);
 	}
 
 	return 0;
 }
 
-bool PlayerWheel::handleTwinBurstsCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
-	// Map of spell pairs for Twin Bursts
-	static const std::unordered_map<std::string, std::string> spellPairs = {
-		{ "Terra Burst", "Ice Burst" },
-		{ "Ice Burst", "Terra Burst" }
-	};
-
-	auto it = spellPairs.find(spellName);
-	if (it != spellPairs.end()) {
-		const auto &spell = g_spells().getSpellByName(it->second);
-		if (spell) {
-			const auto spellId = spell->getSpellId();
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
-			return player->addCondition(condition);
-		}
-	}
-
-	return false;
-}
-
-bool PlayerWheel::handleBeamMasteryCooldown(const std::shared_ptr<Player> &player, const std::string &spellName, int spellCooldown, int rateCooldown) const {
-	static const std::unordered_map<std::string, std::string> spellPairs = {
-		{ "Great Death Beam", "Great Energy Beam" },
-		{ "Great Energy Beam", "Great Death Beam" }
-	};
-
-	auto it = spellPairs.find(spellName);
-	if (it != spellPairs.end()) {
-		const auto &spell = g_spells().getSpellByName(it->second);
-		if (spell) {
-			const auto spellId = spell->getSpellId();
-			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, spellId);
-			return player->addCondition(condition);
-		}
-	}
-
-	return false;
-}
-
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
-	msg.add<uint16_t>(m_unlockedScrolls.size());
-	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
+	std::vector<uint16_t> unlockedScrolls;
+
+	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+		if (!scrollKv) {
+			continue;
+		}
+
+		auto scrollOpt = scrollKv->get(scroll.name);
+		if (scrollOpt && scrollOpt->get<bool>()) {
+			unlockedScrolls.push_back(scroll.itemId);
+		}
+	}
+
+	msg.add<uint16_t>(unlockedScrolls.size());
+	for (const auto &itemId : unlockedScrolls) {
 		msg.add<uint16_t>(itemId);
 	}
 }
@@ -976,54 +768,48 @@ std::shared_ptr<KV> PlayerWheel::gemsKV() const {
 	return m_player.kv()->scoped("wheel-of-destiny")->scoped("gems");
 }
 
-std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t pos) const {
-	return gemsKV()->scoped(std::string(magic_enum::enum_name(type)))->scoped(std::to_string(pos));
-}
-
-uint8_t PlayerWheel::getGemGrade(WheelFragmentType_t type, uint8_t pos) const {
-	return type == WheelFragmentType_t::Lesser ? m_basicGrades[pos] : m_supremeGrades[pos];
-}
-
 std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 	std::vector<PlayerWheelGem> unlockedGems;
-	const auto unlockedGemUUIDs = gemsKV()->scoped("revealed")->keys();
+	auto unlockedGemUUIDs = gemsKV()->scoped("revealed")->keys();
 	if (unlockedGemUUIDs.empty()) {
 		return unlockedGems;
 	}
-
 	std::vector<std::string> sortedUnlockedGemGUIDs;
 	for (const auto &uuid : unlockedGemUUIDs) {
-		sortedUnlockedGemGUIDs.emplace_back(uuid);
+		sortedUnlockedGemGUIDs.push_back(uuid);
 	}
-
-	std::ranges::sort(sortedUnlockedGemGUIDs, [](const std::string &a, const std::string &b) {
-		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
-			return std::stoull(a) < std::stoull(b);
-		} else {
-			return a < b;
-		}
+	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
+		return std::stoull(a) < std::stoull(b);
 	});
 
 	for (const auto &uuid : sortedUnlockedGemGUIDs) {
 		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
-		if (!gem) {
+		if (gem.uuid.empty()) {
 			continue;
 		}
-		unlockedGems.emplace_back(gem);
+		unlockedGems.push_back(gem);
 	}
 	return unlockedGems;
 }
 
 std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 	std::vector<PlayerWheelGem> activeGems;
-	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		const auto &gem = m_activeGems[static_cast<uint8_t>(affinity)];
-
-		if (!gem) {
+	for (auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		std::string key(magic_enum::enum_name(affinity));
+		auto uuidKV = gemsKV()->scoped("active")->get(key);
+		if (!uuidKV.has_value()) {
 			continue;
 		}
 
-		activeGems.emplace_back(gem);
+		auto uuid = uuidKV->get<StringType>();
+		if (uuid.empty()) {
+			continue;
+		}
+		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
+		if (gem.uuid.empty()) {
+			continue;
+		}
+		activeGems.push_back(gem);
 	}
 	return activeGems;
 }
@@ -1043,7 +829,7 @@ uint64_t PlayerWheel::getGemRotateCost(WheelGemQuality_t quality) {
 		default:
 			return 0;
 	}
-	return static_cast<uint64_t>(g_configManager().getNumber(key));
+	return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
 }
 
 uint64_t PlayerWheel::getGemRevealCost(WheelGemQuality_t quality) {
@@ -1061,7 +847,7 @@ uint64_t PlayerWheel::getGemRevealCost(WheelGemQuality_t quality) {
 		default:
 			return 0;
 	}
-	return static_cast<uint64_t>(g_configManager().getNumber(key));
+	return static_cast<uint64_t>(g_configManager().getNumber(key, __FUNCTION__));
 }
 
 void PlayerWheel::revealGem(WheelGemQuality_t quality) {
@@ -1083,7 +869,7 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 		g_logger().error("[{}] Failed to remove gem with id {} from player with name {}", __FUNCTION__, gemId, m_player.getName());
 		return;
 	}
-	const auto supremeModifiers = m_player.getVocation()->getSupremeGemModifiers();
+	auto supremeModifiers = m_player.getVocation()->getSupremeGemModifiers();
 	PlayerWheelGem gem;
 	gem.uuid = KV::generateUUID();
 	gem.locked = false;
@@ -1099,39 +885,32 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 		gem.supremeModifier = supremeModifiers[uniform_random(0, supremeModifiers.size() - 1)];
 	}
 	g_logger().debug("[{}] {}", __FUNCTION__, gem.toString());
-	m_revealedGems.emplace_back(gem);
-
-	std::ranges::sort(m_revealedGems, [](const auto &gem1, const auto &gem2) {
-		if (std::ranges::all_of(gem1.uuid, ::isdigit) && std::ranges::all_of(gem2.uuid, ::isdigit)) {
-			return std::stoull(gem1.uuid) < std::stoull(gem2.uuid);
-		} else {
-			return gem1.uuid < gem2.uuid;
-		}
-	});
-
+	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-PlayerWheelGem &PlayerWheel::getGem(uint16_t index) {
-	auto revealedGemsSize = m_revealedGems.size();
-	if (revealedGemsSize <= index) {
-		g_logger().error("[{}] Player {} trying to get gem with index {} but has only {} gems", __FUNCTION__, m_player.getName(), index, revealedGemsSize);
-		return emptyGem;
+PlayerWheelGem PlayerWheel::getGem(uint8_t index) const {
+	auto gems = getRevealedGems();
+	if (gems.size() <= index) {
+		g_logger().error("[{}] Player {} trying to get gem with index {} but has only {} gems", __FUNCTION__, m_player.getName(), index, gems.size());
+		return {};
 	}
-	return m_revealedGems[index];
+	return gems[index];
 }
 
-PlayerWheelGem &PlayerWheel::getGem(const std::string &uuid) {
-	auto it = std::ranges::find_if(m_revealedGems, [&uuid](const auto &gem) {
-		return gem.uuid == uuid;
-	});
-
-	return it != m_revealedGems.end() ? *it : emptyGem;
+PlayerWheelGem PlayerWheel::getGem(const std::string &uuid) const {
+	auto gem = PlayerWheelGem::load(gemsKV(), uuid);
+	if (gem.uuid.empty()) {
+		g_logger().error("[{}] Failed to load gem with uuid {}", __FUNCTION__, uuid);
+		return {};
+	}
+	return gem;
 }
 
-uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
-	for (uint16_t i = 0; i < m_revealedGems.size(); ++i) {
-		if (m_revealedGems[i].uuid == uuid) {
+uint8_t PlayerWheel::getGemIndex(const std::string &uuid) const {
+	auto gems = getRevealedGems();
+	for (uint8_t i = 0; i < gems.size(); ++i) {
+		if (gems[i].uuid == uuid) {
 			return i;
 		}
 	}
@@ -1139,72 +918,18 @@ uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 	return 0xFF;
 }
 
-void PlayerWheel::destroyGem(uint16_t index) {
-	const auto &gem = getGem(index);
-	if (!gem) {
-		return;
-	}
-
+void PlayerWheel::destroyGem(uint8_t index) {
+	auto gem = getGem(index);
 	if (gem.locked) {
-		g_logger().error("[{}] Player {} destroyed locked gem with index {}", std::source_location::current().function_name(), m_player.getName(), index);
+		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
 		return;
 	}
-
-	uint8_t lesserFragments = 0;
-	uint8_t greaterFragments = 0;
-
-	switch (gem.quality) {
-		case WheelGemQuality_t::Lesser:
-			lesserFragments = normal_random(1, 5);
-			break;
-		case WheelGemQuality_t::Regular:
-			lesserFragments = normal_random(2, 10);
-			break;
-		case WheelGemQuality_t::Greater:
-			greaterFragments = normal_random(1, 5);
-			break;
-	}
-
-	if (lesserFragments > 0) {
-		const auto &fragmentsItem = Item::CreateItem(ITEM_LESSER_FRAGMENT, lesserFragments);
-		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_WHEREEVER);
-		if (returnValue != RETURNVALUE_NOERROR) {
-			g_logger().error("Failed to add {} lesser fragments to player with name {}", lesserFragments, m_player.getName());
-			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
-			return;
-		}
-		g_logger().debug("[{}] Player {} destroyed a gem and received {} lesser fragments", std::source_location::current().function_name(), m_player.getName(), lesserFragments);
-	}
-
-	if (greaterFragments > 0) {
-		const auto &fragmentsItem = Item::CreateItem(ITEM_GREATER_FRAGMENT, greaterFragments);
-		auto returnValue = g_game().internalPlayerAddItem(m_player.getPlayer(), fragmentsItem, false, CONST_SLOT_WHEREEVER);
-		if (returnValue != RETURNVALUE_NOERROR) {
-			g_logger().error("Failed to add {} greater fragments to player with name {}", greaterFragments, m_player.getName());
-			m_player.sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
-			return;
-		}
-		g_logger().debug("[{}] Player {} destroyed a gem and received {} greater fragments", std::source_location::current().function_name(), m_player.getName(), greaterFragments);
-	}
-
-	m_destroyedGems.emplace_back(gem);
-	m_revealedGems.erase(m_revealedGems.begin() + index);
-
-	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);
-	const auto totalGreaterFragment = m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT) + m_player.getStashItemCount(ITEM_GREATER_FRAGMENT);
-
-	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, totalLesserFragment);
-	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, totalGreaterFragment);
-
+	gem.remove(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::switchGemDomain(uint16_t index) {
-	auto &gem = getGem(index);
-	if (!gem) {
-		return;
-	}
-
+void PlayerWheel::switchGemDomain(uint8_t index) {
+	auto gem = getGem(index);
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
 		return;
@@ -1217,21 +942,20 @@ void PlayerWheel::switchGemDomain(uint16_t index) {
 
 	auto gemAffinity = convertWheelGemAffinityToDomain(static_cast<uint8_t>(gem.affinity));
 	gem.affinity = static_cast<WheelGemAffinity_t>(gemAffinity);
+	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::toggleGemLock(uint16_t index) {
-	auto &gem = getGem(index);
-	if (!gem) {
-		return;
-	}
+void PlayerWheel::toggleGemLock(uint8_t index) {
+	auto gem = getGem(index);
 	gem.locked = !gem.locked;
+	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
-	auto &gem = getGem(index);
-	if (!gem) {
+void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint8_t index) {
+	auto gem = getGem(index);
+	if (gem.uuid.empty()) {
 		g_logger().error("[{}] Failed to load gem with index {}", __FUNCTION__, index);
 		return;
 	}
@@ -1239,89 +963,35 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
 		g_logger().error("[{}] Gem with index {} has affinity {} but trying to set it to {}", __FUNCTION__, index, fmt::underlying(gem.affinity), fmt::underlying(affinity));
 		return;
 	}
-	m_activeGems[static_cast<uint8_t>(affinity)] = gem;
+	std::string key(magic_enum::enum_name(affinity));
+	gemsKV()->scoped("active")->set(key, gem.uuid);
 }
 
 void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) {
-	m_activeGems[static_cast<uint8_t>(affinity)] = emptyGem;
-}
-
-void PlayerWheel::addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
-	m_bonusRevelationPoints[static_cast<size_t>(affinity)] += points;
-}
-
-void PlayerWheel::resetRevelationBonus() {
-	m_bonusRevelationPoints = { 0, 0, 0, 0 };
-}
-
-void PlayerWheel::addSpellBonus(const std::string &spellName, const WheelSpells::Bonus &bonus) {
-	if (m_spellsBonuses.contains(spellName)) {
-		m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
-		m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
-		m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-		m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
-		m_spellsBonuses[spellName].increase.area = bonus.increase.area;
-		m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
-		m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
-		m_spellsBonuses[spellName].increase.damage += bonus.increase.damage;
-		m_spellsBonuses[spellName].increase.damageReduction += bonus.increase.damageReduction;
-		m_spellsBonuses[spellName].increase.duration += bonus.increase.duration;
-		m_spellsBonuses[spellName].increase.heal += bonus.increase.heal;
-		m_spellsBonuses[spellName].leech.life += bonus.leech.life;
-		m_spellsBonuses[spellName].leech.mana += bonus.leech.mana;
-		return;
-	}
-	m_spellsBonuses[spellName] = bonus;
-}
-
-int32_t PlayerWheel::getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const {
-	using enum WheelSpellBoost_t;
-
-	if (!m_spellsBonuses.contains(spellName)) {
-		return 0;
-	}
-	const auto &[leech, increase, decrease] = m_spellsBonuses.at(spellName);
-	switch (boost) {
-		case COOLDOWN:
-			return decrease.cooldown;
-		case MANA:
-			return decrease.manaCost;
-		case SECONDARY_GROUP_COOLDOWN:
-			return decrease.secondaryGroupCooldown;
-		case CRITICAL_CHANCE:
-			return increase.criticalChance;
-		case CRITICAL_DAMAGE:
-			return increase.criticalDamage;
-		case DAMAGE:
-			return increase.damage;
-		case DAMAGE_REDUCTION:
-			return increase.damageReduction;
-		case HEAL:
-			return increase.heal;
-		case LIFE_LEECH:
-			return leech.life;
-		case MANA_LEECH:
-			return leech.mana;
-		default:
-			return 0;
-	}
+	std::string key(magic_enum::enum_name(affinity));
+	gemsKV()->scoped("active")->remove(key);
 }
 
 void PlayerWheel::addGems(NetworkMessage &msg) const {
-	const auto activeGems = getActiveGems();
+	auto activeGems = getActiveGems();
 	msg.addByte(activeGems.size());
 	g_logger().debug("[{}] Player {} has {} active gems", __FUNCTION__, m_player.getName(), activeGems.size());
 	for (const auto &gem : activeGems) {
 		auto index = getGemIndex(gem.uuid);
 		g_logger().debug("[{}] Adding active gem: {} with index {}", __FUNCTION__, gem.toString(), index);
-		msg.add<uint16_t>(getGemIndex(gem.uuid));
+		msg.addByte(getGemIndex(gem.uuid));
 	}
 
-	msg.add<uint16_t>(m_revealedGems.size());
-	uint16_t index = 0;
-	for (const auto &gem : m_revealedGems) {
+	auto revealedGems = getRevealedGems();
+	if (revealedGems.size() > 225) {
+		g_logger().error("[{}] Player {} has more than 225 gems unlocked", __FUNCTION__, m_player.getName());
+		revealedGems.resize(225);
+	}
+	msg.addByte(revealedGems.size());
+	int index = 0;
+	for (const auto &gem : revealedGems) {
 		g_logger().debug("[{}] Adding revealed gem: {}", __FUNCTION__, gem.toString());
-		msg.add<uint16_t>(index++);
+		msg.addByte(index++);
 		msg.addByte(gem.locked);
 		msg.addByte(static_cast<uint8_t>(gem.affinity));
 		msg.addByte(static_cast<uint8_t>(gem.quality));
@@ -1335,131 +1005,19 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 	}
 }
 
-void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
-	msg.addByte(0x2E); // Modifiers for all Vocations
-
-	for (const auto &modPosition : modsBasicPosition) {
-		const auto pos = static_cast<uint8_t>(modPosition);
-		msg.addByte(pos);
-		msg.addByte(m_basicGrades[pos]);
-	}
-
-	msg.addByte(0x17); // Modifiers for specific per Vocations
-
-	const auto vocationBaseId = m_player.getVocation()->getBaseId();
-	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
-
-	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (const auto &modPosition : modsSupremeIt->second.get()) {
-			const auto pos = static_cast<uint8_t>(modPosition);
-			msg.addByte(pos);
-			msg.addByte(m_supremeGrades[pos]);
-		}
-	} else {
-		g_logger().error("[{}] vocation base id: {}", std::source_location::current().function_name(), m_player.getVocation()->getBaseId());
-	}
-}
-
-void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos) {
-	uint16_t fragmentId = 0;
-	uint32_t value = 0;
-	uint8_t quantity = 0;
-	uint8_t grade = 0;
-
-	if (fragmentType == WheelFragmentType_t::Lesser) {
-		grade = m_basicGrades[pos];
-	} else {
-		grade = m_supremeGrades[pos];
-	}
-
-	++grade;
-
-	switch (fragmentType) {
-		case WheelFragmentType_t::Lesser:
-			fragmentId = ITEM_LESSER_FRAGMENT;
-			std::tie(value, quantity) = getLesserGradeCost(grade);
-			break;
-		case WheelFragmentType_t::Greater:
-			fragmentId = ITEM_GREATER_FRAGMENT;
-			std::tie(value, quantity) = getGreaterGradeCost(grade);
-			break;
-		default:
-			g_logger().error("[{}] Invalid Fragment Type: {}", std::source_location::current().function_name(), static_cast<uint8_t>(fragmentType));
-			return;
-	}
-
-	if (value == 0 && quantity == 0) {
-		g_logger().error("[{}] Player {} trying to upgrade gem to grade greater than 3", std::source_location::current().function_name(), m_player.getName());
-		return;
-	}
-
-	if (!m_player.hasItemCountById(fragmentId, quantity, true)) {
-		g_logger().error("[{}] Player {} does not have the required {} fragments with id {}", std::source_location::current().function_name(), m_player.getName(), quantity, fragmentId);
-		return;
-	}
-
-	if (!g_game().removeMoney(m_player.getPlayer(), value, 0, true)) {
-		g_logger().error("[{}] Failed to remove {} gold from player {}", std::source_location::current().function_name(), value, m_player.getName());
-		return;
-	}
-
-	if (!m_player.removeItemCountById(fragmentId, quantity, true)) {
-		g_logger().error("[{}] Failed to remove {} fragments with id {} from player {}", std::source_location::current().function_name(), quantity, fragmentId, m_player.getName());
-		return;
-	}
-
-	if (fragmentType == WheelFragmentType_t::Lesser) {
-		m_basicGrades[pos] = grade;
-	} else {
-		m_supremeGrades[pos] = grade;
-	}
-
-	m_modsMaxGrade += grade == 3 ? 1 : 0;
-
-	loadPlayerBonusData();
-	sendOpenWheelWindow(m_player.getID());
-}
-
-std::tuple<int, int> PlayerWheel::getLesserGradeCost(uint8_t grade) const {
-	switch (grade) {
-		case 1:
-			return std::make_tuple(2000000, 5);
-		case 2:
-			return std::make_tuple(5000000, 15);
-		case 3:
-			return std::make_tuple(30000000, 30);
-		default:
-			return {};
-	}
-}
-
-std::tuple<int, int> PlayerWheel::getGreaterGradeCost(uint8_t grade) const {
-	switch (grade) {
-		case 1:
-			return std::make_tuple(5000000, 5);
-		case 2:
-			return std::make_tuple(12000000, 15);
-		case 3:
-			return std::make_tuple(75000000, 30);
-		default:
-			return {};
-	}
-}
-
-void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
+void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) const {
 	if (m_player.client && m_player.client->oldProtocol) {
 		return;
 	}
 
 	msg.addByte(0x5F);
-	const bool canUse = canOpenWheel();
+	bool canUse = canOpenWheel();
 	msg.add<uint32_t>(ownerId); // Player ID
 	msg.addByte(canUse ? 1 : 0); // Can Use
 	if (!canUse) {
 		return;
 	}
 
-	addInitialGems();
 	msg.addByte(getOptions(ownerId)); // Options
 	msg.addByte(m_player.getPlayerVocationEnum()); // Vocation id
 
@@ -1470,24 +1028,13 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
 	}
 	addPromotionScrolls(msg);
 	addGems(msg);
-	addGradeModifiers(msg);
-
-	const auto &voc = m_player.getVocation();
-	if (!voc) {
-		g_logger().error("[{}] Failed to get vocation for player {}", __FUNCTION__, m_player.getName());
-		return;
-	}
-
-	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);
-	const auto totalGreaterFragment = m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT) + m_player.getStashItemCount(ITEM_GREATER_FRAGMENT);
-
+	// TODO: read items from inventory
+	auto voc = m_player.getVocation();
 	m_player.client->sendResourceBalance(RESOURCE_BANK, m_player.getBankBalance());
-	m_player.client->sendResourceBalance(RESOURCE_INVENTORY_MONEY, m_player.getMoney());
+	m_player.client->sendResourceBalance(RESOURCE_INVENTORY, m_player.getMoney());
 	m_player.client->sendResourceBalance(RESOURCE_LESSER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Lesser)));
 	m_player.client->sendResourceBalance(RESOURCE_REGULAR_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Regular)));
 	m_player.client->sendResourceBalance(RESOURCE_GREATER_GEMS, m_player.getItemTypeCount(voc->getWheelGemId(WheelGemQuality_t::Greater)));
-	m_player.client->sendResourceBalance(RESOURCE_LESSER_FRAGMENT, totalLesserFragment);
-	m_player.client->sendResourceBalance(RESOURCE_GREATER_FRAGMENT, totalGreaterFragment);
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
@@ -1519,7 +1066,7 @@ bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t poin
 
 	setPointsBySlotType(static_cast<uint8_t>(slotType), 0);
 
-	const auto unusedPoints = getUnusedPoints();
+	auto unusedPoints = getUnusedPoints();
 	if (points > unusedPoints) {
 		return false;
 	}
@@ -1531,7 +1078,7 @@ bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t poin
 void PlayerWheel::saveSlotPointsHandleRetryErrors(std::vector<SlotInfo> &retryTable, int &errors) {
 	std::vector<SlotInfo> temporaryTable;
 	for (const auto &data : retryTable) {
-		const auto saved = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
+		auto saved = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
 		if (saved) {
 			errors--;
 		} else {
@@ -1565,13 +1112,13 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 			return;
 		}
 
-		const auto order = g_game().getIOWheel()->getSlotPrioritaryOrder(static_cast<WheelSlots_t>(slot));
+		auto order = g_game().getIOWheel()->getSlotPrioritaryOrder(static_cast<WheelSlots_t>(slot));
 		if (order == -1) {
 			continue;
 		}
 
 		// The slot information is then added to the vector in order.
-		sortedTable.emplace_back(order, slot, slotPoints);
+		sortedTable.push_back({ order, slot, slotPoints });
 	}
 
 	// After iterating over all slots, the vector is sorted according to the slot order.
@@ -1584,7 +1131,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 
 	// Processes the vector in the correct order. If it is not possible to save points for a slot,
 	for (const auto &data : sortedTable) {
-		const auto canSave = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
+		auto canSave = checkSavePointsBySlotType(static_cast<WheelSlots_t>(data.slot), data.points);
 		if (!canSave) {
 			sortedTableRetry.emplace_back(data);
 			errors++;
@@ -1608,197 +1155,22 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	}
 
 	// Gem Vessels
-	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		const bool hasGem = msg.getByte();
+	for (auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		bool hasGem = msg.getByte();
 		if (!hasGem) {
 			removeActiveGem(affinity);
 			continue;
 		}
-		const auto gemIndex = msg.get<uint16_t>();
+		uint8_t gemIndex = msg.getByte();
 		setActiveGem(affinity, gemIndex);
 	}
 
-	// Player's bonus data is loaded, initialized, registered, and the function logs
+	// Player's bonus data is loaded, initialized, and registered, and the function logs
 	loadPlayerBonusData();
-
-	sendOpenWheelWindow(m_player.getID());
+	initializePlayerData();
+	registerPlayerBonusData();
 
 	g_logger().debug("Player: {} is saved the all slots info in: {} milliseconds", m_player.getName(), bm_saveSlot.duration());
-}
-
-void PlayerWheel::loadActiveGems() {
-	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		std::string key(magic_enum::enum_name(affinity));
-		auto uuidKV = gemsKV()->scoped("active")->get(key);
-		if (!uuidKV.has_value()) {
-			continue;
-		}
-
-		auto uuid = uuidKV->get<StringType>();
-		if (uuid.empty()) {
-			continue;
-		}
-
-		auto it = std::ranges::find_if(m_revealedGems, [&uuid](const auto &gem) {
-			return gem.uuid == uuid;
-		});
-
-		if (it == m_revealedGems.end()) {
-			continue;
-		}
-
-		m_activeGems[static_cast<uint8_t>(affinity)] = *it;
-	}
-}
-
-void PlayerWheel::saveActiveGems() const {
-	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		const std::string key(magic_enum::enum_name(affinity));
-		const auto &gem = m_activeGems[static_cast<uint8_t>(affinity)];
-		if (gem) {
-			gemsKV()->scoped("active")->set(key, gem.uuid);
-		} else {
-			gemsKV()->scoped("active")->remove(key);
-		}
-	}
-}
-
-void PlayerWheel::loadRevealedGems() {
-	const auto unlockedGemUUIDs = gemsKV()->scoped("revealed")->keys();
-	if (unlockedGemUUIDs.empty()) {
-		return;
-	}
-
-	std::vector<std::string> sortedUnlockedGemGUIDs;
-	for (const auto &uuid : unlockedGemUUIDs) {
-		sortedUnlockedGemGUIDs.emplace_back(uuid);
-	}
-
-	std::ranges::sort(sortedUnlockedGemGUIDs, [](const std::string &a, const std::string &b) {
-		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
-			return std::stoull(a) < std::stoull(b);
-		} else {
-			return a < b;
-		}
-	});
-
-	for (const auto &uuid : sortedUnlockedGemGUIDs) {
-		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
-		if (!gem) {
-			continue;
-		}
-		m_revealedGems.emplace_back(gem);
-	}
-}
-
-void PlayerWheel::saveRevealedGems() const {
-	for (const auto &gem : m_destroyedGems) {
-		gem.remove(gemsKV());
-	}
-
-	for (const auto &gem : m_revealedGems) {
-		gem.save(gemsKV());
-	}
-}
-
-bool PlayerWheel::scrollAcquired(const std::string &scrollName) {
-	auto it = std::ranges::find_if(m_unlockedScrolls, [&scrollName](const PromotionScroll &promotionScroll) {
-		return scrollName == promotionScroll.name;
-	});
-
-	return it != m_unlockedScrolls.end();
-}
-
-bool PlayerWheel::unlockScroll(const std::string &scrollName) {
-	if (scrollAcquired(scrollName)) {
-		return false;
-	}
-
-	auto it = std::ranges::find_if(WheelOfDestinyPromotionScrolls, [&scrollName](const auto &scroll) {
-		return scroll.name == scrollName;
-	});
-
-	if (it != WheelOfDestinyPromotionScrolls.end()) {
-		m_unlockedScrolls.emplace_back(*it);
-		return true;
-	}
-
-	return false;
-}
-
-void PlayerWheel::loadKVScrolls() {
-	const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
-	if (!scrollKv) {
-		return;
-	}
-
-	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
-		const auto scrollValue = scrollKv->get(name);
-		if (scrollValue && scrollValue->get<bool>()) {
-			m_unlockedScrolls.emplace_back(itemId, name, extraPoints);
-		}
-	}
-}
-
-void PlayerWheel::saveKVScrolls() const {
-	const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
-	if (!scrollKv) {
-		return;
-	}
-
-	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
-		scrollKv->set(name, true);
-	}
-}
-
-void PlayerWheel::loadKVModGrades() {
-	for (const auto &modPosition : modsBasicPosition) {
-		const auto pos = static_cast<uint8_t>(modPosition);
-		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
-
-		if (gradeKV.has_value()) {
-			uint8_t grade = gradeKV->get<IntType>();
-			m_basicGrades[pos] = grade;
-			m_modsMaxGrade += grade == 3 ? 1 : 0;
-		}
-	}
-
-	const auto vocationBaseId = m_player.getVocation()->getBaseId();
-	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
-	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (const auto &modPosition : modsSupremeIt->second.get()) {
-			const auto pos = static_cast<uint8_t>(modPosition);
-			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
-
-			if (gradeKV.has_value()) {
-				uint8_t grade = gradeKV->get<IntType>();
-				m_supremeGrades[pos] = grade;
-				m_modsMaxGrade += grade == 3 ? 1 : 0;
-			}
-		}
-	}
-}
-
-void PlayerWheel::saveKVModGrades() const {
-	for (const auto &modPosition : modsBasicPosition) {
-		const auto pos = static_cast<uint8_t>(modPosition);
-		uint8_t grade = m_basicGrades[pos];
-		if (grade > 0) {
-			gemsGradeKV(WheelFragmentType_t::Lesser, pos)->set("grade", grade);
-		}
-	}
-
-	const auto vocationBaseId = m_player.getVocation()->getBaseId();
-	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
-	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (const auto &modPosition : modsSupremeIt->second.get()) {
-			const auto pos = static_cast<uint8_t>(modPosition);
-			uint8_t grade = m_supremeGrades[pos];
-			if (grade > 0) {
-				gemsGradeKV(WheelFragmentType_t::Greater, pos)->set("grade", grade);
-			}
-		}
-	}
 }
 
 /*
@@ -1806,14 +1178,14 @@ void PlayerWheel::saveKVModGrades() const {
  */
 void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 	auto resultString = fmt::format("SELECT `slot` FROM `player_wheeldata` WHERE `player_id` = {}", m_player.getGUID());
-	const DBResult_ptr &result = g_database().storeQuery(resultString);
+	DBResult_ptr result = Database::getInstance().storeQuery(resultString);
 	// Ignore if player not have nothing inserted in the table
 	if (!result) {
 		return;
 	}
 
 	unsigned long size;
-	const auto attribute = result->getStream("slot", size);
+	auto attribute = result->getStream("slot", size);
 	PropStream propStream;
 	propStream.init(attribute, size);
 	for (size_t i = 0; i < size; i++) {
@@ -1827,12 +1199,17 @@ void PlayerWheel::loadDBPlayerSlotPointsOnLogin() {
 }
 
 bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
+	Database &db = Database::getInstance();
+	std::ostringstream query;
 	DBInsert insertWheelData("INSERT INTO `player_wheeldata` (`player_id`, `slot`) VALUES ");
 	insertWheelData.upsert({ "slot" });
 	PropWriteStream stream;
 	const auto wheelSlots = getSlots();
 	for (uint8_t i = 1; i < wheelSlots.size(); ++i) {
 		auto value = wheelSlots[i];
+		if (value == 0) {
+			continue;
+		}
 
 		stream.write<uint8_t>(i);
 		stream.write<uint16_t>(value);
@@ -1842,7 +1219,7 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 	size_t attributesSize;
 	const char* attributes = stream.getStream(attributesSize);
 	if (attributesSize > 0) {
-		const auto query = fmt::format("{}, {}", m_player.getGUID(), g_database().escapeBlob(attributes, static_cast<uint32_t>(attributesSize)));
+		query << m_player.getGUID() << ',' << db.escapeBlob(attributes, (uint32_t)attributesSize);
 		if (!insertWheelData.addRow(query)) {
 			g_logger().debug("[{}] failed to insert row data", __FUNCTION__);
 			return false;
@@ -1864,19 +1241,23 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	}
 
 	uint16_t totalBonus = 0;
-	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
-		if (itemId == 0) {
+	for (const auto &scroll : WheelOfDestinyPromotionScrolls) {
+		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+		if (!scrollKv) {
 			continue;
 		}
 
-		totalBonus += extraPoints;
+		auto scrollKV = scrollKv->get(scroll.name);
+		if (scrollKV && scrollKV->get<bool>()) {
+			totalBonus += scroll.extraPoints;
+		}
 	}
 
 	return totalBonus;
 }
 
 uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const {
-	const uint32_t level = m_player.getLevel();
+	uint32_t level = m_player.getLevel();
 	auto totalPoints = std::max(0u, (level - m_minLevelToStartCountPoints)) * m_pointsPerLevel;
 
 	if (includeExtraPoints) {
@@ -1885,35 +1266,6 @@ uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const 
 	}
 
 	return totalPoints;
-}
-
-void PlayerWheel::addInitialGems() {
-	auto initialsGems = gemsKV()->get("initialGems");
-
-	if (!initialsGems.has_value()) {
-		for (auto gemAffinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-			for (auto gemQuality : magic_enum::enum_values<WheelGemQuality_t>()) {
-				if (gemQuality == WheelGemQuality_t::Greater) {
-					continue;
-				}
-
-				PlayerWheelGem gem;
-				gem.uuid = KV::generateUUID();
-				gem.locked = false;
-				gem.affinity = gemAffinity;
-				gem.quality = gemQuality;
-
-				gem.basicModifier1 = wheelGemBasicSlot1Allowed[uniform_random(0, wheelGemBasicSlot1Allowed.size() - 1)];
-				gem.basicModifier2 = {};
-				gem.supremeModifier = {};
-				if (gemQuality >= WheelGemQuality_t::Regular) {
-					gem.basicModifier2 = selectBasicModifier2(gem.basicModifier1);
-				}
-				gem.save(gemsKV());
-			}
-		}
-		gemsKV()->set("initialGems", true);
-	}
 }
 
 bool PlayerWheel::canOpenWheel() const {
@@ -1950,7 +1302,7 @@ uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {
 
 	// Check if is in the temple range (we assume the temple is within the range of 10 sqms)
 	if (m_player.getZoneType() == ZONE_PROTECTION) {
-		for (const auto &[townid, town] : g_game().map.towns.getTowns()) {
+		for (auto [townid, town] : g_game().map.towns.getTowns()) {
 			if (Position::areInRange<1, 10>(town->getTemplePosition(), m_player.getPosition())) {
 				return 1;
 			}
@@ -1994,13 +1346,8 @@ uint8_t PlayerWheel::getMaxPointsPerSlot(WheelSlots_t slot) const {
 	return 0u;
 }
 
-void PlayerWheel::resetPlayerData() {
+void PlayerWheel::resetPlayerBonusData() {
 	m_playerBonusData = PlayerWheelMethodsBonusData();
-
-	resetUpgradedSpells();
-	resetResistance();
-	resetStats();
-	resetRevelationState();
 }
 
 void PlayerWheel::initializePlayerData() {
@@ -2008,6 +1355,7 @@ void PlayerWheel::initializePlayerData() {
 		return;
 	}
 
+	resetPlayerBonusData();
 	loadPlayerBonusData();
 }
 
@@ -2027,7 +1375,7 @@ void PlayerWheel::setPlayerCombatStats(CombatType_t type, int32_t leechAmount) {
 	}
 }
 
-void PlayerWheel::reloadPlayerData() const {
+void PlayerWheel::reloadPlayerData() {
 	// Maybe it's not really necessary, but it doesn't hurt to validate
 	if (!m_player.getTile()) {
 		return;
@@ -2041,12 +1389,44 @@ void PlayerWheel::reloadPlayerData() const {
 }
 
 void PlayerWheel::registerPlayerBonusData() {
+	resetUpgradedSpells();
+	resetResistance();
+	resetStats();
+	resetRevelationBonus();
+	if (!m_modifierContext) {
+		m_modifierContext = std::make_unique<WheelModifierContext>(*this, static_cast<Vocation_t>(m_player.getVocation()->getBaseId()));
+	}
+	m_modifierContext->resetStrategies();
+	m_spellsBonuses.clear();
+
 	addStat(WheelStat_t::HEALTH, m_playerBonusData.stats.health);
 	addStat(WheelStat_t::MANA, m_playerBonusData.stats.mana);
-	addStat(WheelStat_t::CAPACITY, m_playerBonusData.stats.capacity);
+	addStat(WheelStat_t::CAPACITY, m_playerBonusData.stats.capacity * 100);
 	addStat(WheelStat_t::MITIGATION, m_playerBonusData.mitigation * 100);
 	addStat(WheelStat_t::DAMAGE, m_playerBonusData.stats.damage);
 	addStat(WheelStat_t::HEALING, m_playerBonusData.stats.healing);
+
+	auto activeGems = getActiveGems();
+	std::string playerName = m_player.getName();
+	for (const auto &gem : activeGems) {
+		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(gem.affinity)];
+		if (count >= 1) {
+			std::string modifierName(magic_enum::enum_name(gem.basicModifier1));
+			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
+			m_modifierContext->addStrategies(gem.basicModifier1);
+		}
+		if (count >= 2 && gem.quality >= WheelGemQuality_t::Regular) {
+			std::string modifierName(magic_enum::enum_name(gem.basicModifier2));
+			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
+			m_modifierContext->addStrategies(gem.basicModifier2);
+		}
+		if (count >= 3 && gem.quality >= WheelGemQuality_t::Greater) {
+			std::string modifierName(magic_enum::enum_name(gem.supremeModifier));
+			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(gem.quality), magic_enum::enum_name(gem.affinity));
+			m_modifierContext->addStrategies(gem.supremeModifier);
+		}
+	}
+	m_modifierContext->executeStrategies();
 
 	// Skills
 	addStat(WheelStat_t::MELEE, m_playerBonusData.skills.melee);
@@ -2060,7 +1440,7 @@ void PlayerWheel::registerPlayerBonusData() {
 	// Instant
 	setSpellInstant("Battle Instinct", m_playerBonusData.instant.battleInstinct);
 	setSpellInstant("Battle Healing", m_playerBonusData.instant.battleHealing);
-	setSpellInstant("Positional Tactics", m_playerBonusData.instant.positionalTactics);
+	setSpellInstant("Positional Tatics", m_playerBonusData.instant.positionalTatics);
 	setSpellInstant("Ballistic Mastery", m_playerBonusData.instant.ballisticMastery);
 	setSpellInstant("Healing Link", m_playerBonusData.instant.healingLink);
 	setSpellInstant("Runic Mastery", m_playerBonusData.instant.runicMastery);
@@ -2095,13 +1475,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.divineEmpowerment; ++i) {
 			setSpellInstant("Divine Empowerment", true);
 		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 4 * 1000;
-
 		if (m_playerBonusData.stages.divineEmpowerment >= 2) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 4000;
 			addSpellBonus("Divine Empowerment", bonus);
 		}
 		if (m_playerBonusData.stages.divineEmpowerment >= 3) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 4000;
 			addSpellBonus("Divine Empowerment", bonus);
 		}
 	} else {
@@ -2114,12 +1495,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		}
 		if (m_playerBonusData.stages.divineGrenade >= 2) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 4 * 1000;
+			bonus.decrease.cooldown = 4000;
 			addSpellBonus("Divine Grenade", bonus);
 		}
 		if (m_playerBonusData.stages.divineGrenade >= 3) {
 			WheelSpells::Bonus bonus;
-			bonus.decrease.cooldown = 6 * 1000;
+			bonus.decrease.cooldown = 6000;
 			addSpellBonus("Divine Grenade", bonus);
 		}
 	} else {
@@ -2134,20 +1515,8 @@ void PlayerWheel::registerPlayerBonusData() {
 		setSpellInstant("Drain Body", false);
 	}
 	if (m_playerBonusData.stages.beamMastery > 0) {
-		m_beamMasterySpells.emplace("Energy Beam");
-		m_beamMasterySpells.emplace("Great Death Beam");
-		m_beamMasterySpells.emplace("Great Energy Beam");
 		for (int i = 0; i < m_playerBonusData.stages.beamMastery; ++i) {
 			setSpellInstant("Beam Mastery", true);
-		}
-		WheelSpells::Bonus deathBeamBonus;
-		deathBeamBonus.decrease.cooldown = 2 * 1000;
-		deathBeamBonus.increase.damage = 6;
-		if (m_playerBonusData.stages.beamMastery >= 2) {
-			addSpellBonus("Great Death Beam", deathBeamBonus);
-		}
-		if (m_playerBonusData.stages.beamMastery >= 3) {
-			addSpellBonus("Great Death Beam", deathBeamBonus);
 		}
 	} else {
 		setSpellInstant("Beam Mastery", false);
@@ -2157,17 +1526,6 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.twinBurst; ++i) {
 			setSpellInstant("Twin Burst", true);
 		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 4 * 1000;
-		bonus.decrease.secondaryGroupCooldown = 4 * 1000;
-		if (m_playerBonusData.stages.twinBurst >= 2) {
-			addSpellBonus("Ice Burst", bonus);
-			addSpellBonus("Terra Burst", bonus);
-		}
-		if (m_playerBonusData.stages.twinBurst >= 3) {
-			addSpellBonus("Ice Burst", bonus);
-			addSpellBonus("Terra Burst", bonus);
-		}
 	} else {
 		setSpellInstant("Twin Burst", false);
 	}
@@ -2175,14 +1533,6 @@ void PlayerWheel::registerPlayerBonusData() {
 	if (m_playerBonusData.stages.executionersThrow > 0) {
 		for (int i = 0; i < m_playerBonusData.stages.executionersThrow; ++i) {
 			setSpellInstant("Executioner's Throw", true);
-		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 4 * 1000;
-		if (m_playerBonusData.stages.executionersThrow >= 2) {
-			addSpellBonus("Executioner's Throw", bonus);
-		}
-		if (m_playerBonusData.stages.executionersThrow >= 3) {
-			addSpellBonus("Executioner's Throw", bonus);
 		}
 	} else {
 		setSpellInstant("Executioner's Throw", false);
@@ -2193,13 +1543,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.light; ++i) {
 			setSpellInstant("Avatar of Light", true);
 		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
-
 		if (m_playerBonusData.avatar.light >= 2) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 		if (m_playerBonusData.avatar.light >= 3) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Light", bonus);
 		}
 	} else {
@@ -2210,13 +1561,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.nature; ++i) {
 			setSpellInstant("Avatar of Nature", true);
 		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
-
 		if (m_playerBonusData.avatar.nature >= 2) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 		if (m_playerBonusData.avatar.nature >= 3) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Nature", bonus);
 		}
 	} else {
@@ -2227,12 +1579,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.steel; ++i) {
 			setSpellInstant("Avatar of Steel", true);
 		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 		if (m_playerBonusData.avatar.steel >= 2) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 		if (m_playerBonusData.avatar.steel >= 3) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Steel", bonus);
 		}
 	} else {
@@ -2243,12 +1597,14 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.avatar.storm; ++i) {
 			setSpellInstant("Avatar of Storm", true);
 		}
-		WheelSpells::Bonus bonus;
-		bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 		if (m_playerBonusData.avatar.storm >= 2) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 		if (m_playerBonusData.avatar.storm >= 3) {
+			WheelSpells::Bonus bonus;
+			bonus.decrease.cooldown = 30 * 60 * 1000; // 30 minutes
 			addSpellBonus("Avatar of Storm", bonus);
 		}
 	} else {
@@ -2279,12 +1635,9 @@ void PlayerWheel::loadPlayerBonusData() {
 		return;
 	}
 
-	// Reset data to prevent stats from accumulating
-	resetPlayerData();
-	// Initialize the relevant IOWheel data in the PlayerWheel
 	loadDedicationAndConvictionPerks();
-	loadRevelationPerks();
 
+	loadRevelationPerks();
 	registerPlayerBonusData();
 
 	printPlayerWheelMethodsBonusData(m_playerBonusData);
@@ -2312,12 +1665,12 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 
 	g_logger().debug("Vessel Resonance:");
 	for (size_t i = 0; i < bonusData.unlockedVesselResonances.size(); ++i) {
-		const auto count = bonusData.unlockedVesselResonances[i];
+		auto count = bonusData.unlockedVesselResonances[i];
 		if (count == 0) {
 			continue;
 		}
 
-		const auto affinity = static_cast<WheelGemAffinity_t>(i);
+		WheelGemAffinity_t affinity = static_cast<WheelGemAffinity_t>(i);
 		std::string affinityName(magic_enum::enum_name(affinity));
 		g_logger().debug("  Affinity: {} count: {}", affinityName, bonusData.unlockedVesselResonances[i]);
 	}
@@ -2348,8 +1701,8 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	if (bonusData.instant.battleHealing) {
 		g_logger().debug("  battleHealing: {}", bonusData.instant.battleHealing);
 	}
-	if (bonusData.instant.positionalTactics) {
-		g_logger().debug("  positionalTactics: {}", bonusData.instant.positionalTactics);
+	if (bonusData.instant.positionalTatics) {
+		g_logger().debug("  positionalTatics: {}", bonusData.instant.positionalTatics);
 	}
 	if (bonusData.instant.ballisticMastery) {
 		g_logger().debug("  ballisticMastery: {}", bonusData.instant.ballisticMastery);
@@ -2407,18 +1760,14 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 		g_logger().debug("  storm: {}", bonusData.avatar.storm);
 	}
 
-	if (bonusData.momentum > 0) {
-		g_logger().debug("bonus: {}", bonusData.momentum);
-	}
-
 	if (bonusData.mitigation > 0) {
 		g_logger().debug("mitigation: {}", bonusData.mitigation);
 	}
 
-	const auto &spellsVector = bonusData.spells;
+	auto &spellsVector = bonusData.spells;
 	if (!spellsVector.empty()) {
 		g_logger().debug("Spells:");
-		for (const auto &spell : spellsVector) {
+		for (const auto &spell : bonusData.spells) {
 			g_logger().debug("  {}", spell);
 		}
 	}
@@ -2428,14 +1777,14 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 
 void PlayerWheel::loadDedicationAndConvictionPerks() {
 	using VocationBonusFunction = std::function<void(const std::shared_ptr<Player> &, uint16_t, uint8_t, PlayerWheelMethodsBonusData &)>;
-	const auto &wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
-	const auto vocationCipId = m_player.getPlayerVocationEnum();
+	auto wheelFunctions = g_game().getIOWheel()->getWheelMapFunctions();
+	auto vocationCipId = m_player.getPlayerVocationEnum();
 	if (vocationCipId < VOCATION_KNIGHT_CIP || vocationCipId > VOCATION_DRUID_CIP) {
 		return;
 	}
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
-		const uint16_t points = getPointsBySlotType(static_cast<WheelSlots_t>(i));
+		uint16_t points = getPointsBySlotType(static_cast<WheelSlots_t>(i));
 		if (points > 0) {
 			VocationBonusFunction internalData = nullptr;
 			auto it = wheelFunctions.find(static_cast<WheelSlots_t>(i));
@@ -2454,154 +1803,108 @@ void PlayerWheel::addSpellToVector(const std::string &spellName) {
 }
 
 void PlayerWheel::loadRevelationPerks() {
-	processActiveGems();
-	applyStageBonuses();
-}
-
-void PlayerWheel::resetRevelationState() {
-	// First we reset the information
-	resetRevelationBonus();
-	if (!m_modifierContext) {
-		m_modifierContext = std::make_unique<WheelModifierContext>(*this, static_cast<Vocation_t>(m_player.getVocation()->getBaseId()));
+	// Stats (Damage and Healing)
+	WheelStageEnum_t greenStage = getPlayerSliceStage("green");
+	if (greenStage != WheelStageEnum_t::NONE) {
+		auto [statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(greenStage);
+		m_playerBonusData.stats.damage += statsDamage;
+		m_playerBonusData.stats.healing += statsHealing;
+		m_playerBonusData.stages.giftOfLife = static_cast<int>(greenStage);
 	}
-	m_modifierContext->resetStrategies();
-	m_spellsBonuses.clear();
-}
 
-void PlayerWheel::processActiveGems() {
-	auto activeGems = getActiveGems();
-	std::string playerName = m_player.getName();
-	for (const auto &[uuid, locked, affinity, quality, basicModifier1, basicModifier2, supremeModifier] : activeGems) {
-		if (uuid.empty()) {
-			g_logger().error("[{}] Player {} has an empty gem uuid", __FUNCTION__, playerName);
-			continue;
-		}
+	WheelStageEnum_t redStageEnum = getPlayerSliceStage("red");
+	if (redStageEnum != WheelStageEnum_t::NONE) {
+		auto [statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(redStageEnum);
+		m_playerBonusData.stats.damage += statsDamage;
+		m_playerBonusData.stats.healing += statsHealing;
 
-		auto count = m_playerBonusData.unlockedVesselResonances[static_cast<uint8_t>(affinity)];
-		if (count >= 1) {
-			uint8_t grade = getGemGrade(WheelFragmentType_t::Lesser, static_cast<uint8_t>(basicModifier1));
-			std::string modifierName(magic_enum::enum_name(basicModifier1));
-			g_logger().debug("[{}] Adding basic modifier 1 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
-			m_modifierContext->addStrategies(basicModifier1, grade);
-		}
-		if (count >= 2 && quality >= WheelGemQuality_t::Regular) {
-			uint8_t grade = getGemGrade(WheelFragmentType_t::Lesser, static_cast<uint8_t>(basicModifier2));
-			std::string modifierName(magic_enum::enum_name(basicModifier2));
-			g_logger().debug("[{}] Adding basic modifier 2 {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
-			m_modifierContext->addStrategies(basicModifier2, grade);
-		}
-		if (count >= 3 && quality >= WheelGemQuality_t::Greater) {
-			uint8_t grade = getGemGrade(WheelFragmentType_t::Greater, static_cast<uint8_t>(supremeModifier));
-			std::string modifierName(magic_enum::enum_name(supremeModifier));
-			g_logger().debug("[{}] Adding supreme modifier {} to player {} from {} gem affinity {}", __FUNCTION__, modifierName, playerName, magic_enum::enum_name(quality), magic_enum::enum_name(affinity));
-			m_modifierContext->addStrategies(supremeModifier, grade);
+		auto redStageValue = static_cast<uint8_t>(redStageEnum);
+		auto vocationEnum = m_player.getPlayerVocationEnum();
+		if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+			m_playerBonusData.stages.blessingOfTheGrove = redStageValue;
+		} else if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
+			m_playerBonusData.stages.executionersThrow = redStageValue;
+			for (uint8_t i = 0; i < redStageValue; ++i) {
+				addSpellToVector("Executioner's Throw");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+			m_playerBonusData.stages.beamMastery = redStageValue;
+			for (uint8_t i = 0; i < redStageValue; ++i) {
+				addSpellToVector("Great Death Beam");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+			m_playerBonusData.stages.divineGrenade = redStageValue;
+			for (uint8_t i = 0; i < redStageValue; ++i) {
+				addSpellToVector("Divine Grenade");
+			}
 		}
 	}
 
-	g_logger().debug("[{}] active gems: {} ", __FUNCTION__, activeGems.size());
-	m_modifierContext->executeStrategies();
-}
+	WheelStageEnum_t purpleStageEnum = getPlayerSliceStage("purple");
+	if (purpleStageEnum != WheelStageEnum_t::NONE) {
+		auto [statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(purpleStageEnum);
+		m_playerBonusData.stats.damage += statsDamage;
+		m_playerBonusData.stats.healing += statsHealing;
 
-void PlayerWheel::applyStageBonuses() {
-	applyStageBonusForColor("green");
-	applyStageBonusForColor("red");
-	applyStageBonusForColor("purple");
-	applyStageBonusForColor("blue");
-}
-
-void PlayerWheel::applyStageBonusForColor(const std::string &color) {
-	WheelStageEnum_t stageEnum = getPlayerSliceStage(color);
-	if (stageEnum == WheelStageEnum_t::NONE) {
-		return;
+		auto purpleStage = static_cast<uint8_t>(purpleStageEnum);
+		auto vocationEnum = m_player.getPlayerVocationEnum();
+		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
+			m_playerBonusData.avatar.steel = purpleStage;
+			for (uint8_t i = 0; i < purpleStage; ++i) {
+				addSpellToVector("Avatar of Steel");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+			m_playerBonusData.avatar.light = purpleStage;
+			for (uint8_t i = 0; i < purpleStage; ++i) {
+				addSpellToVector("Avatar of Light");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+			m_playerBonusData.avatar.nature = purpleStage;
+			for (uint8_t i = 0; i < purpleStage; ++i) {
+				addSpellToVector("Avatar of Nature");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+			m_playerBonusData.avatar.storm = purpleStage;
+			for (uint8_t i = 0; i < purpleStage; ++i) {
+				addSpellToVector("Avatar of Storm");
+			}
+		}
 	}
 
-	const auto &[statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(stageEnum);
-	m_playerBonusData.stats.damage += statsDamage;
-	m_playerBonusData.stats.healing += statsHealing;
+	WheelStageEnum_t blueStageEnum = getPlayerSliceStage("blue");
+	if (blueStageEnum != WheelStageEnum_t::NONE) {
+		auto [statsDamage, statsHealing] = g_game().getIOWheel()->getRevelationStatByStage(blueStageEnum);
+		m_playerBonusData.stats.damage += statsDamage;
+		m_playerBonusData.stats.healing += statsHealing;
 
-	auto stageValue = static_cast<uint8_t>(stageEnum);
-	auto vocationEnum = static_cast<Vocation_t>(m_player.getPlayerVocationEnum());
-	if (color == "green") {
-		m_playerBonusData.stages.giftOfLife = stageValue;
-	} else if (color == "red") {
-		applyRedStageBonus(stageValue, vocationEnum);
-	} else if (color == "purple") {
-		applyPurpleStageBonus(stageValue, vocationEnum);
-	} else if (color == "blue") {
-		applyBlueStageBonus(stageValue, vocationEnum);
-	}
-}
-
-void PlayerWheel::applyRedStageBonus(uint8_t stageValue, Vocation_t vocationEnum) {
-	if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
-		m_playerBonusData.stages.blessingOfTheGrove = stageValue;
-	} else if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
-		m_playerBonusData.stages.executionersThrow = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Executioner's Throw");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
-		m_playerBonusData.stages.beamMastery = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Great Death Beam");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
-		m_playerBonusData.stages.divineGrenade = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Divine Grenade");
-		}
-	}
-}
-
-void PlayerWheel::applyPurpleStageBonus(uint8_t stageValue, Vocation_t vocationEnum) {
-	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
-		m_playerBonusData.avatar.steel = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Avatar of Steel");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
-		m_playerBonusData.avatar.light = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Avatar of Light");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
-		m_playerBonusData.avatar.nature = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Avatar of Nature");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
-		m_playerBonusData.avatar.storm = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Avatar of Storm");
-		}
-	}
-}
-
-void PlayerWheel::applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnum) {
-	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
-		m_playerBonusData.stages.combatMastery = stageValue;
-	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
-		m_playerBonusData.stages.drainBody = stageValue;
-		for (uint8_t i = 0; i <= stageValue; ++i) {
-			addSpellToVector("Drain_Body_Spells");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
-		m_playerBonusData.stages.divineEmpowerment = stageValue;
-		for (uint8_t i = 0; i <= stageValue; ++i) {
-			addSpellToVector("Divine Empowerment");
-		}
-	} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
-		m_playerBonusData.stages.twinBurst = stageValue;
-		for (uint8_t i = 1; i <= stageValue; ++i) {
-			addSpellToVector("Terra Burst");
-			addSpellToVector("Ice Burst");
+		auto blueStage = static_cast<uint8_t>(blueStageEnum);
+		auto vocationEnum = m_player.getPlayerVocationEnum();
+		if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
+			m_playerBonusData.stages.combatMastery = blueStage;
+		} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
+			m_playerBonusData.stages.drainBody = blueStage;
+			for (uint8_t i = 0; i <= blueStage; ++i) {
+				addSpellToVector("Drain_Body_Spells");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
+			m_playerBonusData.stages.divineEmpowerment = blueStage;
+			for (uint8_t i = 0; i <= blueStage; ++i) {
+				addSpellToVector("Divine Empowerment");
+			}
+		} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
+			m_playerBonusData.stages.twinBurst = blueStage;
+			for (uint8_t i = 1; i <= blueStage; ++i) {
+				addSpellToVector("Twin Burst");
+				addSpellToVector("Terra Burst");
+				addSpellToVector("Ice Burst");
+			}
 		}
 	}
 }
 
 WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) const {
 	std::vector<WheelSlots_t> slots;
-	auto affinity = WheelGemAffinity_t::Green;
+	WheelGemAffinity_t affinity = WheelGemAffinity_t::Green;
 	if (color == "green") {
 		affinity = WheelGemAffinity_t::Green;
 		slots = {
@@ -2662,25 +1965,13 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 	for (const auto &slot : slots) {
 		totalPoints += getPointsBySlotType(slot);
 	}
-
-	auto affinityNumber = static_cast<uint8_t>(affinity);
-	if (affinityNumber < m_bonusRevelationPoints.size()) {
-		auto bonusRevelationPoints = m_bonusRevelationPoints[affinityNumber];
-		if (bonusRevelationPoints > 0) {
-			totalPoints += bonusRevelationPoints;
-			g_logger().debug("[{}] Player: {}, has affinity: {}, revelation points: {} total points: {}, relations: {}", __FUNCTION__, m_player.getName(), magic_enum::enum_name(affinity), bonusRevelationPoints, totalPoints, m_bonusRevelationPoints.size());
-		}
-	}
-
-	totalPoints += m_modsMaxGrade;
+	totalPoints += m_bonusRevelationPoints[static_cast<uint8_t>(affinity)];
 
 	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::THREE)) {
 		return WheelStageEnum_t::THREE;
-	}
-	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::TWO)) {
+	} else if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::TWO)) {
 		return WheelStageEnum_t::TWO;
-	}
-	if (totalPoints >= static_cast<uint8_t>(WheelStagePointsEnum_t::ONE)) {
+	} else if (totalPoints >= static_cast<uint8_t>(WheelStagePointsEnum_t::ONE)) {
 		return WheelStageEnum_t::ONE;
 	}
 
@@ -2695,7 +1986,7 @@ void PlayerWheel::checkAbilities() {
 	if (getInstant("Battle Instinct") && getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME() && checkBattleInstinct()) {
 		reloadClient = true;
 	}
-	if (getInstant("Positional Tactics") && getOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS) < OTSYS_TIME() && checkPositionalTactics()) {
+	if (getInstant("Positional Tatics") && getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME() && checkPositionalTatics()) {
 		reloadClient = true;
 	}
 	if (getInstant("Ballistic Mastery") && getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME() && checkBallisticMastery()) {
@@ -2712,12 +2003,40 @@ bool PlayerWheel::checkBattleInstinct() {
 	setOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT, OTSYS_TIME() + 2000);
 	bool updateClient = false;
 	m_creaturesNearby = 0;
-	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1).excludePlayerMaster().size();
+	uint16_t creaturesNearby = 0;
+	for (int offsetX = -1; offsetX <= 1; offsetX++) {
+		if (creaturesNearby >= 8) {
+			break;
+		}
+		for (int offsetY = -1; offsetY <= 1; offsetY++) {
+			if (creaturesNearby >= 8) {
+				break;
+			}
+
+			const auto playerPositionOffSet = Position(
+				m_player.getPosition().x + offsetX,
+				m_player.getPosition().y + offsetY,
+				m_player.getPosition().z
+			);
+			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
+			if (!tile) {
+				continue;
+			}
+
+			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			if (!creature || creature == m_player.getPlayer() || (creature->getMaster() && creature->getMaster()->getPlayer() == m_player.getPlayer())) {
+				continue;
+			}
+
+			creaturesNearby++;
+		}
+	}
+
 	if (creaturesNearby >= 5) {
 		m_creaturesNearby = creaturesNearby;
 		creaturesNearby -= 4;
-		const uint16_t meleeSkill = 1 * creaturesNearby;
-		const uint16_t shieldSkill = 6 * creaturesNearby;
+		uint16_t meleeSkill = 1 * creaturesNearby;
+		uint16_t shieldSkill = 6 * creaturesNearby;
 		if (getMajorStat(WheelMajor_t::MELEE) != meleeSkill || getMajorStat(WheelMajor_t::SHIELD) != shieldSkill) {
 			setMajorStat(WheelMajor_t::MELEE, meleeSkill);
 			setMajorStat(WheelMajor_t::SHIELD, shieldSkill);
@@ -2732,26 +2051,45 @@ bool PlayerWheel::checkBattleInstinct() {
 	return updateClient;
 }
 
-bool PlayerWheel::checkPositionalTactics() {
-	setOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS, OTSYS_TIME() + 2000);
+bool PlayerWheel::checkPositionalTatics() {
+	setOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS, OTSYS_TIME() + 2000);
 	m_creaturesNearby = 0;
 	bool updateClient = false;
-	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1).excludePlayerMaster().size();
-	constexpr uint16_t holyMagicSkill = 3;
-	constexpr uint16_t healingMagicSkill = 3;
-	constexpr uint16_t distanceSkill = 3;
+	uint16_t creaturesNearby = 0;
+	for (int offsetX = -1; offsetX <= 1; offsetX++) {
+		if (creaturesNearby > 0) {
+			break;
+		}
+		for (int offsetY = -1; offsetY <= 1; offsetY++) {
+			const auto playerPositionOffSet = Position(
+				m_player.getPosition().x + offsetX,
+				m_player.getPosition().y + offsetY,
+				m_player.getPosition().z
+			);
+			std::shared_ptr<Tile> tile = g_game().map.getTile(playerPositionOffSet);
+			if (!tile) {
+				continue;
+			}
+
+			std::shared_ptr<Creature> creature = tile->getTopVisibleCreature(m_player.getPlayer());
+			if (!creature || creature == m_player.getPlayer() || !creature->getMonster() || (creature->getMaster() && creature->getMaster()->getPlayer())) {
+				continue;
+			}
+
+			creaturesNearby++;
+			break;
+		}
+	}
+	uint16_t magicSkill = 3;
+	uint16_t distanceSkill = 3;
 	if (creaturesNearby == 0) {
 		m_creaturesNearby = creaturesNearby;
 		if (getMajorStat(WheelMajor_t::DISTANCE) != distanceSkill) {
 			setMajorStat(WheelMajor_t::DISTANCE, distanceSkill);
 			updateClient = true;
 		}
-		if (getSpecializedMagic(COMBAT_HOLYDAMAGE) != 0) {
-			setSpecializedMagic(COMBAT_HOLYDAMAGE, 0);
-			updateClient = true;
-		}
-		if (getSpecializedMagic(COMBAT_HEALING) != 0) {
-			setSpecializedMagic(COMBAT_HEALING, 0);
+		if (getMajorStat(WheelMajor_t::MAGIC) != 0) {
+			setMajorStat(WheelMajor_t::MAGIC, 0);
 			updateClient = true;
 		}
 	} else {
@@ -2759,12 +2097,8 @@ bool PlayerWheel::checkPositionalTactics() {
 			setMajorStat(WheelMajor_t::DISTANCE, 0);
 			updateClient = true;
 		}
-		if (getSpecializedMagic(COMBAT_HOLYDAMAGE) != holyMagicSkill) {
-			setSpecializedMagic(COMBAT_HOLYDAMAGE, holyMagicSkill);
-			updateClient = true;
-		}
-		if (getSpecializedMagic(COMBAT_HEALING) != healingMagicSkill) {
-			setSpecializedMagic(COMBAT_HEALING, healingMagicSkill);
+		if (getMajorStat(WheelMajor_t::MAGIC) != magicSkill) {
+			setMajorStat(WheelMajor_t::MAGIC, magicSkill);
 			updateClient = true;
 		}
 	}
@@ -2775,11 +2109,11 @@ bool PlayerWheel::checkPositionalTactics() {
 bool PlayerWheel::checkBallisticMastery() {
 	setOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY, OTSYS_TIME() + 2000);
 	bool updateClient = false;
-	constexpr int32_t newCritical = 1000;
-	constexpr uint16_t newHolyBonus = 2; // 2%
-	constexpr uint16_t newPhysicalBonus = 2; // 2%
+	int32_t newCritical = 1000;
+	uint16_t newHolyBonus = 2; // 2%
+	uint16_t newPhysicalBonus = 2; // 2%
 
-	const auto &item = m_player.getWeapon();
+	std::shared_ptr<Item> item = m_player.getWeapon();
 	if (item && item->getAmmoType() == AMMO_BOLT) {
 		if (getMajorStat(WheelMajor_t::CRITICAL_DMG) != newCritical) {
 			setMajorStat(WheelMajor_t::CRITICAL_DMG, newCritical);
@@ -2818,9 +2152,9 @@ bool PlayerWheel::checkBallisticMastery() {
 bool PlayerWheel::checkCombatMastery() {
 	setOnThinkTimer(WheelOnThink_t::COMBAT_MASTERY, OTSYS_TIME() + 2000);
 	bool updateClient = false;
-	const uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
+	uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
 
-	const auto &item = m_player.getWeapon();
+	std::shared_ptr<Item> item = m_player.getWeapon();
 	if (item && item->getSlotPosition() & SLOTP_TWO_HAND) {
 		int32_t criticalSkill = 0;
 		if (stage >= 3) {
@@ -2865,12 +2199,12 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	bool updateClient = false;
 	setOnThinkTimer(WheelOnThink_t::DIVINE_EMPOWERMENT, OTSYS_TIME() + 1000);
 
-	const auto &tile = m_player.getTile();
+	const auto tile = m_player.getTile();
 	if (!tile) {
 		return updateClient;
 	}
 
-	const auto &items = tile->getItemList();
+	const auto items = tile->getItemList();
 	if (!items) {
 		return updateClient;
 	}
@@ -2885,7 +2219,7 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	}
 
 	if (isOwner) {
-		const uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+		uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
 			damageBonus = 7;
 		} else if (stage >= 2) {
@@ -2903,13 +2237,13 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	return updateClient;
 }
 
-int32_t PlayerWheel::checkDivineGrenade(const std::shared_ptr<Creature> &target) const {
+int32_t PlayerWheel::checkDivineGrenade(std::shared_ptr<Creature> target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t damageBonus = 0;
-	const uint8_t stage = getStage(WheelStage_t::DIVINE_GRENADE);
+	uint8_t stage = getStage(WheelStage_t::DIVINE_GRENADE);
 
 	if (stage >= 3) {
 		damageBonus = 100;
@@ -2931,7 +2265,7 @@ void PlayerWheel::checkGiftOfLife() {
 	g_game().addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
 	g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), giftDamage);
 	// Condition cooldown reduction
-	constexpr uint16_t reductionTimer = 60000;
+	uint16_t reductionTimer = 60000;
 	reduceAllSpellsCooldownTimer(reductionTimer);
 
 	// Set cooldown
@@ -2939,14 +2273,14 @@ void PlayerWheel::checkGiftOfLife() {
 	sendGiftOfLifeCooldown();
 }
 
-int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const {
+int32_t PlayerWheel::checkBlessingGroveHealingByTarget(std::shared_ptr<Creature> target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t healingBonus = 0;
-	const uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
+	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			healingBonus = 24;
@@ -2968,14 +2302,14 @@ int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const std::shared_ptr<Cre
 	return healingBonus;
 }
 
-int32_t PlayerWheel::checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const {
+int32_t PlayerWheel::checkTwinBurstByTarget(std::shared_ptr<Creature> target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t damageBonus = 0;
-	const uint8_t stage = getStage(WheelStage_t::TWIN_BURST);
-	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	uint8_t stage = getStage(WheelStage_t::TWIN_BURST);
+	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent > 60) {
 		if (stage >= 3) {
 			damageBonus = 60;
@@ -2989,14 +2323,14 @@ int32_t PlayerWheel::checkTwinBurstByTarget(const std::shared_ptr<Creature> &tar
 	return damageBonus;
 }
 
-int32_t PlayerWheel::checkExecutionersThrow(const std::shared_ptr<Creature> &target) const {
+int32_t PlayerWheel::checkExecutionersThrow(std::shared_ptr<Creature> target) const {
 	if (!target || target == m_player.getPlayer()) {
 		return 0;
 	}
 
 	int32_t damageBonus = 0;
-	const uint8_t stage = getStage(WheelStage_t::EXECUTIONERS_THROW);
-	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
+	uint8_t stage = getStage(WheelStage_t::EXECUTIONERS_THROW);
+	int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
 	if (healthPercent <= 30) {
 		if (stage >= 3) {
 			damageBonus = 150;
@@ -3012,7 +2346,7 @@ int32_t PlayerWheel::checkExecutionersThrow(const std::shared_ptr<Creature> &tar
 
 int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	int32_t damageBoost = 0;
-	const uint8_t stage = getStage(WheelStage_t::BEAM_MASTERY);
+	uint8_t stage = getStage(WheelStage_t::BEAM_MASTERY);
 	if (stage >= 3) {
 		damageBoost = 14;
 	} else if (stage >= 2) {
@@ -3024,12 +2358,12 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const {
+int32_t PlayerWheel::checkDrainBodyLeech(std::shared_ptr<Creature> target, skills_t skill) const {
 	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
 		return 0;
 	}
 
-	const uint8_t stage = target->getWheelOfDestinyDrainBodyDebuff();
+	uint8_t stage = target->getWheelOfDestinyDrainBodyDebuff();
 	if (target->getBuff(BUFF_DAMAGERECEIVED) > 100 && skill == SKILL_MANA_LEECH_AMOUNT) {
 		int32_t manaLeechSkill = 0;
 		if (stage >= 3) {
@@ -3058,14 +2392,14 @@ int32_t PlayerWheel::checkDrainBodyLeech(const std::shared_ptr<Creature> &target
 }
 
 int32_t PlayerWheel::checkBattleHealingAmount() const {
-	double amount = static_cast<double>(m_player.getSkillLevel(SKILL_SHIELD)) * 0.2;
-	const uint8_t healthPercent = (m_player.getHealth() * 100) / m_player.getMaxHealth();
+	double amount = (double)m_player.getSkillLevel(SKILL_SHIELD) * 0.2;
+	uint8_t healthPercent = (m_player.getHealth() * 100) / m_player.getMaxHealth();
 	if (healthPercent <= 30) {
 		amount *= 3;
 	} else if (healthPercent <= 60) {
 		amount *= 2;
 	}
-	return static_cast<int32_t>(amount);
+	return (int32_t)amount;
 }
 
 int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
@@ -3093,11 +2427,9 @@ int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
 	if (skill == WheelAvatarSkill_t::DAMAGE_REDUCTION) {
 		if (stage >= 3) {
 			return 15;
-		}
-		if (stage >= 2) {
+		} else if (stage >= 2) {
 			return 10;
-		}
-		if (stage >= 1) {
+		} else if (stage >= 1) {
 			return 5;
 		}
 	} else if (skill == WheelAvatarSkill_t::CRITICAL_CHANCE) {
@@ -3105,11 +2437,9 @@ int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
 	} else if (skill == WheelAvatarSkill_t::CRITICAL_DAMAGE) {
 		if (stage >= 3) {
 			return 1500;
-		}
-		if (stage >= 2) {
+		} else if (stage >= 2) {
 			return 1000;
-		}
-		if (stage >= 1) {
+		} else if (stage >= 1) {
 			return 500;
 		}
 	}
@@ -3141,7 +2471,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	if (getGiftOfCooldown() > 0 /*getInstant("Gift of Life")*/ && getOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE) <= OTSYS_TIME()) {
 		decreaseGiftOfCooldown(1);
 	}
-	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tactics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tatics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
@@ -3166,8 +2496,8 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	if (getInstant("Battle Instinct") && (force || getOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT) < OTSYS_TIME()) && checkBattleInstinct()) {
 		updateClient = true;
 	}
-	// Positional Tactics
-	if (getInstant("Positional Tactics") && (force || getOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS) < OTSYS_TIME()) && checkPositionalTactics()) {
+	// Positional Tatics
+	if (getInstant("Positional Tatics") && (force || getOnThinkTimer(WheelOnThink_t::POSITIONAL_TATICS) < OTSYS_TIME()) && checkPositionalTatics()) {
 		updateClient = true;
 	}
 	// Ballistic Mastery
@@ -3188,35 +2518,14 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	}
 }
 
-void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) const {
+void PlayerWheel::reduceAllSpellsCooldownTimer(int32_t value) {
 	for (const auto &condition : m_player.getConditionsByType(CONDITION_SPELLCOOLDOWN)) {
-		const auto spellId = condition->getSubId();
-		const auto &spell = g_spells().getInstantSpellById(spellId);
-		if (!spell) {
-			continue;
-		}
-
-		const auto spellSecondaryGroup = spell->getSecondaryGroup();
-		const auto &secondCondition = m_player.getCondition(CONDITION_SPELLGROUPCOOLDOWN, CONDITIONID_DEFAULT, spellSecondaryGroup);
-
-		if (secondCondition) {
-			if (secondCondition->getTicks() <= value) {
-				m_player.sendSpellGroupCooldown(spellSecondaryGroup, 0);
-				secondCondition->endCondition(m_player.getPlayer());
-			} else {
-				secondCondition->setTicks(secondCondition->getTicks() - value);
-				m_player.sendSpellGroupCooldown(spellSecondaryGroup, secondCondition->getTicks());
-			}
-		}
-
-		if (condition) {
-			if (condition->getTicks() <= value) {
-				m_player.sendSpellCooldown(spellId, 0);
-				condition->endCondition(m_player.getPlayer());
-			} else {
-				condition->setTicks(condition->getTicks() - value);
-				m_player.sendSpellCooldown(spellId, condition->getTicks());
-			}
+		if (condition->getTicks() <= value) {
+			m_player.sendSpellCooldown(condition->getSubId(), 0);
+			condition->endCondition(m_player.getPlayer());
+		} else {
+			condition->setTicks(condition->getTicks() - value);
+			m_player.sendSpellCooldown(condition->getSubId(), condition->getTicks());
 		}
 	}
 }
@@ -3230,11 +2539,10 @@ void PlayerWheel::resetUpgradedSpells() {
 	m_creaturesNearby = 0;
 	m_spellsSelected.clear();
 	m_learnedSpellsSelected.clear();
-	m_beamMasterySpells.clear();
 	for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 		setMajorStat(static_cast<WheelMajor_t>(i), 0);
 	}
-	for (int i = 0; i < static_cast<int>(WheelStage_t::STAGE_COUNT); i++) {
+	for (int i = 0; i < static_cast<int>(WheelStage_t::TOTAL_COUNT); i++) {
 		setStage(static_cast<WheelStage_t>(i), 0);
 	}
 	setOnThinkTimer(WheelOnThink_t::FOCUS_MASTERY, 0);
@@ -3266,7 +2574,7 @@ void PlayerWheel::downgradeSpell(const std::string &name) {
 
 std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 	std::shared_ptr<Spell> spell = nullptr;
-	auto spellGrade = WheelSpellGrade_t::NONE;
+	WheelSpellGrade_t spellGrade = WheelSpellGrade_t::NONE;
 	if (!(damage.instantSpellName).empty()) {
 		spellGrade = getSpellUpgrade(damage.instantSpellName);
 		spell = g_spells().getInstantSpellByName(damage.instantSpellName);
@@ -3274,10 +2582,8 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 		spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 	}
 	if (spell) {
-		const auto &spellName = spell->getName();
-
 		damage.damageMultiplier += checkFocusMasteryDamage();
-		if (getHealingLinkUpgrade(spellName)) {
+		if (getHealingLinkUpgrade(spell->getName())) {
 			damage.healingLink += 10;
 		}
 		if (spell->getSecondaryGroup() == SPELLGROUP_FOCUS && getInstant("Focus Mastery")) {
@@ -3285,26 +2591,16 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 		}
 
 		if (spell->getWheelOfDestinyUpgraded()) {
-			damage.criticalDamage += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, spellGrade) * 100;
-			damage.criticalChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, spellGrade);
-			damage.damageMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, spellGrade);
-			damage.damageReductionMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE_REDUCTION, spellGrade);
-			damage.healingMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, spellGrade);
-			damage.manaLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, spellGrade);
-			damage.manaLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH_CHANCE, spellGrade);
-			damage.lifeLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, spellGrade);
-			damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade);
+			damage.criticalDamage += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_DAMAGE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_DAMAGE);
+			damage.criticalChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::CRITICAL_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::CRITICAL_CHANCE);
+			damage.damageMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE);
+			damage.damageReductionMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::DAMAGE_REDUCTION, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::DAMAGE_REDUCTION);
+			damage.healingMultiplier += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::HEAL, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::HEAL);
+			damage.manaLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::MANA_LEECH, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::MANA_LEECH);
+			damage.manaLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
+			damage.lifeLeech += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH);
+			damage.lifeLeechChance += spell->getWheelOfDestinyBoost(WheelSpellBoost_t::LIFE_LEECH_CHANCE, spellGrade) + getSpellBonus(spell->getName(), WheelSpellBoost_t::LIFE_LEECH_CHANCE);
 		}
-
-		damage.criticalDamage += (getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_DAMAGE) * 100);
-		damage.criticalChance += getSpellBonus(spellName, WheelSpellBoost_t::CRITICAL_CHANCE);
-		damage.damageMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE);
-		damage.damageReductionMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::DAMAGE_REDUCTION);
-		damage.healingMultiplier += getSpellBonus(spellName, WheelSpellBoost_t::HEAL);
-		damage.manaLeech += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH);
-		damage.manaLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::MANA_LEECH_CHANCE);
-		damage.lifeLeech += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH);
-		damage.lifeLeechChance += getSpellBonus(spellName, WheelSpellBoost_t::LIFE_LEECH_CHANCE);
 	}
 
 	return spell;
@@ -3333,15 +2629,6 @@ void PlayerWheel::setMajorStat(WheelMajor_t type, int32_t value) {
 	auto enumValue = static_cast<uint8_t>(type);
 	try {
 		m_majorStats.at(enumValue) = value;
-	} catch (const std::out_of_range &e) {
-		g_logger().error("[{}]. Type {} is out of range, value {}. Error message: {}", __FUNCTION__, enumValue, value, e.what());
-	}
-}
-
-void PlayerWheel::setSpecializedMagic(CombatType_t type, int32_t value) {
-	auto enumValue = static_cast<uint8_t>(type);
-	try {
-		m_specializedMagic.at(enumValue) = value;
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}]. Type {} is out of range, value {}. Error message: {}", __FUNCTION__, enumValue, value, e.what());
 	}
@@ -3383,9 +2670,9 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 		}
 	} else if (name == "Battle Healing") {
 		setInstant(WheelInstant_t::BATTLE_HEALING, value);
-	} else if (name == "Positional Tactics") {
-		setInstant(WheelInstant_t::POSITIONAL_TACTICS, value);
-		if (!getInstant(WheelInstant_t::POSITIONAL_TACTICS)) {
+	} else if (name == "Positional Tatics") {
+		setInstant(WheelInstant_t::POSITIONAL_TATICS, value);
+		if (!getInstant(WheelInstant_t::POSITIONAL_TATICS)) {
 			setMajorStat(WheelMajor_t::MAGIC, 0);
 			setMajorStat(WheelMajor_t::HOLY_RESISTANCE, 0);
 		}
@@ -3509,41 +2796,47 @@ bool PlayerWheel::getInstant(WheelInstant_t type) const {
 	return false;
 }
 
-uint8_t PlayerWheel::getStage(std::string_view name) const {
-	using enum WheelInstant_t;
-	using enum WheelStage_t;
-
-	static const std::unordered_map<std::string_view, WheelInstant_t> instantMapping = {
-		{ "Battle Instinct", BATTLE_INSTINCT },
-		{ "Battle Healing", BATTLE_HEALING },
-		{ "Positional Tatics", POSITIONAL_TACTICS },
-		{ "Ballistic Mastery", BALLISTIC_MASTERY },
-		{ "Healing Link", HEALING_LINK },
-		{ "Runic Mastery", RUNIC_MASTERY },
-		{ "Focus Mastery", FOCUS_MASTERY }
-	};
-
-	static const std::unordered_map<std::string_view, WheelStage_t> stageMapping = {
-		{ "Beam Mastery", BEAM_MASTERY },
-		{ "Combat Mastery", COMBAT_MASTERY },
-		{ "Gift of Life", GIFT_OF_LIFE },
-		{ "Blessing of the Grove", BLESSING_OF_THE_GROVE },
-		{ "Drain Body", DRAIN_BODY },
-		{ "Divine Empowerment", DIVINE_EMPOWERMENT },
-		{ "Divine Grenade", DIVINE_GRENADE },
-		{ "Twin Burst", TWIN_BURST },
-		{ "Executioner's Throw", EXECUTIONERS_THROW },
-		{ "Avatar of Light", AVATAR_OF_LIGHT },
-		{ "Avatar of Nature", AVATAR_OF_NATURE },
-		{ "Avatar of Steel", AVATAR_OF_STEEL },
-		{ "Avatar of Storm", AVATAR_OF_STORM }
-	};
-
-	if (auto it = instantMapping.find(name); it != instantMapping.end()) {
-		return PlayerWheel::getInstant(it->second);
-	}
-	if (auto it = stageMapping.find(name); it != stageMapping.end()) {
-		return PlayerWheel::getStage(it->second);
+uint8_t PlayerWheel::getStage(const std::string name) const {
+	if (name == "Battle Instinct") {
+		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
+	} else if (name == "Battle Healing") {
+		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
+	} else if (name == "Positional Tatics") {
+		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
+	} else if (name == "Ballistic Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
+	} else if (name == "Healing Link") {
+		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
+	} else if (name == "Runic Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
+	} else if (name == "Focus Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
+	} else if (name == "Beam Mastery") {
+		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
+	} else if (name == "Combat Mastery") {
+		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
+	} else if (name == "Gift of Life") {
+		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
+	} else if (name == "Blessing of the Grove") {
+		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
+	} else if (name == "Drain Body") {
+		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
+	} else if (name == "Divine Empowerment") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+	} else if (name == "Divine Grenade") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
+	} else if (name == "Twin Burst") {
+		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
+	} else if (name == "Executioner's Throw") {
+		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
+	} else if (name == "Avatar of Light") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
+	} else if (name == "Avatar of Nature") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
+	} else if (name == "Avatar of Steel") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
+	} else if (name == "Avatar of Storm") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
 	}
 
 	return false;
@@ -3563,16 +2856,6 @@ int32_t PlayerWheel::getMajorStat(WheelMajor_t type) const {
 	auto enumValue = static_cast<uint8_t>(type);
 	try {
 		return m_majorStats.at(enumValue);
-	} catch (const std::out_of_range &e) {
-		g_logger().error("[{}]. Instant type {}. Error message: {}", __FUNCTION__, enumValue, e.what());
-	}
-	return 0;
-}
-
-int32_t PlayerWheel::getSpecializedMagic(CombatType_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
-	try {
-		return m_specializedMagic.at(enumValue);
 	} catch (const std::out_of_range &e) {
 		g_logger().error("[{}]. Instant type {}. Error message: {}", __FUNCTION__, enumValue, e.what());
 	}
@@ -3637,41 +2920,47 @@ int64_t PlayerWheel::getOnThinkTimer(WheelOnThink_t type) const {
 	return 0;
 }
 
-bool PlayerWheel::getInstant(std::string_view name) const {
-	using enum WheelInstant_t;
-	using enum WheelStage_t;
-
-	static const std::unordered_map<std::string_view, WheelInstant_t> instantMapping = {
-		{ "Battle Instinct", BATTLE_INSTINCT },
-		{ "Battle Healing", BATTLE_HEALING },
-		{ "Positional Tactics", POSITIONAL_TACTICS },
-		{ "Ballistic Mastery", BALLISTIC_MASTERY },
-		{ "Healing Link", HEALING_LINK },
-		{ "Runic Mastery", RUNIC_MASTERY },
-		{ "Focus Mastery", FOCUS_MASTERY }
-	};
-
-	static const std::unordered_map<std::string_view, WheelStage_t> stageMapping = {
-		{ "Beam Mastery", BEAM_MASTERY },
-		{ "Combat Mastery", COMBAT_MASTERY },
-		{ "Gift of Life", GIFT_OF_LIFE },
-		{ "Blessing of the Grove", BLESSING_OF_THE_GROVE },
-		{ "Drain Body", DRAIN_BODY },
-		{ "Divine Empowerment", DIVINE_EMPOWERMENT },
-		{ "Divine Grenade", DIVINE_GRENADE },
-		{ "Twin Burst", TWIN_BURST },
-		{ "Executioner's Throw", EXECUTIONERS_THROW },
-		{ "Avatar of Light", AVATAR_OF_LIGHT },
-		{ "Avatar of Nature", AVATAR_OF_NATURE },
-		{ "Avatar of Steel", AVATAR_OF_STEEL },
-		{ "Avatar of Storm", AVATAR_OF_STORM }
-	};
-
-	if (auto it = instantMapping.find(name); it != instantMapping.end()) {
-		return PlayerWheel::getInstant(it->second);
-	}
-	if (auto it = stageMapping.find(name); it != stageMapping.end()) {
-		return PlayerWheel::getStage(it->second);
+bool PlayerWheel::getInstant(const std::string name) const {
+	if (name == "Battle Instinct") {
+		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_INSTINCT);
+	} else if (name == "Battle Healing") {
+		return PlayerWheel::getInstant(WheelInstant_t::BATTLE_HEALING);
+	} else if (name == "Positional Tatics") {
+		return PlayerWheel::getInstant(WheelInstant_t::POSITIONAL_TATICS);
+	} else if (name == "Ballistic Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::BALLISTIC_MASTERY);
+	} else if (name == "Healing Link") {
+		return PlayerWheel::getInstant(WheelInstant_t::HEALING_LINK);
+	} else if (name == "Runic Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::RUNIC_MASTERY);
+	} else if (name == "Focus Mastery") {
+		return PlayerWheel::getInstant(WheelInstant_t::FOCUS_MASTERY);
+	} else if (name == "Beam Mastery") {
+		return PlayerWheel::getStage(WheelStage_t::BEAM_MASTERY);
+	} else if (name == "Combat Mastery") {
+		return PlayerWheel::getStage(WheelStage_t::COMBAT_MASTERY);
+	} else if (name == "Gift of Life") {
+		return PlayerWheel::getStage(WheelStage_t::GIFT_OF_LIFE);
+	} else if (name == "Blessing of the Grove") {
+		return PlayerWheel::getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
+	} else if (name == "Drain Body") {
+		return PlayerWheel::getStage(WheelStage_t::DRAIN_BODY);
+	} else if (name == "Divine Empowerment") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_EMPOWERMENT);
+	} else if (name == "Divine Grenade") {
+		return PlayerWheel::getStage(WheelStage_t::DIVINE_GRENADE);
+	} else if (name == "Twin Burst") {
+		return PlayerWheel::getStage(WheelStage_t::TWIN_BURST);
+	} else if (name == "Executioner's Throw") {
+		return PlayerWheel::getStage(WheelStage_t::EXECUTIONERS_THROW);
+	} else if (name == "Avatar of Light") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_LIGHT);
+	} else if (name == "Avatar of Nature") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_NATURE);
+	} else if (name == "Avatar of Steel") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STEEL);
+	} else if (name == "Avatar of Storm") {
+		return PlayerWheel::getStage(WheelStage_t::AVATAR_OF_STORM);
 	}
 
 	return false;
@@ -3681,11 +2970,9 @@ bool PlayerWheel::getInstant(std::string_view name) const {
 uint32_t PlayerWheel::getGiftOfLifeTotalCooldown() const {
 	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 1) {
 		return 1 * 60 * 60 * 30;
-	}
-	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
+	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
 		return 1 * 60 * 60 * 20;
-	}
-	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
+	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
 		return 1 * 60 * 60 * 10;
 	}
 	return 0;
@@ -3694,11 +2981,9 @@ uint32_t PlayerWheel::getGiftOfLifeTotalCooldown() const {
 uint8_t PlayerWheel::getGiftOfLifeValue() const {
 	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 1) {
 		return 20;
-	}
-	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
+	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 2) {
 		return 25;
-	}
-	if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
+	} else if (getStage(WheelStage_t::GIFT_OF_LIFE) == 3) {
 		return 30;
 	}
 
@@ -3706,7 +2991,7 @@ uint8_t PlayerWheel::getGiftOfLifeValue() const {
 }
 
 int32_t PlayerWheel::getGiftOfCooldown() const {
-	const int32_t value = m_player.getStorageValue(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD);
+	int32_t value = m_player.getStorageValue(STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD);
 	if (value <= 0) {
 		return 0;
 	}
@@ -3721,7 +3006,7 @@ void PlayerWheel::setGiftOfCooldown(int32_t value, bool isOnThink) {
 }
 
 void PlayerWheel::decreaseGiftOfCooldown(int32_t value) {
-	const int32_t cooldown = getGiftOfCooldown() - value;
+	int32_t cooldown = getGiftOfCooldown() - value;
 	if (cooldown <= 0) {
 		setOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE, OTSYS_TIME() + 3600000);
 		return;
@@ -3772,7 +3057,7 @@ void PlayerWheel::setWheelBonusData(const PlayerWheelMethodsBonusData &newBonusD
 // Functions used to Manage Combat
 uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
 	uint8_t beamAffectedTotal = 0; // Removed const
-	if (m_beamMasterySpells.contains(tmpDamage.instantSpellName) && getInstant("Beam Mastery")) {
+	if (tmpDamage.runeSpellName == "Beam Mastery" && getInstant("Beam Mastery")) {
 		beamAffectedTotal = 3;
 	}
 	return beamAffectedTotal;
@@ -3781,7 +3066,6 @@ uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
 void PlayerWheel::updateBeamMasteryDamage(CombatDamage &tmpDamage, uint8_t &beamAffectedTotal, uint8_t &beamAffectedCurrent) const {
 	if (beamAffectedTotal > 0) {
 		tmpDamage.damageMultiplier += checkBeamMasteryDamage();
-		reduceAllSpellsCooldownTimer(1000); // Reduces all spell cooldown by 1 second per target hit (max 3 seconds)
 		--beamAffectedTotal;
 		beamAffectedCurrent++;
 	}
@@ -3797,7 +3081,7 @@ void PlayerWheel::healIfBattleHealingActive() const {
 }
 
 void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType_t combatType) const {
-	const int32_t wheelOfDestinyElementAbsorb = getResistance(combatType);
+	int32_t wheelOfDestinyElementAbsorb = getResistance(combatType);
 	if (wheelOfDestinyElementAbsorb > 0) {
 		damage -= std::ceil((damage * wheelOfDestinyElementAbsorb) / 10000.);
 	}
@@ -3806,8 +3090,11 @@ void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatT
 }
 
 float PlayerWheel::calculateMitigation() const {
-	const int32_t skill = m_player.getSkillLevel(SKILL_SHIELD);
+	int32_t skill = m_player.getSkillLevel(SKILL_SHIELD);
 	int32_t defenseValue = 0;
+	std::shared_ptr<Item> weapon = m_player.inventory[CONST_SLOT_LEFT];
+	std::shared_ptr<Item> shield = m_player.inventory[CONST_SLOT_RIGHT];
+
 	float fightFactor = 1.0f;
 	float shieldFactor = 1.0f;
 	float distanceFactor = 1.0f;
@@ -3828,7 +3115,6 @@ float PlayerWheel::calculateMitigation() const {
 			break;
 	}
 
-	const auto &shield = m_player.inventory[CONST_SLOT_RIGHT];
 	if (shield) {
 		if (shield->isSpellBook() || shield->isQuiver()) {
 			distanceFactor = m_player.vocation->mitigationSecondaryShield;
@@ -3842,7 +3128,6 @@ float PlayerWheel::calculateMitigation() const {
 		}
 	}
 
-	const auto &weapon = m_player.inventory[CONST_SLOT_LEFT];
 	if (weapon) {
 		if (weapon->getAmmoType() == AMMO_BOLT || weapon->getAmmoType() == AMMO_ARROW) {
 			distanceFactor = m_player.vocation->mitigationSecondaryShield;
@@ -3855,8 +3140,8 @@ float PlayerWheel::calculateMitigation() const {
 		}
 	}
 
-	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * static_cast<float>(defenseValue))) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
-	mitigation += (mitigation * static_cast<float>(getMitigationMultiplier())) / 100.f;
+	float mitigation = std::ceil(((((skill * m_player.vocation->mitigationFactor) + (shieldFactor * (float)defenseValue)) / 100.0f) * fightFactor * distanceFactor) * 100.0f) / 100.0f;
+	mitigation += (mitigation * (float)getMitigationMultiplier()) / 100.f;
 	return mitigation;
 }
 
@@ -3866,51 +3151,4 @@ WheelGemBasicModifier_t PlayerWheel::selectBasicModifier2(WheelGemBasicModifier_
 		modifier = wheelGemBasicSlot2Allowed[uniform_random(0, wheelGemBasicSlot2Allowed.size() - 1)];
 	}
 	return modifier;
-}
-
-std::string PlayerWheelGem::toString() const {
-	return fmt::format("[PlayerWheelGem] uuid: {}, locked: {}, affinity: {}, quality: {}, basicModifier1: {}, basicModifier2: {}, supremeModifier: {}", uuid, locked, static_cast<IntType>(affinity), static_cast<IntType>(quality), static_cast<IntType>(basicModifier1), static_cast<IntType>(basicModifier2), static_cast<IntType>(supremeModifier));
-}
-
-void PlayerWheelGem::save(const std::shared_ptr<KV> &kv) const {
-	kv->scoped("revealed")->set(uuid, serialize());
-}
-void PlayerWheelGem::remove(const std::shared_ptr<KV> &kv) const {
-	kv->scoped("revealed")->remove(uuid);
-}
-
-PlayerWheelGem PlayerWheelGem::load(const std::shared_ptr<KV> &kv, const std::string &uuid) {
-	auto val = kv->scoped("revealed")->get(uuid);
-	if (!val || !val.has_value()) {
-		return {};
-	}
-	return deserialize(uuid, val.value());
-}
-
-ValueWrapper PlayerWheelGem::serialize() const {
-	return {
-		{ "uuid", uuid },
-		{ "locked", locked },
-		{ "affinity", static_cast<IntType>(affinity) },
-		{ "quality", static_cast<IntType>(quality) },
-		{ "basicModifier1", static_cast<IntType>(basicModifier1) },
-		{ "basicModifier2", static_cast<IntType>(basicModifier2) },
-		{ "supremeModifier", static_cast<IntType>(supremeModifier) }
-	};
-}
-
-PlayerWheelGem PlayerWheelGem::deserialize(const std::string &uuid, const ValueWrapper &val) {
-	auto map = val.get<MapType>();
-	if (map.empty()) {
-		return {};
-	}
-	return {
-		uuid,
-		map["locked"]->get<BooleanType>(),
-		static_cast<WheelGemAffinity_t>(map["affinity"]->get<IntType>()),
-		static_cast<WheelGemQuality_t>(map["quality"]->get<IntType>()),
-		static_cast<WheelGemBasicModifier_t>(map["basicModifier1"]->get<IntType>()),
-		static_cast<WheelGemBasicModifier_t>(map["basicModifier2"]->get<IntType>()),
-		static_cast<WheelGemSupremeModifier_t>(map["supremeModifier"]->get<IntType>())
-	};
 }

@@ -7,6 +7,7 @@ local data = {
 	coins = {
 		[ITEM_GOLD_COIN] = ITEM_PLATINUM_COIN,
 		[ITEM_PLATINUM_COIN] = ITEM_CRYSTAL_COIN,
+		[ITEM_CRYSTAL_COIN] = ITEM_RUBY_COIN,
 	},
 }
 

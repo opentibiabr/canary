@@ -77,10 +77,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 42860 },
-	{ name = "ultimate mana potion", chance = 42860, minCount = 2, maxCount = 3 },
-	{ id = 7385, chance = 14290 }, -- crimson sword
-	{ name = "ultimate health potion", chance = 14290, maxCount = 2 },
+	{ name = "crystal coin", chance = 6961, maxCount = 1 },
+	{ name = "ultimate mana potion", chance = 10285, maxCount = 2 },
+	{ name = "crimson sword", chance = 10090, maxCount = 3 },
+	{ name = "ultimate health potion", chance = 10285, maxCount = 2 },
 	{ name = "organic acid", chance = 7678, maxCount = 1 },
 	{ name = "rotten roots", chance = 13133, maxCount = 1 },
 	{ name = "emerald bangle", chance = 8558, maxCount = 1 },
@@ -89,7 +89,7 @@ monster.loot = {
 	{ name = "blue gem", chance = 9808, maxCount = 1 },
 	{ name = "relic sword", chance = 6964, maxCount = 1 },
 	{ name = "skullcracker armor", chance = 7270, maxCount = 1 },
-	{ id = 23531, chance = 3073, maxCount = 1 }, -- ring of green plasma
+	{ name = "ring of green plasma", chance = 3073, maxCount = 1 },
 }
 
 monster.attacks = {

@@ -371,10 +371,11 @@ tasks.json
 
 ## CUSTOM
 # Files
-config.lua
+#config.lua
 config_canary.lua
 client_assertions.txt
 .env
+data-otservbr-global/world/revoada.otbm
 data-otservbr-global/world/otservbr.otbm
 
 # Extensions
@@ -394,9 +395,6 @@ canary.old
 
 # VCPKG
 vcpkg_installed
-
-# DB Backups
-database_backup
 
 # CLION
 cmake-build-*

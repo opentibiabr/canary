@@ -4,11 +4,11 @@
 
 if not announcementChannels then
 	announcementChannels = {
-		["serverAnnouncements"] = "", -- Used for an announcement channel on your discord
-		["raids"] = "", -- Used to isolate raids on your discord
-		["player-kills"] = "", -- Self-explaining
+		["serverAnnouncements"] = "https://discord.com/api/webhooks/1199061373079007332/SZlvWTyyWwU2Q7N1g6YJZjqI2enKD4qEKZ1u1rySDGcK7zHqOjV_EFq7NbKvmuaSImw7", -- Used for an announcement channel on your discord
+		["raids"] = "https://discord.com/api/webhooks/1199061592445308938/6qZFEdU82lMIMQgyoFm8QL_WXk3UWYYWSxBSwmsn0Wdrb4t1-uWt7mEexsjm-yEx0r5M", -- Used to isolate raids on your discord
+		["player-kills"] = "https://discord.com/api/webhooks/1199061808187723926/8f4gnm8iWr9JzlBFjbtInLSVhQZGhV-X_gLW_3dkuAc5XKsn2ynaGAYbkaZkAvC-SpnZ", -- Self-explaining
 		["player-levels"] = "", -- Self-explaining
-		["reports"] = "",
+		["reports"] = "https://discord.com/api/webhooks/1199062047040749688/xr6sXri4LRh13jVBYV2lZTQ85mF8DM8TPE7u7gKw7hWeRSvADg6oGK1-hTRcM2b3J3QM",
 	}
 end
 

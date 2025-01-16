@@ -1,0 +1,12 @@
+-- local customs
+--logLevel = "debug"
+protectionLevel = 10
+ip = "127.0.0.1"
+allowReload = true
+mysqlUser = "root"
+mysqlPass = ""
+coinImagesURL = "http://localhost/thorfinn-site/images/store/"
+rateExerciseTrainingSpeed = 30.0
+toggleMaintainMode = false
+discordWebhookURL = ""
+discordSendFooter = false

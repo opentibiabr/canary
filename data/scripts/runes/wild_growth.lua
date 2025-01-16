@@ -1,15 +1,11 @@
-function onCreateWildGrowth(creature, position)
-	local tile = Tile(position)
-	if tile and tile:getTopCreature() and not tile:getTopCreature():isPlayer() then
-		return false
-	end
+function onCreateWildGrowth(creature, tile)
 	local wildGrowth
 	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		wildGrowth = ITEM_WILDGROWTH_SAFE
 	else
 		wildGrowth = ITEM_WILDGROWTH
 	end
-	local item = Game.createItem(wildGrowth, 1, position)
+	local item = Game.createItem(wildGrowth, 1, tile)
 	item:setDuration(30, 60)
 end
 
@@ -27,8 +23,8 @@ rune:name("Wild Growth Rune")
 rune:group("attack")
 rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 rune:impactSound(SOUND_EFFECT_TYPE_SPELL_WILD_GROWTH_RUNE)
-rune:cooldown(2 * 1000)
-rune:groupCooldown(2 * 1000)
+rune:cooldown(DEFAULT_COOLDOWN.RUNE)
+rune:groupCooldown(DEFAULT_COOLDOWN.RUNE_GROUP)
 rune:level(27)
 rune:magicLevel(8)
 rune:runeId(3156)

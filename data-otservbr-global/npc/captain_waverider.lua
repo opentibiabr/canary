@@ -55,7 +55,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "peg leg") then
-		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.AccessToMeriana) == 1 then
+		if player:getStorageValue(Storage.TheShatteredIsles.AccessToMeriana) == 1 then
 			npcHandler:say("Ohhhh. So... <lowers his voice> you know who sent you so I sail you to you know where. <wink> <wink> It will cost 50 gold to cover my expenses. Is it that what you wish?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		else

@@ -7,18 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "items/decay/decay.hpp"
 
-#include "creatures/players/player.hpp"
+#include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "lib/di/container.hpp"
 
 Decay &Decay::getInstance() {
 	return inject<Decay>();
 }
 
-void Decay::startDecay(const std::shared_ptr<Item> &item) {
+void Decay::startDecay(std::shared_ptr<Item> item) {
 	if (!item) {
 		return;
 	}
@@ -33,8 +34,6 @@ void Decay::startDecay(const std::shared_ptr<Item> &item) {
 		return;
 	}
 
-	g_logger().trace("Try decay item {}", item->getName());
-
 	const auto duration = item->getAttribute<int64_t>(ItemAttribute_t::DURATION);
 	if (duration <= 0 && item->hasAttribute(ItemAttribute_t::DURATION)) {
 		internalDecayItem(item);
@@ -46,7 +45,7 @@ void Decay::startDecay(const std::shared_ptr<Item> &item) {
 			stopDecay(item);
 		}
 
-		const int64_t timestamp = OTSYS_TIME() + duration;
+		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
 			eventId = g_dispatcher().scheduleEvent(
 				std::max<int32_t>(SCHEDULER_MINTICKS, duration), [this] { checkDecay(); }, "Decay::checkDecay"
@@ -66,19 +65,15 @@ void Decay::startDecay(const std::shared_ptr<Item> &item) {
 	}
 }
 
-void Decay::stopDecay(const std::shared_ptr<Item> &item) {
-	if (!item) {
-		return;
-	}
+void Decay::stopDecay(std::shared_ptr<Item> item) {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
-		const auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
+		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
-			const auto it = decayMap.find(timestamp);
+			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {
 				auto &decayItems = it->second;
 
-				size_t i = 0;
-				const size_t end = decayItems.size();
+				size_t i = 0, end = decayItems.size();
 				auto decayItem = decayItems[i];
 				if (end == 1) {
 					if (item == decayItem) {
@@ -116,13 +111,12 @@ void Decay::stopDecay(const std::shared_ptr<Item> &item) {
 }
 
 void Decay::checkDecay() {
-	const int64_t timestamp = OTSYS_TIME();
+	int64_t timestamp = OTSYS_TIME();
 
 	std::vector<std::shared_ptr<Item>> tempItems;
 	tempItems.reserve(32); // Small preallocation
 
-	auto it = decayMap.begin();
-	const auto end = decayMap.end();
+	auto it = decayMap.begin(), end = decayMap.end();
 	while (it != end) {
 		if (it->first > timestamp) {
 			break;
@@ -132,7 +126,7 @@ void Decay::checkDecay() {
 		auto &decayItems = it->second;
 		tempItems.reserve(tempItems.size() + decayItems.size());
 		for (auto &decayItem : decayItems) {
-			tempItems.emplace_back(decayItem);
+			tempItems.push_back(decayItem);
 		}
 		it = decayMap.erase(it);
 	}
@@ -154,16 +148,12 @@ void Decay::checkDecay() {
 	}
 }
 
-void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
-	if (!item) {
-		return;
-	}
-
+void Decay::internalDecayItem(std::shared_ptr<Item> item) {
 	const ItemType &it = Item::items[item->getID()];
 	// Remove the item and halt the decay process if a player triggers a bug where the item's decay ID matches its equip or de-equip transformation ID
 	if (it.id == it.transformEquipTo || it.id == it.transformDeEquipTo) {
 		g_game().internalRemoveItem(item);
-		const auto &player = item->getHoldingPlayer();
+		auto player = item->getHoldingPlayer();
 		if (player) {
 			g_logger().error("[{}] - internalDecayItem failed to player {}, item id is same from transform equip/deequip, "
 			                 " item id: {}, equip to id: '{}', deequip to id '{}'",
@@ -173,7 +163,7 @@ void Decay::internalDecayItem(const std::shared_ptr<Item> &item) {
 	}
 
 	if (it.decayTo != 0) {
-		const auto &player = item->getHoldingPlayer();
+		std::shared_ptr<Player> player = item->getHoldingPlayer();
 		if (player) {
 			bool needUpdateSkills = false;
 			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {

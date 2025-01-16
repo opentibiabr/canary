@@ -8,8 +8,8 @@
  */
 
 #pragma once
-
-class Dispatcher;
+#include "utils/tools.hpp"
+#include <unordered_set>
 
 class Task {
 public:
@@ -24,30 +24,34 @@ public:
 			if (++LAST_EVENT_ID == 0) {
 				LAST_EVENT_ID = 1;
 			}
+
 			id = LAST_EVENT_ID;
 		}
+
 		return id;
 	}
 
-	[[nodiscard]] uint32_t getDelay() const {
+	uint32_t getDelay() const {
 		return delay;
 	}
 
-	[[nodiscard]] std::string_view getContext() const {
+	std::string_view getContext() const {
 		return context;
 	}
 
-	[[nodiscard]] auto getTime() const {
+	auto getTime() const {
 		return utime;
 	}
 
-	[[nodiscard]] bool hasExpired() const;
+	bool hasExpired() const {
+		return expiration != 0 && expiration < OTSYS_TIME();
+	}
 
-	[[nodiscard]] bool isCycle() const {
+	bool isCycle() const {
 		return cycle;
 	}
 
-	[[nodiscard]] bool isCanceled() const {
+	bool isCanceled() const {
 		return func == nullptr;
 	}
 
@@ -60,21 +64,23 @@ public:
 private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
 
-	void updateTime();
+	void updateTime() {
+		utime = OTSYS_TIME() + delay;
+	}
 
 	bool hasTraceableContext() const {
-		const static std::unordered_set<std::string_view> tasksContext = {
+		const static auto tasksContext = std::unordered_set<std::string_view>({
 			"Decay::checkDecay",
 			"Dispatcher::asyncEvent",
-			"Creature::checkCreatureAttack",
+			"Game::checkCreatureAttack",
 			"Game::checkCreatureWalk",
 			"Game::checkCreatures",
 			"Game::checkImbuements",
 			"Game::checkLight",
 			"Game::createFiendishMonsters",
 			"Game::createInfluencedMonsters",
+			"Game::updateCreatureWalk",
 			"Game::updateForgeableMonsters",
-			"Game::addCreatureCheck",
 			"GlobalEvents::think",
 			"LuaEnvironment::executeTimerEvent",
 			"Modules::executeOnRecvbyte",
@@ -88,25 +94,26 @@ private:
 			"SpawnNpc::checkSpawnNpc",
 			"Webhook::run",
 			"Protocol::sendRecvMessageCallback",
-			"Player::addInFightTicks"
-		};
+		});
 
 		return tasksContext.contains(context);
 	}
 
 	struct Compare {
 		bool operator()(const std::shared_ptr<Task> &a, const std::shared_ptr<Task> &b) const {
-			return a->getTime() < b->getTime();
+			return a->utime < b->utime;
 		}
 	};
 
-	std::function<void(void)> func;
+	std::function<void(void)> func = nullptr;
 	std::string context;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;
+
 	uint64_t id = 0;
 	uint32_t delay = 0;
+
 	bool cycle = false;
 	bool log = true;
 

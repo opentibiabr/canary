@@ -57,7 +57,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "piece of draconian steel") and player:getStorageValue(Storage.Quest.U7_8.ObsidianKnife) < 1 then
+	if MsgContains(message, "piece of draconian steel") then
 		npcHandler:say("You bringing me draconian steel and obsidian lance in exchange for obsidian knife?", npc, creature)
 		npcHandler:setTopic(playerId, 15)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 15 then
@@ -65,7 +65,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(5889, 1) and player:removeItem(3313, 1) then
 				npcHandler:say("Here you have it.", npc, creature)
 				player:addItem(5908, 1)
-				player:setStorageValue(Storage.Quest.U7_8.ObsidianKnife, 1)
 				npcHandler:setTopic(playerId, 0)
 			end
 		else
@@ -75,12 +74,12 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "pickaxe") then
-		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) == 1 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 1 then
+		if player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) == 1 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 1 then
 			npcHandler:say("True dwarven pickaxes having to be maded by true weaponsmith! You wanting to get pickaxe for explorer society?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "crimson sword") then
-		if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05) == 1 then
+		if player:getStorageValue(Storage.TravellingTrader.Mission05) == 1 then
 			npcHandler:say("Me don't sell crimson sword.", npc, creature)
 			npcHandler:setTopic(playerId, 5)
 		end
@@ -90,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 6)
 		end
 	elseif MsgContains(message, "brooch") then
-		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers) == 3 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 3 then
+		if player:getStorageValue(Storage.ExplorerSociety.JoiningTheExplorers) == 3 and player:getStorageValue(Storage.ExplorerSociety.QuestLine) == 3 then
 			npcHandler:say("You got me brooch?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -104,9 +103,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Last key should be in the generals quarter near armory. Only General might have key to enter there too. But me not knowing how to enter Generals private room at barracks. You looking on your own ...", npc, creature)
 			npcHandler:say("When got key, then you going down to dwarven prison and getting me that brooch. Tell me that you got brooch when having it.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers, 2)
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.DwacatraDoor, 1)
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 2)
+			player:setStorageValue(Storage.ExplorerSociety.JoiningTheExplorers, 2)
+			player:setStorageValue(Storage.ExplorerSociety.DwacatraDoor, 1)
+			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 2)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(4834, 1) then -----
 				npcHandler:say("Thanking you for brooch. Me guessing you now want your pickaxe?", npc, creature)
@@ -115,15 +114,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Here you have it.", npc, creature)
 			player:addItem(4845, 1) -----
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.JoiningTheExplorers, 4)
-			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 4)
+			player:setStorageValue(Storage.ExplorerSociety.JoiningTheExplorers, 4)
+			player:setStorageValue(Storage.ExplorerSociety.QuestLine, 4)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 9 then
 			if player:getMoney() + player:getBankBalance() >= 250 and player:getItemCount(5880) >= 3 then
 				if player:removeMoneyBank(250) and player:removeItem(5880, 3) then
 					npcHandler:say("Ah, that's how me like me customers. Ok, me do this... <pling pling> ... another fine swing of the hammer here and there... <ploing>... here you have it!", npc, creature)
 					player:addItem(7385, 1)
-					player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05, 2)
+					player:setStorageValue(Storage.TravellingTrader.Mission05, 2)
 					npcHandler:setTopic(playerId, 0)
 				end
 			end
@@ -142,10 +141,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
-
-npcHandler:setMessage(MESSAGE_GREET, "Hiho |PLAYERNAME|! Wanna weapon, eh?")
-npcHandler:setMessage(MESSAGE_FAREWELL, "Guut bye. Coming back soon.")
-npcHandler:setMessage(MESSAGE_WALKAWAY, "Guut bye. Coming back soon.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
@@ -166,26 +161,26 @@ npcConfig.shop = {
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
 	{ itemName = "dagger", clientId = 3267, buy = 5, sell = 2 },
 	{ itemName = "double axe", clientId = 3275, sell = 260 },
-	{ itemName = "durable exercise axe", clientId = 35280, buy = 1250000, count = 1800 },
-	{ itemName = "durable exercise bow", clientId = 35282, buy = 1250000, count = 1800 },
-	{ itemName = "durable exercise club", clientId = 35281, buy = 1250000, count = 1800 },
-	{ itemName = "durable exercise shield", clientId = 44066, buy = 1250000, count = 1800 },
-	{ itemName = "durable exercise sword", clientId = 35279, buy = 1250000, count = 1800 },
-	{ itemName = "exercise axe", clientId = 28553, buy = 347222, count = 500 },
-	{ itemName = "exercise bow", clientId = 28555, buy = 347222, count = 500 },
-	{ itemName = "exercise club", clientId = 28554, buy = 347222, count = 500 },
-	{ itemName = "exercise shield", clientId = 44065, buy = 347222, count = 500 },
-	{ itemName = "exercise sword", clientId = 28552, buy = 347222, count = 500 },
+	{ itemName = "durable exercise axe", clientId = 35280, buy = 545000, count = 5000 },
+	{ itemName = "durable exercise bow", clientId = 35282, buy = 545000, count = 5000 },
+	{ itemName = "durable exercise club", clientId = 35281, buy = 545000, count = 5000 },
+	{ itemName = "durable exercise shield", clientId = 44066, buy = 545000, count = 5000 },
+	{ itemName = "durable exercise sword", clientId = 35279, buy = 545000, count = 5000 },
+	{ itemName = "exercise axe", clientId = 28553, buy = 262500, count = 1500 },
+	{ itemName = "exercise bow", clientId = 28555, buy = 262500, count = 1500 },
+	{ itemName = "exercise club", clientId = 28554, buy = 262500, count = 1500 },
+	{ itemName = "exercise shield", clientId = 44065, buy = 262500, count = 1500 },
+	{ itemName = "exercise sword", clientId = 28552, buy = 262500, count = 1500 },
 	{ itemName = "fire sword", clientId = 3280, sell = 1000 },
 	{ itemName = "halberd", clientId = 3269, sell = 310 },
 	{ itemName = "hand axe", clientId = 3268, buy = 8, sell = 4 },
 	{ itemName = "hatchet", clientId = 3276, sell = 25 },
 	{ itemName = "katana", clientId = 3300, sell = 35 },
-	{ itemName = "lasting exercise axe", clientId = 35286, buy = 10000000, count = 14400 },
-	{ itemName = "lasting exercise bow", clientId = 35288, buy = 10000000, count = 14400 },
-	{ itemName = "lasting exercise club", clientId = 35287, buy = 10000000, count = 14400 },
-	{ itemName = "lasting exercise shield", clientId = 44067, buy = 10000000, count = 14400 },
-	{ itemName = "lasting exercise sword", clientId = 35285, buy = 10000000, count = 14400 },
+	{ itemName = "lasting exercise axe", clientId = 35286, buy = 8500000, count = 40000 },
+	{ itemName = "lasting exercise bow", clientId = 35288, buy = 8500000, count = 40000 },
+	{ itemName = "lasting exercise club", clientId = 35287, buy = 8500000, count = 40000 },
+	{ itemName = "lasting exercise shield", clientId = 44067, buy = 8500000, count = 40000 },
+	{ itemName = "lasting exercise sword", clientId = 35285, buy = 8500000, count = 40000 },
 	{ itemName = "longsword", clientId = 3285, buy = 160, sell = 51 },
 	{ itemName = "mace", clientId = 3286, buy = 90 },
 	{ itemName = "morning star", clientId = 3282, buy = 430 },

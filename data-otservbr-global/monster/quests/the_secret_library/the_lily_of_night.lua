@@ -25,10 +25,6 @@ monster.corpse = 28802
 monster.speed = 175
 monster.manaCost = 0
 
-monster.events = {
-	"AsurasMechanic",
-}
-
 monster.changeTarget = {
 	interval = 5000,
 	chance = 8,

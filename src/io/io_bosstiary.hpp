@@ -9,6 +9,11 @@
 
 #pragma once
 
+#include <map>
+#include <string>
+#include <vector>
+#include "lib/di/container.hpp"
+
 enum class BosstiaryRarity_t : uint8_t {
 	RARITY_BANE = 0,
 	RARITY_ARCHFOE = 1,
@@ -34,7 +39,9 @@ public:
 	IOBosstiary(const IOBosstiary &) = delete;
 	void operator=(const IOBosstiary &) = delete;
 
-	static IOBosstiary &getInstance();
+	static IOBosstiary &getInstance() {
+		return inject<IOBosstiary>();
+	}
 
 	void loadBoostedBoss();
 
@@ -47,17 +54,17 @@ public:
 		{ BosstiaryRarity_t::RARITY_NEMESIS, { { 1, 10 }, { 3, 30 }, { 5, 60 } } }
 	};
 
-	void setBossBoostedName(std::string_view name);
+	void setBossBoostedName(const std::string_view &name);
 	std::string getBoostedBossName() const;
 	void setBossBoostedId(uint16_t raceId);
 	uint16_t getBoostedBossId() const;
 	std::shared_ptr<MonsterType> getMonsterTypeByBossRaceId(uint16_t raceId) const;
 
-	void addBosstiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount = 1) const;
+	void addBosstiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount = 1) const;
 	uint16_t calculateLootBonus(uint32_t bossPoints) const;
 	uint32_t calculateBossPoints(uint16_t lootBonus) const;
 	std::vector<uint16_t> getBosstiaryFinished(const std::shared_ptr<Player> &player, uint8_t level = 1) const;
-	uint8_t getBossCurrentLevel(const std::shared_ptr<Player> &player, uint16_t bossId) const;
+	uint8_t getBossCurrentLevel(std::shared_ptr<Player> player, uint16_t bossId) const;
 	uint32_t calculteRemoveBoss(uint8_t removeTimes) const;
 	const std::vector<LevelInfo> &getBossRaceKillStages(BosstiaryRarity_t race) const;
 

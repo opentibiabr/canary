@@ -68,11 +68,11 @@ keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = 
 end)
 
 local stoneKeyword = keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, you want to replace your adventurer's stone for free?" }, function(player)
-	return player:getStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Yberius) ~= 1
+	return player:getStorageValue(Storage.AdventurersGuild.FreeStone.Yberius) ~= 1
 end)
 stoneKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you are. Take care.", reset = true }, nil, function(player)
 	player:addItem(16277, 1)
-	player:setStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Yberius, 1)
+	player:setStorageValue(Storage.AdventurersGuild.FreeStone.Yberius, 1)
 end)
 stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "No problem.", reset = true })
 
@@ -89,23 +89,23 @@ stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, t
 
 -- Wooden Stake
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "I think you have forgotten to bring your stake." }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 4 and player:getItemCount(5941) == 0
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 4 and player:getItemCount(5941) == 0
 end)
 
 local stakeKeyword = keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, I was informed what to do. Are you prepared to receive my line of the prayer?" }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 4
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 4
 end)
 stakeKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "So receive my prayer: 'Protection will be granted - from dangers at hand'. Now, bring your stake to Isimov in the dwarven settlement for the next line of the prayer. I will inform him what to do.", reset = true }, nil, function(player)
-	player:setStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake, 5)
+	player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 5)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 end)
 stakeKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "I will wait for you.", reset = true })
 
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You should visit Isimov in the dwarven settlement now." }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) == 5
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 5
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "You already received my line of the prayer." }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheBlessedStake) > 5
+	return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) > 5
 end)
 keywordHandler:addKeyword({ "stake" }, StdModule.say, { npcHandler = npcHandler, text = "A blessed stake? That is a strange request. Maybe Quentin knows more, he is one of the oldest monks after all." })
 

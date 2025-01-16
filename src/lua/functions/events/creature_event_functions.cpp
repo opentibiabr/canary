@@ -7,45 +7,27 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lua/functions/events/creature_event_functions.hpp"
+#include "pch.hpp"
 
 #include "lua/creature/creatureevent.hpp"
+#include "lua/functions/events/creature_event_functions.hpp"
 #include "utils/tools.hpp"
-#include "lua/functions/lua_functions_loader.hpp"
-
-void CreatureEventFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "CreatureEvent", "", CreatureEventFunctions::luaCreateCreatureEvent);
-	Lua::registerMethod(L, "CreatureEvent", "type", CreatureEventFunctions::luaCreatureEventType);
-	Lua::registerMethod(L, "CreatureEvent", "register", CreatureEventFunctions::luaCreatureEventRegister);
-	Lua::registerMethod(L, "CreatureEvent", "onLogin", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onLogout", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onThink", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onPrepareDeath", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onDeath", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onKill", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onAdvance", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onModalWindow", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onTextEdit", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onHealthChange", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onManaChange", CreatureEventFunctions::luaCreatureEventOnCallback);
-	Lua::registerMethod(L, "CreatureEvent", "onExtendedOpcode", CreatureEventFunctions::luaCreatureEventOnCallback);
-}
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
-	const auto creatureEvent = std::make_shared<CreatureEvent>();
-	creatureEvent->setName(Lua::getString(L, 2));
-	Lua::pushUserdata<CreatureEvent>(L, creatureEvent);
-	Lua::setMetatable(L, -1, "CreatureEvent");
+	auto creatureEvent = std::make_shared<CreatureEvent>(getScriptEnv()->getScriptInterface());
+	creatureEvent->setName(getString(L, 2));
+	pushUserdata<CreatureEvent>(L, creatureEvent);
+	setMetatable(L, -1, "CreatureEvent");
 	return 1;
 }
 
 int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 	// creatureevent:type(callback)
-	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1);
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
 	if (creatureEvent) {
-		std::string typeName = Lua::getString(L, 2);
-		const std::string tmpStr = asLowerCaseString(typeName);
+		std::string typeName = getString(L, 2);
+		std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "login") {
 			creatureEvent->setEventType(CREATURE_EVENT_LOGIN);
 		} else if (tmpStr == "logout") {
@@ -74,10 +56,10 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 			g_logger().error("[CreatureEventFunctions::luaCreatureEventType] - "
 			                 "Invalid type for creature event: {}",
 			                 typeName);
-			Lua::pushBoolean(L, false);
+			pushBoolean(L, false);
 		}
 		creatureEvent->setLoaded(true);
-		Lua::pushBoolean(L, true);
+		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
@@ -86,13 +68,13 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 	// creatureevent:register()
-	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1);
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
 	if (creatureEvent) {
-		if (!creatureEvent->isLoadedScriptId()) {
-			Lua::pushBoolean(L, false);
+		if (!creatureEvent->isLoadedCallback()) {
+			pushBoolean(L, false);
 			return 1;
 		}
-		Lua::pushBoolean(L, g_creatureEvents().registerLuaEvent(creatureEvent));
+		pushBoolean(L, g_creatureEvents().registerLuaEvent(creatureEvent));
 	} else {
 		lua_pushnil(L);
 	}
@@ -101,13 +83,13 @@ int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventOnCallback(lua_State* L) {
 	// creatureevent:onLogin / logout / etc. (callback)
-	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1);
+	const auto creatureEvent = getUserdataShared<CreatureEvent>(L, 1);
 	if (creatureEvent) {
-		if (!creatureEvent->loadScriptId()) {
-			Lua::pushBoolean(L, false);
+		if (!creatureEvent->loadCallback()) {
+			pushBoolean(L, false);
 			return 1;
 		}
-		Lua::pushBoolean(L, true);
+		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}

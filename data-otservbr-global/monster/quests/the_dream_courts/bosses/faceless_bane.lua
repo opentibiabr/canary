@@ -20,11 +20,6 @@ monster.corpse = 30013
 monster.speed = 125
 monster.manaCost = 0
 
-monster.events = {
-	"dreamCourtsDeath",
-	"facelessThink",
-}
-
 monster.changeTarget = {
 	interval = 4000,
 	chance = 20,
@@ -83,8 +78,8 @@ monster.loot = {
 	{ name = "crowbar", chance = 16670 },
 	{ name = "cyan crystal fragment", chance = 13160 },
 	{ name = "dagger", chance = 48250 },
-	{ name = "dream blossom staff", chance = 1750 },
-	{ name = "ectoplasmic shield", chance = 1750 },
+	{ name = "dream blossom staff", chance = 2750 },
+	{ name = "ectoplasmic shield", chance = 2750 },
 	{ id = 30344, chance = 1750 }, -- enchanted pendulet
 	{ id = 282, chance = 880 }, -- giant shimmering pearl
 	{ name = "gold ingot", chance = 8330 },
@@ -150,7 +145,9 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-mType.onSpawn = function(monster, spawnPosition)
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
 	if monster:getType():isRewardBoss() then
 		-- reset global storage state to default / ensure sqm's reset for the next team
 		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.Deaths, -1)
@@ -160,5 +157,11 @@ mType.onSpawn = function(monster, spawnPosition)
 		monster:setReward(true)
 	end
 end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

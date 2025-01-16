@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local vocation = Vocation(player:getVocation():getBase():getId())
 
 	if MsgContains(message, "pumin") then
-		if player:getStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin) == 2 then
+		if player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 2 then
 			npcHandler:say("Tell me if you liked it when you come back. What is your name?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
@@ -85,11 +85,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "145") then
 		if npcHandler:getTopic(playerId) == 3 then
-			player:setStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin, 3)
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 3)
 			npcHandler:say("That's right, you can get Form 145 from me. However, I need Form 411 first. Come back when you have it.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin) == 6 then
-			player:setStorageValue(Storage.Quest.U7_9.ThePitsOfInferno.ThronePumin, 7)
+		elseif player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 6 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 7)
 			npcHandler:say("Well done! You have form 411!! Here is Form 145. Have fun with it.", npc, creature)
 		end
 	end

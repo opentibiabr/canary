@@ -51,52 +51,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function endConversationWithDelay(npcHandler, npc, creature)
-	addEvent(function()
-		npcHandler:unGreet(npc, creature)
-	end, 1000)
-end
-
-local function greetCallback(npc, creature, message)
-	local player = Player(creature)
-	local playerId = player:getId()
-
-	if not MsgContains(message, "djanni'hah") then
-		npcHandler:say("Whoa! A human! This is no place for you, |PLAYERNAME|. Go and play somewhere else.", npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
-
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start) == 1 then
-		npcHandler:say({
-			"Hahahaha! ...",
-			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
-		}, npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
-
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.Greeting) == -1 then
-		npcHandler:say({
-			"Hahahaha! ...",
-			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
-		}, npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
-
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor) == 1 then
-		npcHandler:say("Hey! A human! What are you doing in my kitchen, |PLAYERNAME|?", npc, creature)
-	else
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
-
-	npcHandler:setInteraction(npc, creature)
-
-	return true
-end
-
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -105,7 +59,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01)
+	local missionProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission01)
 	if MsgContains(message, "recipe") or MsgContains(message, "mission") then
 		if missionProgress < 1 then
 			npcHandler:say({
@@ -134,8 +88,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Fine! Even though I know so many recipes, I'm looking for the description of some dwarven meals. ...",
 				"So, if you could bring me a cookbook of the dwarven kitchen, I'll reward you well.",
 			}, npc, creature)
-			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start, 1)
-			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01, 1)
+			player:setStorageValue(Storage.DjinnWar.MaridFaction.Start, 1)
+			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission01, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Well, too bad.", npc, creature)
 		end
@@ -152,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Dragon Egg Omelette, Dwarven beer sauce... it's all there. This is great! Here is your well-deserved reward. ...",
 				"Incidentally, I have talked to Fa'hradin about you during dinner. I think he might have some work for you. Why don't you talk to him about it?",
 			}, npc, creature)
-			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01, 2)
+			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission01, 2)
 			player:addItem(3029, 3)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Too bad. I must have this book.", npc, creature)
@@ -163,7 +117,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addCustomGreetKeyword({ "djanni'hah" }, greetCallback, { npcHandler = npcHandler })
+keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Hey! A human! What are you doing in my kitchen, |PLAYERNAME|?" })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye. I am sure you will come back for more. They all do.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Goodbye. I am sure you will come back for more. They all do.")

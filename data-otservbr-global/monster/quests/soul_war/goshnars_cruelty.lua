@@ -15,7 +15,6 @@ monster.outfit = {
 
 monster.events = {
 	"SoulWarBossesDeath",
-	"GoshnarsCrueltyBuff",
 }
 
 monster.health = 300000
@@ -60,6 +59,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -95,7 +95,6 @@ monster.loot = {
 	{ name = "figurine of cruelty", chance = 400 },
 	{ name = "spectral saddle", chance = 400 },
 	{ name = "spectral horse tack", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -135,26 +134,22 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
-local firstTime = 0
-mType.onThink = function(monster, interval)
-	firstTime = firstTime + interval
-	-- Run only 15 seconds before creation
-	if firstTime >= 15000 then
-		monster:goshnarsDefenseIncrease("greedy-maw-action")
+mType.onThink = function(monster)
+	monster:goshnarsDefenseIncrease("greedy-maw-action")
+end
+
+mType.onAppear = function(monster, creature) end
+
+mType.onSpawn = function(monster)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
 	end
 end
 
-mType.onSpawn = function(monsterCallback)
-	firstTime = 0
-end
+mType.onDisappear = function(monster, creature) end
 
-mType.onDisappear = function(monster, creature)
-	if creature:getName() == "Goshnar's Cruelty" then
-		local eyeCreature = Creature("A Greedy Eye")
-		if eyeCreature then
-			eyeCreature:remove()
-		end
-	end
-end
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

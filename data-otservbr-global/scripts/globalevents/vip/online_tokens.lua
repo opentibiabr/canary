@@ -1,11 +1,11 @@
 local config = {
-	enabled = false,
+	enabled = true,
 	storage = Storage.VipSystem.OnlineTokensGain,
-	checkDuplicateIps = false,
+	checkDuplicateIps = true,
 
-	tokenItemId = 14112, -- bar of gold
+	tokenItemId = ITEM_REVOADA_COIN, -- revoada coin (if you don't use custom item, you need to verify all drops in monsters)
 
-	interval = 60 * 1000,
+	interval = 60 * 1000, -- 1 hora
 
 	-- per hour | system will calculate how many tokens will be given and when
 	-- put 0 in tokensPerHour.free to disable free from receiving tokens
@@ -30,9 +30,14 @@ function onlineTokensEvent.onThink(interval)
 		return true
 	end
 
+	local tournamentCoinName = configManager.getString(configKeys.TOURNAMENT_COINS_NAME)
 	local checkIp = {}
 	for _, player in pairs(players) do
 		if player:getGroup():getId() > GROUP_TYPE_SENIORTUTOR then
+			goto continue
+		end
+
+		if player:inPrison() then
 			goto continue
 		end
 
@@ -46,7 +51,7 @@ function onlineTokensEvent.onThink(interval)
 				local tokensMath = math.floor(tokens)
 				local item = player:addItem(config.tokenItemId, tokensMath)
 				if item then
-					player:sendTextMessage(MESSAGE_FAILURE, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), tokensMath, "tokens"))
+					player:sendTextMessage(MESSAGE_STATUS_SMALL, string.format("Congratulations %s!\z You have received %d %s for being online.", player:getName(), tokensMath, tournamentCoinName))
 				end
 				player:setStorageValue(config.storage, (tokens - tokensMath) * 10000000)
 			end

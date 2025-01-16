@@ -28,7 +28,7 @@ function loadLuaMapAction(tablename)
 				if not value.itemId == false and tile:getItemCountById(value.itemId) == 0 then
 					logger.error("[loadLuaMapAction] - Wrong item id {} found", value.itemId)
 					logger.warn("Action id: {}, position {}", index, tile:getPosition():toString())
-					goto continue
+					break
 				end
 
 				if value.itemId ~= false and tile:getItemCountById(value.itemId) > 0 then
@@ -49,7 +49,6 @@ function loadLuaMapAction(tablename)
 					tile:getGround():setAttribute(ITEM_ATTRIBUTE_ACTIONID, index)
 				end
 			end
-			::continue::
 		end
 	end
 end
@@ -65,12 +64,12 @@ function loadLuaMapUnique(tablename)
 			if not value.itemId == false and tile:getItemCountById(value.itemId) == 0 then
 				logger.error("[loadLuaMapUnique] - Wrong item id {} found", value.itemId)
 				logger.warn("Unique id: {}, position {}", index, tile:getPosition():toString())
-				goto continue
+				break
 			end
 			if tile:getItemCountById(value.itemId) < 1 or value.itemId == false then
 				logger.warn("[loadLuaMapUnique] - Wrong item id {} found", value.itemId)
 				logger.warn("Unique id: {}, position {}, item id: wrong", index, tile:getPosition():toString())
-				goto continue
+				break
 			end
 			item = tile:getItemById(value.itemId)
 			-- If he found the item, add the unique id
@@ -78,8 +77,6 @@ function loadLuaMapUnique(tablename)
 				item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, index)
 			end
 		end
-
-		::continue::
 	end
 end
 
@@ -94,7 +91,7 @@ function loadLuaMapSign(tablename)
 			if tile:getItemCountById(value.itemId) == 0 then
 				logger.error("[loadLuaMapSign] - Wrong item id {} found", value.itemId)
 				logger.warn("Sign id: {}, position {}, item id: wrong", index, tile:getPosition():toString())
-				goto continue
+				break
 			end
 			if tile:getItemCountById(value.itemId) == 1 then
 				item = tile:getItemById(value.itemId)
@@ -104,7 +101,6 @@ function loadLuaMapSign(tablename)
 				item:setAttribute(ITEM_ATTRIBUTE_TEXT, value.text)
 			end
 		end
-		::continue::
 	end
 end
 
@@ -141,18 +137,17 @@ function loadLuaMapBookDocument(tablename)
 						totals[2] = totals[2] + 1
 					else
 						logger.warn("[loadLuaMapBookDocument] - Item not found! Index: {}, itemId: {}", index, value.itemId)
-						goto continue
+						break
 					end
 				else
 					logger.warn("[loadLuaMapBookDocument] - Container not found! Index: {}, containerId: {}", index, value.containerId)
-					goto continue
+					break
 				end
 			else
 				logger.warn("[loadLuaMapBookDocument] - Tile not found! Index: {}, position: x: {} y: {} z: {}", index, value.position.x, value.position.y, value.position.z)
-				goto continue
+				break
 			end
 		end
-		::continue::
 	end
 	if totals[1] == totals[2] then
 		logger.debug("Loaded {} books and documents in the map", totals[2])

@@ -15,10 +15,9 @@ local config = {
 		from = Position(33547, 32749, 15),
 		to = Position(33570, 32769, 15),
 	},
-	disableCooldown = true,
 	exit = Position(33520, 32871, 15),
 }
 
-lever = BossLever(config)
+local lever = BossLever(config)
 lever:position(Position(33547, 32752, 14))
 lever:register()

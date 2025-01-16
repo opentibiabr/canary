@@ -114,6 +114,12 @@ mType.onPlayerAttack = function(monster, attackerPlayer)
 	logger.info("Player {}, attacking monster {}", attackerPlayer:getName(), monster:getName())
 
 	local apparitionType = ""
+	local apparitionTypes = {
+		"Druid's Apparition",
+		"Knight's Apparition",
+		"Paladin's Apparition",
+		"Sorcerer's Apparition",
+	}
 
 	local sameVocationProbability = 70 -- 70% chance for create monster of first player attack vocation
 	if attackerPlayer:isDruid() then
@@ -128,9 +134,9 @@ mType.onPlayerAttack = function(monster, attackerPlayer)
 
 	if math.random(100) > sameVocationProbability then
 		repeat
-			local randomIndex = math.random(#SoulWarQuest.apparitionNames)
-			if SoulWarQuest.apparitionNames[randomIndex] ~= apparitionType then
-				apparitionType = SoulWarQuest.apparitionNames[randomIndex]
+			local randomIndex = math.random(#apparitionTypes)
+			if apparitionTypes[randomIndex] ~= apparitionType then
+				apparitionType = apparitionTypes[randomIndex]
 				break
 			end
 		until false

@@ -9,7 +9,7 @@
 
 #pragma once
 
-enum class ItemAttribute_t : uint64_t {
+enum ItemAttribute_t : uint64_t {
 	NONE = 0,
 	ACTIONID = 1,
 	UNIQUEID = 2,

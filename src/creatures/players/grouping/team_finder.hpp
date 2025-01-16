@@ -1,3 +1,5 @@
+#include <utility>
+
 /**
  * Canary - A free and open-source MMORPG server emulator
  * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
@@ -14,7 +16,7 @@
  * This class is responsible control and manage the team finder feature.
  **/
 
-class TeamFinder final {
+class TeamFinder {
 public:
 	TeamFinder() = default;
 	TeamFinder(uint16_t initMinLevel, uint16_t initMaxLevel, uint8_t initVocationIDs, uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool, uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID, uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID, uint32_t initLeaderGuid, std::map<uint32_t, uint8_t> initMembersMap) :
@@ -32,7 +34,7 @@ public:
 		questID(initQuestID),
 		leaderGuid(initLeaderGuid),
 		membersMap(std::move(initMembersMap)) { }
-	~TeamFinder() = default;
+	virtual ~TeamFinder() = default;
 
 	uint16_t minLevel = 0;
 	uint16_t maxLevel = 0;

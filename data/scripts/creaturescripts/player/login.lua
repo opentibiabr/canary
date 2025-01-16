@@ -2,6 +2,21 @@ local function sendBoostMessage(player, category, isIncreased)
 	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Event! %s is %screased. Happy Hunting!", category, isIncreased and "in" or "de"))
 end
 
+local function onMovementRemoveProtection(playerId, oldPos, time)
+	local player = Player(playerId)
+	if not player then
+		return true
+	end
+
+	local playerPos = player:getPosition()
+	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
+		player:kv():remove("combat-protection")
+		return true
+	end
+
+	addEvent(onMovementRemoveProtection, 1000, playerId, oldPos, time - 1)
+end
+
 local playerLoginGlobal = CreatureEvent("PlayerLoginGlobal")
 
 function playerLoginGlobal.onLogin(player)
@@ -65,7 +80,7 @@ function playerLoginGlobal.onLogin(player)
 	end
 
 	-- Send Recruiter Outfit
-	local resultId = db.storeQuery("SELECT `recruiter` FROM `accounts` WHERE `id`= " .. Game.getPlayerAccountId(getPlayerName(player)))
+	local resultId = db.storeQuery("SELECT `recruiter` FROM `accounts` WHERE `id`= " .. getAccountNumberByPlayerName(getPlayerName(player)))
 	if resultId then
 		local recruiterStatus = Result.getNumber(resultId, "recruiter")
 		local sex = player:getSex()
@@ -103,19 +118,19 @@ function playerLoginGlobal.onLogin(player)
 
 	-- Updates the player's VIP status and executes corresponding actions if applicable.
 	if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
-		local isCurrentlyVip = player:isVip()
-		local hadVipStatus = player:kv():scoped("account"):get("vip-system") or false
+		local isVipNow = player:isVip()
+		local wasVip = player:kv():scoped("account"):get("vip-system") or false
 
-		if hadVipStatus ~= isCurrentlyVip then
-			if hadVipStatus then
+		if wasVip ~= isVipNow then
+			if wasVip then
 				player:onRemoveVip()
 			else
 				player:onAddVip(player:getVipDays())
 			end
 		end
 
-		if isCurrentlyVip then
-			player:sendVipStatus()
+		if isVipNow then
+			CheckPremiumAndPrint(player, MESSAGE_LOGIN)
 		end
 	end
 
@@ -147,6 +162,13 @@ function playerLoginGlobal.onLogin(player)
 		player:setRemoveBossTime(1)
 	end
 
+	-- Remove combat protection
+	local isProtected = player:kv():get("combat-protection") or 0
+	if isProtected < 1 then
+		player:kv():set("combat-protection", 1)
+		onMovementRemoveProtection(playerId, player:getPosition(), 10)
+	end
+
 	-- Change support outfit to a normal outfit to open customize character without crashes
 	local playerOutfit = player:getOutfit()
 	if table.contains({ 75, 266, 302 }, playerOutfit.lookType) then
@@ -159,7 +181,6 @@ function playerLoginGlobal.onLogin(player)
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
-	player:registerEvent("UpdatePlayerOnAdvancedLevel")
 	return true
 end
 

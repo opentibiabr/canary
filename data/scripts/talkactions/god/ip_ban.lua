@@ -38,7 +38,7 @@ function ipBan.onSay(player, words, param)
 	end
 
 	local timeNow = os.time()
-	db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. targetIp .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
+	db.query("INSERT INTO `ip_bans` (`ip`, `ip_real`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. targetIp .. ", " .. db.escapeString(Game.convertIpToString(targetIp)) .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
 	player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  has been IP banned.")
 	return true
 end

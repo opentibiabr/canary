@@ -84,19 +84,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 8938, maxCount = 165 },
-	{ name = "ultimate mana potion", chance = 11433, maxCount = 198 },
-	{ name = "giant amethyst", chance = 10570, maxCount = 4 },
-	{ name = "giant topaz", chance = 10570, maxCount = 6 },
-	{ name = "ultimate spirit potion", chance = 11433, maxCount = 45 },
-	{ name = "giant ruby", chance = 10570, maxCount = 1 },
-	{ name = "giant sapphire", chance = 10570, maxCount = 1 },
-	{ name = "mastermind potion", chance = 10938, maxCount = 23 },
-	{ id = 3039, chance = 10570, maxCount = 3 }, -- red gem
-	{ name = "violet gem", chance = 10970, maxCount = 8 },
-	{ name = "yellow gem", chance = 10970, maxCount = 9 },
-	-- { name = "figurine of bakragore", chance = 10970 },
-	-- { name = "bakragore's amalgamation", chance = 570 },
+	{ name = "crystal coin", chance = 8938, maxCount = 200 },
+	{ name = "supreme health potion", chance = 8938, maxCount = 300 },
+	{ name = "ultimate mana potion", chance = 11433, maxCount = 300 },
+	{ name = "ultimate spirit potion", chance = 11433, maxCount = 300 },
+	{ name = "berserk potion", chance = 10938, maxCount = 90 },
+	{ name = "bullseye potion", chance = 10938, maxCount = 90 },
+	{ name = "mastermind potion", chance = 10938, maxCount = 30 },
+	{ name = "blue gem", chance = 10570, maxCount = 10 },
+	{ name = "giant amethyst", chance = 10570, maxCount = 10 },
+	{ name = "giant emerald", chance = 10570, maxCount = 10 },
+	{ name = "giant ruby", chance = 10570, maxCount = 10 },
+	{ id = 3039, chance = 10570, maxCount = 10 }, -- red gem
+	{ name = "giant sapphire", chance = 10570, maxCount = 10 },
+	{ name = "giant topaz", chance = 10570, maxCount = 10 },
+	{ name = "violet gem", chance = 10970, maxCount = 10 },
+	{ name = "yellow gem", chance = 10970, maxCount = 10 },
+	{ name = "figurine of bakragore", chance = 10970 },
+	{ name = "bakragore's amalgamation", chance = 570 },
 	{ name = "spiritual horseshoe", chance = 470 },
 	{ id = 43895, chance = 360 }, -- Bag you covet
 }

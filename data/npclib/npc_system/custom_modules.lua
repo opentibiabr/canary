@@ -82,13 +82,6 @@ function KeywordHandler:addGreetKeyword(keys, parameters, condition, action)
 	return self:addKeyword(localKeys, GreetModule.greet, parameters, condition, action)
 end
 
--- Function adapted to be able to create a single call to the NPC and per function
-function KeywordHandler:addCustomGreetKeyword(keys, callbackFunction, parameters, condition, action)
-	local localKeys = keys
-	localKeys.callback = FocusModule.messageMatcherDefault
-	return self:addKeyword(localKeys, callbackFunction, parameters, condition, action)
-end
-
 -- Adds a keyword which acts as a farewell word
 function KeywordHandler:addFarewellKeyword(keys, parameters, condition, action)
 	local localKeys = keys

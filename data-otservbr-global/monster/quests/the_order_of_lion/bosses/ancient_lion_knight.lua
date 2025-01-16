@@ -82,17 +82,17 @@ monster.loot = {
 	{ name = "cape", chance = 5000 },
 	{ name = "life preserver", chance = 3750 },
 	{ name = "dwarven shield", chance = 1250 },
-	{ name = "lion spangenhelm", chance = 35 },
-	{ name = "lion plate", chance = 35 },
-	{ name = "lion shield", chance = 35 },
-	{ name = "lion longsword", chance = 35 },
-	{ name = "lion hammer", chance = 35 },
-	{ name = "lion axe", chance = 35 },
-	{ name = "lion longbow", chance = 35 },
-	{ name = "lion spellbook", chance = 35 },
-	{ name = "lion wand", chance = 35 },
-	{ name = "lion amulet", chance = 35 },
-	{ name = "lion rod", chance = 35 },
+	{ name = "lion spangenhelm", chance = 15 },
+	{ name = "lion plate", chance = 15 },
+	{ name = "lion shield", chance = 15 },
+	{ name = "lion longsword", chance = 15 },
+	{ name = "lion hammer", chance = 15 },
+	{ name = "lion axe", chance = 15 },
+	{ name = "lion longbow", chance = 15 },
+	{ name = "lion spellbook", chance = 15 },
+	{ name = "lion wand", chance = 15 },
+	{ name = "lion amulet", chance = 15 },
+	{ name = "lion rod", chance = 15 },
 }
 
 monster.attacks = {
@@ -130,5 +130,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
 
 mType:register(monster)

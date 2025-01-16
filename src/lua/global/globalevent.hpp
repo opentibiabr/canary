@@ -10,17 +10,12 @@
 #pragma once
 
 #include "utils/utils_definitions.hpp"
-#include "lua/lua_definitions.hpp"
+#include "lua/scripts/scripts.hpp"
 
-class LuaScriptInterface;
 class GlobalEvent;
 using GlobalEventMap = std::map<std::string, std::shared_ptr<GlobalEvent>>;
 
-enum LightState_t : uint8_t;
-
-struct LightInfo;
-
-class GlobalEvents {
+class GlobalEvents final : public Scripts {
 public:
 	GlobalEvents();
 	~GlobalEvents();
@@ -29,11 +24,11 @@ public:
 	GlobalEvents(const GlobalEvents &) = delete;
 	GlobalEvents &operator=(const GlobalEvents &) = delete;
 
-	static GlobalEvents &getInstance();
+	static GlobalEvents &getInstance() {
+		return inject<GlobalEvents>();
+	}
 
 	void startup() const;
-	void shutdown() const;
-	void save() const;
 
 	void timer();
 	void think();
@@ -41,23 +36,22 @@ public:
 
 	GlobalEventMap getEventMap(GlobalEvent_t type);
 
-	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEvent);
+	bool registerLuaEvent(const std::shared_ptr<GlobalEvent> globalEvent);
 	void clear();
 
 private:
 	GlobalEventMap thinkMap, serverMap, timerMap;
-	uint64_t thinkEventId = 0;
-	uint64_t timerEventId = 0;
+	uint64_t thinkEventId = 0, timerEventId = 0;
 };
 
 constexpr auto g_globalEvents = GlobalEvents::getInstance;
 
-class GlobalEvent {
+class GlobalEvent final : public Script {
 public:
-	explicit GlobalEvent();
+	explicit GlobalEvent(LuaScriptInterface* interface);
 
 	bool executePeriodChange(LightState_t lightState, LightInfo lightInfo) const;
-	bool executeRecord(uint32_t current, uint32_t old) const;
+	bool executeRecord(uint32_t current, uint32_t old);
 	bool executeEvent() const;
 
 	GlobalEvent_t getEventType() const {
@@ -71,7 +65,7 @@ public:
 		return name;
 	}
 	void setName(std::string eventName) {
-		name = std::move(eventName);
+		name = eventName;
 	}
 	uint32_t getInterval() const {
 		return interval;
@@ -87,17 +81,10 @@ public:
 		nextExecution = time;
 	}
 
-	std::string getScriptTypeName() const;
-	LuaScriptInterface* getScriptInterface() const;
-	bool loadScriptId();
-	int32_t getScriptId() const;
-	void setScriptId(int32_t newScriptId);
-	bool isLoadedScriptId() const;
-
 private:
-	int32_t m_scriptId {};
-
 	GlobalEvent_t eventType = GLOBALEVENT_NONE;
+
+	std::string getScriptTypeName() const override;
 
 	std::string name;
 	int64_t nextExecution = 0;

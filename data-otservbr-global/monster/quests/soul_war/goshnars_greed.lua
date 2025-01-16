@@ -59,6 +59,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+	pet = false,
 }
 
 monster.light = {
@@ -68,6 +69,9 @@ monster.light = {
 
 monster.summon = {
 	maxSummons = 1,
+	summons = {
+		{ name = "dreadful harvester", chance = 10, interval = 1000, count = 1 },
+	},
 }
 
 monster.voices = {
@@ -96,7 +100,6 @@ monster.loot = {
 	{ name = "greed's arm", chance = 25000, maxCount = 1 },
 	{ name = "figurine of greed", chance = 400 },
 	{ name = "the skull of a beast", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
 }
 
 monster.attacks = {
@@ -138,7 +141,7 @@ local immuneTimeCount = 0
 local isImmune = nil
 local createdSoulSphere = nil
 mType.onThink = function(monsterCallback, interval)
-	if GreedbeastKills >= 5 and isImmune == nil then
+	if GreedbeastKills == 5 and isImmune == nil then
 		isImmune = monsterCallback:immune(false)
 		monsterCallback:teleportTo(Position(33741, 31659, 14))
 		monsterCallback:setSpeed(0)
@@ -166,23 +169,15 @@ mType.onSpawn = function(monster)
 		monster:setReward(true)
 	end
 
-	isImmune = nil
 	monster:immune(true)
 	immuneTimeCount = 0
 	GreedbeastKills = 0
 end
 
-mType.onDisappear = function(monster, creature)
-	if creature:getName() == "Greedbeast" then
-		logger.debug("GreedbeastKills {}", GreedbeastKills)
-	end
-	if creature:getName() == "Goshnar's Greed" then
-		logger.debug("Killed goshnar's greed")
-		if createdSoulSphere then
-			logger.debug("Found soul sphere, remove it")
-			createdSoulSphere:remove()
-		end
-	end
-end
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

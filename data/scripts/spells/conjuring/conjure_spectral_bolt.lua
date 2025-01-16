@@ -1,0 +1,21 @@
+local spell = Spell("instant")
+
+function spell.onCastSpell(creature, variant)
+	return creature:conjureItem(0, 35902, 100, CONST_ME_MAGIC_BLUE)
+end
+
+spell:group("support")
+spell:id(193)
+spell:name("Conjure Spectral Bolt")
+spell:words("exevo gran con vis")
+spell:cooldown(DEFAULT_COOLDOWN.SPELL)
+spell:groupCooldown(DEFAULT_COOLDOWN.SPELL_GROUP)
+spell:level(150)
+spell:mana(1000)
+spell:soul(0)
+spell:isPremium(true)
+spell:isSelfTarget(true)
+spell:isAggressive(false)
+spell:vocation("paladin;true", "royal paladin;true")
+spell:needLearn(false)
+spell:register()

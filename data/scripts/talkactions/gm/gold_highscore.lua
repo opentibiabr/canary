@@ -1,33 +1,28 @@
-local goldRank = TalkAction("/goldrank")
+local gold_rank = TalkAction("/goldrank")
 
-function goldRank.onSay(player, words, param)
+function gold_rank.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	local highscoreQuery = db.storeQuery("SELECT `balance`, `name` FROM `players` WHERE group_id < 3 ORDER BY balance DESC LIMIT 10")
-	if not highscoreQuery then
+	local resultId = db.storeQuery("SELECT `balance`, `name` FROM `players` WHERE group_id < 3 ORDER BY balance DESC LIMIT 10")
+	if resultId ~= false then
+		local str = ""
+		local x = 0
+		repeat
+			x = x + 1
+			str = str .. "\n" .. x .. "- " .. Result.getString(resultId, "name") .. " (" .. Result.getNumber(resultId, "balance") .. ")."
+		until not Result.next(resultId)
+		Result.free(resultId)
+		if str == "" then
+			str = "No highscore to show."
+		end
+		player:popupFYI("Current gold highscore for this server:\n" .. str)
+	else
 		player:sendCancelMessage("No highscore to show.")
-		return true
 	end
-
-	local highscoreList = ""
-	local rank = 0
-	repeat
-		rank = rank + 1
-		local playerName = Result.getString(highscoreQuery, "name")
-		local playerBalance = FormatNumber(Result.getNumber(highscoreQuery, "balance"))
-		highscoreList = highscoreList .. "\n" .. rank .. "- " .. playerName .. " (" .. playerBalance .. ")."
-	until not Result.next(highscoreQuery)
-
-	Result.free(highscoreQuery)
-	if highscoreList == "" then
-		highscoreList = "No highscore to show."
-	end
-
-	player:popupFYI("Current gold highscore for this server:\n" .. highscoreList)
 	return true
 end
 
-goldRank:separator(" ")
-goldRank:groupType("gamemaster")
-goldRank:register()
+gold_rank:separator(" ")
+gold_rank:groupType("gamemaster")
+gold_rank:register()

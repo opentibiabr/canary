@@ -33,22 +33,27 @@ SoulPit = {
 		{
 			pos = Position(32375, 31158, 8),
 			teleport = Position(32373, 31151, 8),
+			effect = CONST_ME_TELEPORT
 		},
 		{
 			pos = Position(32375, 31159, 8),
 			teleport = Position(32374, 31151, 8),
+			effect = CONST_ME_TELEPORT
 		},
 		{
 			pos = Position(32375, 31160, 8),
 			teleport = Position(32375, 31151, 8),
+			effect = CONST_ME_TELEPORT
 		},
 		{
 			pos = Position(32375, 31161, 8),
 			teleport = Position(32376, 31151, 8),
+			effect = CONST_ME_TELEPORT
 		},
 		{
 			pos = Position(32375, 31162, 8),
 			teleport = Position(32377, 31151, 8),
+			effect = CONST_ME_TELEPORT
 		},
 	},
 	waves = {

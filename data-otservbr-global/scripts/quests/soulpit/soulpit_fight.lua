@@ -59,7 +59,6 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 			return false
 		end
 
-		local infoPositions = lever:getInfoPositions()
 		return true
 	end)
 

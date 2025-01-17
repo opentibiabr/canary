@@ -3032,7 +3032,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 		}
 
 		const auto monsterType = g_monsters().getMonsterType(it_.second);
-		if (monsterType && player->animusMastery().has(it_.second)) {
+		if (monsterType && player->animusMastery().has(it_.second) && progress > 3 ) {
 			newmsg.add<uint16_t>(1);
 		} else {
 			newmsg.add<uint16_t>(0); 

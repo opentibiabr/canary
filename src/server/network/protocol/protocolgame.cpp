@@ -2392,7 +2392,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	newmsg.addByte(currentLevel);
 
 	if (currentLevel > 3 && player->animusMastery().has(mtype->name)) {
-		newmsg.add<uint16_t>(static_cast<uint16_t>((player->animusMastery().getExperienceMultiplier() - 1) * 1000)); // Animus Mastery Bonus
+		newmsg.add<uint16_t>(static_cast<uint16_t>(std::round((player->animusMastery().getExperienceMultiplier() - 1) * 1000))); // Animus Mastery Bonus
 		newmsg.add<uint16_t>(player->animusMastery().getPoints()); // Animus Mastery Points
 	} else {
 		newmsg.add<uint16_t>(0);

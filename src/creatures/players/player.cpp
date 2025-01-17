@@ -3120,13 +3120,8 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 	float animusMasteryMultiplier = 0;
 
 	if (handleAnimusMastery) {
-		auto mType = g_monsters().getMonsterType(monster->getName());
-		uint32_t killCounter = this->getBestiaryKillCount(mType->info.raceid);
-		uint8_t currentLevel = g_iobestiary().getKillStatus(mType, killCounter);
-		if (currentLevel > 3) {
-			animusMasteryMultiplier = animusMastery().getExperienceMultiplier();
-			exp *= animusMasteryMultiplier;
-		}
+		animusMasteryMultiplier = animusMastery().getExperienceMultiplier();
+		exp *= animusMasteryMultiplier;
 	}
 
 	experience += exp;
@@ -3140,7 +3135,7 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 			}
 		}
 
-		if (handleAnimusMastery && animusMasteryMultiplier > 0) {
+		if (handleAnimusMastery) {
 			expString = fmt::format("{} (animus mastery bonus {:.1f}%)", expString, (animusMasteryMultiplier - 1) * 100);
 		}
 

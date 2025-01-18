@@ -59,7 +59,6 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "setGameState", GameFunctions::luaGameSetGameState);
 
 	Lua::registerMethod(L, "Game", "getWorldType", GameFunctions::luaGameGetWorldType);
-	Lua::registerMethod(L, "Game", "setWorldType", GameFunctions::luaGameSetWorldType);
 
 	Lua::registerMethod(L, "Game", "getReturnMessage", GameFunctions::luaGameGetReturnMessage);
 
@@ -355,7 +354,7 @@ int GameFunctions::luaGameSetGameState(lua_State* L) {
 
 int GameFunctions::luaGameGetWorldType(lua_State* L) {
 	// Game.getWorldType()
-	lua_pushnumber(L, g_game().worlds()->getCurrentWorld()->type);
+	lua_pushnumber(L, g_game().worlds().getCurrentWorld()->type);
 	return 1;
 }
 

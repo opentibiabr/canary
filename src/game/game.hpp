@@ -18,6 +18,7 @@
 #include "map/map.hpp"
 #include "modal_window/modal_window.hpp"
 #include "movement/position.hpp"
+#include "game/worlds/gameworlds.hpp"
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -97,8 +98,8 @@ public:
 	static Game &getInstance();
 
 	// Game worlds interface
-	std::unique_ptr<Worlds> &worlds();
-	[[nodiscard]] const std::unique_ptr<Worlds> &worlds() const;
+	Worlds &worlds();
+	[[nodiscard]] const Worlds &worlds() const;
 	[[nodiscard]] const std::unordered_map<uint8_t, std::string> &getWorldTypeNames() const;
 
 	void resetMonsters() const;
@@ -953,7 +954,7 @@ private:
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
-	std::unique_ptr<Worlds> m_worlds;
+	Worlds m_worlds;
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(const DBResult_ptr &result, const std::string& worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
@@ -967,7 +968,7 @@ private:
 		uint32_t vocation,
 		uint32_t playerGUID = 0
 	);
-	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
+	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, const std::string &world, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;

@@ -13,24 +13,19 @@
 
 struct World {
 	World() = default;
-	World(uint16_t id, std::string name, WorldType_t type, std::string ip, uint16_t port) :
-		id(id), name(std::move(name)), type(type), ip(std::move(ip)), port(port) { }
+	World(uint8_t id, std::string name, WorldType_t type, std::string motd, std::string locationName, Location_t location, std::string ip, uint16_t port, uint32_t port_status, uint16_t creation) :
+		id(id), name(std::move(name)), type(type), motd(std::move(motd)), locationName(std::move(locationName)), location(location), ip(std::move(ip)), port(port), portStatus(port_status), creation(creation) { }
 
 	uint8_t id = 0;
 	std::string name;
 	WorldType_t type = WORLD_TYPE_PVP;
 	std::string motd;
-	std::string location_str;
+	std::string locationName;
 	Location_t location = LOCATION_SOUTH_AMERICA;
 	std::string ip;
 	uint16_t port = 7172;
-	uint32_t port_status = 97172;
+	uint32_t portStatus = 97172;
 	uint16_t creation = 0;
-
-	World() = default;
-
-	World(uint8_t id, std::string name, WorldType_t type, std::string motd, std::string location_str, Location_t location, std::string ip, uint16_t port, uint32_t port_status, uint16_t creation) :
-		id(id), name(std::move(name)), type(type), motd(std::move(motd)), location_str(std::move(location_str)), location(location), ip(std::move(ip)), port(port), port_status(port_status), creation(creation) { }
 
 	bool operator==(const World &other) const {
 		return id == other.id;

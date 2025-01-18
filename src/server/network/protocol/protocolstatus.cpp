@@ -89,15 +89,15 @@ void ProtocolStatus::sendStatusString() {
 	pugi::xml_node tsqp = doc.append_child("tsqp");
 	tsqp.append_attribute("version") = "1.0";
 
-	const auto currentWorld = g_game().worlds()->getCurrentWorld();
+	const auto &currentWorld = g_game().worlds().getCurrentWorld();
 	pugi::xml_node serverinfo = tsqp.append_child("serverinfo");
 	const uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
 	serverinfo.append_attribute("ip") = currentWorld->ip.c_str();
 	serverinfo.append_attribute("servername") = currentWorld->name.c_str();
-	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)).c_str();
-	serverinfo.append_attribute("location") = currentWorld->location_str.c_str();
-	serverinfo.append_attribute("url") = g_configManager().getString(URL, __FUNCTION__).c_str();
+	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT)).c_str();
+	serverinfo.append_attribute("location") = currentWorld->locationName.c_str();
+	serverinfo.append_attribute("url") = g_configManager().getString(URL).c_str();
 	serverinfo.append_attribute("server") = ProtocolStatus::SERVER_NAME.c_str();
 	serverinfo.append_attribute("version") = ProtocolStatus::SERVER_VERSION.c_str();
 	serverinfo.append_attribute("client") = fmt::format("{}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER).c_str();
@@ -164,7 +164,7 @@ void ProtocolStatus::sendStatusString() {
 void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) const {
 	const auto output = OutputMessagePool::getOutputMessage();
 
-	const auto currentWorld = g_game().worlds()->getCurrentWorld();
+	const auto &currentWorld = g_game().worlds().getCurrentWorld();
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
 		output->addString(currentWorld->name);
@@ -181,7 +181,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 	if (requestedInfo & REQUEST_MISC_SERVER_INFO) {
 		output->addByte(0x12);
 		output->addString(currentWorld->motd);
-		output->addString(currentWorld->location_str);
+		output->addString(currentWorld->locationName);
 		output->addString(g_configManager().getString(URL));
 		output->add<uint64_t>((OTSYS_TIME() - ProtocolStatus::start) / 1000);
 	}

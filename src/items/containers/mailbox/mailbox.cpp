@@ -82,8 +82,6 @@ bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 		return false;
 	}
 
-	std::shared_ptr<Player> player = g_game().getPlayerByName(receiver, true);
-
 	if (item && item->getContainer() && item->getTile()) {
 		for (const auto &spectator : Spectators().find<Player>(item->getTile()->getPosition())) {
 			spectator->getPlayer()->autoCloseContainers(item->getContainer());

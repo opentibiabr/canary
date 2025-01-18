@@ -214,7 +214,7 @@ Game::Game() {
 	offlineTrainingWindow.priority = true;
 
 	// Create instance of worlds
-	m_worlds = std::make_unique<Worlds>();
+	m_worlds = Worlds();
 	m_worldTypesNames = {
 		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_PVP), "Open PvP" },
 		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_NO_PVP), "Optional PvP" },
@@ -435,11 +435,11 @@ Game &Game::getInstance() {
 }
 
 // Worlds interface
-std::unique_ptr<Worlds> &Game::worlds() {
+Worlds &Game::worlds() {
 	return m_worlds;
 }
 
-const std::unique_ptr<Worlds> &Game::worlds() const {
+const Worlds &Game::worlds() const {
 	return m_worlds;
 }
 
@@ -464,10 +464,8 @@ void Game::resetNpcs() const {
 
 void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
-	const auto result = db.storeQuery(
-		"SELECT `date`, `boostname`, `raceid`, `looktype`, `lookfeet`, `looklegs`, `lookhead`, `lookbody`, `lookaddons`, `lookmount` "
-		"FROM `boosted_creature`"
-	);
+	const std::string &selectQuery = "SELECT `date`, `boostname`, `raceid`, `looktype`, `lookfeet`, `looklegs`, `lookhead`, `lookbody`, `lookaddons`, `lookmount` FROM `boosted_creature`";
+	auto result = db.storeQuery(selectQuery);
 	if (!result) {
 		db.storeQuery("INSERT INTO `boosted_creature` (`boostname`, `date`, `raceid`) VALUES ('default', 0, 0)");
 
@@ -535,13 +533,13 @@ void Game::loadBoostedCreature() {
 }
 
 void Game::start(ServiceManager* manager) {
-	const std::shared_ptr<World> &currentWorld = worlds()->getCurrentWorld();
+	const std::shared_ptr<World> &currentWorld = worlds().getCurrentWorld();
 
 	// Game client protocols
 	manager->add<ProtocolGame>(currentWorld->port);
-	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT, __FUNCTION__)));
+	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT)));
 	// OT protocols
-	manager->add<ProtocolStatus>(currentWorld->port_status);
+	manager->add<ProtocolStatus>(currentWorld->portStatus);
 
 	serviceManager = manager;
 
@@ -8223,7 +8221,7 @@ void Game::updateCreatureWalkthrough(const std::shared_ptr<Creature> &creature) 
 }
 
 void Game::updateCreatureSkull(const std::shared_ptr<Creature> &creature) const {
-	if (worlds()->getCurrentWorld()->type != WORLD_TYPE_PVP) {
+	if (worlds().getCurrentWorld()->type != WORLD_TYPE_PVP) {
 		return;
 	}
 
@@ -8273,7 +8271,7 @@ void Game::updateCreatureType(const std::shared_ptr<Creature> &creature) {
 
 void Game::loadMotdNum() {
 	Database &db = Database::getInstance();
-	const auto worldId = worlds()->getCurrentWorld()->id;
+	const auto worldId = worlds().getCurrentWorld()->id;
 
 	auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num' AND `world_id` = {}", worldId));
 	if (result) {
@@ -8295,7 +8293,7 @@ void Game::loadMotdNum() {
 
 void Game::saveMotdNum() const {
 	Database &db = Database::getInstance();
-	const auto worldId = worlds()->getCurrentWorld()->id;
+	const auto worldId = worlds().getCurrentWorld()->id;
 
 	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'motd_num' AND `world_id` = {}", motdNum, worldId);
 	db.executeQuery(query);
@@ -8320,13 +8318,13 @@ void Game::checkPlayersRecord() {
 void Game::updatePlayersRecord() const {
 	Database &db = Database::getInstance();
 
-	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `world_id` = {}", playersRecord, worlds()->getCurrentWorld()->id);
+	std::string query = fmt::format("UPDATE `server_config` SET `value` = {} WHERE `config` = 'players_record' AND `world_id` = {}", playersRecord, worlds().getCurrentWorld()->id);
 	db.executeQuery(query);
 }
 
 void Game::loadPlayersRecord() {
 	Database &db = Database::getInstance();
-	const auto worldId = worlds()->getCurrentWorld()->id;
+	const auto worldId = worlds().getCurrentWorld()->id;
 
 	const auto result = db.storeQuery(fmt::format("SELECT `value` FROM `server_config` WHERE `config` = 'players_record' AND `world_id` = {}", worldId));
 	if (result) {
@@ -8562,7 +8560,7 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 
 std::string Game::generateHighscoreQuery(
 	const std::string &categoryName,
-	const std::string& worldName,
+	const std::string &worldName,
 	uint32_t page,
 	uint8_t entriesPerPage,
 	uint32_t vocation,
@@ -8578,47 +8576,9 @@ std::string Game::generateHighscoreQuery(
 	}
 
 	std::string query = fmt::format(
-		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, "
+		"SELECT *, @row AS `entries`, {0} AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `p`.`{1}` AS `points`, @curRank := IF(@prevRank = `{1}`, @curRank, IF(@prevRank := `{1}`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`world_id` = `w`.`id`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < {2} {6} ORDER BY `{1}` DESC) `t`{3}) `T` WHERE `rn` > {4} AND `rn` <= {5}",
+		page, categoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "", startPage, endPage, worldName
 	);
-
-	if (playerGUID != 0) {
-		query += fmt::format("(@ourRow DIV {0}) + 1 AS `page` FROM (", entriesStr);
-	} else {
-		query += fmt::format("{} AS `page` FROM (", page);
-	}
-
-	query += fmt::format(
-		"SELECT `id`, `name`, `level`, `vocation`, `{}` AS `points`, "
-		"@curRank := IF(@prevRank = `{}`, @curRank, IF(@prevRank := `{}`, @curRank + 1, @curRank + 1)) AS `rank`, "
-		"(@row := @row + 1) AS `rn`",
-		categoryName, categoryName, categoryName
-	);
-
-	if (playerGUID != 0) {
-		query += fmt::format(", @ourRow := IF(`id` = {}, @row - 1, @ourRow) AS `rw`", playerGUID);
-	}
-
-	query += fmt::format(
-		" FROM (SELECT `id`, `name`, `level`, `vocation`, `{}` FROM `players` `p`, "
-		"(SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` "
-		"WHERE `group_id` < {} ORDER BY `{}` DESC) `t`",
-		categoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), categoryName
-	);
-
-	if (vocation != 0xFFFFFFFF) {
-		query += generateVocationConditionHighscore(vocation);
-	}
-
-	query += ") `T` WHERE ";
-
-	if (playerGUID != 0) {
-		query += fmt::format(
-			"`rn` > ((@ourRow DIV {0}) * {0}) AND `rn` <= (((@ourRow DIV {0}) * {0}) + {0})",
-			entriesStr
-		);
-	} else {
-		query += fmt::format("`rn` > {} AND `rn` <= {}", startPage, endPage);
-	}
 
 	return query;
 }
@@ -8722,7 +8682,7 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 		}
 	}
 
-	std::string newQuery = generateHighscoreQuery(categoryName, 0, entriesPerPage, vocation, playerGUID);
+	std::string newQuery = generateHighscoreQuery(categoryName, worlds().getCurrentWorld()->name, 0, entriesPerPage, vocation, playerGUID);
 	cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
 
 	return newQuery;

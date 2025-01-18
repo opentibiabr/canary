@@ -15,6 +15,7 @@ class DBResult;
 
 struct VIPEntry;
 struct VIPGroupEntry;
+struct World;
 
 using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 

@@ -18,6 +18,7 @@
 #include "game/game.hpp"
 #include "core.hpp"
 #include "enums/account_errors.hpp"
+#include "game/worlds/gameworlds.hpp"
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
 	const auto output = OutputMessagePool::getOutputMessage();
@@ -72,7 +73,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	output->addByte(0x64);
 
-	std::vector<std::shared_ptr<World>> worlds = g_game().worlds()->getWorlds();
+	const auto &worlds = g_game().worlds().getWorlds();
 
 	output->addByte(worlds.size()); // number of worlds
 

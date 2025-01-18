@@ -131,6 +131,9 @@ public:
 
 	bool authenticatePassword(const std::string &password);
 
+	uint32_t getHouseBidId() const;
+	void setHouseBidId(uint32_t houseId);
+
 private:
 	std::string m_descriptor;
 	std::unique_ptr<AccountInfo> m_account;

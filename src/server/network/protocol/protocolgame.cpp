@@ -3033,13 +3033,14 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 
 		const auto monsterType = g_monsters().getMonsterType(it_.second);
 		if (monsterType && player->animusMastery().has(it_.second)) {
-			newmsg.add<uint16_t>(1);
+			newmsg.add<uint16_t>(static_cast<uint16_t>(std::round((player->animusMastery().getExperienceMultiplier() - 1) * 1000))); // Animus Mastery Bonus
 		} else {
 			newmsg.add<uint16_t>(0);
 		}
 	}
 
-	newmsg.add<uint16_t>(player->animusMastery().getPoints());
+	newmsg.add<uint16_t>(player->animusMastery().getPoints()); // Animus Mastery Points
+
 	writeToOutputBuffer(newmsg);
 }
 

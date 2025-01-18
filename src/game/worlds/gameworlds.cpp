@@ -65,19 +65,21 @@ const std::shared_ptr<World> &Worlds::getCurrentWorld() const {
 }
 
 [[nodiscard]] Location_t Worlds::getWorldLocationByKey(const std::string &key) {
+	using enum Location_t;
+
 	const std::string location = asLowerCaseString(key);
 
 	if (location == "europe") {
-		return Location_t::Europe;
+		return Europe;
 	} else if (location == "north america") {
-		return Location_t::NorthAmerica;
+		return NorthAmerica;
 	} else if (location == "south america") {
-		return Location_t::SouthAmerica;
+		return SouthAmerica;
 	} else if (location == "oceania") {
-		return Location_t::Oceania;
+		return Oceania;
 	}
 
 	g_logger().error("[{}] - Unable to get world location from string '{}'", __FUNCTION__, location);
 
-	return Location_t::None;
+	return None;
 }

@@ -957,12 +957,12 @@ private:
 	Worlds m_worlds = {};
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
-	void processHighscoreResults(const DBResult_ptr &result, const std::string& worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
+	void processHighscoreResults(const DBResult_ptr &result, const std::string &worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
 	std::string generateVocationConditionHighscore(uint32_t vocation);
 	std::string generateHighscoreQuery(
 		const std::string &categoryName,
-		const std::string& worldName,
+		const std::string &worldName,
 		uint32_t page,
 		uint8_t entriesPerPage,
 		uint32_t vocation,

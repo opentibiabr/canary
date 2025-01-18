@@ -118,13 +118,14 @@ enum Supply_Stash_Actions_t : uint8_t {
 };
 
 struct HighscoreCharacter {
-	HighscoreCharacter(std::string name, uint64_t points, uint32_t id, uint32_t rank, uint16_t level, uint8_t vocation, std::string loyaltyTitle) :
+	HighscoreCharacter(std::string name, uint64_t points, uint32_t id, uint32_t rank, uint16_t level, uint8_t vocation, std::string worldName, std::string loyaltyTitle) :
 		name(std::move(name)),
 		points(points),
 		id(id),
 		rank(rank),
 		level(level),
 		vocation(vocation),
+		worldName(std::move(worldName)),
 		loyaltyTitle(std::move(loyaltyTitle)) { }
 
 	std::string name;
@@ -133,5 +134,6 @@ struct HighscoreCharacter {
 	uint32_t rank;
 	uint16_t level;
 	uint8_t vocation;
+	std::string worldName;
 	std::string loyaltyTitle;
 };

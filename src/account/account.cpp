@@ -249,7 +249,7 @@ void Account::updatePremiumTime() {
 	}
 }
 
-std::tuple<phmap::flat_hash_map<std::string, uint64_t>, AccountErrors_t>
+std::tuple<phmap::flat_hash_map<std::string, Character>, AccountErrors_t>
 Account::getAccountPlayers() const {
 	using enum AccountErrors_t;
 	auto valueToReturn = m_accLoaded ? Ok : NotInitialized;

@@ -15,6 +15,7 @@ class DBResult;
 
 struct VIPEntry;
 struct VIPGroupEntry;
+struct World;
 
 using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
@@ -43,6 +44,9 @@ public:
 	static void removeVIPGroupEntry(uint8_t groupId, uint32_t accountId);
 	static void addGuidVIPGroupEntry(uint8_t groupId, uint32_t accountId, uint32_t guid);
 	static void removeGuidVIPGroupEntry(uint32_t accountId, uint32_t guid);
+
+	static void createFirstWorld();
+	static std::vector<std::shared_ptr<World>> loadWorlds();
 
 private:
 	static bool savePlayerGuard(const std::shared_ptr<Player> &player);

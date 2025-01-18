@@ -76,8 +76,9 @@ int CanaryServer::run() {
 #endif
 				rsa.start();
 				initializeDatabase();
+				g_game().worlds().load();
+				loadThisWorld();
 				loadModules();
-				setWorldType();
 				loadMaps();
 
 				logger.info("Initializing gamestate...");
@@ -134,7 +135,8 @@ int CanaryServer::run() {
 		return EXIT_FAILURE;
 	}
 
-	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
+	const auto &curWorld = g_game().worlds().getCurrentWorld();
+	logger.info("World [{} - {} - {}] on port [{}] is online!", curWorld->id, curWorld->name, g_game().getWorldTypeNames().at(curWorld->type), curWorld->port);
 	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
 
 	serviceManager.run();
@@ -143,24 +145,34 @@ int CanaryServer::run() {
 	return EXIT_SUCCESS;
 }
 
-void CanaryServer::setWorldType() {
-	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE));
-	if (worldType == "pvp") {
-		g_game().setWorldType(WORLD_TYPE_PVP);
-	} else if (worldType == "no-pvp") {
-		g_game().setWorldType(WORLD_TYPE_NO_PVP);
-	} else if (worldType == "pvp-enforced") {
-		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
-	} else {
+void CanaryServer::loadThisWorld() {
+	auto worldId = g_configManager().getNumber(WORLD_ID);
+	auto world = g_game().worlds().getWorldConfigsById(worldId);
+	if (!world) {
+		throw FailedToInitializeCanary(fmt::format("Unknown world with ID {}", worldId));
+	}
+
+	if (world->type == WORLD_TYPE_NONE) {
 		throw FailedToInitializeCanary(
-			fmt::format(
-				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
-				g_configManager().getString(WORLD_TYPE)
-			)
+			fmt::format("Unknown world type: {}, valid world types are: no-pvp, pvp, retro-pvp, pvp-enforced and retro-pvp-enforced", world->type)
 		);
 	}
 
-	logger.debug("World type set as {}", asUpperCaseString(worldType));
+	const auto location = Worlds::getWorldLocationByKey(world->locationName);
+	if (location == Location_t::None) {
+		throw FailedToInitializeCanary(
+			fmt::format("Unknown world location: {}, valid world locations are: Europe, North America, South America and Oceania", world->locationName)
+		);
+	}
+
+	if (g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO)) {
+		g_logger().warn("[{}] - Config deprecated, you need to update your world type to 'retro-pvp' or 'retro-pvp-enforced'");
+		world->type = world->type == WORLD_TYPE_PVP ? WORLD_TYPE_RETRO_PVP : WORLD_TYPE_RETRO_PVP_ENFORCED;
+	}
+
+	g_game().worlds().setCurrentWorld(world);
+
+	logger.debug("World ID: {}, Name: {}, Type: {}, Location: {}, Port {}", world->id, world->name, g_game().getWorldTypeNames().at(world->type), world->locationName, world->port);
 }
 
 void CanaryServer::loadMaps() const {

@@ -64,7 +64,7 @@ function serverInfo.onSay(player, words, param)
 		.. "\nProtection level: "
 		.. configManager.getNumber(configKeys.PROTECTION_LEVEL)
 		.. "\nWorldType: "
-		.. configManager.getString(configKeys.WORLD_TYPE)
+		.. getWorldTypeName()
 		.. "\nKills/day to red skull: "
 		.. configManager.getNumber(configKeys.DAY_KILLS_TO_RED)
 		.. "\nKills/week to red skull: "

@@ -36,11 +36,10 @@ void House::setNewOwnerGuid(int32_t newOwnerGuid, bool serverStartup) {
 		return;
 	}
 
-	std::ostringstream query;
-	query << "UPDATE `houses` SET `new_owner` = " << newOwnerGuid << " WHERE `id` = " << id;
+	std::string query = fmt::format("UPDATE `houses` SET `new_owner` = {} WHERE `id` = {} AND `world_id` = {}", newOwnerGuid, id, g_game().worlds().getCurrentWorld()->id);
 
 	Database &db = Database::getInstance();
-	db.executeQuery(query.str());
+	db.executeQuery(query);
 	if (!serverStartup) {
 		setNewOwnership();
 	}
@@ -91,11 +90,13 @@ bool House::tryTransferOwnership(const std::shared_ptr<Player> &player, bool ser
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::shared_ptr<Player> &player /* = nullptr*/) {
+	const auto worldId = g_game().worlds().getCurrentWorld()->id;
+
 	if (updateDatabase && owner != guid) {
 		Database &db = Database::getInstance();
 
 		std::ostringstream query;
-		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `paid` = 0, `bidder` = 0, `bidder_name` = '', `highest_bid` = 0, `internal_bid` = 0, `bid_end_date` = 0, `state` = " << (guid > 0 ? 2 : 0) << " WHERE `id` = " << id;
+		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `paid` = 0, `bidder` = 0, `bidder_name` = '', `highest_bid` = 0, `internal_bid` = 0, `bid_end_date` = 0, `state` = " << (guid > 0 ? 2 : 0) << " WHERE `id` = " << id << " AND `world_id` = " << worldId;
 		db.executeQuery(query.str());
 	}
 
@@ -133,9 +134,8 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 
 	if (guid != 0) {
 		Database &db = Database::getInstance();
-		std::ostringstream query;
-		query << "SELECT `name`, `account_id` FROM `players` WHERE `id` = " << guid;
-		const DBResult_ptr result = db.storeQuery(query.str());
+		std::string query = fmt::format("SELECT `name`, `account_id` FROM `players` WHERE `id` = {} AND `world_id` = {}", guid, worldId);
+		DBResult_ptr result = db.storeQuery(query);
 		if (!result) {
 			return;
 		}

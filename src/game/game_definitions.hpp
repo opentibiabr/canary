@@ -19,10 +19,21 @@ enum StackPosType_t {
 	STACKPOS_FIND_THING,
 };
 
-enum WorldType_t {
+enum WorldType_t : int8_t {
+	WORLD_TYPE_NONE = -1,
+	WORLD_TYPE_PVP = 0,
 	WORLD_TYPE_NO_PVP = 1,
-	WORLD_TYPE_PVP = 2,
-	WORLD_TYPE_PVP_ENFORCED = 3,
+	WORLD_TYPE_PVP_ENFORCED = 2,
+	WORLD_TYPE_RETRO_PVP = 3,
+	WORLD_TYPE_RETRO_PVP_ENFORCED = 4,
+};
+
+enum class Location_t {
+	None = 0,
+	Europe = 1,
+	NorthAmerica = 2,
+	SouthAmerica = 3,
+	Oceania = 4,
 };
 
 enum GameState_t {

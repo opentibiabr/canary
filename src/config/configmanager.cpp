@@ -7,12 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "config/configmanager.hpp"
+
 #include "lib/di/container.hpp"
 #include "game/game.hpp"
 #include "server/network/webhook/webhook.hpp"
+#include "utils/tools.hpp"
 
 #if LUA_VERSION_NUM >= 502
 	#undef lua_strlen
@@ -36,10 +36,6 @@ bool ConfigManager::load() {
 		lua_close(L);
 		return false;
 	}
-
-#ifndef DEBUG_LOG
-	g_logger().setLevel(loadStringConfig(L, LOGLEVEL, "logLevel", "info"));
-#endif
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)
@@ -76,6 +72,7 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");
 		loadStringConfig(L, MAP_NAME, "mapName", "canary");
 		loadStringConfig(L, MYSQL_DB, "mysqlDatabase", "canary");
+		loadBoolConfig(L, MYSQL_DB_BACKUP, "mysqlDatabaseBackup", false);
 		loadStringConfig(L, MYSQL_HOST, "mysqlHost", "127.0.0.1");
 		loadStringConfig(L, MYSQL_PASS, "mysqlPass", "");
 		loadStringConfig(L, MYSQL_SOCK, "mysqlSock", "");
@@ -162,6 +159,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, VIP_SYSTEM_ENABLED, "vipSystemEnabled", false);
 	loadBoolConfig(L, WARN_UNSAFE_SCRIPTS, "warnUnsafeScripts", true);
 	loadBoolConfig(L, XP_DISPLAY_MODE, "experienceDisplayRates", true);
+	loadBoolConfig(L, CYCLOPEDIA_HOUSE_AUCTION, "toggleCyclopediaHouseAuction", true);
 
 	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);
 	loadFloatConfig(L, COMBAT_CHAIN_SKILL_FORMULA_AXE, "combatChainSkillFormulaAxe", 0.9);
@@ -260,6 +258,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_SPAWN, "hazardPodsTimeToSpawn", 4000);
 	loadIntConfig(L, HAZARD_SPAWN_PLUNDER_MULTIPLIER, "hazardSpawnPlunderMultiplier", 25);
+	loadIntConfig(L, DAYS_TO_CLOSE_BID, "daysToCloseBid", 7);
 	loadIntConfig(L, HOUSE_BUY_LEVEL, "houseBuyLevel", 0);
 	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
 	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);
@@ -272,6 +271,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MAX_ALLOWED_ON_A_DUMMY, "maxAllowedOnADummy", 1);
 	loadIntConfig(L, MAX_CONTAINER_ITEM, "maxItem", 5000);
 	loadIntConfig(L, MAX_CONTAINER, "maxContainer", 500);
+	loadIntConfig(L, MAX_CONTAINER_DEPTH, "maxContainerDepth", 200);
 	loadIntConfig(L, MAX_DAMAGE_REFLECTION, "maxDamageReflection", 200);
 	loadIntConfig(L, MAX_ELEMENTAL_RESISTANCE, "maxElementalResistance", 200);
 	loadIntConfig(L, MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER, "maxMarketOffersAtATimePerPlayer", 100);
@@ -288,6 +288,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
+	loadIntConfig(L, LOGIN_PROTECTION_TIME, "loginProtectionTime", 10000);
 	loadIntConfig(L, PARALLELISM, "parallelism", 2);
 	loadIntConfig(L, PARTY_LIST_MAX_DISTANCE, "partyListMaxDistance", 0);
 	loadIntConfig(L, PREY_BONUS_REROLL_PRICE, "preyBonusRerollPrice", 1);
@@ -365,6 +366,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, URL, "url", "");
 	loadStringConfig(L, WORLD_LOCATION, "worldLocation", "South America");
 	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
+	loadStringConfig(L, LOGLEVEL, "logLevel", "info");
 
 	loaded = true;
 	lua_close(L);
@@ -372,8 +374,12 @@ bool ConfigManager::load() {
 }
 
 bool ConfigManager::reload() {
+	m_configString.clear();
+	m_configInteger.clear();
+	m_configBoolean.clear();
+	m_configFloat.clear();
 	const bool result = load();
-	if (transformToSHA1(getString(SERVER_MOTD, __FUNCTION__)) != g_game().getMotdHash()) {
+	if (transformToSHA1(getString(SERVER_MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
 	}
 	return result;
@@ -435,35 +441,78 @@ float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const
 	return value;
 }
 
-const std::string &ConfigManager::getString(const ConfigKey_t &key, std::string_view context) const {
-	static const std::string dummyStr;
-	if (configs.contains(key) && std::holds_alternative<std::string>(configs.at(key))) {
-		return std::get<std::string>(configs.at(key));
+const std::string &ConfigManager::getString(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
+	auto itCache = m_configString.find(key);
+	if (itCache != m_configString.end()) {
+		return itCache->second;
 	}
-	g_logger().warn("[ConfigManager::getString] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
-	return dummyStr;
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (const auto* value = std::get_if<std::string>(&it->second)) {
+			m_configString[key] = *value;
+			return *value;
+		}
+	}
+
+	static const std::string staticEmptyString;
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
+	return staticEmptyString;
 }
 
-int32_t ConfigManager::getNumber(const ConfigKey_t &key, std::string_view context) const {
-	if (configs.contains(key) && std::holds_alternative<int32_t>(configs.at(key))) {
-		return std::get<int32_t>(configs.at(key));
+int32_t ConfigManager::getNumber(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
+	auto itCache = m_configInteger.find(key);
+	if (itCache != m_configInteger.end()) {
+		return itCache->second;
 	}
-	g_logger().warn("[ConfigManager::getNumber] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (std::holds_alternative<int32_t>(it->second)) {
+			const auto value = std::get<int32_t>(it->second);
+			m_configInteger[key] = value;
+			return value;
+		}
+	}
+
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0;
 }
 
-bool ConfigManager::getBoolean(const ConfigKey_t &key, std::string_view context) const {
-	if (configs.contains(key) && std::holds_alternative<bool>(configs.at(key))) {
-		return std::get<bool>(configs.at(key));
+bool ConfigManager::getBoolean(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
+	auto itCache = m_configBoolean.find(key);
+	if (itCache != m_configBoolean.end()) {
+		return itCache->second;
 	}
-	g_logger().warn("[ConfigManager::getBoolean] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (std::holds_alternative<bool>(it->second)) {
+			const auto value = std::get<bool>(it->second);
+			m_configBoolean[key] = value;
+			return value;
+		}
+	}
+
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return false;
 }
 
-float ConfigManager::getFloat(const ConfigKey_t &key, std::string_view context) const {
-	if (configs.contains(key) && std::holds_alternative<float>(configs.at(key))) {
-		return std::get<float>(configs.at(key));
+float ConfigManager::getFloat(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
+	auto itCache = m_configFloat.find(key);
+	if (itCache != m_configFloat.end()) {
+		return itCache->second;
 	}
-	g_logger().warn("[ConfigManager::getFloat] - Accessing invalid or wrong type index: {}[{}], Function: {}", magic_enum::enum_name(key), fmt::underlying(key), context);
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (std::holds_alternative<float>(it->second)) {
+			const auto value = std::get<float>(it->second);
+			m_configFloat[key] = value;
+			return value;
+		}
+	}
+
+	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0.0f;
 }

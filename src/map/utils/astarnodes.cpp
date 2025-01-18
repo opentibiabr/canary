@@ -7,14 +7,28 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "map/utils/astarnodes.hpp"
 
-#include "astarnodes.hpp"
-#include "creatures/monsters/monster.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/monsters/monster.hpp"
+#include "items/tile.hpp"
 
 AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
-	openNodes(), nodes() {
+#if defined(__AVX2__) || defined(__SSE2__)
+	nodesTable(), // 1. nodesTable
+	calculatedNodes(), // 2. calculatedNodes
+	nodes(), // 3. nodes
+	closedNodes(0), // 4. closedNodes
+	curNode(0), // 5. curNode
+	openNodes() // 6. openNodes
+#else
+	nodes(), // 1. nodes
+	nodesTable(), // 2. nodesTable
+	closedNodes(0), // 3. closedNodes
+	curNode(0), // 4. curNode
+	openNodes() // 5. openNodes
+#endif
+{
 #if defined(__AVX2__)
 	__m256i defaultCost = _mm256_set1_epi32(std::numeric_limits<int32_t>::max());
 	for (int32_t i = 0; i < MAX_NODES; i += 32) {
@@ -47,7 +61,7 @@ AStarNodes::AStarNodes(uint32_t x, uint32_t y, int_fast32_t extraCost) :
 	startNode.g = 0;
 	startNode.c = extraCost;
 	nodesTable[0] = (x << 16) | y;
-#if defined(__SSE2__)
+#if defined(__SSE2__) || defined(__AVX2__)
 	calculatedNodes[0] = 0;
 #endif
 }
@@ -57,7 +71,7 @@ bool AStarNodes::createOpenNode(AStarNode* parent, uint32_t x, uint32_t y, int_f
 		return false;
 	}
 
-	int32_t retNode = curNode++;
+	const int32_t retNode = curNode++;
 	openNodes[retNode] = true;
 
 	AStarNode &node = nodes[retNode];
@@ -100,7 +114,7 @@ AStarNode* AStarNodes::getBestNode() {
 		best_node = (total_cost < best_node_f ? indices_array[i] : best_node);
 		best_node_f = (total_cost < best_node_f ? total_cost : best_node_f);
 	}
-	return (openNodes[best_node] ? &nodes[best_node] : NULL);
+	return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 #elif defined(__AVX2__)
 	const __m256i increment = _mm256_set1_epi32(8);
 	__m256i indices = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
@@ -120,8 +134,8 @@ AStarNode* AStarNodes::getBestNode() {
 	alignas(32) int32_t indices_array[8];
 	_mm256_store_si256(reinterpret_cast<__m256i*>(indices_array), minindices);
 
-	int32_t best_node = indices_array[(_mm_ctz(_mm256_movemask_epi8(_mm256_cmpeq_epi32(minvalues, res))) >> 2)];
-	return (openNodes[best_node] ? &nodes[best_node] : NULL);
+	int32_t best_node = indices_array[(mm_ctz(_mm256_movemask_epi8(_mm256_cmpeq_epi32(minvalues, res))) >> 2)];
+	return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 #elif defined(__SSE4_1__)
 	const __m128i increment = _mm_set1_epi32(4);
 	__m128i indices = _mm_setr_epi32(0, 1, 2, 3);
@@ -140,7 +154,7 @@ AStarNode* AStarNodes::getBestNode() {
 	alignas(16) int32_t indices_array[4];
 	_mm_store_si128(reinterpret_cast<__m128i*>(indices_array), minindices);
 
-	int32_t best_node = indices_array[(_mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
+	int32_t best_node = indices_array[(mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
 	return (openNodes[best_node] ? &nodes[best_node] : NULL);
 #elif defined(__SSE2__)
 	auto _mm_sse2_min_epi32 = [](const __m128i a, const __m128i b) {
@@ -170,8 +184,8 @@ AStarNode* AStarNodes::getBestNode() {
 	alignas(16) int32_t indices_array[4];
 	_mm_store_si128(reinterpret_cast<__m128i*>(indices_array), minindices);
 
-	int32_t best_node = indices_array[(_mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
-	return (openNodes[best_node] ? &nodes[best_node] : NULL);
+	int32_t best_node = indices_array[(mm_ctz(_mm_movemask_epi8(_mm_cmpeq_epi32(minvalues, res))) >> 2)];
+	return (openNodes[best_node] ? &nodes[best_node] : nullptr);
 #else
 	int32_t best_node_f = std::numeric_limits<int32_t>::max();
 	int32_t best_node = -1;
@@ -227,7 +241,7 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 		v[3] = _mm_cmpeq_epi32(_mm_load_si128(reinterpret_cast<const __m128i*>(&nodesTable[pos + 12])), key);
 		const uint32_t mask = _mm_movemask_epi8(_mm_packs_epi16(_mm_packs_epi32(v[0], v[1]), _mm_packs_epi32(v[2], v[3])));
 		if (mask != 0) {
-			return &nodes[pos + _mm_ctz(mask)];
+			return &nodes[pos + mm_ctz(mask)];
 		}
 	}
 	curRound = curNode - 8;
@@ -237,7 +251,7 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 		v[1] = _mm_cmpeq_epi32(_mm_load_si128(reinterpret_cast<const __m128i*>(&nodesTable[pos + 4])), key);
 		const uint32_t mask = _mm_movemask_epi8(_mm_packs_epi32(v[0], v[1]));
 		if (mask != 0) {
-			return &nodes[pos + (_mm_ctz(mask) >> 1)];
+			return &nodes[pos + (mm_ctz(mask) >> 1)];
 		}
 		pos += 8;
 	}
@@ -257,7 +271,7 @@ AStarNode* AStarNodes::getNodeByPosition(uint32_t x, uint32_t y) {
 #endif
 }
 
-int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighborPos) {
+int_fast32_t AStarNodes::getMapWalkCost(const AStarNode* node, const Position &neighborPos) {
 	// diagonal movement extra cost
 	return (((std::abs(node->x - neighborPos.x) + std::abs(node->y - neighborPos.y)) - 1) * MAP_DIAGONALWALKCOST) + MAP_NORMALWALKCOST;
 }
@@ -265,14 +279,14 @@ int_fast32_t AStarNodes::getMapWalkCost(AStarNode* node, const Position &neighbo
 int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) {
 	int_fast32_t cost = 0;
 
-	if (creature) {
+	if (creature && tile) {
+		// Destroy creature cost
 		if (tile->getTopVisibleCreature(creature) != nullptr) {
-			// destroy creature cost
 			cost += MAP_NORMALWALKCOST * 4;
 		}
 		if (const auto &field = tile->getFieldItem()) {
-			CombatType_t combatType = field->getCombatType();
-			if (!creature->isImmune(combatType) && !creature->hasCondition(Combat::DamageToConditionType(combatType)) && (creature->getMonster() && !creature->getMonster()->canWalkOnFieldType(combatType))) {
+			const CombatType_t combatType = field->getCombatType();
+			if (combatType != COMBAT_NONE && !creature->isImmune(combatType) && !creature->hasCondition(Combat::DamageToConditionType(combatType)) && (creature->getMonster() && !creature->getMonster()->canWalkOnFieldType(combatType))) {
 				cost += MAP_NORMALWALKCOST * 18;
 			}
 		}

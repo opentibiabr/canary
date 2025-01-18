@@ -14,7 +14,7 @@
 class NetworkMessage;
 class OutputMessage;
 
-class ProtocolLogin : public Protocol {
+class ProtocolLogin final : public Protocol {
 public:
 	// static protocol information
 	enum { SERVER_SENDS_FIRST = false };
@@ -24,15 +24,15 @@ public:
 		return "login protocol";
 	}
 
-	explicit ProtocolLogin(Connection_ptr loginConnection) :
+	explicit ProtocolLogin(const Connection_ptr &loginConnection) :
 		Protocol(loginConnection) { }
 
-	void onRecvFirstMessage(NetworkMessage &msg);
+	void onRecvFirstMessage(NetworkMessage &msg) override;
 
 private:
-	void disconnectClient(const std::string &message);
+	void disconnectClient(const std::string &message) const;
 
-	void getCharacterList(const std::string &accountDescriptor, const std::string &password);
+	void getCharacterList(const std::string &accountDescriptor, const std::string &password) const;
 
 	bool oldProtocol = false;
 };

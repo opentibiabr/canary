@@ -9,10 +9,12 @@
 
 #pragma once
 
-#include "account/account.hpp"
-#include "creatures/players/player.hpp"
-#include "game/game.hpp"
-#include "database/database.hpp"
+class Player;
+class Item;
+class DBResult;
+
+struct VIPEntry;
+struct VIPGroupEntry;
 
 using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
@@ -20,17 +22,15 @@ class IOLoginData {
 public:
 	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol, const uint32_t ip);
 	static uint8_t getAccountType(uint32_t accountId);
-	static void updateOnlineStatus(uint32_t guid, bool login);
-	static bool loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo = true);
-	static bool loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo = true);
-	static bool loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disableIrrelevantInfo = false);
-	static bool savePlayer(std::shared_ptr<Player> player);
+	static bool loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo = true);
+	static bool loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo = true);
+	static bool loadPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result, bool disableIrrelevantInfo = false);
+	static bool savePlayer(const std::shared_ptr<Player> &player);
 	static uint32_t getGuidByName(const std::string &name);
 	static bool getGuidByNameEx(uint32_t &guid, bool &specialVip, std::string &name);
 	static std::string getNameByGuid(uint32_t guid);
 	static bool formatPlayerName(std::string &name);
 	static void increaseBankBalance(uint32_t guid, uint64_t bankBalance);
-	static bool hasBiddedOnHouse(uint32_t guid);
 
 	static std::vector<VIPEntry> getVIPEntries(uint32_t accountId);
 	static void addVIPEntry(uint32_t accountId, uint32_t guid, const std::string &description, uint32_t icon, bool notify);
@@ -48,5 +48,5 @@ public:
 	static std::vector<std::shared_ptr<World>> loadWorlds();
 
 private:
-	static bool savePlayerGuard(std::shared_ptr<Player> player);
+	static bool savePlayerGuard(const std::shared_ptr<Player> &player);
 };

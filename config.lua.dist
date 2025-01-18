@@ -9,7 +9,8 @@ coreDirectory = "data"
 
 -- Set log level
 -- It can be trace, debug, info, warning, error, critical, off (default: info).
--- NOTE: Will only display logs with level higher or equal the one set.
+-- NOTE: It will only be valid after the server starts up and only display logs with level higher or equal the one set.
+-- NOTE: Debug and trace logs are only available if compiled in debug mode.
 logLevel = "info"
 
 --- Toggles the server's maintenance mode.
@@ -24,6 +25,7 @@ maintainModeMessage = ""
 -- Combat settings
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
+-- NOTE: loginProtectionTime in MS
 hotkeyAimbotEnabled = true
 protectionLevel = 7
 pzLocked = 60 * 1000
@@ -44,6 +46,7 @@ monthKillsToRedSkull = 10
 redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
+loginProtectionTime = 10 * 1000
 
 cleanProtectionZones = false
 
@@ -67,8 +70,6 @@ serverMotd = "Welcome to the OTServBR-Global!"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
-maxItem = 2000
-maxContainer = 100
 maxPlayersOnlinePerAccount = 1
 maxPlayersOutsidePZPerAccount = 1
 
@@ -89,6 +90,12 @@ packetCompressionLevel = 6
 freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
+
+-- Item and containers limit
+-- NOTE: 'maxContainerDepth' defines the maximum depth to which containers can be nested
+maxItem = 5000
+maxContainer = 500
+maxContainerDepth = 200
 
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
@@ -150,7 +157,7 @@ forgeAmountMultiplier = 3
 forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300
-forgeFiendishLimit = 3
+forgeFiendishLimit = 4
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 
@@ -346,9 +353,11 @@ Setting this to false may pose risks; if a house is abandoned and contains a lar
 ]]
 -- Periods: daily/weekly/monthly/yearly/never
 -- Base: sqm,rent,sqm+rent
+toggleCyclopediaHouseAuction = true
+daysToCloseBid = 7
 housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
-houseRentPeriod = "never"
+houseRentPeriod = "monthly"
 houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
@@ -401,6 +410,7 @@ mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
 mysqlDatabase = "otservbr-global"
+mysqlDatabaseBackup = false
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"

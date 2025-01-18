@@ -7,13 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/iologindata.hpp"
+
+#include "account/account.hpp"
+#include "config/configmanager.hpp"
+#include "database/database.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/functions/iologindata_save_player.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
+#include "creatures/players/player.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"
@@ -22,12 +25,12 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
+	if (AccountErrors_t::Ok != account.load()) {
 		g_logger().error("Couldn't load account [{}].", account.getDescriptor());
 		return false;
 	}
 
-	if (g_configManager().getString(AUTH_TYPE, __FUNCTION__) == "session") {
+	if (g_configManager().getString(AUTH_TYPE) == "session") {
 		if (!account.authenticate()) {
 			return false;
 		}
@@ -42,13 +45,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		return false;
 	}
 
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(account.load())) {
+	if (AccountErrors_t::Ok != account.load()) {
 		g_logger().error("Failed to load account [{}]", accountDescriptor);
 		return false;
 	}
 
 	auto [players, result] = account.getAccountPlayers();
-	if (AccountErrors_t::Ok != enumFromValue<AccountErrors_t>(result)) {
+	if (AccountErrors_t::Ok != result) {
 		g_logger().error("Failed to load account [{}] players", accountDescriptor);
 		return false;
 	}
@@ -96,19 +99,19 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login) {
 }
 
 // The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
-bool IOLoginData::loadPlayerById(std::shared_ptr<Player> player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
+bool IOLoginData::loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::string query = fmt::format("SELECT * FROM `players` WHERE `id` = {} AND `world_id` = {}", id, g_game().worlds()->getCurrentWorld()->id);
 	return loadPlayer(player, db.storeQuery(query), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayerByName(std::shared_ptr<Player> player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
+bool IOLoginData::loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
 	Database &db = Database::getInstance();
 	std::string query = fmt::format("SELECT * FROM `players` WHERE `name` = {} AND `world_id` = {}", db.escapeString(name), g_game().worlds()->getCurrentWorld()->id);
 	return loadPlayer(player, db.storeQuery(query), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result, bool disableIrrelevantInfo /* = false*/) {
+bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result, bool disableIrrelevantInfo /* = false*/) {
 	if (!result || !player) {
 		std::string nullptrType = !result ? "Result" : "Player";
 		g_logger().warn("[{}] - {} is nullptr", __FUNCTION__, nullptrType);
@@ -117,14 +120,10 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 
 	try {
 		// First
-		IOLoginDataLoad::loadPlayerFirst(player, result);
+		IOLoginDataLoad::loadPlayerBasicInfo(player, result);
 
 		// Experience load
 		IOLoginDataLoad::loadPlayerExperience(player, result);
-
-		if (disableIrrelevantInfo) {
-			return true;
-		}
 
 		// Blessings load
 		IOLoginDataLoad::loadPlayerBlessings(player, result);
@@ -183,6 +182,10 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 		// Load instant spells list
 		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
 
+		if (disableIrrelevantInfo) {
+			return true;
+		}
+
 		// load forge history
 		IOLoginDataLoad::loadPlayerForgeHistory(player, result);
 
@@ -202,19 +205,25 @@ bool IOLoginData::loadPlayer(std::shared_ptr<Player> player, DBResult_ptr result
 	}
 }
 
-bool IOLoginData::savePlayer(std::shared_ptr<Player> player) {
-	bool success = DBTransaction::executeWithinTransaction([player]() {
-		return savePlayerGuard(player);
-	});
+bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
+	try {
+		bool success = DBTransaction::executeWithinTransaction([player]() {
+			return savePlayerGuard(player);
+		});
 
-	if (!success) {
-		g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+		if (!success) {
+			g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+		}
+
+		return success;
+	} catch (const DatabaseException &e) {
+		g_logger().error("[{}] Exception occurred: {}", __FUNCTION__, e.what());
 	}
 
-	return success;
+	return false;
 }
 
-bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
+bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 	if (!player) {
 		throw DatabaseException("Player nullptr in function: " + std::string(__FUNCTION__));
 	}
@@ -275,6 +284,11 @@ bool IOLoginData::savePlayerGuard(std::shared_ptr<Player> player) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
 
+	player->wheel()->saveRevealedGems();
+	player->wheel()->saveActiveGems();
+	player->wheel()->saveKVModGrades();
+	player->wheel()->saveKVScrolls();
+
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}
@@ -286,7 +300,7 @@ std::string IOLoginData::getNameByGuid(uint32_t guid) {
 	std::string query = fmt::format("SELECT `name` FROM `players` WHERE `id` = {} AND `world_id` = {}", guid, g_game().worlds()->getCurrentWorld()->id);
 	DBResult_ptr result = Database::getInstance().storeQuery(query);
 	if (!result) {
-		return std::string();
+		return {};
 	}
 	return result->getString("name");
 }

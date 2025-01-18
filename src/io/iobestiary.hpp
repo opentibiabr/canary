@@ -9,12 +9,16 @@
 
 #pragma once
 
-#include "declarations.hpp"
 #include "lib/di/soft_singleton.hpp"
-#include "lua/scripts/luascript.hpp"
-#include "creatures/players/player.hpp"
 
+#include "creatures/creatures_definitions.hpp"
+
+class Player;
 class Game;
+class SoftSingleton;
+class SoftSingletonGuard;
+class MonsterType;
+class Creature;
 
 class Charm {
 public:
@@ -26,14 +30,14 @@ public:
 	std::string name;
 	charmRune_t id = CHARM_NONE;
 	std::string description;
-	charm_t type;
+	charm_t type {};
 	uint16_t points = 0;
 	int32_t binary = 0;
 	std::string cancelMsg;
 	std::string logMsg;
 
 	CombatType_t dmgtype = COMBAT_NONE;
-	uint16_t effect = CONST_ME_NONE;
+	uint16_t effect = 0;
 
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
 	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
@@ -50,34 +54,32 @@ public:
 	IOBestiary(const IOBestiary &) = delete;
 	void operator=(const IOBestiary &) = delete;
 
-	static IOBestiary &getInstance() {
-		return inject<IOBestiary>();
-	}
+	static IOBestiary &getInstance();
 
 	std::shared_ptr<Charm> getBestiaryCharm(charmRune_t activeCharm, bool force = false) const;
-	void addBestiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount = 1);
-	bool parseCharmCombat(const std::shared_ptr<Charm> charm, std::shared_ptr<Player> player, std::shared_ptr<Creature> target, int32_t realDamage, bool dueToPotion = false, bool checkArmor = false);
-	void addCharmPoints(std::shared_ptr<Player> player, uint16_t amount, bool negative = false);
-	void sendBuyCharmRune(std::shared_ptr<Player> player, charmRune_t runeID, uint8_t action, uint16_t raceid);
-	void setCharmRuneCreature(std::shared_ptr<Player> player, const std::shared_ptr<Charm> charm, uint16_t raceid);
-	void resetCharmRuneCreature(std::shared_ptr<Player> player, const std::shared_ptr<Charm> charm);
+	void addBestiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount = 1);
+	bool parseCharmCombat(const std::shared_ptr<Charm> &charm, const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, int32_t realDamage, bool dueToPotion = false, bool checkArmor = false);
+	void addCharmPoints(const std::shared_ptr<Player> &player, uint16_t amount, bool negative = false);
+	void sendBuyCharmRune(const std::shared_ptr<Player> &player, charmRune_t runeID, uint8_t action, uint16_t raceid);
+	void setCharmRuneCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Charm> &charm, uint16_t raceid) const;
+	void resetCharmRuneCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Charm> &charm) const;
 
 	int8_t calculateDifficult(uint32_t chance) const;
-	uint8_t getKillStatus(const std::shared_ptr<MonsterType> mtype, uint32_t killAmount) const;
+	uint8_t getKillStatus(const std::shared_ptr<MonsterType> &mtype, uint32_t killAmount) const;
 
-	uint16_t getBestiaryRaceUnlocked(std::shared_ptr<Player> player, BestiaryType_t race) const;
+	uint16_t getBestiaryRaceUnlocked(const std::shared_ptr<Player> &player, BestiaryType_t race) const;
 
-	int32_t bitToggle(int32_t input, const std::shared_ptr<Charm> charm, bool on) const;
+	int32_t bitToggle(int32_t input, const std::shared_ptr<Charm> &charm, bool on) const;
 
-	bool hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> charm, int32_t input) const;
+	bool hasCharmUnlockedRuneBit(const std::shared_ptr<Charm> &charm, int32_t input) const;
 
-	std::list<charmRune_t> getCharmUsedRuneBitAll(std::shared_ptr<Player> player);
+	std::list<charmRune_t> getCharmUsedRuneBitAll(const std::shared_ptr<Player> &player);
 	std::vector<uint16_t> getBestiaryFinished(const std::shared_ptr<Player> &player) const;
 
-	charmRune_t getCharmFromTarget(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype);
+	charmRune_t getCharmFromTarget(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype);
 
-	std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(std::shared_ptr<Player> player, std::map<uint16_t, std::string> mtype_list) const;
-	std::map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> mtype) const;
+	std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(const std::shared_ptr<Player> &player, const std::map<uint16_t, std::string> &mtype_list) const;
+	std::map<uint8_t, int16_t> getMonsterElements(const std::shared_ptr<MonsterType> &mtype) const;
 	std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 
 private:

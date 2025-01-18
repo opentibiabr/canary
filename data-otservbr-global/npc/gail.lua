@@ -54,15 +54,15 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.Kilmaresh.First.Access) < 1 then
+	if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Access) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 1)
-	elseif (player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) <= 50) and player:getStorageValue(Storage.Kilmaresh.First.Mission) < 3 then
+	elseif (player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.JamesfrancisTask) <= 50) and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Mission) < 3 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 15)
-	elseif player:getStorageValue(Storage.Kilmaresh.First.Mission) == 4 then
+	elseif player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Mission) == 4 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
-		player:setStorageValue(Storage.Kilmaresh.First.Mission, 5)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Mission, 5)
 		npcHandler:setTopic(playerId, 20)
 	end
 	return true
@@ -76,10 +76,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "daughter") and player:getStorageValue(Storage.TheSecretLibrary.Peacock) == 1 then
-		npcHandler:say({ "I always feared that I lost her. And yet, all those years, I still had a gleam of hope. I'm devastated to learn about her fate - but at least I have certainty now. Thank you for telling me." }, npc, creature)
-		player:setStorageValue(Storage.TheSecretLibrary.Peacock, 2)
-		npcHandler:setTopic(playerId, 1)
+	if MsgContains(message, "daughter") and player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline) == 3 then
+		npcHandler:say("I always feared that I lost her. And yet, all those years, I still had a gleam of hope. I'm devastated to learn about her fate - but at least I have certainty now. Thank you for telling me.", npc, creature)
+		player:setStorageValue(Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline, 4)
 		npcHandler:setTopic(playerId, 1)
 	end
 

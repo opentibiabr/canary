@@ -12,6 +12,10 @@
 #pragma once
 
 struct World {
+	World() = default;
+	World(uint16_t id, std::string name, WorldType_t type, std::string ip, uint16_t port) :
+		id(id), name(std::move(name)), type(type), ip(std::move(ip)), port(port) { }
+
 	uint8_t id = 0;
 	std::string name;
 	WorldType_t type = WORLD_TYPE_PVP;

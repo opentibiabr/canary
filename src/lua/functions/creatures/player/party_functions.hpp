@@ -9,29 +9,9 @@
 
 #pragma once
 
-#include "lua/scripts/luascript.hpp"
-
-class PartyFunctions final : LuaScriptInterface {
+class PartyFunctions {
 public:
-	static void init(lua_State* L) {
-		registerSharedClass(L, "Party", "", PartyFunctions::luaPartyCreate);
-		registerMetaMethod(L, "Party", "__eq", PartyFunctions::luaUserdataCompare);
-		registerMethod(L, "Party", "disband", PartyFunctions::luaPartyDisband);
-		registerMethod(L, "Party", "getLeader", PartyFunctions::luaPartyGetLeader);
-		registerMethod(L, "Party", "setLeader", PartyFunctions::luaPartySetLeader);
-		registerMethod(L, "Party", "getMembers", PartyFunctions::luaPartyGetMembers);
-		registerMethod(L, "Party", "getMemberCount", PartyFunctions::luaPartyGetMemberCount);
-		registerMethod(L, "Party", "getInvitees", PartyFunctions::luaPartyGetInvitees);
-		registerMethod(L, "Party", "getInviteeCount", PartyFunctions::luaPartyGetInviteeCount);
-		registerMethod(L, "Party", "addInvite", PartyFunctions::luaPartyAddInvite);
-		registerMethod(L, "Party", "removeInvite", PartyFunctions::luaPartyRemoveInvite);
-		registerMethod(L, "Party", "addMember", PartyFunctions::luaPartyAddMember);
-		registerMethod(L, "Party", "removeMember", PartyFunctions::luaPartyRemoveMember);
-		registerMethod(L, "Party", "isSharedExperienceActive", PartyFunctions::luaPartyIsSharedExperienceActive);
-		registerMethod(L, "Party", "isSharedExperienceEnabled", PartyFunctions::luaPartyIsSharedExperienceEnabled);
-		registerMethod(L, "Party", "shareExperience", PartyFunctions::luaPartyShareExperience);
-		registerMethod(L, "Party", "setSharedExperience", PartyFunctions::luaPartySetSharedExperience);
-	}
+	static void init(lua_State* L);
 
 private:
 	static int luaPartyCreate(lua_State* L);
@@ -42,6 +22,7 @@ private:
 	static int luaPartyGetMemberCount(lua_State* L);
 	static int luaPartyGetInvitees(lua_State* L);
 	static int luaPartyGetInviteeCount(lua_State* L);
+	static int luaPartyGetUniqueVocationsCount(lua_State* L);
 	static int luaPartyAddInvite(lua_State* L);
 	static int luaPartyRemoveInvite(lua_State* L);
 	static int luaPartyAddMember(lua_State* L);

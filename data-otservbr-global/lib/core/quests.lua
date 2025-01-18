@@ -115,49 +115,49 @@ if not Quests then
 		},
 		[3] = {
 			name = "Spike Task",
-			startStorageId = Storage.SpikeTaskQuest.QuestLine,
+			startStorageId = Storage.Quest.U10_20.SpikeTaskQuest.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "First Task",
-					storageId = Storage.SpikeTaskQuest.Gnomilly,
+					storageId = Storage.Quest.U10_20.SpikeTaskQuest.Gnomilly,
 					missionId = 1021,
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format("You have %d points of task. You need 100 points to take Cave Explorer outfit.", (math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomilly), 0)))
+						return string.format("You have %d points of task. You need 100 points to take Cave Explorer outfit.", (math.max(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomilly), 0)))
 					end,
 				},
 				[2] = {
 					name = "Second Task",
-					storageId = Storage.SpikeTaskQuest.Gnombold.Points,
+					storageId = Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points,
 					missionId = 1022,
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format("You have %d points of task. You need 100 points to take first addon.", (math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnombold.Points), 0)))
+						return string.format("You have %d points of task. You need 100 points to take first addon.", (math.max(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points), 0)))
 					end,
 				},
 				[3] = {
 					name = "Third Task",
-					storageId = Storage.SpikeTaskQuest.Gnomargery.Points,
+					storageId = Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points,
 					missionId = 1023,
 					startValue = 0,
 					endValue = 100,
 					description = function(player)
-						return string.format("You have %d points of task. You need 100 points to take second addon.", (math.max(player:getStorageValue(Storage.SpikeTaskQuest.Gnomargery.Points), 0)))
+						return string.format("You have %d points of task. You need 100 points to take second addon.", (math.max(player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points), 0)))
 					end,
 				},
 			},
 		},
 		[4] = {
 			name = "A Father's Burden",
-			startStorageId = Storage.FathersBurden.QuestLog,
+			startStorageId = Storage.Quest.U8_6.AFathersBurden.QuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Birthday Presents",
-					storageId = Storage.FathersBurden.Status,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Status,
 					missionId = 1024,
 					startValue = 1,
 					endValue = 2,
@@ -169,7 +169,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Magic Bow - Sinew",
-					storageId = Storage.FathersBurden.Sinew,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Sinew,
 					missionId = 1025,
 					startValue = 1,
 					endValue = 2,
@@ -180,7 +180,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Magic Bow - Wood",
-					storageId = Storage.FathersBurden.Wood,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Wood,
 					missionId = 1026,
 					startValue = 1,
 					endValue = 2,
@@ -192,7 +192,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Magic Robe - Cloth",
-					storageId = Storage.FathersBurden.Cloth,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Cloth,
 					missionId = 1027,
 					startValue = 1,
 					endValue = 2,
@@ -204,7 +204,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "The Magic Robe - Silk",
-					storageId = Storage.FathersBurden.Silk,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Silk,
 					missionId = 1028,
 					startValue = 1,
 					endValue = 2,
@@ -215,7 +215,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Magic Rod - Crystal",
-					storageId = Storage.FathersBurden.Crystal,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Crystal,
 					missionId = 1029,
 					startValue = 1,
 					endValue = 2,
@@ -226,7 +226,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Magic Rod - Root",
-					storageId = Storage.FathersBurden.Root,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Root,
 					missionId = 1030,
 					startValue = 1,
 					endValue = 2,
@@ -237,7 +237,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "The Magic Shield - Iron",
-					storageId = Storage.FathersBurden.Iron,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Iron,
 					missionId = 1031,
 					startValue = 1,
 					endValue = 2,
@@ -249,7 +249,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Magic Shield - Scale",
-					storageId = Storage.FathersBurden.Scale,
+					storageId = Storage.Quest.U8_6.AFathersBurden.Scale,
 					missionId = 1032,
 					startValue = 1,
 					endValue = 2,
@@ -3111,7 +3111,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Pythius the Rotten",
-					storageId = Storage.QuestChests.FirewalkerBoots,
+					storageId = Storage.Quest.U8_4.TheHiddenCityOfBeregar.FirewalkerBoots,
 					missionId = 10230,
 					startValue = 1,
 					endValue = 1,
@@ -3488,12 +3488,12 @@ if not Quests then
 		},
 		[24] = {
 			name = "The Postman Missions",
-			startStorageId = Storage.Postman.Mission01,
+			startStorageId = Storage.Quest.U7_24.ThePostmanMissions.Mission01,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Mission 01 - Check Postal Routes",
-					storageId = Storage.Postman.Mission01,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission01,
 					missionId = 10252,
 					startValue = 1,
 					endValue = 6,
@@ -3508,7 +3508,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Mission 02 - Fix Mailbox",
-					storageId = Storage.Postman.Mission02,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission02,
 					missionId = 10253,
 					startValue = 1,
 					endValue = 3,
@@ -3520,7 +3520,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Mission 03 - Bill Delivery",
-					storageId = Storage.Postman.Mission03,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission03,
 					missionId = 10254,
 					startValue = 1,
 					endValue = 3,
@@ -3533,7 +3533,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Mission 04 - Aggressive Dogs",
-					storageId = Storage.Postman.Mission04,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission04,
 					missionId = 10255,
 					startValue = 1,
 					endValue = 2,
@@ -3544,7 +3544,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Mission 05 - Present Delivery",
-					storageId = Storage.Postman.Mission05,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission05,
 					missionId = 10256,
 					startValue = 1,
 					endValue = 4,
@@ -3558,7 +3558,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Mission 06 - New Uniforms",
-					storageId = Storage.Postman.Mission06,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission06,
 					missionId = 10257,
 					startValue = 1,
 					endValue = 13,
@@ -3582,7 +3582,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Mission 07 - Measurements",
-					storageId = Storage.Postman.Mission07,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission07,
 					missionId = 10258,
 					startValue = 1,
 					endValue = 9,
@@ -3599,7 +3599,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Mission 08 - Missing Courier",
-					storageId = Storage.Postman.Mission08,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission08,
 					missionId = 10259,
 					startValue = 1,
 					endValue = 3,
@@ -3611,7 +3611,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "Mission 09 - Dear Santa",
-					storageId = Storage.Postman.Mission09,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission09,
 					missionId = 10260,
 					startValue = 1,
 					endValue = 4,
@@ -3624,7 +3624,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "Mission 10 - Mintwallin",
-					storageId = Storage.Postman.Mission10,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Mission10,
 					missionId = 10261,
 					startValue = 1,
 					endValue = 3,
@@ -3636,7 +3636,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Postman Rank",
-					storageId = Storage.Postman.Rank,
+					storageId = Storage.Quest.U7_24.ThePostmanMissions.Rank,
 					missionId = 10262,
 					startValue = 1,
 					endValue = 5,
@@ -4382,12 +4382,12 @@ if not Quests then
 		},
 		[30] = {
 			name = "The White Raven Monastery",
-			startStorageId = Storage.WhiteRavenMonastery.QuestLog,
+			startStorageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.QuestLog,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Access to the Isle of Kings",
-					storageId = Storage.WhiteRavenMonastery.Passage,
+					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage,
 					missionId = 10315,
 					startValue = 1,
 					endValue = 2,
@@ -4398,7 +4398,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "The Investigation",
-					storageId = Storage.WhiteRavenMonastery.Diary,
+					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Diary,
 					missionId = 10316,
 					startValue = 1,
 					endValue = 2,
@@ -4412,12 +4412,12 @@ if not Quests then
 		},
 		[31] = {
 			name = "Tibia Tales",
-			startStorageId = Storage.TibiaTales.DefaultStart,
+			startStorageId = Storage.Quest.U8_1.TibiaTales.DefaultStart,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "To Appease the Mighty",
-					storageId = Storage.TibiaTales.ToAppeaseTheMightyQuest,
+					storageId = Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest,
 					missionId = 10317,
 					startValue = 0,
 					endValue = 4,
@@ -4431,7 +4431,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Arito's Task",
-					storageId = Storage.TibiaTales.AritosTask,
+					storageId = Storage.Quest.U8_1.TibiaTales.AritosTask,
 					missionId = 10318,
 					startValue = 1,
 					endValue = 3,
@@ -4443,7 +4443,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Lion's Rock",
-					storageId = Storage.LionsRock.Questline,
+					storageId = Storage.Quest.U10_70.LionsRock.Questline,
 					missionId = 10319,
 					startValue = 1,
 					endValue = 11,
@@ -4451,25 +4451,25 @@ if not Quests then
 						[1] = function(player)
 							return string.format(
 								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears), 0))
 							)
 						end,
 						[2] = function(player)
 							return string.format(
 								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears), 0))
 							)
 						end,
 						[3] = function(player)
 							return string.format(
 								"You have discovered the Lion's Rock. If you pass the following tests you may enter the inner sanctum.\n\nThe Lion's Strength %d/1\nThe Lion's Beauty %d/1\nThe Lion's Tears %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsStrength), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsBeauty), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.OuterSanctum.LionsTears), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsStrength), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsBeauty), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.OuterSanctum.LionsTears), 0))
 							)
 						end,
 						[4] = "You have passed the three tests of Lion's Rock and thus lit the three mystical pyramids. You may enter the inner sanctum now. - What other secrets could be hidden down there?",
@@ -4477,28 +4477,28 @@ if not Quests then
 						[6] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.SnakeSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.LizardSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.ScorpionSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.HyenaSign), 0))
 							)
 						end,
 						[7] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.SnakeSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.LizardSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.ScorpionSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.HyenaSign), 0))
 							)
 						end,
 						[8] = function(player)
 							return string.format(
 								"lions' enemies in this area of the temple. What could be the resolution?\n\nblood %d/1\negg %d/1\neye %d/1\npoison %d/1",
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.SnakeSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.LizardSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.ScorpionSign), 0)),
-								(math.max(player:getStorageValue(Storage.LionsRock.InnerSanctum.HyenaSign), 0))
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.SnakeSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.LizardSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.ScorpionSign), 0)),
+								(math.max(player:getStorageValue(Storage.Quest.U10_70.LionsRock.InnerSanctum.HyenaSign), 0))
 							)
 						end,
 						[9] = 'In the north-west area of the Inner Sanctum, find the southern rectangular room to the south-west. In this room you will find 4 "sun" floor inscriptions as well as a rock in the center. The sun inscriptions represent gem slots.',
@@ -4507,7 +4507,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Against the Spider Cult",
-					storageId = Storage.TibiaTales.AgainstTheSpiderCult,
+					storageId = Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult,
 					missionId = 10320,
 					startValue = 1,
 					endValue = 6,
@@ -4522,7 +4522,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "An Interest In Botany",
-					storageId = Storage.TibiaTales.AnInterestInBotany.Questline,
+					storageId = Storage.Quest.U8_6.AnInterestInBotany.Questline,
 					missionId = 10321,
 					startValue = 1,
 					endValue = 4,
@@ -4538,17 +4538,17 @@ if not Quests then
 				},
 				[6] = {
 					name = "Graves Sanctified - In Progress",
-					storageId = Storage.TibiaTales.RestInHallowedGround.HolyWater,
+					storageId = Storage.Quest.U8_1.RestInHallowedGround.HolyWater,
 					missionId = 10322,
 					startValue = 1,
 					endValue = 15,
 					description = function(player)
-						return string.format("You sanctified %d of 15 graves.", (math.max(player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.HolyWater), 0)))
+						return string.format("You sanctified %d of 15 graves.", (math.max(player:getStorageValue(Storage.Quest.U8_1.RestInHallowedGround.HolyWater), 0)))
 					end,
 				},
 				[7] = {
 					name = "Into the Bone Pit",
-					storageId = Storage.TibiaTales.IntoTheBonePit,
+					storageId = Storage.Quest.U8_1.TibiaTales.IntoTheBonePit,
 					missionId = 10323,
 					startValue = 1,
 					endValue = 3,
@@ -4561,7 +4561,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Rest in Hallowed Ground",
-					storageId = Storage.TibiaTales.RestInHallowedGround.Questline,
+					storageId = Storage.Quest.U8_1.RestInHallowedGround.Questline,
 					missionId = 10324,
 					startValue = 1,
 					endValue = 5,
@@ -4576,7 +4576,7 @@ if not Quests then
 				},
 				[9] = {
 					name = "The Exterminator",
-					storageId = Storage.TibiaTales.TheExterminator,
+					storageId = Storage.Quest.U8_1.TibiaTales.TheExterminator,
 					missionId = 10325,
 					startValue = 1,
 					endValue = 3,
@@ -4590,7 +4590,7 @@ if not Quests then
 				},
 				[10] = {
 					name = "The Ultimate Booze",
-					storageId = Storage.TibiaTales.UltimateBoozeQuest,
+					storageId = Storage.Quest.U8_1.TibiaTales.UltimateBoozeQuest,
 					missionId = 10326,
 					startValue = 1,
 					endValue = 3,
@@ -4603,7 +4603,7 @@ if not Quests then
 				},
 				[11] = {
 					name = "Jack to the Future",
-					storageId = Storage.TibiaTales.JackFutureQuest.QuestLine,
+					storageId = Storage.Quest.U8_7.JackFutureQuest.QuestLine,
 					missionId = 10327,
 					startValue = 1,
 					endValue = 11,
@@ -4636,7 +4636,7 @@ if not Quests then
 				},
 				[12] = {
 					name = "The Cursed Crystal",
-					storageId = Storage.TibiaTales.TheCursedCrystal.Questline,
+					storageId = Storage.Quest.U10_70.TheCursedCrystal.Questline,
 					missionId = 10328,
 					startValue = 0,
 					endValue = 4,
@@ -4675,7 +4675,7 @@ if not Quests then
 				},
 				[14] = {
 					name = "To Outfox a Fox",
-					storageId = Storage.TibiaTales.ToOutfoxAFoxQuest,
+					storageId = Storage.Quest.U8_1.ToOutfoxAFoxQuest,
 					missionId = 10432,
 					startValue = 1,
 					endValue = 2,
@@ -5153,12 +5153,12 @@ if not Quests then
 		},
 		[35] = {
 			name = "Oramond",
-			startStorageId = Storage.Oramond.QuestLine,
+			startStorageId = Storage.Quest.U10_50.OramondQuest.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "To Take Roots",
-					storageId = Storage.Oramond.MissionToTakeRoots,
+					storageId = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission,
 					missionId = 10360,
 					startValue = 1,
 					endValue = 3000,
@@ -5169,12 +5169,12 @@ if not Quests then
 		},
 		[36] = {
 			name = "Forgotten Knowledge",
-			startStorageId = Storage.ForgottenKnowledge.Tomes,
+			startStorageId = Storage.Quest.U11_02.ForgottenKnowledge.Tomes,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Circle of the Black Sphinx",
-					storageId = Storage.ForgottenKnowledge.LadyTenebrisKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled,
 					missionId = 10361,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5184,7 +5184,7 @@ if not Quests then
 				},
 				[2] = {
 					name = "Bane of the Cosmic Force",
-					storageId = Storage.ForgottenKnowledge.LloydKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled,
 					missionId = 10362,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5195,7 +5195,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Desecrated Glade",
-					storageId = Storage.ForgottenKnowledge.ThornKnightKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled,
 					missionId = 10363,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5206,7 +5206,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Unwary Mage",
-					storageId = Storage.ForgottenKnowledge.DragonkingKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled,
 					missionId = 10364,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5217,7 +5217,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Dragon in Distress",
-					storageId = Storage.ForgottenKnowledge.HorrorKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled,
 					missionId = 10365,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5227,7 +5227,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Time is a Window",
-					storageId = Storage.ForgottenKnowledge.TimeGuardianKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
 					missionId = 10366,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5238,7 +5238,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Final Fight",
-					storageId = Storage.ForgottenKnowledge.LastLoreKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled,
 					missionId = 10367,
 					startValue = 0,
 					endValue = 1522018605,
@@ -5250,22 +5250,22 @@ if not Quests then
 		},
 		[37] = {
 			name = "The First Dragon",
-			startStorageId = Storage.FirstDragon.Questline,
+			startStorageId = Storage.Quest.U11_02.TheFirstDragon.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Power",
-					storageId = Storage.FirstDragon.DragonCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.DragonCounter,
 					missionId = 10368,
 					startValue = 0,
 					endValue = 200,
 					description = function(player)
-						return ("You already hunted %d/200 dragons."):format(player:getStorageValue(Storage.FirstDragon.DragonCounter))
+						return ("You already hunted %d/200 dragons."):format(player:getStorageValue(Storage.Quest.U11_02.TheFirstDragon.DragonCounter))
 					end,
 				},
 				[2] = {
 					name = "Treasure",
-					storageId = Storage.FirstDragon.ChestCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.ChestCounter,
 					missionId = 10369,
 					startValue = 0,
 					endValue = 20,
@@ -5274,7 +5274,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Knowledge",
-					storageId = Storage.FirstDragon.GelidrazahAccess,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.GelidrazahAccess,
 					missionId = 10370,
 					startValue = 0,
 					endValue = 1,
@@ -5283,7 +5283,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Life",
-					storageId = Storage.FirstDragon.SecretsCounter,
+					storageId = Storage.Quest.U11_02.TheFirstDragon.SecretsCounter,
 					missionId = 10371,
 					startValue = 0,
 					endValue = 3,
@@ -5294,23 +5294,23 @@ if not Quests then
 		},
 		[38] = {
 			name = "Cults of Tibia",
-			startStorageId = Storage.CultsOfTibia.Questline,
+			startStorageId = Storage.Quest.U11_40.CultsOfTibia.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Strengthtening of the Minotaurs",
-					storageId = Storage.CultsOfTibia.Minotaurs.JamesfrancisTask,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.JamesfrancisTask,
 					missionId = 10372,
 					startValue = 0,
 					endValue = 50,
 					description = function(player)
 						return ("James asked you to enter the cave for hunting 50 empowered minotaurs. \z
-						Then he will be able to continue his research.\nMinotaurs killed: %d/50"):format(player:getStorageValue(Storage.CultsOfTibia.Minotaurs.JamesfrancisTask))
+						Then he will be able to continue his research.\nMinotaurs killed: %d/50"):format(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Minotaurs.JamesfrancisTask))
 					end,
 				},
 				[2] = {
 					name = "The Strengthtening of the Minotaurs",
-					storageId = Storage.CultsOfTibia.Minotaurs.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.Mission,
 					missionId = 10373,
 					startValue = 1,
 					endValue = 5,
@@ -5326,7 +5326,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Patron of Arts",
-					storageId = Storage.CultsOfTibia.MotA.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.MotA.Mission,
 					missionId = 10374,
 					startValue = 1,
 					endValue = 15,
@@ -5359,7 +5359,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Barkless",
-					storageId = Storage.CultsOfTibia.Barkless.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission,
 					missionId = 10375,
 					startValue = 1,
 					endValue = 7,
@@ -5371,7 +5371,7 @@ if not Quests then
 						The hardest part, however, is yet to come. Give your life to the ice... to become true and purified.",
 						[3] = function(player)
 							return ("You survived the Trial. Barkless now have the right to see the cult leader but a \z
-							powerful relic is sealing the path. Barkless markings broken to reverse the power of the cult object: \z %d of 10"):format(math.max(player:getStorageValue(Storage.CultsOfTibia.Barkless.Objects), 0))
+							powerful relic is sealing the path. Barkless markings broken to reverse the power of the cult object: \z %d of 10"):format(math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Objects), 0))
 						end,
 						[4] = "You broke enough Barkless markings to now reverse the seal \z
 						held up by the cult object in the ritual chamber. \z
@@ -5387,7 +5387,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Misguided",
-					storageId = Storage.CultsOfTibia.Misguided.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission,
 					missionId = 10376,
 					startValue = 1,
 					endValue = 5,
@@ -5397,7 +5397,7 @@ if not Quests then
 						hinted at something weird going on in a cave. He seemed too confused to decide whether to stop you.",
 						[3] = function(player)
 							return ("While rubbish, the amulet you equipe emits a strange aura of splendour. \z
-							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(math.max(player:getStorageValue(Storage.CultsOfTibia.Misguided.Exorcisms), 0))
+							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Exorcisms), 0))
 						end,
 						[4] = "You defeated the cult leader of Misguided by uncovering the true master to pull his strings \z
 						and freeing this world from its malicious existance. Return to Gerimor to tell him about the victory.",
@@ -5406,7 +5406,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "The Orc Idol",
-					storageId = Storage.CultsOfTibia.Orcs.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Orcs.Mission,
 					missionId = 10377,
 					startValue = 1,
 					endValue = 3,
@@ -5420,7 +5420,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "The Secret of the Sandy Cave",
-					storageId = Storage.CultsOfTibia.Life.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Life.Mission,
 					missionId = 10378,
 					startValue = 1,
 					endValue = 10,
@@ -5445,7 +5445,7 @@ if not Quests then
 				},
 				[8] = {
 					name = "Zathroth Remmants",
-					storageId = Storage.CultsOfTibia.Humans.Mission,
+					storageId = Storage.Quest.U11_40.CultsOfTibia.Humans.Mission,
 					missionId = 10379,
 					startValue = 1,
 					endValue = 3,
@@ -5463,12 +5463,12 @@ if not Quests then
 		},
 		[39] = {
 			name = "Dangerous Depths",
-			startStorageId = Storage.DangerousDepths.Questline,
+			startStorageId = Storage.Quest.U11_50.DangerousDepths.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Dwarves: Home Improvement",
-					storageId = Storage.DangerousDepths.Dwarves.Home,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Dwarves.Home,
 					missionId = 10380,
 					startValue = 1,
 					endValue = 2,
@@ -5476,14 +5476,14 @@ if not Quests then
 						[1] = function(player)
 							return ("Destroy makeshift homes of the Lost to force them to fight you! Try making some \z
 							prisoners in the progress and report back to Klom Stonecutter.\n\nLost Exiles: %d/20\nPrisoners (bonus): \z
-							%d/3"):format(math.max(player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles), 0), math.max(player:getStorageValue(Storage.DangerousDepths.Dwarves.Prisoners), 0))
+							%d/3"):format(math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.LostExiles), 0), math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Prisoners), 0))
 						end,
 						[2] = "You drove off the Lost but more are sure to come. Check back with Klom Stonecutter at a later time.",
 					},
 				},
 				[2] = {
 					name = "Dwarves: Subterranean Life",
-					storageId = Storage.DangerousDepths.Dwarves.Subterranean,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Dwarves.Subterranean,
 					missionId = 10381,
 					startValue = 1,
 					endValue = 2,
@@ -5491,7 +5491,7 @@ if not Quests then
 						[1] = function(player)
 							return ("Klome Stonecutter sent you on a grave mission to exterminate large populaces of \z
 							subterranian life. Looks like the dwarves make short work of the deep intruders.\n\nSubterranean organisms: \z
-							%d/50"):format(math.max(player:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms), 0))
+							%d/50"):format(math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Organisms), 0))
 						end,
 						[2] = "You helped Klom defend the outpost by cutting down a number of vermin from deep down below. \z
 						The gnomes don't seem to completely approve of this but everyone appreciates the drop in the enemy's ranks.",
@@ -5499,7 +5499,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "Gnomes: Gnomal Warming Measurements",
-					storageId = Storage.DangerousDepths.Gnomes.Measurements,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Gnomes.Measurements,
 					missionId = 10382,
 					startValue = 1,
 					endValue = 2,
@@ -5507,11 +5507,11 @@ if not Quests then
 						[1] = function(player)
 							return ("Gnomus sent you on a mission to measure the rising heat from below.\n\nLocation A: \z
 							%d/1\nLocation B: %d/1\nLocation C: %d/1\nLocation D: %d/1\nLocation E: %d/1"):format(
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.LocationA), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.LocationB), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.LocationC), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.LocationD), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.LocationE), 0)
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LocationA), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LocationB), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LocationC), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LocationD), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LocationE), 0)
 							)
 						end,
 						[2] = "You helped Lardoc Bashsmite fighting back the verminous growth in the northern mineshaft. \z
@@ -5520,7 +5520,7 @@ if not Quests then
 				},
 				[4] = {
 					name = "Gnomes: Ordnance",
-					storageId = Storage.DangerousDepths.Gnomes.Ordnance,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Gnomes.Ordnance,
 					missionId = 10383,
 					startValue = 1,
 					endValue = 3,
@@ -5529,7 +5529,7 @@ if not Quests then
 						Travel to the east of the cave system and find the old gnome trail where reinforcements will arrive.",
 						[2] = function(player)
 							return ("You found the old gnome trail where ordnance for the gnome outpost arrive, escort them \z
-							and their pack animals to safety and return to Gnomus.\n\nRescued gnomes: %d/5\nRescued animals: %d/3"):format(math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.GnomesCount), 0), math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.CrawlersCount), 0))
+							and their pack animals to safety and return to Gnomus.\n\nRescued gnomes: %d/5\nRescued animals: %d/3"):format(math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.GnomesCount), 0), math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.CrawlersCount), 0))
 						end,
 						[3] = "You helped Lardoc Bashsmite fighting back the verminous growth in the northern mineshaft. \z
 						Return to him later to see if he has more work for you.",
@@ -5537,7 +5537,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Gnomes: Uncharted Territory",
-					storageId = Storage.DangerousDepths.Gnomes.Charting,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Gnomes.Charting,
 					missionId = 10384,
 					startValue = 1,
 					endValue = 2,
@@ -5546,12 +5546,12 @@ if not Quests then
 							return ("Chart the area around the deep base for Gnomus. Look for especific landmarks: \z
 							\n\nOld Gate: %d/1\nThe Gaze: %d/1\nLost Ruin: %d/1\nOutpost: %d/1\nBastion: %d/1\nBroken Tower: \z
 							%d/1"):format(
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.OldGate), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.TheGaze), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.LostRuin), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.Outpost), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.Bastion), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.BrokenTower), 0)
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.OldGate), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.TheGaze), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.LostRuin), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.Outpost), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.Bastion), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.BrokenTower), 0)
 							)
 						end,
 						[2] = "You helped Gnomus chart the area around the deep base. You found traces of what \z
@@ -5560,7 +5560,7 @@ if not Quests then
 				},
 				[6] = {
 					name = "Scouts: Explosive Growth",
-					storageId = Storage.DangerousDepths.Scouts.Growth,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Scouts.Growth,
 					missionId = 10385,
 					startValue = 1,
 					endValue = 2,
@@ -5568,11 +5568,11 @@ if not Quests then
 						[1] = function(player)
 							return ("You found the mine shaft. Burn all the growth and report back to Lardoc Bashsmite! \z
 							\n\nFirst Room: %d/1\nSecond room: %d/1\nThird room: %d/1\nFourth room: %d/1\nFifth room: %d/1"):format(
-								math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.FirstBarrel), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.SecondBarrel), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.ThirdBarrel), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.FourthBarrel), 0),
-								math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.FifthBarrel), 0)
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.FirstBarrel), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.SecondBarrel), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.ThirdBarrel), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.FourthBarrel), 0),
+								math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.FifthBarrel), 0)
 							)
 						end,
 						[2] = "You helped Lardoc Bashsmite fighting back the verminous growth in the northern mineshaft. \z
@@ -5581,7 +5581,7 @@ if not Quests then
 				},
 				[7] = {
 					name = "Scouts: Pesticide",
-					storageId = Storage.DangerousDepths.Scouts.Diremaw,
+					storageId = Storage.Quest.U11_50.DangerousDepths.Scouts.Diremaw,
 					missionId = 10386,
 					startValue = 1,
 					endValue = 2,
@@ -5589,7 +5589,7 @@ if not Quests then
 						[1] = function(player)
 							return ("Lardoc asked you to follow a plan of the gnomes to stop the deep threat by trying to \z
 							neutralise diremaw spawn with pesticies. Diremaws lay eggs inside corpses of their skin. \z
-							\n\nNeutralised: %d/20"):format(math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.DiremawsCount), 0))
+							\n\nNeutralised: %d/20"):format(math.max(player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.DiremawsCount), 0))
 						end,
 						[2] = "You reported back to Lardoc Bashsmite to inform him that the gnome's plan to \z
 						neutralise diremaw corpses seems to work.",
@@ -5597,43 +5597,25 @@ if not Quests then
 				},
 			},
 		},
-		[40] = { -- FREE SLOT FOR A SIMPLE QUEST
-			name = "XXXXXXXXXXXX",
-			startStorageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
-			startStorageValue = 1,
-			missions = {
-				[1] = {
-					name = "XXXXXXXXXXXX",
-					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
-					missionId = 10387,
-					startValue = 1,
-					endValue = 2,
-					states = {
-						[1] = "XXXXXXXXXXXX",
-						[2] = "XXXXXXXXXXXX",
-					},
-				},
-			},
-		},
-		[41] = {
+		[40] = {
 			name = "Adventurers Guild",
-			startStorageId = Storage.AdventurersGuild.QuestLine,
+			startStorageId = Storage.Quest.U9_80.AdventurersGuild.QuestLine,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "The Great Dragon Hunt",
-					storageId = Storage.AdventurersGuild.GreatDragonHunt.WarriorSkeleton,
+					storageId = Storage.Quest.U10_80.TheGreatDragonHunt.WarriorSkeleton,
 					missionId = 10388,
 					startValue = 0,
 					endValue = 2,
 					description = function(player)
 						return ("You are exploring the Kha'zeel Dragon Lairs. Others obviously found a terrible end here. \z
-						But the dragon hoards might justify the risks. You killed %d/50 dragons and dragon lords."):format(math.max(player:getStorageValue(Storage.AdventurersGuild.GreatDragonHunt.DragonCounter), 0))
+						But the dragon hoards might justify the risks. You killed %d/50 dragons and dragon lords."):format(math.max(player:getStorageValue(Storage.Quest.U10_80.TheGreatDragonHunt.DragonCounter), 0))
 					end,
 				},
 				[2] = {
 					name = "The Lost Brother",
-					storageId = Storage.AdventurersGuild.TheLostBrother,
+					storageId = Storage.Quest.U10_80.TheLostBrotherQuest,
 					missionId = 11000,
 					startValue = 1,
 					endValue = 3,
@@ -5645,7 +5627,7 @@ if not Quests then
 				},
 			},
 		},
-		[42] = {
+		[41] = {
 			name = "Dawnport",
 			startStorageId = Storage.Quest.U10_55.Dawnport.Questline,
 			startStorageValue = 1,
@@ -5740,7 +5722,7 @@ if not Quests then
 				},
 			},
 		},
-		[43] = {
+		[42] = {
 			name = "The Rookie Guard",
 			startStorageId = Storage.Quest.U9_1.TheRookieGuard.Questline,
 			startStorageValue = 1,
@@ -5922,7 +5904,7 @@ if not Quests then
 				},
 			},
 		},
-		[44] = {
+		[43] = {
 			name = "The New Frontier",
 			startStorageId = Storage.Quest.U8_54.TheNewFrontier.Questline,
 			startStorageValue = 1,
@@ -6171,7 +6153,7 @@ if not Quests then
 				},
 			},
 		},
-		[45] = {
+		[44] = {
 			name = "Spirithunters Quest",
 			startStorageId = Storage.Quest.U8_7.SpiritHunters.Mission01,
 			startStorageValue = 1,
@@ -6211,7 +6193,7 @@ if not Quests then
 				},
 			},
 		},
-		[46] = {
+		[45] = {
 			name = "Threatened Dreams",
 			startStorageId = Storage.Quest.U11_40.ThreatenedDreams.QuestLine,
 			startStorageValue = 1,
@@ -6306,7 +6288,7 @@ if not Quests then
 				},
 			},
 		},
-		[47] = {
+		[46] = {
 			name = "Blood Brothers",
 			startStorageId = Storage.Quest.U8_4.BloodBrothers.QuestLine,
 			startStorageValue = 1,
@@ -6359,14 +6341,14 @@ if not Quests then
 				},
 			},
 		},
-		[48] = {
+		[47] = {
 			name = "Grave Danger",
-			startStorageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
+			startStorageId = Storage.Quest.U12_20.GraveDanger.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "* Grave Danger - The Lich Knights",
-					storageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
+					storageId = Storage.Quest.U12_20.GraveDanger.Questline,
 					missionId = 10437,
 					startValue = 1,
 					endValue = 2,
@@ -6536,18 +6518,186 @@ if not Quests then
 				},
 			},
 		},
-		[49] = {
+		[48] = {
 			name = "The Outlaw Camp",
-			startStorageId = Storage.QuestChests.OutlawCamp,
+			startStorageId = Storage.Quest.U6_4.OutlawCampQuest,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "Outlaw Treasure",
-					storageId = Storage.QuestChests.OutlawCamp,
+					storageId = Storage.Quest.U6_4.OutlawCampQuest,
 					missionId = 10451,
 					startValue = 1,
 					endValue = 1,
 					description = "You made your way through the Outlaw Camp and found the hidden treasure of the bandits.",
+				},
+			},
+		},
+		[49] = {
+			name = "The Secret Library",
+			startStorageId = Storage.Quest.U11_80.TheSecretLibrary.Questlog,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "High and Dry",
+					storageId = Storage.Quest.U11_80.TheSecretLibrary.SmallIslands.Questline,
+					missionId = 10451,
+					startValue = 1,
+					endValue = 4,
+					states = {
+						[1] = "Dedoras asked for you to talk to Charles, he knows about a small island.",
+						[2] = "You got stucked on this island. You must discover how to leave.",
+						[3] = "You successfully built a raft and used the starts to navigate your way through the waves. At least you found something of interest on the deserted island.",
+						[4] = "Congratulations you completed this mission.",
+					},
+				},
+				[2] = {
+					name = "Liquid Death",
+					storageId = Storage.Quest.U11_80.TheSecretLibrary.LiquidDeath.Questline,
+					missionId = 10452,
+					startValue = 1,
+					endValue = 8,
+					states = {
+						[1] = "Dedoras has sent you to Spectulus in the Edron Academy. Rumors of strange fishmen in the Tiquanda region may be connected to some of the research the scholar conducted.",
+						[2] = "Spectulus asked you to check out the rumors of strange fishmen in the jungles of northern Tiquanda. A small sunken temple is said to be overrun by strange fish-like creatures.",
+						[3] = "You found a sunken temple deep in the Tiquanda jungle. Spectulus will help you enter the vortex at the entrance. Find out what happened there and take care of the fish-like aggressors...",
+						[4] = "Part IV",
+						[5] = "Part V",
+						[6] = "Part VI",
+						[7] = "Brokul has been defeated and now you can talk with Spectulus or Dedoras what you found about the fishmen.",
+						[8] = "Congratulations you completed this mission.",
+					},
+				},
+				[3] = {
+					name = "Asuri - The Lament",
+					storageId = Storage.Quest.U11_80.TheSecretLibrary.Asuras.Questline,
+					missionId = 10453,
+					startValue = 1,
+					endValue = 7,
+					states = {
+						[1] = "Go to Asuri Palace in Port Hope.",
+						[2] = "You were able to assemble an instrument with the objects found. That should work for something.",
+						[3] = "You must talk with the dead girl's mother, Gail, at Port Hope.",
+						[4] = "With a heavy heart you used a piece of ebony as well as the skull and hair of an unfortunate maiden to create a bone fiddle. By playing the Peacock Ballad you should be able to open the viollet portal.",
+						[5] = "You may enter the viollet portal. Check if there is something useful there.",
+						[6] = "In a secret room of the Asura Palace you discovered an old writing desk that contains an ancient map. This must be a hint to the secret library you are searching for.",
+						[7] = "Congratulations you completed this mission.",
+					},
+				},
+				[4] = {
+					name = "The Order of the Falcon",
+					storageId = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.Questline,
+					missionId = 10454,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						[1] = "It is said that an ancient order of knights once resided in Edron. The knights disappeared a long time ago but their abandoned outpost is still there. The place may yet hold some surprises.",
+						[2] = "You defeated Grand Master Oberon in mortal combat. The Falcon Order may have lost its glory a long time ago but you are just getting started.",
+						[3] = "Congratulations you completed this mission.",
+					},
+				},
+				[5] = {
+					name = "The Path of Defiances",
+					storageId = Storage.Quest.U11_80.TheSecretLibrary.Darashia.Questline,
+					missionId = 10455,
+					startValue = 1,
+					endValue = 9,
+					states = {
+						[1] = "Go to Darashia and find out about the mysterious statue.",
+						[2] = "After you have been swallowed by a sand vortex you have entered a hidden desert area. A voice of unknown origin has informed you that you will have to face some challenges.",
+						[3] = "Part III",
+						[4] = "Part IV",
+						[5] = "Part V",
+						[6] = "Part VI",
+						[7] = "Part VII",
+						[8] = "You have found a book page in a chest. It seems to contain very useful information, but you are not capable to read it. At this point you have to speak with an expert.",
+						[9] = "Congratulations you completed this mission.",
+					},
+				},
+				[6] = {
+					name = "Bursting at the Seams",
+					storageId = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Questline,
+					missionId = 10456,
+					startValue = 1,
+					endValue = 8,
+					states = {
+						[1] = "Dedoras told you where to search for leads to the Veiled Hoard: the museum in Thais, a fishmen temple in Tiquanda, an order fortress in Edron, the Asuri Palace and a deserted isle.",
+						[2] = "You talked with Gareth and now you may pass trougth the door.",
+						[3] = "Part III",
+						[4] = "Part IV",
+						[5] = "Part V",
+						[6] = "You successfully entered the Veiled Hoard of Zathroth. However, countless secret and vast knowledge still lie ahead.",
+						[7] = "You have reported Gareth about the enigmatic inscription you have found in the chamber of doom. He was able to decipher it for you and referred to Dedoras in Cormaya for further assistance.",
+						[8] = "Congratulations you completed this mission.",
+					},
+				},
+			},
+		},
+		[50] = {
+			name = "The Dream Courts",
+			startStorageId = Storage.Quest.U12_00.TheDreamCourts.Main.Questline,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "The Dream Courts",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline,
+					missionId = 10457,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						[1] = function(player)
+							return string.format("You already got %d/8 energized ward stones.", math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Count), 0))
+						end,
+						[2] = "You must kill the Nightmare Beast.",
+						[3] = "By defeating the dreadful Nightmare Beast you did the Winter Court and the Summer Court alike a great favor. From now on, the dream elves will regard you as a friend.",
+					},
+				},
+				[2] = {
+					name = "Unsafe Release",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline,
+					missionId = 10458,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						[1] = "Part I",
+						[2] = "Part II",
+						[3] = "Andre was happy to hear that the compass works as intendend. From now on it is possible that he will charge your compass again. It can be used to give acess to mystical chests once a day.",
+					},
+				},
+				[3] = {
+					name = "Haunted House",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
+					missionId = 10459,
+					startValue = 1,
+					endValue = 6,
+					states = {
+						[1] = function(player)
+							return string.format(
+								"A tormented soul trusted you with the secret of this house: join the passages to the three dungeons it connects to reveal a hidden portal within!\n\nCellar %d/1\nTemple %d/1\nTomb %d/1",
+								math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Cellar), 0),
+								math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple), 0),
+								math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Tomb), 0)
+							)
+						end,
+						[2] = "Part I - burried catedral",
+						[3] = "Part II - puzzle dos livros",
+						[4] = "Part III - bosses",
+						[5] = "Part IV - last stone",
+						[6] = "Activating the ward stone after defeating the Faceless Bane has gained you acess to the deepest mysteries of the dream courts.",
+					},
+				},
+				[4] = {
+					name = "The Seven Keys",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Questline,
+					missionId = 10460,
+					startValue = 1,
+					endValue = 2,
+					states = {
+						[1] = function(player)
+							return string.format("You already got %d/7 secret keys.", math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count), 0))
+						end,
+						[2] = "You found the seven keys to unlock the Seven Dream Doors in the Labyrinth of Summer's and Winter's Dreams.",
+					},
 				},
 			},
 		},

@@ -9,12 +9,14 @@
 
 #pragma once
 
-#include "lib/di/container.hpp"
-#include "server/network/protocol/protocolgame.hpp"
+// TODO: Remove circular includes (maybe shared_ptr?)
+#include "server/network/message/networkmessage.hpp"
 
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
+class NetworkMessage;
+class Player;
 
 static const std::unique_ptr<PreySlot> &PreySlotNull {};
 static const std::unique_ptr<TaskHuntingSlot> &TaskHuntingSlotNull {};
@@ -221,23 +223,19 @@ public:
 	IOPrey(const IOPrey &) = delete;
 	void operator=(const IOPrey &) = delete;
 
-	static IOPrey &getInstance() {
-		return inject<IOPrey>();
-	}
+	static IOPrey &getInstance();
 
-	void checkPlayerPreys(std::shared_ptr<Player> player, uint8_t amount) const;
-	void parsePreyAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
+	void checkPlayerPreys(const std::shared_ptr<Player> &player, uint8_t amount) const;
+	void parsePreyAction(const std::shared_ptr<Player> &player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
 
-	void parseTaskHuntingAction(std::shared_ptr<Player> player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
+	void parseTaskHuntingAction(const std::shared_ptr<Player> &player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
 
 	void initializeTaskHuntOptions();
 	const std::unique_ptr<TaskHuntingOption> &getTaskRewardOption(const std::unique_ptr<TaskHuntingSlot> &slot) const;
 
-	NetworkMessage getTaskHuntingBaseDate() const {
-		return baseDataMessage;
-	}
+	NetworkMessage getTaskHuntingBaseDate() const;
 
-	NetworkMessage baseDataMessage;
+	NetworkMessage m_baseDataMessage;
 	std::vector<std::unique_ptr<TaskHuntingOption>> taskOption;
 };
 

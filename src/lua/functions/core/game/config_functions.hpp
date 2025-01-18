@@ -10,9 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "lua/scripts/luascript.hpp"
-
-class ConfigFunctions final : LuaScriptInterface {
+class ConfigFunctions {
 public:
 	static void init(lua_State* L);
 

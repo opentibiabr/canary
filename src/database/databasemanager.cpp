@@ -7,19 +7,31 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "database/databasemanager.hpp"
 
 #include "config/configmanager.hpp"
-#include "database/databasemanager.hpp"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "game/game.hpp"
+
+namespace InternalDBManager {
+	int32_t extractVersionFromFilename(const std::string &filename) {
+		std::regex versionRegex(R"((\d+)\.lua)");
+		std::smatch match;
+
+		if (std::regex_search(filename, match, versionRegex) && match.size() > 1) {
+			return std::stoi(match.str(1));
+		}
+
+		return -1;
+	}
+}
 
 bool DatabaseManager::optimizeTables() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 
-	query << "SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB, __FUNCTION__)) << " AND `DATA_FREE` > 0";
+	query << "SELECT `TABLE_NAME` FROM `information_schema`.`TABLES` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB)) << " AND `DATA_FREE` > 0";
 	DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
 		return false;
@@ -48,14 +60,14 @@ bool DatabaseManager::tableExists(const std::string &tableName) {
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
-	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB, __FUNCTION__)) << " AND `TABLE_NAME` = " << db.escapeString(tableName) << " LIMIT 1";
+	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB)) << " AND `TABLE_NAME` = " << db.escapeString(tableName) << " LIMIT 1";
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
 bool DatabaseManager::isDatabaseSetup() {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB, __FUNCTION__));
+	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB));
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
@@ -75,13 +87,13 @@ int32_t DatabaseManager::getDatabaseVersion() {
 }
 
 void DatabaseManager::updateDatabase() {
+	Benchmark bm;
 	lua_State* L = luaL_newstate();
 	if (!L) {
 		return;
 	}
 
 	luaL_openlibs(L);
-
 	CoreLibsFunctions::init(L);
 
 	int32_t version = getDatabaseVersion();
@@ -94,28 +106,40 @@ void DatabaseManager::updateDatabase() {
 			break;
 		}
 
-		if (!LuaScriptInterface::reserveScriptEnv()) {
-			break;
-		}
+	std::sort(migrations.begin(), migrations.end());
 
-		lua_getglobal(L, "onUpdateDatabase");
-		if (lua_pcall(L, 0, 1, 0) != 0) {
+	for (const auto &[fileVersion, scriptPath] : migrations) {
+		if (fileVersion > currentVersion) {
+			if (!LuaScriptInterface::reserveScriptEnv()) {
+				break;
+			}
+
+			if (luaL_dofile(L, scriptPath.c_str()) != 0) {
+				g_logger().error("DatabaseManager::updateDatabase - Version: {}] {}", fileVersion, lua_tostring(L, -1));
+				continue;
+			}
+
+			lua_getglobal(L, "onUpdateDatabase");
+			if (lua_pcall(L, 0, 1, 0) != 0) {
+				LuaScriptInterface::resetScriptEnv();
+				g_logger().warn("[DatabaseManager::updateDatabase - Version: {}] {}", fileVersion, lua_tostring(L, -1));
+				continue;
+			}
+
+			currentVersion = fileVersion;
+			g_logger().info("Database has been updated to version {}", currentVersion);
+			registerDatabaseConfig("db_version", currentVersion);
+
 			LuaScriptInterface::resetScriptEnv();
-			g_logger().warn("[DatabaseManager::updateDatabase - Version: {}] {}", version, lua_tostring(L, -1));
-			break;
 		}
+	}
 
-		if (!LuaScriptInterface::getBoolean(L, -1, false)) {
-			LuaScriptInterface::resetScriptEnv();
-			break;
-		}
-
-		version++;
-		g_logger().info("Database has been updated to version {}", version);
-		registerDatabaseConfig("db_version", version);
-
-		LuaScriptInterface::resetScriptEnv();
-	} while (true);
+	double duration = bm.duration();
+	if (duration < 1000.0) {
+		g_logger().debug("Database update completed in {:.2f} ms", duration);
+	} else {
+		g_logger().debug("Database update completed in {:.2f} seconds", duration / 1000.0);
+	}
 	lua_close(L);
 }
 

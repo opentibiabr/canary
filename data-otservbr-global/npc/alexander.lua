@@ -31,12 +31,12 @@ npcConfig.voices = {
 
 local itemsTable = {
 	["exercise weapons"] = {
-		{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, count = 1800 },
-		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, count = 1800 },
-		{ itemName = "exercise rod", clientId = 28556, buy = 262500, count = 500 },
-		{ itemName = "exercise wand", clientId = 28557, buy = 262500, count = 500 },
-		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
-		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
+		{ itemName = "durable exercise rod", clientId = 35283, buy = 1250000, count = 1800 },
+		{ itemName = "durable exercise wand", clientId = 35284, buy = 1250000, count = 1800 },
+		{ itemName = "exercise rod", clientId = 28556, buy = 347222, count = 500 },
+		{ itemName = "exercise wand", clientId = 28557, buy = 347222, count = 500 },
+		{ itemName = "lasting exercise rod", clientId = 35289, buy = 10000000, count = 14400 },
+		{ itemName = "lasting exercise wand", clientId = 35290, buy = 10000000, count = 14400 },
 	},
 	["creature products"] = {
 		{ itemName = "crystal ball", clientId = 3076, buy = 530, sell = 190 },
@@ -64,8 +64,8 @@ local itemsTable = {
 		{ itemName = "paralyze rune", clientId = 3165, buy = 700 },
 		{ itemName = "poison bomb rune", clientId = 3173, buy = 85 },
 		{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
-		{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
-		{ itemName = "thunderstorm rune", clientId = 3202, buy = 47 },
+		{ itemName = "stone shower rune", clientId = 3175, buy = 41 },
+		{ itemName = "thunderstorm rune", clientId = 3202, buy = 52 },
 		{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
 	},
 	["wands"] = {
@@ -134,11 +134,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 	local itemId = items[player:getVocation():getBaseId()]
 	if MsgContains(message, "first rod") or MsgContains(message, "first wand") then
@@ -163,7 +158,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("Ok then.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif categoryTable then
-		npcHandler:say("Of course, just browse through my wares.", npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -175,7 +171,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Hi there |PLAYERNAME|, and welcome to the {magic} store.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "See you, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "See you, |PLAYERNAME|.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at {runes} or {wands}?")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- On buy npc shop message

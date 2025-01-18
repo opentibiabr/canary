@@ -7,83 +7,92 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "io/io_bosstiary.hpp"
 
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
+#include "lib/di/container.hpp"
 #include "utils/tools.hpp"
-#include "items/item.hpp"
+
+IOBosstiary &IOBosstiary::getInstance() {
+	return inject<IOBosstiary>();
+}
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
-
-	std::string query = "SELECT * FROM `boosted_boss`";
-	auto result = database.storeQuery(query);
-
+	auto query = fmt::format("SELECT `date`, `boostname`, `raceid` FROM `boosted_boss`");
+	DBResult_ptr result = database.storeQuery(query);
 	if (!result) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
 		return;
 	}
 
-	uint16_t date = result->getNumber<uint16_t>("date");
-	auto timeNow = getTimeNow();
-	auto time = localtime(&timeNow);
-	auto today = time->tm_mday;
-
-	auto bossMap = getBosstiaryMap();
+	const auto &bossMap = getBosstiaryMap();
 	if (bossMap.size() <= 1) {
 		g_logger().error("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
 		return;
 	}
 
-	std::string bossName;
-	uint16_t bossId = 0;
-	if (date == today) {
-		bossName = result->getString("boostname");
-		bossId = result->getNumber<uint16_t>("raceid");
-		setBossBoostedName(bossName);
-		setBossBoostedId(bossId);
-		g_logger().info("Boosted boss: {}", bossName);
-		return;
+	auto timeNow = getTimeNow();
+	auto time = localtime(&timeNow);
+	auto today = time->tm_mday;
+
+	if (!result) {
+		g_logger().warn("[{}] No boosted boss found in g_database(). A new one will be selected.", __FUNCTION__);
+	} else {
+		auto date = result->getNumber<uint16_t>("date");
+		if (date == today) {
+			std::string bossName = result->getString("boostname");
+			uint16_t bossId = result->getNumber<uint16_t>("raceid");
+			setBossBoostedName(bossName);
+			setBossBoostedId(bossId);
+			g_logger().info("Boosted boss: {}", bossName);
+			return;
+		}
 	}
 
 	// Filter only archfoe bosses
-	std::map<uint16_t, std::string> bossInfo;
-	for (auto [infoBossRaceId, infoBossName] : bossMap) {
-		const auto mType = getMonsterTypeByBossRaceId(infoBossRaceId);
+	std::vector<std::pair<uint16_t, std::string>> bossInfo;
+	for (const auto &[infoBossRaceId, infoBossName] : bossMap) {
+		const auto &mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}
-
-		bossInfo.try_emplace(infoBossRaceId, infoBossName);
+		bossInfo.emplace_back(infoBossRaceId, infoBossName);
 	}
 
 	// Check if not have archfoe registered boss
-	if (bossInfo.size() == 0) {
+	if (bossInfo.empty()) {
 		g_logger().error("Failed to boost a boss. There is no boss registered with the Archfoe Rarity.");
 		return;
 	}
 
-	uint16_t oldBossRace = result->getNumber<uint16_t>("raceid");
-	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
-		auto it = std::next(bossInfo.begin(), randomIndex);
-		if (it == bossInfo.end()) {
-			break;
-		}
+	const auto &[randomBossId, randomBossName] = bossInfo[uniform_random(0, static_cast<int32_t>(bossInfo.size() - 1))];
+	std::string bossName = randomBossName;
+	uint16_t bossId = randomBossId;
 
-		const auto &[randomBossId, randomBossName] = *it;
-		if (randomBossId == oldBossRace) {
-			continue;
-		}
+	query = fmt::format(
+		"UPDATE `boosted_boss` SET `date` = '{}', `boostname` = {}, `raceid` = '{}', ",
+		today, database.escapeString(bossName), bossId
+	);
 
-		bossName = randomBossName;
-		bossId = randomBossId;
-		break;
+	if (const auto bossType = getMonsterTypeByBossRaceId(bossId); bossType) {
+		query += fmt::format(
+			"`looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, "
+			"`lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, ",
+			static_cast<int>(bossType->info.outfit.lookTypeEx),
+			static_cast<int>(bossType->info.outfit.lookType),
+			static_cast<int>(bossType->info.outfit.lookFeet),
+			static_cast<int>(bossType->info.outfit.lookLegs),
+			static_cast<int>(bossType->info.outfit.lookHead),
+			static_cast<int>(bossType->info.outfit.lookBody),
+			static_cast<int>(bossType->info.outfit.lookAddons),
+			static_cast<int>(bossType->info.outfit.lookMount)
+		);
 	}
+
+	query += fmt::format("`raceid` = '{}'", bossId);
 
 	const auto bossType = getMonsterTypeByBossRaceId(bossId);
 
@@ -136,7 +145,7 @@ const std::map<uint16_t, std::string> &IOBosstiary::getBosstiaryMap() const {
 	return bosstiaryMap;
 }
 
-void IOBosstiary::setBossBoostedName(const std::string_view &name) {
+void IOBosstiary::setBossBoostedName(std::string_view name) {
 	boostedBoss = name;
 }
 
@@ -168,7 +177,7 @@ std::shared_ptr<MonsterType> IOBosstiary::getMonsterTypeByBossRaceId(uint16_t ra
 	return nullptr;
 }
 
-void IOBosstiary::addBosstiaryKill(std::shared_ptr<Player> player, const std::shared_ptr<MonsterType> mtype, uint32_t amount /*= 1*/) const {
+void IOBosstiary::addBosstiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) const {
 	if (!player || !mtype) {
 		return;
 	}
@@ -268,7 +277,7 @@ std::vector<uint16_t> IOBosstiary::getBosstiaryFinished(const std::shared_ptr<Pl
 	return unlockedMonsters.data();
 }
 
-uint8_t IOBosstiary::getBossCurrentLevel(std::shared_ptr<Player> player, uint16_t bossId) const {
+uint8_t IOBosstiary::getBossCurrentLevel(const std::shared_ptr<Player> &player, uint16_t bossId) const {
 	if (bossId == 0 || !player) {
 		return 0;
 	}

@@ -7,12 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "database/database.hpp"
 
 #include "config/configmanager.hpp"
-#include "database/database.hpp"
 #include "lib/di/container.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/tools.hpp"
 
 Database::~Database() {
 	if (handle != nullptr) {
@@ -25,7 +25,7 @@ Database &Database::getInstance() {
 }
 
 bool Database::connect() {
-	return connect(&g_configManager().getString(MYSQL_HOST, __FUNCTION__), &g_configManager().getString(MYSQL_USER, __FUNCTION__), &g_configManager().getString(MYSQL_PASS, __FUNCTION__), &g_configManager().getString(MYSQL_DB, __FUNCTION__), g_configManager().getNumber(SQL_PORT, __FUNCTION__), &g_configManager().getString(MYSQL_SOCK, __FUNCTION__));
+	return connect(&g_configManager().getString(MYSQL_HOST), &g_configManager().getString(MYSQL_USER), &g_configManager().getString(MYSQL_PASS), &g_configManager().getString(MYSQL_DB), g_configManager().getNumber(SQL_PORT), &g_configManager().getString(MYSQL_SOCK));
 }
 
 bool Database::connect(const std::string* host, const std::string* user, const std::string* password, const std::string* database, uint32_t port, const std::string* sock) {
@@ -44,6 +44,10 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	bool reconnect = true;
 	mysql_options(handle, MYSQL_OPT_RECONNECT, &reconnect);
 
+	// Remove ssl verification
+	bool ssl_enabled = false;
+	mysql_options(handle, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_enabled);
+
 	// connects to database
 	if (!mysql_real_connect(handle, host->c_str(), user->c_str(), password->c_str(), database->c_str(), port, sock->c_str(), 0)) {
 		g_logger().error("MySQL Error Message: {}", mysql_error(handle));
@@ -55,6 +59,102 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
 	return true;
+}
+
+void Database::createDatabaseBackup(bool compress) const {
+	if (!g_configManager().getBoolean(MYSQL_DB_BACKUP)) {
+		return;
+	}
+
+	// Get current time for formatting
+	auto now = std::chrono::system_clock::now();
+	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+	std::string formattedDate = fmt::format("{:%Y-%m-%d}", fmt::localtime(now_c));
+	std::string formattedTime = fmt::format("{:%H-%M-%S}", fmt::localtime(now_c));
+
+	// Create a backup directory based on the current date
+	std::string backupDir = fmt::format("database_backup/{}/", formattedDate);
+	std::filesystem::create_directories(backupDir);
+	std::string backupFileName = fmt::format("{}backup_{}.sql", backupDir, formattedTime);
+
+	// Create a temporary configuration file for MySQL credentials
+	std::string tempConfigFile = "database_backup.cnf";
+	std::ofstream configFile(tempConfigFile);
+	if (configFile.is_open()) {
+		configFile << "[client]\n";
+		configFile << "user=\"" << g_configManager().getString(MYSQL_USER) << "\"\n";
+		configFile << "password=\"" << g_configManager().getString(MYSQL_PASS) << "\"\n";
+		configFile << "host=" << g_configManager().getString(MYSQL_HOST) << "\n";
+		configFile << "port=" << g_configManager().getNumber(SQL_PORT) << "\n";
+		configFile.close();
+	} else {
+		g_logger().error("Failed to create temporary MySQL configuration file.");
+		return;
+	}
+
+	// Execute mysqldump command to create backup file
+	std::string command = fmt::format(
+		"mysqldump --defaults-extra-file={} {} > {}",
+		tempConfigFile, g_configManager().getString(MYSQL_DB), backupFileName
+	);
+
+	int result = std::system(command.c_str());
+	std::filesystem::remove(tempConfigFile);
+
+	if (result != 0) {
+		g_logger().error("Failed to create database backup using mysqldump.");
+		return;
+	}
+
+	// Compress the backup file if requested
+	std::string compressedFileName;
+	compressedFileName = backupFileName + ".gz";
+	gzFile gzFile = gzopen(compressedFileName.c_str(), "wb9");
+	if (!gzFile) {
+		g_logger().error("Failed to open gzip file for compression.");
+		return;
+	}
+
+	std::ifstream backupFile(backupFileName, std::ios::binary);
+	if (!backupFile.is_open()) {
+		g_logger().error("Failed to open backup file for compression: {}", backupFileName);
+		gzclose(gzFile);
+		return;
+	}
+
+	std::string buffer(8192, '\0');
+	while (backupFile.read(&buffer[0], buffer.size()) || backupFile.gcount() > 0) {
+		gzwrite(gzFile, buffer.data(), backupFile.gcount());
+	}
+
+	backupFile.close();
+	gzclose(gzFile);
+	std::filesystem::remove(backupFileName);
+
+	g_logger().info("Database backup successfully compressed to: {}", compressedFileName);
+
+	// Delete backups older than 7 days
+	auto nowTime = std::chrono::system_clock::now();
+	auto sevenDaysAgo = nowTime - std::chrono::hours(7 * 24); // 7 days in hours
+	for (const auto &entry : std::filesystem::directory_iterator("database_backup")) {
+		if (entry.is_directory()) {
+			try {
+				for (const auto &file : std::filesystem::directory_iterator(entry)) {
+					if (file.path().extension() == ".gz") {
+						auto fileTime = std::filesystem::last_write_time(file);
+						auto fileTimeSystemClock = std::chrono::clock_cast<std::chrono::system_clock>(fileTime);
+
+						if (fileTimeSystemClock < sevenDaysAgo) {
+							std::filesystem::remove(file);
+							g_logger().info("Deleted old backup file: {}", file.path().string());
+						}
+					}
+				}
+			} catch (const std::filesystem::filesystem_error &e) {
+				g_logger().error("Failed to check or delete files in backup directory: {}. Error: {}", entry.path().string(), e.what());
+			}
+		}
+	}
 }
 
 bool Database::beginTransaction() {
@@ -99,11 +199,11 @@ bool Database::commit() {
 	return true;
 }
 
-bool Database::isRecoverableError(unsigned int error) const {
+bool Database::isRecoverableError(unsigned int error) {
 	return error == CR_SERVER_LOST || error == CR_SERVER_GONE_ERROR || error == CR_CONN_HOST_ERROR || error == 1053 /*ER_SERVER_SHUTDOWN*/ || error == CR_CONNECTION_ERROR;
 }
 
-bool Database::retryQuery(const std::string_view &query, int retries) {
+bool Database::retryQuery(std::string_view query, int retries) {
 	while (retries > 0 && mysql_query(handle, query.data()) != 0) {
 		g_logger().error("Query: {}", query.substr(0, 256));
 		g_logger().error("MySQL error [{}]: {}", mysql_errno(handle), mysql_error(handle));
@@ -121,7 +221,7 @@ bool Database::retryQuery(const std::string_view &query, int retries) {
 	return true;
 }
 
-bool Database::executeQuery(const std::string_view &query) {
+bool Database::executeQuery(std::string_view query) {
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return false;
@@ -140,7 +240,7 @@ bool Database::executeQuery(const std::string_view &query) {
 	return success;
 }
 
-DBResult_ptr Database::storeQuery(const std::string_view &query) {
+DBResult_ptr Database::storeQuery(std::string_view query) {
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
@@ -223,10 +323,10 @@ std::string DBResult::getString(const std::string &s) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
 		g_logger().error("Column '{}' does not exist in result set", s);
-		return std::string();
+		return {};
 	}
 	if (row[it->second] == nullptr) {
-		return std::string();
+		return {};
 	}
 	return std::string(row[it->second]);
 }
@@ -248,7 +348,7 @@ const char* DBResult::getStream(const std::string &s, unsigned long &size) const
 	return row[it->second];
 }
 
-uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const {
+uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) {
 	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
 	if (result > std::numeric_limits<uint8_t>::max()) {
 		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
@@ -258,7 +358,7 @@ uint8_t DBResult::getU8FromString(const std::string &string, const std::string &
 	return result;
 }
 
-int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const {
+int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) {
 	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
 	if (result > std::numeric_limits<int8_t>::max()) {
 		g_logger().error("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);

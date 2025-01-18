@@ -65,7 +65,7 @@ enum Faction_t {
 	FACTION_LAST = FACTION_FAFNAR,
 };
 
-enum LightState_t {
+enum LightState_t : uint8_t {
 	LIGHT_STATE_DAY,
 	LIGHT_STATE_NIGHT,
 	LIGHT_STATE_SUNSET,
@@ -105,7 +105,7 @@ enum class HighscoreCategories_t : uint8_t {
 	SHIELDING = 6,
 	FISHING = 7,
 	MAGIC_LEVEL = 8,
-	LOYALTY = 9,
+	LOYALTY_POINTS = 9,
 	ACHIEVEMENTS = 10,
 	CHARMS = 11,
 	DROME = 12,

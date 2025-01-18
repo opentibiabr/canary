@@ -9,12 +9,14 @@
 
 #pragma once
 
-#include "creatures/creature.hpp"
-
+class Creature;
 class Player;
 class Monster;
 class Npc;
 struct Position;
+
+// Forward declaration para CreatureVector
+using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 struct SpectatorsCache {
 	struct FloorData {
@@ -28,6 +30,8 @@ struct SpectatorsCache {
 	int32_t maxRangeY { 0 };
 
 	FloorData creatures;
+	FloorData monsters;
+	FloorData npcs;
 	FloorData players;
 };
 
@@ -36,15 +40,25 @@ public:
 	static void clearCache();
 
 	template <typename T>
-		requires std::is_same_v<Creature, T> || std::is_same_v<Player, T>
-	Spectators find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0) {
+		requires std::is_base_of_v<Creature, T>
+	Spectators find(const Position &centerPos, bool multifloor = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0, bool useCache = true) {
 		constexpr bool onlyPlayers = std::is_same_v<T, Player>;
-		return find(centerPos, multifloor, onlyPlayers, minRangeX, maxRangeX, minRangeY, maxRangeY);
+		constexpr bool onlyMonsters = std::is_same_v<T, Monster>;
+		constexpr bool onlyNpcs = std::is_same_v<T, Npc>;
+		return find(centerPos, multifloor, onlyPlayers, onlyMonsters, onlyNpcs, minRangeX, maxRangeX, minRangeY, maxRangeY, useCache);
 	}
 
 	template <typename T>
 		requires std::is_base_of_v<Creature, T>
-	Spectators filter();
+	Spectators filter() const {
+		constexpr bool onlyPlayers = std::is_same_v<T, Player>;
+		constexpr bool onlyMonsters = std::is_same_v<T, Monster>;
+		constexpr bool onlyNpcs = std::is_same_v<T, Npc>;
+		return filter(onlyPlayers, onlyMonsters, onlyNpcs);
+	}
+
+	Spectators excludeMaster() const;
+	Spectators excludePlayerMaster() const;
 
 	Spectators insert(const std::shared_ptr<Creature> &creature);
 	Spectators insertAll(const CreatureVector &list);
@@ -83,33 +97,12 @@ public:
 private:
 	static phmap::flat_hash_map<Position, SpectatorsCache> spectatorsCache;
 
-	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
-	bool checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
+	Spectators find(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, bool onlyMonsters = false, bool onlyNpcs = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0, bool useCache = true);
+	CreatureVector getSpectators(const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, bool onlyMonsters = false, bool onlyNpcs = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
+
+	Spectators filter(bool onlyPlayers, bool onlyMonsters, bool onlyNpcs) const;
+
+	bool checkCache(const SpectatorsCache::FloorData &specData, bool onlyPlayers, bool onlyMonsters, bool onlyNpcs, const Position &centerPos, bool checkDistance, bool multifloor, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY);
 
 	CreatureVector creatures;
 };
-
-template <typename T>
-	requires std::is_base_of_v<Creature, T>
-Spectators Spectators::filter() {
-	auto specs = Spectators();
-	specs.creatures.reserve(creatures.size());
-
-	for (const auto &c : creatures) {
-		if constexpr (std::is_same_v<T, Player>) {
-			if (c->getPlayer() != nullptr) {
-				specs.insert(c);
-			}
-		} else if constexpr (std::is_same_v<T, Monster>) {
-			if (c->getMonster() != nullptr) {
-				specs.insert(c);
-			}
-		} else if constexpr (std::is_same_v<T, Npc>) {
-			if (c->getNpc() != nullptr) {
-				specs.insert(c);
-			}
-		}
-	}
-
-	return specs;
-}

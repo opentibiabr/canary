@@ -7,16 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "server/signals.hpp"
 
+#include "config/configmanager.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/global/globalevent.hpp"
-#include "server/signals.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "lib/di/container.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {
@@ -111,7 +114,7 @@ void Signals::sighupHandler() {
 	Item::items.reload();
 	g_logger().info("Reloaded items");
 
-	g_game().mounts.reload();
+	g_game().mounts->reload();
 	g_logger().info("Reloaded mounts");
 
 	g_events().loadFromXml();
@@ -120,7 +123,7 @@ void Signals::sighupHandler() {
 	g_chat().load();
 	g_logger().info("Reloaded chatchannels");
 
-	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/core.lua", "core.lua");
+	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua", "core.lua");
 	g_logger().info("Reloaded core.lua");
 
 	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);

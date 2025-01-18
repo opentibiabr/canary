@@ -17,6 +17,8 @@ static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 
 enum class TaskGroup : int8_t {
 	ThreadPool = -1,
+	Walk,
+	WalkParallel,
 	Serial,
 	GenericParallel,
 	Last
@@ -31,16 +33,14 @@ enum class DispatcherType : uint8_t {
 };
 
 struct DispatcherContext {
-	bool isOn() const {
-		return OTSYS_TIME() != 0;
-	}
+	static bool isOn();
 
 	bool isGroup(const TaskGroup _group) const {
 		return group == _group;
 	}
 
 	bool isAsync() const {
-		return group != TaskGroup::Serial;
+		return type == DispatcherType::AsyncEvent;
 	}
 
 	auto getGroup() const {
@@ -54,12 +54,6 @@ struct DispatcherContext {
 	auto getType() const {
 		return type;
 	}
-
-	// postpone the event
-	void addEvent(std::function<void(void)> &&f, std::string_view context) const;
-
-	// if the context is async, the event will be postponed, if not, it will be executed immediately.
-	void tryAddEvent(std::function<void(void)> &&f, std::string_view context) const;
 
 private:
 	void reset() {
@@ -88,7 +82,9 @@ public:
 		for (uint_fast16_t i = 0; i < threads.capacity(); ++i) {
 			threads.emplace_back(std::make_unique<ThreadTask>());
 		}
-	};
+
+		scheduledTasksRef.reserve(2000);
+	}
 
 	// Ensures that we don't accidentally copy it
 	Dispatcher(const Dispatcher &) = delete;
@@ -97,6 +93,7 @@ public:
 	static Dispatcher &getInstance();
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
+	void addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0); // No need context name
 
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
 		return scheduleEvent(delay, std::move(f), context, true);
@@ -150,11 +147,13 @@ private:
 
 	inline void mergeAsyncEvents();
 	inline void mergeEvents();
-	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Serial);
+	inline void __mergeEvents(const std::array<uint8_t, 2> &groups, const bool mergeScheduledEvents);
+
+	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Walk);
 	inline void executeScheduledEvents();
 
-	inline void executeSerialEvents(std::vector<Task> &tasks);
-	inline void executeParallelEvents(std::vector<Task> &tasks, const uint8_t groupId);
+	inline void executeSerialEvents(const uint8_t groupId);
+	inline void executeParallelEvents(const uint8_t groupId);
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -210,12 +209,13 @@ private:
 		std::vector<std::shared_ptr<Task>> scheduledTasks;
 		std::mutex mutex;
 	};
+
 	std::vector<std::unique_ptr<ThreadTask>> threads;
 
 	// Main Events
 	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
-	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks;
-	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef;
+	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks {};
+	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 
 	bool asyncWaitDisabled = false;
 

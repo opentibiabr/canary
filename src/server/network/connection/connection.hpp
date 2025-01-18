@@ -107,4 +107,20 @@ private:
 
 	friend class ServicePort;
 	friend class ConnectionManager;
+
+	template <typename Func>
+	void executeWithCatch(Func &&func, const std::string &context) {
+		try {
+			func();
+		} catch (const std::system_error &e) {
+			g_logger().error("[{}] - System error: {}", context, e.what());
+			close(true);
+		} catch (const std::exception &e) {
+			g_logger().error("[{}] - Unexpected error: {}", context, e.what());
+			close(true);
+		} catch (...) {
+			g_logger().error("[{}] - Unknown error occurred", context);
+			close(true);
+		}
+	}
 };

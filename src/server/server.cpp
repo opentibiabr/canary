@@ -59,7 +59,7 @@ void ServiceManager::stop() {
 
 	acceptors.clear();
 
-	death_timer.expires_from_now(std::chrono::seconds(3));
+	death_timer.expires_after(std::chrono::seconds(3));
 	death_timer.async_wait([this](const std::error_code &err) {
 		if (!err) {
 			die();

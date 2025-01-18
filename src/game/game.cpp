@@ -440,7 +440,10 @@ void Game::resetNpcs() const {
 
 void Game::loadBoostedCreature() {
 	auto &db = Database::getInstance();
-	const auto result = db.storeQuery("SELECT * FROM `boosted_creature`");
+	const auto result = db.storeQuery(
+		"SELECT `date`, `boostname`, `raceid`, `looktype`, `lookfeet`, `looklegs`, `lookhead`, `lookbody`, `lookaddons`, `lookmount` "
+		"FROM `boosted_creature`"
+	);
 	if (!result) {
 		g_logger().warn("[Game::loadBoostedCreature] - "
 		                "Failed to detect boosted creature database. (CODE 01)");
@@ -3380,6 +3383,21 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		return;
 	}
 
+	if (!player->canDoAction()) {
+		uint32_t delay = player->getNextActionTime() - OTSYS_TIME();
+		if (delay > 0) {
+			const auto &task = createPlayerTask(
+				delay,
+				[this, playerId, itemId, hasTier, tier] {
+					playerEquipItem(playerId, itemId, hasTier, tier);
+				},
+				__FUNCTION__
+			);
+			player->setNextActionTask(task);
+		}
+		return;
+	}
+
 	if (player->hasCondition(CONDITION_FEARED)) {
 		/*
 		 *	When player is feared the player can´t equip any items.
@@ -3477,6 +3495,8 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	}
+
+	player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 }
 
 void Game::playerMove(uint32_t playerId, Direction direction) {
@@ -3485,6 +3505,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
@@ -3498,6 +3519,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
@@ -3673,6 +3695,7 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 	player->startAutoWalk(listDir, false);
@@ -3689,6 +3712,7 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &
 	player->sendCancelTarget();
 	player->setFollowCreature(nullptr);
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 
@@ -3822,6 +3846,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		player->setNextPotionActionTask(nullptr);
@@ -3943,6 +3968,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextActionTask(nullptr);
 
@@ -4107,6 +4133,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		player->setNextPotionActionTask(nullptr);
@@ -5891,6 +5918,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	if (player->getAttackedCreature() && creatureId == 0) {
+		player->resetLoginProtection();
 		player->setAttackedCreature(nullptr);
 		player->sendCancelTarget();
 		return;
@@ -6065,6 +6093,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	internalCreatureTurn(player, dir);
 }
@@ -6188,6 +6217,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 
 	if (playerSaySpell(player, type, text)) {
@@ -8513,39 +8543,66 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 	}
 }
 
-std::string Game::generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation) {
-	std::ostringstream query;
-	uint32_t startPage = (static_cast<uint32_t>(page - 1) * static_cast<uint32_t>(entriesPerPage));
+std::string Game::generateHighscoreQuery(
+	const std::string &categoryName,
+	uint32_t page,
+	uint8_t entriesPerPage,
+	uint32_t vocation,
+	uint32_t playerGUID /*= 0*/
+) {
+	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
 	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
-
-	query << "SELECT *, @row AS `entries`, " << page << " AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `id`, `name`, `level`, `vocation`, `"
-		  << categoryName << "` AS `points`, @curRank := IF(@prevRank = `" << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName
-		  << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
-
-	if (vocation != 0xFFFFFFFF) {
-		query << generateVocationConditionHighscore(vocation);
-	}
-	query << ") `T` WHERE `rn` > " << startPage << " AND `rn` <= " << endPage;
-
-	return query.str();
-}
-
-std::string Game::generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation) {
-	std::ostringstream query;
 	std::string entriesStr = std::to_string(entriesPerPage);
 
-	query << "SELECT *, @row AS `entries`, (@ourRow DIV " << entriesStr << ") + 1 AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn`, @ourRow := IF(`id` = "
-		  << playerGUID << ", @row - 1, @ourRow) AS `rw` FROM (SELECT `id`, `name`, `level`, `vocation`, `" << categoryName << "` AS `points`, @curRank := IF(@prevRank = `"
-		  << categoryName << "`, @curRank, IF(@prevRank := `" << categoryName << "`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` WHERE `group_id` < "
-		  << static_cast<int>(GROUP_TYPE_GAMEMASTER) << " ORDER BY `" << categoryName << "` DESC) `t`";
+	if (categoryName.empty()) {
+		g_logger().error("Category name cannot be empty.");
+		return "";
+	}
+
+	std::string query = fmt::format(
+		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, "
+	);
+
+	if (playerGUID != 0) {
+		query += fmt::format("(@ourRow DIV {0}) + 1 AS `page` FROM (", entriesStr);
+	} else {
+		query += fmt::format("{} AS `page` FROM (", page);
+	}
+
+	query += fmt::format(
+		"SELECT `id`, `name`, `level`, `vocation`, `{}` AS `points`, "
+		"@curRank := IF(@prevRank = `{}`, @curRank, IF(@prevRank := `{}`, @curRank + 1, @curRank + 1)) AS `rank`, "
+		"(@row := @row + 1) AS `rn`",
+		categoryName, categoryName, categoryName
+	);
+
+	if (playerGUID != 0) {
+		query += fmt::format(", @ourRow := IF(`id` = {}, @row - 1, @ourRow) AS `rw`", playerGUID);
+	}
+
+	query += fmt::format(
+		" FROM (SELECT `id`, `name`, `level`, `vocation`, `{}` FROM `players` `p`, "
+		"(SELECT @curRank := 0, @prevRank := NULL, @row := 0, @ourRow := 0) `r` "
+		"WHERE `group_id` < {} ORDER BY `{}` DESC) `t`",
+		categoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), categoryName
+	);
 
 	if (vocation != 0xFFFFFFFF) {
-		query << generateVocationConditionHighscore(vocation);
+		query += generateVocationConditionHighscore(vocation);
 	}
-	query << ") `T` WHERE `rn` > ((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") AND `rn` <= (((@ourRow DIV " << entriesStr << ") * " << entriesStr << ") + " << entriesStr << ")";
 
-	return query.str();
+	query += ") `T` WHERE ";
+
+	if (playerGUID != 0) {
+		query += fmt::format(
+			"`rn` > ((@ourRow DIV {0}) * {0}) AND `rn` <= (((@ourRow DIV {0}) * {0}) + {0})",
+			entriesStr
+		);
+	} else {
+		query += fmt::format("`rn` > {} AND `rn` <= {}", startPage, endPage);
+	}
+
+	return query;
 }
 
 std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
@@ -8633,7 +8690,7 @@ std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string 
 		}
 	}
 
-	std::string newQuery = generateHighscoreQueryForEntries(categoryName, page, entriesPerPage, vocation);
+	std::string newQuery = generateHighscoreQuery(categoryName, page, entriesPerPage, vocation);
 	cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
 
 	return newQuery;
@@ -8651,7 +8708,7 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 		}
 	}
 
-	std::string newQuery = generateHighscoreQueryForOurRank(categoryName, entriesPerPage, playerGUID, vocation);
+	std::string newQuery = generateHighscoreQuery(categoryName, 0, entriesPerPage, vocation, playerGUID);
 	cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
 
 	return newQuery;
@@ -9007,12 +9064,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	uint64_t totalPrice = price * amount;
-	uint64_t totalFee = totalPrice * 0.02;
-	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee);
-	uint64_t fee = std::max<uint64_t>(20, totalFee);
+	uint64_t totalFee = totalPrice * 0.02; // 2% fee
+	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee); // Max fee is 1kk
+	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
 	if (type == MARKETACTION_SELL) {
-		if (fee > (player->getBankBalance() + player->getMoney())) {
+		if (fee > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money";
 			return;
 		}
@@ -9868,8 +9925,8 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 	player->updateUIExhausted();
+	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 }
 
 void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
@@ -10941,7 +10998,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 			const auto &house = it.second;
 			const auto &town = g_game().map.towns.getTown(house->getTownId());
 			if (!town) {
-				return;
+				continue;
 			}
 
 			const std::string &houseTown = town->getName();

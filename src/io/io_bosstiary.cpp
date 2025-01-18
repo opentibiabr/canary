@@ -20,23 +20,23 @@ IOBosstiary &IOBosstiary::getInstance() {
 }
 
 void IOBosstiary::loadBoostedBoss() {
-	std::string query = R"SQL(
-		SELECT `date`, `boostname`, `raceid`, `looktypeEx`, `looktype`, 
-		       `lookfeet`, `looklegs`, `lookhead`, `lookbody`, 
-		       `lookaddons`, `lookmount`
-		FROM `boosted_boss`
-	)SQL";
-
-	DBResult_ptr result = g_database().storeQuery(query);
-	auto timeNow = getTimeNow();
-	auto time = localtime(&timeNow);
-	auto today = time->tm_mday;
+	Database &database = Database::getInstance();
+	auto query = fmt::format("SELECT `date`, `boostname`, `raceid` FROM `boosted_boss`");
+	DBResult_ptr result = database.storeQuery(query);
+	if (!result) {
+		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
+		return;
+	}
 
 	const auto &bossMap = getBosstiaryMap();
 	if (bossMap.size() <= 1) {
 		g_logger().error("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
 		return;
 	}
+
+	auto timeNow = getTimeNow();
+	auto time = localtime(&timeNow);
+	auto today = time->tm_mday;
 
 	if (!result) {
 		g_logger().warn("[{}] No boosted boss found in g_database(). A new one will be selected.", __FUNCTION__);
@@ -73,34 +73,49 @@ void IOBosstiary::loadBoostedBoss() {
 	uint16_t bossId = randomBossId;
 
 	query = fmt::format(
-		"UPDATE `boosted_boss` SET `date` = '{}', `boostname` = {}, ",
-		today, g_database().escapeString(bossName)
+		"UPDATE `boosted_boss` SET `date` = '{}', `boostname` = {}, `raceid` = '{}', ",
+		today, database.escapeString(bossName), bossId
 	);
-	if (const auto &bossType = getMonsterTypeByBossRaceId(bossId); bossType) {
+
+	if (const auto bossType = getMonsterTypeByBossRaceId(bossId); bossType) {
 		query += fmt::format(
 			"`looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, "
 			"`lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, ",
-			bossType->info.outfit.lookTypeEx, bossType->info.outfit.lookType,
-			bossType->info.outfit.lookFeet, bossType->info.outfit.lookLegs,
-			bossType->info.outfit.lookHead, bossType->info.outfit.lookBody,
-			bossType->info.outfit.lookAddons, bossType->info.outfit.lookMount
+			static_cast<int>(bossType->info.outfit.lookTypeEx),
+			static_cast<int>(bossType->info.outfit.lookType),
+			static_cast<int>(bossType->info.outfit.lookFeet),
+			static_cast<int>(bossType->info.outfit.lookLegs),
+			static_cast<int>(bossType->info.outfit.lookHead),
+			static_cast<int>(bossType->info.outfit.lookBody),
+			static_cast<int>(bossType->info.outfit.lookAddons),
+			static_cast<int>(bossType->info.outfit.lookMount)
 		);
 	}
-	query += fmt::format("`raceid` = {}", bossId);
 
-	if (!g_database().executeQuery(query)) {
-		g_logger().error("[{}] Failed to update boosted boss in g_database(). (CODE 03)", __FUNCTION__);
+	query += fmt::format("`raceid` = '{}'", bossId);
+
+	if (!database.executeQuery(query)) {
+		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 03)", __FUNCTION__);
 		return;
 	}
 
-	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}", bossId);
-	if (!g_database().executeQuery(query)) {
-		g_logger().error("[{}] Failed to reset players' selected boss slot 1. (CODE 03)", __FUNCTION__);
+	query = fmt::format(
+		"UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}",
+		bossId
+	);
+
+	if (!database.executeQuery(query)) {
+		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}
 
-	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}", bossId);
-	if (!g_database().executeQuery(query)) {
-		g_logger().error("[{}] Failed to reset players' selected boss slot 2. (CODE 03)", __FUNCTION__);
+	query = fmt::format(
+		"UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}",
+		bossId
+	);
+
+	if (!database.executeQuery(query)) {
+		g_logger().error("[{}] Failed to reset players selected boss slot 2. (CODE 03)", __FUNCTION__);
+		return;
 	}
 
 	setBossBoostedName(bossName);

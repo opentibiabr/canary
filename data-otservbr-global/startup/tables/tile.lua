@@ -296,8 +296,9 @@ TileAction = {
 	[50307] = {
 		itemId = false,
 		itemPos = {
+			{ x = 33955, y = 31503, z = 2 },
 			{ x = 33956, y = 31503, z = 2 },
-			{ x = 33957, y = 31503, z = 2 },
+			{ x = 33956, y = 31504, z = 2 },
 		},
 	},
 	-- The paradox tower quest

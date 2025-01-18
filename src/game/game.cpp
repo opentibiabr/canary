@@ -8603,7 +8603,7 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 	return queryPart.str();
 }
 
-void Game::processHighscoreResults(const DBResult_ptr &result, const std::string& worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage) {
+void Game::processHighscoreResults(const DBResult_ptr &result, const std::string &worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage) {
 	const auto &player = g_game().getPlayerByID(playerID);
 	if (!player) {
 		return;
@@ -8688,7 +8688,7 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 	return newQuery;
 }
 
-void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage) {
+void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage) {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
 		return;
 	}

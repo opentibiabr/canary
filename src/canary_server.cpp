@@ -159,7 +159,7 @@ void CanaryServer::loadThisWorld() {
 	}
 
 	const auto location = Worlds::getWorldLocationByKey(world->locationName);
-	if (location == LOCATION_NONE) {
+	if (location == Location_t::None) {
 		throw FailedToInitializeCanary(
 			fmt::format("Unknown world location: {}, valid world locations are: Europe, North America, South America and Oceania", world->locationName)
 		);

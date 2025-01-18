@@ -21,7 +21,7 @@ struct World {
 	WorldType_t type = WORLD_TYPE_PVP;
 	std::string motd;
 	std::string locationName;
-	Location_t location = LOCATION_SOUTH_AMERICA;
+	Location_t location = Location_t::SouthAmerica;
 	std::string ip;
 	uint16_t port = 7172;
 	uint32_t portStatus = 97172;

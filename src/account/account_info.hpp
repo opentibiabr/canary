@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "enums/account_type.hpp"
+
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <parallel_hashmap/phmap.h>
 	#include <cstdint>
@@ -22,8 +24,6 @@ struct Character {
 	uint64_t deletion = 0;
 	uint16_t worldId = 0;
 };
-
-#include "enums/account_type.hpp"
 
 struct AccountInfo {
 	~AccountInfo() = default;

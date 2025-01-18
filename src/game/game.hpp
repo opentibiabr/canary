@@ -954,7 +954,7 @@ private:
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
-	Worlds m_worlds;
+	Worlds m_worlds = {};
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(const DBResult_ptr &result, const std::string& worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);

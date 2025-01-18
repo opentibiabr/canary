@@ -468,10 +468,10 @@ std::vector<std::shared_ptr<World>> IOLoginData::loadWorlds() {
 			entries.emplace_back(std::make_shared<World>(
 				result->getNumber<uint8_t>("id"),
 				result->getString("name"),
-				g_game().worlds().getWorldTypeIdByKey(result->getString("type")),
+				Worlds::getWorldTypeIdByKey(result->getString("type")),
 				result->getString("motd"),
 				result->getString("location"),
-				g_game().worlds().getWorldLocationByKey(result->getString("location")),
+				Worlds::getWorldLocationByKey(result->getString("location")),
 				result->getString("ip"),
 				result->getNumber<uint16_t>("port"),
 				result->getNumber<uint32_t>("port_status"),

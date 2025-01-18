@@ -28,12 +28,12 @@ enum WorldType_t : int8_t {
 	WORLD_TYPE_RETRO_PVP_ENFORCED = 4,
 };
 
-enum Location_t {
-	LOCATION_NONE = 0,
-	LOCATION_EUROPE = 1,
-	LOCATION_NORTH_AMERICA = 2,
-	LOCATION_SOUTH_AMERICA = 3,
-	LOCATION_OCEANIA = 4,
+enum class Location_t {
+	None = 0,
+	Europe = 1,
+	NorthAmerica = 2,
+	SouthAmerica = 3,
+	Oceania = 4,
 };
 
 enum GameState_t {

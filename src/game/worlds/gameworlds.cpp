@@ -24,7 +24,7 @@ void Worlds::reload() {
 }
 
 [[nodiscard]] std::shared_ptr<World> Worlds::getWorldConfigsById(uint8_t id) const {
-	auto it = std::find_if(worlds.begin(), worlds.end(), [id](const std::shared_ptr<World> &world) {
+	auto it = std::ranges::find_if(worlds, [id](const std::shared_ptr<World> &world) {
 		return world->id == id;
 	});
 
@@ -68,16 +68,16 @@ const std::shared_ptr<World> &Worlds::getCurrentWorld() const {
 	const std::string location = asLowerCaseString(key);
 
 	if (location == "europe") {
-		return LOCATION_EUROPE;
+		return Location_t::Europe;
 	} else if (location == "north america") {
-		return LOCATION_NORTH_AMERICA;
+		return Location_t::NorthAmerica;
 	} else if (location == "south america") {
-		return LOCATION_SOUTH_AMERICA;
+		return Location_t::SouthAmerica;
 	} else if (location == "oceania") {
-		return LOCATION_OCEANIA;
+		return Location_t::Oceania;
 	}
 
 	g_logger().error("[{}] - Unable to get world location from string '{}'", __FUNCTION__, location);
 
-	return LOCATION_NONE;
+	return Location_t::None;
 }

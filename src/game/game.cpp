@@ -213,8 +213,6 @@ Game::Game() {
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
 
-	// Create instance of worlds
-	m_worlds = Worlds();
 	m_worldTypesNames = {
 		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_PVP), "Open PvP" },
 		{ static_cast<uint8_t>(WorldType_t::WORLD_TYPE_NO_PVP), "Optional PvP" },
@@ -8640,7 +8638,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, const std::string
 				const auto &voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
 				uint8_t characterVocation = voc ? voc->getClientId() : 0;
 				std::string loyaltyTitle; // todo get loyalty title from player
-				characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, std::move(result->getString("worldName")), loyaltyTitle);
+				characters.emplace_back(result->getString("name"), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation, result->getString("worldName"), loyaltyTitle);
 			} while (result->next());
 		}
 

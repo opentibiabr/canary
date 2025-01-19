@@ -3773,41 +3773,69 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	const auto &corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
-		std::string subjectPronoun = getSubjectPronoun();
-		capitalizeWords(subjectPronoun);
 
-		if (!damageMap.empty()) {
-			ss << fmt::format("You recognize {}. {} was killed by ", getNameDescription(), subjectPronoun);
+		ss << "You recognize " << getNameDescription() << ". ";
 
-			std::vector<std::string> killers;
-			for (const auto &[creatureId, damageInfo] : damageMap) {
-				const auto &[totalDamage, ticks] = damageInfo;
-				const auto &damageDealer = g_game().getCreatureByID(creatureId);
-				if (damageDealer) {
-					killers.push_back(damageDealer->getNameDescription());
+		std::string responsibleName;
+		std::string secondaryResponsibleName;
+		bool hasOthers = false;
+
+		if (lastHitCreature) {
+			if (lastHitCreature->getPlayer()) {
+				responsibleName = lastHitCreature->getNameDescription();
+			} else if (auto master = lastHitCreature->getMaster(); master && master->getPlayer()) {
+				responsibleName = master->getNameDescription();
+			}
+		}
+
+		if (mostDamageCreature) {
+			if (mostDamageCreature->getPlayer()) {
+				if (responsibleName != mostDamageCreature->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = mostDamageCreature->getNameDescription();
+				}
+			} else if (auto master = mostDamageCreature->getMaster(); master && master->getPlayer()) {
+				if (responsibleName != master->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = master->getNameDescription();
 				}
 			}
+		}
 
-			if (!killers.empty()) {
-				for (size_t i = 0; i < killers.size(); ++i) {
-					if (i > 0) {
-						ss << (i == killers.size() - 1 ? " and " : ", ");
-					}
-					ss << killers[i];
+		uint32_t inFightTicks = 5 * 60 * 1000;
+		for (const auto &[creatureId, damageInfo] : damageMap) {
+			const auto &[total, ticks] = damageInfo;
+			if ((OTSYS_TIME() - ticks) <= inFightTicks) {
+				const auto &attacker = g_game().getCreatureByID(creatureId);
+				if (attacker && !attacker->getPlayer()) {
+					hasOthers = true;
+					break;
 				}
-			} else {
-				ss << "an unknown attacker";
+			}
+		}
+
+		if (!responsibleName.empty()) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << responsibleName;
+
+			if (!secondaryResponsibleName.empty()) {
+				ss << " and " << secondaryResponsibleName;
+			} else if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
+		} else if (lastHitCreature) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription();
+			if (hasOthers) {
+				ss << " and others";
 			}
 			ss << '.';
 		} else {
-			ss << fmt::format("You recognize {}.", getNameDescription());
+			ss << "No attackers were identified.";
 		}
 
 		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
-		return corpse;
 	}
-
-	return nullptr;
+	return corpse;
 }
 
 void Player::addInFightTicks(bool pzlock /*= false*/) {

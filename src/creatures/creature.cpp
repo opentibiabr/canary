@@ -577,6 +577,7 @@ void Creature::onDeath() {
 		}
 	}
 
+	const auto &mostDamagePlayer = mostDamageCreature ? mostDamageCreature->getPlayer() : nullptr;
 	const auto &mostMasterPlayer = mostDamageCreatureMaster ? mostDamageCreatureMaster->getPlayer() : nullptr;
 	bool killedByPlayer = mostDamagePlayer || mostMasterPlayer;
 	if (thisPlayer) {

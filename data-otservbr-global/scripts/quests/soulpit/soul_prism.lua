@@ -94,10 +94,10 @@ function soulPrism.onUse(player, item, fromPosition, target, toPosition, isHotke
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received an Ominous Soul Core.")
 	else
 		player:addItem(newSoulCoreItem, 1)
-		player:removeItem(target:getId(), 1)
+		target:remove(1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received a %s soul core.", newMonsterType:getName()))
 	end
-	player:removeItem(item:getId(), 1)
+	item:remove(1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	return true
 end

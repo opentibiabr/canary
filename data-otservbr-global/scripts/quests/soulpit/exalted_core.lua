@@ -81,9 +81,9 @@ function exaltedCore.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 
 	player:addItem(newSoulCoreItem, 1)
-	player:removeItem(target:getId(), 1)
+	target:remove(1)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You have received a %s soul core.", newMonsterType:getName()))
-	player:removeItem(item:getId(), 1)
+	item:remove(1)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	return true
 end

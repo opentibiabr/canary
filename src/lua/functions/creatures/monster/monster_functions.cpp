@@ -140,9 +140,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		}
 
 		// Update created monster
-		const std::string oldName = monster->getLowerName();
-		uint32_t oldId = monster->getID();
-		g_game().updateMonster(monster, oldName, oldId);
+		g_game().updateMonster(monster, mType);
 
 		// Assign new MonsterType
 		monster->mType = mType;

@@ -541,7 +541,7 @@ public:
 
 	void addMonster(const std::shared_ptr<Monster> &monster);
 	void removeMonster(const std::shared_ptr<Monster> &monster);
-	void updateMonster(const std::shared_ptr<Monster> &monster, const std::string &oldName, uint32_t oldId);
+	void updateMonster(const std::shared_ptr<Monster> &monster, const std::shared_ptr<MonsterType> &monsterType);
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;

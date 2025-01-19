@@ -9069,8 +9069,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
 	if (type == MARKETACTION_SELL) {
-		uint64_t totalPriceWithFee = totalPrice + fee;
-		if (totalPriceWithFee > (player->getMoney() + player->getBankBalance())) {
+		if (fee > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money";
 			return;
 		}
@@ -10999,7 +10998,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 			const auto &house = it.second;
 			const auto &town = g_game().map.towns.getTown(house->getTownId());
 			if (!town) {
-				return;
+				continue;
 			}
 
 			const std::string &houseTown = town->getName();

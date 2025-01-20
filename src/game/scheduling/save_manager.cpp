@@ -121,7 +121,7 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 }
 
 bool SaveManager::savePlayer(std::shared_ptr<Player> player) {
-	if (player->isOnline()) {
+	if (player->isOnline() && g_game().getGameState() != GAME_STATE_SHUTDOWN) {
 		schedulePlayer(player);
 		return true;
 	}

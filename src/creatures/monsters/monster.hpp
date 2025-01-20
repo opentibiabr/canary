@@ -49,6 +49,10 @@ public:
 	void setNameDescription(std::string_view nameDescription);
 	std::string getDescription(int32_t) override;
 
+	const std::string &getLowerName() const {
+		return m_lowerName;
+	}
+
 	CreatureType_t getType() const override;
 
 	const Position &getMasterPos() const;
@@ -91,7 +95,7 @@ public:
 	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
 	void onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) override;
 	void onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer);
-	void onSpawn();
+	void onSpawn(const Position &position);
 
 	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
@@ -225,6 +229,8 @@ protected:
 	void onExecuteAsyncTasks() override;
 
 private:
+	void onThink_async();
+
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
 			const auto &target = ref.lock();
@@ -242,6 +248,7 @@ private:
 	ForgeClassifications_t monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
 	std::string name;
+	std::string m_lowerName;
 	std::string nameDescription;
 
 	std::shared_ptr<MonsterType> mType;

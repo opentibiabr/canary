@@ -3505,6 +3505,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
@@ -3518,6 +3519,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
@@ -3693,6 +3695,7 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 	player->startAutoWalk(listDir, false);
@@ -3709,6 +3712,7 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &
 	player->sendCancelTarget();
 	player->setFollowCreature(nullptr);
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 
@@ -3842,6 +3846,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		player->setNextPotionActionTask(nullptr);
@@ -3963,6 +3968,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextActionTask(nullptr);
 
@@ -4127,6 +4133,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
 		player->setNextPotionActionTask(nullptr);
@@ -5911,6 +5918,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	if (player->getAttackedCreature() && creatureId == 0) {
+		player->resetLoginProtection();
 		player->setAttackedCreature(nullptr);
 		player->sendCancelTarget();
 		return;
@@ -6085,6 +6093,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 	internalCreatureTurn(player, dir);
 }
@@ -6208,6 +6217,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 		return;
 	}
 
+	player->resetLoginProtection();
 	player->resetIdleTime();
 
 	if (playerSaySpell(player, type, text)) {
@@ -9054,12 +9064,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	uint64_t totalPrice = price * amount;
-	uint64_t totalFee = totalPrice * 0.02;
-	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee);
-	uint64_t fee = std::max<uint64_t>(20, totalFee);
+	uint64_t totalFee = totalPrice * 0.02; // 2% fee
+	uint64_t maxFee = std::min<uint64_t>(1000000, totalFee); // Max fee is 1kk
+	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
 	if (type == MARKETACTION_SELL) {
-		if (fee > (player->getBankBalance() + player->getMoney())) {
+		if (fee > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money";
 			return;
 		}
@@ -9915,8 +9925,8 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 		return;
 	}
 
-	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 	player->updateUIExhausted();
+	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
 }
 
 void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
@@ -10988,7 +10998,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 			const auto &house = it.second;
 			const auto &town = g_game().map.towns.getTown(house->getTownId());
 			if (!town) {
-				return;
+				continue;
 			}
 
 			const std::string &houseTown = town->getName();

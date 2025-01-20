@@ -309,7 +309,7 @@ This page seems to be part of a book about ancient rituals, mystic incantations 
 				name = "Falcon Bastion Access",
 			},
 		},
-		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastionAccess,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.FalconBastionAccess,
 	},
 	[20002] = {
 		items = {

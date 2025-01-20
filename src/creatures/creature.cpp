@@ -249,6 +249,18 @@ void Creature::onWalk(Direction &dir) {
 	}
 }
 
+void Creature::resetMovementState() {
+	listWalkDir.clear();
+	cancelNextWalk = false;
+	eventWalk = 0;
+	if (const auto &player = getPlayer()) {
+		player->sendCancelWalk();
+		if (const auto &playerTile = player->getTile()) {
+			player->sendUpdateTile(playerTile, player->getPosition());
+		}
+	}
+}
+
 bool Creature::getNextStep(Direction &dir, uint32_t &) {
 	if (listWalkDir.empty()) {
 		return false;
@@ -416,6 +428,11 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 
 void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (hasCondition(CONDITION_ROOTED)) {
+		resetMovementState();
+		return;
+	}
+
 	if (creature.get() == this) {
 		lastStep = OTSYS_TIME();
 		lastStepCost = 1;

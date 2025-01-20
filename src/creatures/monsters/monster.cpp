@@ -35,6 +35,7 @@ std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 }
 
 Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
+	m_lowerName(asLowerCaseString(mType->name)),
 	nameDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
 	defaultOutfit = mType->info.outfit;
@@ -585,7 +586,11 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		totalPlayersOnScreen--;
 	}
 
-	targetList.erase(it);
+	if (auto shared = it->lock()) {
+		targetList.erase(it);
+	} else {
+		return false;
+	}
 
 	return true;
 }
@@ -668,7 +673,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return creature != master;
 	}
 
-	if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player && player->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
 	}
 
@@ -678,7 +684,7 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 
 	const auto &creatureMaster = creature->getMaster();
 	const auto &creaturePlayer = creatureMaster ? creatureMaster->getPlayer() : nullptr;
-	if (creature->getPlayer() || creaturePlayer) {
+	if (player || creaturePlayer) {
 		return true;
 	}
 
@@ -912,10 +918,6 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (!isSummon()) {
-		if (creature->getPlayer() && creature->getPlayer()->isDisconnected()) {
-			return false;
-		}
-
 		if (getFaction() != FACTION_DEFAULT) {
 			return isEnemyFaction(creature->getFaction());
 		}
@@ -930,6 +932,11 @@ bool Monster::isFleeing() const {
 
 bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 	if (!isTarget(creature)) {
+		return false;
+	}
+
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player && player->isLoginProtected()) {
 		return false;
 	}
 
@@ -1087,11 +1094,10 @@ void Monster::onThink_async() {
 			setFollowCreature(master);
 		}
 	} else if (!targetList.empty()) {
-		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
 		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
 		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
-		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
-			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
+		if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
+			if (!followCreature || !hasFollowPath) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
 				searchTarget(TARGETSEARCH_DEFAULT);
@@ -1111,6 +1117,11 @@ void Monster::onThink_async() {
 void Monster::doAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
 	if (!attackedCreature || attackedCreature->isLifeless() || (isSummon() && attackedCreature.get() == this)) {
+		return;
+	}
+
+	const auto &player = attackedCreature->getPlayer();
+	if (player && player->isLoginProtected()) {
 		return;
 	}
 
@@ -1503,6 +1514,11 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 }
 
 void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {
+	if (totalPlayersOnScreen > 0) {
+		isWalkingBack = false;
+		return;
+	}
+
 	result = Creature::getNextStep(nextDirection, flags);
 	if (result) {
 		flags |= FLAG_PATHFINDING;

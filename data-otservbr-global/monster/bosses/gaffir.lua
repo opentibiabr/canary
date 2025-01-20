@@ -28,6 +28,7 @@ monster.manaCost = 0
 monster.events = {
 	"UglyMonsterSpawn",
 	"UglyMonsterCleanup",
+	"grave_danger_death",
 }
 
 monster.changeTarget = {

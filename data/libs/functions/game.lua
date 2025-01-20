@@ -182,35 +182,3 @@ function Game.getPlayerAccountId(name)
 	end
 	return 0
 end
-
-function Game.getFormattedTimeRemaining(time)
-	local timeNow = os.time()
-	local timeRemaining = time - timeNow
-	local days = math.floor(timeRemaining / 86400)
-	local output = ""
-
-	if days > 1 then
-		return days .. " days"
-	end
-
-	local hours = math.floor((timeRemaining % 86400) / 3600)
-	local minutes = math.floor((timeRemaining % 3600) / 60)
-	local seconds = timeRemaining % 60
-
-	if hours == 0 and minutes == 0 and seconds > 0 then
-		output = "less than 1 minute"
-	else
-		if hours > 0 then
-			output = output .. hours .. " hour" .. (hours ~= 1 and "s" or "")
-		end
-
-		if minutes > 0 then
-			if hours > 0 then
-				output = output .. " and "
-			end
-
-			output = output .. minutes .. " minute" .. (minutes ~= 1 and "s" or "")
-		end
-	end
-	return output
-end

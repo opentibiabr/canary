@@ -250,13 +250,19 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		executeUseWeapon(player, var);
 	} else {
 		CombatDamage damage;
+		const WeaponType_t weaponType = item->getWeaponType();
+		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
+			damage.origin = ORIGIN_RANGED;
+		} else {
+			damage.origin = ORIGIN_MELEE;
+		}
 		damage.primary.type = params.combatType;
 		damage.secondary.type = getElementType();
 
 		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		const int32_t physicalAttack = item->getAttack();
 		const int32_t elementalAttack = getElementDamageValue();
-		const int32_t combinedAttack = physicalAttack + element
+		const int32_t combinedAttack = physicalAttack + elementalAttack;
 		if (elementalAttack > 0) {
 			float physicalPercentage = static_cast<float>(physicalAttack) / combinedAttack;
 			float elementalPercentage = static_cast<float>(elementalAttack) / combinedAttack;

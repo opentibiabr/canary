@@ -20,7 +20,6 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
-#include "items/weapons/weapons.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;

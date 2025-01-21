@@ -256,13 +256,13 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		const int32_t physicalAttack = item->getAttack();
 		const int32_t elementalAttack = getElementDamageValue();
-		const int32_t combinedAttack = physicalAttack + element
-		if (elementalAttack > 0) {
+		const int32_t combinedAttack = physicalAttack + element if (elementalAttack > 0) {
 			float physicalPercentage = static_cast<float>(physicalAttack) / combinedAttack;
 			float elementalPercentage = static_cast<float>(elementalAttack) / combinedAttack;
 			damage.primary.value = static_cast<int32_t>(totalDamage * physicalPercentage);
 			damage.secondary.value = static_cast<int32_t>(totalDamage * elementalPercentage);
-		} else {
+		}
+		else {
 			damage.primary.value = totalDamage;
 			damage.secondary.value = 0;
 		}
@@ -481,7 +481,6 @@ std::shared_ptr<Combat> Weapon::getCombat() {
 
 	return m_combat;
 }
-
 
 WeaponMelee::WeaponMelee() {
 	// Add combat type and blocked attributes to the weapon

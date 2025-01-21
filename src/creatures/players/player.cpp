@@ -7519,7 +7519,7 @@ void Player::sendFightModes() const {
 	}
 }
 
-void Player::sendNetworkMessage(const NetworkMessage &message) const {
+void Player::sendNetworkMessage(NetworkMessage &message) const {
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
@@ -8325,7 +8325,8 @@ void Player::initializeTaskHunting() {
 	}
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
-		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
+		auto buffer = g_ioprey().getTaskHuntingBaseDate();
+		client->writeToOutputBuffer(buffer);
 	}
 }
 

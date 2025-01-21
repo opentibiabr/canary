@@ -17,7 +17,6 @@
 #include "lib/di/container.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "lua/global/lua_variant.hpp"
-#include "creatures/monsters/monster.hpp"
 #include "creatures/players/player.hpp"
 
 Weapons::Weapons() = default;
@@ -249,30 +248,21 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
 		executeUseWeapon(player, var);
-		g_logger().debug("Weapon::internalUseWeapon - Lua callback executed.");
 	} else {
 		CombatDamage damage;
-		const WeaponType_t weaponType = item->getWeaponType();
-		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
-			damage.origin = ORIGIN_RANGED;
-		} else {
-			damage.origin = ORIGIN_MELEE;
-		}
-
-		// Define the primary and secondary damage types
 		damage.primary.type = params.combatType;
 		damage.secondary.type = getElementType();
 
-		// Step 1: Calculate total damage
 		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		if (damage.secondary.type != COMBAT_NONE) {
-			// Step 2: Use the helper function to distribute the damage
-			auto [physicalDamage, elementalDamage] = calculateDamageDistribution(target, totalDamage);
-			// Step 3: Assign the calculated values to the damage object
-			damage.primary.value = physicalDamage;
-			damage.secondary.value = elementalDamage;
+		const int32_t physicalAttack = item->getAttack();
+		const int32_t elementalAttack = getElementDamageValue();
+		const int32_t combinedAttack = physicalAttack + element
+		if (elementalAttack > 0) {
+			float physicalPercentage = static_cast<float>(physicalAttack) / combinedAttack;
+			float elementalPercentage = static_cast<float>(elementalAttack) / combinedAttack;
+			damage.primary.value = static_cast<int32_t>(totalDamage * physicalPercentage);
+			damage.secondary.value = static_cast<int32_t>(totalDamage * elementalPercentage);
 		} else {
-			// Step 2: Assign the total damage to the primary value
 			damage.primary.value = totalDamage;
 			damage.secondary.value = 0;
 		}
@@ -297,8 +287,6 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		} else {
 			Combat::doCombatHealth(player, target, damage, params);
 		}
-
-		g_logger().debug("Weapon::internalUseWeapon - cpp callback executed.");
 	}
 
 	onUsedWeapon(player, item, target->getTile());
@@ -494,42 +482,6 @@ std::shared_ptr<Combat> Weapon::getCombat() {
 	return m_combat;
 }
 
-std::pair<int32_t, int32_t> Weapon::calculateDamageDistribution(
-	const std::shared_ptr<Creature> &target,
-	int32_t totalDamage
-) const {
-	// Default damage distribution percentages
-	constexpr float DEFAULT_ELEMENTAL_PERCENTAGE = 0.666f; // 2/3 elemental damage
-	constexpr float DEFAULT_PHYSICAL_PERCENTAGE = 1.0f - DEFAULT_ELEMENTAL_PERCENTAGE;
-	// Initialize damage percentages
-	float elementalPercentage = DEFAULT_ELEMENTAL_PERCENTAGE;
-	float physicalPercentage = DEFAULT_PHYSICAL_PERCENTAGE;
-	// Check if the target is a player
-	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
-	if (targetPlayer) {
-		// Players have no weaknesses, damage is split 50/50
-		elementalPercentage = 0.5f;
-		physicalPercentage = 0.5f;
-	}
-	// Calculate base physical and elemental damage
-	int32_t physicalDamage = static_cast<int32_t>(totalDamage * physicalPercentage);
-	int32_t elementalDamage = static_cast<int32_t>(totalDamage * elementalPercentage);
-	// Apply resistance/weakness modifiers for monsters only
-	if (!targetPlayer && target) {
-		const auto &targetMonster = target->getMonster();
-		// Use the Monster::calculateElementalDamage function
-		if (targetMonster) {
-			auto elementType = getElementType();
-			auto elementDamageMap = targetMonster->calculateElementalDamage(elementType, elementalDamage);
-			auto it = elementDamageMap.find(elementType);
-			if (it != elementDamageMap.end()) {
-				elementalDamage = it->second; // Update elemental damage with calculated value
-			}
-		}
-	}
-	// Return the calculated damage distribution
-	return { physicalDamage, elementalDamage };
-}
 
 WeaponMelee::WeaponMelee() {
 	// Add combat type and blocked attributes to the weapon

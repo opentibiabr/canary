@@ -206,10 +206,6 @@ public:
 	std::shared_ptr<Combat> getCombat();
 
 	bool calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int16_t &elementAttack, CombatDamage &damage, bool useCharges = false) const;
-	std::pair<int32_t, int32_t> calculateDamageDistribution(
-		const std::shared_ptr<Creature> &target,
-		int32_t totalDamage
-	) const;
 
 	LuaScriptInterface* getScriptInterface() const;
 	bool loadScriptId();

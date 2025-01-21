@@ -315,6 +315,7 @@ public:
 	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
+	void resetMovementState();
 
 	void updateCreatureWalk() {
 		goToFollowCreature_async();

@@ -81,6 +81,7 @@ private:
 			"OutputMessagePool::sendAll",
 			"ProtocolGame::addGameTask",
 			"ProtocolGame::parsePacketFromDispatcher",
+			"ProtocolGame::writeToOutputBuffer",
 			"Raids::checkRaids",
 			"SpawnMonster::checkSpawnMonster",
 			"SpawnMonster::scheduleSpawn",

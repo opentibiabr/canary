@@ -908,8 +908,17 @@ void ProtocolGame::disconnectClient(const std::string &message) const {
 }
 
 void ProtocolGame::writeToOutputBuffer(const NetworkMessage &msg) {
-	auto out = getOutputBuffer(msg.getLength());
-	out->append(msg);
+	if (g_dispatcher().context().isAsync()) {
+		g_dispatcher().addEvent([=] {
+			auto out = getOutputBuffer(msg.getLength());
+			out->append(msg);
+		},
+		                        "ProtocolGame::writeToOutputBuffer");
+	}
+	else {
+		auto out = getOutputBuffer(msg.getLength());
+		out->append(msg);
+	}
 }
 
 void ProtocolGame::parsePacket(NetworkMessage &msg) {

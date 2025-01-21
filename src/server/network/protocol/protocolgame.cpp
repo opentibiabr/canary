@@ -914,8 +914,7 @@ void ProtocolGame::writeToOutputBuffer(const NetworkMessage &msg) {
 			out->append(msg);
 		},
 		                        "ProtocolGame::writeToOutputBuffer");
-	}
-	else {
+	} else {
 		auto out = getOutputBuffer(msg.getLength());
 		out->append(msg);
 	}

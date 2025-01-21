@@ -18,6 +18,7 @@ void MonsterSpellFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterSpell", "setType", MonsterSpellFunctions::luaMonsterSpellSetType);
 	Lua::registerMethod(L, "MonsterSpell", "setScriptName", MonsterSpellFunctions::luaMonsterSpellSetScriptName);
 	Lua::registerMethod(L, "MonsterSpell", "setChance", MonsterSpellFunctions::luaMonsterSpellSetChance);
+	Lua::registerMethod(L, "MonsterSpell", "setGroup", MonsterSpellFunctions::luaMonsterSpellSetGroup);
 	Lua::registerMethod(L, "MonsterSpell", "setInterval", MonsterSpellFunctions::luaMonsterSpellSetInterval);
 	Lua::registerMethod(L, "MonsterSpell", "setRange", MonsterSpellFunctions::luaMonsterSpellSetRange);
 	Lua::registerMethod(L, "MonsterSpell", "setCombatValue", MonsterSpellFunctions::luaMonsterSpellSetCombatValue);
@@ -88,6 +89,18 @@ int MonsterSpellFunctions::luaMonsterSpellSetInterval(lua_State* L) {
 	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
 	if (spell) {
 		spell->interval = Lua::getNumber<uint16_t>(L, 2);
+		Lua::pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterSpellFunctions::luaMonsterSpellSetGroup(lua_State* L) {
+	// monsterSpell:setGroup(group)
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	if (spell) {
+		spell->group = Lua::getNumber<uint16_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

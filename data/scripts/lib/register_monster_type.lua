@@ -897,6 +897,9 @@ function readSpell(incomingLua, mtype)
 			end
 			if incomingLua.chance then
 				spell:setChance(incomingLua.chance)
+			end            
+			if incomingLua.group then
+				spell:setGroup(incomingLua.group)
 			end
 			if incomingLua.range then
 				spell:setRange(incomingLua.range)

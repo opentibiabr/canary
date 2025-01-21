@@ -1115,65 +1115,68 @@ void Monster::onThink_async() {
 }
 
 void Monster::doAttacking(uint32_t interval) {
-	const auto &attackedCreature = getAttackedCreature();
-	if (!attackedCreature || attackedCreature->isLifeless() || (isSummon() && attackedCreature.get() == this)) {
-		return;
-	}
+    const auto &attackedCreature = getAttackedCreature();
+    if (!attackedCreature || (isSummon() && attackedCreature.get() == this)) {
+        return;
+    }
 
-	const auto &player = attackedCreature->getPlayer();
-	if (player && player->isLoginProtected()) {
-		return;
-	}
+    bool updateLook = true;
+    bool resetTicks = interval != 0;
+    attackTicks += interval;
 
-	bool updateLook = true;
-	bool resetTicks = interval != 0;
-	attackTicks += interval;
+    const Position &myPos = getPosition();
+    const Position &targetPos = attackedCreature->getPosition();
 
-	const Position &myPos = getPosition();
-	const Position &targetPos = attackedCreature->getPosition();
+    std::map<uint32_t, std::vector<const spellBlock_t*>> groupSpells;
 
-	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
-		bool inRange = false;
+    for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
+        if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
+            continue;
+        }
 
-		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
-			continue;
-		}
+        uint32_t group = spellBlock.group > 0 ? spellBlock.group : 0;
+        bool inRange = false;
 
-		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
-			if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
-				if (updateLook) {
-					updateLookDirection();
-					updateLook = false;
-				}
+        if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
+            if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
+                groupSpells[group].push_back(&spellBlock);
+            }
+        }
 
-				minCombatValue = spellBlock.minCombatValue;
-				maxCombatValue = spellBlock.maxCombatValue;
+        if (!inRange && spellBlock.isMelee) {
+            extraMeleeAttack = true; // melee swing out of reach
+        }
+    }
 
-				if (spellBlock.spell == nullptr) {
-					continue;
-				}
+    for (const auto &[group, spells] : groupSpells) {
+        if (!spells.empty()) {
+            const spellBlock_t* selectedSpell = spells[uniform_random(0, spells.size() - 1)];
 
-				spellBlock.spell->castSpell(getMonster(), attackedCreature);
+            if (selectedSpell) {
+                if (updateLook) {
+                    updateLookDirection();
+                    updateLook = false;
+                }
 
-				if (spellBlock.isMelee) {
-					extraMeleeAttack = false;
-				}
-			}
-		}
+                minCombatValue = selectedSpell->minCombatValue;
+                maxCombatValue = selectedSpell->maxCombatValue;
 
-		if (!inRange && spellBlock.isMelee) {
-			// melee swing out of reach
-			extraMeleeAttack = true;
-		}
-	}
+                selectedSpell->spell->castSpell(getMonster(), attackedCreature);
 
-	if (updateLook) {
-		updateLookDirection();
-	}
+                if (selectedSpell->isMelee) {
+                    extraMeleeAttack = false;
+                }
+            }
+        }
+    }
 
-	if (resetTicks) {
-		attackTicks = 0;
-	}
+    if (updateLook) {
+        updateLookDirection();
+    }
+
+    if (resetTicks) {
+        attackTicks = 0;
+    }
 }
 
 bool Monster::hasExtraSwing() {

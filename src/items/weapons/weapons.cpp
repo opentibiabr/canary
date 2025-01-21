@@ -268,8 +268,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 			float elementalPercentage = static_cast<float>(elementalAttack) / combinedAttack;
 			damage.primary.value = static_cast<int32_t>(totalDamage * physicalPercentage);
 			damage.secondary.value = static_cast<int32_t>(totalDamage * elementalPercentage);
-		}
-		else {
+		} else {
 			damage.primary.value = totalDamage;
 			damage.secondary.value = 0;
 		}

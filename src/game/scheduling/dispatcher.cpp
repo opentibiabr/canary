@@ -252,7 +252,7 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 }
 
 void Dispatcher::safeCall(std::function<void(void)> &&f) {
-	if (g_dispatcher().context().isAsync()) {
+	if (dispacherContext.isAsync()) {
 		addEvent(std::move(f), dispacherContext.taskName);
 	} else {
 		f();

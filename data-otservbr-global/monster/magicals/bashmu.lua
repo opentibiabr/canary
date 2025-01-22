@@ -61,7 +61,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -72,33 +72,32 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-    { text = "Hsssssss!", yell = false },
-    { text = "Hiss!", yell = false },
-    { text = "*rattle*", yell = false },
+	{ text = "Hsssssss!", yell = false },
+	{ text = "Hiss!", yell = false },
+	{ text = "*rattle*", yell = false },
 }
 
 monster.loot = {
-    { name = "platinum coin", chance = 70260, maxCount = 19 },
-    { name = "guardian halberd", chance = 9040 },
-    { name = "bashmu feather", chance = 5760 },
-    { name = "bashmu tongue", chance = 4110 },
-    { name = "sacred tree amulet", chance = 4340 },
-    { name = "great spirit potion", chance = 3930 },
-    { name = "green crystal shard", chance = 3070 },
-    { name = "blue crystal shard", chance = 3190 },
-    { name = "small diamond", chance = 4020 },
-    { name = "violet gem", chance = 3310 },
-    { name = "bashmu fang", chance = 2220 },
-    { name = "rainbow quartz", chance = 1890 },
-    { name = "terra amulet", chance = 1450 },
-    { name = "glacier amulet", chance = 890 },
-    { name = "glorious axe", chance = 830 },
-    { id = 23544, chance = 710 }, -- collar of red plasma
-    { name = "haunted blade", chance = 710 },
-    { name = "magma amulet", chance = 800 },
-    { id = 23542, chance = 830 }, -- collar of blue plasma
+	{ name = "platinum coin", chance = 70260, maxCount = 19 },
+	{ name = "guardian halberd", chance = 9040 },
+	{ name = "bashmu feather", chance = 5760 },
+	{ name = "bashmu tongue", chance = 4110 },
+	{ name = "sacred tree amulet", chance = 4340 },
+	{ name = "great spirit potion", chance = 3930 },
+	{ name = "green crystal shard", chance = 3070 },
+	{ name = "blue crystal shard", chance = 3190 },
+	{ name = "small diamond", chance = 4020 },
+	{ name = "violet gem", chance = 3310 },
+	{ name = "bashmu fang", chance = 2220 },
+	{ name = "rainbow quartz", chance = 1890 },
+	{ name = "terra amulet", chance = 1450 },
+	{ name = "glacier amulet", chance = 890 },
+	{ name = "glorious axe", chance = 830 },
+	{ id = 23544, chance = 710 }, -- collar of red plasma
+	{ name = "haunted blade", chance = 710 },
+	{ name = "magma amulet", chance = 800 },
+	{ id = 23542, chance = 830 }, -- collar of blue plasma
 }
-
 
 monster.attacks = {
 	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = 0, maxDamage = -600 },

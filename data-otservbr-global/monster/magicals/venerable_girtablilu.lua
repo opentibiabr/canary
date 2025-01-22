@@ -60,7 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -71,9 +71,9 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-    { text = "We guard the gates of Suon!", yell = false },
-    { text = "Praised be the Benevolent Sun!", yell = false },
-    { text = "Stay out of the ruins! You have been warned!", yell = false },
+	{ text = "We guard the gates of Suon!", yell = false },
+	{ text = "Praised be the Benevolent Sun!", yell = false },
+	{ text = "Stay out of the ruins! You have been warned!", yell = false },
 }
 
 monster.loot = {
@@ -104,9 +104,8 @@ monster.loot = {
     { name = "wood cape", chance = 990 },
 }
 
-
 monster.attacks = {
-	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_DRAWBLOOD },    
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", group = MONSTER_SPELL_GROUP_BASIC, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -500, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
 	{ name = "combat", group = MONSTER_SPELL_GROUP_BASIC, chance = 40, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -400, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
 	{ name = "girtablilu poison wave", group = MONSTER_SPELL_GROUP_BASIC, chance = 30, minDamage = -200, maxDamage = -400 },

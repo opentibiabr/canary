@@ -60,7 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {

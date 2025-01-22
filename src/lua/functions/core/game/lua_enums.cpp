@@ -113,6 +113,7 @@ void LuaEnums::init(lua_State* L) {
 	initWheelEnums(L);
 	initAttributeConditionSubIdEnums(L);
 	initConcoctionsEnum(L);
+    initMonsterSpellGroupEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {
@@ -1805,4 +1806,13 @@ void LuaEnums::initWheelEnums(lua_State* L) {
 	for (const auto value : magic_enum::enum_values<WheelSpellBoost_t>()) {
 		registerMagicEnumNamespace(L, wheelNamespace, value);
 	}
+}
+
+void LuaEnums::initMonsterSpellGroupEnums(lua_State* L) {
+	registerEnum(L, MONSTER_SPELL_GROUP_DEFAULT);
+	registerEnum(L, MONSTER_SPELL_GROUP_BASIC);
+	registerEnum(L, MONSTER_SPELL_GROUP_ATTACK);
+	registerEnum(L, MONSTER_SPELL_GROUP_DRAIN);
+	registerEnum(L, MONSTER_SPELL_GROUP_TRANSFORM);
+	registerEnum(L, MONSTER_SPELL_GROUP_STATUS);
 }

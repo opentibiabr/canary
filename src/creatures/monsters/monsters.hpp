@@ -49,7 +49,7 @@ struct spellBlock_t {
 
 	std::shared_ptr<BaseSpell> spell = nullptr;
 	uint32_t chance = 100;
-    uint32_t group = 0;
+    uint32_t group = MonsterSpellGroup_t::MONSTER_SPELL_GROUP_DEFAULT;
 	uint32_t speed = 2000;
 	uint32_t range = 0;
 	int32_t minCombatValue = 0;
@@ -165,6 +165,7 @@ class MonsterType {
 		bool isForgeCreature = true;
 		bool isPreyable = true;
 		bool isPreyExclusive = false;
+		bool hasGroupedSpells = false;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};

@@ -85,7 +85,7 @@ monster.loot = {
     { name = "bone toothpick", chance = 5000 },
     { name = "skull helmet", chance = 3130 },
     { name = "ruthless axe", chance = 380 },
-    { name = "sword", chance = 1960 },
+    { id = 3264, chance = 1960 }, --sword
     { name = "brown mushroom", chance = 1950 },
     { name = "mace", chance = 1880 },
 }

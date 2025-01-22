@@ -60,6 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = false,
+    hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -73,37 +74,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 44000, maxCount = 40 },
-	{ name = "belted cape", chance = 500 },
-	{ name = "ultimate health potion", chance = 500, maxCount = 2 },
-	{ name = "throwing star", chance = 500, maxCount = 18 },
-	{ name = "knight axe", chance = 250 },
-	{ id = 3307, chance = 500 }, -- scimitar
-	{ name = "protection amulet", chance = 250 },
-	{ name = "hunting spear", chance = 250 },
-	{ name = "broken gladiator shield", chance = 250 },
-	{ name = "dark helmet", chance = 250 },
-	{ name = "flask of warrior's sweat", chance = 250 },
-	{ name = "plate armor", chance = 250 },
-	{ name = "plate legs", chance = 250 },
-	{ name = "two handed sword", chance = 250 },
-	{ name = "great health potion", chance = 250, maxCount = 2 },
-	{ id = 3049, chance = 230 }, -- stealth ring
-	{ name = "crusader helmet", chance = 150 },
-	{ name = "relic sword", chance = 150 },
+    { name = "platinum coin", chance = 44000, maxCount = 40 },
+    { name = "belted cape", chance = 24500 },
+    { name = "throwing star", chance = 15190, maxCount = 18 },
+    { id = 3307, chance = 11340 }, -- scimitar
+    { name = "knight axe", chance = 8780 },
+    { name = "ultimate health potion", chance = 8740, maxCount = 2 },
+    { name = "plate legs", chance = 5260 },
+    { name = "flask of warrior's sweat", chance = 5220 },
+    { name = "great health potion", chance = 5190 },
+    { name = "broken gladiator shield", chance = 5030 },
+    { name = "hunting spear", chance = 5020 },
+    { name = "protection amulet", chance = 2290 },
+    { name = "plate armor", chance = 2060 },
+    { name = "two handed sword", chance = 1910 },
+    { name = "dark helmet", chance = 1540 },
+    { id = 3049, chance = 980 }, -- stealth ring
+    { name = "relic sword", chance = 190 },
+    { name = "crusader helmet", chance = 110 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 100, maxDamage = 550 },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = 300, maxDamage = 550, range = 7, shootEffect = CONST_ANI_WHIRLWINDSWORD, target = false },
-	{ name = "combat", interval = 1000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = 300, maxDamage = 500, range = 5, radius = 3, effect = CONST_ME_HITAREA, target = false },
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -100, maxDamage = -500 },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -500, maxDamage = -600, range = 7, shootEffect = CONST_ANI_WHIRLWINDSWORD, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -320, maxDamage = -420, length = 3, spread = 2, effect = CONST_ME_YELLOW_RINGS, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -500, range = 5, radius = 3, effect = CONST_ME_BLOCKHIT, target = false },        
 }
 
 monster.defenses = {
 	defense = 45,
 	armor = 85,
 	mitigation = 2.40,
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {

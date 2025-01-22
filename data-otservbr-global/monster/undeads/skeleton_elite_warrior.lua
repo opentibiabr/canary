@@ -29,7 +29,7 @@ monster.Bestiary = {
 monster.health = 7800
 monster.maxHealth = 7800
 monster.race = "undead"
-monster.corpse = 5972
+monster.corpse = 8909
 monster.speed = 155
 monster.manaCost = 0
 
@@ -60,6 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = false,
 	canWalkOnFire = false,
 	canWalkOnPoison = true,
+    hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -73,25 +74,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 43500, maxCount = 15 },
-	{ id = 3115, chance = 50000 }, -- bone
-	{ name = "white mushroom", chance = 24000, maxCount = 3 },
-	{ name = "soul orb", chance = 43500, maxCount = 5 },
-	{ name = "knight axe", chance = 3250 },
-	{ name = "pelvis bone", chance = 2630, maxCount = 10 },
-	{ name = "unholy bone", chance = 2630, maxCount = 5 },
-	{ name = "skull helmet", chance = 350 },
-	{ name = "ruthless axe", chance = 150 },
+    { name = "platinum coin", chance = 100000, maxCount = 15 },
+    { id = 3115, chance = 50130 }, -- bone
+    { name = "soul orb", chance = 25610, maxCount = 5 },
+    { name = "white mushroom", chance = 25080, maxCount = 3 },
+    { name = "pelvis bone", chance = 15660, maxCount = 3 },
+    { name = "unholy bone", chance = 10230 },
+    { name = "knight axe", chance = 6200 },
+    { name = "mammoth whopper", chance = 5130 },
+    { name = "bone toothpick", chance = 5000 },
+    { name = "skull helmet", chance = 3130 },
+    { name = "ruthless axe", chance = 380 },
+    { name = "sword", chance = 1960 },
+    { name = "brown mushroom", chance = 1950 },
+    { name = "mace", chance = 1880 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -700 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -480, range = 1, effect = CONST_ME_MAGIC_RED, target = false },
-	{ name = "combat", interval = 1500, chance = 20, type = COMBAT_PHYSICALDAMAGE, minDamage = -380, maxDamage = -520, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -0, maxDamage = -650 },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -400, maxDamage = -500, range = 1, effect = CONST_ME_MAGIC_RED, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_DEATHDAMAGE, minDamage = -450, maxDamage = -550, range = 7, radius = 3, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
 }
 
 monster.defenses = {
-	defense = 15,
+	defense = 35,
 	armor = 75,
 	mitigation = 2.16,
 }

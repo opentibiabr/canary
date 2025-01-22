@@ -61,6 +61,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+    hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -71,43 +72,46 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+    { text = "Hsssssss!", yell = false },
+    { text = "Hiss!", yell = false },
+    { text = "*rattle*", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 69350, maxCount = 24 },
-	{ name = "guardian halberd", chance = 9160 },
-	{ name = "bashmu feather", chance = 5320 },
-	{ name = "bashmu tongue", chance = 4950 },
-	{ name = "sacred tree amulet", chance = 4280 },
-	{ name = "great spirit potion", chance = 3840, maxCount = 4 },
-	{ name = "green crystal shard", chance = 3470, maxCount = 3 },
-	{ name = "blue crystal shard", chance = 2950, maxCount = 3 },
-	{ name = "small diamond", chance = 2950, maxCount = 6 },
-	{ name = "violet gem", chance = 2730 },
-	{ name = "bashmu fang", chance = 2070 },
-	{ name = "rainbow quartz", chance = 1770 },
-	{ name = "terra amulet", chance = 1770 },
-	{ name = "glacier amulet", chance = 960 },
-	{ name = "glorious axe", chance = 810 },
-	{ id = 23544, chance = 660 }, -- collar of red plasma
-	{ name = "haunted blade", chance = 590 },
-	{ name = "magma amulet", chance = 520 },
-	{ id = 23542, chance = 440 }, -- collar of blue plasma
+    { name = "platinum coin", chance = 70260, maxCount = 19 },
+    { name = "guardian halberd", chance = 9040 },
+    { name = "bashmu feather", chance = 5760 },
+    { name = "bashmu tongue", chance = 4110 },
+    { name = "sacred tree amulet", chance = 4340 },
+    { name = "great spirit potion", chance = 3930 },
+    { name = "green crystal shard", chance = 3070 },
+    { name = "blue crystal shard", chance = 3190 },
+    { name = "small diamond", chance = 4020 },
+    { name = "violet gem", chance = 3310 },
+    { name = "bashmu fang", chance = 2220 },
+    { name = "rainbow quartz", chance = 1890 },
+    { name = "terra amulet", chance = 1450 },
+    { name = "glacier amulet", chance = 890 },
+    { name = "glorious axe", chance = 830 },
+    { id = 23544, chance = 710 }, -- collar of red plasma
+    { name = "haunted blade", chance = 710 },
+    { name = "magma amulet", chance = 800 },
+    { id = 23542, chance = 830 }, -- collar of blue plasma
 }
 
+
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -600 },
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, length = 4, spread = 0, effect = CONST_ME_ENERGYAREA, target = false },
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -500, range = 3, radius = 3, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -800, range = 7, shootEffect = CONST_ANI_EARTHARROW, target = true },
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = 0, maxDamage = -600 },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -800, length = 4, spread = 0, effect = CONST_ME_ENERGYAREA, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -500, range = 3, radius = 3, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -400, maxDamage = -800, range = 7, shootEffect = CONST_ANI_EARTHARROW, target = true },
 }
 
 monster.defenses = {
 	defense = 72,
 	armor = 72,
 	mitigation = 2.16,
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_HEALING, minDamage = 250, maxDamage = 500, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = 340, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = 150, effect = CONST_ME_MAGIC_RED, target = false, duration = 5000 },
 }
 
 monster.elements = {

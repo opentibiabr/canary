@@ -60,6 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+    hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -70,42 +71,45 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+    { text = "We guard the gates of Suon!", yell = false },
+    { text = "Praised be the Benevolent Sun!", yell = false },
+    { text = "Stay out of the ruins! You have been warned!", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 19 },
-	{ name = "gold ingot", chance = 15920, maxCount = 2 },
-	{ name = "small diamond", chance = 5360, maxCount = 6 },
-	{ name = "cyan crystal fragment", chance = 5210, maxCount = 3 },
-	{ name = "scorpion charm", chance = 5210, maxCount = 1 },
-	{ id = 3039, chance = 4910, maxCount = 1 }, -- red gem
-	{ name = "old girtablilu carapace", chance = 4760, maxCount = 1 },
-	{ name = "violet gem", chance = 4170, maxCount = 1 },
-	{ name = "northwind rod", chance = 3570 },
-	{ name = "wand of cosmic energy", chance = 2680 },
-	{ name = "blue crystal shard", chance = 2530 },
-	{ name = "red crystal fragment", chance = 2530 },
-	{ name = "violet crystal shard", chance = 2530 },
-	{ name = "yellow gem", chance = 2530 },
-	{ name = "underworld rod", chance = 2080 },
-	{ name = "wand of voodoo", chance = 2080 },
-	{ name = "blue gem", chance = 1930 },
-	{ id = 23529, chance = 1930 }, -- ring of blue plasma
-	{ name = "green crystal fragment", chance = 1640 },
-	{ name = "green crystal shard", chance = 1640 },
-	{ name = "wand of defiance", chance = 1340 },
-	{ name = "wood cape", chance = 1340 },
-	{ name = "necrotic rod", chance = 1040 },
-	{ name = "springsprout rod", chance = 1040 },
-	{ name = "wand of decay", chance = 1040 },
+    { name = "platinum coin", chance = 84020, maxCount = 19 },
+    { name = "gold ingot", chance = 15980 },
+    { name = "small diamond", chance = 5540 },
+    { name = "red gem", chance = 5260 },
+    { name = "cyan crystal fragment", chance = 5040 },
+    { name = "old girtablilu carapace", chance = 4620 },
+    { name = "scorpion charm", chance = 4120 },
+    { name = "northwind rod", chance = 3980 },
+    { name = "violet gem", chance = 3840 },
+    { name = "blue crystal shard", chance = 2700 },
+    { name = "wand of cosmic energy", chance = 2700 },
+    { name = "yellow gem", chance = 2560 },
+    { name = "underworld rod", chance = 2270 },
+    { name = "red crystal fragment", chance = 2200 },
+    { name = "green crystal fragment", chance = 1990 },
+    { id = 23529, chance = 1850 }, -- ring of blue plasma
+    { name = "violet crystal shard", chance = 1780 },
+    { name = "green crystal shard", chance = 1700 },
+    { name = "wand of voodoo", chance = 1560 },
+    { name = "blue gem", chance = 1490 },
+    { name = "wand of decay", chance = 1280 },
+    { name = "necrotic rod", chance = 1140 },
+    { name = "wand of defiance", chance = 1140 },
+    { name = "springsprout rod", chance = 1070 },
+    { name = "wood cape", chance = 990 },
 }
 
+
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -550, effect = CONST_ME_DRAWBLOOD },
-	{ name = "combat", interval = 2750, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -500, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -400, length = 4, spread = 0, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -400, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
-	{ name = "girtablilu poison wave", interval = 2000, chance = 30, minDamage = -200, maxDamage = -400 },
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = 0, maxDamage = -400, effect = CONST_ME_DRAWBLOOD },    
+	{ name = "combat", group = MONSTER_SPELL_GROUP_BASIC, chance = 30, type = COMBAT_DEATHDAMAGE, minDamage = -200, maxDamage = -500, range = 7, shootEffect = CONST_ANI_SUDDENDEATH, effect = CONST_ME_MORTAREA, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_BASIC, chance = 40, type = COMBAT_EARTHDAMAGE, minDamage = -200, maxDamage = -400, radius = 3, effect = CONST_ME_HITBYPOISON, target = false },
+	{ name = "girtablilu poison wave", group = MONSTER_SPELL_GROUP_BASIC, chance = 30, minDamage = -200, maxDamage = -400 },
 }
 
 monster.defenses = {

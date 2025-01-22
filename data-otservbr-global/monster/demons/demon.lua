@@ -63,6 +63,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+    hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -88,50 +89,51 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "purple tome", chance = 1180 },
 	{ name = "gold coin", chance = 60000, maxCount = 100 },
 	{ name = "gold coin", chance = 60000, maxCount = 100 },
-	{ name = "small emerald", chance = 9690, maxCount = 5 },
-	{ name = "small amethyst", chance = 7250, maxCount = 5 },
-	{ name = "small ruby", chance = 7430, maxCount = 5 },
-	{ name = "small topaz", chance = 7470, maxCount = 5 },
-	{ id = 3039, chance = 2220 }, -- red gem
-	{ name = "demonic essence", chance = 14630 },
-	{ name = "talon", chance = 3430 },
-	{ name = "platinum coin", chance = 90540, maxCount = 8 },
-	{ name = "might ring", chance = 1890 },
-	{ id = 3049, chance = 2170 }, -- stealth ring
-	{ name = "platinum amulet", chance = 680 },
-	{ name = "orb", chance = 2854 },
-	{ name = "gold ring", chance = 1050 },
-	{ id = 3098, chance = 1990 }, -- ring of healing
-	{ name = "giant sword", chance = 1980 },
-	{ name = "ice rapier", chance = 1550 },
-	{ name = "golden sickle", chance = 1440 },
-	{ name = "fire axe", chance = 4030 },
-	{ name = "devil helmet", chance = 1180 },
-	{ name = "golden legs", chance = 440 },
-	{ name = "magic plate armor", chance = 130 },
-	{ name = "mastermind shield", chance = 480 },
-	{ name = "demon shield", chance = 740 },
-	{ name = "fire mushroom", chance = 19660, maxCount = 6 },
-	{ name = "demon horn", chance = 14920 },
-	{ name = "assassin star", chance = 12550, maxCount = 10 },
-	{ name = "demonrage sword", chance = 70 },
-	{ id = 7393, chance = 90 }, -- demon trophy
-	{ name = "great mana potion", chance = 22220, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 19540, maxCount = 3 },
-	{ name = "great spirit potion", chance = 18510, maxCount = 3 },
+    { name = "platinum coin", chance = 99580, maxCount = 8 },
+    { name = "great mana potion", chance = 25150, maxCount = 3 },
+    { name = "great spirit potion", chance = 24650, maxCount = 3 },
+    { name = "ultimate health potion", chance = 20010, maxCount = 3 },
+    { name = "demon horn", chance = 20000 },
+    { name = "fire mushroom", chance = 19840, maxCount = 6 },
+    { name = "demonic essence", chance = 19650 },
+    { name = "assassin star", chance = 15340, maxCount = 10 },
+    { name = "small topaz", chance = 10110, maxCount = 5 },
+    { name = "small ruby", chance = 10040, maxCount = 5 },
+    { name = "small emerald", chance = 9930, maxCount = 5 },
+    { name = "small amethyst", chance = 9790, maxCount = 5 },
+    { name = "fire axe", chance = 4070 },
+    { name = "talon", chance = 3440 },
+    { id = 3039, chance = 2950 }, -- red gem
+    { name = "orb", chance = 2850 },
+    { id = 3098, chance = 2610 }, -- ring of healing
+    { name = "might ring", chance = 2450 },
+    { id = 3049, chance = 2370 }, -- stealth ring
+    { name = "giant sword", chance = 1960 },
+    { name = "ice rapier", chance = 1940 },
+    { name = "golden sickle", chance = 1360 },
+    { name = "purple tome", chance = 1270 },
+    { name = "devil helmet", chance = 1240 },
+    { name = "gold ring", chance = 1040 },
+    { name = "demon shield", chance = 730 },
+    { name = "platinum amulet", chance = 700 },
+    { name = "mastermind shield", chance = 500 },
+    { name = "golden legs", chance = 380 },
+    { id = 7393, chance = 90 }, -- demon trophy
+    { name = "magic plate armor", chance = 80 },
+    { name = "demonrage sword", chance = 60 },
 }
 
+
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -520 },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -120, range = 7, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_FIREDAMAGE, minDamage = -150, maxDamage = -250, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
-	{ name = "firefield", interval = 2000, chance = 10, range = 7, radius = 1, shootEffect = CONST_ANI_FIRE, target = true },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -490, length = 8, spread = 0, effect = CONST_ME_PURPLEENERGY, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -210, maxDamage = -300, range = 1, shootEffect = CONST_ANI_ENERGY, target = true },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -700, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = 0, maxDamage = -520 },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 75, type = COMBAT_FIREDAMAGE, minDamage = -150, maxDamage = -250, range = 7, radius = 7, shootEffect = CONST_ANI_FIRE, effect = CONST_ME_FIREAREA, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -480, length = 8, spread = 0, effect = CONST_ME_PURPLEENERGY, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -210, maxDamage = -300, range = 1, shootEffect = CONST_ANI_ENERGY, target = true },
+	{ name = "firefield", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, range = 7, radius = 1, shootEffect = CONST_ANI_FIRE, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_DRAIN, chance = 20, type = COMBAT_MANADRAIN, minDamage = -30, maxDamage = -120, range = 7, shootEffect = CONST_ANI_DEATH, effect = CONST_ANI_SMALLEARTH, target = true },
+	{ name = "speed", group = MONSTER_SPELL_GROUP_STATUS, chance = 15, speedChange = -700, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },  
 }
 
 monster.defenses = {

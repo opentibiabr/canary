@@ -37,7 +37,7 @@ struct spellBlock_t {
 	spellBlock_t(spellBlock_t &&other) noexcept :
 		spell(std::move(other.spell)),
 		chance(other.chance),
-        group(other.group),
+		group(other.group),
 		speed(other.speed),
 		range(other.range),
 		minCombatValue(other.minCombatValue),
@@ -49,7 +49,7 @@ struct spellBlock_t {
 
 	std::shared_ptr<BaseSpell> spell = nullptr;
 	uint32_t chance = 100;
-    uint32_t group = MonsterSpellGroup_t::MONSTER_SPELL_GROUP_DEFAULT;
+	uint32_t group = MonsterSpellGroup_t::MONSTER_SPELL_GROUP_DEFAULT;
 	uint32_t speed = 2000;
 	uint32_t range = 0;
 	int32_t minCombatValue = 0;

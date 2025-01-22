@@ -113,7 +113,7 @@ void LuaEnums::init(lua_State* L) {
 	initWheelEnums(L);
 	initAttributeConditionSubIdEnums(L);
 	initConcoctionsEnum(L);
-    initMonsterSpellGroupEnums(L);
+	initMonsterSpellGroupEnums(L);
 }
 
 void LuaEnums::initOthersEnums(lua_State* L) {

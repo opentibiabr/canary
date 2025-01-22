@@ -744,10 +744,10 @@ enum Screenshot_t : uint8_t {
 };
 
 enum MonsterSpellGroup_t : uint8_t {
-    MONSTER_SPELL_GROUP_DEFAULT = 0,
-    MONSTER_SPELL_GROUP_BASIC = 1, // Basic attacks, such as melee or ranged
-    MONSTER_SPELL_GROUP_ATTACK = 2, // Offensive spells like energy beams or fireballs
-    MONSTER_SPELL_GROUP_DRAIN = 3, // Spells for resource draining, e.g., mana drain
-    MONSTER_SPELL_GROUP_TRANSFORM = 4, // Spells that change appearance or looktype
-    MONSTER_SPELL_GROUP_STATUS = 5, // Special conditions like fear, root, or drunk
+	MONSTER_SPELL_GROUP_DEFAULT = 0,
+	MONSTER_SPELL_GROUP_BASIC = 1, // Basic attacks, such as melee or ranged
+	MONSTER_SPELL_GROUP_ATTACK = 2, // Offensive spells like energy beams or fireballs
+	MONSTER_SPELL_GROUP_DRAIN = 3, // Spells for resource draining, e.g., mana drain
+	MONSTER_SPELL_GROUP_TRANSFORM = 4, // Spells that change appearance or looktype
+	MONSTER_SPELL_GROUP_STATUS = 5, // Special conditions like fear, root, or drunk
 };

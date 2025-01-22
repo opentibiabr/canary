@@ -74,20 +74,20 @@ monster.voices = {
 }
 
 monster.loot = {
-    { name = "platinum coin", chance = 100000, maxCount = 15 },
-    { id = 3115, chance = 50130 }, -- bone
-    { name = "soul orb", chance = 25610, maxCount = 5 },
-    { name = "white mushroom", chance = 25080, maxCount = 3 },
-    { name = "pelvis bone", chance = 15660, maxCount = 3 },
-    { name = "unholy bone", chance = 10230 },
-    { name = "knight axe", chance = 6200 },
-    { name = "mammoth whopper", chance = 5130 },
-    { name = "bone toothpick", chance = 5000 },
-    { name = "skull helmet", chance = 3130 },
-    { name = "ruthless axe", chance = 380 },
-    { id = 3264, chance = 1960 }, --sword
-    { name = "brown mushroom", chance = 1950 },
-    { name = "mace", chance = 1880 },
+	{ name = "platinum coin", chance = 100000, maxCount = 15 },
+	{ id = 3115, chance = 50130 }, -- bone
+	{ name = "soul orb", chance = 25610, maxCount = 5 },
+	{ name = "white mushroom", chance = 25080, maxCount = 3 },
+	{ name = "pelvis bone", chance = 15660, maxCount = 3 },
+	{ name = "unholy bone", chance = 10230 },
+	{ name = "knight axe", chance = 6200 },
+	{ name = "mammoth whopper", chance = 5130 },
+	{ name = "bone toothpick", chance = 5000 },
+	{ name = "skull helmet", chance = 3130 },
+	{ name = "ruthless axe", chance = 380 },
+	{ id = 3264, chance = 1960 }, --sword
+	{ name = "brown mushroom", chance = 1950 },
+	{ name = "mace", chance = 1880 },
 }
 
 monster.attacks = {

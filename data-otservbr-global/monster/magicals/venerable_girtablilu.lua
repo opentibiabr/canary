@@ -77,31 +77,31 @@ monster.voices = {
 }
 
 monster.loot = {
-    { name = "platinum coin", chance = 84020, maxCount = 19 },
-    { name = "gold ingot", chance = 15980 },
-    { name = "small diamond", chance = 5540 },
-    { id = 3039, chance = 5260 }, -- red gem
-    { name = "cyan crystal fragment", chance = 5040 },
-    { name = "old girtablilu carapace", chance = 4620 },
-    { name = "scorpion charm", chance = 4120 },
-    { name = "northwind rod", chance = 3980 },
-    { name = "violet gem", chance = 3840 },
-    { name = "blue crystal shard", chance = 2700 },
-    { name = "wand of cosmic energy", chance = 2700 },
-    { name = "yellow gem", chance = 2560 },
-    { name = "underworld rod", chance = 2270 },
-    { name = "red crystal fragment", chance = 2200 },
-    { name = "green crystal fragment", chance = 1990 },
-    { id = 23529, chance = 1850 }, -- ring of blue plasma
-    { name = "violet crystal shard", chance = 1780 },
-    { name = "green crystal shard", chance = 1700 },
-    { name = "wand of voodoo", chance = 1560 },
-    { name = "blue gem", chance = 1490 },
-    { name = "wand of decay", chance = 1280 },
-    { name = "necrotic rod", chance = 1140 },
-    { name = "wand of defiance", chance = 1140 },
-    { name = "springsprout rod", chance = 1070 },
-    { name = "wood cape", chance = 990 },
+	{ name = "platinum coin", chance = 84020, maxCount = 19 },
+	{ name = "gold ingot", chance = 15980 },
+	{ name = "small diamond", chance = 5540 },
+	{ id = 3039, chance = 5260 }, -- red gem
+	{ name = "cyan crystal fragment", chance = 5040 },
+	{ name = "old girtablilu carapace", chance = 4620 },
+	{ name = "scorpion charm", chance = 4120 },
+	{ name = "northwind rod", chance = 3980 },
+	{ name = "violet gem", chance = 3840 },
+	{ name = "blue crystal shard", chance = 2700 },
+	{ name = "wand of cosmic energy", chance = 2700 },
+	{ name = "yellow gem", chance = 2560 },
+	{ name = "underworld rod", chance = 2270 },
+	{ name = "red crystal fragment", chance = 2200 },
+	{ name = "green crystal fragment", chance = 1990 },
+	{ id = 23529, chance = 1850 }, -- ring of blue plasma
+	{ name = "violet crystal shard", chance = 1780 },
+	{ name = "green crystal shard", chance = 1700 },
+	{ name = "wand of voodoo", chance = 1560 },
+	{ name = "blue gem", chance = 1490 },
+	{ name = "wand of decay", chance = 1280 },
+	{ name = "necrotic rod", chance = 1140 },
+	{ name = "wand of defiance", chance = 1140 },
+	{ name = "springsprout rod", chance = 1070 },
+	{ name = "wood cape", chance = 990 },
 }
 
 monster.attacks = {

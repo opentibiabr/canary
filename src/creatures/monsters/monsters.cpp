@@ -65,7 +65,7 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 
 	sb.speed = spell->interval;
 	sb.chance = std::min(static_cast<int>(spell->chance), 100);
-    sb.group = spell->group > 0 ? spell->group : 0;
+	sb.group = spell->group > 0 ? spell->group : 0;
 	sb.range = std::min(static_cast<int>(spell->range), MAP_MAX_VIEW_PORT_X * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);

@@ -132,7 +132,7 @@ void MonsterTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterType", "canWalkOnEnergy", MonsterTypeFunctions::luaMonsterTypeCanWalkOnEnergy);
 	Lua::registerMethod(L, "MonsterType", "canWalkOnFire", MonsterTypeFunctions::luaMonsterTypeCanWalkOnFire);
 	Lua::registerMethod(L, "MonsterType", "canWalkOnPoison", MonsterTypeFunctions::luaMonsterTypeCanWalkOnPoison);
-    
+
 	Lua::registerMethod(L, "MonsterType", "hasGroupedSpells", MonsterTypeFunctions::luaMonsterTypeHasGroupedSpells);
 
 	Lua::registerMethod(L, "MonsterType", "strategiesTargetNearest", MonsterTypeFunctions::luaMonsterTypeStrategiesTargetNearest);

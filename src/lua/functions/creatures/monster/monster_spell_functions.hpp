@@ -18,7 +18,6 @@ private:
 	static int luaMonsterSpellSetType(lua_State* L);
 	static int luaMonsterSpellSetScriptName(lua_State* L);
 	static int luaMonsterSpellSetChance(lua_State* L);
-	static int luaMonsterSpellSetGroup(lua_State* L);
 	static int luaMonsterSpellSetInterval(lua_State* L);
 	static int luaMonsterSpellSetRange(lua_State* L);
 	static int luaMonsterSpellSetCombatValue(lua_State* L);

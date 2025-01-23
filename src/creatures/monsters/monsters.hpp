@@ -37,7 +37,6 @@ struct spellBlock_t {
 	spellBlock_t(spellBlock_t &&other) noexcept :
 		spell(std::move(other.spell)),
 		chance(other.chance),
-		group(other.group),
 		speed(other.speed),
 		range(other.range),
 		minCombatValue(other.minCombatValue),
@@ -49,7 +48,6 @@ struct spellBlock_t {
 
 	std::shared_ptr<BaseSpell> spell = nullptr;
 	uint32_t chance = 100;
-	uint32_t group = MonsterSpellGroup_t::MONSTER_SPELL_GROUP_DEFAULT;
 	uint32_t speed = 2000;
 	uint32_t range = 0;
 	int32_t minCombatValue = 0;
@@ -165,7 +163,6 @@ class MonsterType {
 		bool isForgeCreature = true;
 		bool isPreyable = true;
 		bool isPreyExclusive = false;
-		bool hasGroupedSpells = false;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};
@@ -233,7 +230,6 @@ public:
 	int32_t tickInterval = 0;
 	int32_t speedChange = 0;
 	int32_t duration = 0;
-	int32_t group = 0;
 
 	bool isScripted = false;
 	bool needTarget = false;

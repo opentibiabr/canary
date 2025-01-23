@@ -901,9 +901,6 @@ function readSpell(incomingLua, mtype)
 			if incomingLua.chance then
 				spell:setChance(incomingLua.chance)
 			end
-			if incomingLua.group then
-				spell:setGroup(incomingLua.group)
-			end
 			if incomingLua.range then
 				spell:setRange(incomingLua.range)
 			end

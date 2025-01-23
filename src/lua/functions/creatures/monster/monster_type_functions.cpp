@@ -133,8 +133,6 @@ void MonsterTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterType", "canWalkOnFire", MonsterTypeFunctions::luaMonsterTypeCanWalkOnFire);
 	Lua::registerMethod(L, "MonsterType", "canWalkOnPoison", MonsterTypeFunctions::luaMonsterTypeCanWalkOnPoison);
 
-	Lua::registerMethod(L, "MonsterType", "hasGroupedSpells", MonsterTypeFunctions::luaMonsterTypeHasGroupedSpells);
-
 	Lua::registerMethod(L, "MonsterType", "strategiesTargetNearest", MonsterTypeFunctions::luaMonsterTypeStrategiesTargetNearest);
 	Lua::registerMethod(L, "MonsterType", "strategiesTargetHealth", MonsterTypeFunctions::luaMonsterTypeStrategiesTargetHealth);
 	Lua::registerMethod(L, "MonsterType", "strategiesTargetDamage", MonsterTypeFunctions::luaMonsterTypeStrategiesTargetDamage);
@@ -1592,22 +1590,6 @@ int MonsterTypeFunctions::luaMonsterTypeCanWalkOnPoison(lua_State* L) {
 			Lua::pushBoolean(L, monsterType->info.canWalkOnPoison);
 		} else {
 			monsterType->info.canWalkOnPoison = Lua::getBoolean(L, 2, true);
-			Lua::pushBoolean(L, true);
-		}
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int MonsterTypeFunctions::luaMonsterTypeHasGroupedSpells(lua_State* L) {
-	// get: monsterType:hasGroupedSpells() set: monsterType:hasGroupedSpells(bool)
-	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1);
-	if (monsterType) {
-		if (lua_gettop(L) == 1) {
-			Lua::pushBoolean(L, monsterType->info.hasGroupedSpells);
-		} else {
-			monsterType->info.hasGroupedSpells = Lua::getBoolean(L, 2, true);
 			Lua::pushBoolean(L, true);
 		}
 	} else {

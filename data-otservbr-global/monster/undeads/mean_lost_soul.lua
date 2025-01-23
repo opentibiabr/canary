@@ -60,6 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
+    hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -70,28 +71,31 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
+	{ text = "zz zzz zzz", yell = false },
+	{ text = "Chew, chew, chew!", yell = false },
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 56040 },
+	{ name = "platinum coin", chance = 68090 },
 	{ name = "lost soul", chance = 36220 },
-	{ name = "death toll", chance = 4890 },
-	{ name = "skull staff", chance = 4540 },
-	{ name = "machete", chance = 3520 },
-	{ name = "ensouled essence", chance = 2760 },
-	{ name = "fire axe", chance = 1400 },
-	{ name = "ivory comb", chance = 1200 },
-	{ name = "mercenary sword", chance = 1050 },
-	{ name = "haunted blade", chance = 960 },
-	{ name = "warrior's axe", chance = 730 },
-	{ name = "twiceslicer", chance = 310 },
+	{ name = "death toll", chance = 4769 },
+	{ name = "skull staff", chance = 5150 },
+	{ name = "machete", chance = 4860 },
+	{ name = "ensouled essence", chance = 3360 },
+	{ name = "fire axe", chance = 1620 },
+	{ name = "ivory comb", chance = 1650 },
+	{ name = "mercenary sword", chance = 1450 },
+	{ name = "haunted blade", chance = 1040 },
+	{ name = "warrior's axe", chance = 1090 },
+	{ name = "twiceslicer", chance = 479 },
 }
 
-monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500 },
-	{ name = "combat", interval = 1700, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -300, maxDamage = -550, radius = 3, shootEffect = CONST_ANI_ENVENOMEDARROW, effect = CONST_ME_HITBYPOISON, target = true },
-	{ name = "combat", interval = 1700, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -550, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
-	{ name = "combat", interval = 1700, chance = 35, type = COMBAT_DEATHDAMAGE, minDamage = -300, maxDamage = -550, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+monster.attacks = {    
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -0, maxDamage = -450 },	    
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 26, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -350, range = 4, shootEffect = CONST_ANI_DRILLBOLT, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -540, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -270, maxDamage = -360, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },    
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -350, maxDamage = -550, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },    
 }
 
 monster.defenses = {

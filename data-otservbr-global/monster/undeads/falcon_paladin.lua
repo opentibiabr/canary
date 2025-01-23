@@ -60,7 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -72,36 +72,36 @@ monster.voices = {
 	interval = 5000,
 	chance = 10,
 	{ text = "Repent Heretic!", yell = false },
-    { text = "Uuunngh!", yell = false },
-    { text = "Ooooaaah!", yell = false },
+	{ text = "Uuunngh!", yell = false },
+	{ text = "Ooooaaah!", yell = false },
 }
 
 monster.loot = {
-    { name = "platinum coin", chance = 90080, maxCount = 6 },
-    { name = "great spirit potion", chance = 48530, maxCount = 2 },
-    { name = "small diamond", chance = 48190, maxCount = 2 },
-    { name = "small amethyst", chance = 47280, maxCount = 2 },
-    { name = "small emerald", chance = 46710, maxCount = 2 },
-    { name = "assassin star", chance = 30170, maxCount = 10 },
-    { name = "small ruby", chance = 23600, maxCount = 2 },
-    { name = "small topaz", chance = 23500, maxCount = 2 },
-    { name = "onyx arrow", chance = 18440, maxCount = 15 },
-    { id = 3039, chance = 8870, maxCount = 1 }, -- red gem
-    { name = "green gem", chance = 5680 },
-    { name = "violet gem", chance = 5340 },
-    { id = 282, chance = 2020 }, -- giant shimmering pearl (green)
-    { name = "damaged armor plates", chance = 1190 },
-    { name = "falcon crest", chance = 990 },
-    { name = "mastermind shield", chance = 410 },
-    { name = "golden armor", chance = 320 },
+	{ name = "platinum coin", chance = 90080, maxCount = 6 },
+	{ name = "great spirit potion", chance = 48530, maxCount = 2 },
+	{ name = "small diamond", chance = 48190, maxCount = 2 },
+	{ name = "small amethyst", chance = 47280, maxCount = 2 },
+	{ name = "small emerald", chance = 46710, maxCount = 2 },
+	{ name = "assassin star", chance = 30170, maxCount = 10 },
+	{ name = "small ruby", chance = 23600, maxCount = 2 },
+	{ name = "small topaz", chance = 23500, maxCount = 2 },
+	{ name = "onyx arrow", chance = 18440, maxCount = 15 },
+	{ id = 3039, chance = 8870, maxCount = 1 }, -- red gem
+	{ name = "green gem", chance = 5680 },
+	{ name = "violet gem", chance = 5340 },
+	{ id = 282, chance = 2020 }, -- giant shimmering pearl (green)
+	{ name = "damaged armor plates", chance = 1190 },
+	{ name = "falcon crest", chance = 990 },
+	{ name = "mastermind shield", chance = 410 },
+	{ name = "golden armor", chance = 320 },
 }
 
 monster.attacks = {
 	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -100, maxDamage = -250 },
-	{ name = "combat", group = MONSTER_SPELL_GROUP_BASIC, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -550, range = 5, shootEffect = CONST_ANI_ROYALSPEAR, target = true },    
+	{ name = "combat", group = MONSTER_SPELL_GROUP_BASIC, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -550, range = 5, shootEffect = CONST_ANI_ROYALSPEAR, target = true },
 	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 30, type = COMBAT_PHYSICALDAMAGE, minDamage = -200, maxDamage = -500, range = 5, shootEffect = CONST_ANI_BOLT, target = true },
 	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 45, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -600, range = 7, radius = 3, shootEffect = CONST_ANI_POWERBOLT, effect = CONST_ME_ENERGYAREA, target = true },
-    { name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -250, maxDamage = -350, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
 }
 
 monster.defenses = {

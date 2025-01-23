@@ -60,7 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -87,11 +87,11 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -650 },	
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -0, maxDamage = -650 },
 	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 50, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -400, range = 4, shootEffect = CONST_ANI_DRILLBOLT, target = true },
 	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -500, maxDamage = -600, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -620, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },  
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -450, maxDamage = -850, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },    
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -620, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -450, maxDamage = -850, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },
 }
 
 monster.defenses = {

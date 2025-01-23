@@ -60,7 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -90,12 +90,12 @@ monster.loot = {
 	{ name = "twiceslicer", chance = 479 },
 }
 
-monster.attacks = {    
-	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -0, maxDamage = -450 },	    
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 26, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -350, range = 4, shootEffect = CONST_ANI_DRILLBOLT, target = true },
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -540, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -270, maxDamage = -360, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },    
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -350, maxDamage = -550, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },    
+monster.attacks = {
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -0, maxDamage = -450 },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 26, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -350, range = 4, shootEffect = CONST_ANI_DRILLBOLT, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 15, type = COMBAT_DEATHDAMAGE, minDamage = -400, maxDamage = -540, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -270, maxDamage = -360, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 30, type = COMBAT_LIFEDRAIN, minDamage = -350, maxDamage = -550, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },
 }
 
 monster.defenses = {

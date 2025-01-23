@@ -60,7 +60,7 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-    hasGroupedSpells = true,
+	hasGroupedSpells = true,
 }
 
 monster.light = {
@@ -93,11 +93,11 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -0, maxDamage = -350 },	
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 18, type = COMBAT_DEATHDAMAGE, minDamage = -360, maxDamage = -500, radius = 3, effect = CONST_ME_MORTAREA, target = false },
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -420, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },    
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -320, maxDamage = -400, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },    
-	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK,  chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -450, range = 4, shootEffect = CONST_ANI_DRILLBOLT, target = true },
+	{ name = "melee", group = MONSTER_SPELL_GROUP_BASIC, chance = 100, minDamage = -0, maxDamage = -350 },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 18, type = COMBAT_DEATHDAMAGE, minDamage = -360, maxDamage = -500, radius = 3, effect = CONST_ME_MORTAREA, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -420, length = 4, spread = 0, effect = CONST_ME_ENERGYHIT, target = false },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -320, maxDamage = -400, range = 5, effect = CONST_ME_YELLOWENERGY, shootEffect = CONST_ANI_ENERGYBALL, target = true },
+	{ name = "combat", group = MONSTER_SPELL_GROUP_ATTACK, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = -0, maxDamage = -450, range = 4, shootEffect = CONST_ANI_DRILLBOLT, target = true },
 }
 
 monster.defenses = {

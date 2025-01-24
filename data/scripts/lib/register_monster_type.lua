@@ -553,8 +553,7 @@ end
 
 registerMonsterType.attacks = function(mtype, mask)
     if type(mask.attacks) == "table" then
-        local isGrouped = type(mask.attacks[1]) == "table" and type(mask.attacks[1][1]) == "table"
-        
+        local isGrouped = type(mask.attacks[1]) == "table" and type(mask.attacks[1][1]) == "table"        
         if isGrouped then
             for groupIndex, attackGroup in ipairs(mask.attacks) do
                 for _, attack in ipairs(attackGroup) do

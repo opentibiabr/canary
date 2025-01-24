@@ -1876,25 +1876,11 @@ std::shared_ptr<Item> Tile::getUseItem(int32_t index) const {
 		return ground;
 	}
 
-	if (index >= 0 && index < static_cast<int32_t>(items->size())) {
-		if (const auto &thing = getThing(index)) {
-			if (auto thingItem = thing->getItem()) {
-				return thingItem;
-			}
-		}
+	if (const auto &thing = getThing(index)) {
+		return thing->getItem();
 	}
 
-	if (auto topDownItem = getTopDownItem()) {
-		return topDownItem;
-	}
-
-	for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
-		if ((*it)->getDoor()) {
-			return (*it)->getItem();
-		}
-	}
-
-	return !items->empty() ? *items->begin() : nullptr;
+	return nullptr;
 }
 
 std::shared_ptr<Item> Tile::getDoorItem() const {

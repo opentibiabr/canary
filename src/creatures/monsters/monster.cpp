@@ -1132,38 +1132,46 @@ void Monster::doAttacking(uint32_t interval) {
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
-	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
-		bool inRange = false;
+	std::map<uint32_t, std::vector<const spellBlock_t*>> groupSpells;
 
+	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
 			continue;
 		}
 
+		uint32_t group = spellBlock.group > 0 ? spellBlock.group : 0;
+		bool inRange = false;
+
 		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
 			if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
+				groupSpells[group].push_back(&spellBlock);
+			}
+		}
+
+		if (!inRange && spellBlock.isMelee) {
+			extraMeleeAttack = true; // melee swing out of reach
+		}
+	}
+
+	for (const auto &[group, spells] : groupSpells) {
+		if (!spells.empty()) {
+			const spellBlock_t* selectedSpell = spells[uniform_random(0, spells.size() - 1)];
+
+			if (selectedSpell) {
 				if (updateLook) {
 					updateLookDirection();
 					updateLook = false;
 				}
 
-				minCombatValue = spellBlock.minCombatValue;
-				maxCombatValue = spellBlock.maxCombatValue;
+				minCombatValue = selectedSpell->minCombatValue;
+				maxCombatValue = selectedSpell->maxCombatValue;
 
-				if (spellBlock.spell == nullptr) {
-					continue;
-				}
+				selectedSpell->spell->castSpell(getMonster(), attackedCreature);
 
-				spellBlock.spell->castSpell(getMonster(), attackedCreature);
-
-				if (spellBlock.isMelee) {
+				if (selectedSpell->isMelee) {
 					extraMeleeAttack = false;
 				}
 			}
-		}
-
-		if (!inRange && spellBlock.isMelee) {
-			// melee swing out of reach
-			extraMeleeAttack = true;
 		}
 	}
 

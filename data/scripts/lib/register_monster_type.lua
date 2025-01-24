@@ -235,6 +235,9 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.hasGroupedSpells ~= nil then
 			mtype:hasGroupedSpells(mask.flags.hasGroupedSpells)
 		end
+		if mask.flags.hasGroupedSpells ~= nil then
+			mtype:hasGroupedSpells(mask.flags.hasGroupedSpells)
+		end
 		if mask.flags.isBlockable ~= nil then
 			mtype:isBlockable(mask.flags.isBlockable)
 		end
@@ -547,12 +550,25 @@ registerMonsterType.immunities = function(mtype, mask)
 		end
 	end
 end
+
 registerMonsterType.attacks = function(mtype, mask)
-	if type(mask.attacks) == "table" then
-		for _, attack in pairs(mask.attacks) do
-			mtype:addAttack(readSpell(attack, mtype))
-		end
-	end
+    if type(mask.attacks) == "table" then
+        local isGrouped = type(mask.attacks[1]) == "table" and type(mask.attacks[1][1]) == "table"
+        
+        if isGrouped then
+            for groupIndex, attackGroup in ipairs(mask.attacks) do
+                for _, attack in ipairs(attackGroup) do
+                    attack.group = groupIndex
+                    mtype:addAttack(readSpell(attack, mtype))
+                end
+            end
+        else
+            for _, attack in ipairs(mask.attacks) do
+                attack.group = 1
+                mtype:addAttack(readSpell(attack, mtype))
+            end
+        end
+    end
 end
 
 registerMonsterType.defenses = function(mtype, mask)

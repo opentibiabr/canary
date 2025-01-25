@@ -984,7 +984,7 @@
 	<house name="Pilchard Bin 9" houseid="3684" entryx="32281" entryy="31152" entryz="6" rent="50000" townid="16" size="10" clientid="55124" beds="1" />
 	<house name="Pilchard Bin 10" houseid="3685" entryx="32281" entryy="31148" entryz="6" rent="50000" townid="16" size="10" clientid="55125" beds="1" />
 	<house name="Mammoth House" houseid="3686" entryx="32234" entryy="31227" entryz="7" rent="300000" townid="16" size="176" clientid="55014" beds="6" />
-	<house name="Cherry Cake Tower" houseid="3687" entryx="33450" entryy="32103" entryz="7" rent="800000" townid="29" size="189" clientid="53503" beds="7" />
+	<house name="Cherry Cake Tower" houseid="3687" entryx="33450" entryy="32103" entryz="7" rent="800000" townid="29" size="153" clientid="53503" beds="7" />
 	<house name="Blueberry Bay" houseid="3688" entryx="33414" entryy="32114" entryz="7" rent="600000" townid="29" size="130" clientid="53501" beds="4" />
 	<house name="Vanilla Beach" houseid="3689" entryx="33402" entryy="32166" entryz="7" rent="600000" townid="29" size="129" clientid="53502" beds="4" />
 	<house name="Centre 1" houseid="3690" entryx="33751" entryy="32856" entryz="7" rent="600000" townid="30" size="126" clientid="49001" beds="4" />

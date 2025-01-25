@@ -1898,8 +1898,16 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 
 	for (uint32_t y = 0; y < rows; ++y) {
 		for (uint32_t x = 0; x < cols; ++x) {
-			if (area->getValue(y, x) != 0 && g_game().isSightClear(casterPos, tmpPos, true)) {
-				list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
+			if (area->getValue(y, x) != 0) {
+				std::shared_ptr<Tile> tile = g_game().map.getTile(tmpPos);
+				if (tile && tile->hasFlag(TILESTATE_FLOORCHANGE)) {
+					++tmpPos.x;
+					continue;
+				}
+
+				if (g_game().isSightClear(casterPos, tmpPos, true)) {
+					list.emplace_back(g_game().map.getOrCreateTile(tmpPos));
+				}
 			}
 			++tmpPos.x;
 		}

@@ -19,7 +19,7 @@ function onCreateWildGrowth(creature, position)
 		wildGrowth = ITEM_WILDGROWTH
 	end
 
-	local item = Game.createItem(magicWall, 1, position)
+	local item = Game.createItem(wildGrowth, 1, position)
 	if item then
 		item:setDuration(30, 60)
 	end

@@ -22,6 +22,7 @@ function onCreateMagicWall(creature, position)
 	local item = Game.createItem(magicWall, 1, position)
 	if item then
 		item:setDuration(16, 24)
+		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
 	end
 end
 

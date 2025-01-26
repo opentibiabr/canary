@@ -21,7 +21,8 @@ function onCreateWildGrowth(creature, position)
 
 	local item = Game.createItem(wildGrowth, 1, position)
 	if item then
-		item:setDuration(30, 60)
+		item:setDuration(30)
+		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
 	end
 end
 

@@ -7143,8 +7143,12 @@ uint8_t Player::getLastWing() const {
 	if (value > 0) {
 		return value;
 	}
-	auto wingOpt = kv()->get("last-wing");
-	return static_cast<uint8_t>(wingOpt ? wingOpt->get<int>() : 0);
+	const auto lastWing = kv()->get("last-wing");
+	if (!lastWing.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastWing->get<int>());
 }
 
 uint8_t Player::getCurrentWing() const {
@@ -7323,8 +7327,12 @@ uint8_t Player::getLastAura() const {
 	if (value > 0) {
 		return value;
 	}
-	auto auraOpt = kv()->get("last-aura");
-	return static_cast<uint8_t>(auraOpt ? auraOpt->get<int>() : 0);
+	const auto lastAura = kv()->get("last-aura");
+	if (!lastAura.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastAura->get<int>());
 }
 
 uint8_t Player::getCurrentAura() const {
@@ -7502,8 +7510,13 @@ uint8_t Player::getLastEffect() const {
 	if (value > 0) {
 		return value;
 	}
-	auto effectOpt = kv()->get("last-effect");
-	return static_cast<uint8_t>(effectOpt ? effectOpt->get<int>() : 0);
+
+	const auto lastEffect = kv()->get("last-effect");
+	if (!lastEffect.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastEffect->get<int>());
 }
 
 uint8_t Player::getCurrentEffect() const {

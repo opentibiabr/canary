@@ -6950,7 +6950,12 @@ uint8_t Player::getLastMount() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	const auto lastMount = kv()->get("last-mount");
+	if (!lastMount.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastMount->get<int>());
 }
 
 uint8_t Player::getCurrentMount() const {

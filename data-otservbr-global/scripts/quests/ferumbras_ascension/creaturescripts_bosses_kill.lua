@@ -24,7 +24,7 @@ local bosses = {
 		storage = Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer,
 	},
 	["razzagorn"] = {
-		teleportPos = Position(33357, 32434, 12),
+		teleportPos = Position(33413, 32467, 14),
 		godbreakerPos = Position(33357, 32440, 13),
 		cooldown = 44, -- hours
 		storage = Storage.Quest.U10_90.FerumbrasAscension.RazzagornTimer,

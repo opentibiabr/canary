@@ -32,7 +32,6 @@ local function handleItemDescription(inspectedThing, lookDistance, player)
 			return "You see rush wood."
 		end
 	end
-	
 	if isSpecialItem(inspectedThing.itemid) then
 		local itemCharges = inspectedThing:getCharges()
 		if itemCharges > 0 then

@@ -1014,6 +1014,12 @@ public:
 	void setNextPotionAction(int64_t time);
 	bool canDoPotionAction() const;
 
+	void setNextNecklaceAction(int64_t time);
+	bool canEquipNecklace() const;
+
+	void setNextRingAction(int64_t time);
+	bool canEquipRing() const;
+
 	void setLoginProtection(int64_t time);
 	bool isLoginProtected() const;
 	void resetLoginProtection();
@@ -1513,6 +1519,8 @@ private:
 	int64_t lastToggleAura = 0;
 	int64_t lastToggleShader = 0;
 	int64_t nextPotionAction = 0;
+	int64_t nextNecklaceAction = 0;
+	int64_t nextRingAction = 0;
 	int64_t lastQuickLootNotification = 0;
 	int64_t lastWalking = 0;
 	int64_t loginProtectionTime = 0;

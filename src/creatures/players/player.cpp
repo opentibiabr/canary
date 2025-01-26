@@ -2933,6 +2933,26 @@ bool Player::canDoAction() const {
 	return nextAction <= OTSYS_TIME();
 }
 
+void Player::setNextNecklaceAction(int64_t time) {
+	if (time > nextNecklaceAction) {
+		nextNecklaceAction = time;
+	}
+}
+
+void Player::setNextRingAction(int64_t time) {
+	if (time > nextRingAction) {
+		nextRingAction = time;
+	}
+}
+
+bool Player::canEquipNecklace() const {
+	return OTSYS_TIME() >= nextNecklaceAction;
+}
+
+bool Player::canEquipRing() const {
+	return OTSYS_TIME() >= nextRingAction;
+}
+
 void Player::setNextPotionAction(int64_t time) {
 	if (time > nextPotionAction) {
 		nextPotionAction = time;
@@ -6939,7 +6959,12 @@ uint8_t Player::getLastMount() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	const auto lastMount = kv()->get("last-mount");
+	if (!lastMount.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastMount->get<int>());
 }
 
 uint8_t Player::getCurrentMount() const {

@@ -45,8 +45,8 @@ function actions_goldenIdol.onUse(player, item, fromPosition, target, toPosition
 
 				if currentCount + 1 == totalAltars then
 					player:setStorageValue(finalStorage, 1)
-					if p:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Tomb) == 1 and p:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Cellar) == 1 and p:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple) == 1 then
-						p:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline, 2)
+					if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Tomb) == 1 and player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Cellar) == 1 and player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple) == 1 then
+						player:setStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline, 2)
 					end
 					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have placed all the idols on the altars and unlocked the temple!")
 				end

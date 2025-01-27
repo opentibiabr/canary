@@ -2924,6 +2924,26 @@ bool Player::canDoAction() const {
 	return nextAction <= OTSYS_TIME();
 }
 
+void Player::setNextNecklaceAction(int64_t time) {
+	if (time > nextNecklaceAction) {
+		nextNecklaceAction = time;
+	}
+}
+
+void Player::setNextRingAction(int64_t time) {
+	if (time > nextRingAction) {
+		nextRingAction = time;
+	}
+}
+
+bool Player::canEquipNecklace() const {
+	return OTSYS_TIME() >= nextNecklaceAction;
+}
+
+bool Player::canEquipRing() const {
+	return OTSYS_TIME() >= nextRingAction;
+}
+
 void Player::setNextPotionAction(int64_t time) {
 	if (time > nextPotionAction) {
 		nextPotionAction = time;
@@ -3812,12 +3832,64 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	const auto &corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
+
+		ss << "You recognize " << getNameDescription() << ". ";
+
+		std::string responsibleName;
+		std::string secondaryResponsibleName;
+		bool hasOthers = false;
+
 		if (lastHitCreature) {
-			std::string subjectPronoun = getSubjectPronoun();
-			capitalizeWords(subjectPronoun);
-			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
+			if (lastHitCreature->getPlayer()) {
+				responsibleName = lastHitCreature->getNameDescription();
+			} else if (auto master = lastHitCreature->getMaster(); master && master->getPlayer()) {
+				responsibleName = master->getNameDescription();
+			}
+		}
+
+		if (mostDamageCreature) {
+			if (mostDamageCreature->getPlayer()) {
+				if (responsibleName != mostDamageCreature->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = mostDamageCreature->getNameDescription();
+				}
+			} else if (auto master = mostDamageCreature->getMaster(); master && master->getPlayer()) {
+				if (responsibleName != master->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = master->getNameDescription();
+				}
+			}
+		}
+
+		uint32_t inFightTicks = 5 * 60 * 1000;
+		for (const auto &[creatureId, damageInfo] : damageMap) {
+			const auto &[total, ticks] = damageInfo;
+			if ((OTSYS_TIME() - ticks) <= inFightTicks) {
+				const auto &attacker = g_game().getCreatureByID(creatureId);
+				if (attacker && !attacker->getPlayer()) {
+					hasOthers = true;
+					break;
+				}
+			}
+		}
+
+		if (!responsibleName.empty()) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << responsibleName;
+
+			if (!secondaryResponsibleName.empty()) {
+				ss << " and " << secondaryResponsibleName;
+			} else if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
+		} else if (lastHitCreature) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription();
+			if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
 		} else {
-			ss << "You recognize " << getNameDescription() << '.';
+			ss << "No attackers were identified.";
 		}
 
 		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
@@ -6878,7 +6950,12 @@ uint8_t Player::getLastMount() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	const auto lastMount = kv()->get("last-mount");
+	if (!lastMount.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastMount->get<int>());
 }
 
 uint8_t Player::getCurrentMount() const {

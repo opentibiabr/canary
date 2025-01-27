@@ -1726,6 +1726,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			}
 
 			uint8_t isMountRandomized = !oldProtocol ? msg.getByte() : 0;
+			// g_game.enableFeature(GameWingsAurasEffectsShader)
 			newOutfit.lookWing = isOTCR ? msg.get<uint16_t>() : 0;
 			newOutfit.lookAura = isOTCR ? msg.get<uint16_t>() : 0;
 			newOutfit.lookEffect = isOTCR ? msg.get<uint16_t>() : 0;
@@ -8025,7 +8026,7 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 		}
 	}
 	if (isOTCR) {
-		AddOutfitCustomOTCR(msg, outfit);
+		AddOutfitCustomOTCR(msg, outfit); // g_game.enableFeature(GameWingsAurasEffectsShader)
 	}
 }
 

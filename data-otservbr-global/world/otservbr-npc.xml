@@ -1353,6 +1353,9 @@
 	<npc centerx="33304" centery="31720" centerz="7" radius="1">
 		<npc name="Cornell" x="0" y="0" z="7" spawntime="60" />
 	</npc>
+	<npc centerx="33272" centery="31723" centerz="7" radius="4">
+		<npc name="Myzzi" x="0" y="-1" z="7" spawntime="60" />
+	</npc>
 	<npc centerx="32412" centery="31728" centerz="7" radius="1">
 		<npc name="A Fluffy Squirrel" x="0" y="0" z="7" spawntime="60" />
 	</npc>
@@ -2793,6 +2796,12 @@
 	</npc>
 	<npc centerx="32524" centery="32023" centerz="13" radius="1">
 		<npc name="Robson" x="0" y="0" z="13" spawntime="60" />
+	</npc>
+	<npc centerx="32179" centery="32048" centerz="13" radius="1">
+		<npc name="Shirtalis Of The Summer Court" x="0" y="0" z="13" spawntime="60" />
+	</npc>
+	<npc centerx="32238" centery="32048" centerz="13" radius="1">
+		<npc name="Farhilorn Of The Winter Court" x="0" y="0" z="13" spawntime="60" />
 	</npc>
 	<npc centerx="32394" centery="32138" centerz="13" radius="1">
 		<npc name="A Prisoner" x="0" y="0" z="13" spawntime="60" />

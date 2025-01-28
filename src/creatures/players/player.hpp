@@ -945,6 +945,19 @@ public:
 	void setNextPotionAction(int64_t time);
 	bool canDoPotionAction() const;
 
+	void setNextNecklaceAction(int64_t time);
+	bool canEquipNecklace() const;
+
+	void setNextRingAction(int64_t time);
+	bool canEquipRing() const;
+
+	void setLoginProtection(int64_t time);
+	bool isLoginProtected() const;
+	void resetLoginProtection();
+
+	void setProtection(bool status);
+	bool isProtected();
+
 	void cancelPush();
 
 	void setModuleDelay(uint8_t byteortype, int16_t delay);
@@ -1419,8 +1432,11 @@ private:
 	int64_t lastPong;
 	int64_t nextAction = 0;
 	int64_t nextPotionAction = 0;
+	int64_t nextNecklaceAction = 0;
+	int64_t nextRingAction = 0;
 	int64_t lastQuickLootNotification = 0;
 	int64_t lastWalking = 0;
+	int64_t loginProtectionTime = 0;
 	uint64_t asyncOngoingTasks = 0;
 
 	std::vector<Kill> unjustifiedKills;
@@ -1560,6 +1576,8 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	bool shouldForceLogout = true;
+	bool connProtected = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;

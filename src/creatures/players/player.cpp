@@ -2045,16 +2045,20 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
 		setAttackedCreature(nullptr);
 	}
 
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
-		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
-		if (client) {
-			client->logout(true, true);
+	if (noPongTime >= 60000 && shouldForceLogout) {
+		if (canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+			g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
+			if (client) {
+				client->logout(true, true);
+			} else {
+				g_game().removeCreature(static_self_cast<Player>(), true);
+			}
 		} else {
-			g_game().removeCreature(static_self_cast<Player>(), true);
+			shouldForceLogout = false;
 		}
 	}
 }
@@ -2920,6 +2924,26 @@ bool Player::canDoAction() const {
 	return nextAction <= OTSYS_TIME();
 }
 
+void Player::setNextNecklaceAction(int64_t time) {
+	if (time > nextNecklaceAction) {
+		nextNecklaceAction = time;
+	}
+}
+
+void Player::setNextRingAction(int64_t time) {
+	if (time > nextRingAction) {
+		nextRingAction = time;
+	}
+}
+
+bool Player::canEquipNecklace() const {
+	return OTSYS_TIME() >= nextNecklaceAction;
+}
+
+bool Player::canEquipRing() const {
+	return OTSYS_TIME() >= nextRingAction;
+}
+
 void Player::setNextPotionAction(int64_t time) {
 	if (time > nextPotionAction) {
 		nextPotionAction = time;
@@ -2928,6 +2952,23 @@ void Player::setNextPotionAction(int64_t time) {
 
 bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
+}
+
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
 }
 
 void Player::cancelPush() {
@@ -3371,7 +3412,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			//
+			// Absorb Percent
 			const ItemType &it = Item::items[item->getID()];
 			if (it.abilities) {
 				int totalAbsorbPercent = 0;
@@ -3387,7 +3428,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-				if (totalAbsorbPercent > 0) {
+				if (totalAbsorbPercent != 0) {
 					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
 
 					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
@@ -3791,12 +3832,64 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	const auto &corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
+
+		ss << "You recognize " << getNameDescription() << ". ";
+
+		std::string responsibleName;
+		std::string secondaryResponsibleName;
+		bool hasOthers = false;
+
 		if (lastHitCreature) {
-			std::string subjectPronoun = getSubjectPronoun();
-			capitalizeWords(subjectPronoun);
-			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
+			if (lastHitCreature->getPlayer()) {
+				responsibleName = lastHitCreature->getNameDescription();
+			} else if (auto master = lastHitCreature->getMaster(); master && master->getPlayer()) {
+				responsibleName = master->getNameDescription();
+			}
+		}
+
+		if (mostDamageCreature) {
+			if (mostDamageCreature->getPlayer()) {
+				if (responsibleName != mostDamageCreature->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = mostDamageCreature->getNameDescription();
+				}
+			} else if (auto master = mostDamageCreature->getMaster(); master && master->getPlayer()) {
+				if (responsibleName != master->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = master->getNameDescription();
+				}
+			}
+		}
+
+		uint32_t inFightTicks = 5 * 60 * 1000;
+		for (const auto &[creatureId, damageInfo] : damageMap) {
+			const auto &[total, ticks] = damageInfo;
+			if ((OTSYS_TIME() - ticks) <= inFightTicks) {
+				const auto &attacker = g_game().getCreatureByID(creatureId);
+				if (attacker && !attacker->getPlayer()) {
+					hasOthers = true;
+					break;
+				}
+			}
+		}
+
+		if (!responsibleName.empty()) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << responsibleName;
+
+			if (!secondaryResponsibleName.empty()) {
+				ss << " and " << secondaryResponsibleName;
+			} else if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
+		} else if (lastHitCreature) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription();
+			if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
 		} else {
-			ss << "You recognize " << getNameDescription() << '.';
+			ss << "No attackers were identified.";
 		}
 
 		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
@@ -6873,7 +6966,12 @@ uint8_t Player::getLastMount() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	const auto lastMount = kv()->get("last-mount");
+	if (!lastMount.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastMount->get<int>());
 }
 
 uint8_t Player::getCurrentMount() const {
@@ -6904,9 +7002,16 @@ uint8_t Player::getRandomMountId() const {
 		}
 	}
 
-	const auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
-	return playerMounts.at(randomIndex);
+	if (playerMounts.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(playerMounts.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < playerMounts.size()) {
+		return playerMounts[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleMount(bool mount) {
@@ -9954,9 +10059,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-// container
-// container
-
+// Container
 void Player::onAddContainerItem(const std::shared_ptr<Item> &item) {
 	checkTradeState(item);
 }

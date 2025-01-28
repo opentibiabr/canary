@@ -19,6 +19,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -2390,9 +2391,13 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	newmsg.addByte(currentLevel);
 
-	newmsg.add<uint16_t>(0); // Animus Mastery Bonus
-	newmsg.add<uint16_t>(0); // Animus Mastery Points
-
+	if (player->animusMastery().has(mtype->name)) {
+		newmsg.add<uint16_t>(static_cast<uint16_t>(std::round((player->animusMastery().getExperienceMultiplier() - 1) * 1000))); // Animus Mastery Bonus
+		newmsg.add<uint16_t>(player->animusMastery().getPoints()); // Animus Mastery Points
+	} else {
+		newmsg.add<uint16_t>(0);
+		newmsg.add<uint16_t>(0);
+	}
 	newmsg.add<uint32_t>(killCounter);
 
 	newmsg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
@@ -3026,10 +3031,15 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg) {
 			newmsg.addByte(0);
 		}
 
-		newmsg.add<uint16_t>(0); // Creature Animous Bonus
+		const auto monsterType = g_monsters().getMonsterType(it_.second);
+		if (monsterType && player->animusMastery().has(it_.second)) {
+			newmsg.add<uint16_t>(static_cast<uint16_t>(std::round((player->animusMastery().getExperienceMultiplier() - 1) * 1000))); // Animus Mastery Bonus
+		} else {
+			newmsg.add<uint16_t>(0);
+		}
 	}
 
-	newmsg.add<uint16_t>(0); // Animus Mastery Points
+	newmsg.add<uint16_t>(player->animusMastery().getPoints()); // Animus Mastery Points
 
 	writeToOutputBuffer(newmsg);
 }

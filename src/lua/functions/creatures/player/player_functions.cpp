@@ -15,6 +15,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/cyclopedia/player_title.hpp"
@@ -403,6 +404,10 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
 	Lua::registerMethod(L, "Player", "removeIconBakragore", PlayerFunctions::luaPlayerRemoveIconBakragore);
 	Lua::registerMethod(L, "Player", "sendCreatureAppear", PlayerFunctions::luaPlayerSendCreatureAppear);
+
+	Lua::registerMethod(L, "Player", "addAnimusMastery", PlayerFunctions::luaPlayerAddAnimusMastery);
+	Lua::registerMethod(L, "Player", "removeAnimusMastery", PlayerFunctions::luaPlayerRemoveAnimusMastery);
+	Lua::registerMethod(L, "Player", "hasAnimusMastery", PlayerFunctions::luaPlayerHasAnimusMastery);
 
 	GroupFunctions::init(L);
 	GuildFunctions::init(L);
@@ -4868,5 +4873,44 @@ int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
 	bool isLogin = Lua::getBoolean(L, 2, false);
 	player->sendCreatureAppear(player, player->getPosition(), isLogin);
 	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAnimusMastery(lua_State* L) {
+	auto player = Lua::getUserdataShared<Player>(L, 1);
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	const std::string &monsterType = Lua::getString(L, 2);
+	player->animusMastery().add(monsterType);
+
+	return 1;
+}
+int PlayerFunctions::luaPlayerRemoveAnimusMastery(lua_State* L) {
+	auto player = Lua::getUserdataShared<Player>(L, 1);
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	const std::string &monsterType = Lua::getString(L, 2);
+	player->animusMastery().remove(monsterType);
+
+	return 1;
+}
+int PlayerFunctions::luaPlayerHasAnimusMastery(lua_State* L) {
+	auto player = Lua::getUserdataShared<Player>(L, 1);
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	const std::string &monsterType = Lua::getString(L, 2);
+
+	bool has = player->animusMastery().has(monsterType);
+	Lua::pushBoolean(L, has);
+
 	return 1;
 }

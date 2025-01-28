@@ -77,7 +77,6 @@ public:
 	bool isHostile() const;
 	bool isFamiliar() const;
 	bool canSeeInvisibility() const override;
-	uint16_t critChance() const;
 	uint32_t getManaCost() const;
 	RespawnType getRespawnType() const;
 	void setSpawnMonster(const std::shared_ptr<SpawnMonster> &newSpawnMonster);
@@ -179,6 +178,10 @@ public:
 	void setHazardSystemDefenseBoost(bool value);
 	// Hazard end
 
+	bool getSoulPit() const;
+	void setSoulPit(bool value);
+	void setSoulPitStack(uint8_t stack, bool isSummon = false);
+
 	void updateTargetList();
 	void clearTargetList();
 	void clearFriendList();
@@ -186,6 +189,8 @@ public:
 	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 	static uint32_t monsterAutoID;
+
+	void applyStacks();
 
 	void configureForgeSystem();
 
@@ -225,6 +230,12 @@ public:
 
 	void setDead(bool isDead);
 
+	void setCriticalChance(uint16_t chance);
+	uint16_t getCriticalChance() const;
+
+	void setCriticalDamage(uint16_t damage);
+	uint16_t getCriticalDamage() const;
+
 protected:
 	void onExecuteAsyncTasks() override;
 
@@ -258,6 +269,9 @@ private:
 
 	uint16_t totalPlayersOnScreen = 0;
 
+	uint16_t criticalChance = 0;
+	uint16_t criticalDamage = 0;
+
 	uint32_t attackTicks = 0;
 	uint32_t targetChangeTicks = 0;
 	uint32_t defenseTicks = 0;
@@ -276,6 +290,9 @@ private:
 
 	std::unordered_map<CombatType_t, int32_t> m_reflectElementMap;
 
+	std::vector<spellBlock_t> attackSpells;
+	std::vector<spellBlock_t> defenseSpells;
+
 	Position masterPos;
 
 	bool isWalkingBack = false;
@@ -289,6 +306,8 @@ private:
 	bool hazardDodge = false;
 	bool hazardDamageBoost = false;
 	bool hazardDefenseBoost = false;
+
+	bool soulPit = false;
 
 	bool m_isDead = false;
 	bool m_isImmune = false;

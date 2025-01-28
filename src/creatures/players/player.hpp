@@ -16,7 +16,9 @@
 #include "items/cylinder.hpp"
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 
+class AnimusMastery;
 class House;
 class NetworkMessage;
 class Weapon;
@@ -945,6 +947,12 @@ public:
 	void setNextPotionAction(int64_t time);
 	bool canDoPotionAction() const;
 
+	void setNextNecklaceAction(int64_t time);
+	bool canEquipNecklace() const;
+
+	void setNextRingAction(int64_t time);
+	bool canEquipRing() const;
+
 	void setLoginProtection(int64_t time);
 	bool isLoginProtected() const;
 	void resetLoginProtection();
@@ -1264,13 +1272,17 @@ public:
 	std::unique_ptr<PlayerTitle> &title();
 	const std::unique_ptr<PlayerTitle> &title() const;
 
-	// Player summary interface
+	// Player cyclopedia interface
 	std::unique_ptr<PlayerCyclopedia> &cyclopedia();
 	const std::unique_ptr<PlayerCyclopedia> &cyclopedia() const;
 
 	// Player vip interface
 	std::unique_ptr<PlayerVIP> &vip();
 	const std::unique_ptr<PlayerVIP> &vip() const;
+
+	// Player animusMastery interface
+	AnimusMastery &animusMastery();
+	const AnimusMastery &animusMastery() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -1426,6 +1438,8 @@ private:
 	int64_t lastPong;
 	int64_t nextAction = 0;
 	int64_t nextPotionAction = 0;
+	int64_t nextNecklaceAction = 0;
+	int64_t nextRingAction = 0;
 	int64_t lastQuickLootNotification = 0;
 	int64_t lastWalking = 0;
 	int64_t loginProtectionTime = 0;
@@ -1646,6 +1660,7 @@ private:
 	std::unique_ptr<PlayerCyclopedia> m_playerCyclopedia;
 	std::unique_ptr<PlayerTitle> m_playerTitle;
 	std::unique_ptr<PlayerVIP> m_playerVIP;
+	AnimusMastery m_animusMastery;
 
 	std::mutex quickLootMutex;
 

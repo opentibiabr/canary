@@ -151,6 +151,8 @@ void MonsterTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterType", "deathSound", MonsterTypeFunctions::luaMonsterTypedeathSound);
 
 	Lua::registerMethod(L, "MonsterType", "variant", MonsterTypeFunctions::luaMonsterTypeVariant);
+	Lua::registerMethod(L, "MonsterType", "getMonstersByRace", MonsterTypeFunctions::luaMonsterTypeGetMonstersByRace);
+	Lua::registerMethod(L, "MonsterType", "getMonstersByBestiaryStars", MonsterTypeFunctions::luaMonsterTypeGetMonstersByBestiaryStars);
 }
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock> &lootList) {
@@ -650,6 +652,22 @@ int MonsterTypeFunctions::luaMonsterTypeRaceid(lua_State* L) {
 		} else {
 			monsterType->info.raceid = Lua::getNumber<uint16_t>(L, 2);
 			g_game().addBestiaryList(Lua::getNumber<uint16_t>(L, 2), monsterType->name);
+			Lua::pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeSoulCore(lua_State* L) {
+	// get: monsterType:luaMonsterTypeSoulCore() set: monsterType:luaMonsterTypeSoulCore(id)
+	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.soulCore);
+		} else {
+			monsterType->info.soulCore = Lua::getNumber<uint16_t>(L, 2);
 			Lua::pushBoolean(L, true);
 		}
 	} else {
@@ -1855,5 +1873,35 @@ int MonsterTypeFunctions::luaMonsterTypeVariant(lua_State* L) {
 		Lua::pushBoolean(L, true);
 	}
 
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeGetMonstersByRace(lua_State* L) {
+	// monsterType:getMonstersByRace(race)
+	const BestiaryType_t race = Lua::getNumber<BestiaryType_t>(L, 1);
+	const auto monstersByRace = g_monsters().getMonstersByRace(race);
+
+	lua_createtable(L, monstersByRace.size(), 0);
+	int index = 0;
+	for (const auto &monsterType : monstersByRace) {
+		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeGetMonstersByBestiaryStars(lua_State* L) {
+	// monsterType:getMonstersByBestiaryStars(stars)
+	const uint8_t stars = Lua::getNumber<uint8_t>(L, 1);
+	const auto monstersByStars = g_monsters().getMonstersByBestiaryStars(stars);
+
+	lua_createtable(L, monstersByStars.size(), 0);
+	int index = 0;
+	for (const auto &monsterType : monstersByStars) {
+		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
+		lua_rawseti(L, -2, ++index);
+	}
 	return 1;
 }

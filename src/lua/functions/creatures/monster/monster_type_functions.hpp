@@ -120,6 +120,8 @@ private:
 	static int luaMonsterTypeCanWalkOnFire(lua_State* L);
 	static int luaMonsterTypeCanWalkOnPoison(lua_State* L);
 
+	static int luaMonsterTypeHasGroupedSpells(lua_State* L);
+
 	static int luaMonsterTypeStrategiesTargetNearest(lua_State* L);
 	static int luaMonsterTypeStrategiesTargetHealth(lua_State* L);
 	static int luaMonsterTypeStrategiesTargetDamage(lua_State* L);

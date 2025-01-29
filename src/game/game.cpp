@@ -7649,8 +7649,12 @@ void Game::buildMessageAsTarget(
 	const std::string &damageString
 ) const {
 	ss.str({});
-	auto attackMsg = damage.critical ? "critical " : "";
-	auto article = damage.critical ? "a" : "an";
+	const auto &monster = attacker ? attacker->getMonster() : nullptr;
+	bool handleSoulPit = monster ? monster->getSoulPit() && monster->getForgeStack() == 40 : false;
+
+	std::string attackMsg = damage.critical && !handleSoulPit ? "critical " : "";
+	std::string article = damage.critical && !handleSoulPit ? "a" : "an";
+
 	ss << "You lose " << damageString;
 	if (!attacker) {
 		ss << '.';
@@ -7661,6 +7665,9 @@ void Game::buildMessageAsTarget(
 	}
 	if (damage.extension) {
 		ss << " " << damage.exString;
+	}
+	if (handleSoulPit && damage.critical) {
+		ss << " (Soulpit Crit)";
 	}
 	message.type = MESSAGE_DAMAGE_RECEIVED;
 	message.text = ss.str();

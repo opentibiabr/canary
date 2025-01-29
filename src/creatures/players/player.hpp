@@ -16,7 +16,9 @@
 #include "items/cylinder.hpp"
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 
+class AnimusMastery;
 class House;
 class NetworkMessage;
 class Weapon;
@@ -1339,13 +1341,17 @@ public:
 	std::unique_ptr<PlayerTitle> &title();
 	const std::unique_ptr<PlayerTitle> &title() const;
 
-	// Player summary interface
+	// Player cyclopedia interface
 	std::unique_ptr<PlayerCyclopedia> &cyclopedia();
 	const std::unique_ptr<PlayerCyclopedia> &cyclopedia() const;
 
 	// Player vip interface
 	std::unique_ptr<PlayerVIP> &vip();
 	const std::unique_ptr<PlayerVIP> &vip() const;
+
+	// Player animusMastery interface
+	AnimusMastery &animusMastery();
+	const AnimusMastery &animusMastery() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -1749,6 +1755,7 @@ private:
 	std::unique_ptr<PlayerCyclopedia> m_playerCyclopedia;
 	std::unique_ptr<PlayerTitle> m_playerTitle;
 	std::unique_ptr<PlayerVIP> m_playerVIP;
+	AnimusMastery m_animusMastery;
 
 	std::mutex quickLootMutex;
 

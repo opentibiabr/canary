@@ -384,11 +384,14 @@ class PlayerFunctions {
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
 
+	static int luaPlayerAddAnimusMastery(lua_State* L);
+	static int luaPlayerRemoveAnimusMastery(lua_State* L);
+	static int luaPlayerHasAnimusMastery(lua_State* L);
+
 	static int luaPlayerGetMapShader(lua_State* L);
 	static int luaPlayerSetMapShader(lua_State* L);
-
 	static int luaPlayerAddCustomOutfit(lua_State* L);
 	static int luaPlayerRemoveCustomOutfit(lua_State* L);
-
+	
 	friend class CreatureFunctions;
 };

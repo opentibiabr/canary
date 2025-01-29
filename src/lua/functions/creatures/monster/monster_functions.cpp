@@ -66,12 +66,20 @@ void MonsterFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Monster", "hazardDamageBoost", MonsterFunctions::luaMonsterHazardDamageBoost);
 	Lua::registerMethod(L, "Monster", "hazardDefenseBoost", MonsterFunctions::luaMonsterHazardDefenseBoost);
 
+	Lua::registerMethod(L, "Monster", "soulPit", MonsterFunctions::luaMonsterSoulPit);
+
 	Lua::registerMethod(L, "Monster", "addReflectElement", MonsterFunctions::luaMonsterAddReflectElement);
 	Lua::registerMethod(L, "Monster", "addDefense", MonsterFunctions::luaMonsterAddDefense);
 	Lua::registerMethod(L, "Monster", "getDefense", MonsterFunctions::luaMonsterGetDefense);
 
 	Lua::registerMethod(L, "Monster", "isDead", MonsterFunctions::luaMonsterIsDead);
 	Lua::registerMethod(L, "Monster", "immune", MonsterFunctions::luaMonsterImmune);
+
+	Lua::registerMethod(L, "Monster", "criticalChance", MonsterFunctions::luaMonsterCriticalChance);
+	Lua::registerMethod(L, "Monster", "criticalDamage", MonsterFunctions::luaMonsterCriticalDamage);
+
+	Lua::registerMethod(L, "Monster", "addAttackSpell", MonsterFunctions::luaMonsterAddAttackSpell);
+	Lua::registerMethod(L, "Monster", "addDefenseSpell", MonsterFunctions::luaMonsterAddDefenseSpell);
 
 	CharmFunctions::init(L);
 	LootFunctions::init(L);
@@ -700,6 +708,23 @@ int MonsterFunctions::luaMonsterHazardDefenseBoost(lua_State* L) {
 	return 1;
 }
 
+int MonsterFunctions::luaMonsterSoulPit(lua_State* L) {
+	// get: monster:soulPit() ; set: monster:soulPit(hazard)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const bool soulPit = Lua::getBoolean(L, 2, false);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monster->getSoulPit());
+		} else {
+			monster->setSoulPit(soulPit);
+			Lua::pushBoolean(L, monster->getSoulPit());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterFunctions::luaMonsterAddReflectElement(lua_State* L) {
 	// monster:addReflectElement(type, percent)
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
@@ -770,5 +795,83 @@ int MonsterFunctions::luaMonsterImmune(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, monster->isImmune());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterCriticalChance(lua_State* L) {
+	// get: monster:criticalChance(); set: monster:criticalChance(critical)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const auto critical = Lua::getNumber<uint16_t>(L, 2, 0);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monster->getCriticalChance());
+		} else {
+			monster->setCriticalChance(critical);
+			Lua::pushBoolean(L, monster->getCriticalChance());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterCriticalDamage(lua_State* L) {
+	// get: monster:criticalDamage(); set: monster:criticalDamage(damage)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const auto damage = Lua::getNumber<uint16_t>(L, 2, 0);
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monster->getCriticalDamage());
+		} else {
+			monster->setCriticalDamage(damage);
+			Lua::pushBoolean(L, monster->getCriticalDamage());
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterAddAttackSpell(lua_State* L) {
+	// monster:addAttackSpell(monsterspell)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	if (monster) {
+		const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 2);
+		if (spell) {
+			spellBlock_t sb;
+			const auto &monsterName = monster->getName();
+			if (g_monsters().deserializeSpell(spell, sb, monsterName)) {
+				monster->attackSpells.push_back(std::move(sb));
+			} else {
+				g_logger().warn("Monster: {}, cant load spell: {}", monsterName, spell->name);
+			}
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterAddDefenseSpell(lua_State* L) {
+	// monster:addDefenseSpell(monsterspell)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	if (monster) {
+		const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 2);
+		if (spell) {
+			spellBlock_t sb;
+			const auto &monsterName = monster->getName();
+			if (g_monsters().deserializeSpell(spell, sb, monsterName)) {
+				monster->defenseSpells.push_back(std::move(sb));
+			} else {
+				g_logger().warn("Monster: {}, Cant load spell: {}", monsterName, spell->name);
+			}
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }

@@ -90,7 +90,7 @@ public:
 		if (ItemAttributeHelper::isAttributeInteger(attributeType)) {
 			return 0;
 		}
-		
+
 		return {};
 	}
 

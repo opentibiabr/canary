@@ -75525,11 +75525,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="elementfire" value="46"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6100"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75553,11 +75557,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="elementfire" value="46"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="weight" value="6000"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75566,9 +75574,6 @@ Granted by TibiaGoals.com"/>
 		<attribute key="augments" value="1">
 			<attribute key="fierce berserk" value="base">
 				<attribute key="value" value="8"/>
-			</attribute>
-			<attribute key="intense wound cleansing" value="cooldown">
-				<attribute key="value" value="120000"/>
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent;weapon">
@@ -75584,11 +75589,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="club"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="elementdeath" value="46"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="6900"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75612,11 +75621,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="club"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="elementdeath" value="46"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="weight" value="6800"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75640,11 +75653,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="elementfire" value="46"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="7200"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -75668,11 +75685,15 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="attack" value="8"/>
 		<attribute key="elementfire" value="46"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="extradef" value="3"/>
 		<attribute key="defense" value="32"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="weight" value="7200"/>
-		<attribute key="imbuementslot" value="3">
+		<attribute key="imbuementslot" value="2">
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -76044,6 +76065,10 @@ Granted by TibiaGoals.com"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="absorbpercentearth" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
+		<attribute key="manaleechamount" value="100"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="200"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="criticalhitdamage" value="1200"/>
@@ -76081,6 +76106,10 @@ Granted by TibiaGoals.com"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="absorbpercentearth" value="7"/>
 		<attribute key="magiclevelpoints" value="5"/>
+		<attribute key="manaleechamount" value="100"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="200"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="firemagiclevelpoints" value="1"/>
 		<attribute key="energymagiclevelpoints" value="1"/>
 		<attribute key="range" value="6"/>
@@ -76146,6 +76175,10 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="earth"/>
 		<attribute key="absorbpercentdeath" value="7"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="6"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
@@ -76183,6 +76216,10 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="earth"/>
 		<attribute key="absorbpercentdeath" value="7"/>
+		<attribute key="manaleechamount" value="300"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="600"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="magiclevelpoints" value="5"/>
 		<attribute key="earthmagiclevelpoints" value="1"/>
 		<attribute key="range" value="6"/>
@@ -76602,6 +76639,18 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Druid;true, Elder Druid"/>
 		</attribute>
 	</item>
+	<item id="44638" article="a" name="knight pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44639" article="a" name="paladin pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44640" article="a" name="sorcerer pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44641" article="a" name="druid pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
 	<item id="44642" name="stoic iks culet">
 		<attribute key="primarytype" value="legs"/>
 		<attribute key="armor" value="9"/>
@@ -76816,6 +76865,82 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="containersize" value="10"/>
 		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="44763" article="an" name="arrow pointing left">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44764" article="an" name="arrow pointing up">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44895" article="a" name="ramp"/>
+	<item id="44896" article="a" name="ramp">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="44897" article="a" name="ramp"/>
+	<item id="44898" article="a" name="ramp">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="44899" article="a" name="ramp"/>
+	<item id="44900" article="a" name="ramp">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="44901" article="a" name="ramp"/>
+	<item id="44902" article="a" name="ramp">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="44913" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="44914" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="44915" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="44916" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="44917" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="44918" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="44941" article="a" name="ramp"/>
+	<item id="44942" article="a" name="ramp">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="44943" article="a" name="ramp">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="44944" article="a" name="ramp"/>
+	<item id="44945" article="a" name="ramp"/>
+	<item id="44946" article="a" name="ramp">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="44947" article="a" name="ramp"/>
+	<item id="44948" article="a" name="ramp">
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="45153" article="a" name="ramp"/>
+	<item id="45154" article="a" name="ramp">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="45155" article="a" name="ramp"/>
+	<item id="45156" article="a" name="ramp">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="45157" article="a" name="ramp"/>
+	<item id="45158" article="a" name="ramp">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="45159" article="a" name="ramp"/>
+	<item id="45160" article="a" name="ramp">
+		<attribute key="floorchange" value="south"/>
 	</item>
 	<item id="46627" article="a" name="crusher">
 		<attribute key="loottype" value="tools"/>
@@ -79512,6 +79637,82 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
 		<attribute key="weight" value="100"/>
 	</item>
+	<item id="48493" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
+	<item id="48494" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
+	<item id="48495" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48496" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48497" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48498" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48499" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48500" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48501" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48502" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48520" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48521" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48522" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48523" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48524" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48525" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48526" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48527" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48528" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48529" article="a" name="closed door">
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="48530" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="48531" article="an" name="open door">
+		<attribute key="type" value="door"/>
+	</item>
 	<item id="48929" article="an" name="black sheep soul core">
 		<attribute key="primarytype" value="soul cores"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
@@ -80126,6 +80327,16 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="soul cores"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
 		<attribute key="weight" value="100"/>
+	</item>
+	<item id="49164" article="a" name="soul prism">
+		<attribute key="description" value="Focalises the soul within a core. Can be used to turn a soul core into a greater version"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="47367" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
+	</item>
+	<item id="47379" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
 	</item>
 </items>
 

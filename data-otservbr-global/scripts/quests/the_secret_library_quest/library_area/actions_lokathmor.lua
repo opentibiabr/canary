@@ -11,6 +11,12 @@ local config = {
 		{ pos = Position(32724, 32749, 10), teleport = Position(32751, 32685, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32725, 32749, 10), teleport = Position(32751, 32685, 10), effect = CONST_ME_TELEPORT },
 	},
+	monsters = {
+		{ name = "knowledge raider", pos = Position(32747, 32684, 10) },
+		{ name = "knowledge raider", pos = Position(32755, 32684, 10) },
+		{ name = "knowledge raider", pos = Position(32755, 32694, 10) },
+		{ name = "knowledge raider", pos = Position(32747, 32694, 10) },
+	},
 	specPos = {
 		from = Position(32742, 32681, 10),
 		to = Position(32758, 32696, 10),
@@ -19,5 +25,5 @@ local config = {
 }
 
 local lever = BossLever(config)
-lever:position({ x = 32720, y = 32749, z = 10 })
+lever:position(Position(32720, 32749, 10))
 lever:register()

@@ -2294,11 +2294,33 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
+	auto itemSlots = item->getImbuementSlot();
+	if (slot >= itemSlots) {
+		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", this->getName(), slot);
+		this->sendImbuementResult("Invalid slot selection.");
+		return;
+	}
+
 	ImbuementInfo imbuementInfo;
 	if (item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
+	}
+
+	for (uint8_t i = 0; i < item->getImbuementSlot(); i++) {
+		if (i == slot) {
+			continue;
+		}
+
+		ImbuementInfo existingImbuement;
+		if (item->getImbuementInfo(i, &existingImbuement) && existingImbuement.imbuement) {
+			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
+				g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
+				this->sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
+				return;
+			}
+		}
 	}
 
 	const auto &items = imbuement->getItems();

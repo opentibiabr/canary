@@ -1396,8 +1396,12 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg) {
 	}
 
 	auto itemId = msg.get<uint16_t>();
-	auto tier = msg.get<uint8_t>();
-	g_game().playerEquipItem(player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
+	uint8_t tier = 0;
+	bool hasTier = Item::items[itemId].upgradeClassification > 0;
+	if (hasTier) {
+		tier = msg.get<uint8_t>();
+	}
+	g_game().playerEquipItem(player->getID(), itemId, hasTier, tier);
 }
 
 void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg) {
@@ -3144,7 +3148,10 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 		g_game().playerBrowseMarketOwnHistory(player->getID());
 	} else if (!oldProtocol) {
 		auto itemId = msg.get<uint16_t>();
-		auto tier = msg.get<uint8_t>();
+		uint8_t tier = 0;
+		if (Item::items[itemId].upgradeClassification > 0) {
+			tier = msg.get<uint8_t>();
+		}
 		player->sendMarketEnter(player->getLastDepotId());
 		g_game().playerBrowseMarket(player->getID(), itemId, tier);
 	} else {

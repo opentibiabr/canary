@@ -7241,6 +7241,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				return combatChangeHealth(attacker, target, damage);
 			}
 		}
+		
 		// Wheel of destiny apply combat effects
 		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 

@@ -1,6 +1,3 @@
--- Im planning to move the database creation to schema once everything is good to go, for the time being im leaving it
--- here so i can test without messing around with the original code
-
 db.query([[
 	CREATE TABLE IF NOT EXISTS drome_highscores (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -184,53 +181,68 @@ function checkWaveCompletion(player)
     end
 end
 
+local playerCooldowns = {}
+
 function leverAction.onUse(player, item, fromPosition, target, isHotkey)
     if item:getActionId() == 46985 then
-        local isInPosition = false
-        for _, posData in ipairs(configDrome.playerPositions) do
-            if player:getPosition() == posData.pos then
-                isInPosition = true
-                break
-            end
-        end
-
-        if not isInPosition then
-            return true
-        end
-
+        local playerId = player:getGuid()
+        local lastFightTime = playerCooldowns[playerId] or 0 
         local currentTime = os.time()
+
         if currentTime - lastFightTime < configDrome.timeToFightAgain then
             player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must wait before entering the Tibiadrome again.")
             return true
         end
 
-        lastFightTime = currentTime
+        playerCooldowns[playerId] = currentTime
 
-        local playerId = player:getGuid()
-        local query = string.format("SELECT highscore FROM drome_highscores WHERE player_id = %d", playerId)
-        local resultId = db.storeQuery(query)
+        local isAnyPlayerInPosition = false
+        local playersToTeleport = {}
 
-        local playerHighscore = 0
-        if resultId then
-            playerHighscore = result.getNumber(resultId, "highscore") or 0
-            result.free(resultId)
+        for _, targetPlayer in pairs(Game.getPlayers()) do
+            for _, posData in ipairs(configDrome.playerPositions) do
+                if targetPlayer:getPosition() == posData.pos then
+                    table.insert(playersToTeleport, targetPlayer)
+                    isAnyPlayerInPosition = true
+                    break
+                end
+            end
         end
 
-        local startingWave = math.max(playerHighscore - 5, 0)
-        playerWaveData[playerId] = startingWave
+        if not isAnyPlayerInPosition then
+            return true
+        end
 
-        local entryPos = configDrome.playerPositions[math.random(#configDrome.playerPositions)].teleport
-        player:teleportTo(entryPos)
-        player:getPosition():sendMagicEffect(configDrome.playerPositions[math.random(#configDrome.playerPositions)].effect)
+        for _, targetPlayer in ipairs(playersToTeleport) do
+            local playerId = targetPlayer:getGuid()
+            local query = string.format("SELECT highscore FROM drome_highscores WHERE player_id = %d", playerId)
+            local resultId = db.storeQuery(query)
+
+            local playerHighscore = 0
+            if resultId then
+                playerHighscore = result.getNumber(resultId, "highscore") or 0
+                result.free(resultId)
+            end
+
+            local startingWave = math.max(playerHighscore - 5, 0)
+            playerWaveData[playerId] = startingWave
+        end
+
+        for _, targetPlayer in ipairs(playersToTeleport) do
+            local entryPos = configDrome.playerPositions[math.random(#configDrome.playerPositions)].teleport
+            targetPlayer:teleportTo(entryPos)
+            targetPlayer:getPosition():sendMagicEffect(configDrome.playerPositions[math.random(#configDrome.playerPositions)].effect)
+        end
 
         if waveTimer then
             stopEvent(waveTimer)
         end
 
-        dromeLevel = startingWave
+        dromeLevel = 0
         spawnMonsters(countPlayersInArea())
         waveTimer = nil
         startWaveTimer()
+
         return true
     end
     return false
@@ -490,7 +502,7 @@ end
 
 offlinereward:register()
 
--- save it to retrieve data ( not finished function )
+-- save it to retrieve data
 function getDromeLevel(player)
     local playerId = player:getId()
     local dromeLevel = dromeLevel + 1

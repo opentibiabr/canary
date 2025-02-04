@@ -521,6 +521,7 @@ end
 
 local function isTileWalkable(position)
 
+    -- Check if the position matches the restricted position
     if position == restrictedPosition then
         return false
     end

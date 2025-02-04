@@ -61,11 +61,11 @@ monster.voices = {
 }
 
 monster.attacks = {
-    {name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -400},
-	{name ="combat", interval = 1000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -500, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
-    {name ="combat", interval = 2000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -500, range = 7, radius = 6, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICETORNADO, target = true},
-    {name ="combat", interval = 3000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -600, range = 7, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ANI_TARSALARROW, target = true},
-    {name ="combat", interval = 3000, chance = 16, type = COMBAT_HOLYDAMAGE, minDamage = -100, maxDamage = -550, range = 7, radius = 6, effect = CONST_ME_HITBYFIRE, target = false}
+    {name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -100},
+	{name ="combat", interval = 1000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -100, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICEATTACK, target = true},
+    {name ="combat", interval = 2000, chance = 12, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 6, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ME_ICETORNADO, target = true},
+    {name ="combat", interval = 3000, chance = 13, type = COMBAT_ICEDAMAGE, minDamage = -100, maxDamage = -100, range = 7, range = 7, shootEffect = CONST_ANI_SMALLICE, effect = CONST_ANI_TARSALARROW, target = true},
+    {name ="combat", interval = 3000, chance = 16, type = COMBAT_HOLYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 6, effect = CONST_ME_HITBYFIRE, target = false}
 }
 
 monster.defenses = {
@@ -93,10 +93,23 @@ monster.immunities = {
 	{type = "bleed", condition = false}
 }
 
+local function applyDamageScalingCondition(creature)
+    local dromeLevel = getDromeLevel(creature)
+    local condition = Condition(CONDITION_ATTRIBUTES)
+    local scaleFactor = 1 + (dromeLevel * 0.5)
+    local scaledBuff = math.floor(100 * scaleFactor)
+
+    condition:setParameter(CONDITION_PARAM_TICKS, -1)
+    condition:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, scaledBuff)
+    creature:addCondition(condition)
+end
+
 mType.onAppear = function(creature)
-    -- Retrieve drome level from the creature (not player)
-    local dromeLevel = getDromeLevel(creature)  -- Ensure this function returns a valid drome level
-    print(monster:getName() .. " spawned with drome level: " .. dromeLevel)
+    applyDamageScalingCondition(creature)
+
+    local creatureName = creature:getName()
+
+    local dromeLevel = getDromeLevel(creature)
 end
 
 mType:register(monster)

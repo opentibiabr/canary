@@ -61,10 +61,10 @@ monster.voices = {
 }
 
 monster.attacks = {
-    {name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -500},
-    {name ="combat", interval = 1000, chance = 8, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -700, range = 7, radius = 4, effect = CONST_ME_GREENSMOKE, target = false},
-    {name ="combat", interval = 3000, chance = 13, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -500, range = 7, effect = CONST_ME_CRITICAL_DAMAGE, target = true},
-    {name ="combat", interval = 3000, chance = 8, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -400, range = 7, length = 3, effect = CONST_ME_FIREATTACK, target = false}
+    {name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -100},
+    {name ="combat", interval = 1000, chance = 8, type = COMBAT_EARTHDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 4, effect = CONST_ME_GREENSMOKE, target = false},
+    {name ="combat", interval = 3000, chance = 13, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -100, range = 7, effect = CONST_ME_CRITICAL_DAMAGE, target = true},
+    {name ="combat", interval = 3000, chance = 8, type = COMBAT_FIREDAMAGE, minDamage = -100, maxDamage = -100, range = 7, length = 3, effect = CONST_ME_FIREATTACK, target = false}
 }
 
 monster.defenses = {
@@ -91,5 +91,24 @@ monster.immunities = {
 	{type = "invisible", condition = true},
 	{type = "bleed", condition = false}
 }
+
+local function applyDamageScalingCondition(creature)
+    local dromeLevel = getDromeLevel(creature)
+    local condition = Condition(CONDITION_ATTRIBUTES)
+    local scaleFactor = 1 + (dromeLevel * 0.5)
+    local scaledBuff = math.floor(100 * scaleFactor)
+
+    condition:setParameter(CONDITION_PARAM_TICKS, -1)
+    condition:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, scaledBuff)
+    creature:addCondition(condition)
+end
+
+mType.onAppear = function(creature)
+    applyDamageScalingCondition(creature)
+
+    local creatureName = creature:getName()
+
+    local dromeLevel = getDromeLevel(creature)
+end
 
 mType:register(monster)

@@ -8908,6 +8908,20 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 	return true;
 }
 
+void Player::setDead(bool isDead) {
+	m_isDead = isDead;
+	const auto &thisPlayer = static_self_cast<Player>();
+	if (isDead) {
+		g_game().addDeadPlayer(thisPlayer);
+	} else {
+		g_game().removeDeadPlayer(getName());
+	}
+}
+
+bool Player::isDead() const {
+	return m_isDead;
+}
+
 void Player::triggerMomentum() {
 	double_t chance = 0;
 	if (const auto &item = getInventoryItem(CONST_SLOT_HEAD)) {

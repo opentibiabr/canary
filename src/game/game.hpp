@@ -529,6 +529,10 @@ public:
 		return npcs;
 	}
 
+	void addDeadPlayer(const std::shared_ptr<Player> &player);
+	void removeDeadPlayer(const std::string &playerName);
+	std::shared_ptr<Player> getDeadPlayer(const std::string &playerName);
+
 	const std::vector<ItemClassification*> &getItemsClassifications() const {
 		return itemsClassifications;
 	}
@@ -787,6 +791,7 @@ private:
 	phmap::flat_hash_map<std::string, QueryHighscoreCacheEntry> queryCache;
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
+	std::unordered_map<std::string, std::weak_ptr<Player>> m_deadPlayers;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;

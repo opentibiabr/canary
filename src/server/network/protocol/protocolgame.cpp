@@ -8613,7 +8613,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg) {
 		return;
 	}
 
-	if (!player->isSupplyStashMenuAvailable()) {
+	if (!player->isAccessPlayer() && !player->isSupplyStashMenuAvailable()) {
 		player->sendCancelMessage("You can't use supply stash right now.");
 		return;
 	}

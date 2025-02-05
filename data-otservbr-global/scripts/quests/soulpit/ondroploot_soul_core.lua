@@ -31,7 +31,8 @@ function callback.monsterOnDropLoot(monster, corpse)
 				local randomMonster = monstersInCategory[math.random(#monstersInCategory)]
 				local itemName = randomMonster:name():lower() .. " soul core"
 				soulCoreId = getItemIdByName(itemName)
-				logger.info("soulcoreId: " .. soulCoreId)
+
+				logger.debug("soulcoreId {}", soulCoreId)
 			end
 		end
 

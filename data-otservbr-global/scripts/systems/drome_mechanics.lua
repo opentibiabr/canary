@@ -178,7 +178,7 @@ function placeBeamFields()
             addEvent(function() item:remove() end, 5000)
         end
     end
-    addEvent(teleportPlayers, 1000)
+    addEvent(teleportPlayers, 500)
 end
 
 function teleportPlayers()

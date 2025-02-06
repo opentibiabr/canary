@@ -88,6 +88,17 @@ maxItem = 5000
 maxContainer = 500
 maxContainerDepth = 200
 
+-- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
+-- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
+-- NOTE: animusMasteryMonsterXpMultiplier is the monster experience multiplier that has the animus mastery unlocked.
+-- NOTE: animusMasteryMonstersXpMultiplier is the multiplier for each 'animusMasteryMonstersToIncreaseXpMultiplier' monsters that
+-- the player has the animus mastery unlocked.
+-- NOTE: animusMasteryMonstersToIncreaseXpMultiplier is the amount of monster to increase the experience multiplier by 'animusMasteryMonstersXpMultiplier'.
+animusMasteryMaxMonsterXpMultiplier = 4.0
+animusMasteryMonsterXpMultiplier = 2.0
+animusMasteryMonstersXpMultiplier = 0.1
+animusMasteryMonstersToIncreaseXpMultiplier = 10
+
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
 -- To customize the percentage of a particular item with these augment types, please add to the item "augments" section on items.xml as the example above.

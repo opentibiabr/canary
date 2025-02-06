@@ -13,14 +13,18 @@ TileAction = {
 	[20001] = {
 		itemId = 416,
 		itemPos = {
-			{ x = 32064, y = 31881, z = 5 },
-			{ x = 32065, y = 31881, z = 5 },
-			{ x = 32074, y = 31890, z = 5 },
-			{ x = 32074, y = 31891, z = 5 },
-			{ x = 32064, y = 31900, z = 5 },
-			{ x = 32065, y = 31900, z = 5 },
-			{ x = 32056, y = 31890, z = 5 },
-			{ x = 32056, y = 31891, z = 5 },
+			{ x = 32064, y = 31880, z = 5 },
+			{ x = 32065, y = 31880, z = 5 },
+			{ x = 32066, y = 31880, z = 5 },
+			{ x = 32075, y = 31890, z = 5 },
+			{ x = 32075, y = 31891, z = 5 },
+			{ x = 32075, y = 31892, z = 5 },
+			{ x = 32064, y = 31901, z = 5 },
+			{ x = 32065, y = 31901, z = 5 },
+			{ x = 32066, y = 31901, z = 5 },
+			{ x = 32054, y = 31890, z = 5 },
+			{ x = 32054, y = 31891, z = 5 },
+			{ x = 32054, y = 31892, z = 5 },
 		},
 	},
 	-- Dark trails quest tile
@@ -61,42 +65,30 @@ TileAction = {
 	--Sorcerer vocation tile
 	--Vocation trial: data\scripts\movements\others\dawnport_vocation_trial.lua
 	[25005] = {
-		itemId = 416,
+		itemId = 44640,
 		itemPos = {
-			{ x = 32055, y = 31889, z = 5 },
-			{ x = 32055, y = 31890, z = 5 },
-			{ x = 32055, y = 31891, z = 5 },
-			{ x = 32055, y = 31892, z = 5 },
+			{ x = 32063, y = 31900, z = 5 },
 		},
 	},
 	--Druid vocation tile
 	[25006] = {
-		itemId = 416,
+		itemId = 44641,
 		itemPos = {
-			{ x = 32063, y = 31901, z = 5 },
-			{ x = 32064, y = 31901, z = 5 },
-			{ x = 32065, y = 31901, z = 5 },
-			{ x = 32066, y = 31901, z = 5 },
+			{ x = 32063, y = 31881, z = 5 },
 		},
 	},
 	--Paladin vocation tile
 	[25007] = {
-		itemId = 416,
+		itemId = 44639,
 		itemPos = {
-			{ x = 32075, y = 31889, z = 5 },
-			{ x = 32075, y = 31890, z = 5 },
-			{ x = 32075, y = 31891, z = 5 },
-			{ x = 32075, y = 31892, z = 5 },
+			{ x = 32055, y = 31889, z = 5 },
 		},
 	},
 	--Knight vocation tile
 	[25008] = {
-		itemId = 416,
+		itemId = 44638,
 		itemPos = {
-			{ x = 32063, y = 31880, z = 5 },
-			{ x = 32064, y = 31880, z = 5 },
-			{ x = 32065, y = 31880, z = 5 },
-			{ x = 32066, y = 31880, z = 5 },
+			{ x = 32074, y = 31889, z = 5 },
 		},
 	},
 	-- Tiles data\scripts\movements\others\dawnport_tiles.lua

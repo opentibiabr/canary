@@ -76639,6 +76639,18 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Druid;true, Elder Druid"/>
 		</attribute>
 	</item>
+	<item id="44638" article="a" name="knight pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44639" article="a" name="paladin pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44640" article="a" name="sorcerer pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44641" article="a" name="druid pedestal">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
 	<item id="44642" name="stoic iks culet">
 		<attribute key="primarytype" value="legs"/>
 		<attribute key="armor" value="9"/>
@@ -76853,6 +76865,12 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="containersize" value="10"/>
 		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="44763" article="an" name="arrow pointing left">
+		<attribute key="primarytype" value="artificial tiles"/>
+	</item>
+	<item id="44764" article="an" name="arrow pointing up">
+		<attribute key="primarytype" value="artificial tiles"/>
 	</item>
 	<item id="44895" article="a" name="ramp"/>
 	<item id="44896" article="a" name="ramp">
@@ -80309,6 +80327,16 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="soul cores"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
 		<attribute key="weight" value="100"/>
+	</item>
+	<item id="49164" article="a" name="soul prism">
+		<attribute key="description" value="Focalises the soul within a core. Can be used to turn a soul core into a greater version"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="47367" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
+	</item>
+	<item id="47379" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
 	</item>
 </items>
 

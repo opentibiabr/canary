@@ -931,7 +931,7 @@ void Spell::addVocMap(uint16_t vocationId, bool b) {
 	vocSpellMap[vocationId] = b;
 }
 
-SpellGroup_t Spell::getGroup() {
+SpellGroup_t Spell::getGroup() const {
 	return group;
 }
 
@@ -1055,6 +1055,10 @@ InstantSpell::InstantSpell() = default;
 
 bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
 	if (!playerSpellCheck(player)) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_POWERLESS) && getGroup() == SPELLGROUP_ATTACK) {
 		return false;
 	}
 
@@ -1376,6 +1380,10 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 
 	// If script not loaded correctly, return
 	if (!isRuneSpellLoadedScriptId()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_POWERLESS) && getGroup() == SPELLGROUP_ATTACK) {
 		return false;
 	}
 

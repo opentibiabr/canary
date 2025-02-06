@@ -252,6 +252,10 @@ ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, con
 }
 
 ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive) {
+	if (!aggressive) {
+		return RETURNVALUE_NOERROR;
+	}
+
 	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 		bool Cannotthrow = false;
 

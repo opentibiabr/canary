@@ -58,6 +58,9 @@ local creaturePool = {
     "Murmillion",
     "Scissorion"
 }
+rangeX = math.abs(configDrome.specPos.to.x - configDrome.specPos.from.x)
+rangeY = math.abs(configDrome.specPos.to.y - configDrome.specPos.from.y)
+
 
 function deathEvent.onDeath(creature, corpse, killer, mostDamageKiller)
     if creature:isMonster() then
@@ -116,30 +119,34 @@ function startWaveTimer()
         local playerCount = countPlayersInArea()
 
         if playerCount > 0 then
-            for _, targetPlayer in pairs(Game.getPlayers()) do
-                if targetPlayer:getPosition():isInRange(configDrome.specPos.from, configDrome.specPos.to) then
-                    targetPlayer:teleportTo(Position(32255, 32205, 11)) -- Position for players who failed
-                    targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You failed to complete the wave in time! You have been kicked out.")
+            local centerPosition = Position(configDrome.specPos.from.x, configDrome.specPos.from.y, configDrome.specPos.from.z)
+            local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+            if #spectators > 0 then
+                for _, spectator in pairs(spectators) do
+                    spectator:teleportTo(Position(32255, 32205, 11))
+                    spectator:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You failed to complete the wave in time! You have been kicked out.")
                 end
             end
-        else
         end
     end, waveTimeLimit * 1000)
 end
 
 function checkWaveCompletion(player)
-    
     local playerCount = countPlayersInArea()
     local requiredMonsters = calculateMonsters(playerCount)
 
     if monstersKilled >= requiredMonsters then
-        
         if waveTimer then
             stopEvent(waveTimer)
         end
 
-        for _, targetPlayer in pairs(Game.getPlayers()) do
-            if targetPlayer:getPosition():isInRange(configDrome.specPos.from, configDrome.specPos.to) then
+        local centerPosition = Position(configDrome.specPos.from.x, configDrome.specPos.from.y, configDrome.specPos.from.z)
+        local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+        -- Check if there are any players in the area
+        if #spectators > 0 then
+            for _, targetPlayer in pairs(spectators) do
                 local playerId = targetPlayer:getGuid()
                 local playerName = targetPlayer:getName()
                 local playerHighscore = playerWaveData[playerId] or 0
@@ -160,11 +167,8 @@ function checkWaveCompletion(player)
         monstersKilled = 0
 
         local message = "Next wave will start in 8 seconds. Current level: " .. dromeLevel
-        local playersInArea = Game.getPlayers()
-        for _, targetPlayer in pairs(playersInArea) do
-            if targetPlayer:getPosition():isInRange(configDrome.specPos.from, configDrome.specPos.to) then
-                targetPlayer:say(message, TALKTYPE_YELL)
-            end
+        for _, targetPlayer in pairs(spectators) do
+            targetPlayer:say(message, TALKTYPE_YELL)
         end
 
         addEvent(function()
@@ -194,21 +198,53 @@ function leverAction.onUse(player, item, fromPosition, target, isHotkey)
             return true
         end
 
+        local isInValidPosition = false
+        for _, posData in ipairs(configDrome.playerPositions) do
+            if player:getPosition() == posData.pos then
+                isInValidPosition = true
+                break
+            end
+        end
+
+        if not isInValidPosition then
+          --  player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You must be in a valid position to use the lever.")
+            return true
+        end
+
+        local isAnyoneInSpecPos = false
+        local centerPosition = Position(configDrome.specPos.from.x, configDrome.specPos.from.y, configDrome.specPos.from.z)
+        local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+        for _, targetPlayer in pairs(spectators) do
+            if targetPlayer:getPosition():isInRange(configDrome.specPos.from, configDrome.specPos.to) then
+                isAnyoneInSpecPos = true
+                break
+            end
+        end
+
+        if isAnyoneInSpecPos then
+            player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is already inside the Tibiadrome. Please wait until they leave.")
+            return true
+        end
+
         playerCooldowns[playerId] = currentTime
 
         local isAnyPlayerInPosition = false
         local playersToTeleport = {}
 
-        for _, targetPlayer in pairs(Game.getPlayers()) do
-            for _, posData in ipairs(configDrome.playerPositions) do
-                if targetPlayer:getPosition() == posData.pos then
+        for _, posData in ipairs(configDrome.playerPositions) do
+            local centerPosition = Position(posData.pos.x, posData.pos.y, posData.pos.z)
+            local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+        
+            for _, targetPlayer in pairs(spectators) do
+                if targetPlayer:getPosition():isInRange(posData.pos, posData.pos) then
                     table.insert(playersToTeleport, targetPlayer)
                     isAnyPlayerInPosition = true
                     break
                 end
             end
         end
-
+        
         if not isAnyPlayerInPosition then
             return true
         end
@@ -248,15 +284,16 @@ function leverAction.onUse(player, item, fromPosition, target, isHotkey)
     return false
 end
 
+
 function countPlayersInArea()
     local playerCount = 0
-    for _, targetPlayer in pairs(Game.getPlayers()) do
-        local playerPos = targetPlayer:getPosition()
+    local centerPosition = Position(configDrome.specPos.from.x, configDrome.specPos.from.y, configDrome.specPos.from.z)
+    local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
 
-        if playerPos:isInRange(configDrome.specPos.from, configDrome.specPos.to) then
-            playerCount = playerCount + 1
-        end
+    for _, targetPlayer in pairs(spectators) do
+        playerCount = playerCount + 1
     end
+
     return playerCount
 end
 
@@ -502,7 +539,7 @@ end
 
 offlinereward:register()
 
--- save it to retrieve data
+-- save it to retrieve data for monsters and future development
 function getDromeLevel(player)
     local playerId = player:getId()
     local dromeLevel = dromeLevel + 1

@@ -87,11 +87,14 @@ function teleportSingleMonsterToPlayer(action)
         if math.random(100) <= 15 then
             local randomMonster = monstersInArea[math.random(#monstersInArea)]
             local playersInArea = {}
-            for _, player in pairs(Game.getPlayers()) do
-                if player:getPosition():isInRange(generalArea.from, generalArea.to) then
-                    table.insert(playersInArea, player)
+            local centerPosition = Position(generalArea.from.x + (rangeX / 2), generalArea.from.y + (rangeY / 2), generalArea.from.z)
+            local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+    
+            for _, spectator in ipairs(spectators) do
+                if spectator:getPosition():isInRange(generalArea.from, generalArea.to) then
+                    table.insert(playersInArea, spectator)
                 end
-            end
+            end    
 
             if #playersInArea > 0 then
                 local randomPlayer = playersInArea[math.random(#playersInArea)]
@@ -137,14 +140,16 @@ end
 
 function applyLavaDamage()
     local current_time = os.time()
-    local players = Game.getPlayers()
-    for _, player in ipairs(players) do
-        local player_position = player:getPosition()
+    local centerPosition = Position(generalArea.from.x + (rangeX / 2), generalArea.from.y + (rangeY / 2), generalArea.from.z)
+    local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+    for _, spectator in ipairs(spectators) do
+        local player_position = spectator:getPosition()
         for _, field in ipairs(lavaFields) do
             if player_position == field.position then
                 if current_time - field.created_time >= 3 then
-                    local damage = player:getHealth() * 0.6
-                    player:addHealth(-damage)
+                    local damage = spectator:getHealth() * 0.6
+                    spectator:addHealth(-damage)
                 end
             end
         end
@@ -178,17 +183,19 @@ function placeBeamFields()
             addEvent(function() item:remove() end, 5000)
         end
     end
-    addEvent(teleportPlayers, 500)
+    addEvent(teleportPlayers, 1000)
 end
 
 function teleportPlayers()
-    local players = Game.getPlayers()
-    for _, player in ipairs(players) do
-        local playerPosition = player:getPosition()
+    local centerPosition = Position(generalArea.from.x + (rangeX / 2), generalArea.from.y + (rangeY / 2), generalArea.from.z)
+    local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+    for _, spectator in ipairs(spectators) do
+        local playerPosition = spectator:getPosition()
         for _, field in ipairs(beamFields) do
             if playerPosition == field.position then
                 local randomPos = getRandomWalkablePosition()
-                player:teleportTo(randomPos)
+                spectator:teleportTo(randomPos)
                 break
             end
         end
@@ -222,18 +229,20 @@ function placeTankedUpFields()
             addEvent(function() item:remove() end, 5000)
         end
     end
-    addEvent(applySuperdrunkEffect, 500)
+    addEvent(applySuperdrunkEffect, 1000)
 end
 
 function applySuperdrunkEffect()
-    local players = Game.getPlayers()
-    for _, player in ipairs(players) do
-        local playerPosition = player:getPosition()
+    local centerPosition = Position(generalArea.from.x + (rangeX / 2), generalArea.from.y + (rangeY / 2), generalArea.from.z)
+    local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+    for _, spectator in ipairs(spectators) do
+        local playerPosition = spectator:getPosition()
         for _, field in ipairs(tankedUpFields) do
             if playerPosition == field.position then
                 local drunk = Condition(CONDITION_DRUNK)
                 drunk:setParameter(CONDITION_PARAM_TICKS, 40000)
-                player:addCondition(drunk)
+                spectator:addCondition(drunk)
                 break
             end
         end
@@ -264,9 +273,11 @@ function isWalkable(position)
 end
 
 function arePlayersInArea()
-    local players = Game.getPlayers()
-    for _, player in ipairs(players) do
-        if isInSpecArea(player:getPosition()) then
+    local centerPosition = Position(generalArea.from.x + (rangeX / 2), generalArea.from.y + (rangeY / 2), generalArea.from.z)
+    local spectators = Game.getSpectators(centerPosition, false, true, rangeX, rangeX, rangeY, rangeY)
+
+    for _, spectator in ipairs(spectators) do
+        if isInSpecArea(spectator:getPosition()) then
             return true
         end
     end
@@ -521,7 +532,6 @@ end
 
 local function isTileWalkable(position)
 
-    -- Check if the position matches the restricted position
     if position == restrictedPosition then
         return false
     end

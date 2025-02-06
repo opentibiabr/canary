@@ -958,7 +958,7 @@
 	<house name="Antimony Lane 3" houseid="3657" entryx="33630" entryy="31921" entryz="6" rent="400000" townid="20" size="77" clientid="19016" beds="3" />
 	<house name="Rathleton Hills Residence" houseid="3658" entryx="33651" entryy="31910" entryz="6" rent="400000" townid="20" size="155" clientid="19003" beds="3" />
 	<house name="Rathleton Hills Estate" houseid="3659" entryx="33662" entryy="31917" entryz="6" rent="1000000" guildhall="true" townid="20" size="433" clientid="19002" beds="13" />
-	<house name="Lion's Head Reef" houseid="3660" entryx="32365" entryy="32501" entryz="7" rent="400000" townid="25" size="149" clientid="63013" beds="5" />
+	<house name="Lion's Head Reef" houseid="3660" entryx="32365" entryy="32501" entryz="7" rent="400000" townid="14" size="149" clientid="63013" beds="5" />
 	<house name="Shadow Caves 1" houseid="3661" entryx="32654" entryy="31672" entryz="8" rent="50000" townid="5" size="22" clientid="40611" beds="2" />
 	<house name="Shadow Caves 2" houseid="3662" entryx="32656" entryy="31672" entryz="8" rent="50000" townid="5" size="22" clientid="40614" beds="2" />
 	<house name="Shadow Caves 3" houseid="3663" entryx="32654" entryy="31664" entryz="9" rent="100000" townid="5" size="44" clientid="40621" beds="4" />
@@ -991,4 +991,6 @@
 	<house name="Centre 2" houseid="3691" entryx="33740" entryy="32856" entryz="7" rent="600000" townid="30" size="139" clientid="49002" beds="4" />
 	<house name="Cliffside" houseid="3693" entryx="33763" entryy="32803" entryz="4" rent="600000" townid="31" size="203" clientid="53001" beds="6" />
 	<house name="House of the Rising Moon" houseid="3694" entryx="33812" entryy="32805" entryz="6" rent="1000000" guildhall="true" townid="31" size="340" clientid="53002" beds="12" />
+	<house name="Marketplace 3" houseid="3695" entryx="33953" entryy="31513" entryz="7" rent="400000" townid="22" size="130" clientid="48008" beds="3" />
+	<house name="Hanging Gardens 1" houseid="3696" entryx="33933" entryy="31479" entryz="4" rent="400000" townid="22" size="178" clientid="48009" beds="5" />
 </houses>

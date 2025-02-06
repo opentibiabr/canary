@@ -13,7 +13,7 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.raceId = 213
+monster.raceId = 227
 monster.Bestiary = {
 	class = "Vermin",
 	race = BESTY_RACE_VERMIN,
@@ -31,7 +31,7 @@ monster.Bestiary = {
 monster.health = 2
 monster.maxHealth = 2
 monster.race = "venom"
-monster.corpse = 4378
+monster.corpse = 4993
 monster.speed = 160
 monster.manaCost = 0
 

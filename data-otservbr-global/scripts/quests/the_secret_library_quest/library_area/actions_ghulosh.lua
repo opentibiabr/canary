@@ -11,6 +11,9 @@ local config = {
 		{ pos = Position(32750, 32773, 10), teleport = Position(32757, 32727, 10), effect = CONST_ME_TELEPORT },
 		{ pos = Position(32751, 32773, 10), teleport = Position(32757, 32727, 10), effect = CONST_ME_TELEPORT },
 	},
+	monsters = {
+		{ name = "the book of death", pos = Position(32756, 32718, 10) },
+	},
 	specPos = {
 		from = Position(32748, 32713, 10),
 		to = Position(32763, 32729, 10),
@@ -19,5 +22,5 @@ local config = {
 }
 
 local lever = BossLever(config)
-lever:position({ x = 32746, y = 32773, z = 10 })
+lever:position(Position(32746, 32773, 10))
 lever:register()

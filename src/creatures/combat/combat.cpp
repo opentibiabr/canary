@@ -253,8 +253,22 @@ ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, con
 
 ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive) {
 	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		return RETURNVALUE_CANNOTTHROW;
+		bool Cannotthrow = false;
+
+		if (const auto fieldList = tile->getItemList()) {
+			for (const auto &findfield : *fieldList) {
+				if (findfield && (findfield->getID() == ITEM_MAGICWALL || findfield->getID() == ITEM_MAGICWALL_SAFE || findfield->getID() == ITEM_WILDGROWTH || findfield->getID() == ITEM_WILDGROWTH_SAFE)) {
+					Cannotthrow = true;
+					break;
+				}
+			}
+		}
+
+		if (!Cannotthrow) {
+			return RETURNVALUE_CANNOTTHROW;
+		}
 	}
+
 	if (aggressive && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 	}

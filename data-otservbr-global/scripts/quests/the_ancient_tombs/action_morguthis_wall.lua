@@ -14,7 +14,7 @@ function morguthisWall.onUse(player, item, fromPosition, target, toPosition)
 		wall:remove()
 	else
 		local creatures = tile:getCreatures()
-		if creatures then
+		if #creatures > 0 then
 			for _, creature in ipairs(creatures) do
 				local newPosition = Position(wallPosition.x, wallPosition.y + 1, wallPosition.z)
 				creature:teleportTo(newPosition)
@@ -22,7 +22,7 @@ function morguthisWall.onUse(player, item, fromPosition, target, toPosition)
 		end
 
 		local items = tile:getItems()
-		if items then
+		if #items > 0 then
 			for _, tileItem in ipairs(items) do
 				local newPosition = Position(wallPosition.x, wallPosition.y + 1, wallPosition.z)
 				tileItem:moveTo(newPosition)
@@ -36,4 +36,5 @@ function morguthisWall.onUse(player, item, fromPosition, target, toPosition)
 end
 
 morguthisWall:position(Position(33212, 32693, 13))
+morguthisWall:position(Position(33209, 32701, 13))
 morguthisWall:register()

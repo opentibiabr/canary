@@ -83,26 +83,56 @@ Blessings.PlayerDeath = function(player, corpse, killer)
 	local hasAol = (player:getSlotItem(CONST_SLOT_NECKLACE) and player:getSlotItem(CONST_SLOT_NECKLACE):getId() == ITEM_AMULETOFLOSS)
 	local hasSkull = table.contains({ SKULL_RED, SKULL_BLACK }, player:getSkull())
 	local currBlessCount = player:getBlessings()
+	local blessCount = type(currBlessCount) == "table" and #currBlessCount or 0
+	local droppedItems = {}
 
 	if hasSkull then
-		Blessings.DropLoot(player, corpse, 100, true)
+		droppedItems = Blessings.DropLoot(player, corpse, 100, true, blessCount)
 	elseif #currBlessCount < 5 and not hasAol then
 		local equipLossChance = Blessings.LossPercent[#currBlessCount].item
-		Blessings.DropLoot(player, corpse, equipLossChance)
+		droppedItems = Blessings.DropLoot(player, corpse, equipLossChance, false, blessCount)
+	else
+		droppedItems = Blessings.DropLoot(player, corpse, 0, false, blessCount)
 	end
 
 	if not player:getSlotItem(CONST_SLOT_BACKPACK) then
 		player:addItem(ITEM_BAG, 1, false, CONST_SLOT_BACKPACK)
 	end
 
+	player:saveDeathLog(blessCount, droppedItems, killer)
 	return true
 end
 
-Blessings.DropLoot = function(player, corpse, chance, skulled)
+local function collectItems(container, droppedItems)
+	for j = 0, container:getSize() - 1 do
+		local insideItem = container:getItem(j)
+		if insideItem then
+			local itemId = insideItem:getId()
+			local iType = ItemType(itemId)
+			local stackSize = iType:getStackSize()
+			local itemName = insideItem:getName()
+			local itemCount = insideItem:getCount()
+
+			if stackSize > 1 then
+				table.insert(droppedItems, string.format("%dx %s", itemCount, itemName))
+			else
+				table.insert(droppedItems, itemName)
+			end
+
+			if insideItem:isContainer() then
+				collectItems(insideItem, droppedItems)
+			end
+		end
+	end
+end
+
+function Blessings.DropLoot(player, corpse, chance, skulled, blessCount)
 	local multiplier = 100
 	math.randomseed(os.time())
 	chance = chance * multiplier
 	Blessings.DebugPrint("DropLoot chance " .. chance)
+	local droppedItems = {}
+
 	for i = CONST_SLOT_HEAD, CONST_SLOT_AMMO do
 		local item = player:getSlotItem(i)
 		if item then
@@ -113,6 +143,12 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 			if skulled or thisRandom <= thisChance then
 				Blessings.DebugPrint("Dropped " .. item:getName())
 				item:moveTo(corpse)
+
+				table.insert(droppedItems, item:getName())
+
+				if item:isContainer() then
+					collectItems(item, droppedItems)
+				end
 			end
 		end
 	end
@@ -137,6 +173,7 @@ Blessings.DropLoot = function(player, corpse, chance, skulled)
 			end
 		end
 	end
+	return droppedItems
 end
 
 -- Blessing Helpers --

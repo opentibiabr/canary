@@ -855,3 +855,25 @@ function Player.findItemInInbox(self, itemId, name)
 	end
 	return nil
 end
+
+function Player.saveDeathLog(self, blessCount, droppedItems, killer)
+	local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+	local position = self:getPosition()
+
+	local filePath = string.format("%s/logs/deaths/%s.txt", CORE_DIRECTORY, self:getName())
+	local file = io.open(filePath, "a")
+	if not file then
+		return true
+	end
+
+	io.output(file)
+	io.write("------------------------------\n")
+	io.write(string.format("Timestamp: %s\n", timestamp))
+	io.write(string.format("Killer: %s\n", killer:getName()))
+	io.write(string.format("Position: (%d, %d, %d)\n", position.x, position.y, position.z))
+	io.write(string.format("Blesses: %d\n", blessCount))
+	io.write(string.format("Dropped Items: %s\n", table.concat(droppedItems, ", ")))
+	io.write("------------------------------\n")
+	io.close(file)
+	return true
+end

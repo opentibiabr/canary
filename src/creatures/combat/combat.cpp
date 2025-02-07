@@ -257,18 +257,18 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const s
 	}
 
 	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		bool Cannotthrow = false;
+		bool canThrow = false;
 
 		if (const auto fieldList = tile->getItemList()) {
 			for (const auto &findfield : *fieldList) {
-				if (findfield && (findfield->getID() == ITEM_MAGICWALL || findfield->getID() == ITEM_MAGICWALL_SAFE || findfield->getID() == ITEM_WILDGROWTH || findfield->getID() == ITEM_WILDGROWTH_SAFE)) {
-					Cannotthrow = true;
+				if (findfield && (findfield->getID() == ITEM_MAGICWALL || findfield->getID() == ITEM_MAGICWALL_SAFE)) {
+					canThrow = true;
 					break;
 				}
 			}
 		}
 
-		if (!Cannotthrow) {
+		if (!canThrow) {
 			return RETURNVALUE_CANNOTTHROW;
 		}
 	}

@@ -525,6 +525,12 @@ float ConfigManager::getFloat(const ConfigKey_t &key, const std::source_location
 void ConfigManager::loadLuaOTCFeatures(lua_State* L) {
 	lua_getglobal(L, "OTCRFeatures");
 	if (!lua_istable(L, -1)) {
+		// Temp to avoid a bug in OTC if the "OTCRFeatures" array is not declared in config.lua.
+		enabledFeaturesOTC.push_back(101);
+		enabledFeaturesOTC.push_back(102);
+		enabledFeaturesOTC.push_back(103);
+		enabledFeaturesOTC.push_back(118);
+		lua_pop(L, 1);
 		return;
 	}
 

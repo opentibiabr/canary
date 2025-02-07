@@ -4990,4 +4990,5 @@ int PlayerFunctions::luaPlayerRemoveCustomOutfit(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, player->removeCustomOutfit(type, idOrName));
+	return 1;
 }

@@ -616,43 +616,59 @@ function createHirelingType(HirelingName)
 	local function creatureSayCallback(npc, creature, type, message)
 		local player = Player(creature)
 		local playerId = player:getId()
-	
+
 		if not npcHandler:checkInteraction(npc, creature) then
 			return false
 		end
-	
+
 		if not hireling:canTalkTo(player) then
 			return false
 		end
-	
+
 		local skillMapping = {
-			["bank"] = { skill = HIRELING_SKILLS.BANKER[2], topic = TOPIC.BANK, action = function()
-				npcHandler:setTopic(playerId, TOPIC.BANK)
-				count[playerId], transfer[playerId] = nil, nil
-				npcHandler:say(GREETINGS.BANK, npc, creature)
-			end },
-			["food"] = { skill = HIRELING_SKILLS.COOKING[2], topic = TOPIC.FOOD, action = function()
-				npcHandler:setTopic(playerId, TOPIC.FOOD)
-				npcHandler:say(GREETINGS.FOOD, npc, creature)
-			end },
-			["stash"] = { skill = HIRELING_SKILLS.STEWARD[2], topic = TOPIC.SERVICES, action = function()
-				npcHandler:say(GREETINGS.STASH, npc, creature)
-				player:setSpecialContainersAvailable(true)
-				player:openStash(true)
-				player:sendTextMessage(MESSAGE_FAILURE, "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
-			end },
-			["goods"] = { skill = HIRELING_SKILLS.TRADER[2], topic = TOPIC.GOODS, action = function()
-				local string
-				if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
-					string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
-				else
-					string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " .. "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " .. "{supplies}, {tools} and {postal} goods. Just ask!"
-				end
-				npcHandler:setTopic(playerId, TOPIC.GOODS)
-				npcHandler:say(string, npc, creature)
-			end }
+			["bank"] = {
+				skill = HIRELING_SKILLS.BANKER[2],
+				topic = TOPIC.BANK,
+				action = function()
+					npcHandler:setTopic(playerId, TOPIC.BANK)
+					count[playerId], transfer[playerId] = nil, nil
+					npcHandler:say(GREETINGS.BANK, npc, creature)
+				end,
+			},
+			["food"] = {
+				skill = HIRELING_SKILLS.COOKING[2],
+				topic = TOPIC.FOOD,
+				action = function()
+					npcHandler:setTopic(playerId, TOPIC.FOOD)
+					npcHandler:say(GREETINGS.FOOD, npc, creature)
+				end,
+			},
+			["stash"] = {
+				skill = HIRELING_SKILLS.STEWARD[2],
+				topic = TOPIC.SERVICES,
+				action = function()
+					npcHandler:say(GREETINGS.STASH, npc, creature)
+					player:setSpecialContainersAvailable(true)
+					player:openStash(true)
+					player:sendTextMessage(MESSAGE_FAILURE, "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
+				end,
+			},
+			["goods"] = {
+				skill = HIRELING_SKILLS.TRADER[2],
+				topic = TOPIC.GOODS,
+				action = function()
+					local string
+					if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
+						string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
+					else
+						string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " .. "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " .. "{supplies}, {tools} and {postal} goods. Just ask!"
+					end
+					npcHandler:setTopic(playerId, TOPIC.GOODS)
+					npcHandler:say(string, npc, creature)
+				end,
+			},
 		}
-	
+
 		for keyword, data in pairs(skillMapping) do
 			if MsgContains(message, keyword) then
 				if hireling:hasSkill(data.skill) then
@@ -663,7 +679,7 @@ function createHirelingType(HirelingName)
 				return true
 			end
 		end
-	
+
 		if hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
 			local categoryTable = itemsTable[message:lower()]
 			if categoryTable then
@@ -697,7 +713,7 @@ function createHirelingType(HirelingName)
 			if player:getGuid() ~= hireling:getOwnerId() then
 				return false
 			end
-		npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
+			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.LAMP then
 			if MsgContains(message, "yes") then
 				hireling:returnToLamp(player:getGuid())
@@ -717,14 +733,14 @@ function createHirelingType(HirelingName)
 				npc:openShopWindowTable(player, categoryTable)
 			end
 		end
-	
+
 		if enableBankSystem[playerId] then
 			npc:parseBank(message, npc, creature, npcHandler)
 			npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			npc:parseBankMessages(message, npc, creature, npcHandler)
 		end
 		return true
-	end	
+	end
 
 	npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {service}.")
 	npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|, I'll be here if you need me again.")

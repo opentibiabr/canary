@@ -88,14 +88,8 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 
 		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
 		if not deactivatedFlasks then
-			local container = Container(item:getParent().uid)
-			if container then
-				local storeInbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if fromPosition.x == CONTAINER_POSITION and container ~= storeInbox and container:getEmptySlots() ~= 0 then
-					container:addItem(potion.flask, 1)
-				else
-					player:addItem(potion.flask, 1)
-				end
+			if fromPosition.x == CONTAINER_POSITION then
+				player:addItem(potion.flask, 1)
 			else
 				Game.createItem(potion.flask, 1, fromPosition)
 			end

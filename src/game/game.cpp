@@ -7230,7 +7230,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
-		
+
 		if (damage.origin != ORIGIN_NONE) {
 			const auto events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
 			if (!events.empty()) {
@@ -7241,7 +7241,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				return combatChangeHealth(attacker, target, damage);
 			}
 		}
-		
+
 		// Wheel of destiny apply combat effects
 		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 

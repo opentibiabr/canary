@@ -964,6 +964,9 @@ function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava, 1)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
 				player:say("You retrieve a fine sulphur from a lava hole.", TALKTYPE_MONSTER_SAY)
+				return true
+			else
+				return false
 			end
 		-- What a Foolish Quest - Mission 8 (sulphur)
 		elseif player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 21 then
@@ -971,14 +974,18 @@ function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
 				player:addItem(124, 1) -- Easily inflammable sulphur
 				player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur, 1)
 				toPosition:sendMagicEffect(CONST_ME_YELLOW_RINGS)
+				return true
+			else
+				return false
 			end
 		else
 			return false
 		end
 	end
 
-	return true
+	return false
 end
+
 
 function onUseSpikedSquelcher(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.itemid == 19068 and toPosition == Position(33276, 31797, 6) then -- mysterious ornate chest at Telas' house
@@ -1013,6 +1020,7 @@ function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 		target:transform(3651)
 		target:decay()
 		Game.createItem(3605, 1, toPosition)
+		player:addAchievementProgress("Happy Farmer", 200)
 		return true
 	elseif target.itemid == 30623 then -- reed
 		target:transform(30624)
@@ -1030,7 +1038,6 @@ function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 	else
 		return false
 	end
-
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 end
 

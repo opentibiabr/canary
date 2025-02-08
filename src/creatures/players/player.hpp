@@ -928,7 +928,7 @@ public:
 	void resetAsyncOngoingTask(uint64_t flags);
 	void sendEnterWorld() const;
 	void sendFightModes() const;
-	void sendNetworkMessage(const NetworkMessage &message) const;
+	void sendNetworkMessage(NetworkMessage &message) const;
 
 	void receivePing();
 

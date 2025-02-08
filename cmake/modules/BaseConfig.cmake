@@ -39,6 +39,21 @@ find_package(
     REQUIRED
 )
 find_package(OpenSSL REQUIRED)
+find_package(
+    Crow
+    CONFIG
+    REQUIRED
+)
+find_package(
+    simdjson
+    CONFIG
+    REQUIRED
+)
+find_package(
+    jwt-cpp
+    CONFIG
+    REQUIRED
+)
 find_package(LuaJIT REQUIRED)
 find_package(MySQL REQUIRED)
 find_package(Protobuf REQUIRED)
@@ -183,6 +198,8 @@ if(OPTIONS_ENABLE_OPENMP)
 else()
     log_option_disabled("OPTIONS_ENABLE_OPENMP")
 endif()
+
+add_definitions(-DCROW_ENABLE_COMPRESSION)
 
 # === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..

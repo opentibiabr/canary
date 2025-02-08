@@ -33,6 +33,7 @@
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "api/api.hpp"
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -110,6 +111,11 @@ int CanaryServer::run() {
 					g_game().setGameState(GAME_STATE_NORMAL);
 					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
+
+				// Inicializa e inicia a API REST
+				APIServer::getInstance().initialize(8081);
+				APIServer::getInstance().start();
+				logger.info("REST API initialized on port 8081");
 
 				{
 					std::scoped_lock lock(loaderMutex);
@@ -425,6 +431,7 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 
 void CanaryServer::shutdown() {
 	g_database().createDatabaseBackup(true);
+	APIServer::getInstance().stop();
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
 	g_threadPool().shutdown();

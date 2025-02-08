@@ -176,3 +176,5 @@ format_as(E e) {
 
 #include "account/account_info.hpp"
 #include "config/config_enums.hpp"
+
+#include <nlohmann/json.hpp>

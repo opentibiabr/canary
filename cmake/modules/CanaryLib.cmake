@@ -3,6 +3,7 @@
 
 # Add subdirectories - these use ${CORE_TARGET_NAME} to add sources
 add_subdirectory(account)
+add_subdirectory(api)
 add_subdirectory(config)
 add_subdirectory(creatures)
 add_subdirectory(database)
@@ -105,12 +106,15 @@ foreach(
                absl::base
                absl::bits
                asio::asio
+               Crow::Crow
                eventpp::eventpp
                fmt::fmt
+               jwt-cpp::jwt-cpp
                magic_enum::magic_enum
                mio::mio
                protobuf::libprotobuf
                pugixml::pugixml
+               simdjson::simdjson
                spdlog::spdlog
                unofficial::argon2::libargon2
                unofficial::libmariadb

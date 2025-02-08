@@ -22,7 +22,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10
+	chance = 10,
 }
 
 monster.strategiesTarget = {
@@ -48,68 +48,65 @@ monster.flags = {
 	isBlockable = false,
 	canWalkOnEnergy = false,
 	canWalkOnFire = true,
-	canWalkOnPoison = true
+	canWalkOnPoison = true,
 }
 
 monster.light = {
 	level = 0,
-	color = 0
+	color = 0,
 }
 
-monster.voices = {
-
-}
+monster.voices = {}
 
 monster.attacks = {
-	{name ="melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -100},
-	{name ="combat", interval = 1000, chance = 8, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 3, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true},
-	{name ="combat", interval = 3000, chance = 13, type = COMBAT_HOLYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, length = 3, effect = CONST_ME_HOLYAREA, target = true},
-	{name ="combat", interval = 3000, chance = 8, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 4, effect = CONST_ME_ENERGYAREA, target = false}
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -100, maxDamage = -100 },
+	{ name = "combat", interval = 1000, chance = 8, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 3, shootEffect = CONST_ANI_ENERGY, effect = CONST_ME_ENERGYHIT, target = true },
+	{ name = "combat", interval = 3000, chance = 13, type = COMBAT_HOLYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, length = 3, effect = CONST_ME_HOLYAREA, target = true },
+	{ name = "combat", interval = 3000, chance = 8, type = COMBAT_ENERGYDAMAGE, minDamage = -100, maxDamage = -100, range = 7, radius = 4, effect = CONST_ME_ENERGYAREA, target = false },
 }
 
 monster.defenses = {
 	defense = 110,
-	armor = 110
+	armor = 110,
 }
 
 monster.elements = {
-	{type = COMBAT_PHYSICALDAMAGE, percent = 0},
-	{type = COMBAT_ENERGYDAMAGE, percent = 0},
-	{type = COMBAT_EARTHDAMAGE, percent = 0},
-	{type = COMBAT_FIREDAMAGE, percent = 0},
-	{type = COMBAT_LIFEDRAIN, percent = 0},
-	{type = COMBAT_MANADRAIN, percent = 0},
-	{type = COMBAT_DROWNDAMAGE, percent = 0},
-	{type = COMBAT_ICEDAMAGE, percent = 0},
-	{type = COMBAT_HOLYDAMAGE , percent = 0},
-	{type = COMBAT_DEATHDAMAGE , percent = 0}
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = 0 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 0 },
+	{ type = COMBAT_FIREDAMAGE, percent = 0 },
+	{ type = COMBAT_LIFEDRAIN, percent = 0 },
+	{ type = COMBAT_MANADRAIN, percent = 0 },
+	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 0 },
+	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
 monster.immunities = {
-	{type = "paralyze", condition = true},
-	{type = "outfit", condition = false},
-	{type = "invisible", condition = true},
-	{type = "bleed", condition = false}
+	{ type = "paralyze", condition = true },
+	{ type = "outfit", condition = false },
+	{ type = "invisible", condition = true },
+	{ type = "bleed", condition = false },
 }
 
 local function applyDamageScalingCondition(creature)
-    local dromeLevel = getDromeLevel(creature)
-    local condition = Condition(CONDITION_ATTRIBUTES)
-    local scaleFactor = 1 + (dromeLevel * 0.5)
-    local scaledBuff = math.floor(100 * scaleFactor)
+	local dromeLevel = getDromeLevel(creature)
+	local condition = Condition(CONDITION_ATTRIBUTES)
+	local scaleFactor = 1 + (dromeLevel * 0.5)
+	local scaledBuff = math.floor(100 * scaleFactor)
 
-    condition:setParameter(CONDITION_PARAM_TICKS, -1)
-    condition:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, scaledBuff)
-    creature:addCondition(condition)
+	condition:setParameter(CONDITION_PARAM_TICKS, -1)
+	condition:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, scaledBuff)
+	creature:addCondition(condition)
 end
 
 mType.onAppear = function(creature)
-    applyDamageScalingCondition(creature)
+	applyDamageScalingCondition(creature)
 
-    local creatureName = creature:getName()
+	local creatureName = creature:getName()
 
-    local dromeLevel = getDromeLevel(creature)
+	local dromeLevel = getDromeLevel(creature)
 end
 
 mType:register(monster)
-

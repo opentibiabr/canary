@@ -510,6 +510,10 @@ void Creature::onDeath() {
 		lastHitCreature->deprecatedOnKilledCreature(thisCreature, true);
 		lastHitUnjustified = lastHitCreature->onKilledPlayer(thisPlayer, true);
 		lastHitCreatureMaster = lastHitCreature->getMaster();
+		if (getZoneType() == ZONE_PVP) {
+			setDropLoot(false);
+			setSkillLoss(false);
+		}
 	} else {
 		lastHitCreatureMaster = nullptr;
 	}

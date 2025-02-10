@@ -366,8 +366,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE) ||
-			(attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE))) {
+		if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE) || (attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE))) {
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 		}
 

@@ -329,17 +329,17 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 		return RETURNVALUE_NOERROR;
 	}
 
-	if (target && target->isSummon() && target->getMaster() && target->getMaster()->getPlayer()) {
-		if (!isInPvpZone(attacker, target)) {
-			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-		}
-	}
-
 	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
 	const auto &attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
 
 	if (target && target->isSummon() && target->getMaster() && target->getMaster()->getPlayer() && !isInPvpZone(attacker, target)) {
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+	}
+
+	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+		if ((attackerPlayer || (attacker->getMaster() && attacker->getMaster()->getPlayer())) && targetPlayer && !isInPvpZone(attacker, target)) {
+			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+		}
 	}
 
 	if (target) {
@@ -366,7 +366,8 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE) || (attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE))) {
+		if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE) ||
+			(attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE))) {
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 		}
 
@@ -395,12 +396,6 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 		}
 	} else if (target && target->getNpc()) {
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-	}
-
-	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
-		if ((attackerPlayer || (attacker->getMaster() && attacker->getMaster()->getPlayer())) && targetPlayer && !isInPvpZone(attacker, target)) {
-			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-		}
 	}
 
 	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);

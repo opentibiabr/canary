@@ -273,116 +273,109 @@ bool Combat::isProtected(const std::shared_ptr<Player> &attacker, const std::sha
 }
 
 ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive) {
-	if (!tile || !aggressive) {
-		return RETURNVALUE_NOERROR;
-	}
+    if (!tile || !aggressive) {
+        return RETURNVALUE_NOERROR;
+    }
 
-	if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
-	}
+    if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+        return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
+    }
 
-	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		const auto fieldList = tile->getItemList();
-		if (!fieldList || std::none_of(fieldList->begin(), fieldList->end(), [](const auto &item) {
-				return item && (item->getID() == ITEM_MAGICWALL || item->getID() == ITEM_MAGICWALL_SAFE);
-			})) {
-			return RETURNVALUE_CANNOTTHROW;
-		}
-	}
+    if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+        const auto &fieldList = tile->getItemList();
+        if (!fieldList) {
+            return RETURNVALUE_CANNOTTHROW;
+        }
 
-	if (tile->getTeleportItem()) {
-		return RETURNVALUE_CANNOTTHROW;
-	}
+        const bool hasMagicWall = std::any_of(fieldList->begin(), fieldList->end(), [](const auto &item) {
+            return item && (item->getID() == ITEM_MAGICWALL || item->getID() == ITEM_MAGICWALL_SAFE);
+        });
 
-	if (caster) {
-		const auto &casterPosition = caster->getPosition();
-		const auto &tilePosition = tile->getPosition();
-		if (casterPosition.z < tilePosition.z) {
-			return RETURNVALUE_FIRSTGODOWNSTAIRS;
-		} else if (casterPosition.z > tilePosition.z) {
-			return RETURNVALUE_FIRSTGOUPSTAIRS;
-		}
+        if (!hasMagicWall) {
+            return RETURNVALUE_CANNOTTHROW;
+        }
+    }
 
-		const auto player = caster->getPlayer();
-		if (player && player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
-			return RETURNVALUE_NOERROR;
-		}
-	}
+    if (tile->getTeleportItem()) {
+        return RETURNVALUE_CANNOTTHROW;
+    }
 
-	ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
-	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
-	}
-	return ret;
+    if (caster) {
+        const auto &casterPosition = caster->getPosition();
+        const auto &tilePosition = tile->getPosition();
+
+        if (casterPosition.z < tilePosition.z) {
+            return RETURNVALUE_FIRSTGODOWNSTAIRS;
+        }
+        if (casterPosition.z > tilePosition.z) {
+            return RETURNVALUE_FIRSTGOUPSTAIRS;
+        }
+
+        const auto &player = caster->getPlayer();
+        if (player && player->hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
+            return RETURNVALUE_NOERROR;
+        }
+    }
+
+    ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
+    if (ret != RETURNVALUE_NOERROR) {
+        return ret;
+    }
+    return g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
 }
 
 ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool aggressive) {
-	if (!aggressive || !target) {
-		return RETURNVALUE_NOERROR;
-	}
+    if (!aggressive || !target || !attacker) {
+        return RETURNVALUE_NOERROR;
+    }
 
-	if (!attacker) {
-		return RETURNVALUE_NOERROR;
-	}
+    const auto &targetMaster = target->getMaster();
+    const auto &targetPlayer = target->getPlayer();
+    const auto &targetTile = target->getTile();
 
-	const auto targetMaster = target->getMaster();
-	const auto targetPlayer = target->getPlayer();
-	const auto targetTile = target->getTile();
+    if (target->isSummon() && targetMaster && targetMaster->getPlayer() && !isInPvpZone(attacker, target)) {
+        return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+    }
 
-	if (target->isSummon() && targetMaster && targetMaster->getPlayer() && !isInPvpZone(attacker, target)) {
-		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-	}
+    if (!targetTile || targetTile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+        return RETURNVALUE_NOTENOUGHROOM;
+    }
 
-	if (!targetTile || targetTile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
+    if (targetPlayer && targetTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+        return targetPlayer->hasPermittedConditionInPZ() ? RETURNVALUE_NOERROR : RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
+    }
 
-	if (targetPlayer && targetTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-		return targetPlayer->hasPermittedConditionInPZ() ? RETURNVALUE_NOERROR : RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
-	}
+    const auto &attackerMaster = attacker->getMaster();
+    const auto &attackerPlayer = attacker->getPlayer();
 
-	const auto attackerMaster = attacker->getMaster();
-	const auto attackerPlayer = attacker->getPlayer();
+    if (targetPlayer && targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
+        return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+    }
 
-	if (targetPlayer) {
-		if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
-			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-		}
+    const auto targetMonster = target->getMonster();
+    if (target->getNpc()) {
+        return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+    } else if (targetMonster) {
+        const auto attackerMonster = attacker->getMonster();
+        if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER &&
+            attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
+            return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+        }
+    }
 
-		const auto targetPlayerTile = targetPlayer->getTile();
-		if (attackerPlayer) {
-			if (attackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer) || isProtected(attackerPlayer, targetPlayer)) {
-				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-			}
+    if (g_game().getWorldType() == WORLD_TYPE_NO_PVP && targetPlayer) {
+        if (attackerPlayer || (attackerMaster && attackerMaster->getPlayer())) {
+            if (!isInPvpZone(attacker, target)) {
+                return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+            }
+        }
+    }
 
-			const auto attackerTile = attackerPlayer->getTile();
-			if (targetPlayerTile && targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
-				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-			}
-			if (attackerTile && attackerTile->hasFlag(TILESTATE_NOPVPZONE) && targetPlayerTile && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
-				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-			}
-		}
-	} else if (target->getMonster()) {
-		const auto attackerMonster = attacker->getMonster();
-		if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
-			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-		}
-	} else if (target->getNpc()) {
-		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-	}
-
-	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
-		if ((attackerPlayer || (attackerMaster && attackerMaster->getPlayer())) && targetPlayer && !isInPvpZone(attacker, target)) {
-			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-		}
-	}
-
-	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
-	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
-	}
-	return ret;
+    ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
+    if (ret == RETURNVALUE_NOERROR) {
+        ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
+    }
+    return ret;
 }
 
 void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina, double newMinb, double newMaxa, double newMaxb) {

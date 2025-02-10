@@ -435,7 +435,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 			}
 		}
 	}
-	
+
 	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
 	if (ret == RETURNVALUE_NOERROR) {
 		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);

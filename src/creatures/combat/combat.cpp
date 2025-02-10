@@ -337,7 +337,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 
 	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
 	const auto &attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
-	
+
 	if (target && target->isSummon() && target->getMaster() && target->getMaster()->getPlayer() && !isInPvpZone(attacker, target)) {
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 	}

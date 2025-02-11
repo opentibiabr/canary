@@ -21,7 +21,10 @@
     "bshoshany-thread-pool",
     "atomic-queue",
     "nlohmann-json",
-    "openssl"
+    "openssl",
+    "crow",
+    "simdjson",
+    "jwt-cpp"
   ],
   "features": {
     "tests": {

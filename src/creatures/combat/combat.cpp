@@ -352,11 +352,11 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
 
-	const auto targetMonster = target->getMonster();
+	const auto &targetMonster = target->getMonster();
 	if (target->getNpc()) {
 		return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 	} else if (targetMonster) {
-		const auto attackerMonster = attacker->getMonster();
+		const auto &attackerMonster = attacker->getMonster();
 		if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}

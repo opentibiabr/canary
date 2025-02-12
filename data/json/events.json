@@ -1,0 +1,179 @@
+{
+	"events": [
+		{
+			"name": "Forge Time",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "forge_time.lua",
+			"description": "Increases the success rate of forges by 20%.",
+			"colors": {
+				"colordark": "#2b3e50",
+				"colorlight": "#3d5a73"
+			},
+			"details": {
+				"displaypriority": 5,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Double Bestiary",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "double_bestiary.lua",
+			"description": "Doubles the bestiary counter when defeating monsters.",
+			"colors": {
+				"colordark": "#3a4f2a",
+				"colorlight": "#4f713a"
+			},
+			"details": {
+				"displaypriority": 5,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Fast Exercise",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "fast_exercise.lua",
+			"description": "Exercise weapons are faster, doubling their speed.",
+			"colors": {
+				"colordark": "#5a3a2a",
+				"colorlight": "#7b4f3a"
+			},
+			"details": {
+				"displaypriority": 5,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "50% Loot Bonus",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "",
+			"ingame": {
+				"lootrate": 150
+			},
+			"description": "Increases loot by 50%.",
+			"colors": {
+				"colordark": "#2b1e10",
+				"colorlight": "#4a2e18"
+			},
+			"details": {
+				"displaypriority": 6,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "50% Exp Bonus",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "",
+			"ingame": {
+				"exprate": 150
+			},
+			"description": "Increases experience by 50%.",
+			"colors": {
+				"colordark": "#234d00",
+				"colorlight": "#3a7500"
+			},
+			"details": {
+				"displaypriority": 6,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Boss Cooldown Reduction",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "boss_cooldown.lua",
+			"description": "Reduces boss cooldown time by 50%.",
+			"colors": {
+				"colordark": "#2d3c5a",
+				"colorlight": "#4a5f7d"
+			},
+			"details": {
+				"displaypriority": 6,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Double Exp",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "",
+			"ingame": {
+				"exprate": 200
+			},
+			"description": "Double experience when hunting monsters.",
+			"colors": {
+				"colordark": "#002d00",
+				"colorlight": "#004400"
+			},
+			"details": {
+				"displaypriority": 6,
+				"isseasonal": 1,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Double Loot",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "",
+			"ingame": {
+				"lootrate": 200
+			},
+			"description": "Doubles the amount of loot obtained from monsters.",
+			"colors": {
+				"colordark": "#2a1d00",
+				"colorlight": "#4c3300"
+			},
+			"details": {
+				"displaypriority": 6,
+				"isseasonal": 1,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Double Bosstiary",
+			"startdate": "08/11/2024",
+			"enddate": "11/11/2024",
+			"script": "double_bosstiary.lua",
+			"description": "Doubles the bestiary counter for bosses.",
+			"colors": {
+				"colordark": "#3a005a",
+				"colorlight": "#4e0075"
+			},
+			"details": {
+				"displaypriority": 5,
+				"isseasonal": 0,
+				"specialevent": 1
+			}
+		},
+		{
+			"name": "Fast Respawn",
+			"startdate": "11/01/2024",
+			"enddate": "11/15/2024",
+			"script": "",
+			"ingame": {
+				"spawnrate": 200
+			},
+			"description": "Monsters respawn twice as fast.",
+			"colors": {
+				"colordark": "#4d2f00",
+				"colorlight": "#6e3e00"
+			},
+			"details": {
+				"displaypriority": 6,
+				"isseasonal": 1,
+				"specialevent": 1
+			}
+		}
+	]
+}

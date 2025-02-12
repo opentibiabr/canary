@@ -2545,12 +2545,19 @@ ChestUnique = {
 	},
 	[6299] = {
 		itemId = 2473,
+		itemPos = { x = 33076, y = 31170, z = 8 },
+		reward = { { 11687, 1 } },
+		weight = 45.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
+	},
+	[6300] = {
+		itemId = 2473,
 		itemPos = { x = 33078, y = 31170, z = 8 },
 		reward = { { 11686, 1 } },
 		weight = 130.00,
 		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
 	},
-	[6300] = {
+	[6301] = {
 		itemId = 2473,
 		itemPos = { x = 33080, y = 31170, z = 8 },
 		reward = { { 11689, 1 } },
@@ -2559,7 +2566,7 @@ ChestUnique = {
 	},
 	-- Rookgaard
 	-- 05 Brown Mushrooms
-	[6301] = {
+	[6302] = {
 		useKV = true,
 		itemId = 2472,
 		itemPos = { x = 32138, y = 32171, z = 3 },
@@ -2567,14 +2574,14 @@ ChestUnique = {
 		questName = "Rookgaard05BrownMushrooms",
 	},
 	-- Dark Trails Quest
-	[6302] = {
+	[6303] = {
 		itemId = 2469,
 		itemPos = { x = 33457, y = 32073, z = 8 },
 		reward = { { 11450, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U10_50.DarkTrails.RewardSmallNotebook,
 	},
-	[6303] = {
+	[6304] = {
 		itemId = 2478,
 		itemPos = { x = 33468, y = 32083, z = 8 },
 		container = 2853,
@@ -2582,7 +2589,7 @@ ChestUnique = {
 		weight = 189.00,
 		storage = Storage.Quest.U10_50.DarkTrails.Reward05GlothAndBelongings,
 	},
-	[6304] = {
+	[6305] = {
 		itemId = 2478,
 		itemPos = { x = 33487, y = 32085, z = 9 },
 		container = 2853,
@@ -2591,7 +2598,7 @@ ChestUnique = {
 		storage = Storage.Quest.U10_50.DarkTrails.Reward10GlothAndBelongings,
 	},
 	-- Nightmare Teddy Quest
-	[6305] = {
+	[6306] = {
 		useKV = true,
 		itemId = 2433,
 		itemPos = { x = 33444, y = 32605, z = 11 },
@@ -2600,14 +2607,14 @@ ChestUnique = {
 		questName = "NightmareTeddyQuest",
 	},
 	-- Ferumbras' Ascension Quest
-	[6306] = {
+	[6307] = {
 		itemId = 1983,
 		itemPos = { x = 33384, y = 32323, z = 12 },
 		reward = { { 22160, 1 } },
 		weight = 1.00,
 		storage = Storage.Quest.U10_90.FerumbrasAscension.TheRiteOfEternalNight,
 	},
-	[6307] = {
+	[6308] = {
 		itemId = 1986,
 		itemPos = { x = 33393, y = 32373, z = 11 },
 		reward = { { 22158, 1 } },

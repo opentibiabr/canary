@@ -870,7 +870,10 @@ function Player.checkAndSendDepotMessage(self)
 					depotItems = depotItems + self:getDepotChest(id, true):getItemHoldingCount()
 				end
 
-				self:sendTextMessage(MESSAGE_STATUS, string.format("Your depot contains %d item%s Your supply stash contains %d item%s", depotItems, depotItems ~= 1 and "s." or ".", self:getStashCount(), self:getStashCount() ~= 1 and "s." or "."))
+				local depotMessage = string.format("Your depot contains %d item%s", depotItems, depotItems ~= 1 and "s." or ".")
+				local stashMessage = string.format("Your supply stash contains %d item%s", self:getStashCount(), self:getStashCount() ~= 1 and "s." or ".")
+
+				self:sendTextMessage(MESSAGE_STATUS, string.format("%s %s", depotMessage, stashMessage))
 				self:setSpecialContainersAvailable(true, true, true)
 				return true
 			end

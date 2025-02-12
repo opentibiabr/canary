@@ -1,12 +1,34 @@
 local increasing = { [419] = 420, [431] = 430, [452] = 453, [563] = 564, [549] = 562, [10145] = 10146 }
 local decreasing = { [420] = 419, [430] = 431, [453] = 452, [564] = 563, [562] = 549, [10146] = 10145 }
 
+function Player:checkAndSendDepotMessage()
+	for _, direction in ipairs(DIRECTIONS_TABLE) do
+		local playerPosition = self:getPosition()
+		playerPosition:getNextPosition(direction)
+		local depotItem = playerPosition:getTile():getItemByType(ITEM_TYPE_DEPOT)
+		if depotItem ~= nil or self:getGroup():getAccess() then
+			local depotItems = 0
+			for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
+				depotItems = depotItems + self:getDepotChest(id, true):getItemHoldingCount()
+			end
+			self:sendTextMessage(MESSAGE_STATUS, string.format("Your depot contains %d item%s Your supply stash contains %d item%s", depotItems, depotItems > 1 and "s." or ".", self:getStashCount(), self:getStashCount() > 1 and "s." or "."))
+			self:setSpecialContainersAvailable(true, true, true)
+			return true
+		end
+	end
+	return false
+end
+
 local tile = MoveEvent()
 
 function tile.onStepIn(creature, item, position, fromPosition)
 	local player = creature:getPlayer()
-	if not player or player:isInGhostMode() then
+	if not player then
 		return true
+	end
+
+	if player:isInGhostMode() then
+		return player:checkAndSendDepotMessage()
 	end
 
 	if not increasing[item.itemid] then
@@ -25,26 +47,7 @@ function tile.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if Tile(position):hasFlag(TILESTATE_PROTECTIONZONE) then
-		for _, direction in ipairs(DIRECTIONS_TABLE) do
-			local playerPosition = player:getPosition()
-			playerPosition:getNextPosition(direction)
-
-			local depotItem = playerPosition:getTile():getItemByType(ITEM_TYPE_DEPOT)
-			if depotItem then
-				local depotItems = 0
-
-				for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
-					depotItems = depotItems + player:getDepotChest(id, true):getItemHoldingCount()
-				end
-
-				local depotMessage = "Your depot contains " .. depotItems .. " item" .. (depotItems ~= 1 and "s." or ".")
-				local stashMessage = "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() ~= 1 and "s." or ".")
-
-				player:sendTextMessage(MESSAGE_FAILURE, depotMessage .. "\n" .. stashMessage)
-				player:setSpecialContainersAvailable(true, true, true)
-				return true
-			end
-		end
+		return player:checkAndSendDepotMessage()
 	end
 
 	if item.actionid ~= 0 and player:getStorageValue(item.actionid) <= 0 then

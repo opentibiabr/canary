@@ -33,6 +33,7 @@
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include <lib/logging/gray_log_sink_options.hpp>
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -136,6 +137,17 @@ int CanaryServer::run() {
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
+
+	if (g_configManager().getBoolean(GRAYLOG_ENABLED)) {
+		 GrayLogSinkOptions options {
+			g_configManager().getString(GRAYLOG_HOSTNAME_OR_ADDRESS),
+			g_configManager().getString(GRAYLOG_SOURCE),
+			g_configManager().getString(GRAYLOG_LEVEL),
+			g_configManager().getNumber(GRAYLOG_PORT)
+		};
+
+		g_logger().enableGraylogSink(options);
+	}
 
 	serviceManager.run();
 

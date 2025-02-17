@@ -26,8 +26,14 @@ public:
 		return buffer.data() + outputBufferStart;
 	}
 
+	void writePaddingAmount() {
+		uint8_t paddingAmount = 8 - (info.length % 8) - 1;
+		addPaddingBytes(paddingAmount);
+		add_header(paddingAmount);
+	}
+
 	void writeMessageLength() {
-		add_header(info.length);
+		add_header(static_cast<uint16_t>((info.length - 4) / 8));
 	}
 
 	void addCryptoHeader(bool addChecksum, uint32_t checksum) {

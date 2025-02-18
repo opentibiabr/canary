@@ -1431,7 +1431,7 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	}
 
 	if (walk.needRecache()) {
-		walk.duration = static_cast<uint16_t>(std::ceil(walk.calculatedStepSpeed / SERVER_BEAT) * SERVER_BEAT);
+		walk.duration = static_cast<uint16_t>(std::round(walk.calculatedStepSpeed / SERVER_BEAT) * SERVER_BEAT);
 		walk.duration = std::max<uint16_t>(50, walk.duration);
 	}
 

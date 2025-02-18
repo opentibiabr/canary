@@ -1568,7 +1568,7 @@ void Creature::setParent(std::weak_ptr<Cylinder> cylinder) {
 	}
 
 	if (walk.groundSpeed != oldGroundSpeed) {
-		walk.recache();
+		updateCalculatedStepSpeed();
 	}
 }
 

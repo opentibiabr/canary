@@ -3948,7 +3948,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	updateImbuementTrackerStats();
 
 	safeCall([this] {
-		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED)));
 	});
 }
 
@@ -5650,7 +5650,8 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 void Player::onEndCondition(ConditionType_t type) {
 	Creature::onEndCondition(type);
 
-	if (type == CONDITION_INFIGHT) {
+	const auto &conditionFight = getCondition(CONDITION_INFIGHT);
+	if (type == CONDITION_INFIGHT && !conditionFight) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();

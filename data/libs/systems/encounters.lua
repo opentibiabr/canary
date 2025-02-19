@@ -214,6 +214,7 @@ function Encounter:spawnMonsters(config)
 			if not monster then
 				return false
 			end
+			monster:setReward(true)
 			if spawn then
 				spawn(monster)
 			end

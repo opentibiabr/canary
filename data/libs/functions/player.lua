@@ -855,29 +855,3 @@ function Player.findItemInInbox(self, itemId, name)
 	end
 	return nil
 end
-
-function Player.checkAndSendDepotMessage(self)
-	for _, direction in ipairs(DIRECTIONS_TABLE) do
-		local playerPosition = self:getPosition()
-		playerPosition:getNextPosition(direction)
-
-		local tile = playerPosition:getTile()
-		if tile then
-			local depotItem = tile:getItemByType(ITEM_TYPE_DEPOT)
-			if depotItem then
-				local depotItems = 0
-				for id = 1, configManager.getNumber(configKeys.DEPOT_BOXES) do
-					depotItems = depotItems + self:getDepotChest(id, true):getItemHoldingCount()
-				end
-
-				local depotMessage = string.format("Your depot contains %d item%s", depotItems, depotItems ~= 1 and "s." or ".")
-				local stashMessage = string.format("Your supply stash contains %d item%s", self:getStashCount(), self:getStashCount() ~= 1 and "s." or ".")
-
-				self:sendTextMessage(MESSAGE_STATUS, string.format("%s %s", depotMessage, stashMessage))
-				self:setSpecialContainersAvailable(true, true, true)
-				return true
-			end
-		end
-	end
-	return true
-end

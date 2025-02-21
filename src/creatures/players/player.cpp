@@ -3852,6 +3852,10 @@ void Player::despawn() {
 		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Pending, false);
 	}
 
+	if (m_party) {
+		m_party->leaveParty(static_self_cast<Player>());
+	}
+
 	setDead(true);
 }
 

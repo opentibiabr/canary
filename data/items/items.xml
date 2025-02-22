@@ -66039,6 +66039,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 		</attribute>
 	</item>
 	<item id="35563" article="a" name="magic shield potion">
+		<attribute key="type" value="magicshieldpotion"/>
 		<attribute key="primarytype" value="liquids"/>
 		<attribute key="description" value="This potion can only be consumed by druids and sorcerers of level 14 or higher"/>
 		<attribute key="weight" value="320"/>

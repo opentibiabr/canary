@@ -3785,7 +3785,8 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 	}
 
 	const ItemType &it = Item::items[item->getID()];
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	bool canTriggerExhaustion = it.triggerExhaustion();
+	if (canTriggerExhaustion) {
 		if (player->walkExhausted()) {
 			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 			return;
@@ -3820,7 +3821,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 					},
 					__FUNCTION__
 				);
-				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+				if (canTriggerExhaustion) {
 					player->setNextPotionActionTask(task);
 				} else {
 					player->setNextWalkActionTask(task);
@@ -3836,13 +3837,13 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 	}
 
 	bool canDoAction = player->canDoAction();
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	if (canTriggerExhaustion) {
 		canDoAction = player->canDoPotionAction();
 	}
 
 	if (!canDoAction) {
 		uint32_t delay = player->getNextActionTime();
-		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		if (canTriggerExhaustion) {
 			delay = player->getNextPotionActionTime();
 		}
 		const auto &task = createPlayerTask(
@@ -3852,7 +3853,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 			},
 			__FUNCTION__
 		);
-		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		if (canTriggerExhaustion) {
 			player->setNextPotionActionTask(task);
 		} else {
 			player->setNextActionTask(task);
@@ -3862,7 +3863,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 
 	player->resetLoginProtection();
 	player->resetIdleTime();
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	if (canTriggerExhaustion) {
 		player->setNextPotionActionTask(nullptr);
 	} else {
 		player->setNextActionTask(nullptr);
@@ -3922,7 +3923,8 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	}
 
 	const ItemType &it = Item::items[item->getID()];
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	bool canTriggerExhaustion = it.triggerExhaustion();
+	if (canTriggerExhaustion) {
 		if (player->walkExhausted()) {
 			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 			return;
@@ -3942,7 +3944,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 					},
 					__FUNCTION__
 				);
-				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+				if (canTriggerExhaustion) {
 					player->setNextPotionActionTask(task);
 				} else {
 					player->setNextWalkActionTask(task);
@@ -3958,13 +3960,13 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	}
 
 	bool canDoAction = player->canDoAction();
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	if (canTriggerExhaustion) {
 		canDoAction = player->canDoPotionAction();
 	}
 
 	if (!canDoAction) {
 		uint32_t delay = player->getNextActionTime();
-		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		if (canTriggerExhaustion) {
 			delay = player->getNextPotionActionTime();
 		}
 		const auto &task = createPlayerTask(
@@ -3974,7 +3976,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 			},
 			__FUNCTION__
 		);
-		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		if (canTriggerExhaustion) {
 			player->setNextPotionActionTask(task);
 		} else {
 			player->setNextActionTask(task);
@@ -4051,7 +4053,8 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 	}
 
 	const ItemType &it = Item::items[item->getID()];
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	bool canTriggerExhaustion = it.triggerExhaustion();
+	if (canTriggerExhaustion) {
 		if (player->walkExhausted()) {
 			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 			return;
@@ -4107,7 +4110,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 					},
 					__FUNCTION__
 				);
-				if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+				if (canTriggerExhaustion) {
 					player->setNextPotionActionTask(task);
 				} else {
 					player->setNextWalkActionTask(task);
@@ -4123,13 +4126,13 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 	}
 
 	bool canDoAction = player->canDoAction();
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	if (canTriggerExhaustion) {
 		canDoAction = player->canDoPotionAction();
 	}
 
 	if (!canDoAction) {
 		uint32_t delay = player->getNextActionTime();
-		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		if (canTriggerExhaustion) {
 			delay = player->getNextPotionActionTime();
 		}
 		const auto &task = createPlayerTask(
@@ -4139,7 +4142,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 			},
 			__FUNCTION__
 		);
-		if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+		if (canTriggerExhaustion) {
 			player->setNextPotionActionTask(task);
 		} else {
 			player->setNextActionTask(task);
@@ -4149,7 +4152,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 
 	player->resetLoginProtection();
 	player->resetIdleTime();
-	if (it.isRune() || it.type == ITEM_TYPE_POTION) {
+	if (canTriggerExhaustion) {
 		player->setNextPotionActionTask(nullptr);
 	} else {
 		player->setNextActionTask(nullptr);

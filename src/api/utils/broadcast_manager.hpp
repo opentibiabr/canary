@@ -17,7 +17,7 @@ private:
 	static void broadcastSystemResources();
 	static void broadcastServerStatus();
 
-	std::atomic<bool> running{false};
+	static std::atomic<bool> running;
     std::jthread broadcastThread;
 	static std::mutex shutdownMutex;
 };

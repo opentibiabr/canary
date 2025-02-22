@@ -4,6 +4,7 @@
 #include "api/utils/system_info.hpp"
 
 std::mutex BroadcastManager::shutdownMutex;
+std::atomic<bool> BroadcastManager::running { false };
 
 BroadcastManager::BroadcastManager() = default;
 BroadcastManager::~BroadcastManager() {
@@ -44,11 +45,11 @@ void BroadcastManager::stop() {
 		if (broadcastThread.joinable()) {
 			try {
 				broadcastThread.join();
-			} catch (const std::exception& e) {
+			} catch (const std::exception &e) {
 				g_logger().error("[BroadcastManager::stop] Erro ao aguardar thread de broadcast: {}", e.what());
 			}
 		}
-	} catch (const std::exception& e) {
+	} catch (const std::exception &e) {
 		g_logger().error("[BroadcastManager::stop] Erro crítico durante parada: {}", e.what());
 	} catch (...) {
 		g_logger().error("[BroadcastManager::stop] Erro desconhecido durante parada");
@@ -62,7 +63,7 @@ void BroadcastManager::broadcastChatMessage(const std::string &playerName, uint3
 		}
 
 		// Função para converter Latin1 para UTF-8
-		auto toUtf8 = [](const std::string& input) -> std::string {
+		auto toUtf8 = [](const std::string &input) -> std::string {
 			std::string output;
 			output.reserve(input.length() * 2); // UTF-8 pode usar até 2 bytes por caractere
 
@@ -137,7 +138,7 @@ void BroadcastManager::broadcastSystemResources() {
 
 		// Verifica novamente se ainda estamos em execução antes de fazer o broadcast
 		if (running) {
-			WebSocketHandler::getInstance().broadcast(WebSocketEvents::SYSTEM_INFO, resources);
+			WebSocketHandler::getInstance().broadcast(WebSocketEvents::SYSTEM_RESOURCES, resources);
 		}
 	} catch (const std::exception &e) {
 		g_logger().error("[BroadcastManager::broadcastSystemResources] Erro durante broadcast: {}", e.what());
@@ -148,13 +149,19 @@ void BroadcastManager::broadcastSystemResources() {
 
 void BroadcastManager::broadcastServerStatus() {
 	try {
-		// Verifica se o jogo ainda está em execução
-		if (!running || !g_game().isGameStarted()) {
+		// Verifica se ainda estamos em execução
+		if (!running) {
 			return;
 		}
 
 		// Captura o estado do jogo de forma segura
 		auto gameState = g_game().getGameState();
+		// Não faz broadcast se o jogo não estiver em estado normal
+		// if (gameState != GAME_STATE_NORMAL) {
+		// 	return;
+		// }
+
+		// Captura os dados do servidor de forma segura
 		auto playersOnline = g_game().getPlayersOnline();
 		auto maxPlayers = g_configManager().getNumber(MAX_PLAYERS);
 		auto uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;

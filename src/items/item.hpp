@@ -141,6 +141,12 @@ public:
 		return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
 	}
 
+	void setShader(const std::string &shaderName);
+
+	bool hasShader() const;
+
+	std::string getShader() const;
+
 protected:
 	std::unique_ptr<ItemAttribute> &initAttributePtr() {
 		if (!attributePtr) {

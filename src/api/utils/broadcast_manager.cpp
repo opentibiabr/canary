@@ -1,9 +1,9 @@
-
-
 #include "pch.hpp"
 #include "api/utils/broadcast_manager.hpp"
 #include "api/utils/chat_history.hpp"
 #include "api/utils/system_info.hpp"
+
+std::mutex BroadcastManager::shutdownMutex;
 
 BroadcastManager::BroadcastManager() = default;
 BroadcastManager::~BroadcastManager() {
@@ -14,6 +14,7 @@ BroadcastManager &BroadcastManager::getInstance() {
 	static BroadcastManager instance;
 	return instance;
 }
+
 void BroadcastManager::start() {
 	if (!running) {
 		running = true;
@@ -31,14 +32,35 @@ void BroadcastManager::start() {
 	}
 }
 void BroadcastManager::stop() {
-	running = false;
-	if (broadcastThread.joinable()) {
-		broadcastThread.join();
+	try {
+		std::lock_guard<std::mutex> lock(shutdownMutex);
+
+		if (!running) {
+			return;
+		}
+
+		running = false;
+
+		if (broadcastThread.joinable()) {
+			try {
+				broadcastThread.join();
+			} catch (const std::exception& e) {
+				g_logger().error("[BroadcastManager::stop] Erro ao aguardar thread de broadcast: {}", e.what());
+			}
+		}
+	} catch (const std::exception& e) {
+		g_logger().error("[BroadcastManager::stop] Erro crítico durante parada: {}", e.what());
+	} catch (...) {
+		g_logger().error("[BroadcastManager::stop] Erro desconhecido durante parada");
 	}
 }
 
 void BroadcastManager::broadcastChatMessage(const std::string &playerName, uint32_t level, const std::string &message, const std::string &channel) {
 	try {
+		if (!running) {
+			return;
+		}
+
 		// Função para converter Latin1 para UTF-8
 		auto toUtf8 = [](const std::string& input) -> std::string {
 			std::string output;
@@ -76,10 +98,11 @@ void BroadcastManager::broadcastChatMessage(const std::string &playerName, uint3
 			return; // Canal desconhecido
 		}
 
-		// Salva a mensagem no histórico
-		ChatHistory::getInstance().addMessage(channel, data);
-
-		WebSocketHandler::getInstance().broadcast(eventType, data);
+		if (running) {
+			// Salva a mensagem no histórico
+			ChatHistory::getInstance().addMessage(channel, data);
+			WebSocketHandler::getInstance().broadcast(eventType, data);
+		}
 	} catch (const std::exception &e) {
 		g_logger().error("Erro ao transmitir mensagem de chat: {}", e.what());
 	}
@@ -88,9 +111,15 @@ void BroadcastManager::broadcastChatMessage(const std::string &playerName, uint3
 // Na classe que gerencia as conexões WebSocket
 void BroadcastManager::broadcastChatMessageHistory() {
 	try {
+		if (!running) {
+			return;
+		}
+
 		// Envia o histórico completo para o cliente
 		const nlohmann::json historyData = ChatHistory::getInstance().getAllHistory();
-		WebSocketHandler::getInstance().broadcast(WebSocketEvents::CHAT_HISTORY, historyData);
+		if (running) {
+			WebSocketHandler::getInstance().broadcast(WebSocketEvents::CHAT_HISTORY, historyData);
+		}
 	} catch (const std::exception &e) {
 		g_logger().error("Erro ao enviar histórico do chat: {}", e.what());
 	}
@@ -98,23 +127,52 @@ void BroadcastManager::broadcastChatMessageHistory() {
 
 void BroadcastManager::broadcastSystemResources() {
 	try {
+		// Verifica se ainda estamos em execução
+		if (!running) {
+			return;
+		}
+
+		// Captura os recursos do sistema de forma segura
 		const auto resources = SystemInfo::getSystemResources();
-		WebSocketHandler::getInstance().broadcast(WebSocketEvents::SYSTEM_RESOURCES, resources);
+
+		// Verifica novamente se ainda estamos em execução antes de fazer o broadcast
+		if (running) {
+			WebSocketHandler::getInstance().broadcast(WebSocketEvents::SYSTEM_INFO, resources);
+		}
 	} catch (const std::exception &e) {
-		g_logger().error("Erro ao transmitir recursos do sistema: {}", e.what());
+		g_logger().error("[BroadcastManager::broadcastSystemResources] Erro durante broadcast: {}", e.what());
+	} catch (...) {
+		g_logger().error("[BroadcastManager::broadcastSystemResources] Erro desconhecido durante shutdown");
 	}
 }
 
 void BroadcastManager::broadcastServerStatus() {
 	try {
+		// Verifica se o jogo ainda está em execução
+		if (!running || !g_game().isGameStarted()) {
+			return;
+		}
+
+		// Captura o estado do jogo de forma segura
+		auto gameState = g_game().getGameState();
+		auto playersOnline = g_game().getPlayersOnline();
+		auto maxPlayers = g_configManager().getNumber(MAX_PLAYERS);
+		auto uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;
+
 		const nlohmann::json status = {
-			{ "status", g_game().getGameState() },
-			{ "uptime", (OTSYS_TIME(true) - ProtocolStatus::start) / 1000 },
-			{ "players_online", g_game().getPlayersOnline() },
-			{ "max_players", g_configManager().getNumber(MAX_PLAYERS) }
+			{ "status", gameState },
+			{ "uptime", uptime },
+			{ "players_online", playersOnline },
+			{ "max_players", maxPlayers }
 		};
-		WebSocketHandler::getInstance().broadcast(WebSocketEvents::SERVER_STATUS, status);
+
+		// Verifica novamente se ainda estamos em execução antes de fazer o broadcast
+		if (running) {
+			WebSocketHandler::getInstance().broadcast(WebSocketEvents::SERVER_STATUS, status);
+		}
 	} catch (const std::exception &e) {
-		g_logger().error("Erro ao transmitir status do servidor: {}", e.what());
+		g_logger().error("[BroadcastManager::broadcastServerStatus] Erro durante broadcast: {}", e.what());
+	} catch (...) {
+		g_logger().error("[BroadcastManager::broadcastServerStatus] Erro desconhecido durante shutdown");
 	}
 }

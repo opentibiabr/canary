@@ -19,4 +19,5 @@ private:
 
 	std::atomic<bool> running{false};
     std::jthread broadcastThread;
+	static std::mutex shutdownMutex;
 };

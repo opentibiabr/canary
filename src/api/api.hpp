@@ -42,7 +42,8 @@ private:
         app {};
 
     std::jthread serverThread {};
-    bool running = false;
+    std::atomic<bool> running{false};
+    static std::mutex shutdownMutex;
 
     void setupRoutes();
     void setupWebSocket();

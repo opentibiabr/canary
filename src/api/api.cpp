@@ -7,6 +7,8 @@
 #include "utils/validators.hpp"
 #include "utils/broadcast_manager.hpp"
 
+std::mutex APIServer::shutdownMutex;
+
 void APIServer::initialize(uint16_t port) {
 	// Configuração do CORS
 	auto &cors = app.get_middleware<crow::CORSHandler>();
@@ -48,14 +50,38 @@ void APIServer::start() {
 }
 
 void APIServer::stop() {
-	running = false;
-	app.stop();
-	
-	// Para o broadcast manager
-	BroadcastManager::getInstance().stop();
-	
-	if (serverThread.joinable()) {
-		serverThread.join();
+	try {
+		std::lock_guard<std::mutex> lock(shutdownMutex);
+
+		if (!running) {
+			return;
+		}
+
+		running = false;
+
+		try {
+			BroadcastManager::getInstance().stop();
+		} catch (const std::exception& e) {
+			g_logger().error("[APIServer::stop] Erro ao parar BroadcastManager: {}", e.what());
+		}
+
+		try {
+			app.stop();
+		} catch (const std::exception& e) {
+			g_logger().error("[APIServer::stop] Erro ao parar servidor Crow: {}", e.what());
+		}
+
+		if (serverThread.joinable()) {
+			try {
+				serverThread.join();
+			} catch (const std::exception& e) {
+				g_logger().error("[APIServer::stop] Erro ao aguardar thread do servidor: {}", e.what());
+			}
+		}
+	} catch (const std::exception& e) {
+		g_logger().error("[APIServer::stop] Erro crítico durante shutdown: {}", e.what());
+	} catch (...) {
+		g_logger().error("[APIServer::stop] Erro desconhecido durante shutdown");
 	}
 }
 

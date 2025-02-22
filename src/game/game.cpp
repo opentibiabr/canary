@@ -7600,7 +7600,7 @@ void Game::sendMessages(
 		}
 
 		if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-			buildMessageAsAttacker(target, damage, message, ss, damageString);
+			buildMessageAsAttacker(target, damage, message, ss, damageString, attackerPlayer);
 		} else if (tmpPlayer == targetPlayer) {
 			buildMessageAsTarget(attacker, damage, attackerPlayer, targetPlayer, message, ss, damageString);
 		} else {
@@ -7675,13 +7675,21 @@ void Game::buildMessageAsTarget(
 
 void Game::buildMessageAsAttacker(
 	const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message,
-	std::stringstream &ss, const std::string &damageString
+	std::stringstream &ss, const std::string &damageString, const std::shared_ptr<Player> &attackerPlayer
 ) const {
 	ss.str({});
 	ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your " << (damage.critical ? "critical " : " ") << "attack.";
 	if (damage.extension) {
 		ss << " " << damage.exString;
 	}
+
+	if (damage.critical) {
+		const auto &targetMonster = target->getMonster();
+		if (targetMonster && attackerPlayer && targetMonster->checkCanApplyCharm(attackerPlayer, CHARM_LOW)) {
+			ss << " (low blow charm)";
+		}
+	}
+
 	if (damage.fatal) {
 		ss << " (Onslaught)";
 	}

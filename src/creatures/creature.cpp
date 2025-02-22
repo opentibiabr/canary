@@ -1890,3 +1890,11 @@ void Creature::safeCall(std::function<void(void)> &&action) const {
 		action();
 	}
 }
+
+void Creature::setCombatDamage(const CombatDamage &damage) {
+	m_combatDamage = damage;
+}
+
+CombatDamage Creature::getCombatDamage() const {
+	return m_combatDamage;
+}

@@ -77,14 +77,14 @@ class NpcType final : public SharedObject {
 
 public:
 	NpcType() = default;
-	explicit NpcType(const std::string &initName) :
-		name(initName), typeName(initName), nameDescription(initName) {};
+	explicit NpcType(const std::string &initName);
 
 	// non-copyable
 	NpcType(const NpcType &) = delete;
 	NpcType &operator=(const NpcType &) = delete;
 
 	std::string name;
+	std::string m_lowerName;
 	std::string typeName;
 	std::string nameDescription;
 	NpcInfo info;

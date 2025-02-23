@@ -382,3 +382,29 @@ bool Monsters::tryAddMonsterType(const std::string &name, const std::shared_ptr<
 	monsters[lowerName] = mType;
 	return true;
 }
+
+std::vector<std::shared_ptr<MonsterType>> Monsters::getMonstersByRace(BestiaryType_t race) const {
+	std::vector<std::shared_ptr<MonsterType>> monstersByRace;
+	const auto &bestiaryList = g_game().getBestiaryList();
+
+	for (const auto &[raceId, name] : bestiaryList) {
+		const auto &monsterType = g_monsters().getMonsterType(name);
+		if (monsterType && monsterType->info.bestiaryRace == race) {
+			monstersByRace.emplace_back(monsterType);
+		}
+	}
+	return monstersByRace;
+}
+
+std::vector<std::shared_ptr<MonsterType>> Monsters::getMonstersByBestiaryStars(uint8_t stars) const {
+	std::vector<std::shared_ptr<MonsterType>> monstersByStars;
+	const auto &bestiaryList = g_game().getBestiaryList();
+
+	for (const auto &[raceId, name] : bestiaryList) {
+		const auto &monsterType = g_monsters().getMonsterType(name);
+		if (monsterType && monsterType->info.bestiaryStars == stars) {
+			monstersByStars.emplace_back(monsterType);
+		}
+	}
+	return monstersByStars;
+}

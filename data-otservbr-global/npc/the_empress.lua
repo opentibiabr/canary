@@ -54,7 +54,14 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 4 then
+	if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor) == 10 then
+		npcHandler:setMessage(MESSAGE_GREET, {
+			"You succeeded! Issavi is safe again. Take this as a sign of our grace and gratitude, brave mortal being. It is a precious relic from earlier times. More precisely, it is one of four parts of the relic called the Regalia of Suon. ...",
+			"Should you ever find the other three parts, a talented jeweler might be able to combine them and recreate the regalia for you.",
+		})
+		player:addItem(31573, 1)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor, 11)
+	elseif player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories) == 5 then
 		player:addItem(31414, 1)
 		npcHandler:setMessage(MESSAGE_GREET, {
 			"I see. There is enough and adequate evidence that the Ambassador of Rathleton is indeed an arch traitor. So, Eshaya was right. Well done, mortal being. You have proven your loyalty and bravery, therefore allow me to ask you one more favour. ...",
@@ -63,43 +70,23 @@ local function greetCallback(npc, creature)
 			"Well, they want to activate five Fafnar statues which they have already enchanted. They are hidden in the catacombs underneath the city. Please go down and search for the statues. ...",
 			"Then use this sceptre to bless them in the name of Suon and Bastesh. This will destroy the disastrous enchantment and Issavi will be safe again.",
 		})
-		player:setStorageValue(Storage.Kilmaresh.Sixth.Favor, 1)
-		player:setStorageValue(Storage.Kilmaresh.Sixth.FourMasks, 0)
-		player:setStorageValue(Storage.Kilmaresh.Sixth.BlessedStatues, 0)
-		player:setStorageValue(Storage.Kilmaresh.Fifth.Memories, 6)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor, 1)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.FourMasks, 0)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.BlessedStatues, 0)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories, 6)
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Greetings.")
 	end
+
 	return true
 end
-
-local masksDialogue = keywordHandler:addKeyword({ "mission" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Did you take all the masks and enchant all the statues?",
-}, function(player)
-	return player:getStorageValue(Storage.Kilmaresh.Sixth.Favor) == 10
-end)
-
-masksDialogue:addChildKeyword(
-	{ "yes" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Thank you.",
-	},
-	nil,
-	function(player)
-		player:addItem(31573, 1) -- Sun Medal
-		player:setStorageValue(Storage.Kilmaresh.Sixth.Favor, 11)
-	end
-)
 
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 
 npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

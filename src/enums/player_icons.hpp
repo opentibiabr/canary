@@ -42,6 +42,7 @@ enum class PlayerIcon : uint8_t {
 	GoshnarTaint5 = 25,
 	NewManaShield = 26,
 	Agony = 27,
+	Powerless = 28,
 
 	// Must always be the last
 	Count

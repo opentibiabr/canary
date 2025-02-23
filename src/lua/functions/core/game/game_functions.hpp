@@ -46,6 +46,7 @@ private:
 	static int luaGameCreateItem(lua_State* L);
 	static int luaGameCreateContainer(lua_State* L);
 	static int luaGameCreateMonster(lua_State* L);
+	static int luaGameCreateSoulPitMonster(lua_State* L);
 	static int luaGameGenerateNpc(lua_State* L);
 	static int luaGameCreateNpc(lua_State* L);
 	static int luaGameCreateTile(lua_State* L);
@@ -88,4 +89,9 @@ private:
 	static int luaGameGetSecretAchievements(lua_State* L);
 	static int luaGameGetPublicAchievements(lua_State* L);
 	static int luaGameGetAchievements(lua_State* L);
+
+	static int luaGameGetSoulCoreItems(lua_State* L);
+
+	static int luaGameGetMonstersByRace(lua_State* L);
+	static int luaGameGetMonstersByBestiaryStars(lua_State* L);
 };

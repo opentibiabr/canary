@@ -7,15 +7,15 @@ npcConfig.description = internalNpcName
 
 npcConfig.health = 100
 npcConfig.maxHealth = npcConfig.health
-npcConfig.walkInterval = 0
+npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
 	lookType = 151,
 	lookHead = 114,
-	lookBody = 131,
+	lookBody = 132,
 	lookLegs = 0,
-	lookFeet = 20,
+	lookFeet = 78,
 	lookAddons = 1,
 }
 

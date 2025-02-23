@@ -91,8 +91,18 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 	return newItem;
 }
 
+bool Item::hasImbuementAttribute(const std::string &attributeSlot) const {
+	// attributeSlot = ITEM_IMBUEMENT_SLOT + slot id
+	return getCustomAttribute(attributeSlot) != nullptr;
+}
+
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo* imbuementInfo) const {
-	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
+	std::string attributeSlot = std::to_string(ITEM_IMBUEMENT_SLOT + slot);
+	if (!hasImbuementAttribute(attributeSlot)) {
+		return false;
+	}
+
+	const CustomAttribute* attribute = getCustomAttribute(attributeSlot);
 	const auto info = attribute ? attribute->getAttribute<uint32_t>() : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
@@ -278,7 +288,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	const ItemType &it = items[id];
 	const auto itemCharges = it.charges;
 	if (it.isFluidContainer() || it.isSplash()) {
-		const auto fluidType = std::clamp<uint16_t>(itemCount, 1, FLUID_INK);
+		const auto fluidType = std::clamp<uint16_t>(itemCount, 0, magic_enum::enum_count<Fluids_t>());
 		setAttribute(ItemAttribute_t::FLUIDTYPE, fluidType);
 	} else if (it.stackable) {
 		if (itemCount != 0) {

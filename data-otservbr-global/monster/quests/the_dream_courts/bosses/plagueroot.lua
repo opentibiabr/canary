@@ -13,16 +13,17 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"DreamCourtsBossDeath",
-}
-
 monster.health = 320000
 monster.maxHealth = 320000
 monster.race = "venom"
 monster.corpse = 30022
 monster.speed = 85
 monster.manaCost = 0
+
+monster.events = {
+	"dreamCourtsDeath",
+	"facelessHealth",
+}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -32,7 +33,6 @@ monster.changeTarget = {
 monster.bosstiary = {
 	bossRaceId = 1695,
 	bossRace = RARITY_NEMESIS,
-	storage = Storage.Quest.U12_00.TheDreamCourts.ArenaTimer,
 }
 
 monster.strategiesTarget = {

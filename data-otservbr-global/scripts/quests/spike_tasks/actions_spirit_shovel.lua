@@ -12,7 +12,7 @@ function spikeTasksShovel.onUse(player, item, fromPosition, target, toPosition, 
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 
-	if (target == nil) or not target:isItem() or (target:getId() ~= 19211) then
+	if not target or type(target) ~= "userdata" or not target:isItem() or (target:getId() ~= 19211) then
 		return player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 	end
 

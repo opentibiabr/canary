@@ -25,6 +25,10 @@ monster.corpse = 31923
 monster.speed = 105
 monster.manaCost = 0
 
+monster.events = {
+	"grave_danger_death",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10,

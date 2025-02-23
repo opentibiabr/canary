@@ -11,7 +11,7 @@ function spikeTasksStone.onUse(player, item, fromPosition, target, toPosition, i
 		return false
 	end
 
-	if (target == nil) or not target:isItem() or (target:getId() ~= 19217) then
+	if not target or type(target) ~= "userdata" or not target:isItem() or (target:getId() ~= 19217) then
 		return false
 	end
 

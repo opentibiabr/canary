@@ -13,12 +13,20 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"dreamCourtsDeath",
+}
+
 monster.health = 50
 monster.maxHealth = 50
 monster.race = "blood"
 monster.corpse = 0
 monster.speed = 125
 monster.manaCost = 0
+
+monster.events = {
+	"dreamCourtsDeath",
+}
 
 monster.changeTarget = {
 	interval = 5000,

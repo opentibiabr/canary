@@ -25,6 +25,8 @@
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
+static PlayerWheelGem emptyGem = {};
+
 std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
@@ -304,12 +306,6 @@ namespace {
 
 		return 0;
 	}
-
-	struct PromotionScroll {
-		uint16_t itemId;
-		std::string name;
-		uint8_t extraPoints;
-	};
 
 	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
 		{ 43946, "abridged", 3 },
@@ -852,36 +848,7 @@ uint16_t PlayerWheel::getUnusedPoints() const {
 		return 0;
 	}
 
-	const auto vocationBaseId = m_player.getVocation()->getBaseId();
-	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
-
-	for (const auto &modPosition : modsBasicPosition) {
-		const auto pos = static_cast<uint8_t>(modPosition);
-		uint8_t grade = 0;
-		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
-
-		if (gradeKV.has_value()) {
-			grade = static_cast<uint8_t>(gradeKV->get<IntType>());
-		}
-
-		totalPoints += grade == 3 ? 1 : 0;
-	}
-
-	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (const auto &modPosition : modsSupremeIt->second.get()) {
-			const auto pos = static_cast<uint8_t>(modPosition);
-			uint8_t grade = 0;
-			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
-
-			if (gradeKV.has_value()) {
-				grade = gradeKV->get<IntType>();
-			}
-
-			totalPoints += grade == 3 ? 1 : 0;
-		}
-	} else {
-		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", std::source_location::current().function_name(), vocationBaseId);
-	}
+	totalPoints += m_modsMaxGrade;
 
 	for (uint8_t i = WheelSlots_t::SLOT_FIRST; i <= WheelSlots_t::SLOT_LAST; ++i) {
 		totalPoints -= getPointsBySlotType(static_cast<WheelSlots_t>(i));
@@ -999,22 +966,8 @@ bool PlayerWheel::handleBeamMasteryCooldown(const std::shared_ptr<Player> &playe
 }
 
 void PlayerWheel::addPromotionScrolls(NetworkMessage &msg) const {
-	std::vector<uint16_t> unlockedScrolls;
-
-	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
-		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
-		if (!scrollKv) {
-			continue;
-		}
-
-		const auto scrollOpt = scrollKv->get(name);
-		if (scrollOpt && scrollOpt->get<bool>()) {
-			unlockedScrolls.emplace_back(itemId);
-		}
-	}
-
-	msg.add<uint16_t>(unlockedScrolls.size());
-	for (const auto &itemId : unlockedScrolls) {
+	msg.add<uint16_t>(m_unlockedScrolls.size());
+	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
 		msg.add<uint16_t>(itemId);
 	}
 }
@@ -1028,13 +981,7 @@ std::shared_ptr<KV> PlayerWheel::gemsGradeKV(WheelFragmentType_t type, uint8_t p
 }
 
 uint8_t PlayerWheel::getGemGrade(WheelFragmentType_t type, uint8_t pos) const {
-	uint8_t grade = 0;
-	const auto gradeKV = gemsGradeKV(type, pos)->get("grade");
-
-	if (gradeKV.has_value()) {
-		grade = static_cast<uint8_t>(gradeKV->get<IntType>());
-	}
-	return grade;
+	return type == WheelFragmentType_t::Lesser ? m_basicGrades[pos] : m_supremeGrades[pos];
 }
 
 std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
@@ -1049,7 +996,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 		sortedUnlockedGemGUIDs.emplace_back(uuid);
 	}
 
-	std::sort(sortedUnlockedGemGUIDs.begin(), sortedUnlockedGemGUIDs.end(), [](const std::string &a, const std::string &b) {
+	std::ranges::sort(sortedUnlockedGemGUIDs, [](const std::string &a, const std::string &b) {
 		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
 			return std::stoull(a) < std::stoull(b);
 		} else {
@@ -1059,7 +1006,7 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 
 	for (const auto &uuid : sortedUnlockedGemGUIDs) {
 		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
-		if (gem.uuid.empty()) {
+		if (!gem) {
 			continue;
 		}
 		unlockedGems.emplace_back(gem);
@@ -1070,20 +1017,12 @@ std::vector<PlayerWheelGem> PlayerWheel::getRevealedGems() const {
 std::vector<PlayerWheelGem> PlayerWheel::getActiveGems() const {
 	std::vector<PlayerWheelGem> activeGems;
 	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
-		std::string key(magic_enum::enum_name(affinity));
-		auto uuidKV = gemsKV()->scoped("active")->get(key);
-		if (!uuidKV.has_value()) {
+		const auto &gem = m_activeGems[static_cast<uint8_t>(affinity)];
+
+		if (!gem) {
 			continue;
 		}
 
-		auto uuid = uuidKV->get<StringType>();
-		if (uuid.empty()) {
-			continue;
-		}
-		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
-		if (gem.uuid.empty()) {
-			continue;
-		}
 		activeGems.emplace_back(gem);
 	}
 	return activeGems;
@@ -1125,7 +1064,7 @@ uint64_t PlayerWheel::getGemRevealCost(WheelGemQuality_t quality) {
 	return static_cast<uint64_t>(g_configManager().getNumber(key));
 }
 
-void PlayerWheel::revealGem(WheelGemQuality_t quality) const {
+void PlayerWheel::revealGem(WheelGemQuality_t quality) {
 	uint16_t gemId = m_player.getVocation()->getWheelGemId(quality);
 	if (gemId == 0) {
 		g_logger().error("[{}] Failed to get gem id for quality {} and vocation {}", __FUNCTION__, fmt::underlying(quality), m_player.getVocation()->getVocName());
@@ -1160,32 +1099,39 @@ void PlayerWheel::revealGem(WheelGemQuality_t quality) const {
 		gem.supremeModifier = supremeModifiers[uniform_random(0, supremeModifiers.size() - 1)];
 	}
 	g_logger().debug("[{}] {}", __FUNCTION__, gem.toString());
-	gem.save(gemsKV());
+	m_revealedGems.emplace_back(gem);
+
+	std::ranges::sort(m_revealedGems, [](const auto &gem1, const auto &gem2) {
+		if (std::ranges::all_of(gem1.uuid, ::isdigit) && std::ranges::all_of(gem2.uuid, ::isdigit)) {
+			return std::stoull(gem1.uuid) < std::stoull(gem2.uuid);
+		} else {
+			return gem1.uuid < gem2.uuid;
+		}
+	});
+
 	sendOpenWheelWindow(m_player.getID());
 }
 
-PlayerWheelGem PlayerWheel::getGem(uint16_t index) const {
-	auto gems = getRevealedGems();
-	if (gems.size() <= index) {
-		g_logger().error("[{}] Player {} trying to get gem with index {} but has only {} gems", __FUNCTION__, m_player.getName(), index, gems.size());
-		return {};
+PlayerWheelGem &PlayerWheel::getGem(uint16_t index) {
+	auto revealedGemsSize = m_revealedGems.size();
+	if (revealedGemsSize <= index) {
+		g_logger().error("[{}] Player {} trying to get gem with index {} but has only {} gems", __FUNCTION__, m_player.getName(), index, revealedGemsSize);
+		return emptyGem;
 	}
-	return gems[index];
+	return m_revealedGems[index];
 }
 
-PlayerWheelGem PlayerWheel::getGem(const std::string &uuid) const {
-	auto gem = PlayerWheelGem::load(gemsKV(), uuid);
-	if (gem.uuid.empty()) {
-		g_logger().error("[{}] Failed to load gem with uuid {}", __FUNCTION__, uuid);
-		return {};
-	}
-	return gem;
+PlayerWheelGem &PlayerWheel::getGem(const std::string &uuid) {
+	auto it = std::ranges::find_if(m_revealedGems, [&uuid](const auto &gem) {
+		return gem.uuid == uuid;
+	});
+
+	return it != m_revealedGems.end() ? *it : emptyGem;
 }
 
 uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
-	const auto gems = getRevealedGems();
-	for (uint16_t i = 0; i < gems.size(); ++i) {
-		if (gems[i].uuid == uuid) {
+	for (uint16_t i = 0; i < m_revealedGems.size(); ++i) {
+		if (m_revealedGems[i].uuid == uuid) {
 			return i;
 		}
 	}
@@ -1193,15 +1139,16 @@ uint16_t PlayerWheel::getGemIndex(const std::string &uuid) const {
 	return 0xFF;
 }
 
-void PlayerWheel::destroyGem(uint16_t index) const {
-	const auto gem = getGem(index);
+void PlayerWheel::destroyGem(uint16_t index) {
+	const auto &gem = getGem(index);
+	if (!gem) {
+		return;
+	}
+
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} destroyed locked gem with index {}", std::source_location::current().function_name(), m_player.getName(), index);
 		return;
 	}
-
-	const auto &backpack = m_player.getInventoryItem(CONST_SLOT_BACKPACK);
-	const auto &mainBackpack = backpack ? backpack->getContainer() : nullptr;
 
 	uint8_t lesserFragments = 0;
 	uint8_t greaterFragments = 0;
@@ -1240,7 +1187,8 @@ void PlayerWheel::destroyGem(uint16_t index) const {
 		g_logger().debug("[{}] Player {} destroyed a gem and received {} greater fragments", std::source_location::current().function_name(), m_player.getName(), greaterFragments);
 	}
 
-	gem.remove(gemsKV());
+	m_destroyedGems.emplace_back(gem);
+	m_revealedGems.erase(m_revealedGems.begin() + index);
 
 	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);
 	const auto totalGreaterFragment = m_player.getItemTypeCount(ITEM_GREATER_FRAGMENT) + m_player.getStashItemCount(ITEM_GREATER_FRAGMENT);
@@ -1251,8 +1199,12 @@ void PlayerWheel::destroyGem(uint16_t index) const {
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::switchGemDomain(uint16_t index) const {
-	auto gem = getGem(index);
+void PlayerWheel::switchGemDomain(uint16_t index) {
+	auto &gem = getGem(index);
+	if (!gem) {
+		return;
+	}
+
 	if (gem.locked) {
 		g_logger().error("[{}] Player {} trying to destroy locked gem with index {}", __FUNCTION__, m_player.getName(), index);
 		return;
@@ -1265,20 +1217,21 @@ void PlayerWheel::switchGemDomain(uint16_t index) const {
 
 	auto gemAffinity = convertWheelGemAffinityToDomain(static_cast<uint8_t>(gem.affinity));
 	gem.affinity = static_cast<WheelGemAffinity_t>(gemAffinity);
-	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::toggleGemLock(uint16_t index) const {
-	auto gem = getGem(index);
+void PlayerWheel::toggleGemLock(uint16_t index) {
+	auto &gem = getGem(index);
+	if (!gem) {
+		return;
+	}
 	gem.locked = !gem.locked;
-	gem.save(gemsKV());
 	sendOpenWheelWindow(m_player.getID());
 }
 
-void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) const {
-	auto gem = getGem(index);
-	if (gem.uuid.empty()) {
+void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
+	auto &gem = getGem(index);
+	if (!gem) {
 		g_logger().error("[{}] Failed to load gem with index {}", __FUNCTION__, index);
 		return;
 	}
@@ -1286,13 +1239,11 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) cons
 		g_logger().error("[{}] Gem with index {} has affinity {} but trying to set it to {}", __FUNCTION__, index, fmt::underlying(gem.affinity), fmt::underlying(affinity));
 		return;
 	}
-	const std::string key(magic_enum::enum_name(affinity));
-	gemsKV()->scoped("active")->set(key, gem.uuid);
+	m_activeGems[static_cast<uint8_t>(affinity)] = gem;
 }
 
-void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) const {
-	const std::string key(magic_enum::enum_name(affinity));
-	gemsKV()->scoped("active")->remove(key);
+void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) {
+	m_activeGems[static_cast<uint8_t>(affinity)] = emptyGem;
 }
 
 void PlayerWheel::addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points) {
@@ -1366,10 +1317,9 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 		msg.add<uint16_t>(getGemIndex(gem.uuid));
 	}
 
-	const auto revealedGems = getRevealedGems();
-	msg.add<uint16_t>(revealedGems.size());
+	msg.add<uint16_t>(m_revealedGems.size());
 	uint16_t index = 0;
-	for (const auto &gem : revealedGems) {
+	for (const auto &gem : m_revealedGems) {
 		g_logger().debug("[{}] Adding revealed gem: {}", __FUNCTION__, gem.toString());
 		msg.add<uint16_t>(index++);
 		msg.addByte(gem.locked);
@@ -1387,16 +1337,11 @@ void PlayerWheel::addGems(NetworkMessage &msg) const {
 
 void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 	msg.addByte(0x2E); // Modifiers for all Vocations
+
 	for (const auto &modPosition : modsBasicPosition) {
 		const auto pos = static_cast<uint8_t>(modPosition);
 		msg.addByte(pos);
-		uint8_t grade = 0;
-		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
-
-		if (gradeKV.has_value()) {
-			grade = static_cast<uint8_t>(gradeKV->get<IntType>());
-		}
-		msg.addByte(grade);
+		msg.addByte(m_basicGrades[pos]);
 	}
 
 	msg.addByte(0x17); // Modifiers for specific per Vocations
@@ -1408,13 +1353,7 @@ void PlayerWheel::addGradeModifiers(NetworkMessage &msg) const {
 		for (const auto &modPosition : modsSupremeIt->second.get()) {
 			const auto pos = static_cast<uint8_t>(modPosition);
 			msg.addByte(pos);
-			uint8_t grade = 0;
-			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
-
-			if (gradeKV.has_value()) {
-				grade = gradeKV->get<IntType>();
-			}
-			msg.addByte(grade);
+			msg.addByte(m_supremeGrades[pos]);
 		}
 	} else {
 		g_logger().error("[{}] vocation base id: {}", std::source_location::current().function_name(), m_player.getVocation()->getBaseId());
@@ -1427,9 +1366,10 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 	uint8_t quantity = 0;
 	uint8_t grade = 0;
 
-	auto gradeKV = gemsGradeKV(fragmentType, pos)->get("grade");
-	if (gradeKV.has_value()) {
-		grade = gradeKV->get<IntType>();
+	if (fragmentType == WheelFragmentType_t::Lesser) {
+		grade = m_basicGrades[pos];
+	} else {
+		grade = m_supremeGrades[pos];
 	}
 
 	++grade;
@@ -1468,7 +1408,14 @@ void PlayerWheel::improveGemGrade(WheelFragmentType_t fragmentType, uint8_t pos)
 		return;
 	}
 
-	gemsGradeKV(fragmentType, pos)->set("grade", grade);
+	if (fragmentType == WheelFragmentType_t::Lesser) {
+		m_basicGrades[pos] = grade;
+	} else {
+		m_supremeGrades[pos] = grade;
+	}
+
+	m_modsMaxGrade += grade == 3 ? 1 : 0;
+
 	loadPlayerBonusData();
 	sendOpenWheelWindow(m_player.getID());
 }
@@ -1674,7 +1621,184 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	// Player's bonus data is loaded, initialized, registered, and the function logs
 	loadPlayerBonusData();
 
+	sendOpenWheelWindow(m_player.getID());
+
 	g_logger().debug("Player: {} is saved the all slots info in: {} milliseconds", m_player.getName(), bm_saveSlot.duration());
+}
+
+void PlayerWheel::loadActiveGems() {
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		std::string key(magic_enum::enum_name(affinity));
+		auto uuidKV = gemsKV()->scoped("active")->get(key);
+		if (!uuidKV.has_value()) {
+			continue;
+		}
+
+		auto uuid = uuidKV->get<StringType>();
+		if (uuid.empty()) {
+			continue;
+		}
+
+		auto it = std::ranges::find_if(m_revealedGems, [&uuid](const auto &gem) {
+			return gem.uuid == uuid;
+		});
+
+		if (it == m_revealedGems.end()) {
+			continue;
+		}
+
+		m_activeGems[static_cast<uint8_t>(affinity)] = *it;
+	}
+}
+
+void PlayerWheel::saveActiveGems() const {
+	for (const auto &affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		const std::string key(magic_enum::enum_name(affinity));
+		const auto &gem = m_activeGems[static_cast<uint8_t>(affinity)];
+		if (gem) {
+			gemsKV()->scoped("active")->set(key, gem.uuid);
+		} else {
+			gemsKV()->scoped("active")->remove(key);
+		}
+	}
+}
+
+void PlayerWheel::loadRevealedGems() {
+	const auto unlockedGemUUIDs = gemsKV()->scoped("revealed")->keys();
+	if (unlockedGemUUIDs.empty()) {
+		return;
+	}
+
+	std::vector<std::string> sortedUnlockedGemGUIDs;
+	for (const auto &uuid : unlockedGemUUIDs) {
+		sortedUnlockedGemGUIDs.emplace_back(uuid);
+	}
+
+	std::ranges::sort(sortedUnlockedGemGUIDs, [](const std::string &a, const std::string &b) {
+		if (std::ranges::all_of(a, ::isdigit) && std::ranges::all_of(b, ::isdigit)) {
+			return std::stoull(a) < std::stoull(b);
+		} else {
+			return a < b;
+		}
+	});
+
+	for (const auto &uuid : sortedUnlockedGemGUIDs) {
+		auto gem = PlayerWheelGem::load(gemsKV(), uuid);
+		if (!gem) {
+			continue;
+		}
+		m_revealedGems.emplace_back(gem);
+	}
+}
+
+void PlayerWheel::saveRevealedGems() const {
+	for (const auto &gem : m_destroyedGems) {
+		gem.remove(gemsKV());
+	}
+
+	for (const auto &gem : m_revealedGems) {
+		gem.save(gemsKV());
+	}
+}
+
+bool PlayerWheel::scrollAcquired(const std::string &scrollName) {
+	auto it = std::ranges::find_if(m_unlockedScrolls, [&scrollName](const PromotionScroll &promotionScroll) {
+		return scrollName == promotionScroll.name;
+	});
+
+	return it != m_unlockedScrolls.end();
+}
+
+bool PlayerWheel::unlockScroll(const std::string &scrollName) {
+	if (scrollAcquired(scrollName)) {
+		return false;
+	}
+
+	auto it = std::ranges::find_if(WheelOfDestinyPromotionScrolls, [&scrollName](const auto &scroll) {
+		return scroll.name == scrollName;
+	});
+
+	if (it != WheelOfDestinyPromotionScrolls.end()) {
+		m_unlockedScrolls.emplace_back(*it);
+		return true;
+	}
+
+	return false;
+}
+
+void PlayerWheel::loadKVScrolls() {
+	const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+	if (!scrollKv) {
+		return;
+	}
+
+	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
+		const auto scrollValue = scrollKv->get(name);
+		if (scrollValue && scrollValue->get<bool>()) {
+			m_unlockedScrolls.emplace_back(itemId, name, extraPoints);
+		}
+	}
+}
+
+void PlayerWheel::saveKVScrolls() const {
+	const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
+	if (!scrollKv) {
+		return;
+	}
+
+	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
+		scrollKv->set(name, true);
+	}
+}
+
+void PlayerWheel::loadKVModGrades() {
+	for (const auto &modPosition : modsBasicPosition) {
+		const auto pos = static_cast<uint8_t>(modPosition);
+		auto gradeKV = gemsGradeKV(WheelFragmentType_t::Lesser, pos)->get("grade");
+
+		if (gradeKV.has_value()) {
+			uint8_t grade = gradeKV->get<IntType>();
+			m_basicGrades[pos] = grade;
+			m_modsMaxGrade += grade == 3 ? 1 : 0;
+		}
+	}
+
+	const auto vocationBaseId = m_player.getVocation()->getBaseId();
+	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
+	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
+		for (const auto &modPosition : modsSupremeIt->second.get()) {
+			const auto pos = static_cast<uint8_t>(modPosition);
+			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
+
+			if (gradeKV.has_value()) {
+				uint8_t grade = gradeKV->get<IntType>();
+				m_supremeGrades[pos] = grade;
+				m_modsMaxGrade += grade == 3 ? 1 : 0;
+			}
+		}
+	}
+}
+
+void PlayerWheel::saveKVModGrades() const {
+	for (const auto &modPosition : modsBasicPosition) {
+		const auto pos = static_cast<uint8_t>(modPosition);
+		uint8_t grade = m_basicGrades[pos];
+		if (grade > 0) {
+			gemsGradeKV(WheelFragmentType_t::Lesser, pos)->set("grade", grade);
+		}
+	}
+
+	const auto vocationBaseId = m_player.getVocation()->getBaseId();
+	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
+	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
+		for (const auto &modPosition : modsSupremeIt->second.get()) {
+			const auto pos = static_cast<uint8_t>(modPosition);
+			uint8_t grade = m_supremeGrades[pos];
+			if (grade > 0) {
+				gemsGradeKV(WheelFragmentType_t::Greater, pos)->set("grade", grade);
+			}
+		}
+	}
 }
 
 /*
@@ -1740,20 +1864,12 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	}
 
 	uint16_t totalBonus = 0;
-	for (const auto &[itemId, name, extraPoints] : WheelOfDestinyPromotionScrolls) {
+	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
 		if (itemId == 0) {
 			continue;
 		}
 
-		const auto &scrollKv = m_player.kv()->scoped("wheel-of-destiny")->scoped("scrolls");
-		if (!scrollKv) {
-			continue;
-		}
-
-		const auto scrollKV = scrollKv->get(name);
-		if (scrollKV && scrollKV->get<bool>()) {
-			totalBonus += extraPoints;
-		}
+		totalBonus += extraPoints;
 	}
 
 	return totalBonus;
@@ -2556,24 +2672,7 @@ WheelStageEnum_t PlayerWheel::getPlayerSliceStage(const std::string &color) cons
 		}
 	}
 
-	const auto vocationBaseId = m_player.getVocation()->getBaseId();
-	const auto modsSupremeIt = modsSupremePositionByVocation.find(vocationBaseId);
-
-	if (modsSupremeIt != modsSupremePositionByVocation.end()) {
-		for (const auto &modPosition : modsSupremeIt->second.get()) {
-			const auto pos = static_cast<uint8_t>(modPosition);
-			uint8_t grade = 0;
-			auto gradeKV = gemsGradeKV(WheelFragmentType_t::Greater, pos)->get("grade");
-
-			if (gradeKV.has_value()) {
-				grade = gradeKV->get<IntType>();
-			}
-
-			totalPoints += grade == 3 ? 1 : 0;
-		}
-	} else {
-		g_logger().error("[{}] supreme modifications not found for vocation base id: {}", std::source_location::current().function_name(), vocationBaseId);
-	}
+	totalPoints += m_modsMaxGrade;
 
 	if (totalPoints >= static_cast<int>(WheelStagePointsEnum_t::THREE)) {
 		return WheelStageEnum_t::THREE;

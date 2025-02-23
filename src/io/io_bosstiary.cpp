@@ -21,45 +21,45 @@ IOBosstiary &IOBosstiary::getInstance() {
 
 void IOBosstiary::loadBoostedBoss() {
 	Database &database = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT * FROM `boosted_boss`";
-	DBResult_ptr result = database.storeQuery(query.str());
+	auto query = fmt::format("SELECT `date`, `boostname`, `raceid` FROM `boosted_boss`");
+	DBResult_ptr result = database.storeQuery(query);
 	if (!result) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 01)", __FUNCTION__);
 		return;
 	}
 
-	auto date = result->getNumber<uint16_t>("date");
-	auto timeNow = getTimeNow();
-	auto time = localtime(&timeNow);
-	auto today = time->tm_mday;
-
-	auto bossMap = getBosstiaryMap();
+	const auto &bossMap = getBosstiaryMap();
 	if (bossMap.size() <= 1) {
 		g_logger().error("[{}] It is not possible to create a boosted boss with only one registered boss. (CODE 02)", __FUNCTION__);
 		return;
 	}
 
-	std::string bossName;
-	uint16_t bossId = 0;
-	if (date == today) {
-		bossName = result->getString("boostname");
-		bossId = result->getNumber<uint16_t>("raceid");
-		setBossBoostedName(bossName);
-		setBossBoostedId(bossId);
-		g_logger().info("Boosted boss: {}", bossName);
-		return;
+	auto timeNow = getTimeNow();
+	auto time = localtime(&timeNow);
+	auto today = time->tm_mday;
+
+	if (!result) {
+		g_logger().warn("[{}] No boosted boss found in g_database(). A new one will be selected.", __FUNCTION__);
+	} else {
+		auto date = result->getNumber<uint16_t>("date");
+		if (date == today) {
+			std::string bossName = result->getString("boostname");
+			uint16_t bossId = result->getNumber<uint16_t>("raceid");
+			setBossBoostedName(bossName);
+			setBossBoostedId(bossId);
+			g_logger().info("Boosted boss: {}", bossName);
+			return;
+		}
 	}
 
 	// Filter only archfoe bosses
-	std::map<uint16_t, std::string> bossInfo;
-	for (auto [infoBossRaceId, infoBossName] : bossMap) {
-		const auto mType = getMonsterTypeByBossRaceId(infoBossRaceId);
+	std::vector<std::pair<uint16_t, std::string>> bossInfo;
+	for (const auto &[infoBossRaceId, infoBossName] : bossMap) {
+		const auto &mType = getMonsterTypeByBossRaceId(infoBossRaceId);
 		if (!mType || mType->info.bosstiaryRace != BosstiaryRarity_t::RARITY_ARCHFOE) {
 			continue;
 		}
-
-		bossInfo.try_emplace(infoBossRaceId, infoBossName);
+		bossInfo.emplace_back(infoBossRaceId, infoBossName);
 	}
 
 	// Check if not have archfoe registered boss
@@ -68,55 +68,54 @@ void IOBosstiary::loadBoostedBoss() {
 		return;
 	}
 
-	auto oldBossRace = result->getNumber<uint16_t>("raceid");
-	while (true) {
-		uint32_t randomIndex = uniform_random(0, static_cast<int32_t>(bossInfo.size()));
-		auto it = std::next(bossInfo.begin(), randomIndex);
-		if (it == bossInfo.end()) {
-			break;
-		}
+	const auto &[randomBossId, randomBossName] = bossInfo[uniform_random(0, static_cast<int32_t>(bossInfo.size() - 1))];
+	std::string bossName = randomBossName;
+	uint16_t bossId = randomBossId;
 
-		const auto &[randomBossId, randomBossName] = *it;
-		if (randomBossId == oldBossRace) {
-			continue;
-		}
+	query = fmt::format(
+		"UPDATE `boosted_boss` SET `date` = '{}', `boostname` = {}, `raceid` = '{}', ",
+		today, database.escapeString(bossName), bossId
+	);
 
-		bossName = randomBossName;
-		bossId = randomBossId;
-		break;
+	if (const auto bossType = getMonsterTypeByBossRaceId(bossId); bossType) {
+		query += fmt::format(
+			"`looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, "
+			"`lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, ",
+			static_cast<int>(bossType->info.outfit.lookTypeEx),
+			static_cast<int>(bossType->info.outfit.lookType),
+			static_cast<int>(bossType->info.outfit.lookFeet),
+			static_cast<int>(bossType->info.outfit.lookLegs),
+			static_cast<int>(bossType->info.outfit.lookHead),
+			static_cast<int>(bossType->info.outfit.lookBody),
+			static_cast<int>(bossType->info.outfit.lookAddons),
+			static_cast<int>(bossType->info.outfit.lookMount)
+		);
 	}
 
-	query.str(std::string());
-	query << "UPDATE `boosted_boss` SET ";
-	query << "`date` = '" << today << "',";
-	query << "`boostname` = " << database.escapeString(bossName) << ",";
-	if (const auto bossType = getMonsterTypeByBossRaceId(bossId);
-	    bossType) {
-		query << "`looktypeEx` = " << static_cast<int>(bossType->info.outfit.lookTypeEx) << ",";
-		query << "`looktype` = " << static_cast<int>(bossType->info.outfit.lookType) << ",";
-		query << "`lookfeet` = " << static_cast<int>(bossType->info.outfit.lookFeet) << ",";
-		query << "`looklegs` = " << static_cast<int>(bossType->info.outfit.lookLegs) << ",";
-		query << "`lookhead` = " << static_cast<int>(bossType->info.outfit.lookHead) << ",";
-		query << "`lookbody` = " << static_cast<int>(bossType->info.outfit.lookBody) << ",";
-		query << "`lookaddons` = " << static_cast<int>(bossType->info.outfit.lookAddons) << ",";
-		query << "`lookmount` = " << static_cast<int>(bossType->info.outfit.lookMount) << ",";
-	}
-	query << "`raceid` = '" << bossId << "'";
-	if (!database.executeQuery(query.str())) {
+	query += fmt::format("`raceid` = '{}'", bossId);
+
+	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 03)", __FUNCTION__);
 		return;
 	}
 
-	query.str(std::string());
-	query << "UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = " << bossId;
-	if (!database.executeQuery(query.str())) {
+	query = fmt::format(
+		"UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}",
+		bossId
+	);
+
+	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}
 
-	query.str(std::string());
-	query << "UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = " << bossId;
-	if (!database.executeQuery(query.str())) {
-		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
+	query = fmt::format(
+		"UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}",
+		bossId
+	);
+
+	if (!database.executeQuery(query)) {
+		g_logger().error("[{}] Failed to reset players selected boss slot 2. (CODE 03)", __FUNCTION__);
+		return;
 	}
 
 	setBossBoostedName(bossName);

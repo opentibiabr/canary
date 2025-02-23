@@ -14,6 +14,7 @@
 #include "creatures/combat/condition.hpp"
 #include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/cyclopedia/player_badge.hpp"
 #include "creatures/players/cyclopedia/player_cyclopedia.hpp"
@@ -273,6 +274,20 @@ void IOLoginDataLoad::loadPlayerConditions(const std::shared_ptr<Player> &player
 		}
 		condition = Condition::createCondition(propStream);
 	}
+}
+
+void IOLoginDataLoad::loadPlayerAnimusMastery(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
+	if (!result || !player) {
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+		return;
+	}
+
+	unsigned long attrSize;
+	const char* attr = result->getStream("animus_mastery", attrSize);
+	PropStream propStream;
+	propStream.init(attr, attrSize);
+
+	player->animusMastery().unserialize(propStream);
 }
 
 void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
@@ -869,14 +884,18 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 }
 
 void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result) {
-	if (!result || !player) {
-		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+	if (!player) {
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
-	std::ostringstream query;
-	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if ((result = Database::getInstance().storeQuery(query.str()))) {
+	auto playerGUID = player->getGUID();
+
+	auto query = fmt::format(
+		"SELECT id, action_type, description, done_at, is_success FROM forge_history WHERE player_id = {}",
+		playerGUID
+	);
+	if ((result = Database::getInstance().storeQuery(query))) {
 		do {
 			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
@@ -978,6 +997,10 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 
 	// Wheel loading
 	player->wheel()->loadDBPlayerSlotPointsOnLogin();
+	player->wheel()->loadRevealedGems();
+	player->wheel()->loadActiveGems();
+	player->wheel()->loadKVModGrades();
+	player->wheel()->loadKVScrolls();
 	player->wheel()->initializePlayerData();
 
 	player->achiev()->loadUnlockedAchievements();

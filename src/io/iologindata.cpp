@@ -113,6 +113,9 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		// load conditions
 		IOLoginDataLoad::loadPlayerConditions(player, result);
 
+		// load animus mastery
+		IOLoginDataLoad::loadPlayerAnimusMastery(player, result);
+
 		// load default outfit
 		IOLoginDataLoad::loadPlayerDefaultOutfit(player, result);
 
@@ -265,6 +268,11 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
+
+	player->wheel()->saveRevealedGems();
+	player->wheel()->saveActiveGems();
+	player->wheel()->saveKVModGrades();
+	player->wheel()->saveKVScrolls();
 
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());

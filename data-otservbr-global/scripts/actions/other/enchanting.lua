@@ -44,6 +44,11 @@ local enchantedItems = {
 local enchanting = Action()
 
 function enchanting.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	-- The Dream Courts Quest
+	if item.itemid == 675 and target.itemid == 21573 then
+		return onGrindItem(player, item, fromPosition, target, toPosition)
+	end
+
 	if table.contains({ 33268, 33269 }, toPosition.x) and toPosition.y == 31830 and toPosition.z == 10 and player:getStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine) > 0 then
 		if not table.contains(spheres[item.itemid], player:getVocation():getBaseId()) then
 			return false

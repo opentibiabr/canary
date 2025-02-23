@@ -104,7 +104,7 @@ function closingDoor.onStepOut(creature, item, position, fromPosition)
 
 	while tileItem and i < tileCount do
 		tileItem = tile:getThing(i)
-		if tileItem and tileItem:getUniqueId() ~= item.uid and tileItem:getType():isMovable() then
+		if tileItem and tileItem:getUniqueId() ~= item.uid and tileItem:getType():isMovable() and not isCorpse(tileItem:getUniqueId()) then
 			tileItem:remove()
 		else
 			i = i + 1

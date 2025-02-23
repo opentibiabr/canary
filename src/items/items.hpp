@@ -415,6 +415,10 @@ public:
 		return items.size();
 	}
 
+	std::vector<ItemType> &getItems() {
+		return items;
+	}
+
 	NameMap nameToItems;
 
 	void addLadderId(uint16_t newId) {

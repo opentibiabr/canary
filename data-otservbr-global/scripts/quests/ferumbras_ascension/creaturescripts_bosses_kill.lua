@@ -3,55 +3,55 @@ local bosses = {
 		teleportPos = Position(33226, 31478, 12),
 		godbreakerPos = Position(33237, 31477, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceTimer,
 	},
 	["tarbaz"] = {
 		teleportPos = Position(33460, 32853, 11),
 		godbreakerPos = Position(33427, 32852, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.TarbazTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TarbazTimer,
 	},
 	["ragiaz"] = {
 		teleportPos = Position(33482, 32345, 13),
 		godbreakerPos = Position(33466, 32392, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.RagiazTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.RagiazTimer,
 	},
 	["plagirath"] = {
 		teleportPos = Position(33174, 31511, 13),
 		godbreakerPos = Position(33204, 31510, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.PlagirathTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer,
 	},
 	["razzagorn"] = {
-		teleportPos = Position(33357, 32434, 12),
+		teleportPos = Position(33413, 32467, 14),
 		godbreakerPos = Position(33357, 32440, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.RazzagornTimer,
 	},
 	["zamulosh"] = {
 		teleportPos = Position(33644, 32764, 11),
 		godbreakerPos = Position(33678, 32758, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.ZamuloshTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.ZamuloshTimer,
 	},
 	["mazoran"] = {
 		teleportPos = Position(33585, 32699, 14),
 		godbreakerPos = Position(33614, 32679, 15),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.MazoranTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.MazoranTimer,
 	},
 	["shulgrax"] = {
 		teleportPos = Position(33486, 32796, 13),
 		godbreakerPos = Position(33459, 32820, 14),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.ShulgraxTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.ShulgraxTimer,
 	},
 	["ferumbras mortal shell"] = {
 		teleportPos = Position(33392, 31485, 14),
 		godbreakerPos = Position(33388, 31414, 14),
 		cooldown = 332, -- hours - 13 days and 20 hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.FerumbrasMortalShellTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.FerumbrasMortalShellTimer,
 	},
 }
 

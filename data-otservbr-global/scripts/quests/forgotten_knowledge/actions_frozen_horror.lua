@@ -21,7 +21,7 @@ function leverMeltingFrozenHorror.onUse(player, item, fromPosition, target, toPo
 		end
 	end
 	if item.itemid == 8911 then
-		if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorTimer) >= 1 then
+		if Game.getStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled) >= 1 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait a while, recently someone challenge Frozen Horror.")
 			return true
 		end
@@ -43,11 +43,11 @@ function leverMeltingFrozenHorror.onUse(player, item, fromPosition, target, toPo
 				playerTile:getPosition():sendMagicEffect(CONST_ME_POFF)
 				playerTile:teleportTo(config.newPosition)
 				playerTile:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				playerTile:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorTimer, os.stime() + 20 * 60 * 60)
+				playerTile:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled, os.time() + 20 * 60 * 60)
 			end
 		end
-		Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorTimer, 1)
-		addEvent(clearForgotten, 30 * 60 * 1000, Position(32264, 31070, 14), Position(32284, 31104, 14), Position(32319, 31091, 14), Storage.Quest.U11_02.ForgottenKnowledge.HorrorTimer)
+		Game.setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled, 1)
+		addEvent(clearForgotten, 30 * 60 * 1000, Position(32264, 31070, 14), Position(32284, 31104, 14), Position(32319, 31091, 14), Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled)
 		item:transform(8912)
 	elseif item.itemid == 8912 then
 		item:transform(8911)

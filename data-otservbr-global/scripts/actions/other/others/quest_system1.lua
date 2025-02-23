@@ -1,7 +1,6 @@
 local specialQuests = {
 	-- {x = 32311, y = 32211, z = 8}
 	[51400] = Storage.Quest.U8_2.TheThievesGuildQuest.Reward,
-	[51324] = Storage.Quest.U8_6.WrathOfTheEmperor.MainReward,
 	-- {x = 32232, y = 31066, z = 7}
 	[51715] = Storage.Quest.U8_0.BarbarianArena.RewardGreenhorn,
 	-- {x = 32232, y = 31059, z = 7}

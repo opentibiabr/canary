@@ -100,8 +100,8 @@ function theShattererKill.onDeath(creature)
 		addEvent(revertTeleport, 2 * 60 * 1000, teleportPos, 22761, 1949, oldPos)
 		revert()
 	end
-	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever, 0)
-	player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererTimer, 0)
+	Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererLever, 0)
+	Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.TheShattererTimer, 0)
 	return true
 end
 

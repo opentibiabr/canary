@@ -31,12 +31,12 @@ npcConfig.voices = {
 
 local itemsTable = {
 	["exercise weapons"] = {
-		{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, count = 1800 },
-		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, count = 1800 },
-		{ itemName = "exercise rod", clientId = 28556, buy = 262500, count = 500 },
-		{ itemName = "exercise wand", clientId = 28557, buy = 262500, count = 500 },
-		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
-		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
+		{ itemName = "durable exercise rod", clientId = 35283, buy = 1250000, count = 1800 },
+		{ itemName = "durable exercise wand", clientId = 35284, buy = 1250000, count = 1800 },
+		{ itemName = "exercise rod", clientId = 28556, buy = 347222, count = 500 },
+		{ itemName = "exercise wand", clientId = 28557, buy = 347222, count = 500 },
+		{ itemName = "lasting exercise rod", clientId = 35289, buy = 10000000, count = 14400 },
+		{ itemName = "lasting exercise wand", clientId = 35290, buy = 10000000, count = 14400 },
 	},
 	["creature products"] = {
 		{ itemName = "crystal ball", clientId = 3076, buy = 530, sell = 190 },
@@ -64,8 +64,8 @@ local itemsTable = {
 		{ itemName = "paralyze rune", clientId = 3165, buy = 700 },
 		{ itemName = "poison bomb rune", clientId = 3173, buy = 85 },
 		{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
-		{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
-		{ itemName = "thunderstorm rune", clientId = 3202, buy = 47 },
+		{ itemName = "stone shower rune", clientId = 3175, buy = 41 },
+		{ itemName = "thunderstorm rune", clientId = 3202, buy = 52 },
 		{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
 	},
 	["wands"] = {

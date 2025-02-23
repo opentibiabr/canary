@@ -10,6 +10,7 @@
 #include "io/functions/iologindata_save_player.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
@@ -245,6 +246,14 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	const char* attributes = propWriteStream.getStream(attributesSize);
 
 	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
+
+	// serialize animus mastery
+	PropWriteStream propAnimusMasteryStream;
+	player->animusMastery().serialize(propAnimusMasteryStream);
+	size_t animusMasterySize;
+	const char* animusMastery = propAnimusMasteryStream.getStream(animusMasterySize);
+
+	query << "`animus_mastery` = " << db.escapeBlob(animusMastery, static_cast<uint32_t>(animusMasterySize)) << ",";
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;

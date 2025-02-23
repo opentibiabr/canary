@@ -35,6 +35,7 @@ private:
 	static int luaItemTypeIsPickupable(lua_State* L);
 	static int luaItemTypeIsKey(lua_State* L);
 	static int luaItemTypeIsQuiver(lua_State* L);
+	static int luaItemTypeIsPodium(lua_State* L);
 
 	static int luaItemTypeGetType(lua_State* L);
 	static int luaItemTypeGetId(lua_State* L);

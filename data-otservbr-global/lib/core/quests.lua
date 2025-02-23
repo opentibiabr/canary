@@ -6343,12 +6343,12 @@ if not Quests then
 		},
 		[47] = {
 			name = "Grave Danger",
-			startStorageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
+			startStorageId = Storage.Quest.U12_20.GraveDanger.Questline,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
 					name = "* Grave Danger - The Lich Knights",
-					storageId = Storage.Quest.U12_20.GraveDanger.QuestLine,
+					storageId = Storage.Quest.U12_20.GraveDanger.Questline,
 					missionId = 10437,
 					startValue = 1,
 					endValue = 2,
@@ -6634,6 +6634,74 @@ if not Quests then
 			},
 		},
 		[50] = {
+			name = "The Dream Courts",
+			startStorageId = Storage.Quest.U12_00.TheDreamCourts.Main.Questline,
+			startStorageValue = 1,
+			missions = {
+				[1] = {
+					name = "The Dream Courts",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.WardStones.Questline,
+					missionId = 10457,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						[1] = function(player)
+							return string.format("You already got %d/8 energized ward stones.", math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.WardStones.Count), 0))
+						end,
+						[2] = "You must kill the Nightmare Beast.",
+						[3] = "By defeating the dreadful Nightmare Beast you did the Winter Court and the Summer Court alike a great favor. From now on, the dream elves will regard you as a friend.",
+					},
+				},
+				[2] = {
+					name = "Unsafe Release",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.UnsafeRelease.Questline,
+					missionId = 10458,
+					startValue = 1,
+					endValue = 3,
+					states = {
+						[1] = "Part I",
+						[2] = "Part II",
+						[3] = "Andre was happy to hear that the compass works as intendend. From now on it is possible that he will charge your compass again. It can be used to give acess to mystical chests once a day.",
+					},
+				},
+				[3] = {
+					name = "Haunted House",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
+					missionId = 10459,
+					startValue = 1,
+					endValue = 6,
+					states = {
+						[1] = function(player)
+							return string.format(
+								"A tormented soul trusted you with the secret of this house: join the passages to the three dungeons it connects to reveal a hidden portal within!\n\nCellar %d/1\nTemple %d/1\nTomb %d/1",
+								math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Cellar), 0),
+								math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Temple), 0),
+								math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Tomb), 0)
+							)
+						end,
+						[2] = "Part I - burried catedral",
+						[3] = "Part II - puzzle dos livros",
+						[4] = "Part III - bosses",
+						[5] = "Part IV - last stone",
+						[6] = "Activating the ward stone after defeating the Faceless Bane has gained you acess to the deepest mysteries of the dream courts.",
+					},
+				},
+				[4] = {
+					name = "The Seven Keys",
+					storageId = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Questline,
+					missionId = 10460,
+					startValue = 1,
+					endValue = 2,
+					states = {
+						[1] = function(player)
+							return string.format("You already got %d/7 secret keys.", math.max(player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Count), 0))
+						end,
+						[2] = "You found the seven keys to unlock the Seven Dream Doors in the Labyrinth of Summer's and Winter's Dreams.",
+					},
+				},
+			},
+		},
+		[51] = {
 			name = "EnaraOT - Hunting System",
 			-- This storage goes from 1 to 72 (Task Hunting)
 			startStorageId = Storage.HuntingTasks.Questline,
@@ -6663,7 +6731,7 @@ if not Quests then
 						[2] = function(player)
 							local monsterlist = getMonsterFromList(taskSystem[player:getTaskMission()].monsters_list)
 							local killed = (player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and 0 or player:getStorageValue(Storage.HuntingTasks.KillCount))
-							local count = taskSystem[player:getTaskMission()].count 
+							local count = taskSystem[player:getTaskMission()].count
 							return string.format(
 								"You need to kill ".. count  .." " .. monsterlist .. ". You already killed [" .. killed .. "/" .. count .. "]."
 							)
@@ -6675,7 +6743,7 @@ if not Quests then
 						end,
 					},
 				},
-				
+
 				[3] = {
 					name = "Orc Fortress",
 					storageId = Storage.HuntingTasks.Steps.OrcFortress,
@@ -6698,7 +6766,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[4] = {
 					name = "Goblins Invasion",
 					storageId = Storage.HuntingTasks.Steps.GoblinsInvasion,
@@ -6721,7 +6789,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[5] = {
 					name = "Amazon's Camp",
 					storageId = Storage.HuntingTasks.Steps.AmazonCamp,
@@ -6744,7 +6812,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[6] = {
 					name = "Minotaur Fortress",
 					storageId = Storage.HuntingTasks.Steps.MinotaurFortress,
@@ -6767,7 +6835,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[7] = {
 					name = "Cyclops Rocks",
 					storageId = Storage.HuntingTasks.Steps.CyclopsRocks,
@@ -6790,7 +6858,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[8] = {
 					name = "Dragon's Tale I",
 					storageId = Storage.HuntingTasks.Steps.DragonsTaleOne,
@@ -6813,7 +6881,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[9] = {
 					name = "Coryms",
 					storageId = Storage.HuntingTasks.Steps.Coryms,
@@ -6836,7 +6904,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[10] = {
 					name = "Elf The Elders",
 					storageId = Storage.HuntingTasks.Steps.ElfTheElders,
@@ -6859,7 +6927,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[11] = {
 					name = "Nomad's Camp",
 					storageId = Storage.HuntingTasks.Steps.NomadsCamp,
@@ -6882,7 +6950,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[12] = {
 					name = "Behemoth Lands",
 					storageId = Storage.HuntingTasks.Steps.BehemothLands,
@@ -6905,7 +6973,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[13] = {
 					name = "The Djinns",
 					storageId = Storage.HuntingTasks.Steps.TheDjinns,
@@ -6928,7 +6996,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[14] = {
 					name = "Deeplings",
 					storageId = Storage.HuntingTasks.Steps.Deeplings,
@@ -6951,7 +7019,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[15] = {
 					name = "Dragons Tale II",
 					storageId = Storage.HuntingTasks.Steps.DragonTaleTwo,
@@ -6974,7 +7042,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[16] = {
 					name = "Exotic Cave",
 					storageId = Storage.HuntingTasks.Steps.ExoticCave,
@@ -6997,7 +7065,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[17] = {
 					name = "Glooth Envy",
 					storageId = Storage.HuntingTasks.Steps.GloothEnvy,
@@ -7020,7 +7088,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[18] = {
 					name = "Hero Cave",
 					storageId = Storage.HuntingTasks.Steps.HeroCave,
@@ -7043,7 +7111,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[19] = {
 					name = "Hydra Jungle",
 					storageId = Storage.HuntingTasks.Steps.HydraJungle,
@@ -7066,7 +7134,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[20] = {
 					name = "Lizard Walls",
 					storageId = Storage.HuntingTasks.Steps.LizardWalls,
@@ -7089,7 +7157,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[21] = {
 					name = "Lumbering Carnivor",
 					storageId = Storage.HuntingTasks.Steps.LumberingCarn,
@@ -7112,7 +7180,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[22] = {
 					name = "Elementals I",
 					storageId = Storage.HuntingTasks.Steps.ElementalsOne,
@@ -7135,7 +7203,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[23] = {
 					name = "Asura's Palace",
 					storageId = Storage.HuntingTasks.Steps.AsuraPalace,
@@ -7158,7 +7226,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[24] = {
 					name = "Mutated Animals",
 					storageId = Storage.HuntingTasks.Steps.MutatedAnimals,
@@ -7181,7 +7249,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[25] = {
 					name = "Ogre Island",
 					storageId = Storage.HuntingTasks.Steps.OgreIsland,
@@ -7204,7 +7272,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[26] = {
 					name = "Pirat Stolen",
 					storageId = Storage.HuntingTasks.Steps.PiratStolen,
@@ -7227,7 +7295,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[27] = {
 					name = "Quara's Determine",
 					storageId = Storage.HuntingTasks.Steps.QuaraDetermine,
@@ -7250,7 +7318,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[28] = {
 					name = "Renegade Knight",
 					storageId = Storage.HuntingTasks.Steps.RenegadeKnight,
@@ -7273,7 +7341,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[29] = {
 					name = "Serpent Spawn",
 					storageId = Storage.HuntingTasks.Steps.SerpentSpawn,
@@ -7296,7 +7364,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[30] = {
 					name = "Spidris",
 					storageId = Storage.HuntingTasks.Steps.Spidris,
@@ -7319,7 +7387,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[31] = {
 					name = "Stabilizing I",
 					storageId = Storage.HuntingTasks.Steps.StabilizingOne,
@@ -7342,7 +7410,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[32] = {
 					name = "The Shaper's",
 					storageId = Storage.HuntingTasks.Steps.TheSphaper,
@@ -7365,7 +7433,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[33] = {
 					name = "The Vampire's Diary",
 					storageId = Storage.HuntingTasks.Steps.TheVampireDiar,
@@ -7388,7 +7456,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[34] = {
 					name = "Warlock's Magic",
 					storageId = Storage.HuntingTasks.Steps.WarlocksMagic,
@@ -7411,7 +7479,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[35] = {
 					name = "Were Monsters",
 					storageId = Storage.HuntingTasks.Steps.WereMonsters,
@@ -7434,7 +7502,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[36] = {
 					name = "Wyrms",
 					storageId = Storage.HuntingTasks.Steps.Wyrms,
@@ -7457,7 +7525,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[37] = {
 					name = "Golems",
 					storageId = Storage.HuntingTasks.Steps.Golems,
@@ -7480,7 +7548,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[38] = {
 					name = "Island of Goanna's",
 					storageId = Storage.HuntingTasks.Steps.IslandOfGoannas,
@@ -7503,7 +7571,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[39] = {
 					name = "Bashmu",
 					storageId = Storage.HuntingTasks.Steps.Bashmu,
@@ -7526,7 +7594,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[40] = {
 					name = "Fire Library",
 					storageId = Storage.HuntingTasks.Steps.FireLibrary,
@@ -7549,7 +7617,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[41] = {
 					name = "Energy Library",
 					storageId = Storage.HuntingTasks.Steps.EnergyLibrary,
@@ -7572,7 +7640,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[42] = {
 					name = "Earth Library",
 					storageId = Storage.HuntingTasks.Steps.EarthLibrary,
@@ -7595,7 +7663,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[43] = {
 					name = "Ice Library",
 					storageId = Storage.HuntingTasks.Steps.IceLibrary,
@@ -7618,7 +7686,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[44] = {
 					name = "Burster Spectre",
 					storageId = Storage.HuntingTasks.Steps.BursterSpectre,
@@ -7641,7 +7709,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[45] = {
 					name = "Choking Fear",
 					storageId = Storage.HuntingTasks.Steps.ChokingFear,
@@ -7664,7 +7732,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[46] = {
 					name = "Ripper Spectre",
 					storageId = Storage.HuntingTasks.Steps.RipperSpectre,
@@ -7687,7 +7755,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[47] = {
 					name = "Cobra's Island",
 					storageId = Storage.HuntingTasks.Steps.CobrasIsland,
@@ -7710,7 +7778,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[48] = {
 					name = "Gazer Spectre",
 					storageId = Storage.HuntingTasks.Steps.GazerSpectre,
@@ -7733,7 +7801,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[49] = {
 					name = "Werelion",
 					storageId = Storage.HuntingTasks.Steps.Werelion,
@@ -7756,7 +7824,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[50] = {
 					name = "Summer Court",
 					storageId = Storage.HuntingTasks.Steps.SummerCourt,
@@ -7779,7 +7847,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[51] = {
 					name = "Winter Court",
 					storageId = Storage.HuntingTasks.Steps.WinterCourt,
@@ -7802,7 +7870,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[52] = {
 					name = "Demon Fields",
 					storageId = Storage.HuntingTasks.Steps.DemonFields,
@@ -7825,7 +7893,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[53] = {
 					name = "Draken's Tomb",
 					storageId = Storage.HuntingTasks.Steps.DrakensTomb,
@@ -7848,7 +7916,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[54] = {
 					name = "Flimsy Lost Soul",
 					storageId = Storage.HuntingTasks.Steps.FlimsyLostSoul,
@@ -7871,7 +7939,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[55] = {
 					name = "Ghastly Dragon",
 					storageId = Storage.HuntingTasks.Steps.GhastlyDragon,
@@ -7894,7 +7962,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[56] = {
 					name = "Grim Reaper",
 					storageId = Storage.HuntingTasks.Steps.GrimReaper,
@@ -7917,7 +7985,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[57] = {
 					name = "Iks Friends",
 					storageId = Storage.HuntingTasks.Steps.IksFriends,
@@ -7940,7 +8008,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[58] = {
 					name = "Lamassu",
 					storageId = Storage.HuntingTasks.Steps.Lamassu,
@@ -7963,7 +8031,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[59] = {
 					name = "Medusa's Lair",
 					storageId = Storage.HuntingTasks.Steps.MedusaLair,
@@ -7986,7 +8054,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[60] = {
 					name = "Naga's Dream",
 					storageId = Storage.HuntingTasks.Steps.NagaDream,
@@ -8009,7 +8077,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[61] = {
 					name = "Usurper's Law",
 					storageId = Storage.HuntingTasks.Steps.UsurperLaw,
@@ -8032,7 +8100,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[62] = {
 					name = "True Dawnfire Asura",
 					storageId = Storage.HuntingTasks.Steps.TrueDawnfire,
@@ -8055,7 +8123,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[63] = {
 					name = "True Midnight Asura",
 					storageId = Storage.HuntingTasks.Steps.TrueMidnight,
@@ -8078,7 +8146,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[64] = {
 					name = "Undead Dragon",
 					storageId = Storage.HuntingTasks.Steps.UndeadDragon,
@@ -8101,7 +8169,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[65] = {
 					name = "Vexclaw",
 					storageId = Storage.HuntingTasks.Steps.Vexclaw,
@@ -8124,7 +8192,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[66] = {
 					name = "Cursed Prospector",
 					storageId = Storage.HuntingTasks.Steps.CursedProspector,
@@ -8147,7 +8215,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[67] = {
 					name = "Evil Prospector",
 					storageId = Storage.HuntingTasks.Steps.EvilProspector,
@@ -8170,7 +8238,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[68] = {
 					name = "Falcon's Ordeal",
 					storageId = Storage.HuntingTasks.Steps.FalconsOrdeal,
@@ -8193,7 +8261,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[69] = {
 					name = "Freakish Lost Soul",
 					storageId = Storage.HuntingTasks.Steps.FreakishLostSoul,
@@ -8216,7 +8284,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[70] = {
 					name = "Guzzlemaw's Valley",
 					storageId = Storage.HuntingTasks.Steps.GuzzlemawValley,
@@ -8239,7 +8307,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[71] = {
 					name = "Hellhound's Fate",
 					storageId = Storage.HuntingTasks.Steps.HellhoundFate,
@@ -8262,7 +8330,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[72] = {
 					name = "Quara's Revenge",
 					storageId = Storage.HuntingTasks.Steps.QuaraRevenge,
@@ -8285,7 +8353,7 @@ if not Quests then
 						end,
 					},
 				},
-	
+
 				[73] = {
 					name = "Sight of Surrender",
 					storageId = Storage.HuntingTasks.Steps.SightOfSurrender,

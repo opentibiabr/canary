@@ -170,11 +170,17 @@ uint16_t RSA::decodeLength(char*&pos) const {
 	if (length & 0x80) {
 		uint8_t numLengthBytes = length & 0x7F;
 		if (numLengthBytes > 4) {
-			g_logger().error("[RSA::loadPEM] - Invalid 'length'");
+			g_logger().error("[RSA::decodeLength] - Invalid 'length'");
 			return 0;
 		}
-		// Copy 'numLengthBytes' bytes from 'pos' into 'buffer', starting at the correct position
-		std::ranges::copy_n(pos, numLengthBytes, buffer.begin() + (4 - numLengthBytes));
+		// Adjust the copy destination to ensure it doesn't overflow
+		auto destIt = buffer.begin() + (4 - numLengthBytes);
+		if (destIt < buffer.begin() || destIt + numLengthBytes > buffer.end()) {
+			g_logger().error("[RSA::decodeLength] - Invalid copy range");
+			return 0;
+		}
+		// Copy 'numLengthBytes' bytes from 'pos' into 'buffer'
+		std::copy_n(pos, numLengthBytes, destIt);
 		pos += numLengthBytes;
 		// Reconstruct 'length' from 'buffer' (big-endian)
 		uint32_t tempLength = 0;
@@ -182,7 +188,7 @@ uint16_t RSA::decodeLength(char*&pos) const {
 			tempLength = (tempLength << 8) | buffer[4 - numLengthBytes + i];
 		}
 		if (tempLength > UINT16_MAX) {
-			g_logger().error("[RSA::loadPEM] - Length too large");
+			g_logger().error("[RSA::decodeLength] - Length too large");
 			return 0;
 		}
 		length = static_cast<uint16_t>(tempLength);

@@ -81,7 +81,6 @@ monster.loot = {
 	{ id = 6558, chance = 10000 }, -- flask of demonic blood
 	{ id = 6558, chance = 10000 }, -- flask of demonic blood
 	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 17838, chance = 1800 }, -- unknown item
 	{ id = 3019, chance = 1000 }, -- demonbone amulet
 	{ id = 3026, chance = 12000, maxCount = 8 }, -- white pearl
 	{ id = 3029, chance = 12000, maxCount = 9 }, -- small sapphire

@@ -173,7 +173,6 @@ public:
 	bool placeCreature(const std::shared_ptr<Creature> &creature, const Position &pos, bool extendedPos = false, bool force = false);
 
 	bool removeCreature(const std::shared_ptr<Creature> &creature, bool isLogout = true);
-	void executeDeath(uint32_t creatureId);
 
 	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
 	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
@@ -290,6 +289,17 @@ public:
 	void playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 	static std::string getSkillNameById(uint8_t &skill);
 
+	// House Auction
+	void playerCyclopediaHousesByTown(uint32_t playerId, const std::string &townName);
+	void playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_t bidValue);
+	void playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uint32_t timestamp);
+	void playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, uint32_t timestamp, const std::string &newOwnerName, uint64_t bidValue);
+	void playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t houseId);
+	void playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t houseId);
+	bool processBankAuction(std::shared_ptr<Player> player, const std::shared_ptr<House> &house, uint64_t bid, bool replace = false);
+
 	void updatePlayerSaleItems(uint32_t playerId);
 
 	bool internalStartTrade(const std::shared_ptr<Player> &player, const std::shared_ptr<Player> &partner, const std::shared_ptr<Item> &tradeItem);
@@ -377,7 +387,7 @@ public:
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);
-	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized = 0);
+	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount, uint8_t isMountRandomized = 0);
 	void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 	void playerJoinParty(uint32_t playerId, uint32_t leaderId);
 	void playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId);
@@ -437,9 +447,6 @@ public:
 	void setGameState(GameState_t newState);
 
 	// Events
-	void checkCreatureWalk(uint32_t creatureId);
-	void updateCreatureWalk(uint32_t creatureId);
-	void checkCreatureAttack(uint32_t creatureId);
 	void checkCreatures();
 	void checkLight();
 
@@ -515,12 +522,16 @@ public:
 	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
 		return players;
 	}
-	const std::map<uint32_t, std::shared_ptr<Monster>> &getMonsters() const {
+	const auto &getMonsters() const {
 		return monsters;
 	}
-	const std::map<uint32_t, std::shared_ptr<Npc>> &getNpcs() const {
+	const auto &getNpcs() const {
 		return npcs;
 	}
+
+	void addDeadPlayer(const std::shared_ptr<Player> &player);
+	void removeDeadPlayer(const std::string &playerName);
+	std::shared_ptr<Player> getDeadPlayer(const std::string &playerName);
 
 	const std::vector<ItemClassification*> &getItemsClassifications() const {
 		return itemsClassifications;
@@ -532,8 +543,8 @@ public:
 	void addNpc(const std::shared_ptr<Npc> &npc);
 	void removeNpc(const std::shared_ptr<Npc> &npc);
 
-	void addMonster(const std::shared_ptr<Monster> &npc);
-	void removeMonster(const std::shared_ptr<Monster> &npc);
+	void addMonster(const std::shared_ptr<Monster> &monster);
+	void removeMonster(const std::shared_ptr<Monster> &monster);
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
@@ -628,43 +639,6 @@ public:
 	void sendUpdateCreature(const std::shared_ptr<Creature> &creature);
 	std::shared_ptr<Item> wrapItem(const std::shared_ptr<Item> &item, const std::shared_ptr<House> &house);
 
-	/**
-	 * @brief Adds a player to the unique login map.
-	 * @details The function registers a player in the unique login map to ensure no duplicate logins.
-	 * If the player pointer is null, it logs an error and returns.
-	 *
-	 * @param player A pointer to the Player object to add.
-	 */
-	void addPlayerUniqueLogin(const std::shared_ptr<Player> &player);
-
-	/**
-	 * @brief Gets a player from the unique login map using their name.
-	 * @details The function attempts to find a player in the unique login map using their name.
-	 * If the player's name is not found, the function returns a null pointer.
-	 * If an empty string is provided, it logs an error and returns a null pointer.
-	 *
-	 * @param playerName The name of the player to search for.
-	 * @return A pointer to the Player object if found, null otherwise.
-	 */
-	std::shared_ptr<Player> getPlayerUniqueLogin(const std::string &playerName) const;
-
-	/**
-	 * @brief Removes a player from the unique login map using their name.
-	 * @details The function removes a player from the unique login map using their name.
-	 * If an empty string is provided, it logs an error and returns.
-	 *
-	 * @param playerName The name of the player to remove.
-	 */
-	void removePlayerUniqueLogin(const std::string &playerName);
-
-	/**
-	 * @brief Removes a player from the unique login map.
-	 * @details The function removes a player from the unique login map.
-	 * If the player pointer is null, it logs an error and returns.
-	 *
-	 * @param player A pointer to the Player object to remove.
-	 */
-	void removePlayerUniqueLogin(const std::shared_ptr<Player> &player);
 	void playerCheckActivity(const std::string &playerName, int interval);
 
 	/**
@@ -817,7 +791,7 @@ private:
 	phmap::flat_hash_map<std::string, QueryHighscoreCacheEntry> queryCache;
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
-	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
+	std::unordered_map<std::string, std::weak_ptr<Player>> m_deadPlayers;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
@@ -844,8 +818,16 @@ private:
 
 	std::shared_ptr<WildcardTreeNode> wildcardTree = nullptr;
 
-	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
-	std::map<uint32_t, std::shared_ptr<Monster>> monsters;
+	std::vector<std::shared_ptr<Monster>> monsters;
+	// This works only for unique monsters (bosses, quest monsters, etc)
+	std::unordered_map<std::string, size_t> monstersNameIndex;
+	std::unordered_map<uint32_t, size_t> monstersIdIndex;
+
+	std::vector<std::shared_ptr<Npc>> npcs;
+	// This works only for unique npcs (quest npcs, etc)
+	std::unordered_map<std::string, size_t> npcsNameIndex;
+	std::unordered_map<uint32_t, size_t> npcsIdIndex;
+
 	std::vector<uint32_t> forgeableMonsters;
 
 	std::map<uint32_t, std::unique_ptr<TeamFinder>> teamFinderMap; // [leaderGUID] = TeamFinder*
@@ -942,8 +924,13 @@ private:
 	void processHighscoreResults(const DBResult_ptr &result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
 	std::string generateVocationConditionHighscore(uint32_t vocation);
-	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
-	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
+	std::string generateHighscoreQuery(
+		const std::string &categoryName,
+		uint32_t page,
+		uint8_t entriesPerPage,
+		uint32_t vocation,
+		uint32_t playerGUID = 0
+	);
 	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 

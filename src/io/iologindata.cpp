@@ -113,6 +113,9 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		// load conditions
 		IOLoginDataLoad::loadPlayerConditions(player, result);
 
+		// load animus mastery
+		IOLoginDataLoad::loadPlayerAnimusMastery(player, result);
+
 		// load default outfit
 		IOLoginDataLoad::loadPlayerDefaultOutfit(player, result);
 
@@ -266,6 +269,11 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
 
+	player->wheel()->saveRevealedGems();
+	player->wheel()->saveActiveGems();
+	player->wheel()->saveKVModGrades();
+	player->wheel()->saveKVScrolls();
+
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}
@@ -334,14 +342,6 @@ void IOLoginData::increaseBankBalance(uint32_t guid, uint64_t bankBalance) {
 	std::ostringstream query;
 	query << "UPDATE `players` SET `balance` = `balance` + " << bankBalance << " WHERE `id` = " << guid;
 	Database::getInstance().executeQuery(query.str());
-}
-
-bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
-	Database &db = Database::getInstance();
-
-	std::ostringstream query;
-	query << "SELECT `id` FROM `houses` WHERE `highest_bidder` = " << guid << " LIMIT 1";
-	return db.storeQuery(query.str()).get() != nullptr;
 }
 
 std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {

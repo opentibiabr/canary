@@ -172,7 +172,7 @@ function Lever.teleportPlayers(self) -- It will teleport all players to the posi
 		local player = v.creature
 		if player then
 			player:teleportTo(v.teleport)
-			player:getPosition():sendMagicEffect(v.effect)
+			player:getPosition():sendMagicEffect(v.effect or CONST_ME_TELEPORT)
 			self:getTeleportPlayerFunc(player)
 		end
 	end

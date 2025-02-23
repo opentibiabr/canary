@@ -2,21 +2,6 @@ local function sendBoostMessage(player, category, isIncreased)
 	return player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Event! %s is %screased. Happy Hunting!", category, isIncreased and "in" or "de"))
 end
 
-local function onMovementRemoveProtection(playerId, oldPos, time)
-	local player = Player(playerId)
-	if not player then
-		return true
-	end
-
-	local playerPos = player:getPosition()
-	if (playerPos.x ~= oldPos.x or playerPos.y ~= oldPos.y or playerPos.z ~= oldPos.z) or player:getTarget() then
-		player:kv():remove("combat-protection")
-		return true
-	end
-
-	addEvent(onMovementRemoveProtection, 1000, playerId, oldPos, time - 1)
-end
-
 local playerLoginGlobal = CreatureEvent("PlayerLoginGlobal")
 
 function playerLoginGlobal.onLogin(player)
@@ -160,13 +145,6 @@ function playerLoginGlobal.onLogin(player)
 	-- Remove Boss Time
 	if GetDailyRewardLastServerSave() >= player:getLastLoginSaved() then
 		player:setRemoveBossTime(1)
-	end
-
-	-- Remove combat protection
-	local isProtected = player:kv():get("combat-protection") or 0
-	if isProtected < 1 then
-		player:kv():set("combat-protection", 1)
-		onMovementRemoveProtection(playerId, player:getPosition(), 10)
 	end
 
 	-- Change support outfit to a normal outfit to open customize character without crashes

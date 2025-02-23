@@ -16,7 +16,9 @@
 #include "items/cylinder.hpp"
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 
+class AnimusMastery;
 class House;
 class NetworkMessage;
 class Weapon;
@@ -64,17 +66,23 @@ struct HighscoreCharacter;
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
+enum class HouseAuctionType : uint8_t;
+enum class BidErrorMessage : uint8_t;
+enum class TransferErrorMessage : uint8_t;
+enum class AcceptTransferErrorMessage : uint8_t;
 enum ObjectCategory_t : uint8_t;
 enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;
 enum ChannelEvent_t : uint8_t;
 enum SquareColor_t : uint8_t;
+enum Resource_t : uint8_t;
 
 using GuildWarVector = std::vector<uint32_t>;
 using StashContainerList = std::vector<std::pair<std::shared_ptr<Item>, uint32_t>>;
 using ItemVector = std::vector<std::shared_ptr<Item>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
+using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
 struct ForgeHistory {
 	ForgeAction_t actionType = ForgeAction_t::FUSION;
@@ -880,6 +888,13 @@ public:
 	void sendOpenPrivateChannel(const std::string &receiver) const;
 	void sendExperienceTracker(int64_t rawExp, int64_t finalExp) const;
 	void sendOutfitWindow() const;
+	// House Auction
+	BidErrorMessage canBidHouse(uint32_t houseId);
+	TransferErrorMessage canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID);
+	AcceptTransferErrorMessage canAcceptTransferHouse(uint32_t houseId);
+	void sendCyclopediaHouseList(const HouseMap &houses) const;
+	void sendResourceBalance(Resource_t resourceType, uint64_t value) const;
+	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess = false) const;
 	// Imbuements
 	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm);
 	void onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot);
@@ -913,7 +928,7 @@ public:
 	void resetAsyncOngoingTask(uint64_t flags);
 	void sendEnterWorld() const;
 	void sendFightModes() const;
-	void sendNetworkMessage(const NetworkMessage &message) const;
+	void sendNetworkMessage(NetworkMessage &message) const;
 
 	void receivePing();
 
@@ -931,6 +946,19 @@ public:
 
 	void setNextPotionAction(int64_t time);
 	bool canDoPotionAction() const;
+
+	void setNextNecklaceAction(int64_t time);
+	bool canEquipNecklace() const;
+
+	void setNextRingAction(int64_t time);
+	bool canEquipRing() const;
+
+	void setLoginProtection(int64_t time);
+	bool isLoginProtected() const;
+	void resetLoginProtection();
+
+	void setProtection(bool status);
+	bool isProtected();
 
 	void cancelPush();
 
@@ -1244,13 +1272,17 @@ public:
 	std::unique_ptr<PlayerTitle> &title();
 	const std::unique_ptr<PlayerTitle> &title() const;
 
-	// Player summary interface
+	// Player cyclopedia interface
 	std::unique_ptr<PlayerCyclopedia> &cyclopedia();
 	const std::unique_ptr<PlayerCyclopedia> &cyclopedia() const;
 
 	// Player vip interface
 	std::unique_ptr<PlayerVIP> &vip();
 	const std::unique_ptr<PlayerVIP> &vip() const;
+
+	// Player animusMastery interface
+	AnimusMastery &animusMastery();
+	const AnimusMastery &animusMastery() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -1406,8 +1438,11 @@ private:
 	int64_t lastPong;
 	int64_t nextAction = 0;
 	int64_t nextPotionAction = 0;
+	int64_t nextNecklaceAction = 0;
+	int64_t nextRingAction = 0;
 	int64_t lastQuickLootNotification = 0;
 	int64_t lastWalking = 0;
+	int64_t loginProtectionTime = 0;
 	uint64_t asyncOngoingTasks = 0;
 
 	std::vector<Kill> unjustifiedKills;
@@ -1547,6 +1582,8 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	bool shouldForceLogout = true;
+	bool connProtected = false;
 
 	// Hazard system
 	int64_t lastHazardSystemCriticalHit = 0;
@@ -1586,12 +1623,8 @@ private:
 	uint16_t getLookCorpse() const override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
-	void setDead(bool isDead) {
-		m_isDead = isDead;
-	}
-	bool isDead() const override {
-		return m_isDead;
-	}
+	void setDead(bool isDead);
+	bool isDead() const override;
 
 	void triggerMomentum();
 	void clearCooldowns();
@@ -1623,6 +1656,7 @@ private:
 	std::unique_ptr<PlayerCyclopedia> m_playerCyclopedia;
 	std::unique_ptr<PlayerTitle> m_playerTitle;
 	std::unique_ptr<PlayerVIP> m_playerVIP;
+	AnimusMastery m_animusMastery;
 
 	std::mutex quickLootMutex;
 

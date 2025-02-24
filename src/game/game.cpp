@@ -11335,25 +11335,13 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 }
 
 bool Game::isMagicEffectRegistered(uint16_t type) const {
-	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
-		return true;
-	}
-
 	return std::ranges::find(registeredMagicEffects, type) != registeredMagicEffects.end();
 }
 
 bool Game::isDistanceEffectRegistered(uint16_t type) const {
-	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
-		return true;
-	}
-
 	return std::ranges::find(registeredDistanceEffects, type) != registeredDistanceEffects.end();
 }
 
 bool Game::isLookTypeRegistered(uint16_t type) const {
-	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
-		return true;
-	}
-
 	return std::ranges::find(registeredLookTypes, type) != registeredLookTypes.end();
 }

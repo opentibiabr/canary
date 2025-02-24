@@ -600,11 +600,22 @@ public:
 	}
 
 	FILELOADER_ERRORS loadAppearanceProtobuf(const std::string &file);
+
 	bool isMagicEffectRegistered(uint16_t type) const;
-
 	bool isDistanceEffectRegistered(uint16_t type) const;
-
 	bool isLookTypeRegistered(uint16_t type) const;
+
+	void setMagicEffectTypes(const std::vector<uint16_t> &types) {
+		registeredMagicEffects = types;
+	}
+
+	void setDistanceEffectTypes(const std::vector<uint16_t> &types) {
+		registeredDistanceEffects = types;
+	}
+
+	void setLookTypes(const std::vector<uint16_t> &types) {
+		registeredLookTypes = types;
+	}
 
 	void setCreateLuaItems(Position position, uint16_t itemId) {
 		mapLuaItemsStored[position] = itemId;

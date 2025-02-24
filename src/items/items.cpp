@@ -312,11 +312,11 @@ bool Items::loadFromDat() {
 
 	std::streamsize fileSize = std::filesystem::file_size(filePath);
 
-	char* buffer = new char[fileSize];
+	std::vector<char> buffer(fileSize);
+	auto bufferData = buffer.data();
 
-	if (!fileStrem.read(buffer, fileSize)) {
+	if (!fileStrem.read(bufferData, fileSize)) {
 		g_logger().warn("[Items::loadFromDat] - Failed to read file.");
-		delete[] buffer;
 		fileStrem.close();
 		return false;
 	}
@@ -324,7 +324,7 @@ bool Items::loadFromDat() {
 	fileStrem.close();
 
 	PropStream props;
-	props.init(buffer, fileSize);
+	props.init(bufferData, fileSize);
 
 	auto signature = props.read<uint32_t>();
 	auto objectCount = props.read<uint16_t>();
@@ -337,6 +337,27 @@ bool Items::loadFromDat() {
 	g_logger().info("Dat outfitCount: {}", outfitCount);
 	g_logger().info("Dat effectCount: {}", effectCount);
 	g_logger().info("Dat missileCount: {}", missileCount);
+
+	auto skipSpriteData = [](PropStream &props) {
+		uint8_t width = props.read<uint8_t>();
+		uint8_t height = props.read<uint8_t>();
+		if (width > 1 || height > 1) {
+			props.skip(1);
+		}
+		uint8_t layers   = props.read<uint8_t>();
+		uint8_t patternX = props.read<uint8_t>();
+		uint8_t patternY = props.read<uint8_t>();
+		uint8_t patternZ = props.read<uint8_t>();
+		uint8_t phases   = props.read<uint8_t>();
+		if (phases > 1) {
+			props.skip(1); // skip animation type
+			props.skip(5);
+			for (int16_t i = 0; i < phases; ++i) {
+				props.skip(8);
+			}
+		}
+		props.skip(4 * (width * height * layers * patternX * patternY * patternZ * phases));
+	};
 
 	uint16_t firstId = 100;
 	for (uint16_t id = firstId; id < objectCount; ++id) {
@@ -393,6 +414,7 @@ bool Items::loadFromDat() {
 					break;
 
 				case DatAttrMultiUse:
+					item.multiUse = true;
 					break;
 
 				case DatAttrWriteable:
@@ -464,20 +486,20 @@ bool Items::loadFromDat() {
 					break;
 
 				case DatAttrDisplaced:
-					props.read<uint16_t>();
-					props.read<uint16_t>();
+					props.skip(2); // unknown u16 flag
+					props.skip(2); // unknown u16 flag
 					break;
 
 				case DatAttrElevated:
 					item.hasHeight = true;
-					props.read<uint16_t>();
+					props.skip(2); // unknown u16 flag
 					break;
 
 				case DatAttrAlwaysAnimated:
 					break;
 
 				case DatAttrMinimapColor:
-					props.read<uint16_t>();
+					props.skip(2); // unknown u16 flag
 					break;
 
 				case DatAttrFullTile:
@@ -496,35 +518,45 @@ bool Items::loadFromDat() {
 					item.lookThrough = true;
 					break;
 
-				case DatAttrClothes:
-					props.read<uint16_t>();
+				case DatAttrClothes: {
+					uint16_t slot = props.read<uint16_t>();
+					item.slotPosition |= static_cast<SlotPositionBits>(1 << (slot - 1));
 					break;
+				}
 
 				case DatAttrMarket: {
-					auto category = props.read<uint16_t>();
-					auto tradeAsObjectId = props.read<uint16_t>();
-					auto showAsObjectId = props.read<uint16_t>();
-					auto name = props.readString();
-					auto vocation = props.read<uint16_t>();
-					auto minimumLevel = props.read<uint16_t>();
+					uint16_t category = props.read<uint16_t>();
+					item.type = static_cast<ItemTypes_t>(category);
+					item.wareId = props.read<uint16_t>();
+					props.skip(2); // uint16_t visualId
+					props.readString(); // item name
+					props.skip(2); // uint16_t vocation
+					props.skip(2); // uint16_t minimumLevel
+
 					break;
 				}
 
 				case DatAttrDefaultAction:
-					props.read<uint16_t>();
+					props.skip(2); // unknown u16 flag
 					break;
 
 				case DatAttrWrappable:
+					item.wrapContainer = true;
+					item.wrapable = true;
+					item.wrapableTo = ITEM_DECORATION_KIT;
+					break;
 				case DatAttrUnWrappable:
+					item.wrapContainer = true;
+					break;
 				case DatAttrTopEffect: {
 					break;
-				}										 	
+				}
 
 				case DatAttrNpcSaleData: {
 					break;
 				}
 				case DatAttrChangedToExpire: {
-					props.read<uint16_t>(); // FormerObjectTypeid
+					props.skip(2); // uint16_t FormerObjectTypeid
 					break;
 				}
 				case DatAttrCorpse: {
@@ -536,7 +568,7 @@ bool Items::loadFromDat() {
 					break;
 				}
 				case DatAttrCyclopediaItem: {
-					props.read<uint16_t>(); // CyclopediaType
+					item.wareId = props.read<uint16_t>();
 					break;
 				}
 				case DatAttrAmmo: {
@@ -578,33 +610,37 @@ bool Items::loadFromDat() {
 
 		if (!done) {
 			g_logger().error("corrupt data (id: {}, count: {}, lastAttr: {})", unsigned(item.id), unsigned(icount), unsigned(attr));
-			delete[] buffer;
 			return false;
 		}
 
-		uint8_t width = props.read<uint8_t>();
-		uint8_t height = props.read<uint8_t>();
-		if (width > 1 || height > 1) {
-			props.skip(1);
-		}
-
-		uint8_t layers = props.read<uint8_t>();
-		uint8_t patternX = props.read<uint8_t>();
-		uint8_t patternY = props.read<uint8_t>();
-		uint8_t patternZ = props.read<uint8_t>();
-		uint8_t phases = props.read<uint8_t>();
-		if (phases > 1) {
-			item.animationType = props.read<uint8_t>() == 1 ? ANIMATION_DESYNC : ANIMATION_RANDOM;
-			props.skip(5);
-
-			for (int16_t i = 0; i < phases; ++i) {
-				props.skip(8);
-			}
-		}
-		props.skip(4 * ((width * height) * layers * patternX * patternY * patternZ * phases));
+		skipSpriteData(props);
 	}
 
-	delete[] buffer;
+	std::vector<uint16_t> outfits;
+	for (uint16_t id = 0; id < outfitCount; ++id) {
+		outfits.push_back(id);
+
+		skipSpriteData(props);
+	}
+
+	std::vector<uint16_t> magicEffects;
+	for (uint16_t id = 0; id < effectCount; ++id) {
+		magicEffects.push_back(id);
+
+		skipSpriteData(props);
+	}
+
+	std::vector<uint16_t> distanceEffects;
+	for (uint16_t id = 0; id < missileCount; ++id) {
+		distanceEffects.push_back(id);
+
+		skipSpriteData(props);
+	}
+
+	g_logger().info("Loaded... Items: {}, Outfits: {}, MagicEffects: {}, DistanceEffects: {}", items.size(), outfits.size(), magicEffects.size(), distanceEffects.size());
+	g_game().setLookTypes(outfits);
+	g_game().setMagicEffectTypes(magicEffects);
+	g_game().setDistanceEffectTypes(distanceEffects);
 	return true;
 }
 

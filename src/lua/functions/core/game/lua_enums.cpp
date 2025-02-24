@@ -609,6 +609,15 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
 	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
 	registerEnum(L, CONST_ME_AGONY);
+	registerEnum(L, CONST_ME_MELTING_CREAM);
+	registerEnum(L, CONST_ME_REAPER);
+	registerEnum(L, CONST_ME_POWERFUL_HEARTS);
+	registerEnum(L, CONST_ME_CREAM);
+	registerEnum(L, CONST_ME_GENTLE_BUBBLE);
+	registerEnum(L, CONST_ME_STARBURST);
+	registerEnum(L, CONST_ME_SIURP);
+	registerEnum(L, CONST_ME_CACAO);
+	registerEnum(L, CONST_ME_CANDY_FLOSS);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {
@@ -667,6 +676,8 @@ void LuaEnums::initConstAniEnums(lua_State* L) {
 	registerEnum(L, CONST_ANI_DIAMONDARROW);
 	registerEnum(L, CONST_ANI_SPECTRALBOLT);
 	registerEnum(L, CONST_ANI_ROYALSTAR);
+	registerEnum(L, CONST_ANI_CANDYCANE);
+	registerEnum(L, CONST_ANI_CHERRYBOMB);
 	registerEnum(L, CONST_ANI_WEAPONTYPE);
 }
 
@@ -772,14 +783,22 @@ void LuaEnums::initCreatureTypeEnums(lua_State* L) {
 }
 
 void LuaEnums::initClientOsEnums(lua_State* L) {
+	registerEnum(L, CLIENTOS_NONE);
 	registerEnum(L, CLIENTOS_LINUX);
 	registerEnum(L, CLIENTOS_WINDOWS);
 	registerEnum(L, CLIENTOS_FLASH);
+	registerEnum(L, CLIENTOS_NEW_LINUX);
 	registerEnum(L, CLIENTOS_NEW_WINDOWS);
 	registerEnum(L, CLIENTOS_NEW_MAC);
 	registerEnum(L, CLIENTOS_OTCLIENT_LINUX);
 	registerEnum(L, CLIENTOS_OTCLIENT_WINDOWS);
 	registerEnum(L, CLIENTOS_OTCLIENT_MAC);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_LINUX);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_WINDOWS);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_MAC);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_ANDROID);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_IOS);
+	registerEnum(L, CLIENTOS_OTCLIENTV8_WEB);
 }
 
 void LuaEnums::initFightModeEnums(lua_State* L) {

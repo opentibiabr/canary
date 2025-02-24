@@ -35,6 +35,7 @@ std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 }
 
 Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
+	m_lowerName(asLowerCaseString(mType->name)),
 	nameDescription(asLowerCaseString(mType->nameDescription)),
 	mType(mType) {
 	defaultOutfit = mType->info.outfit;
@@ -47,6 +48,8 @@ Monster::Monster(const std::shared_ptr<MonsterType> &mType) :
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
 	targetDistance = mType->info.targetDistance;
+	attackSpells = mType->info.attackSpells;
+	defenseSpells = mType->info.defenseSpells;
 
 	// Register creature events
 	for (const std::string &scriptName : mType->info.scripts) {
@@ -248,8 +251,20 @@ bool Monster::canSeeInvisibility() const {
 	return isImmune(CONDITION_INVISIBLE);
 }
 
-uint16_t Monster::critChance() const {
-	return mType->info.critChance;
+void Monster::setCriticalDamage(uint16_t damage) {
+	criticalDamage = damage;
+}
+
+uint16_t Monster::getCriticalDamage() const {
+	return criticalDamage;
+}
+
+void Monster::setCriticalChance(uint16_t chance) {
+	criticalChance = chance;
+}
+
+uint16_t Monster::getCriticalChance() const {
+	return mType->info.critChance + criticalChance;
 }
 
 uint32_t Monster::getManaCost() const {
@@ -501,9 +516,9 @@ void Monster::onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer) 
 	}
 }
 
-void Monster::onSpawn() {
+void Monster::onSpawn(const Position &position) {
 	if (mType->info.spawnEvent != -1) {
-		// onSpawn(self)
+		// onSpawn(self, spawnPosition)
 		LuaScriptInterface* scriptInterface = mType->info.scriptInterface;
 		if (!scriptInterface->reserveScriptEnv()) {
 			g_logger().error("Monster {} creature {}] Call stack overflow. Too many lua "
@@ -520,8 +535,9 @@ void Monster::onSpawn() {
 
 		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
 		LuaScriptInterface::setMetatable(L, -1, "Monster");
+		LuaScriptInterface::pushPosition(L, position);
 
-		scriptInterface->callVoidFunction(1);
+		scriptInterface->callVoidFunction(2);
 	}
 }
 
@@ -584,7 +600,11 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		totalPlayersOnScreen--;
 	}
 
-	targetList.erase(it);
+	if (auto shared = it->lock()) {
+		targetList.erase(it);
+	} else {
+		return false;
+	}
 
 	return true;
 }
@@ -667,7 +687,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return creature != master;
 	}
 
-	if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player && player->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
 	}
 
@@ -677,7 +698,7 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 
 	const auto &creatureMaster = creature->getMaster();
 	const auto &creaturePlayer = creatureMaster ? creatureMaster->getPlayer() : nullptr;
-	if (creature->getPlayer() || creaturePlayer) {
+	if (player || creaturePlayer) {
 		return true;
 	}
 
@@ -685,7 +706,8 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 }
 
 uint64_t Monster::getLostExperience() const {
-	return skillLoss ? mType->info.experience : 0;
+	float extraExperience = forgeStack <= 15 ? (forgeStack + 10) / 10 : 28;
+	return skillLoss ? static_cast<uint64_t>(std::round(mType->info.experience * extraExperience)) : 0;
 }
 
 uint16_t Monster::getLookCorpse() const {
@@ -911,10 +933,6 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (!isSummon()) {
-		if (creature->getPlayer() && creature->getPlayer()->isDisconnected()) {
-			return false;
-		}
-
 		if (getFaction() != FACTION_DEFAULT) {
 			return isEnemyFaction(creature->getFaction());
 		}
@@ -929,6 +947,11 @@ bool Monster::isFleeing() const {
 
 bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 	if (!isTarget(creature)) {
+		return false;
+	}
+
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player && player->isLoginProtected()) {
 		return false;
 	}
 
@@ -1086,11 +1109,10 @@ void Monster::onThink_async() {
 			setFollowCreature(master);
 		}
 	} else if (!targetList.empty()) {
-		const bool attackedCreatureIsDisconnected = attackedCreature && attackedCreature->getPlayer() && attackedCreature->getPlayer()->isDisconnected();
 		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
 		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
-		if (!attackedCreature || attackedCreatureIsDisconnected || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
-			if (!followCreature || !hasFollowPath || attackedCreatureIsDisconnected) {
+		if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
+			if (!followCreature || !hasFollowPath) {
 				searchTarget(TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
 				searchTarget(TARGETSEARCH_DEFAULT);
@@ -1109,7 +1131,12 @@ void Monster::onThink_async() {
 
 void Monster::doAttacking(uint32_t interval) {
 	const auto &attackedCreature = getAttackedCreature();
-	if (!attackedCreature || (isSummon() && attackedCreature.get() == this)) {
+	if (!attackedCreature || attackedCreature->isLifeless() || (isSummon() && attackedCreature.get() == this)) {
+		return;
+	}
+
+	const auto &player = attackedCreature->getPlayer();
+	if (player && player->isLoginProtected()) {
 		return;
 	}
 
@@ -1120,7 +1147,7 @@ void Monster::doAttacking(uint32_t interval) {
 	const Position &myPos = getPosition();
 	const Position &targetPos = attackedCreature->getPosition();
 
-	for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
+	for (const spellBlock_t &spellBlock : attackSpells) {
 		bool inRange = false;
 
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
@@ -1172,7 +1199,7 @@ bool Monster::canUseAttack(const Position &pos, const std::shared_ptr<Creature> 
 	if (isHostile()) {
 		const Position &targetPos = target->getPosition();
 		uint32_t distance = std::max<uint32_t>(Position::getDistanceX(pos, targetPos), Position::getDistanceY(pos, targetPos));
-		for (const spellBlock_t &spellBlock : mType->info.attackSpells) {
+		for (const spellBlock_t &spellBlock : attackSpells) {
 			if (spellBlock.range != 0 && distance <= spellBlock.range) {
 				return g_game().isSightClear(pos, targetPos, true);
 			}
@@ -1267,7 +1294,7 @@ void Monster::onThinkDefense(uint32_t interval) {
 	bool resetTicks = true;
 	defenseTicks += interval;
 
-	for (const spellBlock_t &spellBlock : mType->info.defenseSpells) {
+	for (const spellBlock_t &spellBlock : defenseSpells) {
 		if (spellBlock.speed > defenseTicks) {
 			resetTicks = false;
 			continue;
@@ -1317,13 +1344,15 @@ void Monster::onThinkDefense(uint32_t interval) {
 			}
 
 			const auto &summon = Monster::createMonster(summonName);
-			if (summon) {
-				if (g_game().placeCreature(summon, getPosition(), false, summonForce)) {
-					summon->setMaster(static_self_cast<Monster>(), true);
-					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
-					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
-					g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, getMonster());
+			if (summon && g_game().placeCreature(summon, getPosition(), false, summonForce)) {
+				if (getSoulPit()) {
+					const auto stack = getForgeStack();
+					summon->setSoulPitStack(stack, true);
 				}
+				summon->setMaster(static_self_cast<Monster>(), true);
+				g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
+				g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
+				g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, getMonster());
 			}
 		}
 	}
@@ -1502,6 +1531,11 @@ void Monster::doRandomStep(Direction &nextDirection, bool &result) {
 }
 
 void Monster::doWalkBack(uint32_t &flags, Direction &nextDirection, bool &result) {
+	if (totalPlayersOnScreen > 0) {
+		isWalkingBack = false;
+		return;
+	}
+
 	result = Creature::getNextStep(nextDirection, flags);
 	if (result) {
 		flags |= FLAG_PATHFINDING;
@@ -2182,6 +2216,24 @@ void Monster::setHazardSystemDefenseBoost(bool value) {
 	hazardDefenseBoost = value;
 }
 
+bool Monster::getSoulPit() const {
+	return soulPit;
+}
+
+void Monster::setSoulPit(bool value) {
+	soulPit = value;
+}
+
+void Monster::setSoulPitStack(uint8_t stack, bool isSummon /* = false */) {
+	const bool isBoss = stack == 40;
+	const CreatureIconModifications_t icon = isBoss ? CreatureIconModifications_t::ReducedHealthExclamation : CreatureIconModifications_t::ReducedHealth;
+	setForgeStack(stack);
+	setIcon("soulpit", CreatureIcon(icon, isBoss ? 0 : stack));
+	setSoulPit(true);
+	setDropLoot(false);
+	setSkillLoss(isBoss && !isSummon);
+}
+
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	pos = getNextPosition(moveDirection, pos);
 	if (isInSpawnRange(pos)) {
@@ -2506,6 +2558,15 @@ void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, Fin
 	}
 }
 
+void Monster::applyStacks() {
+	// Change health based in stacks
+	const auto percentToIncrement = 1 + (15 * forgeStack + 35) / 100.f;
+	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
+
+	healthMax = newHealth;
+	health = newHealth;
+}
+
 void Monster::configureForgeSystem() {
 	if (!canBeForgeMonster()) {
 		return;
@@ -2521,13 +2582,6 @@ void Monster::configureForgeSystem() {
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());
 	}
-
-	// Change health based in stacks
-	const auto percentToIncrement = 1 + (15 * forgeStack + 35) / 100.f;
-	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
-
-	healthMax = newHealth;
-	health = newHealth;
 
 	// Event to give Dusts
 	const std::string &Eventname = "ForgeSystemMonster";
@@ -2554,6 +2608,7 @@ uint16_t Monster::getForgeStack() const {
 
 void Monster::setForgeStack(uint16_t stack) {
 	forgeStack = stack;
+	applyStacks();
 }
 
 ForgeClassifications_t Monster::getMonsterForgeClassification() const {

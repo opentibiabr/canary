@@ -209,7 +209,11 @@ public:
 	}
 
 	bool isAlive() const {
-		return !isDead();
+		return !isLifeless();
+	}
+
+	bool isLifeless() const {
+		return health <= 0;
 	}
 
 	virtual int32_t getMaxHealth() const {
@@ -311,6 +315,7 @@ public:
 	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
+	void resetMovementState();
 
 	void updateCreatureWalk() {
 		goToFollowCreature_async();

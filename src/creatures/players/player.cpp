@@ -19,6 +19,7 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/wheel/wheel_gems.hpp"
 #include "creatures/players/achievement/player_achievement.hpp"
@@ -37,6 +38,7 @@
 #include "enums/object_category.hpp"
 #include "enums/player_blessings.hpp"
 #include "enums/player_icons.hpp"
+#include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -70,7 +72,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::move(p)) {
+	client(std::move(p)),
+	m_animusMastery(*this) {
 	m_playerVIP = std::make_unique<PlayerVIP>(*this);
 	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
 	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
@@ -884,7 +887,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 
 	skills[skill].tries += count;
 
-	uint32_t newPercent;
+	double_t newPercent;
 	if (nextReqTries > currReqTries) {
 		newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
 	} else {
@@ -2044,16 +2047,20 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
 		setAttackedCreature(nullptr);
 	}
 
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
-		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
-		if (client) {
-			client->logout(true, true);
+	if (noPongTime >= 60000 && shouldForceLogout) {
+		if (canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+			g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
+			if (client) {
+				client->logout(true, true);
+			} else {
+				g_game().removeCreature(static_self_cast<Player>(), true);
+			}
 		} else {
-			g_game().removeCreature(static_self_cast<Player>(), true);
+			shouldForceLogout = false;
 		}
 	}
 }
@@ -2264,10 +2271,33 @@ void Player::sendOutfitWindow() const {
 	}
 }
 
+void Player::sendCyclopediaHouseList(const HouseMap &houses) const {
+	if (client) {
+		client->sendCyclopediaHouseList(houses);
+	}
+}
+void Player::sendResourceBalance(Resource_t resourceType, uint64_t value) const {
+	if (client) {
+		client->sendResourceBalance(resourceType, value);
+	}
+}
+void Player::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) const {
+	if (client) {
+		client->sendHouseAuctionMessage(houseId, type, index, bidSuccess);
+	}
+}
+
 // Imbuements
 
 void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm) {
 	if (!imbuement || !item) {
+		return;
+	}
+
+	auto itemSlots = item->getImbuementSlot();
+	if (slot >= itemSlots) {
+		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", this->getName(), slot);
+		this->sendImbuementResult("Invalid slot selection.");
 		return;
 	}
 
@@ -2276,6 +2306,21 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
+	}
+
+	for (uint8_t i = 0; i < item->getImbuementSlot(); i++) {
+		if (i == slot) {
+			continue;
+		}
+
+		ImbuementInfo existingImbuement;
+		if (item->getImbuementInfo(i, &existingImbuement) && existingImbuement.imbuement) {
+			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
+				g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
+				this->sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
+				return;
+			}
+		}
 	}
 
 	const auto &items = imbuement->getItems();
@@ -2903,6 +2948,26 @@ bool Player::canDoAction() const {
 	return nextAction <= OTSYS_TIME();
 }
 
+void Player::setNextNecklaceAction(int64_t time) {
+	if (time > nextNecklaceAction) {
+		nextNecklaceAction = time;
+	}
+}
+
+void Player::setNextRingAction(int64_t time) {
+	if (time > nextRingAction) {
+		nextRingAction = time;
+	}
+}
+
+bool Player::canEquipNecklace() const {
+	return OTSYS_TIME() >= nextNecklaceAction;
+}
+
+bool Player::canEquipRing() const {
+	return OTSYS_TIME() >= nextRingAction;
+}
+
 void Player::setNextPotionAction(int64_t time) {
 	if (time > nextPotionAction) {
 		nextPotionAction = time;
@@ -2911,6 +2976,23 @@ void Player::setNextPotionAction(int64_t time) {
 
 bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
+}
+
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
 }
 
 void Player::cancelPush() {
@@ -3076,6 +3158,14 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getFloat(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
 	}
 
+	const bool handleAnimusMastery = monster && animusMastery().has(monster->getMonsterType()->name);
+	float animusMasteryMultiplier = 0;
+
+	if (handleAnimusMastery) {
+		animusMasteryMultiplier = animusMastery().getExperienceMultiplier();
+		exp *= animusMasteryMultiplier;
+	}
+
 	experience += exp;
 
 	if (sendText) {
@@ -3085,6 +3175,10 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 			if (expPercent > 0) {
 				expString = expString + fmt::format(" (VIP bonus {}%)", expPercent > 100 ? 100 : expPercent);
 			}
+		}
+
+		if (handleAnimusMastery) {
+			expString = fmt::format("{} (animus mastery bonus {:.1f}%)", expString, (animusMasteryMultiplier - 1) * 100);
 		}
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
@@ -3354,7 +3448,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			//
+			// Absorb Percent
 			const ItemType &it = Item::items[item->getID()];
 			if (it.abilities) {
 				int totalAbsorbPercent = 0;
@@ -3370,7 +3464,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-				if (totalAbsorbPercent > 0) {
+				if (totalAbsorbPercent != 0) {
 					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
 
 					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
@@ -3774,12 +3868,64 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	const auto &corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
+
+		ss << "You recognize " << getNameDescription() << ". ";
+
+		std::string responsibleName;
+		std::string secondaryResponsibleName;
+		bool hasOthers = false;
+
 		if (lastHitCreature) {
-			std::string subjectPronoun = getSubjectPronoun();
-			capitalizeWords(subjectPronoun);
-			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
+			if (lastHitCreature->getPlayer()) {
+				responsibleName = lastHitCreature->getNameDescription();
+			} else if (auto master = lastHitCreature->getMaster(); master && master->getPlayer()) {
+				responsibleName = master->getNameDescription();
+			}
+		}
+
+		if (mostDamageCreature) {
+			if (mostDamageCreature->getPlayer()) {
+				if (responsibleName != mostDamageCreature->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = mostDamageCreature->getNameDescription();
+				}
+			} else if (auto master = mostDamageCreature->getMaster(); master && master->getPlayer()) {
+				if (responsibleName != master->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = master->getNameDescription();
+				}
+			}
+		}
+
+		uint32_t inFightTicks = 5 * 60 * 1000;
+		for (const auto &[creatureId, damageInfo] : damageMap) {
+			const auto &[total, ticks] = damageInfo;
+			if ((OTSYS_TIME() - ticks) <= inFightTicks) {
+				const auto &attacker = g_game().getCreatureByID(creatureId);
+				if (attacker && !attacker->getPlayer()) {
+					hasOthers = true;
+					break;
+				}
+			}
+		}
+
+		if (!responsibleName.empty()) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << responsibleName;
+
+			if (!secondaryResponsibleName.empty()) {
+				ss << " and " << secondaryResponsibleName;
+			} else if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
+		} else if (lastHitCreature) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription();
+			if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
 		} else {
-			ss << "You recognize " << getNameDescription() << '.';
+			ss << "No attackers were identified.";
 		}
 
 		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
@@ -3802,7 +3948,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	updateImbuementTrackerStats();
 
 	safeCall([this] {
-		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED)));
 	});
 }
 
@@ -5504,7 +5650,8 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 void Player::onEndCondition(ConditionType_t type) {
 	Creature::onEndCondition(type);
 
-	if (type == CONDITION_INFIGHT) {
+	const auto &conditionFight = getCondition(CONDITION_INFIGHT);
+	if (type == CONDITION_INFIGHT && !conditionFight) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
@@ -5744,9 +5891,11 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 		g_logger().error("[{}] Monster type is null.", __FUNCTION__);
 		return false;
 	}
-	addHuntingTaskKill(mType);
-	addBestiaryKill(mType);
-	addBosstiaryKill(mType);
+	if (!monster->getSoulPit()) {
+		addHuntingTaskKill(mType);
+		addBestiaryKill(mType);
+		addBosstiaryKill(mType);
+	}
 	return false;
 }
 
@@ -6840,7 +6989,12 @@ uint8_t Player::getLastMount() const {
 	if (value > 0) {
 		return value;
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	const auto lastMount = kv()->get("last-mount");
+	if (!lastMount.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastMount->get<int>());
 }
 
 uint8_t Player::getCurrentMount() const {
@@ -6871,9 +7025,16 @@ uint8_t Player::getRandomMountId() const {
 		}
 	}
 
-	const auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
-	return playerMounts.at(randomIndex);
+	if (playerMounts.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(playerMounts.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < playerMounts.size()) {
+		return playerMounts[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleMount(bool mount) {
@@ -7422,7 +7583,7 @@ void Player::sendFightModes() const {
 	}
 }
 
-void Player::sendNetworkMessage(const NetworkMessage &message) const {
+void Player::sendNetworkMessage(NetworkMessage &message) const {
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
@@ -8228,7 +8389,8 @@ void Player::initializeTaskHunting() {
 	}
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
-		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
+		auto buffer = g_ioprey().getTaskHuntingBaseDate();
+		client->writeToOutputBuffer(buffer);
 	}
 }
 
@@ -8746,6 +8908,20 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 		tmpPlayer->onCreatureSay(static_self_cast<Player>(), type, text);
 	}
 	return true;
+}
+
+void Player::setDead(bool isDead) {
+	m_isDead = isDead;
+	const auto &thisPlayer = static_self_cast<Player>();
+	if (isDead) {
+		g_game().addDeadPlayer(thisPlayer);
+	} else {
+		g_game().removeDeadPlayer(getName());
+	}
+}
+
+bool Player::isDead() const {
+	return m_isDead;
 }
 
 void Player::triggerMomentum() {
@@ -9803,7 +9979,6 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
@@ -9921,9 +10096,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-// container
-// container
-
+// Container
 void Player::onAddContainerItem(const std::shared_ptr<Item> &item) {
 	checkTradeState(item);
 }
@@ -10247,6 +10420,15 @@ const std::unique_ptr<PlayerTitle> &Player::title() const {
 	return m_playerTitle;
 }
 
+// Cyclopedia interface
+std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
+	return m_playerCyclopedia;
+}
+
+const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
+	return m_playerCyclopedia;
+}
+
 // VIP interface
 std::unique_ptr<PlayerVIP> &Player::vip() {
 	return m_playerVIP;
@@ -10256,13 +10438,13 @@ const std::unique_ptr<PlayerVIP> &Player::vip() const {
 	return m_playerVIP;
 }
 
-// Cyclopedia
-std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
-	return m_playerCyclopedia;
+// Animus Mastery interface
+AnimusMastery &Player::animusMastery() {
+	return m_animusMastery;
 }
 
-const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
-	return m_playerCyclopedia;
+const AnimusMastery &Player::animusMastery() const {
+	return m_animusMastery;
 }
 
 void Player::sendLootMessage(const std::string &message) const {
@@ -10446,4 +10628,109 @@ uint16_t Player::getPlayerVocationEnum() const {
 	}
 
 	return Vocation_t::VOCATION_NONE;
+}
+
+BidErrorMessage Player::canBidHouse(uint32_t houseId) {
+	using enum BidErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (!isPremium()) {
+		return Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return OnlyOneBid;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getHighestBid())) {
+		return NotEnoughMoney;
+	}
+
+	if (house->isGuildhall()) {
+		if (getGuildRank() && getGuildRank()->level != 3) {
+			return Guildhall;
+		}
+
+		if (getGuild() && getGuild()->getBankBalance() < (house->getRent() + house->getHighestBid())) {
+			return NotEnoughGuildMoney;
+		}
+	}
+
+	return NoError;
+}
+
+TransferErrorMessage Player::canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID) {
+	using enum TransferErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getGUID() != house->getOwner()) {
+		return NotHouseOwner;
+	}
+
+	if (getGUID() == newOwnerGUID) {
+		return AlreadyTheOwner;
+	}
+
+	const auto newOwner = g_game().getPlayerByGUID(newOwnerGUID, true);
+	if (!newOwner) {
+		return CharacterNotExist;
+	}
+
+	if (newOwner->getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (!newOwner->isPremium()) {
+		return Premium;
+	}
+
+	if (newOwner->getAccount()->getHouseBidId() != 0) {
+		return OnlyOneBid;
+	}
+
+	return Success;
+}
+
+AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
+	using enum AcceptTransferErrorMessage;
+	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	if (!house) {
+		return Internal;
+	}
+
+	if (getGUID() != house->getBidder()) {
+		return NotNewOwner;
+	}
+
+	if (!isPremium()) {
+		return Premium;
+	}
+
+	if (getAccount()->getHouseBidId() != 0) {
+		return AlreadyBid;
+	}
+
+	if (getPlayerVocationEnum() == Vocation_t::VOCATION_NONE) {
+		return Rookgaard;
+	}
+
+	if (getBankBalance() < (house->getRent() + house->getInternalBid())) {
+		return Frozen;
+	}
+
+	if (house->getTransferStatus()) {
+		return AlreadyAccepted;
+	}
+
+	return Success;
 }

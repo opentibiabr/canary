@@ -216,7 +216,7 @@ protected:
 	Position removeDestination = Position();
 	std::string name;
 	std::string monsterVariant;
-	std::unordered_set<Position> positions;
+	phmap::flat_hash_set<Position> positions;
 	uint32_t id = 0; // ID 0 is used in zones created dynamically from lua. The map editor uses IDs starting from 1 (automatically generated).
 
 	weak::set<Item> itemsCache;

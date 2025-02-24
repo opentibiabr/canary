@@ -71,6 +71,7 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");
 		loadStringConfig(L, MAP_NAME, "mapName", "canary");
 		loadStringConfig(L, MYSQL_DB, "mysqlDatabase", "canary");
+		loadBoolConfig(L, MYSQL_DB_BACKUP, "mysqlDatabaseBackup", false);
 		loadStringConfig(L, MYSQL_HOST, "mysqlHost", "127.0.0.1");
 		loadStringConfig(L, MYSQL_PASS, "mysqlPass", "");
 		loadStringConfig(L, MYSQL_SOCK, "mysqlSock", "");
@@ -157,6 +158,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, VIP_SYSTEM_ENABLED, "vipSystemEnabled", false);
 	loadBoolConfig(L, WARN_UNSAFE_SCRIPTS, "warnUnsafeScripts", true);
 	loadBoolConfig(L, XP_DISPLAY_MODE, "experienceDisplayRates", true);
+	loadBoolConfig(L, CYCLOPEDIA_HOUSE_AUCTION, "toggleCyclopediaHouseAuction", true);
 	loadBoolConfig(L, LOAD_ITEMS_FROM_SPR_DAT, "loadItemsFromSprDat", false);
 
 	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);
@@ -198,6 +200,9 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_A, "transcendanceChanceFormulaA", 0.0127);
 	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_B, "transcendanceChanceFormulaB", 0.1070);
 	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_C, "transcendanceChanceFormulaC", 0.0073);
+	loadFloatConfig(L, ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER, "animusMasteryMaxMonsterXpMultiplier", 4.0);
+	loadFloatConfig(L, ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER, "animusMasteryMonsterXpMultiplier", 2.0);
+	loadFloatConfig(L, ANIMUS_MASTERY_MONSTERS_XP_MULTIPLIER, "animusMasteryMonstersXpMultiplier", 0.1);
 
 	loadIntConfig(L, ACTIONS_DELAY_INTERVAL, "timeBetweenActions", 200);
 	loadIntConfig(L, ADVENTURERSBLESSING_LEVEL, "adventurersBlessingLevel", 21);
@@ -256,6 +261,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_DAMAGE, "hazardPodsTimeToDamage", 2000);
 	loadIntConfig(L, HAZARD_PODS_TIME_TO_SPAWN, "hazardPodsTimeToSpawn", 4000);
 	loadIntConfig(L, HAZARD_SPAWN_PLUNDER_MULTIPLIER, "hazardSpawnPlunderMultiplier", 25);
+	loadIntConfig(L, DAYS_TO_CLOSE_BID, "daysToCloseBid", 7);
 	loadIntConfig(L, HOUSE_BUY_LEVEL, "houseBuyLevel", 0);
 	loadIntConfig(L, HOUSE_LOSE_AFTER_INACTIVITY, "houseLoseAfterInactivity", 0);
 	loadIntConfig(L, HOUSE_PRICE_PER_SQM, "housePriceEachSQM", 1000);
@@ -285,6 +291,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, MULTIPLIER_ATTACKONFIST, "multiplierSpeedOnFist", 5);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
+	loadIntConfig(L, LOGIN_PROTECTION_TIME, "loginProtectionTime", 10000);
 	loadIntConfig(L, PARALLELISM, "parallelism", 2);
 	loadIntConfig(L, PARTY_LIST_MAX_DISTANCE, "partyListMaxDistance", 0);
 	loadIntConfig(L, PREY_BONUS_REROLL_PRICE, "preyBonusRerollPrice", 1);
@@ -342,6 +349,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, AUGMENT_INCREASED_DAMAGE_PERCENT, "augmentIncreasedDamagePercent", 5);
 	loadIntConfig(L, AUGMENT_POWERFUL_IMPACT_PERCENT, "augmentPowerfulImpactPercent", 10);
 	loadIntConfig(L, AUGMENT_STRONG_IMPACT_PERCENT, "augmentStrongImpactPercent", 7);
+	loadIntConfig(L, ANIMUS_MASTERY_MONSTERS_TO_INCREASE_XP_MULTIPLIER, "animusMasteryMonstersToIncreaseXpMultiplier", 10);
 
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");
@@ -370,6 +378,10 @@ bool ConfigManager::load() {
 }
 
 bool ConfigManager::reload() {
+	m_configString.clear();
+	m_configInteger.clear();
+	m_configBoolean.clear();
+	m_configFloat.clear();
 	const bool result = load();
 	if (transformToSHA1(getString(SERVER_MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
@@ -434,34 +446,77 @@ float ConfigManager::loadFloatConfig(lua_State* L, const ConfigKey_t &key, const
 }
 
 const std::string &ConfigManager::getString(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
-	static const std::string dummyStr;
-	if (configs.contains(key) && std::holds_alternative<std::string>(configs.at(key))) {
-		return std::get<std::string>(configs.at(key));
+	auto itCache = m_configString.find(key);
+	if (itCache != m_configString.end()) {
+		return itCache->second;
 	}
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (const auto* value = std::get_if<std::string>(&it->second)) {
+			m_configString[key] = *value;
+			return *value;
+		}
+	}
+
+	static const std::string staticEmptyString;
 	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
-	return dummyStr;
+	return staticEmptyString;
 }
 
 int32_t ConfigManager::getNumber(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
-	if (configs.contains(key) && std::holds_alternative<int32_t>(configs.at(key))) {
-		return std::get<int32_t>(configs.at(key));
+	auto itCache = m_configInteger.find(key);
+	if (itCache != m_configInteger.end()) {
+		return itCache->second;
 	}
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (std::holds_alternative<int32_t>(it->second)) {
+			const auto value = std::get<int32_t>(it->second);
+			m_configInteger[key] = value;
+			return value;
+		}
+	}
+
 	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0;
 }
 
 bool ConfigManager::getBoolean(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
-	if (configs.contains(key) && std::holds_alternative<bool>(configs.at(key))) {
-		return std::get<bool>(configs.at(key));
+	auto itCache = m_configBoolean.find(key);
+	if (itCache != m_configBoolean.end()) {
+		return itCache->second;
 	}
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (std::holds_alternative<bool>(it->second)) {
+			const auto value = std::get<bool>(it->second);
+			m_configBoolean[key] = value;
+			return value;
+		}
+	}
+
 	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return false;
 }
 
 float ConfigManager::getFloat(const ConfigKey_t &key, const std::source_location &location /*= std::source_location::current()*/) const {
-	if (configs.contains(key) && std::holds_alternative<float>(configs.at(key))) {
-		return std::get<float>(configs.at(key));
+	auto itCache = m_configFloat.find(key);
+	if (itCache != m_configFloat.end()) {
+		return itCache->second;
 	}
+
+	auto it = configs.find(key);
+	if (it != configs.end()) {
+		if (std::holds_alternative<float>(it->second)) {
+			const auto value = std::get<float>(it->second);
+			m_configFloat[key] = value;
+			return value;
+		}
+	}
+
 	g_logger().warn("[{}] accessing invalid or wrong type index: {}[{}]. Called line: {}:{}, in {}", __FUNCTION__, magic_enum::enum_name(key), fmt::underlying(key), location.line(), location.column(), location.function_name());
 	return 0.0f;
 }

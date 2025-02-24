@@ -608,3 +608,4 @@ metricsOstreamInterval = 1000
 
 -- NOTE: load items using dat file from old spr and dat cip files, or use default protobuf file if false
 loadItemsFromSprDat = false
+loadDatFilename = "items.dat"

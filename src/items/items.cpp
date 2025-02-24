@@ -361,124 +361,126 @@ static bool readItemAttributes(ItemType &item, PropStream &props, uint16_t itemI
 			return false;
 		}
 
+		using enum DatAttr_t;
+
 		DatAttr_t attr = attrOpt.value();
-		if (attr == DatAttr_t::Default) {
+		if (attr == Default) {
 			return true;
 		}
 
 		switch (attr) {
-			case DatAttr_t::Ground:
+			case Ground:
 				item.group = ITEM_GROUP_GROUND;
 				item.speed = props.read<uint16_t>();
 				break;
-			case DatAttr_t::Clip:
+			case Clip:
 				item.alwaysOnTopOrder = 1;
 				break;
-			case DatAttr_t::Top:
+			case Top:
 				item.alwaysOnTopOrder = 3;
 				break;
-			case DatAttr_t::Bottom:
+			case Bottom:
 				item.alwaysOnTopOrder = 2;
 				break;
-			case DatAttr_t::Container:
+			case Container:
 				item.group = ITEM_GROUP_CONTAINER;
 				item.type = ITEM_TYPE_CONTAINER;
 				break;
-			case DatAttr_t::Stackable:
+			case Stackable:
 				item.stackable = true;
 				break;
-			case DatAttr_t::Usable:
+			case Usable:
 				break;
-			case DatAttr_t::ForceUse:
+			case ForceUse:
 				item.forceUse = true;
 				break;
-			case DatAttr_t::MultiUse:
+			case MultiUse:
 				item.multiUse = true;
 				break;
-			case DatAttr_t::Writeable:
-			case DatAttr_t::WriteableOnce:
+			case Writeable:
+			case WriteableOnce:
 				item.canReadText = true;
 				item.maxTextLen  = props.read<uint16_t>();
 				break;
-			case DatAttr_t::LiquidPool:
+			case LiquidPool:
 				item.group = ITEM_GROUP_SPLASH;
 				break;
-			case DatAttr_t::LiquidContainer:
+			case LiquidContainer:
 				item.group = ITEM_GROUP_FLUID;
 				break;
-			case DatAttr_t::Impassable:
+			case Impassable:
 				item.blockSolid = true;
 				break;
-			case DatAttr_t::Unmovable:
+			case Unmovable:
 				item.movable = false;
 				break;
-			case DatAttr_t::BlocksSight:
+			case BlocksSight:
 				item.blockProjectile = true;
 				break;
-			case DatAttr_t::BlocksPathfinding:
+			case BlocksPathfinding:
 				item.blockPathFind = true;
 				break;
-			case DatAttr_t::NoMovementAnimation:
+			case NoMovementAnimation:
 				break;
-			case DatAttr_t::Pickupable:
+			case Pickupable:
 				item.pickupable = true;
 				break;
-			case DatAttr_t::Hangable:
+			case Hangable:
 				item.isHangable = true;
 				break;
-			case DatAttr_t::HooksSouth:
+			case HooksSouth:
 				item.isVertical = true;
 				break;
-			case DatAttr_t::HooksEast:
+			case HooksEast:
 				item.isHorizontal = true;
 				break;
-			case DatAttr_t::Rotateable:
+			case Rotateable:
 				item.rotatable = true;
 				break;
-			case DatAttr_t::LightSource:
+			case LightSource:
 				item.lightLevel = props.read<uint16_t>();
 				item.lightColor = props.read<uint16_t>();
 				break;
 			// Unused
-			case DatAttr_t::AlwaysSeen:
-			case DatAttr_t::Translucent:
-			case DatAttr_t::AlwaysAnimated:
-			case DatAttr_t::TopEffect:
-			case DatAttr_t::NpcSaleData:
-			case DatAttr_t::Ammo:
-			case DatAttr_t::LyingObject:
-			case DatAttr_t::Reportable:
+			case AlwaysSeen:
+			case Translucent:
+			case AlwaysAnimated:
+			case TopEffect:
+			case NpcSaleData:
+			case Ammo:
+			case LyingObject:
+			case Reportable:
 				break;
-			case DatAttr_t::Displaced:
+			case Displaced:
 				props.skip(2); // unknown u16 flag
 				props.skip(2); // unknown u16 flag
 				break;
-			case DatAttr_t::Elevated:
+			case Elevated:
 				item.hasHeight = true;
 				props.skip(2); // unknown u16
 				break;
-			case DatAttr_t::MinimapColor:
+			case MinimapColor:
 				props.skip(2); // unknown u16
 				break;
-			case DatAttr_t::FullTile:
+			case FullTile:
 				item.group = ITEM_GROUP_GROUND;
 				break;
-			case DatAttr_t::HelpInfo: {
+			case HelpInfo: {
 				uint16_t opt = props.read<uint16_t>();
 				if (opt == 1112) {
 					item.canReadText = true;
 				}
 				break;
 			}
-			case DatAttr_t::Lookthrough:
+			case Lookthrough:
 				item.lookThrough = true;
 				break;
-			case DatAttr_t::Clothes: {
+			case Clothes: {
 				uint16_t slot = props.read<uint16_t>();
 				item.slotPosition |= static_cast<SlotPositionBits>(1 << (slot - 1));
 				break;
 			}
-			case DatAttr_t::Market: {
+			case Market: {
 				uint16_t category = props.read<uint16_t>();
 				item.type = static_cast<ItemTypes_t>(category);
 				item.wareId = props.read<uint16_t>();
@@ -488,43 +490,43 @@ static bool readItemAttributes(ItemType &item, PropStream &props, uint16_t itemI
 				props.skip(2); // minimumLevel
 				break;
 			}
-			case DatAttr_t::DefaultAction:
+			case DefaultAction:
 				props.skip(2);
 				break;
-			case DatAttr_t::Wrappable:
+			case Wrappable:
 				item.wrapContainer = true;
 				item.wrapable = true;
 				item.wrapableTo = ITEM_DECORATION_KIT;
 				break;
-			case DatAttr_t::UnWrappable:
+			case UnWrappable:
 				item.wrapContainer = true;
 				break;
-			case DatAttr_t::ChangedToExpire:
+			case ChangedToExpire:
 				props.skip(2);
 				break;
-			case DatAttr_t::Corpse:
-			case DatAttr_t::PlayerCorpse:
+			case Corpse:
+			case PlayerCorpse:
 				item.isCorpse = true;
 				break;
-			case DatAttr_t::CyclopediaItem:
+			case CyclopediaItem:
 				item.wareId = props.read<uint16_t>();
 				break;
-			case DatAttr_t::ShowOffSocket:
+			case ShowOffSocket:
 				item.isPodium = true;
 				break;
-			case DatAttr_t::UpgradeClassification:
+			case UpgradeClassification:
 				item.upgradeClassification = props.read<uint16_t>();
 				break;
-			case DatAttr_t::Wearout:
+			case Wearout:
 				item.wearOut = true;
 				break;
-			case DatAttr_t::ClockExpire:
+			case ClockExpire:
 				item.clockExpire = true;
 				break;
-			case DatAttr_t::Expire:
+			case Expire:
 				item.expire = true;
 				break;
-			case DatAttr_t::ExpireStop:
+			case ExpireStop:
 				item.expireStop = true;
 				break;
 			default:

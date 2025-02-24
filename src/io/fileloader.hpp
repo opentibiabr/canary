@@ -120,19 +120,13 @@ public:
 	}
 
 	std::string readString() {
-		std::string ret;
 		uint16_t strLen;
-
 		if (read<uint16_t>(strLen) && size() >= strLen) {
-			char* str = new char[strLen + 1];
-			memcpy(str, p, strLen);
-			str[strLen] = 0;
-			ret.assign(str, strLen);
-			delete[] str;
+			std::string ret(p, strLen);
 			p += strLen;
+			return ret;
 		}
-
-		return ret;
+		return std::string();
 	}
 
 	bool skip(size_t n) {

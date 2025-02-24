@@ -346,7 +346,7 @@ void CanaryServer::loadModules() {
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	// Load appearances.dat first
 
-	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
+	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_DAT)) {
 		modulesLoadHelper((Item::items.loadFromDat()), "items.dat");
 	} else {
 		modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");

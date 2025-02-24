@@ -159,7 +159,8 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, WARN_UNSAFE_SCRIPTS, "warnUnsafeScripts", true);
 	loadBoolConfig(L, XP_DISPLAY_MODE, "experienceDisplayRates", true);
 	loadBoolConfig(L, CYCLOPEDIA_HOUSE_AUCTION, "toggleCyclopediaHouseAuction", true);
-	loadBoolConfig(L, LOAD_ITEMS_FROM_SPR_DAT, "loadItemsFromSprDat", false);
+	loadBoolConfig(L, LOAD_ITEMS_FROM_DAT, "loadItemsFromSprDat", false);
+	loadStringConfig(L, LOAD_DAT_FILENAME, "loadDatFilename", "items.dat");
 
 	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);
 	loadFloatConfig(L, COMBAT_CHAIN_SKILL_FORMULA_AXE, "combatChainSkillFormulaAxe", 0.9);

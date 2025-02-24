@@ -368,7 +368,8 @@ bool Items::loadFromDat() {
 
 		item.id = id;
 
-		uint8_t icount = 0, attr = -1;
+		uint8_t icount = 0;
+		uint8_t attr = -1;
 		bool done = false;
 		for (uint8_t i = 0; i < DatAttrDefault; ++i) {
 			icount++;
@@ -418,10 +419,6 @@ bool Items::loadFromDat() {
 					break;
 
 				case DatAttrWriteable:
-					item.canReadText = true;
-					item.maxTextLen = props.read<uint16_t>();
-					break;
-
 				case DatAttrWriteableOnce:
 					item.canReadText = true;
 					item.maxTextLen = props.read<uint16_t>();

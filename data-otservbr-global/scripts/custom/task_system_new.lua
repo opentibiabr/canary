@@ -1,77 +1,8 @@
-local config = {
-	[62001] = 2,
-	[62002] = 3,
-	[62003] = 4,
-	[62004] = 5,
-	[62005] = 6,
-	[62006] = 7,
-	[62007] = 8,
-	[62008] = 9,
-	[62009] = 10,
-	[62010] = 11,
-	[62011] = 12,
-	[62012] = 13,
-	[62013] = 14,
-	[62014] = 15,
-	[62015] = 16,
-	[62016] = 17,
-	[62017] = 18,
-	[62018] = 19,
-	[62019] = 20,
-	[62020] = 21,
-	[62021] = 22,
-	[62022] = 23,
-	[62023] = 24,
-	[62024] = 25,
-	[62025] = 26,
-	[62026] = 27,
-	[62027] = 28,
-	[62028] = 29,
-	[62029] = 30,
-	[62030] = 31,
-	[62031] = 32,
-	[62032] = 33,
-	[62033] = 34,
-	[62034] = 35,
-	[62035] = 36,
-	[62036] = 37,
-	[62037] = 38,
-	[62038] = 39,
-	[62039] = 40,
-	[62040] = 41,
-	[62041] = 42,
-	[62042] = 43,
-	[62043] = 44,
-	[62044] = 45,
-	[62045] = 46,
-	[62046] = 47,
-	[62047] = 48,
-	[62048] = 49,
-	[62049] = 50,
-	[62050] = 51,
-	[62051] = 52,
-	[62052] = 53,
-	[62053] = 54,
-	[62054] = 55,
-	[62055] = 56,
-	[62056] = 57,
-	[62057] = 58,
-	[62058] = 59,
-	[62059] = 60,
-	[62060] = 61,
-	[62061] = 62,
-	[62062] = 63,
-	[62063] = 64,
-	[62064] = 65,
-	[62065] = 66,
-	[62066] = 67,
-	[62067] = 68,
-	[62068] = 69,
-	[62069] = 70,
-	[62070] = 71,
-	[62071] = 72,
-	[62072] = 73,
-}
+-- Configuration table for task system
+local config = {}
+for i = 62001, 62072 do
+    config[i] = i - 62000 + 1
+end
 
 --[[ TASK HUNTING ]]--
 local tasksystemMonsters = Action("tasksystemMonsters")
@@ -315,7 +246,7 @@ function teleportAccessTasks2.onStepIn(creature, item, position, fromPosition)
 
 	local destination = Position(31879, 33460, 6)
 
-	if (player:getStorageValue(Storage.HuntingTasks.Questline) < 24) 
+	if (player:getStorageValue(Storage.HuntingTasks.Questline) < 24)
 	and player:getStorageValue(taskSystem[24].start) < 3 then
 		player:teleportTo(fromPosition)
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)

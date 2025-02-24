@@ -349,7 +349,7 @@ public:
 	bool wrapable = false;
 	bool wrapContainer = false;
 	bool multiUse = false;
-	bool movable = false;
+	bool movable = true;
 	bool canReadText = false;
 	bool canWriteText = false;
 	bool isVertical = false;

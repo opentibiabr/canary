@@ -575,11 +575,11 @@ bool Items::loadFromDat() {
 	auto effectCount = props.read<uint16_t>();
 	auto missileCount = props.read<uint16_t>();
 
-	g_logger().info("Loading {}... Signature: {}", datFilename, signature);
-	g_logger().info("ObjectCount: {}", objectCount);
-	g_logger().info("OutfitCount: {}", outfitCount);
-	g_logger().info("EffectCount: {}", effectCount);
-	g_logger().info("MissileCount: {}", missileCount);
+	g_logger().debug("Loading {}... Signature: {}", datFilename, signature);
+	g_logger().debug("ObjectCount: {}", objectCount);
+	g_logger().debug("OutfitCount: {}", outfitCount);
+	g_logger().debug("EffectCount: {}", effectCount);
+	g_logger().debug("MissileCount: {}", missileCount);
 
 	// Skip unused data from server (sprites, animation, etc)
 	auto skipSpriteData = [](PropStream &readProps) {
@@ -642,7 +642,7 @@ bool Items::loadFromDat() {
 		skipSpriteData(props);
 	}
 
-	g_logger().info("Loaded... Items: {}, Outfits: {}, MagicEffects: {}, DistanceEffects: {}", items.size(), outfits.size(), magicEffects.size(), distanceEffects.size());
+	g_logger().debug("Loaded... Items: {}, Outfits: {}, MagicEffects: {}, DistanceEffects: {}", items.size(), outfits.size(), magicEffects.size(), distanceEffects.size());
 	g_game().setLookTypes(outfits);
 	g_game().setMagicEffectTypes(magicEffects);
 	g_game().setDistanceEffectTypes(distanceEffects);

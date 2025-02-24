@@ -15,8 +15,6 @@
 #include "utils/utils_definitions.hpp"
 #include "enums/item_attribute.hpp"
 
-struct Outfit;
-
 struct Abilities {
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionImmunities = {};
 	std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> conditionSuppressions = {};

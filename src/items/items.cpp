@@ -295,7 +295,7 @@ bool Items::loadFromXml() {
 }
 
 bool Items::loadFromDat() {
-	auto file = g_configManager().getString(CORE_DIRECTORY) + "/items/Tibia.dat";
+	auto file = g_configManager().getString(CORE_DIRECTORY) + "/items/items.dat";
 	std::filesystem::path filePath(file);
 
 	if (!std::filesystem::exists(filePath)) {
@@ -332,11 +332,11 @@ bool Items::loadFromDat() {
 	auto effectCount = props.read<uint16_t>();
 	auto missileCount = props.read<uint16_t>();
 
-	g_logger().info("[Items::loadFromDat] - signature: {}", signature);
-	g_logger().info("[Items::loadFromDat] - objectCount: {}", objectCount);
-	g_logger().info("[Items::loadFromDat] - outfitCount: {}", outfitCount);
-	g_logger().info("[Items::loadFromDat] - effectCount: {}", effectCount);
-	g_logger().info("[Items::loadFromDat] - missileCount: {}", missileCount);
+	g_logger().info("Dat signature: {}", signature);
+	g_logger().info("Dat objectCount: {}", objectCount);
+	g_logger().info("Dat outfitCount: {}", outfitCount);
+	g_logger().info("Dat effectCount: {}", effectCount);
+	g_logger().info("Dat missileCount: {}", missileCount);
 
 	uint16_t firstId = 100;
 	for (uint16_t id = firstId; id < objectCount; ++id) {

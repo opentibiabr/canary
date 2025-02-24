@@ -607,4 +607,4 @@ metricsEnableOstream = false
 metricsOstreamInterval = 1000
 
 -- NOTE: load items using dat file from old spr and dat cip files, or use default protobuff file if this false
-loadItemsFromSprDat = true
+loadItemsFromSprDat = false

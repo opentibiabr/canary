@@ -1318,12 +1318,7 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	// Parsing all items into ItemType
-	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
-		Item::items.loadFromDat();
-	}
-	else {
-		Item::items.loadFromProtobuf();
-	}
+	Item::items.loadFromProtobuf();
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
@@ -11337,4 +11332,28 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 	}
 
 	return true;
+}
+
+bool Game::isMagicEffectRegistered(uint16_t type) const {
+	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
+		return true;
+	}
+
+	return std::ranges::find(registeredMagicEffects, type) != registeredMagicEffects.end();
+}
+
+bool Game::isDistanceEffectRegistered(uint16_t type) const {
+	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
+		return true;
+	}
+
+	return std::ranges::find(registeredDistanceEffects, type) != registeredDistanceEffects.end();
+}
+
+bool Game::isLookTypeRegistered(uint16_t type) const {
+	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_SPR_DAT)) {
+		return true;
+	}
+
+	return std::ranges::find(registeredLookTypes, type) != registeredLookTypes.end();
 }

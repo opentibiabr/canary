@@ -122,6 +122,12 @@ namespace InternalGame {
 			return false;
 		}
 
+		// Doors are checked separately (actions.cpp - Action::internalUseItem)
+		const auto &itemDoor = item->getDoor();
+		if (itemDoor) {
+			return true;
+		}
+
 		auto itemTile = item->getTile();
 		if (!itemTile) {
 			return false;

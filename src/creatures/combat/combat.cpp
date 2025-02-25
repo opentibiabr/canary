@@ -2288,7 +2288,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 					uint16_t raceId = mType->info.raceid;
 
 					if (raceId == lowBlowRaceid) {
-						if (lowBlowCrits.find(raceId) == lowBlowCrits.end()) {
+						if (!lowBlowCrits.contains(raceId)) {
 							lowBlowCrits[raceId] = (lowBlowChance != 0 && uniform_random(1, 10000) <= lowBlowChance);
 						}
 					}
@@ -2310,7 +2310,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 				uint16_t raceId = mType->info.raceid;
 
-				if (!globalCritical && lowBlowCrits.find(raceId) != lowBlowCrits.end() && lowBlowCrits[raceId]) {
+				if (!globalCritical && lowBlowCrits.contains(raceId) && lowBlowCrits[raceId]) {
 					isTargetCritical = true;
 				}
 			}

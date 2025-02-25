@@ -123,6 +123,10 @@ void ItemType::setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMax
 	imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
 }
 
+bool ItemType::triggerExhaustion() const {
+	return isRune() || (type == ITEM_TYPE_POTION && !m_isMagicShieldPotion);
+}
+
 bool Items::reload() {
 	clear();
 	loadFromProtobuf();

@@ -140,6 +140,7 @@ namespace InternalGame {
 			}
 
 			auto isGuest = house->getHouseAccessLevel(player) == HOUSE_GUEST;
+			auto isOwner = house->getHouseAccessLevel(player) == HOUSE_OWNER;
 			auto itemParentContainer = item->getParent() ? item->getParent()->getContainer() : nullptr;
 			auto isItemParentContainerBrowseField = itemParentContainer && itemParentContainer->getID() == ITEM_BROWSEFIELD;
 			if (isGuest && isItemParentContainerBrowseField) {
@@ -152,7 +153,7 @@ namespace InternalGame {
 				return false;
 			}
 
-			if (isGuest && item->isDummy()) {
+			if (!isOwner && item->isDummy() && (isGuest || item->hasActor())) {
 				return false;
 			}
 		}

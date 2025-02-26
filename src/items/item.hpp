@@ -712,6 +712,14 @@ public:
 	bool canBeMoved() const;
 	void checkDecayMapItemOnMove();
 
+	void setActor(bool value) {
+		m_hasActor = value;
+	}
+
+	bool hasActor() const {
+		return m_hasActor;
+	}
+
 protected:
 	std::weak_ptr<Cylinder> m_parent;
 
@@ -721,6 +729,7 @@ protected:
 	bool loadedFromMap = false;
 	bool isLootTrackeable = false;
 	bool decayDisabled = false;
+	bool m_hasActor = false;
 
 private:
 	void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);

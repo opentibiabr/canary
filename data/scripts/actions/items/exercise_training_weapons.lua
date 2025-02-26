@@ -37,7 +37,7 @@ local exerciseWeaponsTable = {
 
 local dummies = Game.getDummies()
 
-local function leaveExerciseTraining(playerId)
+local function leaveExerciseTraining(playerId, targetItem)
 	if _G.OnExerciseTraining[playerId] then
 		stopEvent(_G.OnExerciseTraining[playerId].event)
 		_G.OnExerciseTraining[playerId] = nil
@@ -46,6 +46,9 @@ local function leaveExerciseTraining(playerId)
 	local player = Player(playerId)
 	if player then
 		player:setTraining(false)
+		if targetItem then
+			targetItem:actor(false)
+		end
 	end
 	return
 end
@@ -56,15 +59,16 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 		return leaveExerciseTraining(playerId)
 	end
 
-	if player:isTraining() == 0 then
-		player:sendTextMessage(MESSAGE_FAILURE, "You have stopped training.")
-		return leaveExerciseTraining(playerId)
+	local targetItem = Tile(tilePosition):getItemById(dummyId)
+	if not targetItem then
+		player:sendTextMessage(MESSAGE_FAILURE, "Someone has moved the dummy, the training has stopped.")
+		leaveExerciseTraining(playerId, targetItem)
+		return false
 	end
 
-	if not Tile(tilePosition):getItemById(dummyId) then
-		player:sendTextMessage(MESSAGE_FAILURE, "Someone has moved the dummy, the training has stopped.")
-		leaveExerciseTraining(playerId)
-		return false
+	if player:isTraining() == 0 then
+		player:sendTextMessage(MESSAGE_FAILURE, "You have stopped training.")
+		return leaveExerciseTraining(playerId, targetItem)
 	end
 
 	local playerPosition = player:getPosition()
@@ -76,14 +80,14 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 
 	if player:getItemCount(weaponId) <= 0 then
 		player:sendTextMessage(MESSAGE_FAILURE, "You need the training weapon in the backpack, the training has stopped.")
-		leaveExerciseTraining(playerId)
+		leaveExerciseTraining(playerId, targetItem)
 		return false
 	end
 
 	local weapon = player:getItemById(weaponId, true)
 	if not weapon:isItem() or not weapon:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
 		player:sendTextMessage(MESSAGE_FAILURE, "The selected item is not a training weapon, the training has stopped.")
-		leaveExerciseTraining(playerId)
+		leaveExerciseTraining(playerId, targetItem)
 		return false
 	end
 
@@ -91,7 +95,7 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 	if not weaponCharges or weaponCharges <= 0 then
 		weapon:remove(1) -- ??
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your training weapon has disappeared.")
-		leaveExerciseTraining(playerId)
+		leaveExerciseTraining(playerId, targetItem)
 		return false
 	end
 
@@ -117,7 +121,7 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 	if weapon:getAttribute(ITEM_ATTRIBUTE_CHARGES) <= 0 then
 		weapon:remove(1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your training weapon has disappeared.")
-		leaveExerciseTraining(playerId)
+		leaveExerciseTraining(playerId, targetItem)
 		return false
 	end
 
@@ -140,7 +144,8 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 	local playerId = player:getId()
 	local targetId = target:getId()
 
-	if target:isItem() and isDummy(targetId) then
+	local targetItem = Item(target.uid)
+	if targetItem and isDummy(targetId) then
 		if _G.OnExerciseTraining[playerId] then
 			player:sendTextMessage(MESSAGE_FAILURE, "You are already training!")
 			return true
@@ -189,6 +194,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 		if not _G.OnExerciseTraining[playerId].event then
 			_G.OnExerciseTraining[playerId].event = addEvent(exerciseTrainingEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
+			targetItem:actor(true)
 			player:setTraining(true)
 			player:setExhaustion("training-exhaustion", exhaustionTime)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")

@@ -49,7 +49,7 @@ public:
 
 class ServicePort : public std::enable_shared_from_this<ServicePort> {
 public:
-	explicit ServicePort(asio::io_service &init_io_service) :
+	explicit ServicePort(asio::io_context &init_io_service) :
 		io_service(init_io_service) { }
 	~ServicePort();
 
@@ -72,7 +72,7 @@ public:
 private:
 	void accept();
 
-	asio::io_service &io_service;
+	asio::io_context &io_service;
 	std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 	std::vector<Service_ptr> services;
 
@@ -104,9 +104,9 @@ private:
 
 	phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
-	asio::io_service io_service;
+	asio::io_context io_service;
 	Signals signals { io_service };
-	asio::high_resolution_timer death_timer { io_service };
+	asio::steady_timer death_timer { io_service };
 	bool running = false;
 };
 
@@ -119,16 +119,16 @@ bool ServiceManager::add(uint16_t port) {
 		return false;
 	}
 
+	auto [iter, inserted] = acceptors.emplace(port, nullptr);
+
 	ServicePort_ptr service_port;
 
-	const auto foundServicePort = acceptors.find(port);
-
-	if (foundServicePort == acceptors.end()) {
+	if (inserted) {
 		service_port = std::make_shared<ServicePort>(io_service);
 		service_port->open(port);
-		acceptors[port] = service_port;
+		iter->second = service_port;
 	} else {
-		service_port = foundServicePort->second;
+		service_port = iter->second;
 
 		if (service_port->is_single_socket() || ProtocolType::SERVER_SENDS_FIRST) {
 			g_logger().error("[ServiceManager::add] - "
@@ -138,5 +138,11 @@ bool ServiceManager::add(uint16_t port) {
 		}
 	}
 
-	return service_port->add_service(std::make_shared<Service<ProtocolType>>());
+	auto service = std::make_shared<Service<ProtocolType>>();
+	if (!service_port->add_service(service)) {
+		g_logger().warn("[ServiceManager::add] - Failed to add service {} to port {}", ProtocolType::protocol_name(), port);
+		return false;
+	}
+
+	return true;
 }

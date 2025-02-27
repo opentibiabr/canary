@@ -1244,7 +1244,11 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel()->getBeamAffectedTotal(tmpDamage) : 0;
 	uint8_t beamAffectedCurrent = 0;
 
-	tmpDamage.affected = affected;
+	tmpDamage.affected = affectedTargets.size();
+
+	// The apply extensions can't modifify the damage value, so we need to create a copy of the damage value
+	auto extensionsDamage = tmpDamage;
+	applyExtensions(caster, affectedTargets, extensionsDamage, params);
 	for (const auto &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
@@ -1275,6 +1279,8 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 						auto creatureDamage = creature->getCombatDamage();
 						if (!creatureDamage.isEmpty()) {
 							func(caster, creature, params, &creatureDamage);
+							// Reset the creature's combat damage
+							creature->setCombatDamage(CombatDamage());
 						} else {
 							func(caster, creature, params, &tmpDamage);
 						}
@@ -2256,9 +2262,6 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 	uint16_t baseChance = 0;
 	int32_t baseBonus = 50;
-	bool globalCritical = false;
-	std::unordered_map<uint16_t, bool> lowBlowCrits;
-
 	if (player) {
 		baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
@@ -2267,9 +2270,21 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 		baseBonus += damage.criticalDamage;
 		baseChance += static_cast<uint16_t>(damage.criticalChance);
-		globalCritical = (baseChance != 0 && uniform_random(1, 10000) <= baseChance);
 
-		if (!globalCritical && lowBlowRaceid != 0) {
+		bool canApplyCritical = false;
+		std::unordered_map<uint16_t, bool> lowBlowCrits;
+		canApplyCritical = (baseChance != 0 && uniform_random(1, 10000) <= baseChance);
+
+		bool canApplyFatal = false;
+		if (const auto &playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT); playerWeapon && playerWeapon->getTier() > 0) {
+			double fatalChance = playerWeapon->getFatalChance();
+			if (const auto &playerBoots = player->getInventoryItem(CONST_SLOT_FEET); playerBoots && playerBoots->getTier()) {
+				fatalChance *= 1 + (playerBoots->getAmplificationChance() / 100);
+			}
+			canApplyFatal = (fatalChance > 0 && uniform_random(0, 10000) / 100.0 < fatalChance);
+		}
+
+		if (!canApplyCritical && lowBlowRaceid != 0) {
 			const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 			if (charm) {
 				uint16_t lowBlowChance = baseChance + charm->percent;
@@ -2299,7 +2314,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		for (const auto &targetCreature : targets) {
 			CombatDamage targetDamage = damage;
 			int32_t finalBonus = baseBonus;
-			bool isTargetCritical = globalCritical;
+			bool isTargetCritical = canApplyCritical;
 
 			const auto &targetMonster = targetCreature->getMonster();
 			if (targetMonster) {
@@ -2310,7 +2325,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 				uint16_t raceId = mType->info.raceid;
 
-				if (!globalCritical && lowBlowCrits.contains(raceId) && lowBlowCrits[raceId]) {
+				if (!canApplyCritical && lowBlowCrits.find(raceId) != lowBlowCrits.end() && lowBlowCrits[raceId]) {
 					isTargetCritical = true;
 				}
 			}
@@ -2321,6 +2336,12 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 				targetDamage.critical = true;
 				targetDamage.primary.value *= targetMultiplier;
 				targetDamage.secondary.value *= targetMultiplier;
+			}
+
+			if (canApplyFatal) {
+				targetDamage.fatal = true;
+				targetDamage.primary.value += static_cast<int32_t>(std::round(targetDamage.primary.value * 0.6));
+				targetDamage.secondary.value += static_cast<int32_t>(std::round(targetDamage.secondary.value * 0.6));
 			}
 
 			targetCreature->setCombatDamage(targetDamage);
@@ -2337,21 +2358,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			damage.primary.value *= multiplier;
 			damage.secondary.value *= multiplier;
 		}
-	}
 
-	if (player && applyFatal) {
-		// Fatal hit (onslaught)
-		if (const auto &playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT);
-		    playerWeapon != nullptr && playerWeapon->getTier() > 0) {
-			const double_t fatalChance = playerWeapon->getFatalChance();
-			const double_t randomChance = uniform_random(0, 10000) / 100;
-			if (fatalChance > 0 && randomChance < fatalChance) {
-				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
-			}
-		}
-	} else if (monster) {
 		damage.primary.value *= monster->getAttackMultiplier();
 		damage.secondary.value *= monster->getAttackMultiplier();
 	}

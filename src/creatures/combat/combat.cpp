@@ -2311,6 +2311,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			}
 		}
 
+		bool isSingleCombat = targets.size() == 1;
 		for (const auto &targetCreature : targets) {
 			CombatDamage targetDamage = damage;
 			int32_t finalBonus = baseBonus;
@@ -2344,6 +2345,13 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 				targetDamage.secondary.value += static_cast<int32_t>(std::round(targetDamage.secondary.value * 0.6));
 			}
 
+			// If is single target, apply the damage directly
+			if (isSingleCombat) {
+				damage = targetDamage;
+				continue;
+			}
+			
+			// If is multi target, apply the damage to each target
 			targetCreature->setCombatDamage(targetDamage);
 		}
 	} else if (monster) {

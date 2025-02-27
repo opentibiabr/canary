@@ -571,6 +571,10 @@ public:
 		return m_tile.lock();
 	}
 
+	std::shared_ptr<Tile> getTile() const override final {
+		return m_tile.lock();
+	}
+
 	const Position &getLastPosition() const {
 		return lastPosition;
 	}

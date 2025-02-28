@@ -351,7 +351,7 @@ public:
 	bool wrapable = false;
 	bool wrapContainer = false;
 	bool multiUse = false;
-	bool movable = false;
+	bool movable = true;
 	bool canReadText = false;
 	bool canWriteText = false;
 	bool isVertical = false;
@@ -386,6 +386,7 @@ public:
 	void clear();
 
 	void loadFromProtobuf();
+	bool loadFromDat();
 
 	const ItemType &operator[](size_t id) const {
 		return getItemType(id);

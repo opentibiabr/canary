@@ -172,16 +172,15 @@ protected:
 		return attributePtr->getAttributeVector();
 	}
 
-	const int64_t &getInteger(ItemAttribute_t type) const {
-		static int64_t emptyInt;
+	int64_t getInteger(ItemAttribute_t type) const {
 		if (!attributePtr) {
-			return emptyInt;
+			return {};
 		}
 
 		return attributePtr->getAttributeValue(type);
 	}
 	const std::string &getString(ItemAttribute_t type) const {
-		static std::string emptyString;
+		static const std::string emptyString;
 		if (!attributePtr) {
 			return emptyString;
 		}

@@ -4519,7 +4519,7 @@ int PlayerFunctions::luaPlayerWheelUnlockScroll(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushboolean(L, player->wheel()->unlockScroll(scrollName));
+	lua_pushboolean(L, player->wheel().unlockScroll(scrollName));
 	return 1;
 }
 

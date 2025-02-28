@@ -70,6 +70,7 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
+	m_playerTitle(*this),
 	m_animusMastery(*this) { }
 
 Player::~Player() {
@@ -10410,12 +10411,12 @@ const PlayerTitle &Player::title() const {
 	return m_playerTitle;
 }
 
-// Cyclopedia interface
-std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
+// Cyclopedia
+PlayerCyclopedia &Player::cyclopedia() {
 	return m_playerCyclopedia;
 }
 
-const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
+const PlayerCyclopedia &Player::cyclopedia() const {
 	return m_playerCyclopedia;
 }
 
@@ -10426,15 +10427,6 @@ PlayerVIP &Player::vip() {
 
 const PlayerVIP &Player::vip() const {
 	return m_playerVIP;
-}
-
-// Cyclopedia
-PlayerCyclopedia &Player::cyclopedia() {
-	return m_playerCyclopedia;
-}
-
-const PlayerCyclopedia &Player::cyclopedia() const {
-	return m_playerCyclopedia;
 }
 
 // Animus Mastery interface

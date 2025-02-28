@@ -106,15 +106,19 @@ struct PlayerWheelMethodsBonusData {
 };
 
 struct PlayerWheelGem {
-	std::string uuid;
-	bool locked;
-	WheelGemAffinity_t affinity;
-	WheelGemQuality_t quality;
-	WheelGemBasicModifier_t basicModifier1;
-	WheelGemBasicModifier_t basicModifier2;
-	WheelGemSupremeModifier_t supremeModifier;
+	std::string uuid = {};
+	bool locked = false;
+	WheelGemAffinity_t affinity = {};
+	WheelGemQuality_t quality = {};
+	WheelGemBasicModifier_t basicModifier1 = {};
+	WheelGemBasicModifier_t basicModifier2 = {};
+	WheelGemSupremeModifier_t supremeModifier = {};
 
 	std::string toString() const;
+
+	explicit operator bool() const {
+		return !uuid.empty();
+	}
 
 	void save(const std::shared_ptr<KV> &kv) const;
 
@@ -128,9 +132,28 @@ private:
 	static PlayerWheelGem deserialize(const std::string &uuid, const ValueWrapper &val);
 };
 
+struct PromotionScroll {
+	uint16_t itemId;
+	std::string name;
+	uint8_t extraPoints;
+};
+
 class PlayerWheel {
 public:
 	explicit PlayerWheel(Player &initPlayer);
+
+	void loadActiveGems();
+	void saveActiveGems() const;
+	void loadRevealedGems();
+	void saveRevealedGems() const;
+
+	bool scrollAcquired(const std::string &scrollName);
+	bool unlockScroll(const std::string &scrollName);
+	void loadKVScrolls();
+	void saveKVScrolls() const;
+
+	void loadKVModGrades();
+	void saveKVModGrades() const;
 
 	/*
 	 * Functions for load and save player database informations
@@ -457,15 +480,15 @@ public:
 	 * @return The calculated mitigation value.
 	 */
 	float calculateMitigation() const;
-	PlayerWheelGem getGem(uint16_t index) const;
-	PlayerWheelGem getGem(const std::string &uuid) const;
+	PlayerWheelGem &getGem(uint16_t index);
+	PlayerWheelGem &getGem(const std::string &uuid);
 	uint16_t getGemIndex(const std::string &uuid) const;
-	void revealGem(WheelGemQuality_t quality) const;
-	void destroyGem(uint16_t index) const;
-	void switchGemDomain(uint16_t index) const;
-	void toggleGemLock(uint16_t index) const;
-	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index) const;
-	void removeActiveGem(WheelGemAffinity_t affinity) const;
+	void revealGem(WheelGemQuality_t quality);
+	void destroyGem(uint16_t index);
+	void switchGemDomain(uint16_t index);
+	void toggleGemLock(uint16_t index);
+	void setActiveGem(WheelGemAffinity_t affinity, uint16_t index);
+	void removeActiveGem(WheelGemAffinity_t affinity);
 	void addRevelationBonus(WheelGemAffinity_t affinity, uint16_t points);
 	void resetRevelationBonus();
 	void addSpellBonus(const std::string &spellName, const WheelSpells::Bonus &bonus);
@@ -494,11 +517,15 @@ private:
 	PlayerWheelMethodsBonusData m_playerBonusData;
 	std::unique_ptr<WheelModifierContext> m_modifierContext;
 
-	std::array<uint8_t, magic_enum::enum_count<WheelStage_t>() + 1> m_stages = { 0 };
-	std::array<int64_t, magic_enum::enum_count<WheelOnThink_t>() + 1> m_onThink = { 0 };
-	std::array<int32_t, magic_enum::enum_count<WheelStat_t>() + 1> m_stats = { 0 };
-	std::array<int32_t, magic_enum::enum_count<WheelMajor_t>() + 1> m_majorStats = { 0 };
-	std::array<bool, magic_enum::enum_count<WheelInstant_t>() + 1> m_instant = { false };
+	uint8_t m_modsMaxGrade = {};
+	std::array<uint8_t, 49> m_basicGrades = { 0 };
+	std::array<uint8_t, 76> m_supremeGrades = { 0 };
+
+	std::array<uint8_t, static_cast<size_t>(WheelStage_t::STAGE_COUNT)> m_stages = { 0 };
+	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
+	std::array<int32_t, static_cast<size_t>(WheelStat_t::TOTAL_COUNT)> m_stats = { 0 };
+	std::array<int32_t, static_cast<size_t>(WheelMajor_t::TOTAL_COUNT)> m_majorStats = { 0 };
+	std::array<bool, static_cast<size_t>(WheelInstant_t::INSTANT_COUNT)> m_instant = { false };
 	std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 	std::array<int32_t, COMBAT_COUNT> m_specializedMagic = { 0 };
 
@@ -507,4 +534,10 @@ private:
 	std::vector<std::string> m_learnedSpellsSelected;
 	std::unordered_map<std::string, WheelSpells::Bonus> m_spellsBonuses;
 	std::unordered_set<std::string> m_beamMasterySpells;
+
+	std::vector<PromotionScroll> m_unlockedScrolls;
+
+	std::array<PlayerWheelGem, 4> m_activeGems;
+	std::vector<PlayerWheelGem> m_revealedGems;
+	std::vector<PlayerWheelGem> m_destroyedGems;
 };

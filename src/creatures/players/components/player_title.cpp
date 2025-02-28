@@ -224,7 +224,9 @@ bool PlayerTitle::checkHighscore(uint8_t skill) const {
 		default:
 			std::string skillName = g_game().getSkillNameById(skill);
 			query = fmt::format(
-				"SELECT * FROM `players` WHERE `group_id` < {} AND `{}` > 10 ORDER BY `{}` DESC LIMIT 1",
+				"SELECT `id` FROM `players` "
+				"WHERE `group_id` < {} AND `{}` > 10 "
+				"ORDER BY `{}` DESC LIMIT 1",
 				static_cast<int>(GROUP_TYPE_GAMEMASTER), skillName, skillName
 			);
 			break;

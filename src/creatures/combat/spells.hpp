@@ -150,7 +150,7 @@ public:
 	[[nodiscard]] const VocSpellMap &getVocMap() const;
 	void addVocMap(uint16_t vocationId, bool b);
 
-	SpellGroup_t getGroup();
+	SpellGroup_t getGroup() const;
 	void setGroup(SpellGroup_t g);
 	SpellGroup_t getSecondaryGroup();
 	void setSecondaryGroup(SpellGroup_t g);

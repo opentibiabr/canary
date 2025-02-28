@@ -133,15 +133,15 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.Kilmaresh.First.Access) < 1 then
+	if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Access) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 1)
-	elseif (player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Kilmaresh.First.JamesfrancisTask) <= 50) and player:getStorageValue(Storage.Kilmaresh.First.Mission) < 3 then
+	elseif (player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.JamesfrancisTask) >= 0 and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.JamesfrancisTask) <= 50) and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Mission) < 3 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
 		npcHandler:setTopic(playerId, 15)
-	elseif player:getStorageValue(Storage.Kilmaresh.First.Mission) == 4 then
+	elseif player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Mission) == 4 then
 		npcHandler:setMessage(MESSAGE_GREET, "How could I help you?") -- It needs to be revised, it's not the same as the global
-		player:setStorageValue(Storage.Kilmaresh.First.Mission, 5)
+		player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.First.Mission, 5)
 		npcHandler:setTopic(playerId, 20)
 	end
 	return true
@@ -155,37 +155,37 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 1 then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 1 then
 			npcHandler:say({ "Could you help me do a ritual?" }, npc, creature) -- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:setTopic(playerId, 1)
 		end
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 1 then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 1 then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 1 then
 			player:addItem(31717, 1) -- Yonans List
 			player:addItem(31613, 1) -- Pick Enchanted
 			npcHandler:say({ "Here is the list with the missing ingredients to complete the ritual." }, npc, creature) -- It needs to be revised, it's not the same as the global
-			player:setStorageValue(Storage.Kilmaresh.Eighth.Yonan, 2)
+			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan, 2)
 			npcHandler:setTopic(playerId, 2)
 			npcHandler:setTopic(playerId, 2)
 		else
 			npcHandler:say({ "Sorry." }, npc, creature)
 		end
 	end
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 2 then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 2 then
 			npcHandler:say({ "Did you bring all the materials I informed you about? " }, npc, creature) -- It needs to be revised, it's not the same as the global
 			npcHandler:setTopic(playerId, 3)
 			npcHandler:setTopic(playerId, 3)
 		end
-	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 then
-		if player:getStorageValue(Storage.Kilmaresh.Eighth.Yonan) == 2 and player:getItemById(9651, 3) and player:getItemById(31325, 12) and player:getItemById(31333, 10) then
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 and player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 2 then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan) == 2 and player:getItemById(9651, 3) and player:getItemById(31325, 12) and player:getItemById(31333, 10) then
 			player:removeItem(9651, 3)
 			player:removeItem(31325, 12)
 			player:removeItem(31333, 10)
 			npcHandler:say({ "Thank you this stage of the ritual is complete." }, npc, creature) -- It needs to be revised, it's not the same as the global
-			player:setStorageValue(Storage.Kilmaresh.Eighth.Yonan, 3)
+			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan, 3)
 			npcHandler:setTopic(playerId, 4)
 			npcHandler:setTopic(playerId, 4)
 		else

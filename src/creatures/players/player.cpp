@@ -3948,7 +3948,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	updateImbuementTrackerStats();
 
 	safeCall([this] {
-		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED)));
 	});
 }
 
@@ -5650,7 +5650,8 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 void Player::onEndCondition(ConditionType_t type) {
 	Creature::onEndCondition(type);
 
-	if (type == CONDITION_INFIGHT) {
+	const auto &conditionFight = getCondition(CONDITION_INFIGHT);
+	if (type == CONDITION_INFIGHT && !conditionFight) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
@@ -7582,7 +7583,7 @@ void Player::sendFightModes() const {
 	}
 }
 
-void Player::sendNetworkMessage(const NetworkMessage &message) const {
+void Player::sendNetworkMessage(NetworkMessage &message) const {
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
@@ -8388,7 +8389,8 @@ void Player::initializeTaskHunting() {
 	}
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
-		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
+		auto buffer = g_ioprey().getTaskHuntingBaseDate();
+		client->writeToOutputBuffer(buffer);
 	}
 }
 
@@ -8906,6 +8908,20 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 		tmpPlayer->onCreatureSay(static_self_cast<Player>(), type, text);
 	}
 	return true;
+}
+
+void Player::setDead(bool isDead) {
+	m_isDead = isDead;
+	const auto &thisPlayer = static_self_cast<Player>();
+	if (isDead) {
+		g_game().addDeadPlayer(thisPlayer);
+	} else {
+		g_game().removeDeadPlayer(getName());
+	}
+}
+
+bool Player::isDead() const {
+	return m_isDead;
 }
 
 void Player::triggerMomentum() {
@@ -9963,7 +9979,6 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());

@@ -2294,11 +2294,33 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
+	auto itemSlots = item->getImbuementSlot();
+	if (slot >= itemSlots) {
+		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", this->getName(), slot);
+		this->sendImbuementResult("Invalid slot selection.");
+		return;
+	}
+
 	ImbuementInfo imbuementInfo;
 	if (item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
+	}
+
+	for (uint8_t i = 0; i < item->getImbuementSlot(); i++) {
+		if (i == slot) {
+			continue;
+		}
+
+		ImbuementInfo existingImbuement;
+		if (item->getImbuementInfo(i, &existingImbuement) && existingImbuement.imbuement) {
+			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
+				g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
+				this->sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
+				return;
+			}
+		}
 	}
 
 	const auto &items = imbuement->getItems();
@@ -3926,7 +3948,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	updateImbuementTrackerStats();
 
 	safeCall([this] {
-		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED)));
 	});
 }
 
@@ -5628,7 +5650,8 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 void Player::onEndCondition(ConditionType_t type) {
 	Creature::onEndCondition(type);
 
-	if (type == CONDITION_INFIGHT) {
+	const auto &conditionFight = getCondition(CONDITION_INFIGHT);
+	if (type == CONDITION_INFIGHT && !conditionFight) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
@@ -7560,7 +7583,7 @@ void Player::sendFightModes() const {
 	}
 }
 
-void Player::sendNetworkMessage(const NetworkMessage &message) const {
+void Player::sendNetworkMessage(NetworkMessage &message) const {
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
@@ -8366,7 +8389,8 @@ void Player::initializeTaskHunting() {
 	}
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
-		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
+		auto buffer = g_ioprey().getTaskHuntingBaseDate();
+		client->writeToOutputBuffer(buffer);
 	}
 }
 
@@ -8884,6 +8908,20 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 		tmpPlayer->onCreatureSay(static_self_cast<Player>(), type, text);
 	}
 	return true;
+}
+
+void Player::setDead(bool isDead) {
+	m_isDead = isDead;
+	const auto &thisPlayer = static_self_cast<Player>();
+	if (isDead) {
+		g_game().addDeadPlayer(thisPlayer);
+	} else {
+		g_game().removeDeadPlayer(getName());
+	}
+}
+
+bool Player::isDead() const {
+	return m_isDead;
 }
 
 void Player::triggerMomentum() {
@@ -9941,7 +9979,6 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());

@@ -732,9 +732,8 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, const std
 			g_game().internalTeleport(player, player->getTemplePosition());
 			player->sendMagicEffect(player->getTemplePosition(), CONST_ME_TELEPORT);
 			player->sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+			return false;
 		}
-
-		return false;
 	}
 
 	if (!LuaScriptInterface::reserveScriptEnv()) {

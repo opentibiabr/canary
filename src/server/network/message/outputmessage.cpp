@@ -14,8 +14,10 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "utils/lockfree.hpp"
 
-constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
+constexpr size_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
+
+static inline LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY> outputMessageAllocator;
 
 OutputMessagePool &OutputMessagePool::getInstance() {
 	return inject<OutputMessagePool>();
@@ -59,5 +61,22 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 }
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
+	OutputMessage* rawPtr = outputMessageAllocator.allocate(1);
+
+	if (!rawPtr) {
+		g_logger().error("Failed to allocate OutputMessage");
+	}
+
+	try {
+		rawPtr->resetMessage();
+	} catch (...) {
+		outputMessageAllocator.deallocate(rawPtr, 1);
+		throw;
+	}
+
+	return { rawPtr, [](OutputMessage* ptr) {
+				if (ptr != nullptr) {
+					outputMessageAllocator.deallocate(ptr, 1);
+				}
+			} };
 }

@@ -240,6 +240,9 @@ void House::setAccessList(uint32_t listId, const std::string &textlist) {
 		const auto &door = getDoorByNumber(listId);
 		if (door) {
 			door->setAccessList(textlist);
+		} else {
+			// The door list is only loaded after the house items are loaded, so we need to save it here for later use
+			m_doorListId[listId] = textlist;
 		}
 
 		// We dont have kick anyone
@@ -315,21 +318,25 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 	std::unordered_set<std::shared_ptr<Player>> playersToSave = { player };
 
 	for (const auto &item : moveItemList) {
-		g_logger().debug("[{}] moving item '{}' to depot", __FUNCTION__, item->getName());
-		auto targetPlayer = player;
+		std::shared_ptr<Player> targetPlayer = player;
+
 		if (item->hasOwner() && !item->isOwner(targetPlayer)) {
-			targetPlayer = g_game().getPlayerByGUID(item->getOwnerId());
-			if (!targetPlayer) {
-				g_game().internalRemoveItem(item, item->getItemCount());
+			const auto &itemOwner = g_game().getPlayerByGUID(item->getOwnerId(), true);
+			if (itemOwner) {
+				targetPlayer = itemOwner;
+				playersToSave.insert(targetPlayer);
+			} else {
+				g_logger().warn("[{}] owner of item '{}' (GUID: {}) not found, skipping transfer", __FUNCTION__, item->getName(), item->getOwnerId());
 				continue;
 			}
-			playersToSave.insert(targetPlayer);
 		}
+
 		g_game().internalMoveItem(item->getParent(), targetPlayer->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
 	}
 	for (const auto &playerToSave : playersToSave) {
 		g_saveManager().savePlayer(playerToSave);
 	}
+
 	return true;
 }
 
@@ -407,6 +414,17 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 	const auto &door = getDoorByNumber(listId);
 	if (!door) {
 		return false;
+	}
+
+	// Check if we have the list cached and set it to the door list
+	const auto it = m_doorListId.find(listId);
+	if (it != m_doorListId.end()) {
+		list = it->second;
+
+		// Set to the door and remove from cache
+		door->setAccessList(list);
+		m_doorListId.erase(it);
+		return true;
 	}
 
 	return door->getAccessList(list);

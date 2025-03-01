@@ -549,14 +549,6 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 	}
 
 	const auto &tile = g_game().map.getOrCreateTile(toPos);
-
-	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
-	if (ret != RETURNVALUE_NOERROR) {
-		player->sendCancelMessage(ret);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
-		return false;
-	}
-
 	if (blockingCreature && tile->getBottomVisibleCreature(player) != nullptr) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -931,7 +923,7 @@ void Spell::addVocMap(uint16_t vocationId, bool b) {
 	vocSpellMap[vocationId] = b;
 }
 
-SpellGroup_t Spell::getGroup() {
+SpellGroup_t Spell::getGroup() const {
 	return group;
 }
 
@@ -1055,6 +1047,10 @@ InstantSpell::InstantSpell() = default;
 
 bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
 	if (!playerSpellCheck(player)) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_POWERLESS) && getGroup() == SPELLGROUP_ATTACK) {
 		return false;
 	}
 
@@ -1376,6 +1372,10 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 
 	// If script not loaded correctly, return
 	if (!isRuneSpellLoadedScriptId()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_POWERLESS) && getGroup() == SPELLGROUP_ATTACK) {
 		return false;
 	}
 

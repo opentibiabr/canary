@@ -384,5 +384,9 @@ class PlayerFunctions {
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
 
+	static int luaPlayerAddAnimusMastery(lua_State* L);
+	static int luaPlayerRemoveAnimusMastery(lua_State* L);
+	static int luaPlayerHasAnimusMastery(lua_State* L);
+
 	friend class CreatureFunctions;
 };

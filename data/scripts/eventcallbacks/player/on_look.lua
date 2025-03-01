@@ -22,9 +22,16 @@ local function getPositionDescription(position)
 	end
 end
 
-local function handleItemDescription(inspectedThing, lookDistance)
+local function handleItemDescription(inspectedThing, lookDistance, player)
 	local descriptionText = inspectedThing:getDescription(lookDistance)
 
+	if not player:getGroup():getAccess() then
+		if inspectedThing:getId() == ITEM_MAGICWALL or inspectedThing:getId() == ITEM_MAGICWALL_SAFE then
+			return "You see a magic wall."
+		elseif inspectedThing:getId() == ITEM_WILDGROWTH or inspectedThing:getId() == ITEM_WILDGROWTH_SAFE then
+			return "You see rush wood."
+		end
+	end
 	if isSpecialItem(inspectedThing.itemid) then
 		local itemCharges = inspectedThing:getCharges()
 		if itemCharges > 0 then
@@ -63,6 +70,11 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 		local itemUniqueId = inspectedThing:getUniqueId()
 		if itemUniqueId > 0 and itemUniqueId < 65536 then
 			descriptionText = string.format("%s, Unique ID: %d", descriptionText, itemUniqueId)
+		end
+
+		local doorIdAttribute = inspectedThing:getAttribute(ITEM_ATTRIBUTE_DOORID)
+		if doorIdAttribute and doorIdAttribute > 0 then
+			descriptionText = string.format("%s, Door ID: %d", descriptionText, doorIdAttribute)
 		end
 
 		local itemType = inspectedThing:getType()
@@ -114,7 +126,7 @@ function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDi
 	local descriptionText
 
 	if inspectedThing:isItem() then
-		descriptionText = handleItemDescription(inspectedThing, lookDistance)
+		descriptionText = handleItemDescription(inspectedThing, lookDistance, player)
 	elseif inspectedThing:isCreature() then
 		descriptionText = handleCreatureDescription(inspectedThing, lookDistance)
 	end

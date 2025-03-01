@@ -51,7 +51,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action) {
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		offer.counter = (result->getNumber<uint32_t>("id") ^ 0xABCDEF) & 0xFFFF;
 		if (result->getNumber<uint16_t>("anonymous") == 0) {
 			offer.playerName = result->getString("player_name");
 		} else {
@@ -84,7 +84,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		offer.counter = (result->getNumber<uint32_t>("id") ^ 0xABCDEF) & 0xFFFF;
 		if (result->getNumber<uint16_t>("anonymous") == 0) {
 			offer.playerName = result->getString("player_name");
 		} else {
@@ -116,7 +116,7 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+		offer.counter = (result->getNumber<uint32_t>("id") ^ 0xABCDEF) & 0xFFFF;
 		offer.itemId = result->getNumber<uint16_t>("itemtype");
 		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
 		offerList.push_back(offer);
@@ -272,7 +272,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 	const int32_t created = timestamp - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::string query = fmt::format(
-		"SELECT `id`, `sale`, `itemtype`, `amount`, `created`, `price`, `player_id`, `anonymous`, `tier`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `created` = {} AND (`id` & 65535) = {} AND `world_id` = {} LIMIT 1",
+		"SELECT `id`, `sale`, `itemtype`, `amount`, `created`, `price`, `player_id`, `anonymous`, `tier`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `created` = {} AND ((`id` ^ 0xABCDEF) & 65535) = {} AND `world_id` = {} LIMIT 1",
 		created, counter, g_game().worlds().getCurrentWorld()->id
 	);
 
@@ -285,7 +285,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 	offer.id = result->getNumber<uint32_t>("id");
 	offer.type = static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale"));
 	offer.amount = result->getNumber<uint16_t>("amount");
-	offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
+	offer.counter = (result->getNumber<uint32_t>("id") ^ 0xABCDEF) & 0xFFFF;
 	offer.timestamp = result->getNumber<uint32_t>("created");
 	offer.price = result->getNumber<uint64_t>("price");
 	offer.itemId = result->getNumber<uint16_t>("itemtype");

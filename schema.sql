@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`, `world_id`) VALUES ('db_version', '49', 1), ('motd_hash', '', 1), ('motd_num', '0', 1), ('players_record', '0', 1);
+INSERT INTO `server_config` (`config`, `value`, `world_id`) VALUES ('db_version', '50', 1), ('motd_hash', '', 1), ('motd_num', '0', 1), ('players_record', '0', 1);
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -171,6 +171,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
     `randomize_mount` tinyint(1) NOT NULL DEFAULT '0',
     `boss_points` int NOT NULL DEFAULT '0',
+    `animus_mastery` mediumblob DEFAULT NULL,
     `world_id` int(3) UNSIGNED NOT NULL,
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),

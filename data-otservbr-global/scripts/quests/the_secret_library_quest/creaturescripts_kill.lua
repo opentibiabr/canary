@@ -45,13 +45,3 @@ function creaturescripts_library_bosses.onDeath(creature, corpse, killer, mostDa
 end
 
 creaturescripts_library_bosses:register()
-
-local creaturescripts_library_bosses_oberon = CreatureEvent("oberonImmune")
-
-function creaturescripts_library_bosses_oberon.onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
-	primaryDamage = 0
-	secondaryDamage = 0
-	return primaryDamage, primaryType, secondaryDamage, secondaryType
-end
-
-creaturescripts_library_bosses_oberon:register()

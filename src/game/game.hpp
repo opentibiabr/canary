@@ -388,7 +388,7 @@ public:
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);
-	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized = 0);
+	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount, uint8_t isMountRandomized = 0);
 	void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 	void playerJoinParty(uint32_t playerId, uint32_t leaderId);
 	void playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId);
@@ -530,6 +530,10 @@ public:
 		return npcs;
 	}
 
+	void addDeadPlayer(const std::shared_ptr<Player> &player);
+	void removeDeadPlayer(const std::string &playerName);
+	std::shared_ptr<Player> getDeadPlayer(const std::string &playerName);
+
 	const std::vector<ItemClassification*> &getItemsClassifications() const {
 		return itemsClassifications;
 	}
@@ -542,6 +546,7 @@ public:
 
 	void addMonster(const std::shared_ptr<Monster> &monster);
 	void removeMonster(const std::shared_ptr<Monster> &monster);
+	void updateMonster(const std::shared_ptr<Monster> &monster, const std::shared_ptr<MonsterType> &monsterType);
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
@@ -636,43 +641,6 @@ public:
 	void sendUpdateCreature(const std::shared_ptr<Creature> &creature);
 	std::shared_ptr<Item> wrapItem(const std::shared_ptr<Item> &item, const std::shared_ptr<House> &house);
 
-	/**
-	 * @brief Adds a player to the unique login map.
-	 * @details The function registers a player in the unique login map to ensure no duplicate logins.
-	 * If the player pointer is null, it logs an error and returns.
-	 *
-	 * @param player A pointer to the Player object to add.
-	 */
-	void addPlayerUniqueLogin(const std::shared_ptr<Player> &player);
-
-	/**
-	 * @brief Gets a player from the unique login map using their name.
-	 * @details The function attempts to find a player in the unique login map using their name.
-	 * If the player's name is not found, the function returns a null pointer.
-	 * If an empty string is provided, it logs an error and returns a null pointer.
-	 *
-	 * @param playerName The name of the player to search for.
-	 * @return A pointer to the Player object if found, null otherwise.
-	 */
-	std::shared_ptr<Player> getPlayerUniqueLogin(const std::string &playerName) const;
-
-	/**
-	 * @brief Removes a player from the unique login map using their name.
-	 * @details The function removes a player from the unique login map using their name.
-	 * If an empty string is provided, it logs an error and returns.
-	 *
-	 * @param playerName The name of the player to remove.
-	 */
-	void removePlayerUniqueLogin(const std::string &playerName);
-
-	/**
-	 * @brief Removes a player from the unique login map.
-	 * @details The function removes a player from the unique login map.
-	 * If the player pointer is null, it logs an error and returns.
-	 *
-	 * @param player A pointer to the Player object to remove.
-	 */
-	void removePlayerUniqueLogin(const std::shared_ptr<Player> &player);
 	void playerCheckActivity(const std::string &playerName, int interval);
 
 	/**
@@ -827,7 +795,7 @@ private:
 	phmap::flat_hash_map<std::string, QueryHighscoreCacheEntry> queryCache;
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
-	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
+	std::unordered_map<std::string, std::weak_ptr<Player>> m_deadPlayers;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;

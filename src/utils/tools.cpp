@@ -569,7 +569,7 @@ Position getNextPosition(Direction direction, Position pos) {
 	return pos;
 }
 
-Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
+Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* = true */) {
 	if (from == to) {
 		return DIRECTION_NONE;
 	}
@@ -577,18 +577,17 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 	const int_fast32_t dx = Position::getOffsetX(from, to);
 	const int_fast32_t dy = Position::getOffsetY(from, to);
 
-	if (exactDiagonalOnly) {
-		const int_fast32_t absDx = std::abs(dx);
-		const int_fast32_t absDy = std::abs(dy);
+	if (dx == 0 && dy == 0) {
+		return DIRECTION_NONE;
+	}
 
-		/*
-		 * Only consider diagonal if dx and dy are equal (exact diagonal).
-		 */
-		if (absDx > absDy) {
-			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
-		}
-		if (absDx < absDy) {
-			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+	if (exactDiagonalOnly) {
+		if (std::abs(dx) != std::abs(dy)) {
+			if (std::abs(dx) > std::abs(dy)) {
+				return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
+			} else {
+				return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+			}
 		}
 	}
 
@@ -601,7 +600,6 @@ Direction getDirectionTo(const Position &from, const Position &to, bool exactDia
 		}
 		return DIRECTION_EAST;
 	}
-
 	if (dx > 0) {
 		if (dy < 0) {
 			return DIRECTION_SOUTHWEST;

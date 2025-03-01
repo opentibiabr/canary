@@ -1450,8 +1450,6 @@ function setGlobalStorageValue(key, value)
 	return true
 end
 
-getWorldType = Game.getWorldType
-
 numberToVariant = Variant
 stringToVariant = Variant
 positionToVariant = Variant

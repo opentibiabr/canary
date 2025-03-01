@@ -69,6 +69,7 @@
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
+    <ClInclude Include="..\src\game\worlds\gameworlds.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />
     <ClInclude Include="..\src\io\filestream.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
@@ -280,6 +281,7 @@
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
+    <ClCompile Include="..\src\game\worlds\gameworlds.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\filestream.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />

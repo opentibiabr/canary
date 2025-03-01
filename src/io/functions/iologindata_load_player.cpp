@@ -71,9 +71,8 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, 
 bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const std::string &name) {
 	Database &db = Database::getInstance();
 
-	std::ostringstream query;
-	query << "SELECT `id`, `account_id`, `group_id`, `deletion` FROM `players` WHERE `name` = " << db.escapeString(name);
-	DBResult_ptr result = db.storeQuery(query.str());
+	std::string query = fmt::format("SELECT `id`, `account_id`, `group_id`, `deletion`, `world_id` FROM `players` WHERE `name` = {}", db.escapeString(name));
+	DBResult_ptr result = db.storeQuery(query);
 	if (!result) {
 		return false;
 	}
@@ -81,6 +80,8 @@ bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const
 	if (result->getNumber<uint64_t>("deletion") != 0) {
 		return false;
 	}
+
+	player->worldId = result->getNumber<uint8_t>("world_id");
 
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	const auto &group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
@@ -327,7 +328,7 @@ void IOLoginDataLoad::loadPlayerSkullSystem(const std::shared_ptr<Player> &playe
 		return;
 	}
 
-	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
+	if (g_game().worlds().getCurrentWorld()->type != WORLD_TYPE_PVP_ENFORCED) {
 		const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
 		if (skullSeconds > 0) {
 			// ensure that we round up the number of ticks

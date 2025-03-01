@@ -117,10 +117,7 @@ public:
 
 	void updatePremiumTime();
 
-	std::tuple<phmap::flat_hash_map<std::string, uint64_t>, AccountErrors_t> getAccountPlayers() const;
-
-	void setHouseBidId(uint32_t houseId);
-	uint32_t getHouseBidId() const;
+	std::tuple<phmap::flat_hash_map<std::string, Character>, AccountErrors_t> getAccountPlayers() const;
 
 	// Old protocol compat
 	void setProtocolCompat(bool toggle);
@@ -133,6 +130,9 @@ public:
 	bool authenticateSession();
 
 	bool authenticatePassword(const std::string &password);
+
+	uint32_t getHouseBidId() const;
+	void setHouseBidId(uint32_t houseId);
 
 private:
 	std::string m_descriptor;

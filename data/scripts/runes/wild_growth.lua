@@ -11,14 +11,7 @@ function onCreateWildGrowth(creature, position)
 	if tile:getTopCreature() and not tile:getTopCreature():isPlayer() then
 		return false
 	end
-
-	local wildGrowth
-	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
-		wildGrowth = ITEM_WILDGROWTH_SAFE
-	else
-		wildGrowth = ITEM_WILDGROWTH
-	end
-
+	local wildGrowth = Game.getWorldType() == WORLD_TYPE_NO_PVP and ITEM_WILDGROWTH_SAFE or ITEM_WILDGROWTH
 	local item = Game.createItem(wildGrowth, 1, position)
 	if item then
 		item:setDuration(30)

@@ -255,7 +255,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	query << "`animus_mastery` = " << db.escapeBlob(animusMastery, static_cast<uint32_t>(animusMasterySize)) << ",";
 
-	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
+	if (g_game().worlds().getCurrentWorld()->type != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
 
 		if (player->skullTicks > 0) {

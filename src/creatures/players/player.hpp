@@ -164,6 +164,10 @@ public:
 		return online;
 	}
 
+	uint8_t getWorldId() {
+		return worldId;
+	}
+
 	static uint32_t getFirstID();
 	static uint32_t getLastID();
 
@@ -922,7 +926,7 @@ public:
 	void sendCyclopediaCharacterBadges() const;
 	void sendCyclopediaCharacterTitles() const;
 	void sendHighscoresNoData() const;
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) const;
+	void sendHighscores(const std::string &selectedWorld, const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) const;
 	void addAsyncOngoingTask(uint64_t flags);
 	bool hasAsyncOngoingTask(uint64_t flags) const;
 	void resetAsyncOngoingTask(uint64_t flags);
@@ -1503,6 +1507,7 @@ private:
 	uint32_t coinTransferableBalance = 0;
 	uint16_t xpBoostTime = 0;
 	uint8_t randomMount = 0;
+	uint8_t worldId = 1;
 
 	uint16_t lastStatsTrainingTime = 0;
 	uint16_t staminaMinutes = 2520;

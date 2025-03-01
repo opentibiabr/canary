@@ -40,6 +40,7 @@
 #include "enums/player_icons.hpp"
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
+#include "game/worlds/gameworlds.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
@@ -1154,7 +1155,7 @@ bool Player::canWalkthrough(const std::shared_ptr<Creature> &creature) {
 
 	if (player) {
 		const auto &playerTile = player->getTile();
-		if (!playerTile || (!playerTile->hasFlag(TILESTATE_NOPVPZONE) && !playerTile->hasFlag(TILESTATE_PROTECTIONZONE) && player->getLevel() > static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) && g_game().getWorldType() != WORLD_TYPE_NO_PVP)) {
+		if (!playerTile || (!playerTile->hasFlag(TILESTATE_NOPVPZONE) && !playerTile->hasFlag(TILESTATE_PROTECTIONZONE) && player->getLevel() > static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) && g_game().worlds().getCurrentWorld()->type != WORLD_TYPE_NO_PVP)) {
 			return false;
 		}
 
@@ -1202,7 +1203,7 @@ bool Player::canWalkthroughEx(const std::shared_ptr<Creature> &creature) const {
 	const auto &npc = creature->getNpc();
 	if (player) {
 		const auto &playerTile = player->getTile();
-		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
+		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().worlds().getCurrentWorld()->type == WORLD_TYPE_NO_PVP);
 	} else if (npc) {
 		const auto &tile = npc->getTile();
 		const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
@@ -2495,7 +2496,7 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
 				onAttackedCreatureDisappear(false);
 			}
 		}
-	} else if (zone == ZONE_NORMAL && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+	} else if (zone == ZONE_NORMAL && g_game().worlds().getCurrentWorld()->type == WORLD_TYPE_NO_PVP) {
 		// attackedCreature can leave a pvp zone if not pzlocked
 		if (attackedCreature->getPlayer()) {
 			setAttackedCreature(nullptr);
@@ -5676,7 +5677,7 @@ void Player::onCombatRemoveCondition(const std::shared_ptr<Condition> &condition
 	// Creature::onCombatRemoveCondition(condition);
 	if (condition->getId() > 0) {
 		// Means the condition is from an item, id == slot
-		if (g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
+		if (g_game().worlds().getCurrentWorld()->type == WORLD_TYPE_PVP_ENFORCED) {
 			const auto &item = getInventoryItem(static_cast<Slots_t>(condition->getId()));
 			if (item) {
 				// 25% chance to destroy the item
@@ -5722,7 +5723,7 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 
 	const auto &targetPlayer = target->getPlayer();
 	if (targetPlayer && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
-		if (!pzLocked && g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
+		if (!pzLocked && g_game().worlds().getCurrentWorld()->type == WORLD_TYPE_PVP_ENFORCED) {
 			pzLocked = true;
 			sendIcons();
 		}
@@ -6279,7 +6280,7 @@ Skulls_t Player::getSkull() const {
 }
 
 Skulls_t Player::getSkullClient(const std::shared_ptr<Creature> &creature) {
-	if (!creature || g_game().getWorldType() != WORLD_TYPE_PVP) {
+	if (!creature || g_game().worlds().getCurrentWorld()->type != WORLD_TYPE_PVP) {
 		return SKULL_NONE;
 	}
 
@@ -6345,7 +6346,7 @@ void Player::clearAttacked() {
 }
 
 void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
-	if (hasFlag(PlayerFlags_t::NotGainInFight) || attacked == getPlayer() || g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight) || attacked == getPlayer() || g_game().worlds().getCurrentWorld()->type == WORLD_TYPE_PVP_ENFORCED) {
 		return;
 	}
 
@@ -7553,9 +7554,9 @@ void Player::sendHighscoresNoData() const {
 	}
 }
 
-void Player::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) const {
+void Player::sendHighscores(const std::string &selectedWorld, const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer) const {
 	if (client) {
-		client->sendHighscores(characters, categoryId, vocationId, page, pages, updateTimer);
+		client->sendHighscores(selectedWorld, characters, categoryId, vocationId, page, pages, updateTimer);
 	}
 }
 
@@ -7634,7 +7635,7 @@ void Player::onThink(uint32_t interval) {
 		}
 	}
 
-	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
+	if (g_game().worlds().getCurrentWorld()->type != WORLD_TYPE_PVP_ENFORCED) {
 		checkSkullTicks(interval / 1000);
 	}
 

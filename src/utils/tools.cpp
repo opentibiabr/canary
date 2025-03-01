@@ -15,6 +15,7 @@
 #include "lua/lua_definitions.hpp"
 #include "utils/const.hpp"
 #include "config/configmanager.hpp"
+#include "game/movement/position.hpp"
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
@@ -569,39 +570,50 @@ Position getNextPosition(Direction direction, Position pos) {
 	return pos;
 }
 
-Direction getDiagonalDirection(int32_t dx, int32_t dy);
-Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* = true */) {
+Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
 	if (from == to) {
 		return DIRECTION_NONE;
 	}
 
-	const int32_t dx = Position::getOffsetX(from, to);
-	const int32_t dy = Position::getOffsetY(from, to);
-
-	if (dx == 0 && dy == 0) {
-		return DIRECTION_NONE;
-	}
+	const int_fast32_t dx = Position::getOffsetX(from, to);
+	const int_fast32_t dy = Position::getOffsetY(from, to);
 
 	if (exactDiagonalOnly) {
-		if (std::abs(dx) != std::abs(dy)) {
-			return (std::abs(dx) > std::abs(dy)) ? (dx < 0 ? DIRECTION_EAST : DIRECTION_WEST)
-												 : (dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH);
+		const int_fast32_t absDx = std::abs(dx);
+		const int_fast32_t absDy = std::abs(dy);
+
+		/*
+		 * Only consider diagonal if dx and dy are equal (exact diagonal).
+		 */
+		if (absDx > absDy) {
+			return dx < 0 ? DIRECTION_EAST : DIRECTION_WEST;
+		}
+		if (absDx < absDy) {
+			return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
 		}
 	}
 
-	return getDiagonalDirection(dx, dy);
-}
-
-Direction getDiagonalDirection(int32_t dx, int32_t dy) {
 	if (dx < 0) {
-		return (dy < 0) ? DIRECTION_SOUTHEAST : (dy > 0) ? DIRECTION_NORTHEAST
-														 : DIRECTION_EAST;
+		if (dy < 0) {
+			return DIRECTION_SOUTHEAST;
+		}
+		if (dy > 0) {
+			return DIRECTION_NORTHEAST;
+		}
+		return DIRECTION_EAST;
 	}
+
 	if (dx > 0) {
-		return (dy < 0) ? DIRECTION_SOUTHWEST : (dy > 0) ? DIRECTION_NORTHWEST
-														 : DIRECTION_WEST;
+		if (dy < 0) {
+			return DIRECTION_SOUTHWEST;
+		}
+		if (dy > 0) {
+			return DIRECTION_NORTHWEST;
+		}
+		return DIRECTION_WEST;
 	}
-	return (dy > 0) ? DIRECTION_NORTH : DIRECTION_SOUTH;
+
+	return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
 }
 
 using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;

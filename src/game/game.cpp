@@ -8604,9 +8604,27 @@ std::string Game::generateHighscoreQuery(
 		return "";
 	}
 
+	std::string vocationCondition = (vocation != 0xFFFFFFFF) ? generateVocationConditionHighscore(vocation) : "";
+
+	std::string worldCondition = !worldName.empty() ? fmt::format(" AND `w`.`name` = {}", Database::getInstance().escapeString(worldName)) : "";
+
 	std::string query = fmt::format(
-		"SELECT *, @row AS `entries`, {0} AS `page` FROM (SELECT *, (@row := @row + 1) AS `rn` FROM (SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `p`.`{1}` AS `points`, @curRank := IF(@prevRank = `{1}`, @curRank, IF(@prevRank := `{1}`, @curRank + 1, @curRank + 1)) AS `rank` FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`world_id` = `w`.`id`, (SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` WHERE `group_id` < {2} {6} ORDER BY `{1}` DESC) `t`{3}) `T` WHERE `rn` > {4} AND `rn` <= {5}",
-		page, categoryName, static_cast<int>(GROUP_TYPE_GAMEMASTER), vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "", startPage, endPage, worldName
+		"SELECT *, @row AS `entries`, {0} AS `page` FROM ("
+		"SELECT *, (@row := @row + 1) AS `rn` FROM ("
+		"SELECT `p`.`id`, `p`.`name`, `p`.`level`, `p`.`vocation`, `w`.`name` AS `worldName`, `p`.`{1}` AS `points`, "
+		"@curRank := IF(@prevRank = `{1}`, @curRank, IF(@prevRank := `{1}`, @curRank + 1, @curRank + 1)) AS `rank` "
+		"FROM `players` `p` INNER JOIN `worlds` `w` ON `p`.`world_id` = `w`.`id`, "
+		"(SELECT @curRank := 0, @prevRank := NULL, @row := 0) `r` "
+		"WHERE `group_id` < {2}{3}{4} "
+		"ORDER BY `{1}` DESC) `t`"
+		") `T` WHERE `rn` > {5} AND `rn` <= {6}",
+		page, // {0}
+		categoryName, // {1}
+		static_cast<int>(GROUP_TYPE_GAMEMASTER), // {2}
+		vocationCondition, // {3}
+		worldCondition, // {4}
+		startPage, // {5}
+		endPage // {6}
 	);
 
 	return query;
@@ -8621,13 +8639,15 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 		const auto &voc = it.second;
 		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `p`.`vocation` = " << voc->getId();
+				queryPart << " AND (`p`.`vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
 				queryPart << " OR `p`.`vocation` = " << voc->getId();
 			}
 		}
 	}
+
+	queryPart << ")";
 
 	return queryPart.str();
 }

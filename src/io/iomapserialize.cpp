@@ -381,7 +381,7 @@ bool IOMapSerialize::saveHouseInfo() {
 
 bool IOMapSerialize::SaveHouseInfoGuard() {
 	Database &db = Database::getInstance();
-	const auto worldId = g_game().worlds().getCurrentWorld()->id;
+	const auto worldId = static_cast<int>(g_game().worlds().getCurrentWorld()->id);
 
 	std::ostringstream query;
 	DBInsert houseUpdate("INSERT INTO `houses` (`id`, `owner`, `paid`, `warnings`, `name`, `town_id`, `rent`, `size`, `beds`, `bidder`, `bidder_name`, `highest_bid`, `internal_bid`, `bid_end_date`, `state`, `transfer_status`, `world_id`) VALUES ");

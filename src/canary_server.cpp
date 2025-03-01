@@ -293,10 +293,14 @@ void CanaryServer::loadConfigLua() {
 
 #ifdef _WIN32
 	const std::string &defaultPriority = g_configManager().getString(DEFAULT_PRIORITY);
-	if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
+	if (strcasecmp(defaultPriority.c_str(), "real-time") == 0) {
+		SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+	} else if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	} else if (strcasecmp(defaultPriority.c_str(), "above-normal") == 0) {
 		SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS);
+	} else {
+		SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 	}
 #endif
 }
@@ -310,10 +314,7 @@ void CanaryServer::initializeDatabase() {
 
 	logger.debug("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
-		throw FailedToInitializeCanary(fmt::format(
-			"The database you have specified in {} is empty, please import the schema.sql to your database.",
-			g_configManager().getConfigFileLua()
-		));
+		throw FailedToInitializeCanary(fmt::format("The database you have specified in {} is empty, please import the schema.sql to your database.", g_configManager().getConfigFileLua()));
 	}
 
 	DatabaseManager::updateDatabase();
@@ -330,12 +331,10 @@ void CanaryServer::loadModules() {
 	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
 	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
-		throw FailedToInitializeCanary(fmt::format(
-			"The datapack folder name '{}' is wrong, please select valid "
-			"datapack name 'data-canary' or 'data-otservbr-global "
-			"or enable in config.lua to use any datapack folder",
-			datapackName
-		));
+		throw FailedToInitializeCanary(fmt::format("The datapack folder name '{}' is wrong, please select valid "
+		                                           "datapack name 'data-canary' or 'data-otservbr-global "
+		                                           "or enable in config.lua to use any datapack folder",
+		                                           datapackName));
 	}
 
 	logger.debug("Initializing lua environment...");

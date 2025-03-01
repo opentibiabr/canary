@@ -570,6 +570,10 @@ Position getNextPosition(Direction direction, Position pos) {
 }
 
 Direction getDirectionTo(const Position &from, const Position &to, bool exactDiagonalOnly /* =true*/) {
+	if (from == to) {
+		return DIRECTION_NONE;
+	}
+
 	const int_fast32_t dx = Position::getOffsetX(from, to);
 	const int_fast32_t dy = Position::getOffsetY(from, to);
 

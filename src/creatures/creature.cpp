@@ -208,7 +208,7 @@ void Creature::onCreatureWalk() {
 			if (getNextStep(dir, flags)) {
 				ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
 				if (ret != RETURNVALUE_NOERROR) {
-					if (std::shared_ptr<Player> player = getPlayer()) {
+					if (const auto &player = getPlayer()) {
 						player->sendCancelMessage(ret);
 						player->sendCancelWalk();
 					}

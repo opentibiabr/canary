@@ -10965,6 +10965,8 @@ void Game::updatePlayersOnline() const {
 		// g_metrics().addUpDownCounter("players_online", 1);
 		// g_metrics().addUpDownCounter("players_online", -1);
 
+		const auto worldId = static_cast<int>(g_game().worlds().getCurrentWorld()->id);
+
 		if (m_players.empty()) {
 			std::string query = "SELECT COUNT(*) AS count FROM players_online;";
 			auto result = g_database().storeQuery(query);
@@ -10975,11 +10977,10 @@ void Game::updatePlayersOnline() const {
 			}
 		} else {
 			// Insert the current players
-			DBInsert stmt("INSERT IGNORE INTO `players_online` (player_id) VALUES ");
+			DBInsert stmt("INSERT IGNORE INTO `players_online` (player_id, world_id) VALUES ");
 			for (const auto &[key, player] : m_players) {
-				std::ostringstream playerQuery;
-				playerQuery << "(" << player->getGUID() << ")";
-				stmt.addRow(playerQuery.str());
+				std::string playerQuery = fmt::format("{}, {}", player->getGUID(), worldId);
+				stmt.addRow(playerQuery);
 			}
 			stmt.execute();
 			changesMade = true;
@@ -10991,7 +10992,7 @@ void Game::updatePlayersOnline() const {
 				cleanupQuery << player->getGUID() << ",";
 			}
 			cleanupQuery.seekp(-1, std::ostringstream::cur); // Remove the last comma
-			cleanupQuery << ");";
+			cleanupQuery << ") AND `world_id` = " << worldId << ";";
 			g_database().executeQuery(cleanupQuery.str());
 		}
 

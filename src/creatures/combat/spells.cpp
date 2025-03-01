@@ -1405,6 +1405,10 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 		return false;
 	}
 
+	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP && !getNeedTarget() && !player->isFirstOnStack()) {
+		return false;
+	}
+
 	postCastSpell(player);
 	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES)) {
 		int32_t newCount = std::max<int32_t>(0, item->getItemCount() - 1);

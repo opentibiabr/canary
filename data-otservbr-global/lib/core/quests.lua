@@ -162,8 +162,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Gather the material Tereban listed. \z
-							Talk to him about your mission when you have given him everything he was looking for.",
+						[1] = "Gather the material Tereban listed. Talk to him about your mission when you have given him everything he was looking for.",
 						[2] = "You brought all the required materials to Tereban and guaranteed his sons a great birthday party.",
 					},
 				},
@@ -185,8 +184,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the special wood in the barbarian camps of Hrodmir and bring it to Tereban. \z
-							It might be a good idea to start looking in the northernmost camp.",
+						[1] = "Find the special wood in the barbarian camps of Hrodmir and bring it to Tereban. It might be a good idea to start looking in the northernmost camp.",
 						[2] = "You delivered the Wood to Tereban.",
 					},
 				},
@@ -197,8 +195,7 @@ if not Quests then
 					startValue = 1,
 					endValue = 2,
 					states = {
-						[1] = "Find the spectral cloth hidden deep in the crypts of the isle of the kings and bring it to Tereban. \z
-							You might have to look for a secret entrance.",
+						[1] = "Find the spectral cloth hidden deep in the crypts of the isle of the kings and bring it to Tereban. You might have to look for a secret entrance.",
 						[2] = "You delivered the spectral cloth to Tereban.",
 					},
 				},
@@ -616,35 +613,29 @@ if not Quests then
 					storageId = Storage.Quest.U7_4.DjinnWar.Faction.Greeting,
 					missionId = 1064,
 					startValue = 1,
-					endValue = 2,
+					endValue = 1,
 					states = {
-						[1] = "Melchior told you the word &quot;Djanni'hah&quot; which can be used to talk to Djinns. \z
-							Be aware that once you become an ally of one Djinn race, you cannot switch sides anymore.",
-						[2] = "",
+						[1] = "Melchior told you the word &quot;Djanni'hah&quot; which can be used to talk to Djinns. Be aware that once you become an ally of one Djinn race, you cannot switch sides anymore.",
 					},
 				},
 				[2] = {
 					name = "The Marid and the Efreet - Marid Faction",
-					storageId = Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor,
+					storageId = Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToEfreetTerritory,
 					missionId = 1065,
 					startValue = 1,
-					endValue = 2,
+					endValue = 1,
 					states = {
-						[1] = "You have joined the Marid. These friendly, blue Djinns are honest and fair allies. \z
-							You have pledged eternal loyalty to King Gabel and may enter Asha'daramai freely. Djanni'hah!",
-						[2] = "",
+						[1] = "You have joined the Marid. These friendly, blue Djinns are honest and fair allies. You have pledged eternal loyalty to King Gabel and may enter Asha'daramai freely. Djanni'hah!",
 					},
 				},
 				[3] = {
 					name = "The Efreet and the Efreet - Efreet Faction",
-					storageId = Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor,
+					storageId = Storage.Quest.U7_4.DjinnWar.EfreetFaction.DoorToMaridTerritory,
 					missionId = 1066,
 					startValue = 1,
-					endValue = 2,
+					endValue = 1,
 					states = {
-						[1] = "You have joined the Efreet. These evil, green Djinns are always up to mischievous pranks. \z
-							You have pledged eternal loyalty to King Malor and may enter Mal'ouquah freely. Djanni'hah!",
-						[2] = "",
+						[1] = "You have joined the Efreet. These evil, green Djinns are always up to mischievous pranks. You have pledged eternal loyalty to King Malor and may enter Mal'ouquah freely. Djanni'hah!",
 					},
 				},
 			},

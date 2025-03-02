@@ -125,13 +125,13 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- The paradox tower quest
 	if MsgContains(message, "crunor's cottage") then
-		npcHandler:say("Ah yes, I remember my grandfather talking about that name. This house used to be an inn a long time ago. My family bought it from some of these flower guys.", npc, creature)
+		npcHandler:say("Ah yes, I remember my grandfather talking about that name. This house used to be an inn a long time ago. My family bought it from some of these {flower guys}.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "flower guys") then
-		npcHandler:say("Oh, I mean druids of course. They sold the cottage to my family after some of them died in an accident or something like that.", npc, creature)
+		npcHandler:say("Oh, I mean druids of course. They sold the cottage to my family after some of them died in an {accident} or something like that.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "accident") then
-		npcHandler:say("As far as I can remember the story, a pet escaped its stable behind the inn. It got somehow involved with powerful magic at a ritual and was transformed in some way.", npc, creature)
+		npcHandler:say("As far as I can remember the story, a pet escaped its {stable} behind the inn. It got somehow involved with powerful magic at a ritual and was transformed in some way.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "stable") then
 		if player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.TheFearedHugo) == 3 then

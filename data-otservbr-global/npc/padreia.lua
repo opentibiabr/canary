@@ -111,7 +111,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- The paradox tower quest
 	if MsgContains(message, "crunor's caress") then
-		npcHandler:say("Don't ask. They were only an unimportant footnote of history.", npc, creature)
+		npcHandler:say("Don't ask. They were only an unimportant {footnote} of history.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "footnote") then
 		if player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.TheFearedHugo) == 2 then

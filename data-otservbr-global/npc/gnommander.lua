@@ -64,7 +64,8 @@ local function creatureSayCallback(npc, creature, type, message)
 		return npcHandler:say("I'm responsible for the security and reward heroes to our cause. If you are looking for missions, talk to Gnomilly, Gnombold and Gnomagery.", npc, creature)
 	end
 
-	if MsgContains(message, "reward") then
+	if MsgContains(message, "reward") and player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.QuestLine) < 1 then
+		player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.QuestLine, 1)
 		return npcHandler:say("I can sell special outfit parts. If your fame is high enough, you might be {worthy} of such a reward.", npc, creature)
 	end
 
@@ -72,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return npcHandler:say(speech, npc, creature)
 	end
 
-	if MsgContains(message, "worthy") then
+	if MsgContains(message, "worthy") and player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.QuestLine) >= 1 then
 		if player:getFamePoints() < 100 then
 			return npcHandler:say("You are not worthy of a special reward yet.", npc, creature)
 		end

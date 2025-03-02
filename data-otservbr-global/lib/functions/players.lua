@@ -65,8 +65,20 @@ function Player.addFamePoint(self)
 end
 
 function Player.getFamePoints(self)
-	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Fame_Points)
-	return math.max(0, points)
+    local fameKeys = {
+        Storage.Quest.U10_20.SpikeTaskQuest.Gnomilly,
+        Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points,
+        Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points
+    }
+    
+    local totalPoints = 0
+    for _, key in ipairs(fameKeys) do
+        local value = self:getStorageValue(key)
+        if value ~= -1 then
+            totalPoints = totalPoints + value
+        end
+    end
+    return math.max(0, totalPoints)
 end
 
 function Player.removeFamePoints(self, amount)

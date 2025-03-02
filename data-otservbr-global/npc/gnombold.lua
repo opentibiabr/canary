@@ -52,6 +52,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
+	local storageValue = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points)
+
 	if MsgContains(message, "job") then
 		return npcHandler:say("I'm the officer responsible for this area. I give out missions, accept mission reports and oversee our defences.", npc, creature)
 	end
@@ -77,7 +79,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Sorry, but no! Your expertise could be put to better use elsewhere. Here awaits you no challenge. You are desperately needed in the deeper levels of the Spike. Report there immediately. ", npc, creature)
 		else
 			npcHandler:say(" I can offer you several missions: to gather geomantic {charges}, to {fertilise} the mushroom caves, to destroy monster {nests} and to {kill} some crystal crushers.", npc, creature)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, 0)
+			end
 		end
+
 		return
 	end
 
@@ -94,6 +100,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(2000, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Daily, os.time() + 72000)
 			else
@@ -106,6 +115,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(2000, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Mushroom_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Mushroom_Daily, os.time() + 72000)
 			else
@@ -118,6 +130,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(2000, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Nest_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Nest_Daily, os.time() + 72000)
 			else
@@ -130,6 +145,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(2000, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Kill_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Kill_Daily, os.time() + 72000)
 			else
@@ -163,11 +181,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			player:addItem(19207, 1)
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Charge_Main, 0)
-			npcHandler:say(
-				{ "Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.", "If you lose the magnet you'll have to bring your own. Gnomux sells all the equipment that is required for our missions." },
-				npc,
-				creature
-			)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, 0)
+			end
+			npcHandler:say("Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.", "If you lose the magnet you'll have to bring your own. Gnomux sells all the equipment that is required for our missions.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Ok then.", npc, creature)
@@ -199,6 +216,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			player:addItem(19214)
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Mushroom_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, 0)
+			end
 			npcHandler:say("Gnometastic! And here is your fertiliser - use it on four gardener mushroom in the caves. If you lose the fertiliser you'll have to bring your own. Gnomux sells all the equipment that is required for our missions.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -230,6 +250,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	if talkState[playerId] == "nests" then
 		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Nest_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, 0)
+			end
 			npcHandler:say("Gnometastic! Don't forget to step into the transformer before you go out and destroy five monster nests. If your transformation runs out, return to the transformer to get another illusion.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -261,6 +284,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	if talkState[playerId] == "kill" then
 		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Middle_Kill_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnombold.Points, 0)
+			end
 			npcHandler:say("Gnometastic! You should have no trouble to find enough crystal crushers. Killing seven of them should be enough.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then

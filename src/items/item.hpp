@@ -294,6 +294,7 @@ public:
 	static std::string parseShowDuration(const std::shared_ptr<Item> &item);
 	static std::string parseShowAttributesDescription(const std::shared_ptr<Item> &item, uint16_t itemId);
 	static std::string parseClassificationDescription(const std::shared_ptr<Item> &item);
+	static std::string getTierEffectDescription(const std::shared_ptr<Item> &item);
 
 	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item = nullptr);
 	static std::string getDescription(const ItemType &it, int32_t lookDistance, const std::shared_ptr<Item> &item = nullptr, int32_t subType = -1, bool addArticle = true);
@@ -463,7 +464,7 @@ public:
 		return items[id].stackable;
 	}
 	bool isStowable() const {
-		return items[id].stackable && items[id].wareId > 0;
+		return hasMarketAttributes() && !getTier() && items[id].wareId > 0;
 	}
 	bool isAlwaysOnTop() const {
 		return items[id].alwaysOnTopOrder != 0;
@@ -702,6 +703,8 @@ public:
 	double getMomentumChance() const;
 
 	double getTranscendenceChance() const;
+
+	double getAmplificationChance() const;
 
 	uint8_t getTier() const;
 	void setTier(uint8_t tier);

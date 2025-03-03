@@ -19,6 +19,7 @@ void CharmFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Charm", "name", CharmFunctions::luaCharmName);
 	Lua::registerMethod(L, "Charm", "description", CharmFunctions::luaCharmDescription);
+	Lua::registerMethod(L, "Charm", "category", CharmFunctions::luaCharmCategory);
 	Lua::registerMethod(L, "Charm", "type", CharmFunctions::luaCharmType);
 	Lua::registerMethod(L, "Charm", "points", CharmFunctions::luaCharmPoints);
 	Lua::registerMethod(L, "Charm", "damageType", CharmFunctions::luaCharmDamageType);
@@ -73,6 +74,18 @@ int CharmFunctions::luaCharmDescription(lua_State* L) {
 	return 1;
 }
 
+int CharmFunctions::luaCharmCategory(lua_State* L) {
+	// get: charm:category() set: charm:category(charmCategory_t)
+	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, charm->category);
+	} else {
+		charm->category = Lua::getNumber<charmCategory_t>(L, 2);
+		Lua::pushBoolean(L, true);
+	}
+	return 1;
+}
+
 int CharmFunctions::luaCharmType(lua_State* L) {
 	// get: charm:type() set: charm:type(charm_t)
 	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
@@ -89,10 +102,25 @@ int CharmFunctions::luaCharmPoints(lua_State* L) {
 	// get: charm:points() set: charm:points(value)
 	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, charm->points);
-	} else {
-		charm->points = Lua::getNumber<int16_t>(L, 2);
+		lua_createtable(L, charm->points.size(), 0);
+		int index = 0;
+		for (const auto &pointsValue : charm->points) {
+			lua_pushnumber(L, pointsValue);
+			lua_rawseti(L, -2, ++index);
+		}
+	} else if (lua_istable(L, 2)) {
+		charm->points.clear();
+		lua_pushnil(L);
+		while (lua_next(L, 2)) {
+			if (lua_isnumber(L, -1)) {
+				charm->points.push_back(static_cast<uint16_t>(lua_tonumber(L, -1)));
+			}
+			lua_pop(L, 1);
+		}
 		Lua::pushBoolean(L, true);
+	} else {
+		lua_pushstring(L, "Expected a table for points.");
+		lua_error(L);
 	}
 	return 1;
 }
@@ -101,9 +129,9 @@ int CharmFunctions::luaCharmDamageType(lua_State* L) {
 	// get: charm:damageType() set: charm:damageType(type)
 	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, charm->dmgtype);
+		lua_pushnumber(L, charm->damageType);
 	} else {
-		charm->dmgtype = Lua::getNumber<CombatType_t>(L, 2);
+		charm->damageType = Lua::getNumber<CombatType_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	}
 	return 1;
@@ -115,7 +143,7 @@ int CharmFunctions::luaCharmPercentage(lua_State* L) {
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, charm->percent);
 	} else {
-		charm->percent = Lua::getNumber<uint16_t>(L, 2);
+		charm->percent = Lua::getNumber<float>(L, 2);
 		Lua::pushBoolean(L, true);
 	}
 	return 1;
@@ -125,10 +153,26 @@ int CharmFunctions::luaCharmChance(lua_State* L) {
 	// get: charm:chance() set: charm:chance(value)
 	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, charm->chance);
-	} else {
-		charm->chance = Lua::getNumber<int8_t>(L, 2);
+		lua_createtable(L, charm->chance.size(), 0);
+		int index = 0;
+		for (const auto &chanceValue : charm->chance) {
+			lua_pushnumber(L, chanceValue);
+			lua_rawseti(L, -2, ++index);
+		}
+	} else if (lua_istable(L, 2)) {
+		charm->chance.clear();
+		lua_pushnil(L);
+		charm->chance.emplace_back(0);
+		while (lua_next(L, 2)) {
+			if (lua_isnumber(L, -1)) {
+				charm->chance.emplace_back(static_cast<double_t>(lua_tonumber(L, -1)));
+			}
+			lua_pop(L, 1);
+		}
 		Lua::pushBoolean(L, true);
+	} else {
+		lua_pushstring(L, "Expected a table for chance.");
+		lua_error(L);
 	}
 	return 1;
 }
@@ -137,9 +181,9 @@ int CharmFunctions::luaCharmMessageCancel(lua_State* L) {
 	// get: charm:messageCancel() set: charm:messageCancel(string)
 	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
 	if (lua_gettop(L) == 1) {
-		Lua::pushString(L, charm->cancelMsg);
+		Lua::pushString(L, charm->cancelMessage);
 	} else {
-		charm->cancelMsg = Lua::getString(L, 2);
+		charm->cancelMessage = Lua::getString(L, 2);
 		Lua::pushBoolean(L, true);
 	}
 	return 1;
@@ -149,9 +193,9 @@ int CharmFunctions::luaCharmMessageServerLog(lua_State* L) {
 	// get: charm:messageServerLog() set: charm:messageServerLog(string)
 	const auto &charm = Lua::getUserdataShared<Charm>(L, 1, "Charm");
 	if (lua_gettop(L) == 1) {
-		Lua::pushString(L, charm->logMsg);
+		Lua::pushBoolean(L, charm->logMessage);
 	} else {
-		charm->logMsg = Lua::getString(L, 2);
+		charm->logMessage = Lua::getBoolean(L, 2);
 		Lua::pushBoolean(L, true);
 	}
 	return 1;

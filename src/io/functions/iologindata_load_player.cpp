@@ -451,31 +451,33 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(const std::shared_ptr<Player> &pl
 
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT * FROM `player_charms` WHERE `player_guid` = " << player->getGUID();
+	query << "SELECT * FROM `player_charms` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		player->charmPoints = result->getNumber<uint32_t>("charm_points");
+		player->minorCharmEchoes = result->getNumber<uint32_t>("minor_charm_echoes");
+		player->maxCharmPoints = result->getNumber<uint32_t>("max_charm_points");
+		player->maxMinorCharmEchoes = result->getNumber<uint32_t>("max_minor_charm_echoes");
 		player->charmExpansion = result->getNumber<bool>("charm_expansion");
-		player->charmRuneWound = result->getNumber<uint16_t>("rune_wound");
-		player->charmRuneEnflame = result->getNumber<uint16_t>("rune_enflame");
-		player->charmRunePoison = result->getNumber<uint16_t>("rune_poison");
-		player->charmRuneFreeze = result->getNumber<uint16_t>("rune_freeze");
-		player->charmRuneZap = result->getNumber<uint16_t>("rune_zap");
-		player->charmRuneCurse = result->getNumber<uint16_t>("rune_curse");
-		player->charmRuneCripple = result->getNumber<uint16_t>("rune_cripple");
-		player->charmRuneParry = result->getNumber<uint16_t>("rune_parry");
-		player->charmRuneDodge = result->getNumber<uint16_t>("rune_dodge");
-		player->charmRuneAdrenaline = result->getNumber<uint16_t>("rune_adrenaline");
-		player->charmRuneNumb = result->getNumber<uint16_t>("rune_numb");
-		player->charmRuneCleanse = result->getNumber<uint16_t>("rune_cleanse");
-		player->charmRuneBless = result->getNumber<uint16_t>("rune_bless");
-		player->charmRuneScavenge = result->getNumber<uint16_t>("rune_scavenge");
-		player->charmRuneGut = result->getNumber<uint16_t>("rune_gut");
-		player->charmRuneLowBlow = result->getNumber<uint16_t>("rune_low_blow");
-		player->charmRuneDivine = result->getNumber<uint16_t>("rune_divine");
-		player->charmRuneVamp = result->getNumber<uint16_t>("rune_vamp");
-		player->charmRuneVoid = result->getNumber<uint16_t>("rune_void");
 		player->UsedRunesBit = result->getNumber<int32_t>("UsedRunesBit");
 		player->UnlockedRunesBit = result->getNumber<int32_t>("UnlockedRunesBit");
+
+		unsigned long size;
+		const auto attribute = result->getStream("charms", size);
+		PropStream charmsStream;
+		charmsStream.init(attribute, size);
+		for (uint8_t id = magic_enum::enum_value<charmRune_t>(1); id <= magic_enum::enum_count<charmRune_t>(); id++) {
+			uint16_t raceId;
+			uint8_t tier;
+
+			if (!charmsStream.read<uint16_t>(raceId) || !charmsStream.read<uint8_t>(tier)) {
+				continue;
+			}
+
+			player->charmsArray[id].raceId = raceId;
+			player->charmsArray[id].tier = tier;
+
+			g_logger().debug("Player {} loaded charm Id {} with raceId {} and tier {}", player->name, id, raceId, tier);
+		}
 
 		unsigned long attrBestSize;
 		const char* Bestattr = result->getStream("tracker list", attrBestSize);
@@ -491,7 +493,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(const std::shared_ptr<Player> &pl
 		}
 	} else {
 		query.str("");
-		query << "INSERT INTO `player_charms` (`player_guid`) VALUES (" << player->getGUID() << ')';
+		query << "INSERT INTO `player_charms` (`player_id`) VALUES (" << player->getGUID() << ')';
 		Database::getInstance().executeQuery(query.str());
 	}
 }

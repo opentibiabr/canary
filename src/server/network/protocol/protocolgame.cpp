@@ -3250,17 +3250,16 @@ void ProtocolGame::sendCreatureOutfit(const std::shared_ptr<Creature> &creature,
 		return;
 	}
 
-	Outfit_t newOutfit = outfit;
-	if (player->isWearingSupportOutfit()) {
-		player->setCurrentMount(0);
-		newOutfit.lookMount = 0;
-	}
-
 	NetworkMessage msg;
 	msg.addByte(0x8E);
 	msg.add<uint32_t>(creature->getID());
-	AddOutfit(msg, newOutfit);
-
+	AddOutfit(msg, outfit);
+	if (!oldProtocol && outfit.lookMount != 0) {
+		msg.addByte(outfit.lookMountHead);
+		msg.addByte(outfit.lookMountBody);
+		msg.addByte(outfit.lookMountLegs);
+		msg.addByte(outfit.lookMountFeet);
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -7136,23 +7135,15 @@ void ProtocolGame::sendOutfitWindow() {
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
-	Outfit_t currentOutfit = player->getDefaultOutfit();
-	auto isSupportOutfit = player->isWearingSupportOutfit();
-	bool mounted = false;
-
-	if (!isSupportOutfit) {
-		const auto currentMount = g_game().mounts->getMountByID(player->getLastMount());
+	if (oldProtocol) {
+		Outfit_t currentOutfit = player->getDefaultOutfit();
+		const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
 		if (currentMount) {
-			mounted = (currentOutfit.lookMount == currentMount->clientId);
 			currentOutfit.lookMount = currentMount->clientId;
 		}
-	} else {
-		currentOutfit.lookMount = 0;
-	}
 
-	AddOutfit(msg, currentOutfit);
+		AddOutfit(msg, currentOutfit);
 
-	if (oldProtocol) {
 		std::vector<ProtocolOutfit> protocolOutfits;
 		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
@@ -7193,12 +7184,20 @@ void ProtocolGame::sendOutfitWindow() {
 		return;
 	}
 
-	if (currentOutfit.lookMount == 0) {
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountHead);
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountBody);
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountLegs);
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountFeet);
+	bool mounted = false;
+	Outfit_t currentOutfit = player->getDefaultOutfit();
+	const auto currentMount = g_game().mounts.getMountByID(player->getLastMount());
+	if (currentMount) {
+		mounted = (currentOutfit.lookMount == currentMount->clientId);
+		currentOutfit.lookMount = currentMount->clientId;
 	}
+
+	AddOutfit(msg, currentOutfit);
+
+	msg.addByte(currentOutfit.lookMountHead);
+	msg.addByte(currentOutfit.lookMountBody);
+	msg.addByte(currentOutfit.lookMountLegs);
+	msg.addByte(currentOutfit.lookMountFeet);
 	msg.add<uint16_t>(currentOutfit.lookFamiliarsType);
 
 	auto startOutfits = msg.getBufferPosition();
@@ -7207,7 +7206,7 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	if (player->isAccessPlayer() && g_configManager().getBoolean(ENABLE_SUPPORT_OUTFIT)) {
+	if (player->isAccessPlayer()) {
 		msg.add<uint16_t>(75);
 		msg.addString("Gamemaster");
 		msg.addByte(0);
@@ -7331,7 +7330,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.addByte(mounted ? 0x01 : 0x00);
 
 	// Version 12.81 - Random mount 'bool'
-	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
+	msg.addByte(player->isRandomMounted() ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);
 }

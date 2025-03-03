@@ -4432,8 +4432,8 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		outfit.lookAddons = 0;
 	}
 
-	const auto mount = mounts->getMountByClientID(outfit.lookMount);
-	if (!mount || !player->hasMount(mount) || player->isWearingSupportOutfit()) {
+	const auto mount = mounts.getMountByClientID(outfit.lookMount);
+	if (!mount || !player->hasMount(mount)) {
 		outfit.lookMount = 0;
 	}
 
@@ -6152,11 +6152,6 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
-	}
-
-	if (player->isWearingSupportOutfit()) {
-		outfit.lookMount = 0;
-		isMountRandomized = 0;
 	}
 
 	player->setRandomMount(isMountRandomized);

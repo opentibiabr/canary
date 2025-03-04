@@ -900,7 +900,15 @@ tasksByPlayer = 3
 repeatTimes = 3
 
 function Player.getPawAndFurRank(self)
-	return (self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 100 and RANK_ELITEHUNTER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 70 and RANK_TROPHYHUNTER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 40 and RANK_BIGGAMEHUNTER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 20 and RANK_RANGER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 10 and RANK_HUNTSMAN or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.Join_Stor) == 1 and RANK_JOIN or RANK_NONE)
+	return (
+		self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 100 and RANK_ELITEHUNTER
+		or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 70 and RANK_TROPHYHUNTER
+		or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 40 and RANK_BIGGAMEHUNTER
+		or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 20 and RANK_RANGER
+		or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 10 and RANK_HUNTSMAN
+		or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.Join_Stor) == 1 and RANK_JOIN
+		or RANK_NONE
+	)
 end
 
 function Player.getPawAndFurPoints(self)

@@ -136,7 +136,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			else
 				npcHandler:say({
 					"Well, it can't be wrong to be there when new discoveries are made. Also, all those soldiers of fortune that might travel there could turn out to be a good source of income for a magic shop. ...",
-					"I think we'll send a representative. At least, for some time."
+					"I think we'll send a representative. At least, for some time.",
 				}, npc, creature)
 			end
 			player:setStorageValue(TheNewFrontier.Mission05.Wyrdin, 3)

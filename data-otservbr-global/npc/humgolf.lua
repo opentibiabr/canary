@@ -86,6 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(TheNewFrontier.Mission05.Humgolf, 2)
 		end
 	end
+
 	return true
 end
 

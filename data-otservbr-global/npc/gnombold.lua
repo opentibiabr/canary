@@ -186,7 +186,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			npcHandler:say({
 				"Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.",
-				"If you lose the magnet you'll have to bring your own. Gnomux sells all the equipment that is required for our missions."
+				"If you lose the magnet you'll have to bring your own. Gnomux sells all the equipment that is required for our missions.",
 			}, npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then

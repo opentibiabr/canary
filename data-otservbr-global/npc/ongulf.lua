@@ -189,7 +189,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			-- Setting a keyword for each NPC
 			player:setStorageValue(TheNewFrontier.Mission05.LeelandKeyword, math.random(1, 2)) -- The New Frontier Quest "Mission 5-2"
 			player:setStorageValue(TheNewFrontier.Mission05.AngusKeyword, math.random(1, 2)) -- The New Frontier Quest "Mission 5-3"
-			player:setStorageValue(TheNewFrontier.Mission05.WyrdinKeyword, math.random(1, 4)) -- The New Frontier Quest "Mission 5-4"
+			player:setStorageValue(TheNewFrontier.Mission05.WyrdinKeyword, math.random(1, 3)) -- The New Frontier Quest "Mission 5-4"
 			player:setStorageValue(TheNewFrontier.Mission05.TelasKeyword, math.random(1, 2)) -- The New Frontier Quest "Mission 5-5"
 			player:setStorageValue(TheNewFrontier.Mission05.HumgolfKeyword, math.random(1, 2)) -- The New Frontier Quest "Mission 5-6"
 			npcHandler:setTopic(playerId, 0)

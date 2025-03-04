@@ -106,7 +106,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, 1)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Hussah! Let's bring war to those hoof-legged, dirt-necked, bull-headed minotaurs!! Come back to me when you are done with your {mission}.", npc, creature)
-			player:setStorageValue(JOIN_STOR, 1)
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.Join_Stor, 1)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BudrikMinos, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MinotaurCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.MinotaurCount, 0)

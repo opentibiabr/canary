@@ -53,7 +53,7 @@ function deathEvent.onDeath(creature, _corpse, _lastHitKiller, mostDamageKiller)
 				end
 				local killAmount = player:getStorageValue(killCounter + taskId)
 				player:setStorageValue(killCounter + taskId, killAmount + 1)
-				player:setStorageValue(KILLSSTORAGE_BASE + taskId, player:getStorageValue(KILLSSTORAGE_BASE + taskId)) -- fake update quest tracker
+				player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.KillsStorage_Base + taskId, player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.KillsStorage_Base + taskId)) -- fake update quest tracker
 			end
 		end
 		-- Minotaurs

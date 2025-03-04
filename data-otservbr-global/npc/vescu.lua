@@ -98,7 +98,9 @@ local function endConversationWithDelay(npcHandler, npc, creature)
 end
 
 local function greetCallback(npc, creature)
-	local playerId = creature:getId()
+	local player = Player(creature)
+    local playerId = player:getId()
+
 	if Player(creature):getCondition(CONDITION_DRUNK) and player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey t-there, you look like someone who enjoys a good {booze}.")
 		npcHandler:setInteraction(npc, creature)

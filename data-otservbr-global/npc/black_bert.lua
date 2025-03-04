@@ -154,7 +154,6 @@ npcConfig.shop = {
 	{ itemname = "wrinkled parchment", clientid = 4846, buy = 4000 },
 	{ itemname = "xodet's first wand", clientid = 9187, buy = 5000 },
 }
-
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -193,8 +192,21 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function onTradeRequest(npc, creature)
+    local player = Player(creature)
+    if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Questline) >= 9 then
+        return true
+    end
+
+    npcHandler:say("You don't seem trustworthy enough to trade with me.", npc, creature)
+    return false
+end
+
+
 npcHandler:setMessage(MESSAGE_GREET, "Hi there, |PLAYERNAME|! You look like you are eager to {trade}!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye, |PLAYERNAME|")
+
+npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -19,11 +19,6 @@ REWARD_STORAGE = 4
 REWARD_POINT = 5
 REWARD_ITEM = 6
 
-QUESTSTORAGE_BASE = 1500
-JOIN_STOR = 100157
-KILLSSTORAGE_BASE = 65000
-REPEATSTORAGE_BASE = 48950
-POINTSSTORAGE = 2500
 tasks = {
 	Extra = {
 		[1] = {
@@ -905,11 +900,11 @@ tasksByPlayer = 3
 repeatTimes = 3
 
 function Player.getPawAndFurRank(self)
-	return (self:getStorageValue(POINTSSTORAGE) >= 100 and RANK_ELITEHUNTER or self:getStorageValue(POINTSSTORAGE) >= 70 and RANK_TROPHYHUNTER or self:getStorageValue(POINTSSTORAGE) >= 40 and RANK_BIGGAMEHUNTER or self:getStorageValue(POINTSSTORAGE) >= 20 and RANK_RANGER or self:getStorageValue(POINTSSTORAGE) >= 10 and RANK_HUNTSMAN or self:getStorageValue(JOIN_STOR) == 1 and RANK_JOIN or RANK_NONE)
+	return (self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 100 and RANK_ELITEHUNTER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 70 and RANK_TROPHYHUNTER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 40 and RANK_BIGGAMEHUNTER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 20 and RANK_RANGER or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage) >= 10 and RANK_HUNTSMAN or self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.Join_Stor) == 1 and RANK_JOIN or RANK_NONE)
 end
 
 function Player.getPawAndFurPoints(self)
-	return math.max(self:getStorageValue(POINTSSTORAGE), 0)
+	return math.max(self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage), 0)
 end
 
 function getTaskByName(name, table)
@@ -932,7 +927,7 @@ function Player.getTasks(self)
 	local canmake = {}
 	local able = {}
 	for k, v in pairs(tasks.GrizzlyAdams) do
-		if self:getStorageValue(QUESTSTORAGE_BASE + k) < 1 and self:getStorageValue(REPEATSTORAGE_BASE + k) < repeatTimes then
+		if self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.QuestStorage_Base + k) < 1 and self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.RepeatStorage_Base + k) < repeatTimes then
 			able[k] = true
 			if self:getLevel() < v.level[1] or self:getLevel() > v.level[2] then
 				able[k] = false
@@ -983,10 +978,10 @@ function Player.canStartTask(self, name, table)
 	if v == "" then
 		return false
 	end
-	if self:getStorageValue(QUESTSTORAGE_BASE + id) > 0 then
+	if self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.QuestStorage_Base + id) > 0 then
 		return false
 	end
-	if self:getStorageValue(REPEATSTORAGE_BASE + id) >= repeatTimes or v.norepeatable and self:getStorageValue(REPEATSTORAGE_BASE + id) > 0 then
+	if self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.RepeatStorage_Base + id) >= repeatTimes or v.norepeatable and self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.RepeatStorage_Base + id) > 0 then
 		return false
 	end
 	if v.level and self:getLevel() >= v.level[1] and self:getLevel() <= v.level[2] then
@@ -1018,7 +1013,7 @@ end
 function Player.getStartedTasks(self)
 	local tmp = {}
 	for k, v in ipairs(tasks.GrizzlyAdams) do
-		if self:getStorageValue(QUESTSTORAGE_BASE + k) > 0 and self:getStorageValue(QUESTSTORAGE_BASE + k) < 2 then
+		if self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.QuestStorage_Base + k) > 0 and self:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.QuestStorage_Base + k) < 2 then
 			tmp[#tmp + 1] = k
 		end
 	end

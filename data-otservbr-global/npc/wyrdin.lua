@@ -85,6 +85,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Please look for the explorer's society's captain Maximilian in Liberty Bay. Ask him for a passage to Yalahar. There visit Timothy of the explorer's society and get his research notes. ...",
 				"It might be a good idea to explore the city a bit on your own before you deliver the notes here, but please make sure you don't lose them.",
 			}, npc, creature)
+			if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) < 1 then
+				player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 5)
+			end
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.TheWayToYalahar, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
@@ -131,7 +134,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			elseif chance == 2 then
 				npcHandler:say("<sighs> Okay, sending some trader there won't hurt. I hope it will be worth the effort, though.", npc, creature)
 			else
-				npcHandler:say({ "Well, it can't be wrong to be there when new discoveries are made. Also, all those soldiers of fortune that might travel there could turn out to be a good source of income for a magic shop. ...", "I think we'll send a representative. At least, for some time." }, npc, creature)
+				npcHandler:say({
+					"Well, it can't be wrong to be there when new discoveries are made. Also, all those soldiers of fortune that might travel there could turn out to be a good source of income for a magic shop. ...",
+					"I think we'll send a representative. At least, for some time."
+				}, npc, creature)
 			end
 			player:setStorageValue(TheNewFrontier.Mission05.Wyrdin, 3)
 		end

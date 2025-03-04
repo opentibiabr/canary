@@ -100,6 +100,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(6499, 500) then
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits, 2)
+				player:setStorageValue(Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor, 1)
 				player:addItem(769, 1)
 				npcHandler:say("You advanced to {Hyaena} rank! You are now able to use teleports of second floor of Knightwatch Tower.", npc, creature)
 			else
@@ -123,7 +124,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Outfits, 4)
 				player:setStorageValue(Storage.Quest.U7_9.BrotherhoodOutfits.Door, 1)
-				player:setStorageValue(Storage.Quest.U7_9.NightmareOutfits.KnightwatchTowerDoor, 1)
 				player:addAchievement("Dread Lord")
 				npcHandler:say("You advanced to {Dread Lord} rank! You are now able to use teleports of fourth floor of Knightwatch Tower and to create addon scrolls.", npc, creature)
 			else

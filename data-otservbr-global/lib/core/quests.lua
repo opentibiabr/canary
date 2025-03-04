@@ -920,7 +920,7 @@ if not Quests then
 		},
 		[11] = {
 			name = "Killing in the Name of...",
-			startStorageId = 100157,
+			startStorageId = Storage.Quest.U8_5.KillingInTheNameOf.Join_Stor,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
@@ -930,7 +930,7 @@ if not Quests then
 					startValue = 0,
 					endValue = 1,
 					description = function(player)
-						return string.format("You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.", (math.max(player:getStorageValue(POINTSSTORAGE), 0)), (math.max(player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossPoints), 0)))
+						return string.format("You joined the 'Paw and Fur - Hunting Elite'. Ask Grizzly Adams for some hunting tasks. You already gained %d points. You currently have %d boss points.", (math.max(player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.PointsStorage), 0)), (math.max(player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.BossPoints), 0)))
 					end,
 				},
 				[2] = {

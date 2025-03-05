@@ -117,7 +117,7 @@ private:
 	}
 	void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 	void disconnectClient(const std::string &message) const;
-	void writeToOutputBuffer(const NetworkMessage &msg);
+	void writeToOutputBuffer(NetworkMessage &msg);
 
 	void release() override;
 

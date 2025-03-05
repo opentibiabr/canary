@@ -928,7 +928,7 @@ public:
 	void resetAsyncOngoingTask(uint64_t flags);
 	void sendEnterWorld() const;
 	void sendFightModes() const;
-	void sendNetworkMessage(const NetworkMessage &message) const;
+	void sendNetworkMessage(NetworkMessage &message) const;
 
 	void receivePing();
 
@@ -1623,12 +1623,8 @@ private:
 	uint16_t getLookCorpse() const override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
-	void setDead(bool isDead) {
-		m_isDead = isDead;
-	}
-	bool isDead() const override {
-		return m_isDead;
-	}
+	void setDead(bool isDead);
+	bool isDead() const override;
 
 	void triggerMomentum();
 	void clearCooldowns();

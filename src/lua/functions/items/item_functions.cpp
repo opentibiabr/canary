@@ -66,6 +66,7 @@ void ItemFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Item", "isOwner", ItemFunctions::luaItemIsOwner);
 	Lua::registerMethod(L, "Item", "getOwnerName", ItemFunctions::luaItemGetOwnerName);
 	Lua::registerMethod(L, "Item", "hasOwner", ItemFunctions::luaItemHasOwner);
+	Lua::registerMethod(L, "Item", "actor", ItemFunctions::luaItemActor);
 
 	Lua::registerMethod(L, "Item", "moveTo", ItemFunctions::luaItemMoveTo);
 	Lua::registerMethod(L, "Item", "transform", ItemFunctions::luaItemTransform);
@@ -1119,5 +1120,23 @@ int ItemFunctions::luaItemHasOwner(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, item->hasOwner());
+	return 1;
+}
+
+int ItemFunctions::luaItemActor(lua_State* L) {
+	// item:actor()
+	const auto &item = Lua::getUserdataShared<Item>(L, 1);
+	if (!item) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		Lua::pushBoolean(L, item->hasActor());
+	} else {
+		item->setActor(Lua::getBoolean(L, 2));
+		Lua::pushBoolean(L, true);
+	}
+
 	return 1;
 }

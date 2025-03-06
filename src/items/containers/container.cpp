@@ -449,6 +449,14 @@ void Container::onAddContainerItem(const std::shared_ptr<Item> &item) {
 }
 
 void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item> &oldItem, const std::shared_ptr<Item> &newItem) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	const auto &thisContainer = getContainer();
+	if (holdingPlayer) {
+		holdingPlayer->sendUpdateContainerItem(thisContainer, index, newItem);
+		holdingPlayer->onUpdateContainerItem(thisContainer, oldItem, newItem);
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
@@ -463,6 +471,14 @@ void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item
 }
 
 void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item> &item) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	const auto &thisContainer = getContainer();
+	if (holdingPlayer) {
+		holdingPlayer->sendRemoveContainerItem(thisContainer, index);
+		holdingPlayer->onRemoveContainerItem(thisContainer, item);
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send change to client

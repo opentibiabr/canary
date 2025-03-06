@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.SweetAsChocolateCake, 1)
 			if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart) < 1 then
-        		player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+				player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
 			end
 			npcHandler:say("Great! She works in the tavern of Beregar. It's situated in the western part of the city. Bring her a chocolate cake and tell her that it was me who sent it.", npc, creature)
 			npcHandler:setTopic(playerId, 0)

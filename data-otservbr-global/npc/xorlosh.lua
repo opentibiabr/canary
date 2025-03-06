@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.GoingDown, 1)
 			if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart) < 1 then
-        		player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+				player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
 			end
 			npcHandler:say("That would be great! Maybe a blacksmith can forge you some. Come back when you got them and ask me about your mission.", npc, creature)
 			npcHandler:setTopic(playerId, 0)

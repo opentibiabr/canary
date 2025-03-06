@@ -2185,7 +2185,7 @@ if not Quests then
 				},
 				[5] = {
 					name = "Beggar Outfit: The Newest Fashion",
-					storageId = Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit,
+					storageId = Storage.Quest.U7_8.BeggarOutfits.QuestLog,
 					missionId = 10172,
 					startValue = 1,
 					endValue = 8,
@@ -2414,6 +2414,7 @@ if not Quests then
 					states = {
 						[1] = "Try to find a monster which sometimes lurks in the Tiquandian jungle as the revenge of the jungle \z
 							against mankind. Bring the rare root it carries to Chondur as well as 5 voodoo dolls.",
+						[2] = "Congratulations, you now have the staff addon!",
 					},
 				},
 				[19] = {
@@ -2425,6 +2426,7 @@ if not Quests then
 					states = {
 						[1] = "Your current task is to collect 5 tribal masks from the dworcs and 5 banana staves from the apes. \z
 							Bring them to Chondur to earn your shamanic mask.",
+						[2] = "Congratulations, you now have the mask addon!",
 					},
 				},
 			},
@@ -2939,7 +2941,7 @@ if not Quests then
 				},
 				[3] = {
 					name = "A Hungry Tailor",
-					storageId = Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog,
+					storageId = Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage,
 					missionId = 10220,
 					startValue = 1,
 					endValue = 8,
@@ -3748,11 +3750,12 @@ if not Quests then
 					storageId = Storage.Quest.U7_8.TheShatteredIsles.RaysMission3,
 					missionId = 10271,
 					startValue = 1,
-					endValue = 2,
+					endValue = 3,
 					states = {
 						[1] = "Travel to Nargor and try to enter de pirate's tavern by deceiving the guard in front of it. \z
 						Read all the plans which you can find in the tavern and report back to Striker.",
-						[2] = "You studied all of the pirate's plans in their tavern which will give insight about their next strikes. \z
+						[2] = "Vulturenose has already released the door so you can access the books.",
+						[3] = "You studied all of the pirate's plans in their tavern which will give insight about their next strikes. \z
 						If you haven't done so yet, ask Ray for another mission.",
 					},
 				},
@@ -4301,6 +4304,7 @@ if not Quests then
 						[57] = "Travel to Okolnir and try to find a proof for the existence of dragon lords there in the old times. \z
 							I think old Buddel might be able to bring you there.",
 						[58] = "Report back to Lurik with the dragon scale.",
+						[59] = "Congratulations, you have completed this mission!",
 					},
 				},
 				[16] = {
@@ -4333,7 +4337,7 @@ if not Quests then
 		},
 		[29] = {
 			name = "The Ultimate Challenges",
-			startStorageId = Storage.Quest.U8_0.BarbarianArena.QuestLogGreenhorn,
+			startStorageId = Storage.Quest.U8_0.TheUltimateChallenges,
 			startStorageValue = 1,
 			missions = {
 				[1] = {
@@ -4381,7 +4385,7 @@ if not Quests then
 					storageId = Storage.Quest.U7_24.TheWhiteRavenMonastery.Passage,
 					missionId = 10315,
 					startValue = 1,
-					endValue = 2,
+					endValue = 1,
 					states = {
 						[1] = "You are a friend of Dalbrect. \z
 						Since you returned his family brooch he will sail you to the Isle of Kings unless you do something stupid.",
@@ -4902,10 +4906,13 @@ if not Quests then
 					storageId = Storage.Quest.U8_1.WhatAFoolishQuest.Mission7,
 					missionId = 10342,
 					startValue = 1,
-					endValue = 2,
+					endValue = 5,
 					states = {
 						[1] = "Get the toy mouse of Queen Eloise's cat and show it to Carina, the jeweler in Venore, to scare her.",
-						[2] = "You have finished your seventh mission and should ask Bozo for the next mission.",
+						[2] = "",
+						[3] = "",
+						[4] = "",
+						[5] = "You have finished your seventh mission and should ask Bozo for the next mission.",
 					},
 				},
 				[8] = {
@@ -5152,9 +5159,10 @@ if not Quests then
 					storageId = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission,
 					missionId = 10360,
 					startValue = 1,
-					endValue = 3000,
-					description = "Five Juicy roots from the outskirts of Rathleton may already help feed the poor. \z
-					Try to find a city official to deliver them to or go to the Rathleton poor house.",
+					endValue = 1,
+					states = {
+						[1] = "Five Juicy roots from the outskirts of Rathleton may already help feed the poor. Try to find a city official to deliver them to or go to the Rathleton poor house.",
+					},
 				},
 			},
 		},
@@ -5165,20 +5173,20 @@ if not Quests then
 			missions = {
 				[1] = {
 					name = "Circle of the Black Sphinx",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisFirstKill,
 					missionId = 10361,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
 						[1] = "You defeated the rogue Lady Tenebris.",
 					},
 				},
 				[2] = {
 					name = "Bane of the Cosmic Force",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LloydFirstKill,
 					missionId = 10362,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
 						[1] = "You calmed poor, misguided Lloyd. All he wanted was protection from the outside world. \z
 						Luckily he seems to have learned his lesson... or has he?",
@@ -5186,10 +5194,10 @@ if not Quests then
 				},
 				[3] = {
 					name = "The Desecrated Glade",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightFirstKill,
 					missionId = 10363,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
 						[1] = "You defeated the Thorn Knight and shattered the root of evil with all your might. \z
 						The honor of being a guardian of the glade indeed comes with pride as well as responsibility.",
@@ -5197,10 +5205,10 @@ if not Quests then
 				},
 				[4] = {
 					name = "The Unwary Mage",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingFirstKill,
 					missionId = 10364,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
 						[1] = "With help of Ivalisse from the temple of the Astral Shapers in Thais and her father, \z
 						you averted the Dragon King's menace deep in the Zao Muggy Plains.",
@@ -5208,20 +5216,20 @@ if not Quests then
 				},
 				[5] = {
 					name = "Dragon in Distress",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.HorrorFirstKill,
 					missionId = 10365,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
 						[1] = "You saved the Dragon Mother's egg and she melted the ice wall that blocked your way.",
 					},
 				},
 				[6] = {
 					name = "Time is a Window",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianFirstKill,
 					missionId = 10366,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
 						[1] = "You defeated the Time Guardian and are free to return to your own time. \z
 						For some creatures in this world, it seems neither past nor future are an obstacle.",
@@ -5229,12 +5237,12 @@ if not Quests then
 				},
 				[7] = {
 					name = "Final Fight",
-					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled,
+					storageId = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreFirstKill,
 					missionId = 10367,
-					startValue = 0,
-					endValue = 1522018605,
+					startValue = 1,
+					endValue = 1,
 					states = {
-						[1] = "Description Fault.",
+						[1] = "The Last Lore Keeper has just been defeated.",
 					},
 				},
 			},
@@ -5381,18 +5389,17 @@ if not Quests then
 					storageId = Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission,
 					missionId = 10376,
 					startValue = 1,
-					endValue = 5,
+					endValue = 4,
 					states = {
-						[1] = "ASD",
-						[2] = "Below a ruin in the vicinity of the outlaw camp east of Thais a strange figure in ragged clothes \z
+						[1] = "Below a ruin in the vicinity of the outlaw camp east of Thais a strange figure in ragged clothes \z
 						hinted at something weird going on in a cave. He seemed too confused to decide whether to stop you.",
-						[3] = function(player)
+						[2] = function(player)
 							return ("While rubbish, the amulet you equipe emits a strange aura of splendour. \z
 							You feel an urge to fulfill the amulets hunger for especific deaths... Exorcisms: %d/5 "):format(math.max(player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Exorcisms), 0))
 						end,
-						[4] = "You defeated the cult leader of Misguided by uncovering the true master to pull his strings \z
+						[3] = "You defeated the cult leader of Misguided by uncovering the true master to pull his strings \z
 						and freeing this world from its malicious existance. Return to Gerimor to tell him about the victory.",
-						[5] = "You have spoken to Gerimor about your victory.",
+						[4] = "You have spoken to Gerimor about your victory.",
 					},
 				},
 				[6] = {
@@ -5719,16 +5726,6 @@ if not Quests then
 			startStorageValue = 1,
 			missions = {
 				[1] = {
-					name = "Mission 01: A Taste of Things to Come",
-					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission01,
-					missionId = 10397,
-					startValue = 1,
-					endValue = 1,
-					states = {
-						[1] = "",
-					},
-				},
-				[2] = {
 					name = "Mission 02: Defence!",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission02,
 					missionId = 10398,
@@ -5742,7 +5739,7 @@ if not Quests then
 						[5] = "You made sure that Rookgaard's defences are at their best. If the orcs try to enter the village, they won't have an easy time!",
 					},
 				},
-				[3] = {
+				[2] = {
 					name = "Mission 03: A Rational Request",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.RatKills,
 					missionId = 10399,
@@ -5756,7 +5753,7 @@ if not Quests then
 						)
 					end,
 				},
-				[4] = {
+				[3] = {
 					name = "Mission 04: Home-Brewed",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission04,
 					missionId = 10400,
@@ -5771,7 +5768,7 @@ if not Quests then
 						[6] = "You've told Vascalir about your successful delivery. The next mission awaits.",
 					},
 				},
-				[5] = {
+				[4] = {
 					name = "Mission 05: Web of Terror",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission05,
 					missionId = 10401,
@@ -5786,7 +5783,7 @@ if not Quests then
 						[6] = "You've brought the spider queen's web back to Vascalir. This will definitely come in handy later on.",
 					},
 				},
-				[6] = {
+				[5] = {
 					name = "Mission 06: Run Like a Wolf",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission06,
 					missionId = 10402,
@@ -5802,7 +5799,7 @@ if not Quests then
 						[7] = "Tom gave you a pair of leather boots as reward for your good work. Vascalir surely has a new mission for you now.",
 					},
 				},
-				[7] = {
+				[6] = {
 					name = "Mission 07: Attack!",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission07,
 					missionId = 10403,
@@ -5813,7 +5810,7 @@ if not Quests then
 						[2] = "You've done all you could - but unfortunately the book is lost. No need to lose heart though - there is still hidden knowledge about the orc language in the village, and the next mission awaits.",
 					},
 				},
-				[8] = {
+				[7] = {
 					name = "Mission 08: Less Risk - More Fun",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission08,
 					missionId = 10404,
@@ -5824,7 +5821,7 @@ if not Quests then
 						[2] = "You've done as Vascalir asked and talked to Paulie. Remember to always leave your gold on your account! That way there's no risk of losing it.",
 					},
 				},
-				[9] = {
+				[8] = {
 					name = "Mission 09: Rock 'n Troll",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission09,
 					missionId = 10405,
@@ -5843,7 +5840,7 @@ if not Quests then
 						[10] = "The trolls will not be able to enter the academy via their tunnel again. The village is safe for now - at least from trolls.",
 					},
 				},
-				[10] = {
+				[9] = {
 					name = "Mission 10: Tomb Raiding",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission10,
 					missionId = 10406,
@@ -5855,7 +5852,7 @@ if not Quests then
 						[3] = "You managed to get a fleshy bone from the crypt! Who knows what Vascalir plans with it - but this is going to be good.",
 					},
 				},
-				[11] = {
+				[10] = {
 					name = "Mission 11: Sweet Poison",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission11,
 					missionId = 10407,
@@ -5869,7 +5866,7 @@ if not Quests then
 						[5] = "You've retrieved highly toxic wasp poison for Vascalir. It's time for your final challenge.",
 					},
 				},
-				[12] = {
+				[11] = {
 					name = "Mission 12: Into The Fortress",
 					storageId = Storage.Quest.U9_1.TheRookieGuard.Mission12,
 					missionId = 10408,

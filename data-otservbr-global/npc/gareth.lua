@@ -78,11 +78,11 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	local value = 10000
 
-	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) < 2 then
-		if MsgContains(message, "patrons") then
-			npcHandler:say("If you like to, you can pay some gold to become a patron of the arts for this wonderful museum. The price is 10,000 gold. Your personal gain will be priceless. Do you want to {pay}?", npc, creature)
-			npcHandler:setTopic(playerId, 2)
-		elseif MsgContains(message, "pay") and npcHandler:getTopic(playerId) == 2 then
+	if MsgContains(message, "patrons") then
+		npcHandler:say("If you like to, you can pay some gold to become a patron of the arts for this wonderful museum. The price is 10,000 gold. Your personal gain will be priceless. Do you want to {pay}?", npc, creature)
+		npcHandler:setTopic(playerId, 2)
+	elseif MsgContains(message, "pay") then
+		if npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission) < 2 then
 			if (player:getMoney() + player:getBankBalance()) >= value then
 				npcHandler:say({
 					"This is a very wise decision. You won't regret it. Congratulations! As your first task I like you to investigate the crime scene of a theft wich occurred last night. ...",

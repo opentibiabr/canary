@@ -126,7 +126,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 then
-		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+		end
 		if player:getStorageValue(Storage.Quest.U10_70.TheCursedCrystal.Questline) < 0 then
 			player:setStorageValue(Storage.Quest.U10_70.TheCursedCrystal.Questline, 0)
 		end

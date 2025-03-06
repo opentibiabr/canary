@@ -80,7 +80,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
 			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.TheGoodGuard, 1)
-			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart) < 1 then
+        		player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+			end
 			npcHandler:say("Haha, fine! Don't waste time and get me the ale. See you.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

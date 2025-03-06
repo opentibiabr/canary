@@ -80,7 +80,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRookTimer) < os.time() then
 				npcHandler:say("Just in time! Your backpack is finished. Here you go, I hope you like it.", npc, creature)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
 				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionBackpackRook, 4)
 				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRook, 3)
 				player:addOutfitAddon(136, 1)
@@ -101,7 +100,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif npcHandler:getTopic(playerId) == 2 then
 		if MsgContains(message, "yes") then
-			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
 			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonBackpackRook, 1)
 			player:setStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionBackpackRook, 1)
 			npcHandler:say("Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!", npc, creature)

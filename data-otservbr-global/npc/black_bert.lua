@@ -193,14 +193,15 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function onTradeRequest(npc, creature)
-	local player = Player(creature)
-	if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Questline) >= 9 then
-		return true
-	end
+    local player = Player(creature)
+    if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Questline) >= 9 then
+        return true
+    end
 
-	npcHandler:say("You don't seem trustworthy enough to trade with me.", npc, creature)
-	return false
+    npcHandler:say("You don't seem trustworthy enough to trade with me.", npc, creature)
+    return false
 end
+
 
 npcHandler:setMessage(MESSAGE_GREET, "Hi there, |PLAYERNAME|! You look like you are eager to {trade}!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye, |PLAYERNAME|")

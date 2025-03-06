@@ -308,7 +308,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				"I will mark his current location on your map, just ask him about me and see what happens - good luck.",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U8_54.SeaOfLight.Questline, 11)
-			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			end
 			player:setStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 30 then

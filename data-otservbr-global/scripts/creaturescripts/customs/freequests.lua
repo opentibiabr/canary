@@ -272,7 +272,7 @@ local questTable = {
 	{ storageName = "TheApeCity.Questline", storage = Storage.Quest.U7_6.TheApeCity.Questline, storageValue = 18 },
 	{ storageName = "BanutaSecretTunnel.DeeperBanutaShortcut", storage = Storage.BanutaSecretTunnel.DeeperBanutaShortcut, storageValue = 1 },
 	{ storageName = "OramondQuest.QuestLine", storage = Storage.Quest.U10_50.OramondQuest.QuestLine, storageValue = 1 },
-	{ storageName = "OramondQuest.ToTakeRoots.Mission", storage = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, storageValue = 3000 },
+	{ storageName = "OramondQuest.ToTakeRoots.Mission", storage = Storage.Quest.U10_50.OramondQuest.ToTakeRoots.Mission, storageValue = 1 },
 	{ storageName = "DangerousDepths.Questline", storage = Storage.Quest.U11_50.DangerousDepths.Questline, storageValue = 1 },
 	{ storageName = "DangerousDepths.Dwarves.Home", storage = Storage.Quest.U11_50.DangerousDepths.Dwarves.Home, storageValue = 2 },
 	{ storageName = "DangerousDepths.Dwarves.Subterranean", storage = Storage.Quest.U11_50.DangerousDepths.Dwarves.Subterranean, storageValue = 2 },

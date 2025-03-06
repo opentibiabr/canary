@@ -86,7 +86,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "rehal") then
 		if npcHandler:getTopic(playerId) == 4 then
-			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart) < 1 then
+        		player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.DefaultStart, 1)
+			end
 			player:setStorageValue(Storage.Quest.U8_4.TheHiddenCityOfBeregar.JusticeForAll, 1)
 			npcHandler:say("He's a good emperor but I doubt he is wise enough to see the truth behind that false accusation against me. If just someone would find out the truth about that whole mess.", npc, creature)
 			npcHandler:setTopic(playerId, 0)

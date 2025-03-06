@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addOutfitAddon(141, 2) -- female summoner addon
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak, 11)
-			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 0)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 11)
 		elseif player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak) == 11 then
 			npcHandler:say("Stop bothering me. I am a far too busy man to be constantly giving out awards.", npc, creature)
 		else

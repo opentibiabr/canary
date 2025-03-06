@@ -51,6 +51,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local HiddenThreats = Storage.Quest.U11_50.HiddenThreats
+
 local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 

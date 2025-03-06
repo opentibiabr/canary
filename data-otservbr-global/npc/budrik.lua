@@ -100,7 +100,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("I knew you have the guts for that task! We presume the hideout of The Horned Fox somewhere in the south-west near the coast. Good luck!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
 				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.Quest.U8_1.ToOutfoxAFoxQuest.Questline, 1)

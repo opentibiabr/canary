@@ -27,7 +27,7 @@ local outfitMemorial = Action()
 
 function outfitMemorial.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	goldenOutfitCache, lastUpdatedGolden = updateOutfitCache(Storage.OutfitQuest.GoldenOutfit, goldenOutfitCache, lastUpdatedGolden)
-	royalOutfitCache, lastUpdatedRoyal = updateOutfitCache(Storage.OutfitQuest.RoyalCostumeOutfit, royalOutfitCache, lastUpdatedRoyal)
+	royalOutfitCache, lastUpdatedRoyal = updateOutfitCache(Storage.Quest.U12_80.RoyalCostumeOutfits, royalOutfitCache, lastUpdatedRoyal)
 	local response = NetworkMessage()
 	response:addByte(0xB0)
 

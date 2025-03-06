@@ -103,7 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:removeItem(5890, 100)
 				player:addOutfitAddon(136, 2)
 				player:addOutfitAddon(128, 2)
-				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.MissionHat, 0)
+				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.MissionHat, 2)
 				player:setStorageValue(Storage.Quest.U7_8.CitizenOutfits.AddonHat, 2)
 			end
 		else

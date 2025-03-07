@@ -461,12 +461,12 @@ void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item
 
 	// send to client
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->sendUpdateContainerItem(getContainer(), index, newItem);
+		spectator->getPlayer()->sendUpdateContainerItem(thisContainer, index, newItem);
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->onUpdateContainerItem(getContainer(), oldItem, newItem);
+		spectator->getPlayer()->onUpdateContainerItem(thisContainer, oldItem, newItem);
 	}
 }
 
@@ -483,12 +483,12 @@ void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item
 
 	// send change to client
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->sendRemoveContainerItem(getContainer(), index);
+		spectator->getPlayer()->sendRemoveContainerItem(thisContainer, index);
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->onRemoveContainerItem(getContainer(), item);
+		spectator->getPlayer()->onRemoveContainerItem(thisContainer, item);
 	}
 }
 

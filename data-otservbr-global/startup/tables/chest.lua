@@ -1085,7 +1085,7 @@ ChestUnique = {
 		itemPos = { x = 33352, y = 31318, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Coast,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Coast,
 		time = 24, -- hour
 	},
 	[6106] = {
@@ -1093,7 +1093,7 @@ ChestUnique = {
 		itemPos = { x = 33384, y = 31285, z = 7 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Island,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Island,
 		time = 24, -- hour
 	},
 	[6107] = {
@@ -1101,7 +1101,7 @@ ChestUnique = {
 		itemPos = { x = 33366, y = 31323, z = 5 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.ThroneHall,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.ThroneHall,
 		time = 24, -- hour
 	},
 	[6108] = {
@@ -1109,7 +1109,7 @@ ChestUnique = {
 		itemPos = { x = 33374, y = 31340, z = 4 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Shortcut,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.Shortcut,
 		time = 24, -- hour
 	},
 	[6109] = {
@@ -1117,7 +1117,7 @@ ChestUnique = {
 		itemPos = { x = 33324, y = 31268, z = 8 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.LowerBastion,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.LowerBastion,
 		time = 24, -- hour
 	},
 	[6110] = {
@@ -1125,7 +1125,7 @@ ChestUnique = {
 		itemPos = { x = 33308, y = 31304, z = 9 },
 		randomReward = { { 9081, 1 }, { 28821, 1 }, { 28823, 1 }, { 9058, 1 }, { 6299, 1 }, { 3052, 1 }, { 3035, 10 } },
 		reward = { { nil, nil } },
-		timerStorage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.UndergroundBastion,
+		storage = Storage.Quest.U11_80.TheSecretLibrary.FalconBastion.ChestsTimer.UndergroundBastion,
 		time = 24, -- hour
 	},
 	-- Blood Herb Quest

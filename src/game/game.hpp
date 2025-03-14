@@ -601,16 +601,21 @@ public:
 	}
 
 	FILELOADER_ERRORS loadAppearanceProtobuf(const std::string &file);
-	bool isMagicEffectRegistered(uint16_t type) const {
-		return std::ranges::find(registeredMagicEffects, type) != registeredMagicEffects.end();
+
+	bool isMagicEffectRegistered(uint16_t type) const;
+	bool isDistanceEffectRegistered(uint16_t type) const;
+	bool isLookTypeRegistered(uint16_t type) const;
+
+	void setMagicEffectTypes(const std::vector<uint16_t> &types) {
+		registeredMagicEffects = types;
 	}
 
-	bool isDistanceEffectRegistered(uint16_t type) const {
-		return std::ranges::find(registeredDistanceEffects, type) != registeredDistanceEffects.end();
+	void setDistanceEffectTypes(const std::vector<uint16_t> &types) {
+		registeredDistanceEffects = types;
 	}
 
-	bool isLookTypeRegistered(uint16_t type) const {
-		return std::ranges::find(registeredLookTypes, type) != registeredLookTypes.end();
+	void setLookTypes(const std::vector<uint16_t> &types) {
+		registeredLookTypes = types;
 	}
 
 	void setCreateLuaItems(Position position, uint16_t itemId) {

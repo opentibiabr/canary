@@ -20,6 +20,63 @@
 
 #include <appearances.pb.h>
 
+enum class DatAttr_t : uint8_t {
+	Ground = 0,
+	Clip = 1,
+	Bottom = 2,
+	Top = 3,
+	Container = 4,
+	Stackable = 5,
+	ForceUse = 6,
+	Usable = 254,
+	MultiUse = 7,
+	Writeable = 8,
+	WriteableOnce = 9,
+	LiquidContainer = 10,
+	LiquidPool = 11,
+	Impassable = 12,
+	Unmovable = 13,
+	BlocksSight = 14,
+	BlocksPathfinding = 15,
+	NoMovementAnimation = 16,
+	Pickupable = 17,
+	Hangable = 18,
+	HooksSouth = 19,
+	HooksEast = 20,
+	Rotateable = 21,
+	LightSource = 22,
+	AlwaysSeen = 23,
+	Translucent = 24,
+	Displaced = 25,
+	Elevated = 26,
+	LyingObject = 27,
+	AlwaysAnimated = 28,
+	MinimapColor = 29,
+	HelpInfo = 30,
+	FullTile = 31,
+	Lookthrough = 32,
+	Clothes = 33,
+	Market = 34,
+	DefaultAction = 35,
+	Wrappable = 36,
+	UnWrappable = 37,
+	TopEffect = 38,
+	NpcSaleData = 39,
+	ChangedToExpire = 40,
+	Corpse = 41,
+	PlayerCorpse = 42,
+	CyclopediaItem = 43,
+	Ammo = 44,
+	ShowOffSocket = 45,
+	Reportable = 46,
+	UpgradeClassification = 47,
+	Wearout = 48,
+	ClockExpire = 49,
+	Expire = 50,
+	ExpireStop = 51,
+	Default = 255
+};
+
 Items::Items() = default;
 
 void Items::clear() {
@@ -129,7 +186,12 @@ bool ItemType::triggerExhaustion() const {
 
 bool Items::reload() {
 	clear();
-	loadFromProtobuf();
+
+	if (g_configManager().getBoolean(LOAD_ITEMS_FROM_DAT)) {
+		loadFromDat();
+	} else {
+		loadFromProtobuf();
+	}
 
 	if (!loadFromXml()) {
 		return false;
@@ -290,6 +352,306 @@ bool Items::loadFromXml() {
 			parseItemNode(itemNode, id++);
 		}
 	}
+	return true;
+}
+
+static bool readItemAttributes(ItemType &item, PropStream &props, uint16_t itemId) {
+	while (true) {
+		uint8_t rawAttr = props.read<uint8_t>();
+
+		auto attrOpt = magic_enum::enum_cast<DatAttr_t>(rawAttr);
+		if (!attrOpt.has_value()) {
+			g_logger().error("Unknown DatAttr value: {} (item id: {})", rawAttr, itemId);
+			return false;
+		}
+
+		using enum DatAttr_t;
+
+		DatAttr_t attr = attrOpt.value();
+		if (attr == Default) {
+			return true;
+		}
+
+		switch (attr) {
+			case Ground:
+				item.group = ITEM_GROUP_GROUND;
+				item.speed = props.read<uint16_t>();
+				break;
+			case Clip:
+				item.alwaysOnTopOrder = 1;
+				break;
+			case Top:
+				item.alwaysOnTopOrder = 3;
+				break;
+			case Bottom:
+				item.alwaysOnTopOrder = 2;
+				break;
+			case Container:
+				item.group = ITEM_GROUP_CONTAINER;
+				item.type = ITEM_TYPE_CONTAINER;
+				break;
+			case Stackable:
+				item.stackable = true;
+				break;
+			case Usable:
+				break;
+			case ForceUse:
+				item.forceUse = true;
+				break;
+			case MultiUse:
+				item.multiUse = true;
+				break;
+			case Writeable:
+			case WriteableOnce:
+				item.canReadText = true;
+				item.maxTextLen  = props.read<uint16_t>();
+				break;
+			case LiquidPool:
+				item.group = ITEM_GROUP_SPLASH;
+				break;
+			case LiquidContainer:
+				item.group = ITEM_GROUP_FLUID;
+				break;
+			case Impassable:
+				item.blockSolid = true;
+				break;
+			case Unmovable:
+				item.movable = false;
+				break;
+			case BlocksSight:
+				item.blockProjectile = true;
+				break;
+			case BlocksPathfinding:
+				item.blockPathFind = true;
+				break;
+			case NoMovementAnimation:
+				break;
+			case Pickupable:
+				item.pickupable = true;
+				break;
+			case Hangable:
+				item.isHangable = true;
+				break;
+			case HooksSouth:
+				item.isVertical = true;
+				break;
+			case HooksEast:
+				item.isHorizontal = true;
+				break;
+			case Rotateable:
+				item.rotatable = true;
+				break;
+			case LightSource:
+				item.lightLevel = props.read<uint16_t>();
+				item.lightColor = props.read<uint16_t>();
+				break;
+			// Unused
+			case AlwaysSeen:
+			case Translucent:
+			case AlwaysAnimated:
+			case TopEffect:
+			case NpcSaleData:
+			case Ammo:
+			case LyingObject:
+			case Reportable:
+				break;
+			case Displaced:
+				props.skip(2); // unknown u16 flag
+				props.skip(2); // unknown u16 flag
+				break;
+			case Elevated:
+				item.hasHeight = true;
+				props.skip(2); // unknown u16
+				break;
+			case MinimapColor:
+				props.skip(2); // unknown u16
+				break;
+			case FullTile:
+				item.group = ITEM_GROUP_GROUND;
+				break;
+			case HelpInfo: {
+				uint16_t opt = props.read<uint16_t>();
+				if (opt == 1112) {
+					item.canReadText = true;
+				}
+				break;
+			}
+			case Lookthrough:
+				item.lookThrough = true;
+				break;
+			case Clothes: {
+				uint16_t slot = props.read<uint16_t>();
+				item.slotPosition |= static_cast<SlotPositionBits>(1 << (slot - 1));
+				break;
+			}
+			case Market: {
+				uint16_t category = props.read<uint16_t>();
+				item.type = static_cast<ItemTypes_t>(category);
+				item.wareId = props.read<uint16_t>();
+				props.skip(2); // visualId
+				props.readString(); // item name
+				props.skip(2); // vocation
+				props.skip(2); // minimumLevel
+				break;
+			}
+			case DefaultAction:
+				props.skip(2);
+				break;
+			case Wrappable:
+				item.wrapContainer = true;
+				item.wrapable = true;
+				item.wrapableTo = ITEM_DECORATION_KIT;
+				break;
+			case UnWrappable:
+				item.wrapContainer = true;
+				break;
+			case ChangedToExpire:
+				props.skip(2);
+				break;
+			case Corpse:
+			case PlayerCorpse:
+				item.isCorpse = true;
+				break;
+			case CyclopediaItem:
+				item.wareId = props.read<uint16_t>();
+				break;
+			case ShowOffSocket:
+				item.isPodium = true;
+				break;
+			case UpgradeClassification:
+				item.upgradeClassification = props.read<uint16_t>();
+				break;
+			case Wearout:
+				item.wearOut = true;
+				break;
+			case ClockExpire:
+				item.clockExpire = true;
+				break;
+			case Expire:
+				item.expire = true;
+				break;
+			case ExpireStop:
+				item.expireStop = true;
+				break;
+			default:
+				g_logger().error("Unhandled DatAttr value: {} (item id: {})", rawAttr, itemId);
+				break;
+		}
+	}
+
+	return true;
+}
+
+bool Items::loadFromDat() {
+	auto datFilename = g_configManager().getString(LOAD_DAT_FILENAME);
+	auto file = g_configManager().getString(CORE_DIRECTORY) + "/items/" + datFilename;
+	std::filesystem::path filePath(file);
+
+	if (!std::filesystem::exists(filePath)) {
+		g_logger().warn("[Items::loadFromDat] - File not found.");
+		return false;
+	}
+
+	std::ifstream fileStrem(filePath, std::ios::binary);
+
+	if (!fileStrem.is_open()) {
+		g_logger().warn("[Items::loadFromDat] - File to open file.");
+		return false;
+	}
+
+	std::streamsize fileSize = std::filesystem::file_size(filePath);
+
+	std::vector<char> buffer(fileSize);
+	auto bufferData = buffer.data();
+
+	if (!fileStrem.read(bufferData, fileSize)) {
+		g_logger().warn("[Items::loadFromDat] - Failed to read file.");
+		fileStrem.close();
+		return false;
+	}
+
+	fileStrem.close();
+
+	PropStream props;
+	props.init(bufferData, fileSize);
+
+	auto signature = props.read<uint32_t>();
+	auto objectCount = props.read<uint16_t>();
+	auto outfitCount = props.read<uint16_t>();
+	auto effectCount = props.read<uint16_t>();
+	auto missileCount = props.read<uint16_t>();
+
+	g_logger().debug("Loading {}... Signature: {}", datFilename, signature);
+	g_logger().debug("ObjectCount: {}", objectCount);
+	g_logger().debug("OutfitCount: {}", outfitCount);
+	g_logger().debug("EffectCount: {}", effectCount);
+	g_logger().debug("MissileCount: {}", missileCount);
+
+	// Skip unused data from server (sprites, animation, etc)
+	auto skipSpriteData = [](PropStream &readProps) {
+		uint8_t width = readProps.read<uint8_t>();
+		uint8_t height = readProps.read<uint8_t>();
+		if (width > 1 || height > 1) {
+			readProps.skip(1);
+		}
+		uint8_t layers   = readProps.read<uint8_t>();
+		uint8_t patternX = readProps.read<uint8_t>();
+		uint8_t patternY = readProps.read<uint8_t>();
+		uint8_t patternZ = readProps.read<uint8_t>();
+		uint8_t phases   = readProps.read<uint8_t>();
+		if (phases > 1) {
+			readProps.skip(1); // skip animation type
+			readProps.skip(5);
+			for (int16_t i = 0; i < phases; ++i) {
+				readProps.skip(8);
+			}
+		}
+		readProps.skip(4 * (width * height * layers * patternX * patternY * patternZ * phases));
+	};
+
+	uint16_t firstId = 100;
+	for (uint16_t id = firstId; id < objectCount; ++id) {
+		if (id >= items.size()) {
+			items.resize(id + 1);
+		}
+		ItemType &item = items[id];
+
+		item.id = id;
+
+		bool done = readItemAttributes(item, props, id);
+		if (!done) {
+			g_logger().error("Corrupt data reading attributes for item id {}", id);
+			return false;
+		}
+
+		skipSpriteData(props);
+	}
+
+	std::vector<uint16_t> outfits;
+	for (uint16_t id = 0; id < outfitCount; ++id) {
+		outfits.push_back(id);
+
+		skipSpriteData(props);
+	}
+
+	std::vector<uint16_t> magicEffects;
+	for (uint16_t id = 0; id < effectCount; ++id) {
+		magicEffects.push_back(id);
+
+		skipSpriteData(props);
+	}
+
+	std::vector<uint16_t> distanceEffects;
+	for (uint16_t id = 0; id < missileCount; ++id) {
+		distanceEffects.push_back(id);
+
+		skipSpriteData(props);
+	}
+
+	g_logger().debug("Loaded... Items: {}, Outfits: {}, MagicEffects: {}, DistanceEffects: {}", items.size(), outfits.size(), magicEffects.size(), distanceEffects.size());
+	g_game().setLookTypes(outfits);
+	g_game().setMagicEffectTypes(magicEffects);
+	g_game().setDistanceEffectTypes(distanceEffects);
 	return true;
 }
 

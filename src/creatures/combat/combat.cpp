@@ -1202,7 +1202,6 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
 	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
 
-	int affected = 0;
 	std::vector<std::shared_ptr<Creature>> affectedTargets;
 	CombatDamage tmpDamage;
 	if (data) {
@@ -1229,7 +1228,6 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 				}
 
 				if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
-					affected++;
 					affectedTargets.push_back(creature);
 				}
 			}

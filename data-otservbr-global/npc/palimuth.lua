@@ -78,7 +78,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		elseif player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 4 then
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission01, 1) -- StorageValue for Questlog "Mission 01: Something Rotten"
-			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 5)
+			if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) < 1 then
+				player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 5)
+			end
 			npcHandler:say({
 				"I hope your first mission will not scare you off. Even though, we cut off our sewer system from other parts of the city to prevent the worst, it still has deteriorated in the last decades. ...",
 				"Certain parts of the controls are rusty and the drains are stuffed with garbage. Get yourself a crowbar, loosen the controls and clean the pipes from the garbage. ...",

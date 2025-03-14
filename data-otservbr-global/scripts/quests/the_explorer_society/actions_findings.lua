@@ -47,7 +47,7 @@ local UniqueTable = {
 		rewardItemId = 21378,
 		storageMission = Storage.Quest.U7_6.ExplorerSociety.CalassaQuest,
 		storageMissionValue = 2,
-		storageQuestlineValue = 0,
+		storageQuestlineValue = 1,
 	},
 	-- Others uniques
 	[40041] = {

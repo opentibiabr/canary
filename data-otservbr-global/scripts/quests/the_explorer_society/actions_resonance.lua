@@ -1,4 +1,5 @@
 local explorerSocietyResonance = Action()
+
 function explorerSocietyResonance.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.uid == 40043 then
 		if player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheIceMusic) == 60 and player:getStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine) == 60 then

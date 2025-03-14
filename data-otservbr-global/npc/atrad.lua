@@ -73,7 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "addon") or MsgContains(message, "outfit") then
-		if getPlayerStorageValue(creature, Storage.Atrad) < 1 then
+		if getPlayerStorageValue(creature, Storage.Atrad) < 1 and getPlayerStorageValue(creature, Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) >= 13 then
 			npcHandler:say("You managed to deceive Erayo? Impressive. Well, I guess, since you have come that far, I might as well give you a task too, eh?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
 		end
@@ -86,6 +86,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				doPlayerAddOutfit(creature, getPlayerSex(creature) == 0 and 156 or 152, 2)
 				setPlayerStorageValue(creature, Storage.Atrad, 2)
 				setPlayerStorageValue(creature, Storage.Quest.U7_8.AssassinOutfits.AssassinSecondAddon, 2)
+				setPlayerStorageValue(creature, Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit, 2)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("You don't have it...", npc, creature)
@@ -100,6 +101,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Good. Come back then you have BOTH. Should be clear where to get a behemoth claw from. There's a horned fox who wears a nose ring. Good luck.", npc, creature)
 			setPlayerStorageValue(creature, Storage.Atrad, 1)
 			setPlayerStorageValue(creature, Storage.Quest.U7_8.AssassinOutfits.AssassinSecondAddon, 1)
+			setPlayerStorageValue(creature, Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end

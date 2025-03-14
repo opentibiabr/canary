@@ -60,7 +60,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	-- The paradox tower quest
 	if MsgContains(message, "yenny the gentle") then
-		npcHandler:say("Ah, Yenny the Gentle was one of the founders of the druid order called Crunor's Caress, that has been originated in her hometown Carlin.", npc, creature)
+		npcHandler:say("Ah, Yenny the Gentle was one of the founders of the druid order called {Crunor's Caress}, that has been originated in her hometown Carlin.", npc, creature)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "crunor's caress") then
 		if player:getStorageValue(Storage.Quest.U7_24.TheParadoxTower.TheFearedHugo) == 1 then
@@ -99,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:addOutfitAddon(141, 2) -- female summoner addon
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak, 11)
-			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 0)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 11)
 		elseif player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak) == 11 then
 			npcHandler:say("Stop bothering me. I am a far too busy man to be constantly giving out awards.", npc, creature)
 		else

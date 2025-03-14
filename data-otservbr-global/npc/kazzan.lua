@@ -97,7 +97,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Very good. I hope you are able to convince one of the fractions to stand on our side. If you haven't done yet, you should first go and look for old Melchior in Ankrahmun. ...",
 			"He knows many things about the djinn race and he may have some hints for you.",
 		}, npc, creature)
-		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
 			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 		end
 		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, 1)

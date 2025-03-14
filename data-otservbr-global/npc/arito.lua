@@ -90,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"The entrance to their hideout will be revealed in front of you. I don't know who is in charge there right now but please tell him that I won't spoil their secret...",
 				"... well, I just told you but anyway .... I won't tell it to anybody else. Now hurry up before they get here!!",
 			}, npc, creature)
-			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) <= 0 then
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
 				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.AritosTask, 1)

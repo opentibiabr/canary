@@ -5,7 +5,7 @@ function kosheiBoss.onUse(player, item, fromPosition, target, toPosition, isHotk
 		return false
 	end
 
-	if player:getStorageValue(Storage.SweetyCyclops.AmuletStatus) == 2 and player:getStorageValue(Storage.Quest.U8_1.KosheiTheDeathless.RewardDoor) ~= 1 then
+	if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 and player:getStorageValue(Storage.Quest.U8_1.KosheiTheDeathless.RewardDoor) ~= 1 then
 		player:removeItem(7532, 1)
 		player:setStorageValue(Storage.Quest.U8_1.KosheiTheDeathless.RewardDoor, 1)
 		toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)

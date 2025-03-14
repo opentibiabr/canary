@@ -412,6 +412,12 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(storage[playerId], 1)
 				if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Questline) < 1 then
 					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Questline, 1)
+					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Minotaurs.Mission, 1)
+					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Mission, 1)
+					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, 1)
+					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission, 1)
+					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Life.Mission, 1)
+					player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Humans.Mission, 1)
 				end
 				npcHandler:setTopic(playerId, 2)
 			elseif player:getStorageValue(storage[playerId]) > 0 then

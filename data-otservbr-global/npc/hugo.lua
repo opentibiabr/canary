@@ -176,6 +176,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			end
 			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 1)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, 1)
 			npcHandler:say("Terrific! What are you waiting for?! Start right away gathering 20 pieces of brown cloth and come back once you have them!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
@@ -186,6 +187,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 
 			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) + 1)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog) + 1)
 			if targetMessage.lastItem then
 				player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfitTimer, os.time() + 86400)
 			end
@@ -194,8 +196,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			player:addOutfit(153)
 			player:addOutfit(157)
-			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 6)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 6)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, 6)
 			npcHandler:say("Here you go. Maybe you enjoy if after all.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

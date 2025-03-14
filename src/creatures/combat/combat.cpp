@@ -2321,7 +2321,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 				uint16_t raceId = mType->info.raceid;
 
-				if (!canApplyCritical && lowBlowCrits.find(raceId) != lowBlowCrits.end() && lowBlowCrits[raceId]) {
+				if (!canApplyCritical && lowBlowCrits.contains(raceId) && lowBlowCrits[raceId]) {
 					isTargetCritical = true;
 				}
 			}

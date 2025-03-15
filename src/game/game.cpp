@@ -3433,10 +3433,10 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 
 	const auto &slotItem = player->getInventoryItem(slot);
 	auto equipItem = searchForItem(backpack, it.id, hasTier, tier);
- 	if (!equipItem) {
- 		const auto &lootPouch = player->getLootPouch();
- 		equipItem = searchForItem(lootPouch, it.id, hasTier, tier);
- 	}
+	if (!equipItem) {
+		const auto &lootPouch = player->getLootPouch();
+		equipItem = searchForItem(lootPouch, it.id, hasTier, tier);
+	}
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
@@ -4037,13 +4037,13 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 	}
 
 	bool canUseHouseItem = !g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS, __FUNCTION__) || InternalGame::playerCanUseItemOnHouseTile(player, item);
- 	if (!canUseHouseItem && item->hasOwner() && !item->isOwner(player)) {
- 		player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
- 		return;
- 	} else if (!canUseHouseItem) {
- 		player->sendCancelMessage(RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
- 		return;
- 	}
+	if (!canUseHouseItem && item->hasOwner() && !item->isOwner(player)) {
+		player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
+		return;
+	} else if (!canUseHouseItem) {
+		player->sendCancelMessage(RETURNVALUE_ITEMCANNOTBEMOVEDTHERE);
+		return;
+	}
 
 	const ItemType &it = Item::items[item->getID()];
 	bool canTriggerExhaustion = it.triggerExhaustion();

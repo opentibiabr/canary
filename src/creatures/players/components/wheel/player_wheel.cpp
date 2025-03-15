@@ -27,7 +27,7 @@
 
 static PlayerWheelGem emptyGem = {};
 
-std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
+const std::array<int32_t, COMBAT_COUNT> m_resistance = { 0 };
 
 const static std::vector<WheelGemBasicModifier_t> wheelGemBasicSlot1Allowed = {
 	WheelGemBasicModifier_t::General_FireResistance,
@@ -307,7 +307,7 @@ namespace {
 		return 0;
 	}
 
-	std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
+	const static std::vector<PromotionScroll> WheelOfDestinyPromotionScrolls = {
 		{ 43946, "abridged", 3 },
 		{ 43947, "basic", 5 },
 		{ 43948, "revised", 9 },
@@ -1575,7 +1575,7 @@ void PlayerWheel::saveSlotPointsOnPressSaveButton(NetworkMessage &msg) {
 	}
 
 	// After iterating over all slots, the vector is sorted according to the slot order.
-	std::ranges::sort(sortedTable.begin(), sortedTable.end(), [](const SlotInfo &a, const SlotInfo &b) {
+	std::ranges::sort(sortedTable, [](const SlotInfo &a, const SlotInfo &b) {
 		return a.order < b.order;
 	});
 

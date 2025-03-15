@@ -268,7 +268,7 @@ bool PlayerTitle::checkTask(uint32_t amount) const {
 	return m_player.getTaskHuntingPoints() >= amount;
 }
 
-bool PlayerTitle::checkMap(uint32_t amount) const {
+bool PlayerTitle::checkMap(uint32_t) const {
 	// todo cyclopledia
 	return false;
 }

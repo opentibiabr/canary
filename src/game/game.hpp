@@ -545,6 +545,7 @@ public:
 
 	void addMonster(const std::shared_ptr<Monster> &monster);
 	void removeMonster(const std::shared_ptr<Monster> &monster);
+	void updateMonster(const std::shared_ptr<Monster> &monster, const std::shared_ptr<MonsterType> &monsterType);
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
@@ -900,7 +901,7 @@ private:
 
 	void buildMessageAsAttacker(
 		const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message,
-		std::stringstream &ss, const std::string &damageString
+		std::stringstream &ss, const std::string &damageString, const std::shared_ptr<Player> &attackerPlayer
 	) const;
 
 	void buildMessageAsTarget(

@@ -35,7 +35,7 @@ local function createCombat(area, combatFunc)
 end
 
 local combat = createCombat(AREA_CIRCLE3X3, "onTargetCreature")
-local combatWOD = createCombat(AREA_CIRCLE5X5, "onTargetCreatureWOD")
+local combatWOD = createCombat(AREA_CIRCLE3X4, "onTargetCreatureWOD")
 
 local spell = Spell("instant")
 

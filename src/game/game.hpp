@@ -18,6 +18,7 @@
 #include "map/map.hpp"
 #include "modal_window/modal_window.hpp"
 #include "movement/position.hpp"
+#include "game/worlds/gameworlds.hpp"
 
 // Forward declaration for protobuf class
 namespace Canary {
@@ -96,6 +97,11 @@ public:
 
 	static Game &getInstance();
 
+	// Game worlds interface
+	Worlds &worlds();
+	[[nodiscard]] const Worlds &worlds() const;
+	[[nodiscard]] const std::unordered_map<uint8_t, std::string> &getWorldTypeNames() const;
+
 	void resetMonsters() const;
 	void resetNpcs() const;
 
@@ -123,11 +129,6 @@ public:
 	void getMapDimensions(uint32_t &width, uint32_t &height) const {
 		width = map.width;
 		height = map.height;
-	}
-
-	void setWorldType(WorldType_t type);
-	WorldType_t getWorldType() const {
-		return worldType;
 	}
 
 	const std::map<uint32_t, std::unique_ptr<TeamFinder>> &getTeamFinderList() const {
@@ -689,6 +690,8 @@ public:
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
 
 private:
+	std::unordered_map<uint8_t, std::string> m_worldTypesNames;
+
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
 
@@ -855,7 +858,6 @@ private:
 	bool browseField = false;
 
 	GameState_t gameState = GAME_STATE_NORMAL;
-	WorldType_t worldType = WORLD_TYPE_PVP;
 
 	LightState_t lightState = LIGHT_STATE_DAY;
 	LightState_t currentLightState = lightState;
@@ -920,19 +922,21 @@ private:
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
+	Worlds m_worlds = {};
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
-	void processHighscoreResults(const DBResult_ptr &result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
+	void processHighscoreResults(const DBResult_ptr &result, const std::string &worldName, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
 	std::string generateVocationConditionHighscore(uint32_t vocation);
 	std::string generateHighscoreQuery(
 		const std::string &categoryName,
+		const std::string &worldName,
 		uint32_t page,
 		uint8_t entriesPerPage,
 		uint32_t vocation,
 		uint32_t playerGUID = 0
 	);
-	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
+	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, const std::string &world, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;

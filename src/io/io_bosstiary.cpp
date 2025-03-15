@@ -94,28 +94,35 @@ void IOBosstiary::loadBoostedBoss() {
 
 	query += fmt::format("`raceid` = '{}'", bossId);
 
+	const auto bossType = getMonsterTypeByBossRaceId(bossId);
+
+	const auto lookTypeEx = bossType ? bossType->info.outfit.lookTypeEx : 0;
+	const auto lookType = bossType ? bossType->info.outfit.lookType : 136;
+	const auto lookFeet = bossType ? bossType->info.outfit.lookFeet : 0;
+	const auto lookLegs = bossType ? bossType->info.outfit.lookLegs : 0;
+	const auto lookHead = bossType ? bossType->info.outfit.lookHead : 0;
+	const auto lookBody = bossType ? bossType->info.outfit.lookBody : 0;
+	const auto lookAddons = bossType ? bossType->info.outfit.lookAddons : 0;
+	const auto lookMount = bossType ? bossType->info.outfit.lookMount : 0;
+
+	query = fmt::format(
+		"UPDATE `boosted_boss` SET `date` = {}, `boostname` = {}, `looktypeEx` = {}, `looktype` = {}, `lookfeet` = {}, `looklegs` = {}, `lookhead` = {}, `lookbody` = {}, `lookaddons` = {}, `lookmount` = {}, `raceid` = {}",
+		today, database.escapeString(bossName), lookTypeEx, lookType, lookFeet, lookLegs, lookHead, lookBody, lookAddons, lookMount, bossId
+	);
+
 	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to detect boosted boss database. (CODE 03)", __FUNCTION__);
 		return;
 	}
 
-	query = fmt::format(
-		"UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}",
-		bossId
-	);
-
+	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotOne` = 0 WHERE `bossIdSlotOne` = {}", bossId);
 	if (!database.executeQuery(query)) {
 		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}
 
-	query = fmt::format(
-		"UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}",
-		bossId
-	);
-
+	query = fmt::format("UPDATE `player_bosstiary` SET `bossIdSlotTwo` = 0 WHERE `bossIdSlotTwo` = {}", bossId);
 	if (!database.executeQuery(query)) {
-		g_logger().error("[{}] Failed to reset players selected boss slot 2. (CODE 03)", __FUNCTION__);
-		return;
+		g_logger().error("[{}] Failed to reset players selected boss slot 1. (CODE 03)", __FUNCTION__);
 	}
 
 	setBossBoostedName(bossName);

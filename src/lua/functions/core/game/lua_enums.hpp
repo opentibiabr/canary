@@ -14,6 +14,7 @@ public:
 	static void init(lua_State* L);
 
 private:
+	static void initWorldTypes(lua_State* L);
 	static void initOthersEnums(lua_State* L);
 	static void initAccountEnums(lua_State* L);
 	static void initDailyRewardEnums(lua_State* L);

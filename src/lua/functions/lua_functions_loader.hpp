@@ -216,8 +216,9 @@ public:
 	}
 
 	template <class T>
-	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg) {
-		auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg, const char* metatableName) {
+		// Verify that the userdata at 'arg' has the correct metatable.
+		auto userdata = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, arg, metatableName));
 		if (!userdata) {
 			return nullptr;
 		}

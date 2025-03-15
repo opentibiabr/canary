@@ -20,6 +20,7 @@
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "io/iobestiary.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -2683,4 +2684,23 @@ void Monster::onExecuteAsyncTasks() {
 	if (hasAsyncTaskFlag(OnThink)) {
 		onThink_async();
 	}
+}
+
+bool Monster::checkCanApplyCharm(const std::shared_ptr<Player> &player, charmRune_t charmRune) const {
+	if (!player) {
+		return false;
+	}
+
+	uint16_t playerCharmRaceid = player->parseRacebyCharm(charmRune, false, 0);
+	if (playerCharmRaceid != 0) {
+		const auto &monsterType = g_monsters().getMonsterType(getName());
+		if (monsterType && playerCharmRaceid == monsterType->info.raceid) {
+			const auto &charm = g_iobestiary().getBestiaryCharm(charmRune);
+			if (charm) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

@@ -215,9 +215,30 @@ public:
 		scriptEnv[scriptEnvIndex--].resetEnv();
 	}
 
+	/**
+	 * @brief Retrieves a shared pointer to a userdata object from the Lua stack.
+	 *
+	 * This function attempts to extract a `std::shared_ptr<T>` from the given Lua stack index.
+	 * It ensures that the userdata at the specified index has the expected metatable before
+	 * attempting to retrieve it. This validation prevents crashes due to invalid or outdated
+	 * Lua bindings, ensuring that only correctly-typed userdata is accessed.
+	 *
+	 * @tparam T The C++ class type of the userdata.
+	 * @param L The Lua state.
+	 * @param arg The index of the Lua stack where the userdata is expected to be.
+	 * @param metatableName The expected metatable name associated with the userdata.
+	 *                      This ensures that the retrieved object is of the correct type.
+	 *                      The metatable name should match the one assigned when the userdata
+	 *                      was originally pushed into Lua.
+	 *
+	 * @return std::shared_ptr<T> A valid shared pointer to the requested object if the userdata
+	 *         exists and has the correct metatable. If the userdata is missing or has an incorrect
+	 *         metatable, returns nullptr.
+	 */
 	template <class T>
-	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg) {
-		auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg, const char* metatableName) {
+		// Verify that the userdata at 'arg' has the correct metatable.
+		auto userdata = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, arg, metatableName));
 		if (!userdata) {
 			return nullptr;
 		}

@@ -477,7 +477,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 		return 1;
 	}
 
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 4);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 4, "Condition");
 	if (!condition) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CONDITION_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -515,7 +515,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 		return 1;
 	}
 
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 3);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 3, "Condition");
 	if (!condition) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CONDITION_NOT_FOUND));
 		Lua::pushBoolean(L, false);

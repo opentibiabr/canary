@@ -36,7 +36,7 @@ int KVFunctions::luaKVScoped(lua_State* L) {
 	const auto key = Lua::getString(L, -1);
 
 	if (Lua::isUserdata(L, 1)) {
-		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1, "KV");
 		const auto &newScope = scopedKV->scoped(key);
 		Lua::pushUserdata<KV>(L, newScope);
 		Lua::setMetatable(L, -1, "KV");
@@ -61,7 +61,7 @@ int KVFunctions::luaKVSet(lua_State* L) {
 	}
 
 	if (Lua::isUserdata(L, 1)) {
-		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1, "KV");
 		scopedKV->set(key, valueWrapper.value());
 		Lua::pushBoolean(L, true);
 		return 1;
@@ -82,7 +82,7 @@ int KVFunctions::luaKVGet(lua_State* L) {
 		key = Lua::getString(L, -2);
 	}
 	if (Lua::isUserdata(L, 1)) {
-		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1, "KV");
 		valueWrapper = scopedKV->get(key, forceLoad);
 	} else {
 		valueWrapper = g_kv().get(key, forceLoad);
@@ -100,7 +100,7 @@ int KVFunctions::luaKVRemove(lua_State* L) {
 	// KV.remove(key) | scopedKV:remove(key)
 	const auto key = Lua::getString(L, -1);
 	if (Lua::isUserdata(L, 1)) {
-		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1, "KV");
 		scopedKV->remove(key);
 	} else {
 		g_kv().remove(key);
@@ -119,7 +119,7 @@ int KVFunctions::luaKVKeys(lua_State* L) {
 	}
 
 	if (Lua::isUserdata(L, 1)) {
-		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1);
+		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1, "KV");
 		keys = scopedKV->keys();
 	} else {
 		keys = g_kv().keys(prefix);

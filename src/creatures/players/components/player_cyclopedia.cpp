@@ -7,9 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-
+// Player.hpp already includes the cylopedia
 #include "creatures/players/player.hpp"
+
 #include "database/databasetasks.hpp"
 #include "enums/player_blessings.hpp"
 #include "enums/player_cyclopedia.hpp"

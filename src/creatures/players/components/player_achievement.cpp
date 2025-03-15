@@ -7,9 +7,9 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/achievement/player_achievement.hpp"
-
+// Player.hpp already includes the achievement
 #include "creatures/players/player.hpp"
+
 #include "game/game.hpp"
 #include "kv/kv.hpp"
 

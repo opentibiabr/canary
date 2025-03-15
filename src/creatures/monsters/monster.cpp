@@ -13,7 +13,6 @@
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "items/tile.hpp"
@@ -908,8 +907,8 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 
 		// Wheel of destiny
 		const auto &player = attacker ? attacker->getPlayer() : nullptr;
-		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
-			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
+		if (player && player->wheel().getInstant("Ballistic Mastery")) {
+			elementMod -= player->wheel().checkElementSensitiveReduction(combatType);
 		}
 
 		if (elementMod != 0) {
@@ -2444,7 +2443,7 @@ bool Monster::challengeCreature(const std::shared_ptr<Creature> &creature, int t
 		// Wheel of destiny
 		const auto &player = creature ? creature->getPlayer() : nullptr;
 		if (player && !player->isRemoved()) {
-			player->wheel()->healIfBattleHealingActive();
+			player->wheel().healIfBattleHealingActive();
 		}
 	}
 	return result;

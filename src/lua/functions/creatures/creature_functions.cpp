@@ -109,7 +109,7 @@ int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 			lua_pushnil(L);
 			return 1;
 		}
-		creature = Lua::getUserdataShared<Creature>(L, 2);
+		creature = Lua::getUserdataShared<Creature>(L, 2, "Creature");
 	} else {
 		creature = nullptr;
 	}
@@ -125,7 +125,7 @@ int CreatureFunctions::luaCreatureCreate(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 	// creature:getEvents(type)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -145,7 +145,7 @@ int CreatureFunctions::luaCreatureGetEvents(lua_State* L) {
 
 int CreatureFunctions::luaCreatureRegisterEvent(lua_State* L) {
 	// creature:registerEvent(name)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		const std::string &name = Lua::getString(L, 2);
 		Lua::pushBoolean(L, creature->registerCreatureEvent(name));
@@ -158,7 +158,7 @@ int CreatureFunctions::luaCreatureRegisterEvent(lua_State* L) {
 int CreatureFunctions::luaCreatureUnregisterEvent(lua_State* L) {
 	// creature:unregisterEvent(name)
 	const std::string &name = Lua::getString(L, 2);
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->unregisterCreatureEvent(name));
 	} else {
@@ -169,7 +169,7 @@ int CreatureFunctions::luaCreatureUnregisterEvent(lua_State* L) {
 
 int CreatureFunctions::luaCreatureIsRemoved(lua_State* L) {
 	// creature:isRemoved()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->isRemoved());
 	} else {
@@ -180,13 +180,13 @@ int CreatureFunctions::luaCreatureIsRemoved(lua_State* L) {
 
 int CreatureFunctions::luaCreatureIsCreature(lua_State* L) {
 	// creature:isCreature()
-	Lua::pushBoolean(L, Lua::getUserdataShared<Creature>(L, 1) != nullptr);
+	Lua::pushBoolean(L, Lua::getUserdataShared<Creature>(L, 1, "Creature") != nullptr);
 	return 1;
 }
 
 int CreatureFunctions::luaCreatureIsInGhostMode(lua_State* L) {
 	// creature:isInGhostMode()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->isInGhostMode());
 	} else {
@@ -197,7 +197,7 @@ int CreatureFunctions::luaCreatureIsInGhostMode(lua_State* L) {
 
 int CreatureFunctions::luaCreatureIsHealthHidden(lua_State* L) {
 	// creature:isHealthHidden()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->isHealthHidden());
 	} else {
@@ -208,7 +208,7 @@ int CreatureFunctions::luaCreatureIsHealthHidden(lua_State* L) {
 
 int CreatureFunctions::luaCreatureCanSee(lua_State* L) {
 	// creature:canSee(position)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		const Position &position = Lua::getPosition(L, 2);
 		Lua::pushBoolean(L, creature->canSee(position));
@@ -220,7 +220,7 @@ int CreatureFunctions::luaCreatureCanSee(lua_State* L) {
 
 int CreatureFunctions::luaCreatureCanSeeCreature(lua_State* L) {
 	// creature:canSeeCreature(creature)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		const auto &otherCreature = Lua::getCreature(L, 2);
 		Lua::pushBoolean(L, creature->canSeeCreature(otherCreature));
@@ -232,7 +232,7 @@ int CreatureFunctions::luaCreatureCanSeeCreature(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetParent(lua_State* L) {
 	// creature:getParent()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -250,7 +250,7 @@ int CreatureFunctions::luaCreatureGetParent(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetId(lua_State* L) {
 	// creature:getId()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getID());
 	} else {
@@ -261,7 +261,7 @@ int CreatureFunctions::luaCreatureGetId(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetName(lua_State* L) {
 	// creature:getName()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushString(L, creature->getName());
 	} else {
@@ -272,7 +272,7 @@ int CreatureFunctions::luaCreatureGetName(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetTypeName(lua_State* L) {
 	// creature:getTypeName()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushString(L, creature->getTypeName());
 	} else {
@@ -283,7 +283,7 @@ int CreatureFunctions::luaCreatureGetTypeName(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetTarget(lua_State* L) {
 	// creature:getTarget()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -301,7 +301,7 @@ int CreatureFunctions::luaCreatureGetTarget(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetTarget(lua_State* L) {
 	// creature:setTarget(target)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		const auto &target = Lua::getCreature(L, 2);
 		Lua::pushBoolean(L, creature->setAttackedCreature(target));
@@ -313,7 +313,7 @@ int CreatureFunctions::luaCreatureSetTarget(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetFollowCreature(lua_State* L) {
 	// creature:getFollowCreature()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -331,7 +331,7 @@ int CreatureFunctions::luaCreatureGetFollowCreature(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetFollowCreature(lua_State* L) {
 	// creature:setFollowCreature(followedCreature)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		const auto &followCreature = Lua::getCreature(L, 2);
 		Lua::pushBoolean(L, creature->setFollowCreature(followCreature));
@@ -343,7 +343,7 @@ int CreatureFunctions::luaCreatureSetFollowCreature(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetMaster(lua_State* L) {
 	// creature:getMaster()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -362,7 +362,7 @@ int CreatureFunctions::luaCreatureGetMaster(lua_State* L) {
 
 int CreatureFunctions::luaCreatureReload(lua_State* L) {
 	// creature:reload()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -375,7 +375,7 @@ int CreatureFunctions::luaCreatureReload(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 	// creature:setMaster(master)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -389,7 +389,7 @@ int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetLight(lua_State* L) {
 	// creature:getLight()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -403,7 +403,7 @@ int CreatureFunctions::luaCreatureGetLight(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetLight(lua_State* L) {
 	// creature:setLight(color, level)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -420,7 +420,7 @@ int CreatureFunctions::luaCreatureSetLight(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetSpeed(lua_State* L) {
 	// creature:getSpeed()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getSpeed());
 	} else {
@@ -446,7 +446,7 @@ int CreatureFunctions::luaCreatureSetSpeed(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetBaseSpeed(lua_State* L) {
 	// creature:getBaseSpeed()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getBaseSpeed());
 	} else {
@@ -472,7 +472,7 @@ int CreatureFunctions::luaCreatureChangeSpeed(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetDropLoot(lua_State* L) {
 	// creature:setDropLoot(doDrop)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		creature->setDropLoot(Lua::getBoolean(L, 2));
 		Lua::pushBoolean(L, true);
@@ -484,7 +484,7 @@ int CreatureFunctions::luaCreatureSetDropLoot(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetSkillLoss(lua_State* L) {
 	// creature:setSkillLoss(skillLoss)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		creature->setSkillLoss(Lua::getBoolean(L, 2));
 		Lua::pushBoolean(L, true);
@@ -496,7 +496,7 @@ int CreatureFunctions::luaCreatureSetSkillLoss(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetPosition(lua_State* L) {
 	// creature:Lua::getPosition()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushPosition(L, creature->getPosition());
 	} else {
@@ -507,7 +507,7 @@ int CreatureFunctions::luaCreatureGetPosition(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetTile(lua_State* L) {
 	// creature:getTile()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -525,7 +525,7 @@ int CreatureFunctions::luaCreatureGetTile(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetDirection(lua_State* L) {
 	// creature:getDirection()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getDirection());
 	} else {
@@ -536,7 +536,7 @@ int CreatureFunctions::luaCreatureGetDirection(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetDirection(lua_State* L) {
 	// creature:setDirection(direction)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, g_game().internalCreatureTurn(creature, Lua::getNumber<Direction>(L, 2)));
 	} else {
@@ -547,7 +547,7 @@ int CreatureFunctions::luaCreatureSetDirection(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetHealth(lua_State* L) {
 	// creature:getHealth()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getHealth());
 	} else {
@@ -558,7 +558,7 @@ int CreatureFunctions::luaCreatureGetHealth(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetHealth(lua_State* L) {
 	// creature:setHealth(health)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -577,7 +577,7 @@ int CreatureFunctions::luaCreatureSetHealth(lua_State* L) {
 
 int CreatureFunctions::luaCreatureAddHealth(lua_State* L) {
 	// creature:addHealth(healthChange, combatType)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -598,7 +598,7 @@ int CreatureFunctions::luaCreatureAddHealth(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetMaxHealth(lua_State* L) {
 	// creature:getMaxHealth()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getMaxHealth());
 	} else {
@@ -609,7 +609,7 @@ int CreatureFunctions::luaCreatureGetMaxHealth(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetMaxHealth(lua_State* L) {
 	// creature:setMaxHealth(maxHealth)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -629,7 +629,7 @@ int CreatureFunctions::luaCreatureSetMaxHealth(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetHiddenHealth(lua_State* L) {
 	// creature:setHiddenHealth(hide)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		creature->setHiddenHealth(Lua::getBoolean(L, 2));
 		g_game().addCreatureHealth(creature);
@@ -642,7 +642,7 @@ int CreatureFunctions::luaCreatureSetHiddenHealth(lua_State* L) {
 
 int CreatureFunctions::luaCreatureIsMoveLocked(lua_State* L) {
 	// creature:isMoveLocked()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->isMoveLocked());
 	} else {
@@ -653,7 +653,7 @@ int CreatureFunctions::luaCreatureIsMoveLocked(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetMoveLocked(lua_State* L) {
 	// creature:setMoveLocked(moveLocked)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		creature->setMoveLocked(Lua::getBoolean(L, 2));
 		Lua::pushBoolean(L, true);
@@ -665,7 +665,7 @@ int CreatureFunctions::luaCreatureSetMoveLocked(lua_State* L) {
 
 int CreatureFunctions::luaCreatureIsDirectionLocked(lua_State* L) {
 	// creature:isDirectionLocked()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->isDirectionLocked());
 	} else {
@@ -676,7 +676,7 @@ int CreatureFunctions::luaCreatureIsDirectionLocked(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetDirectionLocked(lua_State* L) {
 	// creature:setDirectionLocked(directionLocked)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		creature->setDirectionLocked(Lua::getBoolean(L, 2));
 		Lua::pushBoolean(L, true);
@@ -688,7 +688,7 @@ int CreatureFunctions::luaCreatureSetDirectionLocked(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 	// creature:getSkull()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getSkull());
 	} else {
@@ -699,7 +699,7 @@ int CreatureFunctions::luaCreatureGetSkull(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetSkull(lua_State* L) {
 	// creature:setSkull(skull)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		creature->setSkull(Lua::getNumber<Skulls_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -711,7 +711,7 @@ int CreatureFunctions::luaCreatureSetSkull(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetOutfit(lua_State* L) {
 	// creature:Lua::getOutfit()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushOutfit(L, creature->getCurrentOutfit());
 	} else {
@@ -722,7 +722,7 @@ int CreatureFunctions::luaCreatureGetOutfit(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 	// creature:setOutfit(outfit)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Outfit_t outfit = Lua::getOutfit(L, 2);
 		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
@@ -741,7 +741,7 @@ int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 	// creature:getCondition(conditionType[, conditionId = CONDITIONID_COMBAT[, subId = 0]])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -763,8 +763,8 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 
 int CreatureFunctions::luaCreatureAddCondition(lua_State* L) {
 	// creature:addCondition(condition)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 2);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 2, "Condition");
 	if (creature && condition) {
 		Lua::pushBoolean(L, creature->addCondition(condition->clone()));
 	} else {
@@ -775,7 +775,7 @@ int CreatureFunctions::luaCreatureAddCondition(lua_State* L) {
 
 int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	// creature:removeCondition(conditionType[, conditionId = CONDITIONID_COMBAT[, subId = 0[, force = false]]])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -801,7 +801,7 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 
 int CreatureFunctions::luaCreatureHasCondition(lua_State* L) {
 	// creature:hasCondition(conditionType[, subId = 0])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -815,7 +815,7 @@ int CreatureFunctions::luaCreatureHasCondition(lua_State* L) {
 
 int CreatureFunctions::luaCreatureIsImmune(lua_State* L) {
 	// creature:isImmune(condition or conditionType)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -823,7 +823,7 @@ int CreatureFunctions::luaCreatureIsImmune(lua_State* L) {
 
 	if (Lua::isNumber(L, 2)) {
 		Lua::pushBoolean(L, creature->isImmune(Lua::getNumber<ConditionType_t>(L, 2)));
-	} else if (const auto condition = Lua::getUserdataShared<Condition>(L, 2)) {
+	} else if (const auto condition = Lua::getUserdataShared<Condition>(L, 2, "Condition")) {
 		Lua::pushBoolean(L, creature->isImmune(condition->getType()));
 	} else {
 		lua_pushnil(L);
@@ -866,7 +866,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	const bool pushMovement = Lua::getBoolean(L, 3, false);
 
 	const Position &position = Lua::getPosition(L, 2);
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature == nullptr) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -921,7 +921,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 
 	const auto type = Lua::getNumber<SpeakClasses>(L, 3, TALKTYPE_MONSTER_SAY);
 	const std::string &text = Lua::getString(L, 2);
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -942,7 +942,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetDamageMap(lua_State* L) {
 	// creature:getDamageMap()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -960,7 +960,7 @@ int CreatureFunctions::luaCreatureGetDamageMap(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetSummons(lua_State* L) {
 	// creature:getSummons()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -981,7 +981,7 @@ int CreatureFunctions::luaCreatureGetSummons(lua_State* L) {
 
 int CreatureFunctions::luaCreatureHasBeenSummoned(lua_State* L) {
 	// creature:hasBeenSummoned()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushBoolean(L, creature->hasBeenSummoned());
 	} else {
@@ -994,7 +994,7 @@ int CreatureFunctions::luaCreatureHasBeenSummoned(lua_State* L) {
 int CreatureFunctions::luaCreatureGetDescription(lua_State* L) {
 	// creature:getDescription(distance)
 	const int32_t distance = Lua::getNumber<int32_t>(L, 2);
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		Lua::pushString(L, creature->getDescription(distance));
 	} else {
@@ -1005,7 +1005,7 @@ int CreatureFunctions::luaCreatureGetDescription(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	// creature:getPathTo(pos[, minTargetDist = 0[, maxTargetDist = 1[, fullPathSearch = true[, clearSight = true[, maxSearchDist = 0]]]]])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -1038,7 +1038,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 int CreatureFunctions::luaCreatureMove(lua_State* L) {
 	// creature:move(direction)
 	// creature:move(tile[, flags = 0])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		lua_pushnil(L);
 		return 1;
@@ -1052,7 +1052,7 @@ int CreatureFunctions::luaCreatureMove(lua_State* L) {
 		}
 		lua_pushnumber(L, g_game().internalMoveCreature(creature, direction, FLAG_NOLIMIT));
 	} else {
-		const auto &tile = Lua::getUserdataShared<Tile>(L, 2);
+		const auto &tile = Lua::getUserdataShared<Tile>(L, 2, "Tile");
 		if (!tile) {
 			lua_pushnil(L);
 			return 1;
@@ -1064,7 +1064,7 @@ int CreatureFunctions::luaCreatureMove(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetZoneType(lua_State* L) {
 	// creature:getZoneType()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature) {
 		lua_pushnumber(L, creature->getZoneType());
 	} else {
@@ -1075,7 +1075,7 @@ int CreatureFunctions::luaCreatureGetZoneType(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetZones(lua_State* L) {
 	// creature:getZones()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (creature == nullptr) {
 		lua_pushnil(L);
 		return 1;
@@ -1095,7 +1095,7 @@ int CreatureFunctions::luaCreatureGetZones(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
 	// creature:setIcon(key, category, icon[, number])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -1120,7 +1120,7 @@ int CreatureFunctions::luaCreatureSetIcon(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetIcons(lua_State* L) {
 	// creature:getIcons()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -1141,7 +1141,7 @@ int CreatureFunctions::luaCreatureGetIcons(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetIcon(lua_State* L) {
 	// creature:getIcon(key)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -1162,7 +1162,7 @@ int CreatureFunctions::luaCreatureGetIcon(lua_State* L) {
 
 int CreatureFunctions::luaCreatureRemoveIcon(lua_State* L) {
 	// creature:removeIcon(key)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -1176,7 +1176,7 @@ int CreatureFunctions::luaCreatureRemoveIcon(lua_State* L) {
 
 int CreatureFunctions::luaCreatureClearIcons(lua_State* L) {
 	// creature:clearIcons()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		Lua::pushBoolean(L, false);

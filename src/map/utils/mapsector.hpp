@@ -48,6 +48,10 @@ struct Floor {
 		return z;
 	}
 
+	auto &getMutex() const {
+		return mutex;
+	}
+
 private:
 	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[SECTOR_SIZE][SECTOR_SIZE] = {};
 

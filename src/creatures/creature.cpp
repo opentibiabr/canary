@@ -1891,6 +1891,14 @@ void Creature::safeCall(std::function<void(void)> &&action) const {
 	}
 }
 
+void Creature::setCombatDamage(const CombatDamage &damage) {
+	m_combatDamage = damage;
+}
+
+CombatDamage Creature::getCombatDamage() const {
+	return m_combatDamage;
+}
+
 void Creature::attachEffectById(uint16_t id) {
 	auto it = std::ranges::find(attachedEffectList, id);
 	if (it != attachedEffectList.end()) {

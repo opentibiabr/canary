@@ -3861,6 +3861,10 @@ void Player::despawn() {
 		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Pending, false);
 	}
 
+	if (m_party && g_configManager().getBoolean(LEAVE_PARTY_ON_DEATH)) {
+		m_party->leaveParty(static_self_cast<Player>());
+	}
+
 	setDead(true);
 }
 

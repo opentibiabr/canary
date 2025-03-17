@@ -711,6 +711,9 @@ public:
 		return attachedEffectList;
 	}
 
+	void setCombatDamage(const CombatDamage &damage);
+	CombatDamage getCombatDamage() const;
+
 protected:
 	enum FlagAsyncClass_t : uint8_t {
 		AsyncTaskRunning = 1 << 0,
@@ -893,6 +896,7 @@ private:
 	}
 
 	uint8_t m_flagAsyncTask = 0;
+	CombatDamage m_combatDamage;
 	std::vector<uint16_t> attachedEffectList;
 	std::string shader;
 };

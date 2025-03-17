@@ -908,7 +908,7 @@ private:
 
 	void buildMessageAsAttacker(
 		const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message,
-		std::stringstream &ss, const std::string &damageString
+		std::stringstream &ss, const std::string &damageString, const std::shared_ptr<Player> &attackerPlayer
 	) const;
 
 	void buildMessageAsTarget(

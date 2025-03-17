@@ -1147,7 +1147,7 @@ int ItemFunctions::luaItemActor(lua_State* L) {
 
 int ItemFunctions::luaItemHasShader(lua_State* L) {
 	// item:hasShader()
-	const auto &item = Lua::getUserdataShared<Item>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 1, "Item");
 	if (!item) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		return 1;
@@ -1158,7 +1158,7 @@ int ItemFunctions::luaItemHasShader(lua_State* L) {
 
 int ItemFunctions::luaItemGetShader(lua_State* L) {
 	// item:getShader()
-	const auto &item = Lua::getUserdataShared<Item>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 1, "Item");
 	if (!item) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -1170,7 +1170,7 @@ int ItemFunctions::luaItemGetShader(lua_State* L) {
 
 int ItemFunctions::luaItemSetShader(lua_State* L) {
 	// item:setShader(shaderName)
-	const auto &item = Lua::getUserdataShared<Item>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 1, "Item");
 	if (!item) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		Lua::pushBoolean(L, false);

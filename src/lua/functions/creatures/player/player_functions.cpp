@@ -4923,7 +4923,7 @@ int PlayerFunctions::luaPlayerHasAnimusMastery(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetMapShader(lua_State* L) {
 	// player:getMapShader()
-	const auto &player = Lua::getUserdataShared<Player>(L, 1);
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -4936,7 +4936,7 @@ int PlayerFunctions::luaPlayerGetMapShader(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
 	// player:setMapShader(shaderName, [temporary])
-	const auto &player = Lua::getUserdataShared<Player>(L, 1);
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -4951,7 +4951,7 @@ int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
 
 int PlayerFunctions::luaPlayerAddCustomOutfit(lua_State* L) {
 	// player:addCustomOutfit(type, id or name)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1);
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -4973,7 +4973,7 @@ int PlayerFunctions::luaPlayerAddCustomOutfit(lua_State* L) {
 
 int PlayerFunctions::luaPlayerRemoveCustomOutfit(lua_State* L) {
 	// player:removeCustomOutfit(type, id or name)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1);
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		Lua::pushBoolean(L, false);

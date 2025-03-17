@@ -1194,7 +1194,7 @@ int CreatureFunctions::luaCreatureClearIcons(lua_State* L) {
 
 int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
 	// creature:attachEffectById(effectId, [temporary])
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		return 1;
@@ -1211,7 +1211,7 @@ int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
 
 int CreatureFunctions::luaCreatureDetachEffectById(lua_State* L) {
 	// creature:detachEffectById(effectId)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		return 1;
@@ -1223,7 +1223,7 @@ int CreatureFunctions::luaCreatureDetachEffectById(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
 	// creature:getAttachedEffects()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		return 1;
@@ -1240,7 +1240,7 @@ int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
 
 int CreatureFunctions::luaCreatureGetShader(lua_State* L) {
 	// creature:getShader()
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		return 1;
@@ -1253,7 +1253,7 @@ int CreatureFunctions::luaCreatureGetShader(lua_State* L) {
 
 int CreatureFunctions::luaCreatureSetShader(lua_State* L) {
 	// creature:setShader(shaderName)
-	const auto &creature = Lua::getUserdataShared<Creature>(L, 1);
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
 	if (!creature) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 		return 1;

@@ -493,22 +493,22 @@ std::shared_ptr<Thing> Lua::getThing(lua_State* L, int32_t arg) {
 		lua_rawgeti(L, -1, 't');
 		switch (getNumber<LuaData_t>(L, -1)) {
 			case LuaData_t::Item:
-				thing = getUserdataShared<Item>(L, arg);
+				thing = Lua::getUserdataShared<Item>(L, arg, "Item");
 				break;
 			case LuaData_t::Container:
-				thing = getUserdataShared<Container>(L, arg);
+				thing = Lua::getUserdataShared<Container>(L, arg, "Container");
 				break;
 			case LuaData_t::Teleport:
-				thing = getUserdataShared<Teleport>(L, arg);
+				thing = Lua::getUserdataShared<Teleport>(L, arg, "Teleport");
 				break;
 			case LuaData_t::Player:
-				thing = getUserdataShared<Player>(L, arg);
+				thing = Lua::getUserdataShared<Player>(L, arg, "Player");
 				break;
 			case LuaData_t::Monster:
-				thing = getUserdataShared<Monster>(L, arg);
+				thing = Lua::getUserdataShared<Monster>(L, arg, "Monster");
 				break;
 			case LuaData_t::Npc:
-				thing = getUserdataShared<Npc>(L, arg);
+				thing = Lua::getUserdataShared<Npc>(L, arg, "Npc");
 				break;
 			default:
 				thing = nullptr;
@@ -523,14 +523,14 @@ std::shared_ptr<Thing> Lua::getThing(lua_State* L, int32_t arg) {
 
 std::shared_ptr<Creature> Lua::getCreature(lua_State* L, int32_t arg) {
 	if (isUserdata(L, arg)) {
-		return getUserdataShared<Creature>(L, arg);
+		return Lua::getUserdataShared<Creature>(L, arg, "Creature");
 	}
 	return g_game().getCreatureByID(getNumber<uint32_t>(L, arg));
 }
 
 std::shared_ptr<Player> Lua::getPlayer(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
 	if (isUserdata(L, arg)) {
-		return getUserdataShared<Player>(L, arg);
+		return Lua::getUserdataShared<Player>(L, arg, "Player");
 	} else if (isNumber(L, arg)) {
 		return g_game().getPlayerByID(getNumber<uint64_t>(L, arg), allowOffline);
 	} else if (isString(L, arg)) {
@@ -542,7 +542,7 @@ std::shared_ptr<Player> Lua::getPlayer(lua_State* L, int32_t arg, bool allowOffl
 
 std::shared_ptr<Guild> Lua::getGuild(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
 	if (isUserdata(L, arg)) {
-		return getUserdataShared<Guild>(L, arg);
+		return Lua::getUserdataShared<Guild>(L, arg, "Guild");
 	} else if (isNumber(L, arg)) {
 		return g_game().getGuild(getNumber<uint64_t>(L, arg), allowOffline);
 	} else if (isString(L, arg)) {

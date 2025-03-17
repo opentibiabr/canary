@@ -25,7 +25,6 @@ struct Floor {
 	}
 
 	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
-		std::unique_lock<std::shared_mutex> ul(mutex);
 		tiles[x & SECTOR_MASK][y & SECTOR_MASK].first = std::move(tile);
 	}
 
@@ -35,7 +34,6 @@ struct Floor {
 	}
 
 	void setTileCache(uint16_t x, uint16_t y, const std::shared_ptr<BasicTile> &newTile) {
-		std::unique_lock<std::shared_mutex> ul(mutex);
 		tiles[x & SECTOR_MASK][y & SECTOR_MASK].second = newTile;
 	}
 

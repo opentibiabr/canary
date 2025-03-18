@@ -7227,6 +7227,17 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			return false;
 		}
 
+		if (damage.origin != ORIGIN_NONE) {
+			const auto events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
+			if (!events.empty()) {
+				for (const auto &creatureEvent : events) {
+					creatureEvent->executeHealthChange(target, attacker, damage);
+				}
+				damage.origin = ORIGIN_NONE;
+				return combatChangeHealth(attacker, target, damage);
+			}
+		}
+
 		// Wheel of destiny apply combat effects
 		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 
@@ -7448,17 +7459,6 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		auto realDamage = damage.primary.value + damage.secondary.value;
 		if (realDamage == 0) {
 			return true;
-		}
-
-		if (damage.origin != ORIGIN_NONE) {
-			const auto events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
-			if (!events.empty()) {
-				for (const auto &creatureEvent : events) {
-					creatureEvent->executeHealthChange(target, attacker, damage);
-				}
-				damage.origin = ORIGIN_NONE;
-				return combatChangeHealth(attacker, target, damage);
-			}
 		}
 
 		// Apply Custom PvP Damage (must be placed here to avoid recursive calls)

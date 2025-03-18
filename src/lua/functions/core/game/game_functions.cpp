@@ -793,7 +793,7 @@ int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
 
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 	// Game.addInfluencedMonster(monster)
-	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
 	if (!monster) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		Lua::pushBoolean(L, false);

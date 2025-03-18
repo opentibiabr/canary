@@ -44,7 +44,7 @@ int TownFunctions::luaTownCreate(lua_State* L) {
 
 int TownFunctions::luaTownGetId(lua_State* L) {
 	// town:getId()
-	if (const auto &town = Lua::getUserdataShared<Town>(L, 1, "Town")) {
+	if (const auto &town = Lua::getUserdataShared<Town>(L, 1)) {
 		lua_pushnumber(L, town->getID());
 	} else {
 		lua_pushnil(L);
@@ -54,7 +54,7 @@ int TownFunctions::luaTownGetId(lua_State* L) {
 
 int TownFunctions::luaTownGetName(lua_State* L) {
 	// town:getName()
-	if (const auto &town = Lua::getUserdataShared<Town>(L, 1, "Town")) {
+	if (const auto &town = Lua::getUserdataShared<Town>(L, 1)) {
 		Lua::pushString(L, town->getName());
 	} else {
 		lua_pushnil(L);
@@ -64,7 +64,7 @@ int TownFunctions::luaTownGetName(lua_State* L) {
 
 int TownFunctions::luaTownGetTemplePosition(lua_State* L) {
 	// town:getTemplePosition()
-	if (const auto &town = Lua::getUserdataShared<Town>(L, 1, "Town")) {
+	if (const auto &town = Lua::getUserdataShared<Town>(L, 1)) {
 		Lua::pushPosition(L, town->getTemplePosition());
 	} else {
 		lua_pushnil(L);

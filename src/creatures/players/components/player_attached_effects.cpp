@@ -745,8 +745,6 @@ std::string PlayerAttachedEffects::getCurrentShader_NAME() const {
 }
 
 bool PlayerAttachedEffects::addCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName) {
-	// test proposal
-
 	uint16_t elementId;
 	if (std::holds_alternative<uint16_t>(idOrName)) {
 		elementId = std::get<uint16_t>(idOrName);
@@ -795,7 +793,6 @@ bool PlayerAttachedEffects::addCustomOutfit(const std::string &type, const std::
 }
 
 bool PlayerAttachedEffects::removeCustomOutfit(const std::string &type, const std::variant<uint16_t, std::string> &idOrName) {
-	// test proposal
 	uint16_t elementId;
 	if (std::holds_alternative<uint16_t>(idOrName)) {
 		elementId = std::get<uint16_t>(idOrName);

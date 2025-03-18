@@ -20,7 +20,7 @@ class PlayerAttachedEffects {
 public:
 	explicit PlayerAttachedEffects(Player &player);
 
-	// -- @ wings
+	// wings
 	uint8_t getLastWing() const;
 	uint8_t getCurrentWing() const;
 	void setCurrentWing(uint8_t wingId);
@@ -33,8 +33,7 @@ public:
 	uint8_t getRandomWingId() const;
 	void diswing();
 
-	// -- @
-	// -- @ Auras
+	// Auras
 	uint8_t getLastAura() const;
 	uint8_t getCurrentAura() const;
 	void setCurrentAura(uint8_t auraId);
@@ -48,8 +47,8 @@ public:
 	bool hasAnyAura() const;
 	uint8_t getRandomAuraId() const;
 	void disaura();
-	// -- @
-	// -- @ Effect
+
+	// Effect
 	uint8_t getLastEffect() const;
 	uint8_t getCurrentEffect() const;
 	void setCurrentEffect(uint8_t effectId);
@@ -63,8 +62,8 @@ public:
 	bool hasAnyEffect() const;
 	uint8_t getRandomEffectId() const;
 	void diseffect();
-	// -- @
-	// -- @ Shader
+
+	// Shader
 	uint16_t getRandomShader() const;
 	uint16_t getCurrentShader() const;
 	void setCurrentShader(uint16_t shaderId);

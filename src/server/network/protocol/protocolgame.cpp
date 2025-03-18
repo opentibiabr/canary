@@ -7183,11 +7183,11 @@ void ProtocolGame::sendOutfitWindow() {
 	}
 
 	auto &playerAttachedEffects = player->attachedEffects();
+	// Wings
 	const auto &currentWing = g_game().getAttachedEffects()->getWingByID(playerAttachedEffects.getCurrentWing());
 	if (currentWing) {
 		currentOutfit.lookWing = currentWing->id;
 	}
-
 	// Auras
 	const auto &currentAura = g_game().getAttachedEffects()->getAuraByID(playerAttachedEffects.getCurrentAura());
 	if (currentAura) {
@@ -7198,6 +7198,7 @@ void ProtocolGame::sendOutfitWindow() {
 	if (currentEffect) {
 		currentOutfit.lookEffect = currentEffect->id;
 	}
+	// Shader
 	const auto &currentShader = g_game().getAttachedEffects()->getShaderByID(playerAttachedEffects.getCurrentShader());
 	if (currentShader) {
 		currentOutfit.lookShader = currentShader->id;
@@ -7242,7 +7243,7 @@ void ProtocolGame::sendOutfitWindow() {
 		}
 
 		if (isOTCR) {
-			sendOutfitWindowCustomOTCR(msg);
+			sendOutfitWindowCustomOTCR(msg); // g_game.enableFeature(GameWingsAurasEffectsShader)
 		}
 		writeToOutputBuffer(msg);
 		return;
@@ -7389,7 +7390,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
 
 	if (isOTCR) {
-		sendOutfitWindowCustomOTCR(msg);
+		sendOutfitWindowCustomOTCR(msg); // g_game.enableFeature(GameWingsAurasEffectsShader)
 	}
 	writeToOutputBuffer(msg);
 }

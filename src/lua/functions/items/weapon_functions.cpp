@@ -279,7 +279,7 @@ int WeaponFunctions::luaWeaponBreakChance(lua_State* L) {
 
 int WeaponFunctions::luaWeaponWandDamage(lua_State* L) {
 	// weapon:damage(damage[min, max]) only use this if the weapon is a wand!
-	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "WeaponWand");
+	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setMinChange(Lua::getNumber<uint32_t>(L, 2));
 		if (lua_gettop(L) > 2) {

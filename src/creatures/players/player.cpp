@@ -73,8 +73,7 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
 	m_animusMastery(*this),
-	m_playerAttachedEffects(*this)
-	{ }
+	m_playerAttachedEffects(*this) { }
 
 Player::~Player() {
 	for (const auto &item : inventory) {

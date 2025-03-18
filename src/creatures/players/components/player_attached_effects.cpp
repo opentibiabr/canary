@@ -15,7 +15,8 @@
 #include "kv/kv.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
-PlayerAttachedEffects::PlayerAttachedEffects(Player &player) : m_player(player) {
+PlayerAttachedEffects::PlayerAttachedEffects(Player &player) :
+	m_player(player) {
 	defaultOutfit = player.getDefaultOutfit();
 }
 

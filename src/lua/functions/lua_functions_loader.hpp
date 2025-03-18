@@ -253,20 +253,14 @@ public:
 	template <class T>
 	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg, const char* expectedMetatableName) {
 		auto userdata = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, arg, expectedMetatableName));
-		if (userdata) {
-			return *userdata;
-		}
-		// Check if the object has the expected name in its metatable chain
-		if (!checkMetatableInheritance(L, arg, expectedMetatableName)) {
-			return nullptr;
-		}
+		if (!userdata) {
+			if (!checkMetatableInheritance(L, arg, expectedMetatableName)) {
+				return nullptr;
+			}
 
-		userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
-		if (userdata) {
-			return *userdata;
+			userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
 		}
-
-		return nullptr;
+		return userdata ? *userdata : nullptr;
 	}
 
 	template <class T>

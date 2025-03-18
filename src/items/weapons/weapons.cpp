@@ -619,13 +619,15 @@ int16_t WeaponMelee::getElementDamageValue() const {
 }
 
 int32_t WeaponMelee::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &, const std::shared_ptr<Item> &item, bool maxDamage /*= false*/) const {
-	using namespace std;
 	const int32_t attackSkill = player->getWeaponSkill(item);
-	const int32_t attackValue = std::max<int32_t>(0, item->getAttack());
+	const int32_t physicalAttack = std::max<int32_t>(0, item->getAttack());
+	const int32_t elementalAttack = getElementDamageValue();
+	const int32_t combinedAttack = physicalAttack + elementalAttack;
+
 	const float attackFactor = player->getAttackFactor();
 	const uint32_t level = player->getLevel();
 
-	const int32_t maxValue = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
+	const int32_t maxValue = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, attackSkill, combinedAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
 
 	const int32_t minValue = level / 5;
 

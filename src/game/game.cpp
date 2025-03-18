@@ -6204,7 +6204,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	}
 
 	auto &playerAttachedEffects = player->attachedEffects();
-	// @  wings
+	// Wings
 	if (outfit.lookWing != 0) {
 		const auto &wing = m_attachedEffects->getWingByID(outfit.lookWing);
 		if (!wing) {
@@ -6221,8 +6221,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 		player->detachEffectById(playerAttachedEffects.getCurrentWing());
 		playerAttachedEffects.setWasWinged(false);
 	}
-	// @
-	// @  Effect
+	// Effect
 	if (outfit.lookEffect != 0) {
 		const auto &effect = m_attachedEffects->getEffectByID(outfit.lookEffect);
 		if (!effect) {
@@ -6257,8 +6256,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 		player->detachEffectById(playerAttachedEffects.getCurrentAura());
 		playerAttachedEffects.setWasAuraed(false);
 	}
-	// @
-	/// shaders
+	// Shaders
 	if (outfit.lookShader != 0) {
 		const auto &shaderPtr = m_attachedEffects->getShaderByID(outfit.lookShader);
 		if (!shaderPtr) {

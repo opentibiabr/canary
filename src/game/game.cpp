@@ -3488,6 +3488,10 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 
 			if (slotItem) {
 				ret = internalCollectManagedItems(player, slotItem, getObjectCategory(slotItem), false);
+				// If the item is not collected, move it to any available container slot
+				if (ret != RETURNVALUE_NOERROR) {
+					ret = internalMoveItem(slotItem->getParent(), player, INDEX_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+				}
 			}
 
 			ret = internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);

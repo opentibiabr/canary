@@ -15,14 +15,8 @@
 #include "creatures/creature.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/animus_mastery/animus_mastery.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/player.hpp"
-#include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/vocations/vocation.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/save_manager.hpp"
@@ -35,6 +29,7 @@
 #include "items/item.hpp"
 #include "map/spectators.hpp"
 #include "kv/kv.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -1792,7 +1787,7 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	player->sendSkills();
 	player->sendStats();
 	player->sendBasicData();
-	player->wheel()->sendGiftOfLifeCooldown();
+	player->wheel().sendGiftOfLifeCooldown();
 	g_game().reloadCreature(player);
 	Lua::pushBoolean(L, true);
 	return 1;
@@ -3439,13 +3434,13 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	if (player->isInGhostMode()) {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->vip()->notifyStatusChange(player, VipStatus_t::Offline);
+				it.second->vip().notifyStatusChange(player, VipStatus_t::Offline);
 			}
 		}
 	} else {
 		for (const auto &it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->vip()->notifyStatusChange(player, player->vip()->getStatus());
+				it.second->vip().notifyStatusChange(player, player->vip().getStatus());
 			}
 		}
 	}
@@ -4316,9 +4311,9 @@ int PlayerFunctions::luaPlayerInstantSkillWOD(lua_State* L) {
 
 	const std::string name = Lua::getString(L, 2);
 	if (lua_gettop(L) == 2) {
-		Lua::pushBoolean(L, player->wheel()->getInstant(name));
+		Lua::pushBoolean(L, player->wheel().getInstant(name));
 	} else {
-		player->wheel()->setSpellInstant(name, Lua::getBoolean(L, 3));
+		player->wheel().setSpellInstant(name, Lua::getBoolean(L, 3));
 		Lua::pushBoolean(L, true);
 	}
 	return 1;
@@ -4333,21 +4328,21 @@ int PlayerFunctions::luaPlayerUpgradeSpellWOD(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		player->wheel()->resetUpgradedSpells();
+		player->wheel().resetUpgradedSpells();
 		return 1;
 	}
 
 	const std::string name = Lua::getString(L, 2);
 	if (lua_gettop(L) == 2) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getSpellUpgrade(name)));
+		lua_pushnumber(L, static_cast<lua_Number>(player->wheel().getSpellUpgrade(name)));
 		return 1;
 	}
 
 	const bool add = Lua::getBoolean(L, 3);
 	if (add) {
-		player->wheel()->upgradeSpell(name);
+		player->wheel().upgradeSpell(name);
 	} else {
-		player->wheel()->downgradeSpell(name);
+		player->wheel().downgradeSpell(name);
 	}
 
 	Lua::pushBoolean(L, true);
@@ -4363,18 +4358,18 @@ int PlayerFunctions::luaPlayerRevelationStageWOD(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		player->wheel()->resetUpgradedSpells();
+		player->wheel().resetUpgradedSpells();
 		return 1;
 	}
 
 	const std::string name = Lua::getString(L, 2);
 	if (lua_gettop(L) == 2) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getStage(name)));
+		lua_pushnumber(L, static_cast<lua_Number>(player->wheel().getStage(name)));
 		return 1;
 	}
 
 	const bool value = Lua::getNumber<uint8_t>(L, 3);
-	player->wheel()->setSpellInstant(name, value);
+	player->wheel().setSpellInstant(name, value);
 
 	Lua::pushBoolean(L, true);
 	return 1;
@@ -4391,7 +4386,7 @@ int PlayerFunctions::luaPlayerReloadData(lua_State* L) {
 	player->sendSkills();
 	player->sendStats();
 	player->sendBasicData();
-	player->wheel()->sendGiftOfLifeCooldown();
+	player->wheel().sendGiftOfLifeCooldown();
 	g_game().reloadCreature(player);
 	Lua::pushBoolean(L, true);
 	return 1;
@@ -4405,7 +4400,7 @@ int PlayerFunctions::luaPlayerOnThinkWheelOfDestiny(lua_State* L) {
 		return 1;
 	}
 
-	player->wheel()->onThink(Lua::getBoolean(L, 2, false));
+	player->wheel().onThink(Lua::getBoolean(L, 2, false));
 	Lua::pushBoolean(L, true);
 	return 1;
 }
@@ -4419,9 +4414,9 @@ int PlayerFunctions::luaPlayerAvatarTimer(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL)));
+		lua_pushnumber(L, static_cast<lua_Number>(player->wheel().getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL)));
 	} else {
-		player->wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_SPELL, Lua::getNumber<int64_t>(L, 2));
+		player->wheel().setOnThinkTimer(WheelOnThink_t::AVATAR_SPELL, Lua::getNumber<int64_t>(L, 2));
 		Lua::pushBoolean(L, true);
 	}
 	return 1;
@@ -4450,7 +4445,7 @@ int PlayerFunctions::luaPlayerGetWheelSpellAdditionalArea(lua_State* L) {
 		return 0;
 	}
 
-	Lua::pushBoolean(L, player->wheel()->getSpellAdditionalArea(spellName));
+	Lua::pushBoolean(L, player->wheel().getSpellAdditionalArea(spellName));
 	return 1;
 }
 
@@ -4477,7 +4472,7 @@ int PlayerFunctions::luaPlayerGetWheelSpellAdditionalTarget(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, player->wheel()->getSpellAdditionalTarget(spellName));
+	lua_pushnumber(L, player->wheel().getSpellAdditionalTarget(spellName));
 	return 1;
 }
 
@@ -4504,7 +4499,7 @@ int PlayerFunctions::luaPlayerGetWheelSpellAdditionalDuration(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, player->wheel()->getSpellAdditionalDuration(spellName));
+	lua_pushnumber(L, player->wheel().getSpellAdditionalDuration(spellName));
 	return 1;
 }
 
@@ -4524,7 +4519,7 @@ int PlayerFunctions::luaPlayerWheelUnlockScroll(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushboolean(L, player->wheel()->unlockScroll(scrollName));
+	lua_pushboolean(L, player->wheel().unlockScroll(scrollName));
 	return 1;
 }
 
@@ -4636,7 +4631,7 @@ int PlayerFunctions::luaPlayerHasAchievement(lua_State* L) {
 		achievementId = g_game().getAchievementByName(Lua::getString(L, 2)).id;
 	}
 
-	Lua::pushBoolean(L, player->achiev()->isUnlocked(achievementId));
+	Lua::pushBoolean(L, player->achiev().isUnlocked(achievementId));
 	return 1;
 }
 
@@ -4655,7 +4650,7 @@ int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
 		achievementId = g_game().getAchievementByName(Lua::getString(L, 2)).id;
 	}
 
-	const bool success = player->achiev()->add(achievementId, Lua::getBoolean(L, 3, true));
+	const bool success = player->achiev().add(achievementId, Lua::getBoolean(L, 3, true));
 	if (success) {
 		player->sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT);
 	}
@@ -4679,7 +4674,7 @@ int PlayerFunctions::luaPlayerRemoveAchievement(lua_State* L) {
 		achievementId = g_game().getAchievementByName(Lua::getString(L, 2)).id;
 	}
 
-	Lua::pushBoolean(L, player->achiev()->remove(achievementId));
+	Lua::pushBoolean(L, player->achiev().remove(achievementId));
 	return 1;
 }
 
@@ -4691,7 +4686,7 @@ int PlayerFunctions::luaPlayerGetAchievementPoints(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, player->achiev()->getPoints());
+	lua_pushnumber(L, player->achiev().getPoints());
 	return 1;
 }
 
@@ -4705,7 +4700,7 @@ int PlayerFunctions::luaPlayerAddAchievementPoints(lua_State* L) {
 
 	const auto points = Lua::getNumber<uint16_t>(L, 2);
 	if (points > 0) {
-		player->achiev()->addPoints(points);
+		player->achiev().addPoints(points);
 	}
 	Lua::pushBoolean(L, true);
 	return 1;
@@ -4721,7 +4716,7 @@ int PlayerFunctions::luaPlayerRemoveAchievementPoints(lua_State* L) {
 
 	const auto points = Lua::getNumber<uint16_t>(L, 2);
 	if (points > 0) {
-		player->achiev()->removePoints(points);
+		player->achiev().removePoints(points);
 	}
 	Lua::pushBoolean(L, true);
 	return 1;
@@ -4735,7 +4730,7 @@ int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
 		return 1;
 	}
 
-	player->badge()->add(Lua::getNumber<uint8_t>(L, 2, 0));
+	player->badge().add(Lua::getNumber<uint8_t>(L, 2, 0));
 	Lua::pushBoolean(L, true);
 	return 1;
 }
@@ -4748,7 +4743,7 @@ int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
 		return 1;
 	}
 
-	player->title()->manage(true, Lua::getNumber<uint8_t>(L, 2, 0));
+	player->title().manage(true, Lua::getNumber<uint8_t>(L, 2, 0));
 	Lua::pushBoolean(L, true);
 	return 1;
 }
@@ -4761,14 +4756,14 @@ int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
 		return 1;
 	}
 
-	const auto playerTitles = player->title()->getUnlockedTitles();
+	const auto playerTitles = player->title().getUnlockedTitles();
 	lua_createtable(L, static_cast<int>(playerTitles.size()), 0);
 
 	int index = 0;
 	for (const auto &title : playerTitles) {
 		lua_createtable(L, 0, 3);
 		Lua::setField(L, "id", title.first.m_id);
-		Lua::setField(L, "name", player->title()->getNameBySex(player->getSex(), title.first.m_maleName, title.first.m_femaleName));
+		Lua::setField(L, "name", player->title().getNameBySex(player->getSex(), title.first.m_maleName, title.first.m_femaleName));
 		Lua::setField(L, "description", title.first.m_description);
 		lua_rawseti(L, -2, ++index);
 	}
@@ -4789,7 +4784,7 @@ int PlayerFunctions::luaPlayerSetCurrentTitle(lua_State* L) {
 		return 1;
 	}
 
-	player->title()->setCurrentTitle(title.m_id);
+	player->title().setCurrentTitle(title.m_id);
 	Lua::pushBoolean(L, true);
 	return 1;
 }
@@ -4811,7 +4806,7 @@ int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
 	const auto amount = Lua::getNumber<uint16_t>(L, 3, 1);
 	const auto id = Lua::getString(L, 4, "");
 
-	player->cyclopedia()->updateStoreSummary(type, amount, id);
+	player->cyclopedia().updateStoreSummary(type, amount, id);
 	Lua::pushBoolean(L, true);
 	return 1;
 }

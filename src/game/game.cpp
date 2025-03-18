@@ -18,16 +18,11 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/player.hpp"
-#include "creatures/players/vip/player_vip.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/player_wheel.hpp"
 #include "database/databasetasks.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -63,6 +58,7 @@
 #include "utils/tools.hpp"
 #include "utils/wildcardtree.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -6004,7 +6000,7 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string &name) {
 			return;
 		}
 
-		player->vip()->add(guid, formattedName, VipStatus_t::Offline);
+		player->vip().add(guid, formattedName, VipStatus_t::Offline);
 	} else {
 		if (vipPlayer->hasFlag(PlayerFlags_t::SpecialVIP) && !player->hasFlag(PlayerFlags_t::SpecialVIP)) {
 			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player");
@@ -6012,9 +6008,9 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string &name) {
 		}
 
 		if (!vipPlayer->isInGhostMode() || player->isAccessPlayer()) {
-			player->vip()->add(vipPlayer->getGUID(), vipPlayer->getName(), vipPlayer->vip()->getStatus());
+			player->vip().add(vipPlayer->getGUID(), vipPlayer->getName(), vipPlayer->vip().getStatus());
 		} else {
-			player->vip()->add(vipPlayer->getGUID(), vipPlayer->getName(), VipStatus_t::Offline);
+			player->vip().add(vipPlayer->getGUID(), vipPlayer->getName(), VipStatus_t::Offline);
 		}
 	}
 }
@@ -6025,7 +6021,7 @@ void Game::playerRequestRemoveVip(uint32_t playerId, uint32_t guid) {
 		return;
 	}
 
-	player->vip()->remove(guid);
+	player->vip().remove(guid);
 }
 
 void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string &description, uint32_t icon, bool notify, std::vector<uint8_t> vipGroupsId) {
@@ -6034,7 +6030,7 @@ void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::str
 		return;
 	}
 
-	player->vip()->edit(guid, description, icon, notify, vipGroupsId);
+	player->vip().edit(guid, description, icon, notify, vipGroupsId);
 }
 
 void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {
@@ -7035,10 +7031,10 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
 
 	if (attackerPlayer) {
-		damage.primary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
+		damage.primary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
 
 		if (damage.secondary.value != 0) {
-			damage.secondary.value += attackerPlayer->wheel()->getStat(WheelStat_t::HEALING);
+			damage.secondary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
 		}
 
 		if (damage.healingLink > 0) {
@@ -7048,8 +7044,8 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 			combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
 		}
 
-		if (attackerPlayer->wheel()->getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel()->checkBlessingGroveHealingByTarget(target)) / 100.;
+		if (attackerPlayer->wheel().getInstant("Blessing of the Grove")) {
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel().checkBlessingGroveHealingByTarget(target)) / 100.;
 		}
 	}
 }
@@ -7066,26 +7062,26 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 	}
 
 	if (attackerPlayer) {
-		damage.primary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
+		damage.primary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
 		if (damage.secondary.value != 0) {
-			damage.secondary.value -= attackerPlayer->wheel()->getStat(WheelStat_t::DAMAGE);
+			damage.secondary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
 		}
 		if (damage.instantSpellName == "Ice Burst" || damage.instantSpellName == "Terra Burst") {
-			int32_t damageBonus = attackerPlayer->wheel()->checkTwinBurstByTarget(target);
+			int32_t damageBonus = attackerPlayer->wheel().checkTwinBurstByTarget(target);
 			if (damageBonus != 0) {
 				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
 				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
 			}
 		}
 		if (damage.instantSpellName == "Executioner's Throw") {
-			int32_t damageBonus = attackerPlayer->wheel()->checkExecutionersThrow(target);
+			int32_t damageBonus = attackerPlayer->wheel().checkExecutionersThrow(target);
 			if (damageBonus != 0) {
 				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
 				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
 			}
 		}
 		if (damage.instantSpellName == "Divine Grenade") {
-			int32_t damageBonus = attackerPlayer->wheel()->checkDivineGrenade(target);
+			int32_t damageBonus = attackerPlayer->wheel().checkDivineGrenade(target);
 			if (damageBonus != 0) {
 				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
 				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
@@ -7099,11 +7095,11 @@ int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_pt
 
 	// Wheel of destiny (Gift of Life)
 	if (std::shared_ptr<Player> targetPlayer = target->getPlayer()) {
-		if (targetPlayer->wheel()->getInstant("Gift of Life") && targetPlayer->wheel()->getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
+		if (targetPlayer->wheel().getInstant("Gift of Life") && targetPlayer->wheel().getGiftOfCooldown() == 0 && (damage.primary.value + damage.secondary.value) >= targetHealth) {
 			int32_t overkillMultiplier = (damage.primary.value + damage.secondary.value) - targetHealth;
 			overkillMultiplier = (overkillMultiplier * 100) / targetPlayer->getMaxHealth();
-			if (overkillMultiplier <= targetPlayer->wheel()->getGiftOfLifeValue()) {
-				targetPlayer->wheel()->checkGiftOfLife();
+			if (overkillMultiplier <= targetPlayer->wheel().getGiftOfLifeValue()) {
+				targetPlayer->wheel().checkGiftOfLife();
 				targetHealth = target->getHealth();
 			}
 		}
@@ -7739,8 +7735,8 @@ void Game::applyManaLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	// Wheel of destiny bonus - mana leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
-	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
+	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
+	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
 
 	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
 	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
@@ -7772,8 +7768,8 @@ void Game::applyLifeLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	// Wheel of destiny bonus - life leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
-	auto wheelLeechAmount = attackerPlayer->wheel()->checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
+	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
+	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
 	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
 	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
 	if (normal_random(0, 100) >= lifeChance) {
@@ -8507,7 +8503,7 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect) {
 
 void Game::playerFriendSystemAction(const std::shared_ptr<Player> &player, uint8_t type, uint8_t titleId) {
 	if (type == 0x0E) {
-		player->title()->setCurrentTitle(titleId);
+		player->title().setCurrentTitle(titleId);
 		player->sendCyclopediaCharacterBaseInformation();
 		player->sendCyclopediaCharacterTitles();
 		return;
@@ -8533,13 +8529,13 @@ void Game::playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, 
 			player->sendCyclopediaCharacterCombatStats();
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS:
-			player->cyclopedia()->loadDeathHistory(page, entriesPerPage);
+			player->cyclopedia().loadDeathHistory(page, entriesPerPage);
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS:
-			player->cyclopedia()->loadRecentKills(page, entriesPerPage);
+			player->cyclopedia().loadRecentKills(page, entriesPerPage);
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS:
-			player->achiev()->sendUnlockedSecretAchievements();
+			player->achiev().sendUnlockedSecretAchievements();
 			break;
 		case CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY: {
 			const ItemsTierCountList &inventoryItems = player->getInventoryItemsId(true);
@@ -9939,7 +9935,7 @@ void Game::playerOpenWheel(uint32_t playerId, uint32_t ownerId) {
 		return;
 	}
 
-	player->wheel()->sendOpenWheelWindow(ownerId);
+	player->wheel().sendOpenWheelWindow(ownerId);
 	player->updateUIExhausted();
 }
 
@@ -9955,7 +9951,7 @@ void Game::playerSaveWheel(uint32_t playerId, NetworkMessage &msg) {
 	}
 
 	player->updateUIExhausted();
-	player->wheel()->saveSlotPointsOnPressSaveButton(msg);
+	player->wheel().saveSlotPointsOnPressSaveButton(msg);
 }
 
 void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
@@ -9975,20 +9971,20 @@ void Game::playerWheelGemAction(uint32_t playerId, NetworkMessage &msg) {
 
 	switch (static_cast<WheelGemAction_t>(action)) {
 		case WheelGemAction_t::Destroy:
-			player->wheel()->destroyGem(param);
+			player->wheel().destroyGem(param);
 			break;
 		case WheelGemAction_t::Reveal:
-			player->wheel()->revealGem(static_cast<WheelGemQuality_t>(param));
+			player->wheel().revealGem(static_cast<WheelGemQuality_t>(param));
 			break;
 		case WheelGemAction_t::SwitchDomain:
-			player->wheel()->switchGemDomain(param);
+			player->wheel().switchGemDomain(param);
 			break;
 		case WheelGemAction_t::ToggleLock:
-			player->wheel()->toggleGemLock(param);
+			player->wheel().toggleGemLock(param);
 			break;
 		case WheelGemAction_t::ImproveGrade:
 			pos = msg.getByte();
-			player->wheel()->improveGemGrade(static_cast<WheelFragmentType_t>(param), pos);
+			player->wheel().improveGemGrade(static_cast<WheelFragmentType_t>(param), pos);
 			break;
 		default:
 			g_logger().error("[{}] player {} is trying to do invalid action {} on wheel", __FUNCTION__, player->getName(), action);

@@ -11,7 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
-#include "creatures/appearance/attachedeffects/attachedeffects.hpp"
+#include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
@@ -218,11 +218,11 @@ Game::Game() {
 
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
+	m_attachedEffects = std::make_unique<AttachedEffects>();
 
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
 
 	mounts = std::make_unique<Mounts>();
-	attachedeffects = std::make_unique<Attachedeffects>();
 
 	using enum CyclopediaBadge_t;
 	using enum CyclopediaTitle_t;
@@ -632,7 +632,7 @@ void Game::setGameState(GameState_t newState) {
 			raids.startup();
 
 			mounts->loadFromXml();
-			attachedeffects->loadFromXml();
+			m_attachedEffects->loadFromXml();
 
 			loadMotdNum();
 			loadPlayersRecord();
@@ -6203,80 +6203,82 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 		internalCreatureChangeOutfit(player, outfit);
 	}
 
+	auto &playerAttachedEffects = player->attachedEffects();
 	// @  wings
 	if (outfit.lookWing != 0) {
-		const auto &wing = attachedeffects->getWingByID(outfit.lookWing);
+		const auto &wing = m_attachedEffects->getWingByID(outfit.lookWing);
 		if (!wing) {
 			return;
 		}
 
-		player->detachEffectById(player->getCurrentWing());
-		player->setCurrentWing(wing->id);
+		player->detachEffectById(playerAttachedEffects.getCurrentWing());
+		playerAttachedEffects.setCurrentWing(wing->id);
 		player->attachEffectById(wing->id);
 	} else {
-		if (player->isWinged()) {
-			player->diswing();
+		if (playerAttachedEffects.isWinged()) {
+			playerAttachedEffects.diswing();
 		}
-		player->detachEffectById(player->getCurrentWing());
-		player->wasWinged = false;
+		player->detachEffectById(playerAttachedEffects.getCurrentWing());
+		playerAttachedEffects.setWasWinged(false);
 	}
 	// @
 	// @  Effect
 	if (outfit.lookEffect != 0) {
-		const auto &effect = attachedeffects->getEffectByID(outfit.lookEffect);
+		const auto &effect = m_attachedEffects->getEffectByID(outfit.lookEffect);
 		if (!effect) {
 			return;
 		}
 
-		player->detachEffectById(player->getCurrentEffect());
-		player->setCurrentEffect(effect->id);
+		player->detachEffectById(playerAttachedEffects.getCurrentEffect());
+		playerAttachedEffects.setCurrentEffect(effect->id);
 		player->attachEffectById(effect->id);
 	} else {
-		if (player->isEffected()) {
-			player->diseffect();
+		if (playerAttachedEffects.isEffected()) {
+			playerAttachedEffects.diseffect();
 		}
-		player->detachEffectById(player->getCurrentEffect());
-		player->wasEffected = false;
+		player->detachEffectById(playerAttachedEffects.getCurrentEffect());
+		playerAttachedEffects.setWasEffected(false);
 	}
-	// @
-	// @  Aura
+
+	// Aura
 	if (outfit.lookAura != 0) {
-		const auto &aura = attachedeffects->getAuraByID(outfit.lookAura);
+		const auto &aura = m_attachedEffects->getAuraByID(outfit.lookAura);
 		if (!aura) {
 			return;
 		}
-		player->detachEffectById(player->getCurrentAura());
-		player->setCurrentAura(aura->id);
+
+		player->detachEffectById(playerAttachedEffects.getCurrentAura());
+		playerAttachedEffects.setCurrentAura(aura->id);
 		player->attachEffectById(aura->id);
 	} else {
-		if (player->isAuraed()) {
-			player->disaura();
+		if (playerAttachedEffects.isAuraed()) {
+			playerAttachedEffects.disaura();
 		}
-		player->detachEffectById(player->getCurrentAura());
-		player->wasAuraed = false;
+		player->detachEffectById(playerAttachedEffects.getCurrentAura());
+		playerAttachedEffects.setWasAuraed(false);
 	}
 	// @
 	/// shaders
 	if (outfit.lookShader != 0) {
-		const auto &shaderPtr = attachedeffects->getShaderByID(outfit.lookShader);
+		const auto &shaderPtr = m_attachedEffects->getShaderByID(outfit.lookShader);
 		if (!shaderPtr) {
 			return;
 		}
 		Shader* shader = shaderPtr.get();
 
-		if (!player->hasShader(shader)) {
+		if (!playerAttachedEffects.hasShader(shader)) {
 			return;
 		}
 
-		player->setCurrentShader(shader->id);
-		player->sendShader(player, shader->name);
+		playerAttachedEffects.setCurrentShader(shader->id);
+		playerAttachedEffects.sendShader(player, shader->name);
 
 	} else {
-		if (player->isShadered()) {
-			player->disshader();
+		if (playerAttachedEffects.isShadered()) {
+			playerAttachedEffects.disshader();
 		}
-		player->sendShader(player, "Outfit - Default");
-		player->wasShadered = false;
+		playerAttachedEffects.sendShader(player, "Outfit - Default");
+		playerAttachedEffects.setWasShadered(false);
 	}
 }
 
@@ -10792,6 +10794,14 @@ const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 	return m_IOWheel;
 }
 
+std::unique_ptr<AttachedEffects> &Game::getAttachedEffects() {
+	return m_attachedEffects;
+}
+
+const std::unique_ptr<AttachedEffects> &Game::getAttachedEffects() const {
+	return m_attachedEffects;
+}
+
 void Game::transferHouseItemsToDepot() {
 	if (!g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART)) {
 		return;
@@ -11090,7 +11100,7 @@ void Game::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_
 	for (const auto &spectator : spectators) {
 		const auto &player = spectator->getPlayer();
 		if (player) {
-			player->sendAttachedEffect(creature, effectId);
+			player->attachedEffects().sendAttachedEffect(creature, effectId);
 		}
 	}
 }
@@ -11100,7 +11110,7 @@ void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t 
 	for (const auto &spectator : spectators) {
 		const auto &player = spectator->getPlayer();
 		if (player) {
-			player->sendDetachEffect(creature, effectId);
+			player->attachedEffects().sendDetachEffect(creature, effectId);
 		}
 	}
 }
@@ -11110,7 +11120,7 @@ void Game::updateCreatureShader(const std::shared_ptr<Creature> &creature) {
 	for (const auto &spectator : spectators) {
 		const auto &player = spectator->getPlayer();
 		if (player) {
-			player->sendShader(creature, creature->getShader());
+			player->attachedEffects().sendShader(creature, creature->getShader());
 		}
 	}
 }

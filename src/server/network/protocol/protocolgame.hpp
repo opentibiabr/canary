@@ -527,6 +527,7 @@ private:
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
+	friend class PlayerAttachedEffects;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;

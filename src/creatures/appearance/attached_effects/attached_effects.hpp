@@ -37,7 +37,7 @@ struct Wing {
 	std::string name;
 };
 
-class Attachedeffects {
+class AttachedEffects {
 public:
 	bool reload();
 	bool loadFromXml();

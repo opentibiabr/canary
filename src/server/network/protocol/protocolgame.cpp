@@ -13,7 +13,7 @@
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
-#include "creatures/appearance/attachedeffects/attachedeffects.hpp"
+#include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -1719,7 +1719,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 			newOutfit.lookEffect = isOTCR ? msg.get<uint16_t>() : 0;
 			std::string shaderName = isOTCR ? msg.getString() : "";
 			if (!shaderName.empty()) {
-				const auto &shader = g_game().attachedeffects->getShaderByName(shaderName);
+				const auto &shader = g_game().getAttachedEffects()->getShaderByName(shaderName);
 				newOutfit.lookShader = shader ? shader->id : 0;
 			}
 			g_game().playerChangeOutfit(player->getID(), newOutfit, setMount, isMountRandomized);
@@ -7182,21 +7182,23 @@ void ProtocolGame::sendOutfitWindow() {
 		currentOutfit.lookMount = 0;
 	}
 
-	const auto &currentWing = g_game().attachedeffects->getWingByID(player->getCurrentWing());
+	auto &playerAttachedEffects = player->attachedEffects();
+	const auto &currentWing = g_game().getAttachedEffects()->getWingByID(playerAttachedEffects.getCurrentWing());
 	if (currentWing) {
 		currentOutfit.lookWing = currentWing->id;
 	}
-	// @ -- auras
-	const auto &currentAura = g_game().attachedeffects->getAuraByID(player->getCurrentAura());
+
+	// Auras
+	const auto &currentAura = g_game().getAttachedEffects()->getAuraByID(playerAttachedEffects.getCurrentAura());
 	if (currentAura) {
 		currentOutfit.lookAura = currentAura->id;
 	}
-	// @ -- effects
-	const auto &currentEffect = g_game().attachedeffects->getEffectByID(player->getCurrentEffect());
+	// Effects
+	const auto &currentEffect = g_game().getAttachedEffects()->getEffectByID(playerAttachedEffects.getCurrentEffect());
 	if (currentEffect) {
 		currentOutfit.lookEffect = currentEffect->id;
 	}
-	const auto &currentShader = g_game().attachedeffects->getShaderByID(player->getCurrentShader());
+	const auto &currentShader = g_game().getAttachedEffects()->getShaderByID(playerAttachedEffects.getCurrentShader());
 	if (currentShader) {
 		currentOutfit.lookShader = currentShader->id;
 	}
@@ -9511,7 +9513,7 @@ void ProtocolGame::AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outf
 	msg.add<uint16_t>(outfit.lookWing);
 	msg.add<uint16_t>(outfit.lookAura);
 	msg.add<uint16_t>(outfit.lookEffect);
-	const auto &shader = g_game().attachedeffects->getShaderByID(outfit.lookShader);
+	const auto &shader = g_game().getAttachedEffects()->getShaderByID(outfit.lookShader);
 	msg.addString(shader ? shader->name : "");
 }
 
@@ -9524,9 +9526,9 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	uint16_t limitWings = std::numeric_limits<uint16_t>::max();
 	uint16_t wingSize = 0;
 	msg.skipBytes(1);
-	const auto &wings = g_game().attachedeffects->getWings();
+	const auto &wings = g_game().getAttachedEffects()->getWings();
 	for (const auto &wing : wings) {
-		if (player->hasWing(wing)) {
+		if (player->attachedEffects().hasWing(wing)) {
 			msg.add<uint16_t>(wing->id);
 			msg.addString(wing->name);
 			++wingSize;
@@ -9544,9 +9546,9 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	uint16_t limitAuras = std::numeric_limits<uint16_t>::max();
 	uint16_t auraSize = 0;
 	msg.skipBytes(1);
-	const auto &auras = g_game().attachedeffects->getAuras();
+	const auto &auras = g_game().getAttachedEffects()->getAuras();
 	for (const auto &aura : auras) {
-		if (player->hasAura(aura)) {
+		if (player->attachedEffects().hasAura(aura)) {
 			msg.add<uint16_t>(aura->id);
 			msg.addString(aura->name);
 			++auraSize;
@@ -9564,9 +9566,9 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	uint16_t limitEffects = std::numeric_limits<uint16_t>::max();
 	uint16_t effectSize = 0;
 	msg.skipBytes(1);
-	const auto &effects = g_game().attachedeffects->getEffects();
+	const auto &effects = g_game().getAttachedEffects()->getEffects();
 	for (const auto &effect : effects) {
-		if (player->hasEffect(effect)) {
+		if (player->attachedEffects().hasEffect(effect)) {
 			msg.add<uint16_t>(effect->id);
 			msg.addString(effect->name);
 			++effectSize;
@@ -9581,8 +9583,8 @@ void ProtocolGame::sendOutfitWindowCustomOTCR(NetworkMessage &msg) {
 	msg.setBufferPosition(endEffects);
 	// shader
 	std::vector<const Shader*> shaders;
-	for (const auto &shader : g_game().attachedeffects->getShaders()) {
-		if (player->hasShader(shader.get())) {
+	for (const auto &shader : g_game().getAttachedEffects()->getShaders()) {
+		if (player->attachedEffects().hasShader(shader.get())) {
 			shaders.push_back(shader.get());
 		}
 	}

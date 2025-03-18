@@ -302,6 +302,9 @@ public:
 	const Outfit_t getDefaultOutfit() const {
 		return defaultOutfit;
 	}
+	void setDefaultOutfit(Outfit_t outfit) {
+		defaultOutfit = outfit;
+	}
 	bool isWearingSupportOutfit() const {
 		auto outfit = currentOutfit.lookType;
 		return outfit == 75 || outfit == 266 || outfit == 302;
@@ -780,10 +783,6 @@ protected:
 
 	Outfit_t currentOutfit;
 	Outfit_t defaultOutfit;
-	uint16_t currentWing;
-	uint16_t currentAura;
-	uint16_t currentEffect;
-	uint16_t currentShader;
 
 	Position lastPosition;
 	LightInfo internalLight;

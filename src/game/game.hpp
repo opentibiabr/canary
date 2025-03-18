@@ -38,7 +38,7 @@ class IOWheel;
 class ItemClassification;
 class Guild;
 class Mounts;
-class Attachedeffects;
+class AttachedEffects;
 class Spectators;
 class Player;
 class Account;
@@ -571,7 +571,6 @@ public:
 	Map map;
 	std::unique_ptr<Mounts> mounts;
 	[[no_unique_address]] Outfits outfits;
-	std::unique_ptr<Attachedeffects> attachedeffects;
 	Raids raids;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
@@ -659,6 +658,9 @@ public:
 
 	std::unique_ptr<IOWheel> &getIOWheel();
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
+
+	std::unique_ptr<AttachedEffects> &getAttachedEffects();
+	const std::unique_ptr<AttachedEffects> &getAttachedEffects() const;
 
 	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
 	void transferHouseItemsToDepot();
@@ -924,6 +926,8 @@ private:
 
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
+
+	std::unique_ptr<AttachedEffects> m_attachedEffects;
 
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(const DBResult_ptr &result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);

@@ -4925,7 +4925,7 @@ int PlayerFunctions::luaPlayerGetMapShader(lua_State* L) {
 		return 0;
 	}
 
-	Lua::pushString(L, player->getMapShader());
+	Lua::pushString(L, player->attachedEffects().getMapShader());
 	return 1;
 }
 
@@ -4938,8 +4938,8 @@ int PlayerFunctions::luaPlayerSetMapShader(lua_State* L) {
 		return 0;
 	}
 	const auto shaderName = Lua::getString(L, 2);
-	player->setMapShader(shaderName);
-	player->sendMapShader(shaderName);
+	player->attachedEffects().setMapShader(shaderName);
+	player->attachedEffects().sendMapShader(shaderName);
 	Lua::pushBoolean(L, true);
 	return 1;
 }
@@ -4962,7 +4962,7 @@ int PlayerFunctions::luaPlayerAddCustomOutfit(lua_State* L) {
 		idOrName = Lua::getString(L, 3);
 	}
 
-	Lua::pushBoolean(L, player->addCustomOutfit(type, idOrName));
+	Lua::pushBoolean(L, player->attachedEffects().addCustomOutfit(type, idOrName));
 	return 1;
 }
 
@@ -4984,6 +4984,6 @@ int PlayerFunctions::luaPlayerRemoveCustomOutfit(lua_State* L) {
 		idOrName = Lua::getString(L, 3);
 	}
 
-	Lua::pushBoolean(L, player->removeCustomOutfit(type, idOrName));
+	Lua::pushBoolean(L, player->attachedEffects().removeCustomOutfit(type, idOrName));
 	return 1;
 }

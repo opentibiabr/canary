@@ -88,6 +88,17 @@ maxItem = 5000
 maxContainer = 500
 maxContainerDepth = 200
 
+-- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
+-- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
+-- NOTE: animusMasteryMonsterXpMultiplier is the monster experience multiplier that has the animus mastery unlocked.
+-- NOTE: animusMasteryMonstersXpMultiplier is the multiplier for each 'animusMasteryMonstersToIncreaseXpMultiplier' monsters that
+-- the player has the animus mastery unlocked.
+-- NOTE: animusMasteryMonstersToIncreaseXpMultiplier is the amount of monster to increase the experience multiplier by 'animusMasteryMonstersXpMultiplier'.
+animusMasteryMaxMonsterXpMultiplier = 4.0
+animusMasteryMonsterXpMultiplier = 2.0
+animusMasteryMonstersXpMultiplier = 0.1
+animusMasteryMonstersToIncreaseXpMultiplier = 10
+
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
 -- To customize the percentage of a particular item with these augment types, please add to the item "augments" section on items.xml as the example above.
@@ -335,6 +346,7 @@ freeQuestStage = 1
 -- death penalty formula. For the old formula, set it to 10. For
 -- no skill/experience loss, set it to 0.
 deathLosePercent = -1
+leavePartyOnDeath = false
 
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
@@ -344,6 +356,7 @@ deathLosePercent = -1
 Setting this to false may pose risks; if a house is abandoned and contains a large number of items on the floor, those items will be transferred to the player's depot instantly.
 • This could potentially freeze the server due to the heavy operation. It's advised to keep this setting enabled (true) to minimize risks.
 ]]
+-- NOTE: When toggleCyclopediaHouseAuction = true, the !buyhouse commmand does not work.
 -- Periods: daily/weekly/monthly/yearly/never
 -- Base: sqm,rent,sqm+rent
 toggleCyclopediaHouseAuction = true

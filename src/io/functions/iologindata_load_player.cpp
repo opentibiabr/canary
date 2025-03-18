@@ -14,13 +14,7 @@
 #include "creatures/combat/condition.hpp"
 #include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
-#include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/vocations/vocation.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/object_category.hpp"
@@ -273,6 +267,20 @@ void IOLoginDataLoad::loadPlayerConditions(const std::shared_ptr<Player> &player
 		}
 		condition = Condition::createCondition(propStream);
 	}
+}
+
+void IOLoginDataLoad::loadPlayerAnimusMastery(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
+	if (!result || !player) {
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+		return;
+	}
+
+	unsigned long attrSize;
+	const char* attr = result->getStream("animus_mastery", attrSize);
+	PropStream propStream;
+	propStream.init(attr, attrSize);
+
+	player->animusMastery().unserialize(propStream);
 }
 
 void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
@@ -745,14 +753,14 @@ void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBRes
 	std::string query = fmt::format("SELECT `player_id` FROM `account_viplist` WHERE `account_id` = {}", accountId);
 	if ((result = db.storeQuery(query))) {
 		do {
-			player->vip()->addInternal(result->getNumber<uint32_t>("player_id"));
+			player->vip().addInternal(result->getNumber<uint32_t>("player_id"));
 		} while (result->next());
 	}
 
 	query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
 	if ((result = db.storeQuery(query))) {
 		do {
-			player->vip()->addGroupInternal(
+			player->vip().addGroupInternal(
 				result->getNumber<uint8_t>("id"),
 				result->getString("name"),
 				result->getNumber<uint8_t>("customizable") == 0 ? false : true
@@ -763,7 +771,7 @@ void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBRes
 	query = fmt::format("SELECT `player_id`, `vipgroup_id` FROM `account_vipgrouplist` WHERE `account_id` = {}", accountId);
 	if ((result = db.storeQuery(query))) {
 		do {
-			player->vip()->addGuidToGroupInternal(
+			player->vip().addGuidToGroupInternal(
 				result->getNumber<uint8_t>("vipgroup_id"),
 				result->getNumber<uint32_t>("player_id")
 			);
@@ -981,17 +989,17 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 	}
 
 	// Wheel loading
-	player->wheel()->loadDBPlayerSlotPointsOnLogin();
-	player->wheel()->loadRevealedGems();
-	player->wheel()->loadActiveGems();
-	player->wheel()->loadKVModGrades();
-	player->wheel()->loadKVScrolls();
-	player->wheel()->initializePlayerData();
+	player->wheel().loadDBPlayerSlotPointsOnLogin();
+	player->wheel().loadRevealedGems();
+	player->wheel().loadActiveGems();
+	player->wheel().loadKVModGrades();
+	player->wheel().loadKVScrolls();
+	player->wheel().initializePlayerData();
 
-	player->achiev()->loadUnlockedAchievements();
-	player->badge()->checkAndUpdateNewBadges();
-	player->title()->checkAndUpdateNewTitles();
-	player->cyclopedia()->loadSummaryData();
+	player->achiev().loadUnlockedAchievements();
+	player->badge().checkAndUpdateNewBadges();
+	player->title().checkAndUpdateNewTitles();
+	player->cyclopedia().loadSummaryData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

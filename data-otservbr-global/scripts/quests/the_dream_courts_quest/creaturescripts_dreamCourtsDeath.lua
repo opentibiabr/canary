@@ -2,7 +2,7 @@ local questlog = {
 	[1] = {
 		bossName = "Faceless Bane",
 		storageQuestline = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline,
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedralGlobal.FacelessTime,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedralGlobal.FacelessTimer,
 		middlePosition = Position(33617, 32563, 13),
 		maxValue = 4,
 	},

@@ -159,6 +159,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, WARN_UNSAFE_SCRIPTS, "warnUnsafeScripts", true);
 	loadBoolConfig(L, XP_DISPLAY_MODE, "experienceDisplayRates", true);
 	loadBoolConfig(L, CYCLOPEDIA_HOUSE_AUCTION, "toggleCyclopediaHouseAuction", true);
+	loadBoolConfig(L, LEAVE_PARTY_ON_DEATH, "leavePartyOnDeath", false);
 
 	loadFloatConfig(L, BESTIARY_RATE_CHARM_SHOP_PRICE, "bestiaryRateCharmShopPrice", 1.0);
 	loadFloatConfig(L, COMBAT_CHAIN_SKILL_FORMULA_AXE, "combatChainSkillFormulaAxe", 0.9);
@@ -199,6 +200,9 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_A, "transcendanceChanceFormulaA", 0.0127);
 	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_B, "transcendanceChanceFormulaB", 0.1070);
 	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_C, "transcendanceChanceFormulaC", 0.0073);
+	loadFloatConfig(L, ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER, "animusMasteryMaxMonsterXpMultiplier", 4.0);
+	loadFloatConfig(L, ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER, "animusMasteryMonsterXpMultiplier", 2.0);
+	loadFloatConfig(L, ANIMUS_MASTERY_MONSTERS_XP_MULTIPLIER, "animusMasteryMonstersXpMultiplier", 0.1);
 
 	loadIntConfig(L, ACTIONS_DELAY_INTERVAL, "timeBetweenActions", 200);
 	loadIntConfig(L, ADVENTURERSBLESSING_LEVEL, "adventurersBlessingLevel", 21);
@@ -345,6 +349,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, AUGMENT_INCREASED_DAMAGE_PERCENT, "augmentIncreasedDamagePercent", 5);
 	loadIntConfig(L, AUGMENT_POWERFUL_IMPACT_PERCENT, "augmentPowerfulImpactPercent", 10);
 	loadIntConfig(L, AUGMENT_STRONG_IMPACT_PERCENT, "augmentStrongImpactPercent", 7);
+	loadIntConfig(L, ANIMUS_MASTERY_MONSTERS_TO_INCREASE_XP_MULTIPLIER, "animusMasteryMonstersToIncreaseXpMultiplier", 10);
 
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");

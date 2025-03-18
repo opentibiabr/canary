@@ -9,13 +9,13 @@
 
 #include "lua/functions/core/game/lua_enums.hpp"
 
-#include "creatures/players/wheel/wheel_definitions.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
 #include "enums/item_attribute.hpp"
 #include "game/functions/game_reload.hpp"
 #include "io/io_bosstiary.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 constexpr const char* soundNamespace = "SOUND_EFFECT_TYPE_";
 
@@ -609,6 +609,15 @@ void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_DIVINE_EMPOWERMENT);
 	registerEnum(L, CONST_ME_WATER_FLOATING_THRASH);
 	registerEnum(L, CONST_ME_AGONY);
+	registerEnum(L, CONST_ME_MELTING_CREAM);
+	registerEnum(L, CONST_ME_REAPER);
+	registerEnum(L, CONST_ME_POWERFUL_HEARTS);
+	registerEnum(L, CONST_ME_CREAM);
+	registerEnum(L, CONST_ME_GENTLE_BUBBLE);
+	registerEnum(L, CONST_ME_STARBURST);
+	registerEnum(L, CONST_ME_SIURP);
+	registerEnum(L, CONST_ME_CACAO);
+	registerEnum(L, CONST_ME_CANDY_FLOSS);
 }
 
 void LuaEnums::initConstAniEnums(lua_State* L) {
@@ -667,6 +676,8 @@ void LuaEnums::initConstAniEnums(lua_State* L) {
 	registerEnum(L, CONST_ANI_DIAMONDARROW);
 	registerEnum(L, CONST_ANI_SPECTRALBOLT);
 	registerEnum(L, CONST_ANI_ROYALSTAR);
+	registerEnum(L, CONST_ANI_CANDYCANE);
+	registerEnum(L, CONST_ANI_CHERRYBOMB);
 	registerEnum(L, CONST_ANI_WEAPONTYPE);
 }
 

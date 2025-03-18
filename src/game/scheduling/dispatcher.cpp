@@ -251,6 +251,14 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 	}
 }
 
+void Dispatcher::safeCall(std::function<void(void)> &&f) {
+	if (dispacherContext.isAsync()) {
+		addEvent(std::move(f), dispacherContext.taskName);
+	} else {
+		f();
+	}
+}
+
 bool DispatcherContext::isOn() {
 	return OTSYS_TIME() != 0;
 }

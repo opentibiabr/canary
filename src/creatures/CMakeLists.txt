@@ -23,12 +23,12 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     players/management/waitlist.cpp
     players/storages/storages.cpp
     players/player.cpp
-    players/achievement/player_achievement.cpp
-    players/cyclopedia/player_badge.cpp
-    players/cyclopedia/player_cyclopedia.cpp
-    players/cyclopedia/player_title.cpp
-    players/wheel/player_wheel.cpp
-    players/wheel/wheel_gems.cpp
+    players/components/player_achievement.cpp
+    players/components/player_badge.cpp
+    players/components/player_cyclopedia.cpp
+    players/components/player_title.cpp
+    players/components/wheel/player_wheel.cpp
+    players/components/player_vip.cpp
+    players/components/wheel/wheel_gems.cpp
     players/vocations/vocation.cpp
-    players/vip/player_vip.cpp
 )

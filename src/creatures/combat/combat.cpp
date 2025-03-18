@@ -17,7 +17,6 @@
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/iobestiary.hpp"
@@ -30,6 +29,7 @@
 #include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -38,7 +38,7 @@ int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std
 
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny - Runic Mastery
-	if (player->wheel()->getInstant("Runic Mastery") && wheelSpell && damage.instantSpellName.empty() && normal_random(0, 100) <= 25) {
+	if (player->wheel().getInstant("Runic Mastery") && wheelSpell && damage.instantSpellName.empty() && normal_random(0, 100) <= 25) {
 		const auto conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);
 		if (conjuringSpell && conjuringSpell != wheelSpell) {
 			uint32_t castResult = conjuringSpell->canCast(player) ? 20 : 10;
@@ -61,7 +61,7 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 	std::shared_ptr<Spell> wheelSpell = nullptr;
 	std::shared_ptr<Player> attackerPlayer = creature ? creature->getPlayer() : nullptr;
 	if (attackerPlayer) {
-		wheelSpell = attackerPlayer->wheel()->getCombatDataSpell(damage);
+		wheelSpell = attackerPlayer->wheel().getCombatDataSpell(damage);
 	}
 	// End
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
@@ -659,7 +659,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			damage.primary.value *= targetPlayer->getBuff(BUFF_HEALINGRECEIVED) / 100.;
 		}
 
-		damage.damageMultiplier += attackerPlayer->wheel()->getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
+		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
 
@@ -1239,7 +1239,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	// Wheel of destiny get beam affected total
 	auto spectators = Spectators().find<Player>(pos, true, rangeX, rangeX, rangeY, rangeY);
 	const std::shared_ptr<Player> &casterPlayer = caster ? caster->getPlayer() : nullptr;
-	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel()->getBeamAffectedTotal(tmpDamage) : 0;
+	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel().getBeamAffectedTotal(tmpDamage) : 0;
 	uint8_t beamAffectedCurrent = 0;
 
 	tmpDamage.affected = affectedTargets.size();
@@ -1270,7 +1270,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 				if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
 					// Wheel of destiny update beam mastery damage
 					if (casterPlayer) {
-						casterPlayer->wheel()->updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
+						casterPlayer->wheel().updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
 					}
 
 					if (func) {
@@ -1579,7 +1579,7 @@ uint32_t ValueCallback::getMagicLevelSkill(const std::shared_ptr<Player> &player
 
 	uint32_t magicLevelSkill = player->getMagicLevel();
 	// Wheel of destiny
-	if (player && player->wheel()->getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
+	if (player && player->wheel().getInstant("Runic Mastery") && damage.instantSpellName.empty()) {
 		const std::shared_ptr<Spell> &spell = g_spells().getRuneSpellByName(damage.runeSpellName);
 		// Rune conjuring spell have the same name as the rune item spell.
 		const std::shared_ptr<InstantSpell> &conjuringSpell = g_spells().getInstantSpellByName(damage.runeSpellName);

@@ -124,11 +124,11 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 	if (weaponPtr && *weaponPtr) {
 		WeaponShared_ptr weapon = *weaponPtr;
 		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO || weapon->weaponType == WEAPON_MISSILE) {
-			weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "WeaponDistance");
+			weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "Weapon");
 		} else if (weapon->weaponType == WEAPON_WAND) {
-			weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "WeaponWand");
+			weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
 		} else {
-			weapon = Lua::getUserdataShared<WeaponMelee>(L, 1, "WeaponMelee");
+			weapon = Lua::getUserdataShared<WeaponMelee>(L, 1, "Weapon");
 		}
 
 		const uint16_t id = weapon->getID();
@@ -279,7 +279,7 @@ int WeaponFunctions::luaWeaponBreakChance(lua_State* L) {
 
 int WeaponFunctions::luaWeaponWandDamage(lua_State* L) {
 	// weapon:damage(damage[min, max]) only use this if the weapon is a wand!
-	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "WeaponWand");
+	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setMinChange(Lua::getNumber<uint32_t>(L, 2));
 		if (lua_gettop(L) > 2) {
@@ -557,7 +557,7 @@ int WeaponFunctions::luaWeaponSlotType(lua_State* L) {
 
 int WeaponFunctions::luaWeaponAmmoType(lua_State* L) {
 	// weapon:ammoType(type)
-	const auto &weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "WeaponDistance");
+	const auto &weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);

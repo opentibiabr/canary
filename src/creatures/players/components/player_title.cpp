@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/cyclopedia/player_title.hpp"
+// Player.hpp already includes the title
+#include "creatures/players/player.hpp"
 
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/player.hpp"
 #include "enums/account_group_type.hpp"
 #include "game/game.hpp"
 #include "kv/kv.hpp"
@@ -268,7 +268,7 @@ bool PlayerTitle::checkTask(uint32_t amount) const {
 	return m_player.getTaskHuntingPoints() >= amount;
 }
 
-bool PlayerTitle::checkMap(uint32_t amount) const {
+bool PlayerTitle::checkMap(uint32_t) const {
 	// todo cyclopledia
 	return false;
 }

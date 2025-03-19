@@ -20,6 +20,8 @@ class RSA;
 
 class NetworkMessage {
 public:
+	explicit NetworkMessage(bool isOldProtocol = false);
+
 	using MsgSize_t = uint16_t;
 	// Headers:
 	// 2 bytes for unencrypted message size
@@ -31,6 +33,10 @@ public:
 
 	void reset() {
 		info = {};
+	}
+
+	void initOldProtocolBufferPosition() {
+		info.position = m_initialBufferPosition;
 	}
 
 	// simply read functions for incoming message
@@ -168,6 +174,9 @@ public:
 	void append(const NetworkMessage &other);
 
 protected:
+	// 1 byte for padding message size on 14.05+ and 2 bytes encrypted for old protocol
+	MsgSize_t m_initialBufferPosition = 7;
+
 	struct NetworkMessageInfo {
 		MsgSize_t length = 0;
 		MsgSize_t position = INITIAL_BUFFER_POSITION;

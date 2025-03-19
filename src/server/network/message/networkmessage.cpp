@@ -11,6 +11,11 @@
 
 #include "items/containers/container.hpp"
 
+NetworkMessage::NetworkMessage(bool isOldProtocol) 
+	: m_initialBufferPosition(isOldProtocol ? 8 : 7) {
+	info.position = m_initialBufferPosition;
+}
+
 int32_t NetworkMessage::decodeHeader() {
 	// Ensure there are enough bytes to read the header (2 bytes)
 	if (!canRead(2)) {
@@ -279,12 +284,12 @@ bool NetworkMessage::canAdd(size_t size) const {
 }
 
 bool NetworkMessage::canRead(int32_t size) const {
-	return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
+	return size <= (info.length - (info.position - m_initialBufferPosition));
 }
 
 void NetworkMessage::append(const NetworkMessage &other) {
 	size_t otherLength = other.getLength();
-	size_t otherStartPos = NetworkMessage::INITIAL_BUFFER_POSITION; // Always start copying from the initial buffer position
+	size_t otherStartPos = other.m_initialBufferPosition; // Always start copying from the initial buffer position
 
 	g_logger().debug("[{}] appending message, other Length = {}, current length = {}, current position = {}, other start position = {}", __FUNCTION__, otherLength, info.length, info.position, otherStartPos);
 

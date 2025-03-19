@@ -19,6 +19,10 @@
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
+ProtocolLogin::ProtocolLogin(const Connection_ptr &loginConnection) : Protocol(loginConnection) {
+	setProtocolType(Protocol::ProtocolType::Login);
+}
+
 void ProtocolLogin::disconnectClient(const std::string &message) const {
 	const auto output = OutputMessagePool::getOutputMessage();
 

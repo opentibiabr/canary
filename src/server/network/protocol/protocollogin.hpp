@@ -24,8 +24,7 @@ public:
 		return "login protocol";
 	}
 
-	explicit ProtocolLogin(const Connection_ptr &loginConnection) :
-		Protocol(loginConnection) { }
+	explicit ProtocolLogin(const Connection_ptr &loginConnection);
 
 	void onRecvFirstMessage(NetworkMessage &msg) override;
 

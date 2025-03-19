@@ -23,20 +23,29 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
 
+		bool oldProtocol = m_protocolType == ProtocolType::Login;
+		if (oldProtocol) {
+			msg->writeMessageLength(true);
+		}
+
 		if (!encryptionEnabled) {
-			msg->writeMessageLength();
+			if (m_protocolType == ProtocolType::Game) {
+				msg->writeMessageLength();
+			}
 			return;
 		}
 
-		msg->writePaddingAmount();
+		if (m_protocolType == ProtocolType::Game) {
+			msg->writePaddingAmount();
+		}
 
 		XTEA_encrypt(*msg);
 		if (checksumMethod == CHECKSUM_METHOD_NONE) {
-			msg->addCryptoHeader(false, 0);
+			msg->addCryptoHeader(false, 0, oldProtocol);
 		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
-			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
+			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()), oldProtocol);
 		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
+			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber), oldProtocol);
 			if (serverSequenceNumber >= 0x7FFFFFFF) {
 				serverSequenceNumber = 0;
 			}
@@ -210,13 +219,23 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 
 	XTEA_transform(buffer, messageLength, false);
 
-	uint8_t paddingSize = msg.getByte();
-	uint16_t innerLength = messageLength - paddingSize;
-	if (innerLength + paddingSize > msgLength) {
+	auto getDeclaredMessageLength = [&](NetworkMessage &msg, uint16_t messageLength) -> uint16_t {
+		if (m_protocolType == Protocol::ProtocolType::Login) {
+			uint16_t innerLength = msg.get<uint16_t>();
+			return innerLength + 2;
+		} else {
+			uint8_t paddingSize = msg.getByte();
+			return messageLength - paddingSize;
+		}
+	};
+
+	uint16_t declaredLength = getDeclaredMessageLength(msg, messageLength);
+
+	if (declaredLength > msgLength) {
 		return false;
 	}
 
-	msg.setLength(innerLength);
+	msg.setLength(declaredLength);
 	return true;
 }
 

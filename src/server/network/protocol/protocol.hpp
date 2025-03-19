@@ -21,6 +21,12 @@ class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
+	enum class ProtocolType : uint8_t {
+		None,
+		Game,
+		Login,
+	};
+
 	explicit Protocol(const Connection_ptr &initConnection);
 
 	virtual ~Protocol() = default;
@@ -74,6 +80,14 @@ protected:
 
 	virtual void release() { }
 
+	ProtocolType getProtocolType() const {
+		return m_protocolType;
+	}
+
+	void setProtocolType(ProtocolType type) {
+		m_protocolType = type;
+	}
+
 private:
 	struct ZStream {
 		ZStream() noexcept;
@@ -100,6 +114,8 @@ private:
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 	bool encryptionEnabled = false;
 	bool rawMessages = false;
+
+	ProtocolType m_protocolType;
 
 	friend class Connection;
 };

@@ -32,21 +32,29 @@ public:
 		add_header(paddingAmount);
 	}
 
-	void writeMessageLength() {
-		add_header(static_cast<uint16_t>((info.length - 4) / 8));
+	void writeMessageLength(bool oldProtocol = false) {
+		if (oldProtocol) {
+			if (m_initialBufferPosition == 7) {
+				m_initialBufferPosition = 8;
+				initOldProtocolBufferPosition();
+			}
+			add_header(info.length);
+		} else {
+			add_header(static_cast<uint16_t>((info.length - 4) / 8));
+		}
 	}
 
-	void addCryptoHeader(bool addChecksum, uint32_t checksum) {
+	void addCryptoHeader(bool addChecksum, uint32_t checksum, bool oldProtocol = false) {
 		if (addChecksum) {
 			add_header(checksum);
 		}
 
-		writeMessageLength();
+		writeMessageLength(oldProtocol);
 	}
 
 	void append(const NetworkMessage &msg) {
 		auto msgLen = msg.getLength();
-		std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<const unsigned char> sourceSpan(msg.getBuffer() + m_initialBufferPosition, msgLen);
 		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
 		std::ranges::copy(sourceSpan, destSpan.begin());
 		info.length += msgLen;
@@ -55,7 +63,7 @@ public:
 
 	void append(const OutputMessage_ptr &msg) {
 		auto msgLen = msg->getLength();
-		std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<const unsigned char> sourceSpan(msg->getBuffer() + m_initialBufferPosition, msgLen);
 		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
 		std::ranges::copy(sourceSpan, destSpan.begin());
 		info.length += msgLen;
@@ -87,7 +95,7 @@ private:
 		info.length += sizeof(T);
 	}
 
-	MsgSize_t outputBufferStart = INITIAL_BUFFER_POSITION;
+	MsgSize_t outputBufferStart = m_initialBufferPosition;
 };
 
 class OutputMessagePool {

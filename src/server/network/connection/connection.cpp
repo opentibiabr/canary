@@ -135,7 +135,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
 		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
-			g_logger().error("[Connection::parseProxyIdentification] - Read error: {}", error.message());
+			g_logger().debug("[Connection::parseProxyIdentification] - Read error: {}", error.message());
 		}
 		close(FORCE_CLOSE);
 		return;
@@ -210,7 +210,8 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	uint16_t size = m_msg.getLengthHeader();
-	if (std::static_pointer_cast<ProtocolGame>(protocol)) {
+	auto protocolType = protocol ? protocol->getProtocolType() : Protocol::ProtocolType::None;
+	if (protocolType == Protocol::ProtocolType::Game) {
 		size = (size * 8) + 4;
 	}
 
@@ -239,7 +240,7 @@ void Connection::parsePacket(const std::error_code &error) {
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
 		if (error) {
-			g_logger().error("[Connection::parsePacket] - Read error: {}", error.message());
+			g_logger().debug("[Connection::parsePacket] - Read error: {}", error.message());
 		}
 		close(FORCE_CLOSE);
 		return;
@@ -272,12 +273,18 @@ void Connection::parsePacket(const std::error_code &error) {
 				close(FORCE_CLOSE);
 				return;
 			}
+
+			// We need to set the buffer position to 8 for old protocol
+			if (protocol->getProtocolType() == Protocol::ProtocolType::Login) {
+				m_msg.initOldProtocolBufferPosition();
+			}
 		} else {
 			// It is rather hard to detect if we have checksum or sequence method here so let's skip checksum check
 			// it doesn't generate any problem because olders protocol don't use 'server sends first' feature
 			m_msg.get<uint32_t>();
 			// Skip protocol ID
-			m_msg.skipBytes(2);
+			auto bytesToSkip = protocol->getProtocolType() == Protocol::ProtocolType::Game ? 2 : 1;
+			m_msg.skipBytes(bytesToSkip);
 		}
 
 		protocol->onRecvFirstMessage(m_msg);

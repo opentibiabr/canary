@@ -61,9 +61,7 @@ int CanaryServer::run() {
 			try {
 				loadConfigLua();
 
-				logger.info("Server protocol: {}.{:02d}{}", 
-					CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, 
-					g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
+				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
 
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;

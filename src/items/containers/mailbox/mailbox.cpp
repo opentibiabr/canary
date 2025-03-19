@@ -72,49 +72,67 @@ void Mailbox::postRemoveNotification(const std::shared_ptr<Thing> &thing, const 
 }
 
 bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
+	if (!item) {
+		return false;
+	}
+
 	std::string receiver;
 	if (!getReceiver(item, receiver)) {
 		return false;
 	}
 
-	/**No need to continue if its still empty**/
+	/** No need to continue if it's still empty **/
 	if (receiver.empty()) {
+		return false;
+	}
+
+	Container* container = item->getContainer().get();
+	if (!container) {
 		return false;
 	}
 
 	if (item && item->getContainer() && item->getTile()) {
 		for (const auto &spectator : Spectators().find<Player>(item->getTile()->getPosition())) {
-			spectator->getPlayer()->autoCloseContainers(item->getContainer());
+			if (spectator && spectator->getPlayer()) {
+				spectator->getPlayer()->autoCloseContainers(item->getContainer());
+			}
 		}
 	}
 
 	const auto &player = g_game().getPlayerByName(receiver, true);
+	if (!player || !item) {
+		return false;
+	}
+
 	std::string writer;
 	time_t date = getTimeNow();
 	std::string text;
-	if (item && item->getID() == ITEM_LETTER && !item->getAttribute<std::string>(ItemAttribute_t::WRITER).empty()) {
+
+	if (item->getID() == ITEM_LETTER && !item->getAttribute<std::string>(ItemAttribute_t::WRITER).empty()) {
 		writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
 		date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
 		text = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
 	}
-	if (player && item) {
-		const auto &playerInbox = player->getInbox();
-		const auto &itemParent = item->getParent();
-		if (g_game().internalMoveItem(itemParent, playerInbox, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
-			const auto &newItem = g_game().transformItem(item, item->getID() + 1);
-			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && !writer.empty()) {
-				newItem->setAttribute(ItemAttribute_t::WRITER, writer);
-				newItem->setAttribute(ItemAttribute_t::DATE, date);
-				newItem->setAttribute(ItemAttribute_t::TEXT, text);
-			}
-			if (player->isOnline()) {
-				player->onReceiveMail();
-			} else {
-				g_saveManager().savePlayer(player);
-			}
-			return true;
+
+	const auto &playerInbox = player->getInbox();
+	const auto &itemParent = item->getParent();
+	if (g_game().internalMoveItem(itemParent, playerInbox, INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+		const auto &newItem = g_game().transformItem(item, item->getID() + 1);
+
+		if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && !writer.empty()) {
+			newItem->setAttribute(ItemAttribute_t::WRITER, writer);
+			newItem->setAttribute(ItemAttribute_t::DATE, date);
+			newItem->setAttribute(ItemAttribute_t::TEXT, text);
 		}
+
+		if (player->isOnline()) {
+			player->onReceiveMail();
+		} else {
+			g_saveManager().savePlayer(player);
+		}
+		return true;
 	}
+
 	return false;
 }
 

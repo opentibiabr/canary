@@ -11,8 +11,8 @@
 
 #include "items/containers/container.hpp"
 
-NetworkMessage::NetworkMessage(bool isOldProtocol) 
-	: m_initialBufferPosition(isOldProtocol ? 8 : 7) {
+NetworkMessage::NetworkMessage(bool isOldProtocol) :
+	m_initialBufferPosition(isOldProtocol ? 8 : 7) {
 	info.position = m_initialBufferPosition;
 }
 

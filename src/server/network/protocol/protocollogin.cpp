@@ -19,7 +19,8 @@
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
-ProtocolLogin::ProtocolLogin(const Connection_ptr &loginConnection) : Protocol(loginConnection) {
+ProtocolLogin::ProtocolLogin(const Connection_ptr &loginConnection) :
+	Protocol(loginConnection) {
 	setProtocolType(Protocol::ProtocolType::Login);
 }
 

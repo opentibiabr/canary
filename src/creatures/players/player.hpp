@@ -1305,6 +1305,8 @@ public:
 
 	uint16_t getPlayerVocationEnum() const;
 
+	bool isFirstOnStack() const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;

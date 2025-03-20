@@ -633,7 +633,7 @@ function Player:onGainExperience(target, exp, rawExp)
 	if taints.monsters[monsterName] and taintLevel and taintLevel > 0 then
 		local count = math.min(taintLevel, #taints)
 		if count > 0 then
-			taints_xpboost = taints.xpboost[count]
+			taints_xpboost = taints.xpboost[count] or 0
 		end
 	end
 

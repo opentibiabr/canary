@@ -1248,7 +1248,6 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 
 	// Wheel of destiny get beam affected total
 	auto spectators = Spectators().find<Player>(pos, true, rangeX, rangeX, rangeY, rangeY);
-	const std::shared_ptr<Player> &casterPlayer = caster ? caster->getPlayer() : nullptr;
 	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel().getBeamAffectedTotal(tmpDamage) : 0;
 	uint8_t beamAffectedCurrent = 0;
 

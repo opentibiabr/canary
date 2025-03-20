@@ -2712,7 +2712,7 @@ bool PlayerWheel::checkBattleInstinct() {
 	setOnThinkTimer(WheelOnThink_t::BATTLE_INSTINCT, OTSYS_TIME() + 2000);
 	bool updateClient = false;
 	m_creaturesNearby = 0;
-	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1).excludePlayerMaster().size();
+	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1, false).excludePlayerMaster().size();
 	if (creaturesNearby >= 5) {
 		m_creaturesNearby = creaturesNearby;
 		creaturesNearby -= 4;
@@ -2736,7 +2736,7 @@ bool PlayerWheel::checkPositionalTactics() {
 	setOnThinkTimer(WheelOnThink_t::POSITIONAL_TACTICS, OTSYS_TIME() + 2000);
 	m_creaturesNearby = 0;
 	bool updateClient = false;
-	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1).excludePlayerMaster().size();
+	uint16_t creaturesNearby = Spectators().find<Monster>(m_player.getPosition(), false, 1, 1, 1, 1, false).excludePlayerMaster().size();
 	constexpr uint16_t holyMagicSkill = 3;
 	constexpr uint16_t healingMagicSkill = 3;
 	constexpr uint16_t distanceSkill = 3;

@@ -27,7 +27,6 @@ monster.manaCost = 0
 
 monster.events = {
 	"killingLibrary",
-	"oberonImmune",
 }
 
 monster.changeTarget = {
@@ -121,6 +120,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onSpawn = function(monster, spawnPosition)
+	monster:setStorageValue(GrandMasterOberonConfig.Storage.Asking, 1)
+	monster:setStorageValue(GrandMasterOberonConfig.Storage.Life, 1)
+end
 
 mType.onThink = function(monster, interval)
 	if monster:getStorageValue(GrandMasterOberonConfig.Storage.Life) <= GrandMasterOberonConfig.AmountLife then

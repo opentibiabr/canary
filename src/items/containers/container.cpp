@@ -78,9 +78,9 @@ std::shared_ptr<Container> Container::createBrowseField(const std::shared_ptr<Ti
 
 Container::~Container() {
 	if (getID() == ITEM_BROWSEFIELD) {
-		auto parent = getParent();
+		const auto &parent = getParent();
 		if (parent) {
-			auto tile = parent->getTile();
+			const auto &tile = parent->getTile();
 			if (tile) {
 				auto browseField = g_game().browseFields.find(tile);
 				if (browseField != g_game().browseFields.end()) {
@@ -385,7 +385,12 @@ uint32_t Container::getContainerHoldingCount() {
 
 bool Container::isHoldingItem(const std::shared_ptr<Item> &item) {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		if (*it == item) {
+		const auto &compareItem = *it;
+		if (!compareItem || !item) {
+			continue;
+		}
+
+		if (compareItem == item) {
 			return true;
 		}
 	}
@@ -395,6 +400,10 @@ bool Container::isHoldingItem(const std::shared_ptr<Item> &item) {
 bool Container::isHoldingItemWithId(const uint16_t id) {
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const auto &item = *it;
+		if (!item) {
+			continue;
+		}
+
 		if (item && item->getID() == id) {
 			return true;
 		}
@@ -440,30 +449,46 @@ void Container::onAddContainerItem(const std::shared_ptr<Item> &item) {
 }
 
 void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item> &oldItem, const std::shared_ptr<Item> &newItem) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	const auto &thisContainer = getContainer();
+	if (holdingPlayer) {
+		holdingPlayer->sendUpdateContainerItem(thisContainer, index, newItem);
+		holdingPlayer->onUpdateContainerItem(thisContainer, oldItem, newItem);
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->sendUpdateContainerItem(getContainer(), index, newItem);
+		spectator->getPlayer()->sendUpdateContainerItem(thisContainer, index, newItem);
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->onUpdateContainerItem(getContainer(), oldItem, newItem);
+		spectator->getPlayer()->onUpdateContainerItem(thisContainer, oldItem, newItem);
 	}
 }
 
 void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item> &item) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	const auto &thisContainer = getContainer();
+	if (holdingPlayer) {
+		holdingPlayer->sendRemoveContainerItem(thisContainer, index);
+		holdingPlayer->onRemoveContainerItem(thisContainer, item);
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send change to client
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->sendRemoveContainerItem(getContainer(), index);
+		spectator->getPlayer()->sendRemoveContainerItem(thisContainer, index);
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->onRemoveContainerItem(getContainer(), item);
+		spectator->getPlayer()->onRemoveContainerItem(thisContainer, item);
 	}
 }
 
@@ -1024,9 +1049,9 @@ void ContainerIterator::advance() {
 		return;
 	}
 
-	auto currentItem = container->itemlist[top.index];
+	const auto &currentItem = container->itemlist[top.index];
 	if (currentItem) {
-		auto subContainer = currentItem->getContainer();
+		const auto &subContainer = currentItem->getContainer();
 		if (subContainer && !subContainer->itemlist.empty()) {
 			size_t newDepth = top.depth + 1;
 			if (newDepth <= maxTraversalDepth) {

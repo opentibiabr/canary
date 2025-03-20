@@ -106,8 +106,10 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 		return oldTile;
 	}
 
+	std::unique_lock l(floor->getMutex());
+
 	const uint8_t z = floor->getZ();
-	const auto map = dynamic_cast<Map*>(this);
+	const auto map = static_cast<Map*>(this);
 
 	std::vector<std::shared_ptr<Creature>> oldCreatureList;
 	if (oldTile) {

@@ -732,9 +732,8 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, const std
 			g_game().internalTeleport(player, player->getTemplePosition());
 			player->sendMagicEffect(player->getTemplePosition(), CONST_ME_TELEPORT);
 			player->sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+			return false;
 		}
-
-		return false;
 	}
 
 	if (!LuaScriptInterface::reserveScriptEnv()) {
@@ -808,6 +807,13 @@ uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const std:
 	if (isLoadedScriptId()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
+		if (!moveFunction) {
+			g_logger().error("[MoveEvent::fireAddRemItem - Item {} item on position: {}] "
+			                 "Move function is nullptr.",
+			                 item->getName(), pos.toString());
+			return 0;
+		}
+
 		return moveFunction(item, fromTile, pos);
 	}
 }
@@ -840,6 +846,13 @@ uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const Posi
 	if (isLoadedScriptId()) {
 		return executeAddRemItem(item, pos);
 	} else {
+		if (!moveFunction) {
+			g_logger().error("[MoveEvent::fireAddRemItem - Item {} item on position: {}] "
+			                 "Move function is nullptr.",
+			                 item->getName(), pos.toString());
+			return 0;
+		}
+
 		return moveFunction(item, nullptr, pos);
 	}
 }
@@ -849,9 +862,9 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Posit
 	// onRemoveItem(moveitem, pos)
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeAddRemItem - "
-		                 "Item {} item on tile x: {} y: {} z: {}] "
+		                 "Item {} item on position: {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
-		                 item->getName(), pos.getX(), pos.getY(), pos.getZ());
+		                 item->getName(), pos.toString());
 		return false;
 	}
 

@@ -86,7 +86,7 @@ bool Mailbox::sendItem(const std::shared_ptr<Item> &item) const {
 		return false;
 	}
 
-	Container* container = item->getContainer().get();
+	const auto &container = item->getContainer();
 	if (!container) {
 		return false;
 	}

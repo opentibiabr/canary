@@ -19,10 +19,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/animus_mastery/animus_mastery.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
@@ -31,8 +27,6 @@
 #include "creatures/players/management/ban.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
-#include "creatures/players/vip/player_vip.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -211,7 +205,7 @@ namespace {
 		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 			damageModifiers[i] -= 100 * player->getAbsorbPercent(indexToCombatType(i));
 			if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
-				damageModifiers[i] -= player->wheel()->getResistance(indexToCombatType(i));
+				damageModifiers[i] -= player->wheel().getResistance(indexToCombatType(i));
 			}
 
 			if (damageModifiers[i] != 10000) {
@@ -793,8 +787,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			message = fmt::format("You are already logged in using protocol '{}'. Please log out from the other session to connect here.", foundPlayer->getProtocolVersion());
 		}
 
-		disconnectClient(message);
-		return;
+		foundPlayer->client->disconnectClient(message);
 	}
 
 	auto timeStamp = msg.get<uint32_t>();
@@ -1485,7 +1478,7 @@ void ProtocolGame::GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t wi
 void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip) {
 	for (int32_t nx = 0; nx < width; nx++) {
 		for (int32_t ny = 0; ny < height; ny++) {
-			std::shared_ptr<Tile> tile = g_game().map.getTile(static_cast<uint16_t>(x + nx + offset), static_cast<uint16_t>(y + ny + offset), static_cast<uint8_t>(z));
+			const auto &tile = g_game().map.getTile(static_cast<uint16_t>(x + nx + offset), static_cast<uint16_t>(y + ny + offset), static_cast<uint8_t>(z));
 			if (tile) {
 				if (skip >= 0) {
 					msg.addByte(skip);
@@ -2030,18 +2023,18 @@ void ProtocolGame::parseVipGroupActions(NetworkMessage &msg) {
 	switch (action) {
 		case 0x01: {
 			const std::string groupName = msg.getString();
-			player->vip()->addGroup(groupName);
+			player->vip().addGroup(groupName);
 			break;
 		}
 		case 0x02: {
 			const uint8_t groupId = msg.getByte();
 			const std::string newGroupName = msg.getString();
-			player->vip()->editGroup(groupId, newGroupName);
+			player->vip().editGroup(groupId, newGroupName);
 			break;
 		}
 		case 0x03: {
 			const uint8_t groupId = msg.getByte();
-			player->vip()->removeGroup(groupId);
+			player->vip().removeGroup(groupId);
 			break;
 		}
 		default: {
@@ -3466,7 +3459,7 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation() {
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
 	msg.addByte(0x01); // Store summary & Character titles
-	msg.addString(player->title()->getCurrentTitleName()); // character title
+	msg.addString(player->title().getCurrentTitleName()); // character title
 	writeToOutputBuffer(msg);
 }
 
@@ -3747,7 +3740,7 @@ void ProtocolGame::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked,
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
-	msg.add<uint16_t>(player->achiev()->getPoints());
+	msg.add<uint16_t>(player->achiev().getPoints());
 	msg.add<uint16_t>(secretsUnlocked);
 	msg.add<uint16_t>(static_cast<uint16_t>(achievementsUnlocked.size()));
 	for (const auto &[achievement, addedTimestamp] : achievementsUnlocked) {
@@ -3993,7 +3986,7 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	auto remaining = player->kv()->get("daily-reward-xp-boost");
 	msg.add<uint32_t>(remaining ? static_cast<uint32_t>(remaining->getNumber()) : 0); // Remaining Daily Reward Xp Boost Time
 
-	auto cyclopediaSummary = player->cyclopedia()->getSummary();
+	auto cyclopediaSummary = player->cyclopedia().getSummary();
 
 	msg.addByte(static_cast<uint8_t>(magic_enum::enum_count<Blessings>()));
 	for (auto bless : magic_enum::enum_values<Blessings>()) {
@@ -4050,7 +4043,7 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	}*/
 	msg.addByte(0x00); // hireling outfit size
 
-	auto houseItems = player->cyclopedia()->getResult(static_cast<uint8_t>(Summary_t::HOUSE_ITEMS));
+	auto houseItems = player->cyclopedia().getResult(static_cast<uint8_t>(Summary_t::HOUSE_ITEMS));
 	msg.add<uint16_t>(houseItems.size());
 	for (const auto &hItem_it : houseItems) {
 		const ItemType &it = Item::items[hItem_it.first];
@@ -4118,10 +4111,10 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	msg.skipBytes(1);
 
 	// Player title
-	if (player->title()->getCurrentTitle() != 0) {
+	if (player->title().getCurrentTitle() != 0) {
 		playerDescriptionSize++;
 		msg.addString("Character Title");
-		msg.addString(player->title()->getCurrentTitleName());
+		msg.addString(player->title().getCurrentTitleName());
 	}
 
 	// Level description
@@ -4221,7 +4214,7 @@ void ProtocolGame::sendCyclopediaCharacterBadges() {
 	auto badgesSizePosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 	for (const auto &badge : g_game().getBadges()) {
-		if (player->badge()->hasBadge(badge.m_id)) {
+		if (player->badge().hasBadge(badge.m_id)) {
 			msg.add<uint32_t>(badge.m_id);
 			msg.addString(badge.m_name);
 			badgesSize++;
@@ -4245,15 +4238,15 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
-	msg.addByte(player->title()->getCurrentTitle());
+	msg.addByte(player->title().getCurrentTitle());
 	msg.addByte(static_cast<uint8_t>(titles.size()));
 	for (const auto &title : titles) {
 		msg.addByte(title.m_id);
-		auto titleName = player->title()->getNameBySex(player->getSex(), title.m_maleName, title.m_femaleName);
+		auto titleName = player->title().getNameBySex(player->getSex(), title.m_maleName, title.m_femaleName);
 		msg.addString(titleName);
 		msg.addString(title.m_description);
 		msg.addByte(title.m_permanent ? 0x01 : 0x00);
-		auto isUnlocked = player->title()->isTitleUnlocked(title.m_id);
+		auto isUnlocked = player->title().isTitleUnlocked(title.m_id);
 		msg.addByte(isUnlocked ? 0x01 : 0x00);
 	}
 
@@ -4328,7 +4321,7 @@ void ProtocolGame::sendBasicData() {
 			msg.add<uint16_t>(0);
 		} else if (spell && spell->isLearnable() && player->hasLearnedInstantSpell(spell->getName())) {
 			// Ignore spell if not have wheel grade (or send if you have)
-			auto grade = player->wheel()->getSpellUpgrade(spell->getName());
+			auto grade = player->wheel().getSpellUpgrade(spell->getName());
 			if (static_cast<uint8_t>(grade) == 0) {
 				msg.add<uint16_t>(0);
 			} else {
@@ -6891,7 +6884,7 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 			if (!vipPlayer) {
 				vipStatus = VipStatus_t::Offline;
 			} else {
-				vipStatus = vipPlayer->vip()->getStatus();
+				vipStatus = vipPlayer->vip().getStatus();
 			}
 
 			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
@@ -6904,7 +6897,7 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 			if (!vipPlayer || vipPlayer->isInGhostMode()) {
 				vipStatus = VipStatus_t::Offline;
 			} else {
-				vipStatus = vipPlayer->vip()->getStatus();
+				vipStatus = vipPlayer->vip().getStatus();
 			}
 
 			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
@@ -6922,7 +6915,7 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	sendHousesInfo();
 	// Wheel of destiny cooldown
 	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
-		player->wheel()->sendGiftOfLifeCooldown();
+		player->wheel().sendGiftOfLifeCooldown();
 	}
 
 	player->sendClientCheck();
@@ -7457,7 +7450,7 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	msg.addByte(notify ? 0x01 : 0x00);
 	msg.addByte(enumToValue(status));
 
-	const auto &vipGuidGroups = player->vip()->getGroupsIdGuidBelongs(guid);
+	const auto &vipGuidGroups = player->vip().getGroupsIdGuidBelongs(guid);
 
 	if (!oldProtocol) {
 		msg.addByte(vipGuidGroups.size()); // vipGroups
@@ -7474,7 +7467,7 @@ void ProtocolGame::sendVIPGroups() {
 		return;
 	}
 
-	const auto &vipGroups = player->vip()->getGroups();
+	const auto &vipGroups = player->vip().getGroups();
 
 	NetworkMessage msg;
 	msg.addByte(0xD4);
@@ -7484,7 +7477,7 @@ void ProtocolGame::sendVIPGroups() {
 		msg.addString(vipGroup->name);
 		msg.addByte(vipGroup->customizable ? 0x01 : 0x00); // 0x00 = not Customizable, 0x01 = Customizable
 	}
-	msg.addByte(player->vip()->getMaxGroupEntries() - vipGroups.size()); // max vip groups
+	msg.addByte(player->vip().getMaxGroupEntries() - vipGroups.size()); // max vip groups
 
 	writeToOutputBuffer(msg);
 }
@@ -9307,7 +9300,7 @@ void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
 	}
 
 	NetworkMessage msg;
-	player->wheel()->sendOpenWheelWindow(msg, ownerId);
+	player->wheel().sendOpenWheelWindow(msg, ownerId);
 	writeToOutputBuffer(msg);
 }
 

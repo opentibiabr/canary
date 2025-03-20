@@ -38,7 +38,7 @@ int TeleportFunctions::luaTeleportCreate(lua_State* L) {
 
 int TeleportFunctions::luaTeleportGetDestination(lua_State* L) {
 	// teleport:getDestination()
-	const auto &teleport = Lua::getUserdataShared<Teleport>(L, 1);
+	const auto &teleport = Lua::getUserdataShared<Teleport>(L, 1, "Teleport");
 	if (teleport) {
 		Lua::pushPosition(L, teleport->getDestPos());
 	} else {
@@ -49,7 +49,7 @@ int TeleportFunctions::luaTeleportGetDestination(lua_State* L) {
 
 int TeleportFunctions::luaTeleportSetDestination(lua_State* L) {
 	// teleport:setDestination(position)
-	const auto &teleport = Lua::getUserdataShared<Teleport>(L, 1);
+	const auto &teleport = Lua::getUserdataShared<Teleport>(L, 1, "Teleport");
 	if (teleport) {
 		teleport->setDestPos(Lua::getPosition(L, 2));
 		Lua::pushBoolean(L, true);

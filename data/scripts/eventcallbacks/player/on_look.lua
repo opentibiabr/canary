@@ -72,6 +72,11 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 			descriptionText = string.format("%s, Unique ID: %d", descriptionText, itemUniqueId)
 		end
 
+		local doorIdAttribute = inspectedThing:getAttribute(ITEM_ATTRIBUTE_DOORID)
+		if doorIdAttribute and doorIdAttribute > 0 then
+			descriptionText = string.format("%s, Door ID: %d", descriptionText, doorIdAttribute)
+		end
+
 		local itemType = inspectedThing:getType()
 		local transformOnEquipId = itemType:getTransformEquipId()
 		local transformOnDeEquipId = itemType:getTransformDeEquipId()

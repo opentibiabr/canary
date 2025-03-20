@@ -105,7 +105,7 @@ enum ConditionType_t : uint8_t {
 	CONDITION_DAZZLED = 22,
 	CONDITION_CURSED = 23,
 	CONDITION_EXHAUST_COMBAT = 24, // unused
-	CONDITION_EXHAUST_HEAL = 25, // unused
+	CONDITION_EXHAUST_HEAL = 25,
 	CONDITION_PACIFIED = 26,
 	CONDITION_SPELLCOOLDOWN = 27,
 	CONDITION_SPELLGROUPCOOLDOWN = 28,
@@ -1582,6 +1582,10 @@ struct CombatDamage {
 	std::string runeSpellName;
 
 	CombatDamage() = default;
+
+	bool isEmpty() const {
+		return primary.type == COMBAT_NONE && primary.value == 0 && secondary.type == COMBAT_NONE && secondary.value == 0 && origin == ORIGIN_NONE && critical == false && affected == 1 && extension == false && exString.empty() && fatal == false && criticalDamage == 0 && criticalChance == 0 && damageMultiplier == 0 && damageReductionMultiplier == 0 && healingMultiplier == 0 && manaLeech == 0 && manaLeechChance == 0 && lifeLeech == 0 && lifeLeechChance == 0 && healingLink == 0 && instantSpellName.empty() && runeSpellName.empty();
+	}
 };
 
 struct RespawnType {

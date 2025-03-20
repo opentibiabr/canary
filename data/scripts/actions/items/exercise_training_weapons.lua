@@ -106,7 +106,7 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 	local rate = dummies[dummyId] / 100
 	local isMagic = exerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL
 	if isMagic then
-		player:addManaSpent(500 * rate)
+		player:addManaSpent(600 * rate)
 	else
 		player:addSkillTries(exerciseWeaponsTable[weaponId].skill, 7 * rate)
 	end

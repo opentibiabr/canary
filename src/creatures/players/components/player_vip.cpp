@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/vip/player_vip.hpp"
+// Player.hpp already includes the vip
+#include "creatures/players/player.hpp"
 
 #include "account/account.hpp"
 #include "creatures/players/grouping/groups.hpp"
-#include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
@@ -71,7 +71,7 @@ bool PlayerVIP::remove(uint32_t vipGuid) {
 	return true;
 }
 
-bool PlayerVIP::add(uint32_t vipGuid, const std::string &vipName, VipStatus_t status) {
+bool PlayerVIP::add(uint32_t vipGuid, const std::string &vipName, VipStatus_t vipStatus) {
 	if (vipGuids.size() >= getMaxEntries() || vipGuids.size() == 200) { // max number of buddies is 200 in 9.53
 		m_player.sendTextMessage(MESSAGE_FAILURE, "You cannot add more buddies.");
 		return false;
@@ -87,7 +87,7 @@ bool PlayerVIP::add(uint32_t vipGuid, const std::string &vipName, VipStatus_t st
 	}
 
 	if (m_player.client) {
-		m_player.client->sendVIP(vipGuid, vipName, "", 0, false, status);
+		m_player.client->sendVIP(vipGuid, vipName, "", 0, false, vipStatus);
 	}
 
 	return true;

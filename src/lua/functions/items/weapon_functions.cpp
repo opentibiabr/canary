@@ -95,7 +95,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 
 int WeaponFunctions::luaWeaponAction(lua_State* L) {
 	// weapon:action(callback)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		std::string typeName = Lua::getString(L, 2);
 		const std::string tmpStr = asLowerCaseString(typeName);
@@ -124,11 +124,11 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 	if (weaponPtr && *weaponPtr) {
 		WeaponShared_ptr weapon = *weaponPtr;
 		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO || weapon->weaponType == WEAPON_MISSILE) {
-			weapon = Lua::getUserdataShared<WeaponDistance>(L, 1);
+			weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "Weapon");
 		} else if (weapon->weaponType == WEAPON_WAND) {
-			weapon = Lua::getUserdataShared<WeaponWand>(L, 1);
+			weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
 		} else {
-			weapon = Lua::getUserdataShared<WeaponMelee>(L, 1);
+			weapon = Lua::getUserdataShared<WeaponMelee>(L, 1, "Weapon");
 		}
 
 		const uint16_t id = weapon->getID();
@@ -153,7 +153,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 
 int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		if (!weapon->loadScriptId()) {
 			Lua::pushBoolean(L, false);
@@ -169,7 +169,7 @@ int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 
 int WeaponFunctions::luaWeaponUnproperly(lua_State* L) {
 	// weapon:wieldedUnproperly(bool)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setWieldUnproperly(Lua::getBoolean(L, 2));
 		Lua::pushBoolean(L, true);
@@ -181,7 +181,7 @@ int WeaponFunctions::luaWeaponUnproperly(lua_State* L) {
 
 int WeaponFunctions::luaWeaponLevel(lua_State* L) {
 	// weapon:level(lvl)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setRequiredLevel(Lua::getNumber<uint32_t>(L, 2));
 		weapon->setWieldInfo(WIELDINFO_LEVEL);
@@ -194,7 +194,7 @@ int WeaponFunctions::luaWeaponLevel(lua_State* L) {
 
 int WeaponFunctions::luaWeaponMagicLevel(lua_State* L) {
 	// weapon:magicLevel(lvl)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setRequiredMagLevel(Lua::getNumber<uint32_t>(L, 2));
 		weapon->setWieldInfo(WIELDINFO_MAGLV);
@@ -207,7 +207,7 @@ int WeaponFunctions::luaWeaponMagicLevel(lua_State* L) {
 
 int WeaponFunctions::luaWeaponMana(lua_State* L) {
 	// weapon:mana(mana)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setMana(Lua::getNumber<uint32_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -219,7 +219,7 @@ int WeaponFunctions::luaWeaponMana(lua_State* L) {
 
 int WeaponFunctions::luaWeaponManaPercent(lua_State* L) {
 	// weapon:manaPercent(percent)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setManaPercent(Lua::getNumber<uint32_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -231,7 +231,7 @@ int WeaponFunctions::luaWeaponManaPercent(lua_State* L) {
 
 int WeaponFunctions::luaWeaponHealth(lua_State* L) {
 	// weapon:health(health)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setHealth(Lua::getNumber<int32_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -243,7 +243,7 @@ int WeaponFunctions::luaWeaponHealth(lua_State* L) {
 
 int WeaponFunctions::luaWeaponHealthPercent(lua_State* L) {
 	// weapon:healthPercent(percent)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setHealthPercent(Lua::getNumber<uint32_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -255,7 +255,7 @@ int WeaponFunctions::luaWeaponHealthPercent(lua_State* L) {
 
 int WeaponFunctions::luaWeaponSoul(lua_State* L) {
 	// weapon:soul(soul)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setSoul(Lua::getNumber<uint32_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -267,7 +267,7 @@ int WeaponFunctions::luaWeaponSoul(lua_State* L) {
 
 int WeaponFunctions::luaWeaponBreakChance(lua_State* L) {
 	// weapon:breakChance(percent)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setBreakChance(Lua::getNumber<uint32_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -279,7 +279,7 @@ int WeaponFunctions::luaWeaponBreakChance(lua_State* L) {
 
 int WeaponFunctions::luaWeaponWandDamage(lua_State* L) {
 	// weapon:damage(damage[min, max]) only use this if the weapon is a wand!
-	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1);
+	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setMinChange(Lua::getNumber<uint32_t>(L, 2));
 		if (lua_gettop(L) > 2) {
@@ -296,7 +296,7 @@ int WeaponFunctions::luaWeaponWandDamage(lua_State* L) {
 
 int WeaponFunctions::luaWeaponElement(lua_State* L) {
 	// weapon:element(combatType)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		if (!Lua::getNumber<CombatType_t>(L, 2)) {
 			std::string element = Lua::getString(L, 2);
@@ -330,7 +330,7 @@ int WeaponFunctions::luaWeaponElement(lua_State* L) {
 
 int WeaponFunctions::luaWeaponPremium(lua_State* L) {
 	// weapon:premium(bool)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setNeedPremium(Lua::getBoolean(L, 2));
 		weapon->setWieldInfo(WIELDINFO_PREMIUM);
@@ -343,7 +343,7 @@ int WeaponFunctions::luaWeaponPremium(lua_State* L) {
 
 int WeaponFunctions::luaWeaponVocation(lua_State* L) {
 	// weapon:vocation(vocName[, showInDescription = false, lastVoc = false])
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->addVocWeaponMap(Lua::getString(L, 2));
 		weapon->setWieldInfo(WIELDINFO_VOCREQ);
@@ -382,7 +382,7 @@ int WeaponFunctions::luaWeaponVocation(lua_State* L) {
 
 int WeaponFunctions::luaWeaponId(lua_State* L) {
 	// weapon:id(id)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		weapon->setID(Lua::getNumber<uint16_t>(L, 2));
 		Lua::pushBoolean(L, true);
@@ -394,7 +394,7 @@ int WeaponFunctions::luaWeaponId(lua_State* L) {
 
 int WeaponFunctions::luaWeaponAttack(lua_State* L) {
 	// weapon:attack(atk)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -408,7 +408,7 @@ int WeaponFunctions::luaWeaponAttack(lua_State* L) {
 
 int WeaponFunctions::luaWeaponDefense(lua_State* L) {
 	// weapon:defense(defense[, extraDefense])
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -425,7 +425,7 @@ int WeaponFunctions::luaWeaponDefense(lua_State* L) {
 
 int WeaponFunctions::luaWeaponRange(lua_State* L) {
 	// weapon:range(range)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -439,7 +439,7 @@ int WeaponFunctions::luaWeaponRange(lua_State* L) {
 
 int WeaponFunctions::luaWeaponCharges(lua_State* L) {
 	// weapon:charges(charges[, showCharges = true])
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		bool showCharges = true;
 		if (lua_gettop(L) > 2) {
@@ -458,7 +458,7 @@ int WeaponFunctions::luaWeaponCharges(lua_State* L) {
 
 int WeaponFunctions::luaWeaponDuration(lua_State* L) {
 	// weapon:duration(duration[, showDuration = true])
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		bool showDuration = true;
 		if (lua_gettop(L) > 2) {
@@ -477,7 +477,7 @@ int WeaponFunctions::luaWeaponDuration(lua_State* L) {
 
 int WeaponFunctions::luaWeaponDecayTo(lua_State* L) {
 	// weapon:decayTo([itemid = 0]
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		uint16_t itemid = 0;
 		if (lua_gettop(L) > 1) {
@@ -495,7 +495,7 @@ int WeaponFunctions::luaWeaponDecayTo(lua_State* L) {
 
 int WeaponFunctions::luaWeaponTransformEquipTo(lua_State* L) {
 	// weapon:transformEquipTo(itemid)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -509,7 +509,7 @@ int WeaponFunctions::luaWeaponTransformEquipTo(lua_State* L) {
 
 int WeaponFunctions::luaWeaponTransformDeEquipTo(lua_State* L) {
 	// weapon:transformDeEquipTo(itemid)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -523,7 +523,7 @@ int WeaponFunctions::luaWeaponTransformDeEquipTo(lua_State* L) {
 
 int WeaponFunctions::luaWeaponShootType(lua_State* L) {
 	// weapon:shootType(type)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -537,7 +537,7 @@ int WeaponFunctions::luaWeaponShootType(lua_State* L) {
 
 int WeaponFunctions::luaWeaponSlotType(lua_State* L) {
 	// weapon:slotType(slot)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -557,7 +557,7 @@ int WeaponFunctions::luaWeaponSlotType(lua_State* L) {
 
 int WeaponFunctions::luaWeaponAmmoType(lua_State* L) {
 	// weapon:ammoType(type)
-	const auto &weapon = Lua::getUserdataShared<WeaponDistance>(L, 1);
+	const auto &weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -583,7 +583,7 @@ int WeaponFunctions::luaWeaponAmmoType(lua_State* L) {
 
 int WeaponFunctions::luaWeaponHitChance(lua_State* L) {
 	// weapon:hitChance(chance)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -597,7 +597,7 @@ int WeaponFunctions::luaWeaponHitChance(lua_State* L) {
 
 int WeaponFunctions::luaWeaponMaxHitChance(lua_State* L) {
 	// weapon:maxHitChance(max)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);
@@ -611,7 +611,7 @@ int WeaponFunctions::luaWeaponMaxHitChance(lua_State* L) {
 
 int WeaponFunctions::luaWeaponExtraElement(lua_State* L) {
 	// weapon:extraElement(atk, combatType)
-	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1);
+	const WeaponShared_ptr &weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		const ItemType &it = Item::items.getItemType(id);

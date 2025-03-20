@@ -38,7 +38,7 @@ int ShopFunctions::luaCreateShop(lua_State* L) {
 int ShopFunctions::luaShopSetId(lua_State* L) {
 	// shop:setId(id)
 
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		if (Lua::isNumber(L, 2)) {
 			shop->shopBlock.itemId = Lua::getNumber<uint16_t>(L, 2);
 			Lua::pushBoolean(L, true);
@@ -55,7 +55,7 @@ int ShopFunctions::luaShopSetId(lua_State* L) {
 
 int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 	// shop:setIdFromName(name)
-	const auto &shop = Lua::getUserdataShared<Shop>(L, 1);
+	const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop");
 	if (shop && Lua::isString(L, 2)) {
 		auto name = Lua::getString(L, 2);
 		const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
@@ -88,7 +88,7 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 
 int ShopFunctions::luaShopSetNameItem(lua_State* L) {
 	// shop:setNameItem(name)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		shop->shopBlock.itemName = Lua::getString(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
@@ -99,7 +99,7 @@ int ShopFunctions::luaShopSetNameItem(lua_State* L) {
 
 int ShopFunctions::luaShopSetCount(lua_State* L) {
 	// shop:setCount(count)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		shop->shopBlock.itemSubType = Lua::getNumber<uint32_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
@@ -110,7 +110,7 @@ int ShopFunctions::luaShopSetCount(lua_State* L) {
 
 int ShopFunctions::luaShopSetBuyPrice(lua_State* L) {
 	// shop:setBuyPrice(price)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		shop->shopBlock.itemBuyPrice = Lua::getNumber<uint32_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
@@ -121,7 +121,7 @@ int ShopFunctions::luaShopSetBuyPrice(lua_State* L) {
 
 int ShopFunctions::luaShopSetSellPrice(lua_State* L) {
 	// shop:setSellPrice(chance)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		shop->shopBlock.itemSellPrice = Lua::getNumber<uint32_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
@@ -132,7 +132,7 @@ int ShopFunctions::luaShopSetSellPrice(lua_State* L) {
 
 int ShopFunctions::luaShopSetStorageKey(lua_State* L) {
 	// shop:setStorageKey(storage)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		shop->shopBlock.itemStorageKey = Lua::getNumber<uint32_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
@@ -143,7 +143,7 @@ int ShopFunctions::luaShopSetStorageKey(lua_State* L) {
 
 int ShopFunctions::luaShopSetStorageValue(lua_State* L) {
 	// shop:setStorageValue(value)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
 		shop->shopBlock.itemStorageValue = Lua::getNumber<uint32_t>(L, 2);
 		Lua::pushBoolean(L, true);
 	} else {
@@ -154,8 +154,8 @@ int ShopFunctions::luaShopSetStorageValue(lua_State* L) {
 
 int ShopFunctions::luaShopAddChildShop(lua_State* L) {
 	// shop:addChildShop(shop)
-	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1)) {
-		shop->shopBlock.childShop.push_back(Lua::getUserdataShared<Shop>(L, 2)->shopBlock);
+	if (const auto &shop = Lua::getUserdataShared<Shop>(L, 1, "Shop")) {
+		shop->shopBlock.childShop.push_back(Lua::getUserdataShared<Shop>(L, 2, "Shop")->shopBlock);
 	} else {
 		lua_pushnil(L);
 	}

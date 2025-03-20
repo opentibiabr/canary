@@ -18,9 +18,9 @@ suite<"utils"> getDirectionToTest = [] {
 	};
 
 	std::vector getDirectionToTestCases {
-		GetDirectionToTestCase { Position {}, Position {}, DIRECTION_SOUTH, DIRECTION_SOUTH },
-		GetDirectionToTestCase { Position { 0, 0, 0 }, Position { 0, 0, 0 }, DIRECTION_SOUTH, DIRECTION_SOUTH },
-		GetDirectionToTestCase { Position { 100, 100, 100 }, Position { 100, 100, 100 }, DIRECTION_SOUTH, DIRECTION_SOUTH },
+		GetDirectionToTestCase { Position {}, Position {}, DIRECTION_NONE, DIRECTION_NONE },
+		GetDirectionToTestCase { Position { 0, 0, 0 }, Position { 0, 0, 0 }, DIRECTION_NONE, DIRECTION_NONE },
+		GetDirectionToTestCase { Position { 100, 100, 100 }, Position { 100, 100, 100 }, DIRECTION_NONE, DIRECTION_NONE },
 		GetDirectionToTestCase { Position { 125, 1123, 5 }, Position { 125, 1153, 5 }, DIRECTION_SOUTH, DIRECTION_SOUTH },
 		GetDirectionToTestCase { Position { 5555, 3212, 15 }, Position { 5555, 3211, 15 }, DIRECTION_NORTH, DIRECTION_NORTH },
 		GetDirectionToTestCase { Position { 32132, 65000, 11 }, Position { 31512, 65000, 11 }, DIRECTION_WEST, DIRECTION_WEST },

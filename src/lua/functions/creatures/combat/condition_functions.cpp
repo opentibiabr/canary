@@ -71,7 +71,7 @@ int ConditionFunctions::luaConditionDelete(lua_State* L) {
 
 int ConditionFunctions::luaConditionGetId(lua_State* L) {
 	// condition:getId()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		lua_pushnumber(L, condition->getId());
 	} else {
@@ -82,7 +82,7 @@ int ConditionFunctions::luaConditionGetId(lua_State* L) {
 
 int ConditionFunctions::luaConditionGetSubId(lua_State* L) {
 	// condition:getSubId()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		lua_pushnumber(L, condition->getSubId());
 	} else {
@@ -93,7 +93,7 @@ int ConditionFunctions::luaConditionGetSubId(lua_State* L) {
 
 int ConditionFunctions::luaConditionGetType(lua_State* L) {
 	// condition:getType()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		lua_pushnumber(L, condition->getType());
 	} else {
@@ -104,7 +104,7 @@ int ConditionFunctions::luaConditionGetType(lua_State* L) {
 
 int ConditionFunctions::luaConditionGetIcons(lua_State* L) {
 	// condition:getIcons()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		const auto icons = condition->getIcons();
 		lua_newtable(L); // Creates a new table on the Lua stack
@@ -121,7 +121,7 @@ int ConditionFunctions::luaConditionGetIcons(lua_State* L) {
 
 int ConditionFunctions::luaConditionGetEndTime(lua_State* L) {
 	// condition:getEndTime()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		lua_pushnumber(L, condition->getEndTime());
 	} else {
@@ -132,7 +132,7 @@ int ConditionFunctions::luaConditionGetEndTime(lua_State* L) {
 
 int ConditionFunctions::luaConditionClone(lua_State* L) {
 	// condition:clone()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		Lua::pushUserdata<Condition>(L, condition->clone());
 		Lua::setMetatable(L, -1, "Condition");
@@ -144,7 +144,7 @@ int ConditionFunctions::luaConditionClone(lua_State* L) {
 
 int ConditionFunctions::luaConditionGetTicks(lua_State* L) {
 	// condition:getTicks()
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		lua_pushnumber(L, condition->getTicks());
 	} else {
@@ -156,7 +156,7 @@ int ConditionFunctions::luaConditionGetTicks(lua_State* L) {
 int ConditionFunctions::luaConditionSetTicks(lua_State* L) {
 	// condition:setTicks(ticks)
 	const int32_t ticks = Lua::getNumber<int32_t>(L, 2);
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (condition) {
 		condition->setTicks(ticks);
 		Lua::pushBoolean(L, true);
@@ -168,7 +168,7 @@ int ConditionFunctions::luaConditionSetTicks(lua_State* L) {
 
 int ConditionFunctions::luaConditionSetParameter(lua_State* L) {
 	// condition:setParameter(key, value)
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 1);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition");
 	if (!condition) {
 		lua_pushnil(L);
 		return 1;
@@ -192,7 +192,7 @@ int ConditionFunctions::luaConditionSetFormula(lua_State* L) {
 	const double maxa = Lua::getNumber<double>(L, 4);
 	const double minb = Lua::getNumber<double>(L, 3);
 	const double mina = Lua::getNumber<double>(L, 2);
-	const std::shared_ptr<ConditionSpeed> &condition = Lua::getUserdataShared<Condition>(L, 1)->dynamic_self_cast<ConditionSpeed>();
+	const std::shared_ptr<ConditionSpeed> &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition")->dynamic_self_cast<ConditionSpeed>();
 	if (condition) {
 		condition->setFormulaVars(mina, minb, maxa, maxb);
 		Lua::pushBoolean(L, true);
@@ -225,7 +225,7 @@ int ConditionFunctions::luaConditionSetOutfit(lua_State* L) {
 		outfit.lookTypeEx = Lua::getNumber<uint16_t>(L, 2);
 	}
 
-	const std::shared_ptr<ConditionOutfit> &condition = Lua::getUserdataShared<Condition>(L, 1)->dynamic_self_cast<ConditionOutfit>();
+	const std::shared_ptr<ConditionOutfit> &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition")->dynamic_self_cast<ConditionOutfit>();
 	if (condition) {
 		condition->setOutfit(outfit);
 		Lua::pushBoolean(L, true);
@@ -240,7 +240,7 @@ int ConditionFunctions::luaConditionAddDamage(lua_State* L) {
 	const int32_t value = Lua::getNumber<int32_t>(L, 4);
 	const int32_t time = Lua::getNumber<int32_t>(L, 3);
 	const int32_t rounds = Lua::getNumber<int32_t>(L, 2);
-	const std::shared_ptr<ConditionDamage> &condition = Lua::getUserdataShared<Condition>(L, 1)->dynamic_self_cast<ConditionDamage>();
+	const std::shared_ptr<ConditionDamage> &condition = Lua::getUserdataShared<Condition>(L, 1, "Condition")->dynamic_self_cast<ConditionDamage>();
 	if (condition) {
 		Lua::pushBoolean(L, condition->addDamage(rounds, time, value));
 	} else {

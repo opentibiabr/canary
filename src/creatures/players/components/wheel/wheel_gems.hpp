@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "creatures/players/wheel/wheel_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_spells.hpp"
 
 class PlayerWheel;
 

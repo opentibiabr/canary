@@ -5,7 +5,7 @@ end
 function onSpeak(player, type, message)
 	local staff = player:getGroup():getAccess()
 	local guild = player:getGuild()
-	local info = "staff"
+	local info = "Staff"
 	type = TALKTYPE_CHANNEL_Y
 	if staff then
 		if guild then
@@ -15,6 +15,6 @@ function onSpeak(player, type, message)
 	else
 		info = guild:getName()
 	end
-	sendChannelMessage(10, type, player:getName() .. " [" .. info .. "]: " .. message)
+	sendChannelMessage(11, type, player:getName() .. " [" .. info .. "]: " .. message)
 	return false
 end

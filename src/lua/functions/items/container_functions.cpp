@@ -51,7 +51,7 @@ int ContainerFunctions::luaContainerCreate(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetSize(lua_State* L) {
 	// container:getSize()
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		lua_pushnumber(L, container->size());
 	} else {
@@ -62,7 +62,7 @@ int ContainerFunctions::luaContainerGetSize(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetMaxCapacity(lua_State* L) {
 	// container:getMaxCapacity()
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		lua_pushnumber(L, container->getMaxCapacity());
 	} else {
@@ -73,7 +73,7 @@ int ContainerFunctions::luaContainerGetMaxCapacity(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetCapacity(lua_State* L) {
 	// container:getCapacity()
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		lua_pushnumber(L, container->capacity());
 	} else {
@@ -84,7 +84,7 @@ int ContainerFunctions::luaContainerGetCapacity(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetEmptySlots(lua_State* L) {
 	// container:getEmptySlots([recursive = false])
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -105,7 +105,7 @@ int ContainerFunctions::luaContainerGetEmptySlots(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItemHoldingCount(lua_State* L) {
 	// container:getItemHoldingCount()
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		lua_pushnumber(L, container->getItemHoldingCount());
 	} else {
@@ -116,7 +116,7 @@ int ContainerFunctions::luaContainerGetItemHoldingCount(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItem(lua_State* L) {
 	// container:getItem(index)
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -135,8 +135,8 @@ int ContainerFunctions::luaContainerGetItem(lua_State* L) {
 
 int ContainerFunctions::luaContainerHasItem(lua_State* L) {
 	// container:hasItem(item)
-	const auto &item = Lua::getUserdataShared<Item>(L, 2);
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &item = Lua::getUserdataShared<Item>(L, 2, "Item");
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		Lua::pushBoolean(L, container->isHoldingItem(item));
 	} else {
@@ -147,7 +147,7 @@ int ContainerFunctions::luaContainerHasItem(lua_State* L) {
 
 int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	// container:addItem(itemId[, count/subType = 1[, index = INDEX_WHEREEVER[, flags = 0]]])
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		Lua::reportErrorFunc("Container is nullptr");
@@ -195,13 +195,13 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 
 int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 	// container:addItemEx(item[, index = INDEX_WHEREEVER[, flags = 0]])
-	const auto &item = Lua::getUserdataShared<Item>(L, 2);
+	const auto &item = Lua::getUserdataShared<Item>(L, 2, "Item");
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -225,7 +225,7 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetCorpseOwner(lua_State* L) {
 	// container:getCorpseOwner()
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		lua_pushnumber(L, container->getCorpseOwner());
 	} else {
@@ -236,7 +236,7 @@ int ContainerFunctions::luaContainerGetCorpseOwner(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 	// container:getItemCountById(itemId[, subType = -1])
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -260,7 +260,7 @@ int ContainerFunctions::luaContainerGetItemCountById(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 	// container:getContentDescription([oldProtocol])
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (container) {
 		Lua::pushString(L, container->getContentDescription(Lua::getBoolean(L, 2, false)));
 	} else {
@@ -271,7 +271,7 @@ int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 	// container:getItems([recursive = false])
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		return 1;
@@ -294,7 +294,7 @@ int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 
 int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	// container:registerReward()
-	const auto &container = Lua::getUserdataShared<Container>(L, 1);
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
 	if (!container) {
 		lua_pushnil(L);
 		return 1;

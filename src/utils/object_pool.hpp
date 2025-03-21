@@ -49,11 +49,14 @@ public:
 
 			// Return a shared_ptr with a custom deleter
 			return std::shared_ptr<T>(obj, [](T* ptr) {
+				auto typeName = typeid(*ptr).name();
+				auto address = static_cast<void*>(ptr);
+				//g_logger().debug("ObjectPool deleter: releasing object of type {} at address {}", typeName, address);
 				std::destroy_at(ptr); // Destroy the object
 				allocator.deallocate(ptr, 1); // Return to the pool
 			});
 		}
-		// Return nullptr if the pool is empty
+		//g_logger().info("ObjectPool::allocateShared: Pool empty, returning nullptr");
 		return nullptr;
 	}
 

@@ -13,6 +13,15 @@
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
+#include "utils/object_pool.hpp"
+
+#include "server/network/protocol/protocolstatus.hpp"
+#include "server/network/protocol/protocolgame.hpp"
+#include "server/network/protocol/protocollogin.hpp"
+
+template Protocol_ptr Service<ProtocolStatus>::make_protocol(const Connection_ptr &c) const;
+template Protocol_ptr Service<ProtocolGame>::make_protocol(const Connection_ptr &c) const;
+template Protocol_ptr Service<ProtocolLogin>::make_protocol(const Connection_ptr &c) const;
 
 ServiceManager::~ServiceManager() {
 	try {
@@ -186,4 +195,9 @@ bool ServicePort::add_service(const Service_ptr &new_svc) {
 
 	services.emplace_back(new_svc);
 	return true;
+}
+
+template <typename ProtocolType>
+Protocol_ptr Service<ProtocolType>::make_protocol(const Connection_ptr &c) const {
+	return ObjectPool<ProtocolType, 4024>::allocateShared(c);
 }

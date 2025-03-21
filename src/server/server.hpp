@@ -42,9 +42,7 @@ public:
 		return ProtocolType::protocol_name();
 	}
 
-	Protocol_ptr make_protocol(const Connection_ptr &c) const override {
-		return std::make_shared<ProtocolType>(c);
-	}
+	Protocol_ptr make_protocol(const Connection_ptr &c) const override;
 };
 
 class ServicePort : public std::enable_shared_from_this<ServicePort> {

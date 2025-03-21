@@ -17,7 +17,8 @@
 constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
-OutputMessage::OutputMessage(bool oldProtocol) : m_oldProtocol(oldProtocol) {
+OutputMessage::OutputMessage(bool oldProtocol) :
+	m_oldProtocol(oldProtocol) {
 	if (oldProtocol) {
 		m_initialBufferPosition = 8;
 	} else {

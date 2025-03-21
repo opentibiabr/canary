@@ -57692,11 +57692,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="weight" value="2000"/>
 	</item>
 	<item id="31129" article="a" name="wooden ladder">
-		<attribute key="floorchange" value="north"/>
 		<attribute key="type" value="ladder"/>
 	</item>
 	<item id="31130" article="a" name="wooden ladder">
-		<attribute key="floorchange" value="west"/>
 		<attribute key="type" value="ladder"/>
 	</item>
 	<item fromid="31131" toid="31133" article="a" name="obelisk">

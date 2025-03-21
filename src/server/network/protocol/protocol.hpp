@@ -103,6 +103,8 @@ protected:
 	uint32_t serverSequenceNumber = 0;
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 
+	bool oldProtocol = false;
+
 private:
 	struct ZStream {
 		ZStream() noexcept;

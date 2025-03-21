@@ -556,7 +556,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			ss << "Too many players online.\nYou are at place "
 			   << currentSlot << " on the waiting list.";
 
-			auto output = OutputMessagePool::getOutputMessage();
+			auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 			output->addByte(0x16);
 			output->addString(ss.str());
 			output->addByte(retryTime);
@@ -847,7 +847,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			ss << "Your " << (oldProtocol ? "username" : "email") << " or password is not correct.";
 		}
 
-		auto output = OutputMessagePool::getOutputMessage();
+		auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
@@ -861,7 +861,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendLoginChallenge() {
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 	static std::random_device rd;
 	static std::ranlux24 generator(rd());
 	static std::uniform_int_distribution<uint16_t> randNumber(0x00, 0xFF);
@@ -895,7 +895,7 @@ void ProtocolGame::sendLoginChallenge() {
 }
 
 void ProtocolGame::disconnectClient(const std::string &message) const {
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 	output->addByte(0x14);
 	output->addString(message);
 	send(output);
@@ -2093,7 +2093,7 @@ void ProtocolGame::parseInspectionObject(NetworkMessage &msg) {
 
 void ProtocolGame::sendSessionEndInformation(SessionEndInformations information) {
 	if (!oldProtocol) {
-		auto output = OutputMessagePool::getOutputMessage();
+		auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 		output->addByte(0x18);
 		output->addByte(information);
 		send(output);

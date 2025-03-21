@@ -77,7 +77,7 @@ void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 }
 
 void ProtocolStatus::sendStatusString() {
-	const auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 
 	setRawMessages(true);
 
@@ -161,7 +161,7 @@ void ProtocolStatus::sendStatusString() {
 }
 
 void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &characterName) const {
-	const auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);

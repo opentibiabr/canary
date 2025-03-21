@@ -534,8 +534,6 @@ private:
 	bool loggedIn = false;
 	bool shouldAddExivaRestrictions = false;
 
-	bool oldProtocol = false;
-
 	uint16_t otclientV8 = 0;
 	bool isOTC = false;
 

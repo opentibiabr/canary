@@ -22,10 +22,11 @@
 ProtocolLogin::ProtocolLogin(const Connection_ptr &loginConnection) :
 	Protocol(loginConnection) {
 	setProtocolType(Protocol::ProtocolType::Login);
+	oldProtocol = true;
 }
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
-	const auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage(true);
 
 	output->addByte(0x0B);
 	output->addString(message);

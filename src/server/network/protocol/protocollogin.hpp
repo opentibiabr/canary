@@ -34,6 +34,4 @@ private:
 	void disconnectClient(const std::string &message) const;
 
 	void getCharacterList(const std::string &accountDescriptor, const std::string &password) const;
-
-	bool oldProtocol = false;
 };

@@ -23,20 +23,12 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
 
-		if (m_protocolType == ProtocolType::Login) {
-			msg->writeMessageLength();
-		}
-
 		if (!encryptionEnabled) {
-			if (m_protocolType == ProtocolType::Game) {
-				msg->writeMessageLength();
-			}
+			msg->writeMessageLength();
 			return;
 		}
 
-		if (m_protocolType == ProtocolType::Game) {
-			msg->writePaddingAmount();
-		}
+		msg->writePaddingAmount();
 
 		XTEA_encrypt(*msg);
 		if (checksumMethod == CHECKSUM_METHOD_NONE) {

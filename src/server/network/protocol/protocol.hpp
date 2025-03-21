@@ -21,6 +21,12 @@ class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
+	enum class ProtocolType : uint8_t {
+		None,
+		Game,
+		Login,
+	};
+
 	explicit Protocol(const Connection_ptr &initConnection);
 
 	virtual ~Protocol() = default;
@@ -35,7 +41,7 @@ public:
 	bool onRecvMessage(NetworkMessage &msg);
 	bool sendRecvMessageCallback(NetworkMessage &msg);
 	virtual void onRecvFirstMessage(NetworkMessage &msg) = 0;
-	virtual void onConnect() { }
+	virtual void sendLoginChallenge() { }
 
 	bool isConnectionExpired() const;
 
@@ -55,6 +61,10 @@ public:
 protected:
 	void disconnect() const;
 
+	bool getEncryptionEnabled() const {
+		return encryptionEnabled;
+	}
+
 	void enableXTEAEncryption() {
 		encryptionEnabled = true;
 	}
@@ -72,7 +82,28 @@ protected:
 		rawMessages = value;
 	}
 
+	bool getRawMessages() const {
+		return rawMessages;
+	}
+
 	virtual void release() { }
+
+	ProtocolType getProtocolType() const {
+		return m_protocolType;
+	}
+
+	void setProtocolType(ProtocolType type) {
+		m_protocolType = type;
+	}
+
+	void XTEA_encrypt(OutputMessage &msg) const;
+
+	bool compression(OutputMessage &msg) const;
+
+	uint32_t serverSequenceNumber = 0;
+	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
+	uint32_t challengeTimestamp = 0;
+	uint8_t challengeRandom = 0;
 
 private:
 	struct ZStream {
@@ -87,19 +118,18 @@ private:
 	};
 
 	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
-	void XTEA_encrypt(OutputMessage &msg) const;
+
 	bool XTEA_decrypt(NetworkMessage &msg) const;
-	bool compression(OutputMessage &msg) const;
 
 	OutputMessage_ptr outputBuffer;
 
 	const ConnectionWeak_ptr connectionPtr;
 	std::array<uint32_t, 4> key = {};
-	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
-	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 	bool encryptionEnabled = false;
 	bool rawMessages = false;
+
+	ProtocolType m_protocolType;
 
 	friend class Connection;
 };

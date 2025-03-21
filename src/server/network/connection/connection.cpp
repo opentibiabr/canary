@@ -15,6 +15,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 
@@ -105,7 +106,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	connectionState = CONNECTION_STATE_IDENTIFYING;
 	protocol = std::move(protocolPtr);
-	g_dispatcher().addEvent([protocol = protocol] { protocol->onConnect(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+	g_dispatcher().addEvent([eventProtocol = protocol] { eventProtocol->sendLoginChallenge(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 
 	acceptInternal(false);
 }
@@ -134,7 +135,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
 		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
-			g_logger().error("[Connection::parseProxyIdentification] - Read error: {}", error.message());
+			g_logger().debug("[Connection::parseProxyIdentification] - Read error: {}", error.message());
 		}
 		close(FORCE_CLOSE);
 		return;
@@ -209,6 +210,11 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	uint16_t size = m_msg.getLengthHeader();
+	auto protocolType = protocol ? protocol->getProtocolType() : Protocol::ProtocolType::None;
+	if (protocolType == Protocol::ProtocolType::Game) {
+		size = (size * 8) + 4;
+	}
+
 	if (size == 0 || size > INPUTMESSAGE_MAXSIZE) {
 		close(FORCE_CLOSE);
 		return;
@@ -234,7 +240,7 @@ void Connection::parsePacket(const std::error_code &error) {
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
 		if (error) {
-			g_logger().error("[Connection::parsePacket] - Read error: {}", error.message());
+			g_logger().debug("[Connection::parsePacket] - Read error: {}", error.message());
 		}
 		close(FORCE_CLOSE);
 		return;
@@ -267,12 +273,14 @@ void Connection::parsePacket(const std::error_code &error) {
 				close(FORCE_CLOSE);
 				return;
 			}
+
 		} else {
 			// It is rather hard to detect if we have checksum or sequence method here so let's skip checksum check
 			// it doesn't generate any problem because olders protocol don't use 'server sends first' feature
 			m_msg.get<uint32_t>();
 			// Skip protocol ID
-			m_msg.skipBytes(1);
+			auto bytesToSkip = protocol->getProtocolType() == Protocol::ProtocolType::Game ? 2 : 1;
+			m_msg.skipBytes(bytesToSkip);
 		}
 
 		protocol->onRecvFirstMessage(m_msg);
@@ -342,6 +350,10 @@ void Connection::internalWorker() {
 
 	const auto &outputMessage = messageQueue.front();
 	lock.unlock();
+	auto protocolType = protocol->getProtocolType();
+	if (protocolType == Protocol::ProtocolType::Login) {
+		m_msg.initOldProtocolBufferPosition();
+	}
 	protocol->onSendMessage(outputMessage);
 	lock.lock();
 

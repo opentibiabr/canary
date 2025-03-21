@@ -17,6 +17,7 @@ class Protocol;
 class OutputMessage : public NetworkMessage {
 public:
 	OutputMessage() = default;
+	OutputMessage(bool oldProtocol);
 
 	// non-copyable
 	OutputMessage(const OutputMessage &) = delete;
@@ -26,8 +27,18 @@ public:
 		return buffer.data() + outputBufferStart;
 	}
 
+	void writePaddingAmount() {
+		uint8_t paddingAmount = 8 - (info.length % 8) - 1;
+		addPaddingBytes(paddingAmount);
+		add_header(paddingAmount);
+	}
+
 	void writeMessageLength() {
-		add_header(info.length);
+		if (m_oldProtocol) {
+			add_header(info.length);
+		} else {
+			add_header(static_cast<uint16_t>((info.length - 4) / 8));
+		}
 	}
 
 	void addCryptoHeader(bool addChecksum, uint32_t checksum) {
@@ -40,7 +51,7 @@ public:
 
 	void append(const NetworkMessage &msg) {
 		auto msgLen = msg.getLength();
-		std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<const unsigned char> sourceSpan(msg.getBuffer() + m_initialBufferPosition, msgLen);
 		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
 		std::ranges::copy(sourceSpan, destSpan.begin());
 		info.length += msgLen;
@@ -49,7 +60,7 @@ public:
 
 	void append(const OutputMessage_ptr &msg) {
 		auto msgLen = msg->getLength();
-		std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
+		std::span<const unsigned char> sourceSpan(msg->getBuffer() + m_initialBufferPosition, msgLen);
 		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
 		std::ranges::copy(sourceSpan, destSpan.begin());
 		info.length += msgLen;
@@ -81,7 +92,9 @@ private:
 		info.length += sizeof(T);
 	}
 
-	MsgSize_t outputBufferStart = INITIAL_BUFFER_POSITION;
+	MsgSize_t outputBufferStart = m_initialBufferPosition;
+
+	bool m_oldProtocol = false;
 };
 
 class OutputMessagePool {
@@ -97,7 +110,7 @@ public:
 	void sendAll();
 	void scheduleSendAll();
 
-	static OutputMessage_ptr getOutputMessage();
+	static OutputMessage_ptr getOutputMessage(bool oldProtocol = false);
 
 	void addProtocolToAutosend(const Protocol_ptr &protocol);
 	void removeProtocolFromAutosend(const Protocol_ptr &protocol);

@@ -19,8 +19,13 @@
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
+ProtocolLogin::ProtocolLogin(const Connection_ptr &loginConnection) :
+	Protocol(loginConnection) {
+	setProtocolType(Protocol::ProtocolType::Login);
+}
+
 void ProtocolLogin::disconnectClient(const std::string &message) const {
-	const auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage(true);
 
 	output->addByte(0x0B);
 	output->addString(message);
@@ -48,7 +53,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		return;
 	}
 
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = OutputMessagePool::getOutputMessage(true);
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
@@ -180,4 +185,57 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		},
 		__FUNCTION__
 	);
+}
+
+void ProtocolLogin::onSendMessage(const OutputMessage_ptr &msg) {
+	if (!getRawMessages()) {
+		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
+
+		if (getProtocolType() == ProtocolType::Login) {
+			msg->writeMessageLength();
+		}
+
+		if (!getEncryptionEnabled()) {
+			return;
+		}
+
+		XTEA_encrypt(*msg);
+		if (checksumMethod == CHECKSUM_METHOD_NONE) {
+			msg->addCryptoHeader(false, 0);
+		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
+			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
+		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
+			if (serverSequenceNumber >= 0x7FFFFFFF) {
+				serverSequenceNumber = 0;
+			}
+		}
+	}
+}
+
+void ProtocolLogin::sendLoginChallenge() {
+	auto output = OutputMessagePool::getOutputMessage(true);
+	static std::random_device rd;
+	static std::ranlux24 generator(rd());
+	static std::uniform_int_distribution<uint16_t> randNumber(0x00, 0xFF);
+
+	// Skip checksum
+	output->skipBytes(sizeof(uint32_t));
+
+	// Packet length & type
+	output->add<uint16_t>(0x0006);
+	output->addByte(0x1F);
+	// Add timestamp & random number
+	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
+	output->add<uint32_t>(challengeTimestamp);
+
+	challengeRandom = randNumber(generator);
+	output->addByte(challengeRandom);
+
+	// Go back and write checksum
+	output->skipBytes(-12);
+	// To support 11.10-, not have problems with 11.11+
+	output->add<uint32_t>(adlerChecksum(output->getOutputBuffer() + sizeof(uint32_t), 8));
+
+	send(output);
 }

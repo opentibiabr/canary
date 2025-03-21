@@ -23,11 +23,12 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
 
-		msg->writeMessageLength();
-
 		if (!encryptionEnabled) {
+			msg->writeMessageLength();
 			return;
 		}
+
+		msg->writePaddingAmount();
 
 		XTEA_encrypt(*msg);
 		if (checksumMethod == CHECKSUM_METHOD_NONE) {
@@ -209,12 +210,27 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 
 	XTEA_transform(buffer, messageLength, false);
 
-	uint16_t innerLength = msg.get<uint16_t>();
-	if (std::cmp_greater(innerLength, msgLength - 2)) {
+	auto getDeclaredMessageLength = [&](NetworkMessage &msg, uint16_t messageLength) -> uint16_t {
+		if (m_protocolType == Protocol::ProtocolType::Login) {
+			uint16_t innerLength = msg.get<uint16_t>();
+			return innerLength + 2;
+		} else {
+			uint8_t paddingSize = msg.getByte();
+			return messageLength - paddingSize;
+		}
+	};
+
+	uint16_t declaredLength = getDeclaredMessageLength(msg, messageLength);
+
+	if (declaredLength > msgLength) {
 		return false;
 	}
 
-	msg.setLength(innerLength);
+	if (m_protocolType == Protocol::ProtocolType::Login) {
+		msg.setLength(declaredLength - 2);
+	} else {
+		msg.setLength(declaredLength);
+	}
 	return true;
 }
 

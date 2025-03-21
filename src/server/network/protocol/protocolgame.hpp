@@ -131,7 +131,7 @@ private:
 	void parsePacket(NetworkMessage &msg) override;
 	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
-	void onConnect() override;
+	void sendLoginChallenge() override;
 
 	// Parse methods
 	void parseAutoWalk(NetworkMessage &msg);
@@ -533,11 +533,8 @@ private:
 	std::shared_ptr<Player> player = nullptr;
 
 	uint32_t eventConnect = 0;
-	uint32_t challengeTimestamp = 0;
 	uint16_t version = 0;
 	int32_t clientVersion = 0;
-
-	uint8_t challengeRandom = 0;
 
 	bool debugAssertSent = false;
 	bool acceptPackets = false;

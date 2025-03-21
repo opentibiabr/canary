@@ -226,7 +226,11 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 		return false;
 	}
 
-	msg.setLength(declaredLength);
+	if (m_protocolType == Protocol::ProtocolType::Login) {
+		msg.setLength(declaredLength - 2);
+	} else {
+		msg.setLength(declaredLength);
+	}
 	return true;
 }
 

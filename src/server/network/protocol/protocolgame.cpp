@@ -1621,7 +1621,7 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	uint8_t numdirs = msg.getByte();
 	uint16_t msgLength = msg.getLength();
-	uint16_t length = msgLength + (oldProtocol ? 6 : 8);
+	uint16_t length = msgLength + (!oldProtocol ? 6 : 8);
 	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != length) {
 		return;
 	}

@@ -102,6 +102,8 @@ protected:
 
 	uint32_t serverSequenceNumber = 0;
 	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
+	uint32_t challengeTimestamp = 0;
+	uint8_t challengeRandom = 0;
 
 private:
 	struct ZStream {

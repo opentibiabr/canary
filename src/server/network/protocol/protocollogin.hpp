@@ -27,8 +27,8 @@ public:
 	explicit ProtocolLogin(const Connection_ptr &loginConnection);
 
 	void onRecvFirstMessage(NetworkMessage &msg) override;
-
 	void onSendMessage(const OutputMessage_ptr &msg) override;
+	void sendLoginChallenge() override;
 
 private:
 	void disconnectClient(const std::string &message) const;

@@ -870,11 +870,7 @@ void ProtocolGame::sendLoginChallenge() {
 	output->skipBytes(sizeof(uint32_t));
 
 	// Packet length & type
-	if (oldProtocol) {
-		output->add<uint16_t>(0x0006);
-	} else {
-		output->addByte(0x01);
-	}
+	output->addByte(0x01);
 	output->addByte(0x1F);
 	// Add timestamp & random number
 	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
@@ -882,9 +878,7 @@ void ProtocolGame::sendLoginChallenge() {
 
 	challengeRandom = randNumber(generator);
 	output->addByte(challengeRandom);
-	if (!oldProtocol) {
-		output->addByte(0x71);
-	}
+	output->addByte(0x71);
 
 	// Go back and write checksum
 	output->skipBytes(-12);

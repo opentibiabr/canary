@@ -840,6 +840,32 @@ CREATE TABLE IF NOT EXISTS `kv_store` (
   PRIMARY KEY (`key_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Drome Highscores Table
+CREATE TABLE IF NOT EXISTS drome_highscores (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    player_id INT NOT NULL,
+    player_name VARCHAR(255) NOT NULL,
+    highscore INT NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY (player_id),
+    FOREIGN KEY (player_id) REFERENCES players (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Drome Reset Table
+CREATE TABLE IF NOT EXISTS drome_reset (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    last_reset TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Drome Offline Rewards Table
+CREATE TABLE IF NOT EXISTS drome_offline_rewards (
+    player_id INT NOT NULL,
+    rewards TEXT NOT NULL,
+    PRIMARY KEY (player_id)
+);
+
 -- Create Account god/god
 INSERT INTO `accounts`
 (`id`, `name`, `email`, `password`, `type`) VALUES

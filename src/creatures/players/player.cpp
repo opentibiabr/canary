@@ -13,6 +13,7 @@
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -71,7 +72,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
-	m_animusMastery(*this) { }
+	m_animusMastery(*this),
+	m_playerAttachedEffects(*this) { }
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -1045,6 +1047,14 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 			return;
 		}
 		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, WING_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, EFFECT_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, AURA_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, SHADER_RANGE)) {
 			// do nothing
 		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
 			familiars.emplace_back(
@@ -9764,6 +9774,14 @@ void Player::sendLootContainers() const {
 	}
 }
 
+void Player::sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const {
+	if (!client) {
+		return;
+	}
+
+	client->sendPlayerTyping(creature, typing);
+}
+
 void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {
 	if (client) {
 		client->sendSingleSoundEffect(pos, id, source);
@@ -10441,6 +10459,15 @@ AnimusMastery &Player::animusMastery() {
 
 const AnimusMastery &Player::animusMastery() const {
 	return m_animusMastery;
+}
+
+// Attached Effects interface
+PlayerAttachedEffects &Player::attachedEffects() {
+	return m_playerAttachedEffects;
+}
+
+const PlayerAttachedEffects &Player::attachedEffects() const {
+	return m_playerAttachedEffects;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

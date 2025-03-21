@@ -88,6 +88,11 @@ void CreatureFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Creature", "getIcons", CreatureFunctions::luaCreatureGetIcons);
 	Lua::registerMethod(L, "Creature", "removeIcon", CreatureFunctions::luaCreatureRemoveIcon);
 	Lua::registerMethod(L, "Creature", "clearIcons", CreatureFunctions::luaCreatureClearIcons);
+	Lua::registerMethod(L, "Creature", "attachEffectById", CreatureFunctions::luaCreatureAttachEffectById);
+	Lua::registerMethod(L, "Creature", "detachEffectById", CreatureFunctions::luaCreatureDetachEffectById);
+	Lua::registerMethod(L, "Creature", "getAttachedEffects", CreatureFunctions::luaCreatureGetAttachedEffects);
+	Lua::registerMethod(L, "Creature", "getShader", CreatureFunctions::luaCreatureGetShader);
+	Lua::registerMethod(L, "Creature", "setShader", CreatureFunctions::luaCreatureSetShader);
 
 	CombatFunctions::init(L);
 	MonsterFunctions::init(L);
@@ -1183,6 +1188,78 @@ int CreatureFunctions::luaCreatureClearIcons(lua_State* L) {
 		return 1;
 	}
 	creature->clearIcons();
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureAttachEffectById(lua_State* L) {
+	// creature:attachEffectById(effectId, [temporary])
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	if (!creature) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		return 1;
+	}
+	uint16_t id = Lua::getNumber<uint16_t>(L, 2);
+	bool temp = Lua::getBoolean(L, 3, false);
+	if (temp) {
+		g_game().sendAttachedEffect(creature, id);
+	} else {
+		creature->attachEffectById(id);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureDetachEffectById(lua_State* L) {
+	// creature:detachEffectById(effectId)
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	if (!creature) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		return 1;
+	}
+	uint16_t id = Lua::getNumber<uint16_t>(L, 2);
+	creature->detachEffectById(id);
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureGetAttachedEffects(lua_State* L) {
+	// creature:getAttachedEffects()
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	if (!creature) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		return 1;
+	}
+
+	const auto &effects = creature->getAttachedEffectList();
+	lua_createtable(L, effects.size(), 0);
+	for (size_t i = 0; i < effects.size(); ++i) {
+		lua_pushnumber(L, effects[i]);
+		lua_rawseti(L, -2, i + 1);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureGetShader(lua_State* L) {
+	// creature:getShader()
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	if (!creature) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		return 1;
+	}
+
+	Lua::pushString(L, creature->getShader());
+
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureSetShader(lua_State* L) {
+	// creature:setShader(shaderName)
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	if (!creature) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		return 1;
+	}
+	creature->setShader(Lua::getString(L, 2));
+	g_game().updateCreatureShader(creature);
 	Lua::pushBoolean(L, true);
 	return 1;
 }

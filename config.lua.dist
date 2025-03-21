@@ -606,3 +606,17 @@ metricsPrometheusAddress = "0.0.0.0:9464"
 --- OStream
 metricsEnableOstream = false
 metricsOstreamInterval = 1000
+
+-- OTC Features
+-- NOTE: Features added in this list will be forced to be used on OTCR
+-- These features can be found in "modules/gamelib/const.lua"
+OTCRFeatures = {
+    enableFeature = { 
+        101, -- g_game.enableFeature(GameItemShader)
+        102, -- g_game.enableFeature(GameCreatureAttachedEffect)
+        103, -- g_game.enableFeature(GameCreatureShader)
+        118  -- g_game.enableFeature(GameWingsAurasEffectsShader)
+    },
+    disableFeature = {
+    }
+}

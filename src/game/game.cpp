@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
@@ -217,6 +218,7 @@ Game::Game() {
 
 	// Create instance of IOWheel to Game class
 	m_IOWheel = std::make_unique<IOWheel>();
+	m_attachedEffects = std::make_unique<AttachedEffects>();
 
 	wildcardTree = std::make_shared<WildcardTreeNode>(false);
 
@@ -630,6 +632,7 @@ void Game::setGameState(GameState_t newState) {
 			raids.startup();
 
 			mounts->loadFromXml();
+			m_attachedEffects->loadFromXml();
 
 			loadMotdNum();
 			loadPlayersRecord();
@@ -6213,6 +6216,82 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 		internalCreatureChangeOutfit(player, outfit);
 	}
+
+	auto &playerAttachedEffects = player->attachedEffects();
+	// Wings
+	if (outfit.lookWing != 0) {
+		const auto &wing = m_attachedEffects->getWingByID(outfit.lookWing);
+		if (!wing) {
+			return;
+		}
+
+		player->detachEffectById(playerAttachedEffects.getCurrentWing());
+		playerAttachedEffects.setCurrentWing(wing->id);
+		player->attachEffectById(wing->id);
+	} else {
+		if (playerAttachedEffects.isWinged()) {
+			playerAttachedEffects.diswing();
+		}
+		player->detachEffectById(playerAttachedEffects.getCurrentWing());
+		playerAttachedEffects.setWasWinged(false);
+	}
+	// Effect
+	if (outfit.lookEffect != 0) {
+		const auto &effect = m_attachedEffects->getEffectByID(outfit.lookEffect);
+		if (!effect) {
+			return;
+		}
+
+		player->detachEffectById(playerAttachedEffects.getCurrentEffect());
+		playerAttachedEffects.setCurrentEffect(effect->id);
+		player->attachEffectById(effect->id);
+	} else {
+		if (playerAttachedEffects.isEffected()) {
+			playerAttachedEffects.diseffect();
+		}
+		player->detachEffectById(playerAttachedEffects.getCurrentEffect());
+		playerAttachedEffects.setWasEffected(false);
+	}
+
+	// Aura
+	if (outfit.lookAura != 0) {
+		const auto &aura = m_attachedEffects->getAuraByID(outfit.lookAura);
+		if (!aura) {
+			return;
+		}
+
+		player->detachEffectById(playerAttachedEffects.getCurrentAura());
+		playerAttachedEffects.setCurrentAura(aura->id);
+		player->attachEffectById(aura->id);
+	} else {
+		if (playerAttachedEffects.isAuraed()) {
+			playerAttachedEffects.disaura();
+		}
+		player->detachEffectById(playerAttachedEffects.getCurrentAura());
+		playerAttachedEffects.setWasAuraed(false);
+	}
+	// Shaders
+	if (outfit.lookShader != 0) {
+		const auto &shaderPtr = m_attachedEffects->getShaderByID(outfit.lookShader);
+		if (!shaderPtr) {
+			return;
+		}
+		Shader* shader = shaderPtr.get();
+
+		if (!playerAttachedEffects.hasShader(shader)) {
+			return;
+		}
+
+		playerAttachedEffects.setCurrentShader(shader->id);
+		playerAttachedEffects.sendShader(player, shader->name);
+
+	} else {
+		if (playerAttachedEffects.isShadered()) {
+			playerAttachedEffects.disshader();
+		}
+		playerAttachedEffects.sendShader(player, "Outfit - Default");
+		playerAttachedEffects.setWasShadered(false);
+	}
 }
 
 void Game::playerShowQuestLog(uint32_t playerId) {
@@ -10727,6 +10806,14 @@ const std::unique_ptr<IOWheel> &Game::getIOWheel() const {
 	return m_IOWheel;
 }
 
+std::unique_ptr<AttachedEffects> &Game::getAttachedEffects() {
+	return m_attachedEffects;
+}
+
+const std::unique_ptr<AttachedEffects> &Game::getAttachedEffects() const {
+	return m_attachedEffects;
+}
+
 void Game::transferHouseItemsToDepot() {
 	if (!g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART)) {
 		return;
@@ -11017,6 +11104,94 @@ void Game::updatePlayersOnline() const {
 	const bool success = DBTransaction::executeWithinTransaction(updateOperation);
 	if (!success) {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
+	}
+}
+
+void Game::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
+	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
+	for (const auto &spectator : spectators) {
+		const auto &player = spectator->getPlayer();
+		if (player) {
+			player->attachedEffects().sendAttachedEffect(creature, effectId);
+		}
+	}
+}
+
+void Game::sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {
+	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
+	for (const auto &spectator : spectators) {
+		const auto &player = spectator->getPlayer();
+		if (player) {
+			player->attachedEffects().sendDetachEffect(creature, effectId);
+		}
+	}
+}
+
+void Game::updateCreatureShader(const std::shared_ptr<Creature> &creature) {
+	auto spectators = Spectators().find<Player>(creature->getPosition(), true);
+	for (const auto &spectator : spectators) {
+		const auto &player = spectator->getPlayer();
+		if (player) {
+			player->attachedEffects().sendShader(creature, creature->getShader());
+		}
+	}
+}
+
+void Game::playerSetTyping(uint32_t playerId, uint8_t typing) {
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+	for (const auto &spectator : Spectators().find<Player>(player->getPosition(), true)) {
+		if (const auto &tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendPlayerTyping(player, typing);
+		}
+	}
+}
+
+void Game::refreshItem(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		return;
+	}
+	const auto &parent = item->getParent();
+	if (!parent) {
+		return;
+	}
+	if (const auto &creature = parent->getCreature()) {
+		if (const auto &player = creature->getPlayer()) {
+			int32_t index = player->getThingIndex(item);
+			if (index > -1) {
+				player->sendInventoryItem(static_cast<Slots_t>(index), item);
+			}
+		}
+		return;
+	}
+	if (const auto &container = parent->getContainer()) {
+		int32_t index = container->getThingIndex(item);
+		if (index > -1 && index <= std::numeric_limits<uint16_t>::max()) {
+			const auto spectators = Spectators().find<Player>(container->getPosition(), false, 2, 2, 2, 2);
+			// send to client
+			for (const auto &spectator : spectators) {
+				const auto &player = spectator->getPlayer();
+				if (!player) {
+					continue;
+				}
+				player->sendUpdateContainerItem(container, static_cast<uint16_t>(index), item);
+			}
+		}
+		return;
+	}
+	if (const auto &tile = parent->getTile()) {
+		const auto spectators = Spectators().find<Player>(tile->getPosition(), true);
+		// send to client
+		for (const auto &spectator : spectators) {
+			const auto &player = spectator->getPlayer();
+			if (!player) {
+				continue;
+			}
+			player->sendUpdateTileItem(tile, tile->getPosition(), item);
+		}
+		return;
 	}
 }
 

@@ -16,9 +16,9 @@
 #include "items/cylinder.hpp"
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
-#include "creatures/players/animus_mastery/animus_mastery.hpp"
 
 // Player components are decoupled to reduce complexity. Keeping includes here aids in clarity and maintainability, but avoid including player.hpp in headers to prevent circular dependencies.
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/players/components/player_achievement.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"
@@ -26,8 +26,8 @@
 #include "creatures/players/components/wheel/player_wheel.hpp"
 #include "creatures/players/components/player_vip.hpp"
 #include "creatures/players/components/wheel/wheel_gems.hpp"
+#include "creatures/players/components/player_attached_effects.hpp"
 
-class AnimusMastery;
 class House;
 class NetworkMessage;
 class Weapon;
@@ -39,12 +39,6 @@ class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
 class Spell;
-class PlayerWheel;
-class PlayerAchievement;
-class PlayerBadge;
-class PlayerCyclopedia;
-class PlayerTitle;
-class PlayerVIP;
 class Spectators;
 class Account;
 class RewardChest;
@@ -64,6 +58,10 @@ struct ModalWindow;
 struct Achievement;
 struct VIPGroup;
 struct Mount;
+struct Wing;
+struct Effect;
+struct Shader;
+struct Aura;
 struct OutfitEntry;
 struct Outfit;
 struct FamiliarEntry;
@@ -209,6 +207,7 @@ public:
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();
+
 	uint16_t getDodgeChance() const;
 
 	uint8_t isRandomMounted() const;
@@ -1293,6 +1292,10 @@ public:
 	AnimusMastery &animusMastery();
 	const AnimusMastery &animusMastery() const;
 
+	// Player attached effects interface
+	PlayerAttachedEffects &attachedEffects();
+	const PlayerAttachedEffects &attachedEffects() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -1304,6 +1307,8 @@ public:
 	bool canSpeakWithHireling(uint8_t speechbubble);
 
 	uint16_t getPlayerVocationEnum() const;
+
+	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
 
 private:
 	friend class PlayerLock;
@@ -1658,6 +1663,7 @@ private:
 	friend class PlayerCyclopedia;
 	friend class PlayerTitle;
 	friend class PlayerVIP;
+	friend class PlayerAttachedEffects;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;
@@ -1666,6 +1672,7 @@ private:
 	PlayerTitle m_playerTitle;
 	PlayerVIP m_playerVIP;
 	AnimusMastery m_animusMastery;
+	PlayerAttachedEffects m_playerAttachedEffects;
 
 	std::mutex quickLootMutex;
 

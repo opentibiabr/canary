@@ -1674,6 +1674,10 @@ struct Outfit_t {
 	uint8_t lookMountLegs = 0;
 	uint8_t lookMountFeet = 0;
 	uint16_t lookFamiliarsType = 0;
+	uint16_t lookWing = 0;
+	uint16_t lookAura = 0;
+	uint16_t lookEffect = 0;
+	uint16_t lookShader = 0;
 };
 
 struct voiceBlock_t {

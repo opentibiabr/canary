@@ -25,7 +25,7 @@ ProtocolLogin::ProtocolLogin(const Connection_ptr &loginConnection) :
 }
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
-	const auto output = OutputMessagePool::getOutputMessage();
+	const auto output = OutputMessagePool::getOutputMessage(true);
 
 	output->addByte(0x0B);
 	output->addString(message);
@@ -214,7 +214,7 @@ void ProtocolLogin::onSendMessage(const OutputMessage_ptr &msg) {
 }
 
 void ProtocolLogin::sendLoginChallenge() {
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = OutputMessagePool::getOutputMessage(true);
 	static std::random_device rd;
 	static std::ranlux24 generator(rd());
 	static std::uniform_int_distribution<uint16_t> randNumber(0x00, 0xFF);

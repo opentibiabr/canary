@@ -847,7 +847,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			ss << "Your " << (oldProtocol ? "username" : "email") << " or password is not correct.";
 		}
 
-		auto output = OutputMessagePool::getOutputMessage();
+		auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
@@ -889,7 +889,7 @@ void ProtocolGame::sendLoginChallenge() {
 }
 
 void ProtocolGame::disconnectClient(const std::string &message) const {
-	auto output = OutputMessagePool::getOutputMessage();
+	auto output = OutputMessagePool::getOutputMessage(oldProtocol);
 	output->addByte(0x14);
 	output->addString(message);
 	send(output);

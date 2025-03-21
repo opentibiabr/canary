@@ -17,6 +17,15 @@
 constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
+OutputMessage::OutputMessage(bool oldProtocol) : m_oldProtocol(oldProtocol) {
+	if (oldProtocol) {
+		m_initialBufferPosition = 8;
+	} else {
+		m_initialBufferPosition = 7;
+	}
+	outputBufferStart = m_initialBufferPosition;
+}
+
 OutputMessagePool &OutputMessagePool::getInstance() {
 	return inject<OutputMessagePool>();
 }
@@ -58,6 +67,6 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol)
 	}
 }
 
-OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
+OutputMessage_ptr OutputMessagePool::getOutputMessage(bool oldProtocol) {
+	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>(), oldProtocol);
 }

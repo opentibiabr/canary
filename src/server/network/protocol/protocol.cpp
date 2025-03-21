@@ -23,9 +23,8 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
 
-		bool oldProtocol = m_protocolType == ProtocolType::Login;
-		if (oldProtocol) {
-			msg->writeMessageLength(true);
+		if (m_protocolType == ProtocolType::Login) {
+			msg->writeMessageLength();
 		}
 
 		if (!encryptionEnabled) {
@@ -41,11 +40,11 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 
 		XTEA_encrypt(*msg);
 		if (checksumMethod == CHECKSUM_METHOD_NONE) {
-			msg->addCryptoHeader(false, 0, oldProtocol);
+			msg->addCryptoHeader(false, 0);
 		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
-			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()), oldProtocol);
+			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
 		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber), oldProtocol);
+			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
 			if (serverSequenceNumber >= 0x7FFFFFFF) {
 				serverSequenceNumber = 0;
 			}

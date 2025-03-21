@@ -17,6 +17,7 @@ class Protocol;
 class OutputMessage : public NetworkMessage {
 public:
 	OutputMessage() = default;
+	OutputMessage(bool oldProtocol);
 
 	// non-copyable
 	OutputMessage(const OutputMessage &) = delete;
@@ -32,24 +33,20 @@ public:
 		add_header(paddingAmount);
 	}
 
-	void writeMessageLength(bool oldProtocol = false) {
-		if (oldProtocol) {
-			if (m_initialBufferPosition == 7) {
-				m_initialBufferPosition = 8;
-				initOldProtocolBufferPosition();
-			}
+	void writeMessageLength() {
+		if (m_oldProtocol) {
 			add_header(info.length);
 		} else {
 			add_header(static_cast<uint16_t>((info.length - 4) / 8));
 		}
 	}
 
-	void addCryptoHeader(bool addChecksum, uint32_t checksum, bool oldProtocol = false) {
+	void addCryptoHeader(bool addChecksum, uint32_t checksum) {
 		if (addChecksum) {
 			add_header(checksum);
 		}
 
-		writeMessageLength(oldProtocol);
+		writeMessageLength();
 	}
 
 	void append(const NetworkMessage &msg) {
@@ -96,6 +93,8 @@ private:
 	}
 
 	MsgSize_t outputBufferStart = m_initialBufferPosition;
+
+	bool m_oldProtocol = false;
 };
 
 class OutputMessagePool {
@@ -111,7 +110,7 @@ public:
 	void sendAll();
 	void scheduleSendAll();
 
-	static OutputMessage_ptr getOutputMessage();
+	static OutputMessage_ptr getOutputMessage(bool oldProtocol = false);
 
 	void addProtocolToAutosend(const Protocol_ptr &protocol);
 	void removeProtocolFromAutosend(const Protocol_ptr &protocol);

@@ -116,7 +116,7 @@ private:
 	};
 
 	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
-	
+
 	bool XTEA_decrypt(NetworkMessage &msg) const;
 
 	OutputMessage_ptr outputBuffer;

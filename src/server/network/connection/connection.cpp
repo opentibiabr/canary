@@ -274,10 +274,6 @@ void Connection::parsePacket(const std::error_code &error) {
 				return;
 			}
 
-			// We need to set the buffer position to 8 for old protocol
-			if (protocol->getProtocolType() == Protocol::ProtocolType::Login) {
-				m_msg.initOldProtocolBufferPosition();
-			}
 		} else {
 			// It is rather hard to detect if we have checksum or sequence method here so let's skip checksum check
 			// it doesn't generate any problem because olders protocol don't use 'server sends first' feature
@@ -354,6 +350,10 @@ void Connection::internalWorker() {
 
 	const auto &outputMessage = messageQueue.front();
 	lock.unlock();
+	auto protocolType = protocol->getProtocolType();
+	if (protocolType == Protocol::ProtocolType::Login) {
+		m_msg.initOldProtocolBufferPosition();
+	}
 	protocol->onSendMessage(outputMessage);
 	lock.lock();
 

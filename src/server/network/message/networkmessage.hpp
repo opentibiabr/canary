@@ -36,6 +36,11 @@ public:
 	}
 
 	void initOldProtocolBufferPosition() {
+		if (m_initialBufferPosition != 7) {
+			return;
+		}
+
+		m_initialBufferPosition = 8;
 		info.position = m_initialBufferPosition;
 	}
 

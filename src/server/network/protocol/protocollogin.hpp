@@ -28,6 +28,8 @@ public:
 
 	void onRecvFirstMessage(NetworkMessage &msg) override;
 
+	void onSendMessage(const OutputMessage_ptr &msg) override;
+
 private:
 	void disconnectClient(const std::string &message) const;
 

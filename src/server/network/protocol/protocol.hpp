@@ -61,6 +61,10 @@ public:
 protected:
 	void disconnect() const;
 
+	bool getEncryptionEnabled() const {
+		return encryptionEnabled;
+	}
+
 	void enableXTEAEncryption() {
 		encryptionEnabled = true;
 	}
@@ -78,6 +82,10 @@ protected:
 		rawMessages = value;
 	}
 
+	bool getRawMessages() const {
+		return rawMessages;
+	}
+
 	virtual void release() { }
 
 	ProtocolType getProtocolType() const {
@@ -87,6 +95,13 @@ protected:
 	void setProtocolType(ProtocolType type) {
 		m_protocolType = type;
 	}
+
+	void XTEA_encrypt(OutputMessage &msg) const;
+
+	bool compression(OutputMessage &msg) const;
+
+	uint32_t serverSequenceNumber = 0;
+	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 
 private:
 	struct ZStream {
@@ -101,17 +116,14 @@ private:
 	};
 
 	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
-	void XTEA_encrypt(OutputMessage &msg) const;
+	
 	bool XTEA_decrypt(NetworkMessage &msg) const;
-	bool compression(OutputMessage &msg) const;
 
 	OutputMessage_ptr outputBuffer;
 
 	const ConnectionWeak_ptr connectionPtr;
 	std::array<uint32_t, 4> key = {};
-	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
-	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 	bool encryptionEnabled = false;
 	bool rawMessages = false;
 

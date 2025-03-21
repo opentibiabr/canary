@@ -186,3 +186,29 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		__FUNCTION__
 	);
 }
+
+void ProtocolLogin::onSendMessage(const OutputMessage_ptr &msg) {
+	if (!getRawMessages()) {
+		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
+
+		if (getProtocolType() == ProtocolType::Login) {
+			msg->writeMessageLength();
+		}
+
+		if (!getEncryptionEnabled()) {
+			return;
+		}
+
+		XTEA_encrypt(*msg);
+		if (checksumMethod == CHECKSUM_METHOD_NONE) {
+			msg->addCryptoHeader(false, 0);
+		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
+			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
+		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
+			if (serverSequenceNumber >= 0x7FFFFFFF) {
+				serverSequenceNumber = 0;
+			}
+		}
+	}
+}

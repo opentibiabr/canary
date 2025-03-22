@@ -1,4 +1,4 @@
-local teleportToFiend = TalkAction("/gotoFiend")
+local teleportToFiend = TalkAction("/gotofiend")
 
 function teleportToFiend.onSay(player, words, param)
     logCommand(player, words, param)

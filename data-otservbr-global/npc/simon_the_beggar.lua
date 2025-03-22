@@ -102,6 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				if os.time() - beggarOutfitTimer >= 432000 then -- 5 dias em segundos
 					npcHandler:say("Aha! I can see it! Now that you've waited patiently without shaving, your beard is perfect! All thanks to my, err, potion. Yes. Goodbye!", npc, creature)
 					player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 10)
+					player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, 8)
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 					player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarFirstAddonDoor, 1)
 					player:addOutfitAddon(153, 1)
@@ -119,6 +120,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 10)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarFirstAddonDoor, 1)
+				player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, 8)
 				player:addOutfitAddon(153, 1)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -129,7 +131,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getSex() == PLAYERSEX_FEMALE then
 			if player:getStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit) == 8 then
 				npcHandler:say("Oh, I'm sorry... I almost forgot! Okay, okay... here is your promised dress. I'm sure it will look so much better on you than on me- I mean, my, err, sister.", npc, creature)
-				player:addOutfitAddon(157, 1)
+				player:addOutfitAddon(157, 2)
 			end
 		end
 	elseif MsgContains(message, "yes") then
@@ -153,6 +155,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Great! Come back to me once you have the 100 pieces of ape fur and I'll do my part of the deal.", npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarOutfit, 7)
+			player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, 7)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:isPremium() then
@@ -213,9 +216,10 @@ local function creatureSayCallback(npc, creature, type, message)
 					if player:removeItem(6107, 1) then
 						npcHandler:say("Yes!! That's it! I'm so glad! Here, you can have my other one. Thanks!", npc, creature)
 						player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-						player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarSecondAddon, 2)
 						player:addOutfitAddon(153, 2)
-						player:addOutfitAddon(157, 2)
+						player:addOutfitAddon(157, 1)
+						player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.BeggarSecondAddon, 2)
+						player:setStorageValue(Storage.Quest.U7_8.BeggarOutfits.QuestLog, 8)
 					else
 						npcHandler:say("You do not have the staff.", npc, creature)
 					end

@@ -78,7 +78,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			end
 			player:setStorageValue(HiddenThreats.QuestLine, 1)
 			player:setStorageValue(HiddenThreats.RatterDoor, 1)
 			npcHandler:say("Nice! I have opened the mine for you. But take care of you! The monsters of depth won't spare you.", npc, creature)

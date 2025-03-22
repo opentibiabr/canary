@@ -920,7 +920,6 @@ keywordHandler:addKeyword({ "delete" }, StdModule.say, {
 	return player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Questline) == 1 and player:getLevel() == 8 and player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Level8Warning) == -1
 end, function(player)
 	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Questline, -1)
-	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission01, -1)
 	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission02, -1)
 	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission03, -1)
 	player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission04, -1)

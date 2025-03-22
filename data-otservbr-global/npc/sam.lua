@@ -73,9 +73,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Oh, Gregor sent you? I see. It will be my pleasure to adorn your helmet. Please give me some time to finish it.", npc, creature)
 		elseif addonProgress == 6 then
 			if player:getStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmetTimer) < os.time() then
-				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.MissionHelmet, 0)
 				player:setStorageValue(Storage.Quest.U7_8.KnightOutfits.AddonHelmet, 7)
-				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
 				player:addOutfitAddon(131, 2)
 				player:addOutfitAddon(139, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)

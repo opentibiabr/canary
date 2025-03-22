@@ -103,7 +103,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say("That's the spirit! I hope you will find my crossbow, |PLAYERNAME|!", npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 1)
-			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
+			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			if player:removeItem(5947, 1) then
@@ -139,7 +141,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:removeItem(5889, 1)
 				player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.HunterHatAddon, 5)
 				player:addOutfitAddon(129, 1)
-				player:addOutfitAddon(137, 2)
+				player:addOutfitAddon(137, 1)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -204,7 +206,7 @@ end, function(player)
 	player:removeItem(5875, 1)
 	player:setStorageValue(Storage.Quest.U7_8.HunterOutfits.Hunter.AddonGlove, 1)
 	player:addOutfitAddon(129, 2)
-	player:addOutfitAddon(137, 1)
+	player:addOutfitAddon(137, 2)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 end)
 

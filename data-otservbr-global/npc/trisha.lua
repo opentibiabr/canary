@@ -115,6 +115,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	local player, storage = Player(creature), Storage.Quest.U7_8.WarriorOutfits.WarriorShoulderAddon
+
 	if npcHandler:getTopic(playerId) == 0 then
 		if table.contains({ "outfit", "addon" }, message) then
 			npcHandler:say("Are you talking about my spiky shoulder pad? You can't buy one of these. They have to be {earned}.", npc, creature)
@@ -158,7 +159,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			player:setStorageValue(storage, 1)
 			-- This for default start of outfit and addon quests
-			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+			end
 			npcHandler:say("Excellent! Don't forget: Your first task is to bring me 100 hardened bones. Good luck!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "no") then

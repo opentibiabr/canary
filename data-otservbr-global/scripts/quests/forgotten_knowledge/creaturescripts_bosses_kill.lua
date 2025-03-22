@@ -1,14 +1,41 @@
 local bosses = {
 	-- bosses
-	["lady tenebris"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled },
-	["the enraged thorn knight"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled },
-	["lloyd"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled },
-	["soul of dragonking zyrtarch"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled },
-	["melting frozen horror"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled },
-	["the time guardian"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled },
-	["the blazing time guardian"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled },
-	["the freezing time guardian"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled },
-	["the last lore keeper"] = { storage = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled },
+	["lady tenebris"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.LadyTenebrisFirstKill,
+	},
+	["the enraged thorn knight"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.ThornKnightFirstKill,
+	},
+	["lloyd"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.LloydKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.LloydFirstKill,
+	},
+	["soul of dragonking zyrtarch"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.DragonkingFirstKill,
+	},
+	["melting frozen horror"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.HorrorKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.HorrorFirstKill,
+	},
+	["the time guardian"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianFirstKill,
+	},
+	["the blazing time guardian"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.BlazingTimeGuardianFirstKill,
+	},
+	["the freezing time guardian"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.TimeGuardianKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.FreezingTimeGuardianFirstKill,
+	},
+	["the last lore keeper"] = {
+		storage = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreKilled,
+		firstKillStorage = Storage.Quest.U11_02.ForgottenKnowledge.LastLoreFirstKill,
+	},
 	-- IA interactions
 	["an astral glyph"] = {},
 }
@@ -28,7 +55,15 @@ function bossesForgottenKill.onDeath(creature)
 			else
 				player:setStorageValue(bossConfig.storage, os.time() + 20 * 3600)
 			end
-		elseif creature:getName():lower() == "the enraged thorn knight" then
+		end
+
+		if bossConfig.firstKillStorage then
+			if player:getStorageValue(bossConfig.firstKillStorage) < 1 then
+				player:setStorageValue(bossConfig.firstKillStorage, 1)
+			end
+		end
+
+		if creature:getName():lower() == "the enraged thorn knight" then
 			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.PlantCounter, 0)
 			player:setStorageValue(Storage.Quest.U11_02.ForgottenKnowledge.BirdCounter, 0)
 		end

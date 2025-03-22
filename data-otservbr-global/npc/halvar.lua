@@ -99,8 +99,10 @@ local function creatureSayCallback(npc, creature, type, message)
 
 			if player:removeMoneyBank(ARENA[arenaId].price) then
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianArena.PitDoor, 1)
+				if player:getStorageValue(Storage.Quest.U8_0.TheUltimateChallenges) < 1 then
+					player:setStorageValue(Storage.Quest.U8_0.TheUltimateChallenges, 1)
+				end
 				npcHandler:say("As you wish! You can pass the door now and enter the teleporter to the pits.", npc, creature)
-
 				local cStorage = ARENA[arenaId].questLog
 				if player:getStorageValue(cStorage) ~= 1 then
 					player:setStorageValue(cStorage, 1)

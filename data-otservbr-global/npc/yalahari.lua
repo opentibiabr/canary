@@ -266,6 +266,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 50)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SideDecision, 2)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission09, 2) -- StorageValue for Questlog "Mission 09: Decision"
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission10, 1)
 			npcHandler:say("I knew that you were smart enough to make the right decision! Your next mission will be a special one! ", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

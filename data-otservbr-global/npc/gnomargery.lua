@@ -52,6 +52,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
+	local storageValue = player:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points)
+
 	if MsgContains(message, "job") then
 		return npcHandler:say("I'm the officer responsible for this area. I give out missions, accept mission reports and oversee our defences.", npc, creature)
 	end
@@ -79,6 +81,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Sorry, but no! Your expertise could be put to better use elsewhere. You are desperately needed in the upper levels of the Spike. Report there immediately. ", npc, creature)
 		else
 			npcHandler:say("I can offer you several missions: to {deliver} parcels to our boys and girls in the battlefield, to get reports from our {undercover} gnomes, to do some {temperature} measuring and to {kill} some drillworms.", npc, creature)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, 0)
+			end
 		end
 		return
 	end
@@ -96,6 +101,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(3500, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Parcel_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Parcel_Daily, os.time() + 72000)
 			else
@@ -108,6 +116,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(3500, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Undercover_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Undercover_Daily, os.time() + 72000)
 			else
@@ -120,6 +131,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(3500, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Lava_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Lava_Daily, os.time() + 72000)
 			else
@@ -132,6 +146,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You have done well. Here, take your reward.", npc, creature)
 				player:addFamePoint()
 				player:addExperience(3500, true)
+				if storageValue > 0 and storageValue < 100 then
+					player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, storageValue + 1)
+				end
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Kill_Main, -1)
 				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Kill_Daily, os.time() + 72000)
 			else
@@ -168,6 +185,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			player:addItem(19219, 4)
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Parcel_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, 0)
+			end
 			npcHandler:say({ "Gnometastic! Here are the parcels. Regrettably, the labels got lost during transport; but I guess those lonely gnomes won't mind as long as they get ANY parcel at all.", "If you lose the parcels, you'll have to get new ones. Gnomux sells all the equipment that is required for our missions." }, npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -199,6 +219,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	if talkState[playerId] == "undercover" then
 		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Undercover_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, 0)
+			end
 			npcHandler:say("Gnometastic! Get three reports from our agents. You can find them anywhere in the caves around us. Just keep looking for monsters that behave strangely and give you a wink.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -231,6 +254,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		if MsgContains(message, "yes") then
 			player:addItem(19206, 1)
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Lava_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, 0)
+			end
 			npcHandler:say("Gnometastic! Find the hottest spot of the lava pools in the caves. If you lose the GTMD before you find the hot spot, you'll have to get yourself a new one. Gnomux sells all the equipment that is required for our missions.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then
@@ -262,6 +288,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	if talkState[playerId] == "kill" then
 		if MsgContains(message, "yes") then
 			player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Lower_Kill_Main, 0)
+			if storageValue < 1 then
+				player:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Gnomargery.Points, 0)
+			end
 			npcHandler:say("Gnometastic! You should have no trouble finding enough drillworms.", npc, creature)
 			talkState[playerId] = nil
 		elseif MsgContains(message, "no") then

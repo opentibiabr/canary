@@ -192,8 +192,11 @@ void Creature::onCreatureWalk() {
 
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 
-	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(getCreature()), this] {
-		if (!self.lock()) {
+	auto selfCreature = getCreature();
+
+	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(selfCreature), this] {
+		const auto &creatureEvent = self.lock();
+		if (!creatureEvent) {
 			return;
 		}
 
@@ -206,9 +209,9 @@ void Creature::onCreatureWalk() {
 			Direction dir;
 			uint32_t flags = FLAG_IGNOREFIELDDAMAGE;
 			if (getNextStep(dir, flags)) {
-				ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
+				ReturnValue ret = g_game().internalMoveCreature(creatureEvent, dir, flags);
 				if (ret != RETURNVALUE_NOERROR) {
-					if (std::shared_ptr<Player> player = getPlayer()) {
+					if (const auto &player = getPlayer()) {
 						player->sendCancelMessage(ret);
 						player->sendCancelWalk();
 					}
@@ -577,7 +580,7 @@ void Creature::onDeath() {
 			killer->onKilledMonster(thisMonster);
 		} else if (thisPlayer) {
 			bool isResponsible = mostDamageCreature == killer || (mostDamageCreatureMaster && mostDamageCreatureMaster == killer);
-			if (isResponsible) {
+			if (isResponsible && !lastHitUnjustified) {
 				killer->onKilledPlayer(thisPlayer, false);
 			}
 
@@ -1897,4 +1900,22 @@ void Creature::setCombatDamage(const CombatDamage &damage) {
 
 CombatDamage Creature::getCombatDamage() const {
 	return m_combatDamage;
+}
+
+void Creature::attachEffectById(uint16_t id) {
+	auto it = std::ranges::find(attachedEffectList, id);
+	if (it != attachedEffectList.end()) {
+		return;
+	}
+	attachedEffectList.push_back(id);
+	g_game().sendAttachedEffect(static_self_cast<Creature>(), id);
+}
+
+void Creature::detachEffectById(uint16_t id) {
+	auto it = std::ranges::find(attachedEffectList, id);
+	if (it == attachedEffectList.end()) {
+		return;
+	}
+	attachedEffectList.erase(it);
+	g_game().sendDetachEffect(static_self_cast<Creature>(), id);
 }

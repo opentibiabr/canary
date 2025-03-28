@@ -299,6 +299,7 @@ class PlayerFunctions {
 	static int luaPlayerGetWheelSpellAdditionalArea(lua_State* L);
 	static int luaPlayerGetWheelSpellAdditionalTarget(lua_State* L);
 	static int luaPlayerGetWheelSpellAdditionalDuration(lua_State* L);
+	static int luaPlayerWheelUnlockScroll(lua_State* L);
 
 	static int luaPlayerOpenForge(lua_State* L);
 	static int luaPlayerCloseForge(lua_State* L);
@@ -382,6 +383,15 @@ class PlayerFunctions {
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
+
+	static int luaPlayerAddAnimusMastery(lua_State* L);
+	static int luaPlayerRemoveAnimusMastery(lua_State* L);
+	static int luaPlayerHasAnimusMastery(lua_State* L);
+
+	static int luaPlayerGetMapShader(lua_State* L);
+	static int luaPlayerSetMapShader(lua_State* L);
+	static int luaPlayerAddCustomOutfit(lua_State* L);
+	static int luaPlayerRemoveCustomOutfit(lua_State* L);
 
 	friend class CreatureFunctions;
 };

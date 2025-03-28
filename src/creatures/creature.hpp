@@ -209,7 +209,11 @@ public:
 	}
 
 	bool isAlive() const {
-		return !isDead();
+		return !isLifeless();
+	}
+
+	bool isLifeless() const {
+		return health <= 0;
 	}
 
 	virtual int32_t getMaxHealth() const {
@@ -298,6 +302,9 @@ public:
 	const Outfit_t getDefaultOutfit() const {
 		return defaultOutfit;
 	}
+	void setDefaultOutfit(Outfit_t outfit) {
+		defaultOutfit = outfit;
+	}
 	bool isWearingSupportOutfit() const {
 		auto outfit = currentOutfit.lookType;
 		return outfit == 75 || outfit == 266 || outfit == 302;
@@ -311,7 +318,11 @@ public:
 	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
 	void addEventWalk(bool firstStep = false);
 	void stopEventWalk();
+	void resetMovementState();
 
+	void updateCreatureWalk() {
+		goToFollowCreature_async();
+	}
 	void goToFollowCreature_async(std::function<void()> &&onComplete = nullptr);
 	virtual void goToFollowCreature();
 
@@ -482,6 +493,9 @@ public:
 	void setCreatureLight(LightInfo lightInfo);
 
 	virtual void onThink(uint32_t interval);
+
+	void checkCreatureAttack(bool now = false);
+
 	void onAttacking(uint32_t interval);
 	virtual void onCreatureWalk();
 	virtual bool getNextStep(Direction &dir, uint32_t &flags);
@@ -688,13 +702,28 @@ public:
 	void setCharmChanceModifier(int8_t value) {
 		charmChanceModifier = value;
 	}
+	std::string getShader() const {
+		return shader;
+	}
+	void setShader(const std::string_view shaderName) {
+		shader = shaderName;
+	}
+	void attachEffectById(uint16_t id);
+	void detachEffectById(uint16_t id);
+	std::vector<uint16_t> getAttachedEffectList() const {
+		return attachedEffectList;
+	}
+
+	void setCombatDamage(const CombatDamage &damage);
+	CombatDamage getCombatDamage() const;
 
 protected:
 	enum FlagAsyncClass_t : uint8_t {
 		AsyncTaskRunning = 1 << 0,
 		UpdateTargetList = 1 << 1,
 		UpdateIdleStatus = 1 << 2,
-		Pathfinder = 1 << 3
+		Pathfinder = 1 << 3,
+		OnThink = 1 << 4,
 	};
 
 	virtual bool isDead() const {
@@ -866,4 +895,7 @@ private:
 	}
 
 	uint8_t m_flagAsyncTask = 0;
+	CombatDamage m_combatDamage;
+	std::vector<uint16_t> attachedEffectList;
+	std::string shader;
 };

@@ -17,6 +17,10 @@ end
 registerMonsterType.name = function(mtype, mask)
 	if mask.name then
 		mtype:name(mask.name)
+		-- Try register hazard monsters
+		mtype.onSpawn = function(monster, spawnPosition)
+			HazardMonster.onSpawn(monster, spawnPosition)
+		end
 	end
 end
 registerMonsterType.description = function(mtype, mask)
@@ -194,8 +198,8 @@ registerMonsterType.flags = function(mtype, mask)
 		end
 		if mask.flags.rewardBoss then
 			mtype:isRewardBoss(mask.flags.rewardBoss)
-			mtype.onSpawn = function(monster)
-				monster:setRewardBoss()
+			mtype.onSpawn = function(monster, spawnPosition)
+				monster:setReward(true)
 			end
 		end
 		if mask.flags.familiar then

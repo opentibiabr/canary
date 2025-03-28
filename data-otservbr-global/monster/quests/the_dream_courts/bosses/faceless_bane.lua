@@ -20,6 +20,11 @@ monster.corpse = 30013
 monster.speed = 125
 monster.manaCost = 0
 
+monster.events = {
+	"dreamCourtsDeath",
+	"facelessThink",
+}
+
 monster.changeTarget = {
 	interval = 4000,
 	chance = 20,
@@ -144,5 +149,16 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onSpawn = function(monster, spawnPosition)
+	if monster:getType():isRewardBoss() then
+		-- reset global storage state to default / ensure sqm's reset for the next team
+		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.Deaths, -1)
+		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.StepsOn, -1)
+		Game.setStorageValue(GlobalStorage.TheDreamCourts.FacelessBane.ResetSteps, 1)
+		monster:registerEvent("facelessBaneImmunity")
+		monster:setReward(true)
+	end
+end
 
 mType:register(monster)

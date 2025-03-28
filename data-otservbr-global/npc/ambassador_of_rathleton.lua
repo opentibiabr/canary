@@ -58,23 +58,31 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-keywordHandler:addKeyword({ "present" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "This is a very beautiful ring. Thank you for this generous present!",
-}, function(player)
-	return player:getStorageValue(Storage.Kilmaresh.Third.Recovering) == 2 and player:getItemById(31263, true)
-end, function(player)
-	player:removeItem(31263, 1)
-	player:setStorageValue(Storage.Kilmaresh.Fourth.Moe, 1)
-	player:setStorageValue(Storage.Kilmaresh.Third.Recovering, 3)
-end)
+local function creatureSayCallback(npc, creature, type, message)
+	local player = Player(creature)
+	local playerId = player:getId()
 
-keywordHandler:addKeyword({ "present" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Didn't you bring my gift?",
-}, function(player)
-	return player:getStorageValue(Storage.Kilmaresh.Third.Recovering) == 2
-end)
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
+
+	if MsgContains(message, "present") then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Third.Recovering) == 2 then
+			if player:getItemById(31263, true) then
+				npcHandler:say("This is a very beautiful ring. Thank you for this generous present!", npc, creature)
+				player:removeItem(31263, 1)
+				player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Third.Recovering, 3)
+			else
+				npcHandler:say("Didn't you bring my gift?", npc, creature)
+			end
+		else
+			npcHandler:say("I don't need a present right now. Thank you.", npc, creature)
+		end
+	end
+
+	return true
+end
+
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, friend.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
 

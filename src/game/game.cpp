@@ -5734,14 +5734,14 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 			}
 		}
 
-		constexpr uint16_t batchSize = 10;
+		constexpr uint16_t batchSize = 1;
 		size_t totalCorpses = lootQueue.size();
 
 		for (size_t i = 0; i < totalCorpses; i++) {
 			playerQuickLootCorpse(player, lootQueue[i], lootQueue[i]->getPosition());
 
 			if ((i + 1) % batchSize == 0) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			}
 		}
 

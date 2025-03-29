@@ -60,8 +60,8 @@ function buyHouse.onSay(player, words, param)
 	return true
 end
 
-if configManager.getBoolean(configKeys.CYCLOPEDIA_HOUSE_AUCTION) then	
-buyHouse:separator(" ")
-buyHouse:groupType("god")
-buyHouse:register()
+if configManager.getBoolean(configKeys.CYCLOPEDIA_HOUSE_AUCTION) then
+	buyHouse:separator(" ")
+	buyHouse:groupType("god")
+	buyHouse:register()
 end

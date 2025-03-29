@@ -4607,9 +4607,13 @@ std::shared_ptr<Item> Game::wrapItem(const std::shared_ptr<Item> &item, const st
 	}
 	uint16_t oldItemID = item->getID();
 	auto itemName = item->getName();
+	auto attributeStore = item->getAttribute<int64_t>(ItemAttribute_t::STORE);
 	std::shared_ptr<Item> newItem = transformItem(item, ITEM_DECORATION_KIT);
+	if (attributeStore != 0) {
+		newItem->setAttribute(ItemAttribute_t::STORE, attributeStore);
+	}
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
+	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" + itemName + ">.");
 	if (hiddenCharges > 0) {
 		newItem->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 	}
@@ -4635,7 +4639,12 @@ void Game::unwrapItem(const std::shared_ptr<Item> &item, uint16_t unWrapId, cons
 	if (!amount) {
 		amount = 1;
 	}
+
+	auto attributeStore = item->getAttribute<int64_t>(ItemAttribute_t::STORE);
 	std::shared_ptr<Item> newItem = transformItem(item, unWrapId, amount);
+	if (attributeStore != 0) {
+		newItem->setAttribute(ItemAttribute_t::STORE, attributeStore);
+	}
 	if (house && newiType.isBed()) {
 		house->addBed(newItem->getBed());
 	}
@@ -10688,7 +10697,7 @@ bool Game::addItemStoreInbox(const std::shared_ptr<Player> &player, uint32_t ite
 		return false;
 	}
 	const ItemType &itemType = Item::items[itemId];
-	std::string description = fmt::format("Unwrap it in your own house to create a <{}>.", itemType.name);
+	std::string description = fmt::format("You bought this item in the Store.\nUnwrap it in your own house to create a <{}>.", itemType.name);
 	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
 	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
 

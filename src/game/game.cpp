@@ -2926,116 +2926,116 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 }
 
 void Game::playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr<Container> corpse, const Position &position) {
-    if (!player || !corpse) {
-        return;
-    }
+	if (!player || !corpse) {
+		return;
+	}
 
-    bool ignoreListItems = (player->quickLootFilter == QUICKLOOTFILTER_SKIPPEDLOOT);
-    bool missedAnyGold = false, missedAnyItem = false;
-    bool shouldNotifyCapacity = false;
-    ObjectCategory_t shouldNotifyNotEnoughRoom = OBJECTCATEGORY_NONE;
+	bool ignoreListItems = (player->quickLootFilter == QUICKLOOTFILTER_SKIPPEDLOOT);
+	bool missedAnyGold = false, missedAnyItem = false;
+	bool shouldNotifyCapacity = false;
+	ObjectCategory_t shouldNotifyNotEnoughRoom = OBJECTCATEGORY_NONE;
 
-    uint32_t totalLootedGold = 0, totalLootedItems = 0;
+	uint32_t totalLootedGold = 0, totalLootedItems = 0;
 
-    for (ContainerIterator it = corpse->iterator(); it.hasNext(); it.advance()) {
-        std::shared_ptr<Item> item = *it;
-        if (!item) {
-            continue;
-        }
+	for (ContainerIterator it = corpse->iterator(); it.hasNext(); it.advance()) {
+		std::shared_ptr<Item> item = *it;
+		if (!item) {
+			continue;
+		}
 
-        bool listed = player->isQuickLootListedItem(item);
-        if ((listed && ignoreListItems) || (!listed && !ignoreListItems)) {
-            if (item->getWorth() != 0) {
-                missedAnyGold = true;
-            } else {
-                missedAnyItem = true;
-            }
-            continue;
-        }
+		bool listed = player->isQuickLootListedItem(item);
+		if ((listed && ignoreListItems) || (!listed && !ignoreListItems)) {
+			if (item->getWorth() != 0) {
+				missedAnyGold = true;
+			} else {
+				missedAnyItem = true;
+			}
+			continue;
+		}
 
-        uint32_t worth = item->getWorth();
-        uint16_t baseCount = item->getItemCount();
-        ObjectCategory_t category = getObjectCategory(item);
+		uint32_t worth = item->getWorth();
+		uint16_t baseCount = item->getItemCount();
+		ObjectCategory_t category = getObjectCategory(item);
 
-        ReturnValue ret = internalCollectManagedItems(player, item, category);
-        bool success = (ret == RETURNVALUE_NOERROR);
+		ReturnValue ret = internalCollectManagedItems(player, item, category);
+		bool success = (ret == RETURNVALUE_NOERROR);
 
-        if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
-            shouldNotifyCapacity = true;
-        } else if (ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
-            shouldNotifyNotEnoughRoom = category;
-        }
+		if (ret == RETURNVALUE_NOTENOUGHCAPACITY) {
+			shouldNotifyCapacity = true;
+		} else if (ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
+			shouldNotifyNotEnoughRoom = category;
+		}
 
-        if (worth != 0) {
-            missedAnyGold |= !success;
-            if (success) {
-                player->sendLootStats(item, baseCount);
-                totalLootedGold += worth;
-            } else {
-                totalLootedGold += worth - item->getWorth();
-            }
-        } else {
-            missedAnyItem |= !success;
-            if (success || item->getItemCount() != baseCount) {
-                totalLootedItems++;
-                player->sendLootStats(item, item->getItemCount());
-            }
-        }
-    }
+		if (worth != 0) {
+			missedAnyGold |= !success;
+			if (success) {
+				player->sendLootStats(item, baseCount);
+				totalLootedGold += worth;
+			} else {
+				totalLootedGold += worth - item->getWorth();
+			}
+		} else {
+			missedAnyItem |= !success;
+			if (success || item->getItemCount() != baseCount) {
+				totalLootedItems++;
+				player->sendLootStats(item, item->getItemCount());
+			}
+		}
+	}
 
-    std::stringstream ss;
-    if (totalLootedGold || missedAnyGold || totalLootedItems || missedAnyItem) {
-        if (totalLootedGold && !missedAnyGold) {
-            ss << "You looted " << totalLootedGold << " gold";
-            if (totalLootedItems && !missedAnyItem) {
-                ss << " and all dropped items";
-            } else if (totalLootedItems) {
-                ss << " and some items";
-            } else if (missedAnyItem) {
-                ss << " but no items";
-            }
-        } else if (totalLootedItems && !missedAnyItem) {
-            ss << "You looted all items";
-            if (totalLootedGold) {
-                ss << ", but only " << totalLootedGold << " gold";
-            } else if (missedAnyGold) {
-                ss << " but no gold";
-            }
-        } else if (totalLootedGold) {
-            ss << "You looted " << totalLootedGold << " gold";
-            if (totalLootedItems) {
-                ss << " and some items";
-            } else if (missedAnyItem) {
-                ss << " but no items";
-            }
-        } else if (totalLootedItems) {
-            ss << "You looted some items";
-            if (missedAnyGold) {
-                ss << " but no gold";
-            }
-        } else if (missedAnyGold) {
-            ss << "You looted no gold";
-            if (missedAnyItem) {
-                ss << " and no items";
-            }
-        } else if (missedAnyItem) {
-            ss << "You looted no items";
-        }
-    } else {
-        ss << "No loot";
-    }
-    ss << ".";
-    // player->sendTextMessage(MESSAGE_STATUS, ss.str());
+	std::stringstream ss;
+	if (totalLootedGold || missedAnyGold || totalLootedItems || missedAnyItem) {
+		if (totalLootedGold && !missedAnyGold) {
+			ss << "You looted " << totalLootedGold << " gold";
+			if (totalLootedItems && !missedAnyItem) {
+				ss << " and all dropped items";
+			} else if (totalLootedItems) {
+				ss << " and some items";
+			} else if (missedAnyItem) {
+				ss << " but no items";
+			}
+		} else if (totalLootedItems && !missedAnyItem) {
+			ss << "You looted all items";
+			if (totalLootedGold) {
+				ss << ", but only " << totalLootedGold << " gold";
+			} else if (missedAnyGold) {
+				ss << " but no gold";
+			}
+		} else if (totalLootedGold) {
+			ss << "You looted " << totalLootedGold << " gold";
+			if (totalLootedItems) {
+				ss << " and some items";
+			} else if (missedAnyItem) {
+				ss << " but no items";
+			}
+		} else if (totalLootedItems) {
+			ss << "You looted some items";
+			if (missedAnyGold) {
+				ss << " but no gold";
+			}
+		} else if (missedAnyGold) {
+			ss << "You looted no gold";
+			if (missedAnyItem) {
+				ss << " and no items";
+			}
+		} else if (missedAnyItem) {
+			ss << "You looted no items";
+		}
+	} else {
+		ss << "No loot";
+	}
+	ss << ".";
+	// player->sendTextMessage(MESSAGE_STATUS, ss.str());
 
-    if (shouldNotifyCapacity) {
-        player->sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "Attention! The loot is too heavy for you to carry.");
-    } else if (shouldNotifyNotEnoughRoom != OBJECTCATEGORY_NONE) {
-        std::stringstream notify;
-        notify << "Attention! The container assigned to category " << getObjectCategoryName(shouldNotifyNotEnoughRoom) << " is full.";
-        player->sendTextMessage(MESSAGE_GAME_HIGHLIGHT, notify.str());
-    }
+	if (shouldNotifyCapacity) {
+		player->sendTextMessage(MESSAGE_GAME_HIGHLIGHT, "Attention! The loot is too heavy for you to carry.");
+	} else if (shouldNotifyNotEnoughRoom != OBJECTCATEGORY_NONE) {
+		std::stringstream notify;
+		notify << "Attention! The container assigned to category " << getObjectCategoryName(shouldNotifyNotEnoughRoom) << " is full.";
+		player->sendTextMessage(MESSAGE_GAME_HIGHLIGHT, notify.str());
+	}
 
-    player->lastQuickLootNotification = OTSYS_TIME();
+	player->lastQuickLootNotification = OTSYS_TIME();
 }
 
 std::shared_ptr<Container> Game::findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer) {

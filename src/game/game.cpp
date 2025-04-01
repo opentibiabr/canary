@@ -2972,7 +2972,7 @@ void Game::playerQuickLootCorpse(std::shared_ptr<Player> player, std::shared_ptr
                 player->sendLootStats(item, baseCount);
                 totalLootedGold += worth;
             } else {
-                totalLootedGold += worth - item->getWorth();  // Ajusta caso parcial
+                totalLootedGold += worth - item->getWorth();
             }
         } else {
             missedAnyItem |= !success;

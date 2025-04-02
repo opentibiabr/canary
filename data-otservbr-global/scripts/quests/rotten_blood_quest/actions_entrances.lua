@@ -18,10 +18,9 @@ local entrances = {
 	{ position = Position(33069, 32405, 15), destination = Position(34106, 32052, 13) }, -- Bakragore leave room
 }
 
-local teleportEvent = MoveEvent()
+local teleportEvent = Action()
 
-function teleportEvent.onStepIn(creature, item, position, fromPosition)
-	local player = creature:getPlayer()
+function teleportEvent.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not player then
 		return false
 	end
@@ -44,7 +43,6 @@ function teleportEvent.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-teleportEvent:type("stepin")
 for _, entrance in pairs(entrances) do
 	teleportEvent:position(entrance.position)
 end
@@ -56,10 +54,9 @@ local entrance = {
 	destination = Position(33071, 32403, 15), -- Bakragore lever room
 }
 
-local bakragoreEntrance = MoveEvent()
+local bakragoreEntrance = Action()
 
-function bakragoreEntrance.onStepIn(creature, item, position, fromPosition)
-	local player = creature:getPlayer()
+function bakragoreEntrance.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not player then
 		return false
 	end
@@ -99,6 +96,5 @@ function bakragoreEntrance.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-bakragoreEntrance:type("stepin")
 bakragoreEntrance:position(entrance.position)
 bakragoreEntrance:register()

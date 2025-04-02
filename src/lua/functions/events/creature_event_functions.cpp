@@ -42,7 +42,7 @@ int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 	// creatureevent:type(callback)
-	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1);
+	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1, "CreatureEvent");
 	if (creatureEvent) {
 		std::string typeName = Lua::getString(L, 2);
 		const std::string tmpStr = asLowerCaseString(typeName);
@@ -86,7 +86,7 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 	// creatureevent:register()
-	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1);
+	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1, "CreatureEvent");
 	if (creatureEvent) {
 		if (!creatureEvent->isLoadedScriptId()) {
 			Lua::pushBoolean(L, false);
@@ -101,7 +101,7 @@ int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventOnCallback(lua_State* L) {
 	// creatureevent:onLogin / logout / etc. (callback)
-	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1);
+	const auto &creatureEvent = Lua::getUserdataShared<CreatureEvent>(L, 1, "CreatureEvent");
 	if (creatureEvent) {
 		if (!creatureEvent->loadScriptId()) {
 			Lua::pushBoolean(L, false);

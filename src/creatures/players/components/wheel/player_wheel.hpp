@@ -10,7 +10,7 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
-#include "creatures/players/wheel/wheel_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 class Creature;
 class IOWheel;
@@ -22,15 +22,88 @@ class WheelModifierContext;
 class ValueWrapper;
 
 struct CombatDamage;
+struct SlotInfo;
 
 enum class WheelFragmentType_t : uint8_t;
 enum class WheelGemAffinity_t : uint8_t;
 enum class WheelGemBasicModifier_t : uint8_t;
 enum class WheelGemQuality_t : uint8_t;
 enum class WheelGemSupremeModifier_t : uint8_t;
+
 enum CombatType_t : uint8_t;
 enum skills_t : int8_t;
 enum Vocation_t : uint16_t;
+
+namespace WheelSpells {
+	struct Bonus;
+}
+
+struct PlayerWheelMethodsBonusData {
+	// Raw value. Example: 1 == 1
+	struct Stats {
+		int health = 0;
+		int mana = 0;
+		int capacity = 0;
+		int damage = 0;
+		int healing = 0;
+	};
+	// value * 100. Example: 1% == 100
+	std::array<uint8_t, 4> unlockedVesselResonances = {};
+
+	// Raw value. Example: 1 == 1
+	struct Skills {
+		int melee = 0;
+		int distance = 0;
+		int magic = 0;
+	};
+
+	// value * 100. Example: 1% == 100
+	struct Leech {
+		double manaLeech = 0;
+		double lifeLeech = 0;
+	};
+
+	struct Instant {
+		bool battleInstinct = false; // Knight
+		bool battleHealing = false; // Knight
+		bool positionalTactics = false; // Paladin
+		bool ballisticMastery = false; // Paladin
+		bool healingLink = false; // Druid
+		bool runicMastery = false; // Druid/sorcerer
+		bool focusMastery = false; // Sorcerer
+	};
+
+	struct Stages {
+		int combatMastery = 0; // Knight
+		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
+		int divineEmpowerment = 0; // Paladin
+		int divineGrenade = 0; // Paladin
+		int blessingOfTheGrove = 0; // Druid
+		int drainBody = 0; // Sorcerer
+		int beamMastery = 0; // Sorcerer
+		int twinBurst = 0; // Druid
+		int executionersThrow = 0; // Knight
+	};
+
+	struct Avatar {
+		int light = 0; // Paladin
+		int nature = 0; // Druid
+		int steel = 0; // Knight
+		int storm = 0; // Sorcerer
+	};
+
+	// Initialize structs
+	Stats stats;
+	Skills skills;
+	Leech leech;
+	Instant instant;
+	Stages stages;
+	Avatar avatar;
+
+	float momentum = 0;
+	float mitigation = 0;
+	std::vector<std::string> spells;
+};
 
 struct PlayerWheelGem {
 	std::string uuid = {};
@@ -363,7 +436,7 @@ public:
 
 	void sendOpenWheelWindow(uint32_t ownerId) const;
 
-	uint16_t getPointsBySlotType(uint8_t slotType) const;
+	uint16_t getPointsBySlotType(WheelSlots_t slotType) const;
 
 	const std::array<uint16_t, 37> &getSlots() const;
 
@@ -438,7 +511,7 @@ private:
 	Player &m_player;
 
 	// Starting count in 1 (1-37), slot enums are from 1 to 36, but the index always starts at 0 in c++
-	std::array<uint16_t, 37> m_wheelSlots = {};
+	std::array<uint16_t, magic_enum::enum_count<WheelSlots_t>() + 1> m_wheelSlots = {};
 	std::array<uint16_t, 4> m_bonusRevelationPoints = { 0, 0, 0, 0 };
 
 	PlayerWheelMethodsBonusData m_playerBonusData;

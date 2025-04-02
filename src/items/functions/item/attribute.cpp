@@ -27,7 +27,7 @@ const std::string &ItemAttribute::getAttributeString(ItemAttribute_t type) const
 		return emptyString;
 	}
 
-	return *attribute->getString();
+	return attribute->getString();
 }
 
 const int64_t &ItemAttribute::getAttributeValue(ItemAttribute_t type) const {

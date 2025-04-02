@@ -13,7 +13,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/player.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
@@ -793,7 +792,7 @@ int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
 
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 	// Game.addInfluencedMonster(monster)
-	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (!monster) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		Lua::pushBoolean(L, false);

@@ -82,7 +82,7 @@ int TileFunctions::luaTileCreate(lua_State* L) {
 
 int TileFunctions::luaTileGetPosition(lua_State* L) {
 	// tile:Lua::getPosition()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (tile) {
 		Lua::pushPosition(L, tile->getPosition());
 	} else {
@@ -93,7 +93,7 @@ int TileFunctions::luaTileGetPosition(lua_State* L) {
 
 int TileFunctions::luaTileGetGround(lua_State* L) {
 	// tile:getGround()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (tile && tile->getGround()) {
 		Lua::pushUserdata<Item>(L, tile->getGround());
 		Lua::setItemMetatable(L, -1, tile->getGround());
@@ -106,7 +106,7 @@ int TileFunctions::luaTileGetGround(lua_State* L) {
 int TileFunctions::luaTileGetThing(lua_State* L) {
 	// tile:getThing(index)
 	const int32_t index = Lua::getNumber<int32_t>(L, 2);
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -132,7 +132,7 @@ int TileFunctions::luaTileGetThing(lua_State* L) {
 
 int TileFunctions::luaTileGetThingCount(lua_State* L) {
 	// tile:getThingCount()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (tile) {
 		lua_pushnumber(L, tile->getThingCount());
 	} else {
@@ -144,7 +144,7 @@ int TileFunctions::luaTileGetThingCount(lua_State* L) {
 int TileFunctions::luaTileGetTopVisibleThing(lua_State* L) {
 	// tile:getTopVisibleThing(creature)
 	const auto &creature = Lua::getCreature(L, 2);
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -170,7 +170,7 @@ int TileFunctions::luaTileGetTopVisibleThing(lua_State* L) {
 
 int TileFunctions::luaTileGetTopTopItem(lua_State* L) {
 	// tile:getTopTopItem()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -188,7 +188,7 @@ int TileFunctions::luaTileGetTopTopItem(lua_State* L) {
 
 int TileFunctions::luaTileGetTopDownItem(lua_State* L) {
 	// tile:getTopDownItem()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -206,7 +206,7 @@ int TileFunctions::luaTileGetTopDownItem(lua_State* L) {
 
 int TileFunctions::luaTileGetFieldItem(lua_State* L) {
 	// tile:getFieldItem()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -224,7 +224,7 @@ int TileFunctions::luaTileGetFieldItem(lua_State* L) {
 
 int TileFunctions::luaTileGetItemById(lua_State* L) {
 	// tile:getItemById(itemId[, subType = -1])
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -254,7 +254,7 @@ int TileFunctions::luaTileGetItemById(lua_State* L) {
 
 int TileFunctions::luaTileGetItemByType(lua_State* L) {
 	// tile:getItemByType(itemType)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -318,7 +318,7 @@ int TileFunctions::luaTileGetItemByType(lua_State* L) {
 
 int TileFunctions::luaTileGetItemByTopOrder(lua_State* L) {
 	// tile:getItemByTopOrder(topOrder)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -339,7 +339,7 @@ int TileFunctions::luaTileGetItemByTopOrder(lua_State* L) {
 
 int TileFunctions::luaTileGetItemCountById(lua_State* L) {
 	// tile:getItemCountById(itemId[, subType = -1])
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -364,7 +364,7 @@ int TileFunctions::luaTileGetItemCountById(lua_State* L) {
 
 int TileFunctions::luaTileGetBottomCreature(lua_State* L) {
 	// tile:getBottomCreature()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -383,7 +383,7 @@ int TileFunctions::luaTileGetBottomCreature(lua_State* L) {
 
 int TileFunctions::luaTileGetTopCreature(lua_State* L) {
 	// tile:getTopCreature()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -402,7 +402,7 @@ int TileFunctions::luaTileGetTopCreature(lua_State* L) {
 
 int TileFunctions::luaTileGetBottomVisibleCreature(lua_State* L) {
 	// tile:getBottomVisibleCreature(creature)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -426,7 +426,7 @@ int TileFunctions::luaTileGetBottomVisibleCreature(lua_State* L) {
 
 int TileFunctions::luaTileGetTopVisibleCreature(lua_State* L) {
 	// tile:getTopVisibleCreature(creature)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -450,7 +450,7 @@ int TileFunctions::luaTileGetTopVisibleCreature(lua_State* L) {
 
 int TileFunctions::luaTileGetItems(lua_State* L) {
 	// tile:getItems()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -475,7 +475,7 @@ int TileFunctions::luaTileGetItems(lua_State* L) {
 
 int TileFunctions::luaTileGetItemCount(lua_State* L) {
 	// tile:getItemCount()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -487,7 +487,7 @@ int TileFunctions::luaTileGetItemCount(lua_State* L) {
 
 int TileFunctions::luaTileGetDownItemCount(lua_State* L) {
 	// tile:getDownItemCount()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (tile) {
 		lua_pushnumber(L, tile->getDownItemCount());
 	} else {
@@ -498,7 +498,7 @@ int TileFunctions::luaTileGetDownItemCount(lua_State* L) {
 
 int TileFunctions::luaTileGetTopItemCount(lua_State* L) {
 	// tile:getTopItemCount()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -510,7 +510,7 @@ int TileFunctions::luaTileGetTopItemCount(lua_State* L) {
 
 int TileFunctions::luaTileGetCreatures(lua_State* L) {
 	// tile:getCreatures()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -535,7 +535,7 @@ int TileFunctions::luaTileGetCreatures(lua_State* L) {
 
 int TileFunctions::luaTileGetCreatureCount(lua_State* L) {
 	// tile:getCreatureCount()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -547,7 +547,7 @@ int TileFunctions::luaTileGetCreatureCount(lua_State* L) {
 
 int TileFunctions::luaTileHasProperty(lua_State* L) {
 	// tile:hasProperty(property[, item])
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -555,7 +555,7 @@ int TileFunctions::luaTileHasProperty(lua_State* L) {
 
 	std::shared_ptr<Item> item;
 	if (lua_gettop(L) >= 3) {
-		item = Lua::getUserdataShared<Item>(L, 3);
+		item = Lua::getUserdataShared<Item>(L, 3, "Item");
 	} else {
 		item = nullptr;
 	}
@@ -571,7 +571,7 @@ int TileFunctions::luaTileHasProperty(lua_State* L) {
 
 int TileFunctions::luaTileGetThingIndex(lua_State* L) {
 	// tile:getThingIndex(thing)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -588,7 +588,7 @@ int TileFunctions::luaTileGetThingIndex(lua_State* L) {
 
 int TileFunctions::luaTileHasFlag(lua_State* L) {
 	// tile:hasFlag(flag)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (tile) {
 		TileFlags_t flag = Lua::getNumber<TileFlags_t>(L, 2);
 		Lua::pushBoolean(L, tile->hasFlag(flag));
@@ -600,7 +600,7 @@ int TileFunctions::luaTileHasFlag(lua_State* L) {
 
 int TileFunctions::luaTileQueryAdd(lua_State* L) {
 	// tile:queryAdd(thing[, flags])
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -618,7 +618,7 @@ int TileFunctions::luaTileQueryAdd(lua_State* L) {
 
 int TileFunctions::luaTileAddItem(lua_State* L) {
 	// tile:addItem(itemId[, count/subType = 1[, flags = 0]])
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -658,13 +658,13 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 
 int TileFunctions::luaTileAddItemEx(lua_State* L) {
 	// tile:addItemEx(item[, flags = 0])
-	const auto &item = Lua::getUserdataShared<Item>(L, 2);
+	const auto &item = Lua::getUserdataShared<Item>(L, 2, "Item");
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -687,7 +687,7 @@ int TileFunctions::luaTileAddItemEx(lua_State* L) {
 
 int TileFunctions::luaTileGetHouse(lua_State* L) {
 	// tile:getHouse()
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;
@@ -704,7 +704,7 @@ int TileFunctions::luaTileGetHouse(lua_State* L) {
 
 int TileFunctions::luaTileSweep(lua_State* L) {
 	// tile:sweep(actor)
-	const auto &tile = Lua::getUserdataShared<Tile>(L, 1);
+	const auto &tile = Lua::getUserdataShared<Tile>(L, 1, "Tile");
 	if (!tile) {
 		lua_pushnil(L);
 		return 1;

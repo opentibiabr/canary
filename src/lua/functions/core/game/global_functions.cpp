@@ -13,7 +13,6 @@
 #include "creatures/creature.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -332,7 +331,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 		damage.runeSpellName = Lua::getString(L, 10);
 		if (creature) {
 			if (const auto &player = creature->getPlayer()) {
-				player->wheel()->getCombatDataSpell(damage);
+				player->wheel().getCombatDataSpell(damage);
 			}
 		}
 
@@ -376,7 +375,7 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.runeSpellName = Lua::getString(L, 10);
 	if (creature) {
 		if (const auto &player = creature->getPlayer()) {
-			player->wheel()->getCombatDataSpell(damage);
+			player->wheel().getCombatDataSpell(damage);
 		}
 	}
 
@@ -414,7 +413,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 		damage.runeSpellName = Lua::getString(L, 9);
 		if (creature) {
 			if (const auto &player = creature->getPlayer()) {
-				player->wheel()->getCombatDataSpell(damage);
+				player->wheel().getCombatDataSpell(damage);
 			}
 		}
 
@@ -459,7 +458,7 @@ int GlobalFunctions::luaDoTargetCombatMana(lua_State* L) {
 	damage.runeSpellName = Lua::getString(L, 8);
 	if (creature) {
 		if (const auto &player = creature->getPlayer()) {
-			player->wheel()->getCombatDataSpell(damage);
+			player->wheel().getCombatDataSpell(damage);
 		}
 	}
 
@@ -477,7 +476,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 		return 1;
 	}
 
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 4);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 4, "Condition");
 	if (!condition) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CONDITION_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -515,7 +514,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 		return 1;
 	}
 
-	const auto &condition = Lua::getUserdataShared<Condition>(L, 3);
+	const auto &condition = Lua::getUserdataShared<Condition>(L, 3, "Condition");
 	if (!condition) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_CONDITION_NOT_FOUND));
 		Lua::pushBoolean(L, false);

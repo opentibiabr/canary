@@ -113,4 +113,9 @@ private:
 	static int luaCreatureGetIcon(lua_State* L);
 	static int luaCreatureRemoveIcon(lua_State* L);
 	static int luaCreatureClearIcons(lua_State* L);
+	static int luaCreatureAttachEffectById(lua_State* L);
+	static int luaCreatureDetachEffectById(lua_State* L);
+	static int luaCreatureGetAttachedEffects(lua_State* L);
+	static int luaCreatureGetShader(lua_State* L);
+	static int luaCreatureSetShader(lua_State* L);
 };

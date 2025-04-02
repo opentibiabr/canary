@@ -324,6 +324,7 @@ private:
 
 	HouseTileList houseTiles;
 	std::list<std::shared_ptr<Door>> doorList;
+	mutable std::unordered_map<uint32_t, std::string> m_doorListId;
 	HouseBedItemList bedsList;
 
 	std::string houseName;

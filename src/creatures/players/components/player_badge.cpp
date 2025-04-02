@@ -7,10 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "creatures/players/cyclopedia/player_badge.hpp"
+// Player.hpp already includes the badge
+#include "creatures/players/player.hpp"
 
 #include "account/account.hpp"
-#include "creatures/players/player.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"

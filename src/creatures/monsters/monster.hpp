@@ -235,6 +235,7 @@ public:
 
 	void setCriticalDamage(uint16_t damage);
 	uint16_t getCriticalDamage() const;
+	bool checkCanApplyCharm(const std::shared_ptr<Player> &player, charmRune_t charmRune) const;
 
 protected:
 	void onExecuteAsyncTasks() override;

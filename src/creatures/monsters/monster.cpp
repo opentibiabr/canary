@@ -13,13 +13,13 @@
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
+#include "io/iobestiary.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -907,8 +907,8 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 
 		// Wheel of destiny
 		const auto &player = attacker ? attacker->getPlayer() : nullptr;
-		if (player && player->wheel()->getInstant("Ballistic Mastery")) {
-			elementMod -= player->wheel()->checkElementSensitiveReduction(combatType);
+		if (player && player->wheel().getInstant("Ballistic Mastery")) {
+			elementMod -= player->wheel().checkElementSensitiveReduction(combatType);
 		}
 
 		if (elementMod != 0) {
@@ -2443,7 +2443,7 @@ bool Monster::challengeCreature(const std::shared_ptr<Creature> &creature, int t
 		// Wheel of destiny
 		const auto &player = creature ? creature->getPlayer() : nullptr;
 		if (player && !player->isRemoved()) {
-			player->wheel()->healIfBattleHealingActive();
+			player->wheel().healIfBattleHealingActive();
 		}
 	}
 	return result;
@@ -2683,4 +2683,23 @@ void Monster::onExecuteAsyncTasks() {
 	if (hasAsyncTaskFlag(OnThink)) {
 		onThink_async();
 	}
+}
+
+bool Monster::checkCanApplyCharm(const std::shared_ptr<Player> &player, charmRune_t charmRune) const {
+	if (!player) {
+		return false;
+	}
+
+	uint16_t playerCharmRaceid = player->parseRacebyCharm(charmRune, false, 0);
+	if (playerCharmRaceid != 0) {
+		const auto &monsterType = g_monsters().getMonsterType(getName());
+		if (monsterType && playerCharmRaceid == monsterType->info.raceid) {
+			const auto &charm = g_iobestiary().getBestiaryCharm(charmRune);
+			if (charm) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

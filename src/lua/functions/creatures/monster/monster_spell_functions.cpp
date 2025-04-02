@@ -49,7 +49,7 @@ int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetType(lua_State* L) {
 	// monsterSpell:setType(type)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->name = Lua::getString(L, 2);
 		Lua::pushBoolean(L, true);
@@ -61,7 +61,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetType(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetScriptName(lua_State* L) {
 	// monsterSpell:setScriptName(name)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->scriptName = Lua::getString(L, 2);
 		Lua::pushBoolean(L, true);
@@ -73,7 +73,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetScriptName(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetChance(lua_State* L) {
 	// monsterSpell:setChance(chance)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->chance = Lua::getNumber<uint8_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -85,7 +85,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetChance(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetInterval(lua_State* L) {
 	// monsterSpell:setInterval(interval)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->interval = Lua::getNumber<uint16_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -97,7 +97,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetInterval(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetRange(lua_State* L) {
 	// monsterSpell:setRange(range)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->range = Lua::getNumber<uint8_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -109,7 +109,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetRange(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatValue(lua_State* L) {
 	// monsterSpell:setCombatValue(min, max)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->minCombatValue = Lua::getNumber<int32_t>(L, 2);
 		spell->maxCombatValue = Lua::getNumber<int32_t>(L, 3);
@@ -122,7 +122,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatValue(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatType(lua_State* L) {
 	// monsterSpell:setCombatType(combatType_t)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->combatType = Lua::getNumber<CombatType_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -134,7 +134,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatType(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetAttackValue(lua_State* L) {
 	// monsterSpell:setAttackValue(attack, skill)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->attack = Lua::getNumber<int32_t>(L, 2);
 		spell->skill = Lua::getNumber<int32_t>(L, 3);
@@ -147,7 +147,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetAttackValue(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetNeedTarget(lua_State* L) {
 	// monsterSpell:setNeedTarget(bool)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->needTarget = Lua::getBoolean(L, 2);
 		Lua::pushBoolean(L, true);
@@ -159,7 +159,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetNeedTarget(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatLength(lua_State* L) {
 	// monsterSpell:setCombatLength(length)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->length = Lua::getNumber<int32_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -171,7 +171,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatLength(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatSpread(lua_State* L) {
 	// monsterSpell:setCombatSpread(spread)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->spread = Lua::getNumber<int32_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -183,7 +183,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatSpread(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatRadius(lua_State* L) {
 	// monsterSpell:setCombatRadius(radius)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->radius = Lua::getNumber<int32_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -195,7 +195,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatRadius(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetConditionType(lua_State* L) {
 	// monsterSpell:setConditionType(type)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		auto conditionType = Lua::getNumber<uint8_t>(L, 2);
 		if (conditionType == 254) {
@@ -215,7 +215,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionType(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetConditionDamage(lua_State* L) {
 	// monsterSpell:setConditionDamage(min, max, start)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->conditionMinDamage = Lua::getNumber<int32_t>(L, 2);
 		spell->conditionMaxDamage = Lua::getNumber<int32_t>(L, 3);
@@ -229,7 +229,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionDamage(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetConditionSpeedChange(lua_State* L) {
 	// monsterSpell:setConditionSpeedChange(speed)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->speedChange = Lua::getNumber<int32_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -241,7 +241,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionSpeedChange(lua_State* L) 
 
 int MonsterSpellFunctions::luaMonsterSpellSetConditionDuration(lua_State* L) {
 	// monsterSpell:setConditionDuration(duration)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->duration = Lua::getNumber<int32_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -253,7 +253,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionDuration(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetConditionTickInterval(lua_State* L) {
 	// monsterSpell:setConditionTickInterval(interval)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->tickInterval = Lua::getNumber<int32_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -265,7 +265,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetConditionTickInterval(lua_State* L)
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatShootEffect(lua_State* L) {
 	// monsterSpell:setCombatShootEffect(effect)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->shoot = Lua::getNumber<ShootType_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -277,7 +277,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatShootEffect(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetCombatEffect(lua_State* L) {
 	// monsterSpell:setCombatEffect(effect)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->effect = Lua::getNumber<MagicEffectClasses>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -289,7 +289,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatEffect(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetOutfitMonster(lua_State* L) {
 	// monsterSpell:setOutfitMonster(effect)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->outfitMonster = Lua::getString(L, 2);
 		Lua::pushBoolean(L, true);
@@ -301,7 +301,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetOutfitMonster(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellSetOutfitItem(lua_State* L) {
 	// monsterSpell:setOutfitItem(effect)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (spell) {
 		spell->outfitItem = Lua::getNumber<uint16_t>(L, 2);
 		Lua::pushBoolean(L, true);
@@ -313,7 +313,7 @@ int MonsterSpellFunctions::luaMonsterSpellSetOutfitItem(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellCastSound(lua_State* L) {
 	// get: monsterSpell:castSound() set: monsterSpell:castSound(sound)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, static_cast<lua_Number>(spell->soundCastEffect));
 	} else {
@@ -325,7 +325,7 @@ int MonsterSpellFunctions::luaMonsterSpellCastSound(lua_State* L) {
 
 int MonsterSpellFunctions::luaMonsterSpellImpactSound(lua_State* L) {
 	// get: monsterSpell:impactSound() set: monsterSpell:impactSound(sound)
-	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1);
+	const auto &spell = Lua::getUserdataShared<MonsterSpell>(L, 1, "MonsterSpell");
 	if (lua_gettop(L) == 1) {
 		lua_pushnumber(L, static_cast<lua_Number>(spell->soundImpactEffect));
 	} else {

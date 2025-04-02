@@ -215,13 +215,52 @@ public:
 		scriptEnv[scriptEnvIndex--].resetEnv();
 	}
 
+	/**
+	 * @brief Checks whether the metatable of the object at the given Lua stack index inherits from a specified metatable.
+	 *
+	 * This function verifies whether the metatable of the object either exactly matches the expected metatable
+	 * or, by traversing its inheritance chain via the "__name" and "baseclass" fields (or via the "__index" table),
+	 * determines if it ultimately inherits from a metatable with the expected name.
+	 *
+	 * @param L The Lua state.
+	 * @param index The stack index of the object.
+	 * @param expectedName The expected metatable name to check for in the inheritance chain.
+	 * @return true if the object's metatable is the expected one or inherits from it; false otherwise.
+	 */
+	static bool checkMetatableInheritance(lua_State* L, int index, const char* expectedName);
+
+	/**
+	 * @brief Retrieves a shared pointer to a userdata object from the Lua stack with inheritance support.
+	 *
+	 * This function attempts to extract a `std::shared_ptr<T>` from the given Lua stack index.
+	 * It ensures that the userdata at the specified index either has the expected metatable directly
+	 * or inherits from the expected metatable (by traversing the inheritance chain via the "__name"
+	 * and "baseclass" fields) before attempting to retrieve it. This validation prevents crashes
+	 * due to invalid or outdated Lua bindings, ensuring that only correctly-typed userdata is accessed.
+	 *
+	 * @tparam T The C++ class type of the userdata.
+	 * @param L The Lua state.
+	 * @param arg The index of the Lua stack where the userdata is expected to be.
+	 * @param expectedMetatableName The expected metatable name associated with the userdata.
+	 *                              This ensures that the retrieved object is of the correct type.
+	 *                              The metatable name should match the one assigned when the userdata
+	 *                              was originally pushed into Lua, or be found within its inheritance chain.
+	 *
+	 * @return std::shared_ptr<T> A valid shared pointer to the requested object if the userdata exists
+	 *         and either has the correct metatable or inherits from the expected metatable. If the userdata
+	 *         is missing or does not satisfy these conditions, returns nullptr.
+	 */
 	template <class T>
-	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg) {
-		auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg, const char* expectedMetatableName) {
+		auto userdata = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, arg, expectedMetatableName));
 		if (!userdata) {
-			return nullptr;
+			if (!checkMetatableInheritance(L, arg, expectedMetatableName)) {
+				return nullptr;
+			}
+
+			userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
 		}
-		return *userdata;
+		return userdata ? *userdata : nullptr;
 	}
 
 	template <class T>

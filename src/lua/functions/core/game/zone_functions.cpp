@@ -56,8 +56,8 @@ int ZoneFunctions::luaZoneCreate(lua_State* L) {
 }
 
 int ZoneFunctions::luaZoneCompare(lua_State* L) {
-	const auto &zone1 = Lua::getUserdataShared<Zone>(L, 1);
-	const auto &zone2 = Lua::getUserdataShared<Zone>(L, 2);
+	const auto &zone1 = Lua::getUserdataShared<Zone>(L, 1, "Zone");
+	const auto &zone2 = Lua::getUserdataShared<Zone>(L, 2, "Zone");
 	if (!zone1) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -75,7 +75,7 @@ int ZoneFunctions::luaZoneCompare(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetName(lua_State* L) {
 	// Zone:getName()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -87,7 +87,7 @@ int ZoneFunctions::luaZoneGetName(lua_State* L) {
 
 int ZoneFunctions::luaZoneAddArea(lua_State* L) {
 	// Zone:addArea(fromPos, toPos)
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -103,7 +103,7 @@ int ZoneFunctions::luaZoneAddArea(lua_State* L) {
 
 int ZoneFunctions::luaZoneSubtractArea(lua_State* L) {
 	// Zone:subtractArea(fromPos, toPos)
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -119,7 +119,7 @@ int ZoneFunctions::luaZoneSubtractArea(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetRemoveDestination(lua_State* L) {
 	// Zone:getRemoveDestination()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		return 1;
@@ -130,7 +130,7 @@ int ZoneFunctions::luaZoneGetRemoveDestination(lua_State* L) {
 
 int ZoneFunctions::luaZoneSetRemoveDestination(lua_State* L) {
 	// Zone:setRemoveDestination(pos)
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		return 1;
@@ -142,7 +142,7 @@ int ZoneFunctions::luaZoneSetRemoveDestination(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetPositions(lua_State* L) {
 	// Zone:getPositions()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -162,7 +162,7 @@ int ZoneFunctions::luaZoneGetPositions(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetCreatures(lua_State* L) {
 	// Zone:getCreatures()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -183,7 +183,7 @@ int ZoneFunctions::luaZoneGetCreatures(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetPlayers(lua_State* L) {
 	// Zone:getPlayers()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -204,7 +204,7 @@ int ZoneFunctions::luaZoneGetPlayers(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetMonsters(lua_State* L) {
 	// Zone:getMonsters()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -225,7 +225,7 @@ int ZoneFunctions::luaZoneGetMonsters(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetNpcs(lua_State* L) {
 	// Zone:getNpcs()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -246,7 +246,7 @@ int ZoneFunctions::luaZoneGetNpcs(lua_State* L) {
 
 int ZoneFunctions::luaZoneGetItems(lua_State* L) {
 	// Zone:getItems()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -267,7 +267,7 @@ int ZoneFunctions::luaZoneGetItems(lua_State* L) {
 
 int ZoneFunctions::luaZoneRemovePlayers(lua_State* L) {
 	// Zone:removePlayers()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -280,7 +280,7 @@ int ZoneFunctions::luaZoneRemovePlayers(lua_State* L) {
 
 int ZoneFunctions::luaZoneRemoveMonsters(lua_State* L) {
 	// Zone:removeMonsters()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -292,7 +292,7 @@ int ZoneFunctions::luaZoneRemoveMonsters(lua_State* L) {
 
 int ZoneFunctions::luaZoneRemoveNpcs(lua_State* L) {
 	// Zone:removeNpcs()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -304,7 +304,7 @@ int ZoneFunctions::luaZoneRemoveNpcs(lua_State* L) {
 
 int ZoneFunctions::luaZoneSetMonsterVariant(lua_State* L) {
 	// Zone:setMonsterVariant(variant)
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -369,7 +369,7 @@ int ZoneFunctions::luaZoneGetAll(lua_State* L) {
 
 int ZoneFunctions::luaZoneRefresh(lua_State* L) {
 	// Zone:refresh()
-	const auto &zone = Lua::getUserdataShared<Zone>(L, 1);
+	const auto &zone = Lua::getUserdataShared<Zone>(L, 1, "Zone");
 	if (!zone) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ZONE_NOT_FOUND));
 		return 1;

@@ -117,7 +117,7 @@ function setBestiary.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
-	local usage = "/setbestiary PLAYER NAME,MONSTER NAME,AMOUNT"
+	local usage = "/setbestiary PLAYER NAME,MONSTER NAME/ALL,AMOUNT"
 	if param == "" then
 		player:sendCancelMessage("Command param required. Usage: " .. usage)
 		return true
@@ -136,21 +136,36 @@ function setBestiary.onSay(player, words, param)
 	split[2] = split[2]:trimSpace()
 	split[3] = split[3]:trimSpace()
 
-	local monsterName = split[2]
-	local mType = MonsterType(monsterName)
-	if not mType or (mType and mType:raceId() == 0) then
-		player:sendCancelMessage("This monster has no bestiary. Type the name exactly as in game.")
-		return true
-	end
 	local amount = tonumber(split[3])
 	if not amount then
-		player:sendCancelMessage("Wrong kill amount")
+		player:sendCancelMessage("Wrong kill amount.")
 		return true
 	end
 
-	player:sendCancelMessage("Set bestiary kill of monster '" .. monsterName .. "' from player '" .. target:getName() .. "' to '" .. amount .. "'.")
-	target:sendCancelMessage("Updated kills of monster '" .. monsterName .. "'!")
-	target:addBestiaryKill(monsterName, amount)
+	local monsterName = split[2]
+
+	-- If "all" is specified, iterate through all monsters
+	if monsterName:lower() == "all" then
+		local monsterList = Game.getMonsterTypes() -- Retrieves all available monsters
+		for _, mType in pairs(monsterList) do
+			if mType:raceId() > 0 then -- Ensure the monster has a bestiary entry
+				target:addBestiaryKill(mType:name(), amount)
+			end
+		end
+		player:sendCancelMessage("Set bestiary kill count to '" .. amount .. "' for all monsters for player '" .. target:getName() .. "'.")
+		target:sendCancelMessage("Updated kills for all monsters in the bestiary!")
+	else
+		local mType = MonsterType(monsterName)
+		if not mType or (mType and mType:raceId() == 0) then
+			player:sendCancelMessage("This monster has no bestiary. Type the name exactly as in the game.")
+			return true
+		end
+
+		target:addBestiaryKill(monsterName, amount)
+		player:sendCancelMessage("Set bestiary kill of monster '" .. monsterName .. "' for player '" .. target:getName() .. "' to '" .. amount .. "'.")
+		target:sendCancelMessage("Updated kills of monster '" .. monsterName .. "'!")
+	end
+
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 end
 

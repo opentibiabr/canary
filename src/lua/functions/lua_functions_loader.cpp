@@ -310,6 +310,9 @@ void Lua::setWeakMetatable(lua_State* L, int32_t index, const std::string &name)
 		lua_pushnil(L);
 		lua_setfield(L, metatable, "__gc");
 
+		lua_pushstring(L, name.c_str());
+		lua_setfield(L, metatable, "__name");
+
 		lua_remove(L, childMetatable);
 	} else {
 		luaL_getmetatable(L, weakName.c_str());
@@ -449,7 +452,12 @@ Outfit_t Lua::getOutfit(lua_State* L, int32_t arg) {
 	outfit.lookTypeEx = getField<uint16_t>(L, arg, "lookTypeEx");
 	outfit.lookType = getField<uint16_t>(L, arg, "lookType");
 
-	lua_pop(L, 13);
+	outfit.lookWing = getField<uint16_t>(L, arg, "lookShader");
+	outfit.lookAura = getField<uint16_t>(L, arg, "lookAura");
+	outfit.lookEffect = getField<uint16_t>(L, arg, "lookEffect");
+	outfit.lookShader = getField<uint16_t>(L, arg, "lookShader");
+
+	lua_pop(L, 17);
 	return outfit;
 }
 
@@ -493,22 +501,22 @@ std::shared_ptr<Thing> Lua::getThing(lua_State* L, int32_t arg) {
 		lua_rawgeti(L, -1, 't');
 		switch (getNumber<LuaData_t>(L, -1)) {
 			case LuaData_t::Item:
-				thing = getUserdataShared<Item>(L, arg);
+				thing = Lua::getUserdataShared<Item>(L, arg, "Item");
 				break;
 			case LuaData_t::Container:
-				thing = getUserdataShared<Container>(L, arg);
+				thing = Lua::getUserdataShared<Container>(L, arg, "Container");
 				break;
 			case LuaData_t::Teleport:
-				thing = getUserdataShared<Teleport>(L, arg);
+				thing = Lua::getUserdataShared<Teleport>(L, arg, "Teleport");
 				break;
 			case LuaData_t::Player:
-				thing = getUserdataShared<Player>(L, arg);
+				thing = Lua::getUserdataShared<Player>(L, arg, "Player");
 				break;
 			case LuaData_t::Monster:
-				thing = getUserdataShared<Monster>(L, arg);
+				thing = Lua::getUserdataShared<Monster>(L, arg, "Monster");
 				break;
 			case LuaData_t::Npc:
-				thing = getUserdataShared<Npc>(L, arg);
+				thing = Lua::getUserdataShared<Npc>(L, arg, "Npc");
 				break;
 			default:
 				thing = nullptr;
@@ -523,14 +531,14 @@ std::shared_ptr<Thing> Lua::getThing(lua_State* L, int32_t arg) {
 
 std::shared_ptr<Creature> Lua::getCreature(lua_State* L, int32_t arg) {
 	if (isUserdata(L, arg)) {
-		return getUserdataShared<Creature>(L, arg);
+		return Lua::getUserdataShared<Creature>(L, arg, "Creature");
 	}
 	return g_game().getCreatureByID(getNumber<uint32_t>(L, arg));
 }
 
 std::shared_ptr<Player> Lua::getPlayer(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
 	if (isUserdata(L, arg)) {
-		return getUserdataShared<Player>(L, arg);
+		return Lua::getUserdataShared<Player>(L, arg, "Player");
 	} else if (isNumber(L, arg)) {
 		return g_game().getPlayerByID(getNumber<uint64_t>(L, arg), allowOffline);
 	} else if (isString(L, arg)) {
@@ -542,7 +550,7 @@ std::shared_ptr<Player> Lua::getPlayer(lua_State* L, int32_t arg, bool allowOffl
 
 std::shared_ptr<Guild> Lua::getGuild(lua_State* L, int32_t arg, bool allowOffline /* = false */) {
 	if (isUserdata(L, arg)) {
-		return getUserdataShared<Guild>(L, arg);
+		return Lua::getUserdataShared<Guild>(L, arg, "Guild");
 	} else if (isNumber(L, arg)) {
 		return g_game().getGuild(getNumber<uint64_t>(L, arg), allowOffline);
 	} else if (isString(L, arg)) {
@@ -631,7 +639,7 @@ void Lua::pushOutfit(lua_State* L, const Outfit_t &outfit) {
 		return;
 	}
 
-	lua_createtable(L, 0, 13);
+	lua_createtable(L, 0, 17);
 	setField(L, "lookType", outfit.lookType);
 	setField(L, "lookTypeEx", outfit.lookTypeEx);
 	setField(L, "lookHead", outfit.lookHead);
@@ -645,6 +653,10 @@ void Lua::pushOutfit(lua_State* L, const Outfit_t &outfit) {
 	setField(L, "lookMountLegs", outfit.lookMountLegs);
 	setField(L, "lookMountFeet", outfit.lookMountFeet);
 	setField(L, "lookFamiliarsType", outfit.lookFamiliarsType);
+	setField(L, "lookWing ", outfit.lookWing);
+	setField(L, "lookAura", outfit.lookAura);
+	setField(L, "lookEffect ", outfit.lookEffect);
+	setField(L, "lookShader ", outfit.lookShader);
 }
 
 void Lua::registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction /* = nullptr*/) {
@@ -695,6 +707,14 @@ void Lua::registerClass(lua_State* L, const std::string &className, const std::s
 	// className.metatable['p'] = parents
 	lua_pushnumber(L, parents);
 	lua_rawseti(L, metatable, 'p');
+
+	lua_pushstring(L, className.c_str());
+	lua_setfield(L, metatable, "__name");
+
+	if (!baseClass.empty()) {
+		lua_pushstring(L, baseClass.c_str());
+		lua_setfield(L, metatable, "baseclass");
+	}
 
 	// className.metatable['t'] = type
 	auto userTypeEnum = magic_enum::enum_cast<LuaData_t>(className);
@@ -802,4 +822,53 @@ int Lua::validateDispatcherContext(std::string_view fncName) {
 	}
 
 	return 0;
+}
+
+bool Lua::checkMetatableInheritance(lua_State* L, int index, const char* expectedName) {
+	if (!lua_getmetatable(L, index)) {
+		return false;
+	}
+
+	// Traverse the inheritance chain.
+	bool found = false;
+	while (true) {
+		// Check the "__name" field.
+		lua_getfield(L, -1, "__name");
+		const char* currentName = lua_tostring(L, -1);
+		lua_pop(L, 1); // Remove __name.
+		if (currentName && strcmp(currentName, expectedName) == 0) {
+			found = true;
+			break;
+		}
+
+		// Check for a "baseclass" field.
+		lua_getfield(L, -1, "baseclass");
+		if (lua_isstring(L, -1)) {
+			const char* baseName = lua_tostring(L, -1);
+			lua_pop(L, 1); // Remove baseclass value.
+			if (baseName && strcmp(baseName, expectedName) == 0) {
+				found = true;
+				break;
+			}
+			// Move to the metatable of the base class.
+			luaL_getmetatable(L, baseName);
+			if (lua_isnil(L, -1)) {
+				lua_pop(L, 1);
+				break;
+			}
+			lua_remove(L, -2); // Remove current metatable.
+			continue;
+		}
+		lua_pop(L, 1); // Remove non-string baseclass.
+
+		// Fallback: try the "__index" table.
+		lua_getfield(L, -1, "__index");
+		if (!lua_istable(L, -1)) {
+			lua_pop(L, 1);
+			break;
+		}
+		lua_remove(L, -2); // Remove current metatable; keep __index.
+	}
+	lua_pop(L, 1); // Remove final metatable.
+	return found;
 }

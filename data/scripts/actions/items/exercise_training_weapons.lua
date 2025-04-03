@@ -47,7 +47,6 @@ local function leaveExerciseTraining(playerId, targetItem)
 	if player then
 		player:setTraining(false)
 		if targetItem then
-			targetItem:actor(false)
 		end
 	end
 	return
@@ -194,7 +193,6 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 		if not _G.OnExerciseTraining[playerId].event then
 			_G.OnExerciseTraining[playerId].event = addEvent(exerciseTrainingEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
-			targetItem:actor(true)
 			player:setTraining(true)
 			player:setExhaustion("training-exhaustion", exhaustionTime)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have started training on an exercise dummy.")

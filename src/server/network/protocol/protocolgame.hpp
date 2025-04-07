@@ -499,6 +499,16 @@ private:
 
 	// OTCv8
 	void sendFeatures();
+	// OTCR
+	void sendOTCRFeatures();
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);
+	void sendMapShader(const std::string &shaderName);
+	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
+	void parsePlayerTyping(NetworkMessage &msg);
+	void AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit);
+	void sendOutfitWindowCustomOTCR(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
@@ -517,6 +527,7 @@ private:
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
+	friend class PlayerAttachedEffects;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -535,9 +546,10 @@ private:
 	bool shouldAddExivaRestrictions = false;
 
 	bool oldProtocol = false;
+	bool isOTC = false;
+	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
-	bool isOTC = false;
 
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);

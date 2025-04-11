@@ -185,7 +185,6 @@ function creatureIconAction.onSay(player, words, param)
 				updateIcon(current + step, target, step)
 			end, 1000)
 		else
-
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Icon countdown ended. Removing in 10 seconds...")
 			addEvent(function()
 				if player and player:isPlayer() then

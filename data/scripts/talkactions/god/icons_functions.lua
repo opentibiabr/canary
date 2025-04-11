@@ -143,7 +143,7 @@ function creatureIconAction.onSay(player, words, param)
 	local split = param:split(",")
 	local iconId = tonumber(split[1] and split[1]:trim())
 	local count = tonumber(split[2] and split[2]:trim()) or 0
-	local direction = (split[3] and split[3]:trim():lower()) or "down" -- padrão é 'down'
+	local direction = (split[3] and split[3]:trim():lower()) or "down"
 
 	local maxIconId = 0
 	for id in pairs(creatureIconQuests) do
@@ -173,7 +173,6 @@ function creatureIconAction.onSay(player, words, param)
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Applied icon '%s' in %s mode with quantity: %d", iconName, direction, count))
 
-	-- Função genérica para contagem
 	local function updateIcon(current, target, step)
 		if not player or not player:isPlayer() then
 			return
@@ -186,7 +185,7 @@ function creatureIconAction.onSay(player, words, param)
 				updateIcon(current + step, target, step)
 			end, 1000)
 		else
-			-- Espera 10 segundos antes de remover o ícone
+
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Icon countdown ended. Removing in 10 seconds...")
 			addEvent(function()
 				if player and player:isPlayer() then
@@ -197,7 +196,6 @@ function creatureIconAction.onSay(player, words, param)
 		end
 	end
 
-	-- Determina direção da contagem
 	if direction == "down" then
 		updateIcon(count, 0, -1)
 	else

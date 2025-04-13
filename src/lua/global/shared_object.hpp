@@ -30,7 +30,7 @@
 #include <concepts>
 #include <type_traits>
 
-template<typename To, typename From>
+template <typename To, typename From>
 concept ConvertibleTo = std::is_convertible_v<From*, To*>;
 
 class SharedObject;
@@ -38,87 +38,87 @@ using SharedObjectPtr = std::shared_ptr<SharedObject>;
 
 class SharedObject : public std::enable_shared_from_this<SharedObject> {
 public:
-    virtual ~SharedObject() = default;
+	virtual ~SharedObject() = default;
 
-    SharedObject& operator=(const SharedObject&) = delete;
-    SharedObject(const SharedObject&) = delete;
-    SharedObject() = default;
+	SharedObject &operator=(const SharedObject &) = delete;
+	SharedObject(const SharedObject &) = delete;
+	SharedObject() = default;
 
-    [[nodiscard]] SharedObjectPtr asSharedObject() {
-        return shared_from_this();
-    }
+	[[nodiscard]] SharedObjectPtr asSharedObject() {
+		return shared_from_this();
+	}
 
-    template <typename T>
-    [[nodiscard]] std::shared_ptr<T> static_self_cast() {
-        auto type_idx = std::type_index(typeid(T));
-        
-        auto it = cast_cache.find(type_idx);
-        if (it != cast_cache.end()) {
-            if (auto cached = it->second.lock()) {
-                return std::static_pointer_cast<T>(std::static_pointer_cast<void>(cached));
-            }
-            cast_cache.erase(it);
-        }
-        
-        auto result = std::static_pointer_cast<T>(shared_from_this());
-        cast_cache[type_idx] = result;
-        
-        return result;
-    }
+	template <typename T>
+	[[nodiscard]] std::shared_ptr<T> static_self_cast() {
+		auto type_idx = std::type_index(typeid(T));
 
-    template <typename T>
-    [[nodiscard]] std::shared_ptr<const T> static_self_cast() const {
-        auto type_idx = std::type_index(typeid(const T));
-        
-        auto it = cast_cache.find(type_idx);
-        if (it != cast_cache.end()) {
-            if (auto cached = it->second.lock()) {
-                return std::static_pointer_cast<const T>(std::static_pointer_cast<void>(cached));
-            }
-            cast_cache.erase(it);
-        }
-        
-        auto result = std::static_pointer_cast<const T>(shared_from_this());
-        cast_cache[type_idx] = result;
-        
-        return result;
-    }
+		auto it = cast_cache.find(type_idx);
+		if (it != cast_cache.end()) {
+			if (auto cached = it->second.lock()) {
+				return std::static_pointer_cast<T>(std::static_pointer_cast<void>(cached));
+			}
+			cast_cache.erase(it);
+		}
 
-    template <typename T>
-    [[nodiscard]] std::shared_ptr<T> dynamic_self_cast() {
-        auto type_idx = std::type_index(typeid(T));
-        
-        auto it = cast_cache.find(type_idx);
-        if (it != cast_cache.end()) {
-            if (auto cached = it->second.lock()) {
-                return std::static_pointer_cast<T>(std::static_pointer_cast<void>(cached));
-            }
-            cast_cache.erase(it);
-        }
-        
-        auto result = std::dynamic_pointer_cast<T>(shared_from_this());
-        if (result) {
-            cast_cache[type_idx] = result;
-        }
-        
-        return result;
-    }
+		auto result = std::static_pointer_cast<T>(shared_from_this());
+		cast_cache[type_idx] = result;
 
-    template <typename TargetType, typename SourceType>
-        requires ConvertibleTo<TargetType, SourceType>
-    [[nodiscard]] static std::shared_ptr<TargetType> static_cast_ptr(std::shared_ptr<SourceType> source) {
-        return std::static_pointer_cast<TargetType>(std::move(source));
-    }
+		return result;
+	}
 
-    template <typename TargetType, typename SourceType>
-    [[nodiscard]] static std::shared_ptr<TargetType> dynamic_cast_ptr(std::shared_ptr<SourceType> source) {
-        return std::dynamic_pointer_cast<TargetType>(std::move(source));
-    }
+	template <typename T>
+	[[nodiscard]] std::shared_ptr<const T> static_self_cast() const {
+		auto type_idx = std::type_index(typeid(const T));
 
-    void clear_cast_cache() {
-        cast_cache.clear();
-    }
+		auto it = cast_cache.find(type_idx);
+		if (it != cast_cache.end()) {
+			if (auto cached = it->second.lock()) {
+				return std::static_pointer_cast<const T>(std::static_pointer_cast<void>(cached));
+			}
+			cast_cache.erase(it);
+		}
+
+		auto result = std::static_pointer_cast<const T>(shared_from_this());
+		cast_cache[type_idx] = result;
+
+		return result;
+	}
+
+	template <typename T>
+	[[nodiscard]] std::shared_ptr<T> dynamic_self_cast() {
+		auto type_idx = std::type_index(typeid(T));
+
+		auto it = cast_cache.find(type_idx);
+		if (it != cast_cache.end()) {
+			if (auto cached = it->second.lock()) {
+				return std::static_pointer_cast<T>(std::static_pointer_cast<void>(cached));
+			}
+			cast_cache.erase(it);
+		}
+
+		auto result = std::dynamic_pointer_cast<T>(shared_from_this());
+		if (result) {
+			cast_cache[type_idx] = result;
+		}
+
+		return result;
+	}
+
+	template <typename TargetType, typename SourceType>
+		requires ConvertibleTo<TargetType, SourceType>
+	[[nodiscard]] static std::shared_ptr<TargetType> static_cast_ptr(std::shared_ptr<SourceType> source) {
+		return std::static_pointer_cast<TargetType>(std::move(source));
+	}
+
+	template <typename TargetType, typename SourceType>
+	[[nodiscard]] static std::shared_ptr<TargetType> dynamic_cast_ptr(std::shared_ptr<SourceType> source) {
+		return std::dynamic_pointer_cast<TargetType>(std::move(source));
+	}
+
+	void clear_cast_cache() {
+		cast_cache.clear();
+	}
 
 private:
-    mutable phmap::flat_hash_map<std::type_index, std::weak_ptr<void>> cast_cache;
+	mutable phmap::flat_hash_map<std::type_index, std::weak_ptr<void>> cast_cache;
 };

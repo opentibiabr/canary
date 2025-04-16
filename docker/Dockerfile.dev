@@ -13,7 +13,7 @@ WORKDIR /opt
 COPY vcpkg.json /opt
 RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ' | tr -d '\r\n') \
     && echo "vcpkg commit ID: '$vcpkgCommitId'" \
-    && git clone https://github.com/microsoft/vcpkg.git \
+    && git clone https://github.com/beats-dh/vcpkg.git \
     && cd vcpkg \
     && git fetch origin \
     && git checkout "$vcpkgCommitId" \

@@ -65,7 +65,7 @@
       "description": "Sets Ninja generator, compilers, build and install directory and set build type as release",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": {
-          "value": "/home/beats/vcpkg/scripts/buildsystems/vcpkg.cmake",
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
         "RUN_TESTS_AFTER_BUILD": "OFF"

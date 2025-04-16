@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "server/signals.hpp"
 
 #include "config/configmanager.hpp"
@@ -21,7 +23,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lib/di/container.hpp"
 
-Signals::Signals(asio::io_service &service) :
+Signals::Signals(asio::io_context &service) :
 	set(service) {
 	set.add(SIGINT);
 	set.add(SIGTERM);

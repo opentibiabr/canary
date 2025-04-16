@@ -56,7 +56,7 @@ jobs:
           $vcpkgJson = Get-Content .\vcpkg.json -Raw | ConvertFrom-Json
           $vcpkgCommitId = $vcpkgJson.'builtin-baseline'.Trim()
           Write-Host "vcpkg commit ID: $vcpkgCommitId"
-          git clone https://github.com/Microsoft/vcpkg.git
+          git clone https://github.com/beats-dh/vcpkg.git
           cd vcpkg
           git checkout $vcpkgCommitId
           .\bootstrap-vcpkg.bat

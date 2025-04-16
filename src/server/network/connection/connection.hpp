@@ -36,7 +36,7 @@ public:
 
 	static ConnectionManager &getInstance();
 
-	Connection_ptr createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort);
+	Connection_ptr createConnection(asio::io_context &io_service, const ConstServicePort_ptr &servicePort);
 	void releaseConnection(const Connection_ptr &connection);
 	void closeAll();
 
@@ -47,7 +47,7 @@ private:
 class Connection : public std::enable_shared_from_this<Connection> {
 public:
 	// Constructor
-	Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort);
+	Connection(asio::io_context &initIoService, ConstServicePort_ptr initservicePort);
 	// Constructor end
 
 	// Destructor

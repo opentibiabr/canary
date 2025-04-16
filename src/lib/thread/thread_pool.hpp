@@ -11,7 +11,7 @@
 
 #include "BS_thread_pool.hpp"
 
-class ThreadPool : public BS::thread_pool {
+class ThreadPool : public BS::thread_pool<> {
 public:
 	explicit ThreadPool(Logger &logger);
 

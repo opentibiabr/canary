@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "server/network/connection/connection.hpp"
 
 #include "config/configmanager.hpp"
@@ -22,7 +24,7 @@ ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
 
-Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, const ConstServicePort_ptr &servicePort) {
+Connection_ptr ConnectionManager::createConnection(asio::io_context &io_service, const ConstServicePort_ptr &servicePort) {
 	auto connection = std::make_shared<Connection>(io_service, servicePort);
 	connections.emplace(connection);
 	return connection;
@@ -50,7 +52,7 @@ void ConnectionManager::closeAll() {
 	connections.clear();
 }
 
-Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort) :
+Connection::Connection(asio::io_context &initIoService, ConstServicePort_ptr initservicePort) :
 	readTimer(initIoService),
 	writeTimer(initIoService),
 	service_port(std::move(initservicePort)),
@@ -111,7 +113,7 @@ void Connection::accept(Protocol_ptr protocolPtr) {
 }
 
 void Connection::acceptInternal(bool toggleParseHeader) {
-	readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+	readTimer.expires_after(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
@@ -154,7 +156,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 			if (remainder > 0) {
 				connectionState = CONNECTION_STATE_READINGS;
 				try {
-					readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+					readTimer.expires_after(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 					readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 					// Read the remainder of proxy identification
@@ -215,7 +217,7 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	try {
-		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+		readTimer.expires_after(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 		// Read packet content
@@ -282,7 +284,7 @@ void Connection::parsePacket(const std::error_code &error) {
 	}
 
 	try {
-		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+		readTimer.expires_after(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 		if (!skipReadingNextPacket) {
@@ -296,7 +298,7 @@ void Connection::parsePacket(const std::error_code &error) {
 }
 
 void Connection::resumeWork() {
-	readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
+	readTimer.expires_after(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 	readTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {
@@ -365,7 +367,7 @@ uint32_t Connection::getIP() {
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
-	writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
+	writeTimer.expires_after(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
 	writeTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
 	try {

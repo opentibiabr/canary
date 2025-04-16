@@ -49,7 +49,7 @@ public:
 
 class ServicePort : public std::enable_shared_from_this<ServicePort> {
 public:
-	explicit ServicePort(asio::io_service &init_io_service) :
+	explicit ServicePort(asio::io_context &init_io_service) :
 		io_service(init_io_service) { }
 	~ServicePort();
 
@@ -72,7 +72,7 @@ public:
 private:
 	void accept();
 
-	asio::io_service &io_service;
+	asio::io_context &io_service;
 	std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 	std::vector<Service_ptr> services;
 
@@ -104,7 +104,7 @@ private:
 
 	phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
-	asio::io_service io_service;
+	asio::io_context io_service;
 	Signals signals { io_service };
 	asio::high_resolution_timer death_timer { io_service };
 	bool running = false;

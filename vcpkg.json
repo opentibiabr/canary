@@ -33,6 +33,5 @@
       "name": "mpir",
       "platform": "windows"
     }
-  ],
-  "builtin-baseline": "480d6dfa5c3c568f6a54f1a05a08b3daed67af10"
+  ]
 }

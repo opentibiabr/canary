@@ -1775,7 +1775,7 @@ end
 function GameStore.processExpBoostPurchase(player)
 	local currentXpBoostTime = player:getXpBoostTime()
 	local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
-	player:setXpBoostPercent(oldBoostExp + 50)
+	player:setXpBoostPercent(50)
 	player:setXpBoostTime(currentXpBoostTime + 3600)
 
 	if expBoostCount == -1 or expBoostCount > 0 or expBoostCount > 5 then

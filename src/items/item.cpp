@@ -2145,49 +2145,49 @@ SoundEffect_t Item::getMovementSound(const std::shared_ptr<Cylinder> &toCylinder
 	return SoundEffect_t::ITEM_MOVE_DEFAULT;
 }
 
-std::string Item::parseClassificationDescription(const std::shared_ptr<Item> &item) {
-	std::ostringstream string;
-	if (item && item->getClassification() >= 1) {
-		string << std::endl
-			    << "Classification: " << std::to_string(item->getClassification())
- 			    << " Tier: " << std::to_string(item->getTier());
-		if (item->getTier() != 0) {
-			double amplificationBonus = 0.0;
- 			if (auto holder = item->getHoldingPlayer()) {
- 				amplificationBonus = static_cast<double>(holder->getAmplifiedChance()) / 100.0;
- 			}
+std::string Item::parseClassificationDescription(const std::shared_ptr<Item>& item) {
+	std::ostringstream oss;
+	
+	if (!item || item->getClassification() < 1)
+		return "";
 
-			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
-				double base = item->getFatalChance();
- 				string << fmt::format(" ({:.2f}% Onslaught{}).", base * (1.0 + amplificationBonus),
- 					amplificationBonus > 0.0 ? " [Amplified]" : "");
- 			}
- 			else {
- 				auto category = g_game().getObjectCategory(item);
- 
- 				if (category == OBJECTCATEGORY_HELMETS) {
- 					double base = item->getMomentumChance();
- 					string << fmt::format(" ({:.2f}% Momentum{}).", base * (1.0 + amplificationBonus),
- 						amplificationBonus > 0.0 ? " [Amplified]" : "");
- 				}
- 				else if (category == OBJECTCATEGORY_ARMORS) {
- 					double base = item->getDodgeChance();
- 					string << fmt::format(" ({:.2f}% Ruse{}).", base * (1.0 + amplificationBonus),
- 						amplificationBonus > 0.0 ? " [Amplified]" : "");
- 				}
- 				else if (category == OBJECTCATEGORY_LEGS) {
- 					double base = item->getTranscendenceChance();
- 					string << fmt::format(" ({:.2f}% Transcendence{}).", base * (1.0 + amplificationBonus),
- 						amplificationBonus > 0.0 ? " [Amplified]" : "");
- 				}
- 				else if (category == OBJECTCATEGORY_BOOTS) {
- 					double base = item->getAmplificationChance();
- 					string << fmt::format(" ({:.2f}% Amplification).", base);
- 				}
-			}
+	oss << "\nClassification: " << static_cast<int>(item->getClassification())
+		<< " Tier: " << static_cast<int>(item->getTier());
+	
+	if (item->getTier() == 0)
+		return oss.str();
+
+	double amplificationBonus = 0.0;
+	if (auto holder = item->getHoldingPlayer()) {
+		amplificationBonus = holder->getAmplifiedChance() / 100.0;
+	}
+
+	if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
+		double base = item->getFatalChance();
+		oss << fmt::format(" ({:.2f}% Onslaught).", base * (1.0 + amplificationBonus));
+	}
+	else {
+		auto category = g_game().getObjectCategory(item);
+
+		if (category == OBJECTCATEGORY_HELMETS) {
+			double base = item->getMomentumChance();
+			oss << fmt::format(" ({:.2f}% Momentum).", base * (1.0 + amplificationBonus));
+		}
+		else if (category == OBJECTCATEGORY_ARMORS) {
+			double base = item->getDodgeChance();
+			oss << fmt::format(" ({:.2f}% Ruse).", base * (1.0 + amplificationBonus));
+		}
+		else if (category == OBJECTCATEGORY_LEGS) {
+			double base = item->getTranscendenceChance();
+			oss << fmt::format(" ({:.2f}% Transcendence).", base * (1.0 + amplificationBonus));
+		}
+		else if (category == OBJECTCATEGORY_BOOTS) {
+			double base = item->getAmplificationChance();
+			oss << fmt::format(" ({:.2f}% Amplification).", base);
 		}
 	}
-	return string.str();
+
+	return oss.str();
 }
 
 std::string Item::parseShowDurationSpeed(int32_t speed, bool &begin) {

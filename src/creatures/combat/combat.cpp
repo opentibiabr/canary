@@ -2273,10 +2273,15 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		std::unordered_map<uint16_t, bool> lowBlowCrits;
 		canApplyCritical = (baseChance != 0 && uniform_random(1, 10000) <= baseChance);
 
+		auto rawAmp = static_cast<double>(player->getAmplifiedChance());
+		if (rawAmp > 100.0) rawAmp = 100.0;
+		double amplification = rawAmp / 100.0;
+
 		bool canApplyFatal = false;
 		if (const auto &playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT); playerWeapon && playerWeapon->getTier() > 0) {
 			double fatalChance = playerWeapon->getFatalChance();
-			canApplyFatal = (fatalChance > 0 && uniform_random(0, 10000) / 100.0 < fatalChance);
+			double amplifiedFatalChance = fatalChance * (1.0 + amplification);
+			canApplyFatal = (amplifiedFatalChance > 0 && (uniform_random(0, 10000) / 100.0) < amplifiedFatalChance);
 		}
 
 		if (!canApplyCritical && lowBlowRaceid != 0) {

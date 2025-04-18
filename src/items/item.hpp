@@ -700,6 +700,7 @@ public:
 	double getMomentumChance() const;
 
 	double getTranscendenceChance() const;
+	double getAmplificationChance() const;
 
 	uint8_t getTier() const;
 	void setTier(uint8_t tier);

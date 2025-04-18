@@ -197,6 +197,9 @@ public:
 	bool isArmor() const {
 		return slotPosition & SLOTP_ARMOR;
 	}
+	bool isBoots() const {
+		return slotPosition & CONST_SLOT_FEET;
+	}
 	bool isHelmet() const {
 		return slotPosition & SLOTP_HEAD;
 	}

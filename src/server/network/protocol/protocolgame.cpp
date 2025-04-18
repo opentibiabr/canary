@@ -6146,6 +6146,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			} else if (it.isArmor()) {
 				chance = (0.0307576 * tier * tier) + (0.440697 * tier) + 0.026;
 				ss << fmt::format("{} ({:.2f}% Ruse)", static_cast<uint16_t>(tier), chance);
+			} else if (it.isBoots()) {
+				chance = 0.7192 * tier * tier + 0.1313 * tier + 1.6495;
+				ss << fmt::format("{} ({:.2f}% Amplification)", static_cast<uint16_t>(tier), chance);
 			}
 			msg.addString(ss.str());
 		} else if (it.upgradeClassification > 0 && tier == 0) {
@@ -8936,6 +8939,9 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 			}
 			if (it.isLegs()) {
 				skill = item->getTranscendenceChance() * 100;
+			}
+			if (it.isBoots()) {
+				skill = item->getAmplificationChance() * 100;
 			}
 		}
 

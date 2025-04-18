@@ -203,6 +203,18 @@ double Item::getTranscendenceChance() const {
 	);
 }
 
+double Item::getAmplificationChance() const {
+	if (getTier() == 0) {
+		return 0;
+	}
+	return quadraticPoly(
+		g_configManager().getFloat(AMPLIFICATION_CHANCE_FORMULA_A),
+		g_configManager().getFloat(AMPLIFICATION_CHANCE_FORMULA_B),
+		g_configManager().getFloat(AMPLIFICATION_CHANCE_FORMULA_C),
+		getTier()
+	);
+}
+
 uint8_t Item::getTier() const {
 	if (!hasAttribute(ItemAttribute_t::TIER)) {
 		return 0;
@@ -2137,16 +2149,41 @@ std::string Item::parseClassificationDescription(const std::shared_ptr<Item> &it
 	std::ostringstream string;
 	if (item && item->getClassification() >= 1) {
 		string << std::endl
-			   << "Classification: " << std::to_string(item->getClassification()) << " Tier: " << std::to_string(item->getTier());
+			    << "Classification: " << std::to_string(item->getClassification())
+ 			    << " Tier: " << std::to_string(item->getTier());
 		if (item->getTier() != 0) {
+			double amplificationBonus = 0.0;
+ 			if (auto holder = item->getHoldingPlayer()) {
+ 				amplificationBonus = static_cast<double>(holder->getAmplifiedChance()) / 100.0;
+ 			}
+
 			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
-				string << fmt::format(" ({:.2f}% Onslaught).", item->getFatalChance());
-			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
-				string << fmt::format(" ({:.2f}% Momentum).", item->getMomentumChance());
-			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
-				string << fmt::format(" ({:.2f}% Ruse).", item->getDodgeChance());
-			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_LEGS) {
-				string << fmt::format(" ({:.2f}% Transcendence).", item->getTranscendenceChance());
+				double base = item->getFatalChance();
+ 				string << fmt::format(" ({:.2f}% Onslaught{}).", base * (1.0 + amplificationBonus),
+ 					amplificationBonus > 0.0 ? " [Amplified]" : "");
+ 			}
+ 			else {
+ 				auto category = g_game().getObjectCategory(item);
+ 
+ 				if (category == OBJECTCATEGORY_HELMETS) {
+ 					double base = item->getMomentumChance();
+ 					string << fmt::format(" ({:.2f}% Momentum{}).", base * (1.0 + amplificationBonus),
+ 						amplificationBonus > 0.0 ? " [Amplified]" : "");
+ 				}
+ 				else if (category == OBJECTCATEGORY_ARMORS) {
+ 					double base = item->getDodgeChance();
+ 					string << fmt::format(" ({:.2f}% Ruse{}).", base * (1.0 + amplificationBonus),
+ 						amplificationBonus > 0.0 ? " [Amplified]" : "");
+ 				}
+ 				else if (category == OBJECTCATEGORY_LEGS) {
+ 					double base = item->getTranscendenceChance();
+ 					string << fmt::format(" ({:.2f}% Transcendence{}).", base * (1.0 + amplificationBonus),
+ 						amplificationBonus > 0.0 ? " [Amplified]" : "");
+ 				}
+ 				else if (category == OBJECTCATEGORY_BOOTS) {
+ 					double base = item->getAmplificationChance();
+ 					string << fmt::format(" ({:.2f}% Amplification).", base);
+ 				}
 			}
 		}
 	}

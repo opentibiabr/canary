@@ -181,6 +181,10 @@ transcendanceChanceFormulaC = 0.0073
 
 transcendanceAvatarDuration = 7000
 
+amplificationChanceFormulaA = 0.7192
+amplificationChanceFormulaB = 0.1313
+amplificationChanceFormulaC = 1.6495
+
 -- Bestiary & Bosstiary system
 -- NOTE: bestiaryKillMultiplier, multiplier value of monster killed, default 1
 -- NOTE: bosstiaryKillMultiplier, multiplier value of boss killed, default 1

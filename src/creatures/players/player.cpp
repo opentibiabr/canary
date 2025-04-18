@@ -8938,10 +8938,12 @@ void Player::triggerMomentum() {
 
 	chance += m_wheelPlayer.getBonusData().momentum;
 
-	const double_t amplification = std::min(getAmplifiedChance(), static_cast<uint16_t>(100)) / 100.0;
+	double rawAmpPct = std::clamp(getAmplifiedChance(), 0.0, 100.0);
+	double amplification = rawAmpPct / 100.0;
+
 	chance *= (1.0 + amplification);
 
-	const double_t randomChance = uniform_random(0, 10000) / 100.0;
+	double randomChance = uniform_random(0, 10000) / 100.0;
 
 	if (getZoneType() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0.0 && randomChance < chance) {
 		bool triggered = false;
@@ -8999,14 +9001,15 @@ void Player::triggerTranscendance() {
 		return;
 	}
 
-	double_t chance = item->getTranscendenceChance();
-
-	const double_t amplification = std::min(getAmplifiedChance(), static_cast<uint16_t>(100)) / 100.0;
+	double chance = item->getTranscendenceChance();
+	double rawAmp = getAmplifiedChance();
+	if (rawAmp > 100.0) rawAmp = 100.0;
+	double amplification = rawAmp / 100.0;
 	chance *= (1.0 + amplification);
 
-	const double_t randomChance = uniform_random(0, 10000) / 100.0;
+	double randomChance = uniform_random(0, 10000) / 100.0;
 
-	if (getZoneType() != ZONE_PROTECTION && checkLastAggressiveActionWithin(2000) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
+	if (getZoneType() != ZONE_PROTECTION && checkLastAggressiveActionWithin(2000) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0.0 && randomChance < chance){
 		int64_t duration = g_configManager().getNumber(TRANSCENDANCE_AVATAR_DURATION);
 		const auto &outfitCondition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0)->static_self_cast<ConditionOutfit>();
 		Outfit_t outfit;
@@ -10768,13 +10771,12 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 	return Success;
 }
 
-uint16_t Player::getAmplifiedChance() const {
-	uint16_t amplificationChance = 0;
+double Player::getAmplifiedChance() const {
+    double amplificationChance = 0.0;
 
-	if (const auto &boots = getInventoryItem(CONST_SLOT_FEET); boots != nullptr && boots->getTier() > 0) {
-		amplificationChance += static_cast<uint16_t>(boots->getAmplificationChance()); 
-	}
-
-
-	return amplificationChance;
+    if (auto boots = getInventoryItem(CONST_SLOT_FEET); boots && boots->getTier() > 0) {
+        amplificationChance += boots->getAmplificationChance();
+    }
+	
+	return std::clamp(amplificationChance, 0.0, 100.0);
 }

@@ -8936,11 +8936,10 @@ void Player::triggerMomentum() {
 		chance += item->getMomentumChance();
 	}
 
-	chance += m_wheelPlayer.getBonusData().momentum;
-	if (const auto &boots = getInventoryItem(CONST_SLOT_FEET); boots && boots->getTier() > 0) {
-		const double_t amplification = static_cast<double_t>(boots->getAmplificationChance()) / 100.0;
-		chance *= (1.0 + amplification);
-	}
+	chance += m_wheelPlayer->getBonusData().momentum;
+
+	const double_t amplification = std::min(getAmplifiedChance(), static_cast<uint16_t>(100)) / 100.0;
+	chance *= (1.0 + amplification);
 
 	const double_t randomChance = uniform_random(0, 10000) / 100.0;
 
@@ -9001,11 +9000,9 @@ void Player::triggerTranscendance() {
 	}
 
 	double_t chance = item->getTranscendenceChance();
- 
-	if (const auto &boots = getInventoryItem(CONST_SLOT_FEET); boots && boots->getTier() > 0) {
-		const double_t amplification = static_cast<double_t>(boots->getAmplificationChance()) / 100.0;
-		chance *= (1.0 + amplification);
-	}
+
+	const double_t amplification = std::min(getAmplifiedChance(), static_cast<uint16_t>(100)) / 100.0;
+	chance *= (1.0 + amplification);
 
 	const double_t randomChance = uniform_random(0, 10000) / 100.0;
 

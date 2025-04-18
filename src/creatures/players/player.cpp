@@ -8936,7 +8936,7 @@ void Player::triggerMomentum() {
 		chance += item->getMomentumChance();
 	}
 
-	chance += m_wheelPlayer->getBonusData().momentum;
+	chance += m_wheelPlayer.getBonusData().momentum;
 
 	const double_t amplification = std::min(getAmplifiedChance(), static_cast<uint16_t>(100)) / 100.0;
 	chance *= (1.0 + amplification);

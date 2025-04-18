@@ -174,9 +174,9 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, ONSLAUGHT_CHANCE_FORMULA_A, "onslaughtChanceFormulaA", 0.05);
 	loadFloatConfig(L, ONSLAUGHT_CHANCE_FORMULA_B, "onslaughtChanceFormulaB", 0.4);
 	loadFloatConfig(L, ONSLAUGHT_CHANCE_FORMULA_C, "onslaughtChanceFormulaC", 0.05);
-	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_A, "amplificationChanceFormulaA", 0.025);
- 	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_B, "amplificationChanceFormulaB", 0.0);
- 	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_C, "amplificationChanceFormulaC", 0.0);
+	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_A, "amplificationChanceFormulaA", 0.7192);
+ 	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_B, "amplificationChanceFormulaB", 0.1313);
+ 	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_C, "amplificationChanceFormulaC", 1.6495);
 	loadFloatConfig(L, PARTY_SHARE_LOOT_BOOSTS_DIMINISHING_FACTOR, "partyShareLootBoostsDimishingFactor", 0.7f);
 	loadFloatConfig(L, PVP_RATE_DAMAGE_REDUCTION_PER_LEVEL, "pvpRateDamageReductionPerLevel", 0.0);
 	loadFloatConfig(L, PVP_RATE_DAMAGE_TAKEN_PER_LEVEL, "pvpRateDamageTakenPerLevel", 0.0);

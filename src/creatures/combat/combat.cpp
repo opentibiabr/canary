@@ -2273,7 +2273,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		std::unordered_map<uint16_t, bool> lowBlowCrits;
 		canApplyCritical = (baseChance != 0 && uniform_random(1, 10000) <= baseChance);
 
-		double rawAmp = static_cast<double>(player->getAmplifiedChance());
+		auto rawAmp = static_cast<double>(player->getAmplifiedChance());
 		if (rawAmp > 100.0) rawAmp = 100.0;
 		double amplification = rawAmp / 100.0;
 

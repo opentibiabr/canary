@@ -110,7 +110,9 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.yakchalDoor, 1)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission12, 6) -- Questlog The Ice Islands Quest, Formorgar Mines 4: Retaliation
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.NorsemanOutfit, 1) -- Questlog Norseman Outfit Quest
-				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
+				if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
+					player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+				end
 				player:addOutfit(251, 0)
 				player:addOutfit(252, 0)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)

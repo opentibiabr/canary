@@ -72,7 +72,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			end
 			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.UltimateBoozeQuest, 1)
 			player:addItem(138, 1)
 			npcHandler:say("Good! Listen closely. Take this bottle and go to Kazordoon. I need a sample of their very special brown ale. You may find a cask in their brewery. Come back as soon as you got it.", npc, creature)

@@ -130,7 +130,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Good decision, |PLAYERNAME|. Your first sacrifice will be a medusa shield. Bring it to me and do give it happily.", npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.WizardOutfits, 1)
-			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
+			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+			end
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(3436, 1) then
@@ -173,7 +175,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				"What is left are mainly pseudo-dark pretenders, the old wisdom and power being far beyond their grasp. They think they have the right to tap that dark power, but they don't. ...",
 				"I want you to eliminate them. As many as you can. All of the upstart necromancer orders, and those priestesses. And as I said, don't expect a reward - this is what has to be done to cleanse Tibia of its false dark prophets.",
 			}, npc, creature)
-			player:setStorageValue(JOIN_STOR, 1)
+			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.Join_Stor, 1)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.NecromancerCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.NecromancerCount, 0)
 			player:setStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.PriestessCount, 0)

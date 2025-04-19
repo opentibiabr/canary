@@ -70,7 +70,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "barbarian") and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 1 then
 		npcHandler:say("A true barbarian is something special among our people. Everyone who wants to become a barbarian will have to pass the barbarian {test}.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, "test") then
+	elseif MsgContains(message, "test") and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 1 then
 		npcHandler:say({
 			"All of our juveniles have to take the barbarian test to become a true member of our community. Foreigners who manage to master the test are granted the title of an honorary barbarian and the respect of our people ...",
 			"Are you willing to take the barbarian test?",

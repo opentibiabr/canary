@@ -69,14 +69,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "reason") or MsgContains(message, "flatter") and player:getStorageValue(TheNewFrontier.Mission05.TelasKeyword) <= 2 and player:getStorageValue(TheNewFrontier.Mission05.Telas) == 1 then
 		if npcHandler:getTopic(playerId) == 1 then
-			if MsgContains(message, "reason") and player:getStorageValue(TheNewFrontier.Mission05.TelasKeyword) == 1 then
-				npcHandler:say("Well it sounds like a good idea to test my golems in some real environment. I think it is acceptable to send some of them to Farmine.", npc, creature)
-				player:setStorageValue(TheNewFrontier.Mission05.Telas, 3)
-			elseif MsgContains(message, "flatter") and player:getStorageValue(TheNewFrontier.Mission05.TelasKeyword) == 2 then
+			if player:getStorageValue(TheNewFrontier.Mission05.TelasKeyword) == 2 then
 				npcHandler:say("Well, of course my worker golems are quite usefull and it might indeed be a good idea to see who they operate on realistic conditions. I will send some to farmine soon.", npc, creature)
-				player:setStorageValue(TheNewFrontier.Mission05.Telas, 3)
+			elseif player:getStorageValue(TheNewFrontier.Mission05.TelasKeyword) == 1 then
+				npcHandler:say("Well it sounds like a good idea to test my golems in some real environment. I think it is acceptable to send some of them to Farmine.", npc, creature)
 			end
-			player:setStorageValue(TheNewFrontier.Mission05.TelasKeyword, 3)
+			player:setStorageValue(TheNewFrontier.Mission05.TelasKeyword, math.random(3, 4))
+			player:setStorageValue(TheNewFrontier.Mission05.Telas, 2)
 		end
 	elseif MsgContains(message, "plea") and player:getStorageValue(TheNewFrontier.Mission05.TelasKeyword) == 3 and player:getStorageValue(TheNewFrontier.Mission05.Telas) == 1 then
 		if npcHandler:getTopic(playerId) == 1 then

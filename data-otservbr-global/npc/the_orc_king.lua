@@ -75,7 +75,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	-- Mission 3 - Orc Fortress
 	if MsgContains(message, "lamp") then
 		if efreet == 1 or marid == 1 then
-			if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.RecievedLamp) ~= 1 then
+			if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.ReceivedLamp) ~= 1 then
 				npcHandler:say({
 					"I can sense your evil intentions to imprison a djinn! You are longing for the lamp, which I still possess. ...",
 					"Who do you want to trap in this cursed lamp?",
@@ -100,7 +100,12 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToLamp, 1)
 			end
 
-			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.RecievedLamp, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.ReceivedLamp, 1)
+			if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03) == 1 then
+				player:setStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03, 2)
+			elseif player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03) == 1 then
+				player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03, 2)
+			end
 			player:addItem(3231, 1)
 			npcHandler:say("I was waiting for this day! Take the lamp and let Malor feel my wrath!", npc, creature)
 		else
@@ -150,7 +155,7 @@ keywordHandler:addKeyword({ "deathwish" }, StdModule.say, { npcHandler = npcHand
 keywordHandler:addKeyword({ "good djinn" }, StdModule.say, { npcHandler = npcHandler, text = "I will not share anything more about that topic with you {paleskins}." })
 keywordHandler:addKeyword({ "paleskins" }, StdModule.say, { npcHandler = npcHandler, text = "You are as ugly as maggots, although not quite as as tasty." })
 keywordHandler:addKeyword({ "malor" }, StdModule.say, { npcHandler = npcHandler, text = "This cursed djinn king! I set him free from an enchanted lamp, and he cheated me!" }, function(player)
-	return player:getStorageValue(Storage.Quest.U7_4.DjinnWar.RecievedLamp) == 1
+	return player:getStorageValue(Storage.Quest.U7_4.DjinnWar.ReceivedLamp) == 1
 end)
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

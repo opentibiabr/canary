@@ -161,7 +161,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart) < 1 then
+				player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			end
 			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 1)
 			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.ChestDoor, 0)
 			npcHandler:say("Yes? Yes! That's the enthusiasm I need! Remember to bring a sharp knife to gather the samples, plants - even mutated deformed plants - are very sensitive you know. Off you go and be careful out there, Zao is no place for the feint hearted mind you.", npc, creature)

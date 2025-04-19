@@ -142,7 +142,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 4 then
 			npcHandler:say("Alright then. Take this botanist's container and return to me once you were able to retrieve a sample. Don't lose patience!", npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidHatAddon, 1)
-			player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.DefaultStart, 1) --this for default start of Outfit and Addon Quests
+			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
+			end
 			player:addItem(4867, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 5 then
@@ -160,10 +162,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(5939, 1) then
 				npcHandler:say("Good work, |PLAYERNAME|! This water looks indeed extremely clear. I will examine it right away. If you are ready to help me again, just ask me for a {task}.", npc, creature)
 				player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidHatAddon, 4)
+				player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.QuestLog, 5)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 8 then
-			npcHandler:say("I'm very impressed, |PLAYERNAME|. With this task you have proven that you are on the right side and are powerful as well. If you are ready to help me again, just ask me for a {task}.", npc, creature)
+			npcHandler:say("Good! I will eagerly await your return.", npc, creature)
 			player:setStorageValue(Storage.Quest.U7_8.DruidOutfits.DruidHatAddon, 5)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 9 then

@@ -945,7 +945,13 @@ public:
 	void sendTakeScreenshot(Screenshot_t screenshotType) const;
 
 	void onThink(uint32_t interval) override;
-
+	bool updateInventory = false;
+	std::vector<std::shared_ptr<Item>> updatedItems;
+	const size_t maxUpdatesPerBatch = 100;
+	unsigned int lastUpdateTime = 0;
+	unsigned int updateCooldown = 500;
+	std::chrono::steady_clock::time_point currentTime;
+	long long currentTimeMillis = 0;
 	void postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 	void postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 

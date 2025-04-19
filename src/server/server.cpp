@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "pch.hpp"
+
 #include "server/server.hpp"
 
 #include "server/network/message/outputmessage.hpp"
@@ -46,7 +48,7 @@ void ServiceManager::stop() {
 
 	for (auto &servicePortIt : acceptors) {
 		try {
-			io_service.post([servicePort = servicePortIt.second] { servicePort->onStopServer(); });
+			asio::post([servicePort = servicePortIt.second] { servicePort->onStopServer(); });
 		} catch (const std::system_error &e) {
 			g_logger().warn("[ServiceManager::stop] - Network error: {}", e.what());
 		}
@@ -54,7 +56,7 @@ void ServiceManager::stop() {
 
 	acceptors.clear();
 
-	death_timer.expires_from_now(std::chrono::seconds(3));
+	death_timer.expires_after(std::chrono::seconds(3));
 	death_timer.async_wait([this](const std::error_code &err) {
 		die();
 	});
@@ -153,7 +155,7 @@ void ServicePort::open(uint16_t port) {
 
 	try {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort));
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::make_address(g_configManager().getString(IP)), serverPort));
 		} else {
 			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
 		}

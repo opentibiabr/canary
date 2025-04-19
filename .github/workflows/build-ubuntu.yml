@@ -88,7 +88,7 @@ jobs:
       - name: Get vcpkg commit id from vcpkg.json
         uses: lukka/run-vcpkg@main
         with:
-          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitURL: "https://github.com/beats-dh/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Get latest CMake and ninja

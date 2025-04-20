@@ -210,7 +210,7 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	uint16_t size = m_msg.getLengthHeader();
-	if (std::static_pointer_cast<ProtocolGame>(protocol)) {
+	if (protocol) {
 		size = (size * 8) + 4;
 	}
 

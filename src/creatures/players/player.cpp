@@ -2383,7 +2383,8 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	if (item->getParent() == getPlayer()) {
 		addItemImbuementStats(imbuement);
 	}
-
+    
+	sendSkills();
 	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
@@ -2420,6 +2421,7 @@ void Player::onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot) {
 	}
 
 	item->clearImbuement(slot, imbuementInfo.imbuement->getID());
+	sendSkills();
 	this->openImbuementWindow(item);
 }
 

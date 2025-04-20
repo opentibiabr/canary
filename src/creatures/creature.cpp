@@ -772,7 +772,9 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 					g_game().afterCreatureZoneChange(creature, creature->getZones(), {});
 					creature->onDeath();
 				}
-			} }, "Game::executeDeath");
+			} 
+		},
+		                        "Creature::onDeath");
 	}
 }
 

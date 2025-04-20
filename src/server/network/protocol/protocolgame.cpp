@@ -118,7 +118,7 @@ namespace {
 	 */
 	void handleImbuementDamage(NetworkMessage &msg, const std::shared_ptr<Player> &player) {
 		bool imbueDmg = false;
-		std::shared_ptr<Item> weapon = player->getWeapon();
+		std::shared_ptr<Item> weapon = player->getWeapon(CONST_SLOT_LEFT);
 		if (weapon) {
 			uint8_t slots = Item::items[weapon->getID()].imbuementSlot;
 			if (slots > 0) {
@@ -131,7 +131,7 @@ namespace {
 					if (imbuementInfo.duration > 0) {
 						auto imbuement = *imbuementInfo.imbuement;
 						if (imbuement.combatType != COMBAT_NONE) {
-							msg.addByte(static_cast<uint32_t>(imbuement.elementDamage));
+							msg.addDouble(static_cast<double>(imbuement.elementDamage)/100);
 							msg.addByte(getCipbiaElement(imbuement.combatType));
 							imbueDmg = true;
 							break;
@@ -141,8 +141,8 @@ namespace {
 			}
 		}
 		if (!imbueDmg) {
-			msg.addByte(0);
-			msg.addByte(0);
+			msg.addDouble(0x00); // converted damage
+			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL); // getCipbiaElement
 		}
 	}
 
@@ -213,7 +213,7 @@ namespace {
 				int16_t clientModifier = std::clamp(10000 - static_cast<int16_t>(damageModifiers[i]), -10000, 10000);
 				g_logger().debug("[{}] CombatType: {}, Damage Modifier: {}, Resulting Client Modifier: {}", __FUNCTION__, i, damageModifiers[i], clientModifier);
 				msg.addByte(getCipbiaElement(indexToCombatType(i)));
-				msg.add<int16_t>(clientModifier);
+				msg.addDouble(clientModifier/10000.0, 4);
 				++combats;
 			}
 		}
@@ -7982,24 +7982,206 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 		}
 	}
 
-	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
-		if (!oldProtocol && (i == SKILL_LIFE_LEECH_CHANCE || i == SKILL_MANA_LEECH_CHANCE)) {
-			continue;
-		}
-		auto skill = static_cast<skills_t>(i);
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(skill));
-	}
-
 	if (!oldProtocol) {
-		// 13.10 list (U8 + U16)
-		msg.addByte(0);
-		// Version 12.81 new skill (Fatal, Dodge and Momentum)
-		sendForgeSkillStats(msg);
-
-		// used for imbuement (Feather)
+		msg.addByte(0x00); // unknown
 		msg.add<uint32_t>(player->getCapacity()); // total capacity
 		msg.add<uint32_t>(player->getBaseCapacity()); // base total capacity
+		
+		// damage/healing, max damage and converted damage based on weapon type
+		std::shared_ptr<Item> weapon = player->getWeapon(CONST_SLOT_LEFT);
+		if (weapon) {
+			const ItemType &it = Item::items[weapon->getID()];
+			if (it.weaponType == WEAPON_WAND) {
+					msg.add<uint16_t>(it.maxHitChance/100); // damage / healing
+					msg.addByte(it.abilities->elementType); // getCipbiaElement
+
+					msg.addByte(static_cast<uint32_t>(it.maxHitChance) / 100); // max damage
+					msg.addByte(getCipbiaElement(it.abilities->elementType)); // getCipbiaElement
+
+					msg.addDouble(0x00); // converted damage
+					msg.addByte(CIPBIA_ELEMENTAL_ENERGY); // getCipbiaElement
+
+			} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
+				int32_t attackValue = weapon->getAttack();
+				if (it.weaponType == WEAPON_AMMO) {
+					std::shared_ptr<Item> weaponItem = player->getWeapon(true);
+					if (weaponItem) {
+						attackValue += weaponItem->getAttack();
+					}
+				}
+
+				int32_t attackSkill = player->getSkillLevel(SKILL_DISTANCE);
+				float attackFactor = player->getAttackFactor();
+				uint32_t maxDamage = static_cast<uint32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true) * player->getVocation()->distDamageMultiplier);
+				if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+					maxDamage += static_cast<uint32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue - weapon->getAttack() + it.abilities->elementDamage, attackFactor, true) * player->getVocation()->distDamageMultiplier);
+				}
+
+				if (attackValue) {
+					msg.add<uint16_t>(attackValue);   // damage / healing
+				} else {
+					msg.addByte(0);
+				}
+
+				msg.add<uint16_t>(maxDamage); // max damage
+				msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);  // getCipbiaElement
+
+				if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+
+				} else {
+					handleImbuementDamage(msg, player);   // converted damage
+				}
+
+			} else {
+				int32_t attackValue = std::max<int32_t>(0, weapon->getAttack());
+				int32_t attackSkill = player->getWeaponSkill(weapon);
+				float attackFactor = player->getAttackFactor();
+				uint32_t maxDamage = static_cast<uint32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
+				if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
+					maxDamage += static_cast<uint32_t>(Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, it.abilities->elementDamage, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
+				}
+
+				if (attackValue) {
+						msg.add<uint16_t>(attackValue);  // damage / healing
+					} else {
+						msg.addByte(0);
+					}
+					msg.add<uint16_t>(maxDamage);  // max damage
+					msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL); 
+
+					handleImbuementDamage(msg, player);   // converted damage
+				}
+		} else {
+			float attackFactor = player->getAttackFactor();
+			int32_t attackSkill = player->getSkillLevel(SKILL_FIST);
+			int32_t attackValue = 7;
+
+			int32_t maxDamage = Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true);
+
+			msg.add<uint16_t>(attackValue); // damage / healing
+
+			msg.add<uint16_t>(maxDamage);  // max damage
+			msg.addByte(CIPBIA_ELEMENTAL_PHYSICAL);
+
+			 msg.addDouble(0x00); // converted damage
+			 msg.addByte(CIPBIA_ELEMENTAL_ENERGY); // getCipbiaElement
+
+		}
+
+		const auto lifeLeechAmount = player->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) / 10;
+		const auto manaLeechAmount = player->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) / 10;
+		const auto criticalChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) / 10;
+		const auto criticalDamage = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) / 10;
+
+		if (lifeLeechAmount > 0) {
+			msg.addDouble(lifeLeechAmount, 5); // 5 means the precision - check which is correct
+		} else {
+			msg.addDouble(0x00);
+		}
+		if (manaLeechAmount > 0) {
+			msg.addDouble(manaLeechAmount, 5);  // 5 means the precision - check which is correct
+		} else {
+			msg.addDouble(0x00);
+		}
+		if (criticalChance > 0) {
+			msg.addDouble(criticalChance, 5);  // 5 means the precision - check which is correct
+		} else {
+			msg.addDouble(0x00);
+		}
+		if (criticalDamage > 0) {
+			msg.addDouble(criticalDamage, 5);  // 5 means the precision - check which is correct
+		} else {
+			msg.addDouble(0x00);
+		}
+
+
+		double_t amplificationChance = 0;
+		if (const auto &feetItem = player->getInventoryItem(CONST_SLOT_FEET); feetItem) {
+			amplificationChance += 0; //feetItem->getAmplificationChance(); // code prepared for the amplification feature.
+		}
+
+		double_t onslaught = 0;
+		if (const auto &item = player->getInventoryItem(CONST_SLOT_LEFT); item) {
+			const ItemType &it = Item::items[item->getID()];
+			if (it.isWeapon()) {
+				onslaught = item->getFatalChance() / 100.0;
+			}
+			onslaught += onslaught * amplificationChance;
+			msg.addDouble(onslaught, 5);  // 5 means the precision - check which is correct
+		} else {
+			msg.addDouble(0x00); // ONSLAUGHT
+		}
+		
+		msg.add<uint16_t>(player->getDefense());
+		msg.add<uint16_t>(player->getArmor());
+
+		// Wheel of destiny mitigation
+		if (g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+			msg.addDouble(player->getMitigation()/10, 5); // 5 means the precision - check which is correct
+		} else {
+			msg.addDouble(0);
+		}
+
+		double_t ruse = 0;
+		if (const auto &item = player->getInventoryItem(CONST_SLOT_ARMOR); item) {
+			const ItemType &it = Item::items[item->getID()];
+			if (it.isArmor()) {
+				ruse = item->getDodgeChance() / 100.0;
+			}
+			ruse += ruse * amplificationChance;
+			msg.addDouble(ruse, 5);
+		} else {
+			msg.addDouble(0x00); // ruse
+		}
+
+
+		msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE))); // Reflect
+
+
+		// Store the "combats" to increase in absorb values function and send to client later
+		uint8_t combats = 0;
+		auto startCombats = msg.getBufferPosition();
+		msg.skipBytes(1);
+		// Calculate and parse the combat absorbs values
+		calculateAbsorbValues(player, msg, combats);
+		// Now set the buffer position skiped and send the total combats count
+		auto endCombats = msg.getBufferPosition();
+		msg.setBufferPosition(startCombats);
+		msg.addByte(combats);
+		msg.setBufferPosition(endCombats);
+
+
+
+
+		double_t momentum = 0;
+		if (const auto &item = player->getInventoryItem(CONST_SLOT_HEAD); item) {
+			const ItemType &it = Item::items[item->getID()];
+			if (it.isHelmet()) {
+				momentum = item->getMomentumChance() / 100.0;
+			}
+			momentum += momentum * amplificationChance;
+			msg.addDouble(momentum, 5);
+		} else {
+			msg.addDouble(0x00); // momentum
+		}
+
+		double_t transcendence = 0;
+		if (const auto &item = player->getInventoryItem(CONST_SLOT_LEGS); item) {
+			const ItemType &it = Item::items[item->getID()];
+			if (it.isLegs()) {
+				transcendence = item->getTranscendenceChance() / 100.0;
+			}
+			transcendence += transcendence * amplificationChance;
+			msg.addDouble(transcendence, 5);
+		} else {
+			msg.addDouble(0x00); // transcendence
+		}
+
+		if (amplificationChance > 0) {
+			msg.addDouble(amplificationChance, 5); // amplification
+		} else {
+			msg.addDouble(0x00); // amplification
+		}
 	}
 }
 

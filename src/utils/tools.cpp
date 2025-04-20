@@ -1996,7 +1996,7 @@ Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 		case COMBAT_NEUTRALDAMAGE:
 			return CIPBIA_ELEMENTAL_AGONY;
 		default:
-			return CIPBIA_ELEMENTAL_UNDEFINED;
+			return CIPBIA_ELEMENTAL_PHYSICAL;
 	}
 }
 

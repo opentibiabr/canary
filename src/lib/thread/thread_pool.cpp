@@ -23,10 +23,8 @@
 	#define DEFAULT_NUMBER_OF_THREADS 4
 #endif
 
-ThreadPool::ThreadPool(Logger &logger) :
-	BS::thread_pool(std::max<int>(getNumberOfCores(), DEFAULT_NUMBER_OF_THREADS)), logger(logger) {
-	start();
-}
+ThreadPool::ThreadPool(Logger &logger, const uint32_t threadCount /*= std::thread::hardware_concurrency()*/)
+		: BS::thread_pool<BS::tp::none>(threadCount), logger(logger) {}
 
 void ThreadPool::start() const {
 	logger.info("Running with {} threads.", get_thread_count());

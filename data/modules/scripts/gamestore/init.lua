@@ -1778,7 +1778,7 @@ function GameStore.processExpBoostPurchase(player)
 	player:setXpBoostPercent(50)
 	player:setXpBoostTime(currentXpBoostTime + 3600)
 
-	if expBoostCount == -1 or expBoostCount == 0 or expBoostCount > 5 then
+	if expBoostCount == -1 or expBoostCount > 0 or expBoostCount > 5 then
 		expBoostCount = 1
 	end
 end

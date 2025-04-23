@@ -16,7 +16,6 @@
 #include "io/functions/iologindata_save_player.hpp"
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "creatures/players/player.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "enums/account_type.hpp"
@@ -265,14 +264,14 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerBosstiary] - Failed to save player bosstiary: " + player->getName());
 	}
 
-	if (!player->wheel()->saveDBPlayerSlotPointsOnLogout()) {
+	if (!player->wheel().saveDBPlayerSlotPointsOnLogout()) {
 		throw DatabaseException("[PlayerWheel::saveDBPlayerSlotPointsOnLogout] - Failed to save player wheel info: " + player->getName());
 	}
 
-	player->wheel()->saveRevealedGems();
-	player->wheel()->saveActiveGems();
-	player->wheel()->saveKVModGrades();
-	player->wheel()->saveKVScrolls();
+	player->wheel().saveRevealedGems();
+	player->wheel().saveActiveGems();
+	player->wheel().saveKVModGrades();
+	player->wheel().saveKVScrolls();
 
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());

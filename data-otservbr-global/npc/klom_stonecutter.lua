@@ -177,39 +177,39 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "gnomes") and npcHandler:getTopic(playerId) == 56 then
-		if player:getItemCount(30888) >= count[playerId] then
+		if player:getItemCount(27653) >= count[playerId] then
 			npcHandler:say("Done.", npc, creature)
 			if count[playerId] > 1 then
 				plural = plural .. "s"
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You earned " .. count[playerId] .. " point" .. plural .. " on the gnomes mission.")
-			player:removeItem(30888, count[playerId])
+			player:removeItem(27653, count[playerId])
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.Points, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Gnomes.Points) + count[playerId])
 		else
 			npcHandler:say("You don't have enough suspicious devices.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "dwarves") and npcHandler:getTopic(playerId) == 56 then
-		if player:getItemCount(30888) >= count[playerId] then
+		if player:getItemCount(27653) >= count[playerId] then
 			npcHandler:say("Done.", npc, creature)
 			if count[playerId] > 1 then
 				plural = plural .. "s"
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You earned " .. count[playerId] .. " point" .. plural .. " on the dwarves mission.")
-			player:removeItem(30888, count[playerId])
+			player:removeItem(27653, count[playerId])
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Points, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Dwarves.Points) + count[playerId])
 		else
 			npcHandler:say("You don't have enough suspicious devices.", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end
 	elseif MsgContains(message, "scouts") and npcHandler:getTopic(playerId) == 56 then
-		if player:getItemCount(30888) >= count[playerId] then
+		if player:getItemCount(27653) >= count[playerId] then
 			npcHandler:say("Done.", npc, creature)
 			if count[playerId] > 1 then
 				plural = plural .. "s"
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You earned " .. count[playerId] .. " point" .. plural .. " on the scouts mission.")
-			player:removeItem(30888, count[playerId])
+			player:removeItem(27653, count[playerId])
 			player:setStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.Points, player:getStorageValue(Storage.Quest.U11_50.DangerousDepths.Scouts.Points) + count[playerId])
 		else
 			npcHandler:say("You don't have enough suspicious devices.", npc, creature)

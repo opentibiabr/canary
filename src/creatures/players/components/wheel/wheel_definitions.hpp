@@ -9,7 +9,7 @@
 
 #pragma once
 
-enum WheelSlots_t : uint8_t {
+enum class WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
 	SLOT_GREEN_TOP_150 = 2,
 	SLOT_GREEN_TOP_100 = 3,
@@ -57,18 +57,13 @@ enum WheelSlots_t : uint8_t {
 	SLOT_PURPLE_BOTTOM_100 = 34,
 	SLOT_PURPLE_BOTTOM_150 = 35,
 	SLOT_PURPLE_200 = 36,
-
-	SLOT_FIRST = SLOT_GREEN_200,
-	SLOT_LAST = SLOT_PURPLE_200
 };
 
-enum class WheelStageEnum_t {
+enum class WheelStageEnum_t : uint8_t {
 	NONE = 0,
 	ONE = 1,
 	TWO = 2,
 	THREE = 3,
-
-	TOTAL_COUNT = 4
 };
 
 enum class WheelStagePointsEnum_t {
@@ -185,75 +180,6 @@ enum class WheelSpellBoost_t : uint8_t {
 	HEAL = 10,
 	CRITICAL_DAMAGE = 11,
 	CRITICAL_CHANCE = 12,
-
-	TOTAL_COUNT = 13
-};
-
-struct PlayerWheelMethodsBonusData {
-	// Raw value. Example: 1 == 1
-	struct Stats {
-		int health = 0;
-		int mana = 0;
-		int capacity = 0;
-		int damage = 0;
-		int healing = 0;
-	};
-	// value * 100. Example: 1% == 100
-	std::array<uint8_t, 4> unlockedVesselResonances = {};
-
-	// Raw value. Example: 1 == 1
-	struct Skills {
-		int melee = 0;
-		int distance = 0;
-		int magic = 0;
-	};
-
-	// value * 100. Example: 1% == 100
-	struct Leech {
-		double manaLeech = 0;
-		double lifeLeech = 0;
-	};
-
-	struct Instant {
-		bool battleInstinct = false; // Knight
-		bool battleHealing = false; // Knight
-		bool positionalTactics = false; // Paladin
-		bool ballisticMastery = false; // Paladin
-		bool healingLink = false; // Druid
-		bool runicMastery = false; // Druid/sorcerer
-		bool focusMastery = false; // Sorcerer
-	};
-
-	struct Stages {
-		int combatMastery = 0; // Knight
-		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
-		int divineEmpowerment = 0; // Paladin
-		int divineGrenade = 0; // Paladin
-		int blessingOfTheGrove = 0; // Druid
-		int drainBody = 0; // Sorcerer
-		int beamMastery = 0; // Sorcerer
-		int twinBurst = 0; // Druid
-		int executionersThrow = 0; // Knight
-	};
-
-	struct Avatar {
-		int light = 0; // Paladin
-		int nature = 0; // Druid
-		int steel = 0; // Knight
-		int storm = 0; // Sorcerer
-	};
-
-	// Initialize structs
-	Stats stats;
-	Skills skills;
-	Leech leech;
-	Instant instant;
-	Stages stages;
-	Avatar avatar;
-
-	float momentum = 0;
-	float mitigation = 0;
-	std::vector<std::string> spells;
 };
 
 /**
@@ -266,33 +192,3 @@ struct SlotInfo {
 	uint8_t slot; ///< The slot index.
 	uint16_t points; ///< The points for the slot.
 };
-
-namespace WheelSpells {
-	struct Increase {
-		bool area = false;
-		int damage = 0;
-		int heal = 0;
-		int aditionalTarget = 0;
-		int damageReduction = 0;
-		int duration = 0;
-		int criticalDamage = 0;
-		int criticalChance = 0;
-	};
-
-	struct Decrease {
-		int cooldown = 0;
-		int manaCost = 0;
-		int secondaryGroupCooldown = 0;
-	};
-
-	struct Leech {
-		int mana = 0;
-		int life = 0;
-	};
-
-	struct Bonus {
-		Leech leech;
-		Increase increase;
-		Decrease decrease;
-	};
-}

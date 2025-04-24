@@ -90,7 +90,7 @@ https://medium.com/enekochan/solve-the-alias-directive-in-will-probably-never-ma
 --
 apachectl configtest -> erro: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message
 
-Solu  o: 
+Solu  o:
 nano /etc/apache2/apache2.conf
 
 add-> ServerName localhost
@@ -132,7 +132,7 @@ cd vcpkg
 cd ..
 
 mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake 
+cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
 .. make -j`nproc`
 
 cmake --build linux-release
@@ -140,7 +140,7 @@ cmake --build linux-release
 ========================================================================================================
 ---------------------------------------------CANARY ----------------------------------------------------
 
-sudo apt-get update 
+sudo apt-get update
 sudo apt-get dist-upgrade
 sudo apt-get install git cmake build-essential autoconf libtool ca-certificates curl zip unzip tar pkg-config ninja-build ccache linux-headers-$(uname -r) -y
 sudo apt install git cmake build-essential autoconf libtool ca-certificates curl zip unzip tar pkg-config ninja-build ccache linux-headers-$(uname -r)
@@ -275,7 +275,7 @@ sudo growpart /dev/sda 3
 sudo pvs
 sudo lvextend -r -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
 
-or 
+or
 lvm
 lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
 exit
@@ -286,3 +286,51 @@ rm -rf /var/cache/apt/*
 
 
 ====================================================================================================
+
+
+UPDATED CANARY GITHUB STEP BY STEP
+
+UBUNTU 22.04
+sudo apt update && sudo apt upgrade -y
+sudo apt install git cmake build-essential autoconf libtool ca-certificates curl zip unzip tar pkg-config ninja-build ccache linux-headers-$(uname -r) -y
+
+Update CMAKE
+sudo apt remove --purge cmake -y
+hash -r
+sudo apt install snapd -y
+sudo snap install cmake --classic
+cmake --version
+
+Update GCC
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+sudo apt update
+sudo apt install gcc-13 g++-13 -y
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13 --slave /usr/bin/gcov gcov /usr/bin/gcov-13
+sudo update-alternatives --set gcc /usr/bin/gcc-13
+gcc-13 --version
+g++-13 --version
+
+----
+
+sudo apt install acl
+cd ~
+
+git clone https://github.com/microsoft/vcpkg
+cd vcpkg
+./bootstrap-vcpkg.sh
+cd ~
+
+git clone --depth 1 https://github.com/opentibiabr/canary.git
+sudo setfacl -R -m g:www-data:rx /home/$USER/
+sudo setfacl -R -m g:www-data:rx /home/$USER/canary
+cd canary
+mv config.lua.dist config.lua
+mkdir build && cd build
+
+cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+cmake --build linux-release
+
+cd ~
+cd canary
+cp -r build/linux-release/bin/canary .
+sudo chmod +x canary

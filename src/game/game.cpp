@@ -9090,7 +9090,6 @@ namespace {
 			}
 
 			uint32_t removedCount = 0;
-			ReturnValue ret = RETURNVALUE_NOERROR;
 			for (const auto &item : itemVector) {
 				if (!item) {
 					continue;
@@ -9108,7 +9107,6 @@ namespace {
 				ReturnValue ret = player->removeItem(item, thisRemove);
 				if (ret != RETURNVALUE_NOERROR) {
 					offerStatus << "Failed to remove: " << amount << " items of id: " << itemType.id << " from player " << player->getName() << " error: " << getReturnMessage(ret);
-					return false;
 					return false;
 				}
 

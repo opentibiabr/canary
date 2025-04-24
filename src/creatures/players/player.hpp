@@ -616,6 +616,7 @@ public:
 	bool openShopWindow(const std::shared_ptr<Npc> &npc, const std::vector<ShopBlock> &shopItems = {});
 	bool closeShopWindow();
 	bool updateSaleShopList(const std::shared_ptr<Item> &item);
+	void updateSaleShopList();
 	void updateState();
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 

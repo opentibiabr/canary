@@ -5359,6 +5359,11 @@ bool Player::updateSaleShopList(const std::shared_ptr<Item> &item) {
 	return true;
 }
 
+void Player::updateSaleShopList() {
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, __FUNCTION__);
+	scheduledSaleUpdate = true;
+}
+
 void Player::updateState() {
 	updateInventoryWeight();
 	updateItemsLight();

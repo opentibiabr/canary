@@ -1,12 +1,12 @@
 local bosses = {
-	["ravenous hunger"] = { storage = Storage.CultsOfTibia.Barkless.Mission, value = 6 },
-	["the souldespoiler"] = { storage = Storage.CultsOfTibia.Misguided.Mission, value = 4 },
-	["essence of malice"] = { storage = Storage.CultsOfTibia.Humans.Mission, value = 2 },
-	["the unarmored voidborn"] = { storage = Storage.CultsOfTibia.Orcs.Mission, value = 2 },
-	["the false god"] = { storage = Storage.CultsOfTibia.Minotaurs.Mission, value = 4 },
-	["the sandking"] = { storage = Storage.CultsOfTibia.Life.Mission, value = 8, global = "sandking", g_value = 5 },
+	["ravenous hunger"] = { storage = Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, value = 6 },
+	["the souldespoiler"] = { storage = Storage.Quest.U11_40.CultsOfTibia.Misguided.Mission, value = 4 },
+	["essence of malice"] = { storage = Storage.Quest.U11_40.CultsOfTibia.Humans.Mission, value = 2 },
+	["the unarmored voidborn"] = { storage = Storage.Quest.U11_40.CultsOfTibia.Orcs.Mission, value = 2 },
+	["the false god"] = { storage = Storage.Quest.U11_40.CultsOfTibia.Minotaurs.Mission, value = 4 },
+	["the sandking"] = { storage = Storage.Quest.U11_40.CultsOfTibia.Life.Mission, value = 8, global = "sandking", g_value = 5 },
 	["the corruptor of souls"] = { createNew = "The Source Of Corruption", pos = Position(33039, 31922, 15), removeMonster = "zarcorix of yalahar", area1 = Position(33073, 31885, 15), area2 = Position(33075, 31887, 15) },
-	["the source of corruption"] = { storage = Storage.CultsOfTibia.FinalBoss.Mission, value = 2 },
+	["the source of corruption"] = { storage = Storage.Quest.U11_40.CultsOfTibia.FinalBoss.Mission, value = 2 },
 }
 
 local bossesCults = CreatureEvent("CultsOfTibiaBossDeath")

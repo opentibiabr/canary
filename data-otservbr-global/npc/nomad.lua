@@ -50,8 +50,8 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Heart of the Mountain
-local blessKeyword = keywordHandler:addKeyword({ "heart" }, StdModule.say, { npcHandler = npcHandler, text = "Would you like to receive that protection for a sacrifice of |BLESSCOST| gold, child?" })
-blessKeyword:addChildKeyword({ "yes" }, StdModule.bless, { npcHandler = npcHandler, text = "So receive the Heart of the Mountain, pilgrim.", cost = "|BLESSCOST|", bless = 8 })
+local blessKeyword = keywordHandler:addKeyword({ "enhanced" }, StdModule.say, { npcHandler = npcHandler, text = "I am able to grant you the heart of the mountain's blessing. But I must ask of you to sacrifice |BLESSCOST| gold. Are you willing to part with that amount of wealth?" })
+blessKeyword:addChildKeyword({ "yes" }, StdModule.bless, { npcHandler = npcHandler, text = "Receive the heart of the mountain then.", cost = "|BLESSCOST|", bless = 7 })
 blessKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "Fine. You are free to decline my offer.", reset = true })
 
 -- Healing
@@ -62,6 +62,7 @@ local function addHealKeyword(text, condition, effect)
 		player:removeCondition(condition)
 		player:getPosition():sendMagicEffect(effect)
 	end)
+	keywordHandler:addAliasKeyword({ "help" })
 end
 
 addHealKeyword("You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN)
@@ -78,26 +79,17 @@ end, function(player)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 end)
 keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You aren't looking that bad. Sorry, I can't help you. But if you are looking for additional protection you should go on the {pilgrimage} of ashes or get the protection of the {twist of fate} here." })
+keywordHandler:addAliasKeyword({ "help" })
 
 -- Basic
-keywordHandler:addKeyword({ "pilgrimage" }, StdModule.say, { npcHandler = npcHandler, text = "Whenever you receive a lethal wound, your vital force is damaged and there is a chance that you lose some of your equipment. With every single of the five {blessings} you have, this damage and chance of loss will be reduced." })
-keywordHandler:addKeyword({ "blessings" }, StdModule.say, { npcHandler = npcHandler, text = "There are five blessings available in five sacred places: the {spiritual} shielding, the spark of the {phoenix}, the {embrace} of Tibia, the fire of the {suns} and the wisdom of {solitude}. Additionally, you can receive the {twist of fate} here." })
-keywordHandler:addKeyword({ "spiritual" }, StdModule.say, { npcHandler = npcHandler, text = "I see you received the spiritual shielding in the whiteflower temple south of Thais." }, function(player)
-	return player:hasBlessing(1)
-end)
-keywordHandler:addAliasKeyword({ "shield" })
-keywordHandler:addKeyword({ "suns" }, StdModule.say, { npcHandler = npcHandler, text = "I can see you received the blessing of the two suns in the suntower near Ab'Dendriel." }, function(player)
-	return player:hasBlessing(3)
-end)
-keywordHandler:addAliasKeyword({ "fire" })
-keywordHandler:addKeyword({ "phoenix" }, StdModule.say, { npcHandler = npcHandler, text = "I can sense that the spark of the phoenix already was given to you by the dwarven priests of earth and fire in Kazordoon." }, function(player)
-	return player:hasBlessing(4)
-end)
-keywordHandler:addAliasKeyword({ "spark" })
-keywordHandler:addKeyword({ "solitude" }, StdModule.say, { npcHandler = npcHandler, text = "I can sense you already talked to the hermit Eremo on the isle of Cormaya and received this blessing." }, function(player)
-	return player:hasBlessing(5)
-end)
-keywordHandler:addAliasKeyword({ "wisdom" })
+keywordHandler:addKeyword({ "blessing" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Besides the {enhanced} blessing available from me, I know of one other, granted by a solitary {nomad} far west of Svargrond. There are also five different other blessings available, each in a sacred place. ...\nThese blessings are: the {spiritual} shielding, the spark of the {phoenix}, the {embrace} of Tibia, the fire of the {suns} and the wisdom of {solitude}.",
+})
+
+keywordHandler:addKeyword({ "pilgrimage" }, StdModule.say, { npcHandler = npcHandler, text = "Well, as I am quite in a {fix} currently, my only hope to escape this situation may be to grant you {healing} or an {enhanced} blessing if you wish. You must desire SOMETHING, right? Sure you do." })
+keywordHandler:addAliasKeyword({ "job" })
+
 keywordHandler:addKeyword({ "spiritual" }, StdModule.say, { npcHandler = npcHandler, text = "You can ask for the blessing of spiritual shielding in the whiteflower temple south of Thais." })
 keywordHandler:addAliasKeyword({ "shield" })
 keywordHandler:addKeyword({ "suns" }, StdModule.say, { npcHandler = npcHandler, text = "You can ask for the blessing of the two suns in the suntower near Ab'Dendriel." })
@@ -106,10 +98,16 @@ keywordHandler:addKeyword({ "phoenix" }, StdModule.say, { npcHandler = npcHandle
 keywordHandler:addAliasKeyword({ "spark" })
 keywordHandler:addKeyword({ "solitude" }, StdModule.say, { npcHandler = npcHandler, text = "Talk to the hermit Eremo on the isle of Cormaya about this blessing." })
 keywordHandler:addAliasKeyword({ "wisdom" })
+keywordHandler:addKeyword({ "embrace" }, StdModule.say, { npcHandler = npcHandler, text = "The druids north of Carlin will provide you with the embrace of Tibia." })
+keywordHandler:addAliasKeyword({ "tibia" })
 
-npcHandler:setMessage(MESSAGE_GREET, "Welcome, noble |PLAYERNAME|")
-npcHandler:setMessage(MESSAGE_WALKAWAY, "Good Bye, noble |PLAYERNAME|")
-npcHandler:setMessage(MESSAGE_FAREWELL, "Good Bye, noble |PLAYERNAME|")
+keywordHandler:addKeyword({ "djinn" }, StdModule.say, { npcHandler = npcHandler, text = "I know of a mysterious djinn, bound to an existence of slavery far to the north of Tiquanda's jungles. He is bound to tell you his secrets and offer you the 'blood of the mountain'. ...\nI do not know where exactly but I guess you must first dig that one out to actually talk to him." })
+keywordHandler:addKeyword({ "nomad" }, StdModule.say, { npcHandler = npcHandler, text = "I am one with nature, one with the ice and the cold. Names are of no worth out here. Out here, you face isolation and loneliness. Only your strength, willpower and {training} can keep you alive." })
+keywordHandler:addKeyword({ "training" }, StdModule.say, { npcHandler = npcHandler, text = "My life is one of hardship, hardship I chose freely. Endurance, strength and the power of the will are my only companions in this frigid wilderness. My strength comes from disciplined training and knowledge of the outdoors." })
+
+npcHandler:setMessage(MESSAGE_GREET, "Ah, another diciple of the extreme... surviving the icy outdoors? Let me {help}! If you need some first aid out here, I can provide {healing} or grant you an {enhanced} blessing!")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Keep a stiff upper lip!")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Keep a stiff upper lip!")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

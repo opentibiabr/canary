@@ -10,12 +10,13 @@
 #pragma once
 
 #include "declarations.hpp"
-#include "items/item.hpp"
-#include "lua/functions/events/move_event_functions.hpp"
-#include "lua/scripts/scripts.hpp"
-#include "creatures/players/vocations/vocation.hpp"
 
 class MoveEvent;
+class LuaScriptInterface;
+class Item;
+class Tile;
+class Creature;
+class Player;
 
 struct MoveEventList {
 	std::list<std::shared_ptr<MoveEvent>> moveEvent[MOVE_EVENT_LAST];
@@ -23,7 +24,7 @@ struct MoveEventList {
 
 using VocEquipMap = std::map<uint16_t, bool>;
 
-class MoveEvents final : public Scripts {
+class MoveEvents {
 public:
 	MoveEvents() = default;
 	~MoveEvents() = default;
@@ -32,9 +33,7 @@ public:
 	MoveEvents(const MoveEvents &) = delete;
 	MoveEvents &operator=(const MoveEvents &) = delete;
 
-	static MoveEvents &getInstance() {
-		return inject<MoveEvents>();
-	}
+	static MoveEvents &getInstance();
 
 	uint32_t onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, MoveEvent_t eventType);
 	uint32_t onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck);
@@ -46,7 +45,7 @@ public:
 	}
 
 	bool hasPosition(Position position) const {
-		if (auto it = positionsMap.find(position);
+		if (const auto it = positionsMap.find(position);
 		    it != positionsMap.end()) {
 			return true;
 		}
@@ -62,7 +61,7 @@ public:
 	}
 
 	bool hasItemId(int32_t itemId) const {
-		if (auto it = itemIdMap.find(itemId);
+		if (const auto it = itemIdMap.find(itemId);
 		    it != itemIdMap.end()) {
 			return true;
 		}
@@ -78,7 +77,7 @@ public:
 	}
 
 	bool hasUniqueId(int32_t uniqueId) const {
-		if (auto it = uniqueIdMap.find(uniqueId);
+		if (const auto it = uniqueIdMap.find(uniqueId);
 		    it != uniqueIdMap.end()) {
 			return true;
 		}
@@ -94,7 +93,7 @@ public:
 	}
 
 	bool hasActionId(int32_t actionId) const {
-		if (auto it = actionIdMap.find(actionId);
+		if (const auto it = actionIdMap.find(actionId);
 		    it != actionIdMap.end()) {
 			return true;
 		}
@@ -107,19 +106,16 @@ public:
 
 	std::shared_ptr<MoveEvent> getEvent(const std::shared_ptr<Item> &item, MoveEvent_t eventType);
 
-	bool registerLuaItemEvent(const std::shared_ptr<MoveEvent> moveEvent);
-	bool registerLuaActionEvent(const std::shared_ptr<MoveEvent> moveEvent);
-	bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> moveEvent);
-	bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> moveEvent);
-	bool registerLuaEvent(const std::shared_ptr<MoveEvent> event);
-	void clear(bool isFromXML = false);
+	bool registerLuaItemEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+	bool registerLuaActionEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+	bool registerLuaUniqueEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+	bool registerLuaPositionEvent(const std::shared_ptr<MoveEvent> &moveEvent);
+	bool registerLuaEvent(const std::shared_ptr<MoveEvent> &event);
+	void clear();
 
 private:
-	void clearMap(std::map<int32_t, MoveEventList> &map) const;
-	void clearPosMap(std::map<Position, MoveEventList> &map);
-
-	bool registerEvent(const std::shared_ptr<MoveEvent> moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const;
-	bool registerEvent(const std::shared_ptr<MoveEvent> moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const;
+	bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const;
+	bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const;
 	std::shared_ptr<MoveEvent> getEvent(const std::shared_ptr<Tile> &tile, MoveEvent_t eventType);
 
 	std::shared_ptr<MoveEvent> getEvent(const std::shared_ptr<Item> &item, MoveEvent_t eventType, Slots_t slot);
@@ -132,14 +128,14 @@ private:
 
 constexpr auto g_moveEvents = MoveEvents::getInstance;
 
-class MoveEvent final : public Script, public SharedObject {
+class MoveEvent final : public SharedObject {
 public:
-	explicit MoveEvent(LuaScriptInterface* interface);
+	explicit MoveEvent();
 
 	MoveEvent_t getEventType() const;
 	void setEventType(MoveEvent_t type);
 
-	uint32_t fireStepEvent(const std::shared_ptr<Creature> &creature, std::shared_ptr<Item> item, const Position &pos) const;
+	uint32_t fireStepEvent(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &item, const Position &pos) const;
 	uint32_t fireAddRemItem(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &tileItem, const Position &pos) const;
 	uint32_t fireAddRemItem(const std::shared_ptr<Item> &item, const Position &pos) const;
 	uint32_t fireEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck);
@@ -149,7 +145,7 @@ public:
 	}
 
 	// Scripting to lua interface
-	bool executeStep(const std::shared_ptr<Creature> &creature, std::shared_ptr<Item> item, const Position &pos) const;
+	bool executeStep(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &item, const Position &pos) const;
 	bool executeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck) const;
 	bool executeAddRemItem(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &tileItem, const Position &pos) const;
 	// No have tile item
@@ -178,12 +174,7 @@ public:
 	const std::map<uint16_t, bool> &getVocEquipMap() const {
 		return vocEquipMap;
 	}
-	void addVocEquipMap(std::string vocName) {
-		uint16_t vocationId = g_vocations().getVocationId(vocName);
-		if (vocationId != 65535) {
-			vocEquipMap[vocationId] = true;
-		}
-	}
+	void addVocEquipMap(const std::string &vocName);
 	bool getTileItem() const {
 		return tileItem;
 	}
@@ -217,50 +208,46 @@ public:
 	void setSlot(uint32_t s) {
 		slot = s;
 	}
-	uint32_t getRequiredLevel() {
+	uint32_t getRequiredLevel() const {
 		return reqLevel;
 	}
 	void setRequiredLevel(uint32_t level) {
 		reqLevel = level;
 	}
-	uint32_t getRequiredMagLevel() {
+	uint32_t getRequiredMagLevel() const {
 		return reqMagLevel;
 	}
 	void setRequiredMagLevel(uint32_t level) {
 		reqMagLevel = level;
 	}
-	bool needPremium() {
+	bool needPremium() const {
 		return premium;
 	}
 	void setNeedPremium(bool b) {
 		premium = b;
 	}
-	uint32_t getWieldInfo() {
-		return wieldInfo;
-	}
 	void setWieldInfo(WieldInfo_t info) {
 		wieldInfo |= info;
 	}
 
-	static uint32_t StepInField(std::shared_ptr<Creature> creature, std::shared_ptr<Item> item, const Position &pos);
-	static uint32_t StepOutField(std::shared_ptr<Creature> creature, std::shared_ptr<Item> item, const Position &pos);
+	static uint32_t StepInField(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &item, const Position &pos);
+	static uint32_t StepOutField(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &item, const Position &pos);
 
-	static uint32_t AddItemField(std::shared_ptr<Item> item, std::shared_ptr<Item> tileItem, const Position &pos);
-	static uint32_t RemoveItemField(std::shared_ptr<Item> item, std::shared_ptr<Item> tileItem, const Position &pos);
+	static uint32_t AddItemField(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &tileItem, const Position &pos);
+	static uint32_t RemoveItemField(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &tileItem, const Position &pos);
 
-	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
-	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> moveEvent, std::shared_ptr<Player> player, std::shared_ptr<Item> item, Slots_t slot, bool boolean);
+	static uint32_t EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool boolean);
+	static uint32_t DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool boolean);
 
-	void setFromXML(bool newFromXML) {
-		m_fromXML = newFromXML;
-	}
-
-	bool isFromXML() const {
-		return m_fromXML;
-	}
+	std::string getScriptTypeName() const;
+	bool loadScriptId();
+	int32_t getScriptId() const;
+	void setScriptId(int32_t newScriptId);
+	bool isLoadedScriptId() const;
+	LuaScriptInterface* getScriptInterface() const;
 
 private:
-	std::string getScriptTypeName() const override;
+	int32_t m_scriptId {};
 
 	uint32_t slot = SLOTP_WHEREEVER;
 
@@ -282,7 +269,7 @@ private:
 	// equipFunction
 	std::function<uint32_t(
 		std::shared_ptr<MoveEvent> moveEvent,
-		std::shared_ptr<Player> player,
+		const std::shared_ptr<Player> &player,
 		std::shared_ptr<Item> item,
 		Slots_t slot,
 		bool boolean
@@ -297,8 +284,6 @@ private:
 	uint32_t wieldInfo = 0;
 	std::map<uint16_t, bool> vocEquipMap;
 	bool tileItem = false;
-
-	bool m_fromXML = false;
 
 	std::vector<uint32_t> itemIdVector;
 	std::vector<uint32_t> actionIdVector;

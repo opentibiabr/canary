@@ -1,10 +1,5 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-# CMAKE
-# apt install build-essential git
-# git clone https://github.com/Kitware/CMake/; cd CMake
-# ./bootstrap && make && sudo make install
-
 # VCPKG
 # cmake -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 # Needed libs are in file vcpkg.json
@@ -36,6 +31,12 @@ endif()
 # Append cmake search path
 # *****************************************************************************
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
+# Configure build options for compatibility with commodity CPUs
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mtune=generic -mno-avx -mno-sse4")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=x86-64 -mtune=generic -mno-avx -mno-sse4")
+endif()
 
 # *****************************************************************************
 # Include cmake tools

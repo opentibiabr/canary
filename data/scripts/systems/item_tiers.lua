@@ -6,115 +6,91 @@ local itemTierClassifications = {
 			regular = 25000,
 			core = 1,
 		},
-		[2] = {
-			regular = 50000,
-			core = 1,
-		},
-		[3] = {
-			regular = 100000,
-			core = 1,
-		},
 	},
 	-- Upgrade classification 2
 	[2] = {
 		-- Update tier 0
 		[1] = {
-			regular = 50000,
+			regular = 750000,
 			core = 1,
 		},
 		-- Update tier 1
 		[2] = {
-			regular = 100000,
+			regular = 5000000,
 			core = 1,
-		},
-		[3] = {
-			regular = 200000,
-			core = 2,
-		},
-		[4] = {
-			regular = 400000,
-			core = 2,
 		},
 	},
 	-- Upgrade classification 3
 	[3] = {
 		[1] = {
-			regular = 200000,
+			regular = 4000000,
 			core = 1,
 		},
 		[2] = {
-			regular = 400000,
+			regular = 10000000,
 			core = 2,
 		},
 		[3] = {
-			regular = 800000,
+			regular = 20000000,
 			core = 3,
-		},
-		[4] = {
-			regular = 1600000,
-			core = 4,
-		},
-		[5] = {
-			regular = 3200000,
-			core = 5,
 		},
 	},
 	-- Upgrade classification 4
 	[4] = {
 		[1] = {
-			regular = 1500000,
+			regular = 8000000,
 			core = 1,
-			convergence = { fusion = { price = 6000000 }, transfer = { price = 12000000 } },
+			convergence = { fusion = { price = 55000000 }, transfer = { price = 65000000 } },
 		},
 		[2] = {
-			regular = 3000000,
+			regular = 20000000,
 			core = 2,
-			convergence = { fusion = { price = 12000000 }, transfer = { price = 24000000 } },
+			convergence = { fusion = { price = 110000000 }, transfer = { price = 165000000 } },
 		},
 		[3] = {
-			regular = 6000000,
+			regular = 40000000,
 			core = 5,
-			convergence = { fusion = { price = 24000000 }, transfer = { price = 48000000 } },
+			convergence = { fusion = { price = 170000000 }, transfer = { price = 375000000 } },
 		},
 		[4] = {
-			regular = 15000000,
+			regular = 65000000,
 			core = 10,
-			convergence = { fusion = { price = 48000000 }, transfer = { price = 100000000 } },
+			convergence = { fusion = { price = 300000000 }, transfer = { price = 800000000 } },
 		},
 		[5] = {
-			regular = 30000000,
+			regular = 100000000,
 			core = 15,
-			convergence = { fusion = { price = 100000000 }, transfer = { price = 200000000 } },
+			convergence = { fusion = { price = 875000000 }, transfer = { price = 2000000000 } },
 		},
 		[6] = {
-			regular = 80000000,
+			regular = 250000000,
 			core = 25,
-			convergence = { fusion = { price = 200000000 }, transfer = { price = 400000000 } },
+			convergence = { fusion = { price = 2350000000 }, transfer = { price = 5250000000 } },
 		},
 		[7] = {
-			regular = 200000000,
+			regular = 750000000,
 			core = 35,
-			convergence = { fusion = { price = 400000000 }, transfer = { price = 800000000 } },
+			convergence = { fusion = { price = 6950000000 }, transfer = { price = 14500000000 } },
 		},
 		[8] = {
-			regular = 400000000,
+			regular = 2500000000,
 			core = 50,
-			convergence = { fusion = { price = 800000000 }, transfer = { price = 1600000000 } },
+			convergence = { fusion = { price = 21250000000 }, transfer = { price = 42500000000 } },
 		},
 		[9] = {
-			regular = 800000000,
+			regular = 8000000000,
 			core = 60,
-			convergence = { fusion = { price = 1600000000 }, transfer = { price = 3200000000 } },
+			convergence = { fusion = { price = 50000000000 }, transfer = { price = 100000000000 } },
 		},
 		[10] = {
-			regular = 1600000000,
+			regular = 15000000000,
 			core = 85,
-			convergence = { fusion = { price = 3200000000 }, transfer = { price = 6400000000 } },
+			convergence = { fusion = { price = 125000000000 }, transfer = { price = 300000000000 } },
 		},
 	},
 }
 
--- Item tier with gold price for uprading it
+-- Item tier with gold price for upgrading it
 for classificationId, classificationTable in ipairs(itemTierClassifications) do
 	local itemClassification = Game.createItemClassification(classificationId)
 	local classification = {}

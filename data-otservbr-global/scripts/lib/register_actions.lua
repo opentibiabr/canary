@@ -58,6 +58,29 @@ local lava = {
 	Position(32813, 32333, 11),
 }
 
+local secret_library = {
+	crystals = {
+		[1] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal1, position = Position(33216, 32108, 9) },
+		[2] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal2, position = Position(33242, 32100, 9) },
+		[3] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal3, position = Position(33226, 32103, 9) },
+		[4] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal4, position = Position(33236, 32084, 9) },
+		[5] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal5, position = Position(33260, 32103, 9) },
+		[6] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal6, position = Position(33260, 32103, 9) },
+		[7] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal7, position = Position(33260, 32103, 9) },
+		[8] = { storage = Storage.Quest.U11_80.TheSecretLibrary.MoTA.Crystal8, position = Position(33260, 32103, 9) },
+	},
+	timer = "tsl_crystaltimer",
+	exhaustMessage = "Digging crystal is exhausting. You're still weary from your last prospect.",
+	items = { 27867, 27868, 27869 },
+}
+
+local oldTable = { Position(32005, 32002, 14), Position(32005, 32003, 14), Position(32006, 32002, 14), Position(32006, 32003, 14) }
+local foundItems = {
+	{ id = 29992, quantity = 1 },
+	{ id = 953, quantity = 4 },
+}
+local storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Lock
+
 local function revertItem(position, itemId, transformId)
 	local item = Tile(position):getItemById(itemId)
 	if item then
@@ -226,7 +249,7 @@ local function addFerumbrasAscendantReward(player, target, toPosition)
 end
 
 function onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
-	if not target or target == nil or type(target) ~= "userdata" or not target:isItem() then
+	if not target or type(target) ~= "userdata" or not target:isItem() then
 		return false
 	end
 
@@ -504,6 +527,41 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
+	local tPos = toPosition
+
+	-- The Dream Courts Quest
+	for i = 1, #oldTable do
+		if tPos == oldTable[i] then
+			if player:getStorageValue(storage) < 1 then
+				for j = 1, #foundItems do
+					player:addItem(foundItems[j].id, foundItems[j].quantity)
+				end
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This table is made of several old doors. One of them has a noticeable ornate lock. Perhaps you could lever it out with a tool.")
+				player:setStorageValue(storage, 1)
+			else
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already removed the old lock.")
+			end
+
+			return true
+		end
+	end
+
+	-- The Secret Library Quest
+	for _, j in pairs(secret_library.crystals) do
+		if tPos == j.position then
+			if player:getStorageValue(j.storage) < os.time() then
+				local r = math.random(1, 3)
+				local item_id = secret_library.items[r]
+				player:addItem(item_id, 1)
+				player:say("You have found a " .. ItemType(item_id):getName() .. ".", TALKTYPE_MONSTER_SAY)
+				player:setStorageValue(j.storage, os.time() + 2 * 60)
+			else
+				player:say(secret_library.exhaustMessage, TALKTYPE_MONSTER_SAY)
+			end
+			return true
+		end
+	end
+
 	-- The Rookie Guard Quest - Mission 09: Rock 'n Troll
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission09_rock_troll.lua
 	-- Damage tunnel pillars
@@ -614,10 +672,11 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 				Getting liquid silver out of the mountain needs concentration and a steady hand."
 			)
 		end
-	elseif target:getActionId() == 60000 then
+	elseif target and target.getActionId and target:getActionId() == 60000 then
 		--The Ice Islands Quest, Nibelor 1: Breaking the Ice
 		local missionProgress = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Mission02)
 		local pickAmount = player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.PickAmount)
+
 		if missionProgress < 1 or pickAmount >= 3 or player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) ~= 3 then
 			return false
 		end
@@ -671,7 +730,10 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		-- The Pits of Inferno Quest
 		if toPosition == Position(32808, 32334, 11) then
 			for i = 1, #lava do
-				Game.createItem(5815, 1, lava[i])
+				local lavaTile = Tile(lava[i]):getItemById(21477)
+				if lavaTile then
+					lavaTile:transform(5815)
+				end
 			end
 			target:transform(3141)
 			toPosition:sendMagicEffect(CONST_ME_SMOKE)
@@ -884,8 +946,11 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
+	if not target or not target.getId then
+		return false
+	end
+	
 	local targetId = target:getId()
-
 	if targetId == 3920 then
 		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.SporesMushroom) < 1 then
 			player:addItem(7251, 1)
@@ -957,18 +1022,59 @@ function onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
 		target:decay()
 		Game.createItem(30975, 1, toPosition)
 		return true
-		-- The secret library
+	-- The Secret Library Quest
 	elseif toPosition == Position(32177, 31925, 7) then
-		player:teleportTo({ x = 32515, y = 32535, z = 12 })
+		if player:getStorageValue(Storage.Quest.U11_80.TheSecretLibrary.LibraryPermission) == 7 then
+			player:teleportTo({ x = 32515, y = 32535, z = 12 })
+			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+		else
+			Position(32177, 31925, 7):sendMagicEffect(CONST_ME_POFF)
+		end
 	else
 		return false
 	end
+
 	return onDestroyItem(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 function onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHotkey)
 	if not table.contains({ 3469, 9594, 9598 }, item.itemid) then
 		return false
+	end
+
+	local tPos = toPosition
+
+	-- The Dream Courts Quest
+	for i = 1, #oldTable do
+		if tPos == oldTable[i] then
+			if player:getStorageValue(storage) < 1 then
+				for j = 1, #foundItems do
+					player:addItem(foundItems[j].id, foundItems[j].quantity)
+				end
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "This table is made of several old doors. One of them has a noticeable ornate lock. Perhaps you could lever it out with a tool.")
+				player:setStorageValue(storage, 1)
+			else
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You already removed the old lock.")
+			end
+
+			return true
+		end
+	end
+
+	-- The Secret Library Quest
+	for _, j in pairs(secret_library.crystals) do
+		if tPos == j.position then
+			if player:getStorageValue(j.storage) < os.time() then
+				local r = math.random(1, 3)
+				local item_id = secret_library.items[r]
+				player:addItem(item_id, 1)
+				player:say("You have found a " .. ItemType(item_id):getName() .. ".", TALKTYPE_MONSTER_SAY)
+				player:setStorageValue(j.storage, os.time() + 2 * 60)
+			else
+				player:say(secret_library.exhaustMessage, TALKTYPE_MONSTER_SAY)
+			end
+			return true
+		end
 	end
 
 	local targetId = target:getId()

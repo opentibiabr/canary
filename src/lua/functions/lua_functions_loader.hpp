@@ -26,11 +26,13 @@ class Guild;
 class Zone;
 class KV;
 
+using lua_Number = double;
+
 struct LuaVariant;
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
-class LuaFunctionsLoader {
+class Lua {
 public:
 	static void load(lua_State* L);
 
@@ -39,11 +41,12 @@ public:
 	static void reportError(const char* function, const std::string &error_desc, bool stack_trace = false);
 	static int luaErrorHandler(lua_State* L);
 
-	static void pushThing(lua_State* L, std::shared_ptr<Thing> thing);
+	static void pushThing(lua_State* L, const std::shared_ptr<Thing> &thing);
 	static void pushVariant(lua_State* L, const LuaVariant &var);
 	static void pushString(lua_State* L, const std::string &value);
+	static void pushNumber(lua_State* L, lua_Number value);
 	static void pushCallback(lua_State* L, int32_t callback);
-	static void pushCylinder(lua_State* L, std::shared_ptr<Cylinder> cylinder);
+	static void pushCylinder(lua_State* L, const std::shared_ptr<Cylinder> &cylinder);
 
 	static std::string popString(lua_State* L);
 	static int32_t popCallback(lua_State* L);
@@ -56,27 +59,33 @@ public:
 
 	static void setMetatable(lua_State* L, int32_t index, const std::string &name);
 	static void setWeakMetatable(lua_State* L, int32_t index, const std::string &name);
-	static void setItemMetatable(lua_State* L, int32_t index, std::shared_ptr<Item> item);
-	static void setCreatureMetatable(lua_State* L, int32_t index, std::shared_ptr<Creature> creature);
+	static void setItemMetatable(lua_State* L, int32_t index, const std::shared_ptr<Item> &item);
+	static void setCreatureMetatable(lua_State* L, int32_t index, const std::shared_ptr<Creature> &creature);
 
 	template <typename T>
-	static typename std::enable_if<std::is_enum<T>::value, T>::type
-	getNumber(lua_State* L, int32_t arg) {
-		return static_cast<T>(static_cast<int64_t>(lua_tonumber(L, arg)));
-	}
-	template <typename T>
-	static typename std::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value, T>::type getNumber(lua_State* L, int32_t arg) {
+	static T getNumber(lua_State* L, int32_t arg, std::source_location location = std::source_location::current()) {
 		auto number = lua_tonumber(L, arg);
-		// If there is overflow, we return the value 0
-		if constexpr (std::is_integral_v<T> && std::is_unsigned_v<T>) {
-			if (number < 0) {
-				g_logger().debug("[{}] overflow, setting to default signed value (0)", __FUNCTION__);
-				number = T(0);
-			}
+
+		if constexpr (std::is_enum_v<T>) {
+			return static_cast<T>(static_cast<int64_t>(number));
 		}
 
-		return static_cast<T>(number);
+		if constexpr (std::is_integral_v<T>) {
+			if constexpr (std::is_unsigned_v<T>) {
+				if (number < 0) {
+					g_logger().debug("[{}] overflow, setting to default unsigned value (0), called line: {}:{}, in {}", __FUNCTION__, location.line(), location.column(), location.function_name());
+					return T(0);
+				}
+			}
+			return static_cast<T>(number);
+		}
+		if constexpr (std::is_floating_point_v<T>) {
+			return static_cast<T>(number);
+		}
+
+		return T {};
 	}
+
 	template <typename T>
 	static T getNumber(lua_State* L, int32_t arg, T defaultValue) {
 		const auto parameters = lua_gettop(L);
@@ -206,13 +215,52 @@ public:
 		scriptEnv[scriptEnvIndex--].resetEnv();
 	}
 
+	/**
+	 * @brief Checks whether the metatable of the object at the given Lua stack index inherits from a specified metatable.
+	 *
+	 * This function verifies whether the metatable of the object either exactly matches the expected metatable
+	 * or, by traversing its inheritance chain via the "__name" and "baseclass" fields (or via the "__index" table),
+	 * determines if it ultimately inherits from a metatable with the expected name.
+	 *
+	 * @param L The Lua state.
+	 * @param index The stack index of the object.
+	 * @param expectedName The expected metatable name to check for in the inheritance chain.
+	 * @return true if the object's metatable is the expected one or inherits from it; false otherwise.
+	 */
+	static bool checkMetatableInheritance(lua_State* L, int index, const char* expectedName);
+
+	/**
+	 * @brief Retrieves a shared pointer to a userdata object from the Lua stack with inheritance support.
+	 *
+	 * This function attempts to extract a `std::shared_ptr<T>` from the given Lua stack index.
+	 * It ensures that the userdata at the specified index either has the expected metatable directly
+	 * or inherits from the expected metatable (by traversing the inheritance chain via the "__name"
+	 * and "baseclass" fields) before attempting to retrieve it. This validation prevents crashes
+	 * due to invalid or outdated Lua bindings, ensuring that only correctly-typed userdata is accessed.
+	 *
+	 * @tparam T The C++ class type of the userdata.
+	 * @param L The Lua state.
+	 * @param arg The index of the Lua stack where the userdata is expected to be.
+	 * @param expectedMetatableName The expected metatable name associated with the userdata.
+	 *                              This ensures that the retrieved object is of the correct type.
+	 *                              The metatable name should match the one assigned when the userdata
+	 *                              was originally pushed into Lua, or be found within its inheritance chain.
+	 *
+	 * @return std::shared_ptr<T> A valid shared pointer to the requested object if the userdata exists
+	 *         and either has the correct metatable or inherits from the expected metatable. If the userdata
+	 *         is missing or does not satisfy these conditions, returns nullptr.
+	 */
 	template <class T>
-	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg) {
-		auto userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
+	static std::shared_ptr<T> getUserdataShared(lua_State* L, int32_t arg, const char* expectedMetatableName) {
+		auto userdata = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, arg, expectedMetatableName));
 		if (!userdata) {
-			return nullptr;
+			if (!checkMetatableInheritance(L, arg, expectedMetatableName)) {
+				return nullptr;
+			}
+
+			userdata = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, arg));
 		}
-		return *userdata;
+		return userdata ? *userdata : nullptr;
 	}
 
 	template <class T>
@@ -228,7 +276,6 @@ public:
 		new (userData) std::shared_ptr<T>(value);
 	}
 
-protected:
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);

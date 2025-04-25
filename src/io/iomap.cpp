@@ -8,6 +8,7 @@
  */
 
 #include "io/iomap.hpp"
+
 #include "game/movement/teleport.hpp"
 #include "game/game.hpp"
 #include "io/filestream.hpp"
@@ -134,7 +135,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			const uint16_t x = base_x + tileCoordsX + pos.x;
 			const uint16_t y = base_y + tileCoordsY + pos.y;
-			const uint8_t z = static_cast<uint8_t>(base_z + pos.z);
+			const auto z = static_cast<uint8_t>(base_z + pos.z);
 
 			if (tileType == OTBM_HOUSETILE) {
 				tile->houseId = stream.getU32();
@@ -162,8 +163,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				const uint16_t id = stream.getU16();
 				const auto &iType = Item::items[id];
 
-				if (!tile->isHouse() || (!iType.isBed() && !iType.isTrashHolder())) {
-
+				if (!tile->isHouse() || !iType.isBed()) {
 					const auto item = std::make_shared<BasicItem>();
 					item->id = id;
 
@@ -185,9 +185,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				switch (type) {
 					case OTBM_ITEM: {
 						const uint16_t id = stream.getU16();
-
 						const auto &iType = Item::items[id];
-
 						const auto item = std::make_shared<BasicItem>();
 						item->id = id;
 

@@ -9,9 +9,13 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
+#include "game/game_definitions.hpp"
 #include "io/io_bosstiary.hpp"
-#include "creatures/creature.hpp"
-#include "declarations.hpp"
+#include "utils/utils_definitions.hpp"
+
+class LuaScriptInterface;
+class ConditionDamage;
 
 class Loot {
 public:
@@ -26,22 +30,6 @@ public:
 
 class BaseSpell;
 struct spellBlock_t {
-	constexpr spellBlock_t() = default;
-	~spellBlock_t() = default;
-	spellBlock_t(const spellBlock_t &other) = delete;
-	spellBlock_t &operator=(const spellBlock_t &other) = delete;
-	spellBlock_t(spellBlock_t &&other) noexcept :
-		spell(other.spell),
-		chance(other.chance),
-		speed(other.speed),
-		range(other.range),
-		minCombatValue(other.minCombatValue),
-		maxCombatValue(other.maxCombatValue),
-		combatSpell(other.combatSpell),
-		isMelee(other.isMelee) {
-		other.spell = nullptr;
-	}
-
 	std::shared_ptr<BaseSpell> spell = nullptr;
 	uint32_t chance = 100;
 	uint32_t speed = 2000;
@@ -89,6 +77,8 @@ class MonsterType {
 		uint32_t staticAttackChance = 95;
 		uint32_t maxSummons = 0;
 		uint32_t changeTargetSpeed = 0;
+
+		uint32_t soulCore = 0;
 
 		std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
 		std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
@@ -166,7 +156,7 @@ class MonsterType {
 public:
 	MonsterType() = default;
 	explicit MonsterType(const std::string &initName) :
-		name(initName), typeName(initName), nameDescription(initName), variantName("") {};
+		name(initName), typeName(initName), nameDescription(initName) { }
 
 	// non-copyable
 	MonsterType(const MonsterType &) = delete;
@@ -181,33 +171,21 @@ public:
 
 	MonsterInfo info;
 
-	uint16_t getBaseSpeed() const {
-		return info.baseSpeed;
-	}
+	uint16_t getBaseSpeed() const;
 
-	void setBaseSpeed(const uint16_t initBaseSpeed) {
-		info.baseSpeed = initBaseSpeed;
-	}
+	void setBaseSpeed(const uint16_t initBaseSpeed);
 
-	float getHealthMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_HEALTH) : g_configManager().getFloat(RATE_MONSTER_HEALTH);
-	}
+	float getHealthMultiplier() const;
 
-	float getAttackMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_ATTACK) : g_configManager().getFloat(RATE_MONSTER_ATTACK);
-	}
+	float getAttackMultiplier() const;
 
-	float getDefenseMultiplier() const {
-		return isBoss() ? g_configManager().getFloat(RATE_BOSS_DEFENSE) : g_configManager().getFloat(RATE_MONSTER_DEFENSE);
-	}
+	float getDefenseMultiplier() const;
 
-	bool isBoss() const {
-		return !info.bosstiaryClass.empty();
-	}
+	bool isBoss() const;
 
-	void loadLoot(std::shared_ptr<MonsterType> monsterType, LootBlock lootblock);
+	void loadLoot(const std::shared_ptr<MonsterType> &monsterType, LootBlock lootblock) const;
 
-	bool canSpawn(const Position &pos);
+	bool canSpawn(const Position &pos) const;
 };
 
 class MonsterSpell {
@@ -217,8 +195,8 @@ public:
 	MonsterSpell(const MonsterSpell &) = delete;
 	MonsterSpell &operator=(const MonsterSpell &) = delete;
 
-	std::string name = "";
-	std::string scriptName = "";
+	std::string name;
+	std::string scriptName;
 
 	uint8_t chance = 100;
 	uint8_t range = 0;
@@ -246,7 +224,7 @@ public:
 	bool isMelee = false;
 
 	Outfit_t outfit = {};
-	std::string outfitMonster = "";
+	std::string outfitMonster;
 	uint16_t outfitItem = 0;
 
 	ShootType_t shoot = CONST_ANI_NONE;
@@ -265,24 +243,22 @@ public:
 	Monsters(const Monsters &) = delete;
 	Monsters &operator=(const Monsters &) = delete;
 
-	static Monsters &getInstance() {
-		return inject<Monsters>();
-	}
+	static Monsters &getInstance();
 
-	void clear() {
-		monsters.clear();
-	}
+	void clear();
 
 	std::shared_ptr<MonsterType> getMonsterType(const std::string &name, bool silent = false) const;
 	std::shared_ptr<MonsterType> getMonsterTypeByRaceId(uint16_t raceId, bool isBoss = false) const;
-	bool tryAddMonsterType(const std::string &name, std::shared_ptr<MonsterType> mType);
-	bool deserializeSpell(std::shared_ptr<MonsterSpell> spell, spellBlock_t &sb, const std::string &description = "");
+	bool tryAddMonsterType(const std::string &name, const std::shared_ptr<MonsterType> &mType);
+	bool deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spellBlock_t &sb, const std::string &description = "") const;
+	std::vector<std::shared_ptr<MonsterType>> getMonstersByRace(BestiaryType_t race) const;
+	std::vector<std::shared_ptr<MonsterType>> getMonstersByBestiaryStars(uint8_t stars) const;
 
 	std::unique_ptr<LuaScriptInterface> scriptInterface;
 	std::map<std::string, std::shared_ptr<MonsterType>> monsters;
 
 private:
-	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
+	std::shared_ptr<ConditionDamage> getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) const;
 };
 
 constexpr auto g_monsters = Monsters::getInstance;

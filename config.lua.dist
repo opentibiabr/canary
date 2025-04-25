@@ -9,7 +9,8 @@ coreDirectory = "data"
 
 -- Set log level
 -- It can be trace, debug, info, warning, error, critical, off (default: info).
--- NOTE: Will only display logs with level higher or equal the one set.
+-- NOTE: It will only be valid after the server starts up and only display logs with level higher or equal the one set.
+-- NOTE: Debug and trace logs are only available if compiled in debug mode.
 logLevel = "info"
 
 --- Toggles the server's maintenance mode.
@@ -25,6 +26,7 @@ maintainModeMessage = ""
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
+-- NOTE: loginProtectionTime in MS
 worldType = "pvp"
 hotkeyAimbotEnabled = true
 protectionLevel = 7
@@ -46,13 +48,14 @@ monthKillsToRedSkull = 10
 redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
+loginProtectionTime = 10 * 1000
 
 cleanProtectionZones = false
 
 -- Connection Config
 -- NOTE: allowOldProtocol can allow login on 10x protocol. (11.00)
 -- NOTE: maxPlayers set to 0 means no limit
--- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25, 
+-- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25,
 -- It's recommended to use a range like min 50 in this function, otherwise you will be disconnected after equipping two-handed distance weapons.
 ip = "127.0.0.1"
 allowOldProtocol = false
@@ -84,6 +87,17 @@ depotBoxes = 20
 maxItem = 5000
 maxContainer = 500
 maxContainerDepth = 200
+
+-- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
+-- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
+-- NOTE: animusMasteryMonsterXpMultiplier is the monster experience multiplier that has the animus mastery unlocked.
+-- NOTE: animusMasteryMonstersXpMultiplier is the multiplier for each 'animusMasteryMonstersToIncreaseXpMultiplier' monsters that
+-- the player has the animus mastery unlocked.
+-- NOTE: animusMasteryMonstersToIncreaseXpMultiplier is the amount of monster to increase the experience multiplier by 'animusMasteryMonstersXpMultiplier'.
+animusMasteryMaxMonsterXpMultiplier = 4.0
+animusMasteryMonsterXpMultiplier = 2.0
+animusMasteryMonstersXpMultiplier = 0.1
+animusMasteryMonstersToIncreaseXpMultiplier = 10
 
 -- Augments System (Get more info in: https://github.com/opentibiabr/canary/pull/2602)
 -- NOTE: the following values are for all weapons and equipments that have type of "increase damage", "powerful impact" and "strong impact".
@@ -145,7 +159,7 @@ forgeAmountMultiplier = 3
 forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300
-forgeFiendishLimit = 3
+forgeFiendishLimit = 4
 forgeFiendishIntervalType = "hour"
 forgeFiendishIntervalTime = "1"
 
@@ -332,6 +346,7 @@ freeQuestStage = 1
 -- death penalty formula. For the old formula, set it to 10. For
 -- no skill/experience loss, set it to 0.
 deathLosePercent = -1
+leavePartyOnDeath = false
 
 -- Houses
 -- NOTE: set housePriceEachSQM to -1 to disable the ingame buy house functionality
@@ -341,11 +356,14 @@ deathLosePercent = -1
 Setting this to false may pose risks; if a house is abandoned and contains a large number of items on the floor, those items will be transferred to the player's depot instantly.
 • This could potentially freeze the server due to the heavy operation. It's advised to keep this setting enabled (true) to minimize risks.
 ]]
+-- NOTE: When toggleCyclopediaHouseAuction = true, the !buyhouse commmand does not work.
 -- Periods: daily/weekly/monthly/yearly/never
 -- Base: sqm,rent,sqm+rent
+toggleCyclopediaHouseAuction = true
+daysToCloseBid = 7
 housePriceRentMultiplier = 0.0
 housePriceEachSQM = 1000
-houseRentPeriod = "never"
+houseRentPeriod = "monthly"
 houseRentRate = 1.0
 houseOwnedByAccount = false
 houseBuyLevel = 100
@@ -398,6 +416,7 @@ mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
 mysqlDatabase = "otservbr-global"
+mysqlDatabaseBackup = false
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
@@ -587,3 +606,17 @@ metricsPrometheusAddress = "0.0.0.0:9464"
 --- OStream
 metricsEnableOstream = false
 metricsOstreamInterval = 1000
+
+-- OTC Features
+-- NOTE: Features added in this list will be forced to be used on OTCR
+-- These features can be found in "modules/gamelib/const.lua"
+OTCRFeatures = {
+    enableFeature = { 
+        101, -- g_game.enableFeature(GameItemShader)
+        102, -- g_game.enableFeature(GameCreatureAttachedEffect)
+        103, -- g_game.enableFeature(GameCreatureShader)
+        118  -- g_game.enableFeature(GameWingsAurasEffectsShader)
+    },
+    disableFeature = {
+    }
+}

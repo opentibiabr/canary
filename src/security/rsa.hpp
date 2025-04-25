@@ -13,7 +13,7 @@ class Logger;
 
 class RSA {
 public:
-	RSA(Logger &logger);
+	explicit RSA(Logger &logger);
 	~RSA();
 
 	// Singleton - ensures we don't accidentally copy it
@@ -34,8 +34,8 @@ public:
 
 private:
 	Logger &logger;
-	mpz_t n;
-	mpz_t d;
+	mpz_t n {};
+	mpz_t d {};
 };
 
 constexpr auto g_RSA = RSA::getInstance;

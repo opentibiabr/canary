@@ -23,6 +23,14 @@ SoulWarQuest = {
 		[34007] = 0.10, -- 10% for the smallest pool
 	},
 
+	taintExperienceBoostMap = { -- Experience Boost per taint (In percentage %)
+		[1] = { boost = 4.5 },
+		[2] = { boost = 9.2 },
+		[3] = { boost = 14.1 },
+		[4] = { boost = 19.2 },
+		[5] = { boost = 24.6 },
+	},
+
 	timeToIncreaseCrueltyDefense = 15, -- In seconds, it will increase every 15 seconds if don't use mortal essence in greedy maw
 	useGreedMawCooldown = 30, -- In seconds
 	goshnarsCrueltyDefenseChange = 2, -- Defense change, the amount that will decrease or increase defense, the defense cannot decrease more than the monster's original defense amount
@@ -1455,7 +1463,7 @@ function Player:getSoulWarZoneMonster()
 	return zoneMonsterName
 end
 
-function Player:isInBoatSpot()
+function Creature:isInBoatSpot()
 	-- Get ebb and flow zone and check if player is in zone
 	local zone = SoulWarQuest.ebbAndFlow.getZone()
 	local tile = Tile(self:getPosition())
@@ -1464,11 +1472,11 @@ function Player:isInBoatSpot()
 		groundId = tile:getGround():getId()
 	end
 	if zone and zone:isInZone(self:getPosition()) and tile and groundId == SoulWarQuest.ebbAndFlow.boatId then
-		logger.trace("Player {} is in boat spot", self:getName())
+		logger.trace("Creature {} is in boat spot", self:getName())
 		return true
 	end
 
-	logger.trace("Player {} is not in boat spot", self:getName())
+	logger.trace("Creature {} is not in boat spot", self:getName())
 	return false
 end
 
@@ -1568,22 +1576,4 @@ function Creature:applyZoneEffect(var, combat, zoneName)
 	addEvent(delayedCastSpell, SoulWarQuest.goshnarsCrueltyWaveInterval * 1000, self:getId(), var, combat, target:getId())
 
 	return true
-end
-
-function string.toPosition(str)
-	local patterns = {
-		-- table format
-		"{%s*x%s*=%s*(%d+)%s*,%s*y%s*=%s*(%d+)%s*,%s*z%s*=%s*(%d+)%s*}",
-		-- Position format
-		"Position%s*%((%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%)",
-		-- x, y, z format
-		"(%d+)%s*,%s*(%d+)%s*,%s*(%d+)",
-	}
-
-	for _, pattern in ipairs(patterns) do
-		local x, y, z = string.match(str, pattern)
-		if x and y and z then
-			return Position(tonumber(x), tonumber(y), tonumber(z))
-		end
-	end
 end

@@ -61,7 +61,7 @@ local function greetCallback(npc, creature, message)
 		return false
 	end
 
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) == 1 then
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) <= 0 then
 		npcHandler:say({
 			"Hahahaha! ...",
 			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
@@ -179,7 +179,7 @@ npcConfig.shop = {
 	{ itemName = "glacial rod", clientId = 16118, sell = 6500 },
 	{ itemName = "hailstorm rod", clientId = 3067, sell = 3000 },
 	{ itemName = "life ring", clientId = 3052, buy = 900, sell = 50 },
-	{ itemName = "might ring", clientId = 3048, buy = 5000, sell = 250, count = 20 },
+	{ itemName = "might ring", clientId = 3048, buy = 25000, sell = 250, count = 20 },
 	{ itemName = "moonlight rod", clientId = 3070, sell = 200 },
 	{ itemName = "muck rod", clientId = 16117, sell = 6000 },
 	{ itemName = "mysterious fetish", clientId = 3078, sell = 50 },

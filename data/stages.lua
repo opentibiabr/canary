@@ -1,6 +1,7 @@
 -- Minlevel and multiplier are MANDATORY
 -- Maxlevel is OPTIONAL, but is considered infinite by default
 -- Create a stage with minlevel 1 and no maxlevel to disable stages
+-- Test change
 experienceStages = {
 	{
 		minlevel = 1,

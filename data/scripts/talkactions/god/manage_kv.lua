@@ -29,7 +29,7 @@ local getAllKV = TalkAction("/getallkv")
 function getAllKV.onSay(player, words, param)
 	local playerName = param
 	if not playerName or playerName == "" then
-		playerName = player:getName() -- Se não fornecer o nome, usa o próprio jogador
+		playerName = player:getName()
 	end
 
 	local targetPlayer = Player(playerName)
@@ -45,14 +45,12 @@ function getAllKV.onSay(player, words, param)
 	end
 
 	local found = false
-	-- Usar o método keys para obter todas as chaves
 	local keys = kv:keys()
 	if not keys then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "No keys found.")
 		return
 	end
 
-	-- Iterar sobre as chaves e obter seus valores
 	for _, key in ipairs(keys) do
 		local value = kv:get(key)
 		if type(value) == "number" and value >= 0 then

@@ -13,8 +13,7 @@
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/wheel/wheel_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
 #include "game/game.hpp"
@@ -549,14 +548,6 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 	}
 
 	const auto &tile = g_game().map.getOrCreateTile(toPos);
-
-	ReturnValue ret = Combat::canDoCombat(player, tile, aggressive);
-	if (ret != RETURNVALUE_NOERROR) {
-		player->sendCancelMessage(ret);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
-		return false;
-	}
-
 	if (blockingCreature && tile->getBottomVisibleCreature(player) != nullptr) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -729,7 +720,7 @@ int32_t Spell::calculateAugmentSpellCooldownReduction(const std::shared_ptr<Play
 }
 
 void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const {
-	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
+	WheelSpellGrade_t spellGrade = player->wheel().getSpellUpgrade(getName());
 	bool isUpgraded = getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0;
 	// Safety check to prevent division by zero
 	auto rateCooldown = g_configManager().getFloat(RATE_SPELL_COOLDOWN);
@@ -743,13 +734,13 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
 		int32_t augmentCooldownReduction = calculateAugmentSpellCooldownReduction(player);
-		g_logger().debug("[{}] spell name: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellCooldown, player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
-		spellCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
+		g_logger().debug("[{}] spell name: {}, grade: {}, originalCooldown: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellGrade, cooldown, spellCooldown, player->wheel().getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
+		spellCooldown -= player->wheel().getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
 		spellCooldown -= augmentCooldownReduction;
 		const int32_t halfBaseCooldown = cooldown / 2;
 		spellCooldown = halfBaseCooldown > spellCooldown ? halfBaseCooldown : spellCooldown; // The cooldown should never be reduced less than half (50%) of its base cooldown
 		if (spellCooldown > 0) {
-			player->wheel()->handleTwinBurstsCooldown(player, name, spellCooldown, rateCooldown);
+			player->wheel().handleTwinBurstsCooldown(player, name, spellCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, spellCooldown / rateCooldown, 0, false, m_spellId);
 			player->addCondition(condition);
 		}
@@ -771,9 +762,9 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 		if (isUpgraded) {
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
-		spellSecondaryGroupCooldown -= player->wheel()->getSpellBonus(name, WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN);
+		spellSecondaryGroupCooldown -= player->wheel().getSpellBonus(name, WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN);
 		if (spellSecondaryGroupCooldown > 0) {
-			player->wheel()->handleBeamMasteryCooldown(player, name, spellSecondaryGroupCooldown, rateCooldown);
+			player->wheel().handleBeamMasteryCooldown(player, name, spellSecondaryGroupCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);
 			player->addCondition(condition);
 		}
@@ -835,12 +826,12 @@ bool Spell::isLearnable() const {
 }
 
 uint32_t Spell::getManaCost(const std::shared_ptr<Player> &player) const {
-	WheelSpellGrade_t spellGrade = player->wheel()->getSpellUpgrade(getName());
+	WheelSpellGrade_t spellGrade = player->wheel().getSpellUpgrade(getName());
 	uint32_t manaRedution = 0;
 	if (getWheelOfDestinyUpgraded() && static_cast<uint8_t>(spellGrade) > 0) {
 		manaRedution += getWheelOfDestinyBoost(WheelSpellBoost_t::MANA, spellGrade);
 	}
-	manaRedution += player->wheel()->getSpellBonus(name, WheelSpellBoost_t::MANA);
+	manaRedution += player->wheel().getSpellBonus(name, WheelSpellBoost_t::MANA);
 
 	if (mana != 0) {
 		if (manaRedution > mana) {
@@ -931,7 +922,7 @@ void Spell::addVocMap(uint16_t vocationId, bool b) {
 	vocSpellMap[vocationId] = b;
 }
 
-SpellGroup_t Spell::getGroup() {
+SpellGroup_t Spell::getGroup() const {
 	return group;
 }
 
@@ -1055,6 +1046,10 @@ InstantSpell::InstantSpell() = default;
 
 bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
 	if (!playerSpellCheck(player)) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_POWERLESS) && getGroup() == SPELLGROUP_ATTACK) {
 		return false;
 	}
 
@@ -1376,6 +1371,10 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 
 	// If script not loaded correctly, return
 	if (!isRuneSpellLoadedScriptId()) {
+		return false;
+	}
+
+	if (player->hasCondition(CONDITION_POWERLESS) && getGroup() == SPELLGROUP_ATTACK) {
 		return false;
 	}
 

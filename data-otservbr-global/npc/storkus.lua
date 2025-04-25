@@ -59,13 +59,15 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 6 then
-			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) == 0 then
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) < 0 then
 				npcHandler:say("So they've sent another one? I just hope ye' better than the last one. Are ye' ready for a mission?", npc, creature)
 				npcHandler:setTopic(playerId, 9)
-			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) >= 1 and player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) <= 20 then
+				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, 0)
+			end
+			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) < 20 then
 				npcHandler:say("So far ye've brought me " .. player:getItemCount(5905) .. " of 20 {vampire dusts}. Do ye' have any more with ye'? ", npc, creature)
 				npcHandler:setTopic(playerId, 1)
-			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) == 21 then
+			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) == 20 then
 				npcHandler:say("Fine, you're done! Ye' should talk to me about your {mission} again now.", npc, creature)
 				npcHandler:setTopic(playerId, 2)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 7)
@@ -120,24 +122,14 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			local count = player:getItemCount(5905)
-			local currentStorage = player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)
-			local requiredCount = 21 - currentStorage
+			local requiredCount = 20 - player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)
 			if count > requiredCount then
 				count = requiredCount
 			end
-			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, currentStorage + count)
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) + count)
 			player:removeItem(5905, count)
 
-			local newStorage = player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)
-			local remainingDusts = 20 - newStorage
-
-			local message
-			if remainingDusts <= 0 then
-				message = "Ask me for a {mission} to continue your quest."
-			else
-				message = "Ye' need to bring " .. remainingDusts .. " more."
-			end
-			npcHandler:say("Ye've brought me " .. count .. " vampire dusts. " .. message, npc, creature)
+			npcHandler:say("Ye've brought me " .. count .. " vampire dusts. " .. (20 - player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)) == 0 and "Ask me for a {mission} to continue your quest." or ("Ye' need to bring " .. (20 - player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)) .. " more."), npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(8192, 1) then

@@ -13,23 +13,16 @@
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
-#include "creatures/players/vip/player_vip.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
@@ -64,6 +57,7 @@
 #include "lua/creature/movement.hpp"
 #include "map/spectators.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -71,14 +65,15 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::move(p)) {
-	m_playerVIP = std::make_unique<PlayerVIP>(*this);
-	m_wheelPlayer = std::make_unique<PlayerWheel>(*this);
-	m_playerAchievement = std::make_unique<PlayerAchievement>(*this);
-	m_playerBadge = std::make_unique<PlayerBadge>(*this);
-	m_playerCyclopedia = std::make_unique<PlayerCyclopedia>(*this);
-	m_playerTitle = std::make_unique<PlayerTitle>(*this);
-}
+	client(std::move(p)),
+	m_playerVIP(*this),
+	m_wheelPlayer(*this),
+	m_playerAchievement(*this),
+	m_playerBadge(*this),
+	m_playerCyclopedia(*this),
+	m_playerTitle(*this),
+	m_animusMastery(*this),
+	m_playerAttachedEffects(*this) { }
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -151,7 +146,7 @@ std::string Player::getDescription(int32_t lookDistance) {
 	std::ostringstream s;
 	std::string subjectPronoun = getSubjectPronoun();
 	capitalizeWords(subjectPronoun);
-	const auto playerTitle = title()->getCurrentTitle() == 0 ? "" : (", " + title()->getCurrentTitleName());
+	const auto playerTitle = title().getCurrentTitle() == 0 ? "" : (", " + title().getCurrentTitleName());
 
 	if (lookDistance == -1) {
 		s << "yourself" << playerTitle << ".";
@@ -437,7 +432,7 @@ void Player::getShieldAndWeapon(std::shared_ptr<Item> &shield, std::shared_ptr<I
 }
 
 float Player::getMitigation() const {
-	return wheel()->calculateMitigation();
+	return wheel().calculateMitigation();
 }
 
 int32_t Player::getDefense() const {
@@ -460,7 +455,7 @@ int32_t Player::getDefense() const {
 		defenseValue = weapon != nullptr ? shield->getDefense() + weapon->getExtraDefense() : shield->getDefense();
 		// Wheel of destiny - Combat Mastery
 		if (shield->getDefense() > 0) {
-			defenseValue += wheel()->getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
+			defenseValue += wheel().getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
 		}
 		defenseSkill = getSkillLevel(SKILL_SHIELD);
 	}
@@ -1052,6 +1047,14 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 			return;
 		}
 		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, WING_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, EFFECT_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, AURA_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, SHADER_RANGE)) {
 			// do nothing
 		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
 			familiars.emplace_back(
@@ -2045,16 +2048,20 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
 		setAttackedCreature(nullptr);
 	}
 
-	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
-		g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
-		if (client) {
-			client->logout(true, true);
+	if (noPongTime >= 60000 && shouldForceLogout) {
+		if (canLogout() && g_creatureEvents().playerLogout(static_self_cast<Player>())) {
+			g_logger().info("Player {} has been kicked due to ping timeout. (has client: {})", getName(), client != nullptr);
+			if (client) {
+				client->logout(true, true);
+			} else {
+				g_game().removeCreature(static_self_cast<Player>(), true);
+			}
 		} else {
-			g_game().removeCreature(static_self_cast<Player>(), true);
+			shouldForceLogout = false;
 		}
 	}
 }
@@ -2288,11 +2295,33 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
+	auto itemSlots = item->getImbuementSlot();
+	if (slot >= itemSlots) {
+		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", this->getName(), slot);
+		this->sendImbuementResult("Invalid slot selection.");
+		return;
+	}
+
 	ImbuementInfo imbuementInfo;
 	if (item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
+	}
+
+	for (uint8_t i = 0; i < item->getImbuementSlot(); i++) {
+		if (i == slot) {
+			continue;
+		}
+
+		ImbuementInfo existingImbuement;
+		if (item->getImbuementInfo(i, &existingImbuement) && existingImbuement.imbuement) {
+			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
+				g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
+				this->sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
+				return;
+			}
+		}
 	}
 
 	const auto &items = imbuement->getItems();
@@ -2441,8 +2470,8 @@ void Player::onChangeZone(ZoneType_t zone) {
 	}
 
 	updateImbuementTrackerStats();
-	wheel()->onThink(true);
-	wheel()->sendGiftOfLifeCooldown();
+	wheel().onThink(true);
+	wheel().sendGiftOfLifeCooldown();
 	g_game().updateCreatureWalkthrough(static_self_cast<Player>());
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(static_self_cast<Player>(), zone);
@@ -2774,6 +2803,7 @@ uint16_t Player::getDisplayXpBoostPercent() const {
 
 void Player::setXpBoostPercent(uint16_t percent) {
 	xpBoostPercent = percent;
+	sendStats();
 }
 
 uint16_t Player::getStaminaXpBoost() const {
@@ -2804,10 +2834,10 @@ int32_t Player::getIdleTime() const {
 void Player::setTraining(bool value) {
 	for (const auto &[key, player] : g_game().getPlayers()) {
 		if (!this->isInGhostMode() || player->isAccessPlayer()) {
-			player->vip()->notifyStatusChange(static_self_cast<Player>(), value ? VipStatus_t::Training : VipStatus_t::Online, false);
+			player->vip().notifyStatusChange(static_self_cast<Player>(), value ? VipStatus_t::Training : VipStatus_t::Online, false);
 		}
 	}
-	vip()->setStatus(VipStatus_t::Training);
+	vip().setStatus(VipStatus_t::Training);
 	setExerciseTraining(value);
 }
 
@@ -2920,6 +2950,26 @@ bool Player::canDoAction() const {
 	return nextAction <= OTSYS_TIME();
 }
 
+void Player::setNextNecklaceAction(int64_t time) {
+	if (time > nextNecklaceAction) {
+		nextNecklaceAction = time;
+	}
+}
+
+void Player::setNextRingAction(int64_t time) {
+	if (time > nextRingAction) {
+		nextRingAction = time;
+	}
+}
+
+bool Player::canEquipNecklace() const {
+	return OTSYS_TIME() >= nextNecklaceAction;
+}
+
+bool Player::canEquipRing() const {
+	return OTSYS_TIME() >= nextRingAction;
+}
+
 void Player::setNextPotionAction(int64_t time) {
 	if (time > nextPotionAction) {
 		nextPotionAction = time;
@@ -2928,6 +2978,23 @@ void Player::setNextPotionAction(int64_t time) {
 
 bool Player::canDoPotionAction() const {
 	return nextPotionAction <= OTSYS_TIME();
+}
+
+void Player::setLoginProtection(int64_t time) {
+	loginProtectionTime = OTSYS_TIME() + time;
+}
+bool Player::isLoginProtected() const {
+	return loginProtectionTime > OTSYS_TIME();
+}
+void Player::resetLoginProtection() {
+	loginProtectionTime = 0;
+}
+
+void Player::setProtection(bool status) {
+	connProtected = status;
+}
+bool Player::isProtected() {
+	return connProtected;
 }
 
 void Player::cancelPush() {
@@ -3093,6 +3160,14 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		exp += (exp * (1.75 * getHazardSystemPoints() * g_configManager().getFloat(HAZARD_EXP_BONUS_MULTIPLIER))) / 100.;
 	}
 
+	const bool handleAnimusMastery = monster && animusMastery().has(monster->getMonsterType()->name);
+	float animusMasteryMultiplier = 0;
+
+	if (handleAnimusMastery) {
+		animusMasteryMultiplier = animusMastery().getExperienceMultiplier();
+		exp *= animusMasteryMultiplier;
+	}
+
 	experience += exp;
 
 	if (sendText) {
@@ -3102,6 +3177,10 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 			if (expPercent > 0) {
 				expString = expString + fmt::format(" (VIP bonus {}%)", expPercent > 100 ? 100 : expPercent);
 			}
+		}
+
+		if (handleAnimusMastery) {
+			expString = fmt::format("{} (animus mastery bonus {:.1f}%)", expString, (animusMasteryMultiplier - 1) * 100);
 		}
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString + (handleHazardExperience ? " (Hazard)" : ""));
@@ -3371,7 +3450,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				}
 			}
 
-			//
+			// Absorb Percent
 			const ItemType &it = Item::items[item->getID()];
 			if (it.abilities) {
 				int totalAbsorbPercent = 0;
@@ -3387,7 +3466,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-				if (totalAbsorbPercent > 0) {
+				if (totalAbsorbPercent != 0) {
 					damage -= std::round(damage * (totalAbsorbPercent / 100.0));
 
 					const auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
@@ -3399,7 +3478,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 		}
 
 		// Wheel of destiny - apply resistance
-		wheel()->adjustDamageBasedOnResistanceAndSkill(damage, combatType);
+		wheel().adjustDamageBasedOnResistanceAndSkill(damage, combatType);
 
 		if (damage <= 0) {
 			damage = 0;
@@ -3772,7 +3851,11 @@ void Player::despawn() {
 
 	// show player as pending
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Pending, false);
+		player->vip().notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Pending, false);
+	}
+
+	if (m_party && g_configManager().getBoolean(LEAVE_PARTY_ON_DEATH)) {
+		m_party->leaveParty(static_self_cast<Player>());
 	}
 
 	setDead(true);
@@ -3791,12 +3874,64 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	const auto &corpse = Creature::getCorpse(lastHitCreature, mostDamageCreature);
 	if (corpse && corpse->getContainer()) {
 		std::ostringstream ss;
+
+		ss << "You recognize " << getNameDescription() << ". ";
+
+		std::string responsibleName;
+		std::string secondaryResponsibleName;
+		bool hasOthers = false;
+
 		if (lastHitCreature) {
-			std::string subjectPronoun = getSubjectPronoun();
-			capitalizeWords(subjectPronoun);
-			ss << "You recognize " << getNameDescription() << ". " << subjectPronoun << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription() << '.';
+			if (lastHitCreature->getPlayer()) {
+				responsibleName = lastHitCreature->getNameDescription();
+			} else if (auto master = lastHitCreature->getMaster(); master && master->getPlayer()) {
+				responsibleName = master->getNameDescription();
+			}
+		}
+
+		if (mostDamageCreature) {
+			if (mostDamageCreature->getPlayer()) {
+				if (responsibleName != mostDamageCreature->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = mostDamageCreature->getNameDescription();
+				}
+			} else if (auto master = mostDamageCreature->getMaster(); master && master->getPlayer()) {
+				if (responsibleName != master->getNameDescription()) {
+					secondaryResponsibleName = responsibleName;
+					responsibleName = master->getNameDescription();
+				}
+			}
+		}
+
+		uint32_t inFightTicks = 5 * 60 * 1000;
+		for (const auto &[creatureId, damageInfo] : damageMap) {
+			const auto &[total, ticks] = damageInfo;
+			if ((OTSYS_TIME() - ticks) <= inFightTicks) {
+				const auto &attacker = g_game().getCreatureByID(creatureId);
+				if (attacker && !attacker->getPlayer()) {
+					hasOthers = true;
+					break;
+				}
+			}
+		}
+
+		if (!responsibleName.empty()) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << responsibleName;
+
+			if (!secondaryResponsibleName.empty()) {
+				ss << " and " << secondaryResponsibleName;
+			} else if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
+		} else if (lastHitCreature) {
+			ss << getSubjectPronoun() << " " << getSubjectVerb(true) << " killed by " << lastHitCreature->getNameDescription();
+			if (hasOthers) {
+				ss << " and others";
+			}
+			ss << '.';
 		} else {
-			ss << "You recognize " << getNameDescription() << '.';
+			ss << "No attackers were identified.";
 		}
 
 		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
@@ -3805,7 +3940,7 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 }
 
 void Player::addInFightTicks(bool pzlock /*= false*/) {
-	wheel()->checkAbilities();
+	wheel().checkAbilities();
 
 	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
 		return;
@@ -3819,7 +3954,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	updateImbuementTrackerStats();
 
 	safeCall([this] {
-		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED), 0));
+		addCondition(Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_INFIGHT, g_configManager().getNumber(PZ_LOCKED)));
 	});
 }
 
@@ -3831,13 +3966,13 @@ void Player::removeList() {
 	g_game().removePlayer(static_self_cast<Player>());
 
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->vip()->notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Offline);
+		player->vip().notifyStatusChange(static_self_cast<Player>(), VipStatus_t::Offline);
 	}
 }
 
 void Player::addList() {
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		player->vip()->notifyStatusChange(static_self_cast<Player>(), vip()->getStatus());
+		player->vip().notifyStatusChange(static_self_cast<Player>(), vip().getStatus());
 	}
 
 	g_game().addPlayer(static_self_cast<Player>());
@@ -4707,7 +4842,7 @@ uint32_t Player::getCapacity() const {
 	if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 		return std::numeric_limits<uint32_t>::max();
 	}
-	return capacity + bonusCapacity + varStats[STAT_CAPACITY] + (m_wheelPlayer->getStat(WheelStat_t::CAPACITY) * 100);
+	return capacity + bonusCapacity + varStats[STAT_CAPACITY] + (m_wheelPlayer.getStat(WheelStat_t::CAPACITY) * 100);
 }
 
 uint32_t Player::getBonusCapacity() const {
@@ -5521,7 +5656,8 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 void Player::onEndCondition(ConditionType_t type) {
 	Creature::onEndCondition(type);
 
-	if (type == CONDITION_INFIGHT) {
+	const auto &conditionFight = getCondition(CONDITION_INFIGHT);
+	if (type == CONDITION_INFIGHT && !conditionFight) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
@@ -5761,9 +5897,11 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 		g_logger().error("[{}] Monster type is null.", __FUNCTION__);
 		return false;
 	}
-	addHuntingTaskKill(mType);
-	addBestiaryKill(mType);
-	addBosstiaryKill(mType);
+	if (!monster->getSoulPit()) {
+		addHuntingTaskKill(mType);
+		addBestiaryKill(mType);
+		addBosstiaryKill(mType);
+	}
 	return false;
 }
 
@@ -6386,8 +6524,8 @@ bool Player::isInWarList(uint32_t guildId) const {
 uint32_t Player::getMagicLevel() const {
 	uint32_t magic = std::max<int32_t>(0, getLoyaltyMagicLevel() + varStats[STAT_MAGICPOINTS]);
 	// Wheel of destiny magic bonus
-	magic += m_wheelPlayer->getStat(WheelStat_t::MAGIC); // Regular bonus
-	magic += m_wheelPlayer->getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC); // Revelation bonus
+	magic += m_wheelPlayer.getStat(WheelStat_t::MAGIC); // Regular bonus
+	magic += m_wheelPlayer.getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC); // Revelation bonus
 	return magic;
 }
 
@@ -6419,11 +6557,11 @@ uint32_t Player::getLoyaltyMagicLevel() const {
 }
 
 int32_t Player::getMaxHealth() const {
-	return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS] + m_wheelPlayer->getStat(WheelStat_t::HEALTH));
+	return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS] + m_wheelPlayer.getStat(WheelStat_t::HEALTH));
 }
 
 uint32_t Player::getMaxMana() const {
-	return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS] + m_wheelPlayer->getStat(WheelStat_t::MANA));
+	return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS] + m_wheelPlayer.getStat(WheelStat_t::MANA));
 }
 
 bool Player::hasExtraSwing() {
@@ -6442,28 +6580,28 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 
 	// Wheel of destiny
 	if (skill >= SKILL_CLUB && skill <= SKILL_AXE) {
-		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MELEE);
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Battle Instinct", WheelMajor_t::MELEE);
+		skillLevel += m_wheelPlayer.getStat(WheelStat_t::MELEE);
+		skillLevel += m_wheelPlayer.getMajorStatConditional("Battle Instinct", WheelMajor_t::MELEE);
 	} else if (skill == SKILL_DISTANCE) {
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tactics", WheelMajor_t::DISTANCE);
-		skillLevel += m_wheelPlayer->getStat(WheelStat_t::DISTANCE);
+		skillLevel += m_wheelPlayer.getMajorStatConditional("Positional Tactics", WheelMajor_t::DISTANCE);
+		skillLevel += m_wheelPlayer.getStat(WheelStat_t::DISTANCE);
 	} else if (skill == SKILL_SHIELD) {
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Battle Instinct", WheelMajor_t::SHIELD);
+		skillLevel += m_wheelPlayer.getMajorStatConditional("Battle Instinct", WheelMajor_t::SHIELD);
 	} else if (skill == SKILL_MAGLEVEL) {
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC);
-		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MAGIC);
+		skillLevel += m_wheelPlayer.getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC);
+		skillLevel += m_wheelPlayer.getStat(WheelStat_t::MAGIC);
 	} else if (skill == SKILL_LIFE_LEECH_AMOUNT) {
-		skillLevel += m_wheelPlayer->getStat(WheelStat_t::LIFE_LEECH);
+		skillLevel += m_wheelPlayer.getStat(WheelStat_t::LIFE_LEECH);
 	} else if (skill == SKILL_MANA_LEECH_AMOUNT) {
-		skillLevel += m_wheelPlayer->getStat(WheelStat_t::MANA_LEECH);
+		skillLevel += m_wheelPlayer.getStat(WheelStat_t::MANA_LEECH);
 	} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
-		skillLevel += m_wheelPlayer->getStat(WheelStat_t::CRITICAL_DAMAGE);
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
-		skillLevel += m_wheelPlayer->getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
-		skillLevel += m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
+		skillLevel += m_wheelPlayer.getStat(WheelStat_t::CRITICAL_DAMAGE);
+		skillLevel += m_wheelPlayer.getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
+		skillLevel += m_wheelPlayer.getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
+		skillLevel += m_wheelPlayer.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
 	}
 
-	const int32_t avatarCritChance = m_wheelPlayer->checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
+	const int32_t avatarCritChance = m_wheelPlayer.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
 	if (skill == SKILL_CRITICAL_HIT_CHANCE && avatarCritChance > 0) {
 		skillLevel = avatarCritChance; // 100%
 	}
@@ -6552,7 +6690,7 @@ void Player::setPerfectShotDamage(uint8_t range, int32_t damage) {
 }
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
-	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)] + m_wheelPlayer->getSpecializedMagic(combat);
+	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)] + m_wheelPlayer.getSpecializedMagic(combat);
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
@@ -6855,9 +6993,14 @@ void Player::sendUnjustifiedPoints() const {
 uint8_t Player::getLastMount() const {
 	const int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
 	if (value > 0) {
-		return value;
+		return static_cast<uint8_t>(value);
 	}
-	return static_cast<uint8_t>(kv()->get("last-mount")->get<int>());
+	const auto lastMount = kv()->get("last-mount");
+	if (!lastMount.has_value()) {
+		return 0;
+	}
+
+	return static_cast<uint8_t>(lastMount->get<int>());
 }
 
 uint8_t Player::getCurrentMount() const {
@@ -6888,9 +7031,16 @@ uint8_t Player::getRandomMountId() const {
 		}
 	}
 
-	const auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
-	const auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
-	return playerMounts.at(randomIndex);
+	if (playerMounts.empty()) {
+		return 0;
+	}
+
+	const auto randomIndex = uniform_random(0, static_cast<int32_t>(playerMounts.size() - 1));
+	if (randomIndex >= 0 && static_cast<size_t>(randomIndex) < playerMounts.size()) {
+		return playerMounts[randomIndex];
+	}
+
+	return 0;
 }
 
 bool Player::toggleMount(bool mount) {
@@ -7439,7 +7589,7 @@ void Player::sendFightModes() const {
 	}
 }
 
-void Player::sendNetworkMessage(const NetworkMessage &message) const {
+void Player::sendNetworkMessage(NetworkMessage &message) const {
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
@@ -7500,7 +7650,7 @@ void Player::onThink(uint32_t interval) {
 	}
 
 	// Wheel of destiny major spells
-	wheel()->onThink();
+	wheel().onThink();
 
 	g_callbacks().executeCallback(EventCallback_t::playerOnThink, &EventCallback::playerOnThink, getPlayer(), interval);
 }
@@ -8245,7 +8395,8 @@ void Player::initializeTaskHunting() {
 	}
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
-		client->writeToOutputBuffer(g_ioprey().getTaskHuntingBaseDate());
+		auto buffer = g_ioprey().getTaskHuntingBaseDate();
+		client->writeToOutputBuffer(buffer);
 	}
 }
 
@@ -8765,13 +8916,27 @@ bool Player::saySpell(SpeakClasses type, const std::string &text, bool isGhostMo
 	return true;
 }
 
+void Player::setDead(bool isDead) {
+	m_isDead = isDead;
+	const auto &thisPlayer = static_self_cast<Player>();
+	if (isDead) {
+		g_game().addDeadPlayer(thisPlayer);
+	} else {
+		g_game().removeDeadPlayer(getName());
+	}
+}
+
+bool Player::isDead() const {
+	return m_isDead;
+}
+
 void Player::triggerMomentum() {
 	double_t chance = 0;
 	if (const auto &item = getInventoryItem(CONST_SLOT_HEAD)) {
 		chance += item->getMomentumChance();
 	}
 
-	chance += m_wheelPlayer->getBonusData().momentum;
+	chance += m_wheelPlayer.getBonusData().momentum;
 	double_t randomChance = uniform_random(0, 10000) / 100.;
 	if (getZoneType() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
 		bool triggered = false;
@@ -8820,7 +8985,7 @@ void Player::clearCooldowns() {
 }
 
 void Player::triggerTranscendance() {
-	if (wheel()->getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) > OTSYS_TIME()) {
+	if (wheel().getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) > OTSYS_TIME()) {
 		return;
 	}
 
@@ -8838,7 +9003,7 @@ void Player::triggerTranscendance() {
 		outfit.lookType = getVocation()->getAvatarLookType();
 		outfitCondition->setOutfit(outfit);
 		addCondition(outfitCondition);
-		wheel()->setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
+		wheel().setOnThinkTimer(WheelOnThink_t::AVATAR_FORGE, OTSYS_TIME() + duration);
 		g_game().addMagicEffect(getPosition(), CONST_ME_AVATAR_APPEAR);
 
 		sendSkills();
@@ -8862,7 +9027,7 @@ void Player::triggerTranscendance() {
 		);
 		g_dispatcher().scheduleEvent(task);
 
-		wheel()->sendGiftOfLifeCooldown();
+		wheel().sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
 	}
 }
@@ -9609,6 +9774,14 @@ void Player::sendLootContainers() const {
 	}
 }
 
+void Player::sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const {
+	if (!client) {
+		return;
+	}
+
+	client->sendPlayerTyping(creature, typing);
+}
+
 void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {
 	if (client) {
 		client->sendSingleSoundEffect(pos, id, source);
@@ -9820,7 +9993,6 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 				guild->removeMember(player);
 			}
 
-			g_game().removePlayerUniqueLogin(player);
 			loginPosition = getPosition();
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
@@ -9938,9 +10110,7 @@ void Player::onFollowCreatureDisappear(bool isLogout) {
 	}
 }
 
-// container
-// container
-
+// Container
 void Player::onAddContainerItem(const std::shared_ptr<Item> &item) {
 	checkTradeState(item);
 }
@@ -10229,57 +10399,75 @@ void Player::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Ite
  ******************************************************************************/
 
 // Wheel interface
-std::unique_ptr<PlayerWheel> &Player::wheel() {
+PlayerWheel &Player::wheel() {
 	return m_wheelPlayer;
 }
 
-const std::unique_ptr<PlayerWheel> &Player::wheel() const {
+const PlayerWheel &Player::wheel() const {
 	return m_wheelPlayer;
 }
 
 // Achievement interface
-std::unique_ptr<PlayerAchievement> &Player::achiev() {
+PlayerAchievement &Player::achiev() {
 	return m_playerAchievement;
 }
 
-const std::unique_ptr<PlayerAchievement> &Player::achiev() const {
+const PlayerAchievement &Player::achiev() const {
 	return m_playerAchievement;
 }
 
 // Badge interface
-std::unique_ptr<PlayerBadge> &Player::badge() {
+PlayerBadge &Player::badge() {
 	return m_playerBadge;
 }
 
-const std::unique_ptr<PlayerBadge> &Player::badge() const {
+const PlayerBadge &Player::badge() const {
 	return m_playerBadge;
 }
 
 // Title interface
-std::unique_ptr<PlayerTitle> &Player::title() {
+PlayerTitle &Player::title() {
 	return m_playerTitle;
 }
 
-const std::unique_ptr<PlayerTitle> &Player::title() const {
+const PlayerTitle &Player::title() const {
 	return m_playerTitle;
-}
-
-// VIP interface
-std::unique_ptr<PlayerVIP> &Player::vip() {
-	return m_playerVIP;
-}
-
-const std::unique_ptr<PlayerVIP> &Player::vip() const {
-	return m_playerVIP;
 }
 
 // Cyclopedia
-std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() {
+PlayerCyclopedia &Player::cyclopedia() {
 	return m_playerCyclopedia;
 }
 
-const std::unique_ptr<PlayerCyclopedia> &Player::cyclopedia() const {
+const PlayerCyclopedia &Player::cyclopedia() const {
 	return m_playerCyclopedia;
+}
+
+// VIP interface
+PlayerVIP &Player::vip() {
+	return m_playerVIP;
+}
+
+const PlayerVIP &Player::vip() const {
+	return m_playerVIP;
+}
+
+// Animus Mastery interface
+AnimusMastery &Player::animusMastery() {
+	return m_animusMastery;
+}
+
+const AnimusMastery &Player::animusMastery() const {
+	return m_animusMastery;
+}
+
+// Attached Effects interface
+PlayerAttachedEffects &Player::attachedEffects() {
+	return m_playerAttachedEffects;
+}
+
+const PlayerAttachedEffects &Player::attachedEffects() const {
+	return m_playerAttachedEffects;
 }
 
 void Player::sendLootMessage(const std::string &message) const {
@@ -10364,7 +10552,7 @@ uint16_t Player::getDodgeChance() const {
 		chance += static_cast<uint16_t>(playerArmor->getDodgeChance() * 100);
 	}
 
-	chance += m_wheelPlayer->getStat(WheelStat_t::DODGE);
+	chance += m_wheelPlayer.getStat(WheelStat_t::DODGE);
 
 	return chance;
 }

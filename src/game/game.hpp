@@ -10,8 +10,8 @@
 #pragma once
 
 #include "creatures/appearance/outfit/outfit.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
+#include "creatures/players/components/player_badge.hpp"
+#include "creatures/players/components/player_title.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "lua/creature/raids.hpp"
@@ -38,6 +38,7 @@ class IOWheel;
 class ItemClassification;
 class Guild;
 class Mounts;
+class AttachedEffects;
 class Spectators;
 class Player;
 class Account;
@@ -374,7 +375,6 @@ public:
 	void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
 	void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
 	void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position &pos);
-	void playerMoveThingFromDepotSearch(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t tier, uint8_t count, const Position &fromPos, const Position &toPos, bool allItems = false);
 
 	void playerRequestAddVip(uint32_t playerId, const std::string &name);
 	void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
@@ -387,7 +387,7 @@ public:
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);
-	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMountRandomized = 0);
+	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount, uint8_t isMountRandomized = 0);
 	void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 	void playerJoinParty(uint32_t playerId, uint32_t leaderId);
 	void playerRevokePartyInvitation(uint32_t playerId, uint32_t invitedId);
@@ -486,7 +486,6 @@ public:
 	void addPlayerMana(const std::shared_ptr<Player> &target);
 	void addPlayerVocation(const std::shared_ptr<Player> &target);
 	void addMagicEffect(const Position &pos, uint16_t effect);
-	static void addMagicEffect(const std::vector<std::shared_ptr<Player>> &players, const Position &pos, uint16_t effect);
 	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
 	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
@@ -522,12 +521,16 @@ public:
 	const phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> &getPlayers() const {
 		return players;
 	}
-	const std::map<uint32_t, std::shared_ptr<Monster>> &getMonsters() const {
+	const auto &getMonsters() const {
 		return monsters;
 	}
-	const std::map<uint32_t, std::shared_ptr<Npc>> &getNpcs() const {
+	const auto &getNpcs() const {
 		return npcs;
 	}
+
+	void addDeadPlayer(const std::shared_ptr<Player> &player);
+	void removeDeadPlayer(const std::string &playerName);
+	std::shared_ptr<Player> getDeadPlayer(const std::string &playerName);
 
 	const std::vector<ItemClassification*> &getItemsClassifications() const {
 		return itemsClassifications;
@@ -539,8 +542,9 @@ public:
 	void addNpc(const std::shared_ptr<Npc> &npc);
 	void removeNpc(const std::shared_ptr<Npc> &npc);
 
-	void addMonster(const std::shared_ptr<Monster> &npc);
-	void removeMonster(const std::shared_ptr<Monster> &npc);
+	void addMonster(const std::shared_ptr<Monster> &monster);
+	void removeMonster(const std::shared_ptr<Monster> &monster);
+	void updateMonster(const std::shared_ptr<Monster> &monster, const std::shared_ptr<MonsterType> &monsterType);
 
 	std::shared_ptr<Guild> getGuild(uint32_t id, bool allowOffline = false) const;
 	std::shared_ptr<Guild> getGuildByName(const std::string &name, bool allowOffline = false) const;
@@ -635,43 +639,6 @@ public:
 	void sendUpdateCreature(const std::shared_ptr<Creature> &creature);
 	std::shared_ptr<Item> wrapItem(const std::shared_ptr<Item> &item, const std::shared_ptr<House> &house);
 
-	/**
-	 * @brief Adds a player to the unique login map.
-	 * @details The function registers a player in the unique login map to ensure no duplicate logins.
-	 * If the player pointer is null, it logs an error and returns.
-	 *
-	 * @param player A pointer to the Player object to add.
-	 */
-	void addPlayerUniqueLogin(const std::shared_ptr<Player> &player);
-
-	/**
-	 * @brief Gets a player from the unique login map using their name.
-	 * @details The function attempts to find a player in the unique login map using their name.
-	 * If the player's name is not found, the function returns a null pointer.
-	 * If an empty string is provided, it logs an error and returns a null pointer.
-	 *
-	 * @param playerName The name of the player to search for.
-	 * @return A pointer to the Player object if found, null otherwise.
-	 */
-	std::shared_ptr<Player> getPlayerUniqueLogin(const std::string &playerName) const;
-
-	/**
-	 * @brief Removes a player from the unique login map using their name.
-	 * @details The function removes a player from the unique login map using their name.
-	 * If an empty string is provided, it logs an error and returns.
-	 *
-	 * @param playerName The name of the player to remove.
-	 */
-	void removePlayerUniqueLogin(const std::string &playerName);
-
-	/**
-	 * @brief Removes a player from the unique login map.
-	 * @details The function removes a player from the unique login map.
-	 * If the player pointer is null, it logs an error and returns.
-	 *
-	 * @param player A pointer to the Player object to remove.
-	 */
-	void removePlayerUniqueLogin(const std::shared_ptr<Player> &player);
 	void playerCheckActivity(const std::string &playerName, int interval);
 
 	/**
@@ -691,6 +658,9 @@ public:
 
 	std::unique_ptr<IOWheel> &getIOWheel();
 	const std::unique_ptr<IOWheel> &getIOWheel() const;
+
+	std::unique_ptr<AttachedEffects> &getAttachedEffects();
+	const std::unique_ptr<AttachedEffects> &getAttachedEffects() const;
 
 	void setTransferPlayerHouseItems(uint32_t houseId, uint32_t playerId);
 	void transferHouseItemsToDepot();
@@ -716,9 +686,13 @@ public:
 
 	const std::string &getSummaryKeyByType(uint8_t type);
 
-	const std::map<uint8_t, std::string> &getBlessingNames();
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
+	void playerSetTyping(uint32_t playerId, uint8_t typing);
+	void refreshItem(const std::shared_ptr<Item> &item);
 
 private:
 	std::map<uint16_t, Achievement> m_achievements;
@@ -824,7 +798,7 @@ private:
 	phmap::flat_hash_map<std::string, QueryHighscoreCacheEntry> queryCache;
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
-	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> m_uniqueLoginPlayerNames;
+	std::unordered_map<std::string, std::weak_ptr<Player>> m_deadPlayers;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;
@@ -851,8 +825,16 @@ private:
 
 	std::shared_ptr<WildcardTreeNode> wildcardTree = nullptr;
 
-	std::map<uint32_t, std::shared_ptr<Npc>> npcs;
-	std::map<uint32_t, std::shared_ptr<Monster>> monsters;
+	std::vector<std::shared_ptr<Monster>> monsters;
+	// This works only for unique monsters (bosses, quest monsters, etc)
+	std::unordered_map<std::string, size_t> monstersNameIndex;
+	std::unordered_map<uint32_t, size_t> monstersIdIndex;
+
+	std::vector<std::shared_ptr<Npc>> npcs;
+	// This works only for unique npcs (quest npcs, etc)
+	std::unordered_map<std::string, size_t> npcsNameIndex;
+	std::unordered_map<uint32_t, size_t> npcsIdIndex;
+
 	std::vector<uint32_t> forgeableMonsters;
 
 	std::map<uint32_t, std::unique_ptr<TeamFinder>> teamFinderMap; // [leaderGUID] = TeamFinder*
@@ -925,7 +907,7 @@ private:
 
 	void buildMessageAsAttacker(
 		const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message,
-		std::stringstream &ss, const std::string &damageString
+		std::stringstream &ss, const std::string &damageString, const std::shared_ptr<Player> &attackerPlayer
 	) const;
 
 	void buildMessageAsTarget(
@@ -945,12 +927,19 @@ private:
 	// Variable members (m_)
 	std::unique_ptr<IOWheel> m_IOWheel;
 
+	std::unique_ptr<AttachedEffects> m_attachedEffects;
+
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(const DBResult_ptr &result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
 	std::string generateVocationConditionHighscore(uint32_t vocation);
-	std::string generateHighscoreQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
-	std::string generateHighscoreQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
+	std::string generateHighscoreQuery(
+		const std::string &categoryName,
+		uint32_t page,
+		uint8_t entriesPerPage,
+		uint32_t vocation,
+		uint32_t playerGUID = 0
+	);
 	std::string generateHighscoreOrGetCachedQueryForEntries(const std::string &categoryName, uint32_t page, uint8_t entriesPerPage, uint32_t vocation);
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 

@@ -65,11 +65,11 @@ function getTitle(uid)
 	return false
 end
 
-function getLootRandom()
+function getLootRandom(modifier)
 	local baseRateLoot = configManager.getNumber(configKeys.RATE_LOOT)
 	local scheduleRate = SCHEDULE_LOOT_RATE
 
-	local multi = math.max(1, baseRateLoot * scheduleRate)
+	local multi = math.max(1, baseRateLoot * scheduleRate * (modifier or 1))
 
 	local randomValue = math.random(0, MAX_LOOTCHANCE)
 	return randomValue * 100 / multi

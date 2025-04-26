@@ -9113,6 +9113,8 @@ namespace {
 				removedCount += thisRemove;
 			}
 
+			player->updateState();
+
 			if (removedCount < removeAmount) {
 				g_logger().error("Player {} tried to sell an item {} without this item", player->getName(), itemType.id);
 				offerStatus << "The item you tried to market is not correct. Check the item again.";

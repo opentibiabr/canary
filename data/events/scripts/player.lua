@@ -275,12 +275,18 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return true
 	end
 
-	-- Bath tube
 	local toTile = Tile(toCylinder:getPosition())
 	if toTile then
 		local topDownItem = toTile:getTopDownItem()
-		if topDownItem and table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItem:getId()) then
-			return false
+		if topDownItem then
+			local topDownItemItemId = topDownItem:getId()
+			if table.contains({ BATHTUB_EMPTY, BATHTUB_FILLED }, topDownItemItemId) then -- Bath tube
+				return false
+			elseif ItemType(topDownItemItemId):isPodium() then -- Podium
+				self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+				self:getPosition():sendMagicEffect(CONST_ME_POFF)
+				return false
+			end
 		end
 	end
 
@@ -348,19 +354,20 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return false
 	end
 
-	-- Players cannot throw items on reward chest
-	local tileChest = Tile(toPosition)
-	if tileChest and tileChest:getItemById(ITEM_REWARD_CHEST) then
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		self:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return false
-	end
+	if tile then
+		-- Players cannot throw items on reward chest
+		if tile:getItemById(ITEM_REWARD_CHEST) then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			self:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return false
+		end
 
-	if tile and tile:getItemById(370) then
 		-- Trapdoor
-		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		self:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return false
+		if tile:getItemById(370) then
+			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+			self:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return false
+		end
 	end
 
 	if not antiPush(self, item, count, fromPosition, toPosition, fromCylinder, toCylinder) then
@@ -572,6 +579,18 @@ function Player:onGainExperience(target, exp, rawExp)
 		local vipBonusExp = configManager.getNumber(configKeys.VIP_BONUS_EXP)
 		if vipBonusExp > 0 and self:isVip() then
 			exp = exp * (1 + math.min(vipBonusExp, 100) / 100)
+		end
+	end
+
+	-- Soul War Experience by Taint
+	if SoulWarQuest then
+		local monsterType = target:getType()
+		if monsterType and monsterType:getName() and table.contains(SoulWarQuest.bagYouDesireMonsters, monsterType:getName()) then
+			local taintLevel = self:getTaintLevel()
+			if taintLevel > 0 then
+				local taintBoost = SoulWarQuest.taintExperienceBoostMap[taintLevel] and SoulWarQuest.taintExperienceBoostMap[taintLevel].boost or 0
+				exp = exp * (1 + taintBoost / 100)
+			end
 		end
 	end
 

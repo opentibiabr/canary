@@ -13,7 +13,6 @@
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/npcs/npc.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
 #include "creatures/players/player.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
@@ -66,6 +65,7 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "createItem", GameFunctions::luaGameCreateItem);
 	Lua::registerMethod(L, "Game", "createContainer", GameFunctions::luaGameCreateContainer);
 	Lua::registerMethod(L, "Game", "createMonster", GameFunctions::luaGameCreateMonster);
+	Lua::registerMethod(L, "Game", "createSoulPitMonster", GameFunctions::luaGameCreateSoulPitMonster);
 	Lua::registerMethod(L, "Game", "createNpc", GameFunctions::luaGameCreateNpc);
 	Lua::registerMethod(L, "Game", "generateNpc", GameFunctions::luaGameGenerateNpc);
 	Lua::registerMethod(L, "Game", "createTile", GameFunctions::luaGameCreateTile);
@@ -107,6 +107,11 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "getSecretAchievements", GameFunctions::luaGameGetSecretAchievements);
 	Lua::registerMethod(L, "Game", "getPublicAchievements", GameFunctions::luaGameGetPublicAchievements);
 	Lua::registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
+
+	Lua::registerMethod(L, "Game", "getSoulCoreItems", GameFunctions::luaGameGetSoulCoreItems);
+
+	Lua::registerMethod(L, "Game", "getMonstersByRace", GameFunctions::luaGameGetMonstersByRace);
+	Lua::registerMethod(L, "Game", "getMonstersByBestiaryStars", GameFunctions::luaGameGetMonstersByBestiaryStars);
 }
 
 // Game
@@ -546,6 +551,41 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGameCreateSoulPitMonster(lua_State* L) {
+	// Game.createSoulPitMonster(monsterName, position, [stack = 1, [, extended = false[, force = false[, master = nil]]]])
+	const auto &monster = Monster::createMonster(Lua::getString(L, 1));
+	if (!monster) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	bool isSummon = false;
+	if (lua_gettop(L) >= 6) {
+		if (const auto &master = Lua::getCreature(L, 6)) {
+			monster->setMaster(master, true);
+			isSummon = true;
+		}
+	}
+
+	const Position &position = Lua::getPosition(L, 2);
+	const uint8_t stack = Lua::getNumber<uint8_t>(L, 3, 1);
+	const bool extended = Lua::getBoolean(L, 4, false);
+	const bool force = Lua::getBoolean(L, 5, false);
+	if (g_game().placeCreature(monster, position, extended, force)) {
+		monster->setSoulPitStack(stack);
+		monster->onSpawn(position);
+
+		Lua::pushUserdata<Monster>(L, monster);
+		Lua::setMetatable(L, -1, "Monster");
+	} else {
+		if (isSummon) {
+			monster->setMaster(nullptr);
+		}
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameGenerateNpc(lua_State* L) {
 	// Game.generateNpc(npcName)
 	const auto &npc = Npc::createNpc(Lua::getString(L, 1));
@@ -752,7 +792,7 @@ int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
 
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 	// Game.addInfluencedMonster(monster)
-	const auto &monster = Lua::getUserdataShared<Monster>(L, 1);
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (!monster) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		Lua::pushBoolean(L, false);
@@ -990,6 +1030,58 @@ int GameFunctions::luaGameGetAchievements(lua_State* L) {
 		Lua::setField(L, "points", achievement_it.second.points);
 		Lua::setField(L, "grade", achievement_it.second.grade);
 		Lua::setField(L, "secret", achievement_it.second.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetSoulCoreItems(lua_State* L) {
+	// Game.getSoulCoreItems()
+	std::vector<const ItemType*> soulCoreItems;
+
+	for (const auto &itemType : Item::items.getItems()) {
+		if (itemType.m_primaryType == "SoulCores" || itemType.type == ITEM_TYPE_SOULCORES) {
+			soulCoreItems.emplace_back(&itemType);
+		}
+	}
+
+	lua_createtable(L, soulCoreItems.size(), 0);
+
+	int index = 0;
+	for (const auto* itemType : soulCoreItems) {
+		Lua::pushUserdata<const ItemType>(L, itemType);
+		Lua::setMetatable(L, -1, "ItemType");
+		lua_rawseti(L, -2, ++index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetMonstersByRace(lua_State* L) {
+	// Game.getMonstersByRace(race)
+	const BestiaryType_t race = Lua::getNumber<BestiaryType_t>(L, 1);
+	const auto monstersByRace = g_monsters().getMonstersByRace(race);
+
+	lua_createtable(L, monstersByRace.size(), 0);
+	int index = 0;
+	for (const auto &monsterType : monstersByRace) {
+		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetMonstersByBestiaryStars(lua_State* L) {
+	// Game.getMonstersByBestiaryStars(stars)
+	const uint8_t stars = Lua::getNumber<uint8_t>(L, 1);
+	const auto monstersByStars = g_monsters().getMonstersByBestiaryStars(stars);
+
+	lua_createtable(L, monstersByStars.size(), 0);
+	int index = 0;
+	for (const auto &monsterType : monstersByStars) {
+		Lua::pushUserdata<MonsterType>(L, monsterType);
+		Lua::setMetatable(L, -1, "MonsterType");
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

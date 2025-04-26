@@ -8,7 +8,7 @@ function spikeTasksFertilizer.onUse(player, item, fromPosition, target, toPositi
 		return false
 	end
 
-	if (target == nil) or not target:isItem() or (target:getId() ~= 19215) then
+	if not target or type(target) ~= "userdata" or not target:isItem() or (target:getId() ~= 19215) then
 		return false
 	end
 

@@ -97,6 +97,10 @@ void Npc::setName(std::string newName) const {
 	npcType->name = std::move(newName);
 }
 
+const std::string &Npc::getLowerName() const {
+	return npcType->m_lowerName;
+}
+
 CreatureType_t Npc::getType() const {
 	return CREATURETYPE_NPC;
 }
@@ -808,13 +812,13 @@ void Npc::removeShopPlayer(uint32_t playerGUID) {
 }
 
 void Npc::closeAllShopWindows() {
-	for (const auto &playerGUID : shopPlayers | std::views::keys) {
-		const auto &player = g_game().getPlayerByGUID(playerGUID);
+	for (auto it = shopPlayers.begin(); it != shopPlayers.end();) {
+		const auto &player = g_game().getPlayerByGUID(it->first);
 		if (player) {
 			player->closeShopWindow();
 		}
+		it = shopPlayers.erase(it);
 	}
-	shopPlayers.clear();
 }
 
 void Npc::handlePlayerMove(const std::shared_ptr<Player> &player, const Position &newPos) {

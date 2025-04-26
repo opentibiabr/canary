@@ -10,7 +10,7 @@
 #pragma once
 
 #include "lua/creature/actions.hpp"
-#include "creatures/players/wheel/wheel_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 class InstantSpell;
 class RuneSpell;
@@ -150,7 +150,7 @@ public:
 	[[nodiscard]] const VocSpellMap &getVocMap() const;
 	void addVocMap(uint16_t vocationId, bool b);
 
-	SpellGroup_t getGroup();
+	SpellGroup_t getGroup() const;
 	void setGroup(SpellGroup_t g);
 	SpellGroup_t getSecondaryGroup();
 	void setSecondaryGroup(SpellGroup_t g);
@@ -254,8 +254,8 @@ protected:
 	bool pzLocked = false;
 
 	bool whellOfDestinyUpgraded = false;
-	std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyRegularBoost = { 0 };
-	std::array<int32_t, static_cast<uint8_t>(WheelSpellBoost_t::TOTAL_COUNT)> wheelOfDestinyUpgradedBoost = { 0 };
+	std::array<int32_t, magic_enum::enum_count<WheelSpellBoost_t>() + 1> wheelOfDestinyRegularBoost = { 0 };
+	std::array<int32_t, magic_enum::enum_count<WheelSpellBoost_t>() + 1> wheelOfDestinyUpgradedBoost = { 0 };
 
 private:
 	uint32_t mana = 0;

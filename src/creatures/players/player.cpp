@@ -8303,8 +8303,6 @@ ReturnValue Player::removeItem(const std::shared_ptr<Item> &item, uint32_t count
 		item->stopDecaying();
 	}
 
-	updateState();
-
 	return RETURNVALUE_NOERROR;
 }
 

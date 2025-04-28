@@ -44,7 +44,7 @@ void Dispatcher::init() {
 	});
 
 	if (futureStarted.wait_for(std::chrono::seconds(5)) != std::future_status::ready) {
-		throw std::runtime_error("Failed to initialize dispatcher: timeout waiting for thread start");
+		throw std::logic_error("Failed to initialize dispatcher: timeout waiting for thread start");
 	}
 }
 

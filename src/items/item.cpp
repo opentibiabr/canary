@@ -28,6 +28,7 @@
 #include "lua/creature/actions.hpp"
 #include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "creatures/players/grouping/party.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
 
@@ -3505,7 +3506,8 @@ void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr
 		return;
 	}
 
-	auto participants = player->getParty() ? player->getParty()->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
+	const auto &party = player->getParty();
+	auto participants = party ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
 	for (const auto &participant : participants) {
 		participant->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
 	}

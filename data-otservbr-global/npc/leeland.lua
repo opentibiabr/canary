@@ -51,6 +51,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local TheNewFrontier = Storage.Quest.U8_54.TheNewFrontier
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "declarations.hpp"
+#include "utils/utils_definitions.hpp"
 
 struct Group {
 	std::string name;
@@ -24,12 +24,10 @@ class Groups {
 public:
 	static uint8_t getFlagNumber(PlayerFlags_t playerFlags);
 	static PlayerFlags_t getFlagFromNumber(uint8_t value);
-	bool reload() const;
+	static bool reload();
 	bool load();
-	std::shared_ptr<Group> getGroup(uint16_t id);
-	std::vector<std::shared_ptr<Group>> &getGroups() {
-		return groups_vector;
-	}
+	[[nodiscard]] std::shared_ptr<Group> getGroup(uint16_t id) const;
+	std::vector<std::shared_ptr<Group>> &getGroups();
 
 private:
 	std::vector<std::shared_ptr<Group>> groups_vector;

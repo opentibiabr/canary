@@ -64,11 +64,11 @@ keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = 
 end)
 
 local stoneKeyword = keywordHandler:addKeyword({ "adventurer stone" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, you want to replace your adventurer's stone for free?" }, function(player)
-	return player:getStorageValue(Storage.AdventurersGuild.FreeStone.Alia) ~= 1
+	return player:getStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Alia) ~= 1
 end)
 stoneKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler, text = "Here you are. Take care.", reset = true }, nil, function(player)
 	player:addItem(16277, 1)
-	player:setStorageValue(Storage.AdventurersGuild.FreeStone.Alia, 1)
+	player:setStorageValue(Storage.Quest.U9_80.AdventurersGuild.FreeStone.Alia, 1)
 end)
 stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "No problem.", reset = true })
 

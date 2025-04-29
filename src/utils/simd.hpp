@@ -13,7 +13,7 @@
 
 #if defined(__DISABLE_VECTORIZATION__)
 	// You might want to disable vectorization on some compilers
-	// it can just get buggy and the engine will crashes
+    // it can just get buggy and the engine will crashes
 	#undef __NEON__
 	#undef __ARM_NEON__
 	#undef __ARM_FEATURE_SIMD32
@@ -56,11 +56,11 @@
 
 #ifdef _MSC_VER
 	#include <intrin.h>
-__forceinline unsigned int _mm_ctz(unsigned int value) {
+__forceinline unsigned int mm_ctz(unsigned int value) {
 	unsigned long i = 0;
 	_BitScanForward(&i, value);
 	return static_cast<unsigned int>(i);
 }
 #else
-	#define _mm_ctz __builtin_ctz
+	#define mm_ctz __builtin_ctz
 #endif

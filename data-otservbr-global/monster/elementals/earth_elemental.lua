@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Earth Elemental")
 local monster = {}
 
 monster.description = "an earth elemental"
-monster.experience = 450
+monster.experience = 550
 monster.outfit = {
 	lookType = 301,
 	lookHead = 0,
@@ -117,7 +117,7 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 85 },
+	{ type = COMBAT_ICEDAMAGE, percent = 5 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 50 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 40 },
 }

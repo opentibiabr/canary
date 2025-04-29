@@ -58,57 +58,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "outfit") then
-		if player:getSex() == PLAYERSEX_MALE then
-			npcHandler:say("My jewelled belt? <giggles> That's not very manly. Maybe you'd prefer a scimitar like Habdel has.", npc, creature)
-			return true
-		end
-
-		if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) < 1 then
-			npcHandler:say("My jewelled belt? Of course I could make one for you, but I have a small request. Would you fulfil a task for me?", npc, creature)
-			npcHandler:setTopic(playerId, 1)
-		end
-	elseif MsgContains(message, "comb") then
-		if player:getSex() == PLAYERSEX_MALE then
-			npcHandler:say("Comb? This is a jewellery shop.", npc, creature)
-			return true
-		end
-
-		if player:getStorageValue(Storage.OutfitQuest.firstOrientalAddon) == 1 then
-			npcHandler:say("Have you brought me a mermaid's comb?", npc, creature)
-			npcHandler:setTopic(playerId, 3)
-		end
-	elseif MsgContains(message, "yes") then
-		if npcHandler:getTopic(playerId) == 1 then
-			npcHandler:say({
-				"Listen, um... I have been wanting a comb for a long time... not just any comb, but a mermaid's comb. Having a mermaid's comb means never having split ends again! ...",
-				"You know what that means to a girl! Could you please bring me such a comb? I really would appreciate it.",
-			}, npc, creature)
-			npcHandler:setTopic(playerId, 2)
-		elseif npcHandler:getTopic(playerId) == 2 then
-			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
-			player:setStorageValue(Storage.OutfitQuest.firstOrientalAddon, 1)
-			npcHandler:say("Yay! I will wait for you to return with a mermaid's comb then.", npc, creature)
-			npcHandler:setTopic(playerId, 0)
-		elseif npcHandler:getTopic(playerId) == 3 then
-			if not player:removeItem(5945, 1) then
-				npcHandler:say("No... that's not it.", npc, creature)
-				npcHandler:setTopic(playerId, 0)
-				return true
-			end
-
-			player:setStorageValue(Storage.OutfitQuest.firstOrientalAddon, 2)
-			player:addOutfitAddon(150, 1)
-			player:addOutfitAddon(146, 1)
-			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			npcHandler:say("Yeah! That's it! I can't wait to comb my hair! Oh - but first, I'll fulfil my promise: Here is your jewelled belt! Thanks again!", npc, creature)
-			npcHandler:setTopic(playerId, 0)
-		end
-	elseif MsgContains(message, "no") and npcHandler:getTopic(playerId) ~= 0 then
-		npcHandler:say("Oh... okay.", npc, creature)
-		npcHandler:setTopic(playerId, 0)
-	end
-
 	return true
 end
 
@@ -130,7 +79,7 @@ npcConfig.shop = {
 	{ itemName = "bow", clientId = 3350, buy = 400, sell = 100 },
 	{ itemName = "crossbow", clientId = 3349, buy = 500, sell = 120 },
 	{ itemName = "crystalline arrow", clientId = 15793, buy = 20 },
-	{ itemName = "diamond arrow", clientId = 35901, buy = 100 },
+	{ itemName = "diamond arrow", clientId = 35901, buy = 130 },
 	{ itemName = "drill bolt", clientId = 16142, buy = 12 },
 	{ itemName = "earth arrow", clientId = 774, buy = 5 },
 	{ itemName = "envenomed arrow", clientId = 16143, buy = 12 },

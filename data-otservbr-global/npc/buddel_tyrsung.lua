@@ -82,7 +82,7 @@ addTravelKeyword("svargrond", "You know a town nicer than this? NICER DICER! Apr
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)
@@ -93,7 +93,7 @@ addTravelKeyword("okolnir", "It's nice there. Except of the ice dragons which ar
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)
@@ -104,20 +104,20 @@ addTravelKeyword("helheim", "T'at is a small island to the east.", Position(3246
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)
 	return player:removeItem(3097, 1)
 end, function(player)
-	return player:getStorageValue(Storage.TheIceIslands.Questline) < 30
+	return player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) < 30
 end)
 addTravelKeyword("camp", "Both of you look like you could defend yourself! If you want to go there, ask me for a passage.", Position(32021, 31294, 7), function()
 	return randomDestination[math.random(#randomDestination)]
 end, function()
 	return math.random(5) > 1
 end, function(player)
-	return player:getStorageValue(Storage.BarbarianTest.Questline) < 8
+	return player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8
 end, function(player)
 	return player:getItemCount(3097) > 0
 end, function(player)

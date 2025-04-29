@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Humongous Fungus")
 local monster = {}
 
 monster.description = "a humongous fungus"
-monster.experience = 2600
+monster.experience = 2900
 monster.outfit = {
 	lookType = 488,
 	lookHead = 0,
@@ -104,7 +104,7 @@ monster.loot = {
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -330 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = -180, maxDamage = -350, range = 7, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_SMALLPLANTS, target = false },
-	{ name = "poisonfield", interval = 2000, chance = 20, radius = 4, target = false },
+	{ name = "poisonfield", interval = 2000, chance = 10, radius = 4, target = false },
 	-- poison
 	{ name = "condition", type = CONDITION_POISON, interval = 2000, chance = 10, minDamage = -500, maxDamage = -1000, length = 8, spread = 0, effect = CONST_ME_GREEN_RINGS, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -130, maxDamage = -260, length = 5, spread = 0, effect = CONST_ME_MAGIC_RED, target = false },
@@ -117,14 +117,13 @@ monster.defenses = {
 	armor = 70,
 	mitigation = 2.02,
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, minDamage = 225, maxDamage = 380, effect = CONST_ME_MAGIC_BLUE, target = false },
-	{ name = "invisible", interval = 2000, chance = 15, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
 	{ type = COMBAT_ENERGYDAMAGE, percent = 15 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = 5 },
+	{ type = COMBAT_FIREDAMAGE, percent = -10 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },

@@ -9,6 +9,7 @@
     "bext-ut",
     "curl",
     "eventpp",
+    "libmariadb",
     "luajit",
     "magic-enum",
     "mio",
@@ -18,11 +19,11 @@
     "spdlog",
     "zlib",
     "bshoshany-thread-pool",
+    "atomic-queue",
     {
-      "name": "libmariadb",
-      "features": [
-        "mariadbclient"
-      ]
+      "name": "opentelemetry-cpp",
+      "default-features": true,
+      "features": ["otlp-http", "prometheus"]
     },
     {
       "name": "gmp",
@@ -33,5 +34,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline": "095ee06e7f60dceef7d713e3f8b1c2eb10d650d7"
+  "builtin-baseline": "d6995a0cf3cafda5e9e52749fad075dd62bfd90c"
 }

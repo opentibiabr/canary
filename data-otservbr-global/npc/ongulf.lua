@@ -95,24 +95,21 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({
 				"<grumbles> Well, we have found this place here full of promising resources and plan to create a new mining outpost. Of course this takes a lot of effort and organisation. ...",
 				"For some of the tasks at hand we need help, even from outsiders like you. So if you are interested in some missions, let me know.",
-				"Listen, I can handle the organisation down here and my boys will handle the construction of the base fine enough. Actually, all you do down here is to stand in the workers' way. ...",
-				"But there might be something for you to do outside the base. We need to learn more about the land up there. Take the lift and do some exploring. Find a passage leading out of the mountains. ...",
-				"Do not explore any further though. You never know whom you might be messing with.",
 			}, npc, creature)
-			player:setStorageValue(TheNewFrontier.Questline, 1)
-			player:setStorageValue(TheNewFrontier.Mission01, 1) -- Questlog, The New Frontier Quest "Mission 01: New Land"
-			npcHandler:setTopic(playerId, 0)
+			npcHandler:setTopic(playerId, 2)
 		end
 	elseif MsgContains(message, "mission") then
-		if player:getStorageValue(TheNewFrontier.Questline) < 1 and npcHandler:getTopic(playerId) == 2 then
-			npcHandler:say({
-				"Listen, I can handle the organisation down here and my boys will handle the construction of the base fine enough. Actually, all you do down here is to stand in the workers' way. ...",
-				"But there might be something for you to do outside the base. We need to learn more about the land up there. Take the lift and do some exploring. Find a passage leading out of the mountains. ...",
-				"Do not explore any further though. You never know whom you might be messing with.",
-			}, npc, creature)
-			player:setStorageValue(TheNewFrontier.Questline, 1)
-			player:setStorageValue(TheNewFrontier.Mission01, 1) -- Questlog, The New Frontier Quest "Mission 01: New Land"
-			npcHandler:setTopic(playerId, 0)
+		if npcHandler:getTopic(playerId) == 2 then
+			if player:getStorageValue(TheNewFrontier.Questline) < 1 and npcHandler:getTopic(playerId) == 2 then
+				npcHandler:say({
+					"Listen, I can handle the organisation down here and my boys will handle the construction of the base fine enough. Actually, all you do down here is to stand in the workers' way. ...",
+					"But there might be something for you to do outside the base. We need to learn more about the land up there. Take the lift and do some exploring. Find a passage leading out of the mountains. ...",
+					"Do not explore any further though. You never know whom you might be messing with.",
+				}, npc, creature)
+				player:setStorageValue(TheNewFrontier.Questline, 1)
+				player:setStorageValue(TheNewFrontier.Mission01, 1) -- Questlog, The New Frontier Quest "Mission 01: New Land"
+				npcHandler:setTopic(playerId, 0)
+			end
 		elseif player:getStorageValue(TheNewFrontier.Questline) == 2 then
 			npcHandler:say("Excellent. Although we have no idea what awaits us in this foreign land, it is always good to know something more about our surroundings.", npc, creature)
 			player:setStorageValue(TheNewFrontier.Questline, 3)
@@ -142,7 +139,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(TheNewFrontier.Mission03, 1) -- Questlog, The New Frontier Quest "Mission 03: Strangers in the Night"
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(TheNewFrontier.Questline) == 9 then
-			npcHandler:say({ "Primitive humans you say? These are most startling news, that's for sure. Well, I guess I'll send some victuals we can spare as a sign of our good will. ...", "However, our miners encountered another problem in the meantime. I'm afraid this will be your next {mission}" }, npc, creature)
+			npcHandler:say({
+				"Primitive humans you say? These are most startling news, that's for sure. Well, I guess I'll send some victuals we can spare as a sign of our good will. ...",
+				"However, our miners encountered another problem in the meantime. I'm afraid this will be your next {mission}",
+			}, npc, creature)
 			player:setStorageValue(TheNewFrontier.Questline, 10)
 			player:setStorageValue(TheNewFrontier.Mission03, 3) -- Questlog, The New Frontier Quest "Mission 03: Strangers in the Night"
 			npcHandler:setTopic(playerId, 0)
@@ -242,9 +242,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Oh and one last thing: We convinced a carpet pilot to join us here. You'll find him on top of our lift in the mountains. I think he can offer you fast access to some cities back home.",
 			}, npc, creature)
 			player:addExperience(8000, true)
-			player:addOutfit(335)
-			player:addOutfit(336)
-			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			player:setStorageValue(TheNewFrontier.Questline, 29)
 			player:setStorageValue(TheNewFrontier.Mission10[1], 2) -- Questlog, "Mission 10: New Horizons"
 			player:setStorageValue(TheNewFrontier.Mission10.MagicCarpetDoor, 1)

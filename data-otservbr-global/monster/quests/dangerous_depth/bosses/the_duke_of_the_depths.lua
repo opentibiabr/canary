@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("The Duke of the Depths")
 local monster = {}
 
 monster.description = "The Duke Of The Depths"
-monster.experience = 40000
+monster.experience = 300000
 monster.outfit = {
 	lookType = 1047,
 	lookHead = 0,
@@ -151,19 +151,5 @@ monster.immunities = {
 monster.heals = {
 	{ type = COMBAT_FIREDAMAGE, percent = 100 },
 }
-
-mType.onThink = function(monster, interval) end
-
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
-
-mType.onDisappear = function(monster, creature) end
-
-mType.onMove = function(monster, creature, fromPosition, toPosition) end
-
-mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

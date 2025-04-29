@@ -45,6 +45,37 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
+local function greetCallback(npc, creature, message)
+	local player = Player(creature)
+	local playerId = player:getId()
+
+	if not MsgContains(message, "djanni'hah") then
+		npcHandler:say("Whoa! A human! This is no place for you, |PLAYERNAME|. Go and play somewhere else.", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start) == 1 then
+		npcHandler:say({
+			"Hahahaha! ...",
+			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
+		}, npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
+	end
+
+	npcHandler:say("Aaaah... what have we here. A human - interesting. And such an ugly specimen, too... All right, human |PLAYERNAME|. How can I help you?", npc, creature)
+	npcHandler:setInteraction(npc, creature)
+
+	return true
+end
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -53,9 +84,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local missionProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission02)
+	local missionProgress = player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02)
 	if MsgContains(message, "spy report") or MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission01) ~= 2 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission01) ~= 2 then
 			npcHandler:say("Looking for work, are you? Well, it's very tempting, you know, but I'm afraid we do not really employ beginners. Perhaps our cook could need a helping hand in the kitchen.", npc, creature)
 		elseif missionProgress < 1 then
 			npcHandler:say({
@@ -68,8 +99,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"I need you to infiltrate Mal'ouqhah, contact our man there and get his latest spyreport. The password is {PIEDPIPER}. Remember it well! ...",
 				"I do not have to add that this is a dangerous mission, do I? If you are discovered expect to be attacked! So goodluck, human!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission02, 1)
-			player:setStorageValue(Storage.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.DoorToEfreetTerritory, 1)
 		elseif missionProgress == 1 then
 			npcHandler:say("Did you already retrieve the spyreport?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
@@ -78,7 +109,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
-			if player:getStorageValue(Storage.DjinnWar.MaridFaction.RataMari) ~= 2 or not player:removeItem(3232, 1) then
+			if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.RataMari) ~= 2 or not player:removeItem(3232, 1) then
 				npcHandler:say({
 					"Don't waste any more time. We need the spyreport of our man in Mal'ouquah as soon as possible! ...",
 					"Also don't forget the password to contact our man: PIEDPIPER!",
@@ -89,7 +120,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					"Well, let's see. ...",
 					"I think I need to talk to Gabel about this. I am sure he will know what to do. Perhaps you should have a word with him, too.",
 				}, npc, creature)
-				player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission02, 2)
+				player:setStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission02, 2)
 			end
 		elseif MsgContains(message, "no") then
 			npcHandler:say({
@@ -102,7 +133,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 -- Greeting
-keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Aaaah... what have we here. A human - interesting. And such an ugly specimen, too... All right, human |PLAYERNAME|. How can I help you?" })
+keywordHandler:addCustomGreetKeyword({ "djanni'hah" }, greetCallback, { npcHandler = npcHandler })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, human. I will always remember you. Unless I forget you, of course.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell, human. I will always remember you. Unless I forget you, of course.")

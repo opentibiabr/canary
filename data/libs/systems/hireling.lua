@@ -312,7 +312,7 @@ function Hireling:save()
 
 	sql = sql .. " WHERE `id`=" .. tostring(self.id)
 
-	db.query(sql)
+	return db.query(sql)
 end
 
 function Hireling:spawn()
@@ -361,7 +361,7 @@ function Hireling:returnToLamp(player_id)
 
 		local inbox = owner:getStoreInbox()
 		local inboxItems = inbox:getItems()
-		if not inbox or #inboxItems > inbox:getMaxCapacity() then
+		if not inbox or #inboxItems >= inbox:getMaxCapacity() then
 			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		end
@@ -390,7 +390,7 @@ function SaveHirelings()
 	local failedCount = 0
 
 	for _, hireling in ipairs(HIRELINGS) do
-		local success = hireling:save()
+		local success = hireling:save() or false
 
 		if not success then
 			failedCount = failedCount + 1
@@ -556,7 +556,7 @@ function Player:addNewHireling(name, sex)
 
 	local inbox = self:getStoreInbox()
 	local inboxItems = inbox:getItems()
-	if not inbox or #inboxItems > inbox:getMaxCapacity() then
+	if not inbox or #inboxItems >= inbox:getMaxCapacity() then
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		self:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		return false

@@ -54,7 +54,7 @@ local function greetCallback(npc, creature)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.ThievesGuild.Mission04) ~= 6 or player:getOutfit().lookType ~= 66 then
+	if player:getStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04) ~= 6 or player:getOutfit().lookType ~= 66 then
 		npcHandler:say("Excuse me, but I'm waiting for someone important!", npc, creature)
 		return false
 	end
@@ -90,13 +90,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			local player = Player(creature)
 			if player:removeItem(7866, 1) then
 				player:addItem(7871, 1)
-				player:setStorageValue(Storage.ThievesGuild.Mission04, 7)
+				player:setStorageValue(Storage.Quest.U8_2.TheThievesGuildQuest.Mission04, 7)
 				npcHandler:say({
 					"Excellent! Here is the painting you requested. It's quite precious to my father, but imagine his joy when I tell him about my clever deal! ...",
 					"Now leave me alone please. I have to prepare for my departure. Now my family will not call me a squandering fool anymore!",
 				}, npc, creature)
-				npcHandler:removeInteraction(npc, creature)
-				npcHandler:resetNpc(creature)
+				npcHandler:setTopic(playerId, 0)
 			end
 		end
 	end
@@ -104,6 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 npcHandler:setMessage(MESSAGE_GREET, "It's .. It's YOU! At last!! So what's this special proposal you would like to make, my friend?")
+
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

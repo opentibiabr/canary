@@ -9,13 +9,87 @@ TeleportAction = {
 			{ x = 32210, y = 32292, z = 6 },
 		},
 	},
-	[35001] = { -- The Cursed Crystal teleports
-		itemId = 19387,
+	-- The Secret Library Quest
+	[4905] = {
+		itemId = 25054,
 		itemPos = {
-			{ x = 31973, y = 32905, z = 10 },
-			{ x = 31973, y = 32905, z = 11 },
-			{ x = 32009, y = 32928, z = 10 },
-			{ x = 32009, y = 32928, z = 9 },
+			{ x = 33246, y = 32107, z = 8 },
+			{ x = 33246, y = 32098, z = 8 },
+		},
+	},
+	[4906] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33288, y = 32106, z = 9 },
+			{ x = 33288, y = 32107, z = 9 },
+			{ x = 33287, y = 32106, z = 9 },
+			{ x = 33287, y = 32107, z = 9 },
+			{ x = 33286, y = 32106, z = 9 },
+			{ x = 33286, y = 32107, z = 9 },
+		},
+	},
+	-- Cults of Tibia Quest
+	[5517] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33459, y = 32267, z = 10 },
+		},
+	},
+	[5518] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33449, y = 32241, z = 7 },
+		},
+	},
+	-- Grave Danger Quest
+	[14562] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 32190, y = 31817, z = 8 },
+		},
+	},
+	[14563] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 32345, y = 32168, z = 12 },
+		},
+	},
+	[14564] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 33288, y = 32472, z = 9 },
+		},
+	},
+	[14565] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 33261, y = 31984, z = 8 },
+		},
+	},
+	[14566] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 33196, y = 31694, z = 8 },
+		},
+	},
+	[14567] = {
+		itemId = 23482,
+		itemPos = {
+			{ x = 32174, y = 31916, z = 8 },
+		},
+	},
+	-- Grave Danger Quest
+	[14579] = {
+		itemId = 22761,
+		itemPos = {
+			{ x = 33443, y = 31532, z = 13 },
+		},
+	},
+	-- Barbarian Test - Temple Citizen Svargrond
+	[30032] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 32208, y = 31134, z = 7 },
 		},
 	},
 	-- Path: data\scripts\movements\quests\the_queen_of_the_banshees\movement(2)-second_seal_pearl.lua
@@ -26,9 +100,39 @@ TeleportAction = {
 			{ x = 32177, y = 31869, z = 15 },
 		},
 	},
+	-- Dangerous Depths Quest
+	[57230] = {
+		itemId = 1949,
+		itemPos = {
+			{ x = 33827, y = 32172, z = 14 },
+			{ x = 33829, y = 32128, z = 14 },
+			{ x = 33777, y = 32192, z = 14 },
+		},
+	},
 }
 
 TeleportUnique = {
+	-- Forgotten Knowledge Quest
+	[1067] = {
+		itemId = 1949,
+		itemPos = { x = 32915, y = 31637, z = 14 },
+	},
+	[1068] = {
+		itemId = 1949,
+		itemPos = { x = 32676, y = 32888, z = 14 },
+	},
+	[1070] = {
+		itemId = 1949,
+		itemPos = { x = 32316, y = 31093, z = 14 },
+	},
+	[1071] = {
+		itemId = 1949,
+		itemPos = { x = 32849, y = 32689, z = 15 },
+	},
+	[1072] = {
+		itemId = 1949,
+		itemPos = { x = 32033, y = 32859, z = 14 },
+	},
 	-- Issavi town teleport
 	[9515] = {
 		itemId = 1949,
@@ -36,6 +140,11 @@ TeleportUnique = {
 	},
 	-- The first dragon quest
 	-- Path: data\scripts\movements\quests\first_dragon\entrance_teleport.lua
+	-- Boss First Dragon
+	[24889] = {
+		itemId = 1949,
+		itemPos = { x = 33597, y = 30996, z = 14 },
+	},
 	-- Tazhadur entrance
 	[35001] = {
 		itemId = 8649,
@@ -157,10 +266,10 @@ TeleportUnique = {
 	-- Quests teleports
 	-- Deeper fibula quest teleport
 	-- Entrance
-	[38001] = {
+	[38001] = { -- "left portal" to go back
 		itemId = 1949,
 		itemPos = { x = 32208, y = 32433, z = 10 },
-		destination = { x = 32281, y = 32389, z = 10 },
+		destination = { x = 32167, y = 32438, z = 9 },
 		effect = CONST_ME_TELEPORT,
 	},
 	-- Exit
@@ -351,6 +460,127 @@ TeleportUnique = {
 		itemId = 775,
 		itemPos = { x = 33640, y = 32559, z = 13 },
 		destination = { x = 33618, y = 32523, z = 15 },
+		effect = CONST_ME_TELEPORT,
+	},
+	-- Grave Dange Quest
+	[39009] = {
+		itemId = 22761,
+		itemPos = { x = 33451, y = 31562, z = 13 },
+		destination = { x = 33456, y = 31564, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39010] = {
+		itemId = 22761,
+		itemPos = { x = 33465, y = 31570, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39011] = {
+		itemId = 22761,
+		itemPos = { x = 33463, y = 31553, z = 13 },
+		destination = { x = 33462, y = 31548, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39012] = {
+		itemId = 22761,
+		itemPos = { x = 33454, y = 31562, z = 13 },
+		destination = { x = 33449, y = 31561, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39013] = {
+		itemId = 22761,
+		itemPos = { x = 33463, y = 31541, z = 13 },
+		destination = { x = 33465, y = 31536, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39014] = {
+		itemId = 22761,
+		itemPos = { x = 33463, y = 31538, z = 13 },
+		destination = { x = 33462, y = 31543, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39015] = {
+		itemId = 22761,
+		itemPos = { x = 33454, y = 31529, z = 13 },
+		destination = { x = 33449, y = 31530, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39016] = {
+		itemId = 22761,
+		itemPos = { x = 33465, y = 31521, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39017] = {
+		itemId = 22761,
+		itemPos = { x = 33451, y = 31529, z = 13 },
+		destination = { x = 33456, y = 31531, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39018] = {
+		itemId = 32415,
+		itemPos = { x = 33443, y = 31539, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39019] = {
+		itemId = 22761,
+		itemPos = { x = 33435, y = 31529, z = 13 },
+		destination = { x = 33430, y = 31531, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39020] = {
+		itemId = 22761,
+		itemPos = { x = 33432, y = 31529, z = 13 },
+		destination = { x = 33437, y = 31530, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39021] = {
+		itemId = 22761,
+		itemPos = { x = 33421, y = 31521, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39022] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31538, z = 13 },
+		destination = { x = 33424, y = 31543, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39023] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31541, z = 13 },
+		destination = { x = 33425, y = 31536, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39024] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31551, z = 13 },
+		destination = { x = 33425, y = 31556, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39025] = {
+		itemId = 22761,
+		itemPos = { x = 33423, y = 31554, z = 13 },
+		destination = { x = 33424, y = 31549, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39026] = {
+		itemId = 22761,
+		itemPos = { x = 33421, y = 31570, z = 13 },
+		destination = { x = 32172, y = 31917, z = 8 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39027] = {
+		itemId = 22761,
+		itemPos = { x = 33432, y = 31562, z = 13 },
+		destination = { x = 33437, y = 31563, z = 13 },
+		effect = CONST_ME_TELEPORT,
+	},
+	[39028] = {
+		itemId = 22761,
+		itemPos = { x = 33435, y = 31562, z = 13 },
+		destination = { x = 33430, y = 31564, z = 13 },
 		effect = CONST_ME_TELEPORT,
 	},
 }

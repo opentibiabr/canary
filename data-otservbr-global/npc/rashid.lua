@@ -60,57 +60,57 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "mission") then
 		if os.date("%A") == "Monday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission01) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission01) < 1 then
 				npcHandler:say("Well, you could attempt the mission to become a recognised trader, but it requires a lot of travelling. Are you willing to try?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
-			elseif player:getStorageValue(Storage.TravellingTrader.Mission01) == 1 then
+			elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission01) == 1 then
 				npcHandler:say("Have you managed to obtain a rare deer trophy for my customer?", npc, creature)
 				npcHandler:setTopic(playerId, 3)
 			end
 		elseif os.date("%A") == "Tuesday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission01) == 2 and player:getStorageValue(Storage.TravellingTrader.Mission02) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission01) == 2 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) < 1 then
 				npcHandler:say("So, my friend, are you willing to proceed to the next mission to become a recognised trader?", npc, creature)
 				npcHandler:setTopic(playerId, 4)
-			elseif player:getStorageValue(Storage.TravellingTrader.Mission02) == 4 then
+			elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) == 4 then
 				npcHandler:say("Did you bring me the package?", npc, creature)
 				npcHandler:setTopic(playerId, 6)
 			end
 		elseif os.date("%A") == "Wednesday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission02) == 5 and player:getStorageValue(Storage.TravellingTrader.Mission03) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02) == 5 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03) < 1 then
 				npcHandler:say("So, my friend, are you willing to proceed to the next mission to become a recognised trader?", npc, creature)
 				npcHandler:setTopic(playerId, 7)
-			elseif player:getStorageValue(Storage.TravellingTrader.Mission03) == 2 then
+			elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03) == 2 then
 				npcHandler:say("Have you brought the cheese?", npc, creature)
 				npcHandler:setTopic(playerId, 9)
 			end
 		elseif os.date("%A") == "Thursday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission03) == 3 and player:getStorageValue(Storage.TravellingTrader.Mission04) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03) == 3 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04) < 1 then
 				npcHandler:say("So, my friend, are you willing to proceed to the next mission to become a recognised trader?", npc, creature)
 				npcHandler:setTopic(playerId, 10)
-			elseif player:getStorageValue(Storage.TravellingTrader.Mission04) == 2 then
+			elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04) == 2 then
 				npcHandler:say("Have you brought the vase?", npc, creature)
 				npcHandler:setTopic(playerId, 12)
 			end
 		elseif os.date("%A") == "Friday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission04) == 3 and player:getStorageValue(Storage.TravellingTrader.Mission05) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04) == 3 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05) < 1 then
 				npcHandler:say("So, my friend, are you willing to proceed to the next mission to become a recognised trader?", npc, creature)
 				npcHandler:setTopic(playerId, 13)
-			elseif player:getStorageValue(Storage.TravellingTrader.Mission05) == 2 then
+			elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05) == 2 then
 				npcHandler:say("Have you brought a cheap but good crimson sword?", npc, creature)
 				npcHandler:setTopic(playerId, 15)
 			end
 		elseif os.date("%A") == "Saturday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission05) == 3 and player:getStorageValue(Storage.TravellingTrader.Mission06) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05) == 3 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission06) < 1 then
 				npcHandler:say("So, my friend, are you willing to proceed to the next mission to become a recognised trader?", npc, creature)
 				npcHandler:setTopic(playerId, 16)
-			elseif player:getStorageValue(Storage.TravellingTrader.Mission06) == 1 then
+			elseif player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission06) == 1 then
 				npcHandler:say("Have you brought me a gold fish??", npc, creature)
 				npcHandler:setTopic(playerId, 18)
 			end
 		elseif os.date("%A") == "Sunday" then
-			if player:getStorageValue(Storage.TravellingTrader.Mission06) == 2 and player:getStorageValue(Storage.TravellingTrader.Mission07) ~= 1 then
-				npcHandler:say("Ah, right. <ahem> I hereby declare you - one of my recognised traders! Feel free to offer me your wares!", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission07, 1)
+			if player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission06) == 2 and player:getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission07) ~= 1 then
+				npcHandler:say("Ah, right. <ahem> I hereby declare you - one of my recognised traders! Feel free to offer me your wares, just ask me for a {trade}!", npc, creature)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission07, 1)
 				player:addAchievement("Recognised Trader")
 				npcHandler:setTopic(playerId, 0)
 			end
@@ -128,12 +128,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Fine. Then get a hold of that deer trophy and bring it to me while I'm in Svargrond. Just ask me about your mission.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission01, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission01, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(7397, 1) then
 				npcHandler:say("Well done! I'll take that from you. <snags it> Come see me another day, I'll be busy for a while now. ", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission01, 2)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission01, 2)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
@@ -145,12 +145,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 5)
 		elseif npcHandler:getTopic(playerId) == 5 then
 			npcHandler:say("Fine. Then off you go, just ask Willard about the 'package for Rashid'.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission02, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 6 then
 			if player:removeItem(145, 1) then
 				npcHandler:say("Great. Just place it over there - yes, thanks, that's it. Come see me another day, I'll be busy for a while now. ", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission02, 5)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission02, 5)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 7 then
@@ -164,12 +164,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 8)
 		elseif npcHandler:getTopic(playerId) == 8 then
 			npcHandler:say("Okay, then please find Miraia in Darashia and ask her about the {'scarab cheese'}.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission03, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 9 then
 			if player:removeItem(169, 1) then
 				npcHandler:say("Mmmhh, the lovely odeur of scarab cheese! I really can't understand why most people can't stand it. Thanks, well done! ", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission03, 3)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission03, 3)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 10 then
@@ -181,13 +181,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 11)
 		elseif npcHandler:getTopic(playerId) == 11 then
 			npcHandler:say("Okay, then please find {Briasol} in {Ab'Dendriel} and ask for a {'fine vase'}.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission04, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04, 1)
 			player:addMoney(1000)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 12 then
 			if player:removeItem(227, 1) then
 				npcHandler:say("I'm surprised that you managed to bring this vase without a single crack. That was what I needed to know, thank you. ", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission04, 3)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission04, 3)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 13 then
@@ -197,17 +197,16 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Dwarves are said to be the most stubborn of all traders. Travel to {Kazordoon} and try to get the smith {Uzgod} to sell a {crimson sword} to you. ...",
 				"Of course, it has to be cheap. Don't come back with anything more expensive than 400 gold. ...",
 				"And the quality must not suffer, of course! Everything clear and understood?",
-				"Dwarves are said to be the most stubborn of all traders. Travel to Kazordoon and try to get the smith Uzgod to sell a crimson sword to you. ...",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 14)
 		elseif npcHandler:getTopic(playerId) == 14 then
 			npcHandler:say("Okay, I'm curious how you will do with {Uzgod}. Good luck!", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission05, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 15 then
 			if player:removeItem(7385, 1) then
 				npcHandler:say("Ha! You are clever indeed, well done! I'll take this from you. Come see me tomorrow, I think we two might get into business after all.", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission05, 3)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission05, 3)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 16 then
@@ -220,12 +219,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 17)
 		elseif npcHandler:getTopic(playerId) == 17 then
 			npcHandler:say("Thanks so much! I'll be waiting eagerly for your return then.", npc, creature)
-			player:setStorageValue(Storage.TravellingTrader.Mission06, 1)
+			player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission06, 1)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 18 then
 			if player:removeItem(5929, 1) then
 				npcHandler:say("Thank you!! Ah, this makes my day! I'll take the rest of the day off to get to know this little guy. Come see me tomorrow, if you like.", npc, creature)
-				player:setStorageValue(Storage.TravellingTrader.Mission06, 2)
+				player:setStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission06, 2)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
@@ -262,7 +261,7 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Come back soon!")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Take all the time you need to decide what you want!")
 
 local function onTradeRequest(npc, creature)
-	if Player(creature):getStorageValue(Storage.TravellingTrader.Mission07) ~= 1 then
+	if Player(creature):getStorageValue(Storage.Quest.U8_1.TheTravellingTrader.Mission07) ~= 1 then
 		npcHandler:say("Sorry, but you do not belong to my exclusive customers. I have to make sure that I can trust in the quality of your wares.", npc, creature)
 		return false
 	end

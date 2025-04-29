@@ -29,9 +29,9 @@ class FrozenPathingConditionCall;
  * Map class.
  * Holds all the actual map-data
  */
-class Map : public MapCache {
+class Map final : public MapCache {
 public:
-	uint32_t clean();
+	uint32_t clean() const;
 
 	std::filesystem::path getPath() const {
 		return path;
@@ -59,7 +59,7 @@ public:
 	 * \param loadNpcs if true, the map custom npcs is loaded
 	 * \returns true if the custom map was loaded successfully
 	 */
-	void loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, bool loadZones, const int customMapIndex);
+	void loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, bool loadZones, int customMapIndex);
 
 	void loadHouseInfo();
 
@@ -95,7 +95,7 @@ public:
 	 * \param extendedPos If true, the creature will in first-hand be placed 2 tiles away
 	 * \param forceLogin If true, placing the creature will not fail becase of obstacles (creatures/chests)
 	 */
-	bool placeCreature(const Position &centerPos, std::shared_ptr<Creature> creature, bool extendedPos = false, bool forceLogin = false);
+	bool placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos = false, bool forceLogin = false);
 
 	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
 
@@ -108,8 +108,7 @@ public:
 	 *	\param checkLineOfSight checks if there is any blocking objects in the way
 	 *	\returns The result if you can throw there or not
 	 */
-	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
-
+	bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = MAP_MAX_CLIENT_VIEW_PORT_X, int32_t rangey = MAP_MAX_CLIENT_VIEW_PORT_Y);
 	/**
 	 * Checks if path is clear from fromPos to toPos
 	 * Notice: This only checks a straight line if the path is clear, for path finding use getPathTo.
@@ -119,13 +118,15 @@ public:
 	 *	\returns The result if there is no obstacles
 	 */
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
-	bool checkSightLine(const Position &fromPos, const Position &toPos);
+	bool checkSightLine(Position start, Position destination);
 
 	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
-	bool getPathMatching(const std::shared_ptr<Creature> &creature, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
+	bool getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 
-	bool getPathMatching(const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	bool getPathMatching(const Position &startPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
 		return getPathMatching(nullptr, startPos, dirList, pathCondition, fpp);
 	}
 
@@ -143,13 +144,11 @@ public:
 	Houses housesCustomMaps[50];
 
 private:
-	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &startPos, stdext::arraylist<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
-
 	/**
 	 * Set a single tile.
 	 */
-	void setTile(uint16_t x, uint16_t y, uint8_t z, std::shared_ptr<Tile> newTile);
-	void setTile(const Position &pos, std::shared_ptr<Tile> newTile) {
+	void setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile> &newTile);
+	void setTile(const Position &pos, const std::shared_ptr<Tile> &newTile) {
 		setTile(pos.x, pos.y, pos.z, newTile);
 	}
 	std::shared_ptr<Tile> getLoadedTile(uint16_t x, uint16_t y, uint8_t z);

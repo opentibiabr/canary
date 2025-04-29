@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Blightwalker")
 local monster = {}
 
 monster.description = "a blightwalker"
-monster.experience = 5850
+monster.experience = 6400
 monster.outfit = {
 	lookType = 246,
 	lookHead = 0,
@@ -108,9 +108,8 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -490 },
 	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -220, maxDamage = -405, range = 7, radius = 1, shootEffect = CONST_ANI_POISON, target = true },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_LIFEDRAIN, minDamage = -65, maxDamage = -135, radius = 4, effect = CONST_ME_MAGIC_GREEN, target = false },
-	{ name = "drunk", interval = 2000, chance = 10, radius = 3, effect = CONST_ME_HITBYPOISON, target = false, duration = 5000 },
 	{ name = "blightwalker curse", interval = 2000, chance = 15, target = false },
-	{ name = "speed", interval = 2000, chance = 15, speedChange = -300, range = 7, shootEffect = CONST_ANI_POISON, target = true, duration = 30000 },
+	{ name = "speed", interval = 2000, chance = 10, speedChange = -300, range = 7, shootEffect = CONST_ANI_POISON, target = true, duration = 15000 },
 }
 
 monster.defenses = {
@@ -127,7 +126,7 @@ monster.elements = {
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 50 },
+	{ type = COMBAT_ICEDAMAGE, percent = 15 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -30 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }

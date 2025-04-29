@@ -54,13 +54,13 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 2 then
+		if player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 2 then
 			npcHandler:say("Mhm, what are you doing here. Who zent you? ", npc, creature)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 3 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 3 then
 			npcHandler:say("Zo are you ready to get zomezing done?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.WrathoftheEmperor.Questline) == 5 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline) == 5 then
 			npcHandler:say("Zo? Did you find a way to reztore ze teleporter? ", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
@@ -74,8 +74,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"I zee. Interezting. ... ",
 				"You being here meanz we have eztablished connectionz to ze zouz. Finally. And you are going to help uz. Well, zere iz zertainly a lot for you to do. Zo better get ztarted. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 3)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission01, 3) --Questlog, Wrath of the Emperor "Mission 01: Catering the Lions Den"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 3)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission01, 3) --Questlog, Wrath of the Emperor "Mission 01: Catering the Lions Den"
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "yes") then
@@ -87,28 +87,30 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Zere were meanz to activate teleporterz zomewhere in ze complex. But zinze you cannot reach all ze roomz, I guezz you will have to improvize. ... ",
 				"Here iz ze key to ze entranze to ze complex. Figure zomezing out, reztore ze teleporter zo we can get back to ze plainz in ze zouz. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 4)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission02, 1) --Questlog, Wrath of the Emperor "Mission 02: First Contact"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 4)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission02, 1) --Questlog, Wrath of the Emperor "Mission 02: First Contact"
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			npcHandler:say({
 				"You did it! Zere waz zome kind of zparkle and I zink it iz working again - oh pleaze feel free to try it, I uhm, I will wait here and be ready juzt in caze zomezing uhm happenz to you. ... ",
 				"And if you head to Zalamon, be zure to inform him about our zituation. Food rationz are running low and we are ztill not well equipped. We need to eztablish a working zupply line. ",
 			}, npc, creature)
-			player:setStorageValue(Storage.WrathoftheEmperor.TeleportAccess.Rebel, 1)
-			player:setStorageValue(Storage.WrathoftheEmperor.Questline, 6)
-			player:setStorageValue(Storage.WrathoftheEmperor.Mission02, 3) --Questlog, Wrath of the Emperor "Mission 02: First Contact"
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.TeleportAccess.Rebel, 1)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Questline, 6)
+			player:setStorageValue(Storage.Quest.U8_6.WrathOfTheEmperor.Mission02, 3) --Questlog, Wrath of the Emperor "Mission 02: First Contact"
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
 	return true
 end
 
+npcHandler:setMessage(MESSAGE_GREET, "Great Znake forgive me to converze wiz ziz unworzy blankzkin.")
+
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
-	{ itemName = "avalanche rune", clientId = 3161, buy = 57 },
+	{ itemName = "avalanche rune", clientId = 3161, buy = 64 },
 	{ itemName = "blank rune", clientId = 3147, buy = 10 },
 	{ itemName = "chameleon rune", clientId = 3178, buy = 210 },
 	{ itemName = "convince creature rune", clientId = 3177, buy = 80 },
@@ -125,10 +127,10 @@ npcConfig.shop = {
 	{ itemName = "fire bomb rune", clientId = 3192, buy = 147 },
 	{ itemName = "fire field rune", clientId = 3188, buy = 28 },
 	{ itemName = "fire wall rune", clientId = 3190, buy = 61 },
-	{ itemName = "great fireball rune", clientId = 3191, buy = 57 },
+	{ itemName = "great fireball rune", clientId = 3191, buy = 64 },
 	{ itemName = "great health potion", clientId = 239, buy = 225 },
-	{ itemName = "great mana potion", clientId = 238, buy = 144 },
-	{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
+	{ itemName = "great mana potion", clientId = 238, buy = 158 },
+	{ itemName = "great spirit potion", clientId = 7642, buy = 254 },
 	{ itemName = "ham", clientId = 3582, buy = 10 },
 	{ itemName = "health potion", clientId = 266, buy = 50 },
 	{ itemName = "heavy magic missile rune", clientId = 3198, buy = 12 },
@@ -139,13 +141,13 @@ npcConfig.shop = {
 	{ itemName = "poison wall rune", clientId = 3176, buy = 52 },
 	{ itemName = "stalagmite rune", clientId = 3179, buy = 12 },
 	{ itemName = "strong health potion", clientId = 236, buy = 115 },
-	{ itemName = "strong mana potion", clientId = 237, buy = 93 },
-	{ itemName = "sudden death rune", clientId = 3155, buy = 135 },
-	{ itemName = "supreme health potion", clientId = 23375, buy = 625 },
+	{ itemName = "strong mana potion", clientId = 237, buy = 108 },
+	{ itemName = "sudden death rune", clientId = 3155, buy = 162 },
+	{ itemName = "supreme health potion", clientId = 23375, buy = 650 },
 	{ itemName = "ultimate healing rune", clientId = 3160, buy = 175 },
 	{ itemName = "ultimate health potion", clientId = 7643, buy = 379 },
-	{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
-	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
+	{ itemName = "ultimate mana potion", clientId = 23373, buy = 488 },
+	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 488 },
 	{ itemName = "vial", clientId = 2874, sell = 5 },
 }
 -- On buy npc shop message

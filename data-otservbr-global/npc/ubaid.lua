@@ -45,28 +45,48 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+local function endConversationWithDelay(npcHandler, npc, creature)
+	addEvent(function()
+		npcHandler:unGreet(npc, creature)
+	end, 1000)
+end
+
 local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not MsgContains(message, "djanni'hah") and player:getStorageValue(Storage.DjinnWar.Faction.EfreetDoor) ~= 1 then
+	if not MsgContains(message, "djanni'hah") then
 		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
 		return false
 	end
 
-	if player:getStorageValue(Storage.DjinnWar.Faction.Greeting) == -1 then
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) == 1 then
 		npcHandler:say({
 			"Hahahaha! ...",
 			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
 		}, npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
 		return false
 	end
 
-	if player:getStorageValue(Storage.DjinnWar.Faction.EfreetDoor) ~= 1 then
-		npcHandler:setMessage(MESSAGE_GREET, "What? You know the word, |PLAYERNAME|? All right then - I won't kill you. At least, not now.  What brings you {here}?")
-	else
-		npcHandler:setMessage(MESSAGE_GREET, "Still alive, |PLAYERNAME|? What brings you {here}?")
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.Greeting) == -1 then
+		npcHandler:say({
+			"Hahahaha! ...",
+			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
+		}, npc, creature)
+		endConversationWithDelay(npcHandler, npc, creature)
+		return false
 	end
+
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor) ~= 1 then
+		npcHandler:say("What? You know the word, |PLAYERNAME|? All right then - I won't kill you. At least, not now.  What brings you {here}?", npc, creature)
+	else
+		npcHandler:say("Still alive, |PLAYERNAME|? What brings you {here}?", npc, creature)
+	end
+
+	npcHandler:setInteraction(npc, creature)
+
 	return true
 end
 
@@ -79,7 +99,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	-- To Appease the Mighty Quest
-	if MsgContains(message, "mission") and player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) == 2 then
+	if MsgContains(message, "mission") and player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) == 2 then
 		npcHandler:say({
 			"You have the smell of the Marid on you. Tell me who sent you?",
 		}, npc, creature)
@@ -89,11 +109,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			"And he is sending a worm like you to us!?! The mighty Efreet!! Tell him that we won't be part in his 'great' plans and now LEAVE!! ...",
 			"...or do you want to join us and fight those stinking Marid who claim themselves to be noble and righteous?!? Just let me know.",
 		}, npc, creature)
-		player:setStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.TibiaTales.ToAppeaseTheMightyQuest) + 1)
+		player:setStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest, player:getStorageValue(Storage.Quest.U8_1.TibiaTales.ToAppeaseTheMightyQuest) + 1)
 	end
 
 	if MsgContains(message, "passage") then
-		if player:getStorageValue(Storage.DjinnWar.Faction.EfreetDoor) ~= 1 then
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor) ~= 1 then
 			npcHandler:say({
 				"Only the mighty Efreet, the true djinn of Tibia, may enter Mal'ouquah! ...",
 				"All Marid and little worms like yourself should leave now or something bad may happen. Am I right?",
@@ -113,7 +133,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Of course. Then don't waste my time and shove off.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif MsgContains(message, "no") then
-			if player:getStorageValue(Storage.DjinnWar.Faction.MaridDoor) == 1 then
+			if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.MaridDoor) == 1 then
 				npcHandler:say("Who do you think you are? A Marid? Shove off you worm!", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			else
@@ -140,8 +160,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Go now to general Baa'leal and don't forget to greet him correctly! ...",
 				"And don't touch anything!",
 			}, npc, creature)
-			player:setStorageValue(Storage.DjinnWar.Faction.EfreetDoor, 1)
-			player:setStorageValue(Storage.DjinnWar.Faction.Greeting, 0)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.EfreetDoor, 1)
+			player:setStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.Greeting, 0)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("Of course. Then don't waste my time and shove off.", npc, creature)
 		end
@@ -150,8 +170,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
--- Greeting
-keywordHandler:addGreetKeyword({ "djanni'hah" }, { npcHandler = npcHandler, text = "Shove off, little one! Humans are not welcome here, |PLAYERNAME|" })
+keywordHandler:addCustomGreetKeyword({ "djanni'hah" }, greetCallback, { npcHandler = npcHandler })
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell human!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell human!")

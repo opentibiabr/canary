@@ -1496,6 +1496,11 @@ void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::
 			return;
 		}
 
+		if (!Position::areInRange<1, 1, 0>(movingCreaturePos, player->getPosition())) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
 		if (player != movingCreature) {
 			if (toTile->hasFlag(TILESTATE_BLOCKPATH)) {
 				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
@@ -4607,9 +4612,13 @@ std::shared_ptr<Item> Game::wrapItem(const std::shared_ptr<Item> &item, const st
 	}
 	uint16_t oldItemID = item->getID();
 	auto itemName = item->getName();
+	auto attributeStore = item->getAttribute<int64_t>(ItemAttribute_t::STORE);
 	std::shared_ptr<Item> newItem = transformItem(item, ITEM_DECORATION_KIT);
+	if (attributeStore != 0) {
+		newItem->setAttribute(ItemAttribute_t::STORE, attributeStore);
+	}
 	newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
+	newItem->setAttribute(ItemAttribute_t::DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" + itemName + ">.");
 	if (hiddenCharges > 0) {
 		newItem->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 	}
@@ -4635,7 +4644,12 @@ void Game::unwrapItem(const std::shared_ptr<Item> &item, uint16_t unWrapId, cons
 	if (!amount) {
 		amount = 1;
 	}
+
+	auto attributeStore = item->getAttribute<int64_t>(ItemAttribute_t::STORE);
 	std::shared_ptr<Item> newItem = transformItem(item, unWrapId, amount);
+	if (attributeStore != 0) {
+		newItem->setAttribute(ItemAttribute_t::STORE, attributeStore);
+	}
 	if (house && newiType.isBed()) {
 		house->addBed(newItem->getBed());
 	}
@@ -7895,6 +7909,7 @@ int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &sk
 bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage) {
 	const Position &targetPos = target->getPosition();
 	auto manaChange = damage.primary.value + damage.secondary.value;
+	auto spectators = Spectators().find<Player>(targetPos);
 	if (manaChange > 0) {
 		std::shared_ptr<Player> attackerPlayer;
 		if (attacker) {
@@ -7946,7 +7961,7 @@ bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std
 			message.primary.value = realManaChange;
 			message.primary.color = TEXTCOLOR_MAYABLUE;
 
-			for (const auto &spectator : Spectators().find<Player>(targetPos)) {
+			for (const auto &spectator : spectators) {
 				const auto &tmpPlayer = spectator->getPlayer();
 				if (!tmpPlayer) {
 					continue;
@@ -8043,7 +8058,7 @@ bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std
 		message.primary.value = manaLoss;
 		message.primary.color = TEXTCOLOR_BLUE;
 
-		for (const auto &spectator : Spectators().find<Player>(targetPos)) {
+		for (const auto &spectator : spectators) {
 			const auto &tmpPlayer = spectator->getPlayer();
 			if (!tmpPlayer) {
 				continue;
@@ -8056,7 +8071,7 @@ bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std
 				message.text = ss.str();
 			} else if (tmpPlayer == targetPlayer) {
 				ss.str({});
-				ss << "You lose " << damageString << " mana";
+				ss << "You lose " << damageString << "";
 				if (!attacker) {
 					ss << '.';
 				} else if (targetPlayer == attackerPlayer) {
@@ -8085,6 +8100,20 @@ bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std
 				message.text = spectatorMessage;
 			}
 			tmpPlayer->sendTextMessage(message);
+		}
+
+		if (targetPlayer) {
+			std::string cause = "(other)";
+			if (attacker) {
+				cause = attacker->getName();
+			}
+
+			targetPlayer->updateInputAnalyzer(damage.primary.type, -damage.primary.value, cause);
+			if (attackerPlayer) {
+				if (damage.secondary.type != COMBAT_NONE) {
+					attackerPlayer->updateInputAnalyzer(damage.secondary.type, -damage.secondary.value, cause);
+				}
+			}
 		}
 	}
 
@@ -10688,7 +10717,7 @@ bool Game::addItemStoreInbox(const std::shared_ptr<Player> &player, uint32_t ite
 		return false;
 	}
 	const ItemType &itemType = Item::items[itemId];
-	std::string description = fmt::format("Unwrap it in your own house to create a <{}>.", itemType.name);
+	std::string description = fmt::format("You bought this item in the Store.\nUnwrap it in your own house to create a <{}>.", itemType.name);
 	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
 	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
 

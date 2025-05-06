@@ -424,7 +424,7 @@ function parseBuyStoreOffer(playerId, msg)
 	local playerKV = player:kv()
 	local purchaseCooldown = playerKV:get(GameStore.Kv.purchaseCooldown) or 0
 	local currentTime = os.time()
-    local waittime = purchaseCooldown - currentTime
+	local waittime = purchaseCooldown - currentTime
 	if waittime > 0 then
 		queueSendStoreAlertToUser("You are making many purchases simultaneously in a few moments.", 250, playerId)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are making many purchases simultaneously in a few moments.")

@@ -7215,6 +7215,10 @@ int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_pt
 }
 
 bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent /*= false*/) {
+if (!target || target->isRemoved()) {
+    return false;
+}
+	
 	using namespace std;
 	const Position &targetPos = target->getPosition();
 	if (damage.primary.value > 0) {

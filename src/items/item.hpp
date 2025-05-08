@@ -409,6 +409,12 @@ public:
 		}
 		return items[id].extraDefense;
 	}
+	int32_t getElementDamage() const {
+		if (hasAttribute(ItemAttribute_t::ELEMENT)) {
+			return getAttribute<int32_t>(ItemAttribute_t::ELEMENT);
+		}
+		return items[id].element;
+	}
 	std::vector<std::shared_ptr<AugmentInfo>> getAugments() const {
 		return items[id].augments;
 	}

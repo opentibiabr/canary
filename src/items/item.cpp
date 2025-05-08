@@ -694,6 +694,16 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_ELEMENT: {
+			int32_t element;
+			if (!propStream.read<int32_t>(element)) {
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(ItemAttribute_t::ELEMENT, element);
+			break;
+		}
+
 		case ATTR_IMBUEMENT_SLOT: {
 			int32_t imbuementSlot;
 			if (!propStream.read<int32_t>(imbuementSlot)) {
@@ -1048,6 +1058,11 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE));
 	}
 
+	if (hasAttribute(ItemAttribute_t::ELEMENT)) {
+		propWriteStream.write<uint8_t>(ATTR_ELEMENT);
+		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::ELEMENT));
+	}
+
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
 		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::IMBUEMENT_SLOT));
@@ -1268,6 +1283,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		int32_t attack = item->getAttack();
+		int32_t element = item->getElementDamage();
 		if (it.isRanged()) {
 			bool separator = false;
 			if (attack != 0) {
@@ -1293,7 +1309,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		} else {
 			std::string attackDescription;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
-				attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
+				attackDescription = fmt::format("{} {}", ((element > 0) ? element : it.abilities->elementDamage), getCombatName(it.abilities->elementType));
 			}
 
 			if (attack != 0 && !attackDescription.empty()) {
@@ -1692,6 +1708,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		int32_t attack = it.attack;
+		int32_t element = it.element;
 		if (it.isRanged()) {
 			bool separator = false;
 			if (attack != 0) {
@@ -1717,7 +1734,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		} else {
 			std::string attackDescription;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0) {
-				attackDescription = fmt::format("{} {}", it.abilities->elementDamage, getCombatName(it.abilities->elementType));
+				attackDescription = fmt::format("{} {}", ((element > 0) ? element : it.abilities->elementDamage), getCombatName(it.abilities->elementType));
 			}
 
 			if (attack != 0 && !attackDescription.empty()) {
@@ -2736,15 +2753,17 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 		} else if (it.weaponType != WEAPON_AMMO) {
 			bool begin = true;
 
-			int32_t attack, defense, extraDefense;
+			int32_t attack, defense, extraDefense, element;
 			if (item) {
 				attack = item->getAttack();
 				defense = item->getDefense();
 				extraDefense = item->getExtraDefense();
+				element = item->getElementDamage();
 			} else {
 				attack = it.attack;
 				defense = it.defense;
 				extraDefense = it.extraDefense;
+				element = it.element;
 			}
 
 			if (it.isContainer() || (item && item->getContainer())) {
@@ -2776,10 +2795,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 			}
 
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0 && !begin) {
-				s << " physical + " << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
+				s << " physical + " << ((element > 0) ? element : it.abilities->elementDamage) << ' ' << getCombatName(it.abilities->elementType);
 			} else if (it.abilities && it.abilities->elementType != COMBAT_NONE && it.abilities->elementDamage != 0 && begin) {
 				begin = false;
-				s << " (" << it.abilities->elementDamage << ' ' << getCombatName(it.abilities->elementType);
+				s << " (" << ((element > 0) ? element : it.abilities->elementDamage) << ' ' << getCombatName(it.abilities->elementType);
 			}
 
 			if (defense != 0 || extraDefense != 0 || it.isMissile()) {

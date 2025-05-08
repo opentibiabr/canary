@@ -7215,10 +7215,6 @@ int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_pt
 }
 
 bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent /*= false*/) {
-	if (!target || target->isRemoved()) {
-		return false;
-	}
-
 	using namespace std;
 	const Position &targetPos = target->getPosition();
 	if (damage.primary.value > 0) {
@@ -7304,7 +7300,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				} else {
 					if (spectatorMessage.empty()) {
 						ss.str({});
-						if (!attacker) {
+						if (!attacker && target) {
 							ss << ucfirst(target->getNameDescription()) << " was healed";
 						} else {
 							ss << ucfirst(attacker->getNameDescription()) << " healed ";
@@ -7911,10 +7907,6 @@ int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &sk
 }
 
 bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage) {
-	if (!target || target->isRemoved()) {
-		return false;
-	}
-
 	const Position &targetPos = target->getPosition();
 	auto manaChange = damage.primary.value + damage.secondary.value;
 	auto spectators = Spectators().find<Player>(targetPos);

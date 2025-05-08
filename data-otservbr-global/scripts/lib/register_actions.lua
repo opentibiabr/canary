@@ -323,7 +323,7 @@ function onUseRope(player, item, fromPosition, target, toPosition, isHotkey)
 
 	local tile = Tile(toPosition)
 	if tile and tile:isRopeSpot() then
-		player:teleportTo(toPosition:moveUpstairs())
+		player:teleportTo(toPosition:moveUpstairs(), true)
 		if target.itemid == 7762 then
 			if player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.TutorialHintsStorage) < 22 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully used your rope to climb out of the hole. Congratulations! Now continue to the east.")
@@ -406,7 +406,7 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
 			return true
 		end
-		player:teleportTo(toPosition, false)
+		player:teleportTo(toPosition, true)
 		player:addAchievementProgress("The Undertaker", 500)
 	elseif target.itemid == 1822 and target:getPosition() == Position(33222, 31100, 7) then
 		player:teleportTo(Position(33223, 31100, 8))

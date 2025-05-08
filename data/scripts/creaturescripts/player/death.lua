@@ -47,16 +47,16 @@ local function getMostDamageInfo(mostDamageKiller)
 end
 
 local function serializeParticipants(participants)
-    if not participants or #participants == 0 then
-        return ""
-    end
+	if not participants or #participants == 0 then
+		return ""
+	end
 
-    local result = {}
-    for _, participant in ipairs(participants) do
-        local entry = string.format("Name: %s\nType: %s", participant.name, participant.type)
-        result[#result + 1] = entry
-    end
-    return table.concat(result, "\n\n")
+	local result = {}
+	for _, participant in ipairs(participants) do
+		local entry = string.format("Name: %s\nType: %s", participant.name, participant.type)
+		result[#result + 1] = entry
+	end
+	return table.concat(result, "\n\n")
 end
 
 local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDamageName, byPlayerMostDamage, unjustified, mostDamageUnjustified, participants)
@@ -188,7 +188,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	for _, entry in ipairs(killers) do
 		local name = entry:isMonster() and entry:getType():getNameDescription() or entry:getName()
 		local type = entry:isPlayer() and "player" or "monster"
-		participants[#participants + 1] = {name = name, type = type}
+		participants[#participants + 1] = { name = name, type = type }
 	end
 
 	local killerName, byPlayer = getKillerInfo(killer)

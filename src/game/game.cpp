@@ -7217,7 +7217,7 @@ int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_pt
 bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
 
-	const Position& targetPos = target ? target->getPosition() : (attacker ? attacker->getPosition() : Position());
+	const Position &targetPos = target ? target->getPosition() : (attacker ? attacker->getPosition() : Position());
 
 	if (damage.primary.value > 0) { // healing
 		if (!target || target->getHealth() <= 0) {
@@ -7227,9 +7227,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		std::shared_ptr<Player> attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
 		std::shared_ptr<Player> targetPlayer = target ? target->getPlayer() : nullptr;
 
-		if (attackerPlayer && targetPlayer &&
-			attackerPlayer->getSkull() == SKULL_BLACK &&
-			attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
+		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
 

@@ -121,6 +121,12 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 		return false;
 	}
 
+	auto vocationId = result->getNumber<uint16_t>("vocation");
+	if (!player->setVocation(vocationId)) {
+		g_logger().error("Can't set vocation, player {} has vocation id {} which doesn't exist", player->name, vocationId);
+		return false;
+	}
+
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	player->name = result->getString("name");
 
@@ -134,11 +140,6 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 		return false;
 	}
 	player->setGroup(group);
-
-	if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
-		g_logger().error("Player {} has vocation id {} which doesn't exist", player->name, result->getNumber<uint16_t>("vocation"));
-		return false;
-	}
 
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
@@ -342,12 +343,17 @@ void IOLoginDataLoad::loadPlayerSkill(const std::shared_ptr<Player> &player, con
 		return;
 	}
 
+	auto vocationPtr = player->getVocation();
+	if (!vocationPtr) {
+		return;
+	}
+
 	static const std::array<std::string, 13> skillNames = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
 	static const std::array<std::string, 13> skillNameTries = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
 	for (size_t i = 0; i < skillNames.size(); ++i) {
 		auto skillLevel = result->getNumber<uint16_t>(skillNames[i]);
 		auto skillTries = result->getNumber<uint64_t>(skillNameTries[i]);
-		uint64_t nextSkillTries = player->vocation->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
+		uint64_t nextSkillTries = vocationPtr->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
 		if (skillTries > nextSkillTries) {
 			skillTries = 0;
 		}

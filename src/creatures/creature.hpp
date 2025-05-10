@@ -570,7 +570,11 @@ public:
 		return position;
 	}
 
-	std::shared_ptr<Tile> getTile() override final {
+	std::shared_ptr<Tile> getTile() final {
+		return m_tile.lock();
+	}
+
+	std::shared_ptr<Tile> getTile() const final {
 		return m_tile.lock();
 	}
 

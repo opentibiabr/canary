@@ -177,11 +177,15 @@ momentumChanceFormulaA = 0.05
 momentumChanceFormulaB = 1.9
 momentumChanceFormulaC = 0.05
 
-transcendanceChanceFormulaA = 0.0127
-transcendanceChanceFormulaB = 0.1070
-transcendanceChanceFormulaC = 0.0073
+transcendenceChanceFormulaA = 0.0127
+transcendenceChanceFormulaB = 0.1070
+transcendenceChanceFormulaC = 0.0073
 
-transcendanceAvatarDuration = 7000
+amplificationChanceFormulaA = 0.4
+amplificationChanceFormulaB = 1.7
+amplificationChanceFormulaC = 0.4
+
+transcendenceAvatarDuration = 7000
 
 -- Bestiary & Bosstiary system
 -- NOTE: bestiaryKillMultiplier, multiplier value of monster killed, default 1
@@ -259,7 +263,6 @@ onlyPremiumAccount = false
 
 -- Customs
 -- NOTE: stashMoving = true, stow an container inside your stash
--- NOTE: stashItemCount, the maximum items quantity in stash
 -- NOTE: depotChest, the non-stackable items will be moved to the selected depot chest(I - XVIII).
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
@@ -277,7 +280,6 @@ onlyPremiumAccount = false
 -- NOTE: minTownIdToBankTransferFromMain blocks towns less than defined from receiving money transfers
 -- NOTE: enableSupportOutfit enable GODS and GMS to select support outfit (gamemaster, customer support or community manager)
 stashMoving = false
-stashItemCount = 5000
 depotChest = 4
 autoLoot = false
 autoBank = false

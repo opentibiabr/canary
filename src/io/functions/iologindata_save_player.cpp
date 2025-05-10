@@ -427,28 +427,23 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 	std::ostringstream query;
 	query << "UPDATE `player_charms` SET ";
 	query << "`charm_points` = " << player->charmPoints << ",";
-	query << "`charm_expansion` = " << ((player->charmExpansion) ? 1 : 0) << ",";
-	query << "`rune_wound` = " << player->charmRuneWound << ",";
-	query << "`rune_enflame` = " << player->charmRuneEnflame << ",";
-	query << "`rune_poison` = " << player->charmRunePoison << ",";
-	query << "`rune_freeze` = " << player->charmRuneFreeze << ",";
-	query << "`rune_zap` = " << player->charmRuneZap << ",";
-	query << "`rune_curse` = " << player->charmRuneCurse << ",";
-	query << "`rune_cripple` = " << player->charmRuneCripple << ",";
-	query << "`rune_parry` = " << player->charmRuneParry << ",";
-	query << "`rune_dodge` = " << player->charmRuneDodge << ",";
-	query << "`rune_adrenaline` = " << player->charmRuneAdrenaline << ",";
-	query << "`rune_numb` = " << player->charmRuneNumb << ",";
-	query << "`rune_cleanse` = " << player->charmRuneCleanse << ",";
-	query << "`rune_bless` = " << player->charmRuneBless << ",";
-	query << "`rune_scavenge` = " << player->charmRuneScavenge << ",";
-	query << "`rune_gut` = " << player->charmRuneGut << ",";
-	query << "`rune_low_blow` = " << player->charmRuneLowBlow << ",";
-	query << "`rune_divine` = " << player->charmRuneDivine << ",";
-	query << "`rune_vamp` = " << player->charmRuneVamp << ",";
-	query << "`rune_void` = " << player->charmRuneVoid << ",";
+	query << "`minor_charm_echoes` = " << player->minorCharmEchoes << ",";
+	query << "`max_charm_points` = " << player->maxCharmPoints << ",";
+	query << "`max_minor_charm_echoes` = " << player->maxMinorCharmEchoes << ",";
+	query << "`charm_expansion` = " << (player->charmExpansion ? 1 : 0) << ",";
 	query << "`UsedRunesBit` = " << player->UsedRunesBit << ",";
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
+
+	PropWriteStream charmsStream;
+	for (uint8_t id = magic_enum::enum_value<charmRune_t>(1); id <= magic_enum::enum_count<charmRune_t>(); id++) {
+		const auto &charm = player->charmsArray[id];
+		charmsStream.write<uint16_t>(charm.raceId);
+		charmsStream.write<uint8_t>(charm.tier);
+		g_logger().debug("Player {} saved raceId {} and tier {} to charm Id {}", player->name, charm.raceId, charm.tier, id);
+	}
+	size_t size;
+	const char* charmsList = charmsStream.getStream(size);
+	query << " `charms` = " << db.escapeBlob(charmsList, static_cast<uint32_t>(size)) << ",";
 
 	PropWriteStream propBestiaryStream;
 	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
@@ -457,7 +452,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 	size_t trackerSize;
 	const char* trackerList = propBestiaryStream.getStream(trackerSize);
 	query << " `tracker list` = " << db.escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
-	query << " WHERE `player_guid` = " << player->getGUID();
+	query << " WHERE `player_id` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
 		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());

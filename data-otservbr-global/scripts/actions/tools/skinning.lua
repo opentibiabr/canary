@@ -201,7 +201,9 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	if charmMType then
 		local charmCorpse = charmMType:getCorpseId()
 		if charmCorpse == target.itemid or ItemType(charmCorpse):getDecayId() == target.itemid then
-			chanceRange = chanceRange * GLOBAL_CHARM_SCAVENGE / 100
+			local charmChance = player:getCharmChance(CHARM_SCAVENGE)
+			charmChance = (charmChance == 0 and 1 or charmChance) -- Guarantee that the chance will neve be 0
+			chanceRange = chanceRange * charmChance / 100
 		end
 	end
 

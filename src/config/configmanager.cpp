@@ -60,7 +60,6 @@ bool ConfigManager::load() {
 		loadIntConfig(L, MARKET_REFRESH_PRICES, "marketRefreshPricesInterval", 30);
 		loadIntConfig(L, PREMIUM_DEPOT_LIMIT, "premiumDepotLimit", 8000);
 		loadIntConfig(L, SQL_PORT, "mysqlPort", 3306);
-		loadIntConfig(L, STASH_ITEMS, "stashItemCount", 5000);
 		loadIntConfig(L, STATUS_PORT, "statusProtocolPort", 7171);
 
 		loadStringConfig(L, AUTH_TYPE, "authType", "password");
@@ -197,9 +196,13 @@ bool ConfigManager::load() {
 	loadFloatConfig(L, RUSE_CHANCE_FORMULA_A, "ruseChanceFormulaA", 0.0307576);
 	loadFloatConfig(L, RUSE_CHANCE_FORMULA_B, "ruseChanceFormulaB", 0.440697);
 	loadFloatConfig(L, RUSE_CHANCE_FORMULA_C, "ruseChanceFormulaC", 0.026);
-	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_A, "transcendanceChanceFormulaA", 0.0127);
-	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_B, "transcendanceChanceFormulaB", 0.1070);
-	loadFloatConfig(L, TRANSCENDANCE_CHANCE_FORMULA_C, "transcendanceChanceFormulaC", 0.0073);
+	loadFloatConfig(L, TRANSCENDENCE_CHANCE_FORMULA_A, "transcendanceChanceFormulaA", 0.0127);
+	loadFloatConfig(L, TRANSCENDENCE_CHANCE_FORMULA_B, "transcendanceChanceFormulaB", 0.1070);
+	loadFloatConfig(L, TRANSCENDENCE_CHANCE_FORMULA_C, "transcendanceChanceFormulaC", 0.0073);
+	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_A, "amplificationChanceFormulaA", 0.4);
+	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_B, "amplificationChanceFormulaB", 1.7);
+	loadFloatConfig(L, AMPLIFICATION_CHANCE_FORMULA_C, "amplificationChanceFormulaC", 0.4);
+
 	loadFloatConfig(L, ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER, "animusMasteryMaxMonsterXpMultiplier", 4.0);
 	loadFloatConfig(L, ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER, "animusMasteryMonsterXpMultiplier", 2.0);
 	loadFloatConfig(L, ANIMUS_MASTERY_MONSTERS_XP_MULTIPLIER, "animusMasteryMonstersXpMultiplier", 0.1);
@@ -333,7 +336,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, TASK_HUNTING_SELECTION_LIST_PRICE, "taskHuntingSelectListPrice", 5);
 	loadIntConfig(L, TIBIADROME_CONCOCTION_COOLDOWN, "tibiadromeConcoctionCooldown", 24 * 60 * 60);
 	loadIntConfig(L, TIBIADROME_CONCOCTION_DURATION, "tibiadromeConcoctionDuration", 1 * 60 * 60);
-	loadIntConfig(L, TRANSCENDANCE_AVATAR_DURATION, "transcendanceAvatarDuration", 7000);
+	loadIntConfig(L, TRANSCENDENCE_AVATAR_DURATION, "transcendenceAvatarDuration", 7000);
 	loadIntConfig(L, VIP_BONUS_EXP, "vipBonusExp", 0);
 	loadIntConfig(L, VIP_BONUS_LOOT, "vipBonusLoot", 0);
 	loadIntConfig(L, VIP_BONUS_SKILL, "vipBonusSkill", 0);

@@ -448,10 +448,10 @@ end
 ---@param monster Monster
 ---@return {factor: number, msgSuffix: string}
 function Player:calculateLootFactor(monster)
-	if self:getStamina() <= 840 then
+	if not self:canReceiveLoot() then
 		return {
 			factor = 0.0,
-			msgSuffix = " (due to low stamina)",
+			msgSuffix = "due to low stamina",
 		}
 	end
 
@@ -482,7 +482,7 @@ function Player:calculateLootFactor(monster)
 		factor = factor * (1 + vipBoost)
 	end
 	if vipBoost > 0 then
-		suffix = suffix .. (" (vip bonus: %d%%)"):format(math.floor(vipBoost * 100 + 0.5))
+		suffix = string.format("vip bonus %d%%", math.floor(vipBoost * 100 + 0.5))
 	end
 
 	return {

@@ -445,7 +445,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc()
+		npcHandler:resetNpc(creature)
 	end
 end
 

@@ -14,6 +14,7 @@
 #include "creatures/players/player.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "lib/di/container.hpp"
+#include "enums/account_type.hpp"
 #include "enums/account_group_type.hpp"
 
 TalkActions::TalkActions() = default;
@@ -41,30 +42,28 @@ bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses 
 		return false;
 	}
 
-	// Helper lambda that maps an account type to the maximum allowed group type
-	auto allowedGroupLevelForAccount = [](AccountType account) -> uint8_t {
-		switch (account) {
-			case ACCOUNT_TYPE_NORMAL:
-				return GROUP_TYPE_NORMAL;
-			case ACCOUNT_TYPE_TUTOR:
-				return GROUP_TYPE_TUTOR;
-			case ACCOUNT_TYPE_SENIORTUTOR:
-				return GROUP_TYPE_SENIORTUTOR;
-			case ACCOUNT_TYPE_GAMEMASTER:
-				// Allow both GAMEMASTER and COMMUNITYMANAGER talk actions.
-				return GROUP_TYPE_COMMUNITYMANAGER; // COMMUNITYMANAGER = 5
-			case ACCOUNT_TYPE_GOD:
-				return GROUP_TYPE_GOD;
-			default:
-				return GROUP_TYPE_NONE;
-		}
+	// Map of allowed group levels for each account type
+	static const std::unordered_map<AccountType, GroupType> allowedGroupLevels = {
+		{ ACCOUNT_TYPE_NORMAL, GROUP_TYPE_NORMAL },
+		{ ACCOUNT_TYPE_TUTOR, GROUP_TYPE_TUTOR },
+		{ ACCOUNT_TYPE_SENIORTUTOR, GROUP_TYPE_SENIORTUTOR },
+		{ ACCOUNT_TYPE_GAMEMASTER, GROUP_TYPE_COMMUNITYMANAGER }, // GAMEMASTER -> COMMUNITYMANAGER (5)
+		{ ACCOUNT_TYPE_GOD, GROUP_TYPE_GOD }
 	};
 
-	if (player->getAccountType() != ACCOUNT_TYPE_GOD) {
-		// Compare the talk action's required group level to the allowed maximum for the account.
-		if (talkActionPtr->getGroupType() > allowedGroupLevelForAccount(static_cast<AccountType>(player->getAccountType()))) {
-			return false;
+	// Helper lambda to get the allowed group level for an account
+	auto allowedGroupLevelForAccount = [](AccountType account) -> GroupType {
+		if (auto it = allowedGroupLevels.find(account); it != allowedGroupLevels.end()) {
+			return it->second;
 		}
+
+		g_logger().warn("[TalkActions::checkWord] Invalid account type: {}", account);
+		return GROUP_TYPE_NONE;
+	};
+
+	// Check if player has permission for the talk action
+	if (player->getAccountType() != ACCOUNT_TYPE_GOD && talkActionPtr->getGroupType() > allowedGroupLevelForAccount(static_cast<AccountType>(player->getAccountType()))) {
+		return false;
 	}
 
 	std::string param;

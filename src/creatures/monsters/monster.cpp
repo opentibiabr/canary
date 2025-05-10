@@ -15,6 +15,7 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "io/iobestiary.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
@@ -186,7 +187,7 @@ void Monster::addReflectElement(CombatType_t combatType, int32_t percent) {
 	m_reflectElementMap[combatType] += percent;
 }
 
-int32_t Monster::getDefense() const {
+int32_t Monster::getDefense(bool) const {
 	auto mtypeDefense = mType->info.defense;
 	if (mtypeDefense != 0) {
 		g_logger().trace("[{}] old defense {}", __FUNCTION__, mtypeDefense);
@@ -941,8 +942,12 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 	return true;
 }
 
+void Monster::setFatalHoldDuration(int32_t value) {
+	fatalHoldDuration = value;
+}
+
 bool Monster::isFleeing() const {
-	return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0;
+	return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0 && fatalHoldDuration <= 0;
 }
 
 bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
@@ -1252,6 +1257,14 @@ void Monster::onThinkTarget(uint32_t interval) {
 
 				if (challengeFocusDuration <= 0) {
 					challengeFocusDuration = 0;
+				}
+			}
+
+			if (fatalHoldDuration > 0 && runAwayHealth > 0) {
+				fatalHoldDuration -= interval;
+
+				if (fatalHoldDuration <= 0) {
+					fatalHoldDuration = 0;
 				}
 			}
 
@@ -2249,6 +2262,8 @@ void Monster::death(const std::shared_ptr<Creature> &) {
 	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
+	const auto &attackedCreature = getAttackedCreature();
+	const auto &targetPlayer = attackedCreature ? attackedCreature->getPlayer() : nullptr;
 	setAttackedCreature(nullptr);
 
 	for (const auto &summon : m_summons) {
@@ -2264,11 +2279,26 @@ void Monster::death(const std::shared_ptr<Creature> &) {
 	clearFriendList();
 	onIdleStatus();
 
-	if (mType) {
-		g_game().sendSingleSoundEffect(static_self_cast<Monster>()->getPosition(), mType->info.deathSound, getMonster());
+	setDead(true);
+
+	if (!mType) {
+		return;
 	}
 
-	setDead(true);
+	g_game().sendSingleSoundEffect(static_self_cast<Monster>()->getPosition(), mType->info.deathSound, getMonster());
+
+	if (!targetPlayer) {
+		return;
+	}
+
+	auto [activeCharm, _] = g_iobestiary().getCharmFromTarget(targetPlayer, mType);
+	if (activeCharm == CHARM_CARNAGE) {
+		const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
+		const auto charmTier = targetPlayer->getCharmTier(activeCharm);
+		if (charm && charm->chance[charmTier] >= normal_random(1, 10000) / 100.0) {
+			g_iobestiary().parseCharmCombat(charm, targetPlayer, getMonster());
+		}
+	}
 }
 
 std::shared_ptr<Item> Monster::getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) {
@@ -2692,8 +2722,8 @@ bool Monster::checkCanApplyCharm(const std::shared_ptr<Player> &player, charmRun
 
 	uint16_t playerCharmRaceid = player->parseRacebyCharm(charmRune, false, 0);
 	if (playerCharmRaceid != 0) {
-		const auto &monsterType = g_monsters().getMonsterType(getName());
-		if (monsterType && playerCharmRaceid == monsterType->info.raceid) {
+		const auto &mType = g_monsters().getMonsterType(getName());
+		if (mType && playerCharmRaceid == mType->info.raceid) {
 			const auto &charm = g_iobestiary().getBestiaryCharm(charmRune);
 			if (charm) {
 				return true;

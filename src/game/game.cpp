@@ -7306,7 +7306,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 							ss << ucfirst(attacker->getNameDescription()) << " healed ";
 							if (attacker == target) {
 								ss << (targetPlayer ? targetPlayer->getReflexivePronoun() : "itself");
-							} else {
+							} else if (target) {
 								ss << target->getNameDescription();
 							}
 						}

@@ -880,7 +880,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	g_dispatcher().addEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__);
 }
 
-void ProtocolGame::onConnect() {
+void ProtocolGame::sendLoginChallenge() {
 	auto output = OutputMessagePool::getOutputMessage();
 	static std::random_device rd;
 	static std::ranlux24 generator(rd());
@@ -890,15 +890,15 @@ void ProtocolGame::onConnect() {
 	output->skipBytes(sizeof(uint32_t));
 
 	// Packet length & type
-	output->add<uint16_t>(0x0006);
+	output->addByte(0x01);
 	output->addByte(0x1F);
-
 	// Add timestamp & random number
 	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
 	output->add<uint32_t>(challengeTimestamp);
 
 	challengeRandom = randNumber(generator);
 	output->addByte(challengeRandom);
+	output->addByte(0x71);
 
 	// Go back and write checksum
 	output->skipBytes(-12);
@@ -1405,8 +1405,12 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg) {
 	}
 
 	auto itemId = msg.get<uint16_t>();
-	auto tier = msg.get<uint8_t>();
-	g_game().playerEquipItem(player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
+	uint8_t tier = 0;
+	bool hasTier = Item::items[itemId].upgradeClassification > 0;
+	if (hasTier) {
+		tier = msg.get<uint8_t>();
+	}
+	g_game().playerEquipItem(player->getID(), itemId, hasTier, tier);
 }
 
 void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg) {
@@ -1633,7 +1637,7 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	uint8_t numdirs = msg.getByte();
-	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 8)) {
+	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 6)) {
 		return;
 	}
 
@@ -3168,7 +3172,10 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 		g_game().playerBrowseMarketOwnHistory(player->getID());
 	} else if (!oldProtocol) {
 		auto itemId = msg.get<uint16_t>();
-		auto tier = msg.get<uint8_t>();
+		uint8_t tier = 0;
+		if (Item::items[itemId].upgradeClassification > 0) {
+			tier = msg.get<uint8_t>();
+		}
 		player->sendMarketEnter(player->getLastDepotId());
 		g_game().playerBrowseMarket(player->getID(), itemId, tier);
 	} else {
@@ -4691,8 +4698,8 @@ void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, cons
 		// Send as uint16_t in old protocol
 		msg.add<uint16_t>(static_cast<uint16_t>(icons));
 	} else {
-		// Send as uint32_t in new protocol
-		msg.add<uint32_t>(icons);
+		// Send as uint64_t in new protocol
+		msg.add<uint64_t>(icons);
 		msg.addByte(enumToValue(iconBakragore)); // Icons Bakragore
 	}
 
@@ -4702,7 +4709,7 @@ void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, cons
 void ProtocolGame::sendIconBakragore(const IconBakragore icon) {
 	NetworkMessage msg;
 	msg.addByte(0xA2);
-	msg.add<uint32_t>(0); // Send empty normal icons
+	msg.add<uint64_t>(0); // Send empty normal icons
 	msg.addByte(enumToValue(icon));
 	writeToOutputBuffer(msg);
 }
@@ -8686,7 +8693,6 @@ void ProtocolGame::sendOpenStash() {
 		msg.add<uint16_t>(item.first);
 		msg.add<uint32_t>(item.second);
 	}
-	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STASH_ITEMS) - getStashSize(list)));
 	writeToOutputBuffer(msg);
 }
 

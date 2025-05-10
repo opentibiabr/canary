@@ -5359,6 +5359,21 @@ bool Player::updateSaleShopList(const std::shared_ptr<Item> &item) {
 	return true;
 }
 
+void Player::updateSaleShopList() {
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, __FUNCTION__);
+	scheduledSaleUpdate = true;
+}
+
+void Player::updateState() {
+	updateInventoryWeight();
+	updateItemsLight();
+	sendInventoryIds();
+	sendStats();
+	if (shopOwner) {
+		updateSaleShopList();
+	}
+}
+
 bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const {
 	if (!shopOwner) {
 		return false;
@@ -8201,6 +8216,94 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	}
 
 	return true;
+}
+
+ReturnValue Player::addItemBatchToPaginedContainer(
+	const std::shared_ptr<Container> &container,
+	uint16_t itemId,
+	uint32_t totalCount,
+	uint32_t &actuallyAdded,
+	uint32_t flags /*= 0*/,
+	uint8_t tier /*= 0*/
+) {
+	actuallyAdded = 0;
+
+	if (!container) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (totalCount == 0) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	const auto &itemType = Item::items[itemId];
+	if (!itemType.id) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
+	uint32_t remaining = totalCount;
+	while (remaining > 0) {
+		uint32_t toStack = std::min(remaining, maxStackSize);
+
+		std::shared_ptr<Item> newItem = Item::createItemBatch(itemId, toStack);
+		if (!newItem) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		auto charges = newItem->getCharges();
+		if (charges > 0) {
+			toStack = std::min<uint32_t>(toStack, charges);
+		}
+
+		if (tier > 0) {
+			newItem->setTier(tier);
+		}
+
+		ReturnValue rv = container->queryAdd(INDEX_WHEREEVER, newItem, toStack, flags);
+		if (rv != RETURNVALUE_NOERROR) {
+			return rv;
+		}
+
+		container->addThing(newItem);
+
+		actuallyAdded += toStack;
+		remaining -= toStack;
+	}
+
+	return actuallyAdded > 0 ? RETURNVALUE_NOERROR : RETURNVALUE_NOTENOUGHROOM;
+}
+
+ReturnValue Player::removeItem(const std::shared_ptr<Item> &item, uint32_t count /*= 0*/) {
+	if (!item) {
+		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	const auto &cylinder = item->getParent();
+	if (!cylinder) {
+		g_logger().debug("{} - Cylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (count == 0 || count > item->getItemCount()) {
+		count = item->getItemCount();
+	}
+
+	ReturnValue ret = cylinder->queryRemove(item, count, FLAG_IGNORENOTMOVABLE);
+	if (ret != RETURNVALUE_NOERROR) {
+		g_logger().debug("{} - Failed to execute query remove", __FUNCTION__);
+		return ret;
+	}
+
+	cylinder->removeThing(item, count);
+
+	if (item->isRemoved()) {
+		item->onRemoved();
+		item->stopDecaying();
+	}
+
+	return RETURNVALUE_NOERROR;
 }
 
 void sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &stowItem, StashContainerList &itemDict) {

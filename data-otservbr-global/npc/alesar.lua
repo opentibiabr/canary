@@ -95,19 +95,22 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not MsgContains(message, "djanni'hah") then
-		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
+	--Checks if the player has completed the quest
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03) ~= 3 then
+		if not MsgContains(message, "djanni'hah") then
+			npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+			endConversationWithDelay(npcHandler, npc, creature)
+			return false
+		end
 
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) <= 0 then
-		npcHandler:say({
-			"Hahahaha! ...",
-			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
-		}, npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) == 1 then
+			npcHandler:say({
+				"Hahahaha! ...",
+				"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
+			}, npc, creature)
+			endConversationWithDelay(npcHandler, npc, creature)
+			return false
+		end
 	end
 
 	npcHandler:say("What do you want from me, |PLAYERNAME|?", npc, creature)

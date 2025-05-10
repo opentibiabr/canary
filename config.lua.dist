@@ -84,9 +84,11 @@ depotBoxes = 20
 
 -- Item and containers limit
 -- NOTE: 'maxContainerDepth' defines the maximum depth to which containers can be nested
+-- NOTE: 'maxInboxItems' defines the maximum items allowed in inbox, set to 0 for limit it to uint32_t max limit (4.294.967.295)
 maxItem = 5000
 maxContainer = 500
 maxContainerDepth = 200
+maxInboxItems = 0
 
 -- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
 -- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.

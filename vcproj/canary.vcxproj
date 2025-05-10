@@ -20,6 +20,7 @@
     <ClInclude Include="..\src\core.hpp" />
     <ClInclude Include="..\src\creatures\appearance\mounts\mounts.hpp" />
     <ClInclude Include="..\src\creatures\appearance\outfit\outfit.hpp" />
+    <ClInclude Include="..\src\creatures\appearance\attached_effects\attached_effects.hpp" />
     <ClInclude Include="..\src\creatures\combat\combat.hpp" />
     <ClInclude Include="..\src\creatures\combat\condition.hpp" />
     <ClInclude Include="..\src\creatures\combat\spells.hpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="..\src\creatures\players\vocations\vocation.hpp" />
     <ClInclude Include="..\src\creatures\players\components\wheel\wheel_gems.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_achievement.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\player_attached_effects.hpp" />
     <ClInclude Include="..\src\creatures\players\animus_mastery\animus_mastery.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_badge.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_cyclopedia.hpp" />
@@ -237,6 +239,7 @@
     <ClCompile Include="..\src\config\configmanager.cpp" />
     <ClCompile Include="..\src\creatures\appearance\mounts\mounts.cpp" />
     <ClCompile Include="..\src\creatures\appearance\outfit\outfit.cpp" />
+    <ClCompile Include="..\src\creatures\appearance\attached_effects\attached_effects.cpp" />
     <ClCompile Include="..\src\creatures\combat\combat.cpp" />
     <ClCompile Include="..\src\creatures\combat\condition.cpp" />
     <ClCompile Include="..\src\creatures\combat\spells.cpp" />
@@ -261,6 +264,7 @@
     <ClCompile Include="..\src\creatures\players\vocations\vocation.cpp" />
     <ClCompile Include="..\src\creatures\players\components\wheel\wheel_gems.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_achievement.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\player_attached_effects.cpp" />
     <ClCompile Include="..\src\creatures\players\animus_mastery\animus_mastery.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_badge.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_cyclopedia.cpp" />

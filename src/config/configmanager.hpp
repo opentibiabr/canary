@@ -12,6 +12,7 @@
 #include "config_enums.hpp"
 
 using ConfigValue = std::variant<std::string, int32_t, bool, float>;
+using OTCFeatures = std::vector<uint8_t>;
 
 class ConfigManager {
 public:
@@ -40,6 +41,8 @@ public:
 	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
 	[[nodiscard]] bool getBoolean(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
 	[[nodiscard]] float getFloat(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
+	OTCFeatures getEnabledFeaturesOTC() const;
+	OTCFeatures getDisabledFeaturesOTC() const;
 
 private:
 	mutable std::unordered_map<ConfigKey_t, std::string> m_configString;
@@ -55,6 +58,9 @@ private:
 
 	std::string configFileLua = { "config.lua" };
 	bool loaded = false;
+	OTCFeatures enabledFeaturesOTC = {};
+	OTCFeatures disabledFeaturesOTC = {};
+	void loadLuaOTCFeatures(lua_State* L);
 };
 
 constexpr auto g_configManager = ConfigManager::getInstance;

@@ -13,6 +13,7 @@
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -71,7 +72,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
-	m_animusMastery(*this) { }
+	m_animusMastery(*this),
+	m_playerAttachedEffects(*this) { }
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -1045,6 +1047,14 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 			return;
 		}
 		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, WING_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, EFFECT_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, AURA_RANGE)) {
+			// do nothing
+		} else if (IS_IN_KEYRANGE(key, SHADER_RANGE)) {
 			// do nothing
 		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
 			familiars.emplace_back(
@@ -5349,6 +5359,21 @@ bool Player::updateSaleShopList(const std::shared_ptr<Item> &item) {
 	return true;
 }
 
+void Player::updateSaleShopList() {
+	g_dispatcher().addEvent([creatureId = getID()] { g_game().updatePlayerSaleItems(creatureId); }, __FUNCTION__);
+	scheduledSaleUpdate = true;
+}
+
+void Player::updateState() {
+	updateInventoryWeight();
+	updateItemsLight();
+	sendInventoryIds();
+	sendStats();
+	if (shopOwner) {
+		updateSaleShopList();
+	}
+}
+
 bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const {
 	if (!shopOwner) {
 		return false;
@@ -8193,6 +8218,94 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	return true;
 }
 
+ReturnValue Player::addItemBatchToPaginedContainer(
+	const std::shared_ptr<Container> &container,
+	uint16_t itemId,
+	uint32_t totalCount,
+	uint32_t &actuallyAdded,
+	uint32_t flags /*= 0*/,
+	uint8_t tier /*= 0*/
+) {
+	actuallyAdded = 0;
+
+	if (!container) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (totalCount == 0) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	const auto &itemType = Item::items[itemId];
+	if (!itemType.id) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
+	uint32_t remaining = totalCount;
+	while (remaining > 0) {
+		uint32_t toStack = std::min(remaining, maxStackSize);
+
+		std::shared_ptr<Item> newItem = Item::createItemBatch(itemId, toStack);
+		if (!newItem) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		auto charges = newItem->getCharges();
+		if (charges > 0) {
+			toStack = std::min<uint32_t>(toStack, charges);
+		}
+
+		if (tier > 0) {
+			newItem->setTier(tier);
+		}
+
+		ReturnValue rv = container->queryAdd(INDEX_WHEREEVER, newItem, toStack, flags);
+		if (rv != RETURNVALUE_NOERROR) {
+			return rv;
+		}
+
+		container->addThing(newItem);
+
+		actuallyAdded += toStack;
+		remaining -= toStack;
+	}
+
+	return actuallyAdded > 0 ? RETURNVALUE_NOERROR : RETURNVALUE_NOTENOUGHROOM;
+}
+
+ReturnValue Player::removeItem(const std::shared_ptr<Item> &item, uint32_t count /*= 0*/) {
+	if (!item) {
+		g_logger().debug("{} - Item is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	const auto &cylinder = item->getParent();
+	if (!cylinder) {
+		g_logger().debug("{} - Cylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (count == 0 || count > item->getItemCount()) {
+		count = item->getItemCount();
+	}
+
+	ReturnValue ret = cylinder->queryRemove(item, count, FLAG_IGNORENOTMOVABLE);
+	if (ret != RETURNVALUE_NOERROR) {
+		g_logger().debug("{} - Failed to execute query remove", __FUNCTION__);
+		return ret;
+	}
+
+	cylinder->removeThing(item, count);
+
+	if (item->isRemoved()) {
+		item->onRemoved();
+		item->stopDecaying();
+	}
+
+	return RETURNVALUE_NOERROR;
+}
+
 void sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &stowItem, StashContainerList &itemDict) {
 	if (stowItem->getID() == item->getID()) {
 		itemDict.emplace_back(stowItem, stowItem->getItemCount());
@@ -9764,6 +9877,14 @@ void Player::sendLootContainers() const {
 	}
 }
 
+void Player::sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const {
+	if (!client) {
+		return;
+	}
+
+	client->sendPlayerTyping(creature, typing);
+}
+
 void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const {
 	if (client) {
 		client->sendSingleSoundEffect(pos, id, source);
@@ -10441,6 +10562,15 @@ AnimusMastery &Player::animusMastery() {
 
 const AnimusMastery &Player::animusMastery() const {
 	return m_animusMastery;
+}
+
+// Attached Effects interface
+PlayerAttachedEffects &Player::attachedEffects() {
+	return m_playerAttachedEffects;
+}
+
+const PlayerAttachedEffects &Player::attachedEffects() const {
+	return m_playerAttachedEffects;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

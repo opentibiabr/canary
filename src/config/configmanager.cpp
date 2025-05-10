@@ -128,6 +128,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, STAMINA_SYSTEM, "staminaSystem", true);
 	loadBoolConfig(L, STAMINA_TRAINER, "staminaTrainer", false);
 	loadBoolConfig(L, STASH_MOVING, "stashMoving", false);
+	loadIntConfig(L, STASH_MANAGE_AMOUNT, "stashManageAmount", 100000);
 	loadBoolConfig(L, TASK_HUNTING_ENABLED, "taskHuntingSystemEnabled", true);
 	loadBoolConfig(L, TASK_HUNTING_FREE_THIRD_SLOT, "taskHuntingFreeThirdSlot", false);
 	loadBoolConfig(L, TELEPORT_PLAYER_TO_VOCATION_ROOM, "teleportPlayerToVocationRoom", true);

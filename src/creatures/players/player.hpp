@@ -642,7 +642,7 @@ public:
 	static bool lastHitIsPlayer(const std::shared_ptr<Creature> &lastHitCreature);
 
 	// stash functions
-	bool addItemFromStash(uint16_t itemId, uint32_t itemCount);
+	ReturnValue addItemFromStash(uint16_t itemId, uint32_t itemCount);
 	void stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems);
 
 	ReturnValue addItemBatchToPaginedContainer(
@@ -653,6 +653,8 @@ public:
 		uint32_t flags = 0,
 		uint8_t tier = 0
 	);
+	std::vector<std::shared_ptr<Container>> getAllContainers(bool onlyFromMainBackpack = true) const;
+	std::shared_ptr<Container> getBackpack() const;
 
 	ReturnValue removeItem(const std::shared_ptr<Item> &item, uint32_t count = 0);
 

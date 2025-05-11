@@ -71,6 +71,7 @@ public:
 	std::shared_ptr<Thing> getThingByUID(uint32_t uid);
 	std::shared_ptr<Item> getItemByUID(uint32_t uid);
 	std::shared_ptr<Container> getContainerByUID(uint32_t uid);
+	std::shared_ptr<Player> getPlayerByUID(uint32_t uid);
 	void removeItemByUID(uint32_t uid);
 
 private:

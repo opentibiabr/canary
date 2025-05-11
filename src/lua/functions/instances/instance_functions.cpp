@@ -31,7 +31,7 @@ void InstanceFunctions::init(lua_State* L) {
 
 int InstanceFunctions::luaCreatePlayerInstance(lua_State* L) {
 	// createPlayerInstance(player, mapName, entryPosition, exitPosition, isPartyInstance)
-	const auto &player = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 1));
+	const auto &player = Lua::getPlayer(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -59,7 +59,7 @@ int InstanceFunctions::luaCreatePlayerInstance(lua_State* L) {
 
 int InstanceFunctions::luaTeleportToPlayerInstance(lua_State* L) {
 	// teleportToPlayerInstance(player, instanceId)
-	const auto &player = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 1));
+	const auto &player = Lua::getPlayer(L, 1);
 	if (!player) {
 		lua_pushboolean(L, false);
 		return 1;
@@ -73,7 +73,7 @@ int InstanceFunctions::luaTeleportToPlayerInstance(lua_State* L) {
 
 int InstanceFunctions::luaTeleportFromPlayerInstance(lua_State* L) {
 	// teleportFromPlayerInstance(player)
-	const auto &player = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 1));
+	const auto &player = Lua::getPlayer(L, 1);
 	if (!player) {
 		lua_pushboolean(L, false);
 		return 1;
@@ -86,7 +86,7 @@ int InstanceFunctions::luaTeleportFromPlayerInstance(lua_State* L) {
 
 int InstanceFunctions::luaIsPlayerInInstance(lua_State* L) {
 	// isPlayerInInstance(player)
-	const auto &player = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 1));
+	const auto &player = Lua::getPlayer(L, 1);
 	if (!player) {
 		lua_pushboolean(L, false);
 		return 1;
@@ -99,7 +99,7 @@ int InstanceFunctions::luaIsPlayerInInstance(lua_State* L) {
 
 int InstanceFunctions::luaGetPlayerInstanceId(lua_State* L) {
 	// getPlayerInstanceId(player)
-	const auto &player = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 1));
+	const auto &player = Lua::getPlayer(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -133,13 +133,13 @@ int InstanceFunctions::luaCleanupPlayerInstances(lua_State* L) {
 
 int InstanceFunctions::luaTeleportToPartyMemberInstance(lua_State* L) {
 	// teleportToPartyMemberInstance(player, partyMember)
-	const auto &player = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 1));
+	const auto &player = Lua::getPlayer(L, 1);
 	if (!player) {
 		lua_pushboolean(L, false);
 		return 1;
 	}
 	
-	const auto &partyMember = Lua::getScriptEnv()->getPlayerByUID(Lua::getNumber<uint32_t>(L, 2));
+	const auto &partyMember = Lua::getPlayer(L, 2);
 	if (!partyMember) {
 		lua_pushboolean(L, false);
 		return 1;

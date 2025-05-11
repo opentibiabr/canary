@@ -24,6 +24,7 @@
 #include "lua/functions/items/item_functions.hpp"
 #include "lua/functions/map/map_functions.hpp"
 #include "lua/functions/core/game/zone_functions.hpp"
+#include "lua/functions/instances/instance_functions.hpp"
 #include "lua/global/lua_variant.hpp"
 
 #include "enums/lua_variant_type.hpp"
@@ -43,6 +44,7 @@ void Lua::load(lua_State* L) {
 	ItemFunctions::init(L);
 	MapFunctions::init(L);
 	ZoneFunctions::init(L);
+	InstanceFunctions::init(L);
 }
 
 std::string Lua::getErrorDesc(ErrorCode_t code) {

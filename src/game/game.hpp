@@ -18,6 +18,7 @@
 #include "map/map.hpp"
 #include "modal_window/modal_window.hpp"
 #include "movement/position.hpp"
+#include "game/instances/instance_manager.hpp"
 
 // Forward declaration for protobuf class
 namespace Canary {

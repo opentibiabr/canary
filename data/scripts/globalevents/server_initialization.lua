@@ -132,6 +132,12 @@ function serverInitialization.onStartup()
 	updateEventRates()
 	HirelingsInit()
 	resetAccountSessions()
+	
+	-- Load instance system
+	if io.open("data-canary/config/instances.lua", "r") then
+		dofile("data-canary/config/instances.lua")
+		logger.info("Instance system loaded.")
+	end
 end
 
 serverInitialization:register()

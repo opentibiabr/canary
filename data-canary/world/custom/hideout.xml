@@ -1,0 +1,404 @@
+<?xml version="1.0"?>
+<map version="1.0">
+	<houses />
+	<spawns />
+	<tiles>
+		<!-- Border walls -->
+		<!-- Top wall -->
+		<tile x="995" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="996" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="997" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="998" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="999" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1000" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1001" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1002" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1003" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1004" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1005" y="995" z="7">
+			<item id="1059" />
+		</tile>
+		
+		<!-- Left wall -->
+		<tile x="995" y="996" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="997" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="998" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="999" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="1000" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="1001" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="1002" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="1003" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="1004" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="995" y="1005" z="7">
+			<item id="1058" />
+		</tile>
+		
+		<!-- Right wall -->
+		<tile x="1005" y="996" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="997" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="998" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="999" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="1000" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="1001" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="1002" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="1003" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="1004" z="7">
+			<item id="1058" />
+		</tile>
+		<tile x="1005" y="1005" z="7">
+			<item id="1058" />
+		</tile>
+		
+		<!-- Bottom wall -->
+		<tile x="995" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="996" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="997" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="998" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="999" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1000" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1001" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1002" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1003" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1004" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		<tile x="1005" y="1005" z="7">
+			<item id="1059" />
+		</tile>
+		
+		<!-- Floor tiles -->
+		<tile x="996" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="996" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="996" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="997" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="997" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="998" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="998" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="999" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="999" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="1000" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="1001" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="1002" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="1003" z="7">
+			<item id="407" />
+		</tile>
+		
+		<tile x="996" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="997" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="998" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="999" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1000" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1001" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1002" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1003" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		<tile x="1004" y="1004" z="7">
+			<item id="407" />
+		</tile>
+		
+		<!-- Portal Device -->
+		<tile x="1000" y="1000" z="7">
+			<item id="2358" /> <!-- Magic Crystal Ball (Portal Device) -->
+		</tile>
+		
+		<!-- Exit Portal -->
+		<tile x="1000" y="1004" z="7">
+			<item id="1387" /> <!-- Magic Forcefield (Exit Portal) -->
+		</tile>
+	</tiles>
+</map>

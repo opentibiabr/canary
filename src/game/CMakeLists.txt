@@ -9,4 +9,5 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     scheduling/task.cpp
     scheduling/save_manager.cpp
     zones/zone.cpp
+    instances/instance_manager.cpp
 )

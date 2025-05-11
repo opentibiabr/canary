@@ -529,6 +529,9 @@ void Game::start(ServiceManager* manager) {
 
 	serviceManager = manager;
 
+	// Initialize instance manager
+	g_instances().init();
+
 	const auto now = getTimeNow();
 	const tm* tms = localtime(&now);
 	int minutes = tms->tm_min;
@@ -548,6 +551,9 @@ void Game::start(ServiceManager* manager) {
 	);
 	g_dispatcher().cycleEvent(
 		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
+	);
+	g_dispatcher().cycleEvent(
+		EVENT_MS * 60, [this] { g_instances().cleanupInstances(); }, "Game::cleanupInstances"
 	);
 	g_dispatcher().cycleEvent(
 		EVENT_IMBUEMENT_INTERVAL, [this] { checkImbuements(); }, "Game::checkImbuements"

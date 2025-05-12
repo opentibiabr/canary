@@ -1913,7 +1913,7 @@ void Creature::sendAsyncTasks() {
 			creature->m_flagAsyncTask = 0;
 		}
 	},
-	                          TaskGroup::WalkParallel);
+	                          "Creature::sendAsyncTasks", TaskGroup::WalkParallel);
 }
 
 void Creature::safeCall(std::function<void(void)> &&action) const {

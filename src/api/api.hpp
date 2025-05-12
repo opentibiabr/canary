@@ -8,6 +8,8 @@
 #include "middleware/validation.hpp"
 #include "middleware/security.hpp"
 
+class ThreadPool;
+
 struct VersionInfo {
     std::string version;
     std::string url;
@@ -17,15 +19,13 @@ struct VersionInfo {
 
 class APIServer {
 public:
-    APIServer() = default;
+    explicit APIServer(ThreadPool &threadPool);
+
     ~APIServer() = default;
     APIServer(const APIServer &) = delete;
     APIServer &operator=(const APIServer &) = delete;
 
-    static APIServer &getInstance() {
-        static APIServer instance;
-        return instance;
-    }
+    static APIServer &getInstance();
 
     void initialize(uint16_t port = 8081);
     void start();
@@ -41,7 +41,7 @@ private:
         ValidationMiddleware>
         app {};
 
-    std::jthread serverThread {};
+	ThreadPool &threadPool;
     std::atomic<bool> running{false};
     static std::mutex shutdownMutex;
 
@@ -51,3 +51,5 @@ private:
 	[[nodiscard]] static bool isNewerVersion(const std::string &current, const std::string &new_version) ;
 	static std::map<std::string, std::vector<VersionInfo>> availableVersions;
 };
+
+constexpr auto g_api = APIServer::getInstance;

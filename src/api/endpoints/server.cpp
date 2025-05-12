@@ -28,6 +28,7 @@ crow::response ServerEndpoints::getStatus() {
 		return APIResponse::erro(500, "Erro ao buscar status do servidor: " + std::string(e.what()));
 	}
 }
+
 crow::response ServerEndpoints::getMotd() {
 	try {
 		const json data = {
@@ -39,6 +40,7 @@ crow::response ServerEndpoints::getMotd() {
 		return APIResponse::erro(500, "Erro ao buscar SERVER_MOTD: " + std::string(e.what()));
 	}
 }
+
 crow::response ServerEndpoints::getResources() {
 	try {
 		const auto resources = SystemInfo::getSystemResources();
@@ -47,6 +49,7 @@ crow::response ServerEndpoints::getResources() {
 		return APIResponse::erro(500, "Erro ao buscar recursos do sistema: " + std::string(e.what()));
 	}
 }
+
 crow::response ServerEndpoints::setGameState(const crow::request &req) {
 	try {
 		const auto bodyData = crow::json::load(req.body);
@@ -56,21 +59,29 @@ crow::response ServerEndpoints::setGameState(const crow::request &req) {
 		}
 
 		const std::string newStateStr = bodyData["state"].s();
-		GameState_t newState;
+		GameState_t newState, oldState;
 
 		try {
 			newState = parseGameState(newStateStr);
+			oldState = g_game().getGameState();
 		} catch (const std::runtime_error &e) {
 			return APIResponse::erro(400, e.what());
 		}
 
 		// Verifica se o estado atual é SHUTDOWN
-		if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
+		if (oldState == GAME_STATE_SHUTDOWN) {
 			return APIResponse::erro(400, "Não é possível alterar o estado quando o servidor está desligando");
 		}
 
-		g_game().setGameState(newState);
+		if (newState == oldState) {
+			const json data = {
+				{ "status", "success" },
+				{ "new_state", getGameStateString(newState) }
+			};
+			return APIResponse::ok(data);
+		}
 
+		g_game().setGameState(newState);
 		const json data = {
 			{ "status", "success" },
 			{ "new_state", getGameStateString(newState) }
@@ -83,6 +94,39 @@ crow::response ServerEndpoints::setGameState(const crow::request &req) {
 		return APIResponse::erro(500, "Erro ao alterar estado do servidor: " + std::string(e.what()));
 	}
 }
+
+crow::response ServerEndpoints::broadcastMessage(const crow::request &req) {
+	try {
+		const auto bodyData = crow::json::load(req.body);
+
+		if (!bodyData.has("message")) {
+			return APIResponse::erro(400, "Campo 'message' é obrigatório");
+		}
+
+		const std::string message = bodyData["message"].s();
+		if (message.empty()) {
+			return APIResponse::erro(400, "Mensagem não pode ser vazia");
+		}
+
+		for (const auto &val : g_game().getPlayers() | std::views::values) {
+			const auto &player = val;
+			if (player) {
+				player->sendTextMessage(MESSAGE_ADMINISTRATOR, message);
+			}
+		}
+
+		const json data = {
+			{ "status", "success" },
+			{ "message", message }
+		};
+		return APIResponse::ok(data);
+	} catch (const nlohmann::json::parse_error &e) {
+		return APIResponse::erro(400, "JSON inválido: " + std::string(e.what()));
+	} catch (const std::exception &e) {
+		return APIResponse::erro(500, "Erro ao enviar broadcast: " + std::string(e.what()));
+	}
+}
+
 const std::unordered_map<GameState_t, std::string> &ServerEndpoints::getGameStatesMap() {
 	static const std::unordered_map<GameState_t, std::string> states = {
 		{ GAME_STATE_NORMAL, "online" },

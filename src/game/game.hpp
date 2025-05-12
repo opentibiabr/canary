@@ -717,6 +717,10 @@ public:
 	 */
 	std::shared_ptr<Container> findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer);
 
+	// Ban/unban para uso via Lua
+	bool banPlayer(const std::string& name, int durationDays, const std::string& reason, uint32_t bannedBy);
+	bool unbanPlayer(const std::string& name, uint32_t unbannedBy);
+
 private:
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;

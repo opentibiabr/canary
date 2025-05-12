@@ -12069,3 +12069,64 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 
 	return true;
 }
+
+bool Game::banPlayer(const std::string &name, const int durationDays, const std::string &reason, uint32_t bannedBy) {
+	if (name.empty() || durationDays <= 0) {
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+
+	const auto result = db.storeQuery(fmt::format("SELECT `account_id` FROM `players` WHERE `name` = {}", db.escapeString(name)));
+	if (!result) {
+		return false;
+	}
+	uint32_t accountId = result->getNumber<uint32_t>("account_id");
+
+	const auto banResult = db.storeQuery(fmt::format("SELECT 1 FROM `account_bans` WHERE `account_id` = {}", accountId));
+	if (banResult) {
+		return false;
+	}
+
+	time_t now = time(nullptr);
+	time_t expires = now + (durationDays * 24 * 60 * 60);
+	std::string escReason = db.escapeString(reason);
+
+	db.executeQuery(fmt::format("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ({}, {}, {}, {}, {})", accountId, escReason, now, expires, bannedBy));
+
+	const auto &player = getPlayerByName(name);
+	if (player && player->isOnline()) {
+		player->removePlayer(true, true);
+	}
+
+	return true;
+}
+
+bool Game::unbanPlayer(const std::string &name, uint32_t unbannedBy) {
+	if (name.empty()) {
+		return false;
+	}
+
+	Database &db = Database::getInstance();
+
+	const auto result = db.storeQuery(fmt::format("SELECT `account_id` FROM `players` WHERE `name` = {}", db.escapeString(name)));
+	if (!result) {
+		return false;
+	}
+	uint32_t accountId = result->getNumber<uint32_t>("account_id");
+
+	// Buscar informações do ban ativo
+	const auto banResult = db.storeQuery(fmt::format("SELECT `reason`, `banned_at`, `expires_at`, `banned_by` FROM `account_bans` WHERE `account_id` = {}", accountId));
+	if (banResult) {
+		std::string reason = db.escapeString(banResult->getString("reason"));
+		time_t bannedAt = banResult->getNumber<time_t>("banned_at");
+		uint32_t bannedBy = banResult->getNumber<uint32_t>("banned_by");
+		time_t now = time(nullptr);
+
+		db.executeQuery(fmt::format("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES ({}, {}, {}, {}, {})", accountId, reason, bannedAt, now, bannedBy));
+	}
+
+	db.executeQuery(fmt::format("DELETE FROM `account_bans` WHERE `account_id` = {}", accountId));
+
+	return true;
+}

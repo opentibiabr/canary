@@ -12,7 +12,7 @@ ChatHistory &ChatHistory::getInstance() {
 
 void ChatHistory::addMessage(const std::string &channel, const nlohmann::json &message) {
 	auto &history = channelHistory[channel];
-	history.push_back(message);
+	history.emplace_back(message);
 
 	// Mantém apenas as últimas MAX_MESSAGES_PER_CHANNEL mensagens
 	if (history.size() > MAX_MESSAGES_PER_CHANNEL) {
@@ -22,9 +22,9 @@ void ChatHistory::addMessage(const std::string &channel, const nlohmann::json &m
 
 nlohmann::json ChatHistory::getChannelHistory(const std::string &channel) const {
 	nlohmann::json history = nlohmann::json::array();
-	if (channelHistory.count(channel) > 0) {
+	if (channelHistory.contains(channel)) {
 		for (const auto &msg : channelHistory.at(channel)) {
-			history.push_back(msg);
+			history.emplace_back(msg);
 		}
 	}
 	return history;

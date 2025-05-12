@@ -95,4 +95,7 @@ private:
 
 	static int luaGameGetMonstersByRace(lua_State* L);
 	static int luaGameGetMonstersByBestiaryStars(lua_State* L);
+
+	static int luaGameBanPlayer(lua_State* L);
+	static int luaGameUnbanPlayer(lua_State* L);
 };

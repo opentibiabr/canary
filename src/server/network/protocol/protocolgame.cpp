@@ -12,6 +12,7 @@
 #include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
+#include "api/utils/broadcast_manager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/condition.hpp"
@@ -6641,8 +6642,15 @@ void ProtocolGame::sendToChannel(const std::shared_ptr<Creature> &creature, Spea
 		}
 
 		// Add level only for players
-		if (std::shared_ptr<Player> speaker = creature->getPlayer()) {
+		if (const auto &speaker = creature->getPlayer()) {
 			msg.add<uint16_t>(speaker->getLevel());
+			if (channelId == 3) {
+				BroadcastManager::broadcastChatMessage(speaker->getName(), speaker->getLevel(), text, "global");
+			} else if (channelId == 5) {
+				BroadcastManager::broadcastChatMessage(speaker->getName(), speaker->getLevel(), text, "trade");
+			} else if (channelId == 7) {
+				BroadcastManager::broadcastChatMessage(speaker->getName(), speaker->getLevel(), text, "help");
+			}
 		} else {
 			msg.add<uint16_t>(0x00);
 		}

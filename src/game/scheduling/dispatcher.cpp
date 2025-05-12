@@ -257,14 +257,14 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	return eventId;
 }
 
-void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
+void Dispatcher::asyncEvent(std::function<void(void)> &&f, const std::string &taskName, TaskGroup group) {
 	if (shuttingDown) {
 		return;
 	}
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), taskName);
 	notify();
 }
 

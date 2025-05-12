@@ -154,14 +154,7 @@ void BroadcastManager::broadcastServerStatus() {
 			return;
 		}
 
-		// Captura o estado do jogo de forma segura
-		auto gameState = g_game().getGameState();
-		// Não faz broadcast se o jogo não estiver em estado normal
-		// if (gameState != GAME_STATE_NORMAL) {
-		// 	return;
-		// }
-
-		// Captura os dados do servidor de forma segura
+		auto gameState = ServerEndpoints::getGameStateString(g_game().getGameState());
 		auto playersOnline = g_game().getPlayersOnline();
 		auto maxPlayers = g_configManager().getNumber(MAX_PLAYERS);
 		auto uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;

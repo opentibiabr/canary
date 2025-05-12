@@ -106,18 +106,18 @@ public:
 		return scheduleEvent(delay, std::move(f), context, false);
 	}
 
-	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
+	void asyncEvent(std::function<void(void)> &&f, const std::string &taskName, TaskGroup group = TaskGroup::GenericParallel);
 	void asyncWait(size_t size, std::function<void(size_t i)> &&f);
 
-	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel) {
+	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string &taskName, TaskGroup group = TaskGroup::GenericParallel) {
 		return scheduleEvent(
-			delay, [this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, true, false
+			delay, [this, f = std::move(f), taskName, group] { asyncEvent([f] { f(); }, taskName, group); }, dispacherContext.taskName, true, false
 		);
 	}
 
-	uint64_t asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel) {
+	uint64_t asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string &taskName, TaskGroup group = TaskGroup::GenericParallel) {
 		return scheduleEvent(
-			delay, [this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, false, false
+			delay, [this, f = std::move(f), taskName, group] { asyncEvent([f] { f(); }, taskName,group); }, dispacherContext.taskName, false, false
 		);
 	}
 

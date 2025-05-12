@@ -112,6 +112,9 @@ void GameFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Game", "getMonstersByRace", GameFunctions::luaGameGetMonstersByRace);
 	Lua::registerMethod(L, "Game", "getMonstersByBestiaryStars", GameFunctions::luaGameGetMonstersByBestiaryStars);
+
+	Lua::registerMethod(L, "Game", "banPlayer", GameFunctions::luaGameBanPlayer);
+	Lua::registerMethod(L, "Game", "unbanPlayer", GameFunctions::luaGameUnbanPlayer);
 }
 
 // Game
@@ -1104,5 +1107,23 @@ int GameFunctions::luaGameGetMonstersByBestiaryStars(lua_State* L) {
 		Lua::setMetatable(L, -1, "MonsterType");
 		lua_rawseti(L, -2, ++index);
 	}
+	return 1;
+}
+
+int GameFunctions::luaGameBanPlayer(lua_State* L) {
+	const std::string name = Lua::getString(L, 1);
+	const int duration = Lua::getNumber<int>(L, 2);
+	const std::string reason = Lua::getString(L, 3);
+	const uint32_t bannedBy = Lua::getNumber<uint32_t>(L, 4, 0);
+	const bool result = g_game().banPlayer(name, duration, reason, bannedBy);
+	Lua::pushBoolean(L, result);
+	return 1;
+}
+
+int GameFunctions::luaGameUnbanPlayer(lua_State* L) {
+	const std::string name = Lua::getString(L, 1);
+	const uint32_t unbannedBy = Lua::getNumber<uint32_t>(L, 2, 0);
+	const bool result = g_game().unbanPlayer(name, unbannedBy);
+	Lua::pushBoolean(L, result);
 	return 1;
 }

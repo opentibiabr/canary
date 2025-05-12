@@ -1864,6 +1864,7 @@ private:
 	friend class PlayerAttachedEffects;
 	friend class PlayerStorage;
 	friend class PlayerForgeHistory;
+	friend class PlayerEndpoints;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;

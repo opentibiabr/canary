@@ -83,7 +83,7 @@ public:
 		}
 
 		std::lock_guard lock(mtx);
-		const auto it = subscriptions.find(event);
+		const auto &it = subscriptions.find(event);
 		if (it != subscriptions.end()) {
 			const nlohmann::json message = {
 				{ "type", "event" },
@@ -126,9 +126,9 @@ private:
 			}
 			std::string eventName = event;
 			if (WebSocketEvents::isValidEvent(eventName)) {
-				validEvents.push_back(eventName);
+				validEvents.emplace_back(eventName);
 			} else {
-				invalidEvents.push_back(eventName);
+				invalidEvents.emplace_back(eventName);
 			}
 		}
 
@@ -164,7 +164,7 @@ private:
 				continue;
 			}
 			std::string eventName = event;
-			auto it = subscriptions.find(eventName);
+			const auto it = subscriptions.find(eventName);
 			if (it != subscriptions.end()) {
 				it->second.erase(&conn);
 				unsubscribed.push_back(eventName);
@@ -245,7 +245,7 @@ private:
 				return;
 			}
 
-			std::string message = data["message"];
+			const std::string message = data["message"];
 			std::string channel = data["channel"];
 
 			// Remove o prefixo "chat_" do canal

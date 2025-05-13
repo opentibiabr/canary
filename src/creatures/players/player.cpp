@@ -10860,3 +10860,14 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 
 	return Success;
 }
+
+bool Player::isFirstOnStack() const {
+	const auto &playerTile = getTile();
+	if (!playerTile) {
+		return true;
+	}
+
+	const auto &bottomCreature = playerTile->getBottomCreature();
+	const auto &bottomPlayer = bottomCreature ? bottomCreature->getPlayer() : nullptr;
+	return !bottomPlayer || this == bottomPlayer.get();
+}

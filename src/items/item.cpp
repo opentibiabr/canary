@@ -32,7 +32,12 @@
 
 Items Item::items;
 
-std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/) {
+std::shared_ptr<Item> Item::createItemBatch(uint16_t itemId, uint32_t count, bool wrappable /* = false*/) {
+	const auto &item = Item::CreateItem(itemId, count, nullptr, wrappable, true);
+	return item;
+};
+
+std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/, bool createWrappableItem /* false*/, bool customCharges /* false */) {
 	// A map which contains items that, when on creating, should be transformed to the default type.
 	static const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
 		{ ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING },
@@ -50,8 +55,22 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 	std::shared_ptr<Item> newItem = nullptr;
 
 	const ItemType &it = Item::items[type];
+	if (createWrappableItem && it.wrapable && it.wrapableTo > 0) {
+		uint16_t wrapId = it.wrapableTo;
+		auto wrappedItem = std::make_shared<Item>(wrapId, 1);
+		wrappedItem->setCustomAttribute("unWrapId", static_cast<int64_t>(type));
+		wrappedItem->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + it.name + ">.");
+		return wrappedItem;
+	}
+
 	if (it.stackable && count == 0) {
 		count = 1;
+	}
+
+	// Set the count as charges if the item is not stackable
+	const auto itemCharges = it.charges;
+	if (customCharges && !it.stackable && itemCharges > 0) {
+		count = itemCharges;
 	}
 
 	if (it.id != 0) {

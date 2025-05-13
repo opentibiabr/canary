@@ -616,6 +616,8 @@ public:
 	bool openShopWindow(const std::shared_ptr<Npc> &npc, const std::vector<ShopBlock> &shopItems = {});
 	bool closeShopWindow();
 	bool updateSaleShopList(const std::shared_ptr<Item> &item);
+	void updateSaleShopList();
+	void updateState();
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
 	void setChaseMode(bool mode);
@@ -636,6 +638,17 @@ public:
 	// stash functions
 	bool addItemFromStash(uint16_t itemId, uint32_t itemCount);
 	void stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems);
+
+	ReturnValue addItemBatchToPaginedContainer(
+		const std::shared_ptr<Container> &container,
+		uint16_t itemId,
+		uint32_t totalCount,
+		uint32_t &actuallyAdded,
+		uint32_t flags = 0,
+		uint8_t tier = 0
+	);
+
+	ReturnValue removeItem(const std::shared_ptr<Item> &item, uint32_t count = 0);
 
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
 	void changeMana(int32_t manaChange) override;
@@ -1309,6 +1322,7 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
+	bool isFirstOnStack() const;
 
 private:
 	friend class PlayerLock;

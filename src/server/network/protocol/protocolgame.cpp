@@ -587,8 +587,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
-			disconnectClient("Your character could not be loaded.");
-			g_logger().warn("Player {} could not be loaded", player->getName());
+			disconnectClient("Your character could not be loaded, please contact an adminstrator.");
 			return;
 		}
 

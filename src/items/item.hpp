@@ -204,8 +204,10 @@ private:
 
 class Item : virtual public Thing, public ItemProperties, public SharedObject {
 public:
+	// Create a new item batch, it can use custom charges/count and wrappable
+	static std::shared_ptr<Item> createItemBatch(uint16_t itemId, uint32_t count, bool wrappable = false);
 	// Factory member to create item of right type based on type
-	static std::shared_ptr<Item> CreateItem(uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr);
+	static std::shared_ptr<Item> CreateItem(uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr, bool createWrappableItem = false, bool customCharges = false);
 	static std::shared_ptr<Container> CreateItemAsContainer(uint16_t type, uint16_t size);
 	static std::shared_ptr<Item> CreateItem(uint16_t itemId, Position &itemPosition);
 	static Items items;

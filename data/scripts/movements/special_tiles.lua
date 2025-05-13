@@ -16,7 +16,7 @@ local function checkAndSendDepotMessage(player)
 				end
 
 				local depotMessage = string.format("Your depot contains %d item%s", depotItems, depotItems ~= 1 and "s." or ".")
-				local stashMessage = string.format("Your supply stash contains %d item%s", player:getStashCount(), player:getStashCount() ~= 1 and "s." or ".")
+				local stashMessage = string.format("Your stash contains %d item%s", player:getStashCount(), player:getStashCount() ~= 1 and "s." or ".")
 
 				player:sendTextMessage(MESSAGE_STATUS, string.format("%s %s", depotMessage, stashMessage))
 				player:setSpecialContainersAvailable(true, true, true)

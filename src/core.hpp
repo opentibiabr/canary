@@ -15,7 +15,7 @@ static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 // SERVER_MAJOR_VERSION is the actual full version of the server, including minor and patch numbers.
 // This is intended for internal use to identify the exact state of the server (release) software.
 static constexpr auto SERVER_RELEASE_VERSION = "3.1.2";
-static constexpr auto CLIENT_VERSION = 1405;
+static constexpr auto CLIENT_VERSION = 1412;
 
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)

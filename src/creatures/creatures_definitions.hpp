@@ -117,6 +117,7 @@ enum ConditionType_t : uint8_t {
 	CONDITION_BAKRAGORE = 34,
 	CONDITION_GOSHNARTAINT = 35,
 	CONDITION_POWERLESS = 36,
+	CONDITION_AGONY = 37,
 
 	// Need the last ever
 	CONDITION_COUNT
@@ -286,13 +287,6 @@ enum CallBackParam_t {
 	CALLBACK_PARAM_CHAINPICKER,
 };
 
-enum charm_t {
-	CHARM_UNDEFINED = 0,
-	CHARM_OFFENSIVE = 1,
-	CHARM_DEFENSIVE = 2,
-	CHARM_PASSIVE = 3,
-};
-
 enum SpeechBubble_t {
 	SPEECHBUBBLE_NONE = 0,
 	SPEECHBUBBLE_NORMAL = 1,
@@ -348,6 +342,19 @@ enum Slots_t : uint8_t {
 	CONST_SLOT_LAST = CONST_SLOT_STORE_INBOX,
 };
 
+enum charmCategory_t {
+	CHARM_ALL = 0,
+	CHARM_MAJOR = 1,
+	CHARM_MINOR = 2,
+};
+
+enum charm_t {
+	CHARM_UNDEFINED = 0,
+	CHARM_OFFENSIVE = 1,
+	CHARM_DEFENSIVE = 2,
+	CHARM_PASSIVE = 3,
+};
+
 enum charmRune_t : int8_t {
 	CHARM_NONE = -1,
 	CHARM_WOUND = 0,
@@ -369,8 +376,12 @@ enum charmRune_t : int8_t {
 	CHARM_DIVINE = 16,
 	CHARM_VAMP = 17,
 	CHARM_VOID = 18,
-
-	CHARM_LAST = CHARM_VOID,
+	CHARM_SAVAGE = 19,
+	CHARM_FATAL = 20,
+	CHARM_VOIDINVERSION = 21,
+	CHARM_CARNAGE = 22,
+	CHARM_OVERPOWER = 23,
+	CHARM_OVERFLUX = 24,
 };
 
 enum ConditionId_t : int8_t {
@@ -1566,6 +1577,7 @@ struct CombatDamage {
 	bool extension = false;
 	std::string exString;
 	bool fatal = false;
+	bool hazardDodge = false;
 
 	int32_t criticalDamage = 0;
 	int32_t criticalChance = 0;

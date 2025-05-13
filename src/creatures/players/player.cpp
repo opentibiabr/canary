@@ -11478,7 +11478,7 @@ bool Player::isFirstOnStack() const {
 	}
 
 	if (hasCondition(CONDITION_SPELLCOOLDOWN)) {
-		g_logger().warn("[isFirstOnStack] cooldown error for player: {}", getName());
+		g_logger().debug("[isFirstOnStack] cooldown error for player: {}", getName());
 		return false;
 	}
 

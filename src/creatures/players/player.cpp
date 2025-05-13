@@ -1837,7 +1837,7 @@ bool Player::isImmuneCleanse(ConditionType_t conditiontype) const {
 
 void Player::setImmuneFear(uint32_t immuneTime /* = 10000 */) {
 	m_fearCondition.first = CONDITION_FEARED;
-	m_fearCondition.second = OTSYS_TIME() + 10000;
+	m_fearCondition.second = OTSYS_TIME() + immuneTime;
 }
 
 bool Player::isImmuneFear() const {

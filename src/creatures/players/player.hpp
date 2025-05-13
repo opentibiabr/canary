@@ -820,6 +820,10 @@ public:
 
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) const;
 
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id) const;
+
+	void sendMusicSoundEffect(const SoundMusicEffect_t id) const;
+
 	SoundEffect_t getAttackSoundEffect() const;
 	SoundEffect_t getHitSoundEffect() const;
 

@@ -60,6 +60,7 @@ int CanaryServer::run() {
 		[this] {
 			try {
 				loadConfigLua();
+				validateDatapack();
 
 				logger.info("Server protocol: {}.{}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
 #ifdef FEATURE_METRICS
@@ -120,12 +121,6 @@ int CanaryServer::run() {
 					loaderStatus = LoaderStatus::FAILED;
 				}
 				logger.error(err.what());
-
-				logger.error("The program will close after pressing the enter key...");
-
-				if (isatty(STDIN_FILENO)) {
-					getchar();
-				}
 			}
 		},
 		__FUNCTION__
@@ -162,6 +157,11 @@ int CanaryServer::run() {
 
 	if (loaderStatus == LoaderStatus::FAILED || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");
+		logger.error("The program will close after pressing the enter key...");
+		if (isatty(STDIN_FILENO)) {
+			std::cin.get();
+		}
+
 		shutdown();
 		return EXIT_FAILURE;
 	}
@@ -333,6 +333,20 @@ void CanaryServer::loadConfigLua() {
 #endif
 }
 
+void CanaryServer::validateDatapack() {
+	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
+	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
+	const auto datapackName = g_configManager().getString(DATA_DIRECTORY);
+
+	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
+		throw FailedToInitializeCanary(fmt::format(
+			"The datapack folder name '{}' is wrong. Valid names: 'data-canary', "
+			"'data-otservbr-global', or set USE_ANY_DATAPACK_FOLDER = true in config.lua.",
+			datapackName
+		));
+	}
+}
+
 void CanaryServer::initializeDatabase() {
 	logger.info("Establishing database connection... ");
 	if (!Database::getInstance().connect()) {
@@ -358,22 +372,12 @@ void CanaryServer::initializeDatabase() {
 }
 
 void CanaryServer::loadModules() {
-	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
-	const auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
-	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
-	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
-		throw FailedToInitializeCanary(fmt::format(
-			"The datapack folder name '{}' is wrong, please select valid "
-			"datapack name 'data-canary' or 'data-otservbr-global "
-			"or enable in config.lua to use any datapack folder",
-			datapackName
-		));
-	}
-
-	logger.debug("Initializing lua environment...");
+	logger.info("Initializing lua environment...");
 	if (!g_luaEnvironment().getLuaState()) {
 		g_luaEnvironment().initState();
 	}
+
+	logger.info("Loading modules and scripts...");
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	// Load appearances.dat first
@@ -400,7 +404,7 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
 	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
 
-	logger.debug("Loading datapack scripts on folder: {}/", datapackName);
+	logger.debug("Loading datapack scripts on folder: {}/", datapackFolder);
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
 	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
@@ -425,6 +429,5 @@ void CanaryServer::shutdown() {
 	g_database().createDatabaseBackup(true);
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
-	inject<ThreadPool>().shutdown();
-	std::exit(0);
+	g_threadPool().shutdown();
 }

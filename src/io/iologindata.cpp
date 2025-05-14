@@ -101,7 +101,10 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 	try {
 		// First
-		IOLoginDataLoad::loadPlayerBasicInfo(player, result);
+		if (!IOLoginDataLoad::loadPlayerBasicInfo(player, result)) {
+			g_logger().warn("[{}] - Failed to load player basic info", __FUNCTION__);
+			return false;
+		}
 
 		// Experience load
 		IOLoginDataLoad::loadPlayerExperience(player, result);

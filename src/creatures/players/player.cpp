@@ -11432,6 +11432,17 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 	return Success;
 }
 
+bool Player::isFirstOnStack() const {
+	const auto &playerTile = getTile();
+	if (!playerTile) {
+		return false;
+	}
+
+	const auto &bottomCreature = playerTile->getBottomCreature();
+	const auto &bottomPlayer = bottomCreature ? bottomCreature->getPlayer() : nullptr;
+	return !bottomPlayer || this == bottomPlayer.get();
+}
+
 void Player::resetOldCharms() {
 	const auto &bestiaryList = g_game().getBestiaryList();
 	const auto &charmList = g_game().getCharmList();
@@ -11464,24 +11475,4 @@ void Player::resetOldCharms() {
 	setCharmPoints(totalRefund);
 
 	g_logger().info("Player: {}, recalculated charm points based on unlocked bestiary: {}", getName(), totalRefund);
-}
-
-bool Player::isFirstOnStack() const {
-	const auto &playerTile = getTile();
-	if (!playerTile) {
-		return false;
-	}
-
-	const auto &bottomCreature = playerTile->getBottomCreature();
-	const auto &bottomPlayer = bottomCreature ? bottomCreature->getPlayer() : nullptr;
-	if (!bottomPlayer) {
-		return false;
-	}
-
-	if (hasCondition(CONDITION_SPELLCOOLDOWN)) {
-		g_logger().debug("[isFirstOnStack] cooldown error for player: {}", getName());
-		return false;
-	}
-
-	return this == bottomPlayer.get();
 }

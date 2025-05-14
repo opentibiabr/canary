@@ -16,7 +16,7 @@ local function updateWaterPoolsSize()
 						end
 					end
 				end, 40000) -- 40 seconds
-				
+
 				-- Store the event ID for new cleanup
 				if not SoulWarQuest.ebbAndFlow.pendingEvents then
 					SoulWarQuest.ebbAndFlow.pendingEvents = {}
@@ -51,7 +51,7 @@ local function loadMapEmpty()
 	-- Clean up previous events before loading a new map
 	clearPendingEvents()
 	unregisterEventCallbacks()
-	
+
 	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
 	if playersInZone > 0 or monstersInZone > 0 then
@@ -95,7 +95,7 @@ local function loadMapEmpty()
 	local eventId = addEvent(function()
 		updateWaterPoolsSize()
 	end, 80000) -- 80 seconds
-	
+
 	if not SoulWarQuest.ebbAndFlow.pendingEvents then
 		SoulWarQuest.ebbAndFlow.pendingEvents = {}
 	end
@@ -122,7 +122,7 @@ end
 local function loadMapInundate()
 	clearPendingEvents()
 	unregisterEventCallbacks()
-	
+
 	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
 	if playersInZone > 0 or monstersInZone > 0 then
@@ -171,7 +171,7 @@ local loadEmptyMap = GlobalEvent("SoulWarQuest.ebbAndFlow")
 
 function loadEmptyMap.onStartup()
 	SoulWarQuest.ebbAndFlow.pendingEvents = {}
-	
+
 	Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.ebbFlow)
 	loadMapEmpty()
 	SoulWarQuest.ebbAndFlow.updateZonePlayers()

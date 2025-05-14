@@ -2078,7 +2078,7 @@ function Player.makeCoinTransaction(self, offer, desc)
 		desc = offer.name
 	end
 
-	if offer.Type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
+	if offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
 		local playerKV = self:kv()
 		local expBoostCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
 

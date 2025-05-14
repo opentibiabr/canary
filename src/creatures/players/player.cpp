@@ -11435,7 +11435,7 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 bool Player::isFirstOnStack() const {
 	const auto &playerTile = getTile();
 	if (!playerTile) {
-		return false;
+		return true;
 	}
 
 	const auto &bottomCreature = playerTile->getBottomCreature();

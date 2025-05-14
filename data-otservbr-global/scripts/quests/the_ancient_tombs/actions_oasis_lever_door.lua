@@ -15,7 +15,7 @@ end
 local theAncientOasisLever = Action()
 function theAncientOasisLever.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if item.itemid == 1662 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You first must find the Carrot under one of the three hats to get the access!")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You first must find the Carrot under one of the three hats to get the access!")		
 		return true
 	end
 
@@ -28,15 +28,19 @@ function theAncientOasisLever.onUse(player, item, fromPosition, target, toPositi
 		hatPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		doorPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 		Game.createItem(3595, 1, hatPosition)
+		player:setStorageValue(Storage.Quest.U7_4.TheAncientTombs.RahemosTreasure, 1)
+	-- AID Door changer
+		item:setActionId(12108)
+
+	-- TEMPORARY SOLUTION / AID FOR THE DOOR MUST BE CHANGED FROM 1207 TO 1208 / It could also stay like this to make the mechanic to be more alike
+	local doorItem = Tile(doorPosition):getItemById(1662)
+		if doorItem then
+			doorItem:setActionId(12108)
+		end
 
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You found the carrot! The door is open!")
 		item:transform(2773)
 		addEvent(revertCarrotAndLever, 4 * 1000, toPosition, hatPosition)
-
-		local doorItem = Tile(doorPosition):getItemById(1662)
-		if doorItem then
-			doorItem:transform(1663)
-		end
 		return true
 	end
 

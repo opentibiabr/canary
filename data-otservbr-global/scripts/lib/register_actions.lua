@@ -918,15 +918,15 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission02, 2)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
-		elseif target:getActionId() == 40041 and target.itemid == 4848 then
-			-- The ape city - mission 7
-			local apeCityStorage = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
-			if apeCityStorage < 3 then
-				player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, math.max(0, apeCityStorage) + 1)
-				target:transform(3134)
-				toPosition:sendMagicEffect(CONST_ME_EXPLOSIONAREA)
-				addEvent(revertCask, 3 * 60 * 1000, toPosition)
-			end
+		end
+	elseif target:getActionId() == 40041 and target.itemid == 4848 then
+		-- The ape city - mission 7
+		local apeCityStorage = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
+		if apeCityStorage < 3 then
+			player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, math.max(0, apeCityStorage) + 1)
+			target:transform(3134)
+			toPosition:sendMagicEffect(CONST_ME_EXPLOSIONAREA)
+			addEvent(revertCask, 3 * 60 * 1000, toPosition)
 		end
 	elseif target.actionid == 12566 and player:getStorageValue(Storage.Quest.U8_1.SecretService.TBIMission06) == 1 then
 		-- Secret service quest

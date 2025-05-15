@@ -10742,7 +10742,12 @@ bool Player::canSpeakWithHireling(uint8_t speechbubble) {
 }
 
 uint16_t Player::getPlayerVocationEnum() const {
-	const int cipTibiaId = getVocation()->getClientId();
+	const auto &vocationPtr = getVocation();
+	if (!vocation) {
+		return 0;
+	}
+
+	const int cipTibiaId = vocationPtr->getClientId();
 	if (cipTibiaId == 1 || cipTibiaId == 11) {
 		return Vocation_t::VOCATION_KNIGHT_CIP; // Knight
 	} else if (cipTibiaId == 2 || cipTibiaId == 12) {
@@ -10859,4 +10864,15 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 	}
 
 	return Success;
+}
+
+bool Player::isFirstOnStack() const {
+	const auto &playerTile = getTile();
+	if (!playerTile) {
+		return true;
+	}
+
+	const auto &bottomCreature = playerTile->getBottomCreature();
+	const auto &bottomPlayer = bottomCreature ? bottomCreature->getPlayer() : nullptr;
+	return !bottomPlayer || this == bottomPlayer.get();
 }

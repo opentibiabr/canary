@@ -1322,6 +1322,7 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
+	bool isFirstOnStack() const;
 
 private:
 	friend class PlayerLock;

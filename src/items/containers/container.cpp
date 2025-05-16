@@ -1111,11 +1111,12 @@ size_t ContainerIterator::getCurrentIndex() const {
 }
 
 ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &player) {
-	if (isCorpse() && !empty() && getHoldingPlayer() != player) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	if (!isRewardCorpse() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (isFresh() && (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner()))))) {
 		return ContainerSpecial_t::LootHighlight;
 	}
 
-	if (getHoldingPlayer() == player) {
+	if (holdingPlayer == player) {
 		if (isQuiver() && getSlotPosition() & SLOTP_RIGHT) {
 			return ContainerSpecial_t::QuiverLoot;
 		}

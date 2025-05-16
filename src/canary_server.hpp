@@ -63,6 +63,7 @@ private:
 	static std::string getPlatform();
 
 	void loadConfigLua();
+	void validateDatapack();
 	void initializeDatabase();
 	void loadModules();
 	void setWorldType();

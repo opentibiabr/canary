@@ -15,6 +15,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "server/network/message/networkmessage.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 
@@ -105,7 +106,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	connectionState = CONNECTION_STATE_IDENTIFYING;
 	protocol = std::move(protocolPtr);
-	g_dispatcher().addEvent([protocol = protocol] { protocol->onConnect(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+	g_dispatcher().addEvent([eventProtocol = protocol] { eventProtocol->sendLoginChallenge(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 
 	acceptInternal(false);
 }
@@ -209,6 +210,10 @@ void Connection::parseHeader(const std::error_code &error) {
 	}
 
 	uint16_t size = m_msg.getLengthHeader();
+	if (protocol) {
+		size = (size * 8) + 4;
+	}
+
 	if (size == 0 || size > INPUTMESSAGE_MAXSIZE) {
 		close(FORCE_CLOSE);
 		return;
@@ -272,7 +277,7 @@ void Connection::parsePacket(const std::error_code &error) {
 			// it doesn't generate any problem because olders protocol don't use 'server sends first' feature
 			m_msg.get<uint32_t>();
 			// Skip protocol ID
-			m_msg.skipBytes(1);
+			m_msg.skipBytes(2);
 		}
 
 		protocol->onRecvFirstMessage(m_msg);

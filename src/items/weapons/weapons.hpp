@@ -71,7 +71,7 @@ public:
 	virtual int32_t getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, bool maxDamage = false) const = 0;
 	virtual int32_t getElementDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item) const = 0;
 	virtual CombatType_t getElementType() const = 0;
-	virtual int16_t getElementDamageValue() const = 0;
+	virtual int32_t getElementDamageValue() const = 0;
 	virtual CombatDamage getCombatDamage(CombatDamage combat, const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, int32_t damageModifier) const;
 	uint16_t getID() const {
 		return id;
@@ -205,7 +205,7 @@ public:
 
 	std::shared_ptr<Combat> getCombat();
 
-	bool calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int16_t &elementAttack, CombatDamage &damage, bool useCharges = false) const;
+	bool calculateSkillFormula(const std::shared_ptr<Player> &player, int32_t &attackSkill, int32_t &attackValue, float &attackFactor, int32_t &elementAttack, CombatDamage &damage, bool useCharges = false) const;
 
 	LuaScriptInterface* getScriptInterface() const;
 	bool loadScriptId();
@@ -279,11 +279,11 @@ public:
 	CombatType_t getElementType() const override {
 		return elementType;
 	}
-	virtual int16_t getElementDamageValue() const override;
+	virtual int32_t getElementDamageValue() const override;
 
 private:
 	bool getSkillType(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, skills_t &skill, uint32_t &skillpoint) const override;
-	uint16_t elementDamage = 0;
+	uint32_t elementDamage = 0;
 	CombatType_t elementType = COMBAT_NONE;
 };
 
@@ -303,13 +303,13 @@ public:
 	CombatType_t getElementType() const override {
 		return elementType;
 	}
-	virtual int16_t getElementDamageValue() const override;
+	virtual int32_t getElementDamageValue() const override;
 
 private:
 	bool getSkillType(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, skills_t &skill, uint32_t &skillpoint) const override;
 
 	CombatType_t elementType = COMBAT_NONE;
-	uint16_t elementDamage = 0;
+	uint32_t elementDamage = 0;
 };
 
 class WeaponWand : public Weapon {
@@ -325,7 +325,7 @@ public:
 	CombatType_t getElementType() const override {
 		return params.combatType;
 	}
-	virtual int16_t getElementDamageValue() const override;
+	virtual int32_t getElementDamageValue() const override;
 	void setMinChange(int32_t change) {
 		minChange = change;
 	}

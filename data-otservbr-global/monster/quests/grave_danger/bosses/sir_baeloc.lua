@@ -21,7 +21,7 @@ monster.speed = 125
 monster.manaCost = 0
 
 monster.events = {
-	"BossHealthCheck"
+	"BossHealthCheck",
 }
 
 monster.changeTarget = {

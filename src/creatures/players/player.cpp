@@ -9897,6 +9897,18 @@ void Player::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundI
 	}
 }
 
+void Player::sendAmbientSoundEffect(const SoundAmbientEffect_t id) const {
+	if (client) {
+		client->sendAmbientSoundEffect(id);
+	}
+}
+
+void Player::sendMusicSoundEffect(const SoundMusicEffect_t id) const {
+	if (client) {
+		client->sendMusicSoundEffect(id);
+	}
+}
+
 SoundEffect_t Player::getAttackSoundEffect() const {
 	const auto &tool = getWeapon();
 	if (tool == nullptr) {

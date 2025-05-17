@@ -27,6 +27,8 @@ enum class VipStatus_t : uint8_t;
 enum SpellGroup_t : uint8_t;
 enum Slots_t : uint8_t;
 enum CombatType_t : uint8_t;
+enum SoundMusicEffect_t : uint8_t;
+enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
@@ -560,6 +562,8 @@ private:
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
+	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
 	void sendHotkeyPreset();
 	void sendTakeScreenshot(Screenshot_t screenshotType);

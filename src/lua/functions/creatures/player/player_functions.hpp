@@ -333,6 +333,8 @@ class PlayerFunctions {
 
 	static int luaPlayerSendSingleSoundEffect(lua_State* L);
 	static int luaPlayerSendDoubleSoundEffect(lua_State* L);
+	static int luaPlayerSendAmbientSoundEffect(lua_State* L);
+	static int luaPlayerSendMusicSoundEffect(lua_State* L);
 
 	static int luaPlayerGetName(lua_State* L);
 	static int luaPlayerChangeName(lua_State* L);

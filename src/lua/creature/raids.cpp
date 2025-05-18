@@ -7,33 +7,33 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "lua/creature/raids.hpp"
-#include "utils/pugicast.hpp"
+
+#include "config/configmanager.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
-#include "creatures/monsters/monster.hpp"
 #include "server/network/webhook/webhook.hpp"
+#include "utils/pugicast.hpp"
 
 Raids::Raids() {
 	scriptInterface.initState();
 }
 
 bool Raids::loadFromXml() {
-	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__) || isLoaded()) {
+	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS) || isLoaded()) {
 		return true;
 	}
 
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/raids.xml";
+	auto folder = g_configManager().getString(DATA_DIRECTORY) + "/raids/raids.xml";
 	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
-	for (auto raidNode : doc.child("raids").children()) {
+	for (const auto &raidNode : doc.child("raids").children()) {
 		std::string name, file;
 		uint32_t interval, margin;
 
@@ -82,7 +82,7 @@ bool Raids::loadFromXml() {
 		}
 
 		auto newRaid = std::make_shared<Raid>(name, interval, margin, repeat);
-		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/" + file)) {
+		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY) + "/raids/" + file)) {
 			raidList.push_back(newRaid);
 		} else {
 			g_logger().error("{} - Failed to load raid: {}", __FUNCTION__, name);
@@ -96,7 +96,7 @@ bool Raids::loadFromXml() {
 static constexpr int32_t MAX_RAND_RANGE = 10000000;
 
 bool Raids::startup() {
-	if (!isLoaded() || isStarted() || g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__)) {
+	if (!isLoaded() || isStarted() || g_configManager().getBoolean(DISABLE_LEGACY_RAIDS)) {
 		return false;
 	}
 
@@ -111,18 +111,18 @@ bool Raids::startup() {
 }
 
 void Raids::checkRaids() {
-	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS, __FUNCTION__)) {
+	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS)) {
 		return;
 	}
 	if (!getRunning()) {
-		uint64_t now = OTSYS_TIME();
+		const uint64_t now = OTSYS_TIME();
 
 		for (auto it = raidList.begin(), end = raidList.end(); it != end; ++it) {
 			const auto &raid = *it;
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
-				auto roll = static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE));
-				auto required = static_cast<uint32_t>(MAX_RAND_RANGE * raid->getInterval()) / CHECK_RAIDS_INTERVAL;
-				auto shouldStart = required >= roll;
+				const auto roll = static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE));
+				const auto required = static_cast<uint32_t>(MAX_RAND_RANGE * raid->getInterval()) / CHECK_RAIDS_INTERVAL;
+				const auto shouldStart = required >= roll;
 				if (shouldStart) {
 					setRunning(raid);
 					raid->startRaid();
@@ -163,7 +163,7 @@ bool Raids::reload() {
 	return loadFromXml();
 }
 
-std::shared_ptr<Raid> Raids::getRaidByName(const std::string &name) {
+std::shared_ptr<Raid> Raids::getRaidByName(const std::string &name) const {
 	for (const auto &raid : raidList) {
 		if (strcasecmp(raid->getName().c_str(), name.c_str()) == 0) {
 			return raid;
@@ -178,13 +178,13 @@ bool Raid::loadFromXml(const std::string &filename) {
 	}
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(filename.c_str());
+	const pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, filename, result);
 		return false;
 	}
 
-	for (auto eventNode : doc.child("raid").children()) {
+	for (const auto &eventNode : doc.child("raid").children()) {
 		std::shared_ptr<RaidEvent> event;
 		if (strcasecmp(eventNode.name(), "announce") == 0) {
 			event = std::make_shared<AnnounceEvent>();
@@ -208,7 +208,7 @@ bool Raid::loadFromXml(const std::string &filename) {
 	}
 
 	// sort by delay time
-	std::sort(raidEvents.begin(), raidEvents.end(), [](const std::shared_ptr<RaidEvent> lhs, const std::shared_ptr<RaidEvent> rhs) {
+	std::ranges::sort(raidEvents, [](const std::shared_ptr<RaidEvent> &lhs, const std::shared_ptr<RaidEvent> &rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
 
@@ -229,13 +229,13 @@ void Raid::startRaid() {
 	}
 }
 
-void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> raidEvent) {
+void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
 		const auto newRaidEvent = getNextRaidEvent();
 
 		if (newRaidEvent) {
-			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
+			const uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
 			nextEventEvent = g_dispatcher().scheduleEvent(
 				ticks, [this, newRaidEvent] { executeRaidEvent(newRaidEvent); }, __FUNCTION__
 			);
@@ -270,7 +270,7 @@ std::shared_ptr<RaidEvent> Raid::getNextRaidEvent() {
 }
 
 bool RaidEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
-	pugi::xml_attribute delayAttribute = eventNode.attribute("delay");
+	const pugi::xml_attribute delayAttribute = eventNode.attribute("delay");
 	if (!delayAttribute) {
 		g_logger().error("{} - 'delay' tag missing", __FUNCTION__);
 		return false;
@@ -285,7 +285,7 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 		return false;
 	}
 
-	pugi::xml_attribute messageAttribute = eventNode.attribute("message");
+	const pugi::xml_attribute messageAttribute = eventNode.attribute("message");
 	if (!messageAttribute) {
 		g_logger().error("{} - "
 		                 "'message' tag missing for announce event",
@@ -294,9 +294,9 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 	}
 	message = messageAttribute.as_string();
 
-	pugi::xml_attribute typeAttribute = eventNode.attribute("type");
+	const pugi::xml_attribute typeAttribute = eventNode.attribute("type");
 	if (typeAttribute) {
-		std::string tmpStrValue = asLowerCaseString(typeAttribute.as_string());
+		const std::string tmpStrValue = asLowerCaseString(typeAttribute.as_string());
 		if (tmpStrValue == "warning") {
 			messageType = MESSAGE_GAME_HIGHLIGHT;
 		} else if (tmpStrValue == "event") {
@@ -376,7 +376,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 }
 
 bool SingleSpawnEvent::executeEvent() {
-	std::shared_ptr<Monster> monster = Monster::createMonster(monsterName);
+	const auto &monster = Monster::createMonster(monsterName);
 	if (!monster) {
 		g_logger().error("{} - Cant create monster {}", __FUNCTION__, monsterName);
 		return false;
@@ -388,6 +388,7 @@ bool SingleSpawnEvent::executeEvent() {
 	}
 
 	monster->setForgeMonster(false);
+	monster->onSpawn(position);
 	return true;
 }
 
@@ -398,7 +399,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 	pugi::xml_attribute attr;
 	if ((attr = eventNode.attribute("radius"))) {
-		int32_t radius = pugi::cast<int32_t>(attr.value());
+		const auto radius = pugi::cast<int32_t>(attr.value());
 		Position centerPos;
 
 		if ((attr = eventNode.attribute("centerx"))) {
@@ -492,7 +493,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 		}
 	}
 
-	for (auto monsterNode : eventNode.children()) {
+	for (const auto &monsterNode : eventNode.children()) {
 		const char* name;
 
 		if ((attr = monsterNode.attribute("name"))) {
@@ -537,25 +538,25 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 bool AreaSpawnEvent::executeEvent() {
 	for (const MonsterSpawn &spawn : spawnMonsterList) {
-		uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
+		const uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
 		for (uint32_t i = 0; i < amount; ++i) {
-			std::shared_ptr<Monster> monster = Monster::createMonster(spawn.name);
+			const std::shared_ptr<Monster> &monster = Monster::createMonster(spawn.name);
 			if (!monster) {
 				g_logger().error("{} - Can't create monster {}", __FUNCTION__, spawn.name);
 				return false;
 			}
 
-			bool success = false;
 			for (int32_t tries = 0; tries < MAXIMUM_TRIES_PER_MONSTER; tries++) {
-				std::shared_ptr<Tile> tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
-				if (tile && !tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
-					success = true;
+				const auto &tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
+				if (!tile) {
+					continue;
+				}
+
+				const auto &topCreature = tile->getTopCreature();
+				if (!tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && topCreature == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					monster->setForgeMonster(false);
 					break;
 				}
-			}
-
-			if (!success) {
 			}
 		}
 	}
@@ -567,7 +568,7 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 		return false;
 	}
 
-	pugi::xml_attribute scriptAttribute = eventNode.attribute("script");
+	const pugi::xml_attribute scriptAttribute = eventNode.attribute("script");
 	if (!scriptAttribute) {
 		g_logger().error("{} - "
 		                 "No script file found for raid",
@@ -577,7 +578,7 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 	std::string scriptName = std::string(scriptAttribute.as_string());
 
-	if (!loadScript(g_configManager().getString(DATA_DIRECTORY, __FUNCTION__) + "/raids/scripts/" + scriptName, scriptName)) {
+	if (!loadScript(g_configManager().getString(DATA_DIRECTORY) + "/raids/scripts/" + scriptName, scriptName)) {
 		g_logger().error("[{}] can not load raid script: {}", __FUNCTION__, scriptName);
 		return false;
 	}
@@ -593,14 +594,14 @@ std::string ScriptEvent::getScriptEventName() const {
 
 bool ScriptEvent::executeEvent() {
 	// onRaid()
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("{} - Script with name {} "
 		                 "Call stack overflow. Too many lua script calls being nested.",
 		                 __FUNCTION__, getScriptName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
+	ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
 	env->setScriptId(scriptId, scriptInterface);
 
 	scriptInterface->pushFunction(scriptId);

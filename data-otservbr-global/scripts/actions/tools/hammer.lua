@@ -72,7 +72,7 @@ function hammer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	-- Rottin wood and maried quest
-	if player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) < 6 then
+	if player:getStorageValue(Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart) < 6 then
 		local setting = settingTable[target:getActionId()]
 		if setting then
 			local woodenPosition = Position(setting.position)
@@ -83,7 +83,7 @@ function hammer.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				addEvent(createWooden, 2 * 60 * 1000, setting.position, setting.removeItem, setting.createItem, setting)
 			end
 
-			player:setStorageValue(Storage.RottinWoodAndMaried.RottinStart, player:getStorageValue(Storage.RottinWoodAndMaried.RottinStart) + 1)
+			player:setStorageValue(Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart, player:getStorageValue(Storage.Quest.U8_7.RottinWoodAndTheMarriedMen.RottinStart) + 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You fixed this broken wall.")
 			return true
 		end

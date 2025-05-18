@@ -50,7 +50,9 @@ private:
 	RSA &rsa;
 	ServiceManager &serviceManager;
 
-	std::atomic<LoaderStatus> loaderStatus = LoaderStatus::LOADING;
+	LoaderStatus loaderStatus = LoaderStatus::LOADING;
+	std::mutex loaderMutex;
+	std::condition_variable loaderCV;
 
 	void logInfos();
 	static void toggleForceCloseButton();
@@ -61,6 +63,7 @@ private:
 	static std::string getPlatform();
 
 	void loadConfigLua();
+	void validateDatapack();
 	void initializeDatabase();
 	void loadModules();
 	void setWorldType();

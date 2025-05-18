@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if player:getStorageValue(Storage.Postman.Mission03) ~= 1 then
+	if player:getStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission03) ~= 1 then
 		return true
 	end
 	if MsgContains(message, "bill") then
@@ -69,7 +69,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "yes") then
 		if player:removeItem(3216, 1) and npcHandler:getTopic(playerId) == 7 then
 			npcHandler:say("Ok, ok, I'll take it. I guess I have no other choice anyways. And now leave me alone in my misery please.", npc, creature)
-			player:setStorageValue(Storage.Postman.Mission03, 2)
+			player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission03, 2)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "hat") then

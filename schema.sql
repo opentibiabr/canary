@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '46'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '49'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
     `tournament_coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
     `creation` int(11) UNSIGNED NOT NULL DEFAULT '0',
     `recruiter` INT(6) DEFAULT 0,
+    `house_bid_id` int(11) NOT NULL DEFAULT '0',
     CONSTRAINT `accounts_pk` PRIMARY KEY (`id`),
     CONSTRAINT `accounts_unique` UNIQUE (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -70,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `posx` int(11) NOT NULL DEFAULT '0',
     `posy` int(11) NOT NULL DEFAULT '0',
     `posz` int(11) NOT NULL DEFAULT '0',
-    `conditions` blob NOT NULL,
+    `conditions` mediumblob NOT NULL,
     `cap` int(11) NOT NULL DEFAULT '0',
     `sex` int(11) NOT NULL DEFAULT '0',
     `pronoun` int(11) NOT NULL DEFAULT '0',
@@ -148,6 +149,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
     `randomize_mount` tinyint(1) NOT NULL DEFAULT '0',
     `boss_points` int NOT NULL DEFAULT '0',
+    `animus_mastery` mediumblob DEFAULT NULL,
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),
@@ -451,13 +453,16 @@ CREATE TABLE IF NOT EXISTS `houses` (
     `name` varchar(255) NOT NULL,
     `rent` int(11) NOT NULL DEFAULT '0',
     `town_id` int(11) NOT NULL DEFAULT '0',
-    `bid` int(11) NOT NULL DEFAULT '0',
-    `bid_end` int(11) NOT NULL DEFAULT '0',
-    `last_bid` int(11) NOT NULL DEFAULT '0',
-    `highest_bidder` int(11) NOT NULL DEFAULT '0',
     `size` int(11) NOT NULL DEFAULT '0',
     `guildid` int(11),
     `beds` int(11) NOT NULL DEFAULT '0',
+    `bidder` int(11) NOT NULL DEFAULT '0',
+    `bidder_name` varchar(255) NOT NULL DEFAULT '',
+    `highest_bid` int(11) NOT NULL DEFAULT '0',
+    `internal_bid` int(11) NOT NULL DEFAULT '0',
+    `bid_end_date` int(11) NOT NULL DEFAULT '0',
+    `state` smallint(5) UNSIGNED NOT NULL DEFAULT '0',
+    `transfer_status` tinyint(1) DEFAULT '0',
     INDEX `owner` (`owner`),
     INDEX `town_id` (`town_id`),
     CONSTRAINT `houses_pk` PRIMARY KEY (`id`)

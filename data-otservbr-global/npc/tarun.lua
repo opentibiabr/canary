@@ -62,7 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local theLostBrotherStorage = player:getStorageValue(Storage.AdventurersGuild.TheLostBrother)
+	local theLostBrotherStorage = player:getStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest)
 	if MsgContains(message, "mission") then
 		if theLostBrotherStorage < 1 then
 			npcHandler:say({
@@ -80,16 +80,16 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:addItem(3039, 1)
 			player:addExperience(3000, true)
-			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 3)
+			player:setStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest, 3)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif npcHandler:getTopic(playerId) == 1 then
 		if MsgContains(message, "yes") then
 			npcHandler:say("I thank you! This is more than I could hope!", npc, creature)
 			if theLostBrotherStorage < 1 then
-				player:setStorageValue(Storage.AdventurersGuild.QuestLine, 1)
+				player:setStorageValue(Storage.Quest.U9_80.AdventurersGuild.QuestLine, 1)
 			end
-			player:setStorageValue(Storage.AdventurersGuild.TheLostBrother, 1)
+			player:setStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest, 1)
 		elseif MsgContains(message, "no") then
 			npcHandler:say("As you wish.", npc, creature)
 		end
@@ -106,7 +106,7 @@ local function onTradeRequest(npc, creature)
 	end
 	local playerId = player:getId()
 
-	if player:getStorageValue(Storage.AdventurersGuild.TheLostBrother) ~= 3 then
+	if player:getStorageValue(Storage.Quest.U10_80.TheLostBrotherQuest) ~= 3 then
 		return false
 	end
 
@@ -128,8 +128,8 @@ npcConfig.shop = {
 	{ itemName = "empty potion flask", clientId = 285, sell = 5 },
 	{ itemName = "golden lotus brooch", clientId = 21974, sell = 270 },
 	{ itemName = "great health potion", clientId = 239, buy = 225 },
-	{ itemName = "great mana potion", clientId = 238, buy = 144 },
-	{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
+	{ itemName = "great mana potion", clientId = 238, buy = 158 },
+	{ itemName = "great spirit potion", clientId = 7642, buy = 254 },
 	{ itemName = "health potion", clientId = 266, buy = 50 },
 	{ itemName = "hellspawn tail", clientId = 10304, sell = 475 },
 	{ itemName = "mammoth tusk", clientId = 10321, sell = 100 },
@@ -139,12 +139,12 @@ npcConfig.shop = {
 	{ itemName = "sabretooth", clientId = 10311, sell = 400 },
 	{ itemName = "spider silk", clientId = 5879, sell = 100 },
 	{ itemName = "strong health potion", clientId = 236, buy = 115 },
-	{ itemName = "strong mana potion", clientId = 237, buy = 93 },
-	{ itemName = "supreme health potion", clientId = 23375, buy = 625 },
+	{ itemName = "strong mana potion", clientId = 237, buy = 108 },
+	{ itemName = "supreme health potion", clientId = 23375, buy = 650 },
 	{ itemName = "tusk", clientId = 3044, sell = 100 },
 	{ itemName = "ultimate health potion", clientId = 7643, buy = 379 },
-	{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
-	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
+	{ itemName = "ultimate mana potion", clientId = 23373, buy = 488 },
+	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 488 },
 	{ itemName = "vial", clientId = 2874, sell = 5 },
 }
 -- On buy npc shop message

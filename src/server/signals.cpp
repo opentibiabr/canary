@@ -7,16 +7,19 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
+#include "server/signals.hpp"
 
+#include "config/configmanager.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/global/globalevent.hpp"
-#include "server/signals.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "lib/di/container.hpp"
 
 Signals::Signals(asio::io_service &service) :
 	set(service) {
@@ -36,6 +39,10 @@ Signals::Signals(asio::io_service &service) :
 }
 
 void Signals::asyncWait() {
+	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
+		return;
+	}
+
 	set.async_wait([this](std::error_code err, int signal) {
 		if (err) {
 			g_logger().error("[Signals::asyncWait] - "
@@ -52,25 +59,29 @@ void Signals::asyncWait() {
 // as it is called in a new thread.
 // https://github.com/otland/forgottenserver/pull/2473
 void Signals::dispatchSignalHandler(int signal) {
+	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
+		return;
+	}
+
 	switch (signal) {
 		case SIGINT: // Shuts the server down
-			g_dispatcher().addEvent(sigintHandler, "sigintHandler");
+			g_dispatcher().addEvent(sigintHandler, __FUNCTION__);
 			break;
 		case SIGTERM: // Shuts the server down
-			g_dispatcher().addEvent(sigtermHandler, "sigtermHandler");
+			g_dispatcher().addEvent(sigtermHandler, __FUNCTION__);
 			break;
 #ifndef _WIN32
 		case SIGHUP: // Reload config/data
-			g_dispatcher().addEvent(sighupHandler, "sighupHandler");
+			g_dispatcher().addEvent(sighupHandler, __FUNCTION__);
 			break;
 		case SIGUSR1: // Saves game state
-			g_dispatcher().addEvent(sigusr1Handler, "sigusr1Handler");
+			g_dispatcher().addEvent(sigusr1Handler, __FUNCTION__);
 			break;
 #else
 		case SIGBREAK: // Shuts the server down
-			g_dispatcher().addEvent(sigbreakHandler, "sigbreakHandler");
+			g_dispatcher().addEvent(sigbreakHandler, __FUNCTION__);
 			// hold the thread until other threads end
-			inject<ThreadPool>().shutdown();
+			g_threadPool().shutdown();
 			break;
 #endif
 		default:
@@ -111,7 +122,7 @@ void Signals::sighupHandler() {
 	Item::items.reload();
 	g_logger().info("Reloaded items");
 
-	g_game().mounts.reload();
+	g_game().mounts->reload();
 	g_logger().info("Reloaded mounts");
 
 	g_events().loadFromXml();
@@ -120,7 +131,7 @@ void Signals::sighupHandler() {
 	g_chat().load();
 	g_logger().info("Reloaded chatchannels");
 
-	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY, __FUNCTION__) + "/core.lua", "core.lua");
+	g_luaEnvironment().loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua", "core.lua");
 	g_logger().info("Reloaded core.lua");
 
 	lua_gc(g_luaEnvironment().getLuaState(), LUA_GCCOLLECT, 0);

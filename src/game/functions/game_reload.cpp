@@ -7,20 +7,29 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
 #include "game/functions/game_reload.hpp"
 
 #include "config/configmanager.hpp"
-#include "lua/creature/events.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/interactions/chat.hpp"
+#include "creatures/monsters/monsters.hpp"
+#include "creatures/npcs/npcs.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
-#include "lua/scripts/lua_environment.hpp"
-#include "lua/modules/modules.hpp"
-#include "lua/scripts/scripts.hpp"
+#include "game/game.hpp"
 #include "game/zones/zone.hpp"
+#include "lib/di/container.hpp"
+#include "lua/creature/events.hpp"
+#include "lua/modules/modules.hpp"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.hpp"
+#include "creatures/players/vocations/vocation.hpp"
 
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
+
+GameReload &GameReload::getInstance() {
+	return inject<GameReload>();
+}
 
 bool GameReload::init(Reload_t reloadTypes) {
 	switch (reloadTypes) {
@@ -128,7 +137,7 @@ bool GameReload::reloadOutfits() {
 }
 
 bool GameReload::reloadMounts() {
-	const bool result = g_game().mounts.reload();
+	const bool result = g_game().mounts->reload();
 	logReloadStatus("Mounts", result);
 	return result;
 }
@@ -153,7 +162,7 @@ bool GameReload::reloadVocations() {
 }
 
 bool GameReload::reloadCore() {
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	const bool coreLoaded = g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
 
 	if (coreLoaded) {
@@ -177,8 +186,8 @@ bool GameReload::reloadScripts() {
 	g_scripts().clearAllScripts();
 	Zone::clearZones();
 
-	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 
 	g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
@@ -200,8 +209,8 @@ bool GameReload::reloadItems() {
 
 bool GameReload::reloadMonsters() {
 	g_monsters().clear();
-	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY, __FUNCTION__);
-	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY, __FUNCTION__);
+	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 
 	const bool scriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	const bool monsterScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/monster", false, true);

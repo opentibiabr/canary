@@ -29,20 +29,20 @@ local itemsTable = {
 		{ itemName = "empty potion flask", clientId = 284, sell = 5 },
 		{ itemName = "empty potion flask", clientId = 285, sell = 5 },
 		{ itemName = "great health potion", clientId = 239, buy = 225 },
-		{ itemName = "great mana potion", clientId = 238, buy = 144 },
-		{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
+		{ itemName = "great mana potion", clientId = 238, buy = 158 },
+		{ itemName = "great spirit potion", clientId = 7642, buy = 254 },
 		{ itemName = "health potion", clientId = 266, buy = 50 },
 		{ itemName = "mana potion", clientId = 268, buy = 56 },
 		{ itemName = "strong health potion", clientId = 236, buy = 115 },
-		{ itemName = "strong mana potion", clientId = 237, buy = 93 },
-		{ itemName = "supreme health potion", clientId = 23375, buy = 625 },
+		{ itemName = "strong mana potion", clientId = 237, buy = 108 },
+		{ itemName = "supreme health potion", clientId = 23375, buy = 650 },
 		{ itemName = "ultimate health potion", clientId = 7643, buy = 379 },
-		{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
-		{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
+		{ itemName = "ultimate mana potion", clientId = 23373, buy = 488 },
+		{ itemName = "ultimate spirit potion", clientId = 23374, buy = 488 },
 		{ itemName = "vial", clientId = 2874, sell = 5 },
 	},
 	["runes"] = {
-		{ itemName = "avalanche rune", clientId = 3161, buy = 57 },
+		{ itemName = "avalanche rune", clientId = 3161, buy = 64 },
 		{ itemName = "blank rune", clientId = 3147, buy = 10 },
 		{ itemName = "chameleon rune", clientId = 3178, buy = 210 },
 		{ itemName = "convince creature rune", clientId = 3177, buy = 80 },
@@ -54,14 +54,14 @@ local itemsTable = {
 		{ itemName = "fire bomb rune", clientId = 3192, buy = 147 },
 		{ itemName = "fire field rune", clientId = 3188, buy = 28 },
 		{ itemName = "fire wall rune", clientId = 3190, buy = 61 },
-		{ itemName = "great fireball rune", clientId = 3191, buy = 57 },
+		{ itemName = "great fireball rune", clientId = 3191, buy = 64 },
 		{ itemName = "heavy magic missile rune", clientId = 3198, buy = 12 },
 		{ itemName = "intense healing rune", clientId = 3152, buy = 95 },
 		{ itemName = "light magic missile rune", clientId = 3174, buy = 4 },
 		{ itemName = "poison field rune", clientId = 3172, buy = 21 },
 		{ itemName = "poison wall rune", clientId = 3176, buy = 52 },
 		{ itemName = "stalagmite rune", clientId = 3179, buy = 12 },
-		{ itemName = "sudden death rune", clientId = 3155, buy = 135 },
+		{ itemName = "sudden death rune", clientId = 3155, buy = 162 },
 		{ itemName = "ultimate healing rune", clientId = 3160, buy = 175 },
 	},
 	["wands"] = {
@@ -83,12 +83,12 @@ local itemsTable = {
 		{ itemName = "wand of vortex", clientId = 3074, buy = 500 },
 	},
 	["exercise weapons"] = {
-		{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, count = 1800 },
-		{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, count = 1800 },
-		{ itemName = "exercise rod", clientId = 28556, buy = 262500, count = 500 },
-		{ itemName = "exercise wand", clientId = 28557, buy = 262500, count = 500 },
-		{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, count = 14400 },
-		{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, count = 14400 },
+		{ itemName = "durable exercise rod", clientId = 35283, buy = 1250000, count = 1800 },
+		{ itemName = "durable exercise wand", clientId = 35284, buy = 1250000, count = 1800 },
+		{ itemName = "exercise rod", clientId = 28556, buy = 347222, count = 500 },
+		{ itemName = "exercise wand", clientId = 28557, buy = 347222, count = 500 },
+		{ itemName = "lasting exercise rod", clientId = 35289, buy = 10000000, count = 14400 },
+		{ itemName = "lasting exercise wand", clientId = 35290, buy = 10000000, count = 14400 },
 	},
 	["others"] = {
 		{ itemName = "spellwand", clientId = 651, sell = 299 },
@@ -140,14 +140,9 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	local formattedCategoryNames = {}
-	for categoryName, _ in pairs(itemsTable) do
-		table.insert(formattedCategoryNames, "{" .. categoryName .. "}")
-	end
-
 	local categoryTable = itemsTable[message:lower()]
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.TibiaTales.AnInterestInBotany) < 1 then
+		if player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) < 1 then
 			npcHandler:setTopic(playerId, 1)
 			npcHandler:say({
 				"Why yes, there is indeed some minor issue I could need your help with. I was always a friend of nature and it was not recently I discovered the joys of plants, growths, of all the flora around us. ...",
@@ -160,15 +155,15 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Once you find what I need, best use a knife to carefully cut and gather a leaf or a scrap of their integument and press it directly under their appropriate entry into my botanical almanach. ...",
 				"Simply return to me after you have done that and we will discuss your reward. What do you say, are you in?",
 			}, npc, creature)
-		elseif player:getStorageValue(Storage.TibiaTales.AnInterestInBotany) == 3 then
+		elseif player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) == 3 then
 			npcHandler:setTopic(playerId, 2)
 			npcHandler:say("Well fantastic work, you gathered both samples! Now I can continue my work on the almanach, thank you very much for your help indeed. Can I take a look at my book please?", npc, creature)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
-			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
-			player:setStorageValue(Storage.TibiaTales.AnInterestInBotany, 1)
-			player:setStorageValue(Storage.TibiaTales.AnInterestInBotanyChestDoor, 0)
+			player:setStorageValue(Storage.Quest.U8_1.TibiaTales.DefaultStart, 1)
+			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 1)
+			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.ChestDoor, 0)
 			npcHandler:say("Yes? Yes! That's the enthusiasm I need! Remember to bring a sharp knife to gather the samples, plants - even mutated deformed plants - are very sensitive you know. Off you go and be careful out there, Zao is no place for the feint hearted mind you.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 2 then
@@ -176,7 +171,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:addItem(11700, 1)
 				player:addItem(3035, 10)
 				player:addExperience(3000, true)
-				player:setStorageValue(Storage.TibiaTales.AnInterestInBotany, 4)
+				player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 4)
 				npcHandler:say({
 					"Ah, thank you. Now look at that texture and fine colour, simply marvellous. ...",
 					"I hope the sun in the steppe did not exhaust you too much? Shellshock. A dangerous foe in the world of field science and exploration. ...",
@@ -189,7 +184,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif categoryTable then
-		npcHandler:say("Have a look.", npc, player)
+		local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+		npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 		npc:openShopWindowTable(player, categoryTable)
 	end
 	return true
@@ -199,7 +195,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_GREET, "Ah, a customer! Please feel free to browse my wares, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. But perhaps you just want to see my {potions}, {wands} or {runes}?")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. But perhaps you just want to see my " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- On buy npc shop message

@@ -59,6 +59,7 @@ npcConfig.shop = {
 	{ itemName = "candlestick", clientId = 2917, buy = 2 },
 	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
 	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "document", clientId = 2818, buy = 12 },
 	{ itemName = "fishing rod", clientId = 3483, buy = 40, sell = 40 },
 	{ itemName = "grey backpack", clientId = 2870, buy = 10 },
@@ -80,6 +81,7 @@ npcConfig.shop = {
 	{ itemName = "waterskin of water", clientId = 2901, buy = 40, count = 1 },
 	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
 	{ itemName = "worm", clientId = 3492, buy = 1 },
+	{ itemName = "vial of water", clientId = 2874, buy = 10, count = 1 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

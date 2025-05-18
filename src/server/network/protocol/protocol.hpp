@@ -9,13 +9,19 @@
 
 #pragma once
 
-#include "server/network/connection/connection.hpp"
-#include "config/configmanager.hpp"
+#include "server/server_definitions.hpp"
+
+class OutputMessage;
+using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
+class Connection;
+using Connection_ptr = std::shared_ptr<Connection>;
+using ConnectionWeak_ptr = std::weak_ptr<Connection>;
+
+class NetworkMessage;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
-	explicit Protocol(Connection_ptr initConnection) :
-		connectionPtr(initConnection) { }
+	explicit Protocol(const Connection_ptr &initConnection);
 
 	virtual ~Protocol() = default;
 
@@ -29,15 +35,11 @@ public:
 	bool onRecvMessage(NetworkMessage &msg);
 	bool sendRecvMessageCallback(NetworkMessage &msg);
 	virtual void onRecvFirstMessage(NetworkMessage &msg) = 0;
-	virtual void onConnect() { }
+	virtual void sendLoginChallenge() { }
 
-	bool isConnectionExpired() const {
-		return connectionPtr.expired();
-	}
+	bool isConnectionExpired() const;
 
-	Connection_ptr getConnection() const {
-		return connectionPtr.lock();
-	}
+	Connection_ptr getConnection() const;
 
 	uint32_t getIP() const;
 
@@ -48,26 +50,18 @@ public:
 		return outputBuffer;
 	}
 
-	void send(OutputMessage_ptr msg) const {
-		if (auto connection = getConnection();
-		    connection != nullptr) {
-			connection->send(msg);
-		}
-	}
+	void send(OutputMessage_ptr msg) const;
 
 protected:
-	void disconnect() const {
-		if (auto connection = getConnection()) {
-			connection->close();
-		}
-	}
+	void disconnect() const;
 
 	void enableXTEAEncryption() {
 		encryptionEnabled = true;
 	}
 	void setXTEAKey(const uint32_t* newKey) {
-		memcpy(this->key.data(), newKey, sizeof(*newKey) * 4);
+		std::ranges::copy(newKey, newKey + 4, this->key.begin());
 	}
+
 	void setChecksumMethod(ChecksumMethods_t method) {
 		checksumMethod = method;
 	}
@@ -82,22 +76,7 @@ protected:
 
 private:
 	struct ZStream {
-		ZStream() noexcept {
-			const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL, __FUNCTION__);
-			if (compressionLevel <= 0) {
-				return;
-			}
-
-			stream = std::make_unique<z_stream>();
-			stream->zalloc = nullptr;
-			stream->zfree = nullptr;
-			stream->opaque = nullptr;
-
-			if (deflateInit2(stream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
-				stream.reset();
-				g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (stream->msg ? stream->msg : " unknown error"));
-			}
-		}
+		ZStream() noexcept;
 
 		~ZStream() {
 			deflateEnd(stream.get());
@@ -107,6 +86,7 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
+	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
 	void XTEA_encrypt(OutputMessage &msg) const;
 	bool XTEA_decrypt(NetworkMessage &msg) const;
 	bool compression(OutputMessage &msg) const;

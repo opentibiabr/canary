@@ -17,6 +17,10 @@ end
 registerMonsterType.name = function(mtype, mask)
 	if mask.name then
 		mtype:name(mask.name)
+		-- Try register hazard monsters
+		mtype.onSpawn = function(monster, spawnPosition)
+			HazardMonster.onSpawn(monster, spawnPosition)
+		end
 	end
 end
 registerMonsterType.description = function(mtype, mask)
@@ -171,6 +175,12 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.summonable ~= nil then
 			mtype:isSummonable(mask.flags.summonable)
 		end
+		if mask.flags.isPreyable ~= nil then
+			mtype:isPreyable(mask.flags.isPreyable)
+		end
+		if mask.flags.isPreyExclusive ~= nil then
+			mtype:isPreyExclusive(mask.flags.isPreyExclusive)
+		end
 		if mask.flags.illusionable ~= nil then
 			mtype:isIllusionable(mask.flags.illusionable)
 		end
@@ -188,6 +198,9 @@ registerMonsterType.flags = function(mtype, mask)
 		end
 		if mask.flags.rewardBoss then
 			mtype:isRewardBoss(mask.flags.rewardBoss)
+			mtype.onSpawn = function(monster, spawnPosition)
+				monster:setReward(true)
+			end
 		end
 		if mask.flags.familiar then
 			mtype:familiar(mask.flags.familiar)
@@ -934,8 +947,8 @@ function readSpell(incomingLua, mtype)
 			if incomingLua.effect then
 				spell:setCombatEffect(incomingLua.effect)
 			end
-			if incomingLua.shootEffect then
-				spell:setCombatShootEffect(incomingLua.shootEffect)
+			if incomingLua.shootEffect or incomingLua.shooteffect then
+				spell:setCombatShootEffect(incomingLua.shootEffect or incomingLua.shooteffect)
 			end
 		end
 

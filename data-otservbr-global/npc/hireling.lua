@@ -141,38 +141,50 @@ function createHirelingType(HirelingName)
 			{ itemName = "wooden chair kit", clientId = 2777, buy = 15 },
 			{ itemName = "yellow pillow", clientId = 900, buy = 25 },
 			{ itemName = "yellow tapestry", clientId = 2650, buy = 25 },
-			{ itemName = "exercise axe", clientId = 28553, buy = 262500, subType = 500 },
-			{ itemName = "exercise bow", clientId = 28555, buy = 262500, subType = 500 },
-			{ itemName = "exercise club", clientId = 28554, buy = 262500, subType = 500 },
-			{ itemName = "exercise rod", clientId = 28556, buy = 262500, subType = 500 },
-			{ itemName = "exercise sword", clientId = 28552, buy = 262500, subType = 500 },
-			{ itemName = "exercise wand", clientId = 28557, buy = 262500, subType = 500 },
-			{ itemName = "durable exercise axe", clientId = 35280, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise bow", clientId = 35282, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise club", clientId = 35281, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise sword", clientId = 35279, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, subType = 1800 },
+			{ itemName = "exercise axe", clientId = 28553, buy = 347222, subType = 500 },
+			{ itemName = "exercise bow", clientId = 28555, buy = 347222, subType = 500 },
+			{ itemName = "exercise club", clientId = 28554, buy = 347222, subType = 500 },
+			{ itemName = "exercise rod", clientId = 28556, buy = 347222, subType = 500 },
+			{ itemName = "exercise sword", clientId = 28552, buy = 347222, subType = 500 },
+			{ itemName = "exercise wand", clientId = 28557, buy = 347222, subType = 500 },
+			{ itemName = "exercise shield", clientId = 44065, buy = 347222, subType = 500 },
+			{ itemName = "durable exercise axe", clientId = 35280, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise bow", clientId = 35282, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise club", clientId = 35281, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise rod", clientId = 35283, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise sword", clientId = 35279, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise wand", clientId = 35284, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise shield", clientId = 44066, buy = 1250000, subType = 1800 },
+			{ itemName = "lasting exercise axe", clientId = 35286, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise bow", clientId = 35288, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise club", clientId = 35287, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise rod", clientId = 35289, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise sword", clientId = 35285, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise wand", clientId = 35290, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise shield", clientId = 44067, buy = 10000000, subType = 14400 },
 		},
 		["exercise weapons"] = {
-			{ itemName = "exercise axe", clientId = 28553, buy = 262500, subType = 500 },
-			{ itemName = "exercise bow", clientId = 28555, buy = 262500, subType = 500 },
-			{ itemName = "exercise club", clientId = 28554, buy = 262500, subType = 500 },
-			{ itemName = "exercise rod", clientId = 28556, buy = 262500, subType = 500 },
-			{ itemName = "exercise sword", clientId = 28552, buy = 262500, subType = 500 },
-			{ itemName = "exercise wand", clientId = 28557, buy = 262500, subType = 500 },
-			{ itemName = "durable exercise axe", clientId = 35280, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise bow", clientId = 35282, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise club", clientId = 35281, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise rod", clientId = 35283, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise sword", clientId = 35279, buy = 945000, subType = 1800 },
-			{ itemName = "durable exercise wand", clientId = 35284, buy = 945000, subType = 1800 },
-			{ itemName = "lasting exercise axe", clientId = 35286, buy = 7560000, subType = 14400 },
-			{ itemName = "lasting exercise bow", clientId = 35288, buy = 7560000, subType = 14400 },
-			{ itemName = "lasting exercise club", clientId = 35287, buy = 7560000, subType = 14400 },
-			{ itemName = "lasting exercise rod", clientId = 35289, buy = 7560000, subType = 14400 },
-			{ itemName = "lasting exercise sword", clientId = 35285, buy = 7560000, subType = 14400 },
-			{ itemName = "lasting exercise wand", clientId = 35290, buy = 7560000, subType = 14400 },
+			{ itemName = "exercise axe", clientId = 28553, buy = 347222, subType = 500 },
+			{ itemName = "exercise bow", clientId = 28555, buy = 347222, subType = 500 },
+			{ itemName = "exercise club", clientId = 28554, buy = 347222, subType = 500 },
+			{ itemName = "exercise rod", clientId = 28556, buy = 347222, subType = 500 },
+			{ itemName = "exercise sword", clientId = 28552, buy = 347222, subType = 500 },
+			{ itemName = "exercise wand", clientId = 28557, buy = 347222, subType = 500 },
+			{ itemName = "exercise shield", clientId = 44065, buy = 347222, subType = 500 },
+			{ itemName = "durable exercise axe", clientId = 35280, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise bow", clientId = 35282, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise club", clientId = 35281, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise rod", clientId = 35283, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise sword", clientId = 35279, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise wand", clientId = 35284, buy = 1250000, subType = 1800 },
+			{ itemName = "durable exercise shield", clientId = 44066, buy = 1250000, subType = 1800 },
+			{ itemName = "lasting exercise axe", clientId = 35286, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise bow", clientId = 35288, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise club", clientId = 35287, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise rod", clientId = 35289, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise sword", clientId = 35285, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise wand", clientId = 35290, buy = 10000000, subType = 14400 },
+			{ itemName = "lasting exercise shield", clientId = 44067, buy = 10000000, subType = 14400 },
 		},
 		["equipment"] = {
 			{ itemName = "axe", clientId = 3274, buy = 20, sell = 7 },
@@ -233,7 +245,7 @@ function createHirelingType(HirelingName)
 			{ itemName = "crossbow", clientId = 3349, buy = 500, sell = 120 },
 			{ itemName = "crystalline arrow", clientId = 15793, buy = 450 },
 			{ itemName = "drill bolt", clientId = 16142, buy = 12 },
-			{ itemName = "diamond arrow", clientId = 35901, buy = 100 },
+			{ itemName = "diamond arrow", clientId = 35901, buy = 130 },
 			{ itemName = "earth arrow", clientId = 774, buy = 5 },
 			{ itemName = "envenomed arrow", clientId = 16143, buy = 12 },
 			{ itemName = "flaming arrow", clientId = 763, buy = 5 },
@@ -253,7 +265,7 @@ function createHirelingType(HirelingName)
 			{ itemName = "vortex bolt", clientId = 14252, buy = 6 },
 		},
 		["rods"] = {
-			{ itemName = "exercise rod", clientId = 28556, buy = 236250, subType = 500 },
+			{ itemName = "exercise rod", clientId = 28556, buy = 347222, subType = 500 },
 			{ itemName = "hailstorm rod", clientId = 3067, buy = 15000 },
 			{ itemName = "moonlight rod", clientId = 3070, buy = 1000 },
 			{ itemName = "necrotic rod", clientId = 3069, buy = 5000 },
@@ -264,7 +276,7 @@ function createHirelingType(HirelingName)
 			{ itemName = "underworld rod", clientId = 8082, buy = 22000 },
 		},
 		["wands"] = {
-			{ itemName = "exercise wand", clientId = 28557, buy = 236250, subType = 500 },
+			{ itemName = "exercise wand", clientId = 28557, buy = 347222, subType = 500 },
 			{ itemName = "wand of cosmic energy", clientId = 3073, buy = 10000 },
 			{ itemName = "wand of decay", clientId = 3072, buy = 5000 },
 			{ itemName = "wand of draconia", clientId = 8093, buy = 7500 },
@@ -276,16 +288,16 @@ function createHirelingType(HirelingName)
 		},
 		["potions"] = {
 			{ itemName = "great health potion", clientId = 239, buy = 225 },
-			{ itemName = "great mana potion", clientId = 238, buy = 144 },
-			{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
+			{ itemName = "great mana potion", clientId = 238, buy = 158 },
+			{ itemName = "great spirit potion", clientId = 7642, buy = 254 },
 			{ itemName = "health potion", clientId = 266, buy = 50 },
 			{ itemName = "mana potion", clientId = 268, buy = 56 },
 			{ itemName = "strong health potion", clientId = 236, buy = 115 },
-			{ itemName = "strong mana potion", clientId = 237, buy = 93 },
-			{ itemName = "supreme health potion", clientId = 23375, buy = 625 },
+			{ itemName = "strong mana potion", clientId = 237, buy = 108 },
+			{ itemName = "supreme health potion", clientId = 23375, buy = 650 },
 			{ itemName = "ultimate health potion", clientId = 7643, buy = 379 },
-			{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
-			{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
+			{ itemName = "ultimate mana potion", clientId = 23373, buy = 488 },
+			{ itemName = "ultimate spirit potion", clientId = 23374, buy = 488 },
 			{ itemName = "empty potion flask", clientId = 283, sell = 5 },
 			{ itemName = "empty potion flask", clientId = 284, sell = 5 },
 			{ itemName = "empty potion flask", clientId = 285, sell = 5 },
@@ -293,7 +305,7 @@ function createHirelingType(HirelingName)
 		},
 		["runes"] = {
 			{ itemName = "animate dead rune", clientId = 3203, buy = 375 },
-			{ itemName = "avalanche rune", clientId = 3161, buy = 57 },
+			{ itemName = "avalanche rune", clientId = 3161, buy = 64 },
 			{ itemName = "blank rune", clientId = 3147, buy = 10 },
 			{ itemName = "chameleon rune", clientId = 3178, buy = 210 },
 			{ itemName = "convince creature rune", clientId = 3177, buy = 80 },
@@ -308,7 +320,7 @@ function createHirelingType(HirelingName)
 			{ itemName = "fire field rune", clientId = 3188, buy = 28 },
 			{ itemName = "fire wall rune", clientId = 3190, buy = 61 },
 			{ itemName = "fireball rune", clientId = 3189, buy = 30 },
-			{ itemName = "great fireball rune", clientId = 3191, buy = 57 },
+			{ itemName = "great fireball rune", clientId = 3191, buy = 64 },
 			{ itemName = "heavy magic missile rune", clientId = 3198, buy = 12 },
 			{ itemName = "holy missile rune", clientId = 3182, buy = 16 },
 			{ itemName = "icicle rune", clientId = 3158, buy = 30 },
@@ -321,9 +333,9 @@ function createHirelingType(HirelingName)
 			{ itemName = "poison wall rune", clientId = 3176, buy = 52 },
 			{ itemName = "soulfire rune", clientId = 3195, buy = 46 },
 			{ itemName = "stalagmite rune", clientId = 3179, buy = 12 },
-			{ itemName = "stone shower rune", clientId = 3175, buy = 37 },
-			{ itemName = "sudden death rune", clientId = 3155, buy = 135 },
-			{ itemName = "thunderstorm rune", clientId = 3202, buy = 47 },
+			{ itemName = "stone shower rune", clientId = 3175, buy = 41 },
+			{ itemName = "sudden death rune", clientId = 3155, buy = 162 },
+			{ itemName = "thunderstorm rune", clientId = 3202, buy = 52 },
 			{ itemName = "ultimate healing rune", clientId = 3160, buy = 175 },
 			{ itemName = "wild growth rune", clientId = 3156, buy = 160 },
 		},
@@ -420,11 +432,13 @@ function createHirelingType(HirelingName)
 
 	local TOPIC_FOOD = {
 		SKILL_CHOOSE = 1301,
+		SKILL_SURPRISE = 1302,
 	}
 
 	local GREETINGS = {
 		BANK = "Alright! What can I do for you and your bank business, |PLAYERNAME|?",
-		FOOD = "Hmm, yes! A variety of fine food awaits! However, a small expense of 15000 gold is expected to make these delicious masterpieces happen. Shall I?",
+		FOOD = [[Hmm, yes! A variety of fine food awaits! However, a small expense of 15000 gold is expected to make these delicious masterpieces happen.
+	For 90000 gold I will also serve you a specific dish. Just tell me what it shall be: a {specific} meal or a little {surprise}.]],
 		STASH = "Of course, here is your stash! Well-maintained and neatly sorted for your convenience!",
 	}
 
@@ -513,7 +527,7 @@ function createHirelingType(HirelingName)
 		return message
 	end
 
-	local function deliverFood(npc, creature, food_id)
+	local function deliverFood(npc, creature, food_id, cost)
 		local playerId = creature:getId()
 		local player = Player(creature)
 		local itType = ItemType(food_id)
@@ -523,8 +537,8 @@ function createHirelingType(HirelingName)
 			npcHandler:say("Sorry, but you don't have enough capacity.", npc, creature)
 		elseif not inbox or #inboxItems >= inbox:getMaxCapacity() then
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
-			npcHandler:say("Sorry, you don't have enough room on your inbox", npc, creature)
-		elseif not player:removeMoneyBank(15000) then
+			npcHandler:say("Sorry, you don't have enough room on your inbox.", npc, creature)
+		elseif not player:removeMoneyBank(cost) then
 			npcHandler:say("Sorry, you don't have enough money.", npc, creature)
 		else
 			local message = getDeliveredMessageByFoodId(food_id)
@@ -534,38 +548,66 @@ function createHirelingType(HirelingName)
 		npcHandler:setTopic(playerId, TOPIC.SERVICES)
 	end
 
-	local function cookFood(npc, creature)
+	local function cookFood(npc, creature, specificRequest)
 		local playerId = creature:getId()
-		local random = math.random(6)
-		if random == 6 then
-			-- ask for preferred skill
+		if specificRequest then
+			npcHandler:say("Very well. You may choose one of the following: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
 			npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_CHOOSE)
-			npcHandler:say("Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding} or {distance} skill?", npc, creature)
-		else -- deliver the random generated index
-			deliverFood(npc, creature, HIRELING_FOODS_IDS[random])
+		else
+			npcHandler:say("Alright, let me astonish you. Shall I?", npc, creature)
+			deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
 		end
 	end
 
 	local function handleFoodActions(npc, creature, message)
 		local playerId = creature:getId()
+
 		if npcHandler:getTopic(playerId) == TOPIC.FOOD then
-			if MsgContains(message, "yes") then
-				cookFood(npc, creature)
+			if MsgContains(message, "specific") then
+				npcHandler:setTopic(playerId, TOPIC_FOOD.SPECIFIC)
+				npcHandler:say("Which specific meal would you like? Choices are: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
+			elseif MsgContains(message, "surprise") then
+				local random = math.random(6)
+				if random == 6 then
+					npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_CHOOSE)
+					npcHandler:say("Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding}, or {distance} skill?", npc, creature)
+				else
+					deliverFood(npc, creature, HIRELING_FOODS_IDS[random], 15000)
+				end
+			elseif MsgContains(message, "yes") then
+				deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
 			elseif MsgContains(message, "no") then
 				npcHandler:setTopic(playerId, TOPIC.SERVICES)
 				npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
 			end
 		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE then
 			if MsgContains(message, "magic") then
-				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MAGIC)
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MAGIC, 15000)
 			elseif MsgContains(message, "melee") then
-				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MELEE)
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MELEE, 15000)
 			elseif MsgContains(message, "shielding") then
-				deliverFood(npc, creature, HIRELING_FOODS_BOOST.SHIELDING)
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.SHIELDING, 15000)
 			elseif MsgContains(message, "distance") then
-				deliverFood(npc, creature, HIRELING_FOODS_BOOST.DISTANCE)
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.DISTANCE, 15000)
 			else
-				npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding} or {distance} skill?", npc, creature)
+				npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding}, or {distance} skill?", npc, creature)
+			end
+		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC then
+			local specificFoodOptions = {
+				["chilli con carniphila"] = 29412,
+				["svargrond salmon filet"] = 29413,
+				["carrion casserole"] = 29414,
+				["consecrated beef"] = 29415,
+				["roasted wyvern wings"] = 29408,
+				["carrot pie"] = 29409,
+				["tropical marinated tiger"] = 29410,
+				["delicatessen salad"] = 29411,
+			}
+
+			if specificFoodOptions[message:lower()] then
+				deliverFood(npc, creature, specificFoodOptions[message:lower()], 90000)
+			else
+				npcHandler:say("I'm sorry, but that's not a valid food option. Please choose from: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
 			end
 		end
 	end
@@ -583,70 +625,95 @@ function createHirelingType(HirelingName)
 			return false
 		end
 
-		-- roleplay
+		local skillMapping = {
+			["bank"] = {
+				skill = HIRELING_SKILLS.BANKER[2],
+				topic = TOPIC.BANK,
+				action = function()
+					npcHandler:setTopic(playerId, TOPIC.BANK)
+					count[playerId], transfer[playerId] = nil, nil
+					npcHandler:say(GREETINGS.BANK, npc, creature)
+				end,
+			},
+			["food"] = {
+				skill = HIRELING_SKILLS.COOKING[2],
+				topic = TOPIC.FOOD,
+				action = function()
+					npcHandler:setTopic(playerId, TOPIC.FOOD)
+					npcHandler:say(GREETINGS.FOOD, npc, creature)
+				end,
+			},
+			["stash"] = {
+				skill = HIRELING_SKILLS.STEWARD[2],
+				topic = TOPIC.SERVICES,
+				action = function()
+					npcHandler:say(GREETINGS.STASH, npc, creature)
+					player:setSpecialContainersAvailable(true)
+					player:openStash(true)
+					player:sendTextMessage(MESSAGE_FAILURE, "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
+				end,
+			},
+			["goods"] = {
+				skill = HIRELING_SKILLS.TRADER[2],
+				topic = TOPIC.GOODS,
+				action = function()
+					local string
+					if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
+						string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
+					else
+						string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " .. "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " .. "{supplies}, {tools} and {postal} goods. Just ask!"
+					end
+					npcHandler:setTopic(playerId, TOPIC.GOODS)
+					npcHandler:say(string, npc, creature)
+				end,
+			},
+		}
+
+		for keyword, data in pairs(skillMapping) do
+			if MsgContains(message, keyword) then
+				if hireling:hasSkill(data.skill) then
+					data.action()
+				else
+					sendSkillNotLearned(npc, creature, keyword)
+				end
+				return true
+			end
+		end
+
+		if hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
+			local categoryTable = itemsTable[message:lower()]
+			if categoryTable then
+				npc:closeShopWindow(player)
+				npcHandler:say("Here are the items for the category " .. message .. ".", npc, creature)
+				npc:openShopWindowTable(player, categoryTable)
+				return true
+			end
+		end
+
+		if MsgContains(message, "outfit") then
+			if player:getGuid() ~= hireling:getOwnerId() then
+				return false
+			end
+			hireling:requestOutfitChange()
+			npcHandler:say("As you wish!", npc, creature)
+		end
+
 		if MsgContains(message, "sword of fury") then
 			npcHandler:say("In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!", npc, creature)
 		elseif MsgContains(message, "rookgaard") then
 			npcHandler:say("What an uncivilised place without any culture.", npc, creature)
 		elseif MsgContains(message, "excalibug") then
-			-- end roleplay
 			npcHandler:say("I'll keep an eye open for it when cleaning up the things you brought home!", npc, creature)
 		elseif MsgContains(message, "service") then
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)
 			npcHandler:say(servicesMsg, npc, creature)
-		elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
-			if MsgContains(message, "bank") then
-				local bankerSkillName = HIRELING_SKILLS.BANKER[2]
-				if hireling:hasSkill(bankerSkillName) then
-					npcHandler:setTopic(playerId, TOPIC.BANK)
-					count[playerId], transfer[playerId] = nil, nil
-					npcHandler:say(GREETINGS.BANK, npc, creature)
-				else
-					sendSkillNotLearned(npc, creature, bankerSkillName)
-				end
-			elseif MsgContains(message, "food") then
-				local bankerSkillName = HIRELING_SKILLS.COOKING[2]
-				if hireling:hasSkill(bankerSkillName) then
-					npcHandler:setTopic(playerId, TOPIC.FOOD)
-					npcHandler:say(GREETINGS.FOOD, npc, creature)
-				else
-					sendSkillNotLearned(npc, creature, bankerSkillName)
-				end
-			elseif MsgContains(message, "stash") then
-				local bankerSkillName = HIRELING_SKILLS.STEWARD[2]
-				if hireling:hasSkill(bankerSkillName) then
-					npcHandler:say(GREETINGS.STASH, npc, creature)
-					player:setSpecialContainersAvailable(true)
-					player:openStash(true)
-					player:sendTextMessage(MESSAGE_FAILURE, "Your supply stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
-				else
-					sendSkillNotLearned(npc, creature, bankerSkillName)
-				end
-			elseif MsgContains(message, "goods") then
-				local string
-				if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
-					string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
-				else
-					string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " .. "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " .. "{supplies}, {tools} and {postal} goods. Just ask!"
-				end
-				npcHandler:setTopic(playerId, TOPIC.GOODS)
-				npcHandler:say(string, npc, creature)
-			elseif MsgContains(message, "lamp") then
-				npcHandler:setTopic(playerId, TOPIC.LAMP)
-				if player:getGuid() ~= hireling:getOwnerId() then
-					return false
-				end
-
-				npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
-			elseif MsgContains(message, "outfit") then
-				if player:getGuid() ~= hireling:getOwnerId() then
-					return false
-				end
-
-				hireling:requestOutfitChange()
-				npcHandler:say("As you wish!", npc, creature)
+		elseif MsgContains(message, "lamp") then
+			npcHandler:setTopic(playerId, TOPIC.LAMP)
+			if player:getGuid() ~= hireling:getOwnerId() then
+				return false
 			end
+			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.LAMP then
 			if MsgContains(message, "yes") then
 				hireling:returnToLamp(player:getGuid())
@@ -656,34 +723,20 @@ function createHirelingType(HirelingName)
 			end
 		elseif npcHandler:getTopic(playerId) == TOPIC.BANK then
 			enableBankSystem[playerId] = true
-		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE then
+		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE or npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC then
 			handleFoodActions(npc, creature, message)
 		elseif npcHandler:getTopic(playerId) == TOPIC.GOODS then
-			-- Ensures players cannot access other shop categories
-			if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
-				if not MsgContains(message, "various") then
-					local text = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
-					npcHandler:say(text, npc, creature)
-					return
-				end
-
-				npcHandler:say("Here are the items for the category various.", npc, creature)
-				npc:openShopWindowTable(player, itemsTable["various"])
-				return
-			end
-
 			local categoryTable = itemsTable[message:lower()]
 			if categoryTable then
-				npcHandler:say("Here are the items for the category " .. message .. ".", npc, creature)
+				local remainingCategories = npc:getRemainingShopCategories(message:lower(), itemsTable)
+				npcHandler:say("Of course, just browse through my wares. You can also look at " .. remainingCategories .. ".", npc, player)
 				npc:openShopWindowTable(player, categoryTable)
 			end
 		end
+
 		if enableBankSystem[playerId] then
-			-- Parse bank
 			npc:parseBank(message, npc, creature, npcHandler)
-			-- Parse guild bank
 			npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
-			-- Normal messages
 			npc:parseBankMessages(message, npc, creature, npcHandler)
 		end
 		return true
@@ -696,7 +749,6 @@ function createHirelingType(HirelingName)
 	npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 	npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
-	-- npcType registering the npcConfig table
 	npcType:register(npcConfig)
 end
 

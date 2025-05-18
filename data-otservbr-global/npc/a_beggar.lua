@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 	if MsgContains(message, "want") then
-		if player:getStorageValue(Storage.DarkTrails.Mission01) == 1 then
+		if player:getStorageValue(Storage.Quest.U10_50.DarkTrails.Mission01) == 1 then
 			npcHandler:setTopic(playerId, 1)
 		end
 		npcHandler:say("The guys from the magistrate sent you here, didn't they?", npc, creature)
@@ -72,8 +72,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				"If you brought enough of the stuff you'll see that the king will grant you entrance in his {palace}.",
 			}, npc, creature, 100)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.DarkTrails.Mission01, 2) -- Mission 1 end
-			player:setStorageValue(Storage.DarkTrails.Mission02, 1) -- Mission 2 start
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission01, 2) -- Mission 1 end
+			player:setStorageValue(Storage.Quest.U10_50.DarkTrails.Mission02, 1) -- Mission 2 start
 		end
 	end
 	return true

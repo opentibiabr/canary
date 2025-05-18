@@ -1,15 +1,15 @@
 -- return a dictionary of itemId => { count, gut }
 ---@param config { factor: number, gut: boolean, filter?: fun(itemType: ItemType, unique: boolean): boolean }
 ---@return LootItems
-function MonsterType:generateLootRoll(config, resultTable)
+function MonsterType:generateLootRoll(config, resultTable, player)
 	if configManager.getNumber(configKeys.RATE_LOOT) <= 0 then
 		return resultTable or {}
 	end
 
 	local monsterLoot = self:getLoot() or {}
-	local factor = config.factor or 1.0
 	local uniqueItems = {}
 
+	local factor = config.factor or 1.0
 	if self:isRewardBoss() then
 		factor = factor * SCHEDULE_BOSS_LOOT_RATE / 100
 	end
@@ -17,23 +17,34 @@ function MonsterType:generateLootRoll(config, resultTable)
 	local result = resultTable or {}
 	for _, item in ipairs(monsterLoot) do
 		local iType = ItemType(item.itemId)
+
 		if config.filter and not config.filter(iType, item.unique) then
 			goto continue
 		end
+
 		if uniqueItems[item.itemId] then
 			goto continue
 		end
+
 		if not result[item.itemId] then
 			result[item.itemId] = { count = 0, gut = false }
 		end
 
 		local chance = item.chance
-		if config.gut and iType:getType() == ITEM_TYPE_CREATUREPRODUCT then
-			chance = math.ceil((chance * GLOBAL_CHARM_GUT) / 100)
+		if SoulWarQuest and iType:getId() == SoulWarQuest.bagYouDesireItemId then
+			result[item.itemId].chance = self:calculateBagYouDesireChance(player, chance)
+			logger.debug("Final chance for bag you desire: {}, original chance: {}", result[item.itemId].chance, chance)
 		end
 
-		local randValue = getLootRandom(factor)
-		if randValue >= chance then
+		local dynamicFactor = factor * (math.random(95, 105) / 100)
+		local adjustedChance = item.chance * dynamicFactor
+
+		if config.gut and iType:getType() == ITEM_TYPE_CREATUREPRODUCT then
+			adjustedChance = math.ceil((adjustedChance * GLOBAL_CHARM_GUT) / 100)
+		end
+
+		local randValue = getLootRandom()
+		if randValue >= adjustedChance then
 			goto continue
 		end
 

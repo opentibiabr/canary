@@ -11,11 +11,10 @@
 
 #include "enums/item_attribute.hpp"
 #include "items/functions/item/custom_attribute.hpp"
-#include "utils/tools.hpp"
 
 class ItemAttributeHelper {
 public:
-	bool isAttributeInteger(ItemAttribute_t type) const {
+	static bool isAttributeInteger(ItemAttribute_t type) {
 		switch (type) {
 			case ItemAttribute_t::STORE:
 			case ItemAttribute_t::ACTIONID:
@@ -48,7 +47,7 @@ public:
 		}
 	}
 
-	bool isAttributeString(ItemAttribute_t type) const {
+	static bool isAttributeString(ItemAttribute_t type) {
 		switch (type) {
 			case ItemAttribute_t::DESCRIPTION:
 			case ItemAttribute_t::TEXT:
@@ -87,27 +86,21 @@ public:
 		return type;
 	}
 
-	std::variant<int64_t, std::shared_ptr<std::string>> getDefaultValueForType(ItemAttribute_t attributeType) const {
-		ItemAttributeHelper helper;
-		if (helper.isAttributeInteger(attributeType)) {
+	std::variant<int64_t, std::string> getDefaultValueForType(ItemAttribute_t attributeType) const {
+		if (ItemAttributeHelper::isAttributeInteger(attributeType)) {
 			return 0;
-		} else if (helper.isAttributeString(attributeType)) {
-			return std::make_shared<std::string>();
-		} else {
-			return {};
 		}
+
+		return {};
 	}
 
 	void setValue(int64_t newValue) {
-		if (std::holds_alternative<int64_t>(value)) {
-			value = newValue;
-		}
+		value = newValue;
 	}
 	void setValue(const std::string &newValue) {
-		if (std::holds_alternative<std::shared_ptr<std::string>>(value)) {
-			value = std::make_shared<std::string>(newValue);
-		}
+		value = newValue;
 	}
+
 	const int64_t &getInteger() const {
 		if (std::holds_alternative<int64_t>(value)) {
 			return std::get<int64_t>(value);
@@ -116,17 +109,18 @@ public:
 		return emptyValue;
 	}
 
-	const std::shared_ptr<std::string> getString() const {
-		if (std::holds_alternative<std::shared_ptr<std::string>>(value)) {
-			return std::get<std::shared_ptr<std::string>>(value);
+	const std::string &getString() const {
+		if (std::holds_alternative<std::string>(value)) {
+			return std::get<std::string>(value);
 		}
-		static std::shared_ptr<std::string> emptyPtr;
-		return emptyPtr;
+
+		static const std::string emptyString;
+		return emptyString;
 	}
 
 private:
 	ItemAttribute_t type;
-	std::variant<int64_t, std::shared_ptr<std::string>> value;
+	std::variant<int64_t, std::string> value;
 };
 
 class ItemAttribute : public ItemAttributeHelper {
@@ -138,10 +132,10 @@ public:
 	// CustomAttribute object methods
 	const CustomAttribute* getCustomAttribute(const std::string &attributeName) const;
 
-	void setCustomAttribute(const std::string &key, const int64_t value);
+	void setCustomAttribute(const std::string &key, int64_t value);
 	void setCustomAttribute(const std::string &key, const std::string &value);
-	void setCustomAttribute(const std::string &key, const double value);
-	void setCustomAttribute(const std::string &key, const bool value);
+	void setCustomAttribute(const std::string &key, double value);
+	void setCustomAttribute(const std::string &key, bool value);
 
 	void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute);
 	bool removeCustomAttribute(const std::string &attributeName);
@@ -158,12 +152,9 @@ public:
 	}
 
 	bool hasAttribute(ItemAttribute_t type) const {
-		for (const auto &attr : attributeVector) {
-			if (attr.getAttributeType() == type) {
-				return true;
-			}
-		}
-		return false;
+		return std::ranges::any_of(attributeVector, [type](const auto &attr) {
+			return attr.getAttributeType() == type;
+		});
 	}
 
 	const Attributes* getAttribute(ItemAttribute_t type) const;

@@ -1,19 +1,30 @@
 -- Look README.md for see the reserved action/unique numbers
 
 TileAction = {
+	-- The Ape City Quest
+	[12124] = {
+		itemId = 419,
+		itemPos = {
+			{ x = 33305, y = 32861, z = 13 },
+		},
+	},
 	-- Cure poison tiles at dawnport outpost entrances
 	-- Tiles data\scripts\movements\others\dawnport_tiles.lua
 	[20001] = {
 		itemId = 416,
 		itemPos = {
-			{ x = 32064, y = 31881, z = 5 },
-			{ x = 32065, y = 31881, z = 5 },
-			{ x = 32074, y = 31890, z = 5 },
-			{ x = 32074, y = 31891, z = 5 },
-			{ x = 32064, y = 31900, z = 5 },
-			{ x = 32065, y = 31900, z = 5 },
-			{ x = 32056, y = 31890, z = 5 },
-			{ x = 32056, y = 31891, z = 5 },
+			{ x = 32064, y = 31880, z = 5 },
+			{ x = 32065, y = 31880, z = 5 },
+			{ x = 32066, y = 31880, z = 5 },
+			{ x = 32075, y = 31890, z = 5 },
+			{ x = 32075, y = 31891, z = 5 },
+			{ x = 32075, y = 31892, z = 5 },
+			{ x = 32064, y = 31901, z = 5 },
+			{ x = 32065, y = 31901, z = 5 },
+			{ x = 32066, y = 31901, z = 5 },
+			{ x = 32054, y = 31890, z = 5 },
+			{ x = 32054, y = 31891, z = 5 },
+			{ x = 32054, y = 31892, z = 5 },
 		},
 	},
 	-- Dark trails quest tile
@@ -47,48 +58,37 @@ TileAction = {
 			{ x = 32696, y = 31720, z = 7 },
 			{ x = 32697, y = 31720, z = 7 },
 			{ x = 32698, y = 31720, z = 7 },
+			{ x = 32691, y = 31724, z = 7 },
 		},
 	},
 	--Dawnport
 	--Sorcerer vocation tile
 	--Vocation trial: data\scripts\movements\others\dawnport_vocation_trial.lua
 	[25005] = {
-		itemId = 416,
+		itemId = 44640,
 		itemPos = {
-			{ x = 32055, y = 31889, z = 5 },
-			{ x = 32055, y = 31890, z = 5 },
-			{ x = 32055, y = 31891, z = 5 },
-			{ x = 32055, y = 31892, z = 5 },
+			{ x = 32063, y = 31900, z = 5 },
 		},
 	},
 	--Druid vocation tile
 	[25006] = {
-		itemId = 416,
+		itemId = 44641,
 		itemPos = {
-			{ x = 32063, y = 31901, z = 5 },
-			{ x = 32064, y = 31901, z = 5 },
-			{ x = 32065, y = 31901, z = 5 },
-			{ x = 32066, y = 31901, z = 5 },
+			{ x = 32063, y = 31881, z = 5 },
 		},
 	},
 	--Paladin vocation tile
 	[25007] = {
-		itemId = 416,
+		itemId = 44639,
 		itemPos = {
-			{ x = 32075, y = 31889, z = 5 },
-			{ x = 32075, y = 31890, z = 5 },
-			{ x = 32075, y = 31891, z = 5 },
-			{ x = 32075, y = 31892, z = 5 },
+			{ x = 32055, y = 31889, z = 5 },
 		},
 	},
 	--Knight vocation tile
 	[25008] = {
-		itemId = 416,
+		itemId = 44638,
 		itemPos = {
-			{ x = 32063, y = 31880, z = 5 },
-			{ x = 32064, y = 31880, z = 5 },
-			{ x = 32065, y = 31880, z = 5 },
-			{ x = 32066, y = 31880, z = 5 },
+			{ x = 32074, y = 31889, z = 5 },
 		},
 	},
 	-- Tiles data\scripts\movements\others\dawnport_tiles.lua
@@ -288,8 +288,9 @@ TileAction = {
 	[50307] = {
 		itemId = false,
 		itemPos = {
+			{ x = 33955, y = 31503, z = 2 },
 			{ x = 33956, y = 31503, z = 2 },
-			{ x = 33957, y = 31503, z = 2 },
+			{ x = 33956, y = 31504, z = 2 },
 		},
 	},
 	-- The paradox tower quest
@@ -1099,8 +1100,8 @@ TileUnique = {
 	},
 	-- The paradox tower quest
 	[25011] = {
-		itemId = 354,
-		itemPos = { x = 32497, y = 31889, z = 7 },
+		itemId = 353,
+		itemPos = { x = 32497, y = 31888, z = 7 },
 	},
 	[25012] = {
 		itemId = 10145,
@@ -1154,19 +1155,19 @@ TileUnique = {
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission05_web_terror.lua
 	-- Spider lair entrance hole
 	[25022] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32051, y = 32110, z = 7 },
 	},
 	-- Spider queen chamber hole
 	[25023] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32018, y = 32098, z = 11 },
 	},
 	-- The Rookie Guard Quest - Mission 06: Run Like a Wolf
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission06_run_like_wolf.lua
 	-- War wolf den entrance hole
 	[25024] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32138, y = 32132, z = 7 },
 	},
 	-- War wolf den fall tile
@@ -1188,8 +1189,38 @@ TileUnique = {
 	-- Path: data\scripts\actions\quests\the_rookie_guard\mission09_rock_troll.lua
 	-- Troll caves dug tunnel hole
 	[25028] = {
-		itemId = 12728,
+		itemId = 385,
 		itemPos = { x = 32059, y = 32135, z = 9 },
+	},
+	-- Mintwallin Quest (Devil Helmet Quest)
+	[25030] = {
+		itemId = 431,
+		itemPos = { x = 32468, y = 32119, z = 14 },
+	},
+	-- The Paradox Tower Quest
+	[25031] = {
+		itemId = 599,
+		itemPos = { x = 32477, y = 31905, z = 7 },
+	},
+	[25032] = {
+		itemId = 599,
+		itemPos = { x = 32476, y = 31906, z = 7 },
+	},
+	[25034] = {
+		itemId = 599,
+		itemPos = { x = 32486, y = 31927, z = 7 },
+	},
+	[25035] = {
+		itemId = 599,
+		itemPos = { x = 32487, y = 31927, z = 7 },
+	},
+	[25036] = {
+		itemId = 599,
+		itemPos = { x = 32486, y = 31928, z = 7 },
+	},
+	[25037] = {
+		itemId = 599,
+		itemPos = { x = 32487, y = 31928, z = 7 },
 	},
 	-- Remove/create item on stepIn
 	-- Reserved uniques range from 29001/30000

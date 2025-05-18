@@ -60,7 +60,7 @@ if Modules == nil then
 		local parseInfo = {
 			[TAG_PLAYERNAME] = player:getName(),
 			[TAG_TIME] = getFormattedWorldTime(),
-			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false),
+			[TAG_BLESSCOST] = Blessings.getBlessingCost(player:getLevel(), false, (npc:getName() == "Kais" or npc:getName() == "Nomad") and true),
 			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 			[TAG_TRAVELCOST] = costMessage,
 		}
@@ -160,7 +160,7 @@ if Modules == nil then
 		end
 
 		local parseInfo = {
-			[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel(), false),
+			[TAG_BLESSCOST] = Blessings.getBlessingCost(player:getLevel(), false, (npc:getName() == "Kais" or npc:getName() == "Nomad") and true),
 			[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel(), false),
 		}
 		if player:hasBlessing(parameters.bless) then
@@ -175,7 +175,7 @@ if Modules == nil then
 				npc,
 				player
 			)
-		elseif not player:removeMoneyBank(type(parameters.cost) == "string" and npcHandler:parseMessage(parameters.cost, parseInfo) or parameters.cost) then
+		elseif not player:removeMoneyBank(type(parameters.cost) == "string" and tonumber(npcHandler:parseMessage(parameters.cost, parseInfo)) or parameters.cost) then
 			npcHandler:say("Oh. You do not have enough money.", npc, player)
 		else
 			npcHandler:say(parameters.text or "You have been blessed by one of the seven gods!", npc, player)
@@ -243,10 +243,10 @@ if Modules == nil then
 				player:addAchievementProgress("Ship's Kobold", 1250)
 
 				-- What a foolish Quest - Mission 3
-				if Storage.WhatAFoolish.PieBoxTimer ~= nil then
-					if player:getStorageValue(Storage.WhatAFoolish.PieBoxTimer) > os.time() then
+				if Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer ~= nil then
+					if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer) > os.time() then
 						if destination ~= Position(32660, 31957, 15) then -- kazordoon steamboat
-							player:setStorageValue(Storage.WhatAFoolish.PieBoxTimer, 1)
+							player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.PieBoxTimer, 1)
 						end
 					end
 				end

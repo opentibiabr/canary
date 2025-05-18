@@ -1,5 +1,5 @@
 # Stage 1: Download all dependencies
-FROM ubuntu:23.04 AS dependencies
+FROM ubuntu:24.04 AS dependencies
 
 RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	unzip build-essential ca-certificates curl zip unzip tar \
@@ -30,7 +30,7 @@ WORKDIR /srv
 RUN export VCPKG_ROOT=/opt/vcpkg/ && cmake --preset linux-release && cmake --build --preset linux-release
 
 # Stage 3: load data and execute
-FROM ubuntu:23.04
+FROM ubuntu:24.04
 VOLUME [ "/data" ]
 
 COPY --from=build /srv/build/linux-release/bin/canary /bin/canary

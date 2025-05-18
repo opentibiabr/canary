@@ -14,7 +14,7 @@ monster.outfit = {
 }
 
 monster.events = {
-	"SoulwarsBossDeath",
+	"SoulWarBossesDeath",
 }
 
 monster.health = 300000
@@ -59,20 +59,11 @@ monster.flags = {
 	canWalkOnEnergy = true,
 	canWalkOnFire = true,
 	canWalkOnPoison = true,
-	pet = false,
 }
 
 monster.light = {
 	level = 0,
 	color = 0,
-}
-
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "dreadful harvester", chance = 40, interval = 1000, count = 2 },
-		{ name = "spiteful spitter", chance = 30, interval = 1000, count = 2 },
-	},
 }
 
 monster.voices = {
@@ -111,6 +102,7 @@ monster.attacks = {
 	{ name = "singlecloudchain", interval = 6000, chance = 40, minDamage = -1700, maxDamage = -1900, range = 6, effect = CONST_ME_ENERGYHIT, target = true },
 	{ name = "combat", interval = 2000, chance = 30, type = COMBAT_EARTHDAMAGE, minDamage = -1200, maxDamage = -3500, range = 7, radius = 4, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = true },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -1400, maxDamage = -2200, length = 8, spread = 0, effect = CONST_ME_GREEN_RINGS, target = false },
+	{ name = "soulwars fear", interval = 2000, chance = 10, target = true },
 }
 
 monster.defenses = {
@@ -140,19 +132,5 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
-
-mType.onThink = function(monster, interval) end
-
-mType.onAppear = function(monster, creature)
-	if monster:getType():isRewardBoss() then
-		monster:setReward(true)
-	end
-end
-
-mType.onDisappear = function(monster, creature) end
-
-mType.onMove = function(monster, creature, fromPosition, toPosition) end
-
-mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

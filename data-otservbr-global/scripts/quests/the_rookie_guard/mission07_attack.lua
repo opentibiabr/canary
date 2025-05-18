@@ -27,13 +27,13 @@ function missionGuide.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission07)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission07)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState == 2 then
 		return true
 	end
 	local missionTile = missionTiles[item.actionid]
-	local libraryChestState = player:getStorageValue(Storage.TheRookieGuard.LibraryChest)
+	local libraryChestState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.LibraryChest)
 	-- Check if the tile is active
 	if missionState == 1 and libraryChestState == -1 then
 		-- Check delayed notifications (message/arrow)
@@ -61,7 +61,7 @@ function libraryVaultSteps.onStepIn(creature, item, position, fromPosition)
 	if not player then
 		return true
 	end
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission07)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission07)
 	-- Skip if not was started or finished
 	if missionState == -1 or missionState == 2 then
 		return true
@@ -118,7 +118,7 @@ end
 local destroyFieldRune = Action()
 
 function destroyFieldRune.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission07)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission07)
 	if missionState == 1 and item2.itemid == 12743 then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Fire in this stadium can be crossed without taking damage. Open the chest and get out of here!")
 		item2:getPosition():sendMagicEffect(CONST_ME_POFF)
@@ -136,17 +136,17 @@ destroyFieldRune:register()
 local treasureChest = Action()
 
 function treasureChest.onUse(player, item, frompos, item2, topos)
-	local missionState = player:getStorageValue(Storage.TheRookieGuard.Mission07)
+	local missionState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.Mission07)
 	-- Skip if not was started
 	if missionState == -1 then
 		return true
 	end
 	if missionState == 1 then
-		local libraryChestState = player:getStorageValue(Storage.TheRookieGuard.LibraryChest)
+		local libraryChestState = player:getStorageValue(Storage.Quest.U9_1.TheRookieGuard.LibraryChest)
 		if libraryChestState == -1 then
 			local reward = Game.createItem(12675, 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found " .. reward:getArticle() .. " " .. reward:getName() .. ".")
-			player:setStorageValue(Storage.TheRookieGuard.LibraryChest, 1)
+			player:setStorageValue(Storage.Quest.U9_1.TheRookieGuard.LibraryChest, 1)
 			player:addItemEx(reward, true, CONST_SLOT_WHEREEVER)
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. item:getName() .. " is empty.")

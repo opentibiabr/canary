@@ -52,7 +52,6 @@ end
 local autoTransformItemsEvent = GlobalEvent("autoTransformItems.onThink")
 
 function autoTransformItemsEvent.onThink(interval, lastExecution)
-	local start = os.clock()
 	for defaultIntervalMs, data in pairs(itemsToTransform) do
 		data.currentMs = data.currentMs + interval
 		if data.currentMs >= defaultIntervalMs then
@@ -83,7 +82,6 @@ function autoTransformItemsEvent.onThink(interval, lastExecution)
 			end
 		end
 	end
-	logger.info("[autoTransformItems] elapsed time: {} secs", os.clock() - start)
 	return true
 end
 

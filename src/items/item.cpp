@@ -2276,7 +2276,7 @@ std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &it
 				} else {
 					itemDescription << ", ";
 				}
-	
+
 				itemDescription << "magic level " << std::showpos << itemType.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 			}
 
@@ -2578,7 +2578,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					} else {
 						s << ", ";
 					}
-	
+
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
 
@@ -2854,7 +2854,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 					} else {
 						s << ", ";
 					}
-	
+
 					s << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
 				}
 

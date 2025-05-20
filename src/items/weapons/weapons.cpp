@@ -78,7 +78,7 @@ int32_t Weapons::getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue) {
 // Players
 int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee) {
 	if (isMelee) {
-		return static_cast<int32_t>(std::round((0.085 * attackFactor * attackValue * attackSkill) + (level / 5)));
+		return attackValue > 0 ? static_cast<int32_t>(std::round((0.085 * attackFactor * attackValue * attackSkill) + (level / 5))) : 0;
 	} else {
 		return static_cast<int32_t>(std::round((0.09 * attackFactor * attackValue * attackSkill) + (level / 5)));
 	}
@@ -178,27 +178,33 @@ bool Weapon::useWeapon(const std::shared_ptr<Player> &player, const std::shared_
 }
 
 CombatDamage Weapon::getCombatDamage(CombatDamage combat, const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, int32_t damageModifier) const {
-	// Local variables
-	const uint32_t level = player->getLevel();
-	const int32_t element = item->getElementDamage();
-	const int32_t elementalAttack = (element > 0) ? element : getElementDamageValue();
-	const int32_t weaponAttack = std::max<int32_t>(0, item->getAttack());
-	const int32_t playerSkill = player->getWeaponSkill(item);
-	const float attackFactor = player->getAttackFactor(); // full atk, balanced or full defense
+    if (weaponType == WEAPON_WAND) {
+        combat.primary.type = params.combatType;
+        combat.primary.value = getWeaponDamage(player, nullptr, item) * damageModifier / 100;
+        combat.secondary.type = COMBAT_NONE;
+        combat.secondary.value = 0;
+        return combat;
+    }
 
-	// Getting values factores
-	const int32_t totalAttack = elementalAttack + weaponAttack;
-	const double weaponAttackProportion = static_cast<double>(weaponAttack) / static_cast<double>(totalAttack);
+    const uint32_t level = player->getLevel();
+    const int32_t element = item->getElementDamage();
+    const int32_t elementalAttack = (element > 0) ? element : getElementDamageValue();
+    const int32_t weaponAttack = std::max<int32_t>(0, item->getAttack());
+    const int32_t playerSkill = player->getWeaponSkill(item);
+    const float attackFactor = player->getAttackFactor();
 
-	// Calculating damage
-	const int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
-	const int32_t minDamage = level / 5;
-	const int32_t realDamage = normal_random(minDamage, maxDamage);
+    const int32_t totalAttack = elementalAttack + weaponAttack;
+    const double weaponAttackProportion = totalAttack > 0 ? static_cast<double>(weaponAttack) / static_cast<double>(totalAttack) : 0.0;
 
-	// Setting damage to combat
-	combat.primary.value = realDamage * weaponAttackProportion;
-	combat.secondary.value = realDamage * (1 - weaponAttackProportion);
-	return combat;
+    const int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
+    const int32_t minDamage = level / 5;
+    const int32_t realDamage = normal_random(minDamage, maxDamage);
+
+    combat.primary.type = params.combatType;
+    combat.primary.value = realDamage * weaponAttackProportion;
+    combat.secondary.type = getElementType();
+    combat.secondary.value = realDamage * (1 - weaponAttackProportion);
+    return combat;
 }
 
 bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
@@ -232,72 +238,88 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 }
 
 void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent) const {
-	if (player) {
-		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-		} else {
-			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-		}
-	}
+    if (player) {
+        if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+            g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+        } else {
+            g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+        }
+    }
 
-	if (isLoadedScriptId()) {
-		if (cleavePercent != 0) {
-			return;
-		}
+    if (isLoadedScriptId()) {
+        if (cleavePercent != 0) {
+            return;
+        }
 
-		LuaVariant var;
-		var.type = VARIANT_NUMBER;
-		var.number = target->getID();
-		executeUseWeapon(player, var);
-	} else {
-		CombatDamage damage;
-		const WeaponType_t weaponType = item->getWeaponType();
-		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
-			damage.origin = ORIGIN_RANGED;
-		} else {
-			damage.origin = ORIGIN_MELEE;
-		}
-		damage.primary.type = params.combatType;
-		damage.secondary.type = getElementType();
+        LuaVariant var;
+        var.type = VARIANT_NUMBER;
+        var.number = target->getID();
+        executeUseWeapon(player, var);
+    } else {
+        CombatDamage damage;
+        if (weaponType == WEAPON_WAND) {
+            damage.origin = ORIGIN_RANGED;
+            damage.primary.type = params.combatType;
+            damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+            damage.secondary.type = COMBAT_NONE;
+            damage.secondary.value = 0;
 
-		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		const int32_t physicalAttack = item->getAttack();
-		const int32_t element = item->getElementDamage();
-		const int32_t elementalAttack = (element > 0) ? element : getElementDamageValue();
-		int32_t physicalDamage = 0;
-		if (physicalAttack > 0) {
-			physicalDamage = static_cast<int32_t>(totalDamage * (static_cast<float>(physicalAttack) / (physicalAttack + elementalAttack)));
-		}
-		int32_t elementalDamage = 0;
-		if (elementalAttack > 0) {
-			elementalDamage = static_cast<int32_t>(totalDamage * (static_cast<float>(elementalAttack) / (physicalAttack + elementalAttack)));
-		}
-		damage.primary.value = physicalDamage;
-		damage.secondary.value = elementalDamage;
+            // Aplica o dano para varinhas
+            if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM) && params.chainCallback) {
+                m_combat->doCombatChain(player, target, params.aggressive);
+                g_logger().debug("Weapon::internalUseWeapon - Chain callback executed for wand.");
+            } else {
+                Combat::doCombatHealth(player, target, damage, params);
+            }
+        } else {
+            const WeaponType_t weaponType = item->getWeaponType();
+            if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
+                damage.origin = ORIGIN_RANGED;
+            } else {
+                damage.origin = ORIGIN_MELEE;
+            }
+            damage.primary.type = params.combatType;
+            damage.secondary.type = getElementType();
 
-		// Apply cleave adjustments if applicable
-		uint16_t damagePercent = 100;
-		if (cleavePercent != 0) {
-			damage.extension = true;
-			damagePercent = cleavePercent;
-			if (!damage.exString.empty()) {
-				damage.exString += ", ";
-			}
-			damage.exString += "cleave damage";
-			damage.primary.value = (damage.primary.value * damagePercent) / 100;
-			damage.secondary.value = (damage.secondary.value * damagePercent) / 100;
-		}
+            const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+            const int32_t physicalAttack = item->getAttack();
+            const int32_t element = item->getElementDamage();
+            const int32_t elementalAttack = (element > 0) ? element : getElementDamageValue();
+            int32_t physicalDamage = 0;
+            if (physicalAttack > 0) {
+                physicalDamage = static_cast<int32_t>(totalDamage * (static_cast<float>(physicalAttack) / (physicalAttack + elementalAttack)));
+            }
+            int32_t elementalDamage = 0;
+            if (elementalAttack > 0) {
+                elementalDamage = static_cast<int32_t>(totalDamage * (static_cast<float>(elementalAttack) / (physicalAttack + elementalAttack)));
+            }
+            damage.primary.value = physicalDamage;
+            damage.secondary.value = elementalDamage;
 
-		// Handle chain system
-		if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM) && params.chainCallback) {
-			m_combat->doCombatChain(player, target, params.aggressive);
-			g_logger().debug("Weapon::internalUseWeapon - Chain callback executed.");
-		} else {
-			Combat::doCombatHealth(player, target, damage, params);
-		}
-	}
+            // Apply cleave adjustments if applicable
+            uint16_t damagePercent = 100;
+            if (cleavePercent != 0) {
+                damage.extension = true;
+                damagePercent = cleavePercent;
+                if (!damage.exString.empty()) {
+                    damage.exString += ", ";
+                }
+                damage.exString += "cleave damage";
+                damage.primary.value = (damage.primary.value * damagePercent) / 100;
+                damage.secondary.value = (damage.secondary.value * damagePercent) / 100;
+            }
 
-	onUsedWeapon(player, item, target->getTile());
+            // Handle chain system
+            if (g_configManager().getBoolean(TOGGLE_CHAIN_SYSTEM) && params.chainCallback) {
+                m_combat->doCombatChain(player, target, params.aggressive);
+                g_logger().debug("Weapon::internalUseWeapon - Chain callback executed.");
+            } else {
+                Combat::doCombatHealth(player, target, damage, params);
+            }
+        }
+    }
+
+    onUsedWeapon(player, item, target->getTile());
 }
 
 void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const {
@@ -453,10 +475,10 @@ bool Weapon::calculateSkillFormula(const std::shared_ptr<Player> &player, int32_
 		item = player->getWeapon(true);
 		if (item) {
 			int32_t element = item->getElementDamage();
-			elementAttack = (element > 0) ? element : getElementDamageValue();
-		} else {
-			elementAttack = getElementDamageValue();
-		}
+            elementAttack = (element > 0) ? element : getElementDamageValue();
+        } else {
+            elementAttack = getElementDamageValue();
+        }
 		attackValue += elementAttack;
 	}
 
@@ -855,7 +877,7 @@ int32_t WeaponDistance::getElementDamage(const std::shared_ptr<Player> &player, 
 		if (weapon) {
 			int32_t itemElement = item->getElementDamage();
 			int32_t weaponElement = weapon->getElementDamage();
-			elementItem = (itemElement > 0) ? itemElement : getElementDamageValue();
+            elementItem = (itemElement > 0) ? itemElement : getElementDamageValue();
 			elementWeapon = (weaponElement > 0) ? weaponElement : getElementDamageValue();
 			attackValue += elementItem;
 			attackValue += elementWeapon;

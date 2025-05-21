@@ -520,8 +520,8 @@ std::shared_ptr<Player> Item::getHoldingPlayer() {
 	return nullptr;
 }
 
-bool Item::isItemStorable() const {
-	if (isStoreItem() || hasOwner()) {
+bool Item::isItemStorable() {
+	if (isStoreItem() || hasOwner() || canDecay()) {
 		return false;
 	}
 	const auto isContainerAndHasSomethingInside = (getContainer() != nullptr) && (!getContainer()->getItemList().empty());

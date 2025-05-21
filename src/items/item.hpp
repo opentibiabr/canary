@@ -464,7 +464,7 @@ public:
 		return items[id].stackable;
 	}
 	bool isStowable() const {
-		return hasMarketAttributes() && !getTier() && items[id].wareId > 0;
+		return hasMarketAttributes() && !getTier() && items[id].wareId > 0 && !items[id].isContainer();
 	}
 	bool isAlwaysOnTop() const {
 		return items[id].alwaysOnTopOrder != 0;
@@ -598,7 +598,7 @@ public:
 
 	void setDefaultSubtype();
 	uint16_t getSubType() const;
-	bool isItemStorable() const;
+	bool isItemStorable();
 	void setSubType(uint16_t n);
 	void addUniqueId(uint16_t uniqueId);
 

@@ -152,16 +152,13 @@ void Container::addItem(const std::shared_ptr<Item> &item) {
 	item->setParent(getContainer());
 }
 
-StashContainerList Container::getStowableItems() const {
+StashContainerList Container::getStowableItems() {
 	StashContainerList toReturnList;
-	for (const auto &item : itemlist) {
-		if (item->getContainer() != nullptr) {
-			const auto &subContainer = item->getContainer()->getStowableItems();
-			for (const auto &key : subContainer | std::views::keys) {
-				const auto &containerItem = key;
-				toReturnList.emplace_back(containerItem, static_cast<uint32_t>(containerItem->getItemCount()));
-			}
-		} else if (item->isItemStorable()) {
+
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		const auto &item = *it;
+		const auto &itemType = Item::items.getItemType(item->getID());
+		if (item->isItemStorable() && !itemType.isContainer()) {
 			toReturnList.emplace_back(item, static_cast<uint32_t>(item->getItemCount()));
 		}
 	}

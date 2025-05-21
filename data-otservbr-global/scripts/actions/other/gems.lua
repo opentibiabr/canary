@@ -3,30 +3,23 @@ local lionsRockSanctuaryRockId = 1852
 local lionsRockSanctuaryFountainId = 6389
 
 local shrine = {
-	-- ice shrine
 	[3029] = {
 		targetAction = 15001,
-		-- shrinePosition = {x = 32194, y = 31418, z = 2}, -- read-only
 		destination = { x = 33430, y = 32278, z = 7 },
 		effect = CONST_ME_ICEATTACK,
 	},
-	-- fire shrine
 	[3030] = {
 		targetAction = 15002,
-		-- shrinePosition = {x = 32910, y = 32338, z = 15}, -- read-only
 		destination = { x = 33586, y = 32263, z = 7 },
 		effect = CONST_ME_MAGIC_RED,
 	},
-	-- earth shrine
 	[3032] = {
 		targetAction = 15003,
-		-- shrinePosition = {x = 32973, y = 32225, z = 7}, -- read-only
 		destination = { x = 33539, y = 32209, z = 7 },
 		effect = CONST_ME_SMALLPLANTS,
 	},
 	[3033] = {
 		targetAction = 15004,
-		-- shrinePosition = {x = 33060, y = 32713, z = 5}, -- read-only
 		destination = { x = 33527, y = 32301, z = 4 },
 		effect = CONST_ME_ENERGYHIT,
 	},
@@ -77,10 +70,57 @@ local lionsRock = {
 
 local gems = Action()
 
+local function restoreSanctuaryStone()
+	local tile = Tile(lionsRockSanctuaryPos)
+	local fountain = tile:getItemById(lionsRockSanctuaryFountainId)
+	if fountain then
+		fountain:transform(lionsRockSanctuaryRockId)
+		lionsRockSanctuaryPos:sendMagicEffect(CONST_ME_POFF)
+	end
+end
+
+local function checkLionsRockFields(player, storage)
+	if player:getStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields) == 3 then
+		local stone = Tile(lionsRockSanctuaryPos):getItemById(lionsRockSanctuaryRockId)
+		if stone then
+			stone:transform(lionsRockSanctuaryFountainId)
+			lionsRockSanctuaryPos:sendMagicEffect(CONST_ME_THUNDER)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Something happens at the center of the room ...")
+			player:setStorageValue(storage, 10)
+			addEvent(restoreSanctuaryStone, 30 * 1000)
+			return true
+		end
+	end
+	return false
+end
+
+local function lionsRockCreateField(player, itemPos, fieldId, storage)
+	local gemSpot = Tile(itemPos):getItemById(fieldId)
+	if not gemSpot then
+		Game.createItem(fieldId, 1, itemPos)
+		player:setStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields, player:getStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields) + 1)
+		checkLionsRockFields(player, storage)
+
+		addEvent(function()
+			local tile = Tile(itemPos)
+			if tile then
+				local field = tile:getItemById(fieldId)
+				if field then
+					field:remove()
+					player:setStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields, player:getStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields) - 1)
+				end
+			end
+		end, 60 * 1000) --60 seconds(1minute)
+
+		return true
+	end
+	return false
+end
+
 function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local questStorage = player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline)
-	if questStorage == 10 or questStorage == 11 then
-		player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 6)
+	if questStorage == 5 then
+    	player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 6)
 	end
 
 	-- Small emerald for Kilmaresh quest
@@ -124,45 +164,9 @@ function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
-	-- Use gems in the tile of lions rock quest
 	local setting = lionsRock[target.uid]
 	if not setting then
 		return false
-	end
-
-	-- Reset lion's fields
-	local function lionsRockFieldReset()
-		local gemSpot = Tile(setting.itemPos):getItemById(setting.fieldId)
-		if gemSpot then
-			player:setStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields, player:getStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields) - 1)
-			gemSpot:remove()
-			return true
-		end
-	end
-
-	-- Check if all lion's fields are set
-	local function checkLionsRockFields(storage)
-		if player:getStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields) == 3 then
-			local stone = Tile(lionsRockSanctuaryPos):getItemById(lionsRockSanctuaryRockId)
-			if stone then
-				stone:transform(lionsRockSanctuaryFountainId)
-				lionsRockSanctuaryPos:sendMagicEffect(CONST_ME_THUNDER)
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Something happens at the center of the room ...")
-				player:setStorageValue(storage, 10)
-				return true
-			end
-		end
-	end
-
-	-- Delay to create lion's field
-	local function lionsRockCreateField(itemPos, fieldId, storage)
-		local gemSpot = Tile(itemPos):getItemById(fieldId)
-		if not gemSpot then
-			Game.createItem(fieldId, 1, itemPos)
-			player:setStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields, player:getStorageValue(Storage.Quest.U10_70.LionsRock.LionsRockFields) + 1)
-			checkLionsRockFields(storage)
-			return true
-		end
 	end
 
 	if player:getStorageValue(setting.storage) == setting.value then
@@ -173,8 +177,7 @@ function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, setting.message)
 				item:remove(1)
 				player:setStorageValue(setting.storage, setting.value + 1)
-				addEvent(lionsRockCreateField, 2 * 1000, setting.itemPos, setting.fieldId, setting.storage)
-				addEvent(lionsRockFieldReset, 60 * 1000)
+				lionsRockCreateField(player, setting.itemPos, setting.fieldId, setting.storage)
 				return true
 			end
 		end
@@ -183,7 +186,18 @@ function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return false
 end
 
-for index, value in pairs(shrine) do
-	gems:id(index)
+local registeredItems = {}
+
+for itemId in pairs(shrine) do
+	registeredItems[itemId] = true
 end
+
+for _, setting in pairs(lionsRock) do
+	registeredItems[setting.item] = true
+end
+
+for itemId in pairs(registeredItems) do
+	gems:id(itemId)
+end
+
 gems:register()

@@ -130,10 +130,12 @@ std::ostream &operator<<(std::ostream &, const Direction &);
 
 template <>
 struct fmt::formatter<Position> {
-	constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
+	constexpr auto parse(format_parse_context &ctx) {
+		return ctx.begin();
+	}
 
 	template <typename FormatContext>
-	auto format(const Position& pos, FormatContext& ctx) const {
+	auto format(const Position &pos, FormatContext &ctx) const {
 		return format_to(ctx.out(), "({}, {}, {})", pos.x, pos.y, pos.z);
 	}
 };

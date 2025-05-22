@@ -3496,6 +3496,23 @@ void Item::updateTileFlags() {
 	}
 }
 
+void Item::playerUpdateSupplyTracker() {
+	const auto &player = getHoldingPlayer();
+	if (!player) {
+		return;
+	}
+
+	static const std::array<Slots_t, 2> slotsToCheck = { CONST_SLOT_NECKLACE, CONST_SLOT_RING };
+	const auto &item = getItem();
+	for (const Slots_t slot : slotsToCheck) {
+		const auto &inventoryItem = player->getInventoryItem(slot);
+		if (inventoryItem && inventoryItem == item) {
+			player->updateSupplyTracker(item);
+			break;
+		}
+	}
+}
+
 // Custom Attributes
 
 const std::map<std::string, CustomAttribute, std::less<>> &ItemProperties::getCustomAttributeMap() const {

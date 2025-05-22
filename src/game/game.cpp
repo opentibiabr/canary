@@ -2406,6 +2406,7 @@ ReturnValue Game::internalRemoveItem(const std::shared_ptr<Item> &items, int32_t
 	}
 
 	if (!test) {
+		item->playerUpdateSupplyTracker();
 		int32_t index = cylinder->getThingIndex(item);
 		// remove the item
 		cylinder->removeThing(item, count);
@@ -2853,6 +2854,7 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 				g_logger().debug("Decay duration old type {}, transformEquipTo {}, transformDeEquipTo {}", curType.decayTo, curType.transformEquipTo, curType.transformDeEquipTo);
 				g_logger().debug("Decay duration new type decayTo {}, transformEquipTo {}, transformDeEquipTo {}", newType.decayTo, newType.transformEquipTo, newType.transformDeEquipTo);
 				itemId = newType.decayTo;
+				item->playerUpdateSupplyTracker();
 			} else if (curType.id != newType.id) {
 				if (newType.group != curType.group) {
 					item->setDefaultSubtype();

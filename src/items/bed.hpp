@@ -49,6 +49,8 @@ public:
 
 	friend class MapCache;
 
+	void forceClearSleeper();
+
 private:
 	void updateAppearance(const std::shared_ptr<Player> &player);
 	void regeneratePlayer(const std::shared_ptr<Player> &player) const;

@@ -8845,9 +8845,24 @@ uint32_t sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<
 }
 
 void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems) {
-	if (!item || !item->isItemStorable()) {
+	if (!item || !item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH) {
 		sendCancelMessage("This item cannot be stowed here.");
 		return;
+	}
+
+	if (!item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH) {
+		if (!item->getParent()) {
+			sendCancelMessage("This item cannot be stowed here.");
+			return;
+		}
+		if (!item->getParent()->getItem()) {
+			sendCancelMessage("This item cannot be stowed here.");
+			return;
+		}
+		if (item->getParent()->getItem()->getID() != ITEM_GOLD_POUCH) {
+			sendCancelMessage("This item cannot be stowed here.");
+			return;
+		}
 	}
 
 	StashContainerList itemDict;
@@ -8855,6 +8870,11 @@ void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool al
 	uint32_t maxItemsToStow = g_configManager().getNumber(STASH_MANAGE_AMOUNT);
 
 	if (allItems) {
+		if (item->getContainer()) {
+			sendCancelMessage("You cannot stow containers.");
+			return;
+		}
+
 		if (!item->isInsideDepot(true)) {
 			// Stow items from player backpack
 			if (const auto &backpack = getBackpack()) {

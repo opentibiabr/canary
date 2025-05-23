@@ -119,7 +119,7 @@ end
 
 function gems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local questStorage = player:getStorageValue(Storage.Quest.U10_70.LionsRock.Questline)
-	if questStorage == 5 then
+	if questStorage == 5 or questStorage == 10 or questStorage == 11 then
     	player:setStorageValue(Storage.Quest.U10_70.LionsRock.Questline, 6)
 	end
 

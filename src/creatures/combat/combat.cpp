@@ -143,7 +143,7 @@ CombatType_t Combat::ConditionToDamageType(ConditionType_t type) {
 
 		case CONDITION_POISON:
 			return COMBAT_EARTHDAMAGE;
-		
+
 		case CONDITION_AGONY:
 			return COMBAT_AGONYDAMAGE;
 
@@ -176,7 +176,7 @@ ConditionType_t Combat::DamageToConditionType(CombatType_t type) {
 
 		case COMBAT_EARTHDAMAGE:
 			return CONDITION_POISON;
-		
+
 		case CONDITION_AGONY:
 			return CONDITION_AGONY;
 

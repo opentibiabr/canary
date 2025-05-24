@@ -1916,7 +1916,7 @@ std::unordered_set<PlayerIcon> ConditionDamage::getIcons() const {
 		case CONDITION_POISON:
 			icons.insert(PlayerIcon::Poison);
 			break;
-		
+
 		case CONDITION_AGONY:
 			icons.insert(PlayerIcon::Agony);
 			break;

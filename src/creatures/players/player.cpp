@@ -5841,6 +5841,7 @@ void Player::onAddCondition(ConditionType_t type) {
 void Player::onCleanseCondition(ConditionType_t type) const {
 	static const std::unordered_map<ConditionType_t, std::string_view> conditionMessages = {
 		{ CONDITION_POISON, "poisoned" },
+		{ CONDITION_AGONY, "agonyed" },
 		{ CONDITION_FIRE, "burning" },
 		{ CONDITION_ENERGY, "electrified" },
 		{ CONDITION_FREEZING, "freezing" },
@@ -5865,6 +5866,10 @@ void Player::onAddCombatCondition(ConditionType_t type) {
 	switch (type) {
 		case CONDITION_POISON:
 			sendTextMessage(MESSAGE_FAILURE, "You are poisoned.");
+			break;
+
+		case CONDITION_AGONY:
+			sendTextMessage(MESSAGE_FAILURE, "You are agonyed.");
 			break;
 
 		case CONDITION_DROWN:
@@ -11200,6 +11205,7 @@ bool Player::hasPermittedConditionInPZ() const {
 		CONDITION_ENERGY,
 		CONDITION_FIRE,
 		CONDITION_POISON,
+		CONDITION_AGONY,
 		CONDITION_BLEEDING,
 		CONDITION_CURSED,
 		CONDITION_DAZZLED

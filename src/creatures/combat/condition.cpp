@@ -209,6 +209,7 @@ bool Condition::executeCondition(const std::shared_ptr<Creature> &creature, int3
 std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
 	switch (type) {
 		case CONDITION_POISON:
+		case CONDITION_AGONY:
 		case CONDITION_FIRE:
 		case CONDITION_ENERGY:
 		case CONDITION_DROWN:
@@ -1914,6 +1915,10 @@ std::unordered_set<PlayerIcon> ConditionDamage::getIcons() const {
 
 		case CONDITION_POISON:
 			icons.insert(PlayerIcon::Poison);
+			break;
+		
+		case CONDITION_AGONY:
+			icons.insert(PlayerIcon::Agony);
 			break;
 
 		case CONDITION_FREEZING:

@@ -134,6 +134,7 @@ constexpr bool IsConditionSuppressible(ConditionType_t condition) {
 		CONDITION_DROWN,
 		CONDITION_FREEZING,
 		CONDITION_CURSED,
+		CONDITION_AGONY,
 	};
 
 	return std::ranges::any_of(suppressibleConditions, [condition](const auto &suppressibleCondition) {

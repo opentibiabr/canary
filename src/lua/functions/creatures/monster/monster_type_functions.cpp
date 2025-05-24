@@ -905,6 +905,8 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 		conditionType = CONDITION_FIRE;
 	} else if (immunity == "poison" || immunity == "earth") {
 		conditionType = CONDITION_POISON;
+	} else if (immunity == "agony") {
+		conditionType = CONDITION_AGONY;
 	} else if (immunity == "drown") {
 		conditionType = CONDITION_DROWN;
 	} else if (immunity == "ice") {

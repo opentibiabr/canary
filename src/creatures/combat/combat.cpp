@@ -143,6 +143,9 @@ CombatType_t Combat::ConditionToDamageType(ConditionType_t type) {
 
 		case CONDITION_POISON:
 			return COMBAT_EARTHDAMAGE;
+		
+		case CONDITION_AGONY:
+			return COMBAT_AGONYDAMAGE;
 
 		case CONDITION_FREEZING:
 			return COMBAT_ICEDAMAGE;
@@ -173,6 +176,9 @@ ConditionType_t Combat::DamageToConditionType(CombatType_t type) {
 
 		case COMBAT_EARTHDAMAGE:
 			return CONDITION_POISON;
+		
+		case CONDITION_AGONY:
+			return CONDITION_AGONY;
 
 		case COMBAT_ICEDAMAGE:
 			return CONDITION_FREEZING;

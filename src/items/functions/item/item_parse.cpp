@@ -576,6 +576,8 @@ void ItemParse::parseSupressDrunk(const std::string &stringValue, pugi::xml_attr
 			conditionType = CONDITION_FIRE;
 		} else if (stringValue == "suppresspoison") {
 			conditionType = CONDITION_POISON;
+		} else if (stringValue == "suppressagony") {
+			conditionType = CONDITION_AGONY;
 		} else if (stringValue == "suppressdrown") {
 			conditionType = CONDITION_DROWN;
 		} else if (stringValue == "suppressphysical") {

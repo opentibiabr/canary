@@ -2078,26 +2078,15 @@ function Player.makeCoinTransaction(self, offer, desc)
 		desc = offer.name
 	end
 
-	if offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
+	local isExpBoost = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
+	if isExpBoost then
 		local playerKV = self:kv()
-		local expBoostCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
-
-		if expBoostCount == -1 or expBoostCount == 0 or expBoostCount > 5 then
+		local expBoostCount = tonumber(playerKV:get(GameStore.Kv.expBoostCount)) or 0
+		if expBoostCount <= 0 or expBoostCount > 5 then
 			expBoostCount = 1
 		end
-		if expBoostCount <= 1 then
-			offer.price = GameStore.ExpBoostValues[1]
-		elseif expBoostCount == 2 then
-			offer.price = GameStore.ExpBoostValues[2]
-		elseif expBoostCount == 3 then
-			offer.price = GameStore.ExpBoostValues[3]
-		elseif expBoostCount == 4 then
-			offer.price = GameStore.ExpBoostValues[4]
-		elseif expBoostCount == 5 then
-			offer.price = GameStore.ExpBoostValues[5]
-		else
-			offer.price = offer.price
-		end
+		local priceTable = isExpBoost and GameStore.ExpBoostValues or GameStore.ExpBoostValuesCustom
+		offer.price = priceTable[expBoostCount] or priceTable[1]
 		playerKV:set(GameStore.Kv.expBoostCount, expBoostCount + 1)
 	end
 

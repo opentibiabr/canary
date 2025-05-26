@@ -201,11 +201,16 @@ void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
 
 bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
+	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	if ((msgLength % 8) != 0) {
+		g_logger().error("XTEA_decrypt Failed - invalid block size: {}", msgLength);
+		for (int i = 0; i < msgLength; ++i) {
+			fmt::print("{:02X} ", buffer[i]);
+		}
+		fmt::print("\n");
 		return false;
 	}
 
-	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	size_t messageLength = msgLength;
 
 	XTEA_transform(buffer, messageLength, false);
@@ -213,6 +218,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	uint8_t paddingSize = msg.getByte();
 	uint16_t innerLength = messageLength - paddingSize;
 	if (innerLength + paddingSize > msgLength) {
+		g_logger().error("XTEA_decrypt Failed - invalid inner length: {} + {} > {}", innerLength, paddingSize, msgLength);
 		return false;
 	}
 

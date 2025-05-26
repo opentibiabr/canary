@@ -802,7 +802,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	std::array<uint32_t, 4> key = { msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>() };
+	std::array<uint32_t, 4> key = {
+		msg.get<uint32_t>(),
+		msg.get<uint32_t>(),
+		msg.get<uint32_t>(),
+		msg.get<uint32_t>()
+	};
+
 	enableXTEAEncryption();
 	setXTEAKey(key.data());
 

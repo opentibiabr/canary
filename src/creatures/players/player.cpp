@@ -2380,7 +2380,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 
 	if (canAddImbuement) {
 		// Update imbuement stats item if the item is equipped
-		if (item->getParent() == getPlayer()) {
+		if (item->getParent() == thisPlayer) {
 			addItemImbuementStats(imbuement);
 		}
 

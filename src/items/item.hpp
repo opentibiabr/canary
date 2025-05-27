@@ -722,6 +722,8 @@ public:
 		return m_hasActor;
 	}
 
+	void playerUpdateSupplyTracker();
+
 protected:
 	std::weak_ptr<Cylinder> m_parent;
 

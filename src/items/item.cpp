@@ -133,7 +133,7 @@ void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 	setCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot), valueDuration);
 }
 
-bool Item::canAddImbuement(uint8_t slot, const std::shared_ptr<Player> &player, const Imbuement *imbuement) {
+bool Item::canAddImbuement(uint8_t slot, const std::shared_ptr<Player> &player, const Imbuement* imbuement) {
 	auto itemSlots = getImbuementSlot();
 	if (itemSlots == 0 || slot >= itemSlots) {
 		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", player->getName(), slot);

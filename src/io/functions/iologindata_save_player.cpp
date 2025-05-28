@@ -346,7 +346,7 @@ bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
 
 	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
-		const ItemType& itemType = Item::items[itemId];
+		const ItemType &itemType = Item::items[itemId];
 		if (itemType.decayTo >= 0 && itemType.decayTime > 0) {
 			continue;
 		}

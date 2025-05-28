@@ -445,7 +445,7 @@ void IOLoginDataLoad::loadPlayerStashItems(const std::shared_ptr<Player> &player
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			auto itemId = result->getNumber<uint16_t>("item_id");
-			const ItemType& itemType = Item::items[itemId];
+			const ItemType &itemType = Item::items[itemId];
 			if (itemType.decayTo >= 0 && itemType.decayTime > 0) {
 				continue;
 			}

@@ -444,7 +444,19 @@ void IOLoginDataLoad::loadPlayerStashItems(const std::shared_ptr<Player> &player
 	query << "SELECT `item_count`, `item_id`  FROM `player_stash` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->addItemOnStash(result->getNumber<uint16_t>("item_id"), result->getNumber<uint32_t>("item_count"));
+			auto itemId = result->getNumber<uint16_t>("item_id");
+			const ItemType& itemType = Item::items[itemId];
+			if (itemType.decayTo >= 0 && itemType.decayTime > 0) {
+				continue;
+			}
+
+			auto wareId = itemType.wareId;
+			if (wareId > 0 && wareId != itemType.id) {
+				g_logger().warn("[{}] - Item ID {} is a ware item, for player: {}, skipping.", __FUNCTION__, itemId, player->getName());
+				continue;
+			}
+
+			player->addItemOnStash(itemId, result->getNumber<uint32_t>("item_count"));
 		} while (result->next());
 	}
 }

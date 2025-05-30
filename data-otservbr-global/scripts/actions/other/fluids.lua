@@ -105,7 +105,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif item.type == 1 then
-			toPosition:sendMagicEffect(CONST_ME_WATER_SPLASH)
+			toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
 			target:transform(target.itemid + 1)
 			item:transform(item.itemid, 0)
 		else

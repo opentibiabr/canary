@@ -590,7 +590,7 @@ CREATE TABLE IF NOT EXISTS `player_deaths` (
     `mostdamage_is_player` tinyint(1) NOT NULL DEFAULT '0',
     `unjustified` tinyint(1) NOT NULL DEFAULT '0',
     `mostdamage_unjustified` tinyint(1) NOT NULL DEFAULT '0',
-    `participants` TEXT NOT NULL DEFAULT '[]',
+    `participants` TEXT NOT NULL DEFAULT '',
     INDEX `player_id` (`player_id`),
     INDEX `killed_by` (`killed_by`),
     INDEX `mostdamage_by` (`mostdamage_by`),

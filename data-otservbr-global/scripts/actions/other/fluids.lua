@@ -11,23 +11,26 @@ poison:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 local fluidMessage = {
 	[FLUID_NONE] = "Gulp.", -- water
-	[FLUID_WATER] = "Aah...", -- wine
-	[FLUID_WINE] = "Aah...", -- beer
-	[FLUID_BEER] = "Gulp.", -- mud
-	[FLUID_MUD] = "Gulp.", -- blood
-	[FLUID_BLOOD] = "Urgh!", -- slime
-	[FLUID_SLIME] = "Gulp.", -- oil
-	[FLUID_OIL] = "Urgh!", -- urine
-	[FLUID_URINE] = "Gulp.", -- milk
-	[FLUID_MILK] = "Aaaah...", -- manafluid
-	[FLUID_MANA] = "Aaaah...", -- lifefluid
-	[FLUID_LIFE] = "Mmmh.", -- lemonade
-	[FLUID_LEMONADE] = "Aah...", -- rum
-	[FLUID_RUM] = "Mmmh.", -- fruit juice
-	[FLUID_FRUITJUICE] = "Mmmh.", -- coconut milk
-	[FLUID_COCONUTMILK] = "Aah...", -- mead
-	[FLUID_MEAD] = "Gulp.", -- tea
-	[FLUID_TEA] = "Urgh!", -- ink
+	[FLUID_WATER] = "Gulp.", -- water
+	[FLUID_WINE] = "Aah...", -- wine
+	[FLUID_BEER] = "Aah...", -- beer
+	[FLUID_MUD] = "Gulp.", -- mud
+	[FLUID_BLOOD] = "Gulp.", -- blood
+	[FLUID_SLIME] = "Urgh!", -- slime
+	[FLUID_OIL] = "Gulp.", -- oil
+	[FLUID_URINE] = "Urgh!", -- urine
+	[FLUID_MILK] = "Gulp.", -- milk
+	[FLUID_MANA] = "Aaaah...", -- mana fluid
+	[FLUID_LIFE] = "Aaaah...", -- life fluid
+	[FLUID_LEMONADE] = "Mmmh.", -- lemonade
+	[FLUID_RUM] = "Aah...", -- rum
+	[FLUID_FRUITJUICE] = "Mmmh.", -- fruit juice
+	[FLUID_COCONUTMILK] = "Mmmh.", -- coconut milk
+	[FLUID_MEAD] = "Aah...", -- mead
+	[FLUID_TEA] = "Gulp.", -- tea
+	[FLUID_INK] = "Urgh!", -- ink
+	[FLUID_CANDY] = "Mmmh.", -- candy fluid
+	[FLUID_CHOCOLATE] = "Mmmh.", -- chocolate
 }
 
 local function graveStoneTeleport(cid, fromPosition, toPosition)

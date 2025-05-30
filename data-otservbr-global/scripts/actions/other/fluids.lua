@@ -10,27 +10,27 @@ poison:setParameter(CONDITION_PARAM_TICKINTERVAL, 4000)
 poison:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 local fluidMessage = {
-	[FLUID_NONE] = "Gulp.", -- water
-	[FLUID_WATER] = "Gulp.", -- water
-	[FLUID_WINE] = "Aah...", -- wine
-	[FLUID_BEER] = "Aah...", -- beer
-	[FLUID_MUD] = "Gulp.", -- mud
-	[FLUID_BLOOD] = "Gulp.", -- blood
-	[FLUID_SLIME] = "Urgh!", -- slime
-	[FLUID_OIL] = "Gulp.", -- oil
-	[FLUID_URINE] = "Urgh!", -- urine
-	[FLUID_MILK] = "Gulp.", -- milk
-	[FLUID_MANA] = "Aaaah...", -- mana fluid
-	[FLUID_LIFE] = "Aaaah...", -- life fluid
-	[FLUID_LEMONADE] = "Mmmh.", -- lemonade
-	[FLUID_RUM] = "Aah...", -- rum
-	[FLUID_FRUITJUICE] = "Mmmh.", -- fruit juice
-	[FLUID_COCONUTMILK] = "Mmmh.", -- coconut milk
-	[FLUID_MEAD] = "Aah...", -- mead
-	[FLUID_TEA] = "Gulp.", -- tea
-	[FLUID_INK] = "Urgh!", -- ink
-	[FLUID_CANDY] = "Mmmh.", -- candy fluid
-	[FLUID_CHOCOLATE] = "Mmmh.", -- chocolate
+	[FLUID_NONE] = "Gulp.", -- water 0
+	[FLUID_WATER] = "Gulp.", -- water 1
+	[FLUID_WINE] = "Aah...", -- wine 2
+	[FLUID_BEER] = "Aah...", -- beer 3
+	[FLUID_MUD] = "Gulp.", -- mud 4
+	[FLUID_BLOOD] = "Gulp.", -- blood 5
+	[FLUID_SLIME] = "Urgh!", -- slime 6
+	[FLUID_OIL] = "Gulp.", -- oil 7
+	[FLUID_URINE] = "Urgh!", -- urine 8
+	[FLUID_MILK] = "Gulp.", -- milk 9
+	[FLUID_MANA] = "Aaaah...", -- mana fluid 10
+	[FLUID_LIFE] = "Aaaah...", -- life fluid 11
+	[FLUID_LEMONADE] = "Mmmh.", -- lemonade 12
+	[FLUID_RUM] = "Aah...", -- rum 13
+	[FLUID_FRUITJUICE] = "Mmmh.", -- fruit juice 14
+	[FLUID_COCONUTMILK] = "Mmmh.", -- coconut milk 15
+	[FLUID_MEAD] = "Aah...", -- mead 16
+	[FLUID_TEA] = "Gulp.", -- tea 17
+	[FLUID_INK] = "Urgh!", -- ink 18
+	[FLUID_CANDY] = "Mmmh.", -- candy fluid 19
+	[FLUID_CHOCOLATE] = "Mmmh.", -- chocolate 20
 }
 
 local function graveStoneTeleport(cid, fromPosition, toPosition)
@@ -118,7 +118,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif target.uid == player.uid then
-			if table.contains({ 2, 3, 16 }, item.type) then
+			if table.contains({ 2, 3, 13, 16 }, item.type) then
 				player:addCondition(drunk)
 			elseif item.type == 6 then
 				local town = player:getTown()

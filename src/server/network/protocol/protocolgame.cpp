@@ -917,9 +917,14 @@ void ProtocolGame::disconnectClient(const std::string &message) const {
 }
 
 void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
-	g_dispatcher().safeCall([self = getThis(), msg = std::move(msg)] {
-		self->getOutputBuffer(msg.getLength())->append(msg);
-	});
+	if (g_dispatcher().context().isAsync()) {
+		g_dispatcher().addEvent([self = getThis(), msg] {
+			self->getOutputBuffer(msg.getLength())->append(msg);
+		},
+		                        __FUNCTION__);
+	} else {
+		getOutputBuffer(msg.getLength())->append(msg);
+	}
 }
 
 void ProtocolGame::parsePacket(NetworkMessage &msg) {
@@ -5990,6 +5995,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 		}
 
 		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
+			if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+				continue;
+			}
+
 			auto skills = it.abilities->skills[i];
 			if (!skills) {
 				continue;

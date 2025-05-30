@@ -34,100 +34,100 @@ void PlayerCyclopedia::loadSummaryData() const {
 }
 
 void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) const {
-    Benchmark bm_check;
-    uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
-    const auto query = fmt::format("SELECT `time`, `level`, `killed_by`, `mostdamage_by`, `participants`, (select count(*) FROM `player_deaths` WHERE `player_id` = {}) as `entries` FROM `player_deaths` WHERE `player_id` = {} AND `time` >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 30 DAY)) ORDER BY `time` DESC LIMIT {}, {}", m_player.getGUID(), m_player.getGUID(), offset, entriesPerPage);
+	Benchmark bm_check;
+	uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
+	const auto query = fmt::format("SELECT `time`, `level`, `killed_by`, `mostdamage_by`, `participants`, (select count(*) FROM `player_deaths` WHERE `player_id` = {}) as `entries` FROM `player_deaths` WHERE `player_id` = {} AND `time` >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 30 DAY)) ORDER BY `time` DESC LIMIT {}, {}", m_player.getGUID(), m_player.getGUID(), offset, entriesPerPage);
 
-    uint32_t playerID = m_player.getID();
-    const std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](const DBResult_ptr &result, bool) {
-        const auto &player = g_game().getPlayerByID(playerID);
-        if (!player) {
-            return;
-        }
+	uint32_t playerID = m_player.getID();
+	const std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](const DBResult_ptr &result, bool) {
+		const auto &player = g_game().getPlayerByID(playerID);
+		if (!player) {
+			return;
+		}
 
-        player->resetAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
-        if (!result) {
-            player->sendCyclopediaCharacterRecentDeaths(0, 0, {});
-            return;
-        }
+		player->resetAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
+		if (!result) {
+			player->sendCyclopediaCharacterRecentDeaths(0, 0, {});
+			return;
+		}
 
-        auto pages = result->getNumber<uint32_t>("entries");
-        pages += entriesPerPage - 1;
-        pages /= entriesPerPage;
+		auto pages = result->getNumber<uint32_t>("entries");
+		pages += entriesPerPage - 1;
+		pages /= entriesPerPage;
 
-        std::vector<RecentDeathEntry> entries;
-        entries.reserve(result->countResults());
-        do {
-            std::string killed_by = result->getString("killed_by");
-            std::string mostdamage_by = result->getString("mostdamage_by");
-            std::string participants = result->getString("participants");
-            // Debug: Log the raw participants string
-            g_logger().debug("Participants string: {}", participants);
+		std::vector<RecentDeathEntry> entries;
+		entries.reserve(result->countResults());
+		do {
+			std::string killed_by = result->getString("killed_by");
+			std::string mostdamage_by = result->getString("mostdamage_by");
+			std::string participants = result->getString("participants");
+			// Debug: Log the raw participants string
+			g_logger().debug("Participants string: {}", participants);
 
-            std::string cause = fmt::format("Died at level {}", result->getNumber<uint32_t>("level"));
-            if (!killed_by.empty()) {
-                cause.append(fmt::format(" by {}", killed_by));
-            }
-            if (!mostdamage_by.empty()) {
-                if (mostdamage_by != killed_by) {
-                    cause.append(fmt::format(" and by {}", mostdamage_by));
-                } else {
-                    cause.append(" <b>(soled)</b>");
-                }
-            }
-            if (!participants.empty()) {
-                std::map<std::string, std::pair<int, std::string>> participantCount;
-                std::set<std::string> skipped; // Track skipped names like PHP
-                std::istringstream iss(participants);
-                std::string line;
-                while (std::getline(iss, line)) {
-                    if (line.find("Name: ") == 0) {
-                        std::string name = line.substr(6);
-                        if (std::getline(iss, line) && line.find("Type: ") == 0) {
-                            std::string type = line.substr(6);
-                            // Skip only if not already skipped (mimic PHP logic)
-                            if ((name == killed_by || name == mostdamage_by) && skipped.find(name) == skipped.end()) {
-                                skipped.insert(name);
-                                continue;
-                            }
-                            participantCount[name].first++; // Increment count
-                            participantCount[name].second = type; // Store type
-                        }
-                    }
-                }
+			std::string cause = fmt::format("Died at level {}", result->getNumber<uint32_t>("level"));
+			if (!killed_by.empty()) {
+				cause.append(fmt::format(" by {}", killed_by));
+			}
+			if (!mostdamage_by.empty()) {
+				if (mostdamage_by != killed_by) {
+					cause.append(fmt::format(" and by {}", mostdamage_by));
+				} else {
+					cause.append(" <b>(soled)</b>");
+				}
+			}
+			if (!participants.empty()) {
+				std::map<std::string, std::pair<int, std::string>> participantCount;
+				std::set<std::string> skipped; // Track skipped names like PHP
+				std::istringstream iss(participants);
+				std::string line;
+				while (std::getline(iss, line)) {
+					if (line.find("Name: ") == 0) {
+						std::string name = line.substr(6);
+						if (std::getline(iss, line) && line.find("Type: ") == 0) {
+							std::string type = line.substr(6);
+							// Skip only if not already skipped (mimic PHP logic)
+							if ((name == killed_by || name == mostdamage_by) && skipped.find(name) == skipped.end()) {
+								skipped.insert(name);
+								continue;
+							}
+							participantCount[name].first++; // Increment count
+							participantCount[name].second = type; // Store type
+						}
+					}
+				}
 
-                std::vector<std::string> players;
-                std::vector<std::string> monsters;
-                for (const auto &[name, data] : participantCount) {
-                    int count = data.first;
-                    std::string type = data.second;
-                    std::string entry = count > 1 ? fmt::format("{}x {}", count, name) : name;
-                    if (type == "player") {
-                        players.push_back(entry);
-                    } else if (type == "monster") {
-                        monsters.push_back(entry);
-                    }
-                }
+				std::vector<std::string> players;
+				std::vector<std::string> monsters;
+				for (const auto &[name, data] : participantCount) {
+					int count = data.first;
+					std::string type = data.second;
+					std::string entry = count > 1 ? fmt::format("{}x {}", count, name) : name;
+					if (type == "player") {
+						players.push_back(entry);
+					} else if (type == "monster") {
+						monsters.push_back(entry);
+					}
+				}
 
-                if (!players.empty() || !monsters.empty()) {
-                    cause.append(", ");
-                    std::vector<std::string> allParticipants;
-                    allParticipants.insert(allParticipants.end(), players.begin(), players.end());
-                    allParticipants.insert(allParticipants.end(), monsters.begin(), monsters.end());
-                    cause.append(fmt::format("{}", fmt::join(allParticipants, ", ")));
-                }
-                // Debug: Log the final cause string
-                g_logger().debug("Cause string: {}", cause);
-            }
+				if (!players.empty() || !monsters.empty()) {
+					cause.append(", ");
+					std::vector<std::string> allParticipants;
+					allParticipants.insert(allParticipants.end(), players.begin(), players.end());
+					allParticipants.insert(allParticipants.end(), monsters.begin(), monsters.end());
+					cause.append(fmt::format("{}", fmt::join(allParticipants, ", ")));
+				}
+				// Debug: Log the final cause string
+				g_logger().debug("Cause string: {}", cause);
+			}
 
-            entries.emplace_back(cause, result->getNumber<uint32_t>("time"));
-        } while (result->next());
-        player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
-    };
-    g_databaseTasks().store(query, callback);
-    m_player.addAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
+			entries.emplace_back(cause, result->getNumber<uint32_t>("time"));
+		} while (result->next());
+		player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
+	};
+	g_databaseTasks().store(query, callback);
+	m_player.addAsyncOngoingTask(PlayerAsyncTask_RecentDeaths);
 
-    g_logger().debug("Loading death history from the player {} took {} milliseconds.", m_player.getName(), bm_check.duration());
+	g_logger().debug("Loading death history from the player {} took {} milliseconds.", m_player.getName(), bm_check.duration());
 }
 
 void PlayerCyclopedia::loadRecentKills(uint16_t page, uint16_t entriesPerPage) const {

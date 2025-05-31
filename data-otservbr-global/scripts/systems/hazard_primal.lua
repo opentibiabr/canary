@@ -84,6 +84,12 @@ end
 local spawnEvent = ZoneEvent(hazardZone)
 function spawnEvent.onSpawn(monster, position)
 	monster:registerEvent("PrimalHazardDeath")
+	if not (string.find(monster:getName(), "Primal Menace") or 
+            string.find(monster:getName(), "Fungosaurus") or 
+            string.find(monster:getName(), "Primal Pack Beast")) then
+        monster:registerEvent("PrimalPlunderDeath")
+        monster:hazard(true)
+    end
 end
 spawnEvent:register()
 
@@ -114,9 +120,32 @@ function deathEvent.onDeath(creature)
 		createPrimalPod(closestFreePosition)
 		return true
 	end
+	return true
+end
 
-	-- Plunder patriarch
-	chanceTo = math.random(1, 100000)
+deathEvent:register()
+
+local deathPlunderEvent = CreatureEvent("PrimalPlunderDeath")
+function deathPlunderEvent.onDeath(creature)
+	if not configManager.getBoolean(configKeys.TOGGLE_HAZARDSYSTEM) then
+		return true
+	end
+
+	local monster = creature:getMonster()
+	if not creature or not monster or not monster:hazard() or not hazard:isInZone(monster:getPosition()) then
+		return true
+	end
+	-- don't spawn pods or plunder if the monster is a reward boss
+	if monster:getType():isRewardBoss() then
+		return true
+	end
+
+	local player, points = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
+	if points < 1 then
+		return true
+	end
+
+	local chanceTo = math.random(1, 10000)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_SPAWN_PLUNDER_MULTIPLIER)) then
 		local closestFreePosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
 		local monster = Game.createMonster("Plunder Patriarch", closestFreePosition.x == 0 and monster:getPosition() or closestFreePosition, false, true)
@@ -128,4 +157,4 @@ function deathEvent.onDeath(creature)
 	return true
 end
 
-deathEvent:register()
+deathPlunderEvent:register()

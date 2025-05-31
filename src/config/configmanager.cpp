@@ -116,6 +116,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, REFUND_BEGINNING_WEAPON_MANA, "refundBeginningWeaponMana", false);
 	loadBoolConfig(L, REMOVE_BEGINNING_WEAPON_AMMO, "removeBeginningWeaponAmmunition", true);
 	loadBoolConfig(L, REMOVE_POTION_CHARGES, "removeChargesFromPotions", true);
+	loadBoolConfig(L, REMOVE_EMPTY_POTION_FLASKS, "removeEmptyPotionFlasks", false);
 	loadBoolConfig(L, REMOVE_RUNE_CHARGES, "removeChargesFromRunes", true);
 	loadBoolConfig(L, REMOVE_WEAPON_AMMO, "removeWeaponAmmunition", true);
 	loadBoolConfig(L, REMOVE_WEAPON_CHARGES, "removeWeaponCharges", true);

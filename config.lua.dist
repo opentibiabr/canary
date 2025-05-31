@@ -33,6 +33,7 @@ protectionLevel = 7
 pzLocked = 60 * 1000
 removeChargesFromRunes = true
 removeChargesFromPotions = true
+removeEmptyPotionFlasks = true
 removeWeaponAmmunition = true
 removeWeaponCharges = true
 removeBeginningWeaponAmmunition = true

@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 50 (feat: support to 14.11)")
+	logger.info("Updating database to version 50 (feat: support to 14.12)")
 
 	db.query([[
 		ALTER TABLE `player_charms`

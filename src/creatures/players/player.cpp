@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
@@ -2321,6 +2322,12 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 				return;
 			}
 		}
+
+		if (imbuementInfo.imbuement == imbuement) {
+			g_logger().error("[Player::onApplyImbuement] - Duplicate imbuement application detected for '{}'", imbuement->getName());
+			sendImbuementResult("This imbuement is already applied to this item.");
+			return;
+		}
 	}
 
 	const auto &items = imbuement->getItems();
@@ -2381,9 +2388,13 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	if (canAddImbuement) {
 		// Update imbuement stats item if the item is equipped
 		if (item->getParent() == thisPlayer) {
-			addItemImbuementStats(imbuement);
+		    ImbuementInfo oldImb;
+		    if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
+		        removeItemImbuementStats(oldImb.imbuement);
+		    }
+		
+		    addItemImbuementStats(imbuement);
 		}
-
 		item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	}
 

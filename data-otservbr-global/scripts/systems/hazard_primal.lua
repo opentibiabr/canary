@@ -84,12 +84,10 @@ end
 local spawnEvent = ZoneEvent(hazardZone)
 function spawnEvent.onSpawn(monster, position)
 	monster:registerEvent("PrimalHazardDeath")
-	if not (string.find(monster:getName(), "Primal Menace") or 
-            string.find(monster:getName(), "Fungosaurus") or 
-            string.find(monster:getName(), "Primal Pack Beast")) then
-        monster:registerEvent("PrimalPlunderDeath")
-        monster:hazard(true)
-    end
+	if not (string.find(monster:getName(), "Primal Menace") or string.find(monster:getName(), "Fungosaurus") or string.find(monster:getName(), "Primal Pack Beast")) then
+		monster:registerEvent("PrimalPlunderDeath")
+		monster:hazard(true)
+	end
 end
 spawnEvent:register()
 

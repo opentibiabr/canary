@@ -2388,12 +2388,12 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	if (canAddImbuement) {
 		// Update imbuement stats item if the item is equipped
 		if (item->getParent() == thisPlayer) {
-		    ImbuementInfo oldImb;
-		    if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
-		        removeItemImbuementStats(oldImb.imbuement);
-		    }
-		
-		    addItemImbuementStats(imbuement);
+			ImbuementInfo oldImb;
+			if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
+				removeItemImbuementStats(oldImb.imbuement);
+			}
+
+			addItemImbuementStats(imbuement);
 		}
 		item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	}

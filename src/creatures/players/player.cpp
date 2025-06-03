@@ -269,17 +269,38 @@ bool Player::isSuppress(ConditionType_t conditionType, bool attackerPlayer) cons
 		return true;
 	}
 
-	return m_conditionSuppressions[static_cast<size_t>(conditionType)];
+	auto conditionId = static_cast<size_t>(conditionType);
+	return (m_conditionSuppressionCount[conditionId] > 0);
 }
 
 void Player::addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addConditions) {
-	for (const auto &conditionType : addConditions) {
-		m_conditionSuppressions[static_cast<size_t>(conditionType)] = true;
+	for (auto conditionType : addConditions) {
+		auto conditionId = static_cast<size_t>(conditionType);
+		if (conditionId >= ConditionType_t::CONDITION_COUNT) {
+			continue;
+		}
+		if (m_conditionSuppressionCount[conditionId] < UINT8_MAX) {
+			m_conditionSuppressionCount[conditionId]++;
+		}
 	}
 }
 
-void Player::removeConditionSuppressions() {
-	m_conditionSuppressions.reset();
+void Player::removeConditionSuppressions(const std::vector<ConditionType_t> &toRemoveConditions) {
+	for (auto conditionType : toRemoveConditions) {
+		if (conditionType == ConditionType_t::CONDITION_NONE) {
+			continue;
+		}
+		auto conditionSize = static_cast<size_t>(conditionType);
+		if (conditionSize >= ConditionType_t::CONDITION_COUNT) {
+			continue;
+		}
+		if (m_conditionSuppressionCount[conditionSize] > 0) {
+			m_conditionSuppressionCount[conditionSize]--;
+			if (m_conditionSuppressionCount[conditionSize] == 0) {
+				sendIcons();
+			}
+		}
+	}
 }
 
 std::shared_ptr<Item> Player::getWeapon(Slots_t slot, bool ignoreAmmo) const {

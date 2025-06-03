@@ -561,7 +561,7 @@ public:
 	int32_t getDefaultStats(stats_t stat) const;
 
 	void addConditionSuppressions(const std::array<ConditionType_t, ConditionType_t::CONDITION_COUNT> &addCondition);
-	void removeConditionSuppressions();
+	void removeConditionSuppressions(const std::vector<ConditionType_t> &toRemoveConditions);
 
 	std::shared_ptr<Reward> getReward(uint64_t rewardId, bool autoCreate);
 	void removeReward(uint64_t rewardId);
@@ -1500,7 +1500,7 @@ private:
 
 	std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
 	std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
-	std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionSuppressions;
+	std::array<uint8_t, ConditionType_t::CONDITION_COUNT> m_conditionSuppressionCount {};
 
 	uint32_t level = 1;
 	uint32_t magLevel = 0;

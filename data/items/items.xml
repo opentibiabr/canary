@@ -80970,5 +80970,14 @@ Granted by TibiaGoals.com"/>
 	<item id="47379" article="a" name="large obelisk">
 		<attribute key="primarytype" value="pillars"/>
 	</item>
+	<item id="36828" article="a" name="leaderboard">
+		<attribute key="description" value="Highscore in Glory Ot"/>
+		<attribute key="writeable" value="1"/>
+		<attribute key="maxtextlen" value="1023"/>
+	</item>
+<item id="36870" article="a" name="leaderboard">
+		<attribute key="description" value="Wave counter in Glory Ot"/>
+		<attribute key="writeable" value="1"/>
+		<attribute key="maxtextlen" value="1023"/>
+	</item>
 </items>
-

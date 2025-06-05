@@ -6978,7 +6978,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 					break;
 				case RACE_CANDY:
 					color = TEXTCOLOR_DARKRED;
-					effect = CONST_ME_SIRUP;
+					effect = CONST_ME_SIURP;
 					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_CANDY);
 					break;
 				case RACE_INK:

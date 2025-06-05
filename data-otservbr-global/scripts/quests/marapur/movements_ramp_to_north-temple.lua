@@ -1,15 +1,15 @@
 local ramp = MoveEvent()
 
 function ramp.onStepIn(creature, item, pos, fromPosition)
-local player = Player(creature:getId())
-    if not creature:isPlayer() then
-        return true
-    end
+	local player = Player(creature:getId())
+	if not creature:isPlayer() then
+		return true
+	end
 
-    local position = Position(33614, 32759, 8)
-    player:teleportTo(position, true)
+	local position = Position(33614, 32759, 8)
+	player:teleportTo(position, true)
 
-    return true
+	return true
 end
 
 ramp:type("stepin")

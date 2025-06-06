@@ -2405,10 +2405,8 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			// If is single target, apply the damage directly
 			if (isSingleCombat) {
 				damage = targetDamage;
-				continue;
 			}
 
-			// If is multi target, apply the damage to each target
 			targetCreature->setCombatDamage(targetDamage);
 		}
 	} else if (monster) {

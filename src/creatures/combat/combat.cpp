@@ -608,6 +608,10 @@ CallBack* Combat::getCallback(CallBackParam_t key) const {
 }
 
 void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data) {
+	if (!caster || caster->isRemoved()) {
+		return;
+	}
+
 	if (!data) {
 		g_logger().error("[{}]: CombatDamage is nullptr", __FUNCTION__);
 		return;

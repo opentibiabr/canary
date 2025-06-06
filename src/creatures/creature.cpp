@@ -150,13 +150,23 @@ void Creature::checkCreatureAttack(bool now) {
 
 	g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
+			if (creature->isRemoved()) {
+				return;
+			}
 			creature->checkCreatureAttack(true);
-		} }, "Creature::checkCreatureAttack");
+		}
+	},
+	                        "Creature::checkCreatureAttack");
 }
 
 void Creature::onAttacking(uint32_t interval) {
+	if (isRemoved()) {
+		return;
+	}
+
 	const auto &attackedCreature = getAttackedCreature();
-	if (!attackedCreature) {
+
+	if (!attackedCreature || attackedCreature->isRemoved()) {
 		return;
 	}
 

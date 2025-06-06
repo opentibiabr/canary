@@ -37,7 +37,7 @@ function onUpdateDatabase()
 		MODIFY COLUMN `charm_points` SMALLINT NOT NULL DEFAULT '0',
 		MODIFY COLUMN `UsedRunesBit` INT NOT NULL DEFAULT '0',
 		MODIFY COLUMN `UnlockedRunesBit` INT NOT NULL DEFAULT '0',
-		MODIFY COLUMN `charm_expansion` BOOLEAN NOT NULL DEFAULT FALSE,
+		MODIFY COLUMN `charm_expansion` BOOLEAN NOT NULL DEFAULT 0,
 		CHANGE COLUMN `player_guid` `player_id` int(11) NOT NULL
 	]])
 

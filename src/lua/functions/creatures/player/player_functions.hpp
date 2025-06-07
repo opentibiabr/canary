@@ -392,6 +392,6 @@ class PlayerFunctions {
 	static int luaPlayerSetMapShader(lua_State* L);
 	static int luaPlayerAddCustomOutfit(lua_State* L);
 	static int luaPlayerRemoveCustomOutfit(lua_State* L);
-
+	static int luaPlayerDropConnection(lua_State* L);
 	friend class CreatureFunctions;
 };

@@ -52,7 +52,7 @@ bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses 
 	};
 
 	// Helper lambda to get the allowed group level for an account
-	auto allowedGroupLevelForAccount = [](AccountType account) -> GroupType {
+	auto allowedGroupLevelForAccount = [](AccountType account) {
 		if (auto it = allowedGroupLevels.find(account); it != allowedGroupLevels.end()) {
 			return it->second;
 		}

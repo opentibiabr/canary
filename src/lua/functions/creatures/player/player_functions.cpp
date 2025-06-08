@@ -623,7 +623,17 @@ int PlayerFunctions::luaPlayerGetCharmChance(lua_State* L) {
 
 	charmRune_t charmId = Lua::getNumber<charmRune_t>(L, 2);
 	const auto &charm = g_iobestiary().getBestiaryCharm(charmId);
+	if (!charm) {
+		Lua::pushNumber(L, 0);
+		return 1;
+	}
+
 	uint8_t charmTier = player->getCharmTier(charmId);
+
+	double chance = charm->getChance(charmTier);
+
+	Lua::pushNumber(L, chance);
+
 	return 1;
 }
 

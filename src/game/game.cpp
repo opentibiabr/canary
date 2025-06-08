@@ -3195,7 +3195,7 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 
 	if (!player->quickLootListItemIds.empty()) {
 		uint16_t itemId = item->getID();
-		bool isInList = std::find(player->quickLootListItemIds.begin(), player->quickLootListItemIds.end(), itemId) != player->quickLootListItemIds.end();
+		bool isInList = std::ranges::find(player->quickLootListItemIds, itemId) != player->quickLootListItemIds.end();
 		if (player->quickLootFilter == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !isInList) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		} else if (player->quickLootFilter == QuickLootFilter_t::QUICKLOOTFILTER_SKIPPEDLOOT && isInList) {
@@ -4864,7 +4864,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 		return;
 	}
 
-	uint32_t maxWithdrawLimit = static_cast<uint32_t>(g_configManager().getNumber(STASH_MANAGE_AMOUNT));
+	auto maxWithdrawLimit = static_cast<uint32_t>(g_configManager().getNumber(STASH_MANAGE_AMOUNT));
 	if (count > maxWithdrawLimit) {
 		std::stringstream limitMessage;
 		limitMessage << "You can only withdraw up to " << maxWithdrawLimit << " items at a time from the stash.";

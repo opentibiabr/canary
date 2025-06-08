@@ -4815,7 +4815,7 @@ void Player::stashContainer(const StashContainerList &itemDict) {
 
 	uint16_t refreshDepotSearchOnItem = 0;
 
-	auto processItem = [&](const std::shared_ptr<Item> &item, uint16_t itemCount) -> bool {
+	auto processItem = [&](const std::shared_ptr<Item> &item, uint16_t itemCount) {
 		if (!item) {
 			return false;
 		}
@@ -8466,7 +8466,7 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	double availableCapacity = getFreeCapacity();
 	double itemWeight = itemType.weight;
 
-	uint32_t maxRetrievableByWeight = static_cast<uint32_t>(availableCapacity / itemWeight);
+	auto maxRetrievableByWeight = static_cast<uint32_t>(availableCapacity / itemWeight);
 	uint32_t retrievableCount = std::min(maxRetrievableByWeight, itemCount);
 
 	if (retrievableCount == 0) {
@@ -11227,7 +11227,7 @@ uint16_t Player::getDodgeChance() const {
 		return wheelDodge;
 	}
 
-	uint16_t chance = static_cast<uint16_t>(playerArmor->getDodgeChance() * 100);
+	auto chance = static_cast<uint16_t>(playerArmor->getDodgeChance() * 100);
 	const auto &playerBoots = getInventoryItem(CONST_SLOT_FEET);
 	if (playerBoots && playerBoots->getTier() > 0) {
 		double amplificationChance = playerBoots->getAmplificationChance() / 100.0;

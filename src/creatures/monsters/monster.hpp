@@ -265,7 +265,7 @@ private:
 	std::string m_lowerName;
 	std::string nameDescription;
 
-	std::shared_ptr<MonsterType> mType;
+	std::shared_ptr<MonsterType> m_monsterType;
 	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
 
 	int64_t lastMeleeAttack = 0;

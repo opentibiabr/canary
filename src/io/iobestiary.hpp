@@ -31,9 +31,16 @@ struct PlayerCharmsByMonster {
 class Charm {
 public:
 	Charm() = default;
-	Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charmCategory_t initCategory, charm_t inittype, std::vector<uint16_t> initpoints, int32_t initbinary) :
+	Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charmCategory_t initCategory, charm_t inittype, const std::vector<uint16_t> &initpoints, int32_t initbinary) :
 		name(std::move(initname)), id(initcharmRune_t), description(std::move(initdescription)), category(initCategory), type(inittype), points(initpoints), binary(initbinary) { }
 	virtual ~Charm() = default;
+
+	double getChance(uint8_t tier) const {
+		if (tier < chance.size()) {
+			return chance[tier];
+		}
+		return 0.0;
+	}
 
 	std::string name;
 	charmRune_t id = CHARM_NONE;

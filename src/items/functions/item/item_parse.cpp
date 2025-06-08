@@ -629,6 +629,8 @@ CombatType_t ItemParse::parseFieldCombatType(pugi::xml_attribute valueAttribute)
 		return COMBAT_DROWNDAMAGE;
 	} else if (lowerStringValue == "physical") {
 		return COMBAT_PHYSICALDAMAGE;
+	} else if (lowerStringValue == "agony") {
+		return COMBAT_AGONYDAMAGE;
 	} else {
 		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}

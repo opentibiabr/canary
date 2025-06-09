@@ -2258,13 +2258,12 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	return false;
 }
 
-void Monster::death(const std::shared_ptr<Creature> &) {
+void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
 	const auto &attackedCreature = getAttackedCreature();
-	const auto &targetPlayer = attackedCreature ? attackedCreature->getPlayer() : nullptr;
-	setAttackedCreature(nullptr);
+	const auto &targetPlayer = lastHitCreature ? lastHitCreature->getPlayer() : (attackedCreature ? attackedCreature->getPlayer() : nullptr);
 
 	for (const auto &summon : m_summons) {
 		if (!summon) {

@@ -58,7 +58,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	if sleightInfo[message] ~= nil then
 		if getPlayerStorageValue(creature, sleightInfo[message].storageID) ~= -1 then
 			npcHandler:say("You already have this sleigh!", npc, creature)
-			npcHandler:resetNpc()
+			npcHandler:resetNpc(player)
 		else
 			local itemsTable = sleightInfo[message].items
 			local items_list = ""
@@ -112,20 +112,20 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 			rtnt[playerId] = nil
 			talkState[playerId] = 0
-			npcHandler:resetNpc()
+			npcHandler:resetNpc(player)
 			return true
 		end
 	elseif MsgContains(message, "mount") or MsgContains(message, "mounts") or MsgContains(message, "sleigh") or MsgContains(message, "sleighs") then
 		npcHandler:say("I can give you one of the following sleighs: {" .. table.concat(monsterName, "}, {") .. "}.", npc, creature)
 		rtnt[playerId] = nil
 		talkState[playerId] = 0
-		npcHandler:resetNpc()
+		npcHandler:resetNpc(player)
 		return true
 	elseif MsgContains(message, "help") then
 		npcHandler:say("Just tell me which {sleigh} you want to know more about.", npc, creature)
 		rtnt[playerId] = nil
 		talkState[playerId] = 0
-		npcHandler:resetNpc()
+		npcHandler:resetNpc(player)
 		return true
 	else
 		if talkState[playerId] ~= nil then
@@ -133,7 +133,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Come back when you get these items.", npc, creature)
 				rtnt[playerId] = nil
 				talkState[playerId] = 0
-				npcHandler:resetNpc()
+				npcHandler:resetNpc(player)
 				return true
 			end
 		end

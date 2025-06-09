@@ -61,7 +61,7 @@ endif()
 # *****************************************************************************
 # Options
 # *****************************************************************************
-option(TOGGLE_BIN_FOLDER "Use build/bin folder for generate compilation files" ON)
+option(TOGGLE_BIN_FOLDER "Use build/bin folder for generate compilation files" OFF)
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)

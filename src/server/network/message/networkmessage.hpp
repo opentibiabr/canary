@@ -137,7 +137,7 @@ public:
 	 */
 	void addString(const std::string &value, const std::source_location &location = std::source_location::current(), const std::string &function = "");
 
-	void addDouble(double value, uint8_t precision = 2);
+	void addDouble(double value, uint8_t precision = 4);
 	double getDouble();
 
 	// write functions for complex types

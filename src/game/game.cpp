@@ -10741,6 +10741,13 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		return;
 	}
 
+	if (player->getIP() == 0 && !player->isDead()) {
+		g_logger().info("Player '{}' has no IP and is alive. Disconnecting immediately (logout in combat)", player->getName());
+		removeCreature(player, true);
+		player->disconnect();
+		return;
+	}
+
 	if (player->getIP() == 0) {
 		g_game().removeDeadPlayer(playerName);
 		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
@@ -10748,7 +10755,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		return;
 	}
 
-	if (!player->isDead() || player->client == nullptr) {
+	if (!player->isDead() || !player->hasClient()) {
 		return;
 	}
 
@@ -10764,7 +10771,9 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 	}
 
 	g_dispatcher().scheduleEvent(
-		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
+		1000,
+		[this, playerName, interval] { playerCheckActivity(playerName, interval); },
+		"Game::playerCheckActivity::recursiveCheck"
 	);
 }
 

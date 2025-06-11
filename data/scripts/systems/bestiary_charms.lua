@@ -4,283 +4,212 @@ local charms = {
 		name = "Wound",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as physical damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_PHYSICALDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You wounded the monster.",
+		messageServerLog = "[Wound charm]",
 		effect = CONST_ME_HITAREA,
-		points = { 240, 360, 1200 },
+		points = 600,
 	},
 	-- Enflame charm
 	[2] = {
 		name = "Enflame",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as fire damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_FIREDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You enflamed the monster.",
+		messageServerLog = "[Enflame charm]",
 		effect = CONST_ME_HITBYFIRE,
-		points = { 400, 600, 2000 },
+		points = 1000,
 	},
 	-- Poison charm
 	[3] = {
 		name = "Poison",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as earth damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_EARTHDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You poisoned the monster.",
+		messageServerLog = "[Poison charm]",
 		effect = CONST_ME_GREEN_RINGS,
-		points = { 240, 360, 1200 },
+		points = 600,
 	},
 	-- Freeze charm
 	[4] = {
 		name = "Freeze",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as ice damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_ICEDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You frozen the monster.",
+		messageServerLog = "[Freeze charm]",
 		effect = CONST_ME_ICEATTACK,
-		points = { 320, 480, 1600 },
+		points = 800,
 	},
-	-- Zap charm
+	--Zap charm
 	[5] = {
 		name = "Zap",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as energy damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_ENERGYDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You eletrocuted the monster.",
+		messageServerLog = "[Zap charm]",
 		effect = CONST_ME_ENERGYHIT,
-		points = { 320, 480, 1600 },
+		points = 800,
 	},
-	-- Curse charm
+	--Curse charm
 	[6] = {
 		name = "Curse",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as death damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_DEATHDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You curse the monster.",
+		messageServerLog = "[Curse charm]",
 		effect = CONST_ME_SMALLCLOUDS,
-		points = { 360, 540, 1800 },
+		points = 900,
 	},
 	-- Cripple charm
 	[7] = {
 		name = "Cripple",
 		description = "Cripples the creature with a certain chance and paralyzes it for 10 seconds.",
-		category = CHARM_MINOR,
 		type = CHARM_OFFENSIVE,
-		chance = { 6, 9, 12 },
-		messageCancel = "You crippled a monster. (cripple charm)",
-		points = { 100, 150, 225 },
+		chance = 10,
+		messageCancel = "You cripple the monster.",
+		points = 500,
 	},
 	-- Parry charm
 	[8] = {
 		name = "Parry",
 		description = "Any damage taken is reflected to the aggressor with a certain chance.",
-		category = CHARM_MAJOR,
 		type = CHARM_DEFENSIVE,
 		damageType = COMBAT_PHYSICALDAMAGE,
-		chance = { 5, 10, 11 },
-		messageCancel = "You parried an attack. (parry charm)",
+		chance = 10,
+		messageCancel = "You parry the attack.",
+		messageServerLog = "[Parry charm]",
 		effect = CONST_ME_EXPLOSIONAREA,
-		points = { 400, 600, 2000 },
+		points = 1000,
 	},
 	-- Dodge charm
 	[9] = {
 		name = "Dodge",
 		description = "Dodges an attack with a certain chance without taking any damage at all.",
-		category = CHARM_MAJOR,
 		type = CHARM_DEFENSIVE,
-		chance = { 5, 10, 11 },
-		messageCancel = "You dodged an attack. (dodge charm)",
+		chance = 10,
+		messageCancel = "You dodge the attack.",
 		effect = CONST_ME_POFF,
-		points = { 240, 360, 1200 },
+		points = 600,
 	},
-	-- Adrenaline Burst charm
+	-- Adrenaline burst charm
 	[10] = {
 		name = "Adrenaline Burst",
 		description = "Bursts of adrenaline enhance your reflexes with a certain chance \z
                        after you get hit and let you move faster for 10 seconds.",
-		category = CHARM_MINOR,
 		type = CHARM_DEFENSIVE,
-		chance = { 6, 9, 12 },
-		messageCancel = "Your movements where bursted. (adrenaline burst charm)",
-		points = { 100, 150, 225 },
+		chance = 10,
+		messageCancel = "Your movements where bursted.",
+		points = 500,
 	},
 	-- Numb charm
 	[11] = {
 		name = "Numb",
 		description = "Numbs the creature with a certain chance after its attack and paralyzes the creature for 10 seconds.",
-		category = CHARM_MINOR,
 		type = CHARM_DEFENSIVE,
-		chance = { 6, 9, 12 },
-		messageCancel = "You numbed a monster. (numb charm)",
-		points = { 100, 150, 225 },
+		chance = 10,
+		messageCancel = "You numb the monster.",
+		points = 500,
 	},
 	-- Cleanse charm
 	[12] = {
 		name = "Cleanse",
 		description = "Cleanses you from within with a certain chance after you get hit and \z
                        removes one random active negative status effect and temporarily makes you immune against it.",
-		category = CHARM_MINOR,
 		type = CHARM_DEFENSIVE,
-		chance = { 6, 9, 12 },
-		messageCancel = "You purified an attack. (cleanse charm)",
-		points = { 100, 150, 225 },
+		chance = 10,
+		messageCancel = "You purified the attack.",
+		points = 700,
 	},
 	-- Bless charm
 	[13] = {
 		name = "Bless",
 		description = "Blesses you and reduces skill and xp loss by 10% when killed by the chosen creature.",
-		category = CHARM_MINOR,
 		type = CHARM_PASSIVE,
 		percent = 10,
-		chance = { 6, 9, 12 },
-		points = { 100, 150, 225 },
+		chance = 100,
+		points = 800,
 	},
 	-- Scavenge charm
 	[14] = {
 		name = "Scavenge",
 		description = "Enhances your chances to successfully skin/dust a skinnable/dustable creature.",
-		category = CHARM_MINOR,
 		type = CHARM_PASSIVE,
-		chance = { 60, 90, 120 },
-		points = { 100, 150, 225 },
+		percent = 25,
+		chance = 100,
+		points = 800,
 	},
 	-- Gut charm
 	[15] = {
 		name = "Gut",
 		description = "Gutting the creature yields 20% more creature products.",
-		category = CHARM_MINOR,
 		type = CHARM_PASSIVE,
-		chance = { 6, 9, 12 },
-		points = { 100, 150, 225 },
+		percent = 20,
+		chance = 100,
+		points = 800,
 	},
 	-- Low blow charm
 	[16] = {
 		name = "Low Blow",
 		description = "Adds 8% critical hit chance to attacks with critical hit weapons.",
-		category = CHARM_MAJOR,
 		type = CHARM_PASSIVE,
-		chance = { 4, 8, 9 },
-		points = { 800, 1200, 4000 },
+		percent = 8,
+		chance = 100,
+		points = 2000,
 	},
-	-- Divine Wrath charm
+	-- Divine wrath charm
 	[17] = {
 		name = "Divine Wrath",
 		description = "Triggers on a creature with a certain chance and deals 5% \z
                        of its initial hit points as holy damage once.",
-		category = CHARM_MAJOR,
 		type = CHARM_OFFENSIVE,
 		damageType = COMBAT_HOLYDAMAGE,
 		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
+		chance = 10,
+		messageCancel = "You divine the monster.",
+		messageServerLog = "[Divine charm]",
 		effect = CONST_ME_HOLYDAMAGE,
-		points = { 600, 900, 3000 },
+		points = 1500,
 	},
-	-- Vampiric Embrace charm
+	-- Vampiric embrace charm
 	[18] = {
 		name = "Vampiric Embrace",
 		description = "Adds 4% Life Leech to attacks if wearing equipment that provides life leech.",
-		category = CHARM_MINOR,
 		type = CHARM_PASSIVE,
-		chance = { 1.6, 2.4, 3.2 },
-		points = { 100, 150, 225 },
+		percent = 400,
+		chance = 100,
+		points = 1500,
 	},
-	-- Void's Call charm
+	-- Void's call charm
 	[19] = {
 		name = "Void's Call",
 		description = "Adds 2% Mana Leech to attacks if wearing equipment that provides mana leech.",
-		category = CHARM_MINOR,
 		type = CHARM_PASSIVE,
-		chance = { 0.8, 1.2, 1.6 },
-		points = { 100, 150, 225 },
-	},
-	-- Savage Blow charm
-	[20] = {
-		name = "Savage Blow",
-		description = "Adds critical extra damage to attacks with critical hit weapons.",
-		category = CHARM_MAJOR,
-		type = CHARM_PASSIVE,
-		chance = { 20, 40, 44 },
-		points = { 800, 1200, 4000 },
-	},
-	-- Fatal Hold charm
-	[21] = {
-		name = "Fatal Hold",
-		description = "Prevents creatures from fleeing due to low health for 30 seconds.",
-		category = CHARM_MINOR,
-		type = CHARM_PASSIVE,
-		chance = { 30, 45, 60 },
-		messageCancel = "Your enemy is not able to flee now for 30 \z
-													seconds. (fatal hold charm)",
-		points = { 100, 150, 225 },
-	},
-	-- Void Inversion charm
-	[22] = {
-		name = "Void Inversion",
-		description = "Chance to gain mana instead of losing it when taking Mana Drain damage.",
-		category = CHARM_MINOR,
-		type = CHARM_PASSIVE,
-		chance = { 20, 30, 40 },
-		points = { 100, 150, 225 },
-	},
-	-- Carnage charm
-	[23] = {
-		name = "Carnage",
-		description = "Killing a monster deals physical damage to others in a small radius.",
-		category = CHARM_MAJOR,
-		type = CHARM_OFFENSIVE,
-		damageType = COMBAT_NEUTRALDAMAGE,
-		percent = 15,
-		chance = { 10, 20, 22 },
-		messageServerLog = true,
-		points = { 600, 900, 3000 },
-	},
-	-- Overpower charm
-	[24] = {
-		name = "Overpower",
-		description = "Deals physical damage based on your maximum health.",
-		category = CHARM_MAJOR,
-		type = CHARM_OFFENSIVE,
-		damageType = COMBAT_NEUTRALDAMAGE,
-		percent = 5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
-		points = { 600, 900, 3000 },
-	},
-	-- Overflux charm
-	[25] = {
-		name = "Overflux",
-		description = "Deals physical damage based on your maximum mana.",
-		category = CHARM_MAJOR,
-		type = CHARM_OFFENSIVE,
-		damageType = COMBAT_NEUTRALDAMAGE,
-		percent = 2.5,
-		chance = { 5, 10, 11 },
-		messageServerLog = true,
-		points = { 600, 900, 3000 },
+		percent = 200,
+		chance = 100,
+		points = 1500,
 	},
 }
 
@@ -294,9 +223,6 @@ for charmId, charmsTable in ipairs(charms) do
 	end
 	if charmsTable.description then
 		charmConfig.description = charmsTable.description
-	end
-	if charmsTable.category then
-		charmConfig.category = charmsTable.category
 	end
 	if charmsTable.type then
 		charmConfig.type = charmsTable.type
@@ -320,7 +246,7 @@ for charmId, charmsTable in ipairs(charms) do
 		charmConfig.effect = charmsTable.effect
 	end
 	if charmsTable.points then
-		charmConfig.points = charmsTable.points
+		charmConfig.points = math.ceil(charmsTable.points * bestiaryRateCharmShopPrice)
 	end
 
 	-- Create charm and egister charmConfig table

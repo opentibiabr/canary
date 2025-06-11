@@ -152,13 +152,16 @@ void Container::addItem(const std::shared_ptr<Item> &item) {
 	item->setParent(getContainer());
 }
 
-StashContainerList Container::getStowableItems() {
+StashContainerList Container::getStowableItems() const {
 	StashContainerList toReturnList;
-
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		const auto &item = *it;
-		const auto &itemType = Item::items.getItemType(item->getID());
-		if (item->isItemStorable() && !itemType.isContainer()) {
+	for (const auto &item : itemlist) {
+		if (item->getContainer() != nullptr) {
+			const auto &subContainer = item->getContainer()->getStowableItems();
+			for (const auto &key : subContainer | std::views::keys) {
+				const auto &containerItem = key;
+				toReturnList.emplace_back(containerItem, static_cast<uint32_t>(containerItem->getItemCount()));
+			}
+		} else if (item->isItemStorable()) {
 			toReturnList.emplace_back(item, static_cast<uint32_t>(item->getItemCount()));
 		}
 	}
@@ -238,9 +241,13 @@ uint32_t Container::getWeight() const {
 	return Item::getWeight() + totalWeight;
 }
 
-std::string Container::getContentDescription(bool sendColoredMessage) {
-	std::vector<std::string> descriptions;
+std::string Container::getContentDescription(bool oldProtocol) {
+	std::ostringstream os;
+	return getContentDescription(os, oldProtocol).str();
+}
 
+std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool sendColoredMessage) {
+	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const auto &item = *it;
 		if (!item) {
@@ -252,14 +259,23 @@ std::string Container::getContentDescription(bool sendColoredMessage) {
 			continue;
 		}
 
-		if (sendColoredMessage) {
-			descriptions.push_back(fmt::format("{{{}|{}}}", item->getID(), item->getNameDescription()));
+		if (firstitem) {
+			firstitem = false;
 		} else {
-			descriptions.push_back(item->getNameDescription());
+			os << ", ";
+		}
+
+		if (sendColoredMessage) {
+			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+		} else {
+			os << item->getNameDescription();
 		}
 	}
 
-	return descriptions.empty() ? "nothing" : fmt::format("{}", fmt::join(descriptions, ", "));
+	if (firstitem) {
+		os << "nothing";
+	}
+	return os;
 }
 
 uint32_t Container::getMaxCapacity() const {

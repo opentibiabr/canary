@@ -17,7 +17,6 @@ private:
 	static int luaCharmCreate(lua_State* L);
 	static int luaCharmName(lua_State* L);
 	static int luaCharmDescription(lua_State* L);
-	static int luaCharmCategory(lua_State* L);
 	static int luaCharmType(lua_State* L);
 	static int luaCharmPoints(lua_State* L);
 	static int luaCharmDamageType(lua_State* L);

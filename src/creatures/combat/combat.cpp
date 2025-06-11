@@ -343,13 +343,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 
 	if (attacker) {
 		const auto &attackerMaster = attacker->getMaster();
-		const auto &masterAttackerPlayer = attackerMaster ? attackerMaster->getPlayer() : nullptr;
-		const auto &masterAttackerMonster = attackerMaster ? attackerMaster->getMonster() : nullptr;
 		const auto &attackerPlayer = attacker->getPlayer();
-		const auto &attackerMonster = attacker->getMonster();
-		const auto &targetMonster = target ? target->getMonster() : nullptr;
-		const auto &targetMaster = target ? target->getMaster() : nullptr;
-		const auto &targetMasterPlayer = targetMaster ? targetMaster->getPlayer() : nullptr;
 		if (targetPlayer) {
 			if (targetPlayer->hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -379,7 +373,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 			}
 
 			if (attackerMaster) {
-				if (masterAttackerPlayer) {
+				if (const auto &masterAttackerPlayer = attackerMaster->getPlayer()) {
 					if (masterAttackerPlayer->hasFlag(PlayerFlags_t::CannotAttackPlayer)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
@@ -394,13 +388,13 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				}
 			}
 
-			if (attackerMonster && (!attackerMaster || masterAttackerMonster)) {
-				if (attacker->getFaction() != FACTION_DEFAULT && !attackerMonster->isEnemyFaction(targetPlayer->getFaction())) {
+			if (attacker->getMonster() && (!attackerMaster || attackerMaster->getMonster())) {
+				if (attacker->getFaction() != FACTION_DEFAULT && !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}
 			}
-		} else if (targetMonster) {
-			if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
+		} else if (target && target->getMonster()) {
+			if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attacker->getMonster() && !attacker->getMonster()->isEnemyFaction(target->getFaction())) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
@@ -409,12 +403,14 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 				}
 
-				if (target->isSummon() && targetMasterPlayer && target->getZoneType() == ZONE_NOPVP) {
+				if (target->isSummon() && target->getMaster()->getPlayer() && target->getZoneType() == ZONE_NOPVP) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
-			} else if (attackerMonster) {
-				if ((!targetMaster || !targetMasterPlayer) && attacker->getFaction() == FACTION_DEFAULT) {
-					if (!attackerMaster || !masterAttackerPlayer) {
+			} else if (attacker->getMonster()) {
+				const auto &targetMaster = target->getMaster();
+
+				if ((!targetMaster || !targetMaster->getPlayer()) && attacker->getFaction() == FACTION_DEFAULT) {
+					if (!attackerMaster || !attackerMaster->getPlayer()) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 					}
 				}
@@ -424,14 +420,14 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 		}
 
 		if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
-			if (attackerPlayer || masterAttackerPlayer) {
+			if (attacker->getPlayer() || (attackerMaster && attackerMaster->getPlayer())) {
 				if (targetPlayer) {
 					if (!isInPvpZone(attacker, target)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 					}
 				}
 
-				if (target && target->isSummon() && targetMasterPlayer) {
+				if (target && target->isSummon() && target->getMaster()->getPlayer()) {
 					if (!isInPvpZone(attacker, target)) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 					}
@@ -695,31 +691,6 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 	if (g_game().combatChangeHealth(caster, target, damage)) {
 		CombatConditionFunc(caster, target, params, &damage);
 		CombatDispelFunc(caster, target, params, nullptr);
-
-		if (!targetMonster || !attackerPlayer) {
-			return;
-		}
-
-		const uint16_t playerCharmRaceid = attackerPlayer->parseRacebyCharm(CHARM_FATAL);
-		if (playerCharmRaceid == 0) {
-			return;
-		}
-
-		const auto &mType = g_monsters().getMonsterType(targetMonster->getName());
-		if (!mType || playerCharmRaceid != mType->info.raceid) {
-			return;
-		}
-
-		const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_FATAL);
-		if (!charm) {
-			return;
-		}
-
-		if (charm->chance[attackerPlayer->getCharmTier(CHARM_FATAL)] <= normal_random(0, 100)) {
-			return;
-		}
-
-		g_iobestiary().parseCharmCombat(charm, attackerPlayer, targetMonster);
 	}
 }
 
@@ -817,45 +788,35 @@ void Combat::CombatConditionFunc(const std::shared_ptr<Creature> &caster, const 
 		return;
 	}
 
-	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
-	const auto &casterMonster = caster ? caster->getMonster() : nullptr;
-
-	if (targetPlayer && casterMonster) {
-		const auto &cleansableConditions = targetPlayer->getCleansableConditions();
-
-		if (!cleansableConditions.empty()) {
-			uint16_t playerCharmRaceid = targetPlayer->parseRacebyCharm(CHARM_CLEANSE);
-			if (playerCharmRaceid != 0) {
-				const auto &mType = casterMonster->getMonsterType();
-				if (mType && playerCharmRaceid == mType->info.raceid) {
-					const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
-					const auto charmTier = targetPlayer->getCharmTier(CHARM_CLEANSE);
-					if (charm && (charm->chance[charmTier] >= normal_random(0, 10000) / 100.0)) {
-						uint16_t conditionIndex = uniform_random(0, cleansableConditions.size() - 1);
-						const auto &condition = cleansableConditions[conditionIndex];
-						const auto conditionType = condition->getType();
-						if (targetPlayer->hasCondition(conditionType)) {
-							targetPlayer->removeCondition(conditionType);
+	for (const auto &condition : params.conditionList) {
+		std::shared_ptr<Player> player = nullptr;
+		if (target) {
+			player = target->getPlayer();
+		}
+		if (player) {
+			// Cleanse charm rune (target as player)
+			if (player->isImmuneCleanse(condition->getType())) {
+				player->sendCancelMessage("You are still immune against this spell.");
+				return;
+			} else if (caster && caster->getMonster()) {
+				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
+				if (playerCharmRaceid != 0) {
+					const auto &mType = g_monsters().getMonsterType(caster->getName());
+					if (mType && playerCharmRaceid == mType->info.raceid) {
+						const auto charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
+						if (charm && (charm->chance > normal_random(0, 100))) {
+							if (player->hasCondition(condition->getType())) {
+								player->removeCondition(condition->getType());
+							}
+							player->setImmuneCleanse(condition->getType());
+							player->sendCancelMessage(charm->cancelMsg);
+							return;
 						}
-						targetPlayer->setImmuneCleanse(conditionType);
-						if (!charm->cancelMessage.empty()) {
-							targetPlayer->onCleanseCondition(conditionType);
-						}
-
-						return;
 					}
 				}
 			}
-		}
-	}
 
-	for (const auto &condition : params.conditionList) {
-		if (targetPlayer) {
-			if (condition->getType() != CONDITION_FEARED && targetPlayer->isImmuneCleanse(condition->getType())) {
-				return;
-			}
-
-			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(targetPlayer)) {
+			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(player)) {
 				return;
 			}
 		}
@@ -1211,22 +1172,20 @@ bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const Position &p
 	return true;
 }
 
-void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &toPos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data) {
+void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data) {
 	std::vector<std::shared_ptr<Tile>> tileList;
 
-	const std::shared_ptr<Player> &casterPlayer = caster ? caster->getPlayer() : nullptr;
-
 	if (caster) {
-		getCombatArea(caster->getPosition(), toPos, area, tileList);
+		getCombatArea(caster->getPosition(), pos, area, tileList);
 	} else {
-		getCombatArea(toPos, toPos, area, tileList);
+		getCombatArea(pos, pos, area, tileList);
 	}
 
 	uint32_t maxX = 0;
 	uint32_t maxY = 0;
-	std::vector<std::shared_ptr<Creature>> affectedTargets;
 
-	// Calculate the max viewable range and affected creatures
+	const std::shared_ptr<Player> &casterPlayer = caster ? caster->getPlayer() : nullptr;
+	// calculate the max viewable range
 	for (const auto &tile : tileList) {
 		// If the caster is a player and the world is no pvp, we need to check if there are more than one player in the tile and skip the combat
 		if (casterPlayer && g_game().getWorldType() == WORLD_TYPE_NO_PVP && tile->getPosition() == origin) {
@@ -1239,21 +1198,33 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 
 		const Position &tilePos = tile->getPosition();
 
-		uint32_t diff = Position::getDistanceX(tilePos, toPos);
+		uint32_t diff = Position::getDistanceX(tilePos, pos);
 		if (diff > maxX) {
 			maxX = diff;
 		}
-		diff = Position::getDistanceY(tilePos, toPos);
+
+		diff = Position::getDistanceY(tilePos, pos);
 		if (diff > maxY) {
 			maxY = diff;
 		}
+	}
 
+	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
+	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
+
+	std::vector<std::shared_ptr<Creature>> affectedTargets;
+	CombatDamage tmpDamage;
+	if (data) {
+		tmpDamage = *data;
+	}
+	for (const auto &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			const auto &topCreature = tile->getTopCreature();
+			// A copy of the tile's creature list is made because modifications to this vector, such as adding or removing creatures through a Lua callback, may occur during the iteration within the for loop.
 			CreatureVector creaturesCopy = *creatures;
 			for (const auto &creature : creaturesCopy) {
 				if (params.targetCasterOrTopMost) {
@@ -1273,16 +1244,10 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 		}
 	}
 
-	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
-	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
-
-	CombatDamage tmpDamage;
-	if (data) {
-		tmpDamage = *data;
-	}
+	applyExtensions(caster, affectedTargets, tmpDamage, params);
 
 	// Wheel of destiny get beam affected total
-	auto spectators = Spectators().find<Player>(toPos, true, rangeX, rangeX, rangeY, rangeY);
+	auto spectators = Spectators().find<Player>(pos, true, rangeX, rangeX, rangeY, rangeY);
 	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel().getBeamAffectedTotal(tmpDamage) : 0;
 	uint8_t beamAffectedCurrent = 0;
 
@@ -1340,7 +1305,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 		combatTileEffects(spectators.data(), caster, tile, params);
 	}
 
-	postCombatEffects(caster, origin, toPos, params);
+	postCombatEffects(caster, origin, pos, params);
 }
 
 void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, CombatDamage &damage, const CombatParams &params) {
@@ -2308,8 +2273,7 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
 
-		uint16_t lowBlowRaceid = player->parseRacebyCharm(CHARM_LOW);
-		uint16_t savageBlowRaceid = player->parseRacebyCharm(CHARM_SAVAGE);
+		uint16_t lowBlowRaceid = player->parseRacebyCharm(CHARM_LOW, false, 0);
 
 		baseBonus += damage.criticalDamage;
 		baseChance += static_cast<uint16_t>(damage.criticalChance);
@@ -2321,17 +2285,13 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		bool canApplyFatal = false;
 		if (const auto &playerWeapon = player->getInventoryItem(CONST_SLOT_LEFT); playerWeapon && playerWeapon->getTier() > 0) {
 			double fatalChance = playerWeapon->getFatalChance();
-			if (const auto &playerBoots = player->getInventoryItem(CONST_SLOT_FEET); playerBoots && playerBoots->getTier()) {
-				fatalChance *= 1 + (playerBoots->getAmplificationChance() / 100);
-			}
 			canApplyFatal = (fatalChance > 0 && uniform_random(0, 10000) / 100.0 < fatalChance);
 		}
 
 		if (!canApplyCritical && lowBlowRaceid != 0) {
 			const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 			if (charm) {
-				auto charmTier = player->getCharmTier(CHARM_LOW);
-				uint16_t lowBlowChance = baseChance + (charm->chance[charmTier] * 100);
+				uint16_t lowBlowChance = baseChance + charm->percent;
 
 				for (const auto &target : targets) {
 					const auto &targetMonster = target->getMonster();
@@ -2355,15 +2315,6 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			}
 		}
 
-		int32_t savageBlowBonus = baseBonus;
-		if (savageBlowRaceid != 0) {
-			const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_SAVAGE);
-			if (charm) {
-				auto charmTier = player->getCharmTier(CHARM_SAVAGE);
-				savageBlowBonus += charm->chance[charmTier] * 100;
-			}
-		}
-
 		bool isSingleCombat = targets.size() == 1;
 		for (const auto &targetCreature : targets) {
 			CombatDamage targetDamage = damage;
@@ -2381,10 +2332,6 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 				if (!canApplyCritical && lowBlowCrits.contains(raceId) && lowBlowCrits[raceId]) {
 					isTargetCritical = true;
-				}
-
-				if (raceId == savageBlowRaceid) {
-					finalBonus = savageBlowBonus;
 				}
 			}
 
@@ -2405,8 +2352,10 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			// If is single target, apply the damage directly
 			if (isSingleCombat) {
 				damage = targetDamage;
+				continue;
 			}
 
+			// If is multi target, apply the damage to each target
 			targetCreature->setCombatDamage(targetDamage);
 		}
 	} else if (monster) {

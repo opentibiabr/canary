@@ -4176,6 +4176,7 @@ void Player::addList() {
 }
 
 void Player::removePlayer(bool displayEffect, bool forced /*= true*/) {
+	setAttackedCreature(nullptr);
 	g_creatureEvents().playerLogout(static_self_cast<Player>());
 	if (client) {
 		client->logout(displayEffect, forced);

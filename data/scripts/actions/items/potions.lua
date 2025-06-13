@@ -90,7 +90,7 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		player:addAchievementProgress("Potion Addict", 100000)
 		target:say("Aaaah...", MESSAGE_POTION)
 
-		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
+		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or configManager.getBoolean(configKeys.REMOVE_EMPTY_POTION_FLASKS)
 		if not deactivatedFlasks then
 			if fromPosition.x == CONTAINER_POSITION then
 				player:addItem(potion.flask, 1)

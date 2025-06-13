@@ -3,11 +3,8 @@ local skillMap = {
     club = SKILL_CLUB,
     sword = SKILL_SWORD,
     axe = SKILL_AXE,
-    dist = SKILL_DISTANCE,
     distance = SKILL_DISTANCE,
-    shield = SKILL_SHIELD,
     shielding = SKILL_SHIELD,
-    fish = SKILL_FISHING,
     fishing = SKILL_FISHING,
     fist = SKILL_FIST
 }

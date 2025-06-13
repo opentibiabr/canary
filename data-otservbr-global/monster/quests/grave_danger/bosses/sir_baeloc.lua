@@ -21,9 +21,7 @@ monster.speed = 125
 monster.manaCost = 0
 
 monster.events = {
-	"sir_baeloc_health",
-	"brothers_summon",
-	"grave_danger_death",
+	"BossHealthCheck",
 }
 
 monster.changeTarget = {
@@ -80,6 +78,7 @@ monster.voices = {
 monster.loot = {
 	{ name = "platinum coin", minCount = 1, maxCount = 5, chance = 100000 },
 	{ name = "crystal coin", minCount = 0, maxCount = 2, chance = 50000 },
+	{ name = "silver token", minCount = 0, maxCount = 3, chance = 40000 },
 	{ name = "supreme health potion", minCount = 0, maxCount = 6, chance = 35000 },
 	{ name = "ultimate mana potion", minCount = 0, maxCount = 20, chance = 32000 },
 	{ name = "ultimate spirit potion", minCount = 0, maxCount = 20, chance = 32000 },
@@ -87,7 +86,6 @@ monster.loot = {
 	{ name = "berserk potion", minCount = 0, maxCount = 10, chance = 12000 },
 	{ name = "piece of draconian steel", minCount = 0, maxCount = 4, chance = 9000 },
 	{ id = 3039, minCount = 0, maxCount = 1, chance = 12000 }, -- red gem
-	{ name = "silver token", minCount = 0, maxCount = 2, chance = 9500 },
 	{ id = 23542, chance = 5200 }, -- collar of blue plasma
 	{ id = 23544, chance = 5200 }, -- collar of red plasma
 	{ name = "knight legs", chance = 11000 },

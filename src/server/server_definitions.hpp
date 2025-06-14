@@ -72,6 +72,13 @@ enum Resource_t : uint8_t {
 	RESOURCE_WHEEL_OF_DESTINY = 0x56
 };
 
+enum CharmResource_t : uint8_t {
+	RESOURCE_CHARM = 0x1E,
+	RESOURCE_MINOR_CHARM = 0x1F,
+	RESOURCE_MAX_CHARM = 0x20,
+	RESOURCE_MAX_MINOR_CHARM = 0x21
+};
+
 enum InspectObjectTypes : uint8_t {
 	INSPECT_NORMALOBJECT = 0,
 	INSPECT_NPCTRADE = 1,
@@ -110,11 +117,11 @@ enum ImpactAnalyzerAndTracker_t : uint8_t {
 	ANALYZER_DAMAGE_RECEIVED = 2
 };
 
-enum Supply_Stash_Actions_t : uint8_t {
-	SUPPLY_STASH_ACTION_STOW_ITEM = 0,
-	SUPPLY_STASH_ACTION_STOW_CONTAINER = 1,
-	SUPPLY_STASH_ACTION_STOW_STACK = 2,
-	SUPPLY_STASH_ACTION_WITHDRAW = 3
+enum Stash_Actions_t : uint8_t {
+	STASH_ACTION_STOW_ITEM = 0,
+	STASH_ACTION_STOW_CONTAINER = 1,
+	STASH_ACTION_STOW_STACK = 2,
+	STASH_ACTION_WITHDRAW = 3
 };
 
 struct HighscoreCharacter {

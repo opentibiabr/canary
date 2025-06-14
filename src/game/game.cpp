@@ -10736,58 +10736,60 @@ bool Game::addItemStoreInbox(const std::shared_ptr<Player> &player, uint32_t ite
 }
 
 void Game::playerCheckActivity(const std::string &playerName, int interval) {
-	const auto &player = getPlayerByName(playerName);
-	if (!player) {
-		return;
-	}
+    const auto &player = getPlayerByName(playerName);
+    if (!player) {
+        return;
+    }
+	
+    if (player->getIP() == 0 && !player->isDead()) {
+        g_logger().info("Player '{}' has no IP and is alive. Scheduling kick in 5 seconds (logout in combat)", player->getName());
 
-	if (player->getIP() == 0 && !player->isDead()) {
-		g_logger().info("Player '{}' has no IP and is alive. Scheduling kick in 5 seconds (logout in combat)", player->getName());
+        const std::string playerNameCopy = player->getName();
 
-		const std::string playerNameCopy = player->getName();
+        g_dispatcher().scheduleEvent(
+            5000,
+            [this, playerNameCopy] {
+                const auto& p = getPlayerByName(playerNameCopy);
+                if (p) {
+                    removeCreature(p, true);
+                    p->disconnect();
+                    g_logger().info("Player '{}' was disconnected after 5 seconds delay (logout in combat)", playerNameCopy);
+                }
+            },
+            "Game::playerCheckActivity::kickNoIP"
+        );
+        return;
+    }
 
-		g_dispatcher().scheduleEvent(
-			5000,
-			[this, playerNameCopy] {
-				const auto& p = getPlayerByName(playerNameCopy);
-				if (p) {
-					removeCreature(p, true);
-					p->disconnect();
-					g_logger().info("Player '{}' was disconnected after 5 seconds delay (logout in combat)", playerNameCopy);
-				}
-			},
-			"Game::playerCheckActivity::kickNoIP"
-		);
-		return;
-	}
+    if (player->getIP() == 0) {
+        g_game().removeDeadPlayer(playerName);
+        g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
+        player->disconnect();
+        removeCreature(player, false);
+        return;
+    }
 
-	if (player->getIP() == 0) {
-		g_game().removeDeadPlayer(playerName);
-		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
-		player->disconnect();
-		return;
-	}
+    if (!player->isDead() || !player->hasClient()) {
+        return;
+    }
 
-	if (!player->isDead() || !player->hasClient()) {
-		return;
-	}
+    if (!player->isAccessPlayer()) {
+        player->m_deathTime += interval;
+        const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+        if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
+            g_game().removeDeadPlayer(playerName);
+            g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
+            player->disconnect();
+            removeCreature(player, false);
+            return;
+        }
+    }
 
-	if (!player->isAccessPlayer()) {
-		player->m_deathTime += interval;
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
-		if (player->m_deathTime > (kickAfterMinutes * 60000) + 60000) {
-			g_game().removeDeadPlayer(playerName);
-			g_logger().info("Player with name '{}' has logged out due to inactivity after death", player->getName());
-			player->disconnect();
-			return;
-		}
-	}
-
-	g_dispatcher().scheduleEvent(
-		1000,
-		[this, playerName, interval] { playerCheckActivity(playerName, interval); },
-		"Game::playerCheckActivity::recursiveCheck"
-	);
+    g_dispatcher().scheduleEvent(
+        1000,
+        [this, playerName, interval] { playerCheckActivity(playerName, interval); },
+        "Game::playerCheckActivity::recursiveCheck"
+    );
 }
 
 void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, uint32_t maxMoveItems /* = 0*/) {

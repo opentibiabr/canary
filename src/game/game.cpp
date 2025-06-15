@@ -26,6 +26,7 @@
 #include "creatures/players/player.hpp"
 #include "enums/player_wheel.hpp"
 #include "database/databasetasks.hpp"
+#include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "game/zones/zone.hpp"
@@ -1352,6 +1353,28 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	return ERROR_NONE;
 }
 
+bool isBlockedTile(const std::shared_ptr<Tile> &tile) {
+	if (tile->hasFlag(TILESTATE_TELEPORT)) {
+		return true;
+	}
+
+	const auto &ground = tile->getGround();
+	if (ground && (ground->hasAttribute(ItemAttribute_t::ACTIONID) || ground->hasAttribute(ItemAttribute_t::UNIQUEID))) {
+		return true;
+	}
+
+	const TileItemVector* items = tile->getItemList();
+	if (items) {
+		for (const auto &item : *items) {
+			if (item && (item->hasAttribute(ItemAttribute_t::ACTIONID) || item->hasAttribute(ItemAttribute_t::UNIQUEID))) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	const auto &player = getPlayerByID(playerId);
@@ -1390,6 +1413,11 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 	if (const std::shared_ptr<Creature> &movingCreature = thing->getCreature()) {
 		const std::shared_ptr<Tile> &tile = map.getTile(toPos);
 		if (!tile) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
+		if (isBlockedTile(tile) && movingCreature->getPlayer()) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
 		}

@@ -1353,26 +1353,28 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	return ERROR_NONE;
 }
 
-bool isBlockedTile(const std::shared_ptr<Tile> &tile) {
-	if (tile->hasFlag(TILESTATE_TELEPORT)) {
-		return true;
-	}
+bool isBlockedTile(const std::shared_ptr<Tile>& tile) {
+    using enum ItemAttribute_t;
 
-	const auto &ground = tile->getGround();
-	if (ground && (ground->hasAttribute(ItemAttribute_t::ACTIONID) || ground->hasAttribute(ItemAttribute_t::UNIQUEID))) {
-		return true;
-	}
+    if (tile->hasFlag(TILESTATE_TELEPORT)) {
+        return true;
+    }
 
-	const TileItemVector* items = tile->getItemList();
-	if (items) {
-		for (const auto &item : *items) {
-			if (item && (item->hasAttribute(ItemAttribute_t::ACTIONID) || item->hasAttribute(ItemAttribute_t::UNIQUEID))) {
-				return true;
-			}
-		}
-	}
+    const auto& ground = tile->getGround();
+    if (ground && (ground->hasAttribute(ACTIONID) || ground->hasAttribute(UNIQUEID))) {
+        return true;
+    }
 
-	return false;
+    const TileItemVector* items = tile->getItemList();
+    if (items) {
+        for (const auto& item : *items) {
+            if (item && (item->hasAttribute(ACTIONID) || item->hasAttribute(UNIQUEID))) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count) {

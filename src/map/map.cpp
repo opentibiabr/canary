@@ -413,6 +413,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	// send to client
 	size_t i = 0;
 	for (const auto &spectator : playersSpectators) {
+		// Use the correct stackpos
 		const int32_t stackpos = oldStackPosVector[i++];
 		if (stackpos != -1) {
 			const auto &player = spectator->getPlayer();

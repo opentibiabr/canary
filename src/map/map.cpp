@@ -327,7 +327,6 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	}
 
 	const auto &oldTile = creature->getTile();
-
 	if (!oldTile) {
 		return;
 	}
@@ -347,7 +346,6 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	}
 
 	const bool teleport = forceTeleport || !newTile->getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
-
 	Spectators spectators;
 	if (!teleport && oldPos.z == newPos.z) {
 		int32_t minRangeX = MAP_MAX_VIEW_PORT_X;
@@ -374,9 +372,9 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	}
 
 	const auto playersSpectators = spectators.filter<Player>();
-
 	std::vector<int32_t> oldStackPosVector;
 	oldStackPosVector.reserve(playersSpectators.size());
+
 	for (const auto &spec : playersSpectators) {
 		if (spec->canSeeCreature(creature)) {
 			oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(spec->getPlayer(), creature));
@@ -384,19 +382,18 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 			oldStackPosVector.push_back(-1);
 		}
 	}
-
 	// remove the creature
 	oldTile->removeThing(creature, 0);
 
 	MapSector* old_sector = getMapSector(oldPos.x, oldPos.y);
 	MapSector* new_sector = getMapSector(newPos.x, newPos.y);
 
-	// Switch the node ownership
-	if (old_sector != new_sector) {
+	if (old_sector && new_sector && old_sector != new_sector) {
 		old_sector->removeCreature(creature);
 		new_sector->addCreature(creature);
+	} else if (!old_sector || !new_sector) {
+		g_logger().warn("Map::moveCreature - invalid sector: %s -> %s", oldPos.toString().c_str(), newPos.toString().c_str());
 	}
-
 	// add the creature
 	newTile->addThing(creature);
 
@@ -413,18 +410,15 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 			creature->setDirection(DIRECTION_WEST);
 		}
 	}
-
 	// send to client
 	size_t i = 0;
 	for (const auto &spectator : playersSpectators) {
-		// Use the correct stackpos
 		const int32_t stackpos = oldStackPosVector[i++];
 		if (stackpos != -1) {
 			const auto &player = spectator->getPlayer();
 			player->sendCreatureMove(creature, newPos, newTile->getStackposOfCreature(player, creature), oldPos, stackpos, teleport);
 		}
 	}
-
 	// event method
 	for (const auto &spectator : spectators) {
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
@@ -445,8 +439,8 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	if (forceTeleport) {
 		if (const auto &player = creature->getPlayer()) {
-			player->sendMagicEffect(oldPos, CONST_ME_TELEPORT);
-			player->sendMagicEffect(newPos, CONST_ME_TELEPORT);
+			player->sendMagicEffect(oldPos, CONST_ME_NONE);
+			player->sendMagicEffect(newPos, CONST_ME_NONE);
 		}
 	}
 }

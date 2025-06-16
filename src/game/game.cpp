@@ -3422,7 +3422,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 			return;
 		}
 	} else if (!player->canDoAction()) {
-		uint32_t delay = player->getNextActionTime() - OTSYS_TIME();
+		uint32_t delay = player->getNextActionTime();
 		if (delay > 0) {
 			const auto &task = createPlayerTask(
 				delay,

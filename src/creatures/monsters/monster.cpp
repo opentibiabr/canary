@@ -1467,7 +1467,7 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 	return false;
 }
 
-void Monster::pushCreatures(const std::shared_ptr<Tile>& tile) {
+void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 	// We cannot use iterators here since pushing a creature to another tile
 	// may invalidate the iterator.
 	if (!tile) {

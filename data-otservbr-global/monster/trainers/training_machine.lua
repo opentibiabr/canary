@@ -50,6 +50,7 @@ monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -2, maxDamage = -7, attack = 130 },
+	{ name = "combat", type = COMBAT_MANADRAIN, interval = 10000, chance = 100, minDamage = 300, maxDamage = 300, effect = CONST_ME_MAGIC_BLUE },
 }
 
 monster.defenses = {

@@ -268,7 +268,7 @@ function cultsOfTibiaLevers.onUse(player, item, fromPosition, itemEx, toPosition
 				end
 			end
 
-			if teleport ~= 1 then
+			if teleport ~= 5 then
 				player:sendCancelMessage("You need exactly 5 players to start this challenge.")
 				return true
 			end

@@ -55,4 +55,9 @@ function onUpdateDatabase()
 			pc.max_minor_charm_echoes = 100
 		WHERE p.vocation >= 5
 	]])
+
+	db.query([[
+		ALTER TABLE `player_deaths`
+		ADD COLUMN `participants` VARCHAR(255) NOT NULL DEFAULT ''
+	]])
 end

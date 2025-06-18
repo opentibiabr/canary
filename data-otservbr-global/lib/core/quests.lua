@@ -3593,6 +3593,7 @@ if not Quests then
 						[4] = "You have received the measurements from 3 of 6 post officers.",
 						[5] = "You have received the measurements from 4 of 6 post officers.",
 						[6] = "You have received the measurements from 5 of 6 post officers.",
+						[7] = "You have received the measurements from 6 of 6 post officers.",
 						[8] = "You have received all measurements, report back to Kevin!",
 						[9] = "You have reported back that you have completed the mission.",
 					},

@@ -257,12 +257,15 @@ function Player:CreateFamiliarSpell(spellId)
 		reduction = (reduction > summonDuration and summonDuration) or reduction
 		cooldown = cooldown - reduction * 60
 	end
-	condition:setTicks(1000 * cooldown / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-	self:addCondition(condition)
 
-	self:createFamiliar(familiarName, summonDuration)
+	local createdSuccessfully = self:createFamiliar(familiarName, summonDuration)
+	if createdSuccessfully then
+		condition:setTicks(1000 * cooldown / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+		self:addCondition(condition)
+		return true
+	end
 
-	return true
+	return false
 end
 
 function Player:createFamiliar(familiarName, timeLeft)
@@ -292,7 +295,7 @@ function Player:createFamiliar(familiarName, timeLeft)
 		self:setStorageValue(
 			FAMILIAR_TIMER[sendMessage].storage,
 			addEvent(
-				-- Calling function
+			-- Calling function
 				SendMessageFunction,
 				-- Time for execute event
 				(timeLeft - FAMILIAR_TIMER[sendMessage].countdown) * 1000,

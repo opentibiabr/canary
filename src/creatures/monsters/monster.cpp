@@ -1477,6 +1477,7 @@ void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 		return;
 	}
 
+	// We must copy the vector to avoid iterator invalidation during tile changes
 	auto creaturesCopy = *creatures;
 	uint32_t removeCount = 0;
 	std::shared_ptr<Monster> lastPushedMonster = nullptr;

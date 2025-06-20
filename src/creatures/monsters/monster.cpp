@@ -1468,8 +1468,6 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
-	// We cannot use iterators here since pushing a creature to another tile.
-	// may invalidate the iterator.
 	if (!tile) {
 		return;
 	}
@@ -1478,7 +1476,6 @@ void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 	if (!creatures) {
 		return;
 	}
-
 
 	auto creaturesCopy = *creatures;
 	uint32_t removeCount = 0;

@@ -21,7 +21,7 @@ public:
 
 	void clearAllScripts() const;
 
-	bool loadEventSchedulerScripts(const std::string &fileName);
+	bool loadEventSchedulerScripts(const std::filesystem::path &filePath);
 	bool loadScripts(std::string_view folderName, bool isLib, bool reload);
 	LuaScriptInterface &getScriptInterface() {
 		return scriptInterface;

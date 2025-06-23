@@ -1,11 +1,12 @@
 local config = {
-        rewards_id = {35285, 35286, 35287,35288,35289,35290, 3043}, -- possible reward items
+        rewards_id = {35285, 35286, 35287,35288,35289,35290, 3043, 37317, 9019}, -- possible reward items
         crystal_counts = {10,20,30,40,50,60,70,80,90,100}, -- table for crystal coins
+				tibiacoin_counts = {1,2,3,4,5}, -- table for tibia coins
         days = {--Day-Hour
                 "Monday-08",
                 "Monday-13",
                 "Monday-19",
-				
+
 				-- Every 4 hours
 				"Tuesday-01",
 				"Tuesday-05",
@@ -59,9 +60,9 @@ local config = {
                 "Sunday-19"
                 }
         }
-		
-		
--- Used only if needed for multiple worlds	
+
+
+-- Used only if needed for multiple worlds
 local function getPlayerWorldId(self)
     if not(self:isPlayer()) then
         return false
@@ -85,40 +86,41 @@ function lottery.onThink(interval, lastExecution)
 	local players = Game.getPlayers()
 
 	if #players > 0 and #config.rewards_id > 0 then
-	
+
 		-- select one random player that is online
 		local uid = math.random(1, #players)
-		-- when crystals, whe randomize possible values inside crstal_counts table
+		-- when crystals/tibia coins, whe randomize possible values inside crstal_counts table
 		local crystalcount = config.crystal_counts[math.random(1, #config.crystal_counts)]
-		
+		local tibiacoins = config.tibiacoin_counts[math.random(1, #config.tibiacoin_counts)]
+
 		-- Get Actual Minute and compare with globalStorage for the last Minute Random Time
 		local MinutesNow = tonumber(os.date("%M"))
 		local StorageMinute = tonumber(Game.getStorageValue(LOTTERY_STORAGE_MINUTE))
 		local finished = tonumber(Game.getStorageValue(LOTTERY_STORAGE_FINISHED))
 		local finishedHour = tonumber(Game.getStorageValue(LOTTERY_STORAGE_FINISHEDHOUR))
-		
+
 		-- verify if is set finishedHour
 		if finishedHour == nil or finishedHour <= 0 then
 			Game.setStorageValue(LOTTERY_STORAGE_FINISHEDHOUR, tonumber(os.date("%H")) - 1)
 		end
-		
+
 		-- verify if is in time in Hour
 		if table.find(config.days, os.date("%A-%H")) then
-		
+
 			--
 			if finishedHour == tonumber(os.date("%H")) then
 				--Spdlog.warn("[LOTTERY SYSTEM] - Already sorted hour. Waiting Next Hour.")
-				return true		
+				return true
 			end
 			-- CHECK IF MINUTE Random Exists if not, generate one (used for first time after startup)
-			-- Possible change it to 
+			-- Possible change it to
 			if StorageMinute == nil or StorageMinute <= 0 then
 				Game.setStorageValue(LOTTERY_STORAGE_MINUTE, tonumber(math.random(1,59)))
 				StorageMinute = tonumber(Game.getStorageValue(LOTTERY_STORAGE_MINUTE))
 				Spdlog.warn("[LOTTERY] - Next Minute Generated! " .. StorageMinute .. " Minute is the next Lottery.")
 				return true
 			end
-		
+
 			if not (StorageMinute == MinutesNow) then
 				if MinutesNow >= StorageMinute then
 					Game.setStorageValue(LOTTERY_STORAGE_FINISHEDHOUR, tonumber(os.date("%H")))
@@ -126,27 +128,30 @@ function lottery.onThink(interval, lastExecution)
 					return true
 				end
 				--Spdlog.warn("[LOTTERY] - It's time but not at minute yet.")
-				return true	
-			else		
+				return true
+			else
 				local query = db.query or db.executeQuery
 				local random_item = config.rewards_id[math.random(1, #config.rewards_id)]
 				local item = ItemType(random_item)
 				local itemWeight = item:getWeight()
 				local qntItem = 0
 
-				if item:getId() == 3043 then 
-					qntItem = crystalcount 
+				if item:getId() == 3043 then
+					qntItem = crystalcount
 					itemWeight = item:getWeight() * crystalcount
-				else 
-					qntItem = 0 
+				elseif item:getId() == 37317 then
+					qntItem = tibiacoins
+					itemWeight = item:getWeight() * tibiacoins
+				else
+					qntItem = 0
 				end
-				
+
 				local item_name = item:getName()
 				local data = os.date("%d/%m/%Y - %H:%M:%S")
-		   
+
 				if uid and random_item and players[uid] then
 					local winner = Player(players[uid])
-					
+
 					--[[
 					--if winner:getAccountType() >= ACCOUNT_TYPE_GOD or uid == 1 or uid == 2 then
 					if winner:getAccountType() >= ACCOUNT_TYPE_GOD then
@@ -161,21 +166,21 @@ function lottery.onThink(interval, lastExecution)
 						end
 					end
 					]]--
-				   
+
 					if(random_item == 3043) then
 						if winner:getFreeCapacity() > itemWeight or not(winner:addItem(random_item, qntItem) == RETURNVALUE_CONTAINERNOTENOUGHROOM) then
 							winner:addItem(random_item, qntItem)
 							Spdlog.info("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. crystalcount .."x " .. item:getPluralName() .. " ! Congratulations!")
-							--Game.broadcastMessage("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. crystalcount .."x " .. item:getPluralName() .. " ! Congratulations!", MESSAGE_GAME_HIGHLIGHT) 
+							--Game.broadcastMessage("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. crystalcount .."x " .. item:getPluralName() .. " ! Congratulations!", MESSAGE_GAME_HIGHLIGHT)
 							Game.broadcastMessage(string.format("{%d|%s} The winner is %s ! He had won {%d|%d}x %s. Congratulations!", MESSAGE_COLOR_YELLOW, "[LOTTERY]", winner:getName(), MESSAGE_COLOR_YELLOW, crystalcount, item:getPluralName()), MESSAGE_LOOT)
-							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`, `date`) VALUES ('".. winner:getName() .."', '".. random_item .."', '"..qntItem.. "', '".. item_name .."', '".. data .."');")
+							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`) VALUES ('".. winner:getName() .."', '".. random_item .."', '"..qntItem.. "', '".. item_name .."');")
 						else
 							sendMailbox(winner:getId(), random_item, qntItem)
 							--winner:addItem(random_item, qntItem)
 							Spdlog.info("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. crystalcount .."x " .. item:getPluralName() .. " ! Congratulations!")
-							--Game.broadcastMessage("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. crystalcount .."x " .. item:getPluralName() .. " ! Congratulations!", MESSAGE_GAME_HIGHLIGHT) 
+							--Game.broadcastMessage("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. crystalcount .."x " .. item:getPluralName() .. " ! Congratulations!", MESSAGE_GAME_HIGHLIGHT)
 							Game.broadcastMessage(string.format("{%d|%s} The winner is %s ! He had won {%d|%d}x %s. Congratulations!", MESSAGE_COLOR_YELLOW, "[LOTTERY]", winner:getName(), MESSAGE_COLOR_YELLOW, crystalcount, item:getPluralName()), MESSAGE_LOOT)
-							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`, `date`) VALUES ('".. winner:getName() .."', '".. random_item .."', '"..qntItem.. "', '".. item_name .."', '".. data .."');")
+							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`) VALUES ('".. winner:getName() .."', '".. random_item .."', '"..qntItem.. "', '".. item_name .."');")
 						end
 					else
 						if winner:getFreeCapacity() > itemWeight or not(winner:addItem(random_item, qntItem) == RETURNVALUE_CONTAINERNOTENOUGHROOM) then
@@ -183,14 +188,14 @@ function lottery.onThink(interval, lastExecution)
 							Spdlog.info("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. item:getName() .. "! Congratulations!")
 							--Game.broadcastMessage("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. item:getName() .. "! Congratulations!")
 							Game.broadcastMessage(string.format("{%d|%s} The winner is %s ! He had won {%d|%s}. Congratulations!", MESSAGE_COLOR_YELLOW, "[LOTTERY]", winner:getName(), MESSAGE_COLOR_YELLOW, item:getName()), MESSAGE_LOOT)
-							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`, `date`) VALUES ('".. winner:getName() .."', '".. random_item .."', '1', '".. item_name .."', '".. data .."');")
+							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`) VALUES ('".. winner:getName() .."', '".. random_item .."', '1', '".. item_name .."');")
 						else
 							sendMailbox(winner:getId(), random_item, qntItem)
 							--winner:addItem(random_item, qntItem)
 							Spdlog.info("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. item:getName() .. "! Congratulations!")
 							--Game.broadcastMessage("[LOTTERY] Winner: " .. winner:getName() .. ", Reward: " .. item:getName() .. "! Congratulations!")
 							Game.broadcastMessage(string.format("{%d|%s} The winner is %s ! He had won {%d|%s}. Congratulations!", MESSAGE_COLOR_YELLOW, "[LOTTERY]", winner:getName(), MESSAGE_COLOR_YELLOW, item:getName()), MESSAGE_LOOT)
-							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`, `date`) VALUES ('".. winner:getName() .."', '".. random_item .."', '1', '".. item_name .."', '".. data .."');")
+							query("INSERT INTO `lottery` (`name`, `item`, `qnt`, `item_name`) VALUES ('".. winner:getName() .."', '".. random_item .."', '1', '".. item_name .."');")
 						end
 					end
 				else

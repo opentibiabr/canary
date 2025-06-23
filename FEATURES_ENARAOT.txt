@@ -11,15 +11,23 @@ Loot Seller Item ID = 30316
 10% more Potion efficiency = 11512
 
 
-
 - Online Coins - Every 6h 30 coins (VIP)
 - Drop Exp Boost from monsters
 - EVENTS
-    - Monster Hunt
-    - War City (dev)
-    - Lottery System
-    - SOD (Survive Or Die)
+    - Monster Hunt - 100%
+    - War City (dev) - Check
+    - Lottery System - 100%
+	- Roulette System - 100%
+	- Hunting Task System - 90%
+    - SOD (Survive Or Die) - 0%
+	- Online Reward System (Stay Online) - 100%
 
+- Daily Tasks (90% missing update rewards)
+
+- Patch Notes message: Now players receive a message daily about patch notes and changes on login.
 - Free Bless for VIPS 1x Day
 - Recharge items with silver token (right button)
-- Task System - Falta testar Daily Task, Ajustar os Rankings, configurar entrada das salas, ajustar quest tracker
+
+
+- Login Patch Notes:
+- C:\GitHub\EnaraOT\data-otservbr-global\scripts\custom\login_modal_message.lua

@@ -3072,6 +3072,11 @@ Storage = {
 			SightOfSurrender = 176681,
 		},
 	},
+	--Custom
+	-- Reserved storage from 17700 - 17799
+	Custom = {
+		loginModal = 17700,
+	},
 }
 
 GlobalStorage = {

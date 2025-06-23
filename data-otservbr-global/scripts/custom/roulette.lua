@@ -23,7 +23,7 @@ local config = {
     prizePool = {
         {itemId = 3079, count = {1, 1},    chance = 30000 }, -- Boots of Haste
         {itemId = 3420, count = {1, 1},    chance = 29000 }, -- Demon Shield
-        {itemId = 3043, count = {5, 45}, chance = 29000 }, -- Crystal Coins
+        {itemId = 3043, count = {1, 45}, chance = 29000 }, -- Crystal Coins
         {itemId = 9019, count = {1, 1},   chance = 25000}, -- Firewalker boots
         {itemId = 3366, count = {1, 1},    chance = 15000 }, -- MPA
         {itemId = 37317, count = {1, 3},   chance = 10000 }, -- Tibia Coins
@@ -35,10 +35,12 @@ local config = {
         {itemId = 27647, count = {1, 1},    chance = 800 }, -- Gnome Helmet
         {itemId = 34153, count = {1, 1},    chance = 700 }, -- Lion Spellbook
         {itemId = 28714, count = {1, 1},    chance = 700 }, -- Falcon Circlet
-        {itemId = 30397, count = {1, 1},    chance = 700 }, -- Cobra Hood        
+        {itemId = 30397, count = {1, 1},    chance = 700 }, -- Cobra Hood
         {itemId = 39546, count = {1, 1},    chance = 200 }, -- Primal Bag
         {itemId = 34109, count = {1, 1},    chance = 200 }, -- Bag you Desire
-        {itemId = 43895, count = {1, 1},    chance = 100 } -- Bag you Covet
+        {itemId = 43895, count = {1, 1},    chance = 100 }, -- Bag you Covet
+				{itemId = 14053, count = {1, 1},    chance = 8000 }, -- stamina refiller
+				{itemId = 11512, count = {1, 1},    chance = 20000 } -- Potions Boost (+10%)
     },
 
     roulettePositions = {
@@ -135,7 +137,14 @@ local function initiateReward(leverPosition, effectCounter)
 
         if effectCounter == 2 then
             local item = Tile(config.roulettePositions[5]):getTopVisibleThing()
-            local newItemInfo = {itemId = item:getId(), count = item:getCount()}
+						local itemCount = 1
+						for _, prize in ipairs(config.prizePool) do
+							if prize.itemId == item:getId() then
+								itemCount = math.random(prize.count[1], prize.count[2])
+								break
+							end
+						end
+            local newItemInfo = {itemId = item:getId(), count = itemCount}
             clearRoulette(newItemInfo)
         end
 
@@ -153,11 +162,18 @@ local function rewardPlayer(playerId, leverPosition)
     end
 
     local item = Tile(config.roulettePositions[5]):getTopVisibleThing()
+		local itemCount = 1
+		for _, prize in ipairs(config.prizePool) do
+			if prize.itemId == item:getId() then
+				itemCount = math.random(prize.count[1], prize.count[2])
+				break
+			end
+		end
     local inbox = player:getInbox()
     if inbox then
-        local addedItem = inbox:addItem(item:getId(), 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+        local addedItem = inbox:addItem(item:getId(), itemCount, INDEX_WHEREEVER, FLAG_NOLIMIT)
         if addedItem and ItemType(item:getId()):getCharges() then
-            addedItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, item:getCharges())
+            addedItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, itemCount)
         end
     end
 
@@ -165,7 +181,9 @@ local function rewardPlayer(playerId, leverPosition)
     player:setMoveLocked(false)
     --player:sendColoredMessage("{yellow|[ROULETTE WINNER]} Congratulations! You have won a {blue|rare item} and {green|5000 gold}.")
     player:sendTextMessage(MESSAGE_LOOT, string.format("{%d|%s} You have won a {%d|%s}. It was sent to your inbox.", MESSAGE_COLOR_YELLOW, "[ROULETTE WINNER]", item:getId(), item:getName()))
-    
+    local query = db.query or db.executeQuery
+		query("INSERT INTO `roulette_rewards` (`player_id`, `item_id`, `qnt`) VALUES ('".. player:getGuid() .."', '".. item:getId() .."', '".. itemCount .."');")
+
     if isInArray({ 3079, 3420, 3043, 9019, 3366 }, item:getId()) then
         -- Dont alert in Blue Equipment reward
         --Game.broadcastMessage(string.format("{%d|%s} The player %s has won {%d|%s}", MESSAGE_COLOR_YELLOW, "[ROULETTE WINNER]", player:getName(), MESSAGE_COLOR_BLUE, item:getName()), MESSAGE_LOOT)

@@ -1,3 +1,16 @@
+function Player:sendColoredMessage(message)
+	local grey = 3003
+	local blue = 3043
+	local green = 3415
+	local purple = 36792
+	local yellow = 34021
+
+	local msg = message:gsub("{grey|", "{" .. grey .. "|"):gsub("{blue|", "{" .. blue .. "|"):gsub("{green|", "{" .. green .. "|"):gsub("{purple|", "{" .. purple .. "|"):gsub("{yellow|", "{" .. yellow .. "|")
+	return self:sendTextMessage(MESSAGE_LOOT, msg)
+end
+
+----------------------------------------------------------------------------------------------------------------------------
+
 -- Configuration table for task system
 local config = {}
 for i = 62001, 62072 do
@@ -18,8 +31,9 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
         -- check if clicked in first action (starting 1)
         if config[item.actionid] == 2 then
             -- authorize first hunting task
-            player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Congratulations, you are now participating in the Task of %s and shall kill %d from this list: %s. "..(#taskSystem[config[item.actionid]].items > 0 and "Oh and please bring me %s for me." or "").."" , taskSystem[config[item.actionid]].name, taskSystem[config[item.actionid]].count, getMonsterFromList(taskSystem[config[item.actionid]].monsters_list, getItemsFromList(taskSystem[config[item.actionid]].items))))
-            -- seta primeira hunting ativa
+            --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Congratulations, you are now participating in the Task of %s and shall kill %d from this list: %s. "..(#taskSystem[config[item.actionid]].items > 0 and "Oh and please bring me %s for me." or "").."" , taskSystem[config[item.actionid]].name, taskSystem[config[item.actionid]].count, getMonsterFromList(taskSystem[config[item.actionid]].monsters_list, getItemsFromList(taskSystem[config[item.actionid]].items))))
+            player:sendColoredMessage(string.format("{yellow|[Task System]}: Congratulations, you are now participating in the Task of %s and shall kill %d from this list: %s. "..(#taskSystem[config[item.actionid]].items > 0 and "Oh and please bring me %s for me." or "").."" , taskSystem[config[item.actionid]].name, taskSystem[config[item.actionid]].count, getMonsterFromList(taskSystem[config[item.actionid]].monsters_list, getItemsFromList(taskSystem[config[item.actionid]].items))), MESSAGE_EVENT_ADVANCE)
+						-- seta primeira hunting ativa
             player:setStorageValue(Storage.HuntingTasks.Questline, 2)
             -- seta mission 2
             player:setStorageValue(taskSystem[config[item.actionid]].start, 2)
@@ -38,7 +52,8 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
             -- give reward if finished
             if player:getStorageValue(Storage.HuntingTasks.KillCount) >= v.count then
                 if #v.items > 0 and not player:doRemoveItemsFromList(v.items) then
-                    player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, but you also need to deliver the items on this list: %s"), getItemsFromList(v.items))
+                    player:sendColoredMessage(string.format("{yellow|[Task System]}: Sorry, but you also need to deliver the items on this list: %s", getItemsFromList(v.items)), MESSAGE_EVENT_ADVANCE)
+                    --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, but you also need to deliver the items on this list: %s"), getItemsFromList(v.items))
                     return false
                 end
 
@@ -60,11 +75,13 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
                     player:giveRewardsTask(v.reward)
                     str = str.." and "..getItemsFromList(v.reward).."."
                 end
-                player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name))
+								player:sendColoredMessage(string.format("{yellow|[Task System]}: Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name), MESSAGE_EVENT_ADVANCE)
+                --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name))
                 player:setStorageValue(Storage.HuntingTasks.KillCount, 0)
                 player:setStorageValue(taskSystem[config[item.actionid]].start, 3)
             else
-                player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and v.count or -(player:getStorageValue(Storage.HuntingTasks.KillCount) - v.count)).." of these terrible monsters!", v.name))
+								player:sendColoredMessage(string.format("{yellow|[Task System]}: Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and v.count or -(player:getStorageValue(Storage.HuntingTasks.KillCount) - v.count)).." of these terrible monsters!", v.name), MESSAGE_EVENT_ADVANCE)
+                --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(Storage.HuntingTasks.KillCount) < 0 and v.count or -(player:getStorageValue(Storage.HuntingTasks.KillCount) - v.count)).." of these terrible monsters!", v.name))
                 return true
             end
             return true
@@ -72,14 +89,16 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
 	elseif player:getStorageValue(Storage.HuntingTasks.Questline) > 1
     and player:getStorageValue(taskSystem[config[item.actionid]].start) == 2
     and player:getTaskMission() ~= config[item.actionid] then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, You need to finish other task first."))
+			player:sendColoredMessage("{yellow|[Task System]}: Sorry, You need to finish other task first.", MESSAGE_EVENT_ADVANCE)
+			--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("{yellow|[Task System]}: Sorry, You need to finish other task first."))
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return true
     elseif player:getStorageValue(Storage.HuntingTasks.Questline) > 1
     and player:getStorageValue(taskSystem[config[item.actionid]].start) == 3
     and player:getTaskMission() == config[item.actionid] then
         -- if start == 2, and none of the above, then have no tasks to do.
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, you already did this task."))
+        --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, you already did this task."))
+				player:sendColoredMessage("{yellow|[Task System]}: Sorry, you already did this task.", MESSAGE_EVENT_ADVANCE)
         player:getPosition():sendMagicEffect(CONST_ME_POFF)
         return true
     elseif player:getStorageValue(Storage.HuntingTasks.Questline) > 1
@@ -87,7 +106,8 @@ function tasksystemMonsters.onUse(player, item, fromPosition, target, toPosition
 	and player:getStorageValue(taskSystem[config[item.actionid] - 1].start) == 3 then
         player:setStorageValue(Storage.HuntingTasks.Questline, config[item.actionid])
 		player:setStorageValue(taskSystem[config[item.actionid]].start, 2)
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Congratulations, you are now participating in the Task of %s and shall kill %d from this list: %s. "..(#taskSystem[config[item.actionid]].items > 0 and "Oh and please bring me %s for me." or "").."" , taskSystem[config[item.actionid]].name, taskSystem[config[item.actionid]].count, getMonsterFromList(taskSystem[config[item.actionid]].monsters_list, getItemsFromList(taskSystem[config[item.actionid]].items))))
+				player:sendColoredMessage(string.format("{yellow|[Task System]} Congratulations, you are now participating in the Task of %s and shall kill %d from this list: %s. "..(#taskSystem[config[item.actionid]].items > 0 and "Oh and please bring me %s for me." or "").."" , taskSystem[config[item.actionid]].name, taskSystem[config[item.actionid]].count, getMonsterFromList(taskSystem[config[item.actionid]].monsters_list, getItemsFromList(taskSystem[config[item.actionid]].items))), MESSAGE_EVENT_ADVANCE)
+        --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Congratulations, you are now participating in the Task of %s and shall kill %d from this list: %s. "..(#taskSystem[config[item.actionid]].items > 0 and "Oh and please bring me %s for me." or "").."" , taskSystem[config[item.actionid]].name, taskSystem[config[item.actionid]].count, getMonsterFromList(taskSystem[config[item.actionid]].monsters_list, getItemsFromList(taskSystem[config[item.actionid]].items))))
     end
     return true
 end
@@ -106,13 +126,15 @@ function tasksystemDaily.onUse(player, item, fromPosition, target, toPosition, i
 	if daily == null or daily <= 0 then
 		-- check if able to take the daily task
 		if player:getStorageValue(Storage.HuntingTasks.DailyTime) - os.time() > 0 then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, you must wait until %s to start a new daily task!", os.date("%d %B %Y %X ", player:getStorageValue(Storage.HuntingTasks.DailyTime))))
+			player:sendColoredMessage(string.format("{yellow|[Task System]} Sorry, you must wait until %s to start a new daily task!", os.date("%d %B %Y %X ", player:getStorageValue(Storage.HuntingTasks.DailyTime))), MESSAGE_EVENT_ADVANCE)
+			--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Task System] Sorry, you must wait until %s to start a new daily task!", os.date("%d %B %Y %X ", player:getStorageValue(Storage.HuntingTasks.DailyTime))))
 			return true
 		end
 		-- able then select a random daily task
 		local r = player:randomDailyTask()
 		if r == 0 then
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Sorry, but you don't have the level to complete any daily tasks.")
+			player:sendColoredMessage("{yellow|[Task System]} Sorry, but you don't have the level to complete any daily tasks.", MESSAGE_EVENT_ADVANCE)
+			--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Sorry, but you don't have the level to complete any daily tasks.")
 			return true
 		end
 		-- set all the storages necessary
@@ -126,14 +148,16 @@ function tasksystemDaily.onUse(player, item, fromPosition, target, toPosition, i
 
 		local dtask = dailyTasks[r]
 		--atualiza o hunting task quest tracker
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Congratulations, you are now participating in the Daily Task of %s and shall kill %d monsters from this list: %s up until %s. Good luck!" , dtask.name, dtask.count, getMonsterFromList(dtask.monsters_list), os.date("%d %B %Y %X ", player:getStorageValue(Storage.HuntingTasks.DailyTime))))
+		player:sendColoredMessage(string.format("{yellow|[Daily Task System]} Congratulations, you are now participating in the Daily Task of %s and shall kill %d monsters from this list: %s up until %s. Good luck!" , dtask.name, dtask.count, getMonsterFromList(dtask.monsters_list), os.date("%d %B %Y %X ", player:getStorageValue(Storage.HuntingTasks.DailyTime))), MESSAGE_EVENT_ADVANCE)
+		--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Congratulations, you are now participating in the Daily Task of %s and shall kill %d monsters from this list: %s up until %s. Good luck!" , dtask.name, dtask.count, getMonsterFromList(dtask.monsters_list), os.date("%d %B %Y %X ", player:getStorageValue(Storage.HuntingTasks.DailyTime))))
 
 	else
 		-- already doing a daily, verify and deliver reward
 		local v = dailyTasks[daily]
 		if player:getStorageValue(Storage.HuntingTasks.DailyCount) >= v.count then
 			if #v.items > 0 and not player:doRemoveItemsFromList(v.items) then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Sorry, but you also need to deliver the items on this list: %s"), getItemsFromList(v.items))
+				--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Sorry, but you also need to deliver the items on this list: %s"), getItemsFromList(v.items))
+				player:sendColoredMessage(string.format("{yellow|[Daily Task System]} Sorry, but you also need to deliver the items on this list: %s", getItemsFromList(v.items)), MESSAGE_EVENT_ADVANCE)
 				return true
 			end
 
@@ -163,11 +187,13 @@ function tasksystemDaily.onUse(player, item, fromPosition, target, toPosition, i
 			--daily count
 			player:setStorageValue(Storage.HuntingTasks.DailyCount, -1)
 
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name))
+			--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name))
+			player:sendColoredMessage(string.format("{yellow|[Daily Task System]} Thank you for your help! Rewards: "..(str == "" and "none" or str).." for completing the task of %s", v.name), MESSAGE_EVENT_ADVANCE)
 
 			return true
 		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(Storage.HuntingTasks.DailyCount) < 0 and v.count or -(player:getStorageValue(Storage.HuntingTasks.DailyCount) - v.count)).." of these terrible monsters!", v.name))
+			--player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[Daily Task System] Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(Storage.HuntingTasks.DailyCount) < 0 and v.count or -(player:getStorageValue(Storage.HuntingTasks.DailyCount) - v.count)).." of these terrible monsters!", v.name))
+			player:sendColoredMessage(string.format("{yellow|[Daily Task System]} Sorry, but you haven't finished your task %s yet. I need you to kill more "..(player:getStorageValue(Storage.HuntingTasks.DailyCount) < 0 and v.count or -(player:getStorageValue(Storage.HuntingTasks.DailyCount) - v.count)).." of these terrible monsters!", v.name), MESSAGE_EVENT_ADVANCE)
 			return true
 		end
 	end

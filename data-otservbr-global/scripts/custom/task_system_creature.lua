@@ -1,3 +1,16 @@
+function Player:sendColoredMessage(message)
+	local grey = 3003
+	local blue = 3043
+	local green = 3415
+	local purple = 36792
+	local yellow = 34021
+
+	local msg = message:gsub("{grey|", "{" .. grey .. "|"):gsub("{blue|", "{" .. blue .. "|"):gsub("{green|", "{" .. green .. "|"):gsub("{purple|", "{" .. purple .. "|"):gsub("{yellow|", "{" .. yellow .. "|")
+	return self:sendTextMessage(MESSAGE_LOOT, msg)
+end
+
+------------------------------------------------------------------------------------------------------------------------------
+
 local taskSystemEvent = CreatureEvent("taskSystem")
 
 function taskSystemEvent.onDeath(creature, corpse, killer, mostDamage, unjustified, mostDamageUnjustified)
@@ -29,11 +42,13 @@ function taskSystemEvent.onDeath(creature, corpse, killer, mostDamage, unjustifi
                     if currentCount < task.count then
                         member:setStorageValue(Storage.HuntingTasks.KillCount, currentCount + 1)
                         if member:getStorageValue(Storage.HuntingTasks.Counter) <= 0 then
-                            member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Defeated: [" .. (currentCount + 1) .. "/" .. task.count .. "] monsters for the task: " .. task.name .. ".")
+														member:sendColoredMessage(string.format("{yellow|[Task System]}: Defeated: [" .. (currentCount + 1) .. "/" .. task.count .. "] monsters for the task: " .. task.name .. "."), MESSAGE_EVENT_ADVANCE)
+                            --member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Defeated: [" .. (currentCount + 1) .. "/" .. task.count .. "] monsters for the task: " .. task.name .. ".")
                             member:setStorageValue(taskSystem[member:getTaskMission()].start, 2)
                         end
                         if currentCount + 1 >= task.count then
-                            member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Congratulations! You completed the task: " .. task.name .. ", return to the NPC to claim your reward.")
+														member:sendColoredMessage(string.format("{yellow|[Task System]}: Congratulations! You completed the task: " .. task.name .. ", return to the NPC to claim your reward."), MESSAGE_EVENT_ADVANCE)
+                            --member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] Congratulations! You completed the task: " .. task.name .. ", return to the NPC to claim your reward.")
                             member:setStorageValue(taskSystem[member:getTaskMission()].start, 2)
                             return true
                         end
@@ -48,11 +63,13 @@ function taskSystemEvent.onDeath(creature, corpse, killer, mostDamage, unjustifi
                         if dailyCount < daily.count then
                             member:setStorageValue(Storage.HuntingTasks.DailyCount, dailyCount + 1)
                             if member:getStorageValue(Storage.HuntingTasks.Counter) <= 0 then
-                                member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Daily Task System] Defeated: [" .. (dailyCount + 1) .. "/" .. daily.count .. "] monsters for the daily task: " .. daily.name .. ".")
+																member:sendColoredMessage(string.format("{yellow|[Daily Task System]}: Defeated: [" .. (dailyCount + 1) .. "/" .. daily.count .. "] monsters for the daily task: " .. daily.name .. "."), MESSAGE_EVENT_ADVANCE)
+                                --member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Daily Task System] Defeated: [" .. (dailyCount + 1) .. "/" .. daily.count .. "] monsters for the daily task: " .. daily.name .. ".")
                                 member:setStorageValue(taskSystem[member:getDailyTaskMission()].start, 2)
                             end
                             if dailyCount + 1 >= daily.count then
-                                member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Daily Task System] Congratulations! You completed the daily task: " .. daily.name .. ", return to the NPC to claim your reward.")
+																member:sendColoredMessage(string.format("{yellow|[Daily Task System]}: Congratulations! You completed the daily task: " .. daily.name .. ", return to the NPC to claim your reward."), MESSAGE_EVENT_ADVANCE)
+                                --member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Daily Task System] Congratulations! You completed the daily task: " .. daily.name .. ", return to the NPC to claim your reward.")
                                 member:setStorageValue(taskSystem[member:getDailyTaskMission()].start, 2)
                                 return true
                             end
@@ -60,7 +77,8 @@ function taskSystemEvent.onDeath(creature, corpse, killer, mostDamage, unjustifi
                         end
                         return true
                     else
-                        member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Daily Task System] Sorry, but you didn't finish the Daily Task in time! Please return to the NPC to start a new Daily Task.")
+												member:sendColoredMessage(string.format("{yellow|[Daily Task System]}: Sorry, but you didn't finish the Daily Task in time! Please return to the NPC to start a new Daily Task."), MESSAGE_EVENT_ADVANCE)
+                        --member:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Daily Task System] Sorry, but you didn't finish the Daily Task in time! Please return to the NPC to start a new Daily Task.")
                         return true
                     end
                     return true
@@ -106,8 +124,9 @@ function talkAction.onSay(player, words, param)
 
     if isInArray({"counter", "contador"}, param) then
         player:setStorageValue(Storage.HuntingTasks.Counter, player:getStorageValue(Storage.HuntingTasks.Counter) <= 0 and 1 or 0)
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] The counter has been " .. (player:getStorageValue(Storage.HuntingTasks.Counter) <= 0 and "activated" or "deactivated") .. ".")
-        return true
+        --player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "[Task System] The counter has been " .. (player:getStorageValue(Storage.HuntingTasks.Counter) <= 0 and "activated" or "deactivated") .. ".")
+        player:sendColoredMessage(string.format("{yellow|[Task System]}: The counter has been " .. (player:getStorageValue(Storage.HuntingTasks.Counter) <= 0 and "activated" or "deactivated") .. "."), MESSAGE_EVENT_ADVANCE)
+				return true
     elseif isInArray({"daily", "diaria"}, param) then
         local dailyTasks = _G.dailyTasks
         local daily = player:getDailyTaskMission()

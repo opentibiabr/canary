@@ -378,7 +378,7 @@ local function playerFreeQuestStart(playerId, index)
 	for i = 1, 5 do
 		index = index + 1
 		if not questTable[index] then
-			player:sendTextMessage(MESSAGE_LOOK, "Adding free quests completed.")
+			--player:sendTextMessage(MESSAGE_LOOK, "Adding free quests completed.")
 			player:setStorageValue(Storage.FreeQuests, stage)
 			return
 		end
@@ -405,7 +405,7 @@ function freeQuests.onLogin(player)
 		return true
 	end
 
-	player:sendTextMessage(MESSAGE_LOOK, "Adding free acccess quests to your character.")
+	--player:sendTextMessage(MESSAGE_LOOK, "Adding free acccess quests to your character.")
 	addEvent(playerFreeQuestStart, 500, player:getId(), 0)
 	player:addOutfit(251, 0)
 	player:addOutfit(252, 0)

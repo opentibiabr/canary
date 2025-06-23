@@ -189,7 +189,7 @@ Problemas com Ninja?
 sudo chmod -R 755 /home/your_user
 
 cd ~
-cd canary
+cd otserv
 cp -r build/linux-release/bin/canary .
 
 ========================================================================================================

@@ -23,10 +23,12 @@ function callback.monsterOnDropLoot(monster, corpse)
 		rolls = math.floor(rolls)
 	end
 
+	local existingSuffix = corpse:getAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX) or ""
+
 	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) and rolls > 1 then
-		msgSuffix = msgSuffix .. " (hazard system, " .. rolls .. " extra rolls)"
+		msgSuffix = string.len(existingSuffix) > 0 and string.format(", hazard system %s extra rolls", rolls) or string.format("hazard system %s extra rolls", rolls)
 	elseif rolls == 1 then
-		msgSuffix = msgSuffix .. " (hazard system)"
+		msgSuffix = string.len(existingSuffix) > 0 and ", hazard system" or "hazard system"
 	end
 
 	local lootTable = {}
@@ -34,8 +36,6 @@ function callback.monsterOnDropLoot(monster, corpse)
 		lootTable = mType:generateLootRoll({ factor = factor, gut = false }, lootTable, player)
 	end
 	corpse:addLoot(lootTable)
-
-	local existingSuffix = corpse:getAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX) or ""
 	corpse:setAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX, existingSuffix .. msgSuffix)
 end
 

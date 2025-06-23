@@ -44,6 +44,10 @@ public:
 		return nullptr;
 	}
 
+	virtual std::shared_ptr<Tile> getTile() const {
+		return nullptr;
+	}
+
 	virtual const Position &getPosition();
 	virtual int32_t getThrowRange() const = 0;
 	virtual bool isPushable() = 0;

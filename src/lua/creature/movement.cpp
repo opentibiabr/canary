@@ -691,8 +691,17 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 		g_game().changePlayerSpeed(player, -item->getSpeed());
 	}
 
-	player->removeConditionSuppressions();
-	player->sendIcons();
+	std::vector<ConditionType_t> toRemove;
+	for (auto cond : it.abilities->conditionSuppressions) {
+		if (cond == ConditionType_t::CONDITION_NONE) {
+			continue;
+		}
+		toRemove.emplace_back(cond);
+	}
+	if (!toRemove.empty()) {
+		player->removeConditionSuppressions(toRemove);
+		player->sendIcons();
+	}
 
 	if (it.transformDeEquipTo != 0) {
 		g_game().transformItem(item, it.transformDeEquipTo);

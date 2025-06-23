@@ -18,6 +18,8 @@ static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;
 
 class Protocol;
 using Protocol_ptr = std::shared_ptr<Protocol>;
+class ProtocolGame;
+using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 class Connection;

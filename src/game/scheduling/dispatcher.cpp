@@ -22,8 +22,13 @@ Dispatcher &Dispatcher::getInstance() {
 void Dispatcher::init() {
 	UPDATE_OTSYS_TIME();
 
-	threadPool.detach_task([this] {
+	auto dispatcherStarted = std::make_shared<std::promise<void>>();
+	auto futureStarted = dispatcherStarted->get_future();
+
+	threadPool.detach_task([this, dispatcherStarted]() mutable {
 		std::unique_lock asyncLock(dummyMutex);
+
+		dispatcherStarted->set_value();
 
 		while (!threadPool.isStopped()) {
 			UPDATE_OTSYS_TIME();
@@ -37,6 +42,10 @@ void Dispatcher::init() {
 			}
 		}
 	});
+
+	if (futureStarted.wait_for(std::chrono::seconds(5)) != std::future_status::ready) {
+		throw std::logic_error("Failed to initialize dispatcher: timeout waiting for thread start");
+	}
 }
 
 void Dispatcher::executeSerialEvents(const uint8_t groupId) {
@@ -211,6 +220,10 @@ std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
+	if (shuttingDown) {
+		return;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
@@ -218,6 +231,10 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 }
 
 void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs) {
+	if (shuttingDown) {
+		return;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Walk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
@@ -225,6 +242,10 @@ void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
+	if (shuttingDown) {
+		return 0;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 
@@ -237,6 +258,10 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
+	if (shuttingDown) {
+		return;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);

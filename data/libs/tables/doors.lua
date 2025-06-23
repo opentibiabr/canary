@@ -71,6 +71,8 @@ KeyDoorTable = {
 	{ lockedDoor = 30774, closedDoor = 30775, openDoor = 30777 },
 	{ lockedDoor = 37982, closedDoor = 37981, openDoor = 37985 },
 	{ lockedDoor = 37984, closedDoor = 37983, openDoor = 37986 },
+	{ lockedDoor = 44914, closedDoor = 44913, openDoor = 44917 },
+	{ lockedDoor = 44916, closedDoor = 44915, openDoor = 44918 },
 }
 
 -- These are the common doors, the ones that just open and close without any special requirements.
@@ -164,10 +166,6 @@ CustomDoorTable = {
 	{ closedDoor = 22504, openDoor = 22505 },
 	{ closedDoor = 39660, openDoor = 39666 },
 	{ closedDoor = 39661, openDoor = 39667 },
-	{ closedDoor = 44913, openDoor = 44917 },
-	{ closedDoor = 44914, openDoor = 44917 },
-	{ closedDoor = 44915, openDoor = 44918 },
-	{ closedDoor = 44916, openDoor = 44918 },
 	{ closedDoor = 48495, openDoor = 48497 },
 	{ closedDoor = 48496, openDoor = 48498 },
 	{ closedDoor = 48499, openDoor = 48501 },

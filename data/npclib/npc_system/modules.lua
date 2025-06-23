@@ -111,6 +111,7 @@ if Modules == nil then
 			else
 				npcHandler:say(parameters.text, npc, player)
 				player:setVocation(promotion)
+				player:addMinorCharmEchoes(100)
 				player:kv():set("promoted", true)
 			end
 		else

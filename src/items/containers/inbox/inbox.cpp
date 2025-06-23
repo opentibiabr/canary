@@ -9,11 +9,14 @@
 
 #include "items/containers/inbox/inbox.hpp"
 
+#include "config/configmanager.hpp"
+
 #include "utils/tools.hpp"
 
 Inbox::Inbox(uint16_t type) :
 	Container(type, 30, false, true) {
-	maxInboxItems = std::numeric_limits<uint16_t>::max();
+	auto maxConfigInboxItem = g_configManager().getNumber(MAX_INBOX_ITEMS);
+	maxInboxItems = maxConfigInboxItem ? maxConfigInboxItem : std::numeric_limits<uint32_t>::max();
 }
 
 ReturnValue Inbox::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_t, uint32_t flags, const std::shared_ptr<Creature> &) {

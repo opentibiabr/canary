@@ -58,7 +58,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 	uint32_t majorVersionItems = stream.getU32();
 	stream.getU32(); // minorVersionItems
 
-	if (version > 2) {
+	if (version > 5) {
 		throw IOMapException("Unknown OTBM version detected.");
 	}
 

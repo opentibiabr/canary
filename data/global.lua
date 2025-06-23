@@ -52,10 +52,6 @@ SERVER_MOTD = configManager.getString(configKeys.SERVER_MOTD)
 
 AUTH_TYPE = configManager.getString(configKeys.AUTH_TYPE)
 
--- Bestiary charm
-GLOBAL_CHARM_GUT = 120 -- 20% more chance to get creature products from looting
-GLOBAL_CHARM_SCAVENGE = 125 -- 25% more chance to get creature products from skinning
-
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100

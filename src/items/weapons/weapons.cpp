@@ -78,7 +78,7 @@ int32_t Weapons::getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue) {
 // Players
 int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee) {
 	if (isMelee) {
-		return static_cast<int32_t>(std::round((0.085 * attackFactor * attackValue * attackSkill) + (level / 5)));
+		return attackValue > 0 ? static_cast<int32_t>(std::round((0.085 * attackFactor * attackValue * attackSkill) + (level / 5))) : 0;
 	} else {
 		return static_cast<int32_t>(std::round((0.09 * attackFactor * attackValue * attackSkill) + (level / 5)));
 	}
@@ -629,7 +629,7 @@ int32_t WeaponMelee::getWeaponDamage(const std::shared_ptr<Player> &player, cons
 
 	const auto maxValue = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, attackSkill, combinedAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
 
-	const int32_t minValue = level / 5;
+	const int32_t minValue = physicalAttack > 0 ? level / 5 : 0;
 
 	if (maxDamage) {
 		return -maxValue;

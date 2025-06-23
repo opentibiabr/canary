@@ -993,13 +993,13 @@ std::string getSkillName(uint8_t skillid) {
 			return "life leech chance";
 
 		case SKILL_LIFE_LEECH_AMOUNT:
-			return "life leech amount";
+			return "life leech";
 
 		case SKILL_MANA_LEECH_CHANCE:
 			return "mana leech chance";
 
 		case SKILL_MANA_LEECH_AMOUNT:
-			return "mana leech amount";
+			return "mana leech";
 
 		case SKILL_MAGLEVEL:
 			return "magic level";

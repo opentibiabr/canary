@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Orclops Doomhauler")
 local monster = {}
 
 monster.description = "an orclops doomhauler"
-monster.experience = 1200
+monster.experience = 1450
 monster.outfit = {
 	lookType = 934,
 	lookHead = 0,

@@ -1,3 +1,5 @@
+local eventCallbacks = {}
+
 local function updateWaterPoolsSize()
 	for _, pos in ipairs(SoulWarQuest.ebbAndFlow.poolPositions) do
 		local tile = Tile(pos)
@@ -5,19 +7,51 @@ local function updateWaterPoolsSize()
 			local item = tile:getItemById(SoulWarQuest.ebbAndFlow.smallPoolId)
 			if item then
 				item:transform(SoulWarQuest.ebbAndFlow.MediumPoolId)
-				-- Starts another timer for filling after an additional 40 seconds
-				addEvent(function()
-					local item = tile:getItemById(SoulWarQuest.ebbAndFlow.MediumPoolId)
-					if item then
-						item:transform(SoulWarQuest.ebbAndFlow.smallPoolId)
+				local eventId = addEvent(function()
+					local tile = Tile(pos)
+					if tile then
+						local item = tile:getItemById(SoulWarQuest.ebbAndFlow.MediumPoolId)
+						if item then
+							item:transform(SoulWarQuest.ebbAndFlow.smallPoolId)
+						end
 					end
 				end, 40000) -- 40 seconds
+
+				-- Store the event ID for new cleanup
+				if not SoulWarQuest.ebbAndFlow.pendingEvents then
+					SoulWarQuest.ebbAndFlow.pendingEvents = {}
+				end
+				table.insert(SoulWarQuest.ebbAndFlow.pendingEvents, eventId)
 			end
 		end
 	end
 end
 
+-- Helper function to clear all pending events
+local function clearPendingEvents()
+	if SoulWarQuest.ebbAndFlow.pendingEvents then
+		for _, eventId in ipairs(SoulWarQuest.ebbAndFlow.pendingEvents) do
+			stopEvent(eventId)
+		end
+		SoulWarQuest.ebbAndFlow.pendingEvents = {}
+	end
+end
+
+-- Helper function to unregister all event callbacks
+local function unregisterEventCallbacks()
+	for name, callback in pairs(eventCallbacks) do
+		if callback and callback.unregister then
+			callback:unregister()
+		end
+	end
+	eventCallbacks = {}
+end
+
 local function loadMapEmpty()
+	-- Clean up previous events before loading a new map
+	clearPendingEvents()
+	unregisterEventCallbacks()
+
 	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
 	if playersInZone > 0 or monstersInZone > 0 then
@@ -55,11 +89,17 @@ local function loadMapEmpty()
 	end
 
 	updatePlayers:register()
+	-- Store reference for later cleanup
+	eventCallbacks["UpdatePlayersEmptyEbbFlowMap"] = updatePlayers
 
-	addEvent(function()
-		-- Change the appearance of puddles to indicate the next filling
+	local eventId = addEvent(function()
 		updateWaterPoolsSize()
 	end, 80000) -- 80 seconds
+
+	if not SoulWarQuest.ebbAndFlow.pendingEvents then
+		SoulWarQuest.ebbAndFlow.pendingEvents = {}
+	end
+	table.insert(SoulWarQuest.ebbAndFlow.pendingEvents, eventId)
 end
 
 local function getDistance(pos1, pos2)
@@ -80,6 +120,9 @@ local function findNearestRoomPosition(playerPosition)
 end
 
 local function loadMapInundate()
+	clearPendingEvents()
+	unregisterEventCallbacks()
+
 	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
 	if playersInZone > 0 or monstersInZone > 0 then
@@ -121,11 +164,14 @@ local function loadMapInundate()
 	end
 
 	updatePlayers:register()
+	eventCallbacks["UpdatePlayersInundateEbbFlowMap"] = updatePlayers
 end
 
 local loadEmptyMap = GlobalEvent("SoulWarQuest.ebbAndFlow")
 
 function loadEmptyMap.onStartup()
+	SoulWarQuest.ebbAndFlow.pendingEvents = {}
+
 	Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.ebbFlow)
 	loadMapEmpty()
 	SoulWarQuest.ebbAndFlow.updateZonePlayers()
@@ -149,3 +195,13 @@ end
 
 eddAndFlowInundate:interval(SoulWarQuest.ebbAndFlow.intervalChangeMap * 60 * 1000)
 eddAndFlowInundate:register()
+
+local cleanupOnSave = GlobalEvent("EbbFlowCleanupOnSave")
+
+function cleanupOnSave.onSave()
+	clearPendingEvents()
+	unregisterEventCallbacks()
+	return true
+end
+
+cleanupOnSave:register()

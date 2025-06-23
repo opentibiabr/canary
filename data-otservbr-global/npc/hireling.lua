@@ -708,10 +708,57 @@ function createHirelingType(HirelingName)
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)
 			npcHandler:say(servicesMsg, npc, creature)
-		elseif MsgContains(message, "lamp") then
-			npcHandler:setTopic(playerId, TOPIC.LAMP)
-			if player:getGuid() ~= hireling:getOwnerId() then
-				return false
+		elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
+			if MsgContains(message, "bank") then
+				local bankerSkillName = HIRELING_SKILLS.BANKER[2]
+				if hireling:hasSkill(bankerSkillName) then
+					npcHandler:setTopic(playerId, TOPIC.BANK)
+					count[playerId], transfer[playerId] = nil, nil
+					npcHandler:say(GREETINGS.BANK, npc, creature)
+				else
+					sendSkillNotLearned(npc, creature, bankerSkillName)
+				end
+			elseif MsgContains(message, "food") then
+				local bankerSkillName = HIRELING_SKILLS.COOKING[2]
+				if hireling:hasSkill(bankerSkillName) then
+					npcHandler:setTopic(playerId, TOPIC.FOOD)
+					npcHandler:say(GREETINGS.FOOD, npc, creature)
+				else
+					sendSkillNotLearned(npc, creature, bankerSkillName)
+				end
+			elseif MsgContains(message, "stash") then
+				local bankerSkillName = HIRELING_SKILLS.STEWARD[2]
+				if hireling:hasSkill(bankerSkillName) then
+					npcHandler:say(GREETINGS.STASH, npc, creature)
+					player:setSpecialContainersAvailable(true)
+					player:openStash(true)
+					player:sendTextMessage(MESSAGE_FAILURE, "Your stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
+				else
+					sendSkillNotLearned(npc, creature, bankerSkillName)
+				end
+			elseif MsgContains(message, "goods") then
+				local string
+				if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
+					string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
+				else
+					string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " .. "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " .. "{supplies}, {tools} and {postal} goods. Just ask!"
+				end
+				npcHandler:setTopic(playerId, TOPIC.GOODS)
+				npcHandler:say(string, npc, creature)
+			elseif MsgContains(message, "lamp") then
+				npcHandler:setTopic(playerId, TOPIC.LAMP)
+				if player:getGuid() ~= hireling:getOwnerId() then
+					return false
+				end
+
+				npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
+			elseif MsgContains(message, "outfit") then
+				if player:getGuid() ~= hireling:getOwnerId() then
+					return false
+				end
+
+				hireling:requestOutfitChange()
+				npcHandler:say("As you wish!", npc, creature)
 			end
 			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.LAMP then

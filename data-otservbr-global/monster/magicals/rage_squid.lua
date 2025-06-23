@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Rage Squid")
 local monster = {}
 
 monster.description = "a rage squid"
-monster.experience = 14820
+monster.experience = 16300
 monster.outfit = {
 	lookType = 1059,
 	lookHead = 94,

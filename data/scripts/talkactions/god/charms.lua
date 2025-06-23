@@ -143,7 +143,6 @@ function setBestiary.onSay(player, words, param)
 	end
 
 	local monsterName = split[2]
-
 	-- If "all" is specified, iterate through all monsters
 	if monsterName:lower() == "all" then
 		local monsterList = Game.getMonsterTypes() -- Retrieves all available monsters

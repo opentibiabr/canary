@@ -160,6 +160,7 @@ bool PlayerBadge::accountAllVocations(uint8_t amount) const {
 	auto paladin = false;
 	auto druid = false;
 	auto sorcerer = false;
+	auto monk = false;
 	for (const auto &player : getPlayersInfoByAccount(m_player.getAccount())) {
 		if (player->getLevel() >= amount) {
 			const auto &vocationEnum = player->getPlayerVocationEnum();
@@ -171,10 +172,12 @@ bool PlayerBadge::accountAllVocations(uint8_t amount) const {
 				paladin = true;
 			} else if (vocationEnum == Vocation_t::VOCATION_DRUID_CIP) {
 				druid = true;
+			} else if (vocationEnum == Vocation_t::VOCATION_MONK_CIP) {
+				monk = true;
 			}
 		}
 	}
-	return knight && paladin && druid && sorcerer;
+	return knight && paladin && druid && sorcerer && monk;
 }
 
 bool PlayerBadge::tournamentParticipation(uint8_t skill) const {

@@ -496,6 +496,11 @@ public:
 	int32_t getSpellBonus(const std::string &spellName, WheelSpellBoost_t boost) const;
 
 	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
+	
+	bool hasMonkQuest() const;
+	int32_t checkRevelationPerkAscetic() const;
+	float checkRevelationPerkSanctuary() const;
+	bool setSanctuaryTimer(const std::string &spell);
 
 private:
 	void resetRevelationState();
@@ -519,7 +524,7 @@ private:
 
 	uint8_t m_modsMaxGrade = {};
 	std::array<uint8_t, 49> m_basicGrades = { 0 };
-	std::array<uint8_t, 76> m_supremeGrades = { 0 };
+	std::array<uint8_t, 99> m_supremeGrades = { 0 };
 
 	std::array<uint8_t, static_cast<size_t>(WheelStage_t::STAGE_COUNT)> m_stages = { 0 };
 	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
@@ -540,4 +545,6 @@ private:
 	std::array<PlayerWheelGem, 4> m_activeGems;
 	std::vector<PlayerWheelGem> m_revealedGems;
 	std::vector<PlayerWheelGem> m_destroyedGems;
+	
+	float m_harmonySanctuary = 1.0f;
 };

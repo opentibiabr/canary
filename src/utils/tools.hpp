@@ -215,3 +215,5 @@ const std::map<uint8_t, uint16_t> &getMaxValuePerSkill();
 
 float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer = false);
 uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted = false);
+
+extern const std::unordered_set<std::string_view> harmonySpells;

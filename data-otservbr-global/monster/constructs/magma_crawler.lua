@@ -81,10 +81,15 @@ monster.loot = {
 	{ name = "platinum coin", chance = 100000, maxCount = 5 },
 	{ name = "yellow gem", chance = 1030 },
 	{ id = 3051, chance = 1650 }, -- energy ring
-	{ name = "fire sword", chance = 1680 },
 	{ name = "black shield", chance = 1550 },
 	{ name = "iron ore", chance = 4280 },
-	{ name = "white piece of cloth", chance = 2310 },
+	{ id = 5909, chance = 2310 }, -- white piece of cloth
+	{ name = "fire axe", chance = 1560 },
+	{ name = "firebug", chance = 10000 },
+	{ name = "fire mushroom", chance = 10000 },
+	{ name = "fire sword", chance = 1710 },
+	{ name = "crown shield", chance = 1180 },
+	{ id = 3039, chance = 1180 }, -- red gem
 	{ name = "red piece of cloth", chance = 930 },
 	{ name = "yellow piece of cloth", chance = 2980 },
 	{ name = "great mana potion", chance = 6500 },

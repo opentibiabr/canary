@@ -398,6 +398,16 @@ class PlayerFunctions {
 	static int luaPlayerSetMapShader(lua_State* L);
 	static int luaPlayerAddCustomOutfit(lua_State* L);
 	static int luaPlayerRemoveCustomOutfit(lua_State* L);
+	
+	static int luaPlayerGetHarmony(lua_State* L);
+	static int luaPlayerSetHarmony(lua_State* L);
+	static int luaPlayerAddHarmony(lua_State* L);
+	static int luaPlayerRemoveHarmony(lua_State* L);
+	static int luaPlayerIsSerene(lua_State* L);
+	static int luaPlayerSetSerene(lua_State* L);
+	static int luaPlayerSetSereneCooldown(lua_State* L);
+	static int luaPlayerGetVirtue(lua_State* L);
+	static int luaPlayerSetVirtue(lua_State* L);
 
 	friend class CreatureFunctions;
 };

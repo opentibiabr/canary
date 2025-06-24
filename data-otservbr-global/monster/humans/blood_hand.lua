@@ -81,7 +81,7 @@ monster.loot = {
 	{ name = "boots of haste", chance = 210 },
 	{ name = "skull staff", chance = 130 },
 	{ name = "mystic turban", chance = 790 },
-	{ name = "white piece of cloth", chance = 840 },
+	{ id = 5909, chance = 840 }, -- white piece of cloth
 	{ name = "red piece of cloth", chance = 500 },
 	{ name = "noble axe", chance = 10 },
 	{ name = "strong mana potion", chance = 5590 },

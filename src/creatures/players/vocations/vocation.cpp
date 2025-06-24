@@ -386,7 +386,7 @@ std::vector<WheelGemSupremeModifier_t> Vocation::getSupremeGemModifiers() {
 	if (!m_supremeGemModifiers.empty()) {
 		return m_supremeGemModifiers;
 	}
-	const auto baseVocation = g_vocations().getVocation(getBaseId());
+	const auto baseVocation = g_vocations().getVocation(getFromVocation());
 	auto vocationName = asLowerCaseString(baseVocation->getVocName());
 	auto allModifiers = magic_enum::enum_entries<WheelGemSupremeModifier_t>();
 	g_logger().debug("Loading supreme gem modifiers for vocation: {}", vocationName);

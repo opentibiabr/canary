@@ -83,6 +83,7 @@ enum SpeakClasses : uint8_t;
 enum ChannelEvent_t : uint8_t;
 enum SquareColor_t : uint8_t;
 enum Resource_t : uint8_t;
+enum VirtueMonk_t : uint8_t;
 
 using GuildWarVector = std::vector<uint32_t>;
 using StashContainerList = std::vector<std::pair<std::shared_ptr<Item>, uint32_t>>;
@@ -1352,6 +1353,24 @@ public:
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
 	bool isFirstOnStack() const;
 	void resetOldCharms();
+	
+	// Monk udpate
+	void sendHarmonyProtocol() const;
+	uint8_t getHarmony() const;
+	void setHarmony(const uint8_t harmonyValue);
+	void addHarmony(const uint8_t harmonyValue);
+	void removeHarmony(const uint8_t harmonyValue);
+	void sendSereneProtocol() const;
+	bool isSerene() const;
+	void setSerene(const bool isSerene);
+	uint64_t getSereneCooldown();
+	void setSereneCooldown(const uint64_t addTime);
+	void sendVirtueProtocol() const;
+	void setVirtue(const VirtueMonk_t virtue);
+	VirtueMonk_t getVirtue() const;
+	uint16_t getMantraTotal() const;
+
+	std::unordered_map<uint16_t, uint8_t> spellActivedAimMap;
 
 private:
 	friend class PlayerLock;
@@ -1673,6 +1692,11 @@ private:
 	void triggerMomentum();
 	void clearCooldowns();
 	void triggerTranscendence();
+	
+	uint8_t m_harmony = 0;
+	bool m_serene = false;
+	uint64_t m_serene_cooldown = 0;
+	VirtueMonk_t m_virtue = VIRTUE_NONE;
 
 	friend class Game;
 	friend class SaveManager;
@@ -1733,4 +1757,6 @@ private:
 	int32_t getMarriageSpouse() const {
 		return marriageSpouse;
 	}
+	
+	int16_t getMantraAbsorbPercent(int16_t mantraAbsorbValue) const;
 };

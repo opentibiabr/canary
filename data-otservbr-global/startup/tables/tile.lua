@@ -91,6 +91,13 @@ TileAction = {
 			{ x = 32074, y = 31889, z = 5 },
 		},
 	},
+	--Monk vocation tile
+	[25000] = {
+		itemId = 50308,
+		itemPos = {
+			{ x = 32060, y = 31894, z = 4 },
+		},
+	},
 	-- Tiles data\scripts\movements\others\dawnport_tiles.lua
 	--Stairs decided vocation back
 	[25009] = {

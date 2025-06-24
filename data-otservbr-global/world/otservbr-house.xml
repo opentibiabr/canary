@@ -516,7 +516,7 @@
 	<house name="Aureate Court 5" houseid="3197" entryx="32774" entryy="31200" entryz="7" rent="600000" townid="17" size="142" clientid="37019" beds="6" />
 	<house name="Aureate Court 2" houseid="3198" entryx="32768" entryy="31185" entryz="7" rent="400000" townid="17" size="119" clientid="37002" beds="2" />
 	<house name="Aureate Court 1" houseid="3199" entryx="32767" entryy="31181" entryz="7" rent="600000" townid="17" size="126" clientid="37001" beds="3" />
-	<house name="Halls of Serenity" houseid="3205" entryx="32783" entryy="31167" entryz="7" rent="5000000" guildhall="true" townid="17" size="504" clientid="38001" beds="33" />
+	<house name="Halls of Serenity" houseid="3205" entryx="32783" entryy="31167" entryz="7" rent="5000000" guildhall="true" townid="17" size="478" clientid="38001" beds="33" />
 	<house name="Fortune Wing 3" houseid="3206" entryx="32822" entryy="31171" entryz="7" rent="600000" townid="17" size="141" clientid="37007" beds="2" />
 	<house name="Fortune Wing 4" houseid="3207" entryx="32825" entryy="31172" entryz="7" rent="600000" townid="17" size="141" clientid="37008" beds="4" />
 	<house name="Fortune Wing 2" houseid="3208" entryx="32819" entryy="31179" entryz="7" rent="600000" townid="17" size="137" clientid="37006" beds="2" />
@@ -952,7 +952,7 @@
 	<house name="Wallside Lane 2" houseid="3651" entryx="33637" entryy="31928" entryz="6" rent="600000" townid="20" size="181" clientid="19011" beds="4" />
 	<house name="Vanward Flats B" houseid="3652" entryx="33614" entryy="31935" entryz="6" rent="400000" townid="20" size="158" clientid="19013" beds="4" />
 	<house name="Vanward Flats A" houseid="3653" entryx="33621" entryy="31935" entryz="6" rent="400000" townid="20" size="158" clientid="19012" beds="4" />
-	<house name="Bronze Brothers Bastion" houseid="3654" entryx="33599" entryy="31933" entryz="6" rent="5000000" guildhall="true" townid="20" size="749" clientid="19007" beds="16" />
+	<house name="Bronze Brothers Bastion" houseid="3654" entryx="33599" entryy="31933" entryz="6" rent="5000000" guildhall="true" townid="20" size="945" clientid="19007" beds="16" />
 	<house name="Cistern Ave" houseid="3655" entryx="33588" entryy="31926" entryz="6" rent="300000" townid="20" size="81" clientid="19008" beds="2" />
 	<house name="Antimony Lane 4" houseid="3656" entryx="33614" entryy="31922" entryz="6" rent="400000" townid="20" size="110" clientid="19017" beds="3" />
 	<house name="Antimony Lane 3" houseid="3657" entryx="33630" entryy="31921" entryz="6" rent="400000" townid="20" size="77" clientid="19016" beds="3" />

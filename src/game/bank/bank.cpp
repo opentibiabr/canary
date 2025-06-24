@@ -76,7 +76,8 @@ const std::set<std::string> deniedNames = {
 	"druidsample",
 	"sorcerersample",
 	"knightsample",
-	"paladinsample"
+	"paladinsample",
+	"monksample"
 };
 
 bool Bank::transferTo(const std::shared_ptr<Bank> &destination, uint64_t amount) {

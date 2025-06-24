@@ -98,7 +98,7 @@ monster.loot = {
 	{ name = "spellbook of warding", chance = 15380 },
 	{ name = "yellow gem", chance = 12820 },
 	{ name = "small diamond", chance = 10260, maxCount = 10 },
-	{ name = "white piece of cloth", chance = 10260, maxCount = 3 },
+	{ id = 5909, chance = 10260, maxCount = 3 },
 	{ name = "piece of hell steel", chance = 10260, maxCount = 3 },
 	{ name = "blue gem", chance = 10260 },
 	{ name = "green gem", chance = 10260 },

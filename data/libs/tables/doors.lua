@@ -73,6 +73,8 @@ KeyDoorTable = {
 	{ lockedDoor = 37984, closedDoor = 37983, openDoor = 37986 },
 	{ lockedDoor = 44914, closedDoor = 44913, openDoor = 44917 },
 	{ lockedDoor = 44916, closedDoor = 44915, openDoor = 44918 },
+	{ lockedDoor = 49731, closedDoor = 49732, openDoor = 49735 },
+	{ lockedDoor = 49733, closedDoor = 49734, openDoor = 49736 },
 }
 
 -- These are the common doors, the ones that just open and close without any special requirements.

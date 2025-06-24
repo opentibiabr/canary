@@ -60,6 +60,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
 	const WeaponType_t type = Lua::getNumber<WeaponType_t>(L, 2);
 	switch (type) {
+		case WEAPON_FIST:
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {

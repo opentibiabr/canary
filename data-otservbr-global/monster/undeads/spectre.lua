@@ -89,7 +89,7 @@ monster.loot = {
 	{ id = 3049, chance = 190 }, -- stealth ring
 	{ name = "wand of cosmic energy", chance = 9800 },
 	{ name = "blank rune", chance = 30310, maxCount = 2 },
-	{ name = "white piece of cloth", chance = 3800 },
+	{ id = 5909, chance = 3000 }, -- white piece of cloth
 	{ name = "soul orb", chance = 6005 },
 	{ id = 6299, chance = 280 }, -- death ring
 	{ name = "demonic essence", chance = 6270 },

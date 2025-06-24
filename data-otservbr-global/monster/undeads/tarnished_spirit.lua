@@ -82,7 +82,7 @@ monster.loot = {
 	{ name = "ancient shield", chance = 860 },
 	{ name = "cape", chance = 8800 },
 	{ name = "shadow herb", chance = 14400 },
-	{ name = "white piece of cloth", chance = 1940 },
+	{ id = 5909, chance = 1940 }, -- white piece of cloth
 	{ name = "ghostly tissue", chance = 1870 },
 }
 

@@ -120,4 +120,31 @@
 		<gem quality="1" name="guardian gem" />
 		<gem quality="2" name="greater guardian gem" />
 	</vocation>
+	<vocation id="9" clientid="5" baseid="5" name="Monk" description="an monk" magicshield="0" gaincap="25" gainhp="10" gainmana="10" gainhpticks="7000" gainhpamount="1" gainmanaticks="4000" gainmanaamount="2" manamultiplier="1.3" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="9" avatarlooktype="1823">
+		<formula meleeDamage="1.3" distDamage="1.0" defense="1.0" armor="1.0" />
+		<mitigation multiplier="1.3" primaryShield="2.10" secondaryShield="1.30" />
+		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier="1.0"/>
+		<skill id="0" multiplier="1.1" />
+		<skill id="1" multiplier="1.2" />
+		<skill id="2" multiplier="1.2" />
+		<skill id="3" multiplier="1.2" />
+		<skill id="4" multiplier="1.5" />
+		<skill id="5" multiplier="1.1" />
+		<skill id="6" multiplier="1.1" />
+	</vocation>
+	<vocation id="10" clientid="15" baseid="5" name="Exalted Monk" description="an exalted monk" magicshield="0" gaincap="25" gainhp="10" gainmana="10" gainhpticks="5000" gainhpamount="1" gainmanaticks="3000" gainmanaamount="2" manamultiplier="1.3" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="9" avatarlooktype="1823">
+		<formula meleeDamage="1.3" distDamage="1.0" defense="1.0" armor="1.0" />
+		<mitigation multiplier="1.3" primaryShield="2.10" secondaryShield="1.30" />
+		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier="1.0"/>
+		<skill id="0" multiplier="1.1" />
+		<skill id="1" multiplier="1.2" />
+		<skill id="2" multiplier="1.2" />
+		<skill id="3" multiplier="1.2" />
+		<skill id="4" multiplier="1.5" />
+		<skill id="5" multiplier="1.1" />
+		<skill id="6" multiplier="1.1" />
+		<gem quality="0" name="lesser spiritualist gem" />
+		<gem quality="1" name="spiritualist gem" />
+		<gem quality="2" name="greater spiritualist gem" />
+	</vocation>
 </vocations>

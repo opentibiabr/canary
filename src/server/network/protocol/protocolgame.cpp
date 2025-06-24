@@ -4394,7 +4394,7 @@ void ProtocolGame::sendCyclopediaCharacterDefenceStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_DEFENCESTATS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	const double dodgeWheel = player->wheel()->getStat(WheelStat_t::DODGE) / 10000.0;
+	const double dodgeWheel = player->wheel().getStat(WheelStat_t::DODGE) / 10000.0;
 	const double dodgeTotal = getForgeSkillStat(CONST_SLOT_ARMOR) + dodgeWheel;
 	msg.addDouble(dodgeTotal);
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_ARMOR, false));

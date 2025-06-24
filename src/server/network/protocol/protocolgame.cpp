@@ -10228,7 +10228,7 @@ void ProtocolGame::sendVirtueProtocol(const uint8_t virtueValue) {
 }
 
 void ProtocolGame::parseSelectSpellAimProtocol(NetworkMessage &msg) {
-	if (!player->canDoExAction()) {
+	if (!player->canDoAction()) {
 		player->sendCancelMessage("You need to wait to do this again.");
 		return;
 	}
@@ -10240,5 +10240,5 @@ void ProtocolGame::parseSelectSpellAimProtocol(NetworkMessage &msg) {
 		player->spellActivedAimMap[spellId] = spellAim;
 	}
 
-	player->setNextExAction(OTSYS_TIME() + g_configManager().getNumber(UI_ACTIONS_DELAY_INTERVAL) - 10);
+	player->setNextAction(OTSYS_TIME() + g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 }

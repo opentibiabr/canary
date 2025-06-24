@@ -8,6 +8,7 @@
  */
 
 #pragma once
+#include "creatures/players/components/wheel/wheel_spells.hpp"
 
 enum class WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
@@ -274,33 +275,3 @@ struct SlotInfo {
 	uint8_t slot; ///< The slot index.
 	uint16_t points; ///< The points for the slot.
 };
-
-namespace WheelSpells {
-	struct Increase {
-		bool area = false;
-		int damage = 0;
-		int heal = 0;
-		int aditionalTarget = 0;
-		int damageReduction = 0;
-		int duration = 0;
-		int criticalDamage = 0;
-		int criticalChance = 0;
-	};
-
-	struct Decrease {
-		int cooldown = 0;
-		int manaCost = 0;
-		int secondaryGroupCooldown = 0;
-	};
-
-	struct Leech {
-		int mana = 0;
-		int life = 0;
-	};
-
-	struct Bonus {
-		Leech leech;
-		Increase increase;
-		Decrease decrease;
-	};
-}

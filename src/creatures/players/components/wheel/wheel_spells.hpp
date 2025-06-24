@@ -9,6 +9,9 @@
 
 #pragma once
 
+#ifndef WHEEL_SPELLS_HPP
+#define WHEEL_SPELLS_HPP
+
 namespace WheelSpells {
 	struct Increase {
 		bool area = false;
@@ -38,3 +41,5 @@ namespace WheelSpells {
 		Decrease decrease;
 	};
 }
+
+#endif // WHEEL_SPELLS_HPP

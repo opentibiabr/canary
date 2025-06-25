@@ -30,34 +30,24 @@ void SaveManager::saveAll() {
 	logger.info("Saving server...");
 	Benchmark bm_players;
 	const auto &players = game.getPlayers();
-	std::vector<std::future<void>> futures;
+	std::vector<std::pair<std::future<void>, std::string>> pending;
 	const auto asyncSave = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
 	logger.info("Saving {} players... (Async: {})", players.size(), asyncSave ? "Enabled" : "Disabled");
+	std::vector<std::future<void>> futures;
 	for (const auto &[_, player] : players) {
 		player->loginPosition = player->getPosition();
 
-		auto promise = std::make_shared<std::promise<void>>();
-		futures.push_back(promise->get_future());
-
-		threadPool.detach_task([this, player, promise]() {
-			try {
-				doSavePlayer(player);
-				promise->set_value();
-			} catch (const std::exception &e) {
-				logger.error("Exception occurred while saving player {}: {}", player->getName(), e.what());
-				promise->set_exception(std::current_exception());
-			} catch (...) {
-				logger.error("Unknown error occurred while saving player {}.", player->getName());
-				promise->set_exception(std::current_exception());
-			}
+		auto fut = threadPool.submit_task([this, player] {
+			doSavePlayer(player);
 		});
+		pending.emplace_back(std::move(fut), player->getName());
 	}
 
-	for (auto &future : futures) {
+	for (auto &[future, name] : pending) {
 		try {
 			future.get();
 		} catch (const std::exception &e) {
-			logger.error("Failed to save player due to exception: {}", e.what());
+			logger.error("Failed to save player {}: {}", name, e.what());
 		}
 	}
 

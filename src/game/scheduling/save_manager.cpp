@@ -28,21 +28,67 @@ SaveManager &SaveManager::getInstance() {
 void SaveManager::saveAll() {
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
-	const auto players = game.getPlayers();
-
+	Benchmark bm_players;
+	const auto &players = game.getPlayers();
+	std::vector<std::future<void>> futures;
+	const auto asyncSave = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+	logger.info("Saving {} players... (Async: {})", players.size(), asyncSave ? "Enabled" : "Disabled");
 	for (const auto &[_, player] : players) {
 		player->loginPosition = player->getPosition();
-		doSavePlayer(player);
+
+		auto promise = std::make_shared<std::promise<void>>();
+		futures.push_back(promise->get_future());
+
+		threadPool.detach_task([this, player, promise]() {
+			try {
+				doSavePlayer(player);
+				promise->set_value();
+			} catch (const std::exception &e) {
+				logger.error("Exception occurred while saving player {}: {}", player->getName(), e.what());
+				promise->set_exception(std::current_exception());
+			} catch (...) {
+				logger.error("Unknown error occurred while saving player {}.", player->getName());
+				promise->set_exception(std::current_exception());
+			}
+		});
 	}
 
-	auto guilds = game.getGuilds();
+	for (auto &future : futures) {
+		try {
+			future.get();
+		} catch (const std::exception &e) {
+			logger.error("Failed to save player due to exception: {}", e.what());
+		}
+	}
+
+	double duration_players = bm_players.duration();
+	if (duration_players > 1000.0) {
+		logger.info("Players saved in {:.2f} seconds.", duration_players / 1000.0);
+	} else {
+		logger.info("Players saved in {} milliseconds.", duration_players);
+	}
+
+	Benchmark bm_guilds;
+	const auto &guilds = game.getGuilds();
 	for (const auto &[_, guild] : guilds) {
 		saveGuild(guild);
+	}
+	double duration_guilds = bm_guilds.duration();
+	if (duration_guilds > 1000.0) {
+		logger.info("Guilds saved in {:.2f} seconds.", duration_guilds / 1000.0);
+	} else {
+		logger.info("Guilds saved in {} milliseconds.", duration_guilds);
 	}
 
 	saveMap();
 	saveKV();
-	logger.info("Server saved in {} milliseconds.", bm_saveAll.duration());
+
+	double duration_saveAll = bm_saveAll.duration();
+	if (duration_saveAll > 1000.0) {
+		logger.info("Server saved in {:.2f} seconds.", duration_saveAll / 1000.0);
+	} else {
+		logger.info("Server saved in {} milliseconds.", duration_saveAll);
+	}
 }
 
 void SaveManager::scheduleAll() {

@@ -28,21 +28,57 @@ SaveManager &SaveManager::getInstance() {
 void SaveManager::saveAll() {
 	Benchmark bm_saveAll;
 	logger.info("Saving server...");
-	const auto players = game.getPlayers();
-
+	Benchmark bm_players;
+	const auto &players = game.getPlayers();
+	std::vector<std::pair<std::future<void>, std::string>> pending;
+	const auto asyncSave = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
+	logger.info("Saving {} players... (Async: {})", players.size(), asyncSave ? "Enabled" : "Disabled");
+	std::vector<std::future<void>> futures;
 	for (const auto &[_, player] : players) {
 		player->loginPosition = player->getPosition();
-		doSavePlayer(player);
+
+		auto fut = threadPool.submit_task([this, player] {
+			doSavePlayer(player);
+		});
+		pending.emplace_back(std::move(fut), player->getName());
 	}
 
-	auto guilds = game.getGuilds();
+	for (auto &[future, name] : pending) {
+		try {
+			future.get();
+		} catch (const std::exception &e) {
+			logger.error("Failed to save player {}: {}", name, e.what());
+		}
+	}
+
+	double duration_players = bm_players.duration();
+	if (duration_players > 1000.0) {
+		logger.info("Players saved in {:.2f} seconds.", duration_players / 1000.0);
+	} else {
+		logger.info("Players saved in {} milliseconds.", duration_players);
+	}
+
+	Benchmark bm_guilds;
+	const auto &guilds = game.getGuilds();
 	for (const auto &[_, guild] : guilds) {
 		saveGuild(guild);
+	}
+	double duration_guilds = bm_guilds.duration();
+	if (duration_guilds > 1000.0) {
+		logger.info("Guilds saved in {:.2f} seconds.", duration_guilds / 1000.0);
+	} else {
+		logger.info("Guilds saved in {} milliseconds.", duration_guilds);
 	}
 
 	saveMap();
 	saveKV();
-	logger.info("Server saved in {} milliseconds.", bm_saveAll.duration());
+
+	double duration_saveAll = bm_saveAll.duration();
+	if (duration_saveAll > 1000.0) {
+		logger.info("Server saved in {:.2f} seconds.", duration_saveAll / 1000.0);
+	} else {
+		logger.info("Server saved in {} milliseconds.", duration_saveAll);
+	}
 }
 
 void SaveManager::scheduleAll() {

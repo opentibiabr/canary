@@ -839,6 +839,10 @@ bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monste
 	return monsterType ? m_bosstiaryMonsterTracker.contains(monsterType) : false;
 }
 
+bool Player::isMonsterOnBestiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	return monsterType ? m_bestiaryMonsterTracker.contains(monsterType) : false;
+}
+
 std::shared_ptr<Vocation> Player::getVocation() const {
 	return vocation;
 }

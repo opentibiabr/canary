@@ -810,7 +810,7 @@ void Lua::registerSharedClass(lua_State* L, const std::string &className, const 
 int Lua::luaGarbageCollection(lua_State* L) {
 	const auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
 	if (objPtr) {
-		objPtr->reset();
+		objPtr->~shared_ptr<SharedObject>();
 	}
 	return 0;
 }

@@ -235,4 +235,8 @@
 	<mount id="233" clientid="1833" name="Night Locust" speed="10" premium="no" type="store" />
 	<mount id="234" clientid="1834" name="Leaf Locust" speed="10" premium="no" type="store" />
 	<mount id="235" clientid="1835" name="Pearl Locust" speed="10" premium="no" type="store" />
+	<mount id="236" clientid="1833" name="Night Locust" speed="10" premium="no" type="store" />
+	<mount id="237" clientid="1834" name="Leaf Locust" speed="10" premium="no" type="store" />
+	<mount id="238" clientid="1835" name="Pearl Locust" speed="10" premium="no" type="store" />
+	<mount id="239" clientid="1836" name="Satin Moth" speed="10" premium="no" type="store" />
 </mounts>

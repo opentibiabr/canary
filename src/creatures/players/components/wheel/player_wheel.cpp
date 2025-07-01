@@ -1859,7 +1859,6 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 
 uint16_t PlayerWheel::getExtraPoints() const {
 	if (m_player.getLevel() < 51) {
-		g_logger().error("Character level must be above 50.");
 		return 0;
 	}
 
@@ -3813,15 +3812,15 @@ float PlayerWheel::calculateMitigation() const {
 	float distanceFactor = 1.0f;
 	switch (m_player.fightMode) {
 		case FIGHTMODE_ATTACK: {
-			fightFactor = 0.67f;
+			fightFactor = 0.8f;
 			break;
 		}
 		case FIGHTMODE_BALANCED: {
-			fightFactor = 0.84f;
+			fightFactor = 1.0f;
 			break;
 		}
 		case FIGHTMODE_DEFENSE: {
-			fightFactor = 1.0f;
+			fightFactor = 1.2f;
 			break;
 		}
 		default:

@@ -210,10 +210,10 @@ bool PlayerTitle::checkHighscore(uint8_t skill) const {
 	switch (static_cast<HighscoreCategories_t>(skill)) {
 		case HighscoreCategories_t::CHARMS:
 			query = fmt::format(
-				"SELECT `pc`.`player_guid`, `pc`.`charm_points`, `p`.`group_id` FROM `player_charms` pc JOIN `players` p ON `pc`.`player_guid` = `p`.`id` WHERE `p`.`group_id` < {} ORDER BY `pc`.`charm_points` DESC LIMIT 1",
+				"SELECT `pc`.`player_id`, `pc`.`charm_points`, `p`.`group_id` FROM `player_charms` pc JOIN `players` p ON `pc`.`player_id` = `p`.`id` WHERE `p`.`group_id` < {} ORDER BY `pc`.`charm_points` DESC LIMIT 1",
 				static_cast<int>(GROUP_TYPE_GAMEMASTER)
 			);
-			fieldCheck = "player_guid";
+			fieldCheck = "player_id";
 			break;
 		case HighscoreCategories_t::DROME:
 			// todo check if player is in the top 5 for the previous rota of the Tibiadrome.

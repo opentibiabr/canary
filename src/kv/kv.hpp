@@ -87,8 +87,8 @@ public:
 	std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false) override;
 
 	void flush() override {
-		std::scoped_lock lock(mutex_);
 		KV::flush();
+		std::scoped_lock lock(mutex_);
 		store_.clear();
 	}
 

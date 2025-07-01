@@ -501,6 +501,15 @@ if NpcHandler == nil then
 		local callback = self:getCallback(CALLBACK_ON_THINK)
 		if callback == nil or callback(npc, interval) then
 			if self:processModuleCallback(CALLBACK_ON_THINK, npc, interval) then
+				local now = os.time()
+				for playerId, lastTalk in pairs(self.talkStart) do
+					if lastTalk and now - lastTalk > 120 then
+						local player = Player(playerId)
+						if player then
+							self:onWalkAway(npc, player)
+						end
+					end
+				end
 				return true
 			end
 		end
@@ -561,7 +570,7 @@ if NpcHandler == nil then
 						npc:sayWithDelay(npc:getId(), message_male, TALKTYPE_SAY, self.talkDelay, self.eventDelayedSay)
 					end
 				elseif message ~= "" then
-					npc:sayWithDelay(npc:getId(), message, TALKTYPE_SAY, self.talkDelay, self.eventDelayedSay)
+					npc:sayWithDelay(npc:getId(), message, TALKTYPE_PRIVATE_NP, self.talkDelay, self.eventDelayedSay, player:getId())
 				end
 				self:resetNpc(player)
 				self:removeInteraction(npc, player)

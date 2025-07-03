@@ -106,25 +106,3 @@ function ambientSoundPeriodChange.onPeriodChange(period)
 end
 
 ambientSoundPeriodChange:register()
-
--- Global event to handle initial sound setup on server startup
-local ambientSoundStartup = GlobalEvent("AmbientSoundStartup")
-
-function ambientSoundStartup.onStartup()
-    local currentPeriod = getEffectivePeriod()
-    for _, zoneData in ipairs(ambientZones) do
-        local zone = Zone(zoneData.zone)
-        local players = zone:getPlayers()
-        local sound = getCurrentSound(zoneData, currentPeriod)
-        if sound then
-            for _, player in ipairs(players) do
-                if player:isPlayer() then
-                    player:sendAmbientSoundEffect(sound)
-                end
-            end
-        end
-    end
-    return true
-end
-
-ambientSoundStartup:register()

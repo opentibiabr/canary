@@ -194,7 +194,7 @@ public:
 
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
-	std::string getContentDescription(bool oldProtocol);
+	std::string getContentDescription(bool sendColoredMessage);
 
 	uint32_t getMaxCapacity() const;
 
@@ -224,7 +224,7 @@ public:
 	bool countsToLootAnalyzerBalance() const;
 	bool hasParent();
 	void addItem(const std::shared_ptr<Item> &item);
-	StashContainerList getStowableItems() const;
+	StashContainerList getStowableItems();
 	bool isStoreInbox() const;
 	bool isStoreInboxFiltered() const;
 	std::deque<std::shared_ptr<Item>> getStoreInboxFilteredItems() const;
@@ -286,8 +286,6 @@ public:
 	bool isInsideContainerWithId(uint16_t id);
 
 protected:
-	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);
-
 	uint32_t m_maxItems {};
 	uint32_t maxSize {};
 	uint32_t totalWeight {};

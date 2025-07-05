@@ -131,6 +131,8 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, CHARM_OFFENSIVE);
 	registerEnum(L, CHARM_DEFENSIVE);
 	registerEnum(L, CHARM_PASSIVE);
+	registerEnum(L, CHARM_MAJOR);
+	registerEnum(L, CHARM_MINOR);
 	registerEnum(L, CHARM_GUT);
 	registerEnum(L, CHARM_SCAVENGE);
 

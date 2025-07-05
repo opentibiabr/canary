@@ -121,7 +121,7 @@ int MonsterFunctions::luaMonsterGetType(lua_State* L) {
 	// monster:getType()
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (monster) {
-		Lua::pushUserdata<MonsterType>(L, monster->mType);
+		Lua::pushUserdata<MonsterType>(L, monster->m_monsterType);
 		Lua::setMetatable(L, -1, "MonsterType");
 	} else {
 		lua_pushnil(L);
@@ -141,7 +141,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			mType = g_monsters().getMonsterType(Lua::getString(L, 2));
 		}
 		// Unregister creature events (current MonsterType)
-		for (const std::string &scriptName : monster->mType->info.scripts) {
+		for (const std::string &scriptName : monster->m_monsterType->info.scripts) {
 			if (!monster->unregisterCreatureEvent(scriptName)) {
 				g_logger().warn("[Warning - MonsterFunctions::luaMonsterSetType] Unknown event name: {}", scriptName);
 			}
@@ -151,7 +151,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		g_game().updateMonster(monster, mType);
 
 		// Assign new MonsterType
-		monster->mType = mType;
+		monster->m_monsterType = mType;
 		monster->nameDescription = asLowerCaseString(mType->nameDescription);
 		monster->defaultOutfit = mType->info.outfit;
 		monster->currentOutfit = mType->info.outfit;
@@ -446,7 +446,7 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 
 	const auto &spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().emplace_back(std::make_shared<SpawnMonster>(pos, 5));
 	uint32_t interval = Lua::getNumber<uint32_t>(L, 2, 90) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN) * eventschedule));
-	spawnMonster->addMonster(monster->mType->typeName, pos, DIRECTION_NORTH, static_cast<uint32_t>(interval));
+	spawnMonster->addMonster(monster->m_monsterType->typeName, pos, DIRECTION_NORTH, static_cast<uint32_t>(interval));
 	spawnMonster->startSpawnMonsterCheck();
 
 	Lua::pushBoolean(L, true);

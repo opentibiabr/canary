@@ -231,4 +231,8 @@
 	<mount id="229" clientid="1743" name="Bog Tyrant" speed="10" premium="no" type="store" />
 	<mount id="230" clientid="1744" name="Crimson Fang" speed="10" premium="no" type="store" />
 	<mount id="231" clientid="1778" name="Bumblebee" speed="10" premium="no" type="store" />
+	<mount id="232" clientid="1810" name="Primal Demonosaur" speed="10" premium="no" type="quest" />
+	<mount id="233" clientid="1833" name="Night Locust" speed="10" premium="no" type="store" />
+	<mount id="234" clientid="1834" name="Leaf Locust" speed="10" premium="no" type="store" />
+	<mount id="235" clientid="1835" name="Pearl Locust" speed="10" premium="no" type="store" />
 </mounts>

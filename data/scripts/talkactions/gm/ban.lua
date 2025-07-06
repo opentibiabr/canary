@@ -46,8 +46,7 @@ function ban.onSay(player, words, param)
 		end
 		return true
 	else
-		db.query("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" ..
-			accountId .. ", " .. db.escapeString(reason or "") .. ", " .. timeNow .. ", " .. expiresAt .. ", " .. player:getGuid() .. ")")
+		db.query("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(reason or "") .. ", " .. timeNow .. ", " .. expiresAt .. ", " .. player:getGuid() .. ")")
 	end
 
 	local target = Player(name)

@@ -172,28 +172,40 @@ function Creature:addDamageCondition(target, type, list, damage, period, rounds)
 end
 
 function Creature.checkCreatureInsideDoor(player, toPosition)
-	local creature = Tile(toPosition):getTopCreature()
+	local tile = Tile(toPosition)
+
+	if not tile then
+		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return true
+	end
+
+	local creature = tile:getTopCreature()
 	if creature then
 		toPosition.x = toPosition.x + 1
 		local query = Tile(toPosition):queryAdd(creature, bit.bor(FLAG_IGNOREBLOCKCREATURE, FLAG_PATHFINDING))
+
 		if query ~= RETURNVALUE_NOERROR then
 			toPosition.x = toPosition.x - 1
 			toPosition.y = toPosition.y + 1
 			query = Tile(toPosition):queryAdd(creature, bit.bor(FLAG_IGNOREBLOCKCREATURE, FLAG_PATHFINDING))
 		end
+
 		if query ~= RETURNVALUE_NOERROR then
 			toPosition.y = toPosition.y - 2
 			query = Tile(toPosition):queryAdd(creature, bit.bor(FLAG_IGNOREBLOCKCREATURE, FLAG_PATHFINDING))
 		end
+
 		if query ~= RETURNVALUE_NOERROR then
 			toPosition.x = toPosition.x - 1
 			toPosition.y = toPosition.y + 1
 			query = Tile(toPosition):queryAdd(creature, bit.bor(FLAG_IGNOREBLOCKCREATURE, FLAG_PATHFINDING))
 		end
+
 		if query ~= RETURNVALUE_NOERROR then
 			player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			return true
 		end
+
 		creature:teleportTo(toPosition, true)
 	end
 end

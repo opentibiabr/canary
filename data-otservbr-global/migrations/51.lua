@@ -1,4 +1,3 @@
-
 function onUpdateDatabase()
 	logger.info("Updating database to version 51 (feat: player death participants)")
 

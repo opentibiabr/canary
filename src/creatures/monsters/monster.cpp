@@ -1468,23 +1468,29 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
+	// We can not use iterators here since we can push a creature to another tile
+	// which will invalidate the iterator.
 	if (!tile) {
 		return;
 	}
 
 	const CreatureVector* creatures = tile->getCreatures();
-	if (!creatures) {
+	if (!creatures || creatures->empty()) {
 		return;
 	}
 
-	// We must copy the vector to avoid iterator invalidation during tile changes
-	auto creaturesCopy = *creatures;
 	uint32_t removeCount = 0;
 	std::shared_ptr<Monster> lastPushedMonster = nullptr;
 
-	for (const auto &creature : creaturesCopy) {
-		const auto &monster = creature->getMonster();
+	for (size_t i = 0; i < creatures->size();) {
+		const auto &creature = creatures->at(i);
+		if (!creature) {
+			++i;
+			continue;
+		}
 
+		// Skip increment to re-check current index after change
+		const std::shared_ptr<Monster> monster = creature->getMonster();
 		if (monster && monster->isPushable()) {
 			if (monster != lastPushedMonster && Monster::pushCreature(monster)) {
 				lastPushedMonster = monster;
@@ -1495,6 +1501,8 @@ void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 			monster->setDropLoot(true);
 			removeCount++;
 		}
+
+		++i;
 	}
 
 	if (removeCount > 0) {

@@ -296,6 +296,8 @@ public:
 
 	bool isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
 
+	bool isMonsterOnBestiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const;
+
 	std::shared_ptr<Vocation> getVocation() const;
 
 	OperatingSystem_t getOperatingSystem() const;

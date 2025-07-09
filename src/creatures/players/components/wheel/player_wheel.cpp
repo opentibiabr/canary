@@ -2886,11 +2886,11 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	if (isOwner) {
 		const uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
-			damageBonus = 7;
+			damageBonus = 12;
 		} else if (stage >= 2) {
-			damageBonus = 5;
+			damageBonus = 10;
 		} else if (stage >= 1) {
-			damageBonus = 3;
+			damageBonus = 8;
 		}
 	}
 

@@ -1470,29 +1470,43 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 	// We can not use iterators here since we can push a creature to another tile
 	// which will invalidate the iterator.
-	if (const CreatureVector* creatures = tile->getCreatures()) {
-		uint32_t removeCount = 0;
-		std::shared_ptr<Monster> lastPushedMonster = nullptr;
+	if (!tile) {
+		return;
+	}
 
-		for (size_t i = 0; i < creatures->size();) {
-			const auto &monster = creatures->at(i)->getMonster();
-			if (monster && monster->isPushable()) {
-				if (monster != lastPushedMonster && Monster::pushCreature(monster)) {
-					lastPushedMonster = monster;
-					continue;
-				}
+	const CreatureVector* creatures = tile->getCreatures();
+	if (!creatures || creatures->empty()) {
+		return;
+	}
 
-				monster->changeHealth(-monster->getHealth());
-				monster->setDropLoot(true);
-				removeCount++;
+	uint32_t removeCount = 0;
+	std::shared_ptr<Monster> lastPushedMonster = nullptr;
+
+	for (size_t i = 0; i < creatures->size();) {
+		const auto &creature = creatures->at(i);
+		if (!creature) {
+			++i;
+			continue;
+		}
+
+		// Skip increment to re-check current index after change
+		const std::shared_ptr<Monster> monster = creature->getMonster();
+		if (monster && monster->isPushable()) {
+			if (monster != lastPushedMonster && Monster::pushCreature(monster)) {
+				lastPushedMonster = monster;
+				continue;
 			}
 
-			++i;
+			monster->changeHealth(-monster->getHealth());
+			monster->setDropLoot(true);
+			removeCount++;
 		}
 
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
-		}
+		++i;
+	}
+
+	if (removeCount > 0) {
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
 	}
 }
 

@@ -7,7 +7,7 @@ local vocationTrials = {
 	-- Sorcerer trial
 	[25005] = {
 		tutorialId = 5,
-		effectPosition = { x = 32064, y = 31905, z = 5 },
+		effectPosition = { x = 32050, y = 31891, z = 5 },
 		storage = Storage.Dawnport.Sorcerer,
 		message = "As a sorcerer, you can use the following spells: Magic Patch, Buzz, Scorch.",
 		vocation = {
@@ -37,7 +37,7 @@ local vocationTrials = {
 	-- Druid trial
 	[25006] = {
 		tutorialId = 6,
-		effectPosition = { x = 32064, y = 31876, z = 5 },
+		effectPosition = { x = 32064, y = 31905, z = 5 },
 		storage = Storage.Dawnport.Druid,
 		message = "As a druid, you can use these spells: Mud Attack, Chill Out, Magic Patch.",
 		vocation = {
@@ -67,7 +67,7 @@ local vocationTrials = {
 	-- Paladin trial
 	[25007] = {
 		tutorialId = 4,
-		effectPosition = { x = 32050, y = 31891, z = 5 },
+		effectPosition = { x = 32078, y = 31891, z = 5 },
 		storage = Storage.Dawnport.Paladin,
 		message = "As a paladin, you can use the following spells: Magic Patch, Arrow Call.",
 		vocation = {
@@ -98,7 +98,7 @@ local vocationTrials = {
 	-- Knight trial
 	[25008] = {
 		tutorialId = 3,
-		effectPosition = { x = 32078, y = 31891, z = 5 },
+		effectPosition = { x = 32064, y = 31876, z = 5 },
 		storage = Storage.Dawnport.Knight,
 		message = "As a knight, you can use the following spells: Bruise Bane.",
 		vocation = {
@@ -121,6 +121,33 @@ local vocationTrials = {
 			{ id = 7876, amount = 10, storage = Storage.Dawnport.KnightHealthPotion, limit = 1 }, -- Health potion
 			{ id = 268, amount = 2, storage = Storage.Dawnport.KnightManaPotion, limit = 1 }, -- Mana potion
 			{ id = 3577, amount = 1, storage = Storage.Dawnport.KnightMeat, limit = 1 }, -- Meat
+		},
+	},
+	-- Monk trial
+	[25000] = {
+		tutorialId = 11,
+		effectPosition = { x = 32060, y = 31894, z = 4 },
+		storage = Storage.Dawnport.Monk,
+		message = "As a monk, you can use the following spells: Swift Jab, Tiger Clash.",
+		vocation = {
+			id = VOCATION.ID.MONK,
+			name = "monk",
+			outfit = {
+				lookType = {
+					[PLAYERSEX_FEMALE] = 1825,
+					[PLAYERSEX_MALE] = 1824,
+				},
+				lookHead = 95,
+				lookBody = 38,
+				lookLegs = 94,
+				lookFeet = 115,
+			},
+		},
+		items = {
+			{ id = 50166, amount = 1, slot = CONST_SLOT_LEFT }, -- light jo staff
+			{ id = 7876, amount = 5, storage = Storage.Dawnport.MonkHealthPotion, limit = 1 }, -- Health potion-
+			{ id = 268, amount = 5, storage = Storage.Dawnport.MonkManaPotion, limit = 1 }, -- Mana potion
+			{ id = 3577, amount = 1, storage = Storage.Dawnport.MonkMeat, limit = 1 }, -- Meat
 		},
 	},
 }
@@ -259,25 +286,25 @@ function dawnportVocationTrial.onStepIn(creature, item, position, fromPosition)
 	local trial = vocationTrials[item.actionid]
 	if trial then
 		-- Center room position
-		local centerPosition = Position(32063, 31889, 5)
-		if centerPosition:getDistance(fromPosition) >= centerPosition:getDistance(position) then
-			-- Blocks the vocation trial if same vocation or after level 20
-			if player:getVocation():getId() == trial.vocation.id or player:getLevel() >= 20 then
-				return true
-			end
-			-- On step in the tile
-			tileStep(player, trial)
-			-- Change to new vocation, convert magic level and skills and set proper stats
-			player:changeVocation(trial.vocation.id)
-			-- Remove vocation trial equipment items
-			removeItems(player)
-			-- Add player item
-			addItems(player, trial.items)
-			-- Change outfit
-			setOutfit(player, trial.vocation.outfit)
-			player:getPosition():sendMagicEffect(CONST_ME_BLOCKHIT)
+		--local centerPosition = Position(32065, 31891, 5)
+		--if centerPosition:getDistance(fromPosition) < centerPosition:getDistance(position) then
+		-- Blocks the vocation trial if same vocation or after level 20
+		if player:getVocation():getId() == trial.vocation.id or player:getLevel() >= 20 then
 			return true
 		end
+		-- On step in the tile
+		tileStep(player, trial)
+		-- Change to new vocation, convert magic level and skills and set proper stats
+		player:changeVocation(trial.vocation.id)
+		-- Remove vocation trial equipment items
+		removeItems(player)
+		-- Add player item
+		addItems(player, trial.items)
+		-- Change outfit
+		setOutfit(player, trial.vocation.outfit)
+		player:getPosition():sendMagicEffect(CONST_ME_BLOCKHIT)
+		--	return true
+		--end
 	end
 	return true
 end

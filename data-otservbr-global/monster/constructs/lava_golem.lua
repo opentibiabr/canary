@@ -85,7 +85,7 @@ monster.loot = {
 	{ name = "fire axe", chance = 1560 },
 	{ name = "crown shield", chance = 1180 },
 	{ name = "iron ore", chance = 11570 },
-	{ name = "white piece of cloth", chance = 4810 },
+	{ id = 5909, chance = 4810 }, -- white piece of cloth
 	{ name = "red piece of cloth", chance = 3530 },
 	{ name = "yellow piece of cloth", chance = 7230 },
 	{ name = "strong health potion", chance = 18830, maxCount = 2 },

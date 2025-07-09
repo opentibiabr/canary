@@ -382,6 +382,11 @@ int32_t Player::getWeaponSkill(const std::shared_ptr<Item> &item) const {
 
 	const WeaponType_t &weaponType = item->getWeaponType();
 	switch (weaponType) {
+		case WEAPON_FIST: {
+			attackSkill = getSkillLevel(SKILL_FIST);
+			break;
+		}
+		
 		case WEAPON_SWORD: {
 			attackSkill = getSkillLevel(SKILL_SWORD);
 			break;
@@ -426,6 +431,11 @@ uint16_t Player::getAttackSkill(const std::shared_ptr<Item> &item) const {
 
 	const WeaponType_t &weaponType = item->getWeaponType();
 	switch (weaponType) {
+		case WEAPON_FIST: {
+			attackSkill = getSkillLevel(SKILL_FIST);
+			break;
+		}
+		
 		case WEAPON_SWORD: {
 			attackSkill = getSkillLevel(SKILL_SWORD);
 			break;
@@ -463,6 +473,11 @@ uint8_t Player::getWeaponSkillId(const std::shared_ptr<Item> &item) const {
 	uint8_t skillId;
 	const WeaponType_t &weaponType = item->getWeaponType();
 	switch (weaponType) {
+		case WEAPON_FIST: {
+			skillId = 11;
+			break;
+		}
+		
 		case WEAPON_SWORD: {
 			skillId = 8;
 			break;
@@ -956,7 +971,7 @@ void Player::updateInventoryImbuement() {
 
 			g_logger().trace("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
 			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
-			const uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
+			const uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_AND_SERENE_STATUS_INTERVAL / 1000);
 			// Update the imbuement's duration in the item
 			item->decayImbuementTime(slotid, imbuement->getID(), duration);
 
@@ -3622,6 +3637,8 @@ bool Player::isPzLocked() const {
 	return pzLocked;
 }
 
+fieldAbsorbPercent
+
 BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense, bool checkArmor, bool field) {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
 	if (attacker) {
@@ -3663,6 +3680,14 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 				const int16_t &absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
 				if (absorbPercent != 0) {
 					totalAbsorbPercent += absorbPercent;
+				}
+				
+				const int16_t mantraAbsorbValue = it.abilities->mantraAbsorbValue[combatTypeToIndex(combatType)];
+				if (mantraAbsorbValue != 0) {
+					const int16_t mantraAbsorbPercent = getMantraAbsorbPercent(mantraAbsorbValue);
+					if (mantraAbsorbPercent != 0) {
+						blocked += mantraAbsorbPercent;
+					}
 				}
 
 				if (field) {
@@ -4344,6 +4369,20 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 			} else {
 				ret = RETURNVALUE_NOERROR;
 			}
+			
+			if (ret == RETURNVALUE_NOERROR) {
+				if (item->getWeaponType() == WEAPON_SHIELD) {
+					const auto &leftItem = inventory[CONST_SLOT_LEFT];
+					if (leftItem && leftItem->getWeaponType() == WEAPON_FIST) {
+						ret = RETURNVALUE_CANNOTBEDRESSED;
+					}
+				} else if (item->getWeaponType() == WEAPON_FIST) {
+					const auto &leftItem = inventory[CONST_SLOT_LEFT];
+					if (leftItem && leftItem->getWeaponType() == WEAPON_SHIELD) {
+						ret = RETURNVALUE_CANNOTBEDRESSED;
+					}
+				}
+			}
 			break;
 		}
 
@@ -4387,6 +4426,20 @@ ReturnValue Player::queryAdd(int32_t index, const std::shared_ptr<Thing> &thing,
 				}
 			} else {
 				ret = RETURNVALUE_NOERROR;
+			}
+			
+			if (ret == RETURNVALUE_NOERROR) {
+				if (item->getWeaponType() == WEAPON_SHIELD) {
+					const auto &rightItem = inventory[CONST_SLOT_RIGHT];
+					if (rightItem && rightItem->getWeaponType() == WEAPON_FIST) {
+						ret = RETURNVALUE_CANNOTBEDRESSED;
+					}
+				} else if (item->getWeaponType() == WEAPON_FIST) {
+					const auto &rightItem = inventory[CONST_SLOT_RIGHT];
+					if (rightItem && rightItem->getWeaponType() == WEAPON_SHIELD) {
+						ret = RETURNVALUE_CANNOTBEDRESSED;
+					}
+				}
 			}
 			break;
 		}
@@ -5413,6 +5466,13 @@ void Player::updateDamageReductionFromItemAbility(
 		const int16_t elementReduction = itemType.abilities->absorbPercent[combatTypeIndex];
 		if (elementReduction != 0) {
 			combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], elementReduction);
+		}
+		const int16_t mantraElementReduction = itemType.abilities->mantraAbsorbValue[combatTypeIndex];
+		if (mantraElementReduction != 0) {
+			const int16_t mantraAbsorbPercent = getMantraAbsorbPercent(mantraElementReduction);
+			if (mantraAbsorbPercent != 0) {
+				combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], mantraAbsorbPercent);
+			}
 		}
 	}
 }
@@ -6885,6 +6945,8 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel += m_wheelPlayer.getStat(WheelStat_t::DISTANCE);
 	} else if (skill == SKILL_SHIELD) {
 		skillLevel += m_wheelPlayer.getMajorStatConditional("Battle Instinct", WheelMajor_t::SHIELD);
+	} else if (skill == SKILL_FIST) {
+		skillLevel += m_wheelPlayer->getStat(WheelStat_t::FIST);
 	} else if (skill == SKILL_MAGLEVEL) {
 		skillLevel += m_wheelPlayer.getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC);
 		skillLevel += m_wheelPlayer.getStat(WheelStat_t::MAGIC);
@@ -6902,6 +6964,12 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 	const int32_t avatarCritChance = m_wheelPlayer.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
 	if (skill == SKILL_CRITICAL_HIT_CHANCE && avatarCritChance > 0) {
 		skillLevel = avatarCritChance; // 100%
+	}
+	
+	if (skill == SKILL_FIST && getVirtue() == VIRTUE_JUSTICE) {
+		const uint16_t skillFist = getBaseSkill(skill);
+		const uint16_t bonusVirtueJustice = static_cast<uint16_t>(skillFist * (isSerene() ? 0.30 : 0.15));
+		skillLevel += bonusVirtueJustice;
 	}
 
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
@@ -10516,6 +10584,9 @@ SoundEffect_t Player::getAttackSoundEffect() const {
 	}
 
 	switch (it.weaponType) {
+		case WEAPON_FIST: {
+			return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
+		}
 		case WEAPON_AXE: {
 			return SoundEffect_t::MELEE_ATK_AXE;
 		}
@@ -11377,6 +11448,8 @@ uint16_t Player::getPlayerVocationEnum() const {
 		return Vocation_t::VOCATION_SORCERER_CIP; // Sorcerer
 	} else if (cipTibiaId == 4 || cipTibiaId == 14) {
 		return Vocation_t::VOCATION_DRUID_CIP; // Druid
+	} else if (cipTibiaId == 5 || cipTibiaId == 15) {
+		return Vocation_t::VOCATION_MONK_CIP; // Monk
 	}
 
 	return Vocation_t::VOCATION_NONE;
@@ -11530,4 +11603,134 @@ void Player::resetOldCharms() {
 	setCharmPoints(totalRefund);
 
 	g_logger().info("Player: {}, recalculated charm points based on unlocked bestiary: {}", getName(), totalRefund);
+}
+
+void Player::sendHarmonyProtocol() const {
+	if (client) {
+		client->sendHarmonyProtocol(m_harmony);
+	}
+}
+
+uint8_t Player::getHarmony() const {
+	return m_harmony;
+}
+
+void Player::setHarmony(const uint8_t harmonyValue) {
+	const uint8_t minHarmony = (getVirtue() == VIRTUE_HARMONY) ? 1 : 0;
+	m_harmony = static_cast<uint8_t>(std::clamp<int>(harmonyValue, minHarmony, 5));
+	sendHarmonyProtocol();
+}
+
+void Player::addHarmony(const uint8_t harmonyValue) {
+	setHarmony(m_harmony + harmonyValue);
+}
+
+void Player::removeHarmony(const uint8_t harmonyValue) {
+	int newHarmony = static_cast<int>(m_harmony) - static_cast<int>(harmonyValue);
+	setHarmony(static_cast<uint8_t>(std::max(newHarmony, 0)));
+}
+
+void Player::sendSereneProtocol() const {
+	if (client) {
+		client->sendSereneProtocol(m_serene);
+	}
+}
+
+bool Player::isSerene() const {
+	return m_serene;
+}
+
+void Player::setSerene(const bool isSerene) {
+	if (m_serene == isSerene) {
+		return;
+	}
+	m_serene = isSerene;
+	sendSereneProtocol();
+
+	if (getVirtue() == VIRTUE_JUSTICE) {
+		sendSkills();
+	}
+}
+
+uint64_t Player::getSereneCooldown() {
+	const uint64_t timenow = OTSYS_TIME();
+	if (m_serene_cooldown > timenow) {
+		return m_serene_cooldown - timenow;
+	}
+	return 0;
+}
+
+void Player::setSereneCooldown(const uint64_t addTime) {
+	const uint64_t timenow = OTSYS_TIME();
+	m_serene_cooldown = timenow + addTime;
+}
+
+void Player::sendVirtueProtocol() const {
+	if (client && m_virtue != VIRTUE_NONE) {
+		client->sendVirtueProtocol(static_cast<uint8_t>(m_virtue));
+	}
+}
+
+VirtueMonk_t Player::getVirtue() const {
+	return m_virtue;
+}
+
+void Player::setVirtue(const VirtueMonk_t virtueEnum) {
+	switch (virtueEnum) {
+		case VIRTUE_HARMONY:
+		case VIRTUE_JUSTICE:
+		case VIRTUE_SUSTAIN:
+			m_virtue = virtueEnum;
+			break;
+		default:
+			m_virtue = VIRTUE_NONE;
+			break;
+	}
+
+	sendVirtueProtocol();
+
+	if (m_virtue != VIRTUE_NONE) {
+		sendSkills();
+	}
+}
+
+uint16_t Player::getMantraTotal() const {
+	int32_t mantra = 0;
+	static constexpr Slots_t mantraSlots[] = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_RING };
+	for (const Slots_t &slot : mantraSlots) {
+		const auto &inventoryItem = inventory[slot];
+		if (inventoryItem) {
+			const ItemType &itemType = Item::items[inventoryItem->getID()];
+			if (itemType.mantra > 0) {
+				mantra += itemType.mantra;
+			}
+		}
+	}
+	return static_cast<uint16_t>(mantra);
+}
+
+int16_t Player::getMantraAbsorbPercent(int16_t mantraAbsorbValue) const {
+	const float multiplier = 1.0f;
+
+	if (m_party) {
+		for (const auto &partyMember : m_party->getMembers()) {
+			if (partyMember && partyMember->getMantraTotal() < mantraAbsorbValue) {
+				if (partyMember->wheel()->getInstant(WheelInstant_t::GUIDING_PRESENCE)) {
+					mantraAbsorbValue = partyMember->getMantraTotal();
+				}
+			}
+		}
+
+		if (m_party->getLeader() && m_party->getLeader()->getMantraTotal() < mantraAbsorbValue) {
+			if (m_party->getLeader()->wheel()->getInstant(WheelInstant_t::GUIDING_PRESENCE)) {
+				mantraAbsorbValue = m_party->getLeader()->getMantraTotal();
+			}
+		}
+	}
+
+	if (mantraAbsorbValue <= 0) {
+		return 0;
+	}
+
+	return static_cast<int16_t>(std::floor(mantraAbsorbValue * multiplier));
 }

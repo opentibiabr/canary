@@ -310,6 +310,8 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	query << "`xpboost_value` = " << player->getXpBoostPercent() << ",";
 	query << "`xpboost_stamina` = " << player->getXpBoostTime() << ",";
 	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ",";
+	query << "`virtue` = " << static_cast<uint16_t>(player->getVirtue()) << ",";
+	query << "`harmony` = " << static_cast<uint16_t>(player->getHarmony()) << ",";
 
 	if (!player->isOffline()) {
 		auto now = std::chrono::system_clock::now();

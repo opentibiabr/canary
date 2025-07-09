@@ -1703,6 +1703,14 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		if (it.upgradeClassification > 0) {
 			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
 		}
+		
+		if (!it.elementalBond.empty()) {
+			descriptions.emplace_back("Elemental Bond", it.elementalBond);
+		}
+
+		if (it.mantra > 0) {
+			descriptions.emplace_back("Mantra", std::to_string(it.mantra));
+		}
 	} else {
 		if (!it.description.empty()) {
 			descriptions.emplace_back("Description", it.description);
@@ -2270,6 +2278,16 @@ std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &it
 				begin = false;
 			} else {
 				itemDescription << ", Arm:" << armor;
+			}
+		}
+		
+		const int32_t mantra = itemType.mantra;
+		if (mantra != 0) {
+			if (begin) {
+				itemDescription << " (Mantra:" << mantra;
+				begin = false;
+			} else {
+				itemDescription << ", Mantra:" << mantra;
 			}
 		}
 
@@ -3245,6 +3263,13 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 			s << std::endl
 			  << getWeightDescription(it, it.weight);
 		}
+	}
+	
+	if (!it.elementalBond.empty() && it.isWeapon()) {
+		std::string bond = it.elementalBond;
+		capitalizeWords(bond);
+		s << std::endl
+		  << "Elemental Bond: " << bond;
 	}
 
 	if (item) {

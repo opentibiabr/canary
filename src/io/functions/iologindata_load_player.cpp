@@ -213,6 +213,8 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->setMaxManaShield(result->getNumber<uint32_t>("max_manashield"));
 
 	player->setMarriageSpouse(result->getNumber<int32_t>("marriage_spouse"));
+	player->setVirtue(static_cast<VirtueMonk_t>(result->getNumber<uint8_t>("virtue")));
+	player->setHarmony(result->getNumber<uint8_t>("harmony"));
 	return true;
 }
 

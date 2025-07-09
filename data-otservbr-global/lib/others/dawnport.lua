@@ -15,6 +15,9 @@ Dawnport = {
 		[VOCATION.ID.KNIGHT] = {
 			[SKILL_MAGLEVEL] = 4,
 		},
+		[VOCATION.ID.MONK] = {
+			[SKILL_MAGLEVEL] = 5,
+		},
 	},
 }
 

@@ -8,6 +8,7 @@
  */
 
 #pragma once
+#include "creatures/players/components/wheel/wheel_spells.hpp"
 
 enum class WheelSlots_t : uint8_t {
 	SLOT_GREEN_200 = 1,
@@ -86,8 +87,11 @@ enum class WheelStage_t : uint8_t {
 	AVATAR_OF_STEEL = 10,
 	AVATAR_OF_STORM = 11,
 	DIVINE_GRENADE = 12,
+	AVATAR_OF_BALANCE = 13,
+	SPIRITUAL_OUTBURST = 14,
+	ASCETIC = 15,
 
-	STAGE_COUNT = 13
+	STAGE_COUNT = 16
 };
 
 enum class WheelOnThink_t : uint8_t {
@@ -100,8 +104,11 @@ enum class WheelOnThink_t : uint8_t {
 	DIVINE_EMPOWERMENT = 6,
 	AVATAR_SPELL = 7,
 	AVATAR_FORGE = 8,
+	SANCTUARY = 9,
+	ASCETIC = 10,
+	SPIRITUAL_OUTBURST = 11,
 
-	TOTAL_COUNT = 9
+	TOTAL_COUNT = 12
 };
 
 enum class WheelStat_t : uint8_t {
@@ -120,8 +127,9 @@ enum class WheelStat_t : uint8_t {
 	MANA_LEECH_CHANCE = 12,
 	DODGE = 13,
 	CRITICAL_DAMAGE = 14,
+	FIST = 15,
 
-	TOTAL_COUNT = 15
+	TOTAL_COUNT = 16
 };
 
 enum class WheelMajor_t : uint8_t {
@@ -148,8 +156,10 @@ enum class WheelInstant_t : uint8_t {
 	HEALING_LINK = 4,
 	RUNIC_MASTERY = 5,
 	FOCUS_MASTERY = 6,
+	GUIDING_PRESENCE = 7,
+	SANCTUARY = 8,
 
-	INSTANT_COUNT = 7
+	INSTANT_COUNT = 9
 };
 
 enum class WheelAvatarSkill_t : uint8_t {
@@ -180,6 +190,79 @@ enum class WheelSpellBoost_t : uint8_t {
 	HEAL = 10,
 	CRITICAL_DAMAGE = 11,
 	CRITICAL_CHANCE = 12,
+};
+
+struct PlayerWheelMethodsBonusData {
+	// Raw value. Example: 1 == 1
+	struct Stats {
+		int health = 0;
+		int mana = 0;
+		int capacity = 0;
+		int damage = 0;
+		int healing = 0;
+	};
+	// value * 100. Example: 1% == 100
+	std::array<uint8_t, 4> unlockedVesselResonances = {};
+
+	// Raw value. Example: 1 == 1
+	struct Skills {
+		int melee = 0;
+		int distance = 0;
+		int magic = 0;
+		int fist = 0;
+	};
+
+	// value * 100. Example: 1% == 100
+	struct Leech {
+		double manaLeech = 0;
+		double lifeLeech = 0;
+	};
+
+	struct Instant {
+		bool battleInstinct = false; // Knight
+		bool battleHealing = false; // Knight
+		bool positionalTactics = false; // Paladin
+		bool ballisticMastery = false; // Paladin
+		bool healingLink = false; // Druid
+		bool runicMastery = false; // Druid/sorcerer
+		bool focusMastery = false; // Sorcerer
+		bool guidingPresence = false; // Monk
+		bool sanctuary = false; // Monk
+	};
+
+	struct Stages {
+		int combatMastery = 0; // Knight
+		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
+		int divineEmpowerment = 0; // Paladin
+		int divineGrenade = 0; // Paladin
+		int blessingOfTheGrove = 0; // Druid
+		int drainBody = 0; // Sorcerer
+		int beamMastery = 0; // Sorcerer
+		int twinBurst = 0; // Druid
+		int executionersThrow = 0; // Knight
+		int spiritualOutburst = 0; // Monk
+		int ascetic = 0; // Monk
+	};
+
+	struct Avatar {
+		int light = 0; // Paladin
+		int nature = 0; // Druid
+		int steel = 0; // Knight
+		int storm = 0; // Sorcerer
+		int balance = 0; // Monk
+	};
+
+	// Initialize structs
+	Stats stats;
+	Skills skills;
+	Leech leech;
+	Instant instant;
+	Stages stages;
+	Avatar avatar;
+
+	float momentum = 0;
+	float mitigation = 0;
+	std::vector<std::string> spells;
 };
 
 /**

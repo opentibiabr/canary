@@ -108,7 +108,7 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
 	} else if (augmentInfo->type == Augment_t::Base) {
 		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
-		return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
+		return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell ? (spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage") : "unknown");
 	}
 
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);

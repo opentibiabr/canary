@@ -31,7 +31,7 @@ end
 spell:name("Strong Haste")
 spell:words("utani gran hur")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "sorcerer;true", "master sorcerer;true", "monk;true", "exalted monk;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_STRONG_HASTE)
 spell:id(39)
 spell:cooldown(2 * 1000)

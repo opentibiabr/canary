@@ -1453,6 +1453,7 @@ if not Quests then
 							return string.format("You already hunted %d/650 hydras.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HydraCount))
 						end,
 						[1] = "You successfully hunted 650 hydras. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 650 hydras.",
 					},
 				},
 				[39] = {
@@ -1466,6 +1467,7 @@ if not Quests then
 							return string.format("You already hunted %d/800 serpent spawns.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.SerpentSpawnCount))
 						end,
 						[1] = "You successfully hunted 800 serpent spawns. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 800 serpent spawns.",
 					},
 				},
 				[40] = {
@@ -1479,6 +1481,7 @@ if not Quests then
 							return string.format("You already hunted %d/500 medusae.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.MedusaCount))
 						end,
 						[1] = "You successfully hunted 500 medusae. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 500 medusae.",
 					},
 				},
 				[41] = {
@@ -1492,6 +1495,7 @@ if not Quests then
 							return string.format("You already hunted %d/700 behemoths.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.BehemothCount))
 						end,
 						[1] = "You successfully hunted 700 behemoths. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 700 behemoths.",
 					},
 				},
 				[42] = {
@@ -1505,6 +1509,7 @@ if not Quests then
 							return string.format("You already hunted %d sea serpents and %d young sea serpents. You are supposed to kill 900 in total.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.SeaSerpentCount), player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.AltKillCount.YoungSeaSerpentCount))
 						end,
 						[1] = "You successfully hunted 900 sea serpents. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 900 sea serpents.",
 					},
 				},
 				[43] = {
@@ -1518,6 +1523,7 @@ if not Quests then
 							return string.format("You already hunted %d/250 hellhounds.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.HellhoundCount))
 						end,
 						[1] = "You successfully hunted 250 hellhounds. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 250 hellhounds.",
 					},
 				},
 				[44] = {
@@ -1531,6 +1537,7 @@ if not Quests then
 							return string.format("You already hunted %d/500 ghastly dragons.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.GhastlyDragonCount))
 						end,
 						[1] = "You successfully hunted 500 ghastly dragons. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 500 ghastly dragons.",
 					},
 				},
 				[45] = {
@@ -1550,6 +1557,7 @@ if not Quests then
 							)
 						end,
 						[1] = "You successfully hunted 900 drakens. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 900 drakens.",
 					},
 				},
 				[46] = {
@@ -1563,6 +1571,7 @@ if not Quests then
 							return string.format("You already hunted %d/650 destroyers.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.DestroyerCount))
 						end,
 						[1] = "You successfully hunted 650 destroyers. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 650 destroyers.",
 					},
 				},
 				[47] = {
@@ -1576,6 +1585,7 @@ if not Quests then
 							return string.format("You already hunted %d/400 undead dragons.", player:getStorageValue(Storage.Quest.U8_5.KillingInTheNameOf.MonsterKillCount.UndeadDragonCount))
 						end,
 						[1] = "You successfully hunted 400 undead dragons. If you want to you may complete this task again.",
+						[2] = "You succesfully hunted 400 undead dragons.",
 					},
 				},
 				[48] = {

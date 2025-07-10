@@ -294,6 +294,7 @@ public:
 	static std::string parseShowDuration(const std::shared_ptr<Item> &item);
 	static std::string parseShowAttributesDescription(const std::shared_ptr<Item> &item, uint16_t itemId);
 	static std::string parseClassificationDescription(const std::shared_ptr<Item> &item);
+	static std::string getTierEffectDescription(const std::shared_ptr<Item> &item);
 
 	static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item = nullptr);
 	static std::string getDescription(const ItemType &it, int32_t lookDistance, const std::shared_ptr<Item> &item = nullptr, int32_t subType = -1, bool addArticle = true);
@@ -463,7 +464,9 @@ public:
 		return items[id].stackable;
 	}
 	bool isStowable() const {
-		return items[id].stackable && items[id].wareId > 0;
+		const auto &itemType = items[id];
+		auto wareId = itemType.wareId;
+		return hasMarketAttributes() && !getTier() && wareId > 0 && !itemType.isContainer() && wareId == itemType.id;
 	}
 	bool isAlwaysOnTop() const {
 		return items[id].alwaysOnTopOrder != 0;
@@ -597,7 +600,7 @@ public:
 
 	void setDefaultSubtype();
 	uint16_t getSubType() const;
-	bool isItemStorable() const;
+	bool isItemStorable();
 	void setSubType(uint16_t n);
 	void addUniqueId(uint16_t uniqueId);
 
@@ -661,7 +664,7 @@ public:
 	 * @return false
 	 */
 	bool getImbuementInfo(uint8_t slot, ImbuementInfo* imbuementInfo) const;
-	void addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
+	bool canAddImbuement(uint8_t slot, const std::shared_ptr<Player> &player, const Imbuement* imbuement);
 	/**
 	 * @brief Decay imbuement time duration, only use this for decay the imbuement time
 	 *
@@ -675,6 +678,7 @@ public:
 	void clearImbuement(uint8_t slot, uint16_t imbuementId) {
 		return setImbuement(slot, imbuementId, 0);
 	}
+	void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 	bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) const {
 		const auto it = items[id].imbuementTypes.find(imbuementType);
 		if (it != items[id].imbuementTypes.end()) {
@@ -702,6 +706,8 @@ public:
 	double getMomentumChance() const;
 
 	double getTranscendenceChance() const;
+
+	double getAmplificationChance() const;
 
 	uint8_t getTier() const;
 	void setTier(uint8_t tier);
@@ -735,7 +741,6 @@ protected:
 	bool m_hasActor = false;
 
 private:
-	void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 	// Don't add variables here, use the ItemAttribute class.
 	std::string getWeightDescription(uint32_t weight) const;
 

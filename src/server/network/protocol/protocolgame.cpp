@@ -985,7 +985,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 
 	uint8_t recvbyte = msg.getByte();
 
-	// Silencia ping/pong: 0x1D = pingBack, 0x1E = ping [RASTREIA OS BYTES DO CLIENT]
+	// Silence ping/pong: 0x1D = pingBack, 0x1E = ping [TRACKS CLIENT BYTES]
 	if (recvbyte != 0x1D && recvbyte != 0x1E) {
 		g_logger().debug("BYTE RECEIVED: 0x{:02X}", recvbyte);
 	}

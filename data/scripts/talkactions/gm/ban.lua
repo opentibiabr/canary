@@ -1,47 +1,67 @@
 local ban = TalkAction("/ban")
 
 function ban.onSay(player, words, param)
-	-- create log
 	logCommand(player, words, param)
 
-	local params = param:split(",")
-	if #params < 3 then
-		player:sendCancelMessage("Command requires 3 parameters: /ban <player name>, <duration in days>, <reason>")
+	if param == "" then
+		player:sendCancelMessage("Command param required. Use: /ban playername, days [, reason].")
 		return true
 	end
 
-	local playerName = params[1]:trim()
-	local banDuration = tonumber(params[2]:trim())
-	local banReason = params[3]:trim()
-
-	if not banDuration or banDuration <= 0 then
-		player:sendCancelMessage("Ban duration must be a positive number.")
+	local name, daysStr, reason = param:match("^%s*([^,]+)%s*,%s*([^,]+)%s*,?%s*(.*)$")
+	if not name or not daysStr then
+		player:sendCancelMessage("Invalid command format. Use: /ban playername, days [, reason].")
 		return true
 	end
 
-	local accountId = Game.getPlayerAccountId(playerName)
+	local banDays = tonumber(daysStr)
+	if not banDays or banDays <= 0 then
+		player:sendCancelMessage("Invalid number of days.")
+		return true
+	end
+
+	if banDays > 350000 then
+		player:sendCancelMessage("Ban duration cannot exceed 350000 days.")
+		return true
+	end
+
+	local accountId = Game.getPlayerAccountId(name)
 	if accountId == 0 then
+		player:sendCancelMessage("Player not found.")
 		return true
 	end
 
-	local resultId = db.storeQuery("SELECT 1 FROM `account_bans` WHERE `account_id` = " .. accountId)
+	local timeNow = os.time()
+	local expiresAt = timeNow + (banDays * 86400)
+
+	local resultId = db.storeQuery("SELECT `expires_at` FROM `account_bans` WHERE `account_id` = " .. accountId)
 	if resultId then
-		result.free(resultId)
+		local currentExpires = result.getNumber(resultId, "expires_at")
+		Result.free(resultId)
+		if expiresAt > currentExpires then
+			db.query("UPDATE `account_bans` SET `reason` = " .. db.escapeString(reason or "") .. ", `expires_at` = " .. expiresAt .. ", `banned_by` = " .. player:getGuid() .. " WHERE `account_id` = " .. accountId)
+			player:sendTextMessage(MESSAGE_ADMINISTRATOR, name .. "'s ban has been extended to " .. banDays .. " days.")
+		else
+			player:sendCancelMessage("Player is already banned for longer or equal duration.")
+		end
 		return true
-	end
-
-	local currentTime = os.time()
-	local expirationTime = currentTime + (banDuration * 24 * 60 * 60)
-	db.query(string.format("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (%d, %s, %d, %d, %d)", accountId, db.escapeString(banReason), currentTime, expirationTime, player:getGuid()))
-
-	local target = Player(playerName)
-	if target then
-		player:sendTextMessage(MESSAGE_ADMINISTRATOR, string.format("%s has been banned for %d days.", target:getName(), banDuration))
-		target:remove()
-		Webhook.sendMessage("Player Banned", string.format("%s has been banned for %d days. Reason: %s (by: %s)", target:getName(), banDuration, banReason, player:getName()), WEBHOOK_COLOR_YELLOW, announcementChannels["serverAnnouncements"])
 	else
-		player:sendTextMessage(MESSAGE_ADMINISTRATOR, string.format("%s has been banned for %d days.", playerName, banDuration))
+		db.query("INSERT INTO `account_bans` (`account_id`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(reason or "") .. ", " .. timeNow .. ", " .. expiresAt .. ", " .. player:getGuid() .. ")")
 	end
+
+	local target = Player(name)
+	local text = name .. " has been banned for " .. banDays .. " days."
+	if target then
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, text)
+		Webhook.sendMessage("Player Banned", text .. " Reason: " .. (reason or "Not provided") .. ". (by: " .. player:getName() .. ")", WEBHOOK_COLOR_YELLOW, announcementChannels["serverAnnouncements"])
+		target:remove()
+		local banGlobalMessage = "Player " .. text .. " (by: " .. player:getName() .. "), Reason: " .. (reason or "Not provided")
+		logger.info(banGlobalMessage)
+		Broadcast(banGlobalMessage)
+	else
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, text)
+	end
+
 	return true
 end
 

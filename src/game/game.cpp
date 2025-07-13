@@ -7805,13 +7805,6 @@ void Game::buildMessageAsAttacker(
 		ss << " " << damage.exString;
 	}
 
-	if (damage.critical) {
-		const auto &targetMonster = target->getMonster();
-		if (targetMonster && attackerPlayer && targetMonster->checkCanApplyCharm(attackerPlayer, CHARM_LOW)) {
-			ss << " (low blow charm)";
-		}
-	}
-
 	if (damage.fatal) {
 		ss << (amplified ? " (Amplified Onslaught)" : " (Onslaught)");
 	}

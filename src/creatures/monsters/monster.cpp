@@ -2503,20 +2503,27 @@ bool Monster::isChallenged() const {
 }
 
 std::vector<CreatureIcon> Monster::getIcons() const {
+	std::vector<CreatureIcon> icons;
+
 	auto creatureIcons = Creature::getIcons();
-	if (!creatureIcons.empty()) {
-		return creatureIcons;
-	}
+	// this add pre existing icons, such as from forge system
+	icons.insert(icons.end(), creatureIcons.begin(), creatureIcons.end());
 
 	using enum CreatureIconModifications_t;
+
 	if (challengeMeleeDuration > 0 && m_monsterType->info.targetDistance > targetDistance) {
-		return { CreatureIcon(TurnedMelee) };
-	} else if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
-		return { CreatureIcon(HigherDamageReceived) };
-	} else if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
-		return { CreatureIcon(LowerDamageDealt) };
+		icons.emplace_back(CreatureIcon(TurnedMelee));
 	}
-	return {};
+
+	if (varBuffs[BUFF_DAMAGERECEIVED] > 100) {
+		icons.emplace_back(CreatureIcon(HigherDamageReceived));
+	}
+
+	if (varBuffs[BUFF_DAMAGEDEALT] < 100) {
+		icons.emplace_back(CreatureIcon(LowerDamageDealt));
+	}
+
+	return icons;
 }
 
 bool Monster::isImmune(ConditionType_t conditionType) const {

@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 51 (missing constraints + delete cascade)")
+	logger.info("Updating database to version 52 (missing constraints + delete cascade)")
 
 	-- this one had no ON DELETE CASCADE, need to re-create it
 	db.query([[

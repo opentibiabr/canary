@@ -556,6 +556,13 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 	}
 
 	const auto &tile = g_game().map.getOrCreateTile(toPos);
+	if (!tile) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_logger().error("[Spell::playerInstantSpellCheck] - Invalid tile at position: {}, player: {}", toPos.toString(), player->getName());
+		return false;
+	}
+
 	if (blockingCreature && tile->getBottomVisibleCreature(player) != nullptr) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -595,6 +602,7 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_logger().error("[Spell::playerRuneSpellCheck] - Invalid tile at position: {}, player: {}", toPos.toString(), player->getName());
 		return false;
 	}
 

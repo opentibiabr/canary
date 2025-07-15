@@ -34,9 +34,9 @@ addCharm:register()
 
 ---------------- // ----------------
 
-local addCharm = TalkAction("/addminorcharms")
+local addMinorCharm = TalkAction("/addminorcharms")
 
-function addCharm.onSay(player, words, param)
+function addMinorCharm.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
 
@@ -64,9 +64,9 @@ function addCharm.onSay(player, words, param)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 end
 
-addCharm:separator(" ")
-addCharm:groupType("god")
-addCharm:register()
+addMinorCharm:separator(" ")
+addMinorCharm:groupType("god")
+addMinorCharm:register()
 
 ---------------- // ----------------
 

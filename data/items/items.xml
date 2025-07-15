@@ -77152,7 +77152,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
 		<attribute key="weight" value="30" />
-	</item>	
+	</item>
 	<item id="45657" article="a" name="preserved yellow seed">
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="creature products" />
@@ -80969,5 +80969,95 @@ Granted by TibiaGoals.com"/>
 	</item>
 	<item id="47379" article="a" name="large obelisk">
 		<attribute key="primarytype" value="pillars"/>
+	</item>
+	<item id="49531" article="a" name="maliceforged helmet">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="absorbpercentdeath" value="6"/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="skillsword" value="2"/>
+		<attribute key="skillaxe" value="2"/>
+		<attribute key="skillclub" value="2"/>
+		<attribute key="weight" value="2400"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="front sweep" value="mana leech">
+				<attribute key="value" value="3" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="300"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="49532" article="a" name="hellstalker visor">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="armor" value="10"/>
+		<attribute key="absorbpercentdeath" value="6"/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="weight" value="3600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="strong ethereal spear" value="mana leech">
+				<attribute key="value" value="3" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="300"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49533" article="a" name="dreadfire headpiece">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="absorbpercentdeath" value="6"/>
+		<attribute key="absorbpercentphysical" value="2"/>
+		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="weight" value="1600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="energy wave" value="mana leech">
+				<attribute key="value" value="4" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="300"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+		</attribute>
+	</item>
+	<item id="49534" article="a" name="demonfang mask">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="absorbpercentdeath" value="5"/>
+		<attribute key="absorbpercentphysical" value="2"/>
+		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="healingmagiclevelpoints" value="1"/>
+		<attribute key="weight" value="1500"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="terra wave" value="mana leech">
+				<attribute key="value" value="2" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="300"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+		</attribute>
 	</item>
 </items>

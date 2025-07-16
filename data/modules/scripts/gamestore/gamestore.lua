@@ -2724,6 +2724,15 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
 			},
 			{
+				icons = { "Outfit_Winged_Druid_Male_Addon_3.png", "Outfit_Winged_Druid_Female_Addon_3.png" },
+				name = "Full Winged Druid Outfit",
+				price = 870,
+				sexId = { female = 1832, male = 1831 },
+				addon = 3,
+				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Winged Druids are figures of both grace and menace. Wings that cut through the air like blades and an aura of unshakable determination make them a true force to be reckoned with. Harness the raw fury of nature and unleash its vengeance upon those who threaten it!</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+			},
+			{
 				icons = { "Outfit_Retro_Citizen_Male.png", "Outfit_Retro_Citizen_Female.png" },
 				name = "Retro Citizen",
 				price = 870,

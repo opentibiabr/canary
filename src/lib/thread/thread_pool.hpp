@@ -31,6 +31,15 @@ public:
 		return pool->submit_loop(first, last, std::forward<F>(f));
 	}
 
+	template <typename F, typename... Args>
+	auto submit_task(F &&f, Args &&... args) {
+		return pool->submit_task(std::forward<F>(f), std::forward<Args>(args)...);
+	}
+
+	void wait_for_tasks() {
+		pool->wait();
+	}
+
 	auto get_thread_count() const noexcept {
 		return pool->get_thread_count();
 	}

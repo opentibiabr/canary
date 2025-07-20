@@ -4,7 +4,7 @@ local teleports = {
 	{ position = Position(33658, 32919, 15), destination = Position(33669, 32933, 15) },
 	{ position = Position(33714, 32797, 14), destination = Position(33556, 32754, 14), access = Storage.Quest.U12_90.PrimalOrdeal.Bosses.MagmaBubbleKilled },
 	{ position = Position(33558, 32754, 14), destination = Position(33714, 32799, 14) },
-	{ position = Position(33567, 32758, 15), destination = Position(33555, 32752, 14) },
+	{ position = Position(33567, 32758, 15), destination = Position(33520, 32871, 15) },
 }
 
 local gnomprona = MoveEvent()

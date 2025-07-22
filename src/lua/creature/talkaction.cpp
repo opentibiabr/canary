@@ -43,20 +43,22 @@ bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses 
 	}
 
 	// Switch to get the allowed group level for an account
-	auto allowedGroupLevelForAccount = [](int accountValue) -> GroupType {
-		switch (accountValue) {
-			case 1U:
+	auto allowedGroupLevelForAccount = [](AccountType account) -> GroupType {
+		switch (account) {
+			case ACCOUNT_TYPE_NORMAL:
 				return GROUP_TYPE_NORMAL;
-			case 2U:
+			case ACCOUNT_TYPE_TUTOR:
 				return GROUP_TYPE_TUTOR;
-			case 3U:
+			case ACCOUNT_TYPE_SENIORTUTOR:
 				return GROUP_TYPE_SENIORTUTOR;
-			case 5U:
+			case ACCOUNT_TYPE_GAMEMASTER:
+				return GROUP_TYPE_GAMEMASTER;
+			case ACCOUNT_TYPE_COMMUNITYMANAGER:
 				return GROUP_TYPE_COMMUNITYMANAGER;
-			case 6U:
+			case ACCOUNT_TYPE_GOD:
 				return GROUP_TYPE_GOD;
 			default:
-				g_logger().warn("[TalkActions::checkWord] Error invalid account type: {}", accountValue);
+				g_logger().warn("[TalkActions::checkWord] Error invalid account type: {}", account);
 				return GROUP_TYPE_NONE;
 		}
 	};

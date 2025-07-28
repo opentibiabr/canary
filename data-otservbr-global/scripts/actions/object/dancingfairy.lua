@@ -28,4 +28,3 @@ end
 
 dancingfairy:id(ORIGINAL_ID)
 dancingfairy:register()
-

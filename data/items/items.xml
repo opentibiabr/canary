@@ -80971,6 +80971,148 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="pillars"/>
 	</item>
 	<!-- AZZILON ITEMS -->
+	<!-- CORPSES -->
+	<item id="49998" article="a" name="dead brinebrute inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49997"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49997" article="a" name="dead brinebrute inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49996"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49996" article="a" name="dead brinebrute inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49995"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49995" article="a" name="dead brinebrute inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="49994" article="a" name="dead hellhunter inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49993"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49993" article="a" name="dead hellhunter inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49992"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49992" article="a" name="dead hellhunter inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49991"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49991" article="a" name="dead hellhunter inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="49990" article="a" name="dead spellreaper inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49989"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49989" article="a" name="dead spellreaper inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49988"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49988" article="a" name="dead spellreaper inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49987"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49987" article="a" name="dead spellreaper inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50029" article="" name="remains of arbaziloth">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50028"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50028" article="" name="remains of arbaziloth">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50027"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50027" article="" name="remains of arbaziloth">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50010" article="a" name="dead gorger inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50009"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50009" article="a" name="dead gorger inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50008"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50008" article="a" name="dead gorger inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50007"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50007" article="a" name="dead gorger inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50006" article="a" name="dead broodrider inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50005"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50005" article="a" name="dead broodrider inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50004"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50004" article="a" name="dead broodrider inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50003"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50003" article="a" name="dead broodrider inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50002" article="a" name="dead sineater inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50001"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50001" article="a" name="dead sineater inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50000"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50000" article="a" name="dead sineater inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49999"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49999" article="a" name="dead sineater inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
 	<!-- DOORS -->
 	<item id="49678" article="a" name="closed gate">
 		<attribute key="primarytype" value="doors"/>

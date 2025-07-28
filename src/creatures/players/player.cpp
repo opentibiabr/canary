@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
@@ -837,6 +838,10 @@ void Player::refreshCyclopediaMonsterTracker(const std::unordered_set<std::share
 
 bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
 	return monsterType ? m_bosstiaryMonsterTracker.contains(monsterType) : false;
+}
+
+bool Player::isMonsterOnBestiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	return monsterType ? m_bestiaryMonsterTracker.contains(monsterType) : false;
 }
 
 std::shared_ptr<Vocation> Player::getVocation() const {
@@ -2488,10 +2493,9 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
-	auto itemSlots = item->getImbuementSlot();
-	if (slot >= itemSlots) {
-		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", this->getName(), slot);
-		this->sendImbuementResult("Invalid slot selection.");
+	const auto &thisPlayer = getPlayer();
+	bool canAddImbuement = item->canAddImbuement(slot, thisPlayer, imbuement);
+	if (!canAddImbuement) {
 		return;
 	}
 
@@ -2515,12 +2519,18 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 				return;
 			}
 		}
+
+		if (imbuementInfo.imbuement == imbuement) {
+			g_logger().error("[Player::onApplyImbuement] - Duplicate imbuement application detected for '{}'", imbuement->getName());
+			sendImbuementResult("This imbuement is already applied to this item.");
+			return;
+		}
 	}
 
 	const auto &items = imbuement->getItems();
 	for (auto &[key, value] : items) {
 		const ItemType &itemType = Item::items[key];
-		if (static_self_cast<Player>()->getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
+		if (getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
 		}
@@ -2534,7 +2544,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	uint32_t price = baseImbuement->price;
 	price += protectionCharm ? baseImbuement->protectionPrice : 0;
 
-	if (!g_game().removeMoney(static_self_cast<Player>(), price, 0, true)) {
+	if (!g_game().removeMoney(thisPlayer, price, 0, true)) {
 		const std::string message = fmt::format("You don't have {} gold coins.", price);
 
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
@@ -2572,12 +2582,19 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
-	// Update imbuement stats item if the item is equipped
-	if (item->getParent() == getPlayer()) {
-		addItemImbuementStats(imbuement);
+	if (canAddImbuement) {
+		// Update imbuement stats item if the item is equipped
+		if (item->getParent() == thisPlayer) {
+			ImbuementInfo oldImb;
+			if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
+				removeItemImbuementStats(oldImb.imbuement);
+			}
+
+			addItemImbuementStats(imbuement);
+		}
+		item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	}
 
-	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
 

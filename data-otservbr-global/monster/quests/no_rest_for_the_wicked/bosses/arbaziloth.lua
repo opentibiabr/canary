@@ -69,7 +69,6 @@ monster.summon = {
 	},
 }
 
-
 monster.voices = {
 	interval = 5000,
 	chance = 10,

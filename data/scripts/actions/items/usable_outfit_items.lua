@@ -37,7 +37,7 @@ local outfitConfig = {
 	-- fiend slayer
 	[50067] = { female = 1808, male = 1809, effect = CONST_ME_BITE },
 	[50060] = { female = 1808, male = 1809, addon = 1, achievement = "Fiend Slayer", effect = CONST_ME_BITE },
-	[50061] = { female = 1808, male = 1809, addon = 2, achievement = "Fiend Slayer", effect = CONST_ME_BITE }
+	[50061] = { female = 1808, male = 1809, addon = 2, achievement = "Fiend Slayer", effect = CONST_ME_BITE },
 }
 
 local usableOutfitItems = Action()

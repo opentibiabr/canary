@@ -10,24 +10,27 @@ poison:setParameter(CONDITION_PARAM_TICKINTERVAL, 4000)
 poison:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 local fluidMessage = {
-	[FLUID_NONE] = "Gulp.", -- water
-	[FLUID_WATER] = "Aah...", -- wine
-	[FLUID_WINE] = "Aah...", -- beer
-	[FLUID_BEER] = "Gulp.", -- mud
-	[FLUID_MUD] = "Gulp.", -- blood
-	[FLUID_BLOOD] = "Urgh!", -- slime
-	[FLUID_SLIME] = "Gulp.", -- oil
-	[FLUID_OIL] = "Urgh!", -- urine
-	[FLUID_URINE] = "Gulp.", -- milk
-	[FLUID_MILK] = "Aaaah...", -- manafluid
-	[FLUID_MANA] = "Aaaah...", -- lifefluid
-	[FLUID_LIFE] = "Mmmh.", -- lemonade
-	[FLUID_LEMONADE] = "Aah...", -- rum
-	[FLUID_RUM] = "Mmmh.", -- fruit juice
-	[FLUID_FRUITJUICE] = "Mmmh.", -- coconut milk
-	[FLUID_COCONUTMILK] = "Aah...", -- mead
-	[FLUID_MEAD] = "Gulp.", -- tea
-	[FLUID_TEA] = "Urgh!", -- ink
+	[FLUID_NONE] = "Gulp.", -- water 0
+	[FLUID_WATER] = "Gulp.", -- water 1
+	[FLUID_WINE] = "Aah...", -- wine 2
+	[FLUID_BEER] = "Aah...", -- beer 3
+	[FLUID_MUD] = "Gulp.", -- mud 4
+	[FLUID_BLOOD] = "Gulp.", -- blood 5
+	[FLUID_SLIME] = "Urgh!", -- slime 6
+	[FLUID_OIL] = "Gulp.", -- oil 7
+	[FLUID_URINE] = "Urgh!", -- urine 8
+	[FLUID_MILK] = "Gulp.", -- milk 9
+	[FLUID_MANA] = "Aaaah...", -- mana fluid 10
+	[FLUID_LIFE] = "Aaaah...", -- life fluid 11
+	[FLUID_LEMONADE] = "Mmmh.", -- lemonade 12
+	[FLUID_RUM] = "Aah...", -- rum 13
+	[FLUID_FRUITJUICE] = "Mmmh.", -- fruit juice 14
+	[FLUID_COCONUTMILK] = "Mmmh.", -- coconut milk 15
+	[FLUID_MEAD] = "Aah...", -- mead 16
+	[FLUID_TEA] = "Gulp.", -- tea 17
+	[FLUID_INK] = "Urgh!", -- ink 18
+	[FLUID_CANDY] = "Mmmh.", -- candy fluid 19
+	[FLUID_CHOCOLATE] = "Mmmh.", -- chocolate 20
 }
 
 local function graveStoneTeleport(cid, fromPosition, toPosition)
@@ -102,7 +105,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif item.type == 1 then
-			toPosition:sendMagicEffect(CONST_ME_WATER_SPLASH)
+			toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
 			target:transform(target.itemid + 1)
 			item:transform(item.itemid, 0)
 		else
@@ -115,7 +118,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if item.type == 0 then
 			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif target.uid == player.uid then
-			if table.contains({ 2, 3, 16 }, item.type) then
+			if table.contains({ 2, 3, 13, 16 }, item.type) then
 				player:addCondition(drunk)
 			elseif item.type == 6 then
 				local town = player:getTown()

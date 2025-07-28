@@ -179,6 +179,11 @@ std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 }
 
 std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
+	// Check if the coordinates are valid
+	if (x == 0 && y == 0 && z == 0) {
+		return nullptr;
+	}
+
 	if (z >= MAP_MAX_LAYERS) {
 		return nullptr;
 	}

@@ -10,7 +10,8 @@ local function cleanupDatabase()
 	db.query("DELETE FROM `player_storage` WHERE `key` IN (" .. Global.Storage.FamiliarSummonEvent10 .. ", " .. Global.Storage.FamiliarSummonEvent60 .. ")")
 
 	db.query("UPDATE `players` SET `isreward` = " .. DAILY_REWARD_NOTCOLLECTED)
-	db.query("UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052")
+	-- db.query("UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052")
+	db.query("DELETE FROM `kv_store` WHERE `key_name` LIKE 'player%.exp-boost-count'")
 end
 
 -- Function to move expired bans to ban history

@@ -183427,4 +183427,1156 @@
 		<monster name="Mahrdis" x="1" y="4" z="15" spawntime="90" />
 		<monster name="Flamethrower" x="4" y="4" z="15" spawntime="90" />
 	</monster>
+	<monster centerx="33211" centery="31125" centerz="13" radius="3">
+		<monster name="Wardragon" x="-3" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="0" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31118" centerz="13" radius="3">
+		<monster name="Wardragon" x="-3" y="2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-2" y="2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33225" centery="31118" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31125" centerz="14" radius="3">
+		<monster name="Wardragon" x="0" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31118" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-3" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31118" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31111" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-3" y="0" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="-2" y="1" z="14" spawntime="60" />
+		<monster name="Wardragon" x="1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31118" centerz="13" radius="3">
+		<monster name="Dragolisk" x="1" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31111" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-3" y="-2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="-3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31111" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-3" y="0" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="-2" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="0" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31104" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31104" centerz="13" radius="3">
+		<monster name="Wardragon" x="3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31111" centerz="13" radius="3">
+		<monster name="Wardragon" x="-3" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31118" centerz="14" radius="3">
+		<monster name="Wardragon" x="-2" y="2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="-2" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31118" centerz="14" radius="3">
+		<monster name="Dragolisk" x="0" y="-1" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="1" y="-1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31111" centerz="13" radius="3">
+		<monster name="Dragolisk" x="1" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31097" centerz="13" radius="3">
+		<monster name="Wardragon" x="3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31097" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31097" centerz="14" radius="3">
+		<monster name="Wardragon" x="2" y="-3" z="14" spawntime="60" />
+		<monster name="Wardragon" x="3" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31097" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33190" centery="31097" centerz="14" radius="3">
+		<monster name="Wardragon" x="-2" y="-1" z="14" spawntime="60" />
+		<monster name="Wardragon" x="2" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33190" centery="31090" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="0" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33190" centery="31097" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-3" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33183" centery="31097" centerz="13" radius="3">
+		<monster name="Wardragon" x="2" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31104" centerz="14" radius="3">
+		<monster name="Wardragon" x="3" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33169" centery="31104" centerz="14" radius="3">
+		<monster name="Wardragon" x="2" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31097" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="1" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33183" centery="31090" centerz="13" radius="3">
+		<monster name="Wardragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33183" centery="31097" centerz="14" radius="3">
+		<monster name="Wardragon" x="-1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33169" centery="31090" centerz="14" radius="3">
+		<monster name="Wardragon" x="2" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33169" centery="31097" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="1" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33162" centery="31055" centerz="14" radius="3">
+		<monster name="Dragolisk" x="2" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33190" centery="31027" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-3" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31027" centerz="14" radius="3">
+		<monster name="Dragolisk" x="0" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33190" centery="31055" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-2" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33183" centery="31062" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-2" y="2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="2" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31069" centerz="14" radius="3">
+		<monster name="Wardragon" x="0" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33183" centery="31034" centerz="14" radius="3">
+		<monster name="Wardragon" x="2" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="30999" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-1" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31027" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-1" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31027" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-3" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31041" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-1" y="1" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31055" centerz="14" radius="3">
+		<monster name="Dragolisk" x="0" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31062" centerz="14" radius="3">
+		<monster name="Wardragon" x="-3" y="1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31062" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-1" y="2" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31069" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-2" y="-2" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="-1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="-1" z="14" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31069" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-1" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31076" centerz="13" radius="3">
+		<monster name="Dragolisk" x="1" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="3" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31076" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31083" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="1" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="1" y="-2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31083" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-2" y="1" z="14" spawntime="60" />
+		<monster name="Wardragon" x="-2" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31090" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="2" y="-1" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="1" z="14" spawntime="60" />
+		<monster name="Wardragon" x="3" y="2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="3" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31090" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-3" y="2" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="2" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="3" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="0" y="3" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31097" centerz="14" radius="3">
+		<monster name="Wardragon" x="1" y="3" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="3" y="-2" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="-1" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33225" centery="31097" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-3" y="-2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="-3" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31097" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-2" y="-2" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31090" centerz="13" radius="3">
+		<monster name="Dragolisk" x="1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31083" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="3" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31076" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-3" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31090" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33225" centery="31083" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31048" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="0" y="1" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="0" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31062" centerz="14" radius="3">
+		<monster name="Wardragon" x="1" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31041" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="0" y="0" z="14" spawntime="60" />
+		<monster name="Wardragon" x="1" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31041" centerz="14" radius="3">
+		<monster name="Wardragon" x="1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33274" centery="31069" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="1" y="1" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="1" y="2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31076" centerz="13" radius="3">
+		<monster name="Wardragon" x="-1" y="0" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="2" y="-3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31062" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-1" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31104" centerz="14" radius="3">
+		<monster name="Wardragon" x="0" y="2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="2" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31097" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="-3" y="1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="-1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="-3" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="-1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="0" y="-3" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="0" y="-1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="-3" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31062" centerz="14" radius="3">
+		<monster name="Wardragon" x="0" y="1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31055" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-2" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31034" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-3" y="1" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="-2" z="14" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="-2" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="2" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31041" centerz="14" radius="3">
+		<monster name="Dragolisk" x="0" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31076" centerz="14" radius="3">
+		<monster name="Wardragon" x="1" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31097" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-3" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31097" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31097" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="-1" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="-3" y="0" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31104" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31090" centerz="13" radius="3">
+		<monster name="Dragolisk" x="0" y="2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="-2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33302" centery="31076" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="1" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33295" centery="31090" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33295" centery="31097" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33295" centery="31104" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-2" y="-1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="0" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33288" centery="31118" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="0" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31118" centerz="13" radius="3">
+		<monster name="Dragolisk" x="3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33288" centery="31125" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33302" centery="31125" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-1" y="-2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="0" y="0" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="2" y="-3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33309" centery="31118" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33309" centery="31125" centerz="13" radius="3">
+		<monster name="Wardragon" x="2" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33316" centery="31125" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33309" centery="31132" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33323" centery="31111" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="2" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="0" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33330" centery="31111" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-3" y="1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33330" centery="31118" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33337" centery="31111" centerz="13" radius="3">
+		<monster name="Wardragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="2" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33337" centery="31118" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="0" z="13" spawntime="60" />
+		<monster name="Wardragon" x="0" y="1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33337" centery="31125" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33344" centery="31132" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-3" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33344" centery="31118" centerz="13" radius="3">
+		<monster name="Wardragon" x="1" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33330" centery="31125" centerz="13" radius="3">
+		<monster name="Wardragon" x="-1" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33309" centery="31146" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="3" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33302" centery="31146" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33302" centery="31153" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="0" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33309" centery="31153" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="0" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33295" centery="31153" centerz="13" radius="3">
+		<monster name="Dragolisk" x="0" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33295" centery="31146" centerz="13" radius="3">
+		<monster name="Wardragon" x="-3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33288" centery="31146" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-2" y="-3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="-1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31153" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="-3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-3" y="1" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="0" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31146" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-1" y="0" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="1" y="3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33274" centery="31153" centerz="13" radius="3">
+		<monster name="Wardragon" x="-1" y="0" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31153" centerz="13" radius="3">
+		<monster name="Dragolisk" x="1" y="0" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31146" centerz="13" radius="3">
+		<monster name="Wardragon" x="3" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33274" centery="31139" centerz="13" radius="3">
+		<monster name="Dragolisk" x="0" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31139" centerz="13" radius="3">
+		<monster name="Dragolisk" x="0" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31132" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33281" centery="31125" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33302" centery="31083" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33309" centery="31069" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33302" centery="31062" centerz="13" radius="3">
+		<monster name="Dragolisk" x="3" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33288" centery="31076" centerz="13" radius="3">
+		<monster name="Wardragon" x="-3" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31062" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-1" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33274" centery="31062" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="3" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31069" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-1" y="1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33274" centery="31083" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31097" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31090" centerz="13" radius="3">
+		<monster name="Wardragon" x="1" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31083" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="0" y="-1" z="14" spawntime="60" />
+		<monster name="Mega Dragon" x="1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31069" centerz="14" radius="3">
+		<monster name="Dragolisk" x="1" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33225" centery="31076" centerz="13" radius="3">
+		<monster name="Dragolisk" x="3" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31104" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-2" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31111" centerz="14" radius="3">
+		<monster name="Dragolisk" x="1" y="2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31090" centerz="14" radius="3">
+		<monster name="Wardragon" x="2" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31083" centerz="14" radius="3">
+		<monster name="Wardragon" x="1" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33176" centery="31090" centerz="11" radius="3">
+		<monster name="Draken Abomination" x="1" y="2" z="11" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31153" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="-3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="-2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31153" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31160" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="-3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="2" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31160" centerz="13" radius="3">
+		<monster name="Wardragon" x="3" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33218" centery="31174" centerz="13" radius="3">
+		<monster name="Dragolisk" x="3" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31181" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="-2" y="3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="-1" y="-1" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="-1" y="3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="2" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31188" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31195" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="-3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31188" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="-3" z="13" spawntime="60" />
+		<monster name="Wardragon" x="1" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31195" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31195" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31181" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31181" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31174" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31160" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31153" centerz="13" radius="3">
+		<monster name="Wardragon" x="2" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31160" centerz="13" radius="3">
+		<monster name="Wardragon" x="-1" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="0" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31153" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-1" y="2" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="0" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31160" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31160" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-2" y="-2" z="13" spawntime="60" />
+		<monster name="Wardragon" x="0" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="3" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31153" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="0" y="1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31160" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="3" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31139" centerz="13" radius="3">
+		<monster name="Wardragon" x="1" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31132" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="1" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31118" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-3" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31125" centerz="13" radius="3">
+		<monster name="Wardragon" x="-2" y="-3" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="2" y="-3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33246" centery="31118" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="1" z="13" spawntime="60" />
+		<monster name="Mega Dragon" x="3" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31118" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="-3" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="1" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31111" centerz="13" radius="3">
+		<monster name="Wardragon" x="1" y="-1" z="13" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31125" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="-1" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31118" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31125" centerz="13" radius="3">
+		<monster name="Wardragon" x="1" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33253" centery="31132" centerz="13" radius="3">
+		<monster name="Dragolisk" x="2" y="-2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31132" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="2" y="0" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33267" centery="31132" centerz="13" radius="3">
+		<monster name="Dragolisk" x="-3" y="2" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33260" centery="31090" centerz="13" radius="3">
+		<monster name="Wardragon" x="0" y="3" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33239" centery="31104" centerz="14" radius="3">
+		<monster name="Dragolisk" x="3" y="-3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33232" centery="31090" centerz="14" radius="3">
+		<monster name="Dragolisk" x="-2" y="3" z="14" spawntime="60" />
+		<monster name="Dragolisk" x="2" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31090" centerz="14" radius="3">
+		<monster name="Dragolisk" x="0" y="3" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33211" centery="31097" centerz="14" radius="3">
+		<monster name="Wardragon" x="-2" y="-1" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31104" centerz="14" radius="3">
+		<monster name="Wardragon" x="1" y="0" z="14" spawntime="60" />
+		<monster name="Wardragon" x="3" y="-2" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33197" centery="31097" centerz="14" radius="3">
+		<monster name="Mega Dragon" x="1" y="0" z="14" spawntime="60" />
+	</monster>
+	<monster centerx="33204" centery="31111" centerz="13" radius="3">
+		<monster name="Mega Dragon" x="3" y="-1" z="13" spawntime="60" />
+	</monster>
+	<monster centerx="33427" centery="32147" centerz="4" radius="3">
+		<monster name="Gingerbread Man" x="2" y="-2" z="4" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32140" centerz="5" radius="3">
+		<monster name="Chocolate Blob" x="-2" y="-3" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33364" centery="32161" centerz="5" radius="3">
+		<monster name="Chocolate Blob" x="2" y="1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32119" centerz="6" radius="3">
+		<monster name="Sugar Cube" x="1" y="0" z="6" spawntime="60" />
+		<monster name="Fruit Drop" x="2" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33413" centery="32140" centerz="6" radius="3">
+		<monster name="Gingerbread Man" x="2" y="2" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32147" centerz="6" radius="3">
+		<monster name="Truffle Cook" x="-1" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33364" centery="32161" centerz="6" radius="3">
+		<monster name="Chocolate Blob" x="3" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32098" centerz="7" radius="3">
+		<monster name="Sugar Cube" x="0" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32112" centerz="7" radius="3">
+		<monster name="Fruit Drop" x="1" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32119" centerz="7" radius="3">
+		<monster name="Cream Blob" x="1" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32119" centerz="7" radius="3">
+		<monster name="Cream Blob" x="-2" y="-2" z="7" spawntime="60" />
+		<monster name="Sugar Cube" x="-1" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32119" centerz="7" radius="3">
+		<monster name="Cream Blob" x="1" y="-3" z="7" spawntime="60" />
+		<monster name="Truffle" x="2" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32119" centerz="7" radius="3">
+		<monster name="Sugar Cube" x="3" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32119" centerz="7" radius="3">
+		<monster name="Cream Blob" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32119" centerz="7" radius="3">
+		<monster name="Fruit Drop" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32126" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="-2" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32126" centerz="7" radius="3">
+		<monster name="Cream Blob" x="1" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32133" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32133" centerz="7" radius="3">
+		<monster name="Truffle" x="-1" y="-3" z="7" spawntime="60" />
+		<monster name="Chocolate Blob" x="-1" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33449" centery="32133" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="-2" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33351" centery="32140" centerz="7" radius="3">
+		<monster name="Truffle" x="2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32140" centerz="7" radius="3">
+		<monster name="Chocolate Blob" x="0" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32147" centerz="7" radius="3">
+		<monster name="Cream Blob" x="-1" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32147" centerz="7" radius="3">
+		<monster name="Chocolate Blob" x="-2" y="-2" z="7" spawntime="60" />
+		<monster name="Fruit Drop" x="-2" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32147" centerz="7" radius="3">
+		<monster name="Truffle" x="2" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32147" centerz="7" radius="3">
+		<monster name="Truffle Cook" x="0" y="-1" z="7" spawntime="60" />
+		<monster name="Fruit Drop" x="-1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32147" centerz="7" radius="3">
+		<monster name="Cream Blob" x="1" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32154" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="1" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32154" centerz="7" radius="3">
+		<monster name="Fruit Drop" x="-1" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32154" centerz="7" radius="3">
+		<monster name="Cream Blob" x="-1" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32154" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="1" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32161" centerz="7" radius="3">
+		<monster name="Cream Blob" x="1" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32168" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="0" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32168" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="-1" y="-3" z="7" spawntime="60" />
+		<monster name="Cream Blob" x="2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32168" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="-2" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32175" centerz="7" radius="3">
+		<monster name="Gingerbread Man" x="-3" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32182" centerz="7" radius="3">
+		<monster name="Chocolate Blob" x="2" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32189" centerz="7" radius="3">
+		<monster name="Truffle" x="2" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32105" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="-2" y="-3" z="8" spawntime="60" />
+		<monster name="Angry Sugar Fairy" x="-2" y="-2" z="8" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="2" y="-2" z="8" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32105" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="3" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32105" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="0" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32112" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="-3" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33365" centery="32112" centerz="8" radius="3">
+		<monster name="Candy Horror" x="-3" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32112" centerz="8" radius="3">
+		<monster name="Angry Sugar Fairy" x="-1" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32112" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32112" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32112" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="2" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32119" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="0" y="2" z="8" spawntime="60" />
+		<monster name="Honey Elemental" x="2" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32119" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="3" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32119" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="2" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32119" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-3" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32126" centerz="8" radius="3">
+		<monster name="Candy Horror" x="-2" y="-2" z="8" spawntime="60" />
+		<monster name="Candy Horror" x="-1" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32126" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-1" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32126" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="-2" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32126" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="3" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33351" centery="32133" centerz="8" radius="3">
+		<monster name="Candy Horror" x="-1" y="-3" z="8" spawntime="60" />
+		<monster name="Nibblemaw" x="2" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32133" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="3" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33365" centery="32140" centerz="8" radius="3">
+		<monster name="Fruit Drop" x="-2" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32140" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="1" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32140" centerz="8" radius="3">
+		<monster name="Candy Horror" x="-3" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32147" centerz="8" radius="3">
+		<monster name="Fruit Drop" x="-2" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32147" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="-3" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32147" centerz="8" radius="3">
+		<monster name="Candy Horror" x="3" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32147" centerz="8" radius="3">
+		<monster name="Honey Elemental" x="-1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32147" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="1" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33351" centery="32154" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="0" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32154" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="-3" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32154" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-3" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33365" centery="32161" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="2" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33372" centery="32161" centerz="8" radius="3">
+		<monster name="Candy Horror" x="2" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32161" centerz="8" radius="3">
+		<monster name="Candy Horror" x="1" y="2" z="8" spawntime="60" />
+		<monster name="Candy Horror" x="2" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32161" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-3" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32161" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="2" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32161" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="-1" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33365" centery="32168" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="3" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33372" centery="32168" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="-2" y="-2" z="8" spawntime="60" />
+		<monster name="Candy Horror" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32168" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="2" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32168" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="2" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32168" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-1" y="-2" z="8" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="2" y="-1" z="8" spawntime="60" />
+		<monster name="Goggle Cake" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32168" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="2" y="-1" z="8" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="-1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32175" centerz="8" radius="3">
+		<monster name="Candy Horror" x="1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32175" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32175" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-2" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32182" centerz="8" radius="3">
+		<monster name="Candy Horror" x="-1" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32182" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="-2" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32182" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="-2" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33358" centery="32189" centerz="8" radius="3">
+		<monster name="Candy Horror" x="3" y="-2" z="8" spawntime="60" />
+		<monster name="Nibblemaw" x="-3" y="-1" z="8" spawntime="60" />
+		<monster name="Honey Elemental" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32189" centerz="8" radius="3">
+		<monster name="Candy Horror" x="2" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32189" centerz="8" radius="3">
+		<monster name="Nibblemaw" x="-1" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32189" centerz="8" radius="3">
+		<monster name="Candy Floss Elemental" x="1" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32189" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="1" y="-1" z="8" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="0" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32189" centerz="8" radius="3">
+		<monster name="Goggle Cake" x="3" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33456" centery="32133" centerz="9" radius="3">
+		<monster name="Angry Sugar Fairy" x="0" y="1" z="9" spawntime="60" />
+		<monster name="Goggle Cake" x="-3" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32140" centerz="9" radius="3">
+		<monster name="Candy Horror" x="2" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33456" centery="32140" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="1" y="-3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32147" centerz="9" radius="3">
+		<monster name="Candy Horror" x="1" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32147" centerz="9" radius="3">
+		<monster name="Sugar Cube" x="0" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33456" centery="32147" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="0" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32154" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="2" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32154" centerz="9" radius="3">
+		<monster name="Honey Elemental" x="2" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32154" centerz="9" radius="3">
+		<monster name="Candy Horror" x="-2" y="-1" z="9" spawntime="60" />
+		<monster name="Honey Elemental" x="-3" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32154" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="-1" y="-1" z="9" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="3" y="-1" z="9" spawntime="60" />
+		<monster name="Goggle Cake" x="-2" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33463" centery="32154" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="-3" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32161" centerz="9" radius="3">
+		<monster name="Honey Elemental" x="-3" y="-3" z="9" spawntime="60" />
+		<monster name="Sugar Cube" x="0" y="-2" z="9" spawntime="60" />
+		<monster name="Nibblemaw" x="-2" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32161" centerz="9" radius="3">
+		<monster name="Candy Horror" x="-3" y="-1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33449" centery="32161" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="-1" y="-3" z="9" spawntime="60" />
+		<monster name="Goggle Cake" x="-1" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33456" centery="32161" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="3" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33463" centery="32161" centerz="9" radius="3">
+		<monster name="Angry Sugar Fairy" x="2" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32168" centerz="9" radius="3">
+		<monster name="Candy Horror" x="0" y="-2" z="9" spawntime="60" />
+		<monster name="Nibblemaw" x="2" y="-1" z="9" spawntime="60" />
+		<monster name="Candy Horror" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32168" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32168" centerz="9" radius="3">
+		<monster name="Angry Sugar Fairy" x="3" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32168" centerz="9" radius="3">
+		<monster name="Pixie" x="0" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33463" centery="32168" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="1" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32175" centerz="9" radius="3">
+		<monster name="Candy Horror" x="0" y="3" z="9" spawntime="60" />
+		<monster name="Honey Elemental" x="1" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33393" centery="32175" centerz="9" radius="3">
+		<monster name="Sugar Cube" x="3" y="-3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32175" centerz="9" radius="3">
+		<monster name="Candy Horror" x="0" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32175" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="-1" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32175" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="-2" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32182" centerz="9" radius="3">
+		<monster name="Candy Horror" x="1" y="-1" z="9" spawntime="60" />
+		<monster name="Honey Elemental" x="2" y="-1" z="9" spawntime="60" />
+		<monster name="Nibblemaw" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33386" centery="32182" centerz="9" radius="3">
+		<monster name="Candy Horror" x="-1" y="-1" z="9" spawntime="60" />
+		<monster name="Candy Horror" x="1" y="-1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32182" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="0" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32182" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Nibblemaw" x="1" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32182" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="2" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32182" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="-3" y="-3" z="9" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="2" y="2" z="9" spawntime="60" />
+		<monster name="Candy Floss Elemental" x="-3" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33400" centery="32189" centerz="9" radius="3">
+		<monster name="Nibblemaw" x="0" y="-1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32189" centerz="9" radius="3">
+		<monster name="Sugar Cube" x="-2" y="-3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32189" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="1" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33463" centery="32189" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="1" y="-3" z="9" spawntime="60" />
+		<monster name="Goggle Cake" x="3" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33470" centery="32189" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="1" y="-2" z="9" spawntime="60" />
+		<monster name="Angry Sugar Fairy" x="-1" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33379" centery="32196" centerz="9" radius="3">
+		<monster name="Candy Horror" x="3" y="3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32196" centerz="9" radius="3">
+		<monster name="Candy Horror" x="-1" y="-1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32203" centerz="9" radius="3">
+		<monster name="Sugar Cube" x="1" y="0" z="9" spawntime="60" />
+		<monster name="Sugar Cube" x="3" y="0" z="9" spawntime="60" />
+		<monster name="Sugar Cube" x="-1" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32203" centerz="9" radius="3">
+		<monster name="Candy Horror" x="2" y="-3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32203" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="0" y="-2" z="9" spawntime="60" />
+		<monster name="Goggle Cake" x="-2" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33449" centery="32203" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="2" y="-1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33421" centery="32210" centerz="9" radius="3">
+		<monster name="Candy Horror" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Honey Elemental" x="1" y="1" z="9" spawntime="60" />
+		<monster name="Candy Horror" x="-2" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33428" centery="32210" centerz="9" radius="3">
+		<monster name="Honey Elemental" x="-3" y="0" z="9" spawntime="60" />
+		<monster name="Nibblemaw" x="-2" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32210" centerz="9" radius="3">
+		<monster name="Goggle Cake" x="3" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33449" centery="32210" centerz="9" radius="3">
+		<monster name="Candy Floss Elemental" x="1" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33365" centery="32231" centerz="9" radius="3">
+		<monster name="Sugar Daddy" x="1" y="-1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32147" centerz="10" radius="3">
+		<monster name="Nibblemaw" x="1" y="2" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="33435" centery="32147" centerz="10" radius="3">
+		<monster name="Goggle Cake" x="-1" y="2" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="33407" centery="32154" centerz="10" radius="3">
+		<monster name="Candy Horror" x="3" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="33414" centery="32154" centerz="10" radius="3">
+		<monster name="Nibblemaw" x="1" y="0" z="10" spawntime="60" />
+	</monster>
+	<monster centerx="33442" centery="32154" centerz="10" radius="3">
+		<monster name="Candy Floss Elemental" x="-3" y="-1" z="10" spawntime="60" />
+	</monster>
 </monsters>

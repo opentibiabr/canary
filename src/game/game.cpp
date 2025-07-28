@@ -3422,7 +3422,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 			return;
 		}
 	} else if (!player->canDoAction()) {
-		uint32_t delay = player->getNextActionTime() - OTSYS_TIME();
+		uint32_t delay = player->getNextActionTime();
 		if (delay > 0) {
 			const auto &task = createPlayerTask(
 				delay,
@@ -4474,7 +4474,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	// Change Podium name
 	if (outfit.lookType != 0 || outfit.lookMount != 0) {
 		std::ostringstream name;
-		name << item->getName() << " displaying the ";
+		name << Item::items[item->getID()].name << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
 			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
@@ -6955,6 +6955,16 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 					effect = CONST_ME_HITAREA;
 					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK);
 					break;
+				case RACE_CHOCOLATE:
+					color = TEXTCOLOR_LIGHTGREY;
+					effect = CONST_ME_CACAO;
+					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_CHOCOLATE);
+					break;
+				case RACE_CANDY:
+					color = TEXTCOLOR_DARKRED;
+					effect = CONST_ME_SIRUP;
+					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_CANDY);
+					break;
 				case RACE_UNDEAD:
 					color = TEXTCOLOR_LIGHTGREY;
 					effect = CONST_ME_HITAREA;
@@ -7793,13 +7803,6 @@ void Game::buildMessageAsAttacker(
 
 	if (damage.extension) {
 		ss << " " << damage.exString;
-	}
-
-	if (damage.critical) {
-		const auto &targetMonster = target->getMonster();
-		if (targetMonster && attackerPlayer && targetMonster->checkCanApplyCharm(attackerPlayer, CHARM_LOW)) {
-			ss << " (low blow charm)";
-		}
 	}
 
 	if (damage.fatal) {

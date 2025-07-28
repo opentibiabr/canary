@@ -402,8 +402,10 @@ void IOBestiary::addBestiaryKill(const std::shared_ptr<Player> &player, const st
 		}
 	}
 
-	// Reload bestiary tracker
-	player->refreshCyclopediaMonsterTracker();
+	// Reload bestiary tracker only if the monster is being tracked
+	if (player->isMonsterOnBestiaryTracker(mtype)) {
+		player->refreshCyclopediaMonsterTracker();
+	}
 }
 
 PlayerCharmsByMonster IOBestiary::getCharmFromTarget(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, charmCategory_t category /* = CHARM_ALL */) {

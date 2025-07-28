@@ -808,10 +808,16 @@ void Lua::registerSharedClass(lua_State* L, const std::string &className, const 
 }
 
 int Lua::luaGarbageCollection(lua_State* L) {
-	const auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
-	if (objPtr) {
-		objPtr->reset();
+	auto objPtr = static_cast<std::shared_ptr<SharedObject>*>(lua_touserdata(L, 1));
+	if (!objPtr) {
+		return 0;
 	}
+
+	// Destroy and re-create the shared_ptr instance.  This ensures the
+	// destructor runs exactly once per invocation while leaving a valid,
+	// empty shared_ptr behind should Lua trigger this metamethod again.
+	objPtr->~shared_ptr<SharedObject>();
+	new (objPtr) std::shared_ptr<SharedObject>();
 	return 0;
 }
 

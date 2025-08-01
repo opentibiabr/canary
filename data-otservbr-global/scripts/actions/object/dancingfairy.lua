@@ -12,7 +12,9 @@ function dancingfairy.onUse(player, item, fromPosition, target, toPosition, isHo
 
 	addEvent(function(pos)
 		local tile = Tile(pos)
-		if not tile then return end
+		if not tile then
+			return
+		end
 
 		for _, tileItem in ipairs(tile:getItems() or {}) do
 			if tileItem:getId() == TRANSFORMED_ID then

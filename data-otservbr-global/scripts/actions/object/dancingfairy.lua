@@ -2,28 +2,32 @@ local dancingfairy = Action()
 
 local ORIGINAL_ID = 25747
 local TRANSFORMED_ID = 25748
-local REVERT_DELAY = 1 * 60 * 1000
+local REVERT_DELAY = 1 * 60 * 1000 -- 1 minuto
 
 function dancingfairy.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not item or item:getId() ~= ORIGINAL_ID then
+		return false
+	end
+
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Doooon't touch me! *puff*")
 	item:transform(TRANSFORMED_ID)
 
 	local position = item:getPosition()
+	local playerId = player:getId()
 
-	addEvent(function(pos)
+	addEvent(function(pos, pid)
 		local tile = Tile(pos)
-		if not tile then
+		local player = Player(pid)
+		if not tile or not player then
 			return
 		end
 
-		for _, tileItem in ipairs(tile:getItems() or {}) do
-			if tileItem:getId() == TRANSFORMED_ID then
-				tileItem:transform(ORIGINAL_ID)
-				player:addAchievementProgress("Fairy Teasing", 100)
-				break
-			end
+		local transformedItem = tile:getItemById(TRANSFORMED_ID)
+		if transformedItem then
+			transformedItem:transform(ORIGINAL_ID)
+			player:addAchievementProgress("Fairy Teasing", 100)
 		end
-	end, REVERT_DELAY, position)
+	end, REVERT_DELAY, position, playerId)
 
 	return true
 end

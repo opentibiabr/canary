@@ -2,7 +2,7 @@ local dancingfairy = Action()
 
 local ORIGINAL_ID = 25747
 local TRANSFORMED_ID = 25748
-local REVERT_DELAY = 1 * 60 * 1000 -- 1 minuto
+local REVERT_DELAY = 1 * 60 * 1000
 
 function dancingfairy.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if not item or item:getId() ~= ORIGINAL_ID then

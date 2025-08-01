@@ -1467,7 +1467,7 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 	return false;
 }
 
-void Monster::pushCreatures(const std::shared_ptr<Tile>& tile) {
+void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 	if (!tile) {
 		return;
 	}
@@ -1486,7 +1486,7 @@ void Monster::pushCreatures(const std::shared_ptr<Tile>& tile) {
 			continue;
 		}
 
-		const auto& creature = currentCreatures->at(i);
+		const auto &creature = currentCreatures->at(i);
 		if (!creature) {
 			continue;
 		}

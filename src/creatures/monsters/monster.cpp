@@ -1419,49 +1419,56 @@ bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &nextD
 	}
 
 	const Position &centerPos = item->getPosition();
-	std::shared_ptr<Cylinder> fromCylinder = g_game().map.getTile(centerPos);
-
-	if (!fromCylinder) {
+	std::shared_ptr<Tile> fromTile = std::dynamic_pointer_cast<Tile>(item->getParent());
+	if (!fromTile) {
 		return false;
 	}
 
+	std::shared_ptr<Cylinder> fromCylinder = fromTile;
 	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
 		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
 		std::shared_ptr<Tile> toTile = g_game().map.getTile(tryPos);
+
 		if (toTile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(fromCylinder, toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
 			return true;
 		}
 	}
+
 	return false;
 }
 
 void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection) {
-	// We can not use iterators here since we can push the item to another tile
-	// which will invalidate the iterator.
-	// start from the end to minimize the amount of traffic
 	if (!tile) {
 		return;
 	}
 
-	if (const auto &items = tile->getItemList()) {
-		uint32_t moveCount = 0;
-		uint32_t removeCount = 0;
-		int32_t downItemSize = tile->getDownItemCount();
+	const auto* items = tile->getItemList();
+	if (!items || items->empty()) {
+		return;
+	}
 
-		for (int32_t i = downItemSize; --i >= 0;) {
-			const auto &item = items->at(i);
-			if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
-				if (moveCount < 20 && pushItem(item, nextDirection)) {
-					++moveCount;
-				} else if (removeCount < 10 && !item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-					++removeCount;
-				}
-			}
+	uint32_t moveCount = 0;
+	uint32_t removeCount = 0;
+	int32_t downItemSize = tile->getDownItemCount();
+
+	for (int32_t i = downItemSize; --i >= 0;) {
+		const auto &item = items->at(i);
+		if (!item || !item->hasProperty(CONST_PROP_MOVABLE) || !item->canBeMoved()) {
+			continue;
+		}
+		if (!item->hasProperty(CONST_PROP_BLOCKPATH) && !item->hasProperty(CONST_PROP_BLOCKSOLID)) {
+			continue;
 		}
 
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		if (moveCount < 20 && pushItem(item, nextDirection)) {
+			++moveCount;
+		} else if (removeCount < 10 && !item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+			++removeCount;
 		}
+	}
+
+	if (removeCount > 0) {
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 }
 

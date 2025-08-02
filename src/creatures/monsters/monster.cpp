@@ -1477,16 +1477,12 @@ void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 		return;
 	}
 
-	uint32_t removeCount = 0;
+	CreatureVector creaturesCopy = *creatures;
+	uint32_t killedCount = 0;
 	std::shared_ptr<Monster> lastPushedMonster = nullptr;
 
-	for (int i = static_cast<int>(creatures->size()) - 1; i >= 0; --i) {
-		const CreatureVector* currentCreatures = tile->getCreatures();
-		if (!currentCreatures || i >= static_cast<int>(currentCreatures->size())) {
-			continue;
-		}
-
-		const auto &creature = currentCreatures->at(i);
+	for (int i = static_cast<int>(creaturesCopy.size()) - 1; i >= 0; --i) {
+		const auto &creature = creaturesCopy[i];
 		if (!creature) {
 			continue;
 		}
@@ -1500,11 +1496,11 @@ void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 
 			monster->changeHealth(-monster->getHealth());
 			monster->setDropLoot(true);
-			removeCount++;
+			killedCount++;
 		}
 	}
 
-	if (removeCount > 0) {
+	if (killedCount > 0) {
 		g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
 	}
 }

@@ -380,14 +380,23 @@ void House::setNewOwnership() {
 }
 
 void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const {
+	if (!item) {
+		return;
+	}
+
 	if (item->isWrapContainer()) {
 		g_logger().debug("[{}] found wrapable item '{}'", __FUNCTION__, item->getName());
 		handleContainer(moveItemList, item);
 	}
 
+	const auto &parent = item->getParent();
+	if (parent) {
+		parent->removeThing(item, item->getItemCount());
+	}
+
 	const auto &newItem = g_game().wrapItem(item, houseTile->getHouse());
-	if (newItem->isRemoved() && !newItem->getParent()) {
-		g_logger().warn("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
+	if (!newItem || (newItem->isRemoved() && !newItem->getParent())) {
+		g_logger().warn("[{}] item removed during wrapping - check ground type - player: {} item id: {} pos: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
 		return;
 	}
 

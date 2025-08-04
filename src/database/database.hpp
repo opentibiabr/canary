@@ -227,20 +227,16 @@ public:
 
 	template <typename Func>
 	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();
-		if (changesExpected) {
-			DBTransaction transaction;
-			try {
-				transaction.begin();
-				transaction.commit();
-				return changesExpected;
-			} catch (const std::exception &exception) {
-				transaction.rollback();
-				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
-				return false;
-			}
-		} else {
-			return true;
+		DBTransaction transaction;
+		try {
+			transaction.begin();
+			bool areChangesExpected = toBeExecuted();
+			transaction.commit();
+			return areChangesExpected;
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 

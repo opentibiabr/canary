@@ -13,6 +13,8 @@
 #include "items/item.hpp"
 #include "items/tile.hpp"
 
+#include "enums/container_type.hpp"
+
 class Container;
 class DepotChest;
 class DepotLocker;
@@ -284,6 +286,10 @@ public:
 	bool isAnyKindOfRewardContainer();
 	bool isBrowseFieldAndHoldsRewardChest();
 	bool isInsideContainerWithId(uint16_t id);
+
+	ContainerSpecial_t getSpecialCategory(const std::shared_ptr<Player> &player);
+	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
+	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
 
 protected:
 	uint32_t m_maxItems {};

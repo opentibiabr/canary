@@ -231,6 +231,7 @@ public:
 	{
 		DBTransaction transaction;
 		try {
+			transaction.begin();
 			const bool shouldCommit = callback();
 
 			if (shouldCommit) {

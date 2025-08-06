@@ -229,9 +229,14 @@ template <typename Func>
 	static bool executeWithinTransaction(const Func &callback) {
 		DBTransaction transaction;
 		try {
-			transaction.begin();
-			bool shouldCommit = callback();
-			transaction.commit();
+			const bool shouldCommit = callback();
+
+			if (shouldCommit) {
+				transaction.commit();
+			} else {
+				transaction.rollback();
+			}
+
 			return shouldCommit;
 		} catch (const std::exception &exception) {
 			transaction.rollback();

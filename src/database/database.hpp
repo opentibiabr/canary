@@ -225,14 +225,14 @@ public:
 	DBTransaction(const DBTransaction &&) = delete;
 	DBTransaction &operator=(const DBTransaction &&) = delete;
 
-	template <typename Func>
-	static bool executeWithinTransaction(const Func &toBeExecuted) {
+template <typename Func>
+	static bool executeWithinTransaction(const Func &callback) {
 		DBTransaction transaction;
 		try {
 			transaction.begin();
-			bool areChangesExpected = toBeExecuted();
+			bool shouldCommit = callback();
 			transaction.commit();
-			return areChangesExpected;
+			return shouldCommit;
 		} catch (const std::exception &exception) {
 			transaction.rollback();
 			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());

@@ -226,22 +226,26 @@ public:
 	DBTransaction &operator=(const DBTransaction &&) = delete;
 
 	template <typename Func>
-	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();
-		if (changesExpected) {
-			DBTransaction transaction;
-			try {
-				transaction.begin();
+	static bool executeWithinTransaction(const Func &callback)
+		requires std::invocable<Func>
+	{
+		DBTransaction transaction;
+		try {
+			transaction.begin();
+			const bool shouldCommit = callback();
+
+			if (shouldCommit) {
 				transaction.commit();
-				return changesExpected;
-			} catch (const std::exception &exception) {
+			} else {
 				transaction.rollback();
-				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
-				return false;
 			}
-		} else {
-			return true;
-		}
+
+			return shouldCommit;
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
+		}	
 	}
 
 private:

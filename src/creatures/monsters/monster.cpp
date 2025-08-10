@@ -1413,28 +1413,27 @@ void Monster::onThinkSound(uint32_t interval) {
 	}
 }
 
-bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection) {
-	if (!item) {
-		return false;
-	}
+bool Monster::pushItem(const std::shared_ptr<Item>& item, const Direction& dir) {
+    if (!item) return false;
 
-	const Position &centerPos = item->getPosition();
-	std::shared_ptr<Tile> fromTile = std::dynamic_pointer_cast<Tile>(item->getParent());
-	if (!fromTile) {
-		return false;
-	}
+    auto fromTile = item->getTile();
+    if (!fromTile) return false;
 
-	std::shared_ptr<Cylinder> fromCylinder = fromTile;
-	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
-		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
-		std::shared_ptr<Tile> toTile = g_game().map.getTile(tryPos);
+    const Position& fromPos = fromTile->getPosition();
+    std::shared_ptr<Cylinder> fromCyl = fromTile;
 
-		if (toTile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(fromCylinder, toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
-			return true;
-		}
-	}
+    for (auto [dx, dy] : getPushItemLocationOptions(dir)) {
+        Position toPos(fromPos.x + dx, fromPos.y + dy, fromPos.z);
+        auto toTile = g_game().map.getTile(toPos);
 
-	return false;
+        if (toTile &&
+            g_game().canThrowObjectTo(fromPos, toPos) &&
+            g_game().internalMoveItem(fromCyl, toTile, INDEX_WHEREEVER,
+                                      item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection) {

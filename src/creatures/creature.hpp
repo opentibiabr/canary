@@ -189,7 +189,7 @@ public:
 	int32_t getWalkDelay(Direction dir = DIRECTION_NONE);
 	int64_t getTimeSinceLastMove() const;
 
-	int64_t getEventStepTicks(bool onlyDelay = false);
+	int64_t getEventStepTicks();
 	uint16_t getStepDuration(Direction dir = DIRECTION_NONE);
 	virtual uint16_t getStepSpeed() const {
 		return getSpeed();
@@ -316,7 +316,7 @@ public:
 
 	// walk functions
 	void startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions = false);
-	void addEventWalk(bool firstStep = false);
+	void addEventWalk();
 	void stopEventWalk();
 	void resetMovementState();
 

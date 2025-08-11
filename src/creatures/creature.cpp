@@ -304,7 +304,9 @@ void Creature::addEventWalk() {
 
 	safeCall([this] {
 		const int64_t ticks = getEventStepTicks();
-		if (ticks <= 0) return;
+		if (ticks <= 0) {
+			return;
+		}
 		eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks), [self = std::weak_ptr(getCreature())] {
 				if (const auto &creature = self.lock()) {

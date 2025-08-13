@@ -51,6 +51,10 @@ function getAllKV.onSay(player, words, param)
 		return
 	end
 
+	table.sort(keys, function(a, b)
+		return tostring(a):lower() < tostring(b):lower()
+	end)
+
 	for _, key in ipairs(keys) do
 		local value = kv:get(key)
 		if type(value) == "number" and value >= 0 then

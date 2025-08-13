@@ -245,7 +245,7 @@ public:
 			transaction.rollback();
 			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
 			return false;
-		}	
+		}
 	}
 
 private:

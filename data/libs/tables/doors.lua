@@ -174,7 +174,6 @@ CustomDoorTable = {
 	{ closedDoor = 48522, openDoor = 48526 },
 	{ closedDoor = 48528, openDoor = 48530 },
 	{ closedDoor = 48529, openDoor = 48531 },
-	-- AZZILON DOORS
 	{ closedDoor = 49678, openDoor = 49682 },
 	{ closedDoor = 49679, openDoor = 49682 },
 	{ closedDoor = 49680, openDoor = 49683 },

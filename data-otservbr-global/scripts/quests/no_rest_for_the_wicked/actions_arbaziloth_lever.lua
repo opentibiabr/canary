@@ -21,6 +21,6 @@ local config = {
 	exit = Position(33877, 32399, 10),
 }
 
-local leverArbaziloth = BossLever(config)
-leverArbaziloth:aid(57606)
-leverArbaziloth:register()
+local lever = BossLever(config)
+lever:position(Position(34058, 32395, 14))
+lever:register()

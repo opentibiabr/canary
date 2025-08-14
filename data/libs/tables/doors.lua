@@ -174,6 +174,14 @@ CustomDoorTable = {
 	{ closedDoor = 48522, openDoor = 48526 },
 	{ closedDoor = 48528, openDoor = 48530 },
 	{ closedDoor = 48529, openDoor = 48531 },
+	{ closedDoor = 49678, openDoor = 49682 },
+	{ closedDoor = 49679, openDoor = 49682 },
+	{ closedDoor = 49680, openDoor = 49683 },
+	{ closedDoor = 49681, openDoor = 49683 },
+	{ closedDoor = 49684, openDoor = 49688 },
+	{ closedDoor = 49685, openDoor = 49688 },
+	{ closedDoor = 49686, openDoor = 49689 },
+	{ closedDoor = 49687, openDoor = 49689 },
 }
 
 -- These are the doors for missions, they need access from some mission (storage) to be able to enter. Put the storage value in the action id of the door and it will open only to the player who has the storage value.

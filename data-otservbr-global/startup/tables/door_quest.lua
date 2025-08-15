@@ -50,18 +50,6 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 32467, y = 31969, z = 5 } },
 	},
-	-- Edron
-	[Storage.Kilmaresh.Sixth.Favor] = {
-		itemId = false,
-		itemPos = {
-			{ x = 33855, y = 31450, z = 9 },
-			{ x = 33855, y = 31496, z = 9 },
-			{ x = 33884, y = 31510, z = 9 },
-			{ x = 33884, y = 31536, z = 9 },
-			{ x = 33911, y = 31496, z = 9 },
-			{ x = 33912, y = 31466, z = 9 },
-		},
-	},
 	-- Rathleton quest door
 	[Storage.HeroRathleton.AccessDoor] = {
 		itemId = false,
@@ -667,21 +655,6 @@ QuestDoorAction = {
 			{ x = 32169, y = 31933, z = 7 },
 		},
 	},
-	-- The dream courts door (Andrew Lyze npc)
-	[Storage.Quest.U12_00.TheDreamCourts.AndrewDoor] = {
-		itemId = 20450,
-		itemPos = { { x = 32761, y = 32630, z = 7 } },
-	},
-	-- Kilmaresh doors
-	-- [Storage.Kilmaresh.First.Title] = {
-	-- itemId = false,
-	-- itemPos = {
-	-- {x = 33959, y = 31501, z = 4},
-	-- {x = 33375, y = 31346, z = 5},
-	-- {x = 33371, y = 31349, z = 4},
-	-- {x = 33376, y = 31335, z = 3}
-	-- }
-	-- },
 	-- The Rookie Guard Quest - Mission 07: Attack!
 	-- The library vault door
 	[Storage.Quest.U9_1.TheRookieGuard.LibraryDoor] = {
@@ -759,7 +732,8 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 33083, y = 31216, z = 8 } },
 	},
-	[Storage.Quest.U12_20.GraveDanger.QuestLine] = {
+
+	[Storage.Quest.U12_20.GraveDanger.Questline] = {
 		itemId = false,
 		itemPos = {
 			{ x = 33264, y = 31993, z = 7 },
@@ -776,10 +750,11 @@ QuestDoorAction = {
 			{ x = 32012, y = 31565, z = 7 },
 		},
 	},
-	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelosDoor] = {
+	[Storage.Quest.U12_20.GraveDanger.Bosses.KingZelos.Room] = {
 		itemId = false,
 		itemPos = { { x = 32173, y = 31922, z = 8 } },
 	},
+
 	[Storage.Quest.U12_70.AdventuresOfGalthen.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 32466, y = 32494, z = 8 } },
@@ -799,48 +774,40 @@ QuestDoorAction = {
 			{ x = 33470, y = 32786, z = 11 },
 		},
 	},
-	[Storage.Kilmaresh.AccessDoor] = {
+	-- Kilmaresh Quest
+	[Storage.Quest.U12_20.KilmareshQuest.AccessDoor] = {
 		itemId = false,
 		itemPos = { { x = 33886, y = 31476, z = 7 } },
 	},
-	[Storage.Kilmaresh.CatacombDoors] = {
-		itemId = false,
+	[Storage.Quest.U12_20.KilmareshQuest.Second.Investigating] = {
+		itemId = 31568,
+		itemPos = { { x = 33959, y = 31501, z = 4 } },
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.GryphonMask] = {
+		itemId = 9558,
+		itemPos = { { x = 33884, y = 31536, z = 9 } },
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.MirrorMask] = {
+		itemId = 9558,
+		itemPos = { { x = 33884, y = 31510, z = 9 } },
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.IvoryMask] = {
+		itemId = 9558,
+		itemPos = {
+			{ x = 33911, y = 31496, z = 9 },
+			{ x = 33855, y = 31496, z = 9 },
+		},
+	},
+	[Storage.Quest.U12_20.KilmareshQuest.Sixth.SilverMask] = {
+		itemId = 9558,
 		itemPos = {
 			{ x = 33855, y = 31450, z = 9 },
 			{ x = 33912, y = 31466, z = 9 },
-			{ x = 33855, y = 31496, z = 9 },
-			{ x = 33911, y = 31496, z = 9 },
-			{ x = 33884, y = 31510, z = 9 },
-			{ x = 33884, y = 31536, z = 9 },
 		},
 	},
 	[Storage.Quest.U12_60.APiratesTail.TentuglyDoor] = {
 		itemId = false,
 		itemPos = { { x = 33793, y = 31388, z = 6 } },
-	},
-	[Storage.Quest.U12_00.TheDreamCourts.HauntedHouseAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 32700, y = 32244, z = 9 },
-			{ x = 32700, y = 32255, z = 9 },
-			{ x = 32700, y = 32275, z = 8 },
-			{ x = 33088, y = 32388, z = 8 },
-			{ x = 32671, y = 32652, z = 7 },
-			{ x = 32606, y = 32629, z = 9 },
-		},
-	},
-	[Storage.Quest.U12_00.TheDreamCourts.BuriedCathedralAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 32719, y = 32264, z = 8 },
-			{ x = 32728, y = 32280, z = 8 },
-		},
-	},
-	[Storage.Quest.U12_00.TheDreamCourts.DreamScarAccess] = {
-		itemId = false,
-		itemPos = {
-			{ x = 31983, y = 32000, z = 14 },
-		},
 	},
 	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide] = {
 		itemId = false,

@@ -47,12 +47,13 @@ bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, std::uniq
 bool AccountRepositoryDB::save(const std::unique_ptr<AccountInfo> &accInfo) {
 	bool successful = g_database().executeQuery(
 		fmt::format(
-			"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {} WHERE `id` = {}",
+			"UPDATE `accounts` SET `type` = {}, `premdays` = {}, `lastday` = {}, `creation` = {}, `premdays_purchased` = {}, `house_bid_id` = {} WHERE `id` = {}",
 			accInfo->accountType,
 			accInfo->premiumRemainingDays,
 			accInfo->premiumLastDay,
 			accInfo->creationTime,
 			accInfo->premiumDaysPurchased,
+			accInfo->houseBidId,
 			accInfo->id
 		)
 	);
@@ -75,7 +76,7 @@ bool AccountRepositoryDB::getCharacterByAccountIdAndName(const uint32_t &id, con
 }
 
 bool AccountRepositoryDB::getPassword(const uint32_t &id, std::string &password) {
-	auto result = g_database().storeQuery(fmt::format("SELECT * FROM `accounts` WHERE `id` = {}", id));
+	auto result = g_database().storeQuery(fmt::format("SELECT `password` FROM `accounts` WHERE `id` = {}", id));
 	if (!result) {
 		g_logger().error("Failed to get account:[{}] password!", id);
 		return false;

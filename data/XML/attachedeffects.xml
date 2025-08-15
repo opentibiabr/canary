@@ -1,0 +1,15 @@
+<attachedeffects>
+	<!-- aura -->
+	<aura id="8" name="8 aura" />  
+	<!-- shader -->
+	<shader id="1" name="Outfit - Rainbow" />
+	<shader id="2" name="Outfit - Ghost" />
+	<shader id="3" name="Outfit - Jelly" />
+	<shader id="4" name="Outfit - Fragmented" />
+	<shader id="5" name="Outfit - Outline" />
+	<!-- effect -->
+	<effect id="7" name="7 effect" />
+	<!-- wing -->
+	<wing id="2" name="2 wings" />
+	<wing id="11" name="11 wings" /> 
+</attachedeffects>

@@ -108,7 +108,7 @@ npcConfig.shop = {
 	{ itemName = "crusher", clientId = 46627, buy = 500 },
 	{ itemName = "crystalline arrow", clientId = 15793, buy = 20 },
 	{ itemName = "cup", clientId = 2884, buy = 2 },
-	{ itemName = "diamond arrow", clientId = 35901, buy = 100 },
+	{ itemName = "diamond arrow", clientId = 35901, buy = 130 },
 	{ itemName = "document", clientId = 2818, buy = 12 },
 	{ itemName = "drill bolt", clientId = 16142, buy = 12 },
 	{ itemName = "earth arrow", clientId = 774, buy = 5 },

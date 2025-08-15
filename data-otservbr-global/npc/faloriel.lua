@@ -57,29 +57,35 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local potionTalk = keywordHandler:addKeyword({ "ring" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?",
-}, function(player)
-	return player:getStorageValue(Storage.Kilmaresh.Fifth.Memories) == 1
-end)
+local function creatureSayCallback(npc, creature, type, message)
+	local player = Player(creature)
+	local playerId = player:getId()
 
-potionTalk:addChildKeyword({ "yes" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Great. Here, take it.",
-}, function(player)
-	return player:getMoney() + player:getBankBalance() >= 1000
-end, function(player)
-	player:removeMoneyBank(1000)
-	player:addItem(31350, 1) -- flask of hallucinogen
-end)
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
 
-potionTalk:addChildKeyword({ "yes" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "You do not have enough money.",
-}, function(player)
-	return player:getMoney() + player:getBankBalance() < 1000
-end)
+	if MsgContains(message, "ring") then
+		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Fifth.Memories) == 1 then
+			npcHandler:say("So, the Librarian sent you. Well, yes, I have a vial of the hallucinogen you need. I'll give it to you for 1000 gold. Do you agree?", npc, creature)
+			npcHandler:setTopic(playerId, 1)
+		else
+			npcHandler:say("I don't have anything to offer you regarding a ring.", npc, creature)
+		end
+	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
+		if player:getMoney() + player:getBankBalance() >= 1000 then
+			npcHandler:say("Great. Here, take it.", npc, creature)
+			player:removeMoneyBank(1000)
+			player:addItem(31350, 1)
+			npcHandler:setTopic(playerId, 0)
+		else
+			npcHandler:say("You do not have enough money.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
+		end
+	end
+
+	return true
+end
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, dear guest and welcome to my {potion} shop.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Well, bye then.")
@@ -95,16 +101,16 @@ npcConfig.shop = {
 	{ itemName = "empty potion flask", clientId = 284, sell = 5 },
 	{ itemName = "empty potion flask", clientId = 285, sell = 5 },
 	{ itemName = "great health potion", clientId = 239, buy = 225 },
-	{ itemName = "great mana potion", clientId = 238, buy = 144 },
-	{ itemName = "great spirit potion", clientId = 7642, buy = 228 },
+	{ itemName = "great mana potion", clientId = 238, buy = 158 },
+	{ itemName = "great spirit potion", clientId = 7642, buy = 254 },
 	{ itemName = "health potion", clientId = 266, buy = 50 },
 	{ itemName = "mana potion", clientId = 268, buy = 56 },
 	{ itemName = "strong health potion", clientId = 236, buy = 115 },
-	{ itemName = "strong mana potion", clientId = 237, buy = 93 },
-	{ itemName = "supreme health potion", clientId = 23375, buy = 625 },
+	{ itemName = "strong mana potion", clientId = 237, buy = 108 },
+	{ itemName = "supreme health potion", clientId = 23375, buy = 650 },
 	{ itemName = "ultimate health potion", clientId = 7643, buy = 379 },
-	{ itemName = "ultimate mana potion", clientId = 23373, buy = 438 },
-	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 438 },
+	{ itemName = "ultimate mana potion", clientId = 23373, buy = 488 },
+	{ itemName = "ultimate spirit potion", clientId = 23374, buy = 488 },
 	{ itemName = "vial", clientId = 2874, sell = 5 },
 }
 -- On buy npc shop message

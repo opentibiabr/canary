@@ -52,15 +52,15 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 -- Travel
-local function addTravelKeyword(keyword, cost, destination)
-	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = "Do you seek a ride to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = "postman" })
-	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = "postman", destination = destination })
-	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Then not.", reset = true })
+local function addTravelKeyword(keyword, cost, destination, text, action, discount)
+	local travelKeyword = keywordHandler:addKeyword({ keyword }, StdModule.say, { npcHandler = npcHandler, text = text or "Do you seek a ride to " .. keyword:titleCase() .. " for |TRAVELCOST|?", cost = cost, discount = discount or "postman" })
+	travelKeyword:addChildKeyword({ "yes" }, StdModule.travel, { npcHandler = npcHandler, premium = false, cost = cost, discount = discount or "postman", destination = destination, text = "Full steam ahead!" }, nil, action)
+	travelKeyword:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, text = "Then not", reset = true })
 end
 
 addTravelKeyword("kazordoon", 210, Position(32659, 31957, 15))
 addTravelKeyword("cormaya", 110, Position(33310, 31988, 15))
-addTravelKeyword("gnomprona", { "Would you like to travel to Gnomprona for |TRAVELCOST|?", "Full steam ahead!", "Then not." }, 200, "postman", Position(33516, 32856, 14))
+addTravelKeyword("gnomprona", 200, Position(33516, 32856, 14), "Would you like to travel to Gnomprona for |TRAVELCOST|?", nil, "postman")
 
 keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want me take you to {Cormaya}, {Kazordoon} or {Gnomprona}?" })
 

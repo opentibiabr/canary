@@ -14,13 +14,7 @@
 #include "creatures/combat/condition.hpp"
 #include "database/database.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/achievement/player_achievement.hpp"
-#include "creatures/players/cyclopedia/player_badge.hpp"
-#include "creatures/players/cyclopedia/player_cyclopedia.hpp"
-#include "creatures/players/cyclopedia/player_title.hpp"
-#include "creatures/players/vip/player_vip.hpp"
 #include "creatures/players/vocations/vocation.hpp"
-#include "creatures/players/wheel/player_wheel.hpp"
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/object_category.hpp"
@@ -128,6 +122,12 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 		return false;
 	}
 
+	auto vocationId = result->getNumber<uint16_t>("vocation");
+	if (!player->setVocation(vocationId)) {
+		g_logger().error("Can't set vocation, player {} has vocation id {} which doesn't exist", player->name, vocationId);
+		return false;
+	}
+
 	player->setGUID(result->getNumber<uint32_t>("id"));
 	player->name = result->getString("name");
 
@@ -141,11 +141,6 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 		return false;
 	}
 	player->setGroup(group);
-
-	if (!player->setVocation(result->getNumber<uint16_t>("vocation"))) {
-		g_logger().error("Player {} has vocation id {} which doesn't exist", player->name, result->getNumber<uint16_t>("vocation"));
-		return false;
-	}
 
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
@@ -276,6 +271,20 @@ void IOLoginDataLoad::loadPlayerConditions(const std::shared_ptr<Player> &player
 	}
 }
 
+void IOLoginDataLoad::loadPlayerAnimusMastery(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
+	if (!result || !player) {
+		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+		return;
+	}
+
+	unsigned long attrSize;
+	const char* attr = result->getStream("animus_mastery", attrSize);
+	PropStream propStream;
+	propStream.init(attr, attrSize);
+
+	player->animusMastery().unserialize(propStream);
+}
+
 void IOLoginDataLoad::loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
 	if (!result || !player) {
 		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
@@ -335,12 +344,17 @@ void IOLoginDataLoad::loadPlayerSkill(const std::shared_ptr<Player> &player, con
 		return;
 	}
 
+	auto vocationPtr = player->getVocation();
+	if (!vocationPtr) {
+		return;
+	}
+
 	static const std::array<std::string, 13> skillNames = { "skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount" };
 	static const std::array<std::string, 13> skillNameTries = { "skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries" };
 	for (size_t i = 0; i < skillNames.size(); ++i) {
 		auto skillLevel = result->getNumber<uint16_t>(skillNames[i]);
 		auto skillTries = result->getNumber<uint64_t>(skillNameTries[i]);
-		uint64_t nextSkillTries = player->vocation->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
+		uint64_t nextSkillTries = vocationPtr->getReqSkillTries(static_cast<uint8_t>(i), skillLevel + 1);
 		if (skillTries > nextSkillTries) {
 			skillTries = 0;
 		}
@@ -431,7 +445,19 @@ void IOLoginDataLoad::loadPlayerStashItems(const std::shared_ptr<Player> &player
 	query << "SELECT `item_count`, `item_id`  FROM `player_stash` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->addItemOnStash(result->getNumber<uint16_t>("item_id"), result->getNumber<uint32_t>("item_count"));
+			auto itemId = result->getNumber<uint16_t>("item_id");
+			const ItemType &itemType = Item::items[itemId];
+			if (itemType.decayTo >= 0 && itemType.decayTime > 0) {
+				continue;
+			}
+
+			auto wareId = itemType.wareId;
+			if (wareId > 0 && wareId != itemType.id) {
+				g_logger().warn("[{}] - Item ID {} is a ware item, for player: {}, skipping.", __FUNCTION__, itemId, player->getName());
+				continue;
+			}
+
+			player->addItemOnStash(itemId, result->getNumber<uint32_t>("item_count"));
 		} while (result->next());
 	}
 }
@@ -444,31 +470,33 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(const std::shared_ptr<Player> &pl
 
 	Database &db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT * FROM `player_charms` WHERE `player_guid` = " << player->getGUID();
+	query << "SELECT * FROM `player_charms` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		player->charmPoints = result->getNumber<uint32_t>("charm_points");
+		player->minorCharmEchoes = result->getNumber<uint32_t>("minor_charm_echoes");
+		player->maxCharmPoints = result->getNumber<uint32_t>("max_charm_points");
+		player->maxMinorCharmEchoes = result->getNumber<uint32_t>("max_minor_charm_echoes");
 		player->charmExpansion = result->getNumber<bool>("charm_expansion");
-		player->charmRuneWound = result->getNumber<uint16_t>("rune_wound");
-		player->charmRuneEnflame = result->getNumber<uint16_t>("rune_enflame");
-		player->charmRunePoison = result->getNumber<uint16_t>("rune_poison");
-		player->charmRuneFreeze = result->getNumber<uint16_t>("rune_freeze");
-		player->charmRuneZap = result->getNumber<uint16_t>("rune_zap");
-		player->charmRuneCurse = result->getNumber<uint16_t>("rune_curse");
-		player->charmRuneCripple = result->getNumber<uint16_t>("rune_cripple");
-		player->charmRuneParry = result->getNumber<uint16_t>("rune_parry");
-		player->charmRuneDodge = result->getNumber<uint16_t>("rune_dodge");
-		player->charmRuneAdrenaline = result->getNumber<uint16_t>("rune_adrenaline");
-		player->charmRuneNumb = result->getNumber<uint16_t>("rune_numb");
-		player->charmRuneCleanse = result->getNumber<uint16_t>("rune_cleanse");
-		player->charmRuneBless = result->getNumber<uint16_t>("rune_bless");
-		player->charmRuneScavenge = result->getNumber<uint16_t>("rune_scavenge");
-		player->charmRuneGut = result->getNumber<uint16_t>("rune_gut");
-		player->charmRuneLowBlow = result->getNumber<uint16_t>("rune_low_blow");
-		player->charmRuneDivine = result->getNumber<uint16_t>("rune_divine");
-		player->charmRuneVamp = result->getNumber<uint16_t>("rune_vamp");
-		player->charmRuneVoid = result->getNumber<uint16_t>("rune_void");
 		player->UsedRunesBit = result->getNumber<int32_t>("UsedRunesBit");
 		player->UnlockedRunesBit = result->getNumber<int32_t>("UnlockedRunesBit");
+
+		unsigned long size;
+		const auto attribute = result->getStream("charms", size);
+		PropStream charmsStream;
+		charmsStream.init(attribute, size);
+		for (uint8_t id = magic_enum::enum_value<charmRune_t>(1); id <= magic_enum::enum_count<charmRune_t>(); id++) {
+			uint16_t raceId;
+			uint8_t tier;
+
+			if (!charmsStream.read<uint16_t>(raceId) || !charmsStream.read<uint8_t>(tier)) {
+				continue;
+			}
+
+			player->charmsArray[id].raceId = raceId;
+			player->charmsArray[id].tier = tier;
+
+			g_logger().debug("Player {} loaded charm Id {} with raceId {} and tier {}", player->name, id, raceId, tier);
+		}
 
 		unsigned long attrBestSize;
 		const char* Bestattr = result->getStream("tracker list", attrBestSize);
@@ -484,7 +512,7 @@ void IOLoginDataLoad::loadPlayerBestiaryCharms(const std::shared_ptr<Player> &pl
 		}
 	} else {
 		query.str("");
-		query << "INSERT INTO `player_charms` (`player_guid`) VALUES (" << player->getGUID() << ')';
+		query << "INSERT INTO `player_charms` (`player_id`) VALUES (" << player->getGUID() << ')';
 		Database::getInstance().executeQuery(query.str());
 	}
 }
@@ -746,14 +774,14 @@ void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBRes
 	std::string query = fmt::format("SELECT `player_id` FROM `account_viplist` WHERE `account_id` = {}", accountId);
 	if ((result = db.storeQuery(query))) {
 		do {
-			player->vip()->addInternal(result->getNumber<uint32_t>("player_id"));
+			player->vip().addInternal(result->getNumber<uint32_t>("player_id"));
 		} while (result->next());
 	}
 
 	query = fmt::format("SELECT `id`, `name`, `customizable` FROM `account_vipgroups` WHERE `account_id` = {}", accountId);
 	if ((result = db.storeQuery(query))) {
 		do {
-			player->vip()->addGroupInternal(
+			player->vip().addGroupInternal(
 				result->getNumber<uint8_t>("id"),
 				result->getString("name"),
 				result->getNumber<uint8_t>("customizable") == 0 ? false : true
@@ -764,7 +792,7 @@ void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBRes
 	query = fmt::format("SELECT `player_id`, `vipgroup_id` FROM `account_vipgrouplist` WHERE `account_id` = {}", accountId);
 	if ((result = db.storeQuery(query))) {
 		do {
-			player->vip()->addGuidToGroupInternal(
+			player->vip().addGuidToGroupInternal(
 				result->getNumber<uint8_t>("vipgroup_id"),
 				result->getNumber<uint32_t>("player_id")
 			);
@@ -870,14 +898,18 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 }
 
 void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result) {
-	if (!result || !player) {
-		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+	if (!player) {
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
-	std::ostringstream query;
-	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if ((result = Database::getInstance().storeQuery(query.str()))) {
+	auto playerGUID = player->getGUID();
+
+	auto query = fmt::format(
+		"SELECT id, action_type, description, done_at, is_success FROM forge_history WHERE player_id = {}",
+		playerGUID
+	);
+	if ((result = Database::getInstance().storeQuery(query))) {
 		do {
 			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
@@ -1001,13 +1033,17 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 	}
 
 	// Wheel loading
-	player->wheel()->loadDBPlayerSlotPointsOnLogin();
-	player->wheel()->initializePlayerData();
+	player->wheel().loadDBPlayerSlotPointsOnLogin();
+	player->wheel().loadRevealedGems();
+	player->wheel().loadActiveGems();
+	player->wheel().loadKVModGrades();
+	player->wheel().loadKVScrolls();
+	player->wheel().initializePlayerData();
 
-	player->achiev()->loadUnlockedAchievements();
-	player->badge()->checkAndUpdateNewBadges();
-	player->title()->checkAndUpdateNewTitles();
-	player->cyclopedia()->loadSummaryData();
+	player->achiev().loadUnlockedAchievements();
+	player->badge().checkAndUpdateNewBadges();
+	player->title().checkAndUpdateNewTitles();
+	player->cyclopedia().loadSummaryData();
 
 	player->initializePrey();
 	player->initializeTaskHunting();

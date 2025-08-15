@@ -16,6 +16,9 @@
 #include "lua/scripts/scripts.hpp"
 #include "lib/di/container.hpp"
 
+NpcType::NpcType(const std::string &initName) :
+	name(initName), m_lowerName(asLowerCaseString(initName)), typeName(initName), nameDescription(initName) {};
+
 bool NpcType::canSpawn(const Position &pos) const {
 	bool canSpawn = true;
 	const bool isDay = g_game().gameIsDay();

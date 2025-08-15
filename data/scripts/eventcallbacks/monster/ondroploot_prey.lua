@@ -36,14 +36,15 @@ function callback.monsterOnDropLoot(monster, corpse)
 		return
 	end
 
+	local existingSuffix = corpse:getAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX) or ""
+
 	if configManager.getBoolean(configKeys.PARTY_SHARE_LOOT_BOOSTS) then
-		msgSuffix = msgSuffix .. " (active prey bonus for " .. table.concat(preyActivators, ", ") .. ")"
+		msgSuffix = string.len(existingSuffix) > 0 and string.format(", active prey bonus for %s", table.concat(preyActivators, ", ")) or string.format("active prey bonus for %s", table.concat(preyActivators, ", "))
 	else
-		msgSuffix = msgSuffix .. " (active prey bonus)"
+		msgSuffix = string.len(existingSuffix) > 0 and ", active prey bonus" or "active prey bonus"
 	end
 
 	corpse:addLoot(mType:generateLootRoll({ factor = factor, gut = false }, {}, player))
-	local existingSuffix = corpse:getAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX) or ""
 	corpse:setAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX, existingSuffix .. msgSuffix)
 end
 

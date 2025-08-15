@@ -55,19 +55,22 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not MsgContains(message, "djanni'hah") then
-		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
+	--Checks if the player has completed the quest
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03) ~= 3 then
+		if not MsgContains(message, "djanni'hah") then
+			npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
+			endConversationWithDelay(npcHandler, npc, creature)
+			return false
+		end
 
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) == 1 then
-		npcHandler:say({
-			"Hahahaha! ...",
-			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
-		}, npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Start) == 1 then
+			npcHandler:say({
+				"Hahahaha! ...",
+				"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
+			}, npc, creature)
+			endConversationWithDelay(npcHandler, npc, creature)
+			return false
+		end
 	end
 
 	npcHandler:say("Be greeted, human |PLAYERNAME|. How can a humble djinn be of service?", npc, creature)
@@ -179,7 +182,7 @@ npcConfig.shop = {
 	{ itemName = "glacial rod", clientId = 16118, sell = 6500 },
 	{ itemName = "hailstorm rod", clientId = 3067, sell = 3000 },
 	{ itemName = "life ring", clientId = 3052, buy = 900, sell = 50 },
-	{ itemName = "might ring", clientId = 3048, buy = 5000, sell = 250, count = 20 },
+	{ itemName = "might ring", clientId = 3048, buy = 25000, sell = 250, count = 20 },
 	{ itemName = "moonlight rod", clientId = 3070, sell = 200 },
 	{ itemName = "muck rod", clientId = 16117, sell = 6000 },
 	{ itemName = "mysterious fetish", clientId = 3078, sell = 50 },

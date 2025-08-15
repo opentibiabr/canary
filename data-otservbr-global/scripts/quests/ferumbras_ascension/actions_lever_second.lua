@@ -5,7 +5,7 @@ function ferumbrasAscendantLeverSecond.onUse(player, item, fromPosition, target,
 	end
 	if item.itemid == 9110 then
 		if player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Elements.Done) < 2 then
-			local spectators = player:getSpectators(item:getPosition(), false, false, 9, 9, 6, 6)
+			local spectators = Game.getSpectators(item:getPosition(), false, false, 9, 9, 6, 6)
 			for i = 1, #spectators do
 				if spectators[i]:isPlayer() then
 					local spec = spectators[i]

@@ -9,14 +9,15 @@
 
 #pragma once
 
-// Definitions of wheel of destiny enums
-#include "creatures/players/wheel/wheel_definitions.hpp"
-#include "creatures/players/wheel/wheel_gems.hpp"
-
 #include "creatures/creatures_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_spells.hpp"
 
-// It prevents us from including the player.h file
 class Player;
+
+struct PlayerWheelMethodsBonusData;
+
+enum class WheelGemAffinity_t : uint8_t;
 
 /**
  * @brief Represents the bonus data for the wheel of destiny in the game.
@@ -40,7 +41,7 @@ public:
 		};
 
 		struct Revelation {
-			std::array<Stats, static_cast<size_t>(WheelStageEnum_t::TOTAL_COUNT)> stats = {
+			std::array<Stats, magic_enum::enum_count<WheelStageEnum_t>() + 1> stats = {
 				Stats { 4, 4 },
 				Stats { 9, 9 },
 				Stats { 20, 20 }

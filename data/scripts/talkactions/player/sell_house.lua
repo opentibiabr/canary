@@ -20,6 +20,8 @@ function sellHouse.onSay(player, words, param)
 	return true
 end
 
-sellHouse:separator(" ")
-sellHouse:groupType("normal")
-sellHouse:register()
+if not configManager.getBoolean(configKeys.CYCLOPEDIA_HOUSE_AUCTION) then
+	sellHouse:separator(" ")
+	sellHouse:groupType("normal")
+	sellHouse:register()
+end

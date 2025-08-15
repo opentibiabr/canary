@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 3 (account refactor)")
+	logger.info("Updating database to version 2 (account refactor)")
 
 	db.query([[
 		LOCK TABLES

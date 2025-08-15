@@ -22,6 +22,7 @@ public:
 	static void loadPlayerExperience(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerBlessings(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerConditions(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
+	static void loadPlayerAnimusMastery(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerSkullSystem(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerSkill(const std::shared_ptr<Player> &player, const DBResult_ptr &result);

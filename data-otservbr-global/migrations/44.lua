@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	logger.info("Updating database to version 45 (fix: mana shield column size for more than 65k)")
+	logger.info("Updating database to version 44 (fix: mana shield column size for more than 65k)")
 
 	db.query([[
 			ALTER TABLE `players`

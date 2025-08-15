@@ -55,19 +55,22 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not MsgContains(message, "djanni'hah") then
-		npcHandler:say("Whoa! A human! This is no place for you, |PLAYERNAME|. Go and play somewhere else.", npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-	end
+	--Checks if the player has completed the quest
+	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.MaridFaction.Mission03) ~= 3 then
+		if not MsgContains(message, "djanni'hah") then
+			npcHandler:say("Whoa! A human! This is no place for you, |PLAYERNAME|. Go and play somewhere else.", npc, creature)
+			endConversationWithDelay(npcHandler, npc, creature)
+			return false
+		end
 
-	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start) == 1 then
-		npcHandler:say({
-			"Hahahaha! ...",
-			"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
-		}, npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
+		if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Start) == 1 then
+			npcHandler:say({
+				"Hahahaha! ...",
+				"|PLAYERNAME|, that almost sounded like the word of greeting. Humans - cute they are!",
+			}, npc, creature)
+			endConversationWithDelay(npcHandler, npc, creature)
+			return false
+		end
 	end
 
 	npcHandler:say("Be greeted, human |PLAYERNAME|. How can a humble djinn be of service?", npc, creature)
@@ -157,7 +160,7 @@ npcConfig.shop = {
 	{ itemName = "orb", clientId = 3060, sell = 750 },
 	{ itemName = "power ring", clientId = 3050, buy = 100, sell = 50 },
 	{ itemName = "stealth ring", clientId = 3049, buy = 5000, sell = 200 },
-	{ itemName = "stone skin amulet", clientId = 3081, buy = 5000, sell = 500, count = 5 },
+	{ itemName = "stone skin amulet", clientId = 3081, buy = 25000, sell = 500, count = 5 },
 	{ itemName = "sword ring", clientId = 3091, buy = 500, sell = 100 },
 	{ itemName = "wand of cosmic energy", clientId = 3073, sell = 2000 },
 	{ itemName = "wand of decay", clientId = 3072, sell = 1000 },

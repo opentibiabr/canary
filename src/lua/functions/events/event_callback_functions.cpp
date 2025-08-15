@@ -47,7 +47,7 @@ int EventCallbackFunctions::luaEventCallbackCreate(lua_State* luaState) {
 }
 
 int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
-	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
+	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1, "EventCallback");
 	if (!callback) {
 		Lua::reportErrorFunc("EventCallback is nil");
 		return 0;
@@ -78,7 +78,7 @@ int EventCallbackFunctions::luaEventCallbackType(lua_State* luaState) {
 }
 
 int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
-	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
+	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1, "EventCallback");
 	if (!callback) {
 		return 0;
 	}
@@ -99,7 +99,7 @@ int EventCallbackFunctions::luaEventCallbackRegister(lua_State* luaState) {
 
 // Callback functions
 int EventCallbackFunctions::luaEventCallbackLoad(lua_State* luaState) {
-	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1);
+	const auto &callback = Lua::getUserdataShared<EventCallback>(luaState, 1, "EventCallback");
 	if (!callback) {
 		return 1;
 	}

@@ -35,6 +35,7 @@
 #include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
 #include "io/iomarket.hpp"
+#include "io/io_store.hpp"
 #include "io/ioprey.hpp"
 #include "items/bed.hpp"
 #include "items/containers/inbox/inbox.hpp"
@@ -66,6 +67,7 @@
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
 #include "enums/object_category.hpp"
+#include "enums/player_blessings.hpp"
 
 #include <appearances.pb.h>
 
@@ -1940,7 +1942,7 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 				return RETURNVALUE_ITEMCANNOTBEMOVEDPOUCH;
 			}
 
-			// prevent move up from ponch to store inbox.
+			// prevent move up from pouch to store inbox
 			if (!item->canBeMovedToStore() && fromCylinder->getContainer() && fromCylinder->getContainer()->getID() == ITEM_GOLD_POUCH) {
 				return RETURNVALUE_NOTBOUGHTINSTORE;
 			}
@@ -2008,7 +2010,7 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 				}
 			}
 
-			if (item->isStoreItem() && !house) {
+			if (item->isStoreItem() && (!item->isWrapable() || !house)) {
 				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 			}
 		}
@@ -6118,7 +6120,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 	internalCreatureTurn(player, dir);
 }
 
-void Game::playerRequestOutfit(uint32_t playerId) {
+void Game::playerRequestOutfit(uint32_t playerId, uint16_t tryOutfit /* = 0*/, uint16_t tryMount /* = 0*/) {
 	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
 		return;
 	}
@@ -6128,7 +6130,7 @@ void Game::playerRequestOutfit(uint32_t playerId) {
 		return;
 	}
 
-	player->sendOutfitWindow();
+	player->sendOutfitWindow(tryOutfit, tryMount);
 }
 
 void Game::playerToggleMount(uint32_t playerId, bool mount) {
@@ -9268,7 +9270,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	// Make sure everything is ok before the create market offer starts
 	if (!checkCanInitCreateMarketOffer(player, type, it, amount, price, offerStatus)) {
-		g_logger().error("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		if (!offerStatus.str().empty()) {
+			g_logger().error("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+		}
 		return;
 	}
 
@@ -9283,6 +9287,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
+	// Store the timestamp to ensure consistency across multiple calls, avoiding slight differences in time
+	auto createdAt = getTimeNow();
 	if (type == MARKETACTION_SELL) {
 		if (fee > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money";
@@ -9305,6 +9311,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			// Do not register a transaction for coins creating an offer
 			player->getAccount()->removeCoins(CoinType::Transferable, static_cast<uint32_t>(amount), "");
+
+			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Created, MARKETACTION_SELL, "Sell Offer Placed in The Market", totalPrice);
+			auto description = "Sell Offer Placed in the Market";
+			player->addStoreDetail(description, -amount, createdAt);
+
+			g_logger().info("[{}] Player {} created a sell offer for {} coins", __FUNCTION__, player->getName(), amount);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -9315,7 +9327,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		g_game().removeMoney(player, fee, 0, true);
 		g_metrics().addCounter("balance_decrease", fee, { { "player", player->getName() }, { "context", "market_fee" } });
 	} else {
-		uint64_t totalPrice = price * amount;
 		totalPrice += fee;
 		if (totalPrice > (player->getMoney() + player->getBankBalance())) {
 			offerStatus << "Fee is greater than player money (buy offer)";
@@ -9372,10 +9383,11 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
+	uint64_t totalPrice = offer.price * offer.amount;
 	const auto &playerInbox = player->getInbox();
 	if (offer.type == MARKETACTION_BUY) {
-		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
-		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
+		player->setBankBalance(player->getBankBalance() + totalPrice);
+		g_metrics().addCounter("balance_decrease", totalPrice, { { "player", player->getName() }, { "context", "market_purchase" } });
 		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {
@@ -9387,6 +9399,9 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
 			player->getAccount()->addCoins(CoinType::Transferable, offer.amount, "");
+
+			auto description = "Sell Offer Cancelled or Expired";
+			player->addStoreDetail(description, offer.amount, offer.timestamp);
 		} else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
 
@@ -9475,6 +9490,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	uint64_t totalPrice = offer.price * amount;
 
+	// Store the timestamp to ensure consistency across multiple calls, avoiding slight differences in time
+	auto createdAt = getTimeNow();
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
@@ -9522,6 +9539,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				amount,
 				"Sold on Market"
 			);
+
+			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_SELL, "Transferred via the Market", totalPrice);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, offer.tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
@@ -9547,6 +9566,24 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
+			buyerPlayer->addStoreHistory(true, buyerPlayer->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_BUY, "Purchased via the Market", totalPrice);
+		} else if (it.stackable) {
+			uint16_t tmpAmount = amount;
+			while (tmpAmount > 0) {
+				uint16_t stackCount = std::min<uint16_t>(it.stackSize, tmpAmount);
+				const auto &item = Item::CreateItem(it.id, stackCount);
+				if (internalAddItem(buyerPlayerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+					offerStatus << "Failed to add player inbox stackable item for buy offer for player " << player->getName();
+
+					break;
+				}
+
+				if (offer.tier > 0) {
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
+				}
+
+				tmpAmount -= stackCount;
+			}
 		} else {
 			uint16_t processedAmount = amount;
 			uint64_t effectivePrice = offer.price * processedAmount;
@@ -9565,7 +9602,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
+		if (player == sellerPlayer || player->getAccountId() == sellerPlayer->getAccountId()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
@@ -9587,6 +9624,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			player->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
+			player->addStoreHistory(true, player->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_BUY, "Purchased via the Market", totalPrice);
 		} else {
 			uint16_t processedAmount = amount;
 			uint64_t effectivePrice = offer.price * processedAmount;
@@ -9599,6 +9637,23 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
 		if (it.id == ITEM_STORE_COIN) {
 			sellerPlayer->getAccount()->registerCoinTransaction(CoinTransactionType::Remove, CoinType::Transferable, amount, "Sold on Market");
+			sellerPlayer->addStoreHistory(true, sellerPlayer->getName(), createdAt, amount, StoreDetailType::Finished, MARKETACTION_SELL, "Transferred via the Market", totalPrice);
+			// Add store detail for seller
+			auto description = fmt::format("Sold {} Tibia Coins", amount);
+			sellerPlayer->addStoreDetail(description, totalPrice, offer.timestamp, true);
+
+			// Check and update the sold coin amount for the seller player
+			auto storeHistoryScope = sellerPlayer->getStoreDetailScope(offer.timestamp);
+			auto soldCoinAmountOpt = storeHistoryScope->get("sold-coin-amount");
+			auto soldCoinAmount = soldCoinAmountOpt ? soldCoinAmountOpt->getNumber() : 0;
+			storeHistoryScope->set("sold-coin-amount", soldCoinAmount + amount);
+
+			// Check and update the received gold amount for the seller player
+			auto receivedGoldAmountOpt = storeHistoryScope->get("received-gold-amount");
+			auto receivedGoldAmount = receivedGoldAmountOpt ? receivedGoldAmountOpt->getNumber() : 0;
+			storeHistoryScope->set("received-gold-amount", receivedGoldAmount + totalPrice);
+
+			g_logger().info("Offer timestamp: {}, sold coin amount: {}, received gold amount: {}", offer.timestamp, soldCoinAmount + amount, receivedGoldAmount + totalPrice);
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
@@ -9621,9 +9676,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION);
 
-	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, time(nullptr), offer.tier, OFFERSTATE_ACCEPTEDEX);
+	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, createdAt, offer.tier, OFFERSTATE_ACCEPTEDEX);
 
-	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, time(nullptr), offer.tier, OFFERSTATE_ACCEPTED);
+	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, createdAt, offer.tier, OFFERSTATE_ACCEPTED);
 
 	offer.amount -= amount;
 
@@ -10706,34 +10761,130 @@ bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster) {
 	return false;
 }
 
-bool Game::addItemStoreInbox(const std::shared_ptr<Player> &player, uint32_t itemId) {
+bool Game::processHouseOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/) {
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
+		return false;
+	}
+
 	const auto &decoKit = Item::CreateItem(ITEM_DECORATION_KIT, 1);
 	if (!decoKit) {
 		return false;
 	}
+
 	const ItemType &itemType = Item::items[itemId];
 	std::string description = fmt::format("You bought this item in the Store.\nUnwrap it in your own house to create a <{}>.", itemType.name);
 	decoKit->setAttribute(ItemAttribute_t::DESCRIPTION, description);
 	decoKit->setCustomAttribute("unWrapId", static_cast<int64_t>(itemId));
 
-	const auto &thing = player->getThing(CONST_SLOT_STORE_INBOX);
-	if (!thing) {
+	if (charges > 0) {
+		decoKit->setAttribute(ItemAttribute_t::CHARGES, charges);
+		decoKit->setAttribute(ItemAttribute_t::DATE, charges);
+	}
+
+	decoKit->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+
+	if (internalAddItem(storeInbox, decoKit) != RETURNVALUE_NOERROR) {
 		return false;
 	}
 
-	const auto &inboxItem = thing->getItem();
-	if (!inboxItem) {
+	return true;
+}
+
+bool Game::processChargesOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t charges /* = 0*/, bool movable /* = false*/) {
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
 		return false;
 	}
 
-	const auto &inboxContainer = inboxItem->getContainer();
-	if (!inboxContainer) {
+	const auto &newItem = Item::CreateItem(itemId, 1);
+	if (!newItem) {
 		return false;
 	}
 
-	if (internalAddItem(inboxContainer, decoKit) != RETURNVALUE_NOERROR) {
-		inboxContainer->internalAddThing(decoKit);
+	if (charges > 0) {
+		newItem->setAttribute(ItemAttribute_t::CHARGES, charges);
 	}
+
+	if (!movable) {
+		newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+	}
+
+	newItem->setOwner(player);
+
+	auto ret = internalAddItem(storeInbox, newItem);
+	if (ret != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Game::processStackableOffer(const std::shared_ptr<Player> &player, uint32_t itemId, uint16_t amount /* = 1*/, bool movable /* = false*/) {
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
+		return false;
+	}
+
+	int32_t remainingAmount = amount;
+	do {
+		const auto amountToAdd = (remainingAmount >= 100) ? 100 : remainingAmount;
+		const auto &newItem = Item::CreateItem(itemId, amountToAdd);
+		if (!newItem) {
+			return false;
+		}
+
+		if (!movable) {
+			newItem->setAttribute(ItemAttribute_t::STORE, getTimeNow());
+		}
+
+		newItem->setOwner(player);
+
+		const auto ret = internalAddItem(storeInbox, newItem);
+		if (ret != RETURNVALUE_NOERROR) {
+			return false;
+		}
+		remainingAmount -= amountToAdd;
+	} while (remainingAmount > 0);
+
+	return true;
+}
+
+bool Game::processNameChangeOffer(const std::shared_ptr<Player> &player, std::string name) {
+	trimString(name);
+
+	auto isValidName = validateName(name);
+	if (isValidName != VALID) {
+		return false;
+	}
+
+	capitalizeWords(name);
+
+	if (g_monsters().getMonsterType(name, true)) {
+		return false;
+	} else if (getNpcByName(name)) {
+		return false;
+	}
+
+	DBResult_ptr result = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `name` = {}", g_database().escapeString(name)));
+	if (result) {
+		return false;
+	}
+
+	player->setNewName(name);
+
+	return true;
+}
+
+bool Game::processTempleOffer(const std::shared_ptr<Player> &player) {
+	if (!player->canLogout()) {
+		return false;
+	}
+
+	const auto &position = player->getTemplePosition();
+	playerTeleport(player->getID(), position);
+	addMagicEffect(position, CONST_ME_TELEPORT);
+	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have been teleported to your hometown.");
 
 	return true;
 }
@@ -10815,6 +10966,385 @@ void Game::playerRewardChestCollect(uint32_t playerId, const Position &pos, uint
 	if (returnValue != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(returnValue);
 	}
+}
+
+void Game::playerOpenStore(uint32_t playerId) {
+	std::shared_ptr<Player> player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
+	player->openStore();
+}
+
+void Game::playerCoinTransfer(uint32_t playerId, const std::string &receptorName, uint32_t coinAmount) {
+	const auto &playerDonator = getPlayerByID(playerId);
+	if (!playerDonator) {
+		return;
+	}
+
+	if (playerDonator->isUIExhausted(1000)) {
+		playerDonator->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	const auto &playerReceptor = getPlayerByName(receptorName, true);
+	if (!playerReceptor) {
+		return;
+	}
+
+	if (playerDonator == playerReceptor || playerDonator->getAccountId() == playerReceptor->getAccountId()) {
+		playerDonator->sendStoreError(StoreErrors_t::TRANSFER, "You cannot gift Tibia Coins to characters of your own account.");
+		return;
+	}
+
+	auto [transferableCoins, result] = playerDonator->getAccount()->getCoins(CoinType::Transferable);
+	if (coinAmount > transferableCoins) {
+		playerDonator->sendStoreError(StoreErrors_t::TRANSFER, "You don't have enough coins.");
+		return;
+	}
+
+	auto createdAt = getTimeNow();
+	std::string historyDesc = fmt::format("{} gifted to {}", playerDonator->getName(), playerReceptor->getName());
+	playerDonator->getAccount()->removeCoins(CoinType::Transferable, coinAmount, historyDesc);
+	playerReceptor->getAccount()->addCoins(CoinType::Transferable, coinAmount, historyDesc);
+
+	playerDonator->addStoreHistory(false, playerDonator->getName(), createdAt, coinAmount, StoreDetailType::Finished, MARKETACTION_SELL, historyDesc);
+	playerReceptor->addStoreHistory(false, playerReceptor->getName(), createdAt, coinAmount, StoreDetailType::Finished, MARKETACTION_BUY, historyDesc);
+	playerReceptor->sendCoinBalance();
+	playerDonator->openStore();
+	playerDonator->updateUIExhausted();
+}
+
+void Game::playerOpenStoreHistory(uint32_t playerId, uint32_t page) {
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
+	player->sendStoreHistory(page);
+}
+
+void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::string newName, uint8_t sexId) {
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (!offer) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	std::string errorMessage = "An error has occurred, please contact your administrator.";
+	bool success = false;
+	auto offerType = offer->getType();
+	switch (offerType) {
+		case OfferTypes_t::HOUSE: {
+			auto itemId = offer->getItemId();
+			auto offerAmount = offer->getCount();
+
+			success = processHouseOffer(player, itemId, offerAmount);
+			break;
+		}
+
+		case OfferTypes_t::CHARGES: {
+			auto itemId = offer->getItemId();
+			auto itemCharges = offer->getCount();
+			auto isMovable = offer->isMovable();
+
+			success = processChargesOffer(player, itemId, itemCharges, isMovable);
+			break;
+		}
+
+		case OfferTypes_t::ITEM:
+		case OfferTypes_t::STACKABLE: {
+			auto itemId = offer->getItemId();
+			auto itemAmount = offer->getCount();
+			auto isMovable = offer->isMovable();
+
+			success = processStackableOffer(player, itemId, itemAmount, isMovable);
+			break;
+		}
+
+		case OfferTypes_t::POUCH: {
+			auto itemId = offer->getItemId();
+			auto pouchStorageValue = player->getStorageValue(STORAGEVALUE_POUCH);
+
+			if (pouchStorageValue == 1) {
+				break;
+			}
+
+			player->addStorageValue(STORAGEVALUE_POUCH, 1);
+
+			success = processStackableOffer(player, itemId, false);
+			break;
+		}
+
+		case OfferTypes_t::OUTFIT: {
+			auto offerOutfitId = offer->getOutfitIds();
+			auto playerLookType = (player->getSex() == PLAYERSEX_FEMALE ? offerOutfitId.femaleId : offerOutfitId.maleId);
+			auto addons = playerLookType >= 962 && playerLookType <= 975 ? 0 : 3;
+
+			if (player->canWear(playerLookType, addons)) {
+				errorMessage = "You already own this outfit.";
+				break;
+			}
+
+			player->addOutfit(offerOutfitId.maleId, addons);
+			player->addOutfit(offerOutfitId.femaleId, addons);
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::MOUNT: {
+			auto mount = g_game().mounts->getMountByID(offer->getID());
+			if (!mount) {
+				break;
+			}
+
+			if (player->hasMount(mount)) {
+				errorMessage = "You already own this mount.";
+				break;
+			}
+
+			if (!player->tameMount(mount->id)) {
+				break;
+			}
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::NAMECHANGE: {
+			success = processNameChangeOffer(player, newName);
+			if (!success) {
+				errorMessage = "This name is not available.";
+			}
+			break;
+		}
+
+		case OfferTypes_t::SEXCHANGE: {
+			Outfit_t outfit = player->getCurrentOutfit();
+			if (player->getSex() == PLAYERSEX_FEMALE) {
+				player->setSex(PLAYERSEX_MALE);
+				outfit.lookType = 128;
+			} else {
+				player->setSex(PLAYERSEX_FEMALE);
+				outfit.lookType = 136;
+			}
+
+			outfit.lookAddons = 0;
+			playerChangeOutfit(playerId, outfit, player->getCurrentMount() != 0);
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::EXPBOOST: {
+			auto currentExpBoost = player->getXpBoostTime();
+			auto expBoostCount = player->getStorageValue(STORAGEVALUE_EXPBOOST);
+
+			player->setXpBoostPercent(50);
+			player->setXpBoostTime(currentExpBoost + 3600);
+
+			if (expBoostCount == -1 || expBoostCount == 6) {
+				expBoostCount = 1;
+			}
+
+			player->addStorageValue(STORAGEVALUE_EXPBOOST, expBoostCount + 1);
+			player->sendStats();
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::TEMPLE: {
+			success = processTempleOffer(player);
+			if (!success) {
+				errorMessage = "You cannot make this purchase as long as your characters has a logout block.";
+			}
+
+			break;
+		}
+
+		case OfferTypes_t::BLESSINGS: {
+			auto blessId = offer->getID();
+			if (!magic_enum::enum_contains<Blessings>(blessId)) {
+				g_logger().error("[{}] invalid blessing id: {}, for player: {}", __FUNCTION__, blessId, player->getName());
+				break;
+			}
+
+			player->addBlessing(blessId, offer->getCount());
+			player->sendBlessStatus();
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::ALLBLESSINGS: {
+			for (auto bless : magic_enum::enum_values<Blessings>()) {
+				player->addBlessing(enumToValue(bless), 1);
+			}
+
+			player->sendBlessStatus();
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::PREMIUM: {
+			auto premiumDaysLeft = player->getPremiumDays();
+			if (premiumDaysLeft > 65175) {
+				break;
+			}
+
+			int32_t premiumDays = static_cast<int32_t>(offer->getID()) - 3000;
+			player->getAccount()->addPremiumDays(premiumDays);
+			if (player->getAccount()->save() != AccountErrors_t::Ok) {
+				break;
+			}
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::PREYSLOT: {
+			const auto &thirdSlot = player->getPreySlotById(PreySlot_Three);
+
+			if (thirdSlot->state != PreyDataState_Locked) {
+				break;
+			}
+
+			thirdSlot->eraseBonus();
+			thirdSlot->state = PreyDataState_Selection;
+			thirdSlot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
+			player->reloadPreySlot(PreySlot_Three);
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::PREYBONUS: {
+			auto cardsAmount = offer->getCount();
+			if (player->getPreyCards() + cardsAmount >= g_configManager().getNumber(PREY_MAX_CARDS_AMOUNT)) {
+				break;
+			}
+
+			player->addPreyCards(cardsAmount);
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::CHARM_EXPANSION: {
+			if (player->hasCharmExpansion()) {
+				break;
+			}
+
+			player->setCharmExpansion(true);
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::HUNTINGSLOT: {
+			const auto &thirdSlot = player->getTaskHuntingSlotById(PreySlot_Three);
+
+			if (thirdSlot->state != PreyTaskDataState_Locked) {
+				break;
+			}
+
+			thirdSlot->eraseTask();
+			thirdSlot->reloadReward();
+			thirdSlot->state = PreyTaskDataState_Selection;
+			thirdSlot->reloadMonsterGrid(player->getTaskHuntingBlackList(), player->getLevel());
+			player->reloadTaskSlot(PreySlot_Three);
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::INSTANT_REWARD_ACCESS: {
+			auto offerInstantAmount = offer->getCount();
+			auto playerInstantAmount = static_cast<uint16_t>(player->getStorageValue(STORAGEVALUE_REWARD_ACCESS));
+
+			auto instantLimit = static_cast<uint16_t>(g_configManager().getNumber(INSTANT_DAILY_REWARD_ACCESS_AMOUNT));
+			if (playerInstantAmount + offerInstantAmount >= instantLimit) {
+				break;
+			}
+
+			player->addStorageValue(STORAGEVALUE_REWARD_ACCESS, playerInstantAmount + offerInstantAmount);
+
+			success = true;
+			break;
+		}
+
+		case OfferTypes_t::HIRELING:
+			g_logger().warn("HIRELING");
+			break;
+		case OfferTypes_t::HIRELING_NAMECHANGE:
+			g_logger().warn("HIRELING_NAMECHANGE");
+			break;
+		case OfferTypes_t::HIRELING_SEXCHANGE:
+			g_logger().warn("HIRELING_SEXCHANGE");
+			break;
+		case OfferTypes_t::HIRELING_SKILL:
+			g_logger().warn("HIRELING_SKILL");
+			break;
+		case OfferTypes_t::HIRELING_OUTFIT:
+			g_logger().warn("HIRELING_OUTFIT");
+			break;
+
+		default:
+			break;
+	}
+
+	if (success) {
+		uint32_t offerPrice = offer->getPrice();
+
+		if (offer->getType() == OfferTypes_t::EXPBOOST) {
+			offerPrice = calculateBoostPrice(player->getStorageValue(STORAGEVALUE_EXPBOOST) - 1);
+		}
+
+		std::string returnmessage;
+		if (offer->getType() == OfferTypes_t::NAMECHANGE) {
+			returnmessage = "Thank you for your purchase! To finalise the Character Name Change, please start your client anew. Note that you cannot enter houses or open doors anymore which are still labelled with your old character name until the responsible character invited you with your new name.";
+		} else {
+			returnmessage = fmt::format("You have purchased {} for {} coins.", offer->getName(), offerPrice);
+		}
+		auto result = player->getAccount()->removeCoins(CoinType::Transferable, offerPrice, returnmessage);
+		if (result == AccountErrors_t::RemoveCoins) {
+			player->sendStoreError(StoreErrors_t::PURCHASE, "You don't have enough coins.");
+			return;
+		}
+
+		player->sendStoreSuccess(returnmessage);
+
+		auto offerAmount = offer->getCount();
+		auto pricePerItem = offerPrice ? offerPrice / offerAmount : 0;
+		g_logger().trace("[{}] offer price {}, offer ammount {}, price per item {}", __FUNCTION__, offerPrice, offerAmount, pricePerItem);
+		player->addStoreHistory(false, player->getName(), getTimeNow(), offerPrice, StoreDetailType::Finished, MARKETACTION_SELL, offer->getName());
+	} else {
+		player->sendStoreError(StoreErrors_t::PURCHASE, errorMessage);
+	}
+
+	player->updateUIExhausted();
+	player->openStore();
 }
 
 bool Game::tryRetrieveStashItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) {

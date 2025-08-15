@@ -7,9 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
-#include "creatures/players/gamestore/player_store_detail.hpp"
+#include "creatures/players/components/player_gamestore_detail.hpp"
 
 #include "kv/kv.hpp"
 

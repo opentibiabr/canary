@@ -9287,7 +9287,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	uint64_t fee = std::clamp(totalFee, uint64_t(20), maxFee); // Limit between 20 and maxFee
 
-	uint64_t totalPrice = price * amount;
 	// Store the timestamp to ensure consistency across multiple calls, avoiding slight differences in time
 	auto createdAt = getTimeNow();
 	if (type == MARKETACTION_SELL) {
@@ -11152,7 +11151,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const Offer* offer, std::strin
 			}
 
 			outfit.lookAddons = 0;
-			playerChangeOutfit(playerId, outfit);
+			playerChangeOutfit(playerId, outfit, player->getCurrentMount() != 0);
 			success = true;
 			break;
 		}

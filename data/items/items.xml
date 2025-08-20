@@ -77168,6 +77168,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="loottype" value="tools"/>
 		<attribute key="weight" value="30"/>
 	</item>
+	<item id="47367" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
+	</item>
 	<item id="47368" article="an" name="amber slayer">
 		<attribute key="primarytype" value="sword weapons"/>
 		<attribute key="weaponType" value="sword"/>
@@ -77466,6 +77469,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
 		</attribute>
+	</item>
+	<item id="47379" article="a" name="large obelisk">
+		<attribute key="primarytype" value="pillars"/>
 	</item>
 	<item id="47381" article="an" name="orc warlord soul core">
 		<attribute key="primarytype" value="soul cores"/>
@@ -80964,11 +80970,248 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="Focalises the soul within a core. Can be used to turn a soul core into a greater version"/>
 		<attribute key="weight" value="100"/>
 	</item>
-	<item id="47367" article="a" name="large obelisk">
-		<attribute key="primarytype" value="pillars"/>
+	<item id="49161" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
 	</item>
-	<item id="47379" article="a" name="large obelisk">
-		<attribute key="primarytype" value="pillars"/>
+	<item id="49520" article="an" name="inferniarch bow">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="attack" value="7"/>
+		<attribute key="hitchance" value="5"/>
+		<attribute key="range" value="6"/>
+		<attribute key="weight" value="5600"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49522" article="an" name="inferniarch arbalest">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="bolt"/>
+		<attribute key="range" value="8"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="hitchance" value="6"/>
+		<attribute key="absorbpercentice" value="4"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="weight" value="4000"/>
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49523" article="an" name="inferniarch battleaxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="3"/>
+		<attribute key="weight" value="6700"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49524" article="an" name="inferniarch greataxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="4"/>
+		<attribute key="weight" value="8500"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49525" article="an" name="inferniarch flail">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementdeath" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillclub" value="3"/>
+		<attribute key="weight" value="6500"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49526" article="an" name="inferniarch warhammer">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementice" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillclub" value="4"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49527" article="an" name="inferniarch blade">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillsword" value="3"/>
+		<attribute key="weight" value="6400"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49528" article="an" name="inferniarch wand">
+		<attribute key="primarytype" value="wands"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="death"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2400"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="21"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="95"/>
+			<attribute key="toDamage" value="115"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="death"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49529" article="an" name="inferniarch rod">
+		<attribute key="primarytype" value="rods"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="earth"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="absorbpercentdeath" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="20"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="90"/>
+			<attribute key="toDamage" value="110"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="earth"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49530" article="an" name="inferniarch slayer">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementenergy" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillsword" value="4"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
 	</item>
 	<item id="49531" article="a" name="maliceforged helmet">
 		<attribute key="primarytype" value="helmets"/>
@@ -81059,5 +81302,1123 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="head"/>
 			<attribute key="vocation" value="Druid;true, Elder Druid"/>
 		</attribute>
+	</item>
+	<item id="49656" article="a" name="ramp"/>
+	<item id="49657" name="stone stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="49658" article="a" name="ramp"/>
+	<item id="49659" name="stone stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="49660" article="a" name="ramp"/>
+	<item id="49661" name="stone stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="49662" article="a" name="ramp"/>
+	<item id="49663" name="stone stairs">
+		<attribute key="primarytype" value="stairs"/>
+		<attribute key="floorchange" value="south"/>
+	</item>
+	<item id="49678" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49679" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49680" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49681" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49682" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="49683" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="49684" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49685" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49686" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49687" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="49688" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="49689" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="49858" article="a" name="rending inferniarch bow">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="attack" value="7"/>
+		<attribute key="hitchance" value="5"/>
+		<attribute key="range" value="6"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="weight" value="5600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49859" article="a" name="draining inferniarch bow">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="attack" value="7"/>
+		<attribute key="hitchance" value="5"/>
+		<attribute key="range" value="6"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="5600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49860" article="a" name="siphoning inferniarch bow">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="attack" value="7"/>
+		<attribute key="hitchance" value="5"/>
+		<attribute key="range" value="6"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="weight" value="5600"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49861" article="a" name="rending inferniarch arbalest">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="bolt"/>
+		<attribute key="range" value="6"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="hitchance" value="6"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="absorbpercentice" value="4"/>
+		<attribute key="weight" value="5900"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49862" article="a" name="draining inferniarch arbalest">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="bolt"/>
+		<attribute key="range" value="6"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="hitchance" value="6"/>
+		<attribute key="absorbpercentice" value="4"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="5900"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49863" article="a" name="siphoning inferniarch arbalest">
+		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="weaponType" value="distance"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="bolt"/>
+		<attribute key="range" value="6"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="hitchance" value="6"/>
+		<attribute key="absorbpercentice" value="4"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="5900"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="weaponType" value="distance"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="49864" article="a" name="rending inferniarch battleaxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="3"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="weight" value="6700"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49865" article="a" name="draining inferniarch battleaxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="3"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="6700"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49866" article="a" name="siphoning inferniarch battleaxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="3"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="6700"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49867" article="a" name="rending inferniarch greataxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="4"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="weight" value="8500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49868" article="a" name="draining inferniarch greataxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="4"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="8500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49869" article="a" name="siphoning inferniarch greataxe">
+		<attribute key="primarytype" value="axe weapons"/>
+		<attribute key="weaponType" value="axe"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillaxe" value="4"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="8500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="axe"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49870" article="a" name="rending inferniarch flail">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementdeath" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillclub" value="3"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="weight" value="6500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49871" article="a" name="draining inferniarch flail">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementdeath" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillclub" value="3"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="6500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49872" article="a" name="siphoning inferniarch flail">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementdeath" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillclub" value="3"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="6500"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49873" article="a" name="rending inferniarch warhammer">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementice" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillclub" value="4"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49874" article="a" name="draining inferniarch warhammer">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementice" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillclub" value="4"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49875" article="a" name="siphoning inferniarch warhammer">
+		<attribute key="primarytype" value="club weapons"/>
+		<attribute key="weaponType" value="club"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementice" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillclub" value="4"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="club"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49876" article="a" name="rending inferniarch blade">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillsword" value="3"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="weight" value="6400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49877" article="a" name="draining inferniarch blade">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillsword" value="3"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="6400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49878" article="a" name="siphoning inferniarch blade">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementfire" value="44"/>
+		<attribute key="defense" value="31"/>
+		<attribute key="extradef" value="3"/>
+		<attribute key="skillsword" value="3"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="6400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49879" article="a" name="rending inferniarch slayer">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementenergy" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillsword" value="4"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="49880" article="a" name="draining inferniarch slayer">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementenergy" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillsword" value="4"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="49881" article="a" name="siphoning inferniarch slayer">
+		<attribute key="primarytype" value="sword weapons"/>
+		<attribute key="weaponType" value="sword"/>
+		<attribute key="slotType" value="two-handed"/>
+		<attribute key="attack" value="8"/>
+		<attribute key="elementenergy" value="48"/>
+		<attribute key="defense" value="33"/>
+		<attribute key="extradef" value="4"/>
+		<attribute key="skillsword" value="4"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="weight" value="8600"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="weaponType" value="sword"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="49882" article="a" name="rending inferniarch wand">
+		<attribute key="primarytype" value="wands"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="death"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="21"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="95"/>
+			<attribute key="toDamage" value="115"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="death"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49883" article="a" name="draining inferniarch wand">
+		<attribute key="primarytype" value="wands"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="death"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="21"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="95"/>
+			<attribute key="toDamage" value="115"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="death"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49884" article="a" name="siphoning inferniarch wand">
+		<attribute key="primarytype" value="wands"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="death"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="firemagiclevelpoints" value="1"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="absorbpercentearth" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2400"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="21"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="95"/>
+			<attribute key="toDamage" value="115"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="death"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49885" article="a" name="rending inferniarch rod">
+		<attribute key="primarytype" value="rods"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="earth"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="criticalhitchance" value="1000"/>
+		<attribute key="criticalhitdamage" value="5800"/>
+		<attribute key="absorbpercentdeath" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="20"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="90"/>
+			<attribute key="toDamage" value="110"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="earth"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49886" article="a" name="draining inferniarch rod">
+		<attribute key="primarytype" value="rods"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="earth"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="lifeleechamount" value="2900"/>
+		<attribute key="absorbpercentdeath" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="20"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="90"/>
+			<attribute key="toDamage" value="110"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="earth"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49887" article="a" name="siphoning inferniarch rod">
+		<attribute key="primarytype" value="rods"/>
+		<attribute key="weaponType" value="wand"/>
+		<attribute key="shootType" value="earth"/>
+		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="earthmagiclevelpoints" value="1"/>
+		<attribute key="manaleechamount" value="1000"/>
+		<attribute key="absorbpercentdeath" value="5"/>
+		<attribute key="range" value="5"/>
+		<attribute key="weight" value="2200"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="300"/>
+			<attribute key="mana" value="20"/>
+			<attribute key="unproperly" value="true"/>
+			<attribute key="fromDamage" value="90"/>
+			<attribute key="toDamage" value="110"/>
+			<attribute key="weaponType" value="wand"/>
+			<attribute key="wandType" value="earth"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+			<attribute key="slot" value="hand"/>
+		</attribute>
+	</item>
+	<item id="49894" article="a" name="demonic matter">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="50"/>
+	</item>
+	<item id="49906" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="49908" article="a" name="mummified demon finger">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="120"/>
+	</item>
+	<item id="49909" article="a" name="demonic core essence">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="190"/>
+	</item>
+	<item id="49987" article="a" name="dead spellreaper inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="49988" article="a" name="dead spellreaper inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49987"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49989" article="a" name="dead spellreaper inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49988"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49990" article="a" name="dead spellreaper inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49989"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49991" article="a" name="dead hellhunter inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="49992" article="a" name="dead hellhunter inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49991"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49993" article="a" name="dead hellhunter inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49992"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49994" article="a" name="dead hellhunter inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49993"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49995" article="a" name="dead brinebrute inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="49996" article="a" name="dead brinebrute inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49995"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="49997" article="a" name="dead brinebrute inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49996"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49998" article="a" name="dead brinebrute inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49997"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="49999" article="a" name="dead sineater inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50000" article="a" name="dead sineater inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="49999"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50001" article="a" name="dead sineater inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50000"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50002" article="a" name="dead sineater inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50001"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50003" article="a" name="dead broodrider inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50004" article="a" name="dead broodrider inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50003"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50005" article="a" name="dead broodrider inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50004"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50006" article="a" name="dead broodrider inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50005"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50007" article="a" name="dead gorger inferniarch">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50008" article="a" name="dead gorger inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50007"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50009" article="a" name="dead gorger inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50008"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50010" article="a" name="dead gorger inferniarch">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50009"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50027" article="" name="remains of arbaziloth">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+	</item>
+	<item id="50028" article="" name="remains of arbaziloth">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50027"/>
+		<attribute key="duration" value="300"/>
+	</item>
+	<item id="50029" article="" name="remains of arbaziloth">
+		<attribute key="containerSize" value="15"/>
+		<attribute key="decayTo" value="50028"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidsource" value="blood"/>
+	</item>
+	<item id="50054" article="a" name="spellreaper staff totem">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="650"/>
+	</item>
+	<item id="50055" article="a" name="hellhunter eye">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="190"/>
+	</item>
+	<item id="50056" article="a" name="brinebrute claw">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="240"/>
+	</item>
+	<item id="50057" article="a" name="sineater wing">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="470"/>
+	</item>
+	<item id="50058" article="a" name="broodrider saddle">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="390"/>
+	</item>
+	<item id="50059" article="a" name="gorger antlers">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="630"/>
+	</item>
+	<item id="50060" article="" name="demon claws">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="240"/>
+	</item>
+	<item id="50061" article="a" name="demon skull">
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="320"/>
+	</item>
+	<item id="50064" article="a" name="demon in a green box">
+		<attribute key="primarytype" value="taming items"/>
+		<attribute key="description" value="A primal demonic mount it imprisoned in this box."/>
+		<attribute key="weight" value="200"/>
+	</item>
+	<item id="50067" article="an" name="arbaziloth shoulder piece">
+		<!-- <attribute key="primarytype" value="creature products"/> -->
+		<attribute key="primarytype" value="valuables"/>
+		<attribute key="weight" value="25"/>
+	</item>
+	<item id="50069" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50070" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50071" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50072" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50082" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50083" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50084" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50085" article="a" name="trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50101" article="a" name="bloodstained scythe">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="810"/>
+	</item>
+	<item id="50103" article="a" name="spellreaper inferniarch soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="50104" article="a" name="hellhunter inferniarch soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="50105" article="a" name="brinebrute inferniarch soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="50106" article="a" name="sineater inferniarch soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="50107" article="a" name="broodrider inferniarch soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="50108" article="a" name="gorger inferniarch soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="50121" article="a" name="water trapdoor">
+		<attribute key="primarytype" value="dropdowns"/>
+		<attribute key="floorchange" value="down"/>
+	</item>
+	<item id="50122" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
+	<item id="50123" article="a" name="ladder">
+		<attribute key="type" value="ladder"/>
+	</item>
+	<item id="50138" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="50281" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="50282" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="50283" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="50284" article="a" name="closed gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+		<attribute key="blockProjectile" value="1"/>
+	</item>
+	<item id="50285" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="50286" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="50287" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
+	</item>
+	<item id="50288" article="an" name="open gate">
+		<attribute key="primarytype" value="doors"/>
+		<attribute key="type" value="door"/>
 	</item>
 </items>

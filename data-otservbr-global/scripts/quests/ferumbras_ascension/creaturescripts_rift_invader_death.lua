@@ -23,15 +23,15 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 	for i = 1, #crystals do
 		local crystal = crystals[i]
 		if creature:getPosition():isInRange(crystal.fromPosition, crystal.toPosition) then
-			if lasthitkiller:getStorageValue(crystal.globalStorage) > 8 then
+			if Game.getStorageValue(crystal.globalStorage) > 8 then
 				local item = Tile(crystal.crystalPosition):getItemById(14955)
 				if not item then
 					return true
 				end
 				item:transform(14961)
-				lasthitkiller:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, lasthitkiller:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) + 1)
+				Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) + 1)
 			end
-			if lasthitkiller:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) == 8 then
+			if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) == 8 then
 				local creature = Tile(config.bossPos):getTopCreature()
 				creature:say("NOOOOOOOOOOO!", TALKTYPE_MONSTER_YELL)
 				creature:say("FERUMBRAS BURSTS INTO SOUL SPLINTERS!", TALKTYPE_MONSTER_YELL, nil, nil, Position(33392, 31475, 14))
@@ -42,7 +42,7 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 					Game.createMonster("Ferumbras Soul Splinter", Position(33392, 31473, 14), false, true)
 				end
 			end
-			lasthitkiller:setStorageValue(crystal.globalStorage, lasthitkiller:getStorageValue(crystal.globalStorage) + 1)
+			Game.setStorageValue(crystal.globalStorage, Game.getStorageValue(crystal.globalStorage) + 1)
 			lasthitkiller:say("The negative energy of the rift creature is absorbed by the crystal!", TALKTYPE_MONSTER_SAY, nil, nil, crystal.crystalPosition)
 			lasthitkiller:say("ARGH!", TALKTYPE_MONSTER_SAY, nil, nil, Position(33392, 31473, 14))
 		end

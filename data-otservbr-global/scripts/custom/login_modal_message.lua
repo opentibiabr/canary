@@ -1,5 +1,5 @@
 local config = {
-	enabled = true,
+	enabled = false,
 	storage = Storage.Custom.loginModal
 }
 
@@ -75,11 +75,14 @@ EnaraOT Development Team
 					-- menu:sendToPlayer(player)
 					--]]
 
-	if player:getStorageValue(config.storage) <= 0 then
-		player:popupFYI(text)
-		player:setStorageValue(config.storage, 1)
-	else
-		player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "[Patch Notes]: You have already seen the patch notes. For more information, please check the official website or forums. Happy Hunting!")
+	if config.enabled then
+		if player:getStorageValue(config.storage) <= 0 then
+			player:popupFYI(text)
+			player:setStorageValue(config.storage, 1)
+		else
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "[Patch Notes]: You have already seen the patch notes. For more information, please check the official website or forums. Happy Hunting!")
+		end
+		return true
 	end
 
 

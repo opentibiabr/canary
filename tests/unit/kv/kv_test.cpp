@@ -125,4 +125,15 @@ suite<"kv"> kvTest = [] {
 			  kv.remove("key2");
 			  expect(!kv.get("key2").has_value());
 		  };
+
+	test("Keys skip deleted entries")
+		= [&injectionFixture] {
+			  auto [kv] = injectionFixture.get<KVStore>();
+			  kv.set("key1", 1);
+			  kv.set("key2", 2);
+			  kv.remove("key1");
+			  auto keys = kv.keys();
+			  expect(!keys.contains("key1"));
+			  expect(keys.contains("key2"));
+		  };
 };

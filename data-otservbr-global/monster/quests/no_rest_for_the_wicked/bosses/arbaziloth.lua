@@ -187,4 +187,5 @@ mType.onAppear = function(monster, creature)
 		monster:setReward(true)
 	end
 end
+
 mType:register(monster)

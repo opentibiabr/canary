@@ -25,7 +25,11 @@ class PlayerFunctions {
 
 	static int luaPlayerUnlockAllCharmRunes(lua_State* L);
 	static int luaPlayerResetCharmsMonsters(lua_State* L);
-	static int luaPlayeraddCharmPoints(lua_State* L);
+	static int luaPlayerAddCharmPoints(lua_State* L);
+	static int luaPlayerAddMinorCharmEchoes(lua_State* L);
+	static int luaPlayerGetCharmTier(lua_State* L);
+	static int luaPlayerGetCharmChance(lua_State* L);
+	static int luaPlayerResetOldCharms(lua_State* L);
 	static int luaPlayerIsPlayer(lua_State* L);
 
 	static int luaPlayerGetGuid(lua_State* L);
@@ -155,10 +159,12 @@ class PlayerFunctions {
 	static int luaPlayerGetGroup(lua_State* L);
 	static int luaPlayerSetGroup(lua_State* L);
 
-	static int luaPlayerIsSupplyStashAvailable(lua_State* L);
+	static int luaPlayerIsStashAvailable(lua_State* L);
 	static int luaPlayerGetStashCounter(lua_State* L);
 	static int luaPlayerOpenStash(lua_State* L);
 	static int luaPlayerSetSpecialContainersAvailable(lua_State* L);
+
+	static int luaPlayerCanReceiveLoot(lua_State* L);
 
 	static int luaPlayerGetStamina(lua_State* L);
 	static int luaPlayerSetStamina(lua_State* L);
@@ -383,6 +389,15 @@ class PlayerFunctions {
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
+
+	static int luaPlayerAddAnimusMastery(lua_State* L);
+	static int luaPlayerRemoveAnimusMastery(lua_State* L);
+	static int luaPlayerHasAnimusMastery(lua_State* L);
+
+	static int luaPlayerGetMapShader(lua_State* L);
+	static int luaPlayerSetMapShader(lua_State* L);
+	static int luaPlayerAddCustomOutfit(lua_State* L);
+	static int luaPlayerRemoveCustomOutfit(lua_State* L);
 
 	friend class CreatureFunctions;
 };

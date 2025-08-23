@@ -240,6 +240,9 @@ void House::setAccessList(uint32_t listId, const std::string &textlist) {
 		const auto &door = getDoorByNumber(listId);
 		if (door) {
 			door->setAccessList(textlist);
+		} else {
+			// The door list is only loaded after the house items are loaded, so we need to save it here for later use
+			m_doorListId[listId] = textlist;
 		}
 
 		// We dont have kick anyone
@@ -411,6 +414,17 @@ bool House::getAccessList(uint32_t listId, std::string &list) const {
 	const auto &door = getDoorByNumber(listId);
 	if (!door) {
 		return false;
+	}
+
+	// Check if we have the list cached and set it to the door list
+	const auto it = m_doorListId.find(listId);
+	if (it != m_doorListId.end()) {
+		list = it->second;
+
+		// Set to the door and remove from cache
+		door->setAccessList(list);
+		m_doorListId.erase(it);
+		return true;
 	}
 
 	return door->getAccessList(list);

@@ -105,7 +105,7 @@ enum ConditionType_t : uint8_t {
 	CONDITION_DAZZLED = 22,
 	CONDITION_CURSED = 23,
 	CONDITION_EXHAUST_COMBAT = 24, // unused
-	CONDITION_EXHAUST_HEAL = 25, // unused
+	CONDITION_EXHAUST_HEAL = 25,
 	CONDITION_PACIFIED = 26,
 	CONDITION_SPELLCOOLDOWN = 27,
 	CONDITION_SPELLGROUPCOOLDOWN = 28,
@@ -116,6 +116,7 @@ enum ConditionType_t : uint8_t {
 	CONDITION_GREATERHEX = 33,
 	CONDITION_BAKRAGORE = 34,
 	CONDITION_GOSHNARTAINT = 35,
+	CONDITION_POWERLESS = 36,
 
 	// Need the last ever
 	CONDITION_COUNT
@@ -222,6 +223,7 @@ enum ConditionParam_t {
 	CONDITION_PARAM_INCREASE_MANADRAINPERCENT = 80,
 	CONDITION_PARAM_INCREASE_DROWNPERCENT = 81,
 	CONDITION_PARAM_CHARM_CHANCE_MODIFIER = 82,
+	CONDITION_PARAM_BUFF_HEALINGRECEIVED = 83,
 };
 
 enum stats_t {
@@ -284,13 +286,6 @@ enum CallBackParam_t {
 	CALLBACK_PARAM_CHAINPICKER,
 };
 
-enum charm_t {
-	CHARM_UNDEFINED = 0,
-	CHARM_OFFENSIVE = 1,
-	CHARM_DEFENSIVE = 2,
-	CHARM_PASSIVE = 3,
-};
-
 enum SpeechBubble_t {
 	SPEECHBUBBLE_NONE = 0,
 	SPEECHBUBBLE_NORMAL = 1,
@@ -346,6 +341,19 @@ enum Slots_t : uint8_t {
 	CONST_SLOT_LAST = CONST_SLOT_STORE_INBOX,
 };
 
+enum charmCategory_t {
+	CHARM_ALL = 0,
+	CHARM_MAJOR = 1,
+	CHARM_MINOR = 2,
+};
+
+enum charm_t {
+	CHARM_UNDEFINED = 0,
+	CHARM_OFFENSIVE = 1,
+	CHARM_DEFENSIVE = 2,
+	CHARM_PASSIVE = 3,
+};
+
 enum charmRune_t : int8_t {
 	CHARM_NONE = -1,
 	CHARM_WOUND = 0,
@@ -367,8 +375,12 @@ enum charmRune_t : int8_t {
 	CHARM_DIVINE = 16,
 	CHARM_VAMP = 17,
 	CHARM_VOID = 18,
-
-	CHARM_LAST = CHARM_VOID,
+	CHARM_SAVAGE = 19,
+	CHARM_FATAL = 20,
+	CHARM_VOIDINVERSION = 21,
+	CHARM_CARNAGE = 22,
+	CHARM_OVERPOWER = 23,
+	CHARM_OVERFLUX = 24,
 };
 
 enum ConditionId_t : int8_t {
@@ -450,6 +462,8 @@ enum RaceType_t : uint8_t {
 	RACE_FIRE,
 	RACE_ENERGY,
 	RACE_INK,
+	RACE_CHOCOLATE,
+	RACE_CANDY,
 };
 
 enum BlockType_t : uint8_t {
@@ -1332,6 +1346,7 @@ enum class CreatureIconModifications_t {
 	Influenced,
 	Fiendish,
 	ReducedHealth,
+	ReducedHealthExclamation,
 };
 
 enum class CreatureIconQuests_t {
@@ -1563,6 +1578,7 @@ struct CombatDamage {
 	bool extension = false;
 	std::string exString;
 	bool fatal = false;
+	bool hazardDodge = false;
 
 	int32_t criticalDamage = 0;
 	int32_t criticalChance = 0;
@@ -1579,6 +1595,10 @@ struct CombatDamage {
 	std::string runeSpellName;
 
 	CombatDamage() = default;
+
+	bool isEmpty() const {
+		return primary.type == COMBAT_NONE && primary.value == 0 && secondary.type == COMBAT_NONE && secondary.value == 0 && origin == ORIGIN_NONE && critical == false && affected == 1 && extension == false && exString.empty() && fatal == false && criticalDamage == 0 && criticalChance == 0 && damageMultiplier == 0 && damageReductionMultiplier == 0 && healingMultiplier == 0 && manaLeech == 0 && manaLeechChance == 0 && lifeLeech == 0 && lifeLeechChance == 0 && healingLink == 0 && instantSpellName.empty() && runeSpellName.empty();
+	}
 };
 
 struct RespawnType {
@@ -1667,6 +1687,10 @@ struct Outfit_t {
 	uint8_t lookMountLegs = 0;
 	uint8_t lookMountFeet = 0;
 	uint16_t lookFamiliarsType = 0;
+	uint16_t lookWing = 0;
+	uint16_t lookAura = 0;
+	uint16_t lookEffect = 0;
+	uint16_t lookShader = 0;
 };
 
 struct voiceBlock_t {

@@ -27,7 +27,6 @@ monster.manaCost = 0
 
 monster.events = {
 	"killingLibrary",
-	"oberonImmune",
 }
 
 monster.changeTarget = {

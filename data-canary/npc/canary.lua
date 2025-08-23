@@ -123,6 +123,25 @@ end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end
 
+-- Promotion
+local node1 = keywordHandler:addKeyword({ "promot" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "I can promote you for 20000 gold coins. Do you want me to promote you?",
+})
+node1:addChildKeyword({ "yes" }, StdModule.promotePlayer, {
+	npcHandler = npcHandler,
+	cost = 20000,
+	level = 20,
+	text = "Congratulations! You are now promoted.",
+})
+node1:addChildKeyword({ "no" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Alright then, come back when you are ready.",
+	reset = true,
+})
+
 -- Function called by the callback "npcHandler:setCallback(CALLBACK_GREET, greetCallback)" in end of file
 local function greetCallback(npc, player)
 	npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, you need more info about {canary}?")

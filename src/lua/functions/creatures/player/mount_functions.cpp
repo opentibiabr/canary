@@ -47,7 +47,7 @@ int MountFunctions::luaCreateMount(lua_State* L) {
 
 int MountFunctions::luaMountGetName(lua_State* L) {
 	// mount:getName()
-	const auto &mount = Lua::getUserdataShared<Mount>(L, 1);
+	const auto &mount = Lua::getUserdataShared<Mount>(L, 1, "Mount");
 	if (mount) {
 		Lua::pushString(L, mount->name);
 	} else {
@@ -59,7 +59,7 @@ int MountFunctions::luaMountGetName(lua_State* L) {
 
 int MountFunctions::luaMountGetId(lua_State* L) {
 	// mount:getId()
-	const auto &mount = Lua::getUserdataShared<Mount>(L, 1);
+	const auto &mount = Lua::getUserdataShared<Mount>(L, 1, "Mount");
 	if (mount) {
 		lua_pushnumber(L, mount->id);
 	} else {
@@ -71,7 +71,7 @@ int MountFunctions::luaMountGetId(lua_State* L) {
 
 int MountFunctions::luaMountGetClientId(lua_State* L) {
 	// mount:getClientId()
-	const auto &mount = Lua::getUserdataShared<Mount>(L, 1);
+	const auto &mount = Lua::getUserdataShared<Mount>(L, 1, "Mount");
 	if (mount) {
 		lua_pushnumber(L, mount->clientId);
 	} else {
@@ -83,7 +83,7 @@ int MountFunctions::luaMountGetClientId(lua_State* L) {
 
 int MountFunctions::luaMountGetSpeed(lua_State* L) {
 	// mount:getSpeed()
-	const auto &mount = Lua::getUserdataShared<Mount>(L, 1);
+	const auto &mount = Lua::getUserdataShared<Mount>(L, 1, "Mount");
 	if (mount) {
 		lua_pushnumber(L, mount->speed);
 	} else {

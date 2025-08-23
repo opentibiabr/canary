@@ -192,8 +192,11 @@ void Creature::onCreatureWalk() {
 
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 
-	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(getCreature()), this] {
-		if (!self.lock()) {
+	auto selfCreature = getCreature();
+
+	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(selfCreature), this] {
+		const auto &creatureEvent = self.lock();
+		if (!creatureEvent) {
 			return;
 		}
 
@@ -206,9 +209,9 @@ void Creature::onCreatureWalk() {
 			Direction dir;
 			uint32_t flags = FLAG_IGNOREFIELDDAMAGE;
 			if (getNextStep(dir, flags)) {
-				ReturnValue ret = g_game().internalMoveCreature(static_self_cast<Creature>(), dir, flags);
+				ReturnValue ret = g_game().internalMoveCreature(creatureEvent, dir, flags);
 				if (ret != RETURNVALUE_NOERROR) {
-					if (std::shared_ptr<Player> player = getPlayer()) {
+					if (const auto &player = getPlayer()) {
 						player->sendCancelMessage(ret);
 						player->sendCancelWalk();
 					}
@@ -510,6 +513,10 @@ void Creature::onDeath() {
 		lastHitCreature->deprecatedOnKilledCreature(thisCreature, true);
 		lastHitUnjustified = lastHitCreature->onKilledPlayer(thisPlayer, true);
 		lastHitCreatureMaster = lastHitCreature->getMaster();
+		if (getZoneType() == ZONE_PVP) {
+			setDropLoot(false);
+			setSkillLoss(false);
+		}
 	} else {
 		lastHitCreatureMaster = nullptr;
 	}
@@ -577,7 +584,7 @@ void Creature::onDeath() {
 			killer->onKilledMonster(thisMonster);
 		} else if (thisPlayer) {
 			bool isResponsible = mostDamageCreature == killer || (mostDamageCreatureMaster && mostDamageCreatureMaster == killer);
-			if (isResponsible) {
+			if (isResponsible && !lastHitUnjustified) {
 				killer->onKilledPlayer(thisPlayer, false);
 			}
 
@@ -669,6 +676,14 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_INK);
 				break;
 
+			case RACE_CHOCOLATE:
+				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_CHOCOLATE);
+				break;
+
+			case RACE_CANDY:
+				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_CANDY);
+				break;
+
 			default:
 				splash = nullptr;
 				break;
@@ -691,14 +706,13 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 			if (corpseContainer && player && !disallowedCorpses) {
 				const auto &monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
-					std::ostringstream lootMessage;
 					auto collorMessage = player->getProtocolVersion() > 1200;
-					lootMessage << "Loot of " << getNameDescription() << ": " << corpseContainer->getContentDescription(collorMessage) << ".";
 					auto suffix = corpseContainer->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
+					std::string lootMessage = fmt::format("Loot of {}: {}", getNameDescription(), corpseContainer->getContentDescription(collorMessage));
 					if (!suffix.empty()) {
-						lootMessage << suffix;
+						lootMessage = fmt::format("{} ({})", lootMessage, suffix);
 					}
-					player->sendLootMessage(lootMessage.str());
+					player->sendLootMessage(fmt::format("{}.", lootMessage));
 				}
 
 				FindPathParams fpp;
@@ -1154,6 +1168,10 @@ void Creature::onAttacked() {
 }
 
 void Creature::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {
+	if (!target || points <= 0) {
+		return;
+	}
+
 	target->addDamagePoints(static_self_cast<Creature>(), points);
 }
 
@@ -1371,6 +1389,30 @@ std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type, Conditio
 		}
 	}
 	return nullptr;
+}
+
+std::vector<std::shared_ptr<Condition>> Creature::getCleansableConditions() const {
+	std::vector<std::shared_ptr<Condition>> cleansableConditions;
+	for (const auto &condition : conditions) {
+		switch (condition->getType()) {
+			case CONDITION_POISON:
+			case CONDITION_FIRE:
+			case CONDITION_ENERGY:
+			case CONDITION_FREEZING:
+			case CONDITION_CURSED:
+			case CONDITION_DAZZLED:
+			case CONDITION_BLEEDING:
+			case CONDITION_PARALYZE:
+			case CONDITION_ROOTED:
+			case CONDITION_FEARED:
+				cleansableConditions.emplace_back(condition);
+				break;
+
+			default:
+				break;
+		}
+	}
+	return cleansableConditions;
 }
 
 std::vector<std::shared_ptr<Condition>> Creature::getConditionsByType(ConditionType_t type) const {
@@ -1885,4 +1927,30 @@ void Creature::safeCall(std::function<void(void)> &&action) const {
 	} else if (!isInternalRemoved) {
 		action();
 	}
+}
+
+void Creature::setCombatDamage(const CombatDamage &damage) {
+	m_combatDamage = damage;
+}
+
+CombatDamage Creature::getCombatDamage() const {
+	return m_combatDamage;
+}
+
+void Creature::attachEffectById(uint16_t id) {
+	auto it = std::ranges::find(attachedEffectList, id);
+	if (it != attachedEffectList.end()) {
+		return;
+	}
+	attachedEffectList.push_back(id);
+	g_game().sendAttachedEffect(static_self_cast<Creature>(), id);
+}
+
+void Creature::detachEffectById(uint16_t id) {
+	auto it = std::ranges::find(attachedEffectList, id);
+	if (it == attachedEffectList.end()) {
+		return;
+	}
+	attachedEffectList.erase(it);
+	g_game().sendDetachEffect(static_self_cast<Creature>(), id);
 }

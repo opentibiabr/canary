@@ -118,8 +118,11 @@ void ItemParse::parseType(const std::string &stringValue, pugi::xml_node attribu
 			if (itemType.type == ITEM_TYPE_DUMMY) {
 				parseDummyRate(attributeNode, itemType);
 			}
+		} else if (stringValue == "magicshieldpotion") {
+			g_logger().debug("[Items::parseType] - Item {} is a potion", itemType.id);
+			itemType.m_isMagicShieldPotion = true;
 		} else {
-			g_logger().warn("[Items::parseItemNode] - Unknown type: {}", valueAttribute.as_string());
+			g_logger().warn("[Items::parseType] - Unknown type: {}", valueAttribute.as_string());
 		}
 	}
 }
@@ -626,6 +629,8 @@ CombatType_t ItemParse::parseFieldCombatType(pugi::xml_attribute valueAttribute)
 		return COMBAT_DROWNDAMAGE;
 	} else if (lowerStringValue == "physical") {
 		return COMBAT_PHYSICALDAMAGE;
+	} else if (lowerStringValue == "agony") {
+		return COMBAT_AGONYDAMAGE;
 	} else {
 		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}

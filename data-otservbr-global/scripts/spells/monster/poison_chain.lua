@@ -7,7 +7,18 @@ function getChainValue(creature)
 	return 2, 3, false
 end
 
+function canChain(creature, target)
+	if target:isPlayer() then
+		if target:getPosition():isProtectionZoneTile() then
+			return false
+		end
+		return true
+	end
+	return false
+end
+
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")
+combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 local spell = Spell("instant")
 

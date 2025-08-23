@@ -119,6 +119,20 @@ public:
 		);
 	}
 
+	/**
+	 * @brief Executes an action wrapped in a std::function safely on the dispatcher thread.
+	 *
+	 * This method ensures that the given function is executed on the correct thread (the dispatcher thread).
+	 * If this method is called from a different thread, it will redirect execution to the dispatcher thread,
+	 * using appropriate mechanisms (such as message queues or event loops).
+	 * If called directly from the dispatcher thread, it will execute the function immediately.
+	 *
+	 * @param action The function wrapped in a std::function<void(void)> that should be executed.
+	 *
+	 * @note This method is useful in multi-threaded applications to avoid race conditions or thread context violations.
+	 */
+	void safeCall(std::function<void(void)> &&f);
+
 	[[nodiscard]] uint64_t getDispatcherCycle() const {
 		return dispatcherCycle;
 	}
@@ -143,6 +157,7 @@ private:
 	void init();
 	void shutdown() {
 		signalSchedule.notify_all();
+		shuttingDown = true;
 	}
 
 	inline void mergeAsyncEvents();
@@ -218,6 +233,8 @@ private:
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 
 	bool asyncWaitDisabled = false;
+
+	bool shuttingDown = false;
 
 	friend class CanaryServer;
 };

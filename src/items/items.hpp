@@ -104,6 +104,8 @@ public:
 	ItemType(ItemType &&other) noexcept = default;
 	ItemType &operator=(ItemType &&other) = default;
 
+	bool triggerExhaustion() const;
+
 	bool isGroundTile() const {
 		return group == ITEM_GROUP_GROUND;
 	}
@@ -200,6 +202,9 @@ public:
 	}
 	bool isLegs() const {
 		return slotPosition & SLOTP_LEGS;
+	}
+	bool isBoots() const {
+		return slotPosition & SLOTP_FEET;
 	}
 	bool isRanged() const {
 		return weaponType == WEAPON_DISTANCE && weaponType != WEAPON_NONE;
@@ -366,6 +371,7 @@ public:
 	bool spellbook = false;
 	bool isWrapKit = false;
 	bool m_canBeUsedByGuests = false;
+	bool m_isMagicShieldPotion = false;
 };
 
 class Items {
@@ -413,6 +419,10 @@ public:
 
 	size_t size() const {
 		return items.size();
+	}
+
+	std::vector<ItemType> &getItems() {
+		return items;
 	}
 
 	NameMap nameToItems;

@@ -67,10 +67,18 @@ local crystals = {
 }
 
 local function transformCrystal(player)
+	if type(player) ~= "userdata" or not player:isPlayer() then
+		print("[Error] transformCrystal: invalid player argument")
+		return
+	end
+
 	for c = 1, #crystals do
 		local crystal = crystals[c]
 		player:setStorageValue(crystal.globalStorage, 0)
+		Game.setStorageValue(crystal.globalStorage, 0)
 		player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, 0)
+		Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, 0)
+
 		local item = Tile(crystal.crystalPosition):getItemById(14961)
 		if item then
 			item:transform(14955)
@@ -110,22 +118,31 @@ function ascendantBossesKill.onDeath(creature)
 			local cooldownTime = bossConfig.cooldown * 3600
 			local nextAvailableTime = os.time() + cooldownTime
 			player:setStorageValue(bossConfig.storage, nextAvailableTime)
+
 			local cooldownMessage = formatCooldownMessage(bossConfig.cooldown)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have defeated " .. bossName .. ". You can challenge this boss again in " .. cooldownMessage .. ".")
 		end
 	end)
 
+	-- Handle teleport transformation
 	local teleport = Tile(bossConfig.teleportPos):getItemById(1949)
 	if teleport then
 		teleport:transform(22761)
 		teleport:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 		teleport:setDestination(bossConfig.godbreakerPos)
+
 		addEvent(revertTeleport, 1 * 60 * 1000, bossConfig.teleportPos, 22761, 1949, Position(33319, 32318, 13))
 	end
 
+	-- Special case for Ferumbras Mortal Shell
 	if creature:getName():lower() == "ferumbras mortal shell" then
 		onDeathForDamagingPlayers(creature, function(creature, player)
-			addEvent(transformCrystal, 2 * 60 * 1000, player)
+			addEvent(function(playerId)
+				local player = Player(playerId)
+				if player then
+					transformCrystal(player)
+				end
+			end, 2 * 60 * 1000, player:getId())
 		end)
 	end
 

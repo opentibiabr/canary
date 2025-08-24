@@ -31,7 +31,7 @@ local config = {
 				pos1:sendMagicEffect(CONST_ME_TELEPORT)
 			end, 20000)
 			return true
-		end
+		end,
 	},
 	timeToFightAgain = 20 * 60 * 60, -- 20 hours
 	requiredLevel = 250,

@@ -7234,9 +7234,6 @@ void Player::sendUnjustifiedPoints() {
 		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
 		uint8_t skullDuration = 0;
-		// if (getSkullTicks() != 0) {
-		//	skullDuration = std::floor<uint8_t>(getSkullTicks() / (24 * 60 * 60 * 1000));
-		// }else{
 		//  If player is still redskull but getSkullTicks is 0, calculate time left from last kill
 		if (getSkull() == SKULL_RED) {
 			auto &db = Database::getInstance();
@@ -7259,7 +7256,6 @@ void Player::sendUnjustifiedPoints() {
 		} else {
 			skullDuration = 0;
 		}
-		//}
 		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
 	}
 }

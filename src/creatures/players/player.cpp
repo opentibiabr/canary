@@ -7224,19 +7224,18 @@ void Player::sendUnjustifiedPoints() {
 			}
 		}
 
+		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
-	const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
-
-	auto dayMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-	auto weekMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-	auto monthMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+		auto dayMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+		auto weekMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+		auto monthMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
 		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
 		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
 		uint8_t skullDuration = 0;
-	//  If player is still redskull or blackskull but getSkullTicks is 0, calculate time left from last kill
-	if (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK) {
+		//  If player is still redskull or blackskull but getSkullTicks is 0, calculate time left from last kill
+		if (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK) {
 			auto &db = Database::getInstance();
 			std::ostringstream query;
 			query << "SELECT `time` FROM `player_kills` WHERE `player_id` = " << guid << " ORDER BY `time` DESC LIMIT 1;";

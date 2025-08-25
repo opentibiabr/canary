@@ -356,7 +356,9 @@ public:
 	void removePartyInvitation(const std::shared_ptr<Party> &party);
 	void clearPartyInvitations();
 
-	void sendUnjustifiedPoints() const;
+	void sendUnjustifiedPoints();
+
+	void sendOpenPvpSituations();
 
 	void sendOpenPvpSituations();
 

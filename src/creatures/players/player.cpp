@@ -6052,6 +6052,7 @@ void Player::onPlacedCreature() {
 	refreshSkullTicksFromLastKill();
 	sendOpenPvpSituations();
 	sendUnjustifiedPoints();
+	sendOpenPvpSituations();
 }
 
 void Player::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {
@@ -7249,7 +7250,7 @@ void Player::setBedItem(std::shared_ptr<BedItem> b) {
 	bedItem = std::move(b);
 }
 
-void Player::sendUnjustifiedPoints() const {
+void Player::sendUnjustifiedPoints() {
 	if (client) {
 		double dayKills = 0;
 		double weekKills = 0;
@@ -7279,6 +7280,12 @@ void Player::sendUnjustifiedPoints() const {
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
 		const auto info = computeSkullTimeFromLastKill();
 		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), info.remainingDays);
+	}
+}
+
+void Player::sendOpenPvpSituations() {
+	if (client) {
+		client->sendOpenPvpSituations(static_cast<uint8_t>(attackedSet.size()));
 	}
 }
 

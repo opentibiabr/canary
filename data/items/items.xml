@@ -76302,6 +76302,91 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="trophies"/>
 		<attribute key="weight" value="500"/>
 	</item>
+	<item id="44012" article="" name="remains of bakragore">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44013"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44013" article="" name="remains of bakragore">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44014"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44014" article="" name="remains of bakragore">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44015" article="" name="remains of murcion">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44016"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44016" article="" name="remains of murcion">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44017"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44017" article="" name="remains of murcion">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44018" article="" name="remains of ichgahal">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44019"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44019" article="" name="remains of ichgahal">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44020"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44020" article="" name="remains of ichgahal">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44021" article="" name="remains of vemiath">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44022"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44022" article="" name="remains of vemiath">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44023"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44023" article="" name="remains of vemiath">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44024" article="" name="remains of chagorz">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44025"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44025" article="" name="remains of chagorz">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44026"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44026" article="" name="remains of chagorz">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
 	<item id="44036" article="a" name="dead ayana the crimson curse">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="60"/>

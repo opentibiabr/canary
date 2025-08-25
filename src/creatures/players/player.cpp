@@ -7234,31 +7234,31 @@ void Player::sendUnjustifiedPoints() {
 		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
 		uint8_t skullDuration = 0;
-		//if (getSkullTicks() != 0) {
+		// if (getSkullTicks() != 0) {
 		//	skullDuration = std::floor<uint8_t>(getSkullTicks() / (24 * 60 * 60 * 1000));
-		//}else{
-			// If player is still redskull but getSkullTicks is 0, calculate time left from last kill
-			if (getSkull() == SKULL_RED) {
-				auto& db = Database::getInstance();
-				std::ostringstream query;
-				query << "SELECT `time` FROM `player_kills` WHERE `player_id` = " << guid << " ORDER BY `time` DESC LIMIT 1;";
-				DBResult_ptr result = db.storeQuery(query.str());
-				int64_t lastKillTime = 0;
-				if (result && result->hasNext()) {
-					lastKillTime = std::stoll(result->getString("time"));
-				}
-				// Current time in seconds
-				int64_t now = static_cast<int64_t>(time(nullptr));
-				int64_t elapsed = now - lastKillTime;
-				// RED_SKULL_DURATION is in days, convert to ms
-				int64_t redSkullDurationMs = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
-				int64_t remainingMs = redSkullDurationMs - (elapsed * 1000);
-				skullDuration = remainingMs > 0 ? std::floor<uint8_t>(remainingMs / (24 * 60 * 60 * 1000)) : 0;
-				// Set skullTicks to the remaining ms
-				setSkullTicks(remainingMs > 0 ? remainingMs : 0);
-			} else {
-				skullDuration = 0;
+		// }else{
+		//  If player is still redskull but getSkullTicks is 0, calculate time left from last kill
+		if (getSkull() == SKULL_RED) {
+			auto &db = Database::getInstance();
+			std::ostringstream query;
+			query << "SELECT `time` FROM `player_kills` WHERE `player_id` = " << guid << " ORDER BY `time` DESC LIMIT 1;";
+			DBResult_ptr result = db.storeQuery(query.str());
+			int64_t lastKillTime = 0;
+			if (result && result->hasNext()) {
+				lastKillTime = std::stoll(result->getString("time"));
 			}
+			// Current time in seconds
+			int64_t now = static_cast<int64_t>(time(nullptr));
+			int64_t elapsed = now - lastKillTime;
+			// RED_SKULL_DURATION is in days, convert to ms
+			int64_t redSkullDurationMs = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
+			int64_t remainingMs = redSkullDurationMs - (elapsed * 1000);
+			skullDuration = remainingMs > 0 ? std::floor<uint8_t>(remainingMs / (24 * 60 * 60 * 1000)) : 0;
+			// Set skullTicks to the remaining ms
+			setSkullTicks(remainingMs > 0 ? remainingMs : 0);
+		} else {
+			skullDuration = 0;
+		}
 		//}
 		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
 	}

@@ -7224,18 +7224,19 @@ void Player::sendUnjustifiedPoints() {
 			}
 		}
 
-		const bool isRed = getSkull() == SKULL_RED;
 
-		auto dayMax = ((isRed ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-		auto weekMax = ((isRed ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-		auto monthMax = ((isRed ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+	const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
+
+	auto dayMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+	auto weekMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+	auto monthMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
 		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
 		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
 		uint8_t skullDuration = 0;
-		//  If player is still redskull but getSkullTicks is 0, calculate time left from last kill
-		if (getSkull() == SKULL_RED) {
+	//  If player is still redskull or blackskull but getSkullTicks is 0, calculate time left from last kill
+	if (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK) {
 			auto &db = Database::getInstance();
 			std::ostringstream query;
 			query << "SELECT `time` FROM `player_kills` WHERE `player_id` = " << guid << " ORDER BY `time` DESC LIMIT 1;";
@@ -7247,9 +7248,14 @@ void Player::sendUnjustifiedPoints() {
 			// Current time in seconds
 			int64_t now = static_cast<int64_t>(time(nullptr));
 			int64_t elapsed = now - lastKillTime;
-			// RED_SKULL_DURATION is in days, convert to ms
-			int64_t redSkullDurationMs = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
-			int64_t remainingMs = redSkullDurationMs - (elapsed * 1000);
+			// Use appropriate duration variable for skull type
+			int64_t skullDurationMs = 0;
+			if (getSkull() == SKULL_BLACK) {
+				skullDurationMs = static_cast<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
+			} else {
+				skullDurationMs = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
+			}
+			int64_t remainingMs = skullDurationMs - (elapsed * 1000);
 			skullDuration = remainingMs > 0 ? std::floor<uint8_t>(remainingMs / (24 * 60 * 60 * 1000)) : 0;
 			// Set skullTicks to the remaining ms
 			setSkullTicks(remainingMs > 0 ? remainingMs : 0);

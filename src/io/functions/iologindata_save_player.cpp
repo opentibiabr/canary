@@ -14,6 +14,7 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "game/game.hpp"
+#include "io/io_store.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
@@ -179,10 +180,16 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		return db.executeQuery(query.str());
 	}
 
+	// Change Name Store
+	std::string playerName = player->getNewName();
+	if (playerName.empty()) {
+		playerName = player->getName();
+	}
+
 	// First, an UPDATE query to write the player itself
 	query.str("");
 	query << "UPDATE `players` SET ";
-	query << "`name` = " << db.escapeString(player->name) << ",";
+	query << "`name` = " << db.escapeString(playerName) << ",";
 	query << "`level` = " << player->level << ",";
 	query << "`group_id` = " << player->group->id << ",";
 	query << "`vocation` = " << player->getVocationId() << ",";
@@ -738,6 +745,46 @@ bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &play
 	if (!insertQuery.execute()) {
 		return false;
 	}
+	return true;
+}
+
+bool IOLoginDataSave::savePlayerStoreHistory(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		return false;
+	}
+
+	std::ostringstream query;
+	query << "DELETE FROM `store_history` WHERE `account_id` = " << player->getAccountId();
+	if (!Database::getInstance().executeQuery(query.str())) {
+		return false;
+	}
+
+	query.str("");
+	DBInsert insertQuery("INSERT INTO `store_history` (`account_id`, `description`, `coin_amount`, `coin_type`, `type`, `created_at`, `player_name`, `total_price`, `show_detail`) VALUES");
+	for (const auto &historyEntry : player->getStoreHistory()) {
+		const auto descriptionString = Database::getInstance().escapeString(historyEntry.description);
+		const auto playerNameString = Database::getInstance().escapeString(historyEntry.playerName);
+		// Append query informations
+		query << player->getAccountId() << ','
+			  << descriptionString << ','
+			  << historyEntry.coinAmount << ','
+			  << static_cast<uint16_t>(historyEntry.coinType) << ','
+			  << static_cast<uint16_t>(historyEntry.type) << ','
+			  << historyEntry.createdAt << ','
+			  << playerNameString << ','
+			  << historyEntry.totalPrice << ','
+			  << historyEntry.fromMarket;
+
+		if (!insertQuery.addRow(query)) {
+			return false;
+		}
+	}
+
+	if (!insertQuery.execute()) {
+		return false;
+	}
+
 	return true;
 }
 

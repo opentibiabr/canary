@@ -37,6 +37,15 @@ public:
 		const std::string &description
 	) override;
 
+	bool registerStoreTransaction(
+		const uint32_t &id,
+		CoinTransactionType type,
+		uint32_t amount,
+		CoinType coinType,
+		const std::string &description,
+		const time_t &time
+	) override;
+
 private:
 	std::unordered_map<CoinType, std::string> coinTypeToColumn {};
 

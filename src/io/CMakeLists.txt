@@ -4,6 +4,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     io_wheel.cpp
     iobestiary.cpp
     io_bosstiary.cpp
+    io_store.cpp
     ioguild.cpp
     iologindata.cpp
     functions/iologindata_load_player.cpp

@@ -30,7 +30,7 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Bulltaurs Lair.",
+	Locations = "Bulltaurs Lair",
 }
 
 monster.changeTarget = {

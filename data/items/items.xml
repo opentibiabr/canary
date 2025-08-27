@@ -76890,6 +76890,72 @@ Granted by TibiaGoals.com"/>
 		<attribute key="decayTo" value="44662"/>
 		<attribute key="containersize" value="10"/>
 	</item>
+	<item id="44664" article="a" name="dead mitmah scout">
+		<attribute key="duration" value="60"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="44665" article="a" name="dead mitmah scout">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44664"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44666" article="a" name="dead mitmah scout">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44665"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="44667" article="a" name="dead mitmah scout">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="44666"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="44668" article="a" name="dead mitmah seer">
+		<attribute key="duration" value="60"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="44669" article="a" name="dead mitmah seer">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44668"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44670" article="a" name="dead mitmah seer">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44669"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="44671" article="a" name="dead mitmah seer">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="44670"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="44684" article="" name="remains of mitmah vanguard">
+		<attribute key="duration" value="60"/>
+		<attribute key="decayTo" value="0"/>
+	</item>
+	<item id="44685" article="" name="remains of mitmah vanguard">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44684"/>
+		<attribute key="containersize" value="10"/>
+	</item>
+	<item id="44686" article="" name="remains of mitmah vanguard">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="decayTo" value="44685"/>
+		<attribute key="containersize" value="20"/>
+	</item>
+	<item id="44687" article="" name="remains of mitmah vanguard">
+		<attribute key="fluidsource" value="blood"/>
+		<attribute key="duration" value="10"/>
+		<attribute key="decayTo" value="44686"/>
+		<attribute key="containersize" value="20"/>
+	</item>
 	<item id="44706" article="a" name="dead bulltaur brute">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="60"/>
@@ -76904,6 +76970,12 @@ Granted by TibiaGoals.com"/>
 	<item id="44708" article="a" name="dead bulltaur brute">
 		<attribute key="containerSize" value="30"/>
 		<attribute key="decayTo" value="44707"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44709" article="a" name="dead bulltaur brute">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44708"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="fluidSource" value="blood"/>
 	</item>
@@ -76924,6 +76996,12 @@ Granted by TibiaGoals.com"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="fluidSource" value="blood"/>
 	</item>
+	<item id="44713" article="a" name="dead bulltaur alchemist">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44712"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
 	<item id="44714" article="a" name="dead bulltaur forgepriest">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="60"/>
@@ -76938,6 +77016,12 @@ Granted by TibiaGoals.com"/>
 	<item id="44716" article="a" name="dead bulltaur forgepriest">
 		<attribute key="containerSize" value="30"/>
 		<attribute key="decayTo" value="44715"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="44717" article="a" name="dead bulltaur forgepriest">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="44716"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="fluidSource" value="blood"/>
 	</item>
@@ -80303,6 +80387,144 @@ Granted by TibiaGoals.com"/>
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="food"/>
 		<attribute key="weight" value="20"/>
+	</item>
+	<item id="48274" article="a" name="dead quara looter">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48275" article="a" name="dead quara looter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48274"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48276" article="a" name="dead quara looter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48275"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48277" article="a" name="dead quara looter">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48276"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48386" article="a" name="dead quara plunderer">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48387" article="a" name="dead quara plunderer">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48386"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48388" article="a" name="dead quara plunderer">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48387"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48389" article="a" name="dead quara plunderer">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48388"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48390" article="a" name="dead quara raider">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48391" article="a" name="dead quara raider">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48390"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48392" article="a" name="dead quara raider">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48391"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48393" article="a" name="dead quara raider">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48392"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48394" article="a" name="dead rootthing nutshell">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48395" article="a" name="dead rootthing nutshell">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48394"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48396" article="a" name="dead rootthing nutshell">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48395"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48397" article="a" name="dead rootthing nutshell">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48396"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48399" article="a" name="dead rootthing amber shaper">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48400" article="a" name="dead rootthing amber shaper">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48399"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48401" article="a" name="dead rootthing amber shaper">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48400"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48402" article="a" name="dead rootthing amber shaper">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48401"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48403" article="a" name="dead rootthing bug tracker">
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="60"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48404" article="a" name="dead rootthing bug tracker">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48403"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48405" article="a" name="dead rootthing bug tracker">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48404"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
+	</item>
+	<item id="48406" article="a" name="dead rootthing bug tracker">
+		<attribute key="containerSize" value="30"/>
+		<attribute key="decayTo" value="48405"/>
+		<attribute key="duration" value="300"/>
+		<attribute key="fluidSource" value="blood"/>
 	</item>
 	<item id="48413" article="an" name="amber sickle">
 		<attribute key="primarytype" value="other items"/>

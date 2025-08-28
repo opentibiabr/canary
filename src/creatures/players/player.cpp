@@ -4605,7 +4605,7 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 			std::shared_ptr<Container> tmpContainer = containers[i++];
 			if (!autoStack || !isStackable) {
 				const uint32_t containerCapacity = tmpContainer->capacity();
-				const uint32_t containerSize  = tmpContainer->size();
+				const uint32_t containerSize = tmpContainer->size();
 
 				// Avoid underflow in the loop below
 				if (containerSize >= containerCapacity) {

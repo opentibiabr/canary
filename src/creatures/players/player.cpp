@@ -23,6 +23,7 @@
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
@@ -74,7 +75,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
 	m_animusMastery(*this),
-	m_playerAttachedEffects(*this) { }
+	m_playerAttachedEffects(*this),
+	m_forgeHistoryPlayer(*this) { }
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -10280,14 +10282,6 @@ uint64_t Player::getForgeDustLevel() const {
 	return forgeDustLevel;
 }
 
-std::vector<ForgeHistory> &Player::getForgeHistory() {
-	return forgeHistoryVector;
-}
-
-void Player::setForgeHistory(const ForgeHistory &history) {
-	forgeHistoryVector.emplace_back(history);
-}
-
 void Player::registerForgeHistoryDescription(ForgeHistory history) {
 	std::string successfulString = history.success ? "Successful" : "Unsuccessful";
 	std::string historyTierString = history.tier > 0 ? "tier - 1" : "consumed";
@@ -10438,7 +10432,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 
 	history.description = detailsResponse.str();
 
-	setForgeHistory(history);
+	forgeHistory().add(history);
 }
 
 // Quickloot
@@ -11155,6 +11149,15 @@ PlayerCyclopedia &Player::cyclopedia() {
 
 const PlayerCyclopedia &Player::cyclopedia() const {
 	return m_playerCyclopedia;
+}
+
+// Forge history interface
+PlayerForgeHistory &Player::forgeHistory() {
+	return m_forgeHistoryPlayer;
+}
+
+const PlayerForgeHistory &Player::forgeHistory() const {
+	return m_forgeHistoryPlayer;
 }
 
 // VIP interface

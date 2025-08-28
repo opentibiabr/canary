@@ -1061,7 +1061,7 @@ public:
 
 	void addItemImbuementStats(const Imbuement* imbuement);
 	void removeItemImbuementStats(const Imbuement* imbuement);
-	void updateImbuementTrackerStats() const;
+	void updateImbuementTrackerStats(bool force = false) const;
 
 	// User Interface action exhaustion
 	bool isUIExhausted(uint32_t exhaustionTime = 250) const;
@@ -1529,6 +1529,8 @@ private:
 	uint32_t capacity = 40000;
 	uint32_t bonusCapacity = 0;
 
+	mutable uint64_t m_lastImbuementTrackerUpdate = 0; // rate limit state
+
 	std::bitset<CombatType_t::COMBAT_COUNT> m_damageImmunities;
 	std::bitset<ConditionType_t::CONDITION_COUNT> m_conditionImmunities;
 	std::array<uint8_t, ConditionType_t::CONDITION_COUNT> m_conditionSuppressionCount {};
@@ -1696,6 +1698,7 @@ private:
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend struct PlayerImbuementTrackerStatsTestAccess;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;

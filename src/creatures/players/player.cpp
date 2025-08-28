@@ -954,7 +954,7 @@ void Player::updateInventoryImbuement() {
 			// If the imbuement's duration is 0, remove its stats and continue to the next slot
 			if (imbuementInfo.duration == 0) {
 				removeItemImbuementStats(imbuement);
-				updateImbuementTrackerStats();
+				updateImbuementTrackerStats(true);
 				continue;
 			}
 
@@ -966,7 +966,7 @@ void Player::updateInventoryImbuement() {
 
 			if (duration == 0) {
 				removeItemImbuementStats(imbuement);
-				updateImbuementTrackerStats();
+				updateImbuementTrackerStats(true);
 			}
 		}
 	}
@@ -3125,10 +3125,19 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 }
 
-void Player::updateImbuementTrackerStats() const {
-	if (imbuementTrackerWindowOpen) {
-		g_game().playerRequestInventoryImbuements(getID(), true);
+void Player::updateImbuementTrackerStats(bool force /*= false*/) const {
+	if (!imbuementTrackerWindowOpen) {
+		return;
 	}
+
+	const uint64_t now = OTSYS_TIME();
+	if (!force && (now - m_lastImbuementTrackerUpdate) < 1000) {
+		return;
+	}
+
+	m_lastImbuementTrackerUpdate = now;
+	// Notify imbuement tracker with a maximum frequency of once per second
+	g_game().playerRequestInventoryImbuements(getID(), true);
 }
 
 // User Interface action exhaustion
@@ -7973,6 +7982,9 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 	if (link == LINK_OWNER) {
 		// calling movement scripts
 		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index), false);
+		if (const auto &item = thing->getItem(); item && item->hasImbuements()) {
+			updateImbuementTrackerStats();
+		}
 	}
 
 	bool requireListUpdate = true;
@@ -8033,6 +8045,9 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 	if (link == LINK_OWNER) {
 		if (const auto &item = copyThing->getItem()) {
 			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(index));
+			if (item->hasImbuements()) {
+				updateImbuementTrackerStats();
+			}
 		}
 	}
 	bool requireListUpdate = true;

@@ -548,7 +548,6 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 	player->setItemAbility(slot, true);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-		player->updateImbuementTrackerStats();
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 			continue;
@@ -646,7 +645,6 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 	player->setItemAbility(slot, false);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-		player->updateImbuementTrackerStats();
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 			continue;

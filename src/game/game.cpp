@@ -10018,16 +10018,8 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 	std::map<Slots_t, std::shared_ptr<Item>> itemsWithImbueSlotMap;
 	for (uint8_t inventorySlot = CONST_SLOT_FIRST; inventorySlot <= CONST_SLOT_LAST; ++inventorySlot) {
 		const auto &item = player->getInventoryItem(static_cast<Slots_t>(inventorySlot));
-		if (!item) {
+		if (!item || !item->hasImbuements()) {
 			continue;
-		}
-
-		uint8_t imbuementSlot = item->getImbuementSlot();
-		for (uint8_t slot = 0; slot < imbuementSlot; slot++) {
-			ImbuementInfo imbuementInfo;
-			if (!item->getImbuementInfo(slot, &imbuementInfo)) {
-				continue;
-			}
 		}
 
 		itemsWithImbueSlotMap[static_cast<Slots_t>(inventorySlot)] = item;

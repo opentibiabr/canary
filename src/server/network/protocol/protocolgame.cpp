@@ -8887,7 +8887,7 @@ void ProtocolGame::parseInventoryImbuements(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items) {
-	if (oldProtocol) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

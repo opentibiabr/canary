@@ -24,6 +24,11 @@ struct EventRates {
 	uint32_t bosslootrate = 100;
 	uint32_t spawnrate = 100;
 	uint16_t skillrate = 100;
+	uint8_t forgeChance = 100;
+	uint8_t bosscooldown = 100;
+	bool doubleBestiary {};
+	bool doubleBossTiary {};
+	bool fastExercise {};
 };
 
 class EventsScheduler {
@@ -37,6 +42,8 @@ public:
 	static EventsScheduler &getInstance() {
 		return inject<EventsScheduler>();
 	}
+
+	bool loadScheduleEventFromJson();
 
 	// Event schedule xml load
 	bool loadScheduleEventFromXml();

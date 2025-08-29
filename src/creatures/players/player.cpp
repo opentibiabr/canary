@@ -4604,16 +4604,21 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		while (i < containers.size()) {
 			std::shared_ptr<Container> tmpContainer = containers[i++];
 			if (!autoStack || !isStackable) {
-				// we need to find first empty container as fast as we can for non-stackable items
-				uint32_t n = tmpContainer->capacity() - tmpContainer->size();
-				while (n) {
-					if (tmpContainer->queryAdd(tmpContainer->capacity() - n, item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) {
-						index = tmpContainer->capacity() - n;
+				const uint32_t containerCapacity = tmpContainer->capacity();
+				const uint32_t containerSize = tmpContainer->size();
+
+				// Avoid underflow in the loop below
+				if (containerSize >= containerCapacity) {
+					continue;
+				}
+
+				for (uint32_t pos = 0; pos < containerCapacity; ++pos) {
+					auto rv = tmpContainer->queryAdd(pos, item, item->getItemCount(), flags);
+					if (rv == RETURNVALUE_NOERROR) {
+						index = pos;
 						destItem = nullptr;
 						return tmpContainer;
 					}
-
-					n--;
 				}
 
 				for (const auto &tmpContainerItem : tmpContainer->getItemList()) {

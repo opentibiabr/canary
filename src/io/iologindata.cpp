@@ -189,6 +189,7 @@ void IOLoginData::loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &pla
 	IOLoginDataLoad::loadPlayerBosstiary(player, result);
 	IOLoginDataLoad::loadPlayerInitializeSystem(player);
 	IOLoginDataLoad::loadPlayerUpdateSystem(player);
+	IOLoginDataLoad::loadPlayerStoreHistory(player, result);
 }
 
 bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
@@ -272,6 +273,10 @@ void IOLoginData::saveOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &pla
 
 	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
+	}
+
+	if (!IOLoginDataSave::savePlayerStoreHistory(player)) {
+		throw DatabaseException("[IOLoginDataSave::savePlayerStoreHistory] - Failed to save player store history: " + player->getName());
 	}
 
 	if (!IOLoginDataSave::savePlayerBosstiary(player)) {

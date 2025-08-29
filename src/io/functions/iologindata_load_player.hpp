@@ -41,6 +41,7 @@ public:
 	static void loadPlayerPreyClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result);
+	static void loadPlayerStoreHistory(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerBosstiary(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInitializeSystem(const std::shared_ptr<Player> &player);
 	static void loadPlayerUpdateSystem(const std::shared_ptr<Player> &player);

@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS `forge_history` (
     `gained` bigint UNSIGNED NOT NULL DEFAULT '0',
     CONSTRAINT `forge_history_pk` PRIMARY KEY (`id`),
     FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE,
-    UNIQUE KEY `unique_done_at` (`done_at`),
+    UNIQUE KEY `unique_done_at` (`done_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `global_storage`

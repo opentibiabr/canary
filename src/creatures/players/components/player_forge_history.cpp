@@ -28,10 +28,9 @@ void PlayerForgeHistory::add(const ForgeHistory &history) {
 
 void PlayerForgeHistory::remove(int historyId) {
 	m_removedHistoryIds.push_back(historyId);
-	m_history.erase(
-		std::remove_if(m_history.begin(), m_history.end(), [historyId](const ForgeHistory &h) { return h.id == historyId; }),
-		m_history.end()
-	);
+	std::erase_if(m_history, [historyId](const ForgeHistory &h) {
+		return h.id == historyId;
+	});
 }
 
 bool PlayerForgeHistory::load() {

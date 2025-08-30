@@ -10,6 +10,7 @@
 #include "creatures/interactions/chat.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"

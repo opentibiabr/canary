@@ -13,7 +13,6 @@ class Creature;
 class Player;
 class Monster;
 class Npc;
-struct Position;
 
 // Forward declaration para CreatureVector
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;

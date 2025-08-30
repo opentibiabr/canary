@@ -407,7 +407,7 @@ bool Container::isInsideContainerWithId(const uint16_t id) {
 }
 
 bool Container::isAnyKindOfRewardChest() {
-	return getID() == ITEM_REWARD_CHEST || (getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST) || isBrowseFieldAndHoldsRewardChest();
+	return (getID() == ITEM_REWARD_CHEST) || (getID() == ITEM_REWARD_CONTAINER && getParent() && getParent()->getContainer() && getParent()->getContainer()->getID() == ITEM_REWARD_CHEST) || isBrowseFieldAndHoldsRewardChest();
 }
 
 bool Container::isAnyKindOfRewardContainer() {
@@ -513,11 +513,31 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 		}
 	}
 
-	std::shared_ptr<Cylinder> cylinder = getParent();
-	const auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
-	while (cylinder) {
-		if (cylinder == addThing) {
-			return RETURNVALUE_THISISIMPOSSIBLE;
+	auto noLimit = hasBitSet(FLAG_NOLIMIT, flags);
+
+	// Replaces the visitedCylinders + while block
+	{
+		// Floyd cycle detection, O(1) memory
+		auto slow = getParent();
+		auto fast = getParent();
+
+		auto getNext = [](const std::shared_ptr<Cylinder> &cylinder) -> std::shared_ptr<Cylinder> {
+			return cylinder ? cylinder->getParent() : nullptr;
+		};
+
+		while (fast && getNext(fast)) {
+			slow = getNext(slow);
+			fast = getNext(getNext(fast));
+			if (slow && fast && slow.get() == fast.get()) {
+				const auto thingItem = addThing ? addThing->getItem() : nullptr;
+				g_logger().error(
+					"Container::queryAdd: cycle detected. actor={}, thisCID={}, addThingItemId={}",
+					actor ? actor->getName() : "NONE",
+					getID(),
+					thingItem ? thingItem->getID() : 0
+				);
+				return RETURNVALUE_NOTPOSSIBLE;
+			}
 		}
 		const std::shared_ptr<Container> &container = cylinder->getContainer();
 		if (!noLimit && container && container->isInbox()) {
@@ -533,6 +553,21 @@ ReturnValue Container::queryAdd(int32_t addIndex, const std::shared_ptr<Thing> &
 
 	if (!noLimit && addIndex == INDEX_WHEREEVER && size() >= capacity() && !hasPagination()) {
 		return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+	}
+
+	// Upping the parent chain to check for inboxes and cycles
+	for (auto parentCylinder = getParent(); parentCylinder;) {
+		if (!noLimit) {
+			if (auto cont = parentCylinder->getContainer(); cont && cont->isInbox()) {
+				return RETURNVALUE_CONTAINERNOTENOUGHROOM;
+			}
+		}
+		auto parent = parentCylinder->getParent();
+		if (parent.get() == parentCylinder.get()) {
+			g_logger().error("Container::queryAdd: parent == cylinder. Preventing infinite loop. thisCID={}", getID());
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+		parentCylinder = parent;
 	}
 
 	if (const auto &topParentContainer = getTopParentContainer()) {

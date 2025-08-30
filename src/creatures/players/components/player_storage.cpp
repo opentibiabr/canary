@@ -170,7 +170,7 @@ bool PlayerStorage::load() {
 }
 
 void PlayerStorage::getReservedRange() {
-	auto upsertKey = [&](uint32_t k, int32_t v){
+	auto upsertKey = [&](uint32_t k, int32_t v) {
 		auto it = m_storageMap.find(k);
 		if (it == m_storageMap.end() || it->second != v) {
 			m_storageMap[k] = v;

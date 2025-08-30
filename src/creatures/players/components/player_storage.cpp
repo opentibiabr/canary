@@ -26,7 +26,7 @@
 #endif
 
 namespace {
-	static constexpr std::array<std::pair<uint32_t, uint32_t>, 5> kPassThroughRanges { {
+	constexpr std::array<std::pair<uint32_t, uint32_t>, 5> kPassThroughRanges { {
 		{ PSTRG_MOUNTS_RANGE_START, PSTRG_MOUNTS_RANGE_SIZE },
 		{ PSTRG_WING_RANGE_START, PSTRG_WING_RANGE_SIZE },
 		{ PSTRG_EFFECT_RANGE_START, PSTRG_EFFECT_RANGE_SIZE },
@@ -96,7 +96,7 @@ int32_t PlayerStorage::get(const uint32_t key) const {
 }
 
 bool PlayerStorage::has(uint32_t key) const {
-	return m_storageMap.find(key) != m_storageMap.end();
+	return m_storageMap.contains(key);
 }
 
 bool PlayerStorage::remove(const uint32_t key) {

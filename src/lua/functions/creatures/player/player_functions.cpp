@@ -2197,7 +2197,7 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	const int32_t value = Lua::getNumber<int32_t>(L, 3);
 	const uint32_t key = Lua::getNumber<uint32_t>(L, 2);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (IS_IN_KEYRANGE(key, RESERVED_RANGE)) {
+	if (isStorageKeyInRange(key, PSTRG_RESERVED_RANGE_START, PSTRG_RESERVED_RANGE_SIZE)) {
 		std::ostringstream ss;
 		ss << "Accessing reserved range: " << key;
 		Lua::reportErrorFunc(ss.str());

@@ -13,6 +13,8 @@
 
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/player_storage.hpp"
+#include "creatures/appearance/outfit/outfit.hpp"
+#include "creatures/players/grouping/familiars.hpp"
 #include "utils/const.hpp"
 
 using namespace boost::ut;
@@ -77,32 +79,36 @@ suite<"player_storage"> playerStorageTests = [] {
 		}
 	};
 
-	test("outfits side-effect only (no persistence)") = [] {
+	test("outfits side-effect only via public API (canWear)") = [] {
 		Player player{nullptr};
 		auto& s = player.storage();
 
-		const auto beforeOutfits = player.outfits.size();
+		const auto beforeOutfits = player.getOutfits().size();
 		const uint32_t key = PSTRG_OUTFITS_RANGE_START + 1;
 		const uint32_t lookType = 50u;
 		const uint8_t addons = 3u;
 
+		// add into reserved outfit range
 		s.add(key, (lookType << 16) | addons, /*shouldStorageUpdate=*/true);
 
-		expect(eq(player.outfits.size(), beforeOutfits + 1));
+		expect(eq(player.getOutfits().size(), beforeOutfits + 1));
 		expect(eq(s.getStorageMap().size(), std::size_t { 0 }));
+
+		// side-effect visible through public API
+		expect(player.canWear(lookType, addons));
 	};
 
-	test("familiars side-effect only (no persistence)") = [] {
+	test("familiars side-effect does not persist storage entry") = [] {
 		Player player{nullptr};
 		auto& s = player.storage();
 
-		const auto before = player.familiars.size();
+		const auto before = player.getFamiliars().size();
 		const uint32_t key = PSTRG_FAMILIARS_RANGE_START + 1;
 		const uint32_t lookType = 77u;
 
 		s.add(key, (lookType << 16), /*shouldStorageUpdate=*/true);
 
-		expect(eq(player.familiars.size(), before + 1));
+		expect(eq(player.getFamiliars().size(), before + 1));
 		expect(eq(s.getStorageMap().size(), std::size_t { 0 }));
 	};
 

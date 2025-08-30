@@ -1354,6 +1354,14 @@ public:
 	bool isFirstOnStack() const;
 	void resetOldCharms();
 
+	const auto &getOutfits() const {
+		return outfits;
+	}
+
+	const auto &getFamiliars() const {
+		return familiars;
+	}
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;

@@ -26,16 +26,16 @@
 #endif
 
 namespace {
-	static constexpr std::array<std::pair<uint32_t,uint32_t>,5> kPassThroughRanges{{
-		{PSTRG_MOUNTS_RANGE_START, PSTRG_MOUNTS_RANGE_SIZE},
-		{PSTRG_WING_RANGE_START, PSTRG_WING_RANGE_SIZE},
-		{PSTRG_EFFECT_RANGE_START, PSTRG_EFFECT_RANGE_SIZE},
-		{PSTRG_AURA_RANGE_START, PSTRG_AURA_RANGE_SIZE},
-		{PSTRG_SHADER_RANGE_START, PSTRG_SHADER_RANGE_SIZE},
-	}};
+	static constexpr std::array<std::pair<uint32_t, uint32_t>, 5> kPassThroughRanges { {
+		{ PSTRG_MOUNTS_RANGE_START, PSTRG_MOUNTS_RANGE_SIZE },
+		{ PSTRG_WING_RANGE_START, PSTRG_WING_RANGE_SIZE },
+		{ PSTRG_EFFECT_RANGE_START, PSTRG_EFFECT_RANGE_SIZE },
+		{ PSTRG_AURA_RANGE_START, PSTRG_AURA_RANGE_SIZE },
+		{ PSTRG_SHADER_RANGE_START, PSTRG_SHADER_RANGE_SIZE },
+	} };
 
 	inline bool isInPassThrough(uint32_t key) {
-		return std::ranges::any_of(kPassThroughRanges, [key](const auto &r){
+		return std::ranges::any_of(kPassThroughRanges, [key](const auto &r) {
 			auto [rangeStart, rangeSize] = r;
 			return isStorageKeyInRange(key, rangeStart, rangeSize);
 		});

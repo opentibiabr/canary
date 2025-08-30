@@ -111,6 +111,18 @@ private:
 	void getReservedRange();
 
 	/**
+	 * @brief Inserts or updates a storage key if value differs.
+	 *
+	 * - Creates the key if missing.
+	 * - Updates it if the value changed.
+	 * - Marks the key as modified for the next save.
+	 *
+	 * @param k Storage key.
+	 * @param v Value to assign.
+	 */
+	void upsertKey(uint32_t key, int32_t value);
+
+	/**
 	 * @brief Reference to the Player owning this storage manager.
 	 *
 	 * No ownership is implied. Assumes the Player's lifetime outlives

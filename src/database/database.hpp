@@ -141,6 +141,11 @@ public:
 				else if constexpr (std::is_same_v<T, int64_t>) {
 					// Use std::stoll to convert string to int64_t
 					data = static_cast<T>(std::stoll(row[it->second]));
+				}
+				// Check if the type T is time_t
+				else if constexpr (std::is_same_v<T, time_t>) {
+					// Use std::stoll to convert string to time_t (usually long long)
+					data = static_cast<T>(std::stoll(row[it->second]));
 				} else {
 					// Throws exception indicating that type T is invalid
 					g_logger().error("Invalid signed type T");

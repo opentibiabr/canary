@@ -412,9 +412,6 @@ public:
 	void addStorageValue(uint32_t key, int32_t value, bool isLogin = false);
 	int32_t getStorageValue(uint32_t key) const;
 
-	int32_t getStorageValueByName(const std::string &storageName) const;
-	void addStorageValueByName(const std::string &storageName, int32_t value, bool isLogin = false);
-
 	std::shared_ptr<KV> kv() const;
 
 	void setGroup(std::shared_ptr<Group> newGroup) {

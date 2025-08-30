@@ -1307,14 +1307,6 @@ int32_t Player::getStorageValue(uint32_t key) const {
 	return m_storage.get(key);
 }
 
-int32_t Player::getStorageValueByName(const std::string &storageName) const {
-	return m_storage.get(storageName);
-}
-
-void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
-	m_storage.add(storageName, value);
-}
-
 std::shared_ptr<KV> Player::kv() const {
 	return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 }

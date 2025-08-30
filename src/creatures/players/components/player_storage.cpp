@@ -25,6 +25,23 @@
 	#include <ranges>
 #endif
 
+namespace {
+	constexpr std::array<std::pair<uint32_t, uint32_t>, 5> kPassThroughRanges { {
+		{ PSTRG_MOUNTS_RANGE_START, PSTRG_MOUNTS_RANGE_SIZE },
+		{ PSTRG_WING_RANGE_START, PSTRG_WING_RANGE_SIZE },
+		{ PSTRG_EFFECT_RANGE_START, PSTRG_EFFECT_RANGE_SIZE },
+		{ PSTRG_AURA_RANGE_START, PSTRG_AURA_RANGE_SIZE },
+		{ PSTRG_SHADER_RANGE_START, PSTRG_SHADER_RANGE_SIZE },
+	} };
+
+	inline bool isInPassThrough(uint32_t key) {
+		return std::ranges::any_of(kPassThroughRanges, [key](const auto &r) {
+			auto [rangeStart, rangeSize] = r;
+			return isStorageKeyInRange(key, rangeStart, rangeSize);
+		});
+	}
+} // namespace
+
 PlayerStorage::PlayerStorage(Player &player) :
 	m_player(player) { }
 
@@ -42,20 +59,7 @@ void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shou
 			return;
 		}
 
-		static constexpr std::array<std::pair<uint32_t, uint32_t>, 5> passThroughRanges { {
-			{ PSTRG_MOUNTS_RANGE_START, PSTRG_MOUNTS_RANGE_SIZE },
-			{ PSTRG_WING_RANGE_START, PSTRG_WING_RANGE_SIZE },
-			{ PSTRG_EFFECT_RANGE_START, PSTRG_EFFECT_RANGE_SIZE },
-			{ PSTRG_AURA_RANGE_START, PSTRG_AURA_RANGE_SIZE },
-			{ PSTRG_SHADER_RANGE_START, PSTRG_SHADER_RANGE_SIZE },
-		} };
-
-		const bool isPassThrough = std::ranges::any_of(passThroughRanges, [&](const auto &r) {
-			auto [rangeStart, rangeSize] = r;
-			return isStorageKeyInRange(key, rangeStart, rangeSize);
-		});
-
-		if (!m_player.m_isUnitTestMock && !isPassThrough) {
+		if (!m_player.m_isUnitTestMock && !isInPassThrough(key)) {
 			g_logger().warn("Unknown reserved key: {} for player: {}", key, m_player.getName());
 		}
 	}
@@ -92,27 +96,7 @@ int32_t PlayerStorage::get(const uint32_t key) const {
 }
 
 bool PlayerStorage::has(uint32_t key) const {
-	return m_storageMap.find(key) != m_storageMap.end();
-}
-
-int32_t PlayerStorage::get(const std::string &storageName) const {
-	const auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		return -1;
-	}
-	const uint32_t key = it->second;
-
-	return get(key);
-}
-
-void PlayerStorage::add(const std::string &storageName, const int32_t value) {
-	auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
-		return;
-	}
-	const uint32_t key = it->second;
-	add(key, value);
+	return m_storageMap.contains(key);
 }
 
 bool PlayerStorage::remove(const uint32_t key) {
@@ -133,16 +117,18 @@ bool PlayerStorage::save() {
 		return true;
 	}
 
+	auto playerGUID = m_player.getGUID();
+
 	Benchmark benchmarkSaveStorage;
 	if (!m_removedKeys.empty()) {
 		std::string keysList = fmt::format("{}", fmt::join(m_removedKeys, ", "));
 		std::string deleteQuery = fmt::format(
 			"DELETE FROM `player_storage` WHERE `player_id` = {} AND `key` IN ({})",
-			m_player.getGUID(), keysList
+			playerGUID, keysList
 		);
 
 		if (!g_database().executeQuery(deleteQuery)) {
-			g_logger().error("[PlayerStorage::save] - Failed to delete query to player: {}", m_player.getName());
+			g_logger().error("[PlayerStorage::save] - Failed to delete storage keys for player: {}", m_player.getName());
 			return false;
 		}
 
@@ -152,8 +138,6 @@ bool PlayerStorage::save() {
 	if (!m_modifiedKeys.empty()) {
 		DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
 		storageQuery.upsert({ "value" });
-
-		auto playerGUID = m_player.getGUID();
 		for (const auto key : m_modifiedKeys) {
 			auto row = fmt::format("{}, {}, {}", playerGUID, key, m_storageMap.at(key));
 			if (!storageQuery.addRow(row)) {
@@ -176,10 +160,9 @@ bool PlayerStorage::save() {
 
 bool PlayerStorage::load() {
 	Benchmark benchmarkLoadStorage;
-	Database &db = Database::getInstance();
 	auto query = fmt::format("SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = {}", m_player.getGUID());
 
-	for (auto result = db.storeQuery(query); result && result->hasNext(); result->next()) {
+	for (auto result = g_database().storeQuery(query); result && result->hasNext(); result->next()) {
 		uint32_t key = result->getNumber<uint32_t>("key");
 		int32_t value = result->getNumber<int32_t>("value");
 		add(key, value, true, false);
@@ -190,13 +173,6 @@ bool PlayerStorage::load() {
 }
 
 void PlayerStorage::getReservedRange() {
-	auto upsertKey = [&](uint32_t k, int32_t v){
-		auto it = m_storageMap.find(k);
-		if (it == m_storageMap.end() || it->second != v) {
-			m_storageMap[k] = v;
-			m_modifiedKeys.insert(k);
-		}
-	};
 	// Generate outfits range
 	uint32_t outfits_key = PSTRG_OUTFITS_RANGE_START;
 	for (const auto &entry : m_player.outfits) {
@@ -209,5 +185,13 @@ void PlayerStorage::getReservedRange() {
 	for (const auto &entry : m_player.familiars) {
 		++familiar_key;
 		upsertKey(familiar_key, (entry.lookType << 16));
+	}
+}
+
+void PlayerStorage::upsertKey(uint32_t key, int32_t value) {
+	auto it = m_storageMap.find(key);
+	if (it == m_storageMap.end() || it->second != value) {
+		m_storageMap[key] = value;
+		m_modifiedKeys.insert(key);
 	}
 }

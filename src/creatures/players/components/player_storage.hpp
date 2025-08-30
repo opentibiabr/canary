@@ -61,16 +61,6 @@ public:
 	int32_t get(uint32_t key) const;
 
 	/**
-	 * @brief Gets the value of a key registered by name.
-	 */
-	int32_t get(const std::string &storageName) const;
-
-	/**
-	 * @brief Sets the value of a key registered by name.
-	 */
-	void add(const std::string &storageName, int32_t value);
-
-	/**
 	 * @brief Saves pending changes to the database.
 	 */
 	bool save();
@@ -119,6 +109,18 @@ private:
 	 * Must be called before persisting to ensure consistency between memory and DB.
 	 */
 	void getReservedRange();
+
+	/**
+	 * @brief Inserts or updates a storage key if value differs.
+	 *
+	 * - Creates the key if missing.
+	 * - Updates it if the value changed.
+	 * - Marks the key as modified for the next save.
+	 *
+	 * @param k Storage key.
+	 * @param v Value to assign.
+	 */
+	void upsertKey(uint32_t key, int32_t value);
 
 	/**
 	 * @brief Reference to the Player owning this storage manager.

@@ -56,7 +56,7 @@ class Npc;
 
 struct ModalWindow;
 struct Achievement;
-struct VIPGroup;
+class VIPGroup;
 struct Mount;
 struct Wing;
 struct Effect;

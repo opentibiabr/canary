@@ -11,6 +11,42 @@
 
 #include "creatures/creature.hpp"
 #include "game/game.hpp"
+#include "game/scheduling/dispatcher.hpp"
+
+namespace {
+	bool tryFilterAndCache(SpectatorsCache::FloorData &creaturesCache, SpectatorsCache::FloorData &toCache, const Position &centerPos, bool multifloor, bool onlyPlayers, bool onlyMonsters, bool onlyNpcs, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY) {
+		auto &res = multifloor     ? creaturesCache.multiFloor
+			: creaturesCache.floor ? creaturesCache.floor
+								   : creaturesCache.multiFloor;
+
+		if (!res) {
+			return false;
+		}
+
+		CreatureVector spectators;
+		spectators.reserve(res->size());
+		for (const auto &creature : *res) {
+			const auto &specPos = creature->getPosition();
+			if ((centerPos.x - specPos.x >= minRangeX
+			         && centerPos.y - specPos.y >= minRangeY
+			         && centerPos.x - specPos.x <= maxRangeX
+			         && centerPos.y - specPos.y <= maxRangeY
+			         && (multifloor || specPos.z == centerPos.z)
+			         && ((onlyPlayers && creature->getPlayer())
+			             || (onlyMonsters && creature->getMonster())
+			             || (onlyNpcs && creature->getNpc()))
+			     || (!onlyPlayers && !onlyMonsters && !onlyNpcs
+			     )
+			    )) {
+				spectators.emplace_back(creature);
+			}
+		}
+
+		(multifloor ? toCache.multiFloor : toCache.floor) = std::move(spectators);
+
+		return true;
+	}
+}
 
 phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
 

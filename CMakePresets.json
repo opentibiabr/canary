@@ -108,6 +108,46 @@
       "cacheVariables": {
         "BUILD_TESTS": "ON"
       }
+    },
+    {
+      "name": "macos-release",
+      "inherits": "base",
+      "displayName": "macOS - Release",
+      "description": "macOS Release Build with Apple Clang",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "DEBUG_LOG": "ON",
+        "VCPKG_TARGET_TRIPLET": "arm64-osx",
+        "RUN_TESTS_AFTER_BUILD": "OFF"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "macos-debug",
+      "inherits": "macos-release",
+      "displayName": "macOS - Debug Build",
+      "description": "macOS Debug Build with Apple Clang",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "DEBUG_LOG": "ON",
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "SPEED_UP_BUILD_UNITY": "OFF"
+      }
+    },
+    {
+      "name": "macos-test",
+      "inherits": "macos-release",
+      "displayName": "macOS - Test Build",
+      "description": "macOS Build with Tests",
+      "cacheVariables": {
+        "BUILD_TESTS": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -134,6 +174,18 @@
     {
       "name": "windows-Xdebug",
       "configurePreset": "windows-debug"
+    },
+    {
+      "name": "macos-release",
+      "configurePreset": "macos-release"
+    },
+    {
+      "name": "macos-debug",
+      "configurePreset": "macos-debug"
+    },
+    {
+      "name": "macos-test",
+      "configurePreset": "macos-test"
     }
   ]
 }

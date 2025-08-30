@@ -3236,9 +3236,39 @@ ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player,
 			break;
 		}
 
-		// Limit the collect count if the "maxMoveItems" is not "0"
-		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
-		if (limitMove) {
+		openedBatches.insert(container.get());
+	}
+
+	// Set all fromContainer with update batch
+	for (auto fromContainer : openedBatches) {
+		fromContainer->beginBatchUpdate();
+	}
+
+	const auto &quickList = player->quickLootListItemIds;
+	auto filterMode = player->quickLootFilter;
+
+	// Process items
+	for (const auto &item : rewardItemsVector) {
+		if (!item) {
+			continue;
+		}
+
+		uint16_t itemId = item->getID();
+		bool inList = std::find(quickList.begin(), quickList.end(), itemId) != quickList.end();
+
+		if (!quickList.empty()) {
+			if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !inList) {
+				continue;
+			} else if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_SKIPPEDLOOT && inList) {
+				continue;
+			}
+		}
+
+		if (player->getCapacity() < item->getWeight()) {
+			return RETURNVALUE_NOTENOUGHCAPACITY;
+		}
+
+		if (maxMoveItems && movedRewardItems == maxMoveItems) {
 			lootedItemsMessage = fmt::format("You can only collect {} items at a time. {} of {} objects were picked up.", maxMoveItems, movedRewardItems, rewardCount);
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
 			return RETURNVALUE_NOERROR;
@@ -6499,6 +6529,36 @@ bool Game::isSightClear(const Position &fromPos, const Position &toPos, bool flo
 	return map.isSightClear(fromPos, toPos, floorCheck);
 }
 
+bool Game::isTileAccessible(const std::shared_ptr<Tile> &tile) {
+	if (!tile || !tile->getGround()) {
+		return false;
+	}
+
+	if (tile->hasFlag(TILESTATE_BLOCKSOLID | TILESTATE_IMMOVABLEBLOCKSOLID | TILESTATE_BLOCKPATH | TILESTATE_IMMOVABLEBLOCKPATH)) {
+		return false;
+	}
+
+	const Position &pos = tile->getPosition();
+	static const int8_t neighbours[4][2] = {
+		{ 1, 0 },
+		{ -1, 0 },
+		{ 0, 1 },
+		{ 0, -1 },
+	};
+
+	for (const auto &n : neighbours) {
+		const auto &adj = map.getTile(pos.x + n[0], pos.y + n[1], pos.z);
+		if (!adj) {
+			continue;
+		}
+		if (adj->getGround() && !adj->hasFlag(TILESTATE_BLOCKSOLID | TILESTATE_IMMOVABLEBLOCKSOLID | TILESTATE_BLOCKPATH | TILESTATE_IMMOVABLEBLOCKPATH)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool Game::internalCreatureTurn(const std::shared_ptr<Creature> &creature, Direction dir) {
 	if (creature->getDirection() == dir) {
 		return false;
@@ -6760,7 +6820,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 	// Skill dodge (ruse)
 	if (targetPlayer) {
 		auto chance = targetPlayer->getDodgeChance();
-		if (chance > 0 && uniform_random(0, 10000) < chance || damage.hazardDodge) {
+		if ((chance > 0 && uniform_random(0, 10000) < chance) || damage.hazardDodge) {
 			InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
 			targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack.");
 			return true;
@@ -8617,7 +8677,7 @@ void Game::playerLeaveParty(uint32_t playerId) {
 	}
 
 	std::shared_ptr<Party> party = player->getParty();
-	if (!party || (player->hasCondition(CONDITION_INFIGHT) && !player->getZoneType() == ZONE_PROTECTION)) {
+	if (!party || (player->hasCondition(CONDITION_INFIGHT) && player->getZoneType() != ZONE_PROTECTION)) {
 		player->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You cannot leave party, contact the administrator."));
 		return;
 	}

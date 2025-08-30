@@ -23,6 +23,7 @@ struct Position;
 class Action {
 public:
 	explicit Action();
+	virtual ~Action() = default;
 
 	// Scripting
 	virtual bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &fromPosition, const std::shared_ptr<Thing> &target, const Position &toPosition, bool isHotkey);

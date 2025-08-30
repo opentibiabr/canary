@@ -152,6 +152,24 @@ public:
 		const std::shared_ptr<Player> &player;
 	};
 
+	/**
+	 * @brief Constructs a Player instance for unit testing only.
+	 *
+	 * This constructor initializes a Player object in a minimal, controlled state
+	 * for use in unit tests. It sets up core components such as VIP, Wheel,
+	 * Achievements, Badges, Cyclopedia, Titles, Animus Mastery, Attached Effects,
+	 * and Storage, while marking the instance as a unit test mock by default.
+	 *
+	 * @note This constructor must never be used in production code.
+	 * It exists exclusively to facilitate isolated unit testing of Player
+	 * components without requiring full game runtime initialization.
+	 *
+	 * @warning Using this constructor outside of a unit testing context may lead
+	 * to undefined behavior, incomplete initialization, or bypass of
+	 * required game systems.
+	 */
+	Player();
+
 	explicit Player(std::shared_ptr<ProtocolGame> p);
 	~Player() override;
 
@@ -1357,6 +1375,14 @@ public:
 	bool isFirstOnStack() const;
 	void resetOldCharms();
 
+	const auto &getOutfits() const {
+		return outfits;
+	}
+
+	const auto &getFamiliars() const {
+		return familiars;
+	}
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1583,6 +1609,8 @@ private:
 
 	// Bestiary
 	bool charmExpansion = false;
+
+	bool m_isUnitTestMock = false;
 
 	std::array<CharmInfo, magic_enum::enum_count<charmRune_t>() + 1> charmsArray = {};
 	uint32_t charmPoints = 0;

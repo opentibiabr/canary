@@ -63,6 +63,21 @@
       }
     },
     {
+      "name": "windows-test",
+      "inherits": "windows-release",
+      "displayName": "Windows - Test",
+      "description": "Build Test Mode",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_LOG": "ON",
+        "ASAN_ENABLED": "OFF",
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "SPEED_UP_BUILD_UNITY": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "BUILD_TESTS": "ON"
+      }
+    },
+    {
       "name": "linux-release",
       "inherits": "base",
       "displayName": "Linux - Release",

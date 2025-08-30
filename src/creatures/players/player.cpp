@@ -62,6 +62,25 @@
 
 MuteCountMap Player::muteCountMap;
 
+/**
+ * @brief Unit test constructor.
+ *
+ * This constructor is intended for unit testing only.
+ * For full documentation and usage notes, see the function declaration.
+ */
+Player::Player() :
+	m_isUnitTestMock(true),
+	m_playerVIP(*this),
+	m_wheelPlayer(*this),
+	m_playerAchievement(*this),
+	m_playerBadge(*this),
+	m_playerCyclopedia(*this),
+	m_playerTitle(*this),
+	m_animusMastery(*this),
+	m_playerAttachedEffects(*this),
+	m_storage(*this) {
+}
+
 Player::Player(std::shared_ptr<ProtocolGame> p) :
 	lastPing(OTSYS_TIME()),
 	lastPong(lastPing),
@@ -75,7 +94,10 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerTitle(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) { }
+	m_storage(*this) {
+	m_wheelPlayer.init();
+	m_animusMastery.init();
+}
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -6242,7 +6264,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return false;
 	}
 
-	if (group->access) {
+	if (group && group->access) {
 		return true;
 	}
 

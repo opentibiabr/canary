@@ -55,7 +55,7 @@ void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shou
 			return isStorageKeyInRange(key, rangeStart, rangeSize);
 		});
 
-		if (!isPassThrough) {
+		if (!m_player.m_isUnitTestMock && !isPassThrough) {
 			g_logger().warn("Unknown reserved key: {} for player: {}", key, m_player.getName());
 		}
 	}

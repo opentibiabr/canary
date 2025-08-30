@@ -70,5 +70,6 @@ static constexpr int32_t PSTRG_FAMILIARS_RANGE_SIZE = 500;
 
 static constexpr int32_t IMMOVABLE_ACTION_ID = 100;
 
-#define IS_IN_KEYRANGE(key, range) \
-	(key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))
+constexpr bool isStorageKeyInRange(uint32_t k, uint32_t start, uint32_t size) {
+	return k >= start && (k - start) <= size;
+}

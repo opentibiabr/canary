@@ -13,6 +13,7 @@
 #include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "game/game.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
@@ -787,31 +788,9 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 
 bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerStorage] - Player nullptr: {}", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-
-	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-	player->genReservedStorageRange();
-
-	for (const auto &[key, value] : player->storageMap) {
-		query << player->getGUID() << ',' << key << ',' << value;
-		if (!storageQuery.addRow(query)) {
-			return false;
-		}
-	}
-
-	if (!storageQuery.execute()) {
-		return false;
-	}
-	return true;
+	return player->storage().save();
 }

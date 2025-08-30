@@ -22,6 +22,7 @@
 #include "creatures/players/components/player_achievement.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/components/player_title.hpp"
 #include "creatures/players/components/wheel/player_wheel.hpp"
 #include "creatures/players/components/player_vip.hpp"
@@ -393,12 +394,7 @@ public:
 	void addStorageValue(uint32_t key, int32_t value, bool isLogin = false);
 	int32_t getStorageValue(uint32_t key) const;
 
-	int32_t getStorageValueByName(const std::string &storageName) const;
-	void addStorageValueByName(const std::string &storageName, int32_t value, bool isLogin = false);
-
 	std::shared_ptr<KV> kv() const;
-
-	void genReservedStorageRange();
 
 	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = std::move(newGroup);
@@ -1339,6 +1335,9 @@ public:
 	PlayerAttachedEffects &attachedEffects();
 	const PlayerAttachedEffects &attachedEffects() const;
 
+	PlayerStorage &storage();
+	const PlayerStorage &storage() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -1354,6 +1353,14 @@ public:
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
 	bool isFirstOnStack() const;
 	void resetOldCharms();
+
+	const auto &getOutfits() const {
+		return outfits;
+	}
+
+	const auto &getFamiliars() const {
+		return familiars;
+	}
 
 private:
 	friend class PlayerLock;
@@ -1434,7 +1441,6 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
-	std::map<uint32_t, int32_t> storageMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
@@ -1696,6 +1702,7 @@ private:
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class PlayerStorage;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;
@@ -1705,6 +1712,7 @@ private:
 	PlayerVIP m_playerVIP;
 	AnimusMastery m_animusMastery;
 	PlayerAttachedEffects m_playerAttachedEffects;
+	PlayerStorage m_storage;
 
 	std::mutex quickLootMutex;
 

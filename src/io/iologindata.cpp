@@ -155,7 +155,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		IOLoginDataLoad::loadPlayerInboxItems(player, result);
 
 		// load storage map
-		IOLoginDataLoad::loadPlayerStorageMap(player, result);
+		IOLoginDataLoad::loadPlayerStorageMap(player);
 
 		// load vip
 		IOLoginDataLoad::loadPlayerVip(player, result);

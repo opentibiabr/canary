@@ -61,16 +61,6 @@ public:
 	int32_t get(uint32_t key) const;
 
 	/**
-	 * @brief Gets the value of a key registered by name.
-	 */
-	int32_t get(const std::string &storageName) const;
-
-	/**
-	 * @brief Sets the value of a key registered by name.
-	 */
-	void add(const std::string &storageName, int32_t value);
-
-	/**
 	 * @brief Saves pending changes to the database.
 	 */
 	bool save();

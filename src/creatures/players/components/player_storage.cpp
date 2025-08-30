@@ -95,26 +95,6 @@ bool PlayerStorage::has(uint32_t key) const {
 	return m_storageMap.find(key) != m_storageMap.end();
 }
 
-int32_t PlayerStorage::get(const std::string &storageName) const {
-	const auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		return -1;
-	}
-	const uint32_t key = it->second;
-
-	return get(key);
-}
-
-void PlayerStorage::add(const std::string &storageName, const int32_t value) {
-	auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
-		return;
-	}
-	const uint32_t key = it->second;
-	add(key, value);
-}
-
 bool PlayerStorage::remove(const uint32_t key) {
 	if (!has(key)) {
 		return false;

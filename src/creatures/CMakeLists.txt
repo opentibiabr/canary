@@ -27,6 +27,7 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     players/components/player_attached_effects.cpp
     players/components/player_badge.cpp
     players/components/player_cyclopedia.cpp
+    players/components/player_storage.cpp
     players/components/player_title.cpp
     players/components/wheel/player_wheel.cpp
     players/components/player_vip.cpp

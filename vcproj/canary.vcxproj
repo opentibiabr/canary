@@ -50,6 +50,7 @@
     <ClInclude Include="..\src\creatures\players\animus_mastery\animus_mastery.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_badge.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_cyclopedia.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\player_storage.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_title.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_vip.hpp" />
     <ClInclude Include="..\src\creatures\players\components\wheel\player_wheel.hpp" />
@@ -268,6 +269,7 @@
     <ClCompile Include="..\src\creatures\players\animus_mastery\animus_mastery.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_badge.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_cyclopedia.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\player_storage.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_title.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_vip.cpp" />
     <ClCompile Include="..\src\creatures\players\components\wheel\player_wheel.cpp" />

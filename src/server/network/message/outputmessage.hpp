@@ -11,12 +11,17 @@
 
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/connection/connection.hpp"
+#include "utils/lockfree.hpp"
 
 class Protocol;
 
 class OutputMessage : public NetworkMessage {
 public:
-	OutputMessage() = default;
+	OutputMessage();
+	~OutputMessage();
+
+	void reset() noexcept;
+	bool canAppend(size_t size) const;
 
 	// non-copyable
 	OutputMessage(const OutputMessage &) = delete;
@@ -92,7 +97,8 @@ private:
 
 class OutputMessagePool {
 public:
-	OutputMessagePool() = default;
+	OutputMessagePool();
+	~OutputMessagePool();
 
 	// non-copyable
 	OutputMessagePool(const OutputMessagePool &) = delete;
@@ -111,5 +117,5 @@ public:
 private:
 	// NOTE: A vector is used here because this container is mostly read
 	// and relatively rarely modified (only when a client connects/disconnects)
-	std::vector<Protocol_ptr> bufferedProtocols;
+	std::vector<Protocol_ptr> bufferedProtocols {};
 };

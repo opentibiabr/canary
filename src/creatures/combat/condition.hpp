@@ -23,7 +23,7 @@ class Condition : public SharedObject {
 public:
 	Condition() = default;
 	Condition(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, bool isPersistent = false);
-	virtual ~Condition() = default;
+	~Condition() override = default;
 
 	virtual bool startCondition(std::shared_ptr<Creature> creature);
 	virtual bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval);
@@ -53,6 +53,19 @@ public:
 
 	bool isPersistent() const;
 	bool isRemovableOnDeath() const;
+
+	virtual void reset() {
+		drainBodyStage = 0;
+		endTime = 0;
+		subId = 0;
+		ticks = 0;
+		conditionType = {};
+		id = {};
+		isBuff = false;
+		m_isPersistent = false;
+		tickSound = SoundEffect_t::SILENCE;
+		addSound = SoundEffect_t::SILENCE;
+	}
 
 protected:
 	uint8_t drainBodyStage = 0;
@@ -85,24 +98,79 @@ public:
 	std::unordered_set<PlayerIcon> getIcons() const override;
 
 	std::shared_ptr<Condition> clone() const override;
+
+	void reset() override {
+		Condition::reset();
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, bool isPersistent = false) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		m_isPersistent = isPersistent;
+	}
 };
 
 class ConditionAttributes final : public ConditionGeneric {
 public:
 	ConditionAttributes(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0);
 
-	bool startCondition(std::shared_ptr<Creature> creature) final;
-	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) final;
-	void endCondition(std::shared_ptr<Creature> creature) final;
-	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) final;
+	bool startCondition(std::shared_ptr<Creature> creature) override;
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
+	void endCondition(std::shared_ptr<Creature> creature) override;
+	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 
-	bool setParam(ConditionParam_t param, int32_t value) final;
+	bool setParam(ConditionParam_t param, int32_t value) override;
 
 	std::shared_ptr<Condition> clone() const override;
 
 	// serialization
-	void serialize(PropWriteStream &propWriteStream) final;
-	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) final;
+	void serialize(PropWriteStream &propWriteStream) override;
+	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
+
+	void reset() override {
+		ConditionGeneric::reset();
+		std::ranges::fill(skills, 0);
+		std::ranges::fill(skillsPercent, 0);
+		std::ranges::fill(stats, 0);
+		std::ranges::fill(statsPercent, 0);
+		std::ranges::fill(buffs, 0);
+		std::ranges::fill(buffsPercent, 0);
+		std::ranges::fill(absorbs, 0);
+		std::ranges::fill(absorbsPercent, 0);
+		std::ranges::fill(increases, 0);
+		std::ranges::fill(increasesPercent, 0);
+		currentSkill = 0;
+		currentStat = 0;
+		currentBuff = 0;
+		charmChanceModifier = 0;
+		disableDefense = false;
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		currentSkill = currentStat = currentBuff = 0;
+		charmChanceModifier = 0;
+		disableDefense = false;
+		std::ranges::fill(skills, 0);
+		std::ranges::fill(skillsPercent, 0);
+		std::ranges::fill(stats, 0);
+		std::ranges::fill(statsPercent, 0);
+		std::ranges::fill(buffs, 0);
+		std::ranges::fill(buffsPercent, 0);
+		absorbs.fill(0);
+		absorbsPercent.fill(0);
+		increases.fill(0);
+		increasesPercent.fill(0);
+	}
 
 private:
 	// Helpers
@@ -171,6 +239,31 @@ public:
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
+	void reset() override {
+		ConditionGeneric::reset();
+		internalHealthTicks = 0;
+		internalManaTicks = 0;
+		healthTicks = 1000;
+		manaTicks = 1000;
+		healthGain = 0;
+		manaGain = 0;
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		internalHealthTicks = 0;
+		internalManaTicks = 0;
+		healthTicks = 1000;
+		manaTicks = 1000;
+		healthGain = 0;
+		manaGain = 0;
+	}
+
 private:
 	uint32_t internalHealthTicks = 0;
 	uint32_t internalManaTicks = 0;
@@ -198,6 +291,21 @@ public:
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
+	void reset() override {
+		Condition::reset();
+		manaShield = 0;
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		manaShield = 0;
+	}
+
 private:
 	uint32_t manaShield = 0;
 };
@@ -217,6 +325,25 @@ public:
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
+	void reset() override {
+		ConditionGeneric::reset();
+		internalSoulTicks = 0;
+		soulTicks = 0;
+		soulGain = 0;
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		internalSoulTicks = 0;
+		soulTicks = 0;
+		soulGain = 0;
+	}
+
 private:
 	uint32_t internalSoulTicks = 0;
 	uint32_t soulTicks = 0;
@@ -231,6 +358,19 @@ public:
 	void endCondition(std::shared_ptr<Creature> creature) override;
 
 	std::shared_ptr<Condition> clone() const override;
+
+	void reset() override {
+		ConditionGeneric::reset();
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+	}
 };
 
 class ConditionDamage final : public Condition {
@@ -257,6 +397,41 @@ public:
 	// serialization
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
+
+	void reset() override {
+		Condition::reset();
+		maxDamage = 0;
+		minDamage = 0;
+		startDamage = 0;
+		periodDamage = 0;
+		periodDamageTick = 0;
+		tickInterval = 2000;
+		forceUpdate = false;
+		delayed = false;
+		field = false;
+		owner = 0;
+		damageList.clear();
+	}
+
+	void reset(ConditionId_t intiId, ConditionType_t initType, bool initBuff = false, uint32_t initSubId = 0) {
+		Condition::reset();
+		id = intiId;
+		conditionType = initType;
+		isBuff = initBuff;
+		subId = initSubId;
+		endTime = 0;
+		tickInterval = 2000;
+		maxDamage = 0;
+		minDamage = 0;
+		startDamage = 0;
+		periodDamage = 0;
+		periodDamageTick = 0;
+		forceUpdate = false;
+		delayed = false;
+		field = false;
+		owner = 0;
+		damageList.clear();
+	}
 
 private:
 	int32_t maxDamage = 0;
@@ -295,6 +470,23 @@ public:
 	std::shared_ptr<Condition> clone() const override;
 
 	bool setPositionParam(ConditionParam_t param, const Position &pos) override;
+
+	void reset() override {
+		Condition::reset();
+		Position fleeingFromPos;
+		fleeIndx = 99;
+	}
+
+	void reset(ConditionId_t intiId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = intiId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		Position fleeingFromPos;
+		fleeIndx = 99;
+	}
 
 private:
 	bool canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection) const;
@@ -338,6 +530,26 @@ public:
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
+	void reset() override {
+		Condition::reset();
+		speedDelta = 0;
+		mina = 0.0f;
+		minb = 0.0f;
+		maxa = 0.0f;
+		maxb = 0.0f;
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, int32_t initChangeSpeed = 0) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		speedDelta = initChangeSpeed;
+		mina = minb = maxa = maxb = 0.0f;
+	}
+
 private:
 	void getFormulaValues(int32_t var, int32_t &min, int32_t &max) const;
 
@@ -368,6 +580,23 @@ public:
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
+	void reset() override {
+		Condition::reset();
+		outfit = {};
+		monsterName.clear();
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		outfit = {};
+		monsterName = "";
+	}
+
 private:
 	Outfit_t outfit;
 	std::string monsterName;
@@ -390,6 +619,26 @@ public:
 	void serialize(PropWriteStream &propWriteStream) override;
 	bool unserializeProp(ConditionAttr_t attr, PropStream &propStream) override;
 
+	void reset() override {
+		Condition::reset();
+		lightInfo = { 1, 215 };
+		internalLightTicks = 0;
+		lightChangeInterval = 0;
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, uint8_t initLightlevel, uint8_t initLightcolor) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+		lightInfo.level = initLightlevel;
+		lightInfo.color = initLightcolor;
+		internalLightTicks = 0;
+		lightChangeInterval = 0;
+	}
+
 private:
 	LightInfo lightInfo { 1, 215 };
 	uint32_t internalLightTicks = 0;
@@ -404,6 +653,19 @@ public:
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 
 	std::shared_ptr<Condition> clone() const override;
+
+	void reset() override {
+		ConditionGeneric::reset();
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+	}
 };
 
 class ConditionSpellGroupCooldown final : public ConditionGeneric {
@@ -414,4 +676,17 @@ public:
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 
 	std::shared_ptr<Condition> clone() const override;
+
+	void reset() override {
+		ConditionGeneric::reset();
+	}
+
+	void reset(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) {
+		Condition::reset();
+		id = initId;
+		conditionType = initType;
+		ticks = initTicks;
+		isBuff = initBuff;
+		subId = initSubId;
+	}
 };

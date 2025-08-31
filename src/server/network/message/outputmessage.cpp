@@ -14,11 +14,33 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "utils/lockfree.hpp"
 
-constexpr uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
 constexpr std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
+static SharedOptimizedObjectPool<OutputMessage, 512, false, std::pmr::polymorphic_allocator<OutputMessage>, 8> g_outputPool;
+
+OutputMessage::OutputMessage() = default;
+
+OutputMessage::~OutputMessage() = default;
+
+OutputMessagePool::OutputMessagePool() {
+	g_outputPool.prewarm(64);
+}
+
+OutputMessagePool::~OutputMessagePool() {
+	g_outputPool.flush_local_cache();
+}
 
 OutputMessagePool &OutputMessagePool::getInstance() {
 	return inject<OutputMessagePool>();
+}
+
+void OutputMessage::reset() noexcept {
+	info.position = INITIAL_BUFFER_POSITION;
+	info.length = 0;
+	outputBufferStart = INITIAL_BUFFER_POSITION;
+}
+
+bool OutputMessage::canAppend(const size_t size) const {
+	return (getLength() + size) <= MAX_PROTOCOL_BODY_LENGTH;
 }
 
 void OutputMessagePool::scheduleSendAll() {
@@ -51,13 +73,17 @@ void OutputMessagePool::addProtocolToAutosend(const Protocol_ptr &protocol) {
 
 void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr &protocol) {
 	// dispatcher thread
-	const auto it = std::ranges::find(bufferedProtocols, protocol);
-	if (it != bufferedProtocols.end()) {
+	if (const auto it = std::ranges::find(bufferedProtocols, protocol); it != bufferedProtocols.end()) {
 		*it = bufferedProtocols.back();
 		bufferedProtocols.pop_back();
 	}
 }
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage() {
-	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<OutputMessage, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());
+	auto result = g_outputPool.acquire();
+	if (!result) {
+		g_logger().error("[OutputMessagePool::getOutputMessage] Falha ao adquirir mensagem da pool");
+		return nullptr;
+	}
+	return result.value();
 }

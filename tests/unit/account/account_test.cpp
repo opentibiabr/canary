@@ -23,7 +23,7 @@ using namespace boost::ut;
 using namespace std;
 
 template <typename T, typename U>
-bool eqEnum(const T& lhs, const U& rhs) {
+bool eqEnum(const T &lhs, const U &rhs) {
 	if constexpr (std::is_enum_v<T> && std::is_enum_v<U>) {
 		return enumToValue(lhs) == enumToValue(rhs);
 	} else if constexpr (std::is_enum_v<T>) {
@@ -36,7 +36,7 @@ bool eqEnum(const T& lhs, const U& rhs) {
 }
 
 suite<"account"> accountTest = [] {
-	InjectionFixture injectionFixture{};
+	InjectionFixture injectionFixture {};
 
 	test("Account::Account default constructors") = [] {
 		shared_ptr<Account> byId = make_shared<Account>(1);
@@ -46,9 +46,9 @@ suite<"account"> accountTest = [] {
 		expect(eq(byDescriptor->getID(), 0));
 
 		expect(byId->getDescriptor().empty());
-		expect(eq(byDescriptor->getDescriptor(), string{"canary@test.com"}));
+		expect(eq(byDescriptor->getDescriptor(), string { "canary@test.com" }));
 
-		for (auto& account : { byId, byDescriptor }) {
+		for (auto &account : { byId, byDescriptor }) {
 			expect(eq(account->getPremiumRemainingDays(), 0));
 			expect(eq(account->getPremiumLastDay(), 0));
 			expect(eqEnum(account->getAccountType(), AccountType::ACCOUNT_TYPE_NORMAL));
@@ -61,17 +61,17 @@ suite<"account"> accountTest = [] {
 		AccountErrors_t expectedError;
 	};
 
-	vector<AccountLoadTestCase> accountLoadTestCases{
-		{"returns by id if exists", make_shared<Account>(1), AccountErrors_t::Ok},
-		{"returns by descriptor if exists", make_shared<Account>("canary@test.com"), AccountErrors_t::Ok},
-		{"returns error if id is not valid", make_shared<Account>(2), AccountErrors_t::LoadingAccount},
-		{"returns error if descriptor is not valid", make_shared<Account>("not@valid.com"), AccountErrors_t::LoadingAccount}
+	vector<AccountLoadTestCase> accountLoadTestCases {
+		{ "returns by id if exists", make_shared<Account>(1), AccountErrors_t::Ok },
+		{ "returns by descriptor if exists", make_shared<Account>("canary@test.com"), AccountErrors_t::Ok },
+		{ "returns error if id is not valid", make_shared<Account>(2), AccountErrors_t::LoadingAccount },
+		{ "returns error if descriptor is not valid", make_shared<Account>("not@valid.com"), AccountErrors_t::LoadingAccount }
 	};
 
-	for (auto& testCase : accountLoadTestCases) {
+	for (auto &testCase : accountLoadTestCases) {
 		test(testCase.description) = [&injectionFixture, &testCase] {
 			auto [accountRepository] = injectionFixture.get<AccountRepository>();
-			accountRepository.addAccount("canary@test.com", AccountInfo{1, 1, 1, AccountType::ACCOUNT_TYPE_GOD});
+			accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 			expect(eqEnum(testCase.account->load(), testCase.expectedError)) << testCase.description;
 		};
 	}
@@ -89,7 +89,7 @@ suite<"account"> accountTest = [] {
 		expect(eqEnum(acc.load(), AccountErrors_t::Ok));
 		expect(eqEnum(acc.getAccountType(), AccountType::ACCOUNT_TYPE_GOD));
 
-		accountRepository.addAccount("canary2@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GAMEMASTER });
+		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GAMEMASTER });
 
 		expect(eqEnum(acc.reload(), AccountErrors_t::Ok));
 		expect(eqEnum(acc.getAccountType(), AccountType::ACCOUNT_TYPE_GAMEMASTER));
@@ -368,7 +368,7 @@ suite<"account"> accountTest = [] {
 
 		auto [type, coins, coinType, description] = accountRepository.coinsTransactions_[1][0];
 		expect(eq(coins, 100));
-		expect(eqEnum(coinType,CoinType::Normal));
+		expect(eqEnum(coinType, CoinType::Normal));
 		expect(eqEnum(type, CoinTransactionType::Remove));
 		expect(eq(description, std::string { "REMOVE Coins" }));
 
@@ -421,9 +421,9 @@ suite<"account"> accountTest = [] {
 		accountRepository.addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 		expect(eqEnum(acc.load(), AccountErrors_t::Ok));
-		expect(eq(std::string{}, acc.getPassword()));
-		expect(eq(std::string{"error"}, logger.logs[0].level));
-		expect(eq(std::string{"Failed to get password for account[1]!"}, logger.logs[0].message));
+		expect(eq(std::string {}, acc.getPassword()));
+		expect(eq(std::string { "error" }, logger.logs[0].level));
+		expect(eq(std::string { "Failed to get password for account[1]!" }, logger.logs[0].message));
 	};
 
 	test("Account::addPremiumDays sets premium remaining days") = [] {
@@ -514,8 +514,8 @@ suite<"account"> accountTest = [] {
 		Account acc { 1 };
 		accountRepository.addAccount(
 			"canary@test.com",
-			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, {{ "Canary", 1 }, { "Canary2", 2 }} }
- 		);
+			AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } } }
+		);
 
 		expect(acc.load() == AccountErrors_t::Ok);
 		auto [players, error] = acc.getAccountPlayers();

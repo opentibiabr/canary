@@ -67,6 +67,8 @@ public:
 		addSound = SoundEffect_t::SILENCE;
 	}
 
+	int16_t threadId = -1;
+
 protected:
 	uint8_t drainBodyStage = 0;
 	int64_t endTime {};
@@ -112,6 +114,8 @@ public:
 		subId = initSubId;
 		m_isPersistent = isPersistent;
 	}
+
+	int16_t threadId = -1;
 };
 
 class ConditionAttributes final : public ConditionGeneric {
@@ -171,6 +175,8 @@ public:
 		increases.fill(0);
 		increasesPercent.fill(0);
 	}
+
+	int16_t threadId = -1;
 
 private:
 	// Helpers
@@ -264,6 +270,8 @@ public:
 		manaGain = 0;
 	}
 
+	int16_t threadId = -1;
+
 private:
 	uint32_t internalHealthTicks = 0;
 	uint32_t internalManaTicks = 0;
@@ -306,6 +314,8 @@ public:
 		manaShield = 0;
 	}
 
+	int16_t threadId = -1;
+
 private:
 	uint32_t manaShield = 0;
 };
@@ -344,6 +354,8 @@ public:
 		soulGain = 0;
 	}
 
+	int16_t threadId = -1;
+
 private:
 	uint32_t internalSoulTicks = 0;
 	uint32_t soulTicks = 0;
@@ -371,6 +383,8 @@ public:
 		isBuff = initBuff;
 		subId = initSubId;
 	}
+
+	int16_t threadId = -1;
 };
 
 class ConditionDamage final : public Condition {
@@ -433,6 +447,8 @@ public:
 		damageList.clear();
 	}
 
+	int16_t threadId = -1;
+
 private:
 	int32_t maxDamage = 0;
 	int32_t minDamage = 0;
@@ -487,6 +503,8 @@ public:
 		Position fleeingFromPos;
 		fleeIndx = 99;
 	}
+
+	int16_t threadId = -1;
 
 private:
 	bool canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection) const;
@@ -550,6 +568,8 @@ public:
 		mina = minb = maxa = maxb = 0.0f;
 	}
 
+	int16_t threadId = -1;
+
 private:
 	void getFormulaValues(int32_t var, int32_t &min, int32_t &max) const;
 
@@ -597,6 +617,8 @@ public:
 		monsterName = "";
 	}
 
+	int16_t threadId = -1;
+
 private:
 	Outfit_t outfit;
 	std::string monsterName;
@@ -639,6 +661,8 @@ public:
 		lightChangeInterval = 0;
 	}
 
+	int16_t threadId = -1;
+
 private:
 	LightInfo lightInfo { 1, 215 };
 	uint32_t internalLightTicks = 0;
@@ -666,6 +690,8 @@ public:
 		isBuff = initBuff;
 		subId = initSubId;
 	}
+
+	int16_t threadId = -1;
 };
 
 class ConditionSpellGroupCooldown final : public ConditionGeneric {
@@ -689,4 +715,6 @@ public:
 		isBuff = initBuff;
 		subId = initSubId;
 	}
+
+	int16_t threadId = -1;
 };

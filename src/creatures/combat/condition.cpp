@@ -21,7 +21,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolgame.hpp"
-#include "utils/object_pool.hpp"
+#include "utils/lockfree.hpp"
 
 /**
  *  Condition
@@ -207,6 +207,22 @@ bool Condition::executeCondition(const std::shared_ptr<Creature> &creature, int3
 }
 
 std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
+	// Pools estáticos por tipo
+	static SharedOptimizedObjectPool<ConditionDamage, 1024> poolDamage;
+	static SharedOptimizedObjectPool<ConditionSpeed, 1024> poolSpeed;
+	static SharedOptimizedObjectPool<ConditionInvisible, 1024> poolInvisible;
+	static SharedOptimizedObjectPool<ConditionOutfit, 1024> poolOutfit;
+	static SharedOptimizedObjectPool<ConditionLight, 1024> poolLight;
+	static SharedOptimizedObjectPool<ConditionRegeneration, 1024> poolRegen;
+	static SharedOptimizedObjectPool<ConditionSoul, 1024> poolSoul;
+	static SharedOptimizedObjectPool<ConditionAttributes, 1024> poolAttr;
+	static SharedOptimizedObjectPool<ConditionSpellCooldown, 1024> poolSCool;
+	static SharedOptimizedObjectPool<ConditionSpellGroupCooldown, 1024> poolSGCool;
+	static SharedOptimizedObjectPool<ConditionManaShield, 1024> poolMana;
+	static SharedOptimizedObjectPool<ConditionFeared, 1024> poolFeared;
+	static SharedOptimizedObjectPool<ConditionGeneric, 1024> poolGeneric;
+	static SharedOptimizedObjectPool<ConditionGeneric, 1024> poolGenericPersistent;
+
 	switch (type) {
 		case CONDITION_POISON:
 		case CONDITION_FIRE:
@@ -216,44 +232,44 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_DAZZLED:
 		case CONDITION_CURSED:
 		case CONDITION_BLEEDING:
-			return ObjectPool<ConditionDamage, 1024>::allocateShared(id, type, buff, subId);
+			return poolDamage.acquire(id, type, buff, subId).value();
 
 		case CONDITION_HASTE:
 		case CONDITION_PARALYZE:
-			return ObjectPool<ConditionSpeed, 1024>::allocateShared(id, type, ticks, buff, subId, param);
+			return poolSpeed.acquire(id, type, ticks, buff, subId, param).value();
 
 		case CONDITION_INVISIBLE:
-			return ObjectPool<ConditionInvisible, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolInvisible.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_OUTFIT:
-			return ObjectPool<ConditionOutfit, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolOutfit.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_LIGHT:
-			return ObjectPool<ConditionLight, 1024>::allocateShared(id, type, ticks, buff, subId, param & 0xFF, (param & 0xFF00) >> 8);
+			return poolLight.acquire(id, type, ticks, buff, subId, param & 0xFF, (param & 0xFF00) >> 8).value();
 
 		case CONDITION_REGENERATION:
-			return ObjectPool<ConditionRegeneration, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolRegen.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_SOUL:
-			return ObjectPool<ConditionSoul, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolSoul.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_LESSERHEX:
 		case CONDITION_INTENSEHEX:
 		case CONDITION_GREATERHEX:
 		case CONDITION_ATTRIBUTES:
-			return ObjectPool<ConditionAttributes, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolAttr.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_SPELLCOOLDOWN:
-			return ObjectPool<ConditionSpellCooldown, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolSCool.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_SPELLGROUPCOOLDOWN:
-			return ObjectPool<ConditionSpellGroupCooldown, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolSGCool.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_MANASHIELD:
-			return ObjectPool<ConditionManaShield, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolMana.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_FEARED:
-			return ObjectPool<ConditionFeared, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolFeared.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_ROOTED:
 		case CONDITION_INFIGHT:
@@ -266,13 +282,13 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_YELLTICKS:
 		case CONDITION_POWERLESS:
 		case CONDITION_PACIFIED:
-			return ObjectPool<ConditionGeneric, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolGeneric.acquire(id, type, ticks, buff, subId).value();
 
 		case CONDITION_BAKRAGORE:
-			return ObjectPool<ConditionGeneric, 1024>::allocateShared(id, type, ticks, buff, subId, isPersistent);
+			return poolGenericPersistent.acquire(id, type, ticks, buff, subId, isPersistent).value();
 
 		case CONDITION_GOSHNARTAINT:
-			return ObjectPool<ConditionGeneric, 1024>::allocateShared(id, type, ticks, buff, subId);
+			return poolGeneric.acquire(id, type, ticks, buff, subId).value();
 
 		default:
 			return nullptr;

@@ -67,6 +67,8 @@ public:
 		info.position += msgLen;
 	}
 
+	int16_t threadId = -1;
+
 private:
 	template <typename T>
 	void add_header(T addHeader) {

@@ -101,13 +101,13 @@ namespace lockfree_config {
 
 // Conceitos para garantir que os tipos T tenham as interfaces necessárias.
 template <typename T, typename... Args>
-concept HasReset = requires(T t, Args &&... args) {
-	{ t.reset(std::forward<Args>(args)...) } -> std::same_as<void>;
+concept HasReset = requires(T t, Args... args) {
+	{ t.reset(args...) } -> std::same_as<void>;
 };
 
 template <typename T, typename... Args>
-concept HasBuild = requires(T t, Args &&... args) {
-	{ t.build(std::forward<Args>(args)...) } -> std::same_as<void>;
+concept HasBuild = requires(T t, Args... args) {
+	{ t.build(args...) } -> std::same_as<void>;
 };
 
 template <typename T>

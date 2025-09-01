@@ -7,10 +7,12 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
   merge_group:
   push:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
     branches:
       - main
 

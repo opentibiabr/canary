@@ -56,9 +56,9 @@ int main() {
 		std::string database = "otservbr-global";
 		uint32_t port = 3306;
 		std::string sock;
-    };
-	Database db{};
-	DbConfig dbConfig{};
+	};
+	Database db {};
+	DbConfig dbConfig {};
 
 	db.connect(
 		&dbConfig.host,
@@ -70,8 +70,8 @@ int main() {
 	);
 
 	test("AccountRepositoryDB::loadByID") = databaseTest(db, [&db] {
-		InMemoryLogger logger{};
-		AccountRepositoryDB accRepo{};
+		InMemoryLogger logger {};
+		AccountRepositoryDB accRepo {};
 		createAccount(db);
 
 		auto acc = std::make_unique<AccountInfo>();
@@ -104,8 +104,8 @@ int main() {
 	});
 
 	test("AccountRepositoryDB load sets premium day purchased = remaining days, if needed") = databaseTest(db, [&db] {
-		InMemoryLogger logger{};
-		AccountRepositoryDB accRepo{};
+		InMemoryLogger logger {};
+		AccountRepositoryDB accRepo {};
 
 		auto acc = std::make_unique<AccountInfo>();
 		accRepo.loadByID(1, acc);

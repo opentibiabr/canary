@@ -25,8 +25,8 @@ class Player;
  * Represents one key > value pair loaded from or saved to the database.
  */
 struct PlayerStorageRow {
-	uint32_t key;   // Storage key identifier
-	int32_t value;  // Stored integer value
+	uint32_t key; // Storage key identifier
+	int32_t value; // Stored integer value
 };
 
 /**
@@ -82,7 +82,7 @@ public:
 	 * @brief Represents the difference between in-memory storage state and the database.
 	 *
 	 * Used by IO code to persist only what changed since the last synchronization.
-	 * 
+	 *
 	 * - @ref upserts contains key>value pairs that must be inserted or updated.
 	 * - @ref deletions contains keys that must be removed from the database.
 	 *
@@ -90,7 +90,7 @@ public:
 	 * (e.g., IPlayerStorageRepository::upsert / deleteKeys).
 	 */
 	struct PlayerStorageDelta {
-		//Keys that were added or modified; should be upserted into the database.
+		// Keys that were added or modified; should be upserted into the database.
 		std::map<uint32_t, int32_t> upserts;
 
 		// Keys that were removed; should be deleted from the database.

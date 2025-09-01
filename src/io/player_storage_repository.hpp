@@ -46,4 +46,3 @@ public:
 };
 
 IPlayerStorageRepository &g_playerStorageRepository();
-

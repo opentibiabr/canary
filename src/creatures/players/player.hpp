@@ -160,7 +160,7 @@ public:
 	 * Achievements, Badges, Cyclopedia, Titles, Animus Mastery, Attached Effects,
 	 * and Storage, while marking the instance as a unit test mock by default.
 	 *
-	*/
+	 */
 	explicit Player();
 
 	explicit Player(std::shared_ptr<ProtocolGame> p);

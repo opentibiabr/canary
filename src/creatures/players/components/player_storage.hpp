@@ -14,15 +14,23 @@
 	#include <map>
 	#include <set>
 	#include <string>
+	#include <vector>
 #endif
 
 class Player;
 
 /**
- * @brief Manages a player's persistent storages.
+ * @brief Single storage entry.
  *
- * Encapsulates the player's storage map, providing operations for
- * reading, writing, saving, and loading.
+ * Represents one key > value pair loaded from or saved to the database.
+ */
+struct PlayerStorageRow {
+	uint32_t key;   // Storage key identifier
+	int32_t value;  // Stored integer value
+};
+
+/**
+ * @brief Manages a player's persistent storages.
  */
 class PlayerStorage {
 public:
@@ -31,6 +39,11 @@ public:
 	 * @param player Reference to the owning player.
 	 */
 	explicit PlayerStorage(Player &player);
+
+	/**
+	 * @brief Loads storage rows into memory.
+	 */
+	void ingest(const std::vector<PlayerStorageRow> &rows);
 
 	/**
 	 * @brief Sets the value of a storage key.
@@ -61,14 +74,38 @@ public:
 	int32_t get(uint32_t key) const;
 
 	/**
-	 * @brief Saves pending changes to the database.
+	 * @brief Synchronizes reserved ranges prior to persistence.
 	 */
-	bool save();
+	void prepareForPersist();
 
 	/**
-	 * @brief Loads values from the database.
+	 * @brief Represents the difference between in-memory storage state and the database.
+	 *
+	 * Used by IO code to persist only what changed since the last synchronization.
+	 * 
+	 * - @ref upserts contains key>value pairs that must be inserted or updated.
+	 * - @ref deletions contains keys that must be removed from the database.
+	 *
+	 * Produced by @ref PlayerStorage::delta() and consumed by repository calls
+	 * (e.g., IPlayerStorageRepository::upsert / deleteKeys).
 	 */
-	bool load();
+	struct PlayerStorageDelta {
+		//Keys that were added or modified; should be upserted into the database.
+		std::map<uint32_t, int32_t> upserts;
+
+		// Keys that were removed; should be deleted from the database.
+		std::vector<uint32_t> deletions;
+	};
+
+	/**
+	 * @brief Computes pending changes without touching the database.
+	 */
+	PlayerStorageDelta delta() const;
+
+	/**
+	 * @brief Clears modified and removed tracking sets.
+	 */
+	void clearDirty();
 
 	/**
 	 * @brief Returns the full storage map.
@@ -78,26 +115,17 @@ public:
 	}
 
 	/**
-	 * @brief Returns the keys modified since the last save.
+	 * @brief Returns the keys modified since the last persistence.
 	 */
 	auto getModifiedKeys() const {
 		return m_modifiedKeys;
 	}
 
 	/**
-	 * @brief Returns the keys removed since the last save.
+	 * @brief Returns the keys removed since the last persistence.
 	 */
 	auto getRemovedKeys() const {
 		return m_removedKeys;
-	}
-
-	/**
-	 * @brief Replaces the internal storage state.
-	 */
-	void setStorageData(const std::map<uint32_t, int32_t> &storageMap, const std::set<uint32_t> &modified, const std::set<uint32_t> &removed) {
-		m_storageMap = storageMap;
-		m_modifiedKeys = modified;
-		m_removedKeys = removed;
 	}
 
 private:
@@ -131,7 +159,7 @@ private:
 	Player &m_player;
 
 	/**
-	 * @brief Key→value map of persistent storages.
+	 * @brief Key>value map of persistent storages.
 	 *
 	 * Contains only keys actually stored. Special values:
 	 * - Missing key: interpreted as -1 by @ref get(uint32_t).

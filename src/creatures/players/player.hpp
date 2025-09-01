@@ -160,15 +160,8 @@ public:
 	 * Achievements, Badges, Cyclopedia, Titles, Animus Mastery, Attached Effects,
 	 * and Storage, while marking the instance as a unit test mock by default.
 	 *
-	 * @note This constructor must never be used in production code.
-	 * It exists exclusively to facilitate isolated unit testing of Player
-	 * components without requiring full game runtime initialization.
-	 *
-	 * @warning Using this constructor outside of a unit testing context may lead
-	 * to undefined behavior, incomplete initialization, or bypass of
-	 * required game systems.
-	 */
-	Player();
+	*/
+	explicit Player();
 
 	explicit Player(std::shared_ptr<ProtocolGame> p);
 	~Player() override;

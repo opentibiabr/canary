@@ -13,8 +13,6 @@
 #include "creatures/appearance/outfit/outfit.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/storages/storages.hpp"
-#include "utils/benchmark.hpp"
-#include "database/database.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
@@ -23,6 +21,7 @@
 	#include <array>
 	#include <utility>
 	#include <ranges>
+	#include <vector>
 #endif
 
 namespace {
@@ -44,6 +43,15 @@ namespace {
 
 PlayerStorage::PlayerStorage(Player &player) :
 	m_player(player) { }
+
+void PlayerStorage::ingest(const std::vector<PlayerStorageRow> &rows) {
+	m_storageMap.clear();
+	m_modifiedKeys.clear();
+	m_removedKeys.clear();
+	for (const auto &row : rows) {
+		add(row.key, row.value, true, false);
+	}
+}
 
 void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shouldStorageUpdate /* = false*/, const bool shouldTrackModification /*= true*/) {
 	if (isStorageKeyInRange(key, PSTRG_RESERVED_RANGE_START, PSTRG_RESERVED_RANGE_SIZE)) {
@@ -110,66 +118,22 @@ bool PlayerStorage::remove(const uint32_t key) {
 	return true;
 }
 
-bool PlayerStorage::save() {
+void PlayerStorage::prepareForPersist() {
 	getReservedRange();
-
-	if (m_removedKeys.empty() && m_modifiedKeys.empty()) {
-		return true;
-	}
-
-	auto playerGUID = m_player.getGUID();
-
-	Benchmark benchmarkSaveStorage;
-	if (!m_removedKeys.empty()) {
-		std::string keysList = fmt::format("{}", fmt::join(m_removedKeys, ", "));
-		std::string deleteQuery = fmt::format(
-			"DELETE FROM `player_storage` WHERE `player_id` = {} AND `key` IN ({})",
-			playerGUID, keysList
-		);
-
-		if (!g_database().executeQuery(deleteQuery)) {
-			g_logger().error("[PlayerStorage::save] - Failed to delete storage keys for player: {}", m_player.getName());
-			return false;
-		}
-
-		m_removedKeys.clear();
-	}
-
-	if (!m_modifiedKeys.empty()) {
-		DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-		storageQuery.upsert({ "value" });
-		for (const auto key : m_modifiedKeys) {
-			auto row = fmt::format("{}, {}, {}", playerGUID, key, m_storageMap.at(key));
-			if (!storageQuery.addRow(row)) {
-				g_logger().warn("[PlayerStorage::save] - Failed to add row for player storage: {}", m_player.getName());
-				return false;
-			}
-		}
-
-		if (!storageQuery.execute()) {
-			g_logger().error("[PlayerStorage::save] - Failed to execute storage insertion for player: {}", m_player.getName());
-			return false;
-		}
-
-		m_modifiedKeys.clear();
-	}
-
-	benchmarkSaveStorage.log("[PlayerStorage::save] Total function time");
-	return true;
 }
 
-bool PlayerStorage::load() {
-	Benchmark benchmarkLoadStorage;
-	auto query = fmt::format("SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = {}", m_player.getGUID());
-
-	for (auto result = g_database().storeQuery(query); result && result->hasNext(); result->next()) {
-		uint32_t key = result->getNumber<uint32_t>("key");
-		int32_t value = result->getNumber<int32_t>("value");
-		add(key, value, true, false);
+PlayerStorage::PlayerStorageDelta PlayerStorage::delta() const {
+	PlayerStorageDelta data;
+	for (auto key : m_modifiedKeys) {
+		data.upserts.emplace(key, m_storageMap.at(key));
 	}
+	data.deletions.assign(m_removedKeys.begin(), m_removedKeys.end());
+	return data;
+}
 
-	benchmarkLoadStorage.log("[PlayerStorage::load] Total function time");
-	return true;
+void PlayerStorage::clearDirty() {
+	m_modifiedKeys.clear();
+	m_removedKeys.clear();
 }
 
 void PlayerStorage::getReservedRange() {

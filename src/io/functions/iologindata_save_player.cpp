@@ -788,7 +788,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 
 bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginDataSave::savePlayerStorage] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return false;
 	}
 

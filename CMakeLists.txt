@@ -97,18 +97,16 @@ if(OPTIONS_ENABLE_SCCACHE)
     endif()
 endif()
 
-option(BUILD_TESTS "Build tests" OFF) # By default, tests will not be built
-option(RUN_TESTS_AFTER_BUILD "Run tests when building" OFF) # By default, tests will only run if requested
-
 # *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src)
 
-if(BUILD_TESTS OR PACKAGE_TESTS)
+include(CTest)
+if(BUILD_TESTING)
     log_option_enabled("tests")
     add_subdirectory(tests)
-    add_compile_definitions(BUILD_TESTS)
+    enable_testing()
 else()
     log_option_disabled("tests")
 endif()

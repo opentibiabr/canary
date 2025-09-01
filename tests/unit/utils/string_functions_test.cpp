@@ -25,7 +25,7 @@ suite<"utils"> replaceStringTest = [] {
 	};
 
 	for (const auto &replaceStringTestCase : replaceStringTestCases) {
-		test("replaceString") = [replaceStringTestCase ] {
+		test("replaceString") = [replaceStringTestCase] {
 			auto [subject, search, replace, expected] = replaceStringTestCase;
 			replaceString(subject, search, replace);
 			expect(eq(expected, subject)) << fmt::format("FAILED: {}", replaceStringTestCase.toString());

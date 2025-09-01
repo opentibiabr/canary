@@ -41,9 +41,9 @@ suite<"account"> accountTest = [] {
 	InMemoryLogger::install(injector);
 	DI::setTestContainer(&injector);
 
-	auto &repo_if  = injector.create<AccountRepository&>();
-	auto* accountRepository = &dynamic_cast<tests::InMemoryAccountRepository&>(repo_if);
-	auto* logger = &dynamic_cast<InMemoryLogger&>(injector.create<Logger&>());
+	auto &repo_if = injector.create<AccountRepository &>();
+	auto* accountRepository = &dynamic_cast<tests::InMemoryAccountRepository &>(repo_if);
+	auto* logger = &dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
 
 	auto withFresh = [accountRepository, logger](const char* name, auto fn) {
 		test(name) = [fn, accountRepository, logger] {
@@ -85,7 +85,7 @@ suite<"account"> accountTest = [] {
 
 	for (const auto &testCase : accountLoadTestCases) {
 		withFresh(testCase.description, [testCase, accountRepository] {
-			accountRepository->addAccount("canary@test.com", AccountInfo{1, 1, 1, AccountType::ACCOUNT_TYPE_GOD});
+			accountRepository->addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 			expect(eqEnum(testCase.account->load(), testCase.expectedError)) << testCase.description;
 		});
 	}

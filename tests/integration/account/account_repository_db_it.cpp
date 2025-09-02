@@ -19,19 +19,12 @@ namespace it_account_repo_db {
 		return [&db, load] {
 			db.executeQuery("BEGIN");
 
-			std::exception_ptr ep {};
-			try {
-				load();
-			} catch (const std::exception &) {
-				ep = std::current_exception();
-			} catch (...) {
-				ep = std::current_exception();
-			}
+			struct RollbackGuard {
+				Database* db;
+				~RollbackGuard() { db->executeQuery("ROLLBACK"); }
+			} guard{ &db };
 
-			db.executeQuery("ROLLBACK");
-			if (ep) {
-				std::rethrow_exception(ep);
-			}
+			load();
 		};
 	}
 

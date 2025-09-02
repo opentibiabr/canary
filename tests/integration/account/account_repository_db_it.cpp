@@ -2,11 +2,8 @@
 
 #include "account/account_repository_db.hpp"
 #include "account/account_info.hpp"
-#include "database/database.hpp"
 #include "enums/account_type.hpp"
-#include "lib/di/container.hpp"
-#include "lib/logging/in_memory_logger.hpp"
-#include "test_database.hpp"
+#include "test_env.hpp"
 #include "utils/tools.hpp"
 
 #include <exception>
@@ -15,50 +12,15 @@ using namespace boost::ut;
 
 namespace it_account_repo_db {
 
-	class DatabaseException : public std::exception {
-	public:
-		explicit DatabaseException(std::string message) :
-			message(std::move(message)) { }
-
-		const char* what() const noexcept override {
-			return message.c_str();
-		}
-
-	private:
-		std::string message;
-	};
-
-	inline auto databaseTest(Database &db, const std::function<void(void)> &load) {
-		return [&db, load] {
-			db.executeQuery("BEGIN");
-
-			std::exception_ptr ep {};
-			try {
-				load();
-			} catch (const DatabaseException &) {
-				ep = std::current_exception();
-			}
-
-			db.executeQuery("ROLLBACK");
-			if (ep) {
-				std::rethrow_exception(ep);
-			}
-		};
-	}
-
 	inline void createAccount(Database &db) {
 		auto lastDay = getTimeNow() + 11 * 86400;
-		db.executeQuery(fmt::format(
-			"INSERT INTO `accounts` "
-			"(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
-			"VALUES(111, 'test', '@test', '', 3, 11, {}, 11, 42183281)",
-			lastDay
-		));
-		db.executeQuery(fmt::format(
-			"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
-			"VALUES ('{}', 111, 1337)",
-			transformToSHA1("test")
-		));
+		db.executeQuery(fmt::format("INSERT INTO `accounts` "
+		                            "(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
+		                            "VALUES(111, 'test', '@test', '', 3, 11, {}, 11, 42183281)",
+		                            lastDay));
+		db.executeQuery(fmt::format("INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
+		                            "VALUES ('{}', 111, 1337)",
+		                            transformToSHA1("test")));
 	}
 
 	inline void assertAccountLoad(const AccountInfo &acc) {
@@ -71,26 +33,6 @@ namespace it_account_repo_db {
 		expect(eq(acc.premiumDaysPurchased, 11));
 		expect(approx(acc.creationTime, 42183281, 60 * 60 * 1000));
 	}
-
-	struct inline_env {
-		di::extension::injector<> injector {};
-		InMemoryLogger* logger { nullptr };
-		Database* db { nullptr };
-
-		static InMemoryLogger* init_logger(di::extension::injector<> &inj) {
-			InMemoryLogger::install(inj);
-			DI::setTestContainer(&inj);
-			return &dynamic_cast<InMemoryLogger &>(inj.create<Logger &>());
-		}
-
-		static Database* init_db() {
-			TestDatabase::init();
-			return &g_database();
-		}
-
-		inline_env() :
-			injector {}, logger { init_logger(injector) }, db { init_db() } { }
-	};
 
 	inline void register_loadByID(Database &db) {
 		test("AccountRepositoryDB::loadByID") = databaseTest(db, [&db] {
@@ -181,7 +123,7 @@ namespace it_account_repo_db {
 	}
 
 	inline suite<"AccountRepositoryDB"> suite_all = [] {
-		inline_env env;
+		auto &env = TestEnv::instance();
 		auto &db = *env.db;
 		auto &logger = *env.logger;
 

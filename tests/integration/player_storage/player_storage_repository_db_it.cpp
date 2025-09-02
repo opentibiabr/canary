@@ -5,6 +5,7 @@
 
 #include <exception>
 #include <functional>
+#include <vector>
 #include <fmt/format.h>
 
 using namespace boost::ut;
@@ -17,6 +18,15 @@ namespace it_player_storage_repo_db {
 	inline void createPlayer(Database &db) {
 		db.executeQuery(fmt::format("INSERT INTO `accounts` (`id`,`name`,`password`) VALUES ({}, 'acc', '')", ACCOUNT_ID));
 		db.executeQuery(fmt::format("INSERT INTO `players` (`id`,`name`,`account_id`,`conditions`) VALUES ({}, 'player', {}, '')", PLAYER_ID, ACCOUNT_ID));
+	}
+
+	inline bool hasRow(const std::vector<PlayerStorageRow> &rows, uint32_t key, int32_t value) {
+		for (auto &r : rows) {
+			if (r.key == key && r.value == value) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	inline void register_load(Database &db) {
@@ -61,32 +71,12 @@ namespace it_player_storage_repo_db {
 			expect(repo.upsert(PLAYER_ID, { { 1, 10 }, { 2, 20 } }));
 			auto rows = repo.load(PLAYER_ID);
 			expect(eq(rows.size(), 2_u));
-			bool found1 = false;
-			bool found2 = false;
-			for (auto &r : rows) {
-				if (r.key == 1 && r.value == 10) {
-					found1 = true;
-				}
-				if (r.key == 2 && r.value == 20) {
-					found2 = true;
-				}
-			}
-			expect(found1);
-			expect(found2);
+			expect(hasRow(rows, 1, 10));
+			expect(hasRow(rows, 2, 20));
 			expect(repo.upsert(PLAYER_ID, { { 1, 100 } }));
 			auto rows2 = repo.load(PLAYER_ID);
-			bool updated1 = false;
-			bool still2 = false;
-			for (auto &r : rows2) {
-				if (r.key == 1 && r.value == 100) {
-					updated1 = true;
-				}
-				if (r.key == 2 && r.value == 20) {
-					still2 = true;
-				}
-			}
-			expect(updated1);
-			expect(still2);
+			expect(hasRow(rows2, 1, 100));
+			expect(hasRow(rows2, 2, 20));
 		});
 	}
 

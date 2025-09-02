@@ -11,22 +11,37 @@
 
 struct TestEnv final {
 	di::extension::injector<> injector {};
-	InMemoryLogger* logger { nullptr };
-	Database* db { nullptr };
+	InMemoryLogger* logger;
+	Database* db;
 
-	TestEnv() {
-		InMemoryLogger::install(injector);
-		DI::setTestContainer(&injector);
-		logger = &dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
-		TestDatabase::init();
-		db = &g_database();
-	}
+	TestEnv();
 
-	static TestEnv &instance() {
-		static TestEnv env;
-		return env;
-	}
+	static TestEnv &instance();
+
+private:
+	InMemoryLogger* initLogger();
+	Database* initDb();
 };
+
+inline TestEnv::TestEnv() :
+	injector {}, logger(initLogger()), db(initDb()) { }
+
+inline InMemoryLogger* TestEnv::initLogger() {
+	InMemoryLogger::install(injector);
+	DI::setTestContainer(&injector);
+	return &dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
+}
+
+inline Database* TestEnv::initDb() {
+	TestDatabase::init();
+	return &g_database();
+}
+
+inline TestEnv testEnvInstance {};
+
+inline TestEnv &TestEnv::instance() {
+	return testEnvInstance;
+}
 
 inline auto databaseTest(Database &db, const std::function<void(void)> &load) {
 	return [&db, load] {

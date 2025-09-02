@@ -108,6 +108,6 @@ jobs:
         run: |
           ctest -V -R unit
 
-#      - name: Run Integration Tests
-#        run: |
-#          ctest -V -R integration
+      - name: Run Integration Tests
+        run: |
+          ctest -V -R integration

@@ -36,14 +36,13 @@ bool eqEnum(const T &lhs, const U &rhs) {
 
 suite<"account"> accountTest = [] {
 	// DI setup once
-	static di::extension::injector<> injector {};
-	tests::InMemoryAccountRepository::install(injector);
+	di::extension::injector<> injector {};
 	InMemoryLogger::install(injector);
+	tests::InMemoryAccountRepository::install(injector);
 	DI::setTestContainer(&injector);
 
-	auto &repo_if = injector.create<AccountRepository &>();
-	auto* accountRepository = &dynamic_cast<tests::InMemoryAccountRepository &>(repo_if);
-	auto* logger = &dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
+	auto* accountRepository = &dynamic_cast<tests::InMemoryAccountRepository &>(DI::get<AccountRepository>());
+	auto* logger = &dynamic_cast<InMemoryLogger &>(DI::get<Logger>());
 
 	auto withFresh = [accountRepository, logger](const char* name, auto fn) {
 		test(name) = [fn, accountRepository, logger] {

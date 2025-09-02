@@ -15,18 +15,34 @@ using namespace boost::ut;
 
 namespace it_account_repo_db {
 
+	class DatabaseException : public std::exception {
+	public:
+		explicit DatabaseException(std::string message) :
+			message(std::move(message)) { }
+
+		const char* what() const noexcept override {
+			return message.c_str();
+		}
+
+	private:
+		std::string message;
+	};
+
 	inline auto databaseTest(Database &db, const std::function<void(void)> &load) {
 		return [&db, load] {
 			db.executeQuery("BEGIN");
 
-			struct RollbackGuard {
-				Database* db;
-				~RollbackGuard() {
-					db->executeQuery("ROLLBACK");
-				}
-			} guard { &db };
+			std::exception_ptr ep {};
+			try {
+				load();
+			} catch (const DatabaseException &) {
+				ep = std::current_exception();
+			}
 
-			load();
+			db.executeQuery("ROLLBACK");
+			if (ep) {
+				std::rethrow_exception(ep);
+			}
 		};
 	}
 

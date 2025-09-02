@@ -21,12 +21,9 @@ namespace it_player_storage_repo_db {
 	}
 
 	inline bool hasRow(const std::vector<PlayerStorageRow> &rows, uint32_t key, int32_t value) {
-		for (auto &r : rows) {
-			if (r.key == key && r.value == value) {
-				return true;
-			}
-		}
-		return false;
+		return std::ranges::any_of(rows, [key, value](const auto &r) {
+			return r.key == key && r.value == value;
+		});
 	}
 
 	inline void register_load(Database &db) {

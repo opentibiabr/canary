@@ -16,7 +16,9 @@
 class TestDatabase final {
 	struct TransparentHash {
 		using is_transparent = void;
-		size_t operator()(std::string_view s) const noexcept { return std::hash<std::string_view>{}(s); }
+		size_t operator()(std::string_view s) const noexcept {
+			return std::hash<std::string_view> {}(s);
+		}
 	};
 	struct TestEnvError : public std::runtime_error {
 		using std::runtime_error::runtime_error;
@@ -80,7 +82,7 @@ class TestDatabase final {
 			// OS env takes precedence
 			return std::string { v };
 		}
-		if (auto it = m.find(std::string_view{key}); it != m.end() && !it->second.empty()) {
+		if (auto it = m.find(std::string_view { key }); it != m.end() && !it->second.empty()) {
 			return it->second;
 		}
 		if (required) {

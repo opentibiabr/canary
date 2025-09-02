@@ -77,11 +77,8 @@ namespace it_account_repo_db {
 			return &g_database();
 		}
 
-		inline_env()
-			: injector {}
-			, logger { init_logger(injector) }
-			, db { init_db() }
-		{}
+		inline_env() :
+			injector {}, logger { init_logger(injector) }, db { init_db() } { }
 	};
 
 	inline void register_loadByID(Database &db) {

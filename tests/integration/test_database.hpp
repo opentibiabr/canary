@@ -49,7 +49,7 @@ class TestDatabase final {
 
 #ifdef TESTS_ENV_DEFAULT
 		if (std::filesystem::exists(TESTS_ENV_DEFAULT)) {
-			return TESTS_ENV_DEFAULT;
+			return std::string { TESTS_ENV_DEFAULT };
 		}
 #endif
 

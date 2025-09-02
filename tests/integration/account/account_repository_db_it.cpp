@@ -9,6 +9,8 @@
 #include "test_database.hpp"
 #include "utils/tools.hpp"
 
+#include <exception>
+
 using namespace boost::ut;
 
 namespace it_account_repo_db {
@@ -17,12 +19,19 @@ namespace it_account_repo_db {
 		return [&db, load] {
 			db.executeQuery("BEGIN");
 
+			std::exception_ptr ep {};
 			try {
 				load();
+			} catch (const std::exception &) {
+				ep = std::current_exception();
 			} catch (...) {
+				ep = std::current_exception();
 			}
 
 			db.executeQuery("ROLLBACK");
+			if (ep) {
+				std::rethrow_exception(ep);
+			}
 		};
 	}
 
@@ -41,28 +50,38 @@ namespace it_account_repo_db {
 		));
 	}
 
-	inline void assertAccountLoad(const std::unique_ptr<AccountInfo> &acc) {
-		expect(eq(acc->id, 111));
-		expect(eq(acc->accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
-		expect(eq(acc->premiumRemainingDays, 11));
-		expect(approx(acc->premiumLastDay, getTimeNow() + 11 * 86400, 60));
-		expect(eq(acc->players.size(), 0u));
-		expect(eq(acc->oldProtocol, false));
-		expect(eq(acc->premiumDaysPurchased, 11));
-		expect(approx(acc->creationTime, 42183281, 60 * 60 * 1000));
+	inline void assertAccountLoad(const AccountInfo &acc) {
+		expect(eq(acc.id, 111));
+		expect(eq(acc.accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
+		expect(eq(acc.premiumRemainingDays, 11));
+		expect(approx(acc.premiumLastDay, getTimeNow() + 11 * 86400, 60));
+		expect(eq(acc.players.size(), 0u));
+		expect(eq(acc.oldProtocol, false));
+		expect(eq(acc.premiumDaysPurchased, 11));
+		expect(approx(acc.creationTime, 42183281, 60 * 60 * 1000));
 	}
 
 	struct inline_env {
 		di::extension::injector<> injector {};
 		InMemoryLogger* logger { nullptr };
 		Database* db { nullptr };
-		inline_env() {
-			InMemoryLogger::install(injector);
-			DI::setTestContainer(&injector);
-			TestDatabase::init();
-			db = &g_database();
-			logger = &dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
+
+		static InMemoryLogger* init_logger(di::extension::injector<> &inj) {
+			InMemoryLogger::install(inj);
+			DI::setTestContainer(&inj);
+			return &dynamic_cast<InMemoryLogger &>(inj.create<Logger &>());
 		}
+
+		static Database* init_db() {
+			TestDatabase::init();
+			return &g_database();
+		}
+
+		inline_env()
+			: injector {}
+			, logger { init_logger(injector) }
+			, db { init_db() }
+		{}
 	};
 
 	inline void register_loadByID(Database &db) {
@@ -71,7 +90,7 @@ namespace it_account_repo_db {
 			createAccount(db);
 			auto acc = std::make_unique<AccountInfo>();
 			accRepo.loadByID(111, acc);
-			assertAccountLoad(acc);
+			assertAccountLoad(*acc);
 			expect(eq(acc->sessionExpires, 0));
 		});
 	}
@@ -82,7 +101,7 @@ namespace it_account_repo_db {
 			createAccount(db);
 			auto acc = std::make_unique<AccountInfo>();
 			accRepo.loadByEmailOrName(false, "@test", acc);
-			assertAccountLoad(acc);
+			assertAccountLoad(*acc);
 			expect(eq(acc->sessionExpires, 0));
 		});
 	}
@@ -93,7 +112,7 @@ namespace it_account_repo_db {
 			createAccount(db);
 			auto acc = std::make_unique<AccountInfo>();
 			accRepo.loadBySession("test", acc);
-			assertAccountLoad(acc);
+			assertAccountLoad(*acc);
 			expect(eq(acc->sessionExpires, 1337));
 		});
 	}

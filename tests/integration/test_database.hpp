@@ -5,6 +5,8 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
+#include <functional>
 #include <unordered_map>
 
 #include "database/database.hpp"
@@ -12,9 +14,18 @@
 // Loads DB test configuration from a .env-like file and/or OS env vars.
 // Priority: OS env > file > default. Password is required.
 class TestDatabase final {
-	static std::unordered_map<std::string, std::string>
+	struct TransparentHash {
+		using is_transparent = void;
+		size_t operator()(std::string_view s) const noexcept { return std::hash<std::string_view>{}(s); }
+	};
+	struct TestEnvError : public std::runtime_error {
+		using std::runtime_error::runtime_error;
+	};
+	using EnvMap = std::unordered_map<std::string, std::string, TransparentHash, std::equal_to<>>;
+
+	static EnvMap
 	loadEnvFile(const std::string &path) {
-		std::unordered_map<std::string, std::string> map;
+		EnvMap map;
 		std::ifstream in(path);
 		if (!in) {
 			return map;
@@ -61,19 +72,19 @@ class TestDatabase final {
 			}
 		}
 
-		throw std::runtime_error("Test .env file not found. Set TEST_ENV_FILE or define TESTS_ENV_DEFAULT.");
+		throw TestEnvError("Test .env file not found. Set TEST_ENV_FILE or define TESTS_ENV_DEFAULT.");
 	}
 
-	static std::string get(const std::unordered_map<std::string, std::string> &m, const char* key, const char* def = nullptr, bool required = false) {
+	static std::string get(const EnvMap &m, const char* key, const char* def = nullptr, bool required = false) {
 		if (const char* v = std::getenv(key); v && *v) {
 			// OS env takes precedence
 			return std::string { v };
 		}
-		if (auto it = m.find(key); it != m.end() && !it->second.empty()) {
+		if (auto it = m.find(std::string_view{key}); it != m.end() && !it->second.empty()) {
 			return it->second;
 		}
 		if (required) {
-			throw std::runtime_error(std::string("Missing required key: ") + key);
+			throw TestEnvError(std::string("Missing required key: ") + key);
 		}
 
 		return def ? std::string { def } : std::string {};
@@ -89,7 +100,7 @@ public:
 		std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
 		std::string database = get(env, "TEST_DB_NAME", "otservbr-global");
 		std::string portStr = get(env, "TEST_DB_PORT", "3306");
-		uint32_t port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
+		auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
 		std::string sock = get(env, "TEST_DB_SOCKET", "");
 
 		g_database().connect(&host, &user, &pass, &database, port, &sock);

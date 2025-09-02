@@ -28,6 +28,7 @@
 #include "creatures/players/management/ban.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -6009,7 +6010,7 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 
 void ProtocolGame::sendForgeHistory(uint8_t page) {
 	page = page + 1;
-	auto historyVector = player->getForgeHistory();
+	const auto &historyVector = player->forgeHistory().get();
 	auto historyVectorLen = historyVector.size();
 
 	uint16_t currentPage = 1;

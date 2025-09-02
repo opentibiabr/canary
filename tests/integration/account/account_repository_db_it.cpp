@@ -21,8 +21,10 @@ namespace it_account_repo_db {
 
 			struct RollbackGuard {
 				Database* db;
-				~RollbackGuard() { db->executeQuery("ROLLBACK"); }
-			} guard{ &db };
+				~RollbackGuard() {
+					db->executeQuery("ROLLBACK");
+				}
+			} guard { &db };
 
 			load();
 		};

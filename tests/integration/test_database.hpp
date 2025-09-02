@@ -13,7 +13,7 @@
 // Priority: OS env > file > default. Password is required.
 class TestDatabase final {
 	static std::unordered_map<std::string, std::string>
-	loadEnvFile(const std::string& path) {
+	loadEnvFile(const std::string &path) {
 		std::unordered_map<std::string, std::string> map;
 		std::ifstream in(path);
 		if (!in) {
@@ -48,13 +48,17 @@ class TestDatabase final {
 		}
 
 #ifdef TESTS_ENV_DEFAULT
-		if (std::filesystem::exists(TESTS_ENV_DEFAULT)) return TESTS_ENV_DEFAULT;
+		if (std::filesystem::exists(TESTS_ENV_DEFAULT)) {
+			return TESTS_ENV_DEFAULT;
+		}
 #endif
 
 		// Try common relative locations from build or binary dirs.
 		namespace fs = std::filesystem;
-		for (const char* cand : {"tests/.env", "../tests/.env", "../../tests/.env"}) {
-			if (fs::exists(cand)) return cand;
+		for (const char* cand : { "tests/.env", "../tests/.env", "../../tests/.env" }) {
+			if (fs::exists(cand)) {
+				return cand;
+			}
 		}
 
 		throw std::runtime_error("Test .env file not found. Set TEST_ENV_FILE or define TESTS_ENV_DEFAULT.");
@@ -63,7 +67,7 @@ class TestDatabase final {
 	static std::string get(const std::unordered_map<std::string, std::string> &m, const char* key, const char* def = nullptr, bool required = false) {
 		if (const char* v = std::getenv(key); v && *v) {
 			// OS env takes precedence
-			return std::string{v};
+			return std::string { v };
 		}
 		if (auto it = m.find(key); it != m.end() && !it->second.empty()) {
 			return it->second;
@@ -72,7 +76,7 @@ class TestDatabase final {
 			throw std::runtime_error(std::string("Missing required key: ") + key);
 		}
 
-		return def ? std::string{def} : std::string{};
+		return def ? std::string { def } : std::string {};
 	}
 
 public:
@@ -84,7 +88,7 @@ public:
 		std::string user = get(env, "TEST_DB_USER", "root");
 		std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
 		std::string database = get(env, "TEST_DB_NAME", "otservbr-global");
-		std::string portStr	= get(env, "TEST_DB_PORT", "3306");
+		std::string portStr = get(env, "TEST_DB_PORT", "3306");
 		uint32_t port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
 		std::string sock = get(env, "TEST_DB_SOCKET", "");
 

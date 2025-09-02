@@ -1,0 +1,146 @@
+#include <boost/ut.hpp>
+
+#include "account/account_repository_db.hpp"
+#include "account/account_info.hpp"
+#include "database/database.hpp"
+#include "enums/account_type.hpp"
+#include "lib/di/container.hpp"
+#include "lib/logging/in_memory_logger.hpp"
+#include "test_database.hpp"
+#include "utils/tools.hpp"
+
+using namespace boost::ut;
+
+auto databaseTest(Database &db, const std::function<void(void)> &load) {
+	return [&db, load] {
+		db.executeQuery("BEGIN");
+
+		try {
+			load();
+		} catch (...) {
+		}
+
+		db.executeQuery("ROLLBACK");
+	};
+}
+
+void createAccount(Database &db) {
+	auto lastDay = getTimeNow() + 11 * 86400;
+	db.executeQuery(fmt::format("INSERT INTO `accounts` "
+	                            "(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
+	                            "VALUES(111, 'test', '@test', '', 3, 11, {}, 11, 42183281)",
+	                            lastDay));
+
+	db.executeQuery(fmt::format("INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
+	                            "VALUES ('{}', 111, 1337)",
+	                            transformToSHA1("test")));
+}
+
+void assertAccountLoad(const std::unique_ptr<AccountInfo> &acc) {
+	expect(eq(acc->id, 111));
+	expect(eq(acc->accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
+	expect(eq(acc->premiumRemainingDays, 11));
+	expect(approx(acc->premiumLastDay, getTimeNow() + 11 * 86400, 60));
+	expect(eq(acc->players.size(), 0));
+	expect(eq(acc->oldProtocol, false));
+	expect(eq(acc->premiumDaysPurchased, 11));
+	expect(approx(acc->creationTime, 42183281, 60 * 60 * 1000));
+}
+
+suite<"AccountRepositoryDB"> account_repository_db_it = [] {
+	static di::extension::injector<> injector {};
+	InMemoryLogger::install(injector);
+	DI::setTestContainer(&injector);
+	TestDatabase::init();
+
+	auto &db = g_database();
+	auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
+
+	test("AccountRepositoryDB::loadByID") = databaseTest(db, [&db] {
+		AccountRepositoryDB accRepo {};
+		createAccount(db);
+
+		auto acc = std::make_unique<AccountInfo>();
+		accRepo.loadByID(111, acc);
+		assertAccountLoad(acc);
+		expect(eq(acc->sessionExpires, 0));
+	});
+
+	test("AccountRepositoryDB::loadByEmailOrName") = databaseTest(db, [&db] {
+		AccountRepositoryDB accRepo {};
+		createAccount(db);
+
+		auto acc = std::make_unique<AccountInfo>();
+		accRepo.loadByEmailOrName(false, "@test", acc);
+		assertAccountLoad(acc);
+		expect(eq(acc->sessionExpires, 0));
+	});
+
+	test("AccountRepositoryDB::loadBySession") = databaseTest(db, [&db] {
+		AccountRepositoryDB accRepo {};
+		createAccount(db);
+
+		auto acc = std::make_unique<AccountInfo>();
+		accRepo.loadBySession("test", acc);
+
+		assertAccountLoad(acc);
+		expect(eq(acc->sessionExpires, 1337));
+	});
+
+	test("AccountRepositoryDB load sets premium day purchased = remaining days, if needed") = databaseTest(db, [&db] {
+		AccountRepositoryDB accRepo {};
+
+		auto acc = std::make_unique<AccountInfo>();
+		accRepo.loadByID(1, acc);
+		acc->premiumLastDay = getTimeNow() + 10 * 86400;
+		acc->premiumRemainingDays = 10;
+		acc->premiumDaysPurchased = 0;
+		accRepo.save(acc);
+
+		accRepo.loadByID(1, acc);
+
+		expect(eq(acc->premiumDaysPurchased, 10));
+	});
+
+	test("AccountRepositoryDB::getPassword") = databaseTest(db, [&db] {
+		AccountRepositoryDB accRepo {};
+
+		std::string password {};
+
+		expect(accRepo.getPassword(1, password));
+		expect(eq(password, std::string { "21298df8a3277357ee55b01df9530b535cf08ec1" }));
+	});
+
+	test("AccountRepositoryDB::getPassword logs on failure") = databaseTest(db, [&db, &logger] {
+		AccountRepositoryDB accRepo {};
+
+		std::string password {};
+		logger.logs.clear();
+
+		expect(!accRepo.getPassword(891237, password));
+		expect(logger.logs.size() >= 1_u);
+		expect(eq(logger.logs.back().level, std::string { "error" }));
+		expect(eq(logger.logs.back().message, std::string { "Failed to get account:[891237] password!" }));
+	});
+
+	test("AccountRepositoryDB::save") = databaseTest(db, [&db] {
+		AccountRepositoryDB accRepo {};
+
+		auto acc = std::make_unique<AccountInfo>();
+		acc->id = 1;
+		acc->accountType = AccountType::ACCOUNT_TYPE_SENIORTUTOR;
+		acc->premiumRemainingDays = 10;
+		acc->premiumLastDay = getTimeNow() + acc->premiumRemainingDays * 86400;
+		acc->sessionExpires = 99999999;
+		expect(accRepo.save(acc));
+
+		auto acc2 = std::make_unique<AccountInfo>();
+		accRepo.loadByID(1, acc2);
+		expect(eq(acc2->id, 1));
+		expect(eq(acc2->accountType, AccountType::ACCOUNT_TYPE_SENIORTUTOR));
+		expect(eq(acc2->premiumRemainingDays, 10));
+		expect(approx(acc2->premiumLastDay, acc->premiumLastDay, 60));
+		// sessionExpires is not saved
+		expect(eq(acc2->sessionExpires, 0));
+	});
+};

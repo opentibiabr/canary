@@ -22,6 +22,8 @@
 #include "creatures/players/grouping/familiars.hpp"
 #include "utils/const.hpp"
 
+#include "injection_fixture.hpp"
+
 using namespace boost::ut;
 
 static void reg_add_and_get_storage_value() {
@@ -165,6 +167,10 @@ static void reg_get_missing_key() {
 }
 
 suite<"player_storage"> playerStorageTests = [] {
+	static di::extension::injector<> injector {};
+	InMemoryLogger::install(injector);
+	DI::setTestContainer(&injector);
+
 	reg_add_and_get_storage_value();
 	reg_remove_storage_value();
 	reg_passthrough_mounts();

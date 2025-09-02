@@ -67,7 +67,7 @@ void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shou
 			return;
 		}
 
-		if (!m_player.m_isUnitTestMock && !isInPassThrough(key)) {
+		if (!isInPassThrough(key)) {
 			g_logger().warn("Unknown reserved key: {} for player: {}", key, m_player.getName());
 		}
 	}

@@ -69,7 +69,6 @@ MuteCountMap Player::muteCountMap;
  * For full documentation and usage notes, see the function declaration.
  */
 Player::Player() :
-	m_isUnitTestMock(true),
 	m_playerVIP(*this),
 	m_wheelPlayer(*this),
 	m_playerAchievement(*this),

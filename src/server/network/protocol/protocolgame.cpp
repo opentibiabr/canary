@@ -7122,7 +7122,6 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 
 	if (isLogin) {
 		sendMagicEffect(pos, CONST_ME_TELEPORT);
-		sendHotkeyPreset();
 		sendDisableLoginMusic();
 	}
 
@@ -7196,8 +7195,8 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	player->sendGameNews();
 	player->sendIcons();
 
-	// We need to manually send the open containers on player login, on IOLoginData it won't work.
-	if (isLogin && oldProtocol) {
+	// Send open containers after login.
+	if (isLogin) {
 		player->openPlayerContainers();
 	}
 }
@@ -9793,20 +9792,6 @@ void ProtocolGame::sendDisableLoginMusic() {
 	msg.addByte(0x00);
 	msg.addByte(0x00);
 	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendHotkeyPreset() {
-	if (!player || oldProtocol) {
-		return;
-	}
-
-	auto vocation = g_vocations().getVocation(player->getVocation()->getBaseId());
-	if (vocation) {
-		NetworkMessage msg;
-		msg.addByte(0x9D);
-		msg.add<uint32_t>(vocation->getClientId());
-		writeToOutputBuffer(msg);
-	}
 }
 
 void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {

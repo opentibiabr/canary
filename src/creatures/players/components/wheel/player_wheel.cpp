@@ -317,7 +317,10 @@ namespace {
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
-	m_pointsPerLevel(g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL)), m_player(initPlayer) {
+	m_player(initPlayer) { }
+
+void PlayerWheel::init() {
+	m_pointsPerLevel = g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL);
 }
 
 bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) const {

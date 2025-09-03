@@ -12,4 +12,5 @@ target_sources(${PROJECT_NAME}_lib PRIVATE
     iomapserialize.cpp
     iomarket.cpp
     ioprey.cpp
+    player_storage_repository_db.cpp
 )

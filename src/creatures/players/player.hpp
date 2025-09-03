@@ -1600,8 +1600,6 @@ private:
 	// Bestiary
 	bool charmExpansion = false;
 
-	bool m_isUnitTestMock = false;
-
 	std::array<CharmInfo, magic_enum::enum_count<charmRune_t>() + 1> charmsArray = {};
 	uint32_t charmPoints = 0;
 	uint32_t minorCharmEchoes = 0;

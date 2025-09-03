@@ -795,15 +795,15 @@ bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 
 	auto &storage = player->storage();
 	storage.prepareForPersist();
-	auto d = storage.delta();
+	auto delta = storage.delta();
 	auto guid = player->getGUID();
 	auto &repo = g_playerStorageRepository();
 
-	if (!d.deletions.empty() && !repo.deleteKeys(guid, d.deletions)) {
+	if (!delta.deletions.empty() && !repo.deleteKeys(guid, delta.deletions)) {
 		return false;
 	}
 
-	if (!d.upserts.empty() && !repo.upsert(guid, d.upserts)) {
+	if (!delta.upserts.empty() && !repo.upsert(guid, delta.upserts)) {
 		return false;
 	}
 

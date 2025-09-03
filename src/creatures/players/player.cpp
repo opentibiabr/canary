@@ -69,12 +69,12 @@ MuteCountMap Player::muteCountMap;
  * For full documentation and usage notes, see the function declaration.
  */
 Player::Player() :
-	m_playerVIP(*this),
 	m_wheelPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
+	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this) {
@@ -85,12 +85,12 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)),
-	m_playerVIP(*this),
 	m_wheelPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
+	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this) {

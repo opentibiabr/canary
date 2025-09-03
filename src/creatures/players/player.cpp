@@ -67,12 +67,12 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	lastPong(lastPing),
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)),
-	m_playerVIP(*this),
 	m_wheelPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
+	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this) { }
 
@@ -8889,7 +8889,7 @@ uint32_t sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<
 }
 
 void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems) {
-	if (!item || !item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH) {
+	if (!item || (!item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH)) {
 		sendCancelMessage("This item cannot be stowed here.");
 		return;
 	}

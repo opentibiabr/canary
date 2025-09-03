@@ -3004,7 +3004,6 @@ void ProtocolGame::sendBestiaryCharms() {
 	msg.addByte(charmList.size());
 	for (const auto &c_type : charmList) {
 		msg.addByte(c_type->id);
-		const auto &charmPoints = c_type->points;
 		if (g_iobestiary().hasCharmUnlockedRuneBit(c_type, player->getUnlockedRunesBit())) {
 			const auto charmTier = player->getCharmTier(c_type->id);
 			msg.addByte(charmTier);

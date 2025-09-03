@@ -6,6 +6,7 @@ local config = {
 			return true
 		end,
 	},
+	requiredLevel = 250,
 	timeToFightAgain = 20 * 60 * 60,
 	playerPositions = {
 		{ pos = Position(34058, 32396, 14), teleport = Position(34032, 32331, 14) },

@@ -34,8 +34,20 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # Configure build options for compatibility with commodity CPUs
 if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mtune=generic -mno-avx -mno-sse4")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=x86-64 -mtune=generic -mno-avx -mno-sse4")
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mtune=generic -mno-avx -mno-sse4")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=x86-64 -mtune=generic -mno-avx -mno-sse4")
+    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64")
+        # ARM64 specific flags for compatibility
+        if(APPLE)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mcpu=apple-a14")
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mcpu=apple-a14")
+        else()
+            # Generic ARM64 flags for Linux/other systems
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv8-a -mtune=generic")
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=armv8-a -mtune=generic")
+        endif()
+    endif()
 endif()
 
 # *****************************************************************************
@@ -85,14 +97,16 @@ if(OPTIONS_ENABLE_SCCACHE)
     endif()
 endif()
 
-option(BUILD_TESTS "Build tests" OFF) # By default, tests will not be built
-option(RUN_TESTS_AFTER_BUILD "Run tests when building" OFF) # By default, tests will only run if requested
-
 # *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src)
 
-if(BUILD_TESTS OR PACKAGE_TESTS)
+include(CTest)
+if(BUILD_TESTING)
+    log_option_enabled("tests")
     add_subdirectory(tests)
+    enable_testing()
+else()
+    log_option_disabled("tests")
 endif()

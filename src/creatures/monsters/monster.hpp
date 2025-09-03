@@ -269,6 +269,7 @@ private:
 	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
 
 	int64_t lastMeleeAttack = 0;
+	int64_t targetReactTime = 0;
 
 	uint16_t totalPlayersOnScreen = 0;
 

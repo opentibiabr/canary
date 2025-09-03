@@ -27,6 +27,7 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
+#include "io/player_storage_repository.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
 	try {
@@ -745,20 +746,14 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStorageMap(const std::shared_ptr<Player> &player, DBResult_ptr result) {
-	if (!result || !player) {
-		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+void IOLoginDataLoad::loadPlayerStorageMap(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "SELECT `key`, `value` FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if ((result = db.storeQuery(query.str()))) {
-		do {
-			player->addStorageValue(result->getNumber<uint32_t>("key"), result->getNumber<int32_t>("value"), true);
-		} while (result->next());
-	}
+	auto rows = g_playerStorageRepository().load(player->getGUID());
+	player->storage().ingest(rows);
 }
 
 void IOLoginDataLoad::loadPlayerVip(const std::shared_ptr<Player> &player, DBResult_ptr result) {

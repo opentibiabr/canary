@@ -17,6 +17,8 @@ class AnimusMastery {
 public:
 	explicit AnimusMastery(Player &player);
 
+	void init();
+
 	void add(const std::string &addMonsterType);
 	void remove(const std::string &removeMonsterType);
 

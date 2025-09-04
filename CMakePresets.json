@@ -2,7 +2,7 @@
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 22,
+    "minor": 24,
     "patch": 0
   },
   "configurePresets": [
@@ -13,6 +13,7 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_COLOR_DIAGNOSTICS": "ON",
         "BUILD_STATIC_LIBRARY": "ON",
         "SPEED_UP_BUILD_UNITY": "ON",
         "OPTIONS_ENABLE_SCCACHE": "ON",

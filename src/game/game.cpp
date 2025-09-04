@@ -3756,151 +3756,205 @@ void Game::playerStopAutoWalk(uint32_t playerId) {
 	player->stopWalk();
 }
 
-void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId) {
-	metrics::method_latency measure(__METRICS_METHOD_NAME__);
-	const auto &player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
+void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint16_t fromItemId,
+                           const Position& toPos, uint8_t toStackPos, uint16_t toItemId)
+{
+    metrics::method_latency measure(__METRICS_METHOD_NAME__);
 
-	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
-	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
-		return;
-	}
+    Player* player = getPlayerByID(playerId);
+    if (!player) return;
 
-	const std::shared_ptr<Thing> &thing = internalGetThing(player, fromPos, fromStackPos, fromItemId, STACKPOS_FIND_THING);
-	if (!thing) {
-		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-		return;
-	}
+    const bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
+    if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) return;
 
-	const auto &item = thing->getItem();
-	if (!item || !item->isMultiUse() || item->getID() != fromItemId) {
-		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-		return;
-	}
+    const std::shared_ptr<Thing>& thing = internalGetThing(player, fromPos, fromStackPos, fromItemId, STACKPOS_FIND_THING);
+    if (!thing) { player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE); return; }
 
-	bool canUseHouseItem = !g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) || InternalGame::playerCanUseItemOnHouseTile(player, item);
-	if (!canUseHouseItem && item->hasOwner() && !item->isOwner(player)) {
-		player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
-		return;
-	} else if (!canUseHouseItem) {
-		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
-		return;
-	}
+    const std::shared_ptr<Item>& item = thing->getItem();
+    if (!item || !item->isMultiUse() || item->getID() != fromItemId) {
+        player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+        return;
+    }
 
-	Position walkToPos = fromPos;
-	ReturnValue ret = g_actions().canUse(player, fromPos);
-	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_actions().canUse(player, toPos, item);
-		if (ret == RETURNVALUE_TOOFARAWAY) {
-			walkToPos = toPos;
-		}
-	}
+    const bool canUseHouseItem =
+        !g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) ||
+        InternalGame::playerCanUseItemOnHouseTile(player, item);
 
-	const ItemType &it = Item::items[item->getID()];
-	bool canTriggerExhaustion = it.triggerExhaustion();
-	if (canTriggerExhaustion) {
-		if (player->walkExhausted()) {
-			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-			return;
-		}
-	}
+    if (!canUseHouseItem && item->hasOwner() && !item->isOwner(player)) {
+        player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
+        return;
+    } else if (!canUseHouseItem) {
+        player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+        return;
+    }
 
-	if (ret != RETURNVALUE_NOERROR) {
-		if (ret == RETURNVALUE_TOOFARAWAY) {
-			Position itemPos = fromPos;
-			uint8_t itemStackPos = fromStackPos;
+    const ItemType& it = Item::items[item->getID()];
+    const bool canTriggerExhaustion = it.triggerExhaustion();
+    if (canTriggerExhaustion && player->walkExhausted()) {
+        player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+        return;
+    }
 
-			if (fromPos.x != 0xFFFF && toPos.x != 0xFFFF && Position::areInRange<1, 1, 0>(fromPos, player->getPosition()) && !Position::areInRange<1, 1, 0>(fromPos, toPos)) {
-				std::shared_ptr<Item> moveItem = nullptr;
+    auto planPathNear = [player](const Position& target, std::vector<Direction>& outDirs, Position& outGoto) -> bool {
+        auto canPathTo = [player](const Position& p, std::vector<Direction>& out) -> bool {
+            std::vector<Direction> tmp;
+            if (player->getPathTo(p, tmp, 0, 1, true, false)) {
+                out = std::move(tmp);
+                return true;
+            }
+            return false;
+        };
 
-				ret = internalMoveItem(item->getParent(), player, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem);
-				if (ret != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret);
-					return;
-				}
+        if (canPathTo(target, outDirs)) { outGoto = target; return true; }
 
-				// changing the position since its now in the inventory of the player
-				internalGetPosition(moveItem, itemPos, itemStackPos);
-			}
+        static constexpr int dx[8] = { -1, 0, 1, 0, -1, 1, 1, -1 };
+        static constexpr int dy[8] = {  0, 1, 0,-1, -1,-1, 1,  1 };
+        for (int i = 0; i < 8; ++i) {
+            Position cand{ target.x + dx[i], target.y + dy[i], target.z };
+            if (canPathTo(cand, outDirs)) { outGoto = cand; return true; }
+        }
+        return false;
+    };
 
-			std::vector<Direction> listDir;
-			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, __FUNCTION__);
-				const auto &task = createPlayerTask(
-					400,
-					[this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId] {
-						playerUseItemEx(playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId);
-					},
-					__FUNCTION__
-				);
-				if (canTriggerExhaustion) {
-					player->setNextPotionActionTask(task);
-				} else {
-					player->setNextWalkActionTask(task);
-				}
-			} else {
-				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
-			}
-			return;
-		}
+    auto moveItemToCarry = [this, player](const std::shared_ptr<Item>& srcItem,
+                                          Position& newFromPos, uint8_t& newFromStack) -> ReturnValue {
+        std::shared_ptr<Item> moved;
 
-		player->sendCancelMessage(ret);
-		return;
-	}
+        if (Item* bp = player->getInventoryItem(CONST_SLOT_BACKPACK)) {
+            if (Container* cont = bp->getContainer()) {
+                ReturnValue mv = internalMoveItem(srcItem->getParent(), cont, INDEX_WHEREEVER,
+                                                  srcItem, srcItem->getItemCount(), &moved);
+                if (mv == RETURNVALUE_NOERROR && moved) {
+                    internalGetPosition(moved, newFromPos, newFromStack);
+                    return RETURNVALUE_NOERROR;
+                }
+            }
+        }
 
-	bool canDoAction = player->canDoAction();
-	if (canTriggerExhaustion) {
-		canDoAction = player->canDoPotionAction();
-	}
+        constexpr slots_t hands[] = { CONST_SLOT_RIGHT, CONST_SLOT_LEFT };
+        for (slots_t s : hands) {
+            if (!player->getInventoryItem(s)) {
+                const int32_t toIndex = static_cast<int32_t>(s);
+                ReturnValue mv = internalMoveItem(srcItem->getParent(), player, toIndex,
+                                                  srcItem, srcItem->getItemCount(), &moved);
+                if (mv == RETURNVALUE_NOERROR && moved) {
+                    internalGetPosition(moved, newFromPos, newFromStack);
+                    return RETURNVALUE_NOERROR;
+                }
+            }
+        }
 
-	if (!canDoAction) {
-		uint32_t delay = player->getNextActionTime();
-		if (canTriggerExhaustion) {
-			delay = player->getNextPotionActionTime();
-		}
-		const auto &task = createPlayerTask(
-			delay,
-			[this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId] {
-				playerUseItemEx(playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId);
-			},
-			__FUNCTION__
-		);
-		if (canTriggerExhaustion) {
-			player->setNextPotionActionTask(task);
-		} else {
-			player->setNextActionTask(task);
-		}
-		return;
-	}
+        ReturnValue mv = internalMoveItem(srcItem->getParent(), player, INDEX_WHEREEVER,
+                                          srcItem, srcItem->getItemCount(), &moved);
+        if (mv == RETURNVALUE_NOERROR && moved) {
+            internalGetPosition(moved, newFromPos, newFromStack);
+            return RETURNVALUE_NOERROR;
+        }
+        return mv;
+    };
 
-	player->resetLoginProtection();
-	player->resetIdleTime();
-	if (canTriggerExhaustion) {
-		player->setNextPotionActionTask(nullptr);
-	} else {
-		player->setNextActionTask(nullptr);
-	}
+    auto resched = [this, canTriggerExhaustion](uint32_t pid,
+                                                const Position& fPos, uint8_t fStack, uint16_t fId,
+                                                const Position& tPos, uint8_t tStack) {
+        const auto& task = createPlayerTask(
+            400,
+            [this, pid, fPos, fStack, fId, tPos, tStack] {
+                playerUseItemEx(pid, fPos, fStack, fId, tPos, tStack, 0);
+            },
+            __FUNCTION__
+        );
+        if (Player* p = getPlayerByID(pid)) {
+            if (canTriggerExhaustion) p->setNextPotionActionTask(task);
+            else                      p->setNextWalkActionTask(task);
+        }
+    };
 
-	// Refresh depot search window if necessary
-	bool mustReloadDepotSearch = false;
-	if (player->isDepotSearchOpenOnItem(fromItemId)) {
-		if (item->isInsideDepot(true)) {
-			mustReloadDepotSearch = true;
-		} else {
-			if (auto targetThing = internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
-			    targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
-				mustReloadDepotSearch = true;
-			}
-		}
-	}
+    const ReturnValue retFrom = g_actions().canUse(player, fromPos);
+    ReturnValue retTo = RETURNVALUE_NOTPOSSIBLE;
+    if (retFrom == RETURNVALUE_NOERROR) {
+        retTo = g_actions().canUse(player, toPos, item);
+    }
 
-	g_actions().useItemEx(player, fromPos, toPos, toStackPos, item, isHotkey);
+    if (!(retFrom == RETURNVALUE_NOERROR && retTo == RETURNVALUE_NOERROR)) {
+        const bool losFail = (retFrom == RETURNVALUE_NOERROR &&
+                              player->getPosition().z == toPos.z &&
+                              retTo == RETURNVALUE_CANNOTTHROW);
 
-	if (mustReloadDepotSearch) {
-		player->requestDepotSearchItem(fromItemId, fromStackPos);
-	}
+        if (retFrom == RETURNVALUE_TOOFARAWAY || retTo == RETURNVALUE_TOOFARAWAY || losFail) {
+            const Position base = (retFrom == RETURNVALUE_TOOFARAWAY ? fromPos : toPos);
+
+            std::vector<Direction> dirs;
+            Position walkTo{};
+            if (!planPathNear(base, dirs, walkTo)) {
+                player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+                return;
+            }
+
+            if (retFrom == RETURNVALUE_NOERROR && retTo == RETURNVALUE_TOOFARAWAY &&
+                fromPos.x != 0xFFFF && toPos.x != 0xFFFF &&
+                Position::areInRange<1, 1, 0>(fromPos, player->getPosition()) &&
+                !Position::areInRange<1, 1, 0>(fromPos, toPos))
+            {
+                Position itemPos = fromPos;
+                uint8_t  itemStack = fromStackPos;
+
+                const ReturnValue mv = moveItemToCarry(item, itemPos, itemStack);
+                if (mv != RETURNVALUE_NOERROR) {
+                    player->sendCancelMessage(mv);
+                    return;
+                }
+
+                g_dispatcher().addEvent([this, pid = player->getID(), dirs] { playerAutoWalk(pid, dirs); }, __FUNCTION__);
+                resched(player->getID(), itemPos, itemStack, item->getID(), toPos, toStackPos);
+                return;
+            }
+
+            g_dispatcher().addEvent([this, pid = player->getID(), dirs] { playerAutoWalk(pid, dirs); }, __FUNCTION__);
+            resched(player->getID(), fromPos, fromStackPos, item->getID(), toPos, toStackPos);
+            return;
+        }
+
+        player->sendCancelMessage(retFrom != RETURNVALUE_NOERROR ? retFrom : retTo);
+        return;
+    }
+
+    bool canDoAction = canTriggerExhaustion ? player->canDoPotionAction() : player->canDoAction();
+    if (!canDoAction) {
+        uint32_t delay = canTriggerExhaustion ? player->getNextPotionActionTime() : player->getNextActionTime();
+        const auto& task = createPlayerTask(
+            delay,
+            [this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId] {
+                playerUseItemEx(playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId);
+            },
+            __FUNCTION__
+        );
+        if (canTriggerExhaustion) player->setNextPotionActionTask(task);
+        else                      player->setNextActionTask(task);
+        return;
+    }
+
+    player->resetLoginProtection();
+    player->resetIdleTime();
+    if (canTriggerExhaustion) player->setNextPotionActionTask(nullptr);
+    else                      player->setNextActionTask(nullptr);
+
+    bool mustReloadDepotSearch = false;
+    if (player->isDepotSearchOpenOnItem(fromItemId)) {
+        if (item->isInsideDepot(true)) {
+            mustReloadDepotSearch = true;
+        } else {
+            if (auto targetThing = internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
+                targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
+                mustReloadDepotSearch = true;
+            }
+        }
+    }
+
+    g_actions().useItemEx(player, fromPos, toPos, toStackPos, item, isHotkey);
+
+    if (mustReloadDepotSearch) {
+        player->requestDepotSearchItem(fromItemId, fromStackPos);
+    }
 }
 
 void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {

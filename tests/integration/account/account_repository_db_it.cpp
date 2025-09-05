@@ -3,6 +3,7 @@
 #include "account/account_repository_db.hpp"
 #include "account/account_info.hpp"
 #include "enums/account_type.hpp"
+#include "lib/logging/in_memory_logger.hpp"
 #include "test_env.hpp"
 #include "utils/tools.hpp"
 
@@ -123,9 +124,8 @@ namespace it_account_repo_db {
 	}
 
 	inline suite<"AccountRepositoryDB"> suite_all = [] {
-		auto &env = TestEnv::instance();
-		auto &db = *env.db;
-		auto &logger = *env.logger;
+		auto &db = g_database();
+		auto &logger = dynamic_cast<InMemoryLogger &>(g_logger());
 
 		register_loadByID(db);
 		register_loadByEmailOrName(db);

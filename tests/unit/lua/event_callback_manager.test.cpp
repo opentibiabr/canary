@@ -1,4 +1,5 @@
 #include <boost/ut.hpp>
+
 #include "lua/callbacks/event_callback_manager.hpp"
 #include "lua/scripts/luascript.hpp"
 
@@ -9,7 +10,7 @@ using namespace boost::ut;
 struct DummyScriptInterface final : LuaScriptInterface {
 	mutable int calls = 0;
 	bool result = true;
-	DummyScriptInterface(bool r = true) :
+	explicit DummyScriptInterface(bool r = true) :
 		LuaScriptInterface("test"), result(r) { }
 
 	lua_State* getLuaState() override {
@@ -26,7 +27,7 @@ struct DummyScriptInterface final : LuaScriptInterface {
 
 struct FakeEventCallback : EventCallback {
 	using EventCallback::EventCallback;
-	bool creatureOnCombat(Creature* /*caster*/, Creature* /*target*/, CombatDamage &damage) {
+	bool creatureOnCombat(const Creature* /*caster*/, const Creature* /*target*/, CombatDamage &damage) const {
 		damage.primary.value += 50;
 		damage.secondary.value += 5;
 		return true;
@@ -84,7 +85,8 @@ static void reg_registration_tie_order() {
 
 static void reg_dispatch_short_circuit() {
 	test("dispatch_short_circuit") = [] {
-		DummyScriptInterface first(false), second(true);
+		DummyScriptInterface first(false);
+		DummyScriptInterface second(true);
 		EventCallbackManager mgr;
 
 		auto cb1 = std::make_shared<EventCallback>("cb1", false, &first);
@@ -124,7 +126,8 @@ static void reg_can_execute() {
 
 static void reg_dispatch_all_ok() {
 	test("dispatch_all_ok") = [] {
-		DummyScriptInterface a(true), b(true);
+		DummyScriptInterface a(true);
+		DummyScriptInterface b(true);
 		EventCallbackManager mgr;
 
 		auto cb1 = std::make_shared<EventCallback>("cb1", false, &a);
@@ -147,7 +150,9 @@ static void reg_dispatch_all_ok() {
 
 static void reg_dispatch_skips_disabled_and_invalid() {
 	test("dispatch_skips_disabled_and_invalid") = [] {
-		DummyScriptInterface a(true), b(true), c(true);
+		DummyScriptInterface a(true);
+		DummyScriptInterface b(true);
+		DummyScriptInterface c(true);
 		EventCallbackManager mgr;
 
 		auto disabled = std::make_shared<EventCallback>("disabled", false, &a);
@@ -176,7 +181,8 @@ static void reg_dispatch_skips_disabled_and_invalid() {
 
 static void reg_type_isolation() {
 	test("type_isolation") = [] {
-		DummyScriptInterface trade(true), move(true);
+		DummyScriptInterface trade(true);
+		DummyScriptInterface move(true);
 		EventCallbackManager mgr;
 
 		auto cbTrade = std::make_shared<EventCallback>("trade", false, &trade);
@@ -249,7 +255,7 @@ static void reg_register_dup_allowed_when_skip_true() {
 }
 
 struct MutatingScriptInterface final : LuaScriptInterface {
-	lua_State* L { nullptr };
+	std::unique_ptr<lua_State, decltype(&lua_close)> L;
 	CombatDamage* dmg;
 	int addPrimary;
 	int addSecondary;
@@ -257,16 +263,15 @@ struct MutatingScriptInterface final : LuaScriptInterface {
 	mutable int calls { 0 };
 
 	MutatingScriptInterface(CombatDamage* d, int dp, int ds, bool r) :
-		LuaScriptInterface("test"), dmg(d), addPrimary(dp), addSecondary(ds), result(r) {
-		L = luaL_newstate();
-	}
-	~MutatingScriptInterface() override {
-		if (L) {
-			lua_close(L);
-		}
+		LuaScriptInterface("test"),
+		L(luaL_newstate(), lua_close),
+		dmg(d),
+		addPrimary(dp),
+		addSecondary(ds),
+		result(r) {
 	}
 	lua_State* getLuaState() override {
-		return L;
+		return L.get();
 	}
 	bool pushFunction(int32_t) const override {
 		return true;
@@ -393,7 +398,8 @@ static void reg_dup_skip_true_priority_order() {
 
 static void reg_same_name_different_types_ok() {
 	test("same_name_different_types_ok") = [] {
-		DummyScriptInterface a(true), b(true);
+		DummyScriptInterface a(true);
+		DummyScriptInterface b(true);
 		EventCallbackManager mgr;
 
 		auto c1 = std::make_shared<EventCallback>("dup", false, &a);

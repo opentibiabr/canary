@@ -21,14 +21,9 @@ public:
 	template <typename... Args>
 	[[nodiscard]] bool checkCallback(EventCallback_t type, Args &&... args) const {
 		const auto &vec = m_callbacks[static_cast<size_t>(type)];
-		for (const auto &cb : vec) {
-			if (cb->canExecute()) {
-				if (!cb->execute(std::forward<Args>(args)...)) {
-					return false;
-				}
-			}
-		}
-		return true;
+		return std::ranges::all_of(vec, [&](const CallbackPtr &cb) {
+			return !cb->canExecute() || cb->execute(std::forward<Args>(args)...);
+		});
 	}
 
 	const std::vector<CallbackPtr> &getCallbacks(EventCallback_t type) const noexcept;

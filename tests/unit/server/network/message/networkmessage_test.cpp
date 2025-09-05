@@ -13,8 +13,8 @@ using namespace boost::ut;
 suite<"networkmessage"> networkMessageTest = [] {
 	di::extension::injector<> injector {};
 	DI::setTestContainer(&InMemoryLogger::install(injector));
-	auto& logger = dynamic_cast<InMemoryLogger&>(injector.create<Logger&>());
-	
+	auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
+
 	test("NetworkMessage::addByte and getByte") = [&]() {
 		NetworkMessage msg;
 		uint8_t byteToAdd = 100;
@@ -84,11 +84,11 @@ suite<"networkmessage"> networkMessageTest = [] {
 		NetworkMessage msg1, msg2;
 
 		// Adding initial byte and string to msg1
-		msg1.addByte(1);                  // Byte value 1
-		msg1.addString("Hello");          // String value "Hello"
+		msg1.addByte(1); // Byte value 1
+		msg1.addString("Hello"); // String value "Hello"
 		// Adding initial byte and string to msg2
-		msg2.addByte(2);                  // Byte value 2
-		msg2.addString("World");          // String value "World"
+		msg2.addByte(2); // Byte value 2
+		msg2.addString("World"); // String value "World"
 		// Append msg2 to msg1
 		msg1.append(msg2);
 		msg1.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION); // Reset read position to start
@@ -136,8 +136,7 @@ suite<"networkmessage"> networkMessageTest = [] {
 		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
 		// Verify the content of the buffer before extracting the data
 		auto buffer = msg.getBuffer();
-		std::string extractedData(buffer + NetworkMessage::INITIAL_BUFFER_POSITION, 
-								buffer + NetworkMessage::INITIAL_BUFFER_POSITION + testData.size());
+		std::string extractedData(buffer + NetworkMessage::INITIAL_BUFFER_POSITION, buffer + NetworkMessage::INITIAL_BUFFER_POSITION + testData.size());
 		// Check if the extracted data matches the added data
 		expect(eq(extractedData, testData)) << "Expected the same bytes added";
 	};

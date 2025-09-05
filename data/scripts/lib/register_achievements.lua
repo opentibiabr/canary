@@ -548,6 +548,7 @@ ACHIEVEMENTS = {
 	[547] = { name = "Museum Goer", grade = 1, points = 2, description = "You unveiled the secret plot of the Mitmah who stole away an entire civilisation for their own entertainment. Let the death of their outpost vanguard be an eternal lesson to them." },
 	[548] = { name = "Mystic Predator", grade = 1, points = 3, description = "Proving your true worth to a mystic creature like the jaguar, king of the hunt, granted you not only respect but also its heart." },
 	[549] = { name = "The Rule of Raccool", grade = 1, points = 2, description = "You almost feel as cool as a raccoon. Now, where's the trash?" },
+	[550] = { name = "Fiend Slayer", grade = 1, points = 2, description = "No living fiends were hurt to achieve this outfit." },
 }
 
 --[[

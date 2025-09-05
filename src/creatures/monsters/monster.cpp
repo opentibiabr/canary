@@ -1413,12 +1413,24 @@ void Monster::onThinkSound(uint32_t interval) {
 	}
 }
 
-bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection) {
-	const Position &centerPos = item->getPosition();
-	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
-		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
-		std::shared_ptr<Tile> tile = g_game().map.getTile(tryPos);
-		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
+bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &dir) {
+	if (!item) {
+		return false;
+	}
+
+	auto fromTile = item->getTile();
+	if (!fromTile) {
+		return false;
+	}
+
+	const Position &fromPos = fromTile->getPosition();
+	std::shared_ptr<Cylinder> fromCyl = fromTile;
+
+	for (auto [dx, dy] : getPushItemLocationOptions(dir)) {
+		Position toPos(fromPos.x + dx, fromPos.y + dy, fromPos.z);
+		auto toTile = g_game().map.getTile(toPos);
+
+		if (toTile && g_game().canThrowObjectTo(fromPos, toPos) && g_game().internalMoveItem(fromCyl, toTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
 			return true;
 		}
 	}
@@ -1426,26 +1438,37 @@ bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &nextD
 }
 
 void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection) {
-	// We can not use iterators here since we can push the item to another tile
-	// which will invalidate the iterator.
-	// start from the end to minimize the amount of traffic
-	if (const auto &items = tile->getItemList()) {
-		uint32_t moveCount = 0;
-		uint32_t removeCount = 0;
-		int32_t downItemSize = tile->getDownItemCount();
-		for (int32_t i = downItemSize; --i >= 0;) {
-			const auto &item = items->at(i);
-			if (item && item->hasProperty(CONST_PROP_MOVABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->canBeMoved()) {
-				if (moveCount < 20 && pushItem(item, nextDirection)) {
-					++moveCount;
-				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-					++removeCount;
-				}
-			}
+	if (!tile) {
+		return;
+	}
+
+	const auto* items = tile->getItemList();
+	if (!items || items->empty()) {
+		return;
+	}
+
+	uint32_t moveCount = 0;
+	uint32_t removeCount = 0;
+	int32_t downItemSize = tile->getDownItemCount();
+
+	for (int32_t i = downItemSize; --i >= 0;) {
+		const auto &item = items->at(i);
+		if (!item || !item->hasProperty(CONST_PROP_MOVABLE) || !item->canBeMoved()) {
+			continue;
 		}
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		if (!item->hasProperty(CONST_PROP_BLOCKPATH) && !item->hasProperty(CONST_PROP_BLOCKSOLID)) {
+			continue;
 		}
+
+		if (moveCount < 20 && pushItem(item, nextDirection)) {
+			++moveCount;
+		} else if (removeCount < 10 && !item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+			++removeCount;
+		}
+	}
+
+	if (removeCount > 0) {
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 }
 
@@ -1468,31 +1491,40 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
-	// We can not use iterators here since we can push a creature to another tile
-	// which will invalidate the iterator.
-	if (const CreatureVector* creatures = tile->getCreatures()) {
-		uint32_t removeCount = 0;
-		std::shared_ptr<Monster> lastPushedMonster = nullptr;
+	if (!tile) {
+		return;
+	}
 
-		for (size_t i = 0; i < creatures->size();) {
-			const auto &monster = creatures->at(i)->getMonster();
-			if (monster && monster->isPushable()) {
-				if (monster != lastPushedMonster && Monster::pushCreature(monster)) {
-					lastPushedMonster = monster;
-					continue;
-				}
+	const CreatureVector* creatures = tile->getCreatures();
+	if (!creatures || creatures->empty()) {
+		return;
+	}
 
-				monster->changeHealth(-monster->getHealth());
-				monster->setDropLoot(true);
-				removeCount++;
+	CreatureVector creaturesCopy = *creatures;
+	uint32_t killedCount = 0;
+	std::shared_ptr<Monster> lastPushedMonster = nullptr;
+
+	for (int i = static_cast<int>(creaturesCopy.size()) - 1; i >= 0; --i) {
+		const auto &creature = creaturesCopy[i];
+		if (!creature) {
+			continue;
+		}
+
+		const std::shared_ptr<Monster> monster = creature->getMonster();
+		if (monster && monster->isPushable()) {
+			if (monster != lastPushedMonster && Monster::pushCreature(monster)) {
+				lastPushedMonster = monster;
+				continue;
 			}
 
-			++i;
+			monster->changeHealth(-monster->getHealth());
+			monster->setDropLoot(true);
+			killedCount++;
 		}
+	}
 
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
-		}
+	if (killedCount > 0) {
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
 	}
 }
 

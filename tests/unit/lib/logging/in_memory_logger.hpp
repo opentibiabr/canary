@@ -10,6 +10,8 @@
 
 #include <vector>
 #include <string>
+#include <string_view>
+#include <ranges>
 #include <utility>
 
 #include "test_injection.hpp"
@@ -22,14 +24,16 @@ private:
 	struct LogEntry {
 		std::string level;
 		std::string message;
+
+		LogEntry() = default;
+		LogEntry(std::string_view lvl, std::string_view msg) :
+			level(lvl), message(msg) { }
 	};
 
 public:
 	mutable std::vector<LogEntry> logs;
 
 	InMemoryLogger() = default;
-	InMemoryLogger(const InMemoryLogger &) { }
-	InMemoryLogger(const InMemoryLogger &&) { }
 
 	static di::extension::injector<> &install(di::extension::injector<> &injector) {
 		injector.install(di::bind<Logger>.to<InMemoryLogger>().in(di::singleton));
@@ -41,14 +45,13 @@ public:
 		return *this;
 	}
 
-	bool hasLogEntry(const std::string &lvl, const std::string &expectedMsg) const {
-		for (const auto &entry : logs) {
-			if (entry.level == lvl && entry.message == expectedMsg) {
-				return true;
+	bool hasLogEntry(std::string_view lvl, std::string_view expectedMsg) const {
+		return std::ranges::any_of(
+			logs,
+			[&](const auto &entry) {
+				return entry.level == lvl && entry.message == expectedMsg;
 			}
-		}
-
-		return false;
+		);
 	}
 
 	void setLevel(const std::string &name) const override {
@@ -62,28 +65,28 @@ public:
 	}
 
 	void info(const std::string &msg) const override {
-		logs.push_back({ "info", msg });
+		logs.emplace_back("info", msg);
 	}
 
 	void warn(const std::string &msg) const override {
-		logs.push_back({ "warning", msg });
+		logs.emplace_back("warning", msg);
 	}
 
 	void error(const std::string &msg) const override {
-		logs.push_back({ "error", msg });
+		logs.emplace_back("error", msg);
 	}
 
 	void critical(const std::string &msg) const override {
-		logs.push_back({ "critical", msg });
+		logs.emplace_back("critical", msg);
 	}
 
 #if defined(DEBUG_LOG)
 	void debug(const std::string &msg) const override {
-		logs.push_back({ "debug", msg });
+		logs.emplace_back("debug", msg);
 	}
 
 	void trace(const std::string &msg) const override {
-		logs.push_back({ "trace", msg });
+		logs.emplace_back("trace", msg);
 	}
 #else
 	void debug(const std::string &) const override { }

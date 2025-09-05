@@ -18,9 +18,9 @@ struct DummyScriptInterface final : LuaScriptInterface {
 	mutable int calls = 0;
 	bool result = true;
 	mutable std::function<void()> hook;
-	std::unique_ptr<lua_State, decltype(&lua_close)> L;
+	std::unique_ptr<lua_State, decltype(&lua_close)> L { luaL_newstate(), &lua_close };
 	explicit DummyScriptInterface(bool r = true) :
-		LuaScriptInterface("test"), result(r), L(luaL_newstate(), lua_close) {
+		LuaScriptInterface("test"), result(r) {
 	}
 	lua_State* getLuaState() override {
 		return L.get();
@@ -215,32 +215,36 @@ static void registerVoidEventTests() {
 	}
 }
 
+static void creature_on_drain_health_body() {
+	DummyScriptInterface iface;
+	CombatType_t primaryType = COMBAT_NONE;
+	int32_t primaryValue = 0;
+	CombatType_t secondaryType = COMBAT_NONE;
+	int32_t secondaryValue = 0;
+	TextColor_t primaryColor = TEXTCOLOR_NONE;
+	TextColor_t secondaryColor = TEXTCOLOR_NONE;
+	addCallback(EventCallback_t::creatureOnDrainHealth, iface);
+	iface.hook = [&primaryType, &primaryValue, &secondaryType, &secondaryValue, &primaryColor, &secondaryColor] {
+		primaryType = COMBAT_FIREDAMAGE;
+		primaryValue = 5;
+		secondaryType = COMBAT_ENERGYDAMAGE;
+		secondaryValue = 10;
+		primaryColor = TEXTCOLOR_RED;
+		secondaryColor = TEXTCOLOR_BLUE;
+	};
+	g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, std::shared_ptr<Creature> {}, std::shared_ptr<Creature> {}, std::ref(primaryType), std::ref(primaryValue), std::ref(secondaryType), std::ref(secondaryValue), std::ref(primaryColor), std::ref(secondaryColor));
+	expect(eq(primaryType, COMBAT_FIREDAMAGE));
+	expect(eq(primaryValue, 5));
+	expect(eq(secondaryType, COMBAT_ENERGYDAMAGE));
+	expect(eq(secondaryValue, 10));
+	expect(eq(primaryColor, TEXTCOLOR_RED));
+	expect(eq(secondaryColor, TEXTCOLOR_BLUE));
+	expect(eq(iface.calls, 1));
+}
+
 static void registerCreatureOnDrainHealth() {
 	test(magic_enum::enum_name(EventCallback_t::creatureOnDrainHealth)) = [] {
-		DummyScriptInterface iface;
-		CombatType_t primaryType = COMBAT_NONE;
-		int32_t primaryValue = 0;
-		CombatType_t secondaryType = COMBAT_NONE;
-		int32_t secondaryValue = 0;
-		TextColor_t primaryColor = TEXTCOLOR_NONE;
-		TextColor_t secondaryColor = TEXTCOLOR_NONE;
-		addCallback(EventCallback_t::creatureOnDrainHealth, iface);
-		iface.hook = [&primaryType, &primaryValue, &secondaryType, &secondaryValue, &primaryColor, &secondaryColor] {
-			primaryType = COMBAT_FIREDAMAGE;
-			primaryValue = 5;
-			secondaryType = COMBAT_ENERGYDAMAGE;
-			secondaryValue = 10;
-			primaryColor = TEXTCOLOR_RED;
-			secondaryColor = TEXTCOLOR_BLUE;
-		};
-		g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, std::shared_ptr<Creature> {}, std::shared_ptr<Creature> {}, std::ref(primaryType), std::ref(primaryValue), std::ref(secondaryType), std::ref(secondaryValue), std::ref(primaryColor), std::ref(secondaryColor));
-		expect(eq(primaryType, COMBAT_FIREDAMAGE));
-		expect(eq(primaryValue, 5));
-		expect(eq(secondaryType, COMBAT_ENERGYDAMAGE));
-		expect(eq(secondaryValue, 10));
-		expect(eq(primaryColor, TEXTCOLOR_RED));
-		expect(eq(secondaryColor, TEXTCOLOR_BLUE));
-		expect(eq(iface.calls, 1));
+		creature_on_drain_health_body();
 	};
 }
 

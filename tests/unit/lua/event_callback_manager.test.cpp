@@ -34,76 +34,88 @@ struct FakeEventCallback : EventCallback {
 	}
 };
 
+static void registration_sorting_body() {
+	DummyScriptInterface iface;
+	EventCallbackManager mgr;
+
+	auto cb1 = std::make_shared<EventCallback>("cb1", false, &iface);
+	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setPriority(5);
+	cb1->setScriptId(1);
+
+	auto cb2 = std::make_shared<EventCallback>("cb2", false, &iface);
+	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setPriority(10);
+	cb2->setScriptId(1);
+
+	mgr.registerCallback(cb1);
+	mgr.registerCallback(cb2);
+
+	const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	expect(vec.size() == std::size_t { 2 });
+	expect(vec[0] == cb2);
+	expect(vec[1] == cb1);
+}
+
 static void reg_registration_sorting() {
 	test("registration_sorting") = [] {
-		DummyScriptInterface iface;
-		EventCallbackManager mgr;
-
-		auto cb1 = std::make_shared<EventCallback>("cb1", false, &iface);
-		cb1->setType(EventCallback_t::playerOnTradeRequest);
-		cb1->setPriority(5);
-		cb1->setScriptId(1);
-
-		auto cb2 = std::make_shared<EventCallback>("cb2", false, &iface);
-		cb2->setType(EventCallback_t::playerOnTradeRequest);
-		cb2->setPriority(10);
-		cb2->setScriptId(1);
-
-		mgr.registerCallback(cb1);
-		mgr.registerCallback(cb2);
-
-		const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-		expect(vec.size() == std::size_t { 2 });
-		expect(vec[0] == cb2);
-		expect(vec[1] == cb1);
+		registration_sorting_body();
 	};
+}
+
+static void registration_tie_order_body() {
+	DummyScriptInterface iface;
+	EventCallbackManager mgr;
+
+	auto cb1 = std::make_shared<EventCallback>("a", false, &iface);
+	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setPriority(5);
+	cb1->setScriptId(1);
+
+	auto cb2 = std::make_shared<EventCallback>("b", false, &iface);
+	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setPriority(5);
+	cb2->setScriptId(1);
+
+	mgr.registerCallback(cb1);
+	mgr.registerCallback(cb2);
+
+	const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	expect(vec[0] == cb1);
+	expect(vec[1] == cb2);
 }
 
 static void reg_registration_tie_order() {
 	test("registration_tie_order") = [] {
-		DummyScriptInterface iface;
-		EventCallbackManager mgr;
-
-		auto cb1 = std::make_shared<EventCallback>("a", false, &iface);
-		cb1->setType(EventCallback_t::playerOnTradeRequest);
-		cb1->setPriority(5);
-		cb1->setScriptId(1);
-
-		auto cb2 = std::make_shared<EventCallback>("b", false, &iface);
-		cb2->setType(EventCallback_t::playerOnTradeRequest);
-		cb2->setPriority(5);
-		cb2->setScriptId(1);
-
-		mgr.registerCallback(cb1);
-		mgr.registerCallback(cb2);
-
-		const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-		expect(vec[0] == cb1);
-		expect(vec[1] == cb2);
+		registration_tie_order_body();
 	};
+}
+
+static void dispatch_short_circuit_body() {
+	DummyScriptInterface first(false);
+	DummyScriptInterface second(true);
+	EventCallbackManager mgr;
+
+	auto cb1 = std::make_shared<EventCallback>("cb1", false, &first);
+	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setScriptId(1);
+
+	auto cb2 = std::make_shared<EventCallback>("cb2", false, &second);
+	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setScriptId(1);
+
+	mgr.registerCallback(cb1);
+	mgr.registerCallback(cb2);
+
+	const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
+	expect(!ok);
+	expect(first.calls == 1);
+	expect(second.calls == 0);
 }
 
 static void reg_dispatch_short_circuit() {
 	test("dispatch_short_circuit") = [] {
-		DummyScriptInterface first(false);
-		DummyScriptInterface second(true);
-		EventCallbackManager mgr;
-
-		auto cb1 = std::make_shared<EventCallback>("cb1", false, &first);
-		cb1->setType(EventCallback_t::playerOnTradeRequest);
-		cb1->setScriptId(1);
-
-		auto cb2 = std::make_shared<EventCallback>("cb2", false, &second);
-		cb2->setType(EventCallback_t::playerOnTradeRequest);
-		cb2->setScriptId(1);
-
-		mgr.registerCallback(cb1);
-		mgr.registerCallback(cb2);
-
-		const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
-		expect(!ok);
-		expect(first.calls == 1);
-		expect(second.calls == 0);
+		dispatch_short_circuit_body();
 	};
 }
 
@@ -124,27 +136,31 @@ static void reg_can_execute() {
 	};
 }
 
+static void dispatch_all_ok_body() {
+	DummyScriptInterface a(true);
+	DummyScriptInterface b(true);
+	EventCallbackManager mgr;
+
+	auto cb1 = std::make_shared<EventCallback>("cb1", false, &a);
+	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setScriptId(1);
+
+	auto cb2 = std::make_shared<EventCallback>("cb2", false, &b);
+	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setScriptId(1);
+
+	mgr.registerCallback(cb1);
+	mgr.registerCallback(cb2);
+
+	const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
+	expect(ok);
+	expect(a.calls == 1);
+	expect(b.calls == 1);
+}
+
 static void reg_dispatch_all_ok() {
 	test("dispatch_all_ok") = [] {
-		DummyScriptInterface a(true);
-		DummyScriptInterface b(true);
-		EventCallbackManager mgr;
-
-		auto cb1 = std::make_shared<EventCallback>("cb1", false, &a);
-		cb1->setType(EventCallback_t::playerOnTradeRequest);
-		cb1->setScriptId(1);
-
-		auto cb2 = std::make_shared<EventCallback>("cb2", false, &b);
-		cb2->setType(EventCallback_t::playerOnTradeRequest);
-		cb2->setScriptId(1);
-
-		mgr.registerCallback(cb1);
-		mgr.registerCallback(cb2);
-
-		const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
-		expect(ok);
-		expect(a.calls == 1);
-		expect(b.calls == 1);
+		dispatch_all_ok_body();
 	};
 }
 
@@ -238,32 +254,36 @@ static void reg_register_dup_blocks_when_skip_false() {
 	};
 }
 
+static void register_dup_allowed_when_skip_true_body() {
+	DummyScriptInterface iface;
+	EventCallbackManager mgr;
+
+	auto a = std::make_shared<EventCallback>("Y", false, &iface);
+	a->setType(EventCallback_t::playerOnTradeRequest);
+	a->setScriptId(1);
+
+	auto b = std::make_shared<EventCallback>("Y", false, &iface);
+	b->setType(EventCallback_t::playerOnTradeRequest);
+	b->setScriptId(1);
+	b->setSkipDuplicationCheck(true);
+
+	mgr.registerCallback(a);
+	mgr.registerCallback(b);
+
+	const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	expect(v.size() == std::size_t { 2 });
+	expect(v[0] == a);
+	expect(v[1] == b);
+}
+
 static void reg_register_dup_allowed_when_skip_true() {
 	test("register_dup_allowed_when_skip_true") = [] {
-		DummyScriptInterface iface;
-		EventCallbackManager mgr;
-
-		auto a = std::make_shared<EventCallback>("Y", false, &iface);
-		a->setType(EventCallback_t::playerOnTradeRequest);
-		a->setScriptId(1);
-
-		auto b = std::make_shared<EventCallback>("Y", false, &iface);
-		b->setType(EventCallback_t::playerOnTradeRequest);
-		b->setScriptId(1);
-		b->setSkipDuplicationCheck(true);
-
-		mgr.registerCallback(a);
-		mgr.registerCallback(b);
-
-		const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-		expect(v.size() == std::size_t { 2 });
-		expect(v[0] == a);
-		expect(v[1] == b);
+		register_dup_allowed_when_skip_true_body();
 	};
 }
 
 struct MutatingScriptInterface final : LuaScriptInterface {
-	std::unique_ptr<lua_State, decltype(&lua_close)> L;
+	std::unique_ptr<lua_State, decltype(&lua_close)> L { luaL_newstate(), &lua_close };
 	CombatDamage* dmg;
 	int addPrimary;
 	int addSecondary;
@@ -272,7 +292,6 @@ struct MutatingScriptInterface final : LuaScriptInterface {
 
 	MutatingScriptInterface(CombatDamage* d, int dp, int ds, bool r) :
 		LuaScriptInterface("test"),
-		L(luaL_newstate(), lua_close),
 		dmg(d),
 		addPrimary(dp),
 		addSecondary(ds),

@@ -78,8 +78,7 @@ namespace it_player_storage_repo_db {
 	}
 
 	inline suite<"DbPlayerStorageRepository"> suite_all = [] {
-		auto &env = TestEnv::instance();
-		auto &db = *env.db;
+		auto &db = g_database();
 
 		register_load(db);
 		register_deleteKeys(db);

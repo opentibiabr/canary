@@ -1,6 +1,7 @@
 #include <boost/ut.hpp>
 #include <magic_enum/magic_enum.hpp>
 #include <functional>
+#include <memory>
 #include <lua.hpp>
 
 #include "lua/callbacks/events_callbacks.hpp"
@@ -17,18 +18,12 @@ struct DummyScriptInterface final : LuaScriptInterface {
 	mutable int calls = 0;
 	bool result = true;
 	mutable std::function<void()> hook;
-	lua_State* L = nullptr;
+	std::unique_ptr<lua_State, decltype(&lua_close)> L;
 	explicit DummyScriptInterface(bool r = true) :
-		LuaScriptInterface("test"), result(r) {
-		L = luaL_newstate();
-	}
-	~DummyScriptInterface() override {
-		if (L) {
-			lua_close(L);
-		}
+		LuaScriptInterface("test"), result(r), L(luaL_newstate(), lua_close) {
 	}
 	lua_State* getLuaState() override {
-		return L;
+		return L.get();
 	}
 
 	bool pushFunction(int32_t) const override {
@@ -68,7 +63,7 @@ struct VoidEventTest {
 	std::function<void()> call;
 };
 
-suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
+static void registerBoolEventTests() {
 	const std::vector<BoolEventTest> boolEvents {
 		{ EventCallback_t::creatureOnChangeOutfit, [] {
 			 Outfit_t outfit {};
@@ -115,6 +110,17 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		 } },
 	};
 
+	for (const auto &e : boolEvents) {
+		test(magic_enum::enum_name(e.type)) = [e] {
+			DummyScriptInterface iface;
+			addCallback(e.type, iface);
+			expect(e.call());
+			expect(eq(iface.calls, 1));
+		};
+	}
+}
+
+static void registerReturnEventTests() {
 	const std::vector<ReturnEventTest> returnEvents {
 		{ EventCallback_t::creatureOnAreaCombat, [] {
 			 return g_callbacks().dispatchReturnValue(EventCallback_t::creatureOnAreaCombat, std::shared_ptr<Creature> {}, std::shared_ptr<Tile> {}, false);
@@ -124,6 +130,17 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		 } },
 	};
 
+	for (const auto &e : returnEvents) {
+		test(magic_enum::enum_name(e.type)) = [e] {
+			DummyScriptInterface iface;
+			addCallback(e.type, iface);
+			expect(eq(e.call(), RETURNVALUE_NOERROR));
+			expect(eq(iface.calls, 1));
+		};
+	}
+}
+
+static void registerVoidEventTests() {
 	const std::vector<VoidEventTest> voidEvents {
 		{ EventCallback_t::playerOnLook, [] {
 			 g_callbacks().executeCallback(EventCallback_t::playerOnLook, std::shared_ptr<Player> {}, std::shared_ptr<Thing> {}, Position {}, 0);
@@ -188,25 +205,7 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		 } },
 	};
 
-	for (const auto e : boolEvents) {
-		test(magic_enum::enum_name(e.type)) = [e] {
-			DummyScriptInterface iface;
-			addCallback(e.type, iface);
-			expect(e.call());
-			expect(eq(iface.calls, 1));
-		};
-	}
-
-	for (const auto e : returnEvents) {
-		test(magic_enum::enum_name(e.type)) = [e] {
-			DummyScriptInterface iface;
-			addCallback(e.type, iface);
-			expect(eq(e.call(), RETURNVALUE_NOERROR));
-			expect(eq(iface.calls, 1));
-		};
-	}
-
-	for (const auto e : voidEvents) {
+	for (const auto &e : voidEvents) {
 		test(magic_enum::enum_name(e.type)) = [e] {
 			DummyScriptInterface iface;
 			addCallback(e.type, iface);
@@ -214,7 +213,9 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 			expect(eq(iface.calls, 1));
 		};
 	}
+}
 
+static void registerCreatureOnDrainHealth() {
 	test(magic_enum::enum_name(EventCallback_t::creatureOnDrainHealth)) = [] {
 		DummyScriptInterface iface;
 		CombatType_t primaryType = COMBAT_NONE;
@@ -224,7 +225,7 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		TextColor_t primaryColor = TEXTCOLOR_NONE;
 		TextColor_t secondaryColor = TEXTCOLOR_NONE;
 		addCallback(EventCallback_t::creatureOnDrainHealth, iface);
-		iface.hook = [&] {
+		iface.hook = [&primaryType, &primaryValue, &secondaryType, &secondaryValue, &primaryColor, &secondaryColor] {
 			primaryType = COMBAT_FIREDAMAGE;
 			primaryValue = 5;
 			secondaryType = COMBAT_ENERGYDAMAGE;
@@ -241,12 +242,14 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		expect(eq(secondaryColor, TEXTCOLOR_BLUE));
 		expect(eq(iface.calls, 1));
 	};
+}
 
+static void registerCreatureOnCombat() {
 	test(magic_enum::enum_name(EventCallback_t::creatureOnCombat)) = [] {
 		DummyScriptInterface iface;
 		CombatDamage dmg {};
 		addCallback(EventCallback_t::creatureOnCombat, iface);
-		iface.hook = [&] {
+		iface.hook = [&dmg] {
 			dmg.primary.type = COMBAT_FIREDAMAGE;
 			dmg.primary.value = 5;
 		};
@@ -255,25 +258,29 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		expect(eq(dmg.primary.value, 5));
 		expect(eq(iface.calls, 1));
 	};
+}
 
+static void registerPartyOnShareExperience() {
 	test(magic_enum::enum_name(EventCallback_t::partyOnShareExperience)) = [] {
 		DummyScriptInterface iface;
 		uint64_t shareExp = 0;
 		addCallback(EventCallback_t::partyOnShareExperience, iface);
-		iface.hook = [&] {
+		iface.hook = [&shareExp] {
 			shareExp = 10;
 		};
 		g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, std::shared_ptr<Party> {}, std::ref(shareExp));
 		expect(eq(shareExp, 10));
 		expect(eq(iface.calls, 1));
 	};
+}
 
+static void registerPlayerOnGainExperience() {
 	test(magic_enum::enum_name(EventCallback_t::playerOnGainExperience)) = [] {
 		DummyScriptInterface iface;
 		uint64_t exp = 0;
 		uint64_t raw = 0;
 		addCallback(EventCallback_t::playerOnGainExperience, iface);
-		iface.hook = [&] {
+		iface.hook = [&exp, &raw] {
 			exp = 100;
 			raw = 200;
 		};
@@ -282,37 +289,43 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		expect(eq(raw, 200));
 		expect(eq(iface.calls, 1));
 	};
+}
 
+static void registerPlayerOnLoseExperience() {
 	test(magic_enum::enum_name(EventCallback_t::playerOnLoseExperience)) = [] {
 		DummyScriptInterface iface;
 		uint64_t exp = 0;
 		addCallback(EventCallback_t::playerOnLoseExperience, iface);
-		iface.hook = [&] {
+		iface.hook = [&exp] {
 			exp = 50;
 		};
 		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, std::shared_ptr<Player> {}, std::ref(exp));
 		expect(eq(exp, 50));
 		expect(eq(iface.calls, 1));
 	};
+}
 
+static void registerPlayerOnGainSkillTries() {
 	test(magic_enum::enum_name(EventCallback_t::playerOnGainSkillTries)) = [] {
 		DummyScriptInterface iface;
-		skills_t skill = skills_t {};
+		auto skill = skills_t {};
 		uint64_t tries = 0;
 		addCallback(EventCallback_t::playerOnGainSkillTries, iface);
-		iface.hook = [&] {
+		iface.hook = [&tries] {
 			tries = 7;
 		};
 		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, std::shared_ptr<Player> {}, skill, std::ref(tries));
 		expect(eq(tries, 7));
 		expect(eq(iface.calls, 1));
 	};
+}
 
+static void registerPlayerOnCombat() {
 	test(magic_enum::enum_name(EventCallback_t::playerOnCombat)) = [] {
 		DummyScriptInterface iface;
 		CombatDamage dmg {};
 		addCallback(EventCallback_t::playerOnCombat, iface);
-		iface.hook = [&] {
+		iface.hook = [&dmg] {
 			dmg.primary.type = COMBAT_FIREDAMAGE;
 			dmg.primary.value = 15;
 		};
@@ -321,4 +334,17 @@ suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
 		expect(eq(dmg.primary.value, 15));
 		expect(eq(iface.calls, 1));
 	};
+}
+
+suite<"EventCallbacksIntegration"> eventCallbacksIntegration = [] {
+	registerBoolEventTests();
+	registerReturnEventTests();
+	registerVoidEventTests();
+	registerCreatureOnDrainHealth();
+	registerCreatureOnCombat();
+	registerPartyOnShareExperience();
+	registerPlayerOnGainExperience();
+	registerPlayerOnLoseExperience();
+	registerPlayerOnGainSkillTries();
+	registerPlayerOnCombat();
 };

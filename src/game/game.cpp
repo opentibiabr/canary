@@ -3422,7 +3422,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 			return;
 		}
 	} else if (!player->canDoAction()) {
-		uint32_t delay = player->getNextActionTime() - OTSYS_TIME();
+		uint32_t delay = player->getNextActionTime();
 		if (delay > 0) {
 			const auto &task = createPlayerTask(
 				delay,
@@ -4474,7 +4474,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	// Change Podium name
 	if (outfit.lookType != 0 || outfit.lookMount != 0) {
 		std::ostringstream name;
-		name << item->getName() << " displaying the ";
+		name << Item::items[item->getID()].name << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
 			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
@@ -6760,7 +6760,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 	// Skill dodge (ruse)
 	if (targetPlayer) {
 		auto chance = targetPlayer->getDodgeChance();
-		if (chance > 0 && uniform_random(0, 10000) < chance || damage.hazardDodge) {
+		if ((chance > 0 && uniform_random(0, 10000) < chance) || damage.hazardDodge) {
 			InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
 			targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack.");
 			return true;
@@ -6954,6 +6954,16 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 					color = TEXTCOLOR_LIGHTGREY;
 					effect = CONST_ME_HITAREA;
 					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK);
+					break;
+				case RACE_CHOCOLATE:
+					color = TEXTCOLOR_LIGHTGREY;
+					effect = CONST_ME_CACAO;
+					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_CHOCOLATE);
+					break;
+				case RACE_CANDY:
+					color = TEXTCOLOR_DARKRED;
+					effect = CONST_ME_SIRUP;
+					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_CANDY);
 					break;
 				case RACE_UNDEAD:
 					color = TEXTCOLOR_LIGHTGREY;
@@ -7403,7 +7413,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		} else if (attackerPlayer && targetMonster) {
 			handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
 
-			if (damage.primary.value == 0 && damage.secondary.value == 0 || damage.hazardDodge) {
+			if ((damage.primary.value == 0 && damage.secondary.value == 0) || damage.hazardDodge) {
 				notifySpectators(spectators.data(), targetPos, attackerPlayer, targetMonster);
 				return true;
 			}
@@ -7793,13 +7803,6 @@ void Game::buildMessageAsAttacker(
 
 	if (damage.extension) {
 		ss << " " << damage.exString;
-	}
-
-	if (damage.critical) {
-		const auto &targetMonster = target->getMonster();
-		if (targetMonster && attackerPlayer && targetMonster->checkCanApplyCharm(attackerPlayer, CHARM_LOW)) {
-			ss << " (low blow charm)";
-		}
 	}
 
 	if (damage.fatal) {
@@ -8614,7 +8617,7 @@ void Game::playerLeaveParty(uint32_t playerId) {
 	}
 
 	std::shared_ptr<Party> party = player->getParty();
-	if (!party || (player->hasCondition(CONDITION_INFIGHT) && !player->getZoneType() == ZONE_PROTECTION)) {
+	if (!party || (player->hasCondition(CONDITION_INFIGHT) && player->getZoneType() != ZONE_PROTECTION)) {
 		player->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You cannot leave party, contact the administrator."));
 		return;
 	}

@@ -2,7 +2,7 @@
   "version": 3,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 22,
+    "minor": 24,
     "patch": 0
   },
   "configurePresets": [
@@ -13,10 +13,12 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_COLOR_DIAGNOSTICS": "ON",
         "BUILD_STATIC_LIBRARY": "ON",
         "SPEED_UP_BUILD_UNITY": "ON",
         "OPTIONS_ENABLE_SCCACHE": "ON",
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "BUILD_TESTING": "OFF"
       }
     },
     {
@@ -25,7 +27,8 @@
       "displayName": "Windows - Release",
       "description": "Windows Release Build",
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "BUILD_TESTING": "OFF"
       },
       "architecture": {
         "value": "x64",
@@ -41,7 +44,8 @@
         "ASAN_ENABLED": "ON",
         "DEBUG_LOG": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -55,7 +59,8 @@
         "ASAN_ENABLED": "OFF",
         "BUILD_STATIC_LIBRARY": "OFF",
         "SPEED_UP_BUILD_UNITY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows"
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -68,7 +73,7 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "RUN_TESTS_AFTER_BUILD": "OFF"
+        "BUILD_TESTING": "OFF"
       },
       "condition": {
         "type": "equals",
@@ -79,61 +84,104 @@
     {
       "name": "linux-debug",
       "inherits": "linux-release",
-      "displayName": "Linux - Debug Build",
+      "displayName": "Linux - Debug",
       "description": "Build Debug Mode",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "DEBUG_LOG": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF"
+        "SPEED_UP_BUILD_UNITY": "OFF",
+        "BUILD_TESTING": "ON"
       }
     },
     {
       "name": "linux-debug-asan",
       "inherits": "linux-release",
-      "displayName": "Linux - Debug Build",
+      "displayName": "Linux - Debug w/ Address Sanitizer",
       "description": "Build Debug Mode With ASAN Enable",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
         "ASAN_ENABLED": "ON",
-        "SPEED_UP_BUILD_UNITY": "OFF"
+        "SPEED_UP_BUILD_UNITY": "OFF",
+        "BUILD_TESTING": "ON"
       }
     },
     {
-      "name": "linux-test",
-      "inherits": "linux-release",
-      "displayName": "Linux - Test Build",
-      "description": "Build Tests",
+      "name": "macos-release",
+      "inherits": "base",
+      "displayName": "macOS - Release",
+      "description": "macOS Release Build with Apple Clang",
       "cacheVariables": {
-        "BUILD_TESTS": "ON"
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++",
+        "CMAKE_C_COMPILER": "/usr/bin/clang",
+        "DEBUG_LOG": "ON",
+        "VCPKG_TARGET_TRIPLET": "arm64-osx",
+        "BUILD_TESTING": "OFF"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      }
+    },
+    {
+      "name": "macos-debug",
+      "inherits": "macos-release",
+      "displayName": "macOS - Debug",
+      "description": "macOS Debug Build with Apple Clang",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "DEBUG_LOG": "ON",
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "SPEED_UP_BUILD_UNITY": "OFF",
+        "BUILD_TESTING": "ON"
       }
     }
   ],
   "buildPresets": [
-    {
-      "name": "linux-release",
-      "configurePreset": "linux-release"
-    },
-    {
-      "name": "linux-debug",
-      "configurePreset": "linux-debug"
-    },
-    {
-      "name": "linux-test",
-      "configurePreset": "linux-test"
-    },
-    {
-      "name": "windows-release",
-      "configurePreset": "windows-release"
-    },
+    { "name": "linux-release", "configurePreset": "linux-release" },
+    { "name": "linux-debug", "configurePreset": "linux-debug" },
+    { "name": "windows-release", "configurePreset": "windows-release" },
     {
       "name": "windows-release-asan",
       "configurePreset": "windows-release-asan"
     },
+    { "name": "windows-debug", "configurePreset": "windows-debug" },
+    { "name": "macos-release", "configurePreset": "macos-release" },
+    { "name": "macos-debug", "configurePreset": "macos-debug" }
+  ],
+  "testPresets": [
     {
-      "name": "windows-Xdebug",
-      "configurePreset": "windows-debug"
+      "name": "windows-release-asan",
+      "configurePreset": "windows-release-asan",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "windows-debug",
+      "configurePreset": "windows-debug",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "linux-debug-asan",
+      "configurePreset": "linux-debug-asan",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "macos-debug",
+      "configurePreset": "macos-debug",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
     }
   ]
 }

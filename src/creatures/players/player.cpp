@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
@@ -61,19 +62,41 @@
 
 MuteCountMap Player::muteCountMap;
 
-Player::Player(std::shared_ptr<ProtocolGame> p) :
-	lastPing(OTSYS_TIME()),
-	lastPong(lastPing),
-	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::move(p)),
-	m_playerVIP(*this),
+/**
+ * @brief Unit test constructor.
+ *
+ * This constructor is intended for unit testing only.
+ * For full documentation and usage notes, see the function declaration.
+ */
+Player::Player() :
 	m_wheelPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
+	m_playerVIP(*this),
 	m_animusMastery(*this),
-	m_playerAttachedEffects(*this) { }
+	m_playerAttachedEffects(*this),
+	m_storage(*this) {
+}
+
+Player::Player(std::shared_ptr<ProtocolGame> p) :
+	lastPing(OTSYS_TIME()),
+	lastPong(lastPing),
+	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
+	client(std::move(p)),
+	m_wheelPlayer(*this),
+	m_playerAchievement(*this),
+	m_playerBadge(*this),
+	m_playerCyclopedia(*this),
+	m_playerTitle(*this),
+	m_playerVIP(*this),
+	m_animusMastery(*this),
+	m_playerAttachedEffects(*this),
+	m_storage(*this) {
+	m_wheelPlayer.init();
+	m_animusMastery.init();
+}
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -839,6 +862,10 @@ bool Player::isBossOnBosstiaryTracker(const std::shared_ptr<MonsterType> &monste
 	return monsterType ? m_bosstiaryMonsterTracker.contains(monsterType) : false;
 }
 
+bool Player::isMonsterOnBestiaryTracker(const std::shared_ptr<MonsterType> &monsterType) const {
+	return monsterType ? m_bestiaryMonsterTracker.contains(monsterType) : false;
+}
+
 std::shared_ptr<Vocation> Player::getVocation() const {
 	return vocation;
 }
@@ -1271,79 +1298,12 @@ uint16_t Player::getLookCorpse() const {
 	return ITEM_MALE_CORPSE;
 }
 
-void Player::addStorageValue(const uint32_t key, const int32_t value, const bool isLogin /* = false*/) {
-	if (IS_IN_KEYRANGE(key, RESERVED_RANGE)) {
-		if (IS_IN_KEYRANGE(key, OUTFITS_RANGE)) {
-			outfits.emplace_back(
-				value >> 16,
-				value & 0xFF
-			);
-			return;
-		}
-		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, WING_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, EFFECT_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, AURA_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, SHADER_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
-			familiars.emplace_back(
-				value >> 16
-			);
-			return;
-		} else {
-			g_logger().warn("Unknown reserved key: {} for player: {}", key, getName());
-			return;
-		}
-	}
-
-	if (value != -1) {
-		int32_t oldValue = getStorageValue(key);
-		storageMap[key] = value;
-
-		if (!isLogin) {
-			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
-			g_events().eventOnStorageUpdate(static_self_cast<Player>(), key, value, oldValue, currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, getPlayer(), key, value, oldValue, currentFrameTime);
-		}
-	} else {
-		storageMap.erase(key);
-	}
+void Player::addStorageValue(uint32_t key, int32_t value, bool isLogin) {
+	m_storage.add(key, value, isLogin);
 }
 
-int32_t Player::getStorageValue(const uint32_t key) const {
-	int32_t value = -1;
-	const auto it = storageMap.find(key);
-	if (it == storageMap.end()) {
-		return value;
-	}
-
-	value = it->second;
-	return value;
-}
-
-int32_t Player::getStorageValueByName(const std::string &storageName) const {
-	const auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		return -1;
-	}
-	const uint32_t key = it->second;
-
-	return getStorageValue(key);
-}
-
-void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
-	auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
-		return;
-	}
-	const uint32_t key = it->second;
-	addStorageValue(key, value, isLogin);
+int32_t Player::getStorageValue(uint32_t key) const {
+	return m_storage.get(key);
 }
 
 std::shared_ptr<KV> Player::kv() const {
@@ -2488,10 +2448,9 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
-	auto itemSlots = item->getImbuementSlot();
-	if (slot >= itemSlots) {
-		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", this->getName(), slot);
-		this->sendImbuementResult("Invalid slot selection.");
+	const auto &thisPlayer = getPlayer();
+	bool canAddImbuement = item->canAddImbuement(slot, thisPlayer, imbuement);
+	if (!canAddImbuement) {
 		return;
 	}
 
@@ -2515,12 +2474,18 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 				return;
 			}
 		}
+
+		if (imbuementInfo.imbuement == imbuement) {
+			g_logger().error("[Player::onApplyImbuement] - Duplicate imbuement application detected for '{}'", imbuement->getName());
+			sendImbuementResult("This imbuement is already applied to this item.");
+			return;
+		}
 	}
 
 	const auto &items = imbuement->getItems();
 	for (auto &[key, value] : items) {
 		const ItemType &itemType = Item::items[key];
-		if (static_self_cast<Player>()->getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
+		if (getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value) {
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
 		}
@@ -2534,7 +2499,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	uint32_t price = baseImbuement->price;
 	price += protectionCharm ? baseImbuement->protectionPrice : 0;
 
-	if (!g_game().removeMoney(static_self_cast<Player>(), price, 0, true)) {
+	if (!g_game().removeMoney(thisPlayer, price, 0, true)) {
 		const std::string message = fmt::format("You don't have {} gold coins.", price);
 
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
@@ -2572,12 +2537,19 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
-	// Update imbuement stats item if the item is equipped
-	if (item->getParent() == getPlayer()) {
-		addItemImbuementStats(imbuement);
+	if (canAddImbuement) {
+		// Update imbuement stats item if the item is equipped
+		if (item->getParent() == thisPlayer) {
+			ImbuementInfo oldImb;
+			if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
+				removeItemImbuementStats(oldImb.imbuement);
+			}
+
+			addItemImbuementStats(imbuement);
+		}
+		item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	}
 
-	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
 
@@ -4587,16 +4559,21 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		while (i < containers.size()) {
 			std::shared_ptr<Container> tmpContainer = containers[i++];
 			if (!autoStack || !isStackable) {
-				// we need to find first empty container as fast as we can for non-stackable items
-				uint32_t n = tmpContainer->capacity() - tmpContainer->size();
-				while (n) {
-					if (tmpContainer->queryAdd(tmpContainer->capacity() - n, item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) {
-						index = tmpContainer->capacity() - n;
+				const uint32_t containerCapacity = tmpContainer->capacity();
+				const uint32_t containerSize = tmpContainer->size();
+
+				// Avoid underflow in the loop below
+				if (containerSize >= containerCapacity) {
+					continue;
+				}
+
+				for (uint32_t pos = 0; pos < containerCapacity; ++pos) {
+					auto rv = tmpContainer->queryAdd(pos, item, item->getItemCount(), flags);
+					if (rv == RETURNVALUE_NOERROR) {
+						index = pos;
 						destItem = nullptr;
 						return tmpContainer;
 					}
-
-					n--;
 				}
 
 				for (const auto &tmpContainerItem : tmpContainer->getItemList()) {
@@ -6278,7 +6255,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return false;
 	}
 
-	if (group->access) {
+	if (group && group->access) {
 		return true;
 	}
 
@@ -6302,19 +6279,6 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return (outfitEntry.addons & addons) == addons;
 	}
 	return false;
-}
-
-void Player::genReservedStorageRange() {
-	// generate outfits range
-	uint32_t outfits_key = PSTRG_OUTFITS_RANGE_START;
-	for (const auto &entry : outfits) {
-		storageMap[++outfits_key] = (entry.lookType << 16) | entry.addons;
-	}
-	// generate familiars range
-	uint32_t familiar_key = PSTRG_FAMILIARS_RANGE_START;
-	for (const auto &entry : familiars) {
-		storageMap[++familiar_key] = (entry.lookType << 16);
-	}
 }
 
 void Player::setSpecialMenuAvailable(bool stashBool, bool marketMenuBool, bool depotSearchBool) {
@@ -8867,7 +8831,7 @@ uint32_t sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<
 }
 
 void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems) {
-	if (!item || !item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH) {
+	if (!item || (!item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH)) {
 		sendCancelMessage("This item cannot be stowed here.");
 		return;
 	}
@@ -11165,6 +11129,15 @@ PlayerAttachedEffects &Player::attachedEffects() {
 
 const PlayerAttachedEffects &Player::attachedEffects() const {
 	return m_playerAttachedEffects;
+}
+
+// Storage interface
+PlayerStorage &Player::storage() {
+	return m_storage;
+}
+
+const PlayerStorage &Player::storage() const {
+	return m_storage;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

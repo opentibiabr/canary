@@ -6,10 +6,12 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
   merge_group:
   push:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
     branches:
       - main
 env:
@@ -84,3 +86,11 @@ jobs:
           name: canary-${{ matrix.buildtype }}-${{ github.sha }}
           path: |
             ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/
+
+      - name: Run Unit Tests
+        run: |
+          ctest -V -R unit
+
+      - name: Run Integration Tests
+        run: |
+          ctest -V -R integration

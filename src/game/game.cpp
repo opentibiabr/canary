@@ -3944,6 +3944,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 		player->setNextActionTask(nullptr);
 	}
 
+	// Refresh depot search window if necessary
 	bool mustReloadDepotSearch = false;
 	if (player->isDepotSearchOpenOnItem(fromItemId)) {
 		if (item->isInsideDepot(true)) {

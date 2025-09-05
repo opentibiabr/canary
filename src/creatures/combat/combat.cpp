@@ -24,7 +24,6 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
@@ -298,7 +297,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const s
 	}
 	ReturnValue ret = g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
 	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnAreaCombat, caster, tile, aggressive);
+		ret = g_callbacks().dispatchReturnValue(EventCallback_t::creatureOnAreaCombat, caster, tile, aggressive);
 	}
 	return ret;
 }
@@ -441,7 +440,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 	}
 	ReturnValue ret = g_events().eventCreatureOnTargetCombat(attacker, target);
 	if (ret == RETURNVALUE_NOERROR) {
-		ret = g_callbacks().checkCallbackWithReturnValue(EventCallback_t::creatureOnTargetCombat, &EventCallback::creatureOnTargetCombat, attacker, target);
+		ret = g_callbacks().dispatchReturnValue(EventCallback_t::creatureOnTargetCombat, attacker, target);
 	}
 	return ret;
 }
@@ -641,14 +640,14 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 	}
 
 	g_logger().trace("[{}] (old) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
-	g_callbacks().executeCallback(EventCallback_t::creatureOnCombat, &EventCallback::creatureOnCombat, caster, target, std::ref(damage));
+	g_callbacks().executeCallback(EventCallback_t::creatureOnCombat, caster, target, std::ref(damage));
 	g_logger().trace("[{}] (new) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
 
 	if (attackerPlayer) {
 		const auto &item = attackerPlayer->getWeapon();
 		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
-		g_callbacks().executeCallback(EventCallback_t::playerOnCombat, &EventCallback::playerOnCombat, attackerPlayer, target, item, std::ref(damage));
+		g_callbacks().executeCallback(EventCallback_t::playerOnCombat, attackerPlayer, target, item, std::ref(damage));
 
 		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
 			if (damage.primary.type != COMBAT_HEALING) {

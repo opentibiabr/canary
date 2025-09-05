@@ -16,7 +16,6 @@
 #include "game/zones/zone.hpp"
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
@@ -96,7 +95,7 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 	}
 
 	if (!mainMap) {
-		g_callbacks().executeCallback(EventCallback_t::mapOnLoad, &EventCallback::mapOnLoad, path.string());
+		g_callbacks().executeCallback(EventCallback_t::mapOnLoad, path.string());
 	}
 }
 

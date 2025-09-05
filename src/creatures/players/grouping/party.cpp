@@ -15,7 +15,6 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 
@@ -86,7 +85,7 @@ void Party::disband() {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, &EventCallback::partyOnDisband, getParty())) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, getParty())) {
 		return;
 	}
 
@@ -150,7 +149,7 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player, bool forceRemove /
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, getParty(), player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, getParty(), player)) {
 		return false;
 	}
 
@@ -269,7 +268,7 @@ bool Party::joinParty(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, &EventCallback::partyOnJoin, getParty(), player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, getParty(), player)) {
 		return false;
 	}
 
@@ -521,7 +520,7 @@ void Party::shareExperience(uint64_t experience, const std::shared_ptr<Creature>
 
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(getParty(), shareExperience);
-	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, getParty(), std::ref(shareExperience));
+	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, getParty(), std::ref(shareExperience));
 
 	for (const auto &member : getMembers()) {
 		const auto memberStaminaBoost = static_cast<float>(member->getStaminaXpBoost()) / 100;

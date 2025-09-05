@@ -57,10 +57,10 @@ public:
 		return luaState;
 	}
 
-	bool pushFunction(int32_t functionId) const;
+	virtual bool pushFunction(int32_t functionId) const;
 
-	bool callFunction(int params) const;
-	void callVoidFunction(int params) const;
+	virtual bool callFunction(int params) const;
+	virtual void callVoidFunction(int params) const;
 
 	std::string getStackTrace(const std::string &error_desc) const;
 

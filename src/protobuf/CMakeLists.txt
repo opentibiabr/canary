@@ -3,7 +3,7 @@
 # *****************************************************************************
 project(protobuf)
 
-find_package(Protobuf REQUIRED)
+find_package(Protobuf CONFIG REQUIRED)
 find_package(Threads)
 
 include_directories(${PROTOBUF_INCLUDE_DIRS})

@@ -19,6 +19,92 @@
 #include "items/items.hpp"
 #include "lua/scripts/scripts.hpp"
 
+/**
+ * @class EventCallback
+ * @brief Class representing an event callback.
+ *
+ * @note This class is used to encapsulate the logic of a Lua event callback.
+ * @details It is derived from the Script class and includes additional information specific to event callbacks.
+ *
+ * @see Script
+ */
+EventCallback::EventCallback(const std::string &callbackName, bool skipDuplicationCheck, LuaScriptInterface* interface) :
+	m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck),
+	m_scriptInterface(interface ? interface : &g_scripts().getScriptInterface()) {
+	assert(m_scriptInterface != nullptr);
+}
+
+LuaScriptInterface* EventCallback::getScriptInterface() const noexcept {
+	return m_scriptInterface;
+}
+
+bool EventCallback::loadScriptId() {
+	LuaScriptInterface &luaInterface = *getScriptInterface();
+	m_scriptId = luaInterface.getEvent();
+	if (m_scriptId == kInvalidScriptId) {
+		g_logger().error("[EventCallback::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
+		return false;
+	}
+
+	return true;
+}
+
+std::string EventCallback::getScriptTypeName() const {
+	return m_scriptTypeName;
+}
+
+void EventCallback::setScriptTypeName(std::string_view newName) {
+	m_scriptTypeName = newName;
+}
+
+int32_t EventCallback::getScriptId() const noexcept {
+	return m_scriptId;
+}
+
+void EventCallback::setScriptId(int32_t newScriptId) noexcept {
+	m_scriptId = newScriptId;
+}
+
+bool EventCallback::isLoadedScriptId() const noexcept {
+	return m_scriptId != kInvalidScriptId;
+}
+
+bool EventCallback::canExecute() const {
+	if (!m_enabled) {
+		g_logger().debug("[EventCallback::canExecute] Callback '{}' disabled", m_callbackName);
+		return false;
+	}
+	if (m_scriptId == kInvalidScriptId) {
+		g_logger().warn("[EventCallback::canExecute] Invalid script id for '{}'", m_callbackName);
+		return false;
+	}
+	if (getScriptInterface() == nullptr) {
+		g_logger().error("[EventCallback::canExecute] Script interface is null for '{}'", m_callbackName);
+		return false;
+	}
+	return true;
+}
+
+std::string EventCallback::getName() const {
+	return m_callbackName;
+}
+
+bool EventCallback::skipDuplicationCheck() const {
+	return m_skipDuplicationCheck;
+}
+
+void EventCallback::setSkipDuplicationCheck(bool skip) {
+	m_skipDuplicationCheck = skip;
+}
+
+EventCallback_t EventCallback::getType() const {
+	return m_callbackType;
+}
+
+void EventCallback::setType(EventCallback_t type) {
+	m_callbackType = type;
+}
+
 void EventCallback::pushArgument(lua_State* L, const std::shared_ptr<Player> &player) {
 	if (player) {
 		Lua::pushUserdata<Player>(L, player);
@@ -182,90 +268,4 @@ void EventCallback::pushArgument(lua_State* L, CombatType_t value) {
 
 void EventCallback::pushArgument(lua_State* L, TextColor_t value) {
 	Lua::pushNumber(L, static_cast<int32_t>(value));
-}
-
-/**
- * @class EventCallback
- * @brief Class representing an event callback.
- *
- * @note This class is used to encapsulate the logic of a Lua event callback.
- * @details It is derived from the Script class and includes additional information specific to event callbacks.
- *
- * @see Script
- */
-EventCallback::EventCallback(const std::string &callbackName, bool skipDuplicationCheck, LuaScriptInterface* interface) :
-	m_callbackName(callbackName), m_skipDuplicationCheck(skipDuplicationCheck),
-	m_scriptInterface(interface ? interface : &g_scripts().getScriptInterface()) {
-	assert(m_scriptInterface != nullptr);
-}
-
-LuaScriptInterface* EventCallback::getScriptInterface() const noexcept {
-	return m_scriptInterface;
-}
-
-bool EventCallback::loadScriptId() {
-	LuaScriptInterface &luaInterface = *getScriptInterface();
-	m_scriptId = luaInterface.getEvent();
-	if (m_scriptId == kInvalidScriptId) {
-		g_logger().error("[EventCallback::loadScriptId] Failed to load event. Script name: '{}', Module: '{}'", luaInterface.getLoadingScriptName(), luaInterface.getInterfaceName());
-		return false;
-	}
-
-	return true;
-}
-
-std::string EventCallback::getScriptTypeName() const {
-	return m_scriptTypeName;
-}
-
-void EventCallback::setScriptTypeName(std::string_view newName) {
-	m_scriptTypeName = newName;
-}
-
-int32_t EventCallback::getScriptId() const noexcept {
-	return m_scriptId;
-}
-
-void EventCallback::setScriptId(int32_t newScriptId) noexcept {
-	m_scriptId = newScriptId;
-}
-
-bool EventCallback::isLoadedScriptId() const noexcept {
-	return m_scriptId != kInvalidScriptId;
-}
-
-bool EventCallback::canExecute() const {
-	if (!m_enabled) {
-		g_logger().debug("[EventCallback::canExecute] Callback '{}' disabled", m_callbackName);
-		return false;
-	}
-	if (m_scriptId == kInvalidScriptId) {
-		g_logger().warn("[EventCallback::canExecute] Invalid script id for '{}'", m_callbackName);
-		return false;
-	}
-	if (getScriptInterface() == nullptr) {
-		g_logger().error("[EventCallback::canExecute] Script interface is null for '{}'", m_callbackName);
-		return false;
-	}
-	return true;
-}
-
-std::string EventCallback::getName() const {
-	return m_callbackName;
-}
-
-bool EventCallback::skipDuplicationCheck() const {
-	return m_skipDuplicationCheck;
-}
-
-void EventCallback::setSkipDuplicationCheck(bool skip) {
-	m_skipDuplicationCheck = skip;
-}
-
-EventCallback_t EventCallback::getType() const {
-	return m_callbackType;
-}
-
-void EventCallback::setType(EventCallback_t type) {
-	m_callbackType = type;
 }

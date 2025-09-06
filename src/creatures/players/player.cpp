@@ -7875,6 +7875,13 @@ void Player::sendTakeScreenshot(Screenshot_t screenshotType) const {
 void Player::onThink(uint32_t interval) {
 	Creature::onThink(interval);
 
+	currentTime = std::chrono::steady_clock::now();
+	currentTimeMillis = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime.time_since_epoch()).count();
+	if (updateInventory && !updatedItems.empty()) {
+		sendInventoryIds();
+		updatedItems.clear();
+		updateInventory = false;
+	}
 	sendPing();
 
 	MessageBufferTicks += interval;
@@ -7922,6 +7929,8 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index), false);
 	}
 
+	currentTime = std::chrono::steady_clock::now();
+	currentTimeMillis = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime.time_since_epoch()).count();
 	bool requireListUpdate = true;
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		const auto &item = oldParent ? oldParent->getItem() : nullptr;
@@ -7934,7 +7943,13 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 
 		updateInventoryWeight();
 		updateItemsLight();
-		sendInventoryIds();
+		if (std::shared_ptr<Item> item = thing->getItem()) {
+			updatedItems.push_back(item);
+		}
+		if (updatedItems.size() >= maxUpdatesPerBatch || (currentTimeMillis - lastUpdateTime) > updateCooldown) {
+			updateInventory = true;
+			lastUpdateTime = currentTimeMillis;
+		}
 		sendStats();
 	}
 
@@ -7982,8 +7997,10 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(index));
 		}
 	}
-	bool requireListUpdate = true;
 
+	currentTime = std::chrono::steady_clock::now();
+	currentTimeMillis = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime.time_since_epoch()).count();
+	bool requireListUpdate = true;
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		const auto &item = copyNewParent ? copyNewParent->getItem() : nullptr;
 		const auto &container = item ? item->getContainer() : nullptr;
@@ -7995,7 +8012,14 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 
 		updateInventoryWeight();
 		updateItemsLight();
-		sendInventoryIds();
+		if (std::shared_ptr<Item> item = thing->getItem()) {
+			updatedItems.push_back(item);
+		}
+
+		if (updatedItems.size() >= maxUpdatesPerBatch || (currentTimeMillis - lastUpdateTime) > updateCooldown) {
+			updateInventory = true;
+			lastUpdateTime = currentTimeMillis;
+		}
 		sendStats();
 	}
 

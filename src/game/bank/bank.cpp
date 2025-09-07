@@ -172,7 +172,7 @@ bool Bank::deposit(const std::shared_ptr<Bank> &destination, uint64_t amount) {
 	if (!bankable) {
 		return false;
 	}
-	auto player = bankable->getPlayer();
+	const auto &player = bankable->getPlayer();
 	if (!player) {
 		return false;
 	}

@@ -1187,6 +1187,10 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 }
 
 bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const {
+	if (!creature || !target) {
+		return false;
+	}
+
 	const Position &fromPos = creature->getPosition();
 	const Position &toPos = target->getPosition();
 	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {

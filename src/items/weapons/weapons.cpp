@@ -942,8 +942,17 @@ WeaponWand::WeaponWand() = default;
 
 void WeaponWand::configureWeapon(const ItemType &it) {
 	params.distanceEffect = it.shootType;
-	const_cast<ItemType &>(it).combatType = params.combatType;
-	const_cast<ItemType &>(it).maxHitChance = (minChange + maxChange) / 2;
+	auto &mutableType = const_cast<ItemType &>(it);
+	mutableType.combatType = params.combatType;
+
+	int32_t attackValue = (minChange + maxChange) / 2;
+	if (attackValue <= 0) {
+		attackValue = 1;
+	}
+
+	mutableType.maxHitChance = attackValue;
+	mutableType.attack = attackValue;
+
 	Weapon::configureWeapon(it);
 }
 

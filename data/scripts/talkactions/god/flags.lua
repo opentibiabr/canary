@@ -163,7 +163,28 @@ function Player.talkactionRemoveFlag(self, param, flagType)
 	return true
 end
 
----------------- // ----------------
+function Player.talkactionAddAllFlags(self, param)
+	for flagName, flagEnum in pairs(PlayerFlags_t) do
+		if not self:hasFlag(flagEnum) then
+			self:setGroupFlag(flagEnum)
+		end
+	end
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All flags have been added to your character.")
+	logger.info("[Player.talkactionAddAllFlags] Added all flags to {}.", self:getName())
+	return true
+end
+
+function Player.talkactionRemoveAllFlags(self, param)
+	for flagName, flagEnum in pairs(PlayerFlags_t) do
+		if self:hasFlag(flagEnum) then
+			self:removeGroupFlag(flagEnum)
+		end
+	end
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "All flags have been removed from your character.")
+	logger.info("[Player.talkactionRemoveAllFlags] Removed all flags from {}.", self:getName())
+	return true
+end
+
 local hasFlag = TalkAction("/hasflag")
 
 function hasFlag.onSay(player, words, param)
@@ -204,3 +225,27 @@ end
 removeFlag:separator(" ")
 removeFlag:groupType("god")
 removeFlag:register()
+
+---------------- // ----------------
+local addAllFlags = TalkAction("/addallflags")
+
+function addAllFlags.onSay(player, words, param)
+	logCommand(player, words, param)
+	return player:talkactionAddAllFlags(param)
+end
+
+addAllFlags:separator(" ")
+addAllFlags:groupType("god")
+addAllFlags:register()
+
+---------------- // ----------------
+local removeAllFlags = TalkAction("/removeallflags")
+
+function removeAllFlags.onSay(player, words, param)
+	logCommand(player, words, param)
+	return player:talkactionRemoveAllFlags(param)
+end
+
+removeAllFlags:separator(" ")
+removeAllFlags:groupType("god")
+removeAllFlags:register()

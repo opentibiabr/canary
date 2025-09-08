@@ -57,7 +57,7 @@ local cityWarEventPrepareDeath = CreatureEvent("cityWarEventPrepareDeath")
 function cityWarEventPrepareDeath.onPrepareDeath(creature, killer, realDamage)
 
     local loseTeam = team_battle.getData(creature, "team")
-	if killer and killer:isPlayer() then
+	if killer and killer:isPlayer() and getGlobalStorageValue(team_battle.status) > -1 then
 		local winTeam = (team_battle.getData(killer, "team") == 1) and team_battle.team_a_frags or team_battle.team_b_frags
 		killer:setTarget(0)
 		setGlobalStorageValue(winTeam, getGlobalStorageValue(winTeam) + 1)
@@ -71,7 +71,7 @@ function cityWarEventPrepareDeath.onPrepareDeath(creature, killer, realDamage)
 	team_battle.onEnd(creature)
 	if #team_battle.getTeamPlayers(loseTeam) == 0 then
 		team_battle.finish()
-	end	
+	end
 
 	return true
 end
@@ -122,9 +122,9 @@ function teamBattle.onSay(player, words, param)
 					player:removeCondition(CONDITION_OUTFIT)
 					player:teleportTo(player:getTown():getTemplePosition())
 				end
-			end                
+			end
 		end
-	end 
+	end
 end
 teamBattle:groupType("god")
 teamBattle:separator(" ")
@@ -152,17 +152,17 @@ function cityWarJoin.onSay(player, words, param)
 				player:sendCancelMessage("You may only join the event while being on protection zone.")
 				return false
 			end
-									
+
 			if player:getPosition():isInRange(team_battle.wait_room.from, team_battle.wait_room.to) then
 				player:sendCancelMessage("You are already in the Team Battle.")
 				return false
 			end
-				
+
 			if player:getLevel() < team_battle.player_level then
 				player:sendCancelMessage("You need to be at least of level " .. team_battle.player_level .. " to join the Team Battle.")
 				return false
 			end
-					
+
 			if team_battle.ip_check and team_battle.hasDuplicateIP(player) then
 				player:sendCancelMessage("You cannot join the Team Battle with someone else having your same IP.")
 				return false
@@ -184,7 +184,7 @@ function cityWarJoin.onSay(player, words, param)
 			team_battle.teleport(player, team_battle.wait_room.from, team_battle.wait_room.to)
 			team_battle.broadcast(team_battle.msg_join:format(player:getName()), 8)
 		end
-	end 
+	end
 end
 cityWarJoin:groupType("normal")
 cityWarJoin:separator(" ")

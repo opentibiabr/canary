@@ -2,31 +2,34 @@
 
 ### Running tests
 
-To run the tests, you need to compile with the flag `BUILD_TESTS` enabled (`-DBUILD_TESTS:BOOL=ON`).
-This will build all tests within the `tests` directory and generate a `tests` folder in the build directory, which contains the test executable.
+Tests can be run directly from the repository root using CMake test presets. First, configure and build tests for your platform:
 
-Once the executable is generated, you can run the tests with the following command:
 ```bash
-cd build/{build_type}/tests/unit
-./canary_ut
+# Configure and build tests
+cmake --preset linux-debug && cmake --build --preset linux-debug
 
-cd build/{build_type}/tests/integration
-./canary_it
+# Run all tests
+ctest --preset linux-debug
+
+# Run only unit tests
+ctest --preset linux-debug -R unit
+
+# Run only integration tests
+ctest --preset linux-debug -R integration
+
+# Use -VV for verbose output showing individual test cases
+ctest --preset linux-debug -VV
 ```
 
-#### Running tests with CTest
+Replace `linux-debug` with `macos-debug` or `windows-debug` for other platforms.
 
-You can also run the tests using CTest:
+#### Direct executable access
+
+You can also run test executables directly if needed:
+
 ```bash
--- from the build/{build_type} directory
--- to run all tests 
-ctest --verbose
-
--- to run only unit tests
-ctest --verbose -R unit
-
--- to run only integration tests
-ctest --verbose -R integration
+./build/linux-debug/tests/unit/canary_ut
+./build/linux-debug/tests/integration/canary_it
 ```
 
 ### Adding tests
@@ -49,13 +52,14 @@ As much as possible, tests should be added in the same folder as the code they a
 
 ### Boost::ut
 
-Tests are written using the Boost::ut framework.  We've chosen this framework because it is simple, macro-free, intuitive, and easy to use.
+Tests are written using the Boost::ut framework. We've chosen this framework because it is simple, macro-free, intuitive, and easy to use.
 In this section, we will go over the basics of the framework, but you can find more information in the [Boost::ut documentation](https://boost-ext.github.io/ut/).
 There are many ways to write tests, and we encourage you to read the documentation to find the way that works best for you.
 
 #### Suites
 
 Tests needs to be encapsulated by suites, which are defined using `suite<>` structure.
+
 ```cpp
 suite<"foo"> test_foo = [] {
     // Tests go here
@@ -71,6 +75,7 @@ Avoid creating tests directly in the main function, as this will put them in the
 #### Tests
 
 Tests can be defined using the `test()` lambda or the `_test` operator:
+
 ```cpp
 suite<"foo"> test_foo = [] {
     "test 1"_test = [] {
@@ -89,6 +94,7 @@ Both are equivalent, the received argument is the description of the test.
 The description is used to identify the test in the output, and should be unique within a suite.
 
 Assertions are done using the `expect()` function:
+
 ```cpp
 suite<"foo"> test_foo = [] {
     "test 1"_test = [] {

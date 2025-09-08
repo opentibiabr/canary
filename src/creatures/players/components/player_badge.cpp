@@ -139,8 +139,9 @@ std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const 
 			auto player = std::make_shared<Player>(nullptr);
 			player->setName(result->getString("name"));
 			player->setLevel(result->getNumber<uint32_t>("level"));
-			player->setVocation(result->getNumber<uint16_t>("vocation"));
-			players.push_back(player);
+			if (player->setVocation(result->getNumber<uint16_t>("vocation"))) {
+				players.push_back(player);
+			}
 		} while (result->next());
 	}
 

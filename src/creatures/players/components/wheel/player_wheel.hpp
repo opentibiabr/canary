@@ -142,6 +142,8 @@ class PlayerWheel {
 public:
 	explicit PlayerWheel(Player &initPlayer);
 
+	void init();
+
 	void loadActiveGems();
 	void saveActiveGems() const;
 	void loadRevealedGems();

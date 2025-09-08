@@ -315,6 +315,7 @@ private:
 class WeaponWand : public Weapon {
 public:
 	explicit WeaponWand();
+	virtual ~WeaponWand() = default;
 
 	void configureWeapon(const ItemType &it) override;
 

@@ -530,7 +530,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 
 	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP && !player->isFirstOnStack()) {
 		const auto &instantSpell = g_spells().getInstantSpell(getName());
-		if (instantSpell && !instantSpell->getNeedCasterTargetOrDirection() || !getNeedTarget()) {
+		if ((instantSpell && !instantSpell->getNeedCasterTargetOrDirection()) || !getNeedTarget()) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return false;
 		}

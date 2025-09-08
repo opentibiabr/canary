@@ -66,6 +66,13 @@ monster.light = {
 	color = 0,
 }
 
+monster.summon = {
+	maxSummons = 3,
+	summons = {
+		{ name = "wormling", chance = 40, interval = 2000, count = 3 },
+	},
+}
+
 monster.voices = {
 	interval = 5000,
 	chance = 10,

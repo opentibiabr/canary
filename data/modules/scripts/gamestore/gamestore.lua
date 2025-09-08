@@ -2089,14 +2089,6 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
-				icons = { "Spirit_of_Purity.png" },
-				name = "Spirit of Purity",
-				price = 1000,
-				id = 217,
-				description = "{character}\n{speedboost}\n\n<i>A wild, ancient creature, which had been hiding in the depths of the shadows for a very long time, has been spotted in Tibia again! The almighty Shadow Draptor has returned and only the bravest Tibians can control such a beast!</i>",
-				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-			},
-			{
 				icons = { "Steel_Bee.png" },
 				name = "Steel Bee",
 				price = 600,

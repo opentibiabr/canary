@@ -79,14 +79,24 @@ function Raid:canStart()
 			return false
 		end
 
-		local checksToday = tonumber(self.kv:get("checks-today") or 0)
+		-- Check if we need to reset daily counters
+		local checksToday
+		local lastCheckDate = self.kv:get("last-check-date")
+		local currentDate = os.date("%Y%m%d")
+		if lastCheckDate ~= currentDate then
+			self.kv:set("checks-today", 0)
+			self.kv:set("last-check-date", currentDate)
+			checksToday = 0
+		else
+			checksToday = math.max(0, tonumber(self.kv:get("checks-today")) or 0)
+		end
 		if self.maxChecksPerDay and checksToday >= self.maxChecksPerDay then
 			logger.debug("Raid {} has already checked today (checks today: {}, max: {})", self.name, checksToday, self.maxChecksPerDay)
 			return false
 		end
 		self.kv:set("checks-today", checksToday + 1)
 
-		local failedAttempts = self.kv:get("failed-attempts") or 0
+		local failedAttempts = math.max(0, tonumber(self.kv:get("failed-attempts")) or 0)
 		local checksPerDay = ParseDuration("23h") / ParseDuration(Raid.checkInterval)
 		local initialChance = self.initialChance or (self.targetChancePerDay / checksPerDay)
 		local chanceIncrease = math.max((self.targetChancePerDay - initialChance) / checksPerDay, 0)

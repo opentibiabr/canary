@@ -7,10 +7,12 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
   merge_group:
   push:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
     branches:
       - main
 
@@ -99,7 +101,6 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
-          configurePresetAdditionalArgs: "['-DBUILD_TESTS=ON']"
 
       - name: Create and Upload Artifact
         uses: actions/upload-artifact@main
@@ -110,10 +111,8 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/unit
-          ctest --verbose
+          ctest -V -R unit
 
-#      - name: Run Integration Tests
-#        run: |
-#          cd ${{ github.workspace }}/build/${{ matrix.buildtype }}/tests/integration
-#          ctest --verbose
+      - name: Run Integration Tests
+        run: |
+          ctest -V -R integration

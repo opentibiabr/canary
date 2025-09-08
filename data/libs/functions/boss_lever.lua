@@ -247,6 +247,7 @@ function BossLever:onUse(player)
 			end
 		end
 		lever:teleportPlayers()
+		lever:setCooldownAllPlayers(self.name, os.time() + self.timeToFightAgain)
 		if self.encounter then
 			local encounter = Encounter(self.encounter)
 			encounter:reset()

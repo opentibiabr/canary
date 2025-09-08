@@ -11,24 +11,24 @@ suite<"utils"> replaceStringTest = [] {
 		std::string subject, search, replace, expected;
 
 		[[nodiscard]] std::string toString() const {
-			return fmt::format("replace {} in {} by {}", search, subject, replace);
+			return fmt::format("replace '{}' in '{}' by '{}'", search, subject, replace);
 		}
 	};
 
-	std::vector replaceStringTestCases {
-		ReplaceStringTestCase { "", "", "", "" },
-		ReplaceStringTestCase { "all together", " ", "_", "all_together" },
-		ReplaceStringTestCase { "beautiful", "u", "", "beatifl" },
-		ReplaceStringTestCase { "empty_empty_empty_", "empty_", "", "" },
-		ReplaceStringTestCase { "I am someone", "someone", "Lucas", "I am Lucas" },
-		ReplaceStringTestCase { "[[123[[[[[[124[[asf[[ccc[[[", "[[", "\\[[", "\\[[123\\[[\\[[\\[[124\\[[asf\\[[ccc\\[[[" },
+	static const std::vector<ReplaceStringTestCase> replaceStringTestCases {
+		{ "", "", "", "" },
+		{ "all together", " ", "_", "all_together" },
+		{ "beautiful", "u", "", "beatifl" },
+		{ "empty_empty_empty_", "empty_", "", "" },
+		{ "I am someone", "someone", "Lucas", "I am Lucas" },
+		{ "[[123[[[[[[124[[asf[[ccc[[[", "[[", "\\[[", "\\[[123\\[[\\[[\\[[124\\[[asf\\[[ccc\\[[[" },
 	};
 
 	for (const auto &replaceStringTestCase : replaceStringTestCases) {
-		test(replaceStringTestCase.toString()) = [&replaceStringTestCase] {
+		test("replaceString") = [replaceStringTestCase] {
 			auto [subject, search, replace, expected] = replaceStringTestCase;
 			replaceString(subject, search, replace);
-			expect(eq(expected, subject)) << fmt::format("{} != {}", expected, subject);
+			expect(eq(expected, subject)) << fmt::format("FAILED: {}", replaceStringTestCase.toString());
 		};
 	}
 };

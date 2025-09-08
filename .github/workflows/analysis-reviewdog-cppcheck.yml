@@ -5,9 +5,11 @@ on:
   pull_request:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
   push:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
 
 jobs:
   cppcheck:

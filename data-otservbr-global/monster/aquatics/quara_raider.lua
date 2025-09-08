@@ -23,13 +23,13 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 1,
-	Locations = "Podzilla Bottom, Podzilla Underwater ",
+	Locations = "Podzilla Bottom, Podzilla Underwater",
 }
 
 monster.health = 12500
 monster.maxHealth = 12500
 monster.race = "undead"
-monster.corpse = 48392
+monster.corpse = 48393
 monster.speed = 215
 monster.manaCost = 0
 

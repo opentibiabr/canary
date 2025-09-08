@@ -17,6 +17,7 @@ class Protocol;
 class OutputMessage : public NetworkMessage {
 public:
 	OutputMessage() = default;
+	virtual ~OutputMessage() = default;
 
 	// non-copyable
 	OutputMessage(const OutputMessage &) = delete;

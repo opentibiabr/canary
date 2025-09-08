@@ -503,7 +503,7 @@ public:
 
 	virtual void turnToCreature(const std::shared_ptr<Creature> &creature);
 
-	void onAddTileItem(const std::shared_ptr<Tile> & /*tile*/, const Position & /*pos*/) { }
+	void onAddTileItem(const std::shared_ptr<Tile> & /*tile*/, const Position & /*pos*/) const { }
 	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) { }
 	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) { }
 
@@ -892,7 +892,7 @@ private:
 		const auto stepSpeed = getStepSpeed();
 		walk.calculatedStepSpeed = 1;
 		if (stepSpeed > -Creature::speedB) {
-			const auto formula = std::floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
+			const auto formula = std::floor((Creature::speedA * std::log(stepSpeed + Creature::speedB) + Creature::speedC) + .5);
 			walk.calculatedStepSpeed = static_cast<uint16_t>(std::max(formula, 1.));
 		}
 

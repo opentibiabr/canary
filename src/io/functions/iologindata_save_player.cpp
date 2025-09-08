@@ -13,12 +13,14 @@
 #include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "game/game.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "creatures/players/player.hpp"
+#include "io/player_storage_repository.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -787,31 +789,24 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 
 bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
+	auto &storage = player->storage();
+	storage.prepareForPersist();
+	auto delta = storage.delta();
+	auto guid = player->getGUID();
+	auto &repo = g_playerStorageRepository();
+
+	if (!delta.deletions.empty() && !repo.deleteKeys(guid, delta.deletions)) {
 		return false;
 	}
 
-	query.str("");
-
-	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-	player->genReservedStorageRange();
-
-	for (const auto &[key, value] : player->storageMap) {
-		query << player->getGUID() << ',' << key << ',' << value;
-		if (!storageQuery.addRow(query)) {
-			return false;
-		}
-	}
-
-	if (!storageQuery.execute()) {
+	if (!delta.upserts.empty() && !repo.upsert(guid, delta.upserts)) {
 		return false;
 	}
+
+	storage.clearDirty();
 	return true;
 }

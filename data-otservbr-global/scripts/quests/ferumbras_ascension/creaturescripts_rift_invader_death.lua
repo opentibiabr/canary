@@ -23,26 +23,26 @@ function riftInvaderDeath.onDeath(creature, corpse, lasthitkiller, mostdamagekil
 	for i = 1, #crystals do
 		local crystal = crystals[i]
 		if creature:getPosition():isInRange(crystal.fromPosition, crystal.toPosition) then
-			if player:getStorageValue(crystal.globalStorage) > 8 then
+			if Game.getStorageValue(crystal.globalStorage) > 8 then
 				local item = Tile(crystal.crystalPosition):getItemById(14955)
 				if not item then
 					return true
 				end
 				item:transform(14961)
-				player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) + 1)
+				Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) + 1)
 			end
-			if player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) == 8 then
+			if Game.getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals) == 8 then
 				local creature = Tile(config.bossPos):getTopCreature()
 				creature:say("NOOOOOOOOOOO!", TALKTYPE_MONSTER_YELL)
 				creature:say("FERUMBRAS BURSTS INTO SOUL SPLINTERS!", TALKTYPE_MONSTER_YELL, nil, nil, Position(33392, 31475, 14))
 				creature:remove()
 				for a = 1, #crystals do
-					local crystalEffect = crystals[i]
+					local crystalEffect = crystals[a]
 					crystalEffect.crystalPosition:sendMagicEffect(CONST_ME_FERUMBRAS)
 					Game.createMonster("Ferumbras Soul Splinter", Position(33392, 31473, 14), false, true)
 				end
 			end
-			player:setStorageValue(crystal.globalStorage, player:getStorageValue(crystal.globalStorage) + 1)
+			Game.setStorageValue(crystal.globalStorage, Game.getStorageValue(crystal.globalStorage) + 1)
 			lasthitkiller:say("The negative energy of the rift creature is absorbed by the crystal!", TALKTYPE_MONSTER_SAY, nil, nil, crystal.crystalPosition)
 			lasthitkiller:say("ARGH!", TALKTYPE_MONSTER_SAY, nil, nil, Position(33392, 31473, 14))
 		end

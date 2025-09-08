@@ -156,10 +156,11 @@ bool Bank::deposit(const std::shared_ptr<Bank> &destination) {
 	if (!bankable) {
 		return false;
 	}
-	if (bankable->getPlayer() == nullptr) {
+	auto player = bankable->getPlayer();
+	if (!player) {
 		return false;
 	}
-	auto amount = bankable->getPlayer()->getMoney();
+	auto amount = player->getMoney();
 	return deposit(destination, amount);
 }
 
@@ -171,11 +172,13 @@ bool Bank::deposit(const std::shared_ptr<Bank> &destination, uint64_t amount) {
 	if (!bankable) {
 		return false;
 	}
-	if (!g_game().removeMoney(bankable->getPlayer(), amount)) {
+	const auto &player = bankable->getPlayer();
+	if (!player) {
 		return false;
 	}
-	if (bankable->getPlayer() != nullptr) {
-		g_metrics().addCounter("balance_decrease", amount, { { "player", bankable->getPlayer()->getName() }, { "context", "bank_deposit" } });
+	if (!g_game().removeMoney(player, amount)) {
+		return false;
 	}
+	g_metrics().addCounter("balance_decrease", amount, { { "player", player->getName() }, { "context", "bank_deposit" } });
 	return destination->credit(amount);
 }

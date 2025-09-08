@@ -30,6 +30,9 @@ namespace tests {
 		}
 
 		void addAccount(const std::string &descriptor, const AccountInfo &acc) {
+			phmap::erase_if(accounts, [&](const auto &entry) {
+				return entry.second.id == acc.id;
+			});
 			accounts[descriptor] = acc;
 		}
 

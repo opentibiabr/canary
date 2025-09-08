@@ -15,8 +15,26 @@ our [customized tools](https://docs.opentibiabr.com/opentibiabr/downloads/tools)
 
 ## Getting Started
 
-* [Gitbook](https://docs.opentibiabr.com/opentibiabr/projects/canary).
-* [Wiki](https://github.com/opentibiabr/canary/wiki).
+- [Gitbook](https://docs.opentibiabr.com/opentibiabr/projects/canary).
+- [Wiki](https://github.com/opentibiabr/canary/wiki).
+
+## Running Tests
+
+Tests can be run directly from the repository root using CMake test presets:
+
+```bash
+# Configure and build tests for your platform
+cmake --preset linux-debug && cmake --build --preset linux-debug
+
+# Run all tests
+ctest --preset linux-debug
+
+# For other platforms use:
+# ctest --preset macos-debug
+# ctest --preset windows-debug
+```
+
+For detailed testing information including adding tests and framework usage, see [tests/README.md](tests/README.md).
 
 ## Support
 
@@ -26,8 +44,8 @@ If you need help, please visit our [discord](https://discord.gg/gvTj5sh9Mp). Our
 
 Here are some ways you can contribute:
 
-* [Issue Tracker](https://github.com/opentibiabr/canary/issues/new/choose).
-* [Pull Request](https://github.com/opentibiabr/canary/pulls).
+- [Issue Tracker](https://github.com/opentibiabr/canary/issues/new/choose).
+- [Pull Request](https://github.com/opentibiabr/canary/pulls).
 
 You are subject to our code of conduct, read at [this link](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md).
 

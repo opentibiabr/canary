@@ -36,7 +36,7 @@ public:
 	static void loadPlayerDepotItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadRewardItems(const std::shared_ptr<Player> &player);
 	static void loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerStorageMap(const std::shared_ptr<Player> &player, DBResult_ptr result);
+	static void loadPlayerStorageMap(const std::shared_ptr<Player> &player);
 	static void loadPlayerVip(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerPreyClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &player, DBResult_ptr result);

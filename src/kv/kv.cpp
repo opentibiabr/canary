@@ -31,53 +31,70 @@ void KVStore::set(const std::string &key, const std::initializer_list<std::pair<
 }
 
 void KVStore::set(const std::string &key, const ValueWrapper &value) {
-	return setLocked(key, value);
+	{
+		std::scoped_lock lock(mutex_);
+		setLocked(key, value);
+	}
+	processEvictions();
 }
 
 void KVStore::setLocked(const std::string &key, const ValueWrapper &value) {
-	std::optional<std::pair<std::string, ValueWrapper>> evicted;
+	auto it = store_.find(key);
+	if (it != store_.end()) {
+		it->second.first = value;
+		lruQueue_.splice(lruQueue_.begin(), lruQueue_, it->second.second);
+	} else {
+		std::string evictKey;
+		ValueWrapper evictValue;
+		bool needsEviction = false;
 
-	{
-		std::scoped_lock lk(mutex_);
-
-		if (store_.size() >= MAX_SIZE) {
+		if (store_.size() >= MAX_SIZE && !lruQueue_.empty()) {
+			logger.debug("KVStore::set() - MAX_SIZE reached, removing last element");
 			auto last = std::prev(lruQueue_.end());
-			evicted = std::make_pair(*last, store_[*last].first);
+			evictKey = *last;
+			evictValue = store_[*last].first;
+			needsEviction = true;
 			store_.erase(*last);
 			lruQueue_.pop_back();
 		}
 
-		lruQueue_.remove(key);
 		lruQueue_.push_front(key);
-		store_[key] = std::make_pair(value, lruQueue_.begin());
-	}
+		store_.try_emplace(key, std::make_pair(value, lruQueue_.begin()));
 
-	if (evicted) {
-		save(evicted->first, evicted->second);
+		if (needsEviction) {
+			pendingEvictions_.emplace_back(evictKey, evictValue);
+		}
 	}
 }
 
 std::optional<ValueWrapper> KVStore::get(const std::string &key, bool forceLoad /*= false*/) {
-	std::optional<ValueWrapper> cached;
+	logger.trace("KVStore::get({})", key);
+
 	{
-		std::scoped_lock lk(mutex_);
+		std::scoped_lock lock(mutex_);
 		if (!forceLoad) {
 			auto it = store_.find(key);
-			if (it != store_.end() && !it->second.first.isDeleted()) {
-				cached = it->second.first;
+			if (it != store_.end()) {
+				auto &[value, lruIt] = it->second;
+				if (value.isDeleted()) {
+					lruQueue_.splice(lruQueue_.end(), lruQueue_, lruIt);
+					return std::nullopt;
+				}
+				lruQueue_.splice(lruQueue_.begin(), lruQueue_, lruIt);
+				return value;
 			}
 		}
 	}
 
-	if (cached) {
-		return cached;
+	auto value = load(key);
+	if (value) {
+		{
+			std::scoped_lock lock(mutex_);
+			setLocked(key, *value);
+		}
+		processEvictions();
 	}
-
-	if (auto dbVal = load(key)) {
-		set(key, *dbVal);
-		return dbVal;
-	}
-	return std::nullopt;
+	return value;
 }
 
 std::unordered_set<std::string> KVStore::keys(const std::string &prefix /*= ""*/) {
@@ -107,4 +124,19 @@ void KV::remove(const std::string &key) {
 std::shared_ptr<KV> KVStore::scoped(const std::string &scope) {
 	logger.trace("KVStore::scoped({})", scope);
 	return std::make_shared<ScopedKV>(logger, *this, scope);
+}
+
+void KVStore::processEvictions() {
+	std::vector<std::pair<std::string, ValueWrapper>> evictions;
+	{
+		std::scoped_lock lock(mutex_);
+		if (!pendingEvictions_.empty()) {
+			evictions = std::move(pendingEvictions_);
+			pendingEvictions_.clear();
+		}
+	}
+
+	for (const auto &[key, value] : evictions) {
+		save(key, value);
+	}
 }

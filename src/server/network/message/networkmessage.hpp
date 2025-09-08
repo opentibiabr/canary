@@ -20,6 +20,8 @@ class RSA;
 
 class NetworkMessage {
 public:
+	virtual ~NetworkMessage() = default;
+
 	using MsgSize_t = uint16_t;
 	// Headers:
 	// 2 bytes for unencrypted message size

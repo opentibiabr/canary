@@ -1,5 +1,6 @@
-target_sources(${PROJECT_NAME}_lib PRIVATE
-    lua_functions_loader.cpp
+target_sources(
+    ${PROJECT_NAME}_lib
+    PRIVATE lua_functions_loader.cpp
 )
 
 add_subdirectory(core)

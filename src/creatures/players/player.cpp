@@ -7250,7 +7250,7 @@ void Player::setBedItem(std::shared_ptr<BedItem> b) {
 	bedItem = std::move(b);
 }
 
-void Player::sendUnjustifiedPoints() {
+void Player::sendUnjustifiedPoints() const {
 	if (client) {
 		double dayKills = 0;
 		double weekKills = 0;

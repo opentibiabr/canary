@@ -356,7 +356,7 @@ public:
 	void removePartyInvitation(const std::shared_ptr<Party> &party);
 	void clearPartyInvitations();
 
-	void sendUnjustifiedPoints();
+	void sendUnjustifiedPoints() const;
 
 	void sendOpenPvpSituations();
 
@@ -772,7 +772,7 @@ public:
 	Skulls_t getSkull() const override;
 	Skulls_t getSkullClient(const std::shared_ptr<Creature> &creature) override;
 	int64_t getSkullTicks() const;
-	void setSkullTicks(int64_t ticks);
+	void setSkullTicks(int64_t ticks) const;
 
 	bool hasAttacked(const std::shared_ptr<Player> &attacked) const;
 	void addAttacked(const std::shared_ptr<Player> &attacked);

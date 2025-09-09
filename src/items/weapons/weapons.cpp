@@ -949,8 +949,9 @@ void WeaponWand::configureWeapon(const ItemType &it) {
 	if (attackValue <= 0) {
 		attackValue = (std::abs(minChange) + std::abs(maxChange)) / 2;
 	}
+	
+	// avoid sending invalid attack values to the client	
 	if (attackValue <= 0) {
-		// avoid sending invalid attack values to the client
 		attackValue = 1;
 	}
 

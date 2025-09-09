@@ -7240,13 +7240,11 @@ void Player::sendUnjustifiedPoints() const {
 			DBResult_ptr result = g_database().storeQuery(query);
 			int64_t lastKillTime = 0;
 			if (result && result->hasNext()) {
-				const std::string& timeStr = result->getString("time");
-				auto [ptr, ec] = std::from_chars(timeStr.data(),
-                                 timeStr.data() + timeStr.size(),
-                                 lastKillTime);
+				const std::string &timeStr = result->getString("time");
+				auto [ptr, ec] = std::from_chars(timeStr.data(), timeStr.data() + timeStr.size(), lastKillTime);
 				if (ec != std::errc()) {
-    				// handle parse error, e.g. log or fallback
-    				lastKillTime = 0;
+					// handle parse error, e.g. log or fallback
+					lastKillTime = 0;
 				}
 			}
 			// Current time in seconds

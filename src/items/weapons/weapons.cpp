@@ -945,13 +945,21 @@ void WeaponWand::configureWeapon(const ItemType &it) {
 	auto &mutableType = const_cast<ItemType &>(it);
 	mutableType.combatType = params.combatType;
 
-	int32_t attackValue = (minChange + maxChange) / 2;
+	int32_t attackValue = mutableType.attack;
 	if (attackValue <= 0) {
+		attackValue = (std::abs(minChange) + std::abs(maxChange)) / 2;
+	}
+	if (attackValue <= 0) {
+		// avoid sending invalid attack values to the client
 		attackValue = 1;
 	}
 
-	mutableType.maxHitChance = attackValue;
-	mutableType.attack = attackValue;
+	if (mutableType.attack <= 0) {
+		mutableType.attack = attackValue;
+	}
+	if (mutableType.maxHitChance <= 0) {
+		mutableType.maxHitChance = attackValue;
+	}
 
 	Weapon::configureWeapon(it);
 }

@@ -6569,8 +6569,8 @@ int64_t Player::getSkullTicks() const {
 	return skullTicks;
 }
 
-void Player::setSkullTicks(int64_t ticks) {
-	skullTicks = ticks;
+void Player::setSkullTicks(int64_t ticks) const {
+	const_cast<Player*>(this)->skullTicks = ticks;
 }
 
 bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
@@ -7205,7 +7205,7 @@ void Player::setBedItem(std::shared_ptr<BedItem> b) {
 	bedItem = std::move(b);
 }
 
-void Player::sendUnjustifiedPoints() {
+void Player::sendUnjustifiedPoints() const {
 	if (client) {
 		double dayKills = 0;
 		double weekKills = 0;
@@ -7236,16 +7236,21 @@ void Player::sendUnjustifiedPoints() {
 		uint8_t skullDuration = 0;
 		//  If player is still redskull or blackskull but getSkullTicks is 0, calculate time left from last kill
 		if (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK) {
-			auto &db = Database::getInstance();
-			std::ostringstream query;
-			query << "SELECT `time` FROM `player_kills` WHERE `player_id` = " << guid << " ORDER BY `time` DESC LIMIT 1;";
-			DBResult_ptr result = db.storeQuery(query.str());
+			auto query = fmt::format("SELECT `time` FROM `player_kills` WHERE `player_id` = {} ORDER BY `time` DESC LIMIT 1", guid);
+			DBResult_ptr result = g_database().storeQuery(query);
 			int64_t lastKillTime = 0;
 			if (result && result->hasNext()) {
-				lastKillTime = std::stoll(result->getString("time"));
+				const std::string& timeStr = result->getString("time");
+				auto [ptr, ec] = std::from_chars(timeStr.data(),
+                                 timeStr.data() + timeStr.size(),
+                                 lastKillTime);
+				if (ec != std::errc()) {
+    				// handle parse error, e.g. log or fallback
+    				lastKillTime = 0;
+				}
 			}
 			// Current time in seconds
-			int64_t now = static_cast<int64_t>(time(nullptr));
+			int64_t now = static_cast<int64_t>(getTimeNow());
 			int64_t elapsed = now - lastKillTime;
 			// Use appropriate duration variable for skull type
 			int64_t skullDurationMs = 0;

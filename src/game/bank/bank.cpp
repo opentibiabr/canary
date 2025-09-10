@@ -146,8 +146,34 @@ bool Bank::withdraw(const std::shared_ptr<Player> &player, uint64_t amount) {
 	if (!debit(amount)) {
 		return false;
 	}
-	g_game().addMoney(player, amount);
-	g_metrics().addCounter("balance_decrease", amount, { { "player", player->getName() }, { "context", "bank_withdraw" } });
+	uint32_t flags = 0;
+	auto [addedMoney, returnValue] = g_game().addMoney(player, amount, flags);
+	uint64_t refund = 0;
+
+	if (addedMoney > amount) {
+		g_logger().error(
+			"Bank::withdraw: INCONSISTENT STATE — delivered MORE than requested! Delivered {} of {} gold to player {}",
+			addedMoney, amount, player->getName()
+		);
+	} else if (addedMoney < amount) {
+		refund = amount - addedMoney;
+
+		uint64_t oldBalance = balance();
+		credit(refund);
+		uint64_t newBalance = balance();
+
+		g_logger().warn(
+			"Bank::withdraw: only delivered {} of {} gold to player {}. "
+			"Refunded {} gold to bank. Bank balance was {} gold, now {} gold.",
+			addedMoney, amount, player->getName(), refund, oldBalance, newBalance
+		);
+		player->sendTextMessage(
+			MESSAGE_EVENT_ADVANCE,
+			fmt::format("Only {} of {} gold coins were delivered to your inventory. {}", addedMoney, amount, getReturnMessage(returnValue))
+		);
+	}
+
+	g_metrics().addCounter("balance_decrease", addedMoney, { { "player", player->getName() }, { "context", "bank_withdraw" } });
 	return true;
 }
 

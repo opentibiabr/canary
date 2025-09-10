@@ -1,6 +1,7 @@
 #include <boost/ut.hpp>
 
 #include "io/player_storage_repository_db.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "test_env.hpp"
 
 #include <exception>

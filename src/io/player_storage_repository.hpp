@@ -9,13 +9,13 @@
 
 #pragma once
 
-#include "creatures/players/components/player_storage.hpp"
-
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <cstdint>
 	#include <map>
 	#include <vector>
 #endif
+
+class PlayerStorageRow;
 
 class IPlayerStorageRepository {
 public:

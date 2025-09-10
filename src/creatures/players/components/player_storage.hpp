@@ -117,14 +117,14 @@ public:
 	/**
 	 * @brief Returns the keys modified since the last persistence.
 	 */
-	auto getModifiedKeys() const {
+	const auto &getModifiedKeys() const {
 		return m_modifiedKeys;
 	}
 
 	/**
 	 * @brief Returns the keys removed since the last persistence.
 	 */
-	auto getRemovedKeys() const {
+	const auto &getRemovedKeys() const {
 		return m_removedKeys;
 	}
 
@@ -173,7 +173,7 @@ private:
 	 * Used for batch UPSERT. If a key is later removed, it is erased
 	 * from here and moved into @ref m_removedKeys.
 	 */
-	std::set<uint32_t> m_modifiedKeys;
+	std::unordered_set<uint32_t> m_modifiedKeys;
 
 	/**
 	 * @brief Set of keys removed and pending deletion in the DB.
@@ -181,5 +181,5 @@ private:
 	 * Processed first in @ref save() via DELETE with IN (...).
 	 * Cleared after success. Never loaded from the DB.
 	 */
-	std::set<uint32_t> m_removedKeys;
+	std::unordered_set<uint32_t> m_removedKeys;
 };

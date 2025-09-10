@@ -9,13 +9,14 @@
 
 #include "io/player_storage_repository_db.hpp"
 
+#include "creatures/players/components/player_storage.hpp"
+
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <cstdint>
 	#include <map>
-	#include <set>
 	#include <string>
 	#include <vector>
 	#include <fmt/format.h>
@@ -25,7 +26,7 @@
 std::vector<PlayerStorageRow> DbPlayerStorageRepository::load(uint32_t id) {
 	std::vector<PlayerStorageRow> out;
 	auto query = fmt::format("SELECT `key`,`value` FROM `player_storage` WHERE `player_id`={}", id);
-	if (auto result = Database::getInstance().storeQuery(query)) {
+	if (auto result = g_database().storeQuery(query)) {
 		do {
 			out.push_back({ result->getNumber<uint32_t>("key"), result->getNumber<int32_t>("value") });
 		} while (result->next());
@@ -39,7 +40,7 @@ bool DbPlayerStorageRepository::deleteKeys(uint32_t id, const std::vector<uint32
 	}
 	auto in = fmt::format("{}", fmt::join(keys, ","));
 	auto query = fmt::format("DELETE FROM `player_storage` WHERE `player_id`={} AND `key` IN ({})", id, in);
-	return Database::getInstance().executeQuery(query);
+	return g_database().executeQuery(query);
 }
 
 bool DbPlayerStorageRepository::upsert(uint32_t id, const std::map<uint32_t, int32_t> &kv) {

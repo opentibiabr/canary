@@ -727,7 +727,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 	}
 }
 
-void IOLoginDataLoad::loadPlayerStorageMap(const std::shared_ptr<Player> &player) {
+void IOLoginDataLoad::loadPlayerStorage(const std::shared_ptr<Player> &player) {
 	if (!player) {
 		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;

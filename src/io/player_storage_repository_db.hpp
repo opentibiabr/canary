@@ -11,6 +11,8 @@
 
 #include "io/player_storage_repository.hpp"
 
+class PlayerStorageRow;
+
 /**
  * @brief Database-backed implementation of IPlayerStorageRepository.
  *

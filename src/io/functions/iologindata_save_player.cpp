@@ -13,7 +13,6 @@
 #include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/players/components/player_storage.hpp"
 #include "game/game.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"

@@ -60,6 +60,8 @@
 #include "map/spectators.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+#include "utils/tools.hpp"
+#include <format>
 
 MuteCountMap Player::muteCountMap;
 
@@ -6052,7 +6054,6 @@ void Player::onPlacedCreature() {
 	refreshSkullTicksFromLastKill();
 	sendOpenPvpSituations();
 	sendUnjustifiedPoints();
-	sendOpenPvpSituations();
 }
 
 void Player::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {

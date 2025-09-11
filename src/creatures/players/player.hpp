@@ -360,8 +360,6 @@ public:
 
 	void sendOpenPvpSituations();
 
-	void sendOpenPvpSituations();
-
 	void refreshSkullTicksFromLastKill();
 	struct SkullTimeInfo {
 		int64_t remainingMs { 0 };

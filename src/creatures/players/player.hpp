@@ -770,7 +770,7 @@ public:
 	Skulls_t getSkull() const override;
 	Skulls_t getSkullClient(const std::shared_ptr<Creature> &creature) override;
 	int64_t getSkullTicks() const;
-	void setSkullTicks(int64_t ticks) const;
+	void setSkullTicks(int64_t ticks);
 
 	bool hasAttacked(const std::shared_ptr<Player> &attacked) const;
 	void addAttacked(const std::shared_ptr<Player> &attacked);

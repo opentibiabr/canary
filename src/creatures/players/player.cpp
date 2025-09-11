@@ -60,8 +60,6 @@
 #include "map/spectators.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
-#include "utils/tools.hpp"
-#include <format>
 
 MuteCountMap Player::muteCountMap;
 
@@ -6577,8 +6575,8 @@ int64_t Player::getSkullTicks() const {
 	return skullTicks;
 }
 
-void Player::setSkullTicks(int64_t ticks) const {
-	const_cast<Player*>(this)->skullTicks = ticks;
+void Player::setSkullTicks(int64_t ticks) {
+	skullTicks = ticks;
 }
 
 Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {

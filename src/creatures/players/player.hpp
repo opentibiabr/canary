@@ -356,9 +356,15 @@ public:
 	void removePartyInvitation(const std::shared_ptr<Party> &party);
 	void clearPartyInvitations();
 
-	void sendUnjustifiedPoints();
-
+	void sendUnjustifiedPoints() const;
 	void sendOpenPvpSituations();
+
+	void refreshSkullTicksFromLastKill();
+	struct SkullTimeInfo {
+		int64_t remainingMs { 0 };
+		uint8_t remainingDays { 0 };
+	};
+	SkullTimeInfo computeSkullTimeFromLastKill() const;
 
 	GuildEmblems_t getGuildEmblem(const std::shared_ptr<Player> &player) const;
 
@@ -762,7 +768,7 @@ public:
 	Skulls_t getSkull() const override;
 	Skulls_t getSkullClient(const std::shared_ptr<Creature> &creature) override;
 	int64_t getSkullTicks() const;
-	void setSkullTicks(int64_t ticks);
+	void setSkullTicks(int64_t ticks) const;
 
 	bool hasAttacked(const std::shared_ptr<Player> &attacked) const;
 	void addAttacked(const std::shared_ptr<Player> &attacked);

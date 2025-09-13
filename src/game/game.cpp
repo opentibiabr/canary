@@ -3910,9 +3910,74 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
+	const bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
 	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
+	}
+
+	if (pos.x != 0xFFFF) {
+		const auto &targetThing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_USETARGET);
+		if (targetThing) {
+			if (const auto &clickedCreature = targetThing->getCreature()) {
+				if (const auto &npc = clickedCreature->getNpc()) {
+					if (npc->getSpeechBubble() == SPEECHBUBBLE_HIRELING) {
+						ReturnValue ret = g_actions().canUse(player, pos);
+						if (ret != RETURNVALUE_NOERROR) {
+							if (ret == RETURNVALUE_TOOFARAWAY) {
+								std::vector<Direction> listDir;
+								if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
+									g_dispatcher().addEvent([this, playerId = player->getID(), listDir] {
+										playerAutoWalk(playerId, listDir);
+									},
+									                        __FUNCTION__);
+
+									const auto &task = createPlayerTask(
+										400,
+										[this, playerId, pos, stackPos, index, itemId] {
+											playerUseItem(playerId, pos, stackPos, index, itemId);
+										},
+										__FUNCTION__
+									);
+									player->setNextWalkActionTask(task);
+									return;
+								}
+								ret = RETURNVALUE_THEREISNOWAY;
+							}
+							player->sendCancelMessage(ret);
+							return;
+						}
+
+						auto* L = g_luaEnvironment().getLuaState();
+						if (!Lua::reserveScriptEnv()) {
+							g_logger().warn("[Hireling] Failed to call hirelingReturnToLamp!");
+							return;
+						}
+						{
+							ScriptEnvironment* env = Lua::getScriptEnv();
+							env->setScriptId(env->getScriptId(), &g_luaEnvironment());
+
+							lua_getglobal(L, "hirelingReturnToLamp");
+							if (lua_isfunction(L, -1)) {
+								lua_pushinteger(L, npc->getID());
+								lua_pushinteger(L, player->getGUID());
+								if (lua_pcall(L, 2, 1, 0) != 0) {
+									g_logger().warn("[Hireling] hirelingReturnToLamp() error: {}", lua_tostring(L, -1));
+									lua_pop(L, 1);
+								} else {
+									lua_pop(L, 1);
+								}
+							} else {
+								lua_pop(L, 1);
+								g_logger().warn("[Hireling] hirelingReturnToLamp global function not found.");
+							}
+						}
+						Lua::resetScriptEnv();
+
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	const auto &thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_FIND_THING);
@@ -3965,10 +4030,8 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 				}
 				return;
 			}
-
 			ret = RETURNVALUE_THEREISNOWAY;
 		}
-
 		player->sendCancelMessage(ret);
 		return;
 	}
@@ -3977,7 +4040,6 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	if (canTriggerExhaustion) {
 		canDoAction = player->canDoPotionAction();
 	}
-
 	if (!canDoAction) {
 		uint32_t delay = player->getNextActionTime();
 		if (canTriggerExhaustion) {

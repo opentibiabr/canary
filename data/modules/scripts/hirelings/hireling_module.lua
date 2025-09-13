@@ -44,31 +44,30 @@ local function parseChangeOutfit(player, msg)
 end
 
 function onRecvbyte(player, msg, byte)
-        if byte == HirelingModule.C_Packets.RequestChangeOutfit then
-                local targetType = msg:getByte()
-                if targetType == 0 then
-                        player:sendOutfitWindow()
-                        return
-                end
+	if byte == HirelingModule.C_Packets.RequestChangeOutfit then
+		local targetType = msg:getByte()
+		if targetType == 0 then
+			player:sendOutfitWindow()
+			return
+		end
 
-               local hirelingCid = msg:getU32()
-               local hireling = getHirelingByCid(hirelingCid)
-               if not hireling or not hireling:canTalkTo(player) then
-                       player:sendOutfitWindow()
-                       return
-               end
-               if hireling:getOwnerId() ~= player:getGuid() then
-                       player:sendCancelMessage(RETURNVALUE_NOTOWNHIRELING)
-                       return
-               end
+		local hirelingCid = msg:getU32()
+		local hireling = getHirelingByCid(hirelingCid)
+		if not hireling or not hireling:canTalkTo(player) then
+			player:sendOutfitWindow()
+			return
+		end
+		if hireling:getOwnerId() ~= player:getGuid() then
+			player:sendCancelMessage(RETURNVALUE_NOTOWNHIRELING)
+			return
+		end
 
-               HIRELING_OUTFIT_CHANGING[player:getGuid()] = hireling:getId()
-               player:sendHirelingOutfitWindow(hireling)
-
-        elseif byte == HirelingModule.C_Packets.ConfirmOutfitChange then
-                if not player:isChangingHirelingOutfit() then
-                        return
-                end
-                parseChangeOutfit(player, msg)
-        end
+		HIRELING_OUTFIT_CHANGING[player:getGuid()] = hireling:getId()
+		player:sendHirelingOutfitWindow(hireling)
+	elseif byte == HirelingModule.C_Packets.ConfirmOutfitChange then
+		if not player:isChangingHirelingOutfit() then
+			return
+		end
+		parseChangeOutfit(player, msg)
+	end
 end

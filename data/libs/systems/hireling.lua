@@ -249,10 +249,10 @@ end
 function Hireling:setOutfit(outfit)
 	self.looktype = outfit.lookType
 	self.lookhead = outfit.lookHead
-	self.lookbody = outfit.lookBody
-	self.looklegs = outfit.lookLegs
-	self.lookfeet = outfit.lookHead
-	self.lookAddons = outfit.lookAddons
+    self.lookbody = outfit.lookBody
+    self.looklegs = outfit.lookLegs
+    self.lookfeet = outfit.lookFeet
+    self.lookAddons = outfit.lookAddons
 end
 
 function Hireling:changeOutfit(outfit)
@@ -326,63 +326,63 @@ function Hireling:spawn()
 	npc:setSpeechBubble(7)
 
 	npc:place(self:getPosition())
-	creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	self:setCreature(npc:getId())
 end
 
-function Hireling:returnToLamp(player_id)
-	if self.active ~= 1 then
-		return
-	end
+-- hireling.lua
+function Hireling:returnToLamp(player_id, silent)
+    if self.active ~= 1 then
+        return
+    end
 
-	local player = Player(player_id)
-	if self:getOwnerId() ~= player_id then
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return player:sendTextMessage(MESSAGE_FAILURE, "You are not the master of this hireling.")
-	end
+    local player = Player(player_id)
+    if self:getOwnerId() ~= player_id then
+        return player:sendTextMessage(MESSAGE_FAILURE, "Sorry, not possible.")
+    end
 
-	self.active = 0
-	addEvent(function(npcId, ownerGuid, hirelingId)
-		local npc = Npc(npcId)
-		if not npc then
-			return logger.error("[Hireling:returnToLamp] - Npc not found or is nil.")
-		end
+    self.active = 0
+    addEvent(function(npcId, ownerGuid, hirelingId, silentFlag)
+        local npc = Npc(npcId)
+        if not npc then
+            return logger.error("[Hireling:returnToLamp] - Npc not found or is nil.")
+        end
 
-		local owner = Player(ownerGuid)
-		if not owner then
-			return
-		end
+        local owner = Player(ownerGuid)
+        if not owner then
+            return
+        end
 
-		local lampType = ItemType(HIRELING_LAMP)
-		if owner:getFreeCapacity() < lampType:getWeight(1) then
-			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
-			return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
-		end
+        local lampType = ItemType(HIRELING_LAMP)
+        if owner:getFreeCapacity() < lampType:getWeight(1) then
+            owner:getPosition():sendMagicEffect(CONST_ME_POFF)
+            return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
+        end
 
-		local inbox = owner:getStoreInbox()
-		local inboxItems = inbox:getItems()
-		if not inbox or #inboxItems >= inbox:getMaxCapacity() then
-			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
-			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
-		end
+        local inbox = owner:getStoreInbox()
+        local inboxItems = inbox:getItems()
+        if not inbox or #inboxItems >= inbox:getMaxCapacity() then
+            owner:getPosition():sendMagicEffect(CONST_ME_POFF)
+            return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
+        end
 
-		local hireling = getHirelingById(hirelingId)
-		if not hireling then
-			return logger.error("[Hireling:returnToLamp] - Hireling not found or is nil for hireling name for player {}.", owner:getName())
-		end
+        local hireling = getHirelingById(hirelingId)
+        if not hireling then
+            return logger.error("[Hireling:returnToLamp] - Hireling not found or is nil for player {}.", owner:getName())
+        end
 
-		npc:say("As you wish!", TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
-		local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
-		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
-		npc:remove() --remove hireling
-		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
-		lamp:setCustomAttribute("Hireling", hirelingId) --save hirelingId on item
-		hireling:setPosition({ x = 0, y = 0, z = 0 })
-	end, 1000, self.cid, player:getGuid(), self.id)
+        if not silentFlag then
+            npc:say("As you wish!", TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
+        end
+
+        local lamp = inbox:addItem(HIRELING_LAMP, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
+        npc:remove()
+        lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
+        lamp:setCustomAttribute("Hireling", hirelingId)
+        hireling:setPosition({ x = 0, y = 0, z = 0 })
+    end, 1000, self.cid, player:getGuid(), self.id, silent and true or false)
 end
 
 -- [[ END CLASS DEFINITION ]]
-
 -- [[ GLOBAL FUNCTIONS DEFINITIONS ]]
 
 function SaveHirelings()
@@ -408,25 +408,46 @@ function SaveHirelings()
 end
 
 function getHirelingById(id)
-	local hireling
-	for i = 1, #HIRELINGS do
-		hireling = HIRELINGS[i]
-		if hireling:getId() == tonumber(id) then
-			return hireling
-		end
-	end
-	return nil
+        local hireling
+        for i = 1, #HIRELINGS do
+                hireling = HIRELINGS[i]
+                if hireling:getId() == tonumber(id) then
+                        return hireling
+                end
+        end
+        return nil
 end
 
 function getHirelingByPosition(position)
-	local hireling
-	for i = 1, #HIRELINGS do
-		hireling = HIRELINGS[i]
-		if hireling.posx == position.x and hireling.posy == position.y and hireling.posz == position.z then
-			return hireling
-		end
-	end
-	return nil
+        local hireling
+        for i = 1, #HIRELINGS do
+                hireling = HIRELINGS[i]
+                if hireling.posx == position.x and hireling.posy == position.y and hireling.posz == position.z then
+                        return hireling
+                end
+        end
+        return nil
+end
+
+function getHirelingByCid(cid)
+        local hireling
+        for i = 1, #HIRELINGS do
+                hireling = HIRELINGS[i]
+                if hireling.cid == cid then
+                        return hireling
+                end
+        end
+        return nil
+end
+
+function hirelingReturnToLamp(cid, playerId)
+    local hireling = getHirelingByCid(cid)
+    if not hireling then
+        return false
+    end
+
+    hireling:returnToLamp(playerId, true)
+    return true
 end
 
 function GetHirelingSkillNameById(id)
@@ -637,7 +658,6 @@ function Player:sendHirelingOutfitWindow(hireling)
 	msg:addByte(0x00) -- Try outfit bool
 	msg:addByte(0x00) -- Is mounted bool
 	msg:addByte(0x00) -- Random outfit bool
-
 	msg:sendToPlayer(self)
 end
 

@@ -3455,7 +3455,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	}
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
-	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
+	if (slotItem && slotItem->getID() == it.id && (!hasTier || slotItem->getTier() == tier) && !equipItem) {
 		ret = internalCollectManagedItems(player, slotItem, getObjectCategory(slotItem), false);
 	} else if (equipItem) {
 		// Shield slot item

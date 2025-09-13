@@ -811,7 +811,7 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 
 	const uint16_t raceId = mtype ? mtype->info.raceid : 0;
 	auto &tracker = isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
-	if (tracker.emplace(mtype).second) {
+	if (tracker.size() < static_cast<size_t>(std::numeric_limits<uint8_t>::max()) && tracker.emplace(mtype).second) {
 		if (reloadClient && raceId != 0) {
 			if (isBoss) {
 				client->parseSendBosstiary();

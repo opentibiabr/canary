@@ -3918,63 +3918,63 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	if (pos.x != 0xFFFF) {
 		const auto &targetThing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_USETARGET);
 		if (targetThing) {
-			if (const auto &clickedCreature = targetThing->getCreature()) {
-				if (const auto &npc = clickedCreature->getNpc()) {
-					if (npc->getSpeechBubble() == SPEECHBUBBLE_HIRELING) {
-						ReturnValue ret = g_actions().canUse(player, pos);
-						if (ret != RETURNVALUE_NOERROR) {
-							if (ret == RETURNVALUE_TOOFARAWAY) {
-								std::vector<Direction> listDir;
-								if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-									g_dispatcher().addEvent([this, playerId = player->getID(), listDir] {
-										playerAutoWalk(playerId, listDir);
+			const auto &clickedCreature = targetThing->getCreature();
+			if (clickedCreature) {
+				const auto &npc = clickedCreature->getNpc();
+				if (npc && npc->getSpeechBubble() == SPEECHBUBBLE_HIRELING) {
+					ReturnValue ret = g_actions().canUse(player, pos);
+					if (ret != RETURNVALUE_NOERROR) {
+						if (ret == RETURNVALUE_TOOFARAWAY) {
+							std::vector<Direction> listDir;
+							if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
+								g_dispatcher().addEvent([this, playerId = player->getID(), listDir] {
+									playerAutoWalk(playerId, listDir);
+								},
+								                        __FUNCTION__);
+
+								const auto &task = createPlayerTask(
+									400,
+									[this, playerId, pos, stackPos, index, itemId] {
+										playerUseItem(playerId, pos, stackPos, index, itemId);
 									},
-									                        __FUNCTION__);
-
-									const auto &task = createPlayerTask(
-										400,
-										[this, playerId, pos, stackPos, index, itemId] {
-											playerUseItem(playerId, pos, stackPos, index, itemId);
-										},
-										__FUNCTION__
-									);
-									player->setNextWalkActionTask(task);
-									return;
-								}
-								ret = RETURNVALUE_THEREISNOWAY;
+									__FUNCTION__
+								);
+								player->setNextWalkActionTask(task);
+								return;
 							}
-							player->sendCancelMessage(ret);
-							return;
+							ret = RETURNVALUE_THEREISNOWAY;
 						}
-
-						auto* L = g_luaEnvironment().getLuaState();
-						if (!Lua::reserveScriptEnv()) {
-							g_logger().warn("[Hireling] Failed to call hirelingReturnToLamp!");
-							return;
-						}
-						{
-							ScriptEnvironment* env = Lua::getScriptEnv();
-							env->setScriptId(env->getScriptId(), &g_luaEnvironment());
-
-							lua_getglobal(L, "hirelingReturnToLamp");
-							if (lua_isfunction(L, -1)) {
-								lua_pushinteger(L, npc->getID());
-								lua_pushinteger(L, player->getGUID());
-								if (lua_pcall(L, 2, 1, 0) != 0) {
-									g_logger().warn("[Hireling] hirelingReturnToLamp() error: {}", lua_tostring(L, -1));
-									lua_pop(L, 1);
-								} else {
-									lua_pop(L, 1);
-								}
-							} else {
-								lua_pop(L, 1);
-								g_logger().warn("[Hireling] hirelingReturnToLamp global function not found.");
-							}
-						}
-						Lua::resetScriptEnv();
-
+						player->sendCancelMessage(ret);
 						return;
 					}
+
+					auto* L = g_luaEnvironment().getLuaState();
+					if (!Lua::reserveScriptEnv()) {
+						g_logger().warn("[Hireling] Failed to call hirelingReturnToLamp!");
+						return;
+					}
+
+					{
+						ScriptEnvironment* env = Lua::getScriptEnv();
+						env->setScriptId(env->getScriptId(), &g_luaEnvironment());
+
+						lua_getglobal(L, "hirelingReturnToLamp");
+						if (lua_isfunction(L, -1)) {
+							lua_pushinteger(L, npc->getID());
+							lua_pushinteger(L, player->getGUID());
+							if (lua_pcall(L, 2, 1, 0) != 0) {
+								g_logger().warn("[Hireling] hirelingReturnToLamp() error: {}", lua_tostring(L, -1));
+								lua_pop(L, 1);
+							} else {
+								lua_pop(L, 1);
+							}
+						} else {
+							lua_pop(L, 1);
+							g_logger().warn("[Hireling] hirelingReturnToLamp global function not found.");
+						}
+					}
+					Lua::resetScriptEnv();
+					return;
 				}
 			}
 		}
@@ -3992,22 +3992,23 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	bool canUseHouseItem = !g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS) || InternalGame::playerCanUseItemOnHouseTile(player, item);
-	if (!canUseHouseItem && item->hasOwner() && !item->isOwner(player)) {
-		player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
-		return;
-	} else if (!canUseHouseItem) {
-		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+	bool canUseHouseItem = !g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)
+		|| InternalGame::playerCanUseItemOnHouseTile(player, item);
+
+	if (!canUseHouseItem) {
+		if (item->hasOwner() && !item->isOwner(player)) {
+			player->sendCancelMessage(RETURNVALUE_ITEMISNOTYOURS);
+		} else {
+			player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
+		}
 		return;
 	}
 
 	const ItemType &it = Item::items[item->getID()];
-	bool canTriggerExhaustion = it.triggerExhaustion();
-	if (canTriggerExhaustion) {
-		if (player->walkExhausted()) {
-			player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-			return;
-		}
+	const bool canTriggerExhaustion = it.triggerExhaustion();
+	if (canTriggerExhaustion && player->walkExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
 	}
 
 	ReturnValue ret = g_actions().canUse(player, pos);
@@ -4015,7 +4016,11 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		if (ret == RETURNVALUE_TOOFARAWAY) {
 			std::vector<Direction> listDir;
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
-				g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, __FUNCTION__);
+				g_dispatcher().addEvent([this, playerId = player->getID(), listDir] {
+					playerAutoWalk(playerId, listDir);
+				},
+				                        __FUNCTION__);
+
 				const auto &task = createPlayerTask(
 					400,
 					[this, playerId, pos, stackPos, index, itemId] {
@@ -4036,15 +4041,10 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	bool canDoAction = player->canDoAction();
-	if (canTriggerExhaustion) {
-		canDoAction = player->canDoPotionAction();
-	}
+	bool canDoAction = canTriggerExhaustion ? player->canDoPotionAction() : player->canDoAction();
 	if (!canDoAction) {
-		uint32_t delay = player->getNextActionTime();
-		if (canTriggerExhaustion) {
-			delay = player->getNextPotionActionTime();
-		}
+		uint32_t delay = canTriggerExhaustion ? player->getNextPotionActionTime() : player->getNextActionTime();
+
 		const auto &task = createPlayerTask(
 			delay,
 			[this, playerId, pos, stackPos, index, itemId] {
@@ -4064,12 +4064,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	player->resetIdleTime();
 	player->setNextActionTask(nullptr);
 
-	// Refresh depot search window if necessary
-	bool refreshDepotSearch = false;
-	if (player->isDepotSearchOpenOnItem(itemId) && item->isInsideDepot(true)) {
-		refreshDepotSearch = true;
-	}
-
+	const bool refreshDepotSearch = player->isDepotSearchOpenOnItem(itemId) && item->isInsideDepot(true);
 	g_actions().useItem(player, pos, index, item, isHotkey);
 
 	if (refreshDepotSearch) {

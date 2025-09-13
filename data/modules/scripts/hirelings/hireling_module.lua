@@ -26,7 +26,7 @@ local function getOutfit(msg)
 		outfit.lookMount = msg:getU16()
 	else
 		outfit.lookMount = 0x00
-		msg:getU32() --discard this for some reason maybe it's the hireling id
+		msg:getU32() -- hireling id
 	end
 	return outfit
 end
@@ -36,9 +36,6 @@ local function parseChangeOutfit(player, msg)
 	local outfit
 	if not hireling then
 		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-
-		-- deplete msg to avoid setting an hireling outfit to player
 		getOutfit(msg)
 	else
 		outfit = getOutfit(msg)
@@ -47,7 +44,27 @@ local function parseChangeOutfit(player, msg)
 end
 
 function onRecvbyte(player, msg, byte)
-	if byte == HirelingModule.C_Packets.ConfirmOutfitChange then
+	if byte == HirelingModule.C_Packets.RequestChangeOutfit then
+		local targetType = msg:getByte()
+		if targetType == 0 then
+			player:sendOutfitWindow()
+			return
+		end
+
+		local hirelingCid = msg:getU32()
+		local hireling = getHirelingByCid(hirelingCid)
+		if not hireling or not hireling:canTalkTo(player) then
+			player:sendOutfitWindow()
+			return
+		end
+		if hireling:getOwnerId() ~= player:getGuid() then
+			player:sendCancelMessage(RETURNVALUE_NOTOWNHIRELING)
+			return
+		end
+
+		HIRELING_OUTFIT_CHANGING[player:getGuid()] = hireling:getId()
+		player:sendHirelingOutfitWindow(hireling)
+	elseif byte == HirelingModule.C_Packets.ConfirmOutfitChange then
 		if not player:isChangingHirelingOutfit() then
 			return
 		end

@@ -1004,7 +1004,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	}
 
 	// Modules system
-	if (player && recvbyte != 0xD3) {
+	if (player && recvbyte != 0xD3 && recvbyte != 0xD2) {
 		g_modules().executeOnRecvbyte(player->getID(), msg, recvbyte);
 	}
 
@@ -1345,12 +1345,28 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xCF:
 			sendBlessingWindow();
 			break;
-		case 0xD2:
-			g_game().playerRequestOutfit(player->getID());
+		case 0xD2: {
+			uint16_t startBufferPosition = msg.getBufferPosition();
+			const auto &outfitModule = g_modules().getEventByRecvbyte(0xD2, false);
+			if (outfitModule) {
+				outfitModule->executeOnRecvbyte(player, msg);
+			}
+			if (msg.getBufferPosition() == startBufferPosition) {
+				g_game().playerRequestOutfit(player->getID());
+			}
 			break;
-		case 0xD3:
-			parseSetOutfit(msg);
+		}
+		case 0xD3: {
+			uint16_t startBufferPosition = msg.getBufferPosition();
+			const auto &outfitModule = g_modules().getEventByRecvbyte(0xD3, false);
+			if (outfitModule) {
+				outfitModule->executeOnRecvbyte(player, msg);
+			}
+			if (msg.getBufferPosition() == startBufferPosition) {
+				parseSetOutfit(msg);
+			}
 			break;
+		}
 		case 0xD4:
 			parseToggleMount(msg);
 			break;

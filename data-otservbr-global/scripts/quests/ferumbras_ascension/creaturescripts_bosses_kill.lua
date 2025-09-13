@@ -137,6 +137,7 @@ function ascendantBossesKill.onDeath(creature)
 	-- Special case for Ferumbras Mortal Shell
 	if creature:getName():lower() == "ferumbras mortal shell" then
 		onDeathForDamagingPlayers(creature, function(creature, player)
+			player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.RiftRunner, 0)
 			addEvent(function(playerId)
 				local player = Player(playerId)
 				if player then

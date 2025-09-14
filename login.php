@@ -203,7 +203,6 @@ echo json_encode([
     ]
 ]);
 
-// MAPEIA ID PARA NOME DE VOCAÇÃO
 function getVocationName($id) {
     $vocations = [
         0 => 'No Vocation',

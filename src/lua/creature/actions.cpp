@@ -161,19 +161,23 @@ bool Actions::registerLuaPositionEvent(const std::shared_ptr<Action> &action) {
 }
 
 bool Actions::registerLuaEvent(const std::shared_ptr<Action> &action) {
-	// Call all register lua events
-	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
-		return true;
-	} else {
-		g_logger().warn(
-			"[{}] missing id/aid/uid/position for one script event, for script: {}",
-			__FUNCTION__,
-			action->getScriptInterface()->getLoadingScriptName()
-		);
-		return false;
-	}
-	g_logger().debug("[{}] missing or incorrect script: {}", __FUNCTION__, action->getScriptInterface()->getLoadingScriptName());
-	return false;
+        // Call all register lua events
+        if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
+                return true;
+        } else {
+                g_logger().warn(
+                        "[{}] missing id/aid/uid/position for one script event, for script: {}",
+                        __FUNCTION__,
+                        action->getScriptInterface()->getLoadingScriptName()
+                );
+                return false;
+        }
+        g_logger().debug("[{}] missing or incorrect script: {}", __FUNCTION__, action->getScriptInterface()->getLoadingScriptName());
+        return false;
+}
+
+bool Actions::removeLuaPosition(const Position &position) {
+        return actionPositionMap.erase(position) > 0;
 }
 
 ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Position &pos) const {

@@ -423,8 +423,7 @@ maxMarketOffersAtATimePerPlayer = 100
 -- "argon2id" (recommended)
 -- "argon2i" (strong)
 -- "sha1" (insecure for legacy usage only)
--- Note: SHA-1 is insecure, use only for old hashes compatibility.
--- Note: Legacy SHA-1 still works, just for backwards compatibility.
+-- Note: SHA-1 is insecure, it stil works but use only for old hashes compatibility.
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"

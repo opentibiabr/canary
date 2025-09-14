@@ -419,6 +419,12 @@ checkExpiredMarketOffersEachMinutes = 60
 maxMarketOffersAtATimePerPlayer = 100
 
 -- MySQL
+-- Supported password hashing algorithms:
+-- "argon2id" (recommended)
+-- "argon2i" (strong)
+-- "sha1" (insecure for legacy usage only)
+-- Note: SHA-1 is insecure, use only for old hashes compatibility.
+-- Note: Legacy SHA-1 still works, just for backwards compatibility.
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
@@ -426,7 +432,7 @@ mysqlDatabase = "otservbr-global"
 mysqlDatabaseBackup = false
 mysqlPort = 3306
 mysqlSock = ""
-passwordType = "sha1"
+passwordType = "argon2id"
 
 -- NOTE: memoryConst: This is the memory cost for the Argon2 hash algorithm. It specifies the amount of memory that the algorithm will use when calculating a hash.
 --The memory cost is measured in units of KiB (1024 bytes). A higher memory cost makes the algorithm more resistant to brute-force and hash-table attacks, but also consumes more memory.

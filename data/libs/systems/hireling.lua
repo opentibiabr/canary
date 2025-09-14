@@ -351,7 +351,6 @@ function Hireling:registerReturnToLampAction()
 end
 
 -- hireling.lua
--- hireling.lua
 function Hireling:returnToLamp(player_id, silent)
 	if self.active ~= 1 then
 		return

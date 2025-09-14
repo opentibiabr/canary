@@ -325,9 +325,9 @@ function Hireling:spawn()
 	creature:setOutfit(self:getOutfit())
 	npc:setSpeechBubble(7)
 
-  npc:place(self:getPosition())
-  self:setCreature(npc:getId())
-  self:registerReturnToLampAction()
+	npc:place(self:getPosition())
+	self:setCreature(npc:getId())
+	self:registerReturnToLampAction()
 end
 
 function Hireling:registerReturnToLampAction()

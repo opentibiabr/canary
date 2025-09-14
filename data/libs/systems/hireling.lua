@@ -331,29 +331,33 @@ function Hireling:spawn()
 end
 
 function Hireling:registerReturnToLampAction()
-        local action = Action()
-        function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-                local hireling = getHirelingByPosition(toPosition)
-                if not hireling or not hireling:canTalkTo(player) then
-                        return false
-                end
-                if hireling:getOwnerId() ~= player:getGuid() then
-                        return false
-                end
-                hireling:returnToLamp(player:getGuid())
-                return true
-        end
-        action:position(self:getPosition())
-        action:register()
+	local action = Action()
+	function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+		local hireling = getHirelingByPosition(toPosition)
+		if not hireling or not hireling:canTalkTo(player) then
+			return false
+		end
+
+		if hireling:getOwnerId() ~= player:getGuid() then
+			return false
+		end
+
+		hireling:returnToLamp(player:getGuid())
+		return true
+	end
+
+	action:position(self:getPosition())
+	action:register()
 end
 
 -- hireling.lua
+-- hireling.lua
 function Hireling:returnToLamp(player_id, silent)
-        if self.active ~= 1 then
-                return
-        end
+	if self.active ~= 1 then
+		return
+	end
 
-        Game.removeAction(self:getPosition())
+	Game.removeAction(self:getPosition())
 
 	local player = Player(player_id)
 	if self:getOwnerId() ~= player_id then

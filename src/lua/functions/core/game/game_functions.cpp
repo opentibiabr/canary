@@ -911,27 +911,27 @@ int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetEventCallbacks(lua_State* L) {
-        lua_createtable(L, 0, 0);
-        lua_pushcfunction(L, EventCallbackFunctions::luaEventCallbackLoad);
-        for (const auto &[value, name] : magic_enum::enum_entries<EventCallback_t>()) {
-                if (value != EventCallback_t::none) {
-                        std::string methodName = magic_enum::enum_name(value).data();
-                        lua_pushstring(L, methodName.c_str());
-                        // Copy the function reference to the top of the stack
-                        lua_pushvalue(L, -2);
-                        lua_settable(L, -4);
-                }
-        }
-        // Pop the function
-        lua_pop(L, 1);
-        return 1;
+	lua_createtable(L, 0, 0);
+	lua_pushcfunction(L, EventCallbackFunctions::luaEventCallbackLoad);
+	for (const auto &[value, name] : magic_enum::enum_entries<EventCallback_t>()) {
+		if (value != EventCallback_t::none) {
+			std::string methodName = magic_enum::enum_name(value).data();
+			lua_pushstring(L, methodName.c_str());
+			// Copy the function reference to the top of the stack
+			lua_pushvalue(L, -2);
+			lua_settable(L, -4);
+		}
+	}
+	// Pop the function
+	lua_pop(L, 1);
+	return 1;
 }
 
 int GameFunctions::luaGameRemoveAction(lua_State* L) {
-        // Game.removeAction(position)
-        const Position position = Lua::getPosition(L, 1);
-        Lua::pushBoolean(L, g_actions().removeLuaPosition(position));
-        return 1;
+	// Game.removeAction(position)
+	const Position position = Lua::getPosition(L, 1);
+	Lua::pushBoolean(L, g_actions().removeLuaPosition(position));
+	return 1;
 }
 
 int GameFunctions::luaGameRegisterAchievement(lua_State* L) {

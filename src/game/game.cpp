@@ -3923,6 +3923,16 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 
 	const auto &item = thing->getItem();
 	if (!item || item->isMultiUse() || item->getID() != itemId) {
+		const auto action = g_actions().getLuaPositionAction(pos);
+		if (action) {
+			ReturnValue actionRet = action->canExecuteAction(player, pos);
+			if (actionRet == RETURNVALUE_NOERROR && action->executeUse(player, nullptr, pos, thing, pos, isHotkey)) {
+				return;
+			}
+			player->sendCancelMessage(actionRet);
+			return;
+		}
+
 		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		return;
 	}

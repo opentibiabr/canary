@@ -53,24 +53,75 @@ uint32_t Argon2::parseBitShift(const std::string &bitShiftStr) const {
 }
 
 bool Argon2::verifyPassword(const std::string &password, const std::string &phash) const {
-	const std::regex re("\\$([A-Za-z0-9+/]+)\\$([A-Za-z0-9+/]+)");
 	std::smatch match;
-	if (!std::regex_search(phash, match, re)) {
+
+	const std::regex phcRe(R"(^\$argon2([a-z0-9]+)\$v=(\d+)\$m=(\d+),t=(\d+),p=(\d+)\$([A-Za-z0-9+/]+)\$([A-Za-z0-9+/]+)$)");
+	if (std::regex_match(phash, match, phcRe)) {
+		argon2_type type = Argon2_id;
+		const std::string variant = match[1];
+		if (variant == "i") {
+			type = Argon2_i;
+		} else if (variant == "d") {
+			type = Argon2_d;
+		} else if (variant == "id") {
+			type = Argon2_id;
+		} else {
+			g_logger().warn("Unknown argon2 variant: {}", variant);
+			return false;
+		}
+
+		uint32_t version = ARGON2_VERSION_NUMBER;
+		uint32_t mCost = 0, tCost = 0, para = 0;
+		try {
+			version = static_cast<uint32_t>(std::stoul(match[2]));
+			mCost = static_cast<uint32_t>(std::stoul(match[3]));
+			tCost = static_cast<uint32_t>(std::stoul(match[4]));
+			para = static_cast<uint32_t>(std::stoul(match[5]));
+		} catch (const std::exception &e) {
+			g_logger().warn("Invalid argon2 parameters: {}", e.what());
+			return false;
+		}
+
+		const std::vector<uint8_t> salt = base64_decode(match[6]);
+		const std::vector<uint8_t> hash = base64_decode(match[7]);
+
+		std::vector<uint8_t> computed_hash(hash.size());
+		if (argon2_hash(tCost, mCost, para, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size(), nullptr, 0, type, version) != ARGON2_OK) {
+			g_logger().warn("Error hashing password");
+			return false;
+		}
+
+		return computed_hash == hash;
+	}
+
+	const std::regex customRe(R"(^([A-Za-z0-9]+)\$([A-Za-z0-9+/]+)\$([A-Za-z0-9+/]+)$)");
+	if (!std::regex_match(phash, match, customRe)) {
 		g_logger().debug("No argon2 hash found in string");
 		return false;
 	}
 
-	const std::vector<uint8_t> salt = base64_decode(match[1]);
-	const std::vector<uint8_t> hash = base64_decode(match[2]);
+	argon2_type type = Argon2_id;
+	const std::string algorithm = match[1];
+	if (algorithm == "argon2" || algorithm == "argon2i") {
+		type = Argon2_i;
+	} else if (algorithm == "argon2d") {
+		type = Argon2_d;
+	} else if (algorithm == "argon2id") {
+		type = Argon2_id;
+	} else {
+		g_logger().warn("Unknown argon2 type: {}", algorithm);
+		return false;
+	}
 
-	// Hash the password
+	const std::vector<uint8_t> salt = base64_decode(match[2]);
+	const std::vector<uint8_t> hash = base64_decode(match[3]);
+
 	std::vector<uint8_t> computed_hash(hash.size());
-	if (argon2id_hash_raw(t_cost, m_cost, parallelism, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size()) != ARGON2_OK) {
+	if (argon2_hash(t_cost, m_cost, parallelism, password.c_str(), password.length(), salt.data(), salt.size(), computed_hash.data(), computed_hash.size(), nullptr, 0, type, ARGON2_VERSION_NUMBER) != ARGON2_OK) {
 		g_logger().warn("Error hashing password");
 		return false;
 	}
 
-	// Compare
 	return computed_hash == hash;
 }
 

@@ -325,15 +325,35 @@ function Hireling:spawn()
 	creature:setOutfit(self:getOutfit())
 	npc:setSpeechBubble(7)
 
-	npc:place(self:getPosition())
-	self:setCreature(npc:getId())
+  npc:place(self:getPosition())
+  self:setCreature(npc:getId())
+  self:registerReturnToLampAction()
+end
+
+function Hireling:registerReturnToLampAction()
+        local action = Action()
+        function action.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+                local hireling = getHirelingByPosition(toPosition)
+                if not hireling or not hireling:canTalkTo(player) then
+                        return false
+                end
+                if hireling:getOwnerId() ~= player:getGuid() then
+                        return false
+                end
+                hireling:returnToLamp(player:getGuid())
+                return true
+        end
+        action:position(self:getPosition())
+        action:register()
 end
 
 -- hireling.lua
 function Hireling:returnToLamp(player_id, silent)
-	if self.active ~= 1 then
-		return
-	end
+        if self.active ~= 1 then
+                return
+        end
+
+        Game.removeAction(self:getPosition())
 
 	local player = Player(player_id)
 	if self:getOwnerId() ~= player_id then
@@ -381,10 +401,9 @@ function Hireling:returnToLamp(player_id, silent)
 		hireling:setPosition({ x = 0, y = 0, z = 0 })
 	end, 1000, self.cid, player:getGuid(), self.id, silent and true or false)
 end
-
 -- [[ END CLASS DEFINITION ]]
--- [[ GLOBAL FUNCTIONS DEFINITIONS ]]
 
+-- [[ GLOBAL FUNCTIONS DEFINITIONS ]]
 function SaveHirelings()
 	local successCount = 0
 	local failedCount = 0
@@ -438,16 +457,6 @@ function getHirelingByCid(cid)
 		end
 	end
 	return nil
-end
-
-function hirelingReturnToLamp(cid, playerId)
-	local hireling = getHirelingByCid(cid)
-	if not hireling then
-		return false
-	end
-
-	hireling:returnToLamp(playerId, true)
-	return true
 end
 
 function GetHirelingSkillNameById(id)

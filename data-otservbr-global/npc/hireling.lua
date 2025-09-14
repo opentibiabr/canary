@@ -26,22 +26,22 @@ function createHirelingType(HirelingName)
 		lookFeet = 116,
 		lookAddons = 0,
 	}
-	
+
 	npcConfig.voices = {
 		interval = 15000,
 		chance = 40,
-		{ text = "Take your time!" },		
+		{ text = "Take your time!" },
 		{ text = "Have a nice day!" },
 		{ text = "Can I help you?" },
 		{ text = "Home sweet home!" },
 		{ text = "Enjoy your stay!" },
-		{ text = "Good to see you!" },	
-        { text = "Hope you're doing fine!" },		
+		{ text = "Good to see you!" },
+		{ text = "Hope you're doing fine!" },
 		{ text = "What can I do for you?" },
 		{ text = "Make yourself comfortable!" },
-		{ text = "Let me know if you need anything!" },	
+		{ text = "Let me know if you need anything!" },
 		{ text = "I hope everything is to your liking!" },
-	}	
+	}
 
 	npcConfig.flags = {
 		floorchange = false,
@@ -579,67 +579,61 @@ function createHirelingType(HirelingName)
 		end
 	end
 
-local function handleFoodActions(npc, creature, message)
-	local playerId = creature:getId()
+	local function handleFoodActions(npc, creature, message)
+		local playerId = creature:getId()
 
-	if npcHandler:getTopic(playerId) == TOPIC.FOOD then
-		if MsgContains(message, "specific") then
-			npcHandler:setTopic(playerId, TOPIC_FOOD.SPECIFIC)
-			npcHandler:say("Which specific meal would you like? Choices are: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
+		if npcHandler:getTopic(playerId) == TOPIC.FOOD then
+			if MsgContains(message, "specific") then
+				npcHandler:setTopic(playerId, TOPIC_FOOD.SPECIFIC)
+				npcHandler:say("Which specific meal would you like? Choices are: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
+			elseif MsgContains(message, "surprise") then
+				-- comportamento original: só pergunta, entrega no próximo "yes"
+				npcHandler:say("Alright, let me astonish you. Shall I?", npc, creature)
+				npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_SURPRISE)
+			elseif MsgContains(message, "yes") then
+				deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
+			elseif MsgContains(message, "no") then
+				npcHandler:setTopic(playerId, TOPIC.SERVICES)
+				npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
+			end
+		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_SURPRISE then
+			if MsgContains(message, "yes") then
+				deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
+			elseif MsgContains(message, "no") then
+				npcHandler:setTopic(playerId, TOPIC.SERVICES)
+				npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
+			end
+		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE then
+			if MsgContains(message, "magic") then
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MAGIC, 15000)
+			elseif MsgContains(message, "melee") then
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.MELEE, 15000)
+			elseif MsgContains(message, "shielding") then
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.SHIELDING, 15000)
+			elseif MsgContains(message, "distance") then
+				deliverFood(npc, creature, HIRELING_FOODS_BOOST.DISTANCE, 15000)
+			else
+				npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding}, or {distance} skill?", npc, creature)
+			end
+		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC then
+			local specificFoodOptions = {
+				["chilli con carniphila"] = 29412,
+				["svargrond salmon filet"] = 29413,
+				["carrion casserole"] = 29414,
+				["consecrated beef"] = 29415,
+				["roasted wyvern wings"] = 29408,
+				["carrot pie"] = 29409,
+				["tropical marinated tiger"] = 29410,
+				["delicatessen salad"] = 29411,
+			}
 
-		elseif MsgContains(message, "surprise") then
-			-- comportamento original: só pergunta, entrega no próximo "yes"
-			npcHandler:say("Alright, let me astonish you. Shall I?", npc, creature)
-			npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_SURPRISE)
-
-		elseif MsgContains(message, "yes") then
-			deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
-
-		elseif MsgContains(message, "no") then
-			npcHandler:setTopic(playerId, TOPIC.SERVICES)
-			npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
-		end
-
-	elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_SURPRISE then
-		if MsgContains(message, "yes") then
-			deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
-		elseif MsgContains(message, "no") then
-			npcHandler:setTopic(playerId, TOPIC.SERVICES)
-			npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
-		end
-
-	elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE then
-		if MsgContains(message, "magic") then
-			deliverFood(npc, creature, HIRELING_FOODS_BOOST.MAGIC, 15000)
-		elseif MsgContains(message, "melee") then
-			deliverFood(npc, creature, HIRELING_FOODS_BOOST.MELEE, 15000)
-		elseif MsgContains(message, "shielding") then
-			deliverFood(npc, creature, HIRELING_FOODS_BOOST.SHIELDING, 15000)
-		elseif MsgContains(message, "distance") then
-			deliverFood(npc, creature, HIRELING_FOODS_BOOST.DISTANCE, 15000)
-		else
-			npcHandler:say("Sorry, but you must choose a valid skill class. Would you like to boost your {magic}, {melee}, {shielding}, or {distance} skill?", npc, creature)
-		end
-
-	elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC then
-		local specificFoodOptions = {
-			["chilli con carniphila"] = 29412,
-			["svargrond salmon filet"] = 29413,
-			["carrion casserole"] = 29414,
-			["consecrated beef"] = 29415,
-			["roasted wyvern wings"] = 29408,
-			["carrot pie"] = 29409,
-			["tropical marinated tiger"] = 29410,
-			["delicatessen salad"] = 29411,
-		}
-
-		if specificFoodOptions[message:lower()] then
-			deliverFood(npc, creature, specificFoodOptions[message:lower()], 90000)
-		else
-			npcHandler:say("I'm sorry, but that's not a valid food option. Please choose from: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
+			if specificFoodOptions[message:lower()] then
+				deliverFood(npc, creature, specificFoodOptions[message:lower()], 90000)
+			else
+				npcHandler:say("I'm sorry, but that's not a valid food option. Please choose from: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
+			end
 		end
 	end
-end
 	-- ======================[[ END COOKER FUNCTIONS ]] ======================== --
 	isPlayerInsideHirelingHouse = function(npc, player)
 		local npcTile = npc:getTile()
@@ -721,12 +715,12 @@ end
 				end,
 			},
 			["trade"] = {
-    			skill = HIRELING_SKILLS.TRADER[2],
-    			topic = TOPIC.GOODS,
-    			action = function()
-        			skillMapping["goods"].action()
-    			end,
-			},			
+				skill = HIRELING_SKILLS.TRADER[2],
+				topic = TOPIC.GOODS,
+				action = function()
+					skillMapping["goods"].action()
+				end,
+			},
 		}
 
 		for keyword, data in pairs(skillMapping) do
@@ -758,90 +752,72 @@ end
 			npcHandler:say("As you wish!", npc, creature)
 		end
 
-if MsgContains(message, "sword of fury") then
-    npcHandler:say(
-        "In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!",
-        npc, creature
-    )
-
-elseif MsgContains(message, "rookgaard") then
-    npcHandler:say("What an uncivilised place without any culture.", npc, creature)
-
-elseif MsgContains(message, "excalibug") then
-    npcHandler:say("I'll keep an eye open for it when cleaning up the things you brought home!", npc, creature)
-
-elseif MsgContains(message, "service") then
-    npcHandler:setTopic(playerId, TOPIC.SERVICES)
-    local servicesMsg = getHirelingServiceString(creature)
-    npcHandler:say(servicesMsg, npc, creature)
-
-elseif MsgContains(message, "lamp") then
-    if player:getGuid() ~= hireling:getOwnerId() then
-        return false
-    end
-    npcHandler:setTopic(playerId, TOPIC.LAMP)
-    npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
-
-elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
-    if MsgContains(message, "bank") then
-        local bankerSkillName = HIRELING_SKILLS.BANKER[2]
-        if hireling:hasSkill(bankerSkillName) then
-            npcHandler:setTopic(playerId, TOPIC.BANK)
-            count[playerId], transfer[playerId] = nil, nil
-            npcHandler:say(GREETINGS.BANK, npc, creature)
-        else
-            sendSkillNotLearned(npc, creature, bankerSkillName)
-        end
-
-    elseif MsgContains(message, "food") then
-        local bankerSkillName = HIRELING_SKILLS.COOKING[2]
-        if hireling:hasSkill(bankerSkillName) then
-            npcHandler:setTopic(playerId, TOPIC.FOOD)
-            npcHandler:say(GREETINGS.FOOD, npc, creature)
-        else
-            sendSkillNotLearned(npc, creature, bankerSkillName)
-        end
-
-    elseif MsgContains(message, "stash") then
-        local bankerSkillName = HIRELING_SKILLS.STEWARD[2]
-        if hireling:hasSkill(bankerSkillName) then
-            npcHandler:say(GREETINGS.STASH, npc, creature)
-            player:setSpecialContainersAvailable(true)
-            player:openStash(true)
-            player:sendTextMessage(
-                MESSAGE_FAILURE,
-                "Your stash contains " .. player:getStashCount() .. " item" ..
-                (player:getStashCount() > 1 and "s." or ".")
-            )
-        else
-            sendSkillNotLearned(npc, creature, bankerSkillName)
-        end
-    elseif MsgContains(message, "goods") then
-        local string
-        if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
-            string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
-        else
-            string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " ..
-                     "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " ..
-                     "{supplies}, {tools} and {postal} goods. Just ask!"
-        end
-        npcHandler:setTopic(playerId, TOPIC.GOODS)
-        npcHandler:say(string, npc, creature)
-
-    elseif MsgContains(message, "lamp") then
-        if player:getGuid() ~= hireling:getOwnerId() then
-            return false
-        end
-        npcHandler:setTopic(playerId, TOPIC.LAMP)
-        npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
-
-    elseif MsgContains(message, "outfit") then
-        if player:getGuid() ~= hireling:getOwnerId() then
-            return false
-        end
-        hireling:requestOutfitChange()
-        npcHandler:say("As you wish!", npc, creature)
-    end
+		if MsgContains(message, "sword of fury") then
+			npcHandler:say("In my youth I dreamt to wield it! Now I wield the broom of... brooming. I guess that's the next best thing!", npc, creature)
+		elseif MsgContains(message, "rookgaard") then
+			npcHandler:say("What an uncivilised place without any culture.", npc, creature)
+		elseif MsgContains(message, "excalibug") then
+			npcHandler:say("I'll keep an eye open for it when cleaning up the things you brought home!", npc, creature)
+		elseif MsgContains(message, "service") then
+			npcHandler:setTopic(playerId, TOPIC.SERVICES)
+			local servicesMsg = getHirelingServiceString(creature)
+			npcHandler:say(servicesMsg, npc, creature)
+		elseif MsgContains(message, "lamp") then
+			if player:getGuid() ~= hireling:getOwnerId() then
+				return false
+			end
+			npcHandler:setTopic(playerId, TOPIC.LAMP)
+			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
+		elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
+			if MsgContains(message, "bank") then
+				local bankerSkillName = HIRELING_SKILLS.BANKER[2]
+				if hireling:hasSkill(bankerSkillName) then
+					npcHandler:setTopic(playerId, TOPIC.BANK)
+					count[playerId], transfer[playerId] = nil, nil
+					npcHandler:say(GREETINGS.BANK, npc, creature)
+				else
+					sendSkillNotLearned(npc, creature, bankerSkillName)
+				end
+			elseif MsgContains(message, "food") then
+				local bankerSkillName = HIRELING_SKILLS.COOKING[2]
+				if hireling:hasSkill(bankerSkillName) then
+					npcHandler:setTopic(playerId, TOPIC.FOOD)
+					npcHandler:say(GREETINGS.FOOD, npc, creature)
+				else
+					sendSkillNotLearned(npc, creature, bankerSkillName)
+				end
+			elseif MsgContains(message, "stash") then
+				local bankerSkillName = HIRELING_SKILLS.STEWARD[2]
+				if hireling:hasSkill(bankerSkillName) then
+					npcHandler:say(GREETINGS.STASH, npc, creature)
+					player:setSpecialContainersAvailable(true)
+					player:openStash(true)
+					player:sendTextMessage(MESSAGE_FAILURE, "Your stash contains " .. player:getStashCount() .. " item" .. (player:getStashCount() > 1 and "s." or "."))
+				else
+					sendSkillNotLearned(npc, creature, bankerSkillName)
+				end
+			elseif MsgContains(message, "goods") then
+				local string
+				if not hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
+					string = "While I'm not a trader, I still have a collection of {various} items to sell if you like!"
+				else
+					string = "I sell a selection of {various} items, {exercise weapons}, {equipment}, " .. "{distance} weapons, {wands} and {rods}, {potions}, {runes}, " .. "{supplies}, {tools} and {postal} goods. Just ask!"
+				end
+				npcHandler:setTopic(playerId, TOPIC.GOODS)
+				npcHandler:say(string, npc, creature)
+			elseif MsgContains(message, "lamp") then
+				if player:getGuid() ~= hireling:getOwnerId() then
+					return false
+				end
+				npcHandler:setTopic(playerId, TOPIC.LAMP)
+				npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
+			elseif MsgContains(message, "outfit") then
+				if player:getGuid() ~= hireling:getOwnerId() then
+					return false
+				end
+				hireling:requestOutfitChange()
+				npcHandler:say("As you wish!", npc, creature)
+			end
 			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.LAMP then
 			if MsgContains(message, "yes") then
@@ -852,11 +828,8 @@ elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
 			end
 		elseif npcHandler:getTopic(playerId) == TOPIC.BANK then
 			enableBankSystem[playerId] = true
-		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD 
-    	or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE
-    	or npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC 
-    	or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_SURPRISE then
-		handleFoodActions(npc, creature, message)
+		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE or npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_SURPRISE then
+			handleFoodActions(npc, creature, message)
 		elseif npcHandler:getTopic(playerId) == TOPIC.GOODS then
 			local categoryTable = itemsTable[message:lower()]
 			if categoryTable then
@@ -873,14 +846,14 @@ elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
 		end
 		return true
 	end
-	
+
 	local function greetCallback(npc, player, message)
 		if not isPlayerInsideHirelingHouse(npc, player) then
 			addEvent(releaseInteraction, 0, npc:getId(), player:getId())
 			return false
 		end
 		return true
-	end	
+	end
 
 	npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {service}.")
 	npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye!")

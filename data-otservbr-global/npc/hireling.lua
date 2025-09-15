@@ -805,20 +805,21 @@ function createHirelingType(HirelingName)
 				end
 				npcHandler:setTopic(playerId, TOPIC.GOODS)
 				npcHandler:say(string, npc, creature)
-			elseif MsgContains(message, "lamp") then
-				if player:getGuid() ~= hireling:getOwnerId() then
-					return false
-				end
-				npcHandler:setTopic(playerId, TOPIC.LAMP)
-				npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
-			elseif MsgContains(message, "outfit") then
-				if player:getGuid() ~= hireling:getOwnerId() then
-					return false
-				end
-				hireling:requestOutfitChange()
-				npcHandler:say("As you wish!", npc, creature)
-			end
-			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
+            elseif MsgContains(message, "lamp") then
+                if player:getGuid() ~= hireling:getOwnerId() then
+                    return false
+                end
+                    npcHandler:setTopic(playerId, TOPIC.LAMP)
+                    npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
+            elseif MsgContains(message, "outfit") then
+                if player:getGuid() ~= hireling:getOwnerId() then
+                    return false
+                end
+                    hireling:requestOutfitChange()
+                    npcHandler:say("As you wish!", npc, creature)
+            else
+                    npcHandler:say("No problem, take your time!", npc, creature)
+                end
 		elseif npcHandler:getTopic(playerId) == TOPIC.LAMP then
 			if MsgContains(message, "yes") then
 				hireling:returnToLamp(player:getGuid())

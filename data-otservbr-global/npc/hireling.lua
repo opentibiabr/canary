@@ -8,7 +8,7 @@ function createHirelingType(HirelingName)
 
 	local npcConfig = {}
 	local enableBankSystem = {}
-    local isPlayerInsideHirelingHouse
+  local isPlayerInsideHirelingHouse
 
 	npcConfig.name = HirelingName
 	npcConfig.description = HirelingName

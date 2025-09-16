@@ -104,6 +104,7 @@ target_link_libraries(
            mio::mio
            protobuf::libprotobuf
            pugixml::pugixml
+           sol2::sol2
            spdlog::spdlog
            unofficial::argon2::libargon2
            unofficial::libmariadb

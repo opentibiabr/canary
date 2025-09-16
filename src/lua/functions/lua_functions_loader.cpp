@@ -28,7 +28,32 @@
 
 #include "enums/lua_variant_type.hpp"
 
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+
 class LuaScriptInterface;
+
+namespace {
+
+sol::table ensureGlobalTable(lua_State* L, sol::state_view& lua, const std::string &globalName) {
+	sol::object object = lua[globalName];
+	if (object.valid()) {
+	        const sol::type objectType = object.get_type();
+	        if (objectType == sol::type::table) {
+	                return object.as<sol::table>();
+	        }
+	        if (objectType != sol::type::lua_nil && objectType != sol::type::none) {
+	                const std::string typeName = std::string(sol::type_name(lua, objectType));
+	                luaL_error(L, "attempt to index global '%s' (a %s value)", globalName.c_str(), typeName.c_str());
+	        }
+	}
+
+	sol::table table = lua.create_table();
+	lua[globalName] = table;
+	return table;
+}
+
+} // namespace
 
 void Lua::load(lua_State* L) {
 	if (!L) {
@@ -236,7 +261,7 @@ void Lua::pushString(lua_State* L, const std::string &value) {
 		return;
 	}
 
-	lua_pushlstring(L, value.c_str(), value.length());
+	sol::stack::push(L, value);
 }
 
 void Lua::pushNumber(lua_State* L, lua_Number value) {
@@ -244,7 +269,7 @@ void Lua::pushNumber(lua_State* L, lua_Number value) {
 		return;
 	}
 
-	lua_pushnumber(L, value);
+	sol::stack::push(L, value);
 }
 
 void Lua::pushCallback(lua_State* L, int32_t callback) {
@@ -399,38 +424,29 @@ std::string Lua::getFormatedLoggerMessage(lua_State* L) {
 }
 
 std::string Lua::getString(lua_State* L, int32_t arg) {
-	size_t len;
-	const char* c_str = lua_tolstring(L, arg, &len);
-	if (!c_str || len == 0) {
+	sol::optional<std::string> value = sol::stack::get<sol::optional<std::string>>(L, arg);
+	if (!value || value->empty()) {
 		return {};
 	}
-	return std::string(c_str, len);
+	return *value;
 }
 
 Position Lua::getPosition(lua_State* L, int32_t arg, int32_t &stackpos) {
+	sol::table table = sol::stack::get<sol::table>(L, arg);
 	Position position;
-	position.x = getField<uint16_t>(L, arg, "x");
-	position.y = getField<uint16_t>(L, arg, "y");
-	position.z = getField<uint8_t>(L, arg, "z");
-
-	lua_getfield(L, arg, "stackpos");
-	if (lua_isnil(L, -1) == 1) {
-		stackpos = 0;
-	} else {
-		stackpos = getNumber<int32_t>(L, -1);
-	}
-
-	lua_pop(L, 4);
+	position.x = table.get<sol::optional<uint16_t>>("x").value_or(0);
+	position.y = table.get<sol::optional<uint16_t>>("y").value_or(0);
+	position.z = table.get<sol::optional<uint8_t>>("z").value_or(0);
+	stackpos = table.get<sol::optional<int32_t>>("stackpos").value_or(0);
 	return position;
 }
 
 Position Lua::getPosition(lua_State* L, int32_t arg) {
+	sol::table table = sol::stack::get<sol::table>(L, arg);
 	Position position;
-	position.x = getField<uint16_t>(L, arg, "x");
-	position.y = getField<uint16_t>(L, arg, "y");
-	position.z = getField<uint8_t>(L, arg, "z");
-
-	lua_pop(L, 3);
+	position.x = table.get<sol::optional<uint16_t>>("x").value_or(0);
+	position.y = table.get<sol::optional<uint16_t>>("y").value_or(0);
+	position.z = table.get<sol::optional<uint8_t>>("z").value_or(0);
 	return position;
 }
 
@@ -457,38 +473,42 @@ Outfit_t Lua::getOutfit(lua_State* L, int32_t arg) {
 	outfit.lookEffect = getField<uint16_t>(L, arg, "lookEffect");
 	outfit.lookShader = getField<uint16_t>(L, arg, "lookShader");
 
-	lua_pop(L, 17);
 	return outfit;
 }
 
 LuaVariant Lua::getVariant(lua_State* L, int32_t arg) {
 	LuaVariant var;
-	var.instantName = getFieldString(L, arg, "instantName");
-	var.runeName = getFieldString(L, arg, "runeName");
-	switch (var.type = getField<LuaVariantType_t>(L, arg, "type")) {
+	sol::table table = sol::stack::get<sol::table>(L, arg);
+	var.instantName = table.get<sol::optional<std::string>>("instantName").value_or(std::string{});
+	var.runeName = table.get<sol::optional<std::string>>("runeName").value_or(std::string{});
+	var.type = table.get<sol::optional<LuaVariantType_t>>("type").value_or(VARIANT_NONE);
+
+	switch (var.type) {
 		case VARIANT_NUMBER: {
-			var.number = getField<uint32_t>(L, arg, "number");
-			lua_pop(L, 4);
+			var.number = table.get<sol::optional<uint32_t>>("number").value_or(0);
 			break;
 		}
 
 		case VARIANT_STRING: {
-			var.text = getFieldString(L, arg, "string");
-			lua_pop(L, 4);
+			var.text = table.get<sol::optional<std::string>>("string").value_or(std::string{});
 			break;
 		}
 
 		case VARIANT_POSITION:
 		case VARIANT_TARGETPOSITION: {
-			lua_getfield(L, arg, "pos");
-			var.pos = getPosition(L, lua_gettop(L));
-			lua_pop(L, 4);
+			sol::optional<sol::table> posTable = table.get<sol::optional<sol::table>>("pos");
+			if (posTable) {
+				Position pos;
+				pos.x = posTable->get<sol::optional<uint16_t>>("x").value_or(0);
+				pos.y = posTable->get<sol::optional<uint16_t>>("y").value_or(0);
+				pos.z = posTable->get<sol::optional<uint8_t>>("z").value_or(0);
+				var.pos = pos;
+			}
 			break;
 		}
 
 		default: {
 			var.type = VARIANT_NONE;
-			lua_pop(L, 3);
 			break;
 		}
 	}
@@ -561,8 +581,8 @@ std::shared_ptr<Guild> Lua::getGuild(lua_State* L, int32_t arg, bool allowOfflin
 }
 
 std::string Lua::getFieldString(lua_State* L, int32_t arg, const std::string &key) {
-	lua_getfield(L, arg, key.c_str());
-	return getString(L, -1);
+	sol::table table = sol::stack::get<sol::table>(L, arg);
+	return table.get<sol::optional<std::string>>(key).value_or(std::string{});
 }
 
 LuaData_t Lua::getUserdataType(lua_State* L, int32_t arg) {
@@ -587,7 +607,7 @@ void Lua::pushBoolean(lua_State* L, bool value) {
 		return;
 	}
 
-	lua_pushboolean(L, value ? 1 : 0);
+	sol::stack::push(L, value);
 }
 
 void Lua::pushCombatDamage(lua_State* L, const CombatDamage &damage) {
@@ -595,11 +615,11 @@ void Lua::pushCombatDamage(lua_State* L, const CombatDamage &damage) {
 		return;
 	}
 
-	lua_pushnumber(L, damage.primary.value);
-	lua_pushnumber(L, damage.primary.type);
-	lua_pushnumber(L, damage.secondary.value);
-	lua_pushnumber(L, damage.secondary.type);
-	lua_pushnumber(L, damage.origin);
+	sol::stack::push(L, damage.primary.value);
+	sol::stack::push(L, damage.primary.type);
+	sol::stack::push(L, damage.secondary.value);
+	sol::stack::push(L, damage.secondary.type);
+	sol::stack::push(L, damage.origin);
 }
 
 void Lua::pushInstantSpell(lua_State* L, const InstantSpell &spell) {
@@ -607,7 +627,7 @@ void Lua::pushInstantSpell(lua_State* L, const InstantSpell &spell) {
 		return;
 	}
 
-	lua_createtable(L, 0, 6);
+	sol::stack::push(L, sol::new_table(0, 6));
 
 	setField(L, "name", spell.getName());
 	setField(L, "words", spell.getWords());
@@ -624,7 +644,7 @@ void Lua::pushPosition(lua_State* L, const Position &position, int32_t stackpos 
 		return;
 	}
 
-	lua_createtable(L, 0, 4);
+	sol::stack::push(L, sol::new_table(0, 4));
 
 	setField(L, "x", position.x);
 	setField(L, "y", position.y);
@@ -639,7 +659,7 @@ void Lua::pushOutfit(lua_State* L, const Outfit_t &outfit) {
 		return;
 	}
 
-	lua_createtable(L, 0, 17);
+	sol::stack::push(L, sol::new_table(0, 17));
 	setField(L, "lookType", outfit.lookType);
 	setField(L, "lookTypeEx", outfit.lookTypeEx);
 	setField(L, "lookHead", outfit.lookHead);
@@ -730,19 +750,14 @@ void Lua::registerClass(lua_State* L, const std::string &className, const std::s
 }
 
 void Lua::registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func) {
-	// globalName.methodName = func
-	lua_getglobal(L, globalName.c_str());
-	lua_pushcfunction(L, func);
-	lua_setfield(L, -2, methodName.c_str());
-
-	// pop globalName
-	lua_pop(L, 1);
+	sol::state_view lua(L);
+	sol::table table = ensureGlobalTable(L, lua, globalName);
+	table.set_function(methodName, func);
 }
 
 void Lua::registerTable(lua_State* L, const std::string &tableName) {
-	// _G[tableName] = {}
-	lua_newtable(L);
-	lua_setglobal(L, tableName.c_str());
+	sol::state_view lua(L);
+	lua[tableName] = lua.create_table();
 }
 
 void Lua::registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func) {
@@ -756,36 +771,29 @@ void Lua::registerMetaMethod(lua_State* L, const std::string &className, const s
 }
 
 void Lua::registerVariable(lua_State* L, const std::string &tableName, const std::string &name, lua_Number value) {
-	// tableName.name = value
-	lua_getglobal(L, tableName.c_str());
-	setField(L, name.c_str(), value);
-
-	// pop tableName
-	lua_pop(L, 1);
+	sol::state_view lua(L);
+	sol::table table = ensureGlobalTable(L, lua, tableName);
+	table[name] = value;
 }
 
 void Lua::registerGlobalBoolean(lua_State* L, const std::string &name, bool value) {
-	// _G[name] = value
-	pushBoolean(L, value);
-	lua_setglobal(L, name.c_str());
+	sol::state_view lua(L);
+	lua[name] = value;
 }
 
 void Lua::registerGlobalMethod(lua_State* L, const std::string &functionName, lua_CFunction func) {
-	// _G[functionName] = func
-	lua_pushcfunction(L, func);
-	lua_setglobal(L, functionName.c_str());
+	sol::state_view lua(L);
+	lua.set_function(functionName, func);
 }
 
 void Lua::registerGlobalVariable(lua_State* L, const std::string &name, lua_Number value) {
-	// _G[name] = value
-	lua_pushnumber(L, value);
-	lua_setglobal(L, name.c_str());
+	sol::state_view lua(L);
+	lua[name] = value;
 }
 
 void Lua::registerGlobalString(lua_State* L, const std::string &variable, const std::string &name) {
-	// Example: registerGlobalString(L, "VARIABLE_NAME", "variable string");
-	pushString(L, name);
-	lua_setglobal(L, variable.c_str());
+	sol::state_view lua(L);
+	lua[variable] = name;
 }
 
 std::string Lua::escapeString(const std::string &string) {

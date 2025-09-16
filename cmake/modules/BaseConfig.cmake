@@ -78,6 +78,11 @@ if(FEATURE_METRICS)
 endif()
 find_package(mio REQUIRED)
 find_package(
+    sol2
+    CONFIG
+    REQUIRED
+)
+find_package(
     pugixml
     CONFIG
     REQUIRED

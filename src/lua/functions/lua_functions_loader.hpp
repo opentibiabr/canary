@@ -14,6 +14,11 @@
 #include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
 
+#ifndef SOL_ALL_SAFETIES_ON
+#define SOL_ALL_SAFETIES_ON 1
+#endif
+#include <sol/sol.hpp>
+
 class Combat;
 class Creature;
 class Cylinder;
@@ -64,7 +69,8 @@ public:
 
 	template <typename T>
 	static T getNumber(lua_State* L, int32_t arg, std::source_location location = std::source_location::current()) {
-		auto number = lua_tonumber(L, arg);
+		sol::optional<lua_Number> maybeNumber = sol::stack::get<sol::optional<lua_Number>>(L, arg);
+		const lua_Number number = maybeNumber.value_or(0);
 
 		if constexpr (std::is_enum_v<T>) {
 			return static_cast<T>(static_cast<int64_t>(number));
@@ -108,14 +114,14 @@ public:
 	}
 
 	static bool getBoolean(lua_State* L, int32_t arg) {
-		return lua_toboolean(L, arg) != 0;
+		return sol::stack::get<sol::optional<bool>>(L, arg).value_or(false);
 	}
 	static bool getBoolean(lua_State* L, int32_t arg, bool defaultValue) {
 		const auto parameters = lua_gettop(L);
 		if (parameters == 0 || arg > parameters) {
 			return defaultValue;
 		}
-		return lua_toboolean(L, arg) != 0;
+		return sol::stack::get<sol::optional<bool>>(L, arg).value_or(defaultValue);
 	}
 
 	static std::string getFormatedLoggerMessage(lua_State* L);
@@ -140,8 +146,39 @@ public:
 
 	template <typename T>
 	static T getField(lua_State* L, int32_t arg, const std::string &key) {
-		lua_getfield(L, arg, key.c_str());
-		return getNumber<T>(L, -1);
+		sol::table table = sol::stack::get<sol::table>(L, arg);
+		if constexpr (std::is_enum_v<T>) {
+			sol::optional<lua_Integer> value = table.get<sol::optional<lua_Integer>>(key);
+			if (!value) {
+				return static_cast<T>(0);
+			}
+			return static_cast<T>(*value);
+		} else if constexpr (std::is_integral_v<T>) {
+			if constexpr (std::is_unsigned_v<T>) {
+				sol::optional<lua_Unsigned> value = table.get<sol::optional<lua_Unsigned>>(key);
+				if (!value) {
+					return T{};
+				}
+				return static_cast<T>(*value);
+			}
+			sol::optional<lua_Integer> value = table.get<sol::optional<lua_Integer>>(key);
+			if (!value) {
+				return T{};
+			}
+			return static_cast<T>(*value);
+		} else if constexpr (std::is_floating_point_v<T>) {
+			sol::optional<lua_Number> value = table.get<sol::optional<lua_Number>>(key);
+			if (!value) {
+				return T{};
+			}
+			return static_cast<T>(*value);
+		}
+
+		sol::optional<T> value = table.get<sol::optional<T>>(key);
+		if (!value) {
+			return T{};
+		}
+		return *value;
 	}
 
 	static std::string getFieldString(lua_State* L, int32_t arg, const std::string &key);
@@ -150,25 +187,26 @@ public:
 	static std::string getUserdataTypeName(LuaData_t userType);
 
 	static bool isNumber(lua_State* L, int32_t arg) {
-		return lua_type(L, arg) == LUA_TNUMBER;
+		return sol::type_of(L, arg) == sol::type::number;
 	}
 	static bool isString(lua_State* L, int32_t arg) {
-		return lua_isstring(L, arg) != 0;
+		return sol::type_of(L, arg) == sol::type::string;
 	}
 	static bool isBoolean(lua_State* L, int32_t arg) {
-		return lua_isboolean(L, arg);
+		return sol::type_of(L, arg) == sol::type::boolean;
 	}
 	static bool isTable(lua_State* L, int32_t arg) {
-		return lua_istable(L, arg);
+		return sol::type_of(L, arg) == sol::type::table;
 	}
 	static bool isFunction(lua_State* L, int32_t arg) {
-		return lua_isfunction(L, arg);
+		return sol::type_of(L, arg) == sol::type::function;
 	}
 	static bool isNil(lua_State* L, int32_t arg) {
-		return lua_isnil(L, arg);
+		return sol::type_of(L, arg) == sol::type::lua_nil;
 	}
 	static bool isUserdata(lua_State* L, int32_t arg) {
-		return lua_isuserdata(L, arg) != 0;
+		const sol::type type = sol::type_of(L, arg);
+		return type == sol::type::userdata || type == sol::type::lightuserdata;
 	}
 
 	static void pushBoolean(lua_State* L, bool value);
@@ -178,13 +216,13 @@ public:
 	static void pushOutfit(lua_State* L, const Outfit_t &outfit);
 
 	static void setField(lua_State* L, const char* index, lua_Number value) {
-		lua_pushnumber(L, value);
-		lua_setfield(L, -2, index);
+		sol::table table = sol::stack::get<sol::table>(L, -1);
+		table[index] = value;
 	}
 
 	static void setField(lua_State* L, const char* index, const std::string &value) {
-		pushString(L, value);
-		lua_setfield(L, -2, index);
+		sol::table table = sol::stack::get<sol::table>(L, -1);
+		table[index] = value;
 	}
 
 	static std::string escapeString(const std::string &string);

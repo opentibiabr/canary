@@ -8,7 +8,7 @@ function createHirelingType(HirelingName)
 
 	local npcConfig = {}
 	local enableBankSystem = {}
-	local isPlayerInsideHirelingHouse
+    local isPlayerInsideHirelingHouse
 
 	npcConfig.name = HirelingName
 	npcConfig.description = HirelingName
@@ -16,7 +16,7 @@ function createHirelingType(HirelingName)
 	npcConfig.health = 100
 	npcConfig.maxHealth = npcConfig.health
 	npcConfig.walkInterval = 0
-	npcConfig.walkRadius = 2
+	npcConfig.walkRadius = 0
 
 	npcConfig.outfit = {
 		lookType = 136,
@@ -26,7 +26,7 @@ function createHirelingType(HirelingName)
 		lookFeet = 116,
 		lookAddons = 0,
 	}
-
+	
 	npcConfig.voices = {
 		interval = 15000,
 		chance = 40,
@@ -41,7 +41,7 @@ function createHirelingType(HirelingName)
 		{ text = "Make yourself comfortable!" },
 		{ text = "Let me know if you need anything!" },
 		{ text = "I hope everything is to your liking!" },
-	}
+	}	
 
 	npcConfig.flags = {
 		floorchange = false,
@@ -587,17 +587,14 @@ function createHirelingType(HirelingName)
 				npcHandler:setTopic(playerId, TOPIC_FOOD.SPECIFIC)
 				npcHandler:say("Which specific meal would you like? Choices are: {chilli con carniphila}, {svargrond salmon filet}, {carrion casserole}, {consecrated beef}, {roasted wyvern wings}, {carrot pie}, {tropical marinated tiger}, or {delicatessen salad}.", npc, creature)
 			elseif MsgContains(message, "surprise") then
-				-- comportamento original: só pergunta, entrega no próximo "yes"
-				npcHandler:say("Alright, let me astonish you. Shall I?", npc, creature)
-				npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_SURPRISE)
+				local random = math.random(6)
+				if random == 6 then
+					npcHandler:setTopic(playerId, TOPIC_FOOD.SKILL_CHOOSE)
+					npcHandler:say("Yay! I have the ingredients to make a skill boost dish. Would you rather like to boost your {magic}, {melee}, {shielding}, or {distance} skill?", npc, creature)
+				else
+					deliverFood(npc, creature, HIRELING_FOODS_IDS[random], 15000)
+				end
 			elseif MsgContains(message, "yes") then
-				deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
-			elseif MsgContains(message, "no") then
-				npcHandler:setTopic(playerId, TOPIC.SERVICES)
-				npcHandler:say("Alright then, ask me for other {services}, if you want.", npc, creature)
-			end
-		elseif npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_SURPRISE then
-			if MsgContains(message, "yes") then
 				deliverFood(npc, creature, HIRELING_FOODS_IDS[math.random(#HIRELING_FOODS_IDS)], 15000)
 			elseif MsgContains(message, "no") then
 				npcHandler:setTopic(playerId, TOPIC.SERVICES)
@@ -634,6 +631,7 @@ function createHirelingType(HirelingName)
 			end
 		end
 	end
+
 	-- ======================[[ END COOKER FUNCTIONS ]] ======================== --
 	isPlayerInsideHirelingHouse = function(npc, player)
 		local npcTile = npc:getTile()
@@ -714,13 +712,6 @@ function createHirelingType(HirelingName)
 					npcHandler:say(string, npc, creature)
 				end,
 			},
-			["trade"] = {
-				skill = HIRELING_SKILLS.TRADER[2],
-				topic = TOPIC.GOODS,
-				action = function()
-					skillMapping["goods"].action()
-				end,
-			},
 		}
 
 		for keyword, data in pairs(skillMapping) do
@@ -762,12 +753,6 @@ function createHirelingType(HirelingName)
 			npcHandler:setTopic(playerId, TOPIC.SERVICES)
 			local servicesMsg = getHirelingServiceString(creature)
 			npcHandler:say(servicesMsg, npc, creature)
-		elseif MsgContains(message, "lamp") then
-			if player:getGuid() ~= hireling:getOwnerId() then
-				return false
-			end
-			npcHandler:setTopic(playerId, TOPIC.LAMP)
-			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.SERVICES then
 			if MsgContains(message, "bank") then
 				local bankerSkillName = HIRELING_SKILLS.BANKER[2]
@@ -806,20 +791,21 @@ function createHirelingType(HirelingName)
 				npcHandler:setTopic(playerId, TOPIC.GOODS)
 				npcHandler:say(string, npc, creature)
 			elseif MsgContains(message, "lamp") then
+				npcHandler:setTopic(playerId, TOPIC.LAMP)
 				if player:getGuid() ~= hireling:getOwnerId() then
 					return false
 				end
-				npcHandler:setTopic(playerId, TOPIC.LAMP)
+
 				npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 			elseif MsgContains(message, "outfit") then
 				if player:getGuid() ~= hireling:getOwnerId() then
 					return false
 				end
+
 				hireling:requestOutfitChange()
 				npcHandler:say("As you wish!", npc, creature)
-			else
-				npcHandler:say("No problem, take your time!", npc, creature)
 			end
+			npcHandler:say("Are you sure you want me to go back to my lamp?", npc, creature)
 		elseif npcHandler:getTopic(playerId) == TOPIC.LAMP then
 			if MsgContains(message, "yes") then
 				hireling:returnToLamp(player:getGuid())
@@ -829,7 +815,7 @@ function createHirelingType(HirelingName)
 			end
 		elseif npcHandler:getTopic(playerId) == TOPIC.BANK then
 			enableBankSystem[playerId] = true
-		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE or npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_SURPRISE then
+		elseif npcHandler:getTopic(playerId) == TOPIC.FOOD or npcHandler:getTopic(playerId) == TOPIC_FOOD.SKILL_CHOOSE or npcHandler:getTopic(playerId) == TOPIC_FOOD.SPECIFIC then
 			handleFoodActions(npc, creature, message)
 		elseif npcHandler:getTopic(playerId) == TOPIC.GOODS then
 			local categoryTable = itemsTable[message:lower()]
@@ -847,17 +833,18 @@ function createHirelingType(HirelingName)
 		end
 		return true
 	end
-
+	
 	local function greetCallback(npc, player, message)
 		if not isPlayerInsideHirelingHouse(npc, player) then
 			addEvent(releaseInteraction, 0, npc:getId(), player:getId())
 			return false
 		end
 		return true
-	end
+	end	
 
 	npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {service}.")
-	npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye!")
+	npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|, I'll be here if you need me again.")
+	npcHandler:setMessage(MESSAGE_WALKAWAY, "Come back soon!")
 
 	npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 	npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

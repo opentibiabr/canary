@@ -35,23 +35,23 @@ class LuaScriptInterface;
 
 namespace {
 
-sol::table ensureGlobalTable(lua_State* L, sol::state_view& lua, const std::string &globalName) {
-	sol::object object = lua[globalName];
-	if (object.valid()) {
-	        const sol::type objectType = object.get_type();
-	        if (objectType == sol::type::table) {
-	                return object.as<sol::table>();
-	        }
-	        if (objectType != sol::type::lua_nil && objectType != sol::type::none) {
-	                const std::string typeName = std::string(sol::type_name(lua, objectType));
-	                luaL_error(L, "attempt to index global '%s' (a %s value)", globalName.c_str(), typeName.c_str());
-	        }
-	}
+	sol::table ensureGlobalTable(lua_State* L, sol::state_view &lua, const std::string &globalName) {
+		sol::object object = lua[globalName];
+		if (object.valid()) {
+			const sol::type objectType = object.get_type();
+			if (objectType == sol::type::table) {
+				return object.as<sol::table>();
+			}
+			if (objectType != sol::type::lua_nil && objectType != sol::type::none) {
+				const std::string typeName = std::string(sol::type_name(lua, objectType));
+				luaL_error(L, "attempt to index global '%s' (a %s value)", globalName.c_str(), typeName.c_str());
+			}
+		}
 
-	sol::table table = lua.create_table();
-	lua[globalName] = table;
-	return table;
-}
+		sol::table table = lua.create_table();
+		lua[globalName] = table;
+		return table;
+	}
 
 } // namespace
 
@@ -479,8 +479,8 @@ Outfit_t Lua::getOutfit(lua_State* L, int32_t arg) {
 LuaVariant Lua::getVariant(lua_State* L, int32_t arg) {
 	LuaVariant var;
 	sol::table table = sol::stack::get<sol::table>(L, arg);
-	var.instantName = table.get<sol::optional<std::string>>("instantName").value_or(std::string{});
-	var.runeName = table.get<sol::optional<std::string>>("runeName").value_or(std::string{});
+	var.instantName = table.get<sol::optional<std::string>>("instantName").value_or(std::string {});
+	var.runeName = table.get<sol::optional<std::string>>("runeName").value_or(std::string {});
 	var.type = table.get<sol::optional<LuaVariantType_t>>("type").value_or(VARIANT_NONE);
 
 	switch (var.type) {
@@ -490,7 +490,7 @@ LuaVariant Lua::getVariant(lua_State* L, int32_t arg) {
 		}
 
 		case VARIANT_STRING: {
-			var.text = table.get<sol::optional<std::string>>("string").value_or(std::string{});
+			var.text = table.get<sol::optional<std::string>>("string").value_or(std::string {});
 			break;
 		}
 
@@ -582,7 +582,7 @@ std::shared_ptr<Guild> Lua::getGuild(lua_State* L, int32_t arg, bool allowOfflin
 
 std::string Lua::getFieldString(lua_State* L, int32_t arg, const std::string &key) {
 	sol::table table = sol::stack::get<sol::table>(L, arg);
-	return table.get<sol::optional<std::string>>(key).value_or(std::string{});
+	return table.get<sol::optional<std::string>>(key).value_or(std::string {});
 }
 
 LuaData_t Lua::getUserdataType(lua_State* L, int32_t arg) {

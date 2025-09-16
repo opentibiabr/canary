@@ -15,7 +15,7 @@
 #include "lua/scripts/script_environment.hpp"
 
 #ifndef SOL_ALL_SAFETIES_ON
-#define SOL_ALL_SAFETIES_ON 1
+	#define SOL_ALL_SAFETIES_ON 1
 #endif
 #include <sol/sol.hpp>
 
@@ -157,26 +157,26 @@ public:
 			if constexpr (std::is_unsigned_v<T>) {
 				sol::optional<lua_Unsigned> value = table.get<sol::optional<lua_Unsigned>>(key);
 				if (!value) {
-					return T{};
+					return T {};
 				}
 				return static_cast<T>(*value);
 			}
 			sol::optional<lua_Integer> value = table.get<sol::optional<lua_Integer>>(key);
 			if (!value) {
-				return T{};
+				return T {};
 			}
 			return static_cast<T>(*value);
 		} else if constexpr (std::is_floating_point_v<T>) {
 			sol::optional<lua_Number> value = table.get<sol::optional<lua_Number>>(key);
 			if (!value) {
-				return T{};
+				return T {};
 			}
 			return static_cast<T>(*value);
 		}
 
 		sol::optional<T> value = table.get<sol::optional<T>>(key);
 		if (!value) {
-			return T{};
+			return T {};
 		}
 		return *value;
 	}

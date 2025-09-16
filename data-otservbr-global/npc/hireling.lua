@@ -8,7 +8,7 @@ function createHirelingType(HirelingName)
 
 	local npcConfig = {}
 	local enableBankSystem = {}
-  local isPlayerInsideHirelingHouse
+	local isPlayerInsideHirelingHouse
 
 	npcConfig.name = HirelingName
 	npcConfig.description = HirelingName
@@ -840,7 +840,7 @@ function createHirelingType(HirelingName)
 			return false
 		end
 		return true
-	end	
+	end
 
 	npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {service}.")
 	npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|, I'll be here if you need me again.")

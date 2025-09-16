@@ -26,7 +26,7 @@ function createHirelingType(HirelingName)
 		lookFeet = 116,
 		lookAddons = 0,
 	}
-	
+
 	npcConfig.voices = {
 		interval = 15000,
 		chance = 40,
@@ -41,7 +41,7 @@ function createHirelingType(HirelingName)
 		{ text = "Make yourself comfortable!" },
 		{ text = "Let me know if you need anything!" },
 		{ text = "I hope everything is to your liking!" },
-	}	
+	}
 
 	npcConfig.flags = {
 		floorchange = false,
@@ -833,7 +833,7 @@ function createHirelingType(HirelingName)
 		end
 		return true
 	end
-	
+
 	local function greetCallback(npc, player, message)
 		if not isPlayerInsideHirelingHouse(npc, player) then
 			addEvent(releaseInteraction, 0, npc:getId(), player:getId())

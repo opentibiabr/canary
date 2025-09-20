@@ -443,12 +443,12 @@ function GameStore.processBundlePurchase(player, offer)
 			totalCapacityNeeded = totalCapacityNeeded + itemType:getWeight(itemOffer.count or 1)
 		end
 	end
-	
+
 	if player:getFreeCapacity() < totalCapacityNeeded then
 		local missingCap = totalCapacityNeeded - player:getFreeCapacity()
 		return error({ code = 0, message = "You don't have enough capacity (" .. missingCap .. " oz.) for all items in this package." })
 	end
-	
+
 	for _, itemOffer in ipairs(offer.contents) do
 		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, itemOffer.itemtype, itemOffer.count or 1, itemOffer.movable, itemOffer.setOwner)

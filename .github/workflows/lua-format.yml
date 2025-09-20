@@ -1,5 +1,5 @@
----
 name: Lua-format
+
 on:
   pull_request:
     paths:
@@ -8,6 +8,13 @@ on:
   push:
     paths:
       - "data*/**"
+
+# ==========================================================
+# A CORREÇÃO ESTÁ AQUI: ADICIONANDO AS PERMISSÕES DE ESCRITA
+permissions:
+  contents: write
+# ==========================================================
+
 jobs:
   lua-formatter:
     runs-on: ubuntu-latest

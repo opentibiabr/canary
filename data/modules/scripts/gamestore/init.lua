@@ -418,19 +418,60 @@ function GameStore.processBundlePurchase(player, offer)
 		return error({ code = 0, message = "This package is empty and cannot be purchased." })
 	end
 
+	local totalCapacityNeeded = 0
+
+	for _, itemOffer in ipairs(offer.contents) do
+		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT and player:hasMount(itemOffer.id) then
+			return error({ code = 1, message = "You already own the mount '" .. itemOffer.name .. "' of this package." })
+		end
+
+		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
+			local looktype = player:getSex() == PLAYERSEX_MALE and itemOffer.sexId.male or itemOffer.sexId.female
+			if looktype and player:hasOutfit(looktype, itemOffer.addon or 3) then
+				return error({ code = 1, message = "You already own the outfit '" .. itemOffer.name .. "' of this package." })
+			end
+		end
+
+		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+			if player:getItemById(itemOffer.itemtype, true) then
+				return error({ code = 1, message = "You already own the unique item '" .. itemOffer.name .. "' of this package." })
+			end
+		end
+
+		local itemType = ItemType(itemOffer.itemtype or 0)
+		if itemType and itemType:getId() > 0 and itemType:getWeight() > 0 then
+			totalCapacityNeeded = totalCapacityNeeded + itemType:getWeight(itemOffer.count or 1)
+		end
+	end
+	
+	if player:getFreeCapacity() < totalCapacityNeeded then
+		local missingCap = totalCapacityNeeded - player:getFreeCapacity()
+		return error({ code = 0, message = "You don't have enough capacity (" .. missingCap .. " oz.) for all items in this package." })
+	end
+	
 	for _, itemOffer in ipairs(offer.contents) do
 		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, itemOffer.itemtype, itemOffer.count or 1, itemOffer.movable, itemOffer.setOwner)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
+			GameStore.processInstantRewardAccess(player, itemOffer.count)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
+			GameStore.processCharmsPurchase(player)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
+			GameStore.processSingleBlessingPurchase(player, itemOffer.blessid, itemOffer.count)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
+			GameStore.processAllBlessingsPurchase(player, itemOffer.count)
 		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_PREMIUM then
 			GameStore.processPremiumPurchase(player, itemOffer.id)
 		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE then
 			GameStore.processStackablePurchase(player, itemOffer.itemtype, itemOffer.count, itemOffer.name, itemOffer.movable, itemOffer.setOwner)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED then
+			GameStore.processHouseRelatedPurchase(player, itemOffer)
 		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
 			GameStore.processOutfitPurchase(player, itemOffer.sexId, itemOffer.addon)
 		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
 			GameStore.processMountPurchase(player, itemOffer.id)
-		else
-			logger.warn(string.format("[processBundlePurchase] - Offer type not supported within a bundle: %d", itemOffer.type))
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES then
+			GameStore.processChargesPurchase(player, itemOffer.itemtype, itemOffer.name, itemOffer.charges, itemOffer.movable, itemOffer.setOwner)
 		end
 	end
 end
@@ -838,8 +879,6 @@ function Player.canBuyOffer(self, offer)
 			if offer.contents and #offer.contents > 0 then
 				for _, subOffer in ipairs(offer.contents) do
 					local subOfferDisabled = false
-					local reason = ""
-
 					if subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
 						local outfitLookType
 						if self:getSex() == PLAYERSEX_MALE then

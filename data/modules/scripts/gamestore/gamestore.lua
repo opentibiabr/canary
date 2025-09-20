@@ -1099,60 +1099,6 @@ GameStore.Categories = {
 			},
 		},
 	},
-	
-	{
-		icons = { "Category_Bundles.png" },
-		name = "Bundles",
-		rookgaard = true,
-		description = "Special bundles with multiple items for a discounted price!",
-		offers = {
-			{
-				icons = { "bundle_starter_pack.png" },
-				name = "Starter Pack",
-				price = 900,
-				state = GameStore.States.STATE_NEW,
-				home = true,
-				description = "An essential package for every new adventurer! Includes premium days, a swift mount, a stylish outfit, and potions to begin your journey.",
-				type = GameStore.OfferTypes.OFFER_TYPE_BUNDLE,
-				contents = {
-					{
-						-- Item 1: 30 Premium Time Days
-						name = "30 Days of Premium Time",
-						type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
-						id = 3030
-					},
-					{
-						-- Item 2: Bloodcurl Mount
-						name = "Bloodcurl",
-						type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
-						id = 92
-					},
-					{
-						-- Item 3: Full Pumpkin Mummy Outfit
-						name = "Full Pumpkin Mummy Outfit",
-						type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-						sexId = { female = 1128, male = 1127 },
-						addon = 3
-					},
-					{
-						-- Item 4: 100x Great Mana Potion
-						name = "100x Great Mana Potion",
-						type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
-						itemtype = 238,
-						count = 100
-					},
-					{
-						-- Item 5: 100x Great Health Potion
-						name = "100x Great Health Potion",
-						type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
-						itemtype = 239,
-						count = 100
-					}
-				}
-			},
-		},
-	},
-	
 	-- Cosmetics
 	{
 		icons = { "Category_Cosmetics.png" },
@@ -2143,6 +2089,14 @@ GameStore.Categories = {
 				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
 			},
 			{
+				icons = { "Spirit_of_Purity.png" },
+				name = "Spirit of Purity",
+				price = 1000,
+				id = 217,
+				description = "{character}\n{speedboost}\n\n<i>A wild, ancient creature, which had been hiding in the depths of the shadows for a very long time, has been spotted in Tibia again! The almighty Shadow Draptor has returned and only the bravest Tibians can control such a beast!</i>",
+				type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+			},
+			{
 				icons = { "Steel_Bee.png" },
 				name = "Steel Bee",
 				price = 600,
@@ -2362,7 +2316,6 @@ GameStore.Categories = {
 				addon = 3,
 				description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>Armoured Archers are the epitome of invisible danger. Silently and nimbly, they advance in the background. For hours, they wait patiently, almost motionless, for the decisive moment. Just to be perfectly present in a deadly second.</i>",
 				type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{
@@ -4372,7 +4325,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{
@@ -4847,27 +4799,9 @@ GameStore.Categories = {
 				icons = { "Water_Bucket.png" },
 				name = "Water Bucket",
 				price = 60,
-				itemtype = 35188,
+				itemtype = 34280,
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Water_Floor.png" },
-				name = "Water Floor",
-				price = 35,
-				itemtype = 49216,
-				count = 1,
-				description = "{house}\n{box}\n{storeinbox}\n{useicon} use a bucket to pour it out or fill it back in\n{backtoinbox}",
-				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-			},
-			{
-				icons = { "Water_Floor.png" },
-				name = "Water Floor",
-				price = 175,
-				itemtype = 49216,
-				count = 5,
-				description = "{house}\n{box}\n{storeinbox}\n{useicon} use a bucket to pour it out or fill it back in\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
 			},
 			{
@@ -6648,6 +6582,7 @@ GameStore.Categories = {
 			{
 				icons = { "Name_Change.png" },
 				name = "Character Name Change",
+				home = true,
 				price = 250,
 				id = 65002,
 				description = "<i>Tired of your current character name? Purchase a new one!</i>\n\n{character}\n{info} relog required after purchase to finalise the name change",
@@ -6910,7 +6845,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{
@@ -6921,7 +6855,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{
@@ -6932,7 +6865,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{
@@ -6943,7 +6875,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{
@@ -6954,7 +6885,6 @@ GameStore.Categories = {
 				count = 1,
 				description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 				type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,
-				state = GameStore.States.STATE_NEW,
 				home = true,
 			},
 			{

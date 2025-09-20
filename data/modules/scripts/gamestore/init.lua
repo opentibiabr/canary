@@ -35,14 +35,13 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HUNTINGSLOT = 25,
 	OFFER_TYPE_ITEM_BED = 26,
 	OFFER_TYPE_ITEM_UNIQUE = 27,
-	OFFER_TYPE_BUNDLE = 28,
 }
 
 GameStore.SubActions = {
 	PREY_THIRDSLOT_REAL = 0,
 	PREY_WILDCARD = 1,
 	INSTANT_REWARD = 2,
-	BLESSING_TWIST = 3,
+	CHARM_EXPANSION = 3,
 	BLESSING_SOLITUDE = 4,
 	BLESSING_PHOENIX = 5,
 	BLESSING_SUNS = 6,
@@ -51,9 +50,9 @@ GameStore.SubActions = {
 	BLESSING_BLOOD = 9,
 	BLESSING_HEART = 10,
 	BLESSING_ALL_PVE = 11,
-	BLESSING_ALL_PVP = 12,
-	CHARM_EXPANSION = 13,
-	TASKHUNTING_THIRDSLOT = 14,
+	BLESSING_TWIST = 12,
+	TASKHUNTING_THIRDSLOT = 13,
+	BLESSING_ALL_PVP = 14,
 	PREY_THIRDSLOT_REDIRECT = 15,
 }
 
@@ -101,7 +100,6 @@ function convertType(type)
 		[GameStore.OfferTypes.OFFER_TYPE_HIRELING] = GameStore.ConverType.SHOW_HIRELING,
 		[GameStore.OfferTypes.OFFER_TYPE_ITEM_BED] = GameStore.ConverType.SHOW_NONE,
 		[GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE] = GameStore.ConverType.SHOW_ITEM,
-		[GameStore.OfferTypes.OFFER_TYPE_BUNDLE] = GameStore.ConverType.SHOW_NONE,
 	}
 
 	if not types[type] then
@@ -217,7 +215,6 @@ GameStore.ItemLimit = {
 }
 
 --==Parsing==--
-
 GameStore.isItsPacket = function(byte)
 	for k, v in pairs(GameStore.RecivedPackets) do
 		if v == byte then
@@ -368,7 +365,7 @@ function parseRequestStoreOffers(playerId, msg)
 		local subAction = msg:getByte()
 		local offerId = subAction
 		local category = nil
-		if subAction >= GameStore.SubActions.BLESSING_TWIST and subAction <= GameStore.SubActions.BLESSING_ALL_PVP then
+		if subAction >= GameStore.SubActions.BLESSING_SOLITUDE and subAction <= GameStore.SubActions.BLESSING_TWIST then
 			category = GameStore.getCategoryByName("Blessings")
 		else
 			category = GameStore.getCategoryByName("Useful Things")
@@ -376,6 +373,8 @@ function parseRequestStoreOffers(playerId, msg)
 
 		if subAction == GameStore.SubActions.PREY_THIRDSLOT_REAL then
 			offerId = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT
+		elseif subAction == GameStore.SubActions.CHARM_EXPANSION then
+			offerId = GameStore.SubActions.CHARM_EXPANSION
 		end
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
@@ -412,28 +411,6 @@ local function insertPlayerTransactionSummary(player, offer)
 		id = offer.blessid
 	end
 	player:createTransactionSummary(offer.type, math.max(1, offer.count or 1), id)
-end
-
-function GameStore.processBundlePurchase(player, offer)
-	if not offer.contents or #offer.contents == 0 then
-		return error({ code = 0, message = "This package is empty and cannot be purchased." })
-	end
-
-	for _, itemOffer in ipairs(offer.contents) do
-		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
-			GameStore.processItemPurchase(player, itemOffer.itemtype, itemOffer.count or 1, itemOffer.movable, itemOffer.setOwner)
-		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_PREMIUM then
-			GameStore.processPremiumPurchase(player, itemOffer.id)
-		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE then
-			GameStore.processStackablePurchase(player, itemOffer.itemtype, itemOffer.count, itemOffer.name, itemOffer.movable, itemOffer.setOwner)
-		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
-			GameStore.processOutfitPurchase(player, itemOffer.sexId, itemOffer.addon)
-		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
-			GameStore.processMountPurchase(player, itemOffer.id)
-		else
-			logger.warn(string.format("[processBundlePurchase] - Offer type not supported within a bundle: %d", itemOffer.type))
-		end
-	end
 end
 
 function parseBuyStoreOffer(playerId, msg)
@@ -550,8 +527,6 @@ function parseBuyStoreOffer(playerId, msg)
 			GameStore.processHirelingSkillPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT then
 			GameStore.processHirelingOutfitPurchase(player, offer)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BUNDLE then
-			GameStore.processBundlePurchase(player, offer)
 		else
 			-- This should never happen by our convention, but just in case the guarding condition is messed up...
 			error({ code = 0, message = "This offer is unavailable [2]" })
@@ -835,56 +810,9 @@ function Player.canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You need to have a hireling."
 			end
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BUNDLE then
-			if offer.contents and #offer.contents > 0 then
-				for _, subOffer in ipairs(offer.contents) do
-					local subOfferDisabled = false
-					local reason = ""
-
-					if subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
-						local outfitLookType
-						if self:getSex() == PLAYERSEX_MALE then
-							outfitLookType = subOffer.sexId.male
-						else
-							outfitLookType = subOffer.sexId.female
-						end
-
-						if outfitLookType then
-							if subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT and self:hasOutfit(outfitLookType) then
-								subOfferDisabled = true
-							elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
-								if self:hasOutfit(outfitLookType) then
-									if self:hasOutfit(outfitLookType, subOffer.addon) then
-										subOfferDisabled = true
-									end
-								else
-									subOfferDisabled = true
-								end
-							end
-						else
-							subOfferDisabled = true
-						end
-
-					elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
-						if self:hasMount(subOffer.id) then
-							subOfferDisabled = true
-						end
-						
-					elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
-						if self:getItemById(subOffer.itemtype, true) then
-							subOfferDisabled = true
-						end
-					end
-
-					if subOfferDisabled then
-						disabled = 1
-						disabledReason = "You already own an exclusive item from this pack (" .. subOffer.name .. ")."
-						break 
-					end
-				end
-			end
 		end
 	end
+
 	return { disabled = disabled, disabledReason = disabledReason }
 end
 
@@ -2305,20 +2233,7 @@ function sendHomePage(playerId)
 			offer.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 		end
 
-		if offer.state then
-			if offer.state == GameStore.States.STATE_SALE then
-				local daySub = offer.validUntil - os.date("*t").day
-				if daySub >= 0 then
-					msg:addByte(offer.state)
-				else
-					msg:addByte(GameStore.States.STATE_NONE)
-				end
-			else
-				msg:addByte(offer.state)
-			end
-		else
-			msg:addByte(GameStore.States.STATE_NONE)
-		end
+		msg:addByte(0x00)
 
 		local type = convertType(offer.type)
 

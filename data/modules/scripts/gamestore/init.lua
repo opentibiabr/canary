@@ -35,6 +35,7 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HUNTINGSLOT = 25,
 	OFFER_TYPE_ITEM_BED = 26,
 	OFFER_TYPE_ITEM_UNIQUE = 27,
+	OFFER_TYPE_BUNDLE = 28,
 }
 
 GameStore.SubActions = {
@@ -100,6 +101,7 @@ function convertType(type)
 		[GameStore.OfferTypes.OFFER_TYPE_HIRELING] = GameStore.ConverType.SHOW_HIRELING,
 		[GameStore.OfferTypes.OFFER_TYPE_ITEM_BED] = GameStore.ConverType.SHOW_NONE,
 		[GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE] = GameStore.ConverType.SHOW_ITEM,
+		[GameStore.OfferTypes.OFFER_TYPE_BUNDLE] = GameStore.ConverType.SHOW_NONE,
 	}
 
 	if not types[type] then
@@ -411,6 +413,28 @@ local function insertPlayerTransactionSummary(player, offer)
 	player:createTransactionSummary(offer.type, math.max(1, offer.count or 1), id)
 end
 
+function GameStore.processBundlePurchase(player, offer)
+	if not offer.contents or #offer.contents == 0 then
+		return error({ code = 0, message = "This package is empty and cannot be purchased." })
+	end
+
+	for _, itemOffer in ipairs(offer.contents) do
+		if itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+			GameStore.processItemPurchase(player, itemOffer.itemtype, itemOffer.count or 1, itemOffer.movable, itemOffer.setOwner)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_PREMIUM then
+			GameStore.processPremiumPurchase(player, itemOffer.id)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE then
+			GameStore.processStackablePurchase(player, itemOffer.itemtype, itemOffer.count, itemOffer.name, itemOffer.movable, itemOffer.setOwner)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
+			GameStore.processOutfitPurchase(player, itemOffer.sexId, itemOffer.addon)
+		elseif itemOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
+			GameStore.processMountPurchase(player, itemOffer.id)
+		else
+			logger.warn(string.format("[processBundlePurchase] - Offer type not supported within a bundle: %d", itemOffer.type))
+		end
+	end
+end
+
 function parseBuyStoreOffer(playerId, msg)
 	local player = Player(playerId)
 	local id = msg:getU32()
@@ -525,6 +549,8 @@ function parseBuyStoreOffer(playerId, msg)
 			GameStore.processHirelingSkillPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_OUTFIT then
 			GameStore.processHirelingOutfitPurchase(player, offer)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BUNDLE then
+			GameStore.processBundlePurchase(player, offer)
 		else
 			-- This should never happen by our convention, but just in case the guarding condition is messed up...
 			error({ code = 0, message = "This offer is unavailable [2]" })
@@ -808,9 +834,56 @@ function Player.canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You need to have a hireling."
 			end
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BUNDLE then
+			if offer.contents and #offer.contents > 0 then
+				for _, subOffer in ipairs(offer.contents) do
+					local subOfferDisabled = false
+					local reason = ""
+
+					if subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
+						local outfitLookType
+						if self:getSex() == PLAYERSEX_MALE then
+							outfitLookType = subOffer.sexId.male
+						else
+							outfitLookType = subOffer.sexId.female
+						end
+
+						if outfitLookType then
+							if subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT and self:hasOutfit(outfitLookType) then
+								subOfferDisabled = true
+							elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
+								if self:hasOutfit(outfitLookType) then
+									if self:hasOutfit(outfitLookType, subOffer.addon) then
+										subOfferDisabled = true
+									end
+								else
+									subOfferDisabled = true
+								end
+							end
+						else
+							subOfferDisabled = true
+						end
+
+					elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
+						if self:hasMount(subOffer.id) then
+							subOfferDisabled = true
+						end
+						
+					elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+						if self:getItemById(subOffer.itemtype, true) then
+							subOfferDisabled = true
+						end
+					end
+
+					if subOfferDisabled then
+						disabled = 1
+						disabledReason = "You already own an exclusive item from this pack (" .. subOffer.name .. ")."
+						break 
+					end
+				end
+			end
 		end
 	end
-
 	return { disabled = disabled, disabledReason = disabledReason }
 end
 

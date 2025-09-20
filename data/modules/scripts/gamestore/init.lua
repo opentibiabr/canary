@@ -2231,7 +2231,20 @@ function sendHomePage(playerId)
 			offer.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 		end
 
-		msg:addByte(0x00)
+		if offer.state then
+			if offer.state == GameStore.States.STATE_SALE then
+				local daySub = offer.validUntil - os.date("*t").day
+				if daySub >= 0 then
+					msg:addByte(offer.state)
+				else
+					msg:addByte(GameStore.States.STATE_NONE)
+				end
+			else
+				msg:addByte(offer.state)
+			end
+		else
+			msg:addByte(GameStore.States.STATE_NONE)
+		end
 
 		local type = convertType(offer.type)
 

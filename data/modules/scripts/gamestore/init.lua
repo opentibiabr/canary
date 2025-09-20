@@ -217,6 +217,7 @@ GameStore.ItemLimit = {
 }
 
 --==Parsing==--
+
 GameStore.isItsPacket = function(byte)
 	for k, v in pairs(GameStore.RecivedPackets) do
 		if v == byte then

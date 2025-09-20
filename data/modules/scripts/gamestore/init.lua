@@ -863,12 +863,10 @@ function Player.canBuyOffer(self, offer)
 						else
 							subOfferDisabled = true
 						end
-
 					elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
 						if self:hasMount(subOffer.id) then
 							subOfferDisabled = true
 						end
-						
 					elseif subOffer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 						if self:getItemById(subOffer.itemtype, true) then
 							subOfferDisabled = true
@@ -878,7 +876,7 @@ function Player.canBuyOffer(self, offer)
 					if subOfferDisabled then
 						disabled = 1
 						disabledReason = "You already own an exclusive item from this pack (" .. subOffer.name .. ")."
-						break 
+						break
 					end
 				end
 			end

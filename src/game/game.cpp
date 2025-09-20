@@ -7849,7 +7849,8 @@ void Game::applyCharmRune(
 		const auto charmTier = attackerPlayer->getCharmTier(charmType);
 		int8_t chance = charm->chance[charmTier] + (charm->id == CHARM_CRIPPLE ? 0 : attackerPlayer->getCharmChanceModifier());
 
-		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(1, 10000) / 100.0)) {
+		auto rng = uniform_random(1, 100);
+		if (charm->type == CHARM_OFFENSIVE && (chance >= rng)) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}
 	}

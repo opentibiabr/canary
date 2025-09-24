@@ -1875,8 +1875,10 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	if (item->isWrapable() || item->isStoreItem() || (item->hasOwner() && !item->isOwner(player))) {
-		const auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
-		const auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
+		const auto toTile = map.getTile(mapToPos);
+		const auto fromTile = map.getTile(mapFromPos);
+		const auto toHouseTile = toTile ? toTile->dynamic_self_cast<HouseTile>() : nullptr;
+		const auto fromHouseTile = fromTile ? fromTile->dynamic_self_cast<HouseTile>() : nullptr;
 		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
 			player->sendCancelMessage("You cannot move this item out of this house.");
 			return;
@@ -2936,6 +2938,8 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 	if (!player || !corpse) {
 		return;
 	}
+
+	removeLootHighlight(corpse);
 
 	std::vector<std::shared_ptr<Item>> itemList;
 	bool ignoreListItems = (player->quickLootFilter == QUICKLOOTFILTER_SKIPPEDLOOT);
@@ -5738,6 +5742,149 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 	browseField = false;
 }
 
+void Game::initializeLootHighlight(const std::shared_ptr<Container> &corpse) {
+	if (!corpse || !corpse->isCorpse() || corpse->isRewardCorpse() || corpse->hasLootHighlight() || corpse->empty()) {
+		return;
+	}
+
+	const auto &tile = corpse->getTile();
+	if (!tile) {
+		return;
+	}
+
+	const bool restricted = corpse->getCorpseOwner() != 0;
+	corpse->enableLootHighlight(restricted, OTSYS_TIME());
+	refreshLootHighlight(corpse);
+
+	if (!restricted) {
+		return;
+	}
+
+	g_dispatcher().scheduleEvent(
+		10000,
+		[weakCorpse = std::weak_ptr<Container>(corpse)] {
+			const auto corpseLock = weakCorpse.lock();
+			if (!corpseLock || !corpseLock->hasLootHighlight() || !corpseLock->isLootHighlightRestricted()) {
+				return;
+			}
+
+			corpseLock->setLootHighlightRestricted(false);
+			g_game().refreshLootHighlight(corpseLock);
+		},
+		"Game::initializeLootHighlight"
+	);
+}
+
+void Game::refreshLootHighlight(const std::shared_ptr<Container> &corpse) {
+	if (!corpse || !corpse->hasLootHighlight() || corpse->isRewardCorpse()) {
+		return;
+	}
+
+	const auto &tile = corpse->getTile();
+	if (!tile) {
+		return;
+	}
+
+	for (const auto &spectator : Spectators().find<Player>(tile->getPosition(), true)) {
+		const auto &tmpPlayer = spectator->getPlayer();
+		if (!tmpPlayer || !canPlayerSeeLootHighlight(tmpPlayer, corpse)) {
+			continue;
+		}
+
+		tmpPlayer->sendMagicEffect(tile->getPosition(), CONST_ME_LOOT_HIGHLIGHT);
+	}
+}
+
+void Game::removeLootHighlight(const std::shared_ptr<Container> &corpse) {
+	if (!corpse || !corpse->hasLootHighlight() || corpse->isRewardCorpse()) {
+		return;
+	}
+
+	corpse->disableLootHighlight();
+	updateTileLootHighlight(corpse->getTile());
+}
+
+void Game::updateTileLootHighlight(const std::shared_ptr<Tile> &tile) {
+	if (!tile) {
+		return;
+	}
+
+	if (tileHasLootHighlight(tile)) {
+		return;
+	}
+
+	removeMagicEffect(tile->getPosition(), CONST_ME_LOOT_HIGHLIGHT);
+}
+
+bool Game::hasVisibleLootHighlightForPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Tile> &tile) const {
+	if (!player || !tile) {
+		return false;
+	}
+
+	const TileItemVector* items = tile->getItemList();
+	if (!items) {
+		return false;
+	}
+
+	for (const auto &tileItem : *items) {
+		if (!tileItem) {
+			continue;
+		}
+
+		const auto &container = tileItem->getContainer();
+		if (!container || !container->hasLootHighlight() || !container->isCorpse() || container->isRewardCorpse()) {
+			continue;
+		}
+
+		if (canPlayerSeeLootHighlight(player, container)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Game::canPlayerSeeLootHighlight(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) const {
+	if (!player || !corpse || !corpse->hasLootHighlight()) {
+		return false;
+	}
+
+	if (!corpse->isLootHighlightRestricted()) {
+		return true;
+	}
+
+	const uint32_t corpseOwner = corpse->getCorpseOwner();
+	if (corpseOwner == 0) {
+		return true;
+	}
+
+	return player->canOpenCorpse(corpseOwner);
+}
+
+bool Game::tileHasLootHighlight(const std::shared_ptr<Tile> &tile) const {
+	if (!tile) {
+		return false;
+	}
+
+	const TileItemVector* items = tile->getItemList();
+	if (!items) {
+		return false;
+	}
+
+	for (const auto &tileItem : *items) {
+		if (!tileItem) {
+			continue;
+		}
+
+		const auto &container = tileItem->getContainer();
+		if (container && container->hasLootHighlight() && container->isCorpse() && !container->isRewardCorpse()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player || pos.x != 0xffff) {
@@ -7849,8 +7996,7 @@ void Game::applyCharmRune(
 		const auto charmTier = attackerPlayer->getCharmTier(charmType);
 		int8_t chance = charm->chance[charmTier] + (charm->id == CHARM_CRIPPLE ? 0 : attackerPlayer->getCharmChanceModifier());
 
-		auto rng = uniform_random(1, 100);
-		if (charm->type == CHARM_OFFENSIVE && (chance >= rng)) {
+		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(1, 10000) / 100.0)) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}
 	}

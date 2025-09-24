@@ -232,15 +232,12 @@ public:
 		DBTransaction transaction;
 		try {
 			transaction.begin();
-			const bool shouldCommit = callback();
 
-			if (shouldCommit) {
-				transaction.commit();
-			} else {
-				transaction.rollback();
-			}
+			const bool result = callback();
 
-			return shouldCommit;
+			transaction.commit();
+
+			return result;
 		} catch (const std::exception &exception) {
 			transaction.rollback();
 			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());

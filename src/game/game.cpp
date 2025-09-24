@@ -2998,6 +2998,14 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 		}
 	}
 
+	if (corpse->hasLootHighlight()) {
+		if (corpse->empty()) {
+			removeLootHighlight(corpse);
+		} else {
+			refreshLootHighlight(corpse);
+		}
+	}
+
 	std::stringstream ss;
 	if (totalLootedGold != 0 || missedAnyGold || totalLootedItems != 0 || missedAnyItem) {
 		bool lootedAllGold = totalLootedGold != 0 && !missedAnyGold;
@@ -5791,6 +5799,7 @@ void Game::refreshLootHighlight(const std::shared_ptr<Container> &corpse) {
 			continue;
 		}
 
+		tmpPlayer->removeMagicEffect(tile->getPosition(), CONST_ME_LOOT_HIGHLIGHT);
 		tmpPlayer->sendMagicEffect(tile->getPosition(), CONST_ME_LOOT_HIGHLIGHT);
 	}
 }

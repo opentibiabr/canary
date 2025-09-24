@@ -6989,6 +6989,7 @@ void ProtocolGame::sendMapDescription(const Position &pos) {
 	std::vector<Position> highlightPositions;
 	collectLootHighlightsFromDescription(fromX, fromY, pos.z, width, height, processedPositions, highlightPositions);
 	for (const auto &position : highlightPositions) {
+		removeMagicEffect(position, CONST_ME_LOOT_HIGHLIGHT);
 		sendMagicEffect(position, CONST_ME_LOOT_HIGHLIGHT);
 	}
 }
@@ -7325,6 +7326,7 @@ void ProtocolGame::sendMoveCreature(const std::shared_ptr<Creature> &creature, c
 			writeToOutputBuffer(msg);
 
 			for (const auto &position : highlightPositions) {
+				removeMagicEffect(position, CONST_ME_LOOT_HIGHLIGHT);
 				sendMagicEffect(position, CONST_ME_LOOT_HIGHLIGHT);
 			}
 		}
@@ -8908,11 +8910,11 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const std::shared_ptr<C
 
 	// south
 	msg.addByte(0x67);
-	const int32_t southX = oldPos.x - MAP_MAX_CLIENT_VIEW_PORT_X;
-	const int32_t southY = oldPos.y + (MAP_MAX_CLIENT_VIEW_PORT_Y + 1);
-	const int32_t viewWidth = (MAP_MAX_CLIENT_VIEW_PORT_X + 1) * 2;
-	GetMapDescription(southX, southY, newPos.z, viewWidth, 1, msg);
-	collectLootHighlightsFromDescription(southX, southY, newPos.z, viewWidth, 1, processedPositions, highlightPositions);
+	const int32_t eastX = oldPos.x + MAP_MAX_CLIENT_VIEW_PORT_X + 1;
+	const int32_t eastY = oldPos.y - (MAP_MAX_CLIENT_VIEW_PORT_Y + 1);
+	const int32_t viewHeight = (MAP_MAX_CLIENT_VIEW_PORT_Y + 1) * 2;
+	GetMapDescription(eastX, eastY, newPos.z, 1, viewHeight, msg);
+	collectLootHighlightsFromDescription(eastX, eastY, newPos.z, 1, viewHeight, processedPositions, highlightPositions);
 }
 
 void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg) {

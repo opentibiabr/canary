@@ -234,6 +234,19 @@ public:
 	bool isHoldingItem(const std::shared_ptr<Item> &item);
 	bool isHoldingItemWithId(uint16_t id);
 
+	void enableLootHighlight(bool restricted, uint64_t timestamp);
+	void disableLootHighlight();
+	void setLootHighlightRestricted(bool restricted);
+	bool hasLootHighlight() const {
+		return m_hasLootHighlight;
+	}
+	bool isLootHighlightRestricted() const {
+		return m_lootHighlightRestricted;
+	}
+	uint64_t getLootHighlightTimestamp() const {
+		return m_lootHighlightTimestamp;
+	}
+
 	uint32_t getItemHoldingCount();
 	uint32_t getContainerHoldingCount();
 	uint16_t getFreeSlots() const;
@@ -308,4 +321,8 @@ private:
 
 	friend class ContainerIterator;
 	friend class IOMapSerialize;
+
+	bool m_hasLootHighlight = false;
+	bool m_lootHighlightRestricted = false;
+	uint64_t m_lootHighlightTimestamp = 0;
 };

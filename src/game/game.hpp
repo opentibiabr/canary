@@ -59,7 +59,6 @@ enum ObjectCategory_t : uint8_t;
 enum class ForgeAction_t : uint8_t;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
-constexpr auto g_game = Game::getInstance;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -955,3 +954,5 @@ private:
 
 	void updatePlayersOnline() const;
 };
+
+constexpr auto g_game = Game::getInstance;

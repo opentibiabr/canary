@@ -5703,36 +5703,60 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 
 void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses) {
 	if (lootAllCorpses) {
-		std::shared_ptr<Tile> tile = g_game().map.getTile(pos.x, pos.y, pos.z);
-		if (!tile) {
-			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-			return;
-		}
-
-		const TileItemVector* itemVector = tile->getItemList();
 		uint16_t corpses = 0;
-		for (auto &tileItem : *itemVector) {
-			if (!tileItem) {
-				continue;
-			}
 
-			std::shared_ptr<Container> tileCorpse = tileItem->getContainer();
-			if (!tileCorpse || !tileCorpse->isCorpse() || tileCorpse->hasAttribute(ItemAttribute_t::UNIQUEID) || tileCorpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
-				continue;
-			}
+		for (int32_t dx = -1; dx <= 1 && corpses < 30; ++dx) {
+			for (int32_t dy = -1; dy <= 1 && corpses < 30; ++dy) {
+				const int32_t targetX = static_cast<int32_t>(pos.x) + dx;
+				const int32_t targetY = static_cast<int32_t>(pos.y) + dy;
+				if (targetX < 0 || targetX > std::numeric_limits<uint16_t>::max() || targetY < 0
+				    || targetY > std::numeric_limits<uint16_t>::max()) {
+					continue;
+				}
 
-			if (!tileCorpse->isRewardCorpse()
-			    && tileCorpse->getCorpseOwner() != 0
-			    && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
-				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-				g_logger().debug("Player {} cannot loot corpse from id {} in position {}", player->getName(), tileItem->getID(), tileItem->getPosition().toString());
-				continue;
-			}
+				const uint16_t tileX = static_cast<uint16_t>(targetX);
+				const uint16_t tileY = static_cast<uint16_t>(targetY);
+				const auto &tile = g_game().map.getTile(tileX, tileY, pos.z);
+				if (!tile) {
+					if (dx == 0 && dy == 0) {
+						player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+						return;
+					}
+					continue;
+				}
 
-			corpses++;
-			playerQuickLootCorpse(player, tileCorpse, tileCorpse->getPosition());
-			if (corpses >= 30) {
-				break;
+				const TileItemVector* itemVector = tile->getItemList();
+				if (!itemVector) {
+					continue;
+				}
+
+				for (const auto &tileItem : *itemVector) {
+					if (!tileItem) {
+						continue;
+					}
+
+					const auto &tileCorpse = tileItem->getContainer();
+					if (!tileCorpse || !tileCorpse->isCorpse()
+					    || tileCorpse->hasAttribute(ItemAttribute_t::UNIQUEID)
+					    || tileCorpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
+						continue;
+					}
+
+					if (!tileCorpse->isRewardCorpse() && tileCorpse->getCorpseOwner() != 0
+					    && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
+						player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+						g_logger().debug(
+							"Player {} cannot loot corpse from id {} in position {}",
+							player->getName(), tileItem->getID(), tileItem->getPosition().toString()
+						);
+						continue;
+					}
+
+					playerQuickLootCorpse(player, tileCorpse, tileCorpse->getPosition());
+					if (++corpses >= 30) {
+						break;
+					}
+				}
 			}
 		}
 

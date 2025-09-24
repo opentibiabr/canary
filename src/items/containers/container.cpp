@@ -325,6 +325,22 @@ std::vector<ContainerCategory_t> Container::getStoreInboxValidCategories() const
 	return validCategories.data();
 }
 
+void Container::enableLootHighlight(bool restricted, uint64_t timestamp) {
+	m_hasLootHighlight = true;
+	m_lootHighlightRestricted = restricted;
+	m_lootHighlightTimestamp = timestamp;
+}
+
+void Container::disableLootHighlight() {
+	m_hasLootHighlight = false;
+	m_lootHighlightRestricted = false;
+	m_lootHighlightTimestamp = 0;
+}
+
+void Container::setLootHighlightRestricted(bool restricted) {
+	m_lootHighlightRestricted = restricted;
+}
+
 std::shared_ptr<Item> Container::getFilteredItemByIndex(size_t index) const {
 	const auto &filteredItems = getStoreInboxFilteredItems();
 	if (index >= filteredItems.size()) {

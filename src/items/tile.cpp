@@ -1561,6 +1561,13 @@ void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::s
 		item = thing->getItem();
 	}
 
+	if (item) {
+		const auto &container = item->getContainer();
+		if (container && container->hasLootHighlight()) {
+			g_game().refreshLootHighlight(container);
+		}
+	}
+
 	if (link == LINK_OWNER) {
 		if (hasFlag(TILESTATE_TELEPORT)) {
 			const auto &teleport = getTeleportItem();
@@ -1591,6 +1598,16 @@ void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::s
 void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t) {
 	if (!thing) {
 		return;
+	}
+
+	if (const auto &item = thing->getItem()) {
+		const auto &container = item->getContainer();
+		if (container && container->hasLootHighlight()) {
+			if (!newParent) {
+				container->disableLootHighlight();
+			}
+			g_game().updateTileLootHighlight(static_self_cast<Tile>());
+		}
 	}
 
 	auto spectators = Spectators().find<Player>(getPosition(), true);

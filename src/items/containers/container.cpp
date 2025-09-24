@@ -341,6 +341,10 @@ void Container::setLootHighlightRestricted(bool restricted) {
 	m_lootHighlightRestricted = restricted;
 }
 
+void Container::setLootHighlightRestricted(bool restricted) {
+	m_lootHighlightRestricted = restricted;
+}
+
 std::shared_ptr<Item> Container::getFilteredItemByIndex(size_t index) const {
 	const auto &filteredItems = getStoreInboxFilteredItems();
 	if (index >= filteredItems.size()) {

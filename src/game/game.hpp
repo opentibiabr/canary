@@ -59,6 +59,7 @@ enum ObjectCategory_t : uint8_t;
 enum class ForgeAction_t : uint8_t;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
+constexpr auto g_game = Game::getInstance;
 
 static constexpr uint16_t SERVER_BEAT = 0x32;
 static constexpr int32_t EVENT_MS = 10000;
@@ -364,6 +365,12 @@ public:
 	void playerQuickLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position);
 	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, const std::shared_ptr<Item> &defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 	void playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses);
+
+	void initializeLootHighlight(const std::shared_ptr<Container> &corpse);
+	void refreshLootHighlight(const std::shared_ptr<Container> &corpse);
+	void removeLootHighlight(const std::shared_ptr<Container> &corpse);
+	void updateTileLootHighlight(const std::shared_ptr<Tile> &tile);
+	bool hasVisibleLootHighlightForPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<Tile> &tile) const;
 	void playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer);
 	void playerClearManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
 	void playerOpenManagedContainer(uint32_t playerId, ObjectCategory_t category, bool isLootContainer);
@@ -709,6 +716,9 @@ public:
 	std::shared_ptr<Container> findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer);
 
 private:
+	bool canPlayerSeeLootHighlight(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) const;
+	bool tileHasLootHighlight(const std::shared_ptr<Tile> &tile) const;
+
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
 
@@ -945,5 +955,3 @@ private:
 
 	void updatePlayersOnline() const;
 };
-
-constexpr auto g_game = Game::getInstance;

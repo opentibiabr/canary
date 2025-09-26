@@ -1547,6 +1547,9 @@ const char* getReturnMessage(ReturnValue value) {
 		case RETURNVALUE_ITEMUNTRADEABLE:
 			return "This item is untradeable.";
 
+		case RETURNVALUE_NOTOWNHIRELING:
+			return "You do not own this hireling.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";

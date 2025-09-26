@@ -8,6 +8,7 @@ function createHirelingType(HirelingName)
 
 	local npcConfig = {}
 	local enableBankSystem = {}
+	local isPlayerInsideHirelingHouse
 
 	npcConfig.name = HirelingName
 	npcConfig.description = HirelingName
@@ -15,7 +16,7 @@ function createHirelingType(HirelingName)
 	npcConfig.health = 100
 	npcConfig.maxHealth = npcConfig.health
 	npcConfig.walkInterval = 0
-	npcConfig.walkRadius = 2
+	npcConfig.walkRadius = 0
 
 	npcConfig.outfit = {
 		lookType = 136,
@@ -24,6 +25,22 @@ function createHirelingType(HirelingName)
 		lookLegs = 3,
 		lookFeet = 116,
 		lookAddons = 0,
+	}
+
+	npcConfig.voices = {
+		interval = 15000,
+		chance = 40,
+		{ text = "Take your time!" },
+		{ text = "Have a nice day!" },
+		{ text = "Can I help you?" },
+		{ text = "Home sweet home!" },
+		{ text = "Enjoy your stay!" },
+		{ text = "Good to see you!" },
+		{ text = "Hope you're doing fine!" },
+		{ text = "What can I do for you?" },
+		{ text = "Make yourself comfortable!" },
+		{ text = "Let me know if you need anything!" },
+		{ text = "I hope everything is to your liking!" },
 	}
 
 	npcConfig.flags = {
@@ -409,7 +426,10 @@ function createHirelingType(HirelingName)
 	end
 
 	npcType.onSay = function(npc, creature, type, message)
-		npcHandler:onSay(npc, creature, type, message)
+		local player = Player(creature)
+		if player and isPlayerInsideHirelingHouse(npc, player) then
+			npcHandler:onSay(npc, creature, type, message)
+		end
 	end
 
 	npcType.onCloseChannel = function(npc, creature)
@@ -613,9 +633,34 @@ function createHirelingType(HirelingName)
 	end
 
 	-- ======================[[ END COOKER FUNCTIONS ]] ======================== --
+	isPlayerInsideHirelingHouse = function(npc, player)
+		local npcTile = npc:getTile()
+		local playerTile = player:getTile()
+		if not npcTile or not playerTile then
+			return false
+		end
+
+		local npcHouse = npcTile:getHouse()
+		local playerHouse = playerTile:getHouse()
+		return npcHouse and playerHouse and npcHouse:getId() == playerHouse:getId()
+	end
+
+	local function releaseInteraction(npcId, playerId)
+		local npc = Npc(npcId)
+		local player = Player(playerId)
+		if npc and player then
+			npcHandler:removeInteraction(npc, player)
+		end
+	end
+
 	local function creatureSayCallback(npc, creature, type, message)
 		local player = Player(creature)
 		local playerId = player:getId()
+
+		if not isPlayerInsideHirelingHouse(npc, player) then
+			npcHandler:removeInteraction(npc, player)
+			return false
+		end
 
 		if not npcHandler:checkInteraction(npc, creature) then
 			return false
@@ -785,6 +830,14 @@ function createHirelingType(HirelingName)
 			npc:parseBank(message, npc, creature, npcHandler)
 			npc:parseGuildBank(message, npc, creature, playerId, npcHandler)
 			npc:parseBankMessages(message, npc, creature, npcHandler)
+		end
+		return true
+	end
+
+	local function greetCallback(npc, player, message)
+		if not isPlayerInsideHirelingHouse(npc, player) then
+			addEvent(releaseInteraction, 0, npc:getId(), player:getId())
+			return false
 		end
 		return true
 	end

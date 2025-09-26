@@ -24,6 +24,7 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/creature/talkaction.hpp"
+#include "lua/creature/actions.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/functions/events/event_callback_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -100,6 +101,7 @@ void GameFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Game", "getTalkActions", GameFunctions::luaGameGetTalkActions);
 	Lua::registerMethod(L, "Game", "getEventCallbacks", GameFunctions::luaGameGetEventCallbacks);
+	Lua::registerMethod(L, "Game", "removeAction", GameFunctions::luaGameRemoveAction);
 
 	Lua::registerMethod(L, "Game", "registerAchievement", GameFunctions::luaGameRegisterAchievement);
 	Lua::registerMethod(L, "Game", "getAchievementInfoById", GameFunctions::luaGameGetAchievementInfoById);
@@ -922,6 +924,13 @@ int GameFunctions::luaGameGetEventCallbacks(lua_State* L) {
 	}
 	// Pop the function
 	lua_pop(L, 1);
+	return 1;
+}
+
+int GameFunctions::luaGameRemoveAction(lua_State* L) {
+	// Game.removeAction(position)
+	const Position position = Lua::getPosition(L, 1);
+	Lua::pushBoolean(L, g_actions().removeLuaPosition(position));
 	return 1;
 }
 

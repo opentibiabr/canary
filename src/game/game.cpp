@@ -3910,7 +3910,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
+	const bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
 	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
 	}
@@ -3923,6 +3923,16 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 
 	const auto &item = thing->getItem();
 	if (!item || item->isMultiUse() || item->getID() != itemId) {
+		const auto action = g_actions().getLuaPositionAction(pos);
+		if (action) {
+			ReturnValue actionRet = action->canExecuteAction(player, pos);
+			if (actionRet == RETURNVALUE_NOERROR && action->executeUse(player, nullptr, pos, thing, pos, isHotkey)) {
+				return;
+			}
+			player->sendCancelMessage(actionRet);
+			return;
+		}
+
 		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		return;
 	}
@@ -3965,10 +3975,8 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 				}
 				return;
 			}
-
 			ret = RETURNVALUE_THEREISNOWAY;
 		}
-
 		player->sendCancelMessage(ret);
 		return;
 	}
@@ -3977,7 +3985,6 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	if (canTriggerExhaustion) {
 		canDoAction = player->canDoPotionAction();
 	}
-
 	if (!canDoAction) {
 		uint32_t delay = player->getNextActionTime();
 		if (canTriggerExhaustion) {

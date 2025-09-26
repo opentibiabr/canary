@@ -475,6 +475,11 @@ private:
 	// translate a map area to clientreadable format
 	void GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, NetworkMessage &msg);
 
+	using HighlightPositionSet = std::unordered_set<uint64_t>;
+	void collectLootHighlightsFromDescription(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, HighlightPositionSet &processedPositions, std::vector<Position> &positions);
+	void collectLootHighlightsFromFloor(int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, HighlightPositionSet &processedPositions, std::vector<Position> &positions);
+	uint64_t buildHighlightPositionKey(const Position &pos) const;
+
 	void AddCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, bool known, uint32_t remove);
 	void AddPlayerStats(NetworkMessage &msg);
 	void AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount = true);
@@ -493,8 +498,8 @@ private:
 
 	void sendTaskHuntingData(const std::unique_ptr<TaskHuntingSlot> &slot);
 
-	void MoveUpCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, const Position &newPos, const Position &oldPos);
-	void MoveDownCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, const Position &newPos, const Position &oldPos);
+	void MoveUpCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, const Position &newPos, const Position &oldPos, HighlightPositionSet &processedPositions, std::vector<Position> &positions);
+	void MoveDownCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, const Position &newPos, const Position &oldPos, HighlightPositionSet &processedPositions, std::vector<Position> &positions);
 
 	// shop
 	void AddHiddenShopItem(NetworkMessage &msg);

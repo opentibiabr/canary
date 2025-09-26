@@ -3318,7 +3318,7 @@ void ProtocolGame::parseRewardChestCollect(NetworkMessage &msg) {
 		return;
 	}
 
-	auto maxCollectItems = g_configManager().getNumber(REWARD_CHEST_MAX_COLLECT_ITEMS);
+	auto maxCollectItems = g_configManager().getNumber(REWARD_CHEST_MAX_MOVE_ITEMS);
 	g_game().playerRewardChestCollect(player->getID(), position, itemId, stackPosition, maxCollectItems);
 }
 

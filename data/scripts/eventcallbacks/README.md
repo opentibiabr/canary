@@ -137,7 +137,7 @@ Some event callbacks are expected to return a enum value, in this case, the enum
 Here is an example of a ReturnValue event callback:
 
 ```lua
-local callback = EventCallback()
+local callback = EventCallback("CreatureOnAreaCombat")
 
 function callback.creatureOnAreaCombat(creature, tile, isAggressive)
 	-- if the creature is not aggressive, stop the execution of the C++ function

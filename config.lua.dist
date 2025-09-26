@@ -601,9 +601,9 @@ vipFamiliarTimeCooldownReduction = 0
 vipKeepHouse = false
 
 -- NOTE: set rewardChestCollectEnabled to true to enable the reward collect system
--- NOTE set rewardChestMaxCollectItems max items per collect action
+-- NOTE set rewardChestMaxMoveItems max items per collect action
 rewardChestCollectEnabled = true
-rewardChestMaxCollectItems = 200
+rewardChestMaxMoveItems = 200
 
 -- Metrics
 --- Prometheus

@@ -3,17 +3,25 @@
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
 #include "lib/logging/in_memory_logger.hpp"
+#include "items/item.hpp"
 
 using namespace boost::ut;
 
 int main() {
-	di::extension::injector<> injector {};
-	InMemoryLogger::install(injector);
-	DI::setTestContainer(&injector);
+	static const auto init = [] {
+		di::extension::injector<> injector {};
+		InMemoryLogger::install(injector);
+		DI::setTestContainer(&injector);
 
-	(void)g_logger();
-	(void)g_configManager();
-	(void)g_database();
+		(void)g_logger();
+		auto &config = g_configManager();
+		config.setConfigFileLua("config.lua.dist");
+		config.load();
+		Item::items.loadFromXml();
+		(void)g_database();
+		return true;
+	}();
+	(void)init;
 
 	return cfg<>.run();
 }

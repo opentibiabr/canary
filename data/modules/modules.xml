@@ -22,5 +22,6 @@
 	<module type="recvbyte" byte="218" script="daily_reward/daily_reward.lua" />
 
 	<!-- Hireling Outfit Helper -->
+	<module type="recvbyte" byte="210" script="hirelings/hireling_module.lua" />
 	<module type="recvbyte" byte="211" script="hirelings/hireling_module.lua" />
 </modules>

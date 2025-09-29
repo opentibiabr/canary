@@ -162,6 +162,9 @@ public:
 	bool registerLuaActionEvent(const std::shared_ptr<Action> &action);
 	bool registerLuaPositionEvent(const std::shared_ptr<Action> &action);
 	bool registerLuaEvent(const std::shared_ptr<Action> &action);
+	bool removeLuaPosition(const Position &position);
+	std::shared_ptr<Action> getLuaPositionAction(const Position &position) const;
+
 	// Clear maps for reloading
 	void clear();
 

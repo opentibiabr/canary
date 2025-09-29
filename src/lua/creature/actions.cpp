@@ -176,6 +176,18 @@ bool Actions::registerLuaEvent(const std::shared_ptr<Action> &action) {
 	return false;
 }
 
+bool Actions::removeLuaPosition(const Position &position) {
+	return actionPositionMap.erase(position) > 0;
+}
+
+std::shared_ptr<Action> Actions::getLuaPositionAction(const Position &position) const {
+	const auto it = actionPositionMap.find(position);
+	if (it != actionPositionMap.end()) {
+		return it->second;
+	}
+	return nullptr;
+}
+
 ReturnValue Actions::canUse(const std::shared_ptr<Player> &player, const Position &pos) const {
 	if (pos.x != 0xFFFF) {
 		const Position &playerPos = player->getPosition();

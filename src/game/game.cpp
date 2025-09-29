@@ -3910,7 +3910,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		return;
 	}
 
-	bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
+	const bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
 	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
 	}
@@ -3923,6 +3923,16 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 
 	const auto &item = thing->getItem();
 	if (!item || item->isMultiUse() || item->getID() != itemId) {
+		const auto action = g_actions().getLuaPositionAction(pos);
+		if (action) {
+			ReturnValue actionRet = action->canExecuteAction(player, pos);
+			if (actionRet == RETURNVALUE_NOERROR && action->executeUse(player, nullptr, pos, thing, pos, isHotkey)) {
+				return;
+			}
+			player->sendCancelMessage(actionRet);
+			return;
+		}
+
 		player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		return;
 	}
@@ -3965,10 +3975,8 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 				}
 				return;
 			}
-
 			ret = RETURNVALUE_THEREISNOWAY;
 		}
-
 		player->sendCancelMessage(ret);
 		return;
 	}
@@ -3977,7 +3985,6 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	if (canTriggerExhaustion) {
 		canDoAction = player->canDoPotionAction();
 	}
-
 	if (!canDoAction) {
 		uint32_t delay = player->getNextActionTime();
 		if (canTriggerExhaustion) {
@@ -7849,8 +7856,7 @@ void Game::applyCharmRune(
 		const auto charmTier = attackerPlayer->getCharmTier(charmType);
 		int8_t chance = charm->chance[charmTier] + (charm->id == CHARM_CRIPPLE ? 0 : attackerPlayer->getCharmChanceModifier());
 
-		auto rng = uniform_random(1, 100);
-		if (charm->type == CHARM_OFFENSIVE && (chance >= rng)) {
+		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(1, 10000) / 100.0)) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}
 	}
@@ -9114,21 +9120,19 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId) {
 namespace {
 	bool removeOfferItems(const std::shared_ptr<Player> &player, const std::shared_ptr<DepotLocker> &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus) {
 		uint16_t removeAmount = amount;
-		if (tier == 0) {
-			if (
-				// Init-statement
-				auto stashItemCount = player->getStashItemCount(itemType.wareId);
-				// Condition
-				stashItemCount > 0
-			) {
-				if (removeAmount > stashItemCount && player->withdrawItem(itemType.wareId, stashItemCount)) {
-					removeAmount -= stashItemCount;
-				} else if (player->withdrawItem(itemType.wareId, removeAmount)) {
-					removeAmount = 0;
-				} else {
-					offerStatus << "Failed to remove stash items from player " << player->getName();
-					return false;
-				}
+		if (
+			// Init-statement
+			auto stashItemCount = player->getStashItemCount(itemType.wareId);
+			// Condition
+			stashItemCount > 0
+		) {
+			if (removeAmount > stashItemCount && player->withdrawItem(itemType.wareId, stashItemCount)) {
+				removeAmount -= stashItemCount;
+			} else if (player->withdrawItem(itemType.wareId, removeAmount)) {
+				removeAmount = 0;
+			} else {
+				offerStatus << "Failed to remove stash items from player " << player->getName();
+				return false;
 			}
 		}
 

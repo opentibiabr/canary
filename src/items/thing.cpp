@@ -18,3 +18,11 @@ const Position &Thing::getPosition() {
 	}
 	return tile->getPosition();
 }
+
+const Position &Thing::getPosition() const {
+	const auto &tile = getTile();
+	if (!tile) {
+		return Tile::nullptr_tile->getPosition();
+	}
+	return tile->getPosition();
+}

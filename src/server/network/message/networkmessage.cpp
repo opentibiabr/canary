@@ -185,6 +185,11 @@ double NetworkMessage::getDouble() {
 }
 
 void NetworkMessage::addByte(uint8_t value, std::source_location location /*= std::source_location::current()*/) {
+	constexpr size_t kMax = static_cast<size_t>(std::numeric_limits<uint8_t>::max());
+	if (value > kMax) {
+		return;
+	}
+
 	if (!canAdd(1)) {
 		g_logger().error("[{}] cannot add byte, buffer overflow. Called line '{}:{}' in '{}'", __FUNCTION__, location.line(), location.column(), location.function_name());
 		return;

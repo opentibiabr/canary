@@ -15,40 +15,45 @@
 #include "injection_fixture.hpp"
 
 class KVTest : public ::testing::Test {
-protected:
-	InjectionFixture fixture {};
+public:
+	InjectionFixture &fixture() {
+		return fixture_;
+	}
+
+private:
+	InjectionFixture fixture_ {};
 };
 
 TEST_F(KVTest, SetAndGetIntegerValue) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("keyInt", 42);
 	ASSERT_TRUE(kv.get("keyInt").has_value());
 	EXPECT_EQ(42, kv.get("keyInt")->get<int>());
 }
 
 TEST_F(KVTest, SetAndGetBooleanValue) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("keyBool", true);
 	ASSERT_TRUE(kv.get("keyBool").has_value());
 	EXPECT_TRUE(kv.get("keyBool")->get<bool>());
 }
 
 TEST_F(KVTest, SetAndGetStringValue) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("keyString", std::string("hello"));
 	ASSERT_TRUE(kv.get("keyString").has_value());
 	EXPECT_EQ(std::string("hello"), kv.get("keyString")->get<std::string>());
 }
 
 TEST_F(KVTest, SetAndGetDoubleValue) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("keyDouble", 3.14);
 	ASSERT_TRUE(kv.get("keyDouble").has_value());
 	EXPECT_DOUBLE_EQ(3.14, kv.get("keyDouble")->get<double>());
 }
 
 TEST_F(KVTest, OverwriteExistingKey) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("keyInt", 42);
 	kv.set("keyInt", 43);
 	ASSERT_TRUE(kv.get("keyInt").has_value());
@@ -56,7 +61,7 @@ TEST_F(KVTest, OverwriteExistingKey) {
 }
 
 TEST_F(KVTest, MultipleKeyValuePairs) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("key1", 1);
 	kv.set("key2", 2);
 	kv.set("key3", 3);
@@ -69,13 +74,13 @@ TEST_F(KVTest, MultipleKeyValuePairs) {
 }
 
 TEST_F(KVTest, NonExistantKey) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	EXPECT_FALSE(kv.get("non-existant").has_value());
 	EXPECT_FALSE(kv.get("non-existant2").has_value());
 }
 
 TEST_F(KVTest, SetAndGetMapTypeValue) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	ValueWrapper mapValue { { "key1", 1 }, { "key2", 2 } };
 	kv.set("keyMap", mapValue);
 	ASSERT_TRUE(kv.get("keyMap").has_value());
@@ -83,7 +88,7 @@ TEST_F(KVTest, SetAndGetMapTypeValue) {
 }
 
 TEST_F(KVTest, SetAndGetArrayTypeValue) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	ValueWrapper arrayValue(ArrayType({ 1, 2, 3 }));
 	kv.set("keyArray", arrayValue);
 	ASSERT_TRUE(kv.get("keyArray").has_value());
@@ -91,7 +96,7 @@ TEST_F(KVTest, SetAndGetArrayTypeValue) {
 }
 
 TEST_F(KVTest, MixedTypesInMapType) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	ValueWrapper mixedMap { { "keyInt", 1 }, { "keyString", std::string("hello") }, { "keyDouble", 3.14 } };
 	kv.set("keyMixedMap", mixedMap);
 	ASSERT_TRUE(kv.get("keyMixedMap").has_value());
@@ -99,7 +104,7 @@ TEST_F(KVTest, MixedTypesInMapType) {
 }
 
 TEST_F(KVTest, NestedMapTypeAndArrayType) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	ValueWrapper nestedMap { { "keyArray", ValueWrapper { 1, 2 } }, { "keyInnerMap", ValueWrapper { { "key3", 3 } } } };
 	kv.set("keyNested", nestedMap);
 	ASSERT_TRUE(kv.get("keyNested").has_value());
@@ -107,7 +112,7 @@ TEST_F(KVTest, NestedMapTypeAndArrayType) {
 }
 
 TEST_F(KVTest, ScopedKv) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	auto scoped = kv.scoped("scope-name");
 	scoped->set("key1", 1);
 	ASSERT_TRUE(scoped->get("key1").has_value());
@@ -117,7 +122,7 @@ TEST_F(KVTest, ScopedKv) {
 }
 
 TEST_F(KVTest, NestedScopedKv) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	auto scoped = kv.scoped("scope-name");
 	auto nestedScoped = scoped->scoped("nested-scope-name");
 	auto nestedScoped2 = nestedScoped->scoped("nested-scope-name2");
@@ -133,7 +138,7 @@ TEST_F(KVTest, NestedScopedKv) {
 }
 
 TEST_F(KVTest, RemovingAnElement) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("key1", 1);
 	kv.set("key2", 2);
 	ASSERT_TRUE(kv.get("key1").has_value());
@@ -147,7 +152,7 @@ TEST_F(KVTest, RemovingAnElement) {
 }
 
 TEST_F(KVTest, KeysSkipDeletedEntries) {
-	auto [kv] = fixture.get<KVStore>();
+	auto [kv] = fixture().get<KVStore>();
 	kv.set("key1", 1);
 	kv.set("key2", 2);
 	kv.remove("key1");

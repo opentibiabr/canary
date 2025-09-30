@@ -24,17 +24,22 @@ namespace it_account_repo_db {
 
 	inline void createAccount(Database &db) {
 		auto lastDay = getTimeNow() + 11 * 86400;
-		db.executeQuery(fmt::format(
+		ASSERT_TRUE(db.executeQuery(fmt::format(
 			"INSERT INTO `accounts` "
 			"(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
 			"VALUES(111, 'test', '@test', '', 3, 11, {}, 11, 42183281)",
 			lastDay
-		));
-		db.executeQuery(fmt::format(
+		)));
+		ASSERT_TRUE(db.executeQuery(fmt::format(
 			"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
 			"VALUES ('{}', 111, 1337)",
 			transformToSHA1("test")
-		));
+		)));
+		ASSERT_TRUE(db.executeQuery(fmt::format(
+			"INSERT INTO `players` (`name`, `account_id`, `conditions`, `deletion`) "
+			"VALUES ('deleted_test_player', 111, '', {})",
+			getTimeNow() + 1
+		)));
 	}
 
 	inline void assertAccountLoad(const AccountInfo &acc) {
@@ -54,7 +59,7 @@ namespace it_account_repo_db {
 			AccountRepositoryDB accRepo {};
 			createAccount(db);
 			auto acc = std::make_unique<AccountInfo>();
-			accRepo.loadByID(111, acc);
+			ASSERT_TRUE(accRepo.loadByID(111, acc));
 			assertAccountLoad(*acc);
 			EXPECT_EQ(0, acc->sessionExpires);
 		})();
@@ -66,7 +71,7 @@ namespace it_account_repo_db {
 			AccountRepositoryDB accRepo {};
 			createAccount(db);
 			auto acc = std::make_unique<AccountInfo>();
-			accRepo.loadByEmailOrName(false, "@test", acc);
+			ASSERT_TRUE(accRepo.loadByEmailOrName(false, "@test", acc));
 			assertAccountLoad(*acc);
 			EXPECT_EQ(0, acc->sessionExpires);
 		})();
@@ -78,7 +83,7 @@ namespace it_account_repo_db {
 			AccountRepositoryDB accRepo {};
 			createAccount(db);
 			auto acc = std::make_unique<AccountInfo>();
-			accRepo.loadBySession("test", acc);
+			ASSERT_TRUE(accRepo.loadBySession("test", acc));
 			assertAccountLoad(*acc);
 			EXPECT_EQ(1337, acc->sessionExpires);
 		})();
@@ -86,22 +91,22 @@ namespace it_account_repo_db {
 
 	TEST_F(AccountRepositoryDBTest, PremiumDaysPurchasedSync) {
 		auto &db = g_database();
-		databaseTest(db, [&db] {
+		databaseTest(db, [] {
 			AccountRepositoryDB accRepo {};
 			auto acc = std::make_unique<AccountInfo>();
-			accRepo.loadByID(1, acc);
+			ASSERT_TRUE(accRepo.loadByID(1, acc));
 			acc->premiumLastDay = getTimeNow() + 10 * 86400;
 			acc->premiumRemainingDays = 10;
 			acc->premiumDaysPurchased = 0;
 			EXPECT_TRUE(accRepo.save(acc));
-			accRepo.loadByID(1, acc);
+			ASSERT_TRUE(accRepo.loadByID(1, acc));
 			EXPECT_EQ(10, acc->premiumDaysPurchased);
 		})();
 	}
 
 	TEST_F(AccountRepositoryDBTest, GetPassword) {
 		auto &db = g_database();
-		databaseTest(db, [&db] {
+		databaseTest(db, [] {
 			AccountRepositoryDB accRepo {};
 			std::string password {};
 			EXPECT_TRUE(accRepo.getPassword(1, password));
@@ -111,7 +116,7 @@ namespace it_account_repo_db {
 
 	TEST_F(AccountRepositoryDBTest, GetPasswordLogsOnFailure) {
 		auto &db = g_database();
-		databaseTest(db, [&db] {
+		databaseTest(db, [] {
 			AccountRepositoryDB accRepo {};
 			std::string password {};
 			logger->logs.clear();
@@ -124,7 +129,7 @@ namespace it_account_repo_db {
 
 	TEST_F(AccountRepositoryDBTest, Save) {
 		auto &db = g_database();
-		databaseTest(db, [&db] {
+		databaseTest(db, [] {
 			AccountRepositoryDB accRepo {};
 			auto acc = std::make_unique<AccountInfo>();
 			acc->id = 1;
@@ -134,7 +139,7 @@ namespace it_account_repo_db {
 			acc->sessionExpires = 99999999;
 			EXPECT_TRUE(accRepo.save(acc));
 			auto acc2 = std::make_unique<AccountInfo>();
-			accRepo.loadByID(1, acc2);
+			ASSERT_TRUE(accRepo.loadByID(1, acc2));
 			EXPECT_EQ(1, acc2->id);
 			EXPECT_EQ(AccountType::ACCOUNT_TYPE_SENIORTUTOR, acc2->accountType);
 			EXPECT_EQ(10, acc2->premiumRemainingDays);

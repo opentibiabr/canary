@@ -19,6 +19,23 @@
 #include "enums/account_group_type.hpp"
 
 using namespace std;
+using enum CoinType;
+
+namespace {
+	inline void expectSetCoins(
+		tests::InMemoryAccountRepository &repo,
+		uint32_t id,
+		CoinType coinType,
+		uint32_t amount
+	) {
+		const auto result = repo.setCoins(id, coinType, amount);
+		if (repo.failAddCoins) {
+			EXPECT_FALSE(result);
+		} else {
+			EXPECT_TRUE(result);
+		}
+	}
+}
 
 template <typename T, typename U>
 bool eqEnum(const T &lhs, const U &rhs) {
@@ -155,7 +172,7 @@ TEST_F(AccountTest, SavePersistsAccountInfo) {
 }
 
 TEST_F(AccountTest, GetCoinsReturnsErrorIfNotYetLoaded) {
-	auto [coins, error] = Account { 1 }.getCoins(CoinType::Normal);
+	auto [coins, error] = Account { 1 }.getCoins(Normal);
 	(void)coins;
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::NotInitialized));
 }
@@ -165,7 +182,7 @@ TEST_F(AccountTest, GetCoinsReturnsErrorIfRepositoryFails) {
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(0, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Storage));
 }
@@ -173,10 +190,10 @@ TEST_F(AccountTest, GetCoinsReturnsErrorIfRepositoryFails) {
 TEST_F(AccountTest, GetCoinsReturnsCoins) {
 	Account acc { 1 };
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(100, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 }
@@ -184,13 +201,13 @@ TEST_F(AccountTest, GetCoinsReturnsCoins) {
 TEST_F(AccountTest, GetCoinsReturnsCoinsForSpecifiedAccountOnly) {
 	Account acc { 2 };
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	repository().addAccount("canary2@test.com", AccountInfo { 2, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(2, CoinType::Normal, 33);
+	expectSetCoins(repository(), 2, Normal, 33);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(33, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 }
@@ -198,53 +215,53 @@ TEST_F(AccountTest, GetCoinsReturnsCoinsForSpecifiedAccountOnly) {
 TEST_F(AccountTest, GetCoinsReturnsCoinsForSpecifiedCoinTypeOnly) {
 	Account acc { 1 };
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
-	repository().setCoins(1, CoinType::Tournament, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
+	expectSetCoins(repository(), 1, Tournament, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
 
-	auto [normalCoins, normalError] = acc.getCoins(CoinType::Normal);
+	auto [normalCoins, normalError] = acc.getCoins(Normal);
 	EXPECT_EQ(100, normalCoins);
 	EXPECT_TRUE(eqEnum(normalError, AccountErrors_t::Ok));
 
-	auto [tournamentCoins, tournamentError] = acc.getCoins(CoinType::Tournament);
+	auto [tournamentCoins, tournamentError] = acc.getCoins(Tournament);
 	EXPECT_EQ(100, tournamentCoins);
 	EXPECT_TRUE(eqEnum(tournamentError, AccountErrors_t::Ok));
 }
 
 TEST_F(AccountTest, AddCoinsReturnsErrorIfNotYetLoaded) {
-	EXPECT_TRUE(eqEnum(Account { 1 }.addCoins(CoinType::Normal, 100), AccountErrors_t::NotInitialized));
+	EXPECT_TRUE(eqEnum(Account { 1 }.addCoins(Normal, 100), AccountErrors_t::NotInitialized));
 }
 
 TEST_F(AccountTest, AddCoinsReturnsErrorIfRepositoryFails) {
 	Account acc { 1 };
 	repository().failAddCoins = true;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.addCoins(CoinType::Normal, 100), AccountErrors_t::Storage));
+	EXPECT_TRUE(eqEnum(acc.addCoins(Normal, 100), AccountErrors_t::Storage));
 }
 
 TEST_F(AccountTest, AddCoinsReturnsErrorIfGetCoinsFails) {
 	Account acc { 1 };
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.addCoins(CoinType::Tournament, 100), AccountErrors_t::Storage));
+	EXPECT_TRUE(eqEnum(acc.addCoins(Tournament, 100), AccountErrors_t::Storage));
 }
 
 TEST_F(AccountTest, AddCoinsAddsCoins) {
 	Account acc { 1 };
 	repository().failAddCoins = false;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.addCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.addCoins(Normal, 100), AccountErrors_t::Ok));
 
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(200, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 }
@@ -253,15 +270,15 @@ TEST_F(AccountTest, AddCoinsAddsCoinsForSpecifiedAccountOnly) {
 	Account acc { 2 };
 	repository().failAddCoins = false;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	repository().addAccount("canary2@test.com", AccountInfo { 2, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(2, CoinType::Normal, 33);
+	expectSetCoins(repository(), 2, Normal, 33);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.addCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.addCoins(Normal, 100), AccountErrors_t::Ok));
 
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(133, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 }
@@ -269,18 +286,18 @@ TEST_F(AccountTest, AddCoinsAddsCoinsForSpecifiedAccountOnly) {
 TEST_F(AccountTest, AddCoinsAddsCoinsForSpecifiedCoinTypeOnly) {
 	Account acc { 1 };
 	repository().failAddCoins = false;
-	repository().setCoins(1, CoinType::Normal, 100);
-	repository().setCoins(1, CoinType::Tournament, 57);
+	expectSetCoins(repository(), 1, Normal, 100);
+	expectSetCoins(repository(), 1, Tournament, 57);
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.addCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.addCoins(Normal, 100), AccountErrors_t::Ok));
 
-	auto [normalCoins, normalError] = acc.getCoins(CoinType::Normal);
+	auto [normalCoins, normalError] = acc.getCoins(Normal);
 	EXPECT_EQ(200, normalCoins);
 	EXPECT_TRUE(eqEnum(normalError, AccountErrors_t::Ok));
 
-	auto [tournamentCoins, tournamentError] = acc.getCoins(CoinType::Tournament);
+	auto [tournamentCoins, tournamentError] = acc.getCoins(Tournament);
 	EXPECT_EQ(57, tournamentCoins);
 	EXPECT_TRUE(eqEnum(tournamentError, AccountErrors_t::Ok));
 
@@ -289,44 +306,44 @@ TEST_F(AccountTest, AddCoinsAddsCoinsForSpecifiedCoinTypeOnly) {
 
 	const auto &[type, coins, coinType, description] = repository().coinsTransactions_[1][0];
 	EXPECT_EQ(100u, coins);
-	EXPECT_TRUE(eqEnum(coinType, CoinType::Normal));
+	EXPECT_TRUE(eqEnum(coinType, Normal));
 	EXPECT_TRUE(eqEnum(type, CoinTransactionType::Add));
 	EXPECT_EQ(string { "ADD Coins" }, description);
 }
 
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfNotYetLoaded) {
-	EXPECT_TRUE(eqEnum(Account { 1 }.removeCoins(CoinType::Normal, 100), AccountErrors_t::NotInitialized));
+	EXPECT_TRUE(eqEnum(Account { 1 }.removeCoins(Normal, 100), AccountErrors_t::NotInitialized));
 }
 
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfRepositoryFails) {
 	Account acc { 1 };
 	repository().failAddCoins = true;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::Storage));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Storage));
 }
 
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfGetCoinsFails) {
 	Account acc { 1 };
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Tournament, 100), AccountErrors_t::Storage));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Tournament, 100), AccountErrors_t::Storage));
 }
 
 TEST_F(AccountTest, RemoveCoinsRemovesCoins) {
 	Account acc { 1 };
 	repository().failAddCoins = false;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Ok));
 
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(0, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 }
@@ -335,15 +352,15 @@ TEST_F(AccountTest, RemoveCoinsRemovesCoinsForSpecifiedAccountOnly) {
 	Account acc { 1 };
 	repository().failAddCoins = false;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 
 	repository().addAccount("canary2@test.com", AccountInfo { 2, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(2, CoinType::Normal, 33);
+	expectSetCoins(repository(), 2, Normal, 33);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Ok));
 
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(0, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 }
@@ -352,17 +369,17 @@ TEST_F(AccountTest, RemoveCoinsRemovesCoinsForSpecifiedCoinTypeOnly) {
 	Account acc { 1 };
 	repository().failAddCoins = false;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
-	repository().setCoins(1, CoinType::Normal, 100);
-	repository().setCoins(1, CoinType::Tournament, 57);
+	expectSetCoins(repository(), 1, Normal, 100);
+	expectSetCoins(repository(), 1, Tournament, 57);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Ok));
 
-	auto [normalCoins, normalError] = acc.getCoins(CoinType::Normal);
+	auto [normalCoins, normalError] = acc.getCoins(Normal);
 	EXPECT_EQ(0, normalCoins);
 	EXPECT_TRUE(eqEnum(normalError, AccountErrors_t::Ok));
 
-	auto [tournamentCoins, tournamentError] = acc.getCoins(CoinType::Tournament);
+	auto [tournamentCoins, tournamentError] = acc.getCoins(Tournament);
 	EXPECT_EQ(57, tournamentCoins);
 	EXPECT_TRUE(eqEnum(tournamentError, AccountErrors_t::Ok));
 
@@ -371,7 +388,7 @@ TEST_F(AccountTest, RemoveCoinsRemovesCoinsForSpecifiedCoinTypeOnly) {
 
 	const auto &[type, coins, coinType, description] = repository().coinsTransactions_[1][0];
 	EXPECT_EQ(100u, coins);
-	EXPECT_TRUE(eqEnum(coinType, CoinType::Normal));
+	EXPECT_TRUE(eqEnum(coinType, Normal));
 	EXPECT_TRUE(eqEnum(type, CoinTransactionType::Remove));
 	EXPECT_EQ(string { "REMOVE Coins" }, description);
 }
@@ -379,31 +396,31 @@ TEST_F(AccountTest, RemoveCoinsRemovesCoinsForSpecifiedCoinTypeOnly) {
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfNotEnoughCoins) {
 	Account acc { 1 };
 	repository().failAddCoins = false;
-	repository().setCoins(1, CoinType::Normal, 1);
+	expectSetCoins(repository(), 1, Normal, 1);
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::RemoveCoins));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::RemoveCoins));
 
-	repository().setCoins(1, CoinType::Normal, 50);
+	expectSetCoins(repository(), 1, Normal, 50);
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::RemoveCoins));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::RemoveCoins));
 
-	repository().setCoins(1, CoinType::Normal, 100);
+	expectSetCoins(repository(), 1, Normal, 100);
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Ok));
 
 	ASSERT_EQ(1u, repository().coinsTransactions_.size());
 	ASSERT_EQ(1u, repository().coinsTransactions_[1].size());
 
 	const auto &[type, coins, coinType, description] = repository().coinsTransactions_[1][0];
 	EXPECT_EQ(100u, coins);
-	EXPECT_TRUE(eqEnum(coinType, CoinType::Normal));
+	EXPECT_TRUE(eqEnum(coinType, Normal));
 	EXPECT_TRUE(eqEnum(type, CoinTransactionType::Remove));
 	EXPECT_EQ(string { "REMOVE Coins" }, description);
 
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 100), AccountErrors_t::RemoveCoins));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::RemoveCoins));
 
 	ASSERT_EQ(1u, repository().coinsTransactions_.size());
 	ASSERT_EQ(1u, repository().coinsTransactions_[1].size());
@@ -413,17 +430,17 @@ TEST_F(AccountTest, RegisterCoinTransactionDoesNothingIfDetailIsEmpty) {
 	Account acc { 1 };
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
-	repository().setCoins(1, CoinType::Normal, 1);
+	expectSetCoins(repository(), 1, Normal, 1);
 
-	EXPECT_TRUE(eqEnum(acc.addCoins(CoinType::Normal, 100, string {}), AccountErrors_t::Ok));
-	EXPECT_TRUE(eqEnum(acc.removeCoins(CoinType::Normal, 80, string {}), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.addCoins(Normal, 100, string {}), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 80, string {}), AccountErrors_t::Ok));
 
-	auto [coins, error] = acc.getCoins(CoinType::Normal);
+	auto [coins, error] = acc.getCoins(Normal);
 	EXPECT_EQ(21, coins);
 	EXPECT_TRUE(eqEnum(error, AccountErrors_t::Ok));
 
-	acc.registerCoinTransaction(CoinTransactionType::Add, CoinType::Normal, 100, "");
-	acc.registerCoinTransaction(CoinTransactionType::Remove, CoinType::Normal, 100, "");
+	acc.registerCoinTransaction(CoinTransactionType::Add, Normal, 100, "");
+	acc.registerCoinTransaction(CoinTransactionType::Remove, Normal, 100, "");
 
 	EXPECT_EQ(0u, repository().coinsTransactions_.size());
 }

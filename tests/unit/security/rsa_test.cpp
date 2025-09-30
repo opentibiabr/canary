@@ -26,7 +26,7 @@ protected:
 	}
 
 	void SetUp() override {
-		logger->reset();
+		logger = &logger->reset();
 	}
 
 	static InMemoryLogger &testLogger() {

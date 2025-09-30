@@ -29,6 +29,10 @@ public:
 		testContainer = container;
 	}
 
+	inline static di::extension::injector<>* getTestContainer() {
+		return testContainer;
+	}
+
 	/**
 	 * Create will always return a new instance, it's used for unique instances or non-shared
 	 * states. This can only be used by classes that allow being copied, cloned and moved.

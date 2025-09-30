@@ -28,7 +28,6 @@ public:
 	inline static void setTestContainer(di::extension::injector<>* container) {
 		testContainer = container;
 	}
-
 	inline static di::extension::injector<>* getTestContainer() {
 		return testContainer;
 	}

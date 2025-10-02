@@ -454,30 +454,13 @@ public:
 
 	void combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Creature> &target, TextColor_t &color, uint16_t &effect);
 
-	// Hazard combat helpers
-	void handleHazardSystemAttack(CombatDamage &damage, const std::shared_ptr<Player> &player, const std::shared_ptr<Monster> &monster, bool isPlayerAttacker);
-	void notifySpectators(const CreatureVector &spectators, const Position &targetPos, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster);
-
 	// Custom PvP System combat helpers
 	void applyPvPDamage(CombatDamage &damage, const std::shared_ptr<Player> &attacker, const std::shared_ptr<Player> &target);
 	float pvpLevelDifferenceDamageMultiplier(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Player> &target);
 
-	// Wheel of destiny combat helpers
-	void applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target);
-	void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target) const;
 	int32_t applyHealthChange(const CombatDamage &damage, const std::shared_ptr<Creature> &target) const;
 
 	bool combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent = false);
-	void applyCharmRune(const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target, const int32_t &realDamage) const;
-	void applyManaLeech(
-		const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster,
-		const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
-	) const;
-	void applyLifeLeech(
-		const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster,
-		const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
-	) const;
-	int32_t calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const;
 	bool combatChangeMana(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage);
 
 	// Animation help functions
@@ -892,11 +875,6 @@ private:
 
 	void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const std::shared_ptr<Player> &player) const;
 
-	void sendEffects(
-		const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos,
-		TextMessage &message, const CreatureVector &spectators
-	);
-
 	void sendMessages(
 		const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const CombatDamage &damage,
 		const Position &targetPos, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Player> &targetPlayer,
@@ -905,21 +883,9 @@ private:
 
 	bool shouldSendMessage(const TextMessage &message) const;
 
-	void buildMessageAsAttacker(
-		const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message,
-		std::stringstream &ss, const std::string &damageString, bool amplified = false, const std::shared_ptr<Player> &attackerPlayer = nullptr
-	) const;
-
-	void buildMessageAsTarget(
-		const std::shared_ptr<Creature> &attacker, const CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer,
-		const std::shared_ptr<Player> &targetPlayer, TextMessage &message, std::stringstream &ss,
-		const std::string &damageString
-	) const;
-
 	void buildMessageAsSpectator(
 		const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const CombatDamage &damage,
-		const std::shared_ptr<Player> &targetPlayer, TextMessage &message, std::stringstream &ss,
-		const std::string &damageString, std::string &spectatorMessage
+		const std::shared_ptr<Player> &targetPlayer, TextMessage &message, const std::string &damageString, std::string &spectatorMessage
 	) const;
 
 	void unwrapItem(const std::shared_ptr<Item> &item, uint16_t unWrapId, const std::shared_ptr<House> &house, const std::shared_ptr<Player> &player);

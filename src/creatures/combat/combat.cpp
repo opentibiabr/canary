@@ -16,6 +16,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -30,6 +31,434 @@
 #include "map/spectators.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+
+namespace {
+	struct CombatEntities {
+		std::shared_ptr<Player> attackerPlayer;
+		std::shared_ptr<Monster> attackerMonster;
+		std::shared_ptr<Player> targetPlayer;
+		std::shared_ptr<Monster> targetMonster;
+	};
+
+	CombatEntities buildCombatEntities(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target) {
+		CombatEntities entities;
+
+		if (caster) {
+			entities.attackerPlayer = caster->getPlayer();
+			entities.attackerMonster = caster->getMonster();
+		}
+
+		if (target) {
+			entities.targetPlayer = target->getPlayer();
+			entities.targetMonster = target->getMonster();
+		}
+
+		return entities;
+	}
+
+	void handleAttackerPlayerCombat(const CombatEntities &entities, const std::shared_ptr<Creature> &target, CombatDamage &damage) {
+		const auto &attackerPlayer = entities.attackerPlayer;
+		if (!attackerPlayer) {
+			return;
+		}
+
+		auto item = attackerPlayer->getWeapon();
+		Combat::applyImbuementElementalDamage(attackerPlayer, item, damage);
+		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
+		g_callbacks().executeCallback(EventCallback_t::playerOnCombat, &EventCallback::playerOnCombat, attackerPlayer, target, item, std::ref(damage));
+
+		const auto &targetPlayer = entities.targetPlayer;
+		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
+			if (damage.primary.type != COMBAT_HEALING) {
+				damage.primary.value /= 2;
+			}
+			if (damage.secondary.type != COMBAT_HEALING) {
+				damage.secondary.value /= 2;
+			}
+		}
+
+		if (targetPlayer && damage.primary.type == COMBAT_HEALING) {
+			damage.primary.value *= targetPlayer->getBuff(BUFF_HEALINGRECEIVED) / 100.;
+		}
+
+		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
+		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
+	}
+
+	void applyPreyDamageBonus(CombatDamage &damage, const CombatEntities &entities) {
+		const auto &attackerPlayer = entities.attackerPlayer;
+		const auto &targetMonster = entities.targetMonster;
+		if (!attackerPlayer || !targetMonster) {
+			return;
+		}
+
+		const auto &slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
+			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
+		}
+
+		// Monster type onPlayerAttack event
+		targetMonster->onAttackedByPlayer(attackerPlayer);
+	}
+
+	void applyPreyDefenseBonus(CombatDamage &damage, const CombatEntities &entities) {
+		const auto &attackerMonster = entities.attackerMonster;
+		const auto &targetPlayer = entities.targetPlayer;
+		if (!attackerMonster || !targetPlayer) {
+			return;
+		}
+
+		const auto &slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
+			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+			damage.secondary.value -= static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
+		}
+	}
+
+	int32_t calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) {
+		auto intermediateResult = realDamage * (skillAmount / 10000.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
+		return std::clamp<int32_t>(static_cast<int32_t>(std::lround(intermediateResult)), 0, realDamage);
+	}
+
+	struct LeechConfig {
+		skills_t chanceSkill;
+		skills_t amountSkill;
+		charmRune_t charmType;
+		CombatType_t combatType;
+		int32_t CombatDamage::*chanceBonusField;
+		int32_t CombatDamage::*amountBonusField;
+	};
+
+	template <typename DoCombatFn>
+	void applyLeech(
+		const LeechConfig &config,
+		const std::shared_ptr<Player> &attackerPlayer,
+		const std::shared_ptr<Monster> &targetMonster,
+		const std::shared_ptr<Creature> &target,
+		const CombatDamage &damage,
+		const int32_t &realDamage,
+		DoCombatFn &&doCombat
+	) {
+		if (!attackerPlayer) {
+			return;
+		}
+
+		const auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, config.chanceSkill);
+		const auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, config.amountSkill);
+		const auto chanceBonus = damage.*(config.chanceBonusField);
+		int32_t chanceTotal = attackerPlayer->getSkillLevel(config.chanceSkill) + wheelLeechChance + chanceBonus;
+		if (normal_random(0, 100) >= chanceTotal) {
+			return;
+		}
+
+		int32_t skillTotal = attackerPlayer->getSkillLevel(config.amountSkill) + wheelLeechAmount + damage.*(config.amountBonusField);
+		if (targetMonster && config.charmType != CHARM_NONE && attackerPlayer->parseRacebyCharm(config.charmType) == targetMonster->getRaceId()) {
+			if (const auto &charm = g_iobestiary().getBestiaryCharm(config.charmType)) {
+				skillTotal += charm->chance[attackerPlayer->getCharmTier(config.charmType)] * 100;
+			}
+		}
+
+		CombatParams tmpParams;
+		CombatDamage tmpDamage;
+
+		const int affected = damage.affected;
+		tmpDamage.origin = ORIGIN_SPELL;
+		tmpDamage.primary.type = config.combatType;
+		tmpDamage.primary.value = calculateLeechAmount(realDamage, static_cast<uint16_t>(std::clamp<int32_t>(skillTotal, 0, 0xFFFF)), affected);
+
+		doCombat(tmpDamage, tmpParams);
+	}
+
+	void tryApplyFatalCharm(const CombatEntities &entities) {
+		const auto &attackerPlayer = entities.attackerPlayer;
+		const auto &targetMonster = entities.targetMonster;
+		if (!attackerPlayer || !targetMonster) {
+			return;
+		}
+
+		const uint16_t playerCharmRaceid = attackerPlayer->parseRacebyCharm(CHARM_FATAL);
+		if (playerCharmRaceid == 0) {
+			return;
+		}
+
+		const auto &mType = g_monsters().getMonsterType(targetMonster->getName());
+		if (!mType || playerCharmRaceid != mType->info.raceid) {
+			return;
+		}
+
+		const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_FATAL);
+		if (!charm) {
+			return;
+		}
+
+		if (charm->chance[attackerPlayer->getCharmTier(CHARM_FATAL)] <= normal_random(0, 100)) {
+			return;
+		}
+
+		g_iobestiary().parseCharmCombat(charm, attackerPlayer, targetMonster);
+	}
+}
+
+void Combat::handleHazardSystemAttack(CombatDamage &damage, const std::shared_ptr<Player> &player, const std::shared_ptr<Monster> &monster, bool isPlayerAttacker) {
+	if (damage.primary.value != 0 && monster->getHazard()) {
+		if (isPlayerAttacker) {
+			player->parseAttackDealtHazardSystem(damage, monster);
+		} else {
+			player->parseAttackRecvHazardSystem(damage, monster);
+		}
+	}
+}
+
+void Combat::notifyHazardSpectators(const CreatureVector &spectators, const Position &targetPos, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster) {
+	if (!spectators.empty()) {
+		for (const auto &spectator : spectators) {
+			if (!spectator) {
+				continue;
+			}
+
+			const auto tmpPlayer = spectator->getPlayer();
+			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+				continue;
+			}
+
+			auto baseMessage = fmt::format("{} has dodged", ucfirst(targetMonster->getNameDescription()));
+			if (tmpPlayer == attackerPlayer) {
+				attackerPlayer->sendCancelMessage(fmt::format("{} your attack.", baseMessage));
+				attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, fmt::format("{} your attack. (Hazard)", baseMessage));
+			} else {
+				tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, fmt::format("{} an attack by {}. (Hazard)", baseMessage, attackerPlayer->getName()));
+			}
+		}
+		g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
+	}
+}
+
+void Combat::buildMessageAsTarget(
+	const std::shared_ptr<Creature> &attacker, const CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer,
+	const std::shared_ptr<Player> &targetPlayer, TextMessage &message, const std::string &damageString
+) {
+	const auto &monster = attacker ? attacker->getMonster() : nullptr;
+	bool handleSoulPit = monster ? monster->getSoulPit() && monster->getForgeStack() == 40 : false;
+
+	const char* attackMsg = damage.critical && !handleSoulPit ? "critical " : "";
+	const char* article = damage.critical && !handleSoulPit ? "a" : "an";
+
+	fmt::memory_buffer buffer;
+	fmt::format_to(fmt::appender(buffer), "You lose {}", damageString);
+	if (!attacker) {
+		fmt::format_to(fmt::appender(buffer), ".");
+	} else if (targetPlayer == attackerPlayer) {
+		fmt::format_to(fmt::appender(buffer), " due to your own {}attack.", attackMsg);
+	} else {
+		fmt::format_to(fmt::appender(buffer), " due to {} {}attack by {}.", article, attackMsg, attacker->getNameDescription());
+	}
+	if (damage.extension) {
+		fmt::format_to(fmt::appender(buffer), " {}", damage.exString);
+	}
+	if (handleSoulPit && damage.critical) {
+		fmt::format_to(fmt::appender(buffer), " (Soulpit Crit)");
+	}
+	message.type = MESSAGE_DAMAGE_RECEIVED;
+	message.text = fmt::to_string(buffer);
+}
+
+void Combat::buildMessageAsAttacker(
+	const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message, const std::string &damageString, bool amplified, const std::shared_ptr<Player> &attackerPlayer
+) {
+	fmt::memory_buffer buffer;
+	fmt::format_to(
+		fmt::appender(buffer),
+		"{} loses {} due to your {}attack.",
+		ucfirst(target->getNameDescription()),
+		damageString,
+		damage.critical ? "critical " : " "
+	);
+
+	if (damage.critical && target->getMonster() && attackerPlayer) {
+		const auto &targetMonster = target->getMonster();
+		static const std::pair<charmRune_t, std::string_view> charms[] = {
+			{ CHARM_LOW, " (low blow charm)" },
+			{ CHARM_SAVAGE, " (savage blow charm)" }
+		};
+
+		for (const auto &[charmType, charmText] : charms) {
+			if (targetMonster->checkCanApplyCharm(attackerPlayer, charmType)) {
+				fmt::format_to(fmt::appender(buffer), "{}", charmText);
+				break;
+			}
+		}
+	}
+
+	if (damage.extension) {
+		fmt::format_to(fmt::appender(buffer), " {}", damage.exString);
+	}
+
+	if (damage.fatal) {
+		fmt::format_to(fmt::appender(buffer), " {}", amplified ? "(Amplified Onslaught)" : "(Onslaught)");
+	}
+	message.type = MESSAGE_DAMAGE_DEALT;
+	message.text = fmt::to_string(buffer);
+}
+
+void Combat::sendEffects(
+	const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
+	const CreatureVector &spectators
+) {
+	uint16_t hitEffect;
+	if (message.primary.value) {
+		g_game().combatGetTypeInfo(damage.primary.type, target, message.primary.color, hitEffect);
+		if (hitEffect != CONST_ME_NONE) {
+			g_game().addMagicEffect(spectators, targetPos, hitEffect);
+		}
+	}
+
+	if (message.secondary.value) {
+		g_game().combatGetTypeInfo(damage.secondary.type, target, message.secondary.color, hitEffect);
+		if (hitEffect != CONST_ME_NONE) {
+			g_game().addMagicEffect(spectators, targetPos, hitEffect);
+		}
+	}
+}
+
+void Combat::applyCharmRune(
+	const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target,
+	const int32_t &realDamage
+) {
+	if (!targetMonster || !attackerPlayer) {
+		return;
+	}
+
+	auto [major, minor] = g_iobestiary().getCharmFromTarget(attackerPlayer, targetMonster->getMonsterType());
+	for (auto charmType : { major, minor }) {
+		if (charmType == CHARM_NONE) {
+			continue;
+		}
+
+		const auto &charm = g_iobestiary().getBestiaryCharm(charmType);
+		const auto charmTier = attackerPlayer->getCharmTier(charmType);
+		int8_t chance = charm->chance[charmTier] + (charm->id == CHARM_CRIPPLE ? 0 : attackerPlayer->getCharmChanceModifier());
+
+		auto rng = uniform_random(1, 100);
+		if (charm->type == CHARM_OFFENSIVE && (chance >= rng)) {
+			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
+		}
+	}
+}
+
+void Combat::applyManaLeech(
+	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target,
+	const CombatDamage &damage, const int32_t &realDamage
+) {
+	const LeechConfig config {
+		SKILL_MANA_LEECH_CHANCE,
+		SKILL_MANA_LEECH_AMOUNT,
+		CHARM_VOID,
+		COMBAT_MANADRAIN,
+		&CombatDamage::manaLeechChance,
+		&CombatDamage::manaLeech
+	};
+
+	applyLeech(
+		config,
+		attackerPlayer,
+		targetMonster,
+		target,
+		damage,
+		realDamage,
+		[&](CombatDamage &tmpDamage, CombatParams &tmpParams) {
+			Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
+		}
+	);
+}
+
+void Combat::applyLifeLeech(
+	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target,
+	const CombatDamage &damage, const int32_t &realDamage
+) {
+	const LeechConfig config {
+		SKILL_LIFE_LEECH_CHANCE,
+		SKILL_LIFE_LEECH_AMOUNT,
+		CHARM_VAMP,
+		COMBAT_HEALING,
+		&CombatDamage::lifeLeechChance,
+		&CombatDamage::lifeLeech
+	};
+
+	applyLeech(
+		config,
+		attackerPlayer,
+		targetMonster,
+		target,
+		damage,
+		realDamage,
+		[&](CombatDamage &tmpDamage, CombatParams &tmpParams) {
+			Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
+		}
+	);
+}
+
+void Combat::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target) {
+	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
+
+	if (attackerPlayer) {
+		damage.primary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
+
+		if (damage.secondary.value != 0) {
+			damage.secondary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
+		}
+
+		if (damage.healingLink > 0) {
+			CombatDamage tmpDamage;
+			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
+			tmpDamage.primary.type = COMBAT_HEALING;
+			g_game().combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
+		}
+
+		if (attackerPlayer->wheel().getInstant("Blessing of the Grove")) {
+			damage.primary.value += (damage.primary.value * attackerPlayer->wheel().checkBlessingGroveHealingByTarget(target)) / 100.;
+		}
+	}
+}
+
+void Combat::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target) {
+	if (damage.primary.value == 0 && damage.secondary.value == 0) {
+		return;
+	}
+
+	if (damage.damageMultiplier > 0) {
+		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
+		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
+	}
+
+	if (attackerPlayer) {
+		damage.primary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
+		if (damage.secondary.value != 0) {
+			damage.secondary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
+		}
+		if (damage.instantSpellName == "Ice Burst" || damage.instantSpellName == "Terra Burst") {
+			int32_t damageBonus = attackerPlayer->wheel().checkTwinBurstByTarget(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+		if (damage.instantSpellName == "Executioner's Throw") {
+			int32_t damageBonus = attackerPlayer->wheel().checkExecutionersThrow(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+		if (damage.instantSpellName == "Divine Grenade") {
+			int32_t damageBonus = attackerPlayer->wheel().checkDivineGrenade(target);
+			if (damageBonus != 0) {
+				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
+				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
+			}
+		}
+	}
+}
 
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -619,113 +1048,35 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 	assert(data);
 
 	CombatDamage damage = *data;
-
-	std::shared_ptr<Player> attackerPlayer = nullptr;
-	if (caster) {
-		attackerPlayer = caster->getPlayer();
-	}
-
-	std::shared_ptr<Monster> targetMonster = nullptr;
-	if (target) {
-		targetMonster = target->getMonster();
-	}
-
-	std::shared_ptr<Monster> attackerMonster = nullptr;
-	if (caster) {
-		attackerMonster = caster->getMonster();
-	}
-
-	std::shared_ptr<Player> targetPlayer = nullptr;
-	if (target) {
-		targetPlayer = target->getPlayer();
-	}
+	CombatEntities entities = buildCombatEntities(caster, target);
 
 	g_logger().trace("[{}] (old) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
 	g_callbacks().executeCallback(EventCallback_t::creatureOnCombat, &EventCallback::creatureOnCombat, caster, target, std::ref(damage));
 	g_logger().trace("[{}] (new) eventcallback: 'creatureOnCombat', damage primary: '{}', secondary: '{}'", __FUNCTION__, damage.primary.value, damage.secondary.value);
 
-	if (attackerPlayer) {
-		const auto &item = attackerPlayer->getWeapon();
-		damage = applyImbuementElementalDamage(attackerPlayer, item, damage);
-		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
-		g_callbacks().executeCallback(EventCallback_t::playerOnCombat, &EventCallback::playerOnCombat, attackerPlayer, target, item, std::ref(damage));
-
-		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
-			if (damage.primary.type != COMBAT_HEALING) {
-				damage.primary.value /= 2;
-			}
-			if (damage.secondary.type != COMBAT_HEALING) {
-				damage.secondary.value /= 2;
-			}
-		}
-
-		if (targetPlayer && damage.primary.type == COMBAT_HEALING) {
-			damage.primary.value *= targetPlayer->getBuff(BUFF_HEALINGRECEIVED) / 100.;
-		}
-
-		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
-		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
-	}
+	handleAttackerPlayerCombat(entities, target, damage);
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
 	}
 
 	// Player attacking monster
-	if (attackerPlayer && targetMonster) {
-		const auto &slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
-		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
-			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
-		}
-
-		// Monster type onPlayerAttack event
-		targetMonster->onAttackedByPlayer(attackerPlayer);
-	}
+	applyPreyDamageBonus(damage, entities);
 
 	// Monster attacking player
-	if (attackerMonster && targetPlayer) {
-		const auto &slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
-		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
-			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-			damage.secondary.value -= static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
-		}
-	}
+	applyPreyDefenseBonus(damage, entities);
 
 	if (g_game().combatChangeHealth(caster, target, damage)) {
 		CombatConditionFunc(caster, target, params, &damage);
 		CombatDispelFunc(caster, target, params, nullptr);
 
-		if (!targetMonster || !attackerPlayer) {
-			return;
-		}
-
-		const uint16_t playerCharmRaceid = attackerPlayer->parseRacebyCharm(CHARM_FATAL);
-		if (playerCharmRaceid == 0) {
-			return;
-		}
-
-		const auto &mType = g_monsters().getMonsterType(targetMonster->getName());
-		if (!mType || playerCharmRaceid != mType->info.raceid) {
-			return;
-		}
-
-		const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_FATAL);
-		if (!charm) {
-			return;
-		}
-
-		if (charm->chance[attackerPlayer->getCharmTier(CHARM_FATAL)] <= normal_random(0, 100)) {
-			return;
-		}
-
-		g_iobestiary().parseCharmCombat(charm, attackerPlayer, targetMonster);
+		tryApplyFatalCharm(entities);
 	}
 }
 
-CombatDamage Combat::applyImbuementElementalDamage(const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage) {
+void Combat::applyImbuementElementalDamage(const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Item> item, CombatDamage &damage) {
 	if (!item) {
-		return damage;
+		return;
 	}
 
 	if (item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
@@ -761,8 +1112,6 @@ CombatDamage Combat::applyImbuementElementalDamage(const std::shared_ptr<Player>
 		// If damage imbuement is set, we can return without checking other slots
 		break;
 	}
-
-	return damage;
 }
 
 void Combat::CombatManaFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data) {

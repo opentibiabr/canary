@@ -13,6 +13,7 @@
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/appearance/attached_effects/attached_effects.hpp"
 #include "creatures/combat/condition.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/interactions/chat.hpp"
@@ -201,6 +202,150 @@ namespace InternalGame {
 		}
 
 		return static_cast<T>(value);
+	}
+
+	void appendCommaSeparatedMessage(std::string &text, const char* message) {
+		if (!text.empty()) {
+			text += ", ";
+		}
+		text += message;
+	}
+
+	BlockType_t processSecondaryDamageComponent(
+		CombatDamage &damage,
+		const std::shared_ptr<Creature> &attacker,
+		const std::shared_ptr<Creature> &target,
+		const std::shared_ptr<Player> &targetPlayer,
+		const std::shared_ptr<Monster> &targetMonster,
+		bool field,
+		bool &canHeal,
+		CombatDamage &damageHeal,
+		bool &damageAbsorbMessage,
+		bool &damageIncreaseMessage,
+		bool &canReflect,
+		CombatDamage &damageReflected,
+		CombatParams &damageReflectedParams
+	) {
+		if (damage.secondary.type == COMBAT_NONE) {
+			return BLOCK_NONE;
+		}
+
+		damage.secondary.value = -damage.secondary.value;
+		if (attacker && targetMonster) {
+			uint32_t secondaryHealing = targetMonster->getHealingCombatValue(damage.secondary.type);
+			if (secondaryHealing > 0) {
+				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
+				canHeal = true;
+			}
+			if (targetPlayer && attacker->getAbsorbPercent(damage.secondary.type) != 0) {
+				damageAbsorbMessage = true;
+			}
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0) {
+				damageIncreaseMessage = true;
+			}
+			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+		}
+		damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+
+		BlockType_t blockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
+
+		damage.secondary.value = -damage.secondary.value;
+		InternalGame::sendBlockEffect(blockType, damage.secondary.type, target->getPosition(), attacker);
+
+		if (!damage.extension && attacker && targetMonster) {
+			int32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);
+			int32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type, true);
+			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
+				if (!canReflect) {
+					int32_t reflectFlat = -static_cast<int32_t>(secondaryReflectFlat);
+					int32_t reflectPercent = std::ceil(damage.primary.value * secondaryReflectPercent / 100.);
+					int32_t reflectLimit = std::ceil(attacker->getMaxHealth() * 0.01);
+					damageReflected.primary.value = std::max(-reflectLimit, reflectFlat + reflectPercent);
+					damageReflected.primary.type = damage.secondary.type;
+					InternalGame::appendCommaSeparatedMessage(damageReflected.exString, " (damage reflection)");
+					damageReflected.extension = true;
+					damageReflectedParams.combatType = damage.primary.type;
+					damageReflectedParams.aggressive = true;
+					canReflect = true;
+				} else {
+					damageReflected.secondary.type = damage.secondary.type;
+					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
+				}
+			}
+		}
+
+		return blockType;
+	}
+
+	BlockType_t processPrimaryDamageComponent(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const std::shared_ptr<Player> &targetPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Monster> &attackerMonster, bool checkDefense, bool checkArmor, bool field, bool &canHeal, CombatDamage &damageHeal, bool &damageAbsorbMessage, bool &damageIncreaseMessage, bool &canReflect, CombatDamage &damageReflected, CombatParams &damageReflectedParams) {
+		if (damage.primary.type == COMBAT_NONE) {
+			return BLOCK_NONE;
+		}
+
+		damage.primary.value = -damage.primary.value;
+
+		if (attacker) {
+			if (targetMonster) {
+				uint32_t primaryHealing = targetMonster->getHealingCombatValue(damage.primary.type);
+				if (primaryHealing > 0) {
+					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
+					canHeal = true;
+				}
+			}
+			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0) {
+				damageAbsorbMessage = true;
+			}
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0) {
+				damageIncreaseMessage = true;
+			}
+			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+		}
+		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+
+		BlockType_t blockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
+
+		damage.primary.value = -damage.primary.value;
+		InternalGame::sendBlockEffect(blockType, damage.primary.type, target->getPosition(), attacker);
+
+		if (!damage.extension && attacker) {
+			if (attackerMonster && targetPlayer && damage.primary.type != COMBAT_HEALING) {
+				const auto &mType = attackerMonster->getMonsterType();
+				if (mType) {
+					auto [activeCharm, _] = g_iobestiary().getCharmFromTarget(targetPlayer, mType);
+					if (activeCharm == CHARM_PARRY) {
+						const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
+						const auto charmTier = targetPlayer->getCharmTier(activeCharm);
+						if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance[charmTier] >= normal_random(1, 10000) / 100.0)) {
+							g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value));
+						}
+					}
+				}
+			}
+			double_t primaryReflectPercent = target->getReflectPercent(damage.primary.type, true);
+			int32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type, true);
+			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
+				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
+				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
+				if (targetMonster || damage.primary.type != COMBAT_PHYSICALDAMAGE || primaryReflectPercent > 0 || std::max(distanceX, distanceY) < 2) {
+					int32_t reflectFlat = -static_cast<int32_t>(primaryReflectFlat);
+					int32_t reflectPercent = std::ceil(damage.primary.value * primaryReflectPercent / 100.);
+					int32_t reflectLimit = std::ceil(attacker->getMaxHealth() * 0.01);
+					damageReflected.primary.value = std::max(-reflectLimit, reflectFlat + reflectPercent);
+					if (targetPlayer) {
+						damageReflected.primary.type = COMBAT_NEUTRALDAMAGE;
+					} else {
+						damageReflected.primary.type = damage.primary.type;
+					}
+					InternalGame::appendCommaSeparatedMessage(damageReflected.exString, " (damage reflection)");
+					damageReflected.extension = true;
+					damageReflectedParams.combatType = damage.primary.type;
+					damageReflectedParams.aggressive = true;
+					canReflect = true;
+				}
+			}
+		}
+
+		return blockType;
 	}
 } // Namespace InternalGame
 
@@ -1784,6 +1929,11 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	const auto toCylinderTile = toCylinder->getTile();
+	if (!toCylinderTile) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	const auto &mapToPos = toCylinderTile->getPosition();
 
 	// hangable item specific code
@@ -6778,148 +6928,54 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 	CombatDamage damageReflected;
 	CombatParams damageReflectedParams;
 
-	BlockType_t primaryBlockType, secondaryBlockType;
-	if (damage.primary.type != COMBAT_NONE) {
-		damage.primary.value = -damage.primary.value;
-		// Damage healing primary
-		if (attacker) {
-			if (target->getMonster()) {
-				uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
-				if (primaryHealing > 0) {
-					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
-					canHeal = true;
-				}
-			}
-			if (targetPlayer && attacker->getAbsorbPercent(damage.primary.type) != 0) {
-				damageAbsorbMessage = true;
-			}
-			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0) {
-				damageIncreaseMessage = true;
-			}
-			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
-		}
-		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+	const auto &targetMonster = target->getMonster();
+	const auto &attackerMonster = attacker ? attacker->getMonster() : nullptr;
 
-		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
+	BlockType_t primaryBlockType = InternalGame::processPrimaryDamageComponent(
+		damage,
+		attacker,
+		target,
+		targetPlayer,
+		targetMonster,
+		attackerMonster,
+		checkDefense,
+		checkArmor,
+		field,
+		canHeal,
+		damageHeal,
+		damageAbsorbMessage,
+		damageIncreaseMessage,
+		canReflect,
+		damageReflected,
+		damageReflectedParams
+	);
 
-		damage.primary.value = -damage.primary.value;
-		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
-		// Damage reflection primary
-		if (!damage.extension && attacker) {
-			const auto &attackerMonster = attacker->getMonster();
-			if (attackerMonster && targetPlayer && damage.primary.type != COMBAT_HEALING) {
-				// Charm rune (target as player)
-				const auto &mType = attackerMonster->getMonsterType();
-				if (mType) {
-					auto [activeCharm, _] = g_iobestiary().getCharmFromTarget(targetPlayer, mType);
-					if (activeCharm == CHARM_PARRY) {
-						const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
-						const auto charmTier = targetPlayer->getCharmTier(activeCharm);
-						if (charm && charm->type == CHARM_DEFENSIVE && (charm->chance[charmTier] >= normal_random(1, 10000) / 100.0)) {
-							g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value));
-						}
-					}
-				}
-			}
-			double_t primaryReflectPercent = target->getReflectPercent(damage.primary.type, true);
-			int32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type, true);
-			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
-				int32_t distanceX = Position::getDistanceX(target->getPosition(), attacker->getPosition());
-				int32_t distanceY = Position::getDistanceY(target->getPosition(), attacker->getPosition());
-				if (target->getMonster() || damage.primary.type != COMBAT_PHYSICALDAMAGE || primaryReflectPercent > 0 || std::max(distanceX, distanceY) < 2) {
-					int32_t reflectFlat = -static_cast<int32_t>(primaryReflectFlat);
-					int32_t reflectPercent = std::ceil(damage.primary.value * primaryReflectPercent / 100.);
-					int32_t reflectLimit = std::ceil(attacker->getMaxHealth() * 0.01);
-					damageReflected.primary.value = std::max(-reflectLimit, reflectFlat + reflectPercent);
-					if (targetPlayer) {
-						damageReflected.primary.type = COMBAT_NEUTRALDAMAGE;
-					} else {
-						damageReflected.primary.type = damage.primary.type;
-					}
-					if (!damageReflected.exString.empty()) {
-						damageReflected.exString += ", ";
-					}
-					damageReflected.extension = true;
-					damageReflected.exString += " (damage reflection)";
-					damageReflectedParams.combatType = damage.primary.type;
-					damageReflectedParams.aggressive = true;
-					canReflect = true;
-				}
-			}
-		}
-	} else {
-		primaryBlockType = BLOCK_NONE;
-	}
-
-	if (damage.secondary.type != COMBAT_NONE) {
-		damage.secondary.value = -damage.secondary.value;
-		// Damage healing secondary
-		if (attacker && target->getMonster()) {
-			uint32_t secondaryHealing = target->getMonster()->getHealingCombatValue(damage.secondary.type);
-			if (secondaryHealing > 0) {
-				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
-				canHeal = true;
-			}
-			if (targetPlayer && attacker->getAbsorbPercent(damage.secondary.type) != 0) {
-				damageAbsorbMessage = true;
-			}
-			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0) {
-				damageIncreaseMessage = true;
-			}
-			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
-		}
-		damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
-
-		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
-
-		damage.secondary.value = -damage.secondary.value;
-		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
-
-		if (!damage.extension && attacker && target->getMonster()) {
-			int32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type, true);
-			int32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type, true);
-			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
-				if (!canReflect) {
-					int32_t reflectFlat = -static_cast<int32_t>(secondaryReflectFlat);
-					int32_t reflectPercent = std::ceil(damage.primary.value * secondaryReflectPercent / 100.);
-					int32_t reflectLimit = std::ceil(attacker->getMaxHealth() * 0.01);
-					damageReflected.primary.value = std::max(-reflectLimit, reflectFlat + reflectPercent);
-					damageReflected.primary.type = damage.secondary.type;
-					if (!damageReflected.exString.empty()) {
-						damageReflected.exString += ", ";
-					}
-					damageReflected.extension = true;
-					damageReflected.exString += " (damage reflection)";
-					damageReflectedParams.combatType = damage.primary.type;
-					damageReflectedParams.aggressive = true;
-					canReflect = true;
-				} else {
-					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil(damage.secondary.value * secondaryReflectPercent / 100.) + std::max(-static_cast<int32_t>(std::ceil(attacker->getMaxHealth() * 0.01)), std::max(damage.secondary.value, -(static_cast<int32_t>(secondaryReflectFlat))));
-				}
-			}
-		}
-	} else {
-		secondaryBlockType = BLOCK_NONE;
-	}
-	// Damage reflection secondary
+	BlockType_t secondaryBlockType = InternalGame::processSecondaryDamageComponent(
+		damage,
+		attacker,
+		target,
+		targetPlayer,
+		targetMonster,
+		field,
+		canHeal,
+		damageHeal,
+		damageAbsorbMessage,
+		damageIncreaseMessage,
+		canReflect,
+		damageReflected,
+		damageReflectedParams
+	);
 
 	if (damage.primary.type == COMBAT_HEALING) {
 		damage.primary.value *= target->getBuff(BUFF_HEALINGRECEIVED) / 100.;
 	}
 
 	if (damageAbsorbMessage) {
-		if (!damage.exString.empty()) {
-			damage.exString += ", ";
-		}
-		damage.exString += "active elemental resiliance";
+		InternalGame::appendCommaSeparatedMessage(damage.exString, "active elemental resiliance");
 	}
 
 	if (damageIncreaseMessage) {
-		if (!damage.exString.empty()) {
-			damage.exString += ", ";
-		}
-		damage.exString += "active elemental amplification";
+		InternalGame::appendCommaSeparatedMessage(damage.exString, "active elemental amplification");
 	}
 
 	if (canReflect) {
@@ -7051,45 +7107,6 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 	}
 }
 
-// Hazard combat helpers
-void Game::handleHazardSystemAttack(CombatDamage &damage, const std::shared_ptr<Player> &player, const std::shared_ptr<Monster> &monster, bool isPlayerAttacker) {
-	if (damage.primary.value != 0 && monster->getHazard()) {
-		if (isPlayerAttacker) {
-			player->parseAttackDealtHazardSystem(damage, monster);
-		} else {
-			player->parseAttackRecvHazardSystem(damage, monster);
-		}
-	}
-}
-
-void Game::notifySpectators(const CreatureVector &spectators, const Position &targetPos, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster) {
-	if (!spectators.empty()) {
-		for (const auto &spectator : spectators) {
-			if (!spectator) {
-				continue;
-			}
-
-			const auto tmpPlayer = spectator->getPlayer();
-			if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
-				continue;
-			}
-
-			std::stringstream ss;
-			ss << ucfirst(targetMonster->getNameDescription()) << " has dodged";
-			if (tmpPlayer == attackerPlayer) {
-				ss << " your attack.";
-				attackerPlayer->sendCancelMessage(ss.str());
-				ss << " (Hazard)";
-				attackerPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-			} else {
-				ss << " an attack by " << attackerPlayer->getName() << ". (Hazard)";
-				tmpPlayer->sendTextMessage(MESSAGE_DAMAGE_OTHERS, ss.str());
-			}
-		}
-		addMagicEffect(targetPos, CONST_ME_DODGE);
-	}
-}
-
 // Custom PvP System combat helpers
 void Game::applyPvPDamage(CombatDamage &damage, const std::shared_ptr<Player> &attacker, const std::shared_ptr<Player> &target) {
 	float targetDamageReceivedMultiplier = target->vocation->pvpDamageReceivedMultiplier;
@@ -7120,70 +7137,6 @@ float Game::pvpLevelDifferenceDamageMultiplier(const std::shared_ptr<Player> &at
 	}
 
 	return levelDiffRate;
-}
-
-// Wheel of destiny combat helpers
-void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target) {
-	damage.primary.value += (damage.primary.value * damage.healingMultiplier) / 100.;
-
-	if (attackerPlayer) {
-		damage.primary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
-
-		if (damage.secondary.value != 0) {
-			damage.secondary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
-		}
-
-		if (damage.healingLink > 0) {
-			CombatDamage tmpDamage;
-			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;
-			tmpDamage.primary.type = COMBAT_HEALING;
-			combatChangeHealth(attackerPlayer, attackerPlayer, tmpDamage);
-		}
-
-		if (attackerPlayer->wheel().getInstant("Blessing of the Grove")) {
-			damage.primary.value += (damage.primary.value * attackerPlayer->wheel().checkBlessingGroveHealingByTarget(target)) / 100.;
-		}
-	}
-}
-
-void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target) const {
-	// If damage is 0, it means the target is immune to the damage type, or that we missed.
-	if (damage.primary.value == 0 && damage.secondary.value == 0) {
-		return;
-	}
-
-	if (damage.damageMultiplier > 0) {
-		damage.primary.value += (damage.primary.value * (damage.damageMultiplier)) / 100.;
-		damage.secondary.value += (damage.secondary.value * (damage.damageMultiplier)) / 100.;
-	}
-
-	if (attackerPlayer) {
-		damage.primary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
-		if (damage.secondary.value != 0) {
-			damage.secondary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
-		}
-		if (damage.instantSpellName == "Ice Burst" || damage.instantSpellName == "Terra Burst") {
-			int32_t damageBonus = attackerPlayer->wheel().checkTwinBurstByTarget(target);
-			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
-			}
-		}
-		if (damage.instantSpellName == "Executioner's Throw") {
-			int32_t damageBonus = attackerPlayer->wheel().checkExecutionersThrow(target);
-			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
-			}
-		}
-		if (damage.instantSpellName == "Divine Grenade") {
-			int32_t damageBonus = attackerPlayer->wheel().checkDivineGrenade(target);
-			if (damageBonus != 0) {
-				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
-				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
-			}
-		}
-	}
 }
 
 int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_ptr<Creature> &target) const {
@@ -7235,7 +7188,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		}
 
 		// Wheel of destiny combat healing
-		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
+		Combat::applyWheelOfDestinyHealing(damage, attackerPlayer, target);
 
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
@@ -7335,7 +7288,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		}
 
 		// Wheel of destiny apply combat effects
-		applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
+		Combat::applyWheelOfDestinyEffectsToDamage(damage, attackerPlayer, target);
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
@@ -7409,12 +7362,12 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		auto spectators = Spectators().find<Player>(targetPos, true);
 
 		if (targetPlayer && attackerMonster) {
-			handleHazardSystemAttack(damage, targetPlayer, attackerMonster, false);
+			Combat::handleHazardSystemAttack(damage, targetPlayer, attackerMonster, false);
 		} else if (attackerPlayer && targetMonster) {
-			handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
+			Combat::handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
 
 			if ((damage.primary.value == 0 && damage.secondary.value == 0) || damage.hazardDodge) {
-				notifySpectators(spectators.data(), targetPos, attackerPlayer, targetMonster);
+				Combat::notifyHazardSpectators(spectators.data(), targetPos, attackerPlayer, targetMonster);
 				return true;
 			}
 		}
@@ -7621,9 +7574,9 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 		if (attackerPlayer) {
 			if (!damage.extension && damage.origin != ORIGIN_CONDITION) {
-				applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
-				applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
-				applyManaLeech(attackerPlayer, targetMonster, target, damage, realDamage);
+				Combat::applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
+				Combat::applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
+				Combat::applyManaLeech(attackerPlayer, targetMonster, target, damage, realDamage);
 			}
 			updatePlayerPartyHuntAnalyzer(damage, attackerPlayer);
 		}
@@ -7655,7 +7608,7 @@ void Game::sendDamageMessageAndEffects(
 	message.primary.value = damage.primary.value;
 	message.secondary.value = damage.secondary.value;
 
-	sendEffects(target, damage, targetPos, message, spectators);
+	Combat::sendEffects(target, damage, targetPos, message, spectators);
 
 	if (shouldSendMessage(message)) {
 		sendMessages(attacker, target, damage, targetPos, attackerPlayer, targetPlayer, message, spectators, realDamage);
@@ -7690,10 +7643,7 @@ void Game::sendMessages(
 			}
 		}
 	}
-	std::stringstream ss;
-
-	ss << realDamage << (realDamage != 1 ? " hitpoints" : " hitpoint");
-	std::string damageString = ss.str();
+	std::string damageString = fmt::format("{} {}", realDamage, realDamage != 1 ? "hitpoints" : "hitpoint");
 
 	std::string spectatorMessage;
 
@@ -7706,11 +7656,11 @@ void Game::sendMessages(
 		if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 			const auto &boots = tmpPlayer->getInventoryItem(CONST_SLOT_FEET);
 			bool amplifiedFatal = boots ? boots->getTier() > 0 : false;
-			buildMessageAsAttacker(target, damage, message, ss, damageString, amplifiedFatal, attackerPlayer);
+			Combat::buildMessageAsAttacker(target, damage, message, damageString, amplifiedFatal, attackerPlayer);
 		} else if (tmpPlayer == targetPlayer) {
-			buildMessageAsTarget(attacker, damage, attackerPlayer, targetPlayer, message, ss, damageString);
+			Combat::buildMessageAsTarget(attacker, damage, attackerPlayer, targetPlayer, message, damageString);
 		} else {
-			buildMessageAsSpectator(attacker, target, damage, targetPlayer, message, ss, damageString, spectatorMessage);
+			buildMessageAsSpectator(attacker, target, damage, targetPlayer, message, damageString, spectatorMessage);
 		}
 		tmpPlayer->sendTextMessage(message);
 	}
@@ -7718,207 +7668,35 @@ void Game::sendMessages(
 
 void Game::buildMessageAsSpectator(
 	const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const CombatDamage &damage,
-	const std::shared_ptr<Player> &targetPlayer, TextMessage &message, std::stringstream &ss,
-	const std::string &damageString, std::string &spectatorMessage
+	const std::shared_ptr<Player> &targetPlayer, TextMessage &message, const std::string &damageString, std::string &spectatorMessage
 ) const {
 	if (spectatorMessage.empty()) {
-		ss.str({});
-		auto attackMsg = damage.critical ? "critical " : "";
-		auto article = damage.critical ? "a" : "an";
-		ss << ucfirst(target->getNameDescription()) << " loses " << damageString;
+		const char* attackMsg = damage.critical ? "critical " : "";
+		const char* article = damage.critical ? "a" : "an";
+
+		fmt::memory_buffer buffer;
+		fmt::format_to(fmt::appender(buffer), "{} loses {}", ucfirst(target->getNameDescription()), damageString);
 		if (attacker) {
-			ss << " due to ";
+			fmt::format_to(fmt::appender(buffer), " due to ");
 			if (attacker == target) {
 				if (targetPlayer) {
-					ss << targetPlayer->getPossessivePronoun() << " own " << attackMsg << "attack";
+					fmt::format_to(fmt::appender(buffer), "{} own {}attack", targetPlayer->getPossessivePronoun(), attackMsg);
 				} else {
-					ss << "its own " << attackMsg << "attack";
+					fmt::format_to(fmt::appender(buffer), "its own {}attack", attackMsg);
 				}
 			} else {
-				ss << article << " " << attackMsg << "attack by " << attacker->getNameDescription();
+				fmt::format_to(fmt::appender(buffer), "{} {}attack by {}", article, attackMsg, attacker->getNameDescription());
 			}
 		}
-		ss << '.';
+		fmt::format_to(fmt::appender(buffer), ".");
 		if (damage.extension) {
-			ss << " " << damage.exString;
+			fmt::format_to(fmt::appender(buffer), " {}", damage.exString);
 		}
-		spectatorMessage = ss.str();
+		spectatorMessage = fmt::to_string(buffer);
 	}
 
 	message.type = MESSAGE_DAMAGE_OTHERS;
 	message.text = spectatorMessage;
-}
-
-void Game::buildMessageAsTarget(
-	const std::shared_ptr<Creature> &attacker, const CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer,
-	const std::shared_ptr<Player> &targetPlayer, TextMessage &message, std::stringstream &ss,
-	const std::string &damageString
-) const {
-	ss.str({});
-	const auto &monster = attacker ? attacker->getMonster() : nullptr;
-	bool handleSoulPit = monster ? monster->getSoulPit() && monster->getForgeStack() == 40 : false;
-
-	std::string attackMsg = damage.critical && !handleSoulPit ? "critical " : "";
-	std::string article = damage.critical && !handleSoulPit ? "a" : "an";
-
-	ss << "You lose " << damageString;
-	if (!attacker) {
-		ss << '.';
-	} else if (targetPlayer == attackerPlayer) {
-		ss << " due to your own " << attackMsg << "attack.";
-	} else {
-		ss << " due to " << article << " " << attackMsg << "attack by " << attacker->getNameDescription() << '.';
-	}
-	if (damage.extension) {
-		ss << " " << damage.exString;
-	}
-	if (handleSoulPit && damage.critical) {
-		ss << " (Soulpit Crit)";
-	}
-	message.type = MESSAGE_DAMAGE_RECEIVED;
-	message.text = ss.str();
-}
-
-void Game::buildMessageAsAttacker(
-	const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message,
-	std::stringstream &ss, const std::string &damageString, bool amplified, const std::shared_ptr<Player> &attackerPlayer
-) const {
-	ss.str({});
-	ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your " << (damage.critical ? "critical " : " ") << "attack.";
-
-	if (damage.critical && target->getMonster() && attackerPlayer) {
-		const auto &targetMonster = target->getMonster();
-		static const std::pair<charmRune_t, std::string_view> charms[] = {
-			{ CHARM_LOW, " (low blow charm)" },
-			{ CHARM_SAVAGE, " (savage blow charm)" }
-		};
-
-		for (const auto &[charmType, charmText] : charms) {
-			if (targetMonster->checkCanApplyCharm(attackerPlayer, charmType)) {
-				ss << charmText;
-				break;
-			}
-		}
-	}
-
-	if (damage.extension) {
-		ss << " " << damage.exString;
-	}
-
-	if (damage.fatal) {
-		ss << (amplified ? " (Amplified Onslaught)" : " (Onslaught)");
-	}
-	message.type = MESSAGE_DAMAGE_DEALT;
-	message.text = ss.str();
-}
-
-void Game::sendEffects(
-	const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
-	const CreatureVector &spectators
-) {
-	uint16_t hitEffect;
-	if (message.primary.value) {
-		combatGetTypeInfo(damage.primary.type, target, message.primary.color, hitEffect);
-		if (hitEffect != CONST_ME_NONE) {
-			addMagicEffect(spectators, targetPos, hitEffect);
-		}
-	}
-
-	if (message.secondary.value) {
-		combatGetTypeInfo(damage.secondary.type, target, message.secondary.color, hitEffect);
-		if (hitEffect != CONST_ME_NONE) {
-			addMagicEffect(spectators, targetPos, hitEffect);
-		}
-	}
-}
-
-void Game::applyCharmRune(
-	const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target, const int32_t &realDamage
-) const {
-	if (!targetMonster || !attackerPlayer) {
-		return;
-	}
-
-	auto [major, minor] = g_iobestiary().getCharmFromTarget(attackerPlayer, targetMonster->getMonsterType());
-	for (auto charmType : { major, minor }) {
-		if (charmType == CHARM_NONE) {
-			continue;
-		}
-
-		const auto &charm = g_iobestiary().getBestiaryCharm(charmType);
-		const auto charmTier = attackerPlayer->getCharmTier(charmType);
-		int8_t chance = charm->chance[charmTier] + (charm->id == CHARM_CRIPPLE ? 0 : attackerPlayer->getCharmChanceModifier());
-
-		auto rng = uniform_random(1, 100);
-		if (charm->type == CHARM_OFFENSIVE && (chance >= rng)) {
-			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
-		}
-	}
-}
-
-// Mana leech
-void Game::applyManaLeech(
-	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
-) const {
-	// Wheel of destiny bonus - mana leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
-	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
-
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
-	if (normal_random(0, 100) >= manaChance) {
-		return;
-	}
-	// Void charm rune
-	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
-		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
-			manaSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VOID)] * 100;
-		}
-	}
-
-	CombatParams tmpParams;
-	CombatDamage tmpDamage;
-
-	int affected = damage.affected;
-	tmpDamage.origin = ORIGIN_SPELL;
-	tmpDamage.primary.type = COMBAT_MANADRAIN;
-	tmpDamage.primary.value = calculateLeechAmount(realDamage, manaSkill, affected);
-
-	Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
-}
-
-// Life leech
-void Game::applyLifeLeech(
-	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
-) const {
-	// Wheel of destiny bonus - life leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
-	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
-	if (normal_random(0, 100) >= lifeChance) {
-		return;
-	}
-	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
-		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
-			lifeSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VAMP)] * 100;
-		}
-	}
-
-	CombatParams tmpParams;
-	CombatDamage tmpDamage;
-
-	int affected = damage.affected;
-	tmpDamage.origin = ORIGIN_SPELL;
-	tmpDamage.primary.type = COMBAT_HEALING;
-	tmpDamage.primary.value = calculateLeechAmount(realDamage, lifeSkill, affected);
-
-	Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
-}
-
-int32_t Game::calculateLeechAmount(const int32_t &realDamage, const uint16_t &skillAmount, int targetsAffected) const {
-	auto intermediateResult = realDamage * (skillAmount / 10000.0) * (0.1 * targetsAffected + 0.9) / targetsAffected;
-	return std::clamp<int32_t>(static_cast<int32_t>(std::lround(intermediateResult)), 0, realDamage);
 }
 
 bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage) {

@@ -181,6 +181,7 @@ class PlayerFunctions {
 
 	static int luaPlayerAddItem(lua_State* L);
 	static int luaPlayerAddItemEx(lua_State* L);
+	static int luaPlayerAddItemBatchToPaginedContainer(lua_State* L);
 	static int luaPlayerAddItemStash(lua_State* L);
 	static int luaPlayerRemoveStashItem(lua_State* L);
 	static int luaPlayerRemoveItem(lua_State* L);

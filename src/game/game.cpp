@@ -60,6 +60,7 @@
 #include "utils/wildcardtree.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+#include "utils/batch_update.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -3071,21 +3072,36 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 	player->lastQuickLootNotification = OTSYS_TIME();
 }
 
-std::shared_ptr<Container> Game::findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer) {
-	auto lootContainer = player->getManagedContainer(category, isLootContainer);
-	if (!lootContainer && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
-		auto fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-		auto mainBackpack = fallbackItem ? fallbackItem->getContainer() : nullptr;
+std::shared_ptr<Container> Game::findManagedContainer(
+	const std::shared_ptr<Player> &player,
+	bool &fallbackConsumed,
+	ObjectCategory_t category,
+	bool isLootContainer
+) {
+	const auto candidate = player->getManagedContainer(category, isLootContainer);
 
-		if (mainBackpack) {
-			player->refreshManagedContainer(OBJECTCATEGORY_DEFAULT, mainBackpack, isLootContainer);
+	std::shared_ptr<Container> result = nullptr;
+	if (candidate) {
+		if (player->isHoldingItem(candidate)) {
+			result = candidate;
+		} else {
+			player->checkLootContainers(candidate);
+			player->sendLootContainers();
+		}
+	}
+
+	if (!result && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
+		const auto fbItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+		const auto mainBp = fbItem ? fbItem->getContainer() : nullptr;
+		if (mainBp) {
+			player->refreshManagedContainer(OBJECTCATEGORY_DEFAULT, mainBp, isLootContainer);
 			player->sendInventoryItem(CONST_SLOT_BACKPACK, player->getInventoryItem(CONST_SLOT_BACKPACK));
-			lootContainer = mainBackpack;
+			result = mainBp;
 			fallbackConsumed = true;
 		}
 	}
 
-	return lootContainer;
+	return result;
 }
 
 std::shared_ptr<Container> Game::findNextAvailableContainer(ContainerIterator &containerIterator, std::shared_ptr<Container> &lootContainer, std::shared_ptr<Container> &lastSubContainer) {
@@ -3117,24 +3133,28 @@ bool Game::handleFallbackLogic(const std::shared_ptr<Player> &player, std::share
 		return false;
 	}
 
-	std::shared_ptr<Item> fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+	std::shared_ptr<Item> fallbackItem = player->getBackpack();
 	if (!fallbackItem || !fallbackItem->getContainer()) {
 		return false;
 	}
 
 	lootContainer = fallbackItem->getContainer();
-	containerIterator = lootContainer->iterator();
 
 	return true;
 }
 
 ReturnValue Game::processMoveOrAddItemToLootContainer(const std::shared_ptr<Item> &item, const std::shared_ptr<Container> &lootContainer, uint32_t &remainderCount, const std::shared_ptr<Player> &player) {
+	if (!lootContainer || !item) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	std::shared_ptr<Item> moveItem = nullptr;
 	ReturnValue ret;
+	uint32_t flags = lootContainer->getID() == ITEM_GOLD_POUCH ? FLAG_LOOTPOUCH : 0;
 	if (item->getParent()) {
-		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, 0, player, nullptr, false);
+		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags, player, nullptr, false);
 	} else {
-		ret = internalAddItem(lootContainer, item, INDEX_WHEREEVER);
+		ret = internalAddItem(lootContainer, item, INDEX_WHEREEVER, flags);
 	}
 	if (moveItem) {
 		remainderCount -= moveItem->getItemCount();
@@ -3164,7 +3184,7 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 	return ret;
 }
 
-ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category, bool isLootContainer /* = true*/) {
+ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category /* = OBJECTCATEGORY_DEFAULT*/, bool isLootContainer /* = true*/) {
 	if (!player || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -3209,45 +3229,94 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	return processLootItems(player, lootContainer, item, fallbackConsumed);
+	BatchUpdate batchUpdate(player.get());
+	batchUpdate.add(lootContainer.get());
+	auto returnVale = processLootItems(player, lootContainer, item, fallbackConsumed);
+	return returnVale;
 }
 
 ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player, uint32_t maxMoveItems /* = 0*/) {
 	// Check if have item on player reward chest
-	const std::shared_ptr<RewardChest> &rewardChest = player->getRewardChest();
+	std::shared_ptr<RewardChest> rewardChest = player->getRewardChest();
 	if (rewardChest->empty()) {
 		g_logger().debug("Reward chest is empty");
 		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
-	const auto &container = rewardChest->getContainer();
-	if (!container) {
-		return RETURNVALUE_REWARDCHESTISEMPTY;
-	}
-
-	auto rewardItemsVector = player->getRewardsFromContainer(container);
+	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
 	std::string lootedItemsMessage;
+
+	BatchUpdate batchUpdate(player.get());
 	for (const auto &item : rewardItemsVector) {
-		// Stop if player not have free capacity
-		if (item && player->getCapacity() < item->getWeight()) {
-			player->sendCancelMessage(RETURNVALUE_NOTENOUGHCAPACITY);
-			break;
+		if (!item) {
+			continue;
+		}
+		const auto &parent = item->getParent();
+		if (!parent) {
+			continue;
+		}
+		const auto &container = parent->getContainer();
+		if (!container) {
+			continue;
 		}
 
-		// Limit the collect count if the "maxMoveItems" is not "0"
-		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
-		if (limitMove) {
+		batchUpdate.add(container.get());
+	}
+
+	const auto &quickList = player->quickLootListItemIds;
+	auto filterMode = player->quickLootFilter;
+
+	// Process items
+	for (const auto &item : rewardItemsVector) {
+		if (!item) {
+			continue;
+		}
+
+		uint16_t itemId = item->getID();
+		bool inList = std::find(quickList.begin(), quickList.end(), itemId) != quickList.end();
+
+		if (!quickList.empty()) {
+			if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !inList) {
+				continue;
+			} else if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_SKIPPEDLOOT && inList) {
+				continue;
+			}
+		}
+
+		if (player->getCapacity() < item->getWeight()) {
+			return RETURNVALUE_NOTENOUGHCAPACITY;
+		}
+
+		if (maxMoveItems && movedRewardItems == maxMoveItems) {
 			lootedItemsMessage = fmt::format("You can only collect {} items at a time. {} of {} objects were picked up.", maxMoveItems, movedRewardItems, rewardCount);
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
+			// Already send message here
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		bool fallbackConsumed = false;
+		auto category = getObjectCategory(item);
+		auto toContainer = findManagedContainer(player, fallbackConsumed, category, true);
+		if (!toContainer) {
+			player->sendCancelMessage("No managed loot container configured to receive the items.");
 			return RETURNVALUE_NOERROR;
 		}
 
-		ObjectCategory_t category = getObjectCategory(item);
-		if (internalCollectManagedItems(player, item, category) == RETURNVALUE_NOERROR) {
-			movedRewardItems++;
+		auto rawToContainer = toContainer.get();
+		batchUpdate.add(rawToContainer);
+
+		ReturnValue ret = processLootItems(player, toContainer, item, fallbackConsumed);
+		if (ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
+			player->sendCancelMessage(ret);
+			continue;
+		} else if (ret != RETURNVALUE_NOERROR) {
+			return ret;
 		}
+
+		player->sendLootStats(item, item->getItemCount());
+		++movedRewardItems;
 	}
 
 	lootedItemsMessage = fmt::format("{} of {} objects were picked up.", movedRewardItems, rewardCount);

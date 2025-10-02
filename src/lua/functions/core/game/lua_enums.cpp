@@ -145,6 +145,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, FLAG_IGNOREFIELDDAMAGE);
 	registerEnum(L, FLAG_IGNORENOTMOVABLE);
 	registerEnum(L, FLAG_IGNOREAUTOSTACK);
+	registerEnum(L, FLAG_LOOTPOUCH);
 
 	// Use with house:getAccessList, house:setAccessList
 	registerEnum(L, GUEST_LIST);

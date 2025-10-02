@@ -197,6 +197,7 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "addItem", PlayerFunctions::luaPlayerAddItem);
 	Lua::registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
+	Lua::registerMethod(L, "Player", "addItemBatchToPaginedContainer", PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer);
 	Lua::registerMethod(L, "Player", "addItemStash", PlayerFunctions::luaPlayerAddItemStash);
 	Lua::registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 	Lua::registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
@@ -2344,6 +2345,37 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 		ScriptEnvironment::removeTempItem(item);
 	}
 	lua_pushnumber(L, returnValue);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer(lua_State* L) {
+	// player:addItemBatchToPaginedContainer(container, itemId, count = 1, tier = 0, flags = 0)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &container = Lua::getUserdataShared<Container>(L, 2, "Container");
+	if (!container || !container->hasPagination()) {
+		player->sendCancelMessage("Invalid or non-paginated container.");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
+
+	const auto itemId = Lua::getNumber<uint16_t>(L, 3);
+	const auto count = Lua::getNumber<uint32_t>(L, 4, 1);
+	const auto tier = Lua::getNumber<uint8_t>(L, 5, 0);
+	const auto flags = Lua::getNumber<uint32_t>(L, 6, FLAG_NOLIMIT);
+
+	uint32_t actuallyAdded = 0;
+	const auto ret = player->addItemBatchToPaginedContainer(container, itemId, count, actuallyAdded, flags, tier);
+
+	if (ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+	}
+
+	lua_pushnumber(L, actuallyAdded);
 	return 1;
 }
 

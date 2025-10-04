@@ -308,6 +308,7 @@ DBResult::DBResult(MYSQL_RES* res) {
 	handle = res;
 
 	int num_fields = mysql_num_fields(handle);
+	m_numColumns = static_cast<size_t>(num_fields);
 
 	const MYSQL_FIELD* fields = mysql_fetch_fields(handle);
 	for (size_t i = 0; i < num_fields; i++) {
@@ -318,6 +319,10 @@ DBResult::DBResult(MYSQL_RES* res) {
 
 DBResult::~DBResult() {
 	mysql_free_result(handle);
+}
+
+size_t DBResult::getNumColumns() const {
+	return m_numColumns;
 }
 
 std::string DBResult::getString(const std::string &s) const {
@@ -430,19 +435,27 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	std::string baseQuery = this->query;
+	const std::string &baseQuery = this->query;
 	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
-		std::ostringstream upsertStream;
-		upsertStream << " ON DUPLICATE KEY UPDATE ";
+		size_t estimatedSize = 32;
+		for (const auto &column : upsertColumns) {
+			estimatedSize += (column.size() * 2) + 6;
+		}
+
+		upsertQuery.reserve(estimatedSize);
+		upsertQuery.append(" ON DUPLICATE KEY UPDATE ");
+		fmt::memory_buffer columnBuffer;
+		columnBuffer.reserve(64);
 		for (size_t i = 0; i < upsertColumns.size(); ++i) {
-			upsertStream << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
-			if (i < upsertColumns.size() - 1) {
-				upsertStream << ", ";
+			columnBuffer.clear();
+			fmt::format_to(std::back_inserter(columnBuffer), "`{0}` = VALUES(`{0}`)", upsertColumns[i]);
+			upsertQuery.append(columnBuffer.data(), columnBuffer.size());
+			if (i + 1 < upsertColumns.size()) {
+				upsertQuery.append(", ");
 			}
 		}
-		upsertQuery = upsertStream.str();
 	}
 
 	std::string currentBatch = values;
@@ -459,17 +472,27 @@ bool DBInsert::execute() {
 		}
 
 		std::string batchValues = currentBatch.substr(0, cutPos);
-		if (batchValues.back() == ',') {
+		if (!batchValues.empty() && batchValues.back() == ',') {
 			batchValues.pop_back();
 		}
 		currentBatch = currentBatch.substr(cutPos);
 
-		std::ostringstream query;
-		query << baseQuery << " " << batchValues << upsertQuery;
-		if (!Database::getInstance().executeQuery(query.str())) {
+		std::string query;
+		const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
+		query.reserve(baseQuery.size() + (baseHasSpace ? 0U : 1U) + batchValues.size() + upsertQuery.size());
+		query.append(baseQuery);
+		if (!baseHasSpace) {
+			query.push_back(' ');
+		}
+		query.append(batchValues);
+		query.append(upsertQuery);
+
+		if (!g_database().executeQuery(query)) {
 			return false;
 		}
 	}
 
+	values.clear();
+	length = this->query.length();
 	return true;
 }

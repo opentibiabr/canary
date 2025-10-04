@@ -1707,6 +1707,8 @@ private:
 	friend class PlayerWheel;
 	friend class IOLoginDataLoad;
 	friend class IOLoginDataSave;
+	friend class DbLoginDataLoadRepository;
+	friend class DbLoginDataSaveRepository;
 	friend class PlayerAchievement;
 	friend class PlayerBadge;
 	friend class PlayerCyclopedia;

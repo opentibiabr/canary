@@ -49,7 +49,7 @@ public:
 };
 
 ILoginDataLoadRepository &g_loginDataLoadRepository();
-void setLoginDataLoadRepositoryForTest(ILoginDataLoadRepository *repository);
+void setLoginDataLoadRepositoryForTest(ILoginDataLoadRepository* repository);
 void resetLoginDataLoadRepositoryForTest();
 
 class IOLoginDataLoad : public IOLoginData {

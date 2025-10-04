@@ -31,7 +31,7 @@
 #include "lib/di/container.hpp"
 
 namespace {
-	ILoginDataLoadRepository *g_testLoginDataLoadRepository = nullptr;
+	ILoginDataLoadRepository* g_testLoginDataLoadRepository = nullptr;
 }
 
 class DbLoginDataLoadRepository final : public ILoginDataLoadRepository {
@@ -1062,7 +1062,7 @@ ILoginDataLoadRepository &g_loginDataLoadRepository() {
 	return inject<DbLoginDataLoadRepository>();
 }
 
-void setLoginDataLoadRepositoryForTest(ILoginDataLoadRepository *repository) {
+void setLoginDataLoadRepositoryForTest(ILoginDataLoadRepository* repository) {
 	g_testLoginDataLoadRepository = repository;
 }
 

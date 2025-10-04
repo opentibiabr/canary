@@ -25,7 +25,7 @@
 #include "lib/di/container.hpp"
 
 namespace {
-	ILoginDataSaveRepository *g_testLoginDataSaveRepository = nullptr;
+	ILoginDataSaveRepository* g_testLoginDataSaveRepository = nullptr;
 }
 
 class DbLoginDataSaveRepository final : public ILoginDataSaveRepository {
@@ -944,7 +944,7 @@ ILoginDataSaveRepository &g_loginDataSaveRepository() {
 	return inject<DbLoginDataSaveRepository>();
 }
 
-void setLoginDataSaveRepositoryForTest(ILoginDataSaveRepository *repository) {
+void setLoginDataSaveRepositoryForTest(ILoginDataSaveRepository* repository) {
 	g_testLoginDataSaveRepository = repository;
 }
 

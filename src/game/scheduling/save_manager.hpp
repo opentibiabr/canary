@@ -29,6 +29,8 @@ public:
 	void saveAll();
 	void scheduleAll();
 
+	void addTask(std::function<void()> task, std::string_view taskName);
+
 	bool savePlayer(std::shared_ptr<Player> player);
 	void saveGuild(std::shared_ptr<Guild> guild);
 

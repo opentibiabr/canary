@@ -4,6 +4,13 @@ target_sources(
             network/message/networkmessage.cpp
             network/message/outputmessage.cpp
             network/protocol/protocol.cpp
+            network/protocol/builders/bosstiary_message_builder.cpp
+            network/protocol/builders/cyclopedia_character_message_builder.cpp
+            network/protocol/builders/cyclopedia_house_message_builder.cpp
+            network/protocol/builders/imbuement_damage_encoder.cpp
+            network/protocol/builders/imbuement_message_builder.cpp
+            network/protocol/builders/outfit_message_builder.cpp
+            network/protocol/builders/prey_message_builder.cpp
             network/protocol/protocolgame.cpp
             network/protocol/protocollogin.cpp
             network/protocol/protocolstatus.cpp

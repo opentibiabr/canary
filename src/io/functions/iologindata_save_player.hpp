@@ -35,6 +35,8 @@ public:
 };
 
 ILoginDataSaveRepository &g_loginDataSaveRepository();
+void setLoginDataSaveRepositoryForTest(ILoginDataSaveRepository *repository);
+void resetLoginDataSaveRepositoryForTest();
 
 class IOLoginDataSave : public IOLoginData {
 public:

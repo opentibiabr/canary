@@ -30,6 +30,10 @@
 #include "io/player_storage_repository.hpp"
 #include "lib/di/container.hpp"
 
+namespace {
+	ILoginDataLoadRepository *g_testLoginDataLoadRepository = nullptr;
+}
+
 class DbLoginDataLoadRepository final : public ILoginDataLoadRepository {
 public:
 	bool preLoadPlayer(const std::shared_ptr<Player> &player, const std::string &name) override;
@@ -1052,7 +1056,18 @@ void DbLoginDataLoadRepository::loadPlayerUpdateSystem(const std::shared_ptr<Pla
 }
 
 ILoginDataLoadRepository &g_loginDataLoadRepository() {
+	if (g_testLoginDataLoadRepository) {
+		return *g_testLoginDataLoadRepository;
+	}
 	return inject<DbLoginDataLoadRepository>();
+}
+
+void setLoginDataLoadRepositoryForTest(ILoginDataLoadRepository *repository) {
+	g_testLoginDataLoadRepository = repository;
+}
+
+void resetLoginDataLoadRepositoryForTest() {
+	g_testLoginDataLoadRepository = nullptr;
 }
 
 bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const std::string &name) {

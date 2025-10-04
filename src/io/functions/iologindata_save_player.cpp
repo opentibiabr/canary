@@ -24,6 +24,10 @@
 #include "game/scheduling/save_manager.hpp"
 #include "lib/di/container.hpp"
 
+namespace {
+	ILoginDataSaveRepository *g_testLoginDataSaveRepository = nullptr;
+}
+
 class DbLoginDataSaveRepository final : public ILoginDataSaveRepository {
 public:
 	bool savePlayerFirst(const std::shared_ptr<Player> &player) override;
@@ -934,7 +938,18 @@ bool DbLoginDataSaveRepository::savePlayerStorage(const std::shared_ptr<Player> 
 }
 
 ILoginDataSaveRepository &g_loginDataSaveRepository() {
+	if (g_testLoginDataSaveRepository) {
+		return *g_testLoginDataSaveRepository;
+	}
 	return inject<DbLoginDataSaveRepository>();
+}
+
+void setLoginDataSaveRepositoryForTest(ILoginDataSaveRepository *repository) {
+	g_testLoginDataSaveRepository = repository;
+}
+
+void resetLoginDataSaveRepositoryForTest() {
+	g_testLoginDataSaveRepository = nullptr;
 }
 
 bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {

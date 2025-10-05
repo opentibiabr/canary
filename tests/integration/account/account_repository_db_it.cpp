@@ -91,7 +91,7 @@ namespace it_account_repo_db {
 
 	TEST_F(AccountRepositoryDBTest, PremiumDaysPurchasedSync) {
 		auto &db = g_database();
-		databaseTest(db, [] {
+		databaseTest(db, [&db] {
 			AccountRepositoryDB accRepo {};
 			auto acc = std::make_unique<AccountInfo>();
 			ASSERT_TRUE(accRepo.loadByID(1, acc));

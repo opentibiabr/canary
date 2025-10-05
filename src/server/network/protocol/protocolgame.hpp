@@ -49,6 +49,7 @@ class Party;
 class Creature;
 class MonsterType;
 class Npc;
+class CyclopediaCharacterMessageBuilder;
 
 struct ModalWindow;
 struct Position;
@@ -262,7 +263,6 @@ private:
 	void parseCloseChannel(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -534,6 +534,7 @@ private:
 	friend class PlayerWheel;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class CyclopediaCharacterMessageBuilder;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;

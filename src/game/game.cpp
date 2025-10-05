@@ -4966,10 +4966,21 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	std::shared_ptr<Item> tradeItem = tradeThing->getItem();
+	if (!tradeItem) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (tradeItem->getID() != itemId || !tradeItem->isPickupable() || tradeItem->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
+
+	if (tradeItem->isRemoved() || !tradeItem->getParent()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (tradeItem->isStoreItem() || tradeItem->hasOwner()) {
 		player->sendCancelMessage(RETURNVALUE_ITEMUNTRADEABLE);
 		return;

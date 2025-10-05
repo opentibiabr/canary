@@ -699,17 +699,17 @@ function Player.canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You reached the maximum amount for this blessing."
 			end
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then  
-			local hasAnyMaxBlessing = false  
-			for i = 2, 8 do  
-				if self:getBlessingCount(i) >= 5 then  
-					hasAnyMaxBlessing = true  
-					break  
-				end  
-			end  
-			if hasAnyMaxBlessing then  
-				disabled = 1  
-				disabledReason = "You already have all Blessings."  
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
+			local hasAnyMaxBlessing = false
+			for i = 2, 8 do
+				if self:getBlessingCount(i) >= 5 then
+					hasAnyMaxBlessing = true
+					break
+				end
+			end
+			if hasAnyMaxBlessing then
+				disabled = 1
+				disabledReason = "You already have all Blessings."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
 			local outfitLookType
@@ -1614,20 +1614,20 @@ function GameStore.processSingleBlessingPurchase(player, blessId, count)
 end
 
 function GameStore.processAllBlessingsPurchase(player, count)
-    local twistOfFateCount = player:getBlessingCount(1)  
-      
-    if twistOfFateCount == 0 then  
-        player:addBlessing(1, count)  
-    elseif twistOfFateCount > 0 and twistOfFateCount < 5 then  
-        player:addBlessing(1, 5 - twistOfFateCount)  
-    end  
-      
-    for i = 2, 8 do  
-        local currentCount = player:getBlessingCount(i)  
-        if currentCount < 5 then  
-            player:addBlessing(i, math.min(count, 5 - currentCount))  
-        end  
-    end  
+	local twistOfFateCount = player:getBlessingCount(1)
+
+	if twistOfFateCount == 0 then
+		player:addBlessing(1, count)
+	elseif twistOfFateCount > 0 and twistOfFateCount < 5 then
+		player:addBlessing(1, 5 - twistOfFateCount)
+	end
+
+	for i = 2, 8 do
+		local currentCount = player:getBlessingCount(i)
+		if currentCount < 5 then
+			player:addBlessing(i, math.min(count, 5 - currentCount))
+		end
+	end
 end
 
 function GameStore.processInstantRewardAccess(player, offerCount)

@@ -100,6 +100,30 @@ void SaveManager::scheduleAll() {
 	});
 }
 
+void SaveManager::addTask(std::function<void()> task, std::string_view taskName) {
+	if (!task) {
+		logger.debug("Skipping save task '{}' because it is empty.", taskName);
+		return;
+	}
+
+	std::string name = taskName.empty() ? "Unnamed save task" : std::string(taskName);
+
+	auto safeTask = [this, task = std::move(task), name = std::move(name)]() mutable {
+		try {
+			task();
+		} catch (const std::exception &e) {
+			logger.error("Failed to execute save task {}: {}", name, e.what());
+		}
+	};
+
+	if (!g_configManager().getBoolean(TOGGLE_SAVE_ASYNC)) {
+		safeTask();
+		return;
+	}
+
+	threadPool.detach_task(std::move(safeTask));
+}
+
 void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 	auto playerToSave = playerPtr.lock();
 	if (!playerToSave) {

@@ -14,11 +14,13 @@
 
 class Condition;
 class Creature;
+class Monster;
 class Spell;
 class Player;
 class MatrixArea;
 class Weapon;
 class Tile;
+struct TextMessage;
 
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
@@ -211,6 +213,40 @@ public:
 
 	static void addDistanceEffect(const std::shared_ptr<Creature> &caster, const Position &fromPos, const Position &toPos, uint16_t effect);
 
+	static void applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Creature> target);
+	static void applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target);
+	static void handleHazardSystemAttack(CombatDamage &damage, const std::shared_ptr<Player> &player, const std::shared_ptr<Monster> &monster, bool isPlayerAttacker);
+	static void notifyHazardSpectators(const CreatureVector &spectators, const Position &targetPos, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster);
+	static void buildMessageAsTarget(
+		const std::shared_ptr<Creature> &attacker, const CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer,
+		const std::shared_ptr<Player> &targetPlayer, TextMessage &message, const std::string &damageString
+	);
+	static void buildMessageAsAttacker(
+		const std::shared_ptr<Creature> &target, const CombatDamage &damage, TextMessage &message, const std::string &damageString, bool amplified = false,
+		const std::shared_ptr<Player> &attackerPlayer = nullptr
+	);
+	static void sendEffects(
+		const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
+		const CreatureVector &spectators
+	);
+	static void applyCharmRune(
+		const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target,
+		const int32_t &realDamage
+	);
+	static void applyManaLeech(
+		const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target,
+		const CombatDamage &damage, const int32_t &realDamage
+	);
+	static void applyLifeLeech(
+		const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target,
+		const CombatDamage &damage, const int32_t &realDamage
+	);
+	static void applyImbuementElementalDamage(
+		const std::shared_ptr<Player> &attackerPlayer,
+		std::shared_ptr<Item> item,
+		CombatDamage &damage
+	);
+
 	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target) const;
 	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected = 1) const;
 	bool doCombat(const std::shared_ptr<Creature> &caster, const Position &pos) const;
@@ -259,7 +295,6 @@ private:
 	static void CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data);
 
 	static void CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data);
-	static CombatDamage applyImbuementElementalDamage(const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage);
 	static void CombatManaFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* damage);
 	/**
 	 * @brief Checks if a fear condition can be applied to a player.

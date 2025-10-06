@@ -7026,7 +7026,7 @@ for k, category in ipairs(GameStore.Categories) do
 				offer.type = GameStore.OfferTypes.OFFER_TYPE_NONE
 			end
 			if not offer.coinType then
-				offer.coinType = GameStore.CoinType.Transferable
+				offer.coinType = GameStore.CoinType.Coin
 			end
 		end
 	end

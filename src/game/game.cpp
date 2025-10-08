@@ -3363,6 +3363,59 @@ uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, b
 	return total;
 }
 
+uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
+	// Handle special coins first
+	if (itemId == ITEM_GOLD_COIN) {
+		return 1;
+	} else if (itemId == ITEM_PLATINUM_COIN) {
+		return 100;
+	} else if (itemId == ITEM_CRYSTAL_COIN) {
+		return 10000;
+	}
+
+	// Get historical market statistics for this item
+	const auto &purchaseStats = IOMarket::getInstance().getPurchaseStatistics();
+	const auto &saleStats = IOMarket::getInstance().getSaleStatistics();
+
+	uint64_t purchaseAverage = 0;
+	uint64_t saleAverage = 0;
+	bool hasPurchaseData = false;
+	bool hasSaleData = false;
+
+	// Calculate average from purchase history (people buying items)
+	auto purchaseIt = purchaseStats.find(itemId);
+	if (purchaseIt != purchaseStats.end()) {
+		auto tierIt = purchaseIt->second.find(tier);
+		if (tierIt != purchaseIt->second.end() && tierIt->second.numTransactions > 0) {
+			purchaseAverage = tierIt->second.totalPrice / tierIt->second.numTransactions;
+			hasPurchaseData = true;
+		}
+	}
+
+	// Calculate average from sale history (people selling items)
+	auto saleIt = saleStats.find(itemId);
+	if (saleIt != saleStats.end()) {
+		auto tierIt = saleIt->second.find(tier);
+		if (tierIt != saleIt->second.end() && tierIt->second.numTransactions > 0) {
+			saleAverage = tierIt->second.totalPrice / tierIt->second.numTransactions;
+			hasSaleData = true;
+		}
+	}
+
+	// Return average of purchase and sale historical data
+	if (hasPurchaseData && hasSaleData) {
+		return (purchaseAverage + saleAverage) / 2;
+	} else if (hasPurchaseData) {
+		return purchaseAverage;
+	} else if (hasSaleData) {
+		return saleAverage;
+	}
+
+	// Fallback to NPC prices if no historical market data exists
+	const ItemType &iType = Item::items[itemId];
+	return (iType.buyPrice + iType.sellPrice) / 2; // Average of NPC buy and sell prices
+}
+
 std::shared_ptr<Item> searchForItem(const std::shared_ptr<Container> &container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/) {
 	if (!container) {
 		return nullptr;

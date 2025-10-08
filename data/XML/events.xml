@@ -6,7 +6,7 @@
 		<colors colordark="#235c00" colorlight="#2d7400" />
 		<details displaypriority="6" isseasonal="0" specialevent="0" />
 	</event>
-	<event name="XP Event" startdate="4/23/2025" enddate="5/06/2025" script="" >
+	<event name="XP Event" startdate="9/17/2025" enddate="9/20/2025" script="" >
 		<ingame exprate="200" lootrate="100" bosslootrate="100" spawnrate="100" skillrate="200" />
 		<description description="EnaraOT is launching!! Enjoy Double Exp event and skill rate!" />
 		<colors colordark="#735D10" colorlight="#8B6D05" />

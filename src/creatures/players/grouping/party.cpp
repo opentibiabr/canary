@@ -829,8 +829,9 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
-		const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
-		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+		// Use market average price instead of NPC price
+		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
+		playerAnalyzer->lootPrice += averagePrice * count;
 	}
 	updateTrackerAnalyzer();
 }
@@ -856,8 +857,9 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		const std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
-		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+		// Use market average price instead of NPC price
+		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
+		playerAnalyzer->supplyPrice += averagePrice;
 	}
 	updateTrackerAnalyzer();
 }
@@ -909,8 +911,18 @@ void Party::reloadPrices() const {
 
 	for (const auto &analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
-			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
-			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+			// Use market average prices instead of NPC prices
+			analyzer->lootPrice = 0;
+			for (const auto &[itemId, count] : analyzer->lootMap) {
+				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
+				analyzer->lootPrice += averagePrice * count;
+			}
+
+			analyzer->supplyPrice = 0;
+			for (const auto &[itemId, count] : analyzer->supplyMap) {
+				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
+				analyzer->supplyPrice += averagePrice * count;
+			}
 			continue;
 		}
 

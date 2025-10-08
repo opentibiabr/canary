@@ -3411,9 +3411,7 @@ uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
 		return saleAverage;
 	}
 
-	// Fallback to NPC prices if no historical market data exists
-	const ItemType &iType = Item::items[itemId];
-	return (iType.buyPrice + iType.sellPrice) / 2; // Average of NPC buy and sell prices
+	return 0;
 }
 
 std::shared_ptr<Item> searchForItem(const std::shared_ptr<Container> &container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/) {

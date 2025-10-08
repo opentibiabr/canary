@@ -831,7 +831,13 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	} else {
 		// Use market average price instead of NPC price
 		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
-		playerAnalyzer->lootPrice += averagePrice * count;
+		if (averagePrice > 0) {
+			playerAnalyzer->lootPrice += averagePrice * count;
+		}else{
+			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
+			playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+		}
+
 	}
 	updateTrackerAnalyzer();
 }
@@ -859,7 +865,13 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 	} else {
 		// Use market average price instead of NPC price
 		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
-		playerAnalyzer->supplyPrice += averagePrice;
+		if(averagePrice > 0){
+			playerAnalyzer->supplyPrice += averagePrice;
+		}else{
+			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
+			playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+		}
+
 	}
 	updateTrackerAnalyzer();
 }
@@ -915,13 +927,23 @@ void Party::reloadPrices() const {
 			analyzer->lootPrice = 0;
 			for (const auto &[itemId, count] : analyzer->lootMap) {
 				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
-				analyzer->lootPrice += averagePrice * count;
+				if(averagePrice > 0){
+					analyzer->lootPrice += averagePrice * count;
+				}else{
+					analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
+				}
+
 			}
 
 			analyzer->supplyPrice = 0;
 			for (const auto &[itemId, count] : analyzer->supplyMap) {
 				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
-				analyzer->supplyPrice += averagePrice * count;
+				if(averagePrice > 0){
+					analyzer->supplyPrice += averagePrice * count;
+				}else{
+					analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+				}
+
 			}
 			continue;
 		}

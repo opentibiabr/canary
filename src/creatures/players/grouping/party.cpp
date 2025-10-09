@@ -933,7 +933,7 @@ void Party::reloadPrices() const {
 					analyzer->lootPrice += averagePrice * count;
 				} else {
 					// fallback to NPC Buy price or 0
-					std::map<uint16_t, uint64_t> singleItemMap = { {itemId, static_cast<uint64_t>(count)} };
+					std::map<uint16_t, uint64_t> singleItemMap = { { itemId, static_cast<uint64_t>(count) } };
 					uint64_t marketPrice = g_game().getItemMarketPrice(singleItemMap, false);
 					analyzer->lootPrice += marketPrice;
 				}
@@ -946,7 +946,7 @@ void Party::reloadPrices() const {
 					analyzer->supplyPrice += averagePrice * count;
 				} else {
 					// fallback to NPC Sell price or 0
-					std::map<uint16_t, uint64_t> singleItemMap = { {itemId, static_cast<uint64_t>(count)} };
+					std::map<uint16_t, uint64_t> singleItemMap = { { itemId, static_cast<uint64_t>(count) } };
 					uint64_t leaderprice = g_game().getItemMarketPrice(singleItemMap, true);
 					analyzer->supplyPrice += leaderprice;
 				}

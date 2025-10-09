@@ -15,6 +15,7 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
+#include "lib/di/container.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
@@ -827,15 +828,21 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	}
 
 	if (priceType == LEADER_PRICE) {
-		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
+		uint64_t customPrice = leader->getItemCustomPrice(item->getID());
+		playerAnalyzer->lootPrice += customPrice * count;
+		g_logger().warn("[addPlayerLoot] - Player " + player->getName() + ", Item ID " + std::to_string(item->getID()) + ", Count " + std::to_string(count) + ", Using LEADER_PRICE: " + std::to_string(customPrice) + " per item, Total added: " + std::to_string(customPrice * count));
 	} else {
 		// Use market average price instead of NPC price
 		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
 		if (averagePrice > 0) {
 			playerAnalyzer->lootPrice += averagePrice * count;
+			g_logger().warn("[addPlayerLoot] - Player " + player->getName() + ", Item ID " + std::to_string(item->getID()) + ", Count " + std::to_string(count) + ", Using MARKET_AVERAGE_PRICE: " + std::to_string(averagePrice) + " per item, Total added: " + std::to_string(averagePrice * count));
 		} else {
+			// fallback to NPC Buy price or 0
 			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
-			playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+			uint64_t marketPrice = g_game().getItemMarketPrice(itemMap, false); // true for NPC selling price, false = NPC Buying from player
+			playerAnalyzer->lootPrice += marketPrice;
+			g_logger().warn("[addPlayerLoot] - Player " + player->getName() + ", Item ID " + std::to_string(item->getID()) + ", Count " + std::to_string(count) + ", Using MARKET_PRICE_FALLBACK (average was 0): " + std::to_string(marketPrice) + " total");
 		}
 	}
 	updateTrackerAnalyzer();
@@ -927,8 +934,12 @@ void Party::reloadPrices() const {
 				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
 				if (averagePrice > 0) {
 					analyzer->lootPrice += averagePrice * count;
+					g_logger().warn("[reloadPrices] - Player " + analyzer->name + ", Loot Item ID " + std::to_string(itemId) + ", Count " + std::to_string(count) + ", Using MARKET_AVERAGE_PRICE: " + std::to_string(averagePrice) + " per item, Total added: " + std::to_string(averagePrice * count));
 				} else {
-					analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
+					// fallback to NPC Buy price or 0
+					uint64_t marketPrice = g_game().getItemMarketPrice(analyzer->lootMap, false); // true for NPC selling price, false = NPC Buying from player
+					analyzer->lootPrice = marketPrice;
+					g_logger().warn("[reloadPrices] - Player " + analyzer->name + ", Loot Item ID " + std::to_string(itemId) + ", Count " + std::to_string(count) + ", Using MARKET_PRICE_FALLBACK (average was 0): " + std::to_string(marketPrice) + " total");
 				}
 			}
 
@@ -937,8 +948,12 @@ void Party::reloadPrices() const {
 				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
 				if (averagePrice > 0) {
 					analyzer->supplyPrice += averagePrice * count;
+					g_logger().warn("[reloadPrices] - Player " + analyzer->name + ", Supply Item ID " + std::to_string(itemId) + ", Count " + std::to_string(count) + ", Using MARKET_AVERAGE_PRICE: " + std::to_string(averagePrice) + " per item, Total added: " + std::to_string(averagePrice * count));
 				} else {
-					analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+					// fallback to NPC Sell price or 0
+					uint64_t marketPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+					analyzer->supplyPrice += marketPrice;
+					g_logger().warn("[reloadPrices] - Player " + analyzer->name + ", Supply Item ID " + std::to_string(itemId) + ", Count " + std::to_string(count) + ", Using MARKET_PRICE_FALLBACK (average was 0): " + std::to_string(marketPrice) + " total");
 				}
 			}
 			continue;
@@ -946,12 +961,16 @@ void Party::reloadPrices() const {
 
 		analyzer->lootPrice = 0;
 		for (const auto &[itemId, price] : analyzer->lootMap) {
-			analyzer->lootPrice += leader->getItemCustomPrice(itemId) * price;
+			uint64_t customPrice = leader->getItemCustomPrice(itemId);
+			analyzer->lootPrice += customPrice * price;
+			g_logger().warn("[reloadPrices] - Player " + analyzer->name + ", Loot Item ID " + std::to_string(itemId) + ", Count " + std::to_string(price) + ", Using LEADER_PRICE: " + std::to_string(customPrice) + " per item, Total added: " + std::to_string(customPrice * price));
 		}
 
 		analyzer->supplyPrice = 0;
 		for (const auto &[itemId, price] : analyzer->supplyMap) {
-			analyzer->supplyPrice += leader->getItemCustomPrice(itemId, true) * price;
+			uint64_t customPrice = leader->getItemCustomPrice(itemId, true);
+			analyzer->supplyPrice += customPrice * price;
+			g_logger().warn("[reloadPrices] - Player " + analyzer->name + ", Supply Item ID " + std::to_string(itemId) + ", Count " + std::to_string(price) + ", Using LEADER_PRICE: " + std::to_string(customPrice) + " per item, Total added: " + std::to_string(customPrice * price));
 		}
 	}
 }

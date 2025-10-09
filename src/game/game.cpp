@@ -3340,26 +3340,41 @@ ObjectCategory_t Game::getObjectCategory(const ItemType &it) {
 
 uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
 	uint64_t total = 0;
+	g_logger().warn("[getItemMarketPrice] - Starting calculation with " + std::to_string(itemMap.size()) + " items, buyPrice: " + (buyPrice ? "true" : "false"));
+
 	for (const auto &it : itemMap) {
+		uint64_t itemValue = 0;
 		if (it.first == ITEM_GOLD_COIN) {
-			total += it.second;
+			itemValue = it.second;
+			total += itemValue;
+			g_logger().warn("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + " (GOLD_COIN), Count " + std::to_string(it.second) + ", Value per unit: 1, Total value: " + std::to_string(itemValue));
 		} else if (it.first == ITEM_PLATINUM_COIN) {
-			total += 100 * it.second;
+			itemValue = 100 * it.second;
+			total += itemValue;
+			g_logger().warn("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + " (PLATINUM_COIN), Count " + std::to_string(it.second) + ", Value per unit: 100, Total value: " + std::to_string(itemValue));
 		} else if (it.first == ITEM_CRYSTAL_COIN) {
-			total += 10000 * it.second;
+			itemValue = 10000 * it.second;
+			total += itemValue;
+			g_logger().warn("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + " (CRYSTAL_COIN), Count " + std::to_string(it.second) + ", Value per unit: 10000, Total value: " + std::to_string(itemValue));
 		} else {
 			auto marketIt = itemsPriceMap.find(it.first);
 			if (marketIt != itemsPriceMap.end()) {
 				for (auto &[tier, price] : (*marketIt).second) {
-					total += price * it.second;
+					itemValue = price * it.second;
+					total += itemValue;
+					g_logger().warn("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + ", Count " + std::to_string(it.second) + ", Tier " + std::to_string(tier) + ", Using MARKET_PRICE: " + std::to_string(price) + " per item, Total value: " + std::to_string(itemValue));
 				}
 			} else {
 				const ItemType &iType = Item::items[it.first];
-				total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+				uint64_t npcPrice = buyPrice ? iType.buyPrice : iType.sellPrice;
+				itemValue = npcPrice * it.second;
+				total += itemValue;
+				g_logger().warn("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + ", Count " + std::to_string(it.second) + ", Using NPC_PRICE (" + (buyPrice ? "buy" : "sell") + "): " + std::to_string(npcPrice) + " per item, Total value: " + std::to_string(itemValue));
 			}
 		}
 	}
 
+	g_logger().warn("[getItemMarketPrice] - Final total: " + std::to_string(total));
 	return total;
 }
 

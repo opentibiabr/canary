@@ -3185,8 +3185,7 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg) {
 		return;
 	}
 
-	g_logger().warn("[ProtocolGame::parsePreyAction] - Debug info: playerId={}, slot={}, action={}, option={}, index={}, raceId={}",
-		player->getID(), slot, action, option, index, raceId);
+	g_logger().warn("[ProtocolGame::parsePreyAction] - Debug info: playerId={}, slot={}, action={}, option={}, index={}, raceId={}", player->getID(), slot, action, option, index, raceId);
 
 	g_game().playerPreyAction(player->getID(), slot, action, option, index, raceId);
 }

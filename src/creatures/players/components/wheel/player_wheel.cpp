@@ -1191,6 +1191,11 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	}
 
 	m_destroyedGems.emplace_back(gem);
+	for (auto &activeGem : m_activeGems) {
+		if (activeGem && activeGem.uuid == gem.uuid) {
+			activeGem = emptyGem;
+		}
+	}
 	m_revealedGems.erase(m_revealedGems.begin() + index);
 
 	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);

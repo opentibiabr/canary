@@ -1191,6 +1191,20 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	}
 
 	m_destroyedGems.emplace_back(gem);
+	gem.remove(gemsKV());
+
+	bool wasActive = false;
+	for (auto &activeGem : m_activeGems) {
+		if (activeGem && activeGem.uuid == gem.uuid) {
+			activeGem = emptyGem;
+			wasActive = true;
+		}
+	}
+
+	if (wasActive) {
+		const auto affinityKey = std::string(magic_enum::enum_name(gem.affinity));
+		gemsKV()->scoped("active")->remove(affinityKey);
+	}
 	m_revealedGems.erase(m_revealedGems.begin() + index);
 
 	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);

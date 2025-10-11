@@ -3455,7 +3455,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	}
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
-	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
+	if (slotItem && slotItem->getID() == it.id && (!hasTier || slotItem->getTier() == tier) && !equipItem) {
 		ret = internalCollectManagedItems(player, slotItem, getObjectCategory(slotItem), false);
 	} else if (equipItem) {
 		// Shield slot item
@@ -4872,9 +4872,16 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 		count = maxWithdrawLimit;
 	}
 
+	const uint32_t previousStashCount = player->getStashItemCount(itemId);
 	auto ret = player->addItemFromStash(itemId, count);
 	if (ret != RETURNVALUE_NOERROR) {
-		g_logger().warn("[{}] failed to retrieve item: {}, to player: {}, from the stash", __FUNCTION__, itemId, player->getName());
+		g_logger().warn("[{}] failed to retrieve item: {}, count {}, to player: {}, from the stash", __FUNCTION__, itemId, count, player->getName());
+		const uint32_t currentStashCount = player->getStashItemCount(itemId);
+		if (currentStashCount < previousStashCount) {
+			const uint32_t diff = previousStashCount - currentStashCount;
+			player->addItemOnStash(itemId, diff);
+			g_logger().warn("[{}] corrected stash count for item: {}, count {}, to player: {}, from the stash", __FUNCTION__, itemId, diff, player->getName());
+		}
 		player->sendCancelMessage(ret);
 	}
 
@@ -4959,10 +4966,21 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	std::shared_ptr<Item> tradeItem = tradeThing->getItem();
+	if (!tradeItem) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (tradeItem->getID() != itemId || !tradeItem->isPickupable() || tradeItem->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
+
+	if (tradeItem->isRemoved() || !tradeItem->getParent()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (tradeItem->isStoreItem() || tradeItem->hasOwner()) {
 		player->sendCancelMessage(RETURNVALUE_ITEMUNTRADEABLE);
 		return;

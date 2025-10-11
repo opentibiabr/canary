@@ -7954,11 +7954,6 @@ void ProtocolGame::sendPreyData(const std::unique_ptr<PreySlot> &slot) {
 		msg.add<uint16_t>(timeDiffMinutes ? timeDiffMinutes : 0);
 	} else {
 		msg.add<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0));
-		// Only send wildcards for states that expect it (not for Active state)
-		bool isOTCClient = isOTC || isOTCR;
-		if (slot->state != PreyDataState_Active && isOTCClient) {
-			msg.addByte(static_cast<uint8_t>(player->getPreyCards())); // wildcards/prey cards
-		}
 		msg.addByte(static_cast<uint8_t>(slot->option));
 	}
 

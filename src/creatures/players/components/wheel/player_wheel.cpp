@@ -1250,7 +1250,8 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
 	if (index >= m_revealedGems.size()) {
 		g_logger().error(
 			"[{}] Player {} tried to activate gem {} but only has {} revealed gems",
-			__FUNCTION__, m_player.getName(), index, m_revealedGems.size());
+			__FUNCTION__, m_player.getName(), index, m_revealedGems.size()
+		);
 		removeActiveGem(affinity);
 		return;
 	}
@@ -1261,11 +1262,11 @@ void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
 		removeActiveGem(affinity);
 		return;
 	}
-        if (gem.affinity != affinity) {
-                g_logger().error("[{}] Gem with index {} has affinity {} but trying to set it to {}", __FUNCTION__, index, fmt::underlying(gem.affinity), fmt::underlying(affinity));
-                return;
-        }
-        m_activeGems[static_cast<uint8_t>(affinity)] = gem;
+	if (gem.affinity != affinity) {
+		g_logger().error("[{}] Gem with index {} has affinity {} but trying to set it to {}", __FUNCTION__, index, fmt::underlying(gem.affinity), fmt::underlying(affinity));
+		return;
+	}
+	m_activeGems[static_cast<uint8_t>(affinity)] = gem;
 }
 
 void PlayerWheel::removeActiveGem(WheelGemAffinity_t affinity) {

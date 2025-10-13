@@ -557,6 +557,8 @@ private:
 
 	uint16_t otclientV8 = 0;
 
+	uint64_t m_nextPartyAnalyzerUpdate = 0;
+
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();

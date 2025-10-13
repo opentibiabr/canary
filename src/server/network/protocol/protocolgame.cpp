@@ -8495,6 +8495,13 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &part
 		return;
 	}
 
+	const uint64_t currentTime = OTSYS_TIME();
+	if (currentTime < m_nextPartyAnalyzerUpdate) {
+		return;
+	}
+
+	m_nextPartyAnalyzerUpdate = currentTime + 1000;
+
 	NetworkMessage msg;
 	msg.addByte(0x2B);
 	msg.add<uint32_t>(party->getAnalyzerTimeNow());

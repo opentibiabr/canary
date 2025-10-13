@@ -9308,6 +9308,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			// Do not register a transaction for coins creating an offer
 			player->getAccount()->removeCoins(CoinType::Transferable, static_cast<uint32_t>(amount), "");
+			player->getAccount()->removeCoins(CoinType::Normal, static_cast<uint32_t>(amount), "");
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());

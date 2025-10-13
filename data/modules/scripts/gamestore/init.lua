@@ -2088,33 +2088,34 @@ function Player.makeCoinTransaction(self, offer, desc)
 		playerKV:set(GameStore.Kv.expBoostCount, expBoostCount + 1)
 	end
 
-	-- Remove transferable coins first then regular coins if needed
-	local amountOfCoinsToPay = offer.price
-	local playerTransferableTibiaCoinBalance = self:getTransferableCoins()
-	local playerTibiaCoinBalance = self:getTibiaCoins()
+	local amount = offer.price
 
-	if not self:canPayForStoreOffer(amountOfCoinsToPay) then
+	local total = self:getTibiaCoins()
+	if total < amount then
+		op = false
 		return false
 	end
 
-	local transferableCoinsToPay = math.min(playerTransferableTibiaCoinBalance, amountOfCoinsToPay)
-	local remainingAmountToPay = amountOfCoinsToPay - transferableCoinsToPay
+	local transferable = self:getTransferableCoins()
+	local spendTransferable = math.min(transferable, amount)
 
-	-- Deduct transferable coins first
-	if transferableCoinsToPay > 0 then
-		self:removeTransferableCoinsBalance(transferableCoinsToPay)
-	end
-
-	-- Then deduct regular coins if needed
-	if remainingAmountToPay > 0 then
-		if remainingAmountToPay <= playerTibiaCoinBalance then
-			op = self:removeCoinsBalance(remainingAmountToPay)
-		else
+	if spendTransferable > 0 then
+		if not self:removeTransferableCoinsBalance(spendTransferable) then
 			op = false
+			return false
 		end
-	else
-		op = true
 	end
+
+	if not self:removeCoinsBalance(amount) then
+		-- rollback transferable if total debit fails
+		if spendTransferable > 0 then
+			self:addTransferableCoinsBalance(spendTransferable)
+		end
+		op = false
+		return false
+	end
+
+	op = true
 
 	-- When the transaction is successful add to the history
 	if op then
@@ -2311,8 +2312,11 @@ function Player:openStore(serviceName)
 	local playerId = self:getId()
 	openStore(playerId)
 
-	--local serviceType = msg:getByte()
+	local serviceType = msg:getByte()
+	print("Service type: ", serviceType)
 	local category = GameStore.Categories and GameStore.Categories[1] or nil
+
+	print("Service name: ", serviceName)
 
 	if serviceName and serviceName:lower() == "home" then
 		return sendHomePage(playerId)

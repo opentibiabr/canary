@@ -6591,7 +6591,12 @@ Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
 		if (auto result = g_database().storeQuery(query); result && result->hasNext()) {
 			int64_t lastKillTime = 0;
 			const std::string &timeStr = result->getString("time");
-			std::from_chars(timeStr.data(), timeStr.data() + timeStr.size(), lastKillTime);
+			auto convResult = std::from_chars(timeStr.data(), timeStr.data() + timeStr.size(), lastKillTime);
+			if (convResult.ec != std::errc()) {
+				// Failed to parse, set lastKillTime to 0 (or handle as appropriate)
+				lastKillTime = 0;
+				// Optionally, log an error or warning here
+			}
 			const int64_t now = getTimeNow();
 			const int64_t duration = static_cast<int64_t>(
 										 g_configManager().getNumber(getSkull() == SKULL_RED ? RED_SKULL_DURATION : BLACK_SKULL_DURATION)

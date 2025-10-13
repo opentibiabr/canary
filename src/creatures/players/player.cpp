@@ -5989,8 +5989,6 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 		return;
 	}
 
-	refreshSkullTicksFromLastKill();
-
 	const auto &targetPlayer = target->getPlayer();
 	if (targetPlayer && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
 		if (!pzLocked && g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
@@ -6609,7 +6607,7 @@ Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
 
 	info.remainingMs = ticks;
 	if (ticks > 0) {
-		info.remainingDays = std::floor<uint8_t>(ticks / (24 * 60 * 60 * 1000));
+		info.remainingDays = static_cast<uint8_t>(std::floor(ticks / (24 * 60 * 60 * 1000)))
 	}
 
 	return info;

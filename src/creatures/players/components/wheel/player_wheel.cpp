@@ -1191,6 +1191,20 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	}
 
 	m_destroyedGems.emplace_back(gem);
+	gem.remove(gemsKV());
+
+	bool wasActive = false;
+	for (auto &activeGem : m_activeGems) {
+		if (activeGem && activeGem.uuid == gem.uuid) {
+			activeGem = emptyGem;
+			wasActive = true;
+		}
+	}
+
+	if (wasActive) {
+		const auto affinityKey = std::string(magic_enum::enum_name(gem.affinity));
+		gemsKV()->scoped("active")->remove(affinityKey);
+	}
 	m_revealedGems.erase(m_revealedGems.begin() + index);
 
 	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);
@@ -1233,9 +1247,19 @@ void PlayerWheel::toggleGemLock(uint16_t index) {
 }
 
 void PlayerWheel::setActiveGem(WheelGemAffinity_t affinity, uint16_t index) {
-	auto &gem = getGem(index);
+	if (index >= m_revealedGems.size()) {
+		g_logger().error(
+			"[{}] Player {} tried to activate gem {} but only has {} revealed gems",
+			__FUNCTION__, m_player.getName(), index, m_revealedGems.size()
+		);
+		removeActiveGem(affinity);
+		return;
+	}
+
+	auto &gem = m_revealedGems[index];
 	if (!gem) {
 		g_logger().error("[{}] Failed to load gem with index {}", __FUNCTION__, index);
+		removeActiveGem(affinity);
 		return;
 	}
 	if (gem.affinity != affinity) {

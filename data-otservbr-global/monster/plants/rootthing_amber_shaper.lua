@@ -23,13 +23,13 @@ monster.Bestiary = {
 	CharmsPoints = 50,
 	Stars = 4,
 	Occurrence = 0,
-	Locations = "Podzilla Stalk.",
+	Locations = "Podzilla Stalk",
 }
 
 monster.health = 15000
 monster.maxHealth = 15000
 monster.race = "venom"
-monster.corpse = 48401
+monster.corpse = 48402
 monster.speed = 185
 monster.manaCost = 0
 

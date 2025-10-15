@@ -40,8 +40,13 @@ suite<"utils"> getDirectionToTest = [] {
 		GetDirectionToTestCase { Position { 122, 0, 0 }, Position { 0, 123, 0 }, DIRECTION_SOUTHWEST, DIRECTION_SOUTH },
 	};
 
+	static std::vector<std::string> test_names;
+	test_names.reserve(getDirectionToTestCases.size());
+
 	for (auto getDirectionToTestCase : getDirectionToTestCases) {
-		test("getDirectionTo " + getDirectionToTestCase.toString()) = [getDirectionToTestCase] {
+		test_names.push_back("getDirectionTo " + getDirectionToTestCase.toString());
+		auto &name = test_names.back();
+		test(std::string_view { name }) = [getDirectionToTestCase] {
 			auto [from, to, expected, expectedForExactDiagonal] = getDirectionToTestCase;
 
 			auto result = getDirectionTo(from, to);

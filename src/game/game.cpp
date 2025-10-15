@@ -3455,7 +3455,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	}
 	ReturnValue ret = RETURNVALUE_NOERROR;
 
-	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == slotItem->getStackSize() || !equipItem)) {
+	if (slotItem && slotItem->getID() == it.id && (!hasTier || slotItem->getTier() == tier) && !equipItem) {
 		ret = internalCollectManagedItems(player, slotItem, getObjectCategory(slotItem), false);
 	} else if (equipItem) {
 		// Shield slot item
@@ -4872,9 +4872,16 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 		count = maxWithdrawLimit;
 	}
 
+	const uint32_t previousStashCount = player->getStashItemCount(itemId);
 	auto ret = player->addItemFromStash(itemId, count);
 	if (ret != RETURNVALUE_NOERROR) {
-		g_logger().warn("[{}] failed to retrieve item: {}, to player: {}, from the stash", __FUNCTION__, itemId, player->getName());
+		g_logger().warn("[{}] failed to retrieve item: {}, count {}, to player: {}, from the stash", __FUNCTION__, itemId, count, player->getName());
+		const uint32_t currentStashCount = player->getStashItemCount(itemId);
+		if (currentStashCount < previousStashCount) {
+			const uint32_t diff = previousStashCount - currentStashCount;
+			player->addItemOnStash(itemId, diff);
+			g_logger().warn("[{}] corrected stash count for item: {}, count {}, to player: {}, from the stash", __FUNCTION__, itemId, diff, player->getName());
+		}
 		player->sendCancelMessage(ret);
 	}
 
@@ -4959,10 +4966,21 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	std::shared_ptr<Item> tradeItem = tradeThing->getItem();
+	if (!tradeItem) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (tradeItem->getID() != itemId || !tradeItem->isPickupable() || tradeItem->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
+
+	if (tradeItem->isRemoved() || !tradeItem->getParent()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	if (tradeItem->isStoreItem() || tradeItem->hasOwner()) {
 		player->sendCancelMessage(RETURNVALUE_ITEMUNTRADEABLE);
 		return;
@@ -6760,7 +6778,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 	// Skill dodge (ruse)
 	if (targetPlayer) {
 		auto chance = targetPlayer->getDodgeChance();
-		if (chance > 0 && uniform_random(0, 10000) < chance || damage.hazardDodge) {
+		if ((chance > 0 && uniform_random(0, 10000) < chance) || damage.hazardDodge) {
 			InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
 			targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack.");
 			return true;
@@ -7413,7 +7431,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		} else if (attackerPlayer && targetMonster) {
 			handleHazardSystemAttack(damage, attackerPlayer, targetMonster, true);
 
-			if (damage.primary.value == 0 && damage.secondary.value == 0 || damage.hazardDodge) {
+			if ((damage.primary.value == 0 && damage.secondary.value == 0) || damage.hazardDodge) {
 				notifySpectators(spectators.data(), targetPos, attackerPlayer, targetMonster);
 				return true;
 			}
@@ -7849,7 +7867,8 @@ void Game::applyCharmRune(
 		const auto charmTier = attackerPlayer->getCharmTier(charmType);
 		int8_t chance = charm->chance[charmTier] + (charm->id == CHARM_CRIPPLE ? 0 : attackerPlayer->getCharmChanceModifier());
 
-		if (charm->type == CHARM_OFFENSIVE && (chance >= normal_random(1, 10000) / 100.0)) {
+		auto rng = uniform_random(1, 100);
+		if (charm->type == CHARM_OFFENSIVE && (chance >= rng)) {
 			g_iobestiary().parseCharmCombat(charm, attackerPlayer, target, realDamage);
 		}
 	}
@@ -8617,7 +8636,7 @@ void Game::playerLeaveParty(uint32_t playerId) {
 	}
 
 	std::shared_ptr<Party> party = player->getParty();
-	if (!party || (player->hasCondition(CONDITION_INFIGHT) && !player->getZoneType() == ZONE_PROTECTION)) {
+	if (!party || (player->hasCondition(CONDITION_INFIGHT) && player->getZoneType() != ZONE_PROTECTION)) {
 		player->sendTextMessage(TextMessage(MESSAGE_FAILURE, "You cannot leave party, contact the administrator."));
 		return;
 	}
@@ -9113,19 +9132,21 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId) {
 namespace {
 	bool removeOfferItems(const std::shared_ptr<Player> &player, const std::shared_ptr<DepotLocker> &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus) {
 		uint16_t removeAmount = amount;
-		if (
-			// Init-statement
-			auto stashItemCount = player->getStashItemCount(itemType.wareId);
-			// Condition
-			stashItemCount > 0
-		) {
-			if (removeAmount > stashItemCount && player->withdrawItem(itemType.wareId, stashItemCount)) {
-				removeAmount -= stashItemCount;
-			} else if (player->withdrawItem(itemType.wareId, removeAmount)) {
-				removeAmount = 0;
-			} else {
-				offerStatus << "Failed to remove stash items from player " << player->getName();
-				return false;
+		if (tier == 0) {
+			if (
+				// Init-statement
+				auto stashItemCount = player->getStashItemCount(itemType.wareId);
+				// Condition
+				stashItemCount > 0
+			) {
+				if (removeAmount > stashItemCount && player->withdrawItem(itemType.wareId, stashItemCount)) {
+					removeAmount -= stashItemCount;
+				} else if (player->withdrawItem(itemType.wareId, removeAmount)) {
+					removeAmount = 0;
+				} else {
+					offerStatus << "Failed to remove stash items from player " << player->getName();
+					return false;
+				}
 			}
 		}
 

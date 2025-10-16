@@ -65,8 +65,7 @@ monster.voices = {
 	{ text = "This victory will earn me a casket of beer.", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -80 },

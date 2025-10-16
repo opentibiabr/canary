@@ -72,8 +72,7 @@ monster.voices = {
 	{ text = "How can you be that dumb?", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -1300 },

@@ -60,8 +60,7 @@ monster.voices = {
 	{ text = "Wuff wuff", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.defenses = {
 	defense = 2,

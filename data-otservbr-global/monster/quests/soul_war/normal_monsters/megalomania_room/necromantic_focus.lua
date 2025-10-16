@@ -80,5 +80,4 @@ monster.immunities = {
 
 mType:register(monster)
 
-monster.loot = {
-}
+monster.loot = {}

@@ -69,8 +69,7 @@ monster.voices = {
 	{ text = "You will fall before our might!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -600, maxDamage = -1000 },

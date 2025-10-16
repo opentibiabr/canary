@@ -70,8 +70,7 @@ monster.voices = {
 	{ text = "Perhaps a kiss might release me!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 10, attack = 1 },

@@ -91,8 +91,7 @@ monster.voices = {
 	{ text = "Don't you understand? Gods, Yalarahi, Humans we are all doing HIS bidding all the time!", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900 },

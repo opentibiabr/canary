@@ -65,8 +65,7 @@ monster.voices = {
 	{ text = "When the dust settles there will only be one.", yell = false },
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -180 },

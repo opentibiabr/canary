@@ -59,8 +59,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "energy pulse explosion", interval = 1000, chance = 100, minDamage = -5000, maxDamage = -6000, target = false },

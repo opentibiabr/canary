@@ -75,8 +75,7 @@ monster.voices = {
 	{ text = "Have you seen my truffle baker?", yell = false },
 	{ text = "I should visit the Candy Carnival.", yell = false },
 }
-monster.loot = {
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1 },

@@ -84,8 +84,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-}
+monster.loot = {}
 
 -- melee: 852, 505
 --death ring: 510,464, 487, 632, 210

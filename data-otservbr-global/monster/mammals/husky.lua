@@ -80,7 +80,8 @@ monster.voices = {
 	{ text = "Ruff, ruff!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.defenses = {
 	defense = 5,

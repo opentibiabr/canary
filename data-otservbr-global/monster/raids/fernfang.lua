@@ -73,25 +73,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9646, chance = 100000 }, -- book of prayers
-	{ id = 3031, chance = 100000, maxCount = 95 }, -- gold coin
-	{ id = 3035, chance = 93000, maxCount = 3 }, -- platinum coin
-	{ id = 3736, chance = 86000 }, -- star herb
-	{ id = 11492, chance = 53000 }, -- rope belt
-	{ id = 3050, chance = 40000 }, -- power ring
-	{ id = 11493, chance = 40000 }, -- safety pin
-	{ id = 3037, chance = 33000 }, -- yellow gem
-	{ id = 2885, chance = 20000 }, -- brown flask
-	{ id = 237, chance = 20000 }, -- strong mana potion
-	{ id = 2914, chance = 13000 }, -- lamp
-	{ id = 3289, chance = 13000 }, -- staff
-	{ id = 5786, chance = 13000 }, -- wooden whistle
-	{ id = 3147, chance = 7000 }, -- blank rune
-	{ id = 3600, chance = 7000 }, -- bread
-	{ id = 3563, chance = 7000 }, -- green tunic
-	{ id = 3061, chance = 7000 }, -- life crystal
-	{ id = 3738, chance = 7000 }, -- sling herb
-	{ id = 3012, chance = 7000 }, -- wolf tooth chain
+	{ id = 3031, chance = 80000, maxCount = 94 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 237, chance = 80000 }, -- strong mana potion
+	{ id = 3551, chance = 80000 }, -- sandals
+	{ id = 2885, chance = 80000 }, -- brown flask
+	{ id = 2902, chance = 80000 }, -- bowl
+	{ id = 3600, chance = 80000 }, -- bread
+	{ id = 2815, chance = 80000 }, -- scroll
+	{ id = 3738, chance = 80000 }, -- sling herb
+	{ id = 3736, chance = 80000 }, -- star herb
+	{ id = 3661, chance = 80000 }, -- grave flower
+	{ id = 2905, chance = 80000 }, -- plate
+	{ id = 20130, chance = 80000 }, -- lamp
+	{ id = 6107, chance = 80000, maxCount = 2 }, -- staff
+	{ id = 3147, chance = 80000 }, -- blank rune
+	{ id = 3077, chance = 80000 }, -- ankh
+	{ id = 11493, chance = 80000 }, -- safety pin
+	{ id = 11492, chance = 80000 }, -- rope belt
+	{ id = 3061, chance = 80000 }, -- life crystal
+	{ id = 3050, chance = 80000 }, -- power ring
+	{ id = 5940, chance = 80000 }, -- wolf tooth chain
+	{ id = 3105, chance = 80000 }, -- dirty fur
+	{ id = 3563, chance = 80000 }, -- green tunic
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 5786, chance = 1000 }, -- wooden whistle
+	{ id = 9646, chance = 80000 }, -- book of prayers
 }
 
 monster.attacks = {

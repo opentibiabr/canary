@@ -78,17 +78,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2920, chance = 4950 }, -- torch
-	{ name = "gold coin", chance = 85780, maxCount = 35 },
-	{ name = "wand of cosmic energy", chance = 600 },
-	{ name = "leather helmet", chance = 3000 },
-	{ name = "leather legs", chance = 5190 },
-	{ id = 3595, chance = 15003, maxCount = 8 }, -- carrot
-	{ name = "minotaur leather", chance = 2290 },
-	{ name = "taurus mace", chance = 1000 },
-	{ name = "mana potion", chance = 490 },
-	{ name = "minotaur horn", chance = 3020, maxCount = 2 },
-	{ name = "purple robe", chance = 6430, maxCount = 2 },
+	{ id = 3031, chance = 80000, maxCount = 35 }, -- gold coin
+	{ id = 15634, chance = 23000, maxCount = 8 }, -- carrot
+	{ id = 11473, chance = 23000 }, -- purple robe
+	{ id = 3559, chance = 5000 }, -- leather legs
+	{ id = 3355, chance = 5000 }, -- leather helmet
+	{ id = 11472, chance = 5000, maxCount = 2 }, -- minotaur horn
+	{ id = 5878, chance = 5000 }, -- minotaur leather
+	{ id = 11050, chance = 5000 }, -- torch
+	{ id = 7425, chance = 1000 }, -- taurus mace
+	{ id = 3073, chance = 1000 }, -- wand of cosmic energy
+	{ id = 268, chance = 1000 }, -- mana potion
 }
 
 monster.attacks = {

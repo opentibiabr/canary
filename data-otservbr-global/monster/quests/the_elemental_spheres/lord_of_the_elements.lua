@@ -84,13 +84,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small sapphire", chance = 7142, maxCount = 4 },
-	{ name = "small ruby", chance = 11111, maxCount = 4 },
-	{ name = "small emerald", chance = 11111, maxCount = 4 },
-	{ name = "small amethyst", chance = 11111, maxCount = 3 },
-	{ name = "platinum coin", chance = 50000, maxCount = 9 },
-	{ name = "earthborn titan armor", chance = 2063 },
-	{ name = "gold ingot", chance = 25000 },
+	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 3029, chance = 80000, maxCount = 4 }, -- small sapphire
+	{ id = 3032, chance = 80000, maxCount = 4 }, -- small emerald
+	{ id = 3030, chance = 80000, maxCount = 4 }, -- small ruby
+	{ id = 3033, chance = 80000, maxCount = 4 }, -- small amethyst
+	{ id = 8053, chance = 1000 }, -- fireborn giant armor
+	{ id = 8054, chance = 1000 }, -- earthborn titan armor
+	{ id = 8056, chance = 1000 }, -- oceanborn leviathan armor
+	{ id = 954, chance = 80000 }, -- neutral matter
 }
 
 monster.attacks = {

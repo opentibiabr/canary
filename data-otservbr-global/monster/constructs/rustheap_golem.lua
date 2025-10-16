@@ -80,23 +80,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 953, chance = 1950 }, -- nail
-	{ id = 9016, chance = 5860 }, -- flask of rust remover
-	{ id = 21196, chance = 14980 }, -- necromantic rust
-	{ id = 3031, chance = 100000, maxCount = 290 }, -- gold coin
-	{ id = 5880, chance = 330 }, -- iron ore
-	{ id = 21755, chance = 1950 }, -- bronze gear wheel
-	{ id = 3035, chance = 58310, maxCount = 3 }, -- platinum coin
-	{ id = 3026, chance = 1300 }, -- white pearl
-	{ id = 3027, chance = 1630 }, -- black pearl
-	{ id = 236, chance = 10100, maxCount = 2 }, -- strong health potion
-	{ id = 237, chance = 7170, maxCount = 2 }, -- strong mana potion
-	{ id = 3279, chance = 3580 }, -- war hammer
-	{ id = 7452, chance = 330 }, -- spiked squelcher
-	{ id = 21171, chance = 330 }, -- metal bat
-	{ id = 21170, chance = 2930 }, -- gearwheel chain
-	{ id = 8896, chance = 5860 }, -- slightly rusted armor
-	{ id = 8899, chance = 4230 }, -- slightly rusted legs
+	{ id = 3031, chance = 80000, maxCount = 300 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 21196, chance = 23000 }, -- necromantic rust
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 9016, chance = 5000 }, -- flask of rust remover
+	{ id = 8896, chance = 5000 }, -- slightly rusted armor
+	{ id = 21170, chance = 5000 }, -- gearwheel chain
+	{ id = 953, chance = 5000 }, -- nail
+	{ id = 8899, chance = 5000 }, -- slightly rusted legs
+	{ id = 21755, chance = 5000 }, -- bronze gear wheel
+	{ id = 3279, chance = 5000 }, -- war hammer
+	{ id = 5880, chance = 5000 }, -- iron ore
+	{ id = 3026, chance = 5000 }, -- white pearl
+	{ id = 3027, chance = 5000 }, -- black pearl
+	{ id = 21171, chance = 1000 }, -- metal bat
+	{ id = 7452, chance = 260 }, -- spiked squelcher
 }
 
 monster.attacks = {

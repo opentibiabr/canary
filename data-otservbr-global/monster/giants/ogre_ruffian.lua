@@ -77,16 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "ogre ear stud", chance = 17270 },
-	{ name = "ogre nose ring", chance = 15830 },
-	{ name = "pair of iron fists", chance = 2160 },
-	{ name = "meat", chance = 8630, maxCount = 5 },
-	{ name = "diamond sceptre", chance = 5760 },
-	{ name = "war hammer", chance = 2160 },
-	{ name = "metal spats", chance = 1440 },
-	{ name = "skull fetish", chance = 1440 },
-	{ name = "stone skin amulet", chance = 4320 },
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 22188, chance = 23000 }, -- ogre ear stud
+	{ id = 22189, chance = 23000 }, -- ogre nose ring
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 3029, chance = 23000 }, -- small sapphire
+	{ id = 3032, chance = 23000 }, -- small emerald
+	{ id = 677, chance = 5000, maxCount = 2 }, -- small enchanted emerald
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3041, chance = 5000 }, -- blue gem
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 3279, chance = 5000 }, -- war hammer
+	{ id = 7387, chance = 5000 }, -- diamond sceptre
+	{ id = 16122, chance = 5000 }, -- green crystal splinter
+	{ id = 16125, chance = 5000 }, -- cyan crystal fragment
+	{ id = 17828, chance = 5000 }, -- pair of iron fists
+	{ id = 22191, chance = 5000 }, -- skull fetish
+	{ id = 21169, chance = 5000 }, -- metal spats
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 22171, chance = 1000 }, -- ogre klubba
 }
 
 monster.attacks = {

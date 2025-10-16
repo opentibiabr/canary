@@ -73,43 +73,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small amethyst", chance = 21000, maxCount = 10 },
-	{ name = "small emerald", chance = 19000, maxCount = 10 },
-	{ id = 3039, chance = 12000 }, -- red gem
-	{ name = "platinum coin", chance = 68299, maxCount = 30 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "small diamond", chance = 21000, maxCount = 10 },
-	{ name = "green gem", chance = 12000 },
-	{ name = "luminous orb", chance = 35000 },
-	{ name = "great mana potion", chance = 31230, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 28230, maxCount = 10 },
-	{ name = "cobra crown", chance = 400 },
-	{ name = "silver token", chance = 2500 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "magic sulphur", chance = 18920 },
-	{ id = 7440, chance = 2000 }, -- mastermind potion
-	{ id = 20062, chance = 12000, maxCount = 2 }, -- cluster of solace
-	{ name = "hailstorm rod", chance = 3470 },
-	{ id = 3036, chance = 1000 }, -- violet gem
-	{ id = 3098, chance = 20000 }, -- ring of healing
-	{ id = 3030, chance = 7360, maxCount = 10 }, -- small ruby
-	{ id = 281, chance = 28540 }, -- giant shimmering pearl (green)
-	{ name = "skull staff", chance = 13790 },
-	{ name = "grasshopper legs", chance = 13790 },
-	{ name = "huge chunk of crude iron", chance = 10000, maxCount = 2 },
-	{ id = 7404, chance = 430 }, -- assassin dagger
-	{ name = "runed sword", chance = 6666 },
-	{ name = "djinn blade", chance = 200 },
-	{ id = 16121, chance = 10000, maxCount = 3 }, -- green crystal shard
-	{ id = 16120, chance = 10000, maxCount = 3 }, -- violet crystal shard
-	{ id = 16119, chance = 10000, maxCount = 3 }, -- blue crystal shard
-	{ id = 7642, chance = 4800 }, -- great spirit potion
-	{ id = 16161, chance = 7030 }, -- crystalline axe
-	{ id = 3341, chance = 200 }, -- arcane staff
-	{ name = "heart of the mountain", chance = 400 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 3030, chance = 80000, maxCount = 10 }, -- small ruby
+	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
+	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
+	{ id = 11454, chance = 80000 }, -- luminous orb
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
+	{ id = 7642, chance = 80000, maxCount = 10 }, -- great spirit potion
+	{ id = 238, chance = 80000, maxCount = 10 }, -- great mana potion
+	{ id = 7643, chance = 80000, maxCount = 10 }, -- ultimate health potion
+	{ id = 7440, chance = 80000 }, -- mastermind potion
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 20062, chance = 80000 }, -- cluster of solace
+	{ id = 3067, chance = 80000 }, -- hailstorm rod
+	{ id = 14087, chance = 80000 }, -- grasshopper legs
+	{ id = 19400, chance = 80000 }, -- arcane staff
+	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 3339, chance = 80000 }, -- djinn blade
+	{ id = 7417, chance = 80000 }, -- runed sword
+	{ id = 11674, chance = 80000 }, -- cobra crown
+	{ id = 7404, chance = 80000 }, -- assassin dagger
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 16161, chance = 80000 }, -- crystalline axe
+	{ id = 14086, chance = 80000 }, -- calopteryx cape
 }
 
 monster.attacks = {

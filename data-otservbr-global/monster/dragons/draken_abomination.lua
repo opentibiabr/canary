@@ -84,26 +84,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 47000, maxCount = 98 },
-	{ name = "platinum coin", chance = 50590, maxCount = 8 },
-	{ name = "meat", chance = 50450, maxCount = 4 },
-	{ name = "great mana potion", chance = 9950, maxCount = 3 },
-	{ name = "terra hood", chance = 8730 },
-	{ name = "great spirit potion", chance = 4905, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 9400, maxCount = 3 },
-	{ name = "wand of voodoo", chance = 1020 },
-	{ name = "small topaz", chance = 2900, maxCount = 4 },
-	{ name = "zaoan armor", chance = 470 },
-	{ name = "zaoan helmet", chance = 560 },
-	{ name = "zaoan legs", chance = 780 },
-	{ name = "eye of corruption", chance = 12110 },
-	{ name = "tail of corruption", chance = 6240 },
-	{ name = "scale of corruption", chance = 10940 },
-	{ name = "shield of corruption", chance = 10 },
-	{ name = "draken boots", chance = 540 },
-	{ name = "snake god's wristguard", chance = 10 },
-	{ name = "bamboo leaves", chance = 360 },
+	{ id = 3031, chance = 80000, maxCount = 199 }, -- gold coin
+	{ id = 3577, chance = 80000, maxCount = 4 }, -- meat
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 11671, chance = 23000 }, -- eye of corruption
+	{ id = 11673, chance = 23000 }, -- scale of corruption
+	{ id = 7643, chance = 23000, maxCount = 3 }, -- ultimate health potion
+	{ id = 238, chance = 23000, maxCount = 3 }, -- great mana potion
+	{ id = 830, chance = 23000 }, -- terra hood
+	{ id = 11672, chance = 23000 }, -- tail of corruption
+	{ id = 7642, chance = 5000, maxCount = 3 }, -- great spirit potion
+	{ id = 9057, chance = 5000, maxCount = 4 }, -- small topaz
+	{ id = 8094, chance = 1000 }, -- wand of voodoo
+	{ id = 10387, chance = 1000 }, -- zaoan legs
+	{ id = 10384, chance = 1000 }, -- zaoan armor
+	{ id = 10385, chance = 1000 }, -- zaoan helmet
+	{ id = 4033, chance = 1000 }, -- draken boots
+	{ id = 12549, chance = 260 }, -- bamboo leaves
+	{ id = 11688, chance = 260 }, -- shield of corruption
+	{ id = 11691, chance = 260 }, -- snake gods wristguard
 }
 
 monster.attacks = {

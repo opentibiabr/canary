@@ -78,10 +78,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5925, chance = 50320 }, -- hardened bone
-	{ id = 24388, chance = 50320 }, -- rhino hide
-	{ id = 24389, chance = 50320 }, -- rhino horn
-	{ id = 22186, chance = 50320 }, -- raw meat
+	{ id = 5925, chance = 23000 }, -- hardened bone
+	{ id = 22186, chance = 23000, maxCount = 4 }, -- raw meat
+	{ id = 24388, chance = 23000 }, -- rhino hide
+	{ id = 3443, chance = 5000 }, -- tusk shield
+	{ id = 24389, chance = 5000 }, -- rhino horn
 }
 
 monster.attacks = {

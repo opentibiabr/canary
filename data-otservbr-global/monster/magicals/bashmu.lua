@@ -74,25 +74,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 69350, maxCount = 24 },
-	{ name = "guardian halberd", chance = 9160 },
-	{ name = "bashmu feather", chance = 5320 },
-	{ name = "bashmu tongue", chance = 4950 },
-	{ name = "sacred tree amulet", chance = 4280 },
-	{ name = "great spirit potion", chance = 3840, maxCount = 4 },
-	{ name = "green crystal shard", chance = 3470, maxCount = 3 },
-	{ name = "blue crystal shard", chance = 2950, maxCount = 3 },
-	{ name = "small diamond", chance = 2950, maxCount = 6 },
-	{ name = "violet gem", chance = 2730 },
-	{ name = "bashmu fang", chance = 2070 },
-	{ name = "rainbow quartz", chance = 1770 },
-	{ name = "terra amulet", chance = 1770 },
-	{ name = "glacier amulet", chance = 960 },
-	{ name = "glorious axe", chance = 810 },
-	{ id = 23544, chance = 660 }, -- collar of red plasma
-	{ name = "haunted blade", chance = 590 },
-	{ name = "magma amulet", chance = 520 },
-	{ id = 23542, chance = 440 }, -- collar of blue plasma
+	{ id = 3035, chance = 80000, maxCount = 19 }, -- platinum coin
+	{ id = 3315, chance = 23000 }, -- guardian halberd
+	{ id = 36823, chance = 23000 }, -- bashmu feather
+	{ id = 814, chance = 5000 }, -- terra amulet
+	{ id = 815, chance = 5000 }, -- glacier amulet
+	{ id = 3028, chance = 5000 }, -- small diamond
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 7642, chance = 5000 }, -- great spirit potion
+	{ id = 9302, chance = 5000 }, -- sacred tree amulet
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 25737, chance = 5000 }, -- rainbow quartz
+	{ id = 36820, chance = 5000 }, -- bashmu fang
+	{ id = 36821, chance = 5000 }, -- bashmu tongue
+	{ id = 817, chance = 1000 }, -- magma amulet
+	{ id = 7407, chance = 1000 }, -- haunted blade
+	{ id = 7454, chance = 1000 }, -- glorious axe
+	{ id = 23526, chance = 1000 }, -- collar of blue plasma
+	{ id = 23528, chance = 1000 }, -- collar of red plasma
 }
 
 monster.attacks = {

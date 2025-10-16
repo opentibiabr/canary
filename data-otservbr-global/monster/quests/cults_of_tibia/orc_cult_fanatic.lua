@@ -76,21 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 135 },
-	{ id = 3091, chance = 7770 }, -- sword ring
-	{ name = "plate shield", chance = 16350 },
-	{ name = "plate armor", chance = 5900 },
-	{ name = "brass legs", chance = 2950 },
-	{ name = "plate legs", chance = 4830 },
-	{ id = 3578, chance = 29760 }, -- fish
-	{ name = "great health potion", chance = 10190 },
-	{ name = "orc tooth", chance = 1340 },
-	{ name = "warrior helmet", chance = 10190 },
-	{ name = "orc leather", chance = 22250 },
-	{ name = "skull belt", chance = 13940 },
-	{ name = "small ruby", chance = 10990, maxCount = 3 },
-	{ name = "brown mushroom", chance = 15820, maxCount = 4 },
-	{ name = "cultish robe", chance = 10460 },
+	{ id = 3031, chance = 80000, maxCount = 135 }, -- gold coin
+	{ id = 7885, chance = 80000 }, -- fish
+	{ id = 11479, chance = 23000 }, -- orc leather
+	{ id = 3410, chance = 23000 }, -- plate shield
+	{ id = 3725, chance = 23000, maxCount = 4 }, -- brown mushroom
+	{ id = 11480, chance = 23000 }, -- skull belt
+	{ id = 9639, chance = 23000 }, -- cultish robe
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
+	{ id = 3091, chance = 23000 }, -- sword ring
+	{ id = 3369, chance = 23000 }, -- warrior helmet
+	{ id = 3357, chance = 5000 }, -- plate armor
+	{ id = 3557, chance = 5000 }, -- plate legs
+	{ id = 3372, chance = 5000 }, -- brass legs
+	{ id = 10196, chance = 1000 }, -- orc tooth
 }
 
 monster.attacks = {

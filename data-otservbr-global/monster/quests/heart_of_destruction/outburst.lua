@@ -73,23 +73,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 10 }, -- platinum coin
-	{ id = 16119, chance = 8000, maxCount = 3 }, -- blue crystal shard
-	{ id = 238, chance = 8000, maxCount = 10 }, -- great mana potion
-	{ id = 16121, chance = 8000, maxCount = 3 }, -- green crystal shard
-	{ id = 3033, chance = 8000, maxCount = 10 }, -- small amethyst
-	{ id = 3029, chance = 8000, maxCount = 5 }, -- small sapphire
-	{ id = 7643, chance = 8000, maxCount = 5 }, -- ultimate health potion
-	{ id = 16120, chance = 8000, maxCount = 3 }, -- violet crystal shard
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 23509, chance = 100000 }, -- mysterious remains
-	{ id = 3038, chance = 8000 }, -- green gem
-	{ id = 7427, chance = 6000 }, -- chaos mace
-	{ id = 23533, chance = 5000 }, -- ring of red plasma
-	{ id = 23474, chance = 2000, unique = true }, -- tiara of power
-	{ id = 23477, chance = 2000, unique = true }, -- void boots
-	{ id = 16160, chance = 2000, unique = true }, -- crystalline sword
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3029, chance = 80000, maxCount = 10 }, -- small sapphire
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 23529, chance = 80000 }, -- ring of blue plasma
+	{ id = 23528, chance = 80000 }, -- collar of red plasma
+	{ id = 828, chance = 80000 }, -- lightning headband
+	{ id = 23516, chance = 80000 }, -- instable proto matter
+	{ id = 23523, chance = 80000 }, -- energy ball
+	{ id = 22721, chance = 80000, maxCount = 7 }, -- gold token
+	{ id = 23509, chance = 80000 }, -- mysterious remains
+	{ id = 23474, chance = 80000 }, -- tiara of power
+	{ id = 23476, chance = 80000 }, -- void boots
+	{ id = 23527, chance = 80000 }, -- collar of green plasma
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 7427, chance = 80000 }, -- chaos mace
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 23545, chance = 80000 }, -- energy drink
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 23533, chance = 80000 }, -- ring of red plasma
+	{ id = 8027, chance = 80000 }, -- composite hornbow
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 23526, chance = 80000 }, -- collar of blue plasma
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 7426, chance = 80000 }, -- amber staff
+	{ id = 23531, chance = 80000 }, -- ring of green plasma
+	{ id = 7428, chance = 80000 }, -- bonebreaker
+	{ id = 825, chance = 80000 }, -- lightning robe
+	{ id = 3342, chance = 80000 }, -- war axe
+	{ id = 822, chance = 80000 }, -- lightning legs
+	{ id = 16160, chance = 80000 }, -- crystalline sword
 }
 
 monster.attacks = {

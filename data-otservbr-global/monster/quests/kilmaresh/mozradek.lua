@@ -72,10 +72,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3039, chance = 60000 }, -- red gem
-	{ id = 31369, chance = 9000 }, -- gryphon mask
-	{ name = "sea horse figurine", chance = 6000 },
-	{ id = 31557, chance = 3500 }, -- blister ring
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 31324, chance = 80000 }, -- golden mask
+	{ id = 31323, chance = 80000 }, -- sea horse figurine
+	{ id = 31557, chance = 80000 }, -- enchanted blister ring
+	{ id = 30403, chance = 80000 }, -- enchanted theurgic amulet
+	{ id = 31617, chance = 80000 }, -- winged boots
 }
 
 monster.attacks = {

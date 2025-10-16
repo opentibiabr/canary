@@ -79,25 +79,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 9600, maxCount = 3 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "small emerald", chance = 14000 },
-	{ name = "small amethyst", chance = 17000, maxCount = 3 },
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "giant sword", chance = 560 },
-	{ name = "warrior helmet", chance = 2820 },
-	{ name = "knight armor", chance = 4000 },
-	{ name = "white piece of cloth", chance = 4520 },
-	{ name = "red piece of cloth", chance = 1130 },
-	{ name = "great mana potion", chance = 36000, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 26000 },
-	{ name = "small topaz", chance = 17000, maxCount = 2 },
-	{ name = "blue crystal shard", chance = 6000 },
-	{ name = "blue crystal splinter", chance = 13000 },
-	{ name = "cyan crystal fragment", chance = 17000 },
-	{ id = 20029, chance = 1130 }, -- broken dream
-	{ name = "trapped bad dream monster", chance = 13000 },
-	{ name = "bowl of terror sweat", chance = 18000 },
+	{ id = 3031, chance = 80000, maxCount = 197 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
+	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
+	{ id = 16119, chance = 23000 }, -- blue crystal shard
+	{ id = 20203, chance = 23000 }, -- trapped bad dream monster
+	{ id = 20204, chance = 23000 }, -- bowl of terror sweat
+	{ id = 16124, chance = 23000 }, -- blue crystal splinter
+	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
+	{ id = 3032, chance = 23000, maxCount = 3 }, -- small emerald
+	{ id = 3033, chance = 23000, maxCount = 3 }, -- small amethyst
+	{ id = 20029, chance = 5000 }, -- broken dream
+	{ id = 5912, chance = 5000 }, -- blue piece of cloth
+	{ id = 5895, chance = 5000 }, -- fish fin
+	{ id = 3369, chance = 5000 }, -- warrior helmet
+	{ id = 5909, chance = 5000 }, -- white piece of cloth
+	{ id = 3370, chance = 5000 }, -- knight armor
+	{ id = 3567, chance = 5000 }, -- blue robe
+	{ id = 3281, chance = 5000 }, -- giant sword
+	{ id = 5911, chance = 1000 }, -- red piece of cloth
+	{ id = 20062, chance = 1000 }, -- cluster of solace
 }
 
 monster.attacks = {

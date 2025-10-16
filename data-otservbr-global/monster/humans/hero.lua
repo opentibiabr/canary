@@ -80,32 +80,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2815, chance = 45000 }, -- scroll
-	{ id = 2949, chance = 1640 }, -- lyre
-	{ name = "piggy bank", chance = 80 },
-	{ id = 3003, chance = 2190 }, -- rope
-	{ name = "wedding ring", chance = 4910 },
-	{ name = "gold coin", chance = 59500, maxCount = 100 },
-	{ name = "might ring", chance = 470 },
-	{ name = "two handed sword", chance = 1500 },
-	{ name = "war hammer", chance = 870 },
-	{ name = "fire sword", chance = 550 },
-	{ name = "bow", chance = 13300 },
-	{ name = "crown armor", chance = 490 },
-	{ name = "crown legs", chance = 660 },
-	{ name = "crown helmet", chance = 450 },
-	{ name = "crown shield", chance = 280 },
-	{ name = "arrow", chance = 26000, maxCount = 13 },
-	{ name = "green tunic", chance = 8000 },
-	{ name = "scarf", chance = 1110 },
-	{ name = "meat", chance = 8200, maxCount = 3 },
-	{ name = "grapes", chance = 19850 },
-	{ name = "red rose", chance = 20450 },
-	{ name = "red piece of cloth", chance = 2006 },
-	{ name = "sniper arrow", chance = 11400, maxCount = 4 },
-	{ name = "great health potion", chance = 720 },
-	{ name = "small notebook", chance = 930 },
-	{ name = "scroll of heroic deeds", chance = 5000 },
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 2815, chance = 80000 }, -- scroll
+	{ id = 3447, chance = 80000, maxCount = 13 }, -- arrow
+	{ id = 3658, chance = 23000 }, -- red rose
+	{ id = 3592, chance = 23000 }, -- grapes
+	{ id = 3350, chance = 23000 }, -- bow
+	{ id = 7364, chance = 23000, maxCount = 4 }, -- sniper arrow
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 3563, chance = 23000 }, -- green tunic
+	{ id = 11510, chance = 5000 }, -- scroll of heroic deeds
+	{ id = 3004, chance = 5000 }, -- wedding ring
+	{ id = 31366, chance = 5000 }, -- rope
+	{ id = 5911, chance = 5000 }, -- red piece of cloth
+	{ id = 3260, chance = 5000 }, -- lyre
+	{ id = 3265, chance = 5000 }, -- two handed sword
+	{ id = 3572, chance = 5000 }, -- scarf
+	{ id = 11450, chance = 1000 }, -- small notebook
+	{ id = 3279, chance = 1000 }, -- war hammer
+	{ id = 239, chance = 1000 }, -- great health potion
+	{ id = 3382, chance = 1000 }, -- crown legs
+	{ id = 3280, chance = 1000 }, -- fire sword
+	{ id = 3381, chance = 1000 }, -- crown armor
+	{ id = 3048, chance = 1000 }, -- might ring
+	{ id = 3385, chance = 1000 }, -- crown helmet
+	{ id = 3419, chance = 260 }, -- crown shield
+	{ id = 2995, chance = 260 }, -- piggy bank
 }
 
 monster.attacks = {

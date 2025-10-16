@@ -77,18 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 176 },
-	{ name = "strong health potion", chance = 16340 },
-	{ name = "small ruby", chance = 12870, maxCount = 6 },
-	{ name = "black pearl", chance = 1980 },
-	{ name = "cultish robe", chance = 18870 },
-	{ name = "orc leather", chance = 8420, maxCount = 3 },
-	{ name = "orc tooth", chance = 5940, maxCount = 2 },
-	{ name = "green piece of cloth", chance = 12380 },
-	{ name = "mysterious fetish", chance = 8910 },
-	{ name = "shamanic hood", chance = 14360 },
-	{ name = "broken shamanic staff", chance = 5940 },
-	{ name = "heavy old tome", chance = 99 },
+	{ id = 3031, chance = 80000, maxCount = 1816 }, -- gold coin
+	{ id = 11478, chance = 23000 }, -- shamanic hood
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 9639, chance = 23000 }, -- cultish robe
+	{ id = 5910, chance = 23000 }, -- green piece of cloth
+	{ id = 3030, chance = 23000, maxCount = 6 }, -- small ruby
+	{ id = 3078, chance = 23000 }, -- mysterious fetish
+	{ id = 11479, chance = 23000 }, -- orc leather
+	{ id = 11452, chance = 23000 }, -- broken shamanic staff
+	{ id = 10196, chance = 5000 }, -- orc tooth
+	{ id = 3027, chance = 5000, maxCount = 2 }, -- black pearl
+	{ id = 23986, chance = 5000 }, -- heavy old tome
+	{ id = 3072, chance = 1000 }, -- wand of decay
+	{ id = 7439, chance = 1000 }, -- berserk potion
 }
 
 monster.attacks = {

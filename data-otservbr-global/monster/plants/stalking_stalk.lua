@@ -74,17 +74,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Stalking Seeds", chance = 21520 },
-	{ name = "Crystal Coin", chance = 16570, minCount = 1, maxCount = 3 },
-	{ name = "Small Diamond", chance = 7140, minCount = 1, maxCount = 3 },
-	{ name = "Green Crystal Fragment", chance = 5030 },
-	{ name = "Dragon Necklace", chance = 4540 },
-	{ name = "Opal", chance = 3960, minCount = 1, maxCount = 2 },
-	{ name = "Magma Coat", chance = 2160 },
-	{ name = "Bow", chance = 2000 },
-	{ name = "Green Gem", chance = 1780 },
-	{ name = "Warrior's Axe", chance = 1700 },
-	{ name = "Muck Rod", chance = 1310 },
+	{ id = 3028, chance = 23000, maxCount = 2 }, -- small diamond
+	{ id = 3043, chance = 23000, maxCount = 3 }, -- crystal coin
+	{ id = 3085, chance = 23000 }, -- dragon necklace
+	{ id = 39384, chance = 23000 }, -- stalking seeds
+	{ id = 826, chance = 5000 }, -- magma coat
+	{ id = 3038, chance = 5000 }, -- green gem
+	{ id = 3350, chance = 5000 }, -- bow
+	{ id = 14040, chance = 5000 }, -- warriors axe
+	{ id = 16117, chance = 5000 }, -- muck rod
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 22194, chance = 5000, maxCount = 2 }, -- opal
 }
 
 monster.attacks = {

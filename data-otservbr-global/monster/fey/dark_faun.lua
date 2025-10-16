@@ -80,23 +80,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 30000, maxCount = 112 },
-	{ name = "wood cape", chance = 492 },
-	{ name = "wooden spellbook", chance = 92 },
-	{ name = "mandrake", chance = 50 },
-	{ name = "leaf legs", chance = 492 },
-	{ name = "small stone", chance = 492, maxCount = 4 },
-	{ name = "small enchanted sapphire", chance = 492, maxCount = 2 },
-	{ name = "shimmering beetles", chance = 492 },
-	{ name = "cave turnip", chance = 55000, maxCount = 4 },
-	{ name = "leaf legs", chance = 719 },
-	{ name = "dark mushroom", chance = 719 },
-	{ name = "panpipes", chance = 719 },
-	{ name = "prismatic quartz", chance = 719 },
-	{ name = "leaf star", chance = 10000, maxCount = 8 },
-	{ name = "strong health potion", chance = 6800, maxCount = 2 },
-	{ name = "goat grass", chance = 5155 },
-	{ name = "great health potion", chance = 591 },
+	{ id = 3031, chance = 80000, maxCount = 149 }, -- gold coin
+	{ id = 236, chance = 23000, maxCount = 2 }, -- strong health potion
+	{ id = 3674, chance = 23000 }, -- goat grass
+	{ id = 24383, chance = 23000, maxCount = 2 }, -- cave turnip
+	{ id = 25693, chance = 23000 }, -- shimmering beetles
+	{ id = 25694, chance = 23000 }, -- fairy wings
+	{ id = 25735, chance = 23000, maxCount = 8 }, -- leaf star
+	{ id = 239, chance = 5000, maxCount = 2 }, -- great health potion
+	{ id = 675, chance = 5000, maxCount = 2 }, -- small enchanted sapphire
+	{ id = 1781, chance = 5000, maxCount = 5 }, -- small stone
+	{ id = 2953, chance = 5000 }, -- panpipes
+	{ id = 3575, chance = 5000 }, -- wood cape
+	{ id = 3728, chance = 5000, maxCount = 2 }, -- dark mushroom
+	{ id = 24962, chance = 5000 }, -- prismatic quartz
+	{ id = 9014, chance = 1000 }, -- leaf legs
+	{ id = 5014, chance = 260 }, -- mandrake
+	{ id = 25699, chance = 260 }, -- wooden spellbook
 }
 
 monster.attacks = {

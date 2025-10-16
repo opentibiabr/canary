@@ -79,9 +79,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9391, chance = 10000 }, -- fan club membership card
-	{ id = 3031, chance = 100000, maxCount = 95 }, -- gold coin
-	{ id = 3035, chance = 93000, maxCount = 3 }, -- platinum coin
+	{ id = 9391, chance = 80000 }, -- fan club membership card
 }
 
 monster.attacks = {

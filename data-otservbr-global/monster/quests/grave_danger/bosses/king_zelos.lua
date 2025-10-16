@@ -55,32 +55,56 @@ monster.flags = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", minCount = 1, maxCount = 5, chance = 100000 },
-	{ name = "crystal coin", minCount = 0, maxCount = 5, chance = 50000 },
-	{ name = "supreme health potion", minCount = 0, maxCount = 20, chance = 45000 },
-	{ name = "ultimate mana potion", minCount = 0, maxCount = 6, chance = 42000 },
-	{ name = "ultimate spirit potion", minCount = 0, maxCount = 14, chance = 42000 },
-	{ name = "bullseye potion", minCount = 0, maxCount = 10, chance = 22000 },
-	{ name = "berserk potion", minCount = 0, maxCount = 10, chance = 22000 },
-	{ name = "gold token", minCount = 0, maxCount = 3, chance = 18000 },
-	{ name = "silver token", minCount = 0, maxCount = 3, chance = 25000 },
-	{ name = "green gem", chance = 19000 },
-	{ id = 3039, chance = 18500 }, -- red gem
-	{ name = "yellow gem", chance = 18500 },
-	{ name = "giant sapphire", chance = 16800 },
-	{ id = 23543, chance = 15200 }, -- collar of green plasma
-	{ name = "magma coat", chance = 15200 },
-	{ name = "gold ingot", minCount = 0, maxCount = 1, chance = 18000 },
-	{ name = "red tome", chance = 18200 },
-	{ id = 23529, chance = 12000 }, -- ring of blue plasma
-	{ id = 23533, chance = 12000 }, -- ring of red plasma
-	{ name = "young lich worm", chance = 5500 },
-	{ name = "mortal mace", chance = 1300 },
-	{ name = "golden hyaena pendant", chance = 1100 },
-	{ name = "bow of cataclysm", chance = 600 },
-	{ name = "galea mortis", chance = 550 },
-	{ name = "shadow cowl", chance = 530 },
-	{ name = "toga mortis", chance = 500 },
+	{ id = 3043, chance = 80000, maxCount = 12 }, -- crystal coin
+	{ id = 22516, chance = 80000, maxCount = 4 }, -- silver token
+	{ id = 22721, chance = 80000, maxCount = 3 }, -- gold token
+	{ id = 23374, chance = 80000, maxCount = 14 }, -- ultimate spirit potion
+	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
+	{ id = 23375, chance = 80000, maxCount = 14 }, -- supreme health potion
+	{ id = 5909, chance = 80000, maxCount = 4 }, -- white piece of cloth
+	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
+	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
+	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
+	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
+	{ id = 23527, chance = 80000 }, -- collar of green plasma
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 14112, chance = 80000 }, -- bar of gold
+	{ id = 3381, chance = 80000 }, -- crown armor
+	{ id = 5885, chance = 80000 }, -- flask of warriors sweat
+	{ id = 11674, chance = 80000 }, -- cobra crown
+	{ id = 2852, chance = 80000 }, -- red tome
+	{ id = 23533, chance = 80000 }, -- ring of red plasma
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 23529, chance = 80000 }, -- ring of blue plasma
+	{ id = 23526, chance = 80000 }, -- collar of blue plasma
+	{ id = 825, chance = 80000 }, -- lightning robe
+	{ id = 811, chance = 80000 }, -- terra mantle
+	{ id = 3079, chance = 80000 }, -- boots of haste
+	{ id = 31580, chance = 80000 }, -- mortal mace
+	{ id = 31582, chance = 80000 }, -- galea mortis
+	{ id = 31581, chance = 80000 }, -- bow of cataclysm
+	{ id = 31737, chance = 80000 }, -- shadow cowl
+	{ id = 31583, chance = 80000 }, -- toga mortis
+	{ id = 23531, chance = 80000 }, -- ring of green plasma
+	{ id = 824, chance = 80000 }, -- glacier robe
+	{ id = 31588, chance = 80000 }, -- ancient liche bone
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 23528, chance = 80000 }, -- collar of red plasma
+	{ id = 31589, chance = 80000 }, -- rotten heart
+	{ id = 31590, chance = 80000 }, -- young lich worm
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 826, chance = 80000 }, -- magma coat
+	{ id = 12543, chance = 80000 }, -- golden hyaena pendant
+	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
+	{ id = 7414, chance = 80000 }, -- abyss hammer
+	{ id = 30056, chance = 80000 }, -- ornate locket
+	{ id = 30059, chance = 80000 }, -- giant ruby
+	{ id = 5884, chance = 80000 }, -- spirit container
+	{ id = 24392, chance = 80000 }, -- gemmed figurine
 }
 
 monster.attacks = {

@@ -68,16 +68,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6102, chance = 100000 }, -- deadeye devious' eye patch
-	{ id = 3031, chance = 100000, maxCount = 140 }, -- gold coin
-	{ id = 3114, chance = 85000, maxCount = 2 }, -- skull
-	{ id = 3357, chance = 78000 }, -- plate armor
-	{ id = 3577, chance = 42000, maxCount = 3 }, -- meat
-	{ id = 3370, chance = 28000 }, -- knight armor
-	{ id = 3267, chance = 21000 }, -- dagger
-	{ id = 3028, chance = 14000 }, -- small diamond
-	{ id = 3275, chance = 7000 }, -- double axe
-	{ id = 5926, chance = 7000 }, -- pirate backpack
+	{ id = 3031, chance = 80000, maxCount = 140 }, -- gold coin
+	{ id = 6102, chance = 80000 }, -- deadeye devious eye patch
+	{ id = 3357, chance = 80000 }, -- plate armor
+	{ id = 3577, chance = 80000, maxCount = 3 }, -- meat
+	{ id = 3267, chance = 5000 }, -- dagger
+	{ id = 3370, chance = 5000 }, -- knight armor
+	{ id = 3028, chance = 1000 }, -- small diamond
+	{ id = 239, chance = 1000 }, -- great health potion
+	{ id = 3275, chance = 1000 }, -- double axe
+	{ id = 5926, chance = 1000 }, -- pirate backpack
+	{ id = 9185, chance = 1000 }, -- very old piece of paper
 }
 
 monster.attacks = {

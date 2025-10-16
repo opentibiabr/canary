@@ -88,26 +88,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 95300, maxCount = 237 },
-	{ name = "dragon ham", chance = 79790, maxCount = 2 },
-	{ name = "green mushroom", chance = 12030 },
-	{ id = 2842, chance = 9590 }, -- gemmed book
-	{ name = "royal spear", chance = 9380, maxCount = 3 },
-	{ name = "power bolt", chance = 5920, maxCount = 7 },
-	{ name = "small sapphire", chance = 5590 },
-	{ id = 3051, chance = 4550 }, -- energy ring
-	{ name = "golden mug", chance = 3310 },
-	{ name = "red dragon scale", chance = 1940 },
-	{ name = "red dragon leather", chance = 1150 },
-	{ name = "strong health potion", chance = 800 },
-	{ name = "life crystal", chance = 650 },
-	{ name = "strange helmet", chance = 520 },
-	{ name = "tower shield", chance = 410 },
-	{ name = "fire sword", chance = 350 },
-	{ name = "royal helmet", chance = 260 },
-	{ name = "dragon slayer", chance = 220 },
-	{ name = "dragon lord trophy", chance = 130 },
-	{ name = "dragon scale mail", chance = 90 },
+	{ id = 3031, chance = 80000, maxCount = 245 }, -- gold coin
+	{ id = 3583, chance = 80000, maxCount = 5 }, -- dragon ham
+	{ id = 3732, chance = 23000 }, -- green mushroom
+	{ id = 7378, chance = 23000, maxCount = 3 }, -- royal spear
+	{ id = 3450, chance = 23000, maxCount = 7 }, -- power bolt
+	{ id = 3051, chance = 5000 }, -- energy ring
+	{ id = 3029, chance = 5000 }, -- small sapphire
+	{ id = 2903, chance = 5000 }, -- golden mug
+	{ id = 5882, chance = 5000 }, -- red dragon scale
+	{ id = 5948, chance = 1000 }, -- red dragon leather
+	{ id = 236, chance = 1000 }, -- strong health potion
+	{ id = 3061, chance = 1000 }, -- life crystal
+	{ id = 3373, chance = 260 }, -- strange helmet
+	{ id = 3280, chance = 260 }, -- fire sword
+	{ id = 3392, chance = 260 }, -- royal helmet
+	{ id = 3428, chance = 260 }, -- tower shield
+	{ id = 3386, chance = 260 }, -- dragon scale mail
+	{ id = 7399, chance = 260 }, -- dragon lord trophy
+	{ id = 7402, chance = 260 }, -- dragon slayer
 }
 
 monster.attacks = {

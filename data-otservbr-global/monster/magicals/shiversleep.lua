@@ -62,7 +62,18 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3031, chance = 80000, maxCount = 44 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
+	{ id = 16124, chance = 80000 }, -- blue crystal splinter
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 3030, chance = 80000, maxCount = 2 }, -- small ruby
+	{ id = 9057, chance = 80000, maxCount = 3 }, -- small topaz
+	{ id = 20203, chance = 80000 }, -- trapped bad dream monster
+	{ id = 20062, chance = 80000 }, -- cluster of solace
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -450 },

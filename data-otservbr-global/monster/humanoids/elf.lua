@@ -79,16 +79,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 44000, maxCount = 30 },
-	{ name = "longsword", chance = 10800 },
-	{ name = "studded helmet", chance = 13500 },
-	{ name = "studded armor", chance = 8960 },
-	{ name = "plate shield", chance = 9300 },
-	{ name = "arrow", chance = 7060, maxCount = 3 },
-	{ name = "leather boots", chance = 11410 },
-	{ id = 5921, chance = 940 }, -- heaven blossom
-	{ name = "plum", chance = 20000, maxCount = 2 },
-	{ name = "elvish talisman", chance = 2100 },
+	{ id = 3031, chance = 80000, maxCount = 30 }, -- gold coin
+	{ id = 3447, chance = 80000, maxCount = 3 }, -- arrow
+	{ id = 3552, chance = 80000 }, -- leather boots
+	{ id = 3285, chance = 80000 }, -- longsword
+	{ id = 3410, chance = 80000 }, -- plate shield
+	{ id = 8011, chance = 80000, maxCount = 2 }, -- plum
+	{ id = 3378, chance = 80000 }, -- studded armor
+	{ id = 3376, chance = 80000 }, -- studded helmet
+	{ id = 9635, chance = 5000 }, -- elvish talisman
+	{ id = 5921, chance = 1000 }, -- heaven blossom
 }
 
 monster.attacks = {

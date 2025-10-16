@@ -82,25 +82,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 59290 },
-	{ name = "ultimate health potion", chance = 19470, maxCount = 6 },
-	{ name = "gold ingot", chance = 15040 },
-	{ id = 282, chance = 9730 }, -- giant shimmering pearl
-	{ name = "hailstorm rod", chance = 7960 },
-	{ name = "onyx chip", chance = 6190 },
-	{ name = "green crystal fragment", chance = 5310 },
-	{ name = "wand of voodoo", chance = 4420 },
-	{ name = "violet gem", chance = 4420 },
-	{ name = "jaws", chance = 3540 },
-	{ name = "rainbow quartz", chance = 2650, maxCount = 3 },
-	{ name = "northwind rod", chance = 1770 },
-	{ name = "underworld rod", chance = 1770 },
-	{ name = "skullcracker armor", chance = 1770 },
-	{ id = 33929, chance = 880 }, -- rod
-	{ name = "goblet of gloom", chance = 880 },
-	{ name = "glacier kilt", chance = 880 },
-	{ name = "glacial rod", chance = 1210 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 7643, chance = 23000, maxCount = 6 }, -- ultimate health potion
+	{ id = 9058, chance = 23000 }, -- gold ingot
+	{ id = 823, chance = 5000 }, -- glacier kilt
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 3067, chance = 5000 }, -- hailstorm rod
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 8083, chance = 5000 }, -- northwind rod
+	{ id = 8094, chance = 5000 }, -- wand of voodoo
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 25737, chance = 5000, maxCount = 3 }, -- rainbow quartz
+	{ id = 34014, chance = 5000 }, -- jaws
+	{ id = 16118, chance = 1000 }, -- glacial rod
+	{ id = 8061, chance = 1000 }, -- skullcracker armor
+	{ id = 34022, chance = 1000 }, -- goblet of gloom
+	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 34109, chance = 260 }, -- bag you desire
 }
 
 monster.attacks = {

@@ -80,24 +80,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 150 },
-	{ name = "snakebite rod", chance = 11670 },
-	{ name = "taurus mace", chance = 5360 },
-	{ name = "cultish robe", chance = 9200 },
-	{ name = "purple robe", chance = 16230 },
-	{ name = "strong mana potion", chance = 10660, maxCount = 3 },
-	{ name = "small ruby", chance = 2030, maxCount = 2 },
-	{ name = "small topaz", chance = 2680, maxCount = 2 },
-	{ name = "yellow gem", chance = 220 },
-	{ name = "platinum coin", chance = 39350, maxCount = 3 },
-	{ name = "small emerald", chance = 2540, maxCount = 2 },
-	{ name = "small sapphire", chance = 2170, maxCount = 2 },
-	{ name = "small diamond", chance = 2900, maxCount = 2 },
-	{ name = "small amethyst", chance = 2610, maxCount = 2 },
-	{ name = "red piece of cloth", chance = 2460 },
-	{ id = 3039, chance = 70 }, -- red gem
-	{ name = "minotaur leather", chance = 4780 },
-	{ name = "minotaur horn", chance = 2320, maxCount = 2 },
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 11473, chance = 23000 }, -- purple robe
+	{ id = 3066, chance = 23000 }, -- snakebite rod
+	{ id = 237, chance = 23000, maxCount = 3 }, -- strong mana potion
+	{ id = 9639, chance = 23000 }, -- cultish robe
+	{ id = 7425, chance = 23000 }, -- taurus mace
+	{ id = 5878, chance = 5000 }, -- minotaur leather
+	{ id = 3033, chance = 5000, maxCount = 2 }, -- small amethyst
+	{ id = 3032, chance = 5000, maxCount = 2 }, -- small emerald
+	{ id = 3028, chance = 5000, maxCount = 2 }, -- small diamond
+	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
+	{ id = 11472, chance = 5000, maxCount = 2 }, -- minotaur horn
+	{ id = 5911, chance = 5000 }, -- red piece of cloth
+	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
+	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
+	{ id = 3037, chance = 1000 }, -- yellow gem
+	{ id = 36706, chance = 1000 }, -- red gem
+	{ id = 7401, chance = 260 }, -- minotaur trophy
 }
 
 monster.attacks = {

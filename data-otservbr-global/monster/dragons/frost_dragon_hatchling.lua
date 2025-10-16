@@ -78,11 +78,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 91430, maxCount = 47 },
-	{ name = "dragon ham", chance = 82860 },
-	{ name = "frosty heart", chance = 8570 },
-	{ name = "health potion", chance = 510 },
-	{ name = "spellbook of enlightenment", chance = 430 },
+	{ id = 3031, chance = 80000, maxCount = 55 }, -- gold coin
+	{ id = 3583, chance = 80000 }, -- dragon ham
+	{ id = 9661, chance = 5000 }, -- frosty heart
+	{ id = 266, chance = 1000 }, -- health potion
+	{ id = 8072, chance = 1000 }, -- spellbook of enlightenment
 }
 
 monster.attacks = {

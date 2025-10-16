@@ -79,46 +79,63 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 15 },
-	{ name = "crystal coin", chance = 100000, maxCount = 7 },
-	{ name = "green crystal shard", chance = 100000, maxCount = 3 },
-	{ name = "violet crystal shard", chance = 100000, maxCount = 3 },
-	{ id = 23516, chance = 100000 }, -- instable proto matter
-	{ name = "plasmatic lightning", chance = 100000 },
-	{ name = "emerald bangle", chance = 100000 },
-	{ name = "royal star", chance = 66666, maxCount = 100 },
-	{ name = "small amethyst", chance = 66666, maxCount = 12 },
-	{ name = "silver token", chance = 66666, maxCount = 12 },
-	{ name = "mastermind potion", chance = 66666, maxCount = 10 },
-	{ name = "ultimate mana potion", chance = 66666, maxCount = 6 },
-	{ name = "giant emerald", chance = 66666 },
-	{ id = 3039, chance = 66666 }, -- red gem
-	{ name = "small ruby", chance = 33333, maxCount = 12 },
-	{ name = "bullseye potion", chance = 33333, maxCount = 10 },
-	{ name = "gold token", chance = 33333, maxCount = 8 },
-	{ name = "supreme health potion", chance = 33333, maxCount = 6 },
-	{ name = "blue crystal shard", chance = 33333, maxCount = 3 },
-	{ name = "giant sapphire", chance = 33333 },
-	{ name = "green gem", chance = 33333 },
-	{ id = 23542, chance = 33333 }, -- collar of blue plasma
-	{ name = "huge chunk of crude iron", chance = 33333 },
-	{ name = "magic sulphur", chance = 33333 },
-	{ name = "ring of the sky", chance = 33333 },
-	{ name = "ultimate spirit potion", chance = 15000, maxCount = 20 },
-	{ name = "small diamond", chance = 15000, maxCount = 12 },
-	{ name = "small emerald", chance = 15000, maxCount = 12 },
-	{ name = "rift shield", chance = 5000 },
-	{ id = 281, chance = 5000 }, -- giant shimmering pearl (green)
-	{ id = 3341, chance = 5000 }, -- arcane staff
-	{ name = "skullcracker armor", chance = 5000 },
-	{ name = "chaos mace", chance = 5000 },
-	{ name = "cat's paw", chance = 5000 },
-	{ name = "piggy bank", chance = 5000 },
-	{ name = "mysterious remains", chance = 5000 },
-	{ name = "energy bar", chance = 5000 },
-	{ name = "library ticket", chance = 500, unique = true },
-	{ name = "calamity", chance = 500, unique = true },
-	{ name = "spark sphere", chance = 100000 },
+	{ id = 25759, chance = 80000, maxCount = 100 }, -- royal star
+	{ id = 3043, chance = 80000, maxCount = 13 }, -- crystal coin
+	{ id = 3035, chance = 80000, maxCount = 15 }, -- platinum coin
+	{ id = 23374, chance = 80000, maxCount = 20 }, -- ultimate spirit potion
+	{ id = 3033, chance = 80000, maxCount = 12 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 12 }, -- small diamond
+	{ id = 3032, chance = 80000, maxCount = 12 }, -- small emerald
+	{ id = 3030, chance = 80000, maxCount = 12 }, -- small ruby
+	{ id = 22516, chance = 80000, maxCount = 22 }, -- silver token
+	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
+	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
+	{ id = 22721, chance = 80000, maxCount = 8 }, -- gold token
+	{ id = 23375, chance = 80000, maxCount = 6 }, -- supreme health potion
+	{ id = 23373, chance = 80000, maxCount = 6 }, -- ultimate mana potion
+	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 30059, chance = 80000 }, -- giant ruby
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 23526, chance = 80000 }, -- collar of blue plasma
+	{ id = 22726, chance = 80000 }, -- rift shield
+	{ id = 19400, chance = 80000 }, -- arcane staff
+	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 3006, chance = 80000 }, -- ring of the sky
+	{ id = 8061, chance = 80000 }, -- skullcracker armor
+	{ id = 7427, chance = 80000 }, -- chaos mace
+	{ id = 23518, chance = 80000 }, -- spark sphere
+	{ id = 23520, chance = 80000 }, -- plasmatic lightning
+	{ id = 3010, chance = 80000 }, -- emerald bangle
+	{ id = 5479, chance = 80000 }, -- cats paw
+	{ id = 2995, chance = 80000 }, -- piggy bank
+	{ id = 23509, chance = 80000 }, -- mysterious remains
+	{ id = 23535, chance = 80000 }, -- energy bar
+	{ id = 23527, chance = 80000 }, -- collar of green plasma
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 23528, chance = 80000 }, -- collar of red plasma
+	{ id = 5809, chance = 80000 }, -- soul stone
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 23529, chance = 80000 }, -- ring of blue plasma
+	{ id = 23476, chance = 80000 }, -- void boots
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 23533, chance = 80000 }, -- ring of red plasma
+	{ id = 22867, chance = 80000 }, -- rift crossbow
+	{ id = 23531, chance = 80000 }, -- ring of green plasma
+	{ id = 22727, chance = 80000 }, -- rift lance
+	{ id = 22866, chance = 80000 }, -- rift bow
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 28791, chance = 1000 }, -- library ticket
+	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
+	{ id = 7414, chance = 80000 }, -- abyss hammer
 }
 
 monster.attacks = {

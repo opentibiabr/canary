@@ -79,32 +79,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 99 },
-	{ name = "gold coin", chance = 50000, maxCount = 50 },
-	{ name = "small emerald", chance = 10290, maxCount = 2 },
-	{ name = "small amethyst", chance = 10680, maxCount = 2 },
-	{ name = "platinum coin", chance = 100000, maxCount = 6 },
-	{ id = 3092, chance = 1550 }, -- axe ring
-	{ name = "war hammer", chance = 5050 },
-	{ name = "warrior helmet", chance = 580 },
-	{ name = "guardian shield", chance = 2300 },
-	{ name = "tower shield", chance = 190 },
-	{ name = "ancient shield", chance = 3690 },
-	{ name = "brown mushroom", chance = 15150, maxCount = 2 },
-	{ name = "iron ore", chance = 11070 },
-	{ name = "titan axe", chance = 1170 },
-	{ name = "sapphire hammer", chance = 80 },
-	{ name = "spiked squelcher", chance = 80 },
-	{ name = "glorious axe", chance = 1940 },
-	{ name = "great mana potion", chance = 6660, maxCount = 2 },
-	{ name = "great health potion", chance = 7960 },
-	{ name = "shiny stone", chance = 4660 },
-	{ id = 12600, chance = 780 }, -- coal
-	{ name = "green crystal shard", chance = 1750 },
-	{ name = "green crystal splinter", chance = 3110 },
-	{ name = "brown crystal splinter", chance = 5630, maxCount = 2 },
-	{ name = "red crystal fragment", chance = 3690 },
-	{ name = "drill bolt", chance = 3690, maxCount = 5 },
+	{ id = 3031, chance = 80000, maxCount = 149 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
+	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 5880, chance = 23000 }, -- iron ore
+	{ id = 3033, chance = 23000, maxCount = 2 }, -- small amethyst
+	{ id = 3032, chance = 23000, maxCount = 2 }, -- small emerald
+	{ id = 3279, chance = 5000 }, -- war hammer
+	{ id = 3432, chance = 5000 }, -- ancient shield
+	{ id = 16142, chance = 5000, maxCount = 5 }, -- drill bolt
+	{ id = 7454, chance = 5000 }, -- glorious axe
+	{ id = 16123, chance = 5000, maxCount = 2 }, -- brown crystal splinter
+	{ id = 16122, chance = 5000 }, -- green crystal splinter
+	{ id = 3415, chance = 5000 }, -- guardian shield
+	{ id = 16126, chance = 5000 }, -- red crystal fragment
+	{ id = 10310, chance = 5000 }, -- shiny stone
+	{ id = 3092, chance = 5000 }, -- axe ring
+	{ id = 12600, chance = 5000 }, -- coal
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 7413, chance = 5000 }, -- titan axe
+	{ id = 7437, chance = 1000 }, -- sapphire hammer
+	{ id = 3428, chance = 1000 }, -- tower shield
+	{ id = 3369, chance = 260 }, -- warrior helmet
 }
 
 monster.attacks = {

@@ -80,24 +80,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 198 }, -- gold coin
-	{ id = 3035, chance = 67610, maxCount = 3 }, -- platinum coin
-	{ id = 9058, chance = 390 }, -- gold ingot
-	{ id = 5911, chance = 3230 }, -- red piece of cloth
-	{ id = 5878, chance = 14710 }, -- minotaur leather
-	{ id = 11472, chance = 6580, maxCount = 2 }, -- minotaur horn
-	{ id = 21201, chance = 13160 }, -- execowtioner mask
-	{ id = 239, chance = 11480 }, -- great health potion
-	{ id = 238, chance = 10060 }, -- great mana potion
-	{ id = 3577, chance = 7230 }, -- meat
-	{ id = 9057, chance = 5810, maxCount = 2 }, -- small topaz
-	{ id = 3030, chance = 4520, maxCount = 2 }, -- small ruby
-	{ id = 7412, chance = 900 }, -- butcher's axe
-	{ id = 3381, chance = 770 }, -- crown armor
-	{ id = 21176, chance = 1420 }, -- execowtioner axe
-	{ id = 3318, chance = 770 }, -- knight axe
-	{ id = 7413, chance = 390 }, -- titan axe
-	{ id = 7401, chance = 520 }, -- minotaur trophy
+	{ id = 3031, chance = 80000, maxCount = 198 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 21201, chance = 23000 }, -- execowtioner mask
+	{ id = 5878, chance = 23000 }, -- minotaur leather
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
+	{ id = 11472, chance = 5000, maxCount = 2 }, -- minotaur horn
+	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
+	{ id = 5911, chance = 5000 }, -- red piece of cloth
+	{ id = 21176, chance = 1000 }, -- execowtioner axe
+	{ id = 3318, chance = 1000 }, -- knight axe
+	{ id = 3381, chance = 1000 }, -- crown armor
+	{ id = 7413, chance = 1000 }, -- titan axe
+	{ id = 7412, chance = 1000 }, -- butchers axe
+	{ id = 9058, chance = 260 }, -- gold ingot
+	{ id = 7401, chance = 260 }, -- minotaur trophy
 }
 
 monster.attacks = {

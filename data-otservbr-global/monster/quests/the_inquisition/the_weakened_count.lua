@@ -64,8 +64,8 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 40000, maxCount = 98 }, -- gold coin
-	{ id = 7924, chance = 100000 }, -- ring of the count
+	{ id = 3031, chance = 80000, maxCount = 92 }, -- gold coin
+	{ id = 3434, chance = 260 }, -- vampire shield
 }
 
 monster.attacks = {

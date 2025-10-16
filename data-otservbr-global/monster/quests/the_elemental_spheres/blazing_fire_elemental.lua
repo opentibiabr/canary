@@ -61,10 +61,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 10000, maxCount = 40 },
-	{ name = "flaming arrow", chance = 5000, maxCount = 4 },
-	{ name = "glimmering soil", chance = 2500 },
-	{ name = "fiery heart", chance = 5475 },
+	{ id = 3031, chance = 80000, maxCount = 125 }, -- gold coin
+	{ id = 941, chance = 5000 }, -- glimmering soil
+	{ id = 9636, chance = 5000 }, -- fiery heart
+	{ id = 763, chance = 5000, maxCount = 3 }, -- flaming arrow
+	{ id = 12600, chance = 1000 }, -- coal
 }
 
 monster.attacks = {

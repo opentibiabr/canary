@@ -73,27 +73,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "book page", chance = 100000, maxCount = 3 },
-	{ name = "small diamond", chance = 100000, maxCount = 8 },
-	{ name = "small sapphire", chance = 100000, maxCount = 8 },
-	{ name = "quill", chance = 100000, maxCount = 8 },
-	{ name = "ultimate health potion", chance = 100000, maxCount = 8 },
-	{ name = "ultimate mana potion", chance = 100000, maxCount = 8 },
-	{ name = "diamond sceptre", chance = 100000 },
-	{ name = "frosty heart", chance = 100000, maxCount = 8 },
-	{ name = "glacier mask", chance = 350 },
-	{ name = "ice rapier", chance = 250 },
-	{ name = "silken bookmark", chance = 100000, maxCount = 8 },
-	{ name = "crystal mace", chance = 250 },
-	{ name = "glacier kilt", chance = 250 },
-	{ name = "glacier robe", chance = 250 },
-	{ name = "glacier shoes", chance = 350 },
-	{ name = "strange helmet", chance = 1000 },
-	{ name = "sapphire hammer", chance = 300 },
-	{ id = 7441, chance = 100000 }, -- ice cube
-	{ name = "glacial rod", chance = 150 },
-	{ name = "crystalline armor", chance = 250 },
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 28569, chance = 80000 }, -- book page
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
+	{ id = 28567, chance = 23000 }, -- quill
+	{ id = 9661, chance = 23000 }, -- frosty heart
+	{ id = 28566, chance = 23000 }, -- silken bookmark
+	{ id = 23373, chance = 23000 }, -- ultimate mana potion
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 7387, chance = 23000 }, -- diamond sceptre
+	{ id = 3284, chance = 23000 }, -- ice rapier
+	{ id = 829, chance = 23000 }, -- glacier mask
+	{ id = 7437, chance = 5000 }, -- sapphire hammer
+	{ id = 3333, chance = 5000 }, -- crystal mace
+	{ id = 823, chance = 5000 }, -- glacier kilt
+	{ id = 824, chance = 5000 }, -- glacier robe
+	{ id = 819, chance = 5000 }, -- glacier shoes
+	{ id = 3373, chance = 5000 }, -- strange helmet
+	{ id = 7741, chance = 5000 }, -- ice cube
+	{ id = 16118, chance = 1000 }, -- glacial rod
+	{ id = 8050, chance = 1000 }, -- crystalline armor
+	{ id = 9303, chance = 260 }, -- leviathans amulet
 }
 
 monster.attacks = {

@@ -73,12 +73,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 238, chance = 23000, maxCount = 10 }, -- great mana potion
-	{ id = 7642, chance = 46100, maxCount = 10 }, -- great spirit potion
-	{ id = 7643, chance = 46100, maxCount = 10 }, -- ultimate health potion
-	{ id = 3030, chance = 12000, maxCount = 12 }, -- small ruby
-	{ id = 3035, chance = 8000, maxCount = 10 }, -- platinum coin
-	{ id = 3031, chance = 30000, maxCount = 200 }, -- gold coin
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 7642, chance = 80000 }, -- great spirit potion
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 3332, chance = 80000 }, -- hammer of wrath
+	{ id = 7414, chance = 80000 }, -- abyss hammer
+	{ id = 10310, chance = 80000 }, -- shiny stone
 }
 
 monster.attacks = {

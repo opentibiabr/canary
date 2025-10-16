@@ -60,10 +60,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "dagger", chance = 80000 },
-	{ id = 3114, chance = 80000, maxCount = 2 }, -- skull
-	{ name = "gold coin", chance = 40000, maxCount = 20 },
-	{ name = "brown bread", chance = 30000 },
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3602, chance = 80000 }, -- brown bread
+	{ id = 11050, chance = 80000 }, -- torch
+	{ id = 37468, chance = 80000 }, -- special fx box
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3273, chance = 80000 }, -- sabre
+	{ id = 3267, chance = 80000 }, -- dagger
 }
 
 monster.attacks = {

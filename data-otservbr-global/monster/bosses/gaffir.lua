@@ -81,30 +81,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 17 },
-	{ name = "small amethyst", chance = 33500, maxCount = 2 },
-	{ name = "small ruby", chance = 33500, maxCount = 2 },
-	{ name = "small sapphire", chance = 33500 },
-	{ name = "small topaz", chance = 33500 },
-	{ name = "small diamond", chance = 33500 },
-	{ name = "great spirit potion", chance = 26400 },
-	{ name = "terra rod", chance = 24000, maxCount = 3 },
-	{ name = "springsprout rod", chance = 21000 },
-	{ name = "blue crystal shard", chance = 21000 },
-	{ name = "blue gem", chance = 21000 },
-	{ name = "cobra crest", chance = 12560 },
-	{ name = "violet crystal shard", chance = 14800 },
-	{ id = 281, chance = 14520 }, -- giant shimmering pearl (green)
-	{ name = "gold ingot", chance = 14500 },
-	{ name = "spellbook of warding", chance = 6500 },
-	{ id = 3098, chance = 5400 }, -- ring of healing
-	{ name = "terra hood", chance = 1600 },
-	{ name = "amulet of loss", chance = 3400 },
-	{ name = "wand of everblazing", chance = 2900 },
-	{ name = "cobra wand", chance = 100 },
-	{ name = "cobra axe", chance = 100 },
-	{ name = "cobra rod", chance = 100 },
-	{ name = "cobra crest", chance = 100 },
+	{ id = 3065, chance = 80000 }, -- terra rod
+	{ id = 8084, chance = 80000 }, -- springsprout rod
+	{ id = 3035, chance = 80000, maxCount = 17 }, -- platinum coin
+	{ id = 7642, chance = 80000 }, -- great spirit potion
+	{ id = 8073, chance = 80000 }, -- spellbook of warding
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 3057, chance = 80000 }, -- amulet of loss
+	{ id = 31678, chance = 80000 }, -- cobra crest
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 30399, chance = 80000 }, -- cobra wand
+	{ id = 30400, chance = 80000 }, -- cobra rod
+	{ id = 3033, chance = 80000 }, -- small amethyst
+	{ id = 3032, chance = 80000 }, -- small emerald
 }
 
 monster.attacks = {

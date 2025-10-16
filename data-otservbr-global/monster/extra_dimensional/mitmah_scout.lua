@@ -80,22 +80,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 10 },
-	{ name = "broken mitmah necklace", chance = 17180 },
-	{ name = "brown crystal splinter", chance = 7620 },
-	{ id = 281, chance = 7400 }, -- giant shimmering pearl
-	{ name = "green crystal splinter", chance = 6890 },
-	{ name = "strong health potion", chance = 6170, maxCount = 3 },
-	{ name = "opal", chance = 4080 },
-	{ name = "onyx chip", chance = 3670 },
-	{ name = "gold ingot", chance = 2880 },
-	{ id = 3037, chance = 2450 }, -- yellow gem
-	{ name = "prismatic quartz", chance = 2410 },
-	{ name = "ruby necklace", chance = 1810 },
-	{ name = "gold-brocaded cloth", chance = 1340 },
-	{ name = "drill bolt", chance = 1270, maxCount = 10 },
-	{ id = 3040, chance = 320 }, -- gold nugget
-	{ name = "ornate crossbow", chance = 140 },
+	{ id = 236, chance = 23000, maxCount = 3 }, -- strong health potion
+	{ id = 16122, chance = 23000 }, -- green crystal splinter
+	{ id = 16123, chance = 23000 }, -- brown crystal splinter
+	{ id = 3016, chance = 5000 }, -- ruby necklace
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 9058, chance = 5000 }, -- gold ingot
+	{ id = 16142, chance = 5000, maxCount = 10 }, -- drill bolt
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 22194, chance = 5000 }, -- opal
+	{ id = 24962, chance = 5000 }, -- prismatic quartz
+	{ id = 27488, chance = 260 }, -- gold nugget
+	{ id = 14247, chance = 260 }, -- ornate crossbow
+	{ id = 48098, chance = 80000 }, -- mitmah scout soul core
 }
 
 monster.attacks = {

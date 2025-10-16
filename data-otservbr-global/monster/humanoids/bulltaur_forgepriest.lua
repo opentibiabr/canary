@@ -79,21 +79,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 52410, maxCount = 45 },
-	{ id = 44736, chance = 16131 },
-	{ id = 9057, chance = 9889, maxCount = 3 },
-	{ id = 44741, chance = 8035 },
-	{ id = 44742, chance = 3832 },
-	{ id = 9058, chance = 2719 },
-	{ id = 5944, chance = 1669 },
-	{ id = 3041, chance = 1236 },
-	{ id = 16096, chance = 1236 },
-	{ id = 825, chance = 989 },
-	{ id = 3040, chance = 803 },
-	{ id = 8074, chance = 742 },
-	{ id = 32769, chance = 618 },
-	{ id = 3081, chance = 556 },
-	{ id = 3036, chance = 433 },
+	{ id = 3035, chance = 80000, maxCount = 45 }, -- platinum coin
+	{ id = 9057, chance = 80000, maxCount = 3 }, -- small topaz
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 5944, chance = 80000 }, -- soul orb
+	{ id = 8074, chance = 80000 }, -- spellbook of mind control
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 27488, chance = 80000 }, -- gold nugget
+	{ id = 825, chance = 80000 }, -- lightning robe
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 32769, chance = 80000 }, -- white gem
+	{ id = 48094, chance = 80000 }, -- bulltaur forgepriest soul core
+	{ id = 16096, chance = 80000 }, -- wand of defiance
+	{ id = 3036, chance = 80000 }, -- violet gem
 }
 
 monster.attacks = {

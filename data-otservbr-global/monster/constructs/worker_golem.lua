@@ -82,25 +82,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 1000, maxCount = 2 },
-	{ name = "gold coin", chance = 43000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 40 },
-	{ name = "might ring", chance = 370 },
-	{ name = "life crystal", chance = 890 },
-	{ name = "war hammer", chance = 920 },
-	{ name = "iron ore", chance = 1001 },
-	{ name = "bonebreaker", chance = 130 },
-	{ name = "berserk potion", chance = 820 },
-	{ name = "spiked squelcher", chance = 1003 },
-	{ name = "great mana potion", chance = 1470 },
-	{ name = "great health potion", chance = 2100 },
-	{ name = "nail", chance = 5000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 830 },
-	{ name = "gear wheel", chance = 1007 },
-	{ id = 8895, chance = 200 }, -- rusted armor
-	{ id = 8898, chance = 50 }, -- rusted legs
-	{ id = 9066, chance = 2270 }, -- crystal pedestal
-	{ name = "gear crystal", chance = 2270 },
+	{ id = 3031, chance = 80000, maxCount = 140 }, -- gold coin
+	{ id = 238, chance = 5000 }, -- great mana potion
+	{ id = 239, chance = 5000 }, -- great health potion
+	{ id = 953, chance = 5000, maxCount = 5 }, -- nail
+	{ id = 8895, chance = 5000 }, -- rusted armor
+	{ id = 9655, chance = 5000 }, -- gear crystal
+	{ id = 3028, chance = 1000, maxCount = 2 }, -- small diamond
+	{ id = 3048, chance = 1000 }, -- might ring
+	{ id = 3061, chance = 1000 }, -- life crystal
+	{ id = 3279, chance = 1000 }, -- war hammer
+	{ id = 5880, chance = 1000 }, -- iron ore
+	{ id = 7439, chance = 1000 }, -- berserk potion
+	{ id = 7452, chance = 1000 }, -- spiked squelcher
+	{ id = 7642, chance = 1000 }, -- great spirit potion
+	{ id = 8775, chance = 1000 }, -- gear wheel
+	{ id = 8898, chance = 1000 }, -- rusted legs
+	{ id = 7428, chance = 260 }, -- bonebreaker
+	{ id = 9066, chance = 260 }, -- crystal pedestal
 }
 
 monster.attacks = {

@@ -60,7 +60,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "corrupt naga scales", chance = 17720 },
+	{ id = 39415, chance = 80000 }, -- corrupt naga scales
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 16120, chance = 80000 }, -- violet crystal shard
 }
 
 monster.attacks = {

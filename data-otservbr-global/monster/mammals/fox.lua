@@ -78,8 +78,8 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3577, chance = 49320 }, -- meat
-	{ name = "fox paw", chance = 1350 },
+	{ id = 3577, chance = 80000, maxCount = 2 }, -- meat
+	{ id = 27462, chance = 5000 }, -- fox paw
 }
 
 monster.attacks = {

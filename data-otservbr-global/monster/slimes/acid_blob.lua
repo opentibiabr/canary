@@ -85,7 +85,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "glob of acid slime", chance = 18520 },
+	{ id = 9054, chance = 23000 }, -- glob of acid slime
 }
 
 monster.attacks = {

@@ -85,24 +85,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 12160, maxCount = 3 },
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 28000, maxCount = 33 },
-	{ name = "small emerald", chance = 10190, maxCount = 3 },
-	{ name = "small amethyst", chance = 14570, maxCount = 3 },
-	{ name = "platinum coin", chance = 87730, maxCount = 4 },
-	{ id = 3049, chance = 550 }, -- stealth ring
-	{ name = "blank rune", chance = 22500, maxCount = 2 },
-	{ name = "crown armor", chance = 660 },
-	{ name = "shadow herb", chance = 26930, maxCount = 2 },
-	{ id = 6299, chance = 330 }, -- death ring
-	{ name = "demonic essence", chance = 16320 },
-	{ name = "abyss hammer", chance = 110 },
-	{ name = "shadow sceptre", chance = 550 },
-	{ name = "great mana potion", chance = 32750, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 14680 },
-	{ name = "small topaz", chance = 12810, maxCount = 3 },
+	{ id = 3031, chance = 80000, maxCount = 238 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
+	{ id = 3147, chance = 80000, maxCount = 2 }, -- blank rune
+	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
+	{ id = 3740, chance = 80000 }, -- shadow herb
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 3033, chance = 23000, maxCount = 3 }, -- small amethyst
+	{ id = 3032, chance = 23000, maxCount = 3 }, -- small emerald
+	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
+	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 7451, chance = 1000 }, -- shadow sceptre
+	{ id = 3049, chance = 1000 }, -- stealth ring
+	{ id = 3381, chance = 1000 }, -- crown armor
+	{ id = 6299, chance = 1000 }, -- death ring
+	{ id = 7414, chance = 260 }, -- abyss hammer
 }
 
 monster.attacks = {

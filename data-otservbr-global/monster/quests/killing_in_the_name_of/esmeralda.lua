@@ -64,17 +64,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 170 }, -- gold coin
-	{ id = 9668, chance = 100000 }, -- mutated rat tail
-	{ id = 3098, chance = 100000 }, -- ring of healing
-	{ id = 3035, chance = 95000, maxCount = 4 }, -- platinum coin
-	{ id = 3030, chance = 68000, maxCount = 3 }, -- small ruby
-	{ id = 3370, chance = 54000 }, -- knight armor
-	{ id = 3428, chance = 34000 }, -- tower shield
-	{ id = 3269, chance = 31050 }, -- halberd
-	{ id = 3326, chance = 26000 }, -- epee
-	{ id = 811, chance = 8200 }, -- terra mantle
-	{ id = 3735, chance = 6500 }, -- stone herb
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
+	{ id = 9668, chance = 80000 }, -- mutated rat tail
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 3370, chance = 80000 }, -- knight armor
+	{ id = 3428, chance = 80000 }, -- tower shield
+	{ id = 3269, chance = 80000 }, -- halberd
+	{ id = 3326, chance = 5000 }, -- epee
+	{ id = 3735, chance = 5000 }, -- stone herb
+	{ id = 3030, chance = 1000, maxCount = 3 }, -- small ruby
+	{ id = 811, chance = 1000 }, -- terra mantle
 }
 
 monster.attacks = {

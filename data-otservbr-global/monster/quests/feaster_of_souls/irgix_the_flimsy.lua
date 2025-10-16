@@ -65,19 +65,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 10000, maxCount = 8 },
-	{ name = "skull coin", chance = 66670 },
-	{ name = "diamond", chance = 400 },
-	{ name = "silver hand mirror", chance = 1000, maxCount = 2 },
-	{ name = "white gem", chance = 33333 },
-	{ name = "terra rod", chance = 16670 },
-	{ name = "yellow gem", chance = 16670 },
-	{ id = 3039, chance = 16670 }, -- red gem
-	{ name = "necklace of the deep", chance = 1000 },
-	{ name = "wand of starstorm", chance = 1000 },
-	{ name = "wand of cosmic energy", chance = 1000 },
-	{ name = "death toll", chance = 1000 },
-	{ name = "pair of nightmare boots", chance = 230 },
+	{ id = 32583, chance = 80000 }, -- skull coin
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 32770, chance = 80000 }, -- diamond
+	{ id = 32772, chance = 80000 }, -- silver hand mirror
+	{ id = 32769, chance = 80000 }, -- white gem
+	{ id = 3065, chance = 80000 }, -- terra rod
+	{ id = 13990, chance = 80000 }, -- necklace of the deep
+	{ id = 8092, chance = 80000 }, -- wand of starstorm
+	{ id = 3073, chance = 80000 }, -- wand of cosmic energy
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 32703, chance = 80000 }, -- death toll
+	{ id = 32619, chance = 80000 }, -- pair of nightmare boots
+	{ id = 16118, chance = 80000 }, -- glacial rod
+	{ id = 3067, chance = 80000 }, -- hailstorm rod
+	{ id = 8084, chance = 80000 }, -- springsprout rod
 }
 
 monster.attacks = {

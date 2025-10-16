@@ -77,19 +77,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 20000, maxCount = 2 }, -- platinum coin
-	{ id = 23521, chance = 10200 }, -- crystal bone
-	{ id = 23506, chance = 10100 }, -- plasma pearls
-	{ id = 23545, chance = 4900 }, -- energy drink
-	{ id = 7642, chance = 4800 }, -- great spirit potion
-	{ id = 238, chance = 4400 }, -- great mana potion
-	{ id = 23535, chance = 4200 }, -- energy bar
-	{ id = 239, chance = 4200 }, -- great health potion
-	{ id = 16121, chance = 3400 }, -- green crystal shard
-	{ id = 16125, chance = 3300 }, -- cyan crystal fragment
-	{ id = 16124, chance = 2600 }, -- blue crystal splinter
-	{ id = 16119, chance = 2100 }, -- blue crystal shard
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
+	{ id = 23506, chance = 23000 }, -- plasma pearls
+	{ id = 23521, chance = 23000 }, -- crystal bone
+	{ id = 23545, chance = 5000 }, -- energy drink
+	{ id = 7642, chance = 5000 }, -- great spirit potion
+	{ id = 239, chance = 5000 }, -- great health potion
+	{ id = 238, chance = 5000 }, -- great mana potion
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 23535, chance = 5000 }, -- energy bar
+	{ id = 16125, chance = 5000 }, -- cyan crystal fragment
+	{ id = 16124, chance = 5000 }, -- blue crystal splinter
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
 }
 
 monster.attacks = {

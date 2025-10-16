@@ -79,19 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 85000, maxCount = 13 },
-	{ id = 30058, chance = 13000 }, -- ice flower
-	{ name = "small enchanted ruby", chance = 13300 },
-	{ name = "miraculum", chance = 10100 },
-	{ name = "ultimate health potion", chance = 9300 },
-	{ name = "dream essence egg", chance = 8500 },
-	{ name = "tiger eye", chance = 6900 },
-	{ name = "northwind rod", chance = 6000 },
-	{ name = "glacier amulet", chance = 5000 },
-	{ name = "ice rapier", chance = 6250 },
-	{ name = "glacier robe", chance = 2500 },
-	{ name = "elven amulet", chance = 720 },
-	{ name = "blue gem", chance = 200 },
+	{ id = 3035, chance = 80000, maxCount = 13 }, -- platinum coin
+	{ id = 676, chance = 23000 }, -- small enchanted ruby
+	{ id = 11474, chance = 23000 }, -- miraculum
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 30005, chance = 23000 }, -- dream essence egg
+	{ id = 24961, chance = 23000 }, -- tiger eye
+	{ id = 8083, chance = 23000 }, -- northwind rod
+	{ id = 815, chance = 23000 }, -- glacier amulet
+	{ id = 3284, chance = 23000 }, -- ice rapier
+	{ id = 824, chance = 5000 }, -- glacier robe
+	{ id = 3082, chance = 1000 }, -- elven amulet
+	{ id = 3041, chance = 260 }, -- blue gem
 }
 
 monster.attacks = {

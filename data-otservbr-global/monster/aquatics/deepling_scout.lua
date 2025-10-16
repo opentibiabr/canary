@@ -83,15 +83,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 75000, maxCount = 50 },
-	{ name = "hunting spear", chance = 15185, maxCount = 3 },
-	{ id = 3052, chance = 2127 }, -- life ring
-	{ name = "rusted armor", chance = 925 },
-	{ name = "heavy trident", chance = 505 },
-	{ name = "eye of a deepling", chance = 310 },
-	{ name = "fish fin", chance = 310 },
-	{ name = "small emerald", chance = 121 },
-	{ name = "flask of rust remover", chance = 111 },
+	{ id = 3031, chance = 80000, maxCount = 50 }, -- gold coin
+	{ id = 3347, chance = 23000, maxCount = 3 }, -- hunting spear
+	{ id = 3052, chance = 5000 }, -- life ring
+	{ id = 8895, chance = 1000 }, -- rusted armor
+	{ id = 12683, chance = 1000 }, -- heavy trident
+	{ id = 12730, chance = 260 }, -- eye of a deepling
+	{ id = 5895, chance = 260 }, -- fish fin
+	{ id = 9016, chance = 260 }, -- flask of rust remover
+	{ id = 3032, chance = 260 }, -- small emerald
 }
 
 monster.attacks = {

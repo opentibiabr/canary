@@ -53,7 +53,8 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.defenses = {
 	defense = 33,

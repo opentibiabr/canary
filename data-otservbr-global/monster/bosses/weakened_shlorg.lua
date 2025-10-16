@@ -65,26 +65,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 19083, chance = 3000 }, -- silver raid token
-	{ id = 3031, chance = 100000, maxCount = 105 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 8 }, -- platinum coin
-	{ id = 19371, chance = 3000 }, -- glass of goo
-	{ id = 19372, chance = 3000 }, -- goo shell
-	{ id = 3037, chance = 10000 }, -- yellow gem
-	{ id = 3038, chance = 10000 }, -- green gem
-	{ id = 7643, chance = 10000, maxCount = 3 }, -- ultimate health potion
-	{ id = 7642, chance = 10000, maxCount = 3 }, -- great spirit potion
-	{ id = 238, chance = 10000, maxCount = 3 }, -- great mana potion
-	{ id = 3032, chance = 10000, maxCount = 5 }, -- small emerald
-	{ id = 9057, chance = 10000, maxCount = 5 }, -- small topaz
-	{ id = 8044, chance = 20000 }, -- belted cape
-	{ id = 5910, chance = 10000 }, -- green piece of cloth
-	{ id = 5911, chance = 10000 }, -- red piece of cloth
-	{ id = 5914, chance = 10000 }, -- yellow piece of cloth
-	{ id = 3297, chance = 20000 }, -- serpent sword
-	{ id = 8084, chance = 20000 }, -- springsprout rod
-	{ id = 8063, chance = 10000 }, -- paladin armor
-	{ id = 9667, chance = 100000 }, -- boggy dreads
+	{ id = 3031, chance = 80000, maxCount = 191 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 3032, chance = 80000, maxCount = 5 }, -- small emerald
+	{ id = 9057, chance = 80000, maxCount = 6 }, -- small topaz
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 7643, chance = 80000, maxCount = 4 }, -- ultimate health potion
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 19083, chance = 80000, maxCount = 2 }, -- silver raid token
+	{ id = 9667, chance = 80000, maxCount = 2 }, -- boggy dreads
+	{ id = 5910, chance = 80000 }, -- green piece of cloth
+	{ id = 5912, chance = 80000 }, -- blue piece of cloth
+	{ id = 5914, chance = 80000 }, -- yellow piece of cloth
+	{ id = 5911, chance = 80000 }, -- red piece of cloth
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 8084, chance = 80000 }, -- springsprout rod
+	{ id = 8044, chance = 80000 }, -- belted cape
+	{ id = 3297, chance = 80000 }, -- serpent sword
+	{ id = 7436, chance = 80000 }, -- angelic axe
+	{ id = 7454, chance = 80000 }, -- glorious axe
+	{ id = 7427, chance = 80000 }, -- chaos mace
+	{ id = 8063, chance = 80000 }, -- paladin armor
+	{ id = 19372, chance = 80000 }, -- goo shell
+	{ id = 19371, chance = 80000 }, -- glass of goo
 }
 
 monster.attacks = {

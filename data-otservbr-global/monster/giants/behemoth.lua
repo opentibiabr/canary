@@ -79,30 +79,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2893, chance = 100 }, -- amphora
-	{ name = "crystal necklace", chance = 2530 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "small amethyst", chance = 6380, maxCount = 5 },
-	{ name = "platinum coin", chance = 59800, maxCount = 5 },
-	{ name = "strange symbol", chance = 750 },
-	{ id = 3116, chance = 670 }, -- big bone
-	{ name = "two handed sword", chance = 5980 },
-	{ name = "double axe", chance = 10510 },
-	{ name = "giant sword", chance = 1006 },
-	{ name = "crowbar", chance = 100 },
-	{ name = "war axe", chance = 50 },
-	{ name = "plate armor", chance = 3930 },
-	{ name = "dark armor", chance = 4370 },
-	{ id = 3456, chance = 650 }, -- pick
-	{ name = "steel boots", chance = 380 },
-	{ name = "meat", chance = 30000, maxCount = 6 },
-	{ name = "perfect behemoth fang", chance = 1090 },
-	{ name = "behemoth claw", chance = 860 },
-	{ name = "assassin star", chance = 9750, maxCount = 5 },
-	{ id = 7396, chance = 170 }, -- behemoth trophy
-	{ name = "titan axe", chance = 90 },
-	{ name = "great health potion", chance = 5120 },
-	{ name = "battle stone", chance = 14000 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 3577, chance = 80000, maxCount = 6 }, -- meat
+	{ id = 11447, chance = 23000 }, -- battle stone
+	{ id = 3275, chance = 23000 }, -- double axe
+	{ id = 7368, chance = 23000, maxCount = 5 }, -- assassin star
+	{ id = 3033, chance = 23000, maxCount = 5 }, -- small amethyst
+	{ id = 3265, chance = 23000 }, -- two handed sword
+	{ id = 239, chance = 5000 }, -- great health potion
+	{ id = 3383, chance = 5000 }, -- dark armor
+	{ id = 3357, chance = 5000 }, -- plate armor
+	{ id = 3008, chance = 5000 }, -- crystal necklace
+	{ id = 5893, chance = 1000 }, -- perfect behemoth fang
+	{ id = 3281, chance = 1000 }, -- giant sword
+	{ id = 3058, chance = 1000 }, -- strange symbol
+	{ id = 3116, chance = 1000 }, -- big bone
+	{ id = 31615, chance = 1000 }, -- pick
+	{ id = 5930, chance = 1000 }, -- behemoth claw
+	{ id = 3554, chance = 260 }, -- steel boots
+	{ id = 7396, chance = 260 }, -- behemoth trophy
+	{ id = 30927, chance = 260 }, -- amphora
+	{ id = 3304, chance = 260 }, -- crowbar
+	{ id = 7413, chance = 260 }, -- titan axe
+	{ id = 3342, chance = 260 }, -- war axe
 }
 
 monster.attacks = {

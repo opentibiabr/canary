@@ -72,27 +72,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55000, minCount = 70, maxCount = 75 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "giant sapphire", chance = 10000, maxCount = 1 },
-	{ name = "giant topaz", chance = 10000, maxCount = 1 },
-	{ name = "violet gem", chance = 6000, maxCount = 1 },
-	{ name = "blue gem", chance = 10000, maxCount = 3 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 10000, maxCount = 3 },
-	{ name = "yellow gem", chance = 10000, maxCount = 3 },
-	{ name = "white gem", chance = 6000, maxCount = 3 },
-	{ name = "dragon figurine", chance = 10000, maxCount = 1 },
-	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "the skull of a beast", chance = 400 },
-	{ name = "figurine of spite", chance = 400 },
-	{ name = "spite's spirit", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 23375, chance = 80000 }, -- supreme health potion
+	{ id = 7443, chance = 80000 }, -- bullseye potion
+	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 32623, chance = 80000 }, -- giant topaz
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 23373, chance = 80000 }, -- ultimate mana potion
+	{ id = 32622, chance = 80000 }, -- giant amethyst
+	{ id = 7440, chance = 80000 }, -- mastermind potion
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 33952, chance = 80000 }, -- figurine of spite
+	{ id = 33926, chance = 80000 }, -- spites spirit
+	{ id = 34075, chance = 80000 }, -- the skull of a beast
+	{ id = 34072, chance = 80000 }, -- spectral horseshoe
+	{ id = 34109, chance = 80000 }, -- bag you desire
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 7439, chance = 80000 }, -- berserk potion
 }
 
 monster.attacks = {

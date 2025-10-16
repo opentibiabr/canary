@@ -80,24 +80,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 17 },
-	{ name = "carnisylvan bark", chance = 12040, maxCount = 2 },
-	{ name = "mushroom pie", chance = 8640, maxCount = 1 },
-	{ name = "carnisylvan finger", chance = 8640, maxCount = 4 },
-	{ name = "emerald bangle", chance = 4970 },
-	{ name = "great spirit potion", chance = 6810, maxCount = 5 },
-	{ name = "guardian halberd", chance = 4970 },
-	{ id = 23542, chance = 4970 }, -- collar of blue plasma
-	{ name = "terra rod", chance = 7330 },
-	{ name = "underworld rod", chance = 6280 },
-	{ name = "diamond sceptre", chance = 4710 },
-	{ name = "fire mushroom", chance = 3140 },
-	{ name = "knight axe", chance = 5760 },
-	{ name = "wand of starstorm", chance = 4710 },
-	{ name = "sacred tree amulet", chance = 2880 },
-	{ id = 281, chance = 2090 }, -- giant shimmering pearl (green)
-	{ name = "gemmed figurine", chance = 790 },
-	{ name = "human teeth", chance = 520 },
+	{ id = 3035, chance = 80000, maxCount = 17 }, -- platinum coin
+	{ id = 3010, chance = 23000 }, -- emerald bangle
+	{ id = 34249, chance = 23000 }, -- wooden trash
+	{ id = 3315, chance = 23000 }, -- guardian halberd
+	{ id = 7642, chance = 23000 }, -- great spirit potion
+	{ id = 16103, chance = 23000 }, -- mushroom pie
+	{ id = 36805, chance = 23000 }, -- carnisylvan finger
+	{ id = 36806, chance = 23000 }, -- carnisylvan bark
+	{ id = 3065, chance = 5000 }, -- terra rod
+	{ id = 3318, chance = 5000 }, -- knight axe
+	{ id = 3731, chance = 5000, maxCount = 3 }, -- fire mushroom
+	{ id = 7387, chance = 5000 }, -- diamond sceptre
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 8092, chance = 5000 }, -- wand of starstorm
+	{ id = 9302, chance = 5000 }, -- sacred tree amulet
+	{ id = 23526, chance = 5000 }, -- collar of blue plasma
+	{ id = 24392, chance = 1000 }, -- gemmed figurine
+	{ id = 36807, chance = 260 }, -- human teeth
 }
 
 monster.attacks = {

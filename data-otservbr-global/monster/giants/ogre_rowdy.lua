@@ -77,16 +77,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "flaming arrow", chance = 22040, maxCount = 19 },
-	{ name = "ogre ear stud", chance = 12900 },
-	{ name = "ogre nose ring", chance = 20970 },
-	{ name = "skull fetish", chance = 12900 },
-	{ name = "wand of inferno", chance = 8600 },
-	{ name = "jalapeno pepper", chance = 3760, maxCount = 3 },
-	{ name = "wand of draconia", chance = 2150 },
-	{ name = "wand of everblazing", chance = 1080 },
-	{ name = "ogre choppa", chance = 540 },
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 763, chance = 23000, maxCount = 9 }, -- flaming arrow
+	{ id = 3032, chance = 23000 }, -- small emerald
+	{ id = 3071, chance = 23000 }, -- wand of inferno
+	{ id = 8093, chance = 23000 }, -- wand of draconia
+	{ id = 22189, chance = 23000 }, -- ogre nose ring
+	{ id = 22191, chance = 23000 }, -- skull fetish
+	{ id = 22188, chance = 23000 }, -- ogre ear stud
+	{ id = 3041, chance = 5000 }, -- blue gem
+	{ id = 8016, chance = 5000, maxCount = 2 }, -- jalapeno pepper
+	{ id = 16120, chance = 5000 }, -- violet crystal shard
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 16115, chance = 5000 }, -- wand of everblazing
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 22194, chance = 5000 }, -- opal
+	{ id = 24962, chance = 5000 }, -- prismatic quartz
+	{ id = 22172, chance = 1000 }, -- ogre choppa
 }
 
 monster.attacks = {

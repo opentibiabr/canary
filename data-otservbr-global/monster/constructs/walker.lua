@@ -79,17 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21198, chance = 3548 }, -- metal toe
-	{ id = 21170, chance = 1490 }, -- gearwheel chain
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 51610, maxCount = 3 }, -- platinum coin
-	{ id = 9057, chance = 16130, maxCount = 3 }, -- small topaz
-	{ id = 3032, chance = 6450, maxCount = 2 }, -- small emerald
-	{ id = 7642, chance = 3230 }, -- great spirit potion
-	{ id = 239, chance = 3230 }, -- great health potion
-	{ id = 238, chance = 2300 }, -- great mana potion
-	{ id = 21169, chance = 1780 }, -- metal spats
-	{ id = 3554, chance = 450 }, -- steel boots
+	{ id = 3031, chance = 80000, maxCount = 199 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 21198, chance = 23000 }, -- metal toe
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 7642, chance = 23000 }, -- great spirit potion
+	{ id = 9057, chance = 5000 }, -- small topaz
+	{ id = 3033, chance = 5000 }, -- small amethyst
+	{ id = 3032, chance = 5000 }, -- small emerald
+	{ id = 21169, chance = 5000 }, -- metal spats
+	{ id = 21170, chance = 5000 }, -- gearwheel chain
+	{ id = 3333, chance = 1000 }, -- crystal mace
+	{ id = 3554, chance = 260 }, -- steel boots
 }
 
 monster.attacks = {

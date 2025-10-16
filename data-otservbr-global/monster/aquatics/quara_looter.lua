@@ -76,20 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Amber Souvenir", chance = 7040 },
-	{ name = "Resinous Fish Fin", chance = 6460 },
-	{ id = 3039, chance = 4340 }, -- red gem
-	{ id = 3041, chance = 2700 }, -- blue gem
-	{ name = "Glacier Kilt", chance = 940 },
-	{ name = "Necklace of the Deep", chance = 820 },
-	{ name = "Crystal Crossbow", chance = 470 },
-	{ name = "Rift Lance", chance = 350 },
-	{ name = "Mantassin Tail", chance = 230 },
-	{ name = "platinum coin", chance = 10000, maxCount = 25 },
-	{ name = "Glacier Robe", chance = 1000 },
-	{ name = "Preserved Light Blue Seed", chance = 110 },
-	{ name = "Preserved Purple Seed", chance = 110 },
-	{ name = "Preserved Violet Seed", chance = 110 },
+	{ id = 48508, chance = 23000 }, -- amber souvenir
+	{ id = 48509, chance = 23000 }, -- resinous fish fin
+	{ id = 824, chance = 1000 }, -- glacier robe
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3041, chance = 5000 }, -- blue gem
+	{ id = 823, chance = 1000 }, -- glacier kilt
+	{ id = 11489, chance = 1000 }, -- mantassin tail
+	{ id = 13990, chance = 1000 }, -- necklace of the deep
+	{ id = 16163, chance = 260 }, -- crystal crossbow
+	{ id = 22727, chance = 260 }, -- rift lance
+	{ id = 45654, chance = 260 }, -- preserved light blue seed
+	{ id = 45655, chance = 260 }, -- preserved violet seed
+	{ id = 45656, chance = 260 }, -- preserved purple seed
 }
 
 monster.attacks = {

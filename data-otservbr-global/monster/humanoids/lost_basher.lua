@@ -77,31 +77,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "piggy bank", chance = 4450 },
-	{ name = "gold coin", chance = 60000, maxCount = 100 },
-	{ name = "platinum coin", chance = 70000, maxCount = 2 },
-	{ name = "fire axe", chance = 310 },
-	{ name = "war axe", chance = 120 },
-	{ name = "knight legs", chance = 310 },
-	{ name = "black shield", chance = 3710 },
-	{ name = "brown mushroom", chance = 15170, maxCount = 2 },
-	{ name = "iron ore", chance = 5280 },
-	{ name = "chaos mace", chance = 160 },
-	{ name = "spiked squelcher", chance = 420 },
-	{ name = "great mana potion", chance = 11240 },
-	{ name = "terra boots", chance = 780 },
-	{ name = "ultimate health potion", chance = 10250 },
-	{ name = "small topaz", chance = 10200 },
-	{ id = 12600, chance = 21130 }, -- coal
-	{ name = "blue crystal shard", chance = 840 },
-	{ name = "lost basher's spike", chance = 17260 },
-	{ name = "lost basher's spike", chance = 14380 },
-	{ name = "bloody dwarven beard", chance = 1730 },
-	{ name = "pair of iron fists", chance = 1410 },
-	{ name = "buckle", chance = 10930 },
-	{ name = "bonecarving knife", chance = 7320 },
-	{ name = "basalt fetish", chance = 8800 },
-	{ name = "basalt figurine", chance = 9470 },
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 12600, chance = 23000 }, -- coal
+	{ id = 17827, chance = 23000 }, -- bloody dwarven beard
+	{ id = 17826, chance = 23000 }, -- lost bashers spike
+	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 17855, chance = 23000 }, -- red hair dye
+	{ id = 17847, chance = 23000 }, -- wimp tooth chain
+	{ id = 17857, chance = 23000 }, -- basalt figurine
+	{ id = 9057, chance = 23000 }, -- small topaz
+	{ id = 17830, chance = 23000 }, -- bonecarving knife
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 17856, chance = 23000 }, -- basalt fetish
+	{ id = 17831, chance = 23000 }, -- bone fetish
+	{ id = 5880, chance = 5000 }, -- iron ore
+	{ id = 2995, chance = 5000 }, -- piggy bank
+	{ id = 3429, chance = 5000 }, -- black shield
+	{ id = 3097, chance = 5000 }, -- dwarven ring
+	{ id = 17828, chance = 5000 }, -- pair of iron fists
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 17829, chance = 1000 }, -- buckle
+	{ id = 3318, chance = 1000 }, -- knight axe
+	{ id = 813, chance = 1000 }, -- terra boots
+	{ id = 3371, chance = 1000 }, -- knight legs
+	{ id = 7452, chance = 260 }, -- spiked squelcher
+	{ id = 3320, chance = 260 }, -- fire axe
+	{ id = 7427, chance = 260 }, -- chaos mace
+	{ id = 3342, chance = 260 }, -- war axe
 }
 
 monster.attacks = {

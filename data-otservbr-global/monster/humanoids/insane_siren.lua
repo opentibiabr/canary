@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 12 },
-	{ name = "ultimate health potion", chance = 14970 },
-	{ name = "miraculum", chance = 13090 },
-	{ name = "dream essence egg", chance = 11980 },
-	{ name = "wand of draconia", chance = 7700 },
-	{ name = "holy orchid", chance = 5650 },
-	{ name = "magma amulet", chance = 5130 },
-	{ name = "wand of inferno", chance = 4360 },
-	{ name = "fire axe", chance = 3590 },
-	{ name = "magma coat", chance = 3340 },
-	{ name = "wand of dragonbreath", chance = 2650 },
-	{ name = "sun fruit", chance = 2570 },
-	{ name = "magma legs", chance = 1200 },
-	{ name = "magma monocle", chance = 260 },
+	{ id = 3035, chance = 80000, maxCount = 12 }, -- platinum coin
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 11474, chance = 23000 }, -- miraculum
+	{ id = 30005, chance = 23000 }, -- dream essence egg
+	{ id = 8093, chance = 5000 }, -- wand of draconia
+	{ id = 5922, chance = 5000 }, -- holy orchid
+	{ id = 817, chance = 5000 }, -- magma amulet
+	{ id = 3071, chance = 5000 }, -- wand of inferno
+	{ id = 3320, chance = 5000 }, -- fire axe
+	{ id = 826, chance = 5000 }, -- magma coat
+	{ id = 29995, chance = 5000 }, -- sun fruit
+	{ id = 3075, chance = 5000 }, -- wand of dragonbreath
+	{ id = 821, chance = 1000 }, -- magma legs
+	{ id = 827, chance = 260 }, -- magma monocle
 }
 
 monster.attacks = {

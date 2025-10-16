@@ -71,14 +71,13 @@ monster.light = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 5214, maxCount = 1 },
-	{ name = "yellow darklight matter", chance = 9397, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 13215, maxCount = 1 },
-	{ name = "darklight core", chance = 7570, maxCount = 1 },
-	{ name = "small sapphire", chance = 5644, maxCount = 2 },
-	{ name = "blue gem", chance = 12909, maxCount = 1 },
-	{ name = "twiceslicer", chance = 11596, maxCount = 1 },
-	{ name = "white gem", chance = 13964, maxCount = 1 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 43850, chance = 23000 }, -- dark obsidian splinter
+	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
+	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 11657, chance = 260 }, -- twiceslicer
+	{ id = 32769, chance = 260 }, -- white gem
+	{ id = 8050, chance = 80000 }, -- crystalline armor
 }
 
 monster.attacks = {

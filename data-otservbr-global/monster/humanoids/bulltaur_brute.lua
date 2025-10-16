@@ -78,19 +78,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 53709, maxCount = 33 },
-	{ id = 44736, chance = 16095 },
-	{ id = 44738, chance = 13883 },
-	{ id = 9057, chance = 10239, maxCount = 3 },
-	{ id = 44737, chance = 9718 },
-	{ id = 21175, chance = 2950 },
-	{ id = 3097, chance = 2516 },
-	{ id = 3048, chance = 1432 },
-	{ id = 3036, chance = 1258 },
-	{ id = 3041, chance = 954 },
-	{ id = 3040, chance = 824 },
-	{ id = 3322, chance = 694 },
-	{ id = 32769, chance = 607 },
+	{ id = 3035, chance = 80000, maxCount = 33 }, -- platinum coin
+	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 3097, chance = 5000 }, -- dwarven ring
+	{ id = 21175, chance = 5000 }, -- mino shield
+	{ id = 27488, chance = 1000 }, -- gold nugget
+	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 3048, chance = 1000 }, -- might ring
+	{ id = 3322, chance = 1000 }, -- dragon hammer
+	{ id = 32769, chance = 260 }, -- white gem
 }
 
 monster.attacks = {

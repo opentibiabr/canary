@@ -72,20 +72,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5944, chance = 100000 }, -- soul orb
-	{ id = 5741, chance = 9000 }, -- skull helmet
-	{ id = 7420, chance = 3000 }, -- reaper's axe
-	{ id = 3061, chance = 12000 }, -- life crystal
-	{ id = 5925, chance = 5000, maxCount = 3 }, -- hardened bone
-	{ id = 238, chance = 9000, maxCount = 4 }, -- great mana potion
-	{ id = 239, chance = 9000, maxCount = 4 }, -- great health potion
-	{ id = 6299, chance = 14000 }, -- death ring
-	{ id = 3383, chance = 29000 }, -- dark armor
-	{ id = 3031, chance = 29000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 29000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 20000, maxCount = 8 }, -- platinum coin
-	{ id = 6499, chance = 6000, maxCount = 4 }, -- demonic essence
-	{ id = 6546, chance = 100000 }, -- dracola's eye
+	{ id = 3031, chance = 80000, maxCount = 210 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
+	{ id = 3029, chance = 80000, maxCount = 4 }, -- small sapphire
+	{ id = 3383, chance = 80000 }, -- dark armor
+	{ id = 3061, chance = 80000 }, -- life crystal
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 5925, chance = 80000 }, -- hardened bone
+	{ id = 5944, chance = 80000 }, -- soul orb
+	{ id = 6299, chance = 80000 }, -- death ring
+	{ id = 6499, chance = 80000 }, -- demonic essence
+	{ id = 5741, chance = 80000 }, -- skull helmet
+	{ id = 7420, chance = 260 }, -- reapers axe
+	{ id = 3366, chance = 260 }, -- magic plate armor
+	{ id = 6546, chance = 80000 }, -- dracolas eye
+	{ id = 3098, chance = 80000 }, -- ring of healing
 }
 
 monster.attacks = {

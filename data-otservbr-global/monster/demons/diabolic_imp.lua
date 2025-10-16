@@ -79,24 +79,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 40000, maxCount = 97 },
-	{ name = "gold coin", chance = 3390, maxCount = 7 },
-	{ name = "small amethyst", chance = 2250, maxCount = 3 },
-	{ id = 3049, chance = 2702 }, -- stealth ring
-	{ name = "necrotic rod", chance = 830 },
-	{ name = "blank rune", chance = 16666, maxCount = 2 },
-	{ name = "double axe", chance = 1994 },
-	{ id = 3307, chance = 5660 }, -- scimitar
-	{ name = "guardian shield", chance = 8130 },
-	{ name = "pitchfork", chance = 50000 },
-	{ name = "cleaver", chance = 8830 },
-	{ name = "soul orb", chance = 7230 },
-	{ id = 6299, chance = 120 }, -- death ring
-	{ name = "demonic essence", chance = 8000 },
-	{ name = "flask of demonic blood", chance = 25000, maxCount = 2 },
-	{ name = "magma coat", chance = 250 },
-	{ name = "magma monocle", chance = 430 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3451, chance = 80000 }, -- pitchfork
+	{ id = 6558, chance = 80000, maxCount = 2 }, -- flask of demonic blood
+	{ id = 3147, chance = 23000, maxCount = 2 }, -- blank rune
+	{ id = 3471, chance = 23000 }, -- cleaver
+	{ id = 3415, chance = 23000 }, -- guardian shield
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 5944, chance = 23000 }, -- soul orb
+	{ id = 3307, chance = 23000 }, -- scimitar
+	{ id = 3035, chance = 5000, maxCount = 7 }, -- platinum coin
+	{ id = 3049, chance = 5000 }, -- stealth ring
+	{ id = 3033, chance = 5000, maxCount = 3 }, -- small amethyst
+	{ id = 3275, chance = 5000 }, -- double axe
+	{ id = 3069, chance = 1000 }, -- necrotic rod
+	{ id = 827, chance = 1000 }, -- magma monocle
+	{ id = 826, chance = 260 }, -- magma coat
+	{ id = 6299, chance = 260 }, -- death ring
 }
 
 monster.attacks = {

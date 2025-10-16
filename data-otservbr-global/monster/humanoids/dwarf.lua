@@ -75,17 +75,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 35000, maxCount = 8 },
-	{ id = 3097, chance = 100 }, -- dwarven ring
-	{ name = "axe", chance = 15000 },
-	{ name = "hatchet", chance = 25000 },
-	{ name = "studded armor", chance = 8000 },
-	{ name = "copper shield", chance = 10000 },
-	{ id = 3456, chance = 10000 }, -- pick
-	{ id = 3505, chance = 8000 }, -- letter
-	{ name = "leather legs", chance = 10000 },
-	{ name = "white mushroom", chance = 50000 },
-	{ name = "iron ore", chance = 700 },
+	{ id = 3031, chance = 80000, maxCount = 8 }, -- gold coin
+	{ id = 3723, chance = 80000 }, -- white mushroom
+	{ id = 3276, chance = 80000 }, -- hatchet
+	{ id = 3274, chance = 80000 }, -- axe
+	{ id = 3430, chance = 80000 }, -- copper shield
+	{ id = 31615, chance = 80000 }, -- pick
+	{ id = 3559, chance = 80000 }, -- leather legs
+	{ id = 3378, chance = 80000 }, -- studded armor
+	{ id = 3505, chance = 80000 }, -- letter
+	{ id = 3097, chance = 260 }, -- dwarven ring
+	{ id = 5880, chance = 260 }, -- iron ore
 }
 
 monster.attacks = {

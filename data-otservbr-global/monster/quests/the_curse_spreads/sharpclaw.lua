@@ -76,24 +76,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "platinum coin", chance = 13600000, maxCount = 10 },
-	{ name = "brown mushroom", chance = 13600000, maxCount = 9 },
-	{ name = "onyx chip", chance = 13600000, maxCount = 9 },
-	{ name = "small enchanted amethyst", chance = 13600000, maxCount = 9 },
-	{ name = "beetroot", chance = 13600000, maxCount = 9 },
-	{ name = "great mana potion", chance = 13600000, maxCount = 9 },
-	{ name = "platinum amulet", chance = 13600000 },
-	{ id = 3098, chance = 13600000 }, -- ring of healing
-	{ name = "troll green", chance = 13600000, maxCount = 9 },
-	{ name = "ultimate mana potion", chance = 13600000, maxCount = 9 },
-	{ name = "werebadger claws", chance = 13600000, maxCount = 9 },
-	{ name = "werebadger skull", chance = 13600000, maxCount = 9 },
-	{ name = "badger boots", chance = 400 },
-	{ name = "underworld rod", chance = 400 },
-	{ name = "wand of voodoo", chance = 400 },
-	{ name = "wolf backpack", chance = 250 },
+	{ id = 3031, chance = 80000, maxCount = 75 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
+	{ id = 22051, chance = 80000 }, -- werebadger claws
+	{ id = 22055, chance = 80000 }, -- werebadger skull
+	{ id = 22193, chance = 80000, maxCount = 3 }, -- onyx chip
+	{ id = 22086, chance = 80000 }, -- badger boots
+	{ id = 8017, chance = 80000 }, -- beetroot
+	{ id = 8082, chance = 80000 }, -- underworld rod
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 678, chance = 80000, maxCount = 3 }, -- small enchanted amethyst
+	{ id = 8094, chance = 80000 }, -- wand of voodoo
+	{ id = 3741, chance = 80000 }, -- troll green
+	{ id = 22083, chance = 80000, maxCount = 15 }, -- moonlight crystals
+	{ id = 23373, chance = 80000 }, -- ultimate mana potion
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 3055, chance = 80000 }, -- platinum amulet
+	{ id = 22101, chance = 80000 }, -- werebadger trophy
+	{ id = 22060, chance = 80000 }, -- werewolf amulet
+	{ id = 3725, chance = 80000 }, -- brown mushroom
+	{ id = 22084, chance = 260 }, -- wolf backpack
 }
 
 monster.attacks = {

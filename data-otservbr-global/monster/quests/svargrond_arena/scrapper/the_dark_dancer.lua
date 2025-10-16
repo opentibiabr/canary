@@ -71,7 +71,8 @@ monster.voices = {
 	{ text = "Let us dance the dance of death.", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -45, condition = { type = CONDITION_POISON, totalDamage = 220, interval = 4000 } },

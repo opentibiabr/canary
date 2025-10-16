@@ -78,7 +78,8 @@ monster.voices = {
 	{ text = "Free ... finally.", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {}
 

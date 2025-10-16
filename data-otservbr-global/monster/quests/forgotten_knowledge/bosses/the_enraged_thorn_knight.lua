@@ -76,40 +76,50 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 50320, maxCount = 165 }, -- gold coin
-	{ id = 3035, chance = 50320, maxCount = 30 }, -- platinum coin
-	{ id = 16119, chance = 9660, maxCount = 5 }, -- blue crystal shard
-	{ id = 16120, chance = 9660, maxCount = 5 }, -- violet crystal shard
-	{ id = 16121, chance = 9660, maxCount = 5 }, -- green crystal shard
-	{ id = 3032, chance = 9660, maxCount = 5 }, -- small emerald
-	{ id = 3030, chance = 7360, maxCount = 5 }, -- small ruby
-	{ id = 9057, chance = 7350, maxCount = 5 }, -- small topaz
-	{ id = 3033, chance = 7150, maxCount = 5 }, -- small amethyst
-	{ id = 5887, chance = 5909, maxCount = 2 }, -- piece of royal steel
-	{ id = 238, chance = 22120, maxCount = 3 }, -- great mana potion
-	{ id = 7643, chance = 19500, maxCount = 3 }, -- ultimate health potion
-	{ id = 7642, chance = 18250, maxCount = 3 }, -- great spirit potion
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3039, chance = 2200 }, -- red gem
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 6499, chance = 14460 }, -- demonic essence
-	{ id = 7439, chance = 14460 }, -- berserk potion
-	{ id = 7443, chance = 14460 }, -- bullseye potion
-	{ id = 281, chance = 7000 }, -- giant shimmering pearl (green)
-	{ id = 3295, chance = 20000 }, -- bright sword
-	{ id = 7453, chance = 100 }, -- executioner
-	{ id = 24966, chance = 100 }, -- forbidden fruit
-	{ id = 5014, chance = 500 }, -- mandrake
-	{ id = 3436, chance = 1000 }, -- medusa shield
-	{ id = 9302, chance = 500 }, -- sacred tree amulet
-	{ id = 5875, chance = 1000 }, -- sniper gloves
-	{ id = 5884, chance = 1000 }, -- spirit container
-	{ id = 8052, chance = 500 }, -- swamplair armor
-	{ id = 20203, chance = 1000 }, -- trapped bad dream monster
-	{ id = 24954, chance = 500, unique = true }, -- part of a rune
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 }, -- silver token
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 238, chance = 80000, maxCount = 10 }, -- great mana potion
+	{ id = 7642, chance = 80000, maxCount = 10 }, -- great spirit potion
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 5887, chance = 80000, maxCount = 2 }, -- piece of royal steel
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
+	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
+	{ id = 3030, chance = 80000, maxCount = 10 }, -- small ruby
+	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 7443, chance = 80000 }, -- bullseye potion
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3295, chance = 80000 }, -- bright sword
+	{ id = 6499, chance = 80000 }, -- demonic essence
+	{ id = 7453, chance = 80000 }, -- executioner
+	{ id = 24966, chance = 80000 }, -- forbidden fruit
+	{ id = 5014, chance = 80000 }, -- mandrake
+	{ id = 3436, chance = 80000 }, -- medusa shield
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 9302, chance = 80000 }, -- sacred tree amulet
+	{ id = 5875, chance = 80000 }, -- sniper gloves
+	{ id = 5884, chance = 80000 }, -- spirit container
+	{ id = 8052, chance = 80000 }, -- swamplair armor
+	{ id = 20203, chance = 80000 }, -- trapped bad dream monster
+	{ id = 24965, chance = 1000 }, -- thorn seed
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 5910, chance = 80000 }, -- green piece of cloth
+	{ id = 7407, chance = 80000 }, -- haunted blade
+	{ id = 3318, chance = 80000 }, -- knight axe
+	{ id = 3392, chance = 80000 }, -- royal helmet
+	{ id = 8895, chance = 80000 }, -- rusted armor
+	{ id = 7452, chance = 80000 }, -- spiked squelcher
+	{ id = 5885, chance = 80000 }, -- flask of warriors sweat
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 6553, chance = 80000 }, -- ruthless axe
 }
 
 monster.attacks = {

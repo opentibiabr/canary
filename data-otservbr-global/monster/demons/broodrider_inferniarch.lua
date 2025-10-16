@@ -78,17 +78,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 5000, maxCount = 25 },
-	{ name = "drill bolt", chance = 900, maxCount = 5 },
-	{ name = "broodrider saddle", chance = 1000 },
-	{ name = "mummified demon finger", chance = 155 },
-	{ name = "blue crystal splinter", chance = 300 },
-	{ name = "onyx chip", chance = 1500, maxCount = 3 },
-	{ name = "magma legs", chance = 800 },
-	{ name = "arbalest", chance = 300 },
-	{ name = "power bolt", chance = 1000, maxCount = 5 },
-	{ name = "demonic core essence", chance = 100 },
-	{ name = "demonic matter", chance = 4761 },
+	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
+	{ id = 16124, chance = 23000 }, -- blue crystal splinter
+	{ id = 3450, chance = 5000, maxCount = 5 }, -- power bolt
+	{ id = 16142, chance = 5000, maxCount = 5 }, -- drill bolt
+	{ id = 22193, chance = 5000, maxCount = 3 }, -- onyx chip
+	{ id = 49909, chance = 5000 }, -- demonic core essence
+	{ id = 50058, chance = 5000 }, -- broodrider saddle
+	{ id = 821, chance = 1000 }, -- magma legs
+	{ id = 49894, chance = 1000 }, -- demonic matter
+	{ id = 49908, chance = 1000 }, -- mummified demon finger
+	{ id = 5803, chance = 260 }, -- arbalest
 }
 
 monster.attacks = {

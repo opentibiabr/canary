@@ -90,18 +90,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 99290, maxCount = 86 },
-	{ name = "elder bonelord tentacle", chance = 20040 },
-	{ name = "small flask of eyedrops", chance = 9720 },
-	{ name = "sniper arrow", chance = 8780, maxCount = 5 },
-	{ name = "two handed sword", chance = 2980 },
-	{ name = "steel shield", chance = 2040 },
-	{ id = 3059, chance = 1030 }, -- spellbook
-	{ name = "strong mana potion", chance = 830 },
-	{ name = "giant eye", chance = 460 },
-	{ name = "bonelord shield", chance = 90 },
-	{ name = "bonelord helmet", chance = 90 },
-	{ name = "bonelord eye", chance = 1920 },
+	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
+	{ id = 7364, chance = 23000, maxCount = 4 }, -- sniper arrow
+	{ id = 10276, chance = 23000 }, -- elder bonelord tentacle
+	{ id = 11512, chance = 23000 }, -- small flask of eyedrops
+	{ id = 3265, chance = 5000 }, -- two handed sword
+	{ id = 3409, chance = 5000 }, -- steel shield
+	{ id = 5898, chance = 5000 }, -- bonelord eye
+	{ id = 237, chance = 1000 }, -- strong mana potion
+	{ id = 3101, chance = 1000 }, -- spellbook
+	{ id = 10280, chance = 1000 }, -- giant eye
+	{ id = 3408, chance = 260 }, -- bonelord helmet
+	{ id = 3418, chance = 260 }, -- bonelord shield
 }
 
 monster.attacks = {

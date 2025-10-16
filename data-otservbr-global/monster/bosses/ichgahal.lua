@@ -82,25 +82,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 14615, maxCount = 115 },
-	{ name = "ultimate spirit potion", chance = 7169, maxCount = 153 },
-	{ name = "mastermind potion", chance = 14651, maxCount = 45 },
-	{ name = "yellow gem", chance = 9243, maxCount = 5 },
-	{ name = "amber with a bug", chance = 7224, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 13137, maxCount = 179 },
-	{ name = "violet gem", chance = 14447, maxCount = 4 },
-	{ name = "raw watermelon tourmaline", chance = 6788, maxCount = 2 },
-	{ id = 3039, chance = 9047, maxCount = 1 }, -- red gem
-	{ name = "supreme health potion", chance = 14635, maxCount = 37 },
-	{ name = "berserk potion", chance = 14973, maxCount = 45 },
-	{ name = "amber with a dragonfly", chance = 6470, maxCount = 1 },
-	{ name = "gold ingot", chance = 11421, maxCount = 1 },
-	{ name = "blue gem", chance = 8394, maxCount = 1 },
-	{ name = "bullseye potion", chance = 13783, maxCount = 36 },
-	{ name = "putrefactive figurine", chance = 11416, maxCount = 1 },
-	{ name = "ichgahal's fungal infestation", chance = 7902, maxCount = 1 },
-	{ name = "white gem", chance = 13559, maxCount = 3 },
-	{ id = 43895, chance = 360 }, -- Bag you covet
+	{ id = 3043, chance = 80000, maxCount = 124 }, -- crystal coin
+	{ id = 3038, chance = 80000, maxCount = 5 }, -- green gem
+	{ id = 3037, chance = 80000, maxCount = 5 }, -- yellow gem
+	{ id = 3036, chance = 80000, maxCount = 4 }, -- violet gem
+	{ id = 36706, chance = 80000, maxCount = 3 }, -- red gem
+	{ id = 3041, chance = 80000, maxCount = 4 }, -- blue gem
+	{ id = 32769, chance = 80000, maxCount = 3 }, -- white gem
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 33778, chance = 80000, maxCount = 2 }, -- raw watermelon tourmaline
+	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
+	{ id = 32624, chance = 80000, maxCount = 2 }, -- amber with a bug
+	{ id = 7439, chance = 80000, maxCount = 45 }, -- berserk potion
+	{ id = 7443, chance = 80000, maxCount = 45 }, -- bullseye potion
+	{ id = 7440, chance = 80000, maxCount = 45 }, -- mastermind potion
+	{ id = 23375, chance = 80000, maxCount = 181 }, -- supreme health potion
+	{ id = 23374, chance = 80000, maxCount = 153 }, -- ultimate spirit potion
+	{ id = 23373, chance = 80000, maxCount = 179 }, -- ultimate mana potion
+	{ id = 30054, chance = 80000 }, -- unicorn figurine
+	{ id = 43895, chance = 80000 }, -- bag you covet
+	{ id = 39038, chance = 80000 }, -- royal almandine
+	{ id = 30053, chance = 80000 }, -- dragon figurine
 }
 
 monster.attacks = {

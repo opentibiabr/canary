@@ -80,21 +80,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small blue pillow", chance = 420 },
-	{ id = 2950, chance = 360 }, -- lute
-	{ name = "gold coin", chance = 99000, maxCount = 9 },
-	{ id = 3097, chance = 120 }, -- dwarven ring
-	{ id = 3122, chance = 55000 }, -- dirty cape
-	{ name = "wooden hammer", chance = 6500 },
-	{ name = "wooden spoon", chance = 9750 },
-	{ id = 3473, chance = 5650 }, -- rolling pin
-	{ name = "meat", chance = 9500 },
-	{ name = "roll", chance = 22500 },
-	{ name = "red rose", chance = 4700 },
-	{ name = "sling herb", chance = 420 },
-	{ name = "rum flask", chance = 420 },
-	{ id = 6091, chance = 300 }, -- very noble-looking watch
-	{ id = 8894, chance = 80 }, -- heavily rusted armor
+	{ id = 3031, chance = 80000, maxCount = 9 }, -- gold coin
+	{ id = 3122, chance = 80000 }, -- dirty cape
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 3601, chance = 23000 }, -- roll
+	{ id = 3459, chance = 23000 }, -- wooden hammer
+	{ id = 3470, chance = 23000 }, -- wooden spoon
+	{ id = 12789, chance = 5000 }, -- rolling pin
+	{ id = 3658, chance = 5000 }, -- red rose
+	{ id = 5552, chance = 1000 }, -- rum flask
+	{ id = 2389, chance = 1000 }, -- small blue pillow
+	{ id = 3738, chance = 260 }, -- sling herb
+	{ id = 3097, chance = 260 }, -- dwarven ring
+	{ id = 3258, chance = 260 }, -- lute
+	{ id = 8894, chance = 260 }, -- heavily rusted armor
+	{ id = 6092, chance = 260 }, -- very noblelooking watch
 }
 
 monster.attacks = {

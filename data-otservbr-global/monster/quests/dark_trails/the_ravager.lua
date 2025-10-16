@@ -85,12 +85,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 95000, maxCount = 243 }, -- gold coin
-	{ id = 238, chance = 10000, maxCount = 5 }, -- great mana potion
-	{ id = 239, chance = 5000, maxCount = 5 }, -- great health potion
-	{ id = 3035, chance = 37500, maxCount = 5 }, -- platinum coin
-	{ id = 3042, chance = 15000, maxCount = 5 }, -- scarab coin
-	{ id = 3328, chance = 5000 }, -- daramian waraxe
+	{ id = 3035, chance = 80000, maxCount = 15 }, -- platinum coin
+	{ id = 3042, chance = 80000, maxCount = 4 }, -- scarab coin
+	{ id = 3027, chance = 80000, maxCount = 5 }, -- black pearl
+	{ id = 238, chance = 80000, maxCount = 4 }, -- great mana potion
+	{ id = 239, chance = 80000, maxCount = 4 }, -- great health potion
+	{ id = 22746, chance = 80000 }, -- ancient amulet
+	{ id = 3440, chance = 80000 }, -- scarab shield
+	{ id = 3017, chance = 80000 }, -- silver brooch
+	{ id = 3328, chance = 1000 }, -- daramian waraxe
+	{ id = 8896, chance = 80000 }, -- slightly rusted armor
+	{ id = 8899, chance = 80000 }, -- slightly rusted legs
 }
 
 monster.attacks = {

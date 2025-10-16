@@ -76,28 +76,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 65410, maxCount = 8 },
-	{ name = "morning star", chance = 16730 },
-	{ name = "ultimate mana potion", chance = 9820 },
-	{ name = "violet glass plate", chance = 691 },
-	{ name = "crystal sword", chance = 4750 },
-	{ name = "terra rod", chance = 4480 },
-	{ name = "small ruby", chance = 4000 },
-	{ name = "onyx chip", chance = 3350 },
-	{ name = "green crystal fragment", chance = 3180 },
-	{ name = "small enchanted ruby", chance = 2050 },
-	{ name = "terra legs", chance = 2000 },
-	{ name = "knight legs", chance = 1780 },
-	{ name = "machete", chance = 1730 },
-	{ name = "wand of voodoo", chance = 1570 },
-	{ name = "heavy machete", chance = 1240 },
-	{ name = "wand of starstorm", chance = 1240 },
-	{ name = "wand of dragonbreath", chance = 970 },
-	{ name = "tiger eye", chance = 920 },
-	{ name = "opal", chance = 810 },
-	{ name = "iron helmet", chance = 760 },
-	{ name = "serpent sword", chance = 700 },
-	{ name = "wand of decay", chance = 490 },
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 3282, chance = 23000 }, -- morning star
+	{ id = 23373, chance = 23000 }, -- ultimate mana potion
+	{ id = 29347, chance = 23000 }, -- violet glass plate
+	{ id = 3030, chance = 5000 }, -- small ruby
+	{ id = 3065, chance = 5000 }, -- terra rod
+	{ id = 7449, chance = 5000 }, -- crystal sword
+	{ id = 676, chance = 5000 }, -- small enchanted ruby
+	{ id = 812, chance = 5000 }, -- terra legs
+	{ id = 3297, chance = 5000 }, -- serpent sword
+	{ id = 3308, chance = 5000 }, -- machete
+	{ id = 3330, chance = 5000 }, -- heavy machete
+	{ id = 3371, chance = 5000 }, -- knight legs
+	{ id = 8092, chance = 5000 }, -- wand of starstorm
+	{ id = 8094, chance = 5000 }, -- wand of voodoo
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 24961, chance = 5000 }, -- tiger eye
+	{ id = 3353, chance = 1000 }, -- iron helmet
+	{ id = 22194, chance = 1000 }, -- opal
+	{ id = 3075, chance = 1000 }, -- wand of dragonbreath
+	{ id = 3072, chance = 1000 }, -- wand of decay
 }
 
 monster.attacks = {

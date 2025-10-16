@@ -67,30 +67,6 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6499, chance = 14580 }, -- demonic essence
-	{ id = 3031, chance = 100000, maxCount = 198 }, -- gold coin
-	{ id = 239, chance = 23740, maxCount = 3 }, -- great health potion
-	{ id = 238, chance = 25660, maxCount = 3 }, -- great mana potion
-	{ id = 5925, chance = 14580 }, -- hardened bone
-	{ id = 3035, chance = 49790, maxCount = 5 }, -- platinum coin
-	{ id = 9058, chance = 1630 }, -- gold ingot
-	{ id = 10316, chance = 32260 }, -- unholy bone
-	{ id = 3061, chance = 1140 }, -- life crystal
-	{ id = 7430, chance = 4290 }, -- dragonbone staff
-	{ id = 3342, chance = 1630 }, -- war axe
-	{ id = 7368, chance = 24630, maxCount = 5 }, -- assassin star
-	{ id = 3450, chance = 15720, maxCount = 15 }, -- power bolt
-	{ id = 3360, chance = 850 }, -- golden armor
-	{ id = 10438, chance = 850 }, -- spellweaver's robe
-	{ id = 3370, chance = 4930 }, -- knight armor
-	{ id = 8057, chance = 500 }, -- divine plate
-	{ id = 8061, chance = 530 }, -- skullcracker armor
-	{ id = 3027, chance = 21290, maxCount = 2 }, -- black pearl
-	{ id = 3029, chance = 27610, maxCount = 2 }, -- small sapphire
-	{ id = 3041, chance = 1170 }, -- blue gem
-	{ id = 3392, chance = 920 }, -- royal helmet
-	{ id = 6299, chance = 1950 }, -- death ring
-	{ id = 2903, chance = 5040 }, -- golden mug
 }
 
 monster.attacks = {

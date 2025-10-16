@@ -76,12 +76,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Amber Souvenir", chance = 7040 },
-	{ name = "Resinous Fish Fin", chance = 6460 },
-	{ id = 3039, chance = 4940 }, -- red gem
-	{ id = 3041, chance = 4900 }, -- blue gem
-	{ name = "Haunted Blade", chance = 350 },
-	{ name = "platinum coin", chance = 10000, maxCount = 25 },
+	{ id = 48508, chance = 80000 }, -- amber souvenir
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 7407, chance = 80000 }, -- haunted blade
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3420, chance = 80000 }, -- demon shield
+	{ id = 8074, chance = 80000 }, -- spellbook of mind control
+	{ id = 7382, chance = 80000 }, -- demonrage sword
+	{ id = 48509, chance = 80000 }, -- resinous fish fin
+	{ id = 11488, chance = 80000 }, -- quara eye
+	{ id = 45656, chance = 80000 }, -- preserved purple seed
 }
 
 monster.attacks = {

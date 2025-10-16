@@ -79,30 +79,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", minCount = 1, maxCount = 5, chance = 100000 },
-	{ name = "crystal coin", minCount = 0, maxCount = 2, chance = 50000 },
-	{ name = "supreme health potion", minCount = 0, maxCount = 6, chance = 35000 },
-	{ name = "ultimate mana potion", minCount = 0, maxCount = 20, chance = 32000 },
-	{ name = "ultimate spirit potion", minCount = 0, maxCount = 20, chance = 32000 },
-	{ name = "bullseye potion", minCount = 0, maxCount = 10, chance = 12000 },
-	{ name = "mastermind potion", minCount = 0, maxCount = 10, chance = 12000 },
-	{ name = "berserk potion", minCount = 0, maxCount = 10, chance = 12000 },
-	{ name = "piece of draconian steel", minCount = 0, maxCount = 3, chance = 9000 },
-	{ id = 3039, minCount = 0, maxCount = 2, chance = 12000 }, -- red gem
-	{ name = "silver token", minCount = 0, maxCount = 2, chance = 9500 },
-	{ id = 23542, chance = 5200 }, -- collar of blue plasma
-	{ id = 23544, chance = 5200 }, -- collar of red plasma
-	{ id = 23529, chance = 5000 }, -- ring of blue plasma
-	{ id = 23533, chance = 5000 }, -- ring of red plasma
-	{ name = "warrior helmet", chance = 11000 },
-	{ name = "guardian axe", chance = 6400 },
-	{ name = "gold ingot", minCount = 0, maxCount = 1, chance = 10000 },
-	{ name = "young lich worm", chance = 5800 },
-	{ name = "embrace of nature", chance = 1600 },
-	{ name = "token of love", chance = 1200 },
-	{ name = "rotten heart", chance = 1700 },
-	{ name = "terra helmet", chance = 730 },
-	{ name = "final judgement", chance = 440 },
+	{ id = 22516, chance = 80000, maxCount = 2 }, -- silver token
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 23374, chance = 80000, maxCount = 20 }, -- ultimate spirit potion
+	{ id = 23373, chance = 80000, maxCount = 20 }, -- ultimate mana potion
+	{ id = 23375, chance = 80000, maxCount = 20 }, -- supreme health potion
+	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 5889, chance = 80000, maxCount = 3 }, -- piece of draconian steel
+	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
+	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
+	{ id = 23527, chance = 80000 }, -- collar of green plasma
+	{ id = 3038, chance = 80000, maxCount = 2 }, -- green gem
+	{ id = 14043, chance = 80000 }, -- guardian axe
+	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
+	{ id = 829, chance = 80000 }, -- glacier mask
+	{ id = 3369, chance = 80000 }, -- warrior helmet
+	{ id = 23526, chance = 80000 }, -- collar of blue plasma
+	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 23528, chance = 80000 }, -- collar of red plasma
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 5888, chance = 80000, maxCount = 4 }, -- piece of hell steel
+	{ id = 23531, chance = 80000 }, -- ring of green plasma
+	{ id = 23533, chance = 80000 }, -- ring of red plasma
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 31590, chance = 80000 }, -- young lich worm
+	{ id = 31577, chance = 80000 }, -- terra helmet
+	{ id = 31579, chance = 80000 }, -- embrace of nature
+	{ id = 31738, chance = 80000 }, -- final judgement
+	{ id = 31589, chance = 80000 }, -- rotten heart
+	{ id = 31594, chance = 80000 }, -- token of love
+	{ id = 23529, chance = 80000 }, -- ring of blue plasma
+	{ id = 31588, chance = 80000 }, -- ancient liche bone
+	{ id = 31578, chance = 80000 }, -- bear skin
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 30060, chance = 80000 }, -- giant emerald
 }
 
 monster.attacks = {

@@ -75,17 +75,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2920, chance = 30200, maxCount = 2 }, -- torch
-	{ name = "gold coin", chance = 80000, maxCount = 10 },
+	{ id = 3031, chance = 80000, maxCount = 10 }, -- gold coin
+	{ id = 11050, chance = 80000, maxCount = 2 }, -- torch
+	{ id = 3291, chance = 23000 }, -- knife
+	{ id = 3294, chance = 23000 }, -- short sword
+	{ id = 3355, chance = 23000 }, -- leather helmet
+	{ id = 3559, chance = 23000 }, -- leather legs
+	{ id = 3582, chance = 23000 }, -- ham
 	{ id = 3264, chance = 5000 }, -- sword
-	{ name = "knife", chance = 9920 },
-	{ name = "combat knife", chance = 4400 },
-	{ name = "short sword", chance = 10000 },
-	{ name = "leather helmet", chance = 10050 },
-	{ name = "leather legs", chance = 14840 },
-	{ name = "ham", chance = 10200 },
-	{ id = 7397, chance = 110 }, -- deer trophy
-	{ name = "raspberry", chance = 5000, maxCount = 5 },
+	{ id = 3292, chance = 5000 }, -- combat knife
+	{ id = 8012, chance = 5000, maxCount = 5 }, -- raspberry
+	{ id = 7397, chance = 260 }, -- deer trophy
 }
 
 monster.attacks = {

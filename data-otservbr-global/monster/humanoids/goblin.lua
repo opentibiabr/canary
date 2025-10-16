@@ -79,18 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small stone", chance = 15290, maxCount = 3 },
-	{ name = "gold coin", chance = 50320, maxCount = 9 },
-	{ id = 3115, chance = 1130 }, -- bone
-	{ name = "mouldy cheese", chance = 1000 },
-	{ name = "dagger", chance = 1800 },
-	{ name = "short sword", chance = 8870 },
-	{ name = "bone club", chance = 4900 },
-	{ name = "leather helmet", chance = 1940 },
-	{ name = "leather armor", chance = 2510 },
-	{ name = "small axe", chance = 9700 },
-	{ id = 3578, chance = 12750 }, -- fish
-	{ name = "goblin ear", chance = 910 },
+	{ id = 3031, chance = 80000, maxCount = 9 }, -- gold coin
+	{ id = 7885, chance = 23000 }, -- fish
+	{ id = 3294, chance = 23000 }, -- short sword
+	{ id = 3462, chance = 23000 }, -- small axe
+	{ id = 1781, chance = 23000 }, -- small stone
+	{ id = 3337, chance = 5000 }, -- bone club
+	{ id = 3361, chance = 5000 }, -- leather armor
+	{ id = 7573, chance = 5000 }, -- bone
+	{ id = 3267, chance = 5000 }, -- dagger
+	{ id = 3355, chance = 5000 }, -- leather helmet
+	{ id = 11539, chance = 1000 }, -- goblin ear
+	{ id = 3120, chance = 1000 }, -- mouldy cheese
 }
 
 monster.attacks = {

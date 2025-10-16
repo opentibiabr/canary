@@ -82,24 +82,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 61900 },
-	{ name = "terra rod", chance = 34070 },
-	{ name = "ultimate health potion", chance = 24400, maxCount = 4 },
-	{ name = "hailstorm rod", chance = 7460 },
-	{ name = "springsprout rod", chance = 4640 },
-	{ name = "infernal heart", chance = 4440 },
-	{ name = "underworld rod", chance = 3830 },
-	{ name = "fire axe", chance = 3630 },
-	{ name = "wand of starstorm", chance = 3430 },
-	{ name = "glorious axe", chance = 3230 },
-	{ name = "infernal robe", chance = 2620 },
-	{ name = "chaos mace", chance = 2420 },
-	{ name = "titan axe", chance = 2020 },
-	{ name = "wand of voodoo", chance = 1610 },
-	{ name = "crystal mace", chance = 1610 },
-	{ name = "war axe", chance = 1410 },
-	{ name = "warrior's axe", chance = 1410 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 3065, chance = 80000 }, -- terra rod
+	{ id = 3067, chance = 23000 }, -- hailstorm rod
+	{ id = 7643, chance = 23000, maxCount = 2 }, -- ultimate health potion
+	{ id = 3320, chance = 5000 }, -- fire axe
+	{ id = 3333, chance = 5000 }, -- crystal mace
+	{ id = 3342, chance = 5000 }, -- war axe
+	{ id = 7413, chance = 5000 }, -- titan axe
+	{ id = 7427, chance = 5000 }, -- chaos mace
+	{ id = 7454, chance = 5000 }, -- glorious axe
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 8084, chance = 5000 }, -- springsprout rod
+	{ id = 8092, chance = 5000 }, -- wand of starstorm
+	{ id = 8094, chance = 5000 }, -- wand of voodoo
+	{ id = 14040, chance = 5000 }, -- warriors axe
+	{ id = 34139, chance = 5000 }, -- infernal heart
+	{ id = 34146, chance = 5000 }, -- infernal robe
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 34109, chance = 260 }, -- bag you desire
 }
 
 monster.attacks = {

@@ -73,23 +73,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 28569, chance = 10000, maxCount = 3 }, -- book page
-	{ name = "platinum coin", chance = 10000, maxCount = 10 },
-	{ id = 28566, chance = 10000, maxCount = 3 }, -- silken bookmark
-	{ name = "small diamond", chance = 10000, maxCount = 7 },
-	{ name = "small stone", chance = 10000, maxCount = 7 },
-	{ name = "small topaz", chance = 10000, maxCount = 7 },
-	{ name = "protection amulet", chance = 10000 },
-	{ name = "terra boots", chance = 350 },
-	{ name = "terra hood", chance = 600 },
-	{ name = "diamond sceptre", chance = 600 },
-	{ name = "terra mantle", chance = 250 },
-	{ name = "terra legs", chance = 250 },
-	{ name = "terra amulet", chance = 500 },
-	{ name = "stone skin amulet", chance = 350 },
-	{ name = "springsprout rod", chance = 350 },
-	{ name = "sacred tree amulet", chance = 350 },
-	{ name = "swamplair armor", chance = 250 },
+	{ id = 28569, chance = 80000, maxCount = 4 }, -- book page
+	{ id = 3035, chance = 80000, maxCount = 15 }, -- platinum coin
+	{ id = 28566, chance = 80000 }, -- silken bookmark
+	{ id = 3028, chance = 80000, maxCount = 6 }, -- small diamond
+	{ id = 9057, chance = 80000, maxCount = 5 }, -- small topaz
+	{ id = 1781, chance = 23000, maxCount = 10 }, -- small stone
+	{ id = 3084, chance = 23000 }, -- protection amulet
+	{ id = 813, chance = 23000 }, -- terra boots
+	{ id = 7387, chance = 23000 }, -- diamond sceptre
+	{ id = 830, chance = 5000 }, -- terra hood
+	{ id = 812, chance = 5000 }, -- terra legs
+	{ id = 814, chance = 5000 }, -- terra amulet
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 9302, chance = 5000 }, -- sacred tree amulet
+	{ id = 8084, chance = 1000 }, -- springsprout rod
+	{ id = 811, chance = 1000 }, -- terra mantle
+	{ id = 8052, chance = 260 }, -- swamplair armor
 }
 
 monster.attacks = {

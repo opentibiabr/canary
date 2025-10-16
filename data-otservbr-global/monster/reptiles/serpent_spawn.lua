@@ -79,29 +79,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "golden mug", chance = 2870 },
-	{ name = "small sapphire", chance = 12000 },
-	{ name = "gold coin", chance = 97250, maxCount = 239 },
-	{ id = 3051, chance = 590 }, -- energy ring
-	{ id = 3052, chance = 6250 }, -- life ring
-	{ name = "life crystal", chance = 800 },
-	{ name = "snakebite rod", chance = 930 },
-	{ name = "warrior helmet", chance = 560 },
-	{ name = "strange helmet", chance = 670 },
-	{ name = "crown armor", chance = 510 },
-	{ id = 4831, chance = 550 }, -- old parchment
-	{ name = "royal helmet", chance = 140 },
-	{ name = "tower shield", chance = 920 },
-	{ name = "power bolt", chance = 6200 },
-	{ name = "green mushroom", chance = 18200 },
-	{ name = "charmer's tiara", chance = 180 },
-	{ name = "mercenary sword", chance = 2070 },
-	{ name = "noble axe", chance = 750 },
-	{ name = "great mana potion", chance = 2000 },
-	{ name = "swamplair armor", chance = 90 },
-	{ name = "spellbook of mind control", chance = 90 },
-	{ name = "snake skin", chance = 14800 },
-	{ name = "winged tail", chance = 960 },
+	{ id = 3031, chance = 80000, maxCount = 239 }, -- gold coin
+	{ id = 3732, chance = 23000 }, -- green mushroom
+	{ id = 9694, chance = 23000 }, -- snake skin
+	{ id = 3029, chance = 23000 }, -- small sapphire
+	{ id = 3052, chance = 23000 }, -- life ring
+	{ id = 3450, chance = 23000 }, -- power bolt
+	{ id = 3051, chance = 23000 }, -- energy ring
+	{ id = 2903, chance = 5000 }, -- golden mug
+	{ id = 7386, chance = 5000 }, -- mercenary sword
+	{ id = 238, chance = 5000 }, -- great mana potion
+	{ id = 10313, chance = 1000 }, -- winged tail
+	{ id = 3066, chance = 1000 }, -- snakebite rod
+	{ id = 3428, chance = 1000 }, -- tower shield
+	{ id = 3061, chance = 1000 }, -- life crystal
+	{ id = 7456, chance = 1000 }, -- noble axe
+	{ id = 3373, chance = 1000 }, -- strange helmet
+	{ id = 36586, chance = 1000 }, -- old parchment
+	{ id = 3369, chance = 1000 }, -- warrior helmet
+	{ id = 3381, chance = 1000 }, -- crown armor
+	{ id = 3407, chance = 260 }, -- charmers tiara
+	{ id = 3392, chance = 260 }, -- royal helmet
+	{ id = 8074, chance = 260 }, -- spellbook of mind control
+	{ id = 8052, chance = 260 }, -- swamplair armor
 }
 
 monster.attacks = {

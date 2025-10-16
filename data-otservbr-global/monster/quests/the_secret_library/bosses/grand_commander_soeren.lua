@@ -71,18 +71,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small enchanted amethyst", chance = 15000, maxCount = 3 },
-	{ name = "platinum coin", chance = 50000, maxCount = 3 },
-	{ name = "great health potion", chance = 50000, maxCount = 3 },
-	{ name = "small ruby", chance = 12700, maxCount = 3 },
-	{ name = "onyx arrow", chance = 30000, maxCount = 3 },
-	{ name = "golden armor", chance = 1000 },
-	{ name = "green gem", chance = 1300 },
-	{ name = "damaged armor plates", chance = 1800, maxCount = 3 },
-	{ name = "falcon crest", chance = 400, maxCount = 3 },
-	{ name = "patch of fine cloth", chance = 2500 },
-	{ name = "falcon coif", chance = 200 },
-	{ name = "falcon bow", chance = 200 },
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 238, chance = 80000, maxCount = 3 }, -- great mana potion
+	{ id = 239, chance = 80000, maxCount = 3 }, -- great health potion
+	{ id = 7368, chance = 80000, maxCount = 9 }, -- assassin star
+	{ id = 9057, chance = 80000, maxCount = 2 }, -- small topaz
+	{ id = 3032, chance = 80000, maxCount = 2 }, -- small emerald
+	{ id = 3030, chance = 80000, maxCount = 2 }, -- small ruby
+	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 2 }, -- small diamond
+	{ id = 7365, chance = 80000, maxCount = 15 }, -- onyx arrow
+	{ id = 678, chance = 80000 }, -- small enchanted amethyst
+	{ id = 3360, chance = 80000 }, -- golden armor
+	{ id = 28822, chance = 80000 }, -- damaged armor plates
+	{ id = 28823, chance = 5000 }, -- falcon crest
+	{ id = 28821, chance = 5000 }, -- patch of fine cloth
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 3414, chance = 260 }, -- mastermind shield
+	{ id = 28715, chance = 260 }, -- falcon coif
+	{ id = 28718, chance = 260 }, -- falcon bow
 }
 
 monster.attacks = {

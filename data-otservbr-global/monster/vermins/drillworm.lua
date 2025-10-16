@@ -79,22 +79,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 50 },
-	{ id = 3456, chance = 5280 }, -- pick
-	{ name = "worm", chance = 4580, maxCount = 5 },
-	{ name = "iron ore", chance = 1750 },
-	{ name = "spiked squelcher", chance = 540 },
-	{ name = "terra amulet", chance = 2360 },
-	{ name = "lump of earth", chance = 15000 },
-	{ name = "clay lump", chance = 700 },
-	{ id = 12600, chance = 12130 }, -- coal
-	{ name = "green crystal splinter", chance = 9780 },
-	{ name = "brown crystal splinter", chance = 9260 },
-	{ name = "blue crystal splinter", chance = 9610 },
-	{ name = "pulverized ore", chance = 5400 },
-	{ name = "vein of ore", chance = 7280 },
-	{ name = "drill bolt", chance = 4870, maxCount = 2 },
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 10305, chance = 23000 }, -- lump of earth
+	{ id = 12600, chance = 23000 }, -- coal
+	{ id = 16122, chance = 23000 }, -- green crystal splinter
+	{ id = 16123, chance = 23000 }, -- brown crystal splinter
+	{ id = 16124, chance = 23000 }, -- blue crystal splinter
+	{ id = 16135, chance = 23000 }, -- vein of ore
+	{ id = 814, chance = 5000 }, -- terra amulet
+	{ id = 3097, chance = 5000 }, -- dwarven ring
+	{ id = 31615, chance = 5000 }, -- pick
+	{ id = 3492, chance = 5000, maxCount = 5 }, -- worm
+	{ id = 5880, chance = 5000 }, -- iron ore
+	{ id = 16133, chance = 5000 }, -- pulverized ore
+	{ id = 16142, chance = 5000, maxCount = 2 }, -- drill bolt
+	{ id = 7452, chance = 1000 }, -- spiked squelcher
+	{ id = 10422, chance = 1000 }, -- clay lump
 }
 
 monster.attacks = {

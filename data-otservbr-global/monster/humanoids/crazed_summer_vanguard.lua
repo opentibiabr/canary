@@ -78,21 +78,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 85000, maxCount = 13 },
-	{ name = "elven astral observer", chance = 30000, maxCount = 2 },
-	{ name = "dream essence egg", chance = 8600 },
-	{ name = "belted cape", chance = 9500 },
-	{ name = "two handed sword", chance = 7400 },
-	{ name = "seeds", chance = 8600 },
-	{ id = 3307, chance = 6800 }, -- scimitar
-	{ name = "knife", chance = 6600 },
-	{ name = "dragon necklace", chance = 7150 },
-	{ name = "magma amulet", chance = 5500 },
-	{ name = "wand of dragonbreath", chance = 4800 },
-	{ name = "wand of draconia", chance = 4800 },
-	{ name = "magma boots", chance = 2900 },
-	{ name = "sun fruit", chance = 900 },
-	{ name = "bullseye potion", chance = 300 },
+	{ id = 3035, chance = 80000, maxCount = 13 }, -- platinum coin
+	{ id = 11465, chance = 80000 }, -- elven astral observer
+	{ id = 30005, chance = 23000 }, -- dream essence egg
+	{ id = 8044, chance = 23000 }, -- belted cape
+	{ id = 3265, chance = 23000 }, -- two handed sword
+	{ id = 647, chance = 23000 }, -- seeds
+	{ id = 3307, chance = 23000 }, -- scimitar
+	{ id = 3291, chance = 23000 }, -- knife
+	{ id = 3085, chance = 23000 }, -- dragon necklace
+	{ id = 817, chance = 23000 }, -- magma amulet
+	{ id = 3075, chance = 5000 }, -- wand of dragonbreath
+	{ id = 8093, chance = 5000 }, -- wand of draconia
+	{ id = 818, chance = 5000 }, -- magma boots
+	{ id = 29995, chance = 1000 }, -- sun fruit
+	{ id = 7443, chance = 260 }, -- bullseye potion
 }
 
 monster.attacks = {

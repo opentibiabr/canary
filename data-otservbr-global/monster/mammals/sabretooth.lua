@@ -73,16 +73,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Sabretooth Fur", chance = 23640 },
-	{ name = "Crystal Coin", chance = 23350, minCount = 1, maxCount = 2 },
-	{ name = "Elven Amulet", chance = 5010 },
-	{ name = "Wand of Inferno", chance = 4720 },
-	{ name = "Dragon Necklace", chance = 3850 },
-	{ name = "Magma Coat", chance = 3820 },
-	{ name = "Sacred Tree Amulet", chance = 2730 },
-	{ name = "Fire Sword", chance = 2650 },
-	{ name = "Wand of Dragonbreath", chance = 2330 },
-	{ name = "Metal Spats", chance = 2260 },
+	{ id = 3043, chance = 23000, maxCount = 2 }, -- crystal coin
+	{ id = 39378, chance = 23000 }, -- sabretooth fur
+	{ id = 826, chance = 5000 }, -- magma coat
+	{ id = 3071, chance = 5000 }, -- wand of inferno
+	{ id = 3075, chance = 5000 }, -- wand of dragonbreath
+	{ id = 3082, chance = 5000 }, -- elven amulet
+	{ id = 3085, chance = 5000 }, -- dragon necklace
+	{ id = 3280, chance = 5000 }, -- fire sword
+	{ id = 9302, chance = 5000 }, -- sacred tree amulet
+	{ id = 21169, chance = 5000 }, -- metal spats
 }
 
 monster.attacks = {

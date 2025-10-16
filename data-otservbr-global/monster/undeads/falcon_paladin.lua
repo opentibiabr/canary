@@ -74,23 +74,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000, maxCount = 5 },
-	{ name = "small diamond", chance = 41000, maxCount = 2 },
-	{ name = "great spirit potion", chance = 41000, maxCount = 2 },
-	{ name = "small emerald", chance = 40000, maxCount = 2 },
-	{ name = "small amethyst", chance = 40000, maxCount = 3 },
-	{ name = "assassin star", chance = 25700, maxCount = 10 },
-	{ name = "small ruby", chance = 20700, maxCount = 2 },
-	{ name = "small topaz", chance = 20100, maxCount = 2 },
-	{ name = "onyx arrow", chance = 14000, maxCount = 15 },
-	{ id = 3039, chance = 7500, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 4880 },
-	{ name = "violet gem", chance = 4180 },
-	{ id = 282, chance = 2260 }, -- giant shimmering pearl (brown)
-	{ name = "damaged armor plates", chance = 1120 },
-	{ name = "falcon crest", chance = 730 },
-	{ name = "golden armor", chance = 310 },
-	{ name = "mastermind shield", chance = 310 },
+	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
+	{ id = 3032, chance = 80000, maxCount = 2 }, -- small emerald
+	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 2 }, -- small diamond
+	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
+	{ id = 7368, chance = 80000, maxCount = 10 }, -- assassin star
+	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
+	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
+	{ id = 7365, chance = 23000, maxCount = 15 }, -- onyx arrow
+	{ id = 3036, chance = 23000 }, -- violet gem
+	{ id = 36706, chance = 23000 }, -- red gem
+	{ id = 3038, chance = 23000 }, -- green gem
+	{ id = 28822, chance = 5000 }, -- damaged armor plates
+	{ id = 28823, chance = 5000 }, -- falcon crest
+	{ id = 3360, chance = 260 }, -- golden armor
+	{ id = 3414, chance = 260 }, -- mastermind shield
+	{ id = 3081, chance = 260 }, -- stone skin amulet
 }
 
 monster.attacks = {

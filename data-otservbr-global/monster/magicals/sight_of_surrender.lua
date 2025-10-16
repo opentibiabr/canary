@@ -82,31 +82,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 15 },
-	{ name = "might ring", chance = 8000 },
-	{ name = "stone skin amulet", chance = 18000 },
-	{ name = "hammer of wrath", chance = 1380 },
-	{ name = "crystal mace", chance = 5500 },
-	{ name = "magic plate armor", chance = 1380 },
-	{ name = "crown legs", chance = 920 },
-	{ name = "crusader helmet", chance = 920 },
-	{ name = "tower shield", chance = 1380 },
-	{ name = "steel boots", chance = 920 },
-	{ name = "onyx flail", chance = 920 },
-	{ name = "jade hammer", chance = 920 },
-	{ name = "great mana potion", chance = 78000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 72000, maxCount = 5 },
-	{ name = "ultimate health potion", chance = 30000, maxCount = 5 },
-	{ name = "blue crystal shard", chance = 23000, maxCount = 3 },
-	{ name = "violet crystal shard", chance = 32000, maxCount = 3 },
-	{ name = "green crystal shard", chance = 21600, maxCount = 3 },
-	{ name = "green crystal splinter", chance = 30000, maxCount = 5 },
-	{ name = "brown crystal splinter", chance = 30410, maxCount = 5 },
-	{ name = "blue crystal splinter", chance = 40000, maxCount = 5 },
-	{ name = "cluster of solace", chance = 11800 },
-	{ name = "sight of surrender's eye", chance = 100000 },
-	{ name = "broken visor", chance = 100000 },
-	{ id = 20208, chance = 460 }, -- string of mending
+	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
+	{ id = 20184, chance = 80000 }, -- broken visor
+	{ id = 20183, chance = 80000 }, -- sight of surrenders eye
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 16124, chance = 80000, maxCount = 5 }, -- blue crystal splinter
+	{ id = 16122, chance = 80000, maxCount = 5 }, -- green crystal splinter
+	{ id = 16123, chance = 80000, maxCount = 5 }, -- brown crystal splinter
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 3081, chance = 23000 }, -- stone skin amulet
+	{ id = 3048, chance = 5000 }, -- might ring
+	{ id = 3333, chance = 5000 }, -- crystal mace
+	{ id = 20062, chance = 5000 }, -- cluster of solace
+	{ id = 3366, chance = 5000 }, -- magic plate armor
+	{ id = 3554, chance = 5000 }, -- steel boots
+	{ id = 7422, chance = 5000 }, -- jade hammer
+	{ id = 3428, chance = 5000 }, -- tower shield
+	{ id = 3332, chance = 1000 }, -- hammer of wrath
+	{ id = 7421, chance = 1000 }, -- onyx flail
+	{ id = 3391, chance = 1000 }, -- crusader helmet
+	{ id = 3382, chance = 1000 }, -- crown legs
+	{ id = 20208, chance = 260 }, -- string of mending
 }
 
 monster.attacks = {

@@ -79,20 +79,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 95860, maxCount = 149 },
-	{ name = "platinum coin", chance = 86660, maxCount = 11 },
-	{ name = "fairy wings", chance = 6400 },
-	{ name = "energy bar", chance = 4100 },
-	{ name = "gummy rotworm", chance = 3410, maxCount = 3 },
-	{ name = "opal", chance = 3260 },
-	{ name = "rainbow quartz", chance = 3030, maxCount = 2 },
-	{ name = "violet crystal shard", chance = 2450 },
-	{ name = "wad of fairy floss", chance = 1690 },
-	{ name = "violet gem", chance = 1500 },
-	{ name = "milk chocolate coin", chance = 920, maxCount = 10 },
-	{ name = "springsprout rod", chance = 650 },
-	{ id = 3093, chance = 310 },
-	{ name = "silver amulet", chance = 120 },
+	{ id = 3031, chance = 80000, maxCount = 149 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 11 }, -- platinum coin
+	{ id = 25694, chance = 23000 }, -- fairy wings
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 16120, chance = 5000 }, -- violet crystal shard
+	{ id = 22194, chance = 5000 }, -- opal
+	{ id = 23535, chance = 5000 }, -- energy bar
+	{ id = 25737, chance = 5000, maxCount = 2 }, -- rainbow quartz
+	{ id = 48116, chance = 5000, maxCount = 3 }, -- gummy rotworm
+	{ id = 48544, chance = 5000 }, -- wad of fairy floss
+	{ id = 8084, chance = 1000 }, -- springsprout rod
+	{ id = 3054, chance = 260 }, -- silver amulet
+	{ id = 3093, chance = 260 }, -- club ring
+	{ id = 48249, chance = 260, maxCount = 10 }, -- milk chocolate coin
+	{ id = 3048, chance = 80000 }, -- might ring
 }
 
 monster.attacks = {

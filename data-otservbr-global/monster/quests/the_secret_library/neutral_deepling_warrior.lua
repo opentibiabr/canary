@@ -59,7 +59,19 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 14013, chance = 80000 }, -- deeptags
+	{ id = 14012, chance = 80000 }, -- deepling warts
+	{ id = 14085, chance = 80000 }, -- deepling filet
+	{ id = 3052, chance = 80000 }, -- life ring
+	{ id = 14252, chance = 80000 }, -- vortex bolt
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 14041, chance = 80000 }, -- deepling ridge
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 14040, chance = 80000 }, -- warriors axe
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -300 },

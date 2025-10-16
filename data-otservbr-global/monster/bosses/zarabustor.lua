@@ -79,15 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 32000, maxCount = 80 }, -- gold coin
-	{ id = 3299, chance = 9600 }, -- poison dagger
-	{ id = 3324, chance = 8330 }, -- skull staff
-	{ id = 7368, chance = 5500, maxCount = 4 }, -- assassin star
-	{ id = 3567, chance = 3390 }, -- blue robe
-	{ id = 3029, chance = 3190 }, -- small sapphire
-	{ id = 825, chance = 3040 }, -- lightning robe
-	{ id = 3006, chance = 2420 }, -- ring of the sky
-	{ id = 3360, chance = 2240 }, -- golden armor
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 3029, chance = 80000, maxCount = 2 }, -- small sapphire
+	{ id = 7368, chance = 80000, maxCount = 3 }, -- assassin star
+	{ id = 3299, chance = 80000 }, -- poison dagger
+	{ id = 3567, chance = 80000 }, -- blue robe
+	{ id = 3048, chance = 80000 }, -- might ring
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 3360, chance = 80000 }, -- golden armor
+	{ id = 822, chance = 80000 }, -- lightning legs
+	{ id = 825, chance = 80000 }, -- lightning robe
+	{ id = 8074, chance = 80000 }, -- spellbook of mind control
+	{ id = 3006, chance = 80000 }, -- ring of the sky
 }
 
 monster.attacks = {

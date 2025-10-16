@@ -80,25 +80,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 50320, maxCount = 185 }, -- gold coin
-	{ id = 3724, chance = 50320, maxCount = 3 }, -- red mushroom
-	{ id = 236, chance = 50320 }, -- strong health potion
-	{ id = 3078, chance = 20000 }, -- mysterious fetish
-	{ id = 3316, chance = 50320 }, -- orcish axe
-	{ id = 24380, chance = 20000 }, -- bone toothpick
-	{ id = 24381, chance = 4900 }, -- beetle carapace
-	{ id = 24382, chance = 1800, maxCount = 2 }, -- bug meat
-	{ id = 3027, chance = 12750, maxCount = 2 }, -- black pearl
-	{ id = 3030, chance = 2510, maxCount = 3 }, -- small ruby
-	{ id = 7452, chance = 1940 }, -- spiked squelcher
-	{ id = 8015, chance = 1000, maxCount = 2 }, -- onion
-	{ id = 9057, chance = 8870, maxCount = 3 }, -- small topaz
-	{ id = 16123, chance = 9700 }, -- brown crystal splinter
-	{ id = 17828, chance = 15290, maxCount = 3 }, -- pair of iron fists
-	{ id = 2966, chance = 910 }, -- war drum
-	{ id = 7439, chance = 910 }, -- berserk potion
-	{ id = 10457, chance = 910 }, -- beetle necklace
-	{ id = 23811, chance = 300 }, -- reinvigorating seeds
+	{ id = 3031, chance = 80000, maxCount = 184 }, -- gold coin
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 3078, chance = 23000 }, -- mysterious fetish
+	{ id = 3316, chance = 23000 }, -- orcish axe
+	{ id = 3724, chance = 23000, maxCount = 3 }, -- red mushroom
+	{ id = 24380, chance = 23000 }, -- bone toothpick
+	{ id = 24381, chance = 23000 }, -- beetle carapace
+	{ id = 24382, chance = 23000 }, -- bug meat
+	{ id = 3027, chance = 5000, maxCount = 2 }, -- black pearl
+	{ id = 3030, chance = 5000, maxCount = 3 }, -- small ruby
+	{ id = 7452, chance = 5000 }, -- spiked squelcher
+	{ id = 8015, chance = 5000, maxCount = 2 }, -- onion
+	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
+	{ id = 16123, chance = 5000, maxCount = 2 }, -- brown crystal splinter
+	{ id = 17828, chance = 5000 }, -- pair of iron fists
+	{ id = 2966, chance = 1000 }, -- war drum
+	{ id = 7439, chance = 1000 }, -- berserk potion
+	{ id = 10457, chance = 1000 }, -- beetle necklace
+	{ id = 7419, chance = 260 }, -- dreaded cleaver
 }
 
 monster.attacks = {

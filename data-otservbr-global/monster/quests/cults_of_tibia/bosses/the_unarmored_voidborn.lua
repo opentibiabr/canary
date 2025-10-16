@@ -72,36 +72,40 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "magic sulphur", chance = 8920, maxCount = 10 },
-	{ name = "gold ingot", chance = 21200, maxCount = 10 },
-	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
-	{ name = "berserker", chance = 8920 },
-	{ name = "abyss hammer", chance = 7620 },
-	{ name = "skull helmet", chance = 9700 },
-	{ name = "silver token", chance = 2732 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 29840, maxCount = 25 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "skull fetish", chance = 7270 },
-	{ name = "bonebreaker", chance = 9510 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "small diamond", chance = 12760, maxCount = 10 },
-	{ name = "small amethyst", chance = 14700, maxCount = 10 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "small sapphire", chance = 13790, maxCount = 10 },
-	{ name = "small emerald", chance = 14700, maxCount = 10 },
-	{ name = "small amethyst", chance = 12259, maxCount = 10 },
-	{ name = "energy bar", chance = 16872, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
-	{ name = "great mana potion", chance = 33721, maxCount = 10 },
-	{ name = "great spirit potion", chance = 25690, maxCount = 5 },
-	{ id = 23542, chance = 12798 }, -- collar of blue plasma
-	{ name = "piece of royal steel", chance = 15890 },
-	{ name = "shadow sceptre", chance = 7890 },
-	{ id = 23533, chance = 14542 }, -- ring of red plasma
-	{ name = "terra hood", chance = 16892 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 23535, chance = 80000, maxCount = 5 }, -- energy bar
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 3029, chance = 80000, maxCount = 10 }, -- small sapphire
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 23529, chance = 80000 }, -- ring of blue plasma
+	{ id = 23527, chance = 80000 }, -- collar of green plasma
+	{ id = 22191, chance = 80000 }, -- skull fetish
+	{ id = 7786, chance = 80000 }, -- orc tusk
+	{ id = 23509, chance = 80000 }, -- mysterious remains
+	{ id = 830, chance = 80000 }, -- terra hood
+	{ id = 5887, chance = 80000 }, -- piece of royal steel
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 23528, chance = 80000 }, -- collar of red plasma
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 812, chance = 80000 }, -- terra legs
+	{ id = 21171, chance = 80000 }, -- metal bat
+	{ id = 7428, chance = 80000 }, -- bonebreaker
+	{ id = 7388, chance = 80000 }, -- vile axe
+	{ id = 23526, chance = 80000 }, -- collar of blue plasma
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 23533, chance = 80000 }, -- ring of red plasma
+	{ id = 23531, chance = 80000 }, -- ring of green plasma
 }
 
 monster.attacks = {

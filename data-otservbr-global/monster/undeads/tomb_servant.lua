@@ -78,15 +78,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 82350, maxCount = 108 },
-	{ name = "scarab coin", chance = 8210 },
-	{ name = "rotten meat", chance = 2000 },
-	{ id = 3115, chance = 49000 }, -- bone
-	{ name = "longsword", chance = 6560 },
-	{ name = "bone shield", chance = 5300 },
-	{ name = "worm", chance = 25325, maxCount = 12 },
-	{ name = "half-digested piece of meat", chance = 1000 },
-	{ name = "fist on a stick", chance = 230 },
+	{ id = 3031, chance = 80000, maxCount = 108 }, -- gold coin
+	{ id = 7573, chance = 80000 }, -- bone
+	{ id = 3492, chance = 80000, maxCount = 12 }, -- worm
+	{ id = 3285, chance = 23000 }, -- longsword
+	{ id = 3042, chance = 23000 }, -- scarab coin
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 3441, chance = 5000 }, -- bone shield
+	{ id = 3112, chance = 5000 }, -- rotten meat
+	{ id = 10283, chance = 1000 }, -- halfdigested piece of meat
+	{ id = 12546, chance = 260 }, -- fist on a stick
 }
 
 monster.attacks = {

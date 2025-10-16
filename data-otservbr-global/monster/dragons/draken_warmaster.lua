@@ -75,21 +75,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 97490, maxCount = 197 },
-	{ name = "platinum coin", chance = 47640, maxCount = 5 },
-	{ name = "meat", chance = 30390 },
-	{ name = "bone shoulderplate", chance = 12840 },
-	{ name = "zaoan halberd", chance = 8930 },
-	{ name = "warmaster's wristguards", chance = 7020 },
-	{ name = "great health potion", chance = 3710, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 3410 },
-	{ name = "zaoan shoes", chance = 2610 },
-	{ name = "tower shield", chance = 2310 },
-	{ name = "small ruby", chance = 1810, maxCount = 5 },
-	{ name = "zaoan legs", chance = 1300 },
-	{ name = "zaoan armor", chance = 600 },
-	{ name = "drakinata", chance = 600 },
-	{ name = "ring of the sky", chance = 220 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 3577, chance = 80000 }, -- meat
+	{ id = 10404, chance = 23000 }, -- bone shoulderplate
+	{ id = 10405, chance = 23000 }, -- warmasters wristguards
+	{ id = 10406, chance = 23000 }, -- zaoan halberd
+	{ id = 239, chance = 5000, maxCount = 3 }, -- great health potion
+	{ id = 7643, chance = 5000 }, -- ultimate health potion
+	{ id = 10386, chance = 5000 }, -- zaoan shoes
+	{ id = 3030, chance = 5000, maxCount = 5 }, -- small ruby
+	{ id = 3428, chance = 5000 }, -- tower shield
+	{ id = 10388, chance = 1000 }, -- drakinata
+	{ id = 10384, chance = 1000 }, -- zaoan armor
+	{ id = 10387, chance = 1000 }, -- zaoan legs
+	{ id = 3006, chance = 260 }, -- ring of the sky
 }
 
 monster.attacks = {

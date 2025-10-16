@@ -81,27 +81,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 150 },
-	{ name = "cowbell", chance = 18570 },
-	{ name = "moonlight rod", chance = 8480 },
-	{ name = "cultish robe", chance = 15450 },
-	{ name = "great health potion", chance = 7070 },
-	{ name = "great mana potion", chance = 16810 },
-	{ name = "gold ingot", chance = 1120 },
-	{ name = "small ruby", chance = 7160 },
-	{ name = "small topaz", chance = 7650 },
-	{ name = "yellow gem", chance = 490 },
-	{ name = "platinum coin", chance = 67040, maxCount = 3 },
-	{ name = "small emerald", chance = 11160 },
-	{ name = "small diamond", chance = 2900, maxCount = 2 },
-	{ name = "small amethyst", chance = 6680, maxCount = 2 },
-	{ name = "red piece of cloth", chance = 630 },
-	{ id = 3098, chance = 6730 }, -- ring of healing
-	{ id = 3039, chance = 390 }, -- red gem
-	{ name = "meat", chance = 8040 },
-	{ name = "ham", chance = 60140 },
-	{ name = "minotaur leather", chance = 14230 },
-	{ name = "minotaur horn", chance = 18270, maxCount = 2 },
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 3582, chance = 80000 }, -- ham
+	{ id = 21204, chance = 23000 }, -- cowbell
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 11472, chance = 23000, maxCount = 2 }, -- minotaur horn
+	{ id = 5878, chance = 23000 }, -- minotaur leather
+	{ id = 9639, chance = 23000 }, -- cultish robe
+	{ id = 3032, chance = 23000 }, -- small emerald
+	{ id = 3070, chance = 23000 }, -- moonlight rod
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 9057, chance = 23000 }, -- small topaz
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 3030, chance = 23000 }, -- small ruby
+	{ id = 3033, chance = 23000, maxCount = 2 }, -- small amethyst
+	{ id = 3098, chance = 23000 }, -- ring of healing
+	{ id = 9058, chance = 1000 }, -- gold ingot
+	{ id = 5911, chance = 1000 }, -- red piece of cloth
+	{ id = 7401, chance = 1000 }, -- minotaur trophy
+	{ id = 36706, chance = 1000 }, -- red gem
+	{ id = 3037, chance = 260 }, -- yellow gem
 }
 
 monster.attacks = {

@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Amber Souvenir", chance = 7330 },
-	{ id = 3039, chance = 5340 }, -- red gem
-	{ name = "Resinous Fish Fin", chance = 4090 },
-	{ name = "Skull Staff", chance = 1480 },
-	{ id = 3041, chance = 1140 }, -- blue gem
-	{ name = "Glacier Robe", chance = 910 },
-	{ name = "Crystalline Armor", chance = 510 },
-	{ name = "Quara Pincers", chance = 510 },
-	{ name = "Abyss Hammer", chance = 170 },
-	{ name = "Preserved Light Blue Seed", chance = 110 },
-	{ name = "Preserved Purple Seed", chance = 110 },
-	{ name = "platinum coin", chance = 10000, maxCount = 25 },
+	{ id = 48508, chance = 23000 }, -- amber souvenir
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3324, chance = 5000 }, -- skull staff
+	{ id = 48509, chance = 5000 }, -- resinous fish fin
+	{ id = 824, chance = 1000 }, -- glacier robe
+	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 8050, chance = 1000 }, -- crystalline armor
+	{ id = 11490, chance = 1000 }, -- quara pincers
+	{ id = 7414, chance = 260 }, -- abyss hammer
+	{ id = 45654, chance = 260 }, -- preserved light blue seed
+	{ id = 45656, chance = 260 }, -- preserved purple seed
+	{ id = 45655, chance = 260 }, -- preserved violet seed
 }
 
 monster.attacks = {

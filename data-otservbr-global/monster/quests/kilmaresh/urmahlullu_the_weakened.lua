@@ -70,48 +70,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ name = "green gem", chance = 100000, maxCount = 2 },
-	{ name = "energy bar", chance = 100000 },
-	{ name = "ultimate mana potion", chance = 73080, maxCount = 31 },
-	{ name = "supreme health potion", chance = 53850, maxCount = 28 },
-	{ id = 3039, chance = 53850, maxCount = 2 }, -- red gem
-	{ name = "lightning pendant", chance = 30770 },
-	{ name = "berserk potion", chance = 23080, maxCount = 15 },
-	{ name = "bullseye potion", chance = 23080, maxCount = 15 },
-	{ name = "magma coat", chance = 23080 },
-	{ name = "royal star", chance = 19230, maxCount = 168 },
-	{ name = "flash arrow", chance = 19230, maxCount = 175 },
-	{ name = "ultimate spirit potion", chance = 19230, maxCount = 8 },
-	{ name = "magma amulet", chance = 19230 },
-	{ name = "gold ingot", chance = 19230 },
-	{ name = "blue gem", chance = 15380 },
-	{ name = "magma monocle", chance = 15380 },
-	{ name = "yellow gem", chance = 15380 },
-	{ name = "crystal coin", chance = 11540, maxCount = 5 },
-	{ name = "silver token", chance = 7690, maxCount = 5 },
-	{ name = "violet gem", chance = 7690 },
-	{ name = "urmahlullu's paw", chance = 7690 },
-	{ id = 281, chance = 7690 }, -- giant shimmering pearl
-	{ name = "mastermind potion", chance = 3850 },
-	{ name = "tagralt blade", chance = 1850 },
-	{ name = "giant sapphire", chance = 3850 },
-	{ id = 31263, chance = 3850 }, -- ring of secret thoughts
-	{ name = "sunray emblem", chance = 3850 },
-	{ name = "urmahlullu's mane", chance = 3850 },
-	{ name = "winged boots", chance = 1850 },
-	{ name = "urmahlullu's tail", chance = 6980 },
-	{ name = "lightning legs", chance = 6400 },
-	{ name = "giant emerald", chance = 3490 },
-	{ name = "giant ruby", chance = 3490 },
-	{ id = 30403, chance = 1740 }, -- enchanted theurgic amulet
-	{ name = "sun medal", chance = 580 },
-	{ name = "golden bijou", chance = 580 },
-	{ name = "winged backpack", chance = 250 },
-	{ name = "rainbow necklace", chance = 1160 },
-	{ id = 30403, chance = 160 }, -- enchanted theurgic amulet
-	{ name = "sun medal", chance = 160 },
-	{ name = "sunray emblem", chance = 160 },
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 23535, chance = 80000 }, -- energy bar
+	{ id = 23375, chance = 80000, maxCount = 20 }, -- supreme health potion
+	{ id = 23373, chance = 80000, maxCount = 20 }, -- ultimate mana potion
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 23374, chance = 80000, maxCount = 7 }, -- ultimate spirit potion
+	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
+	{ id = 761, chance = 80000, maxCount = 100 }, -- flash arrow
+	{ id = 25759, chance = 80000, maxCount = 100 }, -- royal star
+	{ id = 816, chance = 80000 }, -- lightning pendant
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
+	{ id = 7439, chance = 80000, maxCount = 12 }, -- berserk potion
+	{ id = 826, chance = 80000 }, -- magma coat
+	{ id = 3041, chance = 80000, maxCount = 2 }, -- blue gem
+	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
+	{ id = 817, chance = 80000 }, -- magma amulet
+	{ id = 7440, chance = 80000, maxCount = 18 }, -- mastermind potion
+	{ id = 30403, chance = 80000 }, -- enchanted theurgic amulet
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 22516, chance = 80000, maxCount = 5 }, -- silver token
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 30059, chance = 80000 }, -- giant ruby
+	{ id = 827, chance = 80000 }, -- magma monocle
+	{ id = 31306, chance = 80000 }, -- ring of secret thoughts
+	{ id = 31623, chance = 80000 }, -- urmahlullus mane
+	{ id = 31624, chance = 80000 }, -- urmahlullus paw
+	{ id = 31622, chance = 80000 }, -- urmahlullus tail
+	{ id = 31614, chance = 80000 }, -- tagralt blade
+	{ id = 30323, chance = 80000 }, -- rainbow necklace
+	{ id = 31617, chance = 80000 }, -- winged boots
+	{ id = 31572, chance = 80000 }, -- blue and golden cordon
+	{ id = 31575, chance = 80000 }, -- golden bijou
+	{ id = 31573, chance = 80000 }, -- sun medal
+	{ id = 31625, chance = 80000 }, -- winged backpack
+	{ id = 822, chance = 80000 }, -- lightning legs
+	{ id = 31557, chance = 80000 }, -- enchanted blister ring
+	{ id = 31574, chance = 80000 }, -- sunray emblem
 }
 
 monster.attacks = {

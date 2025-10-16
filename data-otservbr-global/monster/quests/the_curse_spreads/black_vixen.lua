@@ -77,30 +77,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "platinum coin", chance = 13600000, maxCount = 10 },
-	{ name = "assassin star", chance = 13600000, maxCount = 9 },
-	{ name = "black pearl", chance = 13600000, maxCount = 2 },
-	{ name = "great mana potion", chance = 13600000, maxCount = 2 },
-	{ name = "great spirit potion", chance = 13600000, maxCount = 2 },
-	{ name = "small enchanted emerald", chance = 13600000, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 13600000, maxCount = 2 },
-	{ name = "ultimate spirit potion", chance = 13600000, maxCount = 2 },
-	{ name = "fox paw", chance = 13600000, maxCount = 2 },
-	{ name = "moonlight rod", chance = 13600000 },
-	{ id = 3049, chance = 13600000 }, -- stealth ring
-	{ name = "werefox tail", chance = 13600000 },
-	{ name = "green gem", chance = 400 },
-	{ name = "troll green", chance = 400 },
-	{ name = "werewolf amulet", chance = 400 },
-	{ name = "composite hornbow", chance = 250 },
-	{ name = "sai", chance = 250 },
-	{ name = "silver token", chance = 250 },
-	{ id = 27706, chance = 250 }, -- werefox trophy
-	{ name = "foxtail", chance = 100 },
-	{ name = "wolf backpack", chance = 100 },
-	{ name = "silver token", chance = 100 },
+	{ id = 27462, chance = 80000 }, -- fox paw
+	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
+	{ id = 27463, chance = 80000 }, -- werefox tail
+	{ id = 3027, chance = 80000, maxCount = 2 }, -- black pearl
+	{ id = 7368, chance = 80000, maxCount = 10 }, -- assassin star
+	{ id = 3031, chance = 80000, maxCount = 70 }, -- gold coin
+	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
+	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
+	{ id = 23374, chance = 80000, maxCount = 2 }, -- ultimate spirit potion
+	{ id = 3049, chance = 80000 }, -- stealth ring
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 677, chance = 80000, maxCount = 3 }, -- small enchanted emerald
+	{ id = 23373, chance = 80000, maxCount = 2 }, -- ultimate mana potion
+	{ id = 27706, chance = 80000 }, -- werefox trophy
+	{ id = 3070, chance = 80000 }, -- moonlight rod
+	{ id = 22083, chance = 5000 }, -- moonlight crystals
+	{ id = 3741, chance = 5000 }, -- troll green
+	{ id = 22060, chance = 5000 }, -- werewolf amulet
+	{ id = 8027, chance = 260 }, -- composite hornbow
+	{ id = 22516, chance = 260 }, -- silver token
+	{ id = 14142, chance = 260 }, -- foxtail
+	{ id = 22084, chance = 260 }, -- wolf backpack
+	{ id = 3055, chance = 80000 }, -- platinum amulet
 }
 
 monster.attacks = {

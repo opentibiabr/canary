@@ -77,22 +77,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 80000, maxCount = 4 },
-	{ name = "quara bone", chance = 10000, maxCount = 1 },
-	{ name = "royal spear", chance = 8000, maxCount = 7 },
-	{ name = "great health potion", chance = 6680, maxCount = 2 },
-	{ name = "mind stone", chance = 6440 },
-	{ name = "assassin star", chance = 5233, maxCount = 10 },
-	{ name = "shrimp", chance = 4510, maxCount = 5 },
-	{ name = "small diamond", chance = 3140, maxCount = 3 },
-	{ name = "fish fin", chance = 2101 },
-	{ name = "blue crystal shard", chance = 1290 },
-	{ name = "relic sword", chance = 1051 },
-	{ name = "skull helmet", chance = 560 },
-	{ name = "glacier robe", chance = 400 },
-	{ name = "abyss hammer", chance = 320 },
-	{ name = "frozen plate", chance = 160 },
-	{ name = "giant shrimp", chance = 80 },
+	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
+	{ id = 11491, chance = 23000 }, -- quara bone
+	{ id = 7378, chance = 23000, maxCount = 7 }, -- royal spear
+	{ id = 3062, chance = 23000 }, -- mind stone
+	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
+	{ id = 7368, chance = 5000, maxCount = 10 }, -- assassin star
+	{ id = 3581, chance = 5000, maxCount = 3 }, -- shrimp
+	{ id = 3028, chance = 5000, maxCount = 3 }, -- small diamond
+	{ id = 5895, chance = 5000 }, -- fish fin
+	{ id = 16119, chance = 1000 }, -- blue crystal shard
+	{ id = 7383, chance = 1000 }, -- relic sword
+	{ id = 824, chance = 1000 }, -- glacier robe
+	{ id = 7414, chance = 260 }, -- abyss hammer
+	{ id = 8059, chance = 260 }, -- frozen plate
+	{ id = 5741, chance = 260 }, -- skull helmet
+	{ id = 12318, chance = 260 }, -- giant shrimp
 }
 
 monster.attacks = {

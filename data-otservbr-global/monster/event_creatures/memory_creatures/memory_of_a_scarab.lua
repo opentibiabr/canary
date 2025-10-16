@@ -69,15 +69,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "scarab amulet", chance = 3410 },
-	{ name = "gold coin", chance = 50000, maxCount = 155 },
-	{ name = "small emerald", chance = 4810, maxCount = 3 },
-	{ name = "small amethyst", chance = 5000, maxCount = 4 },
-	{ name = "scarab coin", chance = 7692, maxCount = 2 },
-	{ id = 3046, chance = 11480 }, -- magic light wand
-	{ name = "plate armor", chance = 10300 },
-	{ name = "special fx box", chance = 1500 },
-	{ name = "strong health potion", chance = 660 },
+	{ id = 3033, chance = 80000 }, -- small amethyst
+	{ id = 3018, chance = 80000 }, -- scarab amulet
+	{ id = 236, chance = 80000 }, -- strong health potion
+	{ id = 22746, chance = 80000 }, -- ancient amulet
+	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 37468, chance = 80000 }, -- special fx box
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3042, chance = 80000 }, -- scarab coin
+	{ id = 3357, chance = 80000 }, -- plate armor
+	{ id = 3047, chance = 80000 }, -- magic light wand
+	{ id = 3440, chance = 80000 }, -- scarab shield
+	{ id = 3328, chance = 80000 }, -- daramian waraxe
+	{ id = 8084, chance = 80000 }, -- springsprout rod
 }
 
 monster.attacks = {

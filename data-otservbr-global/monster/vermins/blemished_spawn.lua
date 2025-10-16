@@ -76,29 +76,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 25 },
-	{ name = "terra rod", chance = 26530 },
-	{ name = "blemished spawn abdomen", chance = 9690, maxCount = 1 },
-	{ name = "cyan crystal fragment", chance = 8420, maxCount = 3 },
-	{ name = "violet crystal shard", chance = 7380, maxCount = 3 },
-	{ name = "hailstorm rod", chance = 5550 },
-	{ name = "blue crystal shard", chance = 6300, maxCount = 3 },
-	{ name = "knight axe", chance = 4750 },
-	{ name = "dragonbone staff", chance = 3950 },
-	{ name = "violet gem", chance = 4660 },
-	{ name = "yellow gem", chance = 4560 },
-	{ name = "wand of starstorm", chance = 4190 },
-	{ name = "northwind rod", chance = 5320 },
-	{ name = "blemished spawn head", chance = 4840 },
-	{ name = "sacred tree amulet", chance = 4000 },
-	{ name = "springsprout rod", chance = 4610 },
-	{ name = "diamond sceptre", chance = 3950 },
-	{ id = 281, chance = 3570 }, -- giant shimmering pearl (green)
-	{ name = "ice rapier", chance = 3950 },
-	{ id = 3289, chance = 3760 }, -- staff
-	{ name = "wand of cosmic energy", chance = 3620 },
-	{ name = "blemished spawn tail", chance = 3530 },
-	{ name = "fur armor", chance = 1360 },
+	{ id = 3035, chance = 80000, maxCount = 18 }, -- platinum coin
+	{ id = 3065, chance = 80000 }, -- terra rod
+	{ id = 16119, chance = 23000 }, -- blue crystal shard
+	{ id = 16120, chance = 23000 }, -- violet crystal shard
+	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
+	{ id = 36779, chance = 23000 }, -- blemished spawn abdomen
+	{ id = 3036, chance = 23000 }, -- violet gem
+	{ id = 3067, chance = 23000 }, -- hailstorm rod
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
+	{ id = 3284, chance = 5000 }, -- ice rapier
+	{ id = 6107, chance = 5000 }, -- staff
+	{ id = 3318, chance = 5000 }, -- knight axe
+	{ id = 7387, chance = 5000 }, -- diamond sceptre
+	{ id = 7430, chance = 5000 }, -- dragonbone staff
+	{ id = 8083, chance = 5000 }, -- northwind rod
+	{ id = 8084, chance = 5000 }, -- springsprout rod
+	{ id = 8092, chance = 5000 }, -- wand of starstorm
+	{ id = 9302, chance = 5000 }, -- sacred tree amulet
+	{ id = 22085, chance = 5000 }, -- fur armor
+	{ id = 36778, chance = 5000 }, -- blemished spawn head
+	{ id = 36780, chance = 5000 }, -- blemished spawn tail
+	{ id = 47996, chance = 80000 }, -- blemished spawn soul core
 }
 
 monster.attacks = {

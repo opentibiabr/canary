@@ -76,28 +76,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "ruby necklace", chance = 1500 },
-	{ name = "white pearl", chance = 10000, maxCount = 3 },
-	{ name = "black pearl", chance = 12000, maxCount = 3 },
-	{ name = "gold coin", chance = 100000, maxCount = 198 },
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ id = 3039, chance = 15000 }, -- red gem
-	{ name = "stone skin amulet", chance = 2780 },
-	{ name = "blank rune", chance = 35250, maxCount = 3 },
-	{ name = "skull staff", chance = 850 },
-	{ name = "tower shield", chance = 740 },
-	{ name = "skull helmet", chance = 170 },
-	{ id = 5806, chance = 4950 }, -- silver goblet
-	{ name = "soul orb", chance = 15000 },
-	{ id = 6299, chance = 2170 }, -- death ring
-	{ name = "demonic essence", chance = 7500 },
-	{ name = "skeleton decoration", chance = 1250 },
-	{ name = "haunted blade", chance = 740 },
-	{ name = "titan axe", chance = 1000 },
-	{ name = "great mana potion", chance = 14200, maxCount = 2 },
-	{ name = "great health potion", chance = 8800, maxCount = 2 },
-	{ id = 8896, chance = 3500 }, -- slightly rusted armor
-	{ name = "unholy bone", chance = 33010 },
+	{ id = 3031, chance = 80000, maxCount = 198 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
+	{ id = 3147, chance = 80000, maxCount = 3 }, -- blank rune
+	{ id = 10316, chance = 80000 }, -- unholy bone
+	{ id = 5944, chance = 23000 }, -- soul orb
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
+	{ id = 3026, chance = 23000, maxCount = 3 }, -- white pearl
+	{ id = 3027, chance = 23000, maxCount = 3 }, -- black pearl
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 3016, chance = 5000 }, -- ruby necklace
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 7370, chance = 5000 }, -- silver goblet
+	{ id = 6299, chance = 5000 }, -- death ring
+	{ id = 6525, chance = 5000 }, -- skeleton decoration
+	{ id = 7413, chance = 5000 }, -- titan axe
+	{ id = 8896, chance = 5000 }, -- slightly rusted armor
+	{ id = 3081, chance = 1000 }, -- stone skin amulet
+	{ id = 3324, chance = 1000 }, -- skull staff
+	{ id = 3428, chance = 1000 }, -- tower shield
+	{ id = 7407, chance = 1000 }, -- haunted blade
+	{ id = 5741, chance = 260 }, -- skull helmet
+	{ id = 8895, chance = 80000 }, -- rusted armor
 }
 
 monster.attacks = {

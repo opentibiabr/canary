@@ -78,18 +78,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21178, chance = 2010 }, -- glooth club
-	{ id = 9640, chance = 3080 }, -- poisonous slime
-	{ id = 21146, chance = 2720 }, -- glooth steak
-	{ id = 3031, chance = 100000, maxCount = 139 }, -- gold coin
-	{ id = 21194, chance = 1040 }, -- slime heart
-	{ id = 236, chance = 7710 }, -- strong health potion
-	{ id = 7366, chance = 1290, maxCount = 5 }, -- viper star
-	{ id = 21183, chance = 250 }, -- glooth amulet
-	{ id = 21179, chance = 210 }, -- glooth blade
-	{ id = 21178, chance = 210 }, -- glooth club
-	{ id = 21180, chance = 250 }, -- glooth axe
-	{ id = 21158, chance = 280 }, -- glooth spear
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 7366, chance = 23000, maxCount = 5 }, -- viper star
+	{ id = 21194, chance = 23000 }, -- slime heart
+	{ id = 21195, chance = 23000 }, -- poisoned fang
+	{ id = 9640, chance = 5000 }, -- poisonous slime
+	{ id = 21158, chance = 1000 }, -- glooth spear
+	{ id = 21178, chance = 1000 }, -- glooth club
+	{ id = 21146, chance = 5000 }, -- glooth steak
+	{ id = 21179, chance = 1000 }, -- glooth blade
+	{ id = 21180, chance = 1000 }, -- glooth axe
+	{ id = 21183, chance = 1000 }, -- glooth amulet
+	{ id = 3081, chance = 260 }, -- stone skin amulet
 }
 
 monster.attacks = {

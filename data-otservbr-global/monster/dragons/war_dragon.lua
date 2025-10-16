@@ -76,16 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Platinum Coin", chance = 52560, minCount = 1, maxCount = 45 },
-	{ name = "Wardragon Claw", chance = 14420 },
-	{ name = "Nimmersatt's Seal", chance = 10620 },
-	{ name = "Dragon Tongue", chance = 8450 },
-	{ name = "Wardragon Tooth", chance = 6330 },
-	{ name = "Gold Ingot", chance = 6007 },
-	{ name = "Onyx Chip", chance = 4650, minCount = 1, maxCount = 2 },
-	{ name = "Black Pearl", chance = 4000 },
-	{ name = "White Gem", chance = 1000 },
-	{ name = "Dragonbone Staff", chance = 740 },
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 9058, chance = 23000 }, -- gold ingot
+	{ id = 24938, chance = 23000 }, -- dragon tongue
+	{ id = 44743, chance = 23000 }, -- nimmersatts seal
+	{ id = 44748, chance = 23000 }, -- wardragon claw
+	{ id = 44749, chance = 23000 }, -- wardragon tooth
+	{ id = 3027, chance = 5000 }, -- black pearl
+	{ id = 7643, chance = 5000 }, -- ultimate health potion
+	{ id = 22193, chance = 5000, maxCount = 2 }, -- onyx chip
+	{ id = 23373, chance = 5000 }, -- ultimate mana potion
+	{ id = 32769, chance = 1000 }, -- white gem
+	{ id = 7430, chance = 1000 }, -- dragonbone staff
 }
 
 monster.attacks = {

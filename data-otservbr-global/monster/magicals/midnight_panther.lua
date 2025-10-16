@@ -78,11 +78,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 57 },
-	{ id = 3052, chance = 12500 }, -- life ring
-	{ name = "meat", chance = 25000, maxCount = 4 },
-	{ name = "panther head", chance = 12500 },
-	{ name = "panther paw", chance = 100000 },
+	{ id = 3031, chance = 80000, maxCount = 86 }, -- gold coin
+	{ id = 3577, chance = 80000 }, -- meat
+	{ id = 12040, chance = 80000 }, -- panther paw
+	{ id = 12039, chance = 23000 }, -- panther head
+	{ id = 3052, chance = 23000 }, -- life ring
+	{ id = 10311, chance = 5000 }, -- sabretooth
+	{ id = 236, chance = 1000 }, -- strong health potion
 }
 
 monster.attacks = {

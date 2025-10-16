@@ -66,7 +66,8 @@ monster.voices = {
 	{ text = "I will eat your soul!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -465 },

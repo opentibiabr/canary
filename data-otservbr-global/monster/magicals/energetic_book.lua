@@ -75,21 +75,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 28 },
-	{ id = 28569, chance = 900, maxCount = 8 }, -- book page
-	{ id = 28570, chance = 900, maxCount = 7 }, -- glowing rune
-	{ name = "ultimate health potion", chance = 10000, maxCount = 7 },
-	{ name = "ultimate mana potion", chance = 10000, maxCount = 7 },
-	{ name = "energy ball", chance = 900, maxCount = 7 },
-	{ id = 28566, chance = 800, maxCount = 7 }, -- silken bookmark
-	{ name = "lightning pendant", chance = 500 },
-	{ name = "lightning boots", chance = 500 },
-	{ name = "lightning headband", chance = 500 },
-	{ name = "might ring", chance = 500 },
-	{ name = "spellweaver's robe", chance = 350 },
-	{ name = "wand of defiance", chance = 350 },
-	{ name = "haunted blade", chance = 550 },
-	{ name = "lightning legs", chance = 350 },
+	{ id = 3035, chance = 80000, maxCount = 35 }, -- platinum coin
+	{ id = 28569, chance = 80000, maxCount = 8 }, -- book page
+	{ id = 28570, chance = 80000, maxCount = 6 }, -- glowing rune
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 23373, chance = 23000 }, -- ultimate mana potion
+	{ id = 23523, chance = 23000 }, -- energy ball
+	{ id = 28566, chance = 23000 }, -- silken bookmark
+	{ id = 816, chance = 5000 }, -- lightning pendant
+	{ id = 820, chance = 5000 }, -- lightning boots
+	{ id = 822, chance = 5000 }, -- lightning legs
+	{ id = 828, chance = 5000 }, -- lightning headband
+	{ id = 16096, chance = 5000 }, -- wand of defiance
+	{ id = 10438, chance = 1000 }, -- spellweavers robe
+	{ id = 7407, chance = 1000 }, -- haunted blade
 }
 
 monster.attacks = {

@@ -77,28 +77,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 92000, maxCount = 7 },
-	{ name = "stone skin amulet", chance = 2270 },
-	{ id = 3097, chance = 2840 }, -- dwarven ring
-	{ name = "giant sword", chance = 570 },
-	{ name = "crystal mace", chance = 850 },
-	{ name = "war axe", chance = 920 },
-	{ name = "sapphire hammer", chance = 1490 },
-	{ name = "spiked squelcher", chance = 1490 },
-	{ name = "glorious axe", chance = 3340 },
-	{ name = "strong health potion", chance = 13840, maxCount = 2 },
-	{ name = "strong mana potion", chance = 14900, maxCount = 2 },
-	{ name = "great mana potion", chance = 15610, maxCount = 2 },
-	{ name = "mana potion", chance = 15050, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 14410 },
-	{ id = 12600, chance = 11360 }, -- coal
-	{ name = "ancient stone", chance = 12850 },
-	{ name = "crystalline arrow", chance = 9940, maxCount = 10 },
-	{ name = "green crystal splinter", chance = 6960 },
-	{ name = "cyan crystal fragment", chance = 6810 },
-	{ name = "stone nose", chance = 18679 },
-	{ name = "crystalline spikes", chance = 16320 },
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
+	{ id = 9632, chance = 23000 }, -- ancient stone
+	{ id = 12600, chance = 23000 }, -- coal
+	{ id = 15793, chance = 23000, maxCount = 10 }, -- crystalline arrow
+	{ id = 16138, chance = 23000 }, -- crystalline spikes
+	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 16122, chance = 23000 }, -- green crystal splinter
+	{ id = 268, chance = 23000, maxCount = 2 }, -- mana potion
+	{ id = 16137, chance = 23000 }, -- stone nose
+	{ id = 236, chance = 23000, maxCount = 2 }, -- strong health potion
+	{ id = 237, chance = 23000, maxCount = 2 }, -- strong mana potion
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 3097, chance = 5000 }, -- dwarven ring
+	{ id = 7454, chance = 5000 }, -- glorious axe
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 7437, chance = 5000 }, -- sapphire hammer
+	{ id = 7452, chance = 5000 }, -- spiked squelcher
+	{ id = 3333, chance = 1000 }, -- crystal mace
+	{ id = 3342, chance = 1000 }, -- war axe
+	{ id = 3281, chance = 260 }, -- giant sword
 }
 
 monster.attacks = {

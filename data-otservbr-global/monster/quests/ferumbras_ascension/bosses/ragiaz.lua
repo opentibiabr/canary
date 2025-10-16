@@ -72,38 +72,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 1000000 }, -- silver token
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 16125, chance = 3000, maxCount = 5 }, -- cyan crystal fragment
-	{ id = 16126, chance = 3000, maxCount = 5 }, -- red crystal fragment
-	{ id = 16127, chance = 3000, maxCount = 5 }, -- green crystal fragment
-	{ id = 3026, chance = 3000, maxCount = 8 }, -- white pearl
-	{ id = 3029, chance = 3000, maxCount = 9 }, -- small sapphire
-	{ id = 3031, chance = 98000, maxCount = 200 }, -- gold coin
-	{ id = 3033, chance = 3000, maxCount = 5 }, -- small amethyst
-	{ id = 3035, chance = 8000, maxCount = 58 }, -- platinum coin
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 3039, chance = 1000 }, -- red gem
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3324, chance = 4000 }, -- skull staff
-	{ id = 22758, chance = 100, unique = true }, -- death gaze
-	{ id = 22866, chance = 700 }, -- rift bow
-	{ id = 22867, chance = 700 }, -- rift crossbow
-	{ id = 6499, chance = 11000 }, -- demonic essence
-	{ id = 7420, chance = 500 }, -- reaper's axe
-	{ id = 7426, chance = 4000 }, -- amber staff
-	{ id = 238, chance = 3000, maxCount = 5 }, -- great mana potion
-	{ id = 239, chance = 3100, maxCount = 5 }, -- great health potion
-	{ id = 281, chance = 3000, maxCount = 5 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 3000, maxCount = 5 }, -- giant shimmering pearl (brown)
-	{ id = 7642, chance = 3100, maxCount = 5 }, -- great spirit potion
-	{ id = 7643, chance = 3000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 3000, maxCount = 8 }, -- small topaz
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3030, chance = 80000, maxCount = 5 }, -- small ruby
+	{ id = 7426, chance = 80000 }, -- amber staff
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 16127, chance = 80000, maxCount = 4 }, -- green crystal fragment
+	{ id = 16125, chance = 80000, maxCount = 4 }, -- cyan crystal fragment
+	{ id = 7642, chance = 80000, maxCount = 10 }, -- great spirit potion
+	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
+	{ id = 22762, chance = 80000 }, -- maimer
+	{ id = 22758, chance = 80000 }, -- death gaze
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 22866, chance = 80000 }, -- rift bow
+	{ id = 3033, chance = 80000 }, -- small amethyst
+	{ id = 16126, chance = 80000 }, -- red crystal fragment
+	{ id = 6299, chance = 80000 }, -- death ring
+	{ id = 6558, chance = 80000 }, -- flask of demonic blood
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 6499, chance = 80000 }, -- demonic essence
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 7420, chance = 80000 }, -- reapers axe
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 22727, chance = 80000 }, -- rift lance
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 22726, chance = 80000 }, -- rift shield
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 36706, chance = 80000 }, -- red gem
 }
 
 monster.attacks = {

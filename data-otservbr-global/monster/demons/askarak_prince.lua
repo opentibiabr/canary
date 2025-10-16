@@ -82,20 +82,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 86 },
-	{ name = "small emerald", chance = 12500, maxCount = 5 },
-	{ name = "platinum coin", chance = 35333, maxCount = 4 },
-	{ id = 3049, chance = 4545 }, -- stealth ring
-	{ name = "giant sword", chance = 320 },
-	{ name = "brown mushroom", chance = 6666, maxCount = 5 },
-	{ name = "magic sulphur", chance = 740 },
-	{ name = "mastermind potion", chance = 1315 },
-	{ name = "strong health potion", chance = 14285 },
-	{ name = "strong mana potion", chance = 14285 },
-	{ name = "terra mantle", chance = 840 },
-	{ name = "springsprout rod", chance = 950 },
-	{ name = "demonic finger", chance = 420 },
+	{ id = 3031, chance = 80000, maxCount = 186 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 3032, chance = 23000, maxCount = 5 }, -- small emerald
+	{ id = 3725, chance = 23000, maxCount = 4 }, -- brown mushroom
+	{ id = 3049, chance = 5000 }, -- stealth ring
+	{ id = 7440, chance = 5000 }, -- mastermind potion
+	{ id = 811, chance = 1000 }, -- terra mantle
+	{ id = 5904, chance = 1000 }, -- magic sulphur
+	{ id = 8084, chance = 1000 }, -- springsprout rod
+	{ id = 12541, chance = 1000 }, -- demonic finger
+	{ id = 3281, chance = 260 }, -- giant sword
 }
 
 monster.attacks = {

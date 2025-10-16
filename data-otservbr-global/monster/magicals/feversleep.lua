@@ -76,19 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "small emerald", chance = 11000, maxCount = 2 },
-	{ name = "small amethyst", chance = 12000, maxCount = 3 },
-	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ name = "blue robe", chance = 1500 },
-	{ name = "great mana potion", chance = 40000, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 18000 },
-	{ name = "small topaz", chance = 16000, maxCount = 2 },
-	{ name = "blue crystal shard", chance = 11000 },
-	{ name = "blue crystal splinter", chance = 13000 },
-	{ name = "cyan crystal fragment", chance = 18000 },
-	{ name = "trapped bad dream monster", chance = 17000 },
-	{ name = "bowl of terror sweat", chance = 14000 },
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
+	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
+	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
+	{ id = 3032, chance = 23000, maxCount = 3 }, -- small emerald
+	{ id = 20203, chance = 23000 }, -- trapped bad dream monster
+	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
+	{ id = 7643, chance = 23000 }, -- ultimate health potion
+	{ id = 20204, chance = 23000 }, -- bowl of terror sweat
+	{ id = 3033, chance = 23000, maxCount = 3 }, -- small amethyst
+	{ id = 16119, chance = 23000 }, -- blue crystal shard
+	{ id = 16124, chance = 23000 }, -- blue crystal splinter
+	{ id = 3567, chance = 5000 }, -- blue robe
+	{ id = 20062, chance = 1000 }, -- cluster of solace
 }
 
 monster.attacks = {

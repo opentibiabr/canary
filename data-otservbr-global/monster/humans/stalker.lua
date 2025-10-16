@@ -76,14 +76,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 13000, maxCount = 8 },
-	{ name = "blank rune", chance = 8670 },
-	{ name = "throwing knife", chance = 11170, maxCount = 2 },
-	{ name = "katana", chance = 530 },
-	{ name = "obsidian lance", chance = 1210 },
-	{ name = "brass legs", chance = 3500 },
-	{ name = "brass shield", chance = 5510 },
-	{ name = "miraculum", chance = 1550 },
+	{ id = 3031, chance = 23000, maxCount = 8 }, -- gold coin
+	{ id = 3147, chance = 23000 }, -- blank rune
+	{ id = 3411, chance = 23000 }, -- brass shield
+	{ id = 3298, chance = 23000, maxCount = 2 }, -- throwing knife
+	{ id = 3372, chance = 5000 }, -- brass legs
+	{ id = 11474, chance = 5000 }, -- miraculum
+	{ id = 3313, chance = 5000 }, -- obsidian lance
+	{ id = 3300, chance = 1000 }, -- katana
 }
 
 monster.attacks = {

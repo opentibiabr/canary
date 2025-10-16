@@ -67,7 +67,21 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3031, chance = 80000, maxCount = 172 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 3030, chance = 80000, maxCount = 5 }, -- small ruby
+	{ id = 3026, chance = 80000, maxCount = 5 }, -- white pearl
+	{ id = 14083, chance = 80000, maxCount = 2 }, -- compound eye
+	{ id = 14082, chance = 80000 }, -- spidris mandible
+	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3346, chance = 80000 }, -- ripper lance
+	{ id = 7413, chance = 80000 }, -- titan axe
+	{ id = 6299, chance = 80000 }, -- death ring
+	{ id = 14246, chance = 80000 }, -- hive bow
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -99 },

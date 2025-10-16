@@ -68,24 +68,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 80000, maxCount = 5 },
-	{ name = "great health potion", chance = 40000, maxCount = 5 },
-	{ name = "great mana potion", chance = 40000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 40000, maxCount = 5 },
-	{ name = "ham", chance = 35250, maxCount = 5 },
-	{ name = "meat", chance = 35250, maxCount = 5 },
-	{ name = "minotaur leather", chance = 26500, maxCount = 2 },
-	{ name = "moohtant horn", chance = 21000, maxCount = 2 },
-	{ name = "small diamond", chance = 17900, maxCount = 5 },
-	{ name = "small emerald", chance = 16350, maxCount = 5 },
-	{ name = "small ruby", chance = 15500, maxCount = 5 },
-	{ name = "small sapphire", chance = 14200, maxCount = 5 },
-	{ name = "giant pacifier", chance = 1920 },
-	{ name = "moohtant cudgel", chance = 1800 },
-	{ name = "red piece of cloth", chance = 1500 },
-	{ name = "yellow gem", chance = 1200 },
-	{ name = "one hit wonder", chance = 350 },
+	{ id = 3031, chance = 80000, maxCount = 375 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 3582, chance = 80000, maxCount = 9 }, -- ham
+	{ id = 3577, chance = 80000, maxCount = 9 }, -- meat
+	{ id = 239, chance = 80000, maxCount = 9 }, -- great health potion
+	{ id = 238, chance = 80000, maxCount = 9 }, -- great mana potion
+	{ id = 7642, chance = 80000, maxCount = 9 }, -- great spirit potion
+	{ id = 5878, chance = 80000 }, -- minotaur leather
+	{ id = 21200, chance = 80000, maxCount = 3 }, -- moohtant horn
+	{ id = 3028, chance = 80000, maxCount = 9 }, -- small diamond
+	{ id = 3032, chance = 80000, maxCount = 9 }, -- small emerald
+	{ id = 3030, chance = 80000, maxCount = 9 }, -- small ruby
+	{ id = 3029, chance = 80000, maxCount = 9 }, -- small sapphire
+	{ id = 21199, chance = 80000 }, -- giant pacifier
+	{ id = 21166, chance = 1000 }, -- moohtah plate
+	{ id = 21173, chance = 1000 }, -- moohtant cudgel
+	{ id = 5911, chance = 1000 }, -- red piece of cloth
+	{ id = 3037, chance = 1000 }, -- yellow gem
+	{ id = 21219, chance = 260 }, -- one hit wonder
 }
 
 monster.attacks = {

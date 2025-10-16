@@ -72,7 +72,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 442 },
+	{ id = 3031, chance = 80000, maxCount = 437 }, -- gold coin
+	{ id = 19111, chance = 80000 }, -- fir cone
+	{ id = 19110, chance = 80000 }, -- dowser
+	{ id = 3723, chance = 80000 }, -- white mushroom
+	{ id = 3032, chance = 80000 }, -- small emerald
 }
 
 monster.attacks = {

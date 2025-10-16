@@ -77,24 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 78000, maxCount = 4 },
-	{ name = "quara eye", chance = 20160 },
-	{ name = "mind stone", chance = 10710 },
-	{ name = "shrimp", chance = 7140, maxCount = 4 },
-	{ name = "small topaz", chance = 6800, maxCount = 2 },
-	{ name = "small emerald", chance = 6450, maxCount = 2 },
-	{ name = "great mana potion", chance = 5880, maxCount = 2 },
-	{ name = "spirit cloak", chance = 5650 },
-	{ name = "great health potion", chance = 4950, maxCount = 2 },
-	{ name = "yellow piece of cloth", chance = 3230 },
-	{ name = "green crystal shard", chance = 3000 },
-	{ name = "green piece of cloth", chance = 2880 },
-	{ id = 3052, chance = 2190 }, -- life ring
-	{ name = "fish fin", chance = 1380 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "wand of cosmic energy", chance = 1150 },
-	{ name = "green gem", chance = 460 },
-	{ name = "knight armor", chance = 460 },
+	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
+	{ id = 11488, chance = 23000 }, -- quara eye
+	{ id = 3062, chance = 23000 }, -- mind stone
+	{ id = 3581, chance = 23000 }, -- shrimp
+	{ id = 9057, chance = 23000, maxCount = 2 }, -- small topaz
+	{ id = 3032, chance = 23000, maxCount = 2 }, -- small emerald
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
+	{ id = 8042, chance = 5000 }, -- spirit cloak
+	{ id = 5914, chance = 5000 }, -- yellow piece of cloth
+	{ id = 5910, chance = 5000 }, -- green piece of cloth
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 3052, chance = 5000 }, -- life ring
+	{ id = 5895, chance = 5000 }, -- fish fin
+	{ id = 3073, chance = 1000 }, -- wand of cosmic energy
+	{ id = 3370, chance = 1000 }, -- knight armor
+	{ id = 3038, chance = 260 }, -- green gem
+	{ id = 3027, chance = 80000 }, -- black pearl
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 3026, chance = 80000 }, -- white pearl
 }
 
 monster.attacks = {

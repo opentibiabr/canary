@@ -77,27 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "great spirit potion", chance = 100000, maxCount = 3 },
-	{ name = "protection amulet", chance = 15000 },
-	{ name = "life crystal", chance = 12050 },
-	{ name = "silver amulet", chance = 15000 },
-	{ name = "wand of voodoo", chance = 11050 },
-	{ name = "wand of cosmic energy", chance = 11800 },
-	{ name = "dragon necklace", chance = 16600 },
-	{ name = "stone skin amulet", chance = 8860 },
-	{ id = 30082, chance = 15600 }, -- blue ectoplasm
-	{ name = "glacier amulet", chance = 16890 },
-	{ name = "orb", chance = 18980 },
-	{ name = "hailstorm rod", chance = 17550 },
-	{ name = "elven amulet", chance = 1800 },
-	{ name = "garlic necklace", chance = 2640 },
-	{ name = "platinum amulet", chance = 2600 },
-	{ name = "mind stone", chance = 1800 },
-	{ name = "glacial rod", chance = 520 },
-	{ name = "shockwave amulet", chance = 620 },
-	{ name = "strange symbol", chance = 720 },
-	{ name = "hexagonal ruby", chance = 480 },
+	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
+	{ id = 7642, chance = 23000, maxCount = 3 }, -- great spirit potion
+	{ id = 3084, chance = 23000 }, -- protection amulet
+	{ id = 3061, chance = 23000 }, -- life crystal
+	{ id = 8094, chance = 5000 }, -- wand of voodoo
+	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
+	{ id = 3085, chance = 5000 }, -- dragon necklace
+	{ id = 30203, chance = 5000 }, -- blue ectoplasm
+	{ id = 815, chance = 5000 }, -- glacier amulet
+	{ id = 3060, chance = 5000 }, -- orb
+	{ id = 3055, chance = 5000 }, -- platinum amulet
+	{ id = 3067, chance = 1000 }, -- hailstorm rod
+	{ id = 30180, chance = 1000 }, -- hexagonal ruby
+	{ id = 16118, chance = 1000 }, -- glacial rod
+	{ id = 3062, chance = 260 }, -- mind stone
+	{ id = 3082, chance = 260 }, -- elven amulet
+	{ id = 3083, chance = 260 }, -- garlic necklace
+	{ id = 9304, chance = 260 }, -- shockwave amulet
+	{ id = 3058, chance = 260 }, -- strange symbol
+	{ id = 3081, chance = 260 }, -- stone skin amulet
 }
 
 monster.attacks = {

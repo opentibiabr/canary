@@ -84,21 +84,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 8938, maxCount = 165 },
-	{ name = "ultimate mana potion", chance = 11433, maxCount = 198 },
-	{ name = "giant amethyst", chance = 10570, maxCount = 4 },
-	{ name = "giant topaz", chance = 10570, maxCount = 6 },
-	{ name = "ultimate spirit potion", chance = 11433, maxCount = 45 },
-	{ name = "giant ruby", chance = 10570, maxCount = 1 },
-	{ name = "giant sapphire", chance = 10570, maxCount = 1 },
-	{ name = "mastermind potion", chance = 10938, maxCount = 23 },
-	{ id = 3039, chance = 10570, maxCount = 3 }, -- red gem
-	{ name = "violet gem", chance = 10970, maxCount = 8 },
-	{ name = "yellow gem", chance = 10970, maxCount = 9 },
-	-- { name = "figurine of bakragore", chance = 10970 },
-	-- { name = "bakragore's amalgamation", chance = 570 },
-	{ name = "spiritual horseshoe", chance = 470 },
-	{ id = 43895, chance = 360 }, -- Bag you covet
+	{ id = 43895, chance = 80000 }, -- bag you covet
+	{ id = 7439, chance = 80000, maxCount = 81 }, -- berserk potion
+	{ id = 3041, chance = 80000, maxCount = 9 }, -- blue gem
+	{ id = 7443, chance = 80000, maxCount = 28 }, -- bullseye potion
+	{ id = 3043, chance = 80000, maxCount = 168 }, -- crystal coin
+	{ id = 30053, chance = 80000 }, -- dragon figurine
+	{ id = 39040, chance = 80000 }, -- fiery tear
+	{ id = 32622, chance = 80000, maxCount = 3 }, -- giant amethyst
+	{ id = 30061, chance = 80000, maxCount = 6 }, -- giant sapphire
+	{ id = 30059, chance = 80000, maxCount = 6 }, -- giant ruby
+	{ id = 23373, chance = 80000, maxCount = 37 }, -- ultimate mana potion
+	{ id = 23374, chance = 80000, maxCount = 200 }, -- ultimate spirit potion
+	{ id = 3036, chance = 80000, maxCount = 6 }, -- violet gem
+	{ id = 3037, chance = 80000, maxCount = 7 }, -- yellow gem
+	{ id = 39037, chance = 80000 }, -- cobalt ridge
+	{ id = 7440, chance = 80000, maxCount = 67 }, -- mastermind potion
+	{ id = 3038, chance = 80000, maxCount = 8 }, -- green gem
+	{ id = 32623, chance = 80000, maxCount = 6 }, -- giant topaz
+	{ id = 36706, chance = 80000, maxCount = 3 }, -- red gem
+	{ id = 23375, chance = 80000, maxCount = 110 }, -- supreme health potion
+	{ id = 30060, chance = 80000, maxCount = 4 }, -- giant emerald
 }
 
 monster.attacks = {

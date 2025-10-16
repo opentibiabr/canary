@@ -60,16 +60,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3115, chance = 49870 }, -- bone
-	{ id = 3411, chance = 2920 }, -- brass shield
-	{ id = 3031, chance = 100000, maxCount = 5 }, -- gold coin
-	{ id = 3276, chance = 4770 }, -- hatchet
-	{ id = 3286, chance = 4770 }, -- mace
-	{ id = 11481, chance = 9280 }, -- pelvis bone
-	{ id = 3378, chance = 2920 }, -- studded armor
-	{ id = 3264, chance = 6100 }, -- sword
-	{ id = 2920, chance = 10610 }, -- torch
-	{ id = 3367, chance = 3980 }, -- viking helmet
+	{ id = 3031, chance = 80000, maxCount = 5 }, -- gold coin
+	{ id = 7573, chance = 80000 }, -- bone
+	{ id = 11050, chance = 80000 }, -- torch
+	{ id = 3286, chance = 5000 }, -- mace
+	{ id = 3264, chance = 5000 }, -- sword
+	{ id = 3276, chance = 5000 }, -- hatchet
+	{ id = 3367, chance = 5000 }, -- viking helmet
+	{ id = 3378, chance = 5000 }, -- studded armor
+	{ id = 3411, chance = 1000 }, -- brass shield
 }
 
 monster.attacks = {

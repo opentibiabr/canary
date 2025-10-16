@@ -56,37 +56,47 @@ monster.flags = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", mincount = 10, maxcount = 50, chance = 100000 },
-	{ name = "crystal coin", mincount = 1, maxcount = 5, chance = 100000 },
-	{ name = "violet gem", chance = 50000 },
-	{ name = "mastermind potion", chance = 50000 },
-	{ name = "moonstone", chance = 50000 },
-	{ name = "ultimate spirit potion", chance = 50000 },
-	{ name = "white gem", chance = 50000 },
-	{ name = "brainstealer's tissue", chance = 6000 },
-	{ name = "brainstealer's brain", chance = 5000 },
-	{ name = "brainstealer's brainwave", chance = 2500 },
-	{ name = "eldritch breeches", chance = 180 },
-	{ name = "eldritch cowl", chance = 240 },
-	{ name = "eldritch hood", chance = 225 },
-	{ name = "eldritch bow", chance = 210 },
-	{ name = "eldritch quiver", chance = 250 },
-	{ name = "eldritch claymore", chance = 130 },
-	{ name = "eldritch greataxe", chance = 110 },
-	{ name = "eldritch warmace", chance = 320 },
-	{ name = "eldritch shield", chance = 180 },
-	{ name = "eldritch cuirass", chance = 160 },
-	{ name = "eldritch folio", chance = 170 },
-	{ name = "eldritch tome", chance = 190 },
-	{ name = "eldritch rod", chance = 200 },
-	{ name = "eldritch wand", chance = 180 },
-	{ name = "gilded eldritch claymore", chance = 140 },
-	{ name = "gilded eldritch greataxe", chance = 120 },
-	{ name = "gilded eldritch warmace", chance = 100 },
-	{ name = "gilded eldritch wand", chance = 80 },
-	{ name = "gilded eldritch rod", chance = 60 },
-	{ name = "gilded eldritch bow", chance = 50 },
-	{ name = "eldritch crystal", chance = 30 },
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 7443, chance = 80000 }, -- bullseye potion
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 7440, chance = 80000 }, -- mastermind potion
+	{ id = 32771, chance = 80000 }, -- moonstone
+	{ id = 23373, chance = 80000 }, -- ultimate mana potion
+	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 32769, chance = 80000 }, -- white gem
+	{ id = 23375, chance = 80000 }, -- supreme health potion
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 34025, chance = 80000 }, -- diabolic skull
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 36794, chance = 80000 }, -- brainstealers tissue
+	{ id = 36795, chance = 80000 }, -- brainstealers brain
+	{ id = 36796, chance = 80000 }, -- brainstealers brainwave
+	{ id = 36835, chance = 80000 }, -- eldritch crystal
+	{ id = 36667, chance = 80000 }, -- eldritch breeches
+	{ id = 36670, chance = 80000 }, -- eldritch cowl
+	{ id = 36671, chance = 80000 }, -- eldritch hood
+	{ id = 36664, chance = 80000 }, -- eldritch bow
+	{ id = 36666, chance = 80000 }, -- eldritch quiver
+	{ id = 36657, chance = 80000 }, -- eldritch claymore
+	{ id = 36661, chance = 80000 }, -- eldritch greataxe
+	{ id = 36659, chance = 80000 }, -- eldritch warmace
+	{ id = 36656, chance = 80000 }, -- eldritch shield
+	{ id = 36663, chance = 80000 }, -- eldritch cuirass
+	{ id = 36672, chance = 80000 }, -- eldritch folio
+	{ id = 36673, chance = 80000 }, -- eldritch tome
+	{ id = 36674, chance = 80000 }, -- eldritch rod
+	{ id = 36668, chance = 80000 }, -- eldritch wand
+	{ id = 36658, chance = 80000 }, -- gilded eldritch claymore
+	{ id = 36662, chance = 80000 }, -- gilded eldritch greataxe
+	{ id = 36660, chance = 80000 }, -- gilded eldritch warmace
+	{ id = 36669, chance = 80000 }, -- gilded eldritch wand
+	{ id = 36675, chance = 80000 }, -- gilded eldritch rod
+	{ id = 36665, chance = 80000 }, -- gilded eldritch bow
+	{ id = 30059, chance = 80000 }, -- giant ruby
 }
 
 monster.attacks = {

@@ -88,18 +88,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 99470, maxCount = 89 },
-	{ name = "bone sword", chance = 15130 },
-	{ name = "sniper arrow", chance = 9560, maxCount = 4 },
-	{ name = "steel shield", chance = 5940 },
-	{ name = "piece of dead brain", chance = 5030 },
-	{ name = "bonelord eye", chance = 2960 },
-	{ name = "clerical mace", chance = 1970 },
-	{ name = "haunted blade", chance = 1440 },
-	{ id = 3059, chance = 930 }, -- spellbook
-	{ name = "spiked squelcher", chance = 180 },
-	{ name = "bonelord shield", chance = 100 },
-	{ name = "bonelord helmet", chance = 100 },
+	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
+	{ id = 3338, chance = 23000 }, -- bone sword
+	{ id = 7364, chance = 23000, maxCount = 4 }, -- sniper arrow
+	{ id = 3409, chance = 23000 }, -- steel shield
+	{ id = 5898, chance = 5000 }, -- bonelord eye
+	{ id = 3311, chance = 5000 }, -- clerical mace
+	{ id = 9663, chance = 5000 }, -- piece of dead brain
+	{ id = 7407, chance = 5000 }, -- haunted blade
+	{ id = 3101, chance = 1000 }, -- spellbook
+	{ id = 3408, chance = 260 }, -- bonelord helmet
+	{ id = 3418, chance = 260 }, -- bonelord shield
+	{ id = 7452, chance = 260 }, -- spiked squelcher
+	{ id = 3081, chance = 260 }, -- stone skin amulet
 }
 
 monster.attacks = {

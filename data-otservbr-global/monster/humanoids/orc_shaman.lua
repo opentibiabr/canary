@@ -83,17 +83,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2824, chance = 520 }, -- book
-	{ name = "gold coin", chance = 90000, maxCount = 5 },
-	{ name = "wand of decay", chance = 1000 },
-	{ name = "spear", chance = 4850 },
-	{ name = "chain armor", chance = 8750 },
-	{ name = "corncob", chance = 10600, maxCount = 2 },
-	{ name = "orc tooth", chance = 2100 },
-	{ name = "broken shamanic staff", chance = 10300 },
-	{ name = "shamanic hood", chance = 6860 },
-	{ name = "orc leather", chance = 4300 },
-	{ id = 23986, chance = 1000 }, -- heavy old tome
+	{ id = 3031, chance = 80000, maxCount = 5 }, -- gold coin
+	{ id = 11452, chance = 23000 }, -- broken shamanic staff
+	{ id = 3358, chance = 23000 }, -- chain armor
+	{ id = 3597, chance = 23000, maxCount = 2 }, -- corncob
+	{ id = 11478, chance = 23000 }, -- shamanic hood
+	{ id = 11479, chance = 5000 }, -- orc leather
+	{ id = 10196, chance = 5000 }, -- orc tooth
+	{ id = 3277, chance = 5000 }, -- spear
+	{ id = 23986, chance = 5000 }, -- heavy old tome
+	{ id = 3072, chance = 1000 }, -- wand of decay
 }
 
 monster.attacks = {

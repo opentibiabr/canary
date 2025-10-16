@@ -63,7 +63,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "eggs of a sacred snake", chance = 100000, maxCount = 20 },
+	{ id = 21469, chance = 80000, maxCount = 20 }, -- eggs of a sacred snake
 }
 
 monster.attacks = {

@@ -83,25 +83,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2828, chance = 890 }, -- book
-	{ id = 2948, chance = 1410 }, -- wooden flute
-	{ name = "piggy bank", chance = 90 },
-	{ name = "crystal necklace", chance = 640 },
-	{ name = "talon", chance = 750 },
-	{ name = "hailstorm rod", chance = 1100 },
-	{ id = 3076, chance = 1250 }, -- crystal ball
-	{ id = 2948, chance = 1400 }, -- wooden flute
-	{ name = "clerical mace", chance = 1500 },
-	{ name = "black shield", chance = 210 },
-	{ name = "red apple", chance = 7500, maxCount = 2 },
-	{ name = "goat grass", chance = 11720 },
-	{ name = "wood mushroom", chance = 3240 },
-	{ name = "sling herb", chance = 13200 },
-	{ name = "powder herb", chance = 5900 },
-	{ name = "mana potion", chance = 850 },
-	{ name = "cultish robe", chance = 1800 },
-	{ name = "black hood", chance = 5230 },
-	{ name = "dark rosary", chance = 9840 },
+	{ id = 10303, chance = 23000 }, -- dark rosary
+	{ id = 3674, chance = 23000 }, -- goat grass
+	{ id = 3739, chance = 23000 }, -- powder herb
+	{ id = 3585, chance = 23000, maxCount = 2 }, -- red apple
+	{ id = 3738, chance = 23000 }, -- sling herb
+	{ id = 9645, chance = 5000 }, -- black hood
+	{ id = 3727, chance = 5000 }, -- wood mushroom
+	{ id = 3311, chance = 5000 }, -- clerical mace
+	{ id = 22196, chance = 5000 }, -- crystal ball
+	{ id = 9639, chance = 5000 }, -- cultish robe
+	{ id = 3262, chance = 5000 }, -- wooden flute
+	{ id = 3008, chance = 1000 }, -- crystal necklace
+	{ id = 3067, chance = 1000 }, -- hailstorm rod
+	{ id = 268, chance = 1000 }, -- mana potion
+	{ id = 3034, chance = 1000 }, -- talon
+	{ id = 3429, chance = 260 }, -- black shield
+	{ id = 2995, chance = 260 }, -- piggy bank
 }
 
 monster.attacks = {

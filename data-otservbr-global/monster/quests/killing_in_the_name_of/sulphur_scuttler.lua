@@ -63,18 +63,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 98330, maxCount = 10 }, -- platinum coin
-	{ id = 9640, chance = 50000 }, -- poisonous slime
-	{ id = 10305, chance = 75000 }, -- lump of earth
-	{ id = 10315, chance = 96670 }, -- sulphurous stone
-	{ id = 11703, chance = 100000 }, -- brimstone shell
-	{ id = 237, chance = 71670 }, -- strong mana potion
-	{ id = 236, chance = 75000 }, -- strong health potion
-	{ id = 11702, chance = 100000 }, -- brimstone fangs
-	{ id = 3032, chance = 65000, maxCount = 4 }, -- small emerald
-	{ id = 5904, chance = 81670 }, -- magic sulphur
-	{ id = 3049, chance = 46670 }, -- stealth ring
-	{ id = 3055, chance = 20000 }, -- platinum amulet
+	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
+	{ id = 3032, chance = 80000, maxCount = 4 }, -- small emerald
+	{ id = 236, chance = 80000 }, -- strong health potion
+	{ id = 237, chance = 80000 }, -- strong mana potion
+	{ id = 10305, chance = 80000 }, -- lump of earth
+	{ id = 10315, chance = 80000 }, -- sulphurous stone
+	{ id = 9640, chance = 80000 }, -- poisonous slime
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 3055, chance = 80000 }, -- platinum amulet
+	{ id = 3049, chance = 5000 }, -- stealth ring
+	{ id = 11702, chance = 80000 }, -- brimstone fangs
+	{ id = 11703, chance = 80000 }, -- brimstone shell
 }
 
 monster.attacks = {

@@ -79,19 +79,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "black pearl", chance = 2500 },
-	{ name = "small ruby", chance = 3040, maxCount = 2 },
-	{ name = "gold coin", chance = 83000, maxCount = 50 },
-	{ id = 3039, chance = 540 }, -- red gem
-	{ name = "ice rapier", chance = 810 },
-	{ name = "vampire shield", chance = 200 },
-	{ name = "red piece of cloth", chance = 70 },
-	{ name = "strong health potion", chance = 7100 },
-	{ name = "strong mana potion", chance = 8180 },
-	{ name = "vampire teeth", chance = 7200 },
-	{ name = "blood preservation", chance = 2910 },
-	{ name = "tooth file", chance = 6560 },
-	{ name = "vampire's cape chain", chance = 4460 },
+	{ id = 3031, chance = 80000, maxCount = 50 }, -- gold coin
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 9685, chance = 23000 }, -- vampire teeth
+	{ id = 18924, chance = 5000 }, -- tooth file
+	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
+	{ id = 18927, chance = 5000 }, -- vampires cape chain
+	{ id = 11449, chance = 5000 }, -- blood preservation
+	{ id = 3027, chance = 5000 }, -- black pearl
+	{ id = 3284, chance = 1000 }, -- ice rapier
+	{ id = 36706, chance = 260 }, -- red gem
+	{ id = 3434, chance = 260 }, -- vampire shield
+	{ id = 5911, chance = 260 }, -- red piece of cloth
+	{ id = 3081, chance = 260 }, -- stone skin amulet
 }
 
 monster.attacks = {

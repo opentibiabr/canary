@@ -43,26 +43,32 @@ monster.flags = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 96300, maxCount = 3 },
-	{ name = "diamond", chance = 55560, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 51850, maxCount = 6 },
-	{ name = "white gem", chance = 51850, maxCount = 2 },
-	{ name = "supreme health potion", chance = 29630 },
-	{ name = "mastermind potion", chance = 22220 },
-	{ name = "cursed bone", chance = 22220 },
-	{ name = "berserk potion", chance = 18520 },
-	{ name = "death toll", chance = 18520, maxCount = 2 },
-	{ name = "ivory comb", chance = 18520 },
-	{ name = "bullseye potion", chance = 14810, maxCount = 10 },
-	{ name = "ultimate spirit potion", chance = 14810, maxCount = 6 },
-	{ name = "moonstone", chance = 14810 },
-	{ name = "spooky hood", chance = 8520 },
-	{ name = "silver hand mirror", chance = 7410 },
-	{ name = "amber with a dragonfly", chance = 7410 },
-	{ name = "phantasmal axe", chance = 3700 },
-	{ name = "ghost claw", chance = 3700 },
-	{ name = "giant amethyst", chance = 3700 },
-	{ id = 32621, chance = 3200 }, -- ring of souls
+	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
+	{ id = 32769, chance = 80000, maxCount = 2 }, -- white gem
+	{ id = 3038, chance = 80000, maxCount = 2 }, -- green gem
+	{ id = 23375, chance = 80000, maxCount = 6 }, -- supreme health potion
+	{ id = 23374, chance = 80000, maxCount = 6 }, -- ultimate spirit potion
+	{ id = 23373, chance = 80000, maxCount = 6 }, -- ultimate mana potion
+	{ id = 32770, chance = 80000 }, -- diamond
+	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
+	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
+	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
+	{ id = 32771, chance = 80000 }, -- moonstone
+	{ id = 32703, chance = 80000 }, -- death toll
+	{ id = 32773, chance = 80000 }, -- ivory comb
+	{ id = 32589, chance = 80000 }, -- angel figurine
+	{ id = 32774, chance = 80000 }, -- cursed bone
+	{ id = 32623, chance = 80000 }, -- giant topaz
+	{ id = 32772, chance = 80000 }, -- silver hand mirror
+	{ id = 32631, chance = 80000 }, -- ghost claw
+	{ id = 32636, chance = 80000 }, -- ring of souls
+	{ id = 32616, chance = 80000 }, -- phantasmal axe
+	{ id = 32578, chance = 80000 }, -- brain heads giant neuron
+	{ id = 32579, chance = 80000 }, -- brain heads left hemisphere
+	{ id = 32580, chance = 80000 }, -- brain heads right hemisphere
+	{ id = 32705, chance = 80000 }, -- pair of old bracers
+	{ id = 32622, chance = 80000 }, -- giant amethyst
+	{ id = 32630, chance = 80000 }, -- spooky hood
 }
 
 monster.attacks = {

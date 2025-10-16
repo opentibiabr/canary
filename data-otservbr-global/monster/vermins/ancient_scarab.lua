@@ -83,20 +83,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "scarab amulet", chance = 3410 },
-	{ id = 3025, chance = 2500 }, -- ancient amulet
-	{ name = "gold coin", chance = 100000, maxCount = 187 },
-	{ name = "small emerald", chance = 6000, maxCount = 3 },
-	{ name = "small amethyst", chance = 6000, maxCount = 4 },
-	{ name = "scarab coin", chance = 8000, maxCount = 2 },
-	{ id = 3046, chance = 11480 }, -- magic light wand
-	{ name = "daramian waraxe", chance = 300 },
-	{ name = "plate armor", chance = 5000 },
-	{ name = "scarab shield", chance = 480 },
-	{ name = "strong health potion", chance = 1500 },
-	{ name = "springsprout rod", chance = 1000 },
-	{ name = "terra hood", chance = 490 },
-	{ name = "scarab pincers", chance = 7000 },
+	{ id = 3031, chance = 80000, maxCount = 187 }, -- gold coin
+	{ id = 3047, chance = 23000 }, -- magic light wand
+	{ id = 3042, chance = 23000, maxCount = 2 }, -- scarab coin
+	{ id = 3032, chance = 23000, maxCount = 3 }, -- small emerald
+	{ id = 3033, chance = 23000, maxCount = 4 }, -- small amethyst
+	{ id = 9631, chance = 23000 }, -- scarab pincers
+	{ id = 3357, chance = 5000 }, -- plate armor
+	{ id = 3018, chance = 5000 }, -- scarab amulet
+	{ id = 22746, chance = 5000 }, -- ancient amulet
+	{ id = 236, chance = 5000 }, -- strong health potion
+	{ id = 3440, chance = 1000 }, -- scarab shield
+	{ id = 8084, chance = 1000 }, -- springsprout rod
+	{ id = 3328, chance = 260 }, -- daramian waraxe
+	{ id = 830, chance = 260 }, -- terra hood
 }
 
 monster.attacks = {

@@ -65,27 +65,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "great health potion", chance = 15701 },
-	{ name = "two-headed turtle heads", chance = 8700 },
-	{ name = "strong mana potion", chance = 13373 },
-	{ name = "hydrophytes", chance = 11000 },
-	{ id = 3115, chance = 6388 }, -- bone
-	{ name = "glacier shoes", chance = 4650 },
-	{ id = 281, chance = 3582 }, -- giant shimmering pearl (green)
-	{ name = "small tropical fish", chance = 3582 },
-	{ name = "coral brooch", chance = 2600 },
-	{ name = "silver brooch", chance = 2507 },
-	{ name = "lightning headband", chance = 2110 },
-	{ name = "knight legs", chance = 2000 },
-	{ name = "gemmed figurine", chance = 2090 },
-	{ name = "emerald bangle", chance = 1373 },
-	{ name = "terra amulet", chance = 1373 },
-	{ id = 3040, chance = 1313 }, -- "gold nugget"
-	{ name = "spellbook of enlightenment", chance = 1300 },
-	{ id = 3565, chance = 1015 }, -- "cape"
-	{ id = 10422, chance = 657 }, -- "clay lump"
-	{ name = "white gem", chance = 418 },
+	{ id = 3035, chance = 80000, maxCount = 27 }, -- platinum coin
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 7573, chance = 23000 }, -- bone
+	{ id = 39409, chance = 23000 }, -- twoheaded turtle heads
+	{ id = 39410, chance = 23000 }, -- hydrophytes
+	{ id = 814, chance = 5000 }, -- terra amulet
+	{ id = 819, chance = 5000 }, -- glacier shoes
+	{ id = 828, chance = 5000 }, -- lightning headband
+	{ id = 3010, chance = 5000 }, -- emerald bangle
+	{ id = 3017, chance = 5000 }, -- silver brooch
+	{ id = 3371, chance = 5000 }, -- knight legs
+	{ id = 3565, chance = 5000 }, -- cape
+	{ id = 8072, chance = 5000 }, -- spellbook of enlightenment
+	{ id = 24391, chance = 5000 }, -- coral brooch
+	{ id = 24392, chance = 5000 }, -- gemmed figurine
+	{ id = 39408, chance = 5000 }, -- small tropical fish
+	{ id = 27488, chance = 1000 }, -- gold nugget
+	{ id = 10422, chance = 1000 }, -- clay lump
+	{ id = 32769, chance = 260 }, -- white gem
 }
 
 monster.attacks = {

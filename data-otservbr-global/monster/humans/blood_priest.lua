@@ -75,25 +75,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 3510, maxCount = 2 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 71 },
-	{ name = "boots of haste", chance = 120 },
-	{ name = "skull staff", chance = 180 },
-	{ name = "mystic turban", chance = 2170 },
-	{ name = "white piece of cloth", chance = 3040 },
-	{ name = "red piece of cloth", chance = 640 },
-	{ name = "strong mana potion", chance = 6000 },
-	{ name = "spellbook of warding", chance = 290 },
-	{ name = "spellbook of mind control", chance = 180 },
-	{ name = "underworld rod", chance = 470 },
-	{ name = "book of necromantic rituals", chance = 13550 },
-	{ id = 3039, chance = 880 }, -- red gem
-	{ name = "lancet", chance = 14410 },
-	{ name = "horoscope", chance = 9270 },
-	{ name = "blood tincture in a vial", chance = 14460 },
-	{ name = "incantation notes", chance = 14660 },
-	{ name = "pieces of magic chalk", chance = 7770 },
+	{ id = 3031, chance = 80000, maxCount = 180 }, -- gold coin
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 10320, chance = 23000 }, -- book of necromantic rituals
+	{ id = 18925, chance = 23000 }, -- lancet
+	{ id = 18926, chance = 23000 }, -- horoscope
+	{ id = 18928, chance = 23000 }, -- blood tincture in a vial
+	{ id = 18929, chance = 23000 }, -- incantation notes
+	{ id = 18930, chance = 23000 }, -- pieces of magic chalk
+	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
+	{ id = 3574, chance = 5000 }, -- mystic turban
+	{ id = 5909, chance = 5000 }, -- white piece of cloth
+	{ id = 36706, chance = 1000 }, -- red gem
+	{ id = 5911, chance = 1000 }, -- red piece of cloth
+	{ id = 3324, chance = 260 }, -- skull staff
+	{ id = 7456, chance = 260 }, -- noble axe
+	{ id = 8073, chance = 260 }, -- spellbook of warding
+	{ id = 8074, chance = 260 }, -- spellbook of mind control
+	{ id = 8082, chance = 260 }, -- underworld rod
+	{ id = 3079, chance = 260 }, -- boots of haste
 }
 
 monster.attacks = {

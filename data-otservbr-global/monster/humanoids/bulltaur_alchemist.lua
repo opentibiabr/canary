@@ -78,21 +78,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 51528, maxCount = 30 },
-	{ id = 44736, chance = 15234 },
-	{ id = 44739, chance = 9169 },
-	{ id = 44740, chance = 6256 },
-	{ id = 239, chance = 5540 },
-	{ id = 9058, chance = 3534 },
-	{ id = 7643, chance = 2722 },
-	{ id = 238, chance = 2006 },
-	{ id = 3036, chance = 1862 },
-	{ id = 23373, chance = 1385 },
-	{ id = 3041, chance = 1003 },
-	{ id = 3063, chance = 1003 },
-	{ id = 21168, chance = 1003 },
-	{ id = 32769, chance = 669 },
-	{ id = 10438, chance = 621 },
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 238, chance = 5000 }, -- great mana potion
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 7643, chance = 5000 }, -- ultimate health potion
+	{ id = 9058, chance = 5000 }, -- gold ingot
+	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 3063, chance = 1000 }, -- gold ring
+	{ id = 10438, chance = 1000 }, -- spellweavers robe
+	{ id = 21168, chance = 1000 }, -- alloy legs
+	{ id = 23373, chance = 1000 }, -- ultimate mana potion
+	{ id = 32769, chance = 260 }, -- white gem
 }
 
 monster.attacks = {

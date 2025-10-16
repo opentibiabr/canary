@@ -76,11 +76,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 2700, maxCount = 2 },
-	{ name = "gold coin", chance = 89000, maxCount = 40 },
-	{ name = "meat", chance = 51060, maxCount = 3 },
-	{ name = "worm", chance = 65000, maxCount = 7 },
-	{ name = "health potion", chance = 19840 },
+	{ id = 3031, chance = 80000, maxCount = 40 }, -- gold coin
+	{ id = 3577, chance = 80000, maxCount = 3 }, -- meat
+	{ id = 3492, chance = 80000, maxCount = 7 }, -- worm
+	{ id = 266, chance = 23000 }, -- health potion
+	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
 }
 
 monster.attacks = {

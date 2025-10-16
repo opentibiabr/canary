@@ -80,17 +80,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3019, chance = 500 }, -- demonbone amulet
-	{ name = "black pearl", chance = 7000 },
-	{ name = "gold coin", chance = 50000, maxCount = 80 },
-	{ name = "gold coin", chance = 50000, maxCount = 73 },
-	{ name = "stone skin amulet", chance = 7000 },
-	{ name = "sword hilt", chance = 100000 },
-	{ name = "knight axe", chance = 7000 },
-	{ name = "ravager's axe", chance = 300 },
-	{ name = "steel boots", chance = 500 },
-	{ name = "assassin star", chance = 500, maxCount = 3 },
-	{ name = "great health potion", chance = 1500 },
+	{ id = 3031, chance = 80000, maxCount = 221 }, -- gold coin
+	{ id = 3237, chance = 80000 }, -- sword hilt
+	{ id = 7368, chance = 80000, maxCount = 3 }, -- assassin star
+	{ id = 3027, chance = 80000 }, -- black pearl
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 3318, chance = 80000 }, -- knight axe
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 3019, chance = 260 }, -- demonbone amulet
+	{ id = 10290, chance = 260 }, -- mini mummy
+	{ id = 3331, chance = 260 }, -- ravagers axe
+	{ id = 3554, chance = 260 }, -- steel boots
 }
 
 monster.attacks = {

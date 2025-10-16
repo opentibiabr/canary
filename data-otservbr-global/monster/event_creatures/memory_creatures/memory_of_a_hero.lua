@@ -62,20 +62,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "piggy bank", chance = 80 },
-	{ id = 3003, chance = 2190 }, -- rope
-	{ name = "wedding ring", chance = 4910 },
-	{ name = "gold coin", chance = 59500, maxCount = 80 },
-	{ name = "two handed sword", chance = 1500 },
-	{ name = "war hammer", chance = 870 },
-	{ name = "fire sword", chance = 550 },
-	{ name = "green tunic", chance = 8000 },
-	{ name = "meat", chance = 8200, maxCount = 3 },
-	{ name = "grapes", chance = 19850 },
-	{ name = "red rose", chance = 20450 },
-	{ name = "bottle of champagne", chance = 2006 },
-	{ name = "sniper arrow", chance = 11400, maxCount = 4 },
-	{ name = "great health potion", chance = 720 },
+	{ id = 2995, chance = 80000 }, -- piggy bank
+	{ id = 3260, chance = 80000 }, -- lyre
+	{ id = 3572, chance = 80000 }, -- scarf
+	{ id = 2815, chance = 80000 }, -- scroll
+	{ id = 3265, chance = 80000 }, -- two handed sword
+	{ id = 3004, chance = 80000 }, -- wedding ring
+	{ id = 3279, chance = 80000 }, -- war hammer
+	{ id = 3350, chance = 80000 }, -- bow
+	{ id = 3577, chance = 80000 }, -- meat
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3592, chance = 80000 }, -- grapes
+	{ id = 31366, chance = 80000 }, -- rope
+	{ id = 3280, chance = 80000 }, -- fire sword
+	{ id = 3658, chance = 80000 }, -- red rose
+	{ id = 3048, chance = 80000 }, -- might ring
+	{ id = 3563, chance = 80000 }, -- green tunic
 }
 
 monster.attacks = {

@@ -79,23 +79,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 97000, maxCount = 242 }, -- gold coin
-	{ id = 3035, chance = 18200, maxCount = 5 }, -- platinum coin
-	{ id = 8017, chance = 2000 }, -- beetroot
-	{ id = 3725, chance = 2000 }, -- brown mushroom
-	{ id = 268, chance = 2210 }, -- mana potion
-	{ id = 237, chance = 1200 }, -- strong mana potion
-	{ id = 3741, chance = 1900 }, -- troll green
-	{ id = 22051, chance = 950 }, -- werebadger claws
-	{ id = 22055, chance = 780 }, -- werebadger skull
-	{ id = 22086, chance = 200 }, -- badger boots
-	{ id = 3055, chance = 160 }, -- platinum amulet
-	{ id = 3098, chance = 430 }, -- ring of healing
-	{ id = 8082, chance = 220 }, -- underworld rod
-	{ id = 8094, chance = 200 }, -- wand of voodoo
-	{ id = 22083, chance = 150 }, -- moonlight crystals
-	{ id = 22060, chance = 200 }, -- werewolf amulet
-	{ id = 22101, chance = 100 }, -- werebadger trophy
+	{ id = 3031, chance = 80000, maxCount = 75 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 8017, chance = 80000 }, -- beetroot
+	{ id = 3725, chance = 23000 }, -- brown mushroom
+	{ id = 22051, chance = 23000 }, -- werebadger claws
+	{ id = 22055, chance = 23000 }, -- werebadger skull
+	{ id = 22083, chance = 23000 }, -- moonlight crystals
+	{ id = 237, chance = 5000 }, -- strong mana potion
+	{ id = 238, chance = 5000 }, -- great mana potion
+	{ id = 268, chance = 5000 }, -- mana potion
+	{ id = 678, chance = 5000, maxCount = 2 }, -- small enchanted amethyst
+	{ id = 3741, chance = 5000 }, -- troll green
+	{ id = 3055, chance = 1000 }, -- platinum amulet
+	{ id = 3098, chance = 1000 }, -- ring of healing
+	{ id = 22060, chance = 1000 }, -- werewolf amulet
+	{ id = 22086, chance = 1000 }, -- badger boots
+	{ id = 8082, chance = 260 }, -- underworld rod
+	{ id = 8094, chance = 260 }, -- wand of voodoo
+	{ id = 22101, chance = 260 }, -- werebadger trophy
 }
 
 monster.attacks = {

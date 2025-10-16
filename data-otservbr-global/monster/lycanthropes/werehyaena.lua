@@ -74,23 +74,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "great health potion", chance = 49970, maxCount = 3 },
-	{ name = "meat", chance = 19070 },
-	{ name = "axe", chance = 16810 },
-	{ name = "knife", chance = 16620 },
-	{ name = "werehyaena nose", chance = 12670 },
-	{ name = "halberd", chance = 11480 },
-	{ name = "red crystal fragment", chance = 9540 },
-	{ name = "small enchanted amethyst", chance = 5760, maxCount = 5 },
-	{ name = "life preserver", chance = 5670 },
-	{ id = 3039, chance = 5590 }, -- red gem
-	{ name = "yellow gem", chance = 5420 },
-	{ name = "combat knife", chance = 4700 },
-	{ name = "green crystal fragment", chance = 4580 },
-	{ name = "ratana", chance = 4280 },
-	{ name = "werehyaena talisman", chance = 750 },
-	{ name = "werehyaena trophy", chance = 190 },
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 33943, chance = 23000 }, -- werehyaena nose
+	{ id = 678, chance = 23000 }, -- small enchanted amethyst
+	{ id = 17813, chance = 23000 }, -- life preserver
+	{ id = 22083, chance = 23000 }, -- moonlight crystals
+	{ id = 36706, chance = 23000 }, -- red gem
+	{ id = 3292, chance = 23000 }, -- combat knife
+	{ id = 3037, chance = 23000 }, -- yellow gem
+	{ id = 3269, chance = 23000 }, -- halberd
+	{ id = 16126, chance = 23000 }, -- red crystal fragment
+	{ id = 3274, chance = 23000 }, -- axe
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 3291, chance = 23000 }, -- knife
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 17812, chance = 5000 }, -- ratana
+	{ id = 33944, chance = 1000 }, -- werehyaena talisman
+	{ id = 34219, chance = 260 }, -- werehyaena trophy
 }
 
 monster.attacks = {

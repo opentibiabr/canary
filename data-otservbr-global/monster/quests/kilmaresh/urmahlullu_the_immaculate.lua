@@ -73,7 +73,8 @@ monster.voices = {
 	{ text = "I am the beast with two faces!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -150, maxDamage = -1300 },

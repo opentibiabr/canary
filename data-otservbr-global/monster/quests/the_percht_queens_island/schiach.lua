@@ -76,12 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 50 },
-	{ name = "broken bell", chance = 11070 },
-	{ name = "percht horns", chance = 3960 },
-	{ name = "bright bell", chance = 2920 },
-	{ name = "glacier kilt", chance = 1180 },
-	{ name = "glacier robe", chance = 630 },
+	{ id = 3031, chance = 80000, maxCount = 50 }, -- gold coin
+	{ id = 30185, chance = 23000 }, -- broken bell
+	{ id = 30208, chance = 23000 }, -- fireworks capsule
+	{ id = 30271, chance = 23000 }, -- grainy fireworks powder
+	{ id = 823, chance = 5000 }, -- glacier kilt
+	{ id = 25737, chance = 5000, maxCount = 2 }, -- rainbow quartz
+	{ id = 30186, chance = 5000 }, -- percht horns
+	{ id = 30187, chance = 5000 }, -- versicolour fireworks powder
+	{ id = 30188, chance = 5000 }, -- red fireworks powder
+	{ id = 30189, chance = 5000 }, -- yellow fireworks powder
+	{ id = 30190, chance = 5000 }, -- green fireworks powder
+	{ id = 30191, chance = 5000 }, -- blue fireworks powder
+	{ id = 30268, chance = 5000 }, -- orange fireworks powder
+	{ id = 30269, chance = 5000 }, -- purple fireworks powder
+	{ id = 30270, chance = 5000 }, -- turquoise fireworks powder
+	{ id = 30324, chance = 5000 }, -- bright bell
+	{ id = 824, chance = 1000 }, -- glacier robe
+	{ id = 16118, chance = 1000 }, -- glacial rod
 }
 
 monster.attacks = {

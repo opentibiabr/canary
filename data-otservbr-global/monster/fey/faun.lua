@@ -79,25 +79,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 30000, maxCount = 136 },
-	{ name = "goat grass", chance = 5155 },
-	{ name = "leaf star", chance = 10000, maxCount = 7 },
-	{ name = "grapes", chance = 30100, maxCount = 2 },
-	{ name = "small enchanted sapphire", chance = 492, maxCount = 2 },
-	{ name = "leaf legs", chance = 492 },
-	{ name = "dandelion seeds", chance = 5800 },
-	{ name = "shimmering beetles", chance = 492 },
-	{ name = "panpipes", chance = 172 },
-	{ name = "cookie", chance = 55000, maxCount = 5 },
-	{ name = "great health potion", chance = 6400, maxCount = 2 },
-	{ name = "wooden spellbook", chance = 92 },
-	{ name = "strong health potion", chance = 6800, maxCount = 2 },
-	{ name = "fresh fruit", chance = 3400, maxCount = 3 },
-	{ name = "rainbow quartz", chance = 1086, maxCount = 4 },
-	{ name = "small stone", chance = 492, maxCount = 3 },
-	{ name = "wood cape", chance = 492 },
-	{ id = 5792, chance = 80 }, -- die
-	{ name = "mandrake", chance = 50 },
+	{ id = 3031, chance = 80000, maxCount = 191 }, -- gold coin
+	{ id = 25695, chance = 23000 }, -- dandelion seeds
+	{ id = 236, chance = 23000, maxCount = 2 }, -- strong health potion
+	{ id = 3674, chance = 23000 }, -- goat grass
+	{ id = 25693, chance = 23000 }, -- shimmering beetles
+	{ id = 25692, chance = 23000, maxCount = 3 }, -- fresh fruit
+	{ id = 25735, chance = 23000, maxCount = 7 }, -- leaf star
+	{ id = 3598, chance = 23000, maxCount = 5 }, -- cookie
+	{ id = 2953, chance = 5000 }, -- panpipes
+	{ id = 25737, chance = 5000, maxCount = 3 }, -- rainbow quartz
+	{ id = 3592, chance = 5000, maxCount = 2 }, -- grapes
+	{ id = 1781, chance = 5000, maxCount = 5 }, -- small stone
+	{ id = 675, chance = 5000, maxCount = 2 }, -- small enchanted sapphire
+	{ id = 239, chance = 5000, maxCount = 2 }, -- great health potion
+	{ id = 3575, chance = 5000 }, -- wood cape
+	{ id = 9014, chance = 1000 }, -- leaf legs
+	{ id = 25699, chance = 260 }, -- wooden spellbook
+	{ id = 5014, chance = 260 }, -- mandrake
 }
 
 monster.attacks = {

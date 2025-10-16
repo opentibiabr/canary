@@ -71,7 +71,52 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 3030, chance = 80000, maxCount = 20 }, -- small ruby
+	{ id = 3029, chance = 80000, maxCount = 20 }, -- small sapphire
+	{ id = 3033, chance = 80000, maxCount = 33 }, -- small amethyst
+	{ id = 9057, chance = 80000, maxCount = 20 }, -- small topaz
+	{ id = 3032, chance = 80000, maxCount = 23 }, -- small emerald
+	{ id = 16120, chance = 80000, maxCount = 7 }, -- violet crystal shard
+	{ id = 236, chance = 80000, maxCount = 2 }, -- strong health potion
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 7642, chance = 80000, maxCount = 8 }, -- great spirit potion
+	{ id = 239, chance = 80000, maxCount = 3 }, -- great health potion
+	{ id = 5888, chance = 80000, maxCount = 5 }, -- piece of hell steel
+	{ id = 23507, chance = 80000, maxCount = 10 }, -- crystallized anger
+	{ id = 5904, chance = 80000, maxCount = 4 }, -- magic sulphur
+	{ id = 22721, chance = 80000, maxCount = 4 }, -- gold token
+	{ id = 22516, chance = 80000, maxCount = 3 }, -- silver token
+	{ id = 5909, chance = 80000, maxCount = 4 }, -- white piece of cloth
+	{ id = 22194, chance = 80000, maxCount = 2 }, -- opal
+	{ id = 23517, chance = 80000, maxCount = 11 }, -- solid rage
+	{ id = 22193, chance = 80000 }, -- onyx chip
+	{ id = 6068, chance = 80000 }, -- demon dust
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 5891, chance = 80000 }, -- enchanted chicken wing
+	{ id = 9632, chance = 80000 }, -- ancient stone
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 23533, chance = 80000 }, -- ring of red plasma
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 3356, chance = 80000 }, -- devil helmet
+	{ id = 7437, chance = 80000 }, -- sapphire hammer
+	{ id = 3340, chance = 80000 }, -- heavy mace
+	{ id = 8098, chance = 80000 }, -- demonwing axe
+	{ id = 9068, chance = 80000 }, -- yalahari figurine
+	{ id = 7418, chance = 80000 }, -- nightmare blade
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 8029, chance = 80000 }, -- silkweaver bow
+	{ id = 20067, chance = 80000 }, -- crude umbral slayer
+	{ id = 20068, chance = 80000 }, -- umbral slayer
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 24392, chance = 80000 }, -- gemmed figurine
+	{ id = 22866, chance = 80000 }, -- rift bow
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1500 },

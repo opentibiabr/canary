@@ -75,26 +75,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small sapphire", chance = 5600, maxCount = 3 },
-	{ name = "gold coin", chance = 38000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 36 },
-	{ name = "platinum coin", chance = 25000, maxCount = 3 },
-	{ id = 3049, chance = 400 }, -- stealth ring
-	{ id = 3098, chance = 1100 }, -- ring of healing
-	{ name = "serpent sword", chance = 4200 },
-	{ name = "plate legs", chance = 7150 },
-	{ name = "dragon ham", chance = 60000, maxCount = 2 },
-	{ name = "strong health potion", chance = 5500 },
-	{ name = "strong mana potion", chance = 3850 },
-	{ name = "great mana potion", chance = 920 },
-	{ name = "glacier amulet", chance = 880 },
-	{ name = "glacier kilt", chance = 430 },
-	{ name = "spirit cloak", chance = 2900 },
-	{ name = "focus cape", chance = 370 },
-	{ name = "crystalline armor", chance = 90 },
-	{ name = "northwind rod", chance = 930 },
-	{ name = "sea serpent scale", chance = 10200 },
+	{ id = 3031, chance = 80000, maxCount = 236 }, -- gold coin
+	{ id = 3583, chance = 80000, maxCount = 2 }, -- dragon ham
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 9666, chance = 23000 }, -- sea serpent scale
+	{ id = 3557, chance = 23000 }, -- plate legs
+	{ id = 3029, chance = 23000, maxCount = 3 }, -- small sapphire
+	{ id = 236, chance = 5000 }, -- strong health potion
+	{ id = 3297, chance = 5000 }, -- serpent sword
+	{ id = 237, chance = 5000 }, -- strong mana potion
+	{ id = 8042, chance = 5000 }, -- spirit cloak
+	{ id = 3098, chance = 5000 }, -- ring of healing
+	{ id = 8083, chance = 1000 }, -- northwind rod
+	{ id = 238, chance = 1000 }, -- great mana potion
+	{ id = 815, chance = 1000 }, -- glacier amulet
+	{ id = 823, chance = 260 }, -- glacier kilt
+	{ id = 3049, chance = 260 }, -- stealth ring
+	{ id = 8043, chance = 260 }, -- focus cape
+	{ id = 9303, chance = 260 }, -- leviathans amulet
+	{ id = 8050, chance = 260 }, -- crystalline armor
 }
 
 monster.attacks = {

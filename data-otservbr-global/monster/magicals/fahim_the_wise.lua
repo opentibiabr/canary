@@ -68,22 +68,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "blue piece of cloth", chance = 99990, maxCount = 4 },
-	{ name = "jewelled belt", chance = 99990 },
-	{ name = "gold coin", chance = 95240, maxCount = 118 },
-	{ name = "noble turban", chance = 66670 },
-	{ name = "royal spear", chance = 57140, maxCount = 3 },
-	{ name = "shiny stone", chance = 47620 },
-	{ name = "strong mana potion", chance = 42860, maxCount = 3 },
-	{ name = "blueberry", chance = 40480, maxCount = 22 },
-	{ name = "mystic turban", chance = 33330 },
-	{ name = "small sapphire", chance = 14290, maxCount = 2 },
-	{ name = "seeds", chance = 7140 },
-	{ name = "magma monocle", chance = 4760 },
-	{ name = "blue gem", chance = 2380 },
-	{ name = "small oil lamp", chance = 580 },
-	{ id = 2948, chance = 480 }, -- wooden flute
-	{ name = "heavy machete", chance = 380 },
+	{ id = 3031, chance = 80000, maxCount = 118 }, -- gold coin
+	{ id = 3588, chance = 80000, maxCount = 22 }, -- blueberry
+	{ id = 647, chance = 80000 }, -- seeds
+	{ id = 2933, chance = 80000 }, -- small oil lamp
+	{ id = 5912, chance = 80000, maxCount = 4 }, -- blue piece of cloth
+	{ id = 3029, chance = 80000, maxCount = 2 }, -- small sapphire
+	{ id = 237, chance = 80000, maxCount = 3 }, -- strong mana potion
+	{ id = 7378, chance = 80000, maxCount = 3 }, -- royal spear
+	{ id = 3262, chance = 80000 }, -- wooden flute
+	{ id = 3330, chance = 80000 }, -- heavy machete
+	{ id = 3574, chance = 80000 }, -- mystic turban
+	{ id = 11486, chance = 80000 }, -- noble turban
+	{ id = 11470, chance = 80000 }, -- jewelled belt
+	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 827, chance = 1000 }, -- magma monocle
+	{ id = 10310, chance = 1000 }, -- shiny stone
 }
 
 monster.attacks = {

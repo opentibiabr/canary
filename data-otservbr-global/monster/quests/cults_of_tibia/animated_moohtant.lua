@@ -63,24 +63,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 195 }, -- gold coin
-	{ id = 3035, chance = 58160, maxCount = 2 }, -- platinum coin
-	{ id = 21200, chance = 2740, maxCount = 2 }, -- moohtant horn
-	{ id = 21199, chance = 1770 }, -- giant pacifier
-	{ id = 239, chance = 7380, maxCount = 3 }, -- great health potion
-	{ id = 238, chance = 7230, maxCount = 3 }, -- great mana potion
-	{ id = 3577, chance = 6520 }, -- meat
-	{ id = 3030, chance = 4680, maxCount = 2 }, -- small ruby
-	{ id = 5878, chance = 4110 }, -- minotaur leather
-	{ id = 3028, chance = 4400, maxCount = 2 }, -- small diamond
-	{ id = 3098, chance = 2410 }, -- ring of healing
-	{ id = 5911, chance = 900 }, -- red piece of cloth
-	{ id = 21173, chance = 860 }, -- moohtant cudgel
-	{ id = 3037, chance = 710 }, -- yellow gem
-	{ id = 7452, chance = 430 }, -- spiked squelcher
-	{ id = 7427, chance = 280 }, -- chaos mace
-	{ id = 9058, chance = 280 }, -- gold ingot
-	{ id = 7401, chance = 280 }, -- minotaur trophy
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 5878, chance = 80000 }, -- minotaur leather
+	{ id = 21199, chance = 80000 }, -- giant pacifier
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3577, chance = 80000 }, -- meat
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 5911, chance = 80000 }, -- red piece of cloth
 }
 
 monster.attacks = {

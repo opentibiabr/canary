@@ -74,29 +74,51 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 100000, maxCount = 11 }, -- gold coin
-	{ id = 9661, chance = 14111 }, -- frosty heart
-	{ id = 7441, chance = 5100 }, -- ice cube
-	{ id = 3284, chance = 320 }, -- ice rapier
-	{ id = 7449, chance = 580 }, -- crystal sword
-	{ id = 3028, chance = 730 }, -- small diamond
-	{ id = 16120, chance = 9660, maxCount = 5 }, -- violet crystal shard
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 7643, chance = 19500, maxCount = 3 }, -- ultimate health potion
-	{ id = 16121, chance = 9660, maxCount = 5 }, -- green crystal shard
-	{ id = 7459, chance = 9660 }, -- pair of earmuffs
-	{ id = 23516, chance = 9660 }, -- instable proto matter
-	{ id = 3333, chance = 9660 }, -- crystal mace
-	{ id = 16160, chance = 9660 }, -- crystalline sword
-	{ id = 16175, chance = 200 }, -- shiny blade
-	{ id = 14247, chance = 200 }, -- ornate crossbow
-	{ id = 8059, chance = 500 }, -- frozen plate
-	{ id = 24958, chance = 500, unique = true }, -- part of a rune
-	{ id = 19363, chance = 200 }, -- runic ice shield
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 }, -- silver token
-	{ name = "spark sphere", chance = 100000 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 9661, chance = 80000 }, -- frosty heart
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
+	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
+	{ id = 15793, chance = 80000, maxCount = 100 }, -- crystalline arrow
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3333, chance = 80000 }, -- crystal mace
+	{ id = 7449, chance = 80000 }, -- crystal sword
+	{ id = 16160, chance = 80000 }, -- crystalline sword
+	{ id = 8050, chance = 80000 }, -- crystalline armor
+	{ id = 15793, chance = 80000, maxCount = 100 }, -- crystalline arrow
+	{ id = 8059, chance = 80000 }, -- frozen plate
+	{ id = 7741, chance = 80000 }, -- ice cube
+	{ id = 3284, chance = 80000 }, -- ice rapier
+	{ id = 11652, chance = 80000 }, -- broken key ring
+	{ id = 7459, chance = 80000 }, -- pair of earmuffs
+	{ id = 19363, chance = 80000 }, -- runic ice shield
+	{ id = 16175, chance = 80000 }, -- shiny blade
+	{ id = 23518, chance = 80000 }, -- spark sphere
+	{ id = 24978, chance = 80000 }, -- coal eyes
+	{ id = 14247, chance = 80000 }, -- ornate crossbow
+	{ id = 24977, chance = 1000 }, -- glowing carrot
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 3391, chance = 80000 }, -- crusader helmet
+	{ id = 7290, chance = 80000 }, -- shard
+	{ id = 16119, chance = 80000 }, -- blue crystal shard
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 7368, chance = 80000 }, -- assassin star
+	{ id = 3332, chance = 80000 }, -- hammer of wrath
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3067, chance = 80000 }, -- hailstorm rod
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 7383, chance = 80000 }, -- relic sword
+	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
 }
 
 monster.attacks = {

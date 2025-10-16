@@ -79,18 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 74620, maxCount = 44 },
-	{ name = "small emerald", chance = 6180 },
-	{ name = "resin parasite", chance = 4840 },
-	{ name = "demon root", chance = 4510 },
-	{ name = "springsprout rod", chance = 3170 },
-	{ name = "wood cape", chance = 1170 },
-	{ name = "green gem", chance = 1170 },
-	{ name = "golden legs", chance = 170 },
-	{ name = "composite hornbow", chance = 170 },
-	{ name = "Preserved Pink Seed", chance = 110 },
-	{ name = "Preserved Red Seed", chance = 110 },
-	{ name = "Preserved Yellow Seed", chance = 110 },
+	{ id = 3035, chance = 80000, maxCount = 44 }, -- platinum coin
+	{ id = 48510, chance = 23000 }, -- demon root
+	{ id = 48511, chance = 23000 }, -- resin parasite
+	{ id = 3032, chance = 5000 }, -- small emerald
+	{ id = 3575, chance = 5000 }, -- wood cape
+	{ id = 8084, chance = 5000 }, -- springsprout rod
+	{ id = 3038, chance = 1000 }, -- green gem
+	{ id = 3364, chance = 260 }, -- golden legs
+	{ id = 8027, chance = 260 }, -- composite hornbow
+	{ id = 45652, chance = 260 }, -- preserved pink seed
+	{ id = 45653, chance = 260 }, -- preserved red seed
+	{ id = 45657, chance = 260 }, -- preserved yellow seed
 }
 
 monster.attacks = {

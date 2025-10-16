@@ -60,7 +60,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "cockroach leg", chance = 100000 },
+	{ id = 7882, chance = 80000 }, -- cockroach leg
 }
 
 monster.defenses = {

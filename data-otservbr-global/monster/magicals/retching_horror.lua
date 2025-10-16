@@ -79,22 +79,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ name = "fire sword", chance = 1240 },
-	{ name = "crown shield", chance = 1700 },
-	{ name = "tower shield", chance = 550 },
-	{ name = "brown mushroom", chance = 14000, maxCount = 2 },
-	{ name = "beastslayer axe", chance = 4260 },
-	{ name = "mercenary sword", chance = 2500 },
-	{ name = "spiked squelcher", chance = 410 },
-	{ name = "great mana potion", chance = 12500 },
-	{ name = "great health potion", chance = 15000 },
-	{ name = "underworld rod", chance = 1800 },
-	{ name = "wand of starstorm", chance = 960 },
-	{ id = 20029, chance = 3700 }, -- broken dream
-	{ name = "goosebump leather", chance = 16400 },
-	{ name = "pool of chitinous glue", chance = 14000 },
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 20205, chance = 23000 }, -- goosebump leather
+	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
+	{ id = 20207, chance = 23000 }, -- pool of chitinous glue
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 3344, chance = 5000 }, -- beastslayer axe
+	{ id = 20029, chance = 5000 }, -- broken dream
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 7386, chance = 5000 }, -- mercenary sword
+	{ id = 3419, chance = 5000 }, -- crown shield
+	{ id = 7452, chance = 5000 }, -- spiked squelcher
+	{ id = 8092, chance = 5000 }, -- wand of starstorm
+	{ id = 3280, chance = 5000 }, -- fire sword
+	{ id = 3428, chance = 1000 }, -- tower shield
+	{ id = 7421, chance = 1000 }, -- onyx flail
+	{ id = 7412, chance = 260 }, -- butchers axe
+	{ id = 3554, chance = 260 }, -- steel boots
+	{ id = 20062, chance = 260 }, -- cluster of solace
 }
 
 monster.attacks = {

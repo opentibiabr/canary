@@ -78,26 +78,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 161 },
-	{ name = "platinum coin", chance = 52380, maxCount = 3 },
-	{ name = "wyrm scale", chance = 33330 },
-	{ name = "dragon ham", chance = 23810, maxCount = 2 },
-	{ name = "strong health potion", chance = 23810 },
-	{ name = "strong mana potion", chance = 19050 },
-	{ name = "crossbow", chance = 14290 },
-	{ name = "small diamond", chance = 4760 },
-	{ name = "soul orb", chance = 4760 },
-	{ name = "wand of draconia", chance = 1510 },
-	{ name = "power bolt", chance = 1030, maxCount = 10 },
-	{ name = "wand of starstorm", chance = 830 },
-	{ name = "lightning pendant", chance = 750 },
-	{ name = "lightning legs", chance = 600 },
-	{ name = "lightning robe", chance = 290 },
-	{ name = "dragonbone staff", chance = 240 },
-	{ name = "composite hornbow", chance = 220 },
-	{ name = "shadow sceptre", chance = 170 },
-	{ name = "lightning boots", chance = 150 },
-	{ name = "shockwave amulet", chance = 120 },
+	{ id = 3031, chance = 80000, maxCount = 180 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 3583, chance = 80000, maxCount = 2 }, -- dragon ham
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 3349, chance = 23000 }, -- crossbow
+	{ id = 9665, chance = 23000 }, -- wyrm scale
+	{ id = 3028, chance = 5000, maxCount = 5 }, -- small diamond
+	{ id = 5944, chance = 5000 }, -- soul orb
+	{ id = 8093, chance = 5000 }, -- wand of draconia
+	{ id = 816, chance = 1000 }, -- lightning pendant
+	{ id = 822, chance = 1000 }, -- lightning legs
+	{ id = 3450, chance = 1000, maxCount = 10 }, -- power bolt
+	{ id = 8092, chance = 1000 }, -- wand of starstorm
+	{ id = 820, chance = 260 }, -- lightning boots
+	{ id = 825, chance = 260 }, -- lightning robe
+	{ id = 7430, chance = 260 }, -- dragonbone staff
+	{ id = 7451, chance = 260 }, -- shadow sceptre
+	{ id = 8027, chance = 260 }, -- composite hornbow
+	{ id = 9304, chance = 260 }, -- shockwave amulet
 }
 
 monster.attacks = {

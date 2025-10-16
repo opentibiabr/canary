@@ -73,37 +73,40 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 20062, chance = 100000 }, -- cluster of solace
-	{ id = 5954, chance = 100000 }, -- demon horn
-	{ id = 6499, chance = 100000 }, -- demonic essence
-	{ id = 20063, chance = 13850 }, -- dream matter
-	{ id = 20276, chance = 5380 }, -- dream warden mask
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 50 }, -- platinum coin
-	{ id = 20264, chance = 100000 }, -- unrealized dream
-	{ id = 8075, chance = 5130 }, -- spellbook of lost souls
-	{ id = 8073, chance = 35900 }, -- spellbook of warding
-	{ id = 8074, chance = 10260 }, -- spellbook of mind control
-	{ id = 3344, chance = 33330 }, -- beastslayer axe
-	{ id = 7456, chance = 12820 }, -- noble axe
-	{ id = 7453, chance = 2560 }, -- executioner
-	{ id = 7388, chance = 2560 }, -- vile axe
-	{ id = 3360, chance = 1220 }, -- golden armor
-	{ id = 3567, chance = 1220 }, -- blue robe
-	{ id = 3381, chance = 17950 }, -- crown armor
-	{ id = 3364, chance = 250 }, -- golden legs
-	{ id = 3303, chance = 90 }, -- great axe
-	{ id = 8098, chance = 90 }, -- demonwing axe
-	{ id = 822, chance = 1750 }, -- lightning legs
-	{ id = 3371, chance = 1750 }, -- knight legs
-	{ id = 3382, chance = 20510 }, -- crown legs
-	{ id = 3554, chance = 15380 }, -- steel boots
-	{ id = 3028, chance = 17950, maxCount = 25 }, -- small diamond
-	{ id = 3033, chance = 5130, maxCount = 25 }, -- small amethyst
-	{ id = 3032, chance = 10260, maxCount = 25 }, -- small emerald
-	{ id = 3029, chance = 28210, maxCount = 25 }, -- small sapphire
-	{ id = 9057, chance = 15380, maxCount = 25 }, -- small topaz
-	{ id = 3030, chance = 20510, maxCount = 25 }, -- small ruby
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 50 }, -- platinum coin
+	{ id = 3030, chance = 80000, maxCount = 24 }, -- small ruby
+	{ id = 20062, chance = 80000 }, -- cluster of solace
+	{ id = 5954, chance = 80000 }, -- demon horn
+	{ id = 6499, chance = 80000 }, -- demonic essence
+	{ id = 20264, chance = 80000 }, -- unrealized dream
+	{ id = 20063, chance = 80000 }, -- dream matter
+	{ id = 8073, chance = 80000 }, -- spellbook of warding
+	{ id = 3344, chance = 80000 }, -- beastslayer axe
+	{ id = 3029, chance = 80000, maxCount = 23 }, -- small sapphire
+	{ id = 3381, chance = 80000 }, -- crown armor
+	{ id = 3382, chance = 80000 }, -- crown legs
+	{ id = 822, chance = 80000 }, -- lightning legs
+	{ id = 3371, chance = 80000 }, -- knight legs
+	{ id = 3028, chance = 80000, maxCount = 25 }, -- small diamond
+	{ id = 20276, chance = 80000 }, -- dream warden mask
+	{ id = 9057, chance = 80000, maxCount = 22 }, -- small topaz
+	{ id = 3554, chance = 80000 }, -- steel boots
+	{ id = 3567, chance = 80000 }, -- blue robe
+	{ id = 3360, chance = 80000 }, -- golden armor
+	{ id = 7456, chance = 80000 }, -- noble axe
+	{ id = 3032, chance = 80000, maxCount = 24 }, -- small emerald
+	{ id = 8074, chance = 80000 }, -- spellbook of mind control
+	{ id = 3033, chance = 80000, maxCount = 23 }, -- small amethyst
+	{ id = 3364, chance = 80000 }, -- golden legs
+	{ id = 7388, chance = 80000 }, -- vile axe
+	{ id = 7453, chance = 80000 }, -- executioner
+	{ id = 7412, chance = 80000 }, -- butchers axe
+	{ id = 8076, chance = 80000 }, -- spellscroll of prophecies
+	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
+	{ id = 3303, chance = 80000 }, -- great axe
+	{ id = 8098, chance = 80000 }, -- demonwing axe
+	{ id = 8090, chance = 80000 }, -- spellbook of dark mysteries
 }
 
 monster.attacks = {

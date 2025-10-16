@@ -79,24 +79,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 93020, maxCount = 11 },
-	{ name = "small enchanted emerald", chance = 8830, maxCount = 4 },
-	{ name = "wild flowers", chance = 7410 },
-	{ name = "small enchanted sapphire", chance = 5860, maxCount = 4 },
-	{ name = "green crystal splinter", chance = 5820 },
-	{ name = "violet crystal shard", chance = 4040 },
-	{ name = "small enchanted ruby", chance = 3840, maxCount = 3 },
-	{ name = "wand of cosmic energy", chance = 3770 },
-	{ name = "white pearl", chance = 2710, maxCount = 3 },
-	{ name = "prismatic quartz", chance = 2320 },
-	{ name = "ruby necklace", chance = 1890 },
-	{ name = "wafer paper flower", chance = 1650 },
-	{ name = "spellbook of enlightenment", chance = 960 },
-	{ name = "butterfly ring", chance = 760 },
-	{ name = "milk chocolate coin", chance = 760, maxCount = 10 },
-	{ id = 3098, chance = 730 }, -- ring of healing
-	{ name = "hibiscus dress", chance = 360 },
-	{ id = 3040, chance = 230 }, -- gold nugget
+	{ id = 3035, chance = 80000, maxCount = 11 }, -- platinum coin
+	{ id = 677, chance = 23000, maxCount = 4 }, -- small enchanted emerald
+	{ id = 675, chance = 23000, maxCount = 4 }, -- small enchanted sapphire
+	{ id = 25691, chance = 23000 }, -- wild flowers
+	{ id = 16122, chance = 23000 }, -- green crystal splinter
+	{ id = 676, chance = 5000, maxCount = 3 }, -- small enchanted ruby
+	{ id = 16120, chance = 5000 }, -- violet crystal shard
+	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
+	{ id = 3016, chance = 5000 }, -- ruby necklace
+	{ id = 3026, chance = 5000, maxCount = 3 }, -- white pearl
+	{ id = 24962, chance = 5000 }, -- prismatic quartz
+	{ id = 48251, chance = 5000 }, -- wafer paper flower
+	{ id = 3098, chance = 1000 }, -- ring of healing
+	{ id = 8072, chance = 1000 }, -- spellbook of enlightenment
+	{ id = 25698, chance = 1000 }, -- butterfly ring
+	{ id = 48249, chance = 260, maxCount = 10 }, -- milk chocolate coin
+	{ id = 8045, chance = 260 }, -- hibiscus dress
+	{ id = 27488, chance = 260 }, -- gold nugget
 }
 
 monster.attacks = {

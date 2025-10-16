@@ -78,21 +78,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 5441, maxCount = 108 },
-	{ name = "mastermind potion", chance = 5530, maxCount = 28 },
-	{ name = "supreme health potion", chance = 5044, maxCount = 154 },
-	{ name = "giant sapphire", chance = 10546, maxCount = 1 },
-	{ name = "ultimate mana potion", chance = 5752, maxCount = 107 },
-	{ name = "violet gem", chance = 13217, maxCount = 4 },
-	{ id = 3039, chance = 13465, maxCount = 1 }, -- red gem
-	{ name = "yellow gem", chance = 14071, maxCount = 1 },
-	{ name = "blue gem", chance = 11156, maxCount = 3 },
-	{ name = "bullseye potion", chance = 6792, maxCount = 21 },
-	{ name = "giant amethyst", chance = 11603, maxCount = 1 },
-	{ name = "giant topaz", chance = 12280, maxCount = 1 },
-	{ name = "green gem", chance = 8348, maxCount = 1 },
-	{ name = "ultimate spirit potion", chance = 10934, maxCount = 18 },
-	{ name = "white gem", chance = 9600, maxCount = 3 },
+	{ id = 43895, chance = 80000 }, -- bag you covet
+	{ id = 7439, chance = 80000, maxCount = 40 }, -- berserk potion
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 7443, chance = 80000, maxCount = 31 }, -- bullseye potion
+	{ id = 3043, chance = 80000, maxCount = 100 }, -- crystal coin
+	{ id = 32623, chance = 80000 }, -- giant topaz
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 7440, chance = 80000, maxCount = 27 }, -- mastermind potion
+	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 23375, chance = 80000, maxCount = 164 }, -- supreme health potion
+	{ id = 30054, chance = 80000 }, -- unicorn figurine
+	{ id = 23373, chance = 80000, maxCount = 98 }, -- ultimate mana potion
+	{ id = 23374, chance = 80000, maxCount = 127 }, -- ultimate spirit potion
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 32769, chance = 80000, maxCount = 3 }, -- white gem
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 32622, chance = 80000, maxCount = 2 }, -- giant amethyst
+	{ id = 30053, chance = 80000 }, -- dragon figurine
 }
 
 monster.attacks = {

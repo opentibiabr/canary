@@ -78,27 +78,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 97000, maxCount = 242 }, -- gold coin
-	{ id = 3035, chance = 18200, maxCount = 5 }, -- platinum coin
-	{ id = 239, chance = 1200, maxCount = 2 }, -- great health potion
-	{ id = 7643, chance = 2210 }, -- ultimate health potion
-	{ id = 238, chance = 1200 }, -- great mana potion
-	{ id = 5896, chance = 800 }, -- bear paw
-	{ id = 3582, chance = 1900, maxCount = 2 }, -- ham
-	{ id = 5902, chance = 450 }, -- honeycomb
-	{ id = 22057, chance = 580 }, -- werebear fur
-	{ id = 7439, chance = 800 }, -- berserk potion
-	{ id = 22056, chance = 560 }, -- werebear skull
-	{ id = 3081, chance = 430 }, -- stone skin amulet
-	{ id = 7419, chance = 120 }, -- dreaded cleaver
-	{ id = 22085, chance = 300 }, -- fur armor
-	{ id = 7432, chance = 400 }, -- furry club
-	{ id = 22060, chance = 100 }, -- werewolf amulet
-	{ id = 7383, chance = 200 }, -- relic sword
-	{ id = 7452, chance = 300 }, -- spiked squelcher
-	{ id = 3053, chance = 400 }, -- time ring
-	{ id = 22103, chance = 200 }, -- werebear trophy
-	{ id = 22083, chance = 200 }, -- moonlight crystals
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 22057, chance = 23000 }, -- werebear fur
+	{ id = 22056, chance = 23000 }, -- werebear skull
+	{ id = 3582, chance = 23000, maxCount = 3 }, -- ham
+	{ id = 22083, chance = 23000 }, -- moonlight crystals
+	{ id = 239, chance = 5000 }, -- great health potion
+	{ id = 5896, chance = 5000 }, -- bear paw
+	{ id = 5902, chance = 5000 }, -- honeycomb
+	{ id = 7643, chance = 5000 }, -- ultimate health potion
+	{ id = 675, chance = 5000 }, -- small enchanted sapphire
+	{ id = 22060, chance = 1000 }, -- werewolf amulet
+	{ id = 7432, chance = 1000 }, -- furry club
+	{ id = 3081, chance = 1000 }, -- stone skin amulet
+	{ id = 7439, chance = 1000 }, -- berserk potion
+	{ id = 22085, chance = 1000 }, -- fur armor
+	{ id = 3053, chance = 1000 }, -- time ring
+	{ id = 7452, chance = 1000 }, -- spiked squelcher
+	{ id = 7383, chance = 1000 }, -- relic sword
+	{ id = 22103, chance = 260 }, -- werebear trophy
+	{ id = 7419, chance = 260 }, -- dreaded cleaver
 }
 
 monster.attacks = {

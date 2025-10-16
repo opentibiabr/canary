@@ -82,26 +82,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 40000, maxCount = 99 },
-	{ name = "platinum coin", chance = 55000, maxCount = 8 },
-	{ name = "golden legs", chance = 30 },
-	{ id = 3461, chance = 5250 }, -- saw
-	{ name = "steel boots", chance = 5050 },
-	{ name = "ham", chance = 60000, maxCount = 2 },
-	{ name = "orichalcum pearl", chance = 2760, maxCount = 2 },
-	{ name = "cat's paw", chance = 2222 },
-	{ name = "jewelled backpack", chance = 1192 },
-	{ name = "soul orb", chance = 23000 },
-	{ id = 6299, chance = 2008 }, -- death ring
-	{ name = "demonic essence", chance = 8520 },
-	{ name = "flask of demonic blood", chance = 33333, maxCount = 3 },
-	{ name = "assassin star", chance = 2222, maxCount = 5 },
-	{ name = "vile axe", chance = 480 },
-	{ name = "butcher's axe", chance = 850 },
-	{ name = "great mana potion", chance = 14830, maxCount = 2 },
-	{ name = "great health potion", chance = 10000, maxCount = 2 },
-	{ name = "gold ingot", chance = 3140 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3582, chance = 80000, maxCount = 2 }, -- ham
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 6558, chance = 80000, maxCount = 3 }, -- flask of demonic blood
+	{ id = 5944, chance = 23000 }, -- soul orb
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 3554, chance = 5000 }, -- steel boots
+	{ id = 3461, chance = 5000 }, -- saw
+	{ id = 9058, chance = 5000 }, -- gold ingot
+	{ id = 5021, chance = 5000, maxCount = 2 }, -- orichalcum pearl
+	{ id = 7368, chance = 5000, maxCount = 5 }, -- assassin star
+	{ id = 6299, chance = 5000 }, -- death ring
+	{ id = 5479, chance = 5000 }, -- cats paw
+	{ id = 5801, chance = 1000 }, -- jewelled backpack
+	{ id = 7412, chance = 1000 }, -- butchers axe
+	{ id = 7388, chance = 260 }, -- vile axe
+	{ id = 3364, chance = 260 }, -- golden legs
 }
 
 monster.attacks = {

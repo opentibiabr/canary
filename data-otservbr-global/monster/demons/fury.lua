@@ -78,25 +78,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3007, chance = 410 }, -- crystal ring
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 38000, maxCount = 69 },
-	{ name = "platinum coin", chance = 2800, maxCount = 4 },
-	{ name = "terra rod", chance = 20000 },
-	{ name = "golden legs", chance = 130 },
-	{ name = "steel boots", chance = 790 },
-	{ name = "orichalcum pearl", chance = 1500, maxCount = 4 },
-	{ name = "red piece of cloth", chance = 4000 },
-	{ name = "soul orb", chance = 21500 },
-	{ name = "soul orb", chance = 50 },
-	{ id = 6300, chance = 60 }, -- death ring
-	{ name = "demonic essence", chance = 22500 },
-	{ name = "flask of demonic blood", chance = 35000, maxCount = 3 },
-	{ name = "assassin dagger", chance = 660 },
-	{ name = "noble axe", chance = 2000 },
-	{ name = "great health potion", chance = 10500 },
-	{ name = "jalapeno pepper", chance = 29280, maxCount = 4 },
+	{ id = 3031, chance = 80000, maxCount = 269 }, -- gold coin
+	{ id = 6558, chance = 80000, maxCount = 3 }, -- flask of demonic blood
+	{ id = 8016, chance = 80000, maxCount = 4 }, -- jalapeno pepper
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 5944, chance = 23000 }, -- soul orb
+	{ id = 3065, chance = 23000 }, -- terra rod
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 8899, chance = 23000 }, -- slightly rusted legs
+	{ id = 3033, chance = 23000, maxCount = 3 }, -- small amethyst
+	{ id = 5911, chance = 5000 }, -- red piece of cloth
+	{ id = 3035, chance = 5000, maxCount = 4 }, -- platinum coin
+	{ id = 7456, chance = 5000 }, -- noble axe
+	{ id = 5021, chance = 5000, maxCount = 4 }, -- orichalcum pearl
+	{ id = 3554, chance = 1000 }, -- steel boots
+	{ id = 7404, chance = 1000 }, -- assassin dagger
+	{ id = 6093, chance = 1000 }, -- crystal ring
+	{ id = 6299, chance = 260 }, -- death ring
+	{ id = 3364, chance = 260 }, -- golden legs
+	{ id = 7368, chance = 260 }, -- assassin star
 }
 
 monster.attacks = {

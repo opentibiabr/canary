@@ -74,18 +74,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Sulphur Powder", chance = 39440 },
-	{ name = "Crystal Coin", chance = 22310, minCount = 1, maxCount = 2 },
-	{ name = "Ultimate Mana Potion", chance = 12890, minCount = 1, maxCount = 2 },
-	{ name = "Yellow Gem", chance = 2820 },
-	{ id = 282, chance = 2450 }, -- Giant Shimmering Pearl (Green)
-	{ name = "Slightly Rusted Legs", chance = 2420 },
-	{ name = "Knight Legs", chance = 2360 },
-	{ id = 3039, chance = 2190 }, -- Red Gem
-	{ name = "Warrior's Shield", chance = 1760 },
-	{ id = 23533, chance = 1110 }, -- Ring of Red Plasma
-	{ name = "Fire Sword", chance = 770 },
-	{ name = "Crystal Crossbow", chance = 510 },
+	{ id = 39376, chance = 80000 }, -- sulphur powder
+	{ id = 3043, chance = 23000, maxCount = 2 }, -- crystal coin
+	{ id = 23373, chance = 23000, maxCount = 2 }, -- ultimate mana potion
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3371, chance = 5000 }, -- knight legs
+	{ id = 8899, chance = 5000 }, -- slightly rusted legs
+	{ id = 14042, chance = 5000 }, -- warriors shield
+	{ id = 3048, chance = 5000 }, -- might ring
+	{ id = 3280, chance = 1000 }, -- fire sword
+	{ id = 16163, chance = 1000 }, -- crystal crossbow
+	{ id = 23533, chance = 1000 }, -- ring of red plasma
 }
 
 monster.attacks = {

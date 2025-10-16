@@ -77,27 +77,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 150 }, -- gold coin
-	{ id = 3035, chance = 41130, maxCount = 3 }, -- platinum coin
-	{ id = 11473, chance = 15850 }, -- purple robe
-	{ id = 237, chance = 12380, maxCount = 3 }, -- strong mana potion
-	{ id = 3066, chance = 11470 }, -- snakebite rod
-	{ id = 7425, chance = 5210 }, -- taurus mace
-	{ id = 2920, chance = 4760 }, -- torch
-	{ id = 5878, chance = 4640 }, -- minotaur leather
-	{ id = 11472, chance = 2940, maxCount = 2 }, -- minotaur horn
-	{ id = 3033, chance = 2500, maxCount = 2 }, -- small amethyst
-	{ id = 3032, chance = 2370, maxCount = 2 }, -- small emerald
-	{ id = 3030, chance = 2200, maxCount = 2 }, -- small ruby
-	{ id = 9057, chance = 2460, maxCount = 2 }, -- small topaz
-	{ id = 3028, chance = 2430, maxCount = 2 }, -- small diamond
-	{ id = 5911, chance = 1350 }, -- red piece of cloth
-	{ id = 5910, chance = 1400 }, -- green piece of cloth
-	{ id = 5912, chance = 1820 }, -- blue piece of cloth
-	{ id = 8082, chance = 1590 }, -- underworld rod
-	{ id = 3037, chance = 560 }, -- yellow gem
-	{ id = 3039, chance = 430 }, -- red gem
-	{ id = 7401, chance = 160 }, -- minotaur trophy
+	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 11473, chance = 23000 }, -- purple robe
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 3066, chance = 23000 }, -- snakebite rod
+	{ id = 7425, chance = 5000 }, -- taurus mace
+	{ id = 11050, chance = 5000 }, -- torch
+	{ id = 5878, chance = 5000 }, -- minotaur leather
+	{ id = 11472, chance = 5000, maxCount = 2 }, -- minotaur horn
+	{ id = 3033, chance = 5000, maxCount = 2 }, -- small amethyst
+	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
+	{ id = 3028, chance = 5000, maxCount = 2 }, -- small diamond
+	{ id = 3032, chance = 5000, maxCount = 2 }, -- small emerald
+	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
+	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
+	{ id = 5912, chance = 5000 }, -- blue piece of cloth
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 5910, chance = 5000 }, -- green piece of cloth
+	{ id = 5911, chance = 5000 }, -- red piece of cloth
+	{ id = 3037, chance = 1000 }, -- yellow gem
+	{ id = 36706, chance = 1000 }, -- red gem
+	{ id = 7401, chance = 260 }, -- minotaur trophy
 }
 
 monster.attacks = {

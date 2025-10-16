@@ -78,28 +78,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100320, maxCount = 165 }, -- gold coin
-	{ id = 3035, chance = 70320, maxCount = 2 }, -- platinum coin
-	{ id = 24383, chance = 20000, maxCount = 2 }, -- cave turnip
-	{ id = 24384, chance = 17000 }, -- ancient belt buckle
-	{ id = 24385, chance = 20000 }, -- cracked alabaster vase
-	{ id = 24386, chance = 13000 }, -- rhino horn carving
-	{ id = 24390, chance = 4000 }, -- ancient coin
-	{ id = 3147, chance = 15000 }, -- blank rune
-	{ id = 3577, chance = 50320, maxCount = 2 }, -- meat
-	{ id = 5021, chance = 5000, maxCount = 2 }, -- orichalcum pearl
-	{ id = 5912, chance = 1000, maxCount = 2 }, -- blue piece of cloth
-	{ id = 5913, chance = 5000, maxCount = 2 }, -- brown piece of cloth
-	{ id = 5914, chance = 2000, maxCount = 2 }, -- yellow piece of cloth
-	{ id = 3079, chance = 230 }, -- boots of haste
-	{ id = 239, chance = 7000 }, -- great health potion
-	{ id = 3284, chance = 1000 }, -- ice rapier
-	{ id = 3046, chance = 1000 }, -- magic light wand
-	{ id = 22193, chance = 4200 }, -- onyx chip
-	{ id = 3098, chance = 2000 }, -- ring of healing
-	{ id = 3030, chance = 3000 }, -- small ruby
+	{ id = 3031, chance = 80000, maxCount = 173 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
+	{ id = 24383, chance = 23000, maxCount = 2 }, -- cave turnip
+	{ id = 24384, chance = 23000 }, -- ancient belt buckle
+	{ id = 24385, chance = 23000 }, -- cracked alabaster vase
+	{ id = 24386, chance = 23000 }, -- rhino horn carving
+	{ id = 3577, chance = 23000 }, -- meat
+	{ id = 3147, chance = 23000 }, -- blank rune
+	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
+	{ id = 239, chance = 23000 }, -- great health potion
 	{ id = 3029, chance = 5000 }, -- small sapphire
-	{ id = 3725, chance = 6500, maxCount = 5 }, -- brown mushroom
+	{ id = 5913, chance = 5000 }, -- brown piece of cloth
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 5021, chance = 5000, maxCount = 3 }, -- orichalcum pearl
+	{ id = 24390, chance = 5000 }, -- ancient coin
+	{ id = 3030, chance = 5000 }, -- small ruby
+	{ id = 3098, chance = 5000 }, -- ring of healing
+	{ id = 5914, chance = 5000 }, -- yellow piece of cloth
+	{ id = 24391, chance = 5000 }, -- coral brooch
+	{ id = 8895, chance = 5000 }, -- rusted armor
+	{ id = 3284, chance = 1000 }, -- ice rapier
+	{ id = 5912, chance = 1000 }, -- blue piece of cloth
+	{ id = 3047, chance = 1000 }, -- magic light wand
+	{ id = 5911, chance = 1000 }, -- red piece of cloth
+	{ id = 5909, chance = 1000 }, -- white piece of cloth
+	{ id = 5910, chance = 1000 }, -- green piece of cloth
+	{ id = 3079, chance = 260 }, -- boots of haste
 }
 
 monster.attacks = {

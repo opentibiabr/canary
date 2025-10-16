@@ -62,8 +62,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "candlestick", chance = 70000 },
-	{ name = "silver amulet", chance = 8700 },
+	{ id = 3260, chance = 80000 }, -- lyre
+	{ id = 3004, chance = 80000 }, -- wedding ring
+	{ id = 3299, chance = 80000 }, -- poison dagger
+	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 37468, chance = 80000 }, -- special fx box
+	{ id = 2917, chance = 80000 }, -- candlestick
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3568, chance = 80000 }, -- simple dress
+	{ id = 3054, chance = 80000 }, -- silver amulet
+	{ id = 6093, chance = 80000 }, -- crystal ring
+	{ id = 237, chance = 80000 }, -- strong mana potion
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
 }
 
 monster.attacks = {

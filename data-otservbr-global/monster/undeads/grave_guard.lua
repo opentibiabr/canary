@@ -77,14 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 30 },
-	{ name = "scarab coin", chance = 4166 },
-	{ name = "daramian waraxe", chance = 1170 },
-	{ name = "grave flower", chance = 70000 },
-	{ id = 6299, chance = 1754 }, -- death ring
-	{ name = "health potion", chance = 20000 },
-	{ name = "mana potion", chance = 20000 },
+	{ id = 3031, chance = 80000, maxCount = 130 }, -- gold coin
+	{ id = 3661, chance = 80000 }, -- grave flower
+	{ id = 266, chance = 23000 }, -- health potion
+	{ id = 268, chance = 23000 }, -- mana potion
+	{ id = 3042, chance = 5000 }, -- scarab coin
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 6299, chance = 5000 }, -- death ring
+	{ id = 3328, chance = 1000 }, -- daramian waraxe
 }
 
 monster.attacks = {

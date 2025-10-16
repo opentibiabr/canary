@@ -73,42 +73,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 25 }, -- platinum coin
-	{ id = 3033, chance = 100000, maxCount = 10 }, -- small amethyst
-	{ id = 3028, chance = 100000, maxCount = 10 }, -- small diamond
-	{ id = 3032, chance = 100000, maxCount = 10 }, -- small emerald
-	{ id = 3030, chance = 100000, maxCount = 10 }, -- small ruby
-	{ id = 9057, chance = 100000, maxCount = 10 }, -- small topaz
-	{ id = 238, chance = 100000, maxCount = 5 }, -- great mana potion
-	{ id = 7642, chance = 100000, maxCount = 10 }, -- great spirit potion
-	{ id = 7643, chance = 100000, maxCount = 10 }, -- ultimate health potion
-	{ id = 16119, chance = 100000, maxCount = 3 }, -- blue crystal shard
-	{ id = 16121, chance = 100000, maxCount = 3 }, -- green crystal shard
-	{ id = 16120, chance = 100000, maxCount = 3 }, -- violet crystal shard
-	{ id = 7439, chance = 100000 }, -- berserk potion
-	{ id = 3041, chance = 100000 }, -- blue gem
-	{ id = 3038, chance = 100000 }, -- green gem
-	{ id = 12306, chance = 2000 }, -- leather whip
-	{ id = 11454, chance = 2000 }, -- luminous orb
-	{ id = 5904, chance = 2000 }, -- magic sulphur
-	{ id = 821, chance = 1000 }, -- magma legs
-	{ id = 7440, chance = 2000 }, -- mastermind potion
-	{ id = 3098, chance = 2000 }, -- ring of healing
-	{ id = 3036, chance = 2000 }, -- violet gem
-	{ id = 3037, chance = 2000 }, -- yellow gem
-	{ id = 10323, chance = 1000 }, -- guardian boots
-	{ id = 3324, chance = 1000 }, -- skull staff
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 10323, chance = 1000 }, -- guardian boots
-	{ id = 24956, chance = 500, unique = true }, -- part of a rune
-	{ id = 8076, chance = 1000 }, -- spellscroll of prophecies
-	{ id = 5809, chance = 100, unique = true }, -- soul stone
-	{ id = 3439, chance = 100 }, -- phoenix shield
-	{ id = 7417, chance = 100 }, -- runed sword
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 }, -- silver token
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
+	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
+	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
+	{ id = 7643, chance = 80000, maxCount = 10 }, -- ultimate health potion
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 7642, chance = 80000, maxCount = 10 }, -- great spirit potion
+	{ id = 3030, chance = 80000, maxCount = 10 }, -- small ruby
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
+	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
+	{ id = 24969, chance = 80000 }, -- ancient watch
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 7440, chance = 80000 }, -- mastermind potion
+	{ id = 24970, chance = 80000 }, -- frozen time
+	{ id = 10323, chance = 80000 }, -- guardian boots
+	{ id = 12306, chance = 80000 }, -- leather whip
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 11454, chance = 80000 }, -- luminous orb
+	{ id = 5809, chance = 80000 }, -- soul stone
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 821, chance = 80000 }, -- magma legs
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 3439, chance = 80000 }, -- phoenix shield
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 7417, chance = 80000 }, -- runed sword
+	{ id = 8076, chance = 80000 }, -- spellscroll of prophecies
+	{ id = 20062, chance = 80000 }, -- cluster of solace
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 7387, chance = 80000 }, -- diamond sceptre
+	{ id = 824, chance = 80000 }, -- glacier robe
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 823, chance = 80000 }, -- glacier kilt
+	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
 }
 
 monster.attacks = {

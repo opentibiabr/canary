@@ -81,12 +81,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 33750, maxCount = 90 },
-	{ name = "gold coin", chance = 33750, maxCount = 60 },
-	{ name = "strong health potion", chance = 3150 },
-	{ name = "strong mana potion", chance = 4150 },
-	{ name = "dragon robe", chance = 950 },
-	{ name = "draptor scales", chance = 6650 },
+	{ id = 3031, chance = 80000, maxCount = 214 }, -- gold coin
+	{ id = 12309, chance = 23000 }, -- draptor scales
+	{ id = 236, chance = 23000 }, -- strong health potion
+	{ id = 237, chance = 23000 }, -- strong mana potion
 }
 
 monster.attacks = {

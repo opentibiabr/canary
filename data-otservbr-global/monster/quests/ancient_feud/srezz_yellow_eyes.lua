@@ -66,30 +66,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, minCount = 1, maxCount = 17 }, -- platinum coin
-	{ id = 7643, chance = 100000, minCount = 1, maxCount = 5 }, -- ultimate health potion
-	{ id = 9694, chance = 25560, minCount = 1, maxCount = 3 }, -- snake skin
-	{ id = 7440, chance = 17780 }, -- mastermind potion
-	{ id = 9058, chance = 16110 }, -- gold ingot
-	{ id = 16119, chance = 10560 }, -- blue crystal shard
-	{ id = 282, chance = 10560 }, -- giant shimmering pearl (brown)
-	{ id = 3027, chance = 10000 }, -- black pearl
-	{ id = 3036, chance = 8330 }, -- violet gem
-	{ id = 3038, chance = 7220 }, -- green gem
-	{ id = 3041, chance = 6670 }, -- blue gem
-	{ id = 24392, chance = 5560 }, -- gemmed figurine
-	{ id = 10313, chance = 5000 }, -- winged tail
-	{ id = 823, chance = 4440 }, -- glacier kilt
-	{ id = 34103, chance = 3890 }, -- srezz' eye
-	{ id = 5741, chance = 3330 }, -- skull helmet
-	{ id = 824, chance = 2780 }, -- glacier robe
-	{ id = 3342, chance = 2220 }, -- war axe
-	{ id = 23531, chance = 1670 }, -- ring of green plasma
-	{ id = 3281, chance = 1110 }, -- giant sword
-	{ id = 7382, chance = 560 }, -- demonrage sword
-	{ id = 3040, chance = 560 }, -- gold nugget
-	{ id = 34258, chance = 360 }, -- red silk flower
-	{ id = 33778, chance = 360 }, -- raw watermelon tourmaline
+	{ id = 34103, chance = 80000 }, -- srezz eye
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 7643, chance = 80000, maxCount = 3 }, -- ultimate health potion
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 9694, chance = 80000, maxCount = 2 }, -- snake skin
+	{ id = 16119, chance = 80000 }, -- blue crystal shard
+	{ id = 7440, chance = 80000 }, -- mastermind potion
+	{ id = 24392, chance = 80000 }, -- gemmed figurine
+	{ id = 3027, chance = 80000 }, -- black pearl
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3281, chance = 80000 }, -- giant sword
+	{ id = 823, chance = 80000 }, -- glacier kilt
+	{ id = 7382, chance = 80000 }, -- demonrage sword
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
+	{ id = 5741, chance = 80000 }, -- skull helmet
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3342, chance = 80000 }, -- war axe
+	{ id = 10313, chance = 80000 }, -- winged tail
+	{ id = 34258, chance = 80000 }, -- red silk flower
+	{ id = 824, chance = 80000 }, -- glacier robe
+	{ id = 27488, chance = 80000 }, -- gold nugget
+	{ id = 23531, chance = 80000 }, -- ring of green plasma
 }
 
 monster.attacks = {

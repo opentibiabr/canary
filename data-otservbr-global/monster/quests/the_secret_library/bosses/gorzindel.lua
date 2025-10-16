@@ -69,43 +69,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000 },
-	{ name = "crystal coin", chance = 90000, maxCount = 8 },
-	{ name = "small amethyst", chance = 90000, maxCount = 12 },
-	{ name = "small diamond", chance = 90000, maxCount = 12 },
-	{ name = "small emerald", chance = 90000, maxCount = 12 },
-	{ name = "small ruby", chance = 90000, maxCount = 12 },
-	{ name = "small topaz", chance = 90000, maxCount = 12 },
-	{ name = "onyx chip", chance = 90000, maxCount = 12 },
-	{ name = "great spirit potion", chance = 90000, maxCount = 8 },
-	{ name = "supreme health potion", chance = 90000, maxCount = 12 },
-	{ name = "ultimate health potion", chance = 90000, maxCount = 18 },
-	{ name = "ultimate mana potion", chance = 90000, maxCount = 8 },
-	{ name = "ultimate spirit potion", chance = 90000, maxCount = 12 },
-	{ name = "berserk potion", chance = 90000, maxCount = 2 },
-	{ name = "bullseye potion", chance = 90000, maxCount = 2 },
-	{ name = "mastermind potion", chance = 90000, maxCount = 2 },
-	{ name = "chaos mace", chance = 30000 },
-	{ name = "crown armor", chance = 30000 },
-	{ name = "curious matter", chance = 30000 },
-	{ name = "demon horn", chance = 30000 },
-	{ name = "dreaded cleaver", chance = 30000 },
-	{ id = 281, chance = 30000 }, -- giant shimmering pearl (green)
-	{ name = "gold token", chance = 1000, maxCount = 6 },
-	{ name = "green gem", chance = 1000 },
-	{ name = "knowledgeable book", chance = 1000 },
-	{ name = "ominous book", chance = 1000 },
-	{ name = "magic sulphur", chance = 1000, maxCount = 2 },
-	{ name = "muck rod", chance = 1000 },
-	{ id = 3039, chance = 1000 }, -- red gem
-	{ name = "slightly rusted shield", chance = 11760 },
-	{ name = "silver Token", chance = 1000, maxCount = 6 },
-	{ name = "sinister book", chance = 1000 },
-	{ name = "spellbook of warding", chance = 1000 },
-	{ name = "steel boots", chance = 1000 },
-	{ name = "stone skin amulet", chance = 1000 },
-	{ name = "wand of cosmic Energy", chance = 1000 },
-	{ name = "yellow gem", chance = 1000 },
+	{ id = 27934, chance = 80000 }, -- knowledgeable book
+	{ id = 27933, chance = 80000 }, -- ominous book
+	{ id = 27932, chance = 80000 }, -- sinister book
+	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
+	{ id = 3035, chance = 80000, maxCount = 32 }, -- platinum coin
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3554, chance = 80000 }, -- steel boots
+	{ id = 28832, chance = 80000 }, -- sulphurous demonbone
+	{ id = 7427, chance = 80000 }, -- chaos mace
+	{ id = 7419, chance = 80000 }, -- dreaded cleaver
+	{ id = 3073, chance = 80000 }, -- wand of cosmic energy
+	{ id = 7443, chance = 80000, maxCount = 2 }, -- bullseye potion
+	{ id = 23374, chance = 80000, maxCount = 4 }, -- ultimate spirit potion
+	{ id = 23373, chance = 80000 }, -- ultimate mana potion
+	{ id = 5954, chance = 80000 }, -- demon horn
+	{ id = 7440, chance = 80000 }, -- mastermind potion
+	{ id = 8902, chance = 80000 }, -- slightly rusted shield
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 22193, chance = 80000 }, -- onyx chip
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 28792, chance = 80000 }, -- sturdy book
+	{ id = 7418, chance = 80000 }, -- nightmare blade
+	{ id = 5904, chance = 80000 }, -- magic sulphur
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 23511, chance = 80000 }, -- curious matter
+	{ id = 23375, chance = 80000 }, -- supreme health potion
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 16117, chance = 80000 }, -- muck rod
+	{ id = 3381, chance = 80000 }, -- crown armor
+	{ id = 3041, chance = 80000 }, -- blue gem
 }
 
 monster.attacks = {

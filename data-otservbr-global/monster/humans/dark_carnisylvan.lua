@@ -76,20 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 19 },
-	{ id = 3115, chance = 39690, maxCount = 1 }, -- bone
-	{ name = "carnisylvan finger", chance = 17490, maxCount = 4 },
-	{ name = "carnisylvan bark", chance = 11490, maxCount = 5 },
-	{ name = "great mana potion", chance = 9660, maxCount = 4 },
-	{ name = "underworld rod", chance = 4440 },
-	{ name = "wand of starstorm", chance = 3660 },
-	{ name = "hailstorm rod", chance = 3660 },
-	{ name = "springsprout rod", chance = 2610 },
-	{ id = 3059, chance = 2350 }, -- spellbook
-	{ name = "spellbook of warding", chance = 3390 },
-	{ name = "gold ring", chance = 780 },
-	{ name = "butterfly ring", chance = 520 },
-	{ name = "human teeth", chance = 1040 },
+	{ id = 3035, chance = 80000, maxCount = 23 }, -- platinum coin
+	{ id = 7573, chance = 80000 }, -- bone
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 36805, chance = 23000 }, -- carnisylvan finger
+	{ id = 36806, chance = 23000 }, -- carnisylvan bark
+	{ id = 3101, chance = 5000 }, -- spellbook
+	{ id = 3067, chance = 5000 }, -- hailstorm rod
+	{ id = 8073, chance = 5000 }, -- spellbook of warding
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 8084, chance = 5000 }, -- springsprout rod
+	{ id = 8092, chance = 5000 }, -- wand of starstorm
+	{ id = 3063, chance = 1000 }, -- gold ring
+	{ id = 25698, chance = 1000 }, -- butterfly ring
+	{ id = 36807, chance = 1000 }, -- human teeth
 }
 
 monster.attacks = {

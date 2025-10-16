@@ -63,34 +63,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "primal bag", chance = 100000, unique = true },
-	{ name = "crystal coin", chance = 100000, maxCount = 60 },
-	{ name = "ultimate mana potion", chance = 32653, maxCount = 14 },
-	{ name = "ultimate health potion", chance = 30612, maxCount = 14 },
-	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
-	{ name = "berserk potion", chance = 22449, maxCount = 5 },
-	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
-	{ name = "royal almandine", chance = 8322 },
-	{ name = "raw watermelon tourmaline", chance = 7322 },
-	{ name = "giant amethyst", chance = 6122 },
-	{ name = "giant ruby", chance = 4082 },
-	{ name = "giant emerald", chance = 4082 },
-	{ name = "giant sapphire", chance = 2041 },
-	{ name = "giant topaz", chance = 2041 },
-	{ name = "amber with a bug", chance = 2450 },
-	{ name = "amber with a dragonfly", chance = 2150 },
-	{ name = "arboreal tome", chance = 100 },
-	{ name = "arboreal crown", chance = 100 },
-	{ name = "spiritthorn armor", id = 39147, chance = 100 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 100 },
-	{ name = "alicorn headguard", chance = 100 },
-	{ name = "alicorn quiver", chance = 100 },
-	{ name = "arcanomancer regalia", chance = 100 },
-	{ name = "arcanomancer folio", chance = 100 },
-	{ id = 39183, chance = 100 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 100 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 100 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 100 }, -- name = "charged spiritthorn ring"
+	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
+	{ id = 39038, chance = 80000 }, -- royal almandine
+	{ id = 32622, chance = 80000 }, -- giant amethyst
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 39040, chance = 80000 }, -- fiery tear
+	{ id = 32624, chance = 80000 }, -- amber with a bug
+	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
+	{ id = 3043, chance = 80000, maxCount = 45 }, -- crystal coin
+	{ id = 39148, chance = 80000 }, -- spiritthorn helmet
+	{ id = 39147, chance = 80000 }, -- spiritthorn armor
+	{ id = 39178, chance = 80000 }, -- charged spiritthorn ring
+	{ id = 39149, chance = 80000 }, -- alicorn headguard
+	{ id = 39150, chance = 80000 }, -- alicorn quiver
+	{ id = 39181, chance = 80000 }, -- charged alicorn ring
+	{ id = 39153, chance = 80000 }, -- arboreal crown
+	{ id = 39154, chance = 80000 }, -- arboreal tome
+	{ id = 39187, chance = 80000 }, -- charged arboreal ring
+	{ id = 39151, chance = 80000 }, -- arcanomancer regalia
+	{ id = 39152, chance = 80000 }, -- arcanomancer folio
+	{ id = 39184, chance = 80000 }, -- charged arcanomancer sigil
 }
 
 monster.attacks = {

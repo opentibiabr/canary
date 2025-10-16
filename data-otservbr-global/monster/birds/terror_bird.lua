@@ -77,14 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 82430, maxCount = 30 },
-	{ name = "meat", chance = 48550, maxCount = 3 },
-	{ name = "terrorbird beak", chance = 10310 },
-	{ name = "worm", chance = 9540, maxCount = 3 },
-	{ name = "colourful feather", chance = 3090 },
-	{ name = "health potion", chance = 690 },
-	{ name = "seeds", chance = 280 },
-	{ name = "feather headdress", chance = 100 },
+	{ id = 3031, chance = 80000, maxCount = 30 }, -- gold coin
+	{ id = 3577, chance = 80000, maxCount = 3 }, -- meat
+	{ id = 10273, chance = 80000 }, -- terrorbird beak
+	{ id = 3492, chance = 80000 }, -- worm
+	{ id = 11514, chance = 5000 }, -- colourful feather
+	{ id = 266, chance = 1000 }, -- health potion
+	{ id = 647, chance = 260 }, -- seeds
+	{ id = 3406, chance = 260 }, -- feather headdress
 }
 
 monster.attacks = {

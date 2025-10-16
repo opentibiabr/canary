@@ -75,7 +75,8 @@ monster.voices = {
 	{ text = "Have you ever seen the Big Ice Cream Machine?", yell = false },
 	{ text = "Hello, sweetie!", yell = false },
 }
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1 },

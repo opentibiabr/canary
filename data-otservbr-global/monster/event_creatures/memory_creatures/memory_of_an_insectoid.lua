@@ -60,12 +60,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 86 },
-	{ name = "great mana potion", chance = 5000 },
-	{ name = "small emerald", chance = 2880 },
-	{ name = "epee", chance = 560 },
-	{ name = "health potion", chance = 5090 },
-	{ name = "bottle of champagne", chance = 15380 },
+	{ id = 3326, chance = 80000 }, -- epee
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 37468, chance = 80000 }, -- special fx box
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 266, chance = 80000 }, -- health potion
+	{ id = 3038, chance = 80000 }, -- green gem
 }
 
 monster.attacks = {

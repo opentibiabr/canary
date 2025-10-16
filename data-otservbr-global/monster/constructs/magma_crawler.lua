@@ -75,33 +75,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 8800, maxCount = 3 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 99 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "yellow gem", chance = 1030 },
-	{ id = 3051, chance = 1650 }, -- energy ring
-	{ name = "fire sword", chance = 1680 },
-	{ name = "black shield", chance = 1550 },
-	{ name = "iron ore", chance = 4280 },
-	{ name = "white piece of cloth", chance = 2310 },
-	{ name = "red piece of cloth", chance = 930 },
-	{ name = "yellow piece of cloth", chance = 2980 },
-	{ name = "great mana potion", chance = 6500 },
-	{ name = "great health potion", chance = 7270 },
-	{ name = "magma amulet", chance = 3120 },
-	{ name = "magma boots", chance = 1820 },
-	{ name = "wand of draconia", chance = 4280 },
-	{ name = "fiery heart", chance = 7810 },
-	{ id = 12600, chance = 1675 }, -- coal
-	{ name = "crystalline arrow", chance = 5950, maxCount = 10 },
-	{ name = "wand of everblazing", chance = 690 },
-	{ name = "blue crystal shard", chance = 3930, maxCount = 2 },
-	{ name = "brown crystal splinter", chance = 8500, maxCount = 2 },
-	{ name = "green crystal fragment", chance = 7000 },
-	{ name = "magma clump", chance = 11600 },
-	{ name = "blazing bone", chance = 11500 },
-	{ name = "blazing bone", chance = 12220 },
+	{ id = 3031, chance = 80000, maxCount = 199 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 16131, chance = 23000 }, -- blazing bone
+	{ id = 16123, chance = 23000, maxCount = 2 }, -- brown crystal splinter
+	{ id = 15793, chance = 23000, maxCount = 10 }, -- crystalline arrow
+	{ id = 9636, chance = 23000 }, -- fiery heart
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 16127, chance = 23000 }, -- green crystal fragment
+	{ id = 16130, chance = 23000 }, -- magma clump
+	{ id = 3028, chance = 23000, maxCount = 3 }, -- small diamond
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 5880, chance = 5000 }, -- iron ore
+	{ id = 817, chance = 5000 }, -- magma amulet
+	{ id = 8093, chance = 5000 }, -- wand of draconia
+	{ id = 5909, chance = 5000 }, -- white piece of cloth
+	{ id = 5914, chance = 5000 }, -- yellow piece of cloth
+	{ id = 3429, chance = 5000 }, -- black shield
+	{ id = 12600, chance = 5000 }, -- coal
+	{ id = 3051, chance = 5000 }, -- energy ring
+	{ id = 3280, chance = 5000 }, -- fire sword
+	{ id = 818, chance = 5000 }, -- magma boots
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 5911, chance = 1000 }, -- red piece of cloth
+	{ id = 16115, chance = 1000 }, -- wand of everblazing
 }
 
 monster.attacks = {

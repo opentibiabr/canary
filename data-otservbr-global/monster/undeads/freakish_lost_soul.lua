@@ -73,16 +73,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 10000, maxCount = 3 },
-	{ name = "lost soul", chance = 45240 },
-	{ name = "death toll", chance = 6250 },
-	{ name = "emerald bangle", chance = 5980 },
-	{ name = "gemmed figurine", chance = 3800 },
-	{ name = "ensouled essence", chance = 2720 },
-	{ id = 23529, chance = 1220 }, -- ring of blue plasma
-	{ name = "silver hand mirror", chance = 1090 },
-	{ name = "ornate crossbow", chance = 1090 },
-	{ name = "crystal crossbow", chance = 270 },
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 32703, chance = 23000 }, -- death toll
+	{ id = 3010, chance = 5000 }, -- emerald bangle
+	{ id = 24392, chance = 5000 }, -- gemmed figurine
+	{ id = 32698, chance = 5000 }, -- ensouled essence
+	{ id = 32772, chance = 1000 }, -- silver hand mirror
+	{ id = 23529, chance = 1000 }, -- ring of blue plasma
+	{ id = 14247, chance = 1000 }, -- ornate crossbow
+	{ id = 16163, chance = 1000 }, -- crystal crossbow
+	{ id = 3081, chance = 1000 }, -- stone skin amulet
 }
 
 monster.attacks = {

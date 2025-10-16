@@ -77,28 +77,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 6 }, -- platinum coin
-	{ id = 23545, chance = 15000 }, -- energy drink
-	{ id = 23535, chance = 15000 }, -- energy bar
-	{ id = 23508, chance = 15000 }, -- energy vein
-	{ id = 23520, chance = 14700 }, -- plasmatic lightning
-	{ id = 7642, chance = 11400, maxCount = 2 }, -- great spirit potion
-	{ id = 238, chance = 10300, maxCount = 2 }, -- great mana potion
-	{ id = 239, chance = 9700, maxCount = 2 }, -- great health potion
-	{ id = 23506, chance = 9700 }, -- plasma pearls
-	{ id = 23515, chance = 9600 }, -- dangerous proto matter
-	{ id = 16124, chance = 7900 }, -- blue crystal splinter
-	{ id = 16126, chance = 6000 }, -- red crystal fragment
-	{ id = 16120, chance = 4400 }, -- violet crystal shard
-	{ id = 16119, chance = 4000 }, -- blue crystal shard
-	{ id = 3039, chance = 2600 }, -- red gem
-	{ id = 23543, chance = 630 }, -- collar of green plasma
-	{ id = 828, chance = 520 }, -- lightning headband
-	{ id = 3036, chance = 370 }, -- violet gem
-	{ id = 23529, chance = 370 }, -- ring of blue plasma
-	{ id = 23544, chance = 300 }, -- collar of red plasma
-	{ id = 23531, chance = 220 }, -- ring of green plasma
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
+	{ id = 23535, chance = 23000 }, -- energy bar
+	{ id = 23545, chance = 23000 }, -- energy drink
+	{ id = 7642, chance = 23000, maxCount = 2 }, -- great spirit potion
+	{ id = 39547, chance = 23000 }, -- energy vein
+	{ id = 16124, chance = 23000 }, -- blue crystal splinter
+	{ id = 23515, chance = 23000 }, -- dangerous proto matter
+	{ id = 23506, chance = 23000 }, -- plasma pearls
+	{ id = 23520, chance = 23000 }, -- plasmatic lightning
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 16126, chance = 23000 }, -- red crystal fragment
+	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 16120, chance = 5000 }, -- violet crystal shard
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 828, chance = 1000 }, -- lightning headband
+	{ id = 8092, chance = 1000 }, -- wand of starstorm
+	{ id = 3036, chance = 260 }, -- violet gem
+	{ id = 8043, chance = 260 }, -- focus cape
+	{ id = 23528, chance = 260 }, -- collar of red plasma
+	{ id = 23526, chance = 260 }, -- collar of blue plasma
+	{ id = 23527, chance = 260 }, -- collar of green plasma
+	{ id = 23533, chance = 260 }, -- ring of red plasma
+	{ id = 23529, chance = 260 }, -- ring of blue plasma
+	{ id = 23531, chance = 260 }, -- ring of green plasma
 }
 
 monster.attacks = {

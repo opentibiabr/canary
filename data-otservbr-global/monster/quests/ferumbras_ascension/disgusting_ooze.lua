@@ -67,21 +67,6 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 272 }, -- gold coin
-	{ id = 3035, chance = 95660, maxCount = 6 }, -- platinum coin
-	{ id = 6499, chance = 20340 }, -- demonic essence
-	{ id = 5944, chance = 20130 }, -- soul orb
-	{ id = 9054, chance = 14190 }, -- glob of acid slime
-	{ id = 9055, chance = 11550 }, -- glob of tar
-	{ id = 3034, chance = 5930 }, -- talon
-	{ id = 3032, chance = 5400, maxCount = 3 }, -- small emerald
-	{ id = 3030, chance = 2750, maxCount = 2 }, -- small ruby
-	{ id = 3028, chance = 2650, maxCount = 2 }, -- small diamond
-	{ id = 6299, chance = 2440 }, -- death ring
-	{ id = 3039, chance = 1590 }, -- red gem
-	{ id = 3037, chance = 1380 }, -- yellow gem
-	{ id = 3038, chance = 640 }, -- green gem
-	{ id = 3041, chance = 320 }, -- blue gem
 }
 
 monster.attacks = {

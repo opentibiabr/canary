@@ -76,16 +76,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "knife", chance = 10500 },
-	{ name = "cobra crest", chance = 7750 },
-	{ id = 3307, chance = 7750 }, -- scimitar
-	{ name = "protection amulet", chance = 7500 },
-	{ name = "heavy machete", chance = 6500 },
-	{ name = "bone sword", chance = 5000 },
-	{ name = "machete", chance = 2250 },
-	{ name = "carlin sword", chance = 2250 },
-	{ id = 23533, chance = 1690 }, -- ring of red plasma
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 22194, chance = 80000, maxCount = 5 }, -- opal
+	{ id = 3032, chance = 80000, maxCount = 3 }, -- small emerald
+	{ id = 3291, chance = 23000 }, -- knife
+	{ id = 3308, chance = 23000 }, -- machete
+	{ id = 3084, chance = 23000 }, -- protection amulet
+	{ id = 31678, chance = 23000 }, -- cobra crest
+	{ id = 3330, chance = 23000 }, -- heavy machete
+	{ id = 3338, chance = 23000 }, -- bone sword
+	{ id = 3307, chance = 23000 }, -- scimitar
+	{ id = 16121, chance = 23000 }, -- green crystal shard
+	{ id = 9058, chance = 5000 }, -- gold ingot
+	{ id = 3283, chance = 5000 }, -- carlin sword
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 5944, chance = 5000 }, -- soul orb
+	{ id = 16126, chance = 1000 }, -- red crystal fragment
 }
 
 monster.attacks = {

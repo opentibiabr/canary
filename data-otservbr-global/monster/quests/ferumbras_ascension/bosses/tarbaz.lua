@@ -73,37 +73,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 1000000 }, -- silver token
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 3031, chance = 98000, maxCount = 184 }, -- gold coin
-	{ id = 238, chance = 23000, maxCount = 10 }, -- great mana potion
-	{ id = 281, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (brown)
-	{ id = 7642, chance = 46100, maxCount = 10 }, -- great spirit potion
-	{ id = 7643, chance = 23000, maxCount = 10 }, -- ultimate health potion
-	{ id = 9057, chance = 10000, maxCount = 8 }, -- small topaz
-	{ id = 3029, chance = 12000, maxCount = 9 }, -- small sapphire
-	{ id = 3026, chance = 12000, maxCount = 8 }, -- white pearl
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 815, chance = 4000 }, -- glacier amulet
-	{ id = 823, chance = 1000 }, -- glacier kilt
-	{ id = 824, chance = 1000 }, -- glacier robe
-	{ id = 3033, chance = 10000, maxCount = 5 }, -- small amethyst
-	{ id = 3035, chance = 8000, maxCount = 58 }, -- platinum coin
-	{ id = 16119, chance = 10000, maxCount = 5 }, -- blue crystal shard
-	{ id = 16120, chance = 10000, maxCount = 5 }, -- violet crystal shard
-	{ id = 16121, chance = 10000, maxCount = 5 }, -- green crystal shard
-	{ id = 3036, chance = 1000 }, -- violet gem
-	{ id = 22867, chance = 800 }, -- rift crossbow
-	{ id = 22727, chance = 800 }, -- rift lance
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 8082, chance = 4000 }, -- underworld rod
-	{ id = 22757, chance = 500, unique = true }, -- shroud of despair
+	{ id = 22762, chance = 80000 }, -- maimer
+	{ id = 22757, chance = 80000 }, -- shroud of despair
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 22726, chance = 80000 }, -- rift shield
+	{ id = 7427, chance = 80000 }, -- chaos mace
+	{ id = 16119, chance = 80000 }, -- blue crystal shard
+	{ id = 238, chance = 80000 }, -- great mana potion
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 16121, chance = 80000 }, -- green crystal shard
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 6558, chance = 80000 }, -- flask of demonic blood
+	{ id = 3051, chance = 80000 }, -- energy ring
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 8082, chance = 80000 }, -- underworld rod
+	{ id = 6499, chance = 80000 }, -- demonic essence
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 7642, chance = 80000 }, -- great spirit potion
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 16120, chance = 80000 }, -- violet crystal shard
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 823, chance = 80000 }, -- glacier kilt
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 824, chance = 80000 }, -- glacier robe
+	{ id = 3326, chance = 80000 }, -- epee
+	{ id = 815, chance = 80000 }, -- glacier amulet
 }
 
 monster.attacks = {

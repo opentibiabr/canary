@@ -66,7 +66,8 @@ monster.voices = {
 	{ text = "Now the despoiler will pay!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {
 	{ name = "freed soul spell", interval = 2000, chance = 100, target = false },

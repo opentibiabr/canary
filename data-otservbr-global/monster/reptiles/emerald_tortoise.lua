@@ -74,21 +74,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Emerald Tortoise Shell", chance = 28590 },
-	{ name = "Crystal Coin", chance = 15520, minCount = 1, maxCount = 3 },
-	{ name = "Great Spirit Potion", chance = 13360, minCount = 1, maxCount = 2 },
-	{ name = "Blue Crystal Shard", chance = 4030 },
-	{ name = "Green Crystal Fragment", chance = 3950 },
-	{ name = "Violet Gem", chance = 3950 },
-	{ name = "Red Crystal Fragment", chance = 3350 },
-	{ name = "Yellow Gem", chance = 3320 },
-	{ name = "White Pearl", chance = 3240 },
-	{ name = "Green Crystal Shard", chance = 2900 },
-	{ name = "Green Gem", chance = 2870 },
-	{ name = "Orichalcum Pearl", chance = 2640, minCount = 1, maxCount = 2 },
-	{ id = 282, chance = 2420 }, -- Giant Shimmering Pearl (Green)
-	{ id = 3039, chance = 2420 }, -- Red Gem
-	{ name = "Black Pearl", chance = 2160, minCount = 1, maxCount = 2 },
+	{ id = 39379, chance = 80000 }, -- emerald tortoise shell
+	{ id = 3043, chance = 23000, maxCount = 3 }, -- crystal coin
+	{ id = 7642, chance = 23000, maxCount = 2 }, -- great spirit potion
+	{ id = 3026, chance = 5000 }, -- white pearl
+	{ id = 3036, chance = 5000 }, -- violet gem
+	{ id = 3027, chance = 5000, maxCount = 2 }, -- black pearl
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 16126, chance = 5000 }, -- red crystal fragment
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 5021, chance = 5000, maxCount = 2 }, -- orichalcum pearl
+	{ id = 3038, chance = 5000 }, -- green gem
 }
 
 monster.attacks = {

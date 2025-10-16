@@ -79,26 +79,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 80540, maxCount = 10 },
-	{ name = "small enchanted sapphire", chance = 6730, maxCount = 5 },
-	{ name = "combat knife", chance = 5710 },
-	{ name = "great mana potion", chance = 5690 },
-	{ name = "rainbow quartz", chance = 3810, maxCount = 3 },
-	{ name = "small sapphire", chance = 3590, maxCount = 2 },
-	{ id = 3039, chance = 2660 }, -- red gem
-	{ name = "spirit cloak", chance = 1740 },
-	{ name = "gummy rotworm", chance = 1690 },
-	{ name = "churro heart", chance = 1520 },
-	{ name = "glacier amulet", chance = 1020 },
-	{ id = 3606, chance = 1000 }, -- egg
-	{ name = "milk chocolate coin", chance = 780, maxCount = 15 },
-	{ name = "flour", chance = 690 },
-	{ name = "cookie", chance = 520, maxCount = 2 },
-	{ name = "glacier robe", chance = 500 },
-	{ name = "epee", chance = 400 },
-	{ name = "ice rapier", chance = 210 },
-	{ name = "cream cake", chance = 140 },
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 675, chance = 23000, maxCount = 5 }, -- small enchanted sapphire
+	{ id = 3292, chance = 23000 }, -- combat knife
+	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 25087, chance = 5000 }, -- egg
+	{ id = 8042, chance = 5000 }, -- spirit cloak
+	{ id = 25737, chance = 5000, maxCount = 3 }, -- rainbow quartz
+	{ id = 48116, chance = 5000 }, -- gummy rotworm
+	{ id = 48254, chance = 5000 }, -- churro heart
+	{ id = 815, chance = 1000 }, -- glacier amulet
+	{ id = 824, chance = 1000 }, -- glacier robe
+	{ id = 3598, chance = 1000, maxCount = 2 }, -- cookie
+	{ id = 3603, chance = 1000 }, -- flour
+	{ id = 3284, chance = 260 }, -- ice rapier
+	{ id = 3326, chance = 260 }, -- epee
+	{ id = 6393, chance = 260 }, -- cream cake
+	{ id = 48249, chance = 260, maxCount = 16 }, -- milk chocolate coin
 }
 
 monster.attacks = {

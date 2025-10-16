@@ -79,50 +79,81 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "blue tome", chance = 20000 },
-	{ name = "teddy bear", chance = 12500 },
-	{ id = 3007, chance = 8333 }, -- crystal ring
-	{ name = "white pearl", chance = 25000, maxCount = 15 },
-	{ name = "black pearl", chance = 11111, maxCount = 14 },
-	{ name = "small diamond", chance = 25000, maxCount = 5 },
-	{ name = "small sapphire", chance = 25000, maxCount = 10 },
-	{ name = "small emerald", chance = 25000, maxCount = 10 },
-	{ name = "small amethyst", chance = 25000, maxCount = 17 },
-	{ name = "talon", chance = 12500, maxCount = 7 },
-	{ name = "platinum coin", chance = 100000, maxCount = 69 },
-	{ name = "green gem", chance = 20000 },
-	{ name = "blue gem", chance = 14285 },
-	{ name = "might ring", chance = 12500 },
-	{ id = 3049, chance = 12500 }, -- stealth ring
-	{ name = "strange symbol", chance = 11111 },
-	{ name = "life crystal", chance = 12500 },
-	{ name = "mind stone", chance = 20000 },
-	{ name = "gold ring", chance = 20000 },
-	{ id = 3098, chance = 20000 }, -- ring of healing
-	{ name = "twin axe", chance = 11111 },
-	{ name = "golden armor", chance = 8333 },
-	{ name = "magic plate armor", chance = 8333 },
-	{ name = "demon shield", chance = 12500 },
-	{ name = "golden boots", chance = 8333 },
-	{ name = "demon horn", chance = 33333, maxCount = 2 },
-	{ id = 6299, chance = 25000 }, -- death ring
-	{ name = "demonic essence", chance = 100000 },
-	{ name = "ruthless axe", chance = 14285 },
-	{ name = "assassin star", chance = 12500, maxCount = 44 },
-	{ name = "havoc blade", chance = 16666 },
-	{ name = "ravenwing", chance = 14285 },
-	{ name = "great mana potion", chance = 20000 },
-	{ name = "great health potion", chance = 20000 },
-	{ name = "glacier kilt", chance = 8333 },
-	{ name = "great spirit potion", chance = 25000 },
-	{ name = "ultimate health potion", chance = 25000 },
-	{ name = "oceanborn leviathan armor", chance = 16666 },
-	{ name = "frozen plate", chance = 8333 },
-	{ name = "spellbook of warding", chance = 20000 },
-	{ name = "spellbook of mind control", chance = 11111 },
-	{ name = "spellbook of lost souls", chance = 16666 },
-	{ name = "spellscroll of prophecies", chance = 25000 },
-	{ name = "spellbook of dark mysteries", chance = 20000 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 73 }, -- platinum coin
+	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
+	{ id = 3033, chance = 80000, maxCount = 15 }, -- small amethyst
+	{ id = 3032, chance = 80000, maxCount = 6 }, -- small emerald
+	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
+	{ id = 3029, chance = 80000, maxCount = 9 }, -- small sapphire
+	{ id = 3034, chance = 80000, maxCount = 4 }, -- talon
+	{ id = 3026, chance = 80000, maxCount = 15 }, -- white pearl
+	{ id = 3027, chance = 80000, maxCount = 15 }, -- black pearl
+	{ id = 6499, chance = 80000, maxCount = 500 }, -- demonic essence
+	{ id = 5954, chance = 80000, maxCount = 2 }, -- demon horn
+	{ id = 7365, chance = 80000, maxCount = 82 }, -- onyx arrow
+	{ id = 7368, chance = 80000, maxCount = 47 }, -- assassin star
+	{ id = 9058, chance = 80000 }, -- gold ingot
+	{ id = 22196, chance = 80000 }, -- crystal ball
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3061, chance = 80000 }, -- life crystal
+	{ id = 3060, chance = 80000 }, -- orb
+	{ id = 3366, chance = 80000 }, -- magic plate armor
+	{ id = 8056, chance = 80000 }, -- oceanborn leviathan armor
+	{ id = 8038, chance = 80000 }, -- robe of the ice queen
+	{ id = 8059, chance = 80000 }, -- frozen plate
+	{ id = 8050, chance = 80000 }, -- crystalline armor
+	{ id = 3414, chance = 80000 }, -- mastermind shield
+	{ id = 3281, chance = 80000 }, -- giant sword
+	{ id = 8076, chance = 80000 }, -- spellscroll of prophecies
+	{ id = 8073, chance = 80000 }, -- spellbook of warding
+	{ id = 8090, chance = 80000 }, -- spellbook of dark mysteries
+	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
+	{ id = 8074, chance = 80000 }, -- spellbook of mind control
+	{ id = 823, chance = 80000 }, -- glacier kilt
+	{ id = 3420, chance = 80000 }, -- demon shield
+	{ id = 3275, chance = 80000 }, -- double axe
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 3335, chance = 80000 }, -- twin axe
+	{ id = 7454, chance = 80000 }, -- glorious axe
+	{ id = 7405, chance = 80000 }, -- havoc blade
+	{ id = 7428, chance = 80000 }, -- bonebreaker
+	{ id = 7431, chance = 80000 }, -- demonbone
+	{ id = 3360, chance = 80000 }, -- golden armor
+	{ id = 3364, chance = 80000 }, -- golden legs
+	{ id = 3555, chance = 80000 }, -- golden boots
+	{ id = 2903, chance = 80000 }, -- golden mug
+	{ id = 3116, chance = 80000 }, -- big bone
+	{ id = 3058, chance = 80000 }, -- strange symbol
+	{ id = 3062, chance = 80000 }, -- mind stone
+	{ id = 3047, chance = 80000 }, -- magic light wand
+	{ id = 3054, chance = 80000 }, -- silver amulet
+	{ id = 3084, chance = 80000 }, -- protection amulet
+	{ id = 3055, chance = 80000 }, -- platinum amulet
+	{ id = 22746, chance = 80000 }, -- ancient amulet
+	{ id = 3006, chance = 80000 }, -- ring of the sky
+	{ id = 3051, chance = 80000 }, -- energy ring
+	{ id = 3048, chance = 80000 }, -- might ring
+	{ id = 3063, chance = 80000 }, -- gold ring
+	{ id = 6299, chance = 80000 }, -- death ring
+	{ id = 3098, chance = 80000 }, -- ring of healing
+	{ id = 3049, chance = 80000 }, -- stealth ring
+	{ id = 6093, chance = 80000 }, -- crystal ring
+	{ id = 7643, chance = 80000 }, -- ultimate health potion
+	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
+	{ id = 239, chance = 80000, maxCount = 6 }, -- great health potion
+	{ id = 238, chance = 80000, maxCount = 4 }, -- great mana potion
+	{ id = 236, chance = 80000 }, -- strong health potion
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 2993, chance = 80000 }, -- teddy bear
+	{ id = 2850, chance = 80000 }, -- blue tome
+	{ id = 6553, chance = 80000 }, -- ruthless axe
+	{ id = 7433, chance = 80000 }, -- ravenwing
+	{ id = 7455, chance = 80000 }, -- mythril axe
+	{ id = 762, chance = 80000, maxCount = 46 }, -- shiver arrow
+	{ id = 761, chance = 80000, maxCount = 74 }, -- flash arrow
+	{ id = 7364, chance = 80000, maxCount = 85 }, -- sniper arrow
 }
 
 monster.attacks = {

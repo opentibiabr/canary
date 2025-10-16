@@ -79,18 +79,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 60 },
-	{ name = "gold coin", chance = 40000, maxCount = 50 },
-	{ name = "quara eye", chance = 15930 },
-	{ name = "white pearl", chance = 5250 },
-	{ name = "small emerald", chance = 5111, maxCount = 2 },
-	{ name = "shrimp", chance = 4545, maxCount = 5 },
-	{ name = "black pearl", chance = 3150 },
-	{ name = "great mana potion", chance = 2880 },
-	{ name = "fish fin", chance = 1410 },
-	{ id = 3098, chance = 1218 }, -- ring of healing
-	{ name = "wand of cosmic energy", chance = 980 },
-	{ name = "knight armor", chance = 230 },
+	{ id = 3031, chance = 80000, maxCount = 110 }, -- gold coin
+	{ id = 11488, chance = 23000 }, -- quara eye
+	{ id = 3032, chance = 5000, maxCount = 2 }, -- small emerald
+	{ id = 3026, chance = 5000 }, -- white pearl
+	{ id = 3581, chance = 5000, maxCount = 5 }, -- shrimp
+	{ id = 3027, chance = 5000 }, -- black pearl
+	{ id = 238, chance = 5000 }, -- great mana potion
+	{ id = 5895, chance = 5000 }, -- fish fin
+	{ id = 3098, chance = 1000 }, -- ring of healing
+	{ id = 3073, chance = 1000 }, -- wand of cosmic energy
+	{ id = 3370, chance = 260 }, -- knight armor
 }
 
 monster.attacks = {

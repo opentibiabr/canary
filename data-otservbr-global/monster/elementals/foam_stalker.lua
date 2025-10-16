@@ -66,28 +66,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 50 },
-	{ name = "halberd", chance = 11025 },
-	{ name = "strong mana potion", chance = 9728 },
-	{ name = "orichalcum pearl", chance = 9728 },
-	{ name = "spike sword", chance = 8301 },
-	{ name = "combat knife", chance = 7004 },
-	{ name = "flotsam", chance = 6874 },
-	{ name = "white pearl", chance = 6485 },
-	{ id = 3130, chance = 6355 }, -- twigs
-	{ id = 3289, chance = 6355 }, -- staff
-	{ name = "remains of a fish", chance = 5966 },
-	{ name = "glacier shoes", chance = 5707 },
-	{ name = "coral branch", chance = 4929 },
-	{ name = "soul orb", chance = 4929 },
-	{ id = 3027, chance = 4669 }, -- black pearl
-	{ name = "small diamond", chance = 3891 },
-	{ name = "small emerald", chance = 3243, maxCount = 2 },
-	{ id = 281, chance = 2205 }, -- giant shimmering pearl (green)
-	{ name = "terra boots", chance = 5075 },
-	{ name = "mercenary sword", chance = 4167 },
-	{ name = "knight legs", chance = 3649 },
-	{ name = "violet gem", chance = 3389 },
+	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 819, chance = 23000 }, -- glacier shoes
+	{ id = 3026, chance = 23000 }, -- white pearl
+	{ id = 3027, chance = 23000 }, -- black pearl
+	{ id = 3125, chance = 23000 }, -- remains of a fish
+	{ id = 3130, chance = 23000 }, -- twigs
+	{ id = 3269, chance = 23000 }, -- halberd
+	{ id = 3271, chance = 23000 }, -- spike sword
+	{ id = 6107, chance = 23000 }, -- staff
+	{ id = 3292, chance = 23000 }, -- combat knife
+	{ id = 5021, chance = 23000 }, -- orichalcum pearl
+	{ id = 39406, chance = 23000 }, -- coral branch
+	{ id = 39407, chance = 23000 }, -- flotsam
+	{ id = 813, chance = 5000 }, -- terra boots
+	{ id = 3028, chance = 5000 }, -- small diamond
+	{ id = 3032, chance = 5000, maxCount = 2 }, -- small emerald
+	{ id = 5944, chance = 5000 }, -- soul orb
+	{ id = 3036, chance = 1000 }, -- violet gem
+	{ id = 3371, chance = 1000 }, -- knight legs
+	{ id = 7386, chance = 1000 }, -- mercenary sword
+	{ id = 3048, chance = 260 }, -- might ring
 }
 
 monster.attacks = {

@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 80 },
-	{ name = "platinum coin", chance = 100000, maxCount = 11 },
-	{ name = "werepanther claw", chance = 13820, maxCount = 2 },
-	{ name = "golden sickle", chance = 6720 },
-	{ name = "meat", chance = 5500, maxCount = 2 },
-	{ name = "small ruby", chance = 8470, maxCount = 3 },
-	{ name = "moonlight crystals", chance = 2550 },
-	{ id = 3039, chance = 1240 }, -- red gem
-	{ name = "magma monocle", chance = 3080 },
-	{ name = "ripper lance", chance = 850 },
-	{ name = "gemmed figurine", chance = 1770 },
-	{ id = 817, chance = 2770 }, -- magma amulet
-	{ name = "fur armor", chance = 2620 },
-	{ id = 43917, chance = 650 }, -- werepanther trophy
+	{ id = 3031, chance = 80000, maxCount = 80 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 11 }, -- platinum coin
+	{ id = 43731, chance = 23000 }, -- werepanther claw
+	{ id = 3306, chance = 23000 }, -- golden sickle
+	{ id = 22083, chance = 23000 }, -- moonlight crystals
+	{ id = 3577, chance = 5000, maxCount = 2 }, -- meat
+	{ id = 3030, chance = 5000, maxCount = 3 }, -- small ruby
+	{ id = 827, chance = 5000 }, -- magma monocle
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 24392, chance = 1000 }, -- gemmed figurine
+	{ id = 817, chance = 1000 }, -- magma amulet
+	{ id = 3346, chance = 1000 }, -- ripper lance
+	{ id = 22085, chance = 1000 }, -- fur armor
+	{ id = 43917, chance = 260 }, -- werepanther trophy
 }
 
 monster.attacks = {

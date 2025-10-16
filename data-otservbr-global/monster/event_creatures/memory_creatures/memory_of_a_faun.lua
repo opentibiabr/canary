@@ -63,18 +63,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 30000, maxCount = 140 },
-	{ name = "prismatic quartz", chance = 719 },
-	{ name = "strong health potion", chance = 6800, maxCount = 2 },
-	{ name = "small stone", chance = 492, maxCount = 3 },
-	{ name = "dark mushroom", chance = 719 },
-	{ name = "small enchanted sapphire", chance = 492, maxCount = 2 },
-	{ name = "goat grass", chance = 5155 },
-	{ name = "panpipes", chance = 172 },
-	{ name = "cave turnip", chance = 55000, maxCount = 4 },
-	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "bottle of champagne", chance = 5155 },
-	{ name = "mandrake", chance = 50 },
+	{ id = 24383, chance = 80000 }, -- cave turnip
+	{ id = 2953, chance = 80000 }, -- panpipes
+	{ id = 675, chance = 80000 }, -- small enchanted sapphire
+	{ id = 236, chance = 80000 }, -- strong health potion
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 1781, chance = 80000 }, -- small stone
+	{ id = 37468, chance = 80000 }, -- special fx box
+	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3728, chance = 80000 }, -- dark mushroom
+	{ id = 24962, chance = 80000 }, -- prismatic quartz
+	{ id = 3674, chance = 80000 }, -- goat grass
+	{ id = 5014, chance = 260 }, -- mandrake
 }
 
 monster.attacks = {

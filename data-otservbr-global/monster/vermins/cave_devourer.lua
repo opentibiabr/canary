@@ -76,19 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "cave devourer eyes", chance = 24580 },
-	{ name = "cave devourer maw", chance = 27540 },
-	{ name = "small enchanted sapphire", chance = 8050 },
-	{ name = "small enchanted ruby", chance = 6780 },
-	{ name = "crystalline arrow", chance = 23520, maxCount = 40 },
-	{ name = "blue crystal shard", chance = 10590 },
-	{ name = "violet crystal shard", chance = 7630 },
-	{ name = "green crystal shard", chance = 8900 },
-	{ name = "cyan crystal fragment", chance = 5720 },
-	{ name = "slime heart", chance = 13770, maxCount = 4 },
-	{ name = "cave devourer legs", chance = 17160 },
-	{ id = 3049, chance = 2540 }, -- stealth ring
-	{ name = "suspicious device", chance = 850 },
+	{ id = 27599, chance = 23000 }, -- cave devourer eyes
+	{ id = 27600, chance = 23000 }, -- cave devourer maw
+	{ id = 675, chance = 23000 }, -- small enchanted sapphire
+	{ id = 676, chance = 23000 }, -- small enchanted ruby
+	{ id = 15793, chance = 23000, maxCount = 40 }, -- crystalline arrow
+	{ id = 16119, chance = 23000 }, -- blue crystal shard
+	{ id = 16121, chance = 23000 }, -- green crystal shard
+	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
+	{ id = 21194, chance = 23000, maxCount = 4 }, -- slime heart
+	{ id = 27601, chance = 23000 }, -- cave devourer legs
+	{ id = 16120, chance = 5000 }, -- violet crystal shard
+	{ id = 3049, chance = 5000 }, -- stealth ring
+	{ id = 27653, chance = 5000 }, -- suspicious device
 }
 
 monster.attacks = {

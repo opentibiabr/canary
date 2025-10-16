@@ -63,7 +63,9 @@ monster.voices = {
 	{ text = "Leave as long as you can.", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 9698, chance = 80000 }, -- carrying device
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 100, attack = 40 },

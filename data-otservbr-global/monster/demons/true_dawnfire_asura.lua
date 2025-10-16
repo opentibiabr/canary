@@ -73,33 +73,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, maxCount = 8 }, -- platinum coin
-	{ name = "crystal coin", chance = 4670, maxCount = 1 },
-	{ id = 6558, chance = 30110 }, -- flask of demonic blood
-	{ id = 238, chance = 16560, maxCount = 2 }, -- great mana potion
-	{ id = 3033, chance = 6810, maxCount = 2 }, -- small amethyst
-	{ id = 3028, chance = 7500, maxCount = 2 }, -- small diamond
-	{ id = 3032, chance = 18010, maxCount = 2 }, -- small emerald
-	{ name = "small enchanted ruby", chance = 9440, maxCount = 3 },
-	{ id = 3030, chance = 11890, maxCount = 2 }, -- small ruby
-	{ id = 9057, chance = 8560, maxCount = 2 }, -- small topaz
-	{ name = "royal star", chance = 4050, maxCount = 3 },
-	{ id = 3041, chance = 1300 }, -- blue gem
-	{ id = 3039, chance = 3800 }, -- red gem
-	{ id = 6299, chance = 1100 }, -- death ring
-	{ id = 6499, chance = 22110 }, -- demonic essence
-	{ id = 8043, chance = 2200 }, -- focus cape
-	{ id = 21974, chance = 11400 }, -- golden lotus brooch
-	{ id = 826, chance = 1980 }, -- magma coat
-	{ id = 3078, chance = 2820 }, -- mysterious fetish
-	{ id = 3574, chance = 3170 }, -- mystic turban
-	{ id = 21981, chance = 2110 }, -- oriental shoes
-	{ id = 21975, chance = 11460 }, -- peacock feather fan
-	{ id = 5911, chance = 3070 }, -- red piece of cloth
-	{ id = 3016, chance = 2330 }, -- ruby necklace
-	{ id = 5944, chance = 20140 }, -- soul orb
-	{ id = 8074, chance = 620 }, -- spellbook of mind control
-	{ id = 3071, chance = 1440 }, -- wand of inferno
+	{ id = 3035, chance = 80000, maxCount = 12 }, -- platinum coin
+	{ id = 6558, chance = 80000, maxCount = 3 }, -- flask of demonic blood
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 676, chance = 23000, maxCount = 3 }, -- small enchanted ruby
+	{ id = 3028, chance = 23000, maxCount = 2 }, -- small diamond
+	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
+	{ id = 3032, chance = 23000, maxCount = 5 }, -- small emerald
+	{ id = 3033, chance = 23000, maxCount = 2 }, -- small amethyst
+	{ id = 5944, chance = 23000 }, -- soul orb
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 9057, chance = 23000, maxCount = 2 }, -- small topaz
+	{ id = 21974, chance = 23000 }, -- golden lotus brooch
+	{ id = 21975, chance = 23000 }, -- peacock feather fan
+	{ id = 826, chance = 5000 }, -- magma coat
+	{ id = 3016, chance = 5000 }, -- ruby necklace
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3041, chance = 5000 }, -- blue gem
+	{ id = 3043, chance = 5000 }, -- crystal coin
+	{ id = 3071, chance = 5000 }, -- wand of inferno
+	{ id = 3078, chance = 5000 }, -- mysterious fetish
+	{ id = 3574, chance = 5000 }, -- mystic turban
+	{ id = 5911, chance = 5000 }, -- red piece of cloth
+	{ id = 8043, chance = 5000 }, -- focus cape
+	{ id = 8074, chance = 5000 }, -- spellbook of mind control
+	{ id = 21981, chance = 5000 }, -- oriental shoes
+	{ id = 25759, chance = 5000, maxCount = 3 }, -- royal star
+	{ id = 6299, chance = 1000 }, -- death ring
 }
 
 monster.attacks = {

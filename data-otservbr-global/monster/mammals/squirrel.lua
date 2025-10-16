@@ -75,10 +75,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "walnut", chance = 1140 },
-	{ name = "peanut", chance = 980 },
-	{ name = "acorn", chance = 50410 },
+	{ id = 10296, chance = 80000 }, -- acorn
+	{ id = 841, chance = 1000 }, -- peanut
+	{ id = 836, chance = 1000 }, -- walnut
 }
+
 monster.defenses = {
 	defense = 5,
 	armor = 1,

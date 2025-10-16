@@ -74,18 +74,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 190 },
-	{ name = "gold coin", chance = 89000, maxCount = 80 },
-	{ name = "halberd", chance = 510 },
-	{ name = "spear", chance = 8750, maxCount = 3 },
-	{ name = "obsidian lance", chance = 1120 },
-	{ name = "chain armor", chance = 8560 },
-	{ name = "scale armor", chance = 7730 },
-	{ name = "hunting spear", chance = 4700 },
-	{ name = "sentinel shield", chance = 320 },
-	{ name = "lizard leather", chance = 990 },
-	{ name = "lizard scale", chance = 960 },
-	{ name = "health potion", chance = 590 },
+	{ id = 3031, chance = 80000, maxCount = 80 }, -- gold coin
+	{ id = 3277, chance = 80000, maxCount = 3 }, -- spear
+	{ id = 3358, chance = 80000 }, -- chain armor
+	{ id = 3377, chance = 80000 }, -- scale armor
+	{ id = 3347, chance = 5000 }, -- hunting spear
+	{ id = 3313, chance = 1000 }, -- obsidian lance
+	{ id = 5876, chance = 1000 }, -- lizard leather
+	{ id = 5881, chance = 1000 }, -- lizard scale
+	{ id = 266, chance = 1000 }, -- health potion
+	{ id = 3269, chance = 1000 }, -- halberd
+	{ id = 3444, chance = 260 }, -- sentinel shield
+	{ id = 3028, chance = 260 }, -- small diamond
 }
 
 monster.attacks = {

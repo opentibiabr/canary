@@ -71,7 +71,47 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
+	{ id = 239, chance = 80000 }, -- great health potion
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
+	{ id = 16126, chance = 80000 }, -- red crystal fragment
+	{ id = 16124, chance = 80000 }, -- blue crystal splinter
+	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
+	{ id = 16120, chance = 80000 }, -- violet crystal shard
+	{ id = 16119, chance = 80000, maxCount = 5 }, -- blue crystal shard
+	{ id = 7419, chance = 80000 }, -- dreaded cleaver
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 22083, chance = 80000, maxCount = 6 }, -- moonlight crystals
+	{ id = 22060, chance = 80000 }, -- werewolf amulet
+	{ id = 22104, chance = 80000 }, -- trophy of feroxa
+	{ id = 22084, chance = 80000 }, -- wolf backpack
+	{ id = 22062, chance = 80000 }, -- werewolf helmet
+	{ id = 22086, chance = 80000 }, -- badger boots
+	{ id = 22085, chance = 80000 }, -- fur armor
+	{ id = 7436, chance = 80000 }, -- angelic axe
+	{ id = 8061, chance = 80000 }, -- skullcracker armor
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3079, chance = 80000 }, -- boots of haste
+	{ id = 16123, chance = 80000 }, -- brown crystal splinter
+	{ id = 16121, chance = 80000 }, -- green crystal shard
+	{ id = 3070, chance = 80000 }, -- moonlight rod
+	{ id = 22087, chance = 80000 }, -- wereboar loincloth
+	{ id = 8082, chance = 80000 }, -- underworld rod
+	{ id = 7642, chance = 80000 }, -- great spirit potion
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 3326, chance = 80000 }, -- epee
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 16122, chance = 80000 }, -- green crystal splinter
+	{ id = 3033, chance = 80000 }, -- small amethyst
+	{ id = 8094, chance = 80000 }, -- wand of voodoo
+	{ id = 7428, chance = 80000 }, -- bonebreaker
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 7454, chance = 80000 }, -- glorious axe
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -1400, maxDamage = -1800 },

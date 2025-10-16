@@ -65,10 +65,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9058, chance = 50000, maxCount = 4 }, -- gold ingot
-	{ id = 7741, chance = 5560 }, -- ice cube
-	{ id = 7377, chance = 5560 }, -- ice cream cone
-	{ id = 14112, chance = 50 }, -- bar of gold
+	{ id = 9058, chance = 80000, maxCount = 5 }, -- gold ingot
+	{ id = 14112, chance = 80000 }, -- bar of gold
+	{ id = 7741, chance = 80000 }, -- ice cube
 }
 
 monster.attacks = {

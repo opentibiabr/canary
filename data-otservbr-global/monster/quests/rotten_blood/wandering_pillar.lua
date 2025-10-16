@@ -79,21 +79,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 6629, maxCount = 1 },
-	{ name = "darklight obsidian axe", chance = 14652, maxCount = 1 },
-	{ name = "basalt crumbs", chance = 8184, maxCount = 1 },
-	{ name = "sulphurous stone", chance = 5873, maxCount = 1 },
-	{ name = "magma boots", chance = 5080, maxCount = 1 },
-	{ id = 12600, chance = 9802, maxCount = 4 }, -- coal
-	{ name = "dark helmet", chance = 7490, maxCount = 1 },
-	{ name = "magma coat", chance = 11753, maxCount = 1 },
-	{ name = "onyx chip", chance = 9311, maxCount = 2 },
-	{ name = "darklight core", chance = 5957, maxCount = 1 },
-	{ name = "fire sword", chance = 8319, maxCount = 1 },
-	{ name = "magma clump", chance = 6260, maxCount = 1 },
-	{ id = 3039, chance = 9915, maxCount = 1 }, -- red gem
-	{ name = "green gem", chance = 12864, maxCount = 1 },
-	{ name = "basalt core", chance = 9037, maxCount = 1 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 10315, chance = 23000 }, -- sulphurous stone
+	{ id = 3384, chance = 23000 }, -- dark helmet
+	{ id = 818, chance = 5000 }, -- magma boots
+	{ id = 12600, chance = 5000, maxCount = 4 }, -- coal
+	{ id = 826, chance = 5000 }, -- magma coat
+	{ id = 22193, chance = 5000, maxCount = 2 }, -- onyx chip
+	{ id = 3280, chance = 5000 }, -- fire sword
+	{ id = 16130, chance = 5000 }, -- magma clump
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3038, chance = 5000 }, -- green gem
 }
 
 monster.attacks = {

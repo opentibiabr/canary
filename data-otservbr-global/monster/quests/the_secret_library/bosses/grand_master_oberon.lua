@@ -69,22 +69,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3115, chance = 30000, maxCount = 1 }, -- bone
-	{ name = "brass shield", chance = 30000, maxCount = 1 },
-	{ name = "spatial warp almanac", chance = 25000, maxCount = 1 },
-	{ name = "viking helmet", chance = 23000, maxCount = 1 },
-	{ name = "falcon battleaxe", chance = 500, maxCount = 1 },
-	{ name = "falcon longsword", chance = 500, maxCount = 1 },
-	{ name = "falcon mace", chance = 500, maxCount = 1 },
-	{ name = "grant of arms", chance = 500, maxCount = 1 },
-	{ name = "falcon bow", chance = 350, maxCount = 1 },
-	{ name = "falcon circlet", chance = 350, maxCount = 1 },
-	{ name = "falcon coif", chance = 350, maxCount = 1 },
-	{ name = "falcon rod", chance = 350, maxCount = 1 },
-	{ name = "falcon wand", chance = 350, maxCount = 1 },
-	{ name = "falcon shield", chance = 200, maxCount = 1 },
-	{ name = "falcon greaves", chance = 200, maxCount = 1 },
-	{ name = "falcon plate", chance = 200, maxCount = 1 },
+	{ id = 28865, chance = 80000 }, -- the spatial warp almanac
+	{ id = 28718, chance = 80000 }, -- falcon bow
+	{ id = 28721, chance = 80000 }, -- falcon shield
+	{ id = 28719, chance = 80000 }, -- falcon plate
+	{ id = 28714, chance = 80000 }, -- falcon circlet
+	{ id = 28724, chance = 80000 }, -- falcon battleaxe
+	{ id = 28715, chance = 80000 }, -- falcon coif
+	{ id = 28725, chance = 80000 }, -- falcon mace
+	{ id = 28723, chance = 80000 }, -- falcon longsword
+	{ id = 28720, chance = 80000 }, -- falcon greaves
+	{ id = 28716, chance = 80000 }, -- falcon rod
+	{ id = 28717, chance = 80000 }, -- falcon wand
+	{ id = 28824, chance = 80000 }, -- grant of arms
+	{ id = 3411, chance = 80000 }, -- brass shield
+	{ id = 11050, chance = 80000 }, -- torch
+	{ id = 11481, chance = 80000 }, -- pelvis bone
+	{ id = 3286, chance = 80000 }, -- mace
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3264, chance = 80000 }, -- sword
+	{ id = 3276, chance = 80000 }, -- hatchet
+	{ id = 23986, chance = 80000 }, -- heavy old tome
+	{ id = 7573, chance = 80000 }, -- bone
+	{ id = 3367, chance = 80000 }, -- viking helmet
 }
 
 monster.attacks = {

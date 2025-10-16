@@ -59,7 +59,9 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3105, chance = 80000 }, -- dirty fur
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -40, effect = CONST_ME_DRAWBLOOD, { type = CONDITION_POISON, totalDamage = 30, interval = 4000 } },

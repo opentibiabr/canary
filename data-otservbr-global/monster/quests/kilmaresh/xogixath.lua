@@ -72,16 +72,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ id = 3039, chance = 65000, maxCount = 2 }, -- red gem
-	{ name = "green crystal shard", chance = 16000 },
-	{ name = "sea horse figurine", chance = 2400 },
-	{ name = "winged boots", chance = 120 },
-	{ name = "small sapphire", chance = 48000, maxCount = 3 },
-	{ name = "stone skin amulet", chance = 54000 },
-	{ id = 31369, chance = 6500 }, -- gryphon mask
-	{ name = "fire axe", chance = 34000 },
-	{ id = 31557, chance = 520 }, -- blister ring
+	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
+	{ id = 3029, chance = 80000, maxCount = 3 }, -- small sapphire
+	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
+	{ id = 16121, chance = 80000 }, -- green crystal shard
+	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 3320, chance = 80000 }, -- fire axe
+	{ id = 31323, chance = 80000 }, -- sea horse figurine
+	{ id = 31324, chance = 80000 }, -- golden mask
+	{ id = 31557, chance = 80000 }, -- enchanted blister ring
+	{ id = 31617, chance = 80000 }, -- winged boots
+	{ id = 16127, chance = 80000 }, -- green crystal fragment
+	{ id = 8093, chance = 80000 }, -- wand of draconia
+	{ id = 16124, chance = 80000 }, -- blue crystal splinter
+	{ id = 675, chance = 80000 }, -- small enchanted sapphire
+	{ id = 3071, chance = 80000 }, -- wand of inferno
+	{ id = 6299, chance = 80000 }, -- death ring
+	{ id = 30403, chance = 80000 }, -- enchanted theurgic amulet
 }
 
 monster.attacks = {

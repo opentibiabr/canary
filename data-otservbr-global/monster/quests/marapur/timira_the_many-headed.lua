@@ -60,33 +60,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 22 },
-	{ name = "ultimate mana potion", chance = 32653, maxCount = 14 },
-	{ name = "ultimate health potion", chance = 30612, maxCount = 14 },
-	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
-	{ name = "berserk potion", chance = 22449, maxCount = 5 },
-	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
-	{ name = "naga basin", chance = 12245 },
-	{ name = "piece of timira's sensors", chance = 10204 },
-	{ name = "giant amethyst", chance = 6122 },
-	{ name = "giant ruby", chance = 4082 },
-	{ name = "giant emerald", chance = 4082 },
-	{ name = "one of timira's many heads", chance = 2041 },
-	{ name = "giant sapphire", chance = 2041 },
-	{ name = "giant topaz", chance = 2041 },
-	{ name = "dawnfire sherwani", chance = 200 },
-	{ name = "frostflower boots", chance = 200 },
-	{ name = "feverbloom boots", chance = 200 },
-	{ id = 39233, chance = 200 }, -- enchanted turtle amulet
-	{ name = "midnight tunic", chance = 200 },
-	{ name = "midnight sarong", chance = 200 },
-	{ name = "naga quiver", chance = 200 },
-	{ name = "naga sword", chance = 200 },
-	{ name = "naga axe", chance = 200 },
-	{ name = "naga club", chance = 200 },
-	{ name = "naga wand", chance = 200 },
-	{ name = "naga rod", chance = 200 },
-	{ name = "naga crossbow", chance = 200 },
+	{ id = 39755, chance = 80000 }, -- naga basin
+	{ id = 3043, chance = 80000, maxCount = 6 }, -- crystal coin
+	{ id = 32622, chance = 80000 }, -- giant amethyst
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
+	{ id = 7440, chance = 80000, maxCount = 5 }, -- mastermind potion
+	{ id = 7443, chance = 80000 }, -- bullseye potion
+	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 7643, chance = 80000, maxCount = 14 }, -- ultimate health potion
+	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 30059, chance = 80000 }, -- giant ruby
+	{ id = 39400, chance = 80000 }, -- piece of timiras sensors
+	{ id = 39399, chance = 80000 }, -- one of timiras many heads
+	{ id = 39158, chance = 80000 }, -- frostflower boots
+	{ id = 39234, chance = 80000 }, -- enchanted turtle amulet
+	{ id = 39164, chance = 80000 }, -- dawnfire sherwani
+	{ id = 39159, chance = 80000 }, -- naga crossbow
+	{ id = 39161, chance = 80000 }, -- feverbloom boots
+	{ id = 39157, chance = 80000 }, -- naga club
+	{ id = 39165, chance = 80000 }, -- midnight tunic
+	{ id = 32623, chance = 80000 }, -- giant topaz
+	{ id = 39166, chance = 80000 }, -- dawnfire pantaloons
+	{ id = 39167, chance = 80000 }, -- midnight sarong
+	{ id = 39160, chance = 80000 }, -- naga quiver
+	{ id = 39163, chance = 80000 }, -- naga rod
+	{ id = 39155, chance = 80000 }, -- naga sword
+	{ id = 39162, chance = 80000 }, -- naga wand
+	{ id = 39156, chance = 80000 }, -- naga axe
 }
 
 monster.attacks = {

@@ -79,27 +79,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2815, chance = 31000 }, -- scroll
-	{ name = "candlestick", chance = 2100 },
-	{ name = "gold coin", chance = 37000, maxCount = 47 },
-	{ name = "yellow gem", chance = 50 },
-	{ name = "life crystal", chance = 970 },
-	{ name = "wand of cosmic energy", chance = 1160 },
-	{ name = "elven amulet", chance = 1999 },
-	{ name = "blank rune", chance = 18000 },
-	{ name = "arrow", chance = 6000, maxCount = 3 },
-	{ id = 3509, chance = 1000 }, -- inkwell
-	{ name = "sandals", chance = 950 },
-	{ name = "green tunic", chance = 7000 },
-	{ name = "melon", chance = 22000 },
-	{ name = "bread", chance = 14000 },
-	{ name = "grave flower", chance = 880 },
-	{ name = "sling herb", chance = 5000 },
-	{ name = "holy orchid", chance = 2100 },
-	{ name = "strong mana potion", chance = 3000 },
-	{ name = "health potion", chance = 4000 },
-	{ name = "elvish talisman", chance = 10000 },
-	{ name = "elven astral observer", chance = 7710 },
+	{ id = 3031, chance = 80000, maxCount = 47 }, -- gold coin
+	{ id = 2815, chance = 80000 }, -- scroll
+	{ id = 3593, chance = 80000 }, -- melon
+	{ id = 3147, chance = 80000 }, -- blank rune
+	{ id = 3600, chance = 80000 }, -- bread
+	{ id = 9635, chance = 80000 }, -- elvish talisman
+	{ id = 11465, chance = 80000 }, -- elven astral observer
+	{ id = 3563, chance = 80000 }, -- green tunic
+	{ id = 3447, chance = 80000, maxCount = 3 }, -- arrow
+	{ id = 3738, chance = 5000 }, -- sling herb
+	{ id = 266, chance = 5000 }, -- health potion
+	{ id = 237, chance = 5000 }, -- strong mana potion
+	{ id = 2917, chance = 5000 }, -- candlestick
+	{ id = 5922, chance = 5000 }, -- holy orchid
+	{ id = 3082, chance = 5000 }, -- elven amulet
+	{ id = 3073, chance = 1000 }, -- wand of cosmic energy
+	{ id = 28568, chance = 1000 }, -- inkwell
+	{ id = 3551, chance = 1000 }, -- sandals
+	{ id = 3061, chance = 1000 }, -- life crystal
+	{ id = 3661, chance = 1000 }, -- grave flower
+	{ id = 3037, chance = 260 }, -- yellow gem
 }
 
 monster.attacks = {

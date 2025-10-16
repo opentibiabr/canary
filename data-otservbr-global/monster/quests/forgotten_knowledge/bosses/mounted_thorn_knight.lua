@@ -68,7 +68,8 @@ monster.voices = {
 	{ text = "I'm the hunter and you are my prey!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = -600, maxDamage = -1000 },

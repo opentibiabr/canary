@@ -68,17 +68,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 19083, chance = 200 }, -- silver raid token
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 70000, maxCount = 100 }, -- gold coin
-	{ id = 19359, chance = 500 }, -- horn
-	{ id = 19358, chance = 500 }, -- albino plate
-	{ id = 3052, chance = 1000 }, -- life ring
-	{ id = 3028, chance = 7000 }, -- small diamond
-	{ id = 3577, chance = 70000, maxCount = 4 }, -- meat
-	{ id = 9692, chance = 70000 }, -- lump of dirt
-	{ id = 3327, chance = 70000 }, -- daramian mace
-	{ id = 10275, chance = 70000 }, -- carrion worm fang
+	{ id = 3031, chance = 80000, maxCount = 124 }, -- gold coin
+	{ id = 10275, chance = 80000 }, -- carrion worm fang
+	{ id = 9692, chance = 80000 }, -- lump of dirt
+	{ id = 3577, chance = 80000, maxCount = 3 }, -- meat
+	{ id = 19083, chance = 80000 }, -- silver raid token
+	{ id = 19358, chance = 80000 }, -- albino plate
+	{ id = 7452, chance = 80000 }, -- spiked squelcher
+	{ id = 3052, chance = 80000 }, -- life ring
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 3327, chance = 80000 }, -- daramian mace
+	{ id = 12600, chance = 80000 }, -- coal
 }
 
 monster.attacks = {

@@ -79,15 +79,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "cyan crystal fragment", chance = 13670 },
-	{ name = "green crystal fragment", chance = 1770 },
-	{ name = "lamassu horn", chance = 10770 },
-	{ name = "lamassu hoof", chance = 9700 },
-	{ name = "small amethyst", chance = 8680 },
-	{ name = "gold ingot", chance = 4660 },
-	{ name = "green gem", chance = 1290 },
-	{ name = "elven amulet", chance = 800 },
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 31442, chance = 23000 }, -- lamassu horn
+	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
+	{ id = 31441, chance = 23000 }, -- lamassu hoof
+	{ id = 3033, chance = 23000 }, -- small amethyst
+	{ id = 9058, chance = 5000 }, -- gold ingot
+	{ id = 16127, chance = 5000 }, -- green crystal fragment
+	{ id = 3038, chance = 5000 }, -- green gem
+	{ id = 3082, chance = 1000 }, -- elven amulet
 }
 
 monster.attacks = {

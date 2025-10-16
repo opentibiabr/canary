@@ -74,21 +74,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 20 },
-	{ name = "leaf star", chance = 73000, maxCount = 2 },
-	{ name = "throwing star", chance = 65000, maxCount = 6 },
-	{ name = "hunting spear", chance = 62000 },
-	{ name = "gold ingot", chance = 48000 },
-	{ name = "blue gem", chance = 31000 },
-	{ name = "yellow gem", chance = 31000 },
-	{ name = "green crystal shard", chance = 8600 },
-	{ id = 281, chance = 28000 }, -- giant shimmering pearl (green)
-	{ name = "skull helmet", chance = 7500 },
-	{ id = 23542, chance = 7200 }, -- collar of blue plasma
-	{ name = "cobra crest", chance = 11000 },
-	{ name = "cobra boots", chance = 115 },
-	{ name = "cobra hood", chance = 120 },
-	{ name = "cobra crossbow", chance = 50 },
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 9058, chance = 23000 }, -- gold ingot
+	{ id = 31678, chance = 23000 }, -- cobra crest
+	{ id = 3041, chance = 23000 }, -- blue gem
+	{ id = 3038, chance = 23000 }, -- green gem
+	{ id = 830, chance = 5000 }, -- terra hood
+	{ id = 3349, chance = 5000 }, -- crossbow
+	{ id = 3350, chance = 5000 }, -- bow
+	{ id = 3347, chance = 1000 }, -- hunting spear
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 3287, chance = 5000, maxCount = 6 }, -- throwing star
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 9057, chance = 1000 }, -- small topaz
+	{ id = 9302, chance = 1000 }, -- sacred tree amulet
+	{ id = 827, chance = 1000 }, -- magma monocle
+	{ id = 3575, chance = 1000 }, -- wood cape
+	{ id = 16163, chance = 1000 }, -- crystal crossbow
+	{ id = 5741, chance = 1000 }, -- skull helmet
+	{ id = 23529, chance = 1000 }, -- ring of blue plasma
+	{ id = 30394, chance = 260 }, -- cobra boots
+	{ id = 30393, chance = 260 }, -- cobra crossbow
+	{ id = 30397, chance = 260 }, -- cobra hood
 }
 
 monster.attacks = {

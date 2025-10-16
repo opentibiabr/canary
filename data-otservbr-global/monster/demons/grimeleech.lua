@@ -77,37 +77,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 197 },
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "great mana potion", chance = 34850, maxCount = 3 },
-	{ name = "great health potion", chance = 34290, maxCount = 3 },
-	{ name = "great spirit potion", chance = 30860, maxCount = 3 },
-	{ name = "flask of demonic blood", chance = 23400, maxCount = 3 },
-	{ name = "demonic essence", chance = 19240 },
-	{ name = "some grimeleech wings", chance = 19080 },
-	{ name = "fire mushroom", chance = 15360, maxCount = 5 },
-	{ name = "green mushroom", chance = 14800, maxCount = 5 },
-	{ name = "small diamond", chance = 11290, maxCount = 5 },
-	{ name = "small ruby", chance = 10750, maxCount = 5 },
-	{ name = "small topaz", chance = 9660, maxCount = 5 },
-	{ name = "small amethyst", chance = 9640, maxCount = 5 },
-	{ name = "underworld rod", chance = 6890 },
-	{ name = "wand of voodoo", chance = 4810 },
-	{ id = 3039, chance = 3930 }, -- red gem
-	{ name = "yellow gem", chance = 2900 },
-	{ name = "devil helmet", chance = 1360 },
-	{ name = "magma legs", chance = 1150 },
-	{ name = "demon shield", chance = 1010 },
-	{ name = "nightmare blade", chance = 930 },
-	{ name = "blue gem", chance = 780 },
-	{ name = "rift crossbow", chance = 720 },
-	{ name = "steel boots", chance = 640 },
-	{ name = "rift shield", chance = 620 },
-	{ name = "rift lance", chance = 580 },
-	{ name = "rift bow", chance = 370 },
-	{ name = "abyss hammer", chance = 210 },
-	{ name = "vile axe", chance = 180 },
-	{ name = "magic plate armor", chance = 60 },
+	{ id = 3031, chance = 80000, maxCount = 197 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
+	{ id = 238, chance = 80000, maxCount = 3 }, -- great mana potion
+	{ id = 3028, chance = 23000, maxCount = 5 }, -- small diamond
+	{ id = 3033, chance = 23000, maxCount = 5 }, -- small amethyst
+	{ id = 9057, chance = 23000, maxCount = 5 }, -- small topaz
+	{ id = 3030, chance = 23000, maxCount = 5 }, -- small ruby
+	{ id = 3732, chance = 23000, maxCount = 5 }, -- green mushroom
+	{ id = 3731, chance = 23000, maxCount = 5 }, -- fire mushroom
+	{ id = 7642, chance = 23000, maxCount = 3 }, -- great spirit potion
+	{ id = 239, chance = 23000, maxCount = 3 }, -- great health potion
+	{ id = 6558, chance = 23000, maxCount = 3 }, -- flask of demonic blood
+	{ id = 22730, chance = 23000 }, -- some grimeleech wings
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 8082, chance = 23000 }, -- underworld rod
+	{ id = 8094, chance = 5000 }, -- wand of voodoo
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3037, chance = 5000 }, -- yellow gem
+	{ id = 3356, chance = 1000 }, -- devil helmet
+	{ id = 821, chance = 1000 }, -- magma legs
+	{ id = 3420, chance = 1000 }, -- demon shield
+	{ id = 7418, chance = 1000 }, -- nightmare blade
+	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 22727, chance = 1000 }, -- rift lance
+	{ id = 22867, chance = 260 }, -- rift crossbow
+	{ id = 3554, chance = 260 }, -- steel boots
+	{ id = 22726, chance = 260 }, -- rift shield
+	{ id = 22866, chance = 260 }, -- rift bow
+	{ id = 7414, chance = 260 }, -- abyss hammer
+	{ id = 7388, chance = 260 }, -- vile axe
+	{ id = 3366, chance = 260 }, -- magic plate armor
 }
 
 monster.attacks = {

@@ -80,19 +80,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 15 },
-	{ name = "great mana potion", chance = 11880 },
-	{ name = "crystal of the mitmah", chance = 11410 }, -- 280gp yasir
-	{ name = "strong health potion", chance = 5810, maxCount = 3 },
-	{ name = "opal", chance = 4990 },
-	{ name = "wand of cosmic energy", chance = 3920 },
-	{ id = 3039, chance = 2280 }, -- red gem
-	{ name = "gold-brocaded cloth", chance = 1450 },
-	{ name = "gold ring", chance = 1190 },
-	{ name = "ruby necklace", chance = 1100 },
-	{ id = 3038, chance = 570 }, -- green gem
-	{ id = 3040, chance = 470 }, -- gold nugget
-	{ name = "wooden spellbook", chance = 280 },
+	{ id = 236, chance = 23000, maxCount = 3 }, -- strong health potion
+	{ id = 238, chance = 23000 }, -- great mana potion
+	{ id = 22194, chance = 23000 }, -- opal
+	{ id = 3016, chance = 5000 }, -- ruby necklace
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 3063, chance = 5000 }, -- gold ring
+	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
+	{ id = 3038, chance = 1000 }, -- green gem
+	{ id = 27488, chance = 1000 }, -- gold nugget
+	{ id = 25699, chance = 260 }, -- wooden spellbook
+	{ id = 48099, chance = 80000 }, -- mitmah seer soul core
 }
 
 monster.attacks = {

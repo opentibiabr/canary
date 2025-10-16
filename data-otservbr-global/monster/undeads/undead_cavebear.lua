@@ -76,10 +76,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 31820, maxCount = 80 },
-	{ name = "maxilla", chance = 13640 },
-	{ name = "cavebear skull", chance = 2600 },
-	{ name = "health potion", chance = 1300 },
+	{ id = 3031, chance = 80000, maxCount = 89 }, -- gold coin
+	{ id = 12315, chance = 23000 }, -- maxilla
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 266, chance = 1000 }, -- health potion
+	{ id = 12316, chance = 1000 }, -- cavebear skull
 }
 
 monster.attacks = {

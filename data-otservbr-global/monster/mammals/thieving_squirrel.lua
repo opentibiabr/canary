@@ -61,8 +61,8 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9843, chance = 100000 }, -- flask with beaver bait
-	{ id = 841, chance = 4550 }, -- peanut
+	{ id = 9843, chance = 80000 }, -- flask with beaver bait
+	{ id = 841, chance = 80000 }, -- peanut
 }
 
 monster.attacks = {}

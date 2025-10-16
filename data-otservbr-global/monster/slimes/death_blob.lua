@@ -85,7 +85,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "glob of tar", chance = 18470 },
+	{ id = 9055, chance = 23000 }, -- glob of tar
 }
 
 monster.attacks = {

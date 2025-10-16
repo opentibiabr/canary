@@ -61,12 +61,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 82 }, -- gold coin
-	{ id = 11472, chance = 100000 }, -- minotaur horn
-	{ id = 3035, chance = 100000, maxCount = 4 }, -- platinum coin
-	{ id = 236, chance = 25000 }, -- strong health potion
-	{ id = 5878, chance = 25000 }, -- minotaur leather
-	{ id = 3029, chance = 25000 }, -- small sapphire
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 237, chance = 80000, maxCount = 3 }, -- strong mana potion
+	{ id = 236, chance = 80000, maxCount = 3 }, -- strong health potion
+	{ id = 5878, chance = 80000 }, -- minotaur leather
+	{ id = 3028, chance = 80000 }, -- small diamond
+	{ id = 3577, chance = 80000 }, -- meat
+	{ id = 11472, chance = 80000 }, -- minotaur horn
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 21166, chance = 80000 }, -- moohtah plate
+	{ id = 3093, chance = 80000 }, -- club ring
+	{ id = 5911, chance = 80000 }, -- red piece of cloth
+	{ id = 7401, chance = 80000 }, -- minotaur trophy
+	{ id = 7452, chance = 80000 }, -- spiked squelcher
+	{ id = 21177, chance = 80000 }, -- cowtana
 }
 
 monster.attacks = {

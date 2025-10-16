@@ -60,16 +60,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 90000, maxCount = 40 },
-	{ name = "meat", chance = 39000 },
-	{ name = "ham", chance = 30000, maxCount = 3 },
-	{ name = "tusk shield", chance = 500 },
-	{ name = "mammoth whopper", chance = 2800 },
-	{ name = "furry club", chance = 500 },
-	{ name = "thick fur", chance = 7280 },
-	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "bottle of champagne", chance = 7280 },
-	{ name = "mammoth tusk", chance = 7500, maxCount = 2 },
+	{ id = 7381, chance = 80000 }, -- mammoth whopper
+	{ id = 7432, chance = 80000 }, -- furry club
+	{ id = 3577, chance = 80000 }, -- meat
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3582, chance = 80000 }, -- ham
+	{ id = 3443, chance = 80000 }, -- tusk shield
+	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 37468, chance = 80000 }, -- special fx box
 }
 
 monster.attacks = {

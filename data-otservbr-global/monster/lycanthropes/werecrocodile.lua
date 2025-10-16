@@ -73,20 +73,19 @@ monster.light = {
 monster.voices = {}
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 100000, maxCount = 13 },
-	{ name = "werecrocodile tongue", chance = 10800 },
-	{ name = "serpent sword", chance = 5910 },
-	{ name = "crocodile boots", chance = 8530 },
-	{ name = "meat", chance = 5500, maxCount = 4 },
-	{ name = "small topaz", chance = 9120, maxCount = 4 },
-	{ name = "moonlight crystals", chance = 3000 },
-	{ id = 3039, chance = 5120 }, -- red gem
-	{ name = "green crystal shard", chance = 2800 },
-	{ name = "bonebreaker", chance = 500 },
-	{ name = "glorious axe", chance = 2190 },
-	{ name = "golden sun coin", chance = 1770 },
-	{ id = 43916, chance = 200 }, -- werecrocodile trophy
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 13 }, -- platinum coin
+	{ id = 43729, chance = 23000 }, -- werecrocodile tongue
+	{ id = 3556, chance = 23000 }, -- crocodile boots
+	{ id = 3297, chance = 23000 }, -- serpent sword
+	{ id = 3577, chance = 23000, maxCount = 4 }, -- meat
+	{ id = 22083, chance = 23000 }, -- moonlight crystals
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 16121, chance = 5000 }, -- green crystal shard
+	{ id = 7454, chance = 5000 }, -- glorious axe
+	{ id = 43734, chance = 1000 }, -- golden sun coin
+	{ id = 7428, chance = 1000 }, -- bonebreaker
+	{ id = 43916, chance = 1000 }, -- werecrocodile trophy
 }
 
 monster.attacks = {

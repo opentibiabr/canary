@@ -74,25 +74,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "emerald bangle", chance = 2200 },
-	{ id = 3019, chance = 190 }, -- demonbone amulet
-	{ name = "small diamond", chance = 1400 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 40000, maxCount = 100 },
-	{ name = "gold coin", chance = 10000, maxCount = 46 },
-	{ name = "wand of inferno", chance = 9450 },
-	{ name = "burnt scroll", chance = 50000 },
-	{ name = "blank rune", chance = 30000, maxCount = 2 },
-	{ name = "fire sword", chance = 4140 },
-	{ name = "fire axe", chance = 440 },
-	{ name = "soul orb", chance = 12150 },
-	{ name = "demonic essence", chance = 14500 },
-	{ name = "magma legs", chance = 682 },
-	{ name = "magma coat", chance = 380 },
-	{ name = "fiery heart", chance = 9570 },
-	{ name = "piece of hellfire armor", chance = 5060 },
-	{ id = 12600, chance = 670 }, -- coal
-	{ name = "eternal flames", chance = 380 },
+	{ id = 3031, chance = 80000, maxCount = 246 }, -- gold coin
+	{ id = 3124, chance = 80000 }, -- burnt scroll
+	{ id = 3147, chance = 80000, maxCount = 2 }, -- blank rune
+	{ id = 6499, chance = 23000 }, -- demonic essence
+	{ id = 5944, chance = 23000 }, -- soul orb
+	{ id = 9636, chance = 23000 }, -- fiery heart
+	{ id = 3071, chance = 23000 }, -- wand of inferno
+	{ id = 9664, chance = 5000 }, -- piece of hellfire armor
+	{ id = 3280, chance = 5000 }, -- fire sword
+	{ id = 3010, chance = 5000 }, -- emerald bangle
+	{ id = 3028, chance = 5000 }, -- small diamond
+	{ id = 3035, chance = 1000 }, -- platinum coin
+	{ id = 821, chance = 1000 }, -- magma legs
+	{ id = 12600, chance = 1000 }, -- coal
+	{ id = 826, chance = 1000 }, -- magma coat
+	{ id = 3320, chance = 260 }, -- fire axe
+	{ id = 3019, chance = 260 }, -- demonbone amulet
 }
 
 monster.attacks = {

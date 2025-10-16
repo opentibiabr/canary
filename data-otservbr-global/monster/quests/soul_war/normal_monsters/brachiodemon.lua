@@ -83,27 +83,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 58990 },
-	{ name = "ultimate health potion", chance = 29110, maxCount = 4 },
-	{ id = 33936, chance = 5490 }, -- hand
-	{ id = 33937, chance = 3710 }, -- head brachiodemon
-	{ name = "epee", chance = 3290 },
-	{ name = "crystal mace", chance = 1690 },
-	{ name = "noble axe", chance = 1600 },
-	{ name = "spellbook of mind control", chance = 1180 },
-	{ name = "skull staff", chance = 930 },
-	{ id = 23531, chance = 930 }, -- ring of green plasma
-	{ name = "royal helmet", chance = 840 },
-	{ name = "jade hammer", chance = 840 },
-	{ name = "metal bat", chance = 760 },
-	{ name = "diabolic skull", chance = 590 },
-	{ name = "fire axe", chance = 590 },
-	{ name = "crystalline sword", chance = 420 },
-	{ name = "butcher's axe", chance = 420 },
-	{ name = "mastermind shield", chance = 420 },
-	{ name = "assassin dagger", chance = 340 },
-	{ name = "alloy legs", chance = 170 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 7643, chance = 23000, maxCount = 4 }, -- ultimate health potion
+	{ id = 33936, chance = 23000 }, -- hand
+	{ id = 3324, chance = 5000 }, -- skull staff
+	{ id = 3326, chance = 5000 }, -- epee
+	{ id = 3333, chance = 5000 }, -- crystal mace
+	{ id = 7456, chance = 5000 }, -- noble axe
+	{ id = 3320, chance = 1000 }, -- fire axe
+	{ id = 7404, chance = 1000 }, -- assassin dagger
+	{ id = 7422, chance = 1000 }, -- jade hammer
+	{ id = 8074, chance = 1000 }, -- spellbook of mind control
+	{ id = 23531, chance = 1000 }, -- ring of green plasma
+	{ id = 3392, chance = 260 }, -- royal helmet
+	{ id = 3414, chance = 260 }, -- mastermind shield
+	{ id = 7412, chance = 260 }, -- butchers axe
+	{ id = 16160, chance = 260 }, -- crystalline sword
+	{ id = 21168, chance = 260 }, -- alloy legs
+	{ id = 21171, chance = 260 }, -- metal bat
+	{ id = 34025, chance = 260 }, -- diabolic skull
+	{ id = 34109, chance = 260 }, -- bag you desire
 }
 
 monster.attacks = {

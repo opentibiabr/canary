@@ -65,18 +65,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 10000, maxCount = 5 },
-	{ name = "ivory comb", chance = 1000 },
-	{ name = "skull coin", chance = 1000 },
-	{ name = "moonstone", chance = 1000, maxCount = 2 },
-	{ name = "diamond", chance = 100 },
-	{ name = "machete", chance = 400 },
-	{ name = "pair of nightmare boots", chance = 200 },
-	{ name = "skull staff", chance = 400 },
-	{ name = "warrior's axe", chance = 400 },
-	{ name = "death toll", chance = 150 },
-	{ name = "silver hand mirror", chance = 150 },
-	{ id = 3039, chance = 150, maxCount = 2 }, -- red gem
+	{ id = 32583, chance = 80000 }, -- skull coin
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 32773, chance = 80000 }, -- ivory comb
+	{ id = 32771, chance = 80000, maxCount = 2 }, -- moonstone
+	{ id = 32770, chance = 80000 }, -- diamond
+	{ id = 3308, chance = 80000 }, -- machete
+	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
+	{ id = 32703, chance = 80000 }, -- death toll
+	{ id = 32619, chance = 80000 }, -- pair of nightmare boots
+	{ id = 32772, chance = 80000 }, -- silver hand mirror
+	{ id = 3324, chance = 80000 }, -- skull staff
+	{ id = 14040, chance = 80000 }, -- warriors axe
+	{ id = 3320, chance = 80000 }, -- fire axe
+	{ id = 7386, chance = 80000 }, -- mercenary sword
 }
 
 monster.attacks = {

@@ -88,26 +88,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 92000, maxCount = 130 }, -- gold coin
-	{ id = 22194, chance = 1200, maxCount = 3 }, -- opal
-	{ id = 22185, chance = 6200, maxCount = 2 }, -- prickly pear
-	{ id = 3030, chance = 2200, maxCount = 2 }, -- small ruby
-	{ id = 3027, chance = 1200, maxCount = 2 }, -- black pearl
-	{ id = 17831, chance = 3200 }, -- bone fetish
-	{ id = 11452, chance = 1200 }, -- broken shamanic staff
-	{ id = 3069, chance = 800 }, -- necrotic rod
-	{ id = 22188, chance = 3200 }, -- ogre ear stud
-	{ id = 22189, chance = 2200 }, -- ogre nose ring
-	{ id = 22184, chance = 1200 }, -- shamanic talisman
-	{ id = 3114, chance = 1200 }, -- skull
-	{ id = 22191, chance = 1200 }, -- skull fetish
-	{ id = 237, chance = 1000, maxCount = 3 }, -- strong mana potion
-	{ id = 3072, chance = 600 }, -- wand of decay
-	{ id = 2901, chance = 500 }, -- waterskin
-	{ id = 22183, chance = 300 }, -- ogre scepta
-	{ id = 22192, chance = 300 }, -- shamanic mask
-	{ id = 3002, chance = 100 }, -- voodoo doll
-	{ id = 2965, chance = 100, maxCount = 2 }, -- didgeridoo
+	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
+	{ id = 11452, chance = 23000 }, -- broken shamanic staff
+	{ id = 22189, chance = 23000 }, -- ogre nose ring
+	{ id = 22185, chance = 23000, maxCount = 2 }, -- prickly pear
+	{ id = 237, chance = 23000 }, -- strong mana potion
+	{ id = 22191, chance = 23000 }, -- skull fetish
+	{ id = 22188, chance = 23000 }, -- ogre ear stud
+	{ id = 22184, chance = 23000 }, -- shamanic talisman
+	{ id = 3027, chance = 5000 }, -- black pearl
+	{ id = 3030, chance = 5000, maxCount = 3 }, -- small ruby
+	{ id = 22194, chance = 5000, maxCount = 2 }, -- opal
+	{ id = 22193, chance = 5000 }, -- onyx chip
+	{ id = 2901, chance = 5000 }, -- waterskin
+	{ id = 3069, chance = 5000 }, -- necrotic rod
+	{ id = 17831, chance = 5000 }, -- bone fetish
+	{ id = 3072, chance = 5000 }, -- wand of decay
+	{ id = 22192, chance = 1000 }, -- shamanic mask
+	{ id = 2965, chance = 1000 }, -- didgeridoo
+	{ id = 22183, chance = 1000 }, -- ogre scepta
+	{ id = 9179, chance = 260 }, -- voodoo doll
 }
 
 monster.attacks = {

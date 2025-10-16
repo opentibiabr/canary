@@ -60,11 +60,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "goanna hide with sun symbol", chance = 100000 },
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "envenomed arrow", chance = 50000, maxCount = 29 },
-	{ name = "poison dagger", chance = 50000 },
-	{ name = "scared frog", chance = 50000 },
+	{ id = 31428, chance = 80000 }, -- goanna hide with sun symbol
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 16143, chance = 80000 }, -- envenomed arrow
+	{ id = 31488, chance = 80000 }, -- scared frog
+	{ id = 3299, chance = 80000 }, -- poison dagger
+	{ id = 774, chance = 80000 }, -- earth arrow
+	{ id = 3065, chance = 80000 }, -- terra rod
+	{ id = 830, chance = 80000 }, -- terra hood
+	{ id = 31561, chance = 80000 }, -- goanna claw
+	{ id = 814, chance = 80000 }, -- terra amulet
 }
 
 monster.attacks = {

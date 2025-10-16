@@ -75,14 +75,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50840, maxCount = 12 },
-	{ id = 3130, chance = 8300 }, -- twigs
-	{ name = "rapier", chance = 15500 },
-	{ name = "spear", chance = 21500 },
-	{ id = 3412, chance = 15850 }, -- wooden shield
-	{ name = "coat", chance = 1200 },
-	{ id = 3578, chance = 18000 }, -- fish
-	{ name = "frosty ear of a troll", chance = 2000 },
+	{ id = 3031, chance = 80000, maxCount = 12 }, -- gold coin
+	{ id = 7885, chance = 23000 }, -- fish
+	{ id = 3272, chance = 23000 }, -- rapier
+	{ id = 3277, chance = 23000 }, -- spear
+	{ id = 3130, chance = 23000 }, -- twigs
+	{ id = 3412, chance = 23000 }, -- wooden shield
+	{ id = 9648, chance = 5000 }, -- frosty ear of a troll
+	{ id = 3562, chance = 5000 }, -- coat
 }
 
 monster.attacks = {

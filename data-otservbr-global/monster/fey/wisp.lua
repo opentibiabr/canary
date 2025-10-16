@@ -79,7 +79,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "moon backpack", chance = 220 },
+	{ id = 9604, chance = 260 }, -- moon backpack
 }
 
 monster.attacks = {

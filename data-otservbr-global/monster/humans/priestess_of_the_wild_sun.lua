@@ -83,19 +83,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 2 },
-	{ name = "fafnar symbol", chance = 7360 },
-	{ id = 31433, chance = 6610 }, -- secret instruction
-	{ id = 31435, chance = 6610 }, -- secret instruction
-	{ id = 31436, chance = 6610 }, -- secret instruction
-	{ id = 31331, chance = 2540 }, -- empty honey glass
-	{ name = "sea horse figurine", chance = 910 },
-	{ id = 31369, chance = 530 }, -- gryphon mask
-	{ name = "wand of decay", chance = 1250 },
-	{ name = "wand of everblazing", chance = 1290 },
-	{ name = "golden sickle", chance = 1250 },
-	{ name = "relic sword", chance = 1390 },
-	{ name = "war axe", chance = 1777 },
+	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
+	{ id = 31443, chance = 23000 }, -- fafnar symbol
+	{ id = 3306, chance = 5000 }, -- golden sickle
+	{ id = 3072, chance = 5000 }, -- wand of decay
+	{ id = 3342, chance = 5000 }, -- war axe
+	{ id = 31331, chance = 5000 }, -- empty honey glass
+	{ id = 7383, chance = 5000 }, -- relic sword
+	{ id = 16115, chance = 5000 }, -- wand of everblazing
+	{ id = 31324, chance = 1000 }, -- golden mask
+	{ id = 31323, chance = 1000 }, -- sea horse figurine
 }
 
 monster.attacks = {

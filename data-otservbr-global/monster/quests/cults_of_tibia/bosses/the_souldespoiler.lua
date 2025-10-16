@@ -82,43 +82,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "curious matter", chance = 8920, maxCount = 10 },
-	{ id = 23516, chance = 20000 }, -- instable proto matter
-	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
-	{ name = "wand of defiance", chance = 8920 },
-	{ name = "rift lance", chance = 13200 },
-	{ name = "rift crossbow", chance = 7620 },
-	{ name = "haunted blade", chance = 9700 },
-	{ name = "silver token", chance = 2320 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "sapphire hammer", chance = 14000 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 29840, maxCount = 35 },
-	{ name = "wand of defiance", chance = 8723 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "medusa shield", chance = 7270 },
-	{ name = "underworld rod", chance = 9510 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "prismatic quartz", chance = 13390, maxCount = 10 },
-	{ name = "small diamond", chance = 12760, maxCount = 10 },
-	{ name = "small amethyst", chance = 14700, maxCount = 10 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "small sapphire", chance = 13790, maxCount = 10 },
-	{ name = "small emerald", chance = 14700, maxCount = 10 },
-	{ name = "small amethyst", chance = 12259, maxCount = 10 },
-	{ name = "odd organ", chance = 100000 },
-	{ name = "energy bar", chance = 16872, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
-	{ name = "great mana potion", chance = 33721, maxCount = 10 },
-	{ name = "great spirit potion", chance = 25690, maxCount = 10 },
-	{ name = "blade of corruption", chance = 3775 },
-	{ name = "magma boots", chance = 15890 },
-	{ name = "spark sphere", chance = 80000 },
-	{ name = "spellbook of lost souls", chance = 7890 },
-	{ name = "shield of corruption", chance = 150 },
-	{ name = "plasma pearls", chance = 100000 },
-	{ name = "spiked squelcher", chance = 16892, maxCount = 2 },
+	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
+	{ id = 23535, chance = 80000, maxCount = 5 }, -- energy bar
+	{ id = 23509, chance = 80000 }, -- mysterious remains
+	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
+	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
+	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
+	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
+	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
+	{ id = 23510, chance = 80000 }, -- odd organ
+	{ id = 23506, chance = 80000 }, -- plasma pearls
+	{ id = 24962, chance = 80000, maxCount = 10 }, -- prismatic quartz
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 23511, chance = 80000, maxCount = 10 }, -- curious matter
+	{ id = 23518, chance = 80000, maxCount = 10 }, -- spark sphere
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
+	{ id = 7437, chance = 80000 }, -- sapphire hammer
+	{ id = 7407, chance = 80000 }, -- haunted blade
+	{ id = 7452, chance = 80000, maxCount = 2 }, -- spiked squelcher
+	{ id = 16096, chance = 80000 }, -- wand of defiance
+	{ id = 22516, chance = 80000 }, -- silver token
+	{ id = 22721, chance = 80000 }, -- gold token
+	{ id = 7435, chance = 80000 }, -- impaler
+	{ id = 11688, chance = 80000 }, -- shield of corruption
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 8072, chance = 80000 }, -- spellbook of enlightenment
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3436, chance = 80000 }, -- medusa shield
+	{ id = 818, chance = 80000 }, -- magma boots
+	{ id = 8082, chance = 80000 }, -- underworld rod
+	{ id = 7419, chance = 80000 }, -- dreaded cleaver
+	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 22727, chance = 80000 }, -- rift lance
 }
 
 monster.attacks = {

@@ -84,10 +84,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 10000, maxCount = 3 }, -- platinum coin
-	{ id = 6499, chance = 2857 }, -- demonic essence
-	{ id = 5944, chance = 2500 }, -- soul orb
+	{ id = 3031, chance = 80000 }, -- gold coin
+	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 3027, chance = 80000 }, -- black pearl
+	{ id = 6499, chance = 80000 }, -- demonic essence
+	{ id = 6299, chance = 80000 }, -- death ring
+	{ id = 5944, chance = 80000 }, -- soul orb
+	{ id = 8896, chance = 80000 }, -- slightly rusted armor
+	{ id = 36792, chance = 80000 }, -- abominations eye
+	{ id = 36791, chance = 80000 }, -- abominations tail
+	{ id = 36793, chance = 80000 }, -- abominations tongue
+	{ id = 36938, chance = 80000 }, -- fiery horseshoe
+	{ id = 23373, chance = 80000, maxCount = 20 }, -- ultimate mana potion
+	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3043, chance = 80000, maxCount = 39 }, -- crystal coin
+	{ id = 7443, chance = 80000, maxCount = 19 }, -- bullseye potion
+	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
+	{ id = 7439, chance = 80000, maxCount = 19 }, -- berserk potion
+	{ id = 32624, chance = 80000 }, -- amber with a bug
+	{ id = 7440, chance = 80000, maxCount = 19 }, -- mastermind potion
+	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 23375, chance = 80000, maxCount = 11 }, -- supreme health potion
+	{ id = 23374, chance = 80000, maxCount = 11 }, -- ultimate spirit potion
+	{ id = 30059, chance = 80000 }, -- giant ruby
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 32769, chance = 80000 }, -- white gem
+	{ id = 34024, chance = 80000 }, -- gruesome fan
+	{ id = 34025, chance = 80000 }, -- diabolic skull
+	{ id = 34023, chance = 80000 }, -- brooch of embracement
+	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
 }
 
 monster.attacks = {

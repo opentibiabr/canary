@@ -82,23 +82,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 66670 },
-	{ name = "ultimate health potion", chance = 27960, maxCount = 5 },
-	{ name = "terra rod", chance = 13980 },
-	{ name = "violet gem", chance = 8600 },
-	{ name = "vibrant heart", chance = 6450 },
-	{ id = 281, chance = 6450 }, -- giant shimmering pearl
-	{ name = "gold ingot", chance = 4300 },
-	{ name = "blue crystal shard", chance = 4300 },
-	{ name = "vibrant robe", chance = 3230 },
-	{ name = "springsprout rod", chance = 3230 },
-	{ name = "blue gem", chance = 3230 },
-	{ name = "hailstorm rod", chance = 3230 },
-	{ name = "underworld rod", chance = 2150 },
-	{ name = "violet crystal shard", chance = 1080 },
-	{ id = 23529, chance = 1080 }, -- ring of blue plasma
-	{ name = "green gem", chance = 1080 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 80000 }, -- crystal coin
+	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
+	{ id = 3036, chance = 23000 }, -- violet gem
+	{ id = 3065, chance = 23000 }, -- terra rod
+	{ id = 9058, chance = 23000 }, -- gold ingot
+	{ id = 3067, chance = 5000 }, -- hailstorm rod
+	{ id = 3038, chance = 5000 }, -- green gem
+	{ id = 3041, chance = 5000 }, -- blue gem
+	{ id = 8082, chance = 5000 }, -- underworld rod
+	{ id = 8084, chance = 5000 }, -- springsprout rod
+	{ id = 16119, chance = 5000 }, -- blue crystal shard
+	{ id = 16120, chance = 5000 }, -- violet crystal shard
+	{ id = 23529, chance = 5000 }, -- ring of blue plasma
+	{ id = 34143, chance = 5000 }, -- vibrant heart
+	{ id = 34144, chance = 5000 }, -- vibrant robe
+	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 34109, chance = 260 }, -- bag you desire
 }
 
 monster.attacks = {

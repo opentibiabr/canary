@@ -78,30 +78,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 5000, maxCount = 40 },
-	{ id = 36706, chance = 1500 }, -- red gem
-	{ name = "green crystal shard", chance = 900, maxCount = 2 },
-	{ name = "blue crystal splinter", chance = 300 },
-	{ name = "ultimate health potion", chance = 1500, maxCount = 3 },
-	{ name = "bloodstained scythe", chance = 800 },
-	{ name = "crusader helmet", chance = 800 },
-	{ name = "great spirit potion", chance = 1500, maxCount = 5 },
-	{ name = "blue crystal shard", chance = 300, maxCount = 2 },
-	{ name = "green crystal splinter", chance = 300 },
-	{ name = "stone skin amulet", chance = 500 },
-	{ name = "demonic matter", chance = 4761 },
-	{ name = "gold ring", chance = 200 },
-	{ name = "demon shield", chance = 150 },
-	{ name = "brinebrute claw", chance = 2000 },
-	{ name = "small sapphire", chance = 1500, maxCount = 4 },
-	{ name = "violet crystal shard", chance = 1500, maxCount = 2 },
-	{ name = "brown crystal splinter", chance = 300 },
-	{ name = "might ring", chance = 900 },
-	{ id = 3098, chance = 900 }, -- ring of healing
-	{ name = "giant sword", chance = 300 },
-	{ name = "demonic core essence", chance = 100 },
-	{ name = "mummified demon finger", chance = 155 },
-	{ name = "demonrage sword", chance = 300 },
+	{ id = 3035, chance = 80000, maxCount = 40 }, -- platinum coin
+	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
+	{ id = 50056, chance = 80000 }, -- brinebrute claw
+	{ id = 3029, chance = 23000, maxCount = 4 }, -- small sapphire
+	{ id = 36706, chance = 5000 }, -- red gem
+	{ id = 16119, chance = 23000, maxCount = 2 }, -- blue crystal shard
+	{ id = 16120, chance = 23000, maxCount = 2 }, -- violet crystal shard
+	{ id = 16121, chance = 23000, maxCount = 2 }, -- green crystal shard
+	{ id = 16122, chance = 23000 }, -- green crystal splinter
+	{ id = 16123, chance = 23000 }, -- brown crystal splinter
+	{ id = 16124, chance = 23000 }, -- blue crystal splinter
+	{ id = 3038, chance = 5000 }, -- green gem
+	{ id = 3048, chance = 5000 }, -- might ring
+	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 3098, chance = 5000 }, -- ring of healing
+	{ id = 3281, chance = 5000 }, -- giant sword
+	{ id = 7643, chance = 5000, maxCount = 3 }, -- ultimate health potion
+	{ id = 49894, chance = 5000 }, -- demonic matter
+	{ id = 49909, chance = 5000 }, -- demonic core essence
+	{ id = 50101, chance = 5000 }, -- bloodstained scythe
+	{ id = 3063, chance = 1000 }, -- gold ring
+	{ id = 49908, chance = 1000 }, -- mummified demon finger
+	{ id = 3391, chance = 260 }, -- crusader helmet
+	{ id = 3420, chance = 260 }, -- demon shield
+	{ id = 7382, chance = 260 }, -- demonrage sword
 }
 
 monster.attacks = {

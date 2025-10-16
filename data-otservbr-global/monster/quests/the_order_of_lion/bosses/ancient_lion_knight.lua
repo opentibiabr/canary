@@ -63,36 +63,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "dirty fur", chance = 53750 },
-	{ id = 3130, chance = 8300 }, -- twigs
-	{ name = "fishbone", chance = 9500 },
-	{ name = "dark shield", chance = 2000 },
-	{ name = "ham", chance = 53750 },
-	{ name = "dirty cape", chance = 47500 },
-	{ id = 3114, chance = 28750 }, -- skull
-	{ name = "knife", chance = 25000 },
-	{ name = "broken helmet", chance = 23750 },
-	{ name = "dark armor", chance = 18750 },
-	{ name = "bug meat", chance = 12500 },
-	{ name = "combat knife", chance = 8750 },
-	{ name = "plate armor", chance = 7500 },
-	{ name = "studded shield", chance = 7500 },
-	{ name = "big bone", chance = 5000 },
-	{ name = "cape", chance = 5000 },
-	{ name = "life preserver", chance = 3750 },
-	{ name = "dwarven shield", chance = 1250 },
-	{ name = "lion spangenhelm", chance = 35 },
-	{ name = "lion plate", chance = 35 },
-	{ name = "lion shield", chance = 35 },
-	{ name = "lion longsword", chance = 35 },
-	{ name = "lion hammer", chance = 35 },
-	{ name = "lion axe", chance = 35 },
-	{ name = "lion longbow", chance = 35 },
-	{ name = "lion spellbook", chance = 35 },
-	{ name = "lion wand", chance = 35 },
-	{ name = "lion amulet", chance = 35 },
-	{ name = "lion rod", chance = 35 },
+	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
+	{ id = 3582, chance = 80000, maxCount = 3 }, -- ham
+	{ id = 24382, chance = 80000 }, -- bug meat
+	{ id = 3122, chance = 80000 }, -- dirty cape
+	{ id = 3105, chance = 80000 }, -- dirty fur
+	{ id = 3111, chance = 80000 }, -- fishbone
+	{ id = 3116, chance = 80000 }, -- big bone
+	{ id = 3130, chance = 80000 }, -- twigs
+	{ id = 3291, chance = 80000 }, -- knife
+	{ id = 3292, chance = 80000 }, -- combat knife
+	{ id = 3565, chance = 80000 }, -- cape
+	{ id = 11453, chance = 80000 }, -- broken helmet
+	{ id = 3426, chance = 80000 }, -- studded shield
+	{ id = 3425, chance = 80000 }, -- dwarven shield
+	{ id = 3421, chance = 80000 }, -- dark shield
+	{ id = 3357, chance = 80000 }, -- plate armor
+	{ id = 3383, chance = 80000 }, -- dark armor
+	{ id = 17813, chance = 80000 }, -- life preserver
+	{ id = 34156, chance = 80000 }, -- lion spangenhelm
+	{ id = 34157, chance = 80000 }, -- lion plate
+	{ id = 34154, chance = 80000 }, -- lion shield
+	{ id = 34155, chance = 80000 }, -- lion longsword
+	{ id = 34254, chance = 80000 }, -- lion hammer
+	{ id = 34253, chance = 80000 }, -- lion axe
+	{ id = 34150, chance = 80000 }, -- lion longbow
+	{ id = 34153, chance = 80000 }, -- lion spellbook
+	{ id = 34152, chance = 80000 }, -- lion wand
+	{ id = 34151, chance = 80000 }, -- lion rod
+	{ id = 34158, chance = 80000 }, -- lion amulet
 }
 
 monster.attacks = {

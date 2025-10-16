@@ -76,19 +76,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 10 },
-	{ name = "gold coin", chance = 100000, maxCount = 50 },
-	{ id = 281, chance = 14830 }, -- giant shimmering pearl
-	{ name = "great health potion", chance = 14530 },
-	{ name = "tiger eye", chance = 4820 },
-	{ name = "green crystal splinter", chance = 4190 },
-	{ name = "brown crystal splinter", chance = 4160 },
-	{ name = "opal", chance = 3450, maxCount = 2 },
-	{ name = "gearwheel chain", chance = 3150 },
-	{ name = "onyx chip", chance = 2490 },
-	{ name = "ritual tooth", chance = 2410 },
-	{ name = "spiked squelcher", chance = 1700 },
-	{ id = 11514, chance = 1500 }, -- colorful feather
+	{ id = 239, chance = 23000 }, -- great health potion
+	{ id = 24961, chance = 23000 }, -- tiger eye
+	{ id = 16122, chance = 23000 }, -- green crystal splinter
+	{ id = 16123, chance = 23000 }, -- brown crystal splinter
+	{ id = 22193, chance = 23000 }, -- onyx chip
+	{ id = 22194, chance = 5000, maxCount = 2 }, -- opal
+	{ id = 21170, chance = 5000 }, -- gearwheel chain
+	{ id = 11514, chance = 5000 }, -- colourful feather
+	{ id = 7452, chance = 5000 }, -- spiked squelcher
+	{ id = 3081, chance = 260 }, -- stone skin amulet
 }
 
 monster.attacks = {

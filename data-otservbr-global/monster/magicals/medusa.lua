@@ -80,20 +80,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 190 },
-	{ name = "small emerald", chance = 3770, maxCount = 4 },
-	{ name = "platinum coin", chance = 74810, maxCount = 6 },
-	{ name = "knight armor", chance = 1840 },
-	{ name = "medusa shield", chance = 3040 },
-	{ name = "titan axe", chance = 1160 },
-	{ name = "great mana potion", chance = 10000, maxCount = 2 },
-	{ name = "terra mantle", chance = 870 },
-	{ name = "terra legs", chance = 420 },
-	{ name = "terra amulet", chance = 4060 },
-	{ name = "ultimate health potion", chance = 9290, maxCount = 2 },
-	{ id = 8896, chance = 500 }, -- slightly rusted armor
-	{ name = "sacred tree amulet", chance = 850 },
-	{ name = "strand of medusa hair", chance = 9900 },
+	{ id = 3031, chance = 80000, maxCount = 190 }, -- gold coin
+	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
+	{ id = 238, chance = 23000, maxCount = 2 }, -- great mana potion
+	{ id = 10309, chance = 23000 }, -- strand of medusa hair
+	{ id = 7643, chance = 23000, maxCount = 2 }, -- ultimate health potion
+	{ id = 814, chance = 5000 }, -- terra amulet
+	{ id = 3032, chance = 5000, maxCount = 4 }, -- small emerald
+	{ id = 3436, chance = 5000 }, -- medusa shield
+	{ id = 3370, chance = 5000 }, -- knight armor
+	{ id = 7413, chance = 5000 }, -- titan axe
+	{ id = 811, chance = 1000 }, -- terra mantle
+	{ id = 9302, chance = 1000 }, -- sacred tree amulet
+	{ id = 812, chance = 260 }, -- terra legs
+	{ id = 8896, chance = 260 }, -- slightly rusted armor
 }
 
 monster.attacks = {

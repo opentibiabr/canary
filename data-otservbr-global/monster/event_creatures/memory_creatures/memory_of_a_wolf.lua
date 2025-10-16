@@ -59,7 +59,13 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3031, chance = 80000, maxCount = 115 }, -- gold coin
+	{ id = 3577, chance = 80000, maxCount = 4 }, -- meat
+	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 3028, chance = 80000 }, -- small diamond
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -70 },

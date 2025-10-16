@@ -84,24 +84,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 60000, maxCount = 1 }, -- platinum coin
+	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 80000 }, -- platinum coin
+	{ id = 20199, chance = 23000 }, -- frazzle skin
+	{ id = 7573, chance = 23000 }, -- bone
+	{ id = 25694, chance = 23000 }, -- fairy wings
+	{ id = 238, chance = 23000, maxCount = 3 }, -- great mana potion
+	{ id = 3125, chance = 23000 }, -- remains of a fish
+	{ id = 20198, chance = 23000 }, -- frazzle tongue
+	{ id = 7885, chance = 23000, maxCount = 3 }, -- fish
+	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
+	{ id = 3582, chance = 23000, maxCount = 2 }, -- ham
+	{ id = 3116, chance = 5000 }, -- big bone
 	{ id = 3110, chance = 5000 }, -- piece of iron
-	{ id = 3114, chance = 12680 }, -- skull
-	{ id = 3115, chance = 10000 }, -- bone
-	{ id = 3116, chance = 5500 }, -- big bone
-	{ id = 3578, chance = 6750, maxCount = 3 }, -- fish
-	{ id = 3582, chance = 6000, maxCount = 2 }, -- ham
-	{ id = 5880, chance = 3000 }, -- iron ore
 	{ id = 5895, chance = 5000 }, -- fish fin
-	{ id = 7418, chance = 350 }, -- nightmare blade
-	{ id = 238, chance = 10000, maxCount = 3 }, -- great mana potion
-	{ id = 239, chance = 10000, maxCount = 2 }, -- great health potion
-	{ id = 10389, chance = 300 }, -- sai
-	{ id = 20062, chance = 1200 }, -- cluster of solace
-	{ id = 20198, chance = 12000 }, -- frazzle tongue
-	{ id = 20199, chance = 10500 }, -- frazzle skin
-	{ name = "fairy wings", chance = 15000 },
+	{ id = 5880, chance = 5000 }, -- iron ore
+	{ id = 10389, chance = 260 }, -- sai
+	{ id = 7418, chance = 260 }, -- nightmare blade
+	{ id = 20062, chance = 260 }, -- cluster of solace
 }
 
 monster.attacks = {

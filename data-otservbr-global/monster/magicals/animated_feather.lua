@@ -73,21 +73,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small sapphire", chance = 8700, maxCount = 5 },
-	{ name = "platinum coin", chance = 87000, maxCount = 50 },
-	{ id = 28570, chance = 500, maxCount = 10 }, -- glowing rune
-	{ id = 3051, chance = 8700 }, -- energy ring
-	{ id = 7441, chance = 4000 }, -- ice cube
-	{ name = "shard", chance = 250, maxCount = 3 },
-	{ name = "glacier mask", chance = 250 },
-	{ name = "hailstorm rod", chance = 250 },
-	{ name = "life crystal", chance = 8700 },
-	{ name = "great mana potion", chance = 900, maxCount = 6 },
-	{ name = "golden mug", chance = 500 },
-	{ name = "glowing rune", chance = 500, maxCount = 10 },
-	{ id = 3051, chance = 8700 }, -- energy ring
-	{ name = "quill", chance = 250 },
-	{ name = "small diamond", chance = 500, maxCount = 5 },
+	{ id = 3029, chance = 80000, maxCount = 12 }, -- small sapphire
+	{ id = 3035, chance = 80000, maxCount = 21 }, -- platinum coin
+	{ id = 28570, chance = 80000, maxCount = 5 }, -- glowing rune
+	{ id = 829, chance = 23000 }, -- glacier mask
+	{ id = 3051, chance = 23000 }, -- energy ring
+	{ id = 7741, chance = 23000 }, -- ice cube
+	{ id = 23373, chance = 23000, maxCount = 2 }, -- ultimate mana potion
+	{ id = 28567, chance = 23000 }, -- quill
+	{ id = 7387, chance = 5000 }, -- diamond sceptre
+	{ id = 815, chance = 5000 }, -- glacier amulet
+	{ id = 2903, chance = 5000 }, -- golden mug
+	{ id = 3028, chance = 5000, maxCount = 12 }, -- small diamond
+	{ id = 3061, chance = 5000 }, -- life crystal
+	{ id = 3067, chance = 5000 }, -- hailstorm rod
+	{ id = 3333, chance = 5000 }, -- crystal mace
+	{ id = 7437, chance = 1000 }, -- sapphire hammer
+	{ id = 16118, chance = 1000 }, -- glacial rod
+	{ id = 8050, chance = 260 }, -- crystalline armor
+	{ id = 9303, chance = 260 }, -- leviathans amulet
 }
 
 monster.attacks = {

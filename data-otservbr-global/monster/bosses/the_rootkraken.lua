@@ -70,28 +70,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 3 },
-	{ name = "platinum coin", chance = 100000, maxCount = 93 },
-	{ name = "ultimate health potion", chance = 42590, maxCount = 19 },
-	{ name = "great spirit potion", chance = 42590, maxCount = 7 },
-	{ name = "great mana potion", chance = 31480, maxCount = 14 },
-	{ name = "supreme health potion", chance = 31480, maxCount = 4 },
-	{ name = "ultimate spirit potion", chance = 25930, maxCount = 14 },
-	{ id = 3037, chance = 24070 }, -- yellow gem
-	{ name = "amber with a bug", chance = 18520 },
-	{ name = "giant topaz", chance = 7410 },
-	{ name = "amber crusher", chance = 1850 },
-	{ id = 47375, chance = 300 }, -- amber axe
-	{ id = 47369, chance = 200 }, -- amber greataxe
-	{ id = 47368, chance = 200 }, -- amber slayer
-	{ id = 47374, chance = 300 }, -- amber sabre
-	{ id = 47376, chance = 300 }, -- amber cudgel
-	{ id = 47370, chance = 200 }, -- amber bludgeon
-	{ id = 47371, chance = 200 }, -- amber bow
-	{ id = 47377, chance = 300 }, -- amber crossbow
-	{ id = 47372, chance = 300 }, -- amber wand
-	{ id = 47373, chance = 300 }, -- amber rod
-	{ id = 48514, chance = 250 }, -- strange inedible fruit
+	{ id = 46628, chance = 80000 }, -- amber crusher
+	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
+	{ id = 3035, chance = 80000, maxCount = 93 }, -- platinum coin
+	{ id = 7643, chance = 80000, maxCount = 19 }, -- ultimate health potion
+	{ id = 32624, chance = 80000 }, -- amber with a bug
+	{ id = 7642, chance = 80000, maxCount = 7 }, -- great spirit potion
+	{ id = 23374, chance = 80000, maxCount = 14 }, -- ultimate spirit potion
+	{ id = 32623, chance = 80000 }, -- giant topaz
+	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 237, chance = 80000 }, -- strong mana potion
+	{ id = 238, chance = 80000, maxCount = 14 }, -- great mana potion
+	{ id = 23375, chance = 80000, maxCount = 4 }, -- supreme health potion
+	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 32769, chance = 80000 }, -- white gem
+	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 47374, chance = 80000 }, -- amber sabre
+	{ id = 47370, chance = 80000 }, -- amber bludgeon
+	{ id = 47369, chance = 80000 }, -- amber greataxe
+	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
+	{ id = 32622, chance = 80000 }, -- giant amethyst
+	{ id = 48516, chance = 80000 }, -- root tentacle
+	{ id = 48517, chance = 80000 }, -- fish eye
+	{ id = 48514, chance = 80000 }, -- strange inedible fruit
 }
 
 monster.attacks = {

@@ -177,7 +177,13 @@ mkdir build && cd build
 
 using root:
 cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
-cmake --build linux-release
+cmake --build linux-release -j4
+
+DEBUG
+cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug
+cmake --build linux-debug -j4
+
+=======
 
 using gus:
 cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
@@ -334,3 +340,30 @@ cd ~
 cd canary
 cp -r build/linux-release/bin/canary .
 sudo chmod +x canary
+
+=================================================================================================
+
+
+Expand the VDHX file via Hyper-V as mentioned in existing solutions and then inside the VM:
+
+fdisk -l
+
+See which partition is the current Ubuntu setup - should be obvious based on size (in my case was sda3)
+
+growpart /dev/sda 3
+
+Note the space as mentioned.
+
+pvresize /dev/sda3
+
+This is the step which isn't mentioned in a lot of places; its the intemediate step that allows the logical volume extension step work.
+
+lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+
+The /dev/ part can seen in the fdisk output from step 1.
+
+resize2fs  /dev/mapper/ubuntu--vg-ubuntu--lv
+
+After the prep above, this step now works. Takes a couple of moments and afterwards can verify with df -h that the partition is expanded.
+
+============================================================================================

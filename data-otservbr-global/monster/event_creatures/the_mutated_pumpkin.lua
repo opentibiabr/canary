@@ -78,12 +78,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 8177, chance = 80000, maxCount = 10 }, -- yummy gummy worm
-	{ id = 3594, chance = 80000, maxCount = 5 }, -- pumpkin
-	{ id = 8032, chance = 80000 }, -- spiderwebs
-	{ id = 8179, chance = 80000 }, -- toy spider
-	{ id = 6525, chance = 80000 }, -- skeleton decoration
-	{ id = 6495, chance = 80000 }, -- bat decoration
+	{ id = 8177, chance = 88134, maxCount = 10 }, -- Yummy Gummy Worm
+	{ id = 3594, chance = 100000, maxCount = 5 }, -- Pumpkin
+	{ id = 8032, chance = 5406 }, -- Spiderwebs
+	{ id = 8178, 8179, chance = 9090 }, -- Toy Spider
+	{ id = 6525, chance = 5406 }, -- Skeleton Decoration
+	{ id = 6491, chance = 16216 }, -- Bat Decoration
 }
 
 monster.attacks = {

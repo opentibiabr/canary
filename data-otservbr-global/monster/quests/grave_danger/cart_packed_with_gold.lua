@@ -60,10 +60,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 3065, chance = 80000 }, -- terra rod
+	{ id = 3028, chance = 100000 }, -- Small Diamond
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 7643, chance = 100000 }, -- Ultimate Health Potion
+	{ id = 3065, chance = 1000 }, -- Terra Rod
 }
 
 monster.defenses = {

@@ -63,21 +63,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3026, chance = 80000 }, -- white pearl
-	{ id = 3598, chance = 80000 }, -- cookie
-	{ id = 236, chance = 80000 }, -- strong health potion
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 22194, chance = 80000 }, -- opal
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 1781, chance = 80000 }, -- small stone
-	{ id = 37468, chance = 80000 }, -- special fx box
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 3465, chance = 80000 }, -- pot
-	{ id = 3050, chance = 80000 }, -- power ring
-	{ id = 3093, chance = 80000 }, -- club ring
-	{ id = 37530, chance = 80000 }, -- bottle of champagne
-	{ id = 8907, chance = 80000 }, -- rusted helmet
+	{ id = 3026, chance = 5543 }, -- White Pearl
+	{ id = 3598, chance = 8035 }, -- Cookie
+	{ id = 236, chance = 25208 }, -- Strong Health Potion
+	{ id = 3030, chance = 8307 }, -- Small Ruby
+	{ id = 22194, chance = 5265 }, -- Opal
+	{ id = 3577, chance = 29914 }, -- Meat
+	{ id = 1781, chance = 8030 }, -- Small Stone
+	{ id = 37468, chance = 720 }, -- Special Fx Box
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 22193, chance = 6370 }, -- Onyx Chip
+	{ id = 3465, chance = 1080 }, -- Pot
+	{ id = 3050, chance = 3878 }, -- Power Ring
+	{ id = 3093, chance = 4706 }, -- Club Ring
+	{ id = 37531, chance = 2170 }, -- Candy Floss (Large)
+	{ id = 37530, chance = 1080 }, -- Bottle of Champagne
+	{ id = 8907, chance = 360 }, -- Rusted Helmet
 }
 
 monster.attacks = {

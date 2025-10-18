@@ -80,20 +80,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3582, chance = 80000 }, -- ham
-	{ id = 27597, chance = 80000 }, -- diremaw brainpan
-	{ id = 9640, chance = 23000 }, -- poisonous slime
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 16120, chance = 23000 }, -- violet crystal shard
-	{ id = 16121, chance = 23000 }, -- green crystal shard
-	{ id = 22193, chance = 23000 }, -- onyx chip
-	{ id = 27598, chance = 23000 }, -- diremaw legs
-	{ id = 677, chance = 5000 }, -- small enchanted emerald
-	{ id = 3032, chance = 5000 }, -- small emerald
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 27653, chance = 5000 }, -- suspicious device
-	{ id = 16099, chance = 260 }, -- mushroom backpack
-	{ id = 16164, chance = 260 }, -- mycological bow
+	{ id = 3582, chance = 41068 }, -- Ham
+	{ id = 27597, chance = 23977 }, -- Diremaw Brainpan
+	{ id = 9640, chance = 18367 }, -- Poisonous Slime
+	{ id = 16119, chance = 10658 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 7594 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 9192 }, -- Green Crystal Shard
+	{ id = 22193, chance = 9269 }, -- Onyx Chip
+	{ id = 27598, chance = 9558 }, -- Diremaw Legs
+	{ id = 281, chance = 3194 }, -- Giant Shimmering Pearl (Green)
+	{ id = 677, chance = 4780 }, -- Small Enchanted Emerald
+	{ id = 3032, chance = 6418 }, -- Small Emerald
+	{ id = 9058, chance = 3704 }, -- Gold Ingot
+	{ id = 27653, chance = 624 }, -- Suspicious Device
+	{ id = 16099, chance = 155 }, -- Mushroom Backpack
+	{ id = 16164, chance = 242 }, -- Mycological Bow
 }
 
 monster.attacks = {

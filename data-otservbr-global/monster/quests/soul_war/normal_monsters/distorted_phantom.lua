@@ -83,21 +83,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7642, chance = 23000, maxCount = 5 }, -- great spirit potion
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 8073, chance = 5000 }, -- spellbook of warding
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 8084, chance = 5000 }, -- springsprout rod
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 16118, chance = 5000 }, -- glacial rod
-	{ id = 23529, chance = 5000 }, -- ring of blue plasma
-	{ id = 23531, chance = 5000 }, -- ring of green plasma
-	{ id = 23533, chance = 5000 }, -- ring of red plasma
-	{ id = 34142, chance = 5000 }, -- distorted heart
-	{ id = 34149, chance = 5000 }, -- distorted robe
-	{ id = 3081, chance = 5000 }, -- stone skin amulet
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 68970 }, -- Crystal Coin
+	{ id = 7642, chance = 21554, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 3036, chance = 3135 }, -- Violet Gem
+	{ id = 8073, chance = 3707 }, -- Spellbook of Warding
+	{ id = 8082, chance = 4113 }, -- Underworld Rod
+	{ id = 8084, chance = 2454 }, -- Springsprout Rod
+	{ id = 9058, chance = 3950 }, -- Gold Ingot
+	{ id = 16118, chance = 2202 }, -- Glacial Rod
+	{ id = 23529, chance = 1879 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 1943 }, -- Ring of Green Plasma
+	{ id = 23533, chance = 2190 }, -- Ring of Red Plasma
+	{ id = 34142, chance = 4080 }, -- Distorted Heart
+	{ id = 34149, chance = 2360 }, -- Distorted Robe
+	{ id = 3081, chance = 1370 }, -- Stone Skin Amulet
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

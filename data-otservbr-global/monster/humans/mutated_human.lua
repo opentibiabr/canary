@@ -79,18 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 130 }, -- gold coin
-	{ id = 3111, chance = 23000 }, -- fishbone
-	{ id = 3377, chance = 23000 }, -- scale armor
-	{ id = 3492, chance = 23000, maxCount = 2 }, -- worm
-	{ id = 10308, chance = 23000 }, -- mutated flesh
-	{ id = 3607, chance = 23000 }, -- cheese
-	{ id = 3045, chance = 5000 }, -- strange talisman
-	{ id = 3264, chance = 5000 }, -- sword
-	{ id = 8894, chance = 5000 }, -- heavily rusted armor
-	{ id = 841, chance = 1000 }, -- peanut
-	{ id = 3054, chance = 260 }, -- silver amulet
-	{ id = 3737, chance = 260 }, -- fern
+	{ id = 3031, chance = 88230, maxCount = 130 }, -- Gold Coin
+	{ id = 3111, chance = 9833 }, -- Fishbone
+	{ id = 3377, chance = 7390 }, -- Scale Armor
+	{ id = 3492, chance = 9927, maxCount = 2 }, -- Worm
+	{ id = 10308, chance = 19430 }, -- Mutated Flesh
+	{ id = 3607, chance = 7555 }, -- Cheese
+	{ id = 3045, chance = 5195 }, -- Strange Talisman
+	{ id = 3264, chance = 4642 }, -- Sword
+	{ id = 8894, chance = 2081 }, -- Heavily Rusted Armor
+	{ id = 841, chance = 589 }, -- Peanut
+	{ id = 3054, chance = 116 }, -- Silver Amulet
+	{ id = 3737, chance = 403 }, -- Fern
 }
 
 monster.attacks = {

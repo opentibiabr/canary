@@ -75,21 +75,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
-	{ id = 3583, chance = 80000, maxCount = 9 }, -- dragon ham
-	{ id = 239, chance = 80000, maxCount = 2 }, -- great health potion
-	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
-	{ id = 7365, chance = 80000, maxCount = 10 }, -- onyx arrow
-	{ id = 3386, chance = 80000 }, -- dragon scale mail
-	{ id = 3280, chance = 80000 }, -- fire sword
-	{ id = 3450, chance = 80000, maxCount = 10 }, -- power bolt
-	{ id = 5948, chance = 80000 }, -- red dragon leather
-	{ id = 3392, chance = 80000 }, -- royal helmet
-	{ id = 3051, chance = 80000 }, -- energy ring
-	{ id = 24937, chance = 80000, maxCount = 2 }, -- dragon blood
-	{ id = 24938, chance = 80000 }, -- dragon tongue
-	{ id = 24941, chance = 80000 }, -- horn of kalyassa
-	{ id = 3061, chance = 1000 }, -- life crystal
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 3583, chance = 70570, maxCount = 9 }, -- Dragon Ham
+	{ id = 239, chance = 11710, maxCount = 2 }, -- Great Health Potion
+	{ id = 238, chance = 7710, maxCount = 2 }, -- Great Mana Potion
+	{ id = 7365, chance = 8570, maxCount = 10 }, -- Onyx Arrow
+	{ id = 3386, chance = 3140 }, -- Dragon Scale Mail
+	{ id = 3280, chance = 7710 }, -- Fire Sword
+	{ id = 3450, chance = 51710, maxCount = 10 }, -- Power Bolt
+	{ id = 5948, chance = 98570 }, -- Red Dragon Leather
+	{ id = 3392, chance = 4570 }, -- Royal Helmet
+	{ id = 3051, chance = 19140 }, -- Energy Ring
+	{ id = 24937, chance = 100000, maxCount = 2 }, -- Dragon Blood
+	{ id = 24938, chance = 100000 }, -- Dragon Tongue
+	{ id = 24941, chance = 100000 }, -- Horn of Kalyassa
+	{ id = 3061, chance = 1430 }, -- Life Crystal
 }
 
 monster.attacks = {

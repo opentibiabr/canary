@@ -82,18 +82,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 55 }, -- gold coin
-	{ id = 3565, chance = 80000 }, -- cape
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 5876, chance = 1000 }, -- lizard leather
-	{ id = 268, chance = 1000 }, -- mana potion
-	{ id = 3065, chance = 1000 }, -- terra rod
-	{ id = 5881, chance = 1000 }, -- lizard scale
-	{ id = 3033, chance = 260 }, -- small amethyst
-	{ id = 3052, chance = 260 }, -- life ring
-	{ id = 3407, chance = 260 }, -- charmers tiara
-	{ id = 3066, chance = 260 }, -- snakebite rod
-	{ id = 3037, chance = 260 }, -- yellow gem
+	{ id = 3031, chance = 83090, maxCount = 55 }, -- Gold Coin
+	{ id = 3998, chance = 1000 }, -- Dead Snake (Item)
+	{ id = 3565, chance = 9586 }, -- Cape
+	{ id = 3061, chance = 1222 }, -- Life Crystal
+	{ id = 5876, chance = 1014 }, -- Lizard Leather
+	{ id = 268, chance = 720 }, -- Mana Potion
+	{ id = 3065, chance = 1270 }, -- Terra Rod
+	{ id = 5881, chance = 1090 }, -- Lizard Scale
+	{ id = 3033, chance = 586 }, -- Small Amethyst
+	{ id = 3052, chance = 140 }, -- Life Ring
+	{ id = 3407, chance = 90 }, -- Charmer's Tiara
+	{ id = 3066, chance = 130 }, -- Snakebite Rod
+	{ id = 3037, chance = 50 }, -- Yellow Gem
 }
 
 monster.attacks = {

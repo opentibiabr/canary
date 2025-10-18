@@ -67,40 +67,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 16119, chance = 80000 }, -- blue crystal shard
-	{ id = 20062, chance = 80000 }, -- cluster of solace
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3439, chance = 80000 }, -- phoenix shield
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 16120, chance = 80000 }, -- violet crystal shard
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 7417, chance = 80000 }, -- runed sword
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 16121, chance = 80000 }, -- green crystal shard
-	{ id = 11454, chance = 80000 }, -- luminous orb
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 7387, chance = 80000 }, -- diamond sceptre
-	{ id = 5809, chance = 80000 }, -- soul stone
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 826, chance = 80000 }, -- magma coat
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 823, chance = 80000 }, -- glacier kilt
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 12306, chance = 80000 }, -- leather whip
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 16119, chance = 55000 }, -- Blue Crystal Shard
+	{ id = 20062, chance = 17500 }, -- Cluster of Solace
+	{ id = 7440, chance = 100000 }, -- Mastermind Potion
+	{ id = 3081, chance = 42500 }, -- Stone Skin Amulet
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 3439, chance = 7500 }, -- Phoenix Shield
+	{ id = 7643, chance = 55000 }, -- Ultimate Health Potion
+	{ id = 3028, chance = 22500 }, -- Small Diamond
+	{ id = 22721, chance = 27500 }, -- Gold Token
+	{ id = 22516, chance = 32500 }, -- Silver Token
+	{ id = 16120, chance = 55000 }, -- Violet Crystal Shard
+	{ id = 3033, chance = 20000 }, -- Small Amethyst
+	{ id = 3036, chance = 7500 }, -- Violet Gem
+	{ id = 3098, chance = 100000 }, -- Ring of Healing
+	{ id = 7417, chance = 2499 }, -- Runed Sword
+	{ id = 3039, chance = 25000 }, -- Red Gem
+	{ id = 238, chance = 65000 }, -- Great Mana Potion
+	{ id = 16121, chance = 67500 }, -- Green Crystal Shard
+	{ id = 11454, chance = 45000 }, -- Luminous Orb
+	{ id = 3324, chance = 100000 }, -- Skull Staff
+	{ id = 3041, chance = 20000 }, -- Blue Gem
+	{ id = 3037, chance = 17500 }, -- Yellow Gem
+	{ id = 3032, chance = 22500 }, -- Small Emerald
+	{ id = 7387, chance = 15000 }, -- Diamond Sceptre
+	{ id = 5809, chance = 15000 }, -- Soul Stone
+	{ id = 7642, chance = 45000 }, -- Great Spirit Potion
+	{ id = 281, chance = 12500 }, -- Giant Shimmering Pearl
+	{ id = 5892, chance = 15000 }, -- Huge Chunk of Crude Iron
+	{ id = 9057, chance = 15000 }, -- Small Topaz
+	{ id = 826, chance = 2499 }, -- Magma Coat
+	{ id = 3030, chance = 21428 }, -- Small Ruby
+	{ id = 823, chance = 3571 }, -- Glacier Kilt
+	{ id = 3038, chance = 17857 }, -- Green Gem
+	{ id = 12306, chance = 3571 }, -- Leather Whip
 }
 
 monster.attacks = {

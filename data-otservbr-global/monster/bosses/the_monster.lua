@@ -57,30 +57,29 @@ monster.light = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
-	{ id = 7643, chance = 80000, maxCount = 7 }, -- ultimate health potion
-	{ id = 23373, chance = 80000, maxCount = 5 }, -- ultimate mana potion
-	{ id = 23374, chance = 80000, maxCount = 4 }, -- ultimate spirit potion
-	{ id = 7440, chance = 80000, maxCount = 3 }, -- mastermind potion
-	{ id = 7439, chance = 80000, maxCount = 3 }, -- berserk potion
-	{ id = 7443, chance = 80000, maxCount = 3 }, -- bullseye potion
-	{ id = 3037, chance = 80000, maxCount = 5 }, -- yellow gem
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 32622, chance = 5000 }, -- giant amethyst
-	{ id = 32623, chance = 5000 }, -- giant topaz
-	{ id = 30060, chance = 5000 }, -- giant emerald
-	{ id = 33780, chance = 1000 }, -- watermelon tourmaline
-	{ id = 40594, chance = 260 }, -- alchemists notepad
-	{ id = 40588, chance = 260 }, -- antlerhorn helmet
-	{ id = 40595, chance = 260 }, -- mutant bone kilt
-	{ id = 40591, chance = 260 }, -- mutated skin armor
-	{ id = 40590, chance = 260 }, -- mutated skin legs
-	{ id = 40589, chance = 260 }, -- stitched mutant hide legs
-	{ id = 40592, chance = 260 }, -- alchemists boots
-	{ id = 40593, chance = 260 }, -- mutant bone boots
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 7643, chance = 41904, maxCount = 7 }, -- Ultimate Health Potion
+	{ id = 23373, chance = 33333, maxCount = 5 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 24761, maxCount = 4 }, -- Ultimate Spirit Potion
+	{ id = 7440, chance = 33333, maxCount = 3 }, -- Mastermind Potion
+	{ id = 7439, chance = 24761, maxCount = 3 }, -- Berserk Potion
+	{ id = 7443, chance = 35238, maxCount = 3 }, -- Bullseye Potion
+	{ id = 3037, chance = 28571, maxCount = 5 }, -- Yellow Gem
+	{ id = 3039, chance = 24761, maxCount = 2 }, -- Red Gem
+	{ id = 3041, chance = 17142 }, -- Blue Gem
+	{ id = 3038, chance = 17142 }, -- Green Gem
+	{ id = 3036, chance = 12380 }, -- Violet Gem
+	{ id = 32622, chance = 12380 }, -- Giant Amethyst
+	{ id = 32623, chance = 7619 }, -- Giant Topaz
+	{ id = 30060, chance = 16190 }, -- Giant Emerald
+	{ id = 40594, chance = 1000 }, -- Alchemist's Notepad
+	{ id = 40588, chance = 1000 }, -- Antler-Horn Helmet
+	{ id = 40595, chance = 1818 }, -- Mutant Bone Kilt
+	{ id = 40591, chance = 1000 }, -- Mutated Skin Armor
+	{ id = 40590, chance = 2000 }, -- Mutated Skin Legs
+	{ id = 40589, chance = 1000 }, -- Stitched Mutant Hide Legs
+	{ id = 40592, chance = 1000 }, -- Alchemist's Boots
+	{ id = 40593, chance = 1000 }, -- Mutant Bone Boots
 }
 
 monster.attacks = {

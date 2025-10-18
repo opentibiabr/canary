@@ -75,18 +75,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 174 }, -- gold coin
-	{ id = 3282, chance = 80000 }, -- morning star
-	{ id = 3266, chance = 23000 }, -- battle axe
-	{ id = 8894, chance = 23000 }, -- heavily rusted armor
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 9666, chance = 5000 }, -- sea serpent scale
-	{ id = 3305, chance = 5000 }, -- battle hammer
-	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
-	{ id = 237, chance = 5000 }, -- strong mana potion
-	{ id = 8895, chance = 1000 }, -- rusted armor
-	{ id = 3049, chance = 1000 }, -- stealth ring
-	{ id = 3061, chance = 260 }, -- life crystal
+	{ id = 3031, chance = 98221, maxCount = 174 }, -- Gold Coin
+	{ id = 3282, chance = 39325 }, -- Morning Star
+	{ id = 3266, chance = 9450 }, -- Battle Axe
+	{ id = 8894, chance = 6880 }, -- Heavily Rusted Armor
+	{ id = 236, chance = 5393 }, -- Strong Health Potion
+	{ id = 9666, chance = 4899 }, -- Sea Serpent Scale
+	{ id = 3305, chance = 4804 }, -- Battle Hammer
+	{ id = 3029, chance = 2144, maxCount = 2 }, -- Small Sapphire
+	{ id = 237, chance = 4673 }, -- Strong Mana Potion
+	{ id = 8895, chance = 780 }, -- Rusted Armor
+	{ id = 3049, chance = 742 }, -- Stealth Ring
+	{ id = 3061, chance = 278 }, -- Life Crystal
 }
 
 monster.attacks = {

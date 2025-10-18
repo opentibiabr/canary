@@ -80,19 +80,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 236, chance = 23000, maxCount = 3 }, -- strong health potion
-	{ id = 16122, chance = 23000 }, -- green crystal splinter
-	{ id = 16123, chance = 23000 }, -- brown crystal splinter
-	{ id = 3016, chance = 5000 }, -- ruby necklace
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 16142, chance = 5000, maxCount = 10 }, -- drill bolt
-	{ id = 22193, chance = 5000 }, -- onyx chip
-	{ id = 22194, chance = 5000 }, -- opal
-	{ id = 24962, chance = 5000 }, -- prismatic quartz
-	{ id = 27488, chance = 260 }, -- gold nugget
-	{ id = 14247, chance = 260 }, -- ornate crossbow
-	{ id = 48098, chance = 80000 }, -- mitmah scout soul core
+	{ id = 3035, chance = 1000, maxCount = 10 }, -- Platinum Coin
+	{ id = 236, chance = 6030, maxCount = 3 }, -- Strong Health Potion
+	{ id = 281, chance = 7470 }, -- Giant Shimmering Pearl
+	{ id = 16122, chance = 6860 }, -- Green Crystal Splinter
+	{ id = 16123, chance = 7470 }, -- Brown Crystal Splinter
+	{ id = 44438, chance = 17160 }, -- Broken Mitmah Necklace
+	{ id = 3016, chance = 1740 }, -- Ruby Necklace
+	{ id = 3037, chance = 2450 }, -- Yellow Gem
+	{ id = 9058, chance = 2890 }, -- Gold Ingot
+	{ id = 16142, chance = 1320, maxCount = 10 }, -- Drill Bolt
+	{ id = 22193, chance = 3740 }, -- Onyx Chip
+	{ id = 22194, chance = 4380 }, -- Opal
+	{ id = 24962, chance = 2370 }, -- Prismatic Quartz
+	{ id = 40529, chance = 1320 }, -- Gold-Brocaded Cloth
+	{ id = 44433, chance = 580 }, -- Ceremonial Brush
+	{ id = 3040, chance = 300 }, -- Gold Nugget
+	{ id = 14247, chance = 130 }, -- Ornate Crossbow
 }
 
 monster.attacks = {

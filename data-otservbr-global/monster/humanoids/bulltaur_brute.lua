@@ -78,16 +78,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 33 }, -- platinum coin
-	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3097, chance = 5000 }, -- dwarven ring
-	{ id = 21175, chance = 5000 }, -- mino shield
-	{ id = 27488, chance = 1000 }, -- gold nugget
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3048, chance = 1000 }, -- might ring
-	{ id = 3322, chance = 1000 }, -- dragon hammer
-	{ id = 32769, chance = 260 }, -- white gem
+	{ id = 3035, chance = 53314, maxCount = 33 }, -- Platinum Coin
+	{ id = 9057, chance = 10235, maxCount = 3 }, -- Small Topaz
+	{ id = 44736, chance = 16124 }, -- Bulltaur Horn
+	{ id = 44737, chance = 9848 }, -- Bulltaur Hoof
+	{ id = 44738, chance = 12460 }, -- Bulltaur Armor Scrap
+	{ id = 3036, chance = 1169 }, -- Violet Gem
+	{ id = 3097, chance = 2772 }, -- Dwarven Ring
+	{ id = 21175, chance = 3042 }, -- Mino Shield
+	{ id = 3040, chance = 720 }, -- Gold Nugget
+	{ id = 3041, chance = 1269 }, -- Blue Gem
+	{ id = 3048, chance = 1131 }, -- Might Ring
+	{ id = 3322, chance = 918 }, -- Dragon Hammer
+	{ id = 32769, chance = 580 }, -- White Gem
 }
 
 monster.attacks = {

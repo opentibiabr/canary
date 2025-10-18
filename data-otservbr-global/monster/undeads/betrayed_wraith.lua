@@ -76,24 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
-	{ id = 3450, chance = 80000, maxCount = 15 }, -- power bolt
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 7368, chance = 23000, maxCount = 5 }, -- assassin star
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 238, chance = 23000, maxCount = 3 }, -- great mana potion
-	{ id = 5021, chance = 23000, maxCount = 2 }, -- orichalcum pearl
-	{ id = 3028, chance = 23000, maxCount = 4 }, -- small diamond
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 10316, chance = 23000 }, -- unholy bone
-	{ id = 7386, chance = 1000 }, -- mercenary sword
-	{ id = 7416, chance = 260 }, -- bloody edge
-	{ id = 6299, chance = 260 }, -- death ring
-	{ id = 5799, chance = 260 }, -- golden figurine
-	{ id = 5741, chance = 260 }, -- skull helmet
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 99896, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 57222, maxCount = 8 }, -- Platinum Coin
+	{ id = 3450, chance = 48622, maxCount = 15 }, -- Power Bolt
+	{ id = 6558, chance = 52903 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 9157, maxCount = 5 }, -- Assassin Star
+	{ id = 6499, chance = 13258 }, -- Demonic Essence
+	{ id = 238, chance = 8918, maxCount = 3 }, -- Great Mana Potion
+	{ id = 5021, chance = 7075, maxCount = 2 }, -- Orichalcum Pearl
+	{ id = 3028, chance = 10456, maxCount = 4 }, -- Small Diamond
+	{ id = 5944, chance = 8599 }, -- Soul Orb
+	{ id = 7643, chance = 15274 }, -- Ultimate Health Potion
+	{ id = 10316, chance = 19141 }, -- Unholy Bone
+	{ id = 7386, chance = 1171 }, -- Mercenary Sword
+	{ id = 7416, chance = 252 }, -- Bloody Edge
+	{ id = 6299, chance = 345 }, -- Death Ring
+	{ id = 5799, chance = 491 }, -- Golden Figurine
+	{ id = 5741, chance = 646 }, -- Skull Helmet
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

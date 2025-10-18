@@ -73,16 +73,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 50 }, -- gold coin
-	{ id = 30337, chance = 80000 }, -- twig arms
-	{ id = 762, chance = 23000, maxCount = 5 }, -- shiver arrow
-	{ id = 2992, chance = 5000, maxCount = 5 }, -- snowball
-	{ id = 3284, chance = 5000 }, -- ice rapier
-	{ id = 829, chance = 5000 }, -- glacier mask
-	{ id = 3067, chance = 5000 }, -- hailstorm rod
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 3070, chance = 5000 }, -- moonlight rod
-	{ id = 823, chance = 1000 }, -- glacier kilt
+	{ id = 3031, chance = 100000, maxCount = 50 }, -- Gold Coin
+	{ id = 30337, chance = 91628 }, -- Twig Arms
+	{ id = 762, chance = 7341, maxCount = 5 }, -- Shiver Arrow
+	{ id = 2992, chance = 5600, maxCount = 5 }, -- Snowball
+	{ id = 3284, chance = 4778 }, -- Ice Rapier
+	{ id = 829, chance = 4478 }, -- Glacier Mask
+	{ id = 3067, chance = 3452 }, -- Hailstorm Rod
+	{ id = 815, chance = 3259 }, -- Glacier Amulet
+	{ id = 3070, chance = 1824 }, -- Moonlight Rod
+	{ id = 823, chance = 1103 }, -- Glacier Kilt
 }
 
 monster.attacks = {

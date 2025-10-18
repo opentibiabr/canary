@@ -73,47 +73,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 23535, chance = 80000 }, -- energy bar
-	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
-	{ id = 22516, chance = 80000, maxCount = 5 }, -- silver token
-	{ id = 22721, chance = 80000, maxCount = 3 }, -- gold token
-	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 2995, chance = 80000 }, -- piggy bank
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 23374, chance = 80000, maxCount = 35 }, -- ultimate spirit potion
-	{ id = 23375, chance = 80000, maxCount = 35 }, -- supreme health potion
-	{ id = 23373, chance = 80000, maxCount = 35 }, -- ultimate mana potion
-	{ id = 7439, chance = 80000, maxCount = 20 }, -- berserk potion
-	{ id = 7443, chance = 80000, maxCount = 20 }, -- bullseye potion
-	{ id = 7440, chance = 80000, maxCount = 20 }, -- mastermind potion
-	{ id = 25759, chance = 80000, maxCount = 200 }, -- royal star
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
-	{ id = 3041, chance = 80000, maxCount = 2 }, -- blue gem
-	{ id = 3038, chance = 80000, maxCount = 2 }, -- green gem
-	{ id = 3036, chance = 80000, maxCount = 2 }, -- violet gem
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 19400, chance = 80000 }, -- arcane staff
-	{ id = 7414, chance = 80000 }, -- abyss hammer
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 3006, chance = 80000 }, -- ring of the sky
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 5809, chance = 80000 }, -- soul stone
-	{ id = 29424, chance = 80000 }, -- pair of dreamwalkers
-	{ id = 29423, chance = 80000 }, -- dream shroud
-	{ id = 29943, chance = 80000 }, -- alptramuns toothbrush
-	{ id = 30055, chance = 80000 }, -- crunor idol
-	{ id = 30169, chance = 80000 }, -- pomegranate
-	{ id = 30171, chance = 80000 }, -- purple tendril lantern
+	{ id = 23535, chance = 99074 }, -- Energy Bar
+	{ id = 3035, chance = 99074, maxCount = 9 }, -- Platinum Coin
+	{ id = 22516, chance = 100000, maxCount = 5 }, -- Silver Token
+	{ id = 22721, chance = 73148, maxCount = 3 }, -- Gold Token
+	{ id = 3043, chance = 18518, maxCount = 3 }, -- Crystal Coin
+	{ id = 23509, chance = 99074 }, -- Mysterious Remains
+	{ id = 2995, chance = 99074 }, -- Piggy Bank
+	{ id = 9058, chance = 18518 }, -- Gold Ingot
+	{ id = 23374, chance = 51851, maxCount = 35 }, -- Ultimate Spirit Potion
+	{ id = 23375, chance = 57407, maxCount = 35 }, -- Supreme Health Potion
+	{ id = 23373, chance = 55555, maxCount = 35 }, -- Ultimate Mana Potion
+	{ id = 7439, chance = 21296, maxCount = 20 }, -- Berserk Potion
+	{ id = 7443, chance = 18518, maxCount = 20 }, -- Bullseye Potion
+	{ id = 7440, chance = 17592, maxCount = 20 }, -- Mastermind Potion
+	{ id = 25759, chance = 41666, maxCount = 200 }, -- Royal Star
+	{ id = 5892, chance = 42592 }, -- Huge Chunk of Crude Iron
+	{ id = 281, chance = 17592 }, -- Giant Shimmering Pearl
+	{ id = 30059, chance = 4629 }, -- Giant Ruby
+	{ id = 3039, chance = 34259, maxCount = 2 }, -- Red Gem
+	{ id = 3037, chance = 32407, maxCount = 2 }, -- Yellow Gem
+	{ id = 3041, chance = 24074, maxCount = 2 }, -- Blue Gem
+	{ id = 3038, chance = 13888, maxCount = 2 }, -- Green Gem
+	{ id = 3036, chance = 11111, maxCount = 2 }, -- Violet Gem
+	{ id = 3324, chance = 17592 }, -- Skull Staff
+	{ id = 3341, chance = 1851 }, -- Arcane Staff
+	{ id = 7414, chance = 1851 }, -- Abyss Hammer
+	{ id = 7427, chance = 4629 }, -- Chaos Mace
+	{ id = 23543, chance = 17592 }, -- Collar of Green Plasma
+	{ id = 23526, chance = 6481 }, -- Collar of Blue Plasma
+	{ id = 23544, chance = 4629 }, -- Collar of Red Plasma
+	{ id = 23531, chance = 10185 }, -- Ring of Green Plasma
+	{ id = 23529, chance = 5555 }, -- Ring of Blue Plasma
+	{ id = 23533, chance = 4629 }, -- Ring of Red Plasma
+	{ id = 3006, chance = 6481 }, -- Ring of the Sky
+	{ id = 5904, chance = 8333 }, -- Magic Sulphur
+	{ id = 5809, chance = 6481 }, -- Soul Stone
+	{ id = 29424, chance = 4629 }, -- Pair of Dreamwalkers
+	{ id = 29423, chance = 5555 }, -- Dream Shroud
+	{ id = 29943, chance = 6481 }, -- Alptramun's Toothbrush
+	{ id = 30055, chance = 1851 }, -- Crunor Idol
+	{ id = 30169, chance = 13888 }, -- Pomegranate
+	{ id = 30171, chance = 1000 }, -- Purple Tendril Lantern
 }
 
 monster.attacks = {

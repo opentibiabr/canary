@@ -76,14 +76,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 35 }, -- gold coin
-	{ id = 3587, chance = 80000, maxCount = 12 }, -- banana
-	{ id = 3586, chance = 80000, maxCount = 5 }, -- orange
-	{ id = 1781, chance = 80000, maxCount = 3 }, -- small stone
-	{ id = 11511, chance = 5000 }, -- banana sash
-	{ id = 5883, chance = 1000 }, -- ape fur
-	{ id = 3589, chance = 1000, maxCount = 3 }, -- coconut
-	{ id = 3593, chance = 1000 }, -- melon
+	{ id = 3031, chance = 88779, maxCount = 35 }, -- Gold Coin
+	{ id = 3587, chance = 46795, maxCount = 12 }, -- Banana
+	{ id = 3586, chance = 53247, maxCount = 5 }, -- Orange
+	{ id = 1781, chance = 53141, maxCount = 3 }, -- Small Stone
+	{ id = 11511, chance = 4950 }, -- Banana Sash
+	{ id = 5883, chance = 1005 }, -- Ape Fur
+	{ id = 3589, chance = 10489, maxCount = 3 }, -- Coconut
+	{ id = 3593, chance = 2295 }, -- Melon
 }
 
 monster.attacks = {

@@ -76,22 +76,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 140 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 17856, chance = 23000 }, -- basalt fetish
-	{ id = 17857, chance = 23000 }, -- basalt figurine
-	{ id = 17827, chance = 23000 }, -- bloody dwarven beard
-	{ id = 17851, chance = 23000 }, -- broken throwing axe
-	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
-	{ id = 12600, chance = 23000 }, -- coal
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 5880, chance = 23000 }, -- iron ore
-	{ id = 17853, chance = 23000 }, -- lost bracers
-	{ id = 17854, chance = 23000 }, -- mad froth
-	{ id = 17855, chance = 23000 }, -- red hair dye
-	{ id = 17852, chance = 5000 }, -- helmet of the lost
-	{ id = 17829, chance = 1000 }, -- buckle
+	{ id = 3031, chance = 100000, maxCount = 140 }, -- Gold Coin
+	{ id = 3035, chance = 70180 }, -- Platinum Coin
+	{ id = 17856, chance = 7110 }, -- Basalt Fetish
+	{ id = 17857, chance = 8810 }, -- Basalt Figurine
+	{ id = 17827, chance = 11770 }, -- Bloody Dwarven Beard
+	{ id = 17851, chance = 15060 }, -- Broken Throwing Axe
+	{ id = 3725, chance = 14980, maxCount = 2 }, -- Brown Mushroom
+	{ id = 12600, chance = 11860 }, -- Coal
+	{ id = 239, chance = 13950 }, -- Great Health Potion
+	{ id = 238, chance = 13700 }, -- Great Mana Potion
+	{ id = 5880, chance = 8560 }, -- Iron Ore
+	{ id = 17853, chance = 12330 }, -- Lost Bracers
+	{ id = 17854, chance = 14410 }, -- Mad Froth
+	{ id = 17855, chance = 12210 }, -- Red Hair Dye
+	{ id = 17852, chance = 1560 }, -- Helmet of the Lost
+	{ id = 17829, chance = 770 }, -- Buckle
 }
 
 monster.attacks = {

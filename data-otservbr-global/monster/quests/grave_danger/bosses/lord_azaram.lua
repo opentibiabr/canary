@@ -77,44 +77,44 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 22516, chance = 80000, maxCount = 2 }, -- silver token
-	{ id = 23374, chance = 80000, maxCount = 20 }, -- ultimate spirit potion
-	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
-	{ id = 23375, chance = 80000, maxCount = 14 }, -- supreme health potion
-	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
-	{ id = 5888, chance = 80000, maxCount = 4 }, -- piece of hell steel
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 3038, chance = 80000, maxCount = 2 }, -- green gem
-	{ id = 828, chance = 80000 }, -- lightning headband
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 31578, chance = 80000 }, -- bear skin
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 31590, chance = 80000 }, -- young lich worm
-	{ id = 31579, chance = 80000 }, -- embrace of nature
-	{ id = 31578, chance = 80000 }, -- bear skin
-	{ id = 31577, chance = 80000 }, -- terra helmet
-	{ id = 31588, chance = 80000 }, -- ancient liche bone
-	{ id = 31589, chance = 80000 }, -- rotten heart
-	{ id = 31738, chance = 80000 }, -- final judgement
-	{ id = 31593, chance = 80000 }, -- noble cape
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 7407, chance = 80000 }, -- haunted blade
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 30061, chance = 80000 }, -- giant sapphire
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 22516, chance = 100000, maxCount = 2 }, -- Silver Token
+	{ id = 23374, chance = 57291, maxCount = 20 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 58333, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 55208, maxCount = 14 }, -- Supreme Health Potion
+	{ id = 7443, chance = 21354, maxCount = 10 }, -- Bullseye Potion
+	{ id = 3041, chance = 21875 }, -- Blue Gem
+	{ id = 3039, chance = 33333 }, -- Red Gem
+	{ id = 3370, chance = 20833 }, -- Knight Armor
+	{ id = 7440, chance = 21875, maxCount = 10 }, -- Mastermind Potion
+	{ id = 5888, chance = 31770, maxCount = 4 }, -- Piece of Hell Steel
+	{ id = 3037, chance = 31250 }, -- Yellow Gem
+	{ id = 7439, chance = 17708, maxCount = 10 }, -- Berserk Potion
+	{ id = 23543, chance = 11458 }, -- Collar of Green Plasma
+	{ id = 3038, chance = 22916, maxCount = 2 }, -- Green Gem
+	{ id = 828, chance = 11979 }, -- Lightning Headband
+	{ id = 23531, chance = 5208 }, -- Ring of Green Plasma
+	{ id = 31578, chance = 3645 }, -- Bear Skin
+	{ id = 23526, chance = 8333 }, -- Collar of Blue Plasma
+	{ id = 3043, chance = 24479 }, -- Crystal Coin
+	{ id = 30059, chance = 1818 }, -- Giant Ruby
+	{ id = 9058, chance = 18229 }, -- Gold Ingot
+	{ id = 3036, chance = 6770 }, -- Violet Gem
+	{ id = 31590, chance = 10416 }, -- Young Lich Worm
+	{ id = 31579, chance = 3076 }, -- Embrace of Nature
+	{ id = 31578, chance = 3645 }, -- Bear Skin
+	{ id = 31577, chance = 3076 }, -- Terra Helmet
+	{ id = 31588, chance = 5729 }, -- Ancient Liche Bone
+	{ id = 31589, chance = 5208 }, -- Rotten Heart
+	{ id = 31738, chance = 1000 }, -- Final Judgement
+	{ id = 31593, chance = 1388 }, -- Noble Cape
+	{ id = 23544, chance = 11458 }, -- Collar of Red Plasma
+	{ id = 23529, chance = 7291 }, -- Ring of Blue Plasma
+	{ id = 23533, chance = 8854 }, -- Ring of Red Plasma
+	{ id = 5892, chance = 6770 }, -- Huge Chunk of Crude Iron
+	{ id = 7407, chance = 13541 }, -- Haunted Blade
+	{ id = 30060, chance = 1818 }, -- Giant Emerald
+	{ id = 30061, chance = 3645 }, -- Giant Sapphire
 }
 
 monster.attacks = {

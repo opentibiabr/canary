@@ -80,35 +80,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 101 }, -- gold coin
-	{ id = 16124, chance = 80000, maxCount = 6 }, -- blue crystal splinter
-	{ id = 16123, chance = 80000, maxCount = 6 }, -- brown crystal splinter
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 16122, chance = 80000, maxCount = 6 }, -- green crystal splinter
-	{ id = 3033, chance = 80000, maxCount = 5 }, -- small amethyst
-	{ id = 3030, chance = 80000, maxCount = 5 }, -- small ruby
-	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 8050, chance = 80000 }, -- crystalline armor
-	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3053, chance = 80000 }, -- time ring
-	{ id = 3049, chance = 80000 }, -- stealth ring
-	{ id = 22726, chance = 80000 }, -- rift shield
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 22755, chance = 80000 }, -- book of lies
-	{ id = 22762, chance = 80000 }, -- maimer
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 8074, chance = 80000 }, -- spellbook of mind control
-	{ id = 22867, chance = 80000 }, -- rift crossbow
+	{ id = 3031, chance = 100000, maxCount = 101 }, -- Gold Coin
+	{ id = 16124, chance = 73584, maxCount = 6 }, -- Blue Crystal Splinter
+	{ id = 16123, chance = 77358, maxCount = 6 }, -- Brown Crystal Splinter
+	{ id = 238, chance = 50943, maxCount = 5 }, -- Great Mana Potion
+	{ id = 16122, chance = 77358, maxCount = 6 }, -- Green Crystal Splinter
+	{ id = 3033, chance = 24528, maxCount = 5 }, -- Small Amethyst
+	{ id = 3030, chance = 6250, maxCount = 5 }, -- Small Ruby
+	{ id = 7643, chance = 49056, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 56603, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 8050, chance = 4347 }, -- Crystalline Armor
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 6499, chance = 73584 }, -- Demonic Essence
+	{ id = 3039, chance = 16981 }, -- Red Gem
+	{ id = 3038, chance = 12500 }, -- Green Gem
+	{ id = 3037, chance = 15094 }, -- Yellow Gem
+	{ id = 3053, chance = 98113 }, -- Time Ring
+	{ id = 3049, chance = 98113 }, -- Stealth Ring
+	{ id = 22726, chance = 4347 }, -- Rift Shield
+	{ id = 22516, chance = 100000 }, -- Silver Token
+	{ id = 22755, chance = 4000 }, -- Book of Lies
+	{ id = 22762, chance = 4000 }, -- Maimer
+	{ id = 6558, chance = 50943 }, -- Flask of Demonic Blood
+	{ id = 3029, chance = 11320 }, -- Small Sapphire
+	{ id = 9057, chance = 18867 }, -- Small Topaz
+	{ id = 281, chance = 18750 }, -- Giant Shimmering Pearl
+	{ id = 3041, chance = 16666 }, -- Blue Gem
+	{ id = 3032, chance = 20833 }, -- Small Emerald
+	{ id = 3098, chance = 37500 }, -- Ring of Healing
+	{ id = 8074, chance = 4166 }, -- Spellbook of Mind Control
+	{ id = 22867, chance = 4166 }, -- Rift Crossbow
 }
 
 monster.attacks = {

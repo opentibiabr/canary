@@ -77,23 +77,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 193 }, -- gold coin
-	{ id = 25693, chance = 23000 }, -- shimmering beetles
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 25694, chance = 23000 }, -- fairy wings
-	{ id = 25735, chance = 23000, maxCount = 7 }, -- leaf star
-	{ id = 3727, chance = 5000 }, -- wood mushroom
-	{ id = 24962, chance = 5000, maxCount = 2 }, -- prismatic quartz
-	{ id = 16126, chance = 5000, maxCount = 2 }, -- red crystal fragment
-	{ id = 3738, chance = 5000 }, -- sling herb
-	{ id = 677, chance = 5000, maxCount = 3 }, -- small enchanted emerald
-	{ id = 24390, chance = 5000, maxCount = 3 }, -- ancient coin
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 7439, chance = 1000 }, -- berserk potion
-	{ id = 3306, chance = 1000 }, -- golden sickle
-	{ id = 25699, chance = 260 }, -- wooden spellbook
-	{ id = 5014, chance = 260 }, -- mandrake
-	{ id = 9067, chance = 260 }, -- crystal of power
+	{ id = 3031, chance = 100000, maxCount = 193 }, -- Gold Coin
+	{ id = 25693, chance = 17563 }, -- Shimmering Beetles
+	{ id = 236, chance = 14901 }, -- Strong Health Potion
+	{ id = 25694, chance = 15181 }, -- Fairy Wings
+	{ id = 25735, chance = 8167, maxCount = 7 }, -- Leaf Star
+	{ id = 3727, chance = 4530 }, -- Wood Mushroom
+	{ id = 24962, chance = 3202, maxCount = 2 }, -- Prismatic Quartz
+	{ id = 16126, chance = 3498, maxCount = 2 }, -- Red Crystal Fragment
+	{ id = 3738, chance = 3151 }, -- Sling Herb
+	{ id = 677, chance = 2418, maxCount = 3 }, -- Small Enchanted Emerald
+	{ id = 24390, chance = 2923, maxCount = 3 }, -- Ancient Coin
+	{ id = 814, chance = 3007 }, -- Terra Amulet
+	{ id = 7439, chance = 1185 }, -- Berserk Potion
+	{ id = 3306, chance = 813 }, -- Golden Sickle
+	{ id = 25699, chance = 513 }, -- Wooden Spellbook
+	{ id = 5014, chance = 86 }, -- Mandrake
+	{ id = 9067, chance = 140 }, -- Crystal of Power
 }
 
 monster.attacks = {

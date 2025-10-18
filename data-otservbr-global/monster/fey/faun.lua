@@ -79,24 +79,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 191 }, -- gold coin
-	{ id = 25695, chance = 23000 }, -- dandelion seeds
-	{ id = 236, chance = 23000, maxCount = 2 }, -- strong health potion
-	{ id = 3674, chance = 23000 }, -- goat grass
-	{ id = 25693, chance = 23000 }, -- shimmering beetles
-	{ id = 25692, chance = 23000, maxCount = 3 }, -- fresh fruit
-	{ id = 25735, chance = 23000, maxCount = 7 }, -- leaf star
-	{ id = 3598, chance = 23000, maxCount = 5 }, -- cookie
-	{ id = 2953, chance = 5000 }, -- panpipes
-	{ id = 25737, chance = 5000, maxCount = 3 }, -- rainbow quartz
-	{ id = 3592, chance = 5000, maxCount = 2 }, -- grapes
-	{ id = 1781, chance = 5000, maxCount = 5 }, -- small stone
-	{ id = 675, chance = 5000, maxCount = 2 }, -- small enchanted sapphire
-	{ id = 239, chance = 5000, maxCount = 2 }, -- great health potion
-	{ id = 3575, chance = 5000 }, -- wood cape
-	{ id = 9014, chance = 1000 }, -- leaf legs
-	{ id = 25699, chance = 260 }, -- wooden spellbook
-	{ id = 5014, chance = 260 }, -- mandrake
+	{ id = 3031, chance = 100000, maxCount = 191 }, -- Gold Coin
+	{ id = 25695, chance = 15240 }, -- Dandelion Seeds
+	{ id = 236, chance = 12070, maxCount = 2 }, -- Strong Health Potion
+	{ id = 3674, chance = 7760 }, -- Goat Grass
+	{ id = 25693, chance = 9970 }, -- Shimmering Beetles
+	{ id = 25692, chance = 9440, maxCount = 3 }, -- Fresh Fruit
+	{ id = 25735, chance = 8020, maxCount = 7 }, -- Leaf Star
+	{ id = 3598, chance = 6110, maxCount = 5 }, -- Cookie
+	{ id = 2953, chance = 5500 }, -- Panpipes
+	{ id = 25737, chance = 5450, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 3592, chance = 4910, maxCount = 2 }, -- Grapes
+	{ id = 1781, chance = 5219, maxCount = 5 }, -- Small Stone
+	{ id = 675, chance = 2360, maxCount = 2 }, -- Small Enchanted Sapphire
+	{ id = 239, chance = 3340, maxCount = 2 }, -- Great Health Potion
+	{ id = 3575, chance = 2230 }, -- Wood Cape
+	{ id = 9014, chance = 520 }, -- Leaf Legs
+	{ id = 25699, chance = 450 }, -- Wooden Spellbook
+	{ id = 5792, chance = 110 }, -- Die
+	{ id = 5014, chance = 30 }, -- Mandrake
 }
 
 monster.attacks = {

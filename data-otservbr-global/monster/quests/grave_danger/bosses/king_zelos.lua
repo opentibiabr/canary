@@ -55,56 +55,57 @@ monster.flags = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000, maxCount = 12 }, -- crystal coin
-	{ id = 22516, chance = 80000, maxCount = 4 }, -- silver token
-	{ id = 22721, chance = 80000, maxCount = 3 }, -- gold token
-	{ id = 23374, chance = 80000, maxCount = 14 }, -- ultimate spirit potion
-	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
-	{ id = 23375, chance = 80000, maxCount = 14 }, -- supreme health potion
-	{ id = 5909, chance = 80000, maxCount = 4 }, -- white piece of cloth
-	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
-	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
-	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
-	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 14112, chance = 80000 }, -- bar of gold
-	{ id = 3381, chance = 80000 }, -- crown armor
-	{ id = 5885, chance = 80000 }, -- flask of warriors sweat
-	{ id = 11674, chance = 80000 }, -- cobra crown
-	{ id = 2852, chance = 80000 }, -- red tome
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 825, chance = 80000 }, -- lightning robe
-	{ id = 811, chance = 80000 }, -- terra mantle
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 31580, chance = 80000 }, -- mortal mace
-	{ id = 31582, chance = 80000 }, -- galea mortis
-	{ id = 31581, chance = 80000 }, -- bow of cataclysm
-	{ id = 31737, chance = 80000 }, -- shadow cowl
-	{ id = 31583, chance = 80000 }, -- toga mortis
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 824, chance = 80000 }, -- glacier robe
-	{ id = 31588, chance = 80000 }, -- ancient liche bone
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 31589, chance = 80000 }, -- rotten heart
-	{ id = 31590, chance = 80000 }, -- young lich worm
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 826, chance = 80000 }, -- magma coat
-	{ id = 12543, chance = 80000 }, -- golden hyaena pendant
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 7414, chance = 80000 }, -- abyss hammer
-	{ id = 30056, chance = 80000 }, -- ornate locket
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 5884, chance = 80000 }, -- spirit container
-	{ id = 24392, chance = 80000 }, -- gemmed figurine
+	{ id = 3043, chance = 100000, maxCount = 12 }, -- Crystal Coin
+	{ id = 22516, chance = 99584, maxCount = 4 }, -- Silver Token
+	{ id = 22721, chance = 74428, maxCount = 3 }, -- Gold Token
+	{ id = 23374, chance = 54469, maxCount = 14 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 55093, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 57588, maxCount = 14 }, -- Supreme Health Potion
+	{ id = 5909, chance = 3104, maxCount = 4 }, -- White Piece of Cloth
+	{ id = 7440, chance = 15176, maxCount = 10 }, -- Mastermind Potion
+	{ id = 7439, chance = 17463, maxCount = 10 }, -- Berserk Potion
+	{ id = 7443, chance = 14553, maxCount = 10 }, -- Bullseye Potion
+	{ id = 3037, chance = 28274, maxCount = 2 }, -- Yellow Gem
+	{ id = 23543, chance = 10643 }, -- Collar of Green Plasma
+	{ id = 3039, chance = 26819 }, -- Red Gem
+	{ id = 3041, chance = 14345 }, -- Blue Gem
+	{ id = 3038, chance = 13929 }, -- Green Gem
+	{ id = 3036, chance = 7900 }, -- Violet Gem
+	{ id = 14112, chance = 665 }, -- Bar of Gold
+	{ id = 3381, chance = 16632 }, -- Crown Armor
+	{ id = 5885, chance = 3021 }, -- Flask of Warrior's Sweat
+	{ id = 11674, chance = 1149 }, -- Cobra Crown
+	{ id = 2852, chance = 8108 }, -- Red Tome
+	{ id = 23533, chance = 6652 }, -- Ring of Red Plasma
+	{ id = 5904, chance = 3950 }, -- Magic Sulphur
+	{ id = 23529, chance = 8316 }, -- Ring of Blue Plasma
+	{ id = 23526, chance = 10187 }, -- Collar of Blue Plasma
+	{ id = 825, chance = 7760 }, -- Lightning Robe
+	{ id = 811, chance = 10602 }, -- Terra Mantle
+	{ id = 3079, chance = 2079 }, -- Boots of Haste
+	{ id = 31580, chance = 1108 }, -- Mortal Mace
+	{ id = 31582, chance = 1663 }, -- Galea Mortis
+	{ id = 31581, chance = 1330 }, -- Bow of Cataclysm
+	{ id = 31737, chance = 2079 }, -- Shadow Cowl
+	{ id = 31583, chance = 1330 }, -- Toga Mortis
+	{ id = 23531, chance = 9771 }, -- Ring of Green Plasma
+	{ id = 824, chance = 7484 }, -- Glacier Robe
+	{ id = 31588, chance = 6652 }, -- Ancient Liche Bone
+	{ id = 9058, chance = 12474 }, -- Gold Ingot
+	{ id = 23544, chance = 10395 }, -- Collar of Red Plasma
+	{ id = 31589, chance = 4781 }, -- Rotten Heart
+	{ id = 31590, chance = 8316 }, -- Young Lich Worm
+	{ id = 30061, chance = 4781 }, -- Giant Sapphire
+	{ id = 30060, chance = 3547 }, -- Giant Emerald
+	{ id = 826, chance = 8523 }, -- Magma Coat
+	{ id = 12543, chance = 1330 }, -- Golden Hyaena Pendant
+	{ id = 5892, chance = 2030 }, -- Huge Chunk of Crude Iron
+	{ id = 7414, chance = 1871 }, -- Abyss Hammer
+	{ id = 30056, chance = 1108 }, -- Ornate Locket
+	{ id = 30059, chance = 1108 }, -- Giant Ruby
+	{ id = 5884, chance = 549 }, -- Spirit Container
+	{ id = 24392, chance = 443 }, -- Gemmed Figurine
+	{ id = 50260, chance = 1000 }, -- Death Oyoroi
 }
 
 monster.attacks = {

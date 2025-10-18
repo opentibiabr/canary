@@ -80,21 +80,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 3281, chance = 5000 }, -- giant sword
-	{ id = 3342, chance = 5000 }, -- war axe
-	{ id = 7386, chance = 5000 }, -- mercenary sword
-	{ id = 7413, chance = 5000 }, -- titan axe
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 22085, chance = 5000 }, -- fur armor
-	{ id = 3575, chance = 1000 }, -- wood cape
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 811, chance = 260 }, -- terra mantle
-	{ id = 21165, chance = 260 }, -- rubber cap
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 65518 }, -- Crystal Coin
+	{ id = 7642, chance = 34019, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 281, chance = 2793 }, -- Giant Shimmering Pearl (Green)
+	{ id = 814, chance = 2634 }, -- Terra Amulet
+	{ id = 3281, chance = 2521 }, -- Giant Sword
+	{ id = 3342, chance = 1890 }, -- War Axe
+	{ id = 7386, chance = 1751 }, -- Mercenary Sword
+	{ id = 7413, chance = 2990 }, -- Titan Axe
+	{ id = 8082, chance = 2897 }, -- Underworld Rod
+	{ id = 9302, chance = 4115 }, -- Sacred Tree Amulet
+	{ id = 22085, chance = 1156 }, -- Fur Armor
+	{ id = 3575, chance = 675 }, -- Wood Cape
+	{ id = 3081, chance = 834 }, -- Stone Skin Amulet
+	{ id = 811, chance = 418 }, -- Terra Mantle
+	{ id = 21165, chance = 458 }, -- Rubber Cap
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

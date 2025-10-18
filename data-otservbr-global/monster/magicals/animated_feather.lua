@@ -73,25 +73,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3029, chance = 80000, maxCount = 12 }, -- small sapphire
-	{ id = 3035, chance = 80000, maxCount = 21 }, -- platinum coin
-	{ id = 28570, chance = 80000, maxCount = 5 }, -- glowing rune
-	{ id = 829, chance = 23000 }, -- glacier mask
-	{ id = 3051, chance = 23000 }, -- energy ring
-	{ id = 7741, chance = 23000 }, -- ice cube
-	{ id = 23373, chance = 23000, maxCount = 2 }, -- ultimate mana potion
-	{ id = 28567, chance = 23000 }, -- quill
-	{ id = 7387, chance = 5000 }, -- diamond sceptre
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 2903, chance = 5000 }, -- golden mug
-	{ id = 3028, chance = 5000, maxCount = 12 }, -- small diamond
-	{ id = 3061, chance = 5000 }, -- life crystal
-	{ id = 3067, chance = 5000 }, -- hailstorm rod
-	{ id = 3333, chance = 5000 }, -- crystal mace
-	{ id = 7437, chance = 1000 }, -- sapphire hammer
-	{ id = 16118, chance = 1000 }, -- glacial rod
-	{ id = 8050, chance = 260 }, -- crystalline armor
-	{ id = 9303, chance = 260 }, -- leviathans amulet
+	{ id = 3029, chance = 39790, maxCount = 12 }, -- Small Sapphire
+	{ id = 3035, chance = 77370, maxCount = 21 }, -- Platinum Coin
+	{ id = 28570, chance = 77790, maxCount = 5 }, -- Glowing Rune
+	{ id = 829, chance = 7560 }, -- Glacier Mask
+	{ id = 3051, chance = 13930 }, -- Energy Ring
+	{ id = 7441, chance = 14300 }, -- Ice Cube
+	{ id = 23373, chance = 17380, maxCount = 2 }, -- Ultimate Mana Potion
+	{ id = 28567, chance = 13489 }, -- Quill
+	{ id = 7387, chance = 4660 }, -- Diamond Sceptre
+	{ id = 815, chance = 2940 }, -- Glacier Amulet
+	{ id = 2903, chance = 2640 }, -- Golden Mug
+	{ id = 3028, chance = 4810, maxCount = 12 }, -- Small Diamond
+	{ id = 3061, chance = 3650 }, -- Life Crystal
+	{ id = 3067, chance = 2470 }, -- Hailstorm Rod
+	{ id = 3333, chance = 2820 }, -- Crystal Mace
+	{ id = 7437, chance = 870 }, -- Sapphire Hammer
+	{ id = 16118, chance = 919 }, -- Glacial Rod
+	{ id = 8050, chance = 200 }, -- Crystalline Armor
+	{ id = 9303, chance = 390 }, -- Leviathan's Amulet
 }
 
 monster.attacks = {

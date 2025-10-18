@@ -71,15 +71,18 @@ monster.light = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 8092, chance = 23000 }, -- wand of starstorm
-	{ id = 3048, chance = 5000 }, -- might ring
-	{ id = 7643, chance = 5000, maxCount = 5 }, -- ultimate health potion
-	{ id = 8043, chance = 5000 }, -- focus cape
-	{ id = 23373, chance = 5000, maxCount = 5 }, -- ultimate mana potion
-	{ id = 822, chance = 1000 }, -- lightning legs
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 32769, chance = 260 }, -- white gem
+	{ id = 3043, chance = 62896 }, -- Crystal Coin
+	{ id = 8092, chance = 4113 }, -- Wand of Starstorm
+	{ id = 43781, chance = 11580 }, -- Darklight Obsidian Axe
+	{ id = 43853, chance = 7077 }, -- Darklight Core (Object)
+	{ id = 3048, chance = 1629 }, -- Might Ring
+	{ id = 7643, chance = 2807, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 8043, chance = 1306 }, -- Focus Cape
+	{ id = 23373, chance = 2290, maxCount = 5 }, -- Ultimate Mana Potion
+	{ id = 43851, chance = 5980 }, -- Darklight Matter (Object)
+	{ id = 822, chance = 480 }, -- Lightning Legs
+	{ id = 3041, chance = 2479 }, -- Blue Gem
+	{ id = 32769, chance = 624 }, -- White Gem
 }
 
 monster.attacks = {

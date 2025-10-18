@@ -71,18 +71,19 @@ monster.light = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 3032, chance = 23000 }, -- small emerald
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 3324, chance = 23000 }, -- skull staff
-	{ id = 3441, chance = 5000 }, -- bone shield
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 43849, chance = 5000 }, -- rotten roots
-	{ id = 43846, chance = 5000 }, -- decayed finger bone
-	{ id = 7643, chance = 5000, maxCount = 2 }, -- ultimate health potion
-	{ id = 7416, chance = 5000 }, -- bloody edge
-	{ id = 8073, chance = 1000 }, -- spellbook of warding
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3043, chance = 51282 }, -- Crystal Coin
+	{ id = 43782, chance = 9870 }, -- Lichen Gobbler
+	{ id = 3032, chance = 7435 }, -- Small Emerald
+	{ id = 3039, chance = 4936 }, -- Red Gem
+	{ id = 3324, chance = 2598 }, -- Skull Staff
+	{ id = 3441, chance = 6496 }, -- Bone Shield
+	{ id = 3037, chance = 4158 }, -- Yellow Gem
+	{ id = 43849, chance = 6154 }, -- Rotten Roots
+	{ id = 43846, chance = 1818 }, -- Decayed Finger Bone
+	{ id = 7643, chance = 1560, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 7416, chance = 690 }, -- Bloody Edge
+	{ id = 8073, chance = 1300 }, -- Spellbook of Warding
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

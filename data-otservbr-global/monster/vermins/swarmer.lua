@@ -75,11 +75,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 75 }, -- gold coin
-	{ id = 14083, chance = 23000 }, -- compound eye
-	{ id = 14076, chance = 23000 }, -- swarmer antenna
-	{ id = 3032, chance = 1000 }, -- small emerald
-	{ id = 3326, chance = 260 }, -- epee
+	{ id = 3031, chance = 100000, maxCount = 75 }, -- Gold Coin
+	{ id = 14083, chance = 12010 }, -- Compound Eye
+	{ id = 14076, chance = 15260 }, -- Swarmer Antenna
+	{ id = 3032, chance = 989 }, -- Small Emerald
+	{ id = 3326, chance = 430 }, -- Epee
 }
 
 monster.attacks = {

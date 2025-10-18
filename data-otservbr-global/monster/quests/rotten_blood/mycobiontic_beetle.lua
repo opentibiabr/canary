@@ -76,11 +76,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 829, chance = 23000 }, -- glacier mask
-	{ id = 3297, chance = 23000 }, -- serpent sword
-	{ id = 3029, chance = 23000 }, -- small sapphire
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 3043, chance = 56690 }, -- Crystal Coin
+	{ id = 7643, chance = 24310 }, -- Ultimate Health Potion
+	{ id = 829, chance = 6210 }, -- Glacier Mask
+	{ id = 3297, chance = 7450 }, -- Serpent Sword
+	{ id = 3029, chance = 6299 }, -- Small Sapphire
+	{ id = 43778, chance = 9500 }, -- Organic Acid
 }
 
 monster.attacks = {

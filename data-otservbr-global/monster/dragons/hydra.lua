@@ -80,22 +80,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 246 }, -- gold coin
-	{ id = 3582, chance = 80000, maxCount = 4 }, -- ham
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 10282, chance = 23000 }, -- hydra head
-	{ id = 3029, chance = 5000 }, -- small sapphire
-	{ id = 8014, chance = 5000 }, -- cucumber
-	{ id = 3098, chance = 5000 }, -- ring of healing
-	{ id = 3370, chance = 1000 }, -- knight armor
-	{ id = 4839, chance = 1000 }, -- hydra egg
-	{ id = 3369, chance = 1000 }, -- warrior helmet
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 237, chance = 260 }, -- strong mana potion
-	{ id = 3436, chance = 260 }, -- medusa shield
-	{ id = 3392, chance = 260 }, -- royal helmet
-	{ id = 3079, chance = 260 }, -- boots of haste
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 87406, maxCount = 246 }, -- Gold Coin
+	{ id = 3582, chance = 84196, maxCount = 4 }, -- Ham
+	{ id = 3035, chance = 48768, maxCount = 3 }, -- Platinum Coin
+	{ id = 10282, chance = 9782 }, -- Hydra Head
+	{ id = 3029, chance = 5029 }, -- Small Sapphire
+	{ id = 8014, chance = 5194 }, -- Cucumber
+	{ id = 3098, chance = 1157 }, -- Ring of Healing
+	{ id = 3370, chance = 1144 }, -- Knight Armor
+	{ id = 4839, chance = 686 }, -- Hydra Egg
+	{ id = 3369, chance = 878 }, -- Warrior Helmet
+	{ id = 3061, chance = 507 }, -- Life Crystal
+	{ id = 237, chance = 234 }, -- Strong Mana Potion
+	{ id = 3436, chance = 192 }, -- Medusa Shield
+	{ id = 3392, chance = 232 }, -- Royal Helmet
+	{ id = 3079, chance = 101 }, -- Boots of Haste
+	{ id = 3081, chance = 902 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -77,28 +77,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 15 }, -- platinum coin
-	{ id = 28566, chance = 80000 }, -- silken bookmark
-	{ id = 28569, chance = 80000, maxCount = 5 }, -- book page
-	{ id = 28570, chance = 80000, maxCount = 10 }, -- glowing rune
-	{ id = 3033, chance = 80000, maxCount = 6 }, -- small amethyst
-	{ id = 28567, chance = 23000 }, -- quill
-	{ id = 3051, chance = 23000 }, -- energy ring
-	{ id = 761, chance = 23000, maxCount = 15 }, -- flash arrow
-	{ id = 3415, chance = 23000 }, -- guardian shield
-	{ id = 268, chance = 23000 }, -- mana potion
-	{ id = 3287, chance = 23000, maxCount = 15 }, -- throwing star
-	{ id = 7449, chance = 23000 }, -- crystal sword
-	{ id = 7643, chance = 23000, maxCount = 2 }, -- ultimate health potion
-	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
-	{ id = 23373, chance = 5000 }, -- ultimate mana potion
-	{ id = 16096, chance = 5000 }, -- wand of defiance
-	{ id = 3313, chance = 5000 }, -- obsidian lance
-	{ id = 3054, chance = 5000 }, -- silver amulet
-	{ id = 6093, chance = 5000 }, -- crystal ring
-	{ id = 816, chance = 5000 }, -- lightning pendant
-	{ id = 3048, chance = 1000 }, -- might ring
-	{ id = 10438, chance = 260 }, -- spellweavers robe
+	{ id = 3035, chance = 67473, maxCount = 15 }, -- Platinum Coin
+	{ id = 28566, chance = 26211 }, -- Silken Bookmark
+	{ id = 28569, chance = 38396, maxCount = 5 }, -- Book Page
+	{ id = 28570, chance = 34829, maxCount = 10 }, -- Glowing Rune
+	{ id = 3033, chance = 74737, maxCount = 6 }, -- Small Amethyst
+	{ id = 28567, chance = 22602 }, -- Quill
+	{ id = 3051, chance = 7428 }, -- Energy Ring
+	{ id = 761, chance = 14732, maxCount = 15 }, -- Flash Arrow
+	{ id = 3415, chance = 10174 }, -- Guardian Shield
+	{ id = 268, chance = 9383 }, -- Mana Potion
+	{ id = 3287, chance = 6640, maxCount = 15 }, -- Throwing Star
+	{ id = 7449, chance = 4946 }, -- Crystal Sword
+	{ id = 7643, chance = 10838, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 3073, chance = 5206 }, -- Wand of Cosmic Energy
+	{ id = 23373, chance = 14803 }, -- Ultimate Mana Potion
+	{ id = 16096, chance = 1106 }, -- Wand of Defiance
+	{ id = 3313, chance = 3048 }, -- Obsidian Lance
+	{ id = 3054, chance = 2399 }, -- Silver Amulet
+	{ id = 3007, chance = 1482 }, -- Crystal Ring
+	{ id = 816, chance = 1669 }, -- Lightning Pendant
+	{ id = 3048, chance = 2099 }, -- Might Ring
+	{ id = 10438, chance = 380 }, -- Spellweaver's Robe
 }
 
 monster.attacks = {

@@ -73,39 +73,39 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
-	{ id = 239, chance = 23000, maxCount = 2 }, -- great health potion
-	{ id = 678, chance = 23000, maxCount = 3 }, -- small enchanted amethyst
-	{ id = 3017, chance = 23000 }, -- silver brooch
-	{ id = 3026, chance = 23000, maxCount = 2 }, -- white pearl
-	{ id = 3027, chance = 23000, maxCount = 2 }, -- black pearl
-	{ id = 3028, chance = 23000, maxCount = 3 }, -- small diamond
-	{ id = 3029, chance = 23000, maxCount = 3 }, -- small sapphire
-	{ id = 3030, chance = 23000, maxCount = 2 }, -- small ruby
-	{ id = 3032, chance = 23000, maxCount = 2 }, -- small emerald
-	{ id = 3043, chance = 23000, maxCount = 3 }, -- crystal coin
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 6558, chance = 23000 }, -- flask of demonic blood
-	{ id = 7368, chance = 23000, maxCount = 5 }, -- assassin star
-	{ id = 9057, chance = 23000, maxCount = 2 }, -- small topaz
-	{ id = 21974, chance = 23000 }, -- golden lotus brooch
-	{ id = 21975, chance = 23000 }, -- peacock feather fan
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3054, chance = 5000 }, -- silver amulet
-	{ id = 3069, chance = 5000 }, -- necrotic rod
-	{ id = 3403, chance = 5000 }, -- tribal mask
-	{ id = 7404, chance = 5000 }, -- assassin dagger
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 21981, chance = 5000 }, -- oriental shoes
-	{ id = 25759, chance = 5000, maxCount = 3 }, -- royal star
-	{ id = 6093, chance = 1000 }, -- crystal ring
-	{ id = 3567, chance = 1000 }, -- blue robe
-	{ id = 8061, chance = 1000 }, -- skullcracker armor
-	{ id = 8074, chance = 1000 }, -- spellbook of mind control
+	{ id = 3035, chance = 97598, maxCount = 8 }, -- Platinum Coin
+	{ id = 239, chance = 19078, maxCount = 2 }, -- Great Health Potion
+	{ id = 678, chance = 11805, maxCount = 3 }, -- Small Enchanted Amethyst
+	{ id = 3017, chance = 10002 }, -- Silver Brooch
+	{ id = 3026, chance = 7373, maxCount = 2 }, -- White Pearl
+	{ id = 3027, chance = 9160, maxCount = 2 }, -- Black Pearl
+	{ id = 3028, chance = 14372, maxCount = 3 }, -- Small Diamond
+	{ id = 3029, chance = 11123, maxCount = 3 }, -- Small Sapphire
+	{ id = 3030, chance = 8320, maxCount = 2 }, -- Small Ruby
+	{ id = 3032, chance = 8144, maxCount = 2 }, -- Small Emerald
+	{ id = 3043, chance = 5318, maxCount = 3 }, -- Crystal Coin
+	{ id = 5944, chance = 18716 }, -- Soul Orb
+	{ id = 6499, chance = 14424 }, -- Demonic Essence
+	{ id = 6558, chance = 19256 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 9834, maxCount = 5 }, -- Assassin Star
+	{ id = 9057, chance = 8030, maxCount = 2 }, -- Small Topaz
+	{ id = 21974, chance = 21847 }, -- Golden Lotus Brooch
+	{ id = 21975, chance = 21110 }, -- Peacock Feather Fan
+	{ id = 3036, chance = 1995 }, -- Violet Gem
+	{ id = 3037, chance = 1154 }, -- Yellow Gem
+	{ id = 3041, chance = 1568 }, -- Blue Gem
+	{ id = 3054, chance = 1850 }, -- Silver Amulet
+	{ id = 3069, chance = 3512 }, -- Necrotic Rod
+	{ id = 3403, chance = 2858 }, -- Tribal Mask
+	{ id = 7404, chance = 1532 }, -- Assassin Dagger
+	{ id = 8082, chance = 1165 }, -- Underworld Rod
+	{ id = 9058, chance = 2016 }, -- Gold Ingot
+	{ id = 21981, chance = 1663 }, -- Oriental Shoes
+	{ id = 25759, chance = 3735, maxCount = 3 }, -- Royal Star
+	{ id = 3007, chance = 827 }, -- Crystal Ring
+	{ id = 3567, chance = 814 }, -- Blue Robe
+	{ id = 8061, chance = 586 }, -- Skullcracker Armor
+	{ id = 8074, chance = 818 }, -- Spellbook of Mind Control
 }
 
 monster.attacks = {

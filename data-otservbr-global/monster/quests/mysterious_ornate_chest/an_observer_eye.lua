@@ -60,7 +60,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 24929, chance = 80000 }, -- lightsphere
+	{ id = 24929, chance = 100000 }, -- Lightsphere
 }
 
 monster.attacks = {

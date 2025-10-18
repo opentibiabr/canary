@@ -63,9 +63,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22186, chance = 80000 }, -- raw meat
-	{ id = 10307, chance = 80000 }, -- thick fur
-	{ id = 5925, chance = 80000 }, -- hardened bone
+	{ id = 22186, chance = 19440 }, -- Raw Meat
+	{ id = 10307, chance = 8330 }, -- Thick Fur
+	{ id = 5925, chance = 2780 }, -- Hardened Bone
 }
 
 monster.attacks = {

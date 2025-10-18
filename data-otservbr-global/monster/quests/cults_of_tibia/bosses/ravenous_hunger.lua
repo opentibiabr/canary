@@ -83,46 +83,49 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
-	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
-	{ id = 3029, chance = 80000, maxCount = 10 }, -- small sapphire
-	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
-	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 23535, chance = 80000, maxCount = 5 }, -- energy bar
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 21981, chance = 80000 }, -- oriental shoes
-	{ id = 11652, chance = 80000 }, -- broken key ring
-	{ id = 25743, chance = 80000 }, -- bed of nails
-	{ id = 25744, chance = 80000 }, -- torn shirt
-	{ id = 16117, chance = 80000 }, -- muck rod
-	{ id = 822, chance = 80000 }, -- lightning legs
-	{ id = 25742, chance = 80000 }, -- fig leaf
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 9302, chance = 80000 }, -- sacred tree amulet
-	{ id = 11454, chance = 80000 }, -- luminous orb
-	{ id = 11674, chance = 80000 }, -- cobra crown
-	{ id = 3575, chance = 80000 }, -- wood cape
-	{ id = 25699, chance = 80000 }, -- wooden spellbook
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 3401, chance = 80000 }, -- elven legs
-	{ id = 3399, chance = 80000 }, -- elven mail
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 811, chance = 80000 }, -- terra mantle
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 10451, chance = 80000 }, -- jade hat
-	{ id = 813, chance = 80000 }, -- terra boots
-	{ id = 7463, chance = 80000 }, -- mammoth fur cape
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 8050, chance = 80000 }, -- crystalline armor
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 3028, chance = 21122, maxCount = 10 }, -- Small Diamond
+	{ id = 3029, chance = 20053, maxCount = 10 }, -- Small Sapphire
+	{ id = 3032, chance = 18983, maxCount = 10 }, -- Small Emerald
+	{ id = 7643, chance = 52139, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 53208, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 238, chance = 56684, maxCount = 5 }, -- Great Mana Potion
+	{ id = 23535, chance = 100000, maxCount = 5 }, -- Energy Bar
+	{ id = 3037, chance = 20053 }, -- Yellow Gem
+	{ id = 3039, chance = 19518 }, -- Red Gem
+	{ id = 3038, chance = 27540 }, -- Green Gem
+	{ id = 281, chance = 16310 }, -- Giant Shimmering Pearl
+	{ id = 21981, chance = 8288 }, -- Oriental Shoes
+	{ id = 11652, chance = 13636 }, -- Broken Key Ring
+	{ id = 25743, chance = 99732 }, -- Bed of Nails
+	{ id = 25744, chance = 48395 }, -- Torn Shirt
+	{ id = 16117, chance = 67647 }, -- Muck Rod
+	{ id = 822, chance = 4812 }, -- Lightning Legs
+	{ id = 25742, chance = 50267 }, -- Fig Leaf
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 9302, chance = 62032 }, -- Sacred Tree Amulet
+	{ id = 11454, chance = 15775 }, -- Luminous Orb
+	{ id = 11674, chance = 5882 }, -- Cobra Crown
+	{ id = 3575, chance = 61764 }, -- Wood Cape
+	{ id = 25699, chance = 11497 }, -- Wooden Spellbook
+	{ id = 22516, chance = 28074 }, -- Silver Token
+	{ id = 22721, chance = 21925 }, -- Gold Token
+	{ id = 3401, chance = 1604 }, -- Elven Legs
+	{ id = 3399, chance = 1612 }, -- Elven Mail
+	{ id = 3033, chance = 17379 }, -- Small Amethyst
+	{ id = 3041, chance = 27807 }, -- Blue Gem
+	{ id = 811, chance = 5882 }, -- Terra Mantle
+	{ id = 9057, chance = 21122 }, -- Small Topaz
+	{ id = 25361, chance = 584 }, -- Blood of the Mountain (Item)
+	{ id = 5904, chance = 17379 }, -- Magic Sulphur
+	{ id = 10451, chance = 9625 }, -- Jade Hat
+	{ id = 813, chance = 14438 }, -- Terra Boots
+	{ id = 7463, chance = 8556 }, -- Mammoth Fur Cape
+	{ id = 3036, chance = 5347 }, -- Violet Gem
+	{ id = 3079, chance = 802 }, -- Boots of Haste
+	{ id = 8050, chance = 3475 }, -- Crystalline Armor
+	{ id = 50154, chance = 1000 }, -- Enchanted Merudri Brooch
 }
 
 monster.attacks = {

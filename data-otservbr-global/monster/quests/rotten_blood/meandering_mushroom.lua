@@ -71,17 +71,18 @@ monster.light = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 3723, chance = 23000, maxCount = 3 }, -- white mushroom
-	{ id = 43849, chance = 23000 }, -- rotten roots
-	{ id = 3072, chance = 23000 }, -- wand of decay
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 43848, chance = 23000 }, -- worm sponge
-	{ id = 3728, chance = 23000, maxCount = 3 }, -- dark mushroom
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3725, chance = 5000, maxCount = 3 }, -- brown mushroom
-	{ id = 814, chance = 1000 }, -- terra amulet
-	{ id = 7404, chance = 80000 }, -- assassin dagger
+	{ id = 3043, chance = 56458 }, -- Crystal Coin
+	{ id = 43782, chance = 8988 }, -- Lichen Gobbler
+	{ id = 3723, chance = 11516, maxCount = 3 }, -- White Mushroom
+	{ id = 43849, chance = 5899 }, -- Rotten Roots
+	{ id = 3072, chance = 9271 }, -- Wand of Decay
+	{ id = 3039, chance = 6743 }, -- Red Gem
+	{ id = 43848, chance = 5055 }, -- Worm Sponge
+	{ id = 3728, chance = 6181, maxCount = 3 }, -- Dark Mushroom
+	{ id = 3037, chance = 7024 }, -- Yellow Gem
+	{ id = 3725, chance = 8710, maxCount = 3 }, -- Brown Mushroom
+	{ id = 814, chance = 3372 }, -- Terra Amulet
+	{ id = 7404, chance = 670 }, -- Assassin Dagger
 }
 
 monster.attacks = {

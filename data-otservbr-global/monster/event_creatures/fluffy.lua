@@ -64,14 +64,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 109 }, -- gold coin
-	{ id = 7573, chance = 80000 }, -- bone
-	{ id = 3582, chance = 80000, maxCount = 8 }, -- ham
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 3318, chance = 80000 }, -- knight axe
-	{ id = 5944, chance = 80000 }, -- soul orb
-	{ id = 3271, chance = 80000 }, -- spike sword
+	{ id = 3031, chance = 1000, maxCount = 109 }, -- Gold Coin
+	{ id = 3115, chance = 1000 }, -- Bone
+	{ id = 3582, chance = 1000, maxCount = 8 }, -- Ham
+	{ id = 6570, chance = 1000, maxCount = 4 }, -- Surprise Bag (Blue)
+	{ id = 6571, chance = 1000 }, -- Surprise Bag (Red)
+	{ id = 6499, chance = 1000 }, -- Demonic Essence
+	{ id = 6558, chance = 1000 }, -- Flask of Demonic Blood
+	{ id = 3318, chance = 1000 }, -- Knight Axe
+	{ id = 5944, chance = 1000 }, -- Soul Orb
+	{ id = 3271, chance = 1000 }, -- Spike Sword
 }
 
 monster.attacks = {

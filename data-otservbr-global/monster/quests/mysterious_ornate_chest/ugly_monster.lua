@@ -65,14 +65,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 30393, chance = 80000 }, -- cobra crossbow
-	{ id = 30394, chance = 80000 }, -- cobra boots
-	{ id = 30397, chance = 80000 }, -- cobra hood
-	{ id = 30396, chance = 80000 }, -- cobra axe
-	{ id = 30398, chance = 80000 }, -- cobra sword
-	{ id = 30399, chance = 80000 }, -- cobra wand
-	{ id = 30400, chance = 80000 }, -- cobra rod
-	{ id = 30395, chance = 80000 }, -- cobra club
+	{ id = 30393, chance = 470 }, -- Cobra Crossbow
+	{ id = 30394, chance = 1000 }, -- Cobra Boots
+	{ id = 30397, chance = 470 }, -- Cobra Hood
+	{ id = 30396, chance = 470 }, -- Cobra Axe
+	{ id = 30398, chance = 1000 }, -- Cobra Sword
+	{ id = 30399, chance = 1000 }, -- Cobra Wand
+	{ id = 30400, chance = 470 }, -- Cobra Rod
+	{ id = 30395, chance = 1000 }, -- Cobra Club
 }
 
 monster.attacks = {

@@ -60,13 +60,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 37468, chance = 80000 }, -- special fx box
-	{ id = 37530, chance = 80000 }, -- bottle of champagne
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 27488, chance = 80000 }, -- gold nugget
-	{ id = 16120, chance = 80000 }, -- violet crystal shard
-	{ id = 3038, chance = 80000 }, -- green gem
+	{ id = 37468, chance = 1360 }, -- Special Fx Box
+	{ id = 37530, chance = 2140 }, -- Bottle of Champagne
+	{ id = 3036, chance = 1968 }, -- Violet Gem
+	{ id = 3035, chance = 81935 }, -- Platinum Coin
+	{ id = 3040, chance = 1068 }, -- Gold Nugget
+	{ id = 16120, chance = 580 }, -- Violet Crystal Shard
+	{ id = 3038, chance = 780 }, -- Green Gem
 }
 
 monster.attacks = {

@@ -78,15 +78,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
-	{ id = 3583, chance = 80000, maxCount = 3 }, -- dragon ham
-	{ id = 9644, chance = 23000 }, -- wyvern talisman
-	{ id = 3029, chance = 5000 }, -- small sapphire
-	{ id = 3450, chance = 5000 }, -- power bolt
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 3010, chance = 1000 }, -- emerald bangle
-	{ id = 3071, chance = 1000 }, -- wand of inferno
-	{ id = 7408, chance = 1000 }, -- wyvern fang
+	{ id = 3031, chance = 70496, maxCount = 90 }, -- Gold Coin
+	{ id = 3583, chance = 57563, maxCount = 3 }, -- Dragon Ham
+	{ id = 9644, chance = 5200 }, -- Wyvern Talisman
+	{ id = 3029, chance = 1091 }, -- Small Sapphire
+	{ id = 3450, chance = 3892 }, -- Power Bolt
+	{ id = 236, chance = 969 }, -- Strong Health Potion
+	{ id = 3010, chance = 339 }, -- Emerald Bangle
+	{ id = 3071, chance = 1166 }, -- Wand of Inferno
+	{ id = 7408, chance = 723 }, -- Wyvern Fang
 }
 
 monster.attacks = {

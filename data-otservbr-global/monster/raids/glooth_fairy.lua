@@ -68,35 +68,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 239, chance = 80000, maxCount = 5 }, -- great health potion
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 21103, chance = 80000, maxCount = 3 }, -- glooth injection tube
-	{ id = 21144, chance = 80000, maxCount = 5 }, -- bowl of glooth soup
-	{ id = 21143, chance = 80000, maxCount = 5 }, -- glooth sandwich
-	{ id = 21146, chance = 80000, maxCount = 5 }, -- glooth steak
-	{ id = 3033, chance = 80000, maxCount = 5 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 5 }, -- small emerald
-	{ id = 3030, chance = 80000, maxCount = 5 }, -- small ruby
-	{ id = 9057, chance = 80000, maxCount = 5 }, -- small topaz
-	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
-	{ id = 5880, chance = 80000 }, -- iron ore
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 8775, chance = 80000 }, -- gear wheel
-	{ id = 21180, chance = 80000 }, -- glooth axe
-	{ id = 21178, chance = 80000 }, -- glooth club
-	{ id = 21179, chance = 80000 }, -- glooth blade
-	{ id = 21183, chance = 80000 }, -- glooth amulet
-	{ id = 21158, chance = 80000 }, -- glooth spear
-	{ id = 21164, chance = 80000 }, -- glooth cape
-	{ id = 21165, chance = 80000 }, -- rubber cap
-	{ id = 21167, chance = 80000 }, -- heat core
-	{ id = 21292, chance = 80000 }, -- feedbag
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 239, chance = 30939, maxCount = 5 }, -- Great Health Potion
+	{ id = 238, chance = 31489, maxCount = 5 }, -- Great Mana Potion
+	{ id = 7642, chance = 37571, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 21103, chance = 100000, maxCount = 3 }, -- Glooth Injection Tube
+	{ id = 21144, chance = 22099, maxCount = 5 }, -- Bowl of Glooth Soup
+	{ id = 21143, chance = 27624, maxCount = 5 }, -- Glooth Sandwich
+	{ id = 21146, chance = 23759, maxCount = 5 }, -- Glooth Steak
+	{ id = 3033, chance = 9942, maxCount = 5 }, -- Small Amethyst
+	{ id = 3028, chance = 13747, maxCount = 5 }, -- Small Diamond
+	{ id = 3032, chance = 21546, maxCount = 5 }, -- Small Emerald
+	{ id = 3030, chance = 17681, maxCount = 5 }, -- Small Ruby
+	{ id = 9057, chance = 14366, maxCount = 5 }, -- Small Topaz
+	{ id = 3029, chance = 13812, maxCount = 5 }, -- Small Sapphire
+	{ id = 5880, chance = 16572 }, -- Iron Ore
+	{ id = 3039, chance = 3865 }, -- Red Gem
+	{ id = 3041, chance = 3752 }, -- Blue Gem
+	{ id = 3037, chance = 3750 }, -- Yellow Gem
+	{ id = 8775, chance = 16022 }, -- Gear Wheel
+	{ id = 21180, chance = 19334 }, -- Glooth Axe
+	{ id = 21178, chance = 18784 }, -- Glooth Club
+	{ id = 21179, chance = 19891 }, -- Glooth Blade
+	{ id = 21183, chance = 20992 }, -- Glooth Amulet
+	{ id = 21158, chance = 20996 }, -- Glooth Spear
+	{ id = 21164, chance = 8287 }, -- Glooth Cape
+	{ id = 21165, chance = 7801 }, -- Rubber Cap
+	{ id = 21167, chance = 7734 }, -- Heat Core
+	{ id = 21292, chance = 2130 }, -- Feedbag
 }
 
 monster.attacks = {

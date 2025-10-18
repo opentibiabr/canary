@@ -79,28 +79,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 125 }, -- gold coin
-	{ id = 3577, chance = 23000, maxCount = 2 }, -- meat
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 22189, chance = 23000 }, -- ogre nose ring
-	{ id = 22188, chance = 23000 }, -- ogre ear stud
-	{ id = 3598, chance = 5000, maxCount = 5 }, -- cookie
-	{ id = 1781, chance = 5000, maxCount = 5 }, -- small stone
-	{ id = 11447, chance = 5000 }, -- battle stone
-	{ id = 22191, chance = 5000 }, -- skull fetish
-	{ id = 3050, chance = 5000 }, -- power ring
-	{ id = 3093, chance = 5000 }, -- club ring
-	{ id = 22193, chance = 5000, maxCount = 2 }, -- onyx chip
-	{ id = 3030, chance = 5000 }, -- small ruby
-	{ id = 3026, chance = 5000 }, -- white pearl
-	{ id = 22194, chance = 5000, maxCount = 2 }, -- opal
-	{ id = 22171, chance = 1000 }, -- ogre klubba
-	{ id = 8907, chance = 260 }, -- rusted helmet
-	{ id = 9632, chance = 260 }, -- ancient stone
-	{ id = 3465, chance = 260 }, -- pot
-	{ id = 7428, chance = 260 }, -- bonebreaker
-	{ id = 22192, chance = 260 }, -- shamanic mask
-	{ id = 7412, chance = 260 }, -- butchers axe
+	{ id = 3031, chance = 99690, maxCount = 125 }, -- Gold Coin
+	{ id = 3577, chance = 15000, maxCount = 2 }, -- Meat
+	{ id = 236, chance = 12440 }, -- Strong Health Potion
+	{ id = 22189, chance = 14600 }, -- Ogre Nose Ring
+	{ id = 22188, chance = 18750 }, -- Ogre Ear Stud
+	{ id = 3598, chance = 3780, maxCount = 5 }, -- Cookie
+	{ id = 1781, chance = 5110, maxCount = 5 }, -- Small Stone
+	{ id = 11447, chance = 4670 }, -- Battle Stone
+	{ id = 22191, chance = 3440 }, -- Skull Fetish
+	{ id = 3050, chance = 1590 }, -- Power Ring
+	{ id = 3093, chance = 2290 }, -- Club Ring
+	{ id = 22193, chance = 1970, maxCount = 2 }, -- Onyx Chip
+	{ id = 3030, chance = 2340 }, -- Small Ruby
+	{ id = 3026, chance = 2220 }, -- White Pearl
+	{ id = 22194, chance = 1700, maxCount = 2 }, -- Opal
+	{ id = 22171, chance = 940 }, -- Ogre Klubba
+	{ id = 8907, chance = 210 }, -- Rusted Helmet
+	{ id = 9632, chance = 210 }, -- Ancient Stone
+	{ id = 3465, chance = 270 }, -- Pot
+	{ id = 7428, chance = 100 }, -- Bonebreaker
+	{ id = 22192, chance = 140 }, -- Shamanic Mask
+	{ id = 7412, chance = 10 }, -- Butcher's Axe
 }
 
 monster.attacks = {

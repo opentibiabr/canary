@@ -67,11 +67,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 17 }, -- gold coin
-	{ id = 3277, chance = 80000 }, -- spear
-	{ id = 3597, chance = 80000 }, -- corncob
-	{ id = 3378, chance = 80000 }, -- studded armor
-	{ id = 3362, chance = 80000 }, -- studded legs
+	{ id = 3031, chance = 100000, maxCount = 17 }, -- Gold Coin
+	{ id = 3277, chance = 57146 }, -- Spear
+	{ id = 3597, chance = 11110 }, -- Corncob
+	{ id = 3378, chance = 3700 }, -- Studded Armor
+	{ id = 3362, chance = 11110 }, -- Studded Legs
+	{ id = 2824, chance = 1000 }, -- Book (Grey)
 }
 
 monster.attacks = {

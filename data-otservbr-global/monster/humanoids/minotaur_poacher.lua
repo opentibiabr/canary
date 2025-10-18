@@ -60,12 +60,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 28 }, -- gold coin
-	{ id = 3446, chance = 80000, maxCount = 18 }, -- bolt
-	{ id = 3358, chance = 80000 }, -- chain armor
-	{ id = 3378, chance = 80000 }, -- studded armor
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 3349, chance = 1000 }, -- crossbow
+	{ id = 3031, chance = 100000, maxCount = 28 }, -- Gold Coin
+	{ id = 3446, chance = 59647, maxCount = 18 }, -- Bolt
+	{ id = 3358, chance = 9646 }, -- Chain Armor
+	{ id = 3378, chance = 4092 }, -- Studded Armor
+	{ id = 3577, chance = 4388 }, -- Meat
+	{ id = 3349, chance = 740 }, -- Crossbow
 }
 
 monster.attacks = {

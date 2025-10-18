@@ -69,32 +69,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 19 }, -- platinum coin
-	{ id = 7642, chance = 23000, maxCount = 2 }, -- great spirit potion
-	{ id = 7643, chance = 23000, maxCount = 4 }, -- ultimate health potion
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 36821, chance = 23000 }, -- bashmu tongue
-	{ id = 816, chance = 5000 }, -- lightning pendant
-	{ id = 820, chance = 5000 }, -- lightning boots
-	{ id = 822, chance = 5000 }, -- lightning legs
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3279, chance = 5000 }, -- war hammer
-	{ id = 3333, chance = 5000 }, -- crystal mace
-	{ id = 7387, chance = 5000 }, -- diamond sceptre
-	{ id = 7426, chance = 5000 }, -- amber staff
-	{ id = 7430, chance = 5000 }, -- dragonbone staff
-	{ id = 16120, chance = 5000 }, -- violet crystal shard
-	{ id = 16121, chance = 5000 }, -- green crystal shard
-	{ id = 16125, chance = 5000 }, -- cyan crystal fragment
-	{ id = 36820, chance = 5000 }, -- bashmu fang
-	{ id = 36823, chance = 5000 }, -- bashmu feather
-	{ id = 3324, chance = 1000 }, -- skull staff
-	{ id = 7427, chance = 1000 }, -- chaos mace
-	{ id = 10438, chance = 1000 }, -- spellweavers robe
-	{ id = 17828, chance = 1000 }, -- pair of iron fists
+	{ id = 3035, chance = 78783, maxCount = 19 }, -- Platinum Coin
+	{ id = 7642, chance = 14317, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 7643, chance = 12141, maxCount = 4 }, -- Ultimate Health Potion
+	{ id = 16119, chance = 6449 }, -- Blue Crystal Shard
+	{ id = 36821, chance = 6069 }, -- Bashmu Tongue
+	{ id = 816, chance = 2496 }, -- Lightning Pendant
+	{ id = 820, chance = 1451 }, -- Lightning Boots
+	{ id = 822, chance = 2919 }, -- Lightning Legs
+	{ id = 3036, chance = 2718 }, -- Violet Gem
+	{ id = 3037, chance = 2328 }, -- Yellow Gem
+	{ id = 3038, chance = 1428 }, -- Green Gem
+	{ id = 3039, chance = 2258 }, -- Red Gem
+	{ id = 3279, chance = 1602 }, -- War Hammer
+	{ id = 3333, chance = 909 }, -- Crystal Mace
+	{ id = 7387, chance = 2041 }, -- Diamond Sceptre
+	{ id = 7426, chance = 1483 }, -- Amber Staff
+	{ id = 7430, chance = 1630 }, -- Dragonbone Staff
+	{ id = 16120, chance = 2031 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 3942 }, -- Green Crystal Shard
+	{ id = 16125, chance = 3199 }, -- Cyan Crystal Fragment
+	{ id = 36820, chance = 1885 }, -- Bashmu Fang
+	{ id = 36823, chance = 5172 }, -- Bashmu Feather
+	{ id = 3324, chance = 968 }, -- Skull Staff
+	{ id = 7427, chance = 936 }, -- Chaos Mace
+	{ id = 10438, chance = 909 }, -- Spellweaver's Robe
+	{ id = 17828, chance = 1289 }, -- Pair of Iron Fists
 }
 
 monster.attacks = {

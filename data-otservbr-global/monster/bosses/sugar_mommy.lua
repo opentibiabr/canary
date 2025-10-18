@@ -69,17 +69,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3590, chance = 80000, maxCount = 2 }, -- cherry
-	{ id = 3035, chance = 80000, maxCount = 13 }, -- platinum coin
-	{ id = 25737, chance = 80000, maxCount = 2 }, -- rainbow quartz
-	{ id = 48250, chance = 80000, maxCount = 5 }, -- dark chocolate coin
-	{ id = 48249, chance = 80000, maxCount = 7 }, -- milk chocolate coin
-	{ id = 48273, chance = 80000 }, -- taiyaki ice cream
-	{ id = 25700, chance = 80000 }, -- dream blossom staff
-	{ id = 6393, chance = 80000 }, -- cream cake
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 3590, chance = 100000, maxCount = 2 }, -- Cherry
+	{ id = 3035, chance = 100000, maxCount = 13 }, -- Platinum Coin
+	{ id = 25737, chance = 3730, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 48250, chance = 18280, maxCount = 5 }, -- Dark Chocolate Coin
+	{ id = 48249, chance = 25370, maxCount = 7 }, -- Milk Chocolate Coin
+	{ id = 48273, chance = 15670 }, -- Taiyaki Ice Cream
+	{ id = 25700, chance = 2240 }, -- Dream Blossom Staff
+	{ id = 6393, chance = 1490 }, -- Cream Cake
+	{ id = 3039, chance = 5220 }, -- Red Gem
+	{ id = 3038, chance = 3730 }, -- Green Gem
+	{ id = 3037, chance = 4480 }, -- Yellow Gem
 }
 
 monster.attacks = {

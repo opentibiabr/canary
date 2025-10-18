@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 163 }, -- gold coin
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 237, chance = 23000 }, -- strong mana potion
-	{ id = 9685, chance = 23000 }, -- vampire teeth
-	{ id = 3030, chance = 23000, maxCount = 2 }, -- small ruby
-	{ id = 11449, chance = 23000 }, -- blood preservation
-	{ id = 18924, chance = 23000 }, -- tooth file
-	{ id = 5894, chance = 5000 }, -- bat wing
-	{ id = 3010, chance = 5000 }, -- emerald bangle
-	{ id = 3081, chance = 5000 }, -- stone skin amulet
-	{ id = 36706, chance = 260 }, -- red gem
-	{ id = 3434, chance = 260 }, -- vampire shield
+	{ id = 3031, chance = 100000, maxCount = 163 }, -- Gold Coin
+	{ id = 236, chance = 8780 }, -- Strong Health Potion
+	{ id = 237, chance = 9920 }, -- Strong Mana Potion
+	{ id = 9685, chance = 7630 }, -- Vampire Teeth
+	{ id = 3030, chance = 9160, maxCount = 2 }, -- Small Ruby
+	{ id = 11449, chance = 5340 }, -- Blood Preservation
+	{ id = 18924, chance = 10310 }, -- Tooth File
+	{ id = 5894, chance = 4200 }, -- Bat Wing
+	{ id = 3010, chance = 1150 }, -- Emerald Bangle
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
+	{ id = 3039, chance = 760 }, -- Red Gem
+	{ id = 3434, chance = 760 }, -- Vampire Shield
 }
 
 monster.attacks = {

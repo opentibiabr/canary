@@ -64,13 +64,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 175 }, -- gold coin
-	{ id = 945, chance = 80000 }, -- energy soil
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
-	{ id = 7439, chance = 1000 }, -- berserk potion
-	{ id = 3098, chance = 1000 }, -- ring of healing
-	{ id = 8092, chance = 260 }, -- wand of starstorm
+	{ id = 3031, chance = 1000, maxCount = 175 }, -- Gold Coin
+	{ id = 945, chance = 1000 }, -- Energy Soil
+	{ id = 239, chance = 1000 }, -- Great Health Potion
+	{ id = 3033, chance = 1000, maxCount = 2 }, -- Small Amethyst
+	{ id = 7439, chance = 1000 }, -- Berserk Potion
+	{ id = 3098, chance = 1000 }, -- Ring of Healing
+	{ id = 8092, chance = 1000 }, -- Wand of Starstorm
 }
 
 monster.attacks = {

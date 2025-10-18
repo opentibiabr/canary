@@ -76,19 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 40 }, -- gold coin
-	{ id = 11050, chance = 23000 }, -- torch
-	{ id = 10302, chance = 23000 }, -- compass
-	{ id = 3277, chance = 5000, maxCount = 2 }, -- spear
-	{ id = 3410, chance = 5000 }, -- plate shield
-	{ id = 3358, chance = 5000 }, -- chain armor
-	{ id = 5917, chance = 1000 }, -- bandana
-	{ id = 6098, chance = 1000 }, -- eye patch
-	{ id = 6097, chance = 1000 }, -- hook
-	{ id = 6126, chance = 1000 }, -- peg leg
-	{ id = 5927, chance = 1000 }, -- pirate bag
-	{ id = 5552, chance = 260 }, -- rum flask
-	{ id = 5928, chance = 260 }, -- empty goldfish bowl
+	{ id = 3031, chance = 77620, maxCount = 40 }, -- Gold Coin
+	{ id = 2920, chance = 9752 }, -- Torch
+	{ id = 10302, chance = 10258 }, -- Compass
+	{ id = 3277, chance = 7185, maxCount = 2 }, -- Spear
+	{ id = 3410, chance = 4565 }, -- Plate Shield
+	{ id = 3358, chance = 3044 }, -- Chain Armor
+	{ id = 5706, chance = 735 }, -- Treasure Map (Pirate)
+	{ id = 5917, chance = 1088 }, -- Bandana
+	{ id = 6098, chance = 565 }, -- Eye Patch
+	{ id = 6097, chance = 523 }, -- Hook
+	{ id = 6126, chance = 422 }, -- Peg Leg
+	{ id = 5927, chance = 461 }, -- Pirate Bag
+	{ id = 5552, chance = 89 }, -- Rum Flask
+	{ id = 5792, chance = 100 }, -- Die
 }
 
 monster.attacks = {

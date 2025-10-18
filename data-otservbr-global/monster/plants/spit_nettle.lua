@@ -74,13 +74,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 23000, maxCount = 5 }, -- gold coin
-	{ id = 3740, chance = 23000 }, -- shadow herb
-	{ id = 11476, chance = 23000 }, -- nettle spit
-	{ id = 3738, chance = 5000, maxCount = 2 }, -- sling herb
-	{ id = 3661, chance = 1000 }, -- grave flower
-	{ id = 10314, chance = 1000 }, -- nettle blossom
-	{ id = 647, chance = 1000 }, -- seeds
+	{ id = 3031, chance = 13372, maxCount = 5 }, -- Gold Coin
+	{ id = 3740, chance = 11158 }, -- Shadow Herb
+	{ id = 11476, chance = 9920 }, -- Nettle Spit
+	{ id = 3738, chance = 5244, maxCount = 2 }, -- Sling Herb
+	{ id = 3661, chance = 1074 }, -- Grave Flower
+	{ id = 10314, chance = 1013 }, -- Nettle Blossom
+	{ id = 647, chance = 340 }, -- Seeds
 }
 
 monster.attacks = {

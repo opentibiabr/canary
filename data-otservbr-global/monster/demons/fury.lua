@@ -78,25 +78,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 269 }, -- gold coin
-	{ id = 6558, chance = 80000, maxCount = 3 }, -- flask of demonic blood
-	{ id = 8016, chance = 80000, maxCount = 4 }, -- jalapeno pepper
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 3065, chance = 23000 }, -- terra rod
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 8899, chance = 23000 }, -- slightly rusted legs
-	{ id = 3033, chance = 23000, maxCount = 3 }, -- small amethyst
-	{ id = 5911, chance = 5000 }, -- red piece of cloth
-	{ id = 3035, chance = 5000, maxCount = 4 }, -- platinum coin
-	{ id = 7456, chance = 5000 }, -- noble axe
-	{ id = 5021, chance = 5000, maxCount = 4 }, -- orichalcum pearl
-	{ id = 3554, chance = 1000 }, -- steel boots
-	{ id = 7404, chance = 1000 }, -- assassin dagger
-	{ id = 6093, chance = 1000 }, -- crystal ring
-	{ id = 6299, chance = 260 }, -- death ring
-	{ id = 3364, chance = 260 }, -- golden legs
-	{ id = 7368, chance = 260 }, -- assassin star
+	{ id = 3031, chance = 98804, maxCount = 269 }, -- Gold Coin
+	{ id = 6558, chance = 55361, maxCount = 3 }, -- Flask of Demonic Blood
+	{ id = 8016, chance = 29938, maxCount = 4 }, -- Jalapeno Pepper
+	{ id = 6499, chance = 22499 }, -- Demonic Essence
+	{ id = 5944, chance = 20285 }, -- Soul Orb
+	{ id = 3065, chance = 19818 }, -- Terra Rod
+	{ id = 239, chance = 10058 }, -- Great Health Potion
+	{ id = 8899, chance = 10516 }, -- Slightly Rusted Legs
+	{ id = 3033, chance = 14369, maxCount = 3 }, -- Small Amethyst
+	{ id = 5911, chance = 3798 }, -- Red Piece of Cloth
+	{ id = 3035, chance = 4569, maxCount = 4 }, -- Platinum Coin
+	{ id = 7456, chance = 1991 }, -- Noble Axe
+	{ id = 5021, chance = 2499, maxCount = 4 }, -- Orichalcum Pearl
+	{ id = 3554, chance = 812 }, -- Steel Boots
+	{ id = 7404, chance = 643 }, -- Assassin Dagger
+	{ id = 3007, chance = 352 }, -- Crystal Ring
+	{ id = 6299, chance = 145 }, -- Death Ring
+	{ id = 3364, chance = 198 }, -- Golden Legs
+	{ id = 7368, chance = 109 }, -- Assassin Star
 }
 
 monster.attacks = {

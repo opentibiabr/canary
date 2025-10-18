@@ -77,28 +77,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 5909, chance = 23000 }, -- white piece of cloth
-	{ id = 5913, chance = 23000 }, -- brown piece of cloth
-	{ id = 16103, chance = 23000, maxCount = 3 }, -- mushroom pie
-	{ id = 16139, chance = 23000 }, -- humongous chunk
-	{ id = 16142, chance = 23000, maxCount = 15 }, -- drill bolt
-	{ id = 236, chance = 5000, maxCount = 2 }, -- strong health potion
-	{ id = 237, chance = 5000, maxCount = 2 }, -- strong mana potion
-	{ id = 238, chance = 5000, maxCount = 2 }, -- great mana potion
-	{ id = 239, chance = 5000, maxCount = 2 }, -- great health potion
-	{ id = 268, chance = 5000, maxCount = 3 }, -- mana potion
-	{ id = 812, chance = 5000 }, -- terra legs
-	{ id = 813, chance = 5000 }, -- terra boots
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 5911, chance = 5000 }, -- red piece of cloth
-	{ id = 5912, chance = 5000 }, -- blue piece of cloth
-	{ id = 7436, chance = 5000 }, -- angelic axe
-	{ id = 811, chance = 1000 }, -- terra mantle
-	{ id = 16117, chance = 1000 }, -- muck rod
-	{ id = 16164, chance = 260 }, -- mycological bow
-	{ id = 16099, chance = 260 }, -- mushroom backpack
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 6 }, -- Platinum Coin
+	{ id = 5909, chance = 10200 }, -- White Piece of Cloth
+	{ id = 5913, chance = 14930 }, -- Brown Piece of Cloth
+	{ id = 16103, chance = 17200, maxCount = 3 }, -- Mushroom Pie
+	{ id = 16139, chance = 10420 }, -- Humongous Chunk
+	{ id = 16142, chance = 15080, maxCount = 15 }, -- Drill Bolt
+	{ id = 236, chance = 5070, maxCount = 2 }, -- Strong Health Potion
+	{ id = 237, chance = 5020, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 238, chance = 4910, maxCount = 2 }, -- Great Mana Potion
+	{ id = 239, chance = 4960, maxCount = 2 }, -- Great Health Potion
+	{ id = 268, chance = 5080, maxCount = 3 }, -- Mana Potion
+	{ id = 812, chance = 1070 }, -- Terra Legs
+	{ id = 813, chance = 1980 }, -- Terra Boots
+	{ id = 814, chance = 2120 }, -- Terra Amulet
+	{ id = 5911, chance = 2560 }, -- Red Piece of Cloth
+	{ id = 5912, chance = 4580 }, -- Blue Piece of Cloth
+	{ id = 7436, chance = 1400 }, -- Angelic Axe
+	{ id = 811, chance = 850 }, -- Terra Mantle
+	{ id = 16117, chance = 630 }, -- Muck Rod
+	{ id = 16164, chance = 110 }, -- Mycological Bow
+	{ id = 16099, chance = 20 }, -- Mushroom Backpack
 }
 
 monster.attacks = {

@@ -63,9 +63,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 13991, chance = 80000 }, -- deepling axe
-	{ id = 12730, chance = 80000 }, -- eye of a deepling
-	{ id = 14023, chance = 80000 }, -- obujos shell
+	{ id = 13991, chance = 44444 }, -- Deepling Axe
+	{ id = 12730, chance = 25000 }, -- Eye of a Deepling
+	{ id = 14023, chance = 20000 }, -- Obujos' Shell
+	{ id = 281, chance = 60000 }, -- Giant Shimmering Pearl
 }
 
 monster.attacks = {

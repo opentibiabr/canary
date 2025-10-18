@@ -79,17 +79,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 3016, chance = 5000 }, -- ruby necklace
-	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 16096, chance = 5000 }, -- wand of defiance
-	{ id = 49909, chance = 5000 }, -- demonic core essence
-	{ id = 50057, chance = 5000 }, -- sineater wing
-	{ id = 25699, chance = 1000 }, -- wooden spellbook
-	{ id = 49894, chance = 1000 }, -- demonic matter
-	{ id = 49908, chance = 1000 }, -- mummified demon finger
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 238, chance = 6180 }, -- Great Mana Potion
+	{ id = 3016, chance = 2080 }, -- Ruby Necklace
+	{ id = 3030, chance = 4550, maxCount = 2 }, -- Small Ruby
+	{ id = 3039, chance = 3619 }, -- Red Gem
+	{ id = 16096, chance = 1030 }, -- Wand of Defiance
+	{ id = 49909, chance = 2770 }, -- Demonic Core Essence
+	{ id = 50057, chance = 2040 }, -- Sineater Wing
+	{ id = 25699, chance = 480 }, -- Wooden Spellbook
+	{ id = 49894, chance = 450 }, -- Demonic Matter
+	{ id = 49908, chance = 1040 }, -- Mummified Demon Finger
 }
 
 monster.attacks = {

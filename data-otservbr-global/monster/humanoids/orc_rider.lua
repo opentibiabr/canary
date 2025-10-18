@@ -76,17 +76,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 81 }, -- gold coin
-	{ id = 3577, chance = 80000, maxCount = 3 }, -- meat
-	{ id = 11479, chance = 80000 }, -- orc leather
-	{ id = 3316, chance = 80000 }, -- orcish axe
-	{ id = 10318, chance = 80000 }, -- warwolf fur
-	{ id = 5940, chance = 80000 }, -- wolf tooth chain
-	{ id = 10196, chance = 5000 }, -- orc tooth
-	{ id = 3413, chance = 1000 }, -- battle shield
-	{ id = 3313, chance = 1000 }, -- obsidian lance
-	{ id = 3377, chance = 1000 }, -- scale armor
-	{ id = 11050, chance = 1000 }, -- torch
+	{ id = 3031, chance = 48450, maxCount = 81 }, -- Gold Coin
+	{ id = 3577, chance = 24352, maxCount = 3 }, -- Meat
+	{ id = 11479, chance = 10090 }, -- Orc Leather
+	{ id = 3316, chance = 11597 }, -- Orcish Axe
+	{ id = 10318, chance = 7889 }, -- Warwolf Fur
+	{ id = 3012, chance = 11695 }, -- Wolf Tooth Chain
+	{ id = 10196, chance = 1883 }, -- Orc Tooth
+	{ id = 3413, chance = 1236 }, -- Battle Shield
+	{ id = 3313, chance = 881 }, -- Obsidian Lance
+	{ id = 3377, chance = 477 }, -- Scale Armor
+	{ id = 2920, chance = 4526 }, -- Torch
 }
 
 monster.attacks = {

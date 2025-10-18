@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 40 }, -- gold coin
-	{ id = 1781, chance = 80000, maxCount = 4 }, -- small stone
-	{ id = 10315, chance = 80000 }, -- sulphurous stone
-	{ id = 3050, chance = 80000 }, -- power ring
-	{ id = 3283, chance = 5000 }, -- carlin sword
-	{ id = 5880, chance = 1000 }, -- iron ore
-	{ id = 9632, chance = 1000 }, -- ancient stone
-	{ id = 10310, chance = 5000 }, -- shiny stone
-	{ id = 12600, chance = 1000 }, -- coal
-	{ id = 10426, chance = 1000 }, -- piece of marble rock
-	{ id = 6093, chance = 260 }, -- crystal ring
-	{ id = 36706, chance = 260 }, -- red gem
+	{ id = 3031, chance = 42136, maxCount = 40 }, -- Gold Coin
+	{ id = 1781, chance = 32778, maxCount = 4 }, -- Small Stone
+	{ id = 10315, chance = 10183 }, -- Sulphurous Stone
+	{ id = 3050, chance = 4924 }, -- Power Ring
+	{ id = 3283, chance = 1749 }, -- Carlin Sword
+	{ id = 5880, chance = 1768 }, -- Iron Ore
+	{ id = 9632, chance = 993 }, -- Ancient Stone
+	{ id = 10310, chance = 656 }, -- Shiny Stone
+	{ id = 12600, chance = 181 }, -- Coal
+	{ id = 10426, chance = 489 }, -- Piece of Marble Rock
+	{ id = 3007, chance = 260 }, -- Crystal Ring
+	{ id = 3039, chance = 28 }, -- Red Gem
 }
 
 monster.attacks = {

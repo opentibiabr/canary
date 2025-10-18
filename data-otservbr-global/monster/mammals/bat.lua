@@ -75,7 +75,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5894, chance = 1000 }, -- bat wing
+	{ id = 5894, chance = 1198 }, -- Bat Wing
 }
 
 monster.attacks = {

@@ -77,26 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
-	{ id = 7642, chance = 23000, maxCount = 3 }, -- great spirit potion
-	{ id = 3084, chance = 23000 }, -- protection amulet
-	{ id = 3061, chance = 23000 }, -- life crystal
-	{ id = 8094, chance = 5000 }, -- wand of voodoo
-	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
-	{ id = 3085, chance = 5000 }, -- dragon necklace
-	{ id = 30203, chance = 5000 }, -- blue ectoplasm
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 3060, chance = 5000 }, -- orb
-	{ id = 3055, chance = 5000 }, -- platinum amulet
-	{ id = 3067, chance = 1000 }, -- hailstorm rod
-	{ id = 30180, chance = 1000 }, -- hexagonal ruby
-	{ id = 16118, chance = 1000 }, -- glacial rod
-	{ id = 3062, chance = 260 }, -- mind stone
-	{ id = 3082, chance = 260 }, -- elven amulet
-	{ id = 3083, chance = 260 }, -- garlic necklace
-	{ id = 9304, chance = 260 }, -- shockwave amulet
-	{ id = 3058, chance = 260 }, -- strange symbol
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3035, chance = 95548, maxCount = 7 }, -- Platinum Coin
+	{ id = 7642, chance = 30498, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 3084, chance = 10664 }, -- Protection Amulet
+	{ id = 3061, chance = 8985 }, -- Life Crystal
+	{ id = 8094, chance = 4644 }, -- Wand of Voodoo
+	{ id = 3073, chance = 3838 }, -- Wand of Cosmic Energy
+	{ id = 3085, chance = 2441 }, -- Dragon Necklace
+	{ id = 30203, chance = 1849 }, -- Blue Ectoplasm
+	{ id = 815, chance = 2844 }, -- Glacier Amulet
+	{ id = 3060, chance = 1542 }, -- Orb
+	{ id = 3055, chance = 1718 }, -- Platinum Amulet
+	{ id = 3067, chance = 1089 }, -- Hailstorm Rod
+	{ id = 30180, chance = 1046 }, -- Hexagonal Ruby
+	{ id = 16118, chance = 676 }, -- Glacial Rod
+	{ id = 3062, chance = 296 }, -- Mind Stone
+	{ id = 3082, chance = 373 }, -- Elven Amulet
+	{ id = 3083, chance = 483 }, -- Garlic Necklace
+	{ id = 9304, chance = 432 }, -- Shockwave Amulet
+	{ id = 3058, chance = 224 }, -- Strange Symbol
+	{ id = 3081, chance = 3243 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

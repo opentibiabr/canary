@@ -80,11 +80,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 199 }, -- gold coin
-	{ id = 25742, chance = 23000 }, -- fig leaf
-	{ id = 25743, chance = 5000 }, -- bed of nails
-	{ id = 24961, chance = 5000 }, -- tiger eye
-	{ id = 25744, chance = 1000 }, -- torn shirt
+	{ id = 3031, chance = 50000, maxCount = 199 }, -- Gold Coin
+	{ id = 25742, chance = 9930 }, -- Fig Leaf
+	{ id = 25743, chance = 1910 }, -- Bed of Nails
+	{ id = 24961, chance = 4900 }, -- Tiger Eye
+	{ id = 25744, chance = 1000 }, -- Torn Shirt
 }
 
 monster.attacks = {

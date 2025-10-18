@@ -73,32 +73,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 94 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 237, chance = 80000 }, -- strong mana potion
-	{ id = 3551, chance = 80000 }, -- sandals
-	{ id = 2885, chance = 80000 }, -- brown flask
-	{ id = 2902, chance = 80000 }, -- bowl
-	{ id = 3600, chance = 80000 }, -- bread
-	{ id = 2815, chance = 80000 }, -- scroll
-	{ id = 3738, chance = 80000 }, -- sling herb
-	{ id = 3736, chance = 80000 }, -- star herb
-	{ id = 3661, chance = 80000 }, -- grave flower
-	{ id = 2905, chance = 80000 }, -- plate
-	{ id = 20130, chance = 80000 }, -- lamp
-	{ id = 6107, chance = 80000, maxCount = 2 }, -- staff
-	{ id = 3147, chance = 80000 }, -- blank rune
-	{ id = 3077, chance = 80000 }, -- ankh
-	{ id = 11493, chance = 80000 }, -- safety pin
-	{ id = 11492, chance = 80000 }, -- rope belt
-	{ id = 3061, chance = 80000 }, -- life crystal
-	{ id = 3050, chance = 80000 }, -- power ring
-	{ id = 5940, chance = 80000 }, -- wolf tooth chain
-	{ id = 3105, chance = 80000 }, -- dirty fur
-	{ id = 3563, chance = 80000 }, -- green tunic
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 5786, chance = 1000 }, -- wooden whistle
-	{ id = 9646, chance = 80000 }, -- book of prayers
+	{ id = 3031, chance = 100000, maxCount = 94 }, -- Gold Coin
+	{ id = 3035, chance = 98040, maxCount = 3 }, -- Platinum Coin
+	{ id = 237, chance = 13730 }, -- Strong Mana Potion
+	{ id = 3551, chance = 1000 }, -- Sandals
+	{ id = 2885, chance = 9800 }, -- Brown Flask
+	{ id = 2902, chance = 1000 }, -- Bowl
+	{ id = 3600, chance = 17650 }, -- Bread
+	{ id = 2815, chance = 1000 }, -- Scroll
+	{ id = 3738, chance = 5880 }, -- Sling Herb
+	{ id = 3736, chance = 92160 }, -- Star Herb
+	{ id = 3661, chance = 1000 }, -- Grave Flower
+	{ id = 2905, chance = 1000 }, -- Plate
+	{ id = 2914, chance = 9800 }, -- Lamp
+	{ id = 3289, chance = 9800, maxCount = 2 }, -- Staff
+	{ id = 3147, chance = 19610 }, -- Blank Rune
+	{ id = 3077, chance = 1000 }, -- Ankh
+	{ id = 11493, chance = 43140 }, -- Safety Pin
+	{ id = 11492, chance = 54900 }, -- Rope Belt
+	{ id = 3061, chance = 1960 }, -- Life Crystal
+	{ id = 3050, chance = 49020 }, -- Power Ring
+	{ id = 3012, chance = 11760 }, -- Wolf Tooth Chain
+	{ id = 3105, chance = 1000 }, -- Dirty Fur
+	{ id = 3563, chance = 11760 }, -- Green Tunic
+	{ id = 3037, chance = 45100 }, -- Yellow Gem
+	{ id = 5786, chance = 5880 }, -- Wooden Whistle
+	{ id = 9646, chance = 100000 }, -- Book of Prayers
 }
 
 monster.attacks = {

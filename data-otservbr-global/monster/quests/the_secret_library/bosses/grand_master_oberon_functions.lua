@@ -56,3 +56,7 @@ function SendOberonAsking(monster)
 
 	Game.createMonster(GrandMasterOberonConfig.Monster[math.random(#GrandMasterOberonConfig.Monster)], monster:getPosition(), true, true)
 end
+
+monster.loot = {
+
+}

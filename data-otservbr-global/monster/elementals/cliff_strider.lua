@@ -78,40 +78,40 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 195 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
-	{ id = 238, chance = 80000, maxCount = 4 }, -- great mana potion
-	{ id = 7643, chance = 80000, maxCount = 2 }, -- ultimate health potion
-	{ id = 3026, chance = 23000, maxCount = 3 }, -- white pearl
-	{ id = 3027, chance = 23000 }, -- black pearl
-	{ id = 5880, chance = 23000 }, -- iron ore
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 10310, chance = 23000 }, -- shiny stone
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 16124, chance = 23000, maxCount = 2 }, -- blue crystal splinter
-	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
-	{ id = 16133, chance = 23000 }, -- pulverized ore
-	{ id = 16134, chance = 23000 }, -- cliff strider claw
-	{ id = 16135, chance = 23000, maxCount = 2 }, -- vein of ore
-	{ id = 16141, chance = 23000, maxCount = 8 }, -- prismatic bolt
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3048, chance = 5000 }, -- might ring
-	{ id = 5904, chance = 5000 }, -- magic sulphur
-	{ id = 7437, chance = 5000 }, -- sapphire hammer
-	{ id = 7452, chance = 5000 }, -- spiked squelcher
-	{ id = 9028, chance = 5000 }, -- crystal of balance
-	{ id = 9067, chance = 5000 }, -- crystal of power
-	{ id = 16096, chance = 5000 }, -- wand of defiance
-	{ id = 16118, chance = 5000 }, -- glacial rod
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3281, chance = 1000 }, -- giant sword
-	{ id = 3371, chance = 1000 }, -- knight legs
-	{ id = 3391, chance = 1000 }, -- crusader helmet
-	{ id = 16160, chance = 1000 }, -- crystalline sword
-	{ id = 16163, chance = 1000 }, -- crystal crossbow
-	{ id = 3332, chance = 260 }, -- hammer of wrath
-	{ id = 3381, chance = 260 }, -- crown armor
-	{ id = 3554, chance = 260 }, -- steel boots
+	{ id = 3031, chance = 100000, maxCount = 195 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 238, chance = 34148, maxCount = 4 }, -- Great Mana Potion
+	{ id = 7643, chance = 23672, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 3026, chance = 9351, maxCount = 3 }, -- White Pearl
+	{ id = 3027, chance = 10123 }, -- Black Pearl
+	{ id = 5880, chance = 14631 }, -- Iron Ore
+	{ id = 5944, chance = 17657 }, -- Soul Orb
+	{ id = 10310, chance = 12491 }, -- Shiny Stone
+	{ id = 16119, chance = 5800 }, -- Blue Crystal Shard
+	{ id = 16124, chance = 9223, maxCount = 2 }, -- Blue Crystal Splinter
+	{ id = 16125, chance = 8576 }, -- Cyan Crystal Fragment
+	{ id = 16133, chance = 15400 }, -- Pulverized Ore
+	{ id = 16134, chance = 15738 }, -- Cliff Strider Claw
+	{ id = 16135, chance = 18170, maxCount = 2 }, -- Vein of Ore
+	{ id = 16141, chance = 9747, maxCount = 8 }, -- Prismatic Bolt
+	{ id = 3039, chance = 5369 }, -- Red Gem
+	{ id = 3048, chance = 1040 }, -- Might Ring
+	{ id = 5904, chance = 1403 }, -- Magic Sulphur
+	{ id = 7437, chance = 1719 }, -- Sapphire Hammer
+	{ id = 7452, chance = 1363 }, -- Spiked Squelcher
+	{ id = 9028, chance = 2710 }, -- Crystal of Balance
+	{ id = 9067, chance = 911 }, -- Crystal of Power
+	{ id = 16096, chance = 1903 }, -- Wand of Defiance
+	{ id = 16118, chance = 1299 }, -- Glacial Rod
+	{ id = 3041, chance = 687 }, -- Blue Gem
+	{ id = 3281, chance = 911 }, -- Giant Sword
+	{ id = 3371, chance = 903 }, -- Knight Legs
+	{ id = 3391, chance = 444 }, -- Crusader Helmet
+	{ id = 16160, chance = 497 }, -- Crystalline Sword
+	{ id = 16163, chance = 736 }, -- Crystal Crossbow
+	{ id = 3332, chance = 90 }, -- Hammer of Wrath
+	{ id = 3381, chance = 387 }, -- Crown Armor
+	{ id = 3554, chance = 80 }, -- Steel Boots
 }
 
 monster.attacks = {

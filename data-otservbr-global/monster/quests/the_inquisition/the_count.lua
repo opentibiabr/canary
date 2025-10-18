@@ -70,9 +70,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 94 }, -- gold coin
-	{ id = 3279, chance = 80000 }, -- war hammer
-	{ id = 3434, chance = 80000 }, -- vampire shield
+	{ id = 3031, chance = 73680, maxCount = 94 }, -- Gold Coin
+	{ id = 3114, chance = 25000 }, -- Skull (Item)
+	{ id = 7924, chance = 100000 }, -- The Ring of the Count
+	{ id = 3279, chance = 1000 }, -- War Hammer
+	{ id = 3434, chance = 1000 }, -- Vampire Shield
 }
 
 monster.attacks = {

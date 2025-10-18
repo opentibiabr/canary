@@ -68,27 +68,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3030, chance = 80000, maxCount = 5 }, -- small ruby
-	{ id = 3033, chance = 80000, maxCount = 5 }, -- small amethyst
-	{ id = 9057, chance = 80000, maxCount = 5 }, -- small topaz
-	{ id = 21197, chance = 80000, maxCount = 3 }, -- slimy leaf tentacle
-	{ id = 21143, chance = 80000, maxCount = 5 }, -- glooth sandwich
-	{ id = 21146, chance = 80000, maxCount = 5 }, -- glooth steak
-	{ id = 21144, chance = 80000, maxCount = 3 }, -- bowl of glooth soup
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 239, chance = 80000, maxCount = 5 }, -- great health potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 21178, chance = 80000 }, -- glooth club
-	{ id = 21180, chance = 80000 }, -- glooth axe
-	{ id = 21179, chance = 80000 }, -- glooth blade
-	{ id = 21218, chance = 80000 }, -- lisas doll
-	{ id = 21172, chance = 80000 }, -- glooth whip
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 21164, chance = 80000 }, -- glooth cape
-	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 3031, chance = 1000 }, -- Gold Coin
+	{ id = 3030, chance = 6451, maxCount = 5 }, -- Small Ruby
+	{ id = 3033, chance = 11320, maxCount = 5 }, -- Small Amethyst
+	{ id = 9057, chance = 17741, maxCount = 5 }, -- Small Topaz
+	{ id = 21197, chance = 100000, maxCount = 3 }, -- Slimy Leaf Tentacle
+	{ id = 21143, chance = 30645, maxCount = 5 }, -- Glooth Sandwich
+	{ id = 21146, chance = 29032, maxCount = 5 }, -- Glooth Steak
+	{ id = 21144, chance = 22580, maxCount = 3 }, -- Bowl of Glooth Soup
+	{ id = 238, chance = 37096, maxCount = 5 }, -- Great Mana Potion
+	{ id = 239, chance = 33870, maxCount = 5 }, -- Great Health Potion
+	{ id = 7642, chance = 29032, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 21178, chance = 20967 }, -- Glooth Club
+	{ id = 21180, chance = 28301 }, -- Glooth Axe
+	{ id = 21179, chance = 17741 }, -- Glooth Blade
+	{ id = 21218, chance = 1000 }, -- Lisa's Doll
+	{ id = 21172, chance = 11290 }, -- Glooth Whip
+	{ id = 3032, chance = 24193 }, -- Small Emerald
+	{ id = 3029, chance = 17741 }, -- Small Sapphire
+	{ id = 3028, chance = 11290 }, -- Small Diamond
+	{ id = 21164, chance = 8064 }, -- Glooth Cape
+	{ id = 3039, chance = 6451 }, -- Red Gem
 }
 
 monster.attacks = {

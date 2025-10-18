@@ -69,41 +69,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 23535, chance = 80000 }, -- energy bar
-	{ id = 22721, chance = 80000, maxCount = 2 }, -- gold token
-	{ id = 2995, chance = 80000 }, -- piggy bank
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 22516, chance = 80000, maxCount = 2 }, -- silver token
-	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
-	{ id = 23375, chance = 80000, maxCount = 20 }, -- supreme health potion
-	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
-	{ id = 23374, chance = 80000, maxCount = 20 }, -- ultimate spirit potion
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
-	{ id = 25759, chance = 80000, maxCount = 100 }, -- royal star
-	{ id = 29422, chance = 80000 }, -- winterblade
-	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
-	{ id = 30056, chance = 80000 }, -- ornate locket
-	{ id = 30169, chance = 80000 }, -- pomegranate
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 3006, chance = 80000 }, -- ring of the sky
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 29944, chance = 80000 }, -- izcandars snow globe
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 30168, chance = 80000 }, -- ice shield
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
+	{ id = 23535, chance = 100000 }, -- Energy Bar
+	{ id = 22721, chance = 87500, maxCount = 2 }, -- Gold Token
+	{ id = 2995, chance = 100000 }, -- Piggy Bank
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 22516, chance = 100000, maxCount = 2 }, -- Silver Token
+	{ id = 3037, chance = 37500, maxCount = 2 }, -- Yellow Gem
+	{ id = 23375, chance = 56250, maxCount = 20 }, -- Supreme Health Potion
+	{ id = 23373, chance = 59375, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 56250, maxCount = 20 }, -- Ultimate Spirit Potion
+	{ id = 5892, chance = 40625 }, -- Huge Chunk of Crude Iron
+	{ id = 3039, chance = 43750 }, -- Red Gem
+	{ id = 23529, chance = 18750 }, -- Ring of Blue Plasma
+	{ id = 7443, chance = 18750, maxCount = 10 }, -- Bullseye Potion
+	{ id = 7427, chance = 18750 }, -- Chaos Mace
+	{ id = 281, chance = 15625 }, -- Giant Shimmering Pearl
+	{ id = 3041, chance = 12500 }, -- Blue Gem
+	{ id = 7440, chance = 21875, maxCount = 10 }, -- Mastermind Potion
+	{ id = 25759, chance = 28125, maxCount = 100 }, -- Royal Star
+	{ id = 29422, chance = 15625 }, -- Winterblade
+	{ id = 7439, chance = 9375, maxCount = 10 }, -- Berserk Potion
+	{ id = 23543, chance = 12500 }, -- Collar of Green Plasma
+	{ id = 23544, chance = 12500 }, -- Collar of Red Plasma
+	{ id = 3043, chance = 18750, maxCount = 2 }, -- Crystal Coin
+	{ id = 30056, chance = 6250 }, -- Ornate Locket
+	{ id = 30169, chance = 12500 }, -- Pomegranate
+	{ id = 23533, chance = 15625 }, -- Ring of Red Plasma
+	{ id = 3006, chance = 18750 }, -- Ring of the Sky
+	{ id = 3324, chance = 21875 }, -- Skull Staff
+	{ id = 29944, chance = 6250 }, -- Izcandar's Snow Globe
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 5904, chance = 6250 }, -- Magic Sulphur
+	{ id = 3038, chance = 12500 }, -- Green Gem
+	{ id = 9058, chance = 31250 }, -- Gold Ingot
+	{ id = 30168, chance = 6250 }, -- Ice Shield
+	{ id = 3036, chance = 6250 }, -- Violet Gem
+	{ id = 23531, chance = 6250 }, -- Ring of Green Plasma
 }
 
 monster.attacks = {

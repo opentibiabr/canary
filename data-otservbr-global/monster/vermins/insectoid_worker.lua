@@ -73,12 +73,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
-	{ id = 14083, chance = 80000 }, -- compound eye
-	{ id = 14753, chance = 80000 }, -- dung ball
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 3032, chance = 5000 }, -- small emerald
-	{ id = 3326, chance = 1000 }, -- epee
+	{ id = 3031, chance = 100000, maxCount = 90 }, -- Gold Coin
+	{ id = 14083, chance = 14959 }, -- Compound Eye
+	{ id = 14225, chance = 14570 }, -- Dung Ball
+	{ id = 266, chance = 4870 }, -- Health Potion
+	{ id = 3032, chance = 2819 }, -- Small Emerald
+	{ id = 3326, chance = 570 }, -- Epee
 }
 
 monster.attacks = {

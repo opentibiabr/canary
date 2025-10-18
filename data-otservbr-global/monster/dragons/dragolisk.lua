@@ -76,17 +76,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 36 }, -- platinum coin
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 44743, chance = 23000 }, -- nimmersatts seal
-	{ id = 44746, chance = 23000 }, -- dragolisk eye
-	{ id = 44747, chance = 23000 }, -- dragolisk poison gland
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 7643, chance = 5000 }, -- ultimate health potion
-	{ id = 11457, chance = 5000 }, -- dragons tail
-	{ id = 23373, chance = 1000 }, -- ultimate mana potion
-	{ id = 3416, chance = 260 }, -- dragon shield
-	{ id = 48095, chance = 80000 }, -- dragolisk soul core
+	{ id = 3035, chance = 52388, maxCount = 36 }, -- Platinum Coin
+	{ id = 281, chance = 7449 }, -- Giant Shimmering Pearl
+	{ id = 3039, chance = 7333 }, -- Red Gem
+	{ id = 44743, chance = 8645 }, -- Nimmersatt's Seal
+	{ id = 44746, chance = 5150 }, -- Dragolisk Eye
+	{ id = 44747, chance = 13120 }, -- Dragolisk Poison Gland
+	{ id = 3038, chance = 4270 }, -- Green Gem
+	{ id = 7643, chance = 1855 }, -- Ultimate Health Potion
+	{ id = 11457, chance = 1322 }, -- Dragon's Tail
+	{ id = 23373, chance = 917 }, -- Ultimate Mana Potion
+	{ id = 3416, chance = 535 }, -- Dragon Shield
 }
 
 monster.attacks = {

@@ -76,27 +76,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 28 }, -- platinum coin
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 16120, chance = 23000 }, -- violet crystal shard
-	{ id = 16121, chance = 23000 }, -- green crystal shard
-	{ id = 36784, chance = 23000 }, -- tremendous tyrant shell
-	{ id = 822, chance = 5000 }, -- lightning legs
-	{ id = 824, chance = 5000 }, -- glacier robe
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3067, chance = 5000 }, -- hailstorm rod
-	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
-	{ id = 3082, chance = 5000 }, -- elven amulet
-	{ id = 3284, chance = 5000 }, -- ice rapier
-	{ id = 3318, chance = 5000 }, -- knight axe
-	{ id = 7430, chance = 5000 }, -- dragonbone staff
-	{ id = 8043, chance = 5000 }, -- focus cape
-	{ id = 8073, chance = 5000 }, -- spellbook of warding
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 14042, chance = 5000 }, -- warriors shield
-	{ id = 36783, chance = 5000 }, -- tremendous tyrant head
+	{ id = 3035, chance = 100000, maxCount = 28 }, -- Platinum Coin
+	{ id = 3039, chance = 8335 }, -- Red Gem
+	{ id = 9058, chance = 11209 }, -- Gold Ingot
+	{ id = 16119, chance = 6062 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 7695 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 6720 }, -- Green Crystal Shard
+	{ id = 36784, chance = 4937 }, -- Tremendous Tyrant Shell
+	{ id = 822, chance = 3051 }, -- Lightning Legs
+	{ id = 824, chance = 2227 }, -- Glacier Robe
+	{ id = 3037, chance = 4398 }, -- Yellow Gem
+	{ id = 3067, chance = 3146 }, -- Hailstorm Rod
+	{ id = 3073, chance = 2793 }, -- Wand of Cosmic Energy
+	{ id = 3082, chance = 1986 }, -- Elven Amulet
+	{ id = 3284, chance = 3705 }, -- Ice Rapier
+	{ id = 3318, chance = 3360 }, -- Knight Axe
+	{ id = 7430, chance = 3238 }, -- Dragonbone Staff
+	{ id = 8043, chance = 2145 }, -- Focus Cape
+	{ id = 8073, chance = 4516 }, -- Spellbook of Warding
+	{ id = 8092, chance = 3680 }, -- Wand of Starstorm
+	{ id = 14042, chance = 2281 }, -- Warrior's Shield
+	{ id = 36783, chance = 3316 }, -- Tremendous Tyrant Head
 }
 
 monster.attacks = {

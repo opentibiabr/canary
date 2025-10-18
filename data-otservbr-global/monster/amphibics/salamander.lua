@@ -74,16 +74,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 15 }, -- gold coin
-	{ id = 17457, chance = 80000, maxCount = 5 }, -- insectoid eggs
-	{ id = 3447, chance = 23000, maxCount = 3 }, -- arrow
-	{ id = 31366, chance = 5000 }, -- rope
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 3286, chance = 5000 }, -- mace
-	{ id = 3354, chance = 5000 }, -- brass helmet
-	{ id = 3307, chance = 1000 }, -- scimitar
-	{ id = 3350, chance = 1000 }, -- bow
-	{ id = 13302, chance = 80000 }, -- insectoid egg
+	{ id = 3031, chance = 71940, maxCount = 15 }, -- Gold Coin
+	{ id = 17457, chance = 34690, maxCount = 5 }, -- Insectoid Eggs
+	{ id = 3447, chance = 7989, maxCount = 3 }, -- Arrow
+	{ id = 3003, chance = 5080 }, -- Rope
+	{ id = 266, chance = 1480 }, -- Health Potion
+	{ id = 3286, chance = 3980 }, -- Mace
+	{ id = 3354, chance = 1980 }, -- Brass Helmet
+	{ id = 3307, chance = 490 }, -- Scimitar
+	{ id = 3350, chance = 740 }, -- Bow
+	{ id = 17457, chance = 239 }, -- Insectoid Eggs
 }
 
 monster.attacks = {

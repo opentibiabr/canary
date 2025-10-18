@@ -81,16 +81,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 70 }, -- gold coin
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 9639, chance = 23000 }, -- cultish robe
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 3033, chance = 5000 }, -- small amethyst
-	{ id = 3032, chance = 5000 }, -- small emerald
-	{ id = 3028, chance = 5000 }, -- small diamond
-	{ id = 3572, chance = 1000 }, -- scarf
-	{ id = 3048, chance = 260 }, -- might ring
-	{ id = 2995, chance = 260 }, -- piggy bank
+	{ id = 3031, chance = 100000, maxCount = 70 }, -- Gold Coin
+	{ id = 3577, chance = 10320 }, -- Meat
+	{ id = 9639, chance = 5520 }, -- Cultish Robe
+	{ id = 239, chance = 6250 }, -- Great Health Potion
+	{ id = 3033, chance = 2260 }, -- Small Amethyst
+	{ id = 3032, chance = 2430 }, -- Small Emerald
+	{ id = 3028, chance = 2290 }, -- Small Diamond
+	{ id = 3572, chance = 630 }, -- Scarf
+	{ id = 3048, chance = 349 }, -- Might Ring
+	{ id = 2995, chance = 1000 }, -- Piggy Bank
 }
 
 monster.attacks = {

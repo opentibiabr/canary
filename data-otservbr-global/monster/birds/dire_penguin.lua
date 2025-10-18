@@ -76,11 +76,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 10 }, -- gold coin
-	{ id = 7885, chance = 23000, maxCount = 4 }, -- fish
-	{ id = 7159, chance = 260 }, -- green perch
-	{ id = 7158, chance = 260 }, -- rainbow trout
-	{ id = 3322, chance = 260 }, -- dragon hammer
+	{ id = 3031, chance = 64150, maxCount = 10 }, -- Gold Coin
+	{ id = 3578, chance = 9430, maxCount = 4 }, -- Fish
+	{ id = 7159, chance = 1000 }, -- Green Perch
+	{ id = 7158, chance = 1000 }, -- Rainbow Trout
+	{ id = 3322, chance = 1000 }, -- Dragon Hammer
 }
 
 monster.attacks = {

@@ -117,4 +117,6 @@ mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)
 
-monster.loot = {}
+monster.loot = {
+
+}

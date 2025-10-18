@@ -78,27 +78,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 43895, chance = 80000 }, -- bag you covet
-	{ id = 7439, chance = 80000, maxCount = 40 }, -- berserk potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 7443, chance = 80000, maxCount = 31 }, -- bullseye potion
-	{ id = 3043, chance = 80000, maxCount = 100 }, -- crystal coin
-	{ id = 32623, chance = 80000 }, -- giant topaz
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 7440, chance = 80000, maxCount = 27 }, -- mastermind potion
-	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 23375, chance = 80000, maxCount = 164 }, -- supreme health potion
-	{ id = 30054, chance = 80000 }, -- unicorn figurine
-	{ id = 23373, chance = 80000, maxCount = 98 }, -- ultimate mana potion
-	{ id = 23374, chance = 80000, maxCount = 127 }, -- ultimate spirit potion
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 32769, chance = 80000, maxCount = 3 }, -- white gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 32622, chance = 80000, maxCount = 2 }, -- giant amethyst
-	{ id = 30053, chance = 80000 }, -- dragon figurine
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 43860, chance = 2777 }, -- Bag You Covet
+	{ id = 7439, chance = 11111, maxCount = 40 }, -- Berserk Potion
+	{ id = 3041, chance = 19512 }, -- Blue Gem
+	{ id = 7443, chance = 29268, maxCount = 31 }, -- Bullseye Potion
+	{ id = 3043, chance = 100000, maxCount = 100 }, -- Crystal Coin
+	{ id = 43961, chance = 2777 }, -- Darklight Figurine
+	{ id = 32623, chance = 26829 }, -- Giant Topaz
+	{ id = 30061, chance = 24390 }, -- Giant Sapphire
+	{ id = 9058, chance = 8333 }, -- Gold Ingot
+	{ id = 3038, chance = 41463 }, -- Green Gem
+	{ id = 7440, chance = 36585, maxCount = 27 }, -- Mastermind Potion
+	{ id = 33778, chance = 1000 }, -- Raw Watermelon Tourmaline
+	{ id = 3039, chance = 41463 }, -- Red Gem
+	{ id = 23375, chance = 58536, maxCount = 164 }, -- Supreme Health Potion
+	{ id = 43504, chance = 1000 }, -- The Essence of Chagorz
+	{ id = 30054, chance = 2777 }, -- Unicorn Figurine
+	{ id = 23373, chance = 48780, maxCount = 98 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 39024, maxCount = 127 }, -- Ultimate Spirit Potion
+	{ id = 3036, chance = 21951 }, -- Violet Gem
+	{ id = 32769, chance = 9756, maxCount = 3 }, -- White Gem
+	{ id = 3037, chance = 39024 }, -- Yellow Gem
+	{ id = 49372, chance = 2777 }, -- Spiritualist Gem
+	{ id = 43966, chance = 2777 }, -- Chagorz Igneous Obsidian
+	{ id = 32622, chance = 48780, maxCount = 2 }, -- Giant Amethyst
+	{ id = 49271, chance = 27777, maxCount = 39 }, -- Transcendence Potion
+	{ id = 30053, chance = 2777 }, -- Dragon Figurine
+	{ id = 43900, chance = 2777 }, -- Darklight Geode
 }
 
 monster.attacks = {

@@ -73,26 +73,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 50 }, -- platinum coin
-	{ id = 28570, chance = 80000, maxCount = 6 }, -- glowing rune
-	{ id = 3029, chance = 80000, maxCount = 3 }, -- small sapphire
-	{ id = 9661, chance = 23000 }, -- frosty heart
-	{ id = 7741, chance = 23000 }, -- ice cube
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 23373, chance = 23000 }, -- ultimate mana potion
-	{ id = 3284, chance = 23000 }, -- ice rapier
-	{ id = 829, chance = 23000 }, -- glacier mask
-	{ id = 3333, chance = 23000 }, -- crystal mace
-	{ id = 9663, chance = 5000 }, -- piece of dead brain
-	{ id = 7449, chance = 5000 }, -- crystal sword
-	{ id = 824, chance = 5000 }, -- glacier robe
-	{ id = 823, chance = 5000 }, -- glacier kilt
-	{ id = 21194, chance = 5000 }, -- slime heart
-	{ id = 7387, chance = 5000 }, -- diamond sceptre
-	{ id = 7437, chance = 1000 }, -- sapphire hammer
-	{ id = 8050, chance = 1000 }, -- crystalline armor
-	{ id = 16118, chance = 1000 }, -- glacial rod
-	{ id = 9303, chance = 260 }, -- leviathans amulet
+	{ id = 3035, chance = 50417, maxCount = 50 }, -- Platinum Coin
+	{ id = 28570, chance = 35950, maxCount = 6 }, -- Glowing Rune
+	{ id = 3029, chance = 68104, maxCount = 3 }, -- Small Sapphire
+	{ id = 9661, chance = 22725 }, -- Frosty Heart
+	{ id = 7441, chance = 13981 }, -- Ice Cube
+	{ id = 28568, chance = 15700 }, -- Inkwell (Black)
+	{ id = 7643, chance = 15690 }, -- Ultimate Health Potion
+	{ id = 23373, chance = 17470 }, -- Ultimate Mana Potion
+	{ id = 3284, chance = 5230 }, -- Ice Rapier
+	{ id = 829, chance = 8180 }, -- Glacier Mask
+	{ id = 3333, chance = 5040 }, -- Crystal Mace
+	{ id = 9663, chance = 4019 }, -- Piece of Dead Brain
+	{ id = 7449, chance = 4591 }, -- Crystal Sword
+	{ id = 824, chance = 2320 }, -- Glacier Robe
+	{ id = 823, chance = 2730 }, -- Glacier Kilt
+	{ id = 21194, chance = 4150 }, -- Slime Heart
+	{ id = 7387, chance = 4059 }, -- Diamond Sceptre
+	{ id = 7437, chance = 950 }, -- Sapphire Hammer
+	{ id = 8050, chance = 670 }, -- Crystalline Armor
+	{ id = 16118, chance = 740 }, -- Glacial Rod
+	{ id = 9303, chance = 280 }, -- Leviathan's Amulet
 }
 
 monster.attacks = {

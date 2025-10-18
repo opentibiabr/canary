@@ -78,37 +78,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
-	{ id = 7642, chance = 23000, maxCount = 5 }, -- great spirit potion
-	{ id = 238, chance = 23000, maxCount = 5 }, -- great mana potion
-	{ id = 22728, chance = 23000 }, -- vexclaw talon
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 3731, chance = 23000, maxCount = 6 }, -- fire mushroom
-	{ id = 7643, chance = 23000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 23000, maxCount = 5 }, -- small topaz
-	{ id = 3032, chance = 23000, maxCount = 5 }, -- small emerald
-	{ id = 3033, chance = 23000, maxCount = 5 }, -- small amethyst
-	{ id = 3030, chance = 23000, maxCount = 5 }, -- small ruby
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3284, chance = 5000 }, -- ice rapier
-	{ id = 3320, chance = 5000 }, -- fire axe
-	{ id = 3051, chance = 5000 }, -- energy ring
-	{ id = 3281, chance = 5000 }, -- giant sword
-	{ id = 3048, chance = 1000 }, -- might ring
-	{ id = 22727, chance = 1000 }, -- rift lance
-	{ id = 3098, chance = 1000 }, -- ring of healing
-	{ id = 3356, chance = 1000 }, -- devil helmet
-	{ id = 3055, chance = 260 }, -- platinum amulet
-	{ id = 3364, chance = 260 }, -- golden legs
-	{ id = 3420, chance = 260 }, -- demon shield
-	{ id = 22866, chance = 260 }, -- rift bow
-	{ id = 22726, chance = 260 }, -- rift shield
-	{ id = 3414, chance = 260 }, -- mastermind shield
-	{ id = 22867, chance = 260 }, -- rift crossbow
-	{ id = 3366, chance = 260 }, -- magic plate armor
-	{ id = 7382, chance = 260 }, -- demonrage sword
+	{ id = 3031, chance = 91632, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 91847, maxCount = 9 }, -- Platinum Coin
+	{ id = 7642, chance = 19080, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 238, chance = 19458, maxCount = 5 }, -- Great Mana Potion
+	{ id = 22728, chance = 16111 }, -- Vexclaw Talon
+	{ id = 6499, chance = 15714 }, -- Demonic Essence
+	{ id = 3731, chance = 15884, maxCount = 6 }, -- Fire Mushroom
+	{ id = 7643, chance = 15642, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 9057, chance = 7397, maxCount = 5 }, -- Small Topaz
+	{ id = 3032, chance = 8024, maxCount = 5 }, -- Small Emerald
+	{ id = 3033, chance = 7988, maxCount = 5 }, -- Small Amethyst
+	{ id = 3030, chance = 7316, maxCount = 5 }, -- Small Ruby
+	{ id = 3037, chance = 3886 }, -- Yellow Gem
+	{ id = 3039, chance = 3932 }, -- Red Gem
+	{ id = 3284, chance = 3859 }, -- Ice Rapier
+	{ id = 3320, chance = 2888 }, -- Fire Axe
+	{ id = 3051, chance = 1840 }, -- Energy Ring
+	{ id = 3281, chance = 1372 }, -- Giant Sword
+	{ id = 3048, chance = 1365 }, -- Might Ring
+	{ id = 22727, chance = 929 }, -- Rift Lance
+	{ id = 3098, chance = 1176 }, -- Ring of Healing
+	{ id = 3356, chance = 736 }, -- Devil Helmet
+	{ id = 3055, chance = 615 }, -- Platinum Amulet
+	{ id = 3364, chance = 328 }, -- Golden Legs
+	{ id = 3420, chance = 529 }, -- Demon Shield
+	{ id = 22866, chance = 380 }, -- Rift Bow
+	{ id = 22726, chance = 484 }, -- Rift Shield
+	{ id = 3414, chance = 360 }, -- Mastermind Shield
+	{ id = 22867, chance = 276 }, -- Rift Crossbow
+	{ id = 3366, chance = 74 }, -- Magic Plate Armor
+	{ id = 7382, chance = 64 }, -- Demonrage Sword
 }
 
 monster.attacks = {

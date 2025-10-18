@@ -69,7 +69,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 11548, chance = 80000 }, -- strong sinew
+	{ id = 11548, chance = 1000 }, -- Strong Sinew
 }
 
 monster.attacks = {

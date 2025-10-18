@@ -82,26 +82,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 225 }, -- gold coin
-	{ id = 10317, chance = 23000 }, -- werewolf fur
-	{ id = 22052, chance = 23000 }, -- werewolf fangs
-	{ id = 3410, chance = 23000 }, -- plate shield
-	{ id = 8895, chance = 23000 }, -- rusted armor
-	{ id = 3725, chance = 23000 }, -- brown mushroom
-	{ id = 22083, chance = 23000 }, -- moonlight crystals
-	{ id = 3741, chance = 5000 }, -- troll green
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 5897, chance = 5000 }, -- wolf paw
-	{ id = 3269, chance = 5000 }, -- halberd
-	{ id = 7643, chance = 5000 }, -- ultimate health potion
-	{ id = 7439, chance = 1000 }, -- berserk potion
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 3055, chance = 1000 }, -- platinum amulet
-	{ id = 3053, chance = 1000 }, -- time ring
-	{ id = 3326, chance = 1000 }, -- epee
-	{ id = 7383, chance = 260 }, -- relic sword
-	{ id = 7428, chance = 260 }, -- bonebreaker
-	{ id = 7419, chance = 260 }, -- dreaded cleaver
+	{ id = 3031, chance = 98996, maxCount = 225 }, -- Gold Coin
+	{ id = 10317, chance = 10317 }, -- Werewolf Fur
+	{ id = 22052, chance = 15789 }, -- Werewolf Fangs
+	{ id = 3410, chance = 9924 }, -- Plate Shield
+	{ id = 8895, chance = 7970 }, -- Rusted Armor
+	{ id = 3725, chance = 6908 }, -- Brown Mushroom
+	{ id = 22083, chance = 1376 }, -- Moonlight Crystals
+	{ id = 3741, chance = 4933 }, -- Troll Green
+	{ id = 236, chance = 5360 }, -- Strong Health Potion
+	{ id = 5897, chance = 4958 }, -- Wolf Paw
+	{ id = 3269, chance = 2921 }, -- Halberd
+	{ id = 7643, chance = 2192 }, -- Ultimate Health Potion
+	{ id = 7439, chance = 1034 }, -- Berserk Potion
+	{ id = 3081, chance = 787 }, -- Stone Skin Amulet
+	{ id = 3055, chance = 649 }, -- Platinum Amulet
+	{ id = 3053, chance = 701 }, -- Time Ring
+	{ id = 3326, chance = 601 }, -- Epee
+	{ id = 7383, chance = 492 }, -- Relic Sword
+	{ id = 7428, chance = 326 }, -- Bonebreaker
+	{ id = 7419, chance = 55 }, -- Dreaded Cleaver
 }
 
 monster.attacks = {

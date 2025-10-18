@@ -73,46 +73,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
-	{ id = 238, chance = 80000, maxCount = 10 }, -- great mana potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 7643, chance = 80000, maxCount = 10 }, -- ultimate health potion
-	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
-	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
-	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
-	{ id = 5888, chance = 80000, maxCount = 2 }, -- piece of hell steel
-	{ id = 5887, chance = 80000, maxCount = 2 }, -- piece of royal steel
-	{ id = 5909, chance = 80000, maxCount = 3 }, -- white piece of cloth
-	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
-	{ id = 3030, chance = 80000, maxCount = 10 }, -- small ruby
-	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 11454, chance = 80000 }, -- luminous orb
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 22727, chance = 80000 }, -- rift lance
-	{ id = 7424, chance = 80000 }, -- lunar staff
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 8895, chance = 80000 }, -- rusted armor
-	{ id = 8092, chance = 80000 }, -- wand of starstorm
-	{ id = 3387, chance = 80000 }, -- demon helmet
-	{ id = 822, chance = 80000 }, -- lightning legs
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 8072, chance = 80000 }, -- spellbook of enlightenment
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 10438, chance = 80000 }, -- spellweavers robe
-	{ id = 5891, chance = 80000 }, -- enchanted chicken wing
-	{ id = 24393, chance = 80000 }, -- pillow backpack
-	{ id = 22516, chance = 80000, maxCount = 2 }, -- silver token
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 238, chance = 54741, maxCount = 10 }, -- Great Mana Potion
+	{ id = 7642, chance = 55844, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 7643, chance = 54824, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 16121, chance = 68103, maxCount = 3 }, -- Green Crystal Shard
+	{ id = 16120, chance = 63793, maxCount = 3 }, -- Violet Crystal Shard
+	{ id = 16119, chance = 62500, maxCount = 3 }, -- Blue Crystal Shard
+	{ id = 5888, chance = 18421, maxCount = 2 }, -- Piece of Hell Steel
+	{ id = 5887, chance = 3164, maxCount = 2 }, -- Piece of Royal Steel
+	{ id = 5909, chance = 15584, maxCount = 3 }, -- White Piece of Cloth
+	{ id = 3033, chance = 19298, maxCount = 10 }, -- Small Amethyst
+	{ id = 3028, chance = 21052, maxCount = 10 }, -- Small Diamond
+	{ id = 3032, chance = 26754, maxCount = 10 }, -- Small Emerald
+	{ id = 3030, chance = 14912, maxCount = 10 }, -- Small Ruby
+	{ id = 9057, chance = 18614, maxCount = 10 }, -- Small Topaz
+	{ id = 3039, chance = 23376 }, -- Red Gem
+	{ id = 3041, chance = 22807 }, -- Blue Gem
+	{ id = 3038, chance = 17748 }, -- Green Gem
+	{ id = 3037, chance = 17543 }, -- Yellow Gem
+	{ id = 11454, chance = 37229 }, -- Luminous Orb
+	{ id = 281, chance = 14718 }, -- Giant Shimmering Pearl
+	{ id = 3079, chance = 3333 }, -- Boots of Haste
+	{ id = 22727, chance = 2564 }, -- Rift Lance
+	{ id = 7424, chance = 1282 }, -- Lunar Staff
+	{ id = 23526, chance = 41558 }, -- Collar of Blue Plasma
+	{ id = 8895, chance = 24675 }, -- Rusted Armor
+	{ id = 8092, chance = 100000 }, -- Wand of Starstorm
+	{ id = 3387, chance = 4054 }, -- Demon Helmet
+	{ id = 822, chance = 4385 }, -- Lightning Legs
+	{ id = 7440, chance = 99137 }, -- Mastermind Potion
+	{ id = 5904, chance = 5696 }, -- Magic Sulphur
+	{ id = 3098, chance = 100000 }, -- Ring of Healing
+	{ id = 8072, chance = 1000 }, -- Spellbook of Enlightenment
+	{ id = 8073, chance = 10526 }, -- Spellbook of Warding
+	{ id = 10438, chance = 7456 }, -- Spellweaver's Robe
+	{ id = 5891, chance = 1960 }, -- Enchanted Chicken Wing
+	{ id = 24393, chance = 5701 }, -- Pillow Backpack
+	{ id = 22516, chance = 20175, maxCount = 2 }, -- Silver Token
+	{ id = 22721, chance = 29385 }, -- Gold Token
+	{ id = 24959, chance = 6081 }, -- Part of a Rune (Six)
+	{ id = 3036, chance = 3947 }, -- Violet Gem
 }
 
 monster.attacks = {

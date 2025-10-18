@@ -77,13 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 45 }, -- gold coin
-	{ id = 3147, chance = 23000, maxCount = 3 }, -- blank rune
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 268, chance = 5000 }, -- mana potion
-	{ id = 3075, chance = 5000 }, -- wand of dragonbreath
-	{ id = 3072, chance = 260 }, -- wand of decay
-	{ id = 12308, chance = 260 }, -- reins
+	{ id = 3031, chance = 75050, maxCount = 45 }, -- Gold Coin
+	{ id = 3147, chance = 14887, maxCount = 3 }, -- Blank Rune
+	{ id = 34237, chance = 1000 }, -- Dead Frog (Item)
+	{ id = 266, chance = 2894 }, -- Health Potion
+	{ id = 268, chance = 2958 }, -- Mana Potion
+	{ id = 3075, chance = 1908 }, -- Wand of Dragonbreath
+	{ id = 3072, chance = 83 }, -- Wand of Decay
+	{ id = 12308, chance = 10 }, -- Reins
 }
 
 monster.attacks = {

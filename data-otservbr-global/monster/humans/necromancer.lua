@@ -85,18 +85,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
-	{ id = 3448, chance = 23000, maxCount = 5 }, -- poison arrow
-	{ id = 10320, chance = 23000 }, -- book of necromantic rituals
-	{ id = 3732, chance = 5000 }, -- green mushroom
-	{ id = 11475, chance = 1000 }, -- necromantic robe
-	{ id = 3574, chance = 1000 }, -- mystic turban
-	{ id = 3311, chance = 260 }, -- clerical mace
-	{ id = 237, chance = 260 }, -- strong mana potion
-	{ id = 3079, chance = 260 }, -- boots of haste
-	{ id = 3324, chance = 260 }, -- skull staff
-	{ id = 8073, chance = 260 }, -- spellbook of warding
-	{ id = 7456, chance = 260 }, -- noble axe
+	{ id = 3031, chance = 30080, maxCount = 90 }, -- Gold Coin
+	{ id = 3448, chance = 28827, maxCount = 5 }, -- Poison Arrow
+	{ id = 10320, chance = 9288 }, -- Book of Necromantic Rituals
+	{ id = 3732, chance = 3060 }, -- Green Mushroom
+	{ id = 11475, chance = 1030 }, -- Necromantic Robe
+	{ id = 3574, chance = 370 }, -- Mystic Turban
+	{ id = 3311, chance = 1437 }, -- Clerical Mace
+	{ id = 237, chance = 955 }, -- Strong Mana Potion
+	{ id = 3079, chance = 328 }, -- Boots of Haste
+	{ id = 3324, chance = 114 }, -- Skull Staff
+	{ id = 8073, chance = 155 }, -- Spellbook of Warding
+	{ id = 7456, chance = 0 }, -- Noble Axe
 }
 
 monster.attacks = {

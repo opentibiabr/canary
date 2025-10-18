@@ -71,38 +71,39 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 182 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 15 }, -- platinum coin
-	{ id = 7368, chance = 80000, maxCount = 8 }, -- assassin star
-	{ id = 239, chance = 80000, maxCount = 3 }, -- great health potion
-	{ id = 238, chance = 80000, maxCount = 3 }, -- great mana potion
-	{ id = 3582, chance = 80000 }, -- ham
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3028, chance = 80000, maxCount = 2 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 2 }, -- small emerald
-	{ id = 9057, chance = 80000, maxCount = 2 }, -- small topaz
-	{ id = 9058, chance = 80000, maxCount = 2 }, -- gold ingot
-	{ id = 7452, chance = 80000 }, -- spiked squelcher
-	{ id = 3360, chance = 80000 }, -- golden armor
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 7413, chance = 80000 }, -- titan axe
-	{ id = 28821, chance = 80000 }, -- patch of fine cloth
-	{ id = 3414, chance = 80000 }, -- mastermind shield
-	{ id = 28720, chance = 260 }, -- falcon greaves
-	{ id = 28716, chance = 260 }, -- falcon rod
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3342, chance = 80000 }, -- war axe
-	{ id = 5944, chance = 80000 }, -- soul orb
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 678, chance = 80000 }, -- small enchanted amethyst
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 7365, chance = 80000 }, -- onyx arrow
-	{ id = 31925, chance = 80000 }, -- closed trap
-	{ id = 3019, chance = 80000 }, -- demonbone amulet
-	{ id = 3340, chance = 1000 }, -- heavy mace
+	{ id = 3031, chance = 98729, maxCount = 182 }, -- Gold Coin
+	{ id = 3035, chance = 98729, maxCount = 15 }, -- Platinum Coin
+	{ id = 7368, chance = 26056, maxCount = 8 }, -- Assassin Star
+	{ id = 239, chance = 33755, maxCount = 3 }, -- Great Health Potion
+	{ id = 238, chance = 32562, maxCount = 3 }, -- Great Mana Potion
+	{ id = 3582, chance = 69262 }, -- Ham
+	{ id = 6499, chance = 44481 }, -- Demonic Essence
+	{ id = 3036, chance = 1432 }, -- Violet Gem
+	{ id = 3038, chance = 2940 }, -- Green Gem
+	{ id = 3028, chance = 19383, maxCount = 2 }, -- Small Diamond
+	{ id = 3032, chance = 20250, maxCount = 2 }, -- Small Emerald
+	{ id = 9057, chance = 19696, maxCount = 2 }, -- Small Topaz
+	{ id = 9058, chance = 8654, maxCount = 2 }, -- Gold Ingot
+	{ id = 7452, chance = 5003 }, -- Spiked Squelcher
+	{ id = 3360, chance = 715 }, -- Golden Armor
+	{ id = 3370, chance = 5641 }, -- Knight Armor
+	{ id = 7413, chance = 8261 }, -- Titan Axe
+	{ id = 28821, chance = 1293 }, -- Patch of Fine Cloth
+	{ id = 3414, chance = 630 }, -- Mastermind Shield
+	{ id = 28720, chance = 1000 }, -- Falcon Greaves
+	{ id = 28716, chance = 184 }, -- Falcon Rod
+	{ id = 3030, chance = 18905 }, -- Small Ruby
+	{ id = 3342, chance = 2778 }, -- War Axe
+	{ id = 5944, chance = 32643 }, -- Soul Orb
+	{ id = 6558, chance = 28512 }, -- Flask of Demonic Blood
+	{ id = 281, chance = 7467 }, -- Giant Shimmering Pearl
+	{ id = 3033, chance = 20494 }, -- Small Amethyst
+	{ id = 678, chance = 77681 }, -- Small Enchanted Amethyst
+	{ id = 3039, chance = 14614 }, -- Red Gem
+	{ id = 7365, chance = 14300 }, -- Onyx Arrow
+	{ id = 3481, chance = 420 }, -- Closed Trap
+	{ id = 3019, chance = 530 }, -- Demonbone Amulet
+	{ id = 3340, chance = 420 }, -- Heavy Mace
 }
 
 monster.attacks = {

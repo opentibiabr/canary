@@ -83,11 +83,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 173 }, -- gold coin
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 25296, chance = 23000 }, -- rubbish amulet
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 3041, chance = 1000 }, -- blue gem
+	{ id = 3031, chance = 80620, maxCount = 173 }, -- Gold Coin
+	{ id = 3577, chance = 45090 }, -- Meat
+	{ id = 25296, chance = 7310 }, -- Rubbish Amulet
+	{ id = 9058, chance = 4680 }, -- Gold Ingot
+	{ id = 3041, chance = 670 }, -- Blue Gem
 }
 
 monster.attacks = {

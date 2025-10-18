@@ -63,10 +63,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3292, chance = 80000 }, -- combat knife
-	{ id = 3565, chance = 80000 }, -- cape
-	{ id = 5909, chance = 80000 }, -- white piece of cloth
-	{ id = 3282, chance = 80000 }, -- morning star
+	{ id = 3292, chance = 1000 }, -- Combat Knife
+	{ id = 3565, chance = 25000 }, -- Cape
+	{ id = 5909, chance = 1000 }, -- White Piece of Cloth
+	{ id = 3282, chance = 50000 }, -- Morning Star
 }
 
 monster.attacks = {

@@ -78,53 +78,53 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 283 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 29 }, -- platinum coin
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 3030, chance = 80000, maxCount = 25 }, -- small ruby
-	{ id = 3033, chance = 80000, maxCount = 22 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 21 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 25 }, -- small emerald
-	{ id = 3029, chance = 80000, maxCount = 21 }, -- small sapphire
-	{ id = 9057, chance = 80000, maxCount = 25 }, -- small topaz
-	{ id = 3027, chance = 80000, maxCount = 22 }, -- black pearl
-	{ id = 3026, chance = 80000, maxCount = 25 }, -- white pearl
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 7643, chance = 80000, maxCount = 2 }, -- ultimate health potion
-	{ id = 5954, chance = 80000, maxCount = 2 }, -- demon horn
-	{ id = 3008, chance = 80000 }, -- crystal necklace
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 3013, chance = 80000 }, -- golden amulet
-	{ id = 3016, chance = 80000 }, -- ruby necklace
-	{ id = 8896, chance = 80000 }, -- slightly rusted armor
-	{ id = 8899, chance = 80000 }, -- slightly rusted legs
-	{ id = 3344, chance = 80000 }, -- beastslayer axe
-	{ id = 7456, chance = 80000 }, -- noble axe
-	{ id = 7412, chance = 80000 }, -- butchers axe
-	{ id = 8042, chance = 80000 }, -- spirit cloak
-	{ id = 8043, chance = 80000 }, -- focus cape
-	{ id = 3567, chance = 80000 }, -- blue robe
-	{ id = 3381, chance = 80000 }, -- crown armor
-	{ id = 3371, chance = 80000 }, -- knight legs
-	{ id = 3382, chance = 80000 }, -- crown legs
-	{ id = 821, chance = 80000 }, -- magma legs
-	{ id = 3554, chance = 80000 }, -- steel boots
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 8074, chance = 80000 }, -- spellbook of mind control
-	{ id = 3360, chance = 80000 }, -- golden armor
-	{ id = 3364, chance = 80000 }, -- golden legs
-	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
-	{ id = 7388, chance = 80000 }, -- vile axe
-	{ id = 3019, chance = 1000 }, -- demonbone amulet
-	{ id = 7453, chance = 1000 }, -- executioner
-	{ id = 8076, chance = 1000 }, -- spellscroll of prophecies
-	{ id = 8051, chance = 1000 }, -- voltage armor
-	{ id = 8098, chance = 260 }, -- demonwing axe
-	{ id = 3303, chance = 260 }, -- great axe
-	{ id = 8090, chance = 260 }, -- spellbook of dark mysteries
+	{ id = 3031, chance = 100000, maxCount = 283 }, -- Gold Coin
+	{ id = 3035, chance = 20490, maxCount = 29 }, -- Platinum Coin
+	{ id = 6499, chance = 100000 }, -- Demonic Essence
+	{ id = 3030, chance = 13150, maxCount = 25 }, -- Small Ruby
+	{ id = 3033, chance = 11990, maxCount = 22 }, -- Small Amethyst
+	{ id = 3028, chance = 12830, maxCount = 21 }, -- Small Diamond
+	{ id = 3032, chance = 15832, maxCount = 25 }, -- Small Emerald
+	{ id = 3029, chance = 11560, maxCount = 21 }, -- Small Sapphire
+	{ id = 9057, chance = 11250, maxCount = 25 }, -- Small Topaz
+	{ id = 3027, chance = 14200, maxCount = 22 }, -- Black Pearl
+	{ id = 3026, chance = 13250, maxCount = 25 }, -- White Pearl
+	{ id = 7642, chance = 21136 }, -- Great Spirit Potion
+	{ id = 239, chance = 17454 }, -- Great Health Potion
+	{ id = 238, chance = 18067 }, -- Great Mana Potion
+	{ id = 7643, chance = 45986, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 5954, chance = 10721, maxCount = 2 }, -- Demon Horn
+	{ id = 3008, chance = 14478 }, -- Crystal Necklace
+	{ id = 3081, chance = 10655 }, -- Stone Skin Amulet
+	{ id = 3013, chance = 9981 }, -- Golden Amulet
+	{ id = 3016, chance = 10249 }, -- Ruby Necklace
+	{ id = 8896, chance = 32208 }, -- Slightly Rusted Armor
+	{ id = 8899, chance = 51542 }, -- Slightly Rusted Legs
+	{ id = 3344, chance = 30263 }, -- Beastslayer Axe
+	{ id = 7456, chance = 12099 }, -- Noble Axe
+	{ id = 7412, chance = 2243 }, -- Butcher's Axe
+	{ id = 8042, chance = 10336 }, -- Spirit Cloak
+	{ id = 8043, chance = 9981 }, -- Focus Cape
+	{ id = 3567, chance = 8098 }, -- Blue Robe
+	{ id = 3381, chance = 18108 }, -- Crown Armor
+	{ id = 3371, chance = 8508 }, -- Knight Legs
+	{ id = 3382, chance = 9370 }, -- Crown Legs
+	{ id = 821, chance = 11571 }, -- Magma Legs
+	{ id = 3554, chance = 9687 }, -- Steel Boots
+	{ id = 3079, chance = 1000 }, -- Boots of Haste
+	{ id = 8073, chance = 30727 }, -- Spellbook of Warding
+	{ id = 8074, chance = 9380 }, -- Spellbook of Mind Control
+	{ id = 3360, chance = 2097 }, -- Golden Armor
+	{ id = 3364, chance = 684 }, -- Golden Legs
+	{ id = 8075, chance = 8452 }, -- Spellbook of Lost Souls
+	{ id = 7388, chance = 1353 }, -- Vile Axe
+	{ id = 3019, chance = 580 }, -- Demonbone Amulet
+	{ id = 7453, chance = 831 }, -- Executioner
+	{ id = 8076, chance = 1123 }, -- Spellscroll of Prophecies
+	{ id = 8051, chance = 455 }, -- Voltage Armor
+	{ id = 8098, chance = 475 }, -- Demonwing Axe
+	{ id = 3303, chance = 260 }, -- Great Axe
+	{ id = 8090, chance = 160 }, -- Spellbook of Dark Mysteries
 }
 
 monster.attacks = {

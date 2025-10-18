@@ -56,17 +56,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 25737, chance = 80000, maxCount = 3 }, -- rainbow quartz
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 24391, chance = 80000 }, -- coral brooch
-	{ id = 37468, chance = 80000 }, -- special fx box
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 676, chance = 80000, maxCount = 5 }, -- small enchanted ruby
-	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
-	{ id = 3017, chance = 80000 }, -- silver brooch
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 37530, chance = 80000 }, -- bottle of champagne
+	{ id = 25737, chance = 3865, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 3577, chance = 11395 }, -- Meat
+	{ id = 24391, chance = 2746 }, -- Coral Brooch
+	{ id = 37468, chance = 1350 }, -- Special Fx Box
+	{ id = 3031, chance = 86674 }, -- Gold Coin
+	{ id = 22193, chance = 2847 }, -- Onyx Chip
+	{ id = 676, chance = 3353, maxCount = 5 }, -- Small Enchanted Ruby
+	{ id = 7642, chance = 38758, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 3017, chance = 2846 }, -- Silver Brooch
+	{ id = 3028, chance = 4168 }, -- Small Diamond
+	{ id = 37531, chance = 2538 }, -- Candy Floss (Large)
+	{ id = 37530, chance = 810 }, -- Bottle of Champagne
 }
 
 monster.attacks = {

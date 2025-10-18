@@ -63,29 +63,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 35508, chance = 80000 }, -- cheesy key
-	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
-	{ id = 3035, chance = 80000, maxCount = 19 }, -- platinum coin
-	{ id = 23373, chance = 80000, maxCount = 38 }, -- ultimate mana potion
-	{ id = 7643, chance = 80000, maxCount = 37 }, -- ultimate health potion
-	{ id = 23374, chance = 80000, maxCount = 19 }, -- ultimate spirit potion
-	{ id = 35572, chance = 80000, maxCount = 99 }, -- pirate coin
-	{ id = 7443, chance = 80000, maxCount = 9 }, -- bullseye potion
-	{ id = 7439, chance = 80000, maxCount = 9 }, -- berserk potion
-	{ id = 7440, chance = 80000, maxCount = 9 }, -- mastermind potion
-	{ id = 35578, chance = 80000 }, -- tiara
-	{ id = 31323, chance = 80000 }, -- sea horse figurine
-	{ id = 35571, chance = 80000 }, -- small treasure chest
-	{ id = 32622, chance = 80000 }, -- giant amethyst
-	{ id = 32623, chance = 80000 }, -- giant topaz
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 35580, chance = 80000 }, -- golden skull
-	{ id = 35579, chance = 80000 }, -- golden dustbin
-	{ id = 35581, chance = 80000 }, -- golden cheese wedge
-	{ id = 35611, chance = 80000 }, -- tentacle of tentugly
-	{ id = 35610, chance = 80000 }, -- tentuglys eye
-	{ id = 35612, chance = 1000 }, -- tentuglys jaws
-	{ id = 35576, chance = 260 }, -- plushie of tentugly
+	{ id = 35508, chance = 22673 }, -- Cheesy Key
+	{ id = 3043, chance = 63007, maxCount = 3 }, -- Crystal Coin
+	{ id = 3035, chance = 22911, maxCount = 19 }, -- Platinum Coin
+	{ id = 23373, chance = 62052, maxCount = 38 }, -- Ultimate Mana Potion
+	{ id = 7643, chance = 52505, maxCount = 37 }, -- Ultimate Health Potion
+	{ id = 23374, chance = 24821, maxCount = 19 }, -- Ultimate Spirit Potion
+	{ id = 35572, chance = 15990, maxCount = 99 }, -- Pirate Coin
+	{ id = 7443, chance = 18854, maxCount = 9 }, -- Bullseye Potion
+	{ id = 7439, chance = 19809, maxCount = 9 }, -- Berserk Potion
+	{ id = 7440, chance = 19809, maxCount = 9 }, -- Mastermind Potion
+	{ id = 49271, chance = 1000, maxCount = 9 }, -- Transcendence Potion
+	{ id = 35578, chance = 1670 }, -- Tiara
+	{ id = 31323, chance = 2577 }, -- Sea Horse Figurine
+	{ id = 35571, chance = 5727 }, -- Small Treasure Chest
+	{ id = 32622, chance = 3579 }, -- Giant Amethyst
+	{ id = 32623, chance = 5250 }, -- Giant Topaz
+	{ id = 30059, chance = 2625 }, -- Giant Ruby
+	{ id = 35580, chance = 2386 }, -- Golden Skull
+	{ id = 35579, chance = 3102 }, -- Golden Dustbin
+	{ id = 35581, chance = 2863 }, -- Golden Cheese Wedge
+	{ id = 35611, chance = 2863 }, -- Tentacle of Tentugly
+	{ id = 35610, chance = 2863 }, -- Tentugly's Eye
+	{ id = 35612, chance = 515 }, -- Tentugly's Jaws
+	{ id = 35576, chance = 1670 }, -- Plushie of Tentugly
 }
 
 monster.attacks = {

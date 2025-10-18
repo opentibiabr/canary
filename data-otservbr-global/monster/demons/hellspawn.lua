@@ -81,24 +81,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 236 }, -- gold coin
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 10304, chance = 23000 }, -- hellspawn tail
-	{ id = 3413, chance = 23000 }, -- battle shield
-	{ id = 3282, chance = 23000 }, -- morning star
-	{ id = 7368, chance = 23000, maxCount = 2 }, -- assassin star
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 3724, chance = 23000, maxCount = 2 }, -- red mushroom
-	{ id = 9057, chance = 5000, maxCount = 3 }, -- small topaz
-	{ id = 8895, chance = 5000 }, -- rusted armor
-	{ id = 3371, chance = 5000 }, -- knight legs
-	{ id = 3369, chance = 5000 }, -- warrior helmet
-	{ id = 7452, chance = 1000 }, -- spiked squelcher
-	{ id = 7439, chance = 1000 }, -- berserk potion
-	{ id = 8896, chance = 260 }, -- slightly rusted armor
-	{ id = 9040, chance = 260 }, -- dracoyle statue
-	{ id = 7421, chance = 260 }, -- onyx flail
+	{ id = 3031, chance = 95897, maxCount = 236 }, -- Gold Coin
+	{ id = 239, chance = 37899 }, -- Great Health Potion
+	{ id = 10304, chance = 19899 }, -- Hellspawn Tail
+	{ id = 3413, chance = 9813 }, -- Battle Shield
+	{ id = 3282, chance = 9544 }, -- Morning Star
+	{ id = 7368, chance = 14529, maxCount = 2 }, -- Assassin Star
+	{ id = 7643, chance = 10159 }, -- Ultimate Health Potion
+	{ id = 6499, chance = 9493 }, -- Demonic Essence
+	{ id = 3724, chance = 11627, maxCount = 2 }, -- Red Mushroom
+	{ id = 9057, chance = 8973, maxCount = 3 }, -- Small Topaz
+	{ id = 8895, chance = 2681 }, -- Rusted Armor
+	{ id = 3371, chance = 2899 }, -- Knight Legs
+	{ id = 3369, chance = 1912 }, -- Warrior Helmet
+	{ id = 7452, chance = 821 }, -- Spiked Squelcher
+	{ id = 7439, chance = 839 }, -- Berserk Potion
+	{ id = 8896, chance = 283 }, -- Slightly Rusted Armor
+	{ id = 9056, chance = 212 }, -- Black Skull (Item)
+	{ id = 9035, chance = 127 }, -- Dracoyle Statue
+	{ id = 7421, chance = 127 }, -- Onyx Flail
 }
 
 monster.attacks = {

@@ -74,24 +74,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 31437, chance = 23000 }, -- sphinx feather
-	{ id = 3085, chance = 23000 }, -- dragon necklace
-	{ id = 817, chance = 23000 }, -- magma amulet
-	{ id = 3071, chance = 23000 }, -- wand of inferno
-	{ id = 3029, chance = 23000 }, -- small sapphire
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 16121, chance = 23000 }, -- green crystal shard
-	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
-	{ id = 818, chance = 5000 }, -- magma boots
-	{ id = 821, chance = 5000 }, -- magma legs
-	{ id = 3320, chance = 5000 }, -- fire axe
-	{ id = 827, chance = 5000 }, -- magma monocle
-	{ id = 8093, chance = 5000 }, -- wand of draconia
-	{ id = 31438, chance = 5000 }, -- sphinx tiara
-	{ id = 677, chance = 5000 }, -- small enchanted emerald
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3038, chance = 5000 }, -- green gem
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 31437, chance = 5820 }, -- Sphinx Feather
+	{ id = 3085, chance = 7152 }, -- Dragon Necklace
+	{ id = 817, chance = 6289 }, -- Magma Amulet
+	{ id = 3071, chance = 5898 }, -- Wand of Inferno
+	{ id = 3029, chance = 5509 }, -- Small Sapphire
+	{ id = 3039, chance = 8680 }, -- Red Gem
+	{ id = 16121, chance = 7180 }, -- Green Crystal Shard
+	{ id = 16125, chance = 9370 }, -- Cyan Crystal Fragment
+	{ id = 818, chance = 2278 }, -- Magma Boots
+	{ id = 821, chance = 1761 }, -- Magma Legs
+	{ id = 3320, chance = 3720 }, -- Fire Axe
+	{ id = 827, chance = 1716 }, -- Magma Monocle
+	{ id = 8093, chance = 4349 }, -- Wand of Draconia
+	{ id = 31438, chance = 5275 }, -- Sphinx Tiara
+	{ id = 677, chance = 1410 }, -- Small Enchanted Emerald
+	{ id = 3041, chance = 4190 }, -- Blue Gem
+	{ id = 3038, chance = 1590 }, -- Green Gem
 }
 
 monster.attacks = {

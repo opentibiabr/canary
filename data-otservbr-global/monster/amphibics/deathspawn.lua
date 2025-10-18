@@ -60,7 +60,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3105, chance = 80000 }, -- dirty fur
+	{ id = 3105, chance = 1000 }, -- Dirty Fur
 }
 
 monster.attacks = {

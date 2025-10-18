@@ -73,43 +73,45 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 325 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 37 }, -- platinum coin
-	{ id = 21196, chance = 80000 }, -- necromantic rust
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 23535, chance = 80000, maxCount = 7 }, -- energy bar
-	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
-	{ id = 3029, chance = 80000, maxCount = 10 }, -- small sapphire
-	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
-	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
-	{ id = 7642, chance = 80000, maxCount = 15 }, -- great spirit potion
-	{ id = 238, chance = 80000, maxCount = 11 }, -- great mana potion
-	{ id = 7643, chance = 80000, maxCount = 9 }, -- ultimate health potion
-	{ id = 5887, chance = 80000 }, -- piece of royal steel
-	{ id = 5889, chance = 80000, maxCount = 3 }, -- piece of draconian steel
-	{ id = 5888, chance = 80000, maxCount = 12 }, -- piece of hell steel
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 5880, chance = 80000 }, -- iron ore
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 5911, chance = 80000, maxCount = 9 }, -- red piece of cloth
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 3342, chance = 80000 }, -- war axe
-	{ id = 7383, chance = 80000 }, -- relic sword
-	{ id = 17828, chance = 80000 }, -- pair of iron fists
-	{ id = 22762, chance = 1000 }, -- maimer
-	{ id = 8040, chance = 1000 }, -- velvet mantle
-	{ id = 3281, chance = 260 }, -- giant sword
-	{ id = 21175, chance = 80000 }, -- mino shield
-	{ id = 21176, chance = 80000 }, -- execowtioner axe
-	{ id = 14001, chance = 1000 }, -- ornate mace
+	{ id = 3031, chance = 100000, maxCount = 325 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 37 }, -- Platinum Coin
+	{ id = 21196, chance = 100000 }, -- Necromantic Rust
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 23535, chance = 98437, maxCount = 7 }, -- Energy Bar
+	{ id = 3028, chance = 25000, maxCount = 10 }, -- Small Diamond
+	{ id = 3032, chance = 21875, maxCount = 10 }, -- Small Emerald
+	{ id = 3029, chance = 21875, maxCount = 10 }, -- Small Sapphire
+	{ id = 3033, chance = 15625, maxCount = 10 }, -- Small Amethyst
+	{ id = 9057, chance = 14062, maxCount = 10 }, -- Small Topaz
+	{ id = 7642, chance = 56250, maxCount = 15 }, -- Great Spirit Potion
+	{ id = 238, chance = 64062, maxCount = 11 }, -- Great Mana Potion
+	{ id = 7643, chance = 50000, maxCount = 9 }, -- Ultimate Health Potion
+	{ id = 5887, chance = 21875 }, -- Piece of Royal Steel
+	{ id = 5889, chance = 17187, maxCount = 3 }, -- Piece of Draconian Steel
+	{ id = 5888, chance = 64062, maxCount = 12 }, -- Piece of Hell Steel
+	{ id = 5892, chance = 10714 }, -- Huge Chunk of Crude Iron
+	{ id = 5880, chance = 100000 }, -- Iron Ore
+	{ id = 5904, chance = 35937 }, -- Magic Sulphur
+	{ id = 5911, chance = 31250, maxCount = 9 }, -- Red Piece of Cloth
+	{ id = 3039, chance = 25000 }, -- Red Gem
+	{ id = 3037, chance = 17187 }, -- Yellow Gem
+	{ id = 3038, chance = 20312 }, -- Green Gem
+	{ id = 3041, chance = 25000 }, -- Blue Gem
+	{ id = 3036, chance = 14814 }, -- Violet Gem
+	{ id = 22516, chance = 26562 }, -- Silver Token
+	{ id = 22721, chance = 37500 }, -- Gold Token
+	{ id = 8082, chance = 15625 }, -- Underworld Rod
+	{ id = 3342, chance = 3448 }, -- War Axe
+	{ id = 7383, chance = 1000 }, -- Relic Sword
+	{ id = 17828, chance = 28125 }, -- Pair of Iron Fists
+	{ id = 22762, chance = 7407 }, -- Maimer
+	{ id = 8040, chance = 1000 }, -- Velvet Mantle
+	{ id = 25361, chance = 3703 }, -- Blood of the Mountain (Item)
+	{ id = 3281, chance = 8108 }, -- Giant Sword
+	{ id = 281, chance = 13513 }, -- Giant Shimmering Pearl
+	{ id = 21175, chance = 8571 }, -- Mino Shield
+	{ id = 21176, chance = 3703 }, -- Execowtioner Axe
+	{ id = 14001, chance = 3703 }, -- Ornate Mace
 }
 
 monster.attacks = {

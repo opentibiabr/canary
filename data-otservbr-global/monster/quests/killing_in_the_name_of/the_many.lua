@@ -63,16 +63,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 237, chance = 80000, maxCount = 5 }, -- strong mana potion
-	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
-	{ id = 9058, chance = 80000, maxCount = 3 }, -- gold ingot
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 9302, chance = 80000 }, -- sacred tree amulet
-	{ id = 3436, chance = 80000 }, -- medusa shield
-	{ id = 3369, chance = 80000 }, -- warrior helmet
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 3392, chance = 80000 }, -- royal helmet
-	{ id = 9606, chance = 80000 }, -- egg of the many
+	{ id = 237, chance = 81409, maxCount = 5 }, -- Strong Mana Potion
+	{ id = 3029, chance = 77538, maxCount = 5 }, -- Small Sapphire
+	{ id = 9058, chance = 62205, maxCount = 3 }, -- Gold Ingot
+	{ id = 3081, chance = 90170 }, -- Stone Skin Amulet
+	{ id = 9302, chance = 79705 }, -- Sacred Tree Amulet
+	{ id = 3436, chance = 56066 }, -- Medusa Shield
+	{ id = 3369, chance = 77406 }, -- Warrior Helmet
+	{ id = 3370, chance = 9722 }, -- Knight Armor
+	{ id = 3392, chance = 22620 }, -- Royal Helmet
+	{ id = 9606, chance = 40379 }, -- Egg of The Many
 }
 
 monster.attacks = {

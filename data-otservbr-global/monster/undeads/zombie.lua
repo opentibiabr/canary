@@ -79,18 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 65 }, -- gold coin
-	{ id = 3286, chance = 23000 }, -- mace
-	{ id = 3305, chance = 23000 }, -- battle hammer
-	{ id = 3354, chance = 23000 }, -- brass helmet
-	{ id = 9659, chance = 23000 }, -- halfeaten brain
-	{ id = 8894, chance = 23000 }, -- heavily rusted armor
-	{ id = 3269, chance = 5000 }, -- halberd
-	{ id = 3351, chance = 5000 }, -- steel helmet
-	{ id = 268, chance = 1000 }, -- mana potion
-	{ id = 3052, chance = 1000 }, -- life ring
-	{ id = 3568, chance = 1000 }, -- simple dress
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
+	{ id = 3031, chance = 81903, maxCount = 65 }, -- Gold Coin
+	{ id = 3286, chance = 8203 }, -- Mace
+	{ id = 3305, chance = 6800 }, -- Battle Hammer
+	{ id = 3354, chance = 10003 }, -- Brass Helmet
+	{ id = 9659, chance = 10656 }, -- Half-Eaten Brain
+	{ id = 8894, chance = 5427 }, -- Heavily Rusted Armor
+	{ id = 3269, chance = 3969 }, -- Halberd
+	{ id = 3351, chance = 4809 }, -- Steel Helmet
+	{ id = 268, chance = 789 }, -- Mana Potion
+	{ id = 3052, chance = 1261 }, -- Life Ring
+	{ id = 3568, chance = 460 }, -- Simple Dress
+	{ id = 3081, chance = 700 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

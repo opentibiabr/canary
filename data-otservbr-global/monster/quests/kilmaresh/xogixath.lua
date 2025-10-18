@@ -72,23 +72,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 3029, chance = 80000, maxCount = 3 }, -- small sapphire
-	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
-	{ id = 16121, chance = 80000 }, -- green crystal shard
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 3320, chance = 80000 }, -- fire axe
-	{ id = 31323, chance = 80000 }, -- sea horse figurine
-	{ id = 31324, chance = 80000 }, -- golden mask
-	{ id = 31557, chance = 80000 }, -- enchanted blister ring
-	{ id = 31617, chance = 80000 }, -- winged boots
-	{ id = 16127, chance = 80000 }, -- green crystal fragment
-	{ id = 8093, chance = 80000 }, -- wand of draconia
-	{ id = 16124, chance = 80000 }, -- blue crystal splinter
-	{ id = 675, chance = 80000 }, -- small enchanted sapphire
-	{ id = 3071, chance = 80000 }, -- wand of inferno
-	{ id = 6299, chance = 80000 }, -- death ring
-	{ id = 30403, chance = 80000 }, -- enchanted theurgic amulet
+	{ id = 3039, chance = 54793, maxCount = 2 }, -- Red Gem
+	{ id = 3029, chance = 1000, maxCount = 3 }, -- Small Sapphire
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 16121, chance = 17187 }, -- Green Crystal Shard
+	{ id = 3081, chance = 10937 }, -- Stone Skin Amulet
+	{ id = 3320, chance = 6519 }, -- Fire Axe
+	{ id = 31323, chance = 6097 }, -- Sea Horse Figurine
+	{ id = 31324, chance = 4444 }, -- Golden Mask
+	{ id = 31557, chance = 1000 }, -- Enchanted Blister Ring
+	{ id = 31617, chance = 1000 }, -- Winged Boots
+	{ id = 16127, chance = 6248 }, -- Green Crystal Fragment
+	{ id = 8093, chance = 6249 }, -- Wand of Draconia
+	{ id = 16124, chance = 15627 }, -- Blue Crystal Splinter
+	{ id = 675, chance = 14062 }, -- Small Enchanted Sapphire
+	{ id = 3071, chance = 3123 }, -- Wand of Inferno
+	{ id = 6299, chance = 3123 }, -- Death Ring
+	{ id = 30402, chance = 1000 }, -- Enchanted Theurgic Amulet
 }
 
 monster.attacks = {

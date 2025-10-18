@@ -77,22 +77,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 219 }, -- gold coin
-	{ id = 3583, chance = 80000 }, -- dragon ham
-	{ id = 24937, chance = 23000 }, -- dragon blood
-	{ id = 24938, chance = 23000 }, -- dragon tongue
-	{ id = 762, chance = 23000, maxCount = 9 }, -- shiver arrow
-	{ id = 7741, chance = 5000 }, -- ice cube
-	{ id = 2903, chance = 5000 }, -- golden mug
-	{ id = 3067, chance = 5000 }, -- hailstorm rod
-	{ id = 3051, chance = 5000 }, -- energy ring
-	{ id = 3029, chance = 5000 }, -- small sapphire
-	{ id = 238, chance = 5000, maxCount = 2 }, -- great mana potion
-	{ id = 829, chance = 5000 }, -- glacier mask
-	{ id = 815, chance = 1000 }, -- glacier amulet
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 7290, chance = 1000 }, -- shard
-	{ id = 3386, chance = 260 }, -- dragon scale mail
+	{ id = 3031, chance = 96560, maxCount = 219 }, -- Gold Coin
+	{ id = 3583, chance = 78629 }, -- Dragon Ham
+	{ id = 24937, chance = 18290 }, -- Dragon Blood
+	{ id = 24938, chance = 12390 }, -- Dragon Tongue
+	{ id = 762, chance = 8189, maxCount = 9 }, -- Shiver Arrow
+	{ id = 7441, chance = 4200 }, -- Ice Cube
+	{ id = 2903, chance = 3050 }, -- Golden Mug
+	{ id = 3067, chance = 2190 }, -- Hailstorm Rod
+	{ id = 3051, chance = 4580 }, -- Energy Ring
+	{ id = 3029, chance = 4160 }, -- Small Sapphire
+	{ id = 238, chance = 3680, maxCount = 2 }, -- Great Mana Potion
+	{ id = 829, chance = 1080 }, -- Glacier Mask
+	{ id = 815, chance = 970 }, -- Glacier Amulet
+	{ id = 3061, chance = 560 }, -- Life Crystal
+	{ id = 7290, chance = 1150 }, -- Shard
+	{ id = 3386, chance = 169 }, -- Dragon Scale Mail
 }
 
 monster.attacks = {

@@ -63,13 +63,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 37530, chance = 80000 }, -- bottle of champagne
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3582, chance = 80000 }, -- ham
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 8014, chance = 80000 }, -- cucumber
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
+	{ id = 37530, chance = 2610 }, -- Bottle of Champagne
+	{ id = 3031, chance = 88803 }, -- Gold Coin
+	{ id = 3035, chance = 55198 }, -- Platinum Coin
+	{ id = 3582, chance = 64001 }, -- Ham
+	{ id = 3029, chance = 5220 }, -- Small Sapphire
+	{ id = 8014, chance = 4801 }, -- Cucumber
+	{ id = 3081, chance = 1740 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -77,7 +77,9 @@ monster.voices = {
 	{ text = "MWAAAHAHAAA!! NO ONE!! NO ONE CAN DEFEAT MEEE!!!", yell = true },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "energized raging mage skill reducer", interval = 3000, chance = 15, target = false },

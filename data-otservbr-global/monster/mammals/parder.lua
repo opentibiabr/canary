@@ -75,14 +75,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 285 }, -- gold coin
-	{ id = 3582, chance = 80000, maxCount = 4 }, -- ham
-	{ id = 39418, chance = 23000 }, -- parder fur
-	{ id = 16126, chance = 23000 }, -- red crystal fragment
-	{ id = 39417, chance = 23000, maxCount = 2 }, -- parder tooth
-	{ id = 236, chance = 23000, maxCount = 3 }, -- strong health potion
-	{ id = 3317, chance = 5000 }, -- barbarian axe
-	{ id = 7385, chance = 5000 }, -- crimson sword
+	{ id = 3031, chance = 100000, maxCount = 285 }, -- Gold Coin
+	{ id = 3582, chance = 24160, maxCount = 4 }, -- Ham
+	{ id = 39418, chance = 19540 }, -- Parder Fur
+	{ id = 16126, chance = 13570 }, -- Red Crystal Fragment
+	{ id = 39417, chance = 14660, maxCount = 2 }, -- Parder Tooth
+	{ id = 236, chance = 7590, maxCount = 3 }, -- Strong Health Potion
+	{ id = 3317, chance = 4670 }, -- Barbarian Axe
+	{ id = 7385, chance = 1560 }, -- Crimson Sword
 }
 
 monster.attacks = {

@@ -79,20 +79,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 131 }, -- gold coin
-	{ id = 15634, chance = 80000, maxCount = 3 }, -- carrot
-	{ id = 25693, chance = 80000 }, -- shimmering beetles
-	{ id = 25737, chance = 80000, maxCount = 2 }, -- rainbow quartz
-	{ id = 1781, chance = 80000, maxCount = 5 }, -- small stone
-	{ id = 3726, chance = 80000 }, -- orange mushroom
-	{ id = 676, chance = 80000, maxCount = 2 }, -- small enchanted ruby
-	{ id = 25700, chance = 80000 }, -- dream blossom staff
-	{ id = 3737, chance = 80000 }, -- fern
-	{ id = 3598, chance = 80000, maxCount = 5 }, -- cookie
-	{ id = 22194, chance = 80000, maxCount = 2 }, -- opal
-	{ id = 236, chance = 80000 }, -- strong health potion
-	{ id = 12311, chance = 80000 }, -- carrot on a stick
-	{ id = 3049, chance = 80000 }, -- stealth ring
+	{ id = 3031, chance = 100000, maxCount = 131 }, -- Gold Coin
+	{ id = 3595, chance = 19670, maxCount = 3 }, -- Carrot
+	{ id = 25693, chance = 10269 }, -- Shimmering Beetles
+	{ id = 25737, chance = 4710, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 1781, chance = 5110, maxCount = 5 }, -- Small Stone
+	{ id = 3726, chance = 2840 }, -- Orange Mushroom
+	{ id = 676, chance = 3350, maxCount = 2 }, -- Small Enchanted Ruby
+	{ id = 25700, chance = 440 }, -- Dream Blossom Staff
+	{ id = 3737, chance = 2680 }, -- Fern
+	{ id = 3598, chance = 3760, maxCount = 5 }, -- Cookie
+	{ id = 22194, chance = 3160, maxCount = 2 }, -- Opal
+	{ id = 236, chance = 12510 }, -- Strong Health Potion
+	{ id = 12311, chance = 89 }, -- Carrot on a Stick
+	{ id = 3049, chance = 900 }, -- Stealth Ring
 }
 
 monster.attacks = {

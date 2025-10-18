@@ -60,12 +60,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 12 }, -- gold coin
-	{ id = 21470, chance = 80000, maxCount = 16 }, -- simple arrow
-	{ id = 3448, chance = 80000, maxCount = 8 }, -- poison arrow
-	{ id = 3379, chance = 5000 }, -- doublet
-	{ id = 268, chance = 5000 }, -- mana potion
-	{ id = 266, chance = 5000 }, -- health potion
+	{ id = 3031, chance = 100000, maxCount = 12 }, -- Gold Coin
+	{ id = 21470, chance = 22429, maxCount = 16 }, -- Simple Arrow
+	{ id = 3448, chance = 14428, maxCount = 8 }, -- Poison Arrow
+	{ id = 50166, chance = 1000 }, -- Simple Jo Staff
+	{ id = 3379, chance = 4754 }, -- Doublet
+	{ id = 268, chance = 4166 }, -- Mana Potion
+	{ id = 266, chance = 3777 }, -- Health Potion
 }
 
 monster.attacks = {

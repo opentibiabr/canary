@@ -80,24 +80,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 273 }, -- gold coin
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 3453, chance = 23000 }, -- scythe
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 3035, chance = 5000, maxCount = 4 }, -- platinum coin
-	{ id = 9660, chance = 5000 }, -- mystical hourglass
-	{ id = 3421, chance = 5000 }, -- dark shield
-	{ id = 3047, chance = 5000 }, -- magic light wand
-	{ id = 8896, chance = 5000 }, -- slightly rusted armor
-	{ id = 5021, chance = 5000, maxCount = 4 }, -- orichalcum pearl
-	{ id = 7418, chance = 1000 }, -- nightmare blade
-	{ id = 8082, chance = 1000 }, -- underworld rod
-	{ id = 6299, chance = 260 }, -- death ring
-	{ id = 823, chance = 260 }, -- glacier kilt
-	{ id = 8061, chance = 260 }, -- skullcracker armor
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 97927, maxCount = 273 }, -- Gold Coin
+	{ id = 6558, chance = 35649 }, -- Flask of Demonic Blood
+	{ id = 6499, chance = 10669 }, -- Demonic Essence
+	{ id = 238, chance = 9553 }, -- Great Mana Potion
+	{ id = 3453, chance = 9869 }, -- Scythe
+	{ id = 7643, chance = 10036 }, -- Ultimate Health Potion
+	{ id = 3035, chance = 10099, maxCount = 4 }, -- Platinum Coin
+	{ id = 9660, chance = 5466 }, -- Mystical Hourglass
+	{ id = 3421, chance = 3348 }, -- Dark Shield
+	{ id = 3046, chance = 5368 }, -- Magic Light Wand
+	{ id = 8896, chance = 2908 }, -- Slightly Rusted Armor
+	{ id = 5021, chance = 3605, maxCount = 4 }, -- Orichalcum Pearl
+	{ id = 7418, chance = 602 }, -- Nightmare Blade
+	{ id = 8082, chance = 1127 }, -- Underworld Rod
+	{ id = 6299, chance = 214 }, -- Death Ring
+	{ id = 823, chance = 411 }, -- Glacier Kilt
+	{ id = 8061, chance = 305 }, -- Skullcracker Armor
+	{ id = 3081, chance = 50 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

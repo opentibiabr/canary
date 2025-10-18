@@ -80,24 +80,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5922, chance = 80000 }, -- holy orchid
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 9635, chance = 80000 }, -- elvish talisman
-	{ id = 11465, chance = 80000 }, -- elven astral observer
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3593, chance = 5000 }, -- melon
-	{ id = 3147, chance = 5000 }, -- blank rune
-	{ id = 3082, chance = 1000 }, -- elven amulet
-	{ id = 3600, chance = 1000 }, -- bread
-	{ id = 238, chance = 1000 }, -- great mana potion
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 3257, chance = 1000 }, -- cornucopia
-	{ id = 3738, chance = 1000 }, -- sling herb
-	{ id = 3563, chance = 260 }, -- green tunic
-	{ id = 2902, chance = 80000 }, -- bowl
-	{ id = 2917, chance = 80000 }, -- candlestick
-	{ id = 22868, chance = 80000 }, -- golden goblet
-	{ id = 7378, chance = 80000 }, -- royal spear
+	{ id = 5922, chance = 100000 }, -- Holy Orchid
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 9635, chance = 90200 }, -- Elvish Talisman
+	{ id = 11465, chance = 86270 }, -- Elven Astral Observer
+	{ id = 3037, chance = 36270 }, -- Yellow Gem
+	{ id = 3593, chance = 24510 }, -- Melon
+	{ id = 3147, chance = 19610 }, -- Blank Rune
+	{ id = 3082, chance = 16670 }, -- Elven Amulet
+	{ id = 3600, chance = 13730 }, -- Bread
+	{ id = 238, chance = 15690 }, -- Great Mana Potion
+	{ id = 3061, chance = 12750 }, -- Life Crystal
+	{ id = 3103, chance = 7840 }, -- Cornucopia
+	{ id = 3738, chance = 10780 }, -- Sling Herb
+	{ id = 3563, chance = 5880 }, -- Green Tunic
+	{ id = 2902, chance = 1000 }, -- Bowl
+	{ id = 2917, chance = 1000 }, -- Candlestick
+	{ id = 5805, chance = 1000 }, -- Golden Goblet
+	{ id = 7378, chance = 980 }, -- Royal Spear
 }
 
 monster.attacks = {

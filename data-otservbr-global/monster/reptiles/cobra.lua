@@ -76,7 +76,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9634, chance = 5000 }, -- cobra tongue
+	{ id = 9634, chance = 3985 }, -- Cobra Tongue
 }
 
 monster.attacks = {

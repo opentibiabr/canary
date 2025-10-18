@@ -63,17 +63,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 5878, chance = 80000 }, -- minotaur leather
-	{ id = 21199, chance = 80000 }, -- giant pacifier
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 5911, chance = 80000 }, -- red piece of cloth
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 3035, chance = 68180 }, -- Platinum Coin
+	{ id = 5878, chance = 4550 }, -- Minotaur Leather
+	{ id = 21199, chance = 27269 }, -- Giant Pacifier
+	{ id = 239, chance = 9090 }, -- Great Health Potion
+	{ id = 238, chance = 22730 }, -- Great Mana Potion
+	{ id = 3098, chance = 9090 }, -- Ring of Healing
+	{ id = 3030, chance = 13640 }, -- Small Ruby
+	{ id = 3577, chance = 9090 }, -- Meat
+	{ id = 3028, chance = 4550 }, -- Small Diamond
+	{ id = 5911, chance = 4550 }, -- Red Piece of Cloth
 }
 
 monster.attacks = {

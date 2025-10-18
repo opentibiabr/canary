@@ -72,12 +72,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3093, chance = 80000 }, -- club ring
-	{ id = 30395, chance = 80000 }, -- cobra club
-	{ id = 31678, chance = 80000 }, -- cobra crest
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 3320, chance = 80000 }, -- fire axe
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3093, chance = 4230 }, -- Club Ring
+	{ id = 30395, chance = 1000 }, -- Cobra Club
+	{ id = 31678, chance = 9997 }, -- Cobra Crest
+	{ id = 3029, chance = 100000 }, -- Small Sapphire
+	{ id = 3320, chance = 10530 }, -- Fire Axe
+	{ id = 50167, chance = 1000 }, -- Cobra Bo
 }
 
 monster.attacks = {

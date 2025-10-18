@@ -70,33 +70,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 39544, chance = 80000 }, -- firefighting axe
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 7443, chance = 80000 }, -- bullseye potion
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 32623, chance = 80000 }, -- giant topaz
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 7439, chance = 80000 }, -- berserk potion
-	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 39149, chance = 80000 }, -- alicorn headguard
-	{ id = 39150, chance = 80000 }, -- alicorn quiver
-	{ id = 39181, chance = 80000 }, -- charged alicorn ring
-	{ id = 39153, chance = 80000 }, -- arboreal crown
-	{ id = 39187, chance = 80000 }, -- charged arboreal ring
-	{ id = 39154, chance = 80000 }, -- arboreal tome
-	{ id = 39152, chance = 80000 }, -- arcanomancer folio
-	{ id = 39151, chance = 80000 }, -- arcanomancer regalia
-	{ id = 39184, chance = 80000 }, -- charged arcanomancer sigil
-	{ id = 39040, chance = 80000 }, -- fiery tear
-	{ id = 39543, chance = 80000 }, -- smoldering eye
-	{ id = 39147, chance = 80000 }, -- spiritthorn armor
-	{ id = 39148, chance = 80000 }, -- spiritthorn helmet
-	{ id = 39178, chance = 80000 }, -- charged spiritthorn ring
-	{ id = 39545, chance = 80000 }, -- portable flame
-	{ id = 32622, chance = 80000 }, -- giant amethyst
+	{ id = 39544, chance = 1000 }, -- Firefighting Axe
+	{ id = 23373, chance = 53225 }, -- Ultimate Mana Potion
+	{ id = 3043, chance = 100000 }, -- Crystal Coin
+	{ id = 7440, chance = 29032 }, -- Mastermind Potion
+	{ id = 7443, chance = 25806 }, -- Bullseye Potion
+	{ id = 30060, chance = 25806 }, -- Giant Emerald
+	{ id = 32623, chance = 9677 }, -- Giant Topaz
+	{ id = 7643, chance = 27419 }, -- Ultimate Health Potion
+	{ id = 7439, chance = 41935 }, -- Berserk Potion
+	{ id = 23374, chance = 19354 }, -- Ultimate Spirit Potion
+	{ id = 30061, chance = 25806 }, -- Giant Sapphire
+	{ id = 39149, chance = 1000 }, -- Alicorn Headguard
+	{ id = 39150, chance = 1000 }, -- Alicorn Quiver
+	{ id = 39180, chance = 1000 }, -- Charged Alicorn Ring
+	{ id = 39153, chance = 1000 }, -- Arboreal Crown
+	{ id = 39186, chance = 1000 }, -- Charged Arboreal Ring
+	{ id = 39154, chance = 1000 }, -- Arboreal Tome
+	{ id = 39152, chance = 1000 }, -- Arcanomancer Folio
+	{ id = 39151, chance = 1000 }, -- Arcanomancer Regalia
+	{ id = 39183, chance = 1000 }, -- Charged Arcanomancer Sigil
+	{ id = 39040, chance = 4838 }, -- Fiery Tear
+	{ id = 39543, chance = 29032 }, -- Smoldering Eye
+	{ id = 39147, chance = 1000 }, -- Spiritthorn Armor
+	{ id = 39148, chance = 1000 }, -- Spiritthorn Helmet
+	{ id = 39177, chance = 1000 }, -- Charged Spiritthorn Ring
+	{ id = 39545, chance = 1000 }, -- Portable Flame
+	{ id = 32622, chance = 32258 }, -- Giant Amethyst
+	{ id = 50188, chance = 1000 }, -- Ethereal Coned Hat
+	{ id = 50147, chance = 1000 }, -- Charged Ethereal Ring
+	{ id = 49271, chance = 5128, maxCount = 6 }, -- Transcendence Potion
 }
 
 monster.attacks = {

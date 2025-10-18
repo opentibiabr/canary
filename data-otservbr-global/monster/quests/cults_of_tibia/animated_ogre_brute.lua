@@ -63,17 +63,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 46 }, -- gold coin
-	{ id = 22188, chance = 80000 }, -- ogre ear stud
-	{ id = 22193, chance = 80000, maxCount = 2 }, -- onyx chip
-	{ id = 1781, chance = 80000, maxCount = 2 }, -- small stone
-	{ id = 3026, chance = 80000 }, -- white pearl
-	{ id = 22189, chance = 80000 }, -- ogre nose ring
-	{ id = 11447, chance = 80000 }, -- battle stone
-	{ id = 236, chance = 80000 }, -- strong health potion
-	{ id = 3598, chance = 80000 }, -- cookie
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 3030, chance = 80000 }, -- small ruby
+	{ id = 3031, chance = 100000, maxCount = 46 }, -- Gold Coin
+	{ id = 22188, chance = 15790 }, -- Ogre Ear Stud
+	{ id = 22193, chance = 5260, maxCount = 2 }, -- Onyx Chip
+	{ id = 1781, chance = 5260, maxCount = 2 }, -- Small Stone
+	{ id = 3026, chance = 10530 }, -- White Pearl
+	{ id = 22189, chance = 31580 }, -- Ogre Nose Ring
+	{ id = 11447, chance = 10530 }, -- Battle Stone
+	{ id = 236, chance = 10530 }, -- Strong Health Potion
+	{ id = 3598, chance = 5260 }, -- Cookie
+	{ id = 3577, chance = 21050 }, -- Meat
+	{ id = 3030, chance = 5260 }, -- Small Ruby
 }
 
 monster.attacks = {

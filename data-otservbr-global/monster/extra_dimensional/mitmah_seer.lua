@@ -80,17 +80,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 236, chance = 23000, maxCount = 3 }, -- strong health potion
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 22194, chance = 23000 }, -- opal
-	{ id = 3016, chance = 5000 }, -- ruby necklace
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3063, chance = 5000 }, -- gold ring
-	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 27488, chance = 1000 }, -- gold nugget
-	{ id = 25699, chance = 260 }, -- wooden spellbook
-	{ id = 48099, chance = 80000 }, -- mitmah seer soul core
+	{ id = 3035, chance = 1000, maxCount = 15 }, -- Platinum Coin
+	{ id = 236, chance = 5910, maxCount = 3 }, -- Strong Health Potion
+	{ id = 238, chance = 12000 }, -- Great Mana Potion
+	{ id = 22194, chance = 4880 }, -- Opal
+	{ id = 44439, chance = 11330 }, -- Crystal of the Mitmah
+	{ id = 3016, chance = 1170 }, -- Ruby Necklace
+	{ id = 3039, chance = 2300 }, -- Red Gem
+	{ id = 3063, chance = 1200 }, -- Gold Ring
+	{ id = 3073, chance = 3870 }, -- Wand of Cosmic Energy
+	{ id = 40529, chance = 1480 }, -- Gold-Brocaded Cloth
+	{ id = 3038, chance = 620 }, -- Green Gem
+	{ id = 3040, chance = 500 }, -- Gold Nugget
+	{ id = 44433, chance = 470 }, -- Ceremonial Brush
+	{ id = 25699, chance = 270 }, -- Wooden Spellbook
+	{ id = 49371, chance = 1000 }, -- Lesser Spiritualist Gem
 }
 
 monster.attacks = {

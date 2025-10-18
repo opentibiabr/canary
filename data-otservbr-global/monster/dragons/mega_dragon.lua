@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 24 }, -- platinum coin
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 44743, chance = 23000 }, -- nimmersatts seal
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 23373, chance = 5000 }, -- ultimate mana potion
-	{ id = 24962, chance = 5000 }, -- prismatic quartz
-	{ id = 25737, chance = 5000, maxCount = 2 }, -- rainbow quartz
-	{ id = 44744, chance = 5000 }, -- molten dragon essence
-	{ id = 44745, chance = 5000 }, -- mega dragon heart
-	{ id = 7402, chance = 260 }, -- dragon slayer
+	{ id = 3035, chance = 50200, maxCount = 24 }, -- Platinum Coin
+	{ id = 7643, chance = 5560 }, -- Ultimate Health Potion
+	{ id = 44743, chance = 8560 }, -- Nimmersatt's Seal
+	{ id = 3036, chance = 1240 }, -- Violet Gem
+	{ id = 3039, chance = 5110 }, -- Red Gem
+	{ id = 3041, chance = 3510 }, -- Blue Gem
+	{ id = 23373, chance = 4330 }, -- Ultimate Mana Potion
+	{ id = 24962, chance = 4750 }, -- Prismatic Quartz
+	{ id = 25737, chance = 3940, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 44744, chance = 4720 }, -- Molten Dragon Essence
+	{ id = 44745, chance = 2050 }, -- Mega Dragon Heart
+	{ id = 7402, chance = 100 }, -- Dragon Slayer
 }
 
 monster.attacks = {

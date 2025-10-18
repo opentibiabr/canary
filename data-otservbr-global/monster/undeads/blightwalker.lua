@@ -78,29 +78,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 199 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3147, chance = 80000, maxCount = 2 }, -- blank rune
-	{ id = 3605, chance = 80000 }, -- bunch of wheat
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 238, chance = 80000, maxCount = 3 }, -- great mana potion
-	{ id = 5944, chance = 80000 }, -- soul orb
-	{ id = 7368, chance = 23000, maxCount = 10 }, -- assassin star
-	{ id = 9688, chance = 23000 }, -- bundle of cursed straw
-	{ id = 3067, chance = 23000 }, -- hailstorm rod
-	{ id = 7643, chance = 23000, maxCount = 2 }, -- ultimate health potion
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 3083, chance = 5000 }, -- garlic necklace
-	{ id = 3453, chance = 5000 }, -- scythe
-	{ id = 647, chance = 5000 }, -- seeds
-	{ id = 812, chance = 5000 }, -- terra legs
-	{ id = 6299, chance = 5000 }, -- death ring
-	{ id = 3063, chance = 5000 }, -- gold ring
-	{ id = 3324, chance = 5000 }, -- skull staff
-	{ id = 811, chance = 1000 }, -- terra mantle
-	{ id = 3057, chance = 260 }, -- amulet of loss
-	{ id = 3306, chance = 260 }, -- golden sickle
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 99481, maxCount = 199 }, -- Gold Coin
+	{ id = 3035, chance = 90107, maxCount = 5 }, -- Platinum Coin
+	{ id = 3147, chance = 26946, maxCount = 2 }, -- Blank Rune
+	{ id = 3605, chance = 52970 }, -- Bunch of Wheat
+	{ id = 6499, chance = 29339 }, -- Demonic Essence
+	{ id = 238, chance = 29507, maxCount = 3 }, -- Great Mana Potion
+	{ id = 5944, chance = 26383 }, -- Soul Orb
+	{ id = 7368, chance = 7198, maxCount = 10 }, -- Assassin Star
+	{ id = 9688, chance = 12436 }, -- Bundle of Cursed Straw
+	{ id = 3067, chance = 9370 }, -- Hailstorm Rod
+	{ id = 7643, chance = 14150, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 3071 }, -- Gold Ingot
+	{ id = 3083, chance = 1164 }, -- Garlic Necklace
+	{ id = 281, chance = 3619 }, -- Giant Shimmering Pearl (Green)
+	{ id = 3453, chance = 3149 }, -- Scythe
+	{ id = 647, chance = 3170 }, -- Seeds
+	{ id = 812, chance = 1817 }, -- Terra Legs
+	{ id = 6299, chance = 858 }, -- Death Ring
+	{ id = 3063, chance = 1324 }, -- Gold Ring
+	{ id = 3324, chance = 1039 }, -- Skull Staff
+	{ id = 811, chance = 894 }, -- Terra Mantle
+	{ id = 3057, chance = 260 }, -- Amulet of Loss
+	{ id = 3306, chance = 171 }, -- Golden Sickle
+	{ id = 3081, chance = 490 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

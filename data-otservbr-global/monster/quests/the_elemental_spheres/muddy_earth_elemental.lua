@@ -63,13 +63,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 128 }, -- gold coin
-	{ id = 10305, chance = 80000 }, -- lump of earth
-	{ id = 1781, chance = 80000, maxCount = 5 }, -- small stone
-	{ id = 3129, chance = 80000 }, -- some leaves
-	{ id = 940, chance = 5000 }, -- natural soil
-	{ id = 10422, chance = 1000 }, -- clay lump
-	{ id = 12600, chance = 260 }, -- coal
+	{ id = 3031, chance = 77818, maxCount = 128 }, -- Gold Coin
+	{ id = 10305, chance = 22389 }, -- Lump of Earth
+	{ id = 1781, chance = 39898, maxCount = 5 }, -- Small Stone
+	{ id = 3129, chance = 21355 }, -- Some Leaves
+	{ id = 940, chance = 3570 }, -- Natural Soil
+	{ id = 10422, chance = 1020 }, -- Clay Lump
+	{ id = 12600, chance = 440 }, -- Coal
 }
 
 monster.attacks = {

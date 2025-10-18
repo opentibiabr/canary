@@ -77,17 +77,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 208 }, -- gold coin
-	{ id = 3029, chance = 80000, maxCount = 3 }, -- small sapphire
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 3051, chance = 80000 }, -- energy ring
-	{ id = 3062, chance = 1000 }, -- mind stone
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 10290, chance = 260 }, -- mini mummy
-	{ id = 3077, chance = 260 }, -- ankh
-	{ id = 3324, chance = 260 }, -- skull staff
-	{ id = 3334, chance = 260 }, -- pharaoh sword
-	{ id = 3241, chance = 80000 }, -- ornamented ankh
+	{ id = 3031, chance = 90800, maxCount = 208 }, -- Gold Coin
+	{ id = 3029, chance = 9680, maxCount = 3 }, -- Small Sapphire
+	{ id = 238, chance = 8970 }, -- Great Mana Potion
+	{ id = 3051, chance = 4890 }, -- Energy Ring
+	{ id = 3062, chance = 1020 }, -- Mind Stone
+	{ id = 3041, chance = 890 }, -- Blue Gem
+	{ id = 10290, chance = 90 }, -- Mini Mummy
+	{ id = 3077, chance = 580 }, -- Ankh
+	{ id = 3324, chance = 580 }, -- Skull Staff
+	{ id = 3334, chance = 90 }, -- Pharaoh Sword
+	{ id = 3241, chance = 100000 }, -- Ornamented Ankh
 }
 
 monster.attacks = {

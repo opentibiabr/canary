@@ -76,22 +76,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 36772, chance = 23000 }, -- streaked devourer eyes
-	{ id = 36773, chance = 23000 }, -- streaked devourer maw
-	{ id = 36774, chance = 23000 }, -- streaked devourer legs
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3281, chance = 5000 }, -- giant sword
-	{ id = 3315, chance = 5000 }, -- guardian halberd
-	{ id = 3333, chance = 5000 }, -- crystal mace
-	{ id = 3342, chance = 5000 }, -- war axe
-	{ id = 7383, chance = 5000 }, -- relic sword
-	{ id = 7386, chance = 5000 }, -- mercenary sword
-	{ id = 7456, chance = 5000 }, -- noble axe
-	{ id = 14040, chance = 5000 }, -- warriors axe
-	{ id = 14247, chance = 5000 }, -- ornate crossbow
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 3039, chance = 9018 }, -- Red Gem
+	{ id = 9058, chance = 13347 }, -- Gold Ingot
+	{ id = 36772, chance = 10581 }, -- Streaked Devourer Eyes
+	{ id = 36773, chance = 12830 }, -- Streaked Devourer Maw
+	{ id = 36774, chance = 5837 }, -- Streaked Devourer Legs
+	{ id = 3037, chance = 3736 }, -- Yellow Gem
+	{ id = 3281, chance = 1365 }, -- Giant Sword
+	{ id = 3315, chance = 1292 }, -- Guardian Halberd
+	{ id = 3333, chance = 1715 }, -- Crystal Mace
+	{ id = 3342, chance = 1019 }, -- War Axe
+	{ id = 7383, chance = 1936 }, -- Relic Sword
+	{ id = 7386, chance = 1757 }, -- Mercenary Sword
+	{ id = 7456, chance = 1150 }, -- Noble Axe
+	{ id = 14040, chance = 1453 }, -- Warrior's Axe
+	{ id = 14247, chance = 1091 }, -- Ornate Crossbow
 }
 
 monster.attacks = {

@@ -75,15 +75,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
-	{ id = 39391, chance = 23000 }, -- ripptor scales
-	{ id = 39389, chance = 23000, maxCount = 2 }, -- ripptor claw
-	{ id = 7643, chance = 23000, maxCount = 2 }, -- ultimate health potion
-	{ id = 3297, chance = 5000 }, -- serpent sword
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 16117, chance = 5000 }, -- muck rod
-	{ id = 812, chance = 1000 }, -- terra legs
-	{ id = 25699, chance = 1000 }, -- wooden spellbook
+	{ id = 3043, chance = 25009, maxCount = 2 }, -- Crystal Coin
+	{ id = 39391, chance = 13029 }, -- Ripptor Scales
+	{ id = 39389, chance = 8635, maxCount = 2 }, -- Ripptor Claw
+	{ id = 7643, chance = 12081, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 3297, chance = 1400 }, -- Serpent Sword
+	{ id = 9302, chance = 1343 }, -- Sacred Tree Amulet
+	{ id = 16117, chance = 1270 }, -- Muck Rod
+	{ id = 812, chance = 750 }, -- Terra Legs
+	{ id = 25699, chance = 450 }, -- Wooden Spellbook
 }
 
 monster.attacks = {

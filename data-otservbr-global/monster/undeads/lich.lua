@@ -91,26 +91,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 139 }, -- gold coin
-	{ id = 3035, chance = 23000 }, -- platinum coin
-	{ id = 3101, chance = 23000 }, -- spellbook
-	{ id = 237, chance = 23000 }, -- strong mana potion
-	{ id = 3027, chance = 5000, maxCount = 3 }, -- black pearl
-	{ id = 3026, chance = 5000 }, -- white pearl
-	{ id = 3432, chance = 5000 }, -- ancient shield
-	{ id = 9057, chance = 5000, maxCount = 3 }, -- small topaz
-	{ id = 3032, chance = 5000, maxCount = 3 }, -- small emerald
-	{ id = 3098, chance = 5000 }, -- ring of healing
-	{ id = 3062, chance = 1000 }, -- mind stone
-	{ id = 3373, chance = 1000 }, -- strange helmet
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 820, chance = 260 }, -- lightning boots
-	{ id = 3324, chance = 1000 }, -- skull staff
-	{ id = 3435, chance = 260 }, -- castle shield
-	{ id = 3055, chance = 260 }, -- platinum amulet
-	{ id = 3567, chance = 260 }, -- blue robe
-	{ id = 12304, chance = 260 }, -- maxilla maximus
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 87209, maxCount = 139 }, -- Gold Coin
+	{ id = 3035, chance = 19836 }, -- Platinum Coin
+	{ id = 3059, chance = 9267 }, -- Spellbook
+	{ id = 237, chance = 3394 }, -- Strong Mana Potion
+	{ id = 3027, chance = 4871, maxCount = 3 }, -- Black Pearl
+	{ id = 3026, chance = 3246 }, -- White Pearl
+	{ id = 3432, chance = 2206 }, -- Ancient Shield
+	{ id = 9057, chance = 2709, maxCount = 3 }, -- Small Topaz
+	{ id = 3032, chance = 2348, maxCount = 3 }, -- Small Emerald
+	{ id = 3098, chance = 1191 }, -- Ring of Healing
+	{ id = 3062, chance = 723 }, -- Mind Stone
+	{ id = 3373, chance = 1094 }, -- Strange Helmet
+	{ id = 3037, chance = 702 }, -- Yellow Gem
+	{ id = 820, chance = 393 }, -- Lightning Boots
+	{ id = 3324, chance = 280 }, -- Skull Staff
+	{ id = 3435, chance = 268 }, -- Castle Shield
+	{ id = 3055, chance = 174 }, -- Platinum Amulet
+	{ id = 3567, chance = 174 }, -- Blue Robe
+	{ id = 12304, chance = 107 }, -- Maxilla Maximus
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

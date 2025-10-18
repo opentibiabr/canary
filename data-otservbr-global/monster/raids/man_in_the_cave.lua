@@ -80,14 +80,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 40 }, -- gold coin
-	{ id = 31366, chance = 80000, maxCount = 3 }, -- rope
-	{ id = 5913, chance = 80000 }, -- brown piece of cloth
-	{ id = 7386, chance = 80000 }, -- mercenary sword
-	{ id = 7458, chance = 80000 }, -- fur cap
-	{ id = 7290, chance = 80000 }, -- shard
-	{ id = 3602, chance = 80000 }, -- brown bread
-	{ id = 7463, chance = 80000 }, -- mammoth fur cape
+	{ id = 3031, chance = 25000, maxCount = 40 }, -- Gold Coin
+	{ id = 3003, chance = 100000, maxCount = 3 }, -- Rope
+	{ id = 5913, chance = 31250 }, -- Brown Piece of Cloth
+	{ id = 7386, chance = 34380 }, -- Mercenary Sword
+	{ id = 7458, chance = 18750 }, -- Fur Cap
+	{ id = 7290, chance = 9380 }, -- Shard
+	{ id = 3602, chance = 3130 }, -- Brown Bread
+	{ id = 7463, chance = 1000 }, -- Mammoth Fur Cape
 }
 
 monster.attacks = {

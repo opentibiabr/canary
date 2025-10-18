@@ -72,40 +72,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 30 }, -- platinum coin
-	{ id = 23535, chance = 80000, maxCount = 5 }, -- energy bar
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
-	{ id = 3029, chance = 80000, maxCount = 10 }, -- small sapphire
-	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 22191, chance = 80000 }, -- skull fetish
-	{ id = 7786, chance = 80000 }, -- orc tusk
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 830, chance = 80000 }, -- terra hood
-	{ id = 5887, chance = 80000 }, -- piece of royal steel
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 812, chance = 80000 }, -- terra legs
-	{ id = 21171, chance = 80000 }, -- metal bat
-	{ id = 7428, chance = 80000 }, -- bonebreaker
-	{ id = 7388, chance = 80000 }, -- vile axe
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 23535, chance = 100000, maxCount = 5 }, -- Energy Bar
+	{ id = 238, chance = 50000, maxCount = 5 }, -- Great Mana Potion
+	{ id = 7642, chance = 61842, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 7643, chance = 59210, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 3029, chance = 26315, maxCount = 10 }, -- Small Sapphire
+	{ id = 3033, chance = 18421, maxCount = 10 }, -- Small Amethyst
+	{ id = 3038, chance = 18421 }, -- Green Gem
+	{ id = 3037, chance = 25000 }, -- Yellow Gem
+	{ id = 3039, chance = 23684 }, -- Red Gem
+	{ id = 9058, chance = 64473 }, -- Gold Ingot
+	{ id = 23529, chance = 14473 }, -- Ring of Blue Plasma
+	{ id = 23543, chance = 10526 }, -- Collar of Green Plasma
+	{ id = 22191, chance = 100000 }, -- Skull Fetish
+	{ id = 7786, chance = 1000 }, -- Orc Tusk
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 830, chance = 14516 }, -- Terra Hood
+	{ id = 5887, chance = 22368 }, -- Piece of Royal Steel
+	{ id = 22516, chance = 32894 }, -- Silver Token
+	{ id = 22721, chance = 14473 }, -- Gold Token
+	{ id = 5904, chance = 65789 }, -- Magic Sulphur
+	{ id = 23544, chance = 13157 }, -- Collar of Red Plasma
+	{ id = 3032, chance = 11290 }, -- Small Emerald
+	{ id = 281, chance = 13157 }, -- Giant Shimmering Pearl
+	{ id = 812, chance = 7894 }, -- Terra Legs
+	{ id = 21171, chance = 9677 }, -- Metal Bat
+	{ id = 7428, chance = 11842 }, -- Bonebreaker
+	{ id = 7388, chance = 4838 }, -- Vile Axe
+	{ id = 23526, chance = 9210 }, -- Collar of Blue Plasma
+	{ id = 3041, chance = 14473 }, -- Blue Gem
+	{ id = 9057, chance = 25000 }, -- Small Topaz
+	{ id = 25360, chance = 7142 }, -- Heart of the Mountain (Item)
+	{ id = 3028, chance = 24242 }, -- Small Diamond
+	{ id = 23533, chance = 13636 }, -- Ring of Red Plasma
+	{ id = 23531, chance = 9090 }, -- Ring of Green Plasma
 }
 
 monster.attacks = {

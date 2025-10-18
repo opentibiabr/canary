@@ -80,24 +80,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 90 }, -- gold coin
-	{ id = 25691, chance = 23000 }, -- wild flowers
-	{ id = 25695, chance = 23000 }, -- dandelion seeds
-	{ id = 25692, chance = 23000, maxCount = 2 }, -- fresh fruit
-	{ id = 25696, chance = 23000 }, -- colourful snail shell
-	{ id = 25735, chance = 23000, maxCount = 5 }, -- leaf star
-	{ id = 3736, chance = 5000 }, -- star herb
-	{ id = 3047, chance = 5000 }, -- magic light wand
-	{ id = 238, chance = 5000 }, -- great mana potion
-	{ id = 3658, chance = 5000 }, -- red rose
-	{ id = 25737, chance = 5000, maxCount = 3 }, -- rainbow quartz
-	{ id = 678, chance = 5000, maxCount = 2 }, -- small enchanted amethyst
-	{ id = 3732, chance = 5000 }, -- green mushroom
-	{ id = 237, chance = 1000 }, -- strong mana potion
-	{ id = 25700, chance = 1000 }, -- dream blossom staff
-	{ id = 25698, chance = 1000 }, -- butterfly ring
-	{ id = 25699, chance = 260 }, -- wooden spellbook
-	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 3031, chance = 60360, maxCount = 90 }, -- Gold Coin
+	{ id = 25691, chance = 17950 }, -- Wild Flowers
+	{ id = 25695, chance = 14840 }, -- Dandelion Seeds
+	{ id = 25692, chance = 9790, maxCount = 2 }, -- Fresh Fruit
+	{ id = 25696, chance = 9720 }, -- Colourful Snail Shell
+	{ id = 25735, chance = 8790, maxCount = 5 }, -- Leaf Star
+	{ id = 3736, chance = 4980 }, -- Star Herb
+	{ id = 3046, chance = 4560 }, -- Magic Light Wand
+	{ id = 238, chance = 3250 }, -- Great Mana Potion
+	{ id = 3658, chance = 3120 }, -- Red Rose
+	{ id = 25737, chance = 3020, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 678, chance = 2070, maxCount = 2 }, -- Small Enchanted Amethyst
+	{ id = 3732, chance = 1660 }, -- Green Mushroom
+	{ id = 237, chance = 850 }, -- Strong Mana Potion
+	{ id = 25700, chance = 550 }, -- Dream Blossom Staff
+	{ id = 25698, chance = 630 }, -- Butterfly Ring
+	{ id = 25699, chance = 350 }, -- Wooden Spellbook
+	{ id = 9057, chance = 1000 }, -- Small Topaz
 }
 
 monster.attacks = {

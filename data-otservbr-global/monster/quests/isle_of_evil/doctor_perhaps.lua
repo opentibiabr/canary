@@ -79,10 +79,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9399, chance = 80000 }, -- mighty helm of green sparks
-	{ id = 9383, chance = 80000 }, -- trousers of the ancients
-	{ id = 9372, chance = 80000 }, -- meat shield
-	{ id = 9373, chance = 80000 }, -- gluttons mace
+	{ id = 9399, chance = 1000 }, -- Mighty Helm of Green Sparks
+	{ id = 9383, chance = 20000 }, -- Trousers of the Ancients
+	{ id = 9372, chance = 40000 }, -- Meat Shield
+	{ id = 9373, chance = 40000 }, -- Glutton's Mace
 }
 
 monster.attacks = {

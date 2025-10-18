@@ -80,24 +80,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 89 }, -- gold coin
-	{ id = 25691, chance = 23000 }, -- wild flowers
-	{ id = 25696, chance = 23000 }, -- colourful snail shell
-	{ id = 3739, chance = 5000 }, -- powder herb
-	{ id = 3026, chance = 5000, maxCount = 2 }, -- white pearl
-	{ id = 3017, chance = 5000 }, -- silver brooch
-	{ id = 238, chance = 5000 }, -- great mana potion
-	{ id = 3732, chance = 5000 }, -- green mushroom
-	{ id = 677, chance = 5000 }, -- small enchanted emerald
-	{ id = 24391, chance = 5000 }, -- coral brooch
-	{ id = 22194, chance = 5000, maxCount = 2 }, -- opal
-	{ id = 3311, chance = 1000 }, -- clerical mace
-	{ id = 9013, chance = 1000 }, -- flower wreath
-	{ id = 3079, chance = 1000 }, -- boots of haste
-	{ id = 8046, chance = 1000 }, -- summer dress
-	{ id = 237, chance = 1000 }, -- strong mana potion
-	{ id = 25698, chance = 1000 }, -- butterfly ring
-	{ id = 7387, chance = 260 }, -- diamond sceptre
+	{ id = 3031, chance = 60080, maxCount = 89 }, -- Gold Coin
+	{ id = 25691, chance = 20600 }, -- Wild Flowers
+	{ id = 25696, chance = 14170 }, -- Colourful Snail Shell
+	{ id = 3739, chance = 5380 }, -- Powder Herb
+	{ id = 3026, chance = 1930, maxCount = 2 }, -- White Pearl
+	{ id = 3017, chance = 2970 }, -- Silver Brooch
+	{ id = 238, chance = 3100 }, -- Great Mana Potion
+	{ id = 3732, chance = 1350 }, -- Green Mushroom
+	{ id = 677, chance = 2720 }, -- Small Enchanted Emerald
+	{ id = 24391, chance = 1740 }, -- Coral Brooch
+	{ id = 22194, chance = 1930, maxCount = 2 }, -- Opal
+	{ id = 3311, chance = 930 }, -- Clerical Mace
+	{ id = 9013, chance = 479 }, -- Flower Wreath
+	{ id = 3079, chance = 780 }, -- Boots of Haste
+	{ id = 8046, chance = 510 }, -- Summer Dress
+	{ id = 237, chance = 930 }, -- Strong Mana Potion
+	{ id = 25698, chance = 830 }, -- Butterfly Ring
+	{ id = 7387, chance = 410 }, -- Diamond Sceptre
 }
 
 monster.attacks = {

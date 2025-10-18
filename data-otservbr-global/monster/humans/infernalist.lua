@@ -84,22 +84,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 151 }, -- gold coin
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 8012, chance = 23000, maxCount = 5 }, -- raspberry
-	{ id = 3324, chance = 23000 }, -- skull staff
-	{ id = 3051, chance = 5000 }, -- energy ring
-	{ id = 676, chance = 5000 }, -- small enchanted ruby
-	{ id = 5911, chance = 1000 }, -- red piece of cloth
-	{ id = 9045, chance = 1000 }, -- royal tapestry
-	{ id = 5904, chance = 1000 }, -- magic sulphur
-	{ id = 8074, chance = 260 }, -- spellbook of mind control
-	{ id = 818, chance = 260 }, -- magma boots
-	{ id = 2852, chance = 260 }, -- red tome
-	{ id = 9058, chance = 260 }, -- gold ingot
-	{ id = 9067, chance = 260 }, -- crystal of power
-	{ id = 2995, chance = 260 }, -- piggy bank
+	{ id = 3031, chance = 97780, maxCount = 151 }, -- Gold Coin
+	{ id = 239, chance = 20857 }, -- Great Health Potion
+	{ id = 238, chance = 20874 }, -- Great Mana Potion
+	{ id = 8012, chance = 23273, maxCount = 5 }, -- Raspberry
+	{ id = 3324, chance = 6215 }, -- Skull Staff
+	{ id = 3051, chance = 2013 }, -- Energy Ring
+	{ id = 676, chance = 4990 }, -- Small Enchanted Ruby
+	{ id = 5911, chance = 2116 }, -- Red Piece of Cloth
+	{ id = 9045, chance = 629 }, -- Royal Tapestry
+	{ id = 5904, chance = 396 }, -- Magic Sulphur
+	{ id = 9056, chance = 279 }, -- Black Skull (Item)
+	{ id = 8074, chance = 496 }, -- Spellbook of Mind Control
+	{ id = 818, chance = 114 }, -- Magma Boots
+	{ id = 2852, chance = 91 }, -- Red Tome
+	{ id = 9058, chance = 230 }, -- Gold Ingot
+	{ id = 9067, chance = 98 }, -- Crystal of Power
+	{ id = 2995, chance = 140 }, -- Piggy Bank
 }
 
 monster.attacks = {

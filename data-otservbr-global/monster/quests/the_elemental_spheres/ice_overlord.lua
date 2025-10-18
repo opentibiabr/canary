@@ -67,10 +67,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 942, chance = 80000 }, -- flawless ice crystal
-	{ id = 3031, chance = 80000, maxCount = 75 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 8050, chance = 260 }, -- crystalline armor
+	{ id = 942, chance = 100000 }, -- Flawless Ice Crystal
+	{ id = 3031, chance = 68567, maxCount = 75 }, -- Gold Coin
+	{ id = 3035, chance = 50948, maxCount = 3 }, -- Platinum Coin
+	{ id = 8050, chance = 1000 }, -- Crystalline Armor
 }
 
 monster.attacks = {

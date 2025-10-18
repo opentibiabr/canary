@@ -78,23 +78,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 301 }, -- gold coin
-	{ id = 3147, chance = 80000, maxCount = 2 }, -- blank rune
-	{ id = 3073, chance = 23000 }, -- wand of cosmic energy
-	{ id = 3260, chance = 23000 }, -- lyre
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 3035, chance = 5000, maxCount = 7 }, -- platinum coin
-	{ id = 5909, chance = 5000 }, -- white piece of cloth
-	{ id = 10310, chance = 1000 }, -- shiny stone
-	{ id = 238, chance = 1000 }, -- great mana potion
-	{ id = 3017, chance = 1000 }, -- silver brooch
-	{ id = 7383, chance = 1000 }, -- relic sword
-	{ id = 6299, chance = 260 }, -- death ring
-	{ id = 3049, chance = 260 }, -- stealth ring
-	{ id = 3019, chance = 260 }, -- demonbone amulet
-	{ id = 7451, chance = 260 }, -- shadow sceptre
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 99685, maxCount = 301 }, -- Gold Coin
+	{ id = 3147, chance = 43613, maxCount = 2 }, -- Blank Rune
+	{ id = 3073, chance = 10118 }, -- Wand of Cosmic Energy
+	{ id = 2949, chance = 10109 }, -- Lyre
+	{ id = 6499, chance = 6071 }, -- Demonic Essence
+	{ id = 5944, chance = 6576 }, -- Soul Orb
+	{ id = 3035, chance = 11797, maxCount = 7 }, -- Platinum Coin
+	{ id = 5909, chance = 3962 }, -- White Piece of Cloth
+	{ id = 10310, chance = 1014 }, -- Shiny Stone
+	{ id = 238, chance = 1151 }, -- Great Mana Potion
+	{ id = 3017, chance = 864 }, -- Silver Brooch
+	{ id = 7383, chance = 609 }, -- Relic Sword
+	{ id = 6299, chance = 513 }, -- Death Ring
+	{ id = 3049, chance = 314 }, -- Stealth Ring
+	{ id = 3019, chance = 151 }, -- Demonbone Amulet
+	{ id = 7451, chance = 119 }, -- Shadow Sceptre
+	{ id = 3081, chance = 170 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

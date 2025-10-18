@@ -76,24 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 3383, chance = 23000 }, -- dark armor
-	{ id = 16123, chance = 23000 }, -- brown crystal splinter
-	{ id = 16124, chance = 23000 }, -- blue crystal splinter
-	{ id = 29346, chance = 23000, maxCount = 2 }, -- green glass plate
-	{ id = 3415, chance = 5000 }, -- guardian shield
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 3034, chance = 5000 }, -- talon
-	{ id = 3369, chance = 5000 }, -- warrior helmet
-	{ id = 3567, chance = 5000 }, -- blue robe
-	{ id = 24962, chance = 5000 }, -- prismatic quartz
-	{ id = 25737, chance = 5000, maxCount = 2 }, -- rainbow quartz
-	{ id = 816, chance = 1000 }, -- lightning pendant
-	{ id = 811, chance = 260 }, -- terra mantle
-	{ id = 9304, chance = 260 }, -- shockwave amulet
-	{ id = 3379, chance = 260 }, -- doublet
-	{ id = 17829, chance = 260 }, -- buckle
+	{ id = 3035, chance = 71233, maxCount = 6 }, -- Platinum Coin
+	{ id = 3383, chance = 15500 }, -- Dark Armor
+	{ id = 16123, chance = 7494 }, -- Brown Crystal Splinter
+	{ id = 16124, chance = 8142 }, -- Blue Crystal Splinter
+	{ id = 29346, chance = 12861, maxCount = 2 }, -- Green Glass Plate
+	{ id = 3415, chance = 7119 }, -- Guardian Shield
+	{ id = 814, chance = 2108 }, -- Terra Amulet
+	{ id = 815, chance = 1728 }, -- Glacier Amulet
+	{ id = 3034, chance = 2247 }, -- Talon
+	{ id = 3369, chance = 3039 }, -- Warrior Helmet
+	{ id = 3567, chance = 1494 }, -- Blue Robe
+	{ id = 24962, chance = 1680 }, -- Prismatic Quartz
+	{ id = 25737, chance = 3273, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 816, chance = 928 }, -- Lightning Pendant
+	{ id = 811, chance = 488 }, -- Terra Mantle
+	{ id = 9304, chance = 404 }, -- Shockwave Amulet
+	{ id = 3379, chance = 389 }, -- Doublet
+	{ id = 17829, chance = 336 }, -- Buckle
 }
 
 monster.attacks = {

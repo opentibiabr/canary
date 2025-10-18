@@ -114,4 +114,6 @@ end
 
 mType:register(monster)
 
-monster.loot = {}
+monster.loot = {
+
+}

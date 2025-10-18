@@ -76,25 +76,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 150 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
-	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
-	{ id = 236, chance = 80000, maxCount = 3 }, -- strong health potion
-	{ id = 237, chance = 80000, maxCount = 3 }, -- strong mana potion
-	{ id = 3436, chance = 80000 }, -- medusa shield
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 3392, chance = 80000 }, -- royal helmet
-	{ id = 3369, chance = 80000 }, -- warrior helmet
-	{ id = 4839, chance = 80000 }, -- hydra egg
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 3284, chance = 80000 }, -- ice rapier
-	{ id = 9302, chance = 80000 }, -- sacred tree amulet
-	{ id = 8074, chance = 80000 }, -- spellbook of mind control
-	{ id = 19356, chance = 1000 }, -- triple bolt crossbow
-	{ id = 19083, chance = 1000 }, -- silver raid token
-	{ id = 19357, chance = 1000 }, -- shrunken head necklace
+	{ id = 3031, chance = 100000, maxCount = 150 }, -- Gold Coin
+	{ id = 3035, chance = 88888, maxCount = 20 }, -- Platinum Coin
+	{ id = 3029, chance = 28571, maxCount = 5 }, -- Small Sapphire
+	{ id = 236, chance = 44444, maxCount = 3 }, -- Strong Health Potion
+	{ id = 237, chance = 55555, maxCount = 3 }, -- Strong Mana Potion
+	{ id = 3436, chance = 1000 }, -- Medusa Shield
+	{ id = 281, chance = 71428 }, -- Giant Shimmering Pearl
+	{ id = 3081, chance = 57142 }, -- Stone Skin Amulet
+	{ id = 3079, chance = 1000 }, -- Boots of Haste
+	{ id = 3392, chance = 25000 }, -- Royal Helmet
+	{ id = 3369, chance = 25000 }, -- Warrior Helmet
+	{ id = 4839, chance = 33333 }, -- Hydra Egg
+	{ id = 9058, chance = 60000 }, -- Gold Ingot
+	{ id = 3370, chance = 1000 }, -- Knight Armor
+	{ id = 3284, chance = 1000 }, -- Ice Rapier
+	{ id = 9302, chance = 33333 }, -- Sacred Tree Amulet
+	{ id = 8074, chance = 33333 }, -- Spellbook of Mind Control
+	{ id = 19356, chance = 1000 }, -- Triple Bolt Crossbow
+	{ id = 19083, chance = 25000 }, -- Silver Raid Token
+	{ id = 19357, chance = 1000 }, -- Shrunken Head Necklace
 }
 
 monster.attacks = {

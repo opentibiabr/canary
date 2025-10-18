@@ -81,38 +81,39 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 8192, chance = 80000 }, -- vampire lord token
-	{ id = 18927, chance = 80000 }, -- vampires cape chain
-	{ id = 9685, chance = 80000 }, -- vampire teeth
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3032, chance = 80000, maxCount = 5 }, -- small emerald
-	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
-	{ id = 3033, chance = 80000, maxCount = 5 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
-	{ id = 3027, chance = 80000, maxCount = 5 }, -- black pearl
-	{ id = 236, chance = 80000, maxCount = 3 }, -- strong health potion
-	{ id = 237, chance = 80000, maxCount = 5 }, -- strong mana potion
-	{ id = 11449, chance = 80000 }, -- blood preservation
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3326, chance = 80000 }, -- epee
-	{ id = 3049, chance = 80000 }, -- stealth ring
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 5909, chance = 80000 }, -- white piece of cloth
-	{ id = 5912, chance = 80000 }, -- blue piece of cloth
-	{ id = 5911, chance = 80000 }, -- red piece of cloth
-	{ id = 3434, chance = 80000 }, -- vampire shield
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 7416, chance = 80000 }, -- bloody edge
-	{ id = 7419, chance = 80000 }, -- dreaded cleaver
-	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
-	{ id = 19083, chance = 1000 }, -- silver raid token
-	{ id = 19373, chance = 1000 }, -- haunted mirror piece
-	{ id = 19374, chance = 1000 }, -- vampire silk slippers
-	{ id = 18935, chance = 1000 }, -- vampires signet ring
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 8192, chance = 86206 }, -- Vampire Lord Token
+	{ id = 18927, chance = 100000 }, -- Vampire's Cape Chain
+	{ id = 9685, chance = 63793 }, -- Vampire Teeth
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 41379, maxCount = 5 }, -- Platinum Coin
+	{ id = 3032, chance = 5555, maxCount = 5 }, -- Small Emerald
+	{ id = 3029, chance = 9259, maxCount = 5 }, -- Small Sapphire
+	{ id = 3033, chance = 15517, maxCount = 5 }, -- Small Amethyst
+	{ id = 3028, chance = 13793, maxCount = 5 }, -- Small Diamond
+	{ id = 3027, chance = 14814, maxCount = 5 }, -- Black Pearl
+	{ id = 236, chance = 70689, maxCount = 3 }, -- Strong Health Potion
+	{ id = 237, chance = 75862, maxCount = 5 }, -- Strong Mana Potion
+	{ id = 11449, chance = 50000 }, -- Blood Preservation
+	{ id = 3036, chance = 5555 }, -- Violet Gem
+	{ id = 3326, chance = 15517 }, -- Epee
+	{ id = 3049, chance = 37931 }, -- Stealth Ring
+	{ id = 3098, chance = 13793 }, -- Ring of Healing
+	{ id = 5909, chance = 24074 }, -- White Piece of Cloth
+	{ id = 5912, chance = 25862 }, -- Blue Piece of Cloth
+	{ id = 5911, chance = 25925 }, -- Red Piece of Cloth
+	{ id = 3434, chance = 13793 }, -- Vampire Shield
+	{ id = 7427, chance = 7407 }, -- Chaos Mace
+	{ id = 7416, chance = 1000 }, -- Bloody Edge
+	{ id = 7419, chance = 3125 }, -- Dreaded Cleaver
+	{ id = 8075, chance = 3125 }, -- Spellbook of Lost Souls
+	{ id = 18936, chance = 13793 }, -- The Vampire Count's Medal
+	{ id = 19083, chance = 1000 }, -- Silver Raid Token
+	{ id = 19373, chance = 1000 }, -- Haunted Mirror Piece
+	{ id = 19374, chance = 3125 }, -- Vampire Silk Slippers
+	{ id = 18935, chance = 4545 }, -- Vampire's Signet Ring
+	{ id = 3030, chance = 16666 }, -- Small Ruby
+	{ id = 9057, chance = 12962 }, -- Small Topaz
+	{ id = 3041, chance = 4545 }, -- Blue Gem
 }
 
 monster.attacks = {

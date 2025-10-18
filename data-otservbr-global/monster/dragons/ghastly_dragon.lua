@@ -78,33 +78,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 266 }, -- gold coin
-	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
-	{ id = 3032, chance = 80000, maxCount = 5 }, -- small emerald
-	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
-	{ id = 3383, chance = 80000 }, -- dark armor
-	{ id = 3557, chance = 80000 }, -- plate legs
-	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 813, chance = 23000 }, -- terra boots
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 8896, chance = 23000 }, -- slightly rusted armor
-	{ id = 10392, chance = 23000 }, -- twin hooks
-	{ id = 10406, chance = 23000 }, -- zaoan halberd
-	{ id = 10449, chance = 23000 }, -- ghastly dragon head
-	{ id = 10450, chance = 23000 }, -- undead heart
-	{ id = 812, chance = 5000 }, -- terra legs
-	{ id = 10388, chance = 5000 }, -- drakinata
-	{ id = 10310, chance = 1000 }, -- shiny stone
-	{ id = 10384, chance = 1000 }, -- zaoan armor
-	{ id = 10386, chance = 1000 }, -- zaoan shoes
-	{ id = 10387, chance = 1000 }, -- zaoan legs
-	{ id = 10438, chance = 1000 }, -- spellweavers robe
-	{ id = 10451, chance = 1000 }, -- jade hat
-	{ id = 10323, chance = 260 }, -- guardian boots
-	{ id = 10385, chance = 260 }, -- zaoan helmet
-	{ id = 10390, chance = 260 }, -- zaoan sword
+	{ id = 3031, chance = 99482, maxCount = 266 }, -- Gold Coin
+	{ id = 238, chance = 30100, maxCount = 2 }, -- Great Mana Potion
+	{ id = 3032, chance = 40280, maxCount = 5 }, -- Small Emerald
+	{ id = 3035, chance = 40335, maxCount = 2 }, -- Platinum Coin
+	{ id = 3383, chance = 34760 }, -- Dark Armor
+	{ id = 3557, chance = 49150 }, -- Plate Legs
+	{ id = 7642, chance = 8861, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 7643, chance = 10812 }, -- Ultimate Health Potion
+	{ id = 813, chance = 10120 }, -- Terra Boots
+	{ id = 5944, chance = 12315 }, -- Soul Orb
+	{ id = 6499, chance = 8888 }, -- Demonic Essence
+	{ id = 8896, chance = 2935 }, -- Slightly Rusted Armor
+	{ id = 10392, chance = 6362 }, -- Twin Hooks
+	{ id = 10406, chance = 9024 }, -- Zaoan Halberd
+	{ id = 10449, chance = 7163 }, -- Ghastly Dragon Head
+	{ id = 10450, chance = 19403 }, -- Undead Heart
+	{ id = 812, chance = 3280 }, -- Terra Legs
+	{ id = 10388, chance = 736 }, -- Drakinata
+	{ id = 10310, chance = 736 }, -- Shiny Stone
+	{ id = 10384, chance = 437 }, -- Zaoan Armor
+	{ id = 10386, chance = 655 }, -- Zaoan Shoes
+	{ id = 10387, chance = 1135 }, -- Zaoan Legs
+	{ id = 10438, chance = 647 }, -- Spellweaver's Robe
+	{ id = 10451, chance = 634 }, -- Jade Hat
+	{ id = 10323, chance = 279 }, -- Guardian Boots
+	{ id = 10385, chance = 136 }, -- Zaoan Helmet
+	{ id = 10390, chance = 61 }, -- Zaoan Sword
 }
 
 monster.attacks = {

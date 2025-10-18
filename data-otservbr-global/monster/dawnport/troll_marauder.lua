@@ -60,15 +60,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 8 }, -- gold coin
-	{ id = 3277, chance = 80000 }, -- spear
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 3412, chance = 23000 }, -- wooden shield
-	{ id = 3336, chance = 23000 }, -- studded club
-	{ id = 3378, chance = 23000 }, -- studded armor
-	{ id = 3552, chance = 5000 }, -- leather boots
-	{ id = 21470, chance = 5000, maxCount = 6 }, -- simple arrow
-	{ id = 3054, chance = 260 }, -- silver amulet
+	{ id = 3031, chance = 100000, maxCount = 8 }, -- Gold Coin
+	{ id = 3277, chance = 27211 }, -- Spear
+	{ id = 3577, chance = 17684 }, -- Meat
+	{ id = 3412, chance = 9521 }, -- Wooden Shield
+	{ id = 3336, chance = 11561 }, -- Studded Club
+	{ id = 3378, chance = 11566 }, -- Studded Armor
+	{ id = 3552, chance = 6799 }, -- Leather Boots
+	{ id = 21470, chance = 6119, maxCount = 6 }, -- Simple Arrow
+	{ id = 3054, chance = 1270 }, -- Silver Amulet
 }
 
 monster.attacks = {

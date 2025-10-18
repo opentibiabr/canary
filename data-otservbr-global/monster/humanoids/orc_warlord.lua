@@ -79,28 +79,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 11453, chance = 80000 }, -- broken helmet
-	{ id = 3031, chance = 23000, maxCount = 45 }, -- gold coin
-	{ id = 7885, chance = 23000, maxCount = 2 }, -- fish
-	{ id = 11479, chance = 23000 }, -- orc leather
-	{ id = 10196, chance = 23000 }, -- orc tooth
-	{ id = 3357, chance = 23000 }, -- plate armor
-	{ id = 3287, chance = 23000, maxCount = 18 }, -- throwing star
-	{ id = 3316, chance = 5000 }, -- orcish axe
-	{ id = 3347, chance = 5000 }, -- hunting spear
-	{ id = 3557, chance = 5000 }, -- plate legs
-	{ id = 3084, chance = 5000 }, -- protection amulet
-	{ id = 3307, chance = 5000 }, -- scimitar
-	{ id = 11480, chance = 5000 }, -- skull belt
-	{ id = 3384, chance = 5000 }, -- dark helmet
-	{ id = 3265, chance = 5000 }, -- two handed sword
-	{ id = 3359, chance = 1000 }, -- brass armor
-	{ id = 266, chance = 1000 }, -- health potion
-	{ id = 3391, chance = 260 }, -- crusader helmet
-	{ id = 3322, chance = 260 }, -- dragon hammer
-	{ id = 818, chance = 260 }, -- magma boots
-	{ id = 3049, chance = 260 }, -- stealth ring
-	{ id = 7395, chance = 260 }, -- orc trophy
+	{ id = 11453, chance = 25310 }, -- Broken Helmet
+	{ id = 3031, chance = 19009, maxCount = 45 }, -- Gold Coin
+	{ id = 3578, chance = 11790, maxCount = 2 }, -- Fish
+	{ id = 11479, chance = 20300 }, -- Orc Leather
+	{ id = 10196, chance = 9202 }, -- Orc Tooth
+	{ id = 3357, chance = 5913 }, -- Plate Armor
+	{ id = 3287, chance = 16501, maxCount = 18 }, -- Throwing Star
+	{ id = 3316, chance = 7156 }, -- Orcish Axe
+	{ id = 3347, chance = 4360 }, -- Hunting Spear
+	{ id = 3557, chance = 3478 }, -- Plate Legs
+	{ id = 3084, chance = 1920 }, -- Protection Amulet
+	{ id = 3307, chance = 5143 }, -- Scimitar
+	{ id = 11480, chance = 4990 }, -- Skull Belt
+	{ id = 3384, chance = 1168 }, -- Dark Helmet
+	{ id = 3265, chance = 1977 }, -- Two Handed Sword
+	{ id = 3359, chance = 897 }, -- Brass Armor
+	{ id = 266, chance = 359 }, -- Health Potion
+	{ id = 3391, chance = 274 }, -- Crusader Helmet
+	{ id = 3322, chance = 235 }, -- Dragon Hammer
+	{ id = 818, chance = 215 }, -- Magma Boots
+	{ id = 3049, chance = 198 }, -- Stealth Ring
+	{ id = 7395, chance = 206 }, -- Orc Trophy
 }
 
 monster.attacks = {

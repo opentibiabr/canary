@@ -73,50 +73,53 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
-	{ id = 16119, chance = 80000, maxCount = 3 }, -- blue crystal shard
-	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
-	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
-	{ id = 238, chance = 80000, maxCount = 10 }, -- great mana potion
-	{ id = 7642, chance = 80000, maxCount = 10 }, -- great spirit potion
-	{ id = 7643, chance = 80000, maxCount = 10 }, -- ultimate health potion
-	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 10 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
-	{ id = 3030, chance = 80000, maxCount = 10 }, -- small ruby
-	{ id = 9057, chance = 80000, maxCount = 10 }, -- small topaz
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 11652, chance = 80000 }, -- broken key ring
-	{ id = 9067, chance = 80000 }, -- crystal of power
-	{ id = 24967, chance = 80000 }, -- dragon crown
-	{ id = 24938, chance = 80000 }, -- dragon tongue
-	{ id = 7430, chance = 80000 }, -- dragonbone staff
-	{ id = 4033, chance = 80000 }, -- draken boots
-	{ id = 10388, chance = 80000 }, -- drakinata
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 24968, chance = 80000 }, -- golden talon
-	{ id = 5948, chance = 80000 }, -- red dragon leather
-	{ id = 5882, chance = 80000 }, -- red dragon scale
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 5889, chance = 80000 }, -- piece of draconian steel
-	{ id = 5887, chance = 80000 }, -- piece of royal steel
-	{ id = 8021, chance = 80000 }, -- modified crossbow
-	{ id = 8074, chance = 80000 }, -- spellbook of mind control
-	{ id = 10391, chance = 1000 }, -- drachaku
-	{ id = 11688, chance = 1000 }, -- shield of corruption
-	{ id = 3400, chance = 260 }, -- dragon scale helmet
-	{ id = 3422, chance = 260 }, -- great shield
-	{ id = 11692, chance = 260 }, -- snake gods sceptre
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 3386, chance = 80000 }, -- dragon scale mail
-	{ id = 8895, chance = 80000 }, -- rusted armor
-	{ id = 8896, chance = 80000 }, -- slightly rusted armor
-	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 16119, chance = 63513, maxCount = 3 }, -- Blue Crystal Shard
+	{ id = 16121, chance = 60135, maxCount = 3 }, -- Green Crystal Shard
+	{ id = 16120, chance = 62162, maxCount = 3 }, -- Violet Crystal Shard
+	{ id = 238, chance = 54054, maxCount = 10 }, -- Great Mana Potion
+	{ id = 7642, chance = 54054, maxCount = 10 }, -- Great Spirit Potion
+	{ id = 7643, chance = 52702, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 3033, chance = 18243, maxCount = 10 }, -- Small Amethyst
+	{ id = 3028, chance = 21621, maxCount = 10 }, -- Small Diamond
+	{ id = 3032, chance = 16216, maxCount = 10 }, -- Small Emerald
+	{ id = 3030, chance = 22297, maxCount = 10 }, -- Small Ruby
+	{ id = 9057, chance = 20945, maxCount = 10 }, -- Small Topaz
+	{ id = 3037, chance = 18243 }, -- Yellow Gem
+	{ id = 3041, chance = 21621 }, -- Blue Gem
+	{ id = 3038, chance = 16216 }, -- Green Gem
+	{ id = 3039, chance = 27027 }, -- Red Gem
+	{ id = 11652, chance = 15540 }, -- Broken Key Ring
+	{ id = 9067, chance = 16216 }, -- Crystal of Power
+	{ id = 24967, chance = 1834 }, -- Dragon Crown
+	{ id = 24938, chance = 1000 }, -- Dragon Tongue
+	{ id = 7430, chance = 6756 }, -- Dragonbone Staff
+	{ id = 4033, chance = 1834 }, -- Draken Boots
+	{ id = 10388, chance = 5504 }, -- Drakinata
+	{ id = 281, chance = 11486 }, -- Giant Shimmering Pearl
+	{ id = 9058, chance = 19594 }, -- Gold Ingot
+	{ id = 24968, chance = 4587 }, -- Golden Talon
+	{ id = 5948, chance = 100000 }, -- Red Dragon Leather
+	{ id = 5882, chance = 100000 }, -- Red Dragon Scale
+	{ id = 5904, chance = 72297 }, -- Magic Sulphur
+	{ id = 5889, chance = 79729 }, -- Piece of Draconian Steel
+	{ id = 5887, chance = 4054 }, -- Piece of Royal Steel
+	{ id = 8021, chance = 8108 }, -- Modified Crossbow
+	{ id = 8074, chance = 14864 }, -- Spellbook of Mind Control
+	{ id = 10391, chance = 4729 }, -- Drachaku
+	{ id = 11688, chance = 1000 }, -- Shield of Corruption
+	{ id = 3400, chance = 2884 }, -- Dragon Scale Helmet
+	{ id = 3422, chance = 1000 }, -- Great Shield
+	{ id = 11692, chance = 3614 }, -- Snake God's Sceptre
+	{ id = 22516, chance = 22297 }, -- Silver Token
+	{ id = 22721, chance = 27027 }, -- Gold Token
+	{ id = 24955, chance = 2702 }, -- Part of a Rune (Two)
+	{ id = 3386, chance = 4545 }, -- Dragon Scale Mail
+	{ id = 8895, chance = 14189 }, -- Rusted Armor
+	{ id = 8896, chance = 10135 }, -- Slightly Rusted Armor
+	{ id = 3036, chance = 6730 }, -- Violet Gem
+	{ id = 50259, chance = 6153 }, -- Zaoan Monk Robe
 }
 
 monster.attacks = {

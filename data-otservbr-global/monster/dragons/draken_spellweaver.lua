@@ -76,25 +76,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 3030, chance = 23000, maxCount = 5 }, -- small ruby
-	{ id = 10397, chance = 23000 }, -- weavers wandtip
-	{ id = 238, chance = 5000 }, -- great mana potion
-	{ id = 3071, chance = 5000 }, -- wand of inferno
-	{ id = 8043, chance = 5000 }, -- focus cape
-	{ id = 10386, chance = 5000 }, -- zaoan shoes
-	{ id = 11454, chance = 5000 }, -- luminous orb
-	{ id = 11658, chance = 5000 }, -- draken sulphur
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 10387, chance = 1000 }, -- zaoan legs
-	{ id = 10438, chance = 1000 }, -- spellweavers robe
-	{ id = 10439, chance = 1000 }, -- zaoan robe
-	{ id = 12549, chance = 260 }, -- bamboo leaves
-	{ id = 3006, chance = 260 }, -- ring of the sky
-	{ id = 10398, chance = 260 }, -- draken trophy
-	{ id = 12307, chance = 260 }, -- harness
+	{ id = 3031, chance = 97266, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 11021, maxCount = 5 }, -- Platinum Coin
+	{ id = 3577, chance = 29971 }, -- Meat
+	{ id = 3030, chance = 2263, maxCount = 5 }, -- Small Ruby
+	{ id = 10397, chance = 15190 }, -- Weaver's Wandtip
+	{ id = 238, chance = 2104 }, -- Great Mana Potion
+	{ id = 3071, chance = 1645 }, -- Wand of Inferno
+	{ id = 8043, chance = 875 }, -- Focus Cape
+	{ id = 10386, chance = 2165 }, -- Zaoan Shoes
+	{ id = 11454, chance = 2020 }, -- Luminous Orb
+	{ id = 11658, chance = 3950 }, -- Draken Sulphur
+	{ id = 3038, chance = 1000 }, -- Green Gem
+	{ id = 10387, chance = 823 }, -- Zaoan Legs
+	{ id = 10438, chance = 778 }, -- Spellweaver's Robe
+	{ id = 10439, chance = 785 }, -- Zaoan Robe
+	{ id = 12549, chance = 68 }, -- Bamboo Leaves
+	{ id = 3006, chance = 372 }, -- Ring of the Sky
+	{ id = 10398, chance = 16 }, -- Draken Trophy
+	{ id = 12307, chance = 19 }, -- Harness
 }
 
 monster.attacks = {

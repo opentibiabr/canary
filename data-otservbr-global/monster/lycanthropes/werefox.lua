@@ -85,23 +85,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
-	{ id = 3031, chance = 80000, maxCount = 85 }, -- gold coin
-	{ id = 27462, chance = 23000 }, -- fox paw
-	{ id = 27463, chance = 23000 }, -- werefox tail
-	{ id = 22083, chance = 23000 }, -- moonlight crystals
-	{ id = 3741, chance = 5000 }, -- troll green
-	{ id = 268, chance = 5000 }, -- mana potion
-	{ id = 237, chance = 5000 }, -- strong mana potion
-	{ id = 7368, chance = 5000 }, -- assassin star
-	{ id = 3010, chance = 5000 }, -- emerald bangle
-	{ id = 3070, chance = 5000 }, -- moonlight rod
-	{ id = 238, chance = 5000 }, -- great mana potion
-	{ id = 677, chance = 5000, maxCount = 2 }, -- small enchanted emerald
-	{ id = 3098, chance = 1000 }, -- ring of healing
-	{ id = 22060, chance = 1000 }, -- werewolf amulet
-	{ id = 3055, chance = 1000 }, -- platinum amulet
-	{ id = 27706, chance = 260 }, -- werefox trophy
+	{ id = 3035, chance = 89988, maxCount = 4 }, -- Platinum Coin
+	{ id = 3031, chance = 85052, maxCount = 85 }, -- Gold Coin
+	{ id = 27462, chance = 15084 }, -- Fox Paw
+	{ id = 27463, chance = 13246 }, -- Werefox Tail
+	{ id = 22083, chance = 1226 }, -- Moonlight Crystals
+	{ id = 3741, chance = 4908 }, -- Troll Green
+	{ id = 268, chance = 5235 }, -- Mana Potion
+	{ id = 237, chance = 3556 }, -- Strong Mana Potion
+	{ id = 7368, chance = 3071 }, -- Assassin Star
+	{ id = 3010, chance = 3077 }, -- Emerald Bangle
+	{ id = 3070, chance = 1978 }, -- Moonlight Rod
+	{ id = 238, chance = 2102 }, -- Great Mana Potion
+	{ id = 677, chance = 1633, maxCount = 2 }, -- Small Enchanted Emerald
+	{ id = 3098, chance = 882 }, -- Ring of Healing
+	{ id = 22060, chance = 566 }, -- Werewolf Amulet
+	{ id = 3055, chance = 590 }, -- Platinum Amulet
+	{ id = 27706, chance = 180 }, -- Werefox Trophy
 }
 
 monster.attacks = {

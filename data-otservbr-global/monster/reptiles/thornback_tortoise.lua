@@ -73,17 +73,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 48 }, -- gold coin
-	{ id = 9643, chance = 80000 }, -- thorn
-	{ id = 7885, chance = 80000, maxCount = 2 }, -- fish
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 3026, chance = 5000 }, -- white pearl
-	{ id = 3723, chance = 5000 }, -- white mushroom
-	{ id = 5899, chance = 1000 }, -- turtle shell
-	{ id = 5678, chance = 1000, maxCount = 3 }, -- tortoise egg
-	{ id = 3027, chance = 1000 }, -- black pearl
-	{ id = 3725, chance = 1000 }, -- brown mushroom
-	{ id = 3279, chance = 260 }, -- war hammer
+	{ id = 3031, chance = 84082, maxCount = 48 }, -- Gold Coin
+	{ id = 9643, chance = 6041 }, -- Thorn
+	{ id = 3578, chance = 9497, maxCount = 2 }, -- Fish
+	{ id = 266, chance = 812 }, -- Health Potion
+	{ id = 3026, chance = 1350 }, -- White Pearl
+	{ id = 3723, chance = 1287 }, -- White Mushroom
+	{ id = 5899, chance = 1040 }, -- Turtle Shell
+	{ id = 5678, chance = 1931, maxCount = 3 }, -- Tortoise Egg
+	{ id = 3027, chance = 600 }, -- Black Pearl
+	{ id = 3725, chance = 622 }, -- Brown Mushroom
+	{ id = 3279, chance = 308 }, -- War Hammer
 }
 
 monster.attacks = {

@@ -77,24 +77,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 175 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 21197, chance = 23000 }, -- slimy leaf tentacle
-	{ id = 21144, chance = 23000 }, -- bowl of glooth soup
-	{ id = 9057, chance = 23000, maxCount = 4 }, -- small topaz
-	{ id = 3032, chance = 23000, maxCount = 4 }, -- small emerald
-	{ id = 3030, chance = 23000, maxCount = 4 }, -- small ruby
-	{ id = 237, chance = 23000, maxCount = 2 }, -- strong mana potion
-	{ id = 236, chance = 23000, maxCount = 2 }, -- strong health potion
-	{ id = 21172, chance = 5000 }, -- glooth whip
-	{ id = 3732, chance = 5000 }, -- green mushroom
-	{ id = 7643, chance = 5000 }, -- ultimate health potion
-	{ id = 21180, chance = 1000 }, -- glooth axe
-	{ id = 21183, chance = 1000 }, -- glooth amulet
-	{ id = 21178, chance = 1000 }, -- glooth club
-	{ id = 21158, chance = 1000 }, -- glooth spear
-	{ id = 21179, chance = 1000 }, -- glooth blade
-	{ id = 21164, chance = 1000 }, -- glooth cape
+	{ id = 3031, chance = 99989, maxCount = 175 }, -- Gold Coin
+	{ id = 3035, chance = 50724, maxCount = 3 }, -- Platinum Coin
+	{ id = 21197, chance = 16881 }, -- Slimy Leaf Tentacle
+	{ id = 21144, chance = 9877 }, -- Bowl of Glooth Soup
+	{ id = 9057, chance = 6508, maxCount = 4 }, -- Small Topaz
+	{ id = 3032, chance = 6405, maxCount = 4 }, -- Small Emerald
+	{ id = 3030, chance = 7961, maxCount = 4 }, -- Small Ruby
+	{ id = 237, chance = 8767, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 236, chance = 7005, maxCount = 2 }, -- Strong Health Potion
+	{ id = 21172, chance = 3674 }, -- Glooth Whip
+	{ id = 3732, chance = 3037 }, -- Green Mushroom
+	{ id = 7643, chance = 1635 }, -- Ultimate Health Potion
+	{ id = 21180, chance = 815 }, -- Glooth Axe
+	{ id = 21183, chance = 730 }, -- Glooth Amulet
+	{ id = 21178, chance = 1472 }, -- Glooth Club
+	{ id = 21158, chance = 892 }, -- Glooth Spear
+	{ id = 21179, chance = 867 }, -- Glooth Blade
+	{ id = 21164, chance = 698 }, -- Glooth Cape
 }
 
 monster.attacks = {

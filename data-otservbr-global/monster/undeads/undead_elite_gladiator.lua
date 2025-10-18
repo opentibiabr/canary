@@ -73,25 +73,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 40 }, -- platinum coin
-	{ id = 8044, chance = 80000 }, -- belted cape
-	{ id = 3287, chance = 23000, maxCount = 18 }, -- throwing star
-	{ id = 3307, chance = 23000 }, -- scimitar
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 3318, chance = 23000 }, -- knight axe
-	{ id = 3557, chance = 5000 }, -- plate legs
-	{ id = 239, chance = 5000 }, -- great health potion
-	{ id = 9656, chance = 5000 }, -- broken gladiator shield
-	{ id = 5885, chance = 5000 }, -- flask of warriors sweat
-	{ id = 3357, chance = 5000 }, -- plate armor
-	{ id = 3347, chance = 5000 }, -- hunting spear
-	{ id = 3265, chance = 5000 }, -- two handed sword
-	{ id = 3084, chance = 5000 }, -- protection amulet
-	{ id = 3384, chance = 5000 }, -- dark helmet
-	{ id = 3049, chance = 1000 }, -- stealth ring
-	{ id = 3391, chance = 260 }, -- crusader helmet
-	{ id = 7383, chance = 260 }, -- relic sword
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3035, chance = 100000, maxCount = 40 }, -- Platinum Coin
+	{ id = 8044, chance = 26296 }, -- Belted Cape
+	{ id = 3287, chance = 15222, maxCount = 18 }, -- Throwing Star
+	{ id = 3307, chance = 10647 }, -- Scimitar
+	{ id = 7643, chance = 8331 }, -- Ultimate Health Potion
+	{ id = 3318, chance = 8011 }, -- Knight Axe
+	{ id = 3557, chance = 5556 }, -- Plate Legs
+	{ id = 239, chance = 5101 }, -- Great Health Potion
+	{ id = 9656, chance = 5078 }, -- Broken Gladiator Shield
+	{ id = 5885, chance = 5051 }, -- Flask of Warrior's Sweat
+	{ id = 3357, chance = 2264 }, -- Plate Armor
+	{ id = 3347, chance = 5072 }, -- Hunting Spear
+	{ id = 3265, chance = 1833 }, -- Two Handed Sword
+	{ id = 3084, chance = 2061 }, -- Protection Amulet
+	{ id = 3384, chance = 1680 }, -- Dark Helmet
+	{ id = 3049, chance = 931 }, -- Stealth Ring
+	{ id = 3391, chance = 110 }, -- Crusader Helmet
+	{ id = 7383, chance = 318 }, -- Relic Sword
+	{ id = 3081, chance = 170 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -83,12 +83,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 10 }, -- gold coin
-	{ id = 3426, chance = 80000 }, -- studded shield
-	{ id = 3376, chance = 80000 }, -- studded helmet
-	{ id = 3378, chance = 80000 }, -- studded armor
-	{ id = 3274, chance = 80000 }, -- axe
-	{ id = 3273, chance = 80000 }, -- sabre
+	{ id = 3031, chance = 1000, maxCount = 10 }, -- Gold Coin
+	{ id = 3426, chance = 1000 }, -- Studded Shield
+	{ id = 3376, chance = 1000 }, -- Studded Helmet
+	{ id = 3378, chance = 1000 }, -- Studded Armor
+	{ id = 3274, chance = 1000 }, -- Axe
+	{ id = 3273, chance = 1000 }, -- Sabre
+	{ id = 6570, chance = 1000 }, -- Surprise Bag (Blue)
+	{ id = 6571, chance = 1000 }, -- Surprise Bag (Red)
 }
 
 monster.attacks = {

@@ -78,24 +78,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3028, chance = 23000 }, -- small diamond
-	{ id = 16123, chance = 23000 }, -- brown crystal splinter
-	{ id = 3029, chance = 23000 }, -- small sapphire
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 16126, chance = 23000 }, -- red crystal fragment
-	{ id = 676, chance = 23000 }, -- small enchanted ruby
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 31164, chance = 5000 }, -- golden idol of tukh
-	{ id = 8093, chance = 5000 }, -- wand of draconia
-	{ id = 3071, chance = 5000 }, -- wand of inferno
-	{ id = 30205, chance = 5000 }, -- red ectoplasm
-	{ id = 826, chance = 5000 }, -- magma coat
-	{ id = 24962, chance = 5000 }, -- prismatic quartz
-	{ id = 677, chance = 5000 }, -- small enchanted emerald
-	{ id = 22193, chance = 5000 }, -- onyx chip
-	{ id = 30180, chance = 1000 }, -- hexagonal ruby
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3035, chance = 90654, maxCount = 5 }, -- Platinum Coin
+	{ id = 3028, chance = 29155 }, -- Small Diamond
+	{ id = 16123, chance = 12697 }, -- Brown Crystal Splinter
+	{ id = 3029, chance = 15341 }, -- Small Sapphire
+	{ id = 3039, chance = 12635 }, -- Red Gem
+	{ id = 16126, chance = 9276 }, -- Red Crystal Fragment
+	{ id = 676, chance = 6887 }, -- Small Enchanted Ruby
+	{ id = 3037, chance = 5505 }, -- Yellow Gem
+	{ id = 29299, chance = 4913 }, -- Golden Idol of Tukh
+	{ id = 8093, chance = 3685 }, -- Wand of Draconia
+	{ id = 3071, chance = 2592 }, -- Wand of Inferno
+	{ id = 30205, chance = 2219 }, -- Red Ectoplasm
+	{ id = 826, chance = 1844 }, -- Magma Coat
+	{ id = 24962, chance = 1722 }, -- Prismatic Quartz
+	{ id = 677, chance = 1757 }, -- Small Enchanted Emerald
+	{ id = 22193, chance = 1263 }, -- Onyx Chip
+	{ id = 30180, chance = 1164 }, -- Hexagonal Ruby
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -76,25 +76,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 24 }, -- platinum coin
-	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
-	{ id = 3036, chance = 23000 }, -- violet gem
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 16120, chance = 23000 }, -- violet crystal shard
-	{ id = 36788, chance = 23000 }, -- cave chimera leg
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 823, chance = 5000 }, -- glacier kilt
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3063, chance = 5000 }, -- gold ring
-	{ id = 22085, chance = 5000 }, -- fur armor
-	{ id = 23529, chance = 5000 }, -- ring of blue plasma
-	{ id = 24392, chance = 5000 }, -- gemmed figurine
-	{ id = 36787, chance = 5000 }, -- cave chimera head
-	{ id = 14247, chance = 1000 }, -- ornate crossbow
-	{ id = 7438, chance = 260 }, -- elvish bow
-	{ id = 8027, chance = 260 }, -- composite hornbow
-	{ id = 16163, chance = 260 }, -- crystal crossbow
+	{ id = 3035, chance = 100000, maxCount = 24 }, -- Platinum Coin
+	{ id = 7642, chance = 26125, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 3036, chance = 5620 }, -- Violet Gem
+	{ id = 7643, chance = 19772 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 19062 }, -- Gold Ingot
+	{ id = 16120, chance = 6157 }, -- Violet Crystal Shard
+	{ id = 36788, chance = 4542 }, -- Cave Chimera Leg
+	{ id = 281, chance = 2965 }, -- Giant Shimmering Pearl (Green)
+	{ id = 815, chance = 2739 }, -- Glacier Amulet
+	{ id = 823, chance = 1837 }, -- Glacier Kilt
+	{ id = 3037, chance = 2780 }, -- Yellow Gem
+	{ id = 3063, chance = 1328 }, -- Gold Ring
+	{ id = 22085, chance = 947 }, -- Fur Armor
+	{ id = 23529, chance = 1704 }, -- Ring of Blue Plasma
+	{ id = 24392, chance = 947 }, -- Gemmed Figurine
+	{ id = 36787, chance = 2930 }, -- Cave Chimera Head
+	{ id = 14247, chance = 944 }, -- Ornate Crossbow
+	{ id = 7438, chance = 196 }, -- Elvish Bow
+	{ id = 8027, chance = 133 }, -- Composite Hornbow
+	{ id = 16163, chance = 259 }, -- Crystal Crossbow
 }
 
 monster.attacks = {

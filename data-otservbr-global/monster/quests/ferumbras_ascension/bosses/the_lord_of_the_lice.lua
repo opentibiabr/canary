@@ -77,17 +77,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 3052, chance = 80000 }, -- life ring
-	{ id = 3326, chance = 80000 }, -- epee
-	{ id = 811, chance = 80000 }, -- terra mantle
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3033, chance = 80000 }, -- small amethyst
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 7643, chance = 100000 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 100000 }, -- Great Spirit Potion
+	{ id = 238, chance = 100000 }, -- Great Mana Potion
+	{ id = 9057, chance = 20642 }, -- Small Topaz
+	{ id = 3052, chance = 39908 }, -- Life Ring
+	{ id = 3326, chance = 4128 }, -- Epee
+	{ id = 811, chance = 4166 }, -- Terra Mantle
+	{ id = 3032, chance = 24311 }, -- Small Emerald
+	{ id = 3030, chance = 19266 }, -- Small Ruby
+	{ id = 3033, chance = 25462 }, -- Small Amethyst
 }
 
 monster.attacks = {

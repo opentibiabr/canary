@@ -70,31 +70,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 19361, chance = 260 }, -- sun mirror
-	{ id = 9665, chance = 80000 }, -- wyrm scale
-	{ id = 3031, chance = 80000, maxCount = 99 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
-	{ id = 3583, chance = 80000, maxCount = 5 }, -- dragon ham
-	{ id = 3030, chance = 80000, maxCount = 9 }, -- small ruby
-	{ id = 3029, chance = 80000, maxCount = 9 }, -- small sapphire
-	{ id = 9057, chance = 80000, maxCount = 9 }, -- small topaz
-	{ id = 3033, chance = 80000, maxCount = 9 }, -- small amethyst
-	{ id = 3032, chance = 80000, maxCount = 9 }, -- small emerald
-	{ id = 3028, chance = 80000, maxCount = 9 }, -- small diamond
-	{ id = 3155, chance = 80000, maxCount = 9 }, -- sudden death rune
-	{ id = 236, chance = 80000, maxCount = 9 }, -- strong health potion
-	{ id = 237, chance = 80000, maxCount = 9 }, -- strong mana potion
-	{ id = 7368, chance = 80000, maxCount = 9 }, -- assassin star
-	{ id = 19083, chance = 80000 }, -- silver raid token
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3415, chance = 80000 }, -- guardian shield
-	{ id = 822, chance = 80000 }, -- lightning legs
-	{ id = 828, chance = 80000 }, -- lightning headband
-	{ id = 825, chance = 80000 }, -- lightning robe
-	{ id = 9304, chance = 80000 }, -- shockwave amulet
-	{ id = 8092, chance = 80000 }, -- wand of starstorm
+	{ id = 19361, chance = 1000 }, -- Sun Mirror
+	{ id = 9665, chance = 63636 }, -- Wyrm Scale
+	{ id = 3031, chance = 100000, maxCount = 99 }, -- Gold Coin
+	{ id = 3035, chance = 78787, maxCount = 8 }, -- Platinum Coin
+	{ id = 3583, chance = 72727, maxCount = 5 }, -- Dragon Ham
+	{ id = 3030, chance = 9090, maxCount = 9 }, -- Small Ruby
+	{ id = 3029, chance = 13333, maxCount = 9 }, -- Small Sapphire
+	{ id = 9057, chance = 18181, maxCount = 9 }, -- Small Topaz
+	{ id = 3033, chance = 15789, maxCount = 9 }, -- Small Amethyst
+	{ id = 3032, chance = 21211, maxCount = 9 }, -- Small Emerald
+	{ id = 3028, chance = 13333, maxCount = 9 }, -- Small Diamond
+	{ id = 3155, chance = 54545, maxCount = 9 }, -- Sudden Death Rune
+	{ id = 236, chance = 42423, maxCount = 9 }, -- Strong Health Potion
+	{ id = 237, chance = 51515, maxCount = 9 }, -- Strong Mana Potion
+	{ id = 7368, chance = 39393, maxCount = 9 }, -- Assassin Star
+	{ id = 19083, chance = 14285 }, -- Silver Raid Token
+	{ id = 3037, chance = 15151 }, -- Yellow Gem
+	{ id = 3036, chance = 1000 }, -- Violet Gem
+	{ id = 3039, chance = 16666 }, -- Red Gem
+	{ id = 3415, chance = 1000 }, -- Guardian Shield
+	{ id = 822, chance = 1000 }, -- Lightning Legs
+	{ id = 828, chance = 18181 }, -- Lightning Headband
+	{ id = 825, chance = 9090 }, -- Lightning Robe
+	{ id = 9304, chance = 1000 }, -- Shockwave Amulet
+	{ id = 8092, chance = 6666 }, -- Wand of Starstorm
 }
 
 monster.attacks = {

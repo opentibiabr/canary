@@ -75,31 +75,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
-	{ id = 9057, chance = 80000, maxCount = 5 }, -- small topaz
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 22867, chance = 80000 }, -- rift crossbow
-	{ id = 22762, chance = 80000 }, -- maimer
-	{ id = 22194, chance = 80000 }, -- opal
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 816, chance = 80000 }, -- lightning pendant
-	{ id = 6299, chance = 80000 }, -- death ring
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 22756, chance = 260 }, -- treader of torment
-	{ id = 17828, chance = 80000 }, -- pair of iron fists
-	{ id = 22727, chance = 80000 }, -- rift lance
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 36706, chance = 80000 }, -- red gem
+	{ id = 22516, chance = 100000 }, -- Silver Token
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 9057, chance = 15151, maxCount = 5 }, -- Small Topaz
+	{ id = 238, chance = 53703, maxCount = 5 }, -- Great Mana Potion
+	{ id = 7642, chance = 59259, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 6499, chance = 74074 }, -- Demonic Essence
+	{ id = 3038, chance = 24074 }, -- Green Gem
+	{ id = 8082, chance = 17647 }, -- Underworld Rod
+	{ id = 22867, chance = 13888 }, -- Rift Crossbow
+	{ id = 22762, chance = 1000 }, -- Maimer
+	{ id = 22194, chance = 68518 }, -- Opal
+	{ id = 3032, chance = 24074 }, -- Small Emerald
+	{ id = 22193, chance = 64814 }, -- Onyx Chip
+	{ id = 6558, chance = 55555 }, -- Flask of Demonic Blood
+	{ id = 7643, chance = 50000 }, -- Ultimate Health Potion
+	{ id = 3030, chance = 31481 }, -- Small Ruby
+	{ id = 816, chance = 11111 }, -- Lightning Pendant
+	{ id = 6299, chance = 31481 }, -- Death Ring
+	{ id = 3041, chance = 25925 }, -- Blue Gem
+	{ id = 22756, chance = 1000 }, -- Treader of Torment
+	{ id = 17828, chance = 23529 }, -- Pair of Iron Fists
+	{ id = 281, chance = 19607 }, -- Giant Shimmering Pearl
+	{ id = 22727, chance = 11764 }, -- Rift Lance
+	{ id = 3033, chance = 19607 }, -- Small Amethyst
+	{ id = 3039, chance = 15686 }, -- Red Gem
 }
 
 monster.attacks = {

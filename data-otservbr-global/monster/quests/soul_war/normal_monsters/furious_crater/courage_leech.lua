@@ -82,22 +82,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7643, chance = 23000, maxCount = 7 }, -- ultimate health potion
-	{ id = 822, chance = 5000 }, -- lightning legs
-	{ id = 816, chance = 5000 }, -- lightning pendant
-	{ id = 828, chance = 5000 }, -- lightning headband
-	{ id = 3063, chance = 5000 }, -- gold ring
-	{ id = 7422, chance = 1000 }, -- jade hammer
-	{ id = 3332, chance = 1000 }, -- hammer of wrath
-	{ id = 7421, chance = 1000 }, -- onyx flail
-	{ id = 11657, chance = 1000 }, -- twiceslicer
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 7382, chance = 1000 }, -- demonrage sword
-	{ id = 7418, chance = 260 }, -- nightmare blade
-	{ id = 7419, chance = 260 }, -- dreaded cleaver
-	{ id = 7412, chance = 260 }, -- butchers axe
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 68851 }, -- Crystal Coin
+	{ id = 7643, chance = 12874, maxCount = 7 }, -- Ultimate Health Potion
+	{ id = 822, chance = 5501 }, -- Lightning Legs
+	{ id = 816, chance = 2642 }, -- Lightning Pendant
+	{ id = 828, chance = 2508 }, -- Lightning Headband
+	{ id = 3063, chance = 1340 }, -- Gold Ring
+	{ id = 7422, chance = 1052 }, -- Jade Hammer
+	{ id = 3332, chance = 732 }, -- Hammer of Wrath
+	{ id = 7421, chance = 741 }, -- Onyx Flail
+	{ id = 11657, chance = 725 }, -- Twiceslicer
+	{ id = 3081, chance = 782 }, -- Stone Skin Amulet
+	{ id = 7382, chance = 553 }, -- Demonrage Sword
+	{ id = 7418, chance = 546 }, -- Nightmare Blade
+	{ id = 7419, chance = 442 }, -- Dreaded Cleaver
+	{ id = 7412, chance = 493 }, -- Butcher's Axe
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

@@ -82,20 +82,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 236, chance = 80000 }, -- strong health potion
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 3037, chance = 23000 }, -- yellow gem
-	{ id = 20198, chance = 23000 }, -- frazzle tongue
-	{ id = 20199, chance = 23000 }, -- frazzle skin
-	{ id = 22193, chance = 23000, maxCount = 3 }, -- onyx chip
-	{ id = 3593, chance = 5000 }, -- melon
-	{ id = 16126, chance = 5000 }, -- red crystal fragment
-	{ id = 48116, chance = 5000, maxCount = 2 }, -- gummy rotworm
-	{ id = 48255, chance = 5000 }, -- lime tart
-	{ id = 8012, chance = 1000, maxCount = 2 }, -- raspberry
-	{ id = 7404, chance = 260 }, -- assassin dagger
-	{ id = 48250, chance = 260, maxCount = 64 }, -- dark chocolate coin
+	{ id = 236, chance = 35030 }, -- Strong Health Potion
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 74580, maxCount = 6 }, -- Platinum Coin
+	{ id = 3037, chance = 5600 }, -- Yellow Gem
+	{ id = 20198, chance = 10890 }, -- Frazzle Tongue
+	{ id = 20199, chance = 8170 }, -- Frazzle Skin
+	{ id = 22193, chance = 6720, maxCount = 3 }, -- Onyx Chip
+	{ id = 3593, chance = 1880 }, -- Melon
+	{ id = 16126, chance = 3530 }, -- Red Crystal Fragment
+	{ id = 48116, chance = 4890, maxCount = 2 }, -- Gummy Rotworm
+	{ id = 48255, chance = 1590 }, -- Lime Tart
+	{ id = 8012, chance = 1000, maxCount = 2 }, -- Raspberry
+	{ id = 7404, chance = 410 }, -- Assassin Dagger
+	{ id = 48250, chance = 650, maxCount = 64 }, -- Dark Chocolate Coin
 }
 
 monster.attacks = {

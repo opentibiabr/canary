@@ -78,24 +78,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 14 }, -- platinum coin
-	{ id = 15793, chance = 80000, maxCount = 25 }, -- crystalline arrow
-	{ id = 3032, chance = 23000, maxCount = 14 }, -- small emerald
-	{ id = 14085, chance = 23000 }, -- deepling filet
-	{ id = 14013, chance = 23000 }, -- deeptags
-	{ id = 14041, chance = 23000 }, -- deepling ridge
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 14012, chance = 23000 }, -- deepling warts
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 14252, chance = 23000, maxCount = 25 }, -- vortex bolt
-	{ id = 12730, chance = 23000 }, -- eye of a deepling
-	{ id = 12683, chance = 5000 }, -- heavy trident
-	{ id = 14040, chance = 5000 }, -- warriors axe
-	{ id = 14042, chance = 5000 }, -- warriors shield
-	{ id = 5895, chance = 5000 }, -- fish fin
-	{ id = 3052, chance = 5000 }, -- life ring
-	{ id = 675, chance = 5000 }, -- small enchanted sapphire
-	{ id = 13990, chance = 260 }, -- necklace of the deep
+	{ id = 3035, chance = 94963, maxCount = 14 }, -- Platinum Coin
+	{ id = 15793, chance = 27765, maxCount = 25 }, -- Crystalline Arrow
+	{ id = 3032, chance = 14013, maxCount = 14 }, -- Small Emerald
+	{ id = 14085, chance = 14249 }, -- Deepling Filet
+	{ id = 14013, chance = 14174 }, -- Deeptags
+	{ id = 14041, chance = 10394 }, -- Deepling Ridge
+	{ id = 238, chance = 9713 }, -- Great Mana Potion
+	{ id = 14012, chance = 8712 }, -- Deepling Warts
+	{ id = 239, chance = 9861 }, -- Great Health Potion
+	{ id = 14252, chance = 6396, maxCount = 25 }, -- Vortex Bolt
+	{ id = 12730, chance = 5219 }, -- Eye of a Deepling
+	{ id = 12683, chance = 3767 }, -- Heavy Trident
+	{ id = 14040, chance = 3328 }, -- Warrior's Axe
+	{ id = 14042, chance = 4024 }, -- Warrior's Shield
+	{ id = 5895, chance = 3406 }, -- Fish Fin
+	{ id = 3052, chance = 2598 }, -- Life Ring
+	{ id = 675, chance = 2414 }, -- Small Enchanted Sapphire
+	{ id = 13990, chance = 296 }, -- Necklace of the Deep
 }
 
 monster.attacks = {

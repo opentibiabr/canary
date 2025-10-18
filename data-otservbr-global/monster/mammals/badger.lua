@@ -73,9 +73,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 8017, chance = 80000 }, -- beetroot
-	{ id = 10299, chance = 23000 }, -- badger fur
-	{ id = 10296, chance = 5000 }, -- acorn
+	{ id = 8017, chance = 38885 }, -- Beetroot
+	{ id = 10299, chance = 14605 }, -- Badger Fur
+	{ id = 10296, chance = 6512 }, -- Acorn
 }
 
 monster.attacks = {

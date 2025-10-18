@@ -69,28 +69,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3582, chance = 80000 }, -- ham
-	{ id = 675, chance = 23000 }, -- small enchanted sapphire
-	{ id = 3027, chance = 23000 }, -- black pearl
-	{ id = 7449, chance = 23000 }, -- crystal sword
-	{ id = 22083, chance = 23000 }, -- moonlight crystals
-	{ id = 9691, chance = 23000 }, -- lions mane
-	{ id = 3272, chance = 23000 }, -- rapier
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 3077, chance = 23000 }, -- ankh
-	{ id = 3355, chance = 23000 }, -- leather helmet
-	{ id = 3297, chance = 23000 }, -- serpent sword
-	{ id = 33945, chance = 5000 }, -- ivory carving
-	{ id = 3026, chance = 5000 }, -- white pearl
-	{ id = 3351, chance = 5000 }, -- steel helmet
-	{ id = 828, chance = 5000 }, -- lightning headband
-	{ id = 821, chance = 1000 }, -- magma legs
-	{ id = 3385, chance = 1000 }, -- crown helmet
-	{ id = 33781, chance = 260 }, -- lion figurine
-	{ id = 34008, chance = 260 }, -- white silk flower
+	{ id = 3031, chance = 88940 }, -- Gold Coin
+	{ id = 3035, chance = 90101 }, -- Platinum Coin
+	{ id = 3582, chance = 73307 }, -- Ham
+	{ id = 675, chance = 8461 }, -- Small Enchanted Sapphire
+	{ id = 3027, chance = 7060 }, -- Black Pearl
+	{ id = 7449, chance = 9354 }, -- Crystal Sword
+	{ id = 22083, chance = 1251 }, -- Moonlight Crystals
+	{ id = 9691, chance = 14098 }, -- Lion's Mane
+	{ id = 3272, chance = 12210 }, -- Rapier
+	{ id = 5944, chance = 18125 }, -- Soul Orb
+	{ id = 3577, chance = 16831 }, -- Meat
+	{ id = 3077, chance = 8691 }, -- Ankh
+	{ id = 3355, chance = 10309 }, -- Leather Helmet
+	{ id = 3297, chance = 5425 }, -- Serpent Sword
+	{ id = 33945, chance = 3100 }, -- Ivory Carving
+	{ id = 3026, chance = 3006 }, -- White Pearl
+	{ id = 3351, chance = 3441 }, -- Steel Helmet
+	{ id = 828, chance = 2010 }, -- Lightning Headband
+	{ id = 821, chance = 904 }, -- Magma Legs
+	{ id = 3385, chance = 866 }, -- Crown Helmet
+	{ id = 33781, chance = 450 }, -- Lion Figurine
+	{ id = 34008, chance = 351 }, -- White Silk Flower
 }
 
 monster.attacks = {

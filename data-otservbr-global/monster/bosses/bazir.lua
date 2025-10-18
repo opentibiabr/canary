@@ -73,7 +73,9 @@ monster.voices = {
 	{ text = "DON'T BE AFRAID!  I AM COMING IN PEACE!", yell = true },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 200, attack = 250 },

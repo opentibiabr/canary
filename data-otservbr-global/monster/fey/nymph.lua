@@ -80,23 +80,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 110 }, -- gold coin
-	{ id = 25691, chance = 23000 }, -- wild flowers
-	{ id = 25692, chance = 23000, maxCount = 2 }, -- fresh fruit
-	{ id = 25696, chance = 23000 }, -- colourful snail shell
-	{ id = 25695, chance = 23000 }, -- dandelion seeds
-	{ id = 238, chance = 5000 }, -- great mana potion
-	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
-	{ id = 678, chance = 5000, maxCount = 2 }, -- small enchanted amethyst
-	{ id = 3010, chance = 5000 }, -- emerald bangle
-	{ id = 9302, chance = 1000 }, -- sacred tree amulet
-	{ id = 25698, chance = 1000 }, -- butterfly ring
-	{ id = 237, chance = 1000 }, -- strong mana potion
-	{ id = 25700, chance = 1000 }, -- dream blossom staff
-	{ id = 9013, chance = 1000 }, -- flower wreath
-	{ id = 8045, chance = 1000 }, -- hibiscus dress
-	{ id = 3659, chance = 1000 }, -- blue rose
-	{ id = 3079, chance = 260 }, -- boots of haste
+	{ id = 3031, chance = 64849, maxCount = 110 }, -- Gold Coin
+	{ id = 25691, chance = 21770 }, -- Wild Flowers
+	{ id = 25692, chance = 15070, maxCount = 2 }, -- Fresh Fruit
+	{ id = 25696, chance = 12170 }, -- Colourful Snail Shell
+	{ id = 25695, chance = 12130 }, -- Dandelion Seeds
+	{ id = 238, chance = 3430 }, -- Great Mana Potion
+	{ id = 9057, chance = 2390, maxCount = 2 }, -- Small Topaz
+	{ id = 678, chance = 1960, maxCount = 2 }, -- Small Enchanted Amethyst
+	{ id = 3010, chance = 1780 }, -- Emerald Bangle
+	{ id = 9302, chance = 1090 }, -- Sacred Tree Amulet
+	{ id = 25698, chance = 760 }, -- Butterfly Ring
+	{ id = 237, chance = 890 }, -- Strong Mana Potion
+	{ id = 25700, chance = 670 }, -- Dream Blossom Staff
+	{ id = 9013, chance = 530 }, -- Flower Wreath
+	{ id = 8045, chance = 590 }, -- Hibiscus Dress
+	{ id = 3659, chance = 580 }, -- Blue Rose
+	{ id = 3079, chance = 369 }, -- Boots of Haste
 }
 
 monster.attacks = {

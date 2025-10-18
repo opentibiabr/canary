@@ -63,7 +63,9 @@ monster.voices = {
 	{ text = "More blood! More!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -240, condition = { type = CONDITION_POISON, totalDamage = 6, interval = 4000 } },

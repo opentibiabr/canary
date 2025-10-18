@@ -82,22 +82,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 188 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
-	{ id = 10444, chance = 80000 }, -- dragon priests wandtip
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 237, chance = 80000 }, -- strong mana potion
-	{ id = 3033, chance = 5000, maxCount = 3 }, -- small amethyst
-	{ id = 10328, chance = 1000 }, -- bunch of ripe rice
-	{ id = 8043, chance = 1000 }, -- focus cape
-	{ id = 3052, chance = 1000 }, -- life ring
-	{ id = 5876, chance = 1000 }, -- lizard leather
-	{ id = 5881, chance = 1000 }, -- lizard scale
-	{ id = 3065, chance = 1000 }, -- terra rod
-	{ id = 3071, chance = 1000 }, -- wand of inferno
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 10439, chance = 260 }, -- zaoan robe
-	{ id = 10386, chance = 260 }, -- zaoan shoes
+	{ id = 3031, chance = 93890, maxCount = 188 }, -- Gold Coin
+	{ id = 3035, chance = 4040, maxCount = 2 }, -- Platinum Coin
+	{ id = 10444, chance = 10138 }, -- Dragon Priest's Wandtip
+	{ id = 238, chance = 3044 }, -- Great Mana Potion
+	{ id = 237, chance = 12070 }, -- Strong Mana Potion
+	{ id = 3033, chance = 1611, maxCount = 3 }, -- Small Amethyst
+	{ id = 10328, chance = 952 }, -- Bunch of Ripe Rice
+	{ id = 8043, chance = 670 }, -- Focus Cape
+	{ id = 3052, chance = 913 }, -- Life Ring
+	{ id = 5876, chance = 1187 }, -- Lizard Leather
+	{ id = 5881, chance = 942 }, -- Lizard Scale
+	{ id = 3065, chance = 890 }, -- Terra Rod
+	{ id = 3071, chance = 1530 }, -- Wand of Inferno
+	{ id = 3037, chance = 316 }, -- Yellow Gem
+	{ id = 10439, chance = 344 }, -- Zaoan Robe
+	{ id = 10386, chance = 445 }, -- Zaoan Shoes
 }
 
 monster.attacks = {

@@ -79,14 +79,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 50 }, -- gold coin
-	{ id = 3600, chance = 23000, maxCount = 3 }, -- bread
-	{ id = 9635, chance = 23000 }, -- elvish talisman
-	{ id = 3413, chance = 23000 }, -- battle shield
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 268, chance = 5000 }, -- mana potion
-	{ id = 7449, chance = 5000 }, -- crystal sword
-	{ id = 5922, chance = 5000 }, -- holy orchid
+	{ id = 3031, chance = 56099, maxCount = 50 }, -- Gold Coin
+	{ id = 3600, chance = 12200, maxCount = 3 }, -- Bread
+	{ id = 9635, chance = 17070 }, -- Elvish Talisman
+	{ id = 3413, chance = 17070 }, -- Battle Shield
+	{ id = 266, chance = 12200 }, -- Health Potion
+	{ id = 268, chance = 7320 }, -- Mana Potion
+	{ id = 7449, chance = 4880 }, -- Crystal Sword
+	{ id = 5922, chance = 7320 }, -- Holy Orchid
 }
 
 monster.attacks = {

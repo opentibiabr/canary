@@ -79,10 +79,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 55 }, -- gold coin
-	{ id = 3583, chance = 80000 }, -- dragon ham
-	{ id = 11457, chance = 5000 }, -- dragons tail
-	{ id = 266, chance = 260 }, -- health potion
+	{ id = 3031, chance = 82590, maxCount = 55 }, -- Gold Coin
+	{ id = 3583, chance = 78734 }, -- Dragon Ham
+	{ id = 11457, chance = 4720 }, -- Dragon's Tail
+	{ id = 266, chance = 303 }, -- Health Potion
 }
 
 monster.attacks = {

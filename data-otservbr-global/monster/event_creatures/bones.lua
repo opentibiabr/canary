@@ -67,15 +67,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 3029, chance = 80000, maxCount = 2 }, -- small sapphire
-	{ id = 5944, chance = 80000 }, -- soul orb
-	{ id = 5741, chance = 80000 }, -- skull helmet
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 3061, chance = 80000 }, -- life crystal
-	{ id = 3366, chance = 80000 }, -- magic plate armor
-	{ id = 6299, chance = 1000 }, -- death ring
+	{ id = 3035, chance = 1000, maxCount = 4 }, -- Platinum Coin
+	{ id = 3031, chance = 1000, maxCount = 200 }, -- Gold Coin
+	{ id = 3029, chance = 1000, maxCount = 2 }, -- Small Sapphire
+	{ id = 6570, chance = 1000, maxCount = 3 }, -- Surprise Bag (Blue)
+	{ id = 6571, chance = 1000 }, -- Surprise Bag (Red)
+	{ id = 5944, chance = 1000 }, -- Soul Orb
+	{ id = 5741, chance = 1000 }, -- Skull Helmet
+	{ id = 6499, chance = 1000 }, -- Demonic Essence
+	{ id = 3061, chance = 1000 }, -- Life Crystal
+	{ id = 3366, chance = 1000 }, -- Magic Plate Armor
+	{ id = 6299, chance = 1000 }, -- Death Ring
 }
 
 monster.attacks = {

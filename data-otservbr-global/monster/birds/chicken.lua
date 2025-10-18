@@ -79,10 +79,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5890, chance = 23000 }, -- chicken feather
-	{ id = 3492, chance = 23000 }, -- worm
-	{ id = 3577, chance = 5000, maxCount = 2 }, -- meat
-	{ id = 25087, chance = 1000 }, -- egg
+	{ id = 5890, chance = 20783 }, -- Chicken Feather
+	{ id = 3492, chance = 13974 }, -- Worm
+	{ id = 3577, chance = 1323, maxCount = 2 }, -- Meat
+	{ id = 3606, chance = 1299 }, -- Egg
 }
 
 monster.defenses = {

@@ -75,14 +75,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3045, chance = 23000 }, -- strange talisman
-	{ id = 814, chance = 23000 }, -- terra amulet
-	{ id = 3066, chance = 23000 }, -- snakebite rod
-	{ id = 816, chance = 23000 }, -- lightning pendant
-	{ id = 25735, chance = 23000, maxCount = 2 }, -- leaf star
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 30196, chance = 260 }, -- yetislippers
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3045, chance = 5860 }, -- Strange Talisman
+	{ id = 814, chance = 8520 }, -- Terra Amulet
+	{ id = 3066, chance = 7490 }, -- Snakebite Rod
+	{ id = 816, chance = 6039 }, -- Lightning Pendant
+	{ id = 25735, chance = 7580, maxCount = 2 }, -- Leaf Star
+	{ id = 9302, chance = 2020 }, -- Sacred Tree Amulet
+	{ id = 30196, chance = 140 }, -- Yetislippers
 }
 
 monster.attacks = {

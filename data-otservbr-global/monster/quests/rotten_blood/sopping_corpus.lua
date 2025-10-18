@@ -77,12 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 43849, chance = 23000 }, -- rotten roots
-	{ id = 7385, chance = 23000 }, -- crimson sword
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 3043, chance = 61055 }, -- Crystal Coin
+	{ id = 23373, chance = 25292 }, -- Ultimate Mana Potion
+	{ id = 7643, chance = 12806 }, -- Ultimate Health Potion
+	{ id = 43778, chance = 20750 }, -- Organic Acid
+	{ id = 43849, chance = 5260 }, -- Rotten Roots
+	{ id = 7385, chance = 7589 }, -- Crimson Sword
+	{ id = 3081, chance = 430 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

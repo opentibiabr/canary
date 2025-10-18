@@ -65,29 +65,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
-	{ id = 6299, chance = 80000 }, -- death ring
-	{ id = 7430, chance = 80000 }, -- dragonbone staff
-	{ id = 2903, chance = 80000 }, -- golden mug
-	{ id = 10316, chance = 80000, maxCount = 3 }, -- unholy bone
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 3385, chance = 80000 }, -- crown helmet
-	{ id = 10451, chance = 80000 }, -- jade hat
-	{ id = 7642, chance = 80000, maxCount = 3 }, -- great spirit potion
-	{ id = 239, chance = 80000, maxCount = 4 }, -- great health potion
-	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
-	{ id = 5925, chance = 80000, maxCount = 5 }, -- hardened bone
-	{ id = 238, chance = 5000, maxCount = 3 }, -- great mana potion
-	{ id = 3032, chance = 5000, maxCount = 5 }, -- small emerald
-	{ id = 8896, chance = 5000 }, -- slightly rusted armor
-	{ id = 3360, chance = 1000 }, -- golden armor
-	{ id = 5741, chance = 1000 }, -- skull helmet
-	{ id = 12304, chance = 1000 }, -- maxilla maximus
-	{ id = 3392, chance = 260 }, -- royal helmet
-	{ id = 8057, chance = 260 }, -- divine plate
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 6299, chance = 100000 }, -- Death Ring
+	{ id = 7430, chance = 100000 }, -- Dragonbone Staff
+	{ id = 2903, chance = 100000 }, -- Golden Mug
+	{ id = 10316, chance = 100000, maxCount = 3 }, -- Unholy Bone
+	{ id = 9058, chance = 78410 }, -- Gold Ingot
+	{ id = 6499, chance = 53410 }, -- Demonic Essence
+	{ id = 3370, chance = 45450 }, -- Knight Armor
+	{ id = 3385, chance = 42050 }, -- Crown Helmet
+	{ id = 10451, chance = 31819 }, -- Jade Hat
+	{ id = 7642, chance = 34090, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 239, chance = 40910, maxCount = 4 }, -- Great Health Potion
+	{ id = 3029, chance = 32950, maxCount = 5 }, -- Small Sapphire
+	{ id = 5925, chance = 34090, maxCount = 5 }, -- Hardened Bone
+	{ id = 238, chance = 27269, maxCount = 3 }, -- Great Mana Potion
+	{ id = 3032, chance = 38640, maxCount = 5 }, -- Small Emerald
+	{ id = 8896, chance = 36360 }, -- Slightly Rusted Armor
+	{ id = 3360, chance = 14770 }, -- Golden Armor
+	{ id = 5741, chance = 4550 }, -- Skull Helmet
+	{ id = 12304, chance = 4550 }, -- Maxilla Maximus
+	{ id = 3392, chance = 5680 }, -- Royal Helmet
+	{ id = 8057, chance = 3410 }, -- Divine Plate
 }
 
 monster.attacks = {

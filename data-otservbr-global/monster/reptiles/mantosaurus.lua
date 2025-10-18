@@ -74,17 +74,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
-	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
-	{ id = 39386, chance = 23000 }, -- mantosaurus jaw
-	{ id = 3017, chance = 5000 }, -- silver brooch
-	{ id = 6093, chance = 5000 }, -- crystal ring
-	{ id = 23373, chance = 5000, maxCount = 3 }, -- ultimate mana potion
-	{ id = 16121, chance = 5000 }, -- green crystal shard
-	{ id = 16126, chance = 5000 }, -- red crystal fragment
-	{ id = 24391, chance = 5000 }, -- coral brooch
-	{ id = 3063, chance = 5000 }, -- gold ring
-	{ id = 3057, chance = 260 }, -- amulet of loss
+	{ id = 3043, chance = 23812, maxCount = 2 }, -- Crystal Coin
+	{ id = 16125, chance = 2996 }, -- Cyan Crystal Fragment
+	{ id = 39386, chance = 17823 }, -- Mantosaurus Jaw
+	{ id = 3017, chance = 5087 }, -- Silver Brooch
+	{ id = 3007, chance = 1545 }, -- Crystal Ring
+	{ id = 23373, chance = 10033, maxCount = 3 }, -- Ultimate Mana Potion
+	{ id = 16121, chance = 2813 }, -- Green Crystal Shard
+	{ id = 16126, chance = 3262 }, -- Red Crystal Fragment
+	{ id = 24391, chance = 2019 }, -- Coral Brooch
+	{ id = 3063, chance = 1285 }, -- Gold Ring
+	{ id = 3057, chance = 160 }, -- Amulet of Loss
 }
 
 monster.attacks = {

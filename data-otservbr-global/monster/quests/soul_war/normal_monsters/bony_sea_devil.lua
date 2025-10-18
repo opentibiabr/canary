@@ -82,24 +82,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7643, chance = 23000, maxCount = 6 }, -- ultimate health potion
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 823, chance = 5000 }, -- glacier kilt
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3067, chance = 5000 }, -- hailstorm rod
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 8083, chance = 5000 }, -- northwind rod
-	{ id = 8094, chance = 5000 }, -- wand of voodoo
-	{ id = 16127, chance = 5000 }, -- green crystal fragment
-	{ id = 22193, chance = 5000 }, -- onyx chip
-	{ id = 25737, chance = 5000, maxCount = 3 }, -- rainbow quartz
-	{ id = 34014, chance = 5000 }, -- jaws
-	{ id = 16118, chance = 1000 }, -- glacial rod
-	{ id = 8061, chance = 1000 }, -- skullcracker armor
-	{ id = 34022, chance = 1000 }, -- goblet of gloom
-	{ id = 3081, chance = 260 }, -- stone skin amulet
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 46659 }, -- Crystal Coin
+	{ id = 7643, chance = 19711, maxCount = 6 }, -- Ultimate Health Potion
+	{ id = 282, chance = 1000 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 9058, chance = 14048 }, -- Gold Ingot
+	{ id = 281, chance = 9593 }, -- Giant Shimmering Pearl (Green)
+	{ id = 823, chance = 1052 }, -- Glacier Kilt
+	{ id = 3036, chance = 2228 }, -- Violet Gem
+	{ id = 3067, chance = 2637 }, -- Hailstorm Rod
+	{ id = 8082, chance = 2534 }, -- Underworld Rod
+	{ id = 8083, chance = 3470 }, -- Northwind Rod
+	{ id = 8094, chance = 1674 }, -- Wand of Voodoo
+	{ id = 16127, chance = 2111 }, -- Green Crystal Fragment
+	{ id = 22193, chance = 2652 }, -- Onyx Chip
+	{ id = 25737, chance = 3312, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 33929, chance = 3904 }, -- Rod (Creature Product)
+	{ id = 34014, chance = 1852 }, -- Jaws
+	{ id = 16118, chance = 650 }, -- Glacial Rod
+	{ id = 8061, chance = 700 }, -- Skullcracker Armor
+	{ id = 34022, chance = 701 }, -- Goblet of Gloom
+	{ id = 3081, chance = 240 }, -- Stone Skin Amulet
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

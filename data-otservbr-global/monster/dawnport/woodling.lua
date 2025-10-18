@@ -60,13 +60,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 12 }, -- gold coin
-	{ id = 3723, chance = 80000, maxCount = 4 }, -- white mushroom
-	{ id = 21470, chance = 80000, maxCount = 10 }, -- simple arrow
-	{ id = 31366, chance = 80000 }, -- rope
-	{ id = 3378, chance = 5000 }, -- studded armor
-	{ id = 3276, chance = 5000 }, -- hatchet
-	{ id = 3426, chance = 5000 }, -- studded shield
+	{ id = 3031, chance = 100000, maxCount = 12 }, -- Gold Coin
+	{ id = 3723, chance = 19480, maxCount = 4 }, -- White Mushroom
+	{ id = 21470, chance = 10060, maxCount = 10 }, -- Simple Arrow
+	{ id = 3003, chance = 6508 }, -- Rope
+	{ id = 3378, chance = 4695 }, -- Studded Armor
+	{ id = 3276, chance = 3556 }, -- Hatchet
+	{ id = 3426, chance = 2426 }, -- Studded Shield
 }
 
 monster.attacks = {

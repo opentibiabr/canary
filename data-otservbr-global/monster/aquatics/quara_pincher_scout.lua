@@ -76,13 +76,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 143 }, -- gold coin
-	{ id = 11490, chance = 23000 }, -- quara pincers
-	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
-	{ id = 3269, chance = 5000 }, -- halberd
-	{ id = 3357, chance = 5000 }, -- plate armor
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 5895, chance = 1000 }, -- fish fin
+	{ id = 3031, chance = 89482, maxCount = 143 }, -- Gold Coin
+	{ id = 11490, chance = 10275 }, -- Quara Pincers
+	{ id = 3030, chance = 2957, maxCount = 2 }, -- Small Ruby
+	{ id = 3269, chance = 2067 }, -- Halberd
+	{ id = 3357, chance = 5195 }, -- Plate Armor
+	{ id = 3061, chance = 723 }, -- Life Crystal
+	{ id = 5895, chance = 918 }, -- Fish Fin
 }
 
 monster.attacks = {

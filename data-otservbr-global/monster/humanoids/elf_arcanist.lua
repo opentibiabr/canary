@@ -79,27 +79,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 47 }, -- gold coin
-	{ id = 2815, chance = 80000 }, -- scroll
-	{ id = 3593, chance = 80000 }, -- melon
-	{ id = 3147, chance = 80000 }, -- blank rune
-	{ id = 3600, chance = 80000 }, -- bread
-	{ id = 9635, chance = 80000 }, -- elvish talisman
-	{ id = 11465, chance = 80000 }, -- elven astral observer
-	{ id = 3563, chance = 80000 }, -- green tunic
-	{ id = 3447, chance = 80000, maxCount = 3 }, -- arrow
-	{ id = 3738, chance = 5000 }, -- sling herb
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 237, chance = 5000 }, -- strong mana potion
-	{ id = 2917, chance = 5000 }, -- candlestick
-	{ id = 5922, chance = 5000 }, -- holy orchid
-	{ id = 3082, chance = 5000 }, -- elven amulet
-	{ id = 3073, chance = 1000 }, -- wand of cosmic energy
-	{ id = 28568, chance = 1000 }, -- inkwell
-	{ id = 3551, chance = 1000 }, -- sandals
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 3661, chance = 1000 }, -- grave flower
-	{ id = 3037, chance = 260 }, -- yellow gem
+	{ id = 3031, chance = 37180, maxCount = 47 }, -- Gold Coin
+	{ id = 2815, chance = 29884 }, -- Scroll
+	{ id = 3593, chance = 22007 }, -- Melon
+	{ id = 3147, chance = 17058 }, -- Blank Rune
+	{ id = 3600, chance = 13262 }, -- Bread
+	{ id = 9635, chance = 10172 }, -- Elvish Talisman
+	{ id = 11465, chance = 7730 }, -- Elven Astral Observer
+	{ id = 3563, chance = 7247 }, -- Green Tunic
+	{ id = 3447, chance = 12518, maxCount = 3 }, -- Arrow
+	{ id = 3738, chance = 4637 }, -- Sling Herb
+	{ id = 266, chance = 3755 }, -- Health Potion
+	{ id = 237, chance = 3230 }, -- Strong Mana Potion
+	{ id = 2917, chance = 20878 }, -- Candlestick
+	{ id = 5922, chance = 1946 }, -- Holy Orchid
+	{ id = 3082, chance = 1713 }, -- Elven Amulet
+	{ id = 3073, chance = 853 }, -- Wand of Cosmic Energy
+	{ id = 3509, chance = 8467 }, -- Inkwell
+	{ id = 3551, chance = 12190 }, -- Sandals
+	{ id = 3061, chance = 802 }, -- Life Crystal
+	{ id = 3661, chance = 7077 }, -- Grave Flower
+	{ id = 3037, chance = 342 }, -- Yellow Gem
 }
 
 monster.attacks = {

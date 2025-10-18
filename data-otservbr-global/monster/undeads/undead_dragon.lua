@@ -80,32 +80,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 198 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 10316, chance = 80000 }, -- unholy bone
-	{ id = 3029, chance = 80000, maxCount = 2 }, -- small sapphire
-	{ id = 7368, chance = 80000, maxCount = 5 }, -- assassin star
-	{ id = 238, chance = 80000, maxCount = 3 }, -- great mana potion
-	{ id = 239, chance = 80000, maxCount = 3 }, -- great health potion
-	{ id = 3027, chance = 23000, maxCount = 2 }, -- black pearl
-	{ id = 3450, chance = 23000, maxCount = 15 }, -- power bolt
-	{ id = 5925, chance = 23000 }, -- hardened bone
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 2903, chance = 5000 }, -- golden mug
-	{ id = 3370, chance = 5000 }, -- knight armor
-	{ id = 7430, chance = 5000 }, -- dragonbone staff
-	{ id = 3061, chance = 5000 }, -- life crystal
-	{ id = 3342, chance = 5000 }, -- war axe
-	{ id = 6299, chance = 5000 }, -- death ring
-	{ id = 9058, chance = 5000 }, -- gold ingot
-	{ id = 3392, chance = 1000 }, -- royal helmet
-	{ id = 7402, chance = 1000 }, -- dragon slayer
-	{ id = 3360, chance = 1000 }, -- golden armor
-	{ id = 10438, chance = 1000 }, -- spellweavers robe
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 8057, chance = 1000 }, -- divine plate
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 8061, chance = 260 }, -- skullcracker armor
+	{ id = 3031, chance = 99953, maxCount = 198 }, -- Gold Coin
+	{ id = 3035, chance = 50499, maxCount = 5 }, -- Platinum Coin
+	{ id = 10316, chance = 37931 }, -- Unholy Bone
+	{ id = 3029, chance = 27253, maxCount = 2 }, -- Small Sapphire
+	{ id = 7368, chance = 25380, maxCount = 5 }, -- Assassin Star
+	{ id = 238, chance = 25726, maxCount = 3 }, -- Great Mana Potion
+	{ id = 239, chance = 23645, maxCount = 3 }, -- Great Health Potion
+	{ id = 3027, chance = 23867, maxCount = 2 }, -- Black Pearl
+	{ id = 3450, chance = 14687, maxCount = 15 }, -- Power Bolt
+	{ id = 5925, chance = 13205 }, -- Hardened Bone
+	{ id = 6499, chance = 14781 }, -- Demonic Essence
+	{ id = 2903, chance = 4710 }, -- Golden Mug
+	{ id = 3370, chance = 4426 }, -- Knight Armor
+	{ id = 7430, chance = 3961 }, -- Dragonbone Staff
+	{ id = 3061, chance = 1172 }, -- Life Crystal
+	{ id = 3342, chance = 1374 }, -- War Axe
+	{ id = 6299, chance = 1595 }, -- Death Ring
+	{ id = 9058, chance = 1381 }, -- Gold Ingot
+	{ id = 3392, chance = 1031 }, -- Royal Helmet
+	{ id = 7402, chance = 944 }, -- Dragon Slayer
+	{ id = 3360, chance = 593 }, -- Golden Armor
+	{ id = 10438, chance = 906 }, -- Spellweaver's Robe
+	{ id = 3041, chance = 956 }, -- Blue Gem
+	{ id = 8057, chance = 438 }, -- Divine Plate
+	{ id = 3081, chance = 540 }, -- Stone Skin Amulet
+	{ id = 8061, chance = 328 }, -- Skullcracker Armor
 }
 
 monster.attacks = {

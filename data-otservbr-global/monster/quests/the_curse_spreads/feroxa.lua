@@ -72,45 +72,45 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 7643, chance = 80000, maxCount = 5 }, -- ultimate health potion
-	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
-	{ id = 16126, chance = 80000 }, -- red crystal fragment
-	{ id = 16124, chance = 80000 }, -- blue crystal splinter
-	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
-	{ id = 16120, chance = 80000 }, -- violet crystal shard
-	{ id = 16119, chance = 80000, maxCount = 5 }, -- blue crystal shard
-	{ id = 7419, chance = 80000 }, -- dreaded cleaver
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 22083, chance = 80000, maxCount = 6 }, -- moonlight crystals
-	{ id = 22060, chance = 80000 }, -- werewolf amulet
-	{ id = 22104, chance = 80000 }, -- trophy of feroxa
-	{ id = 22084, chance = 80000 }, -- wolf backpack
-	{ id = 22062, chance = 80000 }, -- werewolf helmet
-	{ id = 22086, chance = 80000 }, -- badger boots
-	{ id = 22085, chance = 80000 }, -- fur armor
-	{ id = 7436, chance = 80000 }, -- angelic axe
-	{ id = 8061, chance = 80000 }, -- skullcracker armor
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 16123, chance = 80000 }, -- brown crystal splinter
-	{ id = 16121, chance = 80000 }, -- green crystal shard
-	{ id = 3070, chance = 80000 }, -- moonlight rod
-	{ id = 22087, chance = 80000 }, -- wereboar loincloth
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 3326, chance = 80000 }, -- epee
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 16122, chance = 80000 }, -- green crystal splinter
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 8094, chance = 80000 }, -- wand of voodoo
-	{ id = 7428, chance = 80000 }, -- bonebreaker
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 7454, chance = 80000 }, -- glorious axe
+	{ id = 3035, chance = 93548, maxCount = 20 }, -- Platinum Coin
+	{ id = 239, chance = 55913 }, -- Great Health Potion
+	{ id = 7643, chance = 64516, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 238, chance = 73118, maxCount = 2 }, -- Great Mana Potion
+	{ id = 16126, chance = 49462 }, -- Red Crystal Fragment
+	{ id = 16124, chance = 22352 }, -- Blue Crystal Splinter
+	{ id = 3028, chance = 65591, maxCount = 5 }, -- Small Diamond
+	{ id = 16120, chance = 61290 }, -- Violet Crystal Shard
+	{ id = 16119, chance = 23529, maxCount = 5 }, -- Blue Crystal Shard
+	{ id = 7419, chance = 9677 }, -- Dreaded Cleaver
+	{ id = 3039, chance = 50537 }, -- Red Gem
+	{ id = 3041, chance = 50537 }, -- Blue Gem
+	{ id = 22083, chance = 100000, maxCount = 6 }, -- Moonlight Crystals
+	{ id = 22060, chance = 9411 }, -- Werewolf Amulet
+	{ id = 22104, chance = 31182 }, -- Trophy of Feroxa
+	{ id = 22084, chance = 7692 }, -- Wolf Backpack
+	{ id = 22062, chance = 7526 }, -- Werewolf Helmet
+	{ id = 22086, chance = 14285 }, -- Badger Boots
+	{ id = 22085, chance = 10588 }, -- Fur Armor
+	{ id = 7436, chance = 2857 }, -- Angelic Axe
+	{ id = 8061, chance = 25000 }, -- Skullcracker Armor
+	{ id = 3030, chance = 61290 }, -- Small Ruby
+	{ id = 3079, chance = 5454 }, -- Boots of Haste
+	{ id = 16123, chance = 11764 }, -- Brown Crystal Splinter
+	{ id = 16121, chance = 11764 }, -- Green Crystal Shard
+	{ id = 3070, chance = 10588 }, -- Moonlight Rod
+	{ id = 22087, chance = 15294 }, -- Wereboar Loincloth
+	{ id = 8082, chance = 7058 }, -- Underworld Rod
+	{ id = 7642, chance = 14117 }, -- Great Spirit Potion
+	{ id = 3029, chance = 14117 }, -- Small Sapphire
+	{ id = 3326, chance = 2857 }, -- Epee
+	{ id = 3031, chance = 23529 }, -- Gold Coin
+	{ id = 16122, chance = 14117 }, -- Green Crystal Splinter
+	{ id = 3033, chance = 7058 }, -- Small Amethyst
+	{ id = 8094, chance = 8571 }, -- Wand of Voodoo
+	{ id = 7428, chance = 5882 }, -- Bonebreaker
+	{ id = 3081, chance = 4705 }, -- Stone Skin Amulet
+	{ id = 9057, chance = 8571 }, -- Small Topaz
+	{ id = 7454, chance = 3225 }, -- Glorious Axe
 }
 
 monster.attacks = {

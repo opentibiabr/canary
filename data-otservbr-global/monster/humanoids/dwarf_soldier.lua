@@ -75,18 +75,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 12 }, -- gold coin
-	{ id = 3723, chance = 80000, maxCount = 2 }, -- white mushroom
-	{ id = 3446, chance = 80000, maxCount = 7 }, -- bolt
-	{ id = 3375, chance = 80000 }, -- soldier helmet
-	{ id = 15689, chance = 80000 }, -- shovel
-	{ id = 3358, chance = 80000 }, -- chain armor
-	{ id = 7363, chance = 5000, maxCount = 3 }, -- piercing bolt
-	{ id = 3425, chance = 5000 }, -- dwarven shield
-	{ id = 3349, chance = 5000 }, -- crossbow
-	{ id = 3266, chance = 5000 }, -- battle axe
-	{ id = 5880, chance = 260 }, -- iron ore
-	{ id = 3092, chance = 260 }, -- axe ring
+	{ id = 3031, chance = 28400, maxCount = 12 }, -- Gold Coin
+	{ id = 3723, chance = 56140, maxCount = 2 }, -- White Mushroom
+	{ id = 3446, chance = 37950, maxCount = 7 }, -- Bolt
+	{ id = 3375, chance = 11305 }, -- Soldier Helmet
+	{ id = 3457, chance = 9918 }, -- Shovel
+	{ id = 3358, chance = 8271 }, -- Chain Armor
+	{ id = 7363, chance = 7361, maxCount = 3 }, -- Piercing Bolt
+	{ id = 3425, chance = 2781 }, -- Dwarven Shield
+	{ id = 3349, chance = 2980 }, -- Crossbow
+	{ id = 3266, chance = 2610 }, -- Battle Axe
+	{ id = 5880, chance = 235 }, -- Iron Ore
+	{ id = 3092, chance = 180 }, -- Axe Ring
 }
 
 monster.attacks = {

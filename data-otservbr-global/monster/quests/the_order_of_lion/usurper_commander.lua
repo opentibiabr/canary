@@ -77,22 +77,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 16119, chance = 80000 }, -- blue crystal shard
-	{ id = 8084, chance = 80000 }, -- springsprout rod
-	{ id = 3350, chance = 80000 }, -- bow
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 34162, chance = 80000 }, -- lion cloak patch
-	{ id = 8094, chance = 80000 }, -- wand of voodoo
-	{ id = 3274, chance = 80000 }, -- axe
-	{ id = 34164, chance = 80000 }, -- fur shred
-	{ id = 34160, chance = 80000 }, -- lion crest
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 7443, chance = 80000 }, -- bullseye potion
+	{ id = 3036, chance = 2800 }, -- Violet Gem
+	{ id = 23533, chance = 1980 }, -- Ring of Red Plasma
+	{ id = 8073, chance = 5050 }, -- Spellbook of Warding
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 16119, chance = 1380 }, -- Blue Crystal Shard
+	{ id = 8084, chance = 4280 }, -- Springsprout Rod
+	{ id = 3350, chance = 8189 }, -- Bow
+	{ id = 9058, chance = 8390 }, -- Gold Ingot
+	{ id = 34162, chance = 10380 }, -- Lion Cloak Patch
+	{ id = 8094, chance = 3740 }, -- Wand of Voodoo
+	{ id = 3274, chance = 15520 }, -- Axe
+	{ id = 282, chance = 8150 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 34164, chance = 16170 }, -- Fur Shred
+	{ id = 34160, chance = 8990 }, -- Lion Crest
+	{ id = 23529, chance = 2280 }, -- Ring of Blue Plasma
+	{ id = 3038, chance = 3030 }, -- Green Gem
+	{ id = 7443, chance = 390 }, -- Bullseye Potion
+	{ id = 281, chance = 90 }, -- Giant Shimmering Pearl
 }
 
 monster.attacks = {

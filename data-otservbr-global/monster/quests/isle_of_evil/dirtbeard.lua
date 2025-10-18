@@ -78,9 +78,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9374, chance = 80000 }, -- odd hat
-	{ id = 9375, chance = 80000 }, -- pointed rabbitslayer
-	{ id = 9382, chance = 80000 }, -- helmet of nature
+	{ id = 9374, chance = 1000 }, -- Odd Hat
+	{ id = 9401, 9447, chance = 1000 }, -- The Shield Nevermourn
+	{ id = 9375, chance = 40000 }, -- Pointed Rabbitslayer
+	{ id = 9382, chance = 60000 }, -- Helmet of Nature
 }
 
 monster.attacks = {

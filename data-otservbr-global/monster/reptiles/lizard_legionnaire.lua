@@ -75,20 +75,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 165 }, -- gold coin
-	{ id = 10418, chance = 23000 }, -- broken halberd
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 10328, chance = 5000 }, -- bunch of ripe rice
-	{ id = 10417, chance = 5000 }, -- legionnaire flags
-	{ id = 10388, chance = 1000 }, -- drakinata
-	{ id = 5876, chance = 1000 }, -- lizard leather
-	{ id = 5881, chance = 1000 }, -- lizard scale
-	{ id = 10289, chance = 1000 }, -- red lantern
-	{ id = 3028, chance = 1000, maxCount = 2 }, -- small diamond
-	{ id = 10406, chance = 1000 }, -- zaoan halberd
-	{ id = 10386, chance = 260 }, -- zaoan shoes
-	{ id = 10384, chance = 260 }, -- zaoan armor
-	{ id = 10419, chance = 260 }, -- lizard trophy
+	{ id = 3031, chance = 94080, maxCount = 165 }, -- Gold Coin
+	{ id = 10418, chance = 10380 }, -- Broken Halberd
+	{ id = 236, chance = 3910 }, -- Strong Health Potion
+	{ id = 10328, chance = 1103 }, -- Bunch of Ripe Rice
+	{ id = 10417, chance = 1271 }, -- Legionnaire Flags
+	{ id = 10388, chance = 172 }, -- Drakinata
+	{ id = 5876, chance = 914 }, -- Lizard Leather
+	{ id = 5881, chance = 1127 }, -- Lizard Scale
+	{ id = 10289, chance = 417 }, -- Red Lantern
+	{ id = 3028, chance = 160, maxCount = 2 }, -- Small Diamond
+	{ id = 10406, chance = 793 }, -- Zaoan Halberd
+	{ id = 10386, chance = 532 }, -- Zaoan Shoes
+	{ id = 10384, chance = 78 }, -- Zaoan Armor
+	{ id = 10419, chance = 19 }, -- Lizard Trophy
 }
 
 monster.attacks = {

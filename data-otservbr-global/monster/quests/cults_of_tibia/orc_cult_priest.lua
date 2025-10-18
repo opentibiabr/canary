@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 1816 }, -- gold coin
-	{ id = 11478, chance = 23000 }, -- shamanic hood
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 9639, chance = 23000 }, -- cultish robe
-	{ id = 5910, chance = 23000 }, -- green piece of cloth
-	{ id = 3030, chance = 23000, maxCount = 6 }, -- small ruby
-	{ id = 3078, chance = 23000 }, -- mysterious fetish
-	{ id = 11479, chance = 23000 }, -- orc leather
-	{ id = 11452, chance = 23000 }, -- broken shamanic staff
-	{ id = 10196, chance = 5000 }, -- orc tooth
-	{ id = 3027, chance = 5000, maxCount = 2 }, -- black pearl
-	{ id = 23986, chance = 5000 }, -- heavy old tome
-	{ id = 3072, chance = 1000 }, -- wand of decay
-	{ id = 7439, chance = 1000 }, -- berserk potion
+	{ id = 3031, chance = 100000, maxCount = 1816 }, -- Gold Coin
+	{ id = 11478, chance = 13690 }, -- Shamanic Hood
+	{ id = 236, chance = 15250 }, -- Strong Health Potion
+	{ id = 9639, chance = 10200 }, -- Cultish Robe
+	{ id = 5910, chance = 10820 }, -- Green Piece of Cloth
+	{ id = 3030, chance = 12210, maxCount = 6 }, -- Small Ruby
+	{ id = 3078, chance = 9440 }, -- Mysterious Fetish
+	{ id = 11479, chance = 8610 }, -- Orc Leather
+	{ id = 11452, chance = 8680 }, -- Broken Shamanic Staff
+	{ id = 10196, chance = 5260 }, -- Orc Tooth
+	{ id = 3027, chance = 2660, maxCount = 2 }, -- Black Pearl
+	{ id = 23986, chance = 1800 }, -- Heavy Old Tome
+	{ id = 3072, chance = 860 }, -- Wand of Decay
+	{ id = 7439, chance = 830 }, -- Berserk Potion
 }
 
 monster.attacks = {

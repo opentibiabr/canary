@@ -82,20 +82,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 173 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 237, chance = 23000 }, -- strong mana potion
-	{ id = 3030, chance = 23000, maxCount = 5 }, -- small ruby
-	{ id = 3725, chance = 23000 }, -- brown mushroom
-	{ id = 3049, chance = 5000 }, -- stealth ring
-	{ id = 826, chance = 1000 }, -- magma coat
-	{ id = 3071, chance = 1000 }, -- wand of inferno
-	{ id = 5904, chance = 1000 }, -- magic sulphur
-	{ id = 7443, chance = 1000 }, -- bullseye potion
-	{ id = 7412, chance = 260 }, -- butchers axe
-	{ id = 3554, chance = 260 }, -- steel boots
-	{ id = 12541, chance = 260 }, -- demonic finger
+	{ id = 3031, chance = 96070, maxCount = 173 }, -- Gold Coin
+	{ id = 3035, chance = 33970, maxCount = 4 }, -- Platinum Coin
+	{ id = 236, chance = 15109 }, -- Strong Health Potion
+	{ id = 237, chance = 15490 }, -- Strong Mana Potion
+	{ id = 3030, chance = 12830, maxCount = 5 }, -- Small Ruby
+	{ id = 3725, chance = 5130 }, -- Brown Mushroom
+	{ id = 3049, chance = 4940 }, -- Stealth Ring
+	{ id = 826, chance = 710 }, -- Magma Coat
+	{ id = 3071, chance = 940 }, -- Wand of Inferno
+	{ id = 5904, chance = 560 }, -- Magic Sulphur
+	{ id = 7443, chance = 520 }, -- Bullseye Potion
+	{ id = 7412, chance = 220 }, -- Butcher's Axe
+	{ id = 3554, chance = 70 }, -- Steel Boots
+	{ id = 12541, chance = 190 }, -- Demonic Finger
 }
 
 monster.attacks = {

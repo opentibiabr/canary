@@ -63,26 +63,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
-	{ id = 39038, chance = 80000 }, -- royal almandine
-	{ id = 32622, chance = 80000 }, -- giant amethyst
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 39040, chance = 80000 }, -- fiery tear
-	{ id = 32624, chance = 80000 }, -- amber with a bug
-	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
-	{ id = 3043, chance = 80000, maxCount = 45 }, -- crystal coin
-	{ id = 39148, chance = 80000 }, -- spiritthorn helmet
-	{ id = 39147, chance = 80000 }, -- spiritthorn armor
-	{ id = 39178, chance = 80000 }, -- charged spiritthorn ring
-	{ id = 39149, chance = 80000 }, -- alicorn headguard
-	{ id = 39150, chance = 80000 }, -- alicorn quiver
-	{ id = 39181, chance = 80000 }, -- charged alicorn ring
-	{ id = 39153, chance = 80000 }, -- arboreal crown
-	{ id = 39154, chance = 80000 }, -- arboreal tome
-	{ id = 39187, chance = 80000 }, -- charged arboreal ring
-	{ id = 39151, chance = 80000 }, -- arcanomancer regalia
-	{ id = 39152, chance = 80000 }, -- arcanomancer folio
-	{ id = 39184, chance = 80000 }, -- charged arcanomancer sigil
+	{ id = 33778, chance = 100000 }, -- Raw Watermelon Tourmaline
+	{ id = 39038, chance = 100000 }, -- Royal Almandine
+	{ id = 32622, chance = 1000 }, -- Giant Amethyst
+	{ id = 30061, chance = 50000 }, -- Giant Sapphire
+	{ id = 39040, chance = 1000 }, -- Fiery Tear
+	{ id = 32624, chance = 25000 }, -- Amber with a Bug
+	{ id = 32625, chance = 25000 }, -- Amber with a Dragonfly
+	{ id = 3043, chance = 100000, maxCount = 45 }, -- Crystal Coin
+	{ id = 39148, chance = 1000 }, -- Spiritthorn Helmet
+	{ id = 39147, chance = 1000 }, -- Spiritthorn Armor
+	{ id = 39177, chance = 1000 }, -- Charged Spiritthorn Ring
+	{ id = 39149, chance = 1000 }, -- Alicorn Headguard
+	{ id = 39150, chance = 1000 }, -- Alicorn Quiver
+	{ id = 39180, chance = 1000 }, -- Charged Alicorn Ring
+	{ id = 39153, chance = 1000 }, -- Arboreal Crown
+	{ id = 39154, chance = 25000 }, -- Arboreal Tome
+	{ id = 39186, chance = 1000 }, -- Charged Arboreal Ring
+	{ id = 39151, chance = 1000 }, -- Arcanomancer Regalia
+	{ id = 39152, chance = 1000 }, -- Arcanomancer Folio
+	{ id = 39183, chance = 25000 }, -- Charged Arcanomancer Sigil
+	{ id = 50188, chance = 1000 }, -- Ethereal Coned Hat
+	{ id = 50147, chance = 1000 }, -- Charged Ethereal Ring
 }
 
 monster.attacks = {

@@ -74,49 +74,51 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 49 }, -- platinum coin
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 238, chance = 80000, maxCount = 10 }, -- great mana potion
-	{ id = 7643, chance = 80000, maxCount = 10 }, -- ultimate health potion
-	{ id = 7642, chance = 80000, maxCount = 8 }, -- great spirit potion
-	{ id = 7440, chance = 80000, maxCount = 2 }, -- mastermind potion
-	{ id = 3028, chance = 80000, maxCount = 12 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 12 }, -- small emerald
-	{ id = 16120, chance = 80000, maxCount = 4 }, -- violet crystal shard
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 3071, chance = 80000 }, -- wand of inferno
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 22086, chance = 80000 }, -- badger boots
-	{ id = 3280, chance = 80000 }, -- fire sword
-	{ id = 3333, chance = 80000 }, -- crystal mace
-	{ id = 8902, chance = 80000 }, -- slightly rusted shield
-	{ id = 27621, chance = 80000 }, -- huge shell
-	{ id = 27624, chance = 80000 }, -- longing eyes
-	{ id = 27623, chance = 80000 }, -- slimy leg
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 8908, chance = 80000 }, -- slightly rusted helmet
-	{ id = 14086, chance = 80000 }, -- calopteryx cape
-	{ id = 826, chance = 80000 }, -- magma coat
-	{ id = 11454, chance = 80000 }, -- luminous orb
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 27713, chance = 80000 }, -- heavy crystal fragment
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 27651, chance = 80000 }, -- gnome sword
-	{ id = 27650, chance = 80000 }, -- gnome shield
-	{ id = 27648, chance = 80000 }, -- gnome armor
-	{ id = 27655, chance = 80000 }, -- plan for a makeshift armour
-	{ id = 27524, chance = 80000 }, -- mallet head
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 27605, chance = 80000 }, -- candle stump
+	{ id = 3035, chance = 99829, maxCount = 49 }, -- Platinum Coin
+	{ id = 3043, chance = 9353 }, -- Crystal Coin
+	{ id = 238, chance = 55952, maxCount = 10 }, -- Great Mana Potion
+	{ id = 7643, chance = 53401, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 54421, maxCount = 8 }, -- Great Spirit Potion
+	{ id = 7440, chance = 99829, maxCount = 2 }, -- Mastermind Potion
+	{ id = 3028, chance = 17857, maxCount = 12 }, -- Small Diamond
+	{ id = 3032, chance = 17006, maxCount = 12 }, -- Small Emerald
+	{ id = 16120, chance = 70068, maxCount = 4 }, -- Violet Crystal Shard
+	{ id = 3038, chance = 19557 }, -- Green Gem
+	{ id = 3041, chance = 18197 }, -- Blue Gem
+	{ id = 3081, chance = 99829 }, -- Stone Skin Amulet
+	{ id = 5892, chance = 20748 }, -- Huge Chunk of Crude Iron
+	{ id = 3071, chance = 67687 }, -- Wand of Inferno
+	{ id = 5904, chance = 44557 }, -- Magic Sulphur
+	{ id = 22086, chance = 4761 }, -- Badger Boots
+	{ id = 3280, chance = 64455 }, -- Fire Sword
+	{ id = 3333, chance = 36224 }, -- Crystal Mace
+	{ id = 8902, chance = 22959 }, -- Slightly Rusted Shield
+	{ id = 27622, chance = 20238 }, -- Chitinous Mouth (Baron from Below)
+	{ id = 27621, chance = 5952 }, -- Huge Shell
+	{ id = 27624, chance = 16156 }, -- Longing Eyes
+	{ id = 27623, chance = 3911 }, -- Slimy Leg
+	{ id = 3033, chance = 19047 }, -- Small Amethyst
+	{ id = 8908, chance = 18707 }, -- Slightly Rusted Helmet
+	{ id = 14086, chance = 3231 }, -- Calopteryx Cape
+	{ id = 826, chance = 3571 }, -- Magma Coat
+	{ id = 11454, chance = 15986 }, -- Luminous Orb
+	{ id = 3030, chance = 15136 }, -- Small Ruby
+	{ id = 3037, chance = 19217 }, -- Yellow Gem
+	{ id = 9058, chance = 12074 }, -- Gold Ingot
+	{ id = 27509, chance = 99829 }, -- Heavy Crystal Fragment
+	{ id = 3039, chance = 17006 }, -- Red Gem
+	{ id = 9057, chance = 21428 }, -- Small Topaz
+	{ id = 22516, chance = 21428 }, -- Silver Token
+	{ id = 22721, chance = 9693 }, -- Gold Token
+	{ id = 27651, chance = 850 }, -- Gnome Sword
+	{ id = 27650, chance = 2380 }, -- Gnome Shield
+	{ id = 27648, chance = 850 }, -- Gnome Armor
+	{ id = 27655, chance = 212 }, -- Plan for a Makeshift Armour
+	{ id = 27524, chance = 424 }, -- Mallet Head
+	{ id = 3036, chance = 4421 }, -- Violet Gem
+	{ id = 8073, chance = 2760 }, -- Spellbook of Warding
+	{ id = 27605, chance = 510 }, -- Candle Stump
+	{ id = 50290, chance = 1000 }, -- Gnomish Footwraps
 }
 
 monster.attacks = {

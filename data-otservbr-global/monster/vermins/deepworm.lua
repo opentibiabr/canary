@@ -80,21 +80,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 27594, chance = 80000 }, -- deepworm jaws
-	{ id = 3727, chance = 23000 }, -- wood mushroom
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 3582, chance = 23000 }, -- ham
-	{ id = 3732, chance = 23000 }, -- green mushroom
-	{ id = 3728, chance = 23000 }, -- dark mushroom
-	{ id = 27593, chance = 23000 }, -- deepworm spike roots
-	{ id = 27592, chance = 23000 }, -- deepworm spikes
-	{ id = 3052, chance = 23000 }, -- life ring
-	{ id = 16121, chance = 23000 }, -- green crystal shard
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 678, chance = 5000 }, -- small enchanted amethyst
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 8084, chance = 5000 }, -- springsprout rod
-	{ id = 27653, chance = 5000 }, -- suspicious device
+	{ id = 27594, chance = 24082 }, -- Deepworm Jaws
+	{ id = 3727, chance = 23041 }, -- Wood Mushroom
+	{ id = 3577, chance = 19323 }, -- Meat
+	{ id = 3582, chance = 19156 }, -- Ham
+	{ id = 3732, chance = 18262 }, -- Green Mushroom
+	{ id = 3728, chance = 14112 }, -- Dark Mushroom
+	{ id = 27593, chance = 12735 }, -- Deepworm Spike Roots
+	{ id = 27592, chance = 10833 }, -- Deepworm Spikes
+	{ id = 3052, chance = 8291 }, -- Life Ring
+	{ id = 16121, chance = 5993 }, -- Green Crystal Shard
+	{ id = 814, chance = 5186 }, -- Terra Amulet
+	{ id = 678, chance = 3903 }, -- Small Enchanted Amethyst
+	{ id = 9302, chance = 2321 }, -- Sacred Tree Amulet
+	{ id = 8084, chance = 1361 }, -- Springsprout Rod
+	{ id = 27653, chance = 1473 }, -- Suspicious Device
+	{ id = 282, chance = 1185 }, -- Giant Shimmering Pearl (Brown)
 }
 
 monster.attacks = {

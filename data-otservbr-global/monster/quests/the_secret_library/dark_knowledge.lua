@@ -60,7 +60,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 28488, chance = 80000 }, -- parchment of dark knowledge
+	{ id = 28488, chance = 1000 }, -- Parchment of Dark Knowledge
 }
 
 monster.attacks = {

@@ -84,25 +84,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 199 }, -- gold coin
-	{ id = 3577, chance = 80000, maxCount = 4 }, -- meat
-	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
-	{ id = 11671, chance = 23000 }, -- eye of corruption
-	{ id = 11673, chance = 23000 }, -- scale of corruption
-	{ id = 7643, chance = 23000, maxCount = 3 }, -- ultimate health potion
-	{ id = 238, chance = 23000, maxCount = 3 }, -- great mana potion
-	{ id = 830, chance = 23000 }, -- terra hood
-	{ id = 11672, chance = 23000 }, -- tail of corruption
-	{ id = 7642, chance = 5000, maxCount = 3 }, -- great spirit potion
-	{ id = 9057, chance = 5000, maxCount = 4 }, -- small topaz
-	{ id = 8094, chance = 1000 }, -- wand of voodoo
-	{ id = 10387, chance = 1000 }, -- zaoan legs
-	{ id = 10384, chance = 1000 }, -- zaoan armor
-	{ id = 10385, chance = 1000 }, -- zaoan helmet
-	{ id = 4033, chance = 1000 }, -- draken boots
-	{ id = 12549, chance = 260 }, -- bamboo leaves
-	{ id = 11688, chance = 260 }, -- shield of corruption
-	{ id = 11691, chance = 260 }, -- snake gods wristguard
+	{ id = 3031, chance = 97439, maxCount = 199 }, -- Gold Coin
+	{ id = 3577, chance = 49714, maxCount = 4 }, -- Meat
+	{ id = 3035, chance = 49799, maxCount = 8 }, -- Platinum Coin
+	{ id = 11671, chance = 12189 }, -- Eye of Corruption
+	{ id = 11673, chance = 10340 }, -- Scale of Corruption
+	{ id = 7643, chance = 9333, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 238, chance = 9544, maxCount = 3 }, -- Great Mana Potion
+	{ id = 830, chance = 8550 }, -- Terra Hood
+	{ id = 11672, chance = 6004 }, -- Tail of Corruption
+	{ id = 7642, chance = 4888, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 9057, chance = 2923, maxCount = 4 }, -- Small Topaz
+	{ id = 8094, chance = 1095 }, -- Wand of Voodoo
+	{ id = 10387, chance = 975 }, -- Zaoan Legs
+	{ id = 10384, chance = 838 }, -- Zaoan Armor
+	{ id = 10385, chance = 524 }, -- Zaoan Helmet
+	{ id = 4033, chance = 433 }, -- Draken Boots
+	{ id = 12549, chance = 159 }, -- Bamboo Leaves
+	{ id = 11688, chance = 15 }, -- Shield of Corruption
+	{ id = 11691, chance = 15 }, -- Snake God's Wristguard
 }
 
 monster.attacks = {

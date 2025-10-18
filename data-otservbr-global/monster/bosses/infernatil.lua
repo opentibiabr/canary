@@ -75,7 +75,9 @@ monster.voices = {
 	{ text = "BOW TO THE POWER OF THE RUTHLESS SEVEN!", yell = true },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 210, attack = 260 },

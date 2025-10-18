@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 268 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
-	{ id = 10414, chance = 23000 }, -- zaogun shoulderplates
-	{ id = 5876, chance = 23000 }, -- lizard leather
-	{ id = 5881, chance = 23000 }, -- lizard scale
-	{ id = 10413, chance = 23000 }, -- zaogun flag
-	{ id = 239, chance = 23000, maxCount = 3 }, -- great health potion
-	{ id = 3032, chance = 5000, maxCount = 5 }, -- small emerald
-	{ id = 10289, chance = 5000 }, -- red lantern
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 3428, chance = 1000 }, -- tower shield
-	{ id = 10386, chance = 1000 }, -- zaoan shoes
-	{ id = 10387, chance = 1000 }, -- zaoan legs
-	{ id = 10384, chance = 1000 }, -- zaoan armor
+	{ id = 3031, chance = 96200, maxCount = 268 }, -- Gold Coin
+	{ id = 3035, chance = 32354, maxCount = 2 }, -- Platinum Coin
+	{ id = 10414, chance = 13478 }, -- Zaogun Shoulderplates
+	{ id = 5876, chance = 7578 }, -- Lizard Leather
+	{ id = 5881, chance = 8197 }, -- Lizard Scale
+	{ id = 10413, chance = 7238 }, -- Zaogun Flag
+	{ id = 239, chance = 5705, maxCount = 3 }, -- Great Health Potion
+	{ id = 3032, chance = 4163, maxCount = 5 }, -- Small Emerald
+	{ id = 10289, chance = 1990 }, -- Red Lantern
+	{ id = 236, chance = 2642 }, -- Strong Health Potion
+	{ id = 3428, chance = 1051 }, -- Tower Shield
+	{ id = 10386, chance = 888 }, -- Zaoan Shoes
+	{ id = 10387, chance = 923 }, -- Zaoan Legs
+	{ id = 10384, chance = 460 }, -- Zaoan Armor
 }
 
 monster.attacks = {

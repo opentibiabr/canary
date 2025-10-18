@@ -83,22 +83,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7643, chance = 23000, maxCount = 8 }, -- ultimate health potion
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 33938, chance = 23000 }, -- roots
-	{ id = 812, chance = 5000 }, -- terra legs
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 33982, chance = 5000 }, -- crawlers essence
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3332, chance = 1000 }, -- hammer of wrath
-	{ id = 7418, chance = 1000 }, -- nightmare blade
-	{ id = 16163, chance = 1000 }, -- crystal crossbow
-	{ id = 6553, chance = 260 }, -- ruthless axe
-	{ id = 11657, chance = 260 }, -- twiceslicer
-	{ id = 16160, chance = 260 }, -- crystalline sword
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 61376 }, -- Crystal Coin
+	{ id = 7643, chance = 9419, maxCount = 8 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 9581 }, -- Gold Ingot
+	{ id = 33938, chance = 6393 }, -- Roots
+	{ id = 812, chance = 1209 }, -- Terra Legs
+	{ id = 3036, chance = 890 }, -- Violet Gem
+	{ id = 33982, chance = 1523 }, -- Crawler's Essence
+	{ id = 3038, chance = 855 }, -- Green Gem
+	{ id = 3041, chance = 1935 }, -- Blue Gem
+	{ id = 3332, chance = 834 }, -- Hammer of Wrath
+	{ id = 7418, chance = 537 }, -- Nightmare Blade
+	{ id = 16163, chance = 631 }, -- Crystal Crossbow
+	{ id = 6553, chance = 537 }, -- Ruthless Axe
+	{ id = 11657, chance = 527 }, -- Twiceslicer
+	{ id = 16160, chance = 445 }, -- Crystalline Sword
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

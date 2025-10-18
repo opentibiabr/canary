@@ -79,16 +79,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 24 }, -- platinum coin
-	{ id = 3029, chance = 5000, maxCount = 3 }, -- small sapphire
-	{ id = 3093, chance = 5000 }, -- club ring
-	{ id = 7452, chance = 5000 }, -- spiked squelcher
-	{ id = 49909, chance = 5000 }, -- demonic core essence
-	{ id = 50059, chance = 5000 }, -- gorger antlers
-	{ id = 3053, chance = 1000 }, -- time ring
-	{ id = 49894, chance = 1000 }, -- demonic matter
-	{ id = 49908, chance = 1000 }, -- mummified demon finger
-	{ id = 27488, chance = 260 }, -- gold nugget
+	{ id = 3035, chance = 100000, maxCount = 24 }, -- Platinum Coin
+	{ id = 3029, chance = 3880, maxCount = 3 }, -- Small Sapphire
+	{ id = 3093, chance = 2540 }, -- Club Ring
+	{ id = 7452, chance = 3460 }, -- Spiked Squelcher
+	{ id = 49909, chance = 2700 }, -- Demonic Core Essence
+	{ id = 50059, chance = 1670 }, -- Gorger Antlers
+	{ id = 3053, chance = 350 }, -- Time Ring
+	{ id = 49894, chance = 459 }, -- Demonic Matter
+	{ id = 49908, chance = 950 }, -- Mummified Demon Finger
+	{ id = 3040, chance = 390 }, -- Gold Nugget
 }
 
 monster.attacks = {

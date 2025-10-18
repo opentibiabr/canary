@@ -76,25 +76,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 120 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 21202, chance = 23000 }, -- moohtah shell
-	{ id = 237, chance = 23000 }, -- strong mana potion
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 5878, chance = 5000 }, -- minotaur leather
-	{ id = 3030, chance = 5000 }, -- small ruby
-	{ id = 3032, chance = 5000 }, -- small emerald
-	{ id = 3033, chance = 5000 }, -- small amethyst
-	{ id = 9057, chance = 5000 }, -- small topaz
-	{ id = 11472, chance = 5000, maxCount = 2 }, -- minotaur horn
-	{ id = 21177, chance = 5000 }, -- cowtana
-	{ id = 3091, chance = 1000 }, -- sword ring
-	{ id = 21166, chance = 1000 }, -- moohtah plate
-	{ id = 3415, chance = 1000 }, -- guardian shield
-	{ id = 3371, chance = 1000 }, -- knight legs
-	{ id = 5911, chance = 1000 }, -- red piece of cloth
-	{ id = 3370, chance = 1000 }, -- knight armor
-	{ id = 7401, chance = 260 }, -- minotaur trophy
+	{ id = 3031, chance = 100000, maxCount = 120 }, -- Gold Coin
+	{ id = 3035, chance = 40120, maxCount = 3 }, -- Platinum Coin
+	{ id = 21202, chance = 15067 }, -- Mooh'tah Shell
+	{ id = 237, chance = 7211 }, -- Strong Mana Potion
+	{ id = 236, chance = 7151 }, -- Strong Health Potion
+	{ id = 5878, chance = 5038 }, -- Minotaur Leather
+	{ id = 3030, chance = 4969 }, -- Small Ruby
+	{ id = 3032, chance = 5004 }, -- Small Emerald
+	{ id = 3033, chance = 5116 }, -- Small Amethyst
+	{ id = 9057, chance = 4972 }, -- Small Topaz
+	{ id = 11472, chance = 4994, maxCount = 2 }, -- Minotaur Horn
+	{ id = 21177, chance = 1463 }, -- Cowtana
+	{ id = 3091, chance = 1030 }, -- Sword Ring
+	{ id = 21166, chance = 994 }, -- Mooh'tah Plate
+	{ id = 3415, chance = 898 }, -- Guardian Shield
+	{ id = 3371, chance = 764 }, -- Knight Legs
+	{ id = 5911, chance = 771 }, -- Red Piece of Cloth
+	{ id = 3370, chance = 536 }, -- Knight Armor
+	{ id = 7401, chance = 133 }, -- Minotaur Trophy
 }
 
 monster.attacks = {

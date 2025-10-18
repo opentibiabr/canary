@@ -88,25 +88,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 245 }, -- gold coin
-	{ id = 3583, chance = 80000, maxCount = 5 }, -- dragon ham
-	{ id = 3732, chance = 23000 }, -- green mushroom
-	{ id = 7378, chance = 23000, maxCount = 3 }, -- royal spear
-	{ id = 3450, chance = 23000, maxCount = 7 }, -- power bolt
-	{ id = 3051, chance = 5000 }, -- energy ring
-	{ id = 3029, chance = 5000 }, -- small sapphire
-	{ id = 2903, chance = 5000 }, -- golden mug
-	{ id = 5882, chance = 5000 }, -- red dragon scale
-	{ id = 5948, chance = 1000 }, -- red dragon leather
-	{ id = 236, chance = 1000 }, -- strong health potion
-	{ id = 3061, chance = 1000 }, -- life crystal
-	{ id = 3373, chance = 260 }, -- strange helmet
-	{ id = 3280, chance = 260 }, -- fire sword
-	{ id = 3392, chance = 260 }, -- royal helmet
-	{ id = 3428, chance = 260 }, -- tower shield
-	{ id = 3386, chance = 260 }, -- dragon scale mail
-	{ id = 7399, chance = 260 }, -- dragon lord trophy
-	{ id = 7402, chance = 260 }, -- dragon slayer
+	{ id = 3031, chance = 95230, maxCount = 245 }, -- Gold Coin
+	{ id = 3583, chance = 72538, maxCount = 5 }, -- Dragon Ham
+	{ id = 3732, chance = 11845 }, -- Green Mushroom
+	{ id = 2842, chance = 8305 }, -- Book (Gemmed)
+	{ id = 7378, chance = 16721, maxCount = 3 }, -- Royal Spear
+	{ id = 3450, chance = 24781, maxCount = 7 }, -- Power Bolt
+	{ id = 3051, chance = 4712 }, -- Energy Ring
+	{ id = 3029, chance = 4716 }, -- Small Sapphire
+	{ id = 2903, chance = 2693 }, -- Golden Mug
+	{ id = 5882, chance = 1750 }, -- Red Dragon Scale
+	{ id = 5948, chance = 1082 }, -- Red Dragon Leather
+	{ id = 236, chance = 878 }, -- Strong Health Potion
+	{ id = 3061, chance = 768 }, -- Life Crystal
+	{ id = 3373, chance = 352 }, -- Strange Helmet
+	{ id = 3280, chance = 458 }, -- Fire Sword
+	{ id = 3392, chance = 168 }, -- Royal Helmet
+	{ id = 3428, chance = 274 }, -- Tower Shield
+	{ id = 3386, chance = 232 }, -- Dragon Scale Mail
+	{ id = 7399, chance = 102 }, -- Dragon Lord Trophy
+	{ id = 7402, chance = 139 }, -- Dragon Slayer
 }
 
 monster.attacks = {

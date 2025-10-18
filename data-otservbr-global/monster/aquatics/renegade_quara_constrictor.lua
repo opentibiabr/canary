@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 11487, chance = 23000 }, -- quara tentacle
-	{ id = 3062, chance = 23000 }, -- mind stone
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 3098, chance = 5000 }, -- ring of healing
-	{ id = 3581, chance = 5000, maxCount = 5 }, -- shrimp
-	{ id = 7368, chance = 5000, maxCount = 7 }, -- assassin star
-	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
-	{ id = 3033, chance = 5000, maxCount = 2 }, -- small amethyst
-	{ id = 14252, chance = 5000, maxCount = 10 }, -- vortex bolt
-	{ id = 16120, chance = 1000 }, -- violet crystal shard
-	{ id = 8083, chance = 1000 }, -- northwind rod
-	{ id = 5895, chance = 1000 }, -- fish fin
-	{ id = 2995, chance = 260 }, -- piggy bank
+	{ id = 3035, chance = 80810, maxCount = 3 }, -- Platinum Coin
+	{ id = 11487, chance = 14559 }, -- Quara Tentacle
+	{ id = 3062, chance = 7020 }, -- Mind Stone
+	{ id = 238, chance = 6660 }, -- Great Mana Potion
+	{ id = 3098, chance = 5330 }, -- Ring of Healing
+	{ id = 3581, chance = 4900, maxCount = 5 }, -- Shrimp
+	{ id = 7368, chance = 4510, maxCount = 7 }, -- Assassin Star
+	{ id = 3030, chance = 4150, maxCount = 2 }, -- Small Ruby
+	{ id = 3033, chance = 4720, maxCount = 2 }, -- Small Amethyst
+	{ id = 14252, chance = 3270, maxCount = 10 }, -- Vortex Bolt
+	{ id = 16120, chance = 940 }, -- Violet Crystal Shard
+	{ id = 8083, chance = 1030 }, -- Northwind Rod
+	{ id = 5895, chance = 360 }, -- Fish Fin
+	{ id = 2995, chance = 240 }, -- Piggy Bank
 }
 
 monster.attacks = {

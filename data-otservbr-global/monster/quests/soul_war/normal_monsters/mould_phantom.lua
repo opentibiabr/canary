@@ -83,22 +83,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 8094, chance = 5000 }, -- wand of voodoo
-	{ id = 14247, chance = 5000 }, -- ornate crossbow
-	{ id = 16096, chance = 5000, maxCount = 2 }, -- wand of defiance
-	{ id = 34141, chance = 5000 }, -- mould heart
-	{ id = 34148, chance = 5000 }, -- mould robe
-	{ id = 23529, chance = 1000 }, -- ring of blue plasma
-	{ id = 23526, chance = 1000 }, -- collar of blue plasma
-	{ id = 16163, chance = 1000 }, -- crystal crossbow
-	{ id = 3081, chance = 260 }, -- stone skin amulet
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 61176 }, -- Crystal Coin
+	{ id = 9058, chance = 12635 }, -- Gold Ingot
+	{ id = 3036, chance = 3323 }, -- Violet Gem
+	{ id = 3038, chance = 3863 }, -- Green Gem
+	{ id = 3041, chance = 2383 }, -- Blue Gem
+	{ id = 8092, chance = 3875 }, -- Wand of Starstorm
+	{ id = 8094, chance = 2334 }, -- Wand of Voodoo
+	{ id = 14247, chance = 885 }, -- Ornate Crossbow
+	{ id = 16096, chance = 3416, maxCount = 2 }, -- Wand of Defiance
+	{ id = 34141, chance = 4005 }, -- Mould Heart
+	{ id = 34148, chance = 2126 }, -- Mould Robe
+	{ id = 23529, chance = 741 }, -- Ring of Blue Plasma
+	{ id = 23526, chance = 1111 }, -- Collar of Blue Plasma
+	{ id = 16163, chance = 948 }, -- Crystal Crossbow
+	{ id = 3081, chance = 170 }, -- Stone Skin Amulet
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

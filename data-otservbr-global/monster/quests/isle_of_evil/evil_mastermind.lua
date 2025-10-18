@@ -79,7 +79,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9391, chance = 80000 }, -- fan club membership card
+	{ id = 9391, chance = 1000 }, -- Fan Club Membership Card
 }
 
 monster.attacks = {

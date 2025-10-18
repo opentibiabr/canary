@@ -73,20 +73,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
-	{ id = 3035, chance = 80000, maxCount = 29 }, -- platinum coin
-	{ id = 3124, chance = 80000 }, -- burnt scroll
-	{ id = 28569, chance = 80000, maxCount = 4 }, -- book page
-	{ id = 28570, chance = 80000, maxCount = 8 }, -- glowing rune
-	{ id = 3071, chance = 23000 }, -- wand of inferno
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 3320, chance = 5000 }, -- fire axe
-	{ id = 8073, chance = 5000 }, -- spellbook of warding
-	{ id = 9664, chance = 5000 }, -- piece of hellfire armor
-	{ id = 821, chance = 5000 }, -- magma legs
-	{ id = 826, chance = 5000 }, -- magma coat
-	{ id = 3280, chance = 5000 }, -- fire sword
-	{ id = 12600, chance = 260 }, -- coal
+	{ id = 3028, chance = 57600, maxCount = 5 }, -- Small Diamond
+	{ id = 3035, chance = 84810, maxCount = 29 }, -- Platinum Coin
+	{ id = 3124, chance = 37880 }, -- Burnt Scroll
+	{ id = 28569, chance = 44750, maxCount = 4 }, -- Book Page
+	{ id = 28570, chance = 38180, maxCount = 8 }, -- Glowing Rune
+	{ id = 3071, chance = 9380 }, -- Wand of Inferno
+	{ id = 5944, chance = 9580 }, -- Soul Orb
+	{ id = 3320, chance = 4360 }, -- Fire Axe
+	{ id = 8073, chance = 5350 }, -- Spellbook of Warding
+	{ id = 9664, chance = 5120 }, -- Piece of Hellfire Armor
+	{ id = 821, chance = 890 }, -- Magma Legs
+	{ id = 826, chance = 790 }, -- Magma Coat
+	{ id = 3280, chance = 1220 }, -- Fire Sword
+	{ id = 12600, chance = 230 }, -- Coal
 }
 
 monster.attacks = {

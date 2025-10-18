@@ -69,20 +69,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 3018, chance = 80000 }, -- scarab amulet
-	{ id = 236, chance = 80000 }, -- strong health potion
-	{ id = 22746, chance = 80000 }, -- ancient amulet
-	{ id = 37530, chance = 80000 }, -- bottle of champagne
-	{ id = 37468, chance = 80000 }, -- special fx box
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3042, chance = 80000 }, -- scarab coin
-	{ id = 3357, chance = 80000 }, -- plate armor
-	{ id = 3047, chance = 80000 }, -- magic light wand
-	{ id = 3440, chance = 80000 }, -- scarab shield
-	{ id = 3328, chance = 80000 }, -- daramian waraxe
-	{ id = 8084, chance = 80000 }, -- springsprout rod
+	{ id = 3033, chance = 5427 }, -- Small Amethyst
+	{ id = 3018, chance = 5115 }, -- Scarab Amulet
+	{ id = 236, chance = 1282 }, -- Strong Health Potion
+	{ id = 3025, chance = 1390 }, -- Ancient Amulet
+	{ id = 37530, chance = 700 }, -- Bottle of Champagne
+	{ id = 37468, chance = 2090 }, -- Special Fx Box
+	{ id = 3032, chance = 7320 }, -- Small Emerald
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 3042, chance = 7664 }, -- Scarab Coin
+	{ id = 3357, chance = 5433 }, -- Plate Armor
+	{ id = 3046, chance = 10862 }, -- Magic Light Wand
+	{ id = 37531, chance = 3830 }, -- Candy Floss (Large)
+	{ id = 3440, chance = 640 }, -- Scarab Shield
+	{ id = 3328, chance = 350 }, -- Daramian Waraxe
+	{ id = 8084, chance = 961 }, -- Springsprout Rod
 }
 
 monster.attacks = {

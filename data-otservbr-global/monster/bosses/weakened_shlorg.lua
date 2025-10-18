@@ -65,30 +65,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 191 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3032, chance = 80000, maxCount = 5 }, -- small emerald
-	{ id = 9057, chance = 80000, maxCount = 6 }, -- small topaz
-	{ id = 7642, chance = 80000, maxCount = 5 }, -- great spirit potion
-	{ id = 7643, chance = 80000, maxCount = 4 }, -- ultimate health potion
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 19083, chance = 80000, maxCount = 2 }, -- silver raid token
-	{ id = 9667, chance = 80000, maxCount = 2 }, -- boggy dreads
-	{ id = 5910, chance = 80000 }, -- green piece of cloth
-	{ id = 5912, chance = 80000 }, -- blue piece of cloth
-	{ id = 5914, chance = 80000 }, -- yellow piece of cloth
-	{ id = 5911, chance = 80000 }, -- red piece of cloth
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 8084, chance = 80000 }, -- springsprout rod
-	{ id = 8044, chance = 80000 }, -- belted cape
-	{ id = 3297, chance = 80000 }, -- serpent sword
-	{ id = 7436, chance = 80000 }, -- angelic axe
-	{ id = 7454, chance = 80000 }, -- glorious axe
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 8063, chance = 80000 }, -- paladin armor
-	{ id = 19372, chance = 80000 }, -- goo shell
-	{ id = 19371, chance = 80000 }, -- glass of goo
+	{ id = 3031, chance = 103448, maxCount = 191 }, -- Gold Coin
+	{ id = 3035, chance = 27586, maxCount = 5 }, -- Platinum Coin
+	{ id = 3032, chance = 12000, maxCount = 5 }, -- Small Emerald
+	{ id = 9057, chance = 25000, maxCount = 6 }, -- Small Topaz
+	{ id = 7642, chance = 31034, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 7643, chance = 24137, maxCount = 4 }, -- Ultimate Health Potion
+	{ id = 238, chance = 27586, maxCount = 5 }, -- Great Mana Potion
+	{ id = 19083, chance = 1000, maxCount = 2 }, -- Silver Raid Token
+	{ id = 9667, chance = 82758, maxCount = 2 }, -- Boggy Dreads
+	{ id = 5910, chance = 20689 }, -- Green Piece of Cloth
+	{ id = 5912, chance = 4761 }, -- Blue Piece of Cloth
+	{ id = 5914, chance = 24000 }, -- Yellow Piece of Cloth
+	{ id = 5911, chance = 50000 }, -- Red Piece of Cloth
+	{ id = 3037, chance = 10344 }, -- Yellow Gem
+	{ id = 3038, chance = 4761 }, -- Green Gem
+	{ id = 8084, chance = 12000 }, -- Springsprout Rod
+	{ id = 8044, chance = 20689 }, -- Belted Cape
+	{ id = 3297, chance = 10344 }, -- Serpent Sword
+	{ id = 7436, chance = 25000 }, -- Angelic Axe
+	{ id = 7454, chance = 1000 }, -- Glorious Axe
+	{ id = 7427, chance = 1000 }, -- Chaos Mace
+	{ id = 8063, chance = 1000 }, -- Paladin Armor
+	{ id = 19372, chance = 12000 }, -- Goo Shell
+	{ id = 19371, chance = 1000 }, -- Glass of Goo
 }
 
 monster.attacks = {

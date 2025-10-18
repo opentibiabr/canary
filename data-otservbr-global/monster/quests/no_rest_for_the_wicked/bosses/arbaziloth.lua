@@ -86,36 +86,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
-	{ id = 3041, chance = 80000, maxCount = 2 }, -- blue gem
-	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 237, chance = 80000, maxCount = 19 }, -- strong mana potion
-	{ id = 238, chance = 80000, maxCount = 9 }, -- great mana potion
-	{ id = 23373, chance = 80000, maxCount = 29 }, -- ultimate mana potion
-	{ id = 7642, chance = 80000, maxCount = 4 }, -- great spirit potion
-	{ id = 23374, chance = 80000, maxCount = 14 }, -- ultimate spirit potion
-	{ id = 7643, chance = 80000, maxCount = 19 }, -- ultimate health potion
-	{ id = 23375, chance = 80000, maxCount = 8 }, -- supreme health potion
-	{ id = 3320, chance = 80000 }, -- fire axe
-	{ id = 3281, chance = 80000 }, -- giant sword
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 817, chance = 80000 }, -- magma amulet
-	{ id = 6299, chance = 80000 }, -- death ring
-	{ id = 3052, chance = 80000 }, -- life ring
-	{ id = 50061, chance = 80000 }, -- demon skull
-	{ id = 50060, chance = 80000 }, -- demon claws
-	{ id = 3373, chance = 80000 }, -- strange helmet
-	{ id = 3356, chance = 80000 }, -- devil helmet
-	{ id = 3284, chance = 80000 }, -- ice rapier
-	{ id = 49534, chance = 80000 }, -- demonfang mask
-	{ id = 49533, chance = 80000 }, -- dreadfire headpiece
-	{ id = 49532, chance = 80000 }, -- hellstalker visor
-	{ id = 49531, chance = 80000 }, -- maliceforged helmet
-	{ id = 7382, chance = 80000 }, -- demonrage sword
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 3043, chance = 100000, maxCount = 3 }, -- Crystal Coin
+	{ id = 3035, chance = 1000, maxCount = 98 }, -- Platinum Coin
+	{ id = 3041, chance = 37500, maxCount = 2 }, -- Blue Gem
+	{ id = 3037, chance = 41666, maxCount = 2 }, -- Yellow Gem
+	{ id = 3039, chance = 12500 }, -- Red Gem
+	{ id = 237, chance = 41666, maxCount = 19 }, -- Strong Mana Potion
+	{ id = 238, chance = 54166, maxCount = 9 }, -- Great Mana Potion
+	{ id = 23373, chance = 25000, maxCount = 29 }, -- Ultimate Mana Potion
+	{ id = 7642, chance = 12500, maxCount = 4 }, -- Great Spirit Potion
+	{ id = 23374, chance = 33333, maxCount = 14 }, -- Ultimate Spirit Potion
+	{ id = 7643, chance = 37500, maxCount = 19 }, -- Ultimate Health Potion
+	{ id = 23375, chance = 20833, maxCount = 8 }, -- Supreme Health Potion
+	{ id = 3320, chance = 8333 }, -- Fire Axe
+	{ id = 3281, chance = 12500 }, -- Giant Sword
+	{ id = 3081, chance = 12500 }, -- Stone Skin Amulet
+	{ id = 817, chance = 4166 }, -- Magma Amulet
+	{ id = 6299, chance = 4166 }, -- Death Ring
+	{ id = 3052, chance = 4166 }, -- Life Ring
+	{ id = 50061, chance = 4166 }, -- Demon Skull
+	{ id = 50060, chance = 1000 }, -- Demon Claws
+	{ id = 3373, chance = 12500 }, -- Strange Helmet
+	{ id = 3356, chance = 8333 }, -- Devil Helmet
+	{ id = 3284, chance = 12500 }, -- Ice Rapier
+	{ id = 50189, chance = 1000 }, -- Demon Mengu
+	{ id = 49534, chance = 1000 }, -- Demonfang Mask
+	{ id = 49533, chance = 1000 }, -- Dreadfire Headpiece
+	{ id = 49532, chance = 1000 }, -- Hellstalker Visor
+	{ id = 49531, chance = 1000 }, -- Maliceforged Helmet
+	{ id = 7382, chance = 4166 }, -- Demonrage Sword
+	{ id = 3098, chance = 8333 }, -- Ring of Healing
+	{ id = 30059, chance = 4166 }, -- Giant Ruby
+	{ id = 30060, chance = 4166 }, -- Giant Emerald
 }
 
 monster.attacks = {

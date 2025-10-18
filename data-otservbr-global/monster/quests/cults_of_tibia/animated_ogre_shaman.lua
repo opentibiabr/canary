@@ -71,17 +71,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 39 }, -- gold coin
-	{ id = 22189, chance = 80000 }, -- ogre nose ring
-	{ id = 237, chance = 80000 }, -- strong mana potion
-	{ id = 2901, chance = 80000 }, -- waterskin
-	{ id = 22184, chance = 80000 }, -- shamanic talisman
-	{ id = 22191, chance = 80000 }, -- skull fetish
-	{ id = 22188, chance = 80000 }, -- ogre ear stud
-	{ id = 17831, chance = 80000 }, -- bone fetish
-	{ id = 3069, chance = 80000 }, -- necrotic rod
-	{ id = 11452, chance = 80000 }, -- broken shamanic staff
-	{ id = 22185, chance = 80000 }, -- prickly pear
+	{ id = 3031, chance = 100000, maxCount = 39 }, -- Gold Coin
+	{ id = 22189, chance = 11760 }, -- Ogre Nose Ring
+	{ id = 237, chance = 5880 }, -- Strong Mana Potion
+	{ id = 2901, chance = 1000 }, -- Waterskin
+	{ id = 3114, chance = 17650 }, -- Skull (Item)
+	{ id = 22184, chance = 5880 }, -- Shamanic Talisman
+	{ id = 22191, chance = 11760 }, -- Skull Fetish
+	{ id = 22188, chance = 23530 }, -- Ogre Ear Stud
+	{ id = 17831, chance = 5880 }, -- Bone Fetish
+	{ id = 3069, chance = 5880 }, -- Necrotic Rod
+	{ id = 11452, chance = 5880 }, -- Broken Shamanic Staff
+	{ id = 22185, chance = 5880 }, -- Prickly Pear
 }
 
 monster.attacks = {

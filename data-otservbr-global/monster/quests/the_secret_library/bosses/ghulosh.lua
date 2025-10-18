@@ -69,46 +69,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 9057, chance = 80000, maxCount = 12 }, -- small topaz
-	{ id = 7412, chance = 80000 }, -- butchers axe
-	{ id = 3043, chance = 80000, maxCount = 5 }, -- crystal coin
-	{ id = 5954, chance = 80000 }, -- demon horn
-	{ id = 23374, chance = 80000, maxCount = 4 }, -- ultimate spirit potion
-	{ id = 23375, chance = 80000, maxCount = 8 }, -- supreme health potion
-	{ id = 3035, chance = 80000, maxCount = 39 }, -- platinum coin
-	{ id = 7440, chance = 80000, maxCount = 2 }, -- mastermind potion
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 23517, chance = 80000 }, -- solid rage
-	{ id = 7443, chance = 80000 }, -- bullseye potion
-	{ id = 7439, chance = 80000 }, -- berserk potion
-	{ id = 22516, chance = 80000, maxCount = 6 }, -- silver token
-	{ id = 28820, chance = 80000 }, -- ornate tome
-	{ id = 27934, chance = 80000 }, -- knowledgeable book
-	{ id = 28831, chance = 80000 }, -- unliving demonbone
-	{ id = 28793, chance = 80000 }, -- epaulette
-	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 7386, chance = 80000 }, -- mercenary sword
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 7419, chance = 80000 }, -- dreaded cleaver
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 8908, chance = 80000 }, -- slightly rusted helmet
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 27932, chance = 80000 }, -- sinister book
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 8902, chance = 80000 }, -- slightly rusted shield
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 27933, chance = 80000 }, -- ominous book
-	{ id = 8094, chance = 80000 }, -- wand of voodoo
+	{ id = 3041, chance = 18750 }, -- Blue Gem
+	{ id = 9057, chance = 37500, maxCount = 12 }, -- Small Topaz
+	{ id = 7412, chance = 41176 }, -- Butcher's Axe
+	{ id = 3043, chance = 88235, maxCount = 5 }, -- Crystal Coin
+	{ id = 5954, chance = 39285 }, -- Demon Horn
+	{ id = 23374, chance = 61764, maxCount = 4 }, -- Ultimate Spirit Potion
+	{ id = 23375, chance = 61764, maxCount = 8 }, -- Supreme Health Potion
+	{ id = 3035, chance = 100000, maxCount = 39 }, -- Platinum Coin
+	{ id = 7440, chance = 50000, maxCount = 2 }, -- Mastermind Potion
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 23517, chance = 34375 }, -- Solid Rage
+	{ id = 7443, chance = 41176 }, -- Bullseye Potion
+	{ id = 7439, chance = 34375 }, -- Berserk Potion
+	{ id = 22516, chance = 67647, maxCount = 6 }, -- Silver Token
+	{ id = 28572, chance = 1000 }, -- Ornate Tome
+	{ id = 27934, chance = 3846 }, -- Knowledgeable Book
+	{ id = 28831, chance = 1000 }, -- Unliving Demonbone
+	{ id = 28793, chance = 1000 }, -- Epaulette
+	{ id = 8075, chance = 7142 }, -- Spellbook of Lost Souls
+	{ id = 22721, chance = 35294 }, -- Gold Token
+	{ id = 3028, chance = 20588 }, -- Small Diamond
+	{ id = 23373, chance = 41176 }, -- Ultimate Mana Potion
+	{ id = 3033, chance = 14285 }, -- Small Amethyst
+	{ id = 3039, chance = 26470 }, -- Red Gem
+	{ id = 7386, chance = 23529 }, -- Mercenary Sword
+	{ id = 30060, chance = 39285 }, -- Giant Emerald
+	{ id = 7419, chance = 38235 }, -- Dreaded Cleaver
+	{ id = 22193, chance = 58823 }, -- Onyx Chip
+	{ id = 8908, chance = 35294 }, -- Slightly Rusted Helmet
+	{ id = 3038, chance = 20588 }, -- Green Gem
+	{ id = 5904, chance = 25000 }, -- Magic Sulphur
+	{ id = 27932, chance = 7692 }, -- Sinister Book
+	{ id = 3030, chance = 23076 }, -- Small Ruby
+	{ id = 8902, chance = 9375 }, -- Slightly Rusted Shield
+	{ id = 3037, chance = 18750 }, -- Yellow Gem
+	{ id = 3032, chance = 12500 }, -- Small Emerald
+	{ id = 281, chance = 11538 }, -- Giant Shimmering Pearl
+	{ id = 6499, chance = 18750 }, -- Demonic Essence
+	{ id = 3036, chance = 7692 }, -- Violet Gem
+	{ id = 27933, chance = 3846 }, -- Ominous Book
+	{ id = 8094, chance = 31250 }, -- Wand of Voodoo
 }
 
 monster.attacks = {

@@ -76,46 +76,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 23374, chance = 80000, maxCount = 6 }, -- ultimate spirit potion
-	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
-	{ id = 23375, chance = 80000, maxCount = 6 }, -- supreme health potion
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
-	{ id = 2995, chance = 80000 }, -- piggy bank
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 23535, chance = 80000 }, -- energy bar
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 3006, chance = 80000 }, -- ring of the sky
-	{ id = 22516, chance = 80000, maxCount = 2 }, -- silver token
-	{ id = 22721, chance = 80000, maxCount = 2 }, -- gold token
-	{ id = 30055, chance = 80000 }, -- crunor idol
-	{ id = 29419, chance = 80000 }, -- resizer
-	{ id = 29420, chance = 80000 }, -- shoulder plate
-	{ id = 30088, chance = 80000 }, -- malofurs lunchbox
-	{ id = 30169, chance = 80000 }, -- pomegranate
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 25759, chance = 80000 }, -- royal star
-	{ id = 5892, chance = 80000 }, -- huge chunk of crude iron
-	{ id = 7439, chance = 80000 }, -- berserk potion
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 7414, chance = 80000 }, -- abyss hammer
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 19400, chance = 80000 }, -- arcane staff
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 5809, chance = 80000 }, -- soul stone
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 30060, chance = 80000 }, -- giant emerald
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 3043, chance = 20689 }, -- Crystal Coin
+	{ id = 23374, chance = 56321, maxCount = 6 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 54022, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 45977, maxCount = 6 }, -- Supreme Health Potion
+	{ id = 281, chance = 8045 }, -- Giant Shimmering Pearl
+	{ id = 3039, chance = 37931 }, -- Red Gem
+	{ id = 3041, chance = 16091 }, -- Blue Gem
+	{ id = 23529, chance = 11494 }, -- Ring of Blue Plasma
+	{ id = 7443, chance = 20689, maxCount = 10 }, -- Bullseye Potion
+	{ id = 2995, chance = 100000 }, -- Piggy Bank
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 23535, chance = 100000 }, -- Energy Bar
+	{ id = 23543, chance = 14942 }, -- Collar of Green Plasma
+	{ id = 3006, chance = 8045 }, -- Ring of the Sky
+	{ id = 22516, chance = 100000, maxCount = 2 }, -- Silver Token
+	{ id = 22721, chance = 78160, maxCount = 2 }, -- Gold Token
+	{ id = 30055, chance = 4597 }, -- Crunor Idol
+	{ id = 29419, chance = 3333 }, -- Resizer
+	{ id = 29420, chance = 6896 }, -- Shoulder Plate
+	{ id = 30088, chance = 5747 }, -- Malofur's Lunchbox
+	{ id = 30169, chance = 22988 }, -- Pomegranate
+	{ id = 7427, chance = 6896 }, -- Chaos Mace
+	{ id = 7440, chance = 17241 }, -- Mastermind Potion
+	{ id = 9058, chance = 14942 }, -- Gold Ingot
+	{ id = 3037, chance = 37931 }, -- Yellow Gem
+	{ id = 23544, chance = 6896 }, -- Collar of Red Plasma
+	{ id = 25759, chance = 36781 }, -- Royal Star
+	{ id = 5892, chance = 31034 }, -- Huge Chunk of Crude Iron
+	{ id = 7439, chance = 20689 }, -- Berserk Potion
+	{ id = 3324, chance = 21839 }, -- Skull Staff
+	{ id = 7414, chance = 2298 }, -- Abyss Hammer
+	{ id = 3038, chance = 13793 }, -- Green Gem
+	{ id = 23526, chance = 8045 }, -- Collar of Blue Plasma
+	{ id = 3341, chance = 3703 }, -- Arcane Staff
+	{ id = 5904, chance = 9195 }, -- Magic Sulphur
+	{ id = 5809, chance = 5747 }, -- Soul Stone
+	{ id = 3036, chance = 12643 }, -- Violet Gem
+	{ id = 23531, chance = 6896 }, -- Ring of Green Plasma
+	{ id = 23533, chance = 9195 }, -- Ring of Red Plasma
+	{ id = 30060, chance = 3448 }, -- Giant Emerald
 }
 
 monster.attacks = {

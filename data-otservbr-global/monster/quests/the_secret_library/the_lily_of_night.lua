@@ -69,19 +69,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3070, chance = 80000 }, -- moonlight rod
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 21975, chance = 80000 }, -- peacock feather fan
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 7368, chance = 80000 }, -- assassin star
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 21974, chance = 80000 }, -- golden lotus brooch
-	{ id = 3069, chance = 80000 }, -- necrotic rod
-	{ id = 5944, chance = 80000 }, -- soul orb
+	{ id = 3033, chance = 26230 }, -- Small Amethyst
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3039, chance = 9840 }, -- Red Gem
+	{ id = 3070, chance = 18030 }, -- Moonlight Rod
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 21975, chance = 100000 }, -- Peacock Feather Fan
+	{ id = 6558, chance = 37700 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 42620 }, -- Assassin Star
+	{ id = 6499, chance = 22950 }, -- Demonic Essence
+	{ id = 7642, chance = 13110 }, -- Great Spirit Potion
+	{ id = 21974, chance = 100000 }, -- Golden Lotus Brooch
+	{ id = 3069, chance = 11480 }, -- Necrotic Rod
+	{ id = 5944, chance = 18030 }, -- Soul Orb
 }
 
 monster.attacks = {

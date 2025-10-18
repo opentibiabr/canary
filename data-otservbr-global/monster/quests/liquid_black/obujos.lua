@@ -74,9 +74,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 13991, chance = 80000 }, -- deepling axe
-	{ id = 13998, chance = 80000 }, -- depth scutum
-	{ id = 13999, chance = 80000 }, -- ornate legs
+	{ id = 13991, chance = 43098 }, -- Deepling Axe
+	{ id = 13998, chance = 38814 }, -- Depth Scutum
+	{ id = 13999, chance = 18411 }, -- Ornate Legs
 }
 
 monster.attacks = {

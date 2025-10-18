@@ -86,30 +86,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 264 }, -- gold coin
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 3410, chance = 23000 }, -- plate shield
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 9654, chance = 23000 }, -- war crystal
-	{ id = 3282, chance = 23000 }, -- morning star
-	{ id = 3326, chance = 23000 }, -- epee
-	{ id = 953, chance = 23000, maxCount = 5 }, -- nail
-	{ id = 3413, chance = 23000 }, -- battle shield
-	{ id = 3265, chance = 23000 }, -- two handed sword
-	{ id = 8895, chance = 5000 }, -- rusted armor
-	{ id = 5880, chance = 5000 }, -- iron ore
-	{ id = 3097, chance = 5000 }, -- dwarven ring
-	{ id = 9066, chance = 5000 }, -- crystal pedestal
-	{ id = 3061, chance = 5000 }, -- life crystal
-	{ id = 7439, chance = 5000 }, -- berserk potion
-	{ id = 3093, chance = 1000 }, -- club ring
-	{ id = 7428, chance = 1000 }, -- bonebreaker
-	{ id = 3554, chance = 1000 }, -- steel boots
-	{ id = 9067, chance = 260 }, -- crystal of power
-	{ id = 7422, chance = 260 }, -- jade hammer
-	{ id = 7403, chance = 260 }, -- berserker
-	{ id = 820, chance = 260 }, -- lightning boots
-	{ id = 12305, chance = 260 }, -- tin key
+	{ id = 3031, chance = 99536, maxCount = 264 }, -- Gold Coin
+	{ id = 7643, chance = 9232 }, -- Ultimate Health Potion
+	{ id = 3410, chance = 8351 }, -- Plate Shield
+	{ id = 238, chance = 8305 }, -- Great Mana Potion
+	{ id = 9654, chance = 7730 }, -- War Crystal
+	{ id = 3282, chance = 7888 }, -- Morning Star
+	{ id = 3326, chance = 7595 }, -- Epee
+	{ id = 953, chance = 10013, maxCount = 5 }, -- Nail
+	{ id = 3413, chance = 5431 }, -- Battle Shield
+	{ id = 3265, chance = 4478 }, -- Two Handed Sword
+	{ id = 8895, chance = 3006 }, -- Rusted Armor
+	{ id = 5880, chance = 1978 }, -- Iron Ore
+	{ id = 3097, chance = 1289 }, -- Dwarven Ring
+	{ id = 3061, chance = 1162 }, -- Life Crystal
+	{ id = 7439, chance = 1020 }, -- Berserk Potion
+	{ id = 3093, chance = 875 }, -- Club Ring
+	{ id = 7428, chance = 702 }, -- Bonebreaker
+	{ id = 3554, chance = 712 }, -- Steel Boots
+	{ id = 9067, chance = 105 }, -- Crystal of Power
+	{ id = 7422, chance = 158 }, -- Jade Hammer
+	{ id = 7403, chance = 205 }, -- Berserker
+	{ id = 820, chance = 150 }, -- Lightning Boots
+	{ id = 12305, chance = 10 }, -- Tin Key
+	{ id = 9063, chance = 1297 }, -- Crystal Pedestal (Red)
 }
 
 monster.attacks = {

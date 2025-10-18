@@ -70,23 +70,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
-	{ id = 7885, chance = 80000 }, -- fish
-	{ id = 3577, chance = 80000, maxCount = 2 }, -- meat
-	{ id = 3287, chance = 80000, maxCount = 18 }, -- throwing star
-	{ id = 266, chance = 80000, maxCount = 3 }, -- health potion
-	{ id = 268, chance = 80000, maxCount = 3 }, -- mana potion
-	{ id = 3383, chance = 80000 }, -- dark armor
-	{ id = 3316, chance = 80000 }, -- orcish axe
-	{ id = 3557, chance = 80000 }, -- plate legs
-	{ id = 3265, chance = 80000 }, -- two handed sword
-	{ id = 3049, chance = 5000 }, -- stealth ring
-	{ id = 817, chance = 5000 }, -- magma amulet
-	{ id = 3391, chance = 1000 }, -- crusader helmet
-	{ id = 3281, chance = 1000 }, -- giant sword
-	{ id = 7412, chance = 1000 }, -- butchers axe
-	{ id = 7395, chance = 1000 }, -- orc trophy
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 98933, maxCount = 10 }, -- Platinum Coin
+	{ id = 3578, chance = 13509 }, -- Fish
+	{ id = 3577, chance = 9194, maxCount = 2 }, -- Meat
+	{ id = 3287, chance = 20074, maxCount = 18 }, -- Throwing Star
+	{ id = 266, chance = 13134, maxCount = 3 }, -- Health Potion
+	{ id = 268, chance = 15947, maxCount = 3 }, -- Mana Potion
+	{ id = 3383, chance = 13321 }, -- Dark Armor
+	{ id = 3316, chance = 27016 }, -- Orcish Axe
+	{ id = 3557, chance = 7130 }, -- Plate Legs
+	{ id = 3265, chance = 22700 }, -- Two Handed Sword
+	{ id = 3049, chance = 4877 }, -- Stealth Ring
+	{ id = 817, chance = 2815 }, -- Magma Amulet
+	{ id = 3391, chance = 1558 }, -- Crusader Helmet
+	{ id = 3281, chance = 2130 }, -- Giant Sword
+	{ id = 7412, chance = 1040 }, -- Butcher's Axe
+	{ id = 7395, chance = 1877 }, -- Orc Trophy
 }
 
 monster.attacks = {

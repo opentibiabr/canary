@@ -77,13 +77,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 17 }, -- gold coin
-	{ id = 3582, chance = 80000 }, -- ham
-	{ id = 9692, chance = 80000 }, -- lump of dirt
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 3286, chance = 5000 }, -- mace
-	{ id = 3264, chance = 5000 }, -- sword
-	{ id = 3492, chance = 5000, maxCount = 3 }, -- worm
+	{ id = 3031, chance = 71900, maxCount = 17 }, -- Gold Coin
+	{ id = 3582, chance = 20532 }, -- Ham
+	{ id = 9692, chance = 10631 }, -- Lump of Dirt
+	{ id = 3577, chance = 19556 }, -- Meat
+	{ id = 3286, chance = 4602 }, -- Mace
+	{ id = 3264, chance = 3264 }, -- Sword
+	{ id = 3492, chance = 5459, maxCount = 3 }, -- Worm
 }
 
 monster.attacks = {

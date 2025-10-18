@@ -79,18 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 7885, chance = 23000 }, -- fish
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 237, chance = 23000 }, -- strong mana potion
-	{ id = 3028, chance = 5000 }, -- small diamond
-	{ id = 3032, chance = 5000, maxCount = 2 }, -- small emerald
-	{ id = 3048, chance = 5000 }, -- might ring
-	{ id = 3051, chance = 1000 }, -- energy ring
-	{ id = 7159, chance = 1000 }, -- green perch
-	{ id = 3052, chance = 1000 }, -- life ring
-	{ id = 7158, chance = 1000 }, -- rainbow trout
+	{ id = 3031, chance = 65966, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 17777 }, -- Platinum Coin
+	{ id = 3578, chance = 19895 }, -- Fish
+	{ id = 236, chance = 9662 }, -- Strong Health Potion
+	{ id = 237, chance = 10364 }, -- Strong Mana Potion
+	{ id = 3028, chance = 2182 }, -- Small Diamond
+	{ id = 3032, chance = 1797, maxCount = 2 }, -- Small Emerald
+	{ id = 3048, chance = 1280 }, -- Might Ring
+	{ id = 3051, chance = 896 }, -- Energy Ring
+	{ id = 7159, chance = 1013 }, -- Green Perch
+	{ id = 3052, chance = 1012 }, -- Life Ring
+	{ id = 7158, chance = 1179 }, -- Rainbow Trout
 }
 
 monster.attacks = {

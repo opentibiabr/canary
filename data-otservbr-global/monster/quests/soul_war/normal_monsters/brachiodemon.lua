@@ -83,26 +83,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7643, chance = 23000, maxCount = 4 }, -- ultimate health potion
-	{ id = 33936, chance = 23000 }, -- hand
-	{ id = 3324, chance = 5000 }, -- skull staff
-	{ id = 3326, chance = 5000 }, -- epee
-	{ id = 3333, chance = 5000 }, -- crystal mace
-	{ id = 7456, chance = 5000 }, -- noble axe
-	{ id = 3320, chance = 1000 }, -- fire axe
-	{ id = 7404, chance = 1000 }, -- assassin dagger
-	{ id = 7422, chance = 1000 }, -- jade hammer
-	{ id = 8074, chance = 1000 }, -- spellbook of mind control
-	{ id = 23531, chance = 1000 }, -- ring of green plasma
-	{ id = 3392, chance = 260 }, -- royal helmet
-	{ id = 3414, chance = 260 }, -- mastermind shield
-	{ id = 7412, chance = 260 }, -- butchers axe
-	{ id = 16160, chance = 260 }, -- crystalline sword
-	{ id = 21168, chance = 260 }, -- alloy legs
-	{ id = 21171, chance = 260 }, -- metal bat
-	{ id = 34025, chance = 260 }, -- diabolic skull
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 61567 }, -- Crystal Coin
+	{ id = 7643, chance = 30283, maxCount = 4 }, -- Ultimate Health Potion
+	{ id = 33936, chance = 7255 }, -- Hand
+	{ id = 3324, chance = 1130 }, -- Skull Staff
+	{ id = 3326, chance = 3744 }, -- Epee
+	{ id = 3333, chance = 2311 }, -- Crystal Mace
+	{ id = 7456, chance = 1327 }, -- Noble Axe
+	{ id = 33937, chance = 4026 }, -- Head (Brachiodemon)
+	{ id = 3320, chance = 646 }, -- Fire Axe
+	{ id = 7404, chance = 1100 }, -- Assassin Dagger
+	{ id = 7422, chance = 654 }, -- Jade Hammer
+	{ id = 8074, chance = 892 }, -- Spellbook of Mind Control
+	{ id = 23531, chance = 498 }, -- Ring of Green Plasma
+	{ id = 3392, chance = 551 }, -- Royal Helmet
+	{ id = 3414, chance = 459 }, -- Mastermind Shield
+	{ id = 7412, chance = 663 }, -- Butcher's Axe
+	{ id = 16160, chance = 800 }, -- Crystalline Sword
+	{ id = 21168, chance = 399 }, -- Alloy Legs
+	{ id = 21171, chance = 396 }, -- Metal Bat
+	{ id = 34025, chance = 181 }, -- Diabolic Skull
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

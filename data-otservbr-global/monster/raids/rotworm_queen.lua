@@ -68,11 +68,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 86 }, -- gold coin
-	{ id = 3492, chance = 80000, maxCount = 50 }, -- worm
-	{ id = 3374, chance = 80000 }, -- legion helmet
-	{ id = 8143, chance = 80000 }, -- gland
-	{ id = 12600, chance = 80000 }, -- coal
+	{ id = 3031, chance = 76710, maxCount = 86 }, -- Gold Coin
+	{ id = 3492, chance = 49320, maxCount = 50 }, -- Worm
+	{ id = 3374, chance = 17810 }, -- Legion Helmet
+	{ id = 8143, chance = 13700 }, -- Gland
+	{ id = 12600, chance = 1370 }, -- Coal
 }
 
 monster.attacks = {

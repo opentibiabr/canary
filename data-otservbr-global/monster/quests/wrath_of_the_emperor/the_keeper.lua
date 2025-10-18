@@ -67,7 +67,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 11367, chance = 80000 }, -- the tail of the keeper
+	{ id = 11367, chance = 1000 }, -- The Tail of the Keeper
 }
 
 monster.attacks = {

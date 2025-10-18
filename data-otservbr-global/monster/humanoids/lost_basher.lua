@@ -77,35 +77,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 12600, chance = 23000 }, -- coal
-	{ id = 17827, chance = 23000 }, -- bloody dwarven beard
-	{ id = 17826, chance = 23000 }, -- lost bashers spike
-	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 17855, chance = 23000 }, -- red hair dye
-	{ id = 17847, chance = 23000 }, -- wimp tooth chain
-	{ id = 17857, chance = 23000 }, -- basalt figurine
-	{ id = 9057, chance = 23000 }, -- small topaz
-	{ id = 17830, chance = 23000 }, -- bonecarving knife
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 17856, chance = 23000 }, -- basalt fetish
-	{ id = 17831, chance = 23000 }, -- bone fetish
-	{ id = 5880, chance = 5000 }, -- iron ore
-	{ id = 2995, chance = 5000 }, -- piggy bank
-	{ id = 3429, chance = 5000 }, -- black shield
-	{ id = 3097, chance = 5000 }, -- dwarven ring
-	{ id = 17828, chance = 5000 }, -- pair of iron fists
-	{ id = 16119, chance = 5000 }, -- blue crystal shard
-	{ id = 17829, chance = 1000 }, -- buckle
-	{ id = 3318, chance = 1000 }, -- knight axe
-	{ id = 813, chance = 1000 }, -- terra boots
-	{ id = 3371, chance = 1000 }, -- knight legs
-	{ id = 7452, chance = 260 }, -- spiked squelcher
-	{ id = 3320, chance = 260 }, -- fire axe
-	{ id = 7427, chance = 260 }, -- chaos mace
-	{ id = 3342, chance = 260 }, -- war axe
+	{ id = 3031, chance = 99990, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 69940 }, -- Platinum Coin
+	{ id = 12600, chance = 20160 }, -- Coal
+	{ id = 17827, chance = 17350 }, -- Bloody Dwarven Beard
+	{ id = 17826, chance = 15080 }, -- Lost Basher's Spike
+	{ id = 3725, chance = 14890, maxCount = 2 }, -- Brown Mushroom
+	{ id = 238, chance = 12240 }, -- Great Mana Potion
+	{ id = 17855, chance = 11900 }, -- Red Hair Dye
+	{ id = 17847, chance = 11850 }, -- Wimp Tooth Chain
+	{ id = 17857, chance = 10220 }, -- Basalt Figurine
+	{ id = 9057, chance = 10100 }, -- Small Topaz
+	{ id = 17830, chance = 10070 }, -- Bonecarving Knife
+	{ id = 7643, chance = 9680 }, -- Ultimate Health Potion
+	{ id = 17856, chance = 8210 }, -- Basalt Fetish
+	{ id = 17831, chance = 7480 }, -- Bone Fetish
+	{ id = 5880, chance = 4940 }, -- Iron Ore
+	{ id = 2995, chance = 3950 }, -- Piggy Bank
+	{ id = 3429, chance = 3430 }, -- Black Shield
+	{ id = 3097, chance = 2420 }, -- Dwarven Ring
+	{ id = 17828, chance = 1560 }, -- Pair of Iron Fists
+	{ id = 16119, chance = 1350 }, -- Blue Crystal Shard
+	{ id = 17829, chance = 1140 }, -- Buckle
+	{ id = 3318, chance = 900 }, -- Knight Axe
+	{ id = 813, chance = 790 }, -- Terra Boots
+	{ id = 3371, chance = 560 }, -- Knight Legs
+	{ id = 7452, chance = 370 }, -- Spiked Squelcher
+	{ id = 3320, chance = 300 }, -- Fire Axe
+	{ id = 7427, chance = 190 }, -- Chaos Mace
+	{ id = 3342, chance = 60 }, -- War Axe
 }
 
 monster.attacks = {

@@ -76,15 +76,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 40 }, -- gold coin
-	{ id = 3587, chance = 80000, maxCount = 12 }, -- banana
-	{ id = 11471, chance = 5000 }, -- kongras shoulderpad
-	{ id = 5883, chance = 1000 }, -- ape fur
-	{ id = 266, chance = 1000 }, -- health potion
-	{ id = 3357, chance = 1000 }, -- plate armor
-	{ id = 3084, chance = 1000 }, -- protection amulet
-	{ id = 3093, chance = 260 }, -- club ring
-	{ id = 3050, chance = 260 }, -- power ring
+	{ id = 3031, chance = 88012, maxCount = 40 }, -- Gold Coin
+	{ id = 3587, chance = 48632, maxCount = 12 }, -- Banana
+	{ id = 11471, chance = 8195 }, -- Kongra's Shoulderpad
+	{ id = 5883, chance = 1189 }, -- Ape Fur
+	{ id = 266, chance = 541 }, -- Health Potion
+	{ id = 3357, chance = 1403 }, -- Plate Armor
+	{ id = 3084, chance = 862 }, -- Protection Amulet
+	{ id = 3093, chance = 214 }, -- Club Ring
+	{ id = 3050, chance = 361 }, -- Power Ring
 }
 
 monster.attacks = {

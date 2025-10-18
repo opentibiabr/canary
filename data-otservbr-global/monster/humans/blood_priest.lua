@@ -75,25 +75,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 180 }, -- gold coin
-	{ id = 237, chance = 23000 }, -- strong mana potion
-	{ id = 10320, chance = 23000 }, -- book of necromantic rituals
-	{ id = 18925, chance = 23000 }, -- lancet
-	{ id = 18926, chance = 23000 }, -- horoscope
-	{ id = 18928, chance = 23000 }, -- blood tincture in a vial
-	{ id = 18929, chance = 23000 }, -- incantation notes
-	{ id = 18930, chance = 23000 }, -- pieces of magic chalk
-	{ id = 3030, chance = 5000, maxCount = 2 }, -- small ruby
-	{ id = 3574, chance = 5000 }, -- mystic turban
-	{ id = 5909, chance = 5000 }, -- white piece of cloth
-	{ id = 36706, chance = 1000 }, -- red gem
-	{ id = 5911, chance = 1000 }, -- red piece of cloth
-	{ id = 3324, chance = 260 }, -- skull staff
-	{ id = 7456, chance = 260 }, -- noble axe
-	{ id = 8073, chance = 260 }, -- spellbook of warding
-	{ id = 8074, chance = 260 }, -- spellbook of mind control
-	{ id = 8082, chance = 260 }, -- underworld rod
-	{ id = 3079, chance = 260 }, -- boots of haste
+	{ id = 3031, chance = 99980, maxCount = 180 }, -- Gold Coin
+	{ id = 237, chance = 5950 }, -- Strong Mana Potion
+	{ id = 10320, chance = 15220 }, -- Book of Necromantic Rituals
+	{ id = 18925, chance = 14640 }, -- Lancet
+	{ id = 18926, chance = 9540 }, -- Horoscope
+	{ id = 18928, chance = 14140 }, -- Blood Tincture in a Vial
+	{ id = 18929, chance = 14640 }, -- Incantation Notes
+	{ id = 18930, chance = 7320 }, -- Pieces of Magic Chalk
+	{ id = 3030, chance = 3200, maxCount = 2 }, -- Small Ruby
+	{ id = 3574, chance = 2780 }, -- Mystic Turban
+	{ id = 5909, chance = 2750 }, -- White Piece of Cloth
+	{ id = 3039, chance = 800 }, -- Red Gem
+	{ id = 5911, chance = 640 }, -- Red Piece of Cloth
+	{ id = 3324, chance = 190 }, -- Skull Staff
+	{ id = 7456, chance = 80 }, -- Noble Axe
+	{ id = 8073, chance = 300 }, -- Spellbook of Warding
+	{ id = 8074, chance = 230 }, -- Spellbook of Mind Control
+	{ id = 8082, chance = 300 }, -- Underworld Rod
+	{ id = 3079, chance = 170 }, -- Boots of Haste
 }
 
 monster.attacks = {

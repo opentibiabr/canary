@@ -81,22 +81,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3065, chance = 80000 }, -- terra rod
-	{ id = 8084, chance = 80000 }, -- springsprout rod
-	{ id = 3035, chance = 80000, maxCount = 17 }, -- platinum coin
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 3057, chance = 80000 }, -- amulet of loss
-	{ id = 31678, chance = 80000 }, -- cobra crest
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 30399, chance = 80000 }, -- cobra wand
-	{ id = 30400, chance = 80000 }, -- cobra rod
-	{ id = 3033, chance = 80000 }, -- small amethyst
-	{ id = 3032, chance = 80000 }, -- small emerald
+	{ id = 3065, chance = 1000 }, -- Terra Rod
+	{ id = 8084, chance = 1000 }, -- Springsprout Rod
+	{ id = 3035, chance = 1000, maxCount = 17 }, -- Platinum Coin
+	{ id = 7642, chance = 1000 }, -- Great Spirit Potion
+	{ id = 8073, chance = 1000 }, -- Spellbook of Warding
+	{ id = 3098, chance = 1000 }, -- Ring of Healing
+	{ id = 3057, chance = 1000 }, -- Amulet of Loss
+	{ id = 31678, chance = 1000 }, -- Cobra Crest
+	{ id = 3030, chance = 13888 }, -- Small Ruby
+	{ id = 3029, chance = 18376 }, -- Small Sapphire
+	{ id = 3028, chance = 19444 }, -- Small Diamond
+	{ id = 9057, chance = 18803 }, -- Small Topaz
+	{ id = 30399, chance = 1000 }, -- Cobra Wand
+	{ id = 30400, chance = 1000 }, -- Cobra Rod
+	{ id = 3033, chance = 16239 }, -- Small Amethyst
+	{ id = 3032, chance = 13247 }, -- Small Emerald
 }
 
 monster.attacks = {

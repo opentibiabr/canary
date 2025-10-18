@@ -76,13 +76,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 67 }, -- gold coin
-	{ id = 3577, chance = 80000, maxCount = 4 }, -- meat
-	{ id = 762, chance = 23000, maxCount = 10 }, -- shiver arrow
-	{ id = 5897, chance = 5000 }, -- wolf paw
-	{ id = 3067, chance = 1000 }, -- hailstorm rod
-	{ id = 10310, chance = 1000 }, -- shiny stone
-	{ id = 8050, chance = 260 }, -- crystalline armor
+	{ id = 3031, chance = 83820, maxCount = 67 }, -- Gold Coin
+	{ id = 3577, chance = 47060, maxCount = 4 }, -- Meat
+	{ id = 762, chance = 11760, maxCount = 10 }, -- Shiver Arrow
+	{ id = 5897, chance = 1470 }, -- Wolf Paw
+	{ id = 3067, chance = 4410 }, -- Hailstorm Rod
+	{ id = 10310, chance = 1000 }, -- Shiny Stone
+	{ id = 8050, chance = 1470 }, -- Crystalline Armor
 }
 
 monster.attacks = {

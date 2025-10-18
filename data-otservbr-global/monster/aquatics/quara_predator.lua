@@ -78,19 +78,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 154 }, -- gold coin
-	{ id = 11491, chance = 23000 }, -- quara bone
-	{ id = 7378, chance = 23000, maxCount = 7 }, -- royal spear
-	{ id = 3028, chance = 5000, maxCount = 2 }, -- small diamond
-	{ id = 3581, chance = 5000, maxCount = 5 }, -- shrimp
-	{ id = 3275, chance = 5000 }, -- double axe
-	{ id = 5895, chance = 5000 }, -- fish fin
-	{ id = 239, chance = 1000 }, -- great health potion
-	{ id = 7383, chance = 1000 }, -- relic sword
-	{ id = 7368, chance = 1000 }, -- assassin star
-	{ id = 824, chance = 1000 }, -- glacier robe
-	{ id = 5741, chance = 260 }, -- skull helmet
-	{ id = 12318, chance = 260 }, -- giant shrimp
+	{ id = 3031, chance = 78040, maxCount = 154 }, -- Gold Coin
+	{ id = 11491, chance = 9929 }, -- Quara Bone
+	{ id = 7378, chance = 31968, maxCount = 7 }, -- Royal Spear
+	{ id = 3028, chance = 4164, maxCount = 2 }, -- Small Diamond
+	{ id = 3581, chance = 3526, maxCount = 5 }, -- Shrimp
+	{ id = 3275, chance = 26206 }, -- Double Axe
+	{ id = 5895, chance = 1471 }, -- Fish Fin
+	{ id = 239, chance = 830 }, -- Great Health Potion
+	{ id = 7383, chance = 450 }, -- Relic Sword
+	{ id = 7368, chance = 768 }, -- Assassin Star
+	{ id = 824, chance = 261 }, -- Glacier Robe
+	{ id = 5741, chance = 768 }, -- Skull Helmet
+	{ id = 12318, chance = 20 }, -- Giant Shrimp
 }
 
 monster.attacks = {

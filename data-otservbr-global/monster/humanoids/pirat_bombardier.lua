@@ -76,15 +76,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
-	{ id = 813, chance = 23000 }, -- terra boots
-	{ id = 35572, chance = 23000, maxCount = 10 }, -- pirate coin
-	{ id = 35596, chance = 5000 }, -- mouldy powder
-	{ id = 35573, chance = 5000 }, -- pirats tail
-	{ id = 818, chance = 5000 }, -- magma boots
-	{ id = 820, chance = 5000 }, -- lightning boots
-	{ id = 23529, chance = 5000 }, -- ring of blue plasma
-	{ id = 3575, chance = 5000 }, -- wood cape
+	{ id = 238, chance = 34530, maxCount = 2 }, -- Great Mana Potion
+	{ id = 813, chance = 6000 }, -- Terra Boots
+	{ id = 35572, chance = 7250, maxCount = 10 }, -- Pirate Coin
+	{ id = 35596, chance = 4240 }, -- Mouldy Powder
+	{ id = 35573, chance = 5050 }, -- Pirat's Tail
+	{ id = 818, chance = 3760 }, -- Magma Boots
+	{ id = 820, chance = 1580 }, -- Lightning Boots
+	{ id = 23529, chance = 2410 }, -- Ring of Blue Plasma
+	{ id = 3575, chance = 1689 }, -- Wood Cape
 }
 
 monster.attacks = {

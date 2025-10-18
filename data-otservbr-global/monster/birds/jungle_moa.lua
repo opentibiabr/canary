@@ -74,16 +74,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 227 }, -- gold coin
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 39404, chance = 23000 }, -- jungle moa claw
-	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
-	{ id = 39403, chance = 23000, maxCount = 2 }, -- jungle moa feather
-	{ id = 237, chance = 23000, maxCount = 2 }, -- strong mana potion
-	{ id = 39405, chance = 23000 }, -- jungle moa egg
-	{ id = 3379, chance = 5000 }, -- doublet
-	{ id = 8072, chance = 5000 }, -- spellbook of enlightenment
-	{ id = 48033, chance = 80000 }, -- jungle moa soul core
+	{ id = 3031, chance = 100000, maxCount = 227 }, -- Gold Coin
+	{ id = 3577, chance = 19870 }, -- Meat
+	{ id = 39404, chance = 20450 }, -- Jungle Moa Claw
+	{ id = 16125, chance = 11280 }, -- Cyan Crystal Fragment
+	{ id = 39403, chance = 10590, maxCount = 2 }, -- Jungle Moa Feather
+	{ id = 237, chance = 9830, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 39405, chance = 8410 }, -- Jungle Moa Egg
+	{ id = 3379, chance = 4460 }, -- Doublet
+	{ id = 8072, chance = 1950 }, -- Spellbook of Enlightenment
 }
 
 monster.attacks = {

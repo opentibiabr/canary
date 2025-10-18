@@ -68,7 +68,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 11550, chance = 80000 }, -- flexible dragon scale
+	{ id = 11550, chance = 1000 }, -- Flexible Dragon Scale
 }
 
 monster.attacks = {

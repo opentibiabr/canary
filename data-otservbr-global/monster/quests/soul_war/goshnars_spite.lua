@@ -72,25 +72,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 23375, chance = 80000 }, -- supreme health potion
-	{ id = 7443, chance = 80000 }, -- bullseye potion
-	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 32623, chance = 80000 }, -- giant topaz
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 32622, chance = 80000 }, -- giant amethyst
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 33952, chance = 80000 }, -- figurine of spite
-	{ id = 33926, chance = 80000 }, -- spites spirit
-	{ id = 34075, chance = 80000 }, -- the skull of a beast
-	{ id = 34072, chance = 80000 }, -- spectral horseshoe
-	{ id = 34109, chance = 80000 }, -- bag you desire
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 7439, chance = 80000 }, -- berserk potion
+	{ id = 3043, chance = 100000 }, -- Crystal Coin
+	{ id = 23375, chance = 56250 }, -- Supreme Health Potion
+	{ id = 7443, chance = 43750 }, -- Bullseye Potion
+	{ id = 23374, chance = 40625 }, -- Ultimate Spirit Potion
+	{ id = 3041, chance = 15625 }, -- Blue Gem
+	{ id = 32623, chance = 34374 }, -- Giant Topaz
+	{ id = 3037, chance = 43750 }, -- Yellow Gem
+	{ id = 23373, chance = 65624 }, -- Ultimate Mana Potion
+	{ id = 32622, chance = 18750 }, -- Giant Amethyst
+	{ id = 7440, chance = 15625 }, -- Mastermind Potion
+	{ id = 3038, chance = 34374 }, -- Green Gem
+	{ id = 3039, chance = 40000 }, -- Red Gem
+	{ id = 33952, chance = 1000 }, -- Figurine of Spite
+	{ id = 33926, chance = 11111 }, -- Spite's Spirit
+	{ id = 34075, chance = 1000 }, -- The Skull of a Beast
+	{ id = 34072, chance = 22222 }, -- Spectral Horseshoe
+	{ id = 34109, chance = 50000 }, -- Bag You Desire
+	{ id = 3036, chance = 23333 }, -- Violet Gem
+	{ id = 281, chance = 33333 }, -- Giant Shimmering Pearl
+	{ id = 7439, chance = 33333 }, -- Berserk Potion
 }
 
 monster.attacks = {

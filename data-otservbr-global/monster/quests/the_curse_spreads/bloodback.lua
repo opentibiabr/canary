@@ -76,28 +76,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 22053, chance = 80000 }, -- wereboar hooves
-	{ id = 22054, chance = 80000 }, -- wereboar tusks
-	{ id = 3031, chance = 80000, maxCount = 74 }, -- gold coin
-	{ id = 676, chance = 80000, maxCount = 3 }, -- small enchanted ruby
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 7432, chance = 80000 }, -- furry club
-	{ id = 22087, chance = 80000 }, -- wereboar loincloth
-	{ id = 16126, chance = 23000, maxCount = 2 }, -- red crystal fragment
-	{ id = 3081, chance = 23000 }, -- stone skin amulet
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 22085, chance = 23000 }, -- fur armor
-	{ id = 7419, chance = 23000 }, -- dreaded cleaver
-	{ id = 22102, chance = 5000 }, -- wereboar trophy
-	{ id = 22516, chance = 5000 }, -- silver token
-	{ id = 7452, chance = 5000 }, -- spiked squelcher
-	{ id = 22060, chance = 5000 }, -- werewolf amulet
-	{ id = 7439, chance = 5000 }, -- berserk potion
-	{ id = 7457, chance = 5000 }, -- fur boots
-	{ id = 22084, chance = 260 }, -- wolf backpack
-	{ id = 22083, chance = 80000 }, -- moonlight crystals
+	{ id = 3035, chance = 100000, maxCount = 6 }, -- Platinum Coin
+	{ id = 22053, chance = 100000 }, -- Wereboar Hooves
+	{ id = 22054, chance = 100000 }, -- Wereboar Tusks
+	{ id = 3031, chance = 82326, maxCount = 74 }, -- Gold Coin
+	{ id = 676, chance = 32669, maxCount = 3 }, -- Small Enchanted Ruby
+	{ id = 239, chance = 35169 }, -- Great Health Potion
+	{ id = 3039, chance = 30992 }, -- Red Gem
+	{ id = 7432, chance = 30071 }, -- Furry Club
+	{ id = 22087, chance = 30013 }, -- Wereboar Loincloth
+	{ id = 16126, chance = 19399, maxCount = 2 }, -- Red Crystal Fragment
+	{ id = 3081, chance = 21798 }, -- Stone Skin Amulet
+	{ id = 7643, chance = 13972 }, -- Ultimate Health Potion
+	{ id = 22085, chance = 7202 }, -- Fur Armor
+	{ id = 7419, chance = 5962 }, -- Dreaded Cleaver
+	{ id = 22102, chance = 3650 }, -- Wereboar Trophy
+	{ id = 22516, chance = 2134 }, -- Silver Token
+	{ id = 7452, chance = 2579 }, -- Spiked Squelcher
+	{ id = 22060, chance = 2936 }, -- Werewolf Amulet
+	{ id = 7439, chance = 1332 }, -- Berserk Potion
+	{ id = 7457, chance = 622 }, -- Fur Boots
+	{ id = 22084, chance = 1000 }, -- Wolf Backpack
+	{ id = 22083, chance = 2850 }, -- Moonlight Crystals
 }
 
 monster.attacks = {

@@ -73,26 +73,27 @@ monster.voices = {
 monster.summons = {}
 
 monster.loot = {
-	{ id = 37613, chance = 80000 }, -- morshabaals brain
-	{ id = 37810, chance = 80000 }, -- morshabaals extract
-	{ id = 37611, chance = 80000 }, -- morshabaals mask
-	{ id = 37608, chance = 80000 }, -- green demon armor
-	{ id = 37609, chance = 80000 }, -- green demon helmet
-	{ id = 37607, chance = 80000 }, -- green demon legs
-	{ id = 37610, chance = 80000 }, -- green demon slippers
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 14112, chance = 80000 }, -- bar of gold
-	{ id = 30053, chance = 80000 }, -- dragon figurine
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 30054, chance = 80000 }, -- unicorn figurine
-	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
-	{ id = 31323, chance = 80000 }, -- sea horse figurine
-	{ id = 3309, chance = 80000 }, -- thunder hammer
-	{ id = 33780, chance = 80000 }, -- watermelon tourmaline
+	{ id = 37613, chance = 1000 }, -- Morshabaal's Brain
+	{ id = 37810, chance = 100000 }, -- Morshabaal's Extract
+	{ id = 37611, chance = 10526 }, -- Morshabaal's Mask
+	{ id = 37608, chance = 12500 }, -- Green Demon Armor
+	{ id = 37609, chance = 12500 }, -- Green Demon Helmet
+	{ id = 37607, chance = 1000 }, -- Green Demon Legs
+	{ id = 37610, chance = 1000 }, -- Green Demon Slippers
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3043, chance = 72727 }, -- Crystal Coin
+	{ id = 33780, chance = 36363, maxCount = 2 }, -- Watermelon Tourmaline (Pear)
+	{ id = 33779, chance = 1000 }, -- Watermelon Tourmaline (Slice)
+	{ id = 30060, chance = 22727 }, -- Giant Emerald
+	{ id = 14112, chance = 18181 }, -- Bar of Gold
+	{ id = 30053, chance = 18181 }, -- Dragon Figurine
+	{ id = 7643, chance = 31578 }, -- Ultimate Health Potion
+	{ id = 30054, chance = 15789 }, -- Unicorn Figurine
+	{ id = 23374, chance = 40909 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 35714 }, -- Ultimate Mana Potion
+	{ id = 32625, chance = 36363 }, -- Amber with a Dragonfly
+	{ id = 31323, chance = 27272 }, -- Sea Horse Figurine
+	{ id = 3309, chance = 1000 }, -- Thunder Hammer
 }
 
 monster.attacks = {

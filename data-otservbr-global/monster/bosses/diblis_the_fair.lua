@@ -79,15 +79,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 99 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 11449, chance = 80000 }, -- blood preservation
-	{ id = 3027, chance = 5000 }, -- black pearl
-	{ id = 3098, chance = 5000 }, -- ring of healing
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 3434, chance = 1000 }, -- vampire shield
-	{ id = 8075, chance = 260 }, -- spellbook of lost souls
-	{ id = 8192, chance = 80000 }, -- vampire lord token
+	{ id = 3031, chance = 100000, maxCount = 99 }, -- Gold Coin
+	{ id = 3035, chance = 9710, maxCount = 5 }, -- Platinum Coin
+	{ id = 11449, chance = 91260 }, -- Blood Preservation
+	{ id = 3114, chance = 12620 }, -- Skull (Item)
+	{ id = 3027, chance = 2701 }, -- Black Pearl
+	{ id = 3098, chance = 10811 }, -- Ring of Healing
+	{ id = 236, chance = 25470 }, -- Strong Health Potion
+	{ id = 3434, chance = 17113 }, -- Vampire Shield
+	{ id = 8075, chance = 1940 }, -- Spellbook of Lost Souls
+	{ id = 8192, chance = 100000 }, -- Vampire Lord Token
 }
 
 monster.attacks = {

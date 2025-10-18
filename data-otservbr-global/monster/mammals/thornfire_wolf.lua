@@ -77,14 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 53 }, -- gold coin
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 763, chance = 23000, maxCount = 8 }, -- flaming arrow
-	{ id = 5897, chance = 5000 }, -- wolf paw
-	{ id = 3028, chance = 1000 }, -- small diamond
-	{ id = 3071, chance = 1000 }, -- wand of inferno
-	{ id = 9636, chance = 1000 }, -- fiery heart
-	{ id = 3280, chance = 260 }, -- fire sword
+	{ id = 3031, chance = 78790, maxCount = 53 }, -- Gold Coin
+	{ id = 3577, chance = 27270 }, -- Meat
+	{ id = 763, chance = 12120, maxCount = 8 }, -- Flaming Arrow
+	{ id = 5897, chance = 3030 }, -- Wolf Paw
+	{ id = 3028, chance = 1000 }, -- Small Diamond
+	{ id = 3071, chance = 1000 }, -- Wand of Inferno
+	{ id = 9636, chance = 9090 }, -- Fiery Heart
+	{ id = 3280, chance = 1000 }, -- Fire Sword
 }
 
 monster.attacks = {

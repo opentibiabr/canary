@@ -68,62 +68,65 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 7440, chance = 80000, maxCount = 4 }, -- mastermind potion
-	{ id = 3035, chance = 80000, maxCount = 350 }, -- platinum coin
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 16119, chance = 80000, maxCount = 6 }, -- blue crystal shard
-	{ id = 3328, chance = 80000 }, -- daramian waraxe
-	{ id = 16120, chance = 80000, maxCount = 6 }, -- violet crystal shard
-	{ id = 9632, chance = 80000, maxCount = 3 }, -- ancient stone
-	{ id = 7642, chance = 80000, maxCount = 24 }, -- great spirit potion
-	{ id = 16121, chance = 80000, maxCount = 6 }, -- green crystal shard
-	{ id = 22193, chance = 80000, maxCount = 3 }, -- onyx chip
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 8084, chance = 80000 }, -- springsprout rod
-	{ id = 238, chance = 80000, maxCount = 24 }, -- great mana potion
-	{ id = 5892, chance = 80000, maxCount = 6 }, -- huge chunk of crude iron
-	{ id = 11454, chance = 80000 }, -- luminous orb
-	{ id = 3018, chance = 80000 }, -- scarab amulet
-	{ id = 830, chance = 80000 }, -- terra hood
-	{ id = 7643, chance = 80000, maxCount = 24 }, -- ultimate health potion
-	{ id = 3037, chance = 80000, maxCount = 2 }, -- yellow gem
-	{ id = 3041, chance = 80000, maxCount = 2 }, -- blue gem
-	{ id = 7428, chance = 80000 }, -- bonebreaker
-	{ id = 3339, chance = 80000 }, -- djinn blade
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 3042, chance = 80000, maxCount = 50 }, -- scarab coin
-	{ id = 3440, chance = 80000 }, -- scarab shield
-	{ id = 3033, chance = 80000, maxCount = 20 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 20 }, -- small diamond
-	{ id = 3032, chance = 80000, maxCount = 20 }, -- small emerald
-	{ id = 3030, chance = 80000, maxCount = 20 }, -- small ruby
-	{ id = 9057, chance = 80000, maxCount = 20 }, -- small topaz
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 27655, chance = 80000 }, -- plan for a makeshift armour
-	{ id = 27657, chance = 80000 }, -- crude wood planks
-	{ id = 27656, chance = 80000 }, -- tinged pot
-	{ id = 8054, chance = 80000 }, -- earthborn titan armor
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 812, chance = 80000 }, -- terra legs
-	{ id = 9631, chance = 80000 }, -- scarab pincers
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 5891, chance = 80000 }, -- enchanted chicken wing
-	{ id = 811, chance = 80000 }, -- terra mantle
-	{ id = 3047, chance = 80000 }, -- magic light wand
-	{ id = 12304, chance = 80000 }, -- maxilla maximus
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 13998, chance = 80000 }, -- depth scutum
-	{ id = 22746, chance = 80000 }, -- ancient amulet
-	{ id = 14042, chance = 80000 }, -- warriors shield
-	{ id = 21981, chance = 80000 }, -- oriental shoes
-	{ id = 27605, chance = 80000 }, -- candle stump
-	{ id = 7382, chance = 80000 }, -- demonrage sword
-	{ id = 3331, chance = 80000 }, -- ravagers axe
-	{ id = 12509, chance = 80000 }, -- scorpion sceptre
-	{ id = 8053, chance = 80000 }, -- fireborn giant armor
-	{ id = 8062, chance = 80000 }, -- robe of the underworld
+	{ id = 7440, chance = 99600, maxCount = 4 }, -- Mastermind Potion
+	{ id = 3035, chance = 100000, maxCount = 350 }, -- Platinum Coin
+	{ id = 3098, chance = 99600 }, -- Ring of Healing
+	{ id = 16119, chance = 63600, maxCount = 6 }, -- Blue Crystal Shard
+	{ id = 3328, chance = 74400 }, -- Daramian Waraxe
+	{ id = 16120, chance = 62800, maxCount = 6 }, -- Violet Crystal Shard
+	{ id = 9632, chance = 60800, maxCount = 3 }, -- Ancient Stone
+	{ id = 7642, chance = 52000, maxCount = 24 }, -- Great Spirit Potion
+	{ id = 16121, chance = 63600, maxCount = 6 }, -- Green Crystal Shard
+	{ id = 22193, chance = 60000, maxCount = 3 }, -- Onyx Chip
+	{ id = 22516, chance = 47200 }, -- Silver Token
+	{ id = 8084, chance = 63600 }, -- Springsprout Rod
+	{ id = 238, chance = 55200, maxCount = 24 }, -- Great Mana Potion
+	{ id = 5892, chance = 31600, maxCount = 6 }, -- Huge Chunk of Crude Iron
+	{ id = 11454, chance = 22400 }, -- Luminous Orb
+	{ id = 3018, chance = 13600 }, -- Scarab Amulet
+	{ id = 830, chance = 7200 }, -- Terra Hood
+	{ id = 7643, chance = 56800, maxCount = 24 }, -- Ultimate Health Potion
+	{ id = 3037, chance = 16800, maxCount = 2 }, -- Yellow Gem
+	{ id = 3041, chance = 20000, maxCount = 2 }, -- Blue Gem
+	{ id = 7428, chance = 10000 }, -- Bonebreaker
+	{ id = 3339, chance = 7600 }, -- Djinn Blade
+	{ id = 281, chance = 12400, maxCount = 2 }, -- Giant Shimmering Pearl
+	{ id = 22721, chance = 54000 }, -- Gold Token
+	{ id = 3039, chance = 17600, maxCount = 2 }, -- Red Gem
+	{ id = 3042, chance = 34800, maxCount = 50 }, -- Scarab Coin
+	{ id = 3440, chance = 10400 }, -- Scarab Shield
+	{ id = 3033, chance = 14400, maxCount = 20 }, -- Small Amethyst
+	{ id = 3028, chance = 16000, maxCount = 20 }, -- Small Diamond
+	{ id = 3032, chance = 17600, maxCount = 20 }, -- Small Emerald
+	{ id = 3030, chance = 16000, maxCount = 20 }, -- Small Ruby
+	{ id = 9057, chance = 22800, maxCount = 20 }, -- Small Topaz
+	{ id = 8082, chance = 12400 }, -- Underworld Rod
+	{ id = 27655, chance = 2580 }, -- Plan for a Makeshift Armour
+	{ id = 27657, chance = 2800 }, -- Crude Wood Planks
+	{ id = 27656, chance = 2400 }, -- Tinged Pot
+	{ id = 8054, chance = 1000 }, -- Earthborn Titan Armor
+	{ id = 5904, chance = 28800 }, -- Magic Sulphur
+	{ id = 812, chance = 3200 }, -- Terra Legs
+	{ id = 9631, chance = 99600 }, -- Scarab Pincers
+	{ id = 3043, chance = 16400 }, -- Crystal Coin
+	{ id = 5891, chance = 1052 }, -- Enchanted Chicken Wing
+	{ id = 811, chance = 1600 }, -- Terra Mantle
+	{ id = 3046, chance = 11200 }, -- Magic Light Wand
+	{ id = 12304, chance = 2139 }, -- Maxilla Maximus
+	{ id = 3038, chance = 15200 }, -- Green Gem
+	{ id = 3036, chance = 4800 }, -- Violet Gem
+	{ id = 13998, chance = 2139 }, -- Depth Scutum
+	{ id = 3025, chance = 6400 }, -- Ancient Amulet
+	{ id = 14042, chance = 2800 }, -- Warrior's Shield
+	{ id = 21981, chance = 1052 }, -- Oriental Shoes
+	{ id = 27605, chance = 1086 }, -- Candle Stump
+	{ id = 7382, chance = 2173 }, -- Demonrage Sword
+	{ id = 3331, chance = 1587 }, -- Ravager's Axe
+	{ id = 12509, chance = 1000 }, -- Scorpion Sceptre
+	{ id = 25360, chance = 1000 }, -- Heart of the Mountain (Item)
+	{ id = 8053, chance = 1000 }, -- Fireborn Giant Armor
+	{ id = 8062, chance = 1000 }, -- Robe of the Underworld
+	{ id = 50176, chance = 1587 }, -- Depth Claws
 }
 
 monster.attacks = {

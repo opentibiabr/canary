@@ -63,29 +63,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 16123, chance = 80000 }, -- brown crystal splinter
-	{ id = 238, chance = 80000, maxCount = 2 }, -- great mana potion
-	{ id = 11542, chance = 80000 }, -- fish tail
-	{ id = 3111, chance = 80000 }, -- fishbone
-	{ id = 20199, chance = 80000 }, -- frazzle skin
-	{ id = 7407, chance = 80000 }, -- haunted blade
-	{ id = 3582, chance = 80000 }, -- ham
-	{ id = 20198, chance = 80000 }, -- frazzle tongue
-	{ id = 7885, chance = 80000 }, -- fish
-	{ id = 3125, chance = 80000 }, -- remains of a fish
-	{ id = 7573, chance = 80000 }, -- bone
-	{ id = 16120, chance = 80000 }, -- violet crystal shard
-	{ id = 16126, chance = 80000 }, -- red crystal fragment
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 5925, chance = 80000 }, -- hardened bone
-	{ id = 3110, chance = 80000 }, -- piece of iron
-	{ id = 3104, chance = 80000 }, -- banana skin
-	{ id = 16279, chance = 80000 }, -- crystal rubbish
-	{ id = 3116, chance = 80000 }, -- big bone
-	{ id = 5880, chance = 80000 }, -- iron ore
-	{ id = 5895, chance = 80000 }, -- fish fin
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 6 }, -- Platinum Coin
+	{ id = 16123, chance = 11110 }, -- Brown Crystal Splinter
+	{ id = 238, chance = 18520, maxCount = 2 }, -- Great Mana Potion
+	{ id = 5951, chance = 7410 }, -- Fish Tail
+	{ id = 3111, chance = 3700 }, -- Fishbone
+	{ id = 20199, chance = 14810 }, -- Frazzle Skin
+	{ id = 3114, chance = 7410 }, -- Skull (Item)
+	{ id = 7407, chance = 7410 }, -- Haunted Blade
+	{ id = 3582, chance = 14810 }, -- Ham
+	{ id = 20198, chance = 18520 }, -- Frazzle Tongue
+	{ id = 3578, chance = 11110 }, -- Fish
+	{ id = 3125, chance = 11110 }, -- Remains of a Fish
+	{ id = 3115, chance = 3700 }, -- Bone
+	{ id = 16120, chance = 7410 }, -- Violet Crystal Shard
+	{ id = 16126, chance = 7410 }, -- Red Crystal Fragment
+	{ id = 239, chance = 7410 }, -- Great Health Potion
+	{ id = 5925, chance = 18520 }, -- Hardened Bone
+	{ id = 3110, chance = 11110 }, -- Piece of Iron
+	{ id = 3104, chance = 3700 }, -- Banana Skin
+	{ id = 16279, chance = 18520 }, -- Crystal Rubbish
+	{ id = 3116, chance = 3700 }, -- Big Bone
+	{ id = 5880, chance = 7410 }, -- Iron Ore
+	{ id = 5895, chance = 3700 }, -- Fish Fin
 }
 
 monster.attacks = {

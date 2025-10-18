@@ -79,55 +79,62 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 200 }, -- gold coin
-	{ id = 9632, chance = 80000 }, -- ancient stone
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 22721, chance = 80000, maxCount = 3 }, -- gold token
-	{ id = 5880, chance = 80000, maxCount = 5 }, -- iron ore
-	{ id = 5887, chance = 80000 }, -- piece of royal steel
-	{ id = 3035, chance = 80000, maxCount = 35 }, -- platinum coin
-	{ id = 22516, chance = 80000, maxCount = 4 }, -- silver token
-	{ id = 16119, chance = 80000, maxCount = 6 }, -- blue crystal shard
-	{ id = 16120, chance = 80000, maxCount = 10 }, -- violet crystal shard
-	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
-	{ id = 238, chance = 80000, maxCount = 10 }, -- great mana potion
-	{ id = 7643, chance = 80000, maxCount = 10 }, -- ultimate health potion
-	{ id = 7642, chance = 80000, maxCount = 10 }, -- great spirit potion
-	{ id = 3029, chance = 80000, maxCount = 20 }, -- small sapphire
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3032, chance = 80000, maxCount = 20 }, -- small emerald
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 9660, chance = 80000 }, -- mystical hourglass
-	{ id = 22194, chance = 80000, maxCount = 2 }, -- opal
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 9057, chance = 80000, maxCount = 20 }, -- small topaz
-	{ id = 5909, chance = 80000, maxCount = 4 }, -- white piece of cloth
-	{ id = 3030, chance = 80000, maxCount = 20 }, -- small ruby
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 3033, chance = 80000, maxCount = 20 }, -- small amethyst
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 5891, chance = 80000 }, -- enchanted chicken wing
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 7437, chance = 80000 }, -- sapphire hammer
-	{ id = 8029, chance = 80000 }, -- silkweaver bow
-	{ id = 8051, chance = 80000 }, -- voltage armor
-	{ id = 3408, chance = 80000 }, -- bonelord helmet
-	{ id = 8076, chance = 80000 }, -- spellscroll of prophecies
-	{ id = 3360, chance = 80000 }, -- golden armor
-	{ id = 3340, chance = 80000 }, -- heavy mace
-	{ id = 7418, chance = 80000 }, -- nightmare blade
-	{ id = 24975, chance = 80000 }, -- astral source
-	{ id = 24971, chance = 80000 }, -- forbidden tome
-	{ id = 24972, chance = 80000 }, -- key to knowledge
-	{ id = 24976, chance = 80000 }, -- astral glyph
-	{ id = 16160, chance = 80000 }, -- crystalline sword
-	{ id = 20080, chance = 80000 }, -- umbral hammer
-	{ id = 20079, chance = 80000 }, -- crude umbral hammer
-	{ id = 5809, chance = 80000 }, -- soul stone
-	{ id = 7450, chance = 80000 }, -- hammer of prophecy
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 9632, chance = 100000 }, -- Ancient Stone
+	{ id = 22193, chance = 100000 }, -- Onyx Chip
+	{ id = 22721, chance = 99395, maxCount = 3 }, -- Gold Token
+	{ id = 5880, chance = 99395, maxCount = 5 }, -- Iron Ore
+	{ id = 5887, chance = 99395 }, -- Piece of Royal Steel
+	{ id = 3035, chance = 99395, maxCount = 35 }, -- Platinum Coin
+	{ id = 22516, chance = 99395, maxCount = 4 }, -- Silver Token
+	{ id = 16119, chance = 71601, maxCount = 6 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 67673, maxCount = 10 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 64652, maxCount = 3 }, -- Green Crystal Shard
+	{ id = 238, chance = 60422, maxCount = 10 }, -- Great Mana Potion
+	{ id = 7643, chance = 53172, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 54682, maxCount = 10 }, -- Great Spirit Potion
+	{ id = 3029, chance = 26888, maxCount = 20 }, -- Small Sapphire
+	{ id = 3039, chance = 27794 }, -- Red Gem
+	{ id = 3037, chance = 24471 }, -- Yellow Gem
+	{ id = 9058, chance = 20241 }, -- Gold Ingot
+	{ id = 3032, chance = 21450, maxCount = 20 }, -- Small Emerald
+	{ id = 3041, chance = 19939 }, -- Blue Gem
+	{ id = 9660, chance = 17220 }, -- Mystical Hourglass
+	{ id = 22194, chance = 16918, maxCount = 2 }, -- Opal
+	{ id = 3038, chance = 17220 }, -- Green Gem
+	{ id = 9057, chance = 17220, maxCount = 20 }, -- Small Topaz
+	{ id = 5909, chance = 16012, maxCount = 4 }, -- White Piece of Cloth
+	{ id = 3030, chance = 14199, maxCount = 20 }, -- Small Ruby
+	{ id = 5904, chance = 15407 }, -- Magic Sulphur
+	{ id = 281, chance = 17220 }, -- Giant Shimmering Pearl
+	{ id = 3033, chance = 14501, maxCount = 20 }, -- Small Amethyst
+	{ id = 23533, chance = 11782 }, -- Ring of Red Plasma
+	{ id = 5891, chance = 10876 }, -- Enchanted Chicken Wing
+	{ id = 3324, chance = 11480 }, -- Skull Staff
+	{ id = 3036, chance = 9969 }, -- Violet Gem
+	{ id = 7437, chance = 9969 }, -- Sapphire Hammer
+	{ id = 24954, chance = 1000 }, -- Part of a Rune (One)
+	{ id = 24955, chance = 1000 }, -- Part of a Rune (Two)
+	{ id = 24956, chance = 1000 }, -- Part of a Rune (Three)
+	{ id = 24957, chance = 1000 }, -- Part of a Rune (Four)
+	{ id = 24958, chance = 1000 }, -- Part of a Rune (Five)
+	{ id = 24959, chance = 1000 }, -- Part of a Rune (Six)
+	{ id = 8029, chance = 4833 }, -- Silkweaver Bow
+	{ id = 8051, chance = 3323 }, -- Voltage Armor
+	{ id = 3408, chance = 2114 }, -- Bonelord Helmet
+	{ id = 8076, chance = 1423 }, -- Spellscroll of Prophecies
+	{ id = 3360, chance = 1779 }, -- Golden Armor
+	{ id = 3340, chance = 2416 }, -- Heavy Mace
+	{ id = 7418, chance = 711 }, -- Nightmare Blade
+	{ id = 24975, chance = 1208 }, -- Astral Source
+	{ id = 24971, chance = 906 }, -- Forbidden Tome
+	{ id = 24972, chance = 711 }, -- Key to Knowledge
+	{ id = 24976, chance = 906 }, -- Astral Glyph
+	{ id = 16160, chance = 355 }, -- Crystalline Sword
+	{ id = 20080, chance = 355 }, -- Umbral Hammer
+	{ id = 20079, chance = 1000 }, -- Crude Umbral Hammer
+	{ id = 5809, chance = 355 }, -- Soul Stone
+	{ id = 7450, chance = 1000 }, -- Hammer of Prophecy
 }
 
 monster.attacks = {

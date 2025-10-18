@@ -60,17 +60,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 14013, chance = 80000 }, -- deeptags
-	{ id = 14012, chance = 80000 }, -- deepling warts
-	{ id = 14085, chance = 80000 }, -- deepling filet
-	{ id = 3052, chance = 80000 }, -- life ring
-	{ id = 14252, chance = 80000 }, -- vortex bolt
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 14041, chance = 80000 }, -- deepling ridge
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 14040, chance = 80000 }, -- warriors axe
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 239, chance = 11640 }, -- Great Health Potion
+	{ id = 14013, chance = 9590 }, -- Deeptags
+	{ id = 14012, chance = 10960 }, -- Deepling Warts
+	{ id = 14085, chance = 10960 }, -- Deepling Filet
+	{ id = 3052, chance = 2740 }, -- Life Ring
+	{ id = 14252, chance = 2740 }, -- Vortex Bolt
+	{ id = 238, chance = 9590 }, -- Great Mana Potion
+	{ id = 14041, chance = 13700 }, -- Deepling Ridge
+	{ id = 3032, chance = 1370 }, -- Small Emerald
+	{ id = 14040, chance = 1370 }, -- Warrior's Axe
 }
 
 monster.attacks = {

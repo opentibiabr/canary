@@ -74,23 +74,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 3032, chance = 80000, maxCount = 2 }, -- small emerald
-	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
-	{ id = 3028, chance = 80000, maxCount = 2 }, -- small diamond
-	{ id = 7642, chance = 80000, maxCount = 2 }, -- great spirit potion
-	{ id = 7368, chance = 80000, maxCount = 10 }, -- assassin star
-	{ id = 3030, chance = 23000, maxCount = 3 }, -- small ruby
-	{ id = 9057, chance = 23000, maxCount = 3 }, -- small topaz
-	{ id = 7365, chance = 23000, maxCount = 15 }, -- onyx arrow
-	{ id = 3036, chance = 23000 }, -- violet gem
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 3038, chance = 23000 }, -- green gem
-	{ id = 28822, chance = 5000 }, -- damaged armor plates
-	{ id = 28823, chance = 5000 }, -- falcon crest
-	{ id = 3360, chance = 260 }, -- golden armor
-	{ id = 3414, chance = 260 }, -- mastermind shield
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3035, chance = 89930, maxCount = 6 }, -- Platinum Coin
+	{ id = 3032, chance = 45494, maxCount = 2 }, -- Small Emerald
+	{ id = 3033, chance = 45708, maxCount = 2 }, -- Small Amethyst
+	{ id = 3028, chance = 45288, maxCount = 2 }, -- Small Diamond
+	{ id = 7642, chance = 46818, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 7368, chance = 28570, maxCount = 10 }, -- Assassin Star
+	{ id = 3030, chance = 22747, maxCount = 3 }, -- Small Ruby
+	{ id = 9057, chance = 22529, maxCount = 3 }, -- Small Topaz
+	{ id = 7365, chance = 17207, maxCount = 15 }, -- Onyx Arrow
+	{ id = 3036, chance = 4822 }, -- Violet Gem
+	{ id = 3039, chance = 7296 }, -- Red Gem
+	{ id = 3038, chance = 5465 }, -- Green Gem
+	{ id = 281, chance = 2375 }, -- Giant Shimmering Pearl (Green)
+	{ id = 28822, chance = 1000 }, -- Damaged Armor Plates
+	{ id = 28823, chance = 1018 }, -- Falcon Crest
+	{ id = 3360, chance = 364 }, -- Golden Armor
+	{ id = 3414, chance = 522 }, -- Mastermind Shield
+	{ id = 3081, chance = 140 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

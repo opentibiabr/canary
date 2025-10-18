@@ -77,23 +77,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 75 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
-	{ id = 22054, chance = 23000 }, -- wereboar tusks
-	{ id = 22053, chance = 23000 }, -- wereboar hooves
-	{ id = 22083, chance = 23000 }, -- moonlight crystals
-	{ id = 676, chance = 5000 }, -- small enchanted ruby
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 7643, chance = 5000 }, -- ultimate health potion
-	{ id = 22087, chance = 5000 }, -- wereboar loincloth
-	{ id = 7439, chance = 1000 }, -- berserk potion
-	{ id = 22060, chance = 1000 }, -- werewolf amulet
-	{ id = 7432, chance = 1000 }, -- furry club
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 22085, chance = 260 }, -- fur armor
-	{ id = 7419, chance = 260 }, -- dreaded cleaver
-	{ id = 22102, chance = 260 }, -- wereboar trophy
+	{ id = 3031, chance = 79493, maxCount = 75 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 3725, chance = 7125, maxCount = 2 }, -- Brown Mushroom
+	{ id = 22054, chance = 14891 }, -- Wereboar Tusks
+	{ id = 22053, chance = 14857 }, -- Wereboar Hooves
+	{ id = 22083, chance = 2210 }, -- Moonlight Crystals
+	{ id = 676, chance = 1334 }, -- Small Enchanted Ruby
+	{ id = 236, chance = 4772 }, -- Strong Health Potion
+	{ id = 7643, chance = 1973 }, -- Ultimate Health Potion
+	{ id = 22087, chance = 1615 }, -- Wereboar Loincloth
+	{ id = 7439, chance = 954 }, -- Berserk Potion
+	{ id = 22060, chance = 682 }, -- Werewolf Amulet
+	{ id = 7432, chance = 727 }, -- Furry Club
+	{ id = 3081, chance = 937 }, -- Stone Skin Amulet
+	{ id = 22085, chance = 429 }, -- Fur Armor
+	{ id = 7419, chance = 83 }, -- Dreaded Cleaver
+	{ id = 22102, chance = 186 }, -- Wereboar Trophy
 }
 
 monster.attacks = {

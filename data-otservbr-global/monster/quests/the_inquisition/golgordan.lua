@@ -74,49 +74,49 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 262 }, -- gold coin
-	{ id = 239, chance = 80000, maxCount = 2 }, -- great health potion
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 3047, chance = 80000 }, -- magic light wand
-	{ id = 3275, chance = 80000 }, -- double axe
-	{ id = 3033, chance = 80000, maxCount = 20 }, -- small amethyst
-	{ id = 3063, chance = 80000 }, -- gold ring
-	{ id = 3290, chance = 80000 }, -- silver dagger
-	{ id = 3029, chance = 80000, maxCount = 10 }, -- small sapphire
-	{ id = 3049, chance = 80000 }, -- stealth ring
-	{ id = 3051, chance = 80000 }, -- energy ring
-	{ id = 3027, chance = 80000, maxCount = 15 }, -- black pearl
-	{ id = 3054, chance = 80000 }, -- silver amulet
-	{ id = 3032, chance = 80000, maxCount = 10 }, -- small emerald
-	{ id = 3356, chance = 80000 }, -- devil helmet
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 3320, chance = 80000 }, -- fire axe
-	{ id = 3420, chance = 80000 }, -- demon shield
-	{ id = 3026, chance = 80000, maxCount = 15 }, -- white pearl
-	{ id = 7365, chance = 80000, maxCount = 8 }, -- onyx arrow
-	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
-	{ id = 3281, chance = 80000 }, -- giant sword
-	{ id = 3284, chance = 80000 }, -- ice rapier
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 6299, chance = 80000 }, -- death ring
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 3062, chance = 80000 }, -- mind stone
-	{ id = 3084, chance = 80000 }, -- protection amulet
-	{ id = 3070, chance = 80000 }, -- moonlight rod
-	{ id = 3048, chance = 80000 }, -- might ring
-	{ id = 3066, chance = 80000 }, -- snakebite rod
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 22196, chance = 80000 }, -- crystal ball
-	{ id = 3072, chance = 80000 }, -- wand of decay
-	{ id = 3069, chance = 80000 }, -- necrotic rod
-	{ id = 7368, chance = 80000, maxCount = 6 }, -- assassin star
-	{ id = 3306, chance = 80000 }, -- golden sickle
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3414, chance = 80000 }, -- mastermind shield
-	{ id = 3079, chance = 80000 }, -- boots of haste
-	{ id = 3364, chance = 80000 }, -- golden legs
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 9179, chance = 80000 }, -- voodoo doll
+	{ id = 3031, chance = 100000, maxCount = 262 }, -- Gold Coin
+	{ id = 239, chance = 37710, maxCount = 2 }, -- Great Health Potion
+	{ id = 3098, chance = 26921 }, -- Ring of Healing
+	{ id = 3046, chance = 25211 }, -- Magic Light Wand
+	{ id = 3275, chance = 20430 }, -- Double Axe
+	{ id = 3033, chance = 19130, maxCount = 20 }, -- Small Amethyst
+	{ id = 3063, chance = 18379 }, -- Gold Ring
+	{ id = 3290, chance = 15519 }, -- Silver Dagger
+	{ id = 3029, chance = 16242, maxCount = 10 }, -- Small Sapphire
+	{ id = 3049, chance = 16960 }, -- Stealth Ring
+	{ id = 3051, chance = 16520 }, -- Energy Ring
+	{ id = 3027, chance = 15220, maxCount = 15 }, -- Black Pearl
+	{ id = 3054, chance = 14827 }, -- Silver Amulet
+	{ id = 3032, chance = 15220, maxCount = 10 }, -- Small Emerald
+	{ id = 3356, chance = 9570 }, -- Devil Helmet
+	{ id = 3081, chance = 10870 }, -- Stone Skin Amulet
+	{ id = 3320, chance = 10256 }, -- Fire Axe
+	{ id = 3420, chance = 8897 }, -- Demon Shield
+	{ id = 3026, chance = 8260, maxCount = 15 }, -- White Pearl
+	{ id = 7365, chance = 8260, maxCount = 8 }, -- Onyx Arrow
+	{ id = 3028, chance = 8978, maxCount = 5 }, -- Small Diamond
+	{ id = 3281, chance = 6520 }, -- Giant Sword
+	{ id = 3284, chance = 7389 }, -- Ice Rapier
+	{ id = 9058, chance = 7389 }, -- Gold Ingot
+	{ id = 6299, chance = 6894 }, -- Death Ring
+	{ id = 3324, chance = 5220 }, -- Skull Staff
+	{ id = 3062, chance = 4350 }, -- Mind Stone
+	{ id = 3084, chance = 5980 }, -- Protection Amulet
+	{ id = 3070, chance = 3910 }, -- Moonlight Rod
+	{ id = 3048, chance = 3910 }, -- Might Ring
+	{ id = 3066, chance = 1740 }, -- Snakebite Rod
+	{ id = 3041, chance = 1300 }, -- Blue Gem
+	{ id = 3076, chance = 2170 }, -- Crystal Ball
+	{ id = 3072, chance = 1719 }, -- Wand of Decay
+	{ id = 3069, chance = 1300 }, -- Necrotic Rod
+	{ id = 7368, chance = 429, maxCount = 6 }, -- Assassin Star
+	{ id = 3306, chance = 429 }, -- Golden Sickle
+	{ id = 3038, chance = 429 }, -- Green Gem
+	{ id = 3414, chance = 429 }, -- Mastermind Shield
+	{ id = 3079, chance = 2170 }, -- Boots of Haste
+	{ id = 3364, chance = 429 }, -- Golden Legs
+	{ id = 6499, chance = 7331 }, -- Demonic Essence
+	{ id = 3002, chance = 1000 }, -- Voodoo Doll
 }
 
 monster.attacks = {

@@ -76,43 +76,43 @@ monster.summon = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
-	{ id = 23373, chance = 80000, maxCount = 20 }, -- ultimate mana potion
-	{ id = 23375, chance = 80000, maxCount = 20 }, -- supreme health potion
-	{ id = 23374, chance = 80000, maxCount = 14 }, -- ultimate spirit potion
-	{ id = 5888, chance = 80000, maxCount = 4 }, -- piece of hell steel
-	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
-	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
-	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 830, chance = 80000 }, -- terra hood
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 3391, chance = 80000 }, -- crusader helmet
-	{ id = 5885, chance = 80000 }, -- flask of warriors sweat
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 31590, chance = 80000 }, -- young lich worm
-	{ id = 31588, chance = 80000 }, -- ancient liche bone
-	{ id = 22516, chance = 80000, maxCount = 3 }, -- silver token
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 31579, chance = 80000 }, -- embrace of nature
-	{ id = 31589, chance = 1000 }, -- rotten heart
-	{ id = 31595, chance = 1000 }, -- noble amulet
-	{ id = 31578, chance = 1000 }, -- bear skin
-	{ id = 31577, chance = 1000 }, -- terra helmet
-	{ id = 31738, chance = 260 }, -- final judgement
+	{ id = 3035, chance = 97395, maxCount = 5 }, -- Platinum Coin
+	{ id = 3043, chance = 18229, maxCount = 2 }, -- Crystal Coin
+	{ id = 23373, chance = 55989, maxCount = 20 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 53906, maxCount = 20 }, -- Supreme Health Potion
+	{ id = 23374, chance = 55989, maxCount = 14 }, -- Ultimate Spirit Potion
+	{ id = 5888, chance = 25520, maxCount = 4 }, -- Piece of Hell Steel
+	{ id = 7439, chance = 16406, maxCount = 10 }, -- Berserk Potion
+	{ id = 7440, chance = 20572, maxCount = 10 }, -- Mastermind Potion
+	{ id = 7443, chance = 20312, maxCount = 10 }, -- Bullseye Potion
+	{ id = 9058, chance = 11979 }, -- Gold Ingot
+	{ id = 830, chance = 8333 }, -- Terra Hood
+	{ id = 3037, chance = 34635 }, -- Yellow Gem
+	{ id = 3041, chance = 19791 }, -- Blue Gem
+	{ id = 3038, chance = 17968 }, -- Green Gem
+	{ id = 3039, chance = 36718 }, -- Red Gem
+	{ id = 3036, chance = 11458 }, -- Violet Gem
+	{ id = 23544, chance = 9114 }, -- Collar of Red Plasma
+	{ id = 23526, chance = 9114 }, -- Collar of Blue Plasma
+	{ id = 23543, chance = 10416 }, -- Collar of Green Plasma
+	{ id = 23533, chance = 5729 }, -- Ring of Red Plasma
+	{ id = 23529, chance = 7291 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 8072 }, -- Ring of Green Plasma
+	{ id = 3391, chance = 18750 }, -- Crusader Helmet
+	{ id = 5885, chance = 16927 }, -- Flask of Warrior's Sweat
+	{ id = 7427, chance = 19270 }, -- Chaos Mace
+	{ id = 31590, chance = 9114 }, -- Young Lich Worm
+	{ id = 31588, chance = 5468 }, -- Ancient Liche Bone
+	{ id = 22516, chance = 100000, maxCount = 3 }, -- Silver Token
+	{ id = 30060, chance = 2083 }, -- Giant Emerald
+	{ id = 30061, chance = 4427 }, -- Giant Sapphire
+	{ id = 30059, chance = 1250 }, -- Giant Ruby
+	{ id = 31579, chance = 2645 }, -- Embrace of Nature
+	{ id = 31589, chance = 4687 }, -- Rotten Heart
+	{ id = 31595, chance = 625 }, -- Noble Amulet
+	{ id = 31578, chance = 1562 }, -- Bear Skin
+	{ id = 31577, chance = 1562 }, -- Terra Helmet
+	{ id = 31738, chance = 1000 }, -- Final Judgement
 }
 
 monster.attacks = {

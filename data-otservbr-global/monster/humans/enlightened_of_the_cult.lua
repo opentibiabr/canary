@@ -88,23 +88,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 70 }, -- gold coin
-	{ id = 9638, chance = 23000 }, -- cultish mask
-	{ id = 11455, chance = 1000 }, -- cultish symbol
-	{ id = 3084, chance = 1000 }, -- protection amulet
-	{ id = 237, chance = 1000 }, -- strong mana potion
-	{ id = 3029, chance = 1000 }, -- small sapphire
-	{ id = 3051, chance = 1000 }, -- energy ring
-	{ id = 5810, chance = 1000 }, -- pirate voodoo doll
-	{ id = 3324, chance = 260 }, -- skull staff
-	{ id = 3055, chance = 260 }, -- platinum amulet
-	{ id = 3071, chance = 260 }, -- wand of inferno
-	{ id = 2995, chance = 260 }, -- piggy bank
-	{ id = 5668, chance = 260 }, -- mysterious voodoo skull
-	{ id = 7426, chance = 260 }, -- amber staff
-	{ id = 11652, chance = 260 }, -- broken key ring
-	{ id = 5801, chance = 260 }, -- jewelled backpack
-	{ id = 3567, chance = 260 }, -- blue robe
+	{ id = 3031, chance = 66371, maxCount = 70 }, -- Gold Coin
+	{ id = 9638, chance = 10064 }, -- Cultish Mask
+	{ id = 2828, chance = 676 }, -- Book (Orange)
+	{ id = 11455, chance = 1000 }, -- Cultish Symbol
+	{ id = 3084, chance = 1231 }, -- Protection Amulet
+	{ id = 237, chance = 817 }, -- Strong Mana Potion
+	{ id = 3029, chance = 475 }, -- Small Sapphire
+	{ id = 6090, chance = 397 }, -- Music Sheet (Fourth Verse)
+	{ id = 3051, chance = 509 }, -- Energy Ring
+	{ id = 5810, chance = 529 }, -- Pirate Voodoo Doll
+	{ id = 3324, chance = 395 }, -- Skull Staff
+	{ id = 3055, chance = 308 }, -- Platinum Amulet
+	{ id = 3071, chance = 240 }, -- Wand of Inferno
+	{ id = 2995, chance = 91 }, -- Piggy Bank
+	{ id = 5668, chance = 152 }, -- Mysterious Voodoo Skull
+	{ id = 7426, chance = 27 }, -- Amber Staff
+	{ id = 11652, chance = 130 }, -- Broken Key Ring
+	{ id = 5801, chance = 130 }, -- Jewelled Backpack
+	{ id = 3567, chance = 135 }, -- Blue Robe
 }
 
 monster.attacks = {

@@ -82,15 +82,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21901, chance = 80000 }, -- glooth glider casing
-	{ id = 21292, chance = 80000 }, -- feedbag
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 8895, chance = 80000 }, -- rusted armor
-	{ id = 21203, chance = 80000 }, -- glooth bag
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 8896, chance = 80000 }, -- slightly rusted armor
-	{ id = 8898, chance = 80000 }, -- rusted legs
-	{ id = 3554, chance = 80000 }, -- steel boots
+	{ id = 21901, chance = 29411 }, -- Glooth Glider Casing
+	{ id = 21292, chance = 11111 }, -- Feedbag
+	{ id = 9058, chance = 4705 }, -- Gold Ingot
+	{ id = 8895, chance = 12941 }, -- Rusted Armor
+	{ id = 21203, chance = 100000 }, -- Glooth Bag
+	{ id = 3035, chance = 45882 }, -- Platinum Coin
+	{ id = 8896, chance = 11764 }, -- Slightly Rusted Armor
+	{ id = 8898, chance = 18421 }, -- Rusted Legs
+	{ id = 3554, chance = 1000 }, -- Steel Boots
 }
 
 monster.attacks = {

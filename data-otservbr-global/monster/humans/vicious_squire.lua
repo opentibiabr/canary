@@ -80,22 +80,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 70 }, -- gold coin
-	{ id = 3446, chance = 23000, maxCount = 10 }, -- bolt
-	{ id = 3349, chance = 23000 }, -- crossbow
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 3033, chance = 5000 }, -- small amethyst
-	{ id = 3028, chance = 5000 }, -- small diamond
-	{ id = 3032, chance = 5000 }, -- small emerald
-	{ id = 3269, chance = 5000 }, -- halberd
-	{ id = 3279, chance = 1000 }, -- war hammer
-	{ id = 3572, chance = 1000 }, -- scarf
-	{ id = 3048, chance = 260 }, -- might ring
-	{ id = 3415, chance = 260 }, -- guardian shield
-	{ id = 3371, chance = 260 }, -- knight legs
-	{ id = 3369, chance = 260 }, -- warrior helmet
-	{ id = 2995, chance = 260 }, -- piggy bank
+	{ id = 3031, chance = 100000, maxCount = 70 }, -- Gold Coin
+	{ id = 3446, chance = 20080, maxCount = 10 }, -- Bolt
+	{ id = 3349, chance = 12960 }, -- Crossbow
+	{ id = 3577, chance = 10660 }, -- Meat
+	{ id = 239, chance = 5860 }, -- Great Health Potion
+	{ id = 3033, chance = 2590 }, -- Small Amethyst
+	{ id = 3028, chance = 2370 }, -- Small Diamond
+	{ id = 3032, chance = 2400 }, -- Small Emerald
+	{ id = 3269, chance = 2490 }, -- Halberd
+	{ id = 3279, chance = 730 }, -- War Hammer
+	{ id = 3572, chance = 600 }, -- Scarf
+	{ id = 3048, chance = 450 }, -- Might Ring
+	{ id = 3415, chance = 310 }, -- Guardian Shield
+	{ id = 3371, chance = 350 }, -- Knight Legs
+	{ id = 3369, chance = 210 }, -- Warrior Helmet
+	{ id = 2995, chance = 50 }, -- Piggy Bank
 }
 
 monster.attacks = {

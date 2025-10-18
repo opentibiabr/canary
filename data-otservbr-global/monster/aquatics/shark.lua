@@ -74,12 +74,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 138 }, -- gold coin
-	{ id = 7885, chance = 80000, maxCount = 4 }, -- fish
-	{ id = 14017, chance = 23000 }, -- deepling scales
-	{ id = 12730, chance = 1000 }, -- eye of a deepling
-	{ id = 3029, chance = 1000 }, -- small sapphire
-	{ id = 5895, chance = 260 }, -- fish fin
+	{ id = 3031, chance = 91369, maxCount = 138 }, -- Gold Coin
+	{ id = 3578, chance = 25080, maxCount = 4 }, -- Fish
+	{ id = 14017, chance = 9680 }, -- Deepling Scales
+	{ id = 12730, chance = 1080 }, -- Eye of a Deepling
+	{ id = 3029, chance = 1090 }, -- Small Sapphire
+	{ id = 282, chance = 439 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 5895, chance = 180 }, -- Fish Fin
 }
 
 monster.attacks = {

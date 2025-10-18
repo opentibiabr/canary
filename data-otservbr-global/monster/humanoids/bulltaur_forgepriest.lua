@@ -79,19 +79,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 45 }, -- platinum coin
-	{ id = 9057, chance = 80000, maxCount = 3 }, -- small topaz
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 5944, chance = 80000 }, -- soul orb
-	{ id = 8074, chance = 80000 }, -- spellbook of mind control
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 27488, chance = 80000 }, -- gold nugget
-	{ id = 825, chance = 80000 }, -- lightning robe
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 32769, chance = 80000 }, -- white gem
-	{ id = 48094, chance = 80000 }, -- bulltaur forgepriest soul core
-	{ id = 16096, chance = 80000 }, -- wand of defiance
-	{ id = 3036, chance = 80000 }, -- violet gem
+	{ id = 3035, chance = 53150, maxCount = 45 }, -- Platinum Coin
+	{ id = 44736, chance = 15830 }, -- Bulltaur Horn
+	{ id = 9057, chance = 9990, maxCount = 3 }, -- Small Topaz
+	{ id = 44741, chance = 7550 }, -- Staff Piece
+	{ id = 9058, chance = 2710 }, -- Gold Ingot
+	{ id = 44742, chance = 3590 }, -- Idol of the Forge
+	{ id = 5944, chance = 1670 }, -- Soul Orb
+	{ id = 8074, chance = 830 }, -- Spellbook of Mind Control
+	{ id = 3041, chance = 1150 }, -- Blue Gem
+	{ id = 3040, chance = 729 }, -- Gold Nugget
+	{ id = 825, chance = 939 }, -- Lightning Robe
+	{ id = 3081, chance = 620 }, -- Stone Skin Amulet
+	{ id = 32769, chance = 570 }, -- White Gem
+	{ id = 16096, chance = 1250 }, -- Wand of Defiance
+	{ id = 3036, chance = 420 }, -- Violet Gem
 }
 
 monster.attacks = {

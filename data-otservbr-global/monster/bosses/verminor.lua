@@ -66,7 +66,9 @@ monster.voices = {
 	{ text = "DEATH TO ALL!", yell = true },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 230, attack = 210 },

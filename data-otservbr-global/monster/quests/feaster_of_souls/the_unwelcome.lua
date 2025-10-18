@@ -79,32 +79,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000, maxCount = 2 }, -- crystal coin
-	{ id = 32770, chance = 80000, maxCount = 2 }, -- diamond
-	{ id = 32771, chance = 80000 }, -- moonstone
-	{ id = 32769, chance = 80000 }, -- white gem
-	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
-	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
-	{ id = 7443, chance = 80000, maxCount = 10 }, -- bullseye potion
-	{ id = 23374, chance = 80000, maxCount = 6 }, -- ultimate spirit potion
-	{ id = 23375, chance = 80000, maxCount = 6 }, -- supreme health potion
-	{ id = 23373, chance = 80000, maxCount = 6 }, -- ultimate mana potion
-	{ id = 32589, chance = 80000 }, -- angel figurine
-	{ id = 32774, chance = 80000 }, -- cursed bone
-	{ id = 32773, chance = 80000 }, -- ivory comb
-	{ id = 32772, chance = 80000 }, -- silver hand mirror
-	{ id = 32703, chance = 80000 }, -- death toll
-	{ id = 32622, chance = 80000 }, -- giant amethyst
-	{ id = 32623, chance = 80000 }, -- giant topaz
-	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
-	{ id = 32599, chance = 80000 }, -- writhing heart
-	{ id = 32600, chance = 80000 }, -- writhing brain
-	{ id = 32630, chance = 80000 }, -- spooky hood
-	{ id = 32591, chance = 80000 }, -- soulforged lantern
-	{ id = 32631, chance = 80000 }, -- ghost claw
-	{ id = 32618, chance = 80000 }, -- soulful legs
-	{ id = 32617, chance = 80000 }, -- fabulous legs
-	{ id = 32624, chance = 80000 }, -- amber with a bug
+	{ id = 3043, chance = 98888, maxCount = 2 }, -- Crystal Coin
+	{ id = 32770, chance = 56666, maxCount = 2 }, -- Diamond
+	{ id = 32771, chance = 54074 }, -- Moonstone
+	{ id = 32769, chance = 10740 }, -- White Gem
+	{ id = 7439, chance = 19629, maxCount = 10 }, -- Berserk Potion
+	{ id = 7440, chance = 26296, maxCount = 10 }, -- Mastermind Potion
+	{ id = 7443, chance = 17777, maxCount = 10 }, -- Bullseye Potion
+	{ id = 23374, chance = 30740, maxCount = 6 }, -- Ultimate Spirit Potion
+	{ id = 23375, chance = 39259, maxCount = 6 }, -- Supreme Health Potion
+	{ id = 23373, chance = 30000, maxCount = 6 }, -- Ultimate Mana Potion
+	{ id = 32589, chance = 11304 }, -- Angel Figurine
+	{ id = 32774, chance = 12592 }, -- Cursed Bone
+	{ id = 32773, chance = 12592 }, -- Ivory Comb
+	{ id = 32772, chance = 10740 }, -- Silver Hand Mirror
+	{ id = 32703, chance = 11111 }, -- Death Toll
+	{ id = 32622, chance = 4444 }, -- Giant Amethyst
+	{ id = 32623, chance = 5882 }, -- Giant Topaz
+	{ id = 32626, chance = 1304 }, -- Amber (Item)
+	{ id = 32625, chance = 2222 }, -- Amber with a Dragonfly
+	{ id = 32599, chance = 3913 }, -- Writhing Heart
+	{ id = 32600, chance = 1176 }, -- Writhing Brain
+	{ id = 32630, chance = 3043 }, -- Spooky Hood
+	{ id = 32591, chance = 14074 }, -- Soulforged Lantern
+	{ id = 32631, chance = 1666 }, -- Ghost Claw
+	{ id = 32618, chance = 2352 }, -- Soulful Legs
+	{ id = 32617, chance = 1176 }, -- Fabulous Legs
+	{ id = 32624, chance = 1739 }, -- Amber with a Bug
 }
 
 monster.attacks = {

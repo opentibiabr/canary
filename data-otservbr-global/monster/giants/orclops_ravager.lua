@@ -78,26 +78,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 120 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 3078, chance = 23000 }, -- mysterious fetish
-	{ id = 3316, chance = 23000 }, -- orcish axe
-	{ id = 3724, chance = 23000, maxCount = 3 }, -- red mushroom
-	{ id = 23811, chance = 23000 }, -- reinvigorating seeds
-	{ id = 24380, chance = 23000 }, -- bone toothpick
-	{ id = 24381, chance = 23000 }, -- beetle carapace
-	{ id = 24382, chance = 23000 }, -- bug meat
-	{ id = 3027, chance = 5000, maxCount = 2 }, -- black pearl
-	{ id = 3030, chance = 5000, maxCount = 3 }, -- small ruby
-	{ id = 7452, chance = 5000 }, -- spiked squelcher
-	{ id = 8015, chance = 5000, maxCount = 2 }, -- onion
-	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
-	{ id = 16123, chance = 5000, maxCount = 2 }, -- brown crystal splinter
-	{ id = 17828, chance = 5000 }, -- pair of iron fists
-	{ id = 2966, chance = 1000 }, -- war drum
-	{ id = 7439, chance = 1000 }, -- berserk potion
-	{ id = 7419, chance = 260 }, -- dreaded cleaver
+	{ id = 3031, chance = 100000, maxCount = 120 }, -- Gold Coin
+	{ id = 3035, chance = 59680 }, -- Platinum Coin
+	{ id = 236, chance = 16250 }, -- Strong Health Potion
+	{ id = 3078, chance = 6240 }, -- Mysterious Fetish
+	{ id = 3316, chance = 8109 }, -- Orcish Axe
+	{ id = 3724, chance = 7990, maxCount = 3 }, -- Red Mushroom
+	{ id = 23811, chance = 10200 }, -- Reinvigorating Seeds
+	{ id = 24380, chance = 18060 }, -- Bone Toothpick
+	{ id = 24381, chance = 18450 }, -- Beetle Carapace
+	{ id = 24382, chance = 19270 }, -- Bug Meat
+	{ id = 3027, chance = 2920, maxCount = 2 }, -- Black Pearl
+	{ id = 3030, chance = 3130, maxCount = 3 }, -- Small Ruby
+	{ id = 7452, chance = 1530 }, -- Spiked Squelcher
+	{ id = 8015, chance = 3130, maxCount = 2 }, -- Onion
+	{ id = 9057, chance = 3860, maxCount = 2 }, -- Small Topaz
+	{ id = 16123, chance = 2700, maxCount = 2 }, -- Brown Crystal Splinter
+	{ id = 17828, chance = 1350 }, -- Pair of Iron Fists
+	{ id = 2966, chance = 1110 }, -- War Drum
+	{ id = 7439, chance = 880 }, -- Berserk Potion
+	{ id = 7419, chance = 10 }, -- Dreaded Cleaver
 }
 
 monster.attacks = {

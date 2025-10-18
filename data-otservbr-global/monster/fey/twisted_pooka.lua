@@ -79,20 +79,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 125 }, -- gold coin
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 15634, chance = 23000, maxCount = 2 }, -- carrot
-	{ id = 3735, chance = 23000 }, -- stone herb
-	{ id = 25693, chance = 23000 }, -- shimmering beetles
-	{ id = 25694, chance = 23000 }, -- fairy wings
-	{ id = 676, chance = 5000, maxCount = 2 }, -- small enchanted ruby
-	{ id = 1781, chance = 5000, maxCount = 5 }, -- small stone
-	{ id = 3598, chance = 5000, maxCount = 5 }, -- cookie
-	{ id = 3726, chance = 5000 }, -- orange mushroom
-	{ id = 24962, chance = 5000 }, -- prismatic quartz
-	{ id = 3049, chance = 1000 }, -- stealth ring
-	{ id = 12311, chance = 260 }, -- carrot on a stick
-	{ id = 9027, chance = 260 }, -- crystal of focus
+	{ id = 3031, chance = 100000, maxCount = 125 }, -- Gold Coin
+	{ id = 236, chance = 12165 }, -- Strong Health Potion
+	{ id = 3595, chance = 20199, maxCount = 2 }, -- Carrot
+	{ id = 3735, chance = 7098 }, -- Stone Herb
+	{ id = 25693, chance = 9378 }, -- Shimmering Beetles
+	{ id = 25694, chance = 9751 }, -- Fairy Wings
+	{ id = 676, chance = 3240, maxCount = 2 }, -- Small Enchanted Ruby
+	{ id = 1781, chance = 4696, maxCount = 5 }, -- Small Stone
+	{ id = 3598, chance = 4227, maxCount = 5 }, -- Cookie
+	{ id = 3726, chance = 2927 }, -- Orange Mushroom
+	{ id = 24962, chance = 2656 }, -- Prismatic Quartz
+	{ id = 3049, chance = 750 }, -- Stealth Ring
+	{ id = 12311, chance = 126 }, -- Carrot on a Stick
+	{ id = 9027, chance = 89 }, -- Crystal of Focus
 }
 
 monster.attacks = {

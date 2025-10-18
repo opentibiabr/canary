@@ -76,21 +76,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 60 }, -- gold coin
-	{ id = 11050, chance = 23000 }, -- torch
-	{ id = 3123, chance = 23000 }, -- worn leather boots
-	{ id = 3273, chance = 23000 }, -- sabre
-	{ id = 3298, chance = 23000, maxCount = 5 }, -- throwing knife
-	{ id = 10302, chance = 23000 }, -- compass
-	{ id = 3413, chance = 5000 }, -- battle shield
-	{ id = 236, chance = 1000 }, -- strong health potion
-	{ id = 3357, chance = 1000 }, -- plate armor
-	{ id = 5926, chance = 1000 }, -- pirate backpack
-	{ id = 6095, chance = 1000 }, -- pirate shirt
-	{ id = 6097, chance = 1000 }, -- hook
-	{ id = 6098, chance = 1000 }, -- eye patch
-	{ id = 6126, chance = 1000 }, -- peg leg
-	{ id = 5552, chance = 260 }, -- rum flask
+	{ id = 3031, chance = 67610, maxCount = 60 }, -- Gold Coin
+	{ id = 2920, chance = 9483 }, -- Torch
+	{ id = 3123, chance = 10282 }, -- Worn Leather Boots
+	{ id = 3273, chance = 9514 }, -- Sabre
+	{ id = 3298, chance = 21321, maxCount = 5 }, -- Throwing Knife
+	{ id = 10302, chance = 10726 }, -- Compass
+	{ id = 3413, chance = 3646 }, -- Battle Shield
+	{ id = 236, chance = 616 }, -- Strong Health Potion
+	{ id = 3357, chance = 972 }, -- Plate Armor
+	{ id = 5706, chance = 1030 }, -- Treasure Map (Pirate)
+	{ id = 5926, chance = 447 }, -- Pirate Backpack
+	{ id = 6095, chance = 883 }, -- Pirate Shirt
+	{ id = 6097, chance = 476 }, -- Hook
+	{ id = 6098, chance = 659 }, -- Eye Patch
+	{ id = 6126, chance = 578 }, -- Peg Leg
+	{ id = 5552, chance = 130 }, -- Rum Flask
+	{ id = 5792, chance = 50 }, -- Die
 }
 
 monster.attacks = {

@@ -74,23 +74,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 3 }, -- platinum coin
-	{ id = 763, chance = 23000, maxCount = 8 }, -- flaming arrow
-	{ id = 3032, chance = 23000 }, -- small emerald
-	{ id = 16127, chance = 23000 }, -- green crystal fragment
-	{ id = 31439, chance = 23000 }, -- manticore tail
-	{ id = 31440, chance = 23000 }, -- manticore ear
-	{ id = 818, chance = 5000 }, -- magma boots
-	{ id = 821, chance = 5000 }, -- magma legs
-	{ id = 826, chance = 5000 }, -- magma coat
-	{ id = 827, chance = 5000 }, -- magma monocle
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3075, chance = 5000 }, -- wand of dragonbreath
-	{ id = 25737, chance = 5000 }, -- rainbow quartz
-	{ id = 24962, chance = 5000, maxCount = 3 }, -- prismatic quartz
-	{ id = 25759, chance = 5000, maxCount = 2 }, -- royal star
-	{ id = 8093, chance = 1000 }, -- wand of draconia
-	{ id = 16115, chance = 1000 }, -- wand of everblazing
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 763, chance = 5110, maxCount = 8 }, -- Flaming Arrow
+	{ id = 3032, chance = 7060 }, -- Small Emerald
+	{ id = 16127, chance = 5190 }, -- Green Crystal Fragment
+	{ id = 31439, chance = 11984 }, -- Manticore Tail
+	{ id = 31440, chance = 6143 }, -- Manticore Ear
+	{ id = 818, chance = 3075 }, -- Magma Boots
+	{ id = 821, chance = 1981 }, -- Magma Legs
+	{ id = 826, chance = 2669 }, -- Magma Coat
+	{ id = 827, chance = 2438 }, -- Magma Monocle
+	{ id = 3036, chance = 2780 }, -- Violet Gem
+	{ id = 3075, chance = 1770 }, -- Wand of Dragonbreath
+	{ id = 25737, chance = 3490 }, -- Rainbow Quartz
+	{ id = 24962, chance = 2919, maxCount = 3 }, -- Prismatic Quartz
+	{ id = 25759, chance = 940, maxCount = 2 }, -- Royal Star
+	{ id = 8093, chance = 979 }, -- Wand of Draconia
+	{ id = 16115, chance = 950 }, -- Wand of Everblazing
 }
 
 monster.attacks = {

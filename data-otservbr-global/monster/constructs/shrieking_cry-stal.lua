@@ -75,18 +75,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 23000, maxCount = 2 }, -- crystal coin
-	{ id = 7642, chance = 23000 }, -- great spirit potion
-	{ id = 39394, chance = 23000, maxCount = 2 }, -- crystal
-	{ id = 3028, chance = 23000, maxCount = 3 }, -- small diamond
-	{ id = 8895, chance = 23000 }, -- rusted armor
-	{ id = 16127, chance = 5000 }, -- green crystal fragment
-	{ id = 813, chance = 5000 }, -- terra boots
-	{ id = 3084, chance = 5000 }, -- protection amulet
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3063, chance = 1000 }, -- gold ring
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 3006, chance = 260 }, -- ring of the sky
+	{ id = 3043, chance = 23797, maxCount = 2 }, -- Crystal Coin
+	{ id = 7642, chance = 20718 }, -- Great Spirit Potion
+	{ id = 39394, chance = 12503, maxCount = 2 }, -- Cry-Stal
+	{ id = 3028, chance = 5808, maxCount = 3 }, -- Small Diamond
+	{ id = 8895, chance = 5316 }, -- Rusted Armor
+	{ id = 16127, chance = 4414 }, -- Green Crystal Fragment
+	{ id = 813, chance = 4625 }, -- Terra Boots
+	{ id = 3084, chance = 2272 }, -- Protection Amulet
+	{ id = 3036, chance = 1280 }, -- Violet Gem
+	{ id = 3063, chance = 694 }, -- Gold Ring
+	{ id = 3038, chance = 420 }, -- Green Gem
+	{ id = 3006, chance = 220 }, -- Ring of the Sky
 }
 
 monster.attacks = {

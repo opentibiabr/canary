@@ -73,17 +73,17 @@ monster.light = {
 monster.voices = {}
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
-	{ id = 43730, chance = 23000 }, -- weretiger tooth
-	{ id = 22083, chance = 23000 }, -- moonlight crystals
-	{ id = 3582, chance = 5000, maxCount = 2 }, -- ham
-	{ id = 3344, chance = 5000 }, -- beastslayer axe
-	{ id = 43732, chance = 5000 }, -- silver moon coin
-	{ id = 32769, chance = 5000 }, -- white gem
-	{ id = 43736, chance = 5000 }, -- moon pin
-	{ id = 3567, chance = 1000 }, -- blue robe
-	{ id = 3333, chance = 1000 }, -- crystal mace
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 20 }, -- Platinum Coin
+	{ id = 43730, chance = 14073 }, -- Weretiger Tooth
+	{ id = 22083, chance = 8808 }, -- Moonlight Crystals
+	{ id = 3582, chance = 4427, maxCount = 2 }, -- Ham
+	{ id = 3344, chance = 4944 }, -- Beastslayer Axe
+	{ id = 43732, chance = 1743 }, -- Silver Moon Coin
+	{ id = 32769, chance = 1993 }, -- White Gem
+	{ id = 43736, chance = 604 }, -- Moon Pin
+	{ id = 3567, chance = 1044 }, -- Blue Robe
+	{ id = 3333, chance = 693 }, -- Crystal Mace
 }
 
 monster.attacks = {

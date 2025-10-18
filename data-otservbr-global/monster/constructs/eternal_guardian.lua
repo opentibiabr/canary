@@ -79,20 +79,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
-	{ id = 1781, chance = 80000, maxCount = 10 }, -- small stone
-	{ id = 9632, chance = 23000 }, -- ancient stone
-	{ id = 10408, chance = 23000 }, -- spiked iron ball
-	{ id = 5880, chance = 5000 }, -- iron ore
-	{ id = 10406, chance = 5000 }, -- zaoan halberd
-	{ id = 10422, chance = 1000 }, -- clay lump
-	{ id = 3315, chance = 1000 }, -- guardian halberd
-	{ id = 10310, chance = 1000 }, -- shiny stone
-	{ id = 3428, chance = 1000 }, -- tower shield
-	{ id = 12600, chance = 1000 }, -- coal
-	{ id = 10426, chance = 1000 }, -- piece of marble rock
-	{ id = 10390, chance = 260 }, -- zaoan sword
+	{ id = 3031, chance = 90560, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 99750, maxCount = 4 }, -- Platinum Coin
+	{ id = 1781, chance = 30502, maxCount = 10 }, -- Small Stone
+	{ id = 9632, chance = 9480 }, -- Ancient Stone
+	{ id = 10408, chance = 10030 }, -- Spiked Iron Ball
+	{ id = 5880, chance = 1649 }, -- Iron Ore
+	{ id = 10406, chance = 1980 }, -- Zaoan Halberd
+	{ id = 10422, chance = 657 }, -- Clay Lump
+	{ id = 3315, chance = 600 }, -- Guardian Halberd
+	{ id = 10310, chance = 874 }, -- Shiny Stone
+	{ id = 3428, chance = 769 }, -- Tower Shield
+	{ id = 12600, chance = 474 }, -- Coal
+	{ id = 10426, chance = 790 }, -- Piece of Marble Rock
+	{ id = 10390, chance = 110 }, -- Zaoan Sword
 }
 
 monster.attacks = {

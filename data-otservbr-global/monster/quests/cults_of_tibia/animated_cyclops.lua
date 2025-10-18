@@ -63,10 +63,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 23986, chance = 80000 }, -- heavy old tome
-	{ id = 3294, chance = 80000 }, -- short sword
+	{ id = 3031, chance = 87500 }, -- Gold Coin
+	{ id = 3577, chance = 22500 }, -- Meat
+	{ id = 23986, chance = 7500 }, -- Heavy Old Tome
+	{ id = 3294, chance = 7500 }, -- Short Sword
 }
 
 monster.attacks = {

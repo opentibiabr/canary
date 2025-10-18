@@ -76,27 +76,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 34161, chance = 23000 }, -- broken longbow
-	{ id = 3027, chance = 23000 }, -- black pearl
-	{ id = 3017, chance = 23000 }, -- silver brooch
-	{ id = 21175, chance = 23000 }, -- mino shield
-	{ id = 3369, chance = 23000 }, -- warrior helmet
-	{ id = 34160, chance = 23000 }, -- lion crest
-	{ id = 34162, chance = 23000 }, -- lion cloak patch
-	{ id = 3291, chance = 23000 }, -- knife
-	{ id = 7404, chance = 5000 }, -- assassin dagger
-	{ id = 3026, chance = 5000 }, -- white pearl
-	{ id = 14247, chance = 5000 }, -- ornate crossbow
-	{ id = 3370, chance = 5000 }, -- knight armor
-	{ id = 24392, chance = 5000 }, -- gemmed figurine
-	{ id = 24391, chance = 5000 }, -- coral brooch
-	{ id = 819, chance = 5000 }, -- glacier shoes
-	{ id = 3575, chance = 5000 }, -- wood cape
-	{ id = 3010, chance = 1000 }, -- emerald bangle
-	{ id = 7438, chance = 260 }, -- elvish bow
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 3577, chance = 43390 }, -- Meat
+	{ id = 7643, chance = 73550 }, -- Ultimate Health Potion
+	{ id = 34161, chance = 15429 }, -- Broken Longbow
+	{ id = 3027, chance = 9040 }, -- Black Pearl
+	{ id = 3017, chance = 7370 }, -- Silver Brooch
+	{ id = 21175, chance = 7680 }, -- Mino Shield
+	{ id = 3369, chance = 8090 }, -- Warrior Helmet
+	{ id = 34160, chance = 7339 }, -- Lion Crest
+	{ id = 34162, chance = 9410 }, -- Lion Cloak Patch
+	{ id = 3291, chance = 6150 }, -- Knife
+	{ id = 7404, chance = 1100 }, -- Assassin Dagger
+	{ id = 3026, chance = 3100 }, -- White Pearl
+	{ id = 14247, chance = 1030 }, -- Ornate Crossbow
+	{ id = 3370, chance = 3180 }, -- Knight Armor
+	{ id = 24392, chance = 5290 }, -- Gemmed Figurine
+	{ id = 24391, chance = 1210 }, -- Coral Brooch
+	{ id = 819, chance = 2190 }, -- Glacier Shoes
+	{ id = 281, chance = 5240 }, -- Giant Shimmering Pearl (Green)
+	{ id = 3575, chance = 1050 }, -- Wood Cape
+	{ id = 3010, chance = 700 }, -- Emerald Bangle
+	{ id = 7438, chance = 330 }, -- Elvish Bow
 }
 
 monster.attacks = {

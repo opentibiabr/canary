@@ -65,38 +65,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 37002, chance = 80000 }, -- tagraltinlaid scabbard
-	{ id = 813, chance = 80000 }, -- terra boots
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 828, chance = 80000 }, -- lightning headband
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 25737, chance = 80000 }, -- rainbow quartz
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 822, chance = 80000 }, -- lightning legs
-	{ id = 3071, chance = 80000 }, -- wand of inferno
-	{ id = 816, chance = 80000 }, -- lightning pendant
-	{ id = 37003, chance = 80000 }, -- eyeembroidered veil
-	{ id = 31323, chance = 80000 }, -- sea horse figurine
-	{ id = 8043, chance = 80000 }, -- focus cape
-	{ id = 826, chance = 80000 }, -- magma coat
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 3267, chance = 80000 }, -- dagger
-	{ id = 9302, chance = 80000 }, -- sacred tree amulet
-	{ id = 818, chance = 80000 }, -- magma boots
-	{ id = 8092, chance = 80000 }, -- wand of starstorm
-	{ id = 21169, chance = 80000 }, -- metal spats
-	{ id = 3097, chance = 80000 }, -- dwarven ring
-	{ id = 3073, chance = 80000 }, -- wand of cosmic energy
-	{ id = 3098, chance = 80000 }, -- ring of healing
-	{ id = 31324, chance = 80000 }, -- golden mask
-	{ id = 14042, chance = 80000 }, -- warriors shield
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 830, chance = 80000 }, -- terra hood
+	{ id = 37002, chance = 530 }, -- Tagralt-Inlaid Scabbard
+	{ id = 813, chance = 2130 }, -- Terra Boots
+	{ id = 3370, chance = 3730 }, -- Knight Armor
+	{ id = 3043, chance = 46130 }, -- Crystal Coin
+	{ id = 9058, chance = 6670 }, -- Gold Ingot
+	{ id = 3037, chance = 1330 }, -- Yellow Gem
+	{ id = 3032, chance = 4270 }, -- Small Emerald
+	{ id = 828, chance = 3730 }, -- Lightning Headband
+	{ id = 3028, chance = 4000 }, -- Small Diamond
+	{ id = 25737, chance = 3470 }, -- Rainbow Quartz
+	{ id = 3036, chance = 3470 }, -- Violet Gem
+	{ id = 822, chance = 1070 }, -- Lightning Legs
+	{ id = 3071, chance = 3730 }, -- Wand of Inferno
+	{ id = 816, chance = 2930 }, -- Lightning Pendant
+	{ id = 37003, chance = 800 }, -- Eye-Embroidered Veil
+	{ id = 31323, chance = 1070 }, -- Sea Horse Figurine
+	{ id = 8043, chance = 4270 }, -- Focus Cape
+	{ id = 826, chance = 2400 }, -- Magma Coat
+	{ id = 23531, chance = 1870 }, -- Ring of Green Plasma
+	{ id = 8082, chance = 3200 }, -- Underworld Rod
+	{ id = 3267, chance = 49070 }, -- Dagger
+	{ id = 9302, chance = 7730 }, -- Sacred Tree Amulet
+	{ id = 818, chance = 2400 }, -- Magma Boots
+	{ id = 8092, chance = 2930 }, -- Wand of Starstorm
+	{ id = 21169, chance = 2400 }, -- Metal Spats
+	{ id = 3097, chance = 1600 }, -- Dwarven Ring
+	{ id = 3073, chance = 3730 }, -- Wand of Cosmic Energy
+	{ id = 3098, chance = 2670 }, -- Ring of Healing
+	{ id = 31324, chance = 1870 }, -- Golden Mask
+	{ id = 14042, chance = 3200 }, -- Warrior's Shield
+	{ id = 22193, chance = 4270 }, -- Onyx Chip
+	{ id = 830, chance = 2670 }, -- Terra Hood
 }
 
 monster.attacks = {

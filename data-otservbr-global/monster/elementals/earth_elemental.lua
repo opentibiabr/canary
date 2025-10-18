@@ -78,17 +78,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 130 }, -- gold coin
-	{ id = 774, chance = 23000, maxCount = 30 }, -- earth arrow
-	{ id = 1781, chance = 23000, maxCount = 10 }, -- small stone
-	{ id = 3147, chance = 23000 }, -- blank rune
-	{ id = 10305, chance = 23000 }, -- lump of earth
-	{ id = 237, chance = 5000 }, -- strong mana potion
-	{ id = 3048, chance = 5000 }, -- might ring
-	{ id = 8894, chance = 5000 }, -- heavily rusted armor
-	{ id = 9057, chance = 1000 }, -- small topaz
-	{ id = 10422, chance = 1000 }, -- clay lump
-	{ id = 12600, chance = 1000 }, -- coal
+	{ id = 3031, chance = 93090, maxCount = 130 }, -- Gold Coin
+	{ id = 774, chance = 19953, maxCount = 30 }, -- Earth Arrow
+	{ id = 1781, chance = 46890, maxCount = 10 }, -- Small Stone
+	{ id = 3147, chance = 10158 }, -- Blank Rune
+	{ id = 10305, chance = 20613 }, -- Lump of Earth
+	{ id = 237, chance = 2154 }, -- Strong Mana Potion
+	{ id = 3048, chance = 20 }, -- Might Ring
+	{ id = 8894, chance = 5259 }, -- Heavily Rusted Armor
+	{ id = 9057, chance = 545 }, -- Small Topaz
+	{ id = 10422, chance = 610 }, -- Clay Lump
+	{ id = 12600, chance = 158 }, -- Coal
 }
 
 monster.attacks = {

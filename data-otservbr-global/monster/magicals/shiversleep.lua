@@ -63,16 +63,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 44 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
-	{ id = 16124, chance = 80000 }, -- blue crystal splinter
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 3030, chance = 80000, maxCount = 2 }, -- small ruby
-	{ id = 9057, chance = 80000, maxCount = 3 }, -- small topaz
-	{ id = 20203, chance = 80000 }, -- trapped bad dream monster
-	{ id = 20062, chance = 80000 }, -- cluster of solace
+	{ id = 3031, chance = 1000, maxCount = 44 }, -- Gold Coin
+	{ id = 3035, chance = 1000, maxCount = 7 }, -- Platinum Coin
+	{ id = 7643, chance = 1000 }, -- Ultimate Health Potion
+	{ id = 3033, chance = 1000, maxCount = 2 }, -- Small Amethyst
+	{ id = 16124, chance = 1000 }, -- Blue Crystal Splinter
+	{ id = 238, chance = 1000 }, -- Great Mana Potion
+	{ id = 3030, chance = 1000, maxCount = 2 }, -- Small Ruby
+	{ id = 9057, chance = 1000, maxCount = 3 }, -- Small Topaz
+	{ id = 20203, chance = 1000 }, -- Trapped Bad Dream Monster
+	{ id = 20062, chance = 1000 }, -- Cluster of Solace
 }
 
 monster.attacks = {

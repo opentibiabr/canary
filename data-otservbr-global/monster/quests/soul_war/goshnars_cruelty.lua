@@ -73,31 +73,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 33923, chance = 80000 }, -- crueltys chest
-	{ id = 33922, chance = 80000 }, -- crueltys claw
-	{ id = 34019, chance = 80000 }, -- figurine of cruelty
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 32622, chance = 80000 }, -- giant amethyst
-	{ id = 32769, chance = 80000 }, -- white gem
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 7443, chance = 80000 }, -- bullseye potion
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 23375, chance = 80000 }, -- supreme health potion
-	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
-	{ id = 7439, chance = 80000 }, -- berserk potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 24391, chance = 80000 }, -- coral brooch
-	{ id = 34109, chance = 80000 }, -- bag you desire
-	{ id = 34073, chance = 80000 }, -- spectral saddle
-	{ id = 34074, chance = 80000 }, -- spectral horse tack
-	{ id = 34075, chance = 80000 }, -- the skull of a beast
+	{ id = 33923, chance = 5555 }, -- Cruelty's Chest
+	{ id = 33922, chance = 14473 }, -- Cruelty's Claw
+	{ id = 34019, chance = 2941 }, -- Figurine of Cruelty
+	{ id = 23373, chance = 57894 }, -- Ultimate Mana Potion
+	{ id = 3036, chance = 21428 }, -- Violet Gem
+	{ id = 32622, chance = 42105 }, -- Giant Amethyst
+	{ id = 32769, chance = 21052 }, -- White Gem
+	{ id = 3043, chance = 100000 }, -- Crystal Coin
+	{ id = 3039, chance = 34210 }, -- Red Gem
+	{ id = 7440, chance = 30263 }, -- Mastermind Potion
+	{ id = 7443, chance = 39473 }, -- Bullseye Potion
+	{ id = 9058, chance = 14473 }, -- Gold Ingot
+	{ id = 3037, chance = 40789 }, -- Yellow Gem
+	{ id = 30060, chance = 19736 }, -- Giant Emerald
+	{ id = 23375, chance = 60526 }, -- Supreme Health Potion
+	{ id = 23374, chance = 51315 }, -- Ultimate Spirit Potion
+	{ id = 7439, chance = 28947 }, -- Berserk Potion
+	{ id = 3041, chance = 18421 }, -- Blue Gem
+	{ id = 30061, chance = 38157 }, -- Giant Sapphire
+	{ id = 3038, chance = 31578 }, -- Green Gem
+	{ id = 24391, chance = 7407 }, -- Coral Brooch
+	{ id = 34109, chance = 4761 }, -- Bag You Desire
+	{ id = 34073, chance = 1000 }, -- Spectral Saddle
+	{ id = 34074, chance = 1000 }, -- Spectral Horse Tack
+	{ id = 34075, chance = 2941 }, -- The Skull of a Beast
 }
 
 monster.attacks = {

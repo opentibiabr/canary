@@ -85,29 +85,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 80 }, -- gold coin
-	{ id = 2917, chance = 80000 }, -- candlestick
-	{ id = 3054, chance = 80000 }, -- silver amulet
-	{ id = 3568, chance = 80000 }, -- simple dress
-	{ id = 11446, chance = 5000 }, -- hair of a banshee
-	{ id = 10420, chance = 5000 }, -- petrified scream
-	{ id = 3027, chance = 5000 }, -- black pearl
-	{ id = 3299, chance = 1000 }, -- poison dagger
-	{ id = 3017, chance = 1000 }, -- silver brooch
-	{ id = 3026, chance = 1000 }, -- white pearl
-	{ id = 3260, chance = 1000 }, -- lyre
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 3567, chance = 1000 }, -- blue robe
-	{ id = 3098, chance = 1000 }, -- ring of healing
-	{ id = 237, chance = 1000 }, -- strong mana potion
-	{ id = 3101, chance = 1000 }, -- spellbook
-	{ id = 3004, chance = 260 }, -- wedding ring
-	{ id = 811, chance = 260 }, -- terra mantle
-	{ id = 3566, chance = 260 }, -- red robe
-	{ id = 3061, chance = 260 }, -- life crystal
-	{ id = 6093, chance = 260 }, -- crystal ring
-	{ id = 12320, chance = 260 }, -- sweet smelling bait
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 30149, maxCount = 80 }, -- Gold Coin
+	{ id = 2917, chance = 70466 }, -- Candlestick
+	{ id = 3054, chance = 8925 }, -- Silver Amulet
+	{ id = 3568, chance = 44994 }, -- Simple Dress
+	{ id = 11446, chance = 4990 }, -- Hair of a Banshee
+	{ id = 10420, chance = 3756 }, -- Petrified Scream
+	{ id = 3027, chance = 2073 }, -- Black Pearl
+	{ id = 3299, chance = 1552 }, -- Poison Dagger
+	{ id = 3017, chance = 1786 }, -- Silver Brooch
+	{ id = 3026, chance = 1056 }, -- White Pearl
+	{ id = 2949, chance = 1009 }, -- Lyre
+	{ id = 3081, chance = 984 }, -- Stone Skin Amulet
+	{ id = 3567, chance = 631 }, -- Blue Robe
+	{ id = 3098, chance = 722 }, -- Ring of Healing
+	{ id = 237, chance = 762 }, -- Strong Mana Potion
+	{ id = 3059, chance = 667 }, -- Spellbook
+	{ id = 3004, chance = 417 }, -- Wedding Ring
+	{ id = 811, chance = 253 }, -- Terra Mantle
+	{ id = 3566, chance = 80 }, -- Red Robe
+	{ id = 3061, chance = 89 }, -- Life Crystal
+	{ id = 3007, chance = 131 }, -- Crystal Ring
+	{ id = 12320, chance = 30 }, -- Sweet Smelling Bait
+	{ id = 3081, chance = 984 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

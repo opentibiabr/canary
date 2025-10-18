@@ -81,18 +81,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 255 }, -- gold coin
-	{ id = 7378, chance = 23000, maxCount = 6 }, -- royal spear
-	{ id = 236, chance = 5000 }, -- strong health potion
-	{ id = 237, chance = 5000 }, -- strong mana potion
-	{ id = 3725, chance = 5000 }, -- brown mushroom
-	{ id = 3030, chance = 5000, maxCount = 5 }, -- small ruby
-	{ id = 7443, chance = 1000 }, -- bullseye potion
-	{ id = 3051, chance = 1000 }, -- energy ring
-	{ id = 2995, chance = 1000 }, -- piggy bank
-	{ id = 3071, chance = 1000 }, -- wand of inferno
-	{ id = 821, chance = 260 }, -- magma legs
-	{ id = 5904, chance = 260 }, -- magic sulphur
+	{ id = 3031, chance = 97089, maxCount = 255 }, -- Gold Coin
+	{ id = 7378, chance = 10280, maxCount = 6 }, -- Royal Spear
+	{ id = 236, chance = 5160 }, -- Strong Health Potion
+	{ id = 237, chance = 5130 }, -- Strong Mana Potion
+	{ id = 3725, chance = 4030 }, -- Brown Mushroom
+	{ id = 3030, chance = 4900, maxCount = 5 }, -- Small Ruby
+	{ id = 7443, chance = 620 }, -- Bullseye Potion
+	{ id = 3051, chance = 1060 }, -- Energy Ring
+	{ id = 2995, chance = 1000 }, -- Piggy Bank
+	{ id = 3071, chance = 600 }, -- Wand of Inferno
+	{ id = 821, chance = 150 }, -- Magma Legs
+	{ id = 5904, chance = 90 }, -- Magic Sulphur
 }
 
 monster.attacks = {

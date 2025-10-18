@@ -77,21 +77,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 228 }, -- gold coin
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 24382, chance = 23000 }, -- bug meat
-	{ id = 11477, chance = 23000 }, -- orcish gear
-	{ id = 9639, chance = 23000 }, -- cultish robe
-	{ id = 3269, chance = 23000 }, -- halberd
-	{ id = 3582, chance = 23000 }, -- ham
-	{ id = 3316, chance = 23000 }, -- orcish axe
-	{ id = 3724, chance = 23000, maxCount = 3 }, -- red mushroom
-	{ id = 11479, chance = 23000 }, -- orc leather
-	{ id = 10196, chance = 23000 }, -- orc tooth
-	{ id = 3266, chance = 23000 }, -- battle axe
-	{ id = 3027, chance = 23000, maxCount = 2 }, -- black pearl
-	{ id = 3030, chance = 23000, maxCount = 5 }, -- small ruby
-	{ id = 7439, chance = 5000 }, -- berserk potion
+	{ id = 3031, chance = 100000, maxCount = 228 }, -- Gold Coin
+	{ id = 236, chance = 17870 }, -- Strong Health Potion
+	{ id = 24382, chance = 19780 }, -- Bug Meat
+	{ id = 11477, chance = 16980 }, -- Orcish Gear
+	{ id = 9639, chance = 9860 }, -- Cultish Robe
+	{ id = 3269, chance = 11900 }, -- Halberd
+	{ id = 3582, chance = 10060 }, -- Ham
+	{ id = 3316, chance = 8760 }, -- Orcish Axe
+	{ id = 3724, chance = 8330, maxCount = 3 }, -- Red Mushroom
+	{ id = 11479, chance = 9530 }, -- Orc Leather
+	{ id = 10196, chance = 6069 }, -- Orc Tooth
+	{ id = 3266, chance = 6209 }, -- Battle Axe
+	{ id = 3027, chance = 6120, maxCount = 2 }, -- Black Pearl
+	{ id = 3030, chance = 4990, maxCount = 5 }, -- Small Ruby
+	{ id = 7439, chance = 3060 }, -- Berserk Potion
 }
 
 monster.attacks = {

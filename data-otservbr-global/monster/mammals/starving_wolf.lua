@@ -77,9 +77,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3105, chance = 80000 }, -- dirty fur
-	{ id = 3577, chance = 5000 }, -- meat
-	{ id = 5897, chance = 1000 }, -- wolf paw
+	{ id = 3105, chance = 65180 }, -- Dirty Fur
+	{ id = 3577, chance = 5170 }, -- Meat
+	{ id = 5897, chance = 1500 }, -- Wolf Paw
 }
 
 monster.attacks = {

@@ -84,21 +84,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 3041, chance = 23000 }, -- blue gem
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3575, chance = 5000 }, -- wood cape
-	{ id = 23529, chance = 5000 }, -- ring of blue plasma
-	{ id = 34138, chance = 5000 }, -- capricious heart
-	{ id = 34145, chance = 5000 }, -- capricious robe
-	{ id = 14247, chance = 1000 }, -- ornate crossbow
-	{ id = 16118, chance = 1000 }, -- glacial rod
-	{ id = 22085, chance = 1000 }, -- fur armor
-	{ id = 23526, chance = 1000 }, -- collar of blue plasma
-	{ id = 3081, chance = 260 }, -- stone skin amulet
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 55273 }, -- Crystal Coin
+	{ id = 7642, chance = 47645 }, -- Great Spirit Potion
+	{ id = 3041, chance = 6637 }, -- Blue Gem
+	{ id = 9058, chance = 5720 }, -- Gold Ingot
+	{ id = 3036, chance = 3473 }, -- Violet Gem
+	{ id = 3575, chance = 1110 }, -- Wood Cape
+	{ id = 23529, chance = 1640 }, -- Ring of Blue Plasma
+	{ id = 34138, chance = 3471 }, -- Capricious Heart
+	{ id = 34145, chance = 1890 }, -- Capricious Robe
+	{ id = 14247, chance = 958 }, -- Ornate Crossbow
+	{ id = 16118, chance = 854 }, -- Glacial Rod
+	{ id = 22085, chance = 1092 }, -- Fur Armor
+	{ id = 23526, chance = 883 }, -- Collar of Blue Plasma
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

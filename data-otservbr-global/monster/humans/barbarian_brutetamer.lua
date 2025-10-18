@@ -86,17 +86,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 15 }, -- gold coin
-	{ id = 6107, chance = 23000 }, -- staff
-	{ id = 3358, chance = 23000 }, -- chain armor
-	{ id = 3597, chance = 23000, maxCount = 2 }, -- corncob
-	{ id = 7343, chance = 23000 }, -- fur bag
-	{ id = 3347, chance = 5000 }, -- hunting spear
-	{ id = 268, chance = 1000 }, -- mana potion
-	{ id = 7379, chance = 260 }, -- brutetamers staff
-	{ id = 7457, chance = 260 }, -- fur boots
-	{ id = 7463, chance = 260 }, -- mammoth fur cape
-	{ id = 7464, chance = 260 }, -- mammoth fur shorts
+	{ id = 3031, chance = 90180, maxCount = 15 }, -- Gold Coin
+	{ id = 3289, chance = 7165 }, -- Staff
+	{ id = 3358, chance = 9073 }, -- Chain Armor
+	{ id = 3597, chance = 12811, maxCount = 2 }, -- Corncob
+	{ id = 7343, chance = 7709 }, -- Fur Bag
+	{ id = 2824, chance = 4816 }, -- Book (Grey)
+	{ id = 3347, chance = 5501 }, -- Hunting Spear
+	{ id = 268, chance = 656 }, -- Mana Potion
+	{ id = 7379, chance = 285 }, -- Brutetamer's Staff
+	{ id = 7457, chance = 139 }, -- Fur Boots
+	{ id = 7463, chance = 218 }, -- Mammoth Fur Cape
+	{ id = 7464, chance = 80 }, -- Mammoth Fur Shorts
 }
 
 monster.attacks = {

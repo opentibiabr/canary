@@ -76,18 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3315, chance = 23000 }, -- guardian halberd
-	{ id = 40582, chance = 23000 }, -- crab man claws
-	{ id = 239, chance = 5000 }, -- great health potion
-	{ id = 822, chance = 5000 }, -- lightning legs
-	{ id = 823, chance = 5000 }, -- glacier kilt
-	{ id = 826, chance = 5000 }, -- magma coat
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 14042, chance = 5000 }, -- warriors shield
-	{ id = 3332, chance = 1000 }, -- hammer of wrath
-	{ id = 7456, chance = 1000 }, -- noble axe
-	{ id = 3006, chance = 80000 }, -- ring of the sky
+	{ id = 3035, chance = 74876 }, -- Platinum Coin
+	{ id = 3315, chance = 5018 }, -- Guardian Halberd
+	{ id = 40582, chance = 5296 }, -- Crab Man Claws
+	{ id = 239, chance = 2033 }, -- Great Health Potion
+	{ id = 281, chance = 2009 }, -- Giant Shimmering Pearl (Green)
+	{ id = 822, chance = 1713 }, -- Lightning Legs
+	{ id = 823, chance = 1392 }, -- Glacier Kilt
+	{ id = 826, chance = 2007 }, -- Magma Coat
+	{ id = 3038, chance = 2421 }, -- Green Gem
+	{ id = 14042, chance = 1704 }, -- Warrior's Shield
+	{ id = 3332, chance = 735 }, -- Hammer of Wrath
+	{ id = 7456, chance = 710 }, -- Noble Axe
+	{ id = 3006, chance = 225 }, -- Ring of the Sky
 }
 
 monster.attacks = {

@@ -76,31 +76,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 11 }, -- platinum coin
-	{ id = 3065, chance = 80000 }, -- terra rod
-	{ id = 3010, chance = 23000 }, -- emerald bangle
-	{ id = 3028, chance = 23000 }, -- small diamond
-	{ id = 3032, chance = 23000 }, -- small emerald
-	{ id = 3038, chance = 23000 }, -- green gem
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 3067, chance = 23000 }, -- hailstorm rod
-	{ id = 16120, chance = 23000 }, -- violet crystal shard
-	{ id = 16121, chance = 23000 }, -- green crystal shard
-	{ id = 16122, chance = 23000 }, -- green crystal splinter
-	{ id = 16123, chance = 23000 }, -- brown crystal splinter
-	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
-	{ id = 36781, chance = 23000 }, -- varnished diremaw brainpan
-	{ id = 36782, chance = 23000 }, -- varnished diremaw legs
-	{ id = 819, chance = 5000 }, -- glacier shoes
-	{ id = 823, chance = 5000 }, -- glacier kilt
-	{ id = 3419, chance = 5000 }, -- crown shield
-	{ id = 3575, chance = 5000 }, -- wood cape
-	{ id = 7387, chance = 5000 }, -- diamond sceptre
-	{ id = 7407, chance = 5000 }, -- haunted blade
-	{ id = 8073, chance = 5000 }, -- spellbook of warding
-	{ id = 8084, chance = 5000 }, -- springsprout rod
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 22085, chance = 5000 }, -- fur armor
+	{ id = 3035, chance = 100000, maxCount = 11 }, -- Platinum Coin
+	{ id = 3065, chance = 31616 }, -- Terra Rod
+	{ id = 3010, chance = 12537 }, -- Emerald Bangle
+	{ id = 3028, chance = 7379 }, -- Small Diamond
+	{ id = 3032, chance = 6551 }, -- Small Emerald
+	{ id = 3038, chance = 6259 }, -- Green Gem
+	{ id = 3039, chance = 8318 }, -- Red Gem
+	{ id = 3067, chance = 5296 }, -- Hailstorm Rod
+	{ id = 16120, chance = 7356 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 5858 }, -- Green Crystal Shard
+	{ id = 16122, chance = 8189 }, -- Green Crystal Splinter
+	{ id = 16123, chance = 10630 }, -- Brown Crystal Splinter
+	{ id = 16125, chance = 6748 }, -- Cyan Crystal Fragment
+	{ id = 36781, chance = 5883 }, -- Varnished Diremaw Brainpan
+	{ id = 36782, chance = 7409 }, -- Varnished Diremaw Legs
+	{ id = 819, chance = 2326 }, -- Glacier Shoes
+	{ id = 823, chance = 1292 }, -- Glacier Kilt
+	{ id = 3419, chance = 1277 }, -- Crown Shield
+	{ id = 3575, chance = 1740 }, -- Wood Cape
+	{ id = 7387, chance = 3803 }, -- Diamond Sceptre
+	{ id = 7407, chance = 1525 }, -- Haunted Blade
+	{ id = 8073, chance = 1999 }, -- Spellbook of Warding
+	{ id = 8084, chance = 3313 }, -- Springsprout Rod
+	{ id = 8092, chance = 3696 }, -- Wand of Starstorm
+	{ id = 22085, chance = 1618 }, -- Fur Armor
 }
 
 monster.attacks = {

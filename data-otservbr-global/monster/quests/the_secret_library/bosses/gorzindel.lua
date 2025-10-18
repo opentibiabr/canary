@@ -69,41 +69,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 27934, chance = 80000 }, -- knowledgeable book
-	{ id = 27933, chance = 80000 }, -- ominous book
-	{ id = 27932, chance = 80000 }, -- sinister book
-	{ id = 3043, chance = 80000, maxCount = 3 }, -- crystal coin
-	{ id = 3035, chance = 80000, maxCount = 32 }, -- platinum coin
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3554, chance = 80000 }, -- steel boots
-	{ id = 28832, chance = 80000 }, -- sulphurous demonbone
-	{ id = 7427, chance = 80000 }, -- chaos mace
-	{ id = 7419, chance = 80000 }, -- dreaded cleaver
-	{ id = 3073, chance = 80000 }, -- wand of cosmic energy
-	{ id = 7443, chance = 80000, maxCount = 2 }, -- bullseye potion
-	{ id = 23374, chance = 80000, maxCount = 4 }, -- ultimate spirit potion
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 5954, chance = 80000 }, -- demon horn
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 8902, chance = 80000 }, -- slightly rusted shield
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 22193, chance = 80000 }, -- onyx chip
-	{ id = 7439, chance = 80000 }, -- berserk potion
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 28792, chance = 80000 }, -- sturdy book
-	{ id = 7418, chance = 80000 }, -- nightmare blade
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 23511, chance = 80000 }, -- curious matter
-	{ id = 23375, chance = 80000 }, -- supreme health potion
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 16117, chance = 80000 }, -- muck rod
-	{ id = 3381, chance = 80000 }, -- crown armor
-	{ id = 3041, chance = 80000 }, -- blue gem
+	{ id = 27934, chance = 1000 }, -- Knowledgeable Book
+	{ id = 27933, chance = 3846 }, -- Ominous Book
+	{ id = 27932, chance = 11538 }, -- Sinister Book
+	{ id = 3043, chance = 81818, maxCount = 3 }, -- Crystal Coin
+	{ id = 3035, chance = 100000, maxCount = 32 }, -- Platinum Coin
+	{ id = 3036, chance = 3846 }, -- Violet Gem
+	{ id = 3554, chance = 19354 }, -- Steel Boots
+	{ id = 28832, chance = 1000 }, -- Sulphurous Demonbone
+	{ id = 7427, chance = 33333 }, -- Chaos Mace
+	{ id = 7419, chance = 42424 }, -- Dreaded Cleaver
+	{ id = 3073, chance = 87878 }, -- Wand of Cosmic Energy
+	{ id = 7443, chance = 38709, maxCount = 2 }, -- Bullseye Potion
+	{ id = 23374, chance = 69696, maxCount = 4 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 60606 }, -- Ultimate Mana Potion
+	{ id = 5954, chance = 45454 }, -- Demon Horn
+	{ id = 7440, chance = 42424 }, -- Mastermind Potion
+	{ id = 8902, chance = 15151 }, -- Slightly Rusted Shield
+	{ id = 3037, chance = 12121 }, -- Yellow Gem
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 22193, chance = 54545 }, -- Onyx Chip
+	{ id = 7439, chance = 42424 }, -- Berserk Potion
+	{ id = 9057, chance = 27272 }, -- Small Topaz
+	{ id = 22516, chance = 84848 }, -- Silver Token
+	{ id = 3028, chance = 39285 }, -- Small Diamond
+	{ id = 3038, chance = 24242 }, -- Green Gem
+	{ id = 28792, chance = 1000 }, -- Sturdy Book
+	{ id = 7418, chance = 3846 }, -- Nightmare Blade
+	{ id = 5904, chance = 23076 }, -- Magic Sulphur
+	{ id = 3030, chance = 22580 }, -- Small Ruby
+	{ id = 23511, chance = 41935 }, -- Curious Matter
+	{ id = 23375, chance = 51612 }, -- Supreme Health Potion
+	{ id = 22721, chance = 22580 }, -- Gold Token
+	{ id = 16117, chance = 6451 }, -- Muck Rod
+	{ id = 3381, chance = 15384 }, -- Crown Armor
+	{ id = 3041, chance = 32258 }, -- Blue Gem
 }
 
 monster.attacks = {

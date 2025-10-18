@@ -74,13 +74,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 18 }, -- gold coin
-	{ id = 3447, chance = 23000, maxCount = 5 }, -- arrow
-	{ id = 39337, chance = 23000 }, -- damselfly eye
-	{ id = 39336, chance = 23000 }, -- damselfly wing
-	{ id = 266, chance = 5000 }, -- health potion
-	{ id = 268, chance = 5000 }, -- mana potion
-	{ id = 31366, chance = 5000 }, -- rope
+	{ id = 3031, chance = 90850, maxCount = 18 }, -- Gold Coin
+	{ id = 3447, chance = 7549, maxCount = 5 }, -- Arrow
+	{ id = 17463, chance = 10010 }, -- Damselfly Eye
+	{ id = 17458, chance = 11820 }, -- Damselfly Wing
+	{ id = 266, chance = 3600 }, -- Health Potion
+	{ id = 268, chance = 3550 }, -- Mana Potion
+	{ id = 3003, chance = 5040 }, -- Rope
 }
 
 monster.attacks = {

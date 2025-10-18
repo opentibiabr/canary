@@ -79,18 +79,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 48510, chance = 23000 }, -- demon root
-	{ id = 31577, chance = 5000 }, -- terra helmet
-	{ id = 3032, chance = 5000 }, -- small emerald
-	{ id = 3326, chance = 5000 }, -- epee
-	{ id = 48511, chance = 5000 }, -- resin parasite
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 8052, chance = 1000 }, -- swamplair armor
-	{ id = 6553, chance = 260 }, -- ruthless axe
-	{ id = 6553, chance = 260 }, -- ruthless axe
-	{ id = 45652, chance = 260 }, -- preserved pink seed
-	{ id = 45653, chance = 260 }, -- preserved red seed
-	{ id = 45657, chance = 260 }, -- preserved yellow seed
+	{ id = 3035, chance = 1000, maxCount = 41 }, -- Platinum Coin
+	{ id = 48510, chance = 7830 }, -- Demon Root
+	{ id = 31577, chance = 1000 }, -- Terra Helmet
+	{ id = 3032, chance = 3399 }, -- Small Emerald
+	{ id = 3326, chance = 1150 }, -- Epee
+	{ id = 48511, chance = 4200 }, -- Resin Parasite
+	{ id = 3038, chance = 520 }, -- Green Gem
+	{ id = 8052, chance = 630 }, -- Swamplair Armor
+	{ id = 6553, chance = 60 }, -- Ruthless Axe
+	{ id = 6553, chance = 60 }, -- Ruthless Axe
+	{ id = 45652, chance = 60 }, -- Preserved Pink Seed
+	{ id = 45653, chance = 1000 }, -- Preserved Red Seed
+	{ id = 45657, chance = 60 }, -- Preserved Yellow Seed
 }
 
 monster.attacks = {

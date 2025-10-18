@@ -65,31 +65,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 10 }, -- platinum coin
-	{ id = 3577, chance = 80000, maxCount = 5 }, -- meat
-	{ id = 11660, chance = 80000 }, -- broken draken mail
-	{ id = 11661, chance = 80000 }, -- broken slicer
-	{ id = 11658, chance = 80000 }, -- draken sulphur
-	{ id = 11659, chance = 80000 }, -- draken wristbands
-	{ id = 5881, chance = 80000 }, -- lizard scale
-	{ id = 5904, chance = 80000 }, -- magic sulphur
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 239, chance = 80000, maxCount = 3 }, -- great health potion
-	{ id = 238, chance = 5000, maxCount = 3 }, -- great mana potion
-	{ id = 7642, chance = 5000, maxCount = 3 }, -- great spirit potion
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 10390, chance = 1000 }, -- zaoan sword
-	{ id = 10384, chance = 1000 }, -- zaoan armor
-	{ id = 3386, chance = 1000 }, -- dragon scale mail
-	{ id = 8052, chance = 1000 }, -- swamplair armor
-	{ id = 11657, chance = 1000 }, -- twiceslicer
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3032, chance = 1000, maxCount = 8 }, -- small emerald
-	{ id = 11651, chance = 1000 }, -- elite draken mail
-	{ id = 12307, chance = 260 }, -- harness
-	{ id = 11693, chance = 260 }, -- blade of corruption
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 3577, chance = 100000, maxCount = 5 }, -- Meat
+	{ id = 11660, chance = 100000 }, -- Broken Draken Mail
+	{ id = 11661, chance = 100000 }, -- Broken Slicer
+	{ id = 11658, chance = 100000 }, -- Draken Sulphur
+	{ id = 11659, chance = 100000 }, -- Draken Wristbands
+	{ id = 5881, chance = 100000 }, -- Lizard Scale
+	{ id = 5904, chance = 38640 }, -- Magic Sulphur
+	{ id = 3037, chance = 38640 }, -- Yellow Gem
+	{ id = 239, chance = 30680, maxCount = 3 }, -- Great Health Potion
+	{ id = 238, chance = 40910, maxCount = 3 }, -- Great Mana Potion
+	{ id = 7642, chance = 28410, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 3039, chance = 28410 }, -- Red Gem
+	{ id = 3038, chance = 20450 }, -- Green Gem
+	{ id = 10389, chance = 1140 }, -- Traditional Sai
+	{ id = 10390, chance = 15909 }, -- Zaoan Sword
+	{ id = 10384, chance = 17050 }, -- Zaoan Armor
+	{ id = 3386, chance = 10230 }, -- Dragon Scale Mail
+	{ id = 8052, chance = 20450 }, -- Swamplair Armor
+	{ id = 11657, chance = 10230 }, -- Twiceslicer
+	{ id = 3041, chance = 6820 }, -- Blue Gem
+	{ id = 3032, chance = 5680, maxCount = 8 }, -- Small Emerald
+	{ id = 11651, chance = 5680 }, -- Elite Draken Mail
+	{ id = 12307, chance = 2270 }, -- Harness
+	{ id = 11693, chance = 1000 }, -- Blade of Corruption
 }
 
 monster.attacks = {

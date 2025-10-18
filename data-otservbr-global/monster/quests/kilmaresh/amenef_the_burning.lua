@@ -65,36 +65,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3315, chance = 80000 }, -- guardian halberd
-	{ id = 7456, chance = 80000 }, -- noble axe
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 3370, chance = 80000 }, -- knight armor
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 8084, chance = 80000 }, -- springsprout rod
-	{ id = 8092, chance = 80000 }, -- wand of starstorm
-	{ id = 3326, chance = 80000 }, -- epee
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 7386, chance = 80000 }, -- mercenary sword
-	{ id = 37003, chance = 80000 }, -- eyeembroidered veil
-	{ id = 37002, chance = 80000 }, -- tagraltinlaid scabbard
-	{ id = 7404, chance = 80000 }, -- assassin dagger
-	{ id = 8899, chance = 80000 }, -- slightly rusted legs
-	{ id = 14040, chance = 80000 }, -- warriors axe
-	{ id = 3379, chance = 80000 }, -- doublet
-	{ id = 8896, chance = 80000 }, -- slightly rusted armor
-	{ id = 3097, chance = 80000 }, -- dwarven ring
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3073, chance = 80000 }, -- wand of cosmic energy
-	{ id = 3318, chance = 80000 }, -- knight axe
-	{ id = 31324, chance = 80000 }, -- golden mask
-	{ id = 7426, chance = 80000 }, -- amber staff
-	{ id = 3071, chance = 80000 }, -- wand of inferno
-	{ id = 8043, chance = 80000 }, -- focus cape
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 9302, chance = 80000 }, -- sacred tree amulet
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 31323, chance = 80000 }, -- sea horse figurine
+	{ id = 3315, chance = 10240 }, -- Guardian Halberd
+	{ id = 7456, chance = 1200 }, -- Noble Axe
+	{ id = 8073, chance = 2410 }, -- Spellbook of Warding
+	{ id = 3370, chance = 6930 }, -- Knight Armor
+	{ id = 3043, chance = 46080 }, -- Crystal Coin
+	{ id = 8084, chance = 3610 }, -- Springsprout Rod
+	{ id = 8092, chance = 3610 }, -- Wand of Starstorm
+	{ id = 3326, chance = 3920 }, -- Epee
+	{ id = 7440, chance = 6930 }, -- Mastermind Potion
+	{ id = 7386, chance = 1810 }, -- Mercenary Sword
+	{ id = 37003, chance = 1810 }, -- Eye-Embroidered Veil
+	{ id = 37002, chance = 1000 }, -- Tagralt-Inlaid Scabbard
+	{ id = 7404, chance = 2110 }, -- Assassin Dagger
+	{ id = 8899, chance = 15660 }, -- Slightly Rusted Legs
+	{ id = 14040, chance = 1810 }, -- Warrior's Axe
+	{ id = 3379, chance = 6630 }, -- Doublet
+	{ id = 281, chance = 3310 }, -- Giant Shimmering Pearl
+	{ id = 8896, chance = 11450 }, -- Slightly Rusted Armor
+	{ id = 3097, chance = 8130 }, -- Dwarven Ring
+	{ id = 23529, chance = 4520 }, -- Ring of Blue Plasma
+	{ id = 3036, chance = 2110 }, -- Violet Gem
+	{ id = 3073, chance = 3610 }, -- Wand of Cosmic Energy
+	{ id = 3318, chance = 3310 }, -- Knight Axe
+	{ id = 31324, chance = 900 }, -- Golden Mask
+	{ id = 7426, chance = 1200 }, -- Amber Staff
+	{ id = 3071, chance = 2710 }, -- Wand of Inferno
+	{ id = 8043, chance = 1510 }, -- Focus Cape
+	{ id = 8082, chance = 3920 }, -- Underworld Rod
+	{ id = 9302, chance = 3610 }, -- Sacred Tree Amulet
+	{ id = 3041, chance = 2110 }, -- Blue Gem
+	{ id = 31323, chance = 600 }, -- Sea Horse Figurine
 }
 
 monster.attacks = {

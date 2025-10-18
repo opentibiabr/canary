@@ -80,23 +80,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7643, chance = 23000 }, -- ultimate health potion
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 824, chance = 5000 }, -- glacier robe
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3575, chance = 5000 }, -- wood cape
-	{ id = 8083, chance = 5000 }, -- northwind rod
-	{ id = 8084, chance = 5000 }, -- springsprout rod
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 3081, chance = 1000 }, -- stone skin amulet
-	{ id = 21165, chance = 1000 }, -- rubber cap
-	{ id = 22085, chance = 1000 }, -- fur armor
-	{ id = 3048, chance = 1000 }, -- might ring
-	{ id = 8050, chance = 260 }, -- crystalline armor
-	{ id = 34109, chance = 260 }, -- bag you desire
+	{ id = 3043, chance = 48079 }, -- Crystal Coin
+	{ id = 7643, chance = 14087 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 16103 }, -- Gold Ingot
+	{ id = 815, chance = 2047 }, -- Glacier Amulet
+	{ id = 824, chance = 1272 }, -- Glacier Robe
+	{ id = 3036, chance = 3629 }, -- Violet Gem
+	{ id = 3041, chance = 3286 }, -- Blue Gem
+	{ id = 3575, chance = 934 }, -- Wood Cape
+	{ id = 8083, chance = 2446 }, -- Northwind Rod
+	{ id = 8084, chance = 4031 }, -- Springsprout Rod
+	{ id = 9302, chance = 3159 }, -- Sacred Tree Amulet
+	{ id = 3081, chance = 820 }, -- Stone Skin Amulet
+	{ id = 21165, chance = 659 }, -- Rubber Cap
+	{ id = 22085, chance = 537 }, -- Fur Armor
+	{ id = 3048, chance = 250 }, -- Might Ring
+	{ id = 8050, chance = 459 }, -- Crystalline Armor
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

@@ -63,7 +63,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 8197, chance = 80000 }, -- bulb of garlic
+	{ id = 8197, chance = 7630 }, -- Bulb of Garlic
 }
 
 monster.attacks = {

@@ -80,31 +80,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 8 }, -- platinum coin
-	{ id = 16123, chance = 80000, maxCount = 2 }, -- brown crystal splinter
-	{ id = 7642, chance = 23000, maxCount = 3 }, -- great spirit potion
-	{ id = 238, chance = 23000, maxCount = 3 }, -- great mana potion
-	{ id = 7643, chance = 23000, maxCount = 3 }, -- ultimate health potion
-	{ id = 20202, chance = 23000 }, -- dead weight
-	{ id = 20206, chance = 23000 }, -- hemp rope
-	{ id = 16124, chance = 23000, maxCount = 3 }, -- blue crystal splinter
-	{ id = 5913, chance = 5000 }, -- brown piece of cloth
-	{ id = 3052, chance = 5000 }, -- life ring
-	{ id = 3344, chance = 5000 }, -- beastslayer axe
-	{ id = 5914, chance = 5000 }, -- yellow piece of cloth
-	{ id = 3051, chance = 5000 }, -- energy ring
-	{ id = 3098, chance = 5000 }, -- ring of healing
-	{ id = 3415, chance = 5000 }, -- guardian shield
-	{ id = 16121, chance = 5000 }, -- green crystal shard
-	{ id = 7451, chance = 1000 }, -- shadow sceptre
-	{ id = 5911, chance = 1000 }, -- red piece of cloth
-	{ id = 8074, chance = 1000 }, -- spellbook of mind control
-	{ id = 813, chance = 260 }, -- terra boots
-	{ id = 8082, chance = 260 }, -- underworld rod
-	{ id = 8084, chance = 260 }, -- springsprout rod
-	{ id = 20062, chance = 260 }, -- cluster of solace
-	{ id = 811, chance = 260 }, -- terra mantle
+	{ id = 3031, chance = 91373, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 96245, maxCount = 8 }, -- Platinum Coin
+	{ id = 16123, chance = 44653, maxCount = 2 }, -- Brown Crystal Splinter
+	{ id = 7642, chance = 18276, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 238, chance = 18595, maxCount = 3 }, -- Great Mana Potion
+	{ id = 7643, chance = 17992, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 20202, chance = 13578 }, -- Dead Weight
+	{ id = 20206, chance = 14056 }, -- Hemp Rope
+	{ id = 16124, chance = 9153, maxCount = 3 }, -- Blue Crystal Splinter
+	{ id = 5913, chance = 4543 }, -- Brown Piece of Cloth
+	{ id = 3052, chance = 4468 }, -- Life Ring
+	{ id = 3344, chance = 3363 }, -- Beastslayer Axe
+	{ id = 5914, chance = 2618 }, -- Yellow Piece of Cloth
+	{ id = 3051, chance = 2785 }, -- Energy Ring
+	{ id = 3098, chance = 3267 }, -- Ring of Healing
+	{ id = 3415, chance = 1408 }, -- Guardian Shield
+	{ id = 16121, chance = 1388 }, -- Green Crystal Shard
+	{ id = 7451, chance = 902 }, -- Shadow Sceptre
+	{ id = 5911, chance = 1060 }, -- Red Piece of Cloth
+	{ id = 8074, chance = 706 }, -- Spellbook of Mind Control
+	{ id = 10389, chance = 540 }, -- Traditional Sai
+	{ id = 813, chance = 444 }, -- Terra Boots
+	{ id = 8082, chance = 637 }, -- Underworld Rod
+	{ id = 8084, chance = 589 }, -- Springsprout Rod
+	{ id = 20062, chance = 453 }, -- Cluster of Solace
+	{ id = 811, chance = 469 }, -- Terra Mantle
 }
 
 monster.attacks = {

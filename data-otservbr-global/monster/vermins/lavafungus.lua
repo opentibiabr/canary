@@ -73,31 +73,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 18 }, -- platinum coin
-	{ id = 3065, chance = 80000 }, -- terra rod
-	{ id = 36706, chance = 23000 }, -- red gem
-	{ id = 3067, chance = 23000 }, -- hailstorm rod
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 36786, chance = 23000 }, -- lavafungus ring
-	{ id = 3038, chance = 23000 }, -- green gem
-	{ id = 817, chance = 5000 }, -- magma amulet
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 3071, chance = 5000 }, -- wand of inferno
-	{ id = 3097, chance = 5000 }, -- dwarven ring
-	{ id = 3333, chance = 5000 }, -- crystal mace
-	{ id = 8043, chance = 5000 }, -- focus cape
-	{ id = 8073, chance = 5000 }, -- spellbook of warding
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 16120, chance = 5000 }, -- violet crystal shard
-	{ id = 16125, chance = 5000 }, -- cyan crystal fragment
-	{ id = 16126, chance = 5000 }, -- red crystal fragment
-	{ id = 16127, chance = 5000 }, -- green crystal fragment
-	{ id = 21169, chance = 5000 }, -- metal spats
-	{ id = 22193, chance = 5000 }, -- onyx chip
-	{ id = 25737, chance = 5000 }, -- rainbow quartz
-	{ id = 36785, chance = 5000 }, -- lavafungus head
-	{ id = 47998, chance = 80000 }, -- lavafungus soul core
+	{ id = 3035, chance = 100000, maxCount = 18 }, -- Platinum Coin
+	{ id = 3065, chance = 25770 }, -- Terra Rod
+	{ id = 3039, chance = 6841 }, -- Red Gem
+	{ id = 3067, chance = 6097 }, -- Hailstorm Rod
+	{ id = 16119, chance = 7124 }, -- Blue Crystal Shard
+	{ id = 36786, chance = 13360 }, -- Lavafungus Ring
+	{ id = 3038, chance = 5511 }, -- Green Gem
+	{ id = 817, chance = 2597 }, -- Magma Amulet
+	{ id = 3036, chance = 4911 }, -- Violet Gem
+	{ id = 3037, chance = 4142 }, -- Yellow Gem
+	{ id = 3071, chance = 4653 }, -- Wand of Inferno
+	{ id = 3097, chance = 1949 }, -- Dwarven Ring
+	{ id = 3333, chance = 1778 }, -- Crystal Mace
+	{ id = 8043, chance = 2125 }, -- Focus Cape
+	{ id = 8073, chance = 2714 }, -- Spellbook of Warding
+	{ id = 8092, chance = 1792 }, -- Wand of Starstorm
+	{ id = 16120, chance = 3781 }, -- Violet Crystal Shard
+	{ id = 16125, chance = 4507 }, -- Cyan Crystal Fragment
+	{ id = 16126, chance = 4198 }, -- Red Crystal Fragment
+	{ id = 16127, chance = 3381 }, -- Green Crystal Fragment
+	{ id = 21169, chance = 2325 }, -- Metal Spats
+	{ id = 22193, chance = 3537 }, -- Onyx Chip
+	{ id = 25737, chance = 3351 }, -- Rainbow Quartz
+	{ id = 36785, chance = 3921 }, -- Lavafungus Head
 }
 
 monster.attacks = {

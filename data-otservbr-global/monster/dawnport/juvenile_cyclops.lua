@@ -60,16 +60,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 25 }, -- gold coin
-	{ id = 3577, chance = 23000, maxCount = 3 }, -- meat
-	{ id = 3264, chance = 23000 }, -- sword
-	{ id = 3286, chance = 23000 }, -- mace
-	{ id = 3352, chance = 23000 }, -- chain helmet
-	{ id = 3358, chance = 23000 }, -- chain armor
-	{ id = 3276, chance = 23000 }, -- hatchet
-	{ id = 3362, chance = 23000 }, -- studded legs
-	{ id = 3410, chance = 5000 }, -- plate shield
-	{ id = 266, chance = 260 }, -- health potion
+	{ id = 3031, chance = 100000, maxCount = 25 }, -- Gold Coin
+	{ id = 3577, chance = 21803, maxCount = 3 }, -- Meat
+	{ id = 3264, chance = 18162 }, -- Sword
+	{ id = 3286, chance = 20416 }, -- Mace
+	{ id = 3352, chance = 9340 }, -- Chain Helmet
+	{ id = 3358, chance = 11941 }, -- Chain Armor
+	{ id = 3276, chance = 18858 }, -- Hatchet
+	{ id = 3362, chance = 11941 }, -- Studded Legs
+	{ id = 3410, chance = 2253 }, -- Plate Shield
+	{ id = 266, chance = 1000 }, -- Health Potion
 }
 
 monster.attacks = {

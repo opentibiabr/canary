@@ -80,18 +80,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 30 }, -- gold coin
-	{ id = 10291, chance = 23000 }, -- rotten piece of cloth
-	{ id = 3492, chance = 23000, maxCount = 2 }, -- worm
-	{ id = 11467, chance = 5000 }, -- ghoul snack
-	{ id = 11050, chance = 5000 }, -- torch
-	{ id = 23986, chance = 5000 }, -- heavy old tome
-	{ id = 5913, chance = 1000 }, -- brown piece of cloth
-	{ id = 11484, chance = 1000 }, -- pile of grave earth
-	{ id = 3377, chance = 1000 }, -- scale armor
-	{ id = 3367, chance = 1000 }, -- viking helmet
-	{ id = 3052, chance = 260 }, -- life ring
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3031, chance = 69996, maxCount = 30 }, -- Gold Coin
+	{ id = 10291, chance = 18005 }, -- Rotten Piece of Cloth
+	{ id = 3492, chance = 15422, maxCount = 2 }, -- Worm
+	{ id = 11467, chance = 4897 }, -- Ghoul Snack
+	{ id = 2920, chance = 45531 }, -- Torch
+	{ id = 23986, chance = 1630 }, -- Heavy Old Tome
+	{ id = 5913, chance = 1030 }, -- Brown Piece of Cloth
+	{ id = 11484, chance = 1115 }, -- Pile of Grave Earth
+	{ id = 3377, chance = 2924 }, -- Scale Armor
+	{ id = 3367, chance = 4161 }, -- Viking Helmet
+	{ id = 3052, chance = 260 }, -- Life Ring
+	{ id = 3114, chance = 2383 }, -- Skull (Item)
+	{ id = 3081, chance = 30 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

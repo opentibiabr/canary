@@ -64,7 +64,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9698, chance = 80000 }, -- carrying device
+	{ id = 9698, chance = 1000 }, -- Carrying Device
 }
 
 monster.attacks = {

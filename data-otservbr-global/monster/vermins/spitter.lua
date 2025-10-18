@@ -74,22 +74,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 190 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 3725, chance = 80000, maxCount = 3 }, -- brown mushroom
-	{ id = 14083, chance = 80000 }, -- compound eye
-	{ id = 239, chance = 80000 }, -- great health potion
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 3033, chance = 80000, maxCount = 2 }, -- small amethyst
-	{ id = 14078, chance = 80000 }, -- spitter nose
-	{ id = 3053, chance = 5000 }, -- time ring
-	{ id = 7449, chance = 1000 }, -- crystal sword
-	{ id = 14086, chance = 260 }, -- calopteryx cape
-	{ id = 3391, chance = 260 }, -- crusader helmet
-	{ id = 14087, chance = 260 }, -- grasshopper legs
-	{ id = 3038, chance = 260 }, -- green gem
-	{ id = 7440, chance = 260 }, -- mastermind potion
-	{ id = 3055, chance = 260 }, -- platinum amulet
+	{ id = 3031, chance = 100000, maxCount = 190 }, -- Gold Coin
+	{ id = 3035, chance = 74930 }, -- Platinum Coin
+	{ id = 3725, chance = 7390, maxCount = 3 }, -- Brown Mushroom
+	{ id = 14083, chance = 14950 }, -- Compound Eye
+	{ id = 239, chance = 4940 }, -- Great Health Potion
+	{ id = 238, chance = 8070 }, -- Great Mana Potion
+	{ id = 3033, chance = 8119, maxCount = 2 }, -- Small Amethyst
+	{ id = 14078, chance = 18090 }, -- Spitter Nose
+	{ id = 3053, chance = 2320 }, -- Time Ring
+	{ id = 7449, chance = 1990 }, -- Crystal Sword
+	{ id = 14086, chance = 240 }, -- Calopteryx Cape
+	{ id = 3391, chance = 220 }, -- Crusader Helmet
+	{ id = 14087, chance = 110 }, -- Grasshopper Legs
+	{ id = 3038, chance = 210 }, -- Green Gem
+	{ id = 7440, chance = 320 }, -- Mastermind Potion
+	{ id = 3055, chance = 240 }, -- Platinum Amulet
 }
 
 monster.attacks = {

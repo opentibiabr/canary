@@ -80,24 +80,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 17 }, -- platinum coin
-	{ id = 3010, chance = 23000 }, -- emerald bangle
-	{ id = 34249, chance = 23000 }, -- wooden trash
-	{ id = 3315, chance = 23000 }, -- guardian halberd
-	{ id = 7642, chance = 23000 }, -- great spirit potion
-	{ id = 16103, chance = 23000 }, -- mushroom pie
-	{ id = 36805, chance = 23000 }, -- carnisylvan finger
-	{ id = 36806, chance = 23000 }, -- carnisylvan bark
-	{ id = 3065, chance = 5000 }, -- terra rod
-	{ id = 3318, chance = 5000 }, -- knight axe
-	{ id = 3731, chance = 5000, maxCount = 3 }, -- fire mushroom
-	{ id = 7387, chance = 5000 }, -- diamond sceptre
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 23526, chance = 5000 }, -- collar of blue plasma
-	{ id = 24392, chance = 1000 }, -- gemmed figurine
-	{ id = 36807, chance = 260 }, -- human teeth
+	{ id = 3035, chance = 83348, maxCount = 17 }, -- Platinum Coin
+	{ id = 3010, chance = 6861 }, -- Emerald Bangle
+	{ id = 3135, 3136, 3137, 3138, 3139, 3140, chance = 7101 }, -- Wooden Trash
+	{ id = 3315, chance = 5659 }, -- Guardian Halberd
+	{ id = 7642, chance = 6515 }, -- Great Spirit Potion
+	{ id = 16103, chance = 8155 }, -- Mushroom Pie
+	{ id = 36805, chance = 7872 }, -- Carnisylvan Finger
+	{ id = 36806, chance = 10540 }, -- Carnisylvan Bark
+	{ id = 281, chance = 1609 }, -- Giant Shimmering Pearl (Green)
+	{ id = 3065, chance = 4159 }, -- Terra Rod
+	{ id = 3318, chance = 3665 }, -- Knight Axe
+	{ id = 3731, chance = 3452, maxCount = 3 }, -- Fire Mushroom
+	{ id = 7387, chance = 3691 }, -- Diamond Sceptre
+	{ id = 8082, chance = 3643 }, -- Underworld Rod
+	{ id = 8092, chance = 3218 }, -- Wand of Starstorm
+	{ id = 9302, chance = 2075 }, -- Sacred Tree Amulet
+	{ id = 23526, chance = 4615 }, -- Collar of Blue Plasma
+	{ id = 24392, chance = 787 }, -- Gemmed Figurine
+	{ id = 36807, chance = 256 }, -- Human Teeth
 }
 
 monster.attacks = {

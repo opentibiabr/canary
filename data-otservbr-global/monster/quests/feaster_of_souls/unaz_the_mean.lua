@@ -65,20 +65,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 32583, chance = 80000 }, -- skull coin
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 32773, chance = 80000 }, -- ivory comb
-	{ id = 32771, chance = 80000, maxCount = 2 }, -- moonstone
-	{ id = 32770, chance = 80000 }, -- diamond
-	{ id = 3308, chance = 80000 }, -- machete
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 32703, chance = 80000 }, -- death toll
-	{ id = 32619, chance = 80000 }, -- pair of nightmare boots
-	{ id = 32772, chance = 80000 }, -- silver hand mirror
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 14040, chance = 80000 }, -- warriors axe
-	{ id = 3320, chance = 80000 }, -- fire axe
-	{ id = 7386, chance = 80000 }, -- mercenary sword
+	{ id = 32583, chance = 13207 }, -- Skull Coin
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 32773, chance = 54088 }, -- Ivory Comb
+	{ id = 32771, chance = 44654, maxCount = 2 }, -- Moonstone
+	{ id = 32770, chance = 18867 }, -- Diamond
+	{ id = 3308, chance = 4929 }, -- Machete
+	{ id = 3039, chance = 1000, maxCount = 2 }, -- Red Gem
+	{ id = 32703, chance = 3773 }, -- Death Toll
+	{ id = 32619, chance = 2564 }, -- Pair of Nightmare Boots
+	{ id = 32772, chance = 1000 }, -- Silver Hand Mirror
+	{ id = 3324, chance = 3773 }, -- Skull Staff
+	{ id = 14040, chance = 2564 }, -- Warrior's Axe
+	{ id = 3320, chance = 1886 }, -- Fire Axe
+	{ id = 7386, chance = 1941 }, -- Mercenary Sword
 }
 
 monster.attacks = {

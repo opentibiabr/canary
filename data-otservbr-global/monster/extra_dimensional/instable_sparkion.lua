@@ -78,22 +78,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 16124, chance = 23000 }, -- blue crystal splinter
-	{ id = 16125, chance = 23000 }, -- cyan crystal fragment
-	{ id = 23502, chance = 23000 }, -- sparkion claw
-	{ id = 23504, chance = 23000 }, -- sparkion legs
-	{ id = 23505, chance = 23000 }, -- sparkion stings
-	{ id = 23503, chance = 23000 }, -- sparkion tail
-	{ id = 23535, chance = 5000 }, -- energy bar
-	{ id = 23545, chance = 5000 }, -- energy drink
-	{ id = 239, chance = 5000 }, -- great health potion
-	{ id = 238, chance = 5000 }, -- great mana potion
-	{ id = 7642, chance = 5000 }, -- great spirit potion
-	{ id = 16119, chance = 5000 }, -- blue crystal shard
-	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
-	{ id = 3073, chance = 1000 }, -- wand of cosmic energy
+	{ id = 3031, chance = 99006, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 90769 }, -- Platinum Coin
+	{ id = 16124, chance = 8395 }, -- Blue Crystal Splinter
+	{ id = 16125, chance = 5239 }, -- Cyan Crystal Fragment
+	{ id = 23502, chance = 8187 }, -- Sparkion Claw
+	{ id = 23504, chance = 6682 }, -- Sparkion Legs
+	{ id = 23505, chance = 5869 }, -- Sparkion Stings
+	{ id = 23503, chance = 6289 }, -- Sparkion Tail
+	{ id = 23535, chance = 4499 }, -- Energy Bar
+	{ id = 23545, chance = 5751 }, -- Energy Drink
+	{ id = 239, chance = 3816 }, -- Great Health Potion
+	{ id = 238, chance = 5187 }, -- Great Mana Potion
+	{ id = 7642, chance = 3704 }, -- Great Spirit Potion
+	{ id = 16119, chance = 4615 }, -- Blue Crystal Shard
+	{ id = 3029, chance = 6027, maxCount = 2 }, -- Small Sapphire
+	{ id = 3073, chance = 845 }, -- Wand of Cosmic Energy
 }
 
 monster.attacks = {

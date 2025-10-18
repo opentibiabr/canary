@@ -68,12 +68,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 20 }, -- gold coin
-	{ id = 5902, chance = 80000, maxCount = 3 }, -- honeycomb
-	{ id = 3054, chance = 80000 }, -- silver amulet
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 19083, chance = 80000 }, -- silver raid token
-	{ id = 9057, chance = 80000 }, -- small topaz
+	{ id = 3031, chance = 100000, maxCount = 20 }, -- Gold Coin
+	{ id = 5902, chance = 100000, maxCount = 3 }, -- Honeycomb
+	{ id = 3054, chance = 9090 }, -- Silver Amulet
+	{ id = 3032, chance = 6060 }, -- Small Emerald
+	{ id = 19083, chance = 1000 }, -- Silver Raid Token
+	{ id = 9057, chance = 6060 }, -- Small Topaz
 }
 
 monster.attacks = {

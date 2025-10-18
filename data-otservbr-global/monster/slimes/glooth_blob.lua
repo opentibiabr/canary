@@ -83,14 +83,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 70 }, -- gold coin
-	{ id = 21182, chance = 23000 }, -- glob of glooth
-	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
-	{ id = 3029, chance = 5000, maxCount = 2 }, -- small sapphire
-	{ id = 21183, chance = 1000 }, -- glooth amulet
-	{ id = 21178, chance = 1000 }, -- glooth club
-	{ id = 21180, chance = 1000 }, -- glooth axe
-	{ id = 21179, chance = 1000 }, -- glooth blade
+	{ id = 3031, chance = 100000, maxCount = 70 }, -- Gold Coin
+	{ id = 21182, chance = 14699 }, -- Glob of Glooth
+	{ id = 9057, chance = 2820, maxCount = 2 }, -- Small Topaz
+	{ id = 3029, chance = 3110, maxCount = 2 }, -- Small Sapphire
+	{ id = 21183, chance = 470 }, -- Glooth Amulet
+	{ id = 21178, chance = 590 }, -- Glooth Club
+	{ id = 21180, chance = 520 }, -- Glooth Axe
+	{ id = 21179, chance = 520 }, -- Glooth Blade
 }
 
 monster.attacks = {

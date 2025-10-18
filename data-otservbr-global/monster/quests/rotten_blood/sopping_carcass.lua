@@ -71,15 +71,16 @@ monster.light = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 5944, chance = 23000, maxCount = 3 }, -- soul orb
-	{ id = 43846, chance = 23000 }, -- decayed finger bone
-	{ id = 43849, chance = 23000 }, -- rotten roots
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3346, chance = 5000 }, -- ripper lance
-	{ id = 3081, chance = 260 }, -- stone skin amulet
+	{ id = 3043, chance = 56035 }, -- Crystal Coin
+	{ id = 5944, chance = 16909, maxCount = 3 }, -- Soul Orb
+	{ id = 43782, chance = 11766 }, -- Lichen Gobbler
+	{ id = 43846, chance = 8335 }, -- Decayed Finger Bone
+	{ id = 43849, chance = 5313 }, -- Rotten Roots
+	{ id = 3037, chance = 6372 }, -- Yellow Gem
+	{ id = 8082, chance = 1961 }, -- Underworld Rod
+	{ id = 3039, chance = 2452 }, -- Red Gem
+	{ id = 3346, chance = 1469 }, -- Ripper Lance
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

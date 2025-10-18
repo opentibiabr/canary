@@ -73,18 +73,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 7432, chance = 23000 }, -- furry club
-	{ id = 39387, chance = 23000 }, -- headpecker beak
-	{ id = 39388, chance = 23000, maxCount = 5 }, -- headpecker feather
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3271, chance = 5000 }, -- spike sword
-	{ id = 3279, chance = 5000 }, -- war hammer
-	{ id = 3291, chance = 5000 }, -- knife
-	{ id = 15634, chance = 5000 }, -- carrot
-	{ id = 7413, chance = 5000 }, -- titan axe
-	{ id = 8092, chance = 1000 }, -- wand of starstorm
-	{ id = 9058, chance = 1000 }, -- gold ingot
+	{ id = 3043, chance = 34435 }, -- Crystal Coin
+	{ id = 7432, chance = 5737 }, -- Furry Club
+	{ id = 39387, chance = 11806 }, -- Headpecker Beak
+	{ id = 39388, chance = 7377, maxCount = 5 }, -- Headpecker Feather
+	{ id = 3041, chance = 1829 }, -- Blue Gem
+	{ id = 3271, chance = 3971 }, -- Spike Sword
+	{ id = 3279, chance = 2197 }, -- War Hammer
+	{ id = 3291, chance = 4117 }, -- Knife
+	{ id = 3595, chance = 4469 }, -- Carrot
+	{ id = 7413, chance = 1735 }, -- Titan Axe
+	{ id = 8092, chance = 1000 }, -- Wand of Starstorm
+	{ id = 9058, chance = 910 }, -- Gold Ingot
 }
 
 monster.attacks = {

@@ -79,13 +79,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 23000, maxCount = 20 }, -- platinum coin
-	{ id = 3030, chance = 23000, maxCount = 5 }, -- small ruby
-	{ id = 236, chance = 23000 }, -- strong health potion
-	{ id = 239, chance = 5000 }, -- great health potion
-	{ id = 5876, chance = 1000 }, -- lizard leather
-	{ id = 5881, chance = 1000 }, -- lizard scale
+	{ id = 3031, chance = 89360, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 14170, maxCount = 20 }, -- Platinum Coin
+	{ id = 3030, chance = 9990, maxCount = 5 }, -- Small Ruby
+	{ id = 236, chance = 10110 }, -- Strong Health Potion
+	{ id = 239, chance = 4640 }, -- Great Health Potion
+	{ id = 5876, chance = 880 }, -- Lizard Leather
+	{ id = 5881, chance = 820 }, -- Lizard Scale
 }
 
 monster.attacks = {

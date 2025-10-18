@@ -73,30 +73,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 34020, chance = 80000 }, -- figurine of hatred
-	{ id = 33927, chance = 80000 }, -- vial of hatred
-	{ id = 23373, chance = 80000 }, -- ultimate mana potion
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 23375, chance = 80000 }, -- supreme health potion
-	{ id = 7443, chance = 80000 }, -- bullseye potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 24391, chance = 80000 }, -- coral brooch
-	{ id = 7439, chance = 80000 }, -- berserk potion
-	{ id = 34109, chance = 80000 }, -- bag you desire
-	{ id = 34074, chance = 80000 }, -- spectral horse tack
-	{ id = 34076, chance = 80000 }, -- bracelet of strengthening
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 32622, chance = 80000 }, -- giant amethyst
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 7440, chance = 80000 }, -- mastermind potion
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 23374, chance = 80000 }, -- ultimate spirit potion
-	{ id = 32769, chance = 80000 }, -- white gem
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 34072, chance = 80000 }, -- spectral horseshoe
+	{ id = 34020, chance = 6250 }, -- Figurine of Hatred
+	{ id = 33927, chance = 5172 }, -- Vial of Hatred
+	{ id = 23373, chance = 58620 }, -- Ultimate Mana Potion
+	{ id = 3043, chance = 100000 }, -- Crystal Coin
+	{ id = 23375, chance = 60344 }, -- Supreme Health Potion
+	{ id = 7443, chance = 31034 }, -- Bullseye Potion
+	{ id = 3041, chance = 29310 }, -- Blue Gem
+	{ id = 3037, chance = 25862 }, -- Yellow Gem
+	{ id = 30059, chance = 41379 }, -- Giant Ruby
+	{ id = 24391, chance = 5172 }, -- Coral Brooch
+	{ id = 7439, chance = 34482 }, -- Berserk Potion
+	{ id = 34109, chance = 3333 }, -- Bag You Desire
+	{ id = 34074, chance = 1000 }, -- Spectral Horse Tack
+	{ id = 34076, chance = 1000 }, -- Bracelet of Strengthening
+	{ id = 3036, chance = 17241 }, -- Violet Gem
+	{ id = 32622, chance = 31034 }, -- Giant Amethyst
+	{ id = 3039, chance = 31034 }, -- Red Gem
+	{ id = 7440, chance = 27586 }, -- Mastermind Potion
+	{ id = 9058, chance = 12068 }, -- Gold Ingot
+	{ id = 23374, chance = 60344 }, -- Ultimate Spirit Potion
+	{ id = 32769, chance = 20689 }, -- White Gem
+	{ id = 30060, chance = 27586 }, -- Giant Emerald
+	{ id = 3038, chance = 27586 }, -- Green Gem
+	{ id = 34072, chance = 6250 }, -- Spectral Horseshoe
+	{ id = 281, chance = 21739 }, -- Giant Shimmering Pearl
 }
 
 monster.attacks = {

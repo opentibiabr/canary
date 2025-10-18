@@ -69,29 +69,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 28865, chance = 80000 }, -- the spatial warp almanac
-	{ id = 28718, chance = 80000 }, -- falcon bow
-	{ id = 28721, chance = 80000 }, -- falcon shield
-	{ id = 28719, chance = 80000 }, -- falcon plate
-	{ id = 28714, chance = 80000 }, -- falcon circlet
-	{ id = 28724, chance = 80000 }, -- falcon battleaxe
-	{ id = 28715, chance = 80000 }, -- falcon coif
-	{ id = 28725, chance = 80000 }, -- falcon mace
-	{ id = 28723, chance = 80000 }, -- falcon longsword
-	{ id = 28720, chance = 80000 }, -- falcon greaves
-	{ id = 28716, chance = 80000 }, -- falcon rod
-	{ id = 28717, chance = 80000 }, -- falcon wand
-	{ id = 28824, chance = 80000 }, -- grant of arms
-	{ id = 3411, chance = 80000 }, -- brass shield
-	{ id = 11050, chance = 80000 }, -- torch
-	{ id = 11481, chance = 80000 }, -- pelvis bone
-	{ id = 3286, chance = 80000 }, -- mace
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 3264, chance = 80000 }, -- sword
-	{ id = 3276, chance = 80000 }, -- hatchet
-	{ id = 23986, chance = 80000 }, -- heavy old tome
-	{ id = 7573, chance = 80000 }, -- bone
-	{ id = 3367, chance = 80000 }, -- viking helmet
+	{ id = 28853, chance = 88664 }, -- The Spatial Warp Almanac
+	{ id = 28718, chance = 636 }, -- Falcon Bow
+	{ id = 28721, chance = 636 }, -- Falcon Shield
+	{ id = 28719, chance = 335 }, -- Falcon Plate
+	{ id = 28714, chance = 186 }, -- Falcon Circlet
+	{ id = 28724, chance = 325 }, -- Falcon Battleaxe
+	{ id = 28715, chance = 316 }, -- Falcon Coif
+	{ id = 28725, chance = 1000 }, -- Falcon Mace
+	{ id = 50161, chance = 1000 }, -- Falcon Sai
+	{ id = 28723, chance = 1000 }, -- Falcon Longsword
+	{ id = 28720, chance = 167 }, -- Falcon Greaves
+	{ id = 28716, chance = 186 }, -- Falcon Rod
+	{ id = 28717, chance = 1000 }, -- Falcon Wand
+	{ id = 28824, chance = 210 }, -- Grant of Arms
+	{ id = 3411, chance = 956 }, -- Brass Shield
+	{ id = 2920, chance = 9247 }, -- Torch
+	{ id = 11481, chance = 10687 }, -- Pelvis Bone
+	{ id = 3286, chance = 3828 }, -- Mace
+	{ id = 3031, chance = 43460 }, -- Gold Coin
+	{ id = 3264, chance = 2086 }, -- Sword
+	{ id = 3276, chance = 4862 }, -- Hatchet
+	{ id = 23986, chance = 1434 }, -- Heavy Old Tome
+	{ id = 3115, chance = 51598 }, -- Bone
+	{ id = 3367, chance = 7575 }, -- Viking Helmet
 }
 
 monster.attacks = {

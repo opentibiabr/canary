@@ -77,12 +77,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 12 }, -- gold coin
-	{ id = 3723, chance = 23000 }, -- white mushroom
-	{ id = 17822, chance = 23000 }, -- swampling moss
-	{ id = 17823, chance = 23000 }, -- piece of swampling wood
-	{ id = 17824, chance = 23000 }, -- swampling club
-	{ id = 31366, chance = 5000 }, -- rope
+	{ id = 3031, chance = 84920, maxCount = 12 }, -- Gold Coin
+	{ id = 3723, chance = 10220 }, -- White Mushroom
+	{ id = 17822, chance = 19980 }, -- Swampling Moss
+	{ id = 17823, chance = 14930 }, -- Piece of Swampling Wood
+	{ id = 17824, chance = 7439 }, -- Swampling Club
+	{ id = 3003, chance = 5080 }, -- Rope
 }
 
 monster.attacks = {

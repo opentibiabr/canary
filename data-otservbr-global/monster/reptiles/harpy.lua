@@ -76,19 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 40585, chance = 23000 }, -- harpy feathers
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 16120, chance = 23000 }, -- violet crystal shard
-	{ id = 3063, chance = 5000 }, -- gold ring
-	{ id = 7642, chance = 5000 }, -- great spirit potion
-	{ id = 16096, chance = 5000 }, -- wand of defiance
-	{ id = 14247, chance = 5000 }, -- ornate crossbow
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 8043, chance = 1000 }, -- focus cape
-	{ id = 3366, chance = 1000 }, -- magic plate armor
-	{ id = 9304, chance = 1000 }, -- shockwave amulet
-	{ id = 16160, chance = 260 }, -- crystalline sword
+	{ id = 3035, chance = 74985 }, -- Platinum Coin
+	{ id = 40585, chance = 6511 }, -- Harpy Feathers
+	{ id = 16119, chance = 5645 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 5120 }, -- Violet Crystal Shard
+	{ id = 3063, chance = 2589 }, -- Gold Ring
+	{ id = 7642, chance = 2347 }, -- Great Spirit Potion
+	{ id = 16096, chance = 1535 }, -- Wand of Defiance
+	{ id = 14247, chance = 1393 }, -- Ornate Crossbow
+	{ id = 3036, chance = 2690 }, -- Violet Gem
+	{ id = 8043, chance = 893 }, -- Focus Cape
+	{ id = 3366, chance = 674 }, -- Magic Plate Armor
+	{ id = 9304, chance = 777 }, -- Shockwave Amulet
+	{ id = 16160, chance = 213 }, -- Crystalline Sword
 }
 
 monster.attacks = {

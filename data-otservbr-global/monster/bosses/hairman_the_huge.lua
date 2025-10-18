@@ -71,13 +71,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 60 }, -- gold coin
-	{ id = 3587, chance = 80000, maxCount = 2 }, -- banana
-	{ id = 5883, chance = 80000 }, -- ape fur
-	{ id = 3357, chance = 80000 }, -- plate armor
-	{ id = 3050, chance = 80000 }, -- power ring
-	{ id = 3084, chance = 80000 }, -- protection amulet
-	{ id = 3093, chance = 80000 }, -- club ring
+	{ id = 3031, chance = 92860, maxCount = 60 }, -- Gold Coin
+	{ id = 3587, chance = 28570, maxCount = 2 }, -- Banana
+	{ id = 5883, chance = 21430 }, -- Ape Fur
+	{ id = 3357, chance = 1000 }, -- Plate Armor
+	{ id = 3050, chance = 1000 }, -- Power Ring
+	{ id = 3084, chance = 1000 }, -- Protection Amulet
+	{ id = 3093, chance = 14290 }, -- Club Ring
 }
 
 monster.attacks = {

@@ -80,19 +80,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 80 }, -- gold coin
-	{ id = 2995, chance = 80000 }, -- piggy bank
-	{ id = 237, chance = 80000 }, -- strong mana potion
-	{ id = 3725, chance = 80000 }, -- brown mushroom
-	{ id = 3071, chance = 80000 }, -- wand of inferno
-	{ id = 3324, chance = 80000 }, -- skull staff
-	{ id = 9179, chance = 80000 }, -- voodoo doll
-	{ id = 5810, chance = 80000 }, -- pirate voodoo doll
-	{ id = 7426, chance = 80000 }, -- amber staff
-	{ id = 8094, chance = 1000 }, -- wand of voodoo
-	{ id = 6090, chance = 80000 }, -- music sheet
-	{ id = 3084, chance = 80000 }, -- protection amulet
-	{ id = 3029, chance = 80000 }, -- small sapphire
+	{ id = 3031, chance = 58330, maxCount = 80 }, -- Gold Coin
+	{ id = 2995, chance = 100000 }, -- Piggy Bank
+	{ id = 237, chance = 8330 }, -- Strong Mana Potion
+	{ id = 3725, chance = 1000 }, -- Brown Mushroom
+	{ id = 3071, chance = 16670 }, -- Wand of Inferno
+	{ id = 3324, chance = 25000 }, -- Skull Staff
+	{ id = 3002, chance = 1000 }, -- Voodoo Doll
+	{ id = 5810, chance = 8330 }, -- Pirate Voodoo Doll
+	{ id = 7426, chance = 1000 }, -- Amber Staff
+	{ id = 6087, chance = 1000 }, -- Music Sheet (First Verse)
+	{ id = 6088, chance = 1000 }, -- Music Sheet (Second Verse)
+	{ id = 6089, chance = 1000 }, -- Music Sheet (Third Verse)
+	{ id = 6090, chance = 1000 }, -- Music Sheet (Fourth Verse)
+	{ id = 8094, chance = 1000 }, -- Wand of Voodoo
+	{ id = 3084, chance = 16670 }, -- Protection Amulet
+	{ id = 3029, chance = 16670 }, -- Small Sapphire
 }
 
 monster.attacks = {

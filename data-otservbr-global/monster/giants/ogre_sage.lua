@@ -84,21 +84,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 11452, chance = 23000 }, -- broken shamanic staff
-	{ id = 22189, chance = 23000 }, -- ogre nose ring
-	{ id = 814, chance = 23000 }, -- terra amulet
-	{ id = 22184, chance = 23000 }, -- shamanic talisman
-	{ id = 22191, chance = 23000 }, -- skull fetish
-	{ id = 22188, chance = 23000 }, -- ogre ear stud
-	{ id = 813, chance = 23000 }, -- terra boots
-	{ id = 16120, chance = 23000 }, -- violet crystal shard
-	{ id = 16127, chance = 23000 }, -- green crystal fragment
-	{ id = 17831, chance = 5000 }, -- bone fetish
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 22183, chance = 1000 }, -- ogre scepta
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 11452, chance = 7300 }, -- Broken Shamanic Staff
+	{ id = 22189, chance = 9760 }, -- Ogre Nose Ring
+	{ id = 814, chance = 8530 }, -- Terra Amulet
+	{ id = 22184, chance = 11340 }, -- Shamanic Talisman
+	{ id = 22191, chance = 9650 }, -- Skull Fetish
+	{ id = 22188, chance = 12230 }, -- Ogre Ear Stud
+	{ id = 813, chance = 7860 }, -- Terra Boots
+	{ id = 16120, chance = 6170 }, -- Violet Crystal Shard
+	{ id = 16127, chance = 5950 }, -- Green Crystal Fragment
+	{ id = 17831, chance = 3250 }, -- Bone Fetish
+	{ id = 9302, chance = 2130 }, -- Sacred Tree Amulet
+	{ id = 3036, chance = 3250 }, -- Violet Gem
+	{ id = 3037, chance = 5050 }, -- Yellow Gem
+	{ id = 22183, chance = 790 }, -- Ogre Scepta
 }
 
 monster.attacks = {

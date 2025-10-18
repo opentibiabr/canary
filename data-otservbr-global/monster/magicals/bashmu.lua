@@ -74,25 +74,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 19 }, -- platinum coin
-	{ id = 3315, chance = 23000 }, -- guardian halberd
-	{ id = 36823, chance = 23000 }, -- bashmu feather
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 815, chance = 5000 }, -- glacier amulet
-	{ id = 3028, chance = 5000 }, -- small diamond
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 7642, chance = 5000 }, -- great spirit potion
-	{ id = 9302, chance = 5000 }, -- sacred tree amulet
-	{ id = 16119, chance = 5000 }, -- blue crystal shard
-	{ id = 16121, chance = 5000 }, -- green crystal shard
-	{ id = 25737, chance = 5000 }, -- rainbow quartz
-	{ id = 36820, chance = 5000 }, -- bashmu fang
-	{ id = 36821, chance = 5000 }, -- bashmu tongue
-	{ id = 817, chance = 1000 }, -- magma amulet
-	{ id = 7407, chance = 1000 }, -- haunted blade
-	{ id = 7454, chance = 1000 }, -- glorious axe
-	{ id = 23526, chance = 1000 }, -- collar of blue plasma
-	{ id = 23528, chance = 1000 }, -- collar of red plasma
+	{ id = 3035, chance = 76328, maxCount = 19 }, -- Platinum Coin
+	{ id = 3315, chance = 8801 }, -- Guardian Halberd
+	{ id = 36823, chance = 5819 }, -- Bashmu Feather
+	{ id = 814, chance = 1402 }, -- Terra Amulet
+	{ id = 815, chance = 895 }, -- Glacier Amulet
+	{ id = 3028, chance = 3802 }, -- Small Diamond
+	{ id = 3036, chance = 3470 }, -- Violet Gem
+	{ id = 7642, chance = 4483 }, -- Great Spirit Potion
+	{ id = 9302, chance = 4196 }, -- Sacred Tree Amulet
+	{ id = 16119, chance = 3555 }, -- Blue Crystal Shard
+	{ id = 16121, chance = 3484 }, -- Green Crystal Shard
+	{ id = 25737, chance = 1725 }, -- Rainbow Quartz
+	{ id = 36820, chance = 2475 }, -- Bashmu Fang
+	{ id = 36821, chance = 4568 }, -- Bashmu Tongue
+	{ id = 817, chance = 853 }, -- Magma Amulet
+	{ id = 7407, chance = 694 }, -- Haunted Blade
+	{ id = 7454, chance = 867 }, -- Glorious Axe
+	{ id = 23526, chance = 750 }, -- Collar of Blue Plasma
+	{ id = 23544, chance = 811 }, -- Collar of Red Plasma
 }
 
 monster.attacks = {

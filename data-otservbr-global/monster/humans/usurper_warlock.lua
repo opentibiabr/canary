@@ -78,21 +78,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
-	{ id = 34162, chance = 23000 }, -- lion cloak patch
-	{ id = 34160, chance = 23000 }, -- lion crest
-	{ id = 830, chance = 23000 }, -- terra hood
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 3027, chance = 23000 }, -- black pearl
-	{ id = 3582, chance = 5000 }, -- ham
-	{ id = 3073, chance = 5000 }, -- wand of cosmic energy
-	{ id = 8084, chance = 5000 }, -- springsprout rod
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 828, chance = 5000 }, -- lightning headband
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 827, chance = 5000 }, -- magma monocle
-	{ id = 3371, chance = 5000 }, -- knight legs
+	{ id = 3035, chance = 79230, maxCount = 4 }, -- Platinum Coin
+	{ id = 34162, chance = 6960 }, -- Lion Cloak Patch
+	{ id = 34160, chance = 7420 }, -- Lion Crest
+	{ id = 830, chance = 4910 }, -- Terra Hood
+	{ id = 9058, chance = 10720 }, -- Gold Ingot
+	{ id = 3027, chance = 6270 }, -- Black Pearl
+	{ id = 3582, chance = 2870 }, -- Ham
+	{ id = 3073, chance = 1650 }, -- Wand of Cosmic Energy
+	{ id = 8084, chance = 3450 }, -- Springsprout Rod
+	{ id = 8092, chance = 1220 }, -- Wand of Starstorm
+	{ id = 281, chance = 4110 }, -- Giant Shimmering Pearl (Green)
+	{ id = 8082, chance = 1580 }, -- Underworld Rod
+	{ id = 828, chance = 3430 }, -- Lightning Headband
+	{ id = 3038, chance = 3960 }, -- Green Gem
+	{ id = 827, chance = 2040 }, -- Magma Monocle
+	{ id = 3371, chance = 2500 }, -- Knight Legs
 }
 
 monster.attacks = {

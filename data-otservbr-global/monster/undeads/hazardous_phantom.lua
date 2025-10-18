@@ -67,23 +67,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 34140, chance = 80000 }, -- hazardous heart
-	{ id = 34147, chance = 80000 }, -- hazardous robe
-	{ id = 34109, chance = 80000 }, -- bag you desire
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 8083, chance = 80000 }, -- northwind rod
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 3067, chance = 80000 }, -- hailstorm rod
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 24392, chance = 80000 }, -- gemmed figurine
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 16115, chance = 80000 }, -- wand of everblazing
-	{ id = 16118, chance = 80000 }, -- glacial rod
-	{ id = 824, chance = 80000 }, -- glacier robe
+	{ id = 34140, chance = 3981 }, -- Hazardous Heart
+	{ id = 34147, chance = 2557 }, -- Hazardous Robe
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
+	{ id = 3036, chance = 2556 }, -- Violet Gem
+	{ id = 3043, chance = 80002 }, -- Crystal Coin
+	{ id = 8083, chance = 1048 }, -- Northwind Rod
+	{ id = 9058, chance = 20932 }, -- Gold Ingot
+	{ id = 3067, chance = 8142 }, -- Hailstorm Rod
+	{ id = 7643, chance = 65581 }, -- Ultimate Health Potion
+	{ id = 281, chance = 3138 }, -- Giant Shimmering Pearl
+	{ id = 3041, chance = 3718 }, -- Blue Gem
+	{ id = 3038, chance = 3833 }, -- Green Gem
+	{ id = 24392, chance = 3142 }, -- Gemmed Figurine
+	{ id = 23544, chance = 1977 }, -- Collar of Red Plasma
+	{ id = 23526, chance = 930 }, -- Collar of Blue Plasma
+	{ id = 16115, chance = 512 }, -- Wand of Everblazing
+	{ id = 16118, chance = 814 }, -- Glacial Rod
+	{ id = 824, chance = 1278 }, -- Glacier Robe
 }
 
 monster.attacks = {

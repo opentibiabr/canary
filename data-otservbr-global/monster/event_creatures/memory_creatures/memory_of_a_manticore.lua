@@ -60,16 +60,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 25737, chance = 80000 }, -- rainbow quartz
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 16127, chance = 80000 }, -- green crystal fragment
-	{ id = 37468, chance = 80000 }, -- special fx box
-	{ id = 37530, chance = 80000 }, -- bottle of champagne
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 763, chance = 80000 }, -- flaming arrow
-	{ id = 3031, chance = 80000 }, -- gold coin
-	{ id = 24962, chance = 80000 }, -- prismatic quartz
-	{ id = 25759, chance = 80000 }, -- royal star
+	{ id = 25737, chance = 3455 }, -- Rainbow Quartz
+	{ id = 3036, chance = 2205 }, -- Violet Gem
+	{ id = 16127, chance = 4319 }, -- Green Crystal Fragment
+	{ id = 37468, chance = 1300 }, -- Special Fx Box
+	{ id = 37530, chance = 1409 }, -- Bottle of Champagne
+	{ id = 3032, chance = 4513 }, -- Small Emerald
+	{ id = 763, chance = 3457 }, -- Flaming Arrow
+	{ id = 3031, chance = 85699 }, -- Gold Coin
+	{ id = 24962, chance = 2301 }, -- Prismatic Quartz
+	{ id = 25759, chance = 760 }, -- Royal Star
+	{ id = 37531, chance = 5000 }, -- Candy Floss (Large)
 }
 
 monster.attacks = {

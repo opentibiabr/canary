@@ -73,21 +73,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 35 }, -- platinum coin
-	{ id = 28569, chance = 80000, maxCount = 4 }, -- book page
-	{ id = 6558, chance = 80000, maxCount = 3 }, -- flask of demonic blood
-	{ id = 6499, chance = 23000 }, -- demonic essence
-	{ id = 28566, chance = 23000 }, -- silken bookmark
-	{ id = 3033, chance = 23000, maxCount = 7 }, -- small amethyst
-	{ id = 826, chance = 23000 }, -- magma coat
-	{ id = 3415, chance = 23000 }, -- guardian shield
-	{ id = 5944, chance = 23000 }, -- soul orb
-	{ id = 3307, chance = 5000 }, -- scimitar
-	{ id = 3069, chance = 5000 }, -- necrotic rod
-	{ id = 827, chance = 5000 }, -- magma monocle
-	{ id = 6299, chance = 5000 }, -- death ring
-	{ id = 3049, chance = 1000 }, -- stealth ring
-	{ id = 7451, chance = 260 }, -- shadow sceptre
+	{ id = 3035, chance = 60910, maxCount = 35 }, -- Platinum Coin
+	{ id = 28569, chance = 49090, maxCount = 4 }, -- Book Page
+	{ id = 6558, chance = 42340, maxCount = 3 }, -- Flask of Demonic Blood
+	{ id = 6499, chance = 19120 }, -- Demonic Essence
+	{ id = 28566, chance = 19390 }, -- Silken Bookmark
+	{ id = 3033, chance = 5540, maxCount = 7 }, -- Small Amethyst
+	{ id = 826, chance = 11720 }, -- Magma Coat
+	{ id = 3415, chance = 8840 }, -- Guardian Shield
+	{ id = 5944, chance = 5270 }, -- Soul Orb
+	{ id = 3307, chance = 4660 }, -- Scimitar
+	{ id = 3069, chance = 3770 }, -- Necrotic Rod
+	{ id = 827, chance = 1440 }, -- Magma Monocle
+	{ id = 6299, chance = 2380 }, -- Death Ring
+	{ id = 3049, chance = 730 }, -- Stealth Ring
+	{ id = 7451, chance = 429 }, -- Shadow Sceptre
 }
 
 monster.attacks = {

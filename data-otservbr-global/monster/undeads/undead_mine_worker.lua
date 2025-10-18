@@ -77,13 +77,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 10 }, -- gold coin
-	{ id = 7573, chance = 80000 }, -- bone
-	{ id = 3723, chance = 23000, maxCount = 3 }, -- white mushroom
-	{ id = 3286, chance = 23000 }, -- mace
-	{ id = 3725, chance = 5000 }, -- brown mushroom
-	{ id = 3264, chance = 5000 }, -- sword
-	{ id = 3081, chance = 5000 }, -- stone skin amulet
+	{ id = 3031, chance = 45257, maxCount = 10 }, -- Gold Coin
+	{ id = 3115, chance = 48272 }, -- Bone
+	{ id = 3723, chance = 19218, maxCount = 3 }, -- White Mushroom
+	{ id = 3286, chance = 20871 }, -- Mace
+	{ id = 3725, chance = 6923 }, -- Brown Mushroom
+	{ id = 3264, chance = 1710 }, -- Sword
+	{ id = 3081, chance = 4550 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

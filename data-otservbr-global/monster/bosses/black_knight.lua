@@ -76,27 +76,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 136 }, -- gold coin
-	{ id = 3277, chance = 80000, maxCount = 3 }, -- spear
-	{ id = 3602, chance = 80000, maxCount = 2 }, -- brown bread
-	{ id = 31366, chance = 80000 }, -- rope
-	{ id = 3372, chance = 80000 }, -- brass legs
-	{ id = 3383, chance = 80000 }, -- dark armor
-	{ id = 3305, chance = 80000 }, -- battle hammer
-	{ id = 3384, chance = 80000 }, -- dark helmet
-	{ id = 3269, chance = 80000 }, -- halberd
-	{ id = 3357, chance = 80000 }, -- plate armor
-	{ id = 3351, chance = 80000 }, -- steel helmet
-	{ id = 3265, chance = 80000 }, -- two handed sword
-	{ id = 3318, chance = 5000 }, -- knight axe
-	{ id = 3369, chance = 5000 }, -- warrior helmet
-	{ id = 3371, chance = 1000 }, -- knight legs
-	{ id = 3016, chance = 1000 }, -- ruby necklace
-	{ id = 3370, chance = 1000 }, -- knight armor
-	{ id = 3302, chance = 260 }, -- dragon lance
-	{ id = 822, chance = 260 }, -- lightning legs
-	{ id = 2995, chance = 260 }, -- piggy bank
-	{ id = 3079, chance = 260 }, -- boots of haste
+	{ id = 3031, chance = 48109, maxCount = 136 }, -- Gold Coin
+	{ id = 3277, chance = 31843, maxCount = 3 }, -- Spear
+	{ id = 3602, chance = 23481, maxCount = 2 }, -- Brown Bread
+	{ id = 3003, chance = 14437 }, -- Rope
+	{ id = 3372, chance = 13929 }, -- Brass Legs
+	{ id = 3383, chance = 1793 }, -- Dark Armor
+	{ id = 3305, chance = 7223 }, -- Battle Hammer
+	{ id = 3384, chance = 2065 }, -- Dark Helmet
+	{ id = 3269, chance = 12716 }, -- Halberd
+	{ id = 3357, chance = 9695 }, -- Plate Armor
+	{ id = 3351, chance = 9784 }, -- Steel Helmet
+	{ id = 3265, chance = 10248 }, -- Two Handed Sword
+	{ id = 3318, chance = 2816 }, -- Knight Axe
+	{ id = 3369, chance = 4647 }, -- Warrior Helmet
+	{ id = 3371, chance = 875 }, -- Knight Legs
+	{ id = 3016, chance = 694 }, -- Ruby Necklace
+	{ id = 3370, chance = 1060 }, -- Knight Armor
+	{ id = 3302, chance = 300 }, -- Dragon Lance
+	{ id = 822, chance = 581 }, -- Lightning Legs
+	{ id = 2995, chance = 89 }, -- Piggy Bank
+	{ id = 3079, chance = 432 }, -- Boots of Haste
 }
 
 monster.attacks = {

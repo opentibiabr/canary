@@ -77,26 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 22188, chance = 23000 }, -- ogre ear stud
-	{ id = 22189, chance = 23000 }, -- ogre nose ring
-	{ id = 3577, chance = 23000 }, -- meat
-	{ id = 3029, chance = 23000 }, -- small sapphire
-	{ id = 3032, chance = 23000 }, -- small emerald
-	{ id = 677, chance = 5000, maxCount = 2 }, -- small enchanted emerald
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 36706, chance = 5000 }, -- red gem
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3081, chance = 5000 }, -- stone skin amulet
-	{ id = 3279, chance = 5000 }, -- war hammer
-	{ id = 7387, chance = 5000 }, -- diamond sceptre
-	{ id = 16122, chance = 5000 }, -- green crystal splinter
-	{ id = 16125, chance = 5000 }, -- cyan crystal fragment
-	{ id = 17828, chance = 5000 }, -- pair of iron fists
-	{ id = 22191, chance = 5000 }, -- skull fetish
-	{ id = 21169, chance = 5000 }, -- metal spats
-	{ id = 22193, chance = 5000 }, -- onyx chip
-	{ id = 22171, chance = 1000 }, -- ogre klubba
+	{ id = 3035, chance = 96697 }, -- Platinum Coin
+	{ id = 22188, chance = 18389 }, -- Ogre Ear Stud
+	{ id = 22189, chance = 16738 }, -- Ogre Nose Ring
+	{ id = 3577, chance = 12191 }, -- Meat
+	{ id = 3029, chance = 15699 }, -- Small Sapphire
+	{ id = 3032, chance = 4444 }, -- Small Emerald
+	{ id = 677, chance = 825, maxCount = 2 }, -- Small Enchanted Emerald
+	{ id = 3037, chance = 2166 }, -- Yellow Gem
+	{ id = 3039, chance = 2475 }, -- Red Gem
+	{ id = 3041, chance = 1032 }, -- Blue Gem
+	{ id = 3081, chance = 3412 }, -- Stone Skin Amulet
+	{ id = 3279, chance = 3619 }, -- War Hammer
+	{ id = 7387, chance = 4237 }, -- Diamond Sceptre
+	{ id = 16122, chance = 825 }, -- Green Crystal Splinter
+	{ id = 16125, chance = 2888 }, -- Cyan Crystal Fragment
+	{ id = 17828, chance = 1547 }, -- Pair of Iron Fists
+	{ id = 22191, chance = 3000 }, -- Skull Fetish
+	{ id = 21169, chance = 1547 }, -- Metal Spats
+	{ id = 22193, chance = 2270 }, -- Onyx Chip
+	{ id = 22171, chance = 722 }, -- Ogre Klubba
 }
 
 monster.attacks = {

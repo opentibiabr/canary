@@ -73,45 +73,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3033, chance = 80000, maxCount = 10 }, -- small amethyst
-	{ id = 3333, chance = 80000 }, -- crystal mace
-	{ id = 23528, chance = 80000 }, -- collar of red plasma
-	{ id = 23518, chance = 80000 }, -- spark sphere
-	{ id = 23520, chance = 80000 }, -- plasmatic lightning
-	{ id = 16121, chance = 80000, maxCount = 3 }, -- green crystal shard
-	{ id = 16120, chance = 80000, maxCount = 3 }, -- violet crystal shard
-	{ id = 22721, chance = 80000, maxCount = 7 }, -- gold token
-	{ id = 23509, chance = 80000 }, -- mysterious remains
-	{ id = 23474, chance = 80000 }, -- tiara of power
-	{ id = 23476, chance = 80000 }, -- void boots
-	{ id = 8073, chance = 80000 }, -- spellbook of warding
-	{ id = 3035, chance = 80000 }, -- platinum coin
-	{ id = 16119, chance = 80000 }, -- blue crystal shard
-	{ id = 3030, chance = 80000 }, -- small ruby
-	{ id = 3032, chance = 80000 }, -- small emerald
-	{ id = 7643, chance = 80000 }, -- ultimate health potion
-	{ id = 8075, chance = 80000 }, -- spellbook of lost souls
-	{ id = 9057, chance = 80000 }, -- small topaz
-	{ id = 23529, chance = 80000 }, -- ring of blue plasma
-	{ id = 3028, chance = 80000 }, -- small diamond
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 23533, chance = 80000 }, -- ring of red plasma
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 23526, chance = 80000 }, -- collar of blue plasma
-	{ id = 23535, chance = 80000 }, -- energy bar
-	{ id = 23531, chance = 80000 }, -- ring of green plasma
-	{ id = 7642, chance = 80000 }, -- great spirit potion
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 23527, chance = 80000 }, -- collar of green plasma
-	{ id = 7426, chance = 80000 }, -- amber staff
-	{ id = 3554, chance = 80000 }, -- steel boots
-	{ id = 8050, chance = 80000 }, -- crystalline armor
-	{ id = 7388, chance = 80000 }, -- vile axe
-	{ id = 7421, chance = 80000 }, -- onyx flail
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3037, chance = 21039 }, -- Yellow Gem
+	{ id = 3033, chance = 21287, maxCount = 10 }, -- Small Amethyst
+	{ id = 3333, chance = 8663 }, -- Crystal Mace
+	{ id = 23544, chance = 9900 }, -- Collar of Red Plasma
+	{ id = 23518, chance = 100000 }, -- Spark Sphere
+	{ id = 23520, chance = 100000 }, -- Plasmatic Lightning
+	{ id = 16121, chance = 63118, maxCount = 3 }, -- Green Crystal Shard
+	{ id = 16120, chance = 64108, maxCount = 3 }, -- Violet Crystal Shard
+	{ id = 22721, chance = 100000, maxCount = 7 }, -- Gold Token
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 23474, 23475, chance = 3712 }, -- Tiara of Power
+	{ id = 23476, 23477, chance = 17574 }, -- Void Boots
+	{ id = 8073, chance = 11633 }, -- Spellbook of Warding
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 16119, chance = 64108 }, -- Blue Crystal Shard
+	{ id = 3030, chance = 17821 }, -- Small Ruby
+	{ id = 3032, chance = 21782 }, -- Small Emerald
+	{ id = 7643, chance = 57425 }, -- Ultimate Health Potion
+	{ id = 281, chance = 15594 }, -- Giant Shimmering Pearl
+	{ id = 8075, chance = 8663 }, -- Spellbook of Lost Souls
+	{ id = 9057, chance = 19059 }, -- Small Topaz
+	{ id = 23529, chance = 14108 }, -- Ring of Blue Plasma
+	{ id = 3028, chance = 19801 }, -- Small Diamond
+	{ id = 3036, chance = 5445 }, -- Violet Gem
+	{ id = 23533, chance = 15346 }, -- Ring of Red Plasma
+	{ id = 3039, chance = 23267 }, -- Red Gem
+	{ id = 238, chance = 60396 }, -- Great Mana Potion
+	{ id = 23526, chance = 10148 }, -- Collar of Blue Plasma
+	{ id = 23535, chance = 100000 }, -- Energy Bar
+	{ id = 23531, chance = 15099 }, -- Ring of Green Plasma
+	{ id = 7642, chance = 52970 }, -- Great Spirit Potion
+	{ id = 3041, chance = 18069 }, -- Blue Gem
+	{ id = 3038, chance = 16336 }, -- Green Gem
+	{ id = 23543, chance = 10891 }, -- Collar of Green Plasma
+	{ id = 7426, chance = 9653 }, -- Amber Staff
+	{ id = 3554, chance = 1732 }, -- Steel Boots
+	{ id = 8050, chance = 1732 }, -- Crystalline Armor
+	{ id = 7388, chance = 990 }, -- Vile Axe
+	{ id = 7421, chance = 1237 }, -- Onyx Flail
 }
 
 monster.attacks = {

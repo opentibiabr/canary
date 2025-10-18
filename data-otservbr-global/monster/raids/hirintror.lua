@@ -72,25 +72,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 60 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
-	{ id = 237, chance = 80000, maxCount = 3 }, -- strong mana potion
-	{ id = 236, chance = 80000, maxCount = 3 }, -- strong health potion
-	{ id = 3028, chance = 80000, maxCount = 5 }, -- small diamond
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 3027, chance = 80000 }, -- black pearl
-	{ id = 7290, chance = 80000 }, -- shard
-	{ id = 7741, chance = 80000 }, -- ice cube
-	{ id = 9661, chance = 80000 }, -- frosty heart
-	{ id = 5912, chance = 80000 }, -- blue piece of cloth
-	{ id = 3373, chance = 80000 }, -- strange helmet
-	{ id = 7449, chance = 80000 }, -- crystal sword
-	{ id = 3284, chance = 80000 }, -- ice rapier
-	{ id = 829, chance = 80000 }, -- glacier mask
-	{ id = 819, chance = 80000 }, -- glacier shoes
-	{ id = 19362, chance = 1000 }, -- icicle bow
-	{ id = 19363, chance = 1000 }, -- runic ice shield
-	{ id = 19083, chance = 1000 }, -- silver raid token
+	{ id = 3031, chance = 87498, maxCount = 60 }, -- Gold Coin
+	{ id = 3035, chance = 45832, maxCount = 2 }, -- Platinum Coin
+	{ id = 237, chance = 45833, maxCount = 3 }, -- Strong Mana Potion
+	{ id = 236, chance = 49999, maxCount = 3 }, -- Strong Health Potion
+	{ id = 3028, chance = 12499, maxCount = 5 }, -- Small Diamond
+	{ id = 3029, chance = 20832 }, -- Small Sapphire
+	{ id = 3027, chance = 16667 }, -- Black Pearl
+	{ id = 7290, chance = 12501 }, -- Shard
+	{ id = 7441, chance = 20834 }, -- Ice Cube
+	{ id = 9661, chance = 25000 }, -- Frosty Heart
+	{ id = 5912, chance = 20832 }, -- Blue Piece of Cloth
+	{ id = 3373, chance = 20832 }, -- Strange Helmet
+	{ id = 7449, chance = 12499 }, -- Crystal Sword
+	{ id = 3284, chance = 14290 }, -- Ice Rapier
+	{ id = 829, chance = 12499 }, -- Glacier Mask
+	{ id = 819, chance = 16666 }, -- Glacier Shoes
+	{ id = 19362, chance = 1000 }, -- Icicle Bow
+	{ id = 19363, chance = 1000 }, -- Runic Ice Shield
+	{ id = 19083, chance = 1000 }, -- Silver Raid Token
 }
 
 monster.attacks = {

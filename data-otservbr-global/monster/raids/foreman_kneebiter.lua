@@ -69,13 +69,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3351, chance = 80000 }, -- steel helmet
-	{ id = 3413, chance = 80000 }, -- battle shield
-	{ id = 5880, chance = 80000 }, -- iron ore
-	{ id = 3377, chance = 80000 }, -- scale armor
-	{ id = 3305, chance = 80000 }, -- battle hammer
-	{ id = 3092, chance = 80000 }, -- axe ring
+	{ id = 3031, chance = 82610, maxCount = 100 }, -- Gold Coin
+	{ id = 3351, chance = 13039 }, -- Steel Helmet
+	{ id = 3413, chance = 8700 }, -- Battle Shield
+	{ id = 5880, chance = 13039 }, -- Iron Ore
+	{ id = 3377, chance = 13039 }, -- Scale Armor
+	{ id = 3305, chance = 1000 }, -- Battle Hammer
+	{ id = 3092, chance = 1000 }, -- Axe Ring
 }
 
 monster.attacks = {

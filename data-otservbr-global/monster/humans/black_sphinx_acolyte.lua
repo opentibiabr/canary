@@ -86,15 +86,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
-	{ id = 3066, chance = 23000 }, -- snakebite rod
-	{ id = 8082, chance = 23000 }, -- underworld rod
-	{ id = 16119, chance = 23000 }, -- blue crystal shard
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 677, chance = 5000, maxCount = 3 }, -- small enchanted emerald
-	{ id = 22194, chance = 5000, maxCount = 2 }, -- opal
-	{ id = 31331, chance = 5000 }, -- empty honey glass
-	{ id = 8094, chance = 5000 }, -- wand of voodoo
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 3066, chance = 5897 }, -- Snakebite Rod
+	{ id = 8082, chance = 4192 }, -- Underworld Rod
+	{ id = 16119, chance = 5302 }, -- Blue Crystal Shard
+	{ id = 3036, chance = 3085 }, -- Violet Gem
+	{ id = 677, chance = 2168, maxCount = 3 }, -- Small Enchanted Emerald
+	{ id = 22194, chance = 2542, maxCount = 2 }, -- Opal
+	{ id = 8094, chance = 1946 }, -- Wand of Voodoo
 }
 
 monster.attacks = {

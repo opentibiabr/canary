@@ -78,17 +78,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 30 }, -- gold coin
-	{ id = 3577, chance = 80000 }, -- meat
-	{ id = 3294, chance = 23000 }, -- short sword
-	{ id = 9657, chance = 23000 }, -- cyclops toe
-	{ id = 3410, chance = 5000 }, -- plate shield
-	{ id = 3413, chance = 5000 }, -- battle shield
-	{ id = 3269, chance = 1000 }, -- halberd
-	{ id = 236, chance = 1000 }, -- strong health potion
-	{ id = 3384, chance = 260 }, -- dark helmet
-	{ id = 7398, chance = 260 }, -- cyclops trophy
-	{ id = 3093, chance = 260 }, -- club ring
+	{ id = 3031, chance = 81990, maxCount = 30 }, -- Gold Coin
+	{ id = 3577, chance = 50627 }, -- Meat
+	{ id = 3294, chance = 7353 }, -- Short Sword
+	{ id = 9657, chance = 7227 }, -- Cyclops Toe
+	{ id = 3410, chance = 1819 }, -- Plate Shield
+	{ id = 3413, chance = 1300 }, -- Battle Shield
+	{ id = 3269, chance = 793 }, -- Halberd
+	{ id = 236, chance = 384 }, -- Strong Health Potion
+	{ id = 3384, chance = 186 }, -- Dark Helmet
+	{ id = 7398, chance = 122 }, -- Cyclops Trophy
+	{ id = 3093, chance = 197 }, -- Club Ring
 }
 
 monster.attacks = {

@@ -76,21 +76,24 @@ monster.summon = {
 monster.voices = {}
 
 monster.loot = {
-	{ id = 32624, chance = 80000 }, -- amber with a bug
-	{ id = 32625, chance = 80000 }, -- amber with a dragonfly
-	{ id = 43895, chance = 80000 }, -- bag you covet
-	{ id = 7439, chance = 80000, maxCount = 16 }, -- berserk potion
-	{ id = 3043, chance = 80000, maxCount = 88 }, -- crystal coin
-	{ id = 30053, chance = 80000 }, -- dragon figurine
-	{ id = 30060, chance = 80000 }, -- giant emerald
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 7440, chance = 80000, maxCount = 15 }, -- mastermind potion
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 23375, chance = 80000, maxCount = 200 }, -- supreme health potion
-	{ id = 23373, chance = 80000, maxCount = 178 }, -- ultimate mana potion
-	{ id = 23374, chance = 80000, maxCount = 169 }, -- ultimate spirit potion
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 3037, chance = 80000 }, -- yellow gem
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 32624, chance = 25714 }, -- Amber with a Bug
+	{ id = 32625, chance = 45714 }, -- Amber with a Dragonfly
+	{ id = 43860, chance = 1000 }, -- Bag You Covet
+	{ id = 7439, chance = 15151, maxCount = 16 }, -- Berserk Potion
+	{ id = 3043, chance = 100000, maxCount = 88 }, -- Crystal Coin
+	{ id = 30053, chance = 3030 }, -- Dragon Figurine
+	{ id = 30060, chance = 30303 }, -- Giant Emerald
+	{ id = 3038, chance = 51428 }, -- Green Gem
+	{ id = 7440, chance = 31428, maxCount = 15 }, -- Mastermind Potion
+	{ id = 43962, chance = 3030 }, -- Putrefactive Figurine
+	{ id = 3039, chance = 25714, maxCount = 2 }, -- Red Gem
+	{ id = 23375, chance = 65714, maxCount = 200 }, -- Supreme Health Potion
+	{ id = 43501, chance = 1000 }, -- The Essence of Murcion
+	{ id = 23373, chance = 42857, maxCount = 178 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 57142, maxCount = 169 }, -- Ultimate Spirit Potion
+	{ id = 3036, chance = 15151 }, -- Violet Gem
+	{ id = 3037, chance = 21212 }, -- Yellow Gem
 }
 
 monster.attacks = {

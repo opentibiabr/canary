@@ -79,26 +79,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 9 }, -- platinum coin
-	{ id = 20205, chance = 23000 }, -- goosebump leather
-	{ id = 3725, chance = 23000, maxCount = 2 }, -- brown mushroom
-	{ id = 20207, chance = 23000 }, -- pool of chitinous glue
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 238, chance = 23000 }, -- great mana potion
-	{ id = 3344, chance = 5000 }, -- beastslayer axe
-	{ id = 20029, chance = 5000 }, -- broken dream
-	{ id = 8082, chance = 5000 }, -- underworld rod
-	{ id = 7386, chance = 5000 }, -- mercenary sword
-	{ id = 3419, chance = 5000 }, -- crown shield
-	{ id = 7452, chance = 5000 }, -- spiked squelcher
-	{ id = 8092, chance = 5000 }, -- wand of starstorm
-	{ id = 3280, chance = 5000 }, -- fire sword
-	{ id = 3428, chance = 1000 }, -- tower shield
-	{ id = 7421, chance = 1000 }, -- onyx flail
-	{ id = 7412, chance = 260 }, -- butchers axe
-	{ id = 3554, chance = 260 }, -- steel boots
-	{ id = 20062, chance = 260 }, -- cluster of solace
+	{ id = 3031, chance = 93413, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 94747, maxCount = 9 }, -- Platinum Coin
+	{ id = 20205, chance = 14312 }, -- Goosebump Leather
+	{ id = 3725, chance = 13788, maxCount = 2 }, -- Brown Mushroom
+	{ id = 20207, chance = 14138 }, -- Pool of Chitinous Glue
+	{ id = 239, chance = 12931 }, -- Great Health Potion
+	{ id = 238, chance = 12846 }, -- Great Mana Potion
+	{ id = 3344, chance = 4060 }, -- Beastslayer Axe
+	{ id = 20029, chance = 4720 }, -- Broken Dream
+	{ id = 8082, chance = 1593 }, -- Underworld Rod
+	{ id = 7386, chance = 2377 }, -- Mercenary Sword
+	{ id = 3419, chance = 1185 }, -- Crown Shield
+	{ id = 7452, chance = 1033 }, -- Spiked Squelcher
+	{ id = 8092, chance = 1324 }, -- Wand of Starstorm
+	{ id = 3280, chance = 1320 }, -- Fire Sword
+	{ id = 3428, chance = 935 }, -- Tower Shield
+	{ id = 7421, chance = 617 }, -- Onyx Flail
+	{ id = 7412, chance = 560 }, -- Butcher's Axe
+	{ id = 3554, chance = 155 }, -- Steel Boots
+	{ id = 20062, chance = 498 }, -- Cluster of Solace
 }
 
 monster.attacks = {

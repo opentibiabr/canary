@@ -63,8 +63,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 27607, chance = 80000 }, -- withered pauldrons
-	{ id = 27608, chance = 80000 }, -- withered scalp
+	{ id = 27511, chance = 100000 }, -- The Cube
+	{ id = 27607, chance = 5555 }, -- Withered Pauldrons
+	{ id = 27608, chance = 5555 }, -- Withered Scalp
 }
 
 monster.attacks = {

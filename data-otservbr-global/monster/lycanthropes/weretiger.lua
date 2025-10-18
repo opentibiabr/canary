@@ -73,18 +73,18 @@ monster.light = {
 monster.voices = {}
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 13 }, -- platinum coin
-	{ id = 43730, chance = 23000 }, -- weretiger tooth
-	{ id = 3577, chance = 23000, maxCount = 4 }, -- meat
-	{ id = 7432, chance = 23000 }, -- furry club
-	{ id = 22083, chance = 23000 }, -- moonlight crystals
-	{ id = 16120, chance = 5000 }, -- violet crystal shard
-	{ id = 3370, chance = 5000 }, -- knight armor
-	{ id = 7436, chance = 5000 }, -- angelic axe
-	{ id = 43915, chance = 1000 }, -- weretiger trophy
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 43732, chance = 1000 }, -- silver moon coin
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 13 }, -- Platinum Coin
+	{ id = 43730, chance = 9750 }, -- Weretiger Tooth
+	{ id = 3577, chance = 5710, maxCount = 4 }, -- Meat
+	{ id = 7432, chance = 5970 }, -- Furry Club
+	{ id = 22083, chance = 1970 }, -- Moonlight Crystals
+	{ id = 16120, chance = 3709 }, -- Violet Crystal Shard
+	{ id = 3370, chance = 3200 }, -- Knight Armor
+	{ id = 7436, chance = 1590 }, -- Angelic Axe
+	{ id = 43915, chance = 550 }, -- Weretiger Trophy
+	{ id = 3041, chance = 670 }, -- Blue Gem
+	{ id = 43732, chance = 360 }, -- Silver Moon Coin
 }
 
 monster.attacks = {

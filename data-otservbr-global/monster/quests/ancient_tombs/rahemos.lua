@@ -80,17 +80,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 242 }, -- gold coin
-	{ id = 3235, chance = 80000 }, -- ancient rune
-	{ id = 238, chance = 80000 }, -- great mana potion
-	{ id = 3033, chance = 80000, maxCount = 3 }, -- small amethyst
-	{ id = 3098, chance = 5000 }, -- ring of healing
-	{ id = 3573, chance = 1000 }, -- magician hat
-	{ id = 3036, chance = 1000 }, -- violet gem
-	{ id = 10290, chance = 260 }, -- mini mummy
-	{ id = 3060, chance = 260 }, -- orb
-	{ id = 3335, chance = 260 }, -- twin axe
-	{ id = 3068, chance = 260 }, -- crystal wand
+	{ id = 3031, chance = 89879, maxCount = 242 }, -- Gold Coin
+	{ id = 3235, chance = 100000 }, -- Ancient Rune
+	{ id = 238, chance = 8604 }, -- Great Mana Potion
+	{ id = 3033, chance = 11207, maxCount = 3 }, -- Small Amethyst
+	{ id = 3098, chance = 4758 }, -- Ring of Healing
+	{ id = 3573, chance = 2570 }, -- Magician Hat
+	{ id = 3036, chance = 1027 }, -- Violet Gem
+	{ id = 10290, chance = 110 }, -- Mini Mummy
+	{ id = 3060, chance = 346 }, -- Orb
+	{ id = 3335, chance = 128 }, -- Twin Axe
+	{ id = 3068, chance = 110 }, -- Crystal Wand
 }
 
 monster.attacks = {

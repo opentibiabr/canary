@@ -78,26 +78,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 340 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 6 }, -- platinum coin
-	{ id = 236, chance = 80000, maxCount = 5 }, -- strong health potion
-	{ id = 237, chance = 80000, maxCount = 5 }, -- strong mana potion
-	{ id = 7368, chance = 80000, maxCount = 5 }, -- assassin star
-	{ id = 3049, chance = 80000 }, -- stealth ring
-	{ id = 3728, chance = 80000, maxCount = 3 }, -- dark mushroom
-	{ id = 11454, chance = 80000 }, -- luminous orb
-	{ id = 7443, chance = 5000 }, -- bullseye potion
-	{ id = 3062, chance = 5000 }, -- mind stone
-	{ id = 5911, chance = 1000 }, -- red piece of cloth
-	{ id = 3033, chance = 1000, maxCount = 3 }, -- small amethyst
-	{ id = 9027, chance = 1000 }, -- crystal of focus
-	{ id = 8073, chance = 1000 }, -- spellbook of warding
-	{ id = 3006, chance = 260 }, -- ring of the sky
-	{ id = 3079, chance = 260 }, -- boots of haste
-	{ id = 825, chance = 260 }, -- lightning robe
-	{ id = 5741, chance = 260 }, -- skull helmet
-	{ id = 2995, chance = 260 }, -- piggy bank
-	{ id = 12599, chance = 260 }, -- mages cap
+	{ id = 3031, chance = 99580, maxCount = 340 }, -- Gold Coin
+	{ id = 3035, chance = 60502, maxCount = 6 }, -- Platinum Coin
+	{ id = 236, chance = 32142, maxCount = 5 }, -- Strong Health Potion
+	{ id = 237, chance = 32775, maxCount = 5 }, -- Strong Mana Potion
+	{ id = 7368, chance = 10294, maxCount = 5 }, -- Assassin Star
+	{ id = 3049, chance = 11894 }, -- Stealth Ring
+	{ id = 3728, chance = 4202, maxCount = 3 }, -- Dark Mushroom
+	{ id = 11454, chance = 1889 }, -- Luminous Orb
+	{ id = 7443, chance = 1889 }, -- Bullseye Potion
+	{ id = 3062, chance = 4843 }, -- Mind Stone
+	{ id = 5911, chance = 5673 }, -- Red Piece of Cloth
+	{ id = 3033, chance = 7560, maxCount = 3 }, -- Small Amethyst
+	{ id = 9027, chance = 839 }, -- Crystal of Focus
+	{ id = 8073, chance = 340 }, -- Spellbook of Warding
+	{ id = 3006, chance = 340 }, -- Ring of the Sky
+	{ id = 3079, chance = 670 }, -- Boots of Haste
+	{ id = 825, chance = 1053 }, -- Lightning Robe
+	{ id = 5741, chance = 1000 }, -- Skull Helmet
+	{ id = 2995, chance = 1764 }, -- Piggy Bank
+	{ id = 12599, chance = 1322 }, -- Mage's Cap
 }
 
 monster.attacks = {

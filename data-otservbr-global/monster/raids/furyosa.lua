@@ -81,36 +81,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 363 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 25 }, -- platinum coin
-	{ id = 8016, chance = 80000, maxCount = 9 }, -- jalapeno pepper
-	{ id = 6093, chance = 80000 }, -- crystal ring
-	{ id = 238, chance = 80000, maxCount = 5 }, -- great mana potion
-	{ id = 19083, chance = 80000 }, -- silver raid token
-	{ id = 3029, chance = 80000, maxCount = 5 }, -- small sapphire
-	{ id = 5944, chance = 80000 }, -- soul orb
-	{ id = 7368, chance = 80000, maxCount = 16 }, -- assassin star
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 7642, chance = 80000, maxCount = 9 }, -- great spirit potion
-	{ id = 5911, chance = 80000 }, -- red piece of cloth
-	{ id = 7643, chance = 80000, maxCount = 9 }, -- ultimate health potion
-	{ id = 5909, chance = 80000 }, -- white piece of cloth
-	{ id = 6558, chance = 80000 }, -- flask of demonic blood
-	{ id = 6299, chance = 80000 }, -- death ring
-	{ id = 6499, chance = 80000 }, -- demonic essence
-	{ id = 826, chance = 80000 }, -- magma coat
-	{ id = 821, chance = 80000 }, -- magma legs
-	{ id = 3028, chance = 80000, maxCount = 9 }, -- small diamond
-	{ id = 3030, chance = 80000, maxCount = 7 }, -- small ruby
-	{ id = 9057, chance = 80000, maxCount = 8 }, -- small topaz
-	{ id = 5914, chance = 80000 }, -- yellow piece of cloth
-	{ id = 3439, chance = 80000 }, -- phoenix shield
-	{ id = 19391, chance = 80000 }, -- furious frock
-	{ id = 7404, chance = 80000 }, -- assassin dagger
-	{ id = 7456, chance = 80000 }, -- noble axe
-	{ id = 16115, chance = 80000 }, -- wand of everblazing
-	{ id = 3364, chance = 80000 }, -- golden legs
-	{ id = 3280, chance = 80000 }, -- fire sword
+	{ id = 3031, chance = 100000, maxCount = 363 }, -- Gold Coin
+	{ id = 3035, chance = 64704, maxCount = 25 }, -- Platinum Coin
+	{ id = 8016, chance = 100000, maxCount = 9 }, -- Jalapeno Pepper
+	{ id = 3007, chance = 59998 }, -- Crystal Ring
+	{ id = 238, chance = 46668, maxCount = 5 }, -- Great Mana Potion
+	{ id = 19083, chance = 42860 }, -- Silver Raid Token
+	{ id = 3029, chance = 35295, maxCount = 5 }, -- Small Sapphire
+	{ id = 5944, chance = 53334 }, -- Soul Orb
+	{ id = 7368, chance = 21427, maxCount = 16 }, -- Assassin Star
+	{ id = 9058, chance = 21427 }, -- Gold Ingot
+	{ id = 7642, chance = 23528, maxCount = 9 }, -- Great Spirit Potion
+	{ id = 5911, chance = 28570 }, -- Red Piece of Cloth
+	{ id = 7643, chance = 35293, maxCount = 9 }, -- Ultimate Health Potion
+	{ id = 5909, chance = 39999 }, -- White Piece of Cloth
+	{ id = 6558, chance = 30002 }, -- Flask of Demonic Blood
+	{ id = 6299, chance = 14290 }, -- Death Ring
+	{ id = 6499, chance = 21430 }, -- Demonic Essence
+	{ id = 826, chance = 14290 }, -- Magma Coat
+	{ id = 821, chance = 1000 }, -- Magma Legs
+	{ id = 3028, chance = 14287, maxCount = 9 }, -- Small Diamond
+	{ id = 3030, chance = 14287, maxCount = 7 }, -- Small Ruby
+	{ id = 9057, chance = 21430, maxCount = 8 }, -- Small Topaz
+	{ id = 5914, chance = 14287 }, -- Yellow Piece of Cloth
+	{ id = 3439, chance = 1000 }, -- Phoenix Shield
+	{ id = 19391, chance = 33333 }, -- Furious Frock
+	{ id = 7404, chance = 33333 }, -- Assassin Dagger
+	{ id = 7456, chance = 33333 }, -- Noble Axe
+	{ id = 16115, chance = 33333 }, -- Wand of Everblazing
+	{ id = 3364, chance = 1000 }, -- Golden Legs
+	{ id = 3280, chance = 1000 }, -- Fire Sword
 }
 
 monster.attacks = {

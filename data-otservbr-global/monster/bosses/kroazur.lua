@@ -72,24 +72,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 365 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 7 }, -- platinum coin
-	{ id = 25694, chance = 80000 }, -- fairy wings
-	{ id = 236, chance = 80000, maxCount = 2 }, -- strong health potion
-	{ id = 239, chance = 80000, maxCount = 3 }, -- great health potion
-	{ id = 678, chance = 80000, maxCount = 5 }, -- small enchanted amethyst
-	{ id = 24390, chance = 80000, maxCount = 3 }, -- ancient coin
-	{ id = 677, chance = 80000, maxCount = 5 }, -- small enchanted emerald
-	{ id = 24392, chance = 80000 }, -- gemmed figurine
-	{ id = 7368, chance = 80000, maxCount = 8 }, -- assassin star
-	{ id = 20062, chance = 80000 }, -- cluster of solace
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 16126, chance = 80000 }, -- red crystal fragment
-	{ id = 7418, chance = 80000 }, -- nightmare blade
-	{ id = 22721, chance = 80000 }, -- gold token
-	{ id = 675, chance = 80000 }, -- small enchanted sapphire
-	{ id = 676, chance = 80000 }, -- small enchanted ruby
+	{ id = 3031, chance = 100000, maxCount = 365 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 25694, chance = 99906 }, -- Fairy Wings
+	{ id = 236, chance = 89375, maxCount = 2 }, -- Strong Health Potion
+	{ id = 239, chance = 75584, maxCount = 3 }, -- Great Health Potion
+	{ id = 678, chance = 39607, maxCount = 5 }, -- Small Enchanted Amethyst
+	{ id = 24390, chance = 48554, maxCount = 3 }, -- Ancient Coin
+	{ id = 677, chance = 25256, maxCount = 5 }, -- Small Enchanted Emerald
+	{ id = 24392, chance = 31128 }, -- Gemmed Figurine
+	{ id = 7368, chance = 7271, maxCount = 8 }, -- Assassin Star
+	{ id = 20062, chance = 9223 }, -- Cluster of Solace
+	{ id = 9058, chance = 6894 }, -- Gold Ingot
+	{ id = 22516, chance = 9600 }, -- Silver Token
+	{ id = 16126, chance = 35321 }, -- Red Crystal Fragment
+	{ id = 7418, chance = 3078 }, -- Nightmare Blade
+	{ id = 22721, chance = 5499 }, -- Gold Token
+	{ id = 675, chance = 16402 }, -- Small Enchanted Sapphire
+	{ id = 676, chance = 18733 }, -- Small Enchanted Ruby
 }
 
 monster.attacks = {

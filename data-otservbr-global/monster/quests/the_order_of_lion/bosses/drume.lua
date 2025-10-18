@@ -83,45 +83,47 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 23535, chance = 80000 }, -- energy bar
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 23375, chance = 80000, maxCount = 20 }, -- supreme health potion
-	{ id = 23373, chance = 80000, maxCount = 14 }, -- ultimate mana potion
-	{ id = 36706, chance = 80000, maxCount = 2 }, -- red gem
-	{ id = 25759, chance = 80000, maxCount = 100 }, -- royal star
-	{ id = 7443, chance = 80000, maxCount = 16 }, -- bullseye potion
-	{ id = 3038, chance = 80000 }, -- green gem
-	{ id = 3081, chance = 80000 }, -- stone skin amulet
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 3041, chance = 80000 }, -- blue gem
-	{ id = 812, chance = 80000 }, -- terra legs
-	{ id = 811, chance = 80000 }, -- terra mantle
-	{ id = 7439, chance = 80000, maxCount = 10 }, -- berserk potion
-	{ id = 3043, chance = 80000 }, -- crystal coin
-	{ id = 30061, chance = 80000 }, -- giant sapphire
-	{ id = 7440, chance = 80000, maxCount = 10 }, -- mastermind potion
-	{ id = 830, chance = 80000 }, -- terra hood
-	{ id = 23374, chance = 80000, maxCount = 6 }, -- ultimate spirit potion
-	{ id = 8082, chance = 80000 }, -- underworld rod
-	{ id = 33778, chance = 80000 }, -- raw watermelon tourmaline
-	{ id = 9058, chance = 80000 }, -- gold ingot
-	{ id = 22516, chance = 80000 }, -- silver token
-	{ id = 3036, chance = 80000 }, -- violet gem
-	{ id = 8094, chance = 80000 }, -- wand of voodoo
-	{ id = 814, chance = 80000 }, -- terra amulet
-	{ id = 3065, chance = 80000 }, -- terra rod
-	{ id = 34158, chance = 80000 }, -- lion amulet
-	{ id = 34253, chance = 80000 }, -- lion axe
-	{ id = 34150, chance = 80000 }, -- lion longbow
-	{ id = 34157, chance = 80000 }, -- lion plate
-	{ id = 34156, chance = 80000 }, -- lion spangenhelm
-	{ id = 34152, chance = 80000 }, -- lion wand
-	{ id = 30059, chance = 80000 }, -- giant ruby
-	{ id = 34153, chance = 80000 }, -- lion spellbook
-	{ id = 34254, chance = 80000 }, -- lion hammer
-	{ id = 34155, chance = 80000 }, -- lion longsword
-	{ id = 34151, chance = 80000 }, -- lion rod
-	{ id = 34154, chance = 80000 }, -- lion shield
+	{ id = 23535, chance = 164599 }, -- Energy Bar
+	{ id = 3035, chance = 164599, maxCount = 5 }, -- Platinum Coin
+	{ id = 23375, chance = 91989, maxCount = 20 }, -- Supreme Health Potion
+	{ id = 23373, chance = 91602, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 3039, chance = 58720, maxCount = 2 }, -- Red Gem
+	{ id = 25759, chance = 47545, maxCount = 100 }, -- Royal Star
+	{ id = 7443, chance = 32299, maxCount = 16 }, -- Bullseye Potion
+	{ id = 281, chance = 25258 }, -- Giant Shimmering Pearl
+	{ id = 3038, chance = 28359 }, -- Green Gem
+	{ id = 3081, chance = 16472 }, -- Stone Skin Amulet
+	{ id = 3037, chance = 56007 }, -- Yellow Gem
+	{ id = 3041, chance = 29974 }, -- Blue Gem
+	{ id = 812, chance = 13565 }, -- Terra Legs
+	{ id = 811, chance = 12015 }, -- Terra Mantle
+	{ id = 7439, chance = 31782, maxCount = 10 }, -- Berserk Potion
+	{ id = 3043, chance = 16925 }, -- Crystal Coin
+	{ id = 30061, chance = 8139 }, -- Giant Sapphire
+	{ id = 7440, chance = 32428, maxCount = 10 }, -- Mastermind Potion
+	{ id = 830, chance = 9302 }, -- Terra Hood
+	{ id = 23374, chance = 53940, maxCount = 6 }, -- Ultimate Spirit Potion
+	{ id = 8082, chance = 4521 }, -- Underworld Rod
+	{ id = 33778, chance = 6718 }, -- Raw Watermelon Tourmaline
+	{ id = 9058, chance = 22868 }, -- Gold Ingot
+	{ id = 22516, chance = 16666 }, -- Silver Token
+	{ id = 3036, chance = 14470 }, -- Violet Gem
+	{ id = 8094, chance = 7105 }, -- Wand of Voodoo
+	{ id = 814, chance = 7751 }, -- Terra Amulet
+	{ id = 3065, chance = 21447 }, -- Terra Rod
+	{ id = 34158, chance = 125 }, -- Lion Amulet
+	{ id = 34253, chance = 387 }, -- Lion Axe
+	{ id = 34150, chance = 250 }, -- Lion Longbow
+	{ id = 34157, chance = 1000 }, -- Lion Plate
+	{ id = 34156, chance = 1000 }, -- Lion Spangenhelm
+	{ id = 34152, chance = 250 }, -- Lion Wand
+	{ id = 30059, chance = 4586 }, -- Giant Ruby
+	{ id = 34153, chance = 357 }, -- Lion Spellbook
+	{ id = 34254, chance = 214 }, -- Lion Hammer
+	{ id = 34155, chance = 286 }, -- Lion Longsword
+	{ id = 34151, chance = 166 }, -- Lion Rod
+	{ id = 34154, chance = 266 }, -- Lion Shield
+	{ id = 50162, chance = 1000 }, -- Lion Claws
 }
 
 monster.attacks = {

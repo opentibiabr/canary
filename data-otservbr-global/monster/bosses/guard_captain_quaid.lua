@@ -74,31 +74,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3029, chance = 80000 }, -- small sapphire
-	{ id = 3035, chance = 80000, maxCount = 20 }, -- platinum coin
-	{ id = 3037, chance = 80000 }, -- yellow gem
-	{ id = 36706, chance = 80000 }, -- red gem
-	{ id = 9058, chance = 23000 }, -- gold ingot
-	{ id = 31678, chance = 23000 }, -- cobra crest
-	{ id = 3041, chance = 23000 }, -- blue gem
-	{ id = 3038, chance = 23000 }, -- green gem
-	{ id = 830, chance = 5000 }, -- terra hood
-	{ id = 3349, chance = 5000 }, -- crossbow
-	{ id = 3350, chance = 5000 }, -- bow
-	{ id = 3347, chance = 1000 }, -- hunting spear
-	{ id = 16119, chance = 5000 }, -- blue crystal shard
-	{ id = 3287, chance = 5000, maxCount = 6 }, -- throwing star
-	{ id = 16121, chance = 5000 }, -- green crystal shard
-	{ id = 9057, chance = 1000 }, -- small topaz
-	{ id = 9302, chance = 1000 }, -- sacred tree amulet
-	{ id = 827, chance = 1000 }, -- magma monocle
-	{ id = 3575, chance = 1000 }, -- wood cape
-	{ id = 16163, chance = 1000 }, -- crystal crossbow
-	{ id = 5741, chance = 1000 }, -- skull helmet
-	{ id = 23529, chance = 1000 }, -- ring of blue plasma
-	{ id = 30394, chance = 260 }, -- cobra boots
-	{ id = 30393, chance = 260 }, -- cobra crossbow
-	{ id = 30397, chance = 260 }, -- cobra hood
+	{ id = 3029, chance = 100000 }, -- Small Sapphire
+	{ id = 3035, chance = 1000, maxCount = 20 }, -- Platinum Coin
+	{ id = 3037, chance = 1000 }, -- Yellow Gem
+	{ id = 3039, chance = 1000 }, -- Red Gem
+	{ id = 9058, chance = 1000 }, -- Gold Ingot
+	{ id = 281, chance = 1000 }, -- Giant Shimmering Pearl
+	{ id = 31678, chance = 1000 }, -- Cobra Crest
+	{ id = 3041, chance = 1000 }, -- Blue Gem
+	{ id = 3038, chance = 1000 }, -- Green Gem
+	{ id = 830, chance = 1000 }, -- Terra Hood
+	{ id = 3349, chance = 1000 }, -- Crossbow
+	{ id = 3350, chance = 1000 }, -- Bow
+	{ id = 3347, chance = 1000 }, -- Hunting Spear
+	{ id = 16119, chance = 1000 }, -- Blue Crystal Shard
+	{ id = 3287, chance = 1000, maxCount = 6 }, -- Throwing Star
+	{ id = 16121, chance = 1000 }, -- Green Crystal Shard
+	{ id = 9057, chance = 1000 }, -- Small Topaz
+	{ id = 9302, chance = 1000 }, -- Sacred Tree Amulet
+	{ id = 827, chance = 1000 }, -- Magma Monocle
+	{ id = 3575, chance = 1000 }, -- Wood Cape
+	{ id = 16163, chance = 1000 }, -- Crystal Crossbow
+	{ id = 5741, chance = 1000 }, -- Skull Helmet
+	{ id = 23529, chance = 1000 }, -- Ring of Blue Plasma
+	{ id = 30394, chance = 1000 }, -- Cobra Boots
+	{ id = 30393, chance = 1000 }, -- Cobra Crossbow
+	{ id = 30397, chance = 1000 }, -- Cobra Hood
 }
 
 monster.attacks = {

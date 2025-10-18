@@ -72,11 +72,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 24 }, -- gold coin
-	{ id = 3492, chance = 80000, maxCount = 4 }, -- worm
-	{ id = 3607, chance = 80000, maxCount = 4 }, -- cheese
-	{ id = 3337, chance = 80000 }, -- bone club
-	{ id = 3598, chance = 80000 }, -- cookie
+	{ id = 3031, chance = 81120, maxCount = 24 }, -- Gold Coin
+	{ id = 3492, chance = 50640, maxCount = 4 }, -- Worm
+	{ id = 3607, chance = 73571, maxCount = 4 }, -- Cheese
+	{ id = 3337, chance = 86075 }, -- Bone Club
+	{ id = 3598, chance = 430 }, -- Cookie
+	{ id = 5792, chance = 860 }, -- Die
 }
 
 monster.attacks = {

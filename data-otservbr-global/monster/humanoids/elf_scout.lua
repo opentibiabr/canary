@@ -80,17 +80,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 25 }, -- gold coin
-	{ id = 3447, chance = 80000, maxCount = 12 }, -- arrow
-	{ id = 3592, chance = 80000 }, -- grapes
-	{ id = 3448, chance = 80000, maxCount = 4 }, -- poison arrow
-	{ id = 11464, chance = 80000 }, -- elven scouting glass
-	{ id = 9635, chance = 80000 }, -- elvish talisman
-	{ id = 3350, chance = 5000 }, -- bow
-	{ id = 2901, chance = 1000 }, -- waterskin
-	{ id = 3551, chance = 1000 }, -- sandals
-	{ id = 5921, chance = 1000 }, -- heaven blossom
-	{ id = 7438, chance = 260 }, -- elvish bow
+	{ id = 3031, chance = 75150, maxCount = 25 }, -- Gold Coin
+	{ id = 3447, chance = 30360, maxCount = 12 }, -- Arrow
+	{ id = 3592, chance = 17768 }, -- Grapes
+	{ id = 3448, chance = 30999, maxCount = 4 }, -- Poison Arrow
+	{ id = 11464, chance = 10090 }, -- Elven Scouting Glass
+	{ id = 9635, chance = 5474 }, -- Elvish Talisman
+	{ id = 3350, chance = 4398 }, -- Bow
+	{ id = 2901, chance = 11007 }, -- Waterskin
+	{ id = 3551, chance = 8068 }, -- Sandals
+	{ id = 5921, chance = 805 }, -- Heaven Blossom
+	{ id = 7438, chance = 60 }, -- Elvish Bow
 }
 
 monster.attacks = {

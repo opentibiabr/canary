@@ -76,24 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80000, maxCount = 197 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 4 }, -- platinum coin
-	{ id = 11482, chance = 23000 }, -- piece of warrior armor
-	{ id = 11472, chance = 23000, maxCount = 2 }, -- minotaur horn
-	{ id = 5878, chance = 5000 }, -- minotaur leather
-	{ id = 9057, chance = 5000, maxCount = 2 }, -- small topaz
-	{ id = 3030, chance = 5000 }, -- small ruby
-	{ id = 3033, chance = 5000 }, -- small amethyst
-	{ id = 3415, chance = 1000 }, -- guardian shield
-	{ id = 3318, chance = 1000 }, -- knight axe
-	{ id = 21166, chance = 1000 }, -- moohtah plate
-	{ id = 5912, chance = 1000 }, -- blue piece of cloth
-	{ id = 5911, chance = 1000 }, -- red piece of cloth
-	{ id = 3369, chance = 1000 }, -- warrior helmet
-	{ id = 36706, chance = 1000 }, -- red gem
-	{ id = 3041, chance = 260 }, -- blue gem
-	{ id = 7413, chance = 260 }, -- titan axe
-	{ id = 7401, chance = 260 }, -- minotaur trophy
+	{ id = 3031, chance = 100000, maxCount = 197 }, -- Gold Coin
+	{ id = 3035, chance = 49720, maxCount = 4 }, -- Platinum Coin
+	{ id = 11482, chance = 14960 }, -- Piece of Warrior Armor
+	{ id = 11472, chance = 8039, maxCount = 2 }, -- Minotaur Horn
+	{ id = 5878, chance = 5070 }, -- Minotaur Leather
+	{ id = 9057, chance = 10230, maxCount = 2 }, -- Small Topaz
+	{ id = 3030, chance = 4700 }, -- Small Ruby
+	{ id = 3033, chance = 5190 }, -- Small Amethyst
+	{ id = 3415, chance = 760 }, -- Guardian Shield
+	{ id = 3318, chance = 560 }, -- Knight Axe
+	{ id = 21166, chance = 910 }, -- Mooh'tah Plate
+	{ id = 5912, chance = 860 }, -- Blue Piece of Cloth
+	{ id = 5911, chance = 600 }, -- Red Piece of Cloth
+	{ id = 3369, chance = 560 }, -- Warrior Helmet
+	{ id = 3039, chance = 750 }, -- Red Gem
+	{ id = 3041, chance = 170 }, -- Blue Gem
+	{ id = 7413, chance = 210 }, -- Titan Axe
+	{ id = 7401, chance = 230 }, -- Minotaur Trophy
 }
 
 monster.attacks = {

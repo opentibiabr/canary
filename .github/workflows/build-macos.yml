@@ -94,6 +94,7 @@ jobs:
       - name: Run CMake
         uses: lukka/run-cmake@main
         with:
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
 

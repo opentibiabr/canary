@@ -9,6 +9,8 @@
 
 #include "server/network/protocol/protocolstatus.hpp"
 
+#include <asio/ip/address.hpp>
+
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/players/player.hpp"
@@ -20,23 +22,32 @@ std::string ProtocolStatus::SERVER_NAME = "Canary";
 std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
-std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+std::map<Connection::Address, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
-	const uint32_t ip = getIP();
-	if (ip != 0x0100007F) {
-		const std::string ipStr = convertIPToString(ip);
-		if (ipStr != g_configManager().getString(IP)) {
+	static const Connection::Address acceptorAddress = [] {
+		std::error_code error;
+		auto address = asio::ip::make_address(g_configManager().getString(IP), error);
+		if (error) {
+			g_logger().warn("[ProtocolStatus::onRecvFirstMessage] - Invalid bind IP '{}': {}", g_configManager().getString(IP), error.message());
+			return Connection::Address {};
+		}
+		return address;
+	}();
+
+	const auto ip = getIP();
+	if (!ip.is_unspecified()) {
+		if (!ip.is_loopback() && ip != acceptorAddress) {
 			const auto it = ipConnectMap.find(ip);
 			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
 				disconnect();
 				return;
 			}
 		}
-	}
 
-	ipConnectMap[ip] = OTSYS_TIME();
+		ipConnectMap[ip] = OTSYS_TIME();
+	}
 
 	switch (msg.getByte()) {
 		// XML info protocol
@@ -107,17 +118,18 @@ void ProtocolStatus::sendStatusString() {
 
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
-	std::map<uint32_t, uint32_t> listIP;
+	std::map<Connection::Address, uint32_t> listIP;
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		if (player->getIP() != 0) {
-			auto ip = listIP.find(player->getIP());
-			if (ip != listIP.end()) {
-				listIP[player->getIP()]++;
-				if (listIP[player->getIP()] < 5) {
+		const auto playerIp = player->getIP();
+		if (!playerIp.is_unspecified()) {
+			auto it = listIP.find(playerIp);
+			if (it != listIP.end()) {
+				it->second++;
+				if (it->second < 5) {
 					real++;
 				}
 			} else {
-				listIP[player->getIP()] = 1;
+				listIP.emplace(playerIp, 1);
 				real++;
 			}
 		}

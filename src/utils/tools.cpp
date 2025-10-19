@@ -434,15 +434,6 @@ void trimString(std::string &str) {
 	str.erase(0, str.find_first_not_of(' '));
 }
 
-std::string convertIPToString(uint32_t ip) {
-	std::array<char, 16> buffer;
-	auto result = fmt::format_to_n(buffer.data(), buffer.size() - 1, "{}.{}.{}.{}", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
-
-	buffer[std::min(result.size, buffer.size() - 1)] = '\0';
-
-	return std::string(buffer.data());
-}
-
 std::string formatDate(time_t time) {
 	try {
 		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));

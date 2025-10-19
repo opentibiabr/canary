@@ -9005,7 +9005,9 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, c
 	// TODO: move debug assertions to database
 	FILE* file = fopen("client_assertions.txt", "a");
 	if (file) {
-		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(time(nullptr)).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
+		const auto ipAddress = player->getIP();
+		const std::string ipString = ipAddress.is_unspecified() ? "unknown" : ipAddress.to_string();
+		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(time(nullptr)).c_str(), player->getName().c_str(), ipString.c_str());
 		fprintf(file, "%s\n%s\n%s\n%s\n", assertLine.c_str(), date.c_str(), description.c_str(), comment.c_str());
 		fclose(file);
 	}
@@ -10782,7 +10784,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		return;
 	}
 
-	if (player->getIP() == 0) {
+	if (player->getIP().is_unspecified()) {
 		g_game().removeDeadPlayer(playerName);
 		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
 		player->disconnect();

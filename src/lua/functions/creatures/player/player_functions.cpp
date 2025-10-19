@@ -673,11 +673,18 @@ int PlayerFunctions::luaPlayerGetGuid(lua_State* L) {
 int PlayerFunctions::luaPlayerGetIp(lua_State* L) {
 	// player:getIp()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (player) {
-		lua_pushnumber(L, player->getIP());
-	} else {
+	if (!player) {
 		lua_pushnil(L);
+		return 1;
 	}
+
+	const auto ipAddress = player->getIP();
+	if (ipAddress.is_unspecified()) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Lua::pushString(L, ipAddress.to_string());
 	return 1;
 }
 

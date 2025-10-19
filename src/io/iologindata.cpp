@@ -9,6 +9,8 @@
 
 #include "io/iologindata.hpp"
 
+#include <asio/ip/address.hpp>
+
 #include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
@@ -21,7 +23,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const uint32_t ip) {
+bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const asio::ip::address &ip) {
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
@@ -41,7 +43,10 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	}
 
 	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
-		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
+		g_logger().warn(
+			"IP [{}] trying to connect into another account character",
+			ip.is_unspecified() ? std::string("unknown") : ip.to_string()
+		);
 		return false;
 	}
 

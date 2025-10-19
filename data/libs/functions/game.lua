@@ -41,10 +41,39 @@ function Game.broadcastMessage(message, messageType)
 	end
 end
 
+local bit_band = bit.band
+local bit_rshift = bit.rshift
+local bit_lshift = bit.lshift
+local bit_bor = bit.bor
+
+local function ipv4StringToNumber(ip)
+        if type(ip) ~= "string" then
+                return nil
+        end
+
+        local a, b, c, d = ip:match("^(%d+)%.(%d+)%.(%d+)%.(%d+)$")
+        if not a then
+                return nil
+        end
+
+        a, b, c, d = tonumber(a), tonumber(b), tonumber(c), tonumber(d)
+        if not a or a > 255 or not b or b > 255 or not c or c > 255 or not d or d > 255 then
+                return nil
+        end
+
+        return bit_bor(a, bit_lshift(b, 8), bit_lshift(c, 16), bit_lshift(d, 24))
+end
+
 function Game.convertIpToString(ip)
-	local band = bit.band
-	local rshift = bit.rshift
-	return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
+        if type(ip) == "string" then
+                return ip
+        end
+
+        if type(ip) ~= "number" then
+                return "unknown"
+        end
+
+        return string.format("%d.%d.%d.%d", bit_band(ip, 0xFF), bit_band(bit_rshift(ip, 8), 0xFF), bit_band(bit_rshift(ip, 16), 0xFF), bit_rshift(ip, 24))
 end
 
 function Game.getHouseByPlayerGUID(playerGUID)
@@ -59,19 +88,41 @@ function Game.getHouseByPlayerGUID(playerGUID)
 end
 
 function Game.getPlayersByIPAddress(ip, mask)
-	if not mask then
-		mask = 0xFFFFFFFF
-	end
-	local masked = bit.band(ip, mask)
-	local result = {}
-	local players, player = Game.getPlayers()
-	for i = 1, #players do
-		player = players[i]
-		if bit.band(player:getIp(), mask) == masked then
-			result[#result + 1] = player
-		end
-	end
-	return result
+        mask = mask or 0xFFFFFFFF
+
+        local players = Game.getPlayers()
+        local result = {}
+
+        local targetNumber
+        if type(ip) == "number" then
+                targetNumber = ip
+        else
+                targetNumber = ipv4StringToNumber(ip)
+        end
+
+        if targetNumber then
+                local masked = bit_band(targetNumber, mask)
+                for i = 1, #players do
+                        local player = players[i]
+                        local playerIp = player:getIp()
+                        local playerNumber = type(playerIp) == "number" and playerIp or ipv4StringToNumber(playerIp)
+                        if playerNumber and bit_band(playerNumber, mask) == masked then
+                                result[#result + 1] = player
+                        end
+                end
+                return result
+        end
+
+        if type(ip) == "string" then
+                for i = 1, #players do
+                        local player = players[i]
+                        if player:getIp() == ip then
+                                result[#result + 1] = player
+                        end
+                end
+        end
+
+        return result
 end
 
 function Game.getReverseDirection(direction)

@@ -62,7 +62,7 @@ void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
 	std::scoped_lock lock(connectionLock);
-	ip = 0;
+	remoteAddress = {};
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
@@ -199,7 +199,9 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
-		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
+		const auto ipAddress = getIP();
+		const auto ipString = ipAddress.is_unspecified() ? std::string("unknown") : ipAddress.to_string();
+		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", ipString);
 		close();
 		return;
 	}
@@ -353,20 +355,23 @@ void Connection::internalWorker() {
 	internalSend(outputMessage);
 }
 
-uint32_t Connection::getIP() {
+Connection::Address Connection::getIP() {
 	std::scoped_lock lock(connectionLock);
 
-	if (ip == 1) {
+	if (remoteAddress.is_unspecified()) {
 		std::error_code error;
-		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+		const auto endpoint = socket.remote_endpoint(error);
 		if (error) {
-			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
-			ip = 0;
-		} else {
-			ip = htonl(endpoint.address().to_v4().to_uint());
+			if (error != asio::error::not_connected && error != asio::error::connection_aborted) {
+				g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
+			}
+			return {};
 		}
+
+		remoteAddress = endpoint.address();
 	}
-	return ip;
+
+	return remoteAddress;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
@@ -412,9 +417,18 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 
 	if (auto connection = connectionWeak.lock()) {
 		if (!error) {
-			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			const auto ipAddress = connection->getIP();
+			g_logger().debug(
+				"Connection Timeout, IP: {}",
+				ipAddress.is_unspecified() ? std::string("unknown") : ipAddress.to_string()
+			);
 		} else {
-			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			const auto ipAddress = connection->getIP();
+			g_logger().debug(
+				"Connection Timeout or error: {}, IP: {}",
+				error.message(),
+				ipAddress.is_unspecified() ? std::string("unknown") : ipAddress.to_string()
+			);
 		}
 		connection->close(FORCE_CLOSE);
 	}

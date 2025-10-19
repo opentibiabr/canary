@@ -245,12 +245,12 @@ Connection_ptr Protocol::getConnection() const {
 	return connectionPtr.lock();
 }
 
-uint32_t Protocol::getIP() const {
+Connection::Address Protocol::getIP() const {
 	if (const auto protocolConnection = getConnection()) {
 		return protocolConnection->getIP();
 	}
 
-	return 0;
+	return {};
 }
 
 bool Protocol::compression(OutputMessage &outputMessage) const {

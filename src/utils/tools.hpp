@@ -100,8 +100,6 @@ std::string formatEnumName(std::string_view name);
 std::time_t getTimeNow();
 int64_t getTimeMsNow();
 int64_t getTimeUsNow();
-std::string convertIPToString(uint32_t ip);
-
 void trimString(std::string &str);
 
 MagicEffectClasses getMagicEffect(const std::string &strValue);

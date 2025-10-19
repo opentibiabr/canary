@@ -60,6 +60,8 @@ cleanProtectionZones = false
 ip = "127.0.0.1"
 allowOldProtocol = false
 bindOnlyGlobalAddress = false
+-- networkBindMode: "ipv4" (default), "ipv6" (IPv6 only), "ipv6fallback" (try IPv6 first, fallback to IPv4 on failure)
+networkBindMode = "ipv4"
 loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171

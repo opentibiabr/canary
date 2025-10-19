@@ -17,16 +17,53 @@
 #include <asio/error.hpp>
 #include <asio/ip/address_v4.hpp>
 #include <asio/ip/v6_only.hpp>
+#include <algorithm>
+#include <cctype>
 #include <system_error>
 
 namespace {
 
-	asio::ip::address getListenAddress() {
+	enum class NetworkBindMode {
+		IPv4Only,
+		IPv6Only,
+		IPv6WithFallback,
+	};
+
+	NetworkBindMode getNetworkBindMode() {
+		std::string mode = g_configManager().getString(NETWORK_BIND_MODE);
+		std::transform(mode.begin(), mode.end(), mode.begin(), [](unsigned char ch) {
+			return static_cast<char>(std::tolower(ch));
+		});
+
+		if (mode == "ipv6" || mode == "ipv6_only") {
+			return NetworkBindMode::IPv6Only;
+		}
+
+		if (mode == "ipv6fallback" || mode == "ipv6_with_fallback" || mode == "dualstack") {
+			return NetworkBindMode::IPv6WithFallback;
+		}
+
+		static bool warned = false;
+		if (!mode.empty() && mode != "ipv4" && !warned) {
+			g_logger().warn(
+				"[ServicePort] - Unknown networkBindMode '{}', falling back to IPv4", mode
+			);
+			warned = true;
+		}
+
+		return NetworkBindMode::IPv4Only;
+	}
+
+	asio::ip::address getListenAddress(NetworkBindMode mode) {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
 			return asio::ip::address::from_string(g_configManager().getString(IP));
 		}
 
-		return asio::ip::address_v6::any();
+		if (mode == NetworkBindMode::IPv6Only || mode == NetworkBindMode::IPv6WithFallback) {
+			return asio::ip::address_v6::any();
+		}
+
+		return asio::ip::address_v4::any();
 	}
 
 	void scheduleOpenAcceptor(const std::weak_ptr<ServicePort> &service, uint16_t port) {
@@ -178,46 +215,47 @@ void ServicePort::open(uint16_t port) {
 	serverPort = port;
 	pendingStart = false;
 
-        try {
-                const auto address = getListenAddress();
+	try {
+		const auto mode = getNetworkBindMode();
+		const auto address = getListenAddress(mode);
 
-                const auto createAcceptor = [&](const asio::ip::address &bindAddress) {
-                        auto newAcceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(bindAddress, serverPort));
+		const auto createAcceptor = [&](const asio::ip::address &bindAddress) {
+			auto newAcceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(bindAddress, serverPort));
 
-                        if (bindAddress.is_v6()) {
-                                asio::ip::v6_only option;
-                                newAcceptor->get_option(option);
-                                if (option.value()) {
-                                        std::error_code error;
-                                        newAcceptor->set_option(asio::ip::v6_only(false), error);
-                                        if (error) {
-                                                g_logger().warn("[ServicePort::open] - Failed to enable dual-stack mode: {}", error.message());
-                                        }
-                                }
-                        }
+			if (bindAddress.is_v6()) {
+				asio::ip::v6_only option;
+				newAcceptor->get_option(option);
+				if (option.value()) {
+					std::error_code error;
+					newAcceptor->set_option(asio::ip::v6_only(false), error);
+					if (error) {
+						g_logger().warn("[ServicePort::open] - Failed to enable dual-stack mode: {}", error.message());
+					}
+				}
+			}
 
-                        newAcceptor->set_option(asio::ip::tcp::no_delay(true));
+			newAcceptor->set_option(asio::ip::tcp::no_delay(true));
 
-                        return newAcceptor;
-                };
+			return newAcceptor;
+		};
 
-                try {
-                        acceptor = createAcceptor(address);
-                } catch (const std::system_error &error) {
-                        const bool canFallbackToIPv4 = !g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) && address.is_v6();
-                        if (canFallbackToIPv4) {
-                                g_logger().info(
-                                        "[ServicePort::open] - Failed to bind IPv6 endpoint ({}), falling back to IPv4",
-                                        error.code().message()
-                                );
-                                acceptor = createAcceptor(asio::ip::address_v4::any());
-                        } else {
-                                throw;
-                        }
-                }
+		try {
+			acceptor = createAcceptor(address);
+		} catch (const std::system_error &error) {
+			const bool canFallbackToIPv4 = mode == NetworkBindMode::IPv6WithFallback && !g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) && address.is_v6();
+			if (canFallbackToIPv4) {
+				g_logger().info(
+					"[ServicePort::open] - Failed to bind IPv6 endpoint ({}), falling back to IPv4",
+					error.code().message()
+				);
+				acceptor = createAcceptor(asio::ip::address_v4::any());
+			} else {
+				throw;
+			}
+		}
 
-                accept();
-        } catch (const std::system_error &e) {
+		accept();
+	} catch (const std::system_error &e) {
 		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;

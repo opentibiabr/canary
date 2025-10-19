@@ -17,6 +17,7 @@
 #include <asio/error.hpp>
 #include <asio/ip/address_v4.hpp>
 #include <asio/ip/v6_only.hpp>
+#include <system_error>
 
 namespace {
 
@@ -200,13 +201,21 @@ void ServicePort::open(uint16_t port) {
                         return newAcceptor;
                 };
 
+                const auto shouldFallbackToIPv4 = [&](const std::error_code &errorCode) {
+                        if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) || !address.is_v6()) {
+                                return false;
+                        }
+
+                        return errorCode == asio::error::address_family_not_supported
+                            || errorCode == asio::error::operation_not_supported
+                            || errorCode == std::make_error_code(std::errc::address_family_not_supported)
+                            || errorCode == std::make_error_code(std::errc::operation_not_supported);
+                };
+
                 try {
                         acceptor = createAcceptor(address);
                 } catch (const std::system_error &error) {
-                        const auto errorCode = error.code();
-                        if (!g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) && address.is_v6()
-                            && (errorCode == asio::error::address_family_not_supported
-                                || errorCode == asio::error::operation_not_supported)) {
+                        if (shouldFallbackToIPv4(error.code())) {
                                 g_logger().info("[ServicePort::open] - IPv6 not supported, falling back to IPv4");
                                 acceptor = createAcceptor(asio::ip::address_v4::any());
                         } else {

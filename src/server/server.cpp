@@ -14,6 +14,8 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
 
+#include <asio/error.hpp>
+#include <asio/ip/address_v4.hpp>
 #include <asio/ip/v6_only.hpp>
 
 namespace {
@@ -175,26 +177,43 @@ void ServicePort::open(uint16_t port) {
 	serverPort = port;
 	pendingStart = false;
 
-	try {
-		const auto address = getListenAddress();
-		acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(address, serverPort));
+        try {
+                const auto address = getListenAddress();
 
-		if (address.is_v6()) {
-			asio::ip::v6_only option;
-			acceptor->get_option(option);
-			if (option.value()) {
-				std::error_code error;
-				acceptor->set_option(asio::ip::v6_only(false), error);
-				if (error) {
-					g_logger().warn("[ServicePort::open] - Failed to enable dual-stack mode: {}", error.message());
-				}
-			}
-		}
+                const auto createAcceptor = [&](const asio::ip::address &bindAddress) {
+                        auto newAcceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(bindAddress, serverPort));
 
-		acceptor->set_option(asio::ip::tcp::no_delay(true));
+                        if (bindAddress.is_v6()) {
+                                asio::ip::v6_only option;
+                                newAcceptor->get_option(option);
+                                if (option.value()) {
+                                        std::error_code error;
+                                        newAcceptor->set_option(asio::ip::v6_only(false), error);
+                                        if (error) {
+                                                g_logger().warn("[ServicePort::open] - Failed to enable dual-stack mode: {}", error.message());
+                                        }
+                                }
+                        }
 
-		accept();
-	} catch (const std::system_error &e) {
+                        newAcceptor->set_option(asio::ip::tcp::no_delay(true));
+
+                        return newAcceptor;
+                };
+
+                try {
+                        acceptor = createAcceptor(address);
+                } catch (const std::system_error &error) {
+                        if (!g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) && address.is_v6()
+                            && error.code() == asio::error::address_family_not_supported) {
+                                g_logger().info("[ServicePort::open] - IPv6 not supported, falling back to IPv4");
+                                acceptor = createAcceptor(asio::ip::address_v4::any());
+                        } else {
+                                throw;
+                        }
+                }
+
+                accept();
+        } catch (const std::system_error &e) {
 		g_logger().warn("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;

@@ -201,22 +201,15 @@ void ServicePort::open(uint16_t port) {
                         return newAcceptor;
                 };
 
-                const auto shouldFallbackToIPv4 = [&](const std::error_code &errorCode) {
-                        if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) || !address.is_v6()) {
-                                return false;
-                        }
-
-                        return errorCode == asio::error::address_family_not_supported
-                            || errorCode == asio::error::operation_not_supported
-                            || errorCode == std::make_error_code(std::errc::address_family_not_supported)
-                            || errorCode == std::make_error_code(std::errc::operation_not_supported);
-                };
-
                 try {
                         acceptor = createAcceptor(address);
                 } catch (const std::system_error &error) {
-                        if (shouldFallbackToIPv4(error.code())) {
-                                g_logger().info("[ServicePort::open] - IPv6 not supported, falling back to IPv4");
+                        const bool canFallbackToIPv4 = !g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) && address.is_v6();
+                        if (canFallbackToIPv4) {
+                                g_logger().info(
+                                        "[ServicePort::open] - Failed to bind IPv6 endpoint ({}), falling back to IPv4",
+                                        error.code().message()
+                                );
                                 acceptor = createAcceptor(asio::ip::address_v4::any());
                         } else {
                                 throw;

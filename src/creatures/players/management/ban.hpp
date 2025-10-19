@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "server/network/connection/connection.hpp"
+
 struct BanInfo {
 	std::string bannedBy {};
 	std::string reason {};
@@ -24,11 +26,11 @@ struct ConnectBlock {
 	uint32_t count {};
 };
 
-using IpConnectMap = std::map<uint32_t, ConnectBlock>;
+using IpConnectMap = std::map<Connection::Address, ConnectBlock>;
 
 class Ban {
 public:
-	bool acceptConnection(uint32_t clientIP);
+	bool acceptConnection(const Connection::Address &clientIP);
 
 private:
 	IpConnectMap ipConnectMap;
@@ -38,6 +40,6 @@ private:
 class IOBan {
 public:
 	static bool isAccountBanned(uint32_t accountId, BanInfo &banInfo);
-	static bool isIpBanned(uint32_t clientIP, BanInfo &banInfo);
+	static bool isIpBanned(const Connection::Address &clientIP, BanInfo &banInfo);
 	static bool isPlayerNamelocked(uint32_t playerId);
 };

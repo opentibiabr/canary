@@ -14,6 +14,26 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
 
+#include <asio/ip/v6_only.hpp>
+
+namespace {
+
+	asio::ip::address getListenAddress() {
+		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
+			return asio::ip::address::from_string(g_configManager().getString(IP));
+		}
+
+		return asio::ip::address_v6::any();
+	}
+
+	void scheduleOpenAcceptor(const std::weak_ptr<ServicePort> &service, uint16_t port) {
+		if (const auto lockedService = service.lock()) {
+			lockedService->open(port);
+		}
+	}
+
+} // namespace
+
 ServiceManager::~ServiceManager() {
 	try {
 		stop();
@@ -98,7 +118,7 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 		}
 
 		const auto remote_ip = connection->getIP();
-		if (remote_ip != 0 && inject<Ban>().acceptConnection(remote_ip)) {
+		if (inject<Ban>().acceptConnection(remote_ip)) {
 			const Service_ptr service = services.front();
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));
@@ -115,7 +135,11 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 			close();
 			pendingStart = true;
 			g_dispatcher().scheduleEvent(
-				15000, [self = shared_from_this(), serverPort = serverPort] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort); }, "ServicePort::openAcceptor"
+				15000,
+				[self = std::weak_ptr<ServicePort>(shared_from_this()), port = serverPort] {
+					scheduleOpenAcceptor(self, port);
+				},
+				"ServicePort::openAcceptor"
 			);
 		}
 	}
@@ -152,10 +176,19 @@ void ServicePort::open(uint16_t port) {
 	pendingStart = false;
 
 	try {
-		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort));
-		} else {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
+		const auto address = getListenAddress();
+		acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(address, serverPort));
+
+		if (address.is_v6()) {
+			asio::ip::v6_only option;
+			acceptor->get_option(option);
+			if (option.value()) {
+				std::error_code error;
+				acceptor->set_option(asio::ip::v6_only(false), error);
+				if (error) {
+					g_logger().warn("[ServicePort::open] - Failed to enable dual-stack mode: {}", error.message());
+				}
+			}
 		}
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
@@ -167,7 +200,8 @@ void ServicePort::open(uint16_t port) {
 		pendingStart = true;
 		g_dispatcher().scheduleEvent(
 			15000,
-			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor"
+			[self = std::weak_ptr<ServicePort>(shared_from_this()), port] { scheduleOpenAcceptor(self, port); },
+			"ServicePort::openAcceptor"
 		);
 	}
 }

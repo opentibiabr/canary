@@ -581,17 +581,11 @@ function getPvpBlessingCost(level, byCommand)
 end
 
 function getPlayersByIPAddress(ip, mask)
-	if mask == nil then
-		mask = 0xFFFFFFFF
-	end
-	local masked = bit.band(ip, mask)
-	local result = {}
-	for _, player in ipairs(Game.getPlayers()) do
-		if bit.band(player:getIp(), mask) == masked then
-			result[#result + 1] = player:getId()
-		end
-	end
-	return result
+        local result = {}
+        for _, player in ipairs(Game.getPlayersByIPAddress(ip, mask)) do
+                result[#result + 1] = player:getId()
+        end
+        return result
 end
 
 function getOnlinePlayers()

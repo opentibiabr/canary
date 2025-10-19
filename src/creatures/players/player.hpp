@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/creature.hpp"
+#include "server/network/connection/connection.hpp"
 #include "enums/forge_conversion.hpp"
 #include "game/bank/bank.hpp"
 #include "grouping/guild.hpp"
@@ -386,10 +387,10 @@ public:
 	}
 	void disconnect() const;
 
-	uint32_t getIP() const;
+	Connection::Address getIP() const;
 
 	bool isDisconnected() const {
-		return getIP() == 0;
+		return getIP().is_unspecified();
 	}
 
 	void addContainer(uint8_t cid, const std::shared_ptr<Container> &container);
@@ -1558,7 +1559,7 @@ private:
 	uint32_t nextStepEvent = 0;
 	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;
-	uint32_t lastIP = 0;
+	Connection::Address lastIP = {};
 	uint32_t guid = 0;
 	uint32_t loyaltyPoints = 0;
 	uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;

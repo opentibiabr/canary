@@ -37,5 +37,5 @@ public:
 	static std::string SERVER_DEVELOPERS;
 
 private:
-	static std::map<uint32_t, int64_t> ipConnectMap;
+	static std::map<Connection::Address, int64_t> ipConnectMap;
 };

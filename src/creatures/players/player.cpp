@@ -9099,8 +9099,8 @@ void Player::disconnect() const {
 	}
 }
 
-uint32_t Player::getIP() const {
-	return client ? client->getIP() : 0;
+Connection::Address Player::getIP() const {
+	return client ? client->getIP() : Connection::Address {};
 }
 
 void Player::reloadTaskSlot(PreySlot_t slotid) {

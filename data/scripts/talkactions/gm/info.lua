@@ -36,16 +36,19 @@ function info.onSay(player, words, param)
 
 	player:popupFYI(text)
 
-	local players = {}
-	for _, targetPlayer in ipairs(Game.getPlayers()) do
-		if targetPlayer:getIp() == targetIp and targetPlayer ~= target then
-			players[#players + 1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
-		end
-	end
+        if targetIp then
+                local players = {}
+                for _, targetPlayer in ipairs(Game.getPlayers()) do
+                        local playerIp = targetPlayer:getIp()
+                        if playerIp and playerIp == targetIp and targetPlayer ~= target then
+                                players[#players + 1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
+                        end
+                end
 
-	if #players > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Other players on same IP: " .. table.concat(players, ", ") .. ".")
-	end
+                if #players > 0 then
+                        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Other players on same IP: " .. table.concat(players, ", ") .. ".")
+                end
+        end
 	return true
 end
 

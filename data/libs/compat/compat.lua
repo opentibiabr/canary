@@ -581,11 +581,11 @@ function getPvpBlessingCost(level, byCommand)
 end
 
 function getPlayersByIPAddress(ip, mask)
-        local result = {}
-        for _, player in ipairs(Game.getPlayersByIPAddress(ip, mask)) do
-                result[#result + 1] = player:getId()
-        end
-        return result
+	local result = {}
+	for _, player in ipairs(Game.getPlayersByIPAddress(ip, mask)) do
+		result[#result + 1] = player:getId()
+	end
+	return result
 end
 
 function getOnlinePlayers()

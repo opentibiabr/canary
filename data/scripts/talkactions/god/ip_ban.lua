@@ -11,26 +11,26 @@ function ipBan.onSay(player, words, param)
 		return true
 	end
 
-        local resultId = db.storeQuery("SELECT `name`, INET6_NTOA(`lastip`) AS `lastip` FROM `players` WHERE `name` = " .. db.escapeString(param))
+	local resultId = db.storeQuery("SELECT `name`, INET6_NTOA(`lastip`) AS `lastip` FROM `players` WHERE `name` = " .. db.escapeString(param))
 	if resultId == false then
 		return true
 	end
 
 	local targetName = Result.getString(resultId, "name")
-        local targetIp = Result.getString(resultId, "lastip")
+	local targetIp = Result.getString(resultId, "lastip")
 	Result.free(resultId)
 
 	local targetPlayer = Player(param)
-        if targetPlayer then
-                targetIp = targetPlayer:getIp()
-                targetPlayer:remove()
-        end
+	if targetPlayer then
+		targetIp = targetPlayer:getIp()
+		targetPlayer:remove()
+	end
 
-        if not targetIp or targetIp == "" then
-                return true
-        end
+	if not targetIp or targetIp == "" then
+		return true
+	end
 
-        resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = INET6_ATON(" .. db.escapeString(targetIp) .. ")")
+	resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = INET6_ATON(" .. db.escapeString(targetIp) .. ")")
 	if resultId ~= false then
 		player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  is already IP banned.")
 		Result.free(resultId)
@@ -38,7 +38,7 @@ function ipBan.onSay(player, words, param)
 	end
 
 	local timeNow = os.time()
-        db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (INET6_ATON(" .. db.escapeString(targetIp) .. "), '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
+	db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (INET6_ATON(" .. db.escapeString(targetIp) .. "), '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
 	player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  has been IP banned.")
 	return true
 end

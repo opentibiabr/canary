@@ -29,35 +29,35 @@ namespace {
 		IPv6WithFallback,
 	};
 
-        NetworkBindMode getNetworkBindMode() {
-                std::string mode = g_configManager().getString(NETWORK_BIND_MODE);
-                std::transform(mode.begin(), mode.end(), mode.begin(), [](unsigned char ch) {
-                        return static_cast<char>(std::tolower(ch));
-                });
+	NetworkBindMode getNetworkBindMode() {
+		std::string mode = g_configManager().getString(NETWORK_BIND_MODE);
+		std::transform(mode.begin(), mode.end(), mode.begin(), [](unsigned char ch) {
+			return static_cast<char>(std::tolower(ch));
+		});
 
-                if (mode == "ipv6" || mode == "ipv6_only") {
-                        return NetworkBindMode::IPv6Only;
-                }
+		if (mode == "ipv6" || mode == "ipv6_only") {
+			return NetworkBindMode::IPv6Only;
+		}
 
-                if (mode.empty() || mode == "ipv6fallback" || mode == "ipv6_with_fallback" || mode == "dualstack") {
-                        return NetworkBindMode::IPv6WithFallback;
-                }
+		if (mode.empty() || mode == "ipv6fallback" || mode == "ipv6_with_fallback" || mode == "dualstack") {
+			return NetworkBindMode::IPv6WithFallback;
+		}
 
-                if (mode == "ipv4" || mode == "ipv4_only") {
-                        return NetworkBindMode::IPv4Only;
-                }
+		if (mode == "ipv4" || mode == "ipv4_only") {
+			return NetworkBindMode::IPv4Only;
+		}
 
-                static bool warned = false;
-                if (!warned) {
-                        g_logger().warn(
-                                "[ServicePort] - Unknown networkBindMode '{}', falling back to IPv6 with IPv4 fallback",
-                                mode
-                        );
-                        warned = true;
-                }
+		static bool warned = false;
+		if (!warned) {
+			g_logger().warn(
+				"[ServicePort] - Unknown networkBindMode '{}', falling back to IPv6 with IPv4 fallback",
+				mode
+			);
+			warned = true;
+		}
 
-                return NetworkBindMode::IPv6WithFallback;
-        }
+		return NetworkBindMode::IPv6WithFallback;
+	}
 
 	asio::ip::address getListenAddress(NetworkBindMode mode) {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {

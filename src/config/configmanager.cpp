@@ -64,8 +64,8 @@ bool ConfigManager::load() {
 
 		loadStringConfig(L, AUTH_TYPE, "authType", "password");
 		loadStringConfig(L, HOUSE_RENT_PERIOD, "houseRentPeriod", "never");
-                loadStringConfig(L, IP, "ip", "127.0.0.1");
-                loadStringConfig(L, NETWORK_BIND_MODE, "networkBindMode", "ipv4");
+    loadStringConfig(L, IP, "ip", "127.0.0.1");
+    loadStringConfig(L, NETWORK_BIND_MODE, "networkBindMode", "ipv4");
 		loadStringConfig(L, MAINTAIN_MODE_MESSAGE, "maintainModeMessage", "");
 		loadStringConfig(L, MAP_AUTHOR, "mapAuthor", "Eduardo Dantas");
 		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");

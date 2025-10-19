@@ -9,13 +9,13 @@
 
 #include "utils/tools.hpp"
 
+#include "config/configmanager.hpp"
 #include "core.hpp"
 #include "enums/object_category.hpp"
+#include "game/movement/position.hpp"
 #include "items/item.hpp"
 #include "lua/lua_definitions.hpp"
 #include "utils/const.hpp"
-#include "config/configmanager.hpp"
-#include "game/movement/position.hpp"
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
@@ -445,7 +445,8 @@ std::string convertIPToString(uint32_t ip) {
 
 std::string formatDate(time_t time) {
 	try {
-		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date with error code {}", exception.what());
 	}
@@ -454,7 +455,8 @@ std::string formatDate(time_t time) {
 
 std::string formatDateShort(time_t time) {
 	try {
-		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%Y-%m-%d %X}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date short with error code {}", exception.what());
 	}
@@ -463,9 +465,29 @@ std::string formatDateShort(time_t time) {
 
 std::string formatTime(time_t time) {
 	try {
-		return fmt::format("{:%H:%M:%S}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%H:%M:%S}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format time with error code {}", exception.what());
+	}
+	return {};
+}
+
+std::string formatTimeMs(int64_t ms) {
+	try {
+		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
+		return fmt::format("{:%H:%M:%S}", tp);
+	} catch (...) {
+		return "<invalid>";
+	}
+}
+
+std::string formatDateTime(int64_t ms) {
+	try {
+		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
+		return fmt::format("{:%Y-%m-%d %H:%M:%S}", tp);
+	} catch (const std::out_of_range &exception) {
+		g_logger().error("Failed to format datetime with error code {}", exception.what());
 	}
 	return {};
 }

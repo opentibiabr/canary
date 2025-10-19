@@ -95,4 +95,6 @@ private:
 
 	static int luaGameGetMonstersByRace(lua_State* L);
 	static int luaGameGetMonstersByBestiaryStars(lua_State* L);
+
+	static int luaGameAddFreeQuestData(lua_State* L);
 };

@@ -112,7 +112,7 @@ Storage = {
 	-- Reserved in Global.Storage.FamiliarSummonEvent10 = 30054
 	-- Reserved in Global.Storage.FamiliarSummonEvent60 = 30055
 	ChayenneKeyTime = 30056,
-	FreeQuests = 30057,
+	-- Reserved in Global.Storage.FreeQuests = 30057 : Free Quests System cpp
 	ShrineEntrance = 30060,
 	PlayerWeaponReward = 30061,
 	--[[

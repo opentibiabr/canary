@@ -1,6 +1,7 @@
 target_sources(
     ${PROJECT_NAME}_lib
     PRIVATE functions/game_reload.cpp
+            functions/game_freequests.cpp
             game.cpp
             bank/bank.cpp
             movement/position.cpp

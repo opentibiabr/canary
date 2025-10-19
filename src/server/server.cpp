@@ -203,8 +203,10 @@ void ServicePort::open(uint16_t port) {
                 try {
                         acceptor = createAcceptor(address);
                 } catch (const std::system_error &error) {
+                        const auto errorCode = error.code();
                         if (!g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS) && address.is_v6()
-                            && error.code() == asio::error::address_family_not_supported) {
+                            && (errorCode == asio::error::address_family_not_supported
+                                || errorCode == asio::error::operation_not_supported)) {
                                 g_logger().info("[ServicePort::open] - IPv6 not supported, falling back to IPv4");
                                 acceptor = createAcceptor(asio::ip::address_v4::any());
                         } else {

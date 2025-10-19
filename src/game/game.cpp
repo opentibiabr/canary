@@ -1717,7 +1717,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		item = thing->getItem();
 	}
 
-	if (item->getID() != itemId) {
+	if (!item || item->getID() != itemId) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -1784,10 +1784,10 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	const auto toCylinderTile = toCylinder->getTile();
-	const auto &mapToPos = toCylinderTile->getPosition();
+	const Position &mapToPos = toCylinderTile ? toCylinderTile->getPosition() : toPos;
 
 	// hangable item specific code
-	if (item->isHangable() && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
+	if (item->isHangable() && toCylinderTile && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 		// destination supports hangable objects so need to move there first
 		bool vertical = toCylinderTile->hasProperty(CONST_PROP_ISVERTICAL);
 		if (vertical) {
@@ -1875,11 +1875,16 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	if (item->isWrapable() || item->isStoreItem() || (item->hasOwner() && !item->isOwner(player))) {
-		const auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
-		const auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
-		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
-			player->sendCancelMessage("You cannot move this item out of this house.");
-			return;
+		const auto toHouseTile = toCylinderTile ? toCylinderTile->dynamic_self_cast<HouseTile>() : nullptr;
+		const auto fromHouseTile = cylinderTile ? cylinderTile->dynamic_self_cast<HouseTile>() : nullptr;
+
+		if (fromHouseTile) {
+			const auto fromHouse = fromHouseTile->getHouse();
+			const auto toHouse = toHouseTile ? toHouseTile->getHouse() : nullptr;
+			if (!fromHouse || !toHouse || toHouse->getId() != fromHouse->getId()) {
+				player->sendCancelMessage("You cannot move this item out of this house.");
+				return;
+			}
 		}
 	}
 

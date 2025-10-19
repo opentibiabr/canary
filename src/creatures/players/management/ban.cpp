@@ -12,6 +12,8 @@
 #include "database/database.hpp"
 #include "database/databasetasks.hpp"
 
+#include "utils/tools.hpp"
+
 bool Ban::acceptConnection(const Connection::Address &clientIP) {
 	std::scoped_lock<std::recursive_mutex> lockClass(lock);
 

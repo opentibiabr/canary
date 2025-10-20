@@ -147,18 +147,21 @@ function createShopLootAction.onSay(player, words, param)
 
 	local batchUpdate = BatchUpdate(player)
 	batchUpdate:add(lootPouch)
+
 	for _, cfg in ipairs(LootShopConfig) do
 		local count = cfg.count or 1
-		local item = Game.createItem(cfg.clientId, count)
-		if item and item:getId() ~= ITEM_GOLD_POUCH then
-			local flags = bit.bor(FLAG_NOLIMIT)
-			local returnValue = lootPouch:addItemEx(item, INDEX_WHEREEVER, flags)
-			if returnValue == RETURNVALUE_NOERROR then
+
+		if cfg.clientId ~= ITEM_GOLD_POUCH then
+			local added = player:addItemBatchToPaginedContainer(lootPouch, cfg.clientId, count)
+
+			if added > 0 then
 				createdCount = createdCount + 1
-				logger.debug("[/createtestshop] Player {} added {} x {} (id {})", player:getName(), count, cfg.itemName, cfg.clientId)
+				logger.debug("[/createtestshop] Player {} added {} x {} (id {}), actually added {}", player:getName(), count, cfg.itemName, cfg.clientId, added)
+				if added < count then
+					logger.warn("[/createtestshop] Partial add for {} (id {}): requested {}, added {}", cfg.itemName, cfg.clientId, count, added)
+				end
 			else
-				item:remove()
-				logger.warn("[/createtestshop] Player {} failed to add {} (id {}), code: {}", player:getName(), cfg.itemName, cfg.clientId, Game.getReturnMessage(returnValue))
+				logger.warn("[/createtestshop] Player {} failed to add {} (id {})", player:getName(), cfg.itemName, cfg.clientId)
 			end
 		end
 	end

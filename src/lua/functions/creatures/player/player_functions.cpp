@@ -217,6 +217,8 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "openChannel", PlayerFunctions::luaPlayerOpenChannel);
 
 	Lua::registerMethod(L, "Player", "getSlotItem", PlayerFunctions::luaPlayerGetSlotItem);
+	Lua::registerMethod(L, "Player", "getBackpack", PlayerFunctions::luaPlayerGetBackpack);
+	Lua::registerMethod(L, "Player", "getLootPouch", PlayerFunctions::luaPlayerGetLootPouch);
 
 	Lua::registerMethod(L, "Player", "getParty", PlayerFunctions::luaPlayerGetParty);
 
@@ -2704,6 +2706,42 @@ int PlayerFunctions::luaPlayerGetSlotItem(lua_State* L) {
 	if (item) {
 		Lua::pushUserdata<Item>(L, item);
 		Lua::setItemMetatable(L, -1, item);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBackpack(lua_State* L) {
+	// player:getBackpack()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &backpack = player->getBackpack();
+	if (backpack) {
+		Lua::pushUserdata<Container>(L, backpack);
+		Lua::setItemMetatable(L, -1, backpack);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLootPouch(lua_State* L) {
+	// player:getLootPouch()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &lootPouch = player->getLootPouch();
+	if (lootPouch) {
+		Lua::pushUserdata<Container>(L, lootPouch);
+		Lua::setItemMetatable(L, -1, lootPouch);
 	} else {
 		lua_pushnil(L);
 	}

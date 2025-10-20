@@ -11369,7 +11369,7 @@ void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uin
 
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11398,7 +11398,7 @@ void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseI
 
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11427,7 +11427,7 @@ void Game::playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, ui
 
 	const std::shared_ptr<Player> &owner = getPlayerByID(playerId);
 	if (!owner) {
-		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11466,7 +11466,7 @@ void Game::playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t house
 
 	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11510,7 +11510,7 @@ void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t house
 
 	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11544,7 +11544,7 @@ void Game::playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t house
 
 	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 

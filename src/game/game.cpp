@@ -3231,8 +3231,8 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 
 	BatchUpdate batchUpdate(player.get());
 	batchUpdate.add(lootContainer.get());
-	auto returnVale = processLootItems(player, lootContainer, item, fallbackConsumed);
-	return returnVale;
+	auto returnValue = processLootItems(player, lootContainer, item, fallbackConsumed);
+	return returnValue;
 }
 
 ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player, uint32_t maxMoveItems /* = 0*/) {

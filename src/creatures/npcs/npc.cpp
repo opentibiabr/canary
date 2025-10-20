@@ -560,6 +560,7 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 			const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			if (returnValue != RETURNVALUE_NOERROR) {
 				g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), getName(), getReturnMessage(returnValue));
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
 			}
 		}
 	}

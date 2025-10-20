@@ -9,6 +9,7 @@
     "bext-ut",
     "curl",
     "eventpp",
+    "gtest",
     "libmariadb",
     "luajit",
     "magic-enum",

@@ -1365,6 +1365,8 @@ public:
 	bool isFirstOnStack() const;
 	void resetOldCharms();
 
+	int32_t getMarriageSpouseId() const;
+
 	const auto &getOutfits() const {
 		return outfits;
 	}
@@ -1372,6 +1374,8 @@ public:
 	const auto &getFamiliars() const {
 		return familiars;
 	}
+
+	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 
 private:
 	friend class PlayerLock;
@@ -1427,7 +1431,6 @@ private:
 	int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const override;
 	size_t getFirstIndex() const override;
 	size_t getLastIndex() const override;
-	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 	void stashContainer(const StashContainerList &itemDict);
 	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
@@ -1750,8 +1753,5 @@ private:
 
 	void setMarriageSpouse(const int32_t spouseId) {
 		marriageSpouse = spouseId;
-	}
-	int32_t getMarriageSpouse() const {
-		return marriageSpouse;
 	}
 };

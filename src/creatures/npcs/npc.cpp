@@ -439,35 +439,98 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 		return;
 	}
 
-	const auto &container = player->getLootPouch();
-	if (!container) {
+	const auto &lootPouch = player->getLootPouch();
+	if (!lootPouch) {
 		return;
 	}
 
-	phmap::flat_hash_map<uint16_t, uint32_t> toSell;
-	for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-		const auto &item = *it;
-		if (!item) {
+	struct LootSaleData {
+		uint32_t price = 0;
+		uint32_t amount = 0;
+	};
+
+	const auto &shopVector = getShopItemVector(player->getGUID());
+	phmap::flat_hash_map<uint16_t, LootSaleData> saleData;
+	saleData.reserve(shopVector.size());
+	for (const ShopBlock &shopBlock : shopVector) {
+		if (shopBlock.itemSellPrice == 0) {
 			continue;
 		}
-		toSell[item->getID()] += item->getItemAmount();
+
+		auto &data = saleData[shopBlock.itemId];
+		data.price = shopBlock.itemSellPrice;
 	}
 
 	BatchUpdate batching(player.get());
+	if (!saleData.empty()) {
+		batching.add(lootPouch.get());
+	}
+
+	for (size_t index = lootPouch->size(); index > 0;) {
+		--index;
+
+		const auto &list = lootPouch->getItemList();
+		if (index >= list.size()) {
+			continue;
+		}
+
+		const auto &item = list[index];
+		if (!item) {
+			continue;
+		}
+
+		const auto it = saleData.find(item->getID());
+		if (it == saleData.end()) {
+			continue;
+		}
+
+		if (item->getTier() > 0 || item->hasImbuements()) {
+			continue;
+		}
+
+		const auto removeCount = static_cast<uint32_t>(item->getItemAmount());
+		if (removeCount == 0) {
+			continue;
+		}
+
+		lootPouch->removeItemByIndex(index, removeCount);
+		it->second.amount += removeCount;
+	}
 
 	std::string log;
-	log.reserve(toSell.size() * 64); // Median of 64 bytes per line
+	log.reserve(saleData.size() * 64); // Median of 64 bytes per line
 	uint32_t totalItemsSold = 0;
-	for (auto &[m_itemId, amount] : toSell) {
-		uint64_t itemPriceBefore = totalPrice;
-		onPlayerSellItem(player, m_itemId, 0, amount, ignore, totalPrice, container, &batching);
-		uint64_t itemPrice = totalPrice - itemPriceBefore;
-
-		if (itemPrice > 0) {
-			const std::string &itemName = Item::items.getItemType(m_itemId).name;
-			log += fmt::format("Sold {}x {} for {} gold.\n", amount, itemName, itemPrice);
-			totalItemsSold += amount;
+	for (auto &[itemId, data] : saleData) {
+		if (data.amount == 0) {
+			continue;
 		}
+
+		const auto totalCost = static_cast<uint64_t>(data.price) * data.amount;
+		if (!totalCost) {
+			continue;
+		}
+
+		totalPrice += totalCost;
+
+		if (getCurrency() == ITEM_GOLD_COIN) {
+			if (g_configManager().getBoolean(AUTOBANK)) {
+				player->setBankBalance(player->getBankBalance() + totalCost);
+			} else {
+				g_game().addMoney(player, totalCost);
+			}
+
+			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
+		} else {
+			const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
+			auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
+			if (newItem && returnValue != RETURNVALUE_NOERROR) {
+				g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+			}
+		}
+
+		const std::string &itemName = Item::items.getItemType(itemId).name;
+		log += fmt::format("Sold {}x {} for {} gold.\n", data.amount, itemName, totalCost);
+		totalItemsSold += data.amount;
 	}
 
 	std::string finalMessage;
@@ -481,14 +544,24 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 	g_logger().debug("Npc::onPlayerSellItem Finished npc sell items");
 
 	if (totalPrice > 0 && !log.empty()) {
+		const auto &storeInbox = player->getStoreInbox();
+		if (!storeInbox) {
+			g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), getName());
+			return;
+		}
+
+		batching.add(storeInbox.get());
+
 		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
 		if (letter) {
 			letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", getName()));
 			letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
 			letter->setAttribute(ItemAttribute_t::TEXT, log);
-			g_game().internalAddItem(player->getStoreInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			if (returnValue != RETURNVALUE_NOERROR) {
+				g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), getName(), getReturnMessage(returnValue));
+			}
 		}
-		return;
 	}
 }
 

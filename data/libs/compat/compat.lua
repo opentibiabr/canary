@@ -291,18 +291,28 @@ function getPlayerByName(name)
 end
 
 function getIPByPlayerName(name)
-	local p = Player(name)
-	return p and p:getIp() or false
+        local p = Player(name)
+        return p and p:getIp() or false
+end
+
+function getIPStringByPlayerName(name)
+        local p = Player(name)
+        return p and p:getIpString() or false
 end
 
 function getPlayerGUID(cid)
-	local p = Player(cid)
-	return p and p:getGuid() or false
+        local p = Player(cid)
+        return p and p:getGuid() or false
 end
 
 function getPlayerIp(cid)
-	local p = Player(cid)
-	return p and p:getIp() or false
+        local p = Player(cid)
+        return p and p:getIp() or false
+end
+
+function getPlayerIpString(cid)
+        local p = Player(cid)
+        return p and p:getIpString() or false
 end
 
 function getPlayerAccountType(cid)

@@ -17,30 +17,30 @@ function ipBan.onSay(player, words, param)
 	end
 
 	local targetName = Result.getString(resultId, "name")
-	local targetIp = Result.getNumber(resultId, "lastip")
-	Result.free(resultId)
+        local targetIp = Result.getString(resultId, "lastip")
+        Result.free(resultId)
 
-	local targetPlayer = Player(param)
-	if targetPlayer then
-		targetIp = targetPlayer:getIp()
-		targetPlayer:remove()
-	end
+        local targetPlayer = Player(param)
+        if targetPlayer then
+                targetIp = targetPlayer:getIpString()
+                targetPlayer:remove()
+        end
 
-	if targetIp == 0 then
-		return true
-	end
+        if not targetIp or targetIp == "" then
+                return true
+        end
 
-	resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = " .. targetIp)
-	if resultId ~= false then
-		player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  is already IP banned.")
-		Result.free(resultId)
-		return true
-	end
+        resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = " .. db.escapeString(targetIp))
+        if resultId ~= false then
+                player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  is already IP banned.")
+                Result.free(resultId)
+                return true
+        end
 
-	local timeNow = os.time()
-	db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. targetIp .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
-	player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  has been IP banned.")
-	return true
+        local timeNow = os.time()
+        db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. db.escapeString(targetIp) .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
+        player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  has been IP banned.")
+        return true
 end
 
 ipBan:separator(" ")

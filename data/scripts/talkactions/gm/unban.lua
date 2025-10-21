@@ -14,8 +14,11 @@ function unban.onSay(player, words, param)
 		return true
 	end
 
-	db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. Result.getNumber(resultId, "account_id"))
-	db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip` = " .. Result.getNumber(resultId, "lastip"))
+        db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. Result.getNumber(resultId, "account_id"))
+        local lastIp = Result.getString(resultId, "lastip")
+        if lastIp and lastIp ~= "" then
+                db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip` = " .. db.escapeString(lastIp))
+        end
 	Result.free(resultId)
 	local text = param .. " has been unbanned."
 	player:sendTextMessage(MESSAGE_ADMINISTRATOR, text)

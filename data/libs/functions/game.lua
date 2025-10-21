@@ -41,10 +41,22 @@ function Game.broadcastMessage(message, messageType)
 	end
 end
 
-function Game.convertIpToString(ip)
-	local band = bit.band
-	local rshift = bit.rshift
-	return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
+function Game.convertIpToString(ip, ipString)
+        if ipString and ipString ~= "" then
+                return ipString
+        end
+
+        if type(ip) == "string" then
+                return ip ~= "" and ip or "0.0.0.0"
+        end
+
+        if type(ip) ~= "number" then
+                return "0.0.0.0"
+        end
+
+        local band = bit.band
+        local rshift = bit.rshift
+        return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
 end
 
 function Game.getHouseByPlayerGUID(playerGUID)
@@ -59,19 +71,32 @@ function Game.getHouseByPlayerGUID(playerGUID)
 end
 
 function Game.getPlayersByIPAddress(ip, mask)
-	if not mask then
-		mask = 0xFFFFFFFF
-	end
-	local masked = bit.band(ip, mask)
-	local result = {}
-	local players, player = Game.getPlayers()
-	for i = 1, #players do
-		player = players[i]
-		if bit.band(player:getIp(), mask) == masked then
-			result[#result + 1] = player
-		end
-	end
-	return result
+        local result = {}
+        local players = Game.getPlayers()
+
+        if type(ip) == "string" and ip ~= "" then
+                for i = 1, #players do
+                        local player = players[i]
+                        if player:getIpString() == ip then
+                                result[#result + 1] = player
+                        end
+                end
+                return result
+        end
+
+        mask = mask or 0xFFFFFFFF
+        if type(ip) ~= "number" then
+                return result
+        end
+
+        local masked = bit.band(ip, mask)
+        for i = 1, #players do
+                local player = players[i]
+                if bit.band(player:getIp(), mask) == masked then
+                        result[#result + 1] = player
+                end
+        end
+        return result
 end
 
 function Game.getReverseDirection(direction)

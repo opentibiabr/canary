@@ -32,9 +32,10 @@ class PlayerFunctions {
 	static int luaPlayerResetOldCharms(lua_State* L);
 	static int luaPlayerIsPlayer(lua_State* L);
 
-	static int luaPlayerGetGuid(lua_State* L);
-	static int luaPlayerGetIp(lua_State* L);
-	static int luaPlayerGetAccountId(lua_State* L);
+        static int luaPlayerGetGuid(lua_State* L);
+        static int luaPlayerGetIp(lua_State* L);
+        static int luaPlayerGetIpString(lua_State* L);
+        static int luaPlayerGetAccountId(lua_State* L);
 	static int luaPlayerGetLastLoginSaved(lua_State* L);
 	static int luaPlayerGetLastLogout(lua_State* L);
 

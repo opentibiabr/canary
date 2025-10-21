@@ -8339,12 +8339,12 @@ void Player::sendBatchUpdateContainer(Container* container, bool hasParent, uint
 			auto sharedContainer = containerInfo.container;
 			checkLootContainers(sharedContainer);
 			client->sendContainer(cid, sharedContainer, hasParent, containerInfo.index);
-			g_logger().info("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
+			g_logger().debug("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
 		}
 	}
 
 	closeContainersOutOfRange();
-	g_logger().info("Player::sendBatchUpdateContainer - Closed out of range containers for player {}.", getName());
+	g_logger().debug("Player::sendBatchUpdateContainer - Closed out of range containers for player {}.", getName());
 }
 
 void Player::closeContainersOutOfRange() {

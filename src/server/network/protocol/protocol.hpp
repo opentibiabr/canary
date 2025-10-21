@@ -105,4 +105,3 @@ private:
 
 	friend class Connection;
 };
-#include <string>

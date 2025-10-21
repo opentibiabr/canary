@@ -112,13 +112,9 @@ local function appendAdminDetails(descriptionText, inspectedThing, inspectedPosi
 		local creatureCurrentSpeed = inspectedThing:getSpeed()
 		descriptionText = string.format("%s\nSpeed Base: %d\nSpeed: %d", descriptionText, creatureBaseSpeed, creatureCurrentSpeed)
 
-                if inspectedThing:isPlayer() then
-                        descriptionText = string.format(
-                                "%s\nIP: %s",
-                                descriptionText,
-                                Game.convertIpToString(inspectedThing:getIp(), inspectedThing:getIpString())
-                        )
-                end
+		if inspectedThing:isPlayer() then
+			descriptionText = string.format("%s\nIP: %s",  Game.convertIpToString(inspectedThing:getIp(), inspectedThing:getIpString()))
+		end
 	end
 
 	return descriptionText

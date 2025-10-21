@@ -185,6 +185,7 @@ public:
 	static uint8_t getU8FromString(const std::string &string, const std::string &function);
 	static int8_t getInt8FromString(const std::string &string, const std::string &function);
 
+	size_t getNumColumns() const;
 	size_t countResults() const;
 	bool hasNext() const;
 	bool next();
@@ -194,6 +195,7 @@ private:
 	MYSQL_ROW row;
 
 	std::map<std::string_view, size_t> listNames;
+	size_t m_numColumns { 0 };
 
 	friend class Database;
 };

@@ -7,6 +7,7 @@ target_sources(
             io_bosstiary.cpp
             ioguild.cpp
             iologindata.cpp
+            account_vip_repository_db.cpp
             functions/iologindata_load_player.cpp
             functions/iologindata_save_player.cpp
             iomap.cpp

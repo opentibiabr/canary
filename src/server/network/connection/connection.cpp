@@ -62,7 +62,7 @@ void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
 	std::scoped_lock lock(connectionLock);
-	remoteAddress = {};
+        remoteAddress = Address{};
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;

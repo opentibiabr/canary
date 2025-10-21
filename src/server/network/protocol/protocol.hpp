@@ -9,8 +9,9 @@
 
 #pragma once
 
-#include "server/server_definitions.hpp"
 #include <string>
+
+#include "server/server_definitions.hpp"
 
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;

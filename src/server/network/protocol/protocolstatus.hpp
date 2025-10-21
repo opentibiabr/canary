@@ -12,6 +12,8 @@
 #include "server/network/message/networkmessage.hpp"
 #include "server/network/protocol/protocol.hpp"
 
+#include <map>
+
 class ProtocolStatus final : public Protocol {
 public:
 	// static protocol information
@@ -37,5 +39,5 @@ public:
 	static std::string SERVER_DEVELOPERS;
 
 private:
-	static std::map<uint32_t, int64_t> ipConnectMap;
+        static std::map<std::string, int64_t> ipConnectMap;
 };

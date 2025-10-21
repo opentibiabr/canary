@@ -8332,7 +8332,9 @@ void Player::sendBatchUpdateContainer(Container* container, bool hasParent, uint
 		return;
 	}
 
-	updateState();
+	if (!m_batching) {
+		updateState();
+	}
 
 	for (const auto &[cid, containerInfo] : openContainers) {
 		if (containerInfo.container.get() == container) {

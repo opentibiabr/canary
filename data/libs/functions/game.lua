@@ -46,12 +46,25 @@ local bit_rshift = bit.rshift
 local bit_lshift = bit.lshift
 local bit_bor = bit.bor
 
-local function ipv4StringToNumber(ip)
-	if type(ip) ~= "string" then
-		return nil
-	end
+local function normalizeIPv6MappedIPv4(ip)
+        if type(ip) ~= "string" then
+                return ip
+        end
 
-	local a, b, c, d = ip:match("^(%d+)%.(%d+)%.(%d+)%.(%d+)$")
+        local mapped = ip:match("^::ffff:(%d+%.%d+%.%d+%.%d+)$")
+        if mapped then
+                return mapped
+        end
+
+        return ip
+end
+
+local function ipv4StringToNumber(ip)
+        if type(ip) ~= "string" then
+                return nil
+        end
+
+        local a, b, c, d = ip:match("^(%d+)%.(%d+)%.(%d+)%.(%d+)$")
 	if not a then
 		return nil
 	end
@@ -88,39 +101,46 @@ function Game.getHouseByPlayerGUID(playerGUID)
 end
 
 function Game.getPlayersByIPAddress(ip, mask)
-	mask = mask or 0xFFFFFFFF
+        mask = mask or 0xFFFFFFFF
 
-	local players = Game.getPlayers()
-	local result = {}
+        local players = Game.getPlayers()
+        local result = {}
 
-	local targetNumber
-	if type(ip) == "number" then
-		targetNumber = ip
-	else
-		targetNumber = ipv4StringToNumber(ip)
-	end
+        local targetNumber
+        if type(ip) == "number" then
+                targetNumber = ip
+        else
+                local normalizedIp = normalizeIPv6MappedIPv4(ip)
+                targetNumber = ipv4StringToNumber(normalizedIp)
+                ip = normalizedIp
+        end
 
-	if targetNumber then
-		local masked = bit_band(targetNumber, mask)
-		for i = 1, #players do
-			local player = players[i]
-			local playerIp = player:getIp()
-			local playerNumber = type(playerIp) == "number" and playerIp or ipv4StringToNumber(playerIp)
-			if playerNumber and bit_band(playerNumber, mask) == masked then
-				result[#result + 1] = player
-			end
-		end
-		return result
-	end
+        if targetNumber then
+                local masked = bit_band(targetNumber, mask)
+                for i = 1, #players do
+                        local player = players[i]
+                        local playerIp = player:getIp()
+                        if type(playerIp) == "string" then
+                                playerIp = normalizeIPv6MappedIPv4(playerIp)
+                        end
 
-	if type(ip) == "string" then
-		for i = 1, #players do
-			local player = players[i]
-			if player:getIp() == ip then
-				result[#result + 1] = player
-			end
-		end
-	end
+                        local playerNumber = type(playerIp) == "number" and playerIp or ipv4StringToNumber(playerIp)
+                        if playerNumber and bit_band(playerNumber, mask) == masked then
+                                result[#result + 1] = player
+                        end
+                end
+                return result
+        end
+
+        if type(ip) == "string" then
+                for i = 1, #players do
+                        local player = players[i]
+                        local playerIp = player:getIp()
+                        if normalizeIPv6MappedIPv4(playerIp) == ip then
+                                result[#result + 1] = player
+                        end
+                end
+        end
 
 	return result
 end

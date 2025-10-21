@@ -21,7 +21,7 @@
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const uint32_t ip) {
+bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const std::string &ip) {
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
@@ -41,7 +41,8 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 	}
 
 	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
-		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
+		const std::string ipForLog = ip.empty() ? std::string("<unknown>") : ip;
+		g_logger().warn("IP [{}] trying to connect into another account character", ipForLog);
 		return false;
 	}
 

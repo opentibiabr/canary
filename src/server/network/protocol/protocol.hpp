@@ -10,6 +10,7 @@
 #pragma once
 
 #include "server/server_definitions.hpp"
+#include <string>
 
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
@@ -42,6 +43,7 @@ public:
 	Connection_ptr getConnection() const;
 
 	uint32_t getIP() const;
+	const std::string &getIPString() const;
 
 	// Use this function for autosend messages only
 	OutputMessage_ptr getOutputBuffer(int32_t size);

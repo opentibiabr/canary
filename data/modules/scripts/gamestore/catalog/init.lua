@@ -27,10 +27,14 @@ local modules = {
 }
 
 local basePath = CORE_DIRECTORY .. "/modules/scripts/gamestore/catalog/"
+local inlineCategories = dofile(basePath .. "parent_categories.lua")
 local catalog = {}
 
 for _, moduleName in ipairs(modules) do
-	local category = dofile(basePath .. moduleName .. ".lua")
+	local category = inlineCategories[moduleName]
+	if not category then
+		category = dofile(basePath .. moduleName .. ".lua")
+	end
 	if category.offers ~= nil and type(category.offers) ~= "table" then
 		error(string.format("Invalid offers table in Game Store category module: %s", moduleName))
 	end

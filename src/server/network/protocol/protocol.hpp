@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <array>
+#include <memory>
 #include <string>
 
 #include "server/server_definitions.hpp"

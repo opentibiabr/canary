@@ -21,25 +21,40 @@ HomeBanners = {
 -- 	state = GameStore.States.STATE_NONE,
 -- }
 
-local catalog = dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/catalog/init.lua")
+local catalogLoader = dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/catalog_loader.lua")
+local catalogModules = dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/catalog/init.lua")
+local catalogBasePath = CORE_DIRECTORY .. "/modules/scripts/gamestore/catalog/"
 
-local categories = {}
+for index, moduleEntry in ipairs(catalogModules) do
+	local category
+	local moduleName
+	local sourceName
 
-for index, category in ipairs(catalog) do
-	if type(category) == "table" then
-		local hasOffers = type(category.offers) == "table"
-		local hasSubclasses = type(category.subclasses) == "table"
-		if not category.name or category.rookgaard == nil or (not hasOffers and not hasSubclasses) then
-			error(string.format("Invalid Game Store category at position %d", index))
+	if type(moduleEntry) == "string" then
+		moduleName = moduleEntry
+		category = dofile(catalogBasePath .. moduleName .. ".lua")
+		sourceName = moduleEntry
+	elseif type(moduleEntry) == "table" then
+		if moduleEntry.module then
+			moduleName = moduleEntry.module
+			category = dofile(catalogBasePath .. moduleName .. ".lua")
+			sourceName = moduleEntry.source or moduleName
+		else
+			category = moduleEntry
+			sourceName = moduleEntry.name or string.format("catalog[%d]", index)
 		end
-		if category.offers ~= nil and not hasOffers then
-			error(string.format("Invalid offers table in Game Store category at position %d", index))
-		end
-		categories[#categories + 1] = category
+	else
+		logger.error("Invalid catalog entry at position {}", index)
 	end
+
+	if moduleName ~= nil and type(moduleName) ~= "string" then
+		logger.error("Invalid catalog module name at position {}", index)
+	end
+
+	catalogLoader.registerCategory(category, sourceName or moduleName)
 end
 
-GameStore.Categories = categories
+GameStore.Categories = catalogLoader.getCategories()
 
 -- Each outfit must be uniquely identified to distinguish between addons.
 -- Here we dynamically assign ids for outfits. These ids must be unique.

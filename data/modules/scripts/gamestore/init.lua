@@ -1448,7 +1448,66 @@ GameStore.getDefaultDescription = function(offerType, count)
 		descList = GameStore.DefaultDescriptions.TEMPLE
 	end
 
+	if not descList or #descList == 0 then
+		return ""
+	end
+
 	return descList[math.floor(math.random(1, #descList))] or ""
+end
+
+GameStore.resolveState = function(state, context)
+	if state == nil then
+		return GameStore.States.STATE_NONE
+	end
+
+	for _, value in pairs(GameStore.States) do
+		if value == state then
+			return state
+		end
+	end
+
+	local message = "Invalid Game Store state"
+	if context then
+		message = message .. " (" .. context .. ")"
+	end
+
+	error(message .. ": " .. tostring(state))
+end
+
+GameStore.normalizeOffer = function(offer)
+	if type(offer.type) ~= "number" then
+		offer.type = GameStore.OfferTypes.OFFER_TYPE_NONE
+	end
+
+	if offer.coinType == nil then
+		offer.coinType = GameStore.CoinType.Transferable
+	else
+		local isValidCoinType = false
+		for _, value in pairs(GameStore.CoinType) do
+			if value == offer.coinType then
+				isValidCoinType = true
+				break
+			end
+		end
+		if not isValidCoinType then
+			error(string.format("Invalid Game Store coin type: %s", tostring(offer.coinType)))
+		end
+	end
+
+	offer.state = GameStore.resolveState(offer.state)
+
+	local description = offer.description
+	if description == nil or description == "" then
+		local defaultDescription = GameStore.getDefaultDescription(offer.type, offer.count)
+		if defaultDescription ~= "" then
+			description = defaultDescription
+		else
+			description = description or ""
+		end
+	end
+	offer.description = description
+
+	return offer
 end
 
 GameStore.canUseHirelingName = function(name)

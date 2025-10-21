@@ -7,11 +7,16 @@ function mcCheck.onSay(player, words, param)
 	player:sendTextMessage(MESSAGE_ADMINISTRATOR, "Multiclient Check List:")
         local ipList = {}
         local players = Game.getPlayers()
-        for i = 1, #players do
-                local tmpPlayer = players[i]
-                local ipString = tmpPlayer:getIpString()
-                local key = ipString ~= "" and ipString or tmpPlayer:getIp()
-                if key ~= "" and key ~= 0 then
+		for i = 1, #players do
+			local tmpPlayer = players[i]
+			local ipString = tmpPlayer:getIpString()
+			local key
+			if ipString and ipString ~= "" then
+				key = ipString
+			else
+				key = tmpPlayer:getIp()
+			end
+			if key and key ~= "" and key ~= 0 then
                         local list = ipList[key]
                         if not list then
                                 list = {}

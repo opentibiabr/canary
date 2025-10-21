@@ -3280,7 +3280,7 @@ ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player,
 		}
 
 		uint16_t itemId = item->getID();
-		bool inList = std::find(quickList.begin(), quickList.end(), itemId) != quickList.end();
+		bool inList = std::ranges::find(quickList, itemId) != quickList.end();
 
 		if (!quickList.empty()) {
 			if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !inList) {

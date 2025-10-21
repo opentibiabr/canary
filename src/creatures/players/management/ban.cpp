@@ -87,10 +87,16 @@ bool IOBan::isIpBanned(const Connection::Address &clientIP, BanInfo &banInfo) {
 
 	Database &db = Database::getInstance();
 
-	const std::string ipString = clientIP.to_string();
+	const std::string originalIpString = clientIP.to_string();
+	const bool isIPv4Mapped = clientIP.is_v6() && clientIP.to_v6().is_v4_mapped();
+	const std::string normalizedIpString = isIPv4Mapped ? clientIP.to_v6().to_v4().to_string() : originalIpString;
 
 	std::ostringstream query;
-	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = INET6_ATON(" << db.escapeString(ipString) << ')';
+	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = INET6_ATON(" << db.escapeString(normalizedIpString) << ')';
+	if (isIPv4Mapped) {
+		query << " OR `ip` = INET6_ATON(" << db.escapeString(originalIpString) << ')';
+	}
+	query << " LIMIT 1";
 
 	const DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
@@ -100,7 +106,10 @@ bool IOBan::isIpBanned(const Connection::Address &clientIP, BanInfo &banInfo) {
 	const auto expiresAt = result->getNumber<int64_t>("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		query.str(std::string());
-		query << "DELETE FROM `ip_bans` WHERE `ip` = INET6_ATON(" << db.escapeString(ipString) << ')';
+		query << "DELETE FROM `ip_bans` WHERE `ip` = INET6_ATON(" << db.escapeString(normalizedIpString) << ')';
+		if (isIPv4Mapped) {
+			query << " OR `ip` = INET6_ATON(" << db.escapeString(originalIpString) << ')';
+		}
 		g_databaseTasks().execute(query.str());
 		return false;
 	}

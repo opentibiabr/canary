@@ -94,4 +94,3 @@ function loader.getCategories()
 end
 
 return loader
-

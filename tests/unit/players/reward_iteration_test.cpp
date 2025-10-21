@@ -8,10 +8,10 @@
 #include "injection_fixture.hpp"
 
 class PlayerRewardIterationTest : public ::testing::Test {
-	protected:
-		void SetUp() override {
-			TestItems::init();
-		}
+protected:
+	void SetUp() override {
+		TestItems::init();
+	}
 
 	InjectionFixture fixture_ {};
 };

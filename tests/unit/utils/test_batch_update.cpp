@@ -47,10 +47,10 @@ namespace {
 }
 
 class BatchUpdateTest : public ::testing::Test {
-	protected:
-		void SetUp() override {
-			TestItems::init();
-		}
+protected:
+	void SetUp() override {
+		TestItems::init();
+	}
 };
 
 TEST_F(BatchUpdateTest, DeduplicatesContainersAndBalancesBeginEndCalls) {

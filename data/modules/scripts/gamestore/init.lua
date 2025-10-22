@@ -1,162 +1,47 @@
-GameStore = {
-	ModuleName = "GameStore",
-	Developers = { "Cjaker", "metabob", "Rick" },
-	Version = "1.1",
-	LastUpdated = "25-07-2020 11:52AM",
-}
+local gamestoreLibPath = CORE_DIRECTORY .. "/libs/gamestore"
 
---== Enums ==--
-GameStore.OfferTypes = {
-	OFFER_TYPE_NONE = 0,
-	OFFER_TYPE_ITEM = 1,
-	OFFER_TYPE_STACKABLE = 2,
-	OFFER_TYPE_CHARGES = 3,
-	OFFER_TYPE_OUTFIT = 4,
-	OFFER_TYPE_OUTFIT_ADDON = 5,
-	OFFER_TYPE_MOUNT = 6,
-	OFFER_TYPE_NAMECHANGE = 7,
-	OFFER_TYPE_SEXCHANGE = 8,
-	OFFER_TYPE_HOUSE = 9,
-	OFFER_TYPE_EXPBOOST = 10,
-	OFFER_TYPE_PREYSLOT = 11,
-	OFFER_TYPE_PREYBONUS = 12,
-	OFFER_TYPE_TEMPLE = 13,
-	OFFER_TYPE_BLESSINGS = 14,
-	OFFER_TYPE_PREMIUM = 15,
-	-- 16, -- Empty
-	OFFER_TYPE_ALLBLESSINGS = 17,
-	OFFER_TYPE_INSTANT_REWARD_ACCESS = 18,
-	OFFER_TYPE_CHARMS = 19,
-	OFFER_TYPE_HIRELING = 20,
-	OFFER_TYPE_HIRELING_NAMECHANGE = 21,
-	OFFER_TYPE_HIRELING_SEXCHANGE = 22,
-	OFFER_TYPE_HIRELING_SKILL = 23,
-	OFFER_TYPE_HIRELING_OUTFIT = 24,
-	OFFER_TYPE_HUNTINGSLOT = 25,
-	OFFER_TYPE_ITEM_BED = 26,
-	OFFER_TYPE_ITEM_UNIQUE = 27,
-}
-
-GameStore.SubActions = {
-	PREY_THIRDSLOT_REAL = 0,
-	PREY_WILDCARD = 1,
-	INSTANT_REWARD = 2,
-	BLESSING_TWIST = 3,
-	BLESSING_SOLITUDE = 4,
-	BLESSING_PHOENIX = 5,
-	BLESSING_SUNS = 6,
-	BLESSING_SPIRITUAL = 7,
-	BLESSING_EMBRACE = 8,
-	BLESSING_BLOOD = 9,
-	BLESSING_HEART = 10,
-	BLESSING_ALL_PVE = 11,
-	BLESSING_ALL_PVP = 12,
-	CHARM_EXPANSION = 13,
-	TASKHUNTING_THIRDSLOT = 14,
-	PREY_THIRDSLOT_REDIRECT = 15,
-}
-
-GameStore.ActionType = {
-	OPEN_HOME = 0,
-	OPEN_PREMIUM_BOOST = 1,
-	OPEN_CATEGORY = 2,
-	OPEN_USEFUL_THINGS = 3,
-	OPEN_OFFER = 4,
-	OPEN_SEARCH = 5,
-}
-
-GameStore.CoinType = {
-	Coin = 0,
-	Transferable = 1,
-}
-
-GameStore.Kv = {
-	expBoostCount = "exp-boost-count",
-	purchaseCooldown = "purchase-cooldown",
-}
-
-GameStore.ConverType = {
-	SHOW_NONE = 0,
-	SHOW_MOUNT = 1,
-	SHOW_OUTFIT = 2,
-	SHOW_ITEM = 3,
-	SHOW_HIRELING = 4,
-}
-
-GameStore.ConfigureOffers = {
-	SHOW_NORMAL = 0,
-	SHOW_CONFIGURE = 1,
-}
-
-function convertType(type)
-	local types = {
-		[GameStore.OfferTypes.OFFER_TYPE_OUTFIT] = GameStore.ConverType.SHOW_OUTFIT,
-		[GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON] = GameStore.ConverType.SHOW_OUTFIT,
-		[GameStore.OfferTypes.OFFER_TYPE_MOUNT] = GameStore.ConverType.SHOW_MOUNT,
-		[GameStore.OfferTypes.OFFER_TYPE_ITEM] = GameStore.ConverType.SHOW_ITEM,
-		[GameStore.OfferTypes.OFFER_TYPE_STACKABLE] = GameStore.ConverType.SHOW_ITEM,
-		[GameStore.OfferTypes.OFFER_TYPE_HOUSE] = GameStore.ConverType.SHOW_ITEM,
-		[GameStore.OfferTypes.OFFER_TYPE_CHARGES] = GameStore.ConverType.SHOW_ITEM,
-		[GameStore.OfferTypes.OFFER_TYPE_HIRELING] = GameStore.ConverType.SHOW_HIRELING,
-		[GameStore.OfferTypes.OFFER_TYPE_ITEM_BED] = GameStore.ConverType.SHOW_NONE,
-		[GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE] = GameStore.ConverType.SHOW_ITEM,
-	}
-
-	if not types[type] then
-		return GameStore.ConverType.SHOW_NONE
-	end
-
-	return types[type]
+local function loadConstants()
+	return dofile(gamestoreLibPath .. "/constants.lua")
 end
 
-function useOfferConfigure(type)
-	local types = {
-		[GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE] = GameStore.ConfigureOffers.SHOW_CONFIGURE,
-		[GameStore.OfferTypes.OFFER_TYPE_HIRELING] = GameStore.ConfigureOffers.SHOW_CONFIGURE,
-		[GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE] = GameStore.ConfigureOffers.SHOW_CONFIGURE,
-		[GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE] = GameStore.ConfigureOffers.SHOW_CONFIGURE,
-	}
-
-	if not types[type] then
-		return GameStore.ConfigureOffers.SHOW_NORMAL
-	end
-
-	return types[type]
+local function loadHelpers()
+	return dofile(gamestoreLibPath .. "/helpers.lua")
 end
 
-GameStore.ClientOfferTypes = {
-	CLIENT_STORE_OFFER_OTHER = 0,
-	CLIENT_STORE_OFFER_NAMECHANGE = 1,
-	CLIENT_STORE_OFFER_HIRELING = 3,
-}
+if not package.preload["gamestore.constants"] then
+	package.preload["gamestore.constants"] = loadConstants
+end
 
-GameStore.HistoryTypes = {
-	HISTORY_TYPE_NONE = 0,
-	HISTORY_TYPE_GIFT = 1,
-	HISTORY_TYPE_REFUND = 2,
-}
+if not package.preload["gamestore.helpers"] then
+	package.preload["gamestore.helpers"] = loadHelpers
+end
 
-GameStore.States = {
-	STATE_NONE = 0,
-	STATE_NEW = 1,
-	STATE_SALE = 2,
-	STATE_TIMED = 3,
-}
+local constants = package.loaded["gamestore.constants"]
+if not constants then
+	constants = loadConstants()
+	package.loaded["gamestore.constants"] = constants
+end
 
-GameStore.StoreErrors = {
-	STORE_ERROR_PURCHASE = 0,
-	STORE_ERROR_NETWORK = 1,
-	STORE_ERROR_HISTORY = 2,
-	STORE_ERROR_TRANSFER = 3,
-	STORE_ERROR_INFORMATION = 4,
-}
+local helpers = package.loaded["gamestore.helpers"]
+if not helpers then
+	helpers = loadHelpers()
+	package.loaded["gamestore.helpers"] = helpers
+end
 
-GameStore.ServiceTypes = {
-	SERVICE_STANDERD = 0,
-	SERVICE_OUTFITS = 3,
-	SERVICE_MOUNTS = 4,
-	SERVICE_BLESSINGS = 5,
-}
+GameStore = GameStore or {}
+
+for key, value in pairs(constants) do
+	GameStore[key] = value
+end
+
+local convertType = helpers.convertType
+local useOfferConfigure = helpers.useOfferConfigure
+
+_G.convertType = convertType
+_G.useOfferConfigure = useOfferConfigure
+
+GameStore.convertType = convertType
+GameStore.useOfferConfigure = useOfferConfigure
 
 GameStore.SendingPackets = {
 	S_CoinBalance = 0xDF, -- 223

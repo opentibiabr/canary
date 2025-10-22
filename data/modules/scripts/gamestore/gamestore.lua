@@ -9,6 +9,9 @@ OFFER_TYPE_ALLBLESSINGS
 dofile(CORE_DIRECTORY .. "/modules/scripts/gamestore/init.lua")
 -- Config
 
+local GameStore = require("gamestore.constants")
+require("gamestore.helpers")
+
 HomeBanners = {
 	images = { "home/banner_armouredarcher.png", "home/banner_podiumoftenacity.png" },
 	delay = 10,
@@ -74,10 +77,10 @@ for k, category in ipairs(GameStore.Categories) do
 				end
 			end
 			if not offer.type then
-				offer.type = GameStore.OfferTypes.OFFER_TYPE_NONE
+				offer.type = GameStoreConstants.OfferTypes.OFFER_TYPE_NONE
 			end
 			if not offer.coinType then
-				offer.coinType = GameStore.CoinType.Transferable
+				offer.coinType = GameStoreConstants.CoinType.Transferable
 			end
 		end
 	end

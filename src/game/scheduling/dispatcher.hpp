@@ -157,6 +157,7 @@ private:
 	void init();
 	void shutdown() {
 		signalSchedule.notify_all();
+		shuttingDown = true;
 	}
 
 	inline void mergeAsyncEvents();
@@ -232,6 +233,8 @@ private:
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 
 	bool asyncWaitDisabled = false;
+
+	bool shuttingDown = false;
 
 	friend class CanaryServer;
 };

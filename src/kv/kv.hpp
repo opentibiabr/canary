@@ -87,9 +87,20 @@ public:
 	std::optional<ValueWrapper> get(const std::string &key, bool forceLoad = false) override;
 
 	void flush() override {
-		std::scoped_lock lock(mutex_);
-		KV::flush();
-		store_.clear();
+		std::vector<std::pair<std::string, ValueWrapper>> snapshot;
+		{
+			std::scoped_lock lock(mutex_);
+			snapshot.reserve(store_.size() + pendingEvictions_.size());
+			for (const auto &[k, v] : store_) {
+				snapshot.emplace_back(k, v.first);
+			}
+			snapshot.insert(snapshot.end(), pendingEvictions_.begin(), pendingEvictions_.end());
+			store_.clear();
+			pendingEvictions_.clear();
+		}
+		for (const auto &[k, v] : snapshot) {
+			save(k, v);
+		}
 	}
 
 	std::shared_ptr<KV> scoped(const std::string &scope) final;
@@ -114,10 +125,13 @@ protected:
 
 private:
 	void setLocked(const std::string &key, const ValueWrapper &value);
+	void processEvictions();
 
 	phmap::parallel_flat_hash_map<std::string, std::pair<ValueWrapper, std::list<std::string>::iterator>> store_;
 	std::list<std::string> lruQueue_;
 	std::mutex mutex_;
+	// Evicted entries pending persistence; accessed under mutex_
+	std::vector<std::pair<std::string, ValueWrapper>> pendingEvictions_;
 };
 
 class ScopedKV final : public KV {

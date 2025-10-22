@@ -70,8 +70,9 @@ GameStore.CoinType = {
 	Transferable = 1,
 }
 
-GameStore.Storages = {
-	expBoostCount = 51052,
+GameStore.Kv = {
+	expBoostCount = "exp-boost-count",
+	purchaseCooldown = "purchase-cooldown",
 }
 
 GameStore.ConverType = {
@@ -419,6 +420,18 @@ function parseBuyStoreOffer(playerId, msg)
 		return false
 	end
 
+	-- Cooldown Purchase
+	local playerKV = player:kv()
+	local purchaseCooldown = playerKV:get(GameStore.Kv.purchaseCooldown) or 0
+	local currentTime = os.time()
+	local waittime = purchaseCooldown - currentTime
+	if waittime > 0 then
+		queueSendStoreAlertToUser("You are making many purchases simultaneously in a few moments.", 250, playerId)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are making many purchases simultaneously in a few moments.")
+		return false
+	end
+	playerKV:set(GameStore.Kv.purchaseCooldown, os.time() + 5)
+
 	-- All guarding conditions under which the offer should not be processed must be included here
 	if
 		not table.contains(GameStore.OfferTypes, offer.type) -- we've got an invalid offer type
@@ -447,7 +460,8 @@ function parseBuyStoreOffer(playerId, msg)
 	end
 
 	-- At this point the purchase is assumed to be formatted correctly
-	local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or offer.price
+	local purchaseExpCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
+	local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[purchaseExpCount] or offer.price
 	local offerCoinType = offer.coinType
 	if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
 		offerPrice = 0
@@ -686,12 +700,16 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You reached the maximum amount for this blessing."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
-			for i = 1, 8 do
+			local hasAnyMaxBlessing = false
+			for i = 2, 8 do
 				if self:getBlessingCount(i) >= 5 then
-					disabled = 1
-					disabledReason = "You already have all Blessings."
+					hasAnyMaxBlessing = true
 					break
 				end
+			end
+			if hasAnyMaxBlessing then
+				disabled = 1
+				disabledReason = "You already have all Blessings."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
 			local outfitLookType
@@ -751,7 +769,9 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have 3 slots released."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-			if self:getStorageValue(GameStore.Storages.expBoostCount) == GameStore.ItemLimit.EXPBOOST then
+			local playerKV = self:kv()
+			local purchaseExpCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
+			if purchaseExpCount == GameStore.ItemLimit.EXPBOOST then
 				disabled = 1
 				disabledReason = "You can't buy XP Boost for today."
 			end
@@ -922,7 +942,9 @@ function sendShowStoreOffers(playerId, category, redirectId)
 			for _, off in ipairs(offer.offers) do
 				xpBoostPrice = nil
 				if offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
-					xpBoostPrice = GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)]
+					local playerKV = player:kv()
+					local purchaseExpCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
+					xpBoostPrice = GameStore.ExpBoostValues[purchaseExpCount]
 				end
 
 				nameLockPrice = nil
@@ -1076,7 +1098,9 @@ function sendShowStoreOffersOnOldProtocol(playerId, category)
 			end
 
 			local disabled, disabledReason = player:canBuyOffer(offer).disabled, player:canBuyOffer(offer).disabledReason
-			local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or (newPrice or offer.price or 0xFFFF)
+			local playerKV = player:kv()
+			local purchaseExpCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
+			local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[purchaseExpCount] or (newPrice or offer.price or 0xFFFF)
 			msg:addU32(offer.id and offer.id or 0xFFFF)
 			msg:addString(name, "sendShowStoreOffersOnOldProtocol - name")
 			msg:addString(offer.description or GameStore.getDefaultDescription(offer.type, offer.count), "sendShowStoreOffersOnOldProtocol - offer.description or GameStore.getDefaultDescription(offer.type, offer.count)")
@@ -1590,14 +1614,20 @@ function GameStore.processSingleBlessingPurchase(player, blessId, count)
 end
 
 function GameStore.processAllBlessingsPurchase(player, count)
-	player:addBlessing(1, count)
-	player:addBlessing(2, count)
-	player:addBlessing(3, count)
-	player:addBlessing(4, count)
-	player:addBlessing(5, count)
-	player:addBlessing(6, count)
-	player:addBlessing(7, count)
-	player:addBlessing(8, count)
+	local twistOfFateCount = player:getBlessingCount(1)
+
+	if twistOfFateCount == 0 then
+		player:addBlessing(1, count)
+	elseif twistOfFateCount > 0 and twistOfFateCount < 5 then
+		player:addBlessing(1, 5 - twistOfFateCount)
+	end
+
+	for i = 2, 8 do
+		local currentCount = player:getBlessingCount(i)
+		if currentCount < 5 then
+			player:addBlessing(i, math.min(count, 5 - currentCount))
+		end
+	end
 end
 
 function GameStore.processInstantRewardAccess(player, offerCount)
@@ -1774,13 +1804,8 @@ end
 
 function GameStore.processExpBoostPurchase(player)
 	local currentXpBoostTime = player:getXpBoostTime()
-	local expBoostCount = player:getStorageValue(GameStore.Storages.expBoostCount)
 	player:setXpBoostPercent(50)
 	player:setXpBoostTime(currentXpBoostTime + 3600)
-
-	if expBoostCount == -1 or expBoostCount == 0 or expBoostCount > 5 then
-		expBoostCount = 1
-	end
 end
 
 function GameStore.processPreyThirdSlot(player)
@@ -2062,26 +2087,16 @@ function Player.makeCoinTransaction(self, offer, desc)
 		desc = offer.name
 	end
 
-	if offer.Type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST or GameStore.OfferTypes.OFFER_TYPE_EXPBOOSTCUSTOM then
-		local expBoostCount = self:getStorageValue(GameStore.Storages.expBoostCount)
-
-		if expBoostCount == -1 or expBoostCount == 0 or expBoostCount > 5 then
+	local isExpBoost = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
+	if isExpBoost then
+		local playerKV = self:kv()
+		local expBoostCount = tonumber(playerKV:get(GameStore.Kv.expBoostCount)) or 0
+		if expBoostCount <= 0 or expBoostCount > 5 then
 			expBoostCount = 1
 		end
-		if expBoostCount <= 1 then
-			offer.price = GameStore.ExpBoostValues[1]
-		elseif expBoostCount == 2 then
-			offer.price = GameStore.ExpBoostValues[2]
-		elseif expBoostCount == 3 then
-			offer.price = GameStore.ExpBoostValues[3]
-		elseif expBoostCount == 4 then
-			offer.price = GameStore.ExpBoostValues[4]
-		elseif expBoostCount == 5 then
-			offer.price = GameStore.ExpBoostValues[5]
-		else
-			offer.price = offer.price
-		end
-		self:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
+		local priceTable = isExpBoost and GameStore.ExpBoostValues or GameStore.ExpBoostValuesCustom
+		offer.price = priceTable[expBoostCount] or priceTable[1]
+		playerKV:set(GameStore.Kv.expBoostCount, expBoostCount + 1)
 	end
 
 	if offer.coinType == GameStore.CoinType.Coin and self:canRemoveCoins(offer.price) then
@@ -2205,7 +2220,9 @@ function sendHomePage(playerId)
 
 	msg:addU16(#homeOffers) -- offers
 	for p, offer in pairs(homeOffers) do
-		local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[player:getStorageValue(GameStore.Storages.expBoostCount)] or offer.price
+		local playerKV = player:kv()
+		local purchaseExpCount = playerKV:get(GameStore.Kv.expBoostCount) or 0
+		local offerPrice = offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST and GameStore.ExpBoostValues[purchaseExpCount] or offer.price
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE and player:kv():get("namelock") then
 			offerPrice = 0
 		end
@@ -2224,7 +2241,20 @@ function sendHomePage(playerId)
 			offer.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 		end
 
-		msg:addByte(0x00)
+		if offer.state then
+			if offer.state == GameStore.States.STATE_SALE then
+				local daySub = offer.validUntil - os.date("*t").day
+				if daySub >= 0 then
+					msg:addByte(offer.state)
+				else
+					msg:addByte(GameStore.States.STATE_NONE)
+				end
+			else
+				msg:addByte(offer.state)
+			end
+		else
+			msg:addByte(GameStore.States.STATE_NONE)
+		end
 
 		local type = convertType(offer.type)
 

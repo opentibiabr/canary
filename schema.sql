@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '49'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '52'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -223,7 +223,10 @@ CREATE TABLE IF NOT EXISTS `account_vipgroups` (
     `account_id` int(11) UNSIGNED NOT NULL COMMENT 'id of account whose vip group entry it is',
     `name` varchar(128) NOT NULL,
     `customizable` BOOLEAN NOT NULL DEFAULT '1',
-    CONSTRAINT `account_vipgroups_pk` PRIMARY KEY (`id`, `account_id`)
+    CONSTRAINT `account_vipgroups_pk` PRIMARY KEY (`id`, `account_id`),
+    CONSTRAINT `account_vipgroups_accounts_fk`
+        FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -547,36 +550,27 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
 -- Table structure `players_online`
 CREATE TABLE IF NOT EXISTS `players_online` (
     `player_id` int(11) NOT NULL,
-    CONSTRAINT `players_online_pk` PRIMARY KEY (`player_id`)
+    CONSTRAINT `players_online_pk` PRIMARY KEY (`player_id`),
+    CONSTRAINT `players_online_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 -- Table structure `player_charm`
 CREATE TABLE IF NOT EXISTS `player_charms` (
-    `player_guid` INT(250) NOT NULL,
-    `charm_points` VARCHAR(250) NULL,
-    `charm_expansion` BOOLEAN NULL,
-    `rune_wound` INT(250) NULL,
-    `rune_enflame` INT(250) NULL,
-    `rune_poison` INT(250) NULL,
-    `rune_freeze` INT(250) NULL,
-    `rune_zap` INT(250) NULL,
-    `rune_curse` INT(250) NULL,
-    `rune_cripple` INT(250) NULL,
-    `rune_parry` INT(250) NULL,
-    `rune_dodge` INT(250) NULL,
-    `rune_adrenaline` INT(250) NULL,
-    `rune_numb` INT(250) NULL,
-    `rune_cleanse` INT(250) NULL,
-    `rune_bless` INT(250) NULL,
-    `rune_scavenge` INT(250) NULL,
-    `rune_gut` INT(250) NULL,
-    `rune_low_blow` INT(250) NULL,
-    `rune_divine` INT(250) NULL,
-    `rune_vamp` INT(250) NULL,
-    `rune_void` INT(250) NULL,
-    `UsedRunesBit` VARCHAR(250) NULL,
-    `UnlockedRunesBit` VARCHAR(250) NULL,
-    `tracker list` BLOB NULL
+    `player_id` int(11) NOT NULL,
+    `charm_points` SMALLINT NOT NULL DEFAULT '0',
+    `minor_charm_echoes` SMALLINT NOT NULL DEFAULT '0',
+    `max_charm_points` SMALLINT NOT NULL DEFAULT '0',
+    `max_minor_charm_echoes` SMALLINT NOT NULL DEFAULT '0',
+    `charm_expansion` BOOLEAN NOT NULL DEFAULT FALSE,
+    `UsedRunesBit` INT NOT NULL DEFAULT '0',
+    `UnlockedRunesBit` INT NOT NULL DEFAULT '0',
+    `charms` BLOB NULL,
+    `tracker list` BLOB NULL,
+    CONSTRAINT `player_charms_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_deaths`
@@ -590,6 +584,7 @@ CREATE TABLE IF NOT EXISTS `player_deaths` (
     `mostdamage_is_player` tinyint(1) NOT NULL DEFAULT '0',
     `unjustified` tinyint(1) NOT NULL DEFAULT '0',
     `mostdamage_unjustified` tinyint(1) NOT NULL DEFAULT '0',
+    `participants` TEXT NOT NULL,
     INDEX `player_id` (`player_id`),
     INDEX `killed_by` (`killed_by`),
     INDEX `mostdamage_by` (`mostdamage_by`),
@@ -679,7 +674,10 @@ CREATE TABLE IF NOT EXISTS `player_kills` (
     `player_id` int(11) NOT NULL,
     `time` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `target` int(11) NOT NULL,
-    `unavenged` tinyint(1) NOT NULL DEFAULT '0'
+    `unavenged` tinyint(1) NOT NULL DEFAULT '0',
+    CONSTRAINT `player_kills_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_namelocks`
@@ -713,7 +711,10 @@ CREATE TABLE IF NOT EXISTS `player_prey` (
     `bonus_time` varchar(250) NOT NULL,
     `free_reroll` bigint(20) NOT NULL,
     `monster_list` BLOB NULL,
-    CONSTRAINT `player_prey_pk` PRIMARY KEY (`player_id`, `slot`)
+    CONSTRAINT `player_prey_pk` PRIMARY KEY (`player_id`, `slot`),
+    CONSTRAINT `player_prey_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_taskhunt`
@@ -728,7 +729,10 @@ CREATE TABLE IF NOT EXISTS `player_taskhunt` (
     `disabled_time` bigint(20) NOT NULL,
     `free_reroll` bigint(20) NOT NULL,
     `monster_list` BLOB NULL,
-    CONSTRAINT `player_prey_pk` PRIMARY KEY (`player_id`, `slot`)
+    CONSTRAINT `player_taskhunt_pk` PRIMARY KEY (`player_id`, `slot`),
+    CONSTRAINT `player_taskhunt_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_bosstiary`
@@ -737,7 +741,10 @@ CREATE TABLE IF NOT EXISTS `player_bosstiary` (
     `bossIdSlotOne` int NOT NULL DEFAULT 0,
     `bossIdSlotTwo` int NOT NULL DEFAULT 0,
     `removeTimes` int NOT NULL DEFAULT 1,
-    `tracker` blob NOT NULL
+    `tracker` blob NOT NULL,
+    CONSTRAINT `player_bosstiary_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_rewards`
@@ -770,7 +777,10 @@ CREATE TABLE IF NOT EXISTS `player_stash` (
     `player_id` INT(16) NOT NULL,
     `item_id` INT(16) NOT NULL,
     `item_count` INT(32) NOT NULL,
-    CONSTRAINT `player_stash_pk` PRIMARY KEY (`player_id`, `item_id`)
+    CONSTRAINT `player_stash_pk` PRIMARY KEY (`player_id`, `item_id`),
+    CONSTRAINT `player_stash_players_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_storage`

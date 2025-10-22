@@ -152,16 +152,13 @@ void Container::addItem(const std::shared_ptr<Item> &item) {
 	item->setParent(getContainer());
 }
 
-StashContainerList Container::getStowableItems() const {
+StashContainerList Container::getStowableItems() {
 	StashContainerList toReturnList;
-	for (const auto &item : itemlist) {
-		if (item->getContainer() != nullptr) {
-			const auto &subContainer = item->getContainer()->getStowableItems();
-			for (const auto &key : subContainer | std::views::keys) {
-				const auto &containerItem = key;
-				toReturnList.emplace_back(containerItem, static_cast<uint32_t>(containerItem->getItemCount()));
-			}
-		} else if (item->isItemStorable()) {
+
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		const auto &item = *it;
+		const auto &itemType = Item::items.getItemType(item->getID());
+		if (item->isItemStorable() && !itemType.isContainer()) {
 			toReturnList.emplace_back(item, static_cast<uint32_t>(item->getItemCount()));
 		}
 	}
@@ -241,13 +238,9 @@ uint32_t Container::getWeight() const {
 	return Item::getWeight() + totalWeight;
 }
 
-std::string Container::getContentDescription(bool oldProtocol) {
-	std::ostringstream os;
-	return getContentDescription(os, oldProtocol).str();
-}
+std::string Container::getContentDescription(bool sendColoredMessage) {
+	std::vector<std::string> descriptions;
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool sendColoredMessage) {
-	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const auto &item = *it;
 		if (!item) {
@@ -259,23 +252,14 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 			continue;
 		}
 
-		if (firstitem) {
-			firstitem = false;
-		} else {
-			os << ", ";
-		}
-
 		if (sendColoredMessage) {
-			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+			descriptions.push_back(fmt::format("{{{}|{}}}", item->getID(), item->getNameDescription()));
 		} else {
-			os << item->getNameDescription();
+			descriptions.push_back(item->getNameDescription());
 		}
 	}
 
-	if (firstitem) {
-		os << "nothing";
-	}
-	return os;
+	return descriptions.empty() ? "nothing" : fmt::format("{}", fmt::join(descriptions, ", "));
 }
 
 uint32_t Container::getMaxCapacity() const {
@@ -792,6 +776,14 @@ void Container::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId
 }
 
 void Container::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
+	if (!thing) {
+		return;
+	}
+
+	if (index >= itemlist.size()) {
+		return;
+	}
+
 	const auto &item = thing->getItem();
 	if (!item) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;

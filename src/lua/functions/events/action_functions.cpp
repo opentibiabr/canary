@@ -172,7 +172,7 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 
 	if (createItem) {
 		if (!Item::items.hasItemType(itemId)) {
-			Lua::reportErrorFunc("Not found item with id: " + itemId);
+			Lua::reportErrorFunc("Not found item with id: " + std::to_string(itemId));
 			Lua::pushBoolean(L, false);
 			return 1;
 		}

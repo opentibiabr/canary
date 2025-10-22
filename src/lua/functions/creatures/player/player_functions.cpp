@@ -42,7 +42,11 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "resetCharmsBestiary", PlayerFunctions::luaPlayerResetCharmsMonsters);
 	Lua::registerMethod(L, "Player", "unlockAllCharmRunes", PlayerFunctions::luaPlayerUnlockAllCharmRunes);
-	Lua::registerMethod(L, "Player", "addCharmPoints", PlayerFunctions::luaPlayeraddCharmPoints);
+	Lua::registerMethod(L, "Player", "addCharmPoints", PlayerFunctions::luaPlayerAddCharmPoints);
+	Lua::registerMethod(L, "Player", "addMinorCharmEchoes", PlayerFunctions::luaPlayerAddMinorCharmEchoes);
+	Lua::registerMethod(L, "Player", "getCharmTier", PlayerFunctions::luaPlayerGetCharmTier);
+	Lua::registerMethod(L, "Player", "getCharmChance", PlayerFunctions::luaPlayerGetCharmChance);
+	Lua::registerMethod(L, "Player", "resetOldCharms", PlayerFunctions::luaPlayerResetOldCharms);
 	Lua::registerMethod(L, "Player", "isPlayer", PlayerFunctions::luaPlayerIsPlayer);
 
 	Lua::registerMethod(L, "Player", "getGuid", PlayerFunctions::luaPlayerGetGuid);
@@ -176,6 +180,8 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "getStashCount", PlayerFunctions::luaPlayerGetStashCounter);
 	Lua::registerMethod(L, "Player", "openStash", PlayerFunctions::luaPlayerOpenStash);
 
+	Lua::registerMethod(L, "Player", "canReceiveLoot", PlayerFunctions::luaPlayerCanReceiveLoot);
+
 	Lua::registerMethod(L, "Player", "getStamina", PlayerFunctions::luaPlayerGetStamina);
 	Lua::registerMethod(L, "Player", "setStamina", PlayerFunctions::luaPlayerSetStamina);
 
@@ -188,9 +194,6 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "getStorageValue", PlayerFunctions::luaPlayerGetStorageValue);
 	Lua::registerMethod(L, "Player", "setStorageValue", PlayerFunctions::luaPlayerSetStorageValue);
-
-	Lua::registerMethod(L, "Player", "getStorageValueByName", PlayerFunctions::luaPlayerGetStorageValueByName);
-	Lua::registerMethod(L, "Player", "setStorageValueByName", PlayerFunctions::luaPlayerSetStorageValueByName);
 
 	Lua::registerMethod(L, "Player", "addItem", PlayerFunctions::luaPlayerAddItem);
 	Lua::registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
@@ -548,7 +551,7 @@ int PlayerFunctions::luaPlayerResetCharmsMonsters(lua_State* L) {
 		player->setCharmExpansion(false);
 		player->setUsedRunesBit(0);
 		player->setUnlockedRunesBit(0);
-		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
+		for (int8_t i = magic_enum::enum_value<charmRune_t>(1); i <= magic_enum::enum_count<charmRune_t>(); i++) {
 			player->parseRacebyCharm(static_cast<charmRune_t>(i), true, 0);
 		}
 		Lua::pushBoolean(L, true);
@@ -562,7 +565,7 @@ int PlayerFunctions::luaPlayerUnlockAllCharmRunes(lua_State* L) {
 	// player:unlockAllCharmRunes()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
+		for (int8_t i = magic_enum::enum_value<charmRune_t>(1); i <= magic_enum::enum_count<charmRune_t>(); i++) {
 			const auto charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(i));
 			if (charm) {
 				const int32_t value = g_iobestiary().bitToggle(player->getUnlockedRunesBit(), charm, true);
@@ -576,7 +579,7 @@ int PlayerFunctions::luaPlayerUnlockAllCharmRunes(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayeraddCharmPoints(lua_State* L) {
+int PlayerFunctions::luaPlayerAddCharmPoints(lua_State* L) {
 	// player:addCharmPoints()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
@@ -591,6 +594,62 @@ int PlayerFunctions::luaPlayeraddCharmPoints(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetCharmTier(lua_State* L) {
+	// player:getCharmTier(charmId)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	charmRune_t charmId = Lua::getNumber<charmRune_t>(L, 2);
+	Lua::pushNumber(L, player->getCharmTier(charmId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetCharmChance(lua_State* L) {
+	// player:getCharmChance(charmId)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	charmRune_t charmId = Lua::getNumber<charmRune_t>(L, 2);
+	const auto &charm = g_iobestiary().getBestiaryCharm(charmId);
+	if (!charm) {
+		Lua::pushNumber(L, 0);
+		return 1;
+	}
+
+	uint8_t charmTier = player->getCharmTier(charmId);
+
+	double chance = charm->getChance(charmTier);
+
+	Lua::pushNumber(L, chance);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddMinorCharmEchoes(lua_State* L) {
+	// player:addMinorCharmEchoes()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	int16_t charms = Lua::getNumber<int16_t>(L, 2);
+	if (charms >= 0) {
+		g_iobestiary().addMinorCharmEchoes(player, static_cast<uint16_t>(charms));
+	} else {
+		charms = -charms;
+		g_iobestiary().addMinorCharmEchoes(player, static_cast<uint16_t>(charms), true);
+	}
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 
@@ -739,7 +798,7 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
 		const charmRune_t charmid = Lua::getNumber<charmRune_t>(L, 2);
-		const uint16_t raceid = player->parseRacebyCharm(charmid, false, 0);
+		const uint16_t raceid = player->parseRacebyCharm(charmid);
 		if (raceid > 0) {
 			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceid);
 			if (mtype) {
@@ -2009,16 +2068,28 @@ int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetSpecialContainersAvailable(lua_State* L) {
 	// player:setSpecialContainersAvailable(stashMenu, marketMenu, depotSearchMenu)
-	const bool supplyStashMenu = Lua::getBoolean(L, 2, false);
+	const bool stashMenu = Lua::getBoolean(L, 2, false);
 	const bool marketMenu = Lua::getBoolean(L, 3, false);
 	const bool depotSearchMenu = Lua::getBoolean(L, 4, false);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		player->setSpecialMenuAvailable(supplyStashMenu, marketMenu, depotSearchMenu);
+		player->setSpecialMenuAvailable(stashMenu, marketMenu, depotSearchMenu);
 		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerCanReceiveLoot(lua_State* L) {
+	// player:canReceiveLoot()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	lua_pushboolean(L, player->getStaminaMinutes() > 840);
 	return 1;
 }
 
@@ -2123,7 +2194,7 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	const int32_t value = Lua::getNumber<int32_t>(L, 3);
 	const uint32_t key = Lua::getNumber<uint32_t>(L, 2);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (IS_IN_KEYRANGE(key, RESERVED_RANGE)) {
+	if (isStorageKeyInRange(key, PSTRG_RESERVED_RANGE_START, PSTRG_RESERVED_RANGE_SIZE)) {
 		std::ostringstream ss;
 		ss << "Accessing reserved range: " << key;
 		Lua::reportErrorFunc(ss.str());
@@ -2142,39 +2213,6 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetStorageValueByName(lua_State* L) {
-	// player:getStorageValueByName(name)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		Lua::pushBoolean(L, false);
-		return 0;
-	}
-
-	g_logger().warn("The function 'player:getStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
-	const auto name = Lua::getString(L, 2);
-	lua_pushnumber(L, player->getStorageValueByName(name));
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetStorageValueByName(lua_State* L) {
-	// player:setStorageValueByName(storageName, value)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		Lua::pushBoolean(L, false);
-		return 0;
-	}
-
-	g_logger().warn("The function 'player:setStorageValueByName' is deprecated and will be removed in future versions, please use KV system");
-	const auto storageName = Lua::getString(L, 2);
-	const int32_t value = Lua::getNumber<int32_t>(L, 3);
-
-	player->addStorageValueByName(storageName, value);
-	Lua::pushBoolean(L, true);
 	return 1;
 }
 
@@ -4985,5 +5023,18 @@ int PlayerFunctions::luaPlayerRemoveCustomOutfit(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, player->attachedEffects().removeCustomOutfit(type, idOrName));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerResetOldCharms(lua_State* L) {
+	// player:resetOldCharms()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	player->resetOldCharms();
+	Lua::pushBoolean(L, true);
 	return 1;
 }

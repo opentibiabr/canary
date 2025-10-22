@@ -101,7 +101,10 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 	try {
 		// First
-		IOLoginDataLoad::loadPlayerBasicInfo(player, result);
+		if (!IOLoginDataLoad::loadPlayerBasicInfo(player, result)) {
+			g_logger().warn("[{}] - Failed to load player basic info", __FUNCTION__);
+			return false;
+		}
 
 		// Experience load
 		IOLoginDataLoad::loadPlayerExperience(player, result);
@@ -152,7 +155,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		IOLoginDataLoad::loadPlayerInboxItems(player, result);
 
 		// load storage map
-		IOLoginDataLoad::loadPlayerStorageMap(player, result);
+		IOLoginDataLoad::loadPlayerStorageMap(player);
 
 		// load vip
 		IOLoginDataLoad::loadPlayerVip(player, result);
@@ -166,18 +169,10 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		// Load instant spells list
 		IOLoginDataLoad::loadPlayerInstantSpellList(player, result);
 
-		if (disableIrrelevantInfo) {
-			return true;
+		if (!disableIrrelevantInfo) {
+			// Load additional data only if the player is online (e.g., forge, bosstiary)
+			loadOnlyDataForOnlinePlayer(player, result);
 		}
-
-		// load forge history
-		IOLoginDataLoad::loadPlayerForgeHistory(player, result);
-
-		// load bosstiary
-		IOLoginDataLoad::loadPlayerBosstiary(player, result);
-
-		IOLoginDataLoad::loadPlayerInitializeSystem(player);
-		IOLoginDataLoad::loadPlayerUpdateSystem(player);
 
 		return true;
 	} catch (const std::system_error &error) {
@@ -187,6 +182,13 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		g_logger().warn("[{}] Error while load player: {}", __FUNCTION__, e.what());
 		return false;
 	}
+}
+
+void IOLoginData::loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
+	IOLoginDataLoad::loadPlayerForgeHistory(player, result);
+	IOLoginDataLoad::loadPlayerBosstiary(player, result);
+	IOLoginDataLoad::loadPlayerInitializeSystem(player);
+	IOLoginDataLoad::loadPlayerUpdateSystem(player);
 }
 
 bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
@@ -256,6 +258,18 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerTaskHuntingClass] - Failed to save player task hunting class: " + player->getName());
 	}
 
+	// Saves data components that are only valid if the player is online.
+	// Skips execution entirely if the player is offline to avoid overwriting unloaded data.
+	saveOnlyDataForOnlinePlayer(player);
+
+	return true;
+}
+
+void IOLoginData::saveOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player) {
+	if (player->isOffline()) {
+		return;
+	}
+
 	if (!IOLoginDataSave::savePlayerForgeHistory(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerForgeHistory] - Failed to save player forge history: " + player->getName());
 	}
@@ -276,8 +290,6 @@ bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}
-
-	return true;
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid) {

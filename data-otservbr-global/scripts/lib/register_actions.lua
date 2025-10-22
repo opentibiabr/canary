@@ -323,7 +323,7 @@ function onUseRope(player, item, fromPosition, target, toPosition, isHotkey)
 
 	local tile = Tile(toPosition)
 	if tile and tile:isRopeSpot() then
-		player:teleportTo(toPosition:moveUpstairs())
+		player:teleportTo(toPosition:moveUpstairs(), true)
 		if target.itemid == 7762 then
 			if player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.TutorialHintsStorage) < 22 then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully used your rope to climb out of the hole. Congratulations! Now continue to the east.")
@@ -406,7 +406,7 @@ function onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
 			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)
 			return true
 		end
-		player:teleportTo(toPosition, false)
+		player:teleportTo(toPosition, true)
 		player:addAchievementProgress("The Undertaker", 500)
 	elseif target.itemid == 1822 and target:getPosition() == Position(33222, 31100, 7) then
 		player:teleportTo(Position(33223, 31100, 8))
@@ -918,15 +918,15 @@ function onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 				player:setStorageValue(Storage.Quest.U7_24.ThePostmanMissions.Mission02, 2)
 				toPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			end
-		elseif target:getActionId() == 40041 and target.itemid == 4848 then
-			-- The ape city - mission 7
-			local apeCityStorage = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
-			if apeCityStorage < 3 then
-				player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, math.max(0, apeCityStorage) + 1)
-				target:transform(3134)
-				toPosition:sendMagicEffect(CONST_ME_EXPLOSIONAREA)
-				addEvent(revertCask, 3 * 60 * 1000, toPosition)
-			end
+		end
+	elseif target:getActionId() == 40041 and target.itemid == 4848 then
+		-- The ape city - mission 7
+		local apeCityStorage = player:getStorageValue(Storage.Quest.U7_6.TheApeCity.Casks)
+		if apeCityStorage < 3 then
+			player:setStorageValue(Storage.Quest.U7_6.TheApeCity.Casks, math.max(0, apeCityStorage) + 1)
+			target:transform(3134)
+			toPosition:sendMagicEffect(CONST_ME_EXPLOSIONAREA)
+			addEvent(revertCask, 3 * 60 * 1000, toPosition)
 		end
 	elseif target.actionid == 12566 and player:getStorageValue(Storage.Quest.U8_1.SecretService.TBIMission06) == 1 then
 		-- Secret service quest

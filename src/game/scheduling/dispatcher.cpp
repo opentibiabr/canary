@@ -220,6 +220,10 @@ std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
 }
 
 void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
+	if (shuttingDown) {
+		return;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
@@ -227,6 +231,10 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 }
 
 void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs) {
+	if (shuttingDown) {
+		return;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Walk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
@@ -234,6 +242,10 @@ void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 }
 
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
+	if (shuttingDown) {
+		return 0;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 
@@ -246,6 +258,10 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 }
 
 void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
+	if (shuttingDown) {
+		return;
+	}
+
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);

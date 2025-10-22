@@ -3576,8 +3576,9 @@ void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr
 	if (!player) {
 		auto spectators = Spectators().find<Creature>(getPosition(), true);
 		for (const auto &spectator : spectators) {
-			spectator->getPlayer()->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
-		}
+			if (auto player = spectator->getPlayer()) {
+				player->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
+			}
 
 		return;
 	}

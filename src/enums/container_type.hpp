@@ -17,7 +17,6 @@ enum class ContainerSpecial_t : uint8_t {
 	None = 0,
 	LootContainer = 1,
 	ContentCounter = 2,
-	ManagerUnknown = 3, // Maybe was used on a few test servers and removed later? Original value was not being used
 	LootHighlight = 4,
 	Obtain = 8,
 	Manager = 9,

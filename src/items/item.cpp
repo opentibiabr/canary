@@ -3580,12 +3580,12 @@ void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr
 				player->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
 			}
 
-		return;
-	}
+			return;
+		}
 
-	const auto &party = player->getParty();
-	auto participants = party ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
-	for (const auto &participant : participants) {
-		participant->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
+		const auto &party = player->getParty();
+		auto participants = party ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
+		for (const auto &participant : participants) {
+			participant->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
+		}
 	}
-}

@@ -1125,7 +1125,7 @@ ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &
 std::pair<uint32_t, uint32_t> Container::getObjectCategoryFlags(const std::shared_ptr<Player> &player) const {
 	uint32_t lootFlags = 0, obtainFlags = 0;
 	// Cycle through all containers managed by the player
-	for (const auto& [category, containerPair] : player->getManagedContainers()) {
+	for (const auto &[category, containerPair] : player->getManagedContainers()) {
 		// Check if the category is valid before continuing
 		if (!isValidObjectCategory(category)) {
 			continue;
@@ -1148,7 +1148,7 @@ std::pair<uint32_t, uint32_t> Container::getObjectCategoryFlags(const std::share
 uint32_t Container::getAmmoAmount(const std::shared_ptr<Player> &player) const {
 	uint32_t ammoTotal = 0;
 	if (isQuiver()) {
-		for (const auto& listItem : getItemList()) {
+		for (const auto &listItem : getItemList()) {
 			if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
 				ammoTotal += listItem->getItemAmount();
 			}

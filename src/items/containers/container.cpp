@@ -1104,26 +1104,29 @@ size_t ContainerIterator::getCurrentIndex() const {
 
 ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &player) {
 	const auto &holdingPlayer = getHoldingPlayer();
+	using enum ContainerSpecial_t;
+
 	if (!isRewardCorpse() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (isFresh() && (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner()))))) {
-		return ContainerSpecial_t::LootHighlight;
+		return LootHighlight;
 	}
 
 	if (holdingPlayer == player) {
 		if (isQuiver() && getSlotPosition() & SLOTP_RIGHT) {
-			return ContainerSpecial_t::QuiverLoot;
+			return QuiverLoot;
 		}
 
 		auto [lootFlags, obtainFlags] = getObjectCategoryFlags(player);
 		if (lootFlags != 0 || obtainFlags != 0) {
-			return ContainerSpecial_t::Manager;
+			return Manager;
 		}
 	}
 
-	return ContainerSpecial_t::None;
+	return None;
 }
 
 std::pair<uint32_t, uint32_t> Container::getObjectCategoryFlags(const std::shared_ptr<Player> &player) const {
-	uint32_t lootFlags = 0, obtainFlags = 0;
+	uint32_t lootFlags = 0;
+	uint32_t obtainFlags = 0;
 	// Cycle through all containers managed by the player
 	for (const auto &[category, containerPair] : player->getManagedContainers()) {
 		// Check if the category is valid before continuing

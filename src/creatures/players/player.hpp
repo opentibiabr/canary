@@ -1362,7 +1362,7 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
-	bool isFirstOnStack() const;
+	[[nodiscard]] bool isFirstOnStack() const;
 	void resetOldCharms();
 
 	const auto &getOutfits() const {

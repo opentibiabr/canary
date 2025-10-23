@@ -64,7 +64,7 @@ private:
 
 	DispatcherType type = DispatcherType::None;
 	TaskGroup group = TaskGroup::ThreadPool;
-	std::string_view taskName;
+	std::string_view taskName = "ThreadPool::call";
 
 	friend class Dispatcher;
 };

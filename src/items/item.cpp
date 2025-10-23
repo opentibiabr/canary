@@ -3573,19 +3573,30 @@ std::string ItemProperties::getShader() const {
 }
 
 void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr*/) {
-	if (!player) {
-		auto spectators = Spectators().find<Creature>(getPosition(), true);
-		for (const auto &spectator : spectators) {
-			if (auto player = spectator->getPlayer()) {
-				player->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
-			}
+	const auto &tile = getTile();
+	if (!tile) {
+		return;
+	}
 
+	if (player) {
+		const auto &party = player->getParty();
+		if (party) {
+			for (const auto &participant : party->getPlayers()) {
+				if (participant) {
+					participant->sendUpdateTileItem(tile, getPosition(), static_self_cast<Item>());
+				}
+			}
 			return;
 		}
 
-		const auto &party = player->getParty();
-		auto participants = party ? party->getPlayers() : std::vector<std::shared_ptr<Player>> { player };
-		for (const auto &participant : participants) {
-			participant->sendUpdateTileItem(getTile(), getPosition(), static_self_cast<Item>());
+		player->sendUpdateTileItem(tile, getPosition(), static_self_cast<Item>());
+		return;
+	}
+
+	auto spectators = Spectators().find<Creature>(getPosition(), true);
+	for (const auto &spectator : spectators) {
+		if (const auto &spectatorPlayer = spectator->getPlayer()) {
+			spectatorPlayer->sendUpdateTileItem(tile, getPosition(), static_self_cast<Item>());
 		}
 	}
+}

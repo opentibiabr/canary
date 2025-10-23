@@ -291,7 +291,9 @@ public:
 	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
 	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
 	void clearLootHighlight(const std::shared_ptr<Player> &player = nullptr);
-	bool hasLootHighlight() const { return m_lootHighlightActive; }
+	bool hasLootHighlight() const {
+		return m_lootHighlightActive;
+	}
 
 protected:
 	uint32_t m_maxItems {};

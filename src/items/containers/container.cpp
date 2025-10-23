@@ -999,7 +999,6 @@ void Container::clearLootHighlight(const std::shared_ptr<Player> &player) {
 	sendUpdateToClient(player);
 }
 
-
 uint32_t Container::getOwnerId() const {
 	uint32_t ownerId = Item::getOwnerId();
 	if (ownerId > 0) {

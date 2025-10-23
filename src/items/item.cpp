@@ -3572,13 +3572,15 @@ std::string ItemProperties::getShader() const {
 	return shader ? shader->getString() : "";
 }
 
-void Item::sendUpdateToClient(const std::shared_ptr<Player>& player /* = nullptr */) {
-	const auto& tile = getTile();
-	if (!tile) return;
+void Item::sendUpdateToClient(const std::shared_ptr<Player> &player /* = nullptr */) {
+	const auto &tile = getTile();
+	if (!tile) {
+		return;
+	}
 
 	auto selfItem = getItem();
 
-	auto sendUpdateTo = [&](const std::shared_ptr<Player>& target) {
+	auto sendUpdateTo = [&](const std::shared_ptr<Player> &target) {
 		if (target) {
 			target->sendUpdateTileItem(tile, getPosition(), selfItem);
 		}
@@ -3586,7 +3588,7 @@ void Item::sendUpdateToClient(const std::shared_ptr<Player>& player /* = nullptr
 
 	if (player) {
 		if (auto party = player->getParty()) {
-			for (const auto& participant : party->getPlayers()) {
+			for (const auto &participant : party->getPlayers()) {
 				sendUpdateTo(participant);
 			}
 		} else {
@@ -3595,7 +3597,7 @@ void Item::sendUpdateToClient(const std::shared_ptr<Player>& player /* = nullptr
 		return;
 	}
 
-	for (const auto& spectator : Spectators().find<Creature>(getPosition(), true)) {
+	for (const auto &spectator : Spectators().find<Creature>(getPosition(), true)) {
 		sendUpdateTo(spectator->getPlayer());
 	}
 }

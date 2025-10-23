@@ -1374,7 +1374,7 @@ public:
 	}
 
 	using ManagedContainerMap = std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>>;
-	const ManagedContainerMap &getManagedContainers() const {
+	[[nodiscard]] const ManagedContainerMap &getManagedContainers() const {
 		return m_managedContainers;
 	}
 

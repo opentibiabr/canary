@@ -1106,7 +1106,7 @@ ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &
 	const auto &holdingPlayer = getHoldingPlayer();
 	using enum ContainerSpecial_t;
 
-	if (!isRewardCorpse() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (isFresh() && (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner()))))) {
+	if (!isRewardCorpse() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner())))) {
 		return LootHighlight;
 	}
 

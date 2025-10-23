@@ -290,6 +290,8 @@ public:
 	ContainerSpecial_t getSpecialCategory(const std::shared_ptr<Player> &player);
 	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
 	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
+	void clearLootHighlight(const std::shared_ptr<Player> &player = nullptr);
+	bool hasLootHighlight() const { return m_lootHighlightActive; }
 
 protected:
 	uint32_t m_maxItems {};
@@ -300,6 +302,7 @@ protected:
 
 	bool unlocked {};
 	bool pagination {};
+	bool m_lootHighlightActive { true };
 
 	friend class MapCache;
 

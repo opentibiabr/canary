@@ -837,6 +837,10 @@ void Container::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count)
 
 		item->resetParent();
 		itemlist.erase(itemlist.begin() + index);
+
+		if (isCorpse() && empty()) {
+			clearLootHighlight();
+		}
 	}
 }
 
@@ -976,8 +980,25 @@ void Container::removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateT
 
 		itemlist.erase(it);
 		itemToRemove->resetParent();
+
+		if (isCorpse() && empty()) {
+			clearLootHighlight();
+		}
 	}
 }
+void Container::clearLootHighlight(const std::shared_ptr<Player> &player) {
+	if (!isCorpse()) {
+		return;
+	}
+
+	if (!m_lootHighlightActive) {
+		return;
+	}
+
+	m_lootHighlightActive = false;
+	sendUpdateToClient(player);
+}
+
 
 uint32_t Container::getOwnerId() const {
 	uint32_t ownerId = Item::getOwnerId();
@@ -1106,7 +1127,7 @@ ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &
 	const auto &holdingPlayer = getHoldingPlayer();
 	using enum ContainerSpecial_t;
 
-	if (!isRewardCorpse() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner())))) {
+	if (isCorpse() && hasLootHighlight() && !isRewardCorpse() && !empty() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner())))) {
 		return LootHighlight;
 	}
 

@@ -2652,22 +2652,27 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 		g_logger().error("[{}] cylinder is nullptr", __FUNCTION__);
 		return false;
 	}
+
 	if (money == 0) {
 		return true;
 	}
+
 	std::vector<std::shared_ptr<Container>> containers;
 	std::multimap<uint32_t, std::shared_ptr<Item>> moneyMap;
 	uint64_t moneyCount = 0;
+
 	for (size_t i = cylinder->getFirstIndex(), j = cylinder->getLastIndex(); i < j; ++i) {
-		const std::shared_ptr<Thing> &thing = cylinder->getThing(i);
+		const auto &thing = cylinder->getThing(i);
 		if (!thing) {
 			continue;
 		}
+
 		const auto &item = thing->getItem();
 		if (!item) {
 			continue;
 		}
-		const std::shared_ptr<Container> &container = item->getContainer();
+
+		const auto &container = item->getContainer();
 		if (container) {
 			containers.push_back(container);
 		} else {
@@ -2678,11 +2683,12 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 			}
 		}
 	}
+
 	size_t i = 0;
 	while (i < containers.size()) {
-		const std::shared_ptr<Container> &container = containers[i++];
-		for (const std::shared_ptr<Item> &item : container->getItemList()) {
-			const std::shared_ptr<Container> &tmpContainer = item->getContainer();
+		const auto &container = containers[i++];
+		for (const auto &item : container->getItemList()) {
+			const auto &tmpContainer = item->getContainer();
 			if (tmpContainer) {
 				containers.push_back(tmpContainer);
 			} else {
@@ -2707,45 +2713,89 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 
 	for (const auto &moneyEntry : moneyMap) {
 		const std::shared_ptr<Item> &item = moneyEntry.second;
+
 		if (moneyEntry.first < money) {
-			internalRemoveItem(item);
+			player->removeItem(item);
 			money -= moneyEntry.first;
 		} else if (moneyEntry.first > money) {
 			const uint32_t worth = moneyEntry.first / item->getItemCount();
 			const uint32_t removeCount = std::ceil(money / static_cast<double>(worth));
-			addMoney(cylinder, (worth * removeCount) - money, flags);
-			internalRemoveItem(item, removeCount);
+
+			uint64_t expectedChange = (worth * removeCount) - money;
+
+			if (expectedChange > 0) {
+				auto [addedMoney, returnValue] = addMoney(cylinder, expectedChange, flags);
+
+				if (addedMoney < expectedChange && returnValue == RETURNVALUE_NOTENOUGHCAPACITY) {
+					std::tie(addedMoney, returnValue) = addMoney(cylinder, expectedChange, flags | FLAG_DROPONMAP);
+				}
+
+				if (addedMoney < expectedChange) {
+					g_logger().error(
+						"Game::removeMoney: INCONSISTENT STATE — could not deliver full change to player {}. "
+						"Expected change: {}, added: {}. Aborting transaction.",
+						player ? player->getName() : "unknown", expectedChange, addedMoney
+					);
+
+					return false;
+				}
+			}
+
+			player->removeItem(item, removeCount);
+			player->updateState();
 			return true;
 		} else {
-			internalRemoveItem(item);
+			player->removeItem(item);
+			player->updateState();
 			return true;
 		}
 	}
 
+	player->updateState();
+
 	if (useBalance && player && player->getBankBalance() >= money) {
-		player->setBankBalance(player->getBankBalance() - money);
+		uint64_t oldBalance = player->getBankBalance();
+		player->setBankBalance(oldBalance - money);
+		uint64_t newBalance = player->getBankBalance();
+
+		g_logger().info(
+			"Game::removeMoney: debited {} gold from player {}'s bank. Old balance: {}, new balance: {}.",
+			money, player->getName(), oldBalance, newBalance
+		);
 	}
 
 	return true;
 }
 
-void Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, uint32_t flags /*= 0*/) {
+std::pair<uint64_t, ReturnValue> Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, uint32_t flags /*= 0*/) {
 	if (cylinder == nullptr) {
 		g_logger().error("[{}] cylinder is nullptr", __FUNCTION__);
-		return;
-	}
-	if (money == 0) {
-		return;
+		return std::make_pair(0, RETURNVALUE_NOTPOSSIBLE);
 	}
 
-	auto addCoins = [&](uint16_t itemId, uint32_t count) {
+	if (money == 0) {
+		return std::make_pair(0, RETURNVALUE_NOERROR);
+	}
+
+	ReturnValue returnValue = RETURNVALUE_NOERROR;
+	uint64_t totalAdded = 0;
+
+	auto addCoins = [&](uint16_t itemId, uint32_t count, uint64_t unitValue) {
 		while (count > 0) {
 			const uint16_t createCount = std::min<uint32_t>(100, count);
-			const std::shared_ptr<Item> &remaindItem = Item::CreateItem(itemId, createCount);
-
+			const auto &remaindItem = Item::CreateItem(itemId, createCount);
 			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
 			if (ret != RETURNVALUE_NOERROR) {
-				internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				if ((flags & FLAG_DROPONMAP) != 0 && cylinder->getTile()) {
+					ret = internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				}
+			}
+
+			if (ret == RETURNVALUE_NOERROR) {
+				totalAdded += static_cast<uint64_t>(createCount) * unitValue;
+			} else {
+				returnValue = ret;
+				break;
 			}
 
 			count -= createCount;
@@ -2754,15 +2804,17 @@ void Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, u
 
 	uint32_t crystalCoins = money / 10000;
 	money -= crystalCoins * 10000;
-	addCoins(ITEM_CRYSTAL_COIN, crystalCoins);
+	addCoins(ITEM_CRYSTAL_COIN, crystalCoins, 10000);
 
 	uint16_t platinumCoins = money / 100;
 	money -= platinumCoins * 100;
-	addCoins(ITEM_PLATINUM_COIN, platinumCoins);
+	addCoins(ITEM_PLATINUM_COIN, platinumCoins, 100);
 
 	if (money > 0) {
-		addCoins(ITEM_GOLD_COIN, money);
+		addCoins(ITEM_GOLD_COIN, money, 1);
 	}
+
+	return std::make_pair(totalAdded, returnValue);
 }
 
 std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t newId, int32_t newCount /*= -1*/) {

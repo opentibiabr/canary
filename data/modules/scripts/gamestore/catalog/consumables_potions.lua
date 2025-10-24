@@ -38,7 +38,7 @@ return {
 			price = 26,
 			itemtype = 238,
 			count = 250,
-			description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n-{storeinbox}\n{battlesign}\n{capacity}",
+			description = "<i>Refills your character's mana.</i>\n\n{character}\n{vocationlevelcheck}\n{storeinbox}\n{battlesign}\n{capacity}",
 			type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
 		},
 		{

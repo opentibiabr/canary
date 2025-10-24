@@ -171,7 +171,7 @@ return {
 		},
 		{
 			icons = { "Outfit_Grove_Keeper_Male_Addon_3.png", "Outfit_Grove_Keeper_Female_Addon_3.png" },
-			name = "Full Groove Keeper Outfit",
+			name = "Full Grove Keeper Outfit",
 			price = 870,
 			sexId = { female = 909, male = 908 },
 			addon = 3,

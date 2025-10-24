@@ -491,7 +491,7 @@ return {
 		},
 		{
 			icons = { "Hailstorm_Fury.png" },
-			name = "Hailtorm Fury",
+			name = "Hailstorm Fury",
 			price = 780,
 			id = 55,
 			description = "{character}\n{speedboost}\n\n<i>Once captured and held captive by a mad hunter, the Hailstorm Fury is the result of sick experiments. Fed only with demon dust and concentrated demonic blood it had to endure a dreadful transformation. The demonic blood that is now running through its veins, however, provides it with incredible strength and endurance.</i>",

@@ -882,7 +882,7 @@ return {
 			icons = { "Square_Side_Table.png" },
 			name = "Square Side Table",
 			price = 50,
-			itemtype = 26161,
+			itemtype = 31207,
 			count = 1,
 			description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 			type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,

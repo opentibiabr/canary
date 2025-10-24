@@ -177,7 +177,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	if (result->getNumber<uint16_t>("save") == 0) {
 		query.str("");
-		query << "UPDATE `players` SET `lastlogin` = " << player->lastLoginSaved << ", `lastip` = " << player->lastIP << " WHERE `id` = " << player->getGUID();
+		query << "UPDATE `players` SET `lastlogin` = " << player->lastLoginSaved << ", `lastip` = " << db.escapeString(player->lastIP) << " WHERE `id` = " << player->getGUID();
 		return db.executeQuery(query.str());
 	}
 
@@ -231,8 +231,8 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		query << "`lastlogin` = " << player->lastLoginSaved << ",";
 	}
 
-	if (player->lastIP != 0) {
-		query << "`lastip` = " << player->lastIP << ",";
+	if (!player->lastIP.empty()) {
+		query << "`lastip` = " << db.escapeString(player->lastIP) << ",";
 	}
 
 	// serialize conditions

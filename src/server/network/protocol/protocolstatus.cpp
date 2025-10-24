@@ -9,6 +9,8 @@
 
 #include "server/network/protocol/protocolstatus.hpp"
 
+#include <asio/ip/address.hpp>
+
 #include "config/configmanager.hpp"
 #include "core.hpp"
 #include "creatures/players/player.hpp"
@@ -20,23 +22,27 @@ std::string ProtocolStatus::SERVER_NAME = "Canary";
 std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
-std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+std::map<std::string, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
-	const uint32_t ip = getIP();
-	if (ip != 0x0100007F) {
-		const std::string ipStr = convertIPToString(ip);
-		if (ipStr != g_configManager().getString(IP)) {
-			const auto it = ipConnectMap.find(ip);
-			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
-				disconnect();
-				return;
-			}
+	const std::string &ipString = getIPString();
+	std::error_code addressError;
+	const auto address = asio::ip::make_address(ipString, addressError);
+	const bool isLoopback = !addressError && address.is_loopback();
+	const std::string &configuredAddress = g_configManager().getBoolean(USE_IPV6) ? g_configManager().getString(IPV6) : g_configManager().getString(IP);
+
+	if (!ipString.empty() && !isLoopback && ipString != configuredAddress) {
+		const auto it = ipConnectMap.find(ipString);
+		if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
+			disconnect();
+			return;
 		}
 	}
 
-	ipConnectMap[ip] = OTSYS_TIME();
+	if (!ipString.empty()) {
+		ipConnectMap[ipString] = OTSYS_TIME();
+	}
 
 	switch (msg.getByte()) {
 		// XML info protocol
@@ -92,7 +98,8 @@ void ProtocolStatus::sendStatusString() {
 	pugi::xml_node serverinfo = tsqp.append_child("serverinfo");
 	const uint64_t uptime = (OTSYS_TIME() - ProtocolStatus::start) / 1000;
 	serverinfo.append_attribute("uptime") = std::to_string(uptime).c_str();
-	serverinfo.append_attribute("ip") = g_configManager().getString(IP).c_str();
+	const std::string &statusIp = g_configManager().getBoolean(USE_IPV6) ? g_configManager().getString(IPV6) : g_configManager().getString(IP);
+	serverinfo.append_attribute("ip") = statusIp.c_str();
 	serverinfo.append_attribute("servername") = g_configManager().getString(ConfigKey_t::SERVER_NAME).c_str();
 	serverinfo.append_attribute("port") = std::to_string(g_configManager().getNumber(LOGIN_PORT)).c_str();
 	serverinfo.append_attribute("location") = g_configManager().getString(LOCATION).c_str();
@@ -107,17 +114,18 @@ void ProtocolStatus::sendStatusString() {
 
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
-	std::map<uint32_t, uint32_t> listIP;
+	std::map<std::string, uint32_t> listIP;
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		if (player->getIP() != 0) {
-			auto ip = listIP.find(player->getIP());
+		const std::string playerIp = player->getIPString();
+		if (!playerIp.empty()) {
+			auto ip = listIP.find(playerIp);
 			if (ip != listIP.end()) {
-				listIP[player->getIP()]++;
-				if (listIP[player->getIP()] < 5) {
+				listIP[playerIp]++;
+				if (listIP[playerIp] < 5) {
 					real++;
 				}
 			} else {
-				listIP[player->getIP()] = 1;
+				listIP[playerIp] = 1;
 				real++;
 			}
 		}
@@ -166,7 +174,8 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
 		output->addByte(0x10);
 		output->addString(g_configManager().getString(ConfigKey_t::SERVER_NAME));
-		output->addString(g_configManager().getString(IP));
+		const std::string &configuredIp = g_configManager().getBoolean(USE_IPV6) ? g_configManager().getString(IPV6) : g_configManager().getString(IP);
+		output->addString(configuredIp);
 		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT)));
 	}
 

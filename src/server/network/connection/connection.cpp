@@ -9,6 +9,10 @@
 
 #include "server/network/connection/connection.hpp"
 
+#include <asio/ip/address.hpp>
+
+#include <algorithm>
+
 #include "config/configmanager.hpp"
 #include "lib/di/container.hpp"
 #include "server/network/message/outputmessage.hpp"
@@ -62,7 +66,8 @@ void Connection::close(bool force) {
 	ConnectionManager::getInstance().releaseConnection(shared_from_this());
 
 	std::scoped_lock lock(connectionLock);
-	ip = 0;
+	cachedIp.clear();
+	hasCachedIp = false;
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
@@ -199,7 +204,9 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
-		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
+		const std::string &remoteIp = getIPString();
+		const std::string ipForLog = remoteIp.empty() ? std::string("<unknown>") : remoteIp;
+		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", ipForLog);
 		close();
 		return;
 	}
@@ -356,17 +363,73 @@ void Connection::internalWorker() {
 uint32_t Connection::getIP() {
 	std::scoped_lock lock(connectionLock);
 
-	if (ip == 1) {
+	if (!hasCachedIp) {
 		std::error_code error;
-		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+		const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
 		if (error) {
 			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
-			ip = 0;
+			cachedIp.clear();
 		} else {
-			ip = htonl(endpoint.address().to_v4().to_uint());
+			cachedIp = endpoint.address().to_string();
 		}
+		hasCachedIp = true;
 	}
-	return ip;
+
+	if (cachedIp.empty()) {
+		return 0;
+	}
+
+	std::error_code ec;
+	const auto address = asio::ip::make_address(cachedIp, ec);
+	if (ec) {
+		return 0;
+	}
+
+	if (address.is_v4()) {
+		return htonl(address.to_v4().to_uint());
+	}
+
+	if (address.is_v6()) {
+		const auto addressV6 = address.to_v6();
+		const auto bytes = addressV6.to_bytes();
+
+		if (addressV6.is_v4_compatible() || addressV6.is_v4_mapped()) {
+			asio::ip::address_v4::bytes_type v4Bytes {};
+			std::copy_n(bytes.end() - v4Bytes.size(), v4Bytes.size(), v4Bytes.begin());
+			return htonl(asio::ip::address_v4(v4Bytes).to_uint());
+		}
+
+		uint32_t hashedValue = 0;
+		for (const auto byte : bytes) {
+			hashedValue = (hashedValue << 5) | (hashedValue >> 27);
+			hashedValue ^= static_cast<uint32_t>(byte);
+		}
+
+		if (hashedValue == 0) {
+			hashedValue = 1;
+		}
+
+		return htonl(hashedValue);
+	}
+	return 0;
+}
+
+const std::string &Connection::getIPString() {
+	std::scoped_lock lock(connectionLock);
+
+	if (!hasCachedIp) {
+		std::error_code error;
+		const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+		if (error) {
+			g_logger().error("[Connection::getIPString] - Failed to get remote endpoint: {}", error.message());
+			cachedIp.clear();
+		} else {
+			cachedIp = endpoint.address().to_string();
+		}
+		hasCachedIp = true;
+	}
+
+	return cachedIp;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
@@ -412,9 +475,13 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 
 	if (auto connection = connectionWeak.lock()) {
 		if (!error) {
-			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			const std::string &remoteIp = connection->getIPString();
+			const std::string ipForLog = remoteIp.empty() ? std::string("<unknown>") : remoteIp;
+			g_logger().debug("Connection Timeout, IP: {}", ipForLog);
 		} else {
-			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			const std::string &remoteIp = connection->getIPString();
+			const std::string ipForLog = remoteIp.empty() ? std::string("<unknown>") : remoteIp;
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), ipForLog);
 		}
 		connection->close(FORCE_CLOSE);
 	}

@@ -661,7 +661,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		player->lastIP = player->getIP();
+		player->lastIP = player->getIPString();
 		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 		player->loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
 		acceptPackets = true;
@@ -713,7 +713,7 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	player->client = getThis();
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
-	player->lastIP = player->getIP();
+	player->lastIP = player->getIPString();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	if (player->isProtected()) {
 		player->setProtection(false);
@@ -897,7 +897,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	BanInfo banInfo;
-	if (IOBan::isIpBanned(getIP(), banInfo)) {
+	if (IOBan::isIpBanned(getIPString(), banInfo)) {
 		if (banInfo.reason.empty()) {
 			banInfo.reason = "(none)";
 		}
@@ -910,7 +910,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	uint32_t accountId;
-	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol, getIP())) {
+	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol, getIPString())) {
 		ss.str(std::string());
 		if (authType == "session") {
 			ss << "Your session has expired. Please log in again.";

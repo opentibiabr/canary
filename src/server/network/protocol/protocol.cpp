@@ -253,6 +253,16 @@ uint32_t Protocol::getIP() const {
 	return 0;
 }
 
+const std::string &Protocol::getIPString() const {
+	static const std::string empty;
+
+	if (const auto protocolConnection = getConnection()) {
+		return protocolConnection->getIPString();
+	}
+
+	return empty;
+}
+
 bool Protocol::compression(OutputMessage &outputMessage) const {
 	if (checksumMethod != CHECKSUM_METHOD_SEQUENCE) {
 		return false;

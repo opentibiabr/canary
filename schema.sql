@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `sex` int(11) NOT NULL DEFAULT '0',
     `pronoun` int(11) NOT NULL DEFAULT '0',
     `lastlogin` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
-    `lastip` int(10) UNSIGNED NOT NULL DEFAULT '0',
+    `lastip` varchar(45) NOT NULL DEFAULT '',
     `save` tinyint(1) NOT NULL DEFAULT '1',
     `skull` tinyint(1) NOT NULL DEFAULT '0',
     `skulltime` bigint(20) NOT NULL DEFAULT '0',
@@ -495,7 +495,7 @@ CREATE TABLE IF NOT EXISTS `house_lists` (
 
 -- Table structure `ip_bans`
 CREATE TABLE IF NOT EXISTS `ip_bans` (
-    `ip` int(11) NOT NULL,
+    `ip` varchar(45) NOT NULL,
     `reason` varchar(255) NOT NULL,
     `banned_at` bigint(20) NOT NULL,
     `expires_at` bigint(20) NOT NULL,

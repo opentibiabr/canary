@@ -76,7 +76,8 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	output->addByte(0); // world id
 	output->addString(g_configManager().getString(SERVER_NAME));
-	output->addString(g_configManager().getString(IP));
+	const std::string &worldIp = g_configManager().getBoolean(USE_IPV6) ? g_configManager().getString(IPV6) : g_configManager().getString(IP);
+	output->addString(worldIp);
 
 	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
 
@@ -148,7 +149,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	if (IOBan::isIpBanned(curConnection->getIP(), banInfo)) {
+	if (IOBan::isIpBanned(curConnection->getIPString(), banInfo)) {
 		if (banInfo.reason.empty()) {
 			banInfo.reason = "(none)";
 		}

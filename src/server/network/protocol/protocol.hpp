@@ -9,6 +9,10 @@
 
 #pragma once
 
+#include <array>
+#include <memory>
+#include <string>
+
 #include "server/server_definitions.hpp"
 
 class OutputMessage;
@@ -42,6 +46,7 @@ public:
 	Connection_ptr getConnection() const;
 
 	uint32_t getIP() const;
+	const std::string &getIPString() const;
 
 	// Use this function for autosend messages only
 	OutputMessage_ptr getOutputBuffer(int32_t size);

@@ -9,6 +9,11 @@
 
 #include "server/server.hpp"
 
+#include <asio/ip/address.hpp>
+#include <asio/ip/address_v4.hpp>
+#include <asio/ip/address_v6.hpp>
+#include <asio/ip/v6_only.hpp>
+
 #include "server/network/message/outputmessage.hpp"
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -97,8 +102,8 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 			return;
 		}
 
-		const auto remote_ip = connection->getIP();
-		if (remote_ip != 0 && inject<Ban>().acceptConnection(remote_ip)) {
+		const std::string &remoteIp = connection->getIPString();
+		if (!remoteIp.empty() && inject<Ban>().acceptConnection(remoteIp)) {
 			const Service_ptr service = services.front();
 			if (service->is_single_socket()) {
 				connection->accept(service->make_protocol(connection));
@@ -152,12 +157,33 @@ void ServicePort::open(uint16_t port) {
 	pendingStart = false;
 
 	try {
+		const bool useIpv6 = g_configManager().getBoolean(USE_IPV6);
+		asio::ip::tcp::endpoint endpoint;
+
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort));
+			std::error_code addressError;
+			const auto configuredAddress = useIpv6 ? g_configManager().getString(IPV6) : g_configManager().getString(IP);
+			const auto address = asio::ip::make_address(configuredAddress, addressError);
+			if (addressError) {
+				throw std::system_error(addressError);
+			}
+			endpoint = asio::ip::tcp::endpoint(address, serverPort);
+		} else if (useIpv6) {
+			endpoint = asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort);
 		} else {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
+			endpoint = asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort);
 		}
 
+		acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service);
+		acceptor->open(endpoint.protocol());
+		acceptor->set_option(asio::ip::tcp::acceptor::reuse_address(true));
+
+		if (useIpv6) {
+			acceptor->set_option(asio::ip::v6_only(g_configManager().getBoolean(IPV6_ONLY)));
+		}
+
+		acceptor->bind(endpoint);
+		acceptor->listen();
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
 
 		accept();

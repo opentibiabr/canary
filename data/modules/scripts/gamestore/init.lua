@@ -94,29 +94,5 @@ parseOpenTransactionHistory = parsers.parseOpenTransactionHistory
 parseRequestTransactionHistory = parsers.parseRequestTransactionHistory
 
 function onRecvbyte(player, msg, byte)
-	if player:getVocation():getId() == 0 and not GameStore.haveCategoryRook() then
-		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
-	end
-
-	if player:isUIExhausted(250) then
-		player:sendCancelMessage("You are exhausted.")
-		return
-	end
-
-	if byte == GameStore.RecivedPackets.C_StoreEvent then
-	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
-		parsers.parseTransferableCoins(player:getId(), msg)
-	elseif byte == GameStore.RecivedPackets.C_OpenStore then
-		parsers.parseOpenStore(player:getId(), msg)
-	elseif byte == GameStore.RecivedPackets.C_RequestStoreOffers then
-		parsers.parseRequestStoreOffers(player:getId(), msg)
-	elseif byte == GameStore.RecivedPackets.C_BuyStoreOffer then
-		parsers.parseBuyStoreOffer(player:getId(), msg)
-	elseif byte == GameStore.RecivedPackets.C_OpenTransactionHistory then
-		parsers.parseOpenTransactionHistory(player:getId(), msg)
-	elseif byte == GameStore.RecivedPackets.C_RequestTransactionHistory then
-		parsers.parseRequestTransactionHistory(player:getId(), msg)
-	end
-
-	return true
+	return parsers.onRecvbyte(player, msg, byte)
 end

@@ -43,27 +43,30 @@ end
 
 local function onRecvbyte(player, msg, byte)
 	if player:getVocation():getId() == 0 and not GameStore.haveCategoryRook() then
-		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
+		player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
+		return false
 	end
 
 	if player:isUIExhausted(250) then
 		player:sendCancelMessage("You are exhausted.")
-		return
+		return false
 	end
+
+	local playerId = player:getId()
 
 	if byte == GameStore.RecivedPackets.C_StoreEvent then
 	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
-		parseTransferableCoins(player:getId(), msg)
+		parseTransferableCoins(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_OpenStore then
-		parseOpenStore(player:getId(), msg)
+		parseOpenStore(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_RequestStoreOffers then
-		parseRequestStoreOffers(player:getId(), msg)
+		parseRequestStoreOffers(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_BuyStoreOffer then
-		parseBuyStoreOffer(player:getId(), msg)
+		parseBuyStoreOffer(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_OpenTransactionHistory then
-		parseOpenTransactionHistory(player:getId(), msg)
+		parseOpenTransactionHistory(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_RequestTransactionHistory then
-		parseRequestTransactionHistory(player:getId(), msg)
+		parseRequestTransactionHistory(playerId, msg)
 	end
 
 	return true

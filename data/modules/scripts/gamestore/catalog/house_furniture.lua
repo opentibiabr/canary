@@ -216,7 +216,7 @@ return {
 			icons = { "Flower_Table.png" },
 			name = "Flower Table",
 			price = 80,
-			itemtype = 39777,
+			itemtype = 39772,
 			count = 1,
 			description = "{house}\n{box}\n{storeinbox}\n{use}\n{backtoinbox}",
 			type = GameStore.OfferTypes.OFFER_TYPE_HOUSE,

@@ -34,7 +34,8 @@ local function openStore(playerId)
 		msg:addByte(0x00)
 	end
 
-	local GameStoreCategories, GameStoreCount = nil, 0
+	local GameStoreCount
+	local GameStoreCategories
 	if player:getVocation():getId() == 0 then
 		GameStoreCategories, GameStoreCount = getCategoriesRook()
 	else

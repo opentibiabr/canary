@@ -2,10 +2,8 @@ local senders = require("gamestore.senders")
 local purchases = {}
 
 local sendStorePurchaseSuccessful = senders.sendStorePurchaseSuccessful
-local sendStoreError = senders.sendStoreError
 local sendRequestPurchaseData = senders.sendRequestPurchaseData
 local sendUpdatedStoreBalances = senders.sendUpdatedStoreBalances
-local sendHomePage = senders.sendHomePage
 
 local function processItemPurchase(player, offerId, offerCount, movable, setOwner)
 	local canReceive, errorMsg = player:canReceiveStoreItems(offerId, offerCount)
@@ -201,7 +199,8 @@ local function processNameChangePurchase(player, offer, productType, newName)
 			return error({ code = 1, message = result.reason })
 		end
 
-		local message, namelockReason = "", player:kv():get("namelock")
+		local namelockReason = player:kv():get("namelock")
+		local message
 		if not namelockReason then
 			player:makeCoinTransaction(offer)
 			message = string.format("You have purchased %s for %d coins.", offer.name, offer.price)

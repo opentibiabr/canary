@@ -78,6 +78,7 @@ return {
 			icons = { "Prey_Bonus_Reroll.png" },
 			name = "Prey Wildcard",
 			price = 50,
+			id = GameStore.SubActions.PREY_WILDCARD,
 			count = 20,
 			description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
 			type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,

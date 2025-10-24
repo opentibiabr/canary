@@ -63,7 +63,7 @@ return {
 			id = HIRELING_SKILLS.STEWARD[1],
 			count = 1,
 			number = 1,
-			description = "{info} Give your hirelings the ability to access and manage your stash at the confort of your from home",
+			description = "{info} Give your hirelings the ability to access and manage your stash at the comfort of your home",
 			type = GameStore.OfferTypes.OFFER_TYPE_HIRELING_SKILL,
 		},
 		{

@@ -10,7 +10,6 @@ local sendStoreError = senders.sendStoreError
 local sendStorePurchaseSuccessful = senders.sendStorePurchaseSuccessful
 local sendUpdatedStoreBalances = senders.sendUpdatedStoreBalances
 local sendStoreTransactionHistory = senders.sendStoreTransactionHistory
-local sendRequestPurchaseData = senders.sendRequestPurchaseData
 local sendHomePage = senders.sendHomePage
 
 local function isItsPacket(byte)
@@ -147,7 +146,7 @@ local function parseRequestStoreOffers(playerId, msg)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_PREMIUM_BOOST then
 		local subAction = msg:getByte()
-		local category = nil
+		local category
 
 		local premiumCategoryName = "Premium Time"
 		if configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) then
@@ -165,7 +164,7 @@ local function parseRequestStoreOffers(playerId, msg)
 	elseif actionType == GameStore.ActionType.OPEN_USEFUL_THINGS then
 		local subAction = msg:getByte()
 		local offerId = subAction
-		local category = nil
+		local category
 		if subAction >= GameStore.SubActions.BLESSING_TWIST and subAction <= GameStore.SubActions.BLESSING_ALL_PVP then
 			category = GameStore.getCategoryByName("Blessings")
 		else

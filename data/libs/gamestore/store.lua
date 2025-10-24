@@ -265,8 +265,8 @@ local function canUseHirelingName(name)
 	-- just copied from znote aac.
 	local words = { "owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "adm", "cm", "gm", "tutor", "counsellor" }
 	local split = name:split(" ")
-	for k, word in ipairs(words) do
-		for k, nameWord in ipairs(split) do
+	for wordIndex, word in ipairs(words) do
+		for partIndex, nameWord in ipairs(split) do
 			if nameWord:lower() == word then
 				result.reason = "You can't use word \"" .. word .. '" in your hireling name.'
 				return result

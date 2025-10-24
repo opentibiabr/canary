@@ -74,6 +74,7 @@ for key, value in pairs(playerLib) do
 	Player[key] = value
 end
 
+-- Expose senders and parsers functions for compatibility
 openStore = senders.openStore
 sendOfferDescription = senders.sendOfferDescription
 sendShowStoreOffers = senders.sendShowStoreOffers

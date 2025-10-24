@@ -91,25 +91,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "white pearl", chance = 5000 },
-	{ name = "black pearl", chance = 5960, maxCount = 3 },
-	{ name = "gold coin", chance = 100000, maxCount = 139 },
-	{ name = "small emerald", chance = 2230, maxCount = 3 },
-	{ name = "platinum coin", chance = 19720 },
-	{ name = "yellow gem", chance = 690 },
-	{ name = "platinum amulet", chance = 450 },
-	{ id = 3059, chance = 10000 }, -- spellbook
-	{ name = "mind stone", chance = 350 },
-	{ id = 3098, chance = 1540 }, -- ring of healing
-	{ name = "skull staff", chance = 550 },
-	{ name = "strange helmet", chance = 740 },
-	{ name = "ancient shield", chance = 2422 },
-	{ name = "castle shield", chance = 350 },
-	{ name = "blue robe", chance = 150 },
-	{ name = "strong mana potion", chance = 7500 },
-	{ name = "lightning boots", chance = 200 },
-	{ name = "small topaz", chance = 2430, maxCount = 3 },
-	{ name = "maxilla maximus", chance = 100 },
+	{ id = 3031, chance = 87209, maxCount = 139 }, -- Gold Coin
+	{ id = 3035, chance = 19836 }, -- Platinum Coin
+	{ id = 3059, chance = 9267 }, -- Spellbook
+	{ id = 237, chance = 3394 }, -- Strong Mana Potion
+	{ id = 3027, chance = 4871, maxCount = 3 }, -- Black Pearl
+	{ id = 3026, chance = 3246 }, -- White Pearl
+	{ id = 3432, chance = 2206 }, -- Ancient Shield
+	{ id = 9057, chance = 2709, maxCount = 3 }, -- Small Topaz
+	{ id = 3032, chance = 2348, maxCount = 3 }, -- Small Emerald
+	{ id = 3098, chance = 1191 }, -- Ring of Healing
+	{ id = 3062, chance = 723 }, -- Mind Stone
+	{ id = 3373, chance = 1094 }, -- Strange Helmet
+	{ id = 3037, chance = 702 }, -- Yellow Gem
+	{ id = 820, chance = 393 }, -- Lightning Boots
+	{ id = 3324, chance = 280 }, -- Skull Staff
+	{ id = 3435, chance = 268 }, -- Castle Shield
+	{ id = 3055, chance = 174 }, -- Platinum Amulet
+	{ id = 3567, chance = 174 }, -- Blue Robe
+	{ id = 12304, chance = 107 }, -- Maxilla Maximus
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

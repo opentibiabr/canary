@@ -74,24 +74,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 95 },
-	{ name = "platinum coin", chance = 100000, maxCount = 11 },
-	{ name = "small enchanted sapphire", chance = 8900 },
-	{ id = 3039, chance = 94465, maxCount = 1 }, -- red gem
-	{ name = "white gem", chance = 5600, maxCount = 1 },
-	{ id = 48114, chance = 1000 }, -- peppermint backpack
-	{ id = 45643, chance = 555 }, -- biscuit barrier
-	{ id = 45644, chance = 1009 }, -- candy-coated quiver
-	{ id = 45639, chance = 555 }, -- cocoa grimoire
-	{ id = 45640, chance = 555 }, -- creamy grimoire
-	{ id = 45641, chance = 2300 }, -- candy necklace
-	{ id = 45642, chance = 7650 }, -- ring of temptation
-	{ id = 48254, chance = 11655, maxCount = 1 }, -- churro heart
-	{ id = 48250, chance = 46555, maxCount = 1 }, -- dark chocolate coin
-	{ id = 48252, chance = 15300, maxCount = 1 }, -- beijinho
-	{ id = 45642, chance = 14650, maxCount = 1 }, -- brigadeiro
-	{ id = 48249, chance = 54465, maxCount = 1 }, -- milk chocolate coin
-	{ id = 48256, chance = 2367, maxCount = 1 }, -- pastry dragon
+	{ id = 3031, chance = 1000, maxCount = 94 }, -- Gold Coin
+	{ id = 3035, chance = 1000, maxCount = 11 }, -- Platinum Coin
+	{ id = 3029, chance = 100000 }, -- Small Sapphire
+	{ id = 3039, chance = 94708 }, -- Red Gem
+	{ id = 48250, chance = 49735, maxCount = 20 }, -- Dark Chocolate Coin
+	{ id = 48249, chance = 50264, maxCount = 20 }, -- Milk Chocolate Coin
+	{ id = 48251, chance = 29629 }, -- Wafer Paper Flower
+	{ id = 48255, chance = 24867 }, -- Lime Tart
+	{ id = 48253, chance = 16666 }, -- Beijinho
+	{ id = 48252, chance = 14285 }, -- Brigadeiro
+	{ id = 48254, chance = 14550 }, -- Churro Heart
+	{ id = 32769, chance = 5291 }, -- White Gem
+	{ id = 48256, chance = 2910 }, -- Pastry Dragon
+	{ id = 45641, chance = 1000 }, -- Candy Necklace
+	{ id = 45642, chance = 6349 }, -- Ring of Temptation
+	{ id = 45644, chance = 529 }, -- Candy-Coated Quiver
+	{ id = 45643, chance = 264 }, -- Biscuit Barrier
+	{ id = 45640, chance = 1000 }, -- Creamy Grimoire
+	{ id = 45639, chance = 264 }, -- Cocoa Grimoire
+	{ id = 48114, chance = 529 }, -- Peppermint Backpack
 }
 
 monster.attacks = {

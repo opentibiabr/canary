@@ -82,18 +82,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3007, chance = 1030 }, -- crystal ring
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 10 },
-	{ name = "platinum amulet", chance = 121 },
-	{ name = "boots of haste", chance = 121 },
-	{ name = "protection amulet", chance = 847 },
-	{ name = "shadow herb", chance = 4761 },
-	{ name = "haunted blade", chance = 318 },
-	{ name = "chaos mace", chance = 121 },
-	{ name = "strong mana potion", chance = 1612 },
-	{ name = "spirit cloak", chance = 520 },
-	{ name = "crystal of balance", chance = 127 },
+	{ id = 3031, chance = 89960, maxCount = 110 }, -- Gold Coin
+	{ id = 237, chance = 1500 }, -- Strong Mana Potion
+	{ id = 3740, chance = 5031 }, -- Shadow Herb
+	{ id = 3007, chance = 846 }, -- Crystal Ring
+	{ id = 3084, chance = 941 }, -- Protection Amulet
+	{ id = 8042, chance = 585 }, -- Spirit Cloak
+	{ id = 3055, chance = 162 }, -- Platinum Amulet
+	{ id = 3079, chance = 86 }, -- Boots of Haste
+	{ id = 7407, chance = 208 }, -- Haunted Blade
+	{ id = 7427, chance = 52 }, -- Chaos Mace
+	{ id = 9028, chance = 145 }, -- Crystal of Balance
 }
 
 monster.attacks = {

@@ -76,26 +76,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 24 },
-	{ name = "gold ingot", chance = 11820, maxCount = 2 },
-	{ id = 3039, chance = 14550, maxCount = 1 }, -- red gem
-	{ name = "violet crystal shard", chance = 6360, maxCount = 3 },
-	{ name = "green crystal shard", chance = 5450 },
-	{ name = "blue crystal shard", chance = 5450 },
-	{ name = "tremendous tyrant shell", chance = 4550 },
-	{ name = "yellow gem", chance = 9090, maxCount = 1 },
-	{ name = "spellbook of warding", chance = 8180 },
-	{ name = "wand of starstorm", chance = 910 },
-	{ name = "ice rapier", chance = 1820 },
-	{ name = "hailstorm rod", chance = 2730 },
-	{ name = "knight axe", chance = 4550 },
-	{ name = "dragonbone staff", chance = 3640 },
-	{ name = "tremendous tyrant head", chance = 8180 },
-	{ name = "wand of cosmic energy", chance = 2730 },
-	{ name = "warrior's shield", chance = 1820 },
-	{ name = "elven amulet", chance = 2730 },
-	{ name = "focus cape", chance = 1820 },
-	{ name = "glacier robe", chance = 4555 },
+	{ id = 3035, chance = 100000, maxCount = 28 }, -- Platinum Coin
+	{ id = 3039, chance = 8335 }, -- Red Gem
+	{ id = 9058, chance = 11209 }, -- Gold Ingot
+	{ id = 16119, chance = 6062 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 7695 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 6720 }, -- Green Crystal Shard
+	{ id = 36784, chance = 4937 }, -- Tremendous Tyrant Shell
+	{ id = 822, chance = 3051 }, -- Lightning Legs
+	{ id = 824, chance = 2227 }, -- Glacier Robe
+	{ id = 3037, chance = 4398 }, -- Yellow Gem
+	{ id = 3067, chance = 3146 }, -- Hailstorm Rod
+	{ id = 3073, chance = 2793 }, -- Wand of Cosmic Energy
+	{ id = 3082, chance = 1986 }, -- Elven Amulet
+	{ id = 3284, chance = 3705 }, -- Ice Rapier
+	{ id = 3318, chance = 3360 }, -- Knight Axe
+	{ id = 7430, chance = 3238 }, -- Dragonbone Staff
+	{ id = 8043, chance = 2145 }, -- Focus Cape
+	{ id = 8073, chance = 4516 }, -- Spellbook of Warding
+	{ id = 8092, chance = 3680 }, -- Wand of Starstorm
+	{ id = 14042, chance = 2281 }, -- Warrior's Shield
+	{ id = 36783, chance = 3316 }, -- Tremendous Tyrant Head
 }
 
 monster.attacks = {

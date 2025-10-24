@@ -73,48 +73,50 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 23529, chance = 6250 }, -- ring of blue plasma
-	{ id = 23531, chance = 16670 }, -- ring of green plasma
-	{ id = 23531, chance = 3130 }, -- ring of green plasma
-	{ id = 23542, chance = 33330 }, -- collar of blue plasma
-	{ id = 23542, chance = 9380 }, -- collar of blue plasma
-	{ id = 23543, chance = 12500 }, -- collar of green plasma
-	{ id = 23544, chance = 9380 }, -- collar of red plasma
-	{ id = 3039, chance = 33330 }, -- red gem
-	{ id = 3341, chance = 3130 }, -- arcane staff
-	{ name = "berserk potion", chance = 18750 },
-	{ name = "blue gem", chance = 50000 },
-	{ name = "bullseye potion", chance = 25000 },
-	{ name = "chaos mace", chance = 9380 },
-	{ name = "crystal coin", chance = 33330, maxCount = 3 },
-	{ name = "energy bar", chance = 100000 },
-	{ name = "energy bar", chance = 93750 },
-	{ name = "giant sapphire", chance = 3130 },
-	{ id = 282, chance = 33330 }, -- giant shimmering pearl
-	{ name = "gold ingot", chance = 33330 },
-	{ name = "gold token", chance = 71880 },
-	{ name = "green gem", chance = 21880, maxCount = 2 },
-	{ name = "huge chunk of crude iron", chance = 33330 },
-	{ name = "izcandar's snow globe", chance = 3130 },
-	{ name = "izcandar's sundial", chance = 3130 },
-	{ name = "magic sulphur", chance = 16670 },
-	{ name = "mastermind potion", chance = 9380 },
-	{ name = "mysterious remains", chance = 93750 },
-	{ name = "piggy bank", chance = 93750 },
-	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ name = "pomegranate", chance = 16670 },
-	{ name = "ring of the sky", chance = 12500 },
-	{ name = "royal star", chance = 50000, maxCount = 199 },
-	{ name = "silver token", chance = 100000, maxCount = 2 },
-	{ name = "skull staff", chance = 6250 },
-	{ name = "soul stone", chance = 16670 },
-	{ name = "summerblade", chance = 3130 },
-	{ name = "supreme health potion", chance = 66670, maxCount = 14 },
-	{ name = "ultimate mana potion", chance = 56250, maxCount = 20 },
-	{ name = "ultimate spirit potion", chance = 66670, maxCount = 5 },
-	{ name = "violet gem", chance = 3130 },
-	{ name = "winterblade", chance = 6250 },
-	{ name = "yellow gem", chance = 34380, maxCount = 2 },
+	{ id = 23535, chance = 100000 }, -- Energy Bar
+	{ id = 2995, chance = 100000 }, -- Piggy Bank
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 22516, chance = 100000, maxCount = 3 }, -- Silver Token
+	{ id = 29944, chance = 1000 }, -- Izcandar's Snow Globe
+	{ id = 23373, chance = 49350, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 7439, chance = 22077, maxCount = 10 }, -- Berserk Potion
+	{ id = 3043, chance = 11688 }, -- Crystal Coin
+	{ id = 22721, chance = 77922, maxCount = 2 }, -- Gold Token
+	{ id = 25759, chance = 36363, maxCount = 100 }, -- Royal Star
+	{ id = 23374, chance = 48051, maxCount = 14 }, -- Ultimate Spirit Potion
+	{ id = 7443, chance = 27272, maxCount = 10 }, -- Bullseye Potion
+	{ id = 7427, chance = 9090 }, -- Chaos Mace
+	{ id = 30061, chance = 3896 }, -- Giant Sapphire
+	{ id = 281, chance = 16883 }, -- Giant Shimmering Pearl
+	{ id = 3038, chance = 25974, maxCount = 2 }, -- Green Gem
+	{ id = 5892, chance = 40259 }, -- Huge Chunk of Crude Iron
+	{ id = 3039, chance = 36363 }, -- Red Gem
+	{ id = 23531, chance = 11688 }, -- Ring of Green Plasma
+	{ id = 23375, chance = 58441, maxCount = 6 }, -- Supreme Health Potion
+	{ id = 3037, chance = 27272 }, -- Yellow Gem
+	{ id = 29422, chance = 5194 }, -- Winterblade
+	{ id = 29421, chance = 5194 }, -- Summerblade
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 23543, chance = 5194 }, -- Collar of Green Plasma
+	{ id = 5904, chance = 7792 }, -- Magic Sulphur
+	{ id = 3341, chance = 2597 }, -- Arcane Staff
+	{ id = 7440, chance = 23376 }, -- Mastermind Potion
+	{ id = 30169, chance = 23376 }, -- Pomegranate
+	{ id = 29945, chance = 2631 }, -- Izcandar's Sundial
+	{ id = 3041, chance = 14285 }, -- Blue Gem
+	{ id = 3324, chance = 25974 }, -- Skull Staff
+	{ id = 23526, chance = 12987 }, -- Collar of Blue Plasma
+	{ id = 23529, chance = 6493 }, -- Ring of Blue Plasma
+	{ id = 3036, chance = 10389 }, -- Violet Gem
+	{ id = 9058, chance = 18181 }, -- Gold Ingot
+	{ id = 23544, chance = 9090 }, -- Collar of Red Plasma
+	{ id = 3006, chance = 6493 }, -- Ring of the Sky
+	{ id = 30056, chance = 7792 }, -- Ornate Locket
+	{ id = 30059, chance = 2597 }, -- Giant Ruby
+	{ id = 5809, chance = 5263 }, -- Soul Stone
+	{ id = 23533, chance = 6493 }, -- Ring of Red Plasma
+	{ id = 30170, chance = 2564 }, -- Turquoise Tendril Lantern
+	{ id = 7414, chance = 2564 }, -- Abyss Hammer
 }
 
 monster.attacks = {

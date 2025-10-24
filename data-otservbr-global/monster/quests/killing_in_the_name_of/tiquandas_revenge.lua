@@ -61,14 +61,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 87250, maxCount = 110 }, -- gold coin
-	{ id = 3577, chance = 70250, maxCount = 50 }, -- meat
-	{ id = 3582, chance = 38250, maxCount = 8 }, -- ham
-	{ id = 3728, chance = 21250, maxCount = 6 }, -- dark mushroom
-	{ id = 3028, chance = 100 }, -- small diamond
-	{ id = 647, chance = 100000, maxCount = 3 }, -- seeds
-	{ id = 12311, chance = 12750 }, -- carrot on a stick
-	{ id = 5014, chance = 100000 }, -- mandrake
+	{ id = 3031, chance = 87500, maxCount = 110 }, -- Gold Coin
+	{ id = 3577, chance = 68750, maxCount = 50 }, -- Meat
+	{ id = 3582, chance = 37500, maxCount = 8 }, -- Ham
+	{ id = 3728, chance = 23073, maxCount = 6 }, -- Dark Mushroom
+	{ id = 647, chance = 100000, maxCount = 3 }, -- Seeds
+	{ id = 5014, chance = 100000 }, -- Mandrake
+	{ id = 12311, chance = 12500 }, -- Carrot on a Stick
+	{ id = 3028, chance = 1000 }, -- Small Diamond
 }
 
 monster.attacks = {

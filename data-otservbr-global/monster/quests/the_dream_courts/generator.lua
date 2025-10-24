@@ -56,7 +56,9 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_EARTHDAMAGE, minDamage = -206, maxDamage = -252, radius = 6, effect = CONST_ME_GREEN_RINGS, target = false },

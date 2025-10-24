@@ -64,7 +64,9 @@ monster.voices = {
 	{ text = "I will teach them all to leave me alone!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "outfit", interval = 4000, chance = 12, range = 7, radius = 4, effect = CONST_ME_MAGIC_BLUE, target = true, duration = 2000, outfitMonster = "rat" },

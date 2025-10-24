@@ -66,28 +66,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 50 },
-	{ name = "halberd", chance = 11025 },
-	{ name = "strong mana potion", chance = 9728 },
-	{ name = "orichalcum pearl", chance = 9728 },
-	{ name = "spike sword", chance = 8301 },
-	{ name = "combat knife", chance = 7004 },
-	{ name = "flotsam", chance = 6874 },
-	{ name = "white pearl", chance = 6485 },
-	{ id = 3130, chance = 6355 }, -- twigs
-	{ id = 3289, chance = 6355 }, -- staff
-	{ name = "remains of a fish", chance = 5966 },
-	{ name = "glacier shoes", chance = 5707 },
-	{ name = "coral branch", chance = 4929 },
-	{ name = "soul orb", chance = 4929 },
-	{ id = 3027, chance = 4669 }, -- black pearl
-	{ name = "small diamond", chance = 3891 },
-	{ name = "small emerald", chance = 3243, maxCount = 2 },
-	{ id = 281, chance = 2205 }, -- giant shimmering pearl (green)
-	{ name = "terra boots", chance = 5075 },
-	{ name = "mercenary sword", chance = 4167 },
-	{ name = "knight legs", chance = 3649 },
-	{ name = "violet gem", chance = 3389 },
+	{ id = 3035, chance = 100000, maxCount = 20 }, -- Platinum Coin
+	{ id = 237, chance = 7234 }, -- Strong Mana Potion
+	{ id = 819, chance = 6505 }, -- Glacier Shoes
+	{ id = 3026, chance = 6883 }, -- White Pearl
+	{ id = 3027, chance = 6163 }, -- Black Pearl
+	{ id = 3125, chance = 7435 }, -- Remains of a Fish
+	{ id = 3130, chance = 7901 }, -- Twigs
+	{ id = 3269, chance = 12663 }, -- Halberd
+	{ id = 3271, chance = 7495 }, -- Spike Sword
+	{ id = 3289, chance = 7524 }, -- Staff
+	{ id = 3292, chance = 7860 }, -- Combat Knife
+	{ id = 5021, chance = 6948 }, -- Orichalcum Pearl
+	{ id = 39406, chance = 4620 }, -- Coral Branch
+	{ id = 39407, chance = 5347 }, -- Flotsam
+	{ id = 281, chance = 2619 }, -- Giant Shimmering Pearl (Green)
+	{ id = 813, chance = 2435 }, -- Terra Boots
+	{ id = 3028, chance = 3620 }, -- Small Diamond
+	{ id = 3032, chance = 4050, maxCount = 2 }, -- Small Emerald
+	{ id = 5944, chance = 5347 }, -- Soul Orb
+	{ id = 3036, chance = 560 }, -- Violet Gem
+	{ id = 3371, chance = 1517 }, -- Knight Legs
+	{ id = 7386, chance = 1271 }, -- Mercenary Sword
+	{ id = 50152, chance = 1000 }, -- Collar of Orange Plasma
+	{ id = 3048, chance = 960 }, -- Might Ring
 }
 
 monster.attacks = {

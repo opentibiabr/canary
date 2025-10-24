@@ -78,25 +78,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 44000, maxCount = 100 },
-	{ name = "gold coin", chance = 50500, maxCount = 48 },
-	{ id = 3049, chance = 30 }, -- stealth ring
-	{ name = "protection amulet", chance = 2200 },
-	{ name = "two handed sword", chance = 1900 },
-	{ name = "throwing star", chance = 15700, maxCount = 18 },
-	{ id = 3307, chance = 11280 }, -- scimitar
-	{ name = "knight axe", chance = 280 },
-	{ name = "plate armor", chance = 1700 },
-	{ name = "brass armor", chance = 4700 },
-	{ name = "brass legs", chance = 5500 },
-	{ name = "dark helmet", chance = 1460 },
-	{ name = "crusader helmet", chance = 100 },
-	{ name = "plate legs", chance = 2444 },
-	{ name = "hunting spear", chance = 4200 },
-	{ name = "flask of warrior's sweat", chance = 210 },
-	{ name = "health potion", chance = 350 },
-	{ name = "belted cape", chance = 5000 },
-	{ name = "broken gladiator shield", chance = 5200 },
+	{ id = 3031, chance = 95810, maxCount = 148 }, -- Gold Coin
+	{ id = 8044, chance = 5880 }, -- Belted Cape
+	{ id = 3307, chance = 10885 }, -- Scimitar
+	{ id = 3287, chance = 16527, maxCount = 18 }, -- Throwing Star
+	{ id = 3359, chance = 5197 }, -- Brass Armor
+	{ id = 3372, chance = 4811 }, -- Brass Legs
+	{ id = 9656, chance = 5279 }, -- Broken Gladiator Shield
+	{ id = 3347, chance = 3338 }, -- Hunting Spear
+	{ id = 3557, chance = 1531 }, -- Plate Legs
+	{ id = 3084, chance = 1871 }, -- Protection Amulet
+	{ id = 3265, chance = 2706 }, -- Two Handed Sword
+	{ id = 3384, chance = 703 }, -- Dark Helmet
+	{ id = 3357, chance = 1664 }, -- Plate Armor
+	{ id = 266, chance = 495 }, -- Health Potion
+	{ id = 3391, chance = 300 }, -- Crusader Helmet
+	{ id = 5885, chance = 180 }, -- Flask of Warrior's Sweat
+	{ id = 3318, chance = 580 }, -- Knight Axe
+	{ id = 3049, chance = 50 }, -- Stealth Ring
+	{ id = 3081, chance = 260 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

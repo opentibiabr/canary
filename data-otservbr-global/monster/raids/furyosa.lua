@@ -81,19 +81,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 8016, chance = 100000, maxCount = 5 }, -- jalapeno pepper
-	{ id = 19083, chance = 45000 }, -- silver raid token
-	{ id = 3035, chance = 85000, maxCount = 25 }, -- platinum coin
-	{ id = 6558, chance = 35000, maxCount = 3 }, -- flask of demonic blood
-	{ id = 6499, chance = 22500 }, -- demonic essence
-	{ id = 5911, chance = 4000 }, -- red piece of cloth
-	{ id = 5944, chance = 21500 }, -- soul orb
-	{ id = 5944, chance = 50 }, -- soul orb
-	{ id = 3007, chance = 410 }, -- crystal ring
-	{ id = 6300, chance = 60 }, -- death ring
-	{ id = 3439, chance = 100 }, -- phoenix shield
-	{ id = 19391, chance = 100 }, -- furious frock
+	{ id = 3031, chance = 100000, maxCount = 363 }, -- Gold Coin
+	{ id = 3035, chance = 64704, maxCount = 25 }, -- Platinum Coin
+	{ id = 8016, chance = 100000, maxCount = 9 }, -- Jalapeno Pepper
+	{ id = 3007, chance = 59998 }, -- Crystal Ring
+	{ id = 238, chance = 46668, maxCount = 5 }, -- Great Mana Potion
+	{ id = 19083, chance = 42860 }, -- Silver Raid Token
+	{ id = 3029, chance = 35295, maxCount = 5 }, -- Small Sapphire
+	{ id = 5944, chance = 53334 }, -- Soul Orb
+	{ id = 7368, chance = 21427, maxCount = 16 }, -- Assassin Star
+	{ id = 9058, chance = 21427 }, -- Gold Ingot
+	{ id = 7642, chance = 23528, maxCount = 9 }, -- Great Spirit Potion
+	{ id = 5911, chance = 28570 }, -- Red Piece of Cloth
+	{ id = 7643, chance = 35293, maxCount = 9 }, -- Ultimate Health Potion
+	{ id = 5909, chance = 39999 }, -- White Piece of Cloth
+	{ id = 6558, chance = 30002 }, -- Flask of Demonic Blood
+	{ id = 6299, chance = 14290 }, -- Death Ring
+	{ id = 6499, chance = 21430 }, -- Demonic Essence
+	{ id = 826, chance = 14290 }, -- Magma Coat
+	{ id = 821, chance = 1000 }, -- Magma Legs
+	{ id = 3028, chance = 14287, maxCount = 9 }, -- Small Diamond
+	{ id = 3030, chance = 14287, maxCount = 7 }, -- Small Ruby
+	{ id = 9057, chance = 21430, maxCount = 8 }, -- Small Topaz
+	{ id = 5914, chance = 14287 }, -- Yellow Piece of Cloth
+	{ id = 3439, chance = 1000 }, -- Phoenix Shield
+	{ id = 19391, chance = 33333 }, -- Furious Frock
+	{ id = 7404, chance = 33333 }, -- Assassin Dagger
+	{ id = 7456, chance = 33333 }, -- Noble Axe
+	{ id = 16115, chance = 33333 }, -- Wand of Everblazing
+	{ id = 3364, chance = 1000 }, -- Golden Legs
+	{ id = 3280, chance = 1000 }, -- Fire Sword
 }
 
 monster.attacks = {

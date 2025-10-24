@@ -56,7 +56,9 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 100, attack = 100 },

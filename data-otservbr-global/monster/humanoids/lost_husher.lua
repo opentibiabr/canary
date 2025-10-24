@@ -77,28 +77,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "platinum coin", chance = 58670, maxCount = 2 },
-	{ name = "fire axe", chance = 330 },
-	{ name = "skull staff", chance = 280 },
-	{ name = "guardian shield", chance = 830 },
-	{ name = "tower shield", chance = 440 },
-	{ name = "brown mushroom", chance = 14920, maxCount = 2 },
-	{ name = "spiked squelcher", chance = 50 },
-	{ name = "strong health potion", chance = 11050, maxCount = 3 },
-	{ name = "great mana potion", chance = 10770, maxCount = 2 },
-	{ name = "terra legs", chance = 50 },
-	{ name = "terra boots", chance = 880 },
-	{ name = "small topaz", chance = 9780 },
-	{ name = "clay lump", chance = 500 },
-	{ id = 12600, chance = 10930 }, -- coal
-	{ name = "buckle", chance = 8180 },
-	{ name = "buckle", chance = 770 },
-	{ name = "bonecarving knife", chance = 8510 },
-	{ name = "wimp tooth chain", chance = 8950 },
-	{ name = "skull shatterer", chance = 12320 },
-	{ name = "red hair dye", chance = 8510 },
-	{ name = "basalt figurine", chance = 8560 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 59850, maxCount = 2 }, -- Platinum Coin
+	{ id = 17856, chance = 5920 }, -- Basalt Fetish
+	{ id = 17857, chance = 7720 }, -- Basalt Figurine
+	{ id = 17831, chance = 7610 }, -- Bone Fetish
+	{ id = 17830, chance = 8450 }, -- Bonecarving Knife
+	{ id = 3725, chance = 15090, maxCount = 2 }, -- Brown Mushroom
+	{ id = 12600, chance = 11890 }, -- Coal
+	{ id = 238, chance = 10320, maxCount = 2 }, -- Great Mana Potion
+	{ id = 17850, chance = 11650 }, -- Holy Ash
+	{ id = 17848, chance = 9180 }, -- Lost Husher's Staff
+	{ id = 17855, chance = 15390 }, -- Red Hair Dye
+	{ id = 17849, chance = 9030 }, -- Skull Shatterer
+	{ id = 9057, chance = 9830 }, -- Small Topaz
+	{ id = 236, chance = 10480, maxCount = 3 }, -- Strong Health Potion
+	{ id = 17847, chance = 12040 }, -- Wimp Tooth Chain
+	{ id = 3097, chance = 2710 }, -- Dwarven Ring
+	{ id = 17829, chance = 720 }, -- Buckle
+	{ id = 3415, chance = 960 }, -- Guardian Shield
+	{ id = 3318, chance = 780 }, -- Knight Axe
+	{ id = 813, chance = 640 }, -- Terra Boots
+	{ id = 10422, chance = 880 }, -- Clay Lump
+	{ id = 3320, chance = 270 }, -- Fire Axe
+	{ id = 3324, chance = 480 }, -- Skull Staff
+	{ id = 7452, chance = 270 }, -- Spiked Squelcher
+	{ id = 812, chance = 210 }, -- Terra Legs
+	{ id = 3428, chance = 190 }, -- Tower Shield
 }
 
 monster.attacks = {

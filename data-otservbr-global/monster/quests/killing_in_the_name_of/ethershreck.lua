@@ -64,29 +64,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 10449, chance = 100000 }, -- ghastly dragon head
-	{ id = 3031, chance = 100000, maxCount = 230 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 15 }, -- platinum coin
-	{ id = 10450, chance = 100000 }, -- undead heart
-	{ id = 6499, chance = 97000 }, -- demonic essence
-	{ id = 281, chance = 45000 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 45000 }, -- giant shimmering pearl (brown)
-	{ id = 9057, chance = 97000, maxCount = 10 }, -- small topaz
-	{ id = 10406, chance = 76000 }, -- zaoan halberd
-	{ id = 7643, chance = 60000 }, -- ultimate health potion
-	{ id = 10310, chance = 45000 }, -- shiny stone
-	{ id = 10451, chance = 37000 }, -- jade hat
-	{ id = 239, chance = 34000, maxCount = 3 }, -- great health potion
-	{ id = 10386, chance = 30000 }, -- zaoan shoes
-	{ id = 238, chance = 26000, maxCount = 3 }, -- great mana potion
-	{ id = 7642, chance = 26000, maxCount = 3 }, -- great spirit potion
-	{ id = 10438, chance = 21000 }, -- spellweaver's robe
-	{ id = 10387, chance = 15000 }, -- zaoan legs
-	{ id = 10384, chance = 13000 }, -- zaoan armor
-	{ id = 10385, chance = 13000 }, -- zaoan helmet
-	{ id = 10389, chance = 10000 }, -- sai
-	{ id = 10388, chance = 8700 }, -- drakinata
-	{ id = 12801, chance = 2170 }, -- golden can of oil
+	{ id = 3031, chance = 99444, maxCount = 230 }, -- Gold Coin
+	{ id = 3035, chance = 96667, maxCount = 15 }, -- Platinum Coin
+	{ id = 9057, chance = 97777, maxCount = 10 }, -- Small Topaz
+	{ id = 6499, chance = 96667 }, -- Demonic Essence
+	{ id = 281, chance = 100000 }, -- Giant Shimmering Pearl
+	{ id = 10450, chance = 97777 }, -- Undead Heart
+	{ id = 7643, chance = 61945 }, -- Ultimate Health Potion
+	{ id = 239, chance = 30280, maxCount = 3 }, -- Great Health Potion
+	{ id = 7642, chance = 29162, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 238, chance = 33608, maxCount = 3 }, -- Great Mana Potion
+	{ id = 10449, chance = 99444 }, -- Ghastly Dragon Head
+	{ id = 10386, chance = 27773 }, -- Zaoan Shoes
+	{ id = 10310, chance = 45834 }, -- Shiny Stone
+	{ id = 10388, chance = 11350 }, -- Drakinata
+	{ id = 10385, chance = 10275 }, -- Zaoan Helmet
+	{ id = 10451, chance = 46670 }, -- Jade Hat
+	{ id = 10438, chance = 14718 }, -- Spellweaver's Robe
+	{ id = 10406, chance = 70836 }, -- Zaoan Halberd
+	{ id = 10389, chance = 1000 }, -- Traditional Sai
+	{ id = 10387, chance = 14444 }, -- Zaoan Legs
+	{ id = 10384, chance = 14168 }, -- Zaoan Armor
+	{ id = 10390, chance = 2150 }, -- Zaoan Sword
+	{ id = 50259, chance = 310 }, -- Zaoan Monk Robe
+	{ id = 10323, chance = 4443 }, -- Guardian Boots
+	{ id = 12801, chance = 1230 }, -- Golden Can of Oil
 }
 
 monster.attacks = {

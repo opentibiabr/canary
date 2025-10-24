@@ -59,55 +59,59 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "piggy bank", chance = 80000 },
-	{ name = "royal star", chance = 80000, maxCount = 100 },
-	{ name = "platinum coin", chance = 80000, maxCount = 5 },
-	{ name = "energy bar", chance = 75000 },
-	{ name = "supreme health potion", chance = 65000, maxCount = 20 },
-	{ name = "huge chunk of crude iron", chance = 64000 },
-	{ name = "mysterious remains", chance = 63000 },
-	{ name = "ultimate spirit potion", chance = 62000, maxCount = 20 },
-	{ name = "ultimate mana potion", chance = 61000, maxCount = 20 },
-	{ name = "bullseye potion", chance = 25500, maxCount = 10 },
-	{ name = "chaos mace", chance = 25000 },
-	{ id = 30279, chance = 24500 }, -- frozen claw
-	{ name = "berserk potion", chance = 23000, maxCount = 10 },
-	{ id = 3039, chance = 22500 }, -- red gem
-	{ name = "soul stone", chance = 224000 },
-	{ id = 30275, chance = 25000 }, -- crown of the percht queen
-	{ name = "flames of the percht queen", chance = 18000 },
-	{ name = "small ladybug", chance = 24980 },
-	{ name = "gold ingot", chance = 22480 },
-	{ name = "crystal coin", chance = 24890, maxCount = 2 },
-	{ id = 281, chance = 21580 }, -- giant shimmering pearl (green)
-	{ name = "skull staff", chance = 19850 },
-	{ name = "magic sulphur", chance = 25480 },
-	{ name = "percht queen's frozen heart", chance = 26800 },
-	{ name = "percht skull", chance = 25842 },
-	{ id = 30277, chance = 25840 }, -- icicle
-	{ name = "silver token", chance = 5480, maxCount = 5 },
-	{ name = "percht handkerchief", chance = 5808 },
-	{ name = "ring of the sky", chance = 5100 },
-	{ id = 23529, chance = 8486 }, -- ring of blue plasma
-	{ id = 30321, chance = 4848 }, -- fly agaric
-	{ name = "percht broom", chance = 6485 },
-	{ name = "ice hatchet", chance = 5485 },
-	{ id = 23533, chance = 4858 }, -- ring of red plasma
-	{ id = 23531, chance = 3485 }, -- ring of green plasma
-	{ name = "yellow gem", chance = 5485 },
-	{ name = "violet gem", chance = 6485 },
-	{ id = 23544, chance = 7848 }, -- collar of red plasma
-	{ id = 23543, chance = 5485 }, -- collar of green plasma
-	{ name = "green gem", chance = 5485 },
-	{ name = "blue gem", chance = 5845 },
-	{ name = "frozen chain", chance = 5485 },
-	{ id = 23542, chance = 5158 }, -- collar of blue plasma
-	{ name = "horseshoe", chance = 1250 },
-	{ name = "golden horseshoe", chance = 2510 },
-	{ name = "abyss hammer", chance = 1480 },
-	{ name = "golden bell", chance = 2548 },
-	{ name = "golden cotton reel", chance = 1254 },
-	{ name = "lucky pig", chance = 2540 },
+	{ id = 7414, chance = 1104 }, -- Abyss Hammer
+	{ id = 9058, chance = 19658 }, -- Gold Ingot
+	{ id = 25759, chance = 33760, maxCount = 100 }, -- Royal Star
+	{ id = 282, chance = 1000 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 281, chance = 1000 }, -- Giant Shimmering Pearl (Green)
+	{ id = 23509, chance = 99145 }, -- Mysterious Remains
+	{ id = 7427, chance = 8119 }, -- Chaos Mace
+	{ id = 3324, chance = 19658 }, -- Skull Staff
+	{ id = 23526, chance = 9401 }, -- Collar of Blue Plasma
+	{ id = 23543, chance = 11965 }, -- Collar of Green Plasma
+	{ id = 23374, chance = 48717, maxCount = 20 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 58974, maxCount = 20 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 52564, maxCount = 20 }, -- Supreme Health Potion
+	{ id = 3035, chance = 99572, maxCount = 5 }, -- Platinum Coin
+	{ id = 2995, chance = 99572 }, -- Piggy Bank
+	{ id = 23535, chance = 97863 }, -- Energy Bar
+	{ id = 3038, chance = 39316 }, -- Green Gem
+	{ id = 3039, chance = 33760 }, -- Red Gem
+	{ id = 3037, chance = 27777 }, -- Yellow Gem
+	{ id = 3043, chance = 20512, maxCount = 2 }, -- Crystal Coin
+	{ id = 5892, chance = 31623 }, -- Huge Chunk of Crude Iron
+	{ id = 7443, chance = 14957, maxCount = 10 }, -- Bullseye Potion
+	{ id = 7439, chance = 20085, maxCount = 10 }, -- Berserk Potion
+	{ id = 7440, chance = 20940, maxCount = 10 }, -- Mastermind Potion
+	{ id = 5809, chance = 3867 }, -- Soul Stone
+	{ id = 5904, chance = 9829 }, -- Magic Sulphur
+	{ id = 3006, chance = 4273 }, -- Ring of the Sky
+	{ id = 23529, chance = 7692 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 4273 }, -- Ring of Green Plasma
+	{ id = 30195, chance = 3773 }, -- Golden Bell
+	{ id = 23544, chance = 8974 }, -- Collar of Red Plasma
+	{ id = 3036, chance = 8974 }, -- Violet Gem
+	{ id = 23533, chance = 7264 }, -- Ring of Red Plasma
+	{ id = 3041, chance = 14102 }, -- Blue Gem
+	{ id = 30320, chance = 1666 }, -- Lucky Pig
+	{ id = 30283, chance = 2762 }, -- Ice Hatchet
+	{ id = 30281, chance = 1709 }, -- Frozen Chain
+	{ id = 30277, chance = 7692 }, -- Icicle (Percht)
+	{ id = 30322, chance = 1709 }, -- Small Ladybug
+	{ id = 30318, chance = 1666 }, -- Horseshoe
+	{ id = 30319, chance = 1000 }, -- Golden Horseshoe
+	{ id = 30285, chance = 833 }, -- Golden Cotton Reel
+	{ id = 30279, chance = 3867 }, -- Frozen Claw
+	{ id = 30282, chance = 2631 }, -- Percht Broom
+	{ id = 30284, chance = 1000 }, -- Percht Handkerchief
+	{ id = 30280, chance = 2991 }, -- Percht Queen's Frozen Heart
+	{ id = 30276, chance = 1000 }, -- The Crown of the Percht Queen (Ice)
+	{ id = 30275, chance = 1000 }, -- The Crown of the Percht Queen (Fire)
+	{ id = 30321, chance = 4624 }, -- Fly Agaric (Item)
+	{ id = 30278, chance = 10256 }, -- Flames of the Percht Queen
+	{ id = 30192, chance = 26923 }, -- Percht Skull
+	{ id = 3341, chance = 2209 }, -- Arcane Staff
+	{ id = 2958, chance = 1000 }, -- War Horn
 }
 
 monster.attacks = {

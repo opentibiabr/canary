@@ -63,12 +63,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, maxCount = 5 }, -- platinum coin
-	{ id = 3351, chance = 50000 }, -- steel helmet
-	{ id = 5879, chance = 50000 }, -- spider silk
-	{ id = 830, chance = 50000 }, -- terra hood
-	{ id = 3371, chance = 50000 }, -- knight legs
-	{ id = 3053, chance = 33333 }, -- time ring
+	{ id = 3053, chance = 43375 }, -- Time Ring
+	{ id = 3351, chance = 59401 }, -- Steel Helmet
+	{ id = 3035, chance = 82071, maxCount = 8 }, -- Platinum Coin
+	{ id = 5879, chance = 71370, maxCount = 2 }, -- Spider Silk
+	{ id = 3371, chance = 46155 }, -- Knight Legs
+	{ id = 830, chance = 39103 }, -- Terra Hood
 }
 
 monster.attacks = {

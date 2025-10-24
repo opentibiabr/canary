@@ -87,30 +87,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 10000, maxCount = 5 },
-	{ name = "small sapphire", chance = 10000, maxCount = 5 },
-	{ name = "small ruby", chance = 12000, maxCount = 5 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "small emerald", chance = 10000, maxCount = 5 },
-	{ name = "platinum coin", chance = 100000, maxCount = 6 },
-	{ name = "might ring", chance = 910 },
-	{ id = 3049, chance = 1300 }, -- stealth ring
-	{ name = "platinum amulet", chance = 1000 },
-	{ id = 3098, chance = 3000 }, -- ring of healing
-	{ name = "giant sword", chance = 2000 },
-	{ name = "ice rapier", chance = 660 },
-	{ name = "devil helmet", chance = 910 },
-	{ name = "crusader helmet", chance = 740 },
-	{ name = "crown shield", chance = 740 },
-	{ name = "demon shield", chance = 170 },
-	{ name = "fire mushroom", chance = 20600, maxCount = 6 },
-	{ id = 5906, chance = 1000 }, -- demon dust
-	{ name = "assassin star", chance = 8340, maxCount = 10 },
-	{ name = "demonrage sword", chance = 350 },
-	{ name = "great mana potion", chance = 18000, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 20500, maxCount = 3 },
-	{ name = "small topaz", chance = 9300, maxCount = 5 },
-	{ name = "cluster of solace", chance = 4550 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 6 }, -- Platinum Coin
+	{ id = 3731, chance = 20200, maxCount = 6 }, -- Fire Mushroom
+	{ id = 7643, chance = 20040, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 238, chance = 19810, maxCount = 2 }, -- Great Mana Potion
+	{ id = 3028, chance = 10250, maxCount = 5 }, -- Small Diamond
+	{ id = 3030, chance = 10040, maxCount = 5 }, -- Small Ruby
+	{ id = 3029, chance = 10010, maxCount = 5 }, -- Small Sapphire
+	{ id = 9057, chance = 9830, maxCount = 5 }, -- Small Topaz
+	{ id = 3032, chance = 9950, maxCount = 5 }, -- Small Emerald
+	{ id = 7368, chance = 8640, maxCount = 10 }, -- Assassin Star
+	{ id = 3098, chance = 2460 }, -- Ring of Healing
+	{ id = 3281, chance = 2000 }, -- Giant Sword
+	{ id = 3049, chance = 1410 }, -- Stealth Ring
+	{ id = 3419, chance = 910 }, -- Crown Shield
+	{ id = 3048, chance = 660 }, -- Might Ring
+	{ id = 3284, chance = 880 }, -- Ice Rapier
+	{ id = 3055, chance = 660 }, -- Platinum Amulet
+	{ id = 3391, chance = 569 }, -- Crusader Helmet
+	{ id = 3356, chance = 560 }, -- Devil Helmet
+	{ id = 5906, chance = 530 }, -- Demon Dust
+	{ id = 20062, chance = 470 }, -- Cluster of Solace
+	{ id = 3420, chance = 450 }, -- Demon Shield
+	{ id = 3381, chance = 270 }, -- Crown Armor
+	{ id = 7382, chance = 90 }, -- Demonrage Sword
 }
 
 monster.attacks = {

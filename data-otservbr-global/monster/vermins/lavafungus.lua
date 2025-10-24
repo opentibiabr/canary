@@ -73,30 +73,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 22 },
-	{ name = "terra rod", chance = 41860, maxCount = 1 },
-	{ name = "lavafungus ring", chance = 9300, maxCount = 4 },
-	{ id = 3039, chance = 9300, maxCount = 1 }, -- red gem
-	{ name = "hailstorm rod", chance = 4650 },
-	{ name = "blue crystal shard", chance = 4000 },
-	{ name = "violet gem", chance = 4650 },
-	{ name = "wand of inferno", chance = 4650 },
-	{ name = "green gem", chance = 9300 },
-	{ name = "lavafungus head", chance = 4650 },
-	{ name = "cyan crystal fragment", chance = 4650 },
-	{ name = "violet crystal shard", chance = 3650 },
-	{ name = "red crystal fragment", chance = 4650 },
-	{ name = "rainbow quartz", chance = 6980 },
-	{ name = "onyx chip", chance = 4650 },
-	{ name = "yellow gem", chance = 2330 },
-	{ name = "green crystal fragment", chance = 9300 },
-	{ name = "metal spats", chance = 6980 },
-	{ name = "spellbook of warding", chance = 2500 },
-	{ name = "magma amulet", chance = 2330 },
-	{ name = "focus cape", chance = 2330 },
-	{ name = "wand of starstorm", chance = 2330 },
-	{ name = "crystal mace", chance = 1700 },
-	{ id = 3097, chance = 2330 }, -- dwarven ring
+	{ id = 3035, chance = 100000, maxCount = 18 }, -- Platinum Coin
+	{ id = 3065, chance = 25770 }, -- Terra Rod
+	{ id = 3039, chance = 6841 }, -- Red Gem
+	{ id = 3067, chance = 6097 }, -- Hailstorm Rod
+	{ id = 16119, chance = 7124 }, -- Blue Crystal Shard
+	{ id = 36786, chance = 13360 }, -- Lavafungus Ring
+	{ id = 3038, chance = 5511 }, -- Green Gem
+	{ id = 817, chance = 2597 }, -- Magma Amulet
+	{ id = 3036, chance = 4911 }, -- Violet Gem
+	{ id = 3037, chance = 4142 }, -- Yellow Gem
+	{ id = 3071, chance = 4653 }, -- Wand of Inferno
+	{ id = 3097, chance = 1949 }, -- Dwarven Ring
+	{ id = 3333, chance = 1778 }, -- Crystal Mace
+	{ id = 8043, chance = 2125 }, -- Focus Cape
+	{ id = 8073, chance = 2714 }, -- Spellbook of Warding
+	{ id = 8092, chance = 1792 }, -- Wand of Starstorm
+	{ id = 16120, chance = 3781 }, -- Violet Crystal Shard
+	{ id = 16125, chance = 4507 }, -- Cyan Crystal Fragment
+	{ id = 16126, chance = 4198 }, -- Red Crystal Fragment
+	{ id = 16127, chance = 3381 }, -- Green Crystal Fragment
+	{ id = 21169, chance = 2325 }, -- Metal Spats
+	{ id = 22193, chance = 3537 }, -- Onyx Chip
+	{ id = 25737, chance = 3351 }, -- Rainbow Quartz
+	{ id = 36785, chance = 3921 }, -- Lavafungus Head
 }
 
 monster.attacks = {

@@ -82,43 +82,44 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "curious matter", chance = 8920, maxCount = 10 },
-	{ id = 23516, chance = 20000 }, -- instable proto matter
-	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
-	{ name = "wand of defiance", chance = 8920 },
-	{ name = "rift lance", chance = 13200 },
-	{ name = "rift crossbow", chance = 7620 },
-	{ name = "haunted blade", chance = 9700 },
-	{ name = "silver token", chance = 2320 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "sapphire hammer", chance = 14000 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 29840, maxCount = 35 },
-	{ name = "wand of defiance", chance = 8723 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "medusa shield", chance = 7270 },
-	{ name = "underworld rod", chance = 9510 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "prismatic quartz", chance = 13390, maxCount = 10 },
-	{ name = "small diamond", chance = 12760, maxCount = 10 },
-	{ name = "small amethyst", chance = 14700, maxCount = 10 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "small sapphire", chance = 13790, maxCount = 10 },
-	{ name = "small emerald", chance = 14700, maxCount = 10 },
-	{ name = "small amethyst", chance = 12259, maxCount = 10 },
-	{ name = "odd organ", chance = 100000 },
-	{ name = "energy bar", chance = 16872, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
-	{ name = "great mana potion", chance = 33721, maxCount = 10 },
-	{ name = "great spirit potion", chance = 25690, maxCount = 10 },
-	{ name = "blade of corruption", chance = 3775 },
-	{ name = "magma boots", chance = 15890 },
-	{ name = "spark sphere", chance = 80000 },
-	{ name = "spellbook of lost souls", chance = 7890 },
-	{ name = "shield of corruption", chance = 150 },
-	{ name = "plasma pearls", chance = 100000 },
-	{ name = "spiked squelcher", chance = 16892, maxCount = 2 },
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 23535, chance = 100000, maxCount = 5 }, -- Energy Bar
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 3033, chance = 17857, maxCount = 10 }, -- Small Amethyst
+	{ id = 3028, chance = 17857, maxCount = 10 }, -- Small Diamond
+	{ id = 3032, chance = 14285, maxCount = 10 }, -- Small Emerald
+	{ id = 9057, chance = 26785, maxCount = 10 }, -- Small Topaz
+	{ id = 23510, chance = 98214 }, -- Odd Organ
+	{ id = 23506, chance = 98214 }, -- Plasma Pearls
+	{ id = 24962, chance = 64285, maxCount = 10 }, -- Prismatic Quartz
+	{ id = 3041, chance = 19642 }, -- Blue Gem
+	{ id = 3038, chance = 14285 }, -- Green Gem
+	{ id = 3037, chance = 26785 }, -- Yellow Gem
+	{ id = 23511, chance = 64285, maxCount = 10 }, -- Curious Matter
+	{ id = 23518, chance = 67857, maxCount = 10 }, -- Spark Sphere
+	{ id = 281, chance = 17857 }, -- Giant Shimmering Pearl
+	{ id = 7643, chance = 66071, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 46428, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 238, chance = 48214, maxCount = 5 }, -- Great Mana Potion
+	{ id = 7437, chance = 4545 }, -- Sapphire Hammer
+	{ id = 7407, chance = 15909 }, -- Haunted Blade
+	{ id = 7452, chance = 17857, maxCount = 2 }, -- Spiked Squelcher
+	{ id = 16096, chance = 21428 }, -- Wand of Defiance
+	{ id = 22516, chance = 23214 }, -- Silver Token
+	{ id = 22721, chance = 25000 }, -- Gold Token
+	{ id = 7435, chance = 1000 }, -- Impaler
+	{ id = 11688, chance = 1000 }, -- Shield of Corruption
+	{ id = 3029, chance = 14285 }, -- Small Sapphire
+	{ id = 8072, chance = 4545 }, -- Spellbook of Enlightenment
+	{ id = 3036, chance = 5555 }, -- Violet Gem
+	{ id = 3436, chance = 13636 }, -- Medusa Shield
+	{ id = 818, chance = 12500 }, -- Magma Boots
+	{ id = 25360, chance = 8333 }, -- Heart of the Mountain (Item)
+	{ id = 8082, chance = 5357 }, -- Underworld Rod
+	{ id = 7419, chance = 13157 }, -- Dreaded Cleaver
+	{ id = 3039, chance = 15789 }, -- Red Gem
+	{ id = 22727, chance = 8333 }, -- Rift Lance
 }
 
 monster.attacks = {

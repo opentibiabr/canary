@@ -63,10 +63,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6571, chance = 100000, maxCount = 2 }, -- surprise bag
-	{ id = 281, chance = 100000 }, -- giant shimmering pearl (green)
-	{ id = 14681, chance = 100000 }, -- anniversary cake
-	{ id = 14682, chance = 100000, unique = true }, -- chayenne's magical key
+
 }
 
 monster.attacks = {

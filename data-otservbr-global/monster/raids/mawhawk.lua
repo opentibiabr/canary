@@ -70,23 +70,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 20062, chance = 30000, maxCount = 2 }, -- cluster of solace
-	{ id = 20198, chance = 30000 }, -- frazzle tongue
-	{ id = 20264, chance = 30000, maxCount = 2, unique = true }, -- unrealized dream
-	{ id = 3031, chance = 10000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 10000, maxCount = 25 }, -- platinum coin
-	{ id = 3280, chance = 10000 }, -- fire sword
-	{ id = 5880, chance = 10000 }, -- iron ore
-	{ id = 5895, chance = 10000 }, -- fish fin
-	{ id = 5911, chance = 10000 }, -- red piece of cloth
-	{ id = 5925, chance = 10000 }, -- hardened bone
-	{ id = 7404, chance = 10000 }, -- assassin dagger
-	{ id = 7407, chance = 10000 }, -- haunted blade
-	{ id = 7418, chance = 10000 }, -- nightmare blade
-	{ id = 16120, chance = 10000, maxCount = 3 }, -- violet crystal shard
-	{ id = 16121, chance = 10000, maxCount = 3 }, -- green crystal shard
-	{ id = 16122, chance = 10000, maxCount = 5 }, -- green crystal splinter
-	{ id = 16124, chance = 10000, maxCount = 5 }, -- blue crystal splinter
+	{ id = 3031, chance = 100000, maxCount = 101 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 16124, chance = 32621, maxCount = 5 }, -- Blue Crystal Splinter
+	{ id = 16123, chance = 32084, maxCount = 5 }, -- Brown Crystal Splinter
+	{ id = 5895, chance = 13901 }, -- Fish Fin
+	{ id = 20198, chance = 100000 }, -- Frazzle Tongue
+	{ id = 16122, chance = 35293, maxCount = 5 }, -- Green Crystal Splinter
+	{ id = 20062, chance = 98396, maxCount = 2 }, -- Cluster of Solace
+	{ id = 20264, chance = 98396, maxCount = 2 }, -- Unrealized Dream
+	{ id = 16120, chance = 10160, maxCount = 3 }, -- Violet Crystal Shard
+	{ id = 3280, chance = 16042 }, -- Fire Sword
+	{ id = 5911, chance = 10694 }, -- Red Piece of Cloth
+	{ id = 7407, chance = 4029 }, -- Haunted Blade
+	{ id = 7418, chance = 7743 }, -- Nightmare Blade
+	{ id = 7404, chance = 4214 }, -- Assassin Dagger
+	{ id = 16119, chance = 11230 }, -- Blue Crystal Shard
+	{ id = 5880, chance = 17043 }, -- Iron Ore
+	{ id = 16121, chance = 11766 }, -- Green Crystal Shard
+	{ id = 5925, chance = 15505 }, -- Hardened Bone
 }
 
 monster.attacks = {

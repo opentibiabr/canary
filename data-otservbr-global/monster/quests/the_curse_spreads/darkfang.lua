@@ -76,27 +76,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "platinum coin", chance = 13600000, maxCount = 10 },
-	{ name = "berserk potion", chance = 13600000, maxCount = 3 },
-	{ name = "black pearl", chance = 13600000, maxCount = 3 },
-	{ name = "onyx chip", chance = 13600000, maxCount = 5 },
-	{ name = "small enchanted sapphire", chance = 13600000, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 13600000, maxCount = 5 },
-	{ name = "platinum amulet", chance = 13600000 },
-	{ name = "stone skin amulet", chance = 13600000 },
-	{ id = 3053, chance = 13600000 }, -- time ring
-	{ name = "troll green", chance = 13600000, maxCount = 2 },
-	{ name = "werewolf fur", chance = 13600000, maxCount = 2 },
-	{ name = "wolf paw", chance = 13600000, maxCount = 2 },
-	{ name = "bonebreaker", chance = 400 },
-	{ name = "dreaded cleaver", chance = 400 },
-	{ name = "werewolf amulet", chance = 400 },
-	{ name = "sai", chance = 250 },
-	{ id = 7394, chance = 13600000 }, -- wolf trophy
-	{ name = "silver token", chance = 250 },
-	{ name = "wolf backpack", chance = 100 },
+	{ id = 7439, chance = 84697, maxCount = 2 }, -- Berserk Potion
+	{ id = 3027, chance = 80562, maxCount = 5 }, -- Black Pearl
+	{ id = 3031, chance = 100000, maxCount = 117 }, -- Gold Coin
+	{ id = 22193, chance = 83550, maxCount = 3 }, -- Onyx Chip
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 675, chance = 79859, maxCount = 2 }, -- Small Enchanted Sapphire
+	{ id = 7643, chance = 100000, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 10317, chance = 100000 }, -- Werewolf Fur
+	{ id = 22052, chance = 100000 }, -- Werewolf Fangs
+	{ id = 5897, chance = 99911 }, -- Wolf Paw
+	{ id = 3081, chance = 23879 }, -- Stone Skin Amulet
+	{ id = 3741, chance = 23879 }, -- Troll Green
+	{ id = 7419, chance = 7314 }, -- Dreaded Cleaver
+	{ id = 7394, chance = 9954 }, -- Wolf Trophy
+	{ id = 7428, chance = 8355 }, -- Bonebreaker
+	{ id = 22084, chance = 265 }, -- Wolf Backpack
+	{ id = 22516, chance = 2115 }, -- Silver Token
+	{ id = 10389, chance = 1350 }, -- Traditional Sai
+	{ id = 22083, chance = 2552 }, -- Moonlight Crystals
+	{ id = 3055, chance = 3084 }, -- Platinum Amulet
+	{ id = 22060, chance = 2994 }, -- Werewolf Amulet
+	{ id = 3053, chance = 7397 }, -- Time Ring
 }
 
 monster.attacks = {

@@ -76,15 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 60 },
-	{ name = "fireworks capsule", chance = 12360 },
-	{ name = "percht horns", chance = 9790 },
-	{ name = "broken bell", chance = 5390 },
-	{ id = 30325, chance = 3190 }, -- dark bell
-	{ name = "magma amulet", chance = 1320 },
-	{ name = "magma coat", chance = 1320 },
-	{ name = "magma monocle", chance = 950 },
-	{ name = "magma legs", chance = 510 },
+	{ id = 3031, chance = 100000, maxCount = 60 }, -- Gold Coin
+	{ id = 30208, chance = 11860 }, -- Fireworks Capsule
+	{ id = 30186, chance = 9420 }, -- Percht Horns
+	{ id = 30271, chance = 5840 }, -- Grainy Fireworks Powder
+	{ id = 30187, chance = 4050 }, -- Versicolour Fireworks Powder
+	{ id = 30185, chance = 4960 }, -- Broken Bell
+	{ id = 30325, chance = 3100 }, -- Dark Bell
+	{ id = 30191, chance = 3130 }, -- Blue Fireworks Powder
+	{ id = 30190, chance = 2940 }, -- Green Fireworks Powder
+	{ id = 30268, chance = 1970 }, -- Orange Fireworks Powder
+	{ id = 30189, chance = 1790 }, -- Yellow Fireworks Powder
+	{ id = 30269, chance = 2000 }, -- Purple Fireworks Powder
+	{ id = 30270, chance = 2050 }, -- Turquoise Fireworks Powder
+	{ id = 30188, chance = 1940 }, -- Red Fireworks Powder
+	{ id = 827, chance = 1200 }, -- Magma Monocle
+	{ id = 817, chance = 1480 }, -- Magma Amulet
+	{ id = 826, chance = 1250 }, -- Magma Coat
+	{ id = 821, chance = 600 }, -- Magma Legs
 }
 
 monster.attacks = {

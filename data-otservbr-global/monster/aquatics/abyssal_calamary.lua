@@ -74,13 +74,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3581, chance = 9680 }, -- shrimp
-	{ id = 3578, chance = 10770 }, -- fish
-	{ name = "black pearl", chance = 1500, maxCount = 1 },
-	{ name = "white pearl", chance = 830, maxCount = 1 },
-	{ name = "small sapphire", chance = 250, maxCount = 3 },
-	{ name = "small ruby", chance = 500, maxCount = 3 },
-	{ name = "small amethyst", chance = 750, maxCount = 3 },
+	{ id = 3578, chance = 10650 }, -- Fish
+	{ id = 3581, chance = 9930 }, -- Shrimp
+	{ id = 3026, chance = 510 }, -- White Pearl
+	{ id = 3027, chance = 1320 }, -- Black Pearl
+	{ id = 3029, chance = 270 }, -- Small Sapphire
+	{ id = 3030, chance = 510 }, -- Small Ruby
+	{ id = 3033, chance = 570 }, -- Small Amethyst
 }
 
 monster.attacks = {}

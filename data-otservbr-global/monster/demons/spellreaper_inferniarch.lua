@@ -79,17 +79,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 5000, maxCount = 34 },
-	{ name = "wand of inferno", chance = 1500 },
-	{ name = "spellbook of mind control", chance = 300 },
-	{ name = "spellreaper staff totem", chance = 1500 },
-	{ name = "small ruby", chance = 1500, maxCount = 4 },
-	{ name = "prismatic quartz", chance = 1000 },
-	{ name = "demonic matter", chance = 4761 },
-	{ name = "fire mushroom", chance = 2000 },
-	{ name = "black pearl", chance = 1000 },
-	{ name = "demonic core essence", chance = 100 },
-	{ name = "mummified demon finger", chance = 155 },
+	{ id = 3035, chance = 100000, maxCount = 34 }, -- Platinum Coin
+	{ id = 3030, chance = 5870, maxCount = 4 }, -- Small Ruby
+	{ id = 3731, chance = 7090 }, -- Fire Mushroom
+	{ id = 3027, chance = 3130 }, -- Black Pearl
+	{ id = 3071, chance = 2110 }, -- Wand of Inferno
+	{ id = 24962, chance = 3380 }, -- Prismatic Quartz
+	{ id = 49909, chance = 3060 }, -- Demonic Core Essence
+	{ id = 8074, chance = 580 }, -- Spellbook of Mind Control
+	{ id = 49894, chance = 790 }, -- Demonic Matter
+	{ id = 49908, chance = 870 }, -- Mummified Demon Finger
+	{ id = 50054, chance = 440 }, -- Spellreaper Staff Totem
 }
 
 monster.attacks = {

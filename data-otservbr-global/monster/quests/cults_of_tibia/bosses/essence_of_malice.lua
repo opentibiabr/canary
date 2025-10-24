@@ -74,23 +74,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "silver token", chance = 2732 },
-	{ name = "gold token", chance = 1530 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 29840, maxCount = 57 },
-	{ name = "lightning legs", chance = 8723 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "demon shield", chance = 2270 },
-	{ name = "shockwave amulet", chance = 15100 },
-	{ name = "witch hat", chance = 9510 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "small amethyst", chance = 14700, maxCount = 10 },
-	{ name = "small amethyst", chance = 12259, maxCount = 10 },
-	{ name = "odd organ", chance = 100000 },
-	{ name = "energy bar", chance = 16872, maxCount = 3 },
-	{ id = 23529, chance = 8762 }, -- ring of blue plasma
-	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
-	{ name = "blade of corruption", chance = 3775 },
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 3420, chance = 10714 }, -- Demon Shield
+	{ id = 3037, chance = 19642 }, -- Yellow Gem
+	{ id = 3033, chance = 17460, maxCount = 10 }, -- Small Amethyst
+	{ id = 23529, chance = 7142 }, -- Ring of Blue Plasma
+	{ id = 822, chance = 2439 }, -- Lightning Legs
+	{ id = 23510, chance = 98412 }, -- Odd Organ
+	{ id = 23506, chance = 98412 }, -- Plasma Pearls
+	{ id = 9304, chance = 65079 }, -- Shockwave Amulet
+	{ id = 9653, chance = 71428 }, -- Witch Hat
+	{ id = 7643, chance = 41269, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 23535, chance = 100000, maxCount = 5 }, -- Energy Bar
+	{ id = 11693, chance = 14285 }, -- Blade of Corruption
+	{ id = 22721, chance = 28571 }, -- Gold Token
+	{ id = 22516, chance = 23214 }, -- Silver Token
+	{ id = 23533, chance = 3571 }, -- Ring of Red Plasma
+	{ id = 3071, chance = 73015 }, -- Wand of Inferno
+	{ id = 238, chance = 68253 }, -- Great Mana Potion
+	{ id = 23531, chance = 3571 }, -- Ring of Green Plasma
+	{ id = 3038, chance = 22222 }, -- Green Gem
+	{ id = 7642, chance = 49206 }, -- Great Spirit Potion
+	{ id = 3320, chance = 12500 }, -- Fire Axe
+	{ id = 3029, chance = 22222 }, -- Small Sapphire
+	{ id = 16096, chance = 7936 }, -- Wand of Defiance
+	{ id = 3039, chance = 25396 }, -- Red Gem
+	{ id = 281, chance = 15873 }, -- Giant Shimmering Pearl
+	{ id = 16115, chance = 15873 }, -- Wand of Everblazing
+	{ id = 827, chance = 14285 }, -- Magma Monocle
+	{ id = 3028, chance = 17460 }, -- Small Diamond
+	{ id = 7456, chance = 7142 }, -- Noble Axe
+	{ id = 9057, chance = 14285 }, -- Small Topaz
+	{ id = 3032, chance = 23214 }, -- Small Emerald
+	{ id = 3036, chance = 6250 }, -- Violet Gem
+	{ id = 25361, chance = 1000 }, -- Blood of the Mountain (Item)
 }
 
 monster.attacks = {

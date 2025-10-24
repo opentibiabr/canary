@@ -63,13 +63,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "great mana potion", chance = 4960, maxCount = 2 },
-	{ name = "strong health potion", chance = 5040, maxCount = 2 },
-	{ name = "mushroom pie", chance = 17130, maxCount = 3 },
-	{ name = "great health potion", chance = 4950, maxCount = 2 },
-	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "yellow gem", chance = 4000 },
+	{ id = 239, chance = 12304 }, -- Great Health Potion
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 16103, chance = 25124 }, -- Mushroom Pie
+	{ id = 236, chance = 12304 }, -- Strong Health Potion
+	{ id = 237, chance = 4610 }, -- Strong Mana Potion
+	{ id = 238, chance = 10252 }, -- Great Mana Potion
+	{ id = 3037, chance = 4098 }, -- Yellow Gem
+	{ id = 37531, chance = 3389 }, -- Candy Floss (Large)
 }
 
 monster.attacks = {

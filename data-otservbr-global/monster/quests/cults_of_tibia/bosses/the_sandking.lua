@@ -73,43 +73,45 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small amethyst", chance = 21000, maxCount = 10 },
-	{ name = "small emerald", chance = 19000, maxCount = 10 },
-	{ id = 3039, chance = 12000 }, -- red gem
-	{ name = "platinum coin", chance = 68299, maxCount = 30 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "small diamond", chance = 21000, maxCount = 10 },
-	{ name = "green gem", chance = 12000 },
-	{ name = "luminous orb", chance = 35000 },
-	{ name = "great mana potion", chance = 31230, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 28230, maxCount = 10 },
-	{ name = "cobra crown", chance = 400 },
-	{ name = "silver token", chance = 2500 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "magic sulphur", chance = 18920 },
-	{ id = 7440, chance = 2000 }, -- mastermind potion
-	{ id = 20062, chance = 12000, maxCount = 2 }, -- cluster of solace
-	{ name = "hailstorm rod", chance = 3470 },
-	{ id = 3036, chance = 1000 }, -- violet gem
-	{ id = 3098, chance = 20000 }, -- ring of healing
-	{ id = 3030, chance = 7360, maxCount = 10 }, -- small ruby
-	{ id = 281, chance = 28540 }, -- giant shimmering pearl (green)
-	{ name = "skull staff", chance = 13790 },
-	{ name = "grasshopper legs", chance = 13790 },
-	{ name = "huge chunk of crude iron", chance = 10000, maxCount = 2 },
-	{ id = 7404, chance = 430 }, -- assassin dagger
-	{ name = "runed sword", chance = 6666 },
-	{ name = "djinn blade", chance = 200 },
-	{ id = 16121, chance = 10000, maxCount = 3 }, -- green crystal shard
-	{ id = 16120, chance = 10000, maxCount = 3 }, -- violet crystal shard
-	{ id = 16119, chance = 10000, maxCount = 3 }, -- blue crystal shard
-	{ id = 7642, chance = 4800 }, -- great spirit potion
-	{ id = 16161, chance = 7030 }, -- crystalline axe
-	{ id = 3341, chance = 200 }, -- arcane staff
-	{ name = "heart of the mountain", chance = 400 },
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 30 }, -- Platinum Coin
+	{ id = 3028, chance = 15492, maxCount = 10 }, -- Small Diamond
+	{ id = 3033, chance = 25352, maxCount = 10 }, -- Small Amethyst
+	{ id = 3030, chance = 16901, maxCount = 10 }, -- Small Ruby
+	{ id = 3032, chance = 20312, maxCount = 10 }, -- Small Emerald
+	{ id = 9057, chance = 23943, maxCount = 10 }, -- Small Topaz
+	{ id = 281, chance = 21126 }, -- Giant Shimmering Pearl
+	{ id = 11454, chance = 46478 }, -- Luminous Orb
+	{ id = 3324, chance = 100000 }, -- Skull Staff
+	{ id = 16121, chance = 64788, maxCount = 3 }, -- Green Crystal Shard
+	{ id = 16120, chance = 60563, maxCount = 3 }, -- Violet Crystal Shard
+	{ id = 16119, chance = 64788, maxCount = 3 }, -- Blue Crystal Shard
+	{ id = 7642, chance = 60563, maxCount = 10 }, -- Great Spirit Potion
+	{ id = 238, chance = 60563, maxCount = 10 }, -- Great Mana Potion
+	{ id = 7643, chance = 54929, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 7440, chance = 100000 }, -- Mastermind Potion
+	{ id = 3039, chance = 21126 }, -- Red Gem
+	{ id = 3041, chance = 23943 }, -- Blue Gem
+	{ id = 3038, chance = 15625 }, -- Green Gem
+	{ id = 3036, chance = 6060 }, -- Violet Gem
+	{ id = 3037, chance = 16901 }, -- Yellow Gem
+	{ id = 3098, chance = 100000 }, -- Ring of Healing
+	{ id = 20062, chance = 25000 }, -- Cluster of Solace
+	{ id = 3067, chance = 15492 }, -- Hailstorm Rod
+	{ id = 14087, chance = 12121 }, -- Grasshopper Legs
+	{ id = 3341, chance = 8450 }, -- Arcane Staff
+	{ id = 5892, chance = 16901 }, -- Huge Chunk of Crude Iron
+	{ id = 5904, chance = 15625 }, -- Magic Sulphur
+	{ id = 3339, chance = 3125 }, -- Djinn Blade
+	{ id = 25360, chance = 3030 }, -- Heart of the Mountain (Item)
+	{ id = 25361, chance = 1000 }, -- Blood of the Mountain (Item)
+	{ id = 7417, chance = 4687 }, -- Runed Sword
+	{ id = 11674, chance = 1000 }, -- Cobra Crown
+	{ id = 7404, chance = 6250 }, -- Assassin Dagger
+	{ id = 22721, chance = 23943 }, -- Gold Token
+	{ id = 22516, chance = 21126 }, -- Silver Token
+	{ id = 16161, chance = 6250 }, -- Crystalline Axe
+	{ id = 14086, chance = 6250 }, -- Calopteryx Cape
 }
 
 monster.attacks = {

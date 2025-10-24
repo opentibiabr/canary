@@ -88,27 +88,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 89920, maxCount = 102 },
-	{ name = "dragon ham", chance = 66270, maxCount = 2 },
-	{ name = "steel shield", chance = 15650 },
-	{ name = "dragon's tail", chance = 9680 },
-	{ name = "crossbow", chance = 9120 },
-	{ id = 3449, chance = 8060, maxCount = 10 }, -- burst arrow
-	{ name = "longsword", chance = 3830 },
-	{ name = "steel helmet", chance = 3490 },
-	{ name = "broadsword", chance = 2700 },
-	{ name = "plate legs", chance = 2029 },
-	{ name = "double axe", chance = 1580 },
-	{ name = "strong health potion", chance = 1130 },
-	{ name = "green dragon leather", chance = 1070 },
-	{ name = "green dragon scale", chance = 1010 },
-	{ name = "wand of inferno", chance = 560 },
-	{ name = "small diamond", chance = 450 },
-	{ name = "serpent sword", chance = 230 },
-	{ name = "dragon hammer", chance = 230 },
-	{ name = "dragonbone staff", chance = 170 },
-	{ name = "life crystal", chance = 170 },
-	{ name = "dragon shield", chance = 110 },
+	{ id = 3031, chance = 90235, maxCount = 105 }, -- Gold Coin
+	{ id = 3583, chance = 66184, maxCount = 3 }, -- Dragon Ham
+	{ id = 3409, chance = 14941 }, -- Steel Shield
+	{ id = 3349, chance = 10086 }, -- Crossbow
+	{ id = 11457, chance = 9967 }, -- Dragon's Tail
+	{ id = 3449, chance = 44159, maxCount = 10 }, -- Burst Arrow
+	{ id = 3285, chance = 4395 }, -- Longsword
+	{ id = 3351, chance = 2974 }, -- Steel Helmet
+	{ id = 3301, chance = 2052 }, -- Broadsword
+	{ id = 3557, chance = 2139 }, -- Plate Legs
+	{ id = 5877, chance = 910 }, -- Green Dragon Leather
+	{ id = 3071, chance = 1069 }, -- Wand of Inferno
+	{ id = 236, chance = 985 }, -- Strong Health Potion
+	{ id = 5920, chance = 986 }, -- Green Dragon Scale
+	{ id = 3275, chance = 959 }, -- Double Axe
+	{ id = 3322, chance = 519 }, -- Dragon Hammer
+	{ id = 3297, chance = 516 }, -- Serpent Sword
+	{ id = 3028, chance = 455 }, -- Small Diamond
+	{ id = 3416, chance = 352 }, -- Dragon Shield
+	{ id = 3061, chance = 106 }, -- Life Crystal
+	{ id = 7430, chance = 121 }, -- Dragonbone Staff
+	{ id = 44158, chance = 90 }, -- Dragon Trophy
 }
 
 monster.attacks = {

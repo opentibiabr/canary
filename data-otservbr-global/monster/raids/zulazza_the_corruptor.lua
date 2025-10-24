@@ -72,29 +72,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 239, chance = 30500 }, -- great health potion
-	{ id = 3035, chance = 41325, maxCount = 30 }, -- platinum coin
-	{ id = 3031, chance = 49650, maxCount = 100 }, -- gold coin
-	{ id = 8894, chance = 50500 }, -- heavily rusted armor
-	{ id = 9058, chance = 33000, maxCount = 4 }, -- gold ingot
-	{ id = 3041, chance = 30500 }, -- blue gem
-	{ id = 3038, chance = 20500 }, -- green gem
-	{ id = 7643, chance = 10500 }, -- ultimate health potion
-	{ id = 10201, chance = 5500 }, -- dragon scale boots
-	{ id = 5944, chance = 19250, maxCount = 4 }, -- soul orb
-	{ id = 3428, chance = 15500 }, -- tower shield
-	{ id = 7366, chance = 8100, maxCount = 67 }, -- viper star
-	{ id = 281, chance = 28000, maxCount = 2 }, -- giant shimmering pearl (green)
-	{ id = 3037, chance = 15500 }, -- yellow gem
-	{ id = 3039, chance = 10500 }, -- red gem
-	{ id = 7440, chance = 10500 }, -- mastermind potion
-	{ id = 3036, chance = 25500 }, -- violet gem
-	{ id = 238, chance = 20500 }, -- great mana potion
-	{ id = 8054, chance = 5500 }, -- earthborn titan armor
-	{ id = 3414, chance = 5500 }, -- mastermind shield
-	{ id = 3010, chance = 10500 }, -- emerald bangle
-	{ id = 8063, chance = 5500 }, -- paladin armor
-	{ id = 3415, chance = 5500 }, -- guardian shield
+	{ id = 3031, chance = 100000, maxCount = 99 }, -- Gold Coin
+	{ id = 3035, chance = 64131, maxCount = 29 }, -- Platinum Coin
+	{ id = 7366, chance = 22782, maxCount = 46 }, -- Viper Star
+	{ id = 5944, chance = 23791, maxCount = 5 }, -- Soul Orb
+	{ id = 9058, chance = 47259, maxCount = 4 }, -- Gold Ingot
+	{ id = 281, chance = 35079, maxCount = 2 }, -- Giant Shimmering Pearl
+	{ id = 3010, chance = 17739 }, -- Emerald Bangle
+	{ id = 7643, chance = 15551 }, -- Ultimate Health Potion
+	{ id = 239, chance = 14921 }, -- Great Health Potion
+	{ id = 238, chance = 13307 }, -- Great Mana Potion
+	{ id = 7642, chance = 17723 }, -- Great Spirit Potion
+	{ id = 7440, chance = 15325 }, -- Mastermind Potion
+	{ id = 3039, chance = 25318 }, -- Red Gem
+	{ id = 3037, chance = 22987 }, -- Yellow Gem
+	{ id = 3038, chance = 15727 }, -- Green Gem
+	{ id = 3041, chance = 14112 }, -- Blue Gem
+	{ id = 3036, chance = 18144 }, -- Violet Gem
+	{ id = 10406, chance = 1000 }, -- Zaoan Halberd
+	{ id = 3415, chance = 10548 }, -- Guardian Shield
+	{ id = 3428, chance = 6983 }, -- Tower Shield
+	{ id = 8896, chance = 48261 }, -- Slightly Rusted Armor
+	{ id = 8063, chance = 9548 }, -- Paladin Armor
+	{ id = 3414, chance = 9996 }, -- Mastermind Shield
+	{ id = 10201, chance = 1780 }, -- Dragon Scale Boots
+	{ id = 8054, chance = 1180 }, -- Earthborn Titan Armor
 }
 
 monster.attacks = {

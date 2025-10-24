@@ -72,29 +72,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 96080, maxCount = 2 },
-	{ name = "white gem", chance = 52940, maxCount = 2 },
-	{ name = "moonstone", chance = 52940, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 43140, maxCount = 6 },
-	{ name = "supreme health potion", chance = 29410, maxCount = 6 },
-	{ name = "silver hand mirror", chance = 27450 },
-	{ name = "berserk potion", chance = 23530, maxCount = 10 },
-	{ name = "ultimate spirit potion", chance = 23530, maxCount = 6 },
-	{ name = "bullseye potion", chance = 19610, maxCount = 10 },
-	{ name = "mastermind potion", chance = 19610, maxCount = 10 },
-	{ name = "death toll", chance = 13730, maxCount = 2 },
-	{ name = "ivory comb", chance = 13730 },
-	{ name = "angel figurine", chance = 11760 },
-	{ name = "diamond", chance = 11760 },
-	{ name = "cursed bone", chance = 7840 },
-	{ name = "soulforged lantern", chance = 7840 },
-	{ name = "grimace", chance = 5880 },
-	{ name = "amber", chance = 5880 },
-	{ name = "amber with a dragonfly", chance = 3920 },
-	{ name = "ghost claw", chance = 1960 },
-	{ name = "bloody tears", chance = 1500 },
-	{ name = "ghost chestplate", chance = 150 },
-	{ name = "spooky hood", chance = 150 },
+	{ id = 3043, chance = 99230, maxCount = 2 }, -- Crystal Coin
+	{ id = 32769, chance = 55769, maxCount = 2 }, -- White Gem
+	{ id = 32772, chance = 21153 }, -- Silver Hand Mirror
+	{ id = 7443, chance = 24230, maxCount = 10 }, -- Bullseye Potion
+	{ id = 7439, chance = 22692, maxCount = 10 }, -- Berserk Potion
+	{ id = 7440, chance = 18846, maxCount = 10 }, -- Mastermind Potion
+	{ id = 32703, chance = 15384, maxCount = 2 }, -- Death Toll
+	{ id = 32771, chance = 50000, maxCount = 2 }, -- Moonstone
+	{ id = 23375, chance = 30384, maxCount = 6 }, -- Supreme Health Potion
+	{ id = 23374, chance = 30384, maxCount = 6 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 38461, maxCount = 6 }, -- Ultimate Mana Potion
+	{ id = 32589, chance = 11538 }, -- Angel Figurine
+	{ id = 32593, chance = 2702 }, -- Grimace
+	{ id = 32626, chance = 4230 }, -- Amber (Item)
+	{ id = 32625, chance = 2631 }, -- Amber with a Dragonfly
+	{ id = 32774, chance = 13461 }, -- Cursed Bone
+	{ id = 32773, chance = 10769 }, -- Ivory Comb
+	{ id = 32594, chance = 1923 }, -- Bloody Tears
+	{ id = 32770, chance = 17307 }, -- Diamond
+	{ id = 32591, chance = 13461 }, -- Soulforged Lantern
+	{ id = 32628, chance = 1801 }, -- Ghost Chestplate
+	{ id = 32630, chance = 2307 }, -- Spooky Hood
+	{ id = 32631, chance = 1973 }, -- Ghost Claw
+	{ id = 32622, chance = 657 }, -- Giant Amethyst
+	{ id = 32623, chance = 1801 }, -- Giant Topaz
+	{ id = 32624, chance = 1153 }, -- Amber with a Bug
 }
 
 monster.attacks = {

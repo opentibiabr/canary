@@ -73,37 +73,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 895000, maxCount = 400 },
-	{ name = "platinum coin", chance = 655000, maxCount = 15 },
-	{ name = "crystal coin", chance = 325000, maxCount = 5 },
-	{ name = "great health potion", chance = 288900, maxCount = 15 },
-	{ name = "great mana potion", chance = 281500 },
-	{ name = "great spirit potion", chance = 65337, maxCount = 45 },
-	{ name = "ultimate health potion", chance = 214800, maxCount = 12 },
-	{ name = "ultimate mana potion", chance = 155600, maxCount = 15 },
-	{ name = "supreme health potion", chance = 33385, maxCount = 23 },
-	{ name = "yellow gem", chance = 11604, maxCount = 5 },
-	{ name = "blue gem", chance = 14144, maxCount = 5 },
-	{ name = "green gem", chance = 11221, maxCount = 4 },
-	{ name = "giant topaz", chance = 11191, maxCount = 1 },
-	{ name = "giant emerald", chance = 11191, maxCount = 1 },
-	{ name = "giant sapphire", chance = 11191, maxCount = 1 },
-	{ name = "giant amethyst", chance = 12527, maxCount = 1 },
-	{ name = "white gem", chance = 311100 },
-	{ name = "yellow gem", chance = 251900 },
-	{ name = "blue gem", chance = 222200 },
-	{ name = "crystal of the mitmah", chance = 451900 },
-	{ name = "broken mitmah necklace", chance = 548100 },
-	{ name = "broken mitmah chestplate", chance = 44400 },
-	{ name = "splintered mitmah gem", chance = 3700 },
-	{ name = "stoic iks boots", chance = 500 },
-	{ name = "stoic iks faulds", chance = 500 },
-	{ name = "stoic iks casque", chance = 500 },
-	{ name = "stoic iks cuirass", chance = 500 },
-	{ name = "stoic iks chestplate", chance = 500 },
-	{ name = "stoic iks sandals", chance = 500 },
-	{ name = "stoic iks headpiece", chance = 500 },
-	{ name = "stoic iks culet", chance = 500 },
+	{ id = 3031, chance = 1000, maxCount = 400 }, -- Gold Coin
+	{ id = 3035, chance = 1000, maxCount = 15 }, -- Platinum Coin
+	{ id = 3043, chance = 1000 }, -- Crystal Coin
+	{ id = 238, chance = 27329 }, -- Great Mana Potion
+	{ id = 23373, chance = 16770, maxCount = 15 }, -- Ultimate Mana Potion
+	{ id = 239, chance = 26086, maxCount = 15 }, -- Great Health Potion
+	{ id = 7642, chance = 8074 }, -- Great Spirit Potion
+	{ id = 7643, chance = 21739, maxCount = 12 }, -- Ultimate Health Potion
+	{ id = 32769, chance = 29192 }, -- White Gem
+	{ id = 3037, chance = 24844 }, -- Yellow Gem
+	{ id = 3041, chance = 23602 }, -- Blue Gem
+	{ id = 32622, chance = 5590 }, -- Giant Amethyst
+	{ id = 44602, chance = 1242 }, -- Lesser Guardian Gem
+	{ id = 44603, chance = 4968 }, -- Guardian Gem
+	{ id = 44611, chance = 621 }, -- Lesser Mystic Gem
+	{ id = 44612, chance = 1863 }, -- Mystic Gem
+	{ id = 44605, chance = 1242 }, -- Lesser Marksman Gem
+	{ id = 44608, chance = 2484 }, -- Lesser Sage Gem
+	{ id = 44438, chance = 54658 }, -- Broken Mitmah Necklace
+	{ id = 44439, chance = 45341 }, -- Crystal of the Mitmah
+	{ id = 44727, chance = 3726 }, -- Broken Mitmah Chestplate
+	{ id = 44728, chance = 3726 }, -- Splintered Mitmah Gem
+	{ id = 50291, chance = 1000 }, -- Iks Footwraps
+	{ id = 44648, chance = 1000 }, -- Stoic Iks Boots
+	{ id = 44636, chance = 1000 }, -- Stoic Iks Casque
+	{ id = 44620, chance = 1000 }, -- Stoic Iks Chestplate
+	{ id = 44619, chance = 1000 }, -- Stoic Iks Cuirass
+	{ id = 44642, chance = 1000 }, -- Stoic Iks Culet
+	{ id = 44643, chance = 621 }, -- Stoic Iks Faulds
+	{ id = 44637, chance = 1000 }, -- Stoic Iks Headpiece
+	{ id = 50255, chance = 1000 }, -- Stoic Iks Robe
+	{ id = 44649, chance = 1000 }, -- Stoic Iks Sandals
+	{ id = 30060, chance = 3726 }, -- Giant Emerald
+	{ id = 30061, chance = 5590 }, -- Giant Sapphire
+	{ id = 32623, chance = 6832 }, -- Giant Topaz
 }
 
 monster.attacks = {

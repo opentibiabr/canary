@@ -104,36 +104,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2639, chance = 4000 }, -- picture
-	{ id = 2950, chance = 5000 }, -- lute
-	{ id = 2983, chance = 500 }, -- flower bowl
-	{ id = 2992, chance = 7000, maxCount = 5 }, -- snowball
-	{ name = "piggy bank", chance = 1000 },
-	{ name = "gold coin", chance = 22500, maxCount = 22 },
-	{ name = "scarab coin", chance = 500, maxCount = 2 },
-	{ id = 3047, chance = 4000 }, -- magic light wand
-	{ name = "blank rune", chance = 5000 },
-	{ id = 3211, chance = 1500 }, -- witchesbroom
-	{ id = 3463, chance = 1000 }, -- mirror
-	{ name = "scarf", chance = 4000 },
-	{ name = "red apple", chance = 700, maxCount = 3 },
-	{ name = "orange", chance = 7000, maxCount = 3 },
-	{ name = "cherry", chance = 7000, maxCount = 4 },
-	{ name = "cookie", chance = 7000, maxCount = 5 },
-	{ name = "candy cane", chance = 5000, maxCount = 3 },
-	{ id = 3606, chance = 5000, maxCount = 2 }, -- egg
-	{ name = "explorer brooch", chance = 4000 },
-	{ name = "orichalcum pearl", chance = 500, maxCount = 2 },
-	{ id = 5792, chance = 1000 }, -- die
-	{ name = "chicken feather", chance = 4000, maxCount = 5 },
-	{ name = "bat wing", chance = 4000, maxCount = 3 },
-	{ name = "honeycomb", chance = 4000 },
-	{ name = "lump of cake dough", chance = 7000, maxCount = 3 },
-	{ name = "valentine's cake", chance = 1500 },
-	{ name = "christmas present bag", chance = 7000 },
-	{ name = "gingerbreadman", chance = 4000, maxCount = 2 },
-	{ name = "walnut", chance = 3500, maxCount = 5 },
-	{ name = "peanut", chance = 3500, maxCount = 100 },
+	{ id = 3031, chance = 55270, maxCount = 16 }, -- Gold Coin
+	{ id = 6496, chance = 30182 }, -- Christmas Present Bag
+	{ id = 2992, chance = 15120, maxCount = 3 }, -- Snowball
+	{ id = 3598, chance = 7920, maxCount = 5 }, -- Cookie
+	{ id = 3585, chance = 9920, maxCount = 3 }, -- Red Apple
+	{ id = 6276, chance = 4930 }, -- Lump of Cake Dough
+	{ id = 3586, chance = 5120, maxCount = 2 }, -- Orange
+	{ id = 836, chance = 2000, maxCount = 4 }, -- Walnut
+	{ id = 841, chance = 940, maxCount = 5 }, -- Peanut
+	{ id = 2875, chance = 520 }, -- Bottle
+	{ id = 3572, chance = 770 }, -- Scarf
+	{ id = 3599, chance = 990, maxCount = 3 }, -- Candy Cane
+	{ id = 3606, chance = 1070, maxCount = 2 }, -- Egg
+	{ id = 4871, chance = 510 }, -- Explorer Brooch
+	{ id = 5894, chance = 600, maxCount = 3 }, -- Bat Wing
+	{ id = 10207, chance = 959 }, -- Snowman Package
+	{ id = 3590, chance = 310, maxCount = 4 }, -- Cherry
+	{ id = 6393, chance = 110 }, -- Cream Cake
+	{ id = 2950, chance = 100 }, -- Lute
+	{ id = 3147, chance = 110 }, -- Blank Rune
+	{ id = 3046, chance = 110 }, -- Magic Light Wand
+	{ id = 2639, chance = 110 }, -- Picture (Landscape)
+	{ id = 6500, chance = 420 }, -- Gingerbreadman
+	{ id = 5890, chance = 410, maxCount = 3 }, -- Chicken Feather
+	{ id = 5902, chance = 350 }, -- Honeycomb
+	{ id = 6392, chance = 100 }, -- Valentine's Cake
+	{ id = 2906, chance = 119 }, -- Watch
+	{ id = 3454, chance = 410 }, -- Broom
+	{ id = 2995, chance = 90 }, -- Piggy Bank
+	{ id = 5792, chance = 130 }, -- Die
+	{ id = 3463, chance = 80 }, -- Mirror
+	{ id = 2392, chance = 70 }, -- Small White Pillow
+	{ id = 2983, chance = 100 }, -- Flower Bowl
+	{ id = 3042, chance = 90 }, -- Scarab Coin
+	{ id = 5021, chance = 80 }, -- Orichalcum Pearl
+	{ id = 3003, chance = 70 }, -- Rope
 }
 
 monster.attacks = {}

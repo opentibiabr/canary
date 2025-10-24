@@ -59,7 +59,9 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3135, 3136, 3137, 3138, 3139, 3140, chance = 1000 }, -- Wooden Trash
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500 },

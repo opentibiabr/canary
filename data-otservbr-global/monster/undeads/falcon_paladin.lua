@@ -74,23 +74,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000, maxCount = 5 },
-	{ name = "small diamond", chance = 41000, maxCount = 2 },
-	{ name = "great spirit potion", chance = 41000, maxCount = 2 },
-	{ name = "small emerald", chance = 40000, maxCount = 2 },
-	{ name = "small amethyst", chance = 40000, maxCount = 3 },
-	{ name = "assassin star", chance = 25700, maxCount = 10 },
-	{ name = "small ruby", chance = 20700, maxCount = 2 },
-	{ name = "small topaz", chance = 20100, maxCount = 2 },
-	{ name = "onyx arrow", chance = 14000, maxCount = 15 },
-	{ id = 3039, chance = 7500, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 4880 },
-	{ name = "violet gem", chance = 4180 },
-	{ id = 282, chance = 2260 }, -- giant shimmering pearl (brown)
-	{ name = "damaged armor plates", chance = 1120 },
-	{ name = "falcon crest", chance = 730 },
-	{ name = "golden armor", chance = 310 },
-	{ name = "mastermind shield", chance = 310 },
+	{ id = 3035, chance = 89930, maxCount = 6 }, -- Platinum Coin
+	{ id = 3032, chance = 45494, maxCount = 2 }, -- Small Emerald
+	{ id = 3033, chance = 45708, maxCount = 2 }, -- Small Amethyst
+	{ id = 3028, chance = 45288, maxCount = 2 }, -- Small Diamond
+	{ id = 7642, chance = 46818, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 7368, chance = 28570, maxCount = 10 }, -- Assassin Star
+	{ id = 3030, chance = 22747, maxCount = 3 }, -- Small Ruby
+	{ id = 9057, chance = 22529, maxCount = 3 }, -- Small Topaz
+	{ id = 7365, chance = 17207, maxCount = 15 }, -- Onyx Arrow
+	{ id = 3036, chance = 4822 }, -- Violet Gem
+	{ id = 3039, chance = 7296 }, -- Red Gem
+	{ id = 3038, chance = 5465 }, -- Green Gem
+	{ id = 281, chance = 2375 }, -- Giant Shimmering Pearl (Green)
+	{ id = 28822, chance = 1000 }, -- Damaged Armor Plates
+	{ id = 28823, chance = 1018 }, -- Falcon Crest
+	{ id = 3360, chance = 364 }, -- Golden Armor
+	{ id = 3414, chance = 522 }, -- Mastermind Shield
+	{ id = 3081, chance = 140 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

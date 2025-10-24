@@ -78,13 +78,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 79000, maxCount = 40 },
-	{ id = 3053, chance = 120 }, -- time ring
-	{ name = "steel helmet", chance = 990 },
-	{ name = "brass legs", chance = 3050 },
-	{ name = "plate shield", chance = 2000 },
-	{ name = "spider fangs", chance = 4820 },
-	{ name = "tarantula egg", chance = 10000 },
+	{ id = 3031, chance = 78948, maxCount = 40 }, -- Gold Coin
+	{ id = 10281, chance = 9693 }, -- Tarantula Egg
+	{ id = 8031, chance = 4069 }, -- Spider Fangs
+	{ id = 3372, chance = 2992 }, -- Brass Legs
+	{ id = 3410, chance = 1934 }, -- Plate Shield
+	{ id = 3351, chance = 1110 }, -- Steel Helmet
+	{ id = 50258, chance = 400 }, -- Monk Robe
+	{ id = 3053, chance = 159 }, -- Time Ring
 }
 
 monster.attacks = {

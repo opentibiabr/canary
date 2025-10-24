@@ -82,20 +82,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 80700 },
-	{ name = "terra rod", chance = 17540 },
-	{ name = "great mana potion", chance = 17110, maxCount = 3 },
-	{ name = "blue gem", chance = 12720 },
-	{ name = "green gem", chance = 6580 },
-	{ name = "stone skin amulet", chance = 4820 },
-	{ name = "glacier amulet", chance = 3510 },
-	{ name = "sacred tree amulet", chance = 3070 },
-	{ name = "springsprout rod", chance = 2190 },
-	{ name = "underworld rod", chance = 2190 },
-	{ name = "platinum amulet", chance = 1750 },
-	{ name = "glacier robe", chance = 880 },
-	{ id = 23544, chance = 440 }, -- collar of red plasma
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 60510 }, -- Crystal Coin
+	{ id = 238, chance = 11870, maxCount = 3 }, -- Great Mana Potion
+	{ id = 3038, chance = 6903 }, -- Green Gem
+	{ id = 3041, chance = 7327 }, -- Blue Gem
+	{ id = 3065, chance = 14439 }, -- Terra Rod
+	{ id = 3081, chance = 4548 }, -- Stone Skin Amulet
+	{ id = 817, chance = 1000 }, -- Magma Amulet
+	{ id = 3055, chance = 1671 }, -- Platinum Amulet
+	{ id = 8082, chance = 1582 }, -- Underworld Rod
+	{ id = 8084, chance = 2338 }, -- Springsprout Rod
+	{ id = 9302, chance = 3034 }, -- Sacred Tree Amulet
+	{ id = 23544, chance = 765 }, -- Collar of Red Plasma
+	{ id = 815, chance = 2551 }, -- Glacier Amulet
+	{ id = 3081, chance = 4548 }, -- Stone Skin Amulet
+	{ id = 824, chance = 1452 }, -- Glacier Robe
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

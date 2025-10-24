@@ -67,22 +67,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 70540 },
-	{ name = "ultimate health potion", chance = 12220, maxCount = 7 },
-	{ name = "violet gem", chance = 4560 },
-	{ name = "green gem", chance = 5760 },
-	{ name = "blue gem", chance = 4960 },
-	{ name = "northwind rod", chance = 5920 },
-	{ name = "sacred tree amulet", chance = 5520 },
-	{ id = 33933, chance = 7920 }, -- apron
-	{ id = 3067, chance = 7220 }, -- hailstorm rod
-	{ name = "glacier shoes", chance = 2520 },
-	{ name = "glacier robe", chance = 2220 },
-	{ name = "stone skin amulet", chance = 5920 },
-	{ id = 23533, chance = 4892 }, -- ring of red plasma
-	{ id = 33932, chance = 3520 }, -- head
-	{ name = "glacial rod", chance = 620 },
-	{ id = 34024, chance = 650 }, -- gruesome fan
+
 }
 
 monster.attacks = {

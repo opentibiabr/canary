@@ -63,18 +63,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 65700, maxCount = 15 }, -- gold coin
-	{ id = 3410, chance = 20000 }, -- plate shield
-	{ id = 3286, chance = 12900 }, -- mace
-	{ id = 3358, chance = 10000 }, -- chain armor
-	{ id = 3354, chance = 7800 }, -- brass helmet
-	{ id = 3264, chance = 5000 }, -- sword
-	{ id = 3577, chance = 5000 }, -- meat
-	{ id = 3274, chance = 4000 }, -- axe
-	{ id = 11472, chance = 2000, maxCount = 2 }, -- minotaur horn
-	{ id = 5878, chance = 980 }, -- minotaur leather
-	{ id = 3457, chance = 310 }, -- shovel
-	{ id = 3056, chance = 120 }, -- bronze amulet
+	{ id = 27511, chance = 100000 }, -- The Cube
+	{ id = 27607, chance = 5555 }, -- Withered Pauldrons
+	{ id = 27608, chance = 5555 }, -- Withered Scalp
 }
 
 monster.attacks = {

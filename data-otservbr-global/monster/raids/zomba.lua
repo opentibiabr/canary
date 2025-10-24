@@ -69,10 +69,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 25 }, -- gold coin
-	{ id = 9691, chance = 100000, maxCount = 2 }, -- lion's mane
-	{ id = 3035, chance = 25000 }, -- platinum coin
-	{ id = 3052, chance = 12500 }, -- life ring
+	{ id = 3031, chance = 100000, maxCount = 29 }, -- Gold Coin
+	{ id = 3035, chance = 29030 }, -- Platinum Coin
+	{ id = 3582, chance = 16129, maxCount = 2 }, -- Ham
+	{ id = 3577, chance = 1000, maxCount = 4 }, -- Meat
+	{ id = 3084, chance = 3230 }, -- Protection Amulet
+	{ id = 9691, chance = 100000, maxCount = 2 }, -- Lion's Mane
+	{ id = 3415, chance = 3230 }, -- Guardian Shield
+	{ id = 3052, chance = 19350 }, -- Life Ring
+	{ id = 19083, chance = 1000 }, -- Silver Raid Token
 }
 
 monster.attacks = {

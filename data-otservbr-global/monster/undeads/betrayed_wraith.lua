@@ -76,23 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 11800, maxCount = 4 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "power bolt", chance = 50000, maxCount = 5 },
-	{ name = "orichalcum pearl", chance = 8000, maxCount = 2 },
-	{ name = "skull helmet", chance = 390 },
-	{ name = "golden figurine", chance = 160 },
-	{ name = "soul orb", chance = 10000 },
-	{ id = 6299, chance = 390 }, -- death ring
-	{ name = "demonic essence", chance = 19430 },
-	{ name = "flask of demonic blood", chance = 65250 },
-	{ name = "assassin star", chance = 10780, maxCount = 5 },
-	{ name = "mercenary sword", chance = 1890 },
-	{ name = "bloody edge", chance = 80 },
-	{ name = "great mana potion", chance = 15000, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 15410 },
-	{ name = "unholy bone", chance = 18410 },
+	{ id = 3031, chance = 99896, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 57222, maxCount = 8 }, -- Platinum Coin
+	{ id = 3450, chance = 48622, maxCount = 15 }, -- Power Bolt
+	{ id = 6558, chance = 52903 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 9157, maxCount = 5 }, -- Assassin Star
+	{ id = 6499, chance = 13258 }, -- Demonic Essence
+	{ id = 238, chance = 8918, maxCount = 3 }, -- Great Mana Potion
+	{ id = 5021, chance = 7075, maxCount = 2 }, -- Orichalcum Pearl
+	{ id = 3028, chance = 10456, maxCount = 4 }, -- Small Diamond
+	{ id = 5944, chance = 8599 }, -- Soul Orb
+	{ id = 7643, chance = 15274 }, -- Ultimate Health Potion
+	{ id = 10316, chance = 19141 }, -- Unholy Bone
+	{ id = 7386, chance = 1171 }, -- Mercenary Sword
+	{ id = 7416, chance = 252 }, -- Bloody Edge
+	{ id = 6299, chance = 345 }, -- Death Ring
+	{ id = 5799, chance = 491 }, -- Golden Figurine
+	{ id = 5741, chance = 646 }, -- Skull Helmet
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

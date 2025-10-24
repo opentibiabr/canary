@@ -80,18 +80,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3012, chance = 1480 }, -- wolf tooth chain
-	{ name = "gold coin", chance = 88000, maxCount = 30 },
-	{ id = 3093, chance = 260 }, -- club ring
-	{ name = "morning star", chance = 2150 },
-	{ name = "steel helmet", chance = 850 },
-	{ name = "dark armor", chance = 300 },
-	{ name = "battle shield", chance = 1000 },
-	{ name = "strawberry", chance = 1810, maxCount = 5 },
-	{ name = "potato", chance = 9220, maxCount = 2 },
-	{ name = "stone wing", chance = 11730 },
-	{ name = "shiny stone", chance = 190 },
-	{ name = "piece of marble rock", chance = 630 },
+	{ id = 3031, chance = 85662, maxCount = 30 }, -- Gold Coin
+	{ id = 8010, chance = 7300, maxCount = 2 }, -- Potato
+	{ id = 1781, chance = 46101, maxCount = 10 }, -- Small Stone
+	{ id = 10278, chance = 11054 }, -- Stone Wing
+	{ id = 3591, chance = 1806, maxCount = 5 }, -- Strawberry
+	{ id = 3413, chance = 1306 }, -- Battle Shield
+	{ id = 3282, chance = 1109 }, -- Morning Star
+	{ id = 3012, chance = 493 }, -- Wolf Tooth Chain
+	{ id = 3351, chance = 403 }, -- Steel Helmet
+	{ id = 10426, chance = 490 }, -- Piece of Marble Rock
+	{ id = 10310, chance = 242 }, -- Shiny Stone
+	{ id = 3093, chance = 169 }, -- Club Ring
+	{ id = 3383, chance = 233 }, -- Dark Armor
 }
 
 monster.attacks = {

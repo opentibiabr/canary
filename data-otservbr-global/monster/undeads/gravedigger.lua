@@ -80,19 +80,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 137 },
-	{ name = "platinum coin", chance = 24470 },
-	{ name = "yellow gem", chance = 800 },
-	{ name = "wand of inferno", chance = 5590 },
-	{ name = "sudden death rune", chance = 7300 },
-	{ name = "skull staff", chance = 130 },
-	{ name = "mysterious voodoo skull", chance = 100 },
-	{ id = 6299, chance = 800 }, -- death ring
-	{ name = "strong health potion", chance = 2260, maxCount = 2 },
-	{ name = "strong mana potion", chance = 3600, maxCount = 2 },
-	{ name = "unholy bone", chance = 9570 },
-	{ name = "pile of grave earth", chance = 6650 },
-	{ name = "safety pin", chance = 6000 },
+	{ id = 3031, chance = 100000, maxCount = 148 }, -- Gold Coin
+	{ id = 3035, chance = 24082 }, -- Platinum Coin
+	{ id = 10316, chance = 10294 }, -- Unholy Bone
+	{ id = 11484, chance = 7787 }, -- Pile of Grave Earth
+	{ id = 11493, chance = 6876 }, -- Safety Pin
+	{ id = 3081, chance = 4260 }, -- Stone Skin Amulet
+	{ id = 3155, chance = 4158, maxCount = 8 }, -- Sudden Death Rune
+	{ id = 3071, chance = 5242 }, -- Wand of Inferno
+	{ id = 237, chance = 3301, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 236, chance = 1995, maxCount = 2 }, -- Strong Health Potion
+	{ id = 6299, chance = 541 }, -- Death Ring
+	{ id = 3037, chance = 1378 }, -- Yellow Gem
+	{ id = 5668, chance = 267 }, -- Mysterious Voodoo Skull
+	{ id = 3324, chance = 119 }, -- Skull Staff
 }
 
 monster.attacks = {

@@ -68,16 +68,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 60 },
-	{ name = "witch broom", chance = 100000 },
-	{ name = "cape", chance = 64500 },
-	{ id = 3012, chance = 41670 }, -- wolf tooth chain
-	{ name = "broom", chance = 37500 },
-	{ name = "coat", chance = 37500 },
-	{ name = "cookie", chance = 25000, maxCount = 10 },
-	{ name = "star herb", chance = 11333 },
-	{ name = "bag of apple slices", chance = 2940 },
-	{ name = "necrotic rod", chance = 2940 },
+	{ id = 3031, chance = 100000, maxCount = 60 }, -- Gold Coin
+	{ id = 3454, chance = 35450 }, -- Broom
+	{ id = 9652, chance = 100000 }, -- Witch Broom
+	{ id = 3598, chance = 29090, maxCount = 10 }, -- Cookie
+	{ id = 3565, chance = 61820 }, -- Cape
+	{ id = 3012, chance = 39090 }, -- Wolf Tooth Chain
+	{ id = 3562, chance = 35450 }, -- Coat
+	{ id = 3736, chance = 19090 }, -- Star Herb
+	{ id = 3069, chance = 2730 }, -- Necrotic Rod
+	{ id = 12548, chance = 6360 }, -- Bag of Apple Slices
+	{ id = 3083, chance = 4550 }, -- Garlic Necklace
 }
 
 monster.attacks = {

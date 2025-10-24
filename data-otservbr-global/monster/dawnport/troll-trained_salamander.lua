@@ -60,18 +60,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3274, chance = 5080 }, -- axe
-	{ id = 3337, chance = 4630 }, -- bone club
-	{ id = 21470, chance = 17650, maxCount = 5 }, -- simple arrow
-	{ id = 3031, chance = 100000, maxCount = 11 }, -- gold coin
-	{ id = 3352, chance = 6300 }, -- chain helmet
-	{ id = 266, chance = 1520 }, -- health potion
-	{ id = 17457, chance = 34410, maxCount = 5 }, -- insectoid eggs
-	{ id = 3577, chance = 9940 }, -- meat
-	{ id = 3448, chance = 2970, maxCount = 2 }, -- poison arrow
-	{ id = 3294, chance = 4470 }, -- short sword
-	{ id = 3457, chance = 5080 }, -- shovel
-	{ id = 3376, chance = 4070 }, -- studded helmet
+	{ id = 3031, chance = 100000, maxCount = 11 }, -- Gold Coin
+	{ id = 17457, chance = 28427, maxCount = 5 }, -- Insectoid Eggs
+	{ id = 21470, chance = 17594, maxCount = 5 }, -- Simple Arrow
+	{ id = 3577, chance = 10167 }, -- Meat
+	{ id = 3352, chance = 5983 }, -- Chain Helmet
+	{ id = 3274, chance = 5117 }, -- Axe
+	{ id = 3337, chance = 4281 }, -- Bone Club
+	{ id = 3294, chance = 4550 }, -- Short Sword
+	{ id = 3376, chance = 3376 }, -- Studded Helmet
+	{ id = 3448, chance = 3063, maxCount = 2 }, -- Poison Arrow
+	{ id = 3457, chance = 4773 }, -- Shovel
+	{ id = 266, chance = 1416 }, -- Health Potion
+	{ id = 17457, chance = 14980 }, -- Insectoid Eggs
 }
 
 monster.attacks = {

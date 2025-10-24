@@ -72,21 +72,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 99 }, -- gold coin
-	{ id = 10317, chance = 100000 }, -- werewolf fur
-	{ id = 5897, chance = 100000 }, -- wolf paw
-	{ id = 7643, chance = 98000 }, -- ultimate health potion
-	{ id = 3725, chance = 94000, maxCount = 5 }, -- brown mushroom
-	{ id = 3035, chance = 94000, maxCount = 10 }, -- platinum coin
-	{ id = 7439, chance = 82000 }, -- berserk potion
-	{ id = 3081, chance = 70000 }, -- stone skin amulet
-	{ id = 3027, chance = 62000, maxCount = 5 }, -- black pearl
-	{ id = 5479, chance = 31000 }, -- cat's paw
-	{ id = 3741, chance = 21000 }, -- troll green
-	{ id = 10389, chance = 15000 }, -- sai
-	{ id = 7419, chance = 9800 }, -- dreaded cleaver
-	{ id = 3053, chance = 6000 }, -- time ring
-	{ id = 7428, chance = 2000 }, -- bonebreaker
+	{ id = 3031, chance = 100000, maxCount = 99 }, -- Gold Coin
+	{ id = 3035, chance = 95950, maxCount = 10 }, -- Platinum Coin
+	{ id = 10317, chance = 100000 }, -- Werewolf Fur
+	{ id = 5897, chance = 100000 }, -- Wolf Paw
+	{ id = 3741, chance = 24320 }, -- Troll Green
+	{ id = 3725, chance = 95950, maxCount = 5 }, -- Brown Mushroom
+	{ id = 3027, chance = 56760, maxCount = 5 }, -- Black Pearl
+	{ id = 7643, chance = 98650 }, -- Ultimate Health Potion
+	{ id = 7439, chance = 81080 }, -- Berserk Potion
+	{ id = 3081, chance = 64860 }, -- Stone Skin Amulet
+	{ id = 3053, chance = 4050 }, -- Time Ring
+	{ id = 10389, chance = 1000 }, -- Traditional Sai
+	{ id = 5479, chance = 33780 }, -- Cat's Paw
+	{ id = 7419, chance = 9460 }, -- Dreaded Cleaver
+	{ id = 7428, chance = 4050 }, -- Bonebreaker
+	{ id = 3055, chance = 2700 }, -- Platinum Amulet
 }
 
 monster.attacks = {

@@ -72,7 +72,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21899, chance = 10000, unique = true }, -- glooth glider tubes and wires
+	{ id = 21899, chance = 26388 }, -- Glooth Glider Tubes and Wires
+	{ id = 3035, chance = 38888 }, -- Platinum Coin
+	{ id = 21203, chance = 100000 }, -- Glooth Bag
+	{ id = 8895, chance = 18055 }, -- Rusted Armor
+	{ id = 8898, chance = 13888 }, -- Rusted Legs
+	{ id = 9058, chance = 9722 }, -- Gold Ingot
+	{ id = 16163, chance = 1000 }, -- Crystal Crossbow
+	{ id = 16160, chance = 1000 }, -- Crystalline Sword
 }
 
 monster.attacks = {

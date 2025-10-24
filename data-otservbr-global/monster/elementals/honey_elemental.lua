@@ -78,18 +78,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 3010 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "small emerald", chance = 3760, maxCount = 2 },
-	{ name = "platinum coin", chance = 85000, maxCount = 6 },
-	{ id = 5902, chance = 3870 }, -- honeycomb
-	{ id = 48253, chance = 1180 }, -- beijinho
-	{ id = 818, chance = 1070 }, -- magma boots
-	{ id = 821, chance = 756 }, -- magma legs
-	{ name = "strong health potion", chance = 4620 },
-	{ id = 3280, chance = 430 }, -- fire sword
-	{ name = "terra amulet", chance = 540 },
-	{ id = 48250, chance = 433, maxCount = 6 }, -- dark chocolate coin
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 84008, maxCount = 6 }, -- Platinum Coin
+	{ id = 236, chance = 5519 }, -- Strong Health Potion
+	{ id = 3028, chance = 3354 }, -- Small Diamond
+	{ id = 3032, chance = 3040, maxCount = 2 }, -- Small Emerald
+	{ id = 5902, chance = 3238 }, -- Honeycomb
+	{ id = 3048, chance = 2830 }, -- Might Ring
+	{ id = 48253, chance = 1765 }, -- Beijinho
+	{ id = 814, chance = 464 }, -- Terra Amulet
+	{ id = 818, chance = 1087 }, -- Magma Boots
+	{ id = 821, chance = 1112 }, -- Magma Legs
+	{ id = 48250, chance = 416, maxCount = 6 }, -- Dark Chocolate Coin
+	{ id = 3280, chance = 381 }, -- Fire Sword
 }
 
 monster.attacks = {

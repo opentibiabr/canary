@@ -73,14 +73,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 48000, maxCount = 25 },
-	{ id = 3114, chance = 4460 }, -- skull
-	{ id = 3115, chance = 4250 }, -- bone
-	{ id = 3116, chance = 5140 }, -- big bone
-	{ id = 3264, chance = 550 }, -- sword
-	{ name = "short sword", chance = 1003 },
-	{ name = "bone club", chance = 960 },
-	{ name = "spooky blue eye", chance = 4730 },
+	{ id = 3031, chance = 48732, maxCount = 25 }, -- Gold Coin
+	{ id = 3081, chance = 3330 }, -- Stone Skin Amulet
+	{ id = 3114, chance = 4516 }, -- Skull (Item)
+	{ id = 9642, chance = 5591 }, -- Spooky Blue Eye
+	{ id = 3116, chance = 6563 }, -- Big Bone
+	{ id = 3115, chance = 4782 }, -- Bone
+	{ id = 3337, chance = 1022 }, -- Bone Club
+	{ id = 3294, chance = 882 }, -- Short Sword
+	{ id = 3264, chance = 924 }, -- Sword
 }
 
 monster.attacks = {

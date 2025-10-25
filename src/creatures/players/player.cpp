@@ -7291,12 +7291,6 @@ void Player::sendOpenPvpSituations() {
 	}
 }
 
-void Player::sendOpenPvpSituations() {
-	if (client) {
-		client->sendOpenPvpSituations(static_cast<uint8_t>(attackedSet.size()));
-	}
-}
-
 uint8_t Player::getLastMount() const {
 	const int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
 	if (value > 0) {

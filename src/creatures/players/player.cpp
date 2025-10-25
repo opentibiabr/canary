@@ -37,6 +37,7 @@
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
+#include "database/database.hpp"
 #include "grouping/familiars.hpp"
 #include "grouping/guild.hpp"
 #include "io/iobestiary.hpp"
@@ -6019,12 +6020,15 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 	}
 
 	addInFightTicks();
+	refreshSkullTicksFromLastKill();
+	sendOpenPvpSituations();
 }
 
 void Player::onAttacked() {
 	Creature::onAttacked();
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onIdleStatus() {
@@ -6043,6 +6047,8 @@ void Player::onPlacedCreature() {
 
 	this->onChangeZone(this->getZoneType());
 
+	refreshSkullTicksFromLastKill();
+	sendOpenPvpSituations();
 	sendUnjustifiedPoints();
 }
 
@@ -6571,6 +6577,47 @@ void Player::setSkullTicks(int64_t ticks) {
 	skullTicks = ticks;
 }
 
+Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
+	SkullTimeInfo info;
+	int64_t ticks = skullTicks;
+
+	if (ticks == 0 && (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK)) {
+		const auto query = fmt::format(
+			"SELECT `time` FROM `player_kills` WHERE `player_id` = {} ORDER BY `time` DESC LIMIT 1;",
+			guid
+		);
+		if (auto result = g_database().storeQuery(query); result && result->hasNext()) {
+			int64_t lastKillTime = 0;
+			const std::string &timeStr = result->getString("time");
+			auto convResult = std::from_chars(timeStr.data(), timeStr.data() + timeStr.size(), lastKillTime);
+			if (convResult.ec != std::errc()) {
+				// Failed to parse, set lastKillTime to 0 (or handle as appropriate)
+				lastKillTime = 0;
+				// Optionally, log an error or warning here
+			}
+			const int64_t now = getTimeNow();
+			const int64_t duration = static_cast<int64_t>(
+										 g_configManager().getNumber(getSkull() == SKULL_RED ? RED_SKULL_DURATION : BLACK_SKULL_DURATION)
+									 )
+				* 24 * 60 * 60;
+			const int64_t remaining = std::max<int64_t>(0, duration - (now - lastKillTime));
+			ticks = remaining * 1000;
+		}
+	}
+
+	info.remainingMs = ticks;
+	if (ticks > 0) {
+		info.remainingDays = static_cast<uint8_t>(std::floor(ticks / (24 * 60 * 60 * 1000)))
+	}
+
+	return info;
+}
+
+void Player::refreshSkullTicksFromLastKill() {
+	const auto info = computeSkullTimeFromLastKill();
+	setSkullTicks(info.remainingMs);
+}
+
 bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
@@ -6637,6 +6684,8 @@ void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
 		}
 	}
 
+	refreshSkullTicksFromLastKill();
+	sendOpenPvpSituations();
 	sendUnjustifiedPoints();
 }
 
@@ -7222,20 +7271,23 @@ void Player::sendUnjustifiedPoints() const {
 			}
 		}
 
-		const bool isRed = getSkull() == SKULL_RED;
+		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
-		auto dayMax = ((isRed ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-		auto weekMax = ((isRed ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-		auto monthMax = ((isRed ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+		auto dayMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+		auto weekMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+		auto monthMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
 		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
 		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
-		uint8_t skullDuration = 0;
-		if (skullTicks != 0) {
-			skullDuration = std::floor<uint8_t>(skullTicks / (24 * 60 * 60 * 1000));
-		}
-		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
+		const auto info = computeSkullTimeFromLastKill();
+		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), info.remainingDays);
+	}
+}
+
+void Player::sendOpenPvpSituations() {
+	if (client) {
+		client->sendOpenPvpSituations(static_cast<uint8_t>(attackedSet.size()));
 	}
 }
 

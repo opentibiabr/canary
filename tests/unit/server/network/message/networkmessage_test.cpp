@@ -1,143 +1,125 @@
 #include "pch.hpp"
 
-#include <boost/ut.hpp>
+#include <gtest/gtest.h>
 
 #include "lib/logging/in_memory_logger.hpp"
 
 #include "server/network/message/networkmessage.hpp"
 #include "utils/tools.hpp"
 
-using namespace boost::ut;
+TEST(NetworkMessageTest, AddByteAndGetByte) {
+	NetworkMessage msg;
+	uint8_t byteToAdd = 100;
+	msg.addByte(byteToAdd);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	auto byte = msg.getByte();
+	EXPECT_EQ(byteToAdd, byte);
+}
 
-// Define a test suite for NetworkMessage
-suite<"networkmessage"> networkMessageTest = [] {
-	di::extension::injector<> injector {};
-	DI::setTestContainer(&InMemoryLogger::install(injector));
-	auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
+TEST(NetworkMessageTest, AddStringAndGetString) {
+	NetworkMessage msg;
+	std::string testStr = "TestString";
+	msg.addString(testStr);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	std::string retrievedStr = msg.getString();
+	EXPECT_EQ(testStr, retrievedStr);
+}
 
-	test("NetworkMessage::addByte and getByte") = [&]() {
-		NetworkMessage msg;
-		uint8_t byteToAdd = 100;
-		msg.addByte(byteToAdd);
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		auto byte = msg.getByte();
-		expect(eq(byte, byteToAdd)) << "Expected: " << byteToAdd << ", Got: " << byte;
-	};
+TEST(NetworkMessageTest, AddStringHandlesEmptyString) {
+	NetworkMessage msg;
+	msg.addString("");
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	EXPECT_EQ(std::string {}, msg.getString());
+}
 
-	test("NetworkMessage::addString and getString") = [&]() {
-		NetworkMessage msg;
-		std::string testStr = "TestString";
-		msg.addString(testStr);
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		std::string retrievedStr = msg.getString();
-		expect(eq(retrievedStr, testStr)) << "Expected: \"" << testStr << "\", Got: \"" << retrievedStr << "\"";
-	};
+TEST(NetworkMessageTest, AddStringFailsWithOversizedString) {
+	NetworkMessage msg;
+	std::string oversizedString(NETWORKMESSAGE_MAXSIZE + 1, 'a');
+	msg.addString(oversizedString);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	EXPECT_EQ(std::string {}, msg.getString());
+}
 
-	test("NetworkMessage::addString should handle empty string") = [&]() {
-		NetworkMessage msg;
-		msg.addString("");
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		expect(eq(msg.getString(), std::string {})) << "Expected to retrieve an empty string";
-	};
+TEST(NetworkMessageTest, CanAddReturnsFalseWhenExceedingMaxSize) {
+	NetworkMessage msg;
+	EXPECT_FALSE(msg.canAdd(NETWORKMESSAGE_MAXSIZE));
+	EXPECT_FALSE(msg.canAdd(NETWORKMESSAGE_MAXSIZE + 1));
+}
 
-	test("NetworkMessage::addString should fail with oversized string") = [&]() {
-		NetworkMessage msg;
-		std::string oversizedString(NETWORKMESSAGE_MAXSIZE + 1, 'a');
-		msg.addString(oversizedString);
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		expect(eq(msg.getString(), std::string {})) << "Expected to retrieve an empty string due to oversized input";
-	};
+TEST(NetworkMessageTest, AddDoubleAndGetDouble) {
+	NetworkMessage msg;
+	double testValue = 123.123;
+	uint8_t precision = 3;
+	msg.addDouble(testValue, precision);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	double retrievedValue = msg.getDouble();
+	EXPECT_NEAR(testValue, retrievedValue, 1e-6);
+}
 
-	test("NetworkMessage::canAdd should return false when exceeding max size") = [&]() {
-		NetworkMessage msg;
-		expect(not msg.canAdd(NETWORKMESSAGE_MAXSIZE)) << "Should have enough space in buffer";
-		expect(not msg.canAdd(NETWORKMESSAGE_MAXSIZE + 1)) << "Should not be able to add data exceeding the max buffer size";
-	};
+TEST(NetworkMessageTest, AddPositionAndGetPosition) {
+	NetworkMessage msg;
+	Position pos { 100, 200, 7 };
+	msg.addPosition(pos);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	Position retrievedPos = msg.getPosition();
+	EXPECT_EQ(pos, retrievedPos);
+}
 
-	test("NetworkMessage::addDouble and getDouble") = [&]() {
-		NetworkMessage msg;
-		double testValue = 123.123;
-		uint8_t precision = 3;
-		msg.addDouble(testValue, precision);
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		double retrievedValue = msg.getDouble();
-		expect(abs(retrievedValue - testValue) < 1e-6) << "Expected: " << testValue << ", Got: " << retrievedValue;
-	};
+TEST(NetworkMessageTest, ResetClearsBuffer) {
+	NetworkMessage msg;
+	msg.addByte(0x64);
+	msg.reset();
+	EXPECT_EQ(0, msg.getLength());
+}
 
-	test("NetworkMessage::addPosition and getPosition") = [&]() {
-		NetworkMessage msg;
-		Position pos { 100, 200, 7 };
-		msg.addPosition(pos);
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		Position retrievedPos = msg.getPosition();
-		expect(eq(retrievedPos, pos)) << "Expected to retrieve the same position values";
-	};
+TEST(NetworkMessageTest, AppendMergesMessages) {
+	NetworkMessage msg1;
+	NetworkMessage msg2;
 
-	test("NetworkMessage::reset should clear buffer") = [&]() {
-		NetworkMessage msg;
-		msg.addByte(0x64);
-		msg.reset();
-		expect(eq(msg.getLength(), 0)) << "Expected the message length to be zero after reset";
-	};
+	msg1.addByte(1);
+	msg1.addString("Hello");
+	msg2.addByte(2);
+	msg2.addString("World");
 
-	test("NetworkMessage::append should merge messages correctly") = [&]() {
-		NetworkMessage msg1, msg2;
+	msg1.append(msg2);
+	msg1.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
 
-		// Adding initial byte and string to msg1
-		msg1.addByte(1); // Byte value 1
-		msg1.addString("Hello"); // String value "Hello"
-		// Adding initial byte and string to msg2
-		msg2.addByte(2); // Byte value 2
-		msg2.addString("World"); // String value "World"
-		// Append msg2 to msg1
-		msg1.append(msg2);
-		msg1.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION); // Reset read position to start
-		// Verify the first byte (msg1)
-		uint8_t byte1 = msg1.getByte();
-		expect(eq(byte1, 1)) << "Expected the first byte of the first message (1)";
-		// Verify the first string (msg1)
-		std::string str1 = msg1.getString();
-		expect(eq(str1, std::string("Hello"))) << "Expected the first string of the first message";
-		// Verify the second byte (msg2)
-		uint8_t byte2 = msg1.getByte();
-		expect(eq(byte2, 2)) << "Expected the first byte of the second message (2)";
-		// Verify the second string (msg2)
-		std::string str2 = msg1.getString();
-		expect(eq(str2, std::string("World"))) << "Expected the first string of the second message";
-	};
+	uint8_t byte1 = msg1.getByte();
+	EXPECT_EQ(1, byte1);
+	std::string str1 = msg1.getString();
+	EXPECT_EQ(std::string("Hello"), str1);
+	uint8_t byte2 = msg1.getByte();
+	EXPECT_EQ(2, byte2);
+	std::string str2 = msg1.getString();
+	EXPECT_EQ(std::string("World"), str2);
+}
 
-	test("NetworkMessage::getString should handle out-of-bounds access safely") = [&]() {
-		NetworkMessage msg;
-		std::string testStr = "Short";
-		msg.addString(testStr);
+TEST(NetworkMessageTest, GetStringHandlesOutOfBoundsAccess) {
+	NetworkMessage msg;
+	std::string testStr = "Short";
+	msg.addString(testStr);
+	msg.setBufferPosition(msg.getBufferPosition() + 10);
+	EXPECT_EQ(std::string {}, msg.getString());
+}
 
-		// Move the position to simulate incomplete data read
-		msg.setBufferPosition(msg.getBufferPosition() + 10);
-		expect(eq(msg.getString(), std::string {})) << "Expected empty string due to out-of-bounds access";
-	};
+TEST(NetworkMessageTest, DecodeHeaderDecodesHeader) {
+	NetworkMessage msg;
+	msg.addByte(0x12);
+	msg.addByte(0x34);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	int32_t header = msg.decodeHeader();
+	EXPECT_EQ(0x3412, header);
+}
 
-	test("NetworkMessage::decodeHeader should correctly decode the header") = [&]() {
-		NetworkMessage msg;
-		msg.addByte(0x12);
-		msg.addByte(0x34);
-
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		int32_t header = msg.decodeHeader();
-		expect(eq(header, 0x3412)) << "Expected header to be decoded correctly";
-	};
-
-	test("NetworkMessage::addBytes and validate content") = [&]() {
-		NetworkMessage msg;
-		std::string testData = "testBytes";
-
-		// Add bytes to the buffer
-		msg.addBytes(testData.data(), testData.size());
-		// Set buffer position to the initial position for reading the added data
-		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
-		// Verify the content of the buffer before extracting the data
-		auto buffer = msg.getBuffer();
-		std::string extractedData(buffer + NetworkMessage::INITIAL_BUFFER_POSITION, buffer + NetworkMessage::INITIAL_BUFFER_POSITION + testData.size());
-		// Check if the extracted data matches the added data
-		expect(eq(extractedData, testData)) << "Expected the same bytes added";
-	};
-};
+TEST(NetworkMessageTest, AddBytesValidatesContent) {
+	NetworkMessage msg;
+	std::string testData = "testBytes";
+	msg.addBytes(testData.data(), testData.size());
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	auto buffer = msg.getBuffer();
+	std::string extractedData(
+		buffer + NetworkMessage::INITIAL_BUFFER_POSITION,
+		buffer + NetworkMessage::INITIAL_BUFFER_POSITION + testData.size()
+	);
+	EXPECT_EQ(testData, extractedData);
+}

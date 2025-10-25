@@ -28,6 +28,9 @@ public:
 	inline static void setTestContainer(di::extension::injector<>* container) {
 		testContainer = container;
 	}
+	inline static di::extension::injector<>* getTestContainer() {
+		return testContainer;
+	}
 
 	/**
 	 * Create will always return a new instance, it's used for unique instances or non-shared

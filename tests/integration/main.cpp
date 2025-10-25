@@ -1,14 +1,14 @@
-#include <boost/ut.hpp>
+#include <gtest/gtest.h>
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 #include "test_database.hpp"
 
-using namespace boost::ut;
+int main(int argc, char** argv) {
+	::testing::InitGoogleTest(&argc, argv);
 
-int main() {
-	di::extension::injector<> injector {};
+	static di::extension::injector<> injector {};
 	InMemoryLogger::install(injector);
 	DI::setTestContainer(&injector);
 
@@ -17,5 +17,5 @@ int main() {
 	(void)g_configManager();
 	(void)g_database();
 
-	return cfg<>.run();
+	return RUN_ALL_TESTS();
 }

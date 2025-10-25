@@ -700,12 +700,16 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You reached the maximum amount for this blessing."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS then
-			for i = 1, 8 do
+			local hasAnyMaxBlessing = false
+			for i = 2, 8 do
 				if self:getBlessingCount(i) >= 5 then
-					disabled = 1
-					disabledReason = "You already have all Blessings."
+					hasAnyMaxBlessing = true
 					break
 				end
+			end
+			if hasAnyMaxBlessing then
+				disabled = 1
+				disabledReason = "You already have all Blessings."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
 			local outfitLookType
@@ -1610,14 +1614,20 @@ function GameStore.processSingleBlessingPurchase(player, blessId, count)
 end
 
 function GameStore.processAllBlessingsPurchase(player, count)
-	player:addBlessing(1, count)
-	player:addBlessing(2, count)
-	player:addBlessing(3, count)
-	player:addBlessing(4, count)
-	player:addBlessing(5, count)
-	player:addBlessing(6, count)
-	player:addBlessing(7, count)
-	player:addBlessing(8, count)
+	local twistOfFateCount = player:getBlessingCount(1)
+
+	if twistOfFateCount == 0 then
+		player:addBlessing(1, count)
+	elseif twistOfFateCount > 0 and twistOfFateCount < 5 then
+		player:addBlessing(1, 5 - twistOfFateCount)
+	end
+
+	for i = 2, 8 do
+		local currentCount = player:getBlessingCount(i)
+		if currentCount < 5 then
+			player:addBlessing(i, math.min(count, 5 - currentCount))
+		end
+	end
 end
 
 function GameStore.processInstantRewardAccess(player, offerCount)

@@ -3441,10 +3441,8 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		return;
 	}
 
+	// When player is feared the player can´t equip any items.
 	if (player->hasCondition(CONDITION_FEARED)) {
-		/*
-		 *	When player is feared the player can´t equip any items.
-		 */
 		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 		return;
 	}
@@ -3452,13 +3450,78 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	const auto &item = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	const auto &backpack = item ? item->getContainer() : nullptr;
 
+	const auto &lootPouch = player->getLootPouch();
 	const auto &slotItem = player->getInventoryItem(slot);
 	auto equipItem = searchForItem(backpack, it.id, hasTier, tier);
 	if (!equipItem) {
-		const auto &lootPouch = player->getLootPouch();
 		equipItem = searchForItem(lootPouch, it.id, hasTier, tier);
 	}
 	ReturnValue ret = RETURNVALUE_NOERROR;
+
+	const auto findInventoryDestination = [&](const std::shared_ptr<Item> &itemToMove, const std::shared_ptr<Cylinder> &excludeCylinder) -> std::pair<std::shared_ptr<Cylinder>, uint32_t> {
+		if (!itemToMove) {
+			return { nullptr, 0u };
+		}
+
+		const auto excludeContainer = std::dynamic_pointer_cast<Container>(excludeCylinder);
+		const auto excludeContainerRaw = excludeContainer ? excludeContainer.get() : nullptr;
+		const auto lootPouchContainer = lootPouch;
+
+		std::unordered_set<const Container*> visitedContainers;
+		std::vector<std::shared_ptr<Container>> containersToCheck;
+		containersToCheck.reserve(8);
+
+		const auto enqueueContainer = [&](const std::shared_ptr<Container> &container) {
+			if (!container) {
+				return;
+			}
+
+			if (container.get() == excludeContainerRaw) {
+				return;
+			}
+
+			if (lootPouchContainer && container == lootPouchContainer) {
+				return;
+			}
+
+			if (container->isQuiver()) {
+				return;
+			}
+
+			if (!visitedContainers.emplace(container.get()).second) {
+				return;
+			}
+
+			containersToCheck.emplace_back(container);
+		};
+
+		const auto &backpackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+		enqueueContainer(backpackItem ? backpackItem->getContainer() : nullptr);
+
+		for (const auto &containerEntry : player->getOpenContainers()) {
+			enqueueContainer(containerEntry.second.container);
+		}
+
+		size_t checkIndex = 0;
+		while (checkIndex < containersToCheck.size()) {
+			const auto &currentContainer = containersToCheck[checkIndex++];
+			if (!currentContainer) {
+				continue;
+			}
+
+			if (currentContainer->queryAdd(INDEX_WHEREEVER, itemToMove, itemToMove->getItemCount(), 0) == RETURNVALUE_NOERROR) {
+				return { currentContainer, 0u };
+			}
+
+			for (const auto &containedItem : currentContainer->getItemList()) {
+				if (const auto &subContainer = containedItem->getContainer()) {
+					enqueueContainer(subContainer);
+				}
+			}
+		}
+
+		return { nullptr, 0u };
+	};
 
 	if (slotItem && slotItem->getID() == it.id && (!hasTier || slotItem->getTier() == tier) && !equipItem) {
 		ret = internalCollectManagedItems(player, slotItem, getObjectCategory(slotItem), false);
@@ -3480,7 +3543,6 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 				(slotPosition & SLOTP_LEFT)
 				&& (slotPosition & SLOTP_TWO_HAND)
 				&& rightItem
-				&& !(it.weaponType == WEAPON_DISTANCE)
 				&& !rightItem->isQuiver()
 				&& (!leftItem || leftItem->getWeaponType() != WEAPON_DISTANCE)
 			) {
@@ -3490,16 +3552,64 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 			// Check if trying to equip a quiver while another quiver is already equipped in the right slot
 			if (slot == CONST_SLOT_RIGHT && rightItem && rightItem->isQuiver() && it.isQuiver()) {
 				// Replace the existing quiver with the new one
-				ret = internalMoveItem(rightItem->getParent(), player, INDEX_WHEREEVER, rightItem, rightItem->getItemCount(), nullptr);
-				if (ret != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret);
-					return;
+				std::shared_ptr<Cylinder> quiverDestination = nullptr;
+				uint32_t quiverMoveFlags = 0;
+				if (const auto &parentCylinder = equipItem->getParent()) {
+					const ReturnValue parentQuery = parentCylinder->queryAdd(INDEX_WHEREEVER, rightItem, rightItem->getItemCount(), 0);
+					if (parentQuery == RETURNVALUE_NOERROR) {
+						quiverDestination = parentCylinder;
+					} else {
+						const auto &parentContainer = parentCylinder->getContainer();
+						if ((parentQuery == RETURNVALUE_CONTAINERNOTENOUGHROOM || parentQuery == RETURNVALUE_NOTENOUGHROOM) && parentContainer && parentContainer->size() >= parentContainer->capacity()) {
+							quiverDestination = parentCylinder;
+							quiverMoveFlags = FLAG_NOLIMIT;
+						} else if (parentContainer) {
+							const ReturnValue containerQuery = parentContainer->queryAdd(INDEX_WHEREEVER, rightItem, rightItem->getItemCount(), 0);
+							if (containerQuery == RETURNVALUE_NOERROR) {
+								quiverDestination = parentContainer;
+							} else if ((containerQuery == RETURNVALUE_CONTAINERNOTENOUGHROOM || containerQuery == RETURNVALUE_NOTENOUGHROOM) && parentContainer->size() >= parentContainer->capacity()) {
+								quiverDestination = parentContainer;
+								quiverMoveFlags = FLAG_NOLIMIT;
+							}
+						}
+					}
 				}
-			} else {
+
+				if (!quiverDestination) {
+					const auto [fallbackDestination, fallbackFlags] = findInventoryDestination(rightItem, nullptr);
+					if (fallbackDestination) {
+						quiverDestination = fallbackDestination;
+						quiverMoveFlags = fallbackFlags;
+					}
+				}
+
+				if (!quiverDestination) {
+					quiverDestination = player;
+				}
+
+				ret = internalMoveItem(rightItem->getParent(), quiverDestination, INDEX_WHEREEVER, rightItem, rightItem->getItemCount(), nullptr, quiverMoveFlags);
+				if (ret != RETURNVALUE_NOERROR) {
+					if (quiverDestination != player) {
+						ret = internalMoveItem(rightItem->getParent(), player, INDEX_WHEREEVER, rightItem, rightItem->getItemCount(), nullptr);
+					}
+
+					if (ret != RETURNVALUE_NOERROR) {
+						player->sendCancelMessage(ret);
+						return;
+					}
+				}
+			} else if (slot == CONST_SLOT_RIGHT && !it.isQuiver() && leftItem && leftItem->getSlotPosition() & SLOTP_TWO_HAND) {
 				// Check if trying to equip a shield while a two-handed weapon is equipped in the left slot
-				if (slot == CONST_SLOT_RIGHT && leftItem && leftItem->getSlotPosition() & SLOTP_TWO_HAND) {
-					// Unequip the two-handed weapon from the left slot
-					ret = internalMoveItem(leftItem->getParent(), player, INDEX_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+				// Unequip the two-handed weapon from the left slot
+				ret = internalMoveItem(leftItem->getParent(), player, INDEX_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+				if (ret != RETURNVALUE_NOERROR) {
+					if (ret == RETURNVALUE_NOTENOUGHROOM || ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
+						const auto [fallbackDestination, fallbackFlags] = findInventoryDestination(leftItem, leftItem->getParent());
+						if (fallbackDestination) {
+							ret = internalMoveItem(leftItem->getParent(), fallbackDestination, INDEX_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr, fallbackFlags);
+						}
+					}
+
 					if (ret != RETURNVALUE_NOERROR) {
 						player->sendCancelMessage(ret);
 						return;
@@ -3512,10 +3622,27 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 				// If the item is not collected, move it to any available container slot
 				if (ret != RETURNVALUE_NOERROR) {
 					ret = internalMoveItem(slotItem->getParent(), player, INDEX_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+					if (ret == RETURNVALUE_NOTENOUGHROOM || ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
+						const auto [fallbackDestination, fallbackFlags] = findInventoryDestination(slotItem, slotItem->getParent());
+						if (fallbackDestination) {
+							ret = internalMoveItem(slotItem->getParent(), fallbackDestination, INDEX_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr, fallbackFlags);
+						}
+					}
 				}
 			}
 
 			ret = internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);
+			if (ret == RETURNVALUE_CONTAINERNOTENOUGHROOM || ret == RETURNVALUE_NOTENOUGHROOM) {
+				const auto &blockingItem = player->getInventoryItem(slot);
+				if (blockingItem && blockingItem != equipItem) {
+					const ReturnValue moveBlockingItemRet = internalMoveItem(blockingItem->getParent(), player, INDEX_WHEREEVER, blockingItem, blockingItem->getItemCount(), nullptr);
+					if (moveBlockingItemRet == RETURNVALUE_NOERROR) {
+						ret = internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);
+					} else {
+						ret = moveBlockingItemRet;
+					}
+				}
+			}
 		}
 	}
 

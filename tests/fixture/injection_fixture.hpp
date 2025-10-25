@@ -4,14 +4,10 @@
 
 #pragma once
 
-#include <boost/ut.hpp>
-
 #include "account/in_memory_account_repository.hpp"
 #include "kv/in_memory_kv.hpp"
 #include "test_injection.hpp"
 #include "lib/logging/in_memory_logger.hpp"
-
-using namespace boost::ut;
 
 struct InjectionFixture {
 	di::extension::injector<> injector {};

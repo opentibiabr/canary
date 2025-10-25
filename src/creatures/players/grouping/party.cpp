@@ -15,6 +15,7 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
+#include "lib/di/container.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
@@ -827,10 +828,19 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	}
 
 	if (priceType == LEADER_PRICE) {
-		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
+		uint64_t customPrice = leader->getItemCustomPrice(item->getID());
+		playerAnalyzer->lootPrice += customPrice * count;
 	} else {
-		const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
-		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+		// Use market average price instead of NPC price
+		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
+		if (averagePrice > 0) {
+			playerAnalyzer->lootPrice += averagePrice * count;
+		} else {
+			// fallback to NPC Buy price or 0
+			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
+			uint64_t marketPrice = g_game().getItemMarketPrice(itemMap, false); // true for NPC selling price, false = NPC Buying from player
+			playerAnalyzer->lootPrice += marketPrice;
+		}
 	}
 	updateTrackerAnalyzer();
 }
@@ -856,8 +866,14 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		const std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
-		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+		// Use market average price instead of NPC price
+		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
+		if (averagePrice > 0) {
+			playerAnalyzer->supplyPrice += averagePrice;
+		} else {
+			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
+			playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+		}
 	}
 	updateTrackerAnalyzer();
 }
@@ -909,19 +925,45 @@ void Party::reloadPrices() const {
 
 	for (const auto &analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
-			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
-			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+			// Use market average prices instead of NPC prices
+			analyzer->lootPrice = 0;
+			for (const auto &[itemId, count] : analyzer->lootMap) {
+				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
+				if (averagePrice > 0) {
+					analyzer->lootPrice += averagePrice * count;
+				} else {
+					// fallback to NPC Buy price or 0
+					std::map<uint16_t, uint64_t> singleItemMap = { { itemId, static_cast<uint64_t>(count) } };
+					uint64_t marketPrice = g_game().getItemMarketPrice(singleItemMap, false);
+					analyzer->lootPrice += marketPrice;
+				}
+			}
+
+			analyzer->supplyPrice = 0;
+			for (const auto &[itemId, count] : analyzer->supplyMap) {
+				uint64_t averagePrice = g_game().getItemMarketAveragePrice(itemId, 0);
+				if (averagePrice > 0) {
+					analyzer->supplyPrice += averagePrice * count;
+				} else {
+					// fallback to NPC Sell price or 0
+					std::map<uint16_t, uint64_t> singleItemMap = { { itemId, static_cast<uint64_t>(count) } };
+					uint64_t leaderprice = g_game().getItemMarketPrice(singleItemMap, true);
+					analyzer->supplyPrice += leaderprice;
+				}
+			}
 			continue;
 		}
 
 		analyzer->lootPrice = 0;
 		for (const auto &[itemId, price] : analyzer->lootMap) {
-			analyzer->lootPrice += leader->getItemCustomPrice(itemId) * price;
+			uint64_t customPrice = leader->getItemCustomPrice(itemId);
+			analyzer->lootPrice += customPrice * price;
 		}
 
 		analyzer->supplyPrice = 0;
 		for (const auto &[itemId, price] : analyzer->supplyMap) {
-			analyzer->supplyPrice += leader->getItemCustomPrice(itemId, true) * price;
+			uint64_t customPrice = leader->getItemCustomPrice(itemId, true);
+			analyzer->supplyPrice += customPrice * price;
 		}
 	}
 }

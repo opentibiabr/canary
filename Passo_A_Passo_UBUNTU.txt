@@ -176,17 +176,17 @@ cd canary
 mkdir build && cd build
 
 using root:
-cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release -DTOGGLE_BIN_FOLDER=ON
 cmake --build linux-release -j4
 
 DEBUG
-cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug
+cmake -DCMAKE_TOOLCHAIN_FILE=~../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-debug -DTOGGLE_BIN_FOLDER=ON
 cmake --build linux-debug -j4
 
 =======
 
 using gus:
-cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release -DTOGGLE_BIN_FOLDER=ON
 cmake --build linux-release
 
 cmake --build linux-release -j4

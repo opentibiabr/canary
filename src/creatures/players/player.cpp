@@ -1310,6 +1310,10 @@ std::shared_ptr<KV> Player::kv() const {
 	return g_kv().scoped("player")->scoped(fmt::format("{}", getGUID()));
 }
 
+int32_t Player::getMarriageSpouseId() const {
+	return marriageSpouse;
+}
+
 bool Player::canSee(const Position &pos) {
 	if (!client) {
 		return false;

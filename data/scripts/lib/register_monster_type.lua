@@ -355,7 +355,7 @@ local function configureLootAttributes(lootObject, lootProperties)
 	if lootProperties.subType or lootProperties.charges then
 		lootObject:setSubType(lootProperties.subType or lootProperties.charges)
 	else
-		local itemType = ItemType(lootProperties.name and lootProperties.name or lootProperties.itemId)
+		local itemType = ItemType(lootProperties.name or lootProperties.itemId)
 		if itemType and itemType:getCharges() > 1 then
 			lootObject:setSubType(itemType:getCharges())
 		end

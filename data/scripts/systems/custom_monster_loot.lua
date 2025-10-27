@@ -27,10 +27,8 @@ function customMonsterLoot.onStartup()
 
 	if #allLootConfig > 0 then
 		for monsterName, mtype in pairs(Game.getMonsterTypes()) do
-			if mtype then
-				mtype:createLoot(allLootConfig)
-				logger.debug("[customMonsterLoot.onStartup] - Global loot registered for monster: {}", mtype:getName())
-			end
+			mtype:createLoot(allLootConfig)
+			logger.debug("[customMonsterLoot.onStartup] - Global loot registered for monster: {}", mtype:getName())
 		end
 	end
 end

@@ -15,7 +15,9 @@
 #include "utils/tools.hpp"
 
 AnimusMastery::AnimusMastery(Player &player) :
-	m_player(player) {
+	m_player(player) { }
+
+void AnimusMastery::init() {
 	maxMonsterXpMultiplier = g_configManager().getFloat(ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER);
 	monsterXpMultiplier = g_configManager().getFloat(ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER);
 	monstersXpMultiplier = g_configManager().getFloat(ANIMUS_MASTERY_MONSTERS_XP_MULTIPLIER);

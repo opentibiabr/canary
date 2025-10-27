@@ -1,0 +1,3 @@
+git apply --reject --ignore-space-change --ignore-whitespace apply.patch
+
+Force update: git am -3 apply.patch

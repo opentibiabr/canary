@@ -9,73 +9,25 @@
 
 #pragma once
 
+#include <string>
 #include <cstdint>
-#include <chrono>
 
 class Benchmark {
 public:
-	Benchmark() noexcept {
-		start();
-	}
+	Benchmark() noexcept;
 
-	void start() noexcept {
-		startTime = time();
-	}
-
-	void end() noexcept {
-		if (startTime == -1) {
-			return;
-		}
-
-		last = static_cast<double>(time() - startTime) / 1000.f;
-
-		startTime = -1;
-
-		if (minTime == -1 || minTime > last) {
-			minTime = last;
-		}
-
-		if (maxTime == -1 || maxTime < last) {
-			maxTime = last;
-		}
-
-		total += last;
-		++totalExecs;
-	}
-
-	double duration() noexcept {
-		if (startTime > -1) {
-			end();
-		}
-
-		return last;
-	}
-
-	double min() const noexcept {
-		return minTime;
-	}
-
-	double max() const noexcept {
-		return maxTime;
-	}
-
-	double avg() const noexcept {
-		return total / totalExecs;
-	}
-
-	void reset() noexcept {
-		startTime = -1;
-		minTime = -1;
-		maxTime = -1;
-		last = -1;
-		total = 0;
-		totalExecs = 0;
-	}
+	void start() noexcept;
+	void end() noexcept;
+	double duration() noexcept;
+	double min() const noexcept;
+	double max() const noexcept;
+	double avg() const noexcept;
+	void reset() noexcept;
+	void log(std::string_view message) noexcept;
+	void logInfo(std::string_view message) noexcept;
 
 private:
-	static int64_t time() noexcept {
-		return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	}
+	static int64_t time() noexcept;
 
 	int64_t startTime = -1;
 	double minTime = -1;

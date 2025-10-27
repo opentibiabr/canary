@@ -61,7 +61,7 @@ public:
 	RaceType_t getRace() const override;
 	float getMitigation() const override;
 	int32_t getArmor() const override;
-	int32_t getDefense() const override;
+	int32_t getDefense(bool = false) const override;
 
 	void addDefense(int32_t defense);
 
@@ -153,6 +153,8 @@ public:
 
 	bool isTarget(const std::shared_ptr<Creature> &creature);
 	bool isFleeing() const;
+
+	void setFatalHoldDuration(int32_t value);
 
 	bool getDistanceStep(const Position &targetPos, Direction &direction, bool flee = false);
 	bool isTargetNearby() const;
@@ -263,7 +265,7 @@ private:
 	std::string m_lowerName;
 	std::string nameDescription;
 
-	std::shared_ptr<MonsterType> mType;
+	std::shared_ptr<MonsterType> m_monsterType;
 	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
 
 	int64_t lastMeleeAttack = 0;
@@ -282,6 +284,7 @@ private:
 	int32_t minCombatValue = 0;
 	int32_t maxCombatValue = 0;
 	int32_t m_targetChangeCooldown = 0;
+	int32_t fatalHoldDuration = 0;
 	int32_t challengeFocusDuration = 0;
 	int32_t stepDuration = 0;
 	int32_t targetDistance = 1;
@@ -296,6 +299,7 @@ private:
 
 	Position masterPos;
 
+	bool canFlee = false;
 	bool isWalkingBack = false;
 	bool isIdle = true;
 	bool extraMeleeAttack = false;

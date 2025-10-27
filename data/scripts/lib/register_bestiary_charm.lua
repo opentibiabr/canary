@@ -34,6 +34,12 @@ registerCharm.sounds = function(charm, mask)
 	end
 end
 
+registerCharm.category = function(charm, mask)
+	if mask.type then
+		charm:category(mask.category)
+	end
+end
+
 registerCharm.type = function(charm, mask)
 	if mask.type then
 		charm:type(mask.type)

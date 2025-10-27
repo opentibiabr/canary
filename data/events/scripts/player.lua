@@ -586,7 +586,7 @@ function Player:onGainExperience(target, exp, rawExp)
 	if SoulWarQuest then
 		local monsterType = target:getType()
 		if monsterType and monsterType:getName() and table.contains(SoulWarQuest.bagYouDesireMonsters, monsterType:getName()) then
-			local taintLevel = self:getTaintLevel()
+			local taintLevel = self:getTaintLevel() or 0
 			if taintLevel > 0 then
 				local taintBoost = SoulWarQuest.taintExperienceBoostMap[taintLevel] and SoulWarQuest.taintExperienceBoostMap[taintLevel].boost or 0
 				exp = exp * (1 + taintBoost / 100)

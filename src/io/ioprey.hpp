@@ -18,10 +18,6 @@ class TaskHuntingOption;
 class NetworkMessage;
 class Player;
 
-static const std::unique_ptr<PreySlot> &PreySlotNull {};
-static const std::unique_ptr<TaskHuntingSlot> &TaskHuntingSlotNull {};
-static const std::unique_ptr<TaskHuntingOption> &TaskHuntingOptionNull {};
-
 enum PreySlot_t : uint8_t {
 	PreySlot_One = 0,
 	PreySlot_Two = 1,
@@ -214,6 +210,10 @@ public:
 	uint16_t firstReward = 0;
 	uint16_t secondReward = 0;
 };
+
+static const std::unique_ptr<PreySlot> &PreySlotNull {};
+static const std::unique_ptr<TaskHuntingSlot> &TaskHuntingSlotNull {};
+static const std::unique_ptr<TaskHuntingOption> &TaskHuntingOptionNull {};
 
 class IOPrey {
 public:

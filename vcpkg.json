@@ -9,6 +9,7 @@
     "bext-ut",
     "curl",
     "eventpp",
+    "gtest",
     "libmariadb",
     "luajit",
     "magic-enum",
@@ -27,7 +28,7 @@
     },
     {
       "name": "gmp",
-      "platform": "linux"
+      "platform": "linux | osx"
     },
     {
       "name": "mpir",

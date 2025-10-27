@@ -317,7 +317,10 @@ namespace {
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
-	m_pointsPerLevel(g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL)), m_player(initPlayer) {
+	m_player(initPlayer) { }
+
+void PlayerWheel::init() {
+	m_pointsPerLevel = g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL);
 }
 
 bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) const {
@@ -454,7 +457,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_GREEN_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	// Red quadrant
@@ -581,7 +584,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_RED_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	// Purple quadrant
@@ -708,7 +711,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_PURPLE_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	// Blue quadrant
@@ -835,7 +838,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_BLUE_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	return false;
@@ -1859,7 +1862,6 @@ bool PlayerWheel::saveDBPlayerSlotPointsOnLogout() const {
 
 uint16_t PlayerWheel::getExtraPoints() const {
 	if (m_player.getLevel() < 51) {
-		g_logger().error("Character level must be above 50.");
 		return 0;
 	}
 
@@ -2887,11 +2889,11 @@ bool PlayerWheel::checkDivineEmpowerment() {
 	if (isOwner) {
 		const uint8_t stage = getStage(WheelStage_t::DIVINE_EMPOWERMENT);
 		if (stage >= 3) {
-			damageBonus = 7;
+			damageBonus = 12;
 		} else if (stage >= 2) {
-			damageBonus = 5;
+			damageBonus = 10;
 		} else if (stage >= 1) {
-			damageBonus = 3;
+			damageBonus = 8;
 		}
 	}
 
@@ -3813,15 +3815,15 @@ float PlayerWheel::calculateMitigation() const {
 	float distanceFactor = 1.0f;
 	switch (m_player.fightMode) {
 		case FIGHTMODE_ATTACK: {
-			fightFactor = 0.67f;
+			fightFactor = 0.8f;
 			break;
 		}
 		case FIGHTMODE_BALANCED: {
-			fightFactor = 0.84f;
+			fightFactor = 1.0f;
 			break;
 		}
 		case FIGHTMODE_DEFENSE: {
-			fightFactor = 1.0f;
+			fightFactor = 1.2f;
 			break;
 		}
 		default:

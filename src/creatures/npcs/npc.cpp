@@ -817,7 +817,10 @@ void Npc::closeAllShopWindows() {
 		if (player) {
 			player->closeShopWindow();
 		}
-		it = shopPlayers.erase(it);
+	}
+
+	if (!shopPlayers.empty()) {
+		shopPlayers.clear();
 	}
 }
 

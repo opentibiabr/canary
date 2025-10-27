@@ -16,6 +16,7 @@ cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BU
 
 # Run tests after compilation
 ./tests/unit/canary_ut --reporter compact --success
+./tests/integration/canary_it --reporter compact --success
 
 # Go back to the tests folder and clean the Docker environment again
 cd ../tests || exit

@@ -56,15 +56,17 @@ struct DispatcherContext {
 	}
 
 private:
+	inline static constexpr std::string_view defaultTaskName { "ThreadPool::call" };
+
 	void reset() {
 		group = TaskGroup::ThreadPool;
 		type = DispatcherType::None;
-		taskName = "ThreadPool::call";
+		taskName = defaultTaskName;
 	}
 
 	DispatcherType type = DispatcherType::None;
 	TaskGroup group = TaskGroup::ThreadPool;
-	std::string_view taskName;
+	std::string_view taskName = defaultTaskName;
 
 	friend class Dispatcher;
 };
@@ -157,6 +159,7 @@ private:
 	void init();
 	void shutdown() {
 		signalSchedule.notify_all();
+		shuttingDown = true;
 	}
 
 	inline void mergeAsyncEvents();
@@ -232,6 +235,8 @@ private:
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 
 	bool asyncWaitDisabled = false;
+
+	bool shuttingDown = false;
 
 	friend class CanaryServer;
 };

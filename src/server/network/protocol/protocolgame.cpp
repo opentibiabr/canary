@@ -6963,9 +6963,9 @@ void ProtocolGame::sendUpdateTileCreature(const Position &pos, uint32_t stackpos
 	msg.addByte(static_cast<uint8_t>(stackpos));
 
 	bool known;
-	uint32_t removedKnown;
+	uint32_t removedKnown = 0;
 	checkCreatureAsKnown(creature->getID(), known, removedKnown);
-	AddCreature(msg, creature, false, removedKnown);
+	AddCreature(msg, creature, known, removedKnown);
 	writeToOutputBuffer(msg);
 }
 

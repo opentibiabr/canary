@@ -13,6 +13,8 @@
 #include "items/item.hpp"
 #include "items/tile.hpp"
 
+#include "enums/container_type.hpp"
+
 class Container;
 class DepotChest;
 class DepotLocker;
@@ -285,6 +287,14 @@ public:
 	bool isBrowseFieldAndHoldsRewardChest();
 	bool isInsideContainerWithId(uint16_t id);
 
+	ContainerSpecial_t getSpecialCategory(const std::shared_ptr<Player> &player);
+	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
+	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
+	void clearLootHighlight(const std::shared_ptr<Player> &player = nullptr);
+	[[nodiscard]] bool hasLootHighlight() const {
+		return m_lootHighlightActive;
+	}
+
 protected:
 	uint32_t m_maxItems {};
 	uint32_t maxSize {};
@@ -294,6 +304,7 @@ protected:
 
 	bool unlocked {};
 	bool pagination {};
+	bool m_lootHighlightActive { true };
 
 	friend class MapCache;
 

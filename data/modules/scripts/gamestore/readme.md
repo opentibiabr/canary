@@ -54,7 +54,7 @@ Each category accepts the fields below (all validated by the *loader*):
                    },
            },
    }
-````
+   ```
 
 2. **Register it in the catalog** by adding `"my_new_category"` to the `modules` table in `catalog/init.lua` in the desired position.
 3. (Optional) **Add its name to a group** in `catalog/parent_categories.lua` if the category belongs to an existing section.

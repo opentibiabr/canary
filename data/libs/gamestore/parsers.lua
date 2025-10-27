@@ -48,13 +48,12 @@ local function onRecvbyte(player, msg, byte)
 
 	if player:isUIExhausted(250) then
 		player:sendCancelMessage("You are exhausted.")
-		return false
+		return true
 	end
 
 	local playerId = player:getId()
 
-	if byte == GameStore.RecivedPackets.C_StoreEvent then
-	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
+	if byte == GameStore.RecivedPackets.C_TransferCoins then
 		parseTransferableCoins(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_OpenStore then
 		parseOpenStore(playerId, msg)

@@ -180,6 +180,7 @@ int GameFunctions::luaGameGetMonsterTypeByName(lua_State* L) {
 	const auto &mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		Lua::reportErrorFunc(fmt::format("MonsterType with name {} not found", name));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 

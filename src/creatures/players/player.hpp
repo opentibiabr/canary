@@ -999,7 +999,7 @@ public:
 	void setNextExAction(int64_t time);
 	bool canDoPotionAction() const;
 	bool canDoAimAction() const;
-	
+
 	void setNextNecklaceAction(int64_t time);
 	bool canEquipNecklace() const;
 

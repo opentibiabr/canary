@@ -125,7 +125,7 @@ mType.onPlayerAttack = function(monster, attackerPlayer)
 	elseif attackerPlayer:isSorcerer() then
 		apparitionType = "Sorcerer's Apparition"
 	elseif attackerPlayer:isMonk() then
-		apparitionType = "Monk's Apparition"	
+		apparitionType = "Monk's Apparition"
 	end
 
 	if math.random(100) > sameVocationProbability then

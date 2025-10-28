@@ -2671,12 +2671,12 @@ void PlayerWheel::applyPurpleStageBonus(uint8_t stageValue, Vocation_t vocationE
 			addSpellToVector("Avatar of Storm");
 		}
 	} else if (vocationEnum == Vocation_t::VOCATION_MONK_CIP) {
-			m_playerBonusData.avatar.balance = stageValue;
-			for (uint8_t i = 0; i < stageValue; ++i) {
-				addSpellToVector("Avatar of Balance");
-			}
+		m_playerBonusData.avatar.balance = stageValue;
+		for (uint8_t i = 0; i < stageValue; ++i) {
+			addSpellToVector("Avatar of Balance");
 		}
 	}
+}
 
 void PlayerWheel::applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnum) {
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {

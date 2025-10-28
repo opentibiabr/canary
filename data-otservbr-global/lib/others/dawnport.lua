@@ -17,7 +17,7 @@ Dawnport = {
 		},
 		[VOCATION.ID.MONK] = {
 			[SKILL_MAGLEVEL] = 5,
-		},		
+		},
 	},
 }
 

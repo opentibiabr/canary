@@ -10,37 +10,37 @@ setmetatable(registerMonsterType, {
 	end,
 })
 
-MonsterType.register = function (self, mask)
-    registerMonsterType(self, mask)
+MonsterType.register = function(self, mask)
+	registerMonsterType(self, mask)
 
-    local hazardHandler = HazardMonster and HazardMonster.onSpawn
-    if not hazardHandler then
-        return
-    end
+	local hazardHandler = HazardMonster and HazardMonster.onSpawn
+	if not hazardHandler then
+		return
+	end
 
-    local previousOnSpawn = self.onSpawn
-    if previousOnSpawn == hazardHandler then
-        return
-    end
+	local previousOnSpawn = self.onSpawn
+	if previousOnSpawn == hazardHandler then
+		return
+	end
 
-    self.onSpawn = function (monster, spawnPosition)
-        local previousResult = true
-        if previousOnSpawn then
-            previousResult = previousOnSpawn(monster, spawnPosition)
-        end
+	self.onSpawn = function(monster, spawnPosition)
+		local previousResult = true
+		if previousOnSpawn then
+			previousResult = previousOnSpawn(monster, spawnPosition)
+		end
 
-        local hazardResult = hazardHandler(monster, spawnPosition)
-        if previousResult == false or hazardResult == false then
-            return false
-        end
-        return true
-    end
+		local hazardResult = hazardHandler(monster, spawnPosition)
+		if previousResult == false or hazardResult == false then
+			return false
+		end
+		return true
+	end
 end
 
-registerMonsterType.name = function (mtype, mask)
-    if mask.name then
-        mtype:name(mask.name)
-    end
+registerMonsterType.name = function(mtype, mask)
+	if mask.name then
+		mtype:name(mask.name)
+	end
 end
 registerMonsterType.description = function(mtype, mask)
 	if mask.description then

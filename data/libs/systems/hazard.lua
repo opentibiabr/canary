@@ -83,10 +83,10 @@ function Hazard:getPlayerMaxLevelEver(player)
 end
 
 function Hazard:setPlayerCurrentLevel(player, level)
-        local max = self:getSelectableMaxLevel(player)
-        if max and level > max then
-                return false
-        end
+	local max = self:getSelectableMaxLevel(player)
+	if max and level > max then
+		return false
+	end
 	if self.storageCurrent then
 		player:setStorageValue(self.storageCurrent, level)
 	else
@@ -105,26 +105,26 @@ function Hazard:setPlayerCurrentLevel(player, level)
 end
 
 function Hazard:getSelectableMaxLevel(player)
-        local playerUnlockedMax = self:getPlayerMaxLevel(player)
-        local selectableMax = playerUnlockedMax
+	local playerUnlockedMax = self:getPlayerMaxLevel(player)
+	local selectableMax = playerUnlockedMax
 
-        if self.maxLevel then
-                selectableMax = math.min(selectableMax, self.maxLevel)
-        end
+	if self.maxLevel then
+		selectableMax = math.min(selectableMax, self.maxLevel)
+	end
 
-        if self.name == "hazard.gnomprona-gardens" then
-                local hasDefeatedPrimalMenace = player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled) >= 1
-                if not hasDefeatedPrimalMenace then
-                        selectableMax = math.min(selectableMax, 5)
-                end
-        end
+	if self.name == "hazard.gnomprona-gardens" then
+		local hasDefeatedPrimalMenace = player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled) >= 1
+		if not hasDefeatedPrimalMenace then
+			selectableMax = math.min(selectableMax, 5)
+		end
+	end
 
-        return selectableMax
+	return selectableMax
 end
 
 function Hazard:getPlayerMaxLevel(player)
-        if self.storageMax then
-                local fromStorage = player:getStorageValue(self.storageMax)
+	if self.storageMax then
+		local fromStorage = player:getStorageValue(self.storageMax)
 		return fromStorage <= 0 and self.minLevel or fromStorage
 	end
 	local fromKV = player:kv():scoped(self.name):get("max-level") or self.minLevel

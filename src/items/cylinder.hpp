@@ -182,7 +182,7 @@ public:
 	virtual ReturnValue queryMaxCount(int32_t, const std::shared_ptr<Thing> &, uint32_t, uint32_t &, uint32_t) override {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> &actor = nullptr) override {
+	virtual ReturnValue queryRemove(const std::shared_ptr<Thing> &, uint32_t, uint32_t, const std::shared_ptr<Creature> & /*actor*/ = nullptr) override {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	virtual std::shared_ptr<Cylinder> queryDestination(int32_t &, const std::shared_ptr<Thing> &, std::shared_ptr<Item> &, uint32_t &) override {

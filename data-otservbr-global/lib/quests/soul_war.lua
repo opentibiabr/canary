@@ -51,6 +51,7 @@ SoulWarQuest = {
 		"Infernal Demon",
 		"Infernal Phantom",
 		"Knight's Apparition",
+		"Monk's Apparition",
 		"Many Faces",
 		"Mould Phantom",
 		"Paladin's Apparition",
@@ -433,6 +434,7 @@ SoulWarQuest = {
 	apparitionNames = {
 		"Druid's Apparition",
 		"Knight's Apparition",
+		"Monk's Apparition",
 		"Paladin's Apparition",
 		"Sorcerer's Apparition",
 	},

@@ -74,6 +74,10 @@ function Party.hasDruid(self)
 	return self:hasVocation(VOCATION.BASE_ID.DRUID)
 end
 
+function Party.hasMonk(self)
+	return self:hasVocation(VOCATION.BASE_ID.MONK)
+end
+
 function Party:getPlayersWithVocation(vocation)
 	local players = {}
 	if self:getLeader():getVocation():getBaseId() == vocation then
@@ -103,6 +107,10 @@ end
 
 function Party:getDruids()
 	return self:getPlayersWithVocation(VOCATION.BASE_ID.DRUID)
+end
+
+function Party:getMonks()
+	return self:getPlayersWithVocation(VOCATION.BASE_ID.MONK)
 end
 
 function Party:getMages()

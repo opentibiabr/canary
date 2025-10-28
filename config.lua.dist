@@ -482,6 +482,7 @@ maxDamageReflection = 200
 toggleChainSystem = false
 combatChainDelay = 50
 combatChainTargets = 5
+combatChainSkillFormulaFist = 1.0
 combatChainSkillFormulaAxe = 0.9
 combatChainSkillFormulaClub = 0.7
 combatChainSkillFormulaSword = 1.1

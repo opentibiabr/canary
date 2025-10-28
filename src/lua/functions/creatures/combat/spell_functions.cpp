@@ -61,6 +61,7 @@ void SpellFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Spell", "allowFarUse", SpellFunctions::luaSpellAllowFarUse);
 	Lua::registerMethod(L, "Spell", "blockWalls", SpellFunctions::luaSpellBlockWalls);
 	Lua::registerMethod(L, "Spell", "checkFloor", SpellFunctions::luaSpellCheckFloor);
+	Lua::registerMethod(L, "Spell", "harmony", SpellFunctions::luaSpellHarmony);
 }
 
 int SpellFunctions::luaSpellCreate(lua_State* L) {
@@ -947,5 +948,25 @@ int SpellFunctions::luaSpellCheckFloor(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellHarmony(lua_State* L) {
+	// spell:harmony([enable])
+	auto spell = Lua::getUserdataShared<Spell>(L, 1, "Spell");
+	if (!spell) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const int args = lua_gettop(L);
+	if (args == 1) {
+		Lua::pushBoolean(L, spell->getHarmonyCost());
+	} else {
+		const bool enable = Lua::getBoolean(L, 2, false);
+		spell->setHarmonyCost(enable);
+		Lua::pushBoolean(L, true);
+	}
+
 	return 1;
 }

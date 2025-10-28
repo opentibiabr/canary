@@ -592,6 +592,11 @@ bool WeaponMelee::getSkillType(const std::shared_ptr<Player> &player, const std:
 			return true;
 		}
 
+		case WEAPON_FIST: {
+			skill = SKILL_FIST;
+			return true;
+		}
+
 		default:
 			break;
 	}

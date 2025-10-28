@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <PREPROCESSOR_DEFS>
+        WIN32;
+        _CRT_SECURE_NO_WARNINGS;
+        _WIN32_WINNT=0x0501;
+        BUILD_TYPE="RelWithDebInfo";
+    </PREPROCESSOR_DEFS>
+    <CANARY_COMMON_LIBDEPS>
+      comctl32.lib;
+      User32.lib;
+      WS2_32.lib;
+      pugixml.lib;
+      lua51.lib;
+      mpir.lib;
+      libmariadb.lib;
+      abseil_dll.lib;
+      argon2.lib;
+    </CANARY_COMMON_LIBDEPS>
+    <CANARY_LIBDEPS>
+      $(CANARY_COMMON_LIBDEPS);
+      libprotobuf.lib;
+      zlib.lib;
+      libcurl.lib;
+      fmt.lib;
+      spdlog.lib;
+    </CANARY_LIBDEPS>
+    <CANARY_LIBDEPS_D>
+      $(CANARY_COMMON_LIBDEPS);
+      libprotobufd.lib;
+      zlibd.lib;
+      libcurl-d.lib;
+      fmtd.lib;
+      spdlogd.lib;
+    </CANARY_LIBDEPS_D>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(FEATURE_METRICS)' == 'true'">
+    <OPENTELEMETRY_LIBS>
+      opentelemetry_common.lib;
+      opentelemetry_exporter_in_memory.lib;
+      opentelemetry_exporter_ostream_logs.lib;
+      opentelemetry_exporter_ostream_metrics.lib;
+      opentelemetry_exporter_ostream_span.lib;
+      opentelemetry_exporter_otlp_http.lib;
+      opentelemetry_exporter_otlp_http_client.lib;
+      opentelemetry_exporter_otlp_http_log.lib;
+      opentelemetry_exporter_otlp_http_metric.lib;
+      opentelemetry_exporter_prometheus.lib;
+      opentelemetry_http_client_curl.lib;
+      opentelemetry_logs.lib;
+      opentelemetry_metrics.lib;
+      opentelemetry_otlp_recordable.lib;
+      opentelemetry_proto.lib;
+      opentelemetry_resources.lib;
+      opentelemetry_trace.lib;
+      opentelemetry_version.lib;
+      prometheus-cpp-core.lib;
+      prometheus-cpp-pull;
+      civetweb.lib;
+      civetweb-cpp.lib;
+    </OPENTELEMETRY_LIBS>
+    <CANARY_LIBDEPS>$(CANARY_LIBDEPS);$(OPENTELEMETRY_LIBS)</CANARY_LIBDEPS>
+    <CANARY_LIBDEPS_D>$(CANARY_LIBDEPS_D);$(OPENTELEMETRY_LIBS)</CANARY_LIBDEPS_D>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(CANARY_LIBDEPS)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <LargeAddressAware>true</LargeAddressAware>
+      <SubSystem>Windows</SubSystem>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <BuildMacro Include="PREPROCESSOR_DEFS">
+      <Value>$(PREPROCESSOR_DEFS)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CANARY_LIBDEPS">
+      <Value>$(CANARY_LIBDEPS)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CANARY_LIBDEPS_D">
+      <Value>$(CANARY_LIBDEPS_D)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

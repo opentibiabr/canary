@@ -242,7 +242,7 @@ Storage = {
 		Monk = 52280,
 		MonkHealthPotion = 52281,
 		MonkManaPotion = 52282,
-		MonkMeat = 52283,		
+		MonkMeat = 52283,
 	},
 	TheMummysCurse = {
 		-- Reserved storage from 52350 - 52359

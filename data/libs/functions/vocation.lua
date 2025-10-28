@@ -10,7 +10,7 @@ VOCATION = {
 		ROYAL_PALADIN = 7,
 		ELITE_KNIGHT = 8,
 		MONK = 9,
-		EXALTED_MONK = 10,		
+		EXALTED_MONK = 10,
 	},
 	CLIENT_ID = {
 		NONE = 0,

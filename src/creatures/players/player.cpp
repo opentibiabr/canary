@@ -3656,7 +3656,7 @@ BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const Co
 					}
 				}
 
-			const int16_t mantraAbsorbValue = it.abilities->mantraAbsorbValue[combatTypeToIndex(combatType)];
+				const int16_t mantraAbsorbValue = it.abilities->mantraAbsorbValue[combatTypeToIndex(combatType)];
 				if (mantraAbsorbValue != 0) {
 					const int16_t mantraAbsorbPercent = getMantraAbsorbPercent(mantraAbsorbValue);
 					if (mantraAbsorbPercent != 0) {

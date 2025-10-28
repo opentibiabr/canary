@@ -62,7 +62,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 		throw IOMapException("Unknown OTBM version detected.");
 	}
 
-	//if (majorVersionItems < 3) {
+	// if (majorVersionItems < 3) {
 	if (version > 5) {
 		throw IOMapException("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 	}

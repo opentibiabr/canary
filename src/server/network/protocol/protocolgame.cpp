@@ -4267,12 +4267,16 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	if (weapon) {
 		const ItemType &it = Item::items[weapon->getID()];
 		if (it.weaponType == WEAPON_WAND) {
-			msg.add<uint16_t>(it.maxHitChance);
-			msg.add<uint16_t>(0);
-			msg.add<uint16_t>(0);
+			int32_t attackValue = std::max<int32_t>(1, weapon->getAttack());
+			const auto attackRawTotal = player->attackRawTotal(flatBonus, attackValue, 0);
+			const auto attackTotal = player->attackTotal(flatBonus, attackValue, 0);
+
+			msg.add<uint16_t>(attackTotal);
+			msg.add<uint16_t>(flatBonus);
+			msg.add<uint16_t>(static_cast<uint16_t>(attackValue));
 			msg.addByte(0x00);
 			msg.add<uint16_t>(0);
-			msg.add<uint16_t>(0);
+			msg.add<uint16_t>(attackTotal - attackRawTotal);
 			msg.addByte(getCipbiaElement(it.combatType));
 			msg.addDouble(0.0);
 			msg.addByte(0x00);
@@ -8230,7 +8234,9 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	if (weapon) {
 		const ItemType &it = Item::items[weapon->getID()];
 		if (it.weaponType == WEAPON_WAND) {
-			msg.add<uint16_t>(it.maxHitChance);
+			int32_t attackValue = std::max<int32_t>(1, weapon->getAttack());
+			const auto attackTotal = player->attackTotal(flatBonus, attackValue, 0);
+			msg.add<uint16_t>(attackTotal);
 			msg.addByte(getCipbiaElement(it.combatType));
 			msg.addDouble(0.0);
 			msg.addByte(0x00);

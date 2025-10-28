@@ -42,63 +42,62 @@ function Game.broadcastMessage(message, messageType)
 end
 
 function Game.convertIpToString(ip, ipString)
-    if ipString and ipString ~= "" then
-        return ipString
-    end
+	if ipString and ipString ~= "" then
+		return ipString
+	end
 
-    if type(ip) == "string" then
-        return ip ~= "" and ip or "0.0.0.0"
-    end
+	if type(ip) == "string" then
+		return ip ~= "" and ip or "0.0.0.0"
+	end
 
-    if type(ip) ~= "number" then
-        return "0.0.0.0"
-    end
+	if type(ip) ~= "number" then
+		return "0.0.0.0"
+	end
 
-    local band = bit.band
-    local rshift = bit.rshift
-    return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
+	local band = bit.band
+	local rshift = bit.rshift
+	return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
 end
 
 function Game.getHouseByPlayerGUID(playerGUID)
-    local houses, house = Game.getHouses()
-    for i = 1, #houses do
-        house = houses[i]
-        if house:getOwnerGuid() == playerGUID then
-            return house
-        end
-    end
-    return nil
+	local houses, house = Game.getHouses()
+	for i = 1, #houses do
+		house = houses[i]
+		if house:getOwnerGuid() == playerGUID then
+			return house
+		end
+	end
+	return nil
 end
 
-
 function Game.getPlayersByIPAddress(ip, mask)
-    local result = {}
-    local players = Game.getPlayers()
+	local result = {}
+	local players = Game.getPlayers()
 
-    if type(ip) == "string" and ip ~= "" then
-        for i = 1, #players do
-            local player = players[i]
-            if player:getIpString() == ip then
-                result[#result + 1] = player
-            end
-        end
-        return result
-    end
+	if type(ip) == "string" and ip ~= "" then
+		for i = 1, #players do
+			local player = players[i]
+			if player:getIpString() == ip then
+				result[#result + 1] = player
+			end
+		end
+		return result
+	end
 
-    mask = mask or 0xFFFFFFFF
-    if type(ip) ~= "number" then
-        return result
-    end
+	mask = mask or 0xFFFFFFFF
+	if type(ip) ~= "number" then
+		return result
+	end
 
-    local masked = bit.band(ip, mask)
-    for i = 1, #players do
-        local player = players[i]
-        if bit.band(player:getIp(), mask) == masked then
-            result[#result + 1] = player
-        end
-    end
+	local masked = bit.band(ip, mask)
+	for i = 1, #players do
+		local player = players[i]
+		if bit.band(player:getIp(), mask) == masked then
+			result[#result + 1] = player
+		end
+	end
 
-    return result
+	return result
 end
 
 function Game.getReverseDirection(direction)

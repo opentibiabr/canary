@@ -362,8 +362,12 @@ local function configureLootAttributes(lootObject, lootProperties)
 	end
 
 	lootObject:setChance(lootProperties.chance or 0)
-	lootObject:setMinCount(lootProperties.minCount or 0)
-	lootObject:setMaxCount(lootProperties.maxCount or 0)
+	if lootProperties.minCount ~= nil then
+		lootObject:setMinCount(lootProperties.minCount)
+	end
+	if lootProperties.maxCount ~= nil then
+		lootObject:setMaxCount(lootProperties.maxCount)
+	end
 	lootObject:setActionId(lootProperties.aid or lootProperties.actionId or 0)
 	lootObject:setText(lootProperties.text or lootProperties.description or "")
 	lootObject:setNameItem(lootProperties.name or "")

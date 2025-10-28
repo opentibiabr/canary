@@ -173,6 +173,7 @@ int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 int GameFunctions::luaGameGetMonsterTypeByName(lua_State* L) {
 	if (!Lua::isString(L, 1)) {
 		Lua::reportErrorFunc("First argument must be a string");
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 

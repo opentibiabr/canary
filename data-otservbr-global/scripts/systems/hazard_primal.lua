@@ -124,7 +124,7 @@ function deathEvent.onDeath (creature)
     end
 
     -- Plunder patriarch
-    chanceTo = math.random(1, 10000)
+    chanceTo = math.random(1, 100000)
     if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_SPAWN_PLUNDER_MULTIPLIER)) then
         local closestFreePosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
         local monster = Game.createMonster(

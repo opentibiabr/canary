@@ -9,7 +9,6 @@ local function creatureArrayListChain(startCreature, maxTargets)
 	end
 
 	creaturesArray = {}
-
 	local visited = {}
 
 	while #creaturesArray < maxTargets do
@@ -104,7 +103,6 @@ local config = {
 
 local function onGetFormulaValues(player, weaponDamage)
 	local basePower = 42
-
 	local skill = player:getSkillLevel(SKILL_FIRST)
 	local attackValue = calculateAttackValue(player, skill, weaponDamage)
 
@@ -127,10 +125,7 @@ function spell.onCastSpell(creature, var)
 		return false
 	end
 
-	--logger.warn("[SPELL SPIRITUAL OUTBURST] addTargetWheel {}", maxTargets)
-
 	local maxTargets = 4
-
 	creatureArrayListChain(creature:getId(), maxTargets)
 
 	if #creaturesArray == 0 then
@@ -141,7 +136,6 @@ function spell.onCastSpell(creature, var)
 
 	local effectData = config["physical"]
 	local weaponDamage = 0
-
 	local weapon = creature:getSlotItem(CONST_SLOT_LEFT)
 	if weapon then
 		local itemType = weapon:getType()
@@ -161,14 +155,14 @@ function spell.onCastSpell(creature, var)
 		addEvent(function()
 			creatureArrayListChain(creature, maxTargets)
 			if #creaturesArray > 0 then
-				local min, max = onGetFormulaValues(creature, weaponDamage)
-				executeChain(creature, min, max, effectData, grade)
+				local innerMin, innerMax = onGetFormulaValues(creature, weaponDamage)
+				executeChain(creature, innerMin, innerMax, effectData, grade)
 			end
 		end, 1500)
 	end
+
 	local cooldownByGrade = { 24, 20, 16 }
 	local cooldown = cooldownByGrade[grade]
-
 	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 295)
 	condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
 	creature:addCondition(condition)

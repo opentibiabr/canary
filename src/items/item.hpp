@@ -628,6 +628,19 @@ public:
 	virtual void startDecaying();
 	virtual void stopDecaying();
 
+	/**
+	 * @brief Send "AddItem" update to the specified player or to all nearby players if none specified.
+	 *
+	 * This function sends updates about the item's state to a client. If a specific player is provided,
+	 * the update is directed to that player and possibly their party members depending on the game logic.
+	 * If no player is specified, the update is broadcast to all nearby players who are capable of viewing
+	 * the item update, such as spectators around the item's location.
+	 *
+	 * @param player Optional shared pointer to a Player object. If provided, the update is directed to this player
+	 * and their associated viewers or party members. If nullptr, the update goes to all nearby spectators.
+	 */
+	void sendUpdateToClient(const std::shared_ptr<Player> &player = nullptr);
+
 	std::shared_ptr<Item> transform(uint16_t itemId, uint16_t itemCount = -1);
 
 	bool isLoadedFromMap() const {

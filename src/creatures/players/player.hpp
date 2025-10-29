@@ -1370,7 +1370,7 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
-	bool isFirstOnStack() const;
+	[[nodiscard]] bool isFirstOnStack() const;
 	void resetOldCharms();
 
 	const auto &getOutfits() const {
@@ -1379,6 +1379,11 @@ public:
 
 	const auto &getFamiliars() const {
 		return familiars;
+	}
+
+	using ManagedContainerMap = std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>>;
+	[[nodiscard]] const ManagedContainerMap &getManagedContainers() const {
+		return m_managedContainers;
 	}
 
 private:
@@ -1464,7 +1469,7 @@ private:
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
-	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
+	ManagedContainerMap m_managedContainers;
 	std::vector<ForgeHistory> forgeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;

@@ -17,10 +17,10 @@ function onTargetTile(creature, position)
 	local creaturesOnTile = Tile(position):getCreatures()
 	if creaturesOnTile and #creaturesOnTile > 0 then
 		for _, creatureUid in pairs(creaturesOnTile) do
-			local creature = Creature(creatureUid)
-			if creature then
-				if creature:isMonster() and creature:getType():getTargetDistance() > 1 then
-					creature:changeTargetDistance(1, duration)
+			local tileCreature = Creature(creatureUid)
+			if tileCreature then
+				if tileCreature:isMonster() and tileCreature:getType():getTargetDistance() > 1 then
+					tileCreature:changeTargetDistance(1, duration)
 				end
 			end
 		end

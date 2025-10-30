@@ -9,12 +9,15 @@ function mcCheck.onSay(player, words, param)
 	local players = Game.getPlayers()
 	for i = 1, #players do
 		local tmpPlayer = players[i]
-		local ip = tmpPlayer:getIp()
-		if ip ~= 0 then
-			local list = ipList[ip]
+		local ipString = tmpPlayer:getIpString() or ""
+		local ipNumber = tmpPlayer:getIp()
+		local key = ipString ~= "" and ipString or (ipNumber ~= 0 and Game.convertIpToString(ipNumber) or "")
+
+		if key ~= "" then
+			local list = ipList[key]
 			if not list then
-				ipList[ip] = {}
-				list = ipList[ip]
+				ipList[key] = {}
+				list = ipList[key]
 			end
 			list[#list + 1] = tmpPlayer
 		end

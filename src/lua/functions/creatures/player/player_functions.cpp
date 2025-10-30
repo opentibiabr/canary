@@ -51,6 +51,7 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "getGuid", PlayerFunctions::luaPlayerGetGuid);
 	Lua::registerMethod(L, "Player", "getIp", PlayerFunctions::luaPlayerGetIp);
+	Lua::registerMethod(L, "Player", "getIpString", PlayerFunctions::luaPlayerGetIpString);
 	Lua::registerMethod(L, "Player", "getAccountId", PlayerFunctions::luaPlayerGetAccountId);
 	Lua::registerMethod(L, "Player", "getLastLoginSaved", PlayerFunctions::luaPlayerGetLastLoginSaved);
 	Lua::registerMethod(L, "Player", "getLastLogout", PlayerFunctions::luaPlayerGetLastLogout);
@@ -678,6 +679,24 @@ int PlayerFunctions::luaPlayerGetIp(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetIpString(lua_State* L) {
+	// player:getIpString()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &ipString = player->getIPString();
+	if (ipString.empty()) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Lua::pushString(L, ipString);
 	return 1;
 }
 

@@ -38,4 +38,5 @@ public:
 
 private:
 	static std::map<uint32_t, int64_t> ipConnectMap;
+	static std::map<std::string, int64_t> ipv6ConnectMap;
 };

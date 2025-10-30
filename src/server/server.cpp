@@ -97,16 +97,27 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 			return;
 		}
 
-		const auto remote_ip = connection->getIP();
-		if (remote_ip != 0 && inject<Ban>().acceptConnection(remote_ip)) {
-			const Service_ptr service = services.front();
-			if (service->is_single_socket()) {
-				connection->accept(service->make_protocol(connection));
-			} else {
-				connection->acceptInternal();
-			}
-		} else {
+		const bool isIpv6Connection = connection->isIPv6Connection();
+		if (isIpv6Connection && !g_configManager().getBoolean(USE_IPV6)) {
 			connection->close(FORCE_CLOSE);
+			accept();
+			return;
+		}
+
+		const auto remote_ip = connection->getIP();
+		if (!isIpv6Connection) {
+			if (remote_ip == 0 || !inject<Ban>().acceptConnection(remote_ip)) {
+				connection->close(FORCE_CLOSE);
+				accept();
+				return;
+			}
+		}
+
+		const Service_ptr service = services.front();
+		if (service->is_single_socket()) {
+			connection->accept(service->make_protocol(connection));
+		} else {
+			connection->acceptInternal();
 		}
 
 		accept();
@@ -152,10 +163,49 @@ void ServicePort::open(uint16_t port) {
 	pendingStart = false;
 
 	try {
-		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
+		const bool useIpv6 = g_configManager().getBoolean(USE_IPV6);
+		const bool bindOnlyGlobal = g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS);
+
+		if (useIpv6) {
+			bool usingIpv6Acceptor = false;
+			asio::ip::tcp::endpoint endpoint(asio::ip::address_v6::any(), serverPort);
+
+			if (bindOnlyGlobal) {
+				const auto configuredAddress = g_configManager().getString(IP);
+				std::error_code addressError;
+				const auto address = asio::ip::make_address(configuredAddress, addressError);
+
+				if (addressError) {
+					g_logger().error("[ServicePort::open] - Invalid configured IP {}: {}. Falling back to IPv6 any.", configuredAddress, addressError.message());
+					usingIpv6Acceptor = true;
+				} else if (address.is_v6()) {
+					endpoint = asio::ip::tcp::endpoint(address.to_v6(), serverPort);
+					usingIpv6Acceptor = true;
+				} else {
+					endpoint = asio::ip::tcp::endpoint(address.to_v4(), serverPort);
+					g_logger().warn("[ServicePort::open] - useIpv6 enabled but configured IP {} is not IPv6. Binding IPv4 endpoint.", configuredAddress);
+				}
+			} else {
+				usingIpv6Acceptor = true;
+			}
+
+			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, endpoint);
+
+			if (usingIpv6Acceptor) {
+				std::error_code optionError;
+				acceptor->set_option(asio::ip::v6_only(false), optionError);
+				if (optionError) {
+					g_logger().warn("[ServicePort::open] - Failed to configure dual stack on port {}: {}", serverPort, optionError.message());
+				}
+			}
+		} else if (bindOnlyGlobal) {
 			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort));
 		} else {
 			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
+		}
+
+		if (!acceptor) {
+			return;
 		}
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));

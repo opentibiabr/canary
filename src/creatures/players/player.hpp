@@ -387,10 +387,9 @@ public:
 	void disconnect() const;
 
 	uint32_t getIP() const;
+	std::string getIPString() const;
 
-	bool isDisconnected() const {
-		return getIP() == 0;
-	}
+	bool isDisconnected() const;
 
 	void addContainer(uint8_t cid, const std::shared_ptr<Container> &container);
 	void closeContainer(uint8_t cid);

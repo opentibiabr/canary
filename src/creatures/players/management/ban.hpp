@@ -32,13 +32,13 @@ using IpStringConnectMap = std::map<std::string, ConnectBlock>;
 
 class Ban {
 public:
-        bool acceptConnection(uint32_t clientIP);
-        bool acceptConnection(const std::string &clientIP);
+	bool acceptConnection(uint32_t clientIP);
+	bool acceptConnection(const std::string &clientIP);
 
 private:
-        IpConnectMap ipConnectMap;
-        IpStringConnectMap ipStringConnectMap;
-        std::recursive_mutex lock;
+	IpConnectMap ipConnectMap;
+	IpStringConnectMap ipStringConnectMap;
+	std::recursive_mutex lock;
 };
 
 class IOBan {

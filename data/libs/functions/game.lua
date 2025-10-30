@@ -42,21 +42,21 @@ function Game.broadcastMessage(message, messageType)
 end
 
 function Game.convertIpToString(ip)
-        if ip == nil then
-                return ""
-        end
+	if ip == nil then
+		return ""
+	end
 
-        if type(ip) == "string" then
-                return ip
-        end
+	if type(ip) == "string" then
+		return ip
+	end
 
-        if type(ip) ~= "number" then
-                return ""
-        end
+	if type(ip) ~= "number" then
+		return ""
+	end
 
-        local band = bit.band
-        local rshift = bit.rshift
-        return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
+	local band = bit.band
+	local rshift = bit.rshift
+	return string.format("%d.%d.%d.%d", band(ip, 0xFF), band(rshift(ip, 8), 0xFF), band(rshift(ip, 16), 0xFF), rshift(ip, 24))
 end
 
 function Game.getHouseByPlayerGUID(playerGUID)

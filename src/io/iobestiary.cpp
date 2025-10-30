@@ -336,7 +336,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(const std::shared_ptr<Player> &play
 	}
 
 	uint16_t count = 0;
-	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
+	const std::map<uint16_t, std::string> &besty_l = g_game().getBestiaryList();
 
 	for (const auto &it : besty_l) {
 		const auto mtype = g_monsters().getMonsterType(it.second);

@@ -9100,32 +9100,32 @@ void Player::disconnect() const {
 }
 
 uint32_t Player::getIP() const {
-        if (!client) {
-                return 0;
-        }
+	if (!client) {
+		return 0;
+	}
 
-        if (client->isIPv6Connection()) {
-                return 0;
-        }
+	if (client->isIPv6Connection()) {
+		return 0;
+	}
 
-        return client->getIP();
+	return client->getIP();
 }
 
 bool Player::isDisconnected() const {
-        if (!client) {
-                return true;
-        }
+	if (!client) {
+		return true;
+	}
 
-        const auto ipString = getIPString();
-        if (!ipString.empty()) {
-                return false;
-        }
+	const auto ipString = getIPString();
+	if (!ipString.empty()) {
+		return false;
+	}
 
-        if (client->isIPv6Connection()) {
-                return false;
-        }
+	if (client->isIPv6Connection()) {
+		return false;
+	}
 
-        return getIP() == 0;
+	return getIP() == 0;
 }
 
 std::string Player::getIPString() const {

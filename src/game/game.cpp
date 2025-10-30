@@ -9013,10 +9013,10 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, c
 
 	// TODO: move debug assertions to database
 	FILE* file = fopen("client_assertions.txt", "a");
-        if (file) {
-                const auto ipString = player->getIPString();
-                std::string ipForLog = ipString.empty() ? convertIPToString(player->getIP()) : ipString;
-                fprintf(file, "----- %s - %s (%s) -----\n", formatDate(time(nullptr)).c_str(), player->getName().c_str(), ipForLog.c_str());
+	if (file) {
+		const auto ipString = player->getIPString();
+		std::string ipForLog = ipString.empty() ? convertIPToString(player->getIP()) : ipString;
+		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(time(nullptr)).c_str(), player->getName().c_str(), ipForLog.c_str());
 		fprintf(file, "%s\n%s\n%s\n%s\n", assertLine.c_str(), date.c_str(), description.c_str(), comment.c_str());
 		fclose(file);
 	}

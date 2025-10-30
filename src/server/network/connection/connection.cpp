@@ -394,9 +394,9 @@ void Connection::resolveRemoteAddressLocked() {
 	}
 
 	remoteAddressResolved = true;
-        ip = 0;
-        ipv6Connection = false;
-        remoteIpString.clear();
+	ip = 0;
+	ipv6Connection = false;
+	remoteIpString.clear();
 
 	std::error_code error;
 	const auto endpoint = socket.remote_endpoint(error);
@@ -413,18 +413,18 @@ void Connection::resolveRemoteAddressLocked() {
 		return;
 	}
 
-        if (!address.is_v6()) {
-                return;
-        }
+	if (!address.is_v6()) {
+		return;
+	}
 
-        const auto addressV6 = address.to_v6();
-        if (addressV6.is_v4_mapped()) {
-                ip = htonl(addressV6.to_v4().to_uint());
-                return;
-        }
+	const auto addressV6 = address.to_v6();
+	if (addressV6.is_v4_mapped()) {
+		ip = htonl(addressV6.to_v4().to_uint());
+		return;
+	}
 
-        ipv6Connection = true;
-        ip = CONNECTION_IPV6_SENTINEL;
+	ipv6Connection = true;
+	ip = CONNECTION_IPV6_SENTINEL;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {

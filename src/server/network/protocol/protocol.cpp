@@ -254,19 +254,19 @@ uint32_t Protocol::getIP() const {
 }
 
 std::string Protocol::getIPString() const {
-        if (const auto protocolConnection = getConnection()) {
-                return protocolConnection->getRemoteIPString();
-        }
+	if (const auto protocolConnection = getConnection()) {
+		return protocolConnection->getRemoteIPString();
+	}
 
-        return {};
+	return {};
 }
 
 bool Protocol::isIPv6Connection() const {
-        if (const auto protocolConnection = getConnection()) {
-                return protocolConnection->isIPv6Connection();
-        }
+	if (const auto protocolConnection = getConnection()) {
+		return protocolConnection->isIPv6Connection();
+	}
 
-        return false;
+	return false;
 }
 
 bool Protocol::compression(OutputMessage &outputMessage) const {

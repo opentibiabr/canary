@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/events_scheduler.hpp"
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
@@ -6044,6 +6045,18 @@ void Player::onPlacedCreature() {
 	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();
+
+	const auto activeEvents = g_eventsScheduler().getActiveEvents();
+	if (!activeEvents.empty()) {
+		std::string eventsList;
+		for (size_t i = 0; i < activeEvents.size(); ++i) {
+			eventsList.append(activeEvents[i]);
+			if (i < activeEvents.size() - 1) {
+				eventsList.append(", ");
+			}
+		}
+		g_logger().info("[{}] Active EventScheduler: {}", getName(), eventsList);
+	}
 }
 
 void Player::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {

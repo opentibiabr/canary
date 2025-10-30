@@ -6,6 +6,7 @@
 
 #include "account/in_memory_account_repository.hpp"
 #include "kv/in_memory_kv.hpp"
+#include "lib/di/container.hpp"
 #include "test_injection.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 
@@ -24,6 +25,12 @@ struct InjectionFixture {
 		:
 		injector(std::move(other.injector)) {
 		setup();
+	}
+
+	~InjectionFixture() {
+		if (DI::getTestContainer() == &injector) {
+			DI::setTestContainer(nullptr);
+		}
 	}
 
 	template <typename... Is>

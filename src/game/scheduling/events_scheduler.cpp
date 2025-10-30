@@ -13,8 +13,10 @@
 #include "lua/scripts/scripts.hpp"
 
 #include <nlohmann/json.hpp>
+#include <unordered_map>
 
 bool EventsScheduler::loadScheduleEventFromJson() {
+	reset();
 	g_kv().scoped("eventscheduler")->remove("forge-chance");
 	g_kv().scoped("eventscheduler")->remove("double-bestiary");
 	g_kv().scoped("eventscheduler")->remove("double-bosstiary");
@@ -89,72 +91,118 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			}
 		}
 
-		EventRates currentEventRates = {
-			static_cast<uint16_t>(event.contains("ingame") && event["ingame"].contains("exprate") ? event["ingame"].value("exprate", 100) : 100),
-			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("lootrate") ? event["ingame"].value("lootrate", 100) : 100),
-			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("bosslootrate") ? event["ingame"].value("bosslootrate", 100) : 100),
-			static_cast<uint32_t>(event.contains("ingame") && event["ingame"].contains("spawnrate") ? event["ingame"].value("spawnrate", 100) : 100),
-			static_cast<uint16_t>(event.contains("ingame") && event["ingame"].contains("skillrate") ? event["ingame"].value("skillrate", 100) : 100),
-			static_cast<uint8_t>(event.contains("ingame") && event["ingame"].contains("forgechance") ? event["ingame"].value("forge-chance", 100) : 100),
-			static_cast<uint8_t>(event.contains("ingame") && event["ingame"].contains("bosscooldown") ? event["ingame"].value("bosscooldown", 100) : 100),
-			event.contains("ingame") && event["ingame"].contains("doublebestiary") ? event["ingame"].value("doublebestiary", false) : false,
-			event.contains("ingame") && event["ingame"].contains("doublebosstiary") ? event["ingame"].value("doublebosstiary", false) : false,
-			event.contains("ingame") && event["ingame"].contains("fastexercise") ? event["ingame"].value("fastexercise", false) : false,
-		};
+		EventRates currentEventRates;
+		if (event.contains("ingame") && event["ingame"].is_object()) {
+			const auto &ingame = event["ingame"];
+			currentEventRates.exprate = static_cast<uint16_t>(ingame.value("exprate", 100));
+			currentEventRates.lootrate = static_cast<uint32_t>(ingame.value("lootrate", 100));
+			currentEventRates.bosslootrate = static_cast<uint32_t>(ingame.value("bosslootrate", 100));
+			currentEventRates.spawnrate = static_cast<uint32_t>(ingame.value("spawnrate", 100));
+			currentEventRates.skillrate = static_cast<uint16_t>(ingame.value("skillrate", 100));
+			if (ingame.contains("forgechance")) {
+				currentEventRates.forgeChance = static_cast<uint8_t>(ingame.value("forgechance", 100));
+			} else if (ingame.contains("forge-chance")) {
+				currentEventRates.forgeChance = static_cast<uint8_t>(ingame.value("forge-chance", 100));
+			}
+			currentEventRates.bosscooldown = static_cast<uint8_t>(ingame.value("bosscooldown", 100));
+			currentEventRates.doubleBestiary = ingame.value("doublebestiary", false);
+			currentEventRates.doubleBossTiary = ingame.value("doublebosstiary", false);
+			if (ingame.contains("fastexercise")) {
+				currentEventRates.fastExercise = ingame.value("fastexercise", false);
+			} else if (ingame.contains("doubleexercise")) {
+				currentEventRates.fastExercise = ingame.value("doubleexercise", false);
+			}
+		}
 
+		bool applyExp = currentEventRates.exprate != 100;
+		bool applyLoot = currentEventRates.lootrate != 100;
+		bool applyBossLoot = currentEventRates.bosslootrate != 100;
+		bool applySpawn = currentEventRates.spawnrate != 100;
+		bool applySkill = currentEventRates.skillrate != 100;
+		bool applyForge = currentEventRates.forgeChance != 100;
+		bool applyDoubleBestiary = currentEventRates.doubleBestiary;
+		bool applyDoubleBosstiary = currentEventRates.doubleBossTiary;
+		bool applyFastExercise = currentEventRates.fastExercise;
+		bool applyBossCooldown = currentEventRates.bosscooldown != 100;
+		std::unordered_map<std::string, std::vector<std::string>> duplicatedRates;
 		for (const auto &[existingEventName, rates] : eventsOnSameDay) {
-			std::vector<std::string> modifiedRates;
+			if (applyExp && rates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
+				duplicatedRates[existingEventName].emplace_back("exprate");
+				applyExp = false;
+			}
+			if (applyLoot && rates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
+				duplicatedRates[existingEventName].emplace_back("lootrate");
+				applyLoot = false;
+			}
+			if (applyBossLoot && rates.bosslootrate != 100 && rates.bosslootrate == currentEventRates.bosslootrate) {
+				duplicatedRates[existingEventName].emplace_back("bosslootrate");
+				applyBossLoot = false;
+			}
+			if (applySpawn && rates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
+				duplicatedRates[existingEventName].emplace_back("spawnrate");
+				applySpawn = false;
+			}
+			if (applySkill && rates.skillrate != 100 && rates.skillrate == currentEventRates.skillrate) {
+				duplicatedRates[existingEventName].emplace_back("skillrate");
+				applySkill = false;
+			}
+			if (applyForge && rates.forgeChance != 100 && rates.forgeChance == currentEventRates.forgeChance) {
+				duplicatedRates[existingEventName].emplace_back("forge-chance");
+				applyForge = false;
+			}
+			if (applyDoubleBestiary && rates.doubleBestiary && rates.doubleBestiary == currentEventRates.doubleBestiary) {
+				duplicatedRates[existingEventName].emplace_back("double-bestiary");
+				applyDoubleBestiary = false;
+			}
+			if (applyDoubleBosstiary && rates.doubleBossTiary && rates.doubleBossTiary == currentEventRates.doubleBossTiary) {
+				duplicatedRates[existingEventName].emplace_back("double-bosstiary");
+				applyDoubleBosstiary = false;
+			}
+			if (applyFastExercise && rates.fastExercise && rates.fastExercise == currentEventRates.fastExercise) {
+				duplicatedRates[existingEventName].emplace_back("fast-exercise");
+				applyFastExercise = false;
+			}
+			if (applyBossCooldown && rates.bosscooldown != 100 && rates.bosscooldown == currentEventRates.bosscooldown) {
+				duplicatedRates[existingEventName].emplace_back("bosscooldown");
+				applyBossCooldown = false;
+			}
+		}
 
-			if (rates.exprate != 100 && currentEventRates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
-				modifiedRates.emplace_back("exprate");
-				g_eventsScheduler().setExpSchedule(rates.exprate);
-			}
-			if (rates.lootrate != 100 && currentEventRates.lootrate != 100 && rates.lootrate == currentEventRates.lootrate) {
-				modifiedRates.emplace_back("lootrate");
-				g_eventsScheduler().setLootSchedule(rates.lootrate);
-			}
-			if (rates.bosslootrate != 100 && currentEventRates.bosslootrate != 100 && rates.bosslootrate == currentEventRates.bosslootrate) {
-				modifiedRates.emplace_back("bosslootrate");
-				g_eventsScheduler().setBossLootSchedule(rates.bosslootrate);
-			}
-			if (rates.spawnrate != 100 && currentEventRates.spawnrate != 100 && rates.spawnrate == currentEventRates.spawnrate) {
-				modifiedRates.emplace_back("spawnrate");
-				g_eventsScheduler().setSpawnMonsterSchedule(rates.spawnrate);
-			}
-			if (rates.skillrate != 100 && currentEventRates.skillrate != 100 && rates.skillrate == currentEventRates.skillrate) {
-				modifiedRates.emplace_back("skillrate");
-				g_eventsScheduler().setSkillSchedule(rates.skillrate);
-			}
+		if (applyExp) {
+			setExpSchedule(currentEventRates.exprate);
+		}
+		if (applyLoot) {
+			setLootSchedule(currentEventRates.lootrate);
+		}
+		if (applyBossLoot) {
+			setBossLootSchedule(currentEventRates.bosslootrate);
+		}
+		if (applySpawn) {
+			setSpawnMonsterSchedule(currentEventRates.spawnrate);
+		}
+		if (applySkill) {
+			setSkillSchedule(currentEventRates.skillrate);
+		}
+		if (applyForge) {
+			g_kv().scoped("eventscheduler")->set("forge-chance", currentEventRates.forgeChance - 100);
+		}
+		if (applyDoubleBestiary) {
+			g_kv().scoped("eventscheduler")->set("double-bestiary", true);
+		}
+		if (applyDoubleBosstiary) {
+			g_kv().scoped("eventscheduler")->set("double-bosstiary", true);
+		}
+		if (applyFastExercise) {
+			g_kv().scoped("eventscheduler")->set("fast-exercise", true);
+		}
+		if (applyBossCooldown) {
+			g_kv().scoped("eventscheduler")->set("boss-cooldown", currentEventRates.bosscooldown - 100);
+		}
 
-			// KV changes
-			if (rates.forgeChance != 100 && currentEventRates.forgeChance != 100 && rates.forgeChance == currentEventRates.forgeChance) {
-				modifiedRates.emplace_back("forge-chance");
-				g_kv().scoped("eventscheduler")->set("forge-chance", rates.forgeChance - 100);
-			}
-
-			if (rates.doubleBestiary != false && currentEventRates.doubleBestiary != false && rates.doubleBestiary == currentEventRates.doubleBestiary) {
-				modifiedRates.emplace_back("double-bestiary");
-				g_kv().scoped("eventscheduler")->set("double-bestiary", true);
-			}
-
-			if (rates.doubleBossTiary != false && currentEventRates.doubleBossTiary != false && rates.doubleBossTiary == currentEventRates.doubleBossTiary) {
-				modifiedRates.emplace_back("double-bosstiary");
-				g_kv().scoped("eventscheduler")->set("double-bosstiary", true);
-			}
-
-			if (rates.fastExercise != false && currentEventRates.fastExercise != false && rates.fastExercise == currentEventRates.fastExercise) {
-				modifiedRates.emplace_back("fast-exercise");
-				g_kv().scoped("eventscheduler")->set("fast-exercise", true);
-			}
-
-			if (rates.bosscooldown != 100 && currentEventRates.bosscooldown != 100 && rates.bosscooldown == currentEventRates.bosscooldown) {
-				modifiedRates.emplace_back("bosscooldown");
-				g_kv().scoped("eventscheduler")->set("boss-cooldown", rates.bosscooldown - 100);
-			}
-
-			if (!modifiedRates.empty()) {
-				std::string ratesString = join(modifiedRates, ", ");
-				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventName, existingEventName, ratesString);
+		for (const auto &[duplicateEventName, rates] : duplicatedRates) {
+			if (!rates.empty()) {
+				std::string ratesString = join(rates, ", ");
+				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventName, duplicateEventName, ratesString);
 			}
 		}
 
@@ -168,6 +216,28 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		}
 	}
 	return true;
+}
+
+void EventsScheduler::reset() {
+	expSchedule = 100;
+	lootSchedule = 100;
+	bossLootSchedule = 100;
+	skillSchedule = 100;
+	spawnMonsterSchedule = 100;
+	eventScheduler.clear();
+}
+
+std::vector<std::string> EventsScheduler::getActiveEvents() const {
+	std::vector<std::string> activeEvents;
+	time_t t = time(nullptr);
+	const tm* timePtr = localtime(&t);
+	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	for (const auto &event : eventScheduler) {
+		if (daysMath >= event.startDays && daysMath <= event.endDays) {
+			activeEvents.emplace_back(event.name);
+		}
+	}
+	return activeEvents;
 }
 
 bool EventsScheduler::loadScheduleEventFromXml() {

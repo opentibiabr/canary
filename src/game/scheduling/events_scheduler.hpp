@@ -84,6 +84,10 @@ public:
 		skillSchedule = (skillSchedule * skillrate) / 100;
 	}
 
+	void reset();
+
+	[[nodiscard]] std::vector<std::string> getActiveEvents() const;
+
 private:
 	// Event schedule
 	uint16_t expSchedule = 100;

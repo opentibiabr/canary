@@ -105,7 +105,14 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 		}
 
 		const auto remote_ip = connection->getIP();
-		if (!isIpv6Connection) {
+		if (isIpv6Connection) {
+			const auto remoteIpString = connection->getRemoteIPString();
+			if (remoteIpString.empty() || !inject<Ban>().acceptConnection(remoteIpString)) {
+				connection->close(FORCE_CLOSE);
+				accept();
+				return;
+			}
+		} else {
 			if (remote_ip == 0 || !inject<Ban>().acceptConnection(remote_ip)) {
 				connection->close(FORCE_CLOSE);
 				accept();

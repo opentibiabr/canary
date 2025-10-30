@@ -13,37 +13,52 @@
 #include "database/databasetasks.hpp"
 #include "utils/tools.hpp"
 
-bool Ban::acceptConnection(uint32_t clientIP) {
-	std::scoped_lock<std::recursive_mutex> lockClass(lock);
+namespace {
+	template <typename Map, typename Key>
+	bool acceptConnectionInternal(Map &connectMap, const Key &clientIP, std::recursive_mutex &lock) {
+		std::scoped_lock<std::recursive_mutex> lockClass(lock);
 
-	const uint64_t currentTime = OTSYS_TIME();
+		const uint64_t currentTime = OTSYS_TIME();
 
-	auto it = ipConnectMap.find(clientIP);
-	if (it == ipConnectMap.end()) {
-		ipConnectMap.emplace(clientIP, ConnectBlock(currentTime, 0, 1));
+		auto it = connectMap.find(clientIP);
+		if (it == connectMap.end()) {
+			connectMap.emplace(clientIP, ConnectBlock(currentTime, 0, 1));
+			return true;
+		}
+
+		ConnectBlock &connectBlock = it->second;
+		if (connectBlock.blockTime > currentTime) {
+			connectBlock.blockTime += 250;
+			return false;
+		}
+
+		const int64_t timeDiff = currentTime - connectBlock.lastAttempt;
+		connectBlock.lastAttempt = currentTime;
+		if (timeDiff <= 5000) {
+			if (++connectBlock.count > 5) {
+				connectBlock.count = 0;
+				if (timeDiff <= 500) {
+					connectBlock.blockTime = currentTime + 3000;
+					return false;
+				}
+			}
+		} else {
+			connectBlock.count = 1;
+		}
 		return true;
 	}
+} // namespace
 
-	ConnectBlock &connectBlock = it->second;
-	if (connectBlock.blockTime > currentTime) {
-		connectBlock.blockTime += 250;
+bool Ban::acceptConnection(uint32_t clientIP) {
+	return acceptConnectionInternal(ipConnectMap, clientIP, lock);
+}
+
+bool Ban::acceptConnection(const std::string &clientIP) {
+	if (clientIP.empty()) {
 		return false;
 	}
 
-	const int64_t timeDiff = currentTime - connectBlock.lastAttempt;
-	connectBlock.lastAttempt = currentTime;
-	if (timeDiff <= 5000) {
-		if (++connectBlock.count > 5) {
-			connectBlock.count = 0;
-			if (timeDiff <= 500) {
-				connectBlock.blockTime = currentTime + 3000;
-				return false;
-			}
-		}
-	} else {
-		connectBlock.count = 1;
-	}
-	return true;
+	return acceptConnectionInternal(ipStringConnectMap, clientIP, lock);
 }
 
 bool IOBan::isAccountBanned(uint32_t accountId, BanInfo &banInfo) {

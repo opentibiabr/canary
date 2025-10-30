@@ -9,6 +9,9 @@
 
 #pragma once
 
+#include <map>
+#include <string>
+
 struct BanInfo {
 	std::string bannedBy {};
 	std::string reason {};
@@ -25,13 +28,16 @@ struct ConnectBlock {
 };
 
 using IpConnectMap = std::map<uint32_t, ConnectBlock>;
+using IpStringConnectMap = std::map<std::string, ConnectBlock>;
 
 class Ban {
 public:
 	bool acceptConnection(uint32_t clientIP);
+	bool acceptConnection(const std::string &clientIP);
 
 private:
 	IpConnectMap ipConnectMap;
+	IpStringConnectMap ipStringConnectMap;
 	std::recursive_mutex lock;
 };
 

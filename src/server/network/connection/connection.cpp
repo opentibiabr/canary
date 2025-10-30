@@ -63,6 +63,9 @@ void Connection::close(bool force) {
 
 	std::scoped_lock lock(connectionLock);
 	ip = 0;
+	remoteAddressResolved = false;
+	ipv6Connection = false;
+	remoteIpString.clear();
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
@@ -199,7 +202,8 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
-		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
+		const auto remoteIP = getRemoteIPString();
+		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", remoteIP.empty() ? "unknown" : remoteIP.c_str());
 		close();
 		return;
 	}
@@ -355,18 +359,72 @@ void Connection::internalWorker() {
 
 uint32_t Connection::getIP() {
 	std::scoped_lock lock(connectionLock);
+	resolveRemoteAddressLocked();
 
 	if (ip == 1) {
-		std::error_code error;
-		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-		if (error) {
-			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
-			ip = 0;
-		} else {
-			ip = htonl(endpoint.address().to_v4().to_uint());
-		}
+		return 0;
 	}
 	return ip;
+}
+
+std::string Connection::getRemoteIPString() {
+	std::scoped_lock lock(connectionLock);
+	resolveRemoteAddressLocked();
+
+	if (!remoteIpString.empty()) {
+		return remoteIpString;
+	}
+
+	if (ip != 0 && ip != 1) {
+		return convertIPToString(ip);
+	}
+
+	return {};
+}
+
+bool Connection::isIPv6Connection() {
+	std::scoped_lock lock(connectionLock);
+	resolveRemoteAddressLocked();
+	return ipv6Connection;
+}
+
+void Connection::resolveRemoteAddressLocked() {
+	if (remoteAddressResolved) {
+		return;
+	}
+
+	remoteAddressResolved = true;
+        ip = 0;
+        ipv6Connection = false;
+        remoteIpString.clear();
+
+	std::error_code error;
+	const auto endpoint = socket.remote_endpoint(error);
+	if (error) {
+		g_logger().error("[Connection::resolveRemoteAddressLocked] - Failed to get remote endpoint: {}", error.message());
+		return;
+	}
+
+	const auto address = endpoint.address();
+	remoteIpString = address.to_string();
+
+	if (address.is_v4()) {
+		ip = htonl(address.to_v4().to_uint());
+		return;
+	}
+
+        if (!address.is_v6()) {
+                return;
+        }
+
+        const auto addressV6 = address.to_v6();
+        if (addressV6.is_v4_mapped()) {
+                ip = htonl(addressV6.to_v4().to_uint());
+                return;
+        }
+
+        ipv6Connection = true;
+        ip = CONNECTION_IPV6_SENTINEL;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
@@ -411,10 +469,13 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 	}
 
 	if (auto connection = connectionWeak.lock()) {
+		const auto remoteIP = connection->getRemoteIPString();
+		const auto* ipForLog = remoteIP.empty() ? "unknown" : remoteIP.c_str();
+
 		if (!error) {
-			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout, IP: {}", ipForLog);
 		} else {
-			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), ipForLog);
 		}
 		connection->close(FORCE_CLOSE);
 	}

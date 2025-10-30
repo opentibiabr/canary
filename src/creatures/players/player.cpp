@@ -9100,7 +9100,40 @@ void Player::disconnect() const {
 }
 
 uint32_t Player::getIP() const {
-	return client ? client->getIP() : 0;
+        if (!client) {
+                return 0;
+        }
+
+        if (client->isIPv6Connection()) {
+                return 0;
+        }
+
+        return client->getIP();
+}
+
+bool Player::isDisconnected() const {
+        if (!client) {
+                return true;
+        }
+
+        const auto ipString = getIPString();
+        if (!ipString.empty()) {
+                return false;
+        }
+
+        if (client->isIPv6Connection()) {
+                return false;
+        }
+
+        return getIP() == 0;
+}
+
+std::string Player::getIPString() const {
+	if (!client) {
+		return {};
+	}
+
+	return client->getIPString();
 }
 
 void Player::reloadTaskSlot(PreySlot_t slotid) {

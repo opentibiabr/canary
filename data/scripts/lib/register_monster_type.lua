@@ -355,7 +355,8 @@ local function configureLootAttributes(lootObject, lootProperties)
 	if lootProperties.subType or lootProperties.charges then
 		lootObject:setSubType(lootProperties.subType or lootProperties.charges)
 	else
-		local itemType = ItemType(lootProperties.name or lootProperties.itemId)
+		local itemTypeLookup = lootProperties.name or lootProperties.itemId or lootProperties.id
+		local itemType = itemTypeLookup and ItemType(itemTypeLookup)
 		if itemType and itemType:getCharges() > 1 then
 			lootObject:setSubType(itemType:getCharges())
 		end
@@ -368,15 +369,39 @@ local function configureLootAttributes(lootObject, lootProperties)
 	if lootProperties.maxCount ~= nil then
 		lootObject:setMaxCount(lootProperties.maxCount)
 	end
-	lootObject:setActionId(lootProperties.aid or lootProperties.actionId or 0)
+        local explicitActionId = lootProperties.aid
+        if explicitActionId == nil then
+                explicitActionId = lootProperties.actionId
+        end
+        if explicitActionId ~= nil then
+                lootObject:setActionId(explicitActionId)
+        end
 	lootObject:setText(lootProperties.text or lootProperties.description or "")
 	lootObject:setNameItem(lootProperties.name or "")
 	lootObject:setArticle(lootProperties.article or "")
-	lootObject:setAttack(lootProperties.attack or 0)
-	lootObject:setDefense(lootProperties.defense or 0)
-	lootObject:setExtraDefense(lootProperties.extraDefense or lootProperties.extraDef or 0)
-	lootObject:setArmor(lootProperties.armor or 0)
-	lootObject:setShootRange(lootProperties.shootRange or lootProperties.range or 0)
+        if lootProperties.attack ~= nil then
+                lootObject:setAttack(lootProperties.attack)
+        end
+        if lootProperties.defense ~= nil then
+                lootObject:setDefense(lootProperties.defense)
+        end
+        local extraDefense = lootProperties.extraDefense
+        if extraDefense == nil then
+                extraDefense = lootProperties.extraDef
+        end
+        if extraDefense ~= nil then
+                lootObject:setExtraDefense(extraDefense)
+        end
+        if lootProperties.armor ~= nil then
+                lootObject:setArmor(lootProperties.armor)
+        end
+        local shootRange = lootProperties.shootRange
+        if shootRange == nil then
+                shootRange = lootProperties.range
+        end
+        if shootRange ~= nil then
+                lootObject:setShootRange(shootRange)
+        end
 	lootObject:setUnique(lootProperties.unique or false)
 end
 

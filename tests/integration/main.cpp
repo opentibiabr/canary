@@ -11,18 +11,18 @@
 int main(int argc, char** argv) {
 	::testing::InitGoogleTest(&argc, argv);
 
-        static auto injector = std::make_unique<di::extension::injector<>>();
-        InMemoryLogger::install(*injector);
-        KVMemory::install(*injector);
-        TestLuaEnvironment::install(*injector);
-        DI::setTestContainer(injector.get());
+	static auto injector = std::make_unique<di::extension::injector<>>();
+	InMemoryLogger::install(*injector);
+	KVMemory::install(*injector);
+	TestLuaEnvironment::install(*injector);
+	DI::setTestContainer(injector.get());
 
 	TestDatabase::init();
 	(void)g_logger();
 	(void)g_configManager();
 	(void)g_database();
 
-        const auto result = RUN_ALL_TESTS();
-        DI::setTestContainer(nullptr);
-        return result;
+	const auto result = RUN_ALL_TESTS();
+	DI::setTestContainer(nullptr);
+	return result;
 }

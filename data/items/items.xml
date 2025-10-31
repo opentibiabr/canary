@@ -43997,6 +43997,10 @@ Awarded by TibiaMagazine.com.ve"/>
 	</item>
 	<item id="22119" article="a" name="burst arrow">
 		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="burstarrow"/>
+		<attribute key="maxhitchance" value="100"/>
 		<attribute key="attack" value="27"/>
 		<attribute key="weight" value="90"/>
 	</item>

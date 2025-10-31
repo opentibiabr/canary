@@ -13,7 +13,46 @@
 #include "lua/scripts/scripts.hpp"
 
 #include <nlohmann/json.hpp>
-#include <unordered_map>
+
+namespace {
+	bool parseDateTime(const std::string &dateStr, const std::string &timeStr, std::time_t &result) {
+		int month = 0;
+		int day = 0;
+		int year = 0;
+		if (sscanf(dateStr.c_str(), "%d/%d/%d", &month, &day, &year) != 3) {
+			return false;
+		}
+		int hour = 0;
+		int minute = 0;
+		int second = 0;
+		if (!timeStr.empty()) {
+			const int parsed = sscanf(timeStr.c_str(), "%d:%d:%d", &hour, &minute, &second);
+			if (parsed < 2) {
+				return false;
+			}
+			if (parsed == 2) {
+				second = 0;
+			}
+		}
+		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) {
+			return false;
+		}
+		std::tm tmDate {};
+		tmDate.tm_year = year - 1900;
+		tmDate.tm_mon = month - 1;
+		tmDate.tm_mday = day;
+		tmDate.tm_hour = hour;
+		tmDate.tm_min = minute;
+		tmDate.tm_sec = second;
+		tmDate.tm_isdst = -1;
+		const std::time_t timestamp = std::mktime(&tmDate);
+		if (timestamp == static_cast<std::time_t>(-1)) {
+			return false;
+		}
+		result = timestamp;
+		return true;
+	}
+}
 
 bool EventsScheduler::loadScheduleEventFromJson() {
 	reset();
@@ -42,9 +81,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		return false;
 	}
 
-	time_t t = time(nullptr);
-	const tm* timePtr = localtime(&t);
-	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	const auto now = getTimeNow();
 
 	phmap::flat_hash_set<std::string_view> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
@@ -58,16 +95,21 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			continue;
 		}
 
-		int startYear, startMonth, startDay, endYear, endMonth, endDay;
-		if (sscanf(event["startdate"].get<std::string>().c_str(), "%d/%d/%d", &startMonth, &startDay, &startYear) != 3 || sscanf(event["enddate"].get<std::string>().c_str(), "%d/%d/%d", &endMonth, &endDay, &endYear) != 3) {
-			g_logger().warn("{} - Invalid date format for event '{}'", __FUNCTION__, eventName);
+		const std::string defaultHour = event.contains("hour") && !event["hour"].is_null() ? event["hour"].get<std::string>() : std::string {};
+		const std::string startHour = event.contains("starthour") && !event["starthour"].is_null() ? event["starthour"].get<std::string>() : (!defaultHour.empty() ? defaultHour : "00:00");
+		const std::string endHour = event.contains("endhour") && !event["endhour"].is_null() ? event["endhour"].get<std::string>() : (!defaultHour.empty() ? defaultHour : "23:59:59");
+		std::time_t startTime {};
+		std::time_t endTime {};
+		if (!parseDateTime(event["startdate"].get<std::string>(), startHour, startTime) || !parseDateTime(event["enddate"].get<std::string>(), endHour, endTime)) {
+			g_logger().warn("{} - Invalid date or hour format for event '{}'", __FUNCTION__, eventName);
+			continue;
+		}
+		if (endTime < startTime) {
+			g_logger().warn("{} - Event '{}' end time is before start time", __FUNCTION__, eventName);
 			continue;
 		}
 
-		int startDays = (startYear * 365) + (startMonth * 30) + startDay;
-		int endDays = (endYear * 365) + (endMonth * 30) + endDay;
-
-		if (daysMath < startDays || daysMath > endDays) {
+		if (now < startTime || now > endTime) {
 			continue;
 		}
 
@@ -207,11 +249,11 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		}
 
 		eventsOnSameDay[eventName] = currentEventRates;
-		eventScheduler.emplace_back(EventScheduler(eventName, startDays, endDays));
+		eventScheduler.emplace_back(EventScheduler {eventName, startTime, endTime});
 	}
 
 	for (const auto &event : eventScheduler) {
-		if (daysMath >= event.startDays && daysMath <= event.endDays) {
+		if (now >= event.startTime && now <= event.endTime) {
 			g_logger().info("Active EventScheduler: {}", event.name);
 		}
 	}
@@ -229,11 +271,9 @@ void EventsScheduler::reset() {
 
 std::vector<std::string> EventsScheduler::getActiveEvents() const {
 	std::vector<std::string> activeEvents;
-	time_t t = time(nullptr);
-	const tm* timePtr = localtime(&t);
-	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	const auto now = getTimeNow();
 	for (const auto &event : eventScheduler) {
-		if (daysMath >= event.startDays && daysMath <= event.endDays) {
+		if (now >= event.startTime && now <= event.endTime) {
 			activeEvents.emplace_back(event.name);
 		}
 	}
@@ -249,9 +289,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		return false;
 	}
 
-	time_t t = time(nullptr);
-	const tm* timePtr = localtime(&t);
-	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	const auto now = getTimeNow();
 
 	// Keep track of loaded scripts to check for duplicates
 	phmap::flat_hash_set<std::string_view> loadedScripts;
@@ -260,18 +298,28 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		std::string eventScript = eventNode.attribute("script").as_string();
 		std::string eventName = eventNode.attribute("name").as_string();
 
-		int16_t startYear;
-		int16_t startMonth;
-		int16_t startDay;
-		int16_t endYear;
-		int16_t endMonth;
-		int16_t endDay;
-		sscanf(eventNode.attribute("startdate").as_string(), "%hd/%hd/%hd", &startMonth, &startDay, &startYear);
-		sscanf(eventNode.attribute("enddate").as_string(), "%hd/%hd/%hd", &endMonth, &endDay, &endYear);
-		int startDays = ((startYear * 365) + (startMonth * 30) + startDay);
-		int endDays = ((endYear * 365) + (endMonth * 30) + endDay);
+		const auto startDateAttr = eventNode.attribute("startdate");
+		const auto endDateAttr = eventNode.attribute("enddate");
+		if (startDateAttr.empty() || endDateAttr.empty()) {
+			g_logger().warn("{} - Missing 'startdate' or 'enddate' for event '{}'", __FUNCTION__, eventName);
+			continue;
+		}
 
-		if (daysMath < startDays || daysMath > endDays) {
+		std::string defaultHour = eventNode.attribute("hour").empty() ? std::string {} : eventNode.attribute("hour").as_string();
+		std::string startHour = eventNode.attribute("starthour").empty() ? (!defaultHour.empty() ? defaultHour : "00:00") : eventNode.attribute("starthour").as_string();
+		std::string endHour = eventNode.attribute("endhour").empty() ? (!defaultHour.empty() ? defaultHour : "23:59:59") : eventNode.attribute("endhour").as_string();
+		std::time_t startTime {};
+		std::time_t endTime {};
+		if (!parseDateTime(startDateAttr.as_string(), startHour, startTime) || !parseDateTime(endDateAttr.as_string(), endHour, endTime)) {
+			g_logger().warn("{} - Invalid date or hour format for event '{}'", __FUNCTION__, eventName);
+			continue;
+		}
+		if (endTime < startTime) {
+			g_logger().warn("{} - Event '{}' end time is before start time", __FUNCTION__, eventName);
+			continue;
+		}
+
+		if (now < startTime || now > endTime) {
 			continue;
 		}
 
@@ -321,7 +369,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			}
 		}
 
-		for (const auto &[eventName, rates] : eventsOnSameDay) {
+		for (const auto &[existingName, rates] : eventsOnSameDay) {
 			std::vector<std::string> modifiedRates;
 
 			if (rates.exprate != 100 && currentEventRates.exprate != 100 && rates.exprate == currentEventRates.exprate) {
@@ -342,16 +390,16 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 
 			if (!modifiedRates.empty()) {
 				std::string ratesString = join(modifiedRates, ", ");
-				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), eventName.c_str(), ratesString);
+				g_logger().warn("{} - Events '{}' and '{}' have the same rates [{}] on the same day.", __FUNCTION__, eventNode.attribute("name").as_string(), existingName.c_str(), ratesString);
 			}
 		}
 
 		eventsOnSameDay[eventName] = currentEventRates;
-		eventScheduler.emplace_back(EventScheduler(eventName, startDays, endDays));
+		eventScheduler.emplace_back(EventScheduler {eventName, startTime, endTime});
 	}
 
 	for (const auto &event : eventScheduler) {
-		if (daysMath >= event.startDays && daysMath <= event.endDays) {
+		if (now >= event.startTime && now <= event.endTime) {
 			g_logger().info("Active EventScheduler: {}", event.name);
 		}
 	}

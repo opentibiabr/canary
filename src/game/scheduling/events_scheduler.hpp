@@ -12,10 +12,14 @@
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <ctime>
+#endif
+
 struct EventScheduler {
 	std::string name;
-	int startDays;
-	int endDays;
+	std::time_t startTime {};
+	std::time_t endTime {};
 };
 
 struct EventRates {

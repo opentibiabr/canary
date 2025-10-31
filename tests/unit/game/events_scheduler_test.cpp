@@ -69,11 +69,11 @@ TEST_F(EventsSchedulerJsonTest, LoadsRatesAndKeyValuesFromJson) {
 
 	const auto forgeChance = g_kv().scoped("eventscheduler")->get("forge-chance");
 	ASSERT_TRUE(forgeChance.has_value());
-	EXPECT_EQ(20, forgeChance->get<IntType>());
+	EXPECT_EQ(120, forgeChance->get<IntType>());
 
 	const auto bossCooldown = g_kv().scoped("eventscheduler")->get("boss-cooldown");
 	ASSERT_TRUE(bossCooldown.has_value());
-	EXPECT_EQ(50, bossCooldown->get<IntType>());
+	EXPECT_EQ(150, bossCooldown->get<IntType>());
 
 	const auto doubleBestiary = g_kv().scoped("eventscheduler")->get("double-bestiary");
 	ASSERT_TRUE(doubleBestiary.has_value());
@@ -162,11 +162,11 @@ TEST_F(EventsSchedulerJsonTest, ReloadingClearsPreviousModifiers) {
 	auto eventScope = g_kv().scoped("eventscheduler");
 	const auto forgeChance = eventScope->get("forge-chance");
 	ASSERT_TRUE(forgeChance.has_value());
-	EXPECT_EQ(30, forgeChance->get<IntType>());
+	EXPECT_EQ(130, forgeChance->get<IntType>());
 	EXPECT_TRUE(eventScope->get("double-bestiary")->get<BooleanType>());
 	EXPECT_TRUE(eventScope->get("double-bosstiary")->get<BooleanType>());
 	EXPECT_TRUE(eventScope->get("fast-exercise")->get<BooleanType>());
-	EXPECT_EQ(40, eventScope->get("boss-cooldown")->get<IntType>());
+	EXPECT_EQ(140, eventScope->get("boss-cooldown")->get<IntType>());
 
 	writeEventsJson(R"json({
 	"events": [

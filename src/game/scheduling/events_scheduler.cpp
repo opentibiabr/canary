@@ -83,7 +83,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 
 	const auto now = getTimeNow();
 
-	phmap::flat_hash_set<std::string_view> loadedScripts;
+	phmap::flat_hash_set<std::string> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 
 	for (const auto &event : eventsJson["events"]) {
@@ -120,7 +120,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			}
 
 			loadedScripts.insert(eventScript);
-			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "scripts" / eventScript;
+			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / eventScript;
 
 			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
 				g_logger().warn("{} - Cannot find script file '{}'", __FUNCTION__, filePath.string());
@@ -128,7 +128,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			}
 
 			if (!g_scripts().loadEventSchedulerScripts(filePath)) {
-				g_logger().warn("{} - Cannot load the file '{}' on '{}/scripts/'", __FUNCTION__, eventScript, coreFolder);
+				g_logger().warn("{} - Cannot load the file '{}' on '{}/json/eventscheduler/scripts/'", __FUNCTION__, eventScript, coreFolder);
 				return false;
 			}
 		}
@@ -226,7 +226,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			setSkillSchedule(currentEventRates.skillrate);
 		}
 		if (applyForge) {
-			g_kv().scoped("eventscheduler")->set("forge-chance", currentEventRates.forgeChance - 100);
+			g_kv().scoped("eventscheduler")->set("forge-chance", currentEventRates.forgeChance);
 		}
 		if (applyDoubleBestiary) {
 			g_kv().scoped("eventscheduler")->set("double-bestiary", true);
@@ -238,7 +238,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			g_kv().scoped("eventscheduler")->set("fast-exercise", true);
 		}
 		if (applyBossCooldown) {
-			g_kv().scoped("eventscheduler")->set("boss-cooldown", currentEventRates.bosscooldown - 100);
+			g_kv().scoped("eventscheduler")->set("boss-cooldown", currentEventRates.bosscooldown);
 		}
 
 		for (const auto &[duplicateEventName, rates] : duplicatedRates) {
@@ -292,7 +292,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 	const auto now = getTimeNow();
 
 	// Keep track of loaded scripts to check for duplicates
-	phmap::flat_hash_set<std::string_view> loadedScripts;
+	phmap::flat_hash_set<std::string> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 	for (const auto &eventNode : doc.child("events").children()) {
 		std::string eventScript = eventNode.attribute("script").as_string();

@@ -41,7 +41,7 @@
 			"startdate": "11/12/2024",
 			"enddate": "11/17/2024",
 			"ingame": {
-				"doubleexercise": true
+				"fastexercise": true
 			},
 			"description": "Exercise weapons are faster, doubling their speed.",
 			"colors": {

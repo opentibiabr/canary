@@ -9663,6 +9663,9 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 		if (scheduleTimerOpt) {
 			schedulePercentage = static_cast<uint8_t>(scheduleTimerOpt->getNumber());
 		}
+		if (schedulePercentage == 0) {
+			schedulePercentage = 100;
+		}
 
 		auto timer = timerValue->getNumber();
 		timer = static_cast<uint32_t>(timer * schedulePercentage / 100);

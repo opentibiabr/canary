@@ -249,7 +249,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		}
 
 		eventsOnSameDay[eventName] = currentEventRates;
-		eventScheduler.emplace_back(EventScheduler {eventName, startTime, endTime});
+		eventScheduler.emplace_back(EventScheduler { eventName, startTime, endTime });
 	}
 
 	for (const auto &event : eventScheduler) {
@@ -395,7 +395,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		}
 
 		eventsOnSameDay[eventName] = currentEventRates;
-		eventScheduler.emplace_back(EventScheduler {eventName, startTime, endTime});
+		eventScheduler.emplace_back(EventScheduler { eventName, startTime, endTime });
 	}
 
 	for (const auto &event : eventScheduler) {

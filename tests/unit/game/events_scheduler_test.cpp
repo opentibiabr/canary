@@ -201,16 +201,16 @@ TEST_F(EventsSchedulerJsonTest, RespectsEventHoursFromJson) {
 	auto inactiveStartTs = now - 7200;
 	auto inactiveEndTs = now - 1800;
 
-	const auto *activeStartInfoPtr = std::localtime(&activeStartTs);
+	const auto* activeStartInfoPtr = std::localtime(&activeStartTs);
 	ASSERT_NE(activeStartInfoPtr, nullptr);
 	const auto activeStartInfo = *activeStartInfoPtr;
-	const auto *activeEndInfoPtr = std::localtime(&activeEndTs);
+	const auto* activeEndInfoPtr = std::localtime(&activeEndTs);
 	ASSERT_NE(activeEndInfoPtr, nullptr);
 	const auto activeEndInfo = *activeEndInfoPtr;
-	const auto *inactiveStartInfoPtr = std::localtime(&inactiveStartTs);
+	const auto* inactiveStartInfoPtr = std::localtime(&inactiveStartTs);
 	ASSERT_NE(inactiveStartInfoPtr, nullptr);
 	const auto inactiveStartInfo = *inactiveStartInfoPtr;
-	const auto *inactiveEndInfoPtr = std::localtime(&inactiveEndTs);
+	const auto* inactiveEndInfoPtr = std::localtime(&inactiveEndTs);
 	ASSERT_NE(inactiveEndInfoPtr, nullptr);
 	const auto inactiveEndInfo = *inactiveEndInfoPtr;
 
@@ -228,29 +228,37 @@ TEST_F(EventsSchedulerJsonTest, RespectsEventHoursFromJson) {
 
 	std::ostringstream json;
 	json << "{\n"
-		"\t\"events\": [\n"
-		"\t\t{\n"
-		"\t\t\t\"name\": \"Active With Hours\",\n"
-		"\t\t\t\"startdate\": \"" << formatDate(activeStartInfo) << "\",\n"
-		"\t\t\t\"enddate\": \"" << formatDate(activeEndInfo) << "\",\n"
-		"\t\t\t\"starthour\": \"" << formatTime(activeStartInfo) << "\",\n"
-		"\t\t\t\"endhour\": \"" << formatTime(activeEndInfo) << "\",\n"
-		"\t\t\t\"ingame\": {\n"
-		"\t\t\t\t\"exprate\": 160\n"
-		"\t\t\t}\n"
-		"\t\t},\n"
-		"\t\t{\n"
-		"\t\t\t\"name\": \"Expired With Hours\",\n"
-		"\t\t\t\"startdate\": \"" << formatDate(inactiveStartInfo) << "\",\n"
-		"\t\t\t\"enddate\": \"" << formatDate(inactiveEndInfo) << "\",\n"
-		"\t\t\t\"starthour\": \"" << formatTime(inactiveStartInfo) << "\",\n"
-		"\t\t\t\"endhour\": \"" << formatTime(inactiveEndInfo) << "\",\n"
-		"\t\t\t\"ingame\": {\n"
-		"\t\t\t\t\"exprate\": 180\n"
-		"\t\t\t}\n"
-		"\t\t}\n"
-		"\t]\n"
-		"}";
+			"\t\"events\": [\n"
+			"\t\t{\n"
+			"\t\t\t\"name\": \"Active With Hours\",\n"
+			"\t\t\t\"startdate\": \""
+		 << formatDate(activeStartInfo) << "\",\n"
+										   "\t\t\t\"enddate\": \""
+		 << formatDate(activeEndInfo) << "\",\n"
+										 "\t\t\t\"starthour\": \""
+		 << formatTime(activeStartInfo) << "\",\n"
+										   "\t\t\t\"endhour\": \""
+		 << formatTime(activeEndInfo) << "\",\n"
+										 "\t\t\t\"ingame\": {\n"
+										 "\t\t\t\t\"exprate\": 160\n"
+										 "\t\t\t}\n"
+										 "\t\t},\n"
+										 "\t\t{\n"
+										 "\t\t\t\"name\": \"Expired With Hours\",\n"
+										 "\t\t\t\"startdate\": \""
+		 << formatDate(inactiveStartInfo) << "\",\n"
+											 "\t\t\t\"enddate\": \""
+		 << formatDate(inactiveEndInfo) << "\",\n"
+										   "\t\t\t\"starthour\": \""
+		 << formatTime(inactiveStartInfo) << "\",\n"
+											 "\t\t\t\"endhour\": \""
+		 << formatTime(inactiveEndInfo) << "\",\n"
+										   "\t\t\t\"ingame\": {\n"
+										   "\t\t\t\t\"exprate\": 180\n"
+										   "\t\t\t}\n"
+										   "\t\t}\n"
+										   "\t]\n"
+										   "}";
 
 	writeEventsJson(json.str());
 

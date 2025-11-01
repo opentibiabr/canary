@@ -60,6 +60,50 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
+-- Amulet quest // quick fix
+if MsgContains(message, "amulet") then
+	-- automatic exchange: crystal coin (ID 3043) -> platinum coins (ID 3035)
+	if player:getItemCount(3043) > 0 then
+		local count = player:getItemCount(3043)
+		player:removeItem(3043, count)
+		player:addItem(3035, count * 100)
+		npcHandler:say("Me break shiny crystal coin into platinum pieces for lil' one!", npc, creature)
+	end
+
+	-- 4 specific required items
+	local requiredItems = {7528, 7529, 7530, 7531}
+	local hasAllItems = true
+
+	-- checking 4 required items
+	for _, itemId in ipairs(requiredItems) do
+		if player:getItemCount(itemId) < 1 then
+			hasAllItems = false
+			break
+		end
+	end
+
+	-- checking for 50 platinum coins (ID 3035)
+	if player:getItemCount(3035) < 50 then
+		hasAllItems = false
+	end
+
+	if hasAllItems then
+		-- remove 4 required items
+		for _, itemId in ipairs(requiredItems) do
+			player:removeItem(itemId, 1)
+		end
+		-- remove 50 platinum coins
+		player:removeItem(3035, 50)
+
+		-- give reward: Koshei's Ancient Amulet (ID 7532)
+		player:addItem(7532, 1)
+
+		npcHandler:say("Cling clang! Lil' one bring shiny things, me give ancient amulet!", npc, creature)
+	else
+		npcHandler:say("Lil' one no have all shiny things. Need 4 more pieces of a broken amulet and 50 platinum coins!", npc, creature)
+	end
+end
+	
 	-- uth'lokr (Bast Skirts)
 	if MsgContains(message, "uth'lokr") and player:getStorageValue(Storage.Quest.U7_8.FriendsandTraders.TheSweatyCyclops) < 1 then
 		npcHandler:say("Firy steel it is. Need green ones' breath to melt. Or red even better. Me can make from shield. Lil' one want to trade?", npc, creature)

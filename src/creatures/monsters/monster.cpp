@@ -1424,7 +1424,7 @@ bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &dir) 
 
 	if (fromTile->getHouse()) {
 		return false;
-	}	
+	}
 
 	const Position &fromPos = fromTile->getPosition();
 	std::shared_ptr<Cylinder> fromCyl = fromTile;

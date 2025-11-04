@@ -357,6 +357,12 @@ public:
 	void clearPartyInvitations();
 
 	void sendUnjustifiedPoints() const;
+	void refreshSkullTicksFromLastKill();
+	struct SkullTimeInfo {
+		int64_t remainingMs { 0 };
+		uint8_t remainingDays { 0 };
+	};
+	SkullTimeInfo computeSkullTimeFromLastKill() const;
 
 	GuildEmblems_t getGuildEmblem(const std::shared_ptr<Player> &player) const;
 

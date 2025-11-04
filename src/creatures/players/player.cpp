@@ -37,6 +37,7 @@
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
+#include "database/database.hpp"
 #include "grouping/familiars.hpp"
 #include "grouping/guild.hpp"
 #include "io/iobestiary.hpp"
@@ -59,6 +60,7 @@
 #include "map/spectators.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+#include "utils/tools.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -5989,6 +5991,8 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 		return;
 	}
 
+	refreshSkullTicksFromLastKill();
+
 	const auto &targetPlayer = target->getPlayer();
 	if (targetPlayer && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
 		if (!pzLocked && g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
@@ -6044,6 +6048,7 @@ void Player::onPlacedCreature() {
 
 	this->onChangeZone(this->getZoneType());
 
+	refreshSkullTicksFromLastKill();
 	sendUnjustifiedPoints();
 }
 
@@ -6570,6 +6575,42 @@ int64_t Player::getSkullTicks() const {
 
 void Player::setSkullTicks(int64_t ticks) {
 	skullTicks = ticks;
+}
+
+Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
+	SkullTimeInfo info;
+	int64_t ticks = skullTicks;
+
+	if (ticks == 0 && (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK)) {
+		const auto query = fmt::format(
+			"SELECT `time` FROM `player_kills` WHERE `player_id` = {} ORDER BY `time` DESC LIMIT 1;",
+			guid
+		);
+		if (auto result = g_database.storeQuery(query); result && result->hasNext()) {
+			int64_t lastKillTime = 0;
+			const std::string &timeStr = result->getString("time");
+			std::from_chars(timeStr.data(), timeStr.data() + timeStr.size(), lastKillTime);
+			const int64_t now = getTimeNow();
+			const int64_t duration = static_cast<int64_t>(
+										 g_configManager().getNumber(getSkull() == SKULL_RED ? RED_SKULL_DURATION : BLACK_SKULL_DURATION)
+									 )
+				* 24 * 60 * 60;
+			const int64_t remaining = std::max<int64_t>(0, duration - (now - lastKillTime));
+			ticks = remaining * 1000;
+		}
+	}
+
+	info.remainingMs = ticks;
+	if (ticks > 0) {
+		info.remainingDays = std::floor<uint8_t>(ticks / (24 * 60 * 60 * 1000));
+	}
+
+	return info;
+}
+
+void Player::refreshSkullTicksFromLastKill() {
+	const auto info = computeSkullTimeFromLastKill();
+	setSkullTicks(info.remainingMs);
 }
 
 bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
@@ -7232,11 +7273,8 @@ void Player::sendUnjustifiedPoints() const {
 		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
 		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
 		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
-		uint8_t skullDuration = 0;
-		if (skullTicks != 0) {
-			skullDuration = std::floor<uint8_t>(skullTicks / (24 * 60 * 60 * 1000));
-		}
-		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
+		const auto info = computeSkullTimeFromLastKill();
+		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), info.remainingDays);
 	}
 }
 

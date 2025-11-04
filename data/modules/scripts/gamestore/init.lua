@@ -552,7 +552,6 @@ function parseBuyStoreOffer(playerId, msg)
 		end
 
 		local message = string.format("You have purchased %s for %d coins.", offer.name, offerPrice)
-		sendUpdatedStoreBalances(playerId)
 		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)
 	end
 
@@ -650,6 +649,7 @@ function openStore(playerId)
 		end
 		msg:sendToPlayer(player)
 		sendStoreBalanceUpdating(playerId, true)
+		sendUpdatedStoreBalances(playerId)
 	end
 end
 
@@ -907,16 +907,18 @@ function sendShowStoreOffers(playerId, category, redirectId)
 		end
 
 		local canBuy = player:canBuyOffer(offer)
+		offer.disabledReadonIndex = nil
 		if canBuy.disabled == 1 then
-			for index, disableTable in ipairs(disableReasons) do
-				if canBuy.disabledReason == disableTable.reason then
-					offer.disabledReadonIndex = index
+			for index, reason in ipairs(disableReasons) do
+				if canBuy.disabledReason == reason then
+					offer.disabledReadonIndex = index - 1
+					break
 				end
 			end
 
 			if offer.disabledReadonIndex == nil then
-				offer.disabledReadonIndex = #disableReasons
 				table.insert(disableReasons, canBuy.disabledReason)
+				offer.disabledReadonIndex = #disableReasons - 1
 			end
 		end
 
@@ -1231,12 +1233,8 @@ function sendStoreBalanceUpdating(playerId, updating)
 
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_CoinBalanceUpdating)
-	msg:addByte(0x00)
+	msg:addByte(updating and 0x00 or 0x01)
 	msg:sendToPlayer(player)
-
-	if updating then
-		sendUpdatedStoreBalances(playerId)
-	end
 end
 
 function sendUpdatedStoreBalances(playerId)
@@ -2040,6 +2038,7 @@ function Player.removeCoinsBalance(self, coins)
 	if self:canRemoveCoins(coins) then
 		sendStoreBalanceUpdating(self:getId(), true)
 		self:removeTibiaCoins(coins)
+		sendUpdatedStoreBalances(self:getId())
 		return true
 	end
 
@@ -2047,9 +2046,12 @@ function Player.removeCoinsBalance(self, coins)
 end
 
 function Player.addCoinsBalance(self, coins, update)
-	self:addTibiaCoins(coins)
 	if update then
 		sendStoreBalanceUpdating(self:getId(), true)
+	end
+	self:addTibiaCoins(coins)
+	if update then
+		sendUpdatedStoreBalances(self:getId())
 	end
 	return true
 end
@@ -2063,6 +2065,7 @@ function Player.removeTransferableCoinsBalance(self, coins)
 	if self:canRemoveTransferableCoins(coins) then
 		sendStoreBalanceUpdating(self:getId(), true)
 		self:removeTransferableCoins(coins)
+		sendUpdatedStoreBalances(self:getId())
 		return true
 	end
 
@@ -2070,9 +2073,12 @@ function Player.removeTransferableCoinsBalance(self, coins)
 end
 
 function Player.addTransferableCoinsBalance(self, coins, update)
-	self:addTransferableCoins(coins)
 	if update then
 		sendStoreBalanceUpdating(self:getId(), true)
+	end
+	self:addTransferableCoins(coins)
+	if update then
+		sendUpdatedStoreBalances(self:getId())
 	end
 	return true
 end
@@ -2199,16 +2205,18 @@ function sendHomePage(playerId)
 	local homeOffers = getHomeOffers(player:getId())
 	for p, offer in pairs(homeOffers) do
 		local canBuy = player:canBuyOffer(offer)
+		offer.disabledReadonIndex = nil
 		if canBuy.disabled == 1 then
-			for index, disableTable in ipairs(disableReasons) do
-				if canBuy.disabledReason == disableTable.reason then
-					offer.disabledReadonIndex = index
+			for index, reason in ipairs(disableReasons) do
+				if canBuy.disabledReason == reason then
+					offer.disabledReadonIndex = index - 1
+					break
 				end
 			end
 
 			if offer.disabledReadonIndex == nil then
-				offer.disabledReadonIndex = #disableReasons
 				table.insert(disableReasons, canBuy.disabledReason)
+				offer.disabledReadonIndex = #disableReasons - 1
 			end
 		end
 	end

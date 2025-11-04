@@ -80,6 +80,7 @@
     <ClInclude Include="..\src\io\iobestiary.hpp" />
     <ClInclude Include="..\src\io\ioguild.hpp" />
     <ClInclude Include="..\src\io\iologindata.hpp" />
+    <ClInclude Include="..\src\io\account_vip_repository_db.hpp" />
     <ClInclude Include="..\src\io\iomap.hpp" />
     <ClInclude Include="..\src\io\iomapserialize.hpp" />
     <ClInclude Include="..\src\io\iomarket.hpp" />
@@ -296,6 +297,7 @@
     <ClCompile Include="..\src\io\iobestiary.cpp" />
     <ClCompile Include="..\src\io\ioguild.cpp" />
     <ClCompile Include="..\src\io\iologindata.cpp" />
+    <ClCompile Include="..\src\io\account_vip_repository_db.cpp" />
     <ClCompile Include="..\src\io\iomap.cpp" />
     <ClCompile Include="..\src\io\iomapserialize.cpp" />
     <ClCompile Include="..\src\io\iomarket.cpp" />

@@ -79,25 +79,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5880, chance = 530 }, -- iron ore
-	{ id = 21183, chance = 720 }, -- glooth amulet
-	{ id = 21170, chance = 1720 }, -- gearwheel chain
-	{ id = 21165, chance = 370 }, -- rubber cap
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 21755, chance = 1470 }, -- bronze gear wheel
-	{ id = 8775, chance = 690 }, -- gear wheel
-	{ id = 21143, chance = 1970 }, -- glooth sandwich
-	{ id = 3035, chance = 6010, maxCount = 4 }, -- platinum coin
-	{ id = 21103, chance = 2840 }, -- glooth injection tube
-	{ id = 7643, chance = 4470 }, -- ultimate health potion
-	{ id = 238, chance = 9280 }, -- great mana potion
-	{ id = 21167, chance = 690 }, -- heat core
-	{ id = 21179, chance = 440 }, -- glooth blade
-	{ id = 21178, chance = 230 }, -- glooth club
-	{ id = 21180, chance = 290 }, -- glooth axe
-	{ id = 3037, chance = 730 }, -- yellow gem
-	{ id = 9057, chance = 1560, maxCount = 4 }, -- small topaz
-	{ id = 3032, chance = 1590, maxCount = 4 }, -- small emerald
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 53710, maxCount = 4 }, -- Platinum Coin
+	{ id = 21103, chance = 14904 }, -- Glooth Injection Tube
+	{ id = 238, chance = 12029 }, -- Great Mana Potion
+	{ id = 21143, chance = 10279 }, -- Glooth Sandwich
+	{ id = 3032, chance = 7029, maxCount = 4 }, -- Small Emerald
+	{ id = 9057, chance = 6933, maxCount = 4 }, -- Small Topaz
+	{ id = 7643, chance = 5811 }, -- Ultimate Health Potion
+	{ id = 21755, chance = 3115 }, -- Bronze Gear Wheel
+	{ id = 5880, chance = 2076 }, -- Iron Ore
+	{ id = 21158, chance = 1456 }, -- Glooth Spear
+	{ id = 21183, chance = 1761 }, -- Glooth Amulet
+	{ id = 21180, chance = 1445 }, -- Glooth Axe
+	{ id = 21167, chance = 1343 }, -- Heat Core
+	{ id = 8775, chance = 1760 }, -- Gear Wheel
+	{ id = 21179, chance = 1251 }, -- Glooth Blade
+	{ id = 21170, chance = 921 }, -- Gearwheel Chain
+	{ id = 21165, chance = 918 }, -- Rubber Cap
+	{ id = 21178, chance = 876 }, -- Glooth Club
+	{ id = 3037, chance = 840 }, -- Yellow Gem
+	{ id = 3038, chance = 140 }, -- Green Gem
 }
 
 monster.attacks = {

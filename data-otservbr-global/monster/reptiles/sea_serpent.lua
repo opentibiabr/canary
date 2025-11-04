@@ -75,26 +75,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small sapphire", chance = 5600, maxCount = 3 },
-	{ name = "gold coin", chance = 38000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 36 },
-	{ name = "platinum coin", chance = 25000, maxCount = 3 },
-	{ id = 3049, chance = 400 }, -- stealth ring
-	{ id = 3098, chance = 1100 }, -- ring of healing
-	{ name = "serpent sword", chance = 4200 },
-	{ name = "plate legs", chance = 7150 },
-	{ name = "dragon ham", chance = 60000, maxCount = 2 },
-	{ name = "strong health potion", chance = 5500 },
-	{ name = "strong mana potion", chance = 3850 },
-	{ name = "great mana potion", chance = 920 },
-	{ name = "glacier amulet", chance = 880 },
-	{ name = "glacier kilt", chance = 430 },
-	{ name = "spirit cloak", chance = 2900 },
-	{ name = "focus cape", chance = 370 },
-	{ name = "crystalline armor", chance = 90 },
-	{ name = "northwind rod", chance = 930 },
-	{ name = "sea serpent scale", chance = 10200 },
+	{ id = 3031, chance = 98198, maxCount = 236 }, -- Gold Coin
+	{ id = 3583, chance = 87926, maxCount = 2 }, -- Dragon Ham
+	{ id = 3035, chance = 27080, maxCount = 3 }, -- Platinum Coin
+	{ id = 9666, chance = 7714 }, -- Sea Serpent Scale
+	{ id = 3557, chance = 5684 }, -- Plate Legs
+	{ id = 3029, chance = 8741, maxCount = 3 }, -- Small Sapphire
+	{ id = 236, chance = 4837 }, -- Strong Health Potion
+	{ id = 3297, chance = 3563 }, -- Serpent Sword
+	{ id = 237, chance = 3647 }, -- Strong Mana Potion
+	{ id = 8042, chance = 3107 }, -- Spirit Cloak
+	{ id = 3098, chance = 1026 }, -- Ring of Healing
+	{ id = 8083, chance = 1681 }, -- Northwind Rod
+	{ id = 238, chance = 809 }, -- Great Mana Potion
+	{ id = 815, chance = 719 }, -- Glacier Amulet
+	{ id = 823, chance = 423 }, -- Glacier Kilt
+	{ id = 3049, chance = 342 }, -- Stealth Ring
+	{ id = 8043, chance = 190 }, -- Focus Cape
+	{ id = 9303, chance = 178 }, -- Leviathan's Amulet
+	{ id = 8050, chance = 142 }, -- Crystalline Armor
 }
 
 monster.attacks = {

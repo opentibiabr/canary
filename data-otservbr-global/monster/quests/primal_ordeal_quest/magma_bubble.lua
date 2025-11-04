@@ -70,32 +70,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 60 },
-	{ name = "ultimate mana potion", chance = 32653, maxCount = 14 },
-	{ name = "ultimate health potion", chance = 30612, maxCount = 14 },
-	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
-	{ name = "berserk potion", chance = 22449, maxCount = 5 },
-	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
-	{ name = "giant amethyst", chance = 6122 },
-	{ name = "giant ruby", chance = 4082 },
-	{ name = "giant emerald", chance = 4082 },
-	{ name = "giant sapphire", chance = 2041 },
-	{ name = "giant topaz", chance = 2041 },
-	{ name = "fiery tear", chance = 1000 },
-	{ name = "arboreal tome", chance = 250 },
-	{ name = "arboreal crown", chance = 250 },
-	{ name = "spiritthorn armor", id = 39147, chance = 250 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
-	{ name = "alicorn headguard", chance = 250 },
-	{ name = "alicorn quiver", chance = 250 },
-	{ name = "arcanomancer regalia", chance = 250 },
-	{ name = "arcanomancer folio", chance = 250 },
-	{ id = 39183, chance = 250 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
-	{ name = "portable flame", chance = 250 },
-	{ name = "firefighting axe", chance = 250 },
+	{ id = 39544, chance = 1000 }, -- Firefighting Axe
+	{ id = 23373, chance = 53225 }, -- Ultimate Mana Potion
+	{ id = 3043, chance = 100000 }, -- Crystal Coin
+	{ id = 7440, chance = 29032 }, -- Mastermind Potion
+	{ id = 7443, chance = 25806 }, -- Bullseye Potion
+	{ id = 30060, chance = 25806 }, -- Giant Emerald
+	{ id = 32623, chance = 9677 }, -- Giant Topaz
+	{ id = 7643, chance = 27419 }, -- Ultimate Health Potion
+	{ id = 7439, chance = 41935 }, -- Berserk Potion
+	{ id = 23374, chance = 19354 }, -- Ultimate Spirit Potion
+	{ id = 30061, chance = 25806 }, -- Giant Sapphire
+	{ id = 39149, chance = 1000 }, -- Alicorn Headguard
+	{ id = 39150, chance = 1000 }, -- Alicorn Quiver
+	{ id = 39180, chance = 1000 }, -- Charged Alicorn Ring
+	{ id = 39153, chance = 1000 }, -- Arboreal Crown
+	{ id = 39186, chance = 1000 }, -- Charged Arboreal Ring
+	{ id = 39154, chance = 1000 }, -- Arboreal Tome
+	{ id = 39152, chance = 1000 }, -- Arcanomancer Folio
+	{ id = 39151, chance = 1000 }, -- Arcanomancer Regalia
+	{ id = 39183, chance = 1000 }, -- Charged Arcanomancer Sigil
+	{ id = 39040, chance = 4838 }, -- Fiery Tear
+	{ id = 39543, chance = 29032 }, -- Smoldering Eye
+	{ id = 39147, chance = 1000 }, -- Spiritthorn Armor
+	{ id = 39148, chance = 1000 }, -- Spiritthorn Helmet
+	{ id = 39177, chance = 1000 }, -- Charged Spiritthorn Ring
+	{ id = 39545, chance = 1000 }, -- Portable Flame
+	{ id = 32622, chance = 32258 }, -- Giant Amethyst
+	{ id = 50188, chance = 1000 }, -- Ethereal Coned Hat
+	{ id = 50147, chance = 1000 }, -- Charged Ethereal Ring
+	{ id = 49271, chance = 5128, maxCount = 6 }, -- Transcendence Potion
 }
 
 monster.attacks = {

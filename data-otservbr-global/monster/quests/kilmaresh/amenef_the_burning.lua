@@ -65,35 +65,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 4494, maxCount = 1 },
-	{ name = "slightly rusted legs", chance = 1392 },
-	{ name = "slightly rusted armor", chance = 1203 },
-	{ name = "guardian halberd", chance = 1139 },
-	{ id = 3097, chance = 886 }, -- dwarven ring
-	{ name = "mastermind potion", chance = 823 },
-	{ name = "doublet", chance = 633 },
-	{ name = "knight armor", chance = 570 },
-	{ id = 23529, chance = 506 }, -- ring of blue plasma
-	{ name = "epee", chance = 443 },
-	{ name = "underworld rod", chance = 443 },
-	{ name = "knight axe", chance = 380 },
-	{ name = "springsprout rod", chance = 380 },
-	{ name = "wand of cosmic energy", chance = 316 },
-	{ name = "wand of inferno", chance = 316 },
-	{ id = 281, chance = 253 }, -- giant shimmering pearl (green)
-	{ name = "spellbook of warding", chance = 253 },
-	{ name = "violet gem", chance = 253 },
-	{ name = "wand of starstorm", chance = 253 },
-	{ name = "amber staff", chance = 190 },
-	{ name = "assassin dagger", chance = 190 },
-	{ name = "blue gem", chance = 190 },
-	{ name = "eye-embroidered veil", chance = 190 },
-	{ name = "warrior's axe", chance = 190 },
-	{ name = "focus cape", chance = 127 },
-	{ name = "noble axe", chance = 127 },
-	{ name = "sacred tree amulet", chance = 127 },
-	{ name = "golden mask", chance = 63 },
-	{ name = "mercenary sword", chance = 63 },
+	{ id = 3315, chance = 10240 }, -- Guardian Halberd
+	{ id = 7456, chance = 1200 }, -- Noble Axe
+	{ id = 8073, chance = 2410 }, -- Spellbook of Warding
+	{ id = 3370, chance = 6930 }, -- Knight Armor
+	{ id = 3043, chance = 46080 }, -- Crystal Coin
+	{ id = 8084, chance = 3610 }, -- Springsprout Rod
+	{ id = 8092, chance = 3610 }, -- Wand of Starstorm
+	{ id = 3326, chance = 3920 }, -- Epee
+	{ id = 7440, chance = 6930 }, -- Mastermind Potion
+	{ id = 7386, chance = 1810 }, -- Mercenary Sword
+	{ id = 37003, chance = 1810 }, -- Eye-Embroidered Veil
+	{ id = 37002, chance = 1000 }, -- Tagralt-Inlaid Scabbard
+	{ id = 7404, chance = 2110 }, -- Assassin Dagger
+	{ id = 8899, chance = 15660 }, -- Slightly Rusted Legs
+	{ id = 14040, chance = 1810 }, -- Warrior's Axe
+	{ id = 3379, chance = 6630 }, -- Doublet
+	{ id = 281, chance = 3310 }, -- Giant Shimmering Pearl
+	{ id = 8896, chance = 11450 }, -- Slightly Rusted Armor
+	{ id = 3097, chance = 8130 }, -- Dwarven Ring
+	{ id = 23529, chance = 4520 }, -- Ring of Blue Plasma
+	{ id = 3036, chance = 2110 }, -- Violet Gem
+	{ id = 3073, chance = 3610 }, -- Wand of Cosmic Energy
+	{ id = 3318, chance = 3310 }, -- Knight Axe
+	{ id = 31324, chance = 900 }, -- Golden Mask
+	{ id = 7426, chance = 1200 }, -- Amber Staff
+	{ id = 3071, chance = 2710 }, -- Wand of Inferno
+	{ id = 8043, chance = 1510 }, -- Focus Cape
+	{ id = 8082, chance = 3920 }, -- Underworld Rod
+	{ id = 9302, chance = 3610 }, -- Sacred Tree Amulet
+	{ id = 3041, chance = 2110 }, -- Blue Gem
+	{ id = 31323, chance = 600 }, -- Sea Horse Figurine
 }
 
 monster.attacks = {

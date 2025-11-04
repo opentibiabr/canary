@@ -79,15 +79,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 92090, maxCount = 105 },
-	{ name = "plate legs", chance = 200 },
-	{ name = "great health potion", chance = 2030 },
-	{ name = "great spirit potion", chance = 2010 },
-	{ name = "ultimate health potion", chance = 750 },
-	{ name = "belted cape", chance = 580 },
-	{ name = "paladin armor", chance = 140 },
-	{ name = "springsprout rod", chance = 1020 },
-	{ name = "boggy dreads", chance = 9870 },
+	{ id = 3031, chance = 92110, maxCount = 105 }, -- Gold Coin
+	{ id = 9667, chance = 9583 }, -- Boggy Dreads
+	{ id = 239, chance = 2087 }, -- Great Health Potion
+	{ id = 7642, chance = 1444 }, -- Great Spirit Potion
+	{ id = 3557, chance = 2109 }, -- Plate Legs
+	{ id = 8044, chance = 713 }, -- Belted Cape
+	{ id = 8084, chance = 1058 }, -- Springsprout Rod
+	{ id = 7643, chance = 692 }, -- Ultimate Health Potion
+	{ id = 8063, chance = 116 }, -- Paladin Armor
 }
 
 monster.attacks = {

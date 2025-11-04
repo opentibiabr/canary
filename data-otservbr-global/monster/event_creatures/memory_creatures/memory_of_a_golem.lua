@@ -63,14 +63,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 160 },
-	{ name = "small topaz", chance = 7000, maxCount = 2 },
-	{ name = "great mana potion", chance = 18830, maxCount = 2 },
-	{ name = "bronze gear wheel", chance = 3000 },
-	{ name = "small emerald", chance = 7430, maxCount = 2 },
-	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "special fx box", chance = 1500 },
-	{ name = "heat core", chance = 5155 },
+	{ id = 3032, chance = 6765 }, -- Small Emerald
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 7643, chance = 4624 }, -- Ultimate Health Potion
+	{ id = 21755, chance = 12700 }, -- Bronze Gear Wheel
+	{ id = 238, chance = 13882 }, -- Great Mana Potion
+	{ id = 9057, chance = 6406 }, -- Small Topaz
+	{ id = 3037, chance = 1420 }, -- Yellow Gem
+	{ id = 21167, chance = 1423 }, -- Heat Core
+	{ id = 37531, chance = 3970 }, -- Candy Floss (Large)
+	{ id = 37468, chance = 1190 }, -- Special Fx Box
 }
 
 monster.attacks = {

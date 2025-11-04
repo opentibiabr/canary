@@ -74,21 +74,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 20 },
-	{ name = "leaf star", chance = 73000, maxCount = 2 },
-	{ name = "throwing star", chance = 65000, maxCount = 6 },
-	{ name = "hunting spear", chance = 62000 },
-	{ name = "gold ingot", chance = 48000 },
-	{ name = "blue gem", chance = 31000 },
-	{ name = "yellow gem", chance = 31000 },
-	{ name = "green crystal shard", chance = 8600 },
-	{ id = 281, chance = 28000 }, -- giant shimmering pearl (green)
-	{ name = "skull helmet", chance = 7500 },
-	{ id = 23542, chance = 7200 }, -- collar of blue plasma
-	{ name = "cobra crest", chance = 11000 },
-	{ name = "cobra boots", chance = 115 },
-	{ name = "cobra hood", chance = 120 },
-	{ name = "cobra crossbow", chance = 50 },
+	{ id = 3029, chance = 100000 }, -- Small Sapphire
+	{ id = 3035, chance = 1000, maxCount = 20 }, -- Platinum Coin
+	{ id = 3037, chance = 1000 }, -- Yellow Gem
+	{ id = 3039, chance = 1000 }, -- Red Gem
+	{ id = 9058, chance = 1000 }, -- Gold Ingot
+	{ id = 281, chance = 1000 }, -- Giant Shimmering Pearl
+	{ id = 31678, chance = 1000 }, -- Cobra Crest
+	{ id = 3041, chance = 1000 }, -- Blue Gem
+	{ id = 3038, chance = 1000 }, -- Green Gem
+	{ id = 830, chance = 1000 }, -- Terra Hood
+	{ id = 3349, chance = 1000 }, -- Crossbow
+	{ id = 3350, chance = 1000 }, -- Bow
+	{ id = 3347, chance = 1000 }, -- Hunting Spear
+	{ id = 16119, chance = 1000 }, -- Blue Crystal Shard
+	{ id = 3287, chance = 1000, maxCount = 6 }, -- Throwing Star
+	{ id = 16121, chance = 1000 }, -- Green Crystal Shard
+	{ id = 9057, chance = 1000 }, -- Small Topaz
+	{ id = 9302, chance = 1000 }, -- Sacred Tree Amulet
+	{ id = 827, chance = 1000 }, -- Magma Monocle
+	{ id = 3575, chance = 1000 }, -- Wood Cape
+	{ id = 16163, chance = 1000 }, -- Crystal Crossbow
+	{ id = 5741, chance = 1000 }, -- Skull Helmet
+	{ id = 23529, chance = 1000 }, -- Ring of Blue Plasma
+	{ id = 30394, chance = 1000 }, -- Cobra Boots
+	{ id = 30393, chance = 1000 }, -- Cobra Crossbow
+	{ id = 30397, chance = 1000 }, -- Cobra Hood
 }
 
 monster.attacks = {

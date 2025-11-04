@@ -69,7 +69,9 @@ monster.voices = {
 	{ text = "Bring it on!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {}
 

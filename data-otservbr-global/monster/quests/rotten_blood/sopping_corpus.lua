@@ -77,19 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 42860 },
-	{ name = "ultimate mana potion", chance = 42860, minCount = 2, maxCount = 3 },
-	{ id = 7385, chance = 14290 }, -- crimson sword
-	{ name = "ultimate health potion", chance = 14290, maxCount = 2 },
-	{ name = "organic acid", chance = 7678, maxCount = 1 },
-	{ name = "rotten roots", chance = 13133, maxCount = 1 },
-	{ name = "emerald bangle", chance = 8558, maxCount = 1 },
-	{ name = "underworld rod", chance = 8380, maxCount = 1 },
-	{ name = "violet gem", chance = 5084, maxCount = 1 },
-	{ name = "blue gem", chance = 9808, maxCount = 1 },
-	{ name = "relic sword", chance = 6964, maxCount = 1 },
-	{ name = "skullcracker armor", chance = 7270, maxCount = 1 },
-	{ id = 23531, chance = 3073, maxCount = 1 }, -- ring of green plasma
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 3043, chance = 61055 }, -- Crystal Coin
+	{ id = 23373, chance = 25292 }, -- Ultimate Mana Potion
+	{ id = 7643, chance = 12806 }, -- Ultimate Health Potion
+	{ id = 43778, chance = 20750 }, -- Organic Acid
+	{ id = 43849, chance = 5260 }, -- Rotten Roots
+	{ id = 7385, chance = 7589 }, -- Crimson Sword
+	{ id = 3081, chance = 430 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

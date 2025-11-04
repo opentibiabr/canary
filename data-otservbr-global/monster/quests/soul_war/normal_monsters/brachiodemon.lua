@@ -83,27 +83,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 58990 },
-	{ name = "ultimate health potion", chance = 29110, maxCount = 4 },
-	{ id = 33936, chance = 5490 }, -- hand
-	{ id = 33937, chance = 3710 }, -- head brachiodemon
-	{ name = "epee", chance = 3290 },
-	{ name = "crystal mace", chance = 1690 },
-	{ name = "noble axe", chance = 1600 },
-	{ name = "spellbook of mind control", chance = 1180 },
-	{ name = "skull staff", chance = 930 },
-	{ id = 23531, chance = 930 }, -- ring of green plasma
-	{ name = "royal helmet", chance = 840 },
-	{ name = "jade hammer", chance = 840 },
-	{ name = "metal bat", chance = 760 },
-	{ name = "diabolic skull", chance = 590 },
-	{ name = "fire axe", chance = 590 },
-	{ name = "crystalline sword", chance = 420 },
-	{ name = "butcher's axe", chance = 420 },
-	{ name = "mastermind shield", chance = 420 },
-	{ name = "assassin dagger", chance = 340 },
-	{ name = "alloy legs", chance = 170 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 61567 }, -- Crystal Coin
+	{ id = 7643, chance = 30283, maxCount = 4 }, -- Ultimate Health Potion
+	{ id = 33936, chance = 7255 }, -- Hand
+	{ id = 3324, chance = 1130 }, -- Skull Staff
+	{ id = 3326, chance = 3744 }, -- Epee
+	{ id = 3333, chance = 2311 }, -- Crystal Mace
+	{ id = 7456, chance = 1327 }, -- Noble Axe
+	{ id = 33937, chance = 4026 }, -- Head (Brachiodemon)
+	{ id = 3320, chance = 646 }, -- Fire Axe
+	{ id = 7404, chance = 1100 }, -- Assassin Dagger
+	{ id = 7422, chance = 654 }, -- Jade Hammer
+	{ id = 8074, chance = 892 }, -- Spellbook of Mind Control
+	{ id = 23531, chance = 498 }, -- Ring of Green Plasma
+	{ id = 3392, chance = 551 }, -- Royal Helmet
+	{ id = 3414, chance = 459 }, -- Mastermind Shield
+	{ id = 7412, chance = 663 }, -- Butcher's Axe
+	{ id = 16160, chance = 800 }, -- Crystalline Sword
+	{ id = 21168, chance = 399 }, -- Alloy Legs
+	{ id = 21171, chance = 396 }, -- Metal Bat
+	{ id = 34025, chance = 181 }, -- Diabolic Skull
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

@@ -73,15 +73,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2914, chance = 6666 }, -- lamp
-	{ name = "gold coin", chance = 100000, maxCount = 12 },
-	{ name = "battle axe", chance = 5000 },
-	{ name = "halberd", chance = 10000 },
-	{ name = "axe", chance = 10000 },
-	{ name = "war hammer", chance = 5000 },
-	{ name = "ham", chance = 50000 },
-	{ id = 6570, chance = 5538 }, -- surprise bag
-	{ id = 6571, chance = 1538 }, -- surprise bag
+	{ id = 3031, chance = 1000, maxCount = 12 }, -- Gold Coin
+	{ id = 3582, chance = 1000 }, -- Ham
+	{ id = 2914, chance = 1000 }, -- Lamp
+	{ id = 6571, chance = 1000 }, -- Surprise Bag (Red)
+	{ id = 6570, chance = 1000 }, -- Surprise Bag (Blue)
+	{ id = 3269, chance = 1000 }, -- Halberd
+	{ id = 3279, chance = 1000 }, -- War Hammer
+	{ id = 3274, chance = 1000 }, -- Axe
+	{ id = 3266, chance = 1000 }, -- Battle Axe
 }
 
 monster.attacks = {

@@ -60,14 +60,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 37000, maxCount = 70 },
-	{ name = "candlestick", chance = 2100 },
-	{ name = "bread", chance = 14000 },
-	{ id = 3509, chance = 1000 }, -- inkwell
-	{ name = "green tunic", chance = 7000 },
-	{ name = "blank rune", chance = 18000 },
-	{ name = "wand of cosmic energy", chance = 1160 },
-	{ name = "strong mana potion", chance = 3000 },
+	{ id = 3447, chance = 8630 }, -- Arrow
+	{ id = 3509, chance = 2880 }, -- Inkwell
+	{ id = 3073, chance = 2160 }, -- Wand of Cosmic Energy
+	{ id = 3661, chance = 3600 }, -- Grave Flower
+	{ id = 2815, chance = 32369 }, -- Scroll
+	{ id = 237, chance = 5040 }, -- Strong Mana Potion
+	{ id = 3061, chance = 1440 }, -- Life Crystal
+	{ id = 3147, chance = 38850 }, -- Blank Rune
+	{ id = 3551, chance = 5040 }, -- Sandals
+	{ id = 3600, chance = 32369 }, -- Bread
+	{ id = 2917, chance = 4320 }, -- Candlestick
+	{ id = 3031, chance = 97120 }, -- Gold Coin
+	{ id = 266, chance = 7910 }, -- Health Potion
+	{ id = 3738, chance = 10790 }, -- Sling Herb
+	{ id = 3082, chance = 2160 }, -- Elven Amulet
+	{ id = 3563, chance = 14390 }, -- Green Tunic
+	{ id = 3593, chance = 19420 }, -- Melon
+	{ id = 37531, chance = 8630 }, -- Candy Floss (Large)
 }
 
 monster.attacks = {

@@ -75,23 +75,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 8180, maxCount = 2 },
-	{ name = "gold coin", chance = 49000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 97 },
-	{ name = "platinum coin", chance = 66000, maxCount = 3 },
-	{ id = 3098, chance = 3270 }, -- ring of healing
-	{ name = "steel boots", chance = 130 },
-	{ name = "great mana potion", chance = 8950, maxCount = 4 },
-	{ id = 281, chance = 2600 }, -- giant shimmering pearl (green)
-	{ name = "ultimate health potion", chance = 4000, maxCount = 3 },
-	{ name = "gold ingot", chance = 5160 },
-	{ name = "kollos shell", chance = 15390 },
-	{ name = "compound eye", chance = 15720 },
-	{ name = "calopteryx cape", chance = 360 },
-	{ name = "carapace shield", chance = 310 },
-	{ name = "hive scythe", chance = 700 },
-	{ name = "buggy backpack", chance = 460 },
-	{ name = "tarsal arrow", chance = 10210, maxCount = 5 },
+	{ id = 3031, chance = 99990, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 66160, maxCount = 3 }, -- Platinum Coin
+	{ id = 14083, chance = 15670 }, -- Compound Eye
+	{ id = 238, chance = 8930, maxCount = 4 }, -- Great Mana Potion
+	{ id = 14077, chance = 15270 }, -- Kollos Shell
+	{ id = 3030, chance = 8160, maxCount = 2 }, -- Small Ruby
+	{ id = 14251, chance = 10170, maxCount = 5 }, -- Tarsal Arrow
+	{ id = 9058, chance = 5150 }, -- Gold Ingot
+	{ id = 282, chance = 2510 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 3098, chance = 3160 }, -- Ring of Healing
+	{ id = 7643, chance = 3880, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 14089, chance = 790 }, -- Hive Scythe
+	{ id = 14249, chance = 440 }, -- Buggy Backpack
+	{ id = 14086, chance = 370 }, -- Calopteryx Cape
+	{ id = 14088, chance = 320 }, -- Carapace Shield
+	{ id = 3554, chance = 140 }, -- Steel Boots
 }
 
 monster.attacks = {

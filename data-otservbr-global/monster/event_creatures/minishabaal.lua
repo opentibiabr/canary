@@ -82,20 +82,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 20 }, -- gold coin
-	{ id = 3033, chance = 1428, maxCount = 2 }, -- small amethyst
-	{ id = 3451, chance = 2857 }, -- pitchfork
-	{ id = 3320, chance = 666 }, -- fire axe
-	{ id = 5944, chance = 909 }, -- soul orb
-	{ id = 3420, chance = 200 }, -- demon shield
-	{ id = 6499, chance = 1000, maxCount = 2 }, -- demonic essence
-	{ id = 3364, chance = 180 }, -- golden legs
-	{ id = 3031, chance = 100000, maxCount = 20 }, -- gold coin
-	{ id = 5944, chance = 909 }, -- soul orb
-	{ id = 3382, chance = 800 }, -- crown legs
-	{ id = 3415, chance = 1333 }, -- guardian shield
-	{ id = 3019, chance = 909 }, -- demonbone amulet
-	{ id = 3442, chance = 500 }, -- tempest shield
+	{ id = 3031, chance = 1000, maxCount = 150 }, -- Gold Coin
+	{ id = 3451, chance = 1000 }, -- Pitchfork
+	{ id = 3320, chance = 1000 }, -- Fire Axe
+	{ id = 5944, chance = 1000 }, -- Soul Orb
+	{ id = 6499, chance = 1000 }, -- Demonic Essence
+	{ id = 3033, chance = 1000 }, -- Small Amethyst
+	{ id = 0, chance = 1000, maxCount = 5 }, -- Surprise Bag
+	{ id = 3382, chance = 1000 }, -- Crown Legs
+	{ id = 3420, chance = 1000 }, -- Demon Shield
+	{ id = 3415, chance = 1000 }, -- Guardian Shield
+	{ id = 3019, chance = 1000 }, -- Demonbone Amulet
+	{ id = 3364, chance = 1000 }, -- Golden Legs
+	{ id = 3442, chance = 1000 }, -- Tempest Shield
+	{ id = 3387, chance = 1000 }, -- Demon Helmet
+	{ id = 6299, chance = 1000 }, -- Death Ring
 }
 
 monster.attacks = {

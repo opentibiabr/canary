@@ -73,19 +73,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 2 },
-	{ name = "lost soul", chance = 30300 },
-	{ name = "wand of cosmic energy", chance = 5220 },
-	{ name = "springsprout rod", chance = 3830 },
-	{ name = "death toll", chance = 3540 },
-	{ name = "terra rod", chance = 3030 },
-	{ name = "hailstorm rod", chance = 2830 },
-	{ name = "ensouled essence", chance = 2260 },
-	{ name = "necklace of the deep", chance = 1760 },
-	{ name = "cursed bone", chance = 1570 },
-	{ name = "wand of starstorm", chance = 1520 },
-	{ name = "glacial rod", chance = 960 },
-	{ name = "wand of voodoo", chance = 330 },
+	{ id = 3035, chance = 100000, maxCount = 2 }, -- Platinum Coin
+	{ id = 32227, chance = 30136 }, -- Lost Soul (Item)
+	{ id = 3073, chance = 6826 }, -- Wand of Cosmic Energy
+	{ id = 8084, chance = 4641 }, -- Springsprout Rod
+	{ id = 32703, chance = 4051 }, -- Death Toll
+	{ id = 3065, chance = 3548 }, -- Terra Rod
+	{ id = 32698, chance = 2545 }, -- Ensouled Essence
+	{ id = 32774, chance = 1875 }, -- Cursed Bone
+	{ id = 3067, chance = 3316 }, -- Hailstorm Rod
+	{ id = 13990, chance = 2075 }, -- Necklace of the Deep
+	{ id = 8092, chance = 1875 }, -- Wand of Starstorm
+	{ id = 16118, chance = 1214 }, -- Glacial Rod
+	{ id = 8094, chance = 334 }, -- Wand of Voodoo
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

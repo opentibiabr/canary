@@ -77,22 +77,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 4 }, -- platinum coin
-	{ id = 239, chance = 14200 }, -- great health potion
-	{ id = 7642, chance = 14000 }, -- great spirit potion
-	{ id = 238, chance = 12700 }, -- great mana potion
-	{ id = 23545, chance = 11200 }, -- energy drink
-	{ id = 23535, chance = 10900 }, -- energy bar
-	{ id = 23501, chance = 9900 }, -- condensed energy
-	{ id = 23524, chance = 8300 }, -- small energy ball
-	{ id = 23506, chance = 8000 }, -- plasma pearls
-	{ id = 16126, chance = 3400 }, -- red crystal fragment
-	{ id = 16120, chance = 3400 }, -- violet crystal shard
-	{ id = 16124, chance = 2700, maxCount = 2 }, -- blue crystal splinter
-	{ id = 16119, chance = 1900 }, -- blue crystal shard
-	{ id = 3039, chance = 1500 }, -- red gem
-	{ id = 8092, chance = 1100 }, -- wand of starstorm
+	{ id = 3031, chance = 98260, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 98260, maxCount = 4 }, -- Platinum Coin
+	{ id = 238, chance = 14100 }, -- Great Mana Potion
+	{ id = 239, chance = 14520 }, -- Great Health Potion
+	{ id = 7642, chance = 14690 }, -- Great Spirit Potion
+	{ id = 23501, chance = 10200 }, -- Condensed Energy
+	{ id = 23506, chance = 9530 }, -- Plasma Pearls
+	{ id = 23524, chance = 9610 }, -- Small Energy Ball
+	{ id = 23535, chance = 9440 }, -- Energy Bar
+	{ id = 23545, chance = 9570 }, -- Energy Drink
+	{ id = 3039, chance = 1360 }, -- Red Gem
+	{ id = 16119, chance = 1710 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 4190 }, -- Violet Crystal Shard
+	{ id = 16124, chance = 3789, maxCount = 2 }, -- Blue Crystal Splinter
+	{ id = 16126, chance = 3939 }, -- Red Crystal Fragment
+	{ id = 8092, chance = 1290 }, -- Wand of Starstorm
+	{ id = 828, chance = 150 }, -- Lightning Headband
+	{ id = 8043, chance = 130 }, -- Focus Cape
 }
 
 monster.attacks = {

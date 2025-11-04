@@ -78,15 +78,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 60870, maxCount = 62 },
-	{ id = 12483, chance = 3840 }, -- pharaoh banner
-	{ name = "black pearl", chance = 1280 },
-	{ name = "little bowl of myrrh", chance = 13550 },
-	{ name = "single human eye", chance = 8950 },
-	{ name = "green gem", chance = 3070 },
-	{ name = "green bandage", chance = 1100 },
-	{ name = "scarab coin", chance = 8180, maxCount = 3 },
-	{ name = "poison dagger", chance = 1530 },
+	{ id = 3031, chance = 64205, maxCount = 64 }, -- Gold Coin
+	{ id = 2894, chance = 8472 }, -- Broken Flask
+	{ id = 3042, chance = 9305, maxCount = 3 }, -- Scarab Coin
+	{ id = 25697, chance = 9848 }, -- Green Bandage
+	{ id = 25702, chance = 12690 }, -- Little Bowl of Myrrh
+	{ id = 25701, chance = 9801 }, -- Single Human Eye
+	{ id = 3038, chance = 1823 }, -- Green Gem
+	{ id = 12483, chance = 2518 }, -- Pharaoh Banner
+	{ id = 3027, chance = 1015 }, -- Black Pearl
+	{ id = 3299, chance = 589 }, -- Poison Dagger
+	{ id = 10290, chance = 1000 }, -- Mini Mummy
+	{ id = 3081, chance = 100 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -74,21 +74,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 20 },
-	{ name = "dagger", chance = 38810 },
-	{ name = "strong health potion", chance = 14930, maxCount = 2 },
-	{ name = "naga warrior scales", chance = 10600, maxCount = 3 },
-	{ name = "naga earring", chance = 6420, maxCount = 3 },
-	{ id = 3307, chance = 5520 }, -- scimitar
-	{ name = "naga armring", chance = 3730 },
-	{ name = "plate armor", chance = 2990 },
-	{ name = "spiky club", chance = 2090 },
-	{ name = "serpent sword", chance = 1940 },
-	{ name = "violet crystal shard", chance = 2640 },
-	{ name = "katana", chance = 1490 },
-	{ name = "relic sword", chance = 600 },
-	{ name = "knight armor", chance = 1100 },
-	{ id = 7441, chance = 300 }, -- ice cube
+	{ id = 3035, chance = 100000, maxCount = 12 }, -- Platinum Coin
+	{ id = 3267, chance = 34122 }, -- Dagger
+	{ id = 236, chance = 14277, maxCount = 2 }, -- Strong Health Potion
+	{ id = 39412, chance = 7181, maxCount = 2 }, -- Naga Earring
+	{ id = 39414, chance = 12084 }, -- Naga Warrior Scales
+	{ id = 3370, chance = 1211 }, -- Knight Armor
+	{ id = 17859, chance = 2191 }, -- Spiky Club
+	{ id = 3357, chance = 2146 }, -- Plate Armor
+	{ id = 3307, chance = 4981 }, -- Scimitar
+	{ id = 3297, chance = 1942 }, -- Serpent Sword
+	{ id = 3300, chance = 1253 }, -- Katana
+	{ id = 16120, chance = 1841 }, -- Violet Crystal Shard
+	{ id = 39411, chance = 2765 }, -- Naga Armring
+	{ id = 7441, chance = 844 }, -- Ice Cube
+	{ id = 7383, chance = 347 }, -- Relic Sword
 }
 
 monster.attacks = {

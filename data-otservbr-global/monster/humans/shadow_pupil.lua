@@ -85,17 +85,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 64 },
-	{ name = "boots of haste", chance = 60 },
-	{ name = "clerical mace", chance = 290 },
-	{ name = "mystic turban", chance = 580 },
-	{ name = "brown mushroom", chance = 5170 },
-	{ name = "strong mana potion", chance = 470 },
-	{ name = "spellbook of enlightenment", chance = 290 },
-	{ name = "book of necromantic rituals", chance = 6920 },
-	{ name = "horoscope", chance = 15000 },
-	{ name = "incantation notes", chance = 9130 },
-	{ name = "pieces of magic chalk", chance = 4300 },
+	{ id = 3031, chance = 100000, maxCount = 65 }, -- Gold Coin
+	{ id = 10320, chance = 7690 }, -- Book of Necromantic Rituals
+	{ id = 18926, chance = 14990 }, -- Horoscope
+	{ id = 18929, chance = 9500 }, -- Incantation Notes
+	{ id = 3725, chance = 4620 }, -- Brown Mushroom
+	{ id = 18930, chance = 4620 }, -- Pieces of Magic Chalk
+	{ id = 3574, chance = 570 }, -- Mystic Turban
+	{ id = 237, chance = 500 }, -- Strong Mana Potion
+	{ id = 3311, chance = 320 }, -- Clerical Mace
+	{ id = 8072, chance = 180 }, -- Spellbook of Enlightenment
+	{ id = 3079, chance = 20 }, -- Boots of Haste
 }
 
 monster.attacks = {

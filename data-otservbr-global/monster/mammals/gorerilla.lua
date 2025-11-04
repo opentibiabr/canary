@@ -74,16 +74,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Crystal Coin", chance = 20700, minCount = 1, maxCount = 2 },
-	{ name = "Gorerilla Mane", chance = 19890 },
-	{ name = "Gorerilla Tail", chance = 17060 },
-	{ name = "Ultimate Mana Potion", chance = 11210, minCount = 1, maxCount = 3 },
-	{ name = "Doublet", chance = 5880 },
-	{ name = "Magma Coat", chance = 2440 },
-	{ name = "Black Pearl", chance = 500, minCount = 1, maxCount = 2 },
-	{ name = "Crystal Crossbow", chance = 110 },
-	{ name = "Composite Hornbow", chance = 30 },
-	{ name = "Ornate Crossbow", chance = 30 },
+	{ id = 3043, chance = 20063, maxCount = 2 }, -- Crystal Coin
+	{ id = 3379, chance = 5978 }, -- Doublet
+	{ id = 23373, chance = 10965, maxCount = 3 }, -- Ultimate Mana Potion
+	{ id = 39392, chance = 19444 }, -- Gorerilla Mane
+	{ id = 39393, chance = 16880 }, -- Gorerilla Tail
+	{ id = 826, chance = 2510 }, -- Magma Coat
+	{ id = 3027, chance = 560, maxCount = 2 }, -- Black Pearl
+	{ id = 16163, chance = 110 }, -- Crystal Crossbow
+	{ id = 14247, chance = 30 }, -- Ornate Crossbow
+	{ id = 8027, chance = 30 }, -- Composite Hornbow
 }
 
 monster.attacks = {

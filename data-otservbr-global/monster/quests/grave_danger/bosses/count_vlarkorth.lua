@@ -77,36 +77,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", minCount = 1, maxCount = 5, chance = 100000 },
-	{ name = "crystal coin", minCount = 0, maxCount = 2, chance = 50000 },
-	{ name = "supreme health potion", minCount = 0, maxCount = 6, chance = 35000 },
-	{ name = "ultimate mana potion", minCount = 0, maxCount = 20, chance = 32000 },
-	{ name = "ultimate spirit potion", minCount = 0, maxCount = 20, chance = 32000 },
-	{ name = "bullseye potion", minCount = 0, maxCount = 10, chance = 12000 },
-	{ name = "mastermind potion", minCount = 0, maxCount = 10, chance = 12000 },
-	{ name = "silver token", minCount = 0, maxCount = 2, chance = 8000 },
-	{ name = "blue gem", chance = 9000 },
-	{ id = 23542, chance = 5200 }, -- collar of blue plasma
-	{ id = 23544, chance = 5200 }, -- collar of red plasma
-	{ name = "blue gem", chance = 8500 },
-	{ name = "gold ingot", minCount = 0, maxCount = 1, chance = 10000 },
-	{ name = "green gem", chance = 8200 },
-	{ name = "magic sulphur", chance = 6500 },
-	{ id = 3039, chance = 8000 }, -- red gem
-	{ id = 23529, chance = 5000 }, -- ring of blue plasma
-	{ id = 23533, chance = 5000 }, -- ring of red plasma
-	{ id = 23531, chance = 5000 }, -- ring of green plasma
-	{ name = "skull staff", chance = 7000 },
-	{ name = "yellow gem", chance = 8500 },
-	{ name = "young lich worm", chance = 5500 },
-	{ name = "bear skin", chance = 1600 },
-	{ name = "embrace of nature", chance = 1100 },
-	{ name = "giant emerald", chance = 1700 },
-	{ name = "giant ruby", chance = 1900 },
-	{ name = "giant sapphire", chance = 1800 },
-	{ name = "medal of valiance", chance = 1200 },
-	{ name = "terra helmet", chance = 700 },
-	{ name = "final judgement", chance = 400 },
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 22516, chance = 100000, maxCount = 2 }, -- Silver Token
+	{ id = 23373, chance = 57090, maxCount = 20 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 59636, maxCount = 20 }, -- Supreme Health Potion
+	{ id = 23374, chance = 52000, maxCount = 20 }, -- Ultimate Spirit Potion
+	{ id = 7439, chance = 20363, maxCount = 10 }, -- Berserk Potion
+	{ id = 3043, chance = 19272, maxCount = 2 }, -- Crystal Coin
+	{ id = 3371, chance = 26181 }, -- Knight Legs
+	{ id = 23531, chance = 6909 }, -- Ring of Green Plasma
+	{ id = 3041, chance = 15272 }, -- Blue Gem
+	{ id = 23544, chance = 10909 }, -- Collar of Red Plasma
+	{ id = 3037, chance = 32000 }, -- Yellow Gem
+	{ id = 7443, chance = 17818, maxCount = 10 }, -- Bullseye Potion
+	{ id = 23543, chance = 10181 }, -- Collar of Green Plasma
+	{ id = 9058, chance = 17818 }, -- Gold Ingot
+	{ id = 3038, chance = 17454, maxCount = 2 }, -- Green Gem
+	{ id = 7440, chance = 20363, maxCount = 10 }, -- Mastermind Potion
+	{ id = 23529, chance = 8363 }, -- Ring of Blue Plasma
+	{ id = 3324, chance = 16000 }, -- Skull Staff
+	{ id = 3036, chance = 7636 }, -- Violet Gem
+	{ id = 31590, chance = 9090 }, -- Young Lich Worm
+	{ id = 31591, chance = 1454 }, -- Medal of Valiance
+	{ id = 31577, chance = 1401 }, -- Terra Helmet
+	{ id = 31738, chance = 2409 }, -- Final Judgement
+	{ id = 31579, chance = 1454 }, -- Embrace of Nature
+	{ id = 5904, chance = 10545 }, -- Magic Sulphur
+	{ id = 23533, chance = 6181 }, -- Ring of Red Plasma
+	{ id = 3039, chance = 39272 }, -- Red Gem
+	{ id = 23526, chance = 12000 }, -- Collar of Blue Plasma
+	{ id = 818, chance = 9090 }, -- Magma Boots
+	{ id = 31588, chance = 5090 }, -- Ancient Liche Bone
+	{ id = 31578, chance = 1807 }, -- Bear Skin
+	{ id = 31589, chance = 5090 }, -- Rotten Heart
+	{ id = 30060, chance = 3271 }, -- Giant Emerald
+	{ id = 30061, chance = 3636 }, -- Giant Sapphire
+	{ id = 30059, chance = 2752 }, -- Giant Ruby
 }
 
 monster.attacks = {

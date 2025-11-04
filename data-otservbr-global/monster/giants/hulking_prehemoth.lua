@@ -74,16 +74,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Crystal Coin", chance = 28240 },
-	{ name = "Prehemoth Horns", chance = 19870 },
-	{ name = "Prehemoth Claw", chance = 16149, minCount = 1, maxCount = 2 },
-	{ name = "Ultimate Health Potion", chance = 16120 },
-	{ name = "Furry Club", chance = 7050 },
-	{ name = "War Hammer", chance = 4660 },
-	{ name = "War Axe", chance = 3040 },
-	{ name = "Doublet", chance = 2880 },
-	{ name = "Silver Brooch", chance = 1160 },
-	{ name = "Emerald Bangle", chance = 780 },
+	{ id = 3043, chance = 28704 }, -- Crystal Coin
+	{ id = 7432, chance = 7376 }, -- Furry Club
+	{ id = 7643, chance = 16062 }, -- Ultimate Health Potion
+	{ id = 39382, chance = 19938 }, -- Prehemoth Horns
+	{ id = 39383, chance = 15855, maxCount = 2 }, -- Prehemoth Claw
+	{ id = 3010, chance = 854 }, -- Emerald Bangle
+	{ id = 3017, chance = 1110 }, -- Silver Brooch
+	{ id = 3279, chance = 4650 }, -- War Hammer
+	{ id = 3342, chance = 3070 }, -- War Axe
+	{ id = 3379, chance = 2992 }, -- Doublet
 }
 
 monster.attacks = {

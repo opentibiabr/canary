@@ -71,15 +71,16 @@ monster.light = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 11290, maxCount = 1 },
-	{ name = "dark obsidian splinter", chance = 12735, maxCount = 1 },
-	{ id = 3039, chance = 8781, maxCount = 1 }, -- red gem
-	{ name = "small emerald", chance = 6646, maxCount = 3 },
-	{ name = "zaoan shoes", chance = 8614, maxCount = 1 },
-	{ name = "darklight core", chance = 5659, maxCount = 1 },
-	{ name = "darklight obsidian axe", chance = 11129, maxCount = 1 },
-	{ name = "magma amulet", chance = 13240, maxCount = 1 },
-	{ name = "small ruby", chance = 12458, maxCount = 3 },
+	{ id = 3043, chance = 61615 }, -- Crystal Coin
+	{ id = 43850, chance = 7650 }, -- Dark Obsidian Splinter
+	{ id = 43853, chance = 7508 }, -- Darklight Core (Object)
+	{ id = 43781, chance = 9458 }, -- Darklight Obsidian Axe
+	{ id = 817, chance = 5559 }, -- Magma Amulet
+	{ id = 3039, chance = 3479 }, -- Red Gem
+	{ id = 3032, chance = 4308, maxCount = 3 }, -- Small Emerald
+	{ id = 10386, chance = 1666 }, -- Zaoan Shoes
+	{ id = 3030, chance = 4588, maxCount = 3 }, -- Small Ruby
+	{ id = 3038, chance = 630 }, -- Green Gem
 }
 
 monster.attacks = {

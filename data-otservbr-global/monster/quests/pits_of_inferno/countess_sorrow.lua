@@ -81,17 +81,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6536, chance = 100000 }, -- countess sorrow's frozen tear
-	{ id = 6499, chance = 20590 }, -- demonic essence
-	{ id = 3031, chance = 82350, maxCount = 169 }, -- gold coin
-	{ id = 3035, chance = 55880, maxCount = 4 }, -- platinum coin
-	{ id = 5944, chance = 85290 }, -- soul orb
-	{ id = 3567, chance = 32350 }, -- blue robe
-	{ id = 3312, chance = 4210 }, -- silver mace
-	{ id = 3557, chance = 8820 }, -- plate legs
-	{ id = 3084, chance = 23530 }, -- protection amulet
-	{ id = 3049, chance = 5880 }, -- stealth ring
-	{ id = 3123, chance = 47060 }, -- worn leather boots
+	{ id = 3031, chance = 87230, maxCount = 179 }, -- Gold Coin
+	{ id = 3035, chance = 61700, maxCount = 4 }, -- Platinum Coin
+	{ id = 6499, chance = 42550 }, -- Demonic Essence
+	{ id = 3084, chance = 29790 }, -- Protection Amulet
+	{ id = 3123, chance = 46810 }, -- Worn Leather Boots
+	{ id = 3557, chance = 17020 }, -- Plate Legs
+	{ id = 3049, chance = 8510 }, -- Stealth Ring
+	{ id = 5944, chance = 89360 }, -- Soul Orb
+	{ id = 3567, chance = 27660 }, -- Blue Robe
+	{ id = 3312, chance = 19150 }, -- Silver Mace
+	{ id = 6536, chance = 100000 }, -- Countess Sorrow's Frozen Tear
 }
 
 monster.attacks = {

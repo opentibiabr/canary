@@ -76,19 +76,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 15540 },
-	{ name = "ultimate health potion", chance = 43253, maxCount = 5 },
-	{ name = "serpent sword", chance = 32253 },
-	{ name = "glacier mask", chance = 21920 },
-	{ name = "small sapphire", chance = 34560, maxCount = 3 },
-	{ name = "organic acid", chance = 11678, maxCount = 1 },
-	{ name = "rotten roots", chance = 25920, maxCount = 1 },
-	{ name = "scarab coin", chance = 22920, maxCount = 3 },
-	{ name = "buckle", chance = 22920, maxCount = 1 },
-	{ name = "rotten vermin ichor", chance = 22920, maxCount = 1 },
-	{ name = "violet gem", chance = 18920 },
-	{ name = "blue gem", chance = 15920 },
-	{ name = "small ruby", chance = 24560, maxCount = 3 },
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 3043, chance = 56690 }, -- Crystal Coin
+	{ id = 7643, chance = 24310 }, -- Ultimate Health Potion
+	{ id = 829, chance = 6210 }, -- Glacier Mask
+	{ id = 3297, chance = 7450 }, -- Serpent Sword
+	{ id = 3029, chance = 6299 }, -- Small Sapphire
+	{ id = 43778, chance = 9500 }, -- Organic Acid
 }
 
 monster.attacks = {

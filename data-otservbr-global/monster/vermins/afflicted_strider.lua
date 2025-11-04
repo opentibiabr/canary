@@ -74,28 +74,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 16 },
-	{ name = "afflicted strider worms", chance = 10940, maxCount = 3 },
-	{ name = "guardian halberd", chance = 9410 },
-	{ name = "crystal sword", chance = 8940 },
-	{ name = "violet gem", chance = 6940, maxCount = 1 },
-	{ name = "violet crystal shard", chance = 5410 },
-	{ name = "doublet", chance = 5060 },
-	{ name = "green crystal shard", chance = 6820 },
-	{ name = "belted cape", chance = 3760 },
-	{ name = "afflicted strider head", chance = 4820 },
-	{ name = "knight armor", chance = 4590 },
-	{ name = "spirit cloak", chance = 3060 },
-	{ name = "magma coat", chance = 2470 },
-	{ name = "serpent sword", chance = 2240 },
-	{ name = "machete", chance = 3760 },
-	{ name = "broadsword", chance = 1060 },
-	{ name = "focus cape", chance = 2240 },
-	{ name = "ice rapier", chance = 2240 },
-	{ name = "titan axe", chance = 1880 },
-	{ name = "haunted blade", chance = 1410 },
-	{ name = "mercenary sword", chance = 1530 },
-	{ name = "knight axe", chance = 1290 },
+	{ id = 3035, chance = 100000, maxCount = 15 }, -- Platinum Coin
+	{ id = 3036, chance = 5587 }, -- Violet Gem
+	{ id = 3315, chance = 6595 }, -- Guardian Halberd
+	{ id = 7449, chance = 6436 }, -- Crystal Sword
+	{ id = 16120, chance = 4931 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 4867 }, -- Green Crystal Shard
+	{ id = 36790, chance = 9423 }, -- Afflicted Strider Worms
+	{ id = 826, chance = 2526 }, -- Magma Coat
+	{ id = 3284, chance = 1567 }, -- Ice Rapier
+	{ id = 3297, chance = 2387 }, -- Serpent Sword
+	{ id = 3301, chance = 1710 }, -- Broadsword
+	{ id = 3308, chance = 2266 }, -- Machete
+	{ id = 3318, chance = 661 }, -- Knight Axe
+	{ id = 3370, chance = 3012 }, -- Knight Armor
+	{ id = 3379, chance = 4700 }, -- Doublet
+	{ id = 7386, chance = 1093 }, -- Mercenary Sword
+	{ id = 7407, chance = 1221 }, -- Haunted Blade
+	{ id = 7413, chance = 1374 }, -- Titan Axe
+	{ id = 8042, chance = 2734 }, -- Spirit Cloak
+	{ id = 8043, chance = 1754 }, -- Focus Cape
+	{ id = 8044, chance = 4204 }, -- Belted Cape
+	{ id = 36789, chance = 3891 }, -- Afflicted Strider Head
 }
 
 monster.attacks = {

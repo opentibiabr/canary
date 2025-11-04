@@ -76,20 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 12 },
-	{ id = 30058, chance = 15750, maxCount = 3 }, -- ice flower
-	{ name = "dream essence egg", chance = 13700 },
-	{ name = "elvish talisman", chance = 4790 },
-	{ name = "knight legs", chance = 4450 },
-	{ name = "glacier kilt", chance = 4110 },
-	{ name = "glacier shoes", chance = 3770 },
-	{ name = "ice rapier", chance = 3770 },
-	{ name = "spellbook of mind control", chance = 2400 },
-	{ name = "crown shield", chance = 1710 },
-	{ name = "wood cape", chance = 1710 },
-	{ id = 23529, chance = 1370 }, -- ring of blue plasma
-	{ name = "tower shield", chance = 680 },
-	{ id = 23543, chance = 680 }, -- collar of green plasma
+	{ id = 3035, chance = 100000, maxCount = 12 }, -- Platinum Coin
+	{ id = 30058, chance = 15523, maxCount = 3 }, -- Ice Flower (Item)
+	{ id = 30005, chance = 12998 }, -- Dream Essence Egg
+	{ id = 9635, chance = 9530 }, -- Elvish Talisman
+	{ id = 819, chance = 3180, maxCount = 2 }, -- Glacier Shoes
+	{ id = 823, chance = 3300 }, -- Glacier Kilt
+	{ id = 3284, chance = 4720 }, -- Ice Rapier
+	{ id = 3371, chance = 2360 }, -- Knight Legs
+	{ id = 3419, chance = 1435 }, -- Crown Shield
+	{ id = 3428, chance = 1820 }, -- Tower Shield
+	{ id = 3575, chance = 1370 }, -- Wood Cape
+	{ id = 8074, chance = 1260 }, -- Spellbook of Mind Control
+	{ id = 23529, chance = 2630 }, -- Ring of Blue Plasma
+	{ id = 23543, chance = 1010 }, -- Collar of Green Plasma
 }
 
 monster.attacks = {

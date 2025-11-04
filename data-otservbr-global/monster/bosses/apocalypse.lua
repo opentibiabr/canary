@@ -67,40 +67,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3025, chance = 13500 }, -- ancient amulet
-	{ id = 3116, chance = 19000 }, -- big bone
-	{ name = "black pearl", chance = 15000, maxCount = 35 },
-	{ name = "boots of haste", chance = 14000 },
-	{ id = 3076, chance = 22500 }, -- crystal ball
-	{ name = "crystal necklace", chance = 21500 },
-	{ id = 3007, chance = 15500 }, -- crystal ring
-	{ name = "demon shield", chance = 15500 },
-	{ name = "devil helmet", chance = 11000 },
-	{ name = "dragon hammer", chance = 34500 },
-	{ id = 3051, chance = 13500 }, -- energy ring
-	{ name = "fire axe", chance = 17000 },
-	{ name = "giant sword", chance = 12500 },
-	{ name = "platinum coin", chance = 69900, maxCount = 100 },
-	{ name = "platinum coin", chance = 68800, maxCount = 100 },
-	{ name = "crystal coin", chance = 47700, maxCount = 40 },
-	{ name = "crystal coin", chance = 36600, maxCount = 15 },
-	{ name = "gold ring", chance = 28000 },
-	{ name = "golden legs", chance = 15000 },
-	{ name = "giant ruby", chance = 31500 },
-	{ name = "giant sapphire", chance = 31500 },
-	{ name = "giant emerald", chance = 31500 },
-	{ name = "ice rapier", chance = 27500 },
-	{ name = "magic plate armor", chance = 13000 },
-	{ name = "mastermind shield", chance = 17500 },
-	{ name = "purple tome", chance = 12600 },
-	{ name = "ring of the sky", chance = 13500 },
-	{ name = "silver dagger", chance = 15500 },
-	{ name = "skull staff", chance = 25000 },
-	{ name = "talon", chance = 14000, maxCount = 27 },
-	{ name = "teddy bear", chance = 10500 },
-	{ name = "thunder hammer", chance = 3500 },
-	{ id = 3002, chance = 5100 }, -- voodoo doll
-	{ name = "white pearl", chance = 12500, maxCount = 35 },
+
 }
 
 monster.attacks = {

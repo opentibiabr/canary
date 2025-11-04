@@ -76,26 +76,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 15690, maxCount = 3 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 99 },
-	{ id = 3035, chance = 100000, maxCount = 7 }, -- platinum coin
-	{ name = "fire sword", chance = 3280 },
-	{ name = "fire axe", chance = 2150 },
-	{ name = "great mana potion", chance = 14800, maxCount = 2 },
-	{ name = "magma legs", chance = 790 },
-	{ name = "magma coat", chance = 790 },
-	{ name = "ultimate health potion", chance = 15440, maxCount = 2 },
-	{ name = "fiery heart", chance = 13570 },
-	{ id = 12600, chance = 1320 }, -- coal
-	{ name = "wand of everblazing", chance = 1480 },
-	{ name = "violet crystal shard", chance = 5430 },
-	{ name = "brown crystal splinter", chance = 12100, maxCount = 2 },
-	{ name = "red crystal fragment", chance = 8880 },
-	{ name = "magma clump", chance = 13240 },
-	{ name = "blazing bone", chance = 14890 },
-	{ name = "eye of a weeper", chance = 15870 },
-	{ name = "prismatic bolt", chance = 10900, maxCount = 5 },
+	{ id = 3031, chance = 100000, maxCount = 199 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 16131, chance = 15160 }, -- Blazing Bone
+	{ id = 16123, chance = 12480, maxCount = 2 }, -- Brown Crystal Splinter
+	{ id = 16132, chance = 15340 }, -- Eye of a Weeper
+	{ id = 9636, chance = 13190 }, -- Fiery Heart
+	{ id = 238, chance = 14699, maxCount = 2 }, -- Great Mana Potion
+	{ id = 16130, chance = 12610 }, -- Magma Clump
+	{ id = 16141, chance = 11680, maxCount = 5 }, -- Prismatic Bolt
+	{ id = 16126, chance = 9020 }, -- Red Crystal Fragment
+	{ id = 3030, chance = 15170, maxCount = 3 }, -- Small Ruby
+	{ id = 7643, chance = 15080, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 16120, chance = 5370 }, -- Violet Crystal Shard
+	{ id = 3280, chance = 3200 }, -- Fire Sword
+	{ id = 12600, chance = 1310 }, -- Coal
+	{ id = 3320, chance = 2110 }, -- Fire Axe
+	{ id = 16115, chance = 1420 }, -- Wand of Everblazing
+	{ id = 826, chance = 810 }, -- Magma Coat
+	{ id = 821, chance = 750 }, -- Magma Legs
 }
 
 monster.attacks = {

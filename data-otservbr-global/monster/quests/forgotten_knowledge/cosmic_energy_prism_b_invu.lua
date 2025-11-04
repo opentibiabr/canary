@@ -55,7 +55,9 @@ monster.voices = {
 	{ text = "*Zap!*", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.defenses = {
 	defense = 50,

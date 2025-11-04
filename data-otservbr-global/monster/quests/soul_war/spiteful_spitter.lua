@@ -104,3 +104,7 @@ mType.onThink = function(monster, interval)
 end
 
 mType:register(monster)
+
+monster.loot = {
+
+}

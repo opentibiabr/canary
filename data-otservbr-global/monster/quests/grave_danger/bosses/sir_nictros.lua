@@ -84,7 +84,9 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 50260, chance = 1000 }, -- Death Oyoroi
+}
 
 -- melee: 852, 505
 --death ring: 510,464, 487, 632, 210

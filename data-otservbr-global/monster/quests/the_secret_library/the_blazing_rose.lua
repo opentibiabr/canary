@@ -68,7 +68,24 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 28495, chance = 100000 }, -- Perfume Flacon
+	{ id = 3033, chance = 28570 }, -- Small Amethyst
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3039, chance = 12860 }, -- Red Gem
+	{ id = 5944, chance = 31430 }, -- Soul Orb
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 21975, chance = 100000 }, -- Peacock Feather Fan
+	{ id = 6558, chance = 48570 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 58569 }, -- Assassin Star
+	{ id = 21981, chance = 2860 }, -- Oriental Shoes
+	{ id = 7642, chance = 14290 }, -- Great Spirit Potion
+	{ id = 6499, chance = 20000 }, -- Demonic Essence
+	{ id = 3007, chance = 7140 }, -- Crystal Ring
+	{ id = 21974, chance = 100000 }, -- Golden Lotus Brooch
+	{ id = 3070, chance = 11430 }, -- Moonlight Rod
+	{ id = 7643, chance = 11430 }, -- Ultimate Health Potion
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },

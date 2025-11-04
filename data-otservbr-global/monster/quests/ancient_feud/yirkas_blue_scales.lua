@@ -65,33 +65,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 31559, chance = 100000, minCount = 1, maxCount = 6 }, -- blue goanna scale
-	{ id = 3035, chance = 100000, minCount = 1, maxCount = 17 }, -- platinum coin
-	{ id = 7643, chance = 100000, minCount = 1, maxCount = 5 }, -- ultimate health potion
-	{ id = 9058, chance = 11540 }, -- gold ingot
-	{ id = 24392, chance = 8790 }, -- gemmed figurine
-	{ id = 34102, chance = 8240 }, -- yirkas' egg
-	{ id = 31340, chance = 6590 }, -- lizard heart
-	{ id = 3038, chance = 3850 }, -- green gem
-	{ id = 3041, chance = 3300 }, -- blue gem
-	{ id = 821, chance = 3300 }, -- magma legs
-	{ id = 5741, chance = 3300 }, -- skull helmet
-	{ id = 3281, chance = 2750 }, -- giant sword
-	{ id = 7422, chance = 2750 }, -- jade hammer
-	{ id = 3342, chance = 2750 }, -- war axe
-	{ id = 7404, chance = 2200 }, -- assassin dagger
-	{ id = 3063, chance = 2200 }, -- gold ring
-	{ id = 23531, chance = 2200 }, -- ring of green plasma
-	{ id = 3366, chance = 1650 }, -- magic plate armor
-	{ id = 3420, chance = 1100 }, -- demon shield
-	{ id = 7440, chance = 1100 }, -- mastermind potion
-	{ id = 14247, chance = 1100 }, -- ornate crossbow
-	{ id = 10438, chance = 1100 }, -- spellweaver's robe
-	{ id = 7382, chance = 550 }, -- demonrage sword
-	{ id = 8074, chance = 550 }, -- spellbook of mind control
-	{ id = 21168, chance = 550 }, -- alloy legs
-	{ id = 33778, chance = 360 }, -- raw watermelon tourmaline
-	{ id = 34258, chance = 360 }, -- red silk flower
+	{ id = 34102, chance = 6473 }, -- Yirkas' Egg
+	{ id = 31559, chance = 99914, maxCount = 4 }, -- Blue Goanna Scale
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 7643, chance = 100000, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 12521 }, -- Gold Ingot
+	{ id = 3041, chance = 4344 }, -- Blue Gem
+	{ id = 34258, chance = 658 }, -- Red Silk Flower
+	{ id = 24392, chance = 5110 }, -- Gemmed Figurine
+	{ id = 31340, chance = 5281 }, -- Lizard Heart
+	{ id = 3420, chance = 1448 }, -- Demon Shield
+	{ id = 3281, chance = 2470 }, -- Giant Sword
+	{ id = 3063, chance = 1192 }, -- Gold Ring
+	{ id = 7440, chance = 1448 }, -- Mastermind Potion
+	{ id = 23531, chance = 2896 }, -- Ring of Green Plasma
+	{ id = 10438, chance = 1192 }, -- Spellweaver's Robe
+	{ id = 33778, chance = 283 }, -- Raw Watermelon Tourmaline
+	{ id = 21168, chance = 878 }, -- Alloy Legs
+	{ id = 821, chance = 3321 }, -- Magma Legs
+	{ id = 5741, chance = 2896 }, -- Skull Helmet
+	{ id = 7422, chance = 2981 }, -- Jade Hammer
+	{ id = 3342, chance = 1959 }, -- War Axe
+	{ id = 7404, chance = 1703 }, -- Assassin Dagger
+	{ id = 3038, chance = 4344 }, -- Green Gem
+	{ id = 3366, chance = 936 }, -- Magic Plate Armor
+	{ id = 7382, chance = 936 }, -- Demonrage Sword
+	{ id = 8074, chance = 1022 }, -- Spellbook of Mind Control
+	{ id = 14247, chance = 929 }, -- Ornate Crossbow
 }
 
 monster.attacks = {

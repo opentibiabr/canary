@@ -73,20 +73,19 @@ monster.light = {
 monster.voices = {}
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 100000, maxCount = 21 },
-	{ name = "werecrocodile tongue", chance = 10800 },
-	{ name = "war hammer", chance = 5000 },
-	{ name = "ham", chance = 5500, maxCount = 2 },
-	{ name = "moonlight crystals", chance = 3000 },
-	{ name = "violet gem", chance = 1370 },
-	{ name = "green crystal shard", chance = 2800 },
-	{ name = "ornate crossbow", chance = 680 },
-	{ name = "terra mantle", chance = 2190 },
-	{ name = "golden sun coin", chance = 1820 },
-	{ name = "sun brooch", chance = 680 },
-	{ name = "swamplair armor", chance = 230 },
-	{ id = 43916, chance = 200 }, -- werecrocodile trophy
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 21 }, -- Platinum Coin
+	{ id = 43729, chance = 8934 }, -- Werecrocodile Tongue
+	{ id = 22083, chance = 5877 }, -- Moonlight Crystals
+	{ id = 3279, chance = 5408 }, -- War Hammer
+	{ id = 3582, chance = 5056, maxCount = 2 }, -- Ham
+	{ id = 43734, chance = 1882 }, -- Golden Sun Coin
+	{ id = 3036, chance = 1750 }, -- Violet Gem
+	{ id = 14247, chance = 708 }, -- Ornate Crossbow
+	{ id = 43737, chance = 1412 }, -- Sun Brooch
+	{ id = 811, chance = 821 }, -- Terra Mantle
+	{ id = 8052, chance = 130 }, -- Swamplair Armor
+	{ id = 50150, chance = 5770 }, -- Ring of Orange Plasma
 }
 
 monster.attacks = {

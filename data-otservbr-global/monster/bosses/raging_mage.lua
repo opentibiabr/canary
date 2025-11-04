@@ -82,28 +82,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 97000, maxCount = 169 }, -- gold coin
-	{ id = 3035, chance = 77400, maxCount = 9 }, -- platinum coin
-	{ id = 5911, chance = 31100 }, -- red piece of cloth
-	{ id = 239, chance = 26830, maxCount = 5 }, -- great health potion
-	{ id = 238, chance = 23170, maxCount = 5 }, -- great mana potion
-	{ id = 3062, chance = 9760 }, -- mind stone
-	{ id = 7443, chance = 6710, maxCount = 2 }, -- bullseye potion
-	{ id = 8043, chance = 4880 }, -- focus cape
-	{ id = 3049, chance = 4880 }, -- stealth ring
-	{ id = 11454, chance = 4270 }, -- luminous orb
-	{ id = 3728, chance = 3600, maxCount = 4 }, -- dark mushroom
-	{ id = 7368, chance = 1830, maxCount = 7 }, -- assassin star
-	{ id = 3007, chance = 1830 }, -- crystal ring
-	{ id = 3006, chance = 1830 }, -- ring of the sky
-	{ id = 3029, chance = 1830, maxCount = 5 }, -- small sapphire
-	{ id = 12803, chance = 1220 }, -- elemental spikes
-	{ id = 2995, chance = 1220 }, -- piggy bank
-	{ id = 9045, chance = 1220 }, -- royal tapestry
-	{ id = 3079, chance = 610 }, -- boots of haste
-	{ id = 9067, chance = 610 }, -- crystal of power
-	{ id = 5741, chance = 610 }, -- skull helmet
-	{ id = 8074, chance = 610 }, -- spellbook of mind control
+
 }
 
 monster.attacks = {

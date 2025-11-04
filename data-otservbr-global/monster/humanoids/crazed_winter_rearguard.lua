@@ -76,26 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 86000, maxCount = 5 },
-	{ name = "red crystal fragment", chance = 2000 },
-	{ id = 3039, chance = 330 }, -- red gem
-	{ name = "ice rapier", chance = 17200 },
-	{ name = "ultimate health potion", chance = 16850 },
-	{ name = "great spirit potion", chance = 15780 },
-	{ id = 30058, chance = 9000, maxCount = 2 }, -- ice flower
-	{ name = "life crystal", chance = 7900 },
-	{ name = "dream essence egg", chance = 8750 },
-	{ name = "elven astral observer", chance = 7600 },
-	{ name = "glacier mask", chance = 6000 },
-	{ name = "moonlight rod", chance = 5400 },
-	{ name = "small enchanted sapphire", chance = 4700, maxCount = 7 },
-	{ name = "northwind rod", chance = 2360 },
-	{ name = "glacier amulet", chance = 2930 },
-	{ name = "hailstorm rod", chance = 2660 },
-	{ name = "glacier robe", chance = 1930 },
-	{ name = "cyan crystal fragment", chance = 2100 },
-	{ name = "elven amulet", chance = 1260 },
-	{ name = "blue gem", chance = 330 },
+	{ id = 3035, chance = 97320, maxCount = 5 }, -- Platinum Coin
+	{ id = 3284, chance = 19604 }, -- Ice Rapier
+	{ id = 7643, chance = 19519 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 17018 }, -- Great Spirit Potion
+	{ id = 30058, chance = 10536, maxCount = 2 }, -- Ice Flower (Item)
+	{ id = 3061, chance = 8800 }, -- Life Crystal
+	{ id = 30005, chance = 9268 }, -- Dream Essence Egg
+	{ id = 11465, chance = 8756 }, -- Elven Astral Observer
+	{ id = 829, chance = 6943 }, -- Glacier Mask
+	{ id = 3070, chance = 5817 }, -- Moonlight Rod
+	{ id = 675, chance = 5189, maxCount = 7 }, -- Small Enchanted Sapphire
+	{ id = 8083, chance = 2467 }, -- Northwind Rod
+	{ id = 815, chance = 3015 }, -- Glacier Amulet
+	{ id = 3067, chance = 3117 }, -- Hailstorm Rod
+	{ id = 824, chance = 2134 }, -- Glacier Robe
+	{ id = 16125, chance = 3148 }, -- Cyan Crystal Fragment
+	{ id = 3082, chance = 1407 }, -- Elven Amulet
+	{ id = 3041, chance = 531 }, -- Blue Gem
 }
 
 monster.attacks = {

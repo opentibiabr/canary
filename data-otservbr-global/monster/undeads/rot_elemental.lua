@@ -78,19 +78,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 80 }, -- gold coin
-	{ id = 3035, chance = 10390 }, -- platinum coin
-	{ id = 236, chance = 10310 }, -- strong health potion
-	{ id = 237, chance = 9990 }, -- strong mana potion
-	{ id = 21182, chance = 4320 }, -- glob of glooth
-	{ id = 3052, chance = 1630 }, -- life ring
-	{ id = 3029, chance = 1110 }, -- small sapphire
-	{ id = 9057, chance = 1140, maxCount = 2 }, -- small topaz
-	{ id = 3032, chance = 940, maxCount = 2 }, -- small emerald
-	{ id = 3038, chance = 80 }, -- green gem
-	{ id = 21183, chance = 130 }, -- glooth amulet
-	{ id = 21180, chance = 60 }, -- glooth axe
-	{ id = 21158, chance = 460 }, -- glooth spear
+	{ id = 3031, chance = 100000, maxCount = 80 }, -- Gold Coin
+	{ id = 3035, chance = 10254 }, -- Platinum Coin
+	{ id = 21182, chance = 14119 }, -- Glob of Glooth
+	{ id = 236, chance = 9545 }, -- Strong Health Potion
+	{ id = 237, chance = 10170 }, -- Strong Mana Potion
+	{ id = 3032, chance = 5004, maxCount = 2 }, -- Small Emerald
+	{ id = 9057, chance = 5225, maxCount = 2 }, -- Small Topaz
+	{ id = 21158, chance = 4557 }, -- Glooth Spear
+	{ id = 3029, chance = 5171 }, -- Small Sapphire
+	{ id = 3052, chance = 1546 }, -- Life Ring
+	{ id = 21183, chance = 67 }, -- Glooth Amulet
+	{ id = 21180, chance = 145 }, -- Glooth Axe
+	{ id = 3038, chance = 71 }, -- Green Gem
+	{ id = 3081, chance = 80 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

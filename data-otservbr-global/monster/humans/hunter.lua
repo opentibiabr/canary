@@ -79,23 +79,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2920, chance = 3300 }, -- torch
-	{ name = "small ruby", chance = 150 },
-	{ name = "dragon necklace", chance = 3000 },
-	{ name = "bow", chance = 5770 },
-	{ name = "brass helmet", chance = 5050 },
-	{ name = "brass armor", chance = 5070 },
-	{ name = "arrow", chance = 82000, maxCount = 22 },
-	{ name = "poison arrow", chance = 4500, maxCount = 4 },
-	{ id = 3449, chance = 5360, maxCount = 3 }, -- burst arrow
-	{ name = "orange", chance = 20300, maxCount = 2 },
-	{ name = "roll", chance = 11370, maxCount = 2 },
-	{ name = "sniper gloves", chance = 540 },
-	{ name = "slingshot", chance = 120 },
-	{ id = 7394, chance = 190 }, -- wolf trophy
-	{ id = 7397, chance = 520 }, -- deer trophy
-	{ id = 7400, chance = 70 }, -- lion trophy
-	{ name = "hunter's quiver", chance = 10240 },
+	{ id = 3447, chance = 82480, maxCount = 22 }, -- Arrow
+	{ id = 3350, chance = 18136 }, -- Bow
+	{ id = 11469, chance = 10160 }, -- Hunter's Quiver
+	{ id = 3586, chance = 23020, maxCount = 2 }, -- Orange
+	{ id = 3601, chance = 13394, maxCount = 2 }, -- Roll
+	{ id = 3359, chance = 4968 }, -- Brass Armor
+	{ id = 3449, chance = 9119, maxCount = 3 }, -- Burst Arrow
+	{ id = 3354, chance = 5635 }, -- Brass Helmet
+	{ id = 3085, chance = 2701 }, -- Dragon Necklace
+	{ id = 3448, chance = 7102, maxCount = 4 }, -- Poison Arrow
+	{ id = 2920, chance = 3641 }, -- Torch
+	{ id = 7397, chance = 440 }, -- Deer Trophy
+	{ id = 5875, chance = 688 }, -- Sniper Gloves
+	{ id = 7400, chance = 125 }, -- Lion Trophy
+	{ id = 5907, chance = 130 }, -- Slingshot
+	{ id = 3030, chance = 174 }, -- Small Ruby
+	{ id = 7394, chance = 116 }, -- Wolf Trophy
 }
 
 monster.attacks = {

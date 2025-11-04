@@ -72,16 +72,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "flaming arrow", chance = 60000, maxCount = 15 },
-	{ id = 3039, chance = 45000, maxCount = 15 }, -- red gem
-	{ name = "sea horse figurine", chance = 6700 },
-	{ id = 31557, chance = 520 }, -- blister ring
-	{ id = 31369, chance = 16500 }, -- gryphon mask
-	{ name = "winged boots", chance = 110 },
-	{ id = 30403, chance = 250 }, -- enchanted theurgic amulet
-	{ name = "magma coat", chance = 48000 },
-	{ name = "stone skin amulet", chance = 54000 },
+	{ id = 763, chance = 1000, maxCount = 12 }, -- Flaming Arrow
+	{ id = 3035, chance = 1000, maxCount = 8 }, -- Platinum Coin
+	{ id = 8082, chance = 1000 }, -- Underworld Rod
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
+	{ id = 281, chance = 1000 }, -- Giant Shimmering Pearl (Green)
+	{ id = 826, chance = 1000 }, -- Magma Coat
+	{ id = 3039, chance = 84324 }, -- Red Gem
+	{ id = 31323, chance = 9729 }, -- Sea Horse Figurine
+	{ id = 31324, chance = 6010 }, -- Golden Mask
+	{ id = 30402, chance = 1000 }, -- Enchanted Theurgic Amulet
+	{ id = 31557, chance = 1000 }, -- Enchanted Blister Ring
+	{ id = 31617, chance = 1000 }, -- Winged Boots
 }
 
 monster.attacks = {

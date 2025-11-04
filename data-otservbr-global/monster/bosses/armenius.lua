@@ -64,7 +64,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3434, chance = 5230 }, -- vampire shield
+
 }
 
 monster.attacks = {

@@ -81,23 +81,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 99110, maxCount = 207 },
-	{ name = "dragon ham", chance = 83040, maxCount = 2 },
-	{ name = "green mushroom", chance = 10710 },
-	{ id = 7441, chance = 6250 }, -- ice cube
-	{ id = 2842, chance = 8500 }, -- book
-	{ name = "power bolt", chance = 5360, maxCount = 6 },
-	{ name = "golden mug", chance = 5360 },
-	{ id = 3051, chance = 2680 }, -- energy ring
-	{ name = "small sapphire", chance = 1790 },
-	{ name = "strange helmet", chance = 890 },
-	{ name = "life crystal", chance = 890 },
-	{ name = "shard", chance = 520 },
-	{ name = "ice rapier", chance = 310 },
-	{ name = "tower shield", chance = 290 },
-	{ name = "royal helmet", chance = 230 },
-	{ name = "dragon scale mail", chance = 100 },
-	{ name = "dragon slayer", chance = 100 },
+	{ id = 3031, chance = 94990, maxCount = 243 }, -- Gold Coin
+	{ id = 3583, chance = 71113, maxCount = 3 }, -- Dragon Ham
+	{ id = 2842, chance = 8547 }, -- Book (Gemmed)
+	{ id = 3450, chance = 16773, maxCount = 6 }, -- Power Bolt
+	{ id = 3732, chance = 11729 }, -- Green Mushroom
+	{ id = 2903, chance = 2872 }, -- Golden Mug
+	{ id = 3029, chance = 5258 }, -- Small Sapphire
+	{ id = 3051, chance = 4565 }, -- Energy Ring
+	{ id = 7441, chance = 4401 }, -- Ice Cube
+	{ id = 3061, chance = 400 }, -- Life Crystal
+	{ id = 7290, chance = 555 }, -- Shard
+	{ id = 3373, chance = 433 }, -- Strange Helmet
+	{ id = 3284, chance = 179 }, -- Ice Rapier
+	{ id = 3428, chance = 239 }, -- Tower Shield
+	{ id = 3392, chance = 209 }, -- Royal Helmet
+	{ id = 7402, chance = 137 }, -- Dragon Slayer
+	{ id = 3386, chance = 181 }, -- Dragon Scale Mail
 }
 
 monster.attacks = {

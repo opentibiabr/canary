@@ -84,26 +84,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 197 },
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "war hammer", chance = 4010 },
-	{ name = "white piece of cloth", chance = 6430 },
-	{ name = "green piece of cloth", chance = 3003 },
-	{ name = "red piece of cloth", chance = 1820 },
-	{ name = "blue piece of cloth", chance = 3700 },
-	{ name = "great mana potion", chance = 7692 },
-	{ name = "great health potion", chance = 7220 },
-	{ name = "mana potion", chance = 9090 },
-	{ name = "terra mantle", chance = 800 },
-	{ name = "terra legs", chance = 920 },
-	{ name = "terra boots", chance = 2000 },
-	{ name = "terra amulet", chance = 2000 },
-	{ name = "mushroom backpack", chance = 20 },
-	{ name = "mushroom pie", chance = 14500, maxCount = 3 },
-	{ name = "muck rod", chance = 590 },
-	{ name = "hideous chunk", chance = 14285 },
-	{ name = "envenomed arrow", chance = 14500, maxCount = 15 },
-	{ name = "mycological bow", chance = 60 },
+	{ id = 3031, chance = 100000, maxCount = 199 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 16143, chance = 14530, maxCount = 15 }, -- Envenomed Arrow
+	{ id = 239, chance = 6980 }, -- Great Health Potion
+	{ id = 238, chance = 7080 }, -- Great Mana Potion
+	{ id = 16140, chance = 14800 }, -- Hideous Chunk
+	{ id = 268, chance = 9030 }, -- Mana Potion
+	{ id = 16103, chance = 14930, maxCount = 3 }, -- Mushroom Pie
+	{ id = 5909, chance = 5870 }, -- White Piece of Cloth
+	{ id = 5912, chance = 3740 }, -- Blue Piece of Cloth
+	{ id = 5910, chance = 3090 }, -- Green Piece of Cloth
+	{ id = 814, chance = 1880 }, -- Terra Amulet
+	{ id = 3279, chance = 3410 }, -- War Hammer
+	{ id = 5911, chance = 1850 }, -- Red Piece of Cloth
+	{ id = 813, chance = 1790 }, -- Terra Boots
+	{ id = 16117, chance = 550 }, -- Muck Rod
+	{ id = 812, chance = 949 }, -- Terra Legs
+	{ id = 811, chance = 909 }, -- Terra Mantle
+	{ id = 16099, chance = 10 }, -- Mushroom Backpack
+	{ id = 16164, chance = 100 }, -- Mycological Bow
 }
 
 monster.attacks = {

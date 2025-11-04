@@ -64,12 +64,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 74230, maxCount = 70 },
-	{ name = "poison arrow", chance = 74230, maxCount = 5 },
-	{ name = "book of necromantic rituals", chance = 74230 },
-	{ name = "incantation fragment", chance = 100000 },
-	{ name = "necromantic robe", chance = 54230 },
-	{ name = "boots of haste", chance = 5000 },
+	{ id = 3031, chance = 36000, maxCount = 70 }, -- Gold Coin
+	{ id = 3448, chance = 8000, maxCount = 5 }, -- Poison Arrow
+	{ id = 10320, chance = 8000 }, -- Book of Necromantic Rituals
+	{ id = 11475, chance = 4000 }, -- Necromantic Robe
+	{ id = 3324, chance = 1000 }, -- Skull Staff
+	{ id = 18933, chance = 100000 }, -- Incantation Fragment
 }
 
 monster.attacks = {

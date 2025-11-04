@@ -78,20 +78,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 120 },
-	{ id = 3607, chance = 20000 }, -- cheese
-	{ name = "bola", chance = 10000 },
-	{ name = "spike shield", chance = 4761 },
-	{ name = "ratana", chance = 5000 },
-	{ name = "life preserver", chance = 5000 },
-	{ name = "cheese cutter", chance = 16666 },
-	{ name = "cheesy figurine", chance = 3846 },
-	{ name = "earflap", chance = 11111 },
-	{ name = "soft cheese", chance = 14285 },
-	{ name = "rat cheese", chance = 14285 },
-	{ name = "rat god doll", chance = 14 },
-	{ name = "leather harness", chance = 1612 },
-	{ name = "spiky club", chance = 3225 },
+	{ id = 3031, chance = 99984, maxCount = 90 }, -- Gold Coin
+	{ id = 3607, chance = 17718 }, -- Cheese
+	{ id = 17809, chance = 9860 }, -- Bola
+	{ id = 17817, chance = 14374 }, -- Cheese Cutter
+	{ id = 17819, chance = 10570 }, -- Earflap
+	{ id = 17820, chance = 15298 }, -- Soft Cheese
+	{ id = 17821, chance = 14678 }, -- Rat Cheese
+	{ id = 17810, chance = 3608 }, -- Spike Shield
+	{ id = 17812, chance = 3677 }, -- Ratana
+	{ id = 17813, chance = 3515 }, -- Life Preserver
+	{ id = 17818, chance = 3109 }, -- Cheesy Figurine
+	{ id = 17846, chance = 1557 }, -- Leather Harness
+	{ id = 17859, chance = 2812 }, -- Spiky Club
+	{ id = 17825, chance = 15 }, -- Rat God Doll
 }
 
 monster.attacks = {

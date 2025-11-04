@@ -77,21 +77,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 9 },
-	{ name = "book page", chance = 10000, maxCount = 6 },
-	{ name = "small amethyst", chance = 10000, maxCount = 8 },
-	{ name = "glowing rune", chance = 10000, maxCount = 3 },
-	{ name = "quill", chance = 10000, maxCount = 3 },
-	{ name = "silken bookmark", chance = 10000, maxCount = 3 },
-	{ name = "flash arrow", chance = 10000, maxCount = 6 },
-	{ name = "throwing star", chance = 10000, maxCount = 10 },
-	{ name = "crystal sword", chance = 10000 },
-	{ id = 3051, chance = 10000 }, -- energy ring
-	{ name = "guardian shield", chance = 10000 },
-	{ name = "mana potion", chance = 10000, maxCount = 10 },
-	{ name = "ultimate mana potion", chance = 10000, maxCount = 8 },
-	{ name = "ultimate health potion", chance = 10000, maxCount = 8 },
-	{ name = "wand of cosmic energy", chance = 300 },
+	{ id = 3035, chance = 67473, maxCount = 15 }, -- Platinum Coin
+	{ id = 28566, chance = 26211 }, -- Silken Bookmark
+	{ id = 28569, chance = 38396, maxCount = 5 }, -- Book Page
+	{ id = 28570, chance = 34829, maxCount = 10 }, -- Glowing Rune
+	{ id = 3033, chance = 74737, maxCount = 6 }, -- Small Amethyst
+	{ id = 28567, chance = 22602 }, -- Quill
+	{ id = 3051, chance = 7428 }, -- Energy Ring
+	{ id = 761, chance = 14732, maxCount = 15 }, -- Flash Arrow
+	{ id = 3415, chance = 10174 }, -- Guardian Shield
+	{ id = 268, chance = 9383 }, -- Mana Potion
+	{ id = 3287, chance = 6640, maxCount = 15 }, -- Throwing Star
+	{ id = 7449, chance = 4946 }, -- Crystal Sword
+	{ id = 7643, chance = 10838, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 3073, chance = 5206 }, -- Wand of Cosmic Energy
+	{ id = 23373, chance = 14803 }, -- Ultimate Mana Potion
+	{ id = 16096, chance = 1106 }, -- Wand of Defiance
+	{ id = 3313, chance = 3048 }, -- Obsidian Lance
+	{ id = 3054, chance = 2399 }, -- Silver Amulet
+	{ id = 3007, chance = 1482 }, -- Crystal Ring
+	{ id = 816, chance = 1669 }, -- Lightning Pendant
+	{ id = 3048, chance = 2099 }, -- Might Ring
+	{ id = 10438, chance = 380 }, -- Spellweaver's Robe
 }
 
 monster.attacks = {

@@ -76,34 +76,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "emerald bangle", chance = 3500 },
-	{ name = "small sapphire", chance = 11000, maxCount = 4 },
-	{ name = "gold coin", chance = 60000, maxCount = 100 },
-	{ name = "gold coin", chance = 60000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 67 },
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "violet gem", chance = 700 },
-	{ name = "yellow gem", chance = 5940 },
-	{ id = 3051, chance = 3150 }, -- energy ring
-	{ name = "platinum amulet", chance = 1005 },
-	{ name = "mind stone", chance = 9090 },
-	{ name = "wand of inferno", chance = 5590 },
-	{ name = "boots of haste", chance = 540 },
-	{ name = "protection amulet", chance = 8740 },
-	{ name = "sudden death rune", chance = 4200, maxCount = 8 },
-	{ name = "skull staff", chance = 700 },
-	{ name = "knight armor", chance = 4550 },
-	{ name = "crown armor", chance = 1400 },
-	{ name = "mysterious voodoo skull", chance = 247 },
-	{ name = "soul orb", chance = 31111 },
-	{ id = 6299, chance = 1750 }, -- death ring
-	{ name = "demonic essence", chance = 12000 },
-	{ name = "flask of demonic blood", chance = 30000, maxCount = 4 },
-	{ name = "assassin star", chance = 7692, maxCount = 5 },
-	{ name = "abyss hammer", chance = 495 },
-	{ name = "great mana potion", chance = 19990, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 18000 },
-	{ name = "gold ingot", chance = 700 },
+	{ id = 3031, chance = 99096, maxCount = 267 }, -- Gold Coin
+	{ id = 3035, chance = 74317, maxCount = 7 }, -- Platinum Coin
+	{ id = 5944, chance = 21501 }, -- Soul Orb
+	{ id = 6558, chance = 32514, maxCount = 4 }, -- Flask of Demonic Blood
+	{ id = 238, chance = 19411, maxCount = 2 }, -- Great Mana Potion
+	{ id = 7643, chance = 19662 }, -- Ultimate Health Potion
+	{ id = 3062, chance = 12091 }, -- Mind Stone
+	{ id = 7368, chance = 13763, maxCount = 5 }, -- Assassin Star
+	{ id = 3029, chance = 12403, maxCount = 4 }, -- Small Sapphire
+	{ id = 6499, chance = 10566 }, -- Demonic Essence
+	{ id = 3084, chance = 7620 }, -- Protection Amulet
+	{ id = 3037, chance = 5995 }, -- Yellow Gem
+	{ id = 3010, chance = 5134 }, -- Emerald Bangle
+	{ id = 3071, chance = 4216 }, -- Wand of Inferno
+	{ id = 3155, chance = 4471, maxCount = 8 }, -- Sudden Death Rune
+	{ id = 3370, chance = 3662 }, -- Knight Armor
+	{ id = 3051, chance = 1456 }, -- Energy Ring
+	{ id = 3041, chance = 1314 }, -- Blue Gem
+	{ id = 6299, chance = 1514 }, -- Death Ring
+	{ id = 3381, chance = 955 }, -- Crown Armor
+	{ id = 3055, chance = 848 }, -- Platinum Amulet
+	{ id = 3324, chance = 821 }, -- Skull Staff
+	{ id = 3036, chance = 845 }, -- Violet Gem
+	{ id = 2828, chance = 1003 }, -- Book (Orange)
+	{ id = 9058, chance = 687 }, -- Gold Ingot
+	{ id = 3079, chance = 170 }, -- Boots of Haste
+	{ id = 5668, chance = 90 }, -- Mysterious Voodoo Skull
+	{ id = 7414, chance = 249 }, -- Abyss Hammer
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -69,21 +69,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 99 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 10 }, -- platinum coin
-	{ id = 5879, chance = 100000 }, -- spider silk
-	{ id = 3351, chance = 100000 }, -- steel helmet
-	{ id = 239, chance = 100000, maxCount = 4 }, -- great health potion
-	{ id = 3370, chance = 50000 }, -- knight armor
-	{ id = 3049, chance = 33333 }, -- stealth ring
-	{ id = 3051, chance = 33333 }, -- energy ring
-	{ id = 3053, chance = 33333 }, -- time ring
-	{ id = 12320, chance = 33333 }, -- sweet smelling bait
-	{ id = 3371, chance = 25000 }, -- knight legs
-	{ id = 3055, chance = 25000 }, -- platinum amulet
-	{ id = 5886, chance = 25000 }, -- spool of yarn
-	{ id = 7416, chance = 3225 }, -- bloody edge
-	{ id = 7419, chance = 1639 }, -- dreaded cleaver
+	{ id = 3031, chance = 99588, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 98370, maxCount = 10 }, -- Platinum Coin
+	{ id = 5879, chance = 89645, maxCount = 3 }, -- Spider Silk
+	{ id = 3351, chance = 75104 }, -- Steel Helmet
+	{ id = 239, chance = 63453, maxCount = 4 }, -- Great Health Potion
+	{ id = 3370, chance = 44223 }, -- Knight Armor
+	{ id = 3053, chance = 31015 }, -- Time Ring
+	{ id = 3051, chance = 35454 }, -- Energy Ring
+	{ id = 3049, chance = 32269 }, -- Stealth Ring
+	{ id = 3371, chance = 23675 }, -- Knight Legs
+	{ id = 12320, chance = 21224 }, -- Sweet Smelling Bait
+	{ id = 3055, chance = 22858 }, -- Platinum Amulet
+	{ id = 5886, chance = 9520 }, -- Spool of Yarn
+	{ id = 7419, chance = 4078 }, -- Dreaded Cleaver
+	{ id = 7416, chance = 1222 }, -- Bloody Edge
 }
 
 monster.attacks = {

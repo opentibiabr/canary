@@ -73,34 +73,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "envenomed arrow", chance = 70400, maxCount = 35 },
-	{ name = "snakebite rod", chance = 10620 },
-	{ name = "goanna meat", chance = 10030 },
-	{ name = "blue crystal shard", chance = 9110 },
-	{ name = "terra rod", chance = 8940 },
-	{ name = "blue goanna scale", chance = 8260 },
-	{ name = "small enchanted emerald", chance = 4890 },
-	{ name = "leaf star", chance = 4550, maxCount = 3 },
-	{ name = "rainbow quartz", chance = 4050, maxCount = 3 },
-	{ name = "onyx chip", chance = 4050 },
-	{ name = "goanna claw", chance = 3880 },
-	{ name = "violet gem", chance = 3540 },
-	{ name = "serpent sword", chance = 3370 },
-	{ name = "springsprout rod", chance = 3370 },
-	{ name = "green crystal shard", chance = 2950 },
-	{ name = "scared frog", chance = 2610 },
-	{ name = "yellow gem", chance = 2530 },
-	{ name = "silver amulet", chance = 2280 },
-	{ name = "terra amulet", chance = 1430 },
-	{ name = "blue gem", chance = 1180 },
-	{ name = "terra hood", chance = 1100 },
-	{ name = "blue crystal splinter", chance = 1010 },
-	{ name = "sacred tree amulet", chance = 840 },
-	{ name = "small tortoise", chance = 670 },
-	{ name = "lizard heart", chance = 590 },
-	{ name = "wooden spellbook", chance = 170 },
-	{ name = "fur armor", chance = 80 },
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 16143, chance = 68221, maxCount = 35 }, -- Envenomed Arrow
+	{ id = 3065, chance = 8598 }, -- Terra Rod
+	{ id = 31560, chance = 9443 }, -- Goanna Meat
+	{ id = 3066, chance = 9377 }, -- Snakebite Rod
+	{ id = 31559, chance = 7969 }, -- Blue Goanna Scale
+	{ id = 16119, chance = 10040 }, -- Blue Crystal Shard
+	{ id = 677, chance = 4460 }, -- Small Enchanted Emerald
+	{ id = 814, chance = 1020 }, -- Terra Amulet
+	{ id = 3036, chance = 3020 }, -- Violet Gem
+	{ id = 3037, chance = 3370 }, -- Yellow Gem
+	{ id = 3041, chance = 1290 }, -- Blue Gem
+	{ id = 31561, chance = 4703 }, -- Goanna Claw
+	{ id = 3297, chance = 3370 }, -- Serpent Sword
+	{ id = 25735, chance = 4395, maxCount = 3 }, -- Leaf Star
+	{ id = 3054, chance = 1761 }, -- Silver Amulet
+	{ id = 8084, chance = 2963 }, -- Springsprout Rod
+	{ id = 31488, chance = 2522 }, -- Scared Frog
+	{ id = 25737, chance = 3130, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 22193, chance = 3720 }, -- Onyx Chip
+	{ id = 16121, chance = 3540 }, -- Green Crystal Shard
+	{ id = 16124, chance = 1010 }, -- Blue Crystal Splinter
+	{ id = 31340, chance = 1210 }, -- Lizard Heart
+	{ id = 9302, chance = 750 }, -- Sacred Tree Amulet
+	{ id = 31445, chance = 1310 }, -- Small Tortoise
+	{ id = 830, chance = 450 }, -- Terra Hood
+	{ id = 22085, chance = 240 }, -- Fur Armor
+	{ id = 25699, chance = 494 }, -- Wooden Spellbook
 }
 
 monster.attacks = {

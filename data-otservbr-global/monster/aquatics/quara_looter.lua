@@ -76,20 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Amber Souvenir", chance = 7040 },
-	{ name = "Resinous Fish Fin", chance = 6460 },
-	{ id = 3039, chance = 4340 }, -- red gem
-	{ id = 3041, chance = 2700 }, -- blue gem
-	{ name = "Glacier Kilt", chance = 940 },
-	{ name = "Necklace of the Deep", chance = 820 },
-	{ name = "Crystal Crossbow", chance = 470 },
-	{ name = "Rift Lance", chance = 350 },
-	{ name = "Mantassin Tail", chance = 230 },
-	{ name = "platinum coin", chance = 10000, maxCount = 25 },
-	{ name = "Glacier Robe", chance = 1000 },
-	{ name = "Preserved Light Blue Seed", chance = 110 },
-	{ name = "Preserved Purple Seed", chance = 110 },
-	{ name = "Preserved Violet Seed", chance = 110 },
+	{ id = 3035, chance = 1000, maxCount = 25 }, -- Platinum Coin
+	{ id = 48508, chance = 6960 }, -- Amber Souvenir
+	{ id = 48509, chance = 6650 }, -- Resinous Fish Fin
+	{ id = 824, chance = 1000 }, -- Glacier Robe
+	{ id = 3039, chance = 5130 }, -- Red Gem
+	{ id = 3041, chance = 2470 }, -- Blue Gem
+	{ id = 823, chance = 760 }, -- Glacier Kilt
+	{ id = 11489, chance = 320 }, -- Mantassin Tail
+	{ id = 13990, chance = 630 }, -- Necklace of the Deep
+	{ id = 16163, chance = 380 }, -- Crystal Crossbow
+	{ id = 22727, chance = 380 }, -- Rift Lance
+	{ id = 45654, chance = 60 }, -- Preserved Light Blue Seed
+	{ id = 45655, chance = 60 }, -- Preserved Violet Seed
+	{ id = 45656, chance = 1000 }, -- Preserved Purple Seed
 }
 
 monster.attacks = {

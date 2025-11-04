@@ -74,18 +74,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Crystal Coin", chance = 24890, minCount = 1, maxCount = 2 },
-	{ name = "Mercurial Wing", chance = 21500 },
-	{ name = "Terra Boots", chance = 4250 },
-	{ name = "Silver Brooch", chance = 2700 },
-	{ name = "Terra Rod", chance = 1660 },
-	{ name = "Wand of Defiance", chance = 1230 },
-	{ name = "Dream Blossom Staff", chance = 1090 },
-	{ name = "Coral Brooch", chance = 1030 },
-	{ name = "Lightning Boots", chance = 1000 },
-	{ name = "Wand of Cosmic Energy", chance = 860 },
-	{ name = "Gemmed Figurine", chance = 830 },
-	{ name = "Butterfly Ring", chance = 800 },
+	{ id = 3043, chance = 24732, maxCount = 2 }, -- Crystal Coin
+	{ id = 39395, chance = 21457 }, -- Mercurial Wing
+	{ id = 813, chance = 4436 }, -- Terra Boots
+	{ id = 3017, chance = 2750 }, -- Silver Brooch
+	{ id = 3065, chance = 1665 }, -- Terra Rod
+	{ id = 16096, chance = 1230 }, -- Wand of Defiance
+	{ id = 24391, chance = 1150 }, -- Coral Brooch
+	{ id = 25700, chance = 1090 }, -- Dream Blossom Staff
+	{ id = 820, chance = 930 }, -- Lightning Boots
+	{ id = 3073, chance = 985 }, -- Wand of Cosmic Energy
+	{ id = 24392, chance = 909 }, -- Gemmed Figurine
+	{ id = 25698, chance = 853 }, -- Butterfly Ring
 }
 
 monster.attacks = {

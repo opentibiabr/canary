@@ -82,23 +82,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 64000 },
-	{ name = "ultimate health potion", chance = 22860, maxCount = 5 },
-	{ name = "gold ingot", chance = 18860 },
-	{ name = "cyan crystal fragment", chance = 7430 },
-	{ name = "red crystal fragment", chance = 7430 },
-	{ name = "blue crystal shard", chance = 5710 },
-	{ name = "small diamond", chance = 4570 },
-	{ name = "blue gem", chance = 4570 },
-	{ name = "green crystal fragment", chance = 3430 },
-	{ name = "magma amulet", chance = 3430 },
-	{ name = "mercenary sword", chance = 2860 },
-	{ name = "onyx chip", chance = 2860 },
-	{ name = "war axe", chance = 2860 },
-	{ name = "giant sword", chance = 2860 },
-	{ name = "magma boots", chance = 2290 },
-	{ name = "stone skin amulet", chance = 570 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 52993 }, -- Crystal Coin
+	{ id = 7643, chance = 18112, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 3028, chance = 7025 }, -- Small Diamond
+	{ id = 9058, chance = 15317 }, -- Gold Ingot
+	{ id = 16119, chance = 6404 }, -- Blue Crystal Shard
+	{ id = 16125, chance = 5533 }, -- Cyan Crystal Fragment
+	{ id = 16126, chance = 6481 }, -- Red Crystal Fragment
+	{ id = 817, chance = 1770 }, -- Magma Amulet
+	{ id = 818, chance = 2370 }, -- Magma Boots
+	{ id = 3041, chance = 2471 }, -- Blue Gem
+	{ id = 3281, chance = 1557 }, -- Giant Sword
+	{ id = 3342, chance = 1270 }, -- War Axe
+	{ id = 7386, chance = 1550 }, -- Mercenary Sword
+	{ id = 16127, chance = 2246 }, -- Green Crystal Fragment
+	{ id = 22193, chance = 3812 }, -- Onyx Chip
+	{ id = 3081, chance = 796 }, -- Stone Skin Amulet
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

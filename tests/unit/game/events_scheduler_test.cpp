@@ -7,6 +7,14 @@
 #include "injection_fixture.hpp"
 #include "kv/kv.hpp"
 #include "kv/kv_definitions.hpp"
+#include "../../shared/game/events_scheduler_test_helpers.hpp"
+
+using test::events_scheduler::expectActiveEventsContain;
+using test::events_scheduler::expectEventScopeBool;
+using test::events_scheduler::expectEventScopeInt;
+using test::events_scheduler::expectEventScopeMissing;
+using test::events_scheduler::expectScheduleRates;
+using test::events_scheduler::expectSingleActiveEvent;
 
 class EventsSchedulerJsonTest : public ::testing::Test {
 protected:
@@ -61,35 +69,15 @@ TEST_F(EventsSchedulerJsonTest, LoadsRatesAndKeyValuesFromJson) {
 	writeEventsJson(originalEventsJson_);
 	ASSERT_TRUE(g_eventsScheduler().loadScheduleEventFromJson());
 
-	EXPECT_EQ(150, g_eventsScheduler().getExpSchedule());
-	EXPECT_EQ(200u, g_eventsScheduler().getLootSchedule());
-	EXPECT_EQ(125u, g_eventsScheduler().getBossLootSchedule());
-	EXPECT_EQ(175u, g_eventsScheduler().getSpawnMonsterSchedule());
-	EXPECT_EQ(130, g_eventsScheduler().getSkillSchedule());
+	expectScheduleRates(150, 200u, 125u, 175u, 130);
 
-	const auto forgeChance = g_kv().scoped("eventscheduler")->get("forge-chance");
-	ASSERT_TRUE(forgeChance.has_value());
-	EXPECT_EQ(120, forgeChance->get<IntType>());
+	expectEventScopeInt("forge-chance", 120);
+	expectEventScopeInt("boss-cooldown", 150);
+	expectEventScopeBool("double-bestiary", true);
+	expectEventScopeBool("double-bosstiary", true);
+	expectEventScopeBool("fast-exercise", true);
 
-	const auto bossCooldown = g_kv().scoped("eventscheduler")->get("boss-cooldown");
-	ASSERT_TRUE(bossCooldown.has_value());
-	EXPECT_EQ(150, bossCooldown->get<IntType>());
-
-	const auto doubleBestiary = g_kv().scoped("eventscheduler")->get("double-bestiary");
-	ASSERT_TRUE(doubleBestiary.has_value());
-	EXPECT_TRUE(doubleBestiary->get<BooleanType>());
-
-	const auto doubleBosstiary = g_kv().scoped("eventscheduler")->get("double-bosstiary");
-	ASSERT_TRUE(doubleBosstiary.has_value());
-	EXPECT_TRUE(doubleBosstiary->get<BooleanType>());
-
-	const auto fastExercise = g_kv().scoped("eventscheduler")->get("fast-exercise");
-	ASSERT_TRUE(fastExercise.has_value());
-	EXPECT_TRUE(fastExercise->get<BooleanType>());
-
-	const auto activeEvents = g_eventsScheduler().getActiveEvents();
-	ASSERT_FALSE(activeEvents.empty());
-	EXPECT_EQ("Test Event Scheduler", activeEvents.front());
+	expectSingleActiveEvent("Test Event Scheduler");
 }
 
 TEST_F(EventsSchedulerJsonTest, SkipsDuplicateRatesWhenEventsOverlap) {
@@ -116,16 +104,9 @@ TEST_F(EventsSchedulerJsonTest, SkipsDuplicateRatesWhenEventsOverlap) {
 
 	ASSERT_TRUE(g_eventsScheduler().loadScheduleEventFromJson());
 
-	EXPECT_EQ(150, g_eventsScheduler().getExpSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getLootSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getBossLootSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getSpawnMonsterSchedule());
-	EXPECT_EQ(100, g_eventsScheduler().getSkillSchedule());
+	expectScheduleRates(150, 100u, 100u, 100u, 100);
 
-	const auto activeEvents = g_eventsScheduler().getActiveEvents();
-	EXPECT_EQ(2u, activeEvents.size());
-	EXPECT_NE(activeEvents.end(), std::find(activeEvents.begin(), activeEvents.end(), "Duplicate Event A"));
-	EXPECT_NE(activeEvents.end(), std::find(activeEvents.begin(), activeEvents.end(), "Duplicate Event B"));
+	expectActiveEventsContain({ "Duplicate Event A", "Duplicate Event B" });
 }
 
 TEST_F(EventsSchedulerJsonTest, ReloadingClearsPreviousModifiers) {
@@ -153,20 +134,13 @@ TEST_F(EventsSchedulerJsonTest, ReloadingClearsPreviousModifiers) {
 
 	ASSERT_TRUE(g_eventsScheduler().loadScheduleEventFromJson());
 
-	EXPECT_EQ(125, g_eventsScheduler().getExpSchedule());
-	EXPECT_EQ(140u, g_eventsScheduler().getLootSchedule());
-	EXPECT_EQ(150u, g_eventsScheduler().getBossLootSchedule());
-	EXPECT_EQ(160u, g_eventsScheduler().getSpawnMonsterSchedule());
-	EXPECT_EQ(135, g_eventsScheduler().getSkillSchedule());
+	expectScheduleRates(125, 140u, 150u, 160u, 135);
 
-	auto eventScope = g_kv().scoped("eventscheduler");
-	const auto forgeChance = eventScope->get("forge-chance");
-	ASSERT_TRUE(forgeChance.has_value());
-	EXPECT_EQ(130, forgeChance->get<IntType>());
-	EXPECT_TRUE(eventScope->get("double-bestiary")->get<BooleanType>());
-	EXPECT_TRUE(eventScope->get("double-bosstiary")->get<BooleanType>());
-	EXPECT_TRUE(eventScope->get("fast-exercise")->get<BooleanType>());
-	EXPECT_EQ(140, eventScope->get("boss-cooldown")->get<IntType>());
+	expectEventScopeInt("forge-chance", 130);
+	expectEventScopeBool("double-bestiary", true);
+	expectEventScopeBool("double-bosstiary", true);
+	expectEventScopeBool("fast-exercise", true);
+	expectEventScopeInt("boss-cooldown", 140);
 
 	writeEventsJson(R"json({
 	"events": [
@@ -180,18 +154,9 @@ TEST_F(EventsSchedulerJsonTest, ReloadingClearsPreviousModifiers) {
 
 	ASSERT_TRUE(g_eventsScheduler().loadScheduleEventFromJson());
 
-	EXPECT_EQ(100, g_eventsScheduler().getExpSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getLootSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getBossLootSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getSpawnMonsterSchedule());
-	EXPECT_EQ(100, g_eventsScheduler().getSkillSchedule());
+	expectScheduleRates(100, 100u, 100u, 100u, 100);
 
-	auto resetScope = g_kv().scoped("eventscheduler");
-	EXPECT_FALSE(resetScope->get("forge-chance").has_value());
-	EXPECT_FALSE(resetScope->get("double-bestiary").has_value());
-	EXPECT_FALSE(resetScope->get("double-bosstiary").has_value());
-	EXPECT_FALSE(resetScope->get("fast-exercise").has_value());
-	EXPECT_FALSE(resetScope->get("boss-cooldown").has_value());
+	expectEventScopeMissing({ "forge-chance", "double-bestiary", "double-bosstiary", "fast-exercise", "boss-cooldown" });
 }
 
 TEST_F(EventsSchedulerJsonTest, RespectsEventHoursFromJson) {
@@ -264,11 +229,9 @@ TEST_F(EventsSchedulerJsonTest, RespectsEventHoursFromJson) {
 
 	ASSERT_TRUE(g_eventsScheduler().loadScheduleEventFromJson());
 
-	EXPECT_EQ(160, g_eventsScheduler().getExpSchedule());
-	EXPECT_EQ(100u, g_eventsScheduler().getLootSchedule());
+	expectScheduleRates(160, 100u, 100u, 100u, 100);
 
+	expectSingleActiveEvent("Active With Hours");
 	const auto activeEvents = g_eventsScheduler().getActiveEvents();
-	ASSERT_EQ(1u, activeEvents.size());
-	EXPECT_EQ("Active With Hours", activeEvents.front());
 	EXPECT_EQ(activeEvents.end(), std::find(activeEvents.begin(), activeEvents.end(), "Expired With Hours"));
 }

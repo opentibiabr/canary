@@ -188,8 +188,8 @@ public:
 		return online;
 	}
 
-	static uint32_t getFirstID();
-	static uint32_t getLastID();
+	[[nodiscard]] static uint32_t getFirstID();
+	[[nodiscard]] static uint32_t getLastID();
 
 	static MuteCountMap muteCountMap;
 
@@ -565,9 +565,9 @@ public:
 	int32_t getMaxHealth() const override;
 	uint32_t getMaxMana() const override;
 
-	std::shared_ptr<Item> getInventoryItem(Slots_t slot) const;
+	[[nodiscard]] std::shared_ptr<Item> getInventoryItem(Slots_t slot) const;
 
-	bool isItemAbilityEnabled(Slots_t slot) const;
+	[[nodiscard]] bool isItemAbilityEnabled(Slots_t slot) const;
 	void setItemAbility(Slots_t slot, bool enabled);
 
 	void setVarSkill(skills_t skill, int32_t modifier);
@@ -1686,7 +1686,7 @@ private:
 		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 	}
 
-	bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
+	[[nodiscard]] bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
 
 	uint16_t getLookCorpse() const override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;

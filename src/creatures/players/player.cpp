@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/events_scheduler.hpp"
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
@@ -6045,6 +6046,18 @@ void Player::onPlacedCreature() {
 	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();
+
+	const auto activeEvents = g_eventsScheduler().getActiveEvents();
+	if (!activeEvents.empty()) {
+		std::string eventsList;
+		for (size_t i = 0; i < activeEvents.size(); ++i) {
+			eventsList.append(activeEvents[i]);
+			if (i < activeEvents.size() - 1) {
+				eventsList.append(", ");
+			}
+		}
+		g_logger().info("[{}] Active EventScheduler: {}", getName(), eventsList);
+	}
 }
 
 void Player::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {
@@ -6131,6 +6144,14 @@ void Player::addBestiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BESTIARY_KILL_MULTIPLIER);
+
+	auto scopedDoubleBestiary = g_kv().scoped("eventscheduler")->get("double-bestiary");
+	bool doubleBestiaryEnabled = scopedDoubleBestiary && scopedDoubleBestiary->get<bool>();
+	if (doubleBestiaryEnabled) {
+		kills *= 2;
+		g_logger().debug("[{}] double bestiary is enabled.", __FUNCTION__);
+	}
+
 	if (isConcoctionActive(Concoction_t::BestiaryBetterment)) {
 		kills *= 2;
 	}
@@ -6142,6 +6163,14 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER);
+
+	auto scopedDoubleBosstiary = g_kv().scoped("eventscheduler")->get("double-bosstiary");
+	bool doubleBosstiaryEnabled = scopedDoubleBosstiary && scopedDoubleBosstiary->get<bool>();
+	if (doubleBosstiaryEnabled) {
+		kills *= 2;
+		g_logger().debug("[{}] double bosstiary is enabled.", __FUNCTION__);
+	}
+
 	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {
 		kills *= g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS);
 	}

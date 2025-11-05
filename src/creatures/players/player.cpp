@@ -6168,7 +6168,7 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 	bool doubleBosstiaryEnabled = scopedDoubleBosstiary && scopedDoubleBosstiary->get<bool>();
 	if (doubleBosstiaryEnabled) {
 		kills *= 2;
-		g_logger().info("[{}] double bosstiary is enabled.", __FUNCTION__);
+		g_logger().debug("[{}] double bosstiary is enabled.", __FUNCTION__);
 	}
 
 	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {

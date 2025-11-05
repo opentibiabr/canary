@@ -4,6 +4,7 @@
 #include "game/scheduling/events_scheduler.hpp"
 #include "kv/kv.hpp"
 #include "kv/kv_definitions.hpp"
+#include "../../shared/game/events_scheduler_test_fixture.hpp"
 #include "../../shared/game/events_scheduler_test_helpers.hpp"
 
 #include <algorithm>
@@ -17,6 +18,7 @@
 
 namespace it_events_scheduler {
 
+	using test::events_scheduler::EventsSchedulerTestBase;
 	using test::events_scheduler::expectActiveEventsContain;
 	using test::events_scheduler::expectEventScopeBool;
 	using test::events_scheduler::expectEventScopeInt;
@@ -24,63 +26,7 @@ namespace it_events_scheduler {
 	using test::events_scheduler::expectScheduleRates;
 	using test::events_scheduler::expectSingleActiveEvent;
 
-	class EventsSchedulerIntegrationTest : public ::testing::Test {
-	protected:
-		void SetUp() override {
-			previousPath_ = std::filesystem::current_path();
-			const auto sourceDir = std::filesystem::path(__FILE__).parent_path();
-			repoRoot_ = sourceDir.parent_path().parent_path().parent_path();
-			std::filesystem::current_path(repoRoot_);
-			eventsJsonPath_ = repoRoot_ / "tests/fixture/core/json/eventscheduler/events.json";
-			originalEventsJson_ = readEventsJson();
-			previousConfigFile_ = g_configManager().getConfigFileLua();
-			g_configManager().setConfigFileLua("tests/fixture/config/events_scheduler_test.lua");
-			ASSERT_TRUE(g_configManager().reload());
-			resetSchedulerState();
-		}
-
-		void TearDown() override {
-			resetSchedulerState();
-			writeEventsJson(originalEventsJson_);
-			g_configManager().setConfigFileLua(previousConfigFile_);
-			std::filesystem::current_path(previousPath_);
-		}
-
-		void resetSchedulerState() const {
-			g_eventsScheduler().reset();
-			clearEventKeyValues();
-			g_kv().flush();
-		}
-
-		void clearEventKeyValues() const {
-			auto scope = g_kv().scoped("eventscheduler");
-			scope->remove("forge-chance");
-			scope->remove("double-bestiary");
-			scope->remove("double-bosstiary");
-			scope->remove("fast-exercise");
-			scope->remove("boss-cooldown");
-		}
-
-		std::string readEventsJson() const {
-			std::ifstream file(eventsJsonPath_);
-			EXPECT_TRUE(file.is_open());
-			std::ostringstream buffer;
-			buffer << file.rdbuf();
-			return buffer.str();
-		}
-
-		void writeEventsJson(const std::string &content) const {
-			std::ofstream file(eventsJsonPath_);
-			EXPECT_TRUE(file.is_open());
-			file << content;
-			file.flush();
-		}
-
-		std::filesystem::path repoRoot_ {};
-		std::filesystem::path previousPath_ {};
-		std::filesystem::path eventsJsonPath_ {};
-		std::string originalEventsJson_ {};
-		std::string previousConfigFile_ {};
+	class EventsSchedulerIntegrationTest : public EventsSchedulerTestBase {
 	};
 
 	TEST_F(EventsSchedulerIntegrationTest, LoadsBonusesFromDefaultFixture) {

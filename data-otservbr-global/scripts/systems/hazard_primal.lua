@@ -2,8 +2,8 @@ local hazard = Hazard.new({
 	name = "hazard.gnomprona-gardens",
 	from = Position(33502, 32740, 13),
 	to = Position(33796, 32996, 15),
+	minLevel = 1,
 	maxLevel = 12,
-
 	crit = true,
 	dodge = true,
 	damageBoost = true,
@@ -17,6 +17,7 @@ local hazardZone = Zone.getByName("hazard.gnomprona-gardens")
 if not hazardZone then
 	return
 end
+
 hazardZone:subtractArea({ x = 33633, y = 32915, z = 15 }, { x = 33649, y = 32928, z = 15 })
 hazardZone:subtractArea({ x = 33630, y = 32887, z = 15 }, { x = 33672, y = 32921, z = 15 })
 
@@ -97,12 +98,17 @@ function deathEvent.onDeath(creature)
 	if not creature or not monster or not monster:hazard() or not hazard:isInZone(monster:getPosition()) then
 		return true
 	end
+
 	-- don't spawn pods or plunder if the monster is a reward boss
 	if monster:getType():isRewardBoss() then
 		return true
 	end
 
 	local player, points = hazard:getHazardPlayerAndPoints(monster:getDamageMap())
+	if not player then
+		return true
+	end
+
 	if points < 1 then
 		return true
 	end
@@ -125,6 +131,7 @@ function deathEvent.onDeath(creature)
 		end
 		return true
 	end
+
 	return true
 end
 

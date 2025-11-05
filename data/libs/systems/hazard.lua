@@ -83,8 +83,8 @@ function Hazard:getPlayerMaxLevelEver(player)
 end
 
 function Hazard:setPlayerCurrentLevel(player, level)
-	local max = self:getPlayerMaxLevel(player)
-	if level > max then
+	local max = self:getSelectableMaxLevel(player)
+	if max and level > max then
 		return false
 	end
 	if self.storageCurrent then
@@ -102,6 +102,24 @@ function Hazard:setPlayerCurrentLevel(player, level)
 	end
 	player:updateHazard()
 	return true
+end
+
+function Hazard:getSelectableMaxLevel(player)
+	local playerUnlockedMax = self:getPlayerMaxLevel(player)
+	local selectableMax = playerUnlockedMax
+
+	if self.maxLevel then
+		selectableMax = math.min(selectableMax, self.maxLevel)
+	end
+
+	if self.name == "hazard.gnomprona-gardens" then
+		local hasDefeatedPrimalMenace = player:getStorageValue(Storage.Quest.U12_90.PrimalOrdeal.Bosses.ThePrimalMenaceKilled) >= 1
+		if not hasDefeatedPrimalMenace then
+			selectableMax = math.min(selectableMax, 5)
+		end
+	end
+
+	return selectableMax
 end
 
 function Hazard:getPlayerMaxLevel(player)

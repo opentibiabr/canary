@@ -6149,7 +6149,7 @@ void Player::addBestiaryKill(const std::shared_ptr<MonsterType> &mType) {
 	bool doubleBestiaryEnabled = scopedDoubleBestiary && scopedDoubleBestiary->get<bool>();
 	if (doubleBestiaryEnabled) {
 		kills *= 2;
-		g_logger().info("[{}] double bestiary is enabled.", std::source_location::current().function_name());
+		g_logger().debug("[{}] double bestiary is enabled.", __FUNCTION__);
 	}
 
 	if (isConcoctionActive(Concoction_t::BestiaryBetterment)) {
@@ -6168,7 +6168,7 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 	bool doubleBosstiaryEnabled = scopedDoubleBosstiary && scopedDoubleBosstiary->get<bool>();
 	if (doubleBosstiaryEnabled) {
 		kills *= 2;
-		g_logger().info("[{}] double bosstiary is enabled.", std::source_location::current().function_name());
+		g_logger().info("[{}] double bosstiary is enabled.", __FUNCTION__);
 	}
 
 	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {

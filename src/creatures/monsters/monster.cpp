@@ -16,7 +16,6 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "items/tile.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
 #include "io/iobestiary.hpp"
@@ -2467,8 +2466,8 @@ void Monster::dropLoot(const std::shared_ptr<Container> &corpse, const std::shar
 			}
 		}
 		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
-			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, getMonster(), corpse);
-			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, getMonster(), corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, getMonster(), corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, getMonster(), corpse);
 		}
 	}
 }

@@ -37,20 +37,22 @@ removeWeaponAmmunition = true
 removeWeaponCharges = true
 removeBeginningWeaponAmmunition = true
 refundBeginningWeaponMana = false
-timeToDecreaseFrags = 24 * 60 * 60 * 1000
-whiteSkullTime = 15 * 60 * 1000
 stairJumpExhaustion = 2 * 1000
 experienceByKillingPlayers = false
 expFromPlayersLevelRange = 75
+loginProtectionTime = 10 * 1000
+
+-- Skull settings:
+-- NOTE: blackSkullEnabled: Set to false to completely disable black skull system.
+blackSkullEnabled = true
+timeToDecreaseFrags = 24 * 60 * 60 * 1000
+whiteSkullTime = 15 * 60 * 1000
 dayKillsToRedSkull = 3
 weekKillsToRedSkull = 5
 monthKillsToRedSkull = 10
 redSkullDuration = 1
 blackSkullDuration = 3
 orangeSkullDuration = 7
-loginProtectionTime = 10 * 1000
-
-cleanProtectionZones = false
 
 -- Connection Config
 -- NOTE: allowOldProtocol can allow login on 10x protocol. (11.00)
@@ -297,6 +299,7 @@ startStreakLevel = 0
 showLootsInBestiary = false
 minTownIdToBankTransferFromMain = 4
 enableSupportOutfit = true
+cleanProtectionZones = false
 
 -- NOTE: stashMoving = true, stow an container inside your stash
 -- NOTE: stashManageAmount = max items add/remove from stash at once

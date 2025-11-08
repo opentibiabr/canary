@@ -6627,11 +6627,18 @@ void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
 	}
 
 	if (getSkull() != SKULL_BLACK) {
-		if (dayKills >= 2 * g_configManager().getNumber(DAY_KILLS_TO_RED) || weekKills >= 2 * g_configManager().getNumber(WEEK_KILLS_TO_RED) || monthKills >= 2 * g_configManager().getNumber(MONTH_KILLS_TO_RED)) {
+		const auto dayKillsLimit = g_configManager().getNumber(DAY_KILLS_TO_RED);
+		const auto weekKillsLimit = g_configManager().getNumber(WEEK_KILLS_TO_RED);
+		const auto monthKillsLimit = g_configManager().getNumber(MONTH_KILLS_TO_RED);
+
+		const bool reachedBlackSkull = dayKills >= 2 * dayKillsLimit || weekKills >= 2 * weekKillsLimit || monthKills >= 2 * monthKillsLimit;
+		const bool reachedRedSkull = dayKills >= dayKillsLimit || weekKills >= weekKillsLimit || monthKills >= monthKillsLimit;
+
+		if (g_configManager().getBoolean(BLACK_SKULL_ENABLED) && reachedBlackSkull) {
 			setSkull(SKULL_BLACK);
 			// start black skull time
 			skullTicks = static_cast<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION)) * 24 * 60 * 60;
-		} else if (dayKills >= g_configManager().getNumber(DAY_KILLS_TO_RED) || weekKills >= g_configManager().getNumber(WEEK_KILLS_TO_RED) || monthKills >= g_configManager().getNumber(MONTH_KILLS_TO_RED)) {
+		} else if (reachedRedSkull) {
 			setSkull(SKULL_RED);
 			// reset red skull time
 			skullTicks = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60;

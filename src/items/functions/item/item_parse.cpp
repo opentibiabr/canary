@@ -1178,10 +1178,27 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 	}
 
 	if (weapon) {
+		itemType.combatType = weapon->params.combatType;
+
 		if (const auto &weaponWand = dynamic_pointer_cast<WeaponWand>(weapon)) {
 			g_logger().trace("Added weapon damage from '{}', to '{}'", fromDamage, toDamage);
 			weaponWand->setMinChange(fromDamage);
 			weaponWand->setMaxChange(toDamage);
+
+			int32_t attackValue = itemType.attack;
+			if (attackValue <= 0) {
+				attackValue = static_cast<int32_t>((fromDamage + toDamage) / 2);
+			}
+			if (attackValue <= 0) {
+				attackValue = 1;
+			}
+			if (itemType.attack <= 0) {
+				itemType.attack = attackValue;
+			}
+			if (itemType.maxHitChance <= 0) {
+				itemType.maxHitChance = attackValue;
+			}
+
 			weaponWand->configureWeapon(itemType);
 		}
 

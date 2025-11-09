@@ -9727,6 +9727,30 @@ void ProtocolGame::sendDoubleSoundEffect(
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendAmbientSoundEffect(const SoundAmbientEffect_t id) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+    msg.addByte(0x85);
+    msg.addByte(0x00);
+    msg.add<uint16_t>(id);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendMusicSoundEffect(const SoundMusicEffect_t id) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+    msg.addByte(0x85);
+    msg.addByte(0x01);
+    msg.add<uint16_t>(id);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
 	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
@@ -9769,9 +9793,8 @@ void ProtocolGame::sendDisableLoginMusic() {
 
 	NetworkMessage msg;
 	msg.addByte(0x85);
-	msg.addByte(0x01);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
+    msg.addByte(0x01);
+    msg.add<uint16_t>(0x00);
 	writeToOutputBuffer(msg);
 }
 

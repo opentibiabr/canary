@@ -15,6 +15,7 @@
 #include "creatures/npcs/npc.hpp"
 #include "creatures/players/player.hpp"
 #include "game/functions/game_reload.hpp"
+#include "game/functions/game_freequests.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/io_bosstiary.hpp"
@@ -113,6 +114,8 @@ void GameFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Game", "getMonstersByRace", GameFunctions::luaGameGetMonstersByRace);
 	Lua::registerMethod(L, "Game", "getMonstersByBestiaryStars", GameFunctions::luaGameGetMonstersByBestiaryStars);
+
+	Lua::registerMethod(L, "Game", "addFreeQuestData", GameFunctions::luaGameAddFreeQuestData);
 }
 
 // Game
@@ -163,6 +166,35 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int GameFunctions::luaGameAddFreeQuestData(lua_State* L) {
+	// Game.addFreeQuestData(storageName, storage, storageValue)
+	if (!Lua::isString(L, 1) || !Lua::isNumber(L, 2) || !Lua::isNumber(L, 3)) {
+		Lua::reportErrorFunc("Invalid parameters. Expected: storageName (string), storage (number), storageValue (number)");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const std::string storageName = Lua::getString(L, 1);
+	const uint32_t storage = Lua::getNumber<uint32_t>(L, 2);
+	const int32_t storageValue = Lua::getNumber<int32_t>(L, 3);
+
+	if (storageName.empty()) {
+		Lua::reportErrorFunc("Storage name cannot be empty");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	if (storage == 0) {
+		Lua::reportErrorFunc("Storage ID cannot be 0");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	bool success = g_gameFreeQuests().addQuestData(storageName, storage, storageValue);
+	Lua::pushBoolean(L, success);
 	return 1;
 }
 

@@ -1,4 +1,4 @@
-dofile(DATA_DIRECTORY .. "/lib/core/quests.lua")
+require("data-otservbr-global.lib.core.quests")
 
 if not LastQuestlogUpdate then
 	LastQuestlogUpdate = {}

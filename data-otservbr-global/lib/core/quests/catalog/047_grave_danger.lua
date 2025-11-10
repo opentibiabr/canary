@@ -12,7 +12,7 @@ local quest = {
 			states = {
 				[1] = function(player)
 					return string.format(
-						"Prevent the raising of twelve lich knights. Sanctify the graves yet untouched and destroy any lich knights that might have been raised. Graves exlored: %d/12",
+						"Prevent the raising of twelve lich knights. Sanctify the graves yet untouched and destroy any lich knights that might have been raised. Graves explored: %d/12",
 						player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Edron)
 							+ player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.DarkCathedral)
 							+ player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Ghostlands)
@@ -170,7 +170,7 @@ local quest = {
 			endValue = 2,
 			states = {
 				[1] = "", --
-				[2] = "Scarlett Etzel once stood proud and righteous. The assassins she rallied around her under the Order of the Cobra, however, where of ill repute and had to be vanquished. And so did she, you prevailed.",
+				[2] = "Scarlett Etzel once stood proud and righteous. The assassins she rallied around her under the Order of the Cobra, however, were of ill repute and had to be vanquished. And so did she, you prevailed.",
 			},
 		},
 	},

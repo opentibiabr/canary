@@ -11,7 +11,7 @@ local quest = {
 			endValue = 16,
 			states = {
 				[1] = "You met the talking white deer Alkestios. It turned out he is actually a fae - and needs help. Search \z
-				out a poacher camp noth of the Green Claw Swamps and keep the poachers from hunting white deers.",
+				out a poacher camp north of the Green Claw Swamps and keep the poachers from hunting white deers.",
 				[2] = "You found a book with legends in the poacher camp. You asked Ahmed to add a story about how it brings \z
 				ill luck to kill a white deer, hopefully the poachers will desist from hunting Alkestios.",
 				[3] = "You returned to the poacher camp and placed the faked book noticeably on a table. You're quite sure the \z

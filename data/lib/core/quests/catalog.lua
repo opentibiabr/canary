@@ -2,11 +2,15 @@ local function validateMissionId(missionId, questName, owners)
 	if not missionId then
 		return
 	end
-	local owner = owners[missionId]
-	if owner and owner ~= questName then
-		error(string.format('Duplicate mission id %d found in quests "%s" and "%s"', missionId, owner, questName))
+	local questOwners = owners[questName]
+	if not questOwners then
+		questOwners = {}
+		owners[questName] = questOwners
 	end
-	owners[missionId] = questName
+	if questOwners[missionId] then
+		error(string.format('Duplicate mission id %d found in quest "%s"', missionId, questName))
+	end
+	questOwners[missionId] = true
 end
 
 local function validateStartStorage(quest, questName, owners)

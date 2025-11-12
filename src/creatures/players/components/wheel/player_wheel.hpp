@@ -55,6 +55,7 @@ struct PlayerWheelMethodsBonusData {
 		int melee = 0;
 		int distance = 0;
 		int magic = 0;
+		int fist = 0;
 	};
 
 	// value * 100. Example: 1% == 100
@@ -71,6 +72,8 @@ struct PlayerWheelMethodsBonusData {
 		bool healingLink = false; // Druid
 		bool runicMastery = false; // Druid/sorcerer
 		bool focusMastery = false; // Sorcerer
+		bool guidingPresence = false; // Monk
+		bool sanctuary = false; // Monk
 	};
 
 	struct Stages {
@@ -83,6 +86,8 @@ struct PlayerWheelMethodsBonusData {
 		int beamMastery = 0; // Sorcerer
 		int twinBurst = 0; // Druid
 		int executionersThrow = 0; // Knight
+		int spiritualOutburst = 0; // Monk
+		int ascetic = 0; // Monk
 	};
 
 	struct Avatar {
@@ -90,6 +95,7 @@ struct PlayerWheelMethodsBonusData {
 		int nature = 0; // Druid
 		int steel = 0; // Knight
 		int storm = 0; // Sorcerer
+		int balance = 0; // Monk
 	};
 
 	// Initialize structs
@@ -440,7 +446,7 @@ public:
 
 	uint16_t getPointsBySlotType(WheelSlots_t slotType) const;
 
-	const std::array<uint16_t, 37> &getSlots() const;
+	const std::array<uint16_t, magic_enum::enum_count<WheelSlots_t>() + 1> &getSlots() const;
 
 	void setPointsBySlotType(uint8_t slotType, uint16_t points);
 
@@ -499,6 +505,11 @@ public:
 
 	WheelGemBasicModifier_t selectBasicModifier2(WheelGemBasicModifier_t modifier1) const;
 
+	bool hasMonkQuest() const;
+	int32_t checkRevelationPerkAscetic() const;
+	float checkRevelationPerkSanctuary() const;
+	bool setSanctuaryTimer(const std::string &spell);
+
 private:
 	void resetRevelationState();
 	void processActiveGems();
@@ -521,7 +532,7 @@ private:
 
 	uint8_t m_modsMaxGrade = {};
 	std::array<uint8_t, 49> m_basicGrades = { 0 };
-	std::array<uint8_t, 76> m_supremeGrades = { 0 };
+	std::array<uint8_t, 99> m_supremeGrades = { 0 };
 
 	std::array<uint8_t, static_cast<size_t>(WheelStage_t::STAGE_COUNT)> m_stages = { 0 };
 	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };
@@ -542,4 +553,6 @@ private:
 	std::array<PlayerWheelGem, 4> m_activeGems;
 	std::vector<PlayerWheelGem> m_revealedGems;
 	std::vector<PlayerWheelGem> m_destroyedGems;
+
+	float m_harmonySanctuary = 1.0f;
 };

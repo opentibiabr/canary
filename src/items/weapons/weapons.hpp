@@ -213,6 +213,10 @@ public:
 	void setScriptId(int32_t newScriptId);
 	bool isLoadedScriptId() const;
 
+	virtual std::string getElementalBond() const {
+		return elementalBond;
+	}
+
 protected:
 	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent = 0) const;
 	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const;
@@ -245,6 +249,7 @@ private:
 	bool wieldUnproperly = false;
 	bool m_isDisabledChain = false;
 	std::string vocationString;
+	std::string elementalBond;
 
 	void onUsedWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &destTile) const;
 

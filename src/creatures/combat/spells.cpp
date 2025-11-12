@@ -495,6 +495,12 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 		return false;
 	}
 
+	if (harmony && player->getHarmony() == 0 && !player->hasFlag(PlayerFlags_t::HasInfiniteHarmony)) {
+		player->sendCancelMessage(RETURNVALUE_NOTENOUGHHARMONY);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		return false;
+	}
+
 	if (isInstant() && getNeedLearn()) {
 		if (!player->hasLearnedInstantSpell(getName())) {
 			player->sendCancelMessage(RETURNVALUE_YOUNEEDTOLEARNTHISSPELL);
@@ -509,6 +515,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 
 	if (needWeapon) {
 		switch (player->getWeaponType()) {
+			case WEAPON_FIST:
 			case WEAPON_SWORD:
 			case WEAPON_CLUB:
 			case WEAPON_AXE:
@@ -820,11 +827,11 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCa
 	}
 
 	if (payCost) {
-		postCastSpell(player, getManaCost(player), getSoulCost());
+		postCastSpell(player, getManaCost(player), getSoulCost(), getHarmonyCost());
 	}
 }
 
-void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost) {
+void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost, uint8_t harmonyCost) {
 	if (manaCost > 0) {
 		player->addManaSpent(manaCost);
 		player->changeMana(-static_cast<int32_t>(manaCost));
@@ -834,6 +841,10 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCo
 		if (soulCost > 0) {
 			player->changeSoul(-static_cast<int32_t>(soulCost));
 		}
+	}
+
+	if (harmonyCost) {
+		player->setHarmony(0);
 	}
 }
 
@@ -1058,7 +1069,32 @@ void Spell::setLockedPZ(bool b) {
 	pzLocked = b;
 }
 
+bool Spell::getHarmonyCost() const {
+	return harmony;
+}
+
+void Spell::setHarmonyCost(bool h) {
+	harmony = h;
+}
+
 InstantSpell::InstantSpell() = default;
+
+static Direction getStraightDirectionTo(const Position &from, const Position &to) {
+	if (from == to) {
+		return DIRECTION_NONE;
+	}
+
+	const int_fast32_t dx = Position::getOffsetX(from, to);
+	const int_fast32_t dy = Position::getOffsetY(from, to);
+
+	if (std::abs(dx) >= std::abs(dy)) {
+		return dx > 0 ? DIRECTION_WEST : DIRECTION_EAST;
+	} else {
+		return dy > 0 ? DIRECTION_NORTH : DIRECTION_SOUTH;
+	}
+
+	return DIRECTION_NONE;
+}
 
 bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
 	if (!playerSpellCheck(player)) {
@@ -1156,8 +1192,19 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	} else {
 		var.type = VARIANT_POSITION;
 
-		if (needDirection) {
-			var.pos = Spells::getCasterPosition(player, player->getDirection());
+		if (needDirection) { // bool to aim at target
+			const std::shared_ptr<Creature> &target = player->getAttackedCreature();
+			if (target && !target->isRemoved() && target->getHealth() > 0) {
+				const auto it = player->spellActivedAimMap.find(getSpellId());
+				if (it != player->spellActivedAimMap.end() && it->second == 1) {
+					Direction dir = getStraightDirectionTo(player->getPosition(), target->getPosition());
+					var.pos = Spells::getCasterPosition(player, dir);
+				} else {
+					var.pos = Spells::getCasterPosition(player, player->getDirection());
+				}
+			} else {
+				var.pos = Spells::getCasterPosition(player, player->getDirection());
+			}
 		} else {
 			var.pos = player->getPosition();
 		}

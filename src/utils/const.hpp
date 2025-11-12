@@ -22,7 +22,7 @@ static constexpr int32_t CHANNEL_PARTY = 0x01;
 static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
 
 // This is in miliseconds
-static constexpr int32_t EVENT_IMBUEMENT_INTERVAL = 1000;
+static constexpr int32_t EVENT_IMBUEMENT_AND_SERENE_STATUS_INTERVAL = 1000;
 static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;
 
 static constexpr int32_t STORAGEVALUE_EMOTE = 30008;

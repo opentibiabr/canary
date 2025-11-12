@@ -57,7 +57,7 @@ function offlineTraining.onLogin(player)
 	local topVocation = not promotion and vocation or promotion
 
 	local tries = nil
-	if table.contains({ SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE }, offlineTrainingSkill) then
+	if table.contains({ SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE, SKILL_FIST }, offlineTrainingSkill) then
 		local modifier = topVocation:getBaseAttackSpeed() / 1000
 		tries = (trainingTime / modifier) / (offlineTrainingSkill == SKILL_DISTANCE and 4 or 2)
 	elseif offlineTrainingSkill == SKILL_MAGLEVEL then

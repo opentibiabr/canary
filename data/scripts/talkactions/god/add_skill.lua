@@ -1,4 +1,5 @@
 local skillMap = {
+	fist = SKILL_FIST,
 	club = SKILL_CLUB,
 	sword = SKILL_SWORD,
 	axe = SKILL_AXE,

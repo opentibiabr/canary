@@ -69,3 +69,14 @@ other open-source initiatives.
 ## Partners
 
 [![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)
+#   1 4 
+ 
+ #   b l o r a 
+ 
+ #   b l o r a 
+ 
+ #   1 5 
+ 
+ #   1 5 
+
+ #   1 5 

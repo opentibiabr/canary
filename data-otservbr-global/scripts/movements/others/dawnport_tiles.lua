@@ -4,12 +4,14 @@ local chestRooms = {
 		[25011] = { destination = { x = 32073, y = 31883, z = 6 } },
 		[25012] = { destination = { x = 32059, y = 31883, z = 6 } },
 		[25013] = { destination = { x = 32068, y = 31883, z = 6 } },
+		[29004] = { destination = { x = 32064, y = 31883, z = 6 } },
 	},
 	exits = {
 		[25014] = { vocation = VOCATION.ID.SORCERER, destination = { x = 32054, y = 31879, z = 6 } },
 		[25015] = { vocation = VOCATION.ID.DRUID, destination = { x = 32073, y = 31879, z = 6 } },
 		[25016] = { vocation = VOCATION.ID.PALADIN, destination = { x = 32059, y = 31879, z = 6 } },
 		[25017] = { vocation = VOCATION.ID.KNIGHT, destination = { x = 32068, y = 31879, z = 6 } },
+		[29005] = { vocation = VOCATION.ID.MONK, destination = { x = 32064, y = 31879, z = 6 } },
 	},
 }
 

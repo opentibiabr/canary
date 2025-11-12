@@ -173,7 +173,7 @@ private:
 	void parseHighscores(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
+	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationBaseId, uint16_t page, uint16_t pages, uint32_t updateTimer);
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
@@ -529,6 +529,11 @@ private:
 	void sendOpenWheelWindow(uint32_t ownerId);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
+
+	void sendHarmonyProtocol(const uint8_t harmonyValue);
+	void sendSereneProtocol(const bool isSerene);
+	void sendVirtueProtocol(const uint8_t virtueValue);
+	void parseSelectSpellAimProtocol(NetworkMessage &msg);
 
 	friend class Player;
 	friend class PlayerWheel;

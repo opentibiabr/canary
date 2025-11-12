@@ -449,6 +449,7 @@ public:
 	// Events
 	void checkCreatures();
 	void checkLight();
+	void checkImbuementsAndSereneStatus();
 
 	bool combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool checkDefense, bool checkArmor, bool field);
 
@@ -932,7 +933,7 @@ private:
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(const DBResult_ptr &result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
-	std::string generateVocationConditionHighscore(uint32_t vocation);
+	std::string generateVocationConditionHighscore(uint32_t searchVocationBaseId);
 	std::string generateHighscoreQuery(
 		const std::string &categoryName,
 		uint32_t page,
@@ -944,6 +945,9 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
+
+	bool hasPartyMembersNearby(const std::shared_ptr<Player> &player);
+	bool isPlayerNoBoxed(const std::shared_ptr<Player> &player);
 };
 
 constexpr auto g_game = Game::getInstance;

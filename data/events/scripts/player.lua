@@ -18,6 +18,7 @@ local storeItemID = {
 	28544, -- training wand
 	28545, -- training club
 	44064, -- training shield
+	50292, -- training wraps
 
 	-- magic gold and magic converter (activated/deactivated)
 	28525, -- magic gold converter
@@ -212,7 +213,7 @@ function Player:onLookInBattleList(creature, distance)
 	local description = "You see " .. creature:getDescription(distance)
 	if creature:isMonster() then
 		local master = creature:getMaster()
-		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar" }
+		local summons = { "sorcerer familiar", "knight familiar", "druid familiar", "paladin familiar", "monk familiar" }
 		if master and table.contains(summons, creature:getName():lower()) then
 			local familiarSummonTime = master:kv():get("familiar-summon-time") or 0
 			description = description .. " (Master: " .. master:getName() .. "). \z

@@ -81,6 +81,8 @@ void ItemParse::initParse(const std::string &stringValue, pugi::xml_node attribu
 	ItemParse::parsePrimaryType(stringValue, valueAttribute, itemType);
 	ItemParse::parseHouseRelated(stringValue, valueAttribute, itemType);
 	ItemParse::parseUnscriptedItems(stringValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseElementalBond(stringValue, valueAttribute, itemType);
+	ItemParse::parseMantra(stringValue, valueAttribute, itemType);
 }
 
 void ItemParse::parseDummyRate(pugi::xml_node attributeNode, ItemType &itemType) {
@@ -1004,6 +1006,7 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		}
 
 		weapon->weaponType = weaponType;
+		weapon->elementalBond = itemType.elementalBond;
 		itemType.weaponType = weapon->weaponType;
 		weapon->configureWeapon(itemType);
 		g_logger().trace("Created weapon with type '{}'", getWeaponName(weaponType));
@@ -1267,5 +1270,32 @@ void ItemParse::parseUnscriptedItems(std::string_view stringValue, pugi::xml_nod
 				createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_NONE, weaponType);
 			}
 		}
+	}
+}
+
+void ItemParse::parseElementalBond(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (stringValue == "elementalbond") {
+		Abilities &abilities = itemType.getAbilities();
+		const std::string &elementalBond = valueAttribute.value();
+		if (elementalBond == "energy") {
+			abilities.elementType = COMBAT_ENERGYDAMAGE;
+		} else if (elementalBond == "earth") {
+			abilities.elementType = COMBAT_EARTHDAMAGE;
+		} else if (elementalBond == "physical") {
+			abilities.elementType = COMBAT_PHYSICALDAMAGE;
+		}
+		itemType.elementalBond = elementalBond;
+	}
+}
+
+void ItemParse::parseMantra(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (stringValue == "mantra") {
+		const auto value = pugi::cast<int16_t>(valueAttribute.value());
+		Abilities &abilities = itemType.getAbilities();
+		abilities.mantraAbsorbValue[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
+		abilities.mantraAbsorbValue[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
+		abilities.mantraAbsorbValue[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
+		abilities.mantraAbsorbValue[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
+		itemType.mantra = value;
 	}
 }

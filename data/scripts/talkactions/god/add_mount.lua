@@ -25,7 +25,7 @@ function addmount.onSay(player, words, param)
 
 	local mountParam = string.trim(split[2])
 	if mountParam == "all" then
-		for mountId = 1, 231 do
+		for mountId = 1, 239 do
 			target:addMount(mountId)
 		end
 

@@ -60,6 +60,7 @@ cleanProtectionZones = false
 ip = "127.0.0.1"
 allowOldProtocol = false
 bindOnlyGlobalAddress = false
+useIpv6 = false
 loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171

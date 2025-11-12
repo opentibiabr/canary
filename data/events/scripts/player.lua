@@ -230,7 +230,16 @@ function Player:onLookInBattleList(creature, distance)
 		description = string.format("%s\nPosition: %d, %d, %d", description, position.x, position.y, position.z)
 
 		if creature:isPlayer() then
-			description = string.format("%s\nIP: %s", description, Game.convertIpToString(creature:getIp()))
+			local ipString = creature:getIpString() or ""
+			if ipString == "" then
+				local ipNumber = creature:getIp()
+				if ipNumber ~= 0 then
+					ipString = Game.convertIpToString(ipNumber)
+				else
+					ipString = "Unavailable"
+				end
+			end
+			description = string.format("%s\nIP: %s", description, ipString)
 		end
 	end
 	self:sendTextMessage(MESSAGE_LOOK, description)

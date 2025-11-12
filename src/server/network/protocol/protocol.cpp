@@ -253,6 +253,22 @@ uint32_t Protocol::getIP() const {
 	return 0;
 }
 
+std::string Protocol::getIPString() const {
+	if (const auto protocolConnection = getConnection()) {
+		return protocolConnection->getRemoteIPString();
+	}
+
+	return {};
+}
+
+bool Protocol::isIPv6Connection() const {
+	if (const auto protocolConnection = getConnection()) {
+		return protocolConnection->isIPv6Connection();
+	}
+
+	return false;
+}
+
 bool Protocol::compression(OutputMessage &outputMessage) const {
 	if (checksumMethod != CHECKSUM_METHOD_SEQUENCE) {
 		return false;

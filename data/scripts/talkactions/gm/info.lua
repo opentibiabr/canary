@@ -16,13 +16,15 @@ function info.onSay(player, words, param)
 	end
 
 	local targetIp = target:getIp()
+	local targetIpString = target:getIpString() or ""
+	local ipDisplay = targetIpString ~= "" and targetIpString or (targetIp ~= 0 and Game.convertIpToString(targetIp) or "Unavailable")
 
 	local text = "Player Info: \n\n"
 	text = text .. "Name: " .. target:getName() .. "\n"
 	text = text .. "Access: " .. (target:getGroup():getAccess() and "1" or "0") .. "\n"
 	text = text .. "Speed: " .. target:getSpeed() .. "\n"
 	text = text .. "Position: " .. string.format("(%0.5d / %0.5d / %0.3d)", target:getPosition().x, target:getPosition().y, target:getPosition().z) .. "\n"
-	text = text .. "IP: " .. Game.convertIpToString(targetIp) .. "\n\n"
+	text = text .. "IP: " .. ipDisplay .. "\n\n"
 
 	text = text .. "Skills: \n\n"
 	text = text .. "* Level: " .. target:getLevel() .. "\n"
@@ -38,8 +40,14 @@ function info.onSay(player, words, param)
 
 	local players = {}
 	for _, targetPlayer in ipairs(Game.getPlayers()) do
-		if targetPlayer:getIp() == targetIp and targetPlayer ~= target then
-			players[#players + 1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
+		if targetPlayer ~= target then
+			if targetIpString ~= "" then
+				if (targetPlayer:getIpString() or "") == targetIpString then
+					players[#players + 1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
+				end
+			elseif targetIp ~= 0 and targetPlayer:getIp() == targetIp then
+				players[#players + 1] = targetPlayer:getName() .. " [" .. targetPlayer:getLevel() .. "]"
+			end
 		end
 	end
 

@@ -21,22 +21,38 @@ std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+std::map<std::string, int64_t> ProtocolStatus::ipv6ConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	const uint32_t ip = getIP();
-	if (ip != 0x0100007F) {
-		const std::string ipStr = convertIPToString(ip);
-		if (ipStr != g_configManager().getString(IP)) {
-			const auto it = ipConnectMap.find(ip);
-			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
+	const auto remoteIpString = getIPString();
+	const bool isIPv6 = !remoteIpString.empty() && remoteIpString.find(':') != std::string::npos;
+
+	if (isIPv6) {
+		if (remoteIpString != "::1") {
+			const auto ipv6It = ipv6ConnectMap.find(remoteIpString);
+			if (ipv6It != ipv6ConnectMap.end() && (OTSYS_TIME() < (ipv6It->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
 				disconnect();
 				return;
 			}
 		}
-	}
 
-	ipConnectMap[ip] = OTSYS_TIME();
+		ipv6ConnectMap[remoteIpString] = OTSYS_TIME();
+	} else {
+		if (ip != 0x0100007F) {
+			const std::string ipStr = convertIPToString(ip);
+			if (ipStr != g_configManager().getString(IP)) {
+				const auto it = ipConnectMap.find(ip);
+				if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
+					disconnect();
+					return;
+				}
+			}
+		}
+
+		ipConnectMap[ip] = OTSYS_TIME();
+	}
 
 	switch (msg.getByte()) {
 		// XML info protocol
@@ -108,16 +124,35 @@ void ProtocolStatus::sendStatusString() {
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
 	std::map<uint32_t, uint32_t> listIP;
+	std::map<std::string, uint32_t> listIPv6;
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		if (player->getIP() != 0) {
-			auto ip = listIP.find(player->getIP());
-			if (ip != listIP.end()) {
-				listIP[player->getIP()]++;
-				if (listIP[player->getIP()] < 5) {
+		const auto ipString = player->getIPString();
+		const bool isIPv6Player = !ipString.empty() && ipString.find(':') != std::string::npos;
+
+		if (isIPv6Player) {
+			auto ipv6 = listIPv6.find(ipString);
+			if (ipv6 != listIPv6.end()) {
+				ipv6->second++;
+				if (ipv6->second < 5) {
 					real++;
 				}
 			} else {
-				listIP[player->getIP()] = 1;
+				listIPv6[ipString] = 1;
+				real++;
+			}
+			continue;
+		}
+
+		const auto ipNumber = player->getIP();
+		if (ipNumber != 0) {
+			auto ip = listIP.find(ipNumber);
+			if (ip != listIP.end()) {
+				ip->second++;
+				if (ip->second < 5) {
+					real++;
+				}
+			} else {
+				listIP[ipNumber] = 1;
 				real++;
 			}
 		}

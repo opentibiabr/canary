@@ -3081,9 +3081,17 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 }
 
 void Player::updateImbuementTrackerStats() const {
-	if (imbuementTrackerWindowOpen) {
-		g_game().playerRequestInventoryImbuements(getID(), true);
+	if (!imbuementTrackerWindowOpen) {
+		return;
 	}
+
+	const int64_t currentTime = OTSYS_TIME();
+	if (currentTime - m_lastImbuementTrackerUpdate < 1000) {
+		return;
+	}
+
+	m_lastImbuementTrackerUpdate = currentTime;
+	g_game().playerRequestInventoryImbuements(getID(), true);
 }
 
 // User Interface action exhaustion

@@ -1650,6 +1650,7 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	mutable int64_t m_lastImbuementTrackerUpdate = 0;
 	bool shouldForceLogout = true;
 	bool connProtected = false;
 

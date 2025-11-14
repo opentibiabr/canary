@@ -1,0 +1,28 @@
+name: Canary Agent PR Validator
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Changes with GPT Agent
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run GPT Agent Validation
+        uses: openai/openai-github-assistant-action@v1
+        with:
+          # 👉 Nome EXATO do seu agente GPT
+          agent: "Vayra Tibia Helper"
+          # 👉 Token automático do GitHub
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if Agent requested changes
+        if: ${{ steps.validate.outputs.action == 'request_changes' }}
+        run: |
+          echo "Agent requested changes. Failing..."
+          exit 1

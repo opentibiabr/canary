@@ -1651,6 +1651,8 @@ private:
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
 	mutable int64_t m_lastImbuementTrackerUpdate = 0;
+	mutable bool m_hasPendingImbuementTrackerUpdate = false;
+	mutable uint64_t m_pendingImbuementTrackerEventId = 0;
 	bool shouldForceLogout = true;
 	bool connProtected = false;
 

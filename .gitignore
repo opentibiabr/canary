@@ -371,10 +371,10 @@ tasks.json
 
 ## CUSTOM
 # Files
-config.lua
 config_canary.lua
 client_assertions.txt
 .env
+!docker/.env
 data-otservbr-global/world/otservbr.otbm
 
 # Extensions

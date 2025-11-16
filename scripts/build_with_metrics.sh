@@ -49,7 +49,10 @@ fi
 
 echo ""
 echo "[4/4] Verificando binário..."
-if [ -f "build-metrics/canary" ]; then
+if [ -f "canary" ]; then
+    echo "✅ Binário criado: canary"
+    ls -lh canary
+elif [ -f "build-metrics/canary" ]; then
     echo "✅ Binário criado: build-metrics/canary"
     ls -lh build-metrics/canary
 else
@@ -68,7 +71,7 @@ echo "     metricsEnablePrometheus = true"
 echo "     metricsPrometheusAddress = \"0.0.0.0:9464\""
 echo ""
 echo "  2. Inicie o servidor:"
-echo "     cd build-metrics && ./canary"
+echo "     ./canary"
 echo ""
 echo "  3. Teste o endpoint:"
 echo "     curl http://localhost:9464/metrics"

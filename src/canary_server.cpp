@@ -9,7 +9,6 @@
 
 #include "canary_server.hpp"
 
-
 #include "core.hpp"
 #include "config/configmanager.hpp"
 #include "creatures/npcs/npcs.hpp"

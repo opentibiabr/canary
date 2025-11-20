@@ -1,0 +1,83 @@
+To generate new recovery key for your account please enter your password.<br/>
+<span>New recovery key cost: <b>{{ config.generate_new_reckey_price }} {{ coin_name }}</b>. You will receive e-mail with this recovery key.</span><br/>
+<span>
+  Coins Balance:
+  {% if coins > 0 %}
+    <span style="color: green; font-weight: bold">{{ coins }} {{ coin_name }}
+      {% if coins < config.account_change_character_name_coins %}
+        <span style="color: red; font-weight: normal"> (you do not have {{ coin_name }} enough,
+                 <a href="?donate" target="_blank">donate</a> now)</span>
+      {% endif %}
+      </span>
+  {% else %}
+    <span style="color: red; font-weight: bold">You do not have {{ coin_name }},
+  <a href="?donate" target="_blank">donate</a> now</span>
+  {% endif %}
+</span>
+<br/><br/>
+
+<form action="{{ getLink('account/register/new') }}" method="post">
+  <input type="hidden" name="registeraccountsave" value="1">
+  <div class="TableContainer">
+    <table class="Table1" cellpadding="0" cellspacing="0">
+      <div class="CaptionContainer">
+        <div class="CaptionInnerContainer">
+          <span class="CaptionEdgeLeftTop"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionEdgeRightTop"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionBorderTop"
+                style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+          <span class="CaptionVerticalLeft"
+                style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+          <div class="Text">Generate recovery key</div>
+          <span class="CaptionVerticalRight"
+                style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+          <span class="CaptionBorderBottom"
+                style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+          <span class="CaptionEdgeLeftBottom"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionEdgeRightBottom"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+        </div>
+      </div>
+      <tr>
+        <td>
+          <div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tr>
+                <td class="LabelV"><span>Password:</span></td>
+                <td><input type="password" name="reg_password" size="30" maxlength="29"></td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br/>
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="border:0px;">
+              {{ include('buttons.submit.html.twig') }}
+            </td>
+          </tr>
+</form>
+</table>
+</td>
+<td>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <form action="{{ getLink('account/manage') }}" method="post">
+      <tr>
+        <td style="border:0px;">
+          {{ include('buttons.back.html.twig') }}
+        </td>
+      </tr>
+    </form>
+  </table>
+</td>
+</tr>
+</table>

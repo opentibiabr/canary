@@ -1,0 +1,55 @@
+<div style="width: 135px;"><a data-bs-toggle="collapse" href="#forumcreate" role="button" aria-expanded="false" aria-controls="forumcreate"><div class="BigButton" style="background-image:url({{ template_path }}/images/global/buttons/sbutton.gif)"><div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);"><div class="BigButtonOver" style="background-image: url({{ template_path }}/images/global/buttons/sbutton_over.gif); visibility: hidden;"></div><input class="BigButtonText" type="button" value="Create Board"></div></div></a></div>
+
+<div class="collapse" id="forumcreate">
+  
+<form method="post" action="{{ link }}">
+	{% if action == 'edit_board' %}
+	<input type="hidden" name="id" value="{{ id }}" />
+	{% endif %}
+	<table width="100%" border="0" cellspacing="1" cellpadding="4">
+		<tr>
+			<td bgcolor="{{ config.vdarkborder }}" class="white"><b>{% if action == 'edit' %}Edit{% else %}Add{% endif %} board</b></td>
+		</tr>
+		<tr>
+			<td bgcolor="{{ config.darkborder }}">
+				<table border="0" cellpadding="1" style="width: 100%;">
+					<tr>
+						<td class="LabelH">Name:</td>
+						<td><input name="name" value="{% if name is not null %}{{ name }}{% endif %}" size="29" maxlength="29"/></td>
+					<tr>
+						<td class="LabelH">Description:</td>
+						<td><textarea name="description" maxlength="300" cols="50" rows="5">{% if description is not null %}{{ description }}{% endif %}</textarea></td>
+					<tr/>
+					<tr>
+						<td class="LabelH">Access:</td>
+						<td>
+							<select name="access">
+								{% for id, group in groups %}
+									<option value="{{ group.getId() }}"{% if access == group.getId() %} selected{% endif %}>{{ group.getName() }}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="LabelH">Guild:</td>
+						<td>
+							<select name="guild">
+								<option value="0"{% if guild == 0 %} selected{% endif %}>----</option>
+								{% for guild_ in guilds %}
+									<option value="{{ guild_.id }}"{% if guild == guild_.id %} selected{% endif %}>{{ guild_.name }}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center">
+						<div class="BigButton" style="background-image:url(templates/tibiacom/images/global/buttons/sbutton.gif)"><div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);"><div class="BigButtonOver" style="background-image: url(&quot;templates/tibiacom/images/global/buttons/sbutton_over.gif&quot;); visibility: hidden;"></div><input class="BigButtonText" type="submit" value="Submit"></div></div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+</div>
+

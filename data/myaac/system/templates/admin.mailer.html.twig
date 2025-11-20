@@ -1,0 +1,51 @@
+<script type="text/javascript" src="{{ constant('BASE_URL') }}tools/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+	tinymce.init({
+		selector: "textarea",
+		theme: "modern",
+		plugins: 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount spellchecker imagetools contextmenu colorpicker textpattern help code emoticons',
+		toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | emoticons link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code',
+		image_advtab: true,
+		relative_urls: false,
+		remove_script_host: false,
+		document_base_url: "{{ constant('BASE_URL') }}"
+	});
+</script>
+
+<div class="row">
+	<div class="col-md-8">
+		<div class="box box-danger">
+			<div class="box-header with-border">
+				<h3 class="box-title">Mailer</h3>
+			</div>
+			<form method="post">
+				<div class="box-body">
+					<div align="center" class="container"><p class="alert alert-info alert-dismissible" style="width: 100%;">Sending mails may
+							take some time if there are many users in db.</p></div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-xs-12 ">
+								<label for="mail_subject" class="control-label">Subject:</label>
+								<input class="form-control" type="text" id="mail_subject" name="mail_subject"
+									   value="{{ mail_subject }}" size="30" maxlength="30"/>
+							</div>
+						</div>
+
+					</div>
+					<label for="mail_content" class="control-label">Content:</label>
+					<textarea id="mail_content" name="mail_content" style="width: 100%"
+							  class="tinymce">{{ mail_content }}</textarea>
+				</div>
+				<div class="box-footer">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="preview" id="preview" value="1"/> Just send test email to me (preview)
+                      </label>
+                    </div>
+					{% if preview_done %} - <b>Done.</b>{% endif %}<br/>
+					<button type="submit" name="submit" value="Send" class="btn btn-success"><i class="fa fa-send"></i> Send</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

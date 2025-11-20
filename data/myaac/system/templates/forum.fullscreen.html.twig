@@ -1,0 +1,41 @@
+<div id="FullScreen">
+	<img src="" alt="" />
+</div>
+<style>
+	#FullScreen {
+		height: 100%;
+		display: none;
+		position:fixed;
+		top:0;
+		right:0;
+		bottom:0;
+		left:0;
+		z-index: 100;
+	}
+	#FullScreen img {
+		height: 100%;
+		display: block;
+		margin: 0 auto;
+		cursor: pointer;
+	}
+	
+	.forum-image {
+		cursor: pointer;
+	}
+</style>
+<script type="text/javascript">
+$(function() {
+	$(".forum-image").click(function(event){		
+		var src = $(this).attr('src'); //get the source attribute of the clicked image
+		$('#FullScreen img').attr('src', src); //assign it to the tag for your fullscreen div
+		$('#FullScreen').fadeIn();
+	});
+
+	$("#FullScreen").click(function(){
+		$(this).fadeOut()
+		$("#imgBig").attr("src", "");
+		$("#overlay").hide();
+		$("#overlayContent").hide();
+	});
+});
+</script>

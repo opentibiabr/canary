@@ -1,0 +1,63 @@
+<div class="TableContainer" >
+	<table class="Table3">
+		<div class="CaptionContainer" >
+			<div class="CaptionInnerContainer" >
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" ></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" ></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+				<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" ></span>
+				<div class="Text" >Last Kills</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" ></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" ></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" ></span>
+			</div>
+		</div>
+		<tr>
+			<td>
+				<div class="InnerTableContainer" >
+					<table style="width:100%;">
+						<tbody>
+						<tr>
+							<td>
+								
+									<div class="TableContentContainer">
+										<table class="TableContent" width="100%">
+											{% if lastkills|length <= 0 %}
+												<tr>
+													<td>
+														No one died on {{ config.lua.serverName }}
+													</td>
+												</tr>
+											{% else %}
+												{% for lastkill in lastkills %}
+												<tr bgcolor="{{ getStyle(lastkill.id) }}">
+													<td class="centralizeContent" width="30">
+														{{ lastkill.id }}.
+													</td>
+													<td width="125">
+														<small>{{ lastkill.time|date("j.m.Y, G:i:s") }}</small>
+													</td>
+													<td>
+														{{ lastkill.killers_string|raw }}
+													</td>
+													{% if config.multiworld %}
+														<td>
+															{{ lastkill.world_id }}
+														</td>
+													{% endif %}
+												</tr>
+												{% endfor %}
+											{% endif %}
+										</table>
+									</div>
+									
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>

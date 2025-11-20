@@ -1,0 +1,12 @@
+We have detected that you don't have access to write to the system/cache directory. Under linux you can fix it by using this two command, where first one should be enough (for apache):
+<br/><br/><span class="console">chown -R www-data.www-data /var/www/*</span><br/><span class="console">chmod -R 660 system/cache</span>
+
+<style type="text/css">
+  .console {
+    font-family: Courier, serif;
+    color: #CCCCCC;
+    background: #000000;
+    border: 3px double #CCCCCC;
+    padding: 0;
+  }
+</style>

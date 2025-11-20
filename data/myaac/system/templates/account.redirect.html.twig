@@ -1,0 +1,36 @@
+<div class="TableContainer">
+	<table class="Table1" cellpadding="0" cellspacing="0">
+		<div class="CaptionContainer">
+			<div class="CaptionInnerContainer">
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+				<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" /></span>
+				<div class="Text" >Login Successful</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" /></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+			</div>
+		</div>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;" >
+						<tr>
+							<td>You have logged in.<br/>Press <a href="{{ redirect }}" >here</a> if you are not returned automatically.</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<script language="javascript" type="text/javascript">
+	// Automatic redirect
+	setTimeout ("automaticRedirect()", 1000);
+	function automaticRedirect() {
+		window.location = "{{ redirect|raw }}";
+	}
+</script>

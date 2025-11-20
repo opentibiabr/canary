@@ -1,0 +1,212 @@
+<style>
+	.ts_Spells > input[type="radio"] {
+		position: absolute;
+		left: -200vw;
+	}
+
+	.ts_Spells .tab-panel {
+		display: none;
+	}
+
+	.ts_Spells > input:first-child:checked ~ .tab-panels > .tab-panel:first-child,
+	.ts_Spells > input:nth-child(3):checked ~ .tab-panels > .tab-panel:nth-child(2),
+	.ts_Spells > input:nth-child(5):checked ~ .tab-panels > .tab-panel:nth-child(3),
+	.ts_Spells > input:nth-child(7):checked ~ .tab-panels > .tab-panel:nth-child(4),
+	.ts_Spells > input:nth-child(9):checked ~ .tab-panels > .tab-panel:nth-child(5),
+	.ts_Spells > input:nth-child(11):checked ~ .tab-panels > .tab-panel:nth-child(6) {
+		display: block;
+	}
+
+	.ts_Spells > label {
+		position: relative;
+		display: inline-block;
+		padding: 10px 10px 10px;
+		margin-bottom: 10px;
+		border: 1px solid transparent;
+		border-bottom: 0;
+		cursor: pointer;
+		font-weight: 600;
+		background-color: {{ config.vdarkborder }};
+		color: #fff;
+	}
+</style>
+<link rel="stylesheet" href="{{ BASE_URL }}tools/css/jquery.dataTables.min.css">
+
+{% if canEdit %}
+	<form method="post" action="{{ getLink('spells') }}">
+		<input type="hidden" name="reload_spells" value="yes"/>
+		<input type="submit" value="(admin) Reload spells"/>
+	</form>
+{% endif %}
+
+<p>Here you can see the list of all available spells in Tibia. Click on any spell name to get detailed information.
+	Please adjust the search criteria below if you want to see just certain spells. Also, you can sort the spell list by
+	any column of your choice.
+	For general information about spells and magic in Tibia please see the Manual.</p>
+
+<div class="TableContainer">
+	<div class="CaptionContainer">
+		<div class="CaptionInnerContainer">
+			<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+			<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+			<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+			<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+			<div class="Text">Spells</div>
+			<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+			<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+			<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+			<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		</div>
+	</div>
+	<table class="Table2" cellpadding="0" cellspacing="0">
+		<tbody>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tbody>
+						<tr>
+							<td>
+								<div class="TableContentContainer">
+									<table class="TableContent" width="100%" style="border:1px solid #faf0d7;"></table>
+									<table border="0" cellspacing="1" cellpadding="4" width="100%">
+										<tbody>
+										<tr bgcolor="#505050">
+											<td width="45%" class="LabelH">Name</td>
+											<td class="LabelH">Group</td>
+											<td class="LabelH">Type</td>
+											<td class="LabelH">Exp Lvl</td>
+											<td class="LabelH">Mana</td>
+											<td class="LabelH">Price</td>
+											<td class="LabelH">Premium</td>
+										</tr>
+										{% set c = 0 %}
+										{% for spell in spells %}
+											{% if (c % 2) == 0 %}
+												<tr bgcolor="#F1E0C6">
+											{% else %}
+												<tr bgcolor="#D4C0A1">
+											{% endif %}
+											<td>
+												<a href="?subtopic=spells&spell={{ spell.name }}">
+													{{ spell.name }}
+												</a>
+												({{ spell.words }})
+											</td>
+											<td>{{ spell.group|title }}</td>
+											<td>{{ spell.type }}</td>
+											<td>{{ spell.level }}</td>
+											<td>{{ spell.mana }}</td>
+											<td>{{ spell.price }}</td>
+											<td>{{ spell.isPremium ? 'yes' : 'no' }}</td>
+											</tr>
+											{% set c = c + 1 %}
+										{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<br>
+<br>
+
+<form action="{{ getLink('spells') }}" method="post">
+	<div class="TableContainer">
+		<div class="CaptionContainer">
+			<div class="CaptionInnerContainer">
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+				<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+				<div class="Text">Spell Search</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+			</div>
+		</div>
+		<table class="Table2" cellpadding="0" cellspacing="0">
+			<tbody>
+			<tr>
+				<td>
+					<div class="InnerTableContainer">
+						<table style="width:100%;">
+							<tbody>
+							<tr>
+								<td>
+									<div class="TableContentContainer">
+										<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+											<tbody>
+											<tr bgcolor="#D4C0A1">
+												<td width="25%"><b>Vocation</b></td>
+												<td width="25%"><b>Group</b></td>
+												<td width="25%"><b>Type</b></td>
+												<td width="25%"><b>Premium</b></td>
+											</tr>
+											<tr bgcolor="#D4C0A1">
+												<td valign="top">
+													<input type="radio" name="vocation" value="" checked=""> all<br>
+													<input type="radio" name="vocation" value="Druid" {{ post.vocation == 'Druid' ? 'checked' : '' }}> Druid<br>
+													<input type="radio" name="vocation" value="Knight" {{ post.vocation == 'Knight' ? 'checked' : '' }}> Knight<br>
+													<input type="radio" name="vocation" value="Paladin" {{ post.vocation == 'Paladin' ? 'checked' : '' }}> Paladin<br>
+													<input type="radio" name="vocation" value="Sorcerer" {{ post.vocation == 'Sorcerer' ? 'checked' : '' }}> Sorcerer
+												</td>
+												<td valign="top">
+													<input type="radio" name="group" value="" checked=""> all<br>
+													<input type="radio" name="group" value="Attack" {{ post.group == 'Attack' ? 'checked' : '' }}> Attack<br>
+													<input type="radio" name="group" value="Healing" {{ post.group == 'Healing' ? 'checked' : '' }}> Healing<br>
+													<input type="radio" name="group" value="Support" {{ post.group == 'Support' ? 'checked' : '' }}> Support
+												</td>
+												<td valign="top">
+													<input type="radio" name="type" value="" checked=""> all<br>
+													<input type="radio" name="type" value="Instant" {{ post.type == 'Instant' ? 'checked' : '' }}> Instant<br>
+													<input type="radio" name="type" value="Rune" {{ post.type == 'Rune' ? 'checked' : '' }}> Rune
+												</td>
+												<td valign="top">
+													<input type="radio" name="premium" value="" checked=""> all<br>
+													<input type="radio" name="premium" value="no" {{ post.premium == 'no' ? 'checked' : '' }}> no<br>
+													<input type="radio" name="premium" value="yes" {{ post.premium == 'yes' ? 'checked' : '' }}> yes
+												</td>
+											</tr>
+											<tr bgcolor="#D4C0A1">
+												<td colspan="4">Sort by:
+													<select name="sort">
+														<option value="name" selected="">Name</option>
+														<option value="group" {{ post.sort == 'group' ? 'selected' : '' }}>Group</option>
+														<option value="type" {{ post.sort == 'type' ? 'selected' : '' }}>Type</option>
+														<option value="level" {{ post.sort == 'level' ? 'selected' : '' }}>Exp Lvl</option>
+														<option value="mana" {{ post.sort == 'mana' ? 'selected' : '' }}>Mana</option>
+														<option value="price" {{ post.sort == 'price' ? 'selected' : '' }}>Price</option>
+														<option value="premium" {{ post.sort == 'premium' ? 'selected' : '' }}>Premium</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<br>
+	<center>
+		{{ include('buttons.submit.html.twig') }}
+	</center>
+</form>

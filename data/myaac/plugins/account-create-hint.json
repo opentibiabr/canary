@@ -1,0 +1,17 @@
+{
+	"name": "create-account-hint",
+	"description": "This plugin display text 'To play on Forgotten you need an account.  All you have to do to create your new account is to enter an account name, password, country and your email address. Also you have to agree to the terms presented below. If you have done so, your account name will be shown on the following page and your account password will be sent to your email address along with further instructions. If you do not receive the email with your password, please check your spam filter.' on the create account page. <strong>Be careful when uninstalling this!</strong>",
+	"version": "1.0",
+	"author": "slawkens",
+	"contact": "slawkens@gmail.com",
+	"hooks": {
+		"create-account-hint": {
+			"type": "ACCOUNT_CREATE_BEFORE_FORM",
+			"file": "plugins/account-create-hint/hint.php"
+		}
+	},
+	"uninstall": [
+		"plugins/account-create-hint.json",
+		"plugins/account-create-hint"
+	]
+}

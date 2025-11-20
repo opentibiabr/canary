@@ -1,0 +1,69 @@
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Declare War</div>
+      <span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/content/box-frame-edge.gif);"></span> </div>
+  </div>
+<form action="?subtopic=guilds&guild={{ guild_name }}&action=guildwars_declare" method="post">
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td><div class="TableContentContainer">
+                      <table class="TableContent" width="100%">
+                        <tbody>
+                          <tr bgcolor="#F1E0C6">
+                            <td width="150"><b>Opponent:</b></td>
+							<td>
+							<select name="war_opp">
+								<option>(select opponent)</option>
+								{% for guild in guilds %}
+								<option value="{{ guild.id }}">{{ guild.name }}</option>
+								{% endfor %}
+							</select>
+							</td>
+                          </tr>
+						  <tr bgcolor="#D4C0A1">
+                            <td width="150"><b>Duration:</b></td>
+							<td><input type="number" name="war_days" min="7" max="180"><br><small>(between 7 and 180 days)</small></td>
+                          </tr>
+						  <tr bgcolor="#F1E0C6">
+                            <td width="150"><b>Kills to Win:</b></td>
+							<td><input type="number" name="war_kills" min="10" max="1000"><br><small>(between 10 and 1000 kills)</small></td>
+                          </tr>
+						  <tr bgcolor="#D4C0A1">
+                            <td width="150"><b>Price:</b></td>
+							<td><input type="number" name="war_price" max="2000000000"><br><small>(between 0 and 2.000.000.000 gold - 2kkk)</small></td>
+                          </tr>
+						  <tr bgcolor="#F1E0C6">
+                            <td width="150"><b>Comment:</b></td>
+							<td><textarea rows="8" name="war_comment" style="width: 100%;"></textarea></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<div style="display: flex; justify-content: center;">
+		<input type="hidden" name="war_st" value="save"/>
+		{% set button_name = 'Declare War' %}
+		{% include('buttons.base.html.twig') %}
+</form>
+	<div style="display: flex; justify-content: center;">
+		<form action="?guilds/{{ guild_name }}" method="post">
+			{{ include('buttons.back.html.twig') }}
+		</form>
+	</div>
+</div>

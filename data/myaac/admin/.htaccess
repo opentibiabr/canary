@@ -1,0 +1,4 @@
+# uncomment if you want to restrict access only for your ip
+#order deny,allow
+#deny from all
+#allow from 127.0.0.1

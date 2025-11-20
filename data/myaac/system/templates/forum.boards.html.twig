@@ -1,0 +1,103 @@
+
+<div class="ForumHead">
+	{% if account.logged %}<p class="ForumWelcome">You are <b>not</b> logged in.<br><a href="?account/manage">Log in</a> to post on the forum.</p>{% endif %}
+	<div class="ForumTimes"><div class="CurrentTime">Current Time: <i>{{ currentTime }} </i></div>
+</div>
+</div>
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Boards</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td><div class="TableContentContainer">
+                      <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                        <tbody>
+                          <tr class="LabelH">
+                            <td class="BoardListFirstColumn"></td>
+                            <td>Board</td>
+                            <td>Posts</td>
+                            <td>Threads</td>
+                            <td>Last Post</td>
+                            {% if canEdit %}
+                            <td style="width: 10%;">Options</td>
+                            {% endif %}
+                          </tr>
+{% set i = 0 %}
+{% for board in boards %}
+{% set i = i + 1 %}
+                          <tr bgcolor="{{ getStyle(i) }}">
+                            <td class="BoardListFirstColumn"><img src="{{ template_path }}/images/global/forum/{{ i }}.png"></td>
+                            <td><a href="{{ board.link }}">{{ board.name }}</a><br>
+                              <font class="ff_info">{{ board.description }}</font></td>
+                            <td class="TextRight">{{ board.posts }}</td>
+                            <td class="TextRight">{{ board.threads }}</td>
+                            <td><div class="LastPostInfo">
+							{% if board.last_post.name is not null %}
+							<img src="{{ template_path }}/images/global/forum/logo_lastpost.gif"> {{ board.last_post.date|date("d.m.y H:i:s") }}<br/>by {{ board.last_post.player_link|raw }}
+							{% else %}
+							No posts
+							{% endif %}</div></td>
+							{% if canEdit %}
+							<td><a data-bs-toggle="collapse" href="#forum{{ i }}" role="button" aria-expanded="false" aria-controls="forum{{ i }}"><div class="BigButton" style="background-image:url({{ template_path }}/images/global/buttons/sbutton.gif)"><div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);"><div class="BigButtonOver" style="background-image: url({{ template_path }}/images/global/buttons/sbutton_over.gif); visibility: hidden;"></div><input class="BigButtonText" type="button" value="Options"></div></div></a>
+							<div class="collapse" id="forum{{ i }}">
+							  <div class="card card-body">
+								<a href="?subtopic=forum&action=edit_board&id={{ board.id }}" title="Edit">
+										<img src="images/edit.png"/>Edit
+									</a>
+									<a id="delete" href="?subtopic=forum&action=delete_board&id={{ board.id }}" onclick="return confirm('Are you sure?');" title="Delete">
+										<img src="images/del.png"/>Delete
+									</a>
+									<a href="?subtopic=forum&action=hide_board&id={{ board.id }}" title="{% if board.hidden != 1 %}Hide{% else %}Show{% endif %}">
+										<img src="images/{% if board.hidden != 1 %}success{% else %}error{% endif %}.png"/>{% if board.hidden != 1 %}Hide{% else %}Show{% endif %}
+									</a>
+									{% if i != 1 %}
+										<a href="?subtopic=forum&action=moveup_board&id={{ board.id }}" title="Move up">
+											<img src="images/icons/arrow_up.gif"/>Move up
+										</a>
+									{% endif %}
+									{% if i != last %}
+										<a href="?subtopic=forum&action=movedown_board&id={{ board.id }}" title="Move down">
+											<img src="images/icons/arrow_down.gif"/>Move down
+										</a>
+									{% endif %}
+							  </div>
+							</div>
+							</td>
+							{% endif %}
+                          </tr>
+{% endfor %}
+                        </tbody>
+                      </table>
+                    </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<center>
+  <table border="0" cellpadding="3" cellspacing="0">
+    <tbody>
+      <tr>
+        <td class="ff_info" colspan="1" align="center" valign="middle" nowrap=""><img src="{{ template_path }}/images/global/forum/logo_newposts.gif" border="0" width="31" height="31"></td>
+        <td class="ff_info" colspan="1" align="center" valign="middle" nowrap=""><b>New Posts</b></td>
+        <td class="ff_info" colspan="1" align="center" valign="middle" nowrap=""><img src="{{ template_path }}/images/global/general/blank.gif" width="12" height="1" border="0"></td>
+        <td class="ff_info" colspan="1" align="center" valign="middle" nowrap=""><img src="{{ template_path }}/images/global/forum/logo_closed.gif" border="0" width="22" height="22"></td>
+        <td class="ff_info" colspan="1" align="center" valign="middle" nowrap=""><b>Closed Board</b></td>
+      </tr>
+    </tbody>
+  </table>
+</center>

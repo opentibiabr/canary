@@ -1,0 +1,13 @@
+<div class="TableContentContainer">
+  <table class="TableContent" width="100%">
+	<tbody>
+	  <tr bgcolor="#D4C0A1">
+	  <form action="?subtopic=guilds&action=invite&guild={{ guild_name }}&todo=save" method="post">
+		<td><b>Invite player with name:</b></td>
+		<td><input type="text" name="name" size="40"></td>
+		<td>{% include('buttons.submit.html.twig') %}</td>
+	  </form>
+	  </tr>
+	</tbody>
+  </table>
+</div>

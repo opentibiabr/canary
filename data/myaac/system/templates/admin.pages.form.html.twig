@@ -1,0 +1,124 @@
+{% if action %}
+	<div class="row">
+		<form class="form-horizontal" method="post"
+			  action="?p=pages&action={% if action == 'edit' %}edit{% else %}add{% endif %}">
+			{% if action == 'edit' %}
+				<input type="hidden" name="id" value="{{ id }}"/>
+			{% endif %}
+			<div class="col-md-8" id="page-edit-table">
+				<div class="box box-info">
+					<div class="box-header with-border">
+						<h3 class="box-title">{% if action == 'edit' %}Edit{% else %}Add{% endif %} page</h3>
+					</div>
+					<div class="box-body">
+						<div class="form-group">
+							<label for="name" class="col-sm-2 control-label">Link/name</label>
+							<div class="col-sm-10">
+								<input type="text" id="name" name="name" class="form-control" autocomplete="off"
+									   maxlength="29"
+									   style="cursor: auto;" value="{{ name }}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="title" class="col-sm-2 control-label">Title</label>
+
+							<div class="col-sm-10">
+								<input type="text" id="title" name="title" class="form-control" autocomplete="off"
+									   maxlength="29"
+									   style="cursor: auto;" value="{{ title }}">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="php" class="col-sm-2 control-label">PHP</label>
+							<div class="col-sm-10">
+								<input type="checkbox" id="php" name="php"
+									   title="Check if page should be executed as PHP"
+									   value="1"{% if php %} checked{% endif %}{% if action == 'edit' %} disabled{% endif %}/>
+								{% if action == 'edit' %}
+									<input type="hidden" name="php" value="{% if php %}1{% else %}0{% endif %}"/>
+								{% endif %}
+							</div>
+						</div>
+						{% if not php %}
+						<div class="form-group">
+							<label for="enable_tinymce" class="col-sm-2 control-label">Enable TinyMCE</label>
+							<div class="col-sm-10">
+								<input type="checkbox" id="enable_tinymce" name="enable_tinymce"
+									   title="Check if you want to use TinyMCE Editor"
+									   value="1"{% if enable_tinymce %} checked{% endif %}{% if action == 'edit' %} disabled{% endif %}/>
+								{% if action == 'edit' %}
+									<input type="hidden" name="enable_tinymce" value="{% if enable_tinymce %}1{% else %}0{% endif %}"/>
+								{% endif %}
+							</div>
+						</div>
+						{% endif %}
+						<div class="form-group">
+							<label for="body" class="col-sm-2 control-label">Content</label>
+							<div class="col-sm-10" id="body-parent">
+                                <textarea class="form-control" id="body" name="body" maxlength="65000" cols="50"
+										  rows="5">{{ body|raw }}</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="access" class="col-sm-2 control-label">Access</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="access" name="access">
+									{% for id, group in groups %}
+										<option value="{{ group.getId() }}"{% if access == group.getId() %} selected{% endif %}>{{ group.getName() }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<td align="right"><input type="submit" class="btn btn-info pull-right" value="Save"/></td>
+						<td align="left">
+							<input type="button" onclick="window.location = '{{ constant('ADMIN_URL') }}?p=pages';"
+								   class="btn btn-default" value="Cancel"/>
+						</td>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<script type="text/javascript" src="{{ constant('BASE_URL') }}tools/tinymce/tinymce.min.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			$('#enable_tinymce').on('change', function (e) {
+				if (!this.checked) {
+					tinymce.remove('#body');
+				} else {
+					if (tinymce.editors.length > 0) {
+						tinymce.activeEditor.show();
+					}
+					else {
+						init_tinymce();
+					}
+				}
+			});
+
+			{% if not php and enable_tinymce %}
+			init_tinymce();
+			{% endif %}
+
+			function init_tinymce() {
+				tinymce.init({
+					selector: "#body",
+					theme: "modern",
+					plugins: 'code print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount spellchecker imagetools contextmenu colorpicker textpattern help emoticons',
+					toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | emoticons link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code',
+					image_advtab: true,
+					relative_urls: false,
+					remove_script_host: false,
+					document_base_url: "{{ constant('BASE_URL') }}"
+				});
+			}
+
+			function decodeHtml(html) {
+				var txt = document.createElement("textarea");
+				txt.innerHTML = html;
+				return txt.value;
+			}
+		});
+	</script>  {% endif %}

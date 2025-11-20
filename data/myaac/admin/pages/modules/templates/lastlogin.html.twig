@@ -1,0 +1,29 @@
+{% if players is iterable %}
+  <div class="col-4">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Last 10 Logins</h3>
+      </div>
+      <div class="box-body no-padding">
+        <table class="table table-condensed">
+          <tbody>
+          <tr>
+            <th>#</th>
+            <th>Player</th>
+            <th>Login Date</th>
+          </tr>
+          {% set i = 0 %}
+          {% for result in players %}
+            {% set i = i + 1 %}
+            <tr>
+              <td>{{ i }}</td>
+              <td>{{ result.name }}</td>
+              <td>{{ result.lastlogin|date("M d Y, H:i:s") }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endif %}

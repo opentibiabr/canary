@@ -1,0 +1,19 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = true
+ij_any_keep_indents_on_empty_lines = false
+quote_type = single
+
+# [*.php]
+# indent_size = 4
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false

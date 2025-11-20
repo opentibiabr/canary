@@ -1,0 +1,14 @@
+<div style="text-align: right;">
+	<a href="admin/?p=pages&action=edit&id={{ page.id }}" title="Edit in Admin Panel" target="_blank">
+		<img src="images/edit.png"/>Edit
+	</a>
+	<a id="delete" href="admin/?p=pages&action=delete&id={{ page.id }}" onclick="return confirm('Are you sure?');"
+	   title="Delete in Admin Panel" target="_blank">
+		<img src="images/del.png"/>Delete
+	</a>
+	<a href="admin/?p=pages&action=hide&id={{ page.id }}"
+	   title="{% if page.hidden != 1 %}Hide{% else %}Show{% endif %} in Admin Panel" target="_blank">
+		<img src="images/{% if page.hidden != 1 %}success{% else %}error{% endif %}.png"/>{% if page.hidden != 1 %}Hide{% else %}Show{% endif %}
+	</a>
+	<br/>
+</div>

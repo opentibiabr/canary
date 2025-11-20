@@ -1,0 +1,213 @@
+{% if account.logged %}
+  <p class="ForumWelcome">You are <b>not</b> logged in.<br><a href="?account/manage">Log in</a> to post on the forum.
+  </p>
+{% endif %}
+<div class="ForumBreadCrumbs">
+  <a href="{{ getLink('forum') }}">Community Boards</a> | <a
+    href="{{ getLink('forum/board/' ~ section.id) }}">{{ section.name }}</a> | <b>{{ thread_starter.post_topic }}</b>
+</div>
+<div class="ForumBreadCrumbsSeparator"></div>
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer">
+      <span class="CaptionEdgeLeftTop"
+            style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightTop"
+            style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span
+        class="CaptionBorderTop"
+        style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span
+        class="CaptionVerticalLeft"
+        style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">
+        <a href="?subtopic=forum&action=new_post&thread_id={{ thread_id }}">
+          <div class="TableHeaderRightButton">
+            <div class="BigButton"
+                 style="background-image:url({{ template_path }}/images/global/buttons/sbutton_green.gif)">
+              <div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);">
+                <div class="BigButtonOver"
+                     style="background-image: url({{ template_path }}/images/global/buttons/sbutton_green_over.gif); visibility: hidden;"></div>
+                <input class="BigButtonText" type="submit" value="Post Reply"></div>
+            </div>
+          </div>
+        </a>
+        <div class="ForumTitleText"><b>{{ thread_starter.post_topic }}</b></div>
+      </div>
+      <span class="CaptionVerticalRight"
+            style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <span class="CaptionBorderBottom"
+            style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+      <span class="CaptionEdgeLeftBottom"
+            style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span
+        class="CaptionEdgeRightBottom"
+        style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span></div>
+  </div>
+  <table class="Table5" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+      <td>
+        <div class="InnerTableContainer">
+          <table style="width:100%;">
+            <tbody>
+            <tr>
+              <td class="PageNavigation"><small>
+                  <div style="float: left;"><b>» Pages: <span class="PageLink "><span
+                          class="CurrentPageLink">1</span></span></b></div>
+                </small></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="TableContentContainer">
+                  <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                    <tbody>
+                    <tr class="LabelH">
+                      <td class="ForumPostHeaderCell">
+                        <div class="ForumPost ForumPostHeader">
+                          <div class="ForumPostHeaderAuthor">Author</div>
+                          <div class="ForumPostHeaderText">Thread #{{ thread_id }}</div>
+                          <div class="PostSeparatorV"></div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    {% set i = 0 %}
+                    {% for post in posts %}
+                      {% set i = i + 1 %}
+                      <tr bgcolor="{{ getStyle(i) }}">
+                        <td class="CipPost">
+                          <div id="" class="ForumPost" style="background-color:#F1E0C6;">
+                            <div class="PostBody">
+                              <div class="PostSeparatorV"></div>
+                              <div class="PostUpper">
+                                <div class="PostCharacterText"><b>{{ post.player_link|raw }}</b><br>
+                                  {% if post.outfit is defined %}
+                                    <img
+                                      style="margin-left:{% if post.player.getLookType() in [75, 266, 302] %}-0px;margin-top:-0px;width:64px;height:64px;{% else %}-60px;margin-top:-60px;width:128px;height:128px;{% endif %}"
+                                      src="{{ post.outfit }}" alt="player outfit"/>
+                                    <br/>
+                                  {% endif %}
+
+                                  <font class="ff_infotext">
+                                    {% if post.group is defined %}
+                                      {{ post.group }}<br/>
+                                    {% endif %}
+                                    Vocation: {{ post.vocation }}<br>
+                                    Level: {{ post.player.getLevel() }}
+                                    <br>
+                                    <font class="ff_smallinfo">
+                                      {% if post.guildRank is defined %}
+                                        {{ guildRank }}<br/>
+                                      {% endif %}
+                                    </font><br>
+                                    <br>
+                                    Posts: {{ post.author_posts_count }}<br>
+                                  </font></div>
+                                <div class="PostText">{{ post.content|raw }}</div>
+                              </div>
+                              <div class="PostLower">
+                                <div class="PostDetailsHelper">
+                                  <div class="PostDetails">
+                                    <img src="{{ template_path }}/images/global/forum/logo_oldpost.gif" border="0"
+                                         width="14" height="11">{{ post.date|date('d.m.y H:i:s') }}
+                                    {% if post.edited_by is defined %}
+                                      <br/>Edited by {{ post.edited_by }}
+                                      <br/>on {{ post.edit_date|date('d.m.y H:i:s') }}
+                                    {% endif %}
+                                  </div>
+                                </div>
+                                <div class="PostActions">
+                                  <div class="AdditionalBox">Post #{{ post.id }}</div>
+                                  {% if is_moderator %}
+                                    {% if post.first_post != post.id %}
+                                      <a href="?subtopic=forum&action=remove_post&id={{ post.id }}" title="Remove Post"
+                                         onclick="return confirm('Are you sure you want remove post of {{ post.player.getName() }}?')"><img
+                                          src="images/del.png"/> Remove Post</a>
+                                    {% else %}
+                                      <a href="?subtopic=forum&action=move_thread&id={{ post.id }}" title="Move Thread"><img
+                                          src="images/icons/arrow_right.gif"/> Move Thread</a>
+                                      <a href="?subtopic=forum&action=remove_post&id={{ post.id }}"
+                                         title="Remove Thread" target="_blank"
+                                         onclick="return confirm('Are you sure you want remove thread > {{ post.post_topic }} <?')"><img
+                                          src="images/del.png"/> Remove Thread</a>
+                                    {% endif %}
+                                  {% endif %}
+
+                                  {% if logged and (post.player.getAccount().getId() == account_logged.getId() or is_moderator) %}
+                                    <a href="?subtopic=forum&action=edit_post&id={{ post.id }}" title="Edit Post"
+                                       target="_blank">
+                                      <img src="images/edit.png"/> Edit Post</a>
+                                  {% endif %}
+                                  {% if logged %}
+                                    <a
+                                      href="?subtopic=forum&action=new_post&thread_id={{ thread_id }}&quote={{ post.id }}"
+                                      title="Quote Post"><img src="images/icons/comment_add.png"/> Quote Post</a>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      {% set i = i + 1 %}
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="PageNavigation"><small>
+                  <div style="float: left;"><b>» Pages: <span class="PageLink "><span
+                          class="CurrentPageLink">{{ links_to_pages|raw }}</span></span></b></div>
+                </small></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<table border="0" cellpadding="6" cellspacing="0" width="100%">
+  <tbody>
+  <tr>
+    <td class="ThreadClassificationControls" colspan="1" align="left" valign=" top"></td>
+    <td class="ff_large" colspan="1" align="right" valign="top">
+      <div style="float: right;">
+        <a href="?subtopic=forum&action=new_post&thread_id={{ thread_id }}">
+          <div class="BigButton"
+               style="background-image:url({{ template_path }}/images/global/buttons/sbutton_green.gif)">
+            <div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);">
+              <div class="BigButtonOver"
+                   style="background-image: url({{ template_path }}/images/global/buttons/sbutton_green_over.gif); visibility: hidden;"></div>
+              <input class="BigButtonText" type="submit" value="Post Reply"></div>
+          </div>
+        </a>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<br>
+
+<b>Board Rights:<br></b>
+View threads.
+<br><br>
+Replace code is ON. Smileys are ON. Images are OFF. Links are ON. "Thank You!" option is OFF.
+<br>
+Account muting option is ON.
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,12 @@
+<form action="{{ constant('BASE_URL') }}install/" method="post">
+	<input type="hidden" name="step" id="step" value="license" />
+	<div class="input"><p>{{ locale.step_welcome_desc }}</p>
+		<select name="lang" class="form-select">
+			{% for locale_ in locales %}
+				<option value="{{ locale_.id }}"{% if (detected_locale is not null and locale_.id == detected_locale) or cookie_locale == locale_.id %} selected{% endif %}>{{ locale_.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	{{ buttons|raw }}
+</form>

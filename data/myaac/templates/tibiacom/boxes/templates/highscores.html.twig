@@ -1,0 +1,62 @@
+<style type="text/css">
+	.top_level {
+		position: absolute;
+		top: 29px;
+		left: 6px;
+		height: 160px;
+		width: 168px;
+		z-index: 20;
+		padding-top: 6px;
+		font-family: Tahoma, Geneva, sans-serif;
+		font-size: 9.2pt;
+		color: #FFF;
+		font-weight: bold;
+		text-align: right;
+		text-decoration: inherit;
+	}
+
+	#Topbar a {
+		text-decoration: none;
+	}
+
+	.online {
+		color: #008000;
+	}
+
+	.offline {
+		color: #FF0000;
+	}
+
+	a.topfont {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 11px;
+		text-decoration: none
+	}
+	a:hover.topfont {
+		font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 11px;
+		color: #5f4d41;
+		text-decoration:none
+	}
+</style>
+
+<div id="Topbar" class="Themebox" style="background-image:url({{ template_path }}/images/themeboxes/highscores/highscores.png);">
+	<div class="top_level" style="background:url({{ template_path }}/images/themeboxes/bg_top.png)" align="	">
+    {% for player in topPlayers %}
+	    <div style="text-align:left;"><a href="{{ getPlayerLink(player['name'], false) }} " class="topfont {% if player['online'] %}online{% else %}offline{% endif %}">
+			{% if config.online_outfit %}
+				<img style="position:absolute;margin-top:{% if player.looktype in [75, 266, 302] %}-20px;margin-left:-0px;{% else %}-45px;margin-left:-25px;{%  endif %}" src="{{ player.outfit }}" alt="player outfit"/>
+			{% endif %}
+				<span style="margin-left: 48px">{{ player['name'] }}</span>
+				
+			<br>
+			<small><span style="color: #5f4d41; margin-left: 50px">Level: ({{ player['level'] }})</span></small>
+			<br>
+		</a>
+	</div>
+	{% endfor %}
+	<div class="Bottom" style="background-image:url({{ template_path }}/images/general/box-bottom.gif); top: 159px;; left:-5px;">
+	</div>
+</div>
+</div>
+<br/><br/><br/>

@@ -1,0 +1,55 @@
+<form action="{{ constant('BASE_URL') }}install/" method="post" autocomplete="off">
+  <input type="hidden" name="step" id="step" value="database"/>
+  <table>
+    {% for value in ['server_path', 'mail_admin', 'mail_address'] %}
+      <tr>
+        <td class="pb-3">
+          <label for="vars_{{ value }}">
+            <span class="fw-bold">{{ locale['step_config_' ~ value] }}</span>
+          </label>
+          <br>
+          <input type="text" class="form-control" name="vars[{{ value }}]"
+                 id="vars_{{ value }}"{% if session['var_' ~ value] is not null %} value="{{ session['var_' ~ value] }}"{% endif %}/>
+          <label class="small">{{ locale['step_config_' ~ value ~ '_desc'] }}</label>
+        </td>
+      </tr>
+    {% endfor %}
+    <tr>
+      <td class="pb-3">
+        <label for="vars_date_timezone">
+          <span class="fw-bold">{{ locale.step_config_timezone }}</span>
+        </label>
+        <br/>
+        <select class="form-select select_timezone" name="vars[date_timezone]" id="vars_date_timezone">
+          {% for timezone in timezones %}
+            <option
+              value="{{ timezone }}"{% if (session['var_date_timezone'] is not null and session['var_date_timezone'] == timezone) or (session['var_date_timezone'] is null and timezone == 'America/Sao_Paulo') %} selected{% endif %}>{{ timezone }}</option>
+          {% endfor %}
+        </select>
+        <label class="small">{{ locale.step_config_timezone_desc }}</label>
+      </td>
+    </tr>
+    <tr>
+      <td class="pb-3">
+        <label for="vars_client">
+          <span class="fw-bold">{{ locale.step_config_client }}</span>
+        </label>
+        <br/>
+        <select class="form-select" name="vars[client]" id="vars_client">
+          {% for id, version in clients %}
+            <option
+              value="{{ id }}"{% if (session['var_client'] is not null and session['var_client'] == id) or (session['var_client'] is null and id == '13.16' ) %} selected{% endif %}>{{ version }}</option>
+          {% endfor %}
+        </select>
+        <label class="small">{{ locale.step_config_client_desc }}</label>
+      </td>
+    </tr>
+  </table>
+
+  {% if errors is defined %}
+    {% for error in errors %}
+      <p class="error">{{ error }}</p>
+    {% endfor %}
+  {% endif %}
+  {{ buttons|raw }}
+</form>

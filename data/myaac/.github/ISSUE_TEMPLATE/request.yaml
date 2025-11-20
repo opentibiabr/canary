@@ -1,0 +1,53 @@
+name: Request
+description: Any request
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this issue!
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How critical is this?
+      options:
+        - Missing Content
+        - Enhancement
+        - Suggestion
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      multiple: true
+      description: Where is the problem?
+      options:
+        - Admin
+        - Assets
+        - Install
+        - Plugins
+        - System
+        - Templates
+        - Tools
+    validations:
+      required: true
+
+  - type: textarea
+    id: missing-content
+    attributes:
+      label: What is missing?
+      description: Page, action, function, validation, button, image, etc. Attach screenshots, logs, etc, anything that can helps us
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

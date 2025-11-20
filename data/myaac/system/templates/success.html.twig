@@ -1,0 +1,44 @@
+<div class="TableContainer">
+	<table class="Table1" cellpadding="0" cellspacing="0">
+		<div class="CaptionContainer">
+			<div class="CaptionInnerContainer">
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+				<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+				<div class="Text" >{{ title|raw }}</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+			</div>
+		</div>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tr>
+							<td>{{ description|raw }}</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br/>
+{% if custom_buttons is defined %}
+{{ custom_buttons|raw }}
+{% else %}
+<div style="text-align:center">
+	<table border="0" cellspacing="0" cellpadding="0">
+		<form action="{{ getLink('account/manage') }}" method="post">
+			<tr>
+				<td style="border:0px;">
+					{{ include('buttons.back.html.twig') }}
+				</td>
+			</tr>
+		</form>
+	</table>
+</div>
+{% endif %}

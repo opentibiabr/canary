@@ -1,0 +1,9 @@
+# automatically exported using this script:
+# git log --all --format='%cN <%cE>' | sort -u > contributors
+# in no particular order
+# cleaned for readability
+
+Elson Costa <elsongabriel@hotmail.com>
+Majesty <32709570+majestyotbr@users.noreply.github.com>
+lucaslking <lucasgiovannidesigner@gmail.com>
+slawkens <slawkens@gmail.com>

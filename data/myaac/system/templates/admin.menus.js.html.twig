@@ -1,0 +1,72 @@
+<link type="text/css" rel="stylesheet" href="{{ constant('BASE_URL') }}tools/css/jquery-ui.min.css">
+<script src="{{ constant('BASE_URL') }}tools/js/jquery-ui.min.js"></script>
+<script>
+	var last_id = [];
+	{% for cat, menu in menus %}
+	last_id[{{ cat }}] = {{ last_id[cat] }};
+	{% endfor %}
+	$(function () {
+		$(".sortable").sortable();
+		$(".sortable").disableSelection();
+
+		$(".remove-button").click(function () {
+			var id = $(this).attr("id");
+			$('#list-' + id.replace('remove-button-', '')).remove();
+		});
+
+		$(".add-button").click(function () {
+			var cat = $(this).attr("id").replace('add-button-', '');
+			var id = last_id[cat];
+			last_id[cat]++;
+			$('#sortable-' + cat).append('<li class="ui-state-default" id="list-' + cat + '-' + id + '"><label>Name:</label><input type="text" name="menu[' + cat + '][]" value=""/> <label>Link:</label><input type="text" name="menu_link[' + cat + '][]" value=""/><input type="hidden" name="menu_blank[' + cat + '][]" value="0" /> <label><input class="blank-checkbox" type="checkbox"/><span title="Open in New Window">Open in New Window</span></label> <input class="color-picker" type="text" name="menu_color[' + cat + '][]" value="#ffffff" /><a class="remove-button" id="remove-button-' + cat + '-' + id + '"><img src="{{ constant('BASE_URL') }}images/del.png"/></a></li>'); //add input bo
+			$('#remove-button-' + cat + '-' + id).click(function () {
+				$('#list-' + $(this).attr("id").replace('remove-button-', '')).remove();
+			});
+
+			initialiceSpectrum();
+		});
+
+		$("#menus-form").submit(function (e) {
+			$('.blank-checkbox:not(:checked)').each(function (i, obj) {
+				$(obj).parent().prev().val("off");
+			});
+
+			$('.blank-checkbox:checked').each(function (i, obj) {
+				$(obj).parent().prev().val("on");
+			});
+		});
+
+	});
+</script>
+<style type="text/css">
+	.sortable {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+
+	.remove-button, .add-button {
+		cursor: pointer;
+	}
+</style>
+<script type="text/javascript" src="{{ constant('BASE_URL') }}tools/js/spectrum.js"></script>
+<link type="text/css" rel="stylesheet" href="{{ constant('BASE_URL') }}tools/css/spectrum.css"/>
+<script type="text/javascript">
+	$(document).ready(function () {
+		initialiceSpectrum();
+	});
+
+	function initialiceSpectrum() {
+		$(".color-picker").spectrum({
+			preferredFormat: "hex",
+			showInput: true,
+			showPalette: true,
+			palette: [
+				['black', 'white', 'blanchedalmond',
+					'rgb(255, 128, 0);', 'hsv 100 70 50'],
+				['red', 'yellow', 'green', 'blue', 'violet']
+			]
+		});
+	}
+</script>

@@ -1,0 +1,126 @@
+To generate recovery key for your account please enter your password.
+{% if can_update_public_info %}<br/>Fill fields with your information{% endif %}
+<br/><br/>
+<form action="{{ getLink('account/register') }}" method="post">
+  <input type="hidden" name="registeraccountsave" value="1"/>
+  <div class="TableContainer">
+    <table class="Table1" cellpadding="0" cellspacing="0">
+      <div class="CaptionContainer">
+        <div class="CaptionInnerContainer">
+          <span class="CaptionEdgeLeftTop"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionEdgeRightTop"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionBorderTop"
+                style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+          <span class="CaptionVerticalLeft"
+                style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+          <div class="Text">Generate recovery
+            key {% if can_update_public_info %} and Update information {% endif %}</div>
+          <span class="CaptionVerticalRight"
+                style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+          <span class="CaptionBorderBottom"
+                style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+          <span class="CaptionEdgeLeftBottom"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionEdgeRightBottom"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+        </div>
+      </div>
+      <tr>
+        <td>
+          <div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tr>
+                <td class="LabelV" style="width:15%;">
+                  <span>Password:</span>
+                </td>
+                <td>
+                  <input style="width:70%;" type="password" name="reg_password" size="30" maxlength="29" autofocus/>
+                </td>
+              </tr>
+              {% if can_update_public_info %}
+                <tr>
+                  <td class="LabelV">Real Name:</td>
+                  <td>
+                    <input name="info_rlname" value="{{ account_rlname }}" size="30" maxlength="50">
+                  </td>
+                </tr>
+                <tr>
+                  <td class="LabelV">Address:</td>
+                  <td>
+                    <input name="info_location" value="{{ account_location }}" size="30" maxlength="50">
+                  </td>
+                </tr>
+                <tr>
+                  <td class="LabelV">Phone:</td>
+                  <td>
+                    <input name="info_phone" value="{{ account_phone }}" size="15" maxlength="11">
+                  </td>
+                </tr>
+                {% if config.account_country %}
+                  <tr>
+                    <td class="LabelV">Country:</td>
+                    <td>
+                      <select name="info_country" id="account_country">
+                        {% for code, country in countries %}
+                          <option
+                            value="{{ code }}"{% if account_country == code %} selected{% endif %}>{{ country }} </option>
+                        {% endfor %}
+                      </select>
+                      <img src="" id="account_country_img"/>
+                      <script>
+                        function updateFlag() {
+                          var img = $('#account_country_img');
+                          var country = $('#account_country :selected').val();
+                          if (country.length) {
+                            img.attr('src', 'images/flags/' + country + '.gif');
+                            img.show();
+                          } else {
+                            img.hide();
+                          }
+                        }
+
+                        $(function () {
+                          updateFlag();
+                          $('#account_country').change(function () {
+                            updateFlag();
+                          });
+                        });
+                      </script>
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endif %}
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br/>
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="border:0px;">
+              {{ include('buttons.submit.html.twig') }}
+            </td>
+          <tr>
+        </table>
+      </td>
+</form>
+<td>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <form action="{{ getLink('account/manage') }}" method="post">
+      <tr>
+        <td style="border: 0px;">
+          {{ include('buttons.back.html.twig') }}
+        </td>
+      </tr>
+    </form>
+  </table>
+</td>
+</tr>
+</table>

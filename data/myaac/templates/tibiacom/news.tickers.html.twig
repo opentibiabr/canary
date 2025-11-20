@@ -1,0 +1,48 @@
+<div id="newsticker" class="Box">
+	<div class="Corner-tl" style="background-image: url({{ template_path }}/images/content/corner-tl.gif);"></div>
+	<div class="Corner-tr" style="background-image: url({{ template_path }}/images/content/corner-tr.gif);"></div>
+	<div class="Border_1" style="background-image: url({{ template_path }}/images/content/border-1.gif);"></div>
+	<div class="BorderTitleText" style="background-image: url({{ template_path }}/images/content/title-background-green.gif);"></div>
+	<img class="Title" src="{{ template_path }}/images/header/headline-newsticker.gif" alt="Contentbox headline">
+	<div class="Border_2">
+		<div class="Border_3">
+			<div class="BoxContent" style="background-image: url({{ template_path }}/images/content/scroll.gif);">
+				{% if i is not defined %}
+				{% set i = 0 %}
+				{% endif %}
+				{% for ticker in tickers %}
+				<div id="TickerEntry-{{ i }}" class="Row" onclick='TickerAction("TickerEntry-{{ i }}")'>
+					<div class="{% if (i / 2) matches '/^\\d+$/' %}Odd{% else %}Even{% endif %}">
+					<div class="NewsTickerIcon" style="background-image: url({{ template_path }}/images/news/icon_{{ ticker.icon }}_small.gif);"></div>
+					<div id="TickerEntry-{{ i }}-Button" class="NewsTickerExtend" style="background-image: url({{ template_path }}/images/general/plus.gif);"></div>
+					<div class="NewsTickerText">
+						<span class="NewsTickerDate">{{ ticker.date|date("j M Y") }} -</span>
+						<div id="TickerEntry-{{ i }}-ShortText" class="NewsTickerShortText">{{ ticker.body_short|raw }}</div>
+						<div id="TickerEntry-{{ i }}-FullText" class="NewsTickerFullText">{{ ticker.body|raw }}
+							{% if canEdit %}
+							<a href="admin/?p=news&action=edit&id={{ ticker.id }}" title="Edit">
+								<img src="images/edit.png"/>
+								Edit
+							</a>
+							<a id="delete" href="admin/?p=news&action=delete&id={{ ticker.id }}" onclick="return confirm('Are you sure?');" title="Delete">
+								<img src="images/del.png"/>
+								Delete
+							</a>
+							<a href="admin/?p=news&action=hide&id={{ ticker.id }}" title="{% if ticker.hidden != 1 %}Hide{% else %}Show{% endif %}">
+								<img src="images/{% if ticker.hidden != 1 %}success{% else %}error{% endif %}.png"/>
+								{% if ticker.hidden != 1 %}Hide{% else %}Show{% endif %}
+							</a>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+			{% set i = i + 1 %}
+			{% endfor %}
+			</div>
+	</div>
+</div>
+<div class="Border_1" style="background-image: url({{ template_path }}/images/content/border-1.gif);"></div>
+<div class="CornerWrapper-b"><div class="Corner-bl" style="background-image: url({{ template_path }}/images/content/corner-bl.gif);"></div></div>
+<div class="CornerWrapper-b"><div class="Corner-br" style="background-image: url({{ template_path }}/images/content/corner-br.gif);"></div></div>
+</div>

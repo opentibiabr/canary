@@ -1,0 +1,32 @@
+<table border="0" cellspacing="1" cellpadding="4" width="100%">
+	<tr bgcolor="{{ config.vdarkborder }}">
+		<td class="white"><b>Accept invitation</b></td>
+	</tr>
+	<tr bgcolor="{{ config.lightborder }}">
+		<td width="100%">Select character to join guild:</td>
+	</tr>
+	<tr bgcolor="{{ config.darkborder }}">
+		<td>
+			<form action="?subtopic=guilds&action=accept_invite&guild={{ guild_name }}&todo=save" method="post">
+				{% set i = 0 %}
+				{% for player in invited_players %}
+				<input type="radio" name="name" id="name_{{ i }}" value="{{ player }}" /><label for="name_{{ i }}">{{ player }}</label>
+				{% set i = i + 1 %}
+				{% endfor %}
+				{{ include('buttons.submit.html.twig') }}
+			</form>
+		</td>
+	</tr>
+</table>
+<br/>
+<div style="text-align:center">
+	<table border="0" cellspacing="0" cellpadding="0" width="100%">
+		<tr>
+			<td>
+				<form action="{{ getLink('guilds') ~ '/' ~ guild_name }}" method="post">
+					{{ include('buttons.back.html.twig') }}
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>

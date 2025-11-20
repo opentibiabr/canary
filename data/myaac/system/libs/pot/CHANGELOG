@@ -1,0 +1,112 @@
+[0.1.4]
+* Updated for last database changes. <wrzasq>
+* Updated OTAdmin implementation. <wrzasq>
+* Binary information protocol support. <wrzasq>
+* Server status routines grouped. <wrzasq>
+* Bugfixes. <wrzasq>
+
+[0.1.3]
+* Updated documentation. <wrzasq>
+* VIP list support. <wrzasq>
+* Bans lists. <wrzasq>
+* PHK and PHAR packages. <wrzasq>
+* Separated make targets for POT package and it's documentation. <wrzasq>
+* More stricted parameters and results types. <wrzasq>
+* Added display driver interface for non-database resources. <wrzasq>
+* Added existence checking methods. <wrzasq>
+* Added __get() and __set() methods to OTS_Admin. <wrzasq>
+* PDO connection is now set to throw exceptions on SQL errors instead of silence them. <wrzasq>
+* Code optimalisation. <wrzasq>
+* Bugfixes. <wrzasq>
+
+[0.1.2]
+* OTAdmin protocol support. <wrzasq>
+* Supports bank balance. <wrzasq>
+* getStorage()/setStorage() methods in OTS_Player class. <wrzasq>
+* More secured. <wrzasq>
+* Fixed buffered streams to use little-endian storage (like Open Tibia does). <wrzasq>
+* Implemented NetworkMessage. <wrzasq>
+
+[0.1.1]
+* Loading groups by names. <wrzasq>
+* Constructors with optional identifier argument for automatical object loading. <wrzasq>
+* OTS_Toolbox class. <wrzasq>
+* Access calculations in OTS_Account class. <wrzasq>
+* E_OTS_General class. <wrzasq>
+
+[0.1.0]
+* Houses support. <wrzasq>
+* No need to call POT::createObject(). <wrzasq>
+* Separated data/ directory resources loaders. <wrzasq>
+* Default data/ directory resources instances within POT class. <wrzasq>
+* Each data/ directory resource reader class implements an Iterator/IteratorAggregate, Countable and ArrayAccess interfaces. <wrzasq>
+* Uses IteratorAggregate interface instead of Iterator in some places (returns ArrayIterator as iterator). <wrzasq>
+* __get()/__set() implementation. <wrzasq>
+* __toString() as display drivers. <wrzasq>
+* Additional wrappers for resource binds. <wrzasq>
+* Some additional updates to match OTServ development. <wrzasq>
+* Fixed some typos. <wrzasq>
+* Code cleanup. <wrzasq>
+
+[0.0.8]
+* Added items.xml and items.otb files support. <wrzasq>
+* Added Iterator and Countable interfaces implementation in OTS_OTBMFile class. <wrzasq>
+* Fixed quoting guild rank name while updating. <wrzasq>
+* Fixed custom fields reading in OTS_Guild class. <wrzasq>
+
+[0.0.7]
+* Updated for last database changes. <wrzasq>
+* Even more PHP 5.0 compatibility. <wrzasq>
+* Added spells support. <wrzasq>
+* Added possibility to sort lists by custom fields, not only selected. <wrzasq>
+* Fixed typos. <wrzasq>
+
+[0.0.6]
+* Updated for last database changes. <wrzasq>
+* Increased PHP 5.0 compatibility. <wrzasq>
+* Added generic binary formats reader with cache drivers. <wrzasq>
+* Added OTBM files basic support. <wrzasq>
+* Added monsters support. <wrzasq>
+* Added OTS_Player::getVocationName() method. <wrzasq>
+
+[0.0.5]
+* Added support for vocations.xml file. <wrzasq>
+* Added support for bans. <wrzasq>
+* Added sorting and filtering for lists. <wrzasq>
+* Code grouped into base classes. <wrzasq>
+* Some code optimalisation. <wrzasq>
+* Fixed typos. <wrzasq>
+
+[0.0.4]
+* Added guild system support (guilds, ranks, invitations and requests drivers mechanisms). <wrzasq>
+* Added account group support. <wrzasq>
+* Added support for depot_id field (it is reserverd in OTServ for futher use). <wrzasq>
+* Added PostgreSQL and ODBC drivers. <wrzasq>
+* Added __sleep() and __wakeup() methods to allow POT objects to be stored in sessions. <wrzasq>
+* Added __clone() methods to allow save ID-losing cloning of POT objects. <wrzasq>
+* Added __set_state() methods. <wrzasq>
+* Updated players table structure. <wrzasq>
+* Dropped REGEXP operator bindings - not used anywhere. <wrzasq>
+* Fixed items loading and saving. <wrzasq>
+* Fixed typos. <wrzasq>
+
+[0.0.3]
+* Added custom fields support. <wrzasq>
+* Added items and depots support. <wrzasq>
+* Added support for players PACC timestamps. <wrzasq>
+* Fixed loading skills. <wrzasq>
+* Replaced E_USER_* with exceptions. <wrzasq>
+* Uses fetchAll() in loops to prevent MySQL buffering problems. <wrzasq>
+* Restricted access to POT class constructor to make sure it won't be instanced directly. <wrzasq>
+
+[0.0.2]
+* Added "compat" library for POT. <wrzasq>
+* Added skills support in OTS_Player class. <wrzasq>
+* Added 'info' serverStatus() method and respond handler for server status protocol. <wrzasq>
+* Fixed `redskulltime` field name in OTS_Player. <wrzasq>
+* Fixed 'password' parameter for DB_MYSQL driver. <wrzasq>
+* Added find() to OTS_Account class to load accounts by their's e-mail addresses. <wrzasq>
+* POT class now automaticly binds own __autoload() handler with spl_autoload_register(). <wrzasq>
+
+[0.0.1]
+* Initial release. <wrzasq>

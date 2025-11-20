@@ -1,0 +1,9 @@
+{% spaceless %}
+  <div class="BigButton" style="background-image:url({{ template_path }}/images/global/buttons/sbutton.gif)">
+    <div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);">
+      <div class="BigButtonOver"
+           style="background-image: url({{ template_path }}/images/global/buttons/sbutton_over.gif); visibility: hidden;"></div>
+      <input class="BigButtonText" type="submit" value="{{ button_name }}" title="{{ button_name }} {{ button_title }}">
+    </div>
+  </div>
+{% endspaceless %}

@@ -1,0 +1,34 @@
+<form action="?subtopic=guilds&action=leave_guild&guild={{ guild_name }}&todo=save" METHOD="post">
+<table border="0" cellspacing="1" cellpadding="4" width="100%">
+	<tr bgcolor="{{ config.vdarkborder }}">
+		<td class="white"><b>Leave guild</b></td></tr>
+	{% if players|length > 0 %}
+	<tr bgcolor="{{ config.lightborder }}">
+		<td width="100%">Select character to leave guild:</td>
+	</tr>
+	<tr bgcolor="{{ config.darkborder }}">
+		<td>
+			{% for player in players %}
+			<input type="radio" name="name" value="{{ player }}" />{{ player }}<br/>
+			{% endfor %}
+		</td>
+	</tr>
+	{% else %}
+	<tr bgcolor="{{ config.lightborder }}"><td width="100%">Any of your characters can't leave guild.</td></tr>
+	{% endif %}
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		{% if players|length > 0 %}
+		<td width="130" valign="top">
+			{{ include('buttons.submit.html.twig') }}
+		</td>
+		{% endif %}
+</form>
+		<td>
+			<form action="?subtopic=guilds&action=show&guild={{ guild_name }}" method="post">
+				{{ include('buttons.back.html.twig') }}
+			</form>
+		</td>
+	</tr>
+</table>

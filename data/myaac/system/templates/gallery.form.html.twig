@@ -1,0 +1,63 @@
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+		<td>
+			<div class="TableContainer">
+				<div class="CaptionContainer">
+					<div class="CaptionInnerContainer">
+						<span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<div class="Text">
+							<div style="height: 16px;">{% if action == 'edit' %}Edit{% else %}Add{% endif %} image to gallery</div>
+						</div>
+						<span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+					</div></div>
+				<table class="Table3" cellpadding="0" cellspacing="0">
+					<tbody>
+					<tr>
+						<td>
+							<div class="InnerTableContainer">
+								<table style="width:100%;"><tbody><tr><td>
+											<div class="TableContentContainer">
+												<form method="post" action="{{ link }}" style="margin: 0;">
+													{% if action == 'edit' %}
+														<input type="hidden" name="id" value="{{ id }}" />
+													{% endif %}
+													<table class="TableContent" width="100%">
+														<tbody>
+														<tr bgcolor="#D4C0A1">
+															<td>Comment:</td>
+															<td><textarea name="comment" maxlength="255" cols="50" rows="5">{% if comment is not null %}{{ comment }}{% endif %}</textarea></td>
+														</tr>
+														<tr bgcolor="#F1E0C6">
+															<td>Image URL:</td>
+															<td><input name="image" value="{% if image is not null %}{{ image }}{% endif %}" size="50" maxlength="255"/></td>
+														</tr>
+														<tr>
+															<td>Author:</td>
+															<td><input name="author" value="{% if author is not null %}{{ author }}{% endif %}" size="50" maxlength="50"/></td>
+														</tr>
+														</tbody>
+													</table>
+												</form>
+											</div>
+										</td></tr></tbody>
+								</table>
+							</div>
+							<div style="padding: 5px; display: flex; justify-content: center;">
+								{% set button_name = 'Submit' %}
+								{% include('buttons.base.html.twig') %}
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<br/>

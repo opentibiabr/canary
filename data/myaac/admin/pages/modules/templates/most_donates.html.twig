@@ -1,0 +1,33 @@
+{% if result is iterable %}
+  <div class="col-8">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Top 10 - Most donates</h3>
+      </div>
+      <div class="box-body no-padding">
+        <table class="table table-condensed">
+          <tbody>
+          <tr>
+            <th style="width: 40px">#</th>
+            <th style="width: 100px;">Account {{ account_type }}</th>
+            <th style="width: 100px;">E-mail</th>
+            <th>Characters</th>
+            <th style="width: 100px;">Total</th>
+          </tr>
+          {% set i = 0 %}
+          {% for item in result %}
+            {% set i = i + 1 %}
+            <tr>
+              <td>{{ i }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.email }}</td>
+              <td>{{ item.players | raw }}</td>
+              <td>{{ item.value }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endif %}

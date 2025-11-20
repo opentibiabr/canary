@@ -1,0 +1,40 @@
+<table width="100%" border="0" cellspacing="1" cellpadding="4">
+	<tr>
+		<td bgcolor="{{ config.vdarkborder }}" class="white" width="150"><b>Words</b></td>
+		<td bgcolor="{{ config.vdarkborder }}" class="white"><b>Description</b></td>
+		{% if canEdit %}
+		<td bgcolor="{{ config.vdarkborder }}" class="white"><b>Options</b></td>
+		{% endif %}
+	</tr>
+	{% set i = 0 %}
+	{% for command in commands %}
+		{% set i = i + 1 %}
+	<tr bgcolor="{{ getStyle(i) }}">
+		<td>{{ command.words }}</td>
+		<td><i>{{ command.description }}</i></td>
+		{% if canEdit %}
+		<td>
+			<a href="?subtopic=commands&action=edit&id={{ command.id }}" title="Edit">
+				<img src="images/edit.png"/>Edit
+			</a>
+			<a id="delete" href="?subtopic=commands&action=delete&id={{ command.id }}" onclick="return confirm('Are you sure?');" title="Delete">
+				<img src="images/del.png"/>Delete
+			</a>
+			<a href="?subtopic=commands&action=hide&id={{ command.id }}" title="{% if command.hidden != 1 %}Hide{% else %}Show{% endif %}">
+				<img src="images/{% if command.hidden != 1 %}success{% else %}error{% endif %}.png"/>{% if command.hidden != 1 %}Hide{% else %}Show{% endif %}
+			</a>
+			{% if i != 1 %}
+			<a href="?subtopic=commands&action=moveup&id={{ command.id }}" title="Move up">
+				<img src="images/icons/arrow_up.gif"/>Move up
+			</a>
+			{% endif %}
+			{% if i != last %}
+			<a href="?subtopic=commands&action=movedown&id={{ command.id }}" title="Move down">
+				<img src="images/icons/arrow_down.gif"/>Move down
+			</a>
+			{% endif %}
+		</td>
+		{% endif %}
+	</tr>
+	{% endfor %}
+</table>

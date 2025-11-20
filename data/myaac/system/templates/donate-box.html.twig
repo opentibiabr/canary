@@ -1,0 +1,55 @@
+<style>
+  .img-box {
+    width: 100%;
+    max-width: 220px;
+    max-height: 400px;
+  }
+</style>
+<h2 style="text-align: center; margin-top: 1rem">Select which box you want to buy!</h2>
+<table width="100%" border="0" cellpadding="4" cellspacing="1">
+  <tbody>
+  {% set i = 1 %}
+  <tr>
+    {% for item in config.pagSeguro.boxes %}
+      <td style="text-align: center; cursor: pointer">
+        <img alt src="./images/boxes/{{ item.image }}" title="{{ item.description }}"
+             style="border: 2px solid {{ item.border }}" class="img-box">
+      </td>
+      {% set i = i + 1 %}
+    {% endfor %}
+  </tr>
+  </tbody>
+</table>
+<br/>
+<form target="pagseguro" method="post" action="{{ getLink('pagsegurobuybox') }}">
+  <input type="hidden" name="reference" value="{{ account_logged.getId() }}">
+  <table border="0" cellpadding="4" cellspacing="1" width="100%">
+    <tbody>
+    <tr bgcolor="{{ config.vdarkborder }}" class="white">
+      <th colspan="2"><strong>Choose the box you want to buy</strong></th>
+    </tr>
+    <tr bgcolor="{{ config.darkborder }}">
+      <td width="15%">Account Name</td>
+      <td><strong>{{ account_logged.getName() }}</strong></td>
+    </tr>
+    <tr bgcolor="{{ config.darkborder }}">
+      <td width="15%">Box</td>
+      <td>
+        <select name="code" required>
+          {% for item in config.pagSeguro.boxes %}
+            <option value="{{ item.id }}">{{ item.name }}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+    <tr bgcolor="{{ config.darkborder }}">
+      <td colspan="2">
+        <input type="image" src="https://p.simg.uol.com.br/out/pagseguro/i/botoes/carrinhoproprio/btnFinalizar.jpg"
+               name="submit" {% if is_localhost and not config.enablePagseguroLocal %}disabled{% endif %}/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</form>
+<b><span style="color:#ff0000;">OBS:</span></b> Box are delivered <b>automatically</b> after
+<u>approved</u> of your payment by PagSeguro.

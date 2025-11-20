@@ -1,0 +1,45 @@
+This is a list of the experience points that are required to advance to the various levels.
+Remember you can also check the respective skill bar in your skill window of the client to check your progress towards the next level.<br/><br/>
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Experience Table</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;" id="ExperienceTable">
+              <tbody>
+                <tr>
+				{% set rows = 0 %}
+				{% for i in 0..config.experiencetable_columns-1 %}
+                  <td><div class="AdditionalTableShadow">
+                      <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                        <tbody>
+                          <tr class="AdditionalTableHeadline">
+                            <td><b>Level</b></td>
+                            <td><b>Experience</b></td>
+                          </tr>
+						  {% for level in i * config.experiencetable_rows + 1..i * config.experiencetable_rows + (config.experiencetable_rows + 1) - 1 %}
+						  {% set rows = rows + 1 %}
+                          <tr bgcolor="{{ getStyle(rows) }}">
+                            <td style="border: 1px solid #FAF0D7; text-align: right;">{{ level }}</td>
+                            <td style="border: 1px solid #FAF0D7; text-align: right;">{{ experience[level] }}</td>
+                          </tr>
+						  {% endfor %}
+                        </tbody>
+                      </table>
+                    </div></td>
+				{% endfor %}
+				
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

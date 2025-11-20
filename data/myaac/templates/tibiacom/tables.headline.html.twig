@@ -1,0 +1,32 @@
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer">
+      <span class="CaptionEdgeLeftTop"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightTop"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionBorderTop"
+            style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+      <span class="CaptionVerticalLeft"
+            style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">{{ title|raw }}</div>
+      <span class="CaptionVerticalRight"
+            style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <span class="CaptionBorderBottom"
+            style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+      <span class="CaptionEdgeLeftBottom"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightBottom"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+    </div>
+  </div>
+  <table class="Table5" cellpadding="0" cellspacing="0" style="background-color: {{ config.lightborder }}">
+    <tr>
+      <td>
+        <div class="InnerTableContainer">
+          {{ content|raw }}
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

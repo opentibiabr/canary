@@ -1,0 +1,10 @@
+<h3>Dear player,</h3>
+<p>Thanks for your registration at <a href="{{ constant('BASE_URL') }}"><b>{{ config.lua.serverName }}</b></a></p>
+<br/><br/>
+Your login details:
+<p>E-mail: <b>{{ email }}</b></p>
+<p>Account {% if constant('USE_ACCOUNT_NAME') %}name{% else %}number{% endif %}: <b>{{ account }}</b></p>
+<p>Password: {% if config.account_welcome_mail_show_pass %}<b>{{ password }}</b>
+  {% else %}<b>************</b> (hidden for security reasons){% endif %}
+</p>
+<p>Kind Regards,</p>

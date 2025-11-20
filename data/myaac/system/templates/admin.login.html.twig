@@ -1,0 +1,31 @@
+<div class="vh-100" style="display: flex; align-items: center;">
+	<div class="form-signin">
+		{% if logout %}
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+			  {{ logout }}
+			  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>
+		{% endif %}
+		<form method="post">
+		<main class="form-signin text-center">
+			<h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+			<div class="form-floating">
+			  <input type="email" class="form-control" id="account-name-input" name="account_login" placeholder="{{ account_login_by }}" required autofocus>
+			  <label for="floatingInput" style="color: #000;">Email address</label>
+			</div>
+			<div class="form-floating">
+			  <input type="password" class="form-control" placeholder="Password" name="password_login" placeholder="Password" required>
+			  <label for="floatingPassword" style="color: #000;">Password</label>
+			</div>
+			<div class="checkbox mb-3">
+			  <label>
+				<input type="checkbox" id="remember_me" name="remember_me" value="true"> Remember me
+			  </label>
+			</div>
+			<input type="hidden" name="admin" value="1"/>
+			<button type="submit" class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+			<p class="mt-5 mb-3 text-muted">MyAAC v{{ myaac_version }}</p>
+		</main>
+		</form>
+	</div>
+</div>

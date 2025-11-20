@@ -1,0 +1,180 @@
+<div class="BoxContent" style="background-image:url({{ template_path }}/images/global/content/scroll.gif);">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tbody>
+		<tr>
+			<td><img alt="{{ dados.name }}" src="images/icons-spells/{{ imageName }}" width="32" height="32"></td>
+			<td width="90%">
+				<center><h2>{{ title }}</h2></center>
+			</td>
+			<td><img alt="{{ dados.name }}" src="images/icons-spells/{{ imageName }}" width="32" height="32"></td>
+		</tr>
+		</tbody>
+	</table>
+	<br>{{ dados.description|raw }}<br><br><br>
+	<div class="TableContainer">
+		<div class="CaptionContainer">
+			<div class="CaptionInnerContainer">
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+				<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+				<div class="Text">Spell Information</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+			</div>
+		</div>
+		<table class="Table2" cellpadding="0" cellspacing="0">
+			<tbody>
+			<tr>
+				<td>
+					<div class="InnerTableContainer">
+						<table style="width:100%;">
+							<tbody>
+							<tr>
+								<td>
+									<div class="TableContentContainer">
+										<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+											<tbody>
+											<tr>
+												<td width="15%">Name:</td>
+												<td>{{ dados.name }}</td>
+											</tr>
+											<tr>
+												<td width="15%">Formula:</td>
+												<td>{{ dados.words }}</td>
+											</tr>
+											<tr>
+												<td>Vocation:</td>
+												<td>{{ dados.vocation }}</td>
+											</tr>
+											<tr>
+												<td>Group:</td>
+												<td>{{ dados.group|title }}</td>
+											</tr>
+											<tr>
+												<td>Type:</td>
+												<td>{{ dados.type|title }}</td>
+											</tr>
+											<tr>
+												<td width="15%">Cooldown:</td>
+												<td>{{ dados.cooldown }}s (Group: {{ dados.groupCooldown }}s)</td>
+											</tr>
+											{% if dados.amount > 0 %}
+												<tr>
+													<td>Amount:</td>
+													<td>{{ dados.amount }}</td>
+												</tr>
+											{% endif %}
+											<tr>
+												<td>Exp Lvl:</td>
+												<td>{{ dados.level }}</td>
+											</tr>
+											<tr>
+												<td>Mana:</td>
+												<td>{{ dados.mana }}</td>
+											</tr>
+											<tr>
+												<td>Price:</td>
+												<td>{{ dados.price }}</td>
+											</tr>
+											<tr>
+												<td>City:</td>
+												<td>{{ dados.city }}</td>
+											</tr>
+											<tr>
+												<td>Premium:</td>
+												<td>{{ dados.isPremium ? 'yes' : 'no' }}</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	{% if dados.rune_information %}
+		<br>
+		<div class="TableContainer">
+			<div class="CaptionContainer">
+				<div class="CaptionInnerContainer">
+					<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+					<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+					<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+					<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+					<div class="Text">Rune Information</div>
+					<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+					<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+					<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+					<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+				</div>
+			</div>
+			<table class="Table2" cellpadding="0" cellspacing="0">
+				<tbody>
+				<tr>
+					<td>
+						<div class="InnerTableContainer">
+							<table style="width:100%;">
+								<tbody>
+								<tr>
+									<td>
+										<div class="TableContentContainer">
+											<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+												<tbody>
+												<tr>
+													<td width="15%">Name:</td>
+													<td>{{ dados.rune_information.name }}</td>
+												</tr>
+												<tr>
+													<td>Vocation:</td>
+													<td>{{ dados.rune_information.vocation }}</td>
+												</tr>
+												<tr>
+													<td>Group:</td>
+													<td>{{ dados.rune_information.group }}</td>
+												</tr>
+												<tr>
+													<td>Exp Lvl:</td>
+													<td>{{ dados.rune_information.level }}</td>
+												</tr>
+												<tr>
+													<td>Mag Lvl:</td>
+													<td>{{ dados.rune_information.magic_level }}</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+
+	<br>
+	<center>
+		<form action="?subtopic=spells" method="post" style="padding:0px;margin:0px;">
+			<input type="hidden" name="vocation" value="">
+			<input type="hidden" name="group" value="">
+			<input type="hidden" name="type" value="">
+			<input type="hidden" name="premium" value="">
+			<input type="hidden" name="sort" value="name">
+
+			<div class="BigButton" style="background-image:url({{ template_path }}/images/global/buttons/sbutton.gif)">
+				<div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);"><div class="BigButtonOver" style="background-image:url({{ template_path }}/images/global/buttons/sbutton_over.gif);"></div><input class="BigButtonText" type="submit" value="Back"></div>
+			</div>
+		</form>
+	</center>
+</div>

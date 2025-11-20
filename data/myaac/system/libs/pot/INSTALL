@@ -1,0 +1,5 @@
+POT is a toolkit which means you don't literaly install it. You copy it's files and write code for it. All source files are located in classes/ subdirectory. Copy them to your script directory.
+
+You can put main file - OTS.php in different directory then other files.
+
+For information about how to include POT in your code see the documentation.

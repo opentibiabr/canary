@@ -1,0 +1,19 @@
+<IfModule mod_autoindex.c>
+	Options -Indexes
+</IfModule>
+
+<IfModule mod_negotiation.c>
+	Options -MultiViews
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	# you can put here your myaac root folder
+	# path relative to web root
+    #RewriteBase /myaac/
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^.*$ index.php [L]
+</IfModule>

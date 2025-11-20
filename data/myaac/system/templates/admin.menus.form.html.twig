@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="box box-primary">
+      <div class="box-header with-border">
+        <h3 class="box-title">Templates</h3>
+      </div>
+      <div class="box-body">
+        <form method="post" action="?p=menus">
+          <p>Please choose template in which you want to edit menu items.</p>
+          <div class="row">
+            <div class="col-xs-6">
+              <div class="input-group input-group-sm">
+                <select id="template" name="template" class="form-control">
+                  {% for template in templates %}
+                    <option value="{{ template.template }}">{{ template.template }}</option>
+                  {% endfor %}
+                </select>
+                <span class="input-group-btn">
+                  <button type="submit" type="button" class="btn btn-success"><i class="fa fa-edit"></i> Edit</button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

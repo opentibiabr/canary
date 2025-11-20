@@ -1,0 +1,38 @@
+<div class="box">
+	<div class="box-header">
+		<h3 class="box-title">Users active within last {{ config_visitors_counter_ttl }} minutes.</h3>
+	</div>
+	<div class="box-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<table id="tb_visitors">
+					<thead>
+					<tr>
+						<th>IP</th>
+						<th>Last visit</th>
+						<th>Page</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% set i = 0 %}
+					{% for visitor in visitors %}
+						{% set i = i + 1 %}
+						<tr role="row" class="odd">
+							<td>{{ visitor.ip }}</td>
+							<td>{{ visitor.lastvisit|date("H:i:s") }}</td>
+							<td>
+								<a href="{{ visitor.page }}">{{ visitor.page|slice(0, 50) }}</a>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	$(function () {
+		$('#tb_visitors').DataTable()
+	})
+</script>

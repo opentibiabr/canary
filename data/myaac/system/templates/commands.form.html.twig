@@ -1,0 +1,26 @@
+<form method="post" action="{{ link }}">
+	{% if action == 'edit' %}
+	<input type="hidden" name="id" value="{{ id }}" />
+	{% endif %}
+	<table width="100%" border="0" cellspacing="1" cellpadding="4">
+		<tr>
+			<td bgcolor="{{ config.vdarkborder }}" class="white"><b>{% if action == 'edit' %}Edit{% else %}Add{% endif %} command</b></td>
+		</tr>
+		<tr>
+			<td bgcolor="{{ config.darkborder }}">
+				<table border="0" cellpadding="1">
+					<tr>
+						<td>Words:</td>
+						<td><input name="words" value="{% if words is not null %}{{ words }}{% endif %}" size="29" maxlength="29"/></td>
+					<tr>
+						<td>Description:</td>
+						<td><textarea name="description" maxlength="300" cols="50" rows="5">{% if description is not null %}{{ description }}{% endif %}</textarea></td>
+					<tr/>
+					<tr>
+						<td colspan="2" align="center"><input type="submit" value="Submit"/>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>

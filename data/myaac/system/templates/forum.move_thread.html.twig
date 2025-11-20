@@ -1,0 +1,35 @@
+<br/>
+<table bgcolor="{{ config.vdarkborder }}" border="0" cellpadding="2" cellspacing="0" width="100%">
+	<tr bgcolor="{{ config.vdarkborder }}">
+		<td class="white" colspan="5"><b>Move thread to another board</b></td>
+	</tr>
+	<tr>
+		<td>
+			<table border="0" cellpadding="3" cellspacing="1" width="100%">
+				<tr bgcolor="{{ config.lightborder }}">
+					<td>
+						<form action="" method="get">
+							<input type="hidden" name="subtopic" value="forum" />
+							<input type="hidden" name="action" value="move_thread" />
+							<input type="hidden" name="save" value="1" />
+							<input type="hidden" name="id" value="{{ post_id }}" />
+							<strong>THREAD:</strong> {{ thread }}<br/>
+							<strong>AUTHOR:</strong> {{ author }}<br/>
+							<strong>BOARD:</strong> {{ board }}<br/><br/>
+							<strong>Select the new board:&nbsp;</strong>
+							<select name="section">
+							{% for id, section in sections %}
+							<option value="{{ id }}">{{ section.name }}</option>
+							{% endfor %}
+							</select>
+							<input type="submit" value="Move Thread">
+						</form>
+						<form action="{{ section_link }}" method="post">
+							<input type="submit" value="Cancel">
+						</form>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>

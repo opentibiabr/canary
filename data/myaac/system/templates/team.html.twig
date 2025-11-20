@@ -1,0 +1,560 @@
+<div style="text-align: -webkit-center !important;">
+	<table>
+		<tbody>
+			<tr>
+				<td><img src="{{ template_path }}/images/global/content/headline-bracer-left.gif"></td>
+				<td style="text-align:center;vertical-align:middle;horizontal-align:center;font-size:17px;font-weight:bold;">Staff Team</td>
+				<td><img src="{{ template_path }}/images/global/content/headline-bracer-right.gif"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<br>
+
+{% set godMembersExist = false %}
+{% for group in groupmember|reverse %}
+    {% if not godMembersExist %}
+        {% if group.members is not empty and group.group_name == 'god' %}
+            {% set godMembersExist = true %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+{% if godMembersExist %}
+
+<div class="TableContainer">
+<div class="CaptionContainer">
+	<div class="CaptionInnerContainer">
+		<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<div class="Text" style="min-height: 17px"><div style="float: left">Administrator</div> </div>
+		<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom"></span>
+		<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+	</div>
+</div>
+  
+<table class="Table3" cellpadding="0" cellspacing="0" align="" style="border: 1px solid #505050;box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)">
+	<tbody>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tbody>
+							<tr>
+								<td>
+									<div class="TableContent">
+										<div class="TableContentContainer">
+											<table class="TableContent " width="100%">
+												<tbody>
+												<tr bgcolor="#D4C0A1">
+													{% if config.team_display_outfit %}<td style="width: 5%;"><b>#</b></td>{% endif %}
+													<td><b>Group</b></td>
+													<td width="30%"><b>Name</b></td>
+													<td><b>Status</b></td>
+													<td><b>Last Login</b></td>
+													<td><b>World</b></td>
+													<td><b>Country</b></td>
+												</tr>
+													{% for group in groupmember|reverse %}
+													{% if group.members is not empty and group.group_name == 'god' %}
+													{% for member in group.members|reverse %}
+													{% set i = i + 1 %}
+													<tr bgcolor="{{ getStyle(i) }}" style="height: 64px;">
+													{% if config.team_display_outfit %}
+														<td><img style="position: absolute; margin-top: {% if member.player.looktype in [75, 266, 302] %}-16px;margin-left:-0px;{% else %} -45px; margin-left: -30px;{%  endif %}" src="{{ member.outfit }}" alt="player outfit"/></td>
+													{% endif %}
+
+													<td width="20%"><b><font style="font-family: Verdana; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);" color="red">Administrator</font><b></td>
+													<td>{{ member.link|raw }}</td>
+													<td>
+														{% if member.status %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="green"> Online </font><b>
+														{% else %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="red"> Offline </font><b>
+														{% endif %}
+													</td>
+
+													<td style="position: relative; text-align: center;">
+														{% if member.last_login %}
+															{{ member.last_login }}
+															<hr style="margin-left: 5px; margin-top: -1px; position: absolute; border: none; border-top: 1px dotted black; width: 88%;">
+														{% else %}
+															Not connected yet
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.world_name %}
+															{{ member.world_name }}
+														{% else %}
+															{{ config['lua']['serverName'] }}
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.flag_image %}
+															{{ member.flag_image|raw }}
+														{% else %}
+															No Flag
+														{% endif %}
+													</td>
+												</tr>
+												{% endfor %}
+												{% endif %}
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table></div>
+<br><br>
+{% endif %}
+
+
+{% set cmMembersExist = false %}
+{% for group in groupmember|reverse %}
+    {% if not cmMembersExist %}
+        {% if group.members is not empty and group.group_name == 'community manager' %}
+            {% set cmMembersExist = true %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+{% if cmMembersExist %}
+
+<div class="TableContainer">
+<div class="CaptionContainer">
+	<div class="CaptionInnerContainer">
+		<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<div class="Text" style="min-height: 17px"><div style="float: left">Community Manager</div> </div>
+		<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom"></span>
+		<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+	</div>
+</div>
+<table class="Table3" cellpadding="0" cellspacing="0" align="" style="border: 1px solid #505050;box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)">
+	<tbody>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tbody>
+							<tr>
+								<td>
+									<div class="TableContent">
+										<div class="TableContentContainer">
+											<table class="TableContent " width="100%">
+												<tbody>
+												<tr bgcolor="#D4C0A1">
+													{% if config.team_display_outfit %}<td style="width: 5%;"><b>#</b></td>{% endif %}
+													<td><b>Group</b></td>
+													<td width="30%"><b>Name</b></td>
+													<td><b>Status</b></td>
+													<td><b>Last Login</b></td>
+													<td><b>World</b></td>
+													<td><b>Country</b></td>
+												</tr>
+													{% for group in groupmember|reverse %}
+													{% if group.members is not empty and group.group_name == 'community manager' %}
+													{% for member in group.members|reverse %}
+													{% set i = i + 1 %}
+													<tr bgcolor="{{ getStyle(i) }}" style="height: 64px;">
+													{% if config.team_display_outfit %}
+														<td><img style="position: absolute; margin-top: {% if member.player.looktype in [75, 266, 302] %}-16px;margin-left:-0px;{% else %} -45px; margin-left: -30px;{%  endif %}" src="{{ member.outfit }}" alt="player outfit"/></td>
+													{% endif %}
+
+													<td width="20%"><b><font style="font-family: Verdana; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);" color="chocolate">Community Manager</font><b></td>
+													<td>{{ member.link|raw }}</td>
+													<td>
+														{% if member.status %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="green"> Online </font><b>
+														{% else %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="red"> Offline </font><b>
+														{% endif %}
+													</td>
+
+													<td style="position: relative; text-align: center;">
+														{% if member.last_login %}
+															{{ member.last_login }}
+															<hr style="margin-left: 5px; margin-top: -1px; position: absolute; border: none; border-top: 1px dotted black; width: 88%;">
+														{% else %}
+															Not connected yet
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.world_name %}
+															{{ member.world_name }}
+														{% else %}
+															{{ config['lua']['serverName'] }}
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.flag_image %}
+															{{ member.flag_image|raw }}
+														{% else %}
+															No Flag
+														{% endif %}
+													</td>
+												</tr>
+												{% endfor %}
+												{% endif %}
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table></div>
+<br><br>
+{% endif %}
+
+{% set gmMembersExist = false %}
+{% for group in groupmember|reverse %}
+    {% if not gmMembersExist %}
+        {% if group.members is not empty and group.group_name == 'gamemaster' %}
+            {% set gmMembersExist = true %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+{% if gmMembersExist %}
+
+<div class="TableContainer">
+<div class="CaptionContainer">
+	<div class="CaptionInnerContainer">
+		<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<div class="Text" style="min-height: 17px"><div style="float: left">GameMaster</div> </div>
+		<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom"></span>
+		<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+	</div>
+</div>
+<table class="Table3" cellpadding="0" cellspacing="0" align="" style="border: 1px solid #505050;box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)">
+	<tbody>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tbody>
+							<tr>
+								<td>
+									<div class="TableContent">
+										<div class="TableContentContainer">
+											<table class="TableContent " width="100%">
+												<tbody>
+												<tr bgcolor="#D4C0A1">
+													{% if config.team_display_outfit %}<td style="width: 5%;"><b>#</b></td>{% endif %}
+													<td><b>Group</b></td>
+													<td width="30%"><b>Name</b></td>
+													<td><b>Status</b></td>
+													<td><b>Last Login</b></td>
+													<td><b>World</b></td>
+													<td><b>Country</b></td>
+												</tr>
+													{% for group in groupmember|reverse %}
+													{% if group.members is not empty and group.group_name == 'gamemaster' %}
+													{% for member in group.members|reverse %}
+													{% set i = i + 1 %}
+													<tr bgcolor="{{ getStyle(i) }}" style="height: 64px;">
+													{% if config.team_display_outfit %}
+														<td><img style="position: absolute; margin-top: {% if member.player.looktype in [75, 266, 302] %}-16px;margin-left:-0px;{% else %} -45px; margin-left: -30px;{%  endif %}" src="{{ member.outfit }}" alt="player outfit"/></td>
+													{% endif %}
+
+													<td width="20%"><b><font style="font-family: Verdana; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);" color="royalblue">GameMaster</font><b></td>
+													<td>{{ member.link|raw }}</td>
+													<td>
+														{% if member.status %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="green"> Online </font><b>
+														{% else %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="red"> Offline </font><b>
+														{% endif %}
+													</td>
+
+													<td style="position: relative; text-align: center;">
+														{% if member.last_login %}
+															{{ member.last_login }}
+															<hr style="margin-left: 5px; margin-top: -1px; position: absolute; border: none; border-top: 1px dotted black; width: 88%;">
+														{% else %}
+															Not connected yet
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.world_name %}
+															{{ member.world_name }}
+														{% else %}
+															{{ config['lua']['serverName'] }}
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.flag_image %}
+															{{ member.flag_image|raw }}
+														{% else %}
+															No Flag
+														{% endif %}
+													</td>
+												</tr>
+												{% endfor %}
+												{% endif %}
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table></div>
+<br><br>
+{% endif %}
+
+{% set seniorMembersExist = false %}
+{% for group in groupmember|reverse %}
+    {% if not seniorMembersExist %}
+        {% if group.members is not empty and group.group_name == 'senior tutor' %}
+            {% set seniorMembersExist = true %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+{% if seniorMembersExist %}
+
+<div class="TableContainer">
+<div class="CaptionContainer">
+	<div class="CaptionInnerContainer">
+		<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<div class="Text" style="min-height: 17px"><div style="float: left">Senior Tutor</div> </div>
+		<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom"></span>
+		<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+	</div>
+</div>
+<table class="Table3" cellpadding="0" cellspacing="0" align="" style="border: 1px solid #505050;box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)">
+	<tbody>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tbody>
+							<tr>
+								<td>
+									<div class="TableContent">
+										<div class="TableContentContainer">
+											<table class="TableContent " width="100%">
+												<tbody>
+												<tr bgcolor="#D4C0A1">
+													{% if config.team_display_outfit %}<td style="width: 5%;"><b>#</b></td>{% endif %}
+													<td><b>Group</b></td>
+													<td width="30%"><b>Name</b></td>
+													<td><b>Status</b></td>
+													<td><b>Last Login</b></td>
+													<td><b>World</b></td>
+													<td><b>Country</b></td>
+												</tr>
+													{% for group in groupmember|reverse %}
+													{% if group.members is not empty and group.group_name == 'senior tutor' %}
+													{% for member in group.members|reverse %}
+													{% set i = i + 1 %}
+													<tr bgcolor="{{ getStyle(i) }}" style="height: 64px;">
+													{% if config.team_display_outfit %}
+														<td><img style="position: absolute; margin-top: {% if member.player.looktype in [75, 266, 302] %}-16px;margin-left:-0px;{% else %} -45px; margin-left: -30px;{%  endif %}" src="{{ member.outfit }}" alt="player outfit"/></td>
+													{% endif %}
+
+													<td width="20%"><b><font style="font-family: Verdana; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);" color="seagreen">Senior Tutor</font><b></td>
+													<td>{{ member.link|raw }}</td>
+													<td>
+														{% if member.status %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="green"> Online </font><b>
+														{% else %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="red"> Offline </font><b>
+														{% endif %}
+													</td>
+
+													<td style="position: relative; text-align: center;">
+														{% if member.last_login %}
+															{{ member.last_login }}
+															<hr style="margin-left: 5px; margin-top: -1px; position: absolute; border: none; border-top: 1px dotted black; width: 88%;">
+														{% else %}
+															Not connected yet
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.world_name %}
+															{{ member.world_name }}
+														{% else %}
+															{{ config['lua']['serverName'] }}
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.flag_image %}
+															{{ member.flag_image|raw }}
+														{% else %}
+															No Flag
+														{% endif %}
+													</td>
+												</tr>
+												{% endfor %}
+												{% endif %}
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table></div>
+<br><br>
+{% endif %}
+
+{% set tutorMembersExist = false %}
+{% for group in groupmember|reverse %}
+    {% if not tutorMembersExist %}
+        {% if group.members is not empty and group.group_name == 'tutor' %}
+            {% set tutorMembersExist = true %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+{% if tutorMembersExist %}
+
+<div class="TableContainer">
+<div class="CaptionContainer">
+	<div class="CaptionInnerContainer">
+		<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+		<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<div class="Text" style="min-height: 17px"><div style="float: left">Tutor</div> </div>
+		<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+		<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+		<span class="CaptionEdgeLeftBottom"></span>
+		<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+	</div>
+</div>
+<table class="Table3" cellpadding="0" cellspacing="0" align="" style="border: 1px solid #505050;box-shadow: 0 10px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)">
+	<tbody>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tbody>
+							<tr>
+								<td>
+									<div class="TableContent">
+										<div class="TableContentContainer">
+											<table class="TableContent " width="100%">
+												<tbody>
+												<tr bgcolor="#D4C0A1">
+													{% if config.team_display_outfit %}<td style="width: 5%;"><b>#</b></td>{% endif %}
+													<td><b>Group</b></td>
+													<td width="30%"><b>Name</b></td>
+													<td><b>Status</b></td>
+													<td><b>Last Login</b></td>
+													<td><b>World</b></td>
+													<td><b>Country</b></td>
+												</tr>
+													{% for group in groupmember|reverse %}
+													{% if group.members is not empty and group.group_name == 'tutor' %}
+													{% for member in group.members|reverse %}
+													{% set i = i + 1 %}
+													<tr bgcolor="{{ getStyle(i) }}" style="height: 64px;">
+													{% if config.team_display_outfit %}
+														<td><img style="position: absolute; margin-top: {% if member.player.looktype in [75, 266, 302] %}-16px;margin-left:-0px;{% else %} -45px; margin-left: -30px;{%  endif %}" src="{{ member.outfit }}" alt="player outfit"/></td>
+													{% endif %}
+
+													<td width="20%"><b><font style="font-family: Verdana; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);" color="forestgreen">Tutor</font><b></td>
+													<td>{{ member.link|raw }}</td>
+													<td>
+														{% if member.status %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="green"> Online </font><b>
+														{% else %}
+															<b><font style="font-family: Verdana; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);" color="red"> Offline </font><b>
+														{% endif %}
+													</td>
+
+													<td style="position: relative; text-align: center;">
+														{% if member.last_login %}
+															{{ member.last_login }}
+															<hr style="margin-left: 5px; margin-top: -1px; position: absolute; border: none; border-top: 1px dotted black; width: 88%;">
+														{% else %}
+															Not connected yet
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.world_name %}
+															{{ member.world_name }}
+														{% else %}
+															{{ config['lua']['serverName'] }}
+														{% endif %}
+													</td>
+													<td style="position: relative; text-align: center;">
+														{% if member.flag_image %}
+															{{ member.flag_image|raw }}
+														{% else %}
+															No Flag
+														{% endif %}
+													</td>
+												</tr>
+												{% endfor %}
+												{% endif %}
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table></div>
+<br><br>
+{% endif %}

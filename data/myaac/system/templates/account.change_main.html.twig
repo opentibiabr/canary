@@ -1,0 +1,92 @@
+Select a main character and submit.<br/>
+<span>Change main character cost: <b>{{ config.account_change_character_main_coins }} {{ coin_name }}</b>.</span><br/>
+<span>
+  Coins Balance:
+  {% if coins > 0 %}
+    <span style="color: green; font-weight: bold">{{ coins }} {{ coin_name }}
+      {% if coins < config.account_change_character_main_coins %}
+        <span style="color: red; font-weight: normal"> (you do not have {{ coin_name }} enough,
+                 <a href="?donate" target="_blank">donate</a> now)</span>
+      {% endif %}
+      </span>
+  {% else %}
+    <span style="color: red; font-weight: bold">You do not have {{ coin_name }},
+  <a href="?donate" target="_blank">donate</a> now</span>
+  {% endif %}
+</span>
+<br><br>
+
+<form action="{{ getLink('account/character/main') }}" method="post">
+  <input type="hidden" name="changemainsave" value="1"/>
+  <div class="TableContainer">
+    <table class="Table1" cellpadding="0" cellspacing="0" style="width:100%;">
+      <div class="CaptionContainer">
+        <div class="CaptionInnerContainer">
+          <span class="CaptionEdgeLeftTop"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionEdgeRightTop"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+          <span class="CaptionBorderTop"
+                style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+          <span class="CaptionVerticalLeft"
+                style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+          <div class="Text">Change Main Character</div>
+          <span class="CaptionVerticalRight"
+                style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+          <span class="CaptionBorderBottom"
+                style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+          <span class="CaptionEdgeLeftBottom"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"/></span>
+          <span class="CaptionEdgeRightBottom"
+                style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"/></span>
+        </div>
+      </div>
+      <tr>
+        <td>
+          <div class="InnerTableContainer">
+            <table>
+              <tr>
+                <td class="LabelV"><span>Character:</span></td>
+                <td style="width:80%">
+                  <select name="player_id" style="width: 100%;">
+                    {% for player in players %}
+                      {% if not player.isMain() %}
+                        <option value="{{ player.getId() }}">{{ player.getName() }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br/>
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="border:0px;">
+              {{ include('buttons.submit.html.twig') }}
+            </td>
+          </tr>
+          <tr>
+</form>
+</table>
+</td>
+<td>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <form action="{{ getLink('account/manage') }}" method="post">
+      <tr>
+        <td style="border:0px;">
+          {{ include('buttons.back.html.twig') }}
+        </td>
+      </tr>
+    </form>
+  </table>
+</td>
+</tr>
+</table>

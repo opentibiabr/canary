@@ -1,0 +1,116 @@
+<div class="TableContainer">
+	<table class="Table1" cellpadding="0" cellspacing="0">
+		<div class="CaptionContainer">
+			<div class="CaptionInnerContainer">
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>        <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+				<div class="Text" >Add new rank</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+			</div>
+		</div>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tr>
+							<td width="150" valign="top"><b>New rank name:</b></td>
+							<form action="?subtopic=guilds&guild={{ guild.getName() }}&action=add_rank" method="post">
+							<td>
+								<input type="text" name="rank_name" size="20"/>
+							</td>
+							<td>
+								{% set button_name = 'Create' %}
+								{% include('buttons.base_green.html.twig') %}
+							</td>
+							</form>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="text-align:center"><h3>Change rank names and levels</h3></div>
+<form action="?subtopic=guilds&action=save_ranks&guild={{ guild.getName() }}" method="post">
+	<table style="clear:both" border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr bgcolor="{{ config.vdarkborder }}">
+			<td rowspan="2" width="120" align="center">
+				<span style="color: white"><b>ID/Delete Rank</b></span>
+			</td>
+			<td rowspan="2" width="300">
+				<span style="color: white"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</b></span>
+			</td>
+			<td colspan="3" align="center">
+				<span style="color: white"><b>Level of RANK in guild</b></span>
+			</td>
+		</tr>
+		<tr bgcolor="{{ config.vdarkborder }}">
+			<td align="center" bgcolor="red">
+				<span style="color: white"><b>Leader (3)</b></span>
+			</td>
+			<td align="center" bgcolor="yellow">
+				<span style="color: black"><b>Vice (2)</b></span>
+			</td>
+			<td align="center" bgcolor="green">
+				<span style="color: white"><b>Member (1)</b></span>
+			</td>
+		</tr>
+		{% set i = 0 %}
+		{% for rank in rank_list %}
+		<tr bgcolor="{{ getStyle(i) }}">
+			<td align="center">{{ rank.getId() }} // <a href="?subtopic=guilds&guild={{ guild.getName() }}&action=delete_rank&rankid={{ rank.getId() }}" border="0"><img src="/images/news/delete.png" border="0" alt="Delete Rank"></a>
+			</td>
+			<td>
+				<input type="text" name="{{ rank.getId() }}_name" value="{{ rank.getName() }}" size="35"/>
+			</td>
+			<td align="center">
+				<input type="radio" name="{{ rank.getId() }}_level" value="3"
+				{% if rank.getLevel() == 3 %} checked="checked"{% endif %}/>
+			</td>
+			<td align="center">
+				<input type="radio" name="{{ rank.getId() }}_level" value="2"
+				{% if rank.getLevel() == 2 %} checked="checked"{% endif %}/>
+			</td>
+			<td align="center">
+				<input type="radio" name="{{ rank.getId() }}_level" value="1"
+				{% if rank.getLevel() == 1 %} checked="checked"{% endif %}/>
+			</td>
+		</tr>
+			{% set i = i + 1 %}
+		{% endfor %}
+		<tr bgcolor="{{ config.vdarkborder }}">
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td colspan="3" align="center">
+				{% set button_name = 'Save All' %}
+				{% include('buttons.base_green.html.twig') %}
+			</td>
+		</tr>
+	</table>
+</form>
+<h3>Ranks info:</h3>
+<b>0. Owner of guild</b> - it's highest rank, only one player in guild may has this rank. Player with this rank can:
+<li>Invite/Cancel Invitation/Kick Player from guild</li>
+<li>Change ranks of all players in guild</li>
+<li>Delete guild or pass leadership to other guild member</li>
+<li>Change names, levels (leader, vice, member), add and delete ranks</li>
+<li>Change {% if constant('MOTD_EXISTS') %}MOTD, {% endif %}logo and description of guild</li>
+<hr/>
+<b>1. Leader</b> - it's second rank in guild. Player with this rank can:
+<li>Invite/Cancel Invitation/Kick Player from guild (only with lower rank than his)
+<li>Change ranks of players with lower rank level ("vice leader", "member") in guild<hr>
+<b>2. Vice Leader</b> - it's third rank in guild. Player with this rank can:
+<li>Invite/Cancel Invitation
+<li>Change ranks of players with lower rank level ("member") in guild<hr>
+<b>3. Member</b> - it's lowest rank in guild. Player with this rank can:
+<li>Be a member of guild
+<br/>
+<div style="display: flex; justify-content: center;">
+	<form action="?guilds/{{ guild.getName() }}" method="post">
+		{{ include('buttons.back.html.twig') }}
+	</form>
+</div>

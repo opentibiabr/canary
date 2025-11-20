@@ -1,0 +1,61 @@
+<table width="100%" border="0" cellpadding="4" cellspacing="1">
+  <tbody>
+  <tr>
+    <td colspan="3" bgcolor="{{ config.vdarkborder }}" class="white"><span
+        class="style4">Donate to receive your reward!</span></td>
+  </tr>
+  <tr bgcolor="{{ config.vdarkborder }}">
+    <td class="white" width="35%"><b>Donation</b></td>
+    <td class="white"><b>Reward</b></td>
+  </tr>
+  {% set i = 1 %}
+  {% for item in config.pagSeguro.donates %}
+    <tr bgcolor="{{ getStyle(i) }}">
+      <td>R${{ item.value }}</td>
+      <td><img alt src="images/content/bullet.gif">
+        {% if is_double and item.coins >= double_start %} <span
+          style="text-decoration: line-through;">{{ item.coins }}</span> {% if item.extra > 0 %}(+{{ item.extra }} bonus){% endif %}
+          <strong>{{ item.coins * 2 }}</strong>
+        {% else %} {{ item.coins }} {% if item.extra > 0 %}(+{{ item.extra }} bonus){% endif %} {% endif %}
+        Coins {% if is_double and item.coins >= double_start %}
+          <strong>(double)</strong> {% endif %} {% if item.id == '500' %} (+1 Mega Roulette Coin) {% elseif item.id == '1000' %} (+3 Mega Roulette Coins) {% endif %}
+      </td>
+    </tr>
+    {% set i = i + 1 %}
+  {% endfor %}
+  </tbody>
+</table>
+<br/>
+<form target="pagseguro" method="post" action="{{ getLink('pagsegurodonate') }}">
+  <input type="hidden" name="reference" value="{{ account_logged.getId() }}">
+  <table border="0" cellpadding="4" cellspacing="1" width="100%">
+    <tbody>
+    <tr bgcolor="{{ config.vdarkborder }}" class="white">
+      <th colspan="2"><strong>Choose the number of coins you want to donate</strong></th>
+    </tr>
+    <tr bgcolor="{{ config.darkborder }}">
+      <td width="15%">Account Name</td>
+      <td><strong>{{ account_logged.getName() }}</strong></td>
+    </tr>
+    <tr bgcolor="{{ config.darkborder }}">
+      <td width="15%">Coins</td>
+      <td>
+        <select name="code" required style="width: 250px">
+          {% for item in config.pagSeguro.donates %}
+            <option value="{{ item.id }}">R${{ item.value }} ({{ item.coins }}
+              Coins{% if item.extra > 0 %} +{{ item.extra }} bonus{% endif %}){% if is_double and item.coins >= double_start %}(double){% endif %}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+    <tr bgcolor="{{ config.darkborder }}">
+      <td colspan="2">
+        <input type="image" src="https://p.simg.uol.com.br/out/pagseguro/i/botoes/carrinhoproprio/btnFinalizar.jpg"
+               name="submit" {% if is_localhost and not config.enablePagseguroLocal %}disabled{% endif %}/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</form>
+<b><span style="color:#ff0000;">OBS:</span></b> Coins are delivered <b>automatically</b> after
+<u>approved</u> of your payment by PagSeguro.

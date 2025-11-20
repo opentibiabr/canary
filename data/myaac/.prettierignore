@@ -1,0 +1,19 @@
+# Ignore system libs
+plugins/
+system/libs/PagSeguroLibrary
+system/libs/phpmailer
+system/libs/polyfill-mbstring
+system/libs/pot
+system/libs/semver
+system/libs/Twig
+system/cache
+system/php_sessions
+node_modules
+
+# Files
+login.php
+clientcreateaccount.php
+
+# Styles
+admin/bootstrap/pace/templates/pace-theme-loading-bar.tmpl.css
+admin/bootstrap/pace/templates/pace-theme-mac-osx.tmpl.css

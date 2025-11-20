@@ -1,0 +1,15 @@
+<div style="position: relative; height: 15px; width: 100%;">
+	{% if next is not null %}
+	<a style="float: right;" href="{{ getLink('gallery') ~ '/' ~ next }}" >next <img src="images/arrow_right.gif" width=15 height=11 border=0 ></a>
+	{% endif %}
+	{% if previous is not null %}
+	<a style="position: absolute;" href="{{ getLink('gallery') ~ '/' ~ previous }}"><img src="images/arrow_left.gif" width=15 height=11 border=0 > previous</a>
+	{% endif %}
+	<div style="position: absolute; width: 80%; margin-left: 10%; margin-right: 10%; text-align: center;">
+		<a href="{{ getLink('gallery') }}" ><img src="images/arrow_up.gif" width=11 height=15 border=0 > back</a>
+	</div>
+</div>
+<div style="position: relative; text-align: center; top: 20px; ">
+	<img src="{{ image.image }}" />
+	<div style="margin-top: 15px; margin-bottom: 35px; ">{{ image.comment }}</div>
+</div>

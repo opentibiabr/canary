@@ -1,0 +1,287 @@
+<div class="SmallBox">
+	<div class="MessageContainer">
+		<div class="BoxFrameHorizontal" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-horizontal.gif);"></div>
+		<div class="BoxFrameEdgeLeftTop" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-edge.gif);"></div>
+		<div class="BoxFrameEdgeRightTop" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-edge.gif);"></div>
+		<div class="Message">
+			<div class="BoxFrameVerticalLeft" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-vertical.gif);"></div>
+			<div class="BoxFrameVerticalRight" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-vertical.gif);"></div>
+			<table style="width:100%;">
+				<tbody>
+				<tr><td style="width:100%;text-align:center;"><nobr>[<a href="{{ BASE_URL }}?achievements#Grade+1">Grade 1</a>]</nobr> <nobr>[<a href="{{ BASE_URL }}?achievements#Grade+2">Grade 2</a>]</nobr> <nobr>[<a href="{{ BASE_URL }}?achievements#Grade+3">Grade 3</a>]</nobr> <nobr>[<a href="{{ BASE_URL }}?achievements#Grade+4">Grade 4</a>]</nobr> <nobr>[<a href="{{ BASE_URL }}?achievements#Secret+Achievements">Secret Achievements</a>]</nobr> </td></tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="BoxFrameHorizontal" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-horizontal.gif);"></div>
+		<div class="BoxFrameEdgeRightBottom" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-edge.gif);"></div>
+		<div class="BoxFrameEdgeLeftBottom" style="background-image:url({{ PATH_URL }}/images/global/content/box-frame-edge.gif);"></div>
+	</div>
+</div>
+<br>
+<p>Achievements are extra goals that you can accomplish while playing Tibia. This list offers you an overview of all common achievements that can be reached in Tibia. However, there are also a number of secret achievements which you have to discover yourself. Show off your five most impressive achievements on your character page.</p>
+<p>Compare yourself with other characters of your game world in the "Highscores". Achievements yield a certain number of points depending on their grade of difficulty:</p>
+<ul>
+	<li><b>Grade 1:</b> 1-3 points</li>
+	<li><b>Grade 2:</b> 4-6 points</li>
+	<li><b>Grade 3:</b> 7-9 points </li>
+	<li><b>Grade 4:</b>&nbsp;&nbsp;10 points </li>
+</ul>
+<br>
+<a name="Grade+1"></a>
+<div class="TopButtonContainer"><div class="TopButton"><a href="#top"><img style="border:0px;" src="{{ PATH_URL }}/images/global/content/back-to-top.gif"></a></div></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+		<td>
+			<div class="TableContainer">
+				<div class="CaptionContainer">
+					<div class="CaptionInnerContainer">
+						<span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<div class="Text">Grade 1 Achievements
+							<span style="height: 16px; margin-left: 10px; vertical-align: top;"><img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement"></span>
+						</div>
+						<span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+					</div></div>
+				<table class="Table3" cellpadding="0" cellspacing="0">
+					<tbody>
+					{% for achievement in achievements %}
+						{% if achievement.grade == 1 and achievement.secret == false %}
+						<tr>
+							<td>
+								<div class="InnerTableContainer">
+									<table style="width:100%;"><tbody><tr><td>
+												<div class="TableContentContainer">
+													<table class="TableContent" width="100%">
+														<tbody>
+														<tr bgcolor="#D4C0A1"><td><b>{{ achievement.name }}</b></td></tr>
+														<tr bgcolor="#F1E0C6"><td>{{ achievement.description }}</td></tr>
+														</tbody>
+													</table>
+												</div>
+											</td></tr></tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<br>
+<a name="Grade+2"></a>
+<div class="TopButtonContainer"><div class="TopButton"><a href="#top"><img style="border:0px;" src="{{ PATH_URL }}/images/global/content/back-to-top.gif"></a></div></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+		<td>
+			<div class="TableContainer">
+				<div class="CaptionContainer">
+					<div class="CaptionInnerContainer">
+						<span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<div class="Text">
+							<div style="height: 16px;">Grade 2 Achievements
+								<span style="height: 16px; margin-left: 10px; vertical-align: top;">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+								</span>
+							</div>
+						</div>
+						<span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+					</div></div>
+				<table class="Table3" cellpadding="0" cellspacing="0">
+					<tbody>
+					{% for achievement in achievements %}
+						{% if achievement.grade == 2 and achievement.secret == false %}
+							<tr>
+								<td>
+									<div class="InnerTableContainer">
+										<table style="width:100%;"><tbody><tr><td>
+													<div class="TableContentContainer">
+														<table class="TableContent" width="100%">
+															<tbody>
+															<tr bgcolor="#D4C0A1"><td><b>{{ achievement.name }}</b></td></tr>
+															<tr bgcolor="#F1E0C6"><td>{{ achievement.description }}</td></tr>
+															</tbody>
+														</table>
+													</div>
+												</td></tr></tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<br>
+<a name="Grade+3"></a>
+<div class="TopButtonContainer"><div class="TopButton"><a href="#top"><img style="border:0px;" src="{{ PATH_URL }}/images/global/content/back-to-top.gif"></a></div></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+		<td>
+			<div class="TableContainer">
+				<div class="CaptionContainer">
+					<div class="CaptionInnerContainer">
+						<span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<div class="Text">
+							<div style="height: 16px;">Grade 3 Achievements
+								<span style="height: 16px; margin-left: 10px; vertical-align: top;">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+								</span>
+							</div>
+						</div>
+						<span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+					</div></div>
+				<table class="Table3" cellpadding="0" cellspacing="0">
+					<tbody>
+					{% for achievement in achievements %}
+						{% if achievement.grade == 3 and achievement.secret == false %}
+							<tr>
+								<td>
+									<div class="InnerTableContainer">
+										<table style="width:100%;"><tbody><tr><td>
+													<div class="TableContentContainer">
+														<table class="TableContent" width="100%">
+															<tbody>
+															<tr bgcolor="#D4C0A1"><td><b>{{ achievement.name }}</b></td></tr>
+															<tr bgcolor="#F1E0C6"><td>{{ achievement.description }}</td></tr>
+															</tbody>
+														</table>
+													</div>
+												</td></tr></tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<br>
+<a name="Grade+4"></a>
+<div class="TopButtonContainer"><div class="TopButton"><a href="#top"><img style="border:0px;" src="{{ PATH_URL }}/images/global/content/back-to-top.gif"></a></div></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+		<td>
+			<div class="TableContainer">
+				<div class="CaptionContainer">
+					<div class="CaptionInnerContainer">
+						<span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<div class="Text">
+							<div style="height: 16px;">Grade 4 Achievements
+								<span style="height: 16px; margin-left: 10px; vertical-align: top;">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+									<img style="width:18px;height:18px;margin-right:2px;" src="{{ BASE_URL }}images/global/general/achievement-grade-symbol.gif" alt="Tibia Achievement">
+								</span>
+							</div>
+						</div>
+						<span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+					</div></div>
+				<table class="Table3" cellpadding="0" cellspacing="0">
+					<tbody>
+							<tr>
+								<td>
+									<div class="InnerTableContainer">
+										<table style="width:100%;"><tbody><tr><td>
+													<div class="TableContentContainer">
+														<table class="TableContent" width="100%">
+															<tbody>
+															<tr bgcolor="#D4C0A1"><td>There are currently no achievements of this grade available.<br>
+																	We will add exciting new achievements in future updates, so stay tuned!</td></tr>
+															</tbody>
+														</table>
+													</div>
+												</td></tr></tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<br>
+<a name="Secret+Achievements"></a>
+<div class="TopButtonContainer"><div class="TopButton"><a href="#top"><img style="border:0px;" src="{{ PATH_URL }}/images/global/content/back-to-top.gif"></a></div></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr>
+		<td>
+			<div class="TableContainer">
+				<div class="CaptionContainer">
+					<div class="CaptionInnerContainer">
+						<span class="CaptionEdgeLeftTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightTop" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionBorderTop" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionVerticalLeft" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<div class="Text">
+							<div style="height: 16px;">Secret Achievements</div>
+						</div>
+						<span class="CaptionVerticalRight" style="background-image:url(templates/tibiacom/images/global/content/box-frame-vertical.gif);"></span>
+						<span class="CaptionBorderBottom" style="background-image:url(templates/tibiacom/images/global/content/table-headline-border.gif);"></span>
+						<span class="CaptionEdgeLeftBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+						<span class="CaptionEdgeRightBottom" style="background-image:url(templates/tibiacom/images/global/content/box-frame-edge.gif);"></span>
+					</div></div>
+				<table class="Table3" cellpadding="0" cellspacing="0">
+					<tbody>
+					<tr>
+						<td>
+							<div class="InnerTableContainer">
+								<table style="width:100%;"><tbody><tr><td>
+											<div class="TableContentContainer">
+												<table class="TableContent" width="100%">
+													<tbody>
+													<tr bgcolor="#D4C0A1"><td>In addition to the common achievements, there are <b>{{ secret }}</b> achievements that you need to discover for yourself. There is no information about these achievements on our website. Keep your eyes and ears open! Maybe you can catch a hint in the game or on the forum.</td></tr>
+													</tbody>
+												</table>
+											</div>
+										</td></tr></tbody>
+								</table>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</tbody>
+</table>

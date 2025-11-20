@@ -1,0 +1,17 @@
+{
+  "name": "Email Confirmed Reward",
+  "description": "Reward users for confirming their E-Mail.",
+  "version": "1.0",
+  "author": "MyAAC Authors",
+  "contact": "www.my-aac.org",
+  "hooks": {
+    "mail-confirmed-reward": {
+      "type": "EMAIL_CONFIRMED",
+      "file": "plugins/email-confirmed-reward/reward.php"
+    }
+  },
+  "uninstall": [
+    "plugins/email-confirmed-reward.json",
+    "plugins/email-confirmed-reward"
+  ]
+}

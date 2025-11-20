@@ -1,0 +1,22 @@
+{% set title = 'Kick player' %}
+{% set description = 'Are you sure you want to kick player with name <b>' ~ player_name ~ '</b> from your guild?' %}
+{% set custom_buttons = '' %}
+{{ include('success.html.twig') }}
+<br/>
+<div style="text-align:center">
+	<table border="0" cellspacing="0" cellpadding="0" width="100%">
+		<tr>
+			<td align="right" width="50%">
+				<form action="?subtopic=guilds&action=kick_player&guild={{ guild_name }}&name={{ player_name }}&todo=save" method="post">
+					{{ include('buttons.submit.html.twig') }}
+				</form>
+			</td>
+			<td style="width: 10px;"></td>
+			<td>
+				<form action="{{ getLink('guilds') ~ '/' ~ guild_name }}" method="post">
+					{{ include('buttons.back.html.twig') }}
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>

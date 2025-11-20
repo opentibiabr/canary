@@ -1,0 +1,395 @@
+Please choose a name{% if config.character_samples|length > 1 %}, vocation{% endif %}
+{% if config.character_towns|length > 1 %}, town{% endif %} and sex for your character as well as the game world on which you want the character to live. If you cannot think of any fantasy names, click on the link below the name field to get some suggestions for a name.
+<br>
+<br>
+In any case the name must not violate the naming conventions stated in the <a href="?subtopic=rules"
+                                                                              target="_blank">{{ config.lua.serverName }}
+  Rules</a>, or your character might get deleted or name locked.
+{% if account_logged.getPlayersList()|length >= config.characters_per_account %}
+  <b><span style="color: red"> You have maximum number of characters per account on your account. Delete one before you make new.</span></b>
+{% endif %}
+<br>
+<br>
+<br>
+
+<form action="{{ getLink('account/character/create') }}" method="post">
+  <input type="hidden" name="save" value="1">
+
+  <div class="TableContainer">
+    <div class="CaptionContainer">
+      <div class="CaptionInnerContainer">
+        <span class="CaptionEdgeLeftTop"
+              style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+        <span class="CaptionEdgeRightTop"
+              style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span
+          class="CaptionBorderTop"
+          style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+        <span class="CaptionVerticalLeft"
+              style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+        <div class="Text">Create Character</div>
+        <span class="CaptionVerticalRight"
+              style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+        <span class="CaptionBorderBottom"
+              style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+        <span class="CaptionEdgeLeftBottom"
+              style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span
+          class="CaptionEdgeRightBottom"
+          style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span></div>
+    </div>
+    <table class="Table3" cellpadding="0" cellspacing="0">
+      <tbody>
+      <tr>
+        <td>
+          <div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+              <tr>
+                <td>
+                  <div class="TableContentContainer">
+                    <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                      <tbody>
+                      <tr class="LabelH">
+                        <td style="width:50%;"><span>Name</span></td>
+                        <td><span>Sex</span></td>
+                      </tr>
+                      <tr class="Even">
+                        <td><input name="name" id="character_name" value="{{ name }}"
+                                   size="{{ config.character_name_max_length }}"
+                                   maxlength="{{ config.character_name_max_length }}">
+                          <img id="character_indicator"
+                               src="images/global/general/{% if not save or errors.name is defined %}n{% endif %}ok.gif"/>
+                          <br>
+                          <small>
+                            <div
+                              id="character_error">{% if not save or errors.name is defined %}Please enter your character name.{% endif %}</div>
+                          </small>
+                        <td>
+                          {% set i = 0 %}
+                          {% for id, gender in config.genders|reverse(true) %}
+                            {% set i = i + 1 %}
+                            <input type="radio" name="sex" id="sex{{ i }}"
+                                   value="{{ id }}"{% if sex is not null and sex == id %} checked="checked"{% endif %}
+                            ><label for="sex{{ i }}">{{ gender|lower }}</label><br/>
+                          {% endfor %}
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="TableContentContainer">
+                    <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                      <tbody>
+                      <tr class="LabelH">
+                        <td colspan="2">Game World</td>
+                      </tr>
+                      <tr id="filterbox_servertype" style="">
+                        <td style="padding: 1em"><b>Filter by game world category</b><br>
+                          <div style="text-align: justify">There are different game world categories to choose from.
+                            Regular game worlds are the default category, where all game features work as described in
+                            the <a href="https://www.tibia.com/gameguides/?subtopic=manual">manual</a>.<br>
+                            Experimental game worlds are special game worlds, which are sometimes used to test new
+                            features. Characters on these game worlds can be played normally, though they may be
+                            affected by restrictions during tests.<br>
+                            For details on experimental worlds, please see the corresponding <a
+                              href="https://www.tibia.com/gameguides/?subtopic=manual">manual</a> section.<br>
+                            Finally, you can choose if you like to play on a game world which has been protected by
+                            BattlEye from the start. BattlEye is a software that prevents the use of cheat software. It
+                            is running in the background while you are playing Tibia. For more information, please have
+                            a look at our <a
+                              href="https://www.tibia.com/support/?subtopic=gethelp&amp;topicid=41">FAQ</a>.<br>
+                          </div>
+                          <br>
+                          <div align="center">
+                            <table>
+                              <tbody>
+                              <tr>
+                                <td valign="top" style="border:0px;">
+                                  <script>CreateFilterOption('server_type', 'REG', 'Regular Game World')</script>
+                                  <div class="OptionContainer">
+                                    <label for="option_server_type_REG" id="option_server_type_REG_label">
+                                      <input type="radio" name="server_type" id="option_server_type_REG" checked
+                                             value="REG">
+                                      Regular Game World</label>
+                                  </div>
+                                </td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr id="filterbox_location" style="">
+                        <td style="padding: 1em"><b>Filter by game world location</b><br>
+                          <div style="text-align: justify">For a good connection and with this the best possible gaming
+                            experience, please select a game world that is situated nearest your own location.
+                          </div>
+                          <br>
+                          <div align="center">
+                            <table>
+                              <tbody>
+                              <tr>
+                                {% if config.lua.location == 'Europe' %}
+                                  <td style="border:0px;width:20%;">
+                                    <div class="OptionContainer">
+                                      <label for="option_server_location_EUR" id="option_server_location_EUR_label"><img
+                                          class="WorldLocationIcon"
+                                          src="{{ template_path }}/images/global/content/option_server_location_eur.png"
+                                          alt="World Location"><br>
+                                        <input type="radio" name="server_location" id="option_server_location_EUR"
+                                               checked value="EUR">
+                                        Europe</label>
+                                    </div>
+                                    &nbsp;&nbsp;
+                                  </td>
+                                {% endif %}
+                                {% if config.lua.location == 'North America' %}
+                                  <td style="border:0px;width:20%;">
+                                    <div class="OptionContainer">
+                                      <label for="option_server_location_USA" id="option_server_location_USA_label"><img
+                                          class="WorldLocationIcon"
+                                          src="{{ template_path }}/images/global/content/option_server_location_usa.png"
+                                          alt="World Location"><br>
+                                        <input type="radio" name="server_location" id="option_server_location_USA"
+                                               checked value="USA">
+                                        North America</label>
+                                    </div>
+                                    &nbsp;&nbsp;
+                                  </td>
+                                {% endif %}
+                                {% if config.lua.location == 'South America' %}
+                                  <td style="border:0px;width:20%;">
+                                    <div class="OptionContainer">
+                                      <label for="option_server_location_BRA" id="option_server_location_BRA_label"><img
+                                          class="WorldLocationIcon"
+                                          src="{{ template_path }}/images/global/content/option_server_location_bra.png"
+                                          alt="World Location"><br>
+                                        <input type="radio" name="server_location" id="option_server_location_BRA"
+                                               checked value="BRA">
+                                        South&nbsp;America</label>
+                                    </div>
+                                    &nbsp;&nbsp;
+                                  </td>
+                                {% endif %}
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr id="filterbox_pvp" style="display: block;">
+                        <td style="padding: 1em"><b>Filter by game world PvP type</b><br>
+                          <div style="text-align: justify">There are five different game world types that differ in the
+                            strictness of PvP rules. For a detailed description, please have a look at our <a href=""
+                                                                                                              target="_blank">manual</a>.
+                            If you cannot decide for a game world type, we recommend playing on optional PvP.
+                          </div>
+                          <br>
+                          <div align="center">
+                            <table cellpadding="0">
+                              <tbody>
+                              <tr>
+                                {% if config.lua.worldType == 'no-pvp' %}
+                                  <td width="33%" align="center" valign="top" style="border:0px;"><b>
+                                      <div class="OptionContainer">
+                                        <label for="option_server_pvp_type_optional"
+                                               id="option_server_pvp_type_optional_label"><img
+                                            class="ServerInformationIcon"
+                                            src="{{ template_path }}/images/global/content/option_server_pvp_type_optional.gif"
+                                            alt="Server PVP Type" value="optional"><br>
+                                          <input type="radio" name="server_pvp_type"
+                                                 id="option_server_pvp_type_optional" onclick="UpdateServerList(this)"
+                                                 value="optional">
+                                          Optional PvP</label>
+                                      </div>
+                                    </b>&nbsp;&nbsp;Only if both sides agree, characters can be fought<br></td>
+                                {% endif %}
+                                {% if config.lua.worldType == 'pvp' %}
+                                  <td width="33%" align="center" valign="top" style="border:0px;"><b>
+                                      <div class="OptionContainer">
+                                        <label for="option_server_pvp_type_open" id="option_server_pvp_type_open_label"><img
+                                            class="ServerInformationIcon"
+                                            src="{{ template_path }}/images/global/content/option_server_pvp_type_open.gif"
+                                            alt="Server PVP Type" value="open"><br>
+                                          <input type="radio" name="server_pvp_type" id="option_server_pvp_type_open"
+                                                 onclick="UpdateServerList(this)" value="open">
+                                          Open PvP</label>
+                                      </div>
+                                    </b>&nbsp;&nbsp;Killing other characters is possible, but restricted<br></td>
+                                {% endif %}
+                                {% if config.lua.worldType == 'pvp-enforced' %}
+                                  <td width="33%" align="center" valign="top" style="border:0px;"><b>
+                                      <div class="OptionContainer">
+                                        <label for="option_server_pvp_type_hardcore"
+                                               id="option_server_pvp_type_hardcore_label"
+                                               style="color: rgb(90, 40, 0);"><img class="ServerInformationIcon"
+                                                                                   src="{{ template_path }}/images/global/content/option_server_pvp_type_hardcore.gif"
+                                                                                   alt="Server PVP Type"
+                                                                                   value="hardcore"><br>
+                                          <input type="radio" name="server_pvp_type"
+                                                 id="option_server_pvp_type_hardcore" onclick="UpdateServerList(this)"
+                                                 value="hardcore">
+                                          Hardcore PvP</label>
+                                      </div>
+                                    </b>&nbsp;&nbsp;Killing other characters is not restricted at all<br></td>
+                                {% endif %}
+                              </tr>
+                              <tr>
+                                {% if config.lua.worldType == 'retro' %}
+                                  <td width="33%" align="center" valign="top" style="border:0px;"></td>
+
+                                  <td width="33%" align="center" valign="top" style="border:0px;"><b>
+                                      <div class="OptionContainer">
+                                        <label for="option_server_pvp_type_retro"
+                                               id="option_server_pvp_type_retro_label"><img
+                                            class="ServerInformationIcon"
+                                            src="{{ template_path }}/images/global/content/option_server_pvp_type_retro.gif"
+                                            alt="Server PVP Type" value="retro"><br>
+                                          <input type="radio" name="server_pvp_type" id="option_server_pvp_type_retro"
+                                                 onclick="UpdateServerList(this)" value="retro">
+                                          Retro Open PvP</label>
+                                      </div>
+                                    </b> &nbsp;&nbsp;Killing other characters is possible, but restricted (old PvP
+                                    rules)<br></td>
+                                {% endif %}
+                                {% if config.lua.worldType == 'retro-enforced' %}
+                                  <td width="33%" align="center" valign="top" style="border:0px;"><b>
+                                      <div class="OptionContainer">
+                                        <label for="option_server_pvp_type_retrohardcore"
+                                               id="option_server_pvp_type_retrohardcore_label"><img
+                                            class="ServerInformationIcon"
+                                            src="{{ template_path }}/images/global/content/option_server_pvp_type_retrohardcore.gif"
+                                            alt="Server PVP Type" value="retrohardcore"><br>
+                                          <input type="radio" name="server_pvp_type"
+                                                 id="option_server_pvp_type_retrohardcore"
+                                                 onclick="UpdateServerList(this)" value="retrohardcore">
+                                          Retro Hardcore PvP</label>
+                                      </div>
+                                    </b>&nbsp;&nbsp;Killing other characters is not restricted at all (old PvP
+                                    rules)<br></td>
+                                {% endif %}
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="Even">
+                        <td colspan="2">
+                          <table id="js_world_box" width="100%">
+                            <tbody>
+                            <tr id="world_list_tr">
+                              <td style="border-style: none" align="center">
+                                <div style="width: 15em; position: relative; text-align: left;">
+                                  <input type="radio" name="world" id="server_{{ config.lua.serverName }}"
+                                         value="server_{{ config.lua.serverName }}" checked>
+                                  <label for="server_{{ config.lua.serverName }}">{{ config.lua.serverName }}</label>
+                                  <span style="position:relative;top:0px;margin-left:5px;"><a href=""
+                                                                                              target="_blank"><span
+                                        class="HelperDivIndicator"
+                                        onmouseover="ActivateHelperDiv($(this), '<b>BattlEye Protected Game World</b>', '<p>On this game world, BattlEye blocks cheats from the game. The game world has been protected by BattlEye since April 19, 2018.</p>', 'server_{{ config.lua.serverName }}_helper2');"
+                                        onmouseout="$('#HelperDivContainer').hide();"><img style="border:0px;"
+                                                                                           src="{{ template_path }}/images/global/content/icon_battleye.gif"
+                                                                                           alt="special offer"></span></a><span
+                                      id="server_{{ config.lua.serverName }}_helper2"></span></span></div>
+                                &nbsp;<br></td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              {% if config.character_samples|length > 1 %}
+                <tr>
+                  <td>
+                    <div class="TableContentContainer">
+                      <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                        <tbody>
+                        <tr class="LabelH">
+                          <td colspan="2">Select your vocation</td>
+                        </tr>
+                        <tr class="Even">
+                          {% for key, sample_char in config.character_samples %}
+                            <td>
+                              <input type="radio" name="vocation" id="vocation{{ key }}" value="{{ key }}"
+                                {% if vocation is not null and vocation == key %} checked="checked"{% endif %}>
+                              <label for="vocation{{ key }}">{{ config['vocations'][key] }}</label>
+                            </td>
+                          {% endfor %}
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              {% endif %}
+
+              {% if config.character_towns|length > 1 %}
+                <tr>
+                  <td>
+                    <div class="TableContentContainer">
+                      <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                        <tbody>
+                        <tr class="LabelH">
+                          <td colspan="2">Select your town</td>
+                        </tr>
+                        <tr class="Odd">
+                          {% for town_id in config.character_towns %}
+                            <td>
+                              <input type="radio" name="town" id="town{{ town_id }}" value="{{ town_id }}"
+                                {% if town is not null and town == town_id %} checked="checked"{% endif %}>
+                              <label for="town{{ town_id }}">{{ config.towns[town_id] }}</label>
+                            </td>
+                          {% endfor %}
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              {% endif %}
+
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <br/>
+  <table style="width:100%;">
+    <tr align="center">
+      <td>
+        <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="border:0px;">
+              {{ include('buttons.submit.html.twig') }}
+            </td>
+          </tr>
+</form>
+</table>
+</td>
+<td>
+  <table border="0" cellspacing="0" cellpadding="0">
+    <form action="{{ getLink('account/manage') }}" method="post">
+      <tr>
+        <td style="border:0px;">
+          {{ include('buttons.back.html.twig') }}
+        </td>
+      </tr>
+    </form>
+  </table>
+</td>
+</tr>
+</table>
+<script type="text/javascript" src="tools/check_name.js"></script>

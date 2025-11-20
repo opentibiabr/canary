@@ -1,0 +1,231 @@
+<style type="text/css">
+  #account-manage {
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+  }
+
+  div#one {
+    width: 150px;
+    float: left;
+  }
+
+  div#two {
+    margin-left: 150px;
+    padding-left: 10px;
+  }
+
+  .vertical-menu a {
+    background-color: {{ config.lightborder }}; /* Grey background color */
+    color: black; /* Black text color */
+    display: block; /* Make the links appear below each other */
+    padding: 12px; /* Add some padding */
+    text-decoration: none; /* Remove underline from links */
+  }
+
+  .vertical-menu a:hover {
+    background-color: {{ config.darkborder }}; /* Dark grey background on mouse-over */
+  }
+</style>
+{% set menus = {
+  'Create Character': 'account/character/create','Delete Character': 'account/character/delete',
+  'Change Info': 'account/info', 'Change Password': 'account/password', 'Change Email': 'account/email'
+} %}
+<div id="account-manage">
+  <div id="one">
+    <div class="vertical-menu">
+      <a href="{{ getLink('account/manage') }}">My Account</a>
+      {% if recovery_key is empty %}
+        <a href="{{ getLink('account/register') }}">Register Account</a>
+      {% endif %}
+      {% for name, link in menus %}
+        <a href="{{ getLink(link) }}">{{ name }}</a>
+      {% endfor %}
+      {% if config.account_change_character_name %}
+        <a href="{{ getLink('account/character/name') }}">Change Name</a>
+      {% endif %}
+      {% if config.account_change_character_sex %}
+        <a href="{{ getLink('account/character/sex') }}">Change Sex</a>
+      {% endif %}
+      <a href="{{ getLink('account/logout') }}">Logout</a>
+    </div>
+  </div>
+  <div id="two">
+    <h1>My account</h1>
+    <p>Welcome to your account page, {{ account }}<br>
+      {% if config.lua.freePremium %}
+        You have unlimited Premium Account.
+      {% else %}
+        {% set premiumDays = account_logged.getPremDays() %}
+        {% if premiumDays == 0 %}
+          You don't have Premium Account
+        {% else %}
+          You have {{ premiumDays }} days remaining Premium Account.
+        {% endif %}
+      {% endif %}
+    </p>
+
+    {# if account dont have recovery key show hint #}
+    {% if recovery_key is empty %}
+      <div style="text-align:center">
+        You can register your account for increased protection. Click on "Register Account" and get your free recovery
+        key today!<br/>
+        <form action="{{ getLink('account/register') }}" method="post">
+          {% set button_name = 'Register Account' %}
+          {% include('buttons.base.html.twig') %}
+        </form>
+      </div>
+      <br/>
+    {% endif %}
+
+    {% if email_request %}
+      <div style="text-align:center">
+        A request has been submitted to change the email address of this account to <b>{{ email_new }}</b>. After
+        <b>{{ email_new_time|date("j F Y, G:i:s") }}</b> you can accept the new email address and finish the process.
+        Please cancel the request if you do not want your email address to be changed! Also cancel the request if you
+        have no access to the new email address!
+
+        <form action="{{ getLink('account/email') }}" method="post">
+          {% set button_name = 'Edit' %}
+          {% include('buttons.base.html.twig') %}
+        </form>
+      </div>
+      <br/><br/>
+    {% endif %}
+    <a name="General+Information"></a>
+    <h2>General Information</h2>
+    <table width="100%">
+      <tr style="background-color: {{ config.lightborder }};">
+        <td style="width: 90px;">Account {% if constant('USE_ACCOUNT_NAME') %}Name{% else %}Number{% endif %}:</td>
+        <td>{{ account }}</td>
+      </tr>
+      <tr style="background-color: {{ config.darkborder }};">
+        <td style="width: 90px;">Email Address:</td>
+        <td>{{ account_email ~ email_change }}
+          <form action="{{ getLink('account/email') }}" method="post">
+            {% set button_name = 'Change Email' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+      </tr>
+      <tr style="background-color: {{ config.lightborder }};">
+        <td>Created:</td>
+        <td>{{ account_created|date("j F Y, G:i:s") }}</td>
+      </tr>
+      <tr style="background-color: {{ config.darkborder }};">
+        <td>Last Login:</td>
+        <td>{{ account_web_lastlogin|date("j F Y, G:i:s") }}</td>
+      </tr>
+      {% autoescape false %}
+        <tr style="background-color: {{ config.lightborder }};">
+          <td>Account Status:</td>
+          <td>{{ account_status }}</td>
+        </tr>
+        <tr style="background-color: {{ config.darkborder }};">
+          <td>Registered:</td>
+          <td>{{ account_registered }}</td>
+        </tr>
+      {% endautoescape %}
+    </table>
+    <br/>
+    <a name="Public+Information"></a>
+    <h2>Public Information</h2>
+    <table width="100%">
+      <tr style="background-color: {{ config.lightborder }};">
+        <td style="width: 80px;">Real name:</td>
+        <td>{{ account_rlname }}</td>
+      </tr>
+      <tr style="background-color: {{ config.darkborder }};">
+        <td style="width: 80px;">Location:</td>
+        <td>{{ account_location }}</td>
+      </tr>
+    </table>
+    <form action="{{ getLink('account/info') }}" method="post">
+      {% set button_name = 'Change Info' %}
+      {% include('buttons.base.html.twig') %}
+    </form>
+    <br/>
+    <a name="Account+Logs"></a>
+    <h2>Action Log</h2>
+    <table>
+      <tr bgcolor="{{ config.vdarkborder }}" class="white">
+        <th>Action</th>
+        <th>Date</th>
+        <th>IP</th>
+      </tr>
+      {% autoescape false %}
+        {% set i = 0 %}
+        {% for action in actions %}
+          {% set i = i + 1 %}
+          <tr style="background-color: {{ getStyle(i) }}">
+            <td>{{ action.action }}</td>
+            <td>{{ action.date|date("jS F Y H:i:s") }}</td>
+            <td>{{ action.ip }}</td>
+          </tr>
+        {% endfor %}
+      {% endautoescape %}
+    </table>
+    <br/>
+    <a name="Characters"></a>
+    <h2>Character list: {{ players|length }} characters.</h2>
+    <table>
+      <tr bgcolor="{{ config.vdarkborder }}" class="white">
+        <th>Name</th>
+        <th>Level</th>
+        <th>Vocation</th>
+        <th>Town</th>
+        <th>Last login</th>
+        <th>Status</th>
+        <th>Hide</th>
+        <th>Edit</th>
+      </tr>
+      {% set i = 0 %}
+      {% for player in players %}
+        {% set i = i + 1 %}
+        <tr bgcolor="{{ getStyle(i) }}">
+          <td><a href="{{ getLink('characters/' ~ player.getName()|urlencode) }}">{{ player.getName() }}</a></td>
+          <td>{{ player.getLevel() }}</td>
+          <td>{{ player.getVocationName() }}</td>
+          <td>{{ config.towns[player.getTownId()] }}</td>
+          <td>{% if player.getLastLogin() > 0 %}{{ player.getLastLogin|date('d F Y (H:i)') }}{% else %}Never.{% endif %}</td>
+          <td>{% if player.isOnline() %}<span style="color: green">ONLINE</span>{% else %}<span style="color: red">Offline</span>{% endif %}</td>
+          <td>{% if player.isHidden() %}Hidden{% else %}Visible{% endif %}</td>
+          <td>{% if not player.isDeleted() %}[<a href="{{ getLink('account/character/comment/' ~ player.getName|urlencode) }}">Edit</a>]{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <br/>
+    <table>
+      <tr>
+        <td>
+          <form action="{{ getLink('account/character/create') }}" method="post">
+            {% set button_name = 'Create Character' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+        {% if config.account_change_character_name %}
+          <td>
+            <form action="{{ getLink('account/character/name') }}" method="post">
+              {% set button_name = 'Change Name' %}
+              {% include('buttons.base.html.twig') %}
+            </form>
+          </td>
+        {% endif %}
+        {% if config.account_change_character_sex %}
+          <td>
+            <form action="{{ getLink('account/character/sex') }}" method="post">
+              {% set button_name = 'Change Sex' %}
+              {% include('buttons.base.html.twig') %}
+            </form>
+          </td>
+        {% endif %}
+        <td>
+          <form action="{{ getLink('account/character/delete') }}" method="post">
+            {% set button_name = 'Delete Character' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

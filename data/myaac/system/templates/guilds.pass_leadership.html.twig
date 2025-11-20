@@ -1,0 +1,40 @@
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Pass leadership</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td><div class="TableContentContainer">
+                      <table class="TableContent" width="100%">
+                        <tbody>
+                          <tr bgcolor="#D4C0A1">
+						  <form action="?subtopic=guilds&guild={{ guild.getName() }}&action=pass_leadership" method="post">
+                            <td><b>Pass leadership to:</b></td>
+							<td><input type="hidden" name="todo" value="save"/><input type="text" size="40" placeholder="Character name" name="player"/></td>
+							<td>{% include('buttons.submit.html.twig') %}</td>
+                          </form>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br/>
+<div style="display: flex; justify-content: center;">
+	<form action="?guilds/{{ guild.getName() }}" method="post">
+		{{ include('buttons.back.html.twig') }}
+	</form>
+</div>

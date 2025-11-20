@@ -1,0 +1,140 @@
+<form action="{{ getLink('account/manage') }}" method="post" style="margin: 0px; padding: 0px;">
+	{% if redirect is not null %}
+		<input type="hidden" name="redirect" value="{{ redirect }}" />
+	{% endif %}
+	<div class="TableContainer" >
+		<table class="Table4" cellpadding="0" cellspacing="0" >
+			<div class="CaptionContainer" >
+				<div class="CaptionInnerContainer" >
+					<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);" ></span>
+					<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);" /></span>
+					<div class="Text" >Account Login</div>
+					<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);" /></span>
+					<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);" ></span>
+					<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);" /></span>
+				</div>
+			</div>
+			<tr>
+				<td>
+					<div class="InnerTableContainer" >
+						<table style="width:100%;">
+							<tbody>
+							<tr>
+								<td>
+										<div class="TableContentContainer" >
+											<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+											<tbody>
+												<tr>
+													<td>
+														<table style="float: left; width: 100%;" cellpadding="0" cellspacing="0" >
+															<tr>
+																<td class="LabelV">
+																	<span{% if error is not null %} class="red"{% endif %}>{{ account_login_by }}:</span>
+																</td>
+																<td><input style="width: 100%;" type="text" name="account_login" size="35" maxlength="30" autofocus /></td>
+															</tr>
+															<tr>
+																<td class="LabelV" ><span{% if error is not null %} class="red"{% endif %}>Tibia Password:</span></td>
+																<td><input style="width: 100%;" type="password" name="password_login" size="35" maxlength="29" /></td>
+															</tr>
+															<tr>
+																<td class="LabelV" ></td>
+																<td><input type="checkbox" id="remember_me" name="remember_me" value="true" />
+																	<label for="remember_me"> Remember me</label></td>
+															</tr>
+														</table>
+													</td>
+														<td id="LoginFormButtonCell">
+														<table style="float: left; width: 100%;" cellpadding="0" cellspacing="0" >
+														<div style="float: right; font-size: 1px;" >
+															<input type="hidden" name="page" value="overview" >
+															{{ include('buttons.login.html.twig') }}
+</form>
+															<div style="width: 2px; height: 2px;" ></div>
+																<form action="{{ getLink('account/lost') }}" method="post" style="padding:0px;margin:0px;" >
+																	{{ include('buttons.account_lost.html.twig') }}
+																</form>
+														</div>
+														</table>
+														</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+								</td>
+							</tr>
+							</tbody>
+							
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<br/>
+
+<div style="text-align:center">
+	<h1>New to {{ config.lua.serverName }}?</h1>
+</div>
+<div class="TableContainer">
+<div class="CaptionContainer">
+<div class="CaptionInnerContainer">
+<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+<div class="Text">New Player</div>
+<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+</div>
+</div>
+<table class="Table3" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td>
+	<div class="InnerTableContainer">
+		<table style="width:100%;">
+			<tbody>
+				<tr>
+					<td>
+						<div class="TableContentContainer">
+							<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+								<tbody>
+									<tr>
+										<td>
+											<div style="float: right; margin-top: 20px;">
+											{% spaceless %}
+												<form class="MediumButtonForm" action="{{ getLink('account/create') }}" method="post" >
+													<div class="MediumButtonBackground" style="background-image:url({{ template_path }}/images/global/buttons/mediumbutton.gif)" onMouseOver="MouseOverBigButton(this);" onMouseOut="MouseOutBigButton(this);">
+														<div class="MediumButtonOver" style="background-image:url({{ template_path }}/images/global/buttons/mediumbutton-over.gif)" onMouseOver="MouseOverBigButton(this);" onMouseOut="MouseOutBigButton(this);"></div>
+														<input class="MediumButtonText" type="image" name="Create Account" alt="Create Account" src="{{ template_path }}/images/global/buttons/mediumbutton_createaccount.png" />
+													</div>
+												</form>
+											{% endspaceless %}
+											</div>
+										<div id="LoginCreateAccountBox"><p><b>{{ config.lua.serverName }}...</b></p>
+										<div style="margin-left: 10px;"><p>... where hardcore gaming meets fantasy.</p><p>... where friendships last a lifetime.</p><p>... unites adventurers since 1997!</p>
+										</div>
+										</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+

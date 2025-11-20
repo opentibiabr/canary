@@ -1,0 +1,79 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Something went wrong...</title>
+  <meta name="description" content="myaac">
+  <meta name="generator" content="MyAAC">
+
+  <base href="{{ BASE_URL }}"/>
+  <link rel="stylesheet" href="tools/css/messages.css">
+  <link rel="shortcut icon" href="images/error.ico">
+
+  <style>
+    body {
+      background-color: #e3e7ed;
+      font-family: Verdana, Geneva, sans-serif;
+    }
+
+    .center {
+      height: 500px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      margin: auto;
+    }
+
+    .wide {
+      max-width: 650px;
+    }
+
+    .big {
+      font-size: 20px !important;
+    }
+
+    #footer {
+      position: absolute;
+      bottom: 15px;
+      width: 100%;
+
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #555;
+    }
+
+    #footer p {
+      text-align: center;
+    }
+
+    .error {
+      font-weight: normal;
+      font-size: 12px;
+    }
+  </style>
+  <!--[if lt IE 9]>
+  <script src="tools/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="center wide">
+  <h2 class="wide">Whoops something went wrong...</h2>
+  <div class="error wide">
+    Exception class: {{ exceptionClass }}()
+    <br/><br/>
+    {{ message }}
+    <br/><br/><br/>
+    <b>Backtrace:</b><br/><br/>
+    {{ backtrace }}
+  </div>
+</div>
+<div id="footer">
+  <p>{{ powered_by }}</p>
+</div>
+</body>
+</html>

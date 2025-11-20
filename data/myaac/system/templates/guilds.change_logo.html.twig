@@ -1,0 +1,83 @@
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Change Guild Banner</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table5" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td><div class="TableContentContainer">
+                      <table class="TableContent" width="100%">
+                        <tbody>
+                          <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+                            <td><b>Here you can change logo of your guild.</b></td>
+                          </tr>
+						  <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+						  	<td>
+								<img src="images/guilds/{{ guild_logo }}" height="64" width="64">
+							</td>
+						  </tr>
+						  <form enctype="multipart/form-data" action="?subtopic=guilds&guild={{ guild.getName() }}&action=change_logo" method="post" id="upload_form">
+						  <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+                            <td>
+								<input type="hidden" name="todo" value="save" />
+								<input type="hidden" name="MAX_FILE_SIZE" value="{{ max_image_size_b }}" />
+								<b>Select new logo:</b> <input name="newlogo" id="newlogo" type="file" />
+							</td>
+                          </tr>
+						  <tr>
+						  	<td style="height: 5px;">
+							</td>
+						  </tr>
+						  <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+						  	<td>
+								{% set button_name = 'Send Banner' %}
+								{% include('buttons.base_green.html.twig') %}
+							</td>
+						  </tr>
+						</form>
+						  <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+						  	<td>
+								Only <b>jpg, gif, png, bmp</b> pictures. Max. size: <b>{{ config.guild_image_size_kb }} KB</b>
+							</td>
+						  </tr>
+                        </tbody>
+                      </table>
+                    </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br>
+<div style="display: flex; justify-content: center;">
+	<form action="?guilds/{{ guild.getName() }}" method="post">
+		{{ include('buttons.back.html.twig') }}
+	</form>
+</div>
+<script type="text/javascript">
+	$(function() {
+		$('#upload_form').submit(function (event) {
+			var max_img_size = {{ config.guild_image_size_kb * 1024 }};
+			var input = document.getElementById("newlogo");
+			// check for browser support (may need to be modified)
+			if (input.files && input.files.length == 1) {
+				if (input.files[0].size > max_img_size) {
+					alert("The file must be less than " + (max_img_size / 1024) + "KB");
+					event.preventDefault();
+					return false;
+				}
+			}
+
+			return true;
+		});
+	});
+</script>

@@ -1,0 +1,17 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "*.php"
+      ],
+      "options": {
+        "parser": "php",
+        "singleQuote": true,
+        "semi": false,
+        "tabWidth": 2,
+        "printWidth": 100,
+        "trailingComma": "none"
+      }
+    }
+  ]
+}

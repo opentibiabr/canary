@@ -1,0 +1,170 @@
+<div class="ForumBreadCrumbsSeparator"></div>
+
+<form action="?" method="post">
+<input type="hidden" name="action" value="new_thread" />
+<input type="hidden" name="section_id" value="{{ section_id }}" />
+<input type="hidden" name="subtopic" value="forum" />
+<input type="hidden" name="save" value="save" />
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Post New Thread</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td><div class="TableContentContainer">
+                      <table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+                        <tbody>
+                          <tr>
+                            <td bgcolor="#D4C0A1" class="ff_std" colspan="1" align="left" valign="top"><b>Tibia Character:</b></td>
+                            <td bgcolor="#D4C0A1" class="ff_std" colspan="1" align="left">
+								<select name="char_id"><option value="0">(Choose Character)</option>
+									{% for player in players %}
+									<option value="{{ player.id }}"{% if player.id == post_player_id %} selected="selected"{% endif %}>{{ player.name }}</option>
+									{% endfor %}
+								</select>
+                              </td>
+                          </tr>
+                          <tr>
+                            <td bgcolor="#F1E0C6" class="ff_std" colspan="1" align="left" valign="top"><b>Topic:</b></td>
+                            <td bgcolor="#F1E0C6" class="ff_std" colspan="1" align="left"><input type="text" name="topic" value="{{ post_thread|escape }}" size="40" maxlength="60" />
+                              <font class="ff_info"> (Optional)</font></td>
+                          </tr>
+                          <tr>
+                            <td bgcolor="#D4C0A1" class="ff_std" colspan="1" align="left" valign="top"><b>Topic Icon:</b></td>
+                            <td bgcolor="#D4C0A1" class="ff_std" colspan="1" align="left"><input type="radio" name="forum_iconid" value="1">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/27.gif" border="0" width="15" height="15" alt="Post">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="2">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/26.gif" border="0" width="15" height="15" alt="Arrow">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="3">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/25.gif" border="0" width="15" height="15" alt="Lightbulb">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="4">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/24.gif" border="0" width="15" height="15" alt="Exclamation">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="5">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/23.gif" border="0" width="15" height="15" alt="Question">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="6">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/22.gif" border="0" width="15" height="15" alt="Cool">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="7">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/21.gif" border="0" width="15" height="15" alt="Smile">&nbsp;&nbsp;&nbsp;<br>
+                              <input type="radio" name="forum_iconid" value="8">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/20.gif" border="0" width="15" height="15" alt="Angry">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="9">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/19.gif" border="0" width="15" height="15" alt="Unhappy">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="10">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/18.gif" border="0" width="15" height="15" alt="Talking">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="11">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/17.gif" border="0" width="15" height="15" alt="Red face">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="12">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/16.gif" border="0" width="15" height="15" alt="Wink">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="13">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/15.gif" border="0" width="15" height="15" alt="Thumbs down">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="14">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/14.gif" border="0" width="15" height="15" alt="Thumbs up">&nbsp;&nbsp;&nbsp;<br>
+                              <input type="radio" name="forum_iconid" value="15">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/13.gif" border="0" width="15" height="15" alt="Roll Eyes">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="16">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/12.gif" border="0" width="15" height="15" alt="Eek">&nbsp;&nbsp;&nbsp;
+                              <input type="radio" name="forum_iconid" value="17">
+                              &nbsp;<img src="{{ template_path }}/images/global/forum/icons/11.gif" border="0" width="15" height="15" alt="Stuck Tongue Out">&nbsp;&nbsp;&nbsp;<br>
+                              <input type="radio" name="forum_iconid" value="-1" checked="">
+                              &nbsp;No Icon</td>
+                          </tr>
+                          <tr>
+                            <td bgcolor="#F1E0C6" class="ff_std" colspan="1" align="left" valign="top"><b>Message:</b><br>
+                              <font class="ff_info">You can use:<br>
+								<b>[player]</b>Nick<b>[/player]</b><br>
+								<b>[url]</b>http://address.com/<b>[/url]</b><br>
+								<b>[img]</b>http://images.com/images3.gif<b>[/img]</b><br>
+								<b>[code]</b>Code<b>[/code]</b><br>
+								<b>[b]</b>Text<b>[/b]</b><br>
+								<b>[i]</b>Text<b>[/i]</b><br>
+								<b>[u]</b>Text<b>[/u]</b><br>
+                              <br>
+                              How to use smileys:<br>
+                              <table border="0" cellpadding="2" cellspacing="0" width="100%">
+                                <tbody>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/10.gif" border="0" width="15" height="15" alt="Cool"></td>
+                                    <td colspan="1" align="left">:cool:</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/9.gif" border="0" width="15" height="15" alt="Smile"></td>
+                                    <td colspan="1" align="left">:)</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/8.gif" border="0" width="15" height="15" alt="Angry"></td>
+                                    <td colspan="1" align="left">:mad:</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/7.gif" border="0" width="15" height="15" alt="Unhappy"></td>
+                                    <td colspan="1" align="left">:(</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/6.gif" border="0" width="15" height="15" alt="Talking"></td>
+                                    <td colspan="1" align="left">:D</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/5.gif" border="0" width="15" height="15" alt="Red face"></td>
+                                    <td colspan="1" align="left">:o</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/4.gif" border="0" width="15" height="15" alt="Wink"></td>
+                                    <td colspan="1" align="left">;)</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/3.gif" border="0" width="15" height="15" alt="Roll Eyes"></td>
+                                    <td colspan="1" align="left">:rolleyes:</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/2.gif" border="0" width="15" height="15" alt="Eek"></td>
+                                    <td colspan="1" align="left">:eek:</td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="1" align="left"><img src="{{ template_path }}/images/global/forum/smile/1.gif" border="0" width="15" height="15" alt="Stuck Tongue Out"></td>
+                                    <td colspan="1" align="left">:p</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              </font></td>
+                            <td bgcolor="#F1E0C6" class="ff_std" colspan="1" align="left"><textarea rows="20" maxlength="15000" cols="55" name="text">{{ post_text|escape }}</textarea>
+                              <div id="forum_pt_lenght">Max 15.000 letters.</div></td>
+                          </tr>
+                          <tr>
+                            <td bgcolor="#D4C0A1" class="ff_std" colspan="1" align="left" valign="top"><b>Options:</b></td>
+                            <td bgcolor="#D4C0A1" class="ff_info" colspan="1" align="left">
+                              <input type="checkbox" name="smile" value="1"{% if post_smile %} checked="checked"{% endif %}/>
+                              &nbsp;<b>Disable Smileys in This Post </b><br>
+							  {% if canEdit %}
+                              <input type="checkbox" name="html" value="1"{% if post_html %} checked="checked"{% endif %}/>
+                              &nbsp;<b>Enable HTML in this post</b> (moderator only)<br></td>
+							  {% endif %}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div></td>
+                </tr>
+                <tr>
+                  <td><table class="InnerTableButtonRow2" cellpadding="0" cellspacing="0">
+                      <tbody>
+                        <tr>
+                          <td>
+						  	<div class="BigButton" style="background-image:url({{ template_path }}/images/global/buttons/sbutton.gif)"><div onmouseover="MouseOverBigButton(this);" onmouseout="MouseOutBigButton(this);"><div class="BigButtonOver" style="background-image: url({{ template_path }}/images/global/buttons/sbutton_over.gif); visibility: hidden;"></div><input name="auction_confirm" class="BigButtonText" type="submit" value="Post Thread"></div></div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</form>

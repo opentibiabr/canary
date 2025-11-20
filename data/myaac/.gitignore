@@ -1,0 +1,84 @@
+Thumbs.db
+.DS_Store
+.idea
+# git rm --cached -r .idea
+
+#
+/.htaccess
+
+# composer
+composer.lock
+vendor
+
+# npm
+node_modules
+
+# cypress
+cypress.env.json
+cypress/e2e/2-advanced-examples
+cypress/e2e/advanced-examples/*
+
+# created by release.sh
+releases
+tmp
+
+config.local.php
+cache/serverstatus.txt
+cache/usercounter.tx
+downloads/*
+logs/
+logs
+!logs/index.html
+
+# all custom templates
+templates/*
+!templates/tibiacom
+!templates/kathrine
+
+# guild images
+images/guilds/*
+!images/guilds/default.gif
+
+# editor images
+images/editor/*
+!images/editor/index.html
+
+# gallery images
+images/gallery/*
+!images/gallery/index.html
+!images/gallery/demon.jpg
+!images/gallery/demon_thumb.gif
+
+# cache
+system/cache/*
+!system/cache/index.html
+!system/cache/twig/index.html
+!system/cache/signatures/index.html
+!system/cache/plugins/index.html
+
+# php sessions
+system/php_sessions/*
+!system/php_sessions/index.html
+
+# logs
+system/logs/*
+!system/logs/index.html
+logs/
+
+# data
+system/data/*
+!system/data/index.html
+
+# plugins
+plugins/*
+!plugins/.htaccess
+!plugins/example.json
+!plugins/account-create-hint.json
+!plugins/account-create-hint
+!plugins/email-confirmed-reward.json
+!plugins/email-confirmed-reward
+landing
+!plugins/pagseguro
+
+# others/rest
+system/pages/downloads.php

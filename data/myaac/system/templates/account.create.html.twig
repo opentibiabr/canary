@@ -1,0 +1,348 @@
+{{ hook('HOOK_ACCOUNT_CREATE_BEFORE_FORM') }}
+<form action="{{ getLink('account/create') }}" method="post" id="createaccount">
+	<div class="TableContainer" >
+		<table class="Table5" cellpadding="0" cellspacing="0" >
+			<div class="CaptionContainer" >
+				<div class="CaptionInnerContainer" >
+					<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+					<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" /></span>
+					<div class="Text" >Create {{ config.lua.serverName }} Account</div>
+					<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" /></span>
+					<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+					<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+				</div>
+			</div>
+			<tr>
+				<td>
+					<div class="InnerTableContainer" >
+						<table style="width:100%;" >
+							{{ hook('HOOK_ACCOUNT_CREATE_BEFORE_BOXES') }}
+							<tr>
+								<td>
+									<div class="TableShadowContainerRightTop"> <div class="TableShadowRightTop" style="background-image:url({{ template_path }}/images/global/content/table-shadow-rt.gif);"></div></div>
+									<div class="TableContentAndRightShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-rm.gif);">
+										<div class="TableContentContainer">
+											<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+												<tbody>
+
+												{{ hook('HOOK_ACCOUNT_CREATE_BEFORE_ACCOUNT') }}
+												
+												{% if config.account_login_by_email %}
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.account is defined %} class="red"{% endif %}>Account {% if constant('USE_ACCOUNT_NAME') %}Name{% else %}Number{% endif %}:</span>
+													</td>
+													<td>
+														<input type="text" name="account" id="account_input" size="30" maxlength="{% if constant('USE_ACCOUNT_NAME') %}30{% else %}10{% endif %}" />
+														<img id="account_indicator" src="images/global/general/{% if not save or errors.account is defined %}n{% endif %}ok.gif" style="display: none;" />
+														{% if constant('USE_ACCOUNT_NAME') %}
+															<div id="SuggestAccountNumber">[<a href="#">suggest number</a>]</div>
+														{% endif %}
+													</td>
+												</tr>
+												{% endif %}
+												<tr><td></td><td><span id="account_error" class="FormFieldError">{% if errors.account is defined %}{{ errors.account }}{% endif %}</span></td></tr>
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_ACCOUNT') }}
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.email is defined %} class="red"{% endif %}>Email Address:</span>
+													</td>
+													<td>
+														<input type="text" name="email" id="email" size="30" maxlength="50" value="{{ email }}" />
+														<img id="email_indicator" src="images/global/general/{% if not save or errors.email is defined %}n{% endif %}ok.gif" style="display: none;" />
+													</td>
+												</tr>
+												<tr>
+													<td></td><td><span id="email_error" class="FormFieldError">{% if errors.email is defined %}{{ errors.email }}{% endif %}</span></td>
+												</tr>
+
+												{% if config.mail_enabled and config.account_mail_verify %}
+													<tr><td></td><td><span><strong>Please use real address!<br/>We will send a link to validate your Email.</strong></span></td></tr>
+												{% endif %}
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_EMAIL') }}
+
+                                                {% if config.account_country %}
+													<tr>
+														<td class="LabelV" style="width: 150px">
+															<span{% if errors.country[0] is defined %} class="red"{% endif %}>Country:</span>
+														</td>
+														<td>
+															<select name="country" id="account_country">
+                                                                {% for code, country_ in countries %}
+																	<option value="{{ code }}"{% if(country is defined and country == code) or (country is null and country_recognized == code) %}selected{% endif %}>{{ country_ }}</option>
+                                                                {% endfor %}
+															</select>
+															<img src="" id="account_country_img"/>
+														</td>
+													</tr>
+                                                    {% if errors.country is defined %}
+														<tr><td></td><td><span class="FormFieldError">{{ errors.country }}</span></td></tr>
+                                                    {% endif %}
+                                                {% endif %}
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_COUNTRY') }}
+
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.password is defined %} class="red"{% endif %}>Password:</span>
+													</td>
+													<td>
+														<input type="password" name="password" id="password" value="" size="30" maxlength="29" />
+														<img id="password_indicator" src="images/global/general/{% if not save or errors.password is defined %}n{% endif %}ok.gif" style="display: none;" />
+													</td>
+												</tr>
+												<tr><td></td><td><span id="password_error" class="FormFieldError">{% if errors.password is defined %}{{ errors.password }}{% endif %}</span></td></tr>
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.password is defined %} class="red"{% endif %}>Repeat password:</span>
+													</td>
+													<td>
+														<input type="password" name="password2" id="password2" value="" size="30" maxlength="29" />
+														<img id="password2_indicator" src="images/global/general/{% if not save or errors.password is defined %}n{% endif %}ok.gif" style="display: none;" />
+													</td>
+												</tr>
+												<tr><td></td><td><span id="password2_error" class="FormFieldError">{% if errors.password is defined %}{{ errors.password }}{% endif %}</span></td></tr>
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_PASSWORDS') }}
+
+                                                {% if config.recaptcha_enabled %}
+													<tr>
+														<td class="LabelV" style="width: 150px">
+															<span{% if errors.verification[0] is defined %} class="red"{% endif %}>Verification:</span>
+														</td>
+														<td>
+															<div class="g-recaptcha" data-sitekey="{{ config.recaptcha_site_key }}" data-theme="{{ config.recaptcha_theme }}"></div>
+														</td>
+													</tr>
+                                                    {% if errors.verification is defined %}
+														<tr><td></td><td><span class="FormFieldError">{{ errors.verification }}</span></td></tr>
+                                                    {% endif %}
+                                                {% endif %}
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_RECAPTCHA') }}
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="TableShadowContainer">
+										<div class="TableBottomShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-bm.gif);"> <div class="TableBottomLeftShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-bl.gif);"></div> <div class="TableBottomRightShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-br.gif);"></div> </div></div>
+								</td>
+							</tr>
+
+							{{ hook('HOOK_ACCOUNT_CREATE_BETWEEN_BOXES_1') }}
+
+							{% if (not config.mail_enabled or not config.account_mail_verify) and config.account_create_character_create %}
+							<tr>
+								<td>
+									<div class="TableShadowContainerRightTop">
+										<div class="TableShadowRightTop" style="background-image:url({{ template_path }}/images/global/content/table-shadow-rt.gif);"></div>
+									</div>
+									<div class="TableContentAndRightShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-rm.gif);">
+										<div class="TableContentContainer">
+											<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+												<tbody>
+
+												{{ hook('HOOK_ACCOUNT_CREATE_BEFORE_CHARACTER_NAME') }}
+
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.name is defined %} class="red"{% endif %}>Character Name:</span>
+													</td>
+													<td>
+														<input id="character_name" name="name" size="{{ config.character_name_max_length }}" maxlength="{{ config.character_name_max_length }}" value="{{ name }}"/>
+														<img id="character_indicator" src="images/global/general/{% if not save or errors.name is defined %}n{% endif %}ok.gif" style="display: none;" />														<br>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<span id="character_error" class="FormFieldError">{% if errors.name is defined %}{{ errors.name }}{% endif %}</span>
+													</td>
+												</tr>
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_CHARACTER_NAME') }}
+
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.sex is defined %} class="red"{% endif %}>Sex:</span>
+													</td>
+													<td>
+														<table width="100%">
+															<tbody>
+															<tr>
+																<td>
+                                                                    {% set i = 0 %}
+                                                                    {% for id, gender in config.genders|reverse(true) %}
+                                                                        {% set i = i + 1 %}
+																		<span style="margin-right:15px;" class="OptionContainer">
+																			<input type="radio" name="sex" id="sex{{ i }}" value="{{ id }}"{% if sex is not null and sex == id %} checked="checked"{% endif %}>
+																			<label for="sex{{ i }}">{{ gender|lower }}</label>
+																		</span>
+                                                                    {% endfor %}
+																</td>
+																<td>
+																</td>
+															</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<span id="sex_error" class="FormFieldError">{% if errors.sex is defined %}{{ errors.sex }}{% endif %}</span>
+													</td>
+												</tr>
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_SEX') }}
+
+                                                {% if config.character_samples|length > 1 %}
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.vocation is defined %} class="red"{% endif %}>Vocation:</span>
+													</td>
+													<td>
+														<table width="100%" >
+															<tbody>
+															<tr>
+																<td>
+                                                           		{% for key, sample_char in config.character_samples %}
+																	<span style="margin-right:15px;" class="OptionContainer">
+																		<input type="radio" name="vocation" id="vocation{{ key }}" value="{{ key }}"
+                                                                                {% if vocation is not null and vocation == key %} checked="checked"{% endif %}>
+																		<label for="vocation{{ key }}">{{ config['vocations'][key] }}</label>
+																	</span>
+                                                            	{% endfor %}
+																</td>
+															</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<span id="vocation_error" class="FormFieldError">{% if errors.vocation is defined %}{{ errors.vocation }}{% endif %}</span>
+													</td>
+												</tr>
+												{% endif %}
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_VOCATION') }}
+
+                                                {% if config.character_towns|length > 1 %}
+												<tr>
+													<td class="LabelV" style="width: 150px">
+														<span{% if errors.town is defined %} class="red"{% endif %}>Select your town:</span>
+													</td>
+													<td>
+														<table width="100%" >
+															<tbody>
+															<tr>
+																<td>
+																	{% for town_id in config.character_towns %}
+																		<span style="margin-right:15px;" class="OptionContainer">
+																			<input type="radio" name="town" id="town{{ town_id }}" value="{{ town_id }}"
+																					{% if town is not null and town == town_id %} checked="checked"{% endif %}>
+																			<label for="town{{ town_id }}">{{ config.towns[town_id] }}</label>
+																		</span>
+																	{% endfor %}
+																</td>
+															</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+                                                {% endif %}
+
+												{{ hook('HOOK_ACCOUNT_CREATE_AFTER_TOWNS') }}
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="TableShadowContainer">
+										<div class="TableBottomShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-bm.gif);">
+											<div class="TableBottomLeftShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-bl.gif);"></div>
+											<div class="TableBottomRightShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-br.gif);"></div>
+										</div>
+									</div>
+								</td>
+							</tr>
+							{% endif %}
+
+							{{ hook('HOOK_ACCOUNT_CREATE_BETWEEN_BOXES_2') }}
+
+							<tr>
+								<td>
+									<div class="TableShadowContainerRightTop">
+										<div class="TableShadowRightTop" style="background-image:url({{ template_path }}/images/global/content/table-shadow-rt.gif);"></div>
+									</div>
+									<div class="TableContentAndRightShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-rm.gif);">
+										<div class="TableContentContainer">
+											<table class="TableContent" width="100%" style="border:1px solid #faf0d7;">
+												<tbody>
+												<tr>
+													<td colspan="2" ><b>Please select the following check box:</b></td>
+												</tr>
+												<tr>
+													<td colspan="2" >
+														<span><input type="checkbox" id="accept_rules" name="accept_rules" value="true"{% if accept_rules %}checked{% endif %}/> <label for="accept_rules">I agree to the <a href="?subtopic=rules" target="_blank">{{ config.lua.serverName }} Rules</a>.</label></span>
+													</td>
+												</tr>
+                                                {% if errors.accept_rules is defined %}
+													<tr>
+														<td colspan="2">
+															<span class="FormFieldError">{{ errors.accept_rules }}</span>
+														</td>
+													</tr>
+                                                {% endif %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="TableShadowContainer">
+										<div class="TableBottomShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-bm.gif);"> <div class="TableBottomLeftShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-bl.gif);"></div> <div class="TableBottomRightShadow" style="background-image:url({{ template_path }}/images/global/content/table-shadow-br.gif);"></div>
+										</div>
+									</div>
+								</td>
+							</tr>
+
+							{{ hook('HOOK_ACCOUNT_CREATE_AFTER_BOXES') }}
+
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<br/>
+	{{ hook('HOOK_ACCOUNT_CREATE_BEFORE_SUBMIT_BUTTON') }}
+	<table width="100%">
+		<tr align="center">
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0" >
+					<tr>
+						<td style="border:0px;" >
+							<input type="hidden" name="save" value="1" >
+							{{ include('buttons.submit.html.twig') }}
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+{{ hook('HOOK_ACCOUNT_CREATE_AFTER_FORM') }}
+<script type="text/javascript" src="tools/check_name.js"></script>
+<style>
+	#SuggestAccountNumber {
+		font-size: 7pt;
+	}
+	#SuggestCharacterName {
+		font-size: 7pt;
+	}
+</style>

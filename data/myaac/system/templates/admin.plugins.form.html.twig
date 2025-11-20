@@ -1,0 +1,27 @@
+<div class="row">
+	<div class="col-md-3">
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Install plugin:</h3>
+				<div class="box-tools pull-right">
+					<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+					</button>
+				</div>
+			</div>
+			<div class="box-body">
+				<form enctype="multipart/form-data" method="post" action="{{ constant('ADMIN_URL') }}?p=plugins">
+					<input type="hidden" name="upload_plugin"/>
+					<div class="box-body">
+						<div class="form-group">
+							<label for="exampleInputFile">File input</label>
+							<input type="file" name="plugin" accept=".zip">
+						</div>
+					</div>
+					<div class="box-footer">
+						<button type="submit" class="btn btn-success"><i class="fa fa-check"></i> Upload</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,37 @@
+<form action="?subtopic=guilds&action=change_rank&guild={{ guild_name }}&todo=save" method="post">
+	<table border="0" cellspacing="1" cellpadding="4" width="100%">
+		<tr bgcolor="{{ config.vdarkborder }}"><td class="white"><b>Change Rank</b></td></tr>
+		<tr bgcolor="{{ config.darkborder }}">
+			<td>
+				<table border="0" cellpadding="1">
+					<tr>
+						<td>Name: <select name="name">
+								{% for player in players %}
+									<option value="{{ player[0] }}">{{ player[1] }}</option>
+								{% endfor %}
+							</select>&nbsp;Rank:&nbsp;<select name="rankid">
+								{% for rank in ranks %}
+									<option value="{{ rank[0] }}">{{ rank[1] }}</option>
+								{% endfor %}
+							</select>
+						</td>
+						<td>
+							{{ include('buttons.submit.html.twig') }}
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</form>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td>
+			<div style="text-align:center">
+				<form action="?subtopic=guilds&action=show&guild={{ guild_name }}" method="post">
+					{{ include('buttons.back.html.twig') }}
+				</form>
+			</div>
+		</td>
+	</tr>
+</table>

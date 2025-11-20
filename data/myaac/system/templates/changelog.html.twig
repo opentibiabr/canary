@@ -1,0 +1,38 @@
+<br/>
+<table border="0" cellspacing="1" cellpadding="4" width="100%">
+	<tr bgcolor="{{ config.vdarkborder }}">
+		<td width="22"><span class="white"><b>Type</b></span></td>
+		<td width="22"><span class="white"><b>Where</b></span></td>
+		<td width="50"><span class="white"><b>Date</b></span></td>
+		<td><span class="white"><b>Description</b></span></td>
+	</tr>
+	{% if changelogs|length > 0%}
+		{% set i = 0 %}
+		{% for log in changelogs %}
+		<tr bgcolor="{{ getStyle(i) }}">
+			<td align="center">
+				<img src="images/changelog/{{ log.type }}.png" title="{{ log.type|capitalize }}"/>
+			</td>
+			<td align="center">
+				<img src="images/changelog/{{ log.where }}.png" title="{{ log.where|capitalize }}"/>
+			</td>
+			<td>{{ log.date|date("j.m.Y") }}</td>
+			<td>{{ log.body|raw }}</td>
+		</tr>
+		{% set i = i + 1 %}
+		{% endfor %}
+	{% else %}
+	<tr>
+		<td colspan="4" bgcolor="{{ config.darkborder }}">There are no changelogs for the moment.</td>
+	</tr>
+	{% endif %}
+
+	<table border="0" cellspacing="1" cellpadding="4" width="100%">
+	{% if page > 0 %}
+		<tr><td width="100%" align="right" valign="bottom"><a href="{{ getLink('changelog/' ~ (page - 1)) }}" class="size_xxs">Previous Page</a></td></tr>
+		{% endif %}
+		{% if next_page %}
+		<tr><td width="100%" align="right" valign="bottom"><a href="{{ getLink('changelog/' ~ (page + 1)) }}" class="size_xxs">Next Page</a></td></tr>
+	{% endif %}
+	</table>
+</table>

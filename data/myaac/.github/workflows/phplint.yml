@@ -1,0 +1,13 @@
+name: PHP Linting
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+jobs:
+  phplint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: overtrue/phplint@3.4.0
+        with:
+          path: .
+          options: --exclude="system/libs/polyfill-mbstring/bootstrap80.php"

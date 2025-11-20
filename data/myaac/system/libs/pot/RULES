@@ -1,0 +1,68 @@
+Zero rule: We use Unicode (UTF-8).
+
+    Of course we should handle input encoding respectively, but output and internal data/code are all written in UTF-8.
+
+I. Coding rules to be followed:
+
+[1] Never ever use global!
+
+    It's just the worst thing you can do in PHP scripts.
+
+[2] Avoid using define - use class constants.
+
+    To group code better, to allow classes __autoload() handling.
+
+[3] Use !isset() instead of is_null().
+
+    That has exacly same effect and we should follow the most simplies methods. Just to make code cleaner (however remember that isset() is a PHP langauge structure and has it's limitations!).
+
+[4] Don't use functions - use class methods (except Compat package).
+
+    This will allow __autoload() handling for all routines as they will be members of classes.
+
+[5] Use 4 spaces as tabulation.
+
+    Tabulator character can be differently displayed and generaly four spaces makes code more readable.
+
+[6] Always use brackets for blocks and leave them in separated lines in same nesting level that block instruction:
+
+    if(condition)
+    {
+        for($i = 0; $i < $j; $i++)
+        {
+            statement;
+        }
+    }
+
+[7] Use single quotes insead of double ones.
+
+    ' are, in standard way, faster then " and it keeps code cleaner if you simply concat everything rather then inserting something like placeholders into string.
+
+[8] Use spaces between parenthess and operators (except object member accessing operator):
+
+    $foo = $lol . $rotfl;
+    $foo .= $bar;
+    $obj = new Class( substr( str_replace( implode('.', $array), ',', '.'), 2) );
+    echo $obj->field;
+    echo $obj->method( rand() );
+    echo $obj->method($value);
+
+[9] Use <?php opening tag.
+
+    It is the most reliable and standard way for starting PHP code.
+
+[10] Use isset(array[offset]) instead of array_key_exists().
+
+    It saves alot of resources (relatively).
+
+II. File naming:
+
+[1] Use lowercase names for directories.
+
+[2] Use fiels and directories in code in case-sensitive way.
+
+    Remember that probably this code will be mostly run on non-Windows platforms.
+
+[3] Use existing directories structure.
+
+    Put classes into classes directory, tutorials into tutorials directory etc.

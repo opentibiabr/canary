@@ -1,0 +1,68 @@
+<style>
+  a:link {
+    color: #ffffff;
+  }
+
+  a:visited {
+    color: #ffffff;
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
+
+  a:active {
+    color: #ffffff;
+  }
+</style>
+<div class="row">
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+      <span class="info-box-icon bg-aqua"><i class="fa-solid fa-users"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Total accounts:</span>
+        <span class="info-box-number">{{ total_accounts }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+      <span class="info-box-icon bg-red"><i class="fa-solid fa-user"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Total players:</span>
+        <span class="info-box-number">{{ total_players }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+      <span class="info-box-icon bg-green"><i class="fa-solid fa-user-shield"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Total guilds:</span>
+        <span class="info-box-number">{{ total_guilds }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+      <span class="info-box-icon bg-yellow"><i class="fa-solid fa-house-user"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Total houses:</span>
+        <span class="info-box-number">{{ total_houses }}</span>
+      </div>
+    </div>
+  </div>
+  {% if total_donates is not null %}
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <a href="?p=pag_transactions">
+        <div class="info-box">
+          <span class="info-box-icon bg-green-gradient"><i class="fa-solid fa-money-bill"></i></span>
+          <div class="info-box-content">
+            <span class="info-box-text">Total donates:</span>
+            <span class="info-box-number">{{ total_donates }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  {% endif %}
+</div>

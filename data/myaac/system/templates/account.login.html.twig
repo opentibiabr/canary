@@ -1,0 +1,76 @@
+Please enter your account {{ account|lower }} and your password.<br/><a href="?subtopic=createaccount" >Create an account</a> if you do not have one yet.<br/><br/>
+<form action="{{ getLink('account/manage') }}" method="post" >
+	{% if redirect is not null %}
+		<input type="hidden" name="redirect" value="{{ redirect }}" />
+	{% endif %}
+	<div class="TableContainer" >
+		<table class="Table1" cellpadding="0" cellspacing="0" >
+			<div class="CaptionContainer" >
+				<div class="CaptionInnerContainer" >
+					<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+					<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" /></span>
+					<div class="Text" >Account Login</div>
+					<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);" /></span>
+					<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);" ></span>
+					<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+					<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);" /></span>
+				</div>
+			</div>
+			<tr>
+				<td>
+					<div class="InnerTableContainer">
+						<table style="width:100%;" >
+							<tr>
+								<td class="LabelV" >
+									<span{% if error is not null %} class="red"{% endif %}>{{ account_login_by }}:</span>
+								</td>
+								<td style="width:100%;" ><input type="text" name="account_login" size="30" maxlength="30" autofocus/></td>
+							</tr>
+							<tr>
+								<td class="LabelV" >
+									<span{% if error is not null %} class="red"{% endif %}>Password:</span>
+								</td>
+								<td><input type="password" name="password_login" size="30" maxlength="29" ></td>
+							</tr>
+							<tr>
+								<td class="LabelV" ></td>
+								<td><input type="checkbox" id="remember_me" name="remember_me" value="true" />
+									<label for="remember_me"> Remember me</label></td>
+							</tr>
+							{% if error is not null %}
+								<tr><td></td><td><span class="FormFieldError">{{ error }}</span></td></tr>
+							{% endif %}
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<br/>
+	<table width="100%" >
+		<tr align="center">
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td style="border:0px;">
+							{{ include('buttons.submit.html.twig') }}
+						</td>
+					<tr>
+					</form>
+				</table>
+			</td>
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<form action="{{ getLink('account/lost') }}" method="post">
+						<tr>
+							<td style="border:0px;">
+								{{ include('buttons.account_lost.html.twig') }}
+							</td>
+						</tr>
+					</form>
+				</table>
+			</td>
+		</tr>
+	</table>

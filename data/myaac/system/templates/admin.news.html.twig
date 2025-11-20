@@ -1,0 +1,188 @@
+<div class="box">
+	<div class="box-header">
+		<h3 class="box-title">News:</h3>
+		<div class="box-tools pull-right">
+			<a href="?p=news&action=new&type=1"><span class="btn btn-success"><i class="fa fa-plus-circle"></i> New</span></a>
+		</div>
+	</div>
+	<div class="box-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<table class="tb_datatable">
+					<thead>
+					<tr>
+						<th width="5%">ID</th>
+						<th>Title</th>
+						<th>Date</th>
+						<th>Player</th>
+						<th style="width: 150px;">Options</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for news in newses[constant('NEWS')] %}
+						<tr>
+							<td>{{ news.id|raw }}</td>
+							<td><i><a href="?p=news&action=edit&id={{ news.id }}">{{ news.title }}</a></i></td>
+							<td>{{ news.date|date(config.news_date_format) }}</td>
+							<td><a target="_blank" rel="noopener noreferrer" href="{{ news.player_link }}">{{ news.player_name }}</a></td>
+							<td>
+								<a href="?p=news&action=edit&id={{ news.id }}" class="ico" title="Edit">
+									<span class="btn btn-success btn-sm edit">
+										<i class="fa fa-edit"></i>
+									</span>
+								</a>
+
+								<a href="?p=news&action=delete&id={{ news.id }}" class="ico" onclick="return confirm('Are you sure?');" title="Delete">
+									<span class="btn btn-danger btn-sm delete">
+										<i class="fa fa-trash"></i>
+									</span>
+								</a>
+
+								<a href="?p=news&action=hide&id={{ news.id }}" class="ico" title="{% if news.hidden != 1 %}Hide{% else %}Show{% endif %}">
+									{% if news.hidden != 1 %}
+										<span class="btn btn-primary btn-sm">
+											<i class="fa fa-eye"></i>
+										</span>
+									{% else %}
+										<span class="btn btn-default btn-sm">
+											<i class="fa fa-eye-slash"></i>
+										</span>
+									{% endif %}
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box">
+	<div class="box-header">
+		<h3 class="box-title">Tickers:</h3>
+		<div class="box-tools pull-right">
+			<a href="?p=news&action=new&type=2"><span class="btn btn-success"><i class="fa fa-plus-circle"></i> New</span></a>
+		</div>
+	</div>
+	<div class="box-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<table class="tb_datatable">
+					<thead>
+					<tr>
+						<th width="5%">ID</th>
+						<th>Title</th>
+						<th>Date</th>
+						<th>Player</th>
+						<th style="width: 150px;">Options</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for ticker in newses[constant('TICKER')] %}
+						<tr>
+							<td>{{ ticker.id|raw }}</td>
+							<td><i><a href="?p=news&action=edit&id={{ ticker.id }}">{{ ticker.title }}</a></i></td>
+							<td>{{ ticker.date|date(config.news_date_format) }}</td>
+							<td><a target="_blank" rel="noopener noreferrer" href="{{ ticker.player_link }}">{{ ticker.player_name }}</a></td>
+							<td>
+								<a href="?p=news&action=edit&id={{ ticker.id }}" class="ico" title="Edit">
+									<span class="btn btn-success btn-sm edit">
+										<i class="fa fa-edit"></i>
+									</span>
+								</a>
+
+								<a href="?p=news&action=delete&id={{ ticker.id }}" class="ico" onclick="return confirm('Are you sure?');" title="Delete">
+									<span class="btn btn-danger btn-sm delete">
+										<i class="fa fa-trash"></i>
+									</span>
+								</a>
+
+								<a href="?p=news&action=hide&id={{ ticker.id }}" class="ico" title="{% if news.hidden != 1 %}Hide{% else %}Show{% endif %}">
+									{% if ticker.hidden != 1 %}
+										<span class="btn btn-primary btn-sm">
+											<i class="fa fa-eye"></i>
+										</span>
+									{% else %}
+										<span class="btn btn-default btn-sm">
+											<i class="fa fa-eye-slash"></i>
+										</span>
+									{% endif %}
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="box">
+	<div class="box-header">
+		<h3 class="box-title">Articles:</h3>
+		<div class="box-tools pull-right">
+			<a href="?p=news&action=new&type=3"><span class="btn btn-success"><i class="fa fa-plus-circle"></i> New</span></a>
+		</div>
+	</div>
+	<div class="box-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<table class="tb_datatable">
+					<thead>
+					<tr>
+						<th width="5%">ID</th>
+						<th>Title</th>
+						<th>Date</th>
+						<th>Player</th>
+						<th style="width: 150px;">Options</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for article in newses[constant('ARTICLE')] %}
+						<tr>
+							<td>{{ article.id|raw }}</td>
+							<td><i><a href="?p=news&action=edit&id={{ article.id }}">{{ article.title }}</a></i></td>
+							<td>{{ article.date|date(config.news_date_format) }}</td>
+							<td><a target="_blank" rel="noopener noreferrer" href="{{ article.player_link }}">{{ article.player_name }}</a></td>
+							<td>
+								<a href="?p=news&action=edit&id={{ article.id }}" class="ico" title="Edit">
+									<span class="btn btn-success btn-sm edit">
+										<i class="fa fa-edit"></i>
+									</span>
+								</a>
+								<a href="?p=news&action=delete&id={{ article.id }}" class="ico" onclick="return confirm('Are you sure?');" title="Delete">
+									<span class="btn btn-danger btn-sm delete">
+										<i class="fa fa-trash"></i>
+									</span>
+								</a>
+								<a href="?p=news&action=hide&id={{ article.id }}" class="ico" title="{% if news.hidden != 1 %}Hide{% else %}Show{% endif %}">
+									{% if article.hidden != 1 %}
+										<span class="btn btn-primary btn-sm">
+											<i class="fa fa-eye"></i>
+										</span>
+									{% else %}
+										<span class="btn btn-default btn-sm">
+											<i class="fa fa-eye-slash"></i>
+										</span>
+									{% endif %}
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(function () {
+	    $('.tb_datatable').DataTable({
+	        "order": [[ 0, "desc" ]]
+	    });
+	});
+</script>

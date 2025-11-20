@@ -1,0 +1,11 @@
+<div id="success-1"></div>
+<div id="spinner">
+  <img src="{{ constant('BASE_URL') }}images/loading_spinner.gif" height="32" width="32"/>
+  {{ message }}
+</div>
+<script type="text/javascript" src="{{ constant('BASE_URL') }}install/tools/installer.js"></script>
+<script type="text/javascript">
+  $(function () {
+    performInstall('{{ url }}');
+  });
+</script>

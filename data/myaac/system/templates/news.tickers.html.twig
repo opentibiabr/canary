@@ -1,0 +1,15 @@
+<table style="width: 100%">
+	<tr class="white" bgcolor="{{ config.vdarkborder }}">
+		<td colspan="3">Tickers</td>
+	</tr>
+	{% set i = 0 %}
+	{% for ticker in tickers %}
+	<tr bgcolor="{{ getStyle(i) }}">
+		<td style="width: 16px;"><img src="{{ template_path }}/images/news/icon_{{ ticker.icon }}_small.gif"/></td>
+		<td style="width: 80px;">{{ ticker.date|date("j M Y") }}</td>
+		<td>{{ ticker.body|raw }}</td>
+	</tr>
+	{% set i = i + 1 %}
+	{% endfor %}
+</table>
+<br/>

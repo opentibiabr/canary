@@ -1,0 +1,189 @@
+{% if action %}
+	<div class="row">
+		<form method="post" action="{{ news_link_form }}" id="news-edit-form">
+			{% if action == 'edit' %}
+				<input type="hidden" name="id" value="{{ news_id }}"/>
+			{% endif %}
+			<div class="col-md-8" id="page-edit-table">
+				<div class="box box-info">
+					<div class="box-header with-border">
+						<h3 class="box-title">{% if action == 'edit' %}Edit{% else %}Add{% endif %} news</h3>
+					</div>
+
+					<div class="box-body">
+						<div class="form-group">
+							<label for="title" class="col-sm-2 control-label">Title</label>
+
+							<div class="col-sm-10">
+								<input type="text" id="title" name="title" class="form-control" autocomplete="off" style="cursor: auto;" value="{{ title }}">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="body" class="col-sm-2 control-label">Content</label>
+
+							<div class="col-sm-10" id="body-parent">
+                                <textarea class="form-control" id="body" name="body" maxlength="65000" cols="50" rows="5">{{ body|raw }}</textarea>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="select-type" class="col-sm-2 control-label">Type</label>
+
+							<div class="col-sm-10">
+								<select class="form-control" name="type" id="select-type">
+									<option value="{{ constant('NEWS') }}" {% if type is defined and type == constant('NEWS') %}selected="yes"{% endif %}{% if action == 'edit' and type != constant('NEWS') %} disabled{% endif %}>News</option>
+									<option value="{{ constant('TICKER') }}" {% if type is defined and type == constant('TICKER') %}selected="yes"{% endif %}{% if action == 'edit' and type != constant('TICKER') %} disabled{% endif %}>Ticker</option>
+									<option value="{{ constant('ARTICLE') }}" {% if type is defined and type == constant('ARTICLE') %}selected="yes"{% endif %}{% if action == 'edit' and type != constant('ARTICLE') %} disabled{% endif %}>Article</option>
+								</select>
+							</div>
+						</div>
+
+						<div id="article-text" class="form-group"{% if type is not defined or type != constant('ARTICLE') %} style="display: none;"{% endif %}>
+							<label for="article_text" class="col-sm-2 control-label">Article short text</label>
+
+							<div class="col-sm-10" id="body-parent">
+								<textarea class="form-control" name="article_text" id="article_text" cols="50" rows="5">{% if article_text is not empty %}{{ article_text }}{% endif %}</textarea>
+							</div>
+						</div>
+
+						<div id="article-image" class="form-group"{% if type is not defined or type != constant('ARTICLE') %} style="display: none;"{% endif %}>
+							<label for="article_image" class="col-sm-2 control-label">Article image</label>
+
+							<div class="col-sm-10">
+								<input class="form-control" type="text" name="article_image" id="article_image" value="{% if article_image is not empty %}{{ article_image }}{% else %}images/news/announcement.jpg{% endif %}" />
+							</div>
+						</div>
+
+						{% if action == 'edit' %}
+							{% if player is defined %}
+							<div class="form-group">
+								<label for="author" class="col-sm-2 control-label">Author</label>
+
+								<div class="col-sm-10">
+									<select class="form-control" id="author" name="original_id" disabled="disabled">
+										<option value="{{ player.getId() }}">{{ player.getName() }}</option>
+									</select>
+								</div>
+							</div>
+							{% endif %}
+						{% endif %}
+
+						<div class="form-group">
+							<label for="player_id" class="col-sm-2 control-label">{% if action == 'edit' %}Modified by{% else %}Author{% endif %}</label>
+
+							<div class="col-sm-10">
+								<select class="form-control" name="player_id" id="player_id">
+									{% for player in account_players %}
+										<option value="{{ player.getId() }}"{% if player_id is defined and player.getId() == player_id %} selected="selected"{% endif %}>{{ player.getName() }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+
+						{% if action != 'edit' %}
+						<div class="form-group">
+							<label for="forum_section" class="col-sm-2 control-label">Create forum thread in section:</label>
+
+							<div class="col-sm-10">
+								<select class="form-control" name="forum_section" id="forum_section">
+									<option value="-1">None</option>
+										{% for section in forum_boards %}
+									<option value="{{ section.id }}" {% if forum_section is defined and forum_section == section.id %}checked="yes"{% endif %}>{{ section.name }}</option>
+										{% endfor %}
+								</select>
+							</div>
+						</div>
+						{% elseif comments is not null %}
+							<input type="hidden" name="forum_section" id="forum_section" value="{{ comments }}" />
+						{% endif %}
+
+						<div class="form-group">
+							<label for="category" class="col-sm-2 control-label">Category</label>
+
+							<div class="col-sm-10">
+								{% for id, cat in categories %}
+									<input type="radio" name="category" id="category" value="{{ id }}" {% if (category == 0 and id == 1) or (category == id) %}checked="yes"{% endif %}/>
+									<img src="{{ constant('BASE_URL') }}/images/news/icon_{{ cat.icon_id }}_small.gif" />
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+
+					<div class="box-footer">
+						<td align="right"><input type="submit" class="btn btn-info pull-right" value="Save"/></td>
+						<td align="left">
+							<input type="button" onclick="window.location = '{{ constant('ADMIN_URL') }}?p=news';" class="btn btn-default" value="Cancel"/>
+						</td>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	{% if action != 'edit' %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#news-edit").hide();
+
+			$("#news-button").click(function() {
+				$("#news-edit").toggle();
+				return false;
+			});
+
+			$('#select-type').change(function() {
+			    var value = $('#select-type').val();
+				if(value == {{ constant('ARTICLE') }}) {
+	                $('#article-text').show();
+				    $('#article-image').show();
+				}
+				else {
+	                $('#article-text').hide();
+				    $('#article-image').hide();
+	            }
+			});
+		});
+	</script>
+	{% endif %}
+
+	<script type="text/javascript" src="{{ constant('BASE_URL') }}tools/tinymce/tinymce.min.js"></script>
+	<script type="text/javascript">
+		var unsaved = false;
+		var lastContent = '';
+
+		tinymce.init({
+			selector : "#body",
+			theme : "modern",
+			plugins: 'print preview searchreplace autolink directionality visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount spellchecker imagetools contextmenu colorpicker textpattern help code emoticons',
+			toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor | emoticons link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat code',
+			image_advtab: true,
+			setup: function(ed){
+				ed.on('Change', function(e) {
+					if(ed.getContent() != lastContent) {
+						unsaved = true;
+					}
+				});
+			}
+		});
+
+		$(document).ready(function() {
+			$(":input").change(function(){ //trigers change in all input fields including text type
+				unsaved = true;
+			});
+
+			$("#news-edit-form").submit(function( event ) {
+				unsaved = false;
+			});
+
+			lastContent = $("#body").val();
+		});
+
+		function unloadPage(){
+			if(unsaved){
+				return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+			}
+		}
+
+		window.onbeforeunload = unloadPage;
+	</script>
+{% endif %}

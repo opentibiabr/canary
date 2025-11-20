@@ -1,0 +1,190 @@
+{% if isLeader %}
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Declarations of War</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+			  	<tr>
+					<td>
+						<div class="TableContentContainer">
+							<table class="TableContent" width="100%"><tbody>
+								<tr class="LabelH">
+									<td>Opponent</td>
+									<td>Status</td>
+									<td>Duration</td>
+									<td>Kills to Win</td>
+									<td>Price</td>
+									<td style="width: 19%;">Action</td>
+								</tr>
+								{% for war in wars %}
+								{% if waracpt.statusid == '1' %}
+								<tr>
+									<td><a href="?guilds/{{ war.name }}">{{ war.name }}</a></td>
+									<td><span style="width: 120px;" class="HelperDivIndicator" onmouseover="ActivateHelperDiv($(this), '', '<div style = &quot;font-size: 12pt; font-weight: bold; word-break: break-word;&quot;>{{ war.status }}:</div><div style = &quot;margin-bottom: 20px;&quot;>{{ war.statushelper }}</div>', '');" onmouseout="$('#HelperDivContainer').hide();"><i class="fas fa-circle" style="color:{{ war.statuscolor }};"></i> {{ war.status }}</span></td>
+									<td><i class="far fa-calendar-star"></i> {{ war.duration }} days</td>
+									<td><i class="far fa-swords"></i> {{ war.kills }}</td>
+									<td><i class="far fa-sack-dollar"></i> {{ war.price }}</td>
+									<td>
+									{% if war.statusid == '1' %}
+									<form method="post" action="">
+									<input type="hidden" name="war_acpt" value="{{ war.id }}">
+									{% set button_name = 'Accept War' %}
+									{% include('buttons.base_green.html.twig') %}
+									</form>
+									<form method="post" action="">
+									<input type="hidden" name="war_rej" value="{{ war.id }}">
+									{% set button_name = 'Reject War' %}
+									{% include('buttons.base_red.html.twig') %}
+									</form>
+									{% endif %}
+									</td>
+								</tr>
+								{% endif %}
+								{% if waracpt.statusid != '1' %}
+								<tr>
+							  		<td colspan="6">The {{ guild_name }} guild is currently without war requests.</td>
+								</tr>
+								{% endif %}
+								{% endfor %}
+							</tbody></table>
+						</div>
+					</td>
+				</tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br>
+<div style="display: flex; justify-content: center;">
+	<form action="?subtopic=guilds&guild={{ guild_name }}&action=guildwars_declare" method="post">
+		{% set button_name = 'Declare War' %}
+		{% include('buttons.base.html.twig') %}
+	</form>
+</div>
+{% endif %}
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Guild Wars</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+			<table style="width:100%;">
+              <tbody>
+			  	<tr>
+					<td>
+						<div class="TableContentContainer">
+							<table class="TableContent" width="100%"><tbody>
+								<tr class="LabelH">
+								<td>Opponent</td>
+								<td>Duration</td>
+								<td>Kills to Win</td>
+								<td>Price</td>
+								<td>Current Kills</td>
+							</tr>
+							{% for waracpt in wars %}
+							{% if waracpt.statusid == '2' %}
+							<tr>
+								<td><a href="?guilds/{{ waracpt.name }}">{{ waracpt.name }}</a></td>
+								<td><i class="far fa-calendar-star"></i> {{ waracpt.duration }} days</td>
+								<td><i class="far fa-swords"></i> {{ waracpt.kills }}</td>
+								<td><i class="far fa-sack-dollar"></i> {{ waracpt.price }}</td>
+								<td style="font-size: 30px; font-weight: bold; text-align: center;">0 x 0</td>
+							</tr>
+							{% endif %}
+							{% if waracpt.statusid != '2' %}
+							<tr>
+							  <td colspan="6">The guild {{ guild_name }} is currently not involved in a guild war.</td>
+							</tr>
+							{% endif %}
+							{% endfor %}
+							</tbody></table>
+						</div>
+					</td>
+				</tr>
+              </tbody>
+            </table>			
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Guild War History</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+		
+            <table style="width:100%;">
+              <tbody>
+			  	<tr>
+					<td>
+						<div class="TableContentContainer">
+							<table class="TableContent" width="100%"><tbody>
+								<tr class="LabelH">
+								<td>Opponent</td>
+								<td>Duration</td>
+								<td>Kills to Win</td>
+								<td>Price</td>
+								<td>Current Kills</td>
+							</tr>
+							{% for waracpt in wars %}
+							{% if waracpt.statusid == '3' and waracpt.statusid == '4' %}
+							<tr>
+								<td><a href="?guilds/{{ waracpt.name }}">{{ waracpt.name }}</a></td>
+								<td><i class="far fa-calendar-star"></i> {{ waracpt.duration }} days</td>
+								<td><i class="far fa-swords"></i> {{ waracpt.kills }}</td>
+								<td><i class="far fa-sack-dollar"></i> {{ waracpt.price }}</td>
+								<td style="font-size: 30px; font-weight: bold; text-align: center;">
+								0 x 0
+								</td>
+							</tr>
+							{% endif %}
+							{% if waracpt.statusid != '3' and waracpt.statusid != '4' %}
+							<tr>
+							  <td colspan="6">The guild {{ guild_name }} has never participated in a guild war.</td>
+							</tr>
+							{% endif %}
+							{% endfor %}
+							</tbody></table>
+						</div>
+					</td>
+				</tr>
+              </tbody>
+            </table>
+			
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<div style="display: flex; justify-content: center;">
+	<form action="?guilds/{{ guild_name }}" method="post">
+		{{ include('buttons.back.html.twig') }}
+	</form>
+</div>

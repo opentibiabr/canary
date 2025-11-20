@@ -1,0 +1,2297 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: #051122;
+}
+
+img {
+  border: none;
+}
+
+#ArtworkHelper {
+  text-align: center;
+  background-position: top center;
+  background-attachment: scroll;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  min-width: 1000px;
+}
+
+/* helper div */
+.HelperDivIndicator {
+  position: relative;
+  cursor: help;
+}
+.OptionContainer {
+  text-align: center;
+}
+
+#HelperDivContainer {
+  display: none;
+  position: absolute;
+  width: 225px;
+  z-index: 1000;
+  color: #5a2800;
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 9pt;
+  text-align: left;
+  padding: 10px;
+  border: 1px double #5a2800;
+  margin-left: 8px;
+}
+
+#HelperDivContainer .HelperDivArrow {
+  position: absolute;
+  top: -1px;
+  left: -8px;
+  width: 8px;
+  height: 13px;
+}
+
+#HelperDivContainer #HelperDivHeadline {
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+#HelperDivContainer #HelperDivHeadline {
+  position: relative;
+  white-space: normal;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+#HelperDivContainer .Ornament {
+  width: 220px;
+}
+
+#HelperDivContainer #HelperDivText {
+  text-align: center;
+}
+
+#HelperDivContainer #HelperDivText ul {
+  padding-left: 20px;
+}
+
+/* container to implement min/max width */
+#Bodycontainer {
+  text-align: left;
+  min-width: 1000px;
+  max-width: 1280px;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0px;
+  display: table;
+  width: expression(document.body.clientWidth > 1200? '1200px': '100%');
+}
+#LoginCreateAccountBox p {
+  margin: 0;
+  padding: 0;
+  font-size: 12pt;
+}
+#LoginFormButtonCell {
+  width: 145px;
+  vertical-align: top;
+  padding-right: 0;
+}
+
+#ContentRow {
+  position: relative;
+  top: 155px;
+}
+
+/* "star-HTML-hack" to correct the position of the content row */
+* html #ContentRow {
+  display: inline-block;
+}
+
+#MenuColumn {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 180px;
+  margin-right: 15px;
+  margin-left: 15px;
+  padding: 0px;
+  font-family: Arial, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  line-height: 12pt;
+}
+
+#ContentColumn {
+  position: relative;
+  margin: 0px;
+  margin-left: 205px;
+  margin-right: 205px;
+}
+
+#ThemeboxesColumn {
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 180px;
+  margin: 0px;
+  margin-right: 15px;
+  margin-left: 25px;
+}
+
+#Footer {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 7pt;
+  font-weight: normal;
+  text-align: center;
+  position: relative;
+  width: 100%;
+  padding-bottom: 20px;
+  color: white;
+}
+* html #Footer {
+  padding-bottom: 120px;
+  margin-bottom: 50px;
+}
+
+/* Footer linkes */
+#Footer a:link {
+  color: white;
+  text-decoration: none;
+}
+#Footer a:visited {
+  color: white;
+  text-decoration: none;
+}
+#Footer a:focus {
+  color: white;
+  text-decoration: none;
+}
+#Footer a:active {
+  color: white;
+  text-decoration: underline;
+}
+#Footer a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  HEADER AREA
+ *  -------------------------------
+ */
+
+#LeftArtwork {
+  position: absolute;
+  height: 140px;
+  width: 166px;
+  top: -140px;
+  left: 4px;
+  background-repeat: no-repeat;
+  z-index: 5;
+}
+
+#LeftArtwork #TibiaLogoArtworkTop {
+  position: absolute;
+  top: -17px;
+  left: -14px;
+  height: 158px;
+  width: 196px;
+  z-index: 5;
+  cursor: pointer;
+  border: 0px;
+}
+
+#LeftArtwork #TibiaLogoArtworkBottom {
+  position: absolute;
+  top: 102px;
+  left: 0px;
+  height: 43px;
+  width: 166px;
+  z-index: 5;
+}
+
+#LeftArtwork #Statue_1 {
+  position: absolute;
+  top: 0px;
+  left: 5px;
+  height: 30px;
+  width: 32px;
+  z-index: 10;
+}
+
+#LeftArtwork #Statue_2 {
+  position: absolute;
+  top: 0px;
+  right: 25px;
+  height: 30px;
+  width: 32px;
+  z-index: 10;
+}
+
+.SmallMenuBox#DownloadBox {
+  top: 4px;
+}
+.SmallMenuBox {
+  position: relative;
+  left: 5px;
+  top: 8px;
+  width: 100%;
+  margin-bottom: 38px;
+  background-repeat: no-repeat;
+}
+.SmallMenuBox#DownloadBox {
+  top: 4px;
+}
+.SmallMenuBox .SmallBoxTop {
+  position: absolute;
+  left: -5px;
+  top: -12px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+.SmallMenuBox#DownloadBox .SmallBoxBorder {
+  height: 39px;
+}
+.SmallMenuBox .SmallBoxBorder {
+  position: absolute;
+  top: 0;
+  height: 52px;
+  width: 8px;
+  background-repeat: repeat-y;
+  z-index: 10;
+}
+.SmallMenuBox .SmallBoxButtonContainer {
+  position: relative;
+  height: 39px;
+  width: 160px;
+  left: 5px;
+  background-repeat: repeat-y;
+  z-index: 1;
+}
+#PlayNowContainer {
+  position: absolute;
+  width: 150px;
+  height: 37px;
+  top: 1px;
+  left: 5px;
+  z-index: 99;
+}
+.SmallMenuBox .BorderRight {
+  right: 9px;
+}
+.SmallMenuBox#DownloadBox .SmallBoxBottom {
+  top: 39px;
+}
+.SmallMenuBox .SmallBoxBottom {
+  position: absolute;
+  top: 52px;
+  left: -5px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#LeftArtwork #LogoLink {
+  position: absolute;
+  bottom: 14px;
+  left: 58px;
+  height: 14px;
+  width: 50px;
+  z-index: 99;
+  cursor: pointer;
+}
+
+#RightArtwork {
+  text-align: left;
+  position: absolute;
+  top: 38px;
+  right: 24px;
+  width: 132px;
+  background-repeat: no-repeat;
+  z-index: 90;
+}
+
+#RightArtwork #Creature {
+  position: absolute;
+  height: 64px;
+  width: 64px;
+  top: -136px;
+  left: -15px;
+  z-index: 15;
+  cursor: pointer;
+}
+
+#RightArtwork #Boss {
+  position: absolute;
+  height: 64px;
+  width: 64px;
+  top: -136px;
+  left: 40px;
+  z-index: 15;
+  cursor: pointer;
+}
+
+#PedestalAndOnline {
+  position: absolute;
+  left: -15px;
+  top: -121px;
+  width: 161px;
+  height: 85px;
+}
+#Pedestal {
+  position: absolute;
+  left: -15px;
+  top: -121px;
+  width: 161px;
+  height: 85px;
+}
+
+#RightArtwork #PlayersOnline {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 7pt;
+  line-height: 8pt;
+  text-align: center;
+  position: absolute;
+  width: 92px;
+  bottom: 11px;
+  left: 21px;
+  color: #cfa600;
+  border-bottom: 1px solid #010101;
+  cursor: pointer;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  LOGINBOX
+ *  -------------------------------
+ */
+
+#Loginbox {
+  position: relative;
+  left: 5px;
+  top: 8px;
+  width: 100%;
+  margin-bottom: 38px;
+  background-repeat: no-repeat;
+}
+
+#Loginbox #LoginTop {
+  position: absolute;
+  left: -5px;
+  top: -12px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#Loginbox #LoginBottom {
+  position: absolute;
+  top: 52px;
+  left: -5px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#Loginbox .LoginBorder {
+  position: absolute;
+  top: 0px;
+  height: 52px;
+  width: 8px;
+  background-repeat: repeat-y;
+  z-index: 10;
+}
+
+#Loginbox #BorderRight {
+  right: 9px;
+}
+
+#Loginbox .Loginstatus {
+  position: relative;
+  top: 0px;
+  left: 5px;
+  height: 13px;
+  width: 160px;
+}
+
+#Loginbox .LoginstatusText {
+  position: absolute;
+  top: 1px;
+  left: 18px;
+  width: 124px;
+  height: 11px;
+  cursor: pointer;
+}
+
+#Loginbox #LoginstatusText_1 {
+  top: 2px;
+  cursor: default;
+}
+
+#Loginbox #LoginstatusText_2_1 {
+  visibility: visible;
+}
+
+#Loginbox #LoginstatusText_2_2 {
+  visibility: hidden;
+}
+
+#LoginBox #LoginButtonContainer {
+  margin-left: 5px;
+  height: 39px;
+  width: 160px;
+  background-repeat: repeat-y;
+}
+
+#Loginbox #LoginButton {
+  position: relative;
+  top: 0px;
+  left: 5px;
+  height: 37px;
+  width: 150px;
+}
+
+#Loginbox #LoginButton .Button {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 37px;
+  visibility: hidden;
+}
+
+#Loginbox #LoginButton #ButtonText {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 37px;
+  width: 150px;
+  z-index: 15;
+  cursor: pointer;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  MENU
+ *  -------------------------------
+ */
+
+#Menu {
+  position: relative;
+  left: 5px;
+  background-repeat: no-repeat;
+}
+
+#MenuTop {
+  position: absolute;
+  left: -5px;
+  top: -12px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+#MenuBottom {
+  position: relative;
+  left: -5px;
+  bottom: 0px;
+  height: 12px;
+  width: 180px;
+  background-repeat: no-repeat;
+}
+
+/* Menuitems */
+
+.MenuButton {
+  position: relative;
+  height: 32px;
+  width: 170px;
+  display: block;
+  cursor: pointer;
+}
+
+.Button {
+  position: relative;
+  height: 32px;
+  /*width: 150px;*/
+  visibility: hidden;
+  display: block;
+}
+
+.Extend {
+  position: absolute;
+  top: 20px;
+  right: -2px;
+  height: 12px;
+  width: 12px;
+  background-repeat: no-repeat;
+}
+
+.Lights {
+  visibility: hidden;
+}
+
+.Light_lu {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  height: 2px;
+  width: 2px;
+  background-repeat: no-repeat;
+}
+
+.Light_ru {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  height: 2px;
+  width: 2px;
+  background-repeat: no-repeat;
+}
+
+.Light_ld {
+  position: absolute;
+  height: 2px;
+  width: 2px;
+  top: 28px;
+  left: 3px;
+}
+
+.Icon {
+  position: absolute;
+  height: 32px;
+  width: 32px;
+  top: 0px;
+  left: 8px;
+}
+
+.Label {
+  position: absolute;
+  height: 22px;
+  width: 116px;
+  top: 6px;
+  left: 42px;
+}
+
+/* Submenus(items) */
+
+.LeftChain {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 33px;
+  width: 7px;
+  background-repeat: repeat-y;
+}
+
+.RightChain {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 33px;
+  width: 7px;
+  background-repeat: repeat-y;
+}
+
+.Submenu {
+  position: relative;
+  margin-left: 0px;
+  margin-right: 5px;
+  background-color: #0d2e2b;
+  width: 170px;
+}
+
+.Submenuitem {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+}
+
+.ActiveSubmenuItemIcon {
+  position: absolute;
+  top: 5px;
+  left: 8px;
+  width: 10px;
+  height: 10px;
+  background-repeat: no-repeat;
+  visibility: hidden;
+}
+
+.SubmenuitemLabel {
+  margin: 0px;
+  border-top: 0;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 22px;
+  border-bottom: 1px solid #4b7874;
+  overflow: hidden;
+}
+
+/* Submenu links */
+.Submenu a:link {
+  color: #d7d7d7;
+  text-decoration: none;
+}
+.Submenu a:visited {
+  color: #d7d7d7;
+  text-decoration: none;
+}
+.Submenu a:focus {
+  color: #d7d7d7;
+  text-decoration: none;
+}
+.Submenu a:active {
+  color: white;
+  text-decoration: none;
+}
+.Submenu a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  CONTENT AREA
+ *  -------------------------------
+ */
+
+.Content .BoxContent {
+  padding: 10px;
+}
+
+/* "tanhack" for correction of IE bug */
+* html .Content {
+  top: -5px;
+}
+
+.Content {
+  position: relative;
+  top: 0px;
+  width: 100%;
+}
+
+/* "star-HTML-hack" to correct the position of the content area */
+* html .Content {
+  position: relative;
+  top: 796px;
+  margin: 20px;
+  border: 0px dashed #051122;
+  border-right-width: 550px;
+}
+
+#ContentHelper {
+  position: relative;
+}
+
+.InfoBar {
+  position: relative;
+  height: 28px;
+  top: 6px;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 10px;
+  color: #fff;
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+}
+.InfoBar a {
+  border: 0;
+}
+.InfoBarBlock {
+  margin-right: 15px;
+  border: 0;
+}
+.InfoBarBigLogo {
+  margin-bottom: 0;
+  border: 0;
+}
+.InfoBarSmallElement {
+  margin-left: 5px;
+  border: 0;
+}
+.InfoBarNumbers {
+  top: -4px;
+  position: relative;
+}
+.InfoBar a {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 7pt;
+  font-weight: 400;
+  color: #fff;
+}
+.InfoBar a:link {
+  color: #fff;
+  font-weight: 400;
+  text-decoration: none;
+}
+.InfoBar a:visited {
+  color: #fff;
+  font-weight: 400;
+  text-decoration: none;
+}
+.InfoBar a:focus {
+  color: #fff;
+  font-weight: 400;
+  text-decoration: none;
+}
+.InfoBar a:active {
+  color: #fff;
+  font-weight: 400;
+  text-decoration: underline;
+}
+.InfoBar a:hover {
+  color: #fff !important;
+  font-weight: 400 !important;
+  text-decoration: underline !important;
+}
+.InfoBarLinks {
+  text-decoration: none;
+  font-size: 10px;
+}
+.InfoBarLinks a:hover {
+  text-decoration: none;
+  font-size: 10px;
+}
+
+/* "star-HTML-hack" to to implement min-width in IE */
+* html #ContentHelper {
+  display: inline-block;
+  position: relative;
+  top: -800px;
+  margin: -20px;
+  margin-right: -570px;
+}
+
+.Content .Box {
+  font-size: 0pt;
+  position: relative;
+  margin: 5px;
+  margin-bottom: 18px;
+  color: #5a2800;
+  border-left: 2px solid #3a3738;
+  border-right: 2px solid #3a3738;
+  background-color: #debb9d;
+  background-repeat: no-repeat;
+  overflow: visible;
+}
+
+.Content .BoxContent {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 9pt;
+  background-color: #fff2db;
+  color: #5a2800;
+  min-height: 367px;
+  height: auto !important;
+  height: 387px;
+}
+
+/* "star-HTML-hack" to correct Box width in IE */
+* html .Content .Box {
+  width: 100%;
+}
+/* "star-HTML-hack" to correct BoxContent width in IE */
+* html .Content .BoxContent {
+  width: 100%;
+}
+
+.Content th {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: left;
+  color: white;
+  background-color: #505050;
+}
+
+.Content .BoxContent td {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 10pt;
+  color: #5a2800;
+}
+
+/* Content Links */
+
+.Content a {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-weight: bold;
+  color: #004294;
+  text-decoration: none;
+}
+.Content a:hover {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #0063dc;
+}
+.Content .HelpLink {
+  font-size: 7pt;
+  cursor: pointer;
+}
+
+/* Corners */
+
+.Content .Corner-tl {
+  position: absolute;
+  top: -4px;
+  left: -5px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.Content .Corner-tr {
+  position: absolute;
+  top: -4px;
+  right: -5px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.Content .BottomCornersHelper {
+  position: absolute;
+  width: 100%;
+}
+
+.Content .CornerWrapper-b {
+  position: absolute;
+  width: 100%;
+}
+
+.Content .Corner-bl {
+  position: absolute;
+  bottom: -4px;
+  left: -6px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.Content .Corner-br {
+  position: absolute;
+  bottom: -4px;
+  right: -6px;
+  width: 17px;
+  height: 17px;
+  z-index: 50;
+}
+
+.SecretAchievementIcon {
+  position: absolute;
+  width: 44px;
+  height: 20px;
+  margin-left: 12px;
+  margin-top: -2px;
+  right: 5px;
+}
+
+/* Borders */
+
+.Content .Border_1 {
+  position: relative;
+  height: 6px;
+  width: 100%;
+  background-repeat: repeat-x;
+}
+
+.Content .BorderTitleText {
+  position: relative;
+  height: 24px;
+  background-repeat: repeat-x;
+}
+
+.Content .Title {
+  position: absolute;
+  top: 6px;
+  left: 5px;
+}
+
+.Content .Border_2 {
+  margin: 4px;
+  padding: 0px;
+  background-color: #793d03;
+}
+
+.Content .Border_3 {
+  margin: 1px;
+  border-top: 1px solid #793d03;
+  border-bottom: 1px solid #793d03;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  THEMEBOXES of the Tibia
+ *  website
+ *  -------------------------------
+ */
+
+.Themebox {
+  position: relative;
+  margin-bottom: 10px;
+  top: -4px;
+  width: 180px;
+  height: 154px;
+}
+#Themeboxes div {
+  font-size: 10pt;
+  background-repeat: no-repeat;
+}
+#Themeboxes .ThemeboxButton {
+  position: absolute;
+  bottom: 20px;
+  left: 22px;
+  height: 25px;
+  width: 135px;
+  cursor: pointer;
+}
+#Themeboxes .Bottom {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 12px;
+  width: 180px;
+}
+/* "star-HTML-hack" to correct the position of the bottom element */
+* html #Themeboxes .Bottom {
+  bottom: -3px;
+}
+#Themeboxes #NewcomerBox .ThemeboxButton {
+  bottom: 15px;
+}
+
+#PremiumBox {
+  position: relative;
+  height: 204px;
+}
+#PremiumBoxDecor {
+  margin: 0;
+  position: absolute;
+  top: -28px;
+  left: 5px;
+  width: 64px;
+  height: 64px;
+}
+#PremiumBoxBg {
+  margin: 0;
+  position: absolute;
+  top: 34px;
+  left: 10px;
+  width: 160px;
+  height: 126px;
+}
+#PremiumBoxOverlay {
+  margin: 0;
+  position: absolute;
+  top: 34px;
+  left: 10px;
+  width: 163px;
+  height: 26px;
+}
+#PremiumBoxOverlayText {
+  color: #fff;
+  font-family: Verdana, sans-serif;
+  margin-top: 3px;
+  text-align: center;
+  font-size: 11px;
+}
+#PremiumBoxButtonDecor {
+  position: absolute;
+  width: 114px;
+  height: 26px;
+  left: 33px;
+  bottom: 34px;
+  z-index: 25;
+}
+#PremiumBoxButton {
+  position: absolute;
+  bottom: 9px;
+  left: 18px;
+  text-align: center;
+}
+
+#Themeboxes #JobBox {
+  height: 164px;
+}
+#Themeboxes #GalleryBox #GalleryContent {
+  position: relative;
+  height: 111px;
+  width: 170px;
+  top: 31px;
+  left: 0px;
+  margin-left: 5px;
+  margin-right: 5px;
+  border: 0;
+  cursor: pointer;
+}
+#Themeboxes #CurrentPollBox #CurrentPollText {
+  font-family: Verdana, Arial, sans-serif;
+  font-weight: bold;
+  line-height: 11pt;
+  color: #5a2800;
+  position: absolute;
+  height: 70px;
+  width: 150px;
+  top: 37px;
+  left: 15px;
+  padding-top: 5px;
+  overflow: hidden;
+}
+#Themeboxes #SkyscraperBanner {
+  border: 0;
+}
+
+#Themeboxes #NetworksBox {
+  position: relative;
+  height: 204px;
+}
+#Themeboxes #NetworksBox #FacebookBlock {
+  position: relative;
+  top: 32px;
+  height: 113px;
+}
+#Themeboxes #NetworksBox #FacebookLikeBox {
+  position: relative;
+  left: 27px;
+  top: 3px;
+  height: 60px;
+  width: 115px;
+  overflow: hidden;
+}
+#Themeboxes #NetworksBox #FacebookLikeBox div {
+  position: relative;
+  left: -1px;
+  top: -1px;
+}
+#Themeboxes #NetworksBox #FacebookSendBox {
+  position: absolute;
+  left: 92px;
+  top: 14px;
+  width: 50px;
+}
+#Themeboxes #NetworksBox #FacebookLikes {
+  position: relative;
+  left: 14px;
+  top: 10px;
+  width: 155px;
+  left: 13px;
+  overflow: hidden;
+}
+#Themeboxes #NetworksBox #FacebookLikes div {
+  position: relative;
+  left: -69px;
+}
+#Themeboxes #NetworksBox #TwitterBlock {
+  position: relative;
+  top: 42px;
+  text-align: center;
+}
+
+/** -------------------------------
+ *  OLD Stylesheet declarations for
+ *  the CONTENT AREA
+ *  -------------------------------
+ */
+
+.Content .BoxContent td .white {
+  color: #efefef;
+  visibility: visible;
+}
+
+.Content .BoxContent td .whites {
+  color: #efefef;
+  visibility: visible;
+  font-size: 9pt;
+}
+
+.Content .BoxContent .white {
+  color: #efefef;
+  visibility: visible;
+}
+
+.Content .BoxContent td .green {
+  color: #00bf00;
+}
+
+.Content .BoxContent td .yellow {
+  color: #ffbb05;
+}
+
+.Content .BoxContent td .red {
+  color: #ef0000;
+}
+
+.Content .BoxContent td .grey {
+  color: #808080;
+}
+
+.Content .BoxContent td .orange {
+  color: #ff9712;
+}
+
+/** -------------------------------
+ *  OLD Stylesheet declarations for
+ *  the CONTENT AREA (forum)
+ *  -------------------------------
+ */
+
+.Content .BoxContent .ff_info {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 10pt;
+  color: #5a2800;
+  visibility: visible;
+}
+
+.Content .ff_white a {
+  color: #ffffff;
+}
+
+.Content .BoxContent .ff_white {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  color: #efefef;
+  visibility: visible;
+  font-size: 7pt;
+  font-weight: bold;
+}
+
+.Content .BoxContent .ff_red {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  color: #ef0000;
+  visibility: visible;
+  font-size: 8pt;
+  font-weight: bold;
+}
+
+.Content .BoxContent .ff_whitelarge {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  color: #efefef;
+  visibility: visible;
+  font-size: 9pt;
+  font-weight: bold;
+}
+
+.Content .BoxContent .ff_info {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 8pt;
+  color: #5a2800;
+  visibility: visible;
+}
+
+.Content .BoxContent .ff_infotext {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 8pt;
+  color: #5a2800;
+  visibility: visible;
+  line-height: 12pt;
+}
+
+.Content .BoxContent .ff_smallinfo {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 7pt;
+  color: #5a2800;
+  visibility: visible;
+}
+
+.Content .BoxContent .ff_large {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 12pt;
+  color: #5a2800;
+  visibility: visible;
+}
+
+.Content .BoxContent .ff_pagetext {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 9pt;
+  color: #5a2800;
+  visibility: visible;
+  line-height: 13pt;
+}
+
+.Content .BoxContent .ff_pagetextgrey {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 9pt;
+  color: #505050;
+  visibility: visible;
+  line-height: 13pt;
+}
+
+.Content .BoxContent .ff_pagetextred {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 9pt;
+  color: #f00;
+  visibility: visible;
+  line-height: 13pt;
+}
+
+.Content .BoxContent .ff_correct {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 11pt;
+  color: #ff0000;
+  visibility: visible;
+  font-weight: bold;
+}
+
+.FormFieldError {
+  font-size: 8pt;
+  color: red;
+}
+.SmallBox {
+  position: relative;
+  font-size: 1px;
+}
+.SmallBox .ErrorMessage {
+  font-size: 8pt;
+  position: relative;
+  color: red;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 5px;
+  padding-left: 43px;
+}
+.SmallBox .Message {
+  font-size: 10pt;
+  position: relative;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 10px;
+}
+.SmallBox .ErrorMessage ul {
+  padding-left: 15px;
+}
+.SmallBox .BoxFrameHorizontal {
+  position: relative;
+  height: 4px;
+}
+.SmallBox .BoxFrameVerticalRight {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 3px;
+  background-repeat: repeat-y;
+  height: 100%;
+}
+.SmallBox .BoxFrameVerticalLeft {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 3px;
+  background-repeat: repeat-y;
+  height: 100%;
+}
+.SmallBox .MessageContainer {
+  position: relative;
+  height: 100%;
+}
+.SmallBox .BoxFrameEdgeLeftTop {
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .BoxFrameEdgeLeftBottom {
+  position: absolute;
+  left: -1px;
+  bottom: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .BoxFrameEdgeRightTop {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .BoxFrameEdgeRightBottom {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 5px;
+  height: 5px;
+}
+.SmallBox .AttentionSign {
+  position: absolute;
+  top: 3px;
+  left: 8px;
+  width: 30px;
+  height: 26px;
+}
+
+/** ----------------
+ *  new process bars
+ *  ----------------
+ */
+
+#ProgressBar #Headline {
+  text-align: center;
+  font-size: 14pt;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+#ProgressBar #MainContainer {
+  position: relative;
+  top: 10px;
+  height: 50px;
+  margin-bottom: 25px;
+}
+#ProgressBar #BackgroundContainer {
+  position: relative;
+  width: 100%;
+}
+
+#ProgressBar #BackgroundContainerLeftEnd {
+  position: absolute;
+  float: left;
+}
+#ProgressBar #BackgroundContainerCenter {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 17px;
+  width: 100%;
+}
+#ProgressBar #BackgroundContainerCenterImage {
+  position: relative;
+  margin-left: 25px;
+  margin-right: 25px;
+  height: 17px;
+}
+#ProgressBar #BackgroundContainerRightEnd {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  float: right;
+}
+#ProgressBar #TubeLeftEnd {
+  position: absolute;
+  left: 25px;
+  top: 4px;
+}
+#ProgressBar #TubeRightEnd {
+  position: absolute;
+  right: 25px;
+  top: 4px;
+  z-index: 0;
+}
+#ProgressBar .Steps {
+  position: relative;
+  height: 39px;
+  font-size: 9px;
+  float: left;
+  top: -11px;
+  margin-left: -1px;
+}
+#ProgressBar #StepsContainer1 {
+  text-align: right;
+  margin-left: 92px;
+  margin-right: 40px;
+  height: 10px;
+}
+#ProgressBar #StepsContainer2 {
+  width: 100%;
+  height: 10px;
+}
+#ProgressBar .TubeContainer {
+  position: relative;
+  padding-right: 47px;
+}
+#ProgressBar .Tube {
+  position: relative;
+  top: 16px;
+  left: 0px;
+  width: 100%;
+  height: 7px;
+  background: #ffffff none repeat scroll 0%;
+}
+* html #ProgressBar .Tube {
+  top: 13px;
+}
+#ProgressBar .SingleStepContainer {
+  position: absolute;
+  top: 0px;
+  width: 47px;
+  height: 30px;
+  right: 0px;
+  text-align: center;
+}
+#ProgressBar #FirstStep .SingleStepContainer {
+  left: 45px;
+  width: 47px;
+  position: absolute;
+}
+#ProgressBar .StepIcon {
+  position: absolute;
+  right: 0px;
+}
+* html #ProgressBar .StepIcon {
+  right: -1px;
+}
+#ProgressBar #FirstStep .StepIcon {
+  top: 0px;
+  left: 0px;
+}
+#ProgressBar .StepText {
+  top: 40px;
+  position: absolute;
+  width: 200px;
+  right: -77px;
+}
+
+/** -------------------------------
+ *  Stylesheet declarations for the
+ *  NEW TABLES
+ *  -------------------------------
+ */
+
+.TableContainer {
+  border: 1px solid black;
+  position: relative;
+  width: 100%;
+  font-size: 1px;
+}
+.TableContainer .Odd {
+  background-color: #f1e0c6;
+}
+.TableContainer .Even {
+  background-color: #d5c0a1;
+}
+.Text {
+  margin-top: 3px;
+  margin-left: 4px;
+  margin-bottom: 2px;
+  padding: 3px;
+  padding-top: 3px;
+}
+
+/* TABLEHEADER DECORATION */
+.TableContainer .CaptionContainer {
+  position: relative;
+  font-size: 1pt;
+  background-color: #5f4d41 !important;
+  height: 100%;
+  width: 100%;
+  text-align: left;
+}
+.TableContainer .CaptionContainer .CaptionInnerContainer {
+  position: relative;
+  background-color: #5f4d41;
+  width: 100%;
+  height: 100%;
+  padding-top: 3px;
+  padding-bottom: 4px;
+}
+.TableContainer .CaptionContainer .Text {
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: left;
+  color: white;
+  padding-left: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+.TableContainer .CaptionContainer .CaptionEdgeLeftTop {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: -2px;
+  left: -2px;
+  z-index: 50;
+}
+.TableContainer .CaptionContainer .CaptionEdgeRightTop {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  top: -2px;
+  right: -2px;
+  z-index: 50;
+}
+.TableContainer .CaptionContainer .CaptionEdgeLeftBottom {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  left: -2px;
+  bottom: -3px;
+  z-index: 50;
+}
+.TableContainer .CaptionContainer .CaptionEdgeRightBottom {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  right: -2px;
+  bottom: -3px;
+  z-index: 50;
+}
+.TableContainer .CaptionContainer .CaptionBorderTop {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0px;
+  top: -1px;
+}
+.TableContainer .CaptionContainer .CaptionBorderBottom {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0px;
+  bottom: -2px;
+}
+.TableContainer .CaptionContainer .CaptionVerticalLeft {
+  position: absolute;
+  height: 100%;
+  width: 3px;
+  left: -1px;
+  top: 0px;
+}
+.TableContainer .CaptionContainer .CaptionVerticalRight {
+  position: absolute;
+  height: 100%;
+  width: 3px;
+  right: -1px;
+  top: 0px;
+}
+* html .TableContainer .CaptionContainer .CaptionEdgeRightTop {
+  right: -3px;
+}
+* html .TableContainer .CaptionContainer .CaptionEdgeLeftBottom {
+  bottom: -4px;
+}
+* html .TableContainer .CaptionContainer .CaptionEdgeRightBottom {
+  right: -3px;
+  bottom: -4px;
+}
+* html .TableContainer .CaptionContainer .CaptionBorderBottom {
+  bottom: -3;
+}
+* html .TableContainer .CaptionContainer .CaptionVerticalRight {
+  right: -2px;
+}
+/* TABLE CONTENT */
+.TableContentContainer {
+  border: 1px solid #5f4d41;
+  position: relative;
+  margin-right: 4px;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 0px;
+}
+.TableContent {
+  width: 100%;
+  border-collapse: collapse;
+}
+.TableContent td {
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+/* INNERLYOUT 1 */
+.TableContainer .Table1 {
+  width: 100%;
+  background-color: #d4c0a1;
+  border: 2px solid #55636c;
+}
+.TableContainer .Table1 .InnerTableContainer {
+  padding: 5px;
+}
+/* INNERLYOUT 2 */
+.TableContainer .Table2 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+  padding: 0px;
+  margin: 0px;
+  border-collapse: collapse;
+}
+.TableContainer .Table2 td {
+  padding: 0px;
+  margin: 0px;
+}
+.TableContainer .Table2 .InnerTableContainer {
+  margin-top: 1px;
+}
+.TableContainer .Table2 .InnerTableContainer table {
+  border-collapse: collapse;
+}
+.TableContainer .Table2 .InnerTableContainer td {
+  padding-top: 2px;
+  padding-left: 5px;
+  padding-bottom: 2px;
+  padding-right: 5px;
+  border: 1px solid #faf0d7;
+}
+/* INNERLYOUT 3 */
+.TableContainer .Table3 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+}
+.TableContainer .Table3 .InnerTableContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+  margin-left: 3px;
+}
+.TableContainer .Table3 .TableContentAndRightShadow td {
+  border: 1px solid #faf0d7;
+}
+/* INNERLYOUT 4 */
+.TableContainer .Table4 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+}
+.TableContainer .Table4 .InnerTableContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 3px;
+}
+.TableContainer .Table4 .TableContentAndRightShadow .TableContent td {
+  padding-left: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+/* INNERLYOUT 5 */
+.TableContainer .Table5 {
+  width: 100%;
+  border: 2px solid #55636c;
+  background-color: #f1e0c5;
+}
+.TableContainer .Table5 .InnerTableContainer {
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+  margin-left: 3px;
+}
+.TableContainer .Table5 .TableContentAndRightShadow .TableContent td {
+  padding-left: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+/* SHADOWS */
+.TableShadowContainerRightTop {
+  position: relative;
+  top: 0px;
+  right: 3px;
+  margin-right: 0px;
+  font-size: 1px;
+  float: right;
+  z-index: 99;
+}
+.TableShadowRightTop {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 4px;
+  height: 5px;
+  z-index: 99;
+}
+.TableContentAndRightShadow {
+  position: relative;
+  background-repeat: repeat-y;
+  background-position: top right;
+  margin-right: 3px;
+  font-size: 1px;
+  /*box-shadow: 3px 3px 2px #875f3e;*/
+}
+.TableShadowContainer {
+  position: relative;
+  margin-right: 5px;
+}
+.TableBottomShadow {
+  position: relative;
+  font-size: 1px;
+  height: 5px;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+.TableBottomLeftShadow {
+  position: relative;
+  height: 5px;
+  width: 4px;
+  float: left;
+  padding: 0px;
+  margin: 0px;
+}
+.TableBottomRightShadow {
+  position: relative;
+  float: right;
+  right: -2px;
+  top: 0px;
+  height: 5px;
+  width: 4px;
+}
+/* HEADLESS CONTENT TABLE */
+.HeadlessTable {
+  border: 0px;
+  border-style: solid;
+  border-color: #656565;
+  border-top-width: 1px;
+  border-top-color: white;
+  border-left-width: 1px;
+  border-left-color: white;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+  border-right-color: #656565;
+  margin-left: 15px;
+}
+/* LABELS */
+.InnerTableContainer .TableContentContainer {
+  box-shadow: 3px 3px 2px #875f3e;
+}
+.TableContentContainer {
+  border: 1px solid #5f4d41;
+  position: relative;
+  margin-right: 7px;
+  margin-bottom: 5px;
+  height: 100%;
+  background-color: #d4c0a1;
+  padding: 0;
+}
+.TableContainer .Table3 .TableContent td {
+  border: 1px solid #faf0d7;
+}
+
+.TableContainer .GreedyCell {
+  width: 80%;
+}
+.LabelV80 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 80px;
+}
+.LabelV100 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 100px;
+}
+.LabelV120 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 120px;
+}
+.LabelV150 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 150px;
+}
+.LabelV175 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 175px;
+}
+.LabelV200 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 200px;
+}
+.LabelV250 {
+  font-weight: 700;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  width: 250px;
+}
+
+.LabelV {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+}
+.LabelH {
+  font-weight: bold;
+  padding-right: 10px;
+  white-space: nowrap;
+  background-color: #d5c0a1;
+}
+.LabelH td {
+  background-color: #d5c0a1;
+  padding-left: 5px;
+  padding-top: 2px;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+
+/* BUTTONS */
+.InnerTableButtonRow {
+  width: 100%;
+  padding-left: 1px;
+  padding-right: 0px;
+  padding-bottom: 4px;
+  border: 0px;
+}
+.InnerTableButtonRow td {
+  padding-right: 4px;
+}
+.BigButton {
+  position: relative;
+  width: 135px;
+  height: 25px;
+  z-index: 10;
+}
+.BigButtonOver {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 137px;
+  height: 25px;
+  visibility: hidden;
+  z-index: 15;
+}
+.ButtonText {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 25px;
+  width: 135px;
+  z-index: 20;
+}
+.BigButtonText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 135px;
+  height: 25px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  background: 0 0;
+  border: none;
+  text-align: center;
+  color: #ffd18c;
+  font-family:
+    Verdana,
+    Arial,
+    Times New Roman,
+    sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  z-index: 20;
+  text-shadow:
+    -1px -1px 0 #000,
+    0 -1px 0 #000,
+    1px -1px 0 #000,
+    1px 0 0 #000,
+    1px 1px 0 #000,
+    0 1px 0 #000,
+    -1px 1px 0 #000,
+    -1px 0 0 #000;
+}
+.BigButtonText:hover {
+  top: 1px;
+  left: 1px;
+}
+.TopButtonContainer {
+  position: relative;
+  right: 4px;
+  top: 4px;
+  z-index: 60;
+}
+* html .TopButtonContainer {
+  right: 27px;
+}
+.TopButtonContainer .TopButton {
+  position: absolute;
+  right: 0;
+  z-index: 55;
+  cursor: pointer;
+}
+
+.Content .BoxContent .Odd {
+  background-color: #d4c0a1;
+  padding: 2px;
+}
+
+.Content .BoxContent .Even {
+  background-color: #f1e0c6;
+  padding: 2px;
+}
+
+.Content .NewsCategoryIconSmall {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  height: 16px;
+  width: 16px;
+  background-repeat: no-repeat;
+}
+
+/* News Ticker */
+
+.Content #NewsTicker .BoxContent {
+  padding: 5px;
+  min-height: 90px;
+  height: auto !important;
+  height: 100px;
+}
+
+.Content #NewsTicker .BoxContent .Row {
+  position: relative;
+  width: 100%;
+}
+
+.Content #NewsTicker .NewsTickerIcon {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  height: 16px;
+  width: 16px;
+  background-repeat: no-repeat;
+}
+
+.Content #NewsTicker .NewsTickerText {
+  font-size: 9pt;
+  position: relative;
+  margin-left: 20px;
+}
+
+.Content #NewsTicker .NewsTickerDate {
+  font-size: 7pt;
+  position: absolute;
+  top: 0px;
+  float: left;
+}
+
+.Content #NewsTicker .NewsTickerShortText {
+  margin-left: 85px;
+  height: 14px;
+}
+
+.Content #NewsTicker .NewsTickerFullText {
+  margin-left: 85px;
+  margin-right: 20px;
+  display: none;
+}
+
+.Content #NewsTicker .NewsTickerExtend {
+  position: relative;
+  right: 0px;
+  top: 1px;
+  right: 1px;
+  height: 12px;
+  width: 12px;
+  background-repeat: no-repeat;
+  float: right;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Featured Article */
+
+.Content #FeaturedArticle .BoxContent {
+  position: relative;
+  height: 100px;
+  padding: 5px;
+  padding-left: 10px;
+  min-height: 100px;
+  height: auto !important;
+  height: 110px;
+  line-height: 10.5pt;
+}
+.Content #FeaturedArticle .NewsHeadline {
+  margin-top: 5px;
+}
+
+.Content #FeaturedArticle #TeaserThumbnail {
+  position: relative;
+  top: 0px;
+  right: 0px;
+  height: 100px;
+  width: 150px;
+  margin-left: 10px;
+  background-color: black;
+  z-index: 90;
+  float: right;
+}
+
+#ContentHelper #FeaturedArticle:first-child .BoxContent {
+  padding: 10px;
+}
+
+.Content #FeaturedArticle #TeaserText {
+  height: 100px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.Content #FeaturedArticle #Link {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  margin: 89 165 0 0;
+  z-index: 99;
+}
+
+.Content #FeaturedArticle .NewsHeadlineBackground {
+  position: relative;
+  height: 28px;
+  margin-bottom: 5px;
+  background-repeat: repeat-x;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+}
+
+.Content #FeaturedArticle .NewsHeadlineIcon {
+  position: absolute;
+  top: -1px;
+  left: 0px;
+  margin-left: 5px;
+  margin-right: 5px;
+  float: left;
+}
+
+.Content #FeaturedArticle .NewsHeadlineDate {
+  font-size: 7pt;
+  position: absolute;
+  top: 9px;
+  left: 50px;
+  width: 85px;
+  color: white;
+}
+
+.Content #FeaturedArticle .NewsHeadlineText {
+  position: relative;
+  top: 8px;
+  left: 135px;
+  font-size: 10pt;
+  font-weight: bold;
+  color: white;
+}
+
+/* News */
+
+.Content #News .BoxContent {
+  min-height: 100px;
+  height: auto !important;
+  height: 110px;
+}
+
+.Content #News .NewsHeadlineBackground {
+  position: relative;
+  height: 28px;
+  margin-bottom: 5px;
+  background-repeat: repeat-x;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+}
+
+.Content #News .NewsHeadlineIcon {
+  position: absolute;
+  top: -1px;
+  left: 0px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.Content #News .NewsHeadlineDate {
+  font-size: 7pt;
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  width: 85px;
+  color: white;
+}
+
+.Content #News .NewsHeadlineText {
+  position: relative;
+  top: 7px;
+  left: 135px;
+  font-size: 10pt;
+  font-weight: bold;
+  color: white;
+}
+
+/* News Archive */
+
+.Content #NewsArchive .NewsHeadlineBackground {
+  position: relative;
+  height: 28px;
+  margin-bottom: 5px;
+  background-repeat: repeat-x;
+  border-left: 1px solid #000000;
+  border-right: 1px solid #000000;
+}
+
+.Content #NewsArchive .NewsHeadlineIcon {
+  position: absolute;
+  top: -1px;
+  left: 0px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.Content #NewsArchive .NewsHeadlineDate {
+  font-size: 7pt;
+  position: absolute;
+  top: 9px;
+  left: 50px;
+  width: 85px;
+  color: white;
+}
+
+.Content #NewsArchive .NewsHeadlineText {
+  position: relative;
+  top: 7px;
+  left: 135px;
+  font-size: 10pt;
+  font-weight: bold;
+  color: white;
+}
+
+.Content #News .NewsHeadlineAuthor {
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  font-size: 10pt;
+  color: white;
+}
+
+/* BUTTONS */
+.MediumButtonText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 37px;
+  width: 150px;
+  z-index: 20;
+}
+.MediumButtonBackground {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 37px;
+  z-index: 10;
+}
+.MediumButtonOver {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 37px;
+  visibility: hidden;
+  z-index: 15;
+}
+.MediumButtonForm {
+  margin: 0;
+  padding: 0;
+}
+
+.moduleRow {
+}
+
+.moduleRowOver {
+  background-color: #d4c0a1;
+  cursor: pointer;
+  cursor: hand;
+}

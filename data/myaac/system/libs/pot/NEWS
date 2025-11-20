@@ -1,0 +1,21 @@
+What's new in 0.1.4 version?
+
+* Updated for last database changes.
+
+    As always POT provides most up-to-date interface for database.
+
+* Updated OTAdmin implementation.
+
+    Support for new COMMAND_KICK call. It is now possible to kick given player from server.
+
+* Binary information protocol support.
+
+    It is now possible to use binary information protocol, which in new version provides such useful featuers like online players list.
+
+* Server status routines grouped.
+
+    All routines related to server infromation protocols (both XML-based and binary) are now grouped within OTS_ServerInfo class.
+
+* Bigfixes.
+
+    Some bugfixes to previously implemented features like VIP list.

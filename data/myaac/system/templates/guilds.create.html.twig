@@ -1,0 +1,65 @@
+<form action="?subtopic=guilds&action=create&todo=save" method="post">
+<div class="TableContainer">
+				<div class="CaptionContainer">
+						<div class="CaptionInnerContainer">
+							<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+							<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+							<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+							<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+							<div class="Text">Create a {{ config.lua.serverName }} Guild</div>
+							<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+							<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+							<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+							<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+						</div>
+					</div><table class="Table1" cellpadding="0" cellspacing="0">
+					
+					<tbody><tr>
+						<td>
+							<div class="InnerTableContainer">
+								<table style="width:100%;">
+									<tbody><tr>
+										<td width="150" valign="top">
+										<b>Leader: </b>
+									</td>
+									<td>
+										<select name="name">
+											{% for player in players %}
+											<option>{{ player }}</option>
+											{% endfor %}
+										</select><br/>
+										<span style="font-size: 10px">(Name of leader of new guild.)</span>
+									</td>
+								</tr>
+								<tr>
+									<td width="150" valign="top"><b>Guild name: </b></td>
+									<td>
+										<input name="guild" value="" size="30" maxlength="50"/><br/>
+										<span style="font-size: 10px">(Here write name of your new guild.)</span></td>
+									</tr>
+								</tbody></table>
+							</div>
+						</td>
+					</tr>
+				</tbody></table>
+			</div>
+	<br/>
+	<table border=0 width=100%>
+		<tr>
+			<td align="center">
+				<img src="{{ template_path }}/images/general/blank.gif" width=120 height=1 border=0><br/>
+			</td>
+			<td align="center" valign="top">
+				{{ include('buttons.submit.html.twig') }}
+</form>
+			</td>
+			<td align="center">
+				<form  action="?subtopic=guilds" method="post">
+					{{ include('buttons.back.html.twig') }}
+				</form>
+			</td>
+			<td align="center">
+				<img src="{{ template_path }}/images/general/blank.gif" width="120" height="1" border="0"><br>
+			</td>
+		</tr>
+	</table>

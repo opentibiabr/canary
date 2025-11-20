@@ -1,0 +1,70 @@
+Please enter your password and the new email address. Make sure that you enter a valid email address which you have access to.<br><b>For security reasons, the actual change will be finalised after a waiting period of {{ config.account_mail_change }} days.</b><br/><br/>
+<form action="{{ getLink('account/email') }}" method="post">
+<div class="TableContainer">
+	<table class="Table1" cellpadding="0" cellspacing="0">
+		<div class="CaptionContainer">
+			<div class="CaptionInnerContainer" >
+				<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+				<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+				<div class="Text" >Change Email Address</div>
+				<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+				<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+				<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+			</div>
+		</div>
+		<tr>
+			<td>
+				<div class="InnerTableContainer">
+					<table style="width:100%;">
+						<tr>
+							<td class="LabelV" >
+								<span >New Email Address:</span>
+							</td>
+							<td style="width:90%;">
+								<input name="new_email" value="{% if new_email is defined %}{{ new_email }}{% endif %}" size="30" maxlength="50" autofocus/>
+							</td>
+						</tr>
+						<tr>
+							<td class="LabelV">
+								<span >Password:</span>
+							</td>
+							<td>
+								<input type="password" name="password" size="30" maxlength="29">
+							</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br/>
+<table style="width:100%;">
+	<tr align="center">
+		<td>
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td style="border:0px;">
+						<input type="hidden" name="changeemailsave" value="1"/>
+						{{ include('buttons.submit.html.twig') }}
+					</td>
+				<tr>
+			</table>
+		</td>
+</form>
+		<td>
+			<table border="0" cellspacing="0" cellpadding="0">
+				<form action="{{ getLink('account/manage') }}" method="post">
+					<tr>
+						<td style="border:0px;">
+							{{ include('buttons.back.html.twig') }}
+						</td>
+					</tr>
+				</form>
+			</table>
+		</td>
+	</tr>
+</table>

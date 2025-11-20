@@ -1,0 +1,55 @@
+---
+name: Format Prettier
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+jobs:
+  cancel-runs:
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Actions checkout
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: npm install prettier @prettier/plugin-php stylelint-prettier
+
+      - name: Run prettier code format
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: npx prettier --write **/*.{php,js} --plugin=@prettier/plugin-php --ignore-unknown && npx stylelint **/*.css --fix
+
+      - name: Run add and commit
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Actions
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: 'PHP code format - (prettier)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

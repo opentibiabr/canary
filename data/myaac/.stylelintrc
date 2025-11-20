@@ -1,0 +1,8 @@
+{
+  "plugins": ["stylelint-prettier"],
+  "ignoreFiles": ["**/*.min.css"],
+  "rules": {
+    "prettier/prettier": true
+  },
+  "extends": ["stylelint-prettier/recommended"]
+}

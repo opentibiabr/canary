@@ -1,0 +1,36 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f2f3f8;
+}
+.install {
+  width: 100%;
+  max-width: 910px;
+  margin: auto;
+}
+.container_install {
+  width: 100%;
+  max-width: 910px;
+  margin: auto;
+}
+ul {
+  list-style-type: none;
+}
+li {
+  background-color: #ebeced;
+  border-radius: 0.3rem;
+}
+li.current {
+  color: #fff;
+  background-color: green;
+  font-weight: bold;
+}
+.success {
+  margin: 0;
+}

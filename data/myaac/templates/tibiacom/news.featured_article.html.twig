@@ -1,0 +1,45 @@
+<div id="FeaturedArticle" class="Box">
+	<div class="Corner-tl" style="background-image:url({{ template_path }}/images/content/corner-tl.gif);"></div>
+	<div class="Corner-tr" style="background-image:url({{ template_path }}/images/content/corner-tr.gif);"></div>
+	<div class="Border_1" style="background-image:url({{ template_path }}/images/content/border-1.gif);"></div>
+	<div class="BorderTitleText" style="background-image:url({{ template_path }}/images/content/title-background-green.gif);"></div>
+	<img id="ContentBoxHeadline" class="Title" src="{{ template_path }}/images/header/headline-featuredarticle.gif" alt="Contentbox headline" />
+	<div class="Border_2">
+		<div class="Border_3">
+			<div class="BoxContent" style="background-image:url({{ template_path }}/images/content/scroll.gif);">
+				<div id="TeaserThumbnail">
+					{% if article.read_more is not empty %}<a href="{{ article.read_more }}">{% endif %}
+						<img src="{{ article.image }}" width="150" height="100" border=0 alt="" />
+					{% if article.read_more is not empty %}</a>{% endif %}
+				</div>
+				{% if article.read_more is not empty %}
+					<a id="Link" href="{{ article.read_more }}">&raquo; read more</a>
+				{% endif %}
+				<div id="TeaserText">
+					<div style="position: relative; top: -2px; margin-bottom: 2px;">
+						<b>
+							<p>{{ article.title|raw }}
+								{% if canEdit %}
+									<a href="/admin/?p=news&action=edit&id={{ article.id }}" title="Edit">
+										<img src="images/edit.png"/>Edit
+									</a>
+									<a id="delete" href="/admin/?p=news&action=delete&id={{ article.id }}" onclick="return confirm('Are you sure?');" title="Delete">
+										<img src="images/del.png"/>Delete
+									</a>
+									<a href="/admin/?p=news&action=hide&id={{ article.id }}" title="{% if article.hidden != 1 %}Hide{% else %}Show{% endif %}">
+										<img src="images/{% if article.hidden != 1 %}success{% else %}error{% endif %}.png"/>
+										{% if article.hidden != 1 %}Hide{% else %}Show{% endif %}
+									</a>
+								{% endif %}
+							</p>
+						</b>
+					</div>
+					{{ article.text|raw }}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="Border_1" style="background-image:url({{ template_path }}/images/content/border-1.gif);"></div>
+	<div class="CornerWrapper-b"><div class="Corner-bl" style="background-image:url({{ template_path }}/images/content/corner-bl.gif);"></div></div>
+	<div class="CornerWrapper-b"><div class="Corner-br" style="background-image:url({{ template_path }}/images/content/corner-br.gif);"></div></div>
+</div>

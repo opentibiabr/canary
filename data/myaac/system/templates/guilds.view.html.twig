@@ -1,0 +1,508 @@
+<table border="0" width="100%">
+  <tbody>
+  <tr>
+    <td width="64">
+      <img src="images/guilds/{{ logo }}" width="64" height="64">
+    </td>
+
+    <td align="center" width="100%"><h1>{{ guild_name }}</h1></td>
+
+    <td width="64">
+      <img src="images/guilds/{{ logo }}" width="64" height="64">
+    </td>
+  </tr>
+  </tbody>
+</table>
+<br>
+<table width="100%">
+  <colgroup>
+    <col width="90%">
+    <col width="10%">
+  </colgroup>
+  <tbody>
+  <tr>
+    <td style="vertical-align:top; padding-right: 5px;">
+      <div class="TableContainer">
+        <div class="CaptionContainer">
+          <div class="CaptionInnerContainer">
+            <span class="CaptionEdgeLeftTop"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            <span class="CaptionEdgeRightTop"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            <span class="CaptionBorderTop"
+                  style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+            <span class="CaptionVerticalLeft"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+            <div class="Text">Guild Information</div>
+            <span class="CaptionVerticalRight"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+            <span class="CaptionBorderBottom"
+                  style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+            <span class="CaptionEdgeLeftBottom"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            <span class="CaptionEdgeRightBottom"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+          </div>
+        </div>
+        <table class="Table1" cellpadding="0" cellspacing="0">
+          <tbody>
+          <tr>
+            <td>
+              <div class="InnerTableContainer">
+                <table style="width:100%;">
+                  <tbody>
+                  <tr>
+                    <td style="word-break: break-all">
+                      <div id="GuildInformationContainer">
+                        {% if description is not empty %}
+                          {{ description|raw }}
+                          <br><br>
+                        {% endif %}
+                        {% if guild_owner is not empty %}
+                          {% set guildOwnerName = guild_owner.getName() %}
+                          <i class="far fa-crown"></i> <a
+                          href="{{ getPlayerLink(guildOwnerName, false) }}"><b>{{ guildOwnerName }}</b></a> is guild leader of {{ guild_name }}.
+                          <br>
+                        {% endif %}
+                        <i class="far fa-calendar-star"></i> The guild was founded on {{ config.lua.serverName }}
+                        on {{ guild_creation_date|date("j F Y") }}.<br>
+                        <b><i class="far fa-sack-dollar"></i> Guild Bank Account Balance: {{ guild_balance }}
+                          Gold</b><br>
+                        {% if guild_house and isVice %}
+                          <i
+                            class="far fa-house-user"></i> Their home on {{ config.lua.serverName }} is {{ guild_house }}
+                          <br>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </td>
+    <td style="vertical-align:top;">
+      <div class="TableContainer">
+        <div class="CaptionContainer">
+          <div class="CaptionInnerContainer">
+            <span class="CaptionEdgeLeftTop"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            <span class="CaptionEdgeRightTop"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            <span class="CaptionBorderTop"
+                  style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+            <span class="CaptionVerticalLeft"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+            <div class="Text">Navigation</div>
+            <span class="CaptionVerticalRight"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+            <span class="CaptionBorderBottom"
+                  style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+            <span class="CaptionEdgeLeftBottom"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            <span class="CaptionEdgeRightBottom"
+                  style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+          </div>
+        </div>
+        <table class="Table1" cellpadding="0" cellspacing="0">
+          <tbody>
+          <tr>
+            <td>
+              <div class="InnerTableContainer">
+                <table style="width:100%;">
+                  <tbody>
+                  <tr>
+                    <td align="center">
+                      <div id="NavigationContainer" style="height: 112px;">
+                        <div style="font-size:1px;height:4px;"></div>
+                        {% if isLeader %}
+                          <a href="?subtopic=guilds&action=manager&guild={{ guild_name }}"
+                             style="padding:0px;margin:0px;">
+                            {% set button_name = 'Edit Ranks' %}
+                            {% include('buttons.base.html.twig') %}
+                          </a>
+                          <div style="font-size:1px;height:4px;"></div>
+                          <a href="?subtopic=guilds&guild={{ guild_name }}&action=change_logo"
+                             style="padding:0px;margin:0px;">
+                            {% set button_name = 'Change Banner' %}
+                            {% include('buttons.base.html.twig') %}
+                          </a>
+                        {% endif %}
+                        <div style="font-size:1px;height:4px;"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </td>
+
+    {% if isLeader %}
+      <td style="vertical-align:top;">
+        <div class="TableContainer">
+          <div class="CaptionContainer">
+            <div class="CaptionInnerContainer">
+              <span class="CaptionEdgeLeftTop"
+                    style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+              <span class="CaptionEdgeRightTop"
+                    style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+              <span class="CaptionBorderTop"
+                    style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+              <span class="CaptionVerticalLeft"
+                    style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+              <div class="Text">Administration</div>
+              <span class="CaptionVerticalRight"
+                    style="background-image:url({{ template_path }}/images/global/content/box-frame-vertical.gif);"></span>
+              <span class="CaptionBorderBottom"
+                    style="background-image:url({{ template_path }}/images/global/content/table-headline-border.gif);"></span>
+              <span class="CaptionEdgeLeftBottom"
+                    style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+              <span class="CaptionEdgeRightBottom"
+                    style="background-image:url({{ template_path }}/images/global/content/box-frame-edge.gif);"></span>
+            </div>
+          </div>
+          <table class="Table1" cellpadding="0" cellspacing="0">
+            <tbody>
+            <tr>
+              <td>
+                <div class="InnerTableContainer">
+                  <table style="width:100%;">
+                    <tbody>
+                    <tr>
+                      <td align="center">
+                        <div id="NavigationContainer" style="height: 112px;">
+                          <a href="?subtopic=guilds&guild={{ guild_name }}&action=change_description"
+                             style="padding:0px;margin:0px;">
+                            {% set button_name = 'Edit Description' %}
+                            {% include('buttons.base.html.twig') %}
+                          </a>
+                          <div style="font-size:1px;height:4px;"></div>
+                          {% if constant('MOTD_EXISTS') %}
+                            <a href="?subtopic=guilds&guild={{ guild_name }}&action=change_motd"
+                               style="padding:0px;margin:0px;">
+                              {% set button_name = 'Create Board' %}
+                              {% include('buttons.base.html.twig') %}
+                            </a>
+                          {% endif %}
+                          <div style="font-size:1px;height:4px;"></div>
+                          <a href="?subtopic=guilds&guild={{ guild_name }}&action=delete_guild"
+                             style="padding:0px;margin:0px;">
+                            {% set button_name = 'Disband Guild' %}
+                            {% include('buttons.base.html.twig') %}
+                          </a>
+                          <div style="font-size:1px;height:4px;"></div>
+                          <a href="?subtopic=guilds&guild={{ guild_name }}&action=pass_leadership"
+                             style="padding:0px;margin:0px;">
+                            {% set button_name = 'Resign Leadership' %}
+                            {% include('buttons.base.html.twig') %}
+                          </a>
+                          <div style="font-size:1px;height:4px;"></div>
+                        </div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    {% endif %}
+  </tr>
+  </tbody>
+</table>
+
+<br>
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer">
+      <span class="CaptionEdgeLeftTop"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightTop"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionBorderTop"
+            style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+      <span class="CaptionVerticalLeft"
+            style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Guild Members</div>
+      <span class="CaptionVerticalRight"
+            style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <span class="CaptionBorderBottom"
+            style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+      <span class="CaptionEdgeLeftBottom"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightBottom"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+    </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+      <td>
+        <div class="InnerTableContainer">
+          <table style="width:100%;">
+            <tbody>
+            <tr>
+              <td>
+                <div class="TableContentAndRightShadow">
+                  <div class="TableContentContainer">
+                    <table class="TableContent" width="100%">
+                      <tbody>
+                      <tr class="LabelH">
+                        <td>Rank</td>
+                        <td>Name{% if useGuildNick %} and Title{% endif %}</td>
+                        <td>Vocation</td>
+                        <td>Level</td>
+                        <td>Status</td>
+                      </tr>
+
+                      {% set showedRank, i = false, 0 %}
+                      {% for rank in guild_members if rank.members|length > 0 %}
+                        {% set rankStyle, i = getStyle(i), i + 1 %}
+
+                        {% for player in rank.members %}
+                          <tr bgcolor="{{ rankStyle }}">
+                            <td>
+                              {% if not showedRank %}{{ rank.rank_name }}{% endif %}
+                              {% set showedRank = true %}
+                            </td>
+
+                            <td>
+                              {% set playerName = player.getName() %}
+                              <form
+                                action="?subtopic=guilds&action=change_nick&name={{ playerName }}&guild={{ guild_name }}"
+                                method="post">
+                                {{ getPlayerLink(playerName, true)|raw }}
+
+                                {% set showGuildNick = false %}
+                                {% if player.getGuildNick() is not empty %}
+                                  {% set showGuildNick = true %}
+                                  {% set guildNickRaw = player.getGuildNick()|raw %}
+                                {% endif %}
+
+                                {% if logged %}
+                                  {% if player.getId() in players_from_account_ids %}
+                                    (<input type="text" class="input_nick" name="nick" value="{{ guildNickRaw }}"><input
+                                    type="submit" class="btn_nick" value="Change">)
+                                  {% else %}
+                                    {% if showGuildNick %} ({{ guildNickRaw }}){% endif %}
+                                  {% endif %}
+
+                                  {% if level_in_guild > rank.rank_level or isLeader %}
+                                    {% if guildOwnerName != playerName %}
+                                      <span style="font-size: 10px; float: right">
+																				{<a
+                                          href="?subtopic=guilds&action=kick_player&guild={{ guild_name|url_encode }}&name={{ playerName|url_encode }}">KICK</a>}
+																			</span>
+                                    {% endif %}
+                                  {% endif %}
+                                {% else %}
+                                  {% if showGuildNick %} ({{ guildNickRaw }}){% endif %}
+                                {% endif %}
+                              </form>
+                            </td>
+
+                            <td>{{ player.getVocationName() }}</td>
+                            <td>{{ player.getLevel() }}</td>
+                            <td>
+                              <span
+                                style="color: {% if player.isOnline() %} green;">Online{% else %} red;">Offline{% endif %}</span>
+                            </td>
+                          </tr>
+                        {% endfor %}
+
+                        {% set showedRank = false %}
+                      {% else %}
+                        <tr bgcolor="{{ getStyle(i) }}">
+                          <td colspan="5">No guild members found.</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+{% if logged %}
+  <table border="0" class="fixed">
+    <tbody>
+    <tr></tr>
+    </tbody>
+    <colgroup>
+      <col width="140px">
+      <col width="140px">
+      <col width="140px">
+      <col width="140px">
+      <col width="140px">
+      <col width="140px">
+    </colgroup>
+    <tbody>
+    <tr>
+      {% if isVice %}
+        <td>
+          <form action="?subtopic=guilds&action=invite&guild={{ guild_name|url_encode }}" method="post">
+            {% set button_name = 'Invite Character' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+        <td>
+          <form action="?subtopic=guilds&action=change_rank&guild={{ guild_name|url_encode }}" method="post">
+            {% set button_name = 'Edit Members' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+        <td>
+          <form action="?subtopic=guilds&action=accept_invite&guild={{ guild_name|url_encode }}" method="post">
+            {% set button_name = 'Accept Guild' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+        <td>
+          <form action="?subtopic=guilds&action=leave_guild&guild={{ guild_name|url_encode }}" method="post">
+            {% set button_name = 'Leave Guild' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+      {% endif %}
+      {% if not isLeader %}
+        <td>
+          <form action="?subtopic=guilds&action=accept_invite&guild={{ guild_name|url_encode }}" method="post">
+            {% set button_name = 'Accept Guild' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+        <td>
+          <form action="?subtopic=guilds&action=leave_guild&guild={{ guild_name|url_encode }}" method="post">
+            {% set button_name = 'Leave Guild' %}
+            {% include('buttons.base.html.twig') %}
+          </form>
+        </td>
+      {% endif %}
+    </tr>
+    </tbody>
+  </table>
+{% else %}
+  <td>
+    <form action="?subtopic=accountmanagement&redirect={{ getGuildLink(guild_name|url_encode, false) }}" method="post">
+      {{ include('buttons.login.html.twig') }}
+    </form>
+  </td>
+{% endif %}
+
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer">
+      <span class="CaptionEdgeLeftTop"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightTop"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionBorderTop"
+            style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+      <span class="CaptionVerticalLeft"
+            style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Invited Characters</div>
+      <span class="CaptionVerticalRight"
+            style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <span class="CaptionBorderBottom"
+            style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+      <span class="CaptionEdgeLeftBottom"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+      <span class="CaptionEdgeRightBottom"
+            style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+    </div>
+  </div>
+  <table class="Table3" cellpadding="0" cellspacing="0">
+    <tbody>
+    <tr>
+      <td>
+        <div class="InnerTableContainer">
+          <table style="width:100%;">
+            <tbody>
+            <tr>
+              <td>
+                <div class="TableContentContainer">
+                  <table class="TableContent" width="100%">
+                    <tbody>
+                    {% if invited_list|length > 0 %}
+                      <tr class="LabelH">
+                        <td><b>Name</b></td>
+                      </tr>
+                    {% endif %}
+                    {% set i = 0 %}
+                    {% for invited_player in invited_list if invited_list|length > 0 %}
+                      {% if invited_player.isLoaded() %}
+                        <tr bgcolor="{{ getStyle(i) }}">
+                          {% set i = i + 1 %}
+
+                          <td>
+                            {{ getPlayerLink(invited_player.getName(), true)|raw }}
+
+                            {% if isVice %}
+                              <div style="float: right">
+                                {<a
+                                  href="?subtopic=guilds&action=delete_invite&guild={{ guild_name|url_encode }}&name={{ invited_player.getName()|url_encode }}">Cancel
+                                  Invitation</a>}
+                              </div>
+                            {% endif %}
+                          </td>
+                        </tr>
+                      {% endif %}
+                    {% else %}
+                      <tr bgcolor="{{ getStyle(i) }}">
+                        <td>
+                          No invited characters found.
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<br>
+
+<table border="0" width="100%">
+  <tbody>
+  <tr>
+    <td align="center"><img src="{{ template_path }}/images/global/general/blank.gif" width="80" height="1"
+                            border="0<BR"></td>
+    <td align="center">
+      <form action="{{ getLink('guilds') }}" method="post">
+        {{ include('buttons.back.html.twig') }}
+      </form>
+    </td>
+    <td align="center"><img src="{{ template_path }}/images/global/general/blank.gif" width="80" height="1"
+                            border="0<BR"></td>
+  </tr>
+  </tbody>
+</table>

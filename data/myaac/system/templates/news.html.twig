@@ -1,0 +1,23 @@
+<div class="NewsHeadline">
+	<div class="NewsHeadlineBackground" style="background-image:url({{ template_path }}/images/news/newsheadline_background.gif)">
+		<img src="{{ template_path }}/images/news/icon_{{ icon }}.gif" class="NewsHeadlineIcon" />
+		<div class="NewsHeadlineDate">{{ date|date(config.news_date_format) }} - </div>
+		<div class="NewsHeadlineText">{{ title }}</div>
+		{% if config.news_author and author is not empty %}
+		<div class="NewsHeadlineAuthor"><b>Author: </b><i>{{ author }}</i></div>
+		{% endif %}
+	</div>
+</div>
+<table style="clear:both" border=0 cellpadding=0 cellspacing=0 width="100%" >
+	<tr>
+		<td style="padding-left:10px;padding-right:10px;" >{{ content|raw }}</td>
+	</tr>
+	{% if comments is not null %}
+	<tr>
+		<td>
+			<div style="text-align: right; margin-right: 10px;"><a href="{{ comments }}">» Comment on this news</a></div>
+		</td>
+	</tr>
+	{% endif %}
+</table>
+<br/>

@@ -1,0 +1,38 @@
+.error,
+.success,
+.note,
+.warning {
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+}
+.error {
+  background-color: #dc3545;
+  color: #fff;
+}
+.error-image {
+  background-image: url(images/error.gif);
+}
+.success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+}
+.success-image {
+  background-image: url(images/success.gif);
+}
+.note {
+  background-color: #ddeafa;
+  border-color: #a3d8fd;
+  color: #026da5;
+}
+.note-image {
+  background-image: url(images/note.gif);
+}
+.warning {
+  background-color: #fbf0b3;
+  border-color: #fbbb95;
+  color: #fd6002;
+}
+.warning-image {
+  background-image: url(images/warning.gif);
+}

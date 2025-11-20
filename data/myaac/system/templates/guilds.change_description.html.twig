@@ -1,0 +1,50 @@
+<div class="TableContainer">
+  <div class="CaptionContainer">
+    <div class="CaptionInnerContainer"> <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span> <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+      <div class="Text">Change Guild Description</div>
+      <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span> <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span> <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span> </div>
+  </div>
+  <table class="Table5" cellpadding="0" cellspacing="0">
+    <tbody>
+      <tr>
+        <td><div class="InnerTableContainer">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td><div class="TableContentContainer">
+                      <table class="TableContent" width="100%">
+                        <tbody>
+						<form enctype="multipart/form-data" action="?subtopic=guilds&guild={{ guild.getName() }}&action=change_description" method="post">
+                          <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+                            <td><b>Here you can change description of your guild.</b></td>
+                          </tr>
+						  <tr bgcolor="#D4C0A1" style="display: flex; justify-content: center;">
+                            <td>
+							<input type="hidden" name="todo" value="save"/><textarea name="description" cols="60" rows="{{ config.guild_description_lines_limit - 1 }}">{{ guild.getCustomField('description')|raw }}</textarea>
+							</td>
+                          </tr>
+						  <tr bgcolor="#D4C0A1">
+                            <td style="display: flex; justify-content: center;">
+							<small>(max. {{ config.guild_description_lines_limit }} lines, max. {{ config.guild_description_chars_limit }} chars)</small><br>
+							{% set button_name = 'Save Description' %}
+							{% include('buttons.base_green.html.twig') %}
+							</td>
+                          </tr>
+						</form>
+                        </tbody>
+                      </table>
+                    </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br>
+<div style="display: flex; justify-content: center;">
+	<form action="?guilds/{{ guild.getName() }}" method="post">
+		{{ include('buttons.back.html.twig') }}
+	</form>
+</div>

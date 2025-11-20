@@ -1,0 +1,171 @@
+<div class="TableContainer">
+    {% if errors is not empty %}
+        {% for error in errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+    {% else %}
+        <table class="Table1" cellpadding="0" cellspacing="0" style="background-color: {{ config.lightborder }}">
+            <div class="CaptionContainer">
+                <div class="CaptionInnerContainer">
+                    <span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+                    <span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+                    <span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+                    <span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+                    <div class="Text" >House Search</div>
+                    <span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+                    <span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+                    <span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+                    <span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+                </div>
+            </div>
+
+            <tr>
+                <td>
+                    <div class="InnerTableContainer">
+                        Here you can see the list of all available houses, flats{{ guildString }}.
+                        Click on any view button to get more information about a house or adjust
+                        the search criteria and start a new search.
+                        <br><br>
+                        {% if cleanOldHouse is not empty or rentType != 'never' %}
+                            Every morning during global server save there is automatic house cleaning. Server delete house owners who have not logged in last {{ cleanOldHouse }} days{% if rentType != 'never' %} or have not paid {{ rentType }} house rent. Remember to leave money for a rent in {% if config.lua.bankSystem is not empty %}your house bank or {% else %}depo in same city where you have house!{% endif %}{% else %}.{% endif %}
+                            <br><br>
+                        {% endif %}
+
+                        {% if houses is not empty or housesSearch %}
+                        <table border="0" cellspacing="1" cellpadding="4" width="100%">
+                            <tbody>
+                                <tr bgcolor="{{ config.vdarkborder }}">
+                                    <td colspan="6" class="white"><b>Available {{ houseType }}{% if townName is not empty %} in {{ townName }}{% endif %} on <b>{{ config.lua.serverName }}</b></b></td>
+                                </tr>
+
+                                <tr bgcolor="{{ config.darkborder }}">
+                                    {% if houses is not empty %}
+                                        <td width="40%"><b>Name</b></td>
+                                        <td width="10%"><b>Size</b></td>
+                                        <td width="10%"><b>Rent</b></td>
+
+                                        <td width="40%"><b>Status</b></td>
+                                        <td>&nbsp;</td>
+                                    {% elseif housesSearch %}
+                                        <td>No {{ houseType }} with specified criterias.</td>
+                                    {% endif %}
+                                </tr>
+
+                                {% if houses is not empty %}
+                                    {% set i = 0 %}
+                                    {% for house in houses %}
+                                        {% set i = i + 1 %}
+                                        <tr bgcolor="{{ getStyle(i) }}">
+                                            <td width="40%">
+                                                {{ house.name }}
+                                            </td>
+
+                                            <td width="10%">
+                                                {{ house.size }}
+                                            </td>
+
+                                            <td width="10%">
+                                                {{ house.rent }} golds
+                                            </td>
+
+                                            <td width="40%">
+                                                {{ house.rentedBy|raw }}
+                                            </td>
+
+                                            <td>
+                                                <form action="{{ getLink('houses/view') }}" method="post">
+                                                    <input type="hidden" name="house" value="{{ house.name }}">
+                                                    {{ include('buttons.view.html.twig') }}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <br>
+                        {% endif %}
+
+                        <form action="{{ getLink('houses') }}" method="post">
+                            <table border="0" cellspacing="1" cellpadding="4" width="100%">
+                                <tbody>
+                                    <tr bgcolor="{{ config.vdarkborder }}">
+                                        <td colspan="4" class="white"><b>House Search</b></td>
+                                    </tr>
+
+                                    <tr bgcolor="{{ config.darkborder }}">
+                                        <td width="25%"><b>Town</b></td>
+                                        <td width="25%"><b>Status</b></td>
+                                        <td width="25%"><b>Order</b></td>
+                                    </tr>
+
+                                    <tr bgcolor="{{ config.darkborder }}">
+                                        <td valign="top" rowspan="2">
+                                            {% set checked = false %}
+                                            {% for id, name in config.towns if id > 0 %}
+                                                {% if ((townId is empty and name is not empty) or id == townId) and not checked %}
+                                                    {% set variable = "checked" %}
+                                                    {% set checked = true %}
+                                                {% else %}
+                                                    {% set variable = "" %}
+                                                {% endif %}
+
+                                                <input type="radio" name="town" id="town_{{ id }}" value="{{ id }}"{% if variable is defined %} {{ variable }}{% endif %}>
+                                                <label for="town_{{ id }}"> {{ name }}</label>
+                                                <br>
+                                            {% endfor %}
+                                        </td>
+
+                                        <td valign="top">
+                                            <input type="radio" name="state" id="state_all" value=""{% if state is empty %} checked{% endif %}>
+                                            <label for="state_all">all states</label><br>
+
+                                            <input type="radio" name="state" id="state_free" value="free"{% if state == 'free' %} checked{% endif %}>
+                                            <label for="state_free">free</label><br>
+
+                                            <input type="radio" name="state" id="state_rented" value="rented"{% if state == 'rented' %} checked{% endif %}>
+                                            <label for="state_rented">rented</label><br>
+                                        </td>
+
+                                        <td valign="top" rowspan="2">
+                                            <input type="radio" name="order" id="order_name" value=""{% if order is empty %} checked{% endif %}>
+                                            <label for="order_name"> by name</label><br>
+
+                                            <input type="radio" name="order" id="order_size" value="size"{% if order == 'size' %} checked{% endif %}>
+                                            <label for="order_size"> by size</label><br>
+
+                                            <input type="radio" name="order" id="order_rent" value="rent"{% if order == 'rent' %} checked{% endif %}>
+                                            <label for="order_rent"> by rent</label><br>
+                                        </td>
+                                    </tr>
+
+                                    <tr bgcolor="{{ config.darkborder }}">
+                                        <td valign="top">
+                                            <input type="radio" name="type" id="type_all" value=""{% if type is empty %} checked{% endif %}>
+                                            <label for="type"> all</label><br>
+                                            <input type="radio" name="type" id="type_houses" value="houses"{% if type == 'houses' %} checked{% endif %}>
+                                            <label for="type_houses"> houses and flats</label><br>
+                                            <input type="radio" name="type" id="type_guildhalls" value="guildhalls"{% if type == 'guildhalls' %} checked{% endif %}>
+                                            <label for="type_guildhalls"> guildhalls</label><br>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br>
+
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tbody>
+                                    <tr align="center">
+                                        <td>
+                                            {{ include('buttons.submit.html.twig') }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+</div>

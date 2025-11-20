@@ -1,0 +1,30 @@
+<style>
+	tr, td {
+		border-bottom: 1px solid #ddd;
+		padding: 15px;
+	}
+</style>
+<form action="{{ constant('BASE_URL') }}install/" method="post" autocomplete="off">
+	<input type="hidden" name="step" id="step" value="finish" />
+	<table>
+		{% for value in ['email', account, 'password', 'player_name'] %}
+		<tr>
+			<td>
+				<label for="vars_{{ value }}">
+					<span class="fw-bold">{{ locale['step_admin_' ~ value] }}</span>
+				</label>
+				<br/>
+				<input class="form-control" type="text" name="vars[{{ value }}]" id="vars_{{ value }}"{% if session['var_' ~ value] is not null %} value="{{ session['var_' ~ value] }}"{% endif %}/>
+				<label class="small">{{ locale['step_admin_' ~ value ~ '_desc']|raw }}</label>
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+
+	{% if errors is defined %}
+		{% for error in errors %}
+			<p class="error">{{ error }}</p>
+		{% endfor %}
+	{% endif %}
+	{{ buttons|raw }}
+</form>

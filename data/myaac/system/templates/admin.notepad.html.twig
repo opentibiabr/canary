@@ -1,0 +1,56 @@
+<div class="row">
+	<div class="col-md-6">
+		<div class="box box-danger">
+			<div class="box-header with-border">
+				<h3 class="box-title">Notepad</h3>
+			</div>
+			<form method="post">
+				<div class="box-body">
+					<div class="form-group">
+						<label>This is your personal notepad. Be sure to save it each time you modify something.</label>
+						<textarea class="form-control" style="text-align: left;" name="content" cols="50" rows="15"
+								  onchange="notepad_onchange(this);">{% if content is not null %}{{ content }}{% endif %}</textarea>
+					</div>
+				</div>
+				<div class="box-footer">
+					<button name="submit" onclick="notepad_save(this);" value="Save" class="btn btn-primary">Save
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{# <?php echo isset($_content) ? htmlentities($_content, ENT_COMPAT, 'UTF-8') : ''; ?> #}
+
+{# confirm leaving current page if content of the notepad has been modified #}
+
+<script type="text/javascript">
+	var original_value = document.getElementsByName("content")[0].value;
+
+	function confirm_exit(e) {
+		var e = e || window.event;
+		var message = 'Are you sure you want to quit? Remaining changes will be unsaved.';
+
+		// for IE and Firefox prior to version 4
+		if (e) {
+			e.returnValue = message;
+		}
+
+		// for Safari
+		return message;
+	}
+
+	function notepad_onchange(e) {
+		if (original_value != e.value) {
+			window.onbeforeunload = confirm_exit;
+		}
+		return true;
+	}
+
+	function notepad_save(e) {
+		window.onbeforeunload = function (e) {
+		};
+		return true;
+	}
+</script>

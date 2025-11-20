@@ -1,0 +1,212 @@
+<script type="text/javascript">
+	var eventId = 0;
+	var lastSend = 0;
+
+	$(function() {
+		updateFlag();
+		$('#account_country').change(function() {
+			updateFlag();
+		});
+
+		$('#account_input').blur(function() {
+			checkAccount();
+		});
+		$('#email').blur(function() {
+			checkEmail();
+		});
+		$('#password').blur(function() {
+			checkPassword();
+		});
+		$('#password2').blur(function() {
+			checkPassword();
+		});
+		$('#SuggestAccountNumber a').click(function (event) {
+			generateAccountNumber(event);
+		});
+	});
+
+	function updateFlag()
+	{
+		var img = $('#account_country_img');
+		var country = $('#account_country :selected').val();
+		if(country.length) {
+			img.attr('src', 'images/flags/' + country + '.gif');
+			img.show();
+		}
+		else {
+			img.hide();
+		}
+	}
+
+	function checkAccount()
+	{
+		if(eventId != 0)
+		{
+			clearInterval(eventId)
+			eventId = 0;
+		}
+
+		if(document.getElementById("account_input").value == "")
+		{
+			$('#account_error').html('Please enter account {% if constant('USE_ACCOUNT_NAME') %}name{% else %}number{% endif %}.');
+			$('#account_indicator').attr('src', 'images/global/general/nok.gif');
+			$('#account_indicator').show();
+			return;
+		}
+
+		//anti flood
+		var date = new Date;
+		var timeNow = parseInt(date.getTime());
+
+		if(lastSend != 0)
+		{
+			if(timeNow - lastSend < 1100)
+			{
+				eventId = setInterval('checkAccount()', 1100)
+				return;
+			}
+		}
+
+		var account = document.getElementById("account_input").value;
+		$.getJSON("tools/validate.php", { account: account, uid: Math.random() },
+			function(data){
+				if(data.hasOwnProperty('success')) {
+					$('#account_error').html ('');
+					$('#account_indicator').attr('src', 'images/global/general/ok.gif');
+				}
+				else if(data.hasOwnProperty('error')) {
+					$('#account_error').html(data.error);
+					$('#account_indicator').attr('src', 'images/global/general/nok.gif');
+				}
+
+				$('#account_indicator').show();
+			}
+		);
+
+		lastSend = timeNow;
+	}
+
+	function checkEmail()
+	{
+		if(eventId != 0)
+		{
+			clearInterval(eventId)
+			eventId = 0;
+		}
+
+		if(document.getElementById("email").value == "")
+		{
+			$('#email_error').html('Please enter e-mail.');
+			$('#email_indicator').attr('src', 'images/global/general/nok.gif');
+			$('#email_indicator').show();
+			return;
+		}
+
+		//anti flood
+		var date = new Date;
+		var timeNow = parseInt(date.getTime());
+
+		if(lastSend != 0)
+		{
+			if(timeNow - lastSend < 1100)
+			{
+				eventId = setInterval('checkEmail()', 1100)
+				return;
+			}
+		}
+
+		var email = document.getElementById("email").value;
+		$.getJSON("tools/validate.php", { email: email, uid: Math.random() },
+			function(data){
+				if(data.hasOwnProperty('success')) {
+					$('#email_error').html ('');
+					$('#email_indicator').attr('src', 'images/global/general/ok.gif');
+				}
+				else if(data.hasOwnProperty('error')) {
+					$('#email_error').html(data.error);
+					$('#email_indicator').attr('src', 'images/global/general/nok.gif');
+				}
+
+				$('#email_indicator').show();
+			}
+		);
+
+		lastSend = timeNow;
+	}
+
+	function checkPassword()
+	{
+		if(eventId != 0)
+		{
+			clearInterval(eventId)
+			eventId = 0;
+		}
+
+		if(document.getElementById("password").value == "")
+		{
+			$('#password_error').html('Please enter the password for your new account.');
+			$('#password_indicator').attr('src', 'images/global/general/nok.gif');
+			$('#password_indicator').show();
+			return;
+		}
+
+		if(document.getElementById("password2").value == "")
+		{
+			$('#password2_error').html('Please enter the password again!');
+			$('#password2_indicator').attr('src', 'images/global/general/nok.gif');
+			$('#password2_indicator').show();
+			return;
+		}
+
+		//anti flood
+		var date = new Date;
+		var timeNow = parseInt(date.getTime());
+
+		if(lastSend != 0)
+		{
+			if(timeNow - lastSend < 1100)
+			{
+				eventId = setInterval('checkPassword()', 1100)
+				return;
+			}
+		}
+
+		var password = document.getElementById("password").value;
+		var password2 = document.getElementById("password2").value;
+		$.getJSON("tools/validate.php", { password: password, password2: password2, uid: Math.random() },
+			function(data){
+				if(data.hasOwnProperty('success')) {
+					$('#password_error').html ('');
+					$('#password2_error').html ('');
+					$('#password_indicator').attr('src', 'images/global/general/ok.gif');
+					$('#password2_indicator').attr('src', 'images/global/general/ok.gif');
+				}
+				else if(data.hasOwnProperty('error')) {
+					$('#password_error').html(data.error);
+					$('#password2_error').html(data.error);
+					$('#password_indicator').attr('src', 'images/global/general/nok.gif');
+					$('#password2_indicator').attr('src', 'images/global/general/nok.gif');
+				}
+
+				$('#password_indicator').show();
+				$('#password2_indicator').show();
+			}
+		);
+
+		lastSend = timeNow;
+	}
+
+	function generateAccountNumber(event)
+	{
+		event.preventDefault();
+		$.getJSON("tools/generate_account_number.php", { uid: Math.random() },
+			function(data){
+				if(data.hasOwnProperty('success')) {
+					$('#account_input').val(data.success);
+				}
+			}
+		);
+
+		setTimeout(checkAccount, 1000);
+	}
+</script>

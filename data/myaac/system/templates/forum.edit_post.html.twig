@@ -1,0 +1,52 @@
+<br/>
+<form action="{{ getLink('forum') }}" method="post">
+	<input type="hidden" name="action" value="edit_post" />
+	<input type="hidden" name="id" value="{{ post_id }}" />
+	<input type="hidden" name="save" value="save" />
+	<table width="100%">
+		<tr bgcolor="{{ config.vdarkborder }}">
+			<td colspan="2">
+				<span style="color: white"><b>Edit Post</b></span>
+			</td>
+		</tr>
+		<tr bgcolor="{{ config.darkborder }}">
+			<td width="180"><b>Character:</b></td>
+			<td>
+				<select name="char_id">
+					<option value="0">(Choose character)</option>
+					{% for player in players %}
+					<option value="{{ player.id }}"{% if player.id == player_id %} selected="selected"{% endif %}>{{ player.name }}</option>
+					{% endfor %}
+					</select>
+			</td>
+		</tr>
+		<tr bgcolor="{{ config.lightborder }}">
+			<td><b>Topic:</b></td>
+			<td><input type="text" value="{{ post_topic|raw }}" name="topic" size="40" maxlength="60" /> (Optional)</td>
+		</tr>
+		<tr bgcolor="{{ config.darkborder }}">
+			<td valign="top"><b>Message:</b><span style="font-size: 10px"><br/>You can use:<br/>[player]Nick[/player]<br />[url]http://address.com/[/url]<br />[img]http://images.com/images3.gif[/img]<br />[code]Code[/code]<br />[b]<b>Text</b>[/b]<br />[i]<i>Text</i>[/i]<br/>[u]<u>Text</u>[/u]<br />and smileys:<br />;) , :) , :D , :( , :rolleyes:<br />:cool: , :eek: , :o , :p</span>
+			</td>
+			<td>
+				<textarea rows="10" cols="60" name="text">{{ post_text|raw }}</textarea><br />(Max. 15,000 letters)
+			</td>
+		</tr>
+		<tr bgcolor="{{ config.lightborder }}">
+			<td valign="top">Options:</td>
+			<td>
+				<label>
+					<input type="checkbox" name="smile" value="1"{% if post_smile %} checked="checked"{% endif %}/>Disable Smileys in This Post
+				</label>
+				{% if canEdit %}
+					<br/>
+					<label>
+						<input type="checkbox" name="html" value="1"{% if post_html %} checked="checked"{% endif %}/>Enable HTML in this post (moderator only)
+					</label>
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+	<div style="text-align:center">
+		<input type="submit" value="Save Post" />
+	</div>
+</form>

@@ -1,0 +1,116 @@
+Here you can see and edit the information about your character.<br/>
+If you do not want to specify a certain field, just leave it blank.<br/><br/>
+<form action="{{ getLink('account/character/comment') }}" method="post">
+	<div class="TableContainer" >
+		<table class="Table5" cellpadding="0" cellspacing="0">
+			<div class="CaptionContainer">
+				<div class="CaptionInnerContainer" >
+					<span class="CaptionEdgeLeftTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+					<span class="CaptionEdgeRightTop" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+					<span class="CaptionBorderTop" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+					<span class="CaptionVerticalLeft" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+					<div class="Text" >Edit Character Information</div>
+					<span class="CaptionVerticalRight" style="background-image:url({{ template_path }}/images/content/box-frame-vertical.gif);"></span>
+					<span class="CaptionBorderBottom" style="background-image:url({{ template_path }}/images/content/table-headline-border.gif);"></span>
+					<span class="CaptionEdgeLeftBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+					<span class="CaptionEdgeRightBottom" style="background-image:url({{ template_path }}/images/content/box-frame-edge.gif);"></span>
+				</div>
+			</div>
+			<tr>
+				<td>
+					<div class="InnerTableContainer">
+						<table style="width:100%;">
+							<tr>
+								<td>
+									<div class="TableShadowContainerRightTop">
+										<div class="TableShadowRightTop" style="background-image:url({{ template_path }}/images/content/table-shadow-rt.gif);" ></div>
+									</div>
+									<div class="TableContentAndRightShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-rm.gif);">
+										<div class="TableContentContainer">
+											<table class="TableContent" width="100%">
+												<tr>
+													<td class="LabelV">Name:</td>
+													<td style="width:80%;" >{{ player.getName() }}</td>
+												</tr>
+                        <tr>
+                          <td class="LabelV">Hide Account:</td>
+                          <td>
+                            {% if not player.isMain() %}
+                              <input type="hidden" value="0" name="accountvisible">
+                              <input type="checkbox" name="accountvisible" id="accountvisible" value="1"
+                                     {% if player.isHidden() %}checked="checked"{% endif %}>
+                              <label for="accountvisible"> check to hide your account information</label>
+                              {% if player.getCustomField('group_id') > 1 %} (you will be also hidden on the Team page!){% endif %}
+                            {% else %}
+                              <label for="accountvisible">Main character can not be hide</label>
+                            {% endif %}
+                          </td>
+                        </tr>
+											</table>
+										</div>
+									</div>
+									<div class="TableShadowContainer">
+										<div class="TableBottomShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-bm.gif);">
+											<div class="TableBottomLeftShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-bl.gif);"></div>
+											<div class="TableBottomRightShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-br.gif);"></div>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="TableShadowContainerRightTop">
+										<div class="TableShadowRightTop" style="background-image:url({{ template_path }}/images/content/table-shadow-rt.gif);"></div>
+									</div>
+									<div class="TableContentAndRightShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-rm.gif);">
+										<div class="TableContentContainer">
+											<table class="TableContent" width="100%">
+												<tr>
+													<td class="LabelV" ><span>Comment:</span></td>
+													<td style="width:80%;"><textarea name="comment" rows="10" cols="50" wrap="virtual">{{ player.getCustomField('comment')|raw }}</textarea><br>[max. length: 2000 chars, 50 lines (ENTERs)]</td>
+												</tr>
+											</table>
+										</div>
+									</div>
+									<div class="TableShadowContainer">
+										<div class="TableBottomShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-bm.gif);">
+											<div class="TableBottomLeftShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-bl.gif);"></div>
+											<div class="TableBottomRightShadow" style="background-image:url({{ template_path }}/images/content/table-shadow-br.gif);" ></div>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<br/>
+	<table style="width:100%">
+		<tr align="center">
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td style="border:0px;">
+							<input type="hidden" name="name" value="{{ player.getName() }}">
+							<input type="hidden" name="changecommentsave" value="1">
+							{{ include('buttons.submit.html.twig') }}
+						</td>
+					</tr>
+</form>
+				</table>
+			</td>
+			<td>
+				<table border="0" cellspacing="0" cellpadding="0">
+					<form action="{{ getLink('account/manage') }}" method="post">
+						<tr>
+							<td style="border:0px;">
+								{{ include('buttons.back.html.twig') }}
+							</td>
+						</tr>
+					</form>
+				</table>
+			</td>
+		</tr>
+	</table>

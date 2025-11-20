@@ -22,7 +22,8 @@ namespace {
 	}
 }
 
-LuaBindingScanner::LuaBindingScanner(std::filesystem::path rootPath) : root(std::move(rootPath)) { }
+LuaBindingScanner::LuaBindingScanner(std::filesystem::path rootPath) :
+	root(std::move(rootPath)) { }
 
 LuaScanResult LuaBindingScanner::scan() const {
 	LuaScanResult result;
@@ -61,141 +62,142 @@ void LuaBindingScanner::scanFile(const std::filesystem::path &filePath, LuaScanR
 	parseRegistrations(content, filePath, result);
 }
 void LuaBindingScanner::parseLuaReg(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
-    // Canary NÃO usa luaL_Reg, mas mantenho caso exista algum legado
-    std::regex luaRegPattern(
-        R"regex(luaL_Reg\s+([A-Za-z0-9_]+)\s*\[\]\s*=\s*\{([^;]*?)\};)regex",
-        std::regex::optimize | std::regex::icase | std::regex::multiline
-    );
-    std::regex entryPattern(
-        R"regex(\{\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+)\s*\})regex",
-        std::regex::optimize
-    );
+	// Canary NÃO usa luaL_Reg, mas mantenho caso exista algum legado
+	std::regex luaRegPattern(
+		R"regex(luaL_Reg\s+([A-Za-z0-9_]+)\s*\[\]\s*=\s*\{([^;]*?)\};)regex",
+		std::regex::optimize | std::regex::icase | std::regex::multiline
+	);
+	std::regex entryPattern(
+		R"regex(\{\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+)\s*\})regex",
+		std::regex::optimize
+	);
 
-    for (auto regIt = std::sregex_iterator(content.begin(), content.end(), luaRegPattern); regIt != std::sregex_iterator(); ++regIt) {
-        const auto block = (*regIt)[2].str();
-        for (auto entryIt = std::sregex_iterator(block.begin(), block.end(), entryPattern); entryIt != std::sregex_iterator(); ++entryIt) {
-            LuaFunctionInfo info;
-            info.name = (*entryIt)[1].str();
-            info.handler = (*entryIt)[2].str();
-            info.returnType = normalizeReturnType(info.handler);
-            info.sourceFile = filePath.string();
-            info.parameters = inferParameters(content, info.handler);
-            result.functions.emplace_back(std::move(info));
-        }
-    }
+	for (auto regIt = std::sregex_iterator(content.begin(), content.end(), luaRegPattern); regIt != std::sregex_iterator(); ++regIt) {
+		const auto block = (*regIt)[2].str();
+		for (auto entryIt = std::sregex_iterator(block.begin(), block.end(), entryPattern); entryIt != std::sregex_iterator(); ++entryIt) {
+			LuaFunctionInfo info;
+			info.name = (*entryIt)[1].str();
+			info.handler = (*entryIt)[2].str();
+			info.returnType = normalizeReturnType(info.handler);
+			info.sourceFile = filePath.string();
+			info.parameters = inferParameters(content, info.handler);
+			result.functions.emplace_back(std::move(info));
+		}
+	}
 }
 
 void LuaBindingScanner::parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
 
-    // ==== 1) CLASSES ======================================================================
-    std::regex classPattern(
-        R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)")regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), classPattern); it != std::sregex_iterator(); ++it) {
-        result.classes.insert((*it)[1].str());
-    }
+	// ==== 1) CLASSES ======================================================================
+	std::regex classPattern(
+		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)")regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), classPattern); it != std::sregex_iterator(); ++it) {
+		result.classes.insert((*it)[1].str());
+	}
 
-    // ==== 2) MÉTODOS DE CLASSE =============================================================
-    std::regex methodPattern(
-        R"regex(Lua::registerMethod\s*\(\s*[^,]+,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), methodPattern); it != std::sregex_iterator(); ++it) {
-        LuaFunctionInfo info;
-        info.className = (*it)[1].str();
-        info.name = (*it)[2].str();
-        info.handler = (*it)[3].str();
-        info.returnType = normalizeReturnType(info.handler);
-        info.parameters = inferParameters(content, info.handler);
-        info.sourceFile = filePath.string();
-        result.functions.emplace_back(std::move(info));
-    }
+	// ==== 2) MÉTODOS DE CLASSE =============================================================
+	std::regex methodPattern(
+		R"regex(Lua::registerMethod\s*\(\s*[^,]+,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), methodPattern); it != std::sregex_iterator(); ++it) {
+		LuaFunctionInfo info;
+		info.className = (*it)[1].str();
+		info.name = (*it)[2].str();
+		info.handler = (*it)[3].str();
+		info.returnType = normalizeReturnType(info.handler);
+		info.parameters = inferParameters(content, info.handler);
+		info.sourceFile = filePath.string();
+		result.functions.emplace_back(std::move(info));
+	}
 
-    // ==== 3) META MÉTODOS ==================================================================
-    std::regex metaMethodPattern(
-        R"regex(Lua::registerMetaMethod\s*\(\s*[^,]+,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), metaMethodPattern); it != std::sregex_iterator(); ++it) {
-        LuaFunctionInfo info;
-        info.className = (*it)[1].str();
-        info.name = (*it)[2].str();
-        info.handler = (*it)[3].str();
-        info.returnType = normalizeReturnType(info.handler);
-        info.parameters = inferParameters(content, info.handler);
-        info.sourceFile = filePath.string();
-        result.functions.emplace_back(std::move(info));
-    }
+	// ==== 3) META MÉTODOS ==================================================================
+	std::regex metaMethodPattern(
+		R"regex(Lua::registerMetaMethod\s*\(\s*[^,]+,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), metaMethodPattern); it != std::sregex_iterator(); ++it) {
+		LuaFunctionInfo info;
+		info.className = (*it)[1].str();
+		info.name = (*it)[2].str();
+		info.handler = (*it)[3].str();
+		info.returnType = normalizeReturnType(info.handler);
+		info.parameters = inferParameters(content, info.handler);
+		info.sourceFile = filePath.string();
+		result.functions.emplace_back(std::move(info));
+	}
 
-    // ==== 4) FUNÇÕES GLOBAIS ===============================================================
-    std::regex globalPattern(
-        R"regex(Lua::registerGlobalMethod\s*\(\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), globalPattern); it != std::sregex_iterator(); ++it) {
-        LuaFunctionInfo info;
-        info.name = (*it)[1].str();
-        info.handler = (*it)[2].str();
-        info.returnType = normalizeReturnType(info.handler);
-        info.parameters = inferParameters(content, info.handler);
-        info.sourceFile = filePath.string();
-        result.functions.emplace_back(std::move(info));
-    }
+	// ==== 4) FUNÇÕES GLOBAIS ===============================================================
+	std::regex globalPattern(
+		R"regex(Lua::registerGlobalMethod\s*\(\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), globalPattern); it != std::sregex_iterator(); ++it) {
+		LuaFunctionInfo info;
+		info.name = (*it)[1].str();
+		info.handler = (*it)[2].str();
+		info.returnType = normalizeReturnType(info.handler);
+		info.parameters = inferParameters(content, info.handler);
+		info.sourceFile = filePath.string();
+		result.functions.emplace_back(std::move(info));
+	}
 
-    // ==== 5) VARIÁVEIS BOOLEANAS GLOBAIS ===================================================
-    std::regex constantBoolPattern(
-        R"regex(Lua::registerGlobalBoolean\s*\(\s*"([^"]+)")regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), constantBoolPattern); it != std::sregex_iterator(); ++it) {
-        LuaFunctionInfo info;
-        info.name = (*it)[1].str();
-        info.returnType = "boolean";
-        info.sourceFile = filePath.string();
-        result.functions.emplace_back(std::move(info));
-    }
+	// ==== 5) VARIÁVEIS BOOLEANAS GLOBAIS ===================================================
+	std::regex constantBoolPattern(
+		R"regex(Lua::registerGlobalBoolean\s*\(\s*"([^"]+)")regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), constantBoolPattern); it != std::sregex_iterator(); ++it) {
+		LuaFunctionInfo info;
+		info.name = (*it)[1].str();
+		info.returnType = "boolean";
+		info.sourceFile = filePath.string();
+		result.functions.emplace_back(std::move(info));
+	}
 
-    // ==== 6) VARIÁVEIS NUMÉRICAS GLOBAIS ===================================================
-    std::regex constantNumberPattern(
-        R"regex(Lua::registerGlobalVariable\s*\(\s*"([^"]+)")regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), constantNumberPattern); it != std::sregex_iterator(); ++it) {
-        LuaFunctionInfo info;
-        info.name = (*it)[1].str();
-        info.returnType = "number";
-        info.sourceFile = filePath.string();
-        result.functions.emplace_back(std::move(info));
-    }
+	// ==== 6) VARIÁVEIS NUMÉRICAS GLOBAIS ===================================================
+	std::regex constantNumberPattern(
+		R"regex(Lua::registerGlobalVariable\s*\(\s*"([^"]+)")regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), constantNumberPattern); it != std::sregex_iterator(); ++it) {
+		LuaFunctionInfo info;
+		info.name = (*it)[1].str();
+		info.returnType = "number";
+		info.sourceFile = filePath.string();
+		result.functions.emplace_back(std::move(info));
+	}
 
-    // ==== 7) STRING GLOBAIS ================================================================
-    std::regex constantStringPattern(
-        R"regex(Lua::registerGlobalString\s*\(\s*"([^"]+)")regex",
-        std::regex::optimize
-    );
-    for (auto it = std::sregex_iterator(content.begin(), content.end(), constantStringPattern); it != std::sregex_iterator(); ++it) {
-        LuaFunctionInfo info;
-        info.name = (*it)[1].str();
-        info.returnType = "string";
-        info.sourceFile = filePath.string();
-        result.functions.emplace_back(std::move(info));
-    }
+	// ==== 7) STRING GLOBAIS ================================================================
+	std::regex constantStringPattern(
+		R"regex(Lua::registerGlobalString\s*\(\s*"([^"]+)")regex",
+		std::regex::optimize
+	);
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), constantStringPattern); it != std::sregex_iterator(); ++it) {
+		LuaFunctionInfo info;
+		info.name = (*it)[1].str();
+		info.returnType = "string";
+		info.sourceFile = filePath.string();
+		result.functions.emplace_back(std::move(info));
+	}
 }
 
 std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &content, const std::string &handler) const {
-    std::vector<std::string> parameters;
+	std::vector<std::string> parameters;
 
-    std::regex commentPattern(
-        ("//.*\\(([^)]*)\\)\\s*\\n\\s*int\\s+" + handler + R"regex(\s*\()regex"
-        ), std::regex::optimize
-    );
+	std::regex commentPattern(
+		("//.*\\(([^)]*)\\)\\s*\\n\\s*int\\s+" + handler + R"regex(\s*\()regex"
+	    ),
+		std::regex::optimize
+	);
 
-    std::smatch match;
-    if (std::regex_search(content, match, commentPattern)) {
-        parameters = splitParameters(match[1].str());
-    }
-    return parameters;
+	std::smatch match;
+	if (std::regex_search(content, match, commentPattern)) {
+		parameters = splitParameters(match[1].str());
+	}
+	return parameters;
 }
 
 std::vector<std::string> LuaBindingScanner::splitParameters(const std::string &parameters) const {
@@ -219,9 +221,9 @@ std::string LuaBindingScanner::normalizeReturnType(const std::string &handler) c
 }
 
 LuaApiDocGenerator::LuaApiDocGenerator(const std::filesystem::path &projectRoot, Logger &logger) :
-		logger(logger),
-		projectRoot(findProjectRoot(projectRoot)),
-		docsDirectory(ensureDocsDirectory()) { }
+	logger(logger),
+	projectRoot(findProjectRoot(projectRoot)),
+	docsDirectory(ensureDocsDirectory()) { }
 
 void LuaApiDocGenerator::generate() {
 	try {

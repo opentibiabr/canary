@@ -20,6 +20,7 @@ void ResultFunctions::init(lua_State* L) {
 }
 
 int ResultFunctions::luaResultGetNumber(lua_State* L) {
+	// Result.getNumber(resultId, column)
 	const auto &res = ScriptEnvironment::getResultByID(Lua::getNumber<uint32_t>(L, 1));
 	if (!res) {
 		Lua::pushBoolean(L, false);
@@ -32,6 +33,7 @@ int ResultFunctions::luaResultGetNumber(lua_State* L) {
 }
 
 int ResultFunctions::luaResultGetString(lua_State* L) {
+	// Result.getString(resultId, column)
 	const auto &res = ScriptEnvironment::getResultByID(Lua::getNumber<uint32_t>(L, 1));
 	if (!res) {
 		Lua::pushBoolean(L, false);
@@ -44,6 +46,7 @@ int ResultFunctions::luaResultGetString(lua_State* L) {
 }
 
 int ResultFunctions::luaResultGetStream(lua_State* L) {
+	// Result.getStream(resultId, column)
 	const auto &res = ScriptEnvironment::getResultByID(Lua::getNumber<uint32_t>(L, 1));
 	if (!res) {
 		Lua::pushBoolean(L, false);
@@ -58,6 +61,7 @@ int ResultFunctions::luaResultGetStream(lua_State* L) {
 }
 
 int ResultFunctions::luaResultNext(lua_State* L) {
+	// Result.next(resultId)
 	const auto &res = ScriptEnvironment::getResultByID(Lua::getNumber<uint32_t>(L, -1));
 	if (!res) {
 		Lua::pushBoolean(L, false);
@@ -69,6 +73,7 @@ int ResultFunctions::luaResultNext(lua_State* L) {
 }
 
 int ResultFunctions::luaResultFree(lua_State* L) {
+	// Result.free(resultId)
 	Lua::pushBoolean(L, ScriptEnvironment::removeResult(Lua::getNumber<uint32_t>(L, -1)));
 	return 1;
 }

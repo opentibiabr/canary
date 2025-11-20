@@ -5207,6 +5207,7 @@ int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddAnimusMastery(lua_State* L) {
+	// player:addAnimusMastery(monsterType)
 	auto player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -5219,6 +5220,7 @@ int PlayerFunctions::luaPlayerAddAnimusMastery(lua_State* L) {
 	return 1;
 }
 int PlayerFunctions::luaPlayerRemoveAnimusMastery(lua_State* L) {
+	// player:removeAnimusMastery(monsterType)
 	auto player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -5231,6 +5233,7 @@ int PlayerFunctions::luaPlayerRemoveAnimusMastery(lua_State* L) {
 	return 1;
 }
 int PlayerFunctions::luaPlayerHasAnimusMastery(lua_State* L) {
+	// player:hasAnimusMastery(monsterType)
 	auto player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));

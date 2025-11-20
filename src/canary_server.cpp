@@ -25,6 +25,7 @@
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "lua/docgen/lua_api_doc_generator.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -62,6 +63,14 @@ int CanaryServer::run() {
 		[this] {
 			try {
 				loadConfigLua();
+				if (g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
+					LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), g_configManager().getString(LUA_API_DOCS_OUTPUT_DIRECTORY), logger);
+					if (apiDocGenerator.generate()) {
+						logger.info("Lua API documentation generated successfully.");
+					}
+				} else {
+					logger.debug("Lua API documentation generation is disabled.");
+				}
 				validateDatapack();
 
 				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");

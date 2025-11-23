@@ -1491,6 +1491,9 @@ void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, Network
 	if (creatures) {
 		bool playerAdded = false;
 		for (auto creature : std::ranges::reverse_view(*creatures)) {
+			if (!creature || creature->isRemoved() || !creature->isAlive()) {
+				continue;
+			}
 			if (!player->canSeeCreature(creature)) {
 				continue;
 			}

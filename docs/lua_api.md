@@ -2,59 +2,59 @@
 
 ## Action
 ### aid()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### allowFarUse()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### blockWalls()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### checkFloor()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### id()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### onUse()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### position()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### position()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### register()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ### uid()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\events\action_functions.cpp
+Source: src/lua/functions/events/action_functions.cpp
 
 ## Bank
 ### balance()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### credit()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### debit()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### deposit()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### hasBalance()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### transfer()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### transferToGuild()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ### withdraw()
-Source: D:\OpenTibia\GitHub\canary\src\lua\functions\core\game\bank_functions.cpp
+Source: src/lua/functions/core/game/bank_functions.cpp
 
 ## Charm
 ### __eq()

@@ -221,10 +221,14 @@ std::string LuaBindingScanner::normalizeReturnType(const std::string &handler) c
 	// For simplicity, assume the handler is a function named 'handler' and look for its definition
 	// Example: int handlerName(...)
 	std::regex signaturePattern(R"regex((\w+)\s+" + handler + R"regex\s*\()regex", std::regex::optimize);
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(root / "src")) {
-		if (!entry.is_regular_file()) continue;
+	for (const auto &entry : std::filesystem::recursive_directory_iterator(root / "src")) {
+		if (!entry.is_regular_file()) {
+			continue;
+		}
 		std::ifstream file(entry.path());
-		if (!file.is_open()) continue;
+		if (!file.is_open()) {
+			continue;
+		}
 		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 		std::smatch match;
 		if (std::regex_search(content, match, signaturePattern)) {

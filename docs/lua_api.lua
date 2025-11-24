@@ -8,7 +8,6 @@
 ---@field id fun(self: Action): unknown
 ---@field onUse fun(self: Action): unknown
 ---@field position fun(self: Action): unknown
----@field position fun(self: Action): unknown
 ---@field register fun(self: Action): unknown
 ---@field uid fun(self: Action): unknown
 

@@ -1,0 +1,108 @@
+---
+name: Deploy to Neep Host
+
+on:
+  workflow_dispatch:
+
+env:
+  TARGET_ARTIFACT_OS: ubuntu-24.04
+  TARGET_ARTIFACT_BUILD: linux-release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Try to download artifact (safe)
+        id: download_artifact
+        run: |
+          mkdir -p artifact-bin
+          artifact_name="canary-${{ env.TARGET_ARTIFACT_OS }}-${{ env.TARGET_ARTIFACT_BUILD }}-${{ github.sha }}"
+
+          echo "Attempting to download artifact: $artifact_name"
+
+          # download-artifact will exit 1 if not found
+          if gh run download ${{ github.run_id }} -n "$artifact_name" -D artifact-bin 2>/dev/null; then
+            echo "artifact_downloaded=true" >> "$GITHUB_OUTPUT"
+            echo "Artifact downloaded."
+          else
+            echo "artifact_downloaded=false" >> "$GITHUB_OUTPUT"
+            echo "No artifact found for this commit. Continuing without binary."
+          fi
+
+      - name: Prepare deploy package
+        run: |
+          mkdir -p deploy
+          zipfile=$(ls artifact-bin/*.zip 2>/dev/null || true)
+
+          if [ -n "$zipfile" ]; then
+            echo "Unzipping $zipfile"
+            unzip "$zipfile" -d extracted/
+
+            binfile=$(find extracted -type f -name "canary" 2>/dev/null || true)
+            if [ -n "$binfile" ]; then
+              echo "Binary found: $binfile"
+              cp "$binfile" deploy/
+            else
+              echo "No binary found inside artifact"
+            fi
+          else
+            echo "No artifact zip found"
+          fi
+
+          # ensure deploy folder is never empty (SCP fails otherwise)
+          if [ -z "$(ls -A deploy)" ]; then
+            echo "No binary, creating placeholder"
+            echo "placeholder" > deploy/placeholder.txt
+          fi
+
+      - name: Upload to server
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
+        with:
+          host: ${{ secrets.NEEP_HOST }}
+          username: root
+          password: ${{ secrets.NEEP_PASS }}
+          source: "deploy/*"
+          target: "/opt/canary-next-deploy"
+
+      - name: Remote deploy
+        uses: appleboy/ssh-action@91f3272fc5907f4699dcf59761eb622a07342f5a
+        with:
+          host: ${{ secrets.NEEP_HOST }}
+          username: root
+          password: ${{ secrets.NEEP_PASS }}
+          script: |
+            set -e
+
+            echo "Stopping canary"
+            systemctl --no-ask-password --no-block stop canary || true
+
+            echo "Pulling latest code"
+            cd /opt/canary
+            git fetch origin
+            git checkout ${{ github.ref_name }} || git checkout -b ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
+
+            if [ -f "/opt/canary-next-deploy/canary" ]; then
+              echo "Deploying new binary"
+              mv /opt/canary-next-deploy/canary /opt/canary/canary
+              chmod +x /opt/canary/canary
+            else
+              echo "No new binary found; keeping existing binary"
+            fi
+
+            echo "Updating MOTD"
+            BRANCH="${{ github.ref_name }}"
+            ESCAPED_BRANCH=$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')
+            sed -i "s/We are currently running [^.]*\./We are currently running $ESCAPED_BRANCH./" config.lua
+
+            echo "Cleaning temp directory"
+            rm -rf /opt/canary-next-deploy
+
+            echo "Starting canary"
+            systemctl start canary

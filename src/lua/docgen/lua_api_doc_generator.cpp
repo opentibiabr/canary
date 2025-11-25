@@ -480,7 +480,8 @@ void LuaApiDocGenerator::exportJson() const {
 					output << ", ";
 				}
 			}
-			output << "], \"return\": \"" << (method.returnType.empty() ? "unknown" : method.returnType) << "\"}";
+			output << "], \"return\": \"" << (method.returnType.empty() ? "unknown" : method.returnType) << "\"";
+			output << ", \"source\": \"" << method.sourceFile << "\"}";
 			if (i + 1 < classInfo.methods.size()) {
 				output << ",";
 			}
@@ -504,7 +505,8 @@ void LuaApiDocGenerator::exportJson() const {
 					output << ", ";
 				}
 			}
-			output << "], \"return\": \"" << (function.returnType.empty() ? "unknown" : function.returnType) << "\"}";
+			output << "], \"return\": \"" << (function.returnType.empty() ? "unknown" : function.returnType) << "\"";
+			output << ", \"source\": \"" << function.sourceFile << "\"}";
 			if (i + 1 < globals.size()) {
 				output << ",";
 			}

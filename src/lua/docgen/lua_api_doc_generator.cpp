@@ -62,7 +62,7 @@ void LuaBindingScanner::scanFile(const std::filesystem::path &filePath, LuaScanR
 	parseRegistrations(content, filePath, result);
 }
 void LuaBindingScanner::parseLuaReg(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
-	// Canary NÃO usa luaL_Reg, mas mantenho caso exista algum legado
+	// Canary does NOT use luaL_Reg, but kept in case there is some legacy code
 	std::regex luaRegPattern(
 		R"regex(luaL_Reg\s+([A-Za-z0-9_]+)\s*\[\]\s*=\s*\{((?:[^\{\}]|\{[^\{\}]*\})*?)\}\s*;)regex",
 		std::regex::optimize | std::regex::icase | std::regex::multiline
@@ -93,7 +93,6 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 
 void LuaBindingScanner::parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
 
-	// ==== 1) CLASSES ======================================================================
 	std::regex classPattern(
 		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)")regex",
 		std::regex::optimize
@@ -102,7 +101,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		result.classes.insert((*it)[1].str());
 	}
 
-	// ==== 2) MÉTODOS DE CLASSE =============================================================
 	std::regex methodPattern(
 		R"regex(Lua::registerMethod\s*\(\s*[^,]+,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
 		std::regex::optimize
@@ -118,7 +116,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		result.functions.emplace_back(std::move(info));
 	}
 
-	// ==== 3) META MÉTODOS ==================================================================
 	std::regex metaMethodPattern(
 		R"regex(Lua::registerMetaMethod\s*\(\s*[^,]+,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
 		std::regex::optimize
@@ -134,7 +131,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		result.functions.emplace_back(std::move(info));
 	}
 
-	// ==== 4) FUNÇÕES GLOBAIS ===============================================================
 	std::regex globalPattern(
 		R"regex(Lua::registerGlobalMethod\s*\(\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+))regex",
 		std::regex::optimize
@@ -149,7 +145,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		result.functions.emplace_back(std::move(info));
 	}
 
-	// ==== 5) VARIÁVEIS BOOLEANAS GLOBAIS ===================================================
 	std::regex constantBoolPattern(
 		R"regex(Lua::registerGlobalBoolean\s*\(\s*"([^"]+)")regex",
 		std::regex::optimize
@@ -162,7 +157,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		result.functions.emplace_back(std::move(info));
 	}
 
-	// ==== 6) VARIÁVEIS NUMÉRICAS GLOBAIS ===================================================
 	std::regex constantNumberPattern(
 		R"regex(Lua::registerGlobalVariable\s*\(\s*"([^"]+)")regex",
 		std::regex::optimize
@@ -175,7 +169,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		result.functions.emplace_back(std::move(info));
 	}
 
-	// ==== 7) STRING GLOBAIS ================================================================
 	std::regex constantStringPattern(
 		R"regex(Lua::registerGlobalString\s*\(\s*"([^"]+)")regex",
 		std::regex::optimize
@@ -196,9 +189,9 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		return parameters;
 	}
 
-	std::string bodyRegex = "\\b" + handler + // início da função
-		"\\s*\\([^)]*\\)" // argumentos (...)
-		"\\s*\\{([\\s\\S]*?)\\}"; // corpo
+	std::string bodyRegex = "\\b" + handler + // start of the function
+		"\\s*\\([^)]*\\)" // arguments (...)
+		"\\s*\\{([\\s\\S]*?)\\}"; // body
 
 	std::regex bodyPattern(bodyRegex, std::regex::optimize | std::regex::icase);
 
@@ -216,19 +209,38 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		bool optional { false };
 	};
 
-	auto normalizeType = [](const std::string &type) -> std::string {
-		std::string lower;
-		lower.reserve(type.size());
+	auto cleanType = [](std::string type) {
+		std::string value;
+		value.reserve(type.size());
 		for (const auto ch : type) {
+			if (ch == '*' || ch == '&') {
+				continue;
+			}
+			value.push_back(static_cast<char>(ch));
+		}
+		value = trim(value);
+		value = std::regex_replace(value, std::regex(R"regex(^const\s+)regex", std::regex::icase), "");
+		value = trim(value);
+		return value;
+	};
+
+	auto normalizeType = [&cleanType](const std::string &type) -> std::string {
+		const auto cleaned = cleanType(type);
+		if (cleaned.empty()) {
+			return "";
+		}
+		std::string lower;
+		lower.reserve(cleaned.size());
+		for (const auto ch : cleaned) {
 			lower.push_back(static_cast<char>(std::tolower(static_cast<unsigned char>(ch))));
 		}
-		if (lower == "number" || lower == "lua_number" || lower == "integer") {
+		if (lower == "number" || lower == "lua_number" || lower == "integer" || lower == "int" || lower == "uint64_t" || lower == "uint32_t" || lower == "uint16_t" || lower == "uint8_t" || lower == "int64_t" || lower == "int32_t" || lower == "int16_t" || lower == "int8_t" || lower == "size_t" || lower == "double" || lower == "float") {
 			return "number";
 		}
 		if (lower == "boolean" || lower == "bool") {
 			return "boolean";
 		}
-		if (lower == "string") {
+		if (lower == "string" || lower == "std::string") {
 			return "string";
 		}
 		if (lower == "userdata") {
@@ -237,22 +249,119 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		if (lower == "table") {
 			return "table";
 		}
-		return type;
+		return cleanType(cleaned);
+	};
+
+	auto deduceTypeFromGetter = [&normalizeType](const std::string &getter, const std::string &templ) -> std::string {
+		if (!templ.empty()) {
+			const auto normalizedTemplate = normalizeType(templ);
+			if (!normalizedTemplate.empty()) {
+				return normalizedTemplate;
+			}
+		}
+
+		std::string base;
+		base.reserve(getter.size());
+		for (const auto ch : getter) {
+			base.push_back(static_cast<char>(std::tolower(static_cast<unsigned char>(ch))));
+		}
+
+		static const std::unordered_map<std::string, std::string> typeMap = {
+			{"player", "Player"},
+			{"creature", "Creature"},
+			{"npc", "Npc"},
+			{"monster", "Monster"},
+			{"guild", "Guild"},
+			{"item", "Item"},
+			{"position", "Position"},
+			{"tile", "Tile"},
+			{"variant", "Variant"},
+			{"lightinfo", "LightInfo"},
+			{"thing", "Thing"},
+			{"boolean", "boolean"},
+			{"bool", "boolean"},
+			{"string", "string"},
+			{"number", "number"},
+			{"integer", "number"},
+			{"bank", "Bank"},
+			{"playerornpc", "Player"},
+			{"playerormonster", "Creature"},
+			{"playerorcreature", "Creature"},
+			{"creatureorplayer", "Creature"},
+			{"userdata", "userdata"},
+			{"userdatahandle", "userdata"}
+		};
+
+		const auto found = typeMap.find(base);
+		if (found != typeMap.end()) {
+			return found->second;
+		}
+
+		if (base.find("number") != std::string::npos || base.find("integer") != std::string::npos) {
+			return "number";
+		}
+		if (base.find("string") != std::string::npos) {
+			return "string";
+		}
+		if (base.find("bool") != std::string::npos) {
+			return "boolean";
+		}
+		if (base.find("player") != std::string::npos) {
+			return "Player";
+		}
+		if (base.find("creature") != std::string::npos) {
+			return "Creature";
+		}
+		if (base.find("thing") != std::string::npos) {
+			return "Thing";
+		}
+		if (base.find("position") != std::string::npos) {
+			return "Position";
+		}
+		if (base.find("variant") != std::string::npos) {
+			return "Variant";
+		}
+
+		return getter;
 	};
 
 	std::map<int, ParameterInfo> parameterMap;
-	auto addParameter = [&parameterMap, &normalizeType](int index, const std::string &type, const std::string &name, bool optional) {
+	auto betterName = [](const std::string &current, const std::string &candidate) {
+		if (candidate.empty()) {
+			return false;
+		}
+		if (current.empty()) {
+			return true;
+		}
+		if (current.rfind("arg", 0) == 0 && candidate.rfind("arg", 0) != 0) {
+			return true;
+		}
+		return false;
+	};
+
+	auto betterType = [](const std::string &current, const std::string &candidate) {
+		if (candidate.empty()) {
+			return false;
+		}
+		if (current.empty() || current == "unknown" || current == "any") {
+			return true;
+		}
+		if (current == "number" && candidate != "number") {
+			return true;
+		}
+		return false;
+	};
+
+	auto addParameter = [&](int index, const std::string &type, const std::string &name, bool optional) {
 		if (index <= 0) {
 			return;
 		}
 		auto &param = parameterMap[index];
 		const auto normalizedType = normalizeType(type);
-		if (!normalizedType.empty()) {
-			if (param.type.empty() || param.type == "unknown") {
-				param.type = normalizedType;
-			}
+		if (betterType(param.type, normalizedType)) {
+			param.type = normalizedType;
 		}
-		if (!name.empty() && param.name.empty()) {
+		if (betterName(param.name, name)) {
 			param.name = name;
 		}
 		param.optional = param.optional || optional;
@@ -263,66 +372,107 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 	for (auto it = std::sregex_iterator(body.begin(), body.end(), topPattern); it != std::sregex_iterator(); ++it) {
 		const auto op = (*it)[1].str();
 		const int threshold = std::stoi((*it)[2].str());
+		int optionalStart = 0;
 		if (op == ">=" || op == ">") {
-			optionalThresholds.insert(threshold);
+			optionalStart = threshold;
+		} else if (op == "==" || op == "=") {
+			optionalStart = threshold + 1;
+		} else if (op == "<" || op == "<=") {
+			optionalStart = threshold + 1;
+		}
+		if (optionalStart > 0) {
+			optionalThresholds.insert(optionalStart);
 		}
 	}
 
-	std::vector<std::pair<std::regex, std::string>> getterPatterns = {
-		{ std::regex(R"regex((?:Lua::)?getPlayer\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Player" },
-		{ std::regex(R"regex((?:Lua::)?getCreature\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Creature" },
-		{ std::regex(R"regex((?:Lua::)?getNpc\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Npc" },
-		{ std::regex(R"regex((?:Lua::)?getMonster\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Monster" },
-		{ std::regex(R"regex((?:Lua::)?getGuild\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Guild" },
-		{ std::regex(R"regex((?:Lua::)?getItem\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Item" },
-		{ std::regex(R"regex((?:Lua::)?getPosition\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Position" },
-		{ std::regex(R"regex((?:Lua::)?getTile\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Tile" },
-		{ std::regex(R"regex((?:Lua::)?getVariant\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Variant" },
-		{ std::regex(R"regex((?:Lua::)?getLightInfo\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "LightInfo" },
-		{ std::regex(R"regex((?:Lua::)?getThing\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Thing" },
-		{ std::regex(R"regex((?:Lua::)?getVariant\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Variant" },
-		{ std::regex(R"regex((?:Lua::)?getBoolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean" },
-		{ std::regex(R"regex((?:Lua::)?getString\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string" },
-		{ std::regex(R"regex((?:Lua::)?getNumber\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
-		{ std::regex(R"regex(lua_tonumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
-		{ std::regex(R"regex(lua_tointeger\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
-		{ std::regex(R"regex(lua_toboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean" },
-		{ std::regex(R"regex(lua_tostring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string" },
-		{ std::regex(R"regex(lua_isnumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
-		{ std::regex(R"regex(lua_isstring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string" },
-		{ std::regex(R"regex(lua_isboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean" },
-		{ std::regex(R"regex(lua_isuserdata\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "userdata" },
-		{ std::regex(R"regex(lua_istable\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "table" },
-		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])getBank\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Bank" },
+	std::vector<std::pair<std::regex, std::string>> simpleGetters = {
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_tonumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_tointeger\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_tostring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_toboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_checknumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_checkinteger\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_checkstring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isnumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isinteger\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isstring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isuserdata\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "userdata"},
+		{std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_istable\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "table"}
 	};
 
-	for (const auto &[pattern, type] : getterPatterns) {
+	for (const auto &[pattern, type] : simpleGetters) {
 		for (auto it = std::sregex_iterator(body.begin(), body.end(), pattern); it != std::sregex_iterator(); ++it) {
 			const auto index = std::stoi((*it)[1].str());
 			addParameter(index, type, "", false);
 		}
 	}
 
-	std::regex genericGetter(R"regex((?:^|[^A-Za-z0-9_])get([A-Z][A-Za-z0-9_]*)\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags);
-	for (auto it = std::sregex_iterator(body.begin(), body.end(), genericGetter); it != std::sregex_iterator(); ++it) {
-		const auto type = (*it)[1].str();
-		const auto index = std::stoi((*it)[2].str());
-		addParameter(index, type, "", false);
+	std::regex assignmentWithType(
+		R"regex((?:const\s+)?([A-Za-z_][A-Za-z0-9_:<>\s\*&]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:[A-Za-z_][A-Za-z0-9_:]*::)?(?:Lua::)?get([A-Za-z0-9_]+)\s*(?:<([^>]+)>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex",
+		flags
+	);
+	for (auto it = std::sregex_iterator(body.begin(), body.end(), assignmentWithType); it != std::sregex_iterator(); ++it) {
+		const auto declaredType = normalizeType((*it)[1].str());
+		const auto name = (*it)[2].str();
+		const auto getter = (*it)[3].str();
+		const auto templ = trim((*it)[4].str());
+		const auto index = std::stoi((*it)[5].str());
+		const auto inferredType = !declaredType.empty() && declaredType != "auto" ? declaredType : deduceTypeFromGetter(getter, templ);
+		addParameter(index, inferredType, name, false);
 	}
 
-	std::regex namedGetter(R"regex((?:const\s+)?(?:auto|[A-Za-z_:<>]+)\s*&?\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:Lua::)?get([A-Z][A-Za-z0-9_]*)\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags);
-	for (auto it = std::sregex_iterator(body.begin(), body.end(), namedGetter); it != std::sregex_iterator(); ++it) {
+	std::regex assignmentAuto(
+		R"regex((?:const\s+)?auto\s*&?\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:[A-Za-z_][A-Za-z0-9_:]*::)?(?:Lua::)?get([A-Za-z0-9_]+)\s*(?:<([^>]+)>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex",
+		flags
+	);
+	for (auto it = std::sregex_iterator(body.begin(), body.end(), assignmentAuto); it != std::sregex_iterator(); ++it) {
 		const auto name = (*it)[1].str();
-		const auto type = (*it)[2].str();
+		const auto getter = (*it)[2].str();
+		const auto templ = trim((*it)[3].str());
+		const auto index = std::stoi((*it)[4].str());
+		addParameter(index, deduceTypeFromGetter(getter, templ), name, false);
+	}
+
+	std::regex directGetter(
+		R"regex((?:[A-Za-z_][A-Za-z0-9_:]*::)?(?:Lua::)?get([A-Za-z0-9_]+)\s*(?:<([^>]+)>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex",
+		flags
+	);
+	for (auto it = std::sregex_iterator(body.begin(), body.end(), directGetter); it != std::sregex_iterator(); ++it) {
+		const auto getter = (*it)[1].str();
+		const auto templ = trim((*it)[2].str());
 		const auto index = std::stoi((*it)[3].str());
-		addParameter(index, type, name, false);
+		addParameter(index, deduceTypeFromGetter(getter, templ), "", false);
 	}
 
-	std::regex thingPattern(R"regex((?:const\s+)?(?:auto|Thing\s*\*|Thing\s*&?)\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*getThing\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags);
-	for (auto it = std::sregex_iterator(body.begin(), body.end(), thingPattern); it != std::sregex_iterator(); ++it) {
+	std::regex namedLuaHelpers(
+		R"regex((?:const\s+)?(?:auto|[A-Za-z_][A-Za-z0-9_:<>\s\*&]+)\s*&?\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(lua_[a-z]+|luaL_check[a-z]+)\s*\(\s*L\s*,\s*(\d+)\s*\))regex",
+		flags
+	);
+	for (auto it = std::sregex_iterator(body.begin(), body.end(), namedLuaHelpers); it != std::sregex_iterator(); ++it) {
 		const auto name = (*it)[1].str();
-		const auto index = std::stoi((*it)[2].str());
-		addParameter(index, "Thing", name, false);
+		const auto helper = (*it)[2].str();
+		const auto index = std::stoi((*it)[3].str());
+		std::string helperType;
+		if (helper.find("string") != std::string::npos) {
+			helperType = "string";
+		} else if (helper.find("number") != std::string::npos || helper.find("integer") != std::string::npos) {
+			helperType = "number";
+		} else if (helper.find("boolean") != std::string::npos || helper.find("bool") != std::string::npos) {
+			helperType = "boolean";
+		}
+		addParameter(index, helperType, name, false);
+	}
+
+	std::regex explicitTypeAssignment(
+		R"regex((?:const\s+)?([A-Za-z_][A-Za-z0-9_:<>\s\*&]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:lua_[a-z]+|luaL_[a-z]+)\s*\(\s*L\s*,\s*(\d+)\s*\))regex",
+		flags
+	);
+	for (auto it = std::sregex_iterator(body.begin(), body.end(), explicitTypeAssignment); it != std::sregex_iterator(); ++it) {
+		const auto declaredType = normalizeType((*it)[1].str());
+		const auto name = (*it)[2].str();
+		const auto index = std::stoi((*it)[3].str());
+		addParameter(index, declaredType, name, false);
 	}
 
 	for (const auto threshold : optionalThresholds) {
@@ -338,7 +488,7 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		if (info.optional) {
 			name.push_back('?');
 		}
-		const auto type = info.type.empty() ? "unknown" : info.type;
+		const auto type = info.type.empty() ? "any" : info.type;
 		parameters.emplace_back(name + ": " + type);
 	}
 

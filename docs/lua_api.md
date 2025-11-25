@@ -100,7 +100,7 @@ Source: src/lua/functions/creatures/monster/charm_functions.cpp
 ### __eq()
 Source: src/lua/functions/creatures/combat/combat_functions.cpp
 
-### addCondition(t: userdata)
+### addCondition(combat: Combat)
 Source: src/lua/functions/creatures/combat/combat_functions.cpp
 
 ### execute(...)
@@ -115,7 +115,7 @@ Source: src/lua/functions/creatures/combat/combat_functions.cpp
 ### setFormula(...)
 Source: src/lua/functions/creatures/combat/combat_functions.cpp
 
-### setOrigin(arg2: number)
+### setOrigin(arg2: CombatOrigin)
 Source: src/lua/functions/creatures/combat/combat_functions.cpp
 
 ### setParameter(...)
@@ -125,7 +125,7 @@ Source: src/lua/functions/creatures/combat/combat_functions.cpp
 ### __eq()
 Source: src/lua/functions/creatures/combat/condition_functions.cpp
 
-### __gc(r: RawUserDataShared)
+### __gc(conditionPtr: std::shared_ptr<Condition>)
 Source: src/lua/functions/creatures/combat/condition_functions.cpp
 
 ### addDamage(rounds: number, time: number, value: number)
@@ -134,7 +134,7 @@ Source: src/lua/functions/creatures/combat/condition_functions.cpp
 ### clone(...)
 Source: src/lua/functions/creatures/combat/condition_functions.cpp
 
-### delete(r: RawUserDataShared)
+### delete(conditionPtr: std::shared_ptr<Condition>)
 Source: src/lua/functions/creatures/combat/condition_functions.cpp
 
 ### getEndTime(...)
@@ -158,7 +158,7 @@ Source: src/lua/functions/creatures/combat/condition_functions.cpp
 ### setFormula(mina: number, minb: number, maxa: number, maxb: number)
 Source: src/lua/functions/creatures/combat/condition_functions.cpp
 
-### setOutfit(t: Outfit)
+### setOutfit(arg2: Outfit)
 Source: src/lua/functions/creatures/combat/condition_functions.cpp
 
 ### setParameter(...)
@@ -226,7 +226,7 @@ Source: src/lua/functions/creatures/creature_functions.cpp
 ### attachEffectById(...)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### canSee(position: Position)
+### canSee(arg2: Position)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ### canSeeCreature(otherCreature: Creature)
@@ -358,13 +358,13 @@ Source: src/lua/functions/creatures/creature_functions.cpp
 ### move(...)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### registerEvent(name: string)
+### registerEvent(arg2: string)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ### reload(...)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### remove(r: RawUserDataShared)
+### remove(creaturePtr: Creature)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ### removeCondition(...)
@@ -373,10 +373,10 @@ Source: src/lua/functions/creatures/creature_functions.cpp
 ### removeIcon(...)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### say(n: Position)
+### say(arg6: Position)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### setDirection(arg2: number)
+### setDirection(arg2: Direction)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ### setDirectionLocked(arg2: boolean)
@@ -409,7 +409,7 @@ Source: src/lua/functions/creatures/creature_functions.cpp
 ### setMoveLocked(arg2: boolean)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### setOutfit(outfit: Outfit)
+### setOutfit(outfit: Outfit_t)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ### setShader(...)
@@ -418,7 +418,7 @@ Source: src/lua/functions/creatures/creature_functions.cpp
 ### setSkillLoss(arg2: boolean)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### setSkull(arg2: number)
+### setSkull(arg2: Skulls_t)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ### setSpeed(creature: Creature)
@@ -427,10 +427,10 @@ Source: src/lua/functions/creatures/creature_functions.cpp
 ### setTarget(target: Creature)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### teleportTo(position: Position)
+### teleportTo(arg2: Position)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
-### unregisterEvent(name: string)
+### unregisterEvent(arg2: string)
 Source: src/lua/functions/creatures/creature_functions.cpp
 
 ## CreatureEvent
@@ -506,10 +506,10 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### createBestiaryCharm(...)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### createContainer(d: number, size: number)
+### createContainer(arg1: number, size: number)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### createItem(d: number)
+### createItem(arg1: number)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### createItemClassification(arg1: number)
@@ -530,7 +530,7 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### createSoulPitMonster(arg1: string)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### createTile(n: Position)
+### createTile(arg1: Position)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### generateNpc(arg1: string)
@@ -596,7 +596,7 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### getMonstersByBestiaryStars(stars: number)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### getMonstersByRace(race: number)
+### getMonstersByRace(race: BestiaryType_t)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### getNormalizedGuildName(name: string)
@@ -620,7 +620,7 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### getPublicAchievements(...)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### getReturnMessage(value: number)
+### getReturnMessage(value: ReturnValue)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### getSecretAchievements(...)
@@ -629,7 +629,7 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### getSoulCoreItems(...)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### getSpectators(position: Position)
+### getSpectators(arg1: Position)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### getTalkActions(...)
@@ -647,10 +647,10 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### hasEffect(effectId: number)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### loadMap(path: string)
+### loadMap(arg1: string)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### loadMapChunk(path: string, position: Position)
+### loadMapChunk(arg1: string, arg2: Position)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### makeFiendishMonster(...)
@@ -659,7 +659,7 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### registerAchievement(...)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### reload(reloadType: number)
+### reload(reloadType: Reload_t)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ### removeFiendishMonster(monsterId: number)
@@ -668,13 +668,13 @@ Source: src/lua/functions/core/game/game_functions.cpp
 ### removeInfluencedMonster(monsterId: number)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### setGameState(state: number)
+### setGameState(state: GameState_t)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### setWorldType(type: number)
+### setWorldType(type: WorldType_t)
 Source: src/lua/functions/core/game/game_functions.cpp
 
-### startRaid(raidName: string)
+### startRaid(arg1: string)
 Source: src/lua/functions/core/game/game_functions.cpp
 
 ## GlobalEvent
@@ -853,28 +853,28 @@ Source: src/lua/functions/map/house_functions.cpp
 ### __eq()
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getBase(t: userdata)
+### getBase(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getCategory(t: userdata)
+### getCategory(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getCombatType(t: userdata)
+### getCombatType(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getElementDamage(t: userdata)
+### getElementDamage(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getId(t: userdata)
+### getId(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getItems(t: userdata)
+### getItems(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### getName(t: userdata)
+### getName(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
-### isPremium(t: userdata)
+### isPremium(imbuement: Imbuement)
 Source: src/lua/functions/items/imbuement_functions.cpp
 
 ## Item
@@ -893,7 +893,7 @@ Source: src/lua/functions/items/item_functions.cpp
 ### clone(...)
 Source: src/lua/functions/items/item_functions.cpp
 
-### decay(o: number)
+### decay(arg2: number)
 Source: src/lua/functions/items/item_functions.cpp
 
 ### getActionId(...)
@@ -980,7 +980,7 @@ Source: src/lua/functions/items/item_functions.cpp
 ### hasOwner(...)
 Source: src/lua/functions/items/item_functions.cpp
 
-### hasProperty(property: number)
+### hasProperty(property: ItemProperty)
 Source: src/lua/functions/items/item_functions.cpp
 
 ### hasShader(...)
@@ -998,7 +998,7 @@ Source: src/lua/functions/items/item_functions.cpp
 ### isOwner(...)
 Source: src/lua/functions/items/item_functions.cpp
 
-### moveTo(itemPtr: RawUserDataShared)
+### moveTo(itemPtr: Item)
 Source: src/lua/functions/items/item_functions.cpp
 
 ### moveToSlot(...)
@@ -1037,180 +1037,180 @@ Source: src/lua/functions/items/item_functions.cpp
 ### setTier(...)
 Source: src/lua/functions/items/item_functions.cpp
 
-### split(itemPtr: RawUserDataShared)
+### split(itemPtr: Item)
 Source: src/lua/functions/items/item_functions.cpp
 
-### transform(itemPtr: RawUserDataShared)
+### transform(itemPtr: Item)
 Source: src/lua/functions/items/item_functions.cpp
 
 ## ItemClassification
 ### __eq()
 Source: src/lua/functions/items/item_classification_functions.cpp
 
-### addTier(n: userdata, arg2: number, arg3: number, arg4: number, arg5: number, arg6: number)
+### addTier(itemClassification: ItemClassification, arg2: number, arg3: number, arg4: number, arg5: number, arg6: number)
 Source: src/lua/functions/items/item_classification_functions.cpp
 
 ## ItemType
 ### __eq()
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getAmmoType(e: userdata)
+### getAmmoType(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getArmor(e: userdata)
+### getArmor(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getArticle(e: userdata)
+### getArticle(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getAttack(e: userdata)
+### getAttack(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getBaseSpeed(e: userdata)
+### getBaseSpeed(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getCapacity(e: userdata)
+### getCapacity(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getCharges(e: userdata)
+### getCharges(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getDecayId(e: userdata)
+### getDecayId(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getDecayTime(e: userdata)
+### getDecayTime(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getDefense(e: userdata)
+### getDefense(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getDescription(itemType: userdata)
+### getDescription(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getDestroyId(e: userdata)
+### getDestroyId(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getElementDamage(e: userdata)
+### getElementDamage(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getElementType(e: userdata)
+### getElementType(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getExtraDefense(e: userdata)
+### getExtraDefense(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getFluidSource(e: userdata)
+### getFluidSource(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getHitChance(e: userdata)
+### getHitChance(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getId(e: userdata)
+### getId(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getImbuementSlot(e: userdata)
+### getImbuementSlot(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getName(e: userdata)
+### getName(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getPluralName(e: userdata)
+### getPluralName(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getRequiredLevel(e: userdata)
+### getRequiredLevel(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getShootRange(e: userdata)
+### getShootRange(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getShowDuration(e: userdata)
+### getShowDuration(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getSlotPosition(e: userdata)
+### getSlotPosition(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getSpeed(e: userdata)
+### getSpeed(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getStackSize(e: userdata)
+### getStackSize(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getTransformDeEquipId(e: userdata)
+### getTransformDeEquipId(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getTransformEquipId(e: userdata)
+### getTransformEquipId(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getType(e: userdata)
+### getType(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getVocationString(e: userdata)
+### getVocationString(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getWeaponType(e: userdata)
+### getWeaponType(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getWeight(e: userdata)
+### getWeight(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### getWrapableTo(e: userdata)
+### getWrapableTo(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### hasSubType(e: userdata)
+### hasSubType(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isBlocking(e: userdata)
+### isBlocking(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isContainer(e: userdata)
+### isContainer(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isCorpse(e: userdata)
+### isCorpse(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isDoor(e: userdata)
+### isDoor(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isFluidContainer(e: userdata)
+### isFluidContainer(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isGroundTile(e: userdata)
+### isGroundTile(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isKey(e: userdata)
+### isKey(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isMagicField(e: userdata)
+### isMagicField(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isMovable(e: userdata)
+### isMovable(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isMultiUse(e: userdata)
+### isMultiUse(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isPickupable(e: userdata)
+### isPickupable(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isPodium(e: userdata)
+### isPodium(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isQuiver(e: userdata)
+### isQuiver(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isReadable(e: userdata)
+### isReadable(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isRune(e: userdata)
+### isRune(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isStackable(e: userdata)
+### isStackable(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isStowable(e: userdata)
+### isStowable(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
-### isWritable(e: userdata)
+### isWritable(itemType: ItemType)
 Source: src/lua/functions/items/item_type_functions.cpp
 
 ## KV
@@ -1230,55 +1230,55 @@ Source: src/lua/functions/core/libs/kv_functions.cpp
 Source: src/lua/functions/core/libs/kv_functions.cpp
 
 ## Loot
-### addChildLoot(childLoot: userdata)
+### addChildLoot(childLoot: Loot)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setActionId(d: number)
+### setActionId(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setArmor(r: number)
+### setArmor(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setArticle(e: string)
+### setArticle(arg2: string)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setAttack(k: number)
+### setAttack(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setChance(e: number)
+### setChance(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setDefense(e: number)
+### setDefense(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setExtraDefense(e: number)
+### setExtraDefense(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setHitChance(e: number)
+### setHitChance(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setId(d: number)
+### setId(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
 ### setIdFromName(name: string)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setMaxCount(x: number)
+### setMaxCount(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setMinCount(n: number)
+### setMinCount(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setNameItem(e: string)
+### setNameItem(arg2: string)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setShootRange(e: number)
+### setShootRange(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setSubType(e: number)
+### setSubType(arg2: number)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
-### setText(t: string)
+### setText(arg2: string)
 Source: src/lua/functions/creatures/monster/loot_functions.cpp
 
 ### setUnique(...)
@@ -1288,10 +1288,10 @@ Source: src/lua/functions/creatures/monster/loot_functions.cpp
 ### __eq()
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### addButton(id: number, text: string)
+### addButton(id: number, arg3: string)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### addChoice(id: number, text: string)
+### addChoice(id: number, arg3: string)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
 ### getButtonCount(...)
@@ -1321,19 +1321,19 @@ Source: src/lua/functions/core/game/modal_window_functions.cpp
 ### sendToPlayer(player: Player)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### setDefaultEnterButton(n: number)
+### setDefaultEnterButton(arg2: number)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### setDefaultEscapeButton(n: number)
+### setDefaultEscapeButton(arg2: number)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### setMessage(text: string)
+### setMessage(arg2: string)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### setPriority(y: boolean)
+### setPriority(arg2: boolean)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
-### setTitle(text: string)
+### setTitle(arg2: string)
 Source: src/lua/functions/core/game/modal_window_functions.cpp
 
 ## Monster
@@ -1472,7 +1472,7 @@ Source: src/lua/functions/creatures/monster/monster_functions.cpp
 ### setIdle(...)
 Source: src/lua/functions/creatures/monster/monster_functions.cpp
 
-### setMonsterForgeClassification(classification: number)
+### setMonsterForgeClassification(classification: ForgeClassifications_t)
 Source: src/lua/functions/creatures/monster/monster_functions.cpp
 
 ### setName(...)
@@ -1497,67 +1497,67 @@ Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 ### impactSound(...)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setAttackValue(k: number, l: number)
+### setAttackValue(arg2: number, arg3: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setChance(e: number)
+### setChance(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatEffect(t: number)
+### setCombatEffect(arg2: MagicEffectClasses)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatLength(h: number)
+### setCombatLength(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatRadius(s: number)
+### setCombatRadius(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatShootEffect(t: number)
+### setCombatShootEffect(arg2: ShootType_t)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatSpread(d: number)
+### setCombatSpread(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatType(e: number)
+### setCombatType(arg2: CombatType_t)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setCombatValue(e: number, e: number)
+### setCombatValue(arg2: number, arg3: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setConditionDamage(e: number, e: number, e: number)
+### setConditionDamage(arg2: number, arg3: number, arg4: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setConditionDuration(n: number)
+### setConditionDuration(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setConditionSpeedChange(e: number)
+### setConditionSpeedChange(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setConditionTickInterval(l: number)
+### setConditionTickInterval(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
 ### setConditionType(conditionType: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setInterval(l: number)
+### setInterval(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setNeedTarget(t: boolean)
+### setNeedTarget(arg2: boolean)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setOutfitItem(m: number)
+### setOutfitItem(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setOutfitMonster(r: string)
+### setOutfitMonster(arg2: string)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setRange(e: number)
+### setRange(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setScriptName(e: string)
+### setScriptName(arg2: string)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
-### setType(e: string)
+### setType(arg2: string)
 Source: src/lua/functions/creatures/monster/monster_spell_functions.cpp
 
 ## MonsterType
@@ -1597,25 +1597,25 @@ Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 ### addDefense(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### addElement(element: number, arg3: number)
+### addElement(element: CombatType_t, arg3: number)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### addHealing(element: number, arg3: number)
+### addHealing(element: CombatType_t, arg3: number)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### addLoot(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### addReflect(element: number, arg3: number)
+### addReflect(element: CombatType_t, arg3: number)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### addSound(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### addSummon(e: string, d: number, e: number)
+### addSummon(arg2: string, arg3: number, arg4: number)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### addVoice(t: string, s: number, e: number, t: boolean)
+### addVoice(arg2: string, arg3: number, arg4: number, arg5: boolean)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### armor(...)
@@ -1636,7 +1636,7 @@ Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 ### canPushItems(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### canSpawn(position: Position)
+### canSpawn(arg2: Position)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### canWalkOnEnergy(...)
@@ -1663,7 +1663,7 @@ Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 ### corpseId(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### critChance(e: number)
+### critChance(arg2: number)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### deathSound(...)
@@ -1675,7 +1675,7 @@ Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 ### enemyFactions(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### eventType(e: number)
+### eventType(arg2: MonstersEvent_t)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### experience(...)
@@ -1708,7 +1708,7 @@ Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 ### getMonstersByBestiaryStars(stars: number)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### getMonstersByRace(race: number)
+### getMonstersByRace(race: BestiaryType_t)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### getSounds(...)
@@ -1807,7 +1807,7 @@ Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 ### outfit(...)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
-### race(race: string)
+### race(race?: string)
 Source: src/lua/functions/creatures/monster/monster_type_functions.cpp
 
 ### raceId(...)
@@ -1929,7 +1929,7 @@ Source: src/lua/functions/events/move_event_functions.cpp
 ### uid(...)
 Source: src/lua/functions/events/move_event_functions.cpp
 
-### vocation(arg2: string, n: boolean)
+### vocation(arg2: string, arg3: boolean)
 Source: src/lua/functions/events/move_event_functions.cpp
 
 ## NetworkMessage
@@ -1957,10 +1957,10 @@ Source: src/lua/functions/core/network/network_message_functions.cpp
 ### addItem(...)
 Source: src/lua/functions/core/network/network_message_functions.cpp
 
-### addPosition(position: Position)
+### addPosition(arg2: Position)
 Source: src/lua/functions/core/network/network_message_functions.cpp
 
-### addString(string: string, function: string)
+### addString(arg2: string, arg3: string)
 Source: src/lua/functions/core/network/network_message_functions.cpp
 
 ### addU16(number: number)
@@ -2030,7 +2030,7 @@ Source: src/lua/functions/creatures/npc/npc_functions.cpp
 ### getSpeechBubble(...)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
-### isInTalkRange(position: Position)
+### isInTalkRange(arg2: Position)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
 ### isInteractingWithPlayer(creature: Creature)
@@ -2045,7 +2045,7 @@ Source: src/lua/functions/creatures/npc/npc_functions.cpp
 ### isPlayerInteractingOnTopic(creature: Creature)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
-### move(arg2: number)
+### move(arg2: Direction)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
 ### openShopWindow(...)
@@ -2060,7 +2060,7 @@ Source: src/lua/functions/creatures/npc/npc_functions.cpp
 ### removePlayerInteraction(creature: Creature)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
-### say(n: Position)
+### say(arg6: Position)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
 ### sellItem(...)
@@ -2072,7 +2072,7 @@ Source: src/lua/functions/creatures/npc/npc_functions.cpp
 ### setMasterPos(...)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
-### setName(name: string)
+### setName(arg2: string)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
 ### setPlayerInteraction(creature: Creature)
@@ -2081,7 +2081,7 @@ Source: src/lua/functions/creatures/npc/npc_functions.cpp
 ### setSpeechBubble(...)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
-### turn(arg2: number)
+### turn(arg2: Direction)
 Source: src/lua/functions/creatures/npc/npc_functions.cpp
 
 ### turnToCreature(creature: Creature)
@@ -2097,7 +2097,7 @@ Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 ### addSound(...)
 Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 
-### addVoice(t: string, s: number, e: number, t: boolean)
+### addVoice(arg2: string, arg3: number, arg4: number, arg5: boolean)
 Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 
 ### baseSpeed(...)
@@ -2109,13 +2109,13 @@ Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 ### canPushItems(...)
 Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 
-### canSpawn(position: Position)
+### canSpawn(arg2: Position)
 Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 
 ### currency(...)
 Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 
-### eventType(e: number)
+### eventType(arg2: NpcsEvent_t)
 Source: src/lua/functions/creatures/npc/npc_type_functions.cpp
 
 ### floorChange(...)
@@ -2218,7 +2218,7 @@ Source: src/lua/functions/creatures/player/party_functions.cpp
 ### addMember(player: Player)
 Source: src/lua/functions/creatures/player/party_functions.cpp
 
-### disband(r: RawUserDataShared)
+### disband(partyPtr: Party)
 Source: src/lua/functions/creatures/player/party_functions.cpp
 
 ### getInviteeCount(...)
@@ -2318,7 +2318,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### addManaSpent(arg2: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### addMapMark(position: Position, type: number, description: string)
+### addMapMark(arg2: Position, type: number, arg4: string)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### addMinorCharmEchoes(...)
@@ -2333,7 +2333,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### addOfflineTrainingTime(time: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### addOfflineTrainingTries(skillType: number, tries: number)
+### addOfflineTrainingTries(skillType: skills_t, tries: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### addOutfit(arg2: number)
@@ -2348,7 +2348,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### addPreyCards(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### addSkillTries(skillType: number, tries: number)
+### addSkillTries(skillType: skills_t, tries: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### addSoul(soulChange: number)
@@ -2399,7 +2399,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### createTransactionSummary(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### forgetSpell(spellName: string)
+### forgetSpell(arg2: string)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### getAccountId(...)
@@ -2444,7 +2444,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### getCharmChance(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### getCharmMonsterType(charmid: number)
+### getCharmMonsterType(charmid: charmRune_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### getCharmTier(...)
@@ -2471,7 +2471,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### getDepotLocker(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### getEffectiveSkillLevel(skillType: number)
+### getEffectiveSkillLevel(skillType: skills_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### getExperience(...)
@@ -2630,13 +2630,13 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### getSex(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### getSkillLevel(skillType: number)
+### getSkillLevel(skillType: skills_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### getSkillPercent(skillType: number)
+### getSkillPercent(skillType: skills_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### getSkillTries(skillType: number)
+### getSkillTries(skillType: skills_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### getSkullTime(...)
@@ -2729,7 +2729,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### hasGroupFlag(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### hasLearnedSpell(spellName: string)
+### hasLearnedSpell(arg2: string)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### hasMount(...)
@@ -2774,7 +2774,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### kv(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### learnSpell(spellName: string)
+### learnSpell(arg2: string)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### onThinkWheelOfDestiny(...)
@@ -2795,7 +2795,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### openStash(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### popupFYI(message: string)
+### popupFYI(arg2: string)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### preyThirdSlot(...)
@@ -2954,7 +2954,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### setBossPoints(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### setCapacity(y: number)
+### setCapacity(arg2: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### setCurrentTitle(...)
@@ -2993,7 +2993,7 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### setGuildLevel(level: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### setGuildNick(nick: string)
+### setGuildNick(arg2: string)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### setHazardSystemPoints(...)
@@ -3023,16 +3023,16 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### setOfflineTrainingSkill(skillId: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### setPronoun(newPronoun: number)
+### setPronoun(newPronoun: PlayerPronoun_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### setRemoveBossTime(...)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### setSex(newSex: number)
+### setSex(newSex: PlayerSex_t)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
-### setSkillLevel(skillType: number, level: number, tries: number)
+### setSkillLevel(skillType: skills_t, level: number, tries: number)
 Source: src/lua/functions/creatures/player/player_functions.cpp
 
 ### setSkullTime(arg2: number)
@@ -3102,25 +3102,25 @@ Source: src/lua/functions/creatures/player/player_functions.cpp
 ### __add(...)
 Source: src/lua/functions/map/position_functions.cpp
 
-### __eq(position: Position, positionEx: Position)
+### __eq(arg1: Position, arg2: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
 ### __sub(...)
 Source: src/lua/functions/map/position_functions.cpp
 
-### getDistance(position: Position, positionEx: Position)
+### getDistance(arg1: Position, arg2: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
-### getPathTo(pos: Position, position: Position)
+### getPathTo(arg1: Position, arg2: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
-### getTile(position: Position)
+### getTile(arg1: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
-### getZones(position: Position)
+### getZones(arg1: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
-### isSightClear(position: Position, positionEx: Position)
+### isSightClear(arg1: Position, arg2: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
 ### removeMagicEffect(player?: Player)
@@ -3129,16 +3129,16 @@ Source: src/lua/functions/map/position_functions.cpp
 ### sendDistanceEffect(player?: Player)
 Source: src/lua/functions/map/position_functions.cpp
 
-### sendDoubleSoundEffect(position: Position, mainSoundEffect: number, secondarySoundEffect: number, actor: Creature)
+### sendDoubleSoundEffect(arg1: Position, mainSoundEffect: SoundEffect_t, secondarySoundEffect: SoundEffect_t, actor: Creature)
 Source: src/lua/functions/map/position_functions.cpp
 
 ### sendMagicEffect(player?: Player)
 Source: src/lua/functions/map/position_functions.cpp
 
-### sendSingleSoundEffect(position: Position, soundEffect: number, actor: Creature)
+### sendSingleSoundEffect(arg1: Position, soundEffect: SoundEffect_t, actor: Creature)
 Source: src/lua/functions/map/position_functions.cpp
 
-### toString(position: Position)
+### toString(arg1: Position)
 Source: src/lua/functions/map/position_functions.cpp
 
 ## Result
@@ -3161,28 +3161,28 @@ Source: src/lua/functions/core/libs/result_functions.cpp
 ### addChildShop(...)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setBuyPrice(e: number)
+### setBuyPrice(arg2: number)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setCount(e: number)
+### setCount(arg2: number)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setId(d: number)
+### setId(arg2: number)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
 ### setIdFromName(name: string)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setNameItem(e: string)
+### setNameItem(arg2: string)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setSellPrice(e: number)
+### setSellPrice(arg2: number)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setStorageKey(y: number)
+### setStorageKey(arg2: number)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
-### setStorageValue(e: number)
+### setStorageValue(arg2: number)
 Source: src/lua/functions/creatures/npc/shop_functions.cpp
 
 ## Spdlog
@@ -3430,7 +3430,7 @@ Source: src/lua/functions/map/tile_functions.cpp
 ### getTopVisibleThing(creature: Creature)
 Source: src/lua/functions/map/tile_functions.cpp
 
-### hasFlag(flag: number)
+### hasFlag(flag: TileFlags_t)
 Source: src/lua/functions/map/tile_functions.cpp
 
 ### hasProperty(...)
@@ -3456,13 +3456,13 @@ Source: src/lua/functions/map/town_functions.cpp
 Source: src/lua/functions/map/town_functions.cpp
 
 ## Variant
-### getNumber(variant: Variant)
+### getNumber(arg1: Variant)
 Source: src/lua/functions/creatures/combat/variant_functions.cpp
 
-### getPosition(variant: Variant)
+### getPosition(arg1: Variant)
 Source: src/lua/functions/creatures/combat/variant_functions.cpp
 
-### getString(variant: Variant)
+### getString(arg1: Variant)
 Source: src/lua/functions/creatures/combat/variant_functions.cpp
 
 ## Vocation
@@ -3526,7 +3526,7 @@ Source: src/lua/functions/creatures/player/vocation_functions.cpp
 ### getRequiredManaSpent(magicLevel: number)
 Source: src/lua/functions/creatures/player/vocation_functions.cpp
 
-### getRequiredSkillTries(skillType: number, skillLevel: number)
+### getRequiredSkillTries(skillType: skills_t, skillLevel: number)
 Source: src/lua/functions/creatures/player/vocation_functions.cpp
 
 ### getSoulGainTicks(...)
@@ -3539,31 +3539,31 @@ Source: src/lua/functions/items/weapon_functions.cpp
 ### ammoType(type: string)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### attack(k: number)
+### attack(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### breakChance(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### charges(s?: boolean)
+### charges(arg3?: boolean)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### damage(arg2?: number, arg3?: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### decayTo(d?: number)
+### decayTo(arg2?: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### defense(e?: number, e?: number)
+### defense(arg2?: number, arg3?: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### duration(n?: boolean)
+### duration(arg3?: boolean)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### element(element: string)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### extraElement(e: number, element: string)
+### extraElement(arg2: number, element: string)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### health(arg2: number)
@@ -3572,7 +3572,7 @@ Source: src/lua/functions/items/weapon_functions.cpp
 ### healthPercent(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### hitChance(e: number)
+### hitChance(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### id(arg2: number)
@@ -3590,7 +3590,7 @@ Source: src/lua/functions/items/weapon_functions.cpp
 ### manaPercent(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### maxHitChance(e: number)
+### maxHitChance(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### onUseWeapon(...)
@@ -3599,13 +3599,13 @@ Source: src/lua/functions/items/weapon_functions.cpp
 ### premium(arg2: boolean)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### range(e: number)
+### range(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### register(r: RawUserDataShared)
+### register(weaponPtr: WeaponShared_ptr)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### shootType(e: number)
+### shootType(arg2: ShootType_t)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### slotType(slot: string)
@@ -3614,13 +3614,13 @@ Source: src/lua/functions/items/weapon_functions.cpp
 ### soul(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### transformDeEquipTo(o: number)
+### transformDeEquipTo(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### transformEquipTo(o: number)
+### transformEquipTo(arg2: number)
 Source: src/lua/functions/items/weapon_functions.cpp
 
-### vocation(arg2: string, n: boolean)
+### vocation(arg2: string, arg3: boolean)
 Source: src/lua/functions/items/weapon_functions.cpp
 
 ### wieldUnproperly(arg2: boolean)
@@ -3695,7 +3695,8 @@ Source: src/lua/functions/core/game/zone_functions.cpp
 ### getBoolean(...)
 Source: src/lua/functions/core/game/config_functions.cpp
 
-### getFloat(key: number)
+### getFloat(key: is provided and is a valid enum
+	const auto)
 Source: src/lua/functions/core/game/config_functions.cpp
 
 ### getNumber(...)

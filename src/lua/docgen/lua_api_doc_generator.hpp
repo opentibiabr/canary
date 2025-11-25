@@ -8,6 +8,15 @@
  */
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+#include <filesystem>
+#include <map>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#endif
+
 class Logger;
 
 struct LuaFunctionInfo {
@@ -40,7 +49,9 @@ private:
 	void parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const;
 	std::vector<std::string> inferParameters(const std::string &content, const std::string &handler) const;
 	std::vector<std::string> splitParameters(const std::string &parameters) const;
-	std::string normalizeReturnType(const std::string &handler) const;
+	std::string normalizeReturnType(const std::string &content, const std::string &handler) const;
+	std::string inferReturnByBody(const std::string &body) const;
+	std::string relativePath(const std::filesystem::path &path) const;
 
 	std::filesystem::path root;
 };

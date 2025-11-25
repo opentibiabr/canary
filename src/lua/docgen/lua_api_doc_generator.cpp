@@ -64,22 +64,27 @@ void LuaBindingScanner::scanFile(const std::filesystem::path &filePath, LuaScanR
 void LuaBindingScanner::parseLuaReg(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
 	// Canary NÃO usa luaL_Reg, mas mantenho caso exista algum legado
 	std::regex luaRegPattern(
-		R"regex(luaL_Reg\s+([A-Za-z0-9_]+)\s*\[\]\s*=\s*\{([^;]*?)\};)regex",
+		R"regex(luaL_Reg\s+([A-Za-z0-9_]+)\s*\[\]\s*=\s*\{((?:[^\{\}]|\{[^\{\}]*\})*?)\}\s*;)regex",
 		std::regex::optimize | std::regex::icase | std::regex::multiline
 	);
 	std::regex entryPattern(
-		R"regex(\{\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+)\s*\})regex",
-		std::regex::optimize
+		R"regex(\{\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+)\s*\}\s*,?)regex",
+		std::regex::optimize | std::regex::icase | std::regex::multiline
 	);
 
 	for (auto regIt = std::sregex_iterator(content.begin(), content.end(), luaRegPattern); regIt != std::sregex_iterator(); ++regIt) {
 		const auto block = (*regIt)[2].str();
+		std::unordered_set<std::string> seen;
 		for (auto entryIt = std::sregex_iterator(block.begin(), block.end(), entryPattern); entryIt != std::sregex_iterator(); ++entryIt) {
+			const auto name = (*entryIt)[1].str();
+			if (!seen.insert(name).second) {
+				continue;
+			}
 			LuaFunctionInfo info;
-			info.name = (*entryIt)[1].str();
+			info.name = name;
 			info.handler = (*entryIt)[2].str();
-			info.returnType = normalizeReturnType(info.handler);
-			info.sourceFile = filePath.string();
+			info.returnType = normalizeReturnType(content, info.handler);
+			info.sourceFile = relativePath(filePath);
 			info.parameters = inferParameters(content, info.handler);
 			result.functions.emplace_back(std::move(info));
 		}
@@ -107,9 +112,9 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.className = (*it)[1].str();
 		info.name = (*it)[2].str();
 		info.handler = (*it)[3].str();
-		info.returnType = normalizeReturnType(info.handler);
+		info.returnType = normalizeReturnType(content, info.handler);
 		info.parameters = inferParameters(content, info.handler);
-		info.sourceFile = filePath.string();
+		info.sourceFile = relativePath(filePath);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -123,9 +128,9 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.className = (*it)[1].str();
 		info.name = (*it)[2].str();
 		info.handler = (*it)[3].str();
-		info.returnType = normalizeReturnType(info.handler);
+		info.returnType = normalizeReturnType(content, info.handler);
 		info.parameters = inferParameters(content, info.handler);
-		info.sourceFile = filePath.string();
+		info.sourceFile = relativePath(filePath);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -138,9 +143,9 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		LuaFunctionInfo info;
 		info.name = (*it)[1].str();
 		info.handler = (*it)[2].str();
-		info.returnType = normalizeReturnType(info.handler);
+		info.returnType = normalizeReturnType(content, info.handler);
 		info.parameters = inferParameters(content, info.handler);
-		info.sourceFile = filePath.string();
+		info.sourceFile = relativePath(filePath);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -153,7 +158,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		LuaFunctionInfo info;
 		info.name = (*it)[1].str();
 		info.returnType = "boolean";
-		info.sourceFile = filePath.string();
+		info.sourceFile = relativePath(filePath);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -166,7 +171,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		LuaFunctionInfo info;
 		info.name = (*it)[1].str();
 		info.returnType = "number";
-		info.sourceFile = filePath.string();
+		info.sourceFile = relativePath(filePath);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -179,7 +184,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		LuaFunctionInfo info;
 		info.name = (*it)[1].str();
 		info.returnType = "string";
-		info.sourceFile = filePath.string();
+		info.sourceFile = relativePath(filePath);
 		result.functions.emplace_back(std::move(info));
 	}
 }
@@ -213,30 +218,68 @@ std::vector<std::string> LuaBindingScanner::splitParameters(const std::string &p
 	return values;
 }
 
-std::string LuaBindingScanner::normalizeReturnType(const std::string &handler) const {
+std::string LuaBindingScanner::normalizeReturnType(const std::string &content, const std::string &handler) const {
 	if (handler.empty()) {
 		return "unknown";
 	}
-	// Try to infer the return type from the handler's function signature in the source files
-	// For simplicity, assume the handler is a function named 'handler' and look for its definition
-	// Example: int handlerName(...)
-	std::regex signaturePattern(R"regex((\w+)\s+" + handler + R"regex\s*\()regex", std::regex::optimize);
-	for (const auto &entry : std::filesystem::recursive_directory_iterator(root / "src")) {
-		if (!entry.is_regular_file()) {
-			continue;
-		}
-		std::ifstream file(entry.path());
-		if (!file.is_open()) {
-			continue;
-		}
-		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		std::smatch match;
-		if (std::regex_search(content, match, signaturePattern)) {
-			// match[1] is the return type
-			return match[1].str();
-		}
+
+	std::regex signaturePattern(
+		std::string("(\\w+)\\s+") + handler + "\\s*\\(",
+		std::regex::optimize | std::regex::icase
+	);
+
+	std::regex bodyPattern(
+		std::string("\\b") + handler + "\\s*\\([^)]*\\)\\s*\\{([\\s\\S]*?)\\}",
+		std::regex::optimize | std::regex::icase
+	);
+
+	std::smatch match;
+	if (std::regex_search(content, match, signaturePattern)) {
+		return match[1].str();
 	}
+
+	if (std::regex_search(content, match, bodyPattern)) {
+		return inferReturnByBody(match[1].str());
+	}
+
 	return "unknown";
+}
+
+std::string LuaBindingScanner::inferReturnByBody(const std::string &body) const {
+	if (body.find("lua_pushboolean") != std::string::npos) {
+		return "boolean";
+	}
+	if (body.find("lua_pushnumber") != std::string::npos || body.find("lua_pushinteger") != std::string::npos) {
+		return "number";
+	}
+	if (body.find("lua_pushstring") != std::string::npos) {
+		return "string";
+	}
+
+	std::regex pushPattern(R"regex(push([A-Z][A-Za-z0-9_]*)\s*\()regex");
+	std::smatch pushMatch;
+	if (std::regex_search(body, pushMatch, pushPattern)) {
+		return pushMatch[1].str();
+	}
+
+	if (body.find("return true") != std::string::npos || body.find("return false") != std::string::npos) {
+		return "boolean";
+	}
+
+	if (body.find("lua_push") == std::string::npos) {
+		return "void";
+	}
+
+	return "unknown";
+}
+
+std::string LuaBindingScanner::relativePath(const std::filesystem::path &path) const {
+	std::error_code ec;
+	const auto relative = std::filesystem::relative(path, root, ec);
+	if (!ec) {
+		return relative.generic_string();
+	}
+	return path.generic_string();
 }
 
 LuaApiDocGenerator::LuaApiDocGenerator(const std::filesystem::path &projectRoot, Logger &logger) :
@@ -280,15 +323,24 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 		classes[className].name = className;
 	}
 
+	std::unordered_map<std::string, std::unordered_set<std::string>> classMethodNames;
+	std::unordered_set<std::string> globalNames;
+
 	for (const auto &function : scanResult.functions) {
 		if (function.className.empty()) {
-			globals.push_back(function);
+			const auto key = function.name;
+			if (globalNames.insert(key).second) {
+				globals.push_back(function);
+			}
 			continue;
 		}
 
 		auto &classInfo = classes[function.className];
 		classInfo.name = function.className;
-		classInfo.methods.push_back(function);
+		auto &names = classMethodNames[function.className];
+		if (names.insert(function.name).second) {
+			classInfo.methods.push_back(function);
+		}
 	}
 
 	for (auto &classEntry : classes) {

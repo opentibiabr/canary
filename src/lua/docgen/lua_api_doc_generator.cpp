@@ -189,7 +189,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 	}
 }
 
-
 std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &content, const std::string &handler) const {
 	std::vector<std::string> parameters;
 
@@ -197,13 +196,11 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		return parameters;
 	}
 
-	std::string bodyRegex =
-		"\\b" + handler +              // início da função
-		"\\s*\\([^)]*\\)"              // argumentos (...)
-		"\\s*\\{([\\s\\S]*?)\\}";      // corpo
+	std::string bodyRegex = "\\b" + handler + // início da função
+		"\\s*\\([^)]*\\)" // argumentos (...)
+		"\\s*\\{([\\s\\S]*?)\\}"; // corpo
 
 	std::regex bodyPattern(bodyRegex, std::regex::optimize | std::regex::icase);
-
 
 	std::smatch bodyMatch;
 	if (!std::regex_search(content, bodyMatch, bodyPattern)) {
@@ -216,7 +213,7 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 	struct ParameterInfo {
 		std::string type;
 		std::string name;
-		bool optional{false};
+		bool optional { false };
 	};
 
 	auto normalizeType = [](const std::string &type) -> std::string {
@@ -272,31 +269,31 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 	}
 
 	std::vector<std::pair<std::regex, std::string>> getterPatterns = {
-		{std::regex(R"regex((?:Lua::)?getPlayer\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Player"},
-		{std::regex(R"regex((?:Lua::)?getCreature\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Creature"},
-		{std::regex(R"regex((?:Lua::)?getNpc\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Npc"},
-		{std::regex(R"regex((?:Lua::)?getMonster\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Monster"},
-		{std::regex(R"regex((?:Lua::)?getGuild\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Guild"},
-		{std::regex(R"regex((?:Lua::)?getItem\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Item"},
-		{std::regex(R"regex((?:Lua::)?getPosition\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Position"},
-		{std::regex(R"regex((?:Lua::)?getTile\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Tile"},
-		{std::regex(R"regex((?:Lua::)?getVariant\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Variant"},
-		{std::regex(R"regex((?:Lua::)?getLightInfo\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "LightInfo"},
-		{std::regex(R"regex((?:Lua::)?getThing\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Thing"},
-		{std::regex(R"regex((?:Lua::)?getVariant\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Variant"},
-		{std::regex(R"regex((?:Lua::)?getBoolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean"},
-		{std::regex(R"regex((?:Lua::)?getString\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string"},
-		{std::regex(R"regex((?:Lua::)?getNumber\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
-		{std::regex(R"regex(lua_tonumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
-		{std::regex(R"regex(lua_tointeger\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
-		{std::regex(R"regex(lua_toboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean"},
-		{std::regex(R"regex(lua_tostring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string"},
-		{std::regex(R"regex(lua_isnumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number"},
-		{std::regex(R"regex(lua_isstring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string"},
-		{std::regex(R"regex(lua_isboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean"},
-		{std::regex(R"regex(lua_isuserdata\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "userdata"},
-		{std::regex(R"regex(lua_istable\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "table"},
-		{std::regex(R"regex((?:^|[^A-Za-z0-9_])getBank\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Bank"},
+		{ std::regex(R"regex((?:Lua::)?getPlayer\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Player" },
+		{ std::regex(R"regex((?:Lua::)?getCreature\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Creature" },
+		{ std::regex(R"regex((?:Lua::)?getNpc\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Npc" },
+		{ std::regex(R"regex((?:Lua::)?getMonster\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Monster" },
+		{ std::regex(R"regex((?:Lua::)?getGuild\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Guild" },
+		{ std::regex(R"regex((?:Lua::)?getItem\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Item" },
+		{ std::regex(R"regex((?:Lua::)?getPosition\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Position" },
+		{ std::regex(R"regex((?:Lua::)?getTile\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Tile" },
+		{ std::regex(R"regex((?:Lua::)?getVariant\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Variant" },
+		{ std::regex(R"regex((?:Lua::)?getLightInfo\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "LightInfo" },
+		{ std::regex(R"regex((?:Lua::)?getThing\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Thing" },
+		{ std::regex(R"regex((?:Lua::)?getVariant\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Variant" },
+		{ std::regex(R"regex((?:Lua::)?getBoolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean" },
+		{ std::regex(R"regex((?:Lua::)?getString\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string" },
+		{ std::regex(R"regex((?:Lua::)?getNumber\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
+		{ std::regex(R"regex(lua_tonumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
+		{ std::regex(R"regex(lua_tointeger\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
+		{ std::regex(R"regex(lua_toboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean" },
+		{ std::regex(R"regex(lua_tostring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string" },
+		{ std::regex(R"regex(lua_isnumber\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "number" },
+		{ std::regex(R"regex(lua_isstring\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "string" },
+		{ std::regex(R"regex(lua_isboolean\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "boolean" },
+		{ std::regex(R"regex(lua_isuserdata\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "userdata" },
+		{ std::regex(R"regex(lua_istable\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "table" },
+		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])getBank\s*\(\s*L\s*,\s*(\d+)\s*\))regex", flags), "Bank" },
 	};
 
 	for (const auto &[pattern, type] : getterPatterns) {

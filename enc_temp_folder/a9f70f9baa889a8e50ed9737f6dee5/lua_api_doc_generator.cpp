@@ -351,7 +351,6 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 
 	return parameters;
 }
-
 std::vector<std::string> LuaBindingScanner::splitParameters(const std::string &parameters) const {
 	std::vector<std::string> values;
 	std::stringstream paramStream(parameters);

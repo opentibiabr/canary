@@ -1,1342 +1,1342 @@
 --- Auto-generated Lua API (do not edit manually)
 
 ---@class Action
----@field aid fun(self: Action): int
----@field allowFarUse fun(self: Action): int
----@field blockWalls fun(self: Action): int
----@field checkFloor fun(self: Action): int
----@field id fun(self: Action): int
----@field onUse fun(self: Action): int
----@field position fun(self: Action): int
----@field register fun(self: Action): int
----@field uid fun(self: Action): int
+---@field aid fun(self: Action, ...: any): int
+---@field allowFarUse fun(self: Action, arg2: boolean): int
+---@field blockWalls fun(self: Action, arg2: boolean): int
+---@field checkFloor fun(self: Action, arg2: boolean): int
+---@field id fun(self: Action, ...: any): int
+---@field onUse fun(self: Action, ...: any): int
+---@field position fun(self: Action, ...: any): int
+---@field register fun(self: Action, ...: any): int
+---@field uid fun(self: Action, ...: any): int
 
 ---@class Bank
----@field balance fun(self: Bank): int
----@field credit fun(self: Bank): int
----@field debit fun(self: Bank): int
----@field deposit fun(self: Bank): int
----@field hasBalance fun(self: Bank): int
----@field transfer fun(self: Bank): int
----@field transferToGuild fun(self: Bank): int
----@field withdraw fun(self: Bank): int
+---@field balance fun(self: Bank, bank: Bank): int
+---@field credit fun(self: Bank, bank: Bank): int
+---@field debit fun(self: Bank, bank: Bank): int
+---@field deposit fun(self: Bank, player: Player): int
+---@field hasBalance fun(self: Bank, bank: Bank): int
+---@field transfer fun(self: Bank, source: Bank): int
+---@field transferToGuild fun(self: Bank, source: Bank): int
+---@field withdraw fun(self: Bank, player: Player): int
 
 ---@class Charm
 ---@field __eq fun(self: Charm): unknown
----@field castSound fun(self: Charm): int
----@field category fun(self: Charm): int
----@field chance fun(self: Charm): int
----@field damageType fun(self: Charm): int
----@field description fun(self: Charm): int
----@field effect fun(self: Charm): int
----@field impactSound fun(self: Charm): int
----@field messageCancel fun(self: Charm): int
----@field messageServerLog fun(self: Charm): int
----@field name fun(self: Charm): int
----@field percentage fun(self: Charm): int
----@field points fun(self: Charm): int
----@field type fun(self: Charm): int
+---@field castSound fun(self: Charm, ...: any): int
+---@field category fun(self: Charm, ...: any): int
+---@field chance fun(self: Charm, ...: any): int
+---@field damageType fun(self: Charm, ...: any): int
+---@field description fun(self: Charm, ...: any): int
+---@field effect fun(self: Charm, ...: any): int
+---@field impactSound fun(self: Charm, ...: any): int
+---@field messageCancel fun(self: Charm, ...: any): int
+---@field messageServerLog fun(self: Charm, ...: any): int
+---@field name fun(self: Charm, ...: any): int
+---@field percentage fun(self: Charm, ...: any): int
+---@field points fun(self: Charm, ...: any): int
+---@field type fun(self: Charm, ...: any): int
 
 ---@class Combat
 ---@field __eq fun(self: Combat): unknown
----@field addCondition fun(self: Combat): int
----@field execute fun(self: Combat): int
----@field setArea fun(self: Combat): int
----@field setCallback fun(self: Combat): int
----@field setFormula fun(self: Combat): int
----@field setOrigin fun(self: Combat): int
----@field setParameter fun(self: Combat): int
+---@field addCondition fun(self: Combat, t: userdata): int
+---@field execute fun(self: Combat, ...: any): int
+---@field setArea fun(self: Combat, ...: any): int
+---@field setCallback fun(self: Combat, ...: any): int
+---@field setFormula fun(self: Combat, ...: any): int
+---@field setOrigin fun(self: Combat, arg2: number): int
+---@field setParameter fun(self: Combat, ...: any): int
 
 ---@class Condition
 ---@field __eq fun(self: Condition): unknown
----@field __gc fun(self: Condition): int
----@field addDamage fun(self: Condition): int
----@field clone fun(self: Condition): int
----@field delete fun(self: Condition): int
----@field getEndTime fun(self: Condition): int
----@field getIcons fun(self: Condition): int
----@field getId fun(self: Condition): int
----@field getSubId fun(self: Condition): int
----@field getTicks fun(self: Condition): int
----@field getType fun(self: Condition): int
----@field setFormula fun(self: Condition): int
----@field setOutfit fun(self: Condition): int
----@field setParameter fun(self: Condition): int
----@field setTicks fun(self: Condition): int
+---@field __gc fun(self: Condition, r: RawUserDataShared): int
+---@field addDamage fun(self: Condition, rounds: number, time: number, value: number): int
+---@field clone fun(self: Condition, ...: any): int
+---@field delete fun(self: Condition, r: RawUserDataShared): int
+---@field getEndTime fun(self: Condition, ...: any): int
+---@field getIcons fun(self: Condition, ...: any): int
+---@field getId fun(self: Condition, ...: any): int
+---@field getSubId fun(self: Condition, ...: any): int
+---@field getTicks fun(self: Condition, ...: any): int
+---@field getType fun(self: Condition, ...: any): int
+---@field setFormula fun(self: Condition, mina: number, minb: number, maxa: number, maxb: number): int
+---@field setOutfit fun(self: Condition, t: Outfit): int
+---@field setParameter fun(self: Condition, ...: any): int
+---@field setTicks fun(self: Condition, ticks: number): int
 
 ---@class Container
 ---@field __eq fun(self: Container): unknown
----@field addItem fun(self: Container): int
----@field addItemEx fun(self: Container): int
----@field getCapacity fun(self: Container): int
----@field getContentDescription fun(self: Container): int
----@field getCorpseOwner fun(self: Container): int
----@field getEmptySlots fun(self: Container): int
----@field getItem fun(self: Container): int
----@field getItemCountById fun(self: Container): int
----@field getItemHoldingCount fun(self: Container): int
----@field getItems fun(self: Container): int
----@field getMaxCapacity fun(self: Container): int
----@field getSize fun(self: Container): int
----@field hasItem fun(self: Container): int
----@field registerReward fun(self: Container): int
+---@field addItem fun(self: Container, ...: any): int
+---@field addItemEx fun(self: Container, ...: any): int
+---@field getCapacity fun(self: Container, ...: any): int
+---@field getContentDescription fun(self: Container, ...: any): int
+---@field getCorpseOwner fun(self: Container, ...: any): int
+---@field getEmptySlots fun(self: Container, ...: any): int
+---@field getItem fun(self: Container, ...: any): int
+---@field getItemCountById fun(self: Container, ...: any): int
+---@field getItemHoldingCount fun(self: Container, ...: any): int
+---@field getItems fun(self: Container, ...: any): int
+---@field getMaxCapacity fun(self: Container, ...: any): int
+---@field getSize fun(self: Container, ...: any): int
+---@field hasItem fun(self: Container, ...: any): int
+---@field registerReward fun(self: Container, ...: any): int
 
 ---@class Creature
 ---@field __eq fun(self: Creature): unknown
----@field addCondition fun(self: Creature): int
----@field addHealth fun(self: Creature): int
----@field attachEffectById fun(self: Creature): int
----@field canSee fun(self: Creature): int
----@field canSeeCreature fun(self: Creature): int
----@field changeSpeed fun(self: Creature): int
----@field clearIcons fun(self: Creature): int
----@field detachEffectById fun(self: Creature): int
----@field getAttachedEffects fun(self: Creature): int
----@field getBaseSpeed fun(self: Creature): int
----@field getCondition fun(self: Creature): int
----@field getDamageMap fun(self: Creature): int
----@field getDescription fun(self: Creature): int
----@field getDirection fun(self: Creature): int
----@field getEvents fun(self: Creature): int
----@field getFollowCreature fun(self: Creature): int
----@field getHealth fun(self: Creature): int
----@field getIcon fun(self: Creature): int
----@field getIcons fun(self: Creature): int
----@field getId fun(self: Creature): int
----@field getLight fun(self: Creature): int
----@field getMaster fun(self: Creature): int
----@field getMaxHealth fun(self: Creature): int
----@field getName fun(self: Creature): int
----@field getOutfit fun(self: Creature): int
----@field getParent fun(self: Creature): int
----@field getPathTo fun(self: Creature): int
----@field getPosition fun(self: Creature): int
----@field getShader fun(self: Creature): int
----@field getSkull fun(self: Creature): int
----@field getSpeed fun(self: Creature): int
----@field getSummons fun(self: Creature): int
----@field getTarget fun(self: Creature): int
----@field getTile fun(self: Creature): int
----@field getTypeName fun(self: Creature): int
----@field getZoneType fun(self: Creature): int
----@field getZones fun(self: Creature): int
----@field hasBeenSummoned fun(self: Creature): int
----@field hasCondition fun(self: Creature): int
----@field isCreature fun(self: Creature): int
----@field isDirectionLocked fun(self: Creature): int
----@field isHealthHidden fun(self: Creature): int
----@field isImmune fun(self: Creature): int
----@field isInGhostMode fun(self: Creature): int
----@field isMoveLocked fun(self: Creature): int
----@field isRemoved fun(self: Creature): int
----@field move fun(self: Creature): int
----@field registerEvent fun(self: Creature): int
----@field reload fun(self: Creature): int
----@field remove fun(self: Creature): int
----@field removeCondition fun(self: Creature): int
----@field removeIcon fun(self: Creature): int
----@field say fun(self: Creature): int
----@field setDirection fun(self: Creature): int
----@field setDirectionLocked fun(self: Creature): int
----@field setDropLoot fun(self: Creature): int
----@field setFollowCreature fun(self: Creature): int
----@field setHealth fun(self: Creature): int
----@field setHiddenHealth fun(self: Creature): int
----@field setIcon fun(self: Creature): int
----@field setLight fun(self: Creature): int
----@field setMaster fun(self: Creature): int
----@field setMaxHealth fun(self: Creature): int
----@field setMoveLocked fun(self: Creature): int
----@field setOutfit fun(self: Creature): int
----@field setShader fun(self: Creature): int
----@field setSkillLoss fun(self: Creature): int
----@field setSkull fun(self: Creature): int
----@field setSpeed fun(self: Creature): int
----@field setTarget fun(self: Creature): int
----@field teleportTo fun(self: Creature): int
----@field unregisterEvent fun(self: Creature): int
+---@field addCondition fun(self: Creature, ...: any): int
+---@field addHealth fun(self: Creature, ...: any): int
+---@field attachEffectById fun(self: Creature, ...: any): int
+---@field canSee fun(self: Creature, position: Position): int
+---@field canSeeCreature fun(self: Creature, otherCreature: Creature): int
+---@field changeSpeed fun(self: Creature, creature: Creature): int
+---@field clearIcons fun(self: Creature, ...: any): int
+---@field detachEffectById fun(self: Creature, ...: any): int
+---@field getAttachedEffects fun(self: Creature, ...: any): int
+---@field getBaseSpeed fun(self: Creature, ...: any): int
+---@field getCondition fun(self: Creature, ...: any): int
+---@field getDamageMap fun(self: Creature, ...: any): int
+---@field getDescription fun(self: Creature, distance: number): int
+---@field getDirection fun(self: Creature, ...: any): int
+---@field getEvents fun(self: Creature, ...: any): int
+---@field getFollowCreature fun(self: Creature, ...: any): int
+---@field getHealth fun(self: Creature, ...: any): int
+---@field getIcon fun(self: Creature, ...: any): int
+---@field getIcons fun(self: Creature, ...: any): int
+---@field getId fun(self: Creature, ...: any): int
+---@field getLight fun(self: Creature, ...: any): int
+---@field getMaster fun(self: Creature, ...: any): int
+---@field getMaxHealth fun(self: Creature, ...: any): int
+---@field getName fun(self: Creature, ...: any): int
+---@field getOutfit fun(self: Creature, ...: any): int
+---@field getParent fun(self: Creature, ...: any): int
+---@field getPathTo fun(self: Creature, ...: any): int
+---@field getPosition fun(self: Creature, ...: any): int
+---@field getShader fun(self: Creature, ...: any): int
+---@field getSkull fun(self: Creature, ...: any): int
+---@field getSpeed fun(self: Creature, ...: any): int
+---@field getSummons fun(self: Creature, ...: any): int
+---@field getTarget fun(self: Creature, ...: any): int
+---@field getTile fun(self: Creature, ...: any): int
+---@field getTypeName fun(self: Creature, ...: any): int
+---@field getZoneType fun(self: Creature, ...: any): int
+---@field getZones fun(self: Creature, ...: any): int
+---@field hasBeenSummoned fun(self: Creature, ...: any): int
+---@field hasCondition fun(self: Creature, ...: any): int
+---@field isCreature fun(self: Creature, ...: any): int
+---@field isDirectionLocked fun(self: Creature, ...: any): int
+---@field isHealthHidden fun(self: Creature, ...: any): int
+---@field isImmune fun(self: Creature, ...: any): int
+---@field isInGhostMode fun(self: Creature, ...: any): int
+---@field isMoveLocked fun(self: Creature, ...: any): int
+---@field isRemoved fun(self: Creature, ...: any): int
+---@field move fun(self: Creature, ...: any): int
+---@field registerEvent fun(self: Creature, name: string): int
+---@field reload fun(self: Creature, ...: any): int
+---@field remove fun(self: Creature, r: RawUserDataShared): int
+---@field removeCondition fun(self: Creature, ...: any): int
+---@field removeIcon fun(self: Creature, ...: any): int
+---@field say fun(self: Creature, n: Position): int
+---@field setDirection fun(self: Creature, arg2: number): int
+---@field setDirectionLocked fun(self: Creature, arg2: boolean): int
+---@field setDropLoot fun(self: Creature, arg2: boolean): int
+---@field setFollowCreature fun(self: Creature, followCreature: Creature): int
+---@field setHealth fun(self: Creature, ...: any): int
+---@field setHiddenHealth fun(self: Creature, arg2: boolean): int
+---@field setIcon fun(self: Creature, ...: any): int
+---@field setLight fun(self: Creature, ...: any): int
+---@field setMaster fun(self: Creature, ...: any): int
+---@field setMaxHealth fun(self: Creature, ...: any): int
+---@field setMoveLocked fun(self: Creature, arg2: boolean): int
+---@field setOutfit fun(self: Creature, outfit: Outfit): int
+---@field setShader fun(self: Creature, ...: any): int
+---@field setSkillLoss fun(self: Creature, arg2: boolean): int
+---@field setSkull fun(self: Creature, arg2: number): int
+---@field setSpeed fun(self: Creature, creature: Creature): int
+---@field setTarget fun(self: Creature, target: Creature): int
+---@field teleportTo fun(self: Creature, position: Position): int
+---@field unregisterEvent fun(self: Creature, name: string): int
 
 ---@class CreatureEvent
----@field onAdvance fun(self: CreatureEvent): int
----@field onDeath fun(self: CreatureEvent): int
----@field onExtendedOpcode fun(self: CreatureEvent): int
----@field onHealthChange fun(self: CreatureEvent): int
----@field onKill fun(self: CreatureEvent): int
----@field onLogin fun(self: CreatureEvent): int
----@field onLogout fun(self: CreatureEvent): int
----@field onManaChange fun(self: CreatureEvent): int
----@field onModalWindow fun(self: CreatureEvent): int
----@field onPrepareDeath fun(self: CreatureEvent): int
----@field onTextEdit fun(self: CreatureEvent): int
----@field onThink fun(self: CreatureEvent): int
----@field register fun(self: CreatureEvent): int
----@field type fun(self: CreatureEvent): int
+---@field onAdvance fun(self: CreatureEvent, ...: any): int
+---@field onDeath fun(self: CreatureEvent, ...: any): int
+---@field onExtendedOpcode fun(self: CreatureEvent, ...: any): int
+---@field onHealthChange fun(self: CreatureEvent, ...: any): int
+---@field onKill fun(self: CreatureEvent, ...: any): int
+---@field onLogin fun(self: CreatureEvent, ...: any): int
+---@field onLogout fun(self: CreatureEvent, ...: any): int
+---@field onManaChange fun(self: CreatureEvent, ...: any): int
+---@field onModalWindow fun(self: CreatureEvent, ...: any): int
+---@field onPrepareDeath fun(self: CreatureEvent, ...: any): int
+---@field onTextEdit fun(self: CreatureEvent, ...: any): int
+---@field onThink fun(self: CreatureEvent, ...: any): int
+---@field register fun(self: CreatureEvent, ...: any): int
+---@field type fun(self: CreatureEvent, typeName: string): int
 
 ---@class EventCallback
----@field register fun(self: EventCallback): int
----@field type fun(self: EventCallback): int
+---@field register fun(self: EventCallback, ...: any): int
+---@field type fun(self: EventCallback, ...: any): int
 
 ---@class EventsScheduler
----@field getEventSBossLoot fun(self: EventsScheduler): int
----@field getEventSExp fun(self: EventsScheduler): int
----@field getEventSLoot fun(self: EventsScheduler): int
----@field getEventSSkill fun(self: EventsScheduler): int
----@field getSpawnMonsterSchedule fun(self: EventsScheduler): int
+---@field getEventSBossLoot fun(self: EventsScheduler, ...: any): int
+---@field getEventSExp fun(self: EventsScheduler, ...: any): int
+---@field getEventSLoot fun(self: EventsScheduler, ...: any): int
+---@field getEventSSkill fun(self: EventsScheduler, ...: any): int
+---@field getSpawnMonsterSchedule fun(self: EventsScheduler, ...: any): int
 
 ---@class Game
----@field addInfluencedMonster fun(self: Game): int
----@field createBestiaryCharm fun(self: Game): int
----@field createContainer fun(self: Game): int
----@field createItem fun(self: Game): int
----@field createItemClassification fun(self: Game): int
----@field createMonster fun(self: Game): int
----@field createMonsterType fun(self: Game): int
----@field createNpc fun(self: Game): int
----@field createNpcType fun(self: Game): int
----@field createSoulPitMonster fun(self: Game): int
----@field createTile fun(self: Game): int
----@field generateNpc fun(self: Game): int
----@field getAchievementInfoById fun(self: Game): int
----@field getAchievementInfoByName fun(self: Game): int
----@field getAchievements fun(self: Game): int
----@field getBestiaryCharm fun(self: Game): int
----@field getBestiaryList fun(self: Game): int
----@field getBoostedBoss fun(self: Game): int
----@field getBoostedCreature fun(self: Game): int
----@field getClientVersion fun(self: Game): int
----@field getDummies fun(self: Game): int
----@field getEventCallbacks fun(self: Game): int
----@field getExperienceForLevel fun(self: Game): int
----@field getFiendishMonsters fun(self: Game): int
----@field getGameState fun(self: Game): int
----@field getHouses fun(self: Game): int
----@field getInfluencedMonsters fun(self: Game): int
----@field getLadderIds fun(self: Game): int
----@field getMonsterCount fun(self: Game): int
----@field getMonsterTypeByName fun(self: Game): int
----@field getMonsterTypes fun(self: Game): int
----@field getMonstersByBestiaryStars fun(self: Game): int
----@field getMonstersByRace fun(self: Game): int
----@field getNormalizedGuildName fun(self: Game): int
----@field getNormalizedPlayerName fun(self: Game): int
----@field getNpcCount fun(self: Game): int
----@field getOfflinePlayer fun(self: Game): int
----@field getPlayerCount fun(self: Game): int
----@field getPlayers fun(self: Game): int
----@field getPublicAchievements fun(self: Game): int
----@field getReturnMessage fun(self: Game): int
----@field getSecretAchievements fun(self: Game): int
----@field getSoulCoreItems fun(self: Game): int
----@field getSpectators fun(self: Game): int
----@field getTalkActions fun(self: Game): int
----@field getTowns fun(self: Game): int
----@field getWorldType fun(self: Game): int
----@field hasDistanceEffect fun(self: Game): int
----@field hasEffect fun(self: Game): int
----@field loadMap fun(self: Game): int
----@field loadMapChunk fun(self: Game): int
----@field makeFiendishMonster fun(self: Game): int
----@field registerAchievement fun(self: Game): int
----@field reload fun(self: Game): int
----@field removeFiendishMonster fun(self: Game): int
----@field removeInfluencedMonster fun(self: Game): int
----@field setGameState fun(self: Game): int
----@field setWorldType fun(self: Game): int
----@field startRaid fun(self: Game): int
+---@field addInfluencedMonster fun(self: Game, ...: any): int
+---@field createBestiaryCharm fun(self: Game, ...: any): int
+---@field createContainer fun(self: Game, d: number, size: number): int
+---@field createItem fun(self: Game, d: number): int
+---@field createItemClassification fun(self: Game, arg1: number): int
+---@field createMonster fun(self: Game, arg1: string): int
+---@field createMonsterType fun(self: Game, name: string): int
+---@field createNpc fun(self: Game, arg1: string): int
+---@field createNpcType fun(self: Game, ...: any): int
+---@field createSoulPitMonster fun(self: Game, arg1: string): int
+---@field createTile fun(self: Game, n: Position): int
+---@field generateNpc fun(self: Game, arg1: string): int
+---@field getAchievementInfoById fun(self: Game, id: number): int
+---@field getAchievementInfoByName fun(self: Game, name: string): int
+---@field getAchievements fun(self: Game, ...: any): int
+---@field getBestiaryCharm fun(self: Game, ...: any): int
+---@field getBestiaryList fun(self: Game, ...: any): int
+---@field getBoostedBoss fun(self: Game, ...: any): int
+---@field getBoostedCreature fun(self: Game, ...: any): int
+---@field getClientVersion fun(self: Game, ...: any): int
+---@field getDummies fun(self: Game, ...: any): int
+---@field getEventCallbacks fun(self: Game, ...: any): int
+---@field getExperienceForLevel fun(self: Game, level: number): int
+---@field getFiendishMonsters fun(self: Game, ...: any): int
+---@field getGameState fun(self: Game, ...: any): int
+---@field getHouses fun(self: Game, ...: any): int
+---@field getInfluencedMonsters fun(self: Game, ...: any): int
+---@field getLadderIds fun(self: Game, ...: any): int
+---@field getMonsterCount fun(self: Game, ...: any): int
+---@field getMonsterTypeByName fun(self: Game, ...: any): int
+---@field getMonsterTypes fun(self: Game, ...: any): int
+---@field getMonstersByBestiaryStars fun(self: Game, stars: number): int
+---@field getMonstersByRace fun(self: Game, race: number): int
+---@field getNormalizedGuildName fun(self: Game, name: string): int
+---@field getNormalizedPlayerName fun(self: Game, name: string): int
+---@field getNpcCount fun(self: Game, ...: any): int
+---@field getOfflinePlayer fun(self: Game, id: number): int
+---@field getPlayerCount fun(self: Game, ...: any): int
+---@field getPlayers fun(self: Game, ...: any): int
+---@field getPublicAchievements fun(self: Game, ...: any): int
+---@field getReturnMessage fun(self: Game, value: number): int
+---@field getSecretAchievements fun(self: Game, ...: any): int
+---@field getSoulCoreItems fun(self: Game, ...: any): int
+---@field getSpectators fun(self: Game, position: Position): int
+---@field getTalkActions fun(self: Game, ...: any): int
+---@field getTowns fun(self: Game, ...: any): int
+---@field getWorldType fun(self: Game, ...: any): int
+---@field hasDistanceEffect fun(self: Game, effectId: number): int
+---@field hasEffect fun(self: Game, effectId: number): int
+---@field loadMap fun(self: Game, path: string): int
+---@field loadMapChunk fun(self: Game, path: string, position: Position): int
+---@field makeFiendishMonster fun(self: Game, ...: any): int
+---@field registerAchievement fun(self: Game, ...: any): int
+---@field reload fun(self: Game, reloadType: number): int
+---@field removeFiendishMonster fun(self: Game, monsterId: number): int
+---@field removeInfluencedMonster fun(self: Game, monsterId: number): int
+---@field setGameState fun(self: Game, state: number): int
+---@field setWorldType fun(self: Game, type: number): int
+---@field startRaid fun(self: Game, raidName: string): int
 
 ---@class GlobalEvent
----@field interval fun(self: GlobalEvent): int
----@field onPeriodChange fun(self: GlobalEvent): int
----@field onRecord fun(self: GlobalEvent): int
----@field onSave fun(self: GlobalEvent): int
----@field onShutdown fun(self: GlobalEvent): int
----@field onStartup fun(self: GlobalEvent): int
----@field onThink fun(self: GlobalEvent): int
----@field onTime fun(self: GlobalEvent): int
----@field register fun(self: GlobalEvent): int
----@field time fun(self: GlobalEvent): int
----@field type fun(self: GlobalEvent): int
+---@field interval fun(self: GlobalEvent, arg2: number): int
+---@field onPeriodChange fun(self: GlobalEvent, ...: any): int
+---@field onRecord fun(self: GlobalEvent, ...: any): int
+---@field onSave fun(self: GlobalEvent, ...: any): int
+---@field onShutdown fun(self: GlobalEvent, ...: any): int
+---@field onStartup fun(self: GlobalEvent, ...: any): int
+---@field onThink fun(self: GlobalEvent, ...: any): int
+---@field onTime fun(self: GlobalEvent, ...: any): int
+---@field register fun(self: GlobalEvent, ...: any): int
+---@field time fun(self: GlobalEvent, timer: string): int
+---@field type fun(self: GlobalEvent, typeName: string): int
 
 ---@class Group
 ---@field __eq fun(self: Group): unknown
----@field getAccess fun(self: Group): int
----@field getFlags fun(self: Group): int
----@field getId fun(self: Group): int
----@field getMaxDepotItems fun(self: Group): int
----@field getMaxVipEntries fun(self: Group): int
----@field getName fun(self: Group): int
----@field hasFlag fun(self: Group): int
+---@field getAccess fun(self: Group, ...: any): int
+---@field getFlags fun(self: Group, ...: any): int
+---@field getId fun(self: Group, ...: any): int
+---@field getMaxDepotItems fun(self: Group, ...: any): int
+---@field getMaxVipEntries fun(self: Group, ...: any): int
+---@field getName fun(self: Group, ...: any): int
+---@field hasFlag fun(self: Group, arg2: number): int
 
 ---@class Guild
 ---@field __eq fun(self: Guild): unknown
----@field addRank fun(self: Guild): int
----@field getBankBalance fun(self: Guild): int
----@field getId fun(self: Guild): int
----@field getMembersOnline fun(self: Guild): int
----@field getMotd fun(self: Guild): int
----@field getName fun(self: Guild): int
----@field getRankById fun(self: Guild): int
----@field getRankByLevel fun(self: Guild): int
----@field setBankBalance fun(self: Guild): int
----@field setMotd fun(self: Guild): int
+---@field addRank fun(self: Guild, ...: any): int
+---@field getBankBalance fun(self: Guild, ...: any): int
+---@field getId fun(self: Guild, ...: any): int
+---@field getMembersOnline fun(self: Guild, ...: any): int
+---@field getMotd fun(self: Guild, ...: any): int
+---@field getName fun(self: Guild, ...: any): int
+---@field getRankById fun(self: Guild, ...: any): int
+---@field getRankByLevel fun(self: Guild, ...: any): int
+---@field setBankBalance fun(self: Guild, ...: any): int
+---@field setMotd fun(self: Guild, ...: any): int
 
 ---@class House
 ---@field __eq fun(self: House): unknown
----@field canEditAccessList fun(self: House): int
----@field getAccessList fun(self: House): int
----@field getBedCount fun(self: House): int
----@field getBeds fun(self: House): int
----@field getDoorCount fun(self: House): int
----@field getDoorIdByPosition fun(self: House): int
----@field getDoors fun(self: House): int
----@field getExitPosition fun(self: House): int
----@field getId fun(self: House): int
----@field getItems fun(self: House): int
----@field getName fun(self: House): int
----@field getOwnerGuid fun(self: House): int
----@field getPrice fun(self: House): int
----@field getRent fun(self: House): int
----@field getTileCount fun(self: House): int
----@field getTiles fun(self: House): int
----@field getTown fun(self: House): int
----@field hasItemOnTile fun(self: House): int
----@field hasNewOwnership fun(self: House): int
----@field isInvited fun(self: House): int
----@field kickPlayer fun(self: House): int
----@field setAccessList fun(self: House): int
----@field setHouseOwner fun(self: House): int
----@field setNewOwnerGuid fun(self: House): int
----@field startTrade fun(self: House): int
+---@field canEditAccessList fun(self: House, ...: any): int
+---@field getAccessList fun(self: House, ...: any): int
+---@field getBedCount fun(self: House, ...: any): int
+---@field getBeds fun(self: House, ...: any): int
+---@field getDoorCount fun(self: House, ...: any): int
+---@field getDoorIdByPosition fun(self: House, ...: any): int
+---@field getDoors fun(self: House, ...: any): int
+---@field getExitPosition fun(self: House, ...: any): int
+---@field getId fun(self: House, ...: any): int
+---@field getItems fun(self: House, ...: any): int
+---@field getName fun(self: House, ...: any): int
+---@field getOwnerGuid fun(self: House, ...: any): int
+---@field getPrice fun(self: House, ...: any): int
+---@field getRent fun(self: House, ...: any): int
+---@field getTileCount fun(self: House, ...: any): int
+---@field getTiles fun(self: House, ...: any): int
+---@field getTown fun(self: House, ...: any): int
+---@field hasItemOnTile fun(self: House, ...: any): int
+---@field hasNewOwnership fun(self: House, ...: any): int
+---@field isInvited fun(self: House, ...: any): int
+---@field kickPlayer fun(self: House, ...: any): int
+---@field setAccessList fun(self: House, ...: any): int
+---@field setHouseOwner fun(self: House, ...: any): int
+---@field setNewOwnerGuid fun(self: House, ...: any): int
+---@field startTrade fun(self: House, ...: any): int
 
 ---@class Imbuement
 ---@field __eq fun(self: Imbuement): unknown
----@field getBase fun(self: Imbuement): int
----@field getCategory fun(self: Imbuement): int
----@field getCombatType fun(self: Imbuement): int
----@field getElementDamage fun(self: Imbuement): int
----@field getId fun(self: Imbuement): int
----@field getItems fun(self: Imbuement): int
----@field getName fun(self: Imbuement): int
----@field isPremium fun(self: Imbuement): int
+---@field getBase fun(self: Imbuement, t: userdata): int
+---@field getCategory fun(self: Imbuement, t: userdata): int
+---@field getCombatType fun(self: Imbuement, t: userdata): int
+---@field getElementDamage fun(self: Imbuement, t: userdata): int
+---@field getId fun(self: Imbuement, t: userdata): int
+---@field getItems fun(self: Imbuement, t: userdata): int
+---@field getName fun(self: Imbuement, t: userdata): int
+---@field isPremium fun(self: Imbuement, t: userdata): int
 
 ---@class Item
 ---@field __eq fun(self: Item): unknown
----@field actor fun(self: Item): int
----@field canBeMoved fun(self: Item): int
----@field canReceiveAutoCarpet fun(self: Item): int
----@field clone fun(self: Item): int
----@field decay fun(self: Item): int
----@field getActionId fun(self: Item): int
----@field getArticle fun(self: Item): int
----@field getAttribute fun(self: Item): int
----@field getCharges fun(self: Item): int
----@field getClassification fun(self: Item): int
----@field getContainer fun(self: Item): int
----@field getCount fun(self: Item): int
----@field getCustomAttribute fun(self: Item): int
----@field getDescription fun(self: Item): int
----@field getFluidType fun(self: Item): int
----@field getId fun(self: Item): int
----@field getImbuement fun(self: Item): int
----@field getImbuementSlot fun(self: Item): int
----@field getName fun(self: Item): int
----@field getOwnerId fun(self: Item): int
----@field getOwnerName fun(self: Item): int
----@field getParent fun(self: Item): int
----@field getPluralName fun(self: Item): int
----@field getPosition fun(self: Item): int
----@field getShader fun(self: Item): int
----@field getSubType fun(self: Item): int
----@field getTier fun(self: Item): int
----@field getTile fun(self: Item): int
----@field getTopParent fun(self: Item): int
----@field getUniqueId fun(self: Item): int
----@field getWeight fun(self: Item): int
----@field hasAttribute fun(self: Item): int
----@field hasOwner fun(self: Item): int
----@field hasProperty fun(self: Item): int
----@field hasShader fun(self: Item): int
----@field isContainer fun(self: Item): int
----@field isInsideDepot fun(self: Item): int
----@field isItem fun(self: Item): int
----@field isOwner fun(self: Item): int
----@field moveTo fun(self: Item): int
----@field moveToSlot fun(self: Item): int
----@field remove fun(self: Item): int
----@field removeAttribute fun(self: Item): int
----@field removeCustomAttribute fun(self: Item): int
----@field serializeAttributes fun(self: Item): int
----@field setActionId fun(self: Item): int
----@field setAttribute fun(self: Item): int
----@field setCustomAttribute fun(self: Item): int
----@field setDuration fun(self: Item): int
----@field setOwner fun(self: Item): int
----@field setShader fun(self: Item): int
----@field setTier fun(self: Item): int
----@field split fun(self: Item): int
----@field transform fun(self: Item): int
+---@field actor fun(self: Item, ...: any): int
+---@field canBeMoved fun(self: Item, ...: any): int
+---@field canReceiveAutoCarpet fun(self: Item, ...: any): int
+---@field clone fun(self: Item, ...: any): int
+---@field decay fun(self: Item, o: number): int
+---@field getActionId fun(self: Item, ...: any): int
+---@field getArticle fun(self: Item, ...: any): int
+---@field getAttribute fun(self: Item, ...: any): int
+---@field getCharges fun(self: Item, ...: any): int
+---@field getClassification fun(self: Item, ...: any): int
+---@field getContainer fun(self: Item, ...: any): int
+---@field getCount fun(self: Item, ...: any): int
+---@field getCustomAttribute fun(self: Item, ...: any): int
+---@field getDescription fun(self: Item, distance: number): int
+---@field getFluidType fun(self: Item, ...: any): int
+---@field getId fun(self: Item, ...: any): int
+---@field getImbuement fun(self: Item, ...: any): int
+---@field getImbuementSlot fun(self: Item, ...: any): int
+---@field getName fun(self: Item, ...: any): int
+---@field getOwnerId fun(self: Item, ...: any): int
+---@field getOwnerName fun(self: Item, ...: any): int
+---@field getParent fun(self: Item, ...: any): int
+---@field getPluralName fun(self: Item, ...: any): int
+---@field getPosition fun(self: Item, ...: any): int
+---@field getShader fun(self: Item, ...: any): int
+---@field getSubType fun(self: Item, ...: any): int
+---@field getTier fun(self: Item, ...: any): int
+---@field getTile fun(self: Item, ...: any): int
+---@field getTopParent fun(self: Item, ...: any): int
+---@field getUniqueId fun(self: Item, ...: any): int
+---@field getWeight fun(self: Item, ...: any): int
+---@field hasAttribute fun(self: Item, ...: any): int
+---@field hasOwner fun(self: Item, ...: any): int
+---@field hasProperty fun(self: Item, property: number): int
+---@field hasShader fun(self: Item, ...: any): int
+---@field isContainer fun(self: Item, ...: any): int
+---@field isInsideDepot fun(self: Item, ...: any): int
+---@field isItem fun(self: Item, ...: any): int
+---@field isOwner fun(self: Item, ...: any): int
+---@field moveTo fun(self: Item, itemPtr: RawUserDataShared): int
+---@field moveToSlot fun(self: Item, ...: any): int
+---@field remove fun(self: Item, ...: any): int
+---@field removeAttribute fun(self: Item, ...: any): int
+---@field removeCustomAttribute fun(self: Item, ...: any): int
+---@field serializeAttributes fun(self: Item, ...: any): int
+---@field setActionId fun(self: Item, actionId: number): int
+---@field setAttribute fun(self: Item, ...: any): int
+---@field setCustomAttribute fun(self: Item, ...: any): int
+---@field setDuration fun(self: Item, ...: any): int
+---@field setOwner fun(self: Item, ...: any): int
+---@field setShader fun(self: Item, ...: any): int
+---@field setTier fun(self: Item, ...: any): int
+---@field split fun(self: Item, itemPtr: RawUserDataShared): int
+---@field transform fun(self: Item, itemPtr: RawUserDataShared): int
 
 ---@class ItemClassification
 ---@field __eq fun(self: ItemClassification): unknown
----@field addTier fun(self: ItemClassification): int
+---@field addTier fun(self: ItemClassification, n: userdata, arg2: number, arg3: number, arg4: number, arg5: number, arg6: number): int
 
 ---@class ItemType
 ---@field __eq fun(self: ItemType): unknown
----@field getAmmoType fun(self: ItemType): int
----@field getArmor fun(self: ItemType): int
----@field getArticle fun(self: ItemType): int
----@field getAttack fun(self: ItemType): int
----@field getBaseSpeed fun(self: ItemType): int
----@field getCapacity fun(self: ItemType): int
----@field getCharges fun(self: ItemType): int
----@field getDecayId fun(self: ItemType): int
----@field getDecayTime fun(self: ItemType): int
----@field getDefense fun(self: ItemType): int
----@field getDescription fun(self: ItemType): int
----@field getDestroyId fun(self: ItemType): int
----@field getElementDamage fun(self: ItemType): int
----@field getElementType fun(self: ItemType): int
----@field getExtraDefense fun(self: ItemType): int
----@field getFluidSource fun(self: ItemType): int
----@field getHitChance fun(self: ItemType): int
----@field getId fun(self: ItemType): int
----@field getImbuementSlot fun(self: ItemType): int
----@field getName fun(self: ItemType): int
----@field getPluralName fun(self: ItemType): int
----@field getRequiredLevel fun(self: ItemType): int
----@field getShootRange fun(self: ItemType): int
----@field getShowDuration fun(self: ItemType): int
----@field getSlotPosition fun(self: ItemType): int
----@field getSpeed fun(self: ItemType): int
----@field getStackSize fun(self: ItemType): int
----@field getTransformDeEquipId fun(self: ItemType): int
----@field getTransformEquipId fun(self: ItemType): int
----@field getType fun(self: ItemType): int
----@field getVocationString fun(self: ItemType): int
----@field getWeaponType fun(self: ItemType): int
----@field getWeight fun(self: ItemType): int
----@field getWrapableTo fun(self: ItemType): int
----@field hasSubType fun(self: ItemType): int
----@field isBlocking fun(self: ItemType): int
----@field isContainer fun(self: ItemType): int
----@field isCorpse fun(self: ItemType): int
----@field isDoor fun(self: ItemType): int
----@field isFluidContainer fun(self: ItemType): int
----@field isGroundTile fun(self: ItemType): int
----@field isKey fun(self: ItemType): int
----@field isMagicField fun(self: ItemType): int
----@field isMovable fun(self: ItemType): int
----@field isMultiUse fun(self: ItemType): int
----@field isPickupable fun(self: ItemType): int
----@field isPodium fun(self: ItemType): int
----@field isQuiver fun(self: ItemType): int
----@field isReadable fun(self: ItemType): int
----@field isRune fun(self: ItemType): int
----@field isStackable fun(self: ItemType): int
----@field isStowable fun(self: ItemType): int
----@field isWritable fun(self: ItemType): int
+---@field getAmmoType fun(self: ItemType, e: userdata): int
+---@field getArmor fun(self: ItemType, e: userdata): int
+---@field getArticle fun(self: ItemType, e: userdata): int
+---@field getAttack fun(self: ItemType, e: userdata): int
+---@field getBaseSpeed fun(self: ItemType, e: userdata): int
+---@field getCapacity fun(self: ItemType, e: userdata): int
+---@field getCharges fun(self: ItemType, e: userdata): int
+---@field getDecayId fun(self: ItemType, e: userdata): int
+---@field getDecayTime fun(self: ItemType, e: userdata): int
+---@field getDefense fun(self: ItemType, e: userdata): int
+---@field getDescription fun(self: ItemType, itemType: userdata): int
+---@field getDestroyId fun(self: ItemType, e: userdata): int
+---@field getElementDamage fun(self: ItemType, e: userdata): int
+---@field getElementType fun(self: ItemType, e: userdata): int
+---@field getExtraDefense fun(self: ItemType, e: userdata): int
+---@field getFluidSource fun(self: ItemType, e: userdata): int
+---@field getHitChance fun(self: ItemType, e: userdata): int
+---@field getId fun(self: ItemType, e: userdata): int
+---@field getImbuementSlot fun(self: ItemType, e: userdata): int
+---@field getName fun(self: ItemType, e: userdata): int
+---@field getPluralName fun(self: ItemType, e: userdata): int
+---@field getRequiredLevel fun(self: ItemType, e: userdata): int
+---@field getShootRange fun(self: ItemType, e: userdata): int
+---@field getShowDuration fun(self: ItemType, e: userdata): int
+---@field getSlotPosition fun(self: ItemType, e: userdata): int
+---@field getSpeed fun(self: ItemType, e: userdata): int
+---@field getStackSize fun(self: ItemType, e: userdata): int
+---@field getTransformDeEquipId fun(self: ItemType, e: userdata): int
+---@field getTransformEquipId fun(self: ItemType, e: userdata): int
+---@field getType fun(self: ItemType, e: userdata): int
+---@field getVocationString fun(self: ItemType, e: userdata): int
+---@field getWeaponType fun(self: ItemType, e: userdata): int
+---@field getWeight fun(self: ItemType, e: userdata): int
+---@field getWrapableTo fun(self: ItemType, e: userdata): int
+---@field hasSubType fun(self: ItemType, e: userdata): int
+---@field isBlocking fun(self: ItemType, e: userdata): int
+---@field isContainer fun(self: ItemType, e: userdata): int
+---@field isCorpse fun(self: ItemType, e: userdata): int
+---@field isDoor fun(self: ItemType, e: userdata): int
+---@field isFluidContainer fun(self: ItemType, e: userdata): int
+---@field isGroundTile fun(self: ItemType, e: userdata): int
+---@field isKey fun(self: ItemType, e: userdata): int
+---@field isMagicField fun(self: ItemType, e: userdata): int
+---@field isMovable fun(self: ItemType, e: userdata): int
+---@field isMultiUse fun(self: ItemType, e: userdata): int
+---@field isPickupable fun(self: ItemType, e: userdata): int
+---@field isPodium fun(self: ItemType, e: userdata): int
+---@field isQuiver fun(self: ItemType, e: userdata): int
+---@field isReadable fun(self: ItemType, e: userdata): int
+---@field isRune fun(self: ItemType, e: userdata): int
+---@field isStackable fun(self: ItemType, e: userdata): int
+---@field isStowable fun(self: ItemType, e: userdata): int
+---@field isWritable fun(self: ItemType, e: userdata): int
 
 ---@class KV
----@field get fun(self: KV): int
----@field keys fun(self: KV): int
----@field remove fun(self: KV): int
----@field scoped fun(self: KV): int
----@field set fun(self: KV): int
+---@field get fun(self: KV, ...: any): int
+---@field keys fun(self: KV, ...: any): int
+---@field remove fun(self: KV, ...: any): int
+---@field scoped fun(self: KV, ...: any): int
+---@field set fun(self: KV, ...: any): int
 
 ---@class Loot
----@field addChildLoot fun(self: Loot): int
----@field setActionId fun(self: Loot): int
----@field setArmor fun(self: Loot): int
----@field setArticle fun(self: Loot): int
----@field setAttack fun(self: Loot): int
----@field setChance fun(self: Loot): int
----@field setDefense fun(self: Loot): int
----@field setExtraDefense fun(self: Loot): int
----@field setHitChance fun(self: Loot): int
----@field setId fun(self: Loot): int
----@field setIdFromName fun(self: Loot): int
----@field setMaxCount fun(self: Loot): int
----@field setMinCount fun(self: Loot): int
----@field setNameItem fun(self: Loot): int
----@field setShootRange fun(self: Loot): int
----@field setSubType fun(self: Loot): int
----@field setText fun(self: Loot): int
----@field setUnique fun(self: Loot): int
+---@field addChildLoot fun(self: Loot, childLoot: userdata): int
+---@field setActionId fun(self: Loot, d: number): int
+---@field setArmor fun(self: Loot, r: number): int
+---@field setArticle fun(self: Loot, e: string): int
+---@field setAttack fun(self: Loot, k: number): int
+---@field setChance fun(self: Loot, e: number): int
+---@field setDefense fun(self: Loot, e: number): int
+---@field setExtraDefense fun(self: Loot, e: number): int
+---@field setHitChance fun(self: Loot, e: number): int
+---@field setId fun(self: Loot, d: number): int
+---@field setIdFromName fun(self: Loot, name: string): int
+---@field setMaxCount fun(self: Loot, x: number): int
+---@field setMinCount fun(self: Loot, n: number): int
+---@field setNameItem fun(self: Loot, e: string): int
+---@field setShootRange fun(self: Loot, e: number): int
+---@field setSubType fun(self: Loot, e: number): int
+---@field setText fun(self: Loot, t: string): int
+---@field setUnique fun(self: Loot, ...: any): int
 
 ---@class ModalWindow
 ---@field __eq fun(self: ModalWindow): unknown
----@field addButton fun(self: ModalWindow): int
----@field addChoice fun(self: ModalWindow): int
----@field getButtonCount fun(self: ModalWindow): int
----@field getChoiceCount fun(self: ModalWindow): int
----@field getDefaultEnterButton fun(self: ModalWindow): int
----@field getDefaultEscapeButton fun(self: ModalWindow): int
----@field getId fun(self: ModalWindow): int
----@field getMessage fun(self: ModalWindow): int
----@field getTitle fun(self: ModalWindow): int
----@field hasPriority fun(self: ModalWindow): int
----@field sendToPlayer fun(self: ModalWindow): int
----@field setDefaultEnterButton fun(self: ModalWindow): int
----@field setDefaultEscapeButton fun(self: ModalWindow): int
----@field setMessage fun(self: ModalWindow): int
----@field setPriority fun(self: ModalWindow): int
----@field setTitle fun(self: ModalWindow): int
+---@field addButton fun(self: ModalWindow, id: number, text: string): int
+---@field addChoice fun(self: ModalWindow, id: number, text: string): int
+---@field getButtonCount fun(self: ModalWindow, ...: any): int
+---@field getChoiceCount fun(self: ModalWindow, ...: any): int
+---@field getDefaultEnterButton fun(self: ModalWindow, ...: any): int
+---@field getDefaultEscapeButton fun(self: ModalWindow, ...: any): int
+---@field getId fun(self: ModalWindow, ...: any): int
+---@field getMessage fun(self: ModalWindow, ...: any): int
+---@field getTitle fun(self: ModalWindow, ...: any): int
+---@field hasPriority fun(self: ModalWindow, ...: any): int
+---@field sendToPlayer fun(self: ModalWindow, player: Player): int
+---@field setDefaultEnterButton fun(self: ModalWindow, n: number): int
+---@field setDefaultEscapeButton fun(self: ModalWindow, n: number): int
+---@field setMessage fun(self: ModalWindow, text: string): int
+---@field setPriority fun(self: ModalWindow, y: boolean): int
+---@field setTitle fun(self: ModalWindow, text: string): int
 
 ---@class Monster
 ---@field __eq fun(self: Monster): unknown
----@field addAttackSpell fun(self: Monster): int
----@field addDefense fun(self: Monster): int
----@field addDefenseSpell fun(self: Monster): int
----@field addFriend fun(self: Monster): int
----@field addReflectElement fun(self: Monster): int
----@field addTarget fun(self: Monster): int
----@field changeTargetDistance fun(self: Monster): int
----@field clearFiendishStatus fun(self: Monster): int
----@field configureForgeSystem fun(self: Monster): int
----@field criticalChance fun(self: Monster): int
----@field criticalDamage fun(self: Monster): int
----@field getDefense fun(self: Monster): int
----@field getForgeStack fun(self: Monster): int
----@field getFriendCount fun(self: Monster): int
----@field getFriendList fun(self: Monster): int
----@field getMonsterForgeClassification fun(self: Monster): int
----@field getName fun(self: Monster): int
----@field getRespawnType fun(self: Monster): int
----@field getSpawnPosition fun(self: Monster): int
----@field getTargetCount fun(self: Monster): int
----@field getTargetList fun(self: Monster): int
----@field getTimeToChangeFiendish fun(self: Monster): int
----@field getType fun(self: Monster): int
----@field hazard fun(self: Monster): int
----@field hazardCrit fun(self: Monster): int
----@field hazardDamageBoost fun(self: Monster): int
----@field hazardDefenseBoost fun(self: Monster): int
----@field hazardDodge fun(self: Monster): int
----@field immune fun(self: Monster): int
----@field isChallenged fun(self: Monster): int
----@field isDead fun(self: Monster): int
----@field isForgeable fun(self: Monster): int
----@field isFriend fun(self: Monster): int
----@field isIdle fun(self: Monster): int
----@field isInSpawnRange fun(self: Monster): int
----@field isMonster fun(self: Monster): int
----@field isOpponent fun(self: Monster): int
----@field isTarget fun(self: Monster): int
----@field removeFriend fun(self: Monster): int
----@field removeTarget fun(self: Monster): int
----@field searchTarget fun(self: Monster): int
----@field selectTarget fun(self: Monster): int
----@field setForgeStack fun(self: Monster): int
----@field setIdle fun(self: Monster): int
----@field setMonsterForgeClassification fun(self: Monster): int
----@field setName fun(self: Monster): int
----@field setSpawnPosition fun(self: Monster): int
----@field setTimeToChangeFiendish fun(self: Monster): int
----@field setType fun(self: Monster): int
----@field soulPit fun(self: Monster): int
+---@field addAttackSpell fun(self: Monster, ...: any): int
+---@field addDefense fun(self: Monster, ...: any): int
+---@field addDefenseSpell fun(self: Monster, ...: any): int
+---@field addFriend fun(self: Monster, creature: Creature): int
+---@field addReflectElement fun(self: Monster, ...: any): int
+---@field addTarget fun(self: Monster, ...: any): int
+---@field changeTargetDistance fun(self: Monster, ...: any): int
+---@field clearFiendishStatus fun(self: Monster, ...: any): int
+---@field configureForgeSystem fun(self: Monster, ...: any): int
+---@field criticalChance fun(self: Monster, ...: any): int
+---@field criticalDamage fun(self: Monster, ...: any): int
+---@field getDefense fun(self: Monster, ...: any): int
+---@field getForgeStack fun(self: Monster, ...: any): int
+---@field getFriendCount fun(self: Monster, ...: any): int
+---@field getFriendList fun(self: Monster, ...: any): int
+---@field getMonsterForgeClassification fun(self: Monster, ...: any): int
+---@field getName fun(self: Monster, ...: any): int
+---@field getRespawnType fun(self: Monster, ...: any): int
+---@field getSpawnPosition fun(self: Monster, ...: any): int
+---@field getTargetCount fun(self: Monster, ...: any): int
+---@field getTargetList fun(self: Monster, ...: any): int
+---@field getTimeToChangeFiendish fun(self: Monster, ...: any): int
+---@field getType fun(self: Monster, ...: any): int
+---@field hazard fun(self: Monster, ...: any): int
+---@field hazardCrit fun(self: Monster, ...: any): int
+---@field hazardDamageBoost fun(self: Monster, ...: any): int
+---@field hazardDefenseBoost fun(self: Monster, ...: any): int
+---@field hazardDodge fun(self: Monster, ...: any): int
+---@field immune fun(self: Monster, ...: any): int
+---@field isChallenged fun(self: Monster, ...: any): int
+---@field isDead fun(self: Monster, ...: any): int
+---@field isForgeable fun(self: Monster, ...: any): int
+---@field isFriend fun(self: Monster, creature: Creature): int
+---@field isIdle fun(self: Monster, ...: any): int
+---@field isInSpawnRange fun(self: Monster, arg2?: Position): int
+---@field isMonster fun(self: Monster, ...: any): int
+---@field isOpponent fun(self: Monster, creature: Creature): int
+---@field isTarget fun(self: Monster, creature: Creature): int
+---@field removeFriend fun(self: Monster, creature: Creature): int
+---@field removeTarget fun(self: Monster, ...: any): int
+---@field searchTarget fun(self: Monster, ...: any): int
+---@field selectTarget fun(self: Monster, creature: Creature): int
+---@field setForgeStack fun(self: Monster, ...: any): int
+---@field setIdle fun(self: Monster, ...: any): int
+---@field setMonsterForgeClassification fun(self: Monster, classification: number): int
+---@field setName fun(self: Monster, ...: any): int
+---@field setSpawnPosition fun(self: Monster, ...: any): int
+---@field setTimeToChangeFiendish fun(self: Monster, ...: any): int
+---@field setType fun(self: Monster, arg2: number): int
+---@field soulPit fun(self: Monster, ...: any): int
 
 ---@class MonsterSpell
----@field castSound fun(self: MonsterSpell): int
----@field impactSound fun(self: MonsterSpell): int
----@field setAttackValue fun(self: MonsterSpell): int
----@field setChance fun(self: MonsterSpell): int
----@field setCombatEffect fun(self: MonsterSpell): int
----@field setCombatLength fun(self: MonsterSpell): int
----@field setCombatRadius fun(self: MonsterSpell): int
----@field setCombatShootEffect fun(self: MonsterSpell): int
----@field setCombatSpread fun(self: MonsterSpell): int
----@field setCombatType fun(self: MonsterSpell): int
----@field setCombatValue fun(self: MonsterSpell): int
----@field setConditionDamage fun(self: MonsterSpell): int
----@field setConditionDuration fun(self: MonsterSpell): int
----@field setConditionSpeedChange fun(self: MonsterSpell): int
----@field setConditionTickInterval fun(self: MonsterSpell): int
----@field setConditionType fun(self: MonsterSpell): int
----@field setInterval fun(self: MonsterSpell): int
----@field setNeedTarget fun(self: MonsterSpell): int
----@field setOutfitItem fun(self: MonsterSpell): int
----@field setOutfitMonster fun(self: MonsterSpell): int
----@field setRange fun(self: MonsterSpell): int
----@field setScriptName fun(self: MonsterSpell): int
----@field setType fun(self: MonsterSpell): int
+---@field castSound fun(self: MonsterSpell, ...: any): int
+---@field impactSound fun(self: MonsterSpell, ...: any): int
+---@field setAttackValue fun(self: MonsterSpell, k: number, l: number): int
+---@field setChance fun(self: MonsterSpell, e: number): int
+---@field setCombatEffect fun(self: MonsterSpell, t: number): int
+---@field setCombatLength fun(self: MonsterSpell, h: number): int
+---@field setCombatRadius fun(self: MonsterSpell, s: number): int
+---@field setCombatShootEffect fun(self: MonsterSpell, t: number): int
+---@field setCombatSpread fun(self: MonsterSpell, d: number): int
+---@field setCombatType fun(self: MonsterSpell, e: number): int
+---@field setCombatValue fun(self: MonsterSpell, e: number, e: number): int
+---@field setConditionDamage fun(self: MonsterSpell, e: number, e: number, e: number): int
+---@field setConditionDuration fun(self: MonsterSpell, n: number): int
+---@field setConditionSpeedChange fun(self: MonsterSpell, e: number): int
+---@field setConditionTickInterval fun(self: MonsterSpell, l: number): int
+---@field setConditionType fun(self: MonsterSpell, conditionType: number): int
+---@field setInterval fun(self: MonsterSpell, l: number): int
+---@field setNeedTarget fun(self: MonsterSpell, t: boolean): int
+---@field setOutfitItem fun(self: MonsterSpell, m: number): int
+---@field setOutfitMonster fun(self: MonsterSpell, r: string): int
+---@field setRange fun(self: MonsterSpell, e: number): int
+---@field setScriptName fun(self: MonsterSpell, e: string): int
+---@field setType fun(self: MonsterSpell, e: string): int
 
 ---@class MonsterType
----@field BestiaryCharmsPoints fun(self: MonsterType): int
----@field BestiaryFirstUnlock fun(self: MonsterType): int
----@field BestiaryLocations fun(self: MonsterType): int
----@field BestiaryOccurrence fun(self: MonsterType): int
----@field BestiarySecondUnlock fun(self: MonsterType): int
----@field BestiaryStars fun(self: MonsterType): int
----@field Bestiaryclass fun(self: MonsterType): int
----@field Bestiaryrace fun(self: MonsterType): int
----@field BestiarytoKill fun(self: MonsterType): int
+---@field BestiaryCharmsPoints fun(self: MonsterType, ...: any): int
+---@field BestiaryFirstUnlock fun(self: MonsterType, ...: any): int
+---@field BestiaryLocations fun(self: MonsterType, ...: any): int
+---@field BestiaryOccurrence fun(self: MonsterType, ...: any): int
+---@field BestiarySecondUnlock fun(self: MonsterType, ...: any): int
+---@field BestiaryStars fun(self: MonsterType, ...: any): int
+---@field Bestiaryclass fun(self: MonsterType, ...: any): int
+---@field Bestiaryrace fun(self: MonsterType, ...: any): int
+---@field BestiarytoKill fun(self: MonsterType, ...: any): int
 ---@field __eq fun(self: MonsterType): unknown
----@field addAttack fun(self: MonsterType): int
----@field addDefense fun(self: MonsterType): int
----@field addElement fun(self: MonsterType): int
----@field addHealing fun(self: MonsterType): int
----@field addLoot fun(self: MonsterType): int
----@field addReflect fun(self: MonsterType): int
----@field addSound fun(self: MonsterType): int
----@field addSummon fun(self: MonsterType): int
----@field addVoice fun(self: MonsterType): int
----@field armor fun(self: MonsterType): int
----@field baseSpeed fun(self: MonsterType): int
----@field bossRace fun(self: MonsterType): int
----@field bossRaceId fun(self: MonsterType): int
----@field canPushCreatures fun(self: MonsterType): int
----@field canPushItems fun(self: MonsterType): int
----@field canSpawn fun(self: MonsterType): int
----@field canWalkOnEnergy fun(self: MonsterType): int
----@field canWalkOnFire fun(self: MonsterType): int
----@field canWalkOnPoison fun(self: MonsterType): int
----@field changeTargetChance fun(self: MonsterType): int
----@field changeTargetSpeed fun(self: MonsterType): int
----@field combatImmunities fun(self: MonsterType): int
----@field conditionImmunities fun(self: MonsterType): int
----@field corpseId fun(self: MonsterType): int
----@field critChance fun(self: MonsterType): int
----@field deathSound fun(self: MonsterType): int
----@field defense fun(self: MonsterType): int
----@field enemyFactions fun(self: MonsterType): int
----@field eventType fun(self: MonsterType): int
----@field experience fun(self: MonsterType): int
----@field faction fun(self: MonsterType): int
----@field familiar fun(self: MonsterType): int
----@field getAttackList fun(self: MonsterType): int
----@field getCorpseId fun(self: MonsterType): int
----@field getCreatureEvents fun(self: MonsterType): int
----@field getDefenseList fun(self: MonsterType): int
----@field getElementList fun(self: MonsterType): int
----@field getLoot fun(self: MonsterType): int
----@field getMonstersByBestiaryStars fun(self: MonsterType): int
----@field getMonstersByRace fun(self: MonsterType): int
----@field getSounds fun(self: MonsterType): int
----@field getSummonList fun(self: MonsterType): int
----@field getTypeName fun(self: MonsterType): int
----@field getVoices fun(self: MonsterType): int
----@field health fun(self: MonsterType): int
----@field isAttackable fun(self: MonsterType): int
----@field isBlockable fun(self: MonsterType): int
----@field isConvinceable fun(self: MonsterType): int
----@field isForgeCreature fun(self: MonsterType): int
----@field isHealthHidden fun(self: MonsterType): int
----@field isHostile fun(self: MonsterType): int
----@field isIllusionable fun(self: MonsterType): int
----@field isPreyExclusive fun(self: MonsterType): int
----@field isPreyable fun(self: MonsterType): int
----@field isPushable fun(self: MonsterType): int
----@field isRewardBoss fun(self: MonsterType): int
----@field isSummonable fun(self: MonsterType): int
----@field light fun(self: MonsterType): int
----@field manaCost fun(self: MonsterType): int
----@field maxHealth fun(self: MonsterType): int
----@field maxSummons fun(self: MonsterType): int
----@field mitigation fun(self: MonsterType): int
----@field name fun(self: MonsterType): int32_t
----@field nameDescription fun(self: MonsterType): int
----@field onAppear fun(self: MonsterType): int
----@field onDisappear fun(self: MonsterType): int
----@field onMove fun(self: MonsterType): int
----@field onPlayerAttack fun(self: MonsterType): int
----@field onSay fun(self: MonsterType): int
----@field onSpawn fun(self: MonsterType): int
----@field onThink fun(self: MonsterType): int
----@field outfit fun(self: MonsterType): int
----@field race fun(self: MonsterType): int
----@field raceId fun(self: MonsterType): int
----@field registerEvent fun(self: MonsterType): int
----@field respawnTypeIsUnderground fun(self: MonsterType): int
----@field respawnTypePeriod fun(self: MonsterType): int
----@field runHealth fun(self: MonsterType): int
----@field soundChance fun(self: MonsterType): int
----@field soundSpeedTicks fun(self: MonsterType): int
----@field staticAttackChance fun(self: MonsterType): int
----@field strategiesTargetDamage fun(self: MonsterType): int
----@field strategiesTargetHealth fun(self: MonsterType): int
----@field strategiesTargetNearest fun(self: MonsterType): int
----@field strategiesTargetRandom fun(self: MonsterType): int
----@field targetDistance fun(self: MonsterType): int
----@field targetPreferMaster fun(self: MonsterType): int
----@field targetPreferPlayer fun(self: MonsterType): int
----@field variant fun(self: MonsterType): int
----@field yellChance fun(self: MonsterType): int
----@field yellSpeedTicks fun(self: MonsterType): int
+---@field addAttack fun(self: MonsterType, ...: any): int
+---@field addDefense fun(self: MonsterType, ...: any): int
+---@field addElement fun(self: MonsterType, element: number, arg3: number): int
+---@field addHealing fun(self: MonsterType, element: number, arg3: number): int
+---@field addLoot fun(self: MonsterType, ...: any): int
+---@field addReflect fun(self: MonsterType, element: number, arg3: number): int
+---@field addSound fun(self: MonsterType, ...: any): int
+---@field addSummon fun(self: MonsterType, e: string, d: number, e: number): int
+---@field addVoice fun(self: MonsterType, t: string, s: number, e: number, t: boolean): int
+---@field armor fun(self: MonsterType, ...: any): int
+---@field baseSpeed fun(self: MonsterType, ...: any): int
+---@field bossRace fun(self: MonsterType, ...: any): int
+---@field bossRaceId fun(self: MonsterType, ...: any): int
+---@field canPushCreatures fun(self: MonsterType, ...: any): int
+---@field canPushItems fun(self: MonsterType, ...: any): int
+---@field canSpawn fun(self: MonsterType, position: Position): int
+---@field canWalkOnEnergy fun(self: MonsterType, ...: any): int
+---@field canWalkOnFire fun(self: MonsterType, ...: any): int
+---@field canWalkOnPoison fun(self: MonsterType, ...: any): int
+---@field changeTargetChance fun(self: MonsterType, ...: any): int
+---@field changeTargetSpeed fun(self: MonsterType, ...: any): int
+---@field combatImmunities fun(self: MonsterType, ...: any): int
+---@field conditionImmunities fun(self: MonsterType, ...: any): int
+---@field corpseId fun(self: MonsterType, ...: any): int
+---@field critChance fun(self: MonsterType, e: number): int
+---@field deathSound fun(self: MonsterType, ...: any): int
+---@field defense fun(self: MonsterType, ...: any): int
+---@field enemyFactions fun(self: MonsterType, ...: any): int
+---@field eventType fun(self: MonsterType, e: number): int
+---@field experience fun(self: MonsterType, ...: any): int
+---@field faction fun(self: MonsterType, ...: any): int
+---@field familiar fun(self: MonsterType, ...: any): int
+---@field getAttackList fun(self: MonsterType, ...: any): int
+---@field getCorpseId fun(self: MonsterType, ...: any): int
+---@field getCreatureEvents fun(self: MonsterType, ...: any): int
+---@field getDefenseList fun(self: MonsterType, ...: any): int
+---@field getElementList fun(self: MonsterType, ...: any): int
+---@field getLoot fun(self: MonsterType, ...: any): int
+---@field getMonstersByBestiaryStars fun(self: MonsterType, stars: number): int
+---@field getMonstersByRace fun(self: MonsterType, race: number): int
+---@field getSounds fun(self: MonsterType, ...: any): int
+---@field getSummonList fun(self: MonsterType, ...: any): int
+---@field getTypeName fun(self: MonsterType, ...: any): int
+---@field getVoices fun(self: MonsterType, ...: any): int
+---@field health fun(self: MonsterType, ...: any): int
+---@field isAttackable fun(self: MonsterType, ...: any): int
+---@field isBlockable fun(self: MonsterType, ...: any): int
+---@field isConvinceable fun(self: MonsterType, ...: any): int
+---@field isForgeCreature fun(self: MonsterType, ...: any): int
+---@field isHealthHidden fun(self: MonsterType, ...: any): int
+---@field isHostile fun(self: MonsterType, ...: any): int
+---@field isIllusionable fun(self: MonsterType, ...: any): int
+---@field isPreyExclusive fun(self: MonsterType, ...: any): int
+---@field isPreyable fun(self: MonsterType, ...: any): int
+---@field isPushable fun(self: MonsterType, ...: any): int
+---@field isRewardBoss fun(self: MonsterType, ...: any): int
+---@field isSummonable fun(self: MonsterType, ...: any): int
+---@field light fun(self: MonsterType, ...: any): int
+---@field manaCost fun(self: MonsterType, ...: any): int
+---@field maxHealth fun(self: MonsterType, ...: any): int
+---@field maxSummons fun(self: MonsterType, ...: any): int
+---@field mitigation fun(self: MonsterType, ...: any): int
+---@field name fun(self: MonsterType, ...: any): int32_t
+---@field nameDescription fun(self: MonsterType, ...: any): int
+---@field onAppear fun(self: MonsterType, ...: any): int
+---@field onDisappear fun(self: MonsterType, ...: any): int
+---@field onMove fun(self: MonsterType, ...: any): int
+---@field onPlayerAttack fun(self: MonsterType, ...: any): int
+---@field onSay fun(self: MonsterType, ...: any): int
+---@field onSpawn fun(self: MonsterType, ...: any): int
+---@field onThink fun(self: MonsterType, ...: any): int
+---@field outfit fun(self: MonsterType, ...: any): int
+---@field race fun(self: MonsterType, race: string): int
+---@field raceId fun(self: MonsterType, ...: any): int
+---@field registerEvent fun(self: MonsterType, ...: any): int
+---@field respawnTypeIsUnderground fun(self: MonsterType, ...: any): int
+---@field respawnTypePeriod fun(self: MonsterType, ...: any): int
+---@field runHealth fun(self: MonsterType, ...: any): int
+---@field soundChance fun(self: MonsterType, ...: any): int
+---@field soundSpeedTicks fun(self: MonsterType, ...: any): int
+---@field staticAttackChance fun(self: MonsterType, ...: any): int
+---@field strategiesTargetDamage fun(self: MonsterType, ...: any): int
+---@field strategiesTargetHealth fun(self: MonsterType, ...: any): int
+---@field strategiesTargetNearest fun(self: MonsterType, ...: any): int
+---@field strategiesTargetRandom fun(self: MonsterType, ...: any): int
+---@field targetDistance fun(self: MonsterType, ...: any): int
+---@field targetPreferMaster fun(self: MonsterType, ...: any): int
+---@field targetPreferPlayer fun(self: MonsterType, ...: any): int
+---@field variant fun(self: MonsterType, ...: any): int
+---@field yellChance fun(self: MonsterType, ...: any): int
+---@field yellSpeedTicks fun(self: MonsterType, ...: any): int
 
 ---@class Mount
 ---@field __eq fun(self: Mount): unknown
----@field getClientId fun(self: Mount): int
----@field getId fun(self: Mount): int
----@field getName fun(self: Mount): int
----@field getSpeed fun(self: Mount): int
+---@field getClientId fun(self: Mount, ...: any): int
+---@field getId fun(self: Mount, ...: any): int
+---@field getName fun(self: Mount, ...: any): int
+---@field getSpeed fun(self: Mount, ...: any): int
 
 ---@class MoveEvent
----@field aid fun(self: MoveEvent): int
----@field id fun(self: MoveEvent): int
----@field level fun(self: MoveEvent): int
----@field magicLevel fun(self: MoveEvent): int
----@field onAddItem fun(self: MoveEvent): int
----@field onDeEquip fun(self: MoveEvent): int
----@field onEquip fun(self: MoveEvent): int
----@field onRemoveItem fun(self: MoveEvent): int
----@field onStepIn fun(self: MoveEvent): int
----@field onStepOut fun(self: MoveEvent): int
----@field position fun(self: MoveEvent): int
----@field premium fun(self: MoveEvent): int
----@field register fun(self: MoveEvent): int
----@field slot fun(self: MoveEvent): int
----@field type fun(self: MoveEvent): int
----@field uid fun(self: MoveEvent): int
----@field vocation fun(self: MoveEvent): int
+---@field aid fun(self: MoveEvent, ...: any): int
+---@field id fun(self: MoveEvent, ...: any): int
+---@field level fun(self: MoveEvent, arg2: number): int
+---@field magicLevel fun(self: MoveEvent, arg2: number): int
+---@field onAddItem fun(self: MoveEvent, ...: any): int
+---@field onDeEquip fun(self: MoveEvent, ...: any): int
+---@field onEquip fun(self: MoveEvent, ...: any): int
+---@field onRemoveItem fun(self: MoveEvent, ...: any): int
+---@field onStepIn fun(self: MoveEvent, ...: any): int
+---@field onStepOut fun(self: MoveEvent, ...: any): int
+---@field position fun(self: MoveEvent, ...: any): int
+---@field premium fun(self: MoveEvent, arg2: boolean): int
+---@field register fun(self: MoveEvent, ...: any): int
+---@field slot fun(self: MoveEvent, ...: any): int
+---@field type fun(self: MoveEvent, typeName: string): int
+---@field uid fun(self: MoveEvent, ...: any): int
+---@field vocation fun(self: MoveEvent, arg2: string, n: boolean): int
 
 ---@class NetworkMessage
 ---@field __eq fun(self: NetworkMessage): unknown
----@field add16 fun(self: NetworkMessage): int
----@field add32 fun(self: NetworkMessage): int
----@field add64 fun(self: NetworkMessage): int
----@field add8 fun(self: NetworkMessage): int
----@field addByte fun(self: NetworkMessage): int
----@field addDouble fun(self: NetworkMessage): int
----@field addItem fun(self: NetworkMessage): int
----@field addPosition fun(self: NetworkMessage): int
----@field addString fun(self: NetworkMessage): int
----@field addU16 fun(self: NetworkMessage): int
----@field addU32 fun(self: NetworkMessage): int
----@field addU64 fun(self: NetworkMessage): int
+---@field add16 fun(self: NetworkMessage, number: number): int
+---@field add32 fun(self: NetworkMessage, number: number): int
+---@field add64 fun(self: NetworkMessage, number: number): int
+---@field add8 fun(self: NetworkMessage, number: number): int
+---@field addByte fun(self: NetworkMessage, number: number): int
+---@field addDouble fun(self: NetworkMessage, number: number): int
+---@field addItem fun(self: NetworkMessage, ...: any): int
+---@field addPosition fun(self: NetworkMessage, position: Position): int
+---@field addString fun(self: NetworkMessage, string: string, function: string): int
+---@field addU16 fun(self: NetworkMessage, number: number): int
+---@field addU32 fun(self: NetworkMessage, number: number): int
+---@field addU64 fun(self: NetworkMessage, number: number): int
 ---@field delete fun(self: NetworkMessage): unknown
----@field getByte fun(self: NetworkMessage): int
----@field getPosition fun(self: NetworkMessage): int
----@field getString fun(self: NetworkMessage): int
----@field getU16 fun(self: NetworkMessage): int
----@field getU32 fun(self: NetworkMessage): int
----@field getU64 fun(self: NetworkMessage): int
----@field reset fun(self: NetworkMessage): int
----@field sendToPlayer fun(self: NetworkMessage): int
----@field skipBytes fun(self: NetworkMessage): int
+---@field getByte fun(self: NetworkMessage, ...: any): int
+---@field getPosition fun(self: NetworkMessage, ...: any): int
+---@field getString fun(self: NetworkMessage, ...: any): int
+---@field getU16 fun(self: NetworkMessage, ...: any): int
+---@field getU32 fun(self: NetworkMessage, ...: any): int
+---@field getU64 fun(self: NetworkMessage, ...: any): int
+---@field reset fun(self: NetworkMessage, ...: any): int
+---@field sendToPlayer fun(self: NetworkMessage, ...: any): int
+---@field skipBytes fun(self: NetworkMessage, number: number): int
 
 ---@class Npc
 ---@field __eq fun(self: Npc): unknown
----@field closeShopWindow fun(self: Npc): int
----@field follow fun(self: Npc): int
----@field getCurrency fun(self: Npc): int
----@field getDistanceTo fun(self: Npc): int
----@field getId fun(self: Npc): int
----@field getName fun(self: Npc): int
----@field getShopItem fun(self: Npc): int
----@field getSpeechBubble fun(self: Npc): int
----@field isInTalkRange fun(self: Npc): int
----@field isInteractingWithPlayer fun(self: Npc): int
----@field isMerchant fun(self: Npc): int
----@field isNpc fun(self: Npc): int
----@field isPlayerInteractingOnTopic fun(self: Npc): int
----@field move fun(self: Npc): int
----@field openShopWindow fun(self: Npc): int
----@field openShopWindowTable fun(self: Npc): int
----@field place fun(self: Npc): int
----@field removePlayerInteraction fun(self: Npc): int
----@field say fun(self: Npc): int
----@field sellItem fun(self: Npc): int
----@field setCurrency fun(self: Npc): int
----@field setMasterPos fun(self: Npc): int
----@field setName fun(self: Npc): int
----@field setPlayerInteraction fun(self: Npc): int
----@field setSpeechBubble fun(self: Npc): int
----@field turn fun(self: Npc): int
----@field turnToCreature fun(self: Npc): int
+---@field closeShopWindow fun(self: Npc, player: Player): int
+---@field follow fun(self: Npc, ...: any): int
+---@field getCurrency fun(self: Npc, ...: any): int
+---@field getDistanceTo fun(self: Npc, ...: any): int
+---@field getId fun(self: Npc, ...: any): int
+---@field getName fun(self: Npc, ...: any): int
+---@field getShopItem fun(self: Npc, ...: any): int
+---@field getSpeechBubble fun(self: Npc, ...: any): int
+---@field isInTalkRange fun(self: Npc, position: Position): int
+---@field isInteractingWithPlayer fun(self: Npc, creature: Creature): int
+---@field isMerchant fun(self: Npc, ...: any): int
+---@field isNpc fun(self: Npc, ...: any): int
+---@field isPlayerInteractingOnTopic fun(self: Npc, creature: Creature): int
+---@field move fun(self: Npc, arg2: number): int
+---@field openShopWindow fun(self: Npc, ...: any): int
+---@field openShopWindowTable fun(self: Npc, ...: any): int
+---@field place fun(self: Npc, ...: any): int
+---@field removePlayerInteraction fun(self: Npc, creature: Creature): int
+---@field say fun(self: Npc, n: Position): int
+---@field sellItem fun(self: Npc, ...: any): int
+---@field setCurrency fun(self: Npc, ...: any): int
+---@field setMasterPos fun(self: Npc, ...: any): int
+---@field setName fun(self: Npc, name: string): int
+---@field setPlayerInteraction fun(self: Npc, creature: Creature): int
+---@field setSpeechBubble fun(self: Npc, ...: any): int
+---@field turn fun(self: Npc, arg2: number): int
+---@field turnToCreature fun(self: Npc, creature: Creature): int
 
 ---@class NpcType
 ---@field __eq fun(self: NpcType): unknown
----@field addShopItem fun(self: NpcType): int
----@field addSound fun(self: NpcType): int
----@field addVoice fun(self: NpcType): int
----@field baseSpeed fun(self: NpcType): int
----@field canPushCreatures fun(self: NpcType): int
----@field canPushItems fun(self: NpcType): int
----@field canSpawn fun(self: NpcType): int
----@field currency fun(self: NpcType): int
----@field eventType fun(self: NpcType): int
----@field floorChange fun(self: NpcType): int
----@field getCreatureEvents fun(self: NpcType): int
----@field getSounds fun(self: NpcType): int
----@field getVoices fun(self: NpcType): int
----@field health fun(self: NpcType): int
----@field isPushable fun(self: NpcType): int
----@field light fun(self: NpcType): int
----@field maxHealth fun(self: NpcType): int
----@field name fun(self: NpcType): int32_t
----@field nameDescription fun(self: NpcType): int
----@field onAppear fun(self: NpcType): int
----@field onBuyItem fun(self: NpcType): int
----@field onCheckItem fun(self: NpcType): int
----@field onCloseChannel fun(self: NpcType): int
----@field onDisappear fun(self: NpcType): int
----@field onMove fun(self: NpcType): int
----@field onSay fun(self: NpcType): int
----@field onSellItem fun(self: NpcType): int
----@field onThink fun(self: NpcType): int
----@field outfit fun(self: NpcType): int
----@field registerEvent fun(self: NpcType): int
----@field respawnTypeIsUnderground fun(self: NpcType): int
----@field respawnTypePeriod fun(self: NpcType): int
----@field soundChance fun(self: NpcType): int
----@field soundSpeedTicks fun(self: NpcType): int
----@field speechBubble fun(self: NpcType): int
----@field walkInterval fun(self: NpcType): int
----@field walkRadius fun(self: NpcType): int
----@field yellChance fun(self: NpcType): int
----@field yellSpeedTicks fun(self: NpcType): int
+---@field addShopItem fun(self: NpcType, ...: any): int
+---@field addSound fun(self: NpcType, ...: any): int
+---@field addVoice fun(self: NpcType, t: string, s: number, e: number, t: boolean): int
+---@field baseSpeed fun(self: NpcType, ...: any): int
+---@field canPushCreatures fun(self: NpcType, ...: any): int
+---@field canPushItems fun(self: NpcType, ...: any): int
+---@field canSpawn fun(self: NpcType, position: Position): int
+---@field currency fun(self: NpcType, ...: any): int
+---@field eventType fun(self: NpcType, e: number): int
+---@field floorChange fun(self: NpcType, ...: any): int
+---@field getCreatureEvents fun(self: NpcType, ...: any): int
+---@field getSounds fun(self: NpcType, ...: any): int
+---@field getVoices fun(self: NpcType, ...: any): int
+---@field health fun(self: NpcType, ...: any): int
+---@field isPushable fun(self: NpcType, ...: any): int
+---@field light fun(self: NpcType, ...: any): int
+---@field maxHealth fun(self: NpcType, ...: any): int
+---@field name fun(self: NpcType, ...: any): int32_t
+---@field nameDescription fun(self: NpcType, ...: any): int
+---@field onAppear fun(self: NpcType, ...: any): int
+---@field onBuyItem fun(self: NpcType, ...: any): int
+---@field onCheckItem fun(self: NpcType, ...: any): int
+---@field onCloseChannel fun(self: NpcType, ...: any): int
+---@field onDisappear fun(self: NpcType, ...: any): int
+---@field onMove fun(self: NpcType, ...: any): int
+---@field onSay fun(self: NpcType, ...: any): int
+---@field onSellItem fun(self: NpcType, ...: any): int
+---@field onThink fun(self: NpcType, ...: any): int
+---@field outfit fun(self: NpcType, ...: any): int
+---@field registerEvent fun(self: NpcType, arg2: string): int
+---@field respawnTypeIsUnderground fun(self: NpcType, ...: any): int
+---@field respawnTypePeriod fun(self: NpcType, ...: any): int
+---@field soundChance fun(self: NpcType, ...: any): int
+---@field soundSpeedTicks fun(self: NpcType, ...: any): int
+---@field speechBubble fun(self: NpcType, ...: any): int
+---@field walkInterval fun(self: NpcType, ...: any): int
+---@field walkRadius fun(self: NpcType, ...: any): int
+---@field yellChance fun(self: NpcType, ...: any): int
+---@field yellSpeedTicks fun(self: NpcType, ...: any): int
 
 ---@class Party
 ---@field __eq fun(self: Party): unknown
----@field addInvite fun(self: Party): int
----@field addMember fun(self: Party): int
----@field disband fun(self: Party): int
----@field getInviteeCount fun(self: Party): int
----@field getInvitees fun(self: Party): int
----@field getLeader fun(self: Party): int
----@field getMemberCount fun(self: Party): int
----@field getMembers fun(self: Party): int
----@field getUniqueVocationsCount fun(self: Party): int
----@field isSharedExperienceActive fun(self: Party): int
----@field isSharedExperienceEnabled fun(self: Party): int
----@field removeInvite fun(self: Party): int
----@field removeMember fun(self: Party): int
----@field setLeader fun(self: Party): int
----@field setSharedExperience fun(self: Party): int
----@field shareExperience fun(self: Party): int
+---@field addInvite fun(self: Party, player: Player): int
+---@field addMember fun(self: Party, player: Player): int
+---@field disband fun(self: Party, r: RawUserDataShared): int
+---@field getInviteeCount fun(self: Party, ...: any): int
+---@field getInvitees fun(self: Party, ...: any): int
+---@field getLeader fun(self: Party, ...: any): int
+---@field getMemberCount fun(self: Party, ...: any): int
+---@field getMembers fun(self: Party, ...: any): int
+---@field getUniqueVocationsCount fun(self: Party, ...: any): int
+---@field isSharedExperienceActive fun(self: Party, ...: any): int
+---@field isSharedExperienceEnabled fun(self: Party, ...: any): int
+---@field removeInvite fun(self: Party, player: Player): int
+---@field removeMember fun(self: Party, player: Player): int
+---@field setLeader fun(self: Party, player: Player): int
+---@field setSharedExperience fun(self: Party, active: boolean): int
+---@field shareExperience fun(self: Party, experience: number): int
 
 ---@class Player
 ---@field __eq fun(self: Player): unknown
----@field addAchievement fun(self: Player): int
----@field addAchievementPoints fun(self: Player): int
----@field addAnimusMastery fun(self: Player): int
----@field addBadge fun(self: Player): int
----@field addBestiaryKill fun(self: Player): int
----@field addBlessing fun(self: Player): int
----@field addBosstiaryKill fun(self: Player): int
----@field addCharmPoints fun(self: Player): int
----@field addCustomOutfit fun(self: Player): int
----@field addExperience fun(self: Player): int
----@field addFamiliar fun(self: Player): int
----@field addForgeDustLevel fun(self: Player): int
----@field addForgeDusts fun(self: Player): int
----@field addItem fun(self: Player): int
----@field addItemEx fun(self: Player): int
----@field addItemStash fun(self: Player): int
----@field addMana fun(self: Player): int
----@field addManaSpent fun(self: Player): int
----@field addMapMark fun(self: Player): int
----@field addMinorCharmEchoes fun(self: Player): int
----@field addMoney fun(self: Player): int
----@field addMount fun(self: Player): int
----@field addOfflineTrainingTime fun(self: Player): int
----@field addOfflineTrainingTries fun(self: Player): int
----@field addOutfit fun(self: Player): int
----@field addOutfitAddon fun(self: Player): int
----@field addPremiumDays fun(self: Player): int
----@field addPreyCards fun(self: Player): int
----@field addSkillTries fun(self: Player): int
----@field addSoul fun(self: Player): int
----@field addTaskHuntingPoints fun(self: Player): int
----@field addTibiaCoins fun(self: Player): int
----@field addTitle fun(self: Player): int
----@field addTransferableCoins fun(self: Player): int
----@field avatarTimer fun(self: Player): int
----@field canCast fun(self: Player): int
----@field canLearnSpell fun(self: Player): int
----@field canReceiveLoot fun(self: Player): int
----@field changeName fun(self: Player): int
----@field channelSay fun(self: Player): int
----@field charmExpansion fun(self: Player): int
----@field clearSpellCooldowns fun(self: Player): int
----@field closeForge fun(self: Player): int
----@field closeImbuementWindow fun(self: Player): int
----@field createTransactionSummary fun(self: Player): int
----@field forgetSpell fun(self: Player): int
----@field getAccountId fun(self: Player): int
----@field getAccountType fun(self: Player): int
----@field getAchievementPoints fun(self: Player): int
----@field getBankBalance fun(self: Player): int
----@field getBaseMagicLevel fun(self: Player): int
----@field getBaseMaxHealth fun(self: Player): int
----@field getBaseMaxMana fun(self: Player): int
----@field getBaseXpGain fun(self: Player): int
----@field getBlessingCount fun(self: Player): int
----@field getBossBonus fun(self: Player): int
----@field getBosstiaryKills fun(self: Player): int
----@field getBosstiaryLevel fun(self: Player): int
----@field getCapacity fun(self: Player): int
----@field getCharmChance fun(self: Player): int
----@field getCharmMonsterType fun(self: Player): int
----@field getCharmTier fun(self: Player): int
----@field getClient fun(self: Player): int
----@field getContainerById fun(self: Player): int
----@field getContainerId fun(self: Player): int
----@field getContainerIndex fun(self: Player): int
----@field getDeathPenalty fun(self: Player): int
----@field getDepotChest fun(self: Player): int
----@field getDepotLocker fun(self: Player): int
----@field getEffectiveSkillLevel fun(self: Player): int
----@field getExperience fun(self: Player): int
----@field getFaction fun(self: Player): int
----@field getFamiliarLooktype fun(self: Player): int
----@field getFightMode fun(self: Player): int
----@field getForgeCores fun(self: Player): int
----@field getForgeDustLevel fun(self: Player): int
----@field getForgeDusts fun(self: Player): int
----@field getForgeSlivers fun(self: Player): int
----@field getFreeBackpackSlots fun(self: Player): int
----@field getFreeCapacity fun(self: Player): int
----@field getGrindingXpBoost fun(self: Player): int
----@field getGroup fun(self: Player): int
----@field getGuid fun(self: Player): int
----@field getGuild fun(self: Player): int
----@field getGuildLevel fun(self: Player): int
----@field getGuildNick fun(self: Player): int
----@field getHazardSystemPoints fun(self: Player): int
----@field getHouse fun(self: Player): int
----@field getIdleTime fun(self: Player): int
----@field getInbox fun(self: Player): int
----@field getInstantSpells fun(self: Player): int
----@field getIp fun(self: Player): int
----@field getItemById fun(self: Player): int
----@field getItemCount fun(self: Player): int
----@field getKills fun(self: Player): int
----@field getLastLoginSaved fun(self: Player): int
----@field getLastLogout fun(self: Player): int
----@field getLevel fun(self: Player): int
----@field getLoyaltyBonus fun(self: Player): int
----@field getLoyaltyPoints fun(self: Player): int
----@field getLoyaltyTitle fun(self: Player): int
----@field getMagicLevel fun(self: Player): int
----@field getMagicShieldCapacityFlat fun(self: Player): int
----@field getMagicShieldCapacityPercent fun(self: Player): int
----@field getMana fun(self: Player): int
----@field getManaSpent fun(self: Player): int
----@field getMapShader fun(self: Player): int
----@field getMaxMana fun(self: Player): int
----@field getMaxSoul fun(self: Player): int
----@field getMoney fun(self: Player): int
----@field getName fun(self: Player): int
----@field getOfflineTrainingSkill fun(self: Player): int
----@field getOfflineTrainingTime fun(self: Player): int
----@field getParty fun(self: Player): int
----@field getPremiumDays fun(self: Player): int
----@field getPreyCards fun(self: Player): int
----@field getPreyExperiencePercentage fun(self: Player): int
----@field getPreyLootPercentage fun(self: Player): int
----@field getPronoun fun(self: Player): int
----@field getReward fun(self: Player): int
----@field getRewardList fun(self: Player): int
----@field getSex fun(self: Player): int
----@field getSkillLevel fun(self: Player): int
----@field getSkillPercent fun(self: Player): int
----@field getSkillTries fun(self: Player): int
----@field getSkullTime fun(self: Player): int
----@field getSlotBossId fun(self: Player): int
----@field getSlotItem fun(self: Player): int
----@field getSoul fun(self: Player): int
----@field getStamina fun(self: Player): int
----@field getStaminaXpBoost fun(self: Player): int
----@field getStashCount fun(self: Player): int
----@field getStashItemCount fun(self: Player): int
----@field getStorageValue fun(self: Player): int
----@field getStoreInbox fun(self: Player): int
----@field getTaskHuntingPoints fun(self: Player): int
----@field getTibiaCoins fun(self: Player): int
----@field getTitles fun(self: Player): int
----@field getTown fun(self: Player): int
----@field getTransferableCoins fun(self: Player): int
----@field getVipDays fun(self: Player): int
----@field getVipTime fun(self: Player): int
----@field getVocation fun(self: Player): int
----@field getVoucherXpBoost fun(self: Player): int
----@field getWheelSpellAdditionalArea fun(self: Player): int
----@field getWheelSpellAdditionalDuration fun(self: Player): int
----@field getWheelSpellAdditionalTarget fun(self: Player): int
----@field getXpBoostPercent fun(self: Player): int
----@field getXpBoostTime fun(self: Player): int
----@field hasAchievement fun(self: Player): int
----@field hasAnimusMastery fun(self: Player): int
----@field hasBlessing fun(self: Player): int
----@field hasChaseMode fun(self: Player): int
----@field hasFamiliar fun(self: Player): int
----@field hasGroupFlag fun(self: Player): int
----@field hasLearnedSpell fun(self: Player): int
----@field hasMount fun(self: Player): int
----@field hasOutfit fun(self: Player): int
----@field hasSecureMode fun(self: Player): int
----@field instantSkillWOD fun(self: Player): int
----@field isMonsterBestiaryUnlocked fun(self: Player): int
----@field isMonsterPrey fun(self: Player): int
----@field isOffline fun(self: Player): int
----@field isPlayer fun(self: Player): int
----@field isPromoted fun(self: Player): int
----@field isPzLocked fun(self: Player): int
----@field isTraining fun(self: Player): int
----@field isUIExhausted fun(self: Player): int
----@field isVip fun(self: Player): int
----@field kv fun(self: Player): int
----@field learnSpell fun(self: Player): int
----@field onThinkWheelOfDestiny fun(self: Player): int
----@field openChannel fun(self: Player): int
----@field openForge fun(self: Player): int
----@field openImbuementWindow fun(self: Player): int
----@field openMarket fun(self: Player): int
----@field openStash fun(self: Player): int
----@field popupFYI fun(self: Player): int
----@field preyThirdSlot fun(self: Player): int
----@field reloadData fun(self: Player): int
----@field removeAchievement fun(self: Player): int
----@field removeAchievementPoints fun(self: Player): int
----@field removeAnimusMastery fun(self: Player): int
----@field removeBlessing fun(self: Player): int
----@field removeCustomOutfit fun(self: Player): int
----@field removeExperience fun(self: Player): int
----@field removeFamiliar fun(self: Player): int
----@field removeForgeDustLevel fun(self: Player): int
----@field removeForgeDusts fun(self: Player): int
----@field removeGroupFlag fun(self: Player): int
----@field removeIconBakragore fun(self: Player): int
----@field removeItem fun(self: Player): int
----@field removeMoney fun(self: Player): int
----@field removeMount fun(self: Player): int
----@field removeOfflineTrainingTime fun(self: Player): int
----@field removeOutfit fun(self: Player): int
----@field removeOutfitAddon fun(self: Player): int
----@field removePremiumDays fun(self: Player): int
----@field removePreyStamina fun(self: Player): int
----@field removeReward fun(self: Player): int
----@field removeStashItem fun(self: Player): int
----@field removeTaskHuntingPoints fun(self: Player): int
----@field removeTibiaCoins fun(self: Player): int
----@field removeTransferableCoins fun(self: Player): int
----@field resetCharmsBestiary fun(self: Player): int
----@field resetOldCharms fun(self: Player): int
----@field revelationStageWOD fun(self: Player): int
----@field save fun(self: Player): int
----@field sendBlessStatus fun(self: Player): int
----@field sendBosstiaryCooldownTimer fun(self: Player): int
----@field sendChannelMessage fun(self: Player): int
----@field sendContainer fun(self: Player): int
----@field sendCreatureAppear fun(self: Player): int
----@field sendDoubleSoundEffect fun(self: Player): int
----@field sendHouseWindow fun(self: Player): int
----@field sendIconBakragore fun(self: Player): int
----@field sendInventory fun(self: Player): int
----@field sendLootStats fun(self: Player): int
----@field sendOutfitWindow fun(self: Player): int
----@field sendPrivateMessage fun(self: Player): int
----@field sendSingleSoundEffect fun(self: Player): int
----@field sendSpellCooldown fun(self: Player): int
----@field sendSpellGroupCooldown fun(self: Player): int
----@field sendTextMessage fun(self: Player): int
----@field sendTutorial fun(self: Player): int
----@field sendUpdateContainer fun(self: Player): int
----@field setAccountType fun(self: Player): int
----@field setBankBalance fun(self: Player): int
----@field setBaseXpGain fun(self: Player): int
----@field setBossPoints fun(self: Player): int
----@field setCapacity fun(self: Player): int
----@field setCurrentTitle fun(self: Player): int
----@field setDailyReward fun(self: Player): int
----@field setEditHouse fun(self: Player): int
----@field setFaction fun(self: Player): int
----@field setFamiliarLooktype fun(self: Player): int
----@field setForgeDusts fun(self: Player): int
----@field setGhostMode fun(self: Player): int
----@field setGrindingXpBoost fun(self: Player): int
----@field setGroup fun(self: Player): int
----@field setGroupFlag fun(self: Player): int
----@field setGuild fun(self: Player): int
----@field setGuildLevel fun(self: Player): int
----@field setGuildNick fun(self: Player): int
----@field setHazardSystemPoints fun(self: Player): int
----@field setKills fun(self: Player): int
----@field setLevel fun(self: Player): int
----@field setLoyaltyBonus fun(self: Player): int
----@field setLoyaltyTitle fun(self: Player): int
----@field setMagicLevel fun(self: Player): int
----@field setMapShader fun(self: Player): int
----@field setMaxMana fun(self: Player): int
----@field setOfflineTrainingSkill fun(self: Player): int
----@field setPronoun fun(self: Player): int
----@field setRemoveBossTime fun(self: Player): int
----@field setSex fun(self: Player): int
----@field setSkillLevel fun(self: Player): int
----@field setSkullTime fun(self: Player): int
----@field setSpecialContainersAvailable fun(self: Player): int
----@field setStamina fun(self: Player): int
----@field setStaminaXpBoost fun(self: Player): int
----@field setStorageValue fun(self: Player): int
----@field setTown fun(self: Player): int
----@field setTraining fun(self: Player): int
----@field setVocation fun(self: Player): int
----@field setVoucherXpBoost fun(self: Player): int
----@field setXpBoostPercent fun(self: Player): int
----@field setXpBoostTime fun(self: Player): int
----@field showTextDialog fun(self: Player): int
----@field takeScreenshot fun(self: Player): int
----@field taskHuntingThirdSlot fun(self: Player): int
----@field unlockAllCharmRunes fun(self: Player): int
----@field updateConcoction fun(self: Player): int
----@field updateKillTracker fun(self: Player): int
----@field updateSupplyTracker fun(self: Player): int
----@field updateUIExhausted fun(self: Player): int
----@field upgradeSpellsWOD fun(self: Player): int
----@field wheelUnlockScroll fun(self: Player): int
+---@field addAchievement fun(self: Player, ...: any): int
+---@field addAchievementPoints fun(self: Player, ...: any): int
+---@field addAnimusMastery fun(self: Player, ...: any): int
+---@field addBadge fun(self: Player, ...: any): int
+---@field addBestiaryKill fun(self: Player, arg2: string): int
+---@field addBlessing fun(self: Player, ...: any): int
+---@field addBosstiaryKill fun(self: Player, arg2: string): int
+---@field addCharmPoints fun(self: Player, charms: number): int
+---@field addCustomOutfit fun(self: Player, ...: any): int
+---@field addExperience fun(self: Player, experience: number): int
+---@field addFamiliar fun(self: Player, arg2: number): int
+---@field addForgeDustLevel fun(self: Player, ...: any): int
+---@field addForgeDusts fun(self: Player, ...: any): int
+---@field addItem fun(self: Player, ...: any): int
+---@field addItemEx fun(self: Player, ...: any): int
+---@field addItemStash fun(self: Player, ...: any): int
+---@field addMana fun(self: Player, ...: any): int
+---@field addManaSpent fun(self: Player, arg2: number): int
+---@field addMapMark fun(self: Player, position: Position, type: number, description: string): int
+---@field addMinorCharmEchoes fun(self: Player, ...: any): int
+---@field addMoney fun(self: Player, money: number): int
+---@field addMount fun(self: Player, ...: any): int
+---@field addOfflineTrainingTime fun(self: Player, time: number): int
+---@field addOfflineTrainingTries fun(self: Player, skillType: number, tries: number): int
+---@field addOutfit fun(self: Player, arg2: number): int
+---@field addOutfitAddon fun(self: Player, lookType: number, addon: number): int
+---@field addPremiumDays fun(self: Player, ...: any): int
+---@field addPreyCards fun(self: Player, ...: any): int
+---@field addSkillTries fun(self: Player, skillType: number, tries: number): int
+---@field addSoul fun(self: Player, soulChange: number): int
+---@field addTaskHuntingPoints fun(self: Player, points: number): int
+---@field addTibiaCoins fun(self: Player, ...: any): int
+---@field addTitle fun(self: Player, ...: any): int
+---@field addTransferableCoins fun(self: Player, ...: any): int
+---@field avatarTimer fun(self: Player, ...: any): int
+---@field canCast fun(self: Player, ...: any): int
+---@field canLearnSpell fun(self: Player, ...: any): int
+---@field canReceiveLoot fun(self: Player, ...: any): int
+---@field changeName fun(self: Player, ...: any): int
+---@field channelSay fun(self: Player, ...: any): int
+---@field charmExpansion fun(self: Player, ...: any): int
+---@field clearSpellCooldowns fun(self: Player, ...: any): int
+---@field closeForge fun(self: Player, ...: any): int
+---@field closeImbuementWindow fun(self: Player, ...: any): int
+---@field createTransactionSummary fun(self: Player, ...: any): int
+---@field forgetSpell fun(self: Player, spellName: string): int
+---@field getAccountId fun(self: Player, ...: any): int
+---@field getAccountType fun(self: Player, ...: any): int
+---@field getAchievementPoints fun(self: Player, ...: any): int
+---@field getBankBalance fun(self: Player, ...: any): int
+---@field getBaseMagicLevel fun(self: Player, ...: any): int
+---@field getBaseMaxHealth fun(self: Player, ...: any): int
+---@field getBaseMaxMana fun(self: Player, ...: any): int
+---@field getBaseXpGain fun(self: Player, ...: any): int
+---@field getBlessingCount fun(self: Player, index: number): int
+---@field getBossBonus fun(self: Player, ...: any): int
+---@field getBosstiaryKills fun(self: Player, arg2: string): int
+---@field getBosstiaryLevel fun(self: Player, arg2: string): int
+---@field getCapacity fun(self: Player, ...: any): int
+---@field getCharmChance fun(self: Player, ...: any): int
+---@field getCharmMonsterType fun(self: Player, charmid: number): int
+---@field getCharmTier fun(self: Player, ...: any): int
+---@field getClient fun(self: Player, ...: any): int
+---@field getContainerById fun(self: Player, ...: any): int
+---@field getContainerId fun(self: Player, ...: any): int
+---@field getContainerIndex fun(self: Player, arg2: number): int
+---@field getDeathPenalty fun(self: Player, ...: any): int
+---@field getDepotChest fun(self: Player, ...: any): int
+---@field getDepotLocker fun(self: Player, ...: any): int
+---@field getEffectiveSkillLevel fun(self: Player, skillType: number): int
+---@field getExperience fun(self: Player, ...: any): int
+---@field getFaction fun(self: Player, ...: any): int
+---@field getFamiliarLooktype fun(self: Player, ...: any): int
+---@field getFightMode fun(self: Player, ...: any): int
+---@field getForgeCores fun(self: Player, ...: any): int
+---@field getForgeDustLevel fun(self: Player, ...: any): int
+---@field getForgeDusts fun(self: Player, ...: any): int
+---@field getForgeSlivers fun(self: Player, ...: any): int
+---@field getFreeBackpackSlots fun(self: Player, ...: any): int
+---@field getFreeCapacity fun(self: Player, ...: any): int
+---@field getGrindingXpBoost fun(self: Player, ...: any): int
+---@field getGroup fun(self: Player, ...: any): int
+---@field getGuid fun(self: Player, ...: any): int
+---@field getGuild fun(self: Player, ...: any): int
+---@field getGuildLevel fun(self: Player, ...: any): int
+---@field getGuildNick fun(self: Player, ...: any): int
+---@field getHazardSystemPoints fun(self: Player, ...: any): int
+---@field getHouse fun(self: Player, ...: any): int
+---@field getIdleTime fun(self: Player, ...: any): int
+---@field getInbox fun(self: Player, ...: any): int
+---@field getInstantSpells fun(self: Player, ...: any): int
+---@field getIp fun(self: Player, ...: any): int
+---@field getItemById fun(self: Player, ...: any): int
+---@field getItemCount fun(self: Player, ...: any): int
+---@field getKills fun(self: Player, ...: any): int
+---@field getLastLoginSaved fun(self: Player, ...: any): int
+---@field getLastLogout fun(self: Player, ...: any): int
+---@field getLevel fun(self: Player, ...: any): int
+---@field getLoyaltyBonus fun(self: Player, ...: any): int
+---@field getLoyaltyPoints fun(self: Player, ...: any): int
+---@field getLoyaltyTitle fun(self: Player, ...: any): int
+---@field getMagicLevel fun(self: Player, ...: any): int
+---@field getMagicShieldCapacityFlat fun(self: Player, ...: any): int
+---@field getMagicShieldCapacityPercent fun(self: Player, ...: any): int
+---@field getMana fun(self: Player, ...: any): int
+---@field getManaSpent fun(self: Player, ...: any): int
+---@field getMapShader fun(self: Player, ...: any): int
+---@field getMaxMana fun(self: Player, ...: any): int
+---@field getMaxSoul fun(self: Player, ...: any): int
+---@field getMoney fun(self: Player, ...: any): int
+---@field getName fun(self: Player, ...: any): int
+---@field getOfflineTrainingSkill fun(self: Player, ...: any): int
+---@field getOfflineTrainingTime fun(self: Player, ...: any): int
+---@field getParty fun(self: Player, ...: any): int
+---@field getPremiumDays fun(self: Player, ...: any): int
+---@field getPreyCards fun(self: Player, ...: any): int
+---@field getPreyExperiencePercentage fun(self: Player, ...: any): int
+---@field getPreyLootPercentage fun(self: Player, ...: any): int
+---@field getPronoun fun(self: Player, ...: any): int
+---@field getReward fun(self: Player, ...: any): int
+---@field getRewardList fun(self: Player, ...: any): int
+---@field getSex fun(self: Player, ...: any): int
+---@field getSkillLevel fun(self: Player, skillType: number): int
+---@field getSkillPercent fun(self: Player, skillType: number): int
+---@field getSkillTries fun(self: Player, skillType: number): int
+---@field getSkullTime fun(self: Player, ...: any): int
+---@field getSlotBossId fun(self: Player, ...: any): int
+---@field getSlotItem fun(self: Player, ...: any): int
+---@field getSoul fun(self: Player, ...: any): int
+---@field getStamina fun(self: Player, ...: any): int
+---@field getStaminaXpBoost fun(self: Player, ...: any): int
+---@field getStashCount fun(self: Player, ...: any): int
+---@field getStashItemCount fun(self: Player, ...: any): int
+---@field getStorageValue fun(self: Player, ...: any): int
+---@field getStoreInbox fun(self: Player, ...: any): int
+---@field getTaskHuntingPoints fun(self: Player, ...: any): int
+---@field getTibiaCoins fun(self: Player, ...: any): int
+---@field getTitles fun(self: Player, ...: any): int
+---@field getTown fun(self: Player, ...: any): int
+---@field getTransferableCoins fun(self: Player, ...: any): int
+---@field getVipDays fun(self: Player, ...: any): int
+---@field getVipTime fun(self: Player, ...: any): int
+---@field getVocation fun(self: Player, ...: any): int
+---@field getVoucherXpBoost fun(self: Player, ...: any): int
+---@field getWheelSpellAdditionalArea fun(self: Player, ...: any): int
+---@field getWheelSpellAdditionalDuration fun(self: Player, ...: any): int
+---@field getWheelSpellAdditionalTarget fun(self: Player, ...: any): int
+---@field getXpBoostPercent fun(self: Player, ...: any): int
+---@field getXpBoostTime fun(self: Player, ...: any): int
+---@field hasAchievement fun(self: Player, ...: any): int
+---@field hasAnimusMastery fun(self: Player, ...: any): int
+---@field hasBlessing fun(self: Player, blessing: number): int
+---@field hasChaseMode fun(self: Player, ...: any): int
+---@field hasFamiliar fun(self: Player, lookType: number): int
+---@field hasGroupFlag fun(self: Player, ...: any): int
+---@field hasLearnedSpell fun(self: Player, spellName: string): int
+---@field hasMount fun(self: Player, ...: any): int
+---@field hasOutfit fun(self: Player, lookType: number): int
+---@field hasSecureMode fun(self: Player, ...: any): int
+---@field instantSkillWOD fun(self: Player, ...: any): int
+---@field isMonsterBestiaryUnlocked fun(self: Player, ...: any): int
+---@field isMonsterPrey fun(self: Player, ...: any): int
+---@field isOffline fun(self: Player, ...: any): int
+---@field isPlayer fun(self: Player, ...: any): int
+---@field isPromoted fun(self: Player, ...: any): int
+---@field isPzLocked fun(self: Player, ...: any): int
+---@field isTraining fun(self: Player, ...: any): int
+---@field isUIExhausted fun(self: Player, ...: any): int
+---@field isVip fun(self: Player, ...: any): int
+---@field kv fun(self: Player, ...: any): int
+---@field learnSpell fun(self: Player, spellName: string): int
+---@field onThinkWheelOfDestiny fun(self: Player, ...: any): int
+---@field openChannel fun(self: Player, channelId: number): int
+---@field openForge fun(self: Player, ...: any): int
+---@field openImbuementWindow fun(self: Player, ...: any): int
+---@field openMarket fun(self: Player, ...: any): int
+---@field openStash fun(self: Player, ...: any): int
+---@field popupFYI fun(self: Player, message: string): int
+---@field preyThirdSlot fun(self: Player, ...: any): int
+---@field reloadData fun(self: Player, ...: any): int
+---@field removeAchievement fun(self: Player, ...: any): int
+---@field removeAchievementPoints fun(self: Player, ...: any): int
+---@field removeAnimusMastery fun(self: Player, ...: any): int
+---@field removeBlessing fun(self: Player, ...: any): int
+---@field removeCustomOutfit fun(self: Player, ...: any): int
+---@field removeExperience fun(self: Player, experience: number): int
+---@field removeFamiliar fun(self: Player, lookType: number): int
+---@field removeForgeDustLevel fun(self: Player, ...: any): int
+---@field removeForgeDusts fun(self: Player, ...: any): int
+---@field removeGroupFlag fun(self: Player, ...: any): int
+---@field removeIconBakragore fun(self: Player, ...: any): int
+---@field removeItem fun(self: Player, ...: any): int
+---@field removeMoney fun(self: Player, money: number): int
+---@field removeMount fun(self: Player, ...: any): int
+---@field removeOfflineTrainingTime fun(self: Player, time: number): int
+---@field removeOutfit fun(self: Player, lookType: number): int
+---@field removeOutfitAddon fun(self: Player, lookType: number, addon: number): int
+---@field removePremiumDays fun(self: Player, ...: any): int
+---@field removePreyStamina fun(self: Player, ...: any): int
+---@field removeReward fun(self: Player, ...: any): int
+---@field removeStashItem fun(self: Player, ...: any): int
+---@field removeTaskHuntingPoints fun(self: Player, ...: any): int
+---@field removeTibiaCoins fun(self: Player, ...: any): int
+---@field removeTransferableCoins fun(self: Player, ...: any): int
+---@field resetCharmsBestiary fun(self: Player, ...: any): int
+---@field resetOldCharms fun(self: Player, ...: any): int
+---@field revelationStageWOD fun(self: Player, ...: any): int
+---@field save fun(self: Player, ...: any): int
+---@field sendBlessStatus fun(self: Player, ...: any): int
+---@field sendBosstiaryCooldownTimer fun(self: Player, ...: any): int
+---@field sendChannelMessage fun(self: Player, ...: any): int
+---@field sendContainer fun(self: Player, ...: any): int
+---@field sendCreatureAppear fun(self: Player, ...: any): int
+---@field sendDoubleSoundEffect fun(self: Player, ...: any): int
+---@field sendHouseWindow fun(self: Player, ...: any): int
+---@field sendIconBakragore fun(self: Player, ...: any): int
+---@field sendInventory fun(self: Player, ...: any): int
+---@field sendLootStats fun(self: Player, ...: any): int
+---@field sendOutfitWindow fun(self: Player, ...: any): int
+---@field sendPrivateMessage fun(self: Player, ...: any): int
+---@field sendSingleSoundEffect fun(self: Player, ...: any): int
+---@field sendSpellCooldown fun(self: Player, ...: any): int
+---@field sendSpellGroupCooldown fun(self: Player, ...: any): int
+---@field sendTextMessage fun(self: Player, ...: any): int
+---@field sendTutorial fun(self: Player, tutorialId: number): int
+---@field sendUpdateContainer fun(self: Player, ...: any): int
+---@field setAccountType fun(self: Player, ...: any): int
+---@field setBankBalance fun(self: Player, ...: any): int
+---@field setBaseXpGain fun(self: Player, arg2: number): int
+---@field setBossPoints fun(self: Player, ...: any): int
+---@field setCapacity fun(self: Player, y: number): int
+---@field setCurrentTitle fun(self: Player, ...: any): int
+---@field setDailyReward fun(self: Player, arg2: number): int
+---@field setEditHouse fun(self: Player, ...: any): int
+---@field setFaction fun(self: Player, ...: any): int
+---@field setFamiliarLooktype fun(self: Player, arg2: number): int
+---@field setForgeDusts fun(self: Player, ...: any): int
+---@field setGhostMode fun(self: Player, ...: any): int
+---@field setGrindingXpBoost fun(self: Player, arg2: number): int
+---@field setGroup fun(self: Player, ...: any): int
+---@field setGroupFlag fun(self: Player, ...: any): int
+---@field setGuild fun(self: Player, ...: any): int
+---@field setGuildLevel fun(self: Player, level: number): int
+---@field setGuildNick fun(self: Player, nick: string): int
+---@field setHazardSystemPoints fun(self: Player, ...: any): int
+---@field setKills fun(self: Player, ...: any): int
+---@field setLevel fun(self: Player, level: number): int
+---@field setLoyaltyBonus fun(self: Player, ...: any): int
+---@field setLoyaltyTitle fun(self: Player, ...: any): int
+---@field setMagicLevel fun(self: Player, level: number, manaSpent: number): int
+---@field setMapShader fun(self: Player, ...: any): int
+---@field setMaxMana fun(self: Player, player: Player): int
+---@field setOfflineTrainingSkill fun(self: Player, skillId: number): int
+---@field setPronoun fun(self: Player, newPronoun: number): int
+---@field setRemoveBossTime fun(self: Player, ...: any): int
+---@field setSex fun(self: Player, newSex: number): int
+---@field setSkillLevel fun(self: Player, skillType: number, level: number, tries: number): int
+---@field setSkullTime fun(self: Player, arg2: number): int
+---@field setSpecialContainersAvailable fun(self: Player, ...: any): int
+---@field setStamina fun(self: Player, stamina: number): int
+---@field setStaminaXpBoost fun(self: Player, arg2: number): int
+---@field setStorageValue fun(self: Player, key: number, value: number): int
+---@field setTown fun(self: Player, ...: any): int
+---@field setTraining fun(self: Player, ...: any): int
+---@field setVocation fun(self: Player, ...: any): int
+---@field setVoucherXpBoost fun(self: Player, arg2: number): int
+---@field setXpBoostPercent fun(self: Player, percent: number): int
+---@field setXpBoostTime fun(self: Player, timeLeft: number): int
+---@field showTextDialog fun(self: Player, ...: any): int
+---@field takeScreenshot fun(self: Player, ...: any): int
+---@field taskHuntingThirdSlot fun(self: Player, ...: any): int
+---@field unlockAllCharmRunes fun(self: Player, ...: any): int
+---@field updateConcoction fun(self: Player, ...: any): int
+---@field updateKillTracker fun(self: Player, ...: any): int
+---@field updateSupplyTracker fun(self: Player, ...: any): int
+---@field updateUIExhausted fun(self: Player, ...: any): int
+---@field upgradeSpellsWOD fun(self: Player, ...: any): int
+---@field wheelUnlockScroll fun(self: Player, ...: any): int
 
 ---@class Position
----@field __add fun(self: Position): int
----@field __eq fun(self: Position): int
----@field __sub fun(self: Position): int
----@field getDistance fun(self: Position): int
----@field getPathTo fun(self: Position): int
----@field getTile fun(self: Position): int
----@field getZones fun(self: Position): int
----@field isSightClear fun(self: Position): int
----@field removeMagicEffect fun(self: Position): int
----@field sendDistanceEffect fun(self: Position): int
----@field sendDoubleSoundEffect fun(self: Position): int
----@field sendMagicEffect fun(self: Position): int
----@field sendSingleSoundEffect fun(self: Position): int
----@field toString fun(self: Position): int
+---@field __add fun(self: Position, ...: any): int
+---@field __eq fun(self: Position, position: Position, positionEx: Position): int
+---@field __sub fun(self: Position, ...: any): int
+---@field getDistance fun(self: Position, position: Position, positionEx: Position): int
+---@field getPathTo fun(self: Position, pos: Position, position: Position): int
+---@field getTile fun(self: Position, position: Position): int
+---@field getZones fun(self: Position, position: Position): int
+---@field isSightClear fun(self: Position, position: Position, positionEx: Position): int
+---@field removeMagicEffect fun(self: Position, player?: Player): int
+---@field sendDistanceEffect fun(self: Position, player?: Player): int
+---@field sendDoubleSoundEffect fun(self: Position, position: Position, mainSoundEffect: number, secondarySoundEffect: number, actor: Creature): int
+---@field sendMagicEffect fun(self: Position, player?: Player): int
+---@field sendSingleSoundEffect fun(self: Position, position: Position, soundEffect: number, actor: Creature): int
+---@field toString fun(self: Position, position: Position): int
 
 ---@class Result
----@field free fun(self: Result): int
----@field getNumber fun(self: Result): int
----@field getStream fun(self: Result): int
----@field getString fun(self: Result): int
----@field next fun(self: Result): int
+---@field free fun(self: Result, ...: any): int
+---@field getNumber fun(self: Result, arg1: number): int
+---@field getStream fun(self: Result, arg1: number): int
+---@field getString fun(self: Result, arg1: number): int
+---@field next fun(self: Result, ...: any): int
 
 ---@class Shop
----@field addChildShop fun(self: Shop): int
----@field setBuyPrice fun(self: Shop): int
----@field setCount fun(self: Shop): int
----@field setId fun(self: Shop): int
----@field setIdFromName fun(self: Shop): int
----@field setNameItem fun(self: Shop): int
----@field setSellPrice fun(self: Shop): int
----@field setStorageKey fun(self: Shop): int
----@field setStorageValue fun(self: Shop): int
+---@field addChildShop fun(self: Shop, ...: any): int
+---@field setBuyPrice fun(self: Shop, e: number): int
+---@field setCount fun(self: Shop, e: number): int
+---@field setId fun(self: Shop, d: number): int
+---@field setIdFromName fun(self: Shop, name: string): int
+---@field setNameItem fun(self: Shop, e: string): int
+---@field setSellPrice fun(self: Shop, e: number): int
+---@field setStorageKey fun(self: Shop, y: number): int
+---@field setStorageValue fun(self: Shop, e: number): int
 
 ---@class Spdlog
----@field debug fun(self: Spdlog): int
----@field error fun(self: Spdlog): int
----@field info fun(self: Spdlog): int
----@field warn fun(self: Spdlog): int
+---@field debug fun(self: Spdlog, arg1: string): int
+---@field error fun(self: Spdlog, arg1: string): int
+---@field info fun(self: Spdlog, arg1: string): int
+---@field warn fun(self: Spdlog, arg1: string): int
 
 ---@class Spell
 ---@field __eq fun(self: Spell): unknown
----@field allowFarUse fun(self: Spell): int
----@field allowOnSelf fun(self: Spell): int
----@field blockWalls fun(self: Spell): int
----@field castSound fun(self: Spell): int
----@field charges fun(self: Spell): int
----@field checkFloor fun(self: Spell): int
----@field cooldown fun(self: Spell): int
----@field group fun(self: Spell): int
----@field groupCooldown fun(self: Spell): int
----@field hasParams fun(self: Spell): int
----@field hasPlayerNameParam fun(self: Spell): int
----@field id fun(self: Spell): int
----@field impactSound fun(self: Spell): int
----@field isAggressive fun(self: Spell): int
----@field isBlocking fun(self: Spell): int
----@field isBlockingWalls fun(self: Spell): int
----@field isEnabled fun(self: Spell): int
----@field isPremium fun(self: Spell): int
----@field isSelfTarget fun(self: Spell): int
----@field level fun(self: Spell): int
----@field magicLevel fun(self: Spell): int
----@field mana fun(self: Spell): int
----@field manaPercent fun(self: Spell): int
----@field name fun(self: Spell): int
----@field needCasterTargetOrDirection fun(self: Spell): int
----@field needDirection fun(self: Spell): int
----@field needLearn fun(self: Spell): int
----@field needTarget fun(self: Spell): int
----@field needWeapon fun(self: Spell): int
----@field onCastSpell fun(self: Spell): int
----@field range fun(self: Spell): int
----@field register fun(self: Spell): int
----@field runeId fun(self: Spell): int
----@field setPzLocked fun(self: Spell): int
----@field soul fun(self: Spell): int
----@field vocation fun(self: Spell): int
----@field words fun(self: Spell): int
+---@field allowFarUse fun(self: Spell, ...: any): int
+---@field allowOnSelf fun(self: Spell, ...: any): int
+---@field blockWalls fun(self: Spell, ...: any): int
+---@field castSound fun(self: Spell, ...: any): int
+---@field charges fun(self: Spell, ...: any): int
+---@field checkFloor fun(self: Spell, ...: any): int
+---@field cooldown fun(self: Spell, ...: any): int
+---@field group fun(self: Spell, ...: any): int
+---@field groupCooldown fun(self: Spell, ...: any): int
+---@field hasParams fun(self: Spell, ...: any): int
+---@field hasPlayerNameParam fun(self: Spell, ...: any): int
+---@field id fun(self: Spell, ...: any): int
+---@field impactSound fun(self: Spell, ...: any): int
+---@field isAggressive fun(self: Spell, ...: any): int
+---@field isBlocking fun(self: Spell, ...: any): int
+---@field isBlockingWalls fun(self: Spell, ...: any): int
+---@field isEnabled fun(self: Spell, ...: any): int
+---@field isPremium fun(self: Spell, ...: any): int
+---@field isSelfTarget fun(self: Spell, ...: any): int
+---@field level fun(self: Spell, ...: any): int
+---@field magicLevel fun(self: Spell, ...: any): int
+---@field mana fun(self: Spell, ...: any): int
+---@field manaPercent fun(self: Spell, ...: any): int
+---@field name fun(self: Spell, ...: any): int
+---@field needCasterTargetOrDirection fun(self: Spell, ...: any): int
+---@field needDirection fun(self: Spell, ...: any): int
+---@field needLearn fun(self: Spell, ...: any): int
+---@field needTarget fun(self: Spell, ...: any): int
+---@field needWeapon fun(self: Spell, ...: any): int
+---@field onCastSpell fun(self: Spell, ...: any): int
+---@field range fun(self: Spell, ...: any): int
+---@field register fun(self: Spell, ...: any): int
+---@field runeId fun(self: Spell, ...: any): int
+---@field setPzLocked fun(self: Spell, ...: any): int
+---@field soul fun(self: Spell, ...: any): int
+---@field vocation fun(self: Spell, ...: any): int
+---@field words fun(self: Spell, ...: any): int
 
 ---@class TalkAction
----@field getDescription fun(self: TalkAction): int
----@field getGroupType fun(self: TalkAction): int
----@field getName fun(self: TalkAction): int
----@field groupType fun(self: TalkAction): int
----@field onSay fun(self: TalkAction): int
----@field register fun(self: TalkAction): int
----@field separator fun(self: TalkAction): int
----@field setDescription fun(self: TalkAction): int
+---@field getDescription fun(self: TalkAction, ...: any): int
+---@field getGroupType fun(self: TalkAction, ...: any): int
+---@field getName fun(self: TalkAction, ...: any): int
+---@field groupType fun(self: TalkAction, ...: any): int
+---@field onSay fun(self: TalkAction, ...: any): int
+---@field register fun(self: TalkAction, ...: any): int
+---@field separator fun(self: TalkAction, ...: any): int
+---@field setDescription fun(self: TalkAction, ...: any): int
 
 ---@class Teleport
 ---@field __eq fun(self: Teleport): unknown
----@field getDestination fun(self: Teleport): int
----@field setDestination fun(self: Teleport): int
+---@field getDestination fun(self: Teleport, ...: any): int
+---@field setDestination fun(self: Teleport, arg2: Position): int
 
 ---@class Tile
 ---@field __eq fun(self: Tile): unknown
----@field addItem fun(self: Tile): int
----@field addItemEx fun(self: Tile): int
----@field getBottomCreature fun(self: Tile): int
----@field getBottomVisibleCreature fun(self: Tile): int
----@field getCreatureCount fun(self: Tile): int
----@field getCreatures fun(self: Tile): int
----@field getDownItemCount fun(self: Tile): int
----@field getFieldItem fun(self: Tile): int
----@field getGround fun(self: Tile): int
----@field getHouse fun(self: Tile): int
----@field getItemById fun(self: Tile): int
----@field getItemByTopOrder fun(self: Tile): int
----@field getItemByType fun(self: Tile): int
----@field getItemCount fun(self: Tile): int
----@field getItemCountById fun(self: Tile): int
----@field getItems fun(self: Tile): int
----@field getPosition fun(self: Tile): int
----@field getThing fun(self: Tile): int
----@field getThingCount fun(self: Tile): int
----@field getThingIndex fun(self: Tile): int
----@field getTopCreature fun(self: Tile): int
----@field getTopDownItem fun(self: Tile): int
----@field getTopItemCount fun(self: Tile): int
----@field getTopTopItem fun(self: Tile): int
----@field getTopVisibleCreature fun(self: Tile): int
----@field getTopVisibleThing fun(self: Tile): int
----@field hasFlag fun(self: Tile): int
----@field hasProperty fun(self: Tile): int
----@field queryAdd fun(self: Tile): int
----@field sweep fun(self: Tile): int
+---@field addItem fun(self: Tile, ...: any): int
+---@field addItemEx fun(self: Tile, ...: any): int
+---@field getBottomCreature fun(self: Tile, ...: any): int
+---@field getBottomVisibleCreature fun(self: Tile, ...: any): int
+---@field getCreatureCount fun(self: Tile, ...: any): int
+---@field getCreatures fun(self: Tile, ...: any): int
+---@field getDownItemCount fun(self: Tile, ...: any): int
+---@field getFieldItem fun(self: Tile, ...: any): int
+---@field getGround fun(self: Tile, ...: any): int
+---@field getHouse fun(self: Tile, ...: any): int
+---@field getItemById fun(self: Tile, ...: any): int
+---@field getItemByTopOrder fun(self: Tile, ...: any): int
+---@field getItemByType fun(self: Tile, ...: any): int
+---@field getItemCount fun(self: Tile, ...: any): int
+---@field getItemCountById fun(self: Tile, ...: any): int
+---@field getItems fun(self: Tile, ...: any): int
+---@field getPosition fun(self: Tile, ...: any): int
+---@field getThing fun(self: Tile, index: number): int
+---@field getThingCount fun(self: Tile, ...: any): int
+---@field getThingIndex fun(self: Tile, ...: any): int
+---@field getTopCreature fun(self: Tile, ...: any): int
+---@field getTopDownItem fun(self: Tile, ...: any): int
+---@field getTopItemCount fun(self: Tile, ...: any): int
+---@field getTopTopItem fun(self: Tile, ...: any): int
+---@field getTopVisibleCreature fun(self: Tile, ...: any): int
+---@field getTopVisibleThing fun(self: Tile, creature: Creature): int
+---@field hasFlag fun(self: Tile, flag: number): int
+---@field hasProperty fun(self: Tile, ...: any): int
+---@field queryAdd fun(self: Tile, ...: any): int
+---@field sweep fun(self: Tile, ...: any): int
 
 ---@class Town
 ---@field __eq fun(self: Town): unknown
----@field getId fun(self: Town): int
----@field getName fun(self: Town): int
----@field getTemplePosition fun(self: Town): int
+---@field getId fun(self: Town, ...: any): int
+---@field getName fun(self: Town, ...: any): int
+---@field getTemplePosition fun(self: Town, ...: any): int
 
 ---@class Variant
----@field getNumber fun(self: Variant): int
----@field getPosition fun(self: Variant): int
----@field getString fun(self: Variant): int
+---@field getNumber fun(self: Variant, variant: Variant): int
+---@field getPosition fun(self: Variant, variant: Variant): int
+---@field getString fun(self: Variant, variant: Variant): int
 
 ---@class Vocation
 ---@field __eq fun(self: Vocation): unknown
----@field getAttackSpeed fun(self: Vocation): int
----@field getBaseAttackSpeed fun(self: Vocation): int
----@field getBaseId fun(self: Vocation): int
----@field getBaseSpeed fun(self: Vocation): int
----@field getCapacityGain fun(self: Vocation): int
----@field getClientId fun(self: Vocation): int
----@field getDemotion fun(self: Vocation): int
----@field getDescription fun(self: Vocation): int
----@field getHealthGain fun(self: Vocation): int
----@field getHealthGainAmount fun(self: Vocation): int
----@field getHealthGainTicks fun(self: Vocation): int
----@field getId fun(self: Vocation): int
----@field getManaGain fun(self: Vocation): int
----@field getManaGainAmount fun(self: Vocation): int
----@field getManaGainTicks fun(self: Vocation): int
----@field getMaxSoul fun(self: Vocation): int
----@field getName fun(self: Vocation): int
----@field getPromotion fun(self: Vocation): int
----@field getRequiredManaSpent fun(self: Vocation): int
----@field getRequiredSkillTries fun(self: Vocation): int
----@field getSoulGainTicks fun(self: Vocation): int
+---@field getAttackSpeed fun(self: Vocation, ...: any): int
+---@field getBaseAttackSpeed fun(self: Vocation, ...: any): int
+---@field getBaseId fun(self: Vocation, ...: any): int
+---@field getBaseSpeed fun(self: Vocation, ...: any): int
+---@field getCapacityGain fun(self: Vocation, ...: any): int
+---@field getClientId fun(self: Vocation, ...: any): int
+---@field getDemotion fun(self: Vocation, ...: any): int
+---@field getDescription fun(self: Vocation, ...: any): int
+---@field getHealthGain fun(self: Vocation, ...: any): int
+---@field getHealthGainAmount fun(self: Vocation, ...: any): int
+---@field getHealthGainTicks fun(self: Vocation, ...: any): int
+---@field getId fun(self: Vocation, ...: any): int
+---@field getManaGain fun(self: Vocation, ...: any): int
+---@field getManaGainAmount fun(self: Vocation, ...: any): int
+---@field getManaGainTicks fun(self: Vocation, ...: any): int
+---@field getMaxSoul fun(self: Vocation, ...: any): int
+---@field getName fun(self: Vocation, ...: any): int
+---@field getPromotion fun(self: Vocation, ...: any): int
+---@field getRequiredManaSpent fun(self: Vocation, magicLevel: number): int
+---@field getRequiredSkillTries fun(self: Vocation, skillType: number, skillLevel: number): int
+---@field getSoulGainTicks fun(self: Vocation, ...: any): int
 
 ---@class Weapon
----@field action fun(self: Weapon): int
----@field ammoType fun(self: Weapon): int
----@field attack fun(self: Weapon): int
----@field breakChance fun(self: Weapon): int
----@field charges fun(self: Weapon): int
----@field damage fun(self: Weapon): int
----@field decayTo fun(self: Weapon): int
----@field defense fun(self: Weapon): int
----@field duration fun(self: Weapon): int
----@field element fun(self: Weapon): int
----@field extraElement fun(self: Weapon): int
----@field health fun(self: Weapon): int
----@field healthPercent fun(self: Weapon): int
----@field hitChance fun(self: Weapon): int
----@field id fun(self: Weapon): int
----@field level fun(self: Weapon): int
----@field magicLevel fun(self: Weapon): int
----@field mana fun(self: Weapon): int
----@field manaPercent fun(self: Weapon): int
----@field maxHitChance fun(self: Weapon): int
----@field onUseWeapon fun(self: Weapon): int
----@field premium fun(self: Weapon): int
----@field range fun(self: Weapon): int
----@field register fun(self: Weapon): int
----@field shootType fun(self: Weapon): int
----@field slotType fun(self: Weapon): int
----@field soul fun(self: Weapon): int
----@field transformDeEquipTo fun(self: Weapon): int
----@field transformEquipTo fun(self: Weapon): int
----@field vocation fun(self: Weapon): int
----@field wieldUnproperly fun(self: Weapon): int
+---@field action fun(self: Weapon, typeName: string): int
+---@field ammoType fun(self: Weapon, type: string): int
+---@field attack fun(self: Weapon, k: number): int
+---@field breakChance fun(self: Weapon, arg2: number): int
+---@field charges fun(self: Weapon, s?: boolean): int
+---@field damage fun(self: Weapon, arg2?: number, arg3?: number): int
+---@field decayTo fun(self: Weapon, d?: number): int
+---@field defense fun(self: Weapon, e?: number, e?: number): int
+---@field duration fun(self: Weapon, n?: boolean): int
+---@field element fun(self: Weapon, element: string): int
+---@field extraElement fun(self: Weapon, e: number, element: string): int
+---@field health fun(self: Weapon, arg2: number): int
+---@field healthPercent fun(self: Weapon, arg2: number): int
+---@field hitChance fun(self: Weapon, e: number): int
+---@field id fun(self: Weapon, arg2: number): int
+---@field level fun(self: Weapon, arg2: number): int
+---@field magicLevel fun(self: Weapon, arg2: number): int
+---@field mana fun(self: Weapon, arg2: number): int
+---@field manaPercent fun(self: Weapon, arg2: number): int
+---@field maxHitChance fun(self: Weapon, e: number): int
+---@field onUseWeapon fun(self: Weapon, ...: any): int
+---@field premium fun(self: Weapon, arg2: boolean): int
+---@field range fun(self: Weapon, e: number): int
+---@field register fun(self: Weapon, r: RawUserDataShared): int
+---@field shootType fun(self: Weapon, e: number): int
+---@field slotType fun(self: Weapon, slot: string): int
+---@field soul fun(self: Weapon, arg2: number): int
+---@field transformDeEquipTo fun(self: Weapon, o: number): int
+---@field transformEquipTo fun(self: Weapon, o: number): int
+---@field vocation fun(self: Weapon, arg2: string, n: boolean): int
+---@field wieldUnproperly fun(self: Weapon, arg2: boolean): int
 
 ---@class Webhook
----@field sendMessage fun(self: Webhook): int
+---@field sendMessage fun(self: Webhook, title: string, message: string): int
 
 ---@class Zone
----@field __eq fun(self: Zone): int
----@field addArea fun(self: Zone): int
----@field getAll fun(self: Zone): int
----@field getByName fun(self: Zone): int
----@field getByPosition fun(self: Zone): int
----@field getCreatures fun(self: Zone): int
----@field getItems fun(self: Zone): int
----@field getMonsters fun(self: Zone): int
----@field getName fun(self: Zone): int
----@field getNpcs fun(self: Zone): int
----@field getPlayers fun(self: Zone): int
----@field getPositions fun(self: Zone): int
----@field getRemoveDestination fun(self: Zone): int
----@field refresh fun(self: Zone): int
----@field removeMonsters fun(self: Zone): int
----@field removeNpcs fun(self: Zone): int
----@field removePlayers fun(self: Zone): int
----@field setMonsterVariant fun(self: Zone): int
----@field setRemoveDestination fun(self: Zone): int
----@field subtractArea fun(self: Zone): int
+---@field __eq fun(self: Zone, ...: any): int
+---@field addArea fun(self: Zone, ...: any): int
+---@field getAll fun(self: Zone, ...: any): int
+---@field getByName fun(self: Zone, name: string): int
+---@field getByPosition fun(self: Zone, pos: Position): int
+---@field getCreatures fun(self: Zone, ...: any): int
+---@field getItems fun(self: Zone, ...: any): int
+---@field getMonsters fun(self: Zone, ...: any): int
+---@field getName fun(self: Zone, ...: any): int
+---@field getNpcs fun(self: Zone, ...: any): int
+---@field getPlayers fun(self: Zone, ...: any): int
+---@field getPositions fun(self: Zone, ...: any): int
+---@field getRemoveDestination fun(self: Zone, ...: any): int
+---@field refresh fun(self: Zone, ...: any): int
+---@field removeMonsters fun(self: Zone, ...: any): int
+---@field removeNpcs fun(self: Zone, ...: any): int
+---@field removePlayers fun(self: Zone, ...: any): int
+---@field setMonsterVariant fun(self: Zone, ...: any): int
+---@field setRemoveDestination fun(self: Zone, ...: any): int
+---@field subtractArea fun(self: Zone, ...: any): int
 
 ---@class configManager
----@field getBoolean fun(self: configManager): void
----@field getFloat fun(self: configManager): void
----@field getNumber fun(self: configManager): void
----@field getString fun(self: configManager): void
+---@field getBoolean fun(self: configManager, ...: any): void
+---@field getFloat fun(self: configManager, key: number): void
+---@field getNumber fun(self: configManager, ...: any): void
+---@field getString fun(self: configManager, ...: any): void
 
 ---@class db
----@field asyncQuery fun(self: db): int
----@field asyncStoreQuery fun(self: db): int
----@field escapeBlob fun(self: db): int
----@field escapeString fun(self: db): int
----@field lastInsertId fun(self: db): int
----@field query fun(self: db): int
----@field storeQuery fun(self: db): int
----@field tableExists fun(self: db): int
+---@field asyncQuery fun(self: db, ...: any): int
+---@field asyncStoreQuery fun(self: db, ...: any): int
+---@field escapeBlob fun(self: db, arg1: string, length: number): int
+---@field escapeString fun(self: db, ...: any): int
+---@field lastInsertId fun(self: db, ...: any): int
+---@field query fun(self: db, ...: any): int
+---@field storeQuery fun(self: db, ...: any): int
+---@field tableExists fun(self: db, ...: any): int
 
 ---@class kv
----@field get fun(self: kv): int
----@field keys fun(self: kv): int
----@field remove fun(self: kv): int
----@field scoped fun(self: kv): int
----@field set fun(self: kv): int
+---@field get fun(self: kv, ...: any): int
+---@field keys fun(self: kv, ...: any): int
+---@field remove fun(self: kv, ...: any): int
+---@field scoped fun(self: kv, ...: any): int
+---@field set fun(self: kv, ...: any): int
 
 ---@class logger
----@field debug fun(self: logger): int
----@field error fun(self: logger): int
----@field info fun(self: logger): int
----@field trace fun(self: logger): int
----@field warn fun(self: logger): int
+---@field debug fun(self: logger, ...: any): int
+---@field error fun(self: logger, ...: any): int
+---@field info fun(self: logger, ...: any): int
+---@field trace fun(self: logger, ...: any): int
+---@field warn fun(self: logger, ...: any): int
 
 ---@class metrics
----@field addCounter fun(self: metrics): int
+---@field addCounter fun(self: metrics, name: string, value: number, attributes: Attributes): int
 

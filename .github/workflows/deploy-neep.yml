@@ -141,37 +141,40 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       # ---------------------------------------------------------
-      # Download artifact ZIP from matching build run
+      # Download artifact AND prepare deploy directory
       # ---------------------------------------------------------
-      - name: Download artifact ZIP
-        id: download_artifact
+      - name: Download and prepare deploy package
+        id: artifact_prep
         if: steps.find_build.outputs.found == 'true'
         env:
           RUN_ID: ${{ steps.find_build.outputs.run_id }}
+          SHA: ${{ steps.setup.outputs.sha }}
+          OS: ${{ env.TARGET_ARTIFACT_OS }}
+          BUILD: ${{ env.TARGET_ARTIFACT_BUILD }}
         run: |
           mkdir -p artifact-bin
-          echo "Downloading artifact from run: $RUN_ID"
+          mkdir -p deploy
 
+          echo "Downloading artifacts from run: $RUN_ID"
           gh run download "$RUN_ID" -D artifact-bin
 
-          if ls artifact-bin/*.zip >/dev/null 2>&1; then
-            echo "artifact_downloaded=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "artifact_downloaded=false" >> "$GITHUB_OUTPUT"
+          echo "Looking for folder: canary-${OS}-${BUILD}-${SHA}"
+          ARTIFACT_DIR="artifact-bin/canary-${OS}-${BUILD}-${SHA}"
+
+          if [ ! -d "$ARTIFACT_DIR" ]; then
+            echo "Artifact directory not found: $ARTIFACT_DIR"
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
-      # ---------------------------------------------------------
-      # Prepare deployment directory
-      # ---------------------------------------------------------
-      - name: Prepare deploy package
-        run: |
-          mkdir -p deploy
-                    
-          cp "artifact-bin/canary-${{ env.TARGET_ARTIFACT_OS }}-${{ env.TARGET_ARTIFACT_BUILD }}-${{ steps.setup.outputs.sha }}"/canary deploy/
+          # Copy binary
+          cp "$ARTIFACT_DIR/canary" deploy/
+          chmod +x deploy/canary
 
-          if [ -z "$(ls -A deploy)" ]; then
-            echo "placeholder" > deploy/placeholder.txt
-          fi
+          echo "success=true" >> $GITHUB_OUTPUT
+
+          echo "Deploy folder content:"
+          ls -l deploy
 
       # ---------------------------------------------------------
       # Upload to server
@@ -235,7 +238,7 @@ jobs:
             ✅ **Deploy successful!**
             **Branch:** `${{ steps.setup.outputs.name }}`
             **Has new build artifact:** `${{ steps.find_build.outputs.found }}`
-            **Build artifact downloaded:** `${{ steps.download_artifact.outputs.artifact_downloaded || 'false' }}`
+            **Build artifact prepared:** `${{ steps.artifact_prep.outputs.success || 'false' }}`
             **Binary deployed:** `${{ contains(steps.remote.outputs.stdout, 'DEPLOYED_ARTIFACT=true') }}`
             *(Triggered by @${{ steps.setup.outputs.actor }})*
 

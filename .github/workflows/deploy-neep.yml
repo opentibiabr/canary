@@ -41,6 +41,7 @@ jobs:
       # ---------------------------------------------------------
       - name: Authenticate gh
         run: echo "${{ github.token }}" | gh auth login --with-token
+
       # ---------------------------------------------------------
       # React to command: 👀
       # ---------------------------------------------------------
@@ -103,6 +104,14 @@ jobs:
           fi
 
       # ---------------------------------------------------------
+      # Checkout branch
+      # ---------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.setup.outputs.name }}
+
+      # ---------------------------------------------------------
       # Find the build run for the target branch
       # ---------------------------------------------------------
       - name: Find build run for SHA
@@ -115,10 +124,9 @@ jobs:
 
           RUN_ID=$(gh run list \
             --workflow build-ubuntu.yml \
-            --json databaseId,headSha,headBranch,status \
-            --jq "map(select(.headSha==\"$SHA\" and .headBranch==\"$BRANCH\" and .status==\"success\")) | first | .databaseId" \
+            --json databaseId,headSha,status \
+            --jq "map(select(.headSha==\"$SHA\" and .status==\"completed\")) | first | .databaseId" \
             || true)
-
 
           if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
             echo "No successful build for SHA $SHA on branch $BRANCH"
@@ -131,14 +139,6 @@ jobs:
             echo "found=true"
             echo "run_id=$RUN_ID"
           } >> "$GITHUB_OUTPUT"
-
-      # ---------------------------------------------------------
-      # Checkout branch
-      # ---------------------------------------------------------
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.setup.outputs.name }}
 
       # ---------------------------------------------------------
       # Download artifact ZIP from matching build run

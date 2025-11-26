@@ -166,16 +166,8 @@ jobs:
       - name: Prepare deploy package
         run: |
           mkdir -p deploy
-          zipfile="$(ls artifact-bin/*.zip 2>/dev/null || true)"
-
-          if [ -n "$zipfile" ]; then
-            unzip "$zipfile" -d extracted/
-            binfile="$(find extracted -type f -name 'canary' 2>/dev/null || true)"
-
-            if [ -n "$binfile" ]; then
-              cp "$binfile" deploy/
-            fi
-          fi
+                    
+          cp "artifact-bin/canary-${{ env.TARGET_ARTIFACT_OS }}-${{ env.TARGET_ARTIFACT_BUILD }}-${{ steps.setup.outputs.sha }}"/canary deploy/
 
           if [ -z "$(ls -A deploy)" ]; then
             echo "placeholder" > deploy/placeholder.txt

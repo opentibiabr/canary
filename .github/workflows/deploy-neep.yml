@@ -185,7 +185,7 @@ jobs:
           host: ${{ secrets.NEEP_HOST }}
           username: root
           password: ${{ secrets.NEEP_PASS }}
-          source: "deploy/*"
+          source: "deploy/canary"
           target: "/opt/canary-next-deploy"
 
       # ---------------------------------------------------------

@@ -37,6 +37,11 @@ jobs:
 
     steps:
       # ---------------------------------------------------------
+      # Authenticate gh
+      # ---------------------------------------------------------
+      - name: Authenticate gh
+        run: echo "${{ github.token }}" | gh auth login --with-token
+      # ---------------------------------------------------------
       # React to command: 👀
       # ---------------------------------------------------------
       - name: React to comment (👀)
@@ -82,6 +87,7 @@ jobs:
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             {
               echo "name=${{ steps.comment-branch.outputs.head_ref }}"
+              echo "sha=${{ steps.comment-branch.outputs.head_sha }}"
               echo "actor=${{ github.event.comment.user.login }}"
               echo "pr_number=${{ github.event.issue.number }}"
               echo "has_pr=true"
@@ -89,11 +95,42 @@ jobs:
           else
             {
               echo "name=${{ github.ref_name }}"
+              echo "sha=${{ github.sha }}"
               echo "actor=${{ github.actor }}"
               echo "pr_number=${{ steps.detect_pr.outputs.pr_number }}"
               echo "has_pr=${{ steps.detect_pr.outputs.has_pr }}"
             } >> "$GITHUB_OUTPUT"
           fi
+
+      # ---------------------------------------------------------
+      # Find the build run for the target branch
+      # ---------------------------------------------------------
+      - name: Find build run for SHA
+        id: find_build
+        run: |
+          BRANCH="${{ steps.setup.outputs.name }}"
+          SHA="${{ steps.setup.outputs.sha }}"
+
+          echo "Searching for build of $SHA on branch $BRANCH"
+
+          RUN_ID=$(gh run list \
+            --workflow build-ubuntu.yml \
+            --json databaseId,headSha,headBranch,status \
+            --jq "map(select(.headSha==\"$SHA\" and .headBranch==\"$BRANCH\" and .status==\"success\")) | first | .databaseId" \
+            || true)
+
+
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "No successful build for SHA $SHA on branch $BRANCH"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Found run $RUN_ID for correct SHA"
+          {
+            echo "found=true"
+            echo "run_id=$RUN_ID"
+          } >> "$GITHUB_OUTPUT"
 
       # ---------------------------------------------------------
       # Checkout branch
@@ -104,17 +141,20 @@ jobs:
           ref: ${{ steps.setup.outputs.name }}
 
       # ---------------------------------------------------------
-      # Try downloading binary artifact
+      # Download artifact ZIP from matching build run
       # ---------------------------------------------------------
-      - name: Try to download artifact (safe)
+      - name: Download artifact ZIP
         id: download_artifact
+        if: steps.find_build.outputs.found == 'true'
+        env:
+          RUN_ID: ${{ steps.find_build.outputs.run_id }}
         run: |
           mkdir -p artifact-bin
-          artifact_name="canary-${{ env.TARGET_ARTIFACT_OS }}-${{ env.TARGET_ARTIFACT_BUILD }}-${{ github.sha }}"
+          echo "Downloading artifact from run: $RUN_ID"
 
-          echo "Attempting to download artifact: $artifact_name"
+          gh run download "$RUN_ID" -D artifact-bin
 
-          if gh run download "${{ github.run_id }}" -n "$artifact_name" -D artifact-bin 2>/dev/null; then
+          if ls artifact-bin/*.zip >/dev/null 2>&1; then
             echo "artifact_downloaded=true" >> "$GITHUB_OUTPUT"
           else
             echo "artifact_downloaded=false" >> "$GITHUB_OUTPUT"
@@ -202,7 +242,8 @@ jobs:
           body: |
             ✅ **Deploy successful!**
             **Branch:** `${{ steps.setup.outputs.name }}`
-            **Artifact downloaded:** `${{ steps.download_artifact.outputs.artifact_downloaded }}`
+            **Has new build artifact:** `${{ steps.find_build.outputs.found }}`
+            **Build artifact downloaded:** `${{ steps.download_artifact.outputs.artifact_downloaded || 'false' }}`
             **Binary deployed:** `${{ contains(steps.remote.outputs.stdout, 'DEPLOYED_ARTIFACT=true') }}`
             *(Triggered by @${{ steps.setup.outputs.actor }})*
 

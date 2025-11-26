@@ -166,7 +166,8 @@ jobs:
           timeout: 300s
           command_timeout: 20m
           script: |
-            set -e
+            set +e
+            trap '' TERM
 
             systemctl --no-ask-password --no-block stop canary || true
 

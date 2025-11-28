@@ -3220,7 +3220,7 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 		}
 	}
 
-	if (!player->quickLootListItemIds.empty()) {
+	if (isLootContainer && !player->quickLootListItemIds.empty()) {
 		uint16_t itemId = item->getID();
 		bool isInList = std::ranges::find(player->quickLootListItemIds, itemId) != player->quickLootListItemIds.end();
 		if (player->quickLootFilter == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !isInList) {

@@ -1099,6 +1099,60 @@ GameStore.Categories = {
 			},
 		},
 	},
+
+	{
+		icons = { "Category_Bundles.png" },
+		name = "Bundles",
+		rookgaard = true,
+		description = "Special bundles with multiple items for a discounted price!",
+		offers = {
+			{
+				icons = { "bundle_starter_pack.png" },
+				name = "Starter Pack",
+				price = 900,
+				state = GameStore.States.STATE_NEW,
+				home = true,
+				description = "An essential package for every new adventurer! Includes premium days, a swift mount, a stylish outfit, and potions to begin your journey.",
+				type = GameStore.OfferTypes.OFFER_TYPE_BUNDLE,
+				contents = {
+					{
+						-- Item 1: 30 Premium Time Days
+						name = "30 Days of Premium Time",
+						type = GameStore.OfferTypes.OFFER_TYPE_PREMIUM,
+						id = 3030,
+					},
+					{
+						-- Item 2: Bloodcurl Mount
+						name = "Bloodcurl",
+						type = GameStore.OfferTypes.OFFER_TYPE_MOUNT,
+						id = 92,
+					},
+					{
+						-- Item 3: Full Pumpkin Mummy Outfit
+						name = "Full Pumpkin Mummy Outfit",
+						type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,
+						sexId = { female = 1128, male = 1127 },
+						addon = 3,
+					},
+					{
+						-- Item 4: 100x Great Mana Potion
+						name = "100x Great Mana Potion",
+						type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+						itemtype = 238,
+						count = 100,
+					},
+					{
+						-- Item 5: 100x Great Health Potion
+						name = "100x Great Health Potion",
+						type = GameStore.OfferTypes.OFFER_TYPE_STACKABLE,
+						itemtype = 239,
+						count = 100,
+					},
+				},
+			},
+		},
+	},
+
 	-- Cosmetics
 	{
 		icons = { "Category_Cosmetics.png" },

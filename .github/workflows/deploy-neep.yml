@@ -3,6 +3,8 @@ name: Deploy to Neep Host
 
 on:
   workflow_dispatch:
+  issue_comment:
+    types: [created]
 
 env:
   TARGET_ARTIFACT_OS: ubuntu-24.04
@@ -10,99 +12,263 @@ env:
 
 jobs:
   deploy:
+    if: |
+      (
+        github.event_name == 'workflow_dispatch'
+      ) ||
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        contains(github.event.comment.body, '/deploy') &&
+        (
+          github.event.comment.author_association == 'OWNER' ||
+          github.event.comment.author_association == 'MEMBER' ||
+          github.event.comment.author_association == 'COLLABORATOR'
+        )
+      )
+
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      discussions: write
+      actions: read
 
     steps:
+      # ---------------------------------------------------------
+      # Authenticate gh
+      # ---------------------------------------------------------
+      - name: Authenticate gh
+        run: echo "${{ github.token }}" | gh auth login --with-token
+
+      # ---------------------------------------------------------
+      # React to command: 👀
+      # ---------------------------------------------------------
+      - name: React to comment (👀)
+        if: github.event_name == 'issue_comment'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
+        with:
+          token: ${{ github.token }}
+          comment-id: ${{ github.event.comment.id }}
+          reactions: eyes
+
+      # ---------------------------------------------------------
+      # Detect PR when running manually
+      # ---------------------------------------------------------
+      - name: Detect open PR for branch
+        id: detect_pr
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          PR_NUMBER="$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' || true)"
+
+          {
+            if [ -n "$PR_NUMBER" ]; then
+              echo "pr_number=$PR_NUMBER"
+              echo "has_pr=true"
+            else
+              echo "has_pr=false"
+            fi
+          } >> "$GITHUB_OUTPUT"
+
+      # ---------------------------------------------------------
+      # Extract PR branch from comment
+      # ---------------------------------------------------------
+      - uses: xt0rted/pull-request-comment-branch@e8b8daa837e8ea7331c0003c9c316a64c6d8b0b1
+        if: github.event_name == 'issue_comment'
+        id: comment-branch
+
+      # ---------------------------------------------------------
+      # Setup configs (branch, actor, PR number)
+      # ---------------------------------------------------------
+      - name: Setup configurations
+        id: setup
+        run: |
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            {
+              echo "name=${{ steps.comment-branch.outputs.head_ref }}"
+              echo "sha=${{ steps.comment-branch.outputs.head_sha }}"
+              echo "actor=${{ github.event.comment.user.login }}"
+              echo "pr_number=${{ github.event.issue.number }}"
+              echo "has_pr=true"
+            } >> "$GITHUB_OUTPUT"
+          else
+            {
+              echo "name=${{ github.ref_name }}"
+              echo "sha=${{ github.sha }}"
+              echo "actor=${{ github.actor }}"
+              echo "pr_number=${{ steps.detect_pr.outputs.pr_number }}"
+              echo "has_pr=${{ steps.detect_pr.outputs.has_pr }}"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      # ---------------------------------------------------------
+      # Checkout branch
+      # ---------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ steps.setup.outputs.name }}
 
-      - name: Try to download artifact (safe)
-        id: download_artifact
+      # ---------------------------------------------------------
+      # Find the build run for the target branch
+      # ---------------------------------------------------------
+      - name: Find build run for SHA
+        id: find_build
+        run: |
+          BRANCH="${{ steps.setup.outputs.name }}"
+          SHA="${{ steps.setup.outputs.sha }}"
+
+          echo "Searching for build of $SHA on branch $BRANCH"
+
+          RUN_ID=$(gh run list \
+            --workflow build-ubuntu.yml \
+            --json databaseId,headSha,status \
+            --jq "map(select(.headSha==\"$SHA\" and .status==\"completed\")) | first | .databaseId" \
+            || true)
+
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo "No successful build for SHA $SHA on branch $BRANCH"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Found run $RUN_ID for correct SHA"
+          {
+            echo "found=true"
+            echo "run_id=$RUN_ID"
+          } >> "$GITHUB_OUTPUT"
+
+      # ---------------------------------------------------------
+      # Download artifact AND prepare deploy directory
+      # ---------------------------------------------------------
+      - name: Download and prepare deploy package
+        id: artifact_prep
+        if: steps.find_build.outputs.found == 'true'
+        env:
+          RUN_ID: ${{ steps.find_build.outputs.run_id }}
+          SHA: ${{ steps.setup.outputs.sha }}
+          OS: ${{ env.TARGET_ARTIFACT_OS }}
+          BUILD: ${{ env.TARGET_ARTIFACT_BUILD }}
         run: |
           mkdir -p artifact-bin
-          artifact_name="canary-${{ env.TARGET_ARTIFACT_OS }}-${{ env.TARGET_ARTIFACT_BUILD }}-${{ github.sha }}"
-
-          echo "Attempting to download artifact: $artifact_name"
-
-          # download-artifact will exit 1 if not found
-          if gh run download ${{ github.run_id }} -n "$artifact_name" -D artifact-bin 2>/dev/null; then
-            echo "artifact_downloaded=true" >> "$GITHUB_OUTPUT"
-            echo "Artifact downloaded."
-          else
-            echo "artifact_downloaded=false" >> "$GITHUB_OUTPUT"
-            echo "No artifact found for this commit. Continuing without binary."
-          fi
-
-      - name: Prepare deploy package
-        run: |
           mkdir -p deploy
-          zipfile=$(ls artifact-bin/*.zip 2>/dev/null || true)
 
-          if [ -n "$zipfile" ]; then
-            echo "Unzipping $zipfile"
-            unzip "$zipfile" -d extracted/
+          echo "Downloading artifacts from run: $RUN_ID"
+          gh run download "$RUN_ID" -D artifact-bin
 
-            binfile=$(find extracted -type f -name "canary" 2>/dev/null || true)
-            if [ -n "$binfile" ]; then
-              echo "Binary found: $binfile"
-              cp "$binfile" deploy/
-            else
-              echo "No binary found inside artifact"
-            fi
-          else
-            echo "No artifact zip found"
+          echo "Looking for folder: canary-${OS}-${BUILD}-${SHA}"
+          ARTIFACT_DIR="artifact-bin/canary-${OS}-${BUILD}-${SHA}"
+
+          if [ ! -d "$ARTIFACT_DIR" ]; then
+            echo "Artifact directory not found: $ARTIFACT_DIR"
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
-          # ensure deploy folder is never empty (SCP fails otherwise)
-          if [ -z "$(ls -A deploy)" ]; then
-            echo "No binary, creating placeholder"
-            echo "placeholder" > deploy/placeholder.txt
-          fi
+          # Copy binary
+          cp "$ARTIFACT_DIR/canary" deploy/
+          chmod +x deploy/canary
 
+          echo "success=true" >> $GITHUB_OUTPUT
+
+          echo "Deploy folder content:"
+          ls -l deploy
+
+      # ---------------------------------------------------------
+      # Upload to server
+      # ---------------------------------------------------------
       - name: Upload to server
         uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
         with:
           host: ${{ secrets.NEEP_HOST }}
           username: root
           password: ${{ secrets.NEEP_PASS }}
-          source: "deploy/*"
+          source: "deploy/canary"
           target: "/opt/canary-next-deploy"
 
+      # ---------------------------------------------------------
+      # Remote deploy
+      # ---------------------------------------------------------
       - name: Remote deploy
+        id: remote
         uses: appleboy/ssh-action@91f3272fc5907f4699dcf59761eb622a07342f5a
         with:
           host: ${{ secrets.NEEP_HOST }}
           username: root
           password: ${{ secrets.NEEP_PASS }}
+          timeout: 300s
+          command_timeout: 20m
           script: |
-            set -e
+            set +e
+            trap '' TERM
 
-            echo "Stopping canary"
             systemctl --no-ask-password --no-block stop canary || true
 
-            echo "Pulling latest code"
             cd /opt/canary
             git fetch origin
-            git checkout ${{ github.ref_name }} || git checkout -b ${{ github.ref_name }}
-            git reset --hard origin/${{ github.ref_name }}
+            git checkout "${{ steps.setup.outputs.name }}" || git checkout -b "${{ steps.setup.outputs.name }}"
+            git reset --hard "origin/${{ steps.setup.outputs.name }}"
 
             if [ -f "/opt/canary-next-deploy/canary" ]; then
-              echo "Deploying new binary"
               mv /opt/canary-next-deploy/canary /opt/canary/canary
               chmod +x /opt/canary/canary
+              echo "DEPLOYED_ARTIFACT=true"
             else
-              echo "No new binary found; keeping existing binary"
+              echo "DEPLOYED_ARTIFACT=false"
             fi
 
-            echo "Updating MOTD"
-            BRANCH="${{ github.ref_name }}"
-            ESCAPED_BRANCH=$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')
+            BRANCH="${{ steps.setup.outputs.name }}"
+            ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
             sed -i "s/We are currently running [^.]*\./We are currently running $ESCAPED_BRANCH./" config.lua
 
-            echo "Cleaning temp directory"
             rm -rf /opt/canary-next-deploy
-
-            echo "Starting canary"
             systemctl start canary
+
+      # ---------------------------------------------------------
+      # Success or failure comment
+      # ---------------------------------------------------------
+      - name: Post deploy result
+        if: steps.remote.outcome == 'success' && steps.setup.outputs.has_pr == 'true'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
+        with:
+          issue-number: ${{ steps.setup.outputs.pr_number }}
+          body: |
+            ✅ **Deploy successful!**
+            **Branch:** `${{ steps.setup.outputs.name }}`
+            **Has new build artifact:** `${{ steps.find_build.outputs.found }}`
+            **Build artifact prepared:** `${{ steps.artifact_prep.outputs.success || 'false' }}`
+            **Binary deployed:** `${{ contains(steps.remote.outputs.stdout, 'DEPLOYED_ARTIFACT=true') }}`
+            *(Triggered by @${{ steps.setup.outputs.actor }})*
+
+      - name: Post failure feedback
+        if: steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
+        with:
+          issue-number: ${{ steps.setup.outputs.pr_number }}
+          body: |
+            ❌ **Deploy failed!**
+            **Branch:** `${{ steps.setup.outputs.name }}`
+            **Error output:**
+            ```
+            ${{ steps.remote.outputs.stderr }}
+            ```
+            *(Triggered by @${{ steps.setup.outputs.actor }})*
+
+      # ---------------------------------------------------------
+      # React with emojis
+      # ---------------------------------------------------------
+      - name: React success
+        if: github.event_name == 'issue_comment' && steps.remote.outcome == 'success'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: hooray
+
+      - name: React failure
+        if: github.event_name == 'issue_comment' && steps.remote.outcome != 'success'
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
+        with:
+          comment-id: ${{ github.event.comment.id }}
+          reactions: "-1"

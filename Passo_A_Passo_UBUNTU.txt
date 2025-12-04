@@ -131,9 +131,14 @@ cd vcpkg
 ./bootstrap-vcpkg.sh
 cd ..
 
+
+FOR WINDOWS 64:
+Go to C:\vcpkg, and execute in terminal
+.\vcpkg install --triplet x64-windows boost-iostreams boost-asio boost-system boost-variant boost-lockfree boost-locale boost-beast boost-json luajit libmariadb pugixml openssl fmt zlib sol2:x64-windows
+.\vcpkg install --triplet x64-windows boost-iostreams boost-asio boost-system boost-variant boost-lockfree lua libmariadb pugixml cryptopp fmt sol2:x64-windows
+
 mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
-.. make -j`nproc`
+cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake .. make -j`nproc`
 
 cmake --build linux-release
 

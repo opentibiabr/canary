@@ -23,6 +23,7 @@
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
@@ -78,7 +79,8 @@ Player::Player() :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -94,7 +96,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }
@@ -9960,7 +9963,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 	history.firstItemName = firstForgingItem->getName();
 	history.secondItemName = secondForgingItem->getName();
 	history.bonus = bonus;
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
@@ -10091,7 +10094,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 
 	history.firstItemName = Item::items[donorItemId].name;
 	history.secondItemName = newReceiveItem->getName();
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
@@ -10175,7 +10178,7 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 		addForgeDustLevel(1);
 	}
 
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	registerForgeHistoryDescription(history);
 	sendForgingData();
 }
@@ -10255,14 +10258,6 @@ void Player::removeForgeDustLevel(uint64_t amount) {
 
 uint64_t Player::getForgeDustLevel() const {
 	return forgeDustLevel;
-}
-
-std::vector<ForgeHistory> &Player::getForgeHistory() {
-	return forgeHistoryVector;
-}
-
-void Player::setForgeHistory(const ForgeHistory &history) {
-	forgeHistoryVector.emplace_back(history);
 }
 
 void Player::registerForgeHistoryDescription(ForgeHistory history) {
@@ -10415,7 +10410,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 
 	history.description = detailsResponse.str();
 
-	setForgeHistory(history);
+	forgeHistory().add(history);
 }
 
 // Quickloot
@@ -11132,6 +11127,15 @@ PlayerCyclopedia &Player::cyclopedia() {
 
 const PlayerCyclopedia &Player::cyclopedia() const {
 	return m_playerCyclopedia;
+}
+
+// Forge history interface
+PlayerForgeHistory &Player::forgeHistory() {
+	return m_forgeHistoryPlayer;
+}
+
+const PlayerForgeHistory &Player::forgeHistory() const {
+	return m_forgeHistoryPlayer;
 }
 
 // VIP interface

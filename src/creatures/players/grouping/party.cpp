@@ -161,12 +161,12 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player, bool forceRemove /
 			} else {
 				auto newLeader = memberList.front();
 				while (!newLeader) {
-					memberList.erase(memberList.begin());
-					if (memberList.empty()) {
+					const auto eraseIt = memberList.erase(memberList.begin());
+					if (eraseIt == memberList.end()) {
 						missingLeader = true;
 						break;
 					}
-					newLeader = memberList.front();
+					newLeader = *eraseIt;
 				}
 				if (newLeader) {
 					passPartyLeadership(newLeader);
@@ -178,9 +178,9 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player, bool forceRemove /
 	}
 
 	// since we already passed the leadership, we remove the player from the list
-	auto it = std::ranges::find(memberList, player);
-	if (it != memberList.end()) {
-		memberList.erase(it);
+	const bool removedMember = std::erase(memberList, player) > 0;
+	if (!removedMember && leader != player) {
+		return false;
 	}
 
 	player->setParty(nullptr);
@@ -224,9 +224,8 @@ bool Party::passPartyLeadership(const std::shared_ptr<Player> &player) {
 	}
 
 	// Remove it before to broadcast the message correctly
-	auto it = std::ranges::find(memberList, player);
-	if (it != memberList.end()) {
-		memberList.erase(it);
+	if (std::erase(memberList, player) == 0) {
+		return false;
 	}
 
 	std::ostringstream ss;
@@ -272,12 +271,9 @@ bool Party::joinParty(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	auto it = std::ranges::find(inviteList, player);
-	if (it == inviteList.end()) {
+	if (std::erase(inviteList, player) == 0) {
 		return false;
 	}
-
-	inviteList.erase(it);
 
 	std::ostringstream ss;
 	ss << player->getName() << " has joined the party.";
@@ -321,12 +317,9 @@ bool Party::removeInvite(const std::shared_ptr<Player> &player, bool removeFromP
 		return false;
 	}
 
-	auto it = std::ranges::find(inviteList, player);
-	if (it == inviteList.end()) {
+	if (std::erase(inviteList, player) == 0) {
 		return false;
 	}
-
-	inviteList.erase(it);
 
 	leader->sendCreatureShield(player);
 	player->sendCreatureShield(leader);

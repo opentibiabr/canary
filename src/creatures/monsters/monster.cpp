@@ -1484,7 +1484,7 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 		DIRECTION_WEST, DIRECTION_EAST,
 		DIRECTION_SOUTH
 	};
-	std::ranges::shuffle(dirList, getRandomGenerator());
+	[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 
 	for (const Direction &dir : dirList) {
 		const Position &tryPos = Spells::getCasterPosition(creature, dir);
@@ -1638,7 +1638,7 @@ bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirectio
 		DIRECTION_WEST, DIRECTION_EAST,
 		DIRECTION_SOUTH
 	};
-	std::ranges::shuffle(dirList, getRandomGenerator());
+	[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 
 	for (const Direction &dir : dirList) {
 		if (canWalkTo(creaturePos, dir)) {
@@ -1703,7 +1703,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	}
 
 	if (!dirList.empty()) {
-		std::ranges::shuffle(dirList, getRandomGenerator());
+		[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
 		return true;
 	}

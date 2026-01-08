@@ -31,15 +31,18 @@ void EventCallbackManager::registerCallback(const CallbackPtr &callback) {
 	auto it = std::ranges::find_if(vec, [&](const CallbackPtr &cb) {
 		return cb->getPriority() < callback->getPriority();
 	});
-	vec.insert(it, callback);
+	const auto insertIt = vec.insert(it, callback);
+	if (insertIt == vec.end()) {
+		return;
+	}
 }
 
 void EventCallbackManager::unregisterCallback(const CallbackPtr &callback) {
 	const auto idx = static_cast<size_t>(callback->getType());
 	auto &vec = m_callbacks[idx];
-	auto it = std::ranges::find(vec, callback);
-	if (it != vec.end()) {
-		vec.erase(it);
+	const auto erasedCount = std::erase(vec, callback);
+	if (erasedCount == 0) {
+		return;
 	}
 }
 

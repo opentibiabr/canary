@@ -489,7 +489,7 @@ static void reg_no_listeners_ok() {
 	};
 }
 
-suite<"event_callbacks"> eventCallbacksTests = [] {
+static void register_event_callbacks_suite() {
 	static di::extension::injector<> injector {};
 	InMemoryLogger::install(injector);
 	DI::setTestContainer(&injector);
@@ -510,4 +510,8 @@ suite<"event_callbacks"> eventCallbacksTests = [] {
 	reg_same_name_different_types_ok();
 	reg_no_listeners_returns_true();
 	reg_no_listeners_ok();
+}
+
+suite<"event_callbacks"> eventCallbacksTests = [] {
+	register_event_callbacks_suite();
 };

@@ -10261,7 +10261,7 @@ std::vector<ForgeHistory> &Player::getForgeHistory() {
 }
 
 void Player::setForgeHistory(const ForgeHistory &history) {
-	forgeHistoryVector.emplace_back(history);
+	forgeHistoryVector.push_back(history);
 }
 
 void Player::registerForgeHistoryDescription(ForgeHistory history) {

@@ -270,11 +270,26 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 
 		std::vector<std::pair<int32_t, int32_t>> &relList = (extendedPos ? extendedRelList : normalRelList);
 
+		auto shuffleRange = [](auto begin, auto end) {
+			std::random_device randomDevice;
+			const auto size = static_cast<size_t>(std::distance(begin, end));
+			if (size < 2) {
+				return;
+			}
+
+			for (size_t i = size - 1; i > 0; --i) {
+				std::uniform_int_distribution<size_t> dist(0, i);
+				auto left = std::next(begin, static_cast<std::ptrdiff_t>(i));
+				auto right = std::next(begin, static_cast<std::ptrdiff_t>(dist(randomDevice)));
+				std::iter_swap(left, right);
+			}
+		};
+
 		if (extendedPos) {
-			std::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
-			std::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
+			shuffleRange(relList.begin(), relList.begin() + 4);
+			shuffleRange(relList.begin() + 4, relList.end());
 		} else {
-			std::ranges::shuffle(relList, getRandomGenerator());
+			shuffleRange(relList.begin(), relList.end());
 		}
 
 		for (const auto &[xOffset, yOffset] : relList) {

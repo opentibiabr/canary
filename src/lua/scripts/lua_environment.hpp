@@ -22,7 +22,7 @@ class Cylinder;
 class Game;
 class GlobalFunctions;
 
-class LuaEnvironment final : public LuaScriptInterface {
+class LuaEnvironment : public LuaScriptInterface {
 public:
 	static bool shuttingDown;
 

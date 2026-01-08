@@ -22,6 +22,7 @@
 #include "creatures/players/components/player_achievement.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/components/player_title.hpp"
 #include "creatures/players/components/wheel/player_wheel.hpp"
@@ -95,31 +96,6 @@ using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 struct CharmInfo {
 	uint16_t raceId = 0;
 	uint8_t tier = 0;
-};
-
-struct ForgeHistory {
-	ForgeAction_t actionType = ForgeAction_t::FUSION;
-	uint8_t tier = 0;
-	uint8_t bonus = 0;
-
-	time_t createdAt;
-
-	uint16_t historyId = 0;
-
-	uint64_t cost = 0;
-	uint64_t dustCost = 0;
-	uint64_t coresCost = 0;
-	uint64_t gained = 0;
-
-	bool success = false;
-	bool tierLoss = false;
-	bool successCore = false;
-	bool tierCore = false;
-	bool convergence = false;
-
-	std::string description;
-	std::string firstItemName;
-	std::string secondItemName;
 };
 
 struct OpenContainer {
@@ -1238,10 +1214,6 @@ public:
 	void removeForgeDustLevel(uint64_t amount);
 	uint64_t getForgeDustLevel() const;
 
-	std::vector<ForgeHistory> &getForgeHistory();
-
-	void setForgeHistory(const ForgeHistory &history);
-
 	void registerForgeHistoryDescription(ForgeHistory history);
 
 	void setBossPoints(uint32_t amount);
@@ -1333,6 +1305,10 @@ public:
 	// Player summary interface
 	PlayerCyclopedia &cyclopedia();
 	const PlayerCyclopedia &cyclopedia() const;
+
+	// Player forge history interface
+	PlayerForgeHistory &forgeHistory();
+	const PlayerForgeHistory &forgeHistory() const;
 
 	// Player vip interface
 	PlayerVIP &vip();
@@ -1462,7 +1438,6 @@ private:
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
 	ManagedContainerMap m_managedContainers;
-	std::vector<ForgeHistory> forgeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;
 
@@ -1719,6 +1694,7 @@ private:
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
 	friend class PlayerStorage;
+	friend class PlayerForgeHistory;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;
@@ -1729,6 +1705,7 @@ private:
 	AnimusMastery m_animusMastery;
 	PlayerAttachedEffects m_playerAttachedEffects;
 	PlayerStorage m_storage;
+	PlayerForgeHistory m_forgeHistoryPlayer;
 
 	std::mutex quickLootMutex;
 

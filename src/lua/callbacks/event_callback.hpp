@@ -9,6 +9,14 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+#include <algorithm>
+#include <functional>
+#include <type_traits>
+#include <utility>
+#include <vector>
+#endif
+
 #include "lua/callbacks/callbacks_definitions.hpp"
 #include "lua/scripts/luascript.hpp"
 
@@ -37,6 +45,7 @@ enum Slots_t : uint8_t;
 enum ZoneType_t : uint8_t;
 enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
+enum CombatOrigin : uint8_t;
 enum TextColor_t : uint8_t;
 
 /**
@@ -78,6 +87,7 @@ private:
 	static void pushArgument(lua_State* L, uint32_t value);
 	static void pushArgument(lua_State* L, uint64_t value);
 	static void pushArgument(lua_State* L, uint8_t value);
+	static void pushArgument(lua_State* L, std::reference_wrapper<CombatDamage> value);
 	static void pushArgument(lua_State* L, bool value);
 	static void pushArgument(lua_State* L, Direction value);
 	static void pushArgument(lua_State* L, ReturnValue value);
@@ -176,9 +186,92 @@ template <typename... Args>
 	lua_State* L = getScriptInterface()->getLuaState();
 	getScriptInterface()->pushFunction(getScriptId());
 
+	struct DamageRef {
+		CombatDamage* damage;
+		int registryIndex;
+	};
+
+	std::vector<DamageRef> damageRefs;
 	int argc = 0;
-	((pushArgument(L, std::forward<Args>(args)), ++argc), ...);
+
+	auto pushArg = [&](auto &&arg) {
+		using ArgT = std::remove_cvref_t<decltype(arg)>;
+
+		if constexpr (std::is_same_v<ArgT, std::reference_wrapper<CombatDamage>>) {
+			auto &damage = arg.get();
+			pushArgument(L, damage);
+			lua_pushvalue(L, -1);
+			const int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+			damageRefs.push_back(DamageRef { &damage, ref });
+			++argc;
+		} else if constexpr (std::is_same_v<ArgT, CombatDamage>) {
+			auto &damage = const_cast<CombatDamage &>(arg);
+			pushArgument(L, damage);
+			lua_pushvalue(L, -1);
+			const int ref = luaL_ref(L, LUA_REGISTRYINDEX);
+			damageRefs.push_back(DamageRef { &damage, ref });
+			++argc;
+		} else {
+			pushArgument(L, std::forward<decltype(arg)>(arg));
+			++argc;
+		}
+	};
+
+	(pushArg(std::forward<Args>(args)), ...);
 
 	const bool result = getScriptInterface()->callFunction(argc);
+
+	for (const auto &entry : damageRefs) {
+		lua_rawgeti(L, LUA_REGISTRYINDEX, entry.registryIndex);
+		if (lua_istable(L, -1)) {
+			const int index = lua_gettop(L);
+			lua_getfield(L, index, "primary");
+			if (lua_istable(L, -1)) {
+				lua_getfield(L, -1, "value");
+				if (lua_isnumber(L, -1)) {
+					entry.damage->primary.value = Lua::getNumber<int32_t>(L, -1);
+				}
+				lua_pop(L, 1);
+
+				lua_getfield(L, -1, "type");
+				if (lua_isnumber(L, -1)) {
+					entry.damage->primary.type = Lua::getNumber<CombatType_t>(L, -1);
+				}
+				lua_pop(L, 1);
+			}
+			lua_pop(L, 1);
+
+			lua_getfield(L, index, "secondary");
+			if (lua_istable(L, -1)) {
+				lua_getfield(L, -1, "value");
+				if (lua_isnumber(L, -1)) {
+					entry.damage->secondary.value = Lua::getNumber<int32_t>(L, -1);
+				}
+				lua_pop(L, 1);
+
+				lua_getfield(L, -1, "type");
+				if (lua_isnumber(L, -1)) {
+					entry.damage->secondary.type = Lua::getNumber<CombatType_t>(L, -1);
+				}
+				lua_pop(L, 1);
+			}
+			lua_pop(L, 1);
+
+			lua_getfield(L, index, "origin");
+			if (lua_isnumber(L, -1)) {
+				entry.damage->origin = Lua::getNumber<CombatOrigin>(L, -1);
+			}
+			lua_pop(L, 1);
+
+			lua_getfield(L, index, "critical");
+			if (lua_isboolean(L, -1)) {
+				entry.damage->critical = Lua::getBoolean(L, -1);
+			}
+			lua_pop(L, 1);
+		}
+		luaL_unref(L, LUA_REGISTRYINDEX, entry.registryIndex);
+		lua_pop(L, 1);
+	}
+
 	return result;
 }

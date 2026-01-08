@@ -30,5 +30,6 @@ public:
 
 private:
 	static constexpr size_t kEventTypeCount = static_cast<size_t>(EventCallback_t::last);
+	static constexpr size_t kDefaultReserve = 4;
 	std::array<std::vector<CallbackPtr>, kEventTypeCount> m_callbacks;
 };

@@ -25,7 +25,7 @@ void EventCallbackManager::registerCallback(const CallbackPtr &callback) {
 	}
 
 	if (vec.empty()) {
-		vec.reserve(4);
+		vec.reserve(kDefaultReserve);
 	}
 
 	auto it = std::ranges::find_if(vec, [&](const CallbackPtr &cb) {

@@ -203,7 +203,21 @@ void EventCallback::pushArgument(lua_State* L, const ItemType* itemType) {
 }
 
 void EventCallback::pushArgument(lua_State* L, CombatDamage &damage) {
-	Lua::pushCombatDamage(L, damage);
+	lua_createtable(L, 0, 4);
+
+	lua_createtable(L, 0, 2);
+	Lua::setField(L, "value", damage.primary.value);
+	Lua::setField(L, "type", damage.primary.type);
+	lua_setfield(L, -2, "primary");
+
+	lua_createtable(L, 0, 2);
+	Lua::setField(L, "value", damage.secondary.value);
+	Lua::setField(L, "type", damage.secondary.type);
+	lua_setfield(L, -2, "secondary");
+
+	Lua::setField(L, "origin", damage.origin);
+	lua_pushboolean(L, damage.critical);
+	lua_setfield(L, -2, "critical");
 }
 
 void EventCallback::pushArgument(lua_State* L, const Position &position) {
@@ -227,7 +241,7 @@ void EventCallback::pushArgument(lua_State* L, uint32_t value) {
 }
 
 void EventCallback::pushArgument(lua_State* L, uint64_t value) {
-	Lua::pushNumber(L, static_cast<int64_t>(value));
+	Lua::pushNumber(L, static_cast<lua_Number>(value));
 }
 
 void EventCallback::pushArgument(lua_State* L, uint8_t value) {
@@ -268,4 +282,8 @@ void EventCallback::pushArgument(lua_State* L, CombatType_t value) {
 
 void EventCallback::pushArgument(lua_State* L, TextColor_t value) {
 	Lua::pushNumber(L, static_cast<int32_t>(value));
+}
+
+void EventCallback::pushArgument(lua_State* L, std::reference_wrapper<CombatDamage> value) {
+	pushArgument(L, value.get());
 }

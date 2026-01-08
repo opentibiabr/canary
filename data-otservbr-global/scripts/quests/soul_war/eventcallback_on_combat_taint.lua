@@ -74,7 +74,7 @@ local callback = EventCallback("CreatureOnCombatTaint")
 
 function callback.creatureOnCombat(caster, target, damage)
 	if not caster or not target then
-		return
+		return true
 	end
 
 	-- Second taint

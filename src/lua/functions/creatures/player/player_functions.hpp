@@ -178,8 +178,6 @@ class PlayerFunctions {
 
 	static int luaPlayerGetStorageValue(lua_State* L);
 	static int luaPlayerSetStorageValue(lua_State* L);
-	static int luaPlayerGetStorageValueByName(lua_State* L);
-	static int luaPlayerSetStorageValueByName(lua_State* L);
 
 	static int luaPlayerAddItem(lua_State* L);
 	static int luaPlayerAddItemEx(lua_State* L);

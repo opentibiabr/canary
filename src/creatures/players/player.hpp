@@ -23,6 +23,7 @@
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"
 #include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/components/player_title.hpp"
 #include "creatures/players/components/wheel/player_wheel.hpp"
 #include "creatures/players/components/player_vip.hpp"
@@ -57,7 +58,7 @@ class Npc;
 
 struct ModalWindow;
 struct Achievement;
-struct VIPGroup;
+class VIPGroup;
 struct Mount;
 struct Wing;
 struct Effect;
@@ -126,6 +127,17 @@ public:
 	private:
 		const std::shared_ptr<Player> &player;
 	};
+
+	/**
+	 * @brief Constructs a Player instance for unit testing only.
+	 *
+	 * This constructor initializes a Player object in a minimal, controlled state
+	 * for use in unit tests. It sets up core components such as VIP, Wheel,
+	 * Achievements, Badges, Cyclopedia, Titles, Animus Mastery, Attached Effects,
+	 * and Storage, while marking the instance as a unit test mock by default.
+	 *
+	 */
+	explicit Player();
 
 	explicit Player(std::shared_ptr<ProtocolGame> p);
 	~Player() override;
@@ -369,12 +381,7 @@ public:
 	void addStorageValue(uint32_t key, int32_t value, bool isLogin = false);
 	int32_t getStorageValue(uint32_t key) const;
 
-	int32_t getStorageValueByName(const std::string &storageName) const;
-	void addStorageValueByName(const std::string &storageName, int32_t value, bool isLogin = false);
-
 	std::shared_ptr<KV> kv() const;
-
-	void genReservedStorageRange();
 
 	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = std::move(newGroup);
@@ -1315,6 +1322,9 @@ public:
 	PlayerAttachedEffects &attachedEffects();
 	const PlayerAttachedEffects &attachedEffects() const;
 
+	PlayerStorage &storage();
+	const PlayerStorage &storage() const;
+
 	void sendLootMessage(const std::string &message) const;
 
 	std::shared_ptr<Container> getLootPouch();
@@ -1328,8 +1338,21 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
-	bool isFirstOnStack() const;
+	[[nodiscard]] bool isFirstOnStack() const;
 	void resetOldCharms();
+
+	const auto &getOutfits() const {
+		return outfits;
+	}
+
+	const auto &getFamiliars() const {
+		return familiars;
+	}
+
+	using ManagedContainerMap = std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>>;
+	[[nodiscard]] const ManagedContainerMap &getManagedContainers() const {
+		return m_managedContainers;
+	}
 
 private:
 	friend class PlayerLock;
@@ -1410,12 +1433,11 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
-	std::map<uint32_t, int32_t> storageMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
-	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
+	ManagedContainerMap m_managedContainers;
 
 	std::vector<uint16_t> quickLootListItemIds;
 
@@ -1671,6 +1693,7 @@ private:
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class PlayerStorage;
 	friend class PlayerForgeHistory;
 
 	PlayerWheel m_wheelPlayer;
@@ -1681,6 +1704,7 @@ private:
 	PlayerVIP m_playerVIP;
 	AnimusMastery m_animusMastery;
 	PlayerAttachedEffects m_playerAttachedEffects;
+	PlayerStorage m_storage;
 	PlayerForgeHistory m_forgeHistoryPlayer;
 
 	std::mutex quickLootMutex;

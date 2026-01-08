@@ -1,4 +1,4 @@
-dofile(DATA_DIRECTORY .. "/lib/core/quests.lua")
+require("data-otservbr-global.lib.core.quests")
 
 if not LastQuestlogUpdate then
 	LastQuestlogUpdate = {}
@@ -338,8 +338,8 @@ function Player.sendTrackedQuests(self, remainingQuests, missions)
 	msg:addByte(remainingQuests)
 	msg:addByte(#missions)
 	for _, mission in ipairs(missions) do
-		msg:addU16(mission.questId)
 		msg:addU16(mission.missionId)
+		msg:addU16(mission.questId)
 		msg:addString(mission.questName, "Player.sendTrackedQuests - mission.questName")
 		msg:addString(mission.missionName, "Player.sendTrackedQuests - mission.missionName")
 		msg:addString(mission.missionDesc, "Player.sendTrackedQuests - mission.missionDesc")

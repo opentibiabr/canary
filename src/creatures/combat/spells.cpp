@@ -530,7 +530,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 
 	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP && !player->isFirstOnStack()) {
 		const auto &instantSpell = g_spells().getInstantSpell(getName());
-		if (instantSpell && !instantSpell->getNeedCasterTargetOrDirection() || !getNeedTarget()) {
+		if ((instantSpell && !instantSpell->getNeedCasterTargetOrDirection()) || !getNeedTarget()) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return false;
 		}
@@ -1187,6 +1187,10 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 }
 
 bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const {
+	if (!creature || !target) {
+		return false;
+	}
+
 	const Position &fromPos = creature->getPosition();
 	const Position &toPos = target->getPosition();
 	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {

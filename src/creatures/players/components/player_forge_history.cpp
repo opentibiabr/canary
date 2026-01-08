@@ -22,14 +22,21 @@ const std::vector<ForgeHistory> &PlayerForgeHistory::get() const {
 }
 
 void PlayerForgeHistory::add(const ForgeHistory &history) {
-	m_history.push_back(history);
-	m_modifiedHistory.push_back(history);
+	auto adjustedHistory = history;
+	while (std::any_of(m_history.begin(), m_history.end(), [&adjustedHistory](const ForgeHistory &existing) {
+		return existing.createdAt == adjustedHistory.createdAt;
+	})) {
+		++adjustedHistory.createdAt;
+	}
+
+	m_history.push_back(adjustedHistory);
+	m_modifiedHistory.push_back(adjustedHistory);
 }
 
-void PlayerForgeHistory::remove(int historyId) {
-	m_removedHistoryIds.push_back(historyId);
-	std::erase_if(m_history, [historyId](const ForgeHistory &h) {
-		return h.id == historyId;
+void PlayerForgeHistory::remove(uint32_t id) {
+	m_removedHistoryIds.push_back(id);
+	std::erase_if(m_history, [id](const ForgeHistory &h) {
+		return h.id == id;
 	});
 }
 
@@ -39,13 +46,14 @@ bool PlayerForgeHistory::load() {
 	auto query = fmt::format("SELECT * FROM forge_history WHERE player_id = {}", playerGUID);
 	const DBResult_ptr &result = g_database().storeQuery(query);
 	if (!result) {
-		g_logger().debug("Failed to load forge history for player with ID: {}", playerGUID);
-		return false;
+		g_logger().debug("No forge history found for player with ID: {}", playerGUID);
+		benchmark.log("PlayerForgeHistory::load completed (no history found)");
+		return true;
 	}
 
 	do {
 		ForgeHistory history;
-		history.id = result->getNumber<int>("id");
+		history.id = result->getNumber<uint32_t>("id");
 		history.actionType = static_cast<ForgeAction_t>(result->getNumber<uint8_t>("action_type"));
 		history.description = result->getString("description");
 		history.createdAt = result->getNumber<uint64_t>("done_at");
@@ -80,11 +88,10 @@ bool PlayerForgeHistory::save() {
 		m_removedHistoryIds.clear();
 	}
 
-	DBInsert insertQuery("INSERT INTO `forge_history` (`id`, `player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES ");
-	insertQuery.upsert({ "action_type", "description", "done_at", "is_success" });
+	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES ");
 
 	for (const auto &history : m_modifiedHistory) {
-		auto row = fmt::format("{}, {}, {}, {}, {}, {}", history.id, playerGUID, history.actionType, g_database().escapeString(history.description), history.createdAt, history.success ? 1 : 0);
+		auto row = fmt::format("{}, {}, {}, {}, {}", playerGUID, static_cast<int>(history.actionType), g_database().escapeString(history.description), history.createdAt, history.success ? 1 : 0);
 
 		if (!insertQuery.addRow(row)) {
 			g_logger().warn("Failed to add forge history entry for player with ID: {}", playerGUID);

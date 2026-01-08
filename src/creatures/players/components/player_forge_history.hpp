@@ -20,7 +20,7 @@ struct ForgeHistory {
 
 	uint64_t createdAt;
 
-	uint16_t id = 0;
+	uint32_t id = 0;
 
 	uint64_t cost = 0;
 	uint64_t dustCost = 0;
@@ -45,7 +45,7 @@ public:
 
 	const std::vector<ForgeHistory> &get() const;
 	void add(const ForgeHistory &history);
-	void remove(int historyId);
+	void remove(uint32_t id);
 
 	bool load();
 	bool save();
@@ -53,6 +53,6 @@ public:
 private:
 	std::vector<ForgeHistory> m_history;
 	std::vector<ForgeHistory> m_modifiedHistory;
-	std::vector<uint16_t> m_removedHistoryIds;
+	std::vector<uint32_t> m_removedHistoryIds;
 	Player &m_player;
 };

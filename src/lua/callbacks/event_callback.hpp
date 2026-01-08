@@ -10,11 +10,11 @@
 #pragma once
 
 #ifndef USE_PRECOMPILED_HEADERS
-#include <algorithm>
-#include <functional>
-#include <type_traits>
-#include <utility>
-#include <vector>
+	#include <algorithm>
+	#include <functional>
+	#include <type_traits>
+	#include <utility>
+	#include <vector>
 #endif
 
 #include "lua/callbacks/callbacks_definitions.hpp"

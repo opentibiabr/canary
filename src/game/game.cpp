@@ -464,7 +464,7 @@ void Game::loadBoostedCreature() {
 	}
 
 	const auto oldRace = result->getNumber<uint16_t>("raceid");
-	const auto monsterlist = getBestiaryList();
+	const auto &monsterlist = getBestiaryList();
 
 	struct MonsterRace {
 		uint16_t raceId { 0 };
@@ -2996,6 +2996,26 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 				player->sendLootStats(item, item->getItemCount());
 			}
 		}
+	}
+
+	bool hasLootavaible = false;
+	for (ContainerIterator it = corpse->iterator(); it.hasNext(); it.advance()) {
+		const auto &corpseItem = *it;
+		if (!corpseItem) {
+			continue;
+		}
+
+		const bool listed = player->isQuickLootListedItem(corpseItem);
+		if ((listed && ignoreListItems) || (!listed && !ignoreListItems)) {
+			continue;
+		}
+
+		hasLootavaible = true;
+		break;
+	}
+
+	if (!hasLootavaible) {
+		corpse->clearLootHighlight(player);
 	}
 
 	std::stringstream ss;
@@ -9766,6 +9786,11 @@ void Game::playerForgeFuseItems(uint32_t playerId, ForgeAction_t actionType, uin
 
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	if (const auto scopedForgeChance = g_kv().scoped("eventscheduler")->get("forge-chance")) {
+		auto forgeChance = static_cast<int>(scopedForgeChance->getNumber());
+		int adjustedSuccess = baseSuccess + forgeChance - 100;
+		baseSuccess = static_cast<uint8_t>(std::clamp(adjustedSuccess, 0, 100));
+	}
 	auto coreSuccess = usedCore ? g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE) : 0;
 	auto finalRate = baseSuccess + coreSuccess;
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= finalRate;

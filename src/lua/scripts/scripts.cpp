@@ -42,26 +42,19 @@ void Scripts::clearAllScripts() const {
 	g_monsters().clear();
 }
 
-bool Scripts::loadEventSchedulerScripts(const std::string &fileName) {
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	const auto dir = std::filesystem::current_path() / coreFolder / "events" / "scripts" / "scheduler";
-	if (!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
-		g_logger().warn("{} - Can not load folder 'scheduler' on {}/events/scripts'", __FUNCTION__, coreFolder);
+bool Scripts::loadEventSchedulerScripts(const std::filesystem::path &filePath) {
+	if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
+		g_logger().warn("{} - Cannot load file '{}'", __FUNCTION__, filePath.string());
 		return false;
 	}
 
-	const std::filesystem::recursive_directory_iterator endit;
-	for (std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
-		if (std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
-			if (it->path().filename().string() == fileName) {
-				if (scriptInterface.loadFile(it->path().string(), it->path().filename().string()) == -1) {
-					g_logger().error(it->path().string());
-					g_logger().error(scriptInterface.getLastLuaError());
-					continue;
-				}
-				return true;
-			}
+	if (filePath.extension() == ".lua") {
+		if (scriptInterface.loadFile(filePath.string(), filePath.filename().string()) == -1) {
+			g_logger().error(filePath.string());
+			g_logger().error(scriptInterface.getLastLuaError());
+			return false;
 		}
+		return true;
 	}
 
 	return false;

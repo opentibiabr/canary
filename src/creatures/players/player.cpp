@@ -96,7 +96,7 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this),
-	m_forgeHistoryPlayer(*this) {	
+	m_forgeHistoryPlayer(*this) {
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }

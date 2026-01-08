@@ -23,7 +23,7 @@ const std::vector<ForgeHistory> &PlayerForgeHistory::get() const {
 
 void PlayerForgeHistory::add(const ForgeHistory &history) {
 	auto adjustedHistory = history;
-	while (std::any_of(m_history.begin(), m_history.end(), [&adjustedHistory](const ForgeHistory &existing) {
+	while (std::ranges::any_of(m_history, [&adjustedHistory](const ForgeHistory &existing) {
 		return existing.createdAt == adjustedHistory.createdAt;
 	})) {
 		++adjustedHistory.createdAt;

@@ -78,8 +78,8 @@ Player::Player() :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_forgeHistoryPlayer(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -95,7 +95,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {	
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }

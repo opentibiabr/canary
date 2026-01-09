@@ -86,7 +86,16 @@ public:
 
 	template <typename... Args>
 	void executeCallback(EventCallback_t eventType, Args &&... args) {
-		(void)checkCallback(eventType, std::forward<Args>(args)...);
+		auto it = m_callbacks.find(eventType);
+		if (it == m_callbacks.end()) {
+			return;
+		}
+
+		for (const auto &entry : it->second) {
+			if (entry.callback && entry.callback->canExecute()) {
+				(void)entry.callback->execute(std::forward<Args>(args)...);
+			}
+		}
 	}
 
 	template <typename... Args>

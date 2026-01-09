@@ -1,11 +1,9 @@
-#include <boost/ut.hpp>
+#include "pch.hpp"
+
+#include <gtest/gtest.h>
 
 #include "lua/callbacks/event_callback_manager.hpp"
 #include "lua/scripts/luascript.hpp"
-
-#include "injection_fixture.hpp"
-
-using namespace boost::ut;
 
 struct DummyScriptInterface final : LuaScriptInterface {
 	mutable int calls = 0;
@@ -25,16 +23,51 @@ struct DummyScriptInterface final : LuaScriptInterface {
 	}
 };
 
-struct FakeEventCallback : EventCallback {
-	using EventCallback::EventCallback;
-	bool creatureOnCombat(const Creature* /*caster*/, const Creature* /*target*/, CombatDamage &damage) const {
-		damage.primary.value += 50;
-		damage.secondary.value += 5;
+struct MutatingScriptInterface final : LuaScriptInterface {
+	std::unique_ptr<lua_State, decltype(&lua_close)> L { luaL_newstate(), &lua_close };
+	int addPrimary;
+	int addSecondary;
+	bool result;
+	mutable int calls { 0 };
+
+	MutatingScriptInterface(int dp, int ds, bool r) :
+		LuaScriptInterface("test"),
+		addPrimary(dp),
+		addSecondary(ds),
+		result(r) {
+	}
+	lua_State* getLuaState() override {
+		return L.get();
+	}
+	bool pushFunction(int32_t) const override {
 		return true;
+	}
+	bool callFunction(int) const override {
+		++calls;
+		const int index = lua_gettop(L.get());
+		lua_getfield(L.get(), index, "primary");
+		if (lua_istable(L.get(), -1)) {
+			lua_getfield(L.get(), -1, "value");
+			const auto value = static_cast<int32_t>(lua_tointeger(L.get(), -1));
+			lua_pop(L.get(), 1);
+			lua_pushnumber(L.get(), value + addPrimary);
+			lua_setfield(L.get(), -2, "value");
+		}
+		lua_pop(L.get(), 1);
+		lua_getfield(L.get(), index, "secondary");
+		if (lua_istable(L.get(), -1)) {
+			lua_getfield(L.get(), -1, "value");
+			const auto value = static_cast<int32_t>(lua_tointeger(L.get(), -1));
+			lua_pop(L.get(), 1);
+			lua_pushnumber(L.get(), value + addSecondary);
+			lua_setfield(L.get(), -2, "value");
+		}
+		lua_pop(L.get(), 1);
+		return result;
 	}
 };
 
-static void registration_sorting_body() {
+TEST(EventCallbackManagerTest, RegistrationSorting) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
@@ -52,18 +85,12 @@ static void registration_sorting_body() {
 	mgr.registerCallback(cb2);
 
 	const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-	expect(vec.size() == std::size_t { 2 });
-	expect(vec[0] == cb2);
-	expect(vec[1] == cb1);
+	ASSERT_EQ(vec.size(), std::size_t { 2 });
+	EXPECT_EQ(vec[0], cb2);
+	EXPECT_EQ(vec[1], cb1);
 }
 
-static void reg_registration_sorting() {
-	test("registration_sorting") = [] {
-		registration_sorting_body();
-	};
-}
-
-static void registration_tie_order_body() {
+TEST(EventCallbackManagerTest, RegistrationTieOrder) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
@@ -81,17 +108,12 @@ static void registration_tie_order_body() {
 	mgr.registerCallback(cb2);
 
 	const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-	expect(vec[0] == cb1);
-	expect(vec[1] == cb2);
+	ASSERT_EQ(vec.size(), std::size_t { 2 });
+	EXPECT_EQ(vec[0], cb1);
+	EXPECT_EQ(vec[1], cb2);
 }
 
-static void reg_registration_tie_order() {
-	test("registration_tie_order") = [] {
-		registration_tie_order_body();
-	};
-}
-
-static void dispatch_short_circuit_body() {
+TEST(EventCallbackManagerTest, DispatchShortCircuit) {
 	DummyScriptInterface first(false);
 	DummyScriptInterface second(true);
 	EventCallbackManager mgr;
@@ -108,35 +130,27 @@ static void dispatch_short_circuit_body() {
 	mgr.registerCallback(cb2);
 
 	const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
-	expect(!ok);
-	expect(first.calls == 1);
-	expect(second.calls == 0);
+	EXPECT_FALSE(ok);
+	EXPECT_EQ(first.calls, 1);
+	EXPECT_EQ(second.calls, 0);
 }
 
-static void reg_dispatch_short_circuit() {
-	test("dispatch_short_circuit") = [] {
-		dispatch_short_circuit_body();
-	};
+TEST(EventCallbackTest, CanExecute) {
+	DummyScriptInterface iface;
+	EventCallback cb("cb", false, &iface);
+
+	cb.setEnabled(false);
+	EXPECT_FALSE(cb.canExecute());
+
+	cb.setEnabled(true);
+	cb.setScriptId(1);
+	EXPECT_TRUE(cb.canExecute());
+
+	cb.setScriptId(EventCallback::kInvalidScriptId);
+	EXPECT_FALSE(cb.canExecute());
 }
 
-static void reg_can_execute() {
-	test("can_execute") = [] {
-		DummyScriptInterface iface;
-		EventCallback cb("cb", false, &iface);
-
-		cb.setEnabled(false);
-		expect(!cb.canExecute());
-
-		cb.setEnabled(true);
-		cb.setScriptId(1);
-		expect(cb.canExecute());
-
-		cb.setScriptId(EventCallback::kInvalidScriptId);
-		expect(!cb.canExecute());
-	};
-}
-
-static void dispatch_all_ok_body() {
+TEST(EventCallbackManagerTest, DispatchAllOk) {
 	DummyScriptInterface a(true);
 	DummyScriptInterface b(true);
 	EventCallbackManager mgr;
@@ -153,18 +167,12 @@ static void dispatch_all_ok_body() {
 	mgr.registerCallback(cb2);
 
 	const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
-	expect(ok);
-	expect(a.calls == 1);
-	expect(b.calls == 1);
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(a.calls, 1);
+	EXPECT_EQ(b.calls, 1);
 }
 
-static void reg_dispatch_all_ok() {
-	test("dispatch_all_ok") = [] {
-		dispatch_all_ok_body();
-	};
-}
-
-static void dispatch_skips_disabled_and_invalid_body() {
+TEST(EventCallbackManagerTest, DispatchSkipsDisabledAndInvalid) {
 	DummyScriptInterface a(true);
 	DummyScriptInterface b(true);
 	DummyScriptInterface c(true);
@@ -187,19 +195,13 @@ static void dispatch_skips_disabled_and_invalid_body() {
 	mgr.registerCallback(ok);
 
 	const bool allOk = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
-	expect(allOk);
-	expect(a.calls == 0);
-	expect(b.calls == 0);
-	expect(c.calls == 1);
+	EXPECT_TRUE(allOk);
+	EXPECT_EQ(a.calls, 0);
+	EXPECT_EQ(b.calls, 0);
+	EXPECT_EQ(c.calls, 1);
 }
 
-static void reg_dispatch_skips_disabled_and_invalid() {
-	test("dispatch_skips_disabled_and_invalid") = [] {
-		dispatch_skips_disabled_and_invalid_body();
-	};
-}
-
-static void type_isolation_body() {
+TEST(EventCallbackManagerTest, TypeIsolation) {
 	DummyScriptInterface trade(true);
 	DummyScriptInterface move(true);
 	EventCallbackManager mgr;
@@ -216,45 +218,37 @@ static void type_isolation_body() {
 	mgr.registerCallback(cbMove);
 
 	const bool okTrade = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
-	expect(okTrade);
-	expect(trade.calls == 1);
-	expect(move.calls == 0);
+	EXPECT_TRUE(okTrade);
+	EXPECT_EQ(trade.calls, 1);
+	EXPECT_EQ(move.calls, 0);
 
 	const bool okMove = mgr.checkCallback(EventCallback_t::playerOnMoveCreature);
-	expect(okMove);
-	expect(trade.calls == 1);
-	expect(move.calls == 1);
+	EXPECT_TRUE(okMove);
+	EXPECT_EQ(trade.calls, 1);
+	EXPECT_EQ(move.calls, 1);
 }
 
-static void reg_type_isolation() {
-	test("type_isolation") = [] {
-		type_isolation_body();
-	};
+TEST(EventCallbackManagerTest, RegisterDupBlocksWhenSkipFalse) {
+	DummyScriptInterface iface;
+	EventCallbackManager mgr;
+
+	auto a = std::make_shared<EventCallback>("X", false, &iface);
+	a->setType(EventCallback_t::playerOnTradeRequest);
+	a->setScriptId(1);
+
+	auto b = std::make_shared<EventCallback>("X", false, &iface);
+	b->setType(EventCallback_t::playerOnTradeRequest);
+	b->setScriptId(1);
+
+	mgr.registerCallback(a);
+	mgr.registerCallback(b);
+
+	const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	ASSERT_EQ(v.size(), std::size_t { 1 });
+	EXPECT_EQ(v[0], a);
 }
 
-static void reg_register_dup_blocks_when_skip_false() {
-	test("register_dup_blocks_when_skip_false") = [] {
-		DummyScriptInterface iface;
-		EventCallbackManager mgr;
-
-		auto a = std::make_shared<EventCallback>("X", false, &iface);
-		a->setType(EventCallback_t::playerOnTradeRequest);
-		a->setScriptId(1);
-
-		auto b = std::make_shared<EventCallback>("X", false, &iface);
-		b->setType(EventCallback_t::playerOnTradeRequest);
-		b->setScriptId(1);
-
-		mgr.registerCallback(a);
-		mgr.registerCallback(b);
-
-		const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-		expect(v.size() == std::size_t { 1 });
-		expect(v[0] == a);
-	};
-}
-
-static void register_dup_allowed_when_skip_true_body() {
+TEST(EventCallbackManagerTest, RegisterDupAllowedWhenSkipTrue) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
@@ -271,55 +265,18 @@ static void register_dup_allowed_when_skip_true_body() {
 	mgr.registerCallback(b);
 
 	const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
-	expect(v.size() == std::size_t { 2 });
-	expect(v[0] == a);
-	expect(v[1] == b);
+	ASSERT_EQ(v.size(), std::size_t { 2 });
+	EXPECT_EQ(v[0], a);
+	EXPECT_EQ(v[1], b);
 }
 
-static void reg_register_dup_allowed_when_skip_true() {
-	test("register_dup_allowed_when_skip_true") = [] {
-		register_dup_allowed_when_skip_true_body();
-	};
-}
-
-struct MutatingScriptInterface final : LuaScriptInterface {
-	std::unique_ptr<lua_State, decltype(&lua_close)> L { luaL_newstate(), &lua_close };
-	CombatDamage* dmg;
-	int addPrimary;
-	int addSecondary;
-	bool result;
-	mutable int calls { 0 };
-
-	MutatingScriptInterface(CombatDamage* d, int dp, int ds, bool r) :
-		LuaScriptInterface("test"),
-		dmg(d),
-		addPrimary(dp),
-		addSecondary(ds),
-		result(r) {
-	}
-	lua_State* getLuaState() override {
-		return L.get();
-	}
-	bool pushFunction(int32_t) const override {
-		return true;
-	}
-	bool callFunction(int) const override {
-		++calls;
-		if (dmg) {
-			dmg->primary.value += addPrimary;
-			dmg->secondary.value += addSecondary;
-		}
-		return result;
-	}
-};
-
-static void damage_roundtrip_mutation_ok_body() {
+TEST(EventCallbackManagerTest, DamageRoundtripMutationOk) {
 	CombatDamage dmg {};
 	dmg.primary.value = 100;
 	dmg.secondary.value = 10;
 
-	MutatingScriptInterface a(&dmg, 50, 5, true);
-	MutatingScriptInterface b(&dmg, 20, 2, true);
+	MutatingScriptInterface a(50, 5, true);
+	MutatingScriptInterface b(20, 2, true);
 
 	EventCallbackManager mgr;
 
@@ -339,26 +296,20 @@ static void damage_roundtrip_mutation_ok_body() {
 		nullptr, nullptr, std::ref(dmg)
 	);
 
-	expect(ok);
-	expect(a.calls == 1);
-	expect(b.calls == 1);
-	expect(dmg.primary.value == 170);
-	expect(dmg.secondary.value == 17);
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(a.calls, 1);
+	EXPECT_EQ(b.calls, 1);
+	EXPECT_EQ(dmg.primary.value, 170);
+	EXPECT_EQ(dmg.secondary.value, 17);
 }
 
-static void reg_damage_roundtrip_mutation_ok() {
-	test("damage_roundtrip_mutation_ok") = [] {
-		damage_roundtrip_mutation_ok_body();
-	};
-}
-
-static void damage_short_circuit_mutation_stops_body() {
+TEST(EventCallbackManagerTest, DamageShortCircuitMutationStops) {
 	CombatDamage dmg {};
 	dmg.primary.value = 100;
 	dmg.secondary.value = 10;
 
-	MutatingScriptInterface stop(&dmg, 77, 7, false);
-	MutatingScriptInterface after(&dmg, 99, 9, true);
+	MutatingScriptInterface stop(77, 7, false);
+	MutatingScriptInterface after(99, 9, true);
 
 	EventCallbackManager mgr;
 
@@ -380,26 +331,20 @@ static void damage_short_circuit_mutation_stops_body() {
 		nullptr, nullptr, std::ref(dmg)
 	);
 
-	expect(!ok);
-	expect(stop.calls == 1);
-	expect(after.calls == 0);
-	expect(dmg.primary.value == 177);
-	expect(dmg.secondary.value == 17);
+	EXPECT_FALSE(ok);
+	EXPECT_EQ(stop.calls, 1);
+	EXPECT_EQ(after.calls, 0);
+	EXPECT_EQ(dmg.primary.value, 177);
+	EXPECT_EQ(dmg.secondary.value, 17);
 }
 
-static void reg_damage_short_circuit_mutation_stops() {
-	test("damage_short_circuit_mutation_stops") = [] {
-		damage_short_circuit_mutation_stops_body();
-	};
-}
-
-static void dup_skip_true_priority_order_body() {
+TEST(EventCallbackManagerTest, DupSkipTruePriorityOrder) {
 	CombatDamage dmg {};
 	dmg.primary.value = 0;
 	dmg.secondary.value = 0;
 
-	MutatingScriptInterface hi(&dmg, 10, 1, true);
-	MutatingScriptInterface lo(&dmg, 1, 0, true);
+	MutatingScriptInterface hi(10, 1, true);
+	MutatingScriptInterface lo(1, 0, true);
 
 	EventCallbackManager mgr;
 
@@ -418,100 +363,56 @@ static void dup_skip_true_priority_order_body() {
 	mgr.registerCallback(b);
 
 	const auto &v = mgr.getCallbacks(EventCallback_t::creatureOnCombat);
-	expect(v.size() == std::size_t { 2 });
-	expect(v[0] == b);
-	expect(v[1] == a);
+	ASSERT_EQ(v.size(), std::size_t { 2 });
+	EXPECT_EQ(v[0], b);
+	EXPECT_EQ(v[1], a);
 
 	const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
-	expect(ok);
-	expect(hi.calls == 1);
-	expect(lo.calls == 1);
-	expect(dmg.primary.value == 11);
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(hi.calls, 1);
+	EXPECT_EQ(lo.calls, 1);
+	EXPECT_EQ(dmg.primary.value, 11);
 }
 
-static void reg_dup_skip_true_priority_order() {
-	test("dup_skip_true_priority_order") = [] {
-		dup_skip_true_priority_order_body();
-	};
-}
-
-static void same_name_different_types_ok_body() {
-	using enum EventCallback_t;
+TEST(EventCallbackManagerTest, SameNameDifferentTypesOk) {
 	DummyScriptInterface a(true);
 	DummyScriptInterface b(true);
 	EventCallbackManager mgr;
 
 	auto c1 = std::make_shared<EventCallback>("dup", false, &a);
-	c1->setType(playerOnTradeRequest);
+	c1->setType(EventCallback_t::playerOnTradeRequest);
 	c1->setScriptId(1);
 
 	auto c2 = std::make_shared<EventCallback>("dup", false, &b);
-	c2->setType(playerOnMoveCreature);
+	c2->setType(EventCallback_t::playerOnMoveCreature);
 	c2->setScriptId(1);
 
 	mgr.registerCallback(c1);
 	mgr.registerCallback(c2);
 
-	expect(mgr.checkCallback(playerOnTradeRequest));
-	expect(a.calls == 1);
-	expect(b.calls == 0);
+	EXPECT_TRUE(mgr.checkCallback(EventCallback_t::playerOnTradeRequest));
+	EXPECT_EQ(a.calls, 1);
+	EXPECT_EQ(b.calls, 0);
 
-	expect(mgr.checkCallback(playerOnMoveCreature));
-	expect(a.calls == 1);
-	expect(b.calls == 1);
+	EXPECT_TRUE(mgr.checkCallback(EventCallback_t::playerOnMoveCreature));
+	EXPECT_EQ(a.calls, 1);
+	EXPECT_EQ(b.calls, 1);
 }
 
-static void reg_same_name_different_types_ok() {
-	test("same_name_different_types_ok") = [] {
-		same_name_different_types_ok_body();
-	};
+TEST(EventCallbackManagerTest, NoListenersReturnsTrue) {
+	EventCallbackManager mgr;
+	CombatDamage dmg {};
+	const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
+	EXPECT_TRUE(ok);
 }
 
-static void reg_no_listeners_returns_true() {
-	test("no_listeners_returns_true") = [] {
-		EventCallbackManager mgr;
-		CombatDamage dmg {};
-		const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
-		expect(ok);
-	};
+TEST(EventCallbackManagerTest, NoListenersOk) {
+	EventCallbackManager mgr;
+	CombatDamage dmg {};
+	dmg.primary.value = 1;
+	dmg.secondary.value = 2;
+	const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(dmg.primary.value, 1);
+	EXPECT_EQ(dmg.secondary.value, 2);
 }
-
-static void reg_no_listeners_ok() {
-	test("no_listeners_ok") = [] {
-		EventCallbackManager mgr;
-		CombatDamage dmg {};
-		dmg.primary.value = 1;
-		dmg.secondary.value = 2;
-		const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
-		expect(ok);
-		expect(dmg.primary.value == 1);
-		expect(dmg.secondary.value == 2);
-	};
-}
-
-static void register_event_callbacks_suite() {
-	static di::extension::injector<> injector {};
-	InMemoryLogger::install(injector);
-	DI::setTestContainer(&injector);
-	(void)injector.create<Logger &>();
-
-	reg_registration_sorting();
-	reg_registration_tie_order();
-	reg_dispatch_short_circuit();
-	reg_can_execute();
-	reg_dispatch_all_ok();
-	reg_dispatch_skips_disabled_and_invalid();
-	reg_type_isolation();
-	reg_register_dup_blocks_when_skip_false();
-	reg_register_dup_allowed_when_skip_true();
-	reg_damage_roundtrip_mutation_ok();
-	reg_damage_short_circuit_mutation_stops();
-	reg_dup_skip_true_priority_order();
-	reg_same_name_different_types_ok();
-	reg_no_listeners_returns_true();
-	reg_no_listeners_ok();
-}
-
-suite<"event_callbacks"> eventCallbacksTests = [] {
-	register_event_callbacks_suite();
-};

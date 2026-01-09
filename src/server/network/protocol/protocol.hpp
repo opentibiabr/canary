@@ -59,7 +59,10 @@ protected:
 		encryptionEnabled = true;
 	}
 	void setXTEAKey(const uint32_t* newKey) {
-		std::ranges::copy(newKey, newKey + 4, this->key.begin());
+		if (std::memcpy(key.data(), newKey, sizeof(uint32_t) * key.size()) == nullptr) {
+			g_logger().error("[{}] memcpy failed while setting XTEA key", __FUNCTION__);
+			return;
+		}
 	}
 
 	void setChecksumMethod(ChecksumMethods_t method) {

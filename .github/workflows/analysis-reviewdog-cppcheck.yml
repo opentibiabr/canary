@@ -17,13 +17,13 @@ jobs:
     steps:
       - name: Cancel Previous Runs
         if: github.ref != 'refs/heads/main'
-        uses: fkirc/skip-duplicate-actions@master
+        uses: fkirc/skip-duplicate-actions@v5.3.1
         with:
           concurrent_skipping: "same_content"
           cancel_others: true
 
       - name: Check out code.
-        uses: actions/checkout@main
+        uses: actions/checkout@v6.0.1
 
       - name: Setup reviewdog
         uses: reviewdog/action-setup@v1.0.3

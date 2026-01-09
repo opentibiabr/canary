@@ -273,7 +273,7 @@ bool LuaScriptInterface::callFunction(int params) const {
 	if (protectedCall(luaState, params, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::getString(luaState, -1));
 	} else {
-		result = LuaScriptInterface::getBoolean(luaState, -1);
+		result = LuaScriptInterface::getBoolean(luaState, -1, true);
 	}
 
 	lua_pop(luaState, 1);

@@ -269,7 +269,7 @@ enum CombatParam_t {
 	COMBAT_PARAM_CHAIN_EFFECT,
 };
 
-enum CombatOrigin {
+enum CombatOrigin : uint8_t {
 	ORIGIN_NONE,
 	ORIGIN_CONDITION,
 	ORIGIN_SPELL,

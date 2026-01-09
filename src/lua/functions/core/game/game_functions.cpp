@@ -20,7 +20,6 @@
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
 #include "items/item.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/creature/talkaction.hpp"

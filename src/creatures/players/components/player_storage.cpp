@@ -83,7 +83,7 @@ void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shou
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
 			const auto &player = m_player.getPlayer();
 			g_events().eventOnStorageUpdate(player, key, value, oldValue, currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, player, key, value, oldValue, currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, player, key, value, oldValue, currentFrameTime);
 		}
 	} else {
 		m_storageMap.erase(key);

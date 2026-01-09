@@ -41,7 +41,7 @@ namespace {
 
 		auto player = std::make_shared<Player>();
 		ASSERT_TRUE(player->setVocation(1));
-		auto *imbuement = g_imbuements().getImbuement(1);
+		auto* imbuement = g_imbuements().getImbuement(1);
 		ASSERT_NE(nullptr, imbuement);
 
 		const auto baseline = player->getSkillLevel(SKILL_DISTANCE);

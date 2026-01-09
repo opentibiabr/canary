@@ -63,24 +63,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 198 }, -- gold coin
-	{ id = 3035, chance = 67610, maxCount = 3 }, -- platinum coin
-	{ id = 9058, chance = 390 }, -- gold ingot
-	{ id = 5911, chance = 3230 }, -- red piece of cloth
-	{ id = 5878, chance = 14710 }, -- minotaur leather
-	{ id = 11472, chance = 6580, maxCount = 2 }, -- minotaur horn
-	{ id = 21201, chance = 13160 }, -- execowtioner mask
-	{ id = 239, chance = 11480 }, -- great health potion
-	{ id = 238, chance = 10060 }, -- great mana potion
-	{ id = 3577, chance = 7230 }, -- meat
-	{ id = 9057, chance = 5810, maxCount = 2 }, -- small topaz
-	{ id = 3030, chance = 4520, maxCount = 2 }, -- small ruby
-	{ id = 7412, chance = 900 }, -- butcher's axe
-	{ id = 3381, chance = 770 }, -- crown armor
-	{ id = 21176, chance = 1420 }, -- execowtioner axe
-	{ id = 3318, chance = 770 }, -- knight axe
-	{ id = 7413, chance = 390 }, -- titan axe
-	{ id = 7401, chance = 520 }, -- minotaur trophy
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 20062, chance = 100000 }, -- Cluster of Solace
+	{ id = 16122, chance = 15000, maxCount = 5 }, -- Green Crystal Splinter
+	{ id = 16124, chance = 32499, maxCount = 5 }, -- Blue Crystal Splinter
+	{ id = 20198, chance = 100000 }, -- Frazzle Tongue
+	{ id = 20264, chance = 100000, maxCount = 2 }, -- Unrealized Dream
+	{ id = 16123, chance = 52500 }, -- Brown Crystal Splinter
 }
 
 monster.attacks = {

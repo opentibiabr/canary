@@ -77,14 +77,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 71170, maxCount = 27 },
-	{ name = "brass helmet", chance = 4390 },
-	{ name = "bone shield", chance = 960 },
-	{ id = 3578, chance = 30790, maxCount = 3 }, -- fish
-	{ name = "northern pike", chance = 40 },
-	{ name = "rainbow trout", chance = 40 },
-	{ name = "green perch", chance = 110 },
-	{ name = "fireproof horn", chance = 410 },
+	{ id = 3031, chance = 68581, maxCount = 27 }, -- Gold Coin
+	{ id = 3578, chance = 36223, maxCount = 3 }, -- Fish
+	{ id = 3354, chance = 3419 }, -- Brass Helmet
+	{ id = 20356, chance = 460 }, -- Fireproof Horn
+	{ id = 3441, chance = 886 }, -- Bone Shield
+	{ id = 7159, chance = 78 }, -- Green Perch
+	{ id = 3580, chance = 63 }, -- Northern Pike
+	{ id = 7158, chance = 52 }, -- Rainbow Trout
 }
 
 monster.attacks = {

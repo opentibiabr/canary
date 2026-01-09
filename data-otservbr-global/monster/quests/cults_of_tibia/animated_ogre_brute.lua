@@ -63,24 +63,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 92000, maxCount = 130 }, -- gold coin
-	{ id = 3577, chance = 6200 }, -- meat
-	{ id = 3030, chance = 4200 }, -- small ruby
-	{ id = 3026, chance = 6200, maxCount = 3 }, -- white pearl
-	{ id = 11447, chance = 6200 }, -- battle stone
-	{ id = 3598, chance = 6200, maxCount = 7 }, -- cookie
-	{ id = 22188, chance = 5200 }, -- ogre ear stud
-	{ id = 22189, chance = 1200 }, -- ogre nose ring
-	{ id = 22193, chance = 3200, maxCount = 2 }, -- onyx chip
-	{ id = 22194, chance = 3200, maxCount = 3 }, -- opal
-	{ id = 3050, chance = 2200 }, -- power ring
-	{ id = 22191, chance = 1200 }, -- skull fetish
-	{ id = 236, chance = 6200, maxCount = 3 }, -- strong health potion
-	{ id = 7428, chance = 500 }, -- bonebreaker
-	{ id = 22172, chance = 600 }, -- ogre choppa
-	{ id = 22171, chance = 800 }, -- ogre klubba
-	{ id = 3465, chance = 500 }, -- pot
-	{ id = 22192, chance = 300 }, -- shamanic mask
+	{ id = 3031, chance = 100000, maxCount = 46 }, -- Gold Coin
+	{ id = 22188, chance = 15790 }, -- Ogre Ear Stud
+	{ id = 22193, chance = 5260, maxCount = 2 }, -- Onyx Chip
+	{ id = 1781, chance = 5260, maxCount = 2 }, -- Small Stone
+	{ id = 3026, chance = 10530 }, -- White Pearl
+	{ id = 22189, chance = 31580 }, -- Ogre Nose Ring
+	{ id = 11447, chance = 10530 }, -- Battle Stone
+	{ id = 236, chance = 10530 }, -- Strong Health Potion
+	{ id = 3598, chance = 5260 }, -- Cookie
+	{ id = 3577, chance = 21050 }, -- Meat
+	{ id = 3030, chance = 5260 }, -- Small Ruby
 }
 
 monster.attacks = {

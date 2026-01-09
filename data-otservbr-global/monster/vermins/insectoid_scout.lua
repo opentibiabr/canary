@@ -76,10 +76,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 80000, maxCount = 80 },
-	{ id = 3093, chance = 100 }, -- club ring
-	{ name = "ripper lance", chance = 850 },
-	{ name = "health potion", chance = 280 },
+	{ id = 3031, chance = 81900, maxCount = 80 }, -- Gold Coin
+	{ id = 3346, chance = 390 }, -- Ripper Lance
+	{ id = 266, chance = 150 }, -- Health Potion
+	{ id = 3093, chance = 80 }, -- Club Ring
 }
 
 monster.attacks = {

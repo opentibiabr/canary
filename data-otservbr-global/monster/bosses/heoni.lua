@@ -68,7 +68,9 @@ monster.voices = {
 	{ text = "Shriiiek", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 11548, chance = 1000 }, -- Strong Sinew
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 50, attack = 40, condition = { type = CONDITION_POISON, totalDamage = 480, interval = 4000 } },

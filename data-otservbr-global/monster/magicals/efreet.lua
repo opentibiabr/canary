@@ -88,22 +88,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2647, chance = 2200 }, -- green tapestry
-	{ name = "small oil lamp", chance = 160 },
-	{ name = "gold coin", chance = 50000, maxCount = 75 },
-	{ name = "gold coin", chance = 60000, maxCount = 50 },
-	{ name = "small emerald", chance = 7000 },
-	{ name = "green gem", chance = 200 },
-	{ name = "wand of inferno", chance = 390 },
-	{ name = "heavy machete", chance = 5000 },
-	{ name = "mystic turban", chance = 160 },
-	{ name = "pear", chance = 9390, maxCount = 5 },
-	{ name = "green piece of cloth", chance = 3000 },
-	{ name = "royal spear", chance = 15570, maxCount = 3 },
-	{ name = "strong mana potion", chance = 3500 },
-	{ name = "magma monocle", chance = 360 },
-	{ name = "jewelled belt", chance = 8540 },
-	{ name = "noble turban", chance = 1130 },
+	{ id = 3031, chance = 98039, maxCount = 130 }, -- Gold Coin
+	{ id = 11470, chance = 7750 }, -- Jewelled Belt
+	{ id = 3584, chance = 19619, maxCount = 5 }, -- Pear
+	{ id = 7378, chance = 16491, maxCount = 3 }, -- Royal Spear
+	{ id = 3032, chance = 7045 }, -- Small Emerald
+	{ id = 237, chance = 9863 }, -- Strong Mana Potion
+	{ id = 5910, chance = 3550 }, -- Green Piece of Cloth
+	{ id = 2647, chance = 2395 }, -- Green Tapestry
+	{ id = 3330, chance = 15120 }, -- Heavy Machete
+	{ id = 3071, chance = 692 }, -- Wand of Inferno
+	{ id = 11486, chance = 1020 }, -- Noble Turban
+	{ id = 827, chance = 497 }, -- Magma Monocle
+	{ id = 3574, chance = 190 }, -- Mystic Turban
+	{ id = 2933, chance = 10089 }, -- Small Oil Lamp
+	{ id = 3038, chance = 110 }, -- Green Gem
 }
 
 monster.attacks = {

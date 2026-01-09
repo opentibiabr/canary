@@ -81,22 +81,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 70000, maxCount = 4 },
-	{ name = "deepling breaktime snack", chance = 35520 },
-	{ name = "great mana potion", chance = 32640, maxCount = 3 },
-	{ name = "great health potion", chance = 33430, maxCount = 3 },
-	{ name = "deepling claw", chance = 29960 },
-	{ name = "eye of a deepling", chance = 29610 },
-	{ name = "deepling guard belt buckle", chance = 23700 },
-	{ name = "small sapphire", chance = 9410, maxCount = 5 },
-	{ name = "heavy trident", chance = 3530 },
-	{ name = "deepling squelcher", chance = 1440 },
-	{ name = "guardian axe", chance = 1340 },
-	{ name = "ornate crossbow", chance = 1190 },
-	{ name = "deepling backpack", chance = 410 },
-	{ name = "foxtail", chance = 30 },
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 70160, maxCount = 4 }, -- Platinum Coin
+	{ id = 14011, chance = 35510 }, -- Deepling Breaktime Snack
+	{ id = 239, chance = 31670, maxCount = 3 }, -- Great Health Potion
+	{ id = 238, chance = 32840, maxCount = 3 }, -- Great Mana Potion
+	{ id = 14044, chance = 30120 }, -- Deepling Claw
+	{ id = 12730, chance = 29840 }, -- Eye of a Deepling
+	{ id = 14010, chance = 23870 }, -- Deepling Guard Belt Buckle
+	{ id = 3029, chance = 9410, maxCount = 5 }, -- Small Sapphire
+	{ id = 12683, chance = 3250 }, -- Heavy Trident
+	{ id = 14250, chance = 1470 }, -- Deepling Squelcher
+	{ id = 14043, chance = 1220 }, -- Guardian Axe
+	{ id = 14248, chance = 530 }, -- Deepling Backpack
+	{ id = 14247, chance = 1140 }, -- Ornate Crossbow
+	{ id = 14142, chance = 30 }, -- Foxtail
 }
 
 monster.attacks = {

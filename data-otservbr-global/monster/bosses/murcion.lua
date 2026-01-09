@@ -76,16 +76,24 @@ monster.summon = {
 monster.voices = {}
 
 monster.loot = {
-	{ name = "crystal coin", chance = 12317, maxCount = 91 },
-	{ id = 3039, chance = 10896, maxCount = 2 }, -- red gem
-	{ name = "amber with a bug", chance = 14590, maxCount = 1 },
-	{ name = "amber with a dragonfly", chance = 5405, maxCount = 1 },
-	{ name = "bullseye potion", chance = 10821, maxCount = 44 },
-	{ name = "green gem", chance = 7763, maxCount = 4 },
-	{ name = "mastermind potion", chance = 9534, maxCount = 15 },
-	{ name = "supreme health potion", chance = 6212, maxCount = 102 },
-	{ name = "ultimate mana potion", chance = 8785, maxCount = 29 },
-	{ name = "ultimate spirit potion", chance = 8783, maxCount = 161 },
+	{ id = 0, chance = 1000 }, -- This creature drops no loot.
+	{ id = 32624, chance = 25714 }, -- Amber with a Bug
+	{ id = 32625, chance = 45714 }, -- Amber with a Dragonfly
+	{ id = 43860, chance = 1000 }, -- Bag You Covet
+	{ id = 7439, chance = 15151, maxCount = 16 }, -- Berserk Potion
+	{ id = 3043, chance = 100000, maxCount = 88 }, -- Crystal Coin
+	{ id = 30053, chance = 3030 }, -- Dragon Figurine
+	{ id = 30060, chance = 30303 }, -- Giant Emerald
+	{ id = 3038, chance = 51428 }, -- Green Gem
+	{ id = 7440, chance = 31428, maxCount = 15 }, -- Mastermind Potion
+	{ id = 43962, chance = 3030 }, -- Putrefactive Figurine
+	{ id = 3039, chance = 25714, maxCount = 2 }, -- Red Gem
+	{ id = 23375, chance = 65714, maxCount = 200 }, -- Supreme Health Potion
+	{ id = 43501, chance = 1000 }, -- The Essence of Murcion
+	{ id = 23373, chance = 42857, maxCount = 178 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 57142, maxCount = 169 }, -- Ultimate Spirit Potion
+	{ id = 3036, chance = 15151 }, -- Violet Gem
+	{ id = 3037, chance = 21212 }, -- Yellow Gem
 }
 
 monster.attacks = {

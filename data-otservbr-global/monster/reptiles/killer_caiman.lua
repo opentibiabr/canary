@@ -74,15 +74,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 80 },
-	{ name = "small emerald", chance = 10150, maxCount = 5 },
-	{ name = "obsidian lance", chance = 4975 },
-	{ name = "ham", chance = 40100 },
-	{ name = "crocodile boots", chance = 510 },
-	{ id = 281, chance = 1130 }, -- giant shimmering pearl (green)
-	{ name = "piece of crocodile leather", chance = 25430 },
-	{ name = "bunch of ripe rice", chance = 4800, maxCount = 2 },
+	{ id = 3031, chance = 85592, maxCount = 180 }, -- Gold Coin
+	{ id = 3582, chance = 40051 }, -- Ham
+	{ id = 10279, chance = 12817 }, -- Piece of Crocodile Leather
+	{ id = 3032, chance = 2273, maxCount = 5 }, -- Small Emerald
+	{ id = 10328, chance = 5986, maxCount = 2 }, -- Bunch of Ripe Rice
+	{ id = 3313, chance = 5000 }, -- Obsidian Lance
+	{ id = 281, chance = 832 }, -- Giant Shimmering Pearl (Green)
+	{ id = 3556, chance = 281 }, -- Crocodile Boots
 }
 
 monster.attacks = {

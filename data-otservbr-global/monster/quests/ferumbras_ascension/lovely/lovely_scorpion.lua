@@ -63,7 +63,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9651, chance = 4970 }, -- scorpion tail
+
 }
 
 monster.attacks = {

@@ -68,8 +68,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 60 },
-	{ name = "gold coin", chance = 100000, maxCount = 40 },
+	{ id = 3031, chance = 100000, maxCount = 143 }, -- Gold Coin
+	{ id = 25694, chance = 15460 }, -- Fairy Wings
+	{ id = 25735, chance = 12372, maxCount = 6 }, -- Leaf Star
+	{ id = 3728, chance = 9276 }, -- Dark Mushroom
+	{ id = 236, chance = 7734, maxCount = 2 }, -- Strong Health Potion
+	{ id = 3674, chance = 10909 }, -- Goat Grass
+	{ id = 24383, chance = 5152, maxCount = 2 }, -- Cave Turnip
+	{ id = 239, chance = 2062, maxCount = 2 }, -- Great Health Potion
+	{ id = 24962, chance = 3092 }, -- Prismatic Quartz
+	{ id = 25693, chance = 8245 }, -- Shimmering Beetles
+	{ id = 675, chance = 1820 }, -- Small Enchanted Sapphire
+	{ id = 1781, chance = 4120, maxCount = 5 }, -- Small Stone
+	{ id = 9014, chance = 3094 }, -- Leaf Legs
+	{ id = 3575, chance = 2062 }, -- Wood Cape
+	{ id = 2953, chance = 4120 }, -- Panpipes
 }
 
 monster.attacks = {

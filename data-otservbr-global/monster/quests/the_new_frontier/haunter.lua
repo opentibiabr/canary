@@ -63,7 +63,9 @@ monster.voices = {
 	{ text = "Surrender and I'll end it quick.", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 50, attack = 50 },

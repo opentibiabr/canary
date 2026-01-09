@@ -74,44 +74,52 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 63 },
-	{ name = "mastermind potion", chance = 100000 },
-	{ name = "stone skin amulet", chance = 100000 },
-	{ id = 27713, chance = 100000 }, -- heavy crystal fragment
-	{ name = "wand of inferno", chance = 75000 },
-	{ name = "great mana potion", chance = 64580, maxCount = 18 },
-	{ name = "blue crystal shard", chance = 60420 },
-	{ name = "fire axe", chance = 58330 },
-	{ name = "ultimate health potion", chance = 52080, maxCount = 18 },
-	{ name = "fire sword", chance = 52080 },
-	{ name = "great spirit potion", chance = 45830, maxCount = 18 },
-	{ name = "luminous orb", chance = 37500 },
-	{ name = "damaged worm head", chance = 27080 },
-	{ name = "small amethyst", chance = 25000 },
-	{ name = "small diamond", chance = 20830 },
-	{ name = "slightly rusted helmet", chance = 20830 },
-	{ name = "green gem", chance = 18750 },
-	{ name = "slightly rusted shield", chance = 18750 },
-	{ name = "silver token", chance = 16670 },
-	{ name = "giant tentacle", chance = 16670 },
-	{ name = "yellow gem", chance = 16670 },
-	{ name = "blue gem", chance = 16670 },
-	{ name = "small ruby", chance = 14580 },
-	{ id = 281, chance = 14580 }, -- giant shimmering pearl
-	{ name = "magic sulphur", chance = 14580 },
-	{ name = "huge chunk of crude iron", chance = 12500 },
-	{ id = 3039, chance = 12500 }, -- red gem
-	{ name = "small topaz", chance = 10420 },
-	{ name = "small emerald", chance = 10420 },
-	{ name = "muck rod", chance = 10420 },
-	{ name = "gold token", chance = 10420 },
-	{ name = "crystal coin", chance = 6250 },
-	{ name = "gnome shield", chance = 4170 },
-	{ name = "crystalline armor", chance = 4170 },
-	{ name = "gnome sword", chance = 4170 },
-	{ name = "terra mantle", chance = 2080 },
-	{ name = "violet gem", chance = 2080 },
-	{ name = "gnome legs", chance = 3390 },
+	{ id = 3035, chance = 100000, maxCount = 36 }, -- Platinum Coin
+	{ id = 3043, chance = 8306 }, -- Crystal Coin
+	{ id = 16119, chance = 65495, maxCount = 4 }, -- Blue Crystal Shard
+	{ id = 27619, chance = 16293 }, -- Giant Tentacle
+	{ id = 5892, chance = 19648 }, -- Huge Chunk of Crude Iron
+	{ id = 3037, chance = 17092 }, -- Yellow Gem
+	{ id = 3041, chance = 23482 }, -- Blue Gem
+	{ id = 3039, chance = 15654 }, -- Red Gem
+	{ id = 3028, chance = 21086, maxCount = 2 }, -- Small Diamond
+	{ id = 3032, chance = 17571, maxCount = 12 }, -- Small Emerald
+	{ id = 3033, chance = 19329, maxCount = 12 }, -- Small Amethyst
+	{ id = 3030, chance = 16613, maxCount = 12 }, -- Small Ruby
+	{ id = 9057, chance = 17412, maxCount = 12 }, -- Small Topaz
+	{ id = 3071, chance = 67571 }, -- Wand of Inferno
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 7440, chance = 100000, maxCount = 2 }, -- Mastermind Potion
+	{ id = 11454, chance = 43929 }, -- Luminous Orb
+	{ id = 811, chance = 3194 }, -- Terra Mantle
+	{ id = 5904, chance = 18370 }, -- Magic Sulphur
+	{ id = 3320, chance = 69169 }, -- Fire Axe
+	{ id = 3280, chance = 63578 }, -- Fire Sword
+	{ id = 239, chance = 1000, maxCount = 8 }, -- Great Health Potion
+	{ id = 7643, chance = 52076, maxCount = 8 }, -- Ultimate Health Potion
+	{ id = 238, chance = 57987, maxCount = 18 }, -- Great Mana Potion
+	{ id = 7642, chance = 58626, maxCount = 10 }, -- Great Spirit Potion
+	{ id = 27620, chance = 16613 }, -- Damaged Worm Head
+	{ id = 27618, chance = 5750 }, -- Pristine Worm Head
+	{ id = 16117, chance = 7507 }, -- Muck Rod
+	{ id = 8908, chance = 19009 }, -- Slightly Rusted Helmet
+	{ id = 8050, chance = 2236 }, -- Crystalline Armor
+	{ id = 3038, chance = 18210 }, -- Green Gem
+	{ id = 8902, chance = 18370 }, -- Slightly Rusted Shield
+	{ id = 27509, chance = 100319 }, -- Heavy Crystal Fragment
+	{ id = 281, chance = 13418 }, -- Giant Shimmering Pearl
+	{ id = 22516, chance = 11661 }, -- Silver Token
+	{ id = 22721, chance = 24281 }, -- Gold Token
+	{ id = 27651, chance = 3180 }, -- Gnome Sword
+	{ id = 27650, chance = 2076 }, -- Gnome Shield
+	{ id = 27605, chance = 479 }, -- Candle Stump
+	{ id = 27657, chance = 198 }, -- Crude Wood Planks
+	{ id = 27649, chance = 958 }, -- Gnome Legs
+	{ id = 27526, chance = 397 }, -- Mallet Pommel
+	{ id = 3036, chance = 4153 }, -- Violet Gem
+	{ id = 826, chance = 2236 }, -- Magma Coat
+	{ id = 10438, chance = 1118 }, -- Spellweaver's Robe
+	{ id = 50290, chance = 1000 }, -- Gnomish Footwraps
 }
 
 monster.attacks = {

@@ -65,7 +65,9 @@ monster.voices = {
 	{ text = "I might be fallen but you will fall before me!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -525, condition = { type = CONDITION_POISON, totalDamage = 18, interval = 4000 } },

@@ -64,17 +64,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 84810, maxCount = 14 },
-	{ name = "old and used backpack", chance = 100000 },
-	{ name = "sabre", chance = 5850 },
-	{ name = "axe", chance = 4960 },
-	{ name = "studded helmet", chance = 2950 },
-	{ name = "studded armor", chance = 7860 },
-	{ name = "studded shield", chance = 7300 },
-	{ name = "meat", chance = 10160 },
-	{ name = "orc tooth", chance = 210 },
-	{ name = "orc leather", chance = 590 },
-	{ id = 23986, chance = 1000 }, -- heavy old tome
+
 }
 
 monster.attacks = {

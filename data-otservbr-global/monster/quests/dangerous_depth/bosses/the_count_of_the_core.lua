@@ -74,48 +74,51 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 54 },
-	{ id = 27713, chance = 100000, maxCount = 7 }, -- heavy crystal fragment
-	{ name = "mastermind potion", chance = 100000, maxCount = 3 },
-	{ name = "stone skin amulet", chance = 100000 },
-	{ name = "amber staff", chance = 100000 },
-	{ name = "ultimate health potion", chance = 80000, maxCount = 15 },
-	{ name = "great mana potion", chance = 60000, maxCount = 23 },
-	{ name = "small topaz", chance = 60000, maxCount = 10 },
-	{ name = "green crystal shard", chance = 60000 },
-	{ name = "wand of inferno", chance = 60000 },
-	{ name = "huge spiky snail shell", chance = 60000 },
-	{ name = "small diamond", chance = 40000 },
-	{ name = "huge chunk of crude iron", chance = 40000, maxCount = 3 },
-	{ id = 282, chance = 40000 }, -- giant shimmering pearl
-	{ name = "great spirit potion", chance = 20000 },
-	{ name = "silver token", chance = 20000 },
-	{ name = "yellow gem", chance = 20000 },
-	{ name = "fire sword", chance = 20000 },
-	{ id = 3039, chance = 20000 }, -- red gem
-	{ name = "green gem", chance = 20000 },
-	{ name = "slightly rusted helmet", chance = 20000 },
-	{ name = "gold token", chance = 20000 },
-	{ name = "magic sulphur", chance = 40680 },
-	{ id = 27626, chance = 23730 }, -- chitinous mouth (count)
-	{ name = "blue gem", chance = 22030 },
-	{ name = "small emerald", chance = 18640 },
-	{ name = "slightly rusted shield", chance = 16950 },
-	{ name = "small ruby", chance = 13560 },
-	{ name = "small amethyst", chance = 11860 },
-	{ name = "luminous orb", chance = 8470 },
-	{ name = "crystal coin", chance = 6780 },
-	{ name = "harpoon of a giant snail", chance = 5080 },
-	{ name = "gnome shield", chance = 5080 },
-	{ name = "gnome helmet", chance = 3390 },
-	{ name = "magma coat", chance = 3390 },
-	{ name = "gnome sword", chance = 3390 },
-	{ name = "violet gem", chance = 3390 },
-	{ name = "crystalline armor", chance = 1690 },
-	{ name = "giant sword", chance = 1690 },
-	{ name = "guardian axe", chance = 1690 },
-	{ name = "twiceslicer", chance = 1690 },
-	{ name = "tinged pot", chance = 1690 },
+	{ id = 3043, chance = 8056 }, -- Crystal Coin
+	{ id = 3035, chance = 100000, maxCount = 53 }, -- Platinum Coin
+	{ id = 22721, chance = 21011 }, -- Gold Token
+	{ id = 3037, chance = 19115 }, -- Yellow Gem
+	{ id = 7642, chance = 53712, maxCount = 18 }, -- Great Spirit Potion
+	{ id = 9057, chance = 20063, maxCount = 12 }, -- Small Topaz
+	{ id = 7440, chance = 100000, maxCount = 2 }, -- Mastermind Potion
+	{ id = 16121, chance = 65718, maxCount = 4 }, -- Green Crystal Shard
+	{ id = 5904, chance = 47235 }, -- Magic Sulphur
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 7426, chance = 69194 }, -- Amber Staff
+	{ id = 3071, chance = 70300 }, -- Wand of Inferno
+	{ id = 3280, chance = 63349 }, -- Fire Sword
+	{ id = 22516, chance = 10426 }, -- Silver Token
+	{ id = 27625, chance = 4739 }, -- Harpoon of a Giant Snail
+	{ id = 27627, chance = 12796 }, -- Huge Spiky Snail Shell
+	{ id = 27626, chance = 17693 }, -- Chitinous Mouth (Count of the Core)
+	{ id = 8908, chance = 20853 }, -- Slightly Rusted Helmet
+	{ id = 8902, chance = 20537 }, -- Slightly Rusted Shield
+	{ id = 3036, chance = 6793 }, -- Violet Gem
+	{ id = 3033, chance = 20221 }, -- Small Amethyst
+	{ id = 238, chance = 55134 }, -- Great Mana Potion
+	{ id = 5892, chance = 16903 }, -- Huge Chunk of Crude Iron
+	{ id = 11454, chance = 20853 }, -- Luminous Orb
+	{ id = 3041, chance = 18325 }, -- Blue Gem
+	{ id = 3038, chance = 18009 }, -- Green Gem
+	{ id = 3030, chance = 18799 }, -- Small Ruby
+	{ id = 27509, chance = 100000 }, -- Heavy Crystal Fragment
+	{ id = 3032, chance = 15639 }, -- Small Emerald
+	{ id = 3039, chance = 18483 }, -- Red Gem
+	{ id = 7643, chance = 54976 }, -- Ultimate Health Potion
+	{ id = 281, chance = 10584 }, -- Giant Shimmering Pearl
+	{ id = 3028, chance = 16587 }, -- Small Diamond
+	{ id = 27651, chance = 1105 }, -- Gnome Sword
+	{ id = 27650, chance = 1612 }, -- Gnome Shield
+	{ id = 27647, chance = 789 }, -- Gnome Helmet
+	{ id = 27605, chance = 1263 }, -- Candle Stump
+	{ id = 27656, chance = 789 }, -- Tinged Pot
+	{ id = 27525, chance = 315 }, -- Mallet Handle
+	{ id = 14043, chance = 2620 }, -- Guardian Axe
+	{ id = 3281, chance = 3475 }, -- Giant Sword
+	{ id = 11657, chance = 1895 }, -- Twiceslicer
+	{ id = 826, chance = 2369 }, -- Magma Coat
+	{ id = 8050, chance = 4581 }, -- Crystalline Armor
+	{ id = 50290, chance = 1000 }, -- Gnomish Footwraps
 }
 
 monster.attacks = {

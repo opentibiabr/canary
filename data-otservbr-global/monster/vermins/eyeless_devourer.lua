@@ -73,29 +73,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 22 },
-	{ name = "ultimate health potion", chance = 29210, maxCount = 3 },
-	{ name = "eyeless devourer maw", chance = 14680, maxCount = 1 },
-	{ name = "blue crystal shard", chance = 6700, maxCount = 3 },
-	{ name = "green crystal shard", chance = 6380, maxCount = 3 },
-	{ name = "violet crystal shard", chance = 6230, maxCount = 3 },
-	{ name = "eyeless devourer legs", chance = 7500, maxCount = 2 },
-	{ name = "green gem", chance = 6300 },
-	{ name = "eyeless devourer tongue", chance = 3590 },
-	{ name = "sacred tree amulet", chance = 3190 },
-	{ name = "crystal mace", chance = 1840 },
-	{ name = "glacier amulet", chance = 2790 },
-	{ name = "noble axe", chance = 1840 },
-	{ name = "warrior's axe", chance = 1440 },
-	{ name = "relic sword", chance = 880 },
-	{ name = "giant sword", chance = 880 },
-	{ name = "mercenary sword", chance = 640 },
-	{ name = "war axe", chance = 1360, maxCount = 1 },
-	{ name = "execowtioner axe", chance = 640 },
-	{ name = "ornate crossbow", chance = 1040 },
-	{ name = "jade hammer", chance = 1200 },
-	{ name = "shadow sceptre", chance = 400 },
-	{ name = "metal bat", chance = 320 },
+	{ id = 3035, chance = 100000, maxCount = 21 }, -- Platinum Coin
+	{ id = 7643, chance = 25667 }, -- Ultimate Health Potion
+	{ id = 3038, chance = 5679 }, -- Green Gem
+	{ id = 16119, chance = 7089 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 6410 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 6539 }, -- Green Crystal Shard
+	{ id = 36775, chance = 11070 }, -- Eyeless Devourer Maw
+	{ id = 36776, chance = 6339 }, -- Eyeless Devourer Legs
+	{ id = 815, chance = 1688 }, -- Glacier Amulet
+	{ id = 3333, chance = 1748 }, -- Crystal Mace
+	{ id = 3342, chance = 933 }, -- War Axe
+	{ id = 7383, chance = 1114 }, -- Relic Sword
+	{ id = 7386, chance = 1032 }, -- Mercenary Sword
+	{ id = 7456, chance = 1299 }, -- Noble Axe
+	{ id = 9302, chance = 2468 }, -- Sacred Tree Amulet
+	{ id = 14040, chance = 1265 }, -- Warrior's Axe
+	{ id = 14247, chance = 634 }, -- Ornate Crossbow
+	{ id = 36777, chance = 3216 }, -- Eyeless Devourer Tongue
+	{ id = 3281, chance = 1005 }, -- Giant Sword
+	{ id = 7422, chance = 537 }, -- Jade Hammer
+	{ id = 7451, chance = 328 }, -- Shadow Sceptre
+	{ id = 21171, chance = 235 }, -- Metal Bat
+	{ id = 21176, chance = 791 }, -- Execowtioner Axe
 }
 
 monster.attacks = {

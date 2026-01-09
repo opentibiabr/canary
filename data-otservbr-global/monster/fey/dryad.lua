@@ -80,7 +80,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 40000, maxCount = 20 },
+	{ id = 3031, chance = 39720, maxCount = 30 }, -- Gold Coin
+	{ id = 3723, chance = 78411, maxCount = 2 }, -- White Mushroom
+	{ id = 647, chance = 8313, maxCount = 3 }, -- Seeds
+	{ id = 9017, chance = 1185 }, -- Coconut Shoes
+	{ id = 9015, chance = 883 }, -- Flower Dress
+	{ id = 9013, chance = 1371 }, -- Flower Wreath
+	{ id = 9014, chance = 797 }, -- Leaf Legs
+	{ id = 3726, chance = 1636, maxCount = 2 }, -- Orange Mushroom
+	{ id = 12311, chance = 190 }, -- Carrot on a Stick
+	{ id = 3033, chance = 211 }, -- Small Amethyst
 }
 
 monster.attacks = {

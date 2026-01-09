@@ -77,7 +77,9 @@ monster.voices = {
 	{ text = "I WILL STOP YOU ONCE AND FOR ALL!", yell = true },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, skill = 55, attack = 115 },

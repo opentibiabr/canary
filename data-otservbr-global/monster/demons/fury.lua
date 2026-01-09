@@ -78,25 +78,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3007, chance = 410 }, -- crystal ring
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 30000, maxCount = 100 },
-	{ name = "gold coin", chance = 38000, maxCount = 69 },
-	{ name = "platinum coin", chance = 2800, maxCount = 4 },
-	{ name = "terra rod", chance = 20000 },
-	{ name = "golden legs", chance = 130 },
-	{ name = "steel boots", chance = 790 },
-	{ name = "orichalcum pearl", chance = 1500, maxCount = 4 },
-	{ name = "red piece of cloth", chance = 4000 },
-	{ name = "soul orb", chance = 21500 },
-	{ name = "soul orb", chance = 50 },
-	{ id = 6300, chance = 60 }, -- death ring
-	{ name = "demonic essence", chance = 22500 },
-	{ name = "flask of demonic blood", chance = 35000, maxCount = 3 },
-	{ name = "assassin dagger", chance = 660 },
-	{ name = "noble axe", chance = 2000 },
-	{ name = "great health potion", chance = 10500 },
-	{ name = "jalapeno pepper", chance = 29280, maxCount = 4 },
+	{ id = 3031, chance = 98804, maxCount = 269 }, -- Gold Coin
+	{ id = 6558, chance = 55361, maxCount = 3 }, -- Flask of Demonic Blood
+	{ id = 8016, chance = 29938, maxCount = 4 }, -- Jalapeno Pepper
+	{ id = 6499, chance = 22499 }, -- Demonic Essence
+	{ id = 5944, chance = 20285 }, -- Soul Orb
+	{ id = 3065, chance = 19818 }, -- Terra Rod
+	{ id = 239, chance = 10058 }, -- Great Health Potion
+	{ id = 8899, chance = 10516 }, -- Slightly Rusted Legs
+	{ id = 3033, chance = 14369, maxCount = 3 }, -- Small Amethyst
+	{ id = 5911, chance = 3798 }, -- Red Piece of Cloth
+	{ id = 3035, chance = 4569, maxCount = 4 }, -- Platinum Coin
+	{ id = 7456, chance = 1991 }, -- Noble Axe
+	{ id = 5021, chance = 2499, maxCount = 4 }, -- Orichalcum Pearl
+	{ id = 3554, chance = 812 }, -- Steel Boots
+	{ id = 7404, chance = 643 }, -- Assassin Dagger
+	{ id = 3007, chance = 352 }, -- Crystal Ring
+	{ id = 6299, chance = 145 }, -- Death Ring
+	{ id = 3364, chance = 198 }, -- Golden Legs
+	{ id = 7368, chance = 109 }, -- Assassin Star
 }
 
 monster.attacks = {

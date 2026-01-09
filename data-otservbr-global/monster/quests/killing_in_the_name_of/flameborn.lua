@@ -63,24 +63,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000 }, -- platinum coin
-	{ id = 3035, chance = 100000, maxCount = 13 }, -- platinum coin
-	{ id = 239, chance = 75810 }, -- great health potion
-	{ id = 10304, chance = 100000 }, -- hellspawn tail
-	{ id = 7368, chance = 19350, maxCount = 5 }, -- assassin star
-	{ id = 7643, chance = 77420 }, -- ultimate health potion
-	{ id = 6499, chance = 35480 }, -- demonic essence
-	{ id = 3724, chance = 67740, maxCount = 2 }, -- red mushroom
-	{ id = 9057, chance = 43550, maxCount = 4 }, -- small topaz
-	{ id = 3371, chance = 67740 }, -- knight legs
-	{ id = 3369, chance = 20970 }, -- warrior helmet
-	{ id = 7452, chance = 6450 }, -- spiked squelcher
-	{ id = 7439, chance = 37100 }, -- berserk potion
-	{ id = 9056, chance = 20970 }, -- black skull
-	{ id = 9034, chance = 1610 }, -- dracoyle statue
-	{ id = 7421, chance = 3230 }, -- onyx flail
-	{ id = 12311, chance = 4840 }, -- carrot on a stick
-	{ id = 3419, chance = 29030 }, -- crown shield
+	{ id = 3035, chance = 98750, maxCount = 14 }, -- Platinum Coin
+	{ id = 9057, chance = 43750, maxCount = 4 }, -- Small Topaz
+	{ id = 7368, chance = 23750, maxCount = 5 }, -- Assassin Star
+	{ id = 6499, chance = 36250 }, -- Demonic Essence
+	{ id = 7439, chance = 32500 }, -- Berserk Potion
+	{ id = 239, chance = 75000 }, -- Great Health Potion
+	{ id = 9056, chance = 20000 }, -- Black Skull (Item)
+	{ id = 3371, chance = 60000 }, -- Knight Legs
+	{ id = 3369, chance = 20000 }, -- Warrior Helmet
+	{ id = 3419, chance = 27500 }, -- Crown Shield
+	{ id = 3724, chance = 67500, maxCount = 2 }, -- Red Mushroom
+	{ id = 7643, chance = 78750 }, -- Ultimate Health Potion
+	{ id = 12311, chance = 6250 }, -- Carrot on a Stick
+	{ id = 7452, chance = 5000 }, -- Spiked Squelcher
+	{ id = 7421, chance = 3750 }, -- Onyx Flail
+	{ id = 9035, chance = 1250 }, -- Dracoyle Statue
+	{ id = 10304, chance = 100000 }, -- Hellspawn Tail
 }
 
 monster.attacks = {

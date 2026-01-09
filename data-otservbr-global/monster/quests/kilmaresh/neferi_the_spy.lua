@@ -65,30 +65,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 4366, maxCount = 1 },
-	{ name = "terra rod", chance = 2276 },
-	{ name = "dagger", chance = 1791 },
-	{ name = "ultimate health potion", chance = 1119, maxCount = 4 },
-	{ name = "gold ingot", chance = 1045, maxCount = 1 },
-	{ name = "great spirit potion", chance = 784, maxCount = 2 },
-	{ name = "fire sword", chance = 746 },
-	{ name = "terra boots", chance = 522 },
-	{ name = "hailstorm rod", chance = 485 },
-	{ name = "lightning headband", chance = 410 },
-	{ name = "terra hood", chance = 373 },
-	{ name = "knight axe", chance = 336 },
-	{ name = "lightning legs", chance = 336 },
-	{ id = 23533, chance = 299 }, -- ring of red plasma
-	{ name = "spellbook of warding", chance = 261 },
-	{ name = "glacier shoes", chance = 224 },
-	{ name = "knight armor", chance = 224 },
-	{ name = "eye-embroidered veil", chance = 187 },
-	{ name = "violet crystal shard", chance = 187 },
-	{ name = "glacier mask", chance = 149 },
-	{ name = "sea horse figurine", chance = 149 },
-	{ id = 3049, chance = 149 }, -- stealth ring
-	{ name = "violet gem", chance = 149 },
-	{ name = "golden mask", chance = 75 },
+	{ id = 37003, chance = 1200 }, -- Eye-Embroidered Veil
+	{ id = 37002, chance = 200 }, -- Tagralt-Inlaid Scabbard
+	{ id = 813, chance = 4010 }, -- Terra Boots
+	{ id = 3036, chance = 2000 }, -- Violet Gem
+	{ id = 23533, chance = 4010 }, -- Ring of Red Plasma
+	{ id = 3370, chance = 2000 }, -- Knight Armor
+	{ id = 3043, chance = 45490 }, -- Crystal Coin
+	{ id = 3318, chance = 3009 }, -- Knight Axe
+	{ id = 9058, chance = 10620 }, -- Gold Ingot
+	{ id = 31323, chance = 800 }, -- Sea Horse Figurine
+	{ id = 3067, chance = 5010 }, -- Hailstorm Rod
+	{ id = 3280, chance = 7010 }, -- Fire Sword
+	{ id = 3065, chance = 22240 }, -- Terra Rod
+	{ id = 7643, chance = 11420 }, -- Ultimate Health Potion
+	{ id = 3267, chance = 20840 }, -- Dagger
+	{ id = 7642, chance = 7210 }, -- Great Spirit Potion
+	{ id = 828, chance = 3810 }, -- Lightning Headband
+	{ id = 16120, chance = 2400 }, -- Violet Crystal Shard
+	{ id = 8073, chance = 1800 }, -- Spellbook of Warding
+	{ id = 819, chance = 2200 }, -- Glacier Shoes
+	{ id = 829, chance = 2400 }, -- Glacier Mask
+	{ id = 822, chance = 3610 }, -- Lightning Legs
+	{ id = 31324, chance = 1400 }, -- Golden Mask
+	{ id = 3049, chance = 2400 }, -- Stealth Ring
+	{ id = 830, chance = 3410 }, -- Terra Hood
 }
 
 monster.attacks = {

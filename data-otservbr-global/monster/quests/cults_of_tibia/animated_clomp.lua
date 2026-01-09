@@ -63,12 +63,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 92000, maxCount = 130 }, -- gold coin
-	{ id = 22186, chance = 2200 }, -- raw meat
-	{ id = 5925, chance = 1200, maxCount = 2 }, -- hardened bone
-	{ id = 10307, chance = 900 }, -- thick fur
-	{ id = 3443, chance = 400 }, -- tusk shield
-	{ id = 7432, chance = 200 }, -- furry club
+	{ id = 22186, chance = 19440 }, -- Raw Meat
+	{ id = 10307, chance = 8330 }, -- Thick Fur
+	{ id = 5925, chance = 2780 }, -- Hardened Bone
 }
 
 monster.attacks = {

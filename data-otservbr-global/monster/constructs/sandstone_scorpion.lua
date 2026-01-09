@@ -78,13 +78,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 92590, maxCount = 128 },
-	{ name = "small emerald", chance = 1100, maxCount = 2 },
-	{ name = "platinum coin", chance = 10750, maxCount = 2 },
-	{ name = "daramian mace", chance = 5100 },
-	{ name = "steel helmet", chance = 4620 },
-	{ name = "black shield", chance = 1820 },
-	{ name = "fist on a stick", chance = 220 },
+	{ id = 3031, chance = 92670, maxCount = 129 }, -- Gold Coin
+	{ id = 3035, chance = 11080, maxCount = 2 }, -- Platinum Coin
+	{ id = 3032, chance = 10090, maxCount = 2 }, -- Small Emerald
+	{ id = 3327, chance = 4980 }, -- Daramian Mace
+	{ id = 3351, chance = 4690 }, -- Steel Helmet
+	{ id = 3429, chance = 1810 }, -- Black Shield
+	{ id = 12546, chance = 220 }, -- Fist on a Stick
 }
 
 monster.attacks = {

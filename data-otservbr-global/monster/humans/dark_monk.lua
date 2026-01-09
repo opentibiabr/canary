@@ -78,20 +78,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2815, chance = 1790 }, -- scroll
-	{ name = "brown flask", chance = 380 },
-	{ id = 2914, chance = 550 }, -- lamp
-	{ name = "gold coin", chance = 14600, maxCount = 18 },
-	{ id = 3050, chance = 120 }, -- power ring
-	{ name = "life crystal", chance = 990 },
-	{ name = "ankh", chance = 900 },
-	{ name = "sandals", chance = 890 },
-	{ name = "bread", chance = 20550 },
-	{ name = "mana potion", chance = 790 },
-	{ name = "book of prayers", chance = 1900 },
-	{ name = "dark rosary", chance = 10500 },
-	{ name = "rope belt", chance = 6666 },
-	{ name = "safety pin", chance = 990 },
+	{ id = 3031, chance = 14470, maxCount = 18 }, -- Gold Coin
+	{ id = 3600, chance = 19338 }, -- Bread
+	{ id = 10303, chance = 10365 }, -- Dark Rosary
+	{ id = 11492, chance = 6030 }, -- Rope Belt
+	{ id = 2815, chance = 19074 }, -- Scroll
+	{ id = 9646, chance = 2133 }, -- Book of Prayers
+	{ id = 268, chance = 792 }, -- Mana Potion
+	{ id = 2914, chance = 1014 }, -- Lamp
+	{ id = 3061, chance = 1073 }, -- Life Crystal
+	{ id = 3077, chance = 1085 }, -- Ankh
+	{ id = 3551, chance = 7744 }, -- Sandals
+	{ id = 11493, chance = 940 }, -- Safety Pin
+	{ id = 2885, chance = 4098 }, -- Brown Flask
+	{ id = 3050, chance = 44 }, -- Power Ring
 }
 
 monster.attacks = {

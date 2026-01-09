@@ -80,24 +80,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 17 },
-	{ name = "carnisylvan bark", chance = 12040, maxCount = 2 },
-	{ name = "mushroom pie", chance = 8640, maxCount = 1 },
-	{ name = "carnisylvan finger", chance = 8640, maxCount = 4 },
-	{ name = "emerald bangle", chance = 4970 },
-	{ name = "great spirit potion", chance = 6810, maxCount = 5 },
-	{ name = "guardian halberd", chance = 4970 },
-	{ id = 23542, chance = 4970 }, -- collar of blue plasma
-	{ name = "terra rod", chance = 7330 },
-	{ name = "underworld rod", chance = 6280 },
-	{ name = "diamond sceptre", chance = 4710 },
-	{ name = "fire mushroom", chance = 3140 },
-	{ name = "knight axe", chance = 5760 },
-	{ name = "wand of starstorm", chance = 4710 },
-	{ name = "sacred tree amulet", chance = 2880 },
-	{ id = 281, chance = 2090 }, -- giant shimmering pearl (green)
-	{ name = "gemmed figurine", chance = 790 },
-	{ name = "human teeth", chance = 520 },
+	{ id = 3035, chance = 83348, maxCount = 17 }, -- Platinum Coin
+	{ id = 3010, chance = 6861 }, -- Emerald Bangle
+	{ id = 3135, 3136, 3137, 3138, 3139, 3140, chance = 7101 }, -- Wooden Trash
+	{ id = 3315, chance = 5659 }, -- Guardian Halberd
+	{ id = 7642, chance = 6515 }, -- Great Spirit Potion
+	{ id = 16103, chance = 8155 }, -- Mushroom Pie
+	{ id = 36805, chance = 7872 }, -- Carnisylvan Finger
+	{ id = 36806, chance = 10540 }, -- Carnisylvan Bark
+	{ id = 281, chance = 1609 }, -- Giant Shimmering Pearl (Green)
+	{ id = 3065, chance = 4159 }, -- Terra Rod
+	{ id = 3318, chance = 3665 }, -- Knight Axe
+	{ id = 3731, chance = 3452, maxCount = 3 }, -- Fire Mushroom
+	{ id = 7387, chance = 3691 }, -- Diamond Sceptre
+	{ id = 8082, chance = 3643 }, -- Underworld Rod
+	{ id = 8092, chance = 3218 }, -- Wand of Starstorm
+	{ id = 9302, chance = 2075 }, -- Sacred Tree Amulet
+	{ id = 23526, chance = 4615 }, -- Collar of Blue Plasma
+	{ id = 24392, chance = 787 }, -- Gemmed Figurine
+	{ id = 36807, chance = 256 }, -- Human Teeth
 }
 
 monster.attacks = {

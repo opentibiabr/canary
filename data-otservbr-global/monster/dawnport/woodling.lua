@@ -60,14 +60,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21470, chance = 9450, maxCount = 10 }, -- simple arrow
-	{ id = 3031, chance = 100000, maxCount = 12 }, -- gold coin
-	{ id = 17823, chance = 14500 }, -- piece of swampling wood
-	{ id = 3003, chance = 5700 }, -- rope
-	{ id = 3378, chance = 4950 }, -- studded armor
-	{ id = 3426, chance = 2670 }, -- studded shield
-	{ id = 17822, chance = 20250 }, -- swampling moss
-	{ id = 3723, chance = 18200, maxCount = 4 }, -- white mushroom
+	{ id = 3031, chance = 100000, maxCount = 12 }, -- Gold Coin
+	{ id = 3723, chance = 19480, maxCount = 4 }, -- White Mushroom
+	{ id = 21470, chance = 10060, maxCount = 10 }, -- Simple Arrow
+	{ id = 3003, chance = 6508 }, -- Rope
+	{ id = 3378, chance = 4695 }, -- Studded Armor
+	{ id = 3276, chance = 3556 }, -- Hatchet
+	{ id = 3426, chance = 2426 }, -- Studded Shield
 }
 
 monster.attacks = {

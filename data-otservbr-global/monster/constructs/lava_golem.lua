@@ -76,35 +76,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 199 },
-	{ name = "platinum coin", chance = 100000, maxCount = 11 },
-	{ name = "yellow gem", chance = 6480 },
-	{ id = 3039, chance = 1180 }, -- red gem
-	{ name = "wand of inferno", chance = 2950 },
-	{ name = "fire sword", chance = 1710 },
-	{ name = "fire axe", chance = 1560 },
-	{ name = "crown shield", chance = 1180 },
-	{ name = "iron ore", chance = 11570 },
-	{ name = "white piece of cloth", chance = 4810 },
-	{ name = "red piece of cloth", chance = 3530 },
-	{ name = "yellow piece of cloth", chance = 7230 },
-	{ name = "strong health potion", chance = 18830, maxCount = 2 },
-	{ name = "strong mana potion", chance = 18150, maxCount = 2 },
-	{ name = "great mana potion", chance = 16030, maxCount = 2 },
-	{ name = "mana potion", chance = 20720, maxCount = 2 },
-	{ name = "magma amulet", chance = 2900 },
-	{ name = "magma boots", chance = 2650 },
-	{ name = "magma coat", chance = 430 },
-	{ name = "ultimate health potion", chance = 15390 },
-	{ name = "spellbook of mind control", chance = 450 },
-	{ name = "fiery heart", chance = 13510 },
-	{ name = "wand of everblazing", chance = 1390 },
-	{ name = "violet crystal shard", chance = 6200 },
-	{ name = "green crystal splinter", chance = 13990, maxCount = 2 },
-	{ name = "red crystal fragment", chance = 10990 },
-	{ name = "magma clump", chance = 15370, maxCount = 2 },
-	{ name = "blazing bone", chance = 15200 },
-	{ name = "prismatic bolt", chance = 12580, maxCount = 5 },
+	{ id = 3031, chance = 100000, maxCount = 199 }, -- Gold Coin
+	{ id = 3035, chance = 99990, maxCount = 11 }, -- Platinum Coin
+	{ id = 16131, chance = 14790 }, -- Blazing Bone
+	{ id = 9636, chance = 13420 }, -- Fiery Heart
+	{ id = 238, chance = 17120, maxCount = 2 }, -- Great Mana Potion
+	{ id = 16122, chance = 14050, maxCount = 2 }, -- Green Crystal Splinter
+	{ id = 5880, chance = 11950 }, -- Iron Ore
+	{ id = 16130, chance = 14860, maxCount = 2 }, -- Magma Clump
+	{ id = 268, chance = 20290, maxCount = 2 }, -- Mana Potion
+	{ id = 16141, chance = 12040, maxCount = 5 }, -- Prismatic Bolt
+	{ id = 16126, chance = 10770 }, -- Red Crystal Fragment
+	{ id = 236, chance = 18770, maxCount = 2 }, -- Strong Health Potion
+	{ id = 237, chance = 17380, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 7643, chance = 14980 }, -- Ultimate Health Potion
+	{ id = 16120, chance = 5850 }, -- Violet Crystal Shard
+	{ id = 3037, chance = 6140 }, -- Yellow Gem
+	{ id = 5914, chance = 7170 }, -- Yellow Piece of Cloth
+	{ id = 5909, chance = 4830 }, -- White Piece of Cloth
+	{ id = 817, chance = 3340 }, -- Magma Amulet
+	{ id = 818, chance = 2400 }, -- Magma Boots
+	{ id = 5911, chance = 3510 }, -- Red Piece of Cloth
+	{ id = 3071, chance = 3160 }, -- Wand of Inferno
+	{ id = 3419, chance = 1350 }, -- Crown Shield
+	{ id = 3320, chance = 1480 }, -- Fire Axe
+	{ id = 3280, chance = 1720 }, -- Fire Sword
+	{ id = 3039, chance = 1170 }, -- Red Gem
+	{ id = 16115, chance = 1320 }, -- Wand of Everblazing
+	{ id = 826, chance = 490 }, -- Magma Coat
+	{ id = 8074, chance = 510 }, -- Spellbook of Mind Control
 }
 
 monster.attacks = {

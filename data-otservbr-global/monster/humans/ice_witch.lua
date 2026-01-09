@@ -77,17 +77,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 29630, maxCount = 90 },
-	{ name = "clerical mace", chance = 920 },
-	{ name = "mystic turban", chance = 430 },
-	{ name = "green mushroom", chance = 1310 },
-	{ name = "shard", chance = 530 },
-	{ name = "diamond sceptre", chance = 330 },
-	{ id = 7441, chance = 10000 }, -- ice cube
-	{ name = "crystal sword", chance = 400 },
-	{ name = "pair of earmuffs", chance = 90 },
-	{ name = "strong mana potion", chance = 820 },
-	{ name = "glacier shoes", chance = 280 },
+	{ id = 3031, chance = 29970, maxCount = 90 }, -- Gold Coin
+	{ id = 7441, chance = 9818 }, -- Ice Cube
+	{ id = 3732, chance = 1823 }, -- Green Mushroom
+	{ id = 237, chance = 1216 }, -- Strong Mana Potion
+	{ id = 3311, chance = 1403 }, -- Clerical Mace
+	{ id = 3574, chance = 247 }, -- Mystic Turban
+	{ id = 7290, chance = 659 }, -- Shard
+	{ id = 7387, chance = 146 }, -- Diamond Sceptre
+	{ id = 819, chance = 558 }, -- Glacier Shoes
+	{ id = 7449, chance = 285 }, -- Crystal Sword
+	{ id = 7459, chance = 90 }, -- Pair of Earmuffs
 }
 
 monster.attacks = {

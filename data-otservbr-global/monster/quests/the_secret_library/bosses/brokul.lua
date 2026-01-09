@@ -79,17 +79,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small sapphire", chance = 2854, maxCount = 10 },
-	{ name = "gold coin", chance = 70000, maxCount = 60 },
-	{ name = "platinum coin", chance = 80000, maxCount = 10 },
-	{ name = "gold ingot", chance = 3448, maxCount = 10 },
-	{ name = "broccoli", chance = 2439, maxCount = 10 },
-	{ name = "small diamond", chance = 498, maxCount = 10 },
-	{ name = "blue gem", chance = 2500 },
-	{ id = 3039, chance = 2000 }, -- red gem
-	{ name = "deepling ceremonial dagger", chance = 200 },
-	{ name = "deepling fork", chance = 200 },
-	{ name = "true book of death", chance = 70000 },
+	{ id = 28702, chance = 100000 }, -- The True Book of Death
+	{ id = 3035, chance = 54117, maxCount = 9 }, -- Platinum Coin
+	{ id = 11461, chance = 9411 }, -- Broccoli
+	{ id = 3039, chance = 2941 }, -- Red Gem
+	{ id = 3028, chance = 8235 }, -- Small Diamond
+	{ id = 9058, chance = 4411, maxCount = 3 }, -- Gold Ingot
+	{ id = 3027, chance = 2941 }, -- Black Pearl
+	{ id = 28825, chance = 2941 }, -- Deepling Ceremonial Dagger
+	{ id = 28826, chance = 11111 }, -- Deepling Fork
 }
 
 monster.attacks = {

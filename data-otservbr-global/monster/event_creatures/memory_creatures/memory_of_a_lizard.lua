@@ -60,18 +60,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 32000, maxCount = 100 },
-	{ name = "small emerald", chance = 2520, maxCount = 4 },
-	{ name = "tower shield", chance = 1040 },
-	{ name = "lizard leather", chance = 1000 },
-	{ name = "lizard scale", chance = 970 },
-	{ name = "strong health potion", chance = 11925 },
-	{ name = "great health potion", chance = 7070 },
-	{ name = "red lantern", chance = 1220 },
-	{ name = "bunch of ripe rice", chance = 4950 },
-	{ name = "zaoan legs", chance = 720 },
-	{ name = "special fx box", chance = 1500 },
-	{ id = 37531, chance = 5155 }, -- candy floss
+	{ id = 3035, chance = 5432 }, -- Platinum Coin
+	{ id = 236, chance = 10706 }, -- Strong Health Potion
+	{ id = 10387, chance = 659 }, -- Zaoan Legs
+	{ id = 239, chance = 6422 }, -- Great Health Potion
+	{ id = 37468, chance = 1060 }, -- Special Fx Box
+	{ id = 3428, chance = 710 }, -- Tower Shield
+	{ id = 3032, chance = 2804 }, -- Small Emerald
+	{ id = 3031, chance = 96868 }, -- Gold Coin
+	{ id = 10328, chance = 4445 }, -- Bunch of Ripe Rice
+	{ id = 10386, chance = 350 }, -- Zaoan Shoes
+	{ id = 37531, chance = 5470 }, -- Candy Floss (Large)
 }
 
 monster.attacks = {

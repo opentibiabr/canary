@@ -87,7 +87,9 @@ monster.voices = {
 	{ text = "You might scratch my shields but they will never break!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900 },

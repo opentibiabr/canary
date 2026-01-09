@@ -66,7 +66,9 @@ monster.voices = {
 	{ text = "One day Yalahar will return to its former glory.", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+
+}
 
 monster.defenses = {
 	defense = 0,

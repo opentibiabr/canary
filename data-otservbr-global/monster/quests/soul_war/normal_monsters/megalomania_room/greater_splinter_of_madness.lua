@@ -104,3 +104,7 @@ mType.onSpawn = function(monsterCallback)
 end
 
 mType:register(monster)
+
+monster.loot = {
+
+}

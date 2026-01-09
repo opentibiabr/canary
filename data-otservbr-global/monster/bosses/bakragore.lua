@@ -84,21 +84,38 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 8938, maxCount = 165 },
-	{ name = "ultimate mana potion", chance = 11433, maxCount = 198 },
-	{ name = "giant amethyst", chance = 10570, maxCount = 4 },
-	{ name = "giant topaz", chance = 10570, maxCount = 6 },
-	{ name = "ultimate spirit potion", chance = 11433, maxCount = 45 },
-	{ name = "giant ruby", chance = 10570, maxCount = 1 },
-	{ name = "giant sapphire", chance = 10570, maxCount = 1 },
-	{ name = "mastermind potion", chance = 10938, maxCount = 23 },
-	{ id = 3039, chance = 10570, maxCount = 3 }, -- red gem
-	{ name = "violet gem", chance = 10970, maxCount = 8 },
-	{ name = "yellow gem", chance = 10970, maxCount = 9 },
-	-- { name = "figurine of bakragore", chance = 10970 },
-	-- { name = "bakragore's amalgamation", chance = 570 },
-	{ name = "spiritual horseshoe", chance = 470 },
-	{ id = 43895, chance = 360 }, -- Bag you covet
+	{ id = 43946, chance = 1000 }, -- Abridged Promotion Scroll
+	{ id = 43950, chance = 1000 }, -- Advanced Promotion Scroll
+	{ id = 43860, chance = 1000 }, -- Bag You Covet
+	{ id = 43968, chance = 12000 }, -- Bakragore's Amalgamation
+	{ id = 43947, chance = 1000 }, -- Basic Promotion Scroll
+	{ id = 7439, chance = 32000, maxCount = 81 }, -- Berserk Potion
+	{ id = 3041, chance = 8000, maxCount = 9 }, -- Blue Gem
+	{ id = 7443, chance = 8000, maxCount = 28 }, -- Bullseye Potion
+	{ id = 3043, chance = 100000, maxCount = 168 }, -- Crystal Coin
+	{ id = 43961, chance = 1000 }, -- Darklight Figurine
+	{ id = 30053, chance = 16000 }, -- Dragon Figurine
+	{ id = 43949, chance = 1000 }, -- Extended Promotion Scroll
+	{ id = 39040, chance = 8000 }, -- Fiery Tear
+	{ id = 43963, chance = 1000 }, -- Figurine of Bakragore
+	{ id = 32622, chance = 24000, maxCount = 3 }, -- Giant Amethyst
+	{ id = 30061, chance = 36000, maxCount = 6 }, -- Giant Sapphire
+	{ id = 30059, chance = 24000, maxCount = 6 }, -- Giant Ruby
+	{ id = 43962, chance = 1000 }, -- Putrefactive Figurine
+	{ id = 43948, chance = 1000 }, -- Revised Promotion Scroll
+	{ id = 23373, chance = 64000, maxCount = 37 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 52000, maxCount = 200 }, -- Ultimate Spirit Potion
+	{ id = 3036, chance = 28000, maxCount = 6 }, -- Violet Gem
+	{ id = 3037, chance = 28000, maxCount = 7 }, -- Yellow Gem
+	{ id = 39037, chance = 1000 }, -- Cobalt Ridge
+	{ id = 7440, chance = 16000, maxCount = 67 }, -- Mastermind Potion
+	{ id = 3038, chance = 20000, maxCount = 8 }, -- Green Gem
+	{ id = 32623, chance = 36000, maxCount = 6 }, -- Giant Topaz
+	{ id = 3039, chance = 16000, maxCount = 3 }, -- Red Gem
+	{ id = 23375, chance = 40000, maxCount = 110 }, -- Supreme Health Potion
+	{ id = 44048, chance = 4000 }, -- Spiritual Horseshoe
+	{ id = 49271, chance = 12000, maxCount = 61 }, -- Transcendence Potion
+	{ id = 30060, chance = 44000, maxCount = 4 }, -- Giant Emerald
 }
 
 monster.attacks = {

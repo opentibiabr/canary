@@ -79,20 +79,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 21755, chance = 1490 }, -- bronze gear wheel
-	{ id = 21193, chance = 17160 }, -- metal jaw
-	{ id = 3035, chance = 43280, maxCount = 2 }, -- platinum coin
-	{ id = 236, chance = 9700, maxCount = 2 }, -- strong health potion
-	{ id = 237, chance = 9700, maxCount = 2 }, -- strong mana potion
-	{ id = 21171, chance = 1490 }, -- metal bat
-	{ id = 8082, chance = 1490 }, -- underworld rod
-	{ id = 3051, chance = 2240 }, -- energy ring
-	{ id = 3052, chance = 750 }, -- life ring
-	{ id = 10310, chance = 2240 }, -- shiny stone
-	{ id = 21169, chance = 1490 }, -- metal spats
-	{ id = 21168, chance = 1490 }, -- alloy legs
-	{ id = 8896, chance = 2990 }, -- slightly rusted armor
+	{ id = 3031, chance = 99390, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 40560, maxCount = 2 }, -- Platinum Coin
+	{ id = 21193, chance = 16261 }, -- Metal Jaw
+	{ id = 236, chance = 7859 }, -- Strong Health Potion
+	{ id = 237, chance = 8346 }, -- Strong Mana Potion
+	{ id = 21169, chance = 2881 }, -- Metal Spats
+	{ id = 8896, chance = 2341 }, -- Slightly Rusted Armor
+	{ id = 21755, chance = 2319 }, -- Bronze Gear Wheel
+	{ id = 10310, chance = 1258 }, -- Shiny Stone
+	{ id = 21168, chance = 854 }, -- Alloy Legs
+	{ id = 21171, chance = 736 }, -- Metal Bat
+	{ id = 8082, chance = 1051 }, -- Underworld Rod
+	{ id = 5880, chance = 439 }, -- Iron Ore
+	{ id = 3052, chance = 526 }, -- Life Ring
+	{ id = 3051, chance = 364 }, -- Energy Ring
 }
 
 monster.attacks = {

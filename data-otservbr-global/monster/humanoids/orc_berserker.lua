@@ -75,16 +75,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2914, chance = 830 }, -- lamp
-	{ name = "gold coin", chance = 54000, maxCount = 12 },
-	{ name = "battle axe", chance = 6110 },
-	{ name = "halberd", chance = 7280 },
-	{ name = "chain armor", chance = 890 },
-	{ name = "ham", chance = 10400 },
-	{ name = "hunting spear", chance = 5000 },
-	{ name = "orc tooth", chance = 3000 },
-	{ name = "orcish gear", chance = 9400 },
-	{ name = "orc leather", chance = 4000 },
+	{ id = 3031, chance = 54822, maxCount = 12 }, -- Gold Coin
+	{ id = 3266, chance = 6500 }, -- Battle Axe
+	{ id = 3269, chance = 7331 }, -- Halberd
+	{ id = 3582, chance = 10207 }, -- Ham
+	{ id = 11477, chance = 10082 }, -- Orcish Gear
+	{ id = 3347, chance = 4610 }, -- Hunting Spear
+	{ id = 11479, chance = 4149 }, -- Orc Leather
+	{ id = 10196, chance = 3190 }, -- Orc Tooth
+	{ id = 3358, chance = 6574 }, -- Chain Armor
+	{ id = 2914, chance = 5151 }, -- Lamp
 }
 
 monster.attacks = {

@@ -68,18 +68,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 97000, maxCount = 51 }, -- gold coin
-	{ id = 5920, chance = 50000 }, -- green dragon scale
-	{ id = 24938, chance = 100000 }, -- dragon tongue
-	{ id = 3386, chance = 25000 }, -- dragon scale mail
-	{ id = 3322, chance = 25000 }, -- dragon hammer
-	{ id = 3416, chance = 25000 }, -- dragon shield
-	{ id = 3085, chance = 25000 }, -- dragon necklace
-	{ id = 3583, chance = 25000 }, -- dragon ham
-	{ id = 5877, chance = 25000 }, -- green dragon leather
-	{ id = 24937, chance = 80000, maxCount = 2 }, -- dragon blood
-	{ id = 3275, chance = 25000 }, -- double axe
-	{ id = 24940, chance = 100000 }, -- tooth of tazhadur
+	{ id = 3031, chance = 90789, maxCount = 99 }, -- Gold Coin
+	{ id = 5920, chance = 100000 }, -- Green Dragon Scale
+	{ id = 5877, chance = 99230 }, -- Green Dragon Leather
+	{ id = 3275, chance = 10740 }, -- Double Axe
+	{ id = 3085, chance = 7670 }, -- Dragon Necklace
+	{ id = 3322, chance = 4350 }, -- Dragon Hammer
+	{ id = 3416, chance = 5630 }, -- Dragon Shield
+	{ id = 3386, chance = 2810 }, -- Dragon Scale Mail
+	{ id = 24937, chance = 100000, maxCount = 2 }, -- Dragon Blood
+	{ id = 24938, chance = 100000 }, -- Dragon Tongue
+	{ id = 24940, chance = 100000 }, -- Tooth of Tazhadur
+	{ id = 236, chance = 1280 }, -- Strong Health Potion
+	{ id = 3071, chance = 2560 }, -- Wand of Inferno
+	{ id = 3583, chance = 41430, maxCount = 3 }, -- Dragon Ham
+	{ id = 7430, chance = 1020 }, -- Dragonbone Staff
+	{ id = 3028, chance = 260 }, -- Small Diamond
 }
 
 monster.attacks = {

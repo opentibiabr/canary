@@ -79,11 +79,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 82000, maxCount = 55 },
-	{ name = "halberd", chance = 1000 },
-	{ name = "gear wheel", chance = 4840 },
-	{ id = 8894, chance = 200 }, -- heavily rusted armor
-	{ name = "slime mould", chance = 310 },
+	{ id = 3031, chance = 82050, maxCount = 55 }, -- Gold Coin
+	{ id = 8775, chance = 4840 }, -- Gear Wheel
+	{ id = 266, chance = 1990 }, -- Health Potion
+	{ id = 3269, chance = 1020 }, -- Halberd
+	{ id = 8894, chance = 510 }, -- Heavily Rusted Armor
+	{ id = 12601, chance = 320 }, -- Slime Mould
 }
 
 monster.attacks = {

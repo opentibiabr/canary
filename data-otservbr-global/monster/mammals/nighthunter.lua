@@ -74,17 +74,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Crystal Coin", chance = 34190 },
-	{ name = "Nighthunter Wing", chance = 24370, minCount = 1, maxCount = 2 },
-	{ name = "Ultimate Health Potion", chance = 12640, minCount = 1, maxCount = 3 },
-	{ name = "Red Crystal Fragment", chance = 3980 },
-	{ name = "Green Crystal Shard", chance = 3670 },
-	{ name = "Cyan Crystal Fragment", chance = 3080 },
-	{ name = "Yellow Gem", chance = 2940 },
-	{ name = "Crystal Sword", chance = 1590 },
-	{ name = "Warrior's Axe", chance = 1400 },
-	{ name = "Spellbook of Mind Control", chance = 960 },
-	{ name = "Stone Skin Amulet", chance = 850 },
+	{ id = 3043, chance = 33750 }, -- Crystal Coin
+	{ id = 39381, chance = 25891, maxCount = 2 }, -- Nighthunter Wing
+	{ id = 7643, chance = 13179, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 3037, chance = 3193 }, -- Yellow Gem
+	{ id = 7449, chance = 2180 }, -- Crystal Sword
+	{ id = 14040, chance = 1019 }, -- Warrior's Axe
+	{ id = 16121, chance = 3942 }, -- Green Crystal Shard
+	{ id = 16125, chance = 3001 }, -- Cyan Crystal Fragment
+	{ id = 16126, chance = 4455 }, -- Red Crystal Fragment
+	{ id = 3081, chance = 840 }, -- Stone Skin Amulet
+	{ id = 8074, chance = 1002 }, -- Spellbook of Mind Control
 }
 
 monster.attacks = {

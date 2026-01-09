@@ -76,21 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "pirate coin", chance = 10000, maxCount = 10 },
-	{ name = "cyan crystal fragment", chance = 10000 },
-	{ name = "small diamond", chance = 10000 },
-	{ name = "red crystal fragment", chance = 10000 },
-	{ name = "mouldy powder", chance = 9000 },
-	{ name = "pirat's tail", chance = 7000 },
-	{ id = 3039, chance = 6000 }, -- red gem
-	{ name = "fire sword", chance = 5000 },
-	{ name = "small emerald", chance = 5000 },
-	{ name = "onyx chip", chance = 4000 },
-	{ name = "shark fins", chance = 4000 },
-	{ name = "yellow gem", chance = 3000 },
-	{ name = "ice rapier", chance = 3000 },
-	{ name = "green crystal shard", chance = 2000 },
-	{ name = "small treasure chest", chance = 2000 },
+	{ id = 3028, chance = 10610 }, -- Small Diamond
+	{ id = 3039, chance = 6360 }, -- Red Gem
+	{ id = 16125, chance = 15450 }, -- Cyan Crystal Fragment
+	{ id = 16126, chance = 10880 }, -- Red Crystal Fragment
+	{ id = 3280, chance = 6300 }, -- Fire Sword
+	{ id = 35573, chance = 8950 }, -- Pirat's Tail
+	{ id = 35596, chance = 9950 }, -- Mouldy Powder
+	{ id = 35572, chance = 11970, maxCount = 9 }, -- Pirate Coin
+	{ id = 3032, chance = 4970 }, -- Small Emerald
+	{ id = 3284, chance = 3130 }, -- Ice Rapier
+	{ id = 5704, chance = 4100 }, -- Shark Fin
+	{ id = 16121, chance = 2670 }, -- Green Crystal Shard
+	{ id = 3037, chance = 3650 }, -- Yellow Gem
+	{ id = 22193, chance = 4870 }, -- Onyx Chip
+	{ id = 35571, chance = 2290 }, -- Small Treasure Chest
 }
 
 monster.attacks = {

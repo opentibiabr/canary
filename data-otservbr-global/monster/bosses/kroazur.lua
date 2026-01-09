@@ -72,24 +72,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "fairy wings", chance = 100000 },
-	{ name = "gold coin", chance = 100000, maxCount = 365 },
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "strong health potion", chance = 91460, maxCount = 2 },
-	{ name = "great health potion", chance = 76330, maxCount = 3 },
-	{ name = "small enchanted amethyst", chance = 53560, maxCount = 5 },
-	{ name = "ancient coin", chance = 46980, maxCount = 3 },
-	{ name = "gemmed figurine", chance = 32030 },
-	{ name = "small enchanted emerald", chance = 11003, maxCount = 5 },
-	{ name = "small enchanted ruby", chance = 2000 },
-	{ name = "silver token", chance = 10140 },
-	{ name = "cluster of solace", chance = 19960 },
-	{ name = "red crystal fragment", chance = 9960 },
-	{ name = "small enchanted sapphire", chance = 8900 },
-	{ name = "assassin star", chance = 8540 },
-	{ name = "gold token", chance = 6580 },
-	{ name = "gold ingot", chance = 6410 },
-	{ name = "nightmare blade", chance = 3020 },
+	{ id = 3031, chance = 100000, maxCount = 365 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 25694, chance = 99906 }, -- Fairy Wings
+	{ id = 236, chance = 89375, maxCount = 2 }, -- Strong Health Potion
+	{ id = 239, chance = 75584, maxCount = 3 }, -- Great Health Potion
+	{ id = 678, chance = 39607, maxCount = 5 }, -- Small Enchanted Amethyst
+	{ id = 24390, chance = 48554, maxCount = 3 }, -- Ancient Coin
+	{ id = 677, chance = 25256, maxCount = 5 }, -- Small Enchanted Emerald
+	{ id = 24392, chance = 31128 }, -- Gemmed Figurine
+	{ id = 7368, chance = 7271, maxCount = 8 }, -- Assassin Star
+	{ id = 20062, chance = 9223 }, -- Cluster of Solace
+	{ id = 9058, chance = 6894 }, -- Gold Ingot
+	{ id = 22516, chance = 9600 }, -- Silver Token
+	{ id = 16126, chance = 35321 }, -- Red Crystal Fragment
+	{ id = 7418, chance = 3078 }, -- Nightmare Blade
+	{ id = 22721, chance = 5499 }, -- Gold Token
+	{ id = 675, chance = 16402 }, -- Small Enchanted Sapphire
+	{ id = 676, chance = 18733 }, -- Small Enchanted Ruby
 }
 
 monster.attacks = {

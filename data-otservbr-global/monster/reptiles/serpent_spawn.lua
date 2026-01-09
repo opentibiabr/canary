@@ -79,29 +79,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "golden mug", chance = 2870 },
-	{ name = "small sapphire", chance = 12000 },
-	{ name = "gold coin", chance = 97250, maxCount = 239 },
-	{ id = 3051, chance = 590 }, -- energy ring
-	{ id = 3052, chance = 6250 }, -- life ring
-	{ name = "life crystal", chance = 800 },
-	{ name = "snakebite rod", chance = 930 },
-	{ name = "warrior helmet", chance = 560 },
-	{ name = "strange helmet", chance = 670 },
-	{ name = "crown armor", chance = 510 },
-	{ id = 4831, chance = 550 }, -- old parchment
-	{ name = "royal helmet", chance = 140 },
-	{ name = "tower shield", chance = 920 },
-	{ name = "power bolt", chance = 6200 },
-	{ name = "green mushroom", chance = 18200 },
-	{ name = "charmer's tiara", chance = 180 },
-	{ name = "mercenary sword", chance = 2070 },
-	{ name = "noble axe", chance = 750 },
-	{ name = "great mana potion", chance = 2000 },
-	{ name = "swamplair armor", chance = 90 },
-	{ name = "spellbook of mind control", chance = 90 },
-	{ name = "snake skin", chance = 14800 },
-	{ name = "winged tail", chance = 960 },
+	{ id = 3031, chance = 97250, maxCount = 239 }, -- Gold Coin
+	{ id = 3732, chance = 18235 }, -- Green Mushroom
+	{ id = 9694, chance = 16447 }, -- Snake Skin
+	{ id = 3029, chance = 12047 }, -- Small Sapphire
+	{ id = 3052, chance = 5810 }, -- Life Ring
+	{ id = 3450, chance = 6424 }, -- Power Bolt
+	{ id = 3051, chance = 6092 }, -- Energy Ring
+	{ id = 2903, chance = 3003 }, -- Golden Mug
+	{ id = 7386, chance = 2100 }, -- Mercenary Sword
+	{ id = 238, chance = 1979 }, -- Great Mana Potion
+	{ id = 10313, chance = 687 }, -- Winged Tail
+	{ id = 3066, chance = 894 }, -- Snakebite Rod
+	{ id = 3428, chance = 837 }, -- Tower Shield
+	{ id = 3061, chance = 659 }, -- Life Crystal
+	{ id = 7456, chance = 730 }, -- Noble Axe
+	{ id = 3373, chance = 644 }, -- Strange Helmet
+	{ id = 4831, chance = 451 }, -- Old Parchment
+	{ id = 3369, chance = 951 }, -- Warrior Helmet
+	{ id = 3381, chance = 588 }, -- Crown Armor
+	{ id = 3407, chance = 1928 }, -- Charmer's Tiara
+	{ id = 3392, chance = 91 }, -- Royal Helmet
+	{ id = 8074, chance = 118 }, -- Spellbook of Mind Control
+	{ id = 8052, chance = 108 }, -- Swamplair Armor
 }
 
 monster.attacks = {

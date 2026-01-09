@@ -76,7 +76,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "shrimp", chance = 12270, maxCount = 2 },
+	{ id = 3581, chance = 10670, maxCount = 2 }, -- Shrimp
 }
 
 monster.defenses = {

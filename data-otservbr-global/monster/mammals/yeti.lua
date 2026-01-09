@@ -77,12 +77,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2992, chance = 10000, maxCount = 22 }, -- snowball
-	{ name = "gold coin", chance = 100000, maxCount = 60 },
-	{ name = "gold coin", chance = 100000, maxCount = 40 },
-	{ name = "bunnyslippers", chance = 1333 },
-	{ name = "meat", chance = 33333, maxCount = 4 },
-	{ name = "ham", chance = 10000, maxCount = 5 },
+	{ id = 3031, chance = 77570, maxCount = 30 }, -- Gold Coin
+	{ id = 3577, chance = 70905, maxCount = 4 }, -- Meat
+	{ id = 3582, chance = 37269, maxCount = 6 }, -- Ham
+	{ id = 2992, chance = 53270, maxCount = 22 }, -- Snowball
+	{ id = 3012, chance = 930 }, -- Wolf Tooth Chain
+	{ id = 3553, chance = 930 }, -- Bunnyslippers
 }
 
 monster.attacks = {

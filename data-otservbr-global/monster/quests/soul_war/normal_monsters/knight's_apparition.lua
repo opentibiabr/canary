@@ -82,17 +82,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 76610 },
-	{ name = "ultimate health potion", chance = 9010 },
-	{ name = "epee", chance = 6870 },
-	{ name = "green gem", chance = 4940 },
-	{ name = "violet gem", chance = 3860 },
-	{ name = "glacier amulet", chance = 3860 },
-	{ name = "crystal mace", chance = 2360 },
-	{ name = "giant sword", chance = 1720 },
-	{ name = "stone skin amulet", chance = 1500 },
-	{ name = "crown shield", chance = 640 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 70929 }, -- Crystal Coin
+	{ id = 7643, chance = 8276 }, -- Ultimate Health Potion
+	{ id = 3326, chance = 6136 }, -- Epee
+	{ id = 3038, chance = 5351 }, -- Green Gem
+	{ id = 3036, chance = 3052 }, -- Violet Gem
+	{ id = 3281, chance = 1979 }, -- Giant Sword
+	{ id = 3333, chance = 3075 }, -- Crystal Mace
+	{ id = 815, chance = 2467 }, -- Glacier Amulet
+	{ id = 3081, chance = 1056 }, -- Stone Skin Amulet
+	{ id = 3419, chance = 1209 }, -- Crown Shield
+	{ id = 3081, chance = 1056 }, -- Stone Skin Amulet
+	{ id = 7422, chance = 977 }, -- Jade Hammer
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

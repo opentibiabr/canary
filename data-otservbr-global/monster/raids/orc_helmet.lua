@@ -65,29 +65,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 11453, chance = 25000 }, -- broken helmet
-	{ id = 11479, chance = 20000 }, -- orc leather
-	{ id = 3031, chance = 18000, maxCount = 45 }, -- gold coin
-	{ id = 3287, chance = 14000, maxCount = 18 }, -- throwing star
-	{ id = 3578, chance = 10800, maxCount = 2 }, -- fish
-	{ id = 10196, chance = 9500 }, -- orc tooth
-	{ id = 3316, chance = 5200 }, -- orcish axe
-	{ id = 3347, chance = 5200 }, -- hunting spear
-	{ id = 3357, chance = 5110 }, -- plate armor
-	{ id = 11480, chance = 4610 }, -- skull belt
-	{ id = 3557, chance = 4180 }, -- plate legs
-	{ id = 3307, chance = 3550 }, -- scimitar
-	{ id = 3084, chance = 2190 }, -- protection amulet
-	{ id = 3265, chance = 1800 }, -- two handed sword
-	{ id = 3384, chance = 1400 }, -- dark helmet
-	{ id = 3359, chance = 670 }, -- brass armor
-	{ id = 266, chance = 420 }, -- health potion
-	{ id = 3391, chance = 340 }, -- crusader helmet
-	{ id = 3322, chance = 290 }, -- dragon hammer
-	{ id = 818, chance = 250 }, -- magma boots
-	{ id = 7395, chance = 80 }, -- orc trophy
-	{ id = 3049, chance = 80 }, -- stealth ring
-	{ id = 3393, chance = 5000 }, -- amazon helmet
+
 }
 
 monster.attacks = {

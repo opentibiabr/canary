@@ -66,24 +66,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 250 },
-	{ name = "platinum coin", chance = 9240, maxCount = 10 },
-	{ id = 3039, chance = 18200 }, -- red gem
-	{ name = "gold ingot", chance = 29700, maxCount = 5 },
-	{ name = "assassin star", chance = 29700, maxCount = 13 },
-	{ name = "demonic essence", chance = 330 },
-	{ name = "great spirit potion", chance = 330 },
-	{ name = "soul orb", chance = 19530 },
-	{ name = "small amethyst", chance = 8310, maxCount = 2 },
-	{ name = "small amethyst", chance = 8310, maxCount = 2 },
-	{ name = "ultimate health potion", chance = 700, maxCount = 4 },
-	{ name = "golden lotus brooch", chance = 19740 },
-	{ name = "green gem", chance = 15780 },
-	{ name = "magma coat", chance = 1050 },
-	{ name = "moonlight rod", chance = 1050 },
-	{ name = "necrotic rod", chance = 1050 },
-	{ name = "oriental shoes", chance = 490 },
-	{ name = "peacock feather fan", chance = 16870 },
+	{ id = 3031, chance = 100000, maxCount = 238 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 21974, chance = 100000 }, -- Golden Lotus Brooch
+	{ id = 21975, chance = 100000 }, -- Peacock Feather Fan
+	{ id = 7642, chance = 15384, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 21981, chance = 3978 }, -- Oriental Shoes
+	{ id = 8082, chance = 4320 }, -- Underworld Rod
+	{ id = 6558, chance = 36870 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 47745 }, -- Assassin Star
+	{ id = 3033, chance = 28116 }, -- Small Amethyst
+	{ id = 3039, chance = 10609 }, -- Red Gem
+	{ id = 9058, chance = 4774 }, -- Gold Ingot
+	{ id = 238, chance = 16975 }, -- Great Mana Potion
+	{ id = 5944, chance = 18036 }, -- Soul Orb
+	{ id = 3070, chance = 14853 }, -- Moonlight Rod
+	{ id = 6299, chance = 4244 }, -- Death Ring
+	{ id = 7643, chance = 14322 }, -- Ultimate Health Potion
+	{ id = 6499, chance = 30769 }, -- Demonic Essence
+	{ id = 3007, chance = 12466 }, -- Crystal Ring
+	{ id = 3038, chance = 5304 }, -- Green Gem
+	{ id = 3069, chance = 6897 }, -- Necrotic Rod
+	{ id = 7404, chance = 1857 }, -- Assassin Dagger
+	{ id = 38634, chance = 3703 }, -- Flamingo Feather
+	{ id = 3036, chance = 2160 }, -- Violet Gem
 }
 
 monster.attacks = {

@@ -63,20 +63,7 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 120 }, -- gold coin
-	{ id = 7642, chance = 100000, maxCount = 2 }, -- great spirit potion
-	{ id = 35572, chance = 10000 }, -- pirate coin
-	{ id = 813, chance = 4761 }, -- terra boots
-	{ id = 813, chance = 4761 }, -- terra boots
-	{ id = 17812, chance = 5000 }, -- ratana
-	{ id = 17813, chance = 5000 }, -- life preserver
-	{ id = 17817, chance = 16666 }, -- cheese cutter
-	{ id = 17818, chance = 3846 }, -- cheesy figurine
-	{ id = 35596, chance = 11111 }, -- mouldy powder
-	{ id = 17820, chance = 14285 }, -- soft cheese
-	{ id = 17821, chance = 14285 }, -- rat cheese
-	{ id = 820, chance = 1612 }, -- lightning boots
-	{ id = 818, chance = 3225 }, -- magma boots
+
 }
 
 monster.attacks = {

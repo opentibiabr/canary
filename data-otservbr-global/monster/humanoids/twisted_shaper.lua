@@ -77,22 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 80320, maxCount = 222 }, -- gold coin
-	{ id = 3035, chance = 50320, maxCount = 4 }, -- platinum coin
-	{ id = 3725, chance = 5000, maxCount = 2 }, -- brown mushroom
-	{ id = 3577, chance = 10000, maxCount = 2 }, -- meat
-	{ id = 24383, chance = 20000, maxCount = 2 }, -- cave turnip
-	{ id = 5021, chance = 5000, maxCount = 2 }, -- orichalcum pearl
-	{ id = 3030, chance = 5600, maxCount = 5 }, -- small ruby
-	{ id = 22193, chance = 4900 }, -- onyx chip
-	{ id = 24387, chance = 14580 }, -- tarnished rhino figurine
-	{ id = 239, chance = 7300 }, -- great health potion
-	{ id = 3051, chance = 7660 }, -- energy ring
-	{ id = 3073, chance = 3810 }, -- wand of cosmic energy
-	{ id = 3055, chance = 370 }, -- platinum amulet
-	{ id = 24384, chance = 17000 }, -- ancient belt buckle
-	{ id = 24385, chance = 20000 }, -- cracked alabaster vase
-	{ id = 24390, chance = 4000 }, -- ancient coin
+	{ id = 3031, chance = 100000, maxCount = 172 }, -- Gold Coin
+	{ id = 3035, chance = 74550, maxCount = 2 }, -- Platinum Coin
+	{ id = 24384, chance = 19010 }, -- Ancient Belt Buckle
+	{ id = 24385, chance = 17470 }, -- Cracked Alabaster Vase
+	{ id = 24383, chance = 20010, maxCount = 2 }, -- Cave Turnip
+	{ id = 24387, chance = 14570 }, -- Tarnished Rhino Figurine
+	{ id = 239, chance = 6950 }, -- Great Health Potion
+	{ id = 3577, chance = 10290 }, -- Meat
+	{ id = 3051, chance = 7669 }, -- Energy Ring
+	{ id = 3030, chance = 5370 }, -- Small Ruby
+	{ id = 24390, chance = 5660 }, -- Ancient Coin
+	{ id = 5021, chance = 5210, maxCount = 5 }, -- Orichalcum Pearl
+	{ id = 14252, chance = 4970, maxCount = 4 }, -- Vortex Bolt
+	{ id = 22193, chance = 4960 }, -- Onyx Chip
+	{ id = 3725, chance = 5210, maxCount = 3 }, -- Brown Mushroom
+	{ id = 3073, chance = 3600 }, -- Wand of Cosmic Energy
+	{ id = 24392, chance = 930 }, -- Gemmed Figurine
+	{ id = 2995, chance = 170 }, -- Piggy Bank
+	{ id = 3055, chance = 389 }, -- Platinum Amulet
+	{ id = 10426, chance = 50 }, -- Piece of Marble Rock
 }
 
 monster.attacks = {

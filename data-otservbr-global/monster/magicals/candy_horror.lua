@@ -81,19 +81,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 30 },
-	{ name = "platinum coin", chance = 82000, maxCount = 6 },
-	{ id = 281, chance = 6510 }, -- giant shimmering pearl (green)
-	{ id = 3591, chance = 1400, maxCount = 2 }, -- stawberries
-	{ id = 48250, chance = 440, maxCount = 11 }, -- dark chocolate coin
-	{ id = 48116, chance = 2490, maxCount = 2 }, -- gummy rotworm
-	{ id = 3036, chance = 1550 }, -- violet gem
-	{ id = 48252, chance = 1250 }, -- brigadeiro
-	{ id = 23535, chance = 5550 }, -- energy bar
-	{ id = 8012, chance = 1240, maxCount = 2 }, -- raspberry
-	{ id = 7419, chance = 502 }, -- dreaded cleaver
-	{ id = 3072, chance = 1840 }, -- wand of decay
-	{ id = 3429, chance = 2830 }, -- black shield
+	{ id = 3031, chance = 100000, maxCount = 30 }, -- Gold Coin
+	{ id = 3035, chance = 80970, maxCount = 6 }, -- Platinum Coin
+	{ id = 281, chance = 6530 }, -- Giant Shimmering Pearl
+	{ id = 3039, chance = 5260 }, -- Red Gem
+	{ id = 23535, chance = 5700 }, -- Energy Bar
+	{ id = 3036, chance = 1210 }, -- Violet Gem
+	{ id = 3072, chance = 2090 }, -- Wand of Decay
+	{ id = 3429, chance = 2870 }, -- Black Shield
+	{ id = 3591, chance = 1300, maxCount = 2 }, -- Strawberry
+	{ id = 48116, chance = 2230, maxCount = 2 }, -- Gummy Rotworm
+	{ id = 48252, chance = 1460 }, -- Brigadeiro
+	{ id = 7419, chance = 40 }, -- Dreaded Cleaver
+	{ id = 48250, chance = 530, maxCount = 11 }, -- Dark Chocolate Coin
 }
 
 monster.attacks = {

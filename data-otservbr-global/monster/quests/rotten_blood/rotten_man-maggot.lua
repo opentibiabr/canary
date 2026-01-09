@@ -76,15 +76,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 10340, maxCount = 1 },
-	{ name = "small amethyst", chance = 7364, maxCount = 2 },
-	{ name = "lichen gobbler", chance = 8391, maxCount = 1 },
-	{ name = "rotten roots", chance = 11619, maxCount = 1 },
-	{ id = 6299, chance = 12591, maxCount = 1 }, -- death ring
-	{ name = "wood cape", chance = 14371, maxCount = 1 },
-	{ id = 3039, chance = 5155, maxCount = 1 }, -- red gem
-	{ name = "yellow gem", chance = 9564, maxCount = 1 },
-	{ name = "blooded worm", chance = 5096, maxCount = 1 },
+	{ id = 3043, chance = 46779 }, -- Crystal Coin
+	{ id = 3033, chance = 14591, maxCount = 2 }, -- Small Amethyst
+	{ id = 43782, chance = 12016 }, -- Lichen Gobbler
+	{ id = 43849, chance = 11159 }, -- Rotten Roots
+	{ id = 6299, chance = 6007 }, -- Death Ring
+	{ id = 3575, chance = 4292 }, -- Wood Cape
+	{ id = 3039, chance = 5148 }, -- Red Gem
+	{ id = 3037, chance = 2145 }, -- Yellow Gem
+	{ id = 43857, chance = 2572 }, -- Blooded Worm
 }
 
 monster.attacks = {

@@ -73,24 +73,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 120000, maxCount = 4 },
-	{ name = "envenomed arrow", chance = 1200, maxCount = 14 },
-	{ id = 28568, chance = 1200, maxCount = 4 }, -- inkwell
-	{ name = "poisonous slime", chance = 1200, maxCount = 4 },
-	{ name = "small diamond", chance = 1200, maxCount = 4 },
-	{ name = "small topaz", chance = 1200, maxCount = 4 },
-	{ id = 282, chance = 900, maxCount = 4 }, -- giant shimmering pearl (brown)
-	{ name = "blue gem", chance = 950, maxCount = 4 },
-	{ name = "terra boots", chance = 850, maxCount = 4 },
-	{ name = "terra hood", chance = 980, maxCount = 4 },
-	{ name = "protection amulet", chance = 1200, maxCount = 4 },
-	{ name = "sacred tree amulet", chance = 1200, maxCount = 4 },
-	{ name = "springsprout rod", chance = 790, maxCount = 4 },
-	{ name = "stone skin amulet", chance = 1200, maxCount = 4 },
-	{ name = "terra legs", chance = 650, maxCount = 4 },
-	{ name = "terra mantle", chance = 550, maxCount = 4 },
-	{ name = "clay lump", chance = 1200, maxCount = 4 },
-	{ name = "terra amulet", chance = 1200, maxCount = 4 },
+	{ id = 3028, chance = 66890, maxCount = 7 }, -- Small Diamond
+	{ id = 3035, chance = 75250, maxCount = 25 }, -- Platinum Coin
+	{ id = 9057, chance = 49780, maxCount = 3 }, -- Small Topaz
+	{ id = 9640, chance = 35380, maxCount = 9 }, -- Poisonous Slime
+	{ id = 16143, chance = 69600, maxCount = 40 }, -- Envenomed Arrow
+	{ id = 28568, chance = 43890, maxCount = 4 }, -- Inkwell (Black)
+	{ id = 282, chance = 15680, maxCount = 3 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 813, chance = 5320 }, -- Terra Boots
+	{ id = 830, chance = 5580 }, -- Terra Hood
+	{ id = 3041, chance = 4720 }, -- Blue Gem
+	{ id = 812, chance = 2870 }, -- Terra Legs
+	{ id = 3081, chance = 1609 }, -- Stone Skin Amulet
+	{ id = 3084, chance = 1250 }, -- Protection Amulet
+	{ id = 9302, chance = 1669 }, -- Sacred Tree Amulet
+	{ id = 8084, chance = 750 }, -- Springsprout Rod
+	{ id = 811, chance = 870 }, -- Terra Mantle
+	{ id = 10422, chance = 540 }, -- Clay Lump
+	{ id = 814, chance = 390 }, -- Terra Amulet
+	{ id = 8052, chance = 119 }, -- Swamplair Armor
 }
 
 monster.attacks = {

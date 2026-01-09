@@ -69,13 +69,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "great health potion", chance = 2775, maxCount = 2 },
-	{ name = "red lantern", chance = 100000 },
-	{ name = "zaoan armor", chance = 1050 },
-	{ name = "zaoan shoes", chance = 3150 },
-	{ name = "zaoan legs", chance = 2625 },
-	{ name = "zaogun flag", chance = 11250 },
-	{ name = "zaogun shoulderplates", chance = 100000 },
+	{ id = 3031, chance = 78950, maxCount = 136 }, -- Gold Coin
+	{ id = 3032, chance = 15790, maxCount = 10 }, -- Small Emerald
+	{ id = 239, chance = 10530 }, -- Great Health Potion
+	{ id = 10289, chance = 100000 }, -- Red Lantern
+	{ id = 10413, chance = 5260 }, -- Zaogun Flag
+	{ id = 10387, chance = 5260 }, -- Zaoan Legs
+	{ id = 10386, chance = 1000 }, -- Zaoan Shoes
+	{ id = 10384, chance = 1000 }, -- Zaoan Armor
+	{ id = 10451, chance = 1000 }, -- Jade Hat
+	{ id = 10414, chance = 100000 }, -- Zaogun Shoulderplates
 }
 
 monster.attacks = {

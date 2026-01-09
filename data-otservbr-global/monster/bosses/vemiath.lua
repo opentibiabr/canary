@@ -78,25 +78,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 8852, maxCount = 125 },
-	{ name = "ultimate mana potion", chance = 11337, maxCount = 211 },
-	{ name = "giant emerald", chance = 6423, maxCount = 1 },
-	{ name = "supreme health potion", chance = 8385, maxCount = 179 },
-	{ name = "yellow gem", chance = 8604, maxCount = 5 },
-	{ name = "berserk potion", chance = 9395, maxCount = 45 },
-	{ name = "blue gem", chance = 14144, maxCount = 5 },
-	{ name = "green gem", chance = 6221, maxCount = 4 },
-	{ name = "bullseye potion", chance = 6530, maxCount = 26 },
-	{ name = "mastermind potion", chance = 5700, maxCount = 44 },
-	{ name = "ultimate spirit potion", chance = 9216, maxCount = 25 },
-	{ name = "giant topaz", chance = 11191, maxCount = 1 },
-	{ name = "giant amethyst", chance = 8527, maxCount = 1 },
-	{ name = "gold ingot", chance = 10866, maxCount = 1 },
-	{ id = 3039, chance = 8945, maxCount = 1 }, -- red gem
-	{ name = "dragon figurine", chance = 11502, maxCount = 1 },
-	{ name = "raw watermelon tourmaline", chance = 9302, maxCount = 1 },
-	{ name = "vemiath's infused basalt", chance = 7914, maxCount = 1 },
-	{ name = "violet gem", chance = 7210, maxCount = 1 },
+	{ id = 3043, chance = 100000, maxCount = 125 }, -- Crystal Coin
+	{ id = 23373, chance = 66666, maxCount = 211 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 39583, maxCount = 35 }, -- Ultimate Spirit Potion
+	{ id = 23375, chance = 60416, maxCount = 179 }, -- Supreme Health Potion
+	{ id = 7443, chance = 29166, maxCount = 42 }, -- Bullseye Potion
+	{ id = 7439, chance = 33333, maxCount = 45 }, -- Berserk Potion
+	{ id = 7440, chance = 27083, maxCount = 44 }, -- Mastermind Potion
+	{ id = 3041, chance = 43750, maxCount = 5 }, -- Blue Gem
+	{ id = 3038, chance = 33333, maxCount = 5 }, -- Green Gem
+	{ id = 3039, chance = 18750, maxCount = 5 }, -- Red Gem
+	{ id = 3037, chance = 43750, maxCount = 5 }, -- Yellow Gem
+	{ id = 3036, chance = 8333, maxCount = 5 }, -- Violet Gem
+	{ id = 9058, chance = 20833 }, -- Gold Ingot
+	{ id = 30060, chance = 50000 }, -- Giant Emerald
+	{ id = 32623, chance = 22916 }, -- Giant Topaz
+	{ id = 32622, chance = 27083 }, -- Giant Amethyst
+	{ id = 33778, chance = 7692 }, -- Raw Watermelon Tourmaline
+	{ id = 43967, chance = 8333 }, -- Vemiath's Infused Basalt
+	{ id = 30053, chance = 4166 }, -- Dragon Figurine
+	{ id = 43961, chance = 2857 }, -- Darklight Figurine
+	{ id = 43503, chance = 1000 }, -- The Essence of Vemiath
+	{ id = 44048, chance = 1000 }, -- Spiritual Horseshoe
+	{ id = 43860, chance = 2857 }, -- Bag You Covet
 }
 
 monster.attacks = {

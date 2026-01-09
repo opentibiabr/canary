@@ -116,3 +116,7 @@ mType.onMove = function(monster, creature, fromPosition, toPosition) end
 mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)
+
+monster.loot = {
+
+}

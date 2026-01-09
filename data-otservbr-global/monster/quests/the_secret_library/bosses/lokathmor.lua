@@ -76,31 +76,44 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000, maxCount = 63 },
-	{ name = "crystal coin", chance = 70000, maxCount = 4 },
-	{ name = "great mana potion", chance = 70000, maxCount = 18 },
-	{ name = "great spirit potion", chance = 70000, maxCount = 18 },
-	{ name = "ultimate mana potion", chance = 70000, maxCount = 12 },
-	{ name = "ultimate health potion", chance = 70000, maxCount = 18 },
-	{ name = "mastermind potion", chance = 70000, maxCount = 2 },
-	{ name = "onyx chip", chance = 70000, maxCount = 12 },
-	{ name = "small emerald", chance = 70000, maxCount = 12 },
-	{ name = "small amethyst", chance = 70000, maxCount = 12 },
-	{ name = "small diamond", chance = 70000, maxCount = 12 },
-	{ name = "small ruby", chance = 70000, maxCount = 12 },
-	{ name = "blue gem", chance = 70000 },
-	{ name = "demon horn", chance = 70000 },
-	{ name = "demonic essence", chance = 70000 },
-	{ id = 281, chance = 70000 }, -- giant shimmering pearl (green)
-	{ name = "green gem", chance = 70000 },
-	{ name = "magic sulphur", chance = 70000 },
-	{ name = "stone skin amulet", chance = 70000 },
-	{ name = "silver token", chance = 30000, maxCount = 4 },
-	{ name = "blue robe", chance = 30000 },
-	{ name = "dreaded cleaver", chance = 30000 },
-	{ name = "slightly rusted shield", chance = 26670 },
-	{ name = "wand of inferno", chance = 30000 },
-	{ name = "sturdy book", chance = 1000 },
+	{ id = 28792, chance = 1000 }, -- Sturdy Book
+	{ id = 30060, chance = 25000 }, -- Giant Emerald
+	{ id = 3038, chance = 12500 }, -- Green Gem
+	{ id = 3037, chance = 20833 }, -- Yellow Gem
+	{ id = 5904, chance = 8333 }, -- Magic Sulphur
+	{ id = 27933, chance = 9677 }, -- Ominous Book
+	{ id = 27934, chance = 4166 }, -- Knowledgeable Book
+	{ id = 7642, chance = 21875, maxCount = 4 }, -- Great Spirit Potion
+	{ id = 23374, chance = 1000, maxCount = 4 }, -- Ultimate Spirit Potion
+	{ id = 7643, chance = 35483, maxCount = 4 }, -- Ultimate Health Potion
+	{ id = 23373, chance = 100000, maxCount = 8 }, -- Ultimate Mana Potion
+	{ id = 7439, chance = 29032, maxCount = 2 }, -- Berserk Potion
+	{ id = 3073, chance = 1000 }, -- Wand of Cosmic Energy
+	{ id = 3071, chance = 70967 }, -- Wand of Inferno
+	{ id = 7419, chance = 41935 }, -- Dreaded Cleaver
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 3035, chance = 100000, maxCount = 58 }, -- Platinum Coin
+	{ id = 3043, chance = 100000, maxCount = 4 }, -- Crystal Coin
+	{ id = 22193, chance = 67741, maxCount = 12 }, -- Onyx Chip
+	{ id = 3033, chance = 28125, maxCount = 12 }, -- Small Amethyst
+	{ id = 3032, chance = 25000, maxCount = 12 }, -- Small Emerald
+	{ id = 3028, chance = 12903, maxCount = 12 }, -- Small Diamond
+	{ id = 3079, chance = 48000 }, -- Boots of Haste
+	{ id = 22516, chance = 56250, maxCount = 6 }, -- Silver Token
+	{ id = 22721, chance = 45161, maxCount = 5 }, -- Gold Token
+	{ id = 5954, chance = 53125 }, -- Demon Horn
+	{ id = 7440, chance = 31250, maxCount = 2 }, -- Mastermind Potion
+	{ id = 8908, chance = 21875 }, -- Slightly Rusted Helmet
+	{ id = 281, chance = 12000 }, -- Giant Shimmering Pearl
+	{ id = 10438, chance = 1000 }, -- Spellweaver's Robe
+	{ id = 7407, chance = 29032 }, -- Haunted Blade
+	{ id = 7443, chance = 29032 }, -- Bullseye Potion
+	{ id = 8902, chance = 29166 }, -- Slightly Rusted Shield
+	{ id = 6499, chance = 25806 }, -- Demonic Essence
+	{ id = 9057, chance = 25806 }, -- Small Topaz
+	{ id = 23507, chance = 29166 }, -- Crystallized Anger
+	{ id = 3041, chance = 41935 }, -- Blue Gem
+	{ id = 28829, chance = 4166 }, -- Rotten Demonbone
 }
 
 monster.attacks = {

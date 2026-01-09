@@ -68,20 +68,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 24942, chance = 100000 }, -- bones of zorvorax
-	{ id = 3031, chance = 100000, maxCount = 24 }, -- gold coin
-	{ id = 239, chance = 20000, maxCount = 3 }, -- great health potion
-	{ id = 7642, chance = 20000, maxCount = 3 }, -- great spirit potion
-	{ id = 12304, chance = 500 }, -- maxilla maximus
-	{ id = 3035, chance = 40000, maxCount = 4 }, -- platinum coin
-	{ id = 5944, chance = 100000 }, -- soul orb
-	{ id = 5741, chance = 25000 }, -- skull helmet
-	{ id = 9058, chance = 25000 }, -- gold ingot
-	{ id = 3057, chance = 25000 }, -- amulet of loss
-	{ id = 7430, chance = 25000 }, -- dragonbone staff
-	{ id = 8896, chance = 26670 }, -- slightly rusted armor
-	{ id = 6299, chance = 13330 }, -- death ring
-	{ id = 10316, chance = 50000, maxCount = 2 }, -- unholy bone
+	{ id = 6299, chance = 100000 }, -- Death Ring
+	{ id = 6499, chance = 28440 }, -- Demonic Essence
+	{ id = 7430, chance = 38620 }, -- Dragonbone Staff
+	{ id = 3031, chance = 100000, maxCount = 98 }, -- Gold Coin
+	{ id = 9058, chance = 76050 }, -- Gold Ingot
+	{ id = 5925, chance = 29640 }, -- Hardened Bone
+	{ id = 10316, chance = 100000, maxCount = 2 }, -- Unholy Bone
+	{ id = 239, chance = 35330 }, -- Great Health Potion
+	{ id = 238, chance = 36530 }, -- Great Mana Potion
+	{ id = 7642, chance = 32630 }, -- Great Spirit Potion
+	{ id = 24942, chance = 100000 }, -- Bones of Zorvorax
+	{ id = 8896, chance = 28740 }, -- Slightly Rusted Armor
+	{ id = 5741, chance = 6890 }, -- Skull Helmet
+	{ id = 12304, chance = 1200 }, -- Maxilla Maximus
+	{ id = 3057, chance = 1500 }, -- Amulet of Loss
+	{ id = 5944, chance = 3890 }, -- Soul Orb
+	{ id = 3035, chance = 68860, maxCount = 3 }, -- Platinum Coin
 }
 
 monster.attacks = {

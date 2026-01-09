@@ -79,15 +79,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "golden backpack", chance = 4290 },
-	{ name = "tiger eye", chance = 11430 },
-	{ id = 3031, chance = 41430, maxCount = 235 }, -- gold coin
-	{ name = "golden brush", chance = 20000 },
-	{ name = "green gem", chance = 5710 },
-	{ name = "gold ingot", chance = 2860 },
-	{ name = "opal", chance = 11430 },
-	{ name = "yellow gem", chance = 5710 },
-	{ id = 2863, chance = 1430 }, -- golden bag
+	{ id = 3031, chance = 50200, maxCount = 250 }, -- Gold Coin
+	{ id = 25689, chance = 23070 }, -- Golden Brush
+	{ id = 22194, chance = 10660 }, -- Opal
+	{ id = 24961, chance = 16470 }, -- Tiger Eye
+	{ id = 2863, chance = 3020 }, -- Golden Bag
+	{ id = 2871, chance = 3020 }, -- Golden Backpack
+	{ id = 9058, chance = 1350 }, -- Gold Ingot
+	{ id = 3037, chance = 5570 }, -- Yellow Gem
+	{ id = 3038, chance = 4770 }, -- Green Gem
+	{ id = 3035, chance = 720, maxCount = 10 }, -- Platinum Coin
+	{ id = 3040, chance = 1000 }, -- Gold Nugget
 }
 
 monster.attacks = {

@@ -76,34 +76,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "banana skin", chance = 10700 },
-	{ name = "piece of iron", chance = 10500 },
-	{ name = "fishbone", chance = 9500 },
-	{ id = 3114, chance = 10400 }, -- skull
-	{ id = 3115, chance = 9200 }, -- bone
-	{ id = 3116, chance = 4500 }, -- big bone
-	{ name = "two handed sword", chance = 2700 },
-	{ id = 3578, chance = 7000, maxCount = 3 }, -- fish
-	{ name = "ham", chance = 10000 },
-	{ name = "iron ore", chance = 3000 },
-	{ name = "fish fin", chance = 5000 },
-	{ name = "hardened bone", chance = 5700 },
-	{ id = 5951, chance = 9400 }, -- fish tail
-	{ name = "assassin dagger", chance = 1000 },
-	{ name = "haunted blade", chance = 2000 },
-	{ name = "nightmare blade", chance = 380 },
-	{ name = "great mana potion", chance = 17000, maxCount = 3 },
-	{ name = "great health potion", chance = 18500, maxCount = 2 },
-	{ name = "sai", chance = 1200 },
-	{ name = "violet crystal shard", chance = 3000 },
-	{ name = "brown crystal splinter", chance = 12000, maxCount = 2 },
-	{ name = "red crystal fragment", chance = 7600 },
-	{ id = 16279, chance = 12000 }, -- crystal rubbish
-	{ name = "cluster of solace", chance = 8920 },
-	{ name = "frazzle tongue", chance = 15000 },
-	{ name = "frazzle skin", chance = 14000 },
+	{ id = 3031, chance = 90773, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 95520, maxCount = 7 }, -- Platinum Coin
+	{ id = 239, chance = 16327, maxCount = 2 }, -- Great Health Potion
+	{ id = 16123, chance = 10738, maxCount = 2 }, -- Brown Crystal Splinter
+	{ id = 238, chance = 16339, maxCount = 3 }, -- Great Mana Potion
+	{ id = 20198, chance = 13394 }, -- Frazzle Tongue
+	{ id = 16279, chance = 9604 }, -- Crystal Rubbish
+	{ id = 3125, chance = 9049 }, -- Remains of a Fish
+	{ id = 3582, chance = 9083 }, -- Ham
+	{ id = 5951, chance = 9281 }, -- Fish Tail
+	{ id = 3110, chance = 9169 }, -- Piece of Iron
+	{ id = 16126, chance = 6292 }, -- Red Crystal Fragment
+	{ id = 3104, chance = 8980 }, -- Banana Skin
+	{ id = 3115, chance = 8970 }, -- Bone
+	{ id = 20199, chance = 12159 }, -- Frazzle Skin
+	{ id = 3114, chance = 10737 }, -- Skull (Item)
+	{ id = 3111, chance = 9641 }, -- Fishbone
+	{ id = 3578, chance = 5759, maxCount = 3 }, -- Fish
+	{ id = 5895, chance = 4470 }, -- Fish Fin
+	{ id = 5925, chance = 4204 }, -- Hardened Bone
+	{ id = 5880, chance = 2690 }, -- Iron Ore
+	{ id = 16120, chance = 2785 }, -- Violet Crystal Shard
+	{ id = 3116, chance = 4504 }, -- Big Bone
+	{ id = 3265, chance = 2614 }, -- Two Handed Sword
+	{ id = 7407, chance = 1908 }, -- Haunted Blade
+	{ id = 10389, chance = 1000 }, -- Traditional Sai
+	{ id = 7418, chance = 543 }, -- Nightmare Blade
+	{ id = 7404, chance = 879 }, -- Assassin Dagger
+	{ id = 20062, chance = 917 }, -- Cluster of Solace
 }
 
 monster.attacks = {

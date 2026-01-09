@@ -82,20 +82,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ name = "small emerald", chance = 5882, maxCount = 5 },
-	{ name = "platinum coin", chance = 35333, maxCount = 2 },
-	{ id = 3051, chance = 606 }, -- energy ring
-	{ name = "brown mushroom", chance = 5263, maxCount = 5 },
-	{ name = "magic sulphur", chance = 620 },
-	{ name = "assassin star", chance = 70, maxCount = 5 },
-	{ name = "dreaded cleaver", chance = 30 },
-	{ name = "mastermind potion", chance = 750 },
-	{ name = "strong health potion", chance = 6250 },
-	{ name = "strong mana potion", chance = 7692 },
-	{ name = "terra mantle", chance = 70 },
-	{ name = "springsprout rod", chance = 1010 },
+	{ id = 3031, chance = 95913, maxCount = 190 }, -- Gold Coin
+	{ id = 3035, chance = 35515, maxCount = 2 }, -- Platinum Coin
+	{ id = 3032, chance = 6388, maxCount = 5 }, -- Small Emerald
+	{ id = 237, chance = 7670 }, -- Strong Mana Potion
+	{ id = 236, chance = 6790 }, -- Strong Health Potion
+	{ id = 3725, chance = 4910 }, -- Brown Mushroom
+	{ id = 3051, chance = 840 }, -- Energy Ring
+	{ id = 5904, chance = 590 }, -- Magic Sulphur
+	{ id = 7440, chance = 1010 }, -- Mastermind Potion
+	{ id = 8084, chance = 700 }, -- Springsprout Rod
+	{ id = 7368, chance = 30, maxCount = 5 }, -- Assassin Star
+	{ id = 811, chance = 30 }, -- Terra Mantle
 }
 
 monster.attacks = {

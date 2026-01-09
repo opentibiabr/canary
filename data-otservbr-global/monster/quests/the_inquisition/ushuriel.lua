@@ -76,41 +76,68 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 190 },
-	{ name = "platinum coin", chance = 20000, maxCount = 26 },
-	{ name = "orb", chance = 16666 },
-	{ name = "life crystal", chance = 16666 },
-	{ name = "mind stone", chance = 20000 },
-	{ name = "spike sword", chance = 9090 },
-	{ name = "fire sword", chance = 14285 },
-	{ name = "giant sword", chance = 7692 },
-	{ id = 3307, chance = 11111 }, -- scimitar
-	{ name = "warrior helmet", chance = 20000 },
-	{ name = "strange helmet", chance = 8333 },
-	{ name = "crown helmet", chance = 6250 },
-	{ name = "royal helmet", chance = 20000 },
-	{ name = "brown mushroom", chance = 50000, maxCount = 30 },
-	{ name = "mysterious voodoo skull", chance = 12500 },
-	{ name = "skull helmet", chance = 20000 },
-	{ name = "iron ore", chance = 33333 },
-	{ id = 5884, chance = 4761 }, -- spirit container
-	{ name = "flask of warrior's sweat", chance = 5555 },
-	{ name = "enchanted chicken wing", chance = 7692 },
-	{ name = "huge chunk of crude iron", chance = 14285 },
-	{ name = "hardened bone", chance = 25000, maxCount = 20 },
-	{ name = "demon horn", chance = 8333, maxCount = 2 },
-	{ id = 6103, chance = 2063 }, -- unholy book
-	{ name = "demonic essence", chance = 100000 },
-	{ id = 7385, chance = 10000 }, -- crimson sword
-	{ name = "thaian sword", chance = 25000 },
-	{ name = "dragon slayer", chance = 8333 },
-	{ name = "runed sword", chance = 6666 },
-	{ name = "great mana potion", chance = 20000 },
-	{ name = "great health potion", chance = 20000 },
-	{ name = "great spirit potion", chance = 20000 },
-	{ name = "ultimate health potion", chance = 20000 },
-	{ id = 8894, chance = 20000 }, -- heavily rusted armor
-	{ name = "gold ingot", chance = 16666 },
+	{ id = 3031, chance = 96990, maxCount = 102 }, -- Gold Coin
+	{ id = 3035, chance = 20720, maxCount = 30 }, -- Platinum Coin
+	{ id = 3028, chance = 1000, maxCount = 3 }, -- Small Diamond
+	{ id = 3029, chance = 1000, maxCount = 8 }, -- Small Sapphire
+	{ id = 3027, chance = 1000, maxCount = 14 }, -- Black Pearl
+	{ id = 3032, chance = 1000, maxCount = 6 }, -- Small Emerald
+	{ id = 3026, chance = 1000, maxCount = 14 }, -- White Pearl
+	{ id = 3033, chance = 1000, maxCount = 17 }, -- Small Amethyst
+	{ id = 239, chance = 26534, maxCount = 2 }, -- Great Health Potion
+	{ id = 238, chance = 20892 }, -- Great Mana Potion
+	{ id = 7642, chance = 24541 }, -- Great Spirit Potion
+	{ id = 7643, chance = 25205 }, -- Ultimate Health Potion
+	{ id = 7365, chance = 1000, maxCount = 8 }, -- Onyx Arrow
+	{ id = 3725, chance = 96990, maxCount = 30 }, -- Brown Mushroom
+	{ id = 5954, chance = 11107, maxCount = 2 }, -- Demon Horn
+	{ id = 7385, chance = 9013 }, -- Crimson Sword
+	{ id = 5880, chance = 45939, maxCount = 10 }, -- Iron Ore
+	{ id = 5925, chance = 27870, maxCount = 20 }, -- Hardened Bone
+	{ id = 3060, chance = 16913 }, -- Orb
+	{ id = 3069, chance = 1000 }, -- Necrotic Rod
+	{ id = 3066, chance = 1000 }, -- Snakebite Rod
+	{ id = 3275, chance = 1000 }, -- Double Axe
+	{ id = 3307, chance = 10572 }, -- Scimitar
+	{ id = 3062, chance = 21060 }, -- Mind Stone
+	{ id = 3046, chance = 1000 }, -- Magic Light Wand
+	{ id = 6299, chance = 1000 }, -- Death Ring
+	{ id = 3051, chance = 1000 }, -- Energy Ring
+	{ id = 3049, chance = 1000 }, -- Stealth Ring
+	{ id = 3063, chance = 1000 }, -- Gold Ring
+	{ id = 9058, chance = 20895 }, -- Gold Ingot
+	{ id = 3290, chance = 1000 }, -- Silver Dagger
+	{ id = 3061, chance = 19904 }, -- Life Crystal
+	{ id = 3054, chance = 1000 }, -- Silver Amulet
+	{ id = 3084, chance = 1000 }, -- Protection Amulet
+	{ id = 3356, chance = 1000 }, -- Devil Helmet
+	{ id = 3373, chance = 8623 }, -- Strange Helmet
+	{ id = 3048, chance = 1000 }, -- Might Ring
+	{ id = 3081, chance = 1000 }, -- Stone Skin Amulet
+	{ id = 3098, chance = 1000 }, -- Ring of Healing
+	{ id = 6499, chance = 100000 }, -- Demonic Essence
+	{ id = 3072, chance = 1000 }, -- Wand of Decay
+	{ id = 3070, chance = 1000 }, -- Moonlight Rod
+	{ id = 3281, chance = 11268 }, -- Giant Sword
+	{ id = 3079, chance = 1000 }, -- Boots of Haste
+	{ id = 5891, chance = 5197 }, -- Enchanted Chicken Wing
+	{ id = 5668, chance = 20729 }, -- Mysterious Voodoo Skull
+	{ id = 3038, chance = 1000 }, -- Green Gem
+	{ id = 3041, chance = 1000 }, -- Blue Gem
+	{ id = 3392, chance = 23719 }, -- Royal Helmet
+	{ id = 5741, chance = 21722 }, -- Skull Helmet
+	{ id = 3385, chance = 8955 }, -- Crown Helmet
+	{ id = 3369, chance = 20567 }, -- Warrior Helmet
+	{ id = 7391, chance = 19235 }, -- Thaian Sword
+	{ id = 5892, chance = 14430 }, -- Huge Chunk of Crude Iron
+	{ id = 5884, chance = 4970 }, -- Spirit Container
+	{ id = 5885, chance = 3817 }, -- Flask of Warrior's Sweat
+	{ id = 3271, chance = 10400 }, -- Spike Sword
+	{ id = 3280, chance = 20234 }, -- Fire Sword
+	{ id = 8896, chance = 16980 }, -- Slightly Rusted Armor
+	{ id = 7402, chance = 10447 }, -- Dragon Slayer
+	{ id = 6103, chance = 4476 }, -- Unholy Book
+	{ id = 7417, chance = 9454 }, -- Runed Sword
 }
 
 monster.attacks = {

@@ -63,13 +63,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 40 },
-	{ name = "blank rune", chance = 10000 },
-	{ name = "battle hammer", chance = 5000 },
-	{ name = "battle shield", chance = 1000 },
-	{ name = "guardian shield", chance = 5000 },
-	{ id = 6570, chance = 5538 }, -- surprise bag
-	{ id = 6571, chance = 1538 }, -- surprise bag
+	{ id = 3031, chance = 1000, maxCount = 39 }, -- Gold Coin
+	{ id = 3147, chance = 1000 }, -- Blank Rune
+	{ id = 3305, chance = 1000 }, -- Battle Hammer
+	{ id = 3413, chance = 1000 }, -- Battle Shield
+	{ id = 6570, chance = 1000 }, -- Surprise Bag (Blue)
+	{ id = 3415, chance = 1000 }, -- Guardian Shield
+	{ id = 6571, chance = 1000 }, -- Surprise Bag (Red)
 }
 
 monster.attacks = {

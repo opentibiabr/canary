@@ -77,25 +77,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 5 }, -- platinum coin
-	{ id = 23535, chance = 15000 }, -- energy bar
-	{ id = 23545, chance = 15000 }, -- energy drink
-	{ id = 23516, chance = 15000 }, -- instable proto matter
-	{ id = 239, chance = 12200 }, -- great health potion
-	{ id = 238, chance = 12000 }, -- great mana potion
-	{ id = 7642, chance = 11700 }, -- great spirit potion
-	{ id = 23507, chance = 11500 }, -- crystallized anger
-	{ id = 23511, chance = 10600 }, -- curious matter
-	{ id = 23514, chance = 9600 }, -- volatile proto matter
-	{ id = 23506, chance = 9600 }, -- plasma pearls
-	{ id = 16124, chance = 7400, maxCount = 2 }, -- blue crystal splinter
-	{ id = 16125, chance = 6500 }, -- cyan crystal fragment
-	{ id = 16119, chance = 4400 }, -- blue crystal shard
-	{ id = 16121, chance = 4100 }, -- green crystal shard
-	{ id = 23544, chance = 470 }, -- collar of red plasma
-	{ id = 23542, chance = 470 }, -- collar of blue plasma
-	{ name = "spark sphere", chance = 14870 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 23545, chance = 18119 }, -- Energy Drink
+	{ id = 23535, chance = 18052 }, -- Energy Bar
+	{ id = 238, chance = 12195 }, -- Great Mana Potion
+	{ id = 7642, chance = 12069 }, -- Great Spirit Potion
+	{ id = 239, chance = 12297 }, -- Great Health Potion
+	{ id = 23518, chance = 14856 }, -- Spark Sphere
+	{ id = 23507, chance = 10168 }, -- Crystallized Anger
+	{ id = 23511, chance = 10100 }, -- Curious Matter
+	{ id = 23506, chance = 10054 }, -- Plasma Pearls
+	{ id = 16124, chance = 7960, maxCount = 2 }, -- Blue Crystal Splinter
+	{ id = 23514, chance = 10250 }, -- Volatile Proto Matter
+	{ id = 16125, chance = 5811 }, -- Cyan Crystal Fragment
+	{ id = 16119, chance = 3999 }, -- Blue Crystal Shard
+	{ id = 16121, chance = 4012 }, -- Green Crystal Shard
+	{ id = 3041, chance = 335 }, -- Blue Gem
+	{ id = 822, chance = 71 }, -- Lightning Legs
+	{ id = 23544, chance = 186 }, -- Collar of Red Plasma
+	{ id = 23526, chance = 250 }, -- Collar of Blue Plasma
+	{ id = 23543, chance = 220 }, -- Collar of Green Plasma
+	{ id = 50152, chance = 100 }, -- Collar of Orange Plasma
+	{ id = 23533, chance = 280 }, -- Ring of Red Plasma
+	{ id = 23529, chance = 364 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 264 }, -- Ring of Green Plasma
+	{ id = 50150, chance = 100 }, -- Ring of Orange Plasma
 }
 
 monster.attacks = {

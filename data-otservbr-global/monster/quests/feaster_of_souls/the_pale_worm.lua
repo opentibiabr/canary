@@ -73,36 +73,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 96080, maxCount = 2 },
-	{ name = "white gem", chance = 52940, maxCount = 2 },
-	{ name = "moonstone", chance = 52940, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 43140, maxCount = 6 },
-	{ name = "supreme health potion", chance = 29410, maxCount = 6 },
-	{ name = "silver hand mirror", chance = 27450 },
-	{ name = "berserk potion", chance = 23530, maxCount = 10 },
-	{ name = "ultimate spirit potion", chance = 23530, maxCount = 6 },
-	{ name = "bullseye potion", chance = 19610, maxCount = 10 },
-	{ name = "mastermind potion", chance = 19610, maxCount = 10 },
-	{ name = "death toll", chance = 13730, maxCount = 2 },
-	{ name = "ivory comb", chance = 13730 },
-	{ name = "angel figurine", chance = 11760 },
-	{ name = "diamond", chance = 11760 },
-	{ name = "cursed bone", chance = 7840 },
-	{ name = "soulforged lantern", chance = 7840 },
-	{ name = "grimace", chance = 5880 },
-	{ name = "amber", chance = 5880 },
-	{ name = "amber with a dragonfly", chance = 3920 },
-	{ name = "ghost claw", chance = 1960 },
-	{ name = "bloody tears", chance = 1500 },
-	{ name = "ghost chestplate", chance = 150 },
-	{ name = "spooky hood", chance = 150 },
-	{ name = "pale worm's scalp", chance = 1200 },
-	{ name = "spectral scrap of cloth", chance = 250 },
-	{ name = "fabulous legs", chance = 150 },
-	{ name = "phantasmal axe", chance = 150 },
-	{ name = "ghost backpack", chance = 150 },
-	{ id = 32621, chance = 400 }, -- Ring of souls
-	{ name = "soulful legs", chance = 150 },
+	{ id = 23374, chance = 32967, maxCount = 6 }, -- Ultimate Spirit Potion
+	{ id = 3043, chance = 99725, maxCount = 3 }, -- Crystal Coin
+	{ id = 32770, chance = 44505, maxCount = 2 }, -- Diamond
+	{ id = 32598, chance = 3030 }, -- Pale Worm's Scalp
+	{ id = 32597, chance = 3571 }, -- Ravenous Circlet
+	{ id = 32621, chance = 1006 }, -- Ring of Souls
+	{ id = 32617, chance = 2684 }, -- Fabulous Legs
+	{ id = 32618, chance = 2348 }, -- Soulful Legs
+	{ id = 32620, chance = 1000 }, -- Ghost Backpack
+	{ id = 32628, chance = 1000 }, -- Ghost Chestplate
+	{ id = 32629, chance = 5219 }, -- Spectral Scrap of Cloth
+	{ id = 32616, chance = 1373 }, -- Phantasmal Axe
+	{ id = 32623, chance = 3021 }, -- Giant Topaz
+	{ id = 32622, chance = 3691 }, -- Giant Amethyst
+	{ id = 32619, chance = 824 }, -- Pair of Nightmare Boots
+	{ id = 32626, chance = 7417 }, -- Amber (Item)
+	{ id = 7440, chance = 19780 }, -- Mastermind Potion
+	{ id = 7443, chance = 19780 }, -- Bullseye Potion
+	{ id = 23375, chance = 32142 }, -- Supreme Health Potion
+	{ id = 32773, chance = 15109 }, -- Ivory Comb
+	{ id = 32589, chance = 8516 }, -- Angel Figurine
+	{ id = 23373, chance = 34615 }, -- Ultimate Mana Potion
+	{ id = 32769, chance = 21153 }, -- White Gem
+	{ id = 32703, chance = 10989 }, -- Death Toll
+	{ id = 32771, chance = 47252 }, -- Moonstone
+	{ id = 32774, chance = 19505 }, -- Cursed Bone
+	{ id = 7439, chance = 21978 }, -- Berserk Potion
+	{ id = 32772, chance = 14285 }, -- Silver Hand Mirror
+	{ id = 32624, chance = 2747 }, -- Amber with a Bug
+	{ id = 32625, chance = 5219 }, -- Amber with a Dragonfly
+	{ id = 50185, chance = 1000 }, -- Jade Legs
 }
 
 monster.attacks = {

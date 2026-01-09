@@ -76,7 +76,8 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 676, chance = 14620, maxCount = 2 }, -- small enchanted ruby
+	{ id = 676, chance = 14589, maxCount = 2 }, -- Small Enchanted Ruby
+	{ id = 3048, chance = 1000 }, -- Might Ring
 }
 
 monster.attacks = {

@@ -73,30 +73,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55000, minCount = 70, maxCount = 75 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "giant sapphire", chance = 10000, maxCount = 1 },
-	{ name = "giant topaz", chance = 10000, maxCount = 1 },
-	{ name = "violet gem", chance = 6000, maxCount = 1 },
-	{ name = "blue gem", chance = 10000, maxCount = 3 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 10000, maxCount = 3 },
-	{ name = "yellow gem", chance = 10000, maxCount = 3 },
-	{ name = "white gem", chance = 6000, maxCount = 3 },
-	{ name = "dragon figurine", chance = 10000, maxCount = 1 },
-	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "malice's spine", chance = 2000, maxCount = 1 },
-	{ name = "malice's horn", chance = 2000, maxCount = 1 },
-	{ name = "bracelet of strengthening", chance = 400 },
-	{ name = "spectral horseshoe", chance = 400 },
-	{ name = "the skull of a beast", chance = 400 },
-	{ name = "figurine of malice", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ id = 34018, chance = 3191 }, -- Figurine of Malice
+	{ id = 33920, chance = 11702 }, -- Malice's Horn
+	{ id = 33921, chance = 9230 }, -- Malice's Spine
+	{ id = 34075, chance = 1000 }, -- The Skull of a Beast
+	{ id = 23373, chance = 58510 }, -- Ultimate Mana Potion
+	{ id = 32622, chance = 28723 }, -- Giant Amethyst
+	{ id = 32769, chance = 19148 }, -- White Gem
+	{ id = 3043, chance = 100000 }, -- Crystal Coin
+	{ id = 281, chance = 10638 }, -- Giant Shimmering Pearl
+	{ id = 7443, chance = 29787 }, -- Bullseye Potion
+	{ id = 7440, chance = 30851 }, -- Mastermind Potion
+	{ id = 9058, chance = 13829 }, -- Gold Ingot
+	{ id = 32623, chance = 31914 }, -- Giant Topaz
+	{ id = 3037, chance = 37234 }, -- Yellow Gem
+	{ id = 23375, chance = 47872 }, -- Supreme Health Potion
+	{ id = 23374, chance = 52127 }, -- Ultimate Spirit Potion
+	{ id = 7439, chance = 36170 }, -- Berserk Potion
+	{ id = 3041, chance = 22340 }, -- Blue Gem
+	{ id = 30061, chance = 39361 }, -- Giant Sapphire
+	{ id = 3038, chance = 26595 }, -- Green Gem
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
+	{ id = 3039, chance = 37234 }, -- Red Gem
+	{ id = 30053, chance = 14285 }, -- Dragon Figurine
+	{ id = 34072, chance = 2325 }, -- Spectral Horseshoe
+	{ id = 34073, chance = 3488 }, -- Spectral Saddle
 }
 
 monster.attacks = {

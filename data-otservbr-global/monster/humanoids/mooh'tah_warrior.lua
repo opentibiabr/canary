@@ -76,25 +76,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 119 },
-	{ name = "platinum coin", chance = 45450, maxCount = 3 },
-	{ id = 21202, chance = 18970 }, -- mooh'tah shell
-	{ name = "strong mana potion", chance = 9290 },
-	{ name = "strong health potion", chance = 8500 },
-	{ name = "small ruby", chance = 7710 },
-	{ name = "small emerald", chance = 6320 },
-	{ name = "small amethyst", chance = 5340 },
-	{ name = "minotaur leather", chance = 5340 },
-	{ name = "minotaur horn", chance = 4550, maxCount = 2 },
-	{ name = "small topaz", chance = 4350 },
-	{ id = 3094, chance = 1580 }, -- sword ring
-	{ name = "cowtana", chance = 1380 },
-	{ id = 21166, chance = 1380 }, -- mooh'tah plate
-	{ name = "knight armor", chance = 990 },
-	{ name = "red piece of cloth", chance = 790 },
-	{ name = "knight legs", chance = 590 },
-	{ name = "guardian shield", chance = 590 },
-	{ id = 7401, chance = 160 }, -- minotaur trophy
+	{ id = 3031, chance = 100000, maxCount = 120 }, -- Gold Coin
+	{ id = 3035, chance = 40120, maxCount = 3 }, -- Platinum Coin
+	{ id = 21202, chance = 15067 }, -- Mooh'tah Shell
+	{ id = 237, chance = 7211 }, -- Strong Mana Potion
+	{ id = 236, chance = 7151 }, -- Strong Health Potion
+	{ id = 5878, chance = 5038 }, -- Minotaur Leather
+	{ id = 3030, chance = 4969 }, -- Small Ruby
+	{ id = 3032, chance = 5004 }, -- Small Emerald
+	{ id = 3033, chance = 5116 }, -- Small Amethyst
+	{ id = 9057, chance = 4972 }, -- Small Topaz
+	{ id = 11472, chance = 4994, maxCount = 2 }, -- Minotaur Horn
+	{ id = 21177, chance = 1463 }, -- Cowtana
+	{ id = 3091, chance = 1030 }, -- Sword Ring
+	{ id = 21166, chance = 994 }, -- Mooh'tah Plate
+	{ id = 3415, chance = 898 }, -- Guardian Shield
+	{ id = 3371, chance = 764 }, -- Knight Legs
+	{ id = 5911, chance = 771 }, -- Red Piece of Cloth
+	{ id = 3370, chance = 536 }, -- Knight Armor
+	{ id = 7401, chance = 133 }, -- Minotaur Trophy
 }
 
 monster.attacks = {

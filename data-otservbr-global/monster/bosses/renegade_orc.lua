@@ -68,21 +68,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3578, chance = 30000 }, -- fish
-	{ id = 3031, chance = 28000, maxCount = 35 }, -- gold coin
-	{ id = 11479, chance = 19000 }, -- orc leather
-	{ id = 3410, chance = 10000 }, -- plate shield
-	{ id = 3298, chance = 9850, maxCount = 4 }, -- throwing knife
-	{ id = 3725, chance = 9650 }, -- brown mushroom
-	{ id = 3091, chance = 3920 }, -- sword ring
-	{ id = 3285, chance = 2800 }, -- longsword
-	{ id = 7378, chance = 2600 }, -- royal spear
-	{ id = 3307, chance = 2100 }, -- scimitar
-	{ id = 10196, chance = 890 }, -- orc tooth
-	{ id = 3301, chance = 830 }, -- broadsword
-	{ id = 266, chance = 550 }, -- health potion
-	{ id = 3557, chance = 420 }, -- plate legs
-	{ id = 3369, chance = 160 }, -- warrior helmet
+	{ id = 3031, chance = 33330, maxCount = 29 }, -- Gold Coin
+	{ id = 3298, chance = 5560, maxCount = 2 }, -- Throwing Knife
+	{ id = 3578, chance = 29547 }, -- Fish
+	{ id = 3725, chance = 5560 }, -- Brown Mushroom
+	{ id = 11479, chance = 1000 }, -- Orc Leather
+	{ id = 3307, chance = 11360 }, -- Scimitar
+	{ id = 3410, chance = 9088 }, -- Plate Shield
+	{ id = 3301, chance = 1000 }, -- Broadsword
+	{ id = 3091, chance = 2780 }, -- Sword Ring
+	{ id = 3285, chance = 5560 }, -- Longsword
+	{ id = 10196, chance = 8330 }, -- Orc Tooth
+	{ id = 266, chance = 1000 }, -- Health Potion
+	{ id = 3557, chance = 5560 }, -- Plate Legs
+	{ id = 3369, chance = 2780 }, -- Warrior Helmet
+	{ id = 7378, chance = 2780 }, -- Royal Spear
 }
 
 monster.attacks = {

@@ -76,25 +76,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 37500, maxCount = 70 }, -- gold coin
-	{ id = 3031, chance = 37500, maxCount = 50 }, -- gold coin
-	{ id = 3449, chance = 4000, maxCount = 12 }, -- burst arrow
-	{ id = 3583, chance = 15500, maxCount = 3 }, -- dragon ham
-	{ id = 3294, chance = 25000 }, -- short sword
-	{ id = 3286, chance = 21500 }, -- mace
-	{ id = 3409, chance = 14000 }, -- steel shield
-	{ id = 3349, chance = 10000 }, -- crossbow
-	{ id = 3285, chance = 5000 }, -- longsword
-	{ id = 3351, chance = 3000 }, -- steel helmet
-	{ id = 3557, chance = 2000 }, -- plate legs
-	{ id = 3301, chance = 2000 }, -- broadsword
-	{ id = 3275, chance = 1333 }, -- double axe
-	{ id = 3071, chance = 1800 }, -- wand of inferno
-	{ id = 5920, chance = 100000 }, -- green dragon scale
-	{ id = 3322, chance = 600 }, -- dragon hammer
-	{ id = 5877, chance = 100000 }, -- green dragon leather
-	{ id = 3416, chance = 500 }, -- dragon shield
-	{ id = 7430, chance = 650 }, -- dragonbone staff
+	{ id = 3031, chance = 87500, maxCount = 71 }, -- Gold Coin
+	{ id = 3583, chance = 31818 }, -- Dragon Ham
+	{ id = 3449, chance = 5000, maxCount = 8 }, -- Burst Arrow
+	{ id = 3294, chance = 25000 }, -- Short Sword
+	{ id = 3409, chance = 25000 }, -- Steel Shield
+	{ id = 3286, chance = 1000 }, -- Mace
+	{ id = 3285, chance = 1000 }, -- Longsword
+	{ id = 3557, chance = 15000 }, -- Plate Legs
+	{ id = 3351, chance = 7500 }, -- Steel Helmet
+	{ id = 3349, chance = 7500 }, -- Crossbow
+	{ id = 3275, chance = 15000 }, -- Double Axe
+	{ id = 3322, chance = 12500 }, -- Dragon Hammer
+	{ id = 3071, chance = 1000 }, -- Wand of Inferno
+	{ id = 7430, chance = 2500 }, -- Dragonbone Staff
+	{ id = 3416, chance = 5000 }, -- Dragon Shield
+	{ id = 5920, chance = 100000 }, -- Green Dragon Scale
+	{ id = 5877, chance = 100000 }, -- Green Dragon Leather
+	{ id = 3301, chance = 2500 }, -- Broadsword
 }
 
 monster.attacks = {

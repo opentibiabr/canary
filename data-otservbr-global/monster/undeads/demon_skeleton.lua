@@ -81,21 +81,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2920, chance = 5270 }, -- torch
-	{ name = "black pearl", chance = 2900 },
-	{ name = "small ruby", chance = 1400 },
-	{ name = "gold coin", chance = 97000, maxCount = 75 },
-	{ name = "mind stone", chance = 520 },
-	{ name = "mysterious fetish", chance = 690 },
-	{ name = "throwing star", chance = 10000, maxCount = 3 },
-	{ name = "battle hammer", chance = 4000 },
-	{ name = "iron helmet", chance = 3450 },
-	{ name = "battle shield", chance = 5000 },
-	{ name = "guardian shield", chance = 100 },
-	{ name = "health potion", chance = 10120, maxCount = 2 },
-	{ name = "health potion", chance = 10000, maxCount = 2 },
-	{ name = "mana potion", chance = 5300 },
-	{ name = "demonic skeletal hand", chance = 12600 },
+	{ id = 3031, chance = 76014, maxCount = 75 }, -- Gold Coin
+	{ id = 9647, chance = 6113 }, -- Demonic Skeletal Hand
+	{ id = 3287, chance = 16145, maxCount = 3 }, -- Throwing Star
+	{ id = 266, chance = 9829, maxCount = 2 }, -- Health Potion
+	{ id = 268, chance = 1200 }, -- Mana Potion
+	{ id = 2920, chance = 42900 }, -- Torch
+	{ id = 3413, chance = 1332 }, -- Battle Shield
+	{ id = 3353, chance = 2367 }, -- Iron Helmet
+	{ id = 3305, chance = 3040 }, -- Battle Hammer
+	{ id = 3027, chance = 2904 }, -- Black Pearl
+	{ id = 3030, chance = 1506 }, -- Small Ruby
+	{ id = 3078, chance = 402 }, -- Mysterious Fetish
+	{ id = 3062, chance = 225 }, -- Mind Stone
+	{ id = 3415, chance = 194 }, -- Guardian Shield
+	{ id = 3081, chance = 160 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -74,16 +74,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 54260, maxCount = 38 },
-	{ name = "axe", chance = 2500 },
-	{ name = "mace", chance = 1700 },
-	{ name = "iron helmet", chance = 500 },
-	{ name = "brass armor", chance = 1700 },
-	{ name = "steel shield", chance = 500 },
-	{ name = "nomad parchment", chance = 170 },
-	{ name = "potato", chance = 5680, maxCount = 3 },
-	{ name = "dirty turban", chance = 1700 },
-	{ name = "rope belt", chance = 7510 },
+	{ id = 3031, chance = 55440, maxCount = 38 }, -- Gold Coin
+	{ id = 11492, chance = 6110 }, -- Rope Belt
+	{ id = 8010, chance = 5230, maxCount = 3 }, -- Potato
+	{ id = 3274, chance = 3150 }, -- Axe
+	{ id = 3359, chance = 1850 }, -- Brass Armor
+	{ id = 11456, chance = 1720 }, -- Dirty Turban
+	{ id = 3286, chance = 1400 }, -- Mace
+	{ id = 3353, chance = 650 }, -- Iron Helmet
+	{ id = 3409, chance = 880 }, -- Steel Shield
+	{ id = 7533, chance = 360 }, -- Nomad Parchment
 }
 
 monster.attacks = {

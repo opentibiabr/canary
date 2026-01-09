@@ -76,19 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 12509, chance = 100000 }, -- scorpion sceptre
-	{ id = 3031, chance = 95000, maxCount = 243 }, -- gold coin
-	{ id = 3035, chance = 36000, maxCount = 5 }, -- platinum coin
-	{ id = 12483, chance = 17000 }, -- pharaoh banner
-	{ id = 3042, chance = 14000, maxCount = 5 }, -- scarab coin
-	{ id = 12482, chance = 12000 }, -- hieroglyph banner
-	{ id = 3017, chance = 12000 }, -- silver brooch
-	{ id = 238, chance = 10000, maxCount = 3 }, -- great mana potion
-	{ id = 239, chance = 5000, maxCount = 4 }, -- great health potion
-	{ id = 3334, chance = 5000 }, -- pharaoh sword
-	{ id = 10290, chance = 2500 }, -- mini mummy
-	{ id = 8897, chance = 2500 }, -- heavily rusted legs
-	{ id = 3335, chance = 2500 }, -- twin axe
+	{ id = 3031, chance = 95830, maxCount = 243 }, -- Gold Coin
+	{ id = 3035, chance = 35420, maxCount = 5 }, -- Platinum Coin
+	{ id = 3042, chance = 20830, maxCount = 5 }, -- Scarab Coin
+	{ id = 239, chance = 6250, maxCount = 4 }, -- Great Health Potion
+	{ id = 238, chance = 8330, maxCount = 3 }, -- Great Mana Potion
+	{ id = 3017, chance = 10420 }, -- Silver Brooch
+	{ id = 12483, chance = 14580 }, -- Pharaoh Banner
+	{ id = 12482, chance = 10420 }, -- Hieroglyph Banner
+	{ id = 8899, chance = 2080 }, -- Slightly Rusted Legs
+	{ id = 8896, chance = 1000 }, -- Slightly Rusted Armor
+	{ id = 3360, chance = 1000 }, -- Golden Armor
+	{ id = 3334, chance = 4170 }, -- Pharaoh Sword
+	{ id = 3335, chance = 2080 }, -- Twin Axe
+	{ id = 10290, chance = 2080 }, -- Mini Mummy
+	{ id = 12509, chance = 100000 }, -- Scorpion Sceptre
 }
 
 monster.attacks = {

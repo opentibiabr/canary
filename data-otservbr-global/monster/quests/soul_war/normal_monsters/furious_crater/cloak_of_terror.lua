@@ -84,21 +84,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 54460 },
-	{ name = "ultimate health potion", chance = 12380, maxCount = 6 },
-	{ name = "gold ingot", chance = 12380 },
-	{ name = "wand of starstorm", chance = 5450 },
-	{ name = "telescope eye", chance = 5450 },
-	{ id = 33935, chance = 4460 }, --  crown (terror)
-	{ name = "violet gem", chance = 3960 },
-	{ name = "wand of inferno", chance = 3960 },
-	{ name = "lightning headband", chance = 3960 },
-	{ name = "green gem", chance = 3960 },
-	{ name = "wand of voodoo", chance = 3960 },
-	{ name = "blue gem", chance = 1490 },
-	{ name = "brooch of embracement", chance = 1490 },
-	{ name = "wand of defiance", chance = 990 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 63361 }, -- Crystal Coin
+	{ id = 7643, chance = 16993, maxCount = 6 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 12828 }, -- Gold Ingot
+	{ id = 33934, chance = 6087 }, -- Telescope Eye
+	{ id = 8092, chance = 5364 }, -- Wand of Starstorm
+	{ id = 3036, chance = 5095 }, -- Violet Gem
+	{ id = 828, chance = 1441 }, -- Lightning Headband
+	{ id = 3038, chance = 3523 }, -- Green Gem
+	{ id = 3041, chance = 2800 }, -- Blue Gem
+	{ id = 3071, chance = 4016 }, -- Wand of Inferno
+	{ id = 8094, chance = 3200 }, -- Wand of Voodoo
+	{ id = 16096, chance = 3378, maxCount = 2 }, -- Wand of Defiance
+	{ id = 33935, chance = 3422 }, -- Crown (Plant)
+	{ id = 34023, chance = 781 }, -- Brooch of Embracement
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

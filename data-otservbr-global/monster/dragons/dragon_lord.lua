@@ -88,26 +88,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 95300, maxCount = 237 },
-	{ name = "dragon ham", chance = 79790, maxCount = 2 },
-	{ name = "green mushroom", chance = 12030 },
-	{ id = 2842, chance = 9590 }, -- gemmed book
-	{ name = "royal spear", chance = 9380, maxCount = 3 },
-	{ name = "power bolt", chance = 5920, maxCount = 7 },
-	{ name = "small sapphire", chance = 5590 },
-	{ id = 3051, chance = 4550 }, -- energy ring
-	{ name = "golden mug", chance = 3310 },
-	{ name = "red dragon scale", chance = 1940 },
-	{ name = "red dragon leather", chance = 1150 },
-	{ name = "strong health potion", chance = 800 },
-	{ name = "life crystal", chance = 650 },
-	{ name = "strange helmet", chance = 520 },
-	{ name = "tower shield", chance = 410 },
-	{ name = "fire sword", chance = 350 },
-	{ name = "royal helmet", chance = 260 },
-	{ name = "dragon slayer", chance = 220 },
-	{ name = "dragon lord trophy", chance = 130 },
-	{ name = "dragon scale mail", chance = 90 },
+	{ id = 3031, chance = 95230, maxCount = 245 }, -- Gold Coin
+	{ id = 3583, chance = 72538, maxCount = 5 }, -- Dragon Ham
+	{ id = 3732, chance = 11845 }, -- Green Mushroom
+	{ id = 2842, chance = 8305 }, -- Book (Gemmed)
+	{ id = 7378, chance = 16721, maxCount = 3 }, -- Royal Spear
+	{ id = 3450, chance = 24781, maxCount = 7 }, -- Power Bolt
+	{ id = 3051, chance = 4712 }, -- Energy Ring
+	{ id = 3029, chance = 4716 }, -- Small Sapphire
+	{ id = 2903, chance = 2693 }, -- Golden Mug
+	{ id = 5882, chance = 1750 }, -- Red Dragon Scale
+	{ id = 5948, chance = 1082 }, -- Red Dragon Leather
+	{ id = 236, chance = 878 }, -- Strong Health Potion
+	{ id = 3061, chance = 768 }, -- Life Crystal
+	{ id = 3373, chance = 352 }, -- Strange Helmet
+	{ id = 3280, chance = 458 }, -- Fire Sword
+	{ id = 3392, chance = 168 }, -- Royal Helmet
+	{ id = 3428, chance = 274 }, -- Tower Shield
+	{ id = 3386, chance = 232 }, -- Dragon Scale Mail
+	{ id = 7399, chance = 102 }, -- Dragon Lord Trophy
+	{ id = 7402, chance = 139 }, -- Dragon Slayer
 }
 
 monster.attacks = {

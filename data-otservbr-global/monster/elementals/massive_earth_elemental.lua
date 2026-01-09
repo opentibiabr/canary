@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small stone", chance = 25280, maxCount = 10 },
-	{ name = "gold coin", chance = 32000, maxCount = 100 },
-	{ name = "gold coin", chance = 32000, maxCount = 100 },
-	{ name = "gold coin", chance = 32000, maxCount = 41 },
-	{ name = "stone skin amulet", chance = 980 },
-	{ name = "protection amulet", chance = 1580 },
-	{ id = 3097, chance = 2790 }, -- dwarven ring
-	{ name = "diamond sceptre", chance = 150 },
-	{ name = "terra amulet", chance = 500 },
-	{ id = 8895, chance = 3300 }, -- rusted armor
-	{ name = "small topaz", chance = 5280, maxCount = 2 },
-	{ name = "lump of earth", chance = 40680 },
-	{ name = "clay lump", chance = 480 },
-	{ id = 12600, chance = 430 }, -- coal
+	{ id = 3031, chance = 92903, maxCount = 241 }, -- Gold Coin
+	{ id = 10305, chance = 38919 }, -- Lump of Earth
+	{ id = 1781, chance = 23698, maxCount = 10 }, -- Small Stone
+	{ id = 9057, chance = 5619, maxCount = 2 }, -- Small Topaz
+	{ id = 3097, chance = 3356 }, -- Dwarven Ring
+	{ id = 8895, chance = 4732 }, -- Rusted Armor
+	{ id = 3028, chance = 4602, maxCount = 2 }, -- Small Diamond
+	{ id = 3048, chance = 3800 }, -- Might Ring
+	{ id = 3084, chance = 2666 }, -- Protection Amulet
+	{ id = 3081, chance = 1359 }, -- Stone Skin Amulet
+	{ id = 10422, chance = 747 }, -- Clay Lump
+	{ id = 12600, chance = 384 }, -- Coal
+	{ id = 814, chance = 786 }, -- Terra Amulet
+	{ id = 7387, chance = 180 }, -- Diamond Sceptre
 }
 
 monster.attacks = {

@@ -83,20 +83,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 74920 },
-	{ name = "great spirit potion", chance = 27010, maxCount = 5 },
-	{ name = "distorted heart", chance = 6750 },
-	{ id = 23529, chance = 4820 }, -- ring of blue plasma
-	{ name = "underworld rod", chance = 4820 },
-	{ name = "distorted robe", chance = 4500 },
-	{ name = "violet gem", chance = 4180 },
-	{ name = "springsprout rod", chance = 3860 },
-	{ id = 23533, chance = 3540 }, -- ring of red plasma
-	{ name = "gold ingot", chance = 2890 },
-	{ name = "spellbook of warding", chance = 2890 },
-	{ id = 23531, chance = 1930 }, -- ring of green plasma
-	{ name = "glacial rod", chance = 1290 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 68970 }, -- Crystal Coin
+	{ id = 7642, chance = 21554, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 3036, chance = 3135 }, -- Violet Gem
+	{ id = 8073, chance = 3707 }, -- Spellbook of Warding
+	{ id = 8082, chance = 4113 }, -- Underworld Rod
+	{ id = 8084, chance = 2454 }, -- Springsprout Rod
+	{ id = 9058, chance = 3950 }, -- Gold Ingot
+	{ id = 16118, chance = 2202 }, -- Glacial Rod
+	{ id = 23529, chance = 1879 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 1943 }, -- Ring of Green Plasma
+	{ id = 23533, chance = 2190 }, -- Ring of Red Plasma
+	{ id = 34142, chance = 4080 }, -- Distorted Heart
+	{ id = 34149, chance = 2360 }, -- Distorted Robe
+	{ id = 3081, chance = 1370 }, -- Stone Skin Amulet
+	{ id = 34109, chance = 1000 }, -- Bag You Desire
 }
 
 monster.attacks = {

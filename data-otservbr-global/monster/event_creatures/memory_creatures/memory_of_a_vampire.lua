@@ -61,18 +61,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "emerald bangle", chance = 230 },
-	{ name = "black pearl", chance = 1800 },
-	{ name = "gold coin", chance = 90230, maxCount = 60 },
-	{ name = "bronze amulet", chance = 220 },
-	{ name = "spike sword", chance = 1000 },
-	{ name = "ice rapier", chance = 420 },
-	{ name = "katana", chance = 1560 },
-	{ name = "strange helmet", chance = 420 },
-	{ name = "vampire shield", chance = 230 },
-	{ name = "grave flower", chance = 1910 },
-	{ name = "special fx box", chance = 1500 },
-	{ name = "strong health potion", chance = 1500 },
+	{ id = 3056, chance = 440 }, -- Bronze Amulet
+	{ id = 3035, chance = 48273 }, -- Platinum Coin
+	{ id = 3661, chance = 5361 }, -- Grave Flower
+	{ id = 3027, chance = 1530 }, -- Black Pearl
+	{ id = 37531, chance = 2220 }, -- Candy Floss (Large)
+	{ id = 236, chance = 4598 }, -- Strong Health Potion
+	{ id = 3373, chance = 890 }, -- Strange Helmet
+	{ id = 37530, chance = 890 }, -- Bottle of Champagne
+	{ id = 37468, chance = 1780 }, -- Special Fx Box
+	{ id = 3271, chance = 3831 }, -- Spike Sword
+	{ id = 3031, chance = 91571 }, -- Gold Coin
+	{ id = 3284, chance = 8000 }, -- Ice Rapier
+	{ id = 3114, chance = 6220 }, -- Skull (Item)
+	{ id = 3300, chance = 1780 }, -- Katana
+	{ id = 3434, chance = 440 }, -- Vampire Shield
 }
 
 monster.attacks = {

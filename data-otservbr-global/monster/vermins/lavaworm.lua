@@ -76,21 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 24 },
-	{ name = "gold ingot", chance = 18430, maxCount = 2 },
-	{ name = "violet crystal shard", chance = 15630, maxCount = 3 },
-	{ name = "lavaworm spike roots", chance = 20310, maxCount = 3 },
-	{ name = "violet gem", chance = 6750 },
-	{ name = "lavaworm spikes", chance = 4230 },
-	{ name = "green gem", chance = 4130 },
-	{ name = "butterfly ring", chance = 3120 },
-	{ name = "underworld rod", chance = 2920 },
-	{ name = "lavaworm jaws", chance = 2620 },
-	{ name = "blue crystal shard", chance = 2520 },
-	{ name = "warrior helmet", chance = 1560 },
-	{ name = "wand of voodoo", chance = 1560 },
-	{ name = "crusader helmet", chance = 1560 },
-	{ name = "strange helmet", chance = 500 },
+	{ id = 3035, chance = 100000, maxCount = 18 }, -- Platinum Coin
+	{ id = 9058, chance = 18544 }, -- Gold Ingot
+	{ id = 16120, chance = 12556 }, -- Violet Crystal Shard
+	{ id = 36769, chance = 7905 }, -- Lavaworm Spike Roots
+	{ id = 3038, chance = 4916 }, -- Green Gem
+	{ id = 36770, chance = 5289 }, -- Lavaworm Spikes
+	{ id = 3036, chance = 8315 }, -- Violet Gem
+	{ id = 3369, chance = 1558 }, -- Warrior Helmet
+	{ id = 8082, chance = 3872 }, -- Underworld Rod
+	{ id = 8094, chance = 1784 }, -- Wand of Voodoo
+	{ id = 16119, chance = 3450 }, -- Blue Crystal Shard
+	{ id = 25698, chance = 3130 }, -- Butterfly Ring
+	{ id = 36771, chance = 3359 }, -- Lavaworm Jaws
+	{ id = 3391, chance = 755 }, -- Crusader Helmet
+	{ id = 3373, chance = 383 }, -- Strange Helmet
 }
 
 monster.attacks = {

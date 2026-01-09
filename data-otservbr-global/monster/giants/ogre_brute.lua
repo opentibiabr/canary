@@ -79,24 +79,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 92000, maxCount = 130 }, -- gold coin
-	{ id = 3577, chance = 6200 }, -- meat
-	{ id = 3030, chance = 4200 }, -- small ruby
-	{ id = 3026, chance = 6200, maxCount = 3 }, -- white pearl
-	{ id = 11447, chance = 6200 }, -- battle stone
-	{ id = 3598, chance = 6200, maxCount = 7 }, -- cookie
-	{ id = 22188, chance = 5200 }, -- ogre ear stud
-	{ id = 22189, chance = 1200 }, -- ogre nose ring
-	{ id = 22193, chance = 3200, maxCount = 2 }, -- onyx chip
-	{ id = 22194, chance = 3200, maxCount = 3 }, -- opal
-	{ id = 3050, chance = 2200 }, -- power ring
-	{ id = 22191, chance = 1200 }, -- skull fetish
-	{ id = 236, chance = 6200, maxCount = 3 }, -- strong health potion
-	{ id = 7428, chance = 500 }, -- bonebreaker
-	{ id = 22171, chance = 800 }, -- ogre klubba
-	{ id = 3465, chance = 500 }, -- pot
-	{ name = "rusted helmet", chance = 220 },
-	{ id = 22192, chance = 300 }, -- shamanic mask
+	{ id = 3031, chance = 99690, maxCount = 125 }, -- Gold Coin
+	{ id = 3577, chance = 15000, maxCount = 2 }, -- Meat
+	{ id = 236, chance = 12440 }, -- Strong Health Potion
+	{ id = 22189, chance = 14600 }, -- Ogre Nose Ring
+	{ id = 22188, chance = 18750 }, -- Ogre Ear Stud
+	{ id = 3598, chance = 3780, maxCount = 5 }, -- Cookie
+	{ id = 1781, chance = 5110, maxCount = 5 }, -- Small Stone
+	{ id = 11447, chance = 4670 }, -- Battle Stone
+	{ id = 22191, chance = 3440 }, -- Skull Fetish
+	{ id = 3050, chance = 1590 }, -- Power Ring
+	{ id = 3093, chance = 2290 }, -- Club Ring
+	{ id = 22193, chance = 1970, maxCount = 2 }, -- Onyx Chip
+	{ id = 3030, chance = 2340 }, -- Small Ruby
+	{ id = 3026, chance = 2220 }, -- White Pearl
+	{ id = 22194, chance = 1700, maxCount = 2 }, -- Opal
+	{ id = 22171, chance = 940 }, -- Ogre Klubba
+	{ id = 8907, chance = 210 }, -- Rusted Helmet
+	{ id = 9632, chance = 210 }, -- Ancient Stone
+	{ id = 3465, chance = 270 }, -- Pot
+	{ id = 7428, chance = 100 }, -- Bonebreaker
+	{ id = 22192, chance = 140 }, -- Shamanic Mask
+	{ id = 7412, chance = 10 }, -- Butcher's Axe
 }
 
 monster.attacks = {

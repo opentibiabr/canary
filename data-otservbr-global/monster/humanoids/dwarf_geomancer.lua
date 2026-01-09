@@ -77,19 +77,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small sapphire", chance = 710 },
-	{ name = "gold coin", chance = 50000, maxCount = 35 },
-	{ id = 3046, chance = 14000 }, -- magic light wand
-	{ id = 3059, chance = 360 }, -- spellbook
-	{ id = 3097, chance = 530 }, -- dwarven ring
-	{ name = "blank rune", chance = 33000 },
-	{ name = "clerical mace", chance = 1120 },
-	{ name = "pear", chance = 25000 },
-	{ name = "white mushroom", chance = 60000, maxCount = 2 },
-	{ name = "iron ore", chance = 120 },
-	{ name = "terra boots", chance = 470 },
-	{ name = "geomancer's robe", chance = 8000 },
-	{ name = "geomancer's staff", chance = 7000 },
+	{ id = 3031, chance = 75250, maxCount = 45 }, -- Gold Coin
+	{ id = 3147, chance = 34335 }, -- Blank Rune
+	{ id = 3584, chance = 23504 }, -- Pear
+	{ id = 3723, chance = 63850, maxCount = 2 }, -- White Mushroom
+	{ id = 3046, chance = 13076 }, -- Magic Light Wand
+	{ id = 11458, chance = 8389 }, -- Geomancer's Robe
+	{ id = 11463, chance = 6657 }, -- Geomancer's Staff
+	{ id = 3311, chance = 921 }, -- Clerical Mace
+	{ id = 3097, chance = 791 }, -- Dwarven Ring
+	{ id = 3029, chance = 689 }, -- Small Sapphire
+	{ id = 813, chance = 509 }, -- Terra Boots
+	{ id = 5880, chance = 485 }, -- Iron Ore
+	{ id = 3059, chance = 480 }, -- Spellbook
 }
 
 monster.attacks = {

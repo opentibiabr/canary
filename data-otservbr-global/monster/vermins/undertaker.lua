@@ -74,18 +74,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Great Spirit Potion", chance = 30660, minCount = 1, maxCount = 3 },
-	{ name = "Undertaker Fangs", chance = 25740 },
-	{ name = "Crystal Coin", chance = 15100, minCount = 1, maxCount = 3 },
-	{ name = "Spider Silk", chance = 3520 },
-	{ name = "Terra Boots", chance = 3390 },
-	{ name = "Blue Crystal Shard", chance = 1840 },
-	{ name = "Relic Sword", chance = 1650 },
-	{ name = "Terra Legs", chance = 1640 },
-	{ name = "Necrotic Rod", chance = 1400 },
-	{ name = "Butterfly Ring", chance = 1240 },
-	{ name = "Wand of Voodoo", chance = 960 },
-	{ name = "Violet Gem", chance = 850 },
+	{ id = 7642, chance = 33552, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 39380, chance = 22352 }, -- Undertaker Fangs
+	{ id = 3043, chance = 12468, maxCount = 3 }, -- Crystal Coin
+	{ id = 812, chance = 919 }, -- Terra Legs
+	{ id = 813, chance = 3168 }, -- Terra Boots
+	{ id = 3069, chance = 1057 }, -- Necrotic Rod
+	{ id = 5879, chance = 4078 }, -- Spider Silk
+	{ id = 7383, chance = 1353 }, -- Relic Sword
+	{ id = 8094, chance = 722 }, -- Wand of Voodoo
+	{ id = 16119, chance = 2059 }, -- Blue Crystal Shard
+	{ id = 25698, chance = 1885 }, -- Butterfly Ring
+	{ id = 3036, chance = 684 }, -- Violet Gem
 }
 
 monster.attacks = {

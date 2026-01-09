@@ -76,14 +76,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small stone", chance = 10000, maxCount = 10 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 63 },
-	{ name = "blank rune", chance = 25000 },
-	{ name = "earth arrow", chance = 5555, maxCount = 8 },
-	{ name = "small topaz", chance = 320 },
-	{ name = "lump of earth", chance = 25000 },
-	{ name = "clay lump", chance = 1100 },
+	{ id = 3031, chance = 97720, maxCount = 164 }, -- Gold Coin
+	{ id = 3147, chance = 25519 }, -- Blank Rune
+	{ id = 10305, chance = 24800 }, -- Lump of Earth
+	{ id = 1781, chance = 10130, maxCount = 10 }, -- Small Stone
+	{ id = 774, chance = 5010, maxCount = 8 }, -- Earth Arrow
+	{ id = 10422, chance = 1020 }, -- Clay Lump
+	{ id = 9057, chance = 410 }, -- Small Topaz
 }
 
 monster.attacks = {

@@ -76,16 +76,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "dagger", chance = 80000 },
-	{ id = 3114, chance = 80000, maxCount = 2 }, -- skull
-	{ name = "gold coin", chance = 40000, maxCount = 20 },
-	{ name = "brown bread", chance = 30000 },
-	{ name = "sabre", chance = 23000 },
-	{ name = "girlish hair decoration", chance = 10000 },
-	{ name = "protective charm", chance = 5200 },
-	{ id = 2920, chance = 1000 }, -- torch
-	{ name = "crystal necklace", chance = 260 },
-	{ name = "small ruby", chance = 130 },
+	{ id = 3031, chance = 40000, maxCount = 20 }, -- Gold Coin
+	{ id = 3114, chance = 79960, maxCount = 2 }, -- Skull (Item)
+	{ id = 3267, chance = 79214 }, -- Dagger
+	{ id = 3602, chance = 29736 }, -- Brown Bread
+	{ id = 3273, chance = 21739 }, -- Sabre
+	{ id = 11443, chance = 9830 }, -- Girlish Hair Decoration
+	{ id = 11444, chance = 5200 }, -- Protective Charm
+	{ id = 2920, chance = 4747 }, -- Torch
+	{ id = 3008, chance = 300 }, -- Crystal Necklace
+	{ id = 3030, chance = 337 }, -- Small Ruby
 }
 
 monster.attacks = {

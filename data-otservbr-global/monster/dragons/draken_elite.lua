@@ -75,28 +75,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 97220, maxCount = 187 },
-	{ name = "platinum coin", chance = 49070, maxCount = 8 },
-	{ name = "meat", chance = 34260, maxCount = 4 },
-	{ name = "broken draken mail", chance = 25000 },
-	{ name = "broken slicer", chance = 25000 },
-	{ name = "ultimate health potion", chance = 12040, maxCount = 3 },
-	{ name = "great mana potion", chance = 9260, maxCount = 3 },
-	{ name = "draken sulphur", chance = 6480 },
-	{ name = "draken wristbands", chance = 6480 },
-	{ name = "small diamond", chance = 1850, maxCount = 2 },
-	{ name = "zaoan legs", chance = 1850 },
-	{ name = "magic sulphur", chance = 1850 },
-	{ name = "draken boots", chance = 930 },
-	{ name = "assassin dagger", chance = 930 },
-	{ name = "twiceslicer", chance = 930 },
-	{ name = "zaoan armor", chance = 650 },
-	{ name = "zaoan sword", chance = 550 },
-	{ name = "zaoan helmet", chance = 220 },
-	{ name = "elite draken mail", chance = 110 },
-	{ name = "blade of corruption", chance = 60 },
-	{ name = "snake god's wristguard", chance = 40 },
-	{ name = "cobra crown", chance = 0 },
+	{ id = 3031, chance = 97090, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 50069, maxCount = 8 }, -- Platinum Coin
+	{ id = 3577, chance = 30000 }, -- Meat
+	{ id = 11661, chance = 24930 }, -- Broken Slicer
+	{ id = 11660, chance = 17700 }, -- Broken Draken Mail
+	{ id = 11659, chance = 14170 }, -- Draken Wristbands
+	{ id = 7643, chance = 9290, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 238, chance = 8980, maxCount = 3 }, -- Great Mana Potion
+	{ id = 11658, chance = 8090 }, -- Draken Sulphur
+	{ id = 3028, chance = 2460, maxCount = 4 }, -- Small Diamond
+	{ id = 5904, chance = 2060 }, -- Magic Sulphur
+	{ id = 11657, chance = 860 }, -- Twiceslicer
+	{ id = 10387, chance = 860 }, -- Zaoan Legs
+	{ id = 7404, chance = 890 }, -- Assassin Dagger
+	{ id = 4033, chance = 570 }, -- Draken Boots
+	{ id = 10384, chance = 560 }, -- Zaoan Armor
+	{ id = 10390, chance = 500 }, -- Zaoan Sword
+	{ id = 10385, chance = 150 }, -- Zaoan Helmet
+	{ id = 11651, chance = 90 }, -- Elite Draken Mail
+	{ id = 11691, chance = 50 }, -- Snake God's Wristguard
+	{ id = 11693, chance = 40 }, -- Blade of Corruption
+	{ id = 11674, chance = 10 }, -- Cobra Crown
 }
 
 monster.attacks = {

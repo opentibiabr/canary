@@ -78,13 +78,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 75100, maxCount = 55 },
-	{ name = "blank rune", chance = 10000 },
-	{ name = "strong health potion", chance = 3000 },
-	{ name = "strong mana potion", chance = 2860 },
-	{ name = "health potion", chance = 12000 },
-	{ name = "mana potion", chance = 11900 },
-	{ name = "reins", chance = 20 },
+	{ id = 3031, chance = 75000, maxCount = 55 }, -- Gold Coin
+	{ id = 3147, chance = 10755 }, -- Blank Rune
+	{ id = 266, chance = 12530 }, -- Health Potion
+	{ id = 268, chance = 12887 }, -- Mana Potion
+	{ id = 236, chance = 3095 }, -- Strong Health Potion
+	{ id = 237, chance = 2978 }, -- Strong Mana Potion
+	{ id = 678, chance = 330 }, -- Small Enchanted Amethyst
+	{ id = 3069, chance = 254 }, -- Necrotic Rod
+	{ id = 12308, chance = 20 }, -- Reins
 }
 
 monster.attacks = {

@@ -76,16 +76,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 78950, maxCount = 22 },
-	{ name = "red crystal fragment", chance = 9830, maxCount = 6 },
-	{ id = 3039, chance = 6390, maxCount = 2 }, -- red gem
-	{ name = "boar man hoof", chance = 4640, maxCount = 2 },
-	{ name = "great health potion", chance = 3810, maxCount = 4 },
-	{ name = "sapphire hammer", chance = 2700 },
-	{ name = "crystal mace", chance = 2160 },
-	{ name = "crystal sword", chance = 1310 },
-	{ name = "tower shield", chance = 930 },
-	{ id = 3007, chance = 710 }, -- crystal ring
+	{ id = 3035, chance = 79070 }, -- Platinum Coin
+	{ id = 3039, chance = 6360 }, -- Red Gem
+	{ id = 16126, chance = 9850 }, -- Red Crystal Fragment
+	{ id = 40584, chance = 200 }, -- Boar Man Hoof
+	{ id = 239, chance = 3790 }, -- Great Health Potion
+	{ id = 3333, chance = 2120 }, -- Crystal Mace
+	{ id = 7437, chance = 2660 }, -- Sapphire Hammer
+	{ id = 7449, chance = 1280 }, -- Crystal Sword
+	{ id = 3428, chance = 920 }, -- Tower Shield
+	{ id = 3007, chance = 680 }, -- Crystal Ring
 }
 
 monster.attacks = {

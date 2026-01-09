@@ -73,40 +73,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22721, chance = 100000, maxCount = 4 }, -- gold token
-	{ id = 23509, chance = 100000 }, -- mysterious remains
-	{ id = 23510, chance = 100000 }, -- odd organ
-	{ id = 3031, chance = 100000, maxCount = 200 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 30 }, -- platinum coin
-	{ id = 16119, chance = 8000, maxCount = 3 }, -- blue crystal shard
-	{ id = 16120, chance = 8000, maxCount = 3 }, -- violet crystal shard
-	{ id = 16121, chance = 8000, maxCount = 3 }, -- green crystal shard
-	{ id = 3033, chance = 8000, maxCount = 10 }, -- small amethyst
-	{ id = 3028, chance = 8000, maxCount = 10 }, -- small diamond
-	{ id = 9057, chance = 8000, maxCount = 10 }, -- small topaz
-	{ id = 238, chance = 8000, maxCount = 10 }, -- great mana potion
-	{ id = 7642, chance = 8000, maxCount = 5 }, -- great spirit potion
-	{ id = 7643, chance = 8000, maxCount = 5 }, -- ultimate health potion
-	{ id = 23545, chance = 8000, maxCount = 5 }, -- energy drink
-	{ id = 3037, chance = 8000 }, -- yellow gem
-	{ id = 3041, chance = 6000 }, -- blue gem
-	{ id = 3038, chance = 6000 }, -- green gem
-	{ id = 23542, chance = 3500 }, -- collar of blue plasma
-	{ id = 23529, chance = 3500 }, -- ring of blue plasma
-	{ id = 23531, chance = 3500 }, -- ring of green plasma
-	{ id = 23511, chance = 8000 }, -- curious matter
-	{ id = 23519, chance = 8000 }, -- frozen lightning
-	{ id = 16160, chance = 4000, unique = true }, -- crystalline sword
-	{ id = 828, chance = 4000 }, -- lightning headband
-	{ id = 7427, chance = 3000 }, -- chaos mace
-	{ id = 7451, chance = 3000 }, -- shadow sceptre
-	{ id = 8073, chance = 3000 }, -- spellbook of warding
-	{ id = 822, chance = 2500 }, -- lightning legs
-	{ id = 825, chance = 2500 }, -- lightning robe
-	{ id = 23474, chance = 1600, unique = true }, -- tiara of power
-	{ id = 23477, chance = 1600, unique = true }, -- void boots
-	{ id = 6553, chance = 1600, unique = true }, -- ruthless axe
-	{ id = 282, chance = 1600, maxCount = 3 }, -- giant shimmering pearl (brown)
+	{ id = 23476, 23477, chance = 18160 }, -- Void Boots
+	{ id = 3041, chance = 19103 }, -- Blue Gem
+	{ id = 3038, chance = 20990 }, -- Green Gem
+	{ id = 8073, chance = 10613 }, -- Spellbook of Warding
+	{ id = 9057, chance = 20047, maxCount = 10 }, -- Small Topaz
+	{ id = 3033, chance = 17452, maxCount = 10 }, -- Small Amethyst
+	{ id = 3028, chance = 20047, maxCount = 10 }, -- Small Diamond
+	{ id = 7643, chance = 49528, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 23511, chance = 100000 }, -- Curious Matter
+	{ id = 23519, chance = 100000 }, -- Frozen Lightning
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 16121, chance = 68396, maxCount = 3 }, -- Green Crystal Shard
+	{ id = 16120, chance = 65330, maxCount = 3 }, -- Violet Crystal Shard
+	{ id = 7451, chance = 9905 }, -- Shadow Sceptre
+	{ id = 23529, chance = 14858 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 18160 }, -- Ring of Green Plasma
+	{ id = 7642, chance = 54481, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 22721, chance = 100000, maxCount = 7 }, -- Gold Token
+	{ id = 6553, chance = 2621 }, -- Ruthless Axe
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 23474, 23475, chance = 3301 }, -- Tiara of Power
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 7427, chance = 10377 }, -- Chaos Mace
+	{ id = 16119, chance = 67216 }, -- Blue Crystal Shard
+	{ id = 3030, chance = 25235 }, -- Small Ruby
+	{ id = 3037, chance = 19103 }, -- Yellow Gem
+	{ id = 23544, chance = 9198 }, -- Collar of Red Plasma
+	{ id = 3032, chance = 17216 }, -- Small Emerald
+	{ id = 23545, chance = 100000 }, -- Energy Drink
+	{ id = 281, chance = 17924 }, -- Giant Shimmering Pearl
+	{ id = 828, chance = 10377 }, -- Lightning Headband
+	{ id = 822, chance = 6839 }, -- Lightning Legs
+	{ id = 23533, chance = 16037 }, -- Ring of Red Plasma
+	{ id = 3039, chance = 18160 }, -- Red Gem
+	{ id = 238, chance = 61792 }, -- Great Mana Potion
+	{ id = 23526, chance = 11556 }, -- Collar of Blue Plasma
+	{ id = 23543, chance = 7547 }, -- Collar of Green Plasma
+	{ id = 3036, chance = 4716 }, -- Violet Gem
+	{ id = 16160, chance = 2594 }, -- Crystalline Sword
+	{ id = 825, chance = 4009 }, -- Lightning Robe
 }
 
 monster.attacks = {

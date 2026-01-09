@@ -72,16 +72,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "throwing star", chance = 65000, maxCount = 6 },
-	{ name = "hunting spear", chance = 62000 },
-	{ name = "gold ingot", chance = 48000 },
-	{ name = "blue gem", chance = 31000 },
-	{ name = "yellow gem", chance = 31000 },
-	{ name = "green crystal shard", chance = 8600 },
-	{ id = 281, chance = 28000 }, -- giant shimmering pearl (green)
-	{ name = "cobra crest", chance = 11000 },
-	{ name = "skull helmet", chance = 7500 },
-	{ name = "cobra club", chance = 100 },
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3093, chance = 4230 }, -- Club Ring
+	{ id = 30395, chance = 1000 }, -- Cobra Club
+	{ id = 31678, chance = 9997 }, -- Cobra Crest
+	{ id = 3029, chance = 100000 }, -- Small Sapphire
+	{ id = 3320, chance = 10530 }, -- Fire Axe
+	{ id = 50167, chance = 1000 }, -- Cobra Bo
 }
 
 monster.attacks = {

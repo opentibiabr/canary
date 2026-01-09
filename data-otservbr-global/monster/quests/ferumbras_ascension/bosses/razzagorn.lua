@@ -82,40 +82,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 1000000 }, -- silver token
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 3031, chance = 98000, maxCount = 200 }, -- gold coin
-	{ id = 3026, chance = 12000, maxCount = 8 }, -- white pearl
-	{ id = 3029, chance = 12000, maxCount = 9 }, -- small sapphire
-	{ id = 3033, chance = 10000, maxCount = 5 }, -- small amethyst
-	{ id = 3035, chance = 8000, maxCount = 58 }, -- platinum coin
-	{ id = 3036, chance = 1000 }, -- violet gem
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 3039, chance = 1000 }, -- red gem
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3065, chance = 13000 }, -- terra rod
-	{ id = 3356, chance = 8000 }, -- devil helmet
-	{ id = 22193, chance = 46100, maxCount = 5 }, -- onyx chip
-	{ id = 22194, chance = 46100, maxCount = 5 }, -- opal
-	{ id = 22754, chance = 500 }, -- visage of the end days
-	{ id = 22762, chance = 500, unique = true }, -- maimer
-	{ id = 5021, chance = 46100, maxCount = 5 }, -- orichalcum pearl
-	{ id = 6499, chance = 11000 }, -- demonic essence
-	{ id = 7439, chance = 8000 }, -- berserk potion
-	{ id = 7440, chance = 4000 }, -- mastermind potion
-	{ id = 7443, chance = 4000 }, -- bullseye potion
-	{ id = 238, chance = 23000, maxCount = 5 }, -- great mana potion
-	{ id = 239, chance = 46100, maxCount = 5 }, -- great health potion
-	{ id = 281, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (brown)
-	{ id = 7642, chance = 46100, maxCount = 10 }, -- great spirit potion
-	{ id = 3422, chance = 100, unique = true }, -- great shield
-	{ id = 7643, chance = 23000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 10000, maxCount = 8 }, -- small topaz
+	{ id = 22762, chance = 1000 }, -- Maimer
+	{ id = 3422, chance = 1000 }, -- Great Shield
+	{ id = 22754, chance = 1000 }, -- Visage of the End Days
+	{ id = 22727, chance = 9090 }, -- Rift Lance
+	{ id = 3039, chance = 21818 }, -- Red Gem
+	{ id = 3032, chance = 23636, maxCount = 5 }, -- Small Emerald
+	{ id = 238, chance = 67272, maxCount = 5 }, -- Great Mana Potion
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 22194, chance = 100000, maxCount = 5 }, -- Opal
+	{ id = 22193, chance = 100000, maxCount = 5 }, -- Onyx Chip
+	{ id = 7642, chance = 50909, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 6499, chance = 78181 }, -- Demonic Essence
+	{ id = 3035, chance = 100000, maxCount = 25 }, -- Platinum Coin
+	{ id = 22516, chance = 100000 }, -- Silver Token
+	{ id = 6558, chance = 52727 }, -- Flask of Demonic Blood
+	{ id = 7643, chance = 52727 }, -- Ultimate Health Potion
+	{ id = 3041, chance = 25454 }, -- Blue Gem
+	{ id = 3028, chance = 25454 }, -- Small Diamond
+	{ id = 3036, chance = 10909 }, -- Violet Gem
+	{ id = 3030, chance = 20000 }, -- Small Ruby
+	{ id = 5021, chance = 16363 }, -- Orichalcum Pearl
+	{ id = 22867, chance = 7894 }, -- Rift Crossbow
+	{ id = 3038, chance = 15789 }, -- Green Gem
+	{ id = 3029, chance = 17647 }, -- Small Sapphire
+	{ id = 7443, chance = 5882 }, -- Bullseye Potion
+	{ id = 3037, chance = 33333 }, -- Yellow Gem
 }
 
 monster.attacks = {

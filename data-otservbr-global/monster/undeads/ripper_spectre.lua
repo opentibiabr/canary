@@ -76,21 +76,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 30910, maxCount = 2 },
-	{ name = "two handed sword", chance = 16500 },
-	{ name = "terra rod", chance = 4780 },
-	{ name = "silver brooch", chance = 15190 },
-	{ name = "emerald bangle", chance = 14740 },
-	{ name = "twin hooks", chance = 1170 },
-	{ name = "springsprout rod", chance = 1210 },
-	{ id = 30083, chance = 1890 }, -- green ectoplasm
-	{ name = "coral brooch", chance = 1330 },
-	{ name = "serpent sword", chance = 1950 },
-	{ name = "hexagonal ruby", chance = 800 },
-	{ name = "assassin dagger", chance = 970 },
-	{ name = "spike sword", chance = 530 },
-	{ name = "wyvern fang", chance = 120 },
+	{ id = 3035, chance = 81939, maxCount = 4 }, -- Platinum Coin
+	{ id = 7642, chance = 25310, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 3265, chance = 13611 }, -- Two Handed Sword
+	{ id = 3065, chance = 7057 }, -- Terra Rod
+	{ id = 3017, chance = 4091 }, -- Silver Brooch
+	{ id = 3010, chance = 4111 }, -- Emerald Bangle
+	{ id = 10392, chance = 3601 }, -- Twin Hooks
+	{ id = 8084, chance = 2858 }, -- Springsprout Rod
+	{ id = 30204, chance = 1916 }, -- Green Ectoplasm
+	{ id = 3297, chance = 1142 }, -- Serpent Sword
+	{ id = 24391, chance = 1176 }, -- Coral Brooch
+	{ id = 30180, chance = 878 }, -- Hexagonal Ruby
+	{ id = 7404, chance = 915 }, -- Assassin Dagger
+	{ id = 3271, chance = 399 }, -- Spike Sword
+	{ id = 7408, chance = 155 }, -- Wyvern Fang
+	{ id = 3081, chance = 90 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

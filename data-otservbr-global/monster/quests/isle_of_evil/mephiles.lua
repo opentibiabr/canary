@@ -73,12 +73,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 2000, maxCount = 95 }, -- gold coin
-	{ id = 3035, chance = 30000, maxCount = 9 }, -- platinum coin
-	{ id = 9376, chance = 1000 }, -- stale bread of ancientness
-	{ id = 9387, chance = 1000 }, -- poet's fencing quill
-	{ id = 9400, chance = 1000 }, -- rain coat
-	{ id = 3537, chance = 1000 }, -- white knight
+	{ id = 9376, chance = 40000 }, -- Stale Bread of Ancientness
+	{ id = 9387, chance = 20000 }, -- Poet's Fencing Quill
+	{ id = 9400, 9446, chance = 1000 }, -- The Rain Coat
+	{ id = 9377, chance = 40000 }, -- Shield of the White Knight
 }
 
 monster.attacks = {

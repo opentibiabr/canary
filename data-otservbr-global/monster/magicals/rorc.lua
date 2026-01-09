@@ -76,14 +76,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3012, chance = 7410 }, -- wolf tooth chain
-	{ name = "gold coin", chance = 73640, maxCount = 25 },
-	{ name = "obsidian lance", chance = 930 },
-	{ name = "orcish axe", chance = 2040 },
-	{ name = "plate shield", chance = 6700 },
-	{ name = "rorc feather", chance = 12520 },
-	{ name = "rorc egg", chance = 790 },
-	{ name = "hatched rorc egg", chance = 12670 },
+	{ id = 3031, chance = 73490, maxCount = 34 }, -- Gold Coin
+	{ id = 18993, chance = 12010 }, -- Rorc Feather
+	{ id = 18997, chance = 10950 }, -- Hatched Rorc Egg
+	{ id = 3012, chance = 7920 }, -- Wolf Tooth Chain
+	{ id = 3410, chance = 6470 }, -- Plate Shield
+	{ id = 3316, chance = 2070 }, -- Orcish Axe
+	{ id = 3313, chance = 980 }, -- Obsidian Lance
+	{ id = 18996, chance = 1040 }, -- Rorc Egg
 }
 
 monster.attacks = {

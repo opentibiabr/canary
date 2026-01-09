@@ -67,7 +67,8 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 396, chance = 1000000 }, -- technomancer beard
+	{ id = 396, chance = 100000 }, -- Technomancer Beard
+	{ id = 5880, chance = 2440 }, -- Iron Ore
 }
 
 monster.attacks = {

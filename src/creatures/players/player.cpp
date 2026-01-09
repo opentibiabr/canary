@@ -7922,8 +7922,8 @@ void Player::onThink(uint32_t interval) {
 	const auto &playerTile = getTile();
 	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
 	idleTime += interval;
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	if (kickAfterMinutes > 0 && playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			removePlayer(true);
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {

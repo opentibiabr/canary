@@ -504,10 +504,6 @@ void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
 			continue;
 		}
 
-		if (!canDecayImbuement(item, imbuementInfo)) {
-			continue;
-		}
-
 		uint32_t duration = imbuementInfo.duration > elapsedTime / 1000 ? imbuementInfo.duration - static_cast<uint32_t>(elapsedTime / 1000) : 0;
 		item->decayImbuementTime(slotid, imbuementInfo.imbuement->getID(), duration);
 

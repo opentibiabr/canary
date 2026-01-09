@@ -3084,9 +3084,41 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 }
 
 void Player::updateImbuementTrackerStats() const {
-	if (imbuementTrackerWindowOpen) {
-		g_game().playerRequestInventoryImbuements(getID(), true);
+	if (!imbuementTrackerWindowOpen) {
+		if (m_pendingImbuementTrackerEventId != 0) {
+			g_dispatcher().stopEvent(m_pendingImbuementTrackerEventId);
+			m_pendingImbuementTrackerEventId = 0;
+		}
+		m_hasPendingImbuementTrackerUpdate = false;
+		return;
 	}
+
+	const int64_t currentTime = OTSYS_TIME();
+	const int64_t elapsed = currentTime - m_lastImbuementTrackerUpdate;
+	if (elapsed < 1000) {
+		if (!m_hasPendingImbuementTrackerUpdate) {
+			m_hasPendingImbuementTrackerUpdate = true;
+			const uint32_t delay = std::max<uint32_t>(static_cast<uint32_t>(1000 - elapsed), SCHEDULER_MINTICKS);
+			m_pendingImbuementTrackerEventId = g_dispatcher().scheduleEvent(
+				delay,
+				[playerId = getID()] {
+					const auto &player = g_game().getPlayerByID(playerId);
+					if (!player || player->isRemoved()) {
+						return;
+					}
+
+					player->m_hasPendingImbuementTrackerUpdate = false;
+					player->m_pendingImbuementTrackerEventId = 0;
+					player->updateImbuementTrackerStats();
+				},
+				__FUNCTION__
+			);
+		}
+		return;
+	}
+
+	m_lastImbuementTrackerUpdate = currentTime;
+	g_game().playerRequestInventoryImbuements(getID(), true);
 }
 
 // User Interface action exhaustion

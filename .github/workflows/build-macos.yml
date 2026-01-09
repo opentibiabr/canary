@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v6.0.1
 
       - name: Setup Latest Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -65,7 +65,7 @@ jobs:
           echo "Architecture: $(uname -m)"
 
       - name: CCache
-        uses: hendrikmuhs/ccache-action@main
+        uses: hendrikmuhs/ccache-action@v1.2.20
         with:
           max-size: "1G"
           key: ccache-macos-${{ matrix.buildtype }}
@@ -83,23 +83,23 @@ jobs:
           echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> "$GITHUB_ENV"
 
       - name: Get vcpkg commit id from vcpkg.json
-        uses: lukka/run-vcpkg@main
+        uses: lukka/run-vcpkg@v11.5
         with:
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Get latest CMake and ninja
-        uses: lukka/get-cmake@main
+        uses: lukka/get-cmake@v4.2.1
 
       - name: Run CMake
-        uses: lukka/run-cmake@main
+        uses: lukka/run-cmake@v10.8
         with:
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
 
       - name: Create and Upload Artifact
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: canary-macos-${{ matrix.buildtype }}-${{ github.sha }}
           path: |

@@ -23,6 +23,7 @@
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 #include "creatures/players/player.hpp"
@@ -543,6 +544,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 
 	ItemsMap inventoryItems;
 	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
+	std::vector<std::shared_ptr<Item>> itemsToStartDecayImbuement;
 
 	try {
 		if ((result = g_database().storeQuery(query))) {
@@ -559,6 +561,9 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 				if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
 					player->internalAddThing(pid, item);
 					item->startDecaying();
+					if (item->hasImbuements()) {
+						itemsToStartDecayImbuement.emplace_back(item);
+					}
 				} else {
 					ItemsMap::const_iterator it2 = inventoryItems.find(pid);
 					if (it2 == inventoryItems.end()) {
@@ -570,11 +575,17 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 						container->internalAddThing(item);
 						// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
 						itemsToStartDecaying.emplace_back(item);
+						if (container->hasImbuements()) {
+							itemsToStartDecayImbuement.emplace_back(container);
+						}
 					}
 				}
 
 				const std::shared_ptr<Container> &itemContainer = item->getContainer();
 				if (itemContainer) {
+					if (itemContainer->hasImbuements()) {
+						itemsToStartDecayImbuement.emplace_back(itemContainer);
+					}
 					for (const bool isLootContainer : { true, false }) {
 						const auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
 						if (item->hasAttribute(checkAttribute)) {
@@ -594,6 +605,11 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 		// Now that all items and containers have been added and parent chain is established, start decay
 		for (const auto &item : itemsToStartDecaying) {
 			item->startDecaying();
+		}
+
+		// Start imbuement decay on login for items with imbuements
+		for (const auto &item : itemsToStartDecayImbuement) {
+			g_imbuementDecay().startImbuementDecay(item);
 		}
 
 	} catch (const std::exception &e) {

@@ -603,7 +603,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 		for (const auto &item : itemsToStartDecaying) {
 			item->startDecaying();
 		}
-		
+
 		// Start imbuement decay on login for backpacks
 		for (const auto &item : itemsToStartDecayImbuement) {
 			g_imbuementDecay().startImbuementDecay(item);

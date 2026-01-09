@@ -9,7 +9,7 @@ function deathDragon.onDeath(creature, corpse, lasthitkiller, mostdamagekiller, 
 		return true
 	end
 
-	local spectators = player:getSpectators(creature:getPosition(), false, false, 10, 10, 10, 10)
+	local spectators = Game.getSpectators(creature:getPosition(), false, false, 10, 10, 10, 10)
 	for i = 1, #spectators do
 		local spectator = spectators[i]
 		if spectator:isMonster() and spectator:getName():lower() == "ragiaz" then

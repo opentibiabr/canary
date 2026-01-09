@@ -128,6 +128,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			end
 			nexusMessage(player, player:getName() .. " destroyed the shadow nexus! In 10 seconds it will return to its original state.")
 			item:remove(1)
+			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 22)
 			toPosition:sendMagicEffect(CONST_ME_HOLYAREA)
 		else
 			target:transform(7925)

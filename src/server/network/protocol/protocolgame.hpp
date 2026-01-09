@@ -26,6 +26,7 @@ enum Resource_t : uint8_t;
 enum class VipStatus_t : uint8_t;
 enum SpellGroup_t : uint8_t;
 enum Slots_t : uint8_t;
+enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
@@ -117,7 +118,7 @@ private:
 	}
 	void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 	void disconnectClient(const std::string &message) const;
-	void writeToOutputBuffer(const NetworkMessage &msg);
+	void writeToOutputBuffer(NetworkMessage &msg);
 
 	void release() override;
 
@@ -131,7 +132,7 @@ private:
 	void parsePacket(NetworkMessage &msg) override;
 	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
-	void onConnect() override;
+	void sendLoginChallenge() override;
 
 	// Parse methods
 	void parseAutoWalk(NetworkMessage &msg);
@@ -181,9 +182,9 @@ private:
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
-	void parseBestiarysendRaces();
-	void parseBestiarysendCreatures(NetworkMessage &msg);
-	void BestiarysendCharms();
+	void parseBestiarySendRaces();
+	void parseBestiarySendCreatures(NetworkMessage &msg);
+	void sendBestiaryCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
 	void refreshCyclopediaMonsterTracker(const std::unordered_set<std::shared_ptr<MonsterType>> &trackerSet, bool isBoss);
 	void sendTeamFinderList();
@@ -295,6 +296,7 @@ private:
 	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence);
 	void sendForgeHistory(uint8_t page);
 	void sendForgeSkillStats(NetworkMessage &msg) const;
+	double getForgeSkillStat(Slots_t slot, bool applyAmplification = true) const;
 
 	void sendBosstiaryData();
 	void parseSendBosstiary();
@@ -344,16 +346,18 @@ private:
 	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 	void sendCyclopediaCharacterBaseInformation();
 	void sendCyclopediaCharacterGeneralStats();
-	void sendCyclopediaCharacterCombatStats();
 	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries);
 	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries);
 	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, const std::vector<std::pair<Achievement, uint32_t>> &achievementsUnlocked);
-	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &supplyStashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems);
+	void sendCyclopediaCharacterItemSummary(const ItemsTierCountList &inventoryItems, const ItemsTierCountList &storeInboxItems, const StashItemList &stashItems, const ItemsTierCountList &depotBoxItems, const ItemsTierCountList &inboxItems);
 	void sendCyclopediaCharacterOutfitsMounts();
 	void sendCyclopediaCharacterStoreSummary();
 	void sendCyclopediaCharacterInspection();
 	void sendCyclopediaCharacterBadges();
 	void sendCyclopediaCharacterTitles();
+	void sendCyclopediaCharacterOffenceStats();
+	void sendCyclopediaCharacterDefenceStats();
+	void sendCyclopediaCharacterMiscStats();
 
 	void sendHousesInfo();
 	void parseCyclopediaHouseAuction(NetworkMessage &msg);
@@ -372,6 +376,8 @@ private:
 	void sendGameNews();
 	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0, uint64_t forgeDust = 0, uint64_t forgeSliver = 0, uint64_t forgeCores = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
+	void sendCharmResourcesBalance(uint32_t charm = 0, uint32_t minorCharm = 0, uint32_t maxCharm = 0, uint32_t maxMinorCharm = 0);
+	void sendCharmResourceBalance(CharmResource_t resourceType, uint32_t value);
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
 	void updateCoinBalance();
@@ -499,6 +505,16 @@ private:
 
 	// OTCv8
 	void sendFeatures();
+	// OTCR
+	void sendOTCRFeatures();
+	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
+	void sendShader(const std::shared_ptr<Creature> &creature, const std::string &shaderName);
+	void sendMapShader(const std::string &shaderName);
+	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
+	void parsePlayerTyping(NetworkMessage &msg);
+	void AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit);
+	void sendOutfitWindowCustomOTCR(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
@@ -517,6 +533,7 @@ private:
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
+	friend class PlayerAttachedEffects;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -535,9 +552,10 @@ private:
 	bool shouldAddExivaRestrictions = false;
 
 	bool oldProtocol = false;
+	bool isOTC = false;
+	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
-	bool isOTC = false;
 
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
@@ -549,7 +567,6 @@ private:
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
-	void sendHotkeyPreset();
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();
 

@@ -10,14 +10,17 @@
 #include "io/functions/iologindata_save_player.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "game/game.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "creatures/players/player.hpp"
+#include "io/player_storage_repository.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -246,6 +249,14 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	query << "`conditions` = " << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)) << ",";
 
+	// serialize animus mastery
+	PropWriteStream propAnimusMasteryStream;
+	player->animusMastery().serialize(propAnimusMasteryStream);
+	size_t animusMasterySize;
+	const char* animusMastery = propAnimusMasteryStream.getStream(animusMasterySize);
+
+	query << "`animus_mastery` = " << db.escapeBlob(animusMastery, static_cast<uint32_t>(animusMasterySize)) << ",";
+
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
 
@@ -337,6 +348,17 @@ bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
 
 	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
+		const ItemType &itemType = Item::items[itemId];
+		if (itemType.decayTo >= 0 && itemType.decayTime > 0) {
+			continue;
+		}
+
+		auto wareId = itemType.wareId;
+		if (wareId > 0 && wareId != itemType.id) {
+			g_logger().warn("[{}] - Item ID {} is a ware item, for player: {}, skipping.", __FUNCTION__, itemId, player->getName());
+			continue;
+		}
+
 		query << player->getGUID() << ',' << itemId << ',' << itemCount;
 		if (!stashQuery.addRow(query)) {
 			return false;
@@ -418,28 +440,23 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 	std::ostringstream query;
 	query << "UPDATE `player_charms` SET ";
 	query << "`charm_points` = " << player->charmPoints << ",";
-	query << "`charm_expansion` = " << ((player->charmExpansion) ? 1 : 0) << ",";
-	query << "`rune_wound` = " << player->charmRuneWound << ",";
-	query << "`rune_enflame` = " << player->charmRuneEnflame << ",";
-	query << "`rune_poison` = " << player->charmRunePoison << ",";
-	query << "`rune_freeze` = " << player->charmRuneFreeze << ",";
-	query << "`rune_zap` = " << player->charmRuneZap << ",";
-	query << "`rune_curse` = " << player->charmRuneCurse << ",";
-	query << "`rune_cripple` = " << player->charmRuneCripple << ",";
-	query << "`rune_parry` = " << player->charmRuneParry << ",";
-	query << "`rune_dodge` = " << player->charmRuneDodge << ",";
-	query << "`rune_adrenaline` = " << player->charmRuneAdrenaline << ",";
-	query << "`rune_numb` = " << player->charmRuneNumb << ",";
-	query << "`rune_cleanse` = " << player->charmRuneCleanse << ",";
-	query << "`rune_bless` = " << player->charmRuneBless << ",";
-	query << "`rune_scavenge` = " << player->charmRuneScavenge << ",";
-	query << "`rune_gut` = " << player->charmRuneGut << ",";
-	query << "`rune_low_blow` = " << player->charmRuneLowBlow << ",";
-	query << "`rune_divine` = " << player->charmRuneDivine << ",";
-	query << "`rune_vamp` = " << player->charmRuneVamp << ",";
-	query << "`rune_void` = " << player->charmRuneVoid << ",";
+	query << "`minor_charm_echoes` = " << player->minorCharmEchoes << ",";
+	query << "`max_charm_points` = " << player->maxCharmPoints << ",";
+	query << "`max_minor_charm_echoes` = " << player->maxMinorCharmEchoes << ",";
+	query << "`charm_expansion` = " << (player->charmExpansion ? 1 : 0) << ",";
 	query << "`UsedRunesBit` = " << player->UsedRunesBit << ",";
 	query << "`UnlockedRunesBit` = " << player->UnlockedRunesBit << ",";
+
+	PropWriteStream charmsStream;
+	for (uint8_t id = magic_enum::enum_value<charmRune_t>(1); id <= magic_enum::enum_count<charmRune_t>(); id++) {
+		const auto &charm = player->charmsArray[id];
+		charmsStream.write<uint16_t>(charm.raceId);
+		charmsStream.write<uint8_t>(charm.tier);
+		g_logger().debug("Player {} saved raceId {} and tier {} to charm Id {}", player->name, charm.raceId, charm.tier, id);
+	}
+	size_t size;
+	const char* charmsList = charmsStream.getStream(size);
+	query << " `charms` = " << db.escapeBlob(charmsList, static_cast<uint32_t>(size)) << ",";
 
 	PropWriteStream propBestiaryStream;
 	for (const auto &trackedType : player->getCyclopediaMonsterTrackerSet(false)) {
@@ -448,7 +465,7 @@ bool IOLoginDataSave::savePlayerBestiarySystem(const std::shared_ptr<Player> &pl
 	size_t trackerSize;
 	const char* trackerList = propBestiaryStream.getStream(trackerSize);
 	query << " `tracker list` = " << db.escapeBlob(trackerList, static_cast<uint32_t>(trackerSize));
-	query << " WHERE `player_guid` = " << player->getGUID();
+	query << " WHERE `player_id` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
 		g_logger().warn("[IOLoginData::savePlayer] - Error saving bestiary data from player: {}", player->getName());
@@ -694,36 +711,11 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 
 bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerForgeHistory] - Player nullptr");
 		return false;
 	}
 
-	std::ostringstream query;
-	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
-	for (const auto &history : player->getForgeHistory()) {
-		const auto stringDescription = Database::getInstance().escapeString(history.description);
-		auto actionString = magic_enum::enum_integer(history.actionType);
-		// Append query informations
-		query << player->getGUID() << ','
-			  << std::to_string(actionString) << ','
-			  << stringDescription << ','
-			  << history.createdAt << ','
-			  << history.success;
-
-		if (!insertQuery.addRow(query)) {
-			return false;
-		}
-	}
-	if (!insertQuery.execute()) {
-		return false;
-	}
-	return true;
+	return player->forgeHistory().save();
 }
 
 bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player) {
@@ -772,31 +764,24 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 
 bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
+	auto &storage = player->storage();
+	storage.prepareForPersist();
+	auto delta = storage.delta();
+	auto guid = player->getGUID();
+	auto &repo = g_playerStorageRepository();
+
+	if (!delta.deletions.empty() && !repo.deleteKeys(guid, delta.deletions)) {
 		return false;
 	}
 
-	query.str("");
-
-	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-	player->genReservedStorageRange();
-
-	for (const auto &[key, value] : player->storageMap) {
-		query << player->getGUID() << ',' << key << ',' << value;
-		if (!storageQuery.addRow(query)) {
-			return false;
-		}
-	}
-
-	if (!storageQuery.execute()) {
+	if (!delta.upserts.empty() && !repo.upsert(guid, delta.upserts)) {
 		return false;
 	}
+
+	storage.clearDirty();
 	return true;
 }

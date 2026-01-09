@@ -152,16 +152,13 @@ void Container::addItem(const std::shared_ptr<Item> &item) {
 	item->setParent(getContainer());
 }
 
-StashContainerList Container::getStowableItems() const {
+StashContainerList Container::getStowableItems() {
 	StashContainerList toReturnList;
-	for (const auto &item : itemlist) {
-		if (item->getContainer() != nullptr) {
-			const auto &subContainer = item->getContainer()->getStowableItems();
-			for (const auto &key : subContainer | std::views::keys) {
-				const auto &containerItem = key;
-				toReturnList.emplace_back(containerItem, static_cast<uint32_t>(containerItem->getItemCount()));
-			}
-		} else if (item->isItemStorable()) {
+
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		const auto &item = *it;
+		const auto &itemType = Item::items.getItemType(item->getID());
+		if (item->isItemStorable() && !itemType.isContainer()) {
 			toReturnList.emplace_back(item, static_cast<uint32_t>(item->getItemCount()));
 		}
 	}
@@ -241,13 +238,9 @@ uint32_t Container::getWeight() const {
 	return Item::getWeight() + totalWeight;
 }
 
-std::string Container::getContentDescription(bool oldProtocol) {
-	std::ostringstream os;
-	return getContentDescription(os, oldProtocol).str();
-}
+std::string Container::getContentDescription(bool sendColoredMessage) {
+	std::vector<std::string> descriptions;
 
-std::ostringstream &Container::getContentDescription(std::ostringstream &os, bool sendColoredMessage) {
-	bool firstitem = true;
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 		const auto &item = *it;
 		if (!item) {
@@ -259,23 +252,14 @@ std::ostringstream &Container::getContentDescription(std::ostringstream &os, boo
 			continue;
 		}
 
-		if (firstitem) {
-			firstitem = false;
-		} else {
-			os << ", ";
-		}
-
 		if (sendColoredMessage) {
-			os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
+			descriptions.push_back(fmt::format("{{{}|{}}}", item->getID(), item->getNameDescription()));
 		} else {
-			os << item->getNameDescription();
+			descriptions.push_back(item->getNameDescription());
 		}
 	}
 
-	if (firstitem) {
-		os << "nothing";
-	}
-	return os;
+	return descriptions.empty() ? "nothing" : fmt::format("{}", fmt::join(descriptions, ", "));
 }
 
 uint32_t Container::getMaxCapacity() const {
@@ -449,30 +433,46 @@ void Container::onAddContainerItem(const std::shared_ptr<Item> &item) {
 }
 
 void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item> &oldItem, const std::shared_ptr<Item> &newItem) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	const auto &thisContainer = getContainer();
+	if (holdingPlayer) {
+		holdingPlayer->sendUpdateContainerItem(thisContainer, index, newItem);
+		holdingPlayer->onUpdateContainerItem(thisContainer, oldItem, newItem);
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send to client
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->sendUpdateContainerItem(getContainer(), index, newItem);
+		spectator->getPlayer()->sendUpdateContainerItem(thisContainer, index, newItem);
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->onUpdateContainerItem(getContainer(), oldItem, newItem);
+		spectator->getPlayer()->onUpdateContainerItem(thisContainer, oldItem, newItem);
 	}
 }
 
 void Container::onRemoveContainerItem(uint32_t index, const std::shared_ptr<Item> &item) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	const auto &thisContainer = getContainer();
+	if (holdingPlayer) {
+		holdingPlayer->sendRemoveContainerItem(thisContainer, index);
+		holdingPlayer->onRemoveContainerItem(thisContainer, item);
+		return;
+	}
+
 	const auto spectators = Spectators().find<Player>(getPosition(), false, 2, 2, 2, 2);
 
 	// send change to client
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->sendRemoveContainerItem(getContainer(), index);
+		spectator->getPlayer()->sendRemoveContainerItem(thisContainer, index);
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->getPlayer()->onRemoveContainerItem(getContainer(), item);
+		spectator->getPlayer()->onRemoveContainerItem(thisContainer, item);
 	}
 }
 
@@ -776,6 +776,14 @@ void Container::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId
 }
 
 void Container::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
+	if (!thing) {
+		return;
+	}
+
+	if (index >= itemlist.size()) {
+		return;
+	}
+
 	const auto &item = thing->getItem();
 	if (!item) {
 		return /*RETURNVALUE_NOTPOSSIBLE*/;
@@ -829,6 +837,10 @@ void Container::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count)
 
 		item->resetParent();
 		itemlist.erase(itemlist.begin() + index);
+
+		if (isCorpse() && empty()) {
+			clearLootHighlight();
+		}
 	}
 }
 
@@ -968,7 +980,23 @@ void Container::removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateT
 
 		itemlist.erase(it);
 		itemToRemove->resetParent();
+
+		if (isCorpse() && empty()) {
+			clearLootHighlight();
+		}
 	}
+}
+void Container::clearLootHighlight(const std::shared_ptr<Player> &player) {
+	if (!isCorpse()) {
+		return;
+	}
+
+	if (!m_lootHighlightActive) {
+		return;
+	}
+
+	m_lootHighlightActive = false;
+	sendUpdateToClient(player);
 }
 
 uint32_t Container::getOwnerId() const {
@@ -1092,4 +1120,63 @@ size_t ContainerIterator::getCurrentIndex() const {
 	}
 	const auto &top = states.back();
 	return top.index;
+}
+
+ContainerSpecial_t Container::getSpecialCategory(const std::shared_ptr<Player> &player) {
+	const auto &holdingPlayer = getHoldingPlayer();
+	using enum ContainerSpecial_t;
+
+	if (isCorpse() && hasLootHighlight() && !isRewardCorpse() && !empty() && (getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max()) || (getCorpseOwner() == 0 || player->canOpenCorpse(getCorpseOwner())))) {
+		return LootHighlight;
+	}
+
+	if (holdingPlayer == player) {
+		if (isQuiver() && getSlotPosition() & SLOTP_RIGHT) {
+			return QuiverLoot;
+		}
+
+		auto [lootFlags, obtainFlags] = getObjectCategoryFlags(player);
+		if (lootFlags != 0 || obtainFlags != 0) {
+			return Manager;
+		}
+	}
+
+	return None;
+}
+
+std::pair<uint32_t, uint32_t> Container::getObjectCategoryFlags(const std::shared_ptr<Player> &player) const {
+	uint32_t lootFlags = 0;
+	uint32_t obtainFlags = 0;
+	// Cycle through all containers managed by the player
+	for (const auto &[category, containerPair] : player->getManagedContainers()) {
+		// Check if the category is valid before continuing
+		if (!isValidObjectCategory(category)) {
+			continue;
+		}
+
+		// containerPair.first refers to loot containers
+		if (containerPair.first == static_self_cast<Container>()) {
+			lootFlags |= 1 << category;
+		}
+
+		// containerPair.second refers to the obtain containers
+		if (containerPair.second == static_self_cast<Container>()) {
+			obtainFlags |= 1 << category;
+		}
+	}
+
+	return { lootFlags, obtainFlags };
+}
+
+uint32_t Container::getAmmoAmount(const std::shared_ptr<Player> &player) const {
+	uint32_t ammoTotal = 0;
+	if (isQuiver()) {
+		for (const auto &listItem : getItemList()) {
+			if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
+				ammoTotal += listItem->getItemAmount();
+			}
+		}
+	}
+
+	return ammoTotal;
 }

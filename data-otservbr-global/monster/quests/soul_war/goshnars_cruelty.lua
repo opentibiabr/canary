@@ -144,6 +144,10 @@ mType.onThink = function(monster, interval)
 	end
 end
 
+mType.onSpawn = function(monsterCallback)
+	firstTime = 0
+end
+
 mType.onDisappear = function(monster, creature)
 	if creature:getName() == "Goshnar's Cruelty" then
 		local eyeCreature = Creature("A Greedy Eye")

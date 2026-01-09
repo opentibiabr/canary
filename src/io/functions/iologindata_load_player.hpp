@@ -22,6 +22,7 @@ public:
 	static void loadPlayerExperience(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerBlessings(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerConditions(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
+	static void loadPlayerAnimusMastery(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerDefaultOutfit(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerSkullSystem(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerSkill(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
@@ -35,11 +36,11 @@ public:
 	static void loadPlayerDepotItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadRewardItems(const std::shared_ptr<Player> &player);
 	static void loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerStorageMap(const std::shared_ptr<Player> &player, DBResult_ptr result);
+	static void loadPlayerStorageMap(const std::shared_ptr<Player> &player);
 	static void loadPlayerVip(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerPreyClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result);
+	static void loadPlayerForgeHistory(const std::shared_ptr<Player> &player);
 	static void loadPlayerBosstiary(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInitializeSystem(const std::shared_ptr<Player> &player);
 	static void loadPlayerUpdateSystem(const std::shared_ptr<Player> &player);

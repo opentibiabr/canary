@@ -14,6 +14,8 @@
 #include "creatures/players/player.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "lib/di/container.hpp"
+#include "enums/account_type.hpp"
+#include "enums/account_group_type.hpp"
 
 TalkActions::TalkActions() = default;
 TalkActions::~TalkActions() = default;
@@ -40,8 +42,27 @@ bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses 
 		return false;
 	}
 
-	const auto groupId = player->getGroup()->id;
-	if (groupId < talkActionPtr->getGroupType()) {
+	// Map of allowed group levels for each account type
+	static const std::unordered_map<AccountType, GroupType> allowedGroupLevels = {
+		{ ACCOUNT_TYPE_NORMAL, GROUP_TYPE_NORMAL },
+		{ ACCOUNT_TYPE_TUTOR, GROUP_TYPE_TUTOR },
+		{ ACCOUNT_TYPE_SENIORTUTOR, GROUP_TYPE_SENIORTUTOR },
+		{ ACCOUNT_TYPE_GAMEMASTER, GROUP_TYPE_COMMUNITYMANAGER }, // GAMEMASTER -> COMMUNITYMANAGER (5)
+		{ ACCOUNT_TYPE_GOD, GROUP_TYPE_GOD }
+	};
+
+	// Helper lambda to get the allowed group level for an account
+	auto allowedGroupLevelForAccount = [](AccountType account) {
+		if (auto it = allowedGroupLevels.find(account); it != allowedGroupLevels.end()) {
+			return it->second;
+		}
+
+		g_logger().warn("[TalkActions::checkWord] Invalid account type: {}", account);
+		return GROUP_TYPE_NONE;
+	};
+
+	// Check if player has permission for the talk action
+	if (player->getAccountType() != ACCOUNT_TYPE_GOD && talkActionPtr->getGroupType() > allowedGroupLevelForAccount(static_cast<AccountType>(player->getAccountType()))) {
 		return false;
 	}
 

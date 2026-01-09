@@ -40,7 +40,7 @@ int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 	// globalevent:type(callback)
-	const auto &global = Lua::getUserdataShared<GlobalEvent>(L, 1);
+	const auto &global = Lua::getUserdataShared<GlobalEvent>(L, 1, "GlobalEvent");
 	if (global) {
 		const std::string typeName = Lua::getString(L, 2);
 		const std::string tmpStr = asLowerCaseString(typeName);
@@ -70,7 +70,7 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 	// globalevent:register()
-	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1, "GlobalEvent");
 	if (globalevent) {
 		if (!globalevent->isLoadedScriptId()) {
 			Lua::pushBoolean(L, false);
@@ -90,7 +90,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventOnCallback(lua_State* L) {
 	// globalevent:onThink / record / etc. (callback)
-	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1, "GlobalEvent");
 	if (globalevent) {
 		if (!globalevent->loadScriptId()) {
 			Lua::pushBoolean(L, false);
@@ -105,7 +105,7 @@ int GlobalEventFunctions::luaGlobalEventOnCallback(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 	// globalevent:time(time)
-	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1, "GlobalEvent");
 	if (globalevent) {
 		std::string timer = Lua::getString(L, 2);
 		const std::vector<int32_t> params = vectorAtoi(explodeString(timer, ":"));
@@ -168,7 +168,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventInterval(lua_State* L) {
 	// globalevent:interval(interval)
-	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1);
+	const auto &globalevent = Lua::getUserdataShared<GlobalEvent>(L, 1, "GlobalEvent");
 	if (globalevent) {
 		globalevent->setInterval(Lua::getNumber<uint32_t>(L, 2));
 		globalevent->setNextExecution(OTSYS_TIME() + Lua::getNumber<uint32_t>(L, 2));

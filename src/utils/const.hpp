@@ -48,11 +48,28 @@ static constexpr int32_t PSTRG_OUTFITS_RANGE_SIZE = 500;
 static constexpr int32_t PSTRG_MOUNTS_RANGE_START = (PSTRG_RESERVED_RANGE_START + 2001);
 static constexpr int32_t PSTRG_MOUNTS_RANGE_SIZE = 10;
 static constexpr int32_t PSTRG_MOUNTS_CURRENTMOUNT = (PSTRG_MOUNTS_RANGE_START + 10);
+//[2012 - 2022];
+static constexpr int32_t PSTRG_WING_RANGE_START = (PSTRG_RESERVED_RANGE_START + 2012);
+static constexpr int32_t PSTRG_WING_RANGE_SIZE = 10;
+static constexpr int32_t PSTRG_WING_CURRENTWING = (PSTRG_WING_RANGE_START + 10);
+//[2023 - 2033];
+static constexpr int32_t PSTRG_EFFECT_RANGE_START = (PSTRG_RESERVED_RANGE_START + 2023);
+static constexpr int32_t PSTRG_EFFECT_RANGE_SIZE = 10;
+static constexpr int32_t PSTRG_EFFECT_CURRENTEFFECT = (PSTRG_EFFECT_RANGE_START + 10);
+//[2034 - 2044];
+static constexpr int32_t PSTRG_AURA_RANGE_START = (PSTRG_RESERVED_RANGE_START + 2034);
+static constexpr int32_t PSTRG_AURA_RANGE_SIZE = 10;
+static constexpr int32_t PSTRG_AURA_CURRENTAURA = (PSTRG_AURA_RANGE_START + 10);
+//[2045 - 2055];
+static constexpr int32_t PSTRG_SHADER_RANGE_START = (PSTRG_RESERVED_RANGE_START + 2045);
+static constexpr int32_t PSTRG_SHADER_RANGE_SIZE = 10;
+static constexpr int32_t PSTRG_SHADER_CURRENTSHADER = (PSTRG_SHADER_RANGE_START + 10);
 // [3000 - 3500];
 static constexpr int32_t PSTRG_FAMILIARS_RANGE_START = (PSTRG_RESERVED_RANGE_START + 3000);
 static constexpr int32_t PSTRG_FAMILIARS_RANGE_SIZE = 500;
 
 static constexpr int32_t IMMOVABLE_ACTION_ID = 100;
 
-#define IS_IN_KEYRANGE(key, range) \
-	(key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))
+constexpr bool isStorageKeyInRange(uint32_t k, uint32_t start, uint32_t size) {
+	return k >= start && (k - start) <= size;
+}

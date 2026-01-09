@@ -163,12 +163,15 @@ void NetworkMessage::addString(const std::string &value, const std::source_locat
 	auto len = static_cast<uint16_t>(stringLen);
 	add<uint16_t>(len);
 	// Using to copy the string into the buffer
-	std::ranges::copy(value, buffer.begin() + info.position);
+	if (std::memcpy(buffer.data() + info.position, value.data(), stringLen) == nullptr) {
+		g_logger().error("[{}] memcpy failed while adding string", __FUNCTION__);
+		return;
+	}
 	info.position += stringLen;
 	info.length += stringLen;
 }
 
-void NetworkMessage::addDouble(double value, uint8_t precision /*= 2*/) {
+void NetworkMessage::addDouble(double value, uint8_t precision /*= 4*/) {
 	addByte(precision);
 	add<uint32_t>((value * std::pow(static_cast<float>(SCALING_BASE), precision)) + std::numeric_limits<int32_t>::max());
 }
@@ -213,7 +216,10 @@ void NetworkMessage::addBytes(const char* bytes, size_t size) {
 		return;
 	}
 
-	std::ranges::copy(std::span(bytes, size), buffer.begin() + info.position);
+	if (std::memcpy(buffer.data() + info.position, bytes, size) == nullptr) {
+		g_logger().error("[NetworkMessage::addBytes] - memcpy failed while adding bytes");
+		return;
+	}
 	info.position += size;
 	info.length += size;
 }
@@ -294,10 +300,10 @@ void NetworkMessage::append(const NetworkMessage &other) {
 		return;
 	}
 
-	std::ranges::copy(
-		std::span<const unsigned char>(other.getBuffer() + otherStartPos, otherLength),
-		buffer.data() + info.position
-	);
+	if (std::memcpy(buffer.data() + info.position, other.getBuffer() + otherStartPos, otherLength) == nullptr) {
+		g_logger().error("[{}] memcpy failed while appending message", __FUNCTION__);
+		return;
+	}
 
 	// Update the buffer information
 	info.length += otherLength;

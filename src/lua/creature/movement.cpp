@@ -14,7 +14,6 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
@@ -328,7 +327,7 @@ uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const 
 		return 1;
 	}
 	g_events().eventPlayerOnInventoryUpdate(player, item, slot, true);
-	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, player, item, slot, true);
+	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, true);
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
@@ -338,7 +337,7 @@ uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, cons
 		return 1;
 	}
 	g_events().eventPlayerOnInventoryUpdate(player, item, slot, false);
-	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, player, item, slot, false);
+	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, false);
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 
@@ -695,8 +694,17 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 		g_game().changePlayerSpeed(player, -item->getSpeed());
 	}
 
-	player->removeConditionSuppressions();
-	player->sendIcons();
+	std::vector<ConditionType_t> toRemove;
+	for (auto cond : it.abilities->conditionSuppressions) {
+		if (cond == ConditionType_t::CONDITION_NONE) {
+			continue;
+		}
+		toRemove.emplace_back(cond);
+	}
+	if (!toRemove.empty()) {
+		player->removeConditionSuppressions(toRemove);
+		player->sendIcons();
+	}
 
 	if (it.transformDeEquipTo != 0) {
 		g_game().transformItem(item, it.transformDeEquipTo);
@@ -736,9 +744,8 @@ bool MoveEvent::executeStep(const std::shared_ptr<Creature> &creature, const std
 			g_game().internalTeleport(player, player->getTemplePosition());
 			player->sendMagicEffect(player->getTemplePosition(), CONST_ME_TELEPORT);
 			player->sendCancelMessage(getReturnMessage(RETURNVALUE_CONTACTADMINISTRATOR));
+			return false;
 		}
-
-		return false;
 	}
 
 	if (!LuaScriptInterface::reserveScriptEnv()) {
@@ -812,6 +819,13 @@ uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const std:
 	if (isLoadedScriptId()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
+		if (!moveFunction) {
+			g_logger().error("[MoveEvent::fireAddRemItem - Item {} item on position: {}] "
+			                 "Move function is nullptr.",
+			                 item->getName(), pos.toString());
+			return 0;
+		}
+
 		return moveFunction(item, fromTile, pos);
 	}
 }
@@ -844,6 +858,13 @@ uint32_t MoveEvent::fireAddRemItem(const std::shared_ptr<Item> &item, const Posi
 	if (isLoadedScriptId()) {
 		return executeAddRemItem(item, pos);
 	} else {
+		if (!moveFunction) {
+			g_logger().error("[MoveEvent::fireAddRemItem - Item {} item on position: {}] "
+			                 "Move function is nullptr.",
+			                 item->getName(), pos.toString());
+			return 0;
+		}
+
 		return moveFunction(item, nullptr, pos);
 	}
 }
@@ -853,9 +874,9 @@ bool MoveEvent::executeAddRemItem(const std::shared_ptr<Item> &item, const Posit
 	// onRemoveItem(moveitem, pos)
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[MoveEvent::executeAddRemItem - "
-		                 "Item {} item on tile x: {} y: {} z: {}] "
+		                 "Item {} item on position: {}] "
 		                 "Call stack overflow. Too many lua script calls being nested.",
-		                 item->getName(), pos.getX(), pos.getY(), pos.getZ());
+		                 item->getName(), pos.toString());
 		return false;
 	}
 

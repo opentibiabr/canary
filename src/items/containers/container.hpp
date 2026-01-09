@@ -13,6 +13,8 @@
 #include "items/item.hpp"
 #include "items/tile.hpp"
 
+#include "enums/container_type.hpp"
+
 class Container;
 class DepotChest;
 class DepotLocker;
@@ -194,7 +196,7 @@ public:
 
 	Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream) override;
 	bool unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, PropStream &propStream, Position &itemPosition) override;
-	std::string getContentDescription(bool oldProtocol);
+	std::string getContentDescription(bool sendColoredMessage);
 
 	uint32_t getMaxCapacity() const;
 
@@ -224,7 +226,7 @@ public:
 	bool countsToLootAnalyzerBalance() const;
 	bool hasParent();
 	void addItem(const std::shared_ptr<Item> &item);
-	StashContainerList getStowableItems() const;
+	StashContainerList getStowableItems();
 	bool isStoreInbox() const;
 	bool isStoreInboxFiltered() const;
 	std::deque<std::shared_ptr<Item>> getStoreInboxFilteredItems() const;
@@ -285,9 +287,15 @@ public:
 	bool isBrowseFieldAndHoldsRewardChest();
 	bool isInsideContainerWithId(uint16_t id);
 
-protected:
-	std::ostringstream &getContentDescription(std::ostringstream &os, bool oldProtocol);
+	ContainerSpecial_t getSpecialCategory(const std::shared_ptr<Player> &player);
+	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
+	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
+	void clearLootHighlight(const std::shared_ptr<Player> &player = nullptr);
+	[[nodiscard]] bool hasLootHighlight() const {
+		return m_lootHighlightActive;
+	}
 
+protected:
 	uint32_t m_maxItems {};
 	uint32_t maxSize {};
 	uint32_t totalWeight {};
@@ -296,6 +304,7 @@ protected:
 
 	bool unlocked {};
 	bool pagination {};
+	bool m_lootHighlightActive { true };
 
 	friend class MapCache;
 

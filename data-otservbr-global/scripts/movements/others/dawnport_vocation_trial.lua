@@ -7,7 +7,7 @@ local vocationTrials = {
 	-- Sorcerer trial
 	[25005] = {
 		tutorialId = 5,
-		effectPosition = { x = 32050, y = 31891, z = 5 },
+		effectPosition = { x = 32064, y = 31905, z = 5 },
 		storage = Storage.Dawnport.Sorcerer,
 		message = "As a sorcerer, you can use the following spells: Magic Patch, Buzz, Scorch.",
 		vocation = {
@@ -37,7 +37,7 @@ local vocationTrials = {
 	-- Druid trial
 	[25006] = {
 		tutorialId = 6,
-		effectPosition = { x = 32064, y = 31905, z = 5 },
+		effectPosition = { x = 32064, y = 31876, z = 5 },
 		storage = Storage.Dawnport.Druid,
 		message = "As a druid, you can use these spells: Mud Attack, Chill Out, Magic Patch.",
 		vocation = {
@@ -67,7 +67,7 @@ local vocationTrials = {
 	-- Paladin trial
 	[25007] = {
 		tutorialId = 4,
-		effectPosition = { x = 32078, y = 31891, z = 5 },
+		effectPosition = { x = 32050, y = 31891, z = 5 },
 		storage = Storage.Dawnport.Paladin,
 		message = "As a paladin, you can use the following spells: Magic Patch, Arrow Call.",
 		vocation = {
@@ -98,7 +98,7 @@ local vocationTrials = {
 	-- Knight trial
 	[25008] = {
 		tutorialId = 3,
-		effectPosition = { x = 32064, y = 31876, z = 5 },
+		effectPosition = { x = 32078, y = 31891, z = 5 },
 		storage = Storage.Dawnport.Knight,
 		message = "As a knight, you can use the following spells: Bruise Bane.",
 		vocation = {
@@ -259,8 +259,8 @@ function dawnportVocationTrial.onStepIn(creature, item, position, fromPosition)
 	local trial = vocationTrials[item.actionid]
 	if trial then
 		-- Center room position
-		local centerPosition = Position(32065, 31891, 5)
-		if centerPosition:getDistance(fromPosition) < centerPosition:getDistance(position) then
+		local centerPosition = Position(32063, 31889, 5)
+		if centerPosition:getDistance(fromPosition) >= centerPosition:getDistance(position) then
 			-- Blocks the vocation trial if same vocation or after level 20
 			if player:getVocation():getId() == trial.vocation.id or player:getLevel() >= 20 then
 				return true

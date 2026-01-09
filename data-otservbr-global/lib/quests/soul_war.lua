@@ -23,6 +23,14 @@ SoulWarQuest = {
 		[34007] = 0.10, -- 10% for the smallest pool
 	},
 
+	taintExperienceBoostMap = { -- Experience Boost per taint (In percentage %)
+		[1] = { boost = 4.5 },
+		[2] = { boost = 9.2 },
+		[3] = { boost = 14.1 },
+		[4] = { boost = 19.2 },
+		[5] = { boost = 24.6 },
+	},
+
 	timeToIncreaseCrueltyDefense = 15, -- In seconds, it will increase every 15 seconds if don't use mortal essence in greedy maw
 	useGreedMawCooldown = 30, -- In seconds
 	goshnarsCrueltyDefenseChange = 2, -- Defense change, the amount that will decrease or increase defense, the defense cannot decrease more than the monster's original defense amount

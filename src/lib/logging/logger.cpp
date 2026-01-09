@@ -48,27 +48,27 @@ void Logger::logProfile(const std::string &name, double duration_ms) const {
 }
 
 void Logger::info(const std::string &msg) const {
-	SPDLOG_INFO(msg);
+	SPDLOG_INFO("{}", msg);
 }
 
 void Logger::warn(const std::string &msg) const {
-	SPDLOG_WARN(msg);
+	SPDLOG_WARN("{}", msg);
 }
 
 void Logger::error(const std::string &msg) const {
-	SPDLOG_ERROR(msg);
+	SPDLOG_ERROR("{}", msg);
 }
 
 void Logger::critical(const std::string &msg) const {
-	SPDLOG_CRITICAL(msg);
+	SPDLOG_CRITICAL("{}", msg);
 }
 
 #if defined(DEBUG_LOG)
 void Logger::debug(const std::string &msg) const {
-	SPDLOG_DEBUG(msg);
+	SPDLOG_DEBUG("{}", msg);
 }
 
 void Logger::trace(const std::string &msg) const {
-	SPDLOG_TRACE(msg);
+	SPDLOG_TRACE("{}", msg);
 }
 #endif

@@ -25,10 +25,14 @@ antidote:setParameter(COMBAT_PARAM_DISPEL, CONDITION_POISON)
 antidote:setParameter(COMBAT_PARAM_AGGRESSIVE, false)
 antidote:setParameter(COMBAT_PARAM_TARGETCASTERORTOPMOST, true)
 
+local exhaust = Condition(CONDITION_EXHAUST_HEAL)
+exhaust:setParameter(CONDITION_PARAM_TICKS, (configManager.getNumber(configKeys.EX_ACTIONS_DELAY_INTERVAL) - 1000))
+
 local function magicshield(player)
 	local condition = Condition(CONDITION_MANASHIELD)
 	condition:setParameter(CONDITION_PARAM_TICKS, 60000)
 	condition:setParameter(CONDITION_PARAM_MANASHIELD, math.min(player:getMaxMana(), 300 + 7.6 * player:getLevel() + 7 * player:getMagicLevel()))
+	exhaust:setParameter(CONDITION_PARAM_TICKS, 500)
 	player:addCondition(condition)
 end
 
@@ -88,14 +92,8 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 
 		local deactivatedFlasks = player:kv():get("talkaction.potions.flask") or false
 		if not deactivatedFlasks then
-			local container = Container(item:getParent().uid)
-			if container then
-				local storeInbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-				if fromPosition.x == CONTAINER_POSITION and container ~= storeInbox and container:getEmptySlots() ~= 0 then
-					container:addItem(potion.flask, 1)
-				else
-					player:addItem(potion.flask, 1)
-				end
+			if fromPosition.x == CONTAINER_POSITION then
+				player:addItem(potion.flask, 1)
 			else
 				Game.createItem(potion.flask, 1, fromPosition)
 			end

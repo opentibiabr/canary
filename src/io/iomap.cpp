@@ -58,7 +58,7 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 	uint32_t majorVersionItems = stream.getU32();
 	stream.getU32(); // minorVersionItems
 
-	if (version > 2) {
+	if (version > 5) {
 		throw IOMapException("Unknown OTBM version detected.");
 	}
 
@@ -163,8 +163,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				const uint16_t id = stream.getU16();
 				const auto &iType = Item::items[id];
 
-				if (!tile->isHouse() || (!iType.isBed() && !iType.isTrashHolder())) {
-
+				if (!tile->isHouse() || !iType.isBed()) {
 					const auto item = std::make_shared<BasicItem>();
 					item->id = id;
 
@@ -186,9 +185,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				switch (type) {
 					case OTBM_ITEM: {
 						const uint16_t id = stream.getU16();
-
 						const auto &iType = Item::items[id];
-
 						const auto item = std::make_shared<BasicItem>();
 						item->id = id;
 

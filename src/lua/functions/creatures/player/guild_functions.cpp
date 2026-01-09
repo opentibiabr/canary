@@ -45,7 +45,7 @@ int GuildFunctions::luaGuildCreate(lua_State* L) {
 }
 
 int GuildFunctions::luaGuildGetId(lua_State* L) {
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (guild) {
 		lua_pushnumber(L, guild->getId());
 	} else {
@@ -56,7 +56,7 @@ int GuildFunctions::luaGuildGetId(lua_State* L) {
 
 int GuildFunctions::luaGuildGetName(lua_State* L) {
 	// guild:getName()
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -67,7 +67,7 @@ int GuildFunctions::luaGuildGetName(lua_State* L) {
 
 int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 	// guild:getMembersOnline()
-	const auto &guild = Lua::getUserdataShared<const Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -87,7 +87,7 @@ int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 
 int GuildFunctions::luaGuildGetBankBalance(lua_State* L) {
 	// guild:getBankBalance()
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -98,7 +98,7 @@ int GuildFunctions::luaGuildGetBankBalance(lua_State* L) {
 
 int GuildFunctions::luaGuildSetBankBalance(lua_State* L) {
 	// guild:setBankBalance(bankBalance)
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -111,7 +111,7 @@ int GuildFunctions::luaGuildSetBankBalance(lua_State* L) {
 
 int GuildFunctions::luaGuildAddRank(lua_State* L) {
 	// guild:addRank(id, name, level)
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -126,7 +126,7 @@ int GuildFunctions::luaGuildAddRank(lua_State* L) {
 
 int GuildFunctions::luaGuildGetRankById(lua_State* L) {
 	// guild:getRankById(id)
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -147,7 +147,7 @@ int GuildFunctions::luaGuildGetRankById(lua_State* L) {
 
 int GuildFunctions::luaGuildGetRankByLevel(lua_State* L) {
 	// guild:getRankByLevel(level)
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -168,7 +168,7 @@ int GuildFunctions::luaGuildGetRankByLevel(lua_State* L) {
 
 int GuildFunctions::luaGuildGetMotd(lua_State* L) {
 	// guild:getMotd()
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;
@@ -179,7 +179,7 @@ int GuildFunctions::luaGuildGetMotd(lua_State* L) {
 
 int GuildFunctions::luaGuildSetMotd(lua_State* L) {
 	// guild:setMotd(motd)
-	const auto &guild = Lua::getUserdataShared<Guild>(L, 1);
+	const auto &guild = Lua::getUserdataShared<Guild>(L, 1, "Guild");
 	if (!guild) {
 		lua_pushnil(L);
 		return 1;

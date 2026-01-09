@@ -3,55 +3,55 @@ local bosses = {
 		teleportPos = Position(33226, 31478, 12),
 		godbreakerPos = Position(33237, 31477, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TheLordOfTheLiceTimer,
 	},
 	["tarbaz"] = {
 		teleportPos = Position(33460, 32853, 11),
 		godbreakerPos = Position(33427, 32852, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.TarbazTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.TarbazTimer,
 	},
 	["ragiaz"] = {
 		teleportPos = Position(33482, 32345, 13),
 		godbreakerPos = Position(33466, 32392, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.RagiazTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.RagiazTimer,
 	},
 	["plagirath"] = {
 		teleportPos = Position(33174, 31511, 13),
 		godbreakerPos = Position(33204, 31510, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.PlagirathTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.PlagirathTimer,
 	},
 	["razzagorn"] = {
-		teleportPos = Position(33357, 32434, 12),
+		teleportPos = Position(33413, 32467, 14),
 		godbreakerPos = Position(33357, 32440, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.RazzagornTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.RazzagornTimer,
 	},
 	["zamulosh"] = {
 		teleportPos = Position(33644, 32764, 11),
 		godbreakerPos = Position(33678, 32758, 13),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.ZamuloshTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.ZamuloshTimer,
 	},
 	["mazoran"] = {
 		teleportPos = Position(33585, 32699, 14),
 		godbreakerPos = Position(33614, 32679, 15),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.MazoranTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.MazoranTimer,
 	},
 	["shulgrax"] = {
 		teleportPos = Position(33486, 32796, 13),
 		godbreakerPos = Position(33459, 32820, 14),
 		cooldown = 44, -- hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.ShulgraxTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.ShulgraxTimer,
 	},
 	["ferumbras mortal shell"] = {
 		teleportPos = Position(33392, 31485, 14),
 		godbreakerPos = Position(33388, 31414, 14),
 		cooldown = 332, -- hours - 13 days and 20 hours
-		storage = Storage.Quest.U10_90.FerumbrasAscension.FerumbrasMortalShellTime,
+		storage = Storage.Quest.U10_90.FerumbrasAscension.FerumbrasMortalShellTimer,
 	},
 }
 
@@ -67,10 +67,18 @@ local crystals = {
 }
 
 local function transformCrystal(player)
+	if type(player) ~= "userdata" or not player:isPlayer() then
+		print("[Error] transformCrystal: invalid player argument")
+		return
+	end
+
 	for c = 1, #crystals do
 		local crystal = crystals[c]
 		player:setStorageValue(crystal.globalStorage, 0)
+		Game.setStorageValue(crystal.globalStorage, 0)
 		player:setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, 0)
+		Game.setStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Crystals.AllCrystals, 0)
+
 		local item = Tile(crystal.crystalPosition):getItemById(14961)
 		if item then
 			item:transform(14955)
@@ -110,22 +118,31 @@ function ascendantBossesKill.onDeath(creature)
 			local cooldownTime = bossConfig.cooldown * 3600
 			local nextAvailableTime = os.time() + cooldownTime
 			player:setStorageValue(bossConfig.storage, nextAvailableTime)
+
 			local cooldownMessage = formatCooldownMessage(bossConfig.cooldown)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have defeated " .. bossName .. ". You can challenge this boss again in " .. cooldownMessage .. ".")
 		end
 	end)
 
+	-- Handle teleport transformation
 	local teleport = Tile(bossConfig.teleportPos):getItemById(1949)
 	if teleport then
 		teleport:transform(22761)
 		teleport:getPosition():sendMagicEffect(CONST_ME_THUNDER)
 		teleport:setDestination(bossConfig.godbreakerPos)
+
 		addEvent(revertTeleport, 1 * 60 * 1000, bossConfig.teleportPos, 22761, 1949, Position(33319, 32318, 13))
 	end
 
+	-- Special case for Ferumbras Mortal Shell
 	if creature:getName():lower() == "ferumbras mortal shell" then
 		onDeathForDamagingPlayers(creature, function(creature, player)
-			addEvent(transformCrystal, 2 * 60 * 1000, player)
+			addEvent(function(playerId)
+				local player = Player(playerId)
+				if player then
+					transformCrystal(player)
+				end
+			end, 2 * 60 * 1000, player:getId())
 		end)
 	end
 

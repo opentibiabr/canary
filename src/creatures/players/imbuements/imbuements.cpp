@@ -425,6 +425,32 @@ ImbuementDecay &ImbuementDecay::getInstance() {
 	return inject<ImbuementDecay>();
 }
 
+bool ImbuementDecay::canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const {
+	const auto &player = item->getHoldingPlayer();
+	if (!player) {
+		return false;
+	}
+
+	const auto &playerTile = player->getTile();
+	const bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+	const bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
+	const bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
+	const auto imbuement = imbuementInfo.imbuement;
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	const auto &parent = item->getParent();
+	const bool isInBackpack = parent && parent->getContainer();
+
+	if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
+		return false;
+	}
+
+	if (categoryImbuement && !categoryImbuement->agressive && parent && parent != player) {
+		return false;
+	}
+
+	return true;
+}
+
 void ImbuementDecay::startImbuementDecay(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		g_logger().error("[{}] item is nullptr", __FUNCTION__);
@@ -454,7 +480,16 @@ void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
 		return;
 	}
 
+	if (m_itemsToDecay.find(item) == m_itemsToDecay.end()) {
+		return;
+	}
+
 	g_logger().debug("Stopping imbuement decay for item {}", item->getName());
+
+	if (m_lastUpdateTime == 0) {
+		m_itemsToDecay.erase(item);
+		return;
+	}
 
 	int64_t currentTime = OTSYS_TIME();
 	int64_t elapsedTime = currentTime - m_lastUpdateTime;
@@ -462,6 +497,10 @@ void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); ++slotid) {
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
+		}
+
+		if (!canDecayImbuement(item, imbuementInfo)) {
 			continue;
 		}
 
@@ -505,10 +544,11 @@ void ImbuementDecay::checkImbuementDecay() {
 		auto player = item->getHoldingPlayer();
 		if (!player) {
 			g_logger().debug("Item {} is not held by any player. Skipping decay.", item->getName());
+			itemsToRemove.push_back(item);
 			continue;
 		}
 
-		bool removeItem = true;
+		bool hasImbuements = false;
 
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); ++slotid) {
 			ImbuementInfo imbuementInfo;
@@ -517,29 +557,13 @@ void ImbuementDecay::checkImbuementDecay() {
 				continue;
 			}
 
-			// Get the tile the player is currently on
-			const auto &playerTile = player->getTile();
-			// Check if the player is in a protection zone
-			const bool &isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
-			// Check if the player is in fight mode
-			bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
-			bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
+			hasImbuements = true;
 
-			// Imbuement from imbuementInfo, this variable reduces code complexity
+			if (!canDecayImbuement(item, imbuementInfo)) {
+				continue;
+			}
+
 			const auto imbuement = imbuementInfo.imbuement;
-			// Get the category of the imbuement
-			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
-			// Parent of the imbued item
-			const auto &parent = item->getParent();
-			const bool &isInBackpack = parent && parent->getContainer();
-			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
-				continue;
-			}
-			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
-			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != player) {
-				continue;
-			}
 
 			// If the imbuement's duration is 0, remove its stats and continue to the next slot
 			if (imbuementInfo.duration == 0) {
@@ -557,11 +581,9 @@ void ImbuementDecay::checkImbuementDecay() {
 				player->removeItemImbuementStats(imbuement);
 				player->updateImbuementTrackerStats();
 			}
-
-			removeItem = false;
 		}
 
-		if (removeItem) {
+		if (!hasImbuements) {
 			itemsToRemove.push_back(item);
 		}
 	}

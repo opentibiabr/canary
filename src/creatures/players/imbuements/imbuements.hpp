@@ -140,6 +140,8 @@ public:
 	void checkImbuementDecay();
 
 private:
+	bool canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const;
+
 	std::unordered_set<std::shared_ptr<Item>> m_itemsToDecay;
 	int64_t m_lastUpdateTime = 0;
 	uint32_t m_eventId { 0 };

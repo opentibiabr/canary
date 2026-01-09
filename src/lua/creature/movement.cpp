@@ -547,14 +547,14 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	player->setItemAbility(slot, true);
 
+	g_imbuementDecay().startImbuementDecay(item);
+
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 			continue;
 		}
-
-		g_imbuementDecay().startImbuementDecay(item);
 
 		player->addItemImbuementStats(imbuementInfo.imbuement);
 	}
@@ -647,6 +647,8 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 	const ItemType &it = Item::items[item->getID()];
 	player->setItemAbility(slot, false);
 
+	g_imbuementDecay().stopImbuementDecay(item);
+
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
 		ImbuementInfo imbuementInfo;
@@ -654,7 +656,6 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 			continue;
 		}
 
-		g_imbuementDecay().stopImbuementDecay(item);
 		player->removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 

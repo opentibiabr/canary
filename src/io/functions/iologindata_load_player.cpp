@@ -561,6 +561,9 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 				if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
 					player->internalAddThing(pid, item);
 					item->startDecaying();
+					if (item->hasImbuements()) {
+						itemsToStartDecayImbuement.emplace_back(item);
+					}
 				} else {
 					ItemsMap::const_iterator it2 = inventoryItems.find(pid);
 					if (it2 == inventoryItems.end()) {
@@ -604,7 +607,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 			item->startDecaying();
 		}
 
-		// Start imbuement decay on login for backpacks
+		// Start imbuement decay on login for items with imbuements
 		for (const auto &item : itemsToStartDecayImbuement) {
 			g_imbuementDecay().startImbuementDecay(item);
 		}

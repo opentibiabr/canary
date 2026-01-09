@@ -457,6 +457,10 @@ void ImbuementDecay::startImbuementDecay(const std::shared_ptr<Item> &item) {
 		return;
 	}
 
+	if (!item->hasImbuements()) {
+		return;
+	}
+
 	if (m_itemsToDecay.find(item) != m_itemsToDecay.end()) {
 		return;
 	}

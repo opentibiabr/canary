@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
+#include "items/items_definitions.hpp"
 
 class Player;
 class Item;

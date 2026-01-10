@@ -3,6 +3,7 @@
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
 #include "lib/logging/in_memory_logger.hpp"
+#include "items/item.hpp"
 
 int main(int argc, char** argv) {
 	::testing::InitGoogleTest(&argc, argv);
@@ -12,7 +13,10 @@ int main(int argc, char** argv) {
 	DI::setTestContainer(&injector);
 
 	(void)g_logger();
-	(void)g_configManager();
+	auto &config = g_configManager();
+	config.setConfigFileLua("config.lua.dist");
+	config.load();
+	Item::items.loadFromXml();
 	(void)g_database();
 
 	return RUN_ALL_TESTS();

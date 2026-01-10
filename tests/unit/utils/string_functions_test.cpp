@@ -23,6 +23,7 @@ TEST_P(ReplaceStringTest, ReplacesStrings) {
 
 static const std::vector<ReplaceStringTestCase> kReplaceStringTestCases {
 	{ "", "", "", "", "empty" },
+	{ "subject", "", "x", "subject" },
 	{ "all together", " ", "_", "all_together", "spaces" },
 	{ "beautiful", "u", "", "beatifl", "remove char" },
 	{ "empty_empty_empty_", "empty_", "", "", "remove substr" },

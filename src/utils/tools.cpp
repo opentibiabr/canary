@@ -247,7 +247,7 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 }
 
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement) {
-	if (str.empty()) {
+	if (str.empty() || sought.empty()) {
 		return;
 	}
 

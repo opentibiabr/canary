@@ -61,6 +61,16 @@ public:
 	bool registerInstantLuaEvent(const std::shared_ptr<InstantSpell> &instant);
 	bool registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune);
 
+	/**
+	 * @brief Checks if a given spell name is one of the Monk Shrine exclusive spells.
+	 *
+	 * Used to identify if a spell is part of the Monk vocation's shrine-based abilities.
+	 *
+	 * @param name The name of the spell.
+	 * @return True if the spell is a Monk Shrine spell, false otherwise.
+	 */
+	bool isMonkShrineSpell(const std::string &name) const;
+
 private:
 	std::map<uint16_t, std::shared_ptr<RuneSpell>> runes;
 	std::map<std::string, std::shared_ptr<InstantSpell>> instants;
@@ -185,6 +195,30 @@ public:
 	void setLockedPZ(bool b);
 
 	/**
+	 * @brief Checks if the spell is a Monk "Builder" type.
+	 * @return true if the spell is a Builder spell, false otherwise.
+	 */
+	[[nodiscard]] bool isBuilder() const;
+
+	/**
+	 * @brief Checks if the spell is a Monk "Spender" type.
+	 * @return true if the spell is a Spender spell, false otherwise.
+	 */
+	[[nodiscard]] bool isSpender() const;
+
+	/**
+	 * @brief Gets the Monk spell type associated with this spell.
+	 * @return The MonkSpell_t enum value representing the spell type.
+	 */
+	[[nodiscard]] MonkSpell_t getMonkSpellType() const;
+
+	/**
+	 * @brief Sets the Monk spell type for this spell.
+	 * @param type The MonkSpell_t enum value to assign.
+	 */
+	void setMonkSpellType(MonkSpell_t type);
+
+	/**
 	 * @brief Get whether the wheel of destiny is upgraded.
 	 *
 	 * @return True if the wheel of destiny is upgraded, false otherwise.
@@ -269,6 +303,8 @@ private:
 	bool learnable = false;
 	bool enabled = true;
 	bool premium = false;
+
+	MonkSpell_t monkSpellType = MonkSpell_t::None;
 
 	std::string name;
 	std::string m_words;

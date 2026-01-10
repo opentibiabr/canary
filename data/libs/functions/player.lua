@@ -161,6 +161,10 @@ function Player:vocationAbbrev()
 	return abbrev:upper()
 end
 
+function Player.isMonk(self)
+	return table.contains({ VOCATION.ID.MONK, VOCATION.ID.EXALTED_MONK }, self:getVocation():getId())
+end
+
 function Player.isSorcerer(self)
 	return table.contains({ VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER }, self:getVocation():getId())
 end

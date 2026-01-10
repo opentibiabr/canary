@@ -150,7 +150,7 @@ npcConfig.shop = {
 	{ itemName = "drakinata", clientId = 10388, sell = 10000, storageKey = tomes, storageValue = 9 },
 	{ itemName = "zaoan armor", clientId = 10384, sell = 14000, storageKey = tomes, storageValue = 9 },
 	{ itemName = "zaoan legs", clientId = 10387, sell = 14000, storageKey = tomes, storageValue = 9 },
-	{ itemName = "sai", clientId = 10389, sell = 16500, storageKey = tomes, storageValue = 9 },
+	{ itemName = "traditional sai", clientId = 10389, sell = 16500, storageKey = tomes, storageValue = 9 },
 	{ itemName = "twiceslicer", clientId = 11657, sell = 28000, storageKey = tomes, storageValue = 9 },
 	{ itemName = "zaoan sword", clientId = 10390, sell = 30000, storageKey = tomes, storageValue = 9 },
 	{ itemName = "guardian boots", clientId = 10323, sell = 35000, storageKey = tomes, storageValue = 9 },

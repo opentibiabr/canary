@@ -5,6 +5,7 @@ local config = {
 			"lesser marksman gem",
 			"lesser sage gem",
 			"lesser mystic gem",
+			"lesser spiritualist gem",
 		},
 		chance = {
 			influenced = 9000,
@@ -19,6 +20,7 @@ local config = {
 			"marksman gem",
 			"sage gem",
 			"mystic gem",
+			"spiritualist gem",
 		},
 		chance = {
 			influenced = 0,
@@ -33,6 +35,7 @@ local config = {
 			"greater marksman gem",
 			"greater sage gem",
 			"greater mystic gem",
+			"greater spiritualist gem",
 		},
 		chance = {
 			influenced = 0,

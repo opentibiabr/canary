@@ -99,6 +99,10 @@ if Modules == nil then
 			return false
 		end
 
+		if player:getVocation():getBaseId() == VOCATION.BASE_ID.MONK and not parameters.monk then
+			return false
+		end
+
 		if player:isPremium() or not parameters.premium then
 			local promotion = player:getVocation():getPromotion()
 			local hasPromotion = player:kv():get("promoted")

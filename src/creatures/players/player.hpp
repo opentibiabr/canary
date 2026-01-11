@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -22,6 +22,7 @@
 #include "creatures/players/components/player_achievement.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/components/player_title.hpp"
 #include "creatures/players/components/wheel/player_wheel.hpp"
@@ -97,31 +98,6 @@ struct CharmInfo {
 	uint8_t tier = 0;
 };
 
-struct ForgeHistory {
-	ForgeAction_t actionType = ForgeAction_t::FUSION;
-	uint8_t tier = 0;
-	uint8_t bonus = 0;
-
-	time_t createdAt;
-
-	uint16_t historyId = 0;
-
-	uint64_t cost = 0;
-	uint64_t dustCost = 0;
-	uint64_t coresCost = 0;
-	uint64_t gained = 0;
-
-	bool success = false;
-	bool tierLoss = false;
-	bool successCore = false;
-	bool tierCore = false;
-	bool convergence = false;
-
-	std::string description;
-	std::string firstItemName;
-	std::string secondItemName;
-};
-
 struct OpenContainer {
 	std::shared_ptr<Container> container;
 	uint16_t index;
@@ -188,8 +164,8 @@ public:
 		return online;
 	}
 
-	static uint32_t getFirstID();
-	static uint32_t getLastID();
+	[[nodiscard]] static uint32_t getFirstID();
+	[[nodiscard]] static uint32_t getLastID();
 
 	static MuteCountMap muteCountMap;
 
@@ -565,9 +541,9 @@ public:
 	int32_t getMaxHealth() const override;
 	uint32_t getMaxMana() const override;
 
-	std::shared_ptr<Item> getInventoryItem(Slots_t slot) const;
+	[[nodiscard]] std::shared_ptr<Item> getInventoryItem(Slots_t slot) const;
 
-	bool isItemAbilityEnabled(Slots_t slot) const;
+	[[nodiscard]] bool isItemAbilityEnabled(Slots_t slot) const;
 	void setItemAbility(Slots_t slot, bool enabled);
 
 	void setVarSkill(skills_t skill, int32_t modifier);
@@ -1238,10 +1214,6 @@ public:
 	void removeForgeDustLevel(uint64_t amount);
 	uint64_t getForgeDustLevel() const;
 
-	std::vector<ForgeHistory> &getForgeHistory();
-
-	void setForgeHistory(const ForgeHistory &history);
-
 	void registerForgeHistoryDescription(ForgeHistory history);
 
 	void setBossPoints(uint32_t amount);
@@ -1333,6 +1305,10 @@ public:
 	// Player summary interface
 	PlayerCyclopedia &cyclopedia();
 	const PlayerCyclopedia &cyclopedia() const;
+
+	// Player forge history interface
+	PlayerForgeHistory &forgeHistory();
+	const PlayerForgeHistory &forgeHistory() const;
 
 	// Player vip interface
 	PlayerVIP &vip();
@@ -1462,7 +1438,6 @@ private:
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
 	ManagedContainerMap m_managedContainers;
-	std::vector<ForgeHistory> forgeHistoryVector;
 
 	std::vector<uint16_t> quickLootListItemIds;
 
@@ -1650,6 +1625,9 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	mutable int64_t m_lastImbuementTrackerUpdate = 0;
+	mutable bool m_hasPendingImbuementTrackerUpdate = false;
+	mutable uint64_t m_pendingImbuementTrackerEventId = 0;
 	bool shouldForceLogout = true;
 	bool connProtected = false;
 
@@ -1686,7 +1664,7 @@ private:
 		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 	}
 
-	bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
+	[[nodiscard]] bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
 
 	uint16_t getLookCorpse() const override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
@@ -1719,6 +1697,7 @@ private:
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
 	friend class PlayerStorage;
+	friend class PlayerForgeHistory;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;
@@ -1729,6 +1708,7 @@ private:
 	AnimusMastery m_animusMastery;
 	PlayerAttachedEffects m_playerAttachedEffects;
 	PlayerStorage m_storage;
+	PlayerForgeHistory m_forgeHistoryPlayer;
 
 	std::mutex quickLootMutex;
 

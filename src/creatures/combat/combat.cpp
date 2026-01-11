@@ -2408,7 +2408,11 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 			targetCreature->setCombatDamage(targetDamage);
 		}
-	} else if (monster) {
+
+		return; // Prevent monster logic from executing
+	}
+
+	if (monster) {
 		baseChance = monster->getCriticalChance() * 100;
 		baseBonus = monster->getCriticalDamage() * 100;
 		baseBonus += damage.criticalDamage;

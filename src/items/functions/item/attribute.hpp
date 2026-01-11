@@ -22,6 +22,7 @@ public:
 			case ItemAttribute_t::DATE:
 			case ItemAttribute_t::WEIGHT:
 			case ItemAttribute_t::ATTACK:
+			case ItemAttribute_t::MANTRA:
 			case ItemAttribute_t::DEFENSE:
 			case ItemAttribute_t::EXTRADEFENSE:
 			case ItemAttribute_t::ARMOR:

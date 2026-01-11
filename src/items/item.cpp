@@ -34,8 +34,12 @@
 
 Items Item::items;
 
-std::shared_ptr<Item> Item::createItemBatch(uint16_t itemId, uint32_t count, bool wrappable /* = false*/) {
+std::shared_ptr<Item> Item::createItemBatch(uint16_t itemId, uint32_t count, uint8_t subType /* 0*/, bool wrappable /* = false*/) {
 	const auto &item = Item::CreateItem(itemId, count, nullptr, wrappable, true);
+	// If it is a special item, set its subtype
+	if (item && subType > 0) {
+		item->setSubType(subType);
+	}
 	return item;
 };
 
@@ -1077,6 +1081,11 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE));
 	}
 
+	if (hasAttribute(ItemAttribute_t::MANTRA)) {
+		propWriteStream.write<uint8_t>(ATTR_MANTRA);
+		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::MANTRA));
+	}
+
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
 		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::IMBUEMENT_SLOT));
@@ -1386,6 +1395,10 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 			}
 
 			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+				if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+					continue;
+				}
+
 				if (!it.abilities->skills[i]) {
 					continue;
 				}
@@ -1705,6 +1718,10 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		if (it.upgradeClassification > 0) {
 			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
 		}
+
+		if (it.elementalBond != COMBAT_NONE) {
+			descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
+		}
 	} else {
 		if (!it.description.empty()) {
 			descriptions.emplace_back("Description", it.description);
@@ -1799,6 +1816,10 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 			}
 
 			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+				if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+					continue;
+				}
+
 				if (!it.abilities->skills[i]) {
 					continue;
 				}
@@ -2056,6 +2077,10 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		if (it.upgradeClassification > 0) {
 			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
 		}
+
+		if (it.elementalBond != COMBAT_NONE) {
+			descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
+		}
 	}
 	descriptions.shrink_to_fit();
 	return descriptions;
@@ -2162,7 +2187,7 @@ SoundEffect_t Item::getMovementSound(const std::shared_ptr<Cylinder> &toCylinder
 
 std::string Item::parseClassificationDescription(const std::shared_ptr<Item> &item) {
 	if (item && item->getClassification() >= 1) {
-		return fmt::format("\nClassification: {} Tier: {}", item->getClassification(), getTierEffectDescription(item));
+		return fmt::format("\nClassification: {} Tier: {}.", item->getClassification(), getTierEffectDescription(item));
 	}
 	return "";
 }
@@ -2275,8 +2300,22 @@ std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &it
 			}
 		}
 
+		const int32_t mantra = (item ? item->getMantra() : itemType.armor);
+		if (mantra != 0) {
+			if (begin) {
+				itemDescription << " (Mantra:" << mantra;
+				begin = false;
+			} else {
+				itemDescription << ", Mantra:" << mantra;
+			}
+		}
+
 		if (itemType.abilities) {
 			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+				if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+					continue;
+				}
+
 				if (!itemType.abilities->skills[i]) {
 					continue;
 				}
@@ -2579,6 +2618,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 			if (it.abilities) {
 				for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+					if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+						continue;
+					}
+
 					if (!it.abilities->skills[i]) {
 						continue;
 					}
@@ -2855,6 +2898,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 			if (it.abilities) {
 				for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+					if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+						continue;
+					}
+
 					if (!it.abilities->skills[i]) {
 						continue;
 					}
@@ -3261,6 +3308,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 	} else if (lookDistance <= 1 && !it.description.empty()) {
 		s << std::endl
 		  << it.description;
+	}
+
+	if (it.elementalBond != COMBAT_NONE) {
+		s << fmt::format("\nElemental Bond: {}.", toPascalCase(getCombatName(it.elementalBond)));
 	}
 
 	if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {

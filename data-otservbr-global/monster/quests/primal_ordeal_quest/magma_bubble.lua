@@ -76,6 +76,7 @@ monster.loot = {
 	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
 	{ name = "berserk potion", chance = 22449, maxCount = 5 },
 	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
+	{ name = "transcendence potion", chance = 18367, maxCount = 5 },
 	{ name = "giant amethyst", chance = 6122 },
 	{ name = "giant ruby", chance = 4082 },
 	{ name = "giant emerald", chance = 4082 },
@@ -86,6 +87,7 @@ monster.loot = {
 	{ name = "arboreal crown", chance = 250 },
 	{ name = "spiritthorn armor", id = 39147, chance = 250 },
 	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
+	{ name = "ethereal coned hat", id = 50188, chance = 250 },
 	{ name = "alicorn headguard", chance = 250 },
 	{ name = "alicorn quiver", chance = 250 },
 	{ name = "arcanomancer regalia", chance = 250 },
@@ -94,6 +96,7 @@ monster.loot = {
 	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
 	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
 	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
+	{ id = 50147, chance = 250 }, -- name = "charged ethereal ring"
 	{ name = "portable flame", chance = 250 },
 	{ name = "firefighting axe", chance = 250 },
 }

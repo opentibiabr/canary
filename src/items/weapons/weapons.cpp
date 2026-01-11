@@ -218,7 +218,12 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 	params.soundImpactEffect = SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 
 	CombatDamage damage;
-	damage.origin = ORIGIN_MELEE;
+	if (player->getPlayerVocationEnum() == VOCATION_MONK_CIP) {
+		damage.origin = ORIGIN_FIST;
+	} else {
+		damage.origin = ORIGIN_MELEE;
+	}
+
 	damage.primary.type = params.combatType;
 	damage.primary.value = -normal_random(0, maxDamage);
 
@@ -258,6 +263,10 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		}
 		damage.primary.type = params.combatType;
 		damage.secondary.type = getElementType();
+
+		if (item->getWeaponType() == WEAPON_FIST) {
+			damage.origin = ORIGIN_FIST;
+		}
 
 		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		const int32_t physicalAttack = item->getAttack();
@@ -577,6 +586,10 @@ bool WeaponMelee::getSkillType(const std::shared_ptr<Player> &player, const std:
 
 	const WeaponType_t weaponType = item->getWeaponType();
 	switch (weaponType) {
+		case WEAPON_FIST: {
+			skill = SKILL_FIST;
+			return true;
+		}
 		case WEAPON_SWORD: {
 			skill = SKILL_SWORD;
 			return true;

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,7 +14,6 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/scripts/scripts.hpp"
@@ -327,7 +326,7 @@ uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const 
 		return 1;
 	}
 	g_events().eventPlayerOnInventoryUpdate(player, item, slot, true);
-	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, player, item, slot, true);
+	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, true);
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
@@ -337,7 +336,7 @@ uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, cons
 		return 1;
 	}
 	g_events().eventPlayerOnInventoryUpdate(player, item, slot, false);
-	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, &EventCallback::playerOnInventoryUpdate, player, item, slot, false);
+	g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, false);
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 

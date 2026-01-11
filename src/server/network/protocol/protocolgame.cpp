@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -28,6 +28,7 @@
 #include "creatures/players/management/ban.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -5992,7 +5993,7 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 
 void ProtocolGame::sendForgeHistory(uint8_t page) {
 	page = page + 1;
-	auto historyVector = player->getForgeHistory();
+	const auto &historyVector = player->forgeHistory().get();
 	auto historyVectorLen = historyVector.size();
 
 	uint16_t currentPage = 1;
@@ -9660,7 +9661,18 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 		if (!timerValue || !timerValue.has_value()) {
 			continue;
 		}
+
+		auto scheduleTimerOpt = g_kv().scoped("eventscheduler")->get("boss-cooldown");
+		uint8_t schedulePercentage = 0;
+		if (scheduleTimerOpt) {
+			schedulePercentage = static_cast<uint8_t>(scheduleTimerOpt->getNumber());
+		}
+		if (schedulePercentage == 0) {
+			schedulePercentage = 100;
+		}
+
 		auto timer = timerValue->getNumber();
+		timer = static_cast<uint32_t>(timer * schedulePercentage / 100);
 		uint64_t sendTimer = timer > 0 ? static_cast<uint64_t>(timer) : 0;
 		msg.add<uint32_t>(bossRaceId); // bossRaceId
 		msg.add<uint64_t>(sendTimer); // Boss cooldown in seconds

@@ -88,7 +88,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 	end
-	
+
 	-- Yes Handlers (uth'lokr (bast skirts))
 	-- uth'lokr - Step 1
 	if isYes and npcHandler:getTopic(playerId) == 1 then
@@ -128,7 +128,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 	end
-	
+
 	if isYes and npcHandler:getTopic(playerId) == 5 then
 		if player:removeItem(3381, 1) then
 			npcHandler:say("Cling clang!", npc, creature)
@@ -156,7 +156,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 	end
-	
+
 	if isYes and npcHandler:getTopic(playerId) == 7 then
 		if player:removeItem(3356, 1) then
 			npcHandler:say("Cling clang!", npc, creature)
@@ -167,7 +167,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	-- uth'prta (giant sword -> huge chunk of crude iron)
-		if MsgContains(msg, "uth'prta") then
+	if MsgContains(msg, "uth'prta") then
 		if player:getStorageValue(Storage.Quest.U7_8.FriendsAndTraders.TheSweatyCyclops) == 2 then
 			npcHandler:say("Good iron is. Me friends use it much for fight. Me can make from weapon. Lil' one want to trade?", npc, creature)
 			npcHandler:setTopic(playerId, 8)
@@ -261,7 +261,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		-- check timer
 		if player:kv():get("koshei-amulet-timer") then
 			local finishTime = player:kv():get("koshei-amulet-timer")
-			
+
 			-- amulet still not done
 			if finishTime > os.time() then
 				local remaining = finishTime - os.time()
@@ -275,7 +275,9 @@ local function creatureSayCallback(npc, creature, type, message)
 					timeStr = hours .. " hour" .. (hours > 1 and "s" or "")
 				end
 				if minutes > 0 then
-					if timeStr ~= "" then timeStr = timeStr .. " and " end
+					if timeStr ~= "" then
+						timeStr = timeStr .. " and "
+					end
 					timeStr = timeStr .. minutes .. " minute" .. (minutes > 1 and "s" or "")
 				end
 				if timeStr == "" then
@@ -307,15 +309,15 @@ local function creatureSayCallback(npc, creature, type, message)
 		-- quest already done
 		if player:kv():get("koshei-amulet-done") then
 			npcHandler:say("Lil' one already did this! Big Ben no make again!", npc, creature)
-       		 npcHandler:setTopic(playerId, 0)
-        return true
-    	end
+			npcHandler:setTopic(playerId, 0)
+			return true
+		end
 		-- if not done yet
 		if player:kv():get("koshei-amulet-timer") then
 			npcHandler:say("Big Ben already working! Come back later!", npc, creature)
-       		npcHandler:setTopic(playerId, 0)
-        	return true
-    	end
+			npcHandler:setTopic(playerId, 0)
+			return true
+		end
 		-- remove gold and check itens
 		if player:removeMoneyBank(5000) then
 			if player:getItemCount(7528) > 0 and player:getItemCount(7529) > 0 and player:getItemCount(7530) > 0 and player:getItemCount(7531) > 0 then

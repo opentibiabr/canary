@@ -8896,7 +8896,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	pages += entriesPerPage - 1;
 	pages /= entriesPerPage;
 
-	uint16_t vocationId = getVocationIdFromClientId(vocationCID);
+	uint32_t vocationId = getVocationIdFromClientId(vocationCID);
 	std::ostringstream cacheKeyStream;
 	cacheKeyStream << "Highscore_" << static_cast<int>(category) << "_" << static_cast<int>(vocationId) << "_" << static_cast<int>(entriesPerPage) << "_" << page;
 	std::string cacheKey = cacheKeyStream.str();
@@ -8977,7 +8977,7 @@ void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType
 
 	std::string query;
 
-	uint16_t vocationId = getVocationIdFromClientId(vocation);
+	uint32_t vocationId = getVocationIdFromClientId(vocation);
 	if (type == HIGHSCORE_GETENTRIES) {
 		query = generateHighscoreOrGetCachedQueryForEntries(categoryName, page, entriesPerPage, vocationId);
 	} else if (type == HIGHSCORE_OURRANK) {

@@ -333,11 +333,7 @@ bool NetworkMessage::writeCount(uint32_t count) {
 		addByte(b3);
 		addByte(b4);
 	} else {
-		g_logger().error("[writeCount] count={} is too large to encode, sending empty fallback", count);
-		addByte(0);
-		addByte(0);
-		addByte(0);
-		addByte(0);
+		g_logger().error("[writeCount] count={} is too large to encode.", count);
 		return false;
 	}
 

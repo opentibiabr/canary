@@ -220,12 +220,12 @@ uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted = false);
  * @brief Converts a client-side vocation ID to the internal vocation ID.
  *
  * This function maps the CipSoft client vocation ID to the server's internal vocation ID.
- * If the client ID is not recognized, returns 0xFFFF.
+ * If the client ID is not recognized, returns 0xFFFFFFFF.
  *
  * @param clientId The vocation ID as used by the client.
- * @return The corresponding internal vocation ID, or 0xFFFF if invalid.
+ * @return The corresponding internal vocation ID, or 0xFFFFFFFF if invalid.
  */
-uint16_t getVocationIdFromClientId(uint16_t clientId);
+uint32_t getVocationIdFromClientId(uint32_t clientId);
 
 /**
  * @brief Gets the primary cardinal direction from one position to another.

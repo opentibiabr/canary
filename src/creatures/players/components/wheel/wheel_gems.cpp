@@ -571,131 +571,128 @@ void WheelModifierContext::addStrategies(WheelGemSupremeModifier_t modifier, uin
 			bonus.increase.heal = 5 * gradeMultiplier;
 			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Mass Healing", bonus));
 			break;
+		/**
+		 * @brief Reduces the cooldown of Avatar of Balance by 900s and adds momentum bonus based on grade.
+		 */
+		case WheelGemSupremeModifier_t::Monk_AvatarOfBalance_Cooldown:
+			bonus.decrease.cooldown = 900 * 1000;
+			wheelBonus.momentum += grade < 3 ? 0.33 * grade : 1;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Avatar of Balance", bonus));
+			break;
 
-			switch (modifier) {
-				/**
-				 * @brief Reduces the cooldown of Avatar of Balance by 900s and adds momentum bonus based on grade.
-				 */
-				case WheelGemSupremeModifier_t::Monk_AvatarOfBalance_Cooldown:
-					bonus.decrease.cooldown = 900 * 1000;
-					wheelBonus.momentum += grade < 3 ? 0.33 * grade : 1;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Avatar of Balance", bonus));
-					break;
+		/**
+		 * @brief Increases healing of Spirit Mend by a flat value.
+		 */
+		case WheelGemSupremeModifier_t::Monk_SpiritMend_HealingIncreased:
+			bonus.increase.heal = 6;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Spirit Mend", bonus));
+			break;
 
-				/**
-				 * @brief Increases healing of Spirit Mend by a flat value.
-				 */
-				case WheelGemSupremeModifier_t::Monk_SpiritMend_HealingIncreased:
-					bonus.increase.heal = 6;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Spirit Mend", bonus));
-					break;
+		/**
+		 * @brief Increases damage of Spiritual Outburst based on grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_SpiritualOutburst_DamageIncrease:
+			bonus.increase.damage = 5 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Spiritual Outburst", bonus));
+			break;
 
-				/**
-				 * @brief Increases damage of Spiritual Outburst based on grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_SpiritualOutburst_DamageIncrease:
-					bonus.increase.damage = 5 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Spiritual Outburst", bonus));
-					break;
+		/**
+		 * @brief Increases critical damage of Spiritual Outburst based on grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_SpiritualOutburst_CriticalExtraDamage:
+			bonus.increase.criticalDamage = 8 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Spiritual Outburst", bonus));
+			break;
 
-				/**
-				 * @brief Increases critical damage of Spiritual Outburst based on grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_SpiritualOutburst_CriticalExtraDamage:
-					bonus.increase.criticalDamage = 8 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Spiritual Outburst", bonus));
-					break;
+		/**
+		 * @brief Increases damage of Forceful Uppercut using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_ForcefulUppercut_DamageIncrease:
+			bonus.increase.damage = 10 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Forceful Uppercut", bonus));
+			break;
 
-				/**
-				 * @brief Increases damage of Forceful Uppercut using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_ForcefulUppercut_DamageIncrease:
-					bonus.increase.damage = 10 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Forceful Uppercut", bonus));
-					break;
+		/**
+		 * @brief Increases critical damage of Forceful Uppercut using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_ForcefulUppercut_CriticalExtraDamage:
+			bonus.increase.criticalDamage = 8 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Forceful Uppercut", bonus));
+			break;
 
-				/**
-				 * @brief Increases critical damage of Forceful Uppercut using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_ForcefulUppercut_CriticalExtraDamage:
-					bonus.increase.criticalDamage = 8 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Forceful Uppercut", bonus));
-					break;
+		/**
+		 * @brief Increases critical damage of Flurry of Blows using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_FlurryOfBlows_DamageIncrease:
+			bonus.increase.criticalDamage = 6.5 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Flurry of Blows", bonus));
+			break;
 
-				/**
-				 * @brief Increases critical damage of Flurry of Blows using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_FlurryOfBlows_DamageIncrease:
-					bonus.increase.criticalDamage = 6.5 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Flurry of Blows", bonus));
-					break;
+		/**
+		 * @brief Increases damage of Flurry of Blows using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_FlurryOfBlows_CriticalExtraDamage:
+			bonus.increase.damage = 8 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Flurry of Blows", bonus));
+			break;
 
-				/**
-				 * @brief Increases damage of Flurry of Blows using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_FlurryOfBlows_CriticalExtraDamage:
-					bonus.increase.damage = 8 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Flurry of Blows", bonus));
-					break;
+		/**
+		 * @brief Increases damage of Greater Flurry of Blows using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_GreaterFlurryOfBlows_DamageIncrease:
+			bonus.increase.damage = 5 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Greater Flurry of Blows", bonus));
+			break;
 
-				/**
-				 * @brief Increases damage of Greater Flurry of Blows using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_GreaterFlurryOfBlows_DamageIncrease:
-					bonus.increase.damage = 5 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Greater Flurry of Blows", bonus));
-					break;
+		/**
+		 * @brief Increases critical damage of Greater Flurry of Blows using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_GreaterFlurryOfBlows_CriticalExtraDamage:
+			bonus.increase.criticalDamage = 8 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Greater Flurry of Blows", bonus));
+			break;
 
-				/**
-				 * @brief Increases critical damage of Greater Flurry of Blows using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_GreaterFlurryOfBlows_CriticalExtraDamage:
-					bonus.increase.criticalDamage = 8 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Greater Flurry of Blows", bonus));
-					break;
+		/**
+		 * @brief Increases damage of Sweeping Takedown using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_SweepingTakedown_DamageIncrease:
+			bonus.increase.damage = 5 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Sweeping Takedown", bonus));
+			break;
 
-				/**
-				 * @brief Increases damage of Sweeping Takedown using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_SweepingTakedown_DamageIncrease:
-					bonus.increase.damage = 5 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Sweeping Takedown", bonus));
-					break;
+		/**
+		 * @brief Increases critical damage of Sweeping Takedown using grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_SweepingTakedown_CriticalExtraDamage:
+			bonus.increase.criticalDamage = 8 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Sweeping Takedown", bonus));
+			break;
 
-				/**
-				 * @brief Increases critical damage of Sweeping Takedown using grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_SweepingTakedown_CriticalExtraDamage:
-					bonus.increase.criticalDamage = 8 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Sweeping Takedown", bonus));
-					break;
+		/**
+		 * @brief Reduces cooldown of Focus Serenity by 300s and adds momentum based on grade.
+		 */
+		case WheelGemSupremeModifier_t::Monk_FocusSerenity_Cooldown:
+			bonus.decrease.cooldown = 300 * 1000;
+			wheelBonus.momentum += grade < 3 ? 0.33 * grade : 1;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Focus Serenity", bonus));
+			break;
 
-				/**
-				 * @brief Reduces cooldown of Focus Serenity by 300s and adds momentum based on grade.
-				 */
-				case WheelGemSupremeModifier_t::Monk_FocusSerenity_Cooldown:
-					bonus.decrease.cooldown = 300 * 1000;
-					wheelBonus.momentum += grade < 3 ? 0.33 * grade : 1;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Focus Serenity", bonus));
-					break;
+		/**
+		 * @brief Reduces cooldown of Focus Harmony by 30s and adds momentum based on grade.
+		 */
+		case WheelGemSupremeModifier_t::Monk_FocusHarmony_Cooldown:
+			bonus.decrease.cooldown = 30 * 1000;
+			wheelBonus.momentum += grade < 3 ? 0.33 * grade : 1;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Focus Harmony", bonus));
+			break;
 
-				/**
-				 * @brief Reduces cooldown of Focus Harmony by 30s and adds momentum based on grade.
-				 */
-				case WheelGemSupremeModifier_t::Monk_FocusHarmony_Cooldown:
-					bonus.decrease.cooldown = 30 * 1000;
-					wheelBonus.momentum += grade < 3 ? 0.33 * grade : 1;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Focus Harmony", bonus));
-					break;
-
-				/**
-				 * @brief Increases healing of Mass Spirit Mend based on grade multiplier.
-				 */
-				case WheelGemSupremeModifier_t::Monk_MassSpiritMend_HealingIncrease:
-					bonus.increase.heal = 5 * gradeMultiplier;
-					m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Mass Spirit Mend", bonus));
-					break;
-			}
+		/**
+		 * @brief Increases healing of Mass Spirit Mend based on grade multiplier.
+		 */
+		case WheelGemSupremeModifier_t::Monk_MassSpiritMend_HealingIncrease:
+			bonus.increase.heal = 5 * gradeMultiplier;
+			m_strategies.emplace_back(std::make_unique<GemModifierSpellBonusStrategy>(m_wheel, "Mass Spirit Mend", bonus));
+			break;
 
 		default:
 			g_logger().error("WheelModifierContext::setStrategy: Invalid supreme modifier: {}", static_cast<uint8_t>(modifier));

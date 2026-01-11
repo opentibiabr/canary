@@ -7269,6 +7269,11 @@ void ProtocolGame::sendInventoryIds() {
 	for (auto [key, amount] : items) {
 		const auto &[itemId, tier] = key;
 
+		if (amount >= 0x40000000) {
+			g_logger().warn("[{}] player: {}, failed to write count for item: {} tier: {}, amount: {}, total count: {}, skipping item.", __FUNCTION__, player->getName(), itemId, tier, amount, totalItemsCount);
+			continue;
+		}
+
 		msg.add<uint16_t>(itemId);
 		msg.addByte(tier);
 		if (!msg.writeCount(amount)) {

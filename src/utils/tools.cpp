@@ -1743,7 +1743,7 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 		case OBJECTCATEGORY_QUIVERS:
 			return "Quiver";
 		case OBJECTCATEGORY_FISTWEAPONS:
-			return "First Weapons";
+			return "Fist Weapons";
 		case OBJECTCATEGORY_DEFAULT:
 			return "Unassigned Loot";
 		default:
@@ -2148,9 +2148,13 @@ uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted /* = false*
 	return result;
 }
 
-uint16_t getVocationIdFromClientId(uint16_t clientId) {
+uint32_t getVocationIdFromClientId(uint32_t clientId) {
+	if (clientId == 0xFFFFFFFF) {
+		return clientId;
+	}
+
 	// Mapping from client vocation ID to internal server vocation ID
-	static const std::unordered_map<uint16_t, uint16_t> CIP_TO_INTERNAL = {
+	static const std::unordered_map<uint32_t, uint32_t> CIP_TO_INTERNAL = {
 		{ VOCATION_KNIGHT_CIP, VOCATION_KNIGHT },
 		{ VOCATION_PALADIN_CIP, VOCATION_PALADIN },
 		{ VOCATION_SORCERER_CIP, VOCATION_SORCERER },
@@ -2166,7 +2170,7 @@ uint16_t getVocationIdFromClientId(uint16_t clientId) {
 	}
 
 	// Return fallback value if not found
-	return 0xFFFF;
+	return 0xFFFFFFFF;
 }
 
 Direction getPrimaryDirection(const Position &from, const Position &to) {

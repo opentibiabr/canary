@@ -292,24 +292,24 @@ function Player.getMissionDescription(self, questId, missionId)
 end
 
 function Player.sendQuestLog(self)
-    local msg = NetworkMessage()
-    msg:addByte(0xF0)
-    local questCount = 0
-    local questIds = {}
-    for questId, quest in pairs(Quests) do
-        if self:questIsStarted(questId) then
-            questCount = questCount + 1
-            table.insert(questIds, questId)
-        end
-    end
-    msg:addU16(questCount)
-    for _, questId in ipairs(questIds) do
-        msg:addU16(questId)
-        msg:addString(Quests[questId].name, "Player.sendQuestLog")
-        msg:addByte(self:questIsCompleted(questId) and 0x01 or 0x00)
-    end
-    msg:sendToPlayer(self)
-    msg:delete()
+	local msg = NetworkMessage()
+	msg:addByte(0xF0)
+	local questCount = 0
+	local questIds = {}
+	for questId, quest in pairs(Quests) do
+		if self:questIsStarted(questId) then
+			questCount = questCount + 1
+			table.insert(questIds, questId)
+		end
+	end
+	msg:addU16(questCount)
+	for _, questId in ipairs(questIds) do
+		msg:addU16(questId)
+		msg:addString(Quests[questId].name, "Player.sendQuestLog")
+		msg:addByte(self:questIsCompleted(questId) and 0x01 or 0x00)
+	end
+	msg:sendToPlayer(self)
+	msg:delete()
 end
 
 function Player.sendQuestLine(self, questId)

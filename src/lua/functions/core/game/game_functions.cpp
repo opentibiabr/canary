@@ -31,6 +31,15 @@
 #include "map/spectators.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 
+/**
+ * @brief Registers the "Game" Lua table and all its Lua-callable game functions.
+ *
+ * Registers the Game table into the provided Lua state and binds the full set of
+ * Game.* methods used by scripts (creation helpers, queries, state accessors,
+ * game systems, and utility functions).
+ *
+ * @param L Pointer to the Lua state where the Game table and its methods will be registered.
+ */
 void GameFunctions::init(lua_State* L) {
 	Lua::registerTable(L, "Game");
 
@@ -118,7 +127,22 @@ void GameFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Game", "addFreeQuestData", GameFunctions::luaGameAddFreeQuestData);
 }
 
-// Game
+/**
+ * @brief Creates and registers a MonsterType for use in Lua from a base name with optional variant and alternate name.
+ *
+ * Constructs a MonsterType using the provided name (string). If a variant (string) is supplied and not empty,
+ * the monster is registered under a derived unique name formed by "variant|name". If the variant starts with '!',
+ * the base name is also registered and the leading '!' is removed before forming the derived name. If an
+ * alternateName (string) is provided and not empty, the MonsterType's visible name is set to that alternate name
+ * and the alternate name is also registered. The MonsterType's nameDescription is set to "a <name>".
+ *
+ * On successful registration the function pushes a `MonsterType` userdata with the "MonsterType" metatable to the
+ * Lua stack. If the first argument is not a string the function pushes `nil`. If a registration conflict occurs
+ * or the MonsterType allocation fails the function raises a Lua error describing the problem.
+ *
+ * @return int Number of Lua values pushed onto the stack (always 1). The pushed value is either the `MonsterType`
+ * userdata on success or `nil` when the input was invalid; on registration or allocation failure a Lua error is raised.
+ */
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	// Game.createMonsterType(name[, variant = ""[, alternateName = ""]])
 	if (Lua::isString(L, 1)) {
@@ -169,6 +193,16 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	return 1;
 }
 
+/**
+ * @brief Adds free quest storage data accessible from Lua as Game.addFreeQuestData.
+ *
+ * Validates and registers a free quest mapping identified by a storage name and numeric storage ID with an associated value.
+ *
+ * @param storageName Name identifier for the free quest storage; must be a non-empty string.
+ * @param storage Numeric storage ID; must be greater than zero.
+ * @param storageValue Integer value to associate with the storage ID.
+ * @return bool `true` if the quest data was successfully added, `false` otherwise (invalid parameters or registration failure). The function reports errors for invalid input. 
+ */
 int GameFunctions::luaGameAddFreeQuestData(lua_State* L) {
 	// Game.addFreeQuestData(storageName, storage, storageValue)
 	if (!Lua::isString(L, 1) || !Lua::isNumber(L, 2) || !Lua::isNumber(L, 3)) {
@@ -198,6 +232,14 @@ int GameFunctions::luaGameAddFreeQuestData(lua_State* L) {
 	return 1;
 }
 
+/**
+ * @brief Creates a new NPC type from Lua arguments and pushes the result onto the Lua stack.
+ *
+ * Expects the Lua arguments required for NPC type creation and will push the created
+ * NPC type userdata (or `nil` on failure) with the appropriate metatable.
+ *
+ * @return int Number of values pushed onto the Lua stack. 
+ */
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 	return NpcTypeFunctions::luaNpcTypeCreate(L);
 }

@@ -443,6 +443,14 @@ std::string convertIPToString(uint32_t ip) {
 	return std::string(buffer.data());
 }
 
+/**
+ * @brief Format a POSIX time value into a human-readable date and time string.
+ *
+ * Formats the provided time as "DD/MM/YYYY HH:MM:SS".
+ *
+ * @param time POSIX time (seconds since the epoch) to format.
+ * @return std::string Formatted date-time string on success, or an empty string on failure.
+ */
 std::string formatDate(time_t time) {
 	try {
 		auto tp = std::chrono::system_clock::from_time_t(time);
@@ -453,6 +461,14 @@ std::string formatDate(time_t time) {
 	return {};
 }
 
+/**
+ * @brief Formats an epoch time as a short date-time string.
+ *
+ * Formats the provided epoch time into the "YYYY-MM-DD HH:MM:SS" representation.
+ *
+ * @param time Seconds since the epoch to format.
+ * @return std::string Formatted date-time string like "2025-01-12 13:45:30", or an empty string if formatting fails.
+ */
 std::string formatDateShort(time_t time) {
 	try {
 		auto tp = std::chrono::system_clock::from_time_t(time);
@@ -463,6 +479,12 @@ std::string formatDateShort(time_t time) {
 	return {};
 }
 
+/**
+ * @brief Format a time value as `HH:MM:SS`.
+ *
+ * @param time Time value to format.
+ * @return std::string Formatted time in `HH:MM:SS` or an empty string on failure (for example, if the input is out of range).
+ */
 std::string formatTime(time_t time) {
 	try {
 		auto tp = std::chrono::system_clock::from_time_t(time);
@@ -473,6 +495,12 @@ std::string formatTime(time_t time) {
 	return {};
 }
 
+/**
+ * @brief Formats a millisecond timestamp as a time string "HH:MM:SS".
+ *
+ * @param ms Milliseconds since the Unix epoch.
+ * @return std::string Time formatted as "HH:MM:SS", or "<invalid>" if formatting fails.
+ */
 std::string formatTimeMs(int64_t ms) {
 	try {
 		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
@@ -482,6 +510,12 @@ std::string formatTimeMs(int64_t ms) {
 	}
 }
 
+/**
+ * @brief Formats a millisecond timestamp as "YYYY-MM-DD HH:MM:SS".
+ *
+ * @param ms Milliseconds since the Unix epoch.
+ * @return std::string Formatted date-time string in the form `YYYY-MM-DD HH:MM:SS`, or an empty string if formatting fails.
+ */
 std::string formatDateTime(int64_t ms) {
 	try {
 		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
@@ -492,6 +526,14 @@ std::string formatDateTime(int64_t ms) {
 	return {};
 }
 
+/**
+ * @brief Convert an enum identifier into a human-readable name.
+ *
+ * Replaces underscores with spaces and converts all letters to lowercase.
+ *
+ * @param name Enum identifier, typically in snake_case or with underscores.
+ * @return std::string Human-readable name with spaces instead of underscores and all lowercase characters.
+ */
 std::string formatEnumName(std::string_view name) {
 	std::string result { name.begin(), name.end() };
 	std::ranges::replace(result, '_', ' ');

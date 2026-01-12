@@ -107,7 +107,12 @@ table.contains = function(array, value)
 	return false
 end
 
--- Free Quests System Integration
+-- Registers free quest definitions from a table into the game's free-quest registry.
+-- Validates each entry requires `storageName` (string), `storage` (number), and `storageValue` (number).
+-- Calls `Game.addFreeQuestData(storageName, storage, storageValue)` for each valid entry and logs warnings for invalid entries.
+-- Logs an error and aborts if `Game.addFreeQuestData` is not available.
+-- @param questTable Table of quest definitions to register.
+-- @return `true` if at least one valid quest was registered, `false` otherwise.
 function setTableQuestFree(questTable)
 	if not questTable or type(questTable) ~= "table" then
 		logger.error("[ERROR] setTableQuestFree: Invalid questTable parameter")

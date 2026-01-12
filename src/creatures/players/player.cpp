@@ -6037,6 +6037,13 @@ void Player::onIdleStatus() {
 	}
 }
 
+/**
+ * @brief Perform post-placement initialization when a player is placed into the world.
+ *
+ * Runs the player login creature event (which may remove the player if the event handler rejects the login),
+ * applies the free-quests system to the player, updates the player's current zone state, and notifies the client
+ * of the player's unjustified points.
+ */
 void Player::onPlacedCreature() {
 	// scripting event - onLogin
 	if (!g_creatureEvents().playerLogin(static_self_cast<Player>())) {

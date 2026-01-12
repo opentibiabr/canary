@@ -61,6 +61,17 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	return true;
 }
 
+/**
+ * @brief Creates a filesystem backup of the configured MySQL database and optionally compresses it.
+ *
+ * Creates a dated backup directory and writes a SQL dump of the configured database to a timestamped file.
+ * If `compress` is true the SQL file is gzipped and the uncompressed file is removed. After creating the
+ * backup, files older than seven days in the database_backup directory are removed.
+ *
+ * Does nothing if database backups are disabled in the configuration or if backup creation fails.
+ *
+ * @param compress When true, compress the generated SQL backup into a gzip file and remove the original SQL file.
+ */
 void Database::createDatabaseBackup(bool compress) const {
 	if (!g_configManager().getBoolean(MYSQL_DB_BACKUP)) {
 		return;

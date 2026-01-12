@@ -50,6 +50,7 @@
     <ClInclude Include="..\src\creatures\players\animus_mastery\animus_mastery.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_badge.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_cyclopedia.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\player_forge_history.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_storage.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_title.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_vip.hpp" />
@@ -271,6 +272,7 @@
     <ClCompile Include="..\src\creatures\players\animus_mastery\animus_mastery.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_badge.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_cyclopedia.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\player_forge_history.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_storage.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_title.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_vip.cpp" />
@@ -441,7 +443,7 @@
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <OutDir>$(ProjectDir)../</OutDir>
-    <SourcePath>$(OutDirFullPath)src</SourcePath>
+    <SourcePath>$(OutDirFullPath)../src/</SourcePath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -514,7 +516,6 @@
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>
-      $(GITHUB_WORKSPACE)\vcpkg\installed\$(VcpkgTriplet)\include\;
       vcpkg_installed\$(VcpkgTriplet)\include\;
       generated
       </AdditionalIncludeDirectories>
@@ -535,7 +536,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>
-      $(GITHUB_WORKSPACE)\vcpkg\installed\$(VcpkgTriplet)\lib\;
       vcpkg_installed\$(VcpkgTriplet)\lib\
       </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -551,7 +551,6 @@
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>
-      $(GITHUB_WORKSPACE)\vcpkg\installed\$(VcpkgTriplet)\include\;
       vcpkg_installed\$(VcpkgTriplet)\include\;
       generated
       </AdditionalIncludeDirectories>
@@ -571,7 +570,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>
-      $(GITHUB_WORKSPACE)\vcpkg\installed\$(VcpkgTriplet)\lib\;
       vcpkg_installed\$(VcpkgTriplet)\lib\
       </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -594,12 +592,12 @@
     <Message Text="RunProtoCompile value: $(RunProtoCompile)" Importance="high" />
   </Target>
   <PropertyGroup Condition="'$(RunProtoCompile)'=='true'">
-    <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\tools\protobuf\protoc</ProtocPath>
-    <ProtoPath>..\$(SourcePath)\protobuf</ProtoPath>
+    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgTriplet)\tools\protobuf\protoc.exe</ProtocPath>
+    <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(RunProtoCompile)'=='false'">
-    <ProtocPath>$(ProjectDir)vcpkg_installed\$(VcpkgTriplet)\tools\protobuf\protoc</ProtocPath>
-    <ProtoPath>$(GITHUB_WORKSPACE)\src\protobuf</ProtoPath>
+    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgTriplet)\tools\protobuf\protoc.exe</ProtocPath>
+    <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>
   <ItemGroup>
     <ProtoFiles Include="$(ProtoPath)\*.proto" />

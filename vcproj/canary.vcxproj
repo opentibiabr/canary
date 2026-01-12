@@ -591,11 +591,7 @@
   <Target Name="DisplayRunProtoCompileValue" BeforeTargets="ProtoCompile">
     <Message Text="RunProtoCompile value: $(RunProtoCompile)" Importance="high" />
   </Target>
-  <PropertyGroup Condition="'$(RunProtoCompile)'=='true'">
-    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgTriplet)\tools\protobuf\protoc.exe</ProtocPath>
-    <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(RunProtoCompile)'=='false'">
+  <PropertyGroup>
     <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgTriplet)\tools\protobuf\protoc.exe</ProtocPath>
     <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>

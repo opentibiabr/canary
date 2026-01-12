@@ -2301,7 +2301,15 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
 	const auto &attackedCreature = getAttackedCreature();
-	const auto &targetPlayer = lastHitCreature ? lastHitCreature->getPlayer() : (attackedCreature ? attackedCreature->getPlayer() : nullptr);
+	std::shared_ptr<Player> resolvedPlayer;
+
+	if (lastHitCreature) {
+	    resolvedPlayer = lastHitCreature->getPlayer();
+	} else if (attackedCreature) {
+	    resolvedPlayer = attackedCreature->getPlayer();
+	}
+
+	const auto& targetPlayer = resolvedPlayer;
 
 	for (const auto &summon : m_summons) {
 		if (!summon) {

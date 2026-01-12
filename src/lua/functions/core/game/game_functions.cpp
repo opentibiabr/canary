@@ -201,7 +201,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
  * @param storageName Name identifier for the free quest storage; must be a non-empty string.
  * @param storage Numeric storage ID; must be greater than zero.
  * @param storageValue Integer value to associate with the storage ID.
- * @return bool `true` if the quest data was successfully added, `false` otherwise (invalid parameters or registration failure). The function reports errors for invalid input. 
+ * @return bool `true` if the quest data was successfully added, `false` otherwise (invalid parameters or registration failure). The function reports errors for invalid input.
  */
 int GameFunctions::luaGameAddFreeQuestData(lua_State* L) {
 	// Game.addFreeQuestData(storageName, storage, storageValue)
@@ -238,7 +238,7 @@ int GameFunctions::luaGameAddFreeQuestData(lua_State* L) {
  * Expects the Lua arguments required for NPC type creation and will push the created
  * NPC type userdata (or `nil` on failure) with the appropriate metatable.
  *
- * @return int Number of values pushed onto the Lua stack. 
+ * @return int Number of values pushed onto the Lua stack.
  */
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 	return NpcTypeFunctions::luaNpcTypeCreate(L);

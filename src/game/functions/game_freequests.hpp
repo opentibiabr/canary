@@ -27,13 +27,13 @@ struct QuestData {
 	int32_t storageValue;
 
 	/**
-		 * @brief Initializes a QuestData entry with the specified storage name, identifier, and value.
-		 *
-		 * @param name Human-readable name for the quest storage.
-		 * @param storageId Numeric identifier for the storage key.
-		 * @param value Integer value to apply to the storage.
-		 */
-		QuestData(const std::string &name, uint32_t storageId, int32_t value) :
+	 * @brief Initializes a QuestData entry with the specified storage name, identifier, and value.
+	 *
+	 * @param name Human-readable name for the quest storage.
+	 * @param storageId Numeric identifier for the storage key.
+	 * @param value Integer value to apply to the storage.
+	 */
+	QuestData(const std::string &name, uint32_t storageId, int32_t value) :
 		storageName(name), storage(storageId), storageValue(value) { }
 };
 
@@ -42,28 +42,28 @@ public:
 	static GameFreeQuests &getInstance();
 
 	/**
- * @brief Constructs a GameFreeQuests instance.
- *
- * Initializes the object with default internal state suitable for the singleton accessor.
- */
-GameFreeQuests() = default;
+	 * @brief Constructs a GameFreeQuests instance.
+	 *
+	 * Initializes the object with default internal state suitable for the singleton accessor.
+	 */
+	GameFreeQuests() = default;
 	/**
- * @brief Destroys the GameFreeQuests singleton and releases any owned resources.
- *
- * Performs cleanup for GameFreeQuests state when the instance is destroyed.
- */
-~GameFreeQuests() = default;
+	 * @brief Destroys the GameFreeQuests singleton and releases any owned resources.
+	 *
+	 * Performs cleanup for GameFreeQuests state when the instance is destroyed.
+	 */
+	~GameFreeQuests() = default;
 
 	/**
- * @brief Deleted copy constructor to prevent copying of the singleton.
- *
- * Enforces non-copyable semantics for GameFreeQuests so the singleton instance cannot be duplicated.
- */
+	 * @brief Deleted copy constructor to prevent copying of the singleton.
+	 *
+	 * Enforces non-copyable semantics for GameFreeQuests so the singleton instance cannot be duplicated.
+	 */
 	GameFreeQuests(const GameFreeQuests &) = delete;
 	/**
- * @brief Deleted copy assignment operator to prevent assigning one GameFreeQuests instance to another and enforce non-copyable (singleton) semantics.
- */
-GameFreeQuests &operator=(const GameFreeQuests &) = delete;
+	 * @brief Deleted copy assignment operator to prevent assigning one GameFreeQuests instance to another and enforce non-copyable (singleton) semantics.
+	 */
+	GameFreeQuests &operator=(const GameFreeQuests &) = delete;
 
 	bool applyFreeQuestsToPlayer(std::shared_ptr<Player> player);
 	bool addQuestData(const std::string &storageName, uint32_t storage, int32_t storageValue);

@@ -630,16 +630,16 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 					  << slot->bonusTimeLeft << ", "
 					  << slot->freeRerollTimeStamp << ", ";
 
-				PropWriteStream propPreyStream;
-				std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
-					propPreyStream.write<uint16_t>(raceId);
-				});
+					PropWriteStream propPreyStream;
+					for (uint16_t raceId : slot->raceIdList) {
+						propPreyStream.write<uint16_t>(raceId);
+					}
 
-				size_t preySize;
-				const char* preyList = propPreyStream.getStream(preySize);
-				query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
+					size_t preySize;
+					const char* preyList = propPreyStream.getStream(preySize);
+					query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
 
-				query << " ON DUPLICATE KEY UPDATE "
+					query << " ON DUPLICATE KEY UPDATE "
 					  << "`state` = VALUES(`state`), "
 					  << "`raceid` = VALUES(`raceid`), "
 					  << "`option` = VALUES(`option`), "
@@ -683,16 +683,16 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				query << slot->disabledUntilTimeStamp << ", ";
 				query << slot->freeRerollTimeStamp << ", ";
 
-				PropWriteStream propTaskHuntingStream;
-				std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
-					propTaskHuntingStream.write<uint16_t>(raceId);
-				});
+					PropWriteStream propTaskHuntingStream;
+					for (uint16_t raceId : slot->raceIdList) {
+						propTaskHuntingStream.write<uint16_t>(raceId);
+					}
 
-				size_t taskHuntingSize;
-				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
-				query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
+					size_t taskHuntingSize;
+					const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
+					query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
 
-				query << " ON DUPLICATE KEY UPDATE "
+					query << " ON DUPLICATE KEY UPDATE "
 					  << "`state` = VALUES(`state`), "
 					  << "`raceid` = VALUES(`raceid`), "
 					  << "`upgrade` = VALUES(`upgrade`), "
@@ -802,6 +802,6 @@ void IOLoginDataSave::savePlayerSystems(const std::shared_ptr<Player> &player) {
 
 	auto harmony = player->getHarmony();
 	if (harmony > 0) {
-		player->kv()->scoped("spells")->set("harmony", static_cast<uint8_t>(harmony));
+		player->kv()->scoped("spells")->set("harmony", harmony);
 	}
 }

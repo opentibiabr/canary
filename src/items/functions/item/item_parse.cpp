@@ -768,7 +768,6 @@ void ItemParse::parseElementalBond(const std::string &stringValue, pugi::xml_att
 		if (elementType == "energy") {
 			itemType.elementalBond = COMBAT_ENERGYDAMAGE;
 		} else if (elementType == "earth") {
-			Abilities &abilities = itemType.getAbilities(); // This may be required for future earth-related effects
 			itemType.elementalBond = COMBAT_EARTHDAMAGE;
 		} else if (elementType == "physical") {
 			itemType.elementalBond = COMBAT_PHYSICALDAMAGE;

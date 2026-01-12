@@ -19,6 +19,21 @@
 #include "lua/global/lua_variant.hpp"
 #include "creatures/players/player.hpp"
 
+namespace {
+void sendWeaponSoundEffect(const std::shared_ptr<Player> &player, const CombatParams &params) {
+	if (!player) {
+		return;
+	}
+
+	if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+		g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+		return;
+	}
+
+	g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+}
+}
+
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 
@@ -236,13 +251,7 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 }
 
 void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent) const {
-	if (player) {
-		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-		} else {
-			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-		}
-	}
+	sendWeaponSoundEffect(player, params);
 
 	if (isLoadedScriptId()) {
 		if (cleavePercent != 0) {

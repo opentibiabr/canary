@@ -638,7 +638,7 @@ void Combat::applyMantraAbsorb(const std::shared_ptr<Player> &player, CombatType
 
 void Combat::harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std::shared_ptr<Player> &targetPlayer, const uint8_t charges) {
 	CombatDamage damage;
-	CombatParams params;
+	CombatParams combatParams;
 
 	// Each charge increases healing by 5%
 	double multiplier = 1.0 + 0.05 * charges;
@@ -647,22 +647,22 @@ void Combat::harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std:
 	uint16_t damageAndHealing = casterPlayer->calculateFlatDamageHealing();
 
 	// Calculate min and max healing, apply multiplier
-	int32_t damageAndHealingMin = static_cast<int32_t>(std::ceil(damageAndHealing * 2 * multiplier));
+	auto damageAndHealingMin = static_cast<int32_t>(std::ceil(damageAndHealing * 2 * multiplier));
 	damageAndHealingMin = std::max<int32_t>(10, damageAndHealingMin); // Enforce minimum
 
-	int32_t damageAndHealingMax = static_cast<int32_t>(std::ceil(damageAndHealing * 2.3 * multiplier));
+	auto damageAndHealingMax = static_cast<int32_t>(std::ceil(damageAndHealing * 2.3 * multiplier));
 	damageAndHealingMax = std::max<int32_t>(25, damageAndHealingMax); // Enforce minimum
 
 	// Setup non-aggressive healing parameters
-	params.aggressive = false;
-	params.impactEffect = CONST_ME_MAGIC_BLUE;
+	combatParams.aggressive = false;
+	combatParams.impactEffect = CONST_ME_MAGIC_BLUE;
 
 	// Set healing type and random healing amount
 	damage.primary.type = COMBAT_HEALING;
 	damage.primary.value = normal_random(damageAndHealingMin, damageAndHealingMax);
 
 	// Apply healing to the target
-	Combat::doCombatHealth(nullptr, targetPlayer, damage, params);
+	Combat::doCombatHealth(nullptr, targetPlayer, damage, combatParams);
 }
 
 void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data) {
@@ -1084,7 +1084,6 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 
 	if (params.impactEffect != CONST_ME_NONE) {
 		Combat::sendCombatEffect(caster, tile->getPosition(), params.impactEffect);
-		// Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
 	}
 
 	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {

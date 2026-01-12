@@ -694,6 +694,14 @@ public:
 	// stash functions
 	ReturnValue addItemFromStash(uint16_t itemId, uint32_t itemCount);
 	void stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems);
+	struct AddItemBatchOptions {
+		uint8_t subType = 0;
+		uint32_t flags = 0;
+		uint8_t tier = 0;
+		bool dropOnMap = false;
+		bool inBackpacks = false;
+		uint16_t backpackId = ITEM_BACKPACK;
+	};
 
 	ReturnValue addItemBatchToPaginedContainer(
 		const std::shared_ptr<Container> &container,
@@ -707,12 +715,7 @@ public:
 		uint16_t itemId,
 		uint32_t totalCount,
 		uint32_t &actuallyAdded,
-		uint8_t subType = 0,
-		uint32_t flags = 0,
-		uint8_t tier = 0,
-		bool dropOnMap = false,
-		bool inBackpacks = false,
-		const uint16_t backpackId = ITEM_BACKPACK
+		const AddItemBatchOptions &options = {}
 	);
 	std::vector<std::shared_ptr<Container>> getAllContainers(bool onlyFromMainBackpack = true) const;
 	std::shared_ptr<Container> getBackpack() const;
@@ -1472,6 +1475,7 @@ private:
 
 	void checkTradeState(const std::shared_ptr<Item> &item);
 	bool hasCapacity(const std::shared_ptr<Item> &item, uint32_t count) const;
+	bool processStashItem(const std::shared_ptr<Item> &item, uint16_t itemCount, uint16_t &refreshDepotSearchOnItem);
 
 	void checkLootContainers(const std::shared_ptr<Container> &item);
 
@@ -1485,6 +1489,7 @@ private:
 	 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
 	 */
 	void updateInventoryImbuement();
+	void updateSerenityState();
 
 	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);

@@ -781,7 +781,7 @@ protected:
 
 	uint32_t manaShield = 0;
 	uint32_t maxManaShield = 0;
-	int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100, 100, 100, 100, 100 };
+	std::array<int32_t, BUFF_LAST + 1> varBuffs = { 100, 100, 100, 100, 100, 100, 100 };
 
 	std::array<int32_t, COMBAT_COUNT> reflectPercent = { 0 };
 	std::array<int32_t, COMBAT_COUNT> reflectFlat = { 0 };

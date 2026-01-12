@@ -22,6 +22,42 @@
 #include "lua/scripts/scripts.hpp"
 #include "lib/di/container.hpp"
 
+namespace {
+void applySanctuaryEffect(const std::shared_ptr<Player> &player, uint8_t harmonies) {
+	uint32_t sanctuarySubId = magic_enum::enum_integer(AttrSubId_t::Sanctuary);
+	if (!player->wheel().getInstant(WheelInstant_t::SANCTUARY) || harmonies == 0 || player->hasCondition(CONDITION_ATTRIBUTES, sanctuarySubId)) {
+		return;
+	}
+
+	const auto &item = Item::CreateItem(ITEM_SANCTUARY);
+	const auto &tile = player->getTile();
+	if (tile && item) {
+		g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		item->startDecaying();
+	}
+
+	int32_t bonus = 100 + 2 * harmonies;
+	const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_ATTRIBUTES, 5 * 1000, 0, false, sanctuarySubId, false);
+	condition->setParam(CONDITION_PARAM_BUFF_DAMAGEDEALT, bonus);
+	condition->setParam(CONDITION_PARAM_BUFF_HEALINGDEALT, bonus);
+	player->addCondition(condition);
+}
+
+void applyInstantSpellDirection(const std::shared_ptr<Player> &player, LuaVariant &variant, const Position &casterPos, uint16_t spellId) {
+	Direction direction = player->getDirection();
+	const auto &target = player->getAttackedCreature();
+	if (target) {
+		variant.type = VARIANT_TARGETPOSITION;
+		const auto &aimAtTargetSpellIds = player->getAimAtTargetSpells();
+		if (aimAtTargetSpellIds.find(spellId) != aimAtTargetSpellIds.end()) {
+			direction = getPrimaryDirection(casterPos, target->getPosition());
+		}
+	}
+
+	variant.pos = Spells::getCasterPosition(player, direction);
+}
+}
+
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
@@ -815,24 +851,7 @@ void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCa
 			uint8_t harmonies = player->getHarmony();
 			player->spendHarmony();
 			player->clearCooldowns(false, true, 2 * 1000 * harmonies);
-
-			uint32_t sanctuarySubId = magic_enum::enum_integer(AttrSubId_t::Sanctuary);
-
-			if (player->wheel().getInstant(WheelInstant_t::SANCTUARY) && harmonies > 0 && !player->hasCondition(CONDITION_ATTRIBUTES, sanctuarySubId)) {
-				const auto &item = Item::CreateItem(ITEM_SANCTUARY);
-				const auto &tile = player->getTile();
-				if (tile && item) {
-					g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
-					item->startDecaying();
-				}
-
-				int32_t bonus = 100 + 2 * harmonies;
-
-				const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_ATTRIBUTES, 5 * 1000, 0, false, sanctuarySubId, false);
-				condition->setParam(CONDITION_PARAM_BUFF_DAMAGEDEALT, bonus);
-				condition->setParam(CONDITION_PARAM_BUFF_HEALINGDEALT, bonus);
-				player->addCondition(condition);
-			}
+			applySanctuaryEffect(player, harmonies);
 		}
 
 		if (isBuilder()) {
@@ -1193,20 +1212,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 		var.pos = variantPosition;
 
 		if (needDirection) {
-			Position casterPos = variantPosition;
-			const auto &target = player->getAttackedCreature();
-			auto direction = player->getDirection();
-
-			if (target) {
-				var.type = VARIANT_TARGETPOSITION;
-
-				const auto &aimAtTargetSpellIds = player->getAimAtTargetSpells();
-				if (aimAtTargetSpellIds.find(getSpellId()) != aimAtTargetSpellIds.end()) {
-					direction = getPrimaryDirection(casterPos, target->getPosition());
-				}
-			}
-
-			var.pos = Spells::getCasterPosition(player, direction);
+			applyInstantSpellDirection(player, var, variantPosition, getSpellId());
 		}
 
 		if (!playerInstantSpellCheck(player, var.pos)) {

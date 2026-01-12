@@ -585,7 +585,7 @@ uint16_t Player::attackRawTotal(uint16_t flatBonus, uint16_t equipment, uint16_t
 int32_t Player::getArmor() const {
 	int32_t armor = 0;
 
-	static constexpr Slots_t armorSlots[] = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING, CONST_SLOT_AMMO };
+	static constexpr std::array<Slots_t, 7> armorSlots = { CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING, CONST_SLOT_AMMO };
 	for (const Slots_t &slot : armorSlots) {
 		const auto &inventoryItem = inventory[slot];
 		if (inventoryItem) {
@@ -599,7 +599,7 @@ int32_t Player::getMantra() const {
 	int32_t mantra = 0;
 
 	// Define which equipment slots contribute to mantra
-	static constexpr Slots_t armorSlots[] = {
+	static constexpr std::array<Slots_t, 7> armorSlots = {
 		CONST_SLOT_HEAD,
 		CONST_SLOT_NECKLACE,
 		CONST_SLOT_ARMOR,
@@ -4895,8 +4895,62 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 	return count;
 }
 
-void Player::stashContainer(const StashContainerList &itemDict) {
+bool Player::processStashItem(const std::shared_ptr<Item> &item, uint16_t itemCount, uint16_t &refreshDepotSearchOnItem) {
+	if (!item) {
+		return false;
+	}
+
+	if (!item->isItemStorable()) {
+		return false;
+	}
+
 	const auto &selfPlayer = static_self_cast<Player>();
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		const auto &inventoryItem = inventory[i];
+		if (!inventoryItem) {
+			continue;
+		}
+
+		if (inventoryItem == item) {
+			if (g_moveEvents().onPlayerDeEquip(selfPlayer, item, static_cast<Slots_t>(i)) == 0) {
+				return false;
+			}
+		}
+	}
+
+	const uint16_t iteratorCID = item->getID();
+	bool success = false;
+
+	if (const auto &player = item->getHoldingPlayer()) {
+		if (player == selfPlayer) {
+			success = (removeItem(item, itemCount) == RETURNVALUE_NOERROR);
+		}
+	} else {
+		if (const auto &parent = item->getParent()) {
+			const auto &parentItem = parent->getItem();
+			if (parentItem && parentItem->getID() == ITEM_BROWSEFIELD) {
+				const auto &parentTile = parent->getTile();
+				if (parentTile) {
+					parentTile->removeThing(item, itemCount);
+				}
+			} else {
+				parent->removeThing(item, itemCount);
+			}
+			success = true;
+		}
+	}
+
+	if (success) {
+		addItemOnStash(iteratorCID, itemCount);
+		if (isDepotSearchOpenOnItem(iteratorCID)) {
+			refreshDepotSearchOnItem = iteratorCID;
+		}
+	}
+
+	return success;
+}
+
+void Player::stashContainer(const StashContainerList &itemDict) {
 	StashItemList stashItemDict; // ItemID - Count
 	for (const auto &[item, itemCount] : itemDict) {
 		if (!item) {
@@ -4916,63 +4970,12 @@ void Player::stashContainer(const StashContainerList &itemDict) {
 
 	uint16_t refreshDepotSearchOnItem = 0;
 
-	auto processItem = [&](const std::shared_ptr<Item> &item, uint16_t itemCount) -> bool {
-		if (!item) {
-			return false;
-		}
-
-		if (!item->isItemStorable()) {
-			return false;
-		}
-
-		for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
-			const auto &inventoryItem = inventory[i];
-			if (!inventoryItem) {
-				continue;
-			}
-
-			if (inventoryItem == item) {
-				g_moveEvents().onPlayerDeEquip(selfPlayer, item, static_cast<Slots_t>(i));
-			}
-		}
-
-		const uint16_t iteratorCID = item->getID();
-		bool success = false;
-
-		if (const auto &player = item->getHoldingPlayer()) {
-			if (player == selfPlayer) {
-				success = (removeItem(item, itemCount) == RETURNVALUE_NOERROR);
-			}
-		} else {
-			if (const auto &parent = item->getParent()) {
-				const auto &parentItem = parent->getItem();
-				if (parentItem && parentItem->getID() == ITEM_BROWSEFIELD) {
-					const auto &parentTile = parent->getTile();
-					if (parentTile) {
-						parentTile->removeThing(item, itemCount);
-					}
-				} else {
-					parent->removeThing(item, itemCount);
-				}
-				success = true;
-			}
-		}
-
-		if (success) {
-			addItemOnStash(iteratorCID, itemCount);
-			if (isDepotSearchOpenOnItem(iteratorCID)) {
-				refreshDepotSearchOnItem = iteratorCID;
-			}
-		}
-		return success;
-	};
-
 	uint32_t totalStowed = 0;
 	for (const auto &[item, itemCount] : itemDict) {
 		if (!item) {
 			continue;
 		}
-		if (processItem(item, itemCount)) {
+		if (processStashItem(item, itemCount, refreshDepotSearchOnItem)) {
 			totalStowed += itemCount;
 		}
 	}
@@ -8010,6 +8013,65 @@ void Player::sendTakeScreenshot(Screenshot_t screenshotType) const {
 	}
 }
 
+namespace {
+bool hasVisiblePartyMember(Player &player) {
+	const auto &party = player.getParty();
+	if (!party) {
+		return false;
+	}
+
+	const Position &playerPosition = player.getPosition();
+	for (const auto &member : party->getMembers()) {
+		const Position &memberPosition = member->getPosition();
+		if (Position::getDistanceZ(playerPosition, memberPosition) > 0) {
+			continue;
+		}
+		const auto offsetX = Position::getDistanceX(playerPosition, memberPosition);
+		const auto offsetY = Position::getDistanceY(playerPosition, memberPosition);
+		if (offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool hasTooManyCreaturesNearby(Player &player) {
+	Spectators spectators;
+	auto nearbyCreatures = spectators.find<Creature>(player.getPosition(), false, 1, 1, 1, 1);
+	int count = 0;
+
+	for (const auto &creature : nearbyCreatures) {
+		if (creature.get() == &player) {
+			continue;
+		}
+		if (creature->getType() == CREATURETYPE_NPC) {
+			continue;
+		}
+		if (++count >= 6) {
+			return true;
+		}
+	}
+
+	return false;
+}
+}
+
+void Player::updateSerenityState() {
+	if (getPlayerVocationEnum() != VOCATION_MONK_CIP) {
+		return;
+	}
+
+	bool isSerene = hasCondition(CONDITION_SERENE);
+	const bool visiblePartyMember = hasVisiblePartyMember(*this);
+	const bool tooManyCreaturesNearby = visiblePartyMember && hasTooManyCreaturesNearby(*this);
+	const bool checkSerenity = !(visiblePartyMember && tooManyCreaturesNearby);
+
+	if (isSerene != checkSerenity) {
+		setSerene(!isSerene);
+	}
+}
+
 void Player::onThink(uint32_t interval) {
 	Creature::onThink(interval);
 
@@ -8021,58 +8083,7 @@ void Player::onThink(uint32_t interval) {
 		addMessageBuffer();
 	}
 
-	if (getPlayerVocationEnum() == VOCATION_MONK_CIP) {
-		bool isSerene = hasCondition(CONDITION_SERENE);
-		bool checkSerenity = true;
-		bool hasVisiblePartyMember = false;
-
-		const Position &playerPosition = getPosition();
-		const auto &party = getParty();
-		if (party) {
-			for (const auto &member : party->getMembers()) {
-				const Position &memberPosition = member->getPosition();
-				const auto offsetZ = Position::getDistanceZ(playerPosition, memberPosition);
-				if (offsetZ > 0) {
-					continue;
-				}
-				const auto offsetX = Position::getDistanceX(playerPosition, memberPosition);
-				const auto offsetY = Position::getDistanceY(playerPosition, memberPosition);
-
-				if (offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y) {
-					hasVisiblePartyMember = true;
-					break;
-				}
-			}
-		}
-
-		bool hasTooManyCreaturesNearby = false;
-
-		if (hasVisiblePartyMember) {
-			Spectators spectators;
-			const auto &nearbyCreatures = spectators.find<Creature>(playerPosition, false, 1, 1, 1, 1);
-			int count = 0;
-
-			for (const auto &creature : nearbyCreatures) {
-				if (creature.get() == this) {
-					continue;
-				}
-				if (creature->getType() == CREATURETYPE_NPC) {
-					continue;
-				}
-				if (++count >= 6) {
-					hasTooManyCreaturesNearby = true;
-					break;
-				}
-			}
-		}
-
-		// Only lose serene if have a visible party member AND 6+ creatures nearby
-		checkSerenity = !(hasVisiblePartyMember && hasTooManyCreaturesNearby);
-
-		if (isSerene != checkSerenity) {
-			setSerene(!isSerene);
-		}
-	}
+	updateSerenityState();
 
 	// Transcendence (avatar trigger)
 	triggerTranscendence();
@@ -8172,7 +8183,9 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 
 	if (link == LINK_OWNER) {
 		if (const auto &item = copyThing->getItem()) {
-			g_moveEvents().onPlayerDeEquip(thisPlayer, item, static_cast<Slots_t>(index));
+			if (g_moveEvents().onPlayerDeEquip(thisPlayer, item, static_cast<Slots_t>(index)) == 0) {
+				return;
+			}
 		}
 	}
 	bool requireListUpdate = true;
@@ -8978,13 +8991,15 @@ ReturnValue Player::addItemBatch(
 	uint16_t itemId,
 	uint32_t totalCount,
 	uint32_t &actuallyAdded,
-	uint8_t subType /*= 0*/,
-	uint32_t flags /*= 0*/,
-	uint8_t tier /*= 0*/,
-	bool dropOnMap /*= false*/,
-	bool inBackpacks /*= false*/,
-	const uint16_t backpackId /*= ITEM_BACKPACK*/
+	const AddItemBatchOptions &options /*= {}*/
 ) {
+	struct AddItemBatchState {
+		uint32_t totalCount;
+		uint32_t remaining;
+		uint32_t &actuallyAdded;
+		ReturnValue returnError = RETURNVALUE_NOERROR;
+	};
+
 	actuallyAdded = 0;
 	if (totalCount == 0) {
 		return RETURNVALUE_NOERROR;
@@ -8995,9 +9010,8 @@ ReturnValue Player::addItemBatch(
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	if ((flags & FLAG_DROPONMAP) != 0) {
-		dropOnMap = true;
-	}
+	uint32_t flags = options.flags;
+	const bool dropOnMap = options.dropOnMap || ((flags & FLAG_DROPONMAP) != 0);
 
 	if (!itemType.movable && !itemType.pickupable) {
 		const auto &tile = getTile();
@@ -9011,11 +9025,11 @@ ReturnValue Player::addItemBatch(
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		auto queryAdd = tile->queryAdd(0, newItem, totalCount, flags);
-		if (queryAdd != RETURNVALUE_NOERROR) {
-			g_logger().warn("[Player::addItemBatch] Could not add item {} to tile for player {}", itemId, getName());
-			return queryAdd;
-		}
+			auto queryAdd = tile->queryAdd(0, newItem, totalCount, flags);
+			if (queryAdd != RETURNVALUE_NOERROR) {
+				g_logger().warn("[Player::addItemBatch] Could not add item {} to tile for player {}", itemId, getName());
+				return queryAdd;
+			}
 
 		tile->addThing(newItem);
 		actuallyAdded = totalCount;
@@ -9029,50 +9043,59 @@ ReturnValue Player::addItemBatch(
 	bool fallbackConsumed = false;
 	auto objectCategory = g_game().getObjectCategory(itemType);
 	const auto &obtainContainer = g_game().findManagedContainer(thisPlayer, fallbackConsumed, objectCategory, false);
-	if (backpackId == ITEM_SHOPPING_BAG && obtainContainer) {
+	if (options.backpackId == ITEM_SHOPPING_BAG && obtainContainer) {
 		if (obtainContainer->capacity() > obtainContainer->size()) {
-			containersCache.emplace_back(obtainContainer);
+			containersCache.push_back(obtainContainer);
 		}
 
 		for (const auto &item : obtainContainer->getItems(true)) {
 			const auto &subContainer = item->getContainer();
 			if (subContainer && subContainer->capacity() > subContainer->size()) {
-				containersCache.emplace_back(subContainer);
+				containersCache.push_back(subContainer);
 			}
 		}
 	} else {
 		containersCache = getAllContainers(!itemType.isAmmo());
 	}
 
-	std::vector<std::shared_ptr<Item>> stackableItemsCache;
-	stackableItemsCache.reserve(128);
-
-	// Find stackable items in inventory and containers
-	for (auto &container : containersCache) {
-		for (auto &item : container->getItemList()) {
-			if (item->getID() == itemId && item->isStackable() && item->getItemCount() < item->getStackSize()) {
-				stackableItemsCache.push_back(item);
+	auto collectStackableItems = [&](const std::vector<std::shared_ptr<Container>> &containers) {
+		std::vector<std::shared_ptr<Item>> stackableItemsCache;
+		stackableItemsCache.reserve(128);
+		for (const auto &container : containers) {
+			for (const auto &item : container->getItemList()) {
+				if (item->getID() == itemId && item->isStackable() && item->getItemCount() < item->getStackSize()) {
+					stackableItemsCache.push_back(item);
+				}
 			}
 		}
-	}
+		return stackableItemsCache;
+	};
+
+	auto stackableItemsCache = collectStackableItems(containersCache);
 
 	uint32_t remaining = totalCount;
 	const uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
-	bool hasFreeSlots = true;
+	const bool hasFreeSlots = remaining > 0;
+	AddItemBatchState state { totalCount, remaining, actuallyAdded };
 
-	// Check if there are free slots remaining
-	hasFreeSlots = remaining > 0;
+	auto checkOverflow = [&](const char* errorCode, bool setError) {
+		if (state.actuallyAdded <= state.totalCount) {
+			return false;
+		}
 
-	ReturnValue returnError = RETURNVALUE_NOERROR;
+		g_logger().error("[Error code: {}] player: {}, overflow detected: actuallyAdded ({}) > totalCount ({})", errorCode, getName(), state.actuallyAdded, state.totalCount);
+		if (setError) {
+			state.returnError = RETURNVALUE_NOTPOSSIBLE;
+		}
+		return true;
+	};
 
-	bool breakLoop = false;
-	// Stack existing items only if no free slots are available or `inBackpacks` is false
-	if (!hasFreeSlots || !inBackpacks) {
-		for (size_t i = 0; i < stackableItemsCache.size() && remaining > 0; i++) {
-			auto &existingItem = stackableItemsCache[i];
+	auto stackExistingItems = [&](std::vector<std::shared_ptr<Item>> &items) {
+		for (size_t i = 0; i < items.size() && state.remaining > 0; i++) {
+			auto &existingItem = items[i];
 
 			uint32_t spaceLeft = existingItem->getStackSize() - existingItem->getItemCount();
-			uint32_t toStack = std::min(spaceLeft, remaining);
+			uint32_t toStack = std::min(spaceLeft, state.remaining);
 
 			const auto &itemParent = existingItem->getParent();
 			const auto &itemParentContainer = itemParent ? itemParent->getContainer() : nullptr;
@@ -9084,49 +9107,44 @@ ReturnValue Player::addItemBatch(
 				);
 			}
 
-			actuallyAdded += toStack;
-			remaining -= toStack;
+			state.actuallyAdded += toStack;
+			state.remaining -= toStack;
 
-			// Remove from cache if fully stacked
 			if (existingItem->getItemCount() >= existingItem->getStackSize()) {
-				stackableItemsCache[i] = stackableItemsCache.back();
-				stackableItemsCache.pop_back();
+				items[i] = items.back();
+				items.pop_back();
 				i--;
 			}
 
-			// Check for overflow
-			if (actuallyAdded > totalCount) {
-				g_logger().error("[Erro code: 01] player: {}, overflow detected: actuallyAdded ({}) > totalCount ({})", getName(), actuallyAdded, totalCount);
-				returnError = RETURNVALUE_NOTPOSSIBLE;
-				break;
+			if (checkOverflow("01", true)) {
+				return false;
 			}
 		}
-	}
+		return true;
+	};
 
-	breakLoop = false;
-	// Add new items to empty slots
-	for (uint32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO && remaining > 0; ++slot) {
-		auto slotType = static_cast<Slots_t>(slot);
-		const auto &item = getInventoryItem(slotType);
-		if (item) {
-			continue;
-		}
+	auto addItemsToEmptySlots = [&]() {
+		for (uint32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO && state.remaining > 0; ++slot) {
+			auto slotType = static_cast<Slots_t>(slot);
+			const auto &item = getInventoryItem(slotType);
+			if (item) {
+				continue;
+			}
 
-		uint32_t toStack = std::min(remaining, maxStackSize);
-		if (toStack == 0) {
-			continue;
-		}
+			uint32_t toStack = std::min(state.remaining, maxStackSize);
+			if (toStack == 0) {
+				continue;
+			}
 
-		if (breakLoop) {
-			break;
-		}
+			const auto &newItem = Item::createItemBatch(itemId, toStack, options.subType);
 
-		const auto &newItem = Item::createItemBatch(itemId, toStack, subType);
+			ReturnValue ret = queryAdd(slot, newItem, toStack, flags);
+			if (ret != RETURNVALUE_NOERROR) {
+				continue;
+			}
 
-		ReturnValue ret = queryAdd(slot, newItem, toStack, flags);
-		if (ret == RETURNVALUE_NOERROR) {
-			if (tier > 0) {
-				newItem->setTier(tier);
+			if (options.tier > 0) {
+				newItem->setTier(options.tier);
 			}
 
 			auto charges = newItem->getCharges();
@@ -9136,86 +9154,83 @@ ReturnValue Player::addItemBatch(
 
 			Slots_t updateSlot = slotType;
 			const auto &mainBackpack = getInventoryItem(CONST_SLOT_BACKPACK);
-			// If there are no containers, add the item to the player's backpack inventory
-			if (backpackId == ITEM_SHOPPING_BAG && !mainBackpack && inBackpacks && queryAdd(CONST_SLOT_BACKPACK, newItem, toStack, flags)) {
-				// Add the shopping bag to the player's inventory
+			if (options.backpackId == ITEM_SHOPPING_BAG && !mainBackpack && options.inBackpacks && queryAdd(CONST_SLOT_BACKPACK, newItem, toStack, flags)) {
 				addThing(CONST_SLOT_BACKPACK, newItem);
 				updateSlot = CONST_SLOT_BACKPACK;
 			} else {
-				// Add the item to the player's inventory
 				addThing(slot, newItem);
 			}
 
-			g_moveEvents().onPlayerEquip(thisPlayer, newItem, updateSlot, false);
+			const auto equipResult = g_moveEvents().onPlayerEquip(thisPlayer, newItem, updateSlot, false);
+			if (equipResult == 0) {
+				state.returnError = RETURNVALUE_NOTPOSSIBLE;
+				return false;
+			}
 
-			actuallyAdded += toStack;
-			remaining -= toStack;
+			state.actuallyAdded += toStack;
+			state.remaining -= toStack;
 
-			// Check for overflow
-			if (actuallyAdded > totalCount) {
-				g_logger().error("[Error code: 02] player: {}, overflow detected: actuallyAdded ({}) > totalCount ({})", getName(), actuallyAdded, totalCount);
-				breakLoop = true;
+			if (checkOverflow("02", false)) {
+				return false;
 			}
 		}
-	}
 
-	size_t containerIndex = 0;
-	breakLoop = false;
-	while (!inBackpacks && remaining > 0) {
-		if (containerIndex >= containersCache.size() || breakLoop) {
-			break;
-		}
+		return true;
+	};
 
-		if (containerIndex < containersCache.size()) {
+	auto addItemsToContainers = [&]() {
+		size_t containerIndex = 0;
+		while (!containersCache.empty() && state.remaining > 0) {
+			if (containerIndex >= containersCache.size()) {
+				break;
+			}
+
 			auto &container = containersCache[containerIndex];
-			if (container->capacity() > container->size()) {
-				uint32_t toStack = std::min(remaining, maxStackSize);
-				if (!itemType.stackable || itemType.isWrappable()) {
-					toStack = 1;
-				}
-				const auto &newItem = Item::createItemBatch(itemId, toStack, subType, true);
-				if (tier > 0) {
-					newItem->setTier(tier);
-				}
-
-				auto charges = newItem->getCharges();
-				if (charges > 0) {
-					toStack = std::min<uint32_t>(toStack, charges);
-				}
-
-				auto queryAdd = container->queryAdd(INDEX_WHEREEVER, newItem, toStack, flags);
-				if (queryAdd != RETURNVALUE_NOERROR) {
-					g_logger().warn("[Player::addItemBatch] Failed to add item: {} to container for player: {}, error code: {}", itemId, getName(), getReturnMessage(queryAdd));
-					returnError = queryAdd;
-					break;
-				}
-
-				container->addThing(newItem);
-				actuallyAdded += toStack;
-				remaining -= toStack;
-
-				// Check for overflow
-				if (actuallyAdded > totalCount) {
-					g_logger().error("[Error code: 03] player {}, overflow detected: actuallyAdded ({}) > totalCount ({})", getName(), actuallyAdded, totalCount);
-					breakLoop = true;
-				}
-			} else {
+			if (container->capacity() <= container->size()) {
 				containerIndex++;
+				continue;
+			}
+
+			uint32_t toStack = std::min(state.remaining, maxStackSize);
+			if (!itemType.stackable || itemType.isWrappable()) {
+				toStack = 1;
+			}
+			const auto &newItem = Item::createItemBatch(itemId, toStack, options.subType, true);
+			if (options.tier > 0) {
+				newItem->setTier(options.tier);
+			}
+
+			auto charges = newItem->getCharges();
+			if (charges > 0) {
+				toStack = std::min<uint32_t>(toStack, charges);
+			}
+
+			auto queryAddResult = container->queryAdd(INDEX_WHEREEVER, newItem, toStack, flags);
+			if (queryAddResult != RETURNVALUE_NOERROR) {
+				g_logger().warn("[Player::addItemBatch] Failed to add item: {} to container for player: {}, error code: {}", itemId, getName(), getReturnMessage(queryAddResult));
+				state.returnError = queryAddResult;
+				return false;
+			}
+
+			container->addThing(newItem);
+			state.actuallyAdded += toStack;
+			state.remaining -= toStack;
+
+			if (checkOverflow("03", false)) {
+				return false;
 			}
 		}
-	}
+		return true;
+	};
 
-	if (inBackpacks) {
+	auto addItemsToBackpacks = [&]() {
 		std::shared_ptr<Container> currentBackpack = nullptr;
-
-		bool breakLoop = false;
-		while (remaining > 0) {
+		while (state.remaining > 0) {
 			if (!currentBackpack || currentBackpack->size() >= currentBackpack->capacity()) {
-				currentBackpack = Container::create(backpackId);
+				currentBackpack = Container::create(options.backpackId);
 				if (!currentBackpack) {
 					g_logger().error("[Player::addItemBatch] Failed to create backpack for player {}", getName());
-					breakLoop = true;
-					continue;
+					return false;
 				}
 
 				bool addedBackpack = false;
@@ -9231,7 +9246,6 @@ ReturnValue Player::addItemBatch(
 
 				if (!addedBackpack) {
 					for (auto &container : containersCache) {
-						// Check if the current container has enough space and can accept the backpack
 						addedBackpack = container->capacity() > container->size()
 							&& container->queryAdd(
 								   INDEX_WHEREEVER,
@@ -9241,68 +9255,68 @@ ReturnValue Player::addItemBatch(
 							   ) == RETURNVALUE_NOERROR;
 						if (addedBackpack) {
 							container->addThing(currentBackpack);
-							containersCache.emplace_back(currentBackpack);
+							containersCache.push_back(currentBackpack);
 							break;
 						}
 					}
 				}
 
-				if (!addedBackpack || breakLoop) {
-					break;
+				if (!addedBackpack) {
+					return false;
 				}
 			}
 
-			uint32_t itemsToAdd = std::min(remaining, maxStackSize);
+			uint32_t itemsToAdd = std::min(state.remaining, maxStackSize);
 			if (!itemType.stackable || itemType.isWrappable()) {
 				itemsToAdd = 1;
 			}
-			const auto &newItem = Item::createItemBatch(itemId, itemsToAdd, subType, true);
+			const auto &newItem = Item::createItemBatch(itemId, itemsToAdd, options.subType, true);
 			if (!newItem) {
 				g_logger().warn("[Player::addItemBatch] Failed to create item for player {}", getName());
-				break;
+				return false;
 			}
 
-			if (tier > 0) {
-				newItem->setTier(tier);
+			if (options.tier > 0) {
+				newItem->setTier(options.tier);
 			}
 
 			auto returnQueryAdd = currentBackpack->queryAdd(INDEX_WHEREEVER, newItem, 1, flags);
-			if (returnQueryAdd == RETURNVALUE_NOERROR) {
-				currentBackpack->addItem(newItem);
-				remaining -= itemsToAdd;
-				actuallyAdded += itemsToAdd;
-
-				if (actuallyAdded > totalCount) {
-					g_logger().error("[Error code: 06] overflow detected in backpacks: actuallyAdded ({}) > totalCount ({})", actuallyAdded, totalCount);
-				}
-			} else {
+			if (returnQueryAdd != RETURNVALUE_NOERROR) {
 				g_logger().warn("[Player::addItemBatch] Failed to add item to backpack for player: {}, error code: {}", getName(), getReturnMessage(returnQueryAdd));
-				returnError = returnQueryAdd;
-				break;
+				state.returnError = returnQueryAdd;
+				return false;
+			}
+
+			currentBackpack->addItem(newItem);
+			state.remaining -= itemsToAdd;
+			state.actuallyAdded += itemsToAdd;
+
+			if (checkOverflow("06", false)) {
+				return false;
 			}
 		}
-	}
 
-	if (remaining > 0 && dropOnMap) {
+		return true;
+	};
+
+	auto addItemsToTile = [&]() {
 		const auto &tile = getTile();
-		bool breakLoop = false;
-		while (remaining > 0) {
-			uint32_t toStack = std::min(remaining, maxStackSize);
-			const auto &newItem = Item::createItemBatch(itemId, toStack, subType, true);
-			auto queryAdd = tile ? tile->queryAdd(0, newItem, toStack, flags) : RETURNVALUE_NOTPOSSIBLE;
-			if (!tile || breakLoop) {
+		while (state.remaining > 0) {
+			uint32_t toStack = std::min(state.remaining, maxStackSize);
+			const auto &newItem = Item::createItemBatch(itemId, toStack, options.subType, true);
+			if (!tile) {
 				break;
 			}
 
-			if (queryAdd != RETURNVALUE_NOERROR) {
-				g_logger().warn("[Player::addItemBatch] Failed to add item: {} to tile for player: {}, error code: {}", itemId, getName(), getReturnMessage(queryAdd));
-				returnError = queryAdd;
-				breakLoop = true;
-				continue;
+			auto queryAddResult = tile->queryAdd(0, newItem, toStack, flags);
+			if (queryAddResult != RETURNVALUE_NOERROR) {
+				g_logger().warn("[Player::addItemBatch] Failed to add item: {} to tile for player: {}, error code: {}", itemId, getName(), getReturnMessage(queryAddResult));
+				state.returnError = queryAddResult;
+				break;
 			}
 
-			if (tier > 0) {
-				newItem->setTier(tier);
+			if (options.tier > 0) {
+				newItem->setTier(options.tier);
 			}
 			auto charges = newItem->getCharges();
 			if (charges > 0) {
@@ -9310,29 +9324,50 @@ ReturnValue Player::addItemBatch(
 			}
 
 			tile->addThing(newItem);
-			actuallyAdded += toStack;
-			remaining -= toStack;
+			state.actuallyAdded += toStack;
+			state.remaining -= toStack;
 
-			// Check for overflow
-			if (actuallyAdded > totalCount) {
-				g_logger().error("[Error code: 07] overflow detected in dropOnMap: actuallyAdded ({}) > totalCount ({})", actuallyAdded, totalCount);
-				breakLoop = true;
+			if (checkOverflow("07", false)) {
+				break;
 			}
+		}
+	};
+
+	// Stack existing items only if no free slots are available or `inBackpacks` is false
+	if (!hasFreeSlots || !options.inBackpacks) {
+		if (!stackExistingItems(stackableItemsCache)) {
+			return state.returnError != RETURNVALUE_NOERROR ? state.returnError : RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
 
-	if (remaining > 0) {
-		g_logger().debug("[Player::addItemBatch] Player: {} missing slots for: {} items from item: {}", getName(), remaining, itemType.name);
+	if (!addItemsToEmptySlots()) {
+		return state.returnError != RETURNVALUE_NOERROR ? state.returnError : RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (!options.inBackpacks && !addItemsToContainers()) {
+		return state.returnError != RETURNVALUE_NOERROR ? state.returnError : RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (options.inBackpacks && !addItemsToBackpacks()) {
+		return state.returnError != RETURNVALUE_NOERROR ? state.returnError : RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (state.remaining > 0 && dropOnMap) {
+		addItemsToTile();
+	}
+
+	if (state.remaining > 0) {
+		g_logger().debug("[Player::addItemBatch] Player: {} missing slots for: {} items from item: {}", getName(), state.remaining, itemType.name);
 	}
 
 	updateState();
 
-	if (actuallyAdded > 0) {
+	if (state.actuallyAdded > 0) {
 		return RETURNVALUE_NOERROR;
 	}
 
-	if (returnError != RETURNVALUE_NOERROR) {
-		return returnError;
+	if (state.returnError != RETURNVALUE_NOERROR) {
+		return state.returnError;
 	}
 
 	return RETURNVALUE_NOTENOUGHROOM;
@@ -9932,14 +9967,9 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	uint32_t retrievableCount = std::min(totalCount, maxByWeight);
 
 	uint32_t actuallyRetrieved = 0;
-	auto returnValue = addItemBatch(
-		itemId,
-		retrievableCount,
-		actuallyRetrieved,
-		0, // flags
-		0, // subtype
-		tier
-	);
+	AddItemBatchOptions options;
+	options.tier = tier;
+	auto returnValue = addItemBatch(itemId, retrievableCount, actuallyRetrieved, options);
 
 	if (returnValue != RETURNVALUE_NOERROR) {
 		sendCancelMessage(returnValue);
@@ -11354,7 +11384,9 @@ void Player::onDeEquipInventory() {
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 		const auto &item = inventory[slot];
 		if (item) {
-			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(slot));
+			if (g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(slot)) == 0) {
+				continue;
+			}
 		}
 	}
 }
@@ -11930,12 +11962,12 @@ bool Player::canSpeakWithHireling(uint8_t speechbubble) {
 }
 
 uint16_t Player::getPlayerVocationEnum() const {
-	const auto &vocation = getVocation();
-	if (!vocation) {
+	const auto &playerVocation = getVocation();
+	if (!playerVocation) {
 		return Vocation_t::VOCATION_NONE;
 	}
 
-	const int cipTibiaId = getVocation()->getClientId();
+	const int cipTibiaId = playerVocation->getClientId();
 	if (cipTibiaId == 1 || cipTibiaId == 11) {
 		return Vocation_t::VOCATION_KNIGHT_CIP; // Knight
 	} else if (cipTibiaId == 2 || cipTibiaId == 12) {

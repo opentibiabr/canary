@@ -34,4 +34,5 @@ struct TierCountPairHash {
  *   {200, 1} => 5   // 5 items with ID 200 and tier 1
  * }
  */
-using ItemsTierCountList = std::unordered_map<std::pair<uint16_t, uint8_t>, uint32_t, TierCountPairHash>;
+using ItemsTierKey = std::pair<uint16_t, uint8_t>;
+using ItemsTierCountList = std::unordered_map<ItemsTierKey, uint32_t, TierCountPairHash>;

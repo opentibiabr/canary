@@ -1462,7 +1462,7 @@ void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &next
 		downItems.push_back(items->at(i));
 	}
 
-	for (int32_t i = static_cast<int32_t>(downItems.size()); --i >= 0;) {
+	for (auto i = static_cast<int32_t>(downItems.size()); --i >= 0;) {
 		const auto &item = downItems.at(i);
 		if (!item || !item->hasProperty(CONST_PROP_MOVABLE) || !item->canBeMoved()) {
 			continue;

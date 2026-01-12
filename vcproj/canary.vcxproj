@@ -443,7 +443,7 @@
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <OutDir>$(ProjectDir)../</OutDir>
-    <SourcePath>$(OutDirFullPath)../src/</SourcePath>
+    <SourcePath>$(ProjectDir)..\src\</SourcePath>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -516,8 +516,9 @@
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>
-      vcpkg_installed\$(VcpkgTriplet)\include\;
-      generated
+      $(VcpkgInstalledDir)\$(VcpkgTriplet)\include\;
+      generated;
+      %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -536,7 +537,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>
-      vcpkg_installed\$(VcpkgTriplet)\lib\
+      $(VcpkgInstalledDir)\$(VcpkgTriplet)\lib\;
+      %(AdditionalLibraryDirectories)
       </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateMapFile>false</GenerateMapFile>
@@ -551,8 +553,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>
-      vcpkg_installed\$(VcpkgTriplet)\include\;
-      generated
+      $(VcpkgInstalledDir)\$(VcpkgTriplet)\include\;
+      generated;
+      %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <WarningLevel>Level1</WarningLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -570,7 +573,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>
-      vcpkg_installed\$(VcpkgTriplet)\lib\
+      $(VcpkgInstalledDir)\$(VcpkgTriplet)\lib\;
+      %(AdditionalLibraryDirectories)
       </AdditionalLibraryDirectories>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <GenerateMapFile>false</GenerateMapFile>
@@ -599,7 +603,7 @@
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
   </ItemGroup>
   <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" DependsOnTargets="VcpkgInstallManifestDependencies">
-    <Exec Command="$(ProtocPath) --proto_path=$(ProtoPath) --cpp_out=generated %(ProtoFiles.Identity)" />
+    <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; &quot;%(ProtoFiles.Identity)&quot;" />
     <ItemGroup>
       <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">
         <IncludeInUnityFile>false</IncludeInUnityFile>

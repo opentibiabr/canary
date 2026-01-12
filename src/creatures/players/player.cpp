@@ -8014,47 +8014,47 @@ void Player::sendTakeScreenshot(Screenshot_t screenshotType) const {
 }
 
 namespace {
-bool hasVisiblePartyMember(Player &player) {
-	const auto &party = player.getParty();
-	if (!party) {
+	bool hasVisiblePartyMember(Player &player) {
+		const auto &party = player.getParty();
+		if (!party) {
+			return false;
+		}
+
+		const Position &playerPosition = player.getPosition();
+		for (const auto &member : party->getMembers()) {
+			const Position &memberPosition = member->getPosition();
+			if (Position::getDistanceZ(playerPosition, memberPosition) > 0) {
+				continue;
+			}
+			const auto offsetX = Position::getDistanceX(playerPosition, memberPosition);
+			const auto offsetY = Position::getDistanceY(playerPosition, memberPosition);
+			if (offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
-	const Position &playerPosition = player.getPosition();
-	for (const auto &member : party->getMembers()) {
-		const Position &memberPosition = member->getPosition();
-		if (Position::getDistanceZ(playerPosition, memberPosition) > 0) {
-			continue;
+	bool hasTooManyCreaturesNearby(Player &player) {
+		Spectators spectators;
+		auto nearbyCreatures = spectators.find<Creature>(player.getPosition(), false, 1, 1, 1, 1);
+		int count = 0;
+
+		for (const auto &creature : nearbyCreatures) {
+			if (creature.get() == &player) {
+				continue;
+			}
+			if (creature->getType() == CREATURETYPE_NPC) {
+				continue;
+			}
+			if (++count >= 6) {
+				return true;
+			}
 		}
-		const auto offsetX = Position::getDistanceX(playerPosition, memberPosition);
-		const auto offsetY = Position::getDistanceY(playerPosition, memberPosition);
-		if (offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y) {
-			return true;
-		}
+
+		return false;
 	}
-
-	return false;
-}
-
-bool hasTooManyCreaturesNearby(Player &player) {
-	Spectators spectators;
-	auto nearbyCreatures = spectators.find<Creature>(player.getPosition(), false, 1, 1, 1, 1);
-	int count = 0;
-
-	for (const auto &creature : nearbyCreatures) {
-		if (creature.get() == &player) {
-			continue;
-		}
-		if (creature->getType() == CREATURETYPE_NPC) {
-			continue;
-		}
-		if (++count >= 6) {
-			return true;
-		}
-	}
-
-	return false;
-}
 }
 
 void Player::updateSerenityState() {
@@ -9025,11 +9025,11 @@ ReturnValue Player::addItemBatch(
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-			auto queryAdd = tile->queryAdd(0, newItem, totalCount, flags);
-			if (queryAdd != RETURNVALUE_NOERROR) {
-				g_logger().warn("[Player::addItemBatch] Could not add item {} to tile for player {}", itemId, getName());
-				return queryAdd;
-			}
+		auto queryAdd = tile->queryAdd(0, newItem, totalCount, flags);
+		if (queryAdd != RETURNVALUE_NOERROR) {
+			g_logger().warn("[Player::addItemBatch] Could not add item {} to tile for player {}", itemId, getName());
+			return queryAdd;
+		}
 
 		tile->addThing(newItem);
 		actuallyAdded = totalCount;

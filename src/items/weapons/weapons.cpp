@@ -20,18 +20,18 @@
 #include "creatures/players/player.hpp"
 
 namespace {
-void sendWeaponSoundEffect(const std::shared_ptr<Player> &player, const CombatParams &params) {
-	if (!player) {
-		return;
-	}
+	void sendWeaponSoundEffect(const std::shared_ptr<Player> &player, const CombatParams &params) {
+		if (!player) {
+			return;
+		}
 
-	if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-		g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-		return;
-	}
+		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+			return;
+		}
 
-	g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-}
+		g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+	}
 }
 
 Weapons::Weapons() = default;

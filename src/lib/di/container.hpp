@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -27,6 +27,9 @@ private:
 public:
 	inline static void setTestContainer(di::extension::injector<>* container) {
 		testContainer = container;
+	}
+	inline static di::extension::injector<>* getTestContainer() {
+		return testContainer;
 	}
 
 	/**

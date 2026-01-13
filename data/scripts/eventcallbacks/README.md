@@ -6,10 +6,11 @@ The `EventCallback` system is a way to dynamically bind C++ functions to be trig
 
 Event callbacks are available for several categories of game entities, such as `Creature`, `Player`, `Party`, and `Monster`.
 
-### In the above list, each function is prefixed with `(bool)` or `(void)`. This annotation indicates the expected return type of the function:
+### In the above list, each function is prefixed with `(bool)`, `(void)` or `(ReturnValue)`. This annotation indicates the expected return type of the function:
 
 - `(bool)`: The function should return a boolean value (`true` or `false`). The return value can affect the program flow on the C++ side. For example, if the function returns `false`, the execution of the associated function on the C++ side is immediately stopped.
 - `(void)`: The function does not return any value. It just performs an action and then terminates.
+- `(ReturnValue)`: The function should return a `ReturnValue` enum value. Any value other than `RETURNVALUE_NOERROR` stops further callback execution.
 
 ### These are the functions available to use
 
@@ -48,8 +49,14 @@ Event callbacks are available for several categories of game entities, such as `
 - `(void)` `playerOnInventoryUpdate`
 - `(bool)` `playerOnRotateItem`
 - `(void)` `playerOnWalk`
+- `(void)` `playerOnThink`
 - `(void)` `monsterOnDropLoot`
 - `(void)` `monsterPostDropLoot`
+- `(bool)` `zoneBeforeCreatureEnter`
+- `(bool)` `zoneBeforeCreatureLeave`
+- `(void)` `zoneAfterCreatureEnter`
+- `(void)` `zoneAfterCreatureLeave`
+- `(void)` `mapOnLoad`
 
 ## Event Callback Usage
 
@@ -75,8 +82,8 @@ callback:register()
 ```lua
 local callback = EventCallback("UniqueCallbackName")
 
-function callback.playerOnLook(player, position, thing, stackpos, lookDistance)
-	-- custom behavior when a player looks at something
+function callback.playerOnLook(player, inspectedThing, inspectedPosition, lookDistance)
+        -- custom behavior when a player looks at something
 end
 
 callback:register()
@@ -152,7 +159,7 @@ end
 callback:register()
 ```
 
-### In this example, when a non-aggressive creature enters a combat area, the creatureOnAreaCombat function returns false, stopping the associated function on the C++ side.
+### In this example, when a non-aggressive creature enters a combat area, the `creatureOnAreaCombat` function returns `RETURNVALUE_NOTPOSSIBLE`, stopping the associated function on the C++ side.
 
 
 ## Multiple Callbacks for the Same Event

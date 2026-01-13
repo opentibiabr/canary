@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -59,7 +59,10 @@ protected:
 		encryptionEnabled = true;
 	}
 	void setXTEAKey(const uint32_t* newKey) {
-		std::ranges::copy(newKey, newKey + 4, this->key.begin());
+		if (std::memcpy(key.data(), newKey, sizeof(uint32_t) * key.size()) == nullptr) {
+			g_logger().error("[{}] memcpy failed while setting XTEA key", __FUNCTION__);
+			return;
+		}
 	}
 
 	void setChecksumMethod(ChecksumMethods_t method) {

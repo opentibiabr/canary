@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -57,10 +57,10 @@ public:
 		return luaState;
 	}
 
-	bool pushFunction(int32_t functionId) const;
+	virtual bool pushFunction(int32_t functionId) const;
 
-	bool callFunction(int params) const;
-	void callVoidFunction(int params) const;
+	virtual bool callFunction(int params) const;
+	virtual void callVoidFunction(int params) const;
 
 	std::string getStackTrace(const std::string &error_desc) const;
 

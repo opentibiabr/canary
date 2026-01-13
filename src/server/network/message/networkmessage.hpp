@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -51,8 +51,10 @@ public:
 		// Create a temporary byte array to store the value read from the buffer.
 		std::array<unsigned char, sizeof(T)> tempBuffer;
 		// Copy data from the buffer to the temporary array
-		std::span<const unsigned char> sourceSpan(buffer.data() + info.position, sizeof(T));
-		std::ranges::copy(sourceSpan, tempBuffer.begin());
+		if (std::memcpy(tempBuffer.data(), buffer.data() + info.position, sizeof(T)) == nullptr) {
+			g_logger().error("[{}] memcpy failed while reading message buffer", __FUNCTION__);
+			return T();
+		}
 		// Update the read position in the buffer
 		info.position += sizeof(T);
 		// Convert the byte array to type T using std::bit_cast and return the result
@@ -87,17 +89,18 @@ public:
 		auto byteArray = std::bit_cast<std::array<unsigned char, sizeof(T)>>(value);
 
 		// Create a span from the byte array
-		std::span<const unsigned char> byteSpan(byteArray);
-
-		// Check if the size of byteSpan can fit into the buffer
-		if (byteSpan.size() > (buffer.size() - info.position)) {
-			g_logger().error("Buffer overflow during span copy. Source span size: {}, buffer available space: {}", byteSpan.size(), buffer.size() - info.position);
+		// Check if the size of byteArray can fit into the buffer
+		if (byteArray.size() > (buffer.size() - info.position)) {
+			g_logger().error("Buffer overflow during span copy. Source span size: {}, buffer available space: {}", byteArray.size(), buffer.size() - info.position);
 			return;
 		}
 
 		g_logger().trace("[{}] called at line '{}:{}' in '{}'", __FUNCTION__, location.line(), location.column(), location.function_name());
 
-		std::ranges::copy(byteSpan, buffer.begin() + info.position);
+		if (std::memcpy(buffer.data() + info.position, byteArray.data(), byteArray.size()) == nullptr) {
+			g_logger().error("[{}] memcpy failed while writing message buffer", __FUNCTION__);
+			return;
+		}
 
 		info.position += sizeof(T);
 		info.length += sizeof(T);

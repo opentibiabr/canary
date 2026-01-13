@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -273,7 +273,7 @@ bool LuaScriptInterface::callFunction(int params) const {
 	if (protectedCall(luaState, params, 1) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::getString(luaState, -1));
 	} else {
-		result = LuaScriptInterface::getBoolean(luaState, -1);
+		result = LuaScriptInterface::getBoolean(luaState, -1, true);
 	}
 
 	lua_pop(luaState, 1);

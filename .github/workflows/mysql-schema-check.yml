@@ -32,7 +32,7 @@ jobs:
     name: Check
     steps:
       - name: Checkout repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v6.0.1
       - name: 📌 MySQL Start & init & show db
         run: |
           sudo /etc/init.d/mysql start

@@ -21,4 +21,4 @@ jobs:
         run: sudo apt-get install -y libluajit-5.1-dev
 
       - name: Check out code.
-        uses: actions/checkout@main
+        uses: actions/checkout@v6.0.1

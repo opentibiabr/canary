@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,10 +12,14 @@
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <ctime>
+#endif
+
 struct EventScheduler {
 	std::string name;
-	int startDays;
-	int endDays;
+	std::time_t startTime {};
+	std::time_t endTime {};
 };
 
 struct EventRates {
@@ -24,6 +28,11 @@ struct EventRates {
 	uint32_t bosslootrate = 100;
 	uint32_t spawnrate = 100;
 	uint16_t skillrate = 100;
+	uint8_t forgeChance = 100;
+	uint8_t bosscooldown = 100;
+	bool doubleBestiary {};
+	bool doubleBossTiary {};
+	bool fastExercise {};
 };
 
 class EventsScheduler {
@@ -37,6 +46,8 @@ public:
 	static EventsScheduler &getInstance() {
 		return inject<EventsScheduler>();
 	}
+
+	bool loadScheduleEventFromJson();
 
 	// Event schedule xml load
 	bool loadScheduleEventFromXml();
@@ -76,6 +87,10 @@ public:
 	void setSkillSchedule(uint16_t skillrate) {
 		skillSchedule = (skillSchedule * skillrate) / 100;
 	}
+
+	void reset();
+
+	[[nodiscard]] std::vector<std::string> getActiveEvents() const;
 
 private:
 	// Event schedule

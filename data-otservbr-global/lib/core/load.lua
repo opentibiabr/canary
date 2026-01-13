@@ -1,3 +1,3 @@
 dofile(DATA_DIRECTORY .. "/lib/core/storages.lua")
 dofile(DATA_DIRECTORY .. "/lib/core/constants.lua")
-dofile(DATA_DIRECTORY .. "/lib/core/quests.lua")
+require("data-otservbr-global.lib.core.quests")

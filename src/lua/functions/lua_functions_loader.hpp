@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -173,6 +173,7 @@ public:
 
 	static void pushBoolean(lua_State* L, bool value);
 	static void pushCombatDamage(lua_State* L, const CombatDamage &damage);
+	static void pushFullCombatDamage(lua_State* L, const CombatDamage &damage);
 	static void pushInstantSpell(lua_State* L, const InstantSpell &spell);
 	static void pushPosition(lua_State* L, const Position &position, int32_t stackpos = 0);
 	static void pushOutfit(lua_State* L, const Outfit_t &outfit);

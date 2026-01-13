@@ -1,0 +1,1 @@
+coreDirectory = "tests/fixture/core"

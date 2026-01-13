@@ -75,6 +75,7 @@ monster.loot = {
 	{ name = "giant sapphire", chance = 2041 },
 	{ name = "giant topaz", chance = 2041 },
 	{ name = "dawnfire sherwani", chance = 200 },
+	{ name = "dawnfire pantaloons", chance = 200 },
 	{ name = "frostflower boots", chance = 200 },
 	{ name = "feverbloom boots", chance = 200 },
 	{ id = 39233, chance = 200 }, -- enchanted turtle amulet

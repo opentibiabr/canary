@@ -26,4 +26,4 @@ jobs:
     steps:
       - run: echo "This is a dummy job to satisfy branch protection checks"
       - name: Checkout repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v6.0.1

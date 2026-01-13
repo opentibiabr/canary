@@ -1,0 +1,21 @@
+{
+        "events": [
+                {
+                        "name": "Test Event Scheduler",
+                        "startdate": "01/01/2000",
+                        "enddate": "12/31/2099",
+                        "ingame": {
+                                "exprate": 150,
+                                "lootrate": 200,
+                                "bosslootrate": 125,
+                                "spawnrate": 175,
+                                "skillrate": 130,
+                                "forgechance": 120,
+                                "bosscooldown": 150,
+                                "doublebestiary": true,
+                                "doublebosstiary": true,
+                                "doubleexercise": true
+                        }
+                }
+        ]
+}

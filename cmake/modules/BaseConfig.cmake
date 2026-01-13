@@ -93,6 +93,11 @@ find_package(
     CONFIG
     REQUIRED
 )
+find_package(
+    nlohmann_json
+    CONFIG
+    REQUIRED
+)
 
 find_path(BOOST_DI_INCLUDE_DIRS "boost/di.hpp")
 

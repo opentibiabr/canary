@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -711,36 +711,11 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 
 bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerForgeHistory] - Player nullptr");
 		return false;
 	}
 
-	std::ostringstream query;
-	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
-	for (const auto &history : player->getForgeHistory()) {
-		const auto stringDescription = Database::getInstance().escapeString(history.description);
-		auto actionString = magic_enum::enum_integer(history.actionType);
-		// Append query informations
-		query << player->getGUID() << ','
-			  << std::to_string(actionString) << ','
-			  << stringDescription << ','
-			  << history.createdAt << ','
-			  << history.success;
-
-		if (!insertQuery.addRow(query)) {
-			return false;
-		}
-	}
-	if (!insertQuery.execute()) {
-		return false;
-	}
-	return true;
+	return player->forgeHistory().save();
 }
 
 bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player) {

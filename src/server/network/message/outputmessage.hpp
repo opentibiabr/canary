@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -47,18 +47,20 @@ public:
 
 	void append(const NetworkMessage &msg) {
 		auto msgLen = msg.getLength();
-		std::span<const unsigned char> sourceSpan(msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
-		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
-		std::ranges::copy(sourceSpan, destSpan.begin());
+		if (std::memcpy(buffer.data() + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen) == nullptr) {
+			g_logger().error("[{}] memcpy failed while appending message", __FUNCTION__);
+			return;
+		}
 		info.length += msgLen;
 		info.position += msgLen;
 	}
 
 	void append(const OutputMessage_ptr &msg) {
 		auto msgLen = msg->getLength();
-		std::span<const unsigned char> sourceSpan(msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
-		std::span<unsigned char> destSpan(buffer.data() + info.position, msgLen);
-		std::ranges::copy(sourceSpan, destSpan.begin());
+		if (std::memcpy(buffer.data() + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen) == nullptr) {
+			g_logger().error("[{}] memcpy failed while appending output message", __FUNCTION__);
+			return;
+		}
 		info.length += msgLen;
 		info.position += msgLen;
 	}
@@ -81,9 +83,11 @@ private:
 		// Convert the header to an array of unsigned char using std::bit_cast
 		auto byteArray = std::bit_cast<std::array<unsigned char, sizeof(T)>>(addHeader);
 
-		std::span<const unsigned char> byteSpan(byteArray);
 		// Copy the bytes into the buffer
-		std::ranges::copy(byteSpan, buffer.begin() + outputBufferStart);
+		if (std::memcpy(buffer.data() + outputBufferStart, byteArray.data(), byteArray.size()) == nullptr) {
+			g_logger().error("[{}] memcpy failed while adding header", __FUNCTION__);
+			return;
+		}
 		// Update the message size
 		info.length += sizeof(T);
 	}

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -83,7 +83,7 @@ void PlayerStorage::add(const uint32_t key, const int32_t value, const bool shou
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
 			const auto &player = m_player.getPlayer();
 			g_events().eventOnStorageUpdate(player, key, value, oldValue, currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, player, key, value, oldValue, currentFrameTime);
+			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, player, key, value, oldValue, currentFrameTime);
 		}
 	} else {
 		m_storageMap.erase(key);

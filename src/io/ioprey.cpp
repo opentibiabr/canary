@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -146,7 +146,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	// Disabling task hunting system if the server have less then 36 registered monsters on bestiary because:
 	// - Impossible to generate random lists without duplications on slots.
 	// - Stress the server with unnecessary loops.
-	std::map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
+	const std::map<uint16_t, std::string> &bestiary = g_game().getBestiaryList();
 	if (bestiary.size() < 36) {
 		return;
 	}
@@ -574,7 +574,7 @@ void IOPrey::initializeTaskHuntOptions() {
 	}
 
 	msg.addByte(0xBA);
-	std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
+	const std::map<uint16_t, std::string> &bestiaryList = g_game().getBestiaryList();
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto mType) {
 		const auto mtype = g_monsters().getMonsterType(mType.second);

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -11,6 +11,7 @@
 
 #include "lua/callbacks/callbacks_definitions.hpp"
 #include "lua/callbacks/event_callback.hpp"
+#include "items/items_definitions.hpp"
 
 class EventCallback;
 
@@ -66,73 +67,52 @@ public:
 	 */
 	void clear();
 
-	/**
-	 * @brief Executes the specified event callback.
-	 * @param eventType The type of event to trigger.
-	 * @param callbackFunc Function pointer to the callback method.
-	 * @param args Variadic arguments to pass to the callback function.
-	 */
-	template <typename CallbackFunc, typename... Args>
-	void executeCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
+	template <typename... Args>
+	[[nodiscard]] bool checkCallback(EventCallback_t eventType, Args &&... args) {
+		auto it = m_callbacks.find(eventType);
+		if (it == m_callbacks.end()) {
+			return true;
+		}
+
+		for (const auto &entry : it->second) {
+			if (entry.callback && entry.callback->canExecute()) {
+				if (!entry.callback->execute(std::forward<Args>(args)...)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	template <typename... Args>
+	void executeCallback(EventCallback_t eventType, Args &&... args) {
 		auto it = m_callbacks.find(eventType);
 		if (it == m_callbacks.end()) {
 			return;
 		}
 
 		for (const auto &entry : it->second) {
-			if (entry.callback && entry.callback->isLoadedScriptId()) {
-				std::invoke(callbackFunc, *entry.callback, args...);
+			if (entry.callback && entry.callback->canExecute()) {
+				(void)entry.callback->execute(std::forward<Args>(args)...);
 			}
 		}
 	}
 
-	/**
-	 * @brief Checks if all registered callbacks of the specified event type succeed.
-	 * @param eventType The type of event to check.
-	 * @param callbackFunc Function pointer to the callback method.
-	 * @param args Variadic arguments to pass to the callback function.
-	 * @return ReturnValue enum.
-	 */
-	template <typename CallbackFunc, typename... Args>
-	ReturnValue checkCallbackWithReturnValue(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
+	template <typename... Args>
+	ReturnValue dispatchReturnValue(EventCallback_t eventType, Args &&... args) {
 		auto it = m_callbacks.find(eventType);
 		if (it == m_callbacks.end()) {
 			return RETURNVALUE_NOERROR;
 		}
 
 		for (const auto &entry : it->second) {
-			if (entry.callback && entry.callback->isLoadedScriptId()) {
-				ReturnValue callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
-				if (callbackResult != RETURNVALUE_NOERROR) {
-					return callbackResult;
+			if (entry.callback && entry.callback->canExecute()) {
+				if (!entry.callback->execute(std::forward<Args>(args)...)) {
+					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
 		}
 		return RETURNVALUE_NOERROR;
-	}
-
-	/**
-	 * @brief Checks if all registered callbacks of the specified event type succeed.
-	 * @param eventType The type of event to check.
-	 * @param callbackFunc Function pointer to the callback method.
-	 * @param args Variadic arguments to pass to the callback function.
-	 * @return True if all callbacks succeed, false otherwise.
-	 */
-	template <typename CallbackFunc, typename... Args>
-	bool checkCallback(EventCallback_t eventType, CallbackFunc callbackFunc, Args &&... args) {
-		bool allCallbacksSucceeded = true;
-		auto it = m_callbacks.find(eventType);
-		if (it == m_callbacks.end()) {
-			return allCallbacksSucceeded;
-		}
-
-		for (const auto &entry : it->second) {
-			if (entry.callback && entry.callback->isLoadedScriptId()) {
-				bool callbackResult = std::invoke(callbackFunc, *entry.callback, args...);
-				allCallbacksSucceeded &= callbackResult;
-			}
-		}
-		return allCallbacksSucceeded;
 	}
 
 private:

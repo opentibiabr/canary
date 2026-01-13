@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -42,23 +42,25 @@ bool TalkActions::checkWord(const std::shared_ptr<Player> &player, SpeakClasses 
 		return false;
 	}
 
-	// Map of allowed group levels for each account type
-	static const std::unordered_map<AccountType, GroupType> allowedGroupLevels = {
-		{ ACCOUNT_TYPE_NORMAL, GROUP_TYPE_NORMAL },
-		{ ACCOUNT_TYPE_TUTOR, GROUP_TYPE_TUTOR },
-		{ ACCOUNT_TYPE_SENIORTUTOR, GROUP_TYPE_SENIORTUTOR },
-		{ ACCOUNT_TYPE_GAMEMASTER, GROUP_TYPE_COMMUNITYMANAGER }, // GAMEMASTER -> COMMUNITYMANAGER (5)
-		{ ACCOUNT_TYPE_GOD, GROUP_TYPE_GOD }
-	};
-
-	// Helper lambda to get the allowed group level for an account
-	auto allowedGroupLevelForAccount = [](AccountType account) {
-		if (auto it = allowedGroupLevels.find(account); it != allowedGroupLevels.end()) {
-			return it->second;
+	// Switch to get the allowed group level for an account
+	auto allowedGroupLevelForAccount = [](AccountType account) -> GroupType {
+		switch (account) {
+			case ACCOUNT_TYPE_NORMAL:
+				return GROUP_TYPE_NORMAL;
+			case ACCOUNT_TYPE_TUTOR:
+				return GROUP_TYPE_TUTOR;
+			case ACCOUNT_TYPE_SENIORTUTOR:
+				return GROUP_TYPE_SENIORTUTOR;
+			case ACCOUNT_TYPE_GAMEMASTER:
+				return GROUP_TYPE_GAMEMASTER;
+			case ACCOUNT_TYPE_COMMUNITYMANAGER:
+				return GROUP_TYPE_COMMUNITYMANAGER;
+			case ACCOUNT_TYPE_GOD:
+				return GROUP_TYPE_GOD;
+			default:
+				g_logger().warn("[TalkActions::checkWord] Error invalid account type: {}", account);
+				return GROUP_TYPE_NONE;
 		}
-
-		g_logger().warn("[TalkActions::checkWord] Invalid account type: {}", account);
-		return GROUP_TYPE_NONE;
 	};
 
 	// Check if player has permission for the talk action

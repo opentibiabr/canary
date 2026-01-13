@@ -375,12 +375,15 @@ void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBR
 	std::ostringstream query;
 	query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
+		int64_t lastKillTime = 0;
 		do {
 			auto killTime = result->getNumber<time_t>("time");
+			lastKillTime = std::max<int64_t>(lastKillTime, killTime);
 			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
 				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
 			}
 		} while (result->next());
+		player->updateLastKillTimeCache(lastKillTime);
 	}
 }
 

@@ -1456,10 +1456,18 @@ void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &next
 	uint32_t moveCount = 0;
 	uint32_t removeCount = 0;
 	int32_t downItemSize = tile->getDownItemCount();
+	std::vector<std::shared_ptr<Item>> downItems;
+	downItems.reserve(downItemSize);
+	for (int32_t i = 0; i < downItemSize; ++i) {
+		downItems.push_back(items->at(i));
+	}
 
-	for (int32_t i = downItemSize; --i >= 0;) {
-		const auto &item = items->at(i);
+	for (auto i = static_cast<int32_t>(downItems.size()); --i >= 0;) {
+		const auto &item = downItems.at(i);
 		if (!item || !item->hasProperty(CONST_PROP_MOVABLE) || !item->canBeMoved()) {
+			continue;
+		}
+		if (item->getTile() != tile) {
 			continue;
 		}
 		if (!item->hasProperty(CONST_PROP_BLOCKPATH) && !item->hasProperty(CONST_PROP_BLOCKSOLID)) {

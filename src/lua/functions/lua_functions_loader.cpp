@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -600,6 +600,89 @@ void Lua::pushCombatDamage(lua_State* L, const CombatDamage &damage) {
 	lua_pushnumber(L, damage.secondary.value);
 	lua_pushnumber(L, damage.secondary.type);
 	lua_pushnumber(L, damage.origin);
+}
+
+void Lua::pushFullCombatDamage(lua_State* L, const CombatDamage &damage) {
+	if (validateDispatcherContext(__FUNCTION__)) {
+		return;
+	}
+
+	// Create the main table for damage
+	lua_newtable(L);
+
+	lua_newtable(L);
+	lua_pushnumber(L, damage.primary.value);
+	lua_setfield(L, -2, "value");
+	lua_pushnumber(L, damage.primary.type);
+	lua_setfield(L, -2, "type");
+	lua_setfield(L, -2, "primary");
+
+	lua_newtable(L);
+	lua_pushnumber(L, damage.secondary.value);
+	lua_setfield(L, -2, "value");
+	lua_pushnumber(L, damage.secondary.type);
+	lua_setfield(L, -2, "type");
+	lua_setfield(L, -2, "secondary");
+
+	lua_pushnumber(L, damage.origin);
+	lua_setfield(L, -2, "origin");
+
+	lua_pushboolean(L, damage.critical);
+	lua_setfield(L, -2, "critical");
+
+	lua_pushnumber(L, damage.affected);
+	lua_setfield(L, -2, "affected");
+
+	lua_pushboolean(L, damage.extension);
+	lua_setfield(L, -2, "extension");
+
+	lua_pushstring(L, damage.exString.c_str());
+	lua_setfield(L, -2, "exString");
+
+	lua_pushboolean(L, damage.fatal);
+	lua_setfield(L, -2, "fatal");
+
+	lua_pushboolean(L, damage.hazardDodge);
+	lua_setfield(L, -2, "hazardDodge");
+
+	lua_pushnumber(L, damage.criticalDamage);
+	lua_setfield(L, -2, "criticalDamage");
+
+	lua_pushnumber(L, damage.criticalChance);
+	lua_setfield(L, -2, "criticalChance");
+
+	lua_pushnumber(L, damage.damageMultiplier);
+	lua_setfield(L, -2, "damageMultiplier");
+
+	lua_pushnumber(L, damage.damageReductionMultiplier);
+	lua_setfield(L, -2, "damageReductionMultiplier");
+
+	lua_pushnumber(L, damage.healingMultiplier);
+	lua_setfield(L, -2, "healingMultiplier");
+
+	lua_pushnumber(L, damage.manaLeech);
+	lua_setfield(L, -2, "manaLeech");
+
+	lua_pushnumber(L, damage.manaLeechChance);
+	lua_setfield(L, -2, "manaLeechChance");
+
+	lua_pushnumber(L, damage.lifeLeech);
+	lua_setfield(L, -2, "lifeLeech");
+
+	lua_pushnumber(L, damage.lifeLeechChance);
+	lua_setfield(L, -2, "lifeLeechChance");
+
+	lua_pushnumber(L, damage.healingLink);
+	lua_setfield(L, -2, "healingLink");
+
+	lua_pushstring(L, damage.instantSpellName.c_str());
+	lua_setfield(L, -2, "instantSpellName");
+
+	lua_pushstring(L, damage.runeSpellName.c_str());
+	lua_setfield(L, -2, "runeSpellName");
+
+	lua_pushboolean(L, damage.isEmpty());
+	lua_setfield(L, -2, "isEmpty");
 }
 
 void Lua::pushInstantSpell(lua_State* L, const InstantSpell &spell) {

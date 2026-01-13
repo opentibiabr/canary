@@ -72,9 +72,9 @@ end
 
 local callback = EventCallback("CreatureOnCombatTaint")
 
-function callback.creatureOnCombat(caster, target, primaryValue, primaryType, secondaryValue, secondaryType, origin)
+function callback.creatureOnCombat(caster, target, damage)
 	if not caster or not target then
-		return primaryValue, primaryType, secondaryValue, secondaryType
+		return true
 	end
 
 	-- Second taint
@@ -85,10 +85,8 @@ function callback.creatureOnCombat(caster, target, primaryValue, primaryType, se
 
 	-- Third taint
 	if caster:getMonster() then
-		primaryValue, secondaryValue = onMonsterAttackPlayer(target, primaryValue, secondaryValue)
+		damage.primary.value, damage.secondary.value = onMonsterAttackPlayer(target, damage.primary.value, damage.secondary.value)
 	end
-
-	return primaryValue, primaryType, secondaryValue, secondaryType
 end
 
 callback:register()

@@ -795,7 +795,6 @@ void Container::addThing(int32_t index, const std::shared_ptr<Thing> &thing) {
 
 void Container::addItemBack(const std::shared_ptr<Item> &item) {
 	addItem(item);
-	updateItemWeight(item->getWeight());
 
 	// send change to client
 	if (getParent() && (getParent() != VirtualCylinder::virtualCylinder)) {

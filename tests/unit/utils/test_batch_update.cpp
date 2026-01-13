@@ -98,3 +98,28 @@ TEST_F(BatchUpdateTest, AddSkipsExpiredCachedContainers) {
 	EXPECT_TRUE(batch.add(c2));
 	EXPECT_EQ(c2->beginCount, 1);
 }
+
+TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
+	auto player = std::make_shared<Player>();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	{
+		BatchUpdate batch(player);
+		batch.addContainers({ nullptr, c1, c1, c2, nullptr });
+		EXPECT_TRUE(player->isBatching());
+		EXPECT_EQ(c1->beginCount, 1);
+		EXPECT_EQ(c2->beginCount, 1);
+	}
+	EXPECT_FALSE(player->isBatching());
+	EXPECT_EQ(c1->endCount, 1);
+	EXPECT_EQ(c2->endCount, 1);
+}
+
+TEST_F(BatchUpdateTest, EmptyScopeBalancesBatchingState) {
+	auto player = std::make_shared<Player>();
+	{
+		BatchUpdate batch(player);
+		EXPECT_TRUE(player->isBatching());
+	}
+	EXPECT_FALSE(player->isBatching());
+}

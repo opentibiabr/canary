@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -870,6 +870,7 @@ int MonsterTypeFunctions::luaMonsterTypeCombatImmunities(lua_State* L) {
 		                "Unknown immunity name {} for monster: {}",
 		                immunity, monsterType->name);
 		lua_pushnil(L);
+		return 1;
 	}
 
 	monsterType->info.m_damageImmunities.set(combatTypeToIndex(combatType), true);
@@ -928,6 +929,7 @@ int MonsterTypeFunctions::luaMonsterTypeConditionImmunities(lua_State* L) {
 		                "Unknown immunity name: {} for monster: {}",
 		                immunity, monsterType->name);
 		lua_pushnil(L);
+		return 1;
 	}
 
 	monsterType->info.m_conditionImmunities[static_cast<size_t>(conditionType)] = true;

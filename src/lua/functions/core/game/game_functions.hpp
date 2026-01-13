@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,6 +16,7 @@ public:
 private:
 	static int luaGameCreateMonsterType(lua_State* L);
 	static int luaGameCreateNpcType(lua_State* L);
+	static int luaGameGetMonsterTypeByName(lua_State* L);
 
 	static int luaGameGetSpectators(lua_State* L);
 

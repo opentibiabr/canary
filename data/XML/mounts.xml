@@ -216,8 +216,8 @@
 	<mount id="214" clientid="1673" name="Surly Steer" speed="10" premium="no" type="store" />
 	<mount id="215" clientid="1674" name="Obstinate Ox" speed="10" premium="no" type="store" />
 	<mount id="216" clientid="1677" name="Darkfire Devourer" speed="10" premium="no" type="store" />
-	<mount id="217" clientid="1682" name="Spirit of Purity" speed="10" premium="no" type="store" />
-	<mount id="218" clientid="1632" name="Foxmouse" speed="10" premium="no" type="store" />
+	<mount id="217" clientid="1682" name="Spirit of Purity" speed="10" premium="no" type="quest" />
+	<mount id="218" clientid="1632" name="Foxmouse" speed="10" premium="no" type="quest" />
 	<mount id="219" clientid="1685" name="Doom Skull" speed="10" premium="no" type="store" />
 	<mount id="220" clientid="1686" name="Magma Skull" speed="10" premium="no" type="store" />
 	<mount id="221" clientid="1687" name="Corpsefire Skull" speed="10" premium="no" type="store" />

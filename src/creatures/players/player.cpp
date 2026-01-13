@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -23,6 +23,7 @@
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
@@ -34,6 +35,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/events_scheduler.hpp"
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
@@ -50,7 +52,6 @@
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
 #include "lua/creature/creatureevent.hpp"
@@ -62,19 +63,43 @@
 
 MuteCountMap Player::muteCountMap;
 
-Player::Player(std::shared_ptr<ProtocolGame> p) :
-	lastPing(OTSYS_TIME()),
-	lastPong(lastPing),
-	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
-	client(std::move(p)),
-	m_playerVIP(*this),
+/**
+ * @brief Unit test constructor.
+ *
+ * This constructor is intended for unit testing only.
+ * For full documentation and usage notes, see the function declaration.
+ */
+Player::Player() :
 	m_wheelPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
 	m_playerTitle(*this),
+	m_playerVIP(*this),
 	m_animusMastery(*this),
-	m_playerAttachedEffects(*this) { }
+	m_playerAttachedEffects(*this),
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
+}
+
+Player::Player(std::shared_ptr<ProtocolGame> p) :
+	lastPing(OTSYS_TIME()),
+	lastPong(lastPing),
+	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
+	client(std::move(p)),
+	m_wheelPlayer(*this),
+	m_playerAchievement(*this),
+	m_playerBadge(*this),
+	m_playerCyclopedia(*this),
+	m_playerTitle(*this),
+	m_playerVIP(*this),
+	m_animusMastery(*this),
+	m_playerAttachedEffects(*this),
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
+	m_wheelPlayer.init();
+	m_animusMastery.init();
+}
 
 Player::~Player() {
 	for (const auto &item : inventory) {
@@ -790,7 +815,7 @@ void Player::addMonsterToCyclopediaTrackerList(const std::shared_ptr<MonsterType
 
 	const uint16_t raceId = mtype ? mtype->info.raceid : 0;
 	auto &tracker = isBoss ? m_bosstiaryMonsterTracker : m_bestiaryMonsterTracker;
-	if (tracker.emplace(mtype).second) {
+	if (tracker.size() < static_cast<size_t>(std::numeric_limits<uint8_t>::max()) && tracker.emplace(mtype).second) {
 		if (reloadClient && raceId != 0) {
 			if (isBoss) {
 				client->parseSendBosstiary();
@@ -1085,7 +1110,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, count);
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), std::ref(skill), std::ref(count));
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), std::ref(skill), std::ref(count));
 	if (count == 0) {
 		return;
 	}
@@ -1276,79 +1301,12 @@ uint16_t Player::getLookCorpse() const {
 	return ITEM_MALE_CORPSE;
 }
 
-void Player::addStorageValue(const uint32_t key, const int32_t value, const bool isLogin /* = false*/) {
-	if (IS_IN_KEYRANGE(key, RESERVED_RANGE)) {
-		if (IS_IN_KEYRANGE(key, OUTFITS_RANGE)) {
-			outfits.emplace_back(
-				value >> 16,
-				value & 0xFF
-			);
-			return;
-		}
-		if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, WING_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, EFFECT_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, AURA_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, SHADER_RANGE)) {
-			// do nothing
-		} else if (IS_IN_KEYRANGE(key, FAMILIARS_RANGE)) {
-			familiars.emplace_back(
-				value >> 16
-			);
-			return;
-		} else {
-			g_logger().warn("Unknown reserved key: {} for player: {}", key, getName());
-			return;
-		}
-	}
-
-	if (value != -1) {
-		int32_t oldValue = getStorageValue(key);
-		storageMap[key] = value;
-
-		if (!isLogin) {
-			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
-			g_events().eventOnStorageUpdate(static_self_cast<Player>(), key, value, oldValue, currentFrameTime);
-			g_callbacks().executeCallback(EventCallback_t::playerOnStorageUpdate, &EventCallback::playerOnStorageUpdate, getPlayer(), key, value, oldValue, currentFrameTime);
-		}
-	} else {
-		storageMap.erase(key);
-	}
+void Player::addStorageValue(uint32_t key, int32_t value, bool isLogin) {
+	m_storage.add(key, value, isLogin);
 }
 
-int32_t Player::getStorageValue(const uint32_t key) const {
-	int32_t value = -1;
-	const auto it = storageMap.find(key);
-	if (it == storageMap.end()) {
-		return value;
-	}
-
-	value = it->second;
-	return value;
-}
-
-int32_t Player::getStorageValueByName(const std::string &storageName) const {
-	const auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		return -1;
-	}
-	const uint32_t key = it->second;
-
-	return getStorageValue(key);
-}
-
-void Player::addStorageValueByName(const std::string &storageName, const int32_t value, const bool isLogin /* = false*/) {
-	auto it = g_storages().getStorageMap().find(storageName);
-	if (it == g_storages().getStorageMap().end()) {
-		g_logger().error("[{}] Storage name '{}' not found in storage map, register your storage in 'storages.xml' first for use", __func__, storageName);
-		return;
-	}
-	const uint32_t key = it->second;
-	addStorageValue(key, value, isLogin);
+int32_t Player::getStorageValue(uint32_t key) const {
+	return m_storage.get(key);
 }
 
 std::shared_ptr<KV> Player::kv() const {
@@ -2686,7 +2644,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(static_self_cast<Player>(), zone);
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, getPlayer(), zone);
+	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, getPlayer(), zone);
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
@@ -2769,7 +2727,7 @@ void Player::onWalk(Direction &dir) {
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
+	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, getPlayer(), dir);
 }
 
 void Player::checkTradeState(const std::shared_ptr<Item> &item) {
@@ -3126,9 +3084,41 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 }
 
 void Player::updateImbuementTrackerStats() const {
-	if (imbuementTrackerWindowOpen) {
-		g_game().playerRequestInventoryImbuements(getID(), true);
+	if (!imbuementTrackerWindowOpen) {
+		if (m_pendingImbuementTrackerEventId != 0) {
+			g_dispatcher().stopEvent(m_pendingImbuementTrackerEventId);
+			m_pendingImbuementTrackerEventId = 0;
+		}
+		m_hasPendingImbuementTrackerUpdate = false;
+		return;
 	}
+
+	const int64_t currentTime = OTSYS_TIME();
+	const int64_t elapsed = currentTime - m_lastImbuementTrackerUpdate;
+	if (elapsed < 1000) {
+		if (!m_hasPendingImbuementTrackerUpdate) {
+			m_hasPendingImbuementTrackerUpdate = true;
+			const uint32_t delay = std::max<uint32_t>(static_cast<uint32_t>(1000 - elapsed), SCHEDULER_MINTICKS);
+			m_pendingImbuementTrackerEventId = g_dispatcher().scheduleEvent(
+				delay,
+				[playerId = getID()] {
+					const auto &player = g_game().getPlayerByID(playerId);
+					if (!player || player->isRemoved()) {
+						return;
+					}
+
+					player->m_hasPendingImbuementTrackerUpdate = false;
+					player->m_pendingImbuementTrackerEventId = 0;
+					player->updateImbuementTrackerStats();
+				},
+				__FUNCTION__
+			);
+		}
+		return;
+	}
+
+	m_lastImbuementTrackerUpdate = currentTime;
+	g_game().playerRequestInventoryImbuements(getID(), true);
 }
 
 // User Interface action exhaustion
@@ -3288,7 +3278,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, amount);
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, amount);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -3346,7 +3336,7 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		return;
 	}
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, getPlayer(), target, std::ref(exp), std::ref(rawExp));
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, getPlayer(), target, std::ref(exp), std::ref(rawExp));
 
 	g_events().eventPlayerOnGainExperience(static_self_cast<Player>(), target, exp, rawExp);
 	if (exp == 0) {
@@ -3474,7 +3464,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), exp);
-	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), std::ref(exp));
+	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, getPlayer(), std::ref(exp));
 	if (exp == 0) {
 		return;
 	}
@@ -3840,7 +3830,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		g_logger().debug("[{}] - experience lost {}", __FUNCTION__, expLoss);
 
 		g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), expLoss);
-		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), expLoss);
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, getPlayer(), expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -3948,6 +3938,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		sendSkills();
 		sendReLoginWindow(unfairFightReduction);
 		sendBlessStatus();
+		lastLogout = getTimeNow();
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;
 			mana = 0;
@@ -4604,16 +4595,21 @@ std::shared_ptr<Cylinder> Player::queryDestination(int32_t &index, const std::sh
 		while (i < containers.size()) {
 			std::shared_ptr<Container> tmpContainer = containers[i++];
 			if (!autoStack || !isStackable) {
-				// we need to find first empty container as fast as we can for non-stackable items
-				uint32_t n = tmpContainer->capacity() - tmpContainer->size();
-				while (n) {
-					if (tmpContainer->queryAdd(tmpContainer->capacity() - n, item, item->getItemCount(), flags) == RETURNVALUE_NOERROR) {
-						index = tmpContainer->capacity() - n;
+				const uint32_t containerCapacity = tmpContainer->capacity();
+				const uint32_t containerSize = tmpContainer->size();
+
+				// Avoid underflow in the loop below
+				if (containerSize >= containerCapacity) {
+					continue;
+				}
+
+				for (uint32_t pos = 0; pos < containerCapacity; ++pos) {
+					auto rv = tmpContainer->queryAdd(pos, item, item->getItemCount(), flags);
+					if (rv == RETURNVALUE_NOERROR) {
+						index = pos;
 						destItem = nullptr;
 						return tmpContainer;
 					}
-
-					n--;
 				}
 
 				for (const auto &tmpContainerItem : tmpContainer->getItemList()) {
@@ -6084,6 +6080,18 @@ void Player::onPlacedCreature() {
 	this->onChangeZone(this->getZoneType());
 
 	sendUnjustifiedPoints();
+
+	const auto activeEvents = g_eventsScheduler().getActiveEvents();
+	if (!activeEvents.empty()) {
+		std::string eventsList;
+		for (size_t i = 0; i < activeEvents.size(); ++i) {
+			eventsList.append(activeEvents[i]);
+			if (i < activeEvents.size() - 1) {
+				eventsList.append(", ");
+			}
+		}
+		g_logger().info("[{}] Active EventScheduler: {}", getName(), eventsList);
+	}
 }
 
 void Player::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {
@@ -6170,6 +6178,14 @@ void Player::addBestiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BESTIARY_KILL_MULTIPLIER);
+
+	auto scopedDoubleBestiary = g_kv().scoped("eventscheduler")->get("double-bestiary");
+	bool doubleBestiaryEnabled = scopedDoubleBestiary && scopedDoubleBestiary->get<bool>();
+	if (doubleBestiaryEnabled) {
+		kills *= 2;
+		g_logger().debug("[{}] double bestiary is enabled.", __FUNCTION__);
+	}
+
 	if (isConcoctionActive(Concoction_t::BestiaryBetterment)) {
 		kills *= 2;
 	}
@@ -6181,6 +6197,14 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER);
+
+	auto scopedDoubleBosstiary = g_kv().scoped("eventscheduler")->get("double-bosstiary");
+	bool doubleBosstiaryEnabled = scopedDoubleBosstiary && scopedDoubleBosstiary->get<bool>();
+	if (doubleBosstiaryEnabled) {
+		kills *= 2;
+		g_logger().debug("[{}] double bosstiary is enabled.", __FUNCTION__);
+	}
+
 	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {
 		kills *= g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS);
 	}
@@ -6295,7 +6319,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return false;
 	}
 
-	if (group->access) {
+	if (group && group->access) {
 		return true;
 	}
 
@@ -6319,19 +6343,6 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return (outfitEntry.addons & addons) == addons;
 	}
 	return false;
-}
-
-void Player::genReservedStorageRange() {
-	// generate outfits range
-	uint32_t outfits_key = PSTRG_OUTFITS_RANGE_START;
-	for (const auto &entry : outfits) {
-		storageMap[++outfits_key] = (entry.lookType << 16) | entry.addons;
-	}
-	// generate familiars range
-	uint32_t familiar_key = PSTRG_FAMILIARS_RANGE_START;
-	for (const auto &entry : familiars) {
-		storageMap[++familiar_key] = (entry.lookType << 16);
-	}
 }
 
 void Player::setSpecialMenuAvailable(bool stashBool, bool marketMenuBool, bool depotSearchBool) {
@@ -7520,7 +7531,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, tries);
-		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, std::ref(tries));
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, std::ref(tries));
 
 		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -7576,7 +7587,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, tries);
-		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), skill, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -7943,8 +7954,8 @@ void Player::onThink(uint32_t interval) {
 	const auto &playerTile = getTile();
 	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
 	idleTime += interval;
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	if (kickAfterMinutes > 0 && playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			removePlayer(true);
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
@@ -7966,7 +7977,7 @@ void Player::onThink(uint32_t interval) {
 	// Wheel of destiny major spells
 	wheel().onThink();
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnThink, &EventCallback::playerOnThink, getPlayer(), interval);
+	g_callbacks().executeCallback(EventCallback_t::playerOnThink, getPlayer(), interval);
 }
 
 void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link) {
@@ -8884,7 +8895,7 @@ uint32_t sendStowItems(const std::shared_ptr<Item> &item, const std::shared_ptr<
 }
 
 void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems) {
-	if (!item || !item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH) {
+	if (!item || (!item->isItemStorable() && item->getID() != ITEM_GOLD_POUCH)) {
 		sendCancelMessage("This item cannot be stowed here.");
 		return;
 	}
@@ -9983,7 +9994,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 	history.firstItemName = firstForgingItem->getName();
 	history.secondItemName = secondForgingItem->getName();
 	history.bonus = bonus;
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
@@ -10114,7 +10125,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 
 	history.firstItemName = Item::items[donorItemId].name;
 	history.secondItemName = newReceiveItem->getName();
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
@@ -10198,7 +10209,7 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 		addForgeDustLevel(1);
 	}
 
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	registerForgeHistoryDescription(history);
 	sendForgingData();
 }
@@ -10278,14 +10289,6 @@ void Player::removeForgeDustLevel(uint64_t amount) {
 
 uint64_t Player::getForgeDustLevel() const {
 	return forgeDustLevel;
-}
-
-std::vector<ForgeHistory> &Player::getForgeHistory() {
-	return forgeHistoryVector;
-}
-
-void Player::setForgeHistory(const ForgeHistory &history) {
-	forgeHistoryVector.emplace_back(history);
 }
 
 void Player::registerForgeHistoryDescription(ForgeHistory history) {
@@ -10438,7 +10441,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 
 	history.description = detailsResponse.str();
 
-	setForgeHistory(history);
+	forgeHistory().add(history);
 }
 
 // Quickloot
@@ -11157,6 +11160,15 @@ const PlayerCyclopedia &Player::cyclopedia() const {
 	return m_playerCyclopedia;
 }
 
+// Forge history interface
+PlayerForgeHistory &Player::forgeHistory() {
+	return m_forgeHistoryPlayer;
+}
+
+const PlayerForgeHistory &Player::forgeHistory() const {
+	return m_forgeHistoryPlayer;
+}
+
 // VIP interface
 PlayerVIP &Player::vip() {
 	return m_playerVIP;
@@ -11182,6 +11194,15 @@ PlayerAttachedEffects &Player::attachedEffects() {
 
 const PlayerAttachedEffects &Player::attachedEffects() const {
 	return m_playerAttachedEffects;
+}
+
+// Storage interface
+PlayerStorage &Player::storage() {
+	return m_storage;
+}
+
+const PlayerStorage &Player::storage() const {
+	return m_storage;
 }
 
 void Player::sendLootMessage(const std::string &message) const {

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -22,6 +22,8 @@
 #include "creatures/players/components/player_achievement.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_cyclopedia.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/components/player_title.hpp"
 #include "creatures/players/components/wheel/player_wheel.hpp"
 #include "creatures/players/components/player_vip.hpp"
@@ -56,7 +58,7 @@ class Npc;
 
 struct ModalWindow;
 struct Achievement;
-struct VIPGroup;
+class VIPGroup;
 struct Mount;
 struct Wing;
 struct Effect;
@@ -96,31 +98,6 @@ struct CharmInfo {
 	uint8_t tier = 0;
 };
 
-struct ForgeHistory {
-	ForgeAction_t actionType = ForgeAction_t::FUSION;
-	uint8_t tier = 0;
-	uint8_t bonus = 0;
-
-	time_t createdAt;
-
-	uint16_t historyId = 0;
-
-	uint64_t cost = 0;
-	uint64_t dustCost = 0;
-	uint64_t coresCost = 0;
-	uint64_t gained = 0;
-
-	bool success = false;
-	bool tierLoss = false;
-	bool successCore = false;
-	bool tierCore = false;
-	bool convergence = false;
-
-	std::string description;
-	std::string firstItemName;
-	std::string secondItemName;
-};
-
 struct OpenContainer {
 	std::shared_ptr<Container> container;
 	uint16_t index;
@@ -151,6 +128,17 @@ public:
 		const std::shared_ptr<Player> &player;
 	};
 
+	/**
+	 * @brief Constructs a Player instance for unit testing only.
+	 *
+	 * This constructor initializes a Player object in a minimal, controlled state
+	 * for use in unit tests. It sets up core components such as VIP, Wheel,
+	 * Achievements, Badges, Cyclopedia, Titles, Animus Mastery, Attached Effects,
+	 * and Storage, while marking the instance as a unit test mock by default.
+	 *
+	 */
+	explicit Player();
+
 	explicit Player(std::shared_ptr<ProtocolGame> p);
 	~Player() override;
 
@@ -176,8 +164,8 @@ public:
 		return online;
 	}
 
-	static uint32_t getFirstID();
-	static uint32_t getLastID();
+	[[nodiscard]] static uint32_t getFirstID();
+	[[nodiscard]] static uint32_t getLastID();
 
 	static MuteCountMap muteCountMap;
 
@@ -393,12 +381,7 @@ public:
 	void addStorageValue(uint32_t key, int32_t value, bool isLogin = false);
 	int32_t getStorageValue(uint32_t key) const;
 
-	int32_t getStorageValueByName(const std::string &storageName) const;
-	void addStorageValueByName(const std::string &storageName, int32_t value, bool isLogin = false);
-
 	std::shared_ptr<KV> kv() const;
-
-	void genReservedStorageRange();
 
 	void setGroup(std::shared_ptr<Group> newGroup) {
 		group = std::move(newGroup);
@@ -558,9 +541,9 @@ public:
 	int32_t getMaxHealth() const override;
 	uint32_t getMaxMana() const override;
 
-	std::shared_ptr<Item> getInventoryItem(Slots_t slot) const;
+	[[nodiscard]] std::shared_ptr<Item> getInventoryItem(Slots_t slot) const;
 
-	bool isItemAbilityEnabled(Slots_t slot) const;
+	[[nodiscard]] bool isItemAbilityEnabled(Slots_t slot) const;
 	void setItemAbility(Slots_t slot, bool enabled);
 
 	void setVarSkill(skills_t skill, int32_t modifier);
@@ -1231,10 +1214,6 @@ public:
 	void removeForgeDustLevel(uint64_t amount);
 	uint64_t getForgeDustLevel() const;
 
-	std::vector<ForgeHistory> &getForgeHistory();
-
-	void setForgeHistory(const ForgeHistory &history);
-
 	void registerForgeHistoryDescription(ForgeHistory history);
 
 	void setBossPoints(uint32_t amount);
@@ -1327,6 +1306,10 @@ public:
 	PlayerCyclopedia &cyclopedia();
 	const PlayerCyclopedia &cyclopedia() const;
 
+	// Player forge history interface
+	PlayerForgeHistory &forgeHistory();
+	const PlayerForgeHistory &forgeHistory() const;
+
 	// Player vip interface
 	PlayerVIP &vip();
 	const PlayerVIP &vip() const;
@@ -1338,6 +1321,9 @@ public:
 	// Player attached effects interface
 	PlayerAttachedEffects &attachedEffects();
 	const PlayerAttachedEffects &attachedEffects() const;
+
+	PlayerStorage &storage();
+	const PlayerStorage &storage() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -1352,8 +1338,21 @@ public:
 	uint16_t getPlayerVocationEnum() const;
 
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing) const;
-	bool isFirstOnStack() const;
+	[[nodiscard]] bool isFirstOnStack() const;
 	void resetOldCharms();
+
+	const auto &getOutfits() const {
+		return outfits;
+	}
+
+	const auto &getFamiliars() const {
+		return familiars;
+	}
+
+	using ManagedContainerMap = std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>>;
+	[[nodiscard]] const ManagedContainerMap &getManagedContainers() const {
+		return m_managedContainers;
+	}
 
 private:
 	friend class PlayerLock;
@@ -1434,13 +1433,11 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
-	std::map<uint32_t, int32_t> storageMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
-	std::map<ObjectCategory_t, std::pair<std::shared_ptr<Container>, std::shared_ptr<Container>>> m_managedContainers;
-	std::vector<ForgeHistory> forgeHistoryVector;
+	ManagedContainerMap m_managedContainers;
 
 	std::vector<uint16_t> quickLootListItemIds;
 
@@ -1628,6 +1625,9 @@ private:
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;
+	mutable int64_t m_lastImbuementTrackerUpdate = 0;
+	mutable bool m_hasPendingImbuementTrackerUpdate = false;
+	mutable uint64_t m_pendingImbuementTrackerEventId = 0;
 	bool shouldForceLogout = true;
 	bool connProtected = false;
 
@@ -1664,7 +1664,7 @@ private:
 		return skillLoss ? static_cast<uint64_t>(experience * getLostPercent()) : 0;
 	}
 
-	bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
+	[[nodiscard]] bool isSuppress(ConditionType_t conditionType, bool attackerPlayer) const override;
 
 	uint16_t getLookCorpse() const override;
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
@@ -1696,6 +1696,8 @@ private:
 	friend class PlayerTitle;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class PlayerStorage;
+	friend class PlayerForgeHistory;
 
 	PlayerWheel m_wheelPlayer;
 	PlayerAchievement m_playerAchievement;
@@ -1705,6 +1707,8 @@ private:
 	PlayerVIP m_playerVIP;
 	AnimusMastery m_animusMastery;
 	PlayerAttachedEffects m_playerAttachedEffects;
+	PlayerStorage m_storage;
+	PlayerForgeHistory m_forgeHistoryPlayer;
 
 	std::mutex quickLootMutex;
 

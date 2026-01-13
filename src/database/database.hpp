@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -140,6 +140,11 @@ public:
 				// Check if the type T is int64_t
 				else if constexpr (std::is_same_v<T, int64_t>) {
 					// Use std::stoll to convert string to int64_t
+					data = static_cast<T>(std::stoll(row[it->second]));
+				}
+				// Check if the type T is time_t
+				else if constexpr (std::is_same_v<T, time_t>) {
+					// Use std::stoll to convert string to time_t (usually long long)
 					data = static_cast<T>(std::stoll(row[it->second]));
 				} else {
 					// Throws exception indicating that type T is invalid

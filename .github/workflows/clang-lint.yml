@@ -4,10 +4,12 @@ on:
   pull_request:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
   merge_group:
   push:
     paths:
       - "src/**"
+      - "tests/**/*.cpp"
 jobs:
   cancel-runs:
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
@@ -39,7 +41,7 @@ jobs:
         if: ${{ github.ref != 'refs/heads/main' }}
         uses: DoozyX/clang-format-lint-action@v0.17
         with:
-          source: "src"
+          source: "src tests"
           exclude: "src/protobuf"
           extensions: "cpp,hpp,h"
           clangFormatVersion: 17

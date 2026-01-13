@@ -211,7 +211,6 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 		}
 
 		addItem(item);
-		updateItemWeight(item->getWeight());
 	}
 	return true;
 }
@@ -1079,9 +1078,6 @@ uint16_t Container::getFreeSlots() const {
 ContainerIterator Container::iterator() const {
 	static thread_local std::unordered_set<const Container*> pool;
 	pool.clear();
-
-	// Always shrink the hash table to release unused memory
-	pool.rehash(0);
 
 	const auto &selfContainer = getContainer();
 	if (!selfContainer) {

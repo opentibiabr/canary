@@ -461,9 +461,9 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 		data.price = shopBlock.itemSellPrice;
 	}
 
-	BatchUpdate batching(player.get());
+	BatchUpdate batching(player);
 	if (!saleData.empty()) {
-		batching.add(lootPouch.get());
+		batching.add(lootPouch);
 	}
 
 	for (size_t index = lootPouch->size(); index > 0;) {
@@ -521,10 +521,21 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
-			const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
-			auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
-			if (newItem && returnValue != RETURNVALUE_NOERROR) {
-				g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+			constexpr uint64_t kMaxStack = static_cast<uint64_t>(std::numeric_limits<uint16_t>::max());
+			uint64_t remainingCost = totalCost;
+			while (remainingCost > 0) {
+				auto stackSize = static_cast<uint16_t>(std::min<uint64_t>(remainingCost, kMaxStack));
+				const auto &newItem = Item::CreateItem(getCurrency(), stackSize);
+				if (!newItem) {
+					g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to create custom currency item {} for npc {}", getCurrency(), getName());
+					break;
+				}
+				auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
+				if (returnValue != RETURNVALUE_NOERROR) {
+					g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+					break;
+				}
+				remainingCost -= stackSize;
 			}
 		}
 
@@ -550,7 +561,7 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 			return;
 		}
 
-		batching.add(storeInbox.get());
+		batching.add(storeInbox);
 
 		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
 		if (letter) {
@@ -593,7 +604,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 
 	if (lootPouch) {
 		if (batchUpdate) {
-			batchUpdate->add(lootPouch.get());
+			batchUpdate->add(lootPouch);
 		}
 
 		for (size_t i = lootPouch->size(); i-- > 0 && toRemove > 0;) {
@@ -627,7 +638,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		const auto &itemParent = item->getParent();
 		auto container = itemParent ? itemParent->getContainer() : nullptr;
 		if (batchUpdate && container) {
-			batchUpdate->add(container.get());
+			batchUpdate->add(container);
 		}
 
 		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
@@ -664,10 +675,21 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		}
 		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 	} else if (totalCost) {
-		const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
-		auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
-		if (newItem && returnValue != RETURNVALUE_NOERROR) {
-			g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+		constexpr uint64_t kMaxStack = static_cast<uint64_t>(std::numeric_limits<uint16_t>::max());
+		uint64_t remainingCost = totalCost;
+		while (remainingCost > 0) {
+			auto stackSize = static_cast<uint16_t>(std::min<uint64_t>(remainingCost, kMaxStack));
+			const auto &newItem = Item::CreateItem(getCurrency(), stackSize);
+			if (!newItem) {
+				g_logger().error("[Npc::onPlayerSellItem] - Failed to create custom currency item {} for npc {}", getCurrency(), getName());
+				break;
+			}
+			auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
+			if (returnValue != RETURNVALUE_NOERROR) {
+				g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+				break;
+			}
+			remainingCost -= stackSize;
 		}
 	}
 

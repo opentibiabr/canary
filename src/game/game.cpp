@@ -3188,10 +3188,13 @@ ReturnValue Game::processMoveOrAddItemToLootContainer(const std::shared_ptr<Item
 	return ret;
 }
 
-ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, const std::shared_ptr<Item> &item, bool &fallbackConsumed) {
+ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, const std::shared_ptr<Item> &item, bool &fallbackConsumed, BatchUpdate* batchUpdate) {
 	std::shared_ptr<Container> lastSubContainer = nullptr;
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
+	if (batchUpdate) {
+		batchUpdate->add(lootContainer);
+	}
 
 	ReturnValue ret;
 	do {
@@ -3204,13 +3207,16 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 		if (!nextContainer && !handleFallbackLogic(player, lootContainer, containerIterator, fallbackConsumed)) {
 			break;
 		}
+		if (batchUpdate) {
+			batchUpdate->add(lootContainer);
+		}
 		fallbackConsumed = fallbackConsumed || (nextContainer == nullptr);
 	} while (remainderCount != 0);
 
 	return ret;
 }
 
-ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category /* = OBJECTCATEGORY_DEFAULT*/, bool isLootContainer /* = true*/) {
+ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category, bool isLootContainer) {
 	if (!player || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -3255,9 +3261,8 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	BatchUpdate batchUpdate(player.get());
-	batchUpdate.add(lootContainer.get());
-	auto returnValue = processLootItems(player, lootContainer, item, fallbackConsumed);
+	BatchUpdate batchUpdate(player);
+	auto returnValue = processLootItems(player, lootContainer, item, fallbackConsumed, &batchUpdate);
 	return returnValue;
 }
 
@@ -3274,7 +3279,7 @@ ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player,
 	uint32_t movedRewardItems = 0;
 	std::string lootedItemsMessage;
 
-	BatchUpdate batchUpdate(player.get());
+	BatchUpdate batchUpdate(player);
 	for (const auto &item : rewardItemsVector) {
 		if (!item) {
 			continue;
@@ -3288,7 +3293,7 @@ ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player,
 			continue;
 		}
 
-		batchUpdate.add(container.get());
+		batchUpdate.add(container);
 	}
 
 	const auto &quickList = player->quickLootListItemIds;
@@ -3330,10 +3335,9 @@ ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player,
 			return RETURNVALUE_NOERROR;
 		}
 
-		auto rawToContainer = toContainer.get();
-		batchUpdate.add(rawToContainer);
+		batchUpdate.add(toContainer);
 
-		ReturnValue ret = processLootItems(player, toContainer, item, fallbackConsumed);
+		ReturnValue ret = processLootItems(player, toContainer, item, fallbackConsumed, &batchUpdate);
 		if (ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
 			player->sendCancelMessage(ret);
 			continue;

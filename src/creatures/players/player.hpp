@@ -630,6 +630,9 @@ public:
 	virtual void beginBatchUpdate();
 	virtual void endBatchUpdate();
 	virtual void sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t firstIndex = 0);
+	bool isBatching() const {
+		return m_batching;
+	}
 	static bool lastHitIsPlayer(const std::shared_ptr<Creature> &lastHitCreature);
 
 	// stash functions

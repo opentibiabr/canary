@@ -25,10 +25,11 @@ int BatchUpdateFunctions::luaBatchUpdateCreate(lua_State* L) {
 	const auto &playerActor = Lua::getPlayer(L, 2);
 	if (!playerActor) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
 		return 1;
 	}
 
-	Lua::pushUserdata<BatchUpdate>(L, std::make_shared<BatchUpdate>(playerActor.get()));
+	Lua::pushUserdata<BatchUpdate>(L, std::make_shared<BatchUpdate>(playerActor));
 	Lua::setMetatable(L, -1, "BatchUpdate");
 	return 1;
 }
@@ -49,6 +50,6 @@ int BatchUpdateFunctions::luaBatchUpdateAdd(lua_State* L) {
 		return 1;
 	}
 
-	Lua::pushBoolean(L, batchUpdate->add(container.get()));
+	Lua::pushBoolean(L, batchUpdate->add(container));
 	return 1;
 }

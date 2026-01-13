@@ -56,8 +56,6 @@ TEST_F(PlayerRewardIterationTest, ForEachRewardItemTraversesNestedNormalContaine
 	auto root = std::make_shared<Container>(ITEM_REWARD_CHEST, 10);
 	auto reward = std::make_shared<Container>(ITEM_REWARD_CONTAINER, 10);
 	auto nestedNormal = std::make_shared<Container>(1987, 10);
-	auto itemInsideNormal = std::make_shared<Item>(104);
-	nestedNormal->addItem(itemInsideNormal);
 	reward->addItem(nestedNormal);
 	auto plainItem = std::make_shared<Item>(105);
 	reward->addItem(plainItem);

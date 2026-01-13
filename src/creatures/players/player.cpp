@@ -8386,6 +8386,9 @@ void Player::beginBatchUpdate() {
 }
 
 void Player::endBatchUpdate() {
+	if (!m_batching) {
+		return;
+	}
 	updateState();
 	m_batching = false;
 }
@@ -8418,8 +8421,6 @@ void Player::closeContainersOutOfRange() {
 		return;
 	}
 
-	checkLootContainers(nullptr);
-
 	std::vector<uint32_t> containersToClose;
 
 	for (const auto &[containerId, containerInfo] : openContainers) {
@@ -8428,8 +8429,8 @@ void Player::closeContainersOutOfRange() {
 			continue;
 		}
 
-		const Position &pos = container->getPosition();
-		if (!Position::areInRange<1, 1, 0>(pos, getPosition())) {
+		if (shouldCloseContainer(container)) {
+			checkLootContainers(container);
 			containersToClose.emplace_back(containerId);
 		}
 	}
@@ -8446,11 +8447,10 @@ bool Player::shouldCloseContainer(const std::shared_ptr<Container> &container) c
 		return true;
 	}
 
-	if (!Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
+	auto topParent = container->getTopParent();
+	if (!topParent) {
 		return true;
 	}
-
-	auto topParent = container->getTopParent();
 	if (topParent == getPlayer()) {
 		return false;
 	}
@@ -8467,6 +8467,10 @@ bool Player::shouldCloseContainer(const std::shared_ptr<Container> &container) c
 				return false;
 			}
 		}
+	}
+
+	if (!Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
+		return true;
 	}
 
 	return true;

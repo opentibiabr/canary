@@ -219,7 +219,6 @@ public:
 
 	virtual void beginBatchUpdate();
 	virtual void endBatchUpdate(Player* actor);
-	bool m_batching = false;
 
 	const ItemDeque &getItemList() const {
 		return itemlist;
@@ -382,6 +381,9 @@ private:
 	void updateCacheOnRemove(const std::shared_ptr<Item> &item);
 
 	void updateItemCountCache();
+
+private:
+	bool m_batching = false;
 
 	friend class ContainerIterator;
 	friend class IOMapSerialize;

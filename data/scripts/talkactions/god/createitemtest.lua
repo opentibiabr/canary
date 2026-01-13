@@ -61,7 +61,11 @@ function createLootTalkAction.onSay(player, words, param)
 		return true
 	end
 
+	local batchUpdate = BatchUpdate(player)
+	batchUpdate:add(lootPouch)
+
 	local createdCount = 0
+	local itemTotals = {}
 	for i = 1, amount do
 		local isStackable = math.random(100) <= 30 -- 30% chance to pick stackable
 		local itemId, itemCount
@@ -75,15 +79,19 @@ function createLootTalkAction.onSay(player, words, param)
 			itemCount = 1
 		end
 
-		local item = Game.createItem(itemId, itemCount)
-		if item then
-			local flags = bit.bor(FLAG_NOLIMIT, FLAG_LOOTPOUCH)
-			if lootPouch:addItemEx(item, INDEX_WHEREEVER, flags) ~= RETURNVALUE_NOERROR then
-				item:remove()
-				logger.warn("[/createloot] - Player: {} failed to add item {}, reason: {}", player:getName(), itemId, Game.getReturnMessage(RETURNVALUE_NOTENOUGHROOM))
-				break
+		itemTotals[itemId] = (itemTotals[itemId] or 0) + itemCount
+	end
+
+	local flags = bit.bor(FLAG_NOLIMIT, FLAG_LOOTPOUCH)
+	for itemId, itemCount in pairs(itemTotals) do
+		local added = player:addItemBatchToPaginedContainer(lootPouch, itemId, itemCount, 0, flags)
+		if added > 0 then
+			createdCount = createdCount + added
+			if added < itemCount then
+				logger.warn("[/createloot] - Player: {} partial add for item {}: requested {}, added {}", player:getName(), itemId, itemCount, added)
 			end
-			createdCount = createdCount + 1
+		else
+			logger.warn("[/createloot] - Player: {} failed to add item {}", player:getName(), itemId)
 		end
 	end
 
@@ -95,6 +103,7 @@ function createLootTalkAction.onSay(player, words, param)
 		logger.error("[/createloot] - Player: " .. player:getName() .. " failed to create items in their Loot Pouch.")
 	end
 
+	batchUpdate:delete()
 	return true
 end
 
@@ -111,9 +120,13 @@ function clearStoreAction.onSay(player, words, param)
 		return true
 	end
 
+	local batchUpdate = BatchUpdate(player)
+	batchUpdate:add(lootPouch)
+
 	local removedCount = lootPouch:removeAllItems(player)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, removedCount .. " items have been removed from your Loot Pouch.")
-	logger.info("[/clearstore] - Player: " .. player:getName() .. " removed " .. removedCount .. " items from their Loot Pouch.")
+	logger.info("[/clearloot] - Player: " .. player:getName() .. " removed " .. removedCount .. " items from their Loot Pouch.")
+	batchUpdate:delete()
 	return true
 end
 
@@ -253,6 +266,9 @@ function addLootAction.onSay(player, words, param)
 		return true
 	end
 
+	local batchUpdate = BatchUpdate(player)
+	batchUpdate:add(lootPouch)
+
 	local itype = ItemType(itemId)
 	local name = itype and itype:getName() or ("item " .. itemId)
 	local created = 0
@@ -291,6 +307,7 @@ function addLootAction.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Added %dx %s to your Loot Pouch.", created, name))
 		end
 	end
+	batchUpdate:delete()
 	return true
 end
 

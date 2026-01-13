@@ -2366,9 +2366,14 @@ int PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer(lua_State* L) {
 	}
 
 	const auto itemId = Lua::getNumber<uint16_t>(L, 3);
+	if (itemId == 0) {
+		player->sendCancelMessage("Invalid item id.");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
 	const auto count = Lua::getNumber<uint32_t>(L, 4, 1);
 	const auto tier = Lua::getNumber<uint8_t>(L, 5, 0);
-	const auto flags = Lua::getNumber<uint32_t>(L, 6, FLAG_NOLIMIT);
+	const auto flags = Lua::getNumber<uint32_t>(L, 6, 0);
 
 	uint32_t actuallyAdded = 0;
 	const auto ret = player->addItemBatchToPaginedContainer(container, itemId, count, actuallyAdded, flags, tier);

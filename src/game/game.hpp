@@ -33,6 +33,7 @@ class Creature;
 class Monster;
 class Npc;
 class Charm;
+class BatchUpdate;
 class IOPrey;
 class IOWheel;
 class ItemClassification;
@@ -774,7 +775,7 @@ private:
 	 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
 	 * @return Return value indicating success or error.
 	 */
-	ReturnValue processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, const std::shared_ptr<Item> &item, bool &fallbackConsumed);
+	ReturnValue processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, const std::shared_ptr<Item> &item, bool &fallbackConsumed, BatchUpdate* batchUpdate = nullptr);
 
 	/**
 	 * @brief Internally collects loot or obtain items from a given item and places them into the managed container.

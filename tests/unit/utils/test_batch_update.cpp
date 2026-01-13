@@ -27,23 +27,6 @@ namespace {
 		}
 	};
 
-	class FakePlayer : public Player {
-	public:
-		using Player::Player;
-		int beginCount { 0 };
-		int endCount { 0 };
-
-		void beginBatchUpdate() override {
-			++beginCount;
-			Player::beginBatchUpdate();
-		}
-
-		void endBatchUpdate() override {
-			++endCount;
-			Player::endBatchUpdate();
-		}
-	};
-
 }
 
 class BatchUpdateTest : public ::testing::Test {
@@ -54,39 +37,42 @@ protected:
 };
 
 TEST_F(BatchUpdateTest, DeduplicatesContainersAndBalancesBeginEndCalls) {
-	Player player;
-	FakeContainer c1(ITEM_REWARD_CONTAINER, 10);
+	auto player = std::make_shared<Player>();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	{
-		BatchUpdate batch(&player);
-		EXPECT_TRUE(batch.add(&c1));
-		EXPECT_FALSE(batch.add(&c1));
-		EXPECT_EQ(c1.beginCount, 1);
+		BatchUpdate batch(player);
+		EXPECT_TRUE(batch.add(c1));
+		EXPECT_FALSE(batch.add(c1));
+		EXPECT_TRUE(player->isBatching());
+		EXPECT_EQ(c1->beginCount, 1);
 	}
-	EXPECT_EQ(c1.endCount, 1);
+	EXPECT_FALSE(player->isBatching());
+	EXPECT_EQ(c1->endCount, 1);
 }
 
 TEST_F(BatchUpdateTest, AddReturnsFalseForNullContainers) {
-	Player player;
-	FakeContainer c1(ITEM_REWARD_CONTAINER, 10);
-	BatchUpdate batch(&player);
-	EXPECT_TRUE(batch.add(&c1));
+	auto player = std::make_shared<Player>();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	BatchUpdate batch(player);
+	EXPECT_TRUE(batch.add(c1));
 	EXPECT_FALSE(batch.add(nullptr));
-	EXPECT_EQ(c1.beginCount, 1);
+	EXPECT_TRUE(player->isBatching());
+	EXPECT_EQ(c1->beginCount, 1);
 }
 
 TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
-	FakePlayer player;
-	FakeContainer c1(ITEM_REWARD_CONTAINER, 10);
-	FakeContainer c2(ITEM_REWARD_CONTAINER, 10);
+	auto player = std::make_shared<Player>();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	{
-		BatchUpdate batch(&player);
-		EXPECT_TRUE(batch.add(&c1));
-		batch.addContainers({ &c1, &c2 });
-		EXPECT_EQ(c1.beginCount, 1);
-		EXPECT_EQ(c2.beginCount, 1);
+		BatchUpdate batch(player);
+		EXPECT_TRUE(batch.add(c1));
+		batch.addContainers({ c1, c2 });
+		EXPECT_TRUE(player->isBatching());
+		EXPECT_EQ(c1->beginCount, 1);
+		EXPECT_EQ(c2->beginCount, 1);
 	}
-	EXPECT_EQ(c1.endCount, 1);
-	EXPECT_EQ(c2.endCount, 1);
-	EXPECT_EQ(player.beginCount, 1);
-	EXPECT_EQ(player.endCount, 1);
+	EXPECT_FALSE(player->isBatching());
+	EXPECT_EQ(c1->endCount, 1);
+	EXPECT_EQ(c2->endCount, 1);
 }

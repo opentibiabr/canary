@@ -76,3 +76,25 @@ TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
 	EXPECT_EQ(c1->endCount, 1);
 	EXPECT_EQ(c2->endCount, 1);
 }
+
+TEST_F(BatchUpdateTest, EndBatchUpdateHandlesExpiredActor) {
+	auto player = std::make_shared<Player>();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	{
+		BatchUpdate batch(player);
+		EXPECT_TRUE(batch.add(c1));
+		player.reset();
+	}
+	EXPECT_EQ(c1->endCount, 1);
+}
+
+TEST_F(BatchUpdateTest, AddSkipsExpiredCachedContainers) {
+	auto player = std::make_shared<Player>();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	BatchUpdate batch(player);
+	EXPECT_TRUE(batch.add(c1));
+	c1.reset();
+	EXPECT_TRUE(batch.add(c2));
+	EXPECT_EQ(c2->beginCount, 1);
+}

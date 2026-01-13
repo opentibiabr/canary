@@ -254,11 +254,13 @@ void Container::updateCacheOnAdd(const std::shared_ptr<Item> &item) {
 void Container::updateCacheOnRemove(const std::shared_ptr<Item> &item) {
 	if (auto subContainer = item->getContainer()) {
 		// Removing a container: subtract one (itself) plus all items and containers within it.
-		m_cachedItemCount -= (1 + subContainer->m_cachedItemCount);
-		m_cachedContainerCount -= (1 + subContainer->m_cachedContainerCount);
+		const uint32_t itemDelta = 1 + subContainer->m_cachedItemCount;
+		const uint32_t containerDelta = 1 + subContainer->m_cachedContainerCount;
+		m_cachedItemCount = m_cachedItemCount > itemDelta ? m_cachedItemCount - itemDelta : 0;
+		m_cachedContainerCount = m_cachedContainerCount > containerDelta ? m_cachedContainerCount - containerDelta : 0;
 	} else {
 		// Removing a regular item: decrease the item count by one.
-		m_cachedItemCount -= 1;
+		m_cachedItemCount = m_cachedItemCount > 0 ? m_cachedItemCount - 1 : 0;
 	}
 
 	// Propagate the update to the parent container, ensuring correct counts up the chain.
@@ -931,16 +933,11 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 		removed->onRemoved();
 
 		if (m_batching) {
-			if (index != itemlist.size() - 1) {
-				std::swap(itemlist[index], itemlist.back());
-				if (const auto &moved = itemlist[index]) {
-					if (moved->getParent().get() != this) {
-						moved->setParent(getContainer());
-					}
-				}
+			if (index == itemlist.size() - 1) {
+				itemlist.pop_back();
+			} else {
+				itemlist.erase(itemlist.begin() + static_cast<std::ptrdiff_t>(index));
 			}
-			itemlist.pop_back();
-
 			removed->resetParent();
 		} else {
 			removed->resetParent();
@@ -1076,14 +1073,11 @@ uint16_t Container::getFreeSlots() const {
 }
 
 ContainerIterator Container::iterator() const {
-	static thread_local std::unordered_set<const Container*> pool;
-	pool.clear();
-
 	const auto &selfContainer = getContainer();
 	if (!selfContainer) {
-		return { nullptr, 0, pool };
+		return { nullptr, 0 };
 	}
-	return { selfContainer, static_cast<size_t>(g_configManager().getNumber(MAX_CONTAINER_DEPTH)), pool };
+	return { selfContainer, static_cast<size_t>(g_configManager().getNumber(MAX_CONTAINER_DEPTH)) };
 }
 
 void Container::beginBatchUpdate() {
@@ -1156,14 +1150,14 @@ uint32_t Container::getOwnerId() const {
  * ContainerIterator
  * @brief Iterator for iterating over the items in a container
  */
-ContainerIterator::ContainerIterator(const std::shared_ptr<const Container> &container, size_t maxDepth, std::unordered_set<const Container*> &pool) :
-	visitedContainers(&pool), maxTraversalDepth(maxDepth) {
+ContainerIterator::ContainerIterator(const std::shared_ptr<const Container> &container, size_t maxDepth) :
+	maxTraversalDepth(maxDepth) {
 	if (container) {
 		states.reserve(maxDepth);
 		const auto &items = container->getItemList();
 
 		states.emplace_back(container, items, 0, 1);
-		visitedContainers->insert(container.get());
+		visitedContainers.insert(container.get());
 	}
 }
 
@@ -1219,7 +1213,7 @@ void ContainerIterator::advance() {
 		}
 
 		const auto raw = sub.get();
-		if (!visitedContainers->insert(raw).second) {
+		if (!visitedContainers.insert(raw).second) {
 			m_cycleDetected = true;
 			return;
 		}

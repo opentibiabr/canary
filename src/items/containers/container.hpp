@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <unordered_set>
+
 #include "items/cylinder.hpp"
 #include "items/item.hpp"
 #include "items/tile.hpp"
@@ -33,7 +35,7 @@ public:
 	 * @param container The root container to start iterating from.
 	 * @param maxDepth The maximum depth of nested containers to traverse.
 	 */
-	ContainerIterator(const std::shared_ptr<const Container> &container, size_t maxDepth, std::unordered_set<const Container*> &pool);
+	ContainerIterator(const std::shared_ptr<const Container> &container, size_t maxDepth);
 
 	/**
 	 * @brief Checks if there are more items to iterate over in the container.
@@ -128,7 +130,7 @@ private:
 	 * that each container is processed only once, preventing redundant processing
 	 * and potential crashes due to cyclic references.
 	 */
-	mutable std::unordered_set<const Container*>* visitedContainers;
+	mutable std::unordered_set<const Container*> visitedContainers;
 	size_t maxTraversalDepth = 0;
 
 	bool m_maxDepthReached = false;

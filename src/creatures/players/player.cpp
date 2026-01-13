@@ -7257,6 +7257,9 @@ uint64_t Player::getSpentMana() const {
 }
 
 bool Player::hasFlag(PlayerFlags_t flag) const {
+	if (!group) {
+		return false;
+	}
 	return group->flags[static_cast<std::size_t>(flag)];
 }
 
@@ -8421,7 +8424,7 @@ void Player::closeContainersOutOfRange() {
 		return;
 	}
 
-	std::vector<uint32_t> containersToClose;
+	std::vector<uint8_t> containersToClose;
 
 	for (const auto &[containerId, containerInfo] : openContainers) {
 		const auto &container = containerInfo.container;
@@ -8435,7 +8438,7 @@ void Player::closeContainersOutOfRange() {
 		}
 	}
 
-	for (const uint32_t containerId : containersToClose) {
+	for (const uint8_t containerId : containersToClose) {
 		g_logger().debug("Player::closeContainersOutOfRange - Closing container {} for player {} due to out of range.", containerId, getName());
 		closeContainer(containerId);
 		client->sendCloseContainer(containerId);
@@ -8473,7 +8476,7 @@ bool Player::shouldCloseContainer(const std::shared_ptr<Container> &container) c
 		return true;
 	}
 
-	return true;
+	return false;
 }
 
 // inventory

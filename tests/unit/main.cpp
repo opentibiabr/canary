@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <filesystem>
 #include <iostream>
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
@@ -16,7 +17,10 @@ int main(int argc, char** argv) {
 
 	(void)g_logger();
 	auto &config = g_configManager();
-	config.setConfigFileLua("config.lua.dist");
+	const std::filesystem::path sourceDir = TESTS_SOURCE_DIR;
+	std::filesystem::current_path(sourceDir);
+	const std::filesystem::path configPath = sourceDir / "config.lua.dist";
+	config.setConfigFileLua(configPath.string());
 	if (!config.load()) {
 		std::cerr << "Failed to load config file." << std::endl;
 		return 1;

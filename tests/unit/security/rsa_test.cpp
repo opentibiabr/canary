@@ -8,6 +8,7 @@
  */
 #include "pch.hpp"
 
+#include <filesystem>
 #include <gtest/gtest.h>
 
 #include "lib/logging/in_memory_logger.hpp"
@@ -40,7 +41,13 @@ private:
 };
 
 TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
+	const std::filesystem::path previousPath = std::filesystem::current_path();
+	const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "canary_rsa_test";
+	std::filesystem::create_directories(tempPath);
+	std::filesystem::current_path(tempPath);
 	DI::create<RSA &>().start();
+	std::filesystem::current_path(previousPath);
+	std::filesystem::remove_all(tempPath);
 
 	auto &logger = testLogger();
 

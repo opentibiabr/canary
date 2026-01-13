@@ -1210,6 +1210,19 @@ bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const Position &p
 	return true;
 }
 
+/**
+ * @brief Executes an area-based combat sequence from a caster/origin toward a target position.
+ *
+ * Applies the combat parameters to all valid tiles and creatures within the computed area: determines affected targets, applies extensions and wheel/damage adjustments, invokes the per-target combat callback, triggers target/tile callbacks and post-combat effects, and manages combat-related side effects (fields, sounds, distance effects).
+ *
+ * @param caster The creature that originates the combat; may be null for caster-less effects.
+ * @param origin The origin position used for certain checks and visual effects.
+ * @param toPos The destination/target position that defines the area orientation.
+ * @param area Optional area definition that shapes which tiles are affected; null uses a single-tile area at toPos.
+ * @param params Combat parameters controlling behavior (effects, aggressiveness, callbacks, chaining, etc.).
+ * @param func Per-target function invoked for each valid creature; receives the caster, target creature, params, and a pointer to the CombatDamage to apply.
+ * @param data Optional base CombatDamage used as the default damage template for targets; if null a default-initialized damage is used. Extensions may be applied and per-creature stored damages (if present) will be passed to the callback instead of the shared template.
+ */
 void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &toPos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data) {
 	std::vector<std::shared_ptr<Tile>> tileList;
 
@@ -2295,6 +2308,26 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	}
 }
 
+/**
+ * @brief Apply critical/fatal extensions to combat damage for the caster across targets.
+ *
+ * Adjusts damage to reflect critical hits, fatal strikes, and charm-driven bonuses based on the caster's
+ * type (player or monster), equipment, charms, and the set of targets. For player casters, per-target
+ * modifiers (including race-specific charm effects and weapon-derived fatal chances) are evaluated and
+ * applied individually; for multi-target player attacks each target receives its own adjusted CombatDamage
+ * via Creature::setCombatDamage. For single-target player attacks the input `damage` is updated in-place.
+ * For monster casters a single aggregated multiplier is applied to the input `damage`.
+ *
+ * The function returns immediately without modification when `damage.extension` is true, `caster` is null,
+ * or the damage represents healing.
+ *
+ * @param caster The creature performing the attack; must be non-null to apply extensions.
+ * @param targets The list of target creatures affected by this attack.
+ * @param[out] damage The combat damage structure to modify for single-target or monster casters.
+ *                    For multi-target player attacks, individual targets receive their adjusted damage
+ *                    through Creature::setCombatDamage rather than modifying this shared object.
+ * @param params Additional combat parameters (unused directly for value description but part of context).
+ */
 void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std::vector<std::shared_ptr<Creature>> targets, CombatDamage &damage, const CombatParams &params) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (damage.extension || !caster || damage.primary.type == COMBAT_HEALING) {

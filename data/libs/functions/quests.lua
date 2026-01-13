@@ -1,4 +1,4 @@
-dofile(DATA_DIRECTORY .. "/lib/core/quests.lua")
+require("data-otservbr-global.lib.core.quests")
 
 if not LastQuestlogUpdate then
 	LastQuestlogUpdate = {}
@@ -34,7 +34,7 @@ function Player.hasTrackingQuest(self, missionId)
 end
 
 function Player.getQuestDataByMissionId(self, missionId)
-	for questId = 1, #Quests do
+	for questId, quest in pairs(Quests) do
 		local quest = Game.getQuest(questId)
 		if quest then
 			if quest.missions then
@@ -96,7 +96,7 @@ function Game.getQuest(questId)
 end
 
 function Game.getQuestIdByName(name)
-	for questId = 1, #Quests do
+	for questId, quest in pairs(Quests) do
 		local quest = Game.getQuest(questId)
 		if quest and quest.name:lower() == name:lower() then
 			return questId
@@ -114,7 +114,7 @@ end
 
 function Player.getMissionsData(self, storage)
 	local missions = {}
-	for questId = 1, #Quests do
+	for questId, quest in pairs(Quests) do
 		local quest = Game.getQuest(questId)
 		if quest and quest.missions then
 			for missionId = 1, #quest.missions do
@@ -137,7 +137,7 @@ function Player.getMissionsData(self, storage)
 end
 
 function Game.isQuestStorage(key, value, oldValue)
-	for questId = 1, #Quests do
+	for questId, quest in pairs(Quests) do
 		local quest = Game.getQuest(questId)
 		if quest then
 			if quest.startStorageId == key and quest.startStorageValue == value then
@@ -294,13 +294,19 @@ end
 function Player.sendQuestLog(self)
 	local msg = NetworkMessage()
 	msg:addByte(0xF0)
-	msg:addU16(Game.getQuestsCount(self))
-	for questId = 1, #Quests do
+	local questCount = 0
+	local questIds = {}
+	for questId, quest in pairs(Quests) do
 		if self:questIsStarted(questId) then
-			msg:addU16(questId)
-			msg:addString(Quests[questId].name, "Player.sendQuestLog")
-			msg:addByte(self:questIsCompleted(questId) and 0x01 or 0x00)
+			questCount = questCount + 1
+			table.insert(questIds, questId)
 		end
+	end
+	msg:addU16(questCount)
+	for _, questId in ipairs(questIds) do
+		msg:addU16(questId)
+		msg:addString(Quests[questId].name, "Player.sendQuestLog")
+		msg:addByte(self:questIsCompleted(questId) and 0x01 or 0x00)
 	end
 	msg:sendToPlayer(self)
 	msg:delete()
@@ -382,7 +388,7 @@ local function sendPrint(questId, index)
 	logger.warn("[sendPrint] - Quest id:[{}]] mission:[{}]", questId, index)
 end
 
-for questId = 1, #Quests do
+for questId, quest in pairs(Quests) do
 	local quest = Game.getQuest(questId)
 	if quest then
 		for index, value in ipairs(quest.missions) do

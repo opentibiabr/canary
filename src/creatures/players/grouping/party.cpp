@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,7 +15,6 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 
@@ -86,7 +85,7 @@ void Party::disband() {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, &EventCallback::partyOnDisband, getParty())) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, getParty())) {
 		return;
 	}
 
@@ -150,7 +149,7 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player, bool forceRemove /
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, &EventCallback::partyOnLeave, getParty(), player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnLeave, getParty(), player)) {
 		return false;
 	}
 
@@ -162,12 +161,12 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player, bool forceRemove /
 			} else {
 				auto newLeader = memberList.front();
 				while (!newLeader) {
-					memberList.erase(memberList.begin());
-					if (memberList.empty()) {
+					const auto eraseIt = memberList.erase(memberList.begin());
+					if (eraseIt == memberList.end()) {
 						missingLeader = true;
 						break;
 					}
-					newLeader = memberList.front();
+					newLeader = *eraseIt;
 				}
 				if (newLeader) {
 					passPartyLeadership(newLeader);
@@ -179,9 +178,9 @@ bool Party::leaveParty(const std::shared_ptr<Player> &player, bool forceRemove /
 	}
 
 	// since we already passed the leadership, we remove the player from the list
-	auto it = std::ranges::find(memberList, player);
-	if (it != memberList.end()) {
-		memberList.erase(it);
+	const bool removedMember = std::erase(memberList, player) > 0;
+	if (!removedMember && leader != player) {
+		return false;
 	}
 
 	player->setParty(nullptr);
@@ -225,9 +224,8 @@ bool Party::passPartyLeadership(const std::shared_ptr<Player> &player) {
 	}
 
 	// Remove it before to broadcast the message correctly
-	auto it = std::ranges::find(memberList, player);
-	if (it != memberList.end()) {
-		memberList.erase(it);
+	if (std::erase(memberList, player) == 0) {
+		return false;
 	}
 
 	std::ostringstream ss;
@@ -269,16 +267,13 @@ bool Party::joinParty(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, &EventCallback::partyOnJoin, getParty(), player)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnJoin, getParty(), player)) {
 		return false;
 	}
 
-	auto it = std::ranges::find(inviteList, player);
-	if (it == inviteList.end()) {
+	if (std::erase(inviteList, player) == 0) {
 		return false;
 	}
-
-	inviteList.erase(it);
 
 	std::ostringstream ss;
 	ss << player->getName() << " has joined the party.";
@@ -322,12 +317,9 @@ bool Party::removeInvite(const std::shared_ptr<Player> &player, bool removeFromP
 		return false;
 	}
 
-	auto it = std::ranges::find(inviteList, player);
-	if (it == inviteList.end()) {
+	if (std::erase(inviteList, player) == 0) {
 		return false;
 	}
-
-	inviteList.erase(it);
 
 	leader->sendCreatureShield(player);
 	player->sendCreatureShield(leader);
@@ -521,7 +513,7 @@ void Party::shareExperience(uint64_t experience, const std::shared_ptr<Creature>
 
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(getParty(), shareExperience);
-	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, &EventCallback::partyOnShareExperience, getParty(), std::ref(shareExperience));
+	g_callbacks().executeCallback(EventCallback_t::partyOnShareExperience, getParty(), std::ref(shareExperience));
 
 	for (const auto &member : getMembers()) {
 		const auto memberStaminaBoost = static_cast<float>(member->getStaminaXpBoost()) / 100;

@@ -3,4 +3,5 @@ target_sources(
     PRIVATE creaturecallback.cpp
             event_callback.cpp
             events_callbacks.cpp
+            event_callback_manager.cpp
 )

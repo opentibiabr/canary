@@ -36,7 +36,6 @@
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
@@ -62,6 +61,7 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/combat/spells.hpp"
+#include "utils/definitions.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -8000,9 +8000,11 @@ void Player::sendFightModes() const {
 }
 
 void Player::sendNetworkMessage(NetworkMessage &message) const {
+#ifndef PROTOCOL_DISABLE_LUA_MESSAGES
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
+#endif
 }
 
 void Player::receivePing() {
@@ -8429,6 +8431,12 @@ void Player::sendSpellCooldown(uint16_t spellId, uint32_t time) const {
 void Player::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) const {
 	if (client) {
 		client->sendSpellGroupCooldown(groupId, time);
+	}
+}
+
+void Player::sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused) const {
+	if (client) {
+		client->sendPassiveCooldown(passiveId, currentCooldown, maxCooldown, paused);
 	}
 }
 
@@ -9659,10 +9667,12 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
+#ifndef PROTOCOL_DISABLE_HUNTING_TASKS
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
 		auto buffer = g_ioprey().getTaskHuntingBaseDate();
 		client->writeToOutputBuffer(buffer);
 	}
+#endif
 }
 
 bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
@@ -11932,9 +11942,9 @@ void Player::sendFYIBox(const std::string &message) const {
 	}
 }
 
-void Player::parseBestiarySendRaces() const {
+void Player::sendBestiaryRaces() const {
 	if (client) {
-		client->parseBestiarySendRaces();
+		client->sendBestiaryRaces();
 	}
 }
 

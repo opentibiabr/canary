@@ -185,7 +185,7 @@ private:
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
-	void parseBestiarySendRaces();
+	void sendBestiaryRaces();
 	void parseBestiarySendCreatures(NetworkMessage &msg);
 	void sendBestiaryCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
@@ -197,7 +197,7 @@ private:
 	void parseLeaderFinderWindow(NetworkMessage &msg);
 	void parseMemberFinderWindow(NetworkMessage &msg);
 	void parseSendBuyCharmRune(NetworkMessage &msg);
-	void parseBestiarysendMonsterData(NetworkMessage &msg);
+	void parseSendBestiaryMonsterData(NetworkMessage &msg);
 	void parseCyclopediaMonsterTracker(NetworkMessage &msg);
 
 	void parseTeleport(NetworkMessage &msg);
@@ -421,6 +421,7 @@ private:
 
 	void sendSpellCooldown(uint16_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
+	void sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused);
 	void sendUseItemCooldown(uint32_t time);
 
 	void sendCoinBalance();

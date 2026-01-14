@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -42,7 +42,6 @@
 #include "items/containers/rewards/rewardchest.hpp"
 #include "items/items.hpp"
 #include "items/items_classification.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
 #include "lua/creature/creatureevent.hpp"
@@ -465,7 +464,7 @@ void Game::loadBoostedCreature() {
 	}
 
 	const auto oldRace = result->getNumber<uint16_t>("raceid");
-	const auto monsterlist = getBestiaryList();
+	const auto &monsterlist = getBestiaryList();
 
 	struct MonsterRace {
 		uint16_t raceId { 0 };
@@ -1532,7 +1531,7 @@ void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::
 			return;
 		}
 
-		if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveCreature, &EventCallback::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
+		if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveCreature, player, movingCreature, movingCreaturePos, toPos)) {
 			return;
 		}
 
@@ -1717,7 +1716,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		item = thing->getItem();
 	}
 
-	if (item->getID() != itemId) {
+	if (!item || item->getID() != itemId) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -1784,10 +1783,10 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	const auto toCylinderTile = toCylinder->getTile();
-	const auto &mapToPos = toCylinderTile->getPosition();
+	const Position &mapToPos = toCylinderTile ? toCylinderTile->getPosition() : toPos;
 
 	// hangable item specific code
-	if (item->isHangable() && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
+	if (item->isHangable() && toCylinderTile && toCylinderTile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 		// destination supports hangable objects so need to move there first
 		bool vertical = toCylinderTile->hasProperty(CONST_PROP_ISVERTICAL);
 		if (vertical) {
@@ -1857,7 +1856,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveItem, &EventCallback::playerOnMoveItem, player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnMoveItem, player, item, count, fromPos, toPos, fromCylinder, toCylinder)) {
 		return;
 	}
 
@@ -1875,11 +1874,16 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	if (item->isWrapable() || item->isStoreItem() || (item->hasOwner() && !item->isOwner(player))) {
-		const auto toHouseTile = map.getTile(mapToPos)->dynamic_self_cast<HouseTile>();
-		const auto fromHouseTile = map.getTile(mapFromPos)->dynamic_self_cast<HouseTile>();
-		if (fromHouseTile && (!toHouseTile || toHouseTile->getHouse()->getId() != fromHouseTile->getHouse()->getId())) {
-			player->sendCancelMessage("You cannot move this item out of this house.");
-			return;
+		const auto toHouseTile = toCylinderTile ? toCylinderTile->dynamic_self_cast<HouseTile>() : nullptr;
+		const auto fromHouseTile = cylinderTile ? cylinderTile->dynamic_self_cast<HouseTile>() : nullptr;
+
+		if (fromHouseTile) {
+			const auto fromHouse = fromHouseTile->getHouse();
+			const auto toHouse = toHouseTile ? toHouseTile->getHouse() : nullptr;
+			if (!fromHouse || !toHouse || toHouse->getId() != fromHouse->getId()) {
+				player->sendCancelMessage("You cannot move this item out of this house.");
+				return;
+			}
 		}
 	}
 
@@ -1904,7 +1908,7 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	item->checkDecayMapItemOnMove();
 
 	g_events().eventPlayerOnItemMoved(player, item, count, fromPos, toPos, fromCylinder, toCylinder);
-	g_callbacks().executeCallback(EventCallback_t::playerOnItemMoved, &EventCallback::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
+	g_callbacks().executeCallback(EventCallback_t::playerOnItemMoved, player, item, count, fromPos, toPos, fromCylinder, toCylinder);
 }
 
 bool Game::isTryingToStow(const Position &toPos, const std::shared_ptr<Cylinder> &toCylinder) const {
@@ -2994,6 +2998,26 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 		}
 	}
 
+	bool hasLootavaible = false;
+	for (ContainerIterator it = corpse->iterator(); it.hasNext(); it.advance()) {
+		const auto &corpseItem = *it;
+		if (!corpseItem) {
+			continue;
+		}
+
+		const bool listed = player->isQuickLootListedItem(corpseItem);
+		if ((listed && ignoreListItems) || (!listed && !ignoreListItems)) {
+			continue;
+		}
+
+		hasLootavaible = true;
+		break;
+	}
+
+	if (!hasLootavaible) {
+		corpse->clearLootHighlight(player);
+	}
+
 	std::stringstream ss;
 	if (totalLootedGold != 0 || missedAnyGold || totalLootedItems != 0 || missedAnyItem) {
 		bool lootedAllGold = totalLootedGold != 0 && !missedAnyGold;
@@ -3067,6 +3091,8 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 	} else {
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
 	}
+
+	corpse->sendUpdateToClient(player);
 
 	player->lastQuickLootNotification = OTSYS_TIME();
 }
@@ -4206,7 +4232,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 			return;
 		}
 
-		if (!g_callbacks().checkCallback(EventCallback_t::playerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
+		if (!g_callbacks().checkCallback(EventCallback_t::playerOnBrowseField, player, tile->getPosition())) {
 			return;
 		}
 
@@ -4295,7 +4321,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::playerOnRotateItem, &EventCallback::playerOnRotateItem, player, item, pos)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnRotateItem, player, item, pos)) {
 		return;
 	}
 
@@ -4778,7 +4804,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::playerOnBrowseField, &EventCallback::playerOnBrowseField, player, tile->getPosition())) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnBrowseField, player, tile->getPosition())) {
 		return;
 	}
 
@@ -5080,7 +5106,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::playerOnTradeRequest, &EventCallback::playerOnTradeRequest, player, tradePartner, tradeItem)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnTradeRequest, player, tradePartner, tradeItem)) {
 		return;
 	}
 
@@ -5152,7 +5178,7 @@ void Game::playerAcceptTrade(uint32_t playerId) {
 			return;
 		}
 
-		if (!g_callbacks().checkCallback(EventCallback_t::playerOnTradeAccept, &EventCallback::playerOnTradeAccept, player, tradePartner, tradeItem1, tradeItem2)) {
+		if (!g_callbacks().checkCallback(EventCallback_t::playerOnTradeAccept, player, tradePartner, tradeItem1, tradeItem2)) {
 			internalCloseTrade(player);
 			return;
 		}
@@ -5286,7 +5312,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 	);
 	if (index == 0) {
 		g_events().eventPlayerOnLookInTrade(player, tradePartner, tradeItem, lookDistance);
-		g_callbacks().executeCallback(EventCallback_t::playerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, tradeItem, lookDistance);
+		g_callbacks().executeCallback(EventCallback_t::playerOnLookInTrade, player, tradePartner, tradeItem, lookDistance);
 		return;
 	}
 
@@ -5307,7 +5333,7 @@ void Game::playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t
 
 			if (--index == 0) {
 				g_events().eventPlayerOnLookInTrade(player, tradePartner, item, lookDistance);
-				g_callbacks().executeCallback(EventCallback_t::playerOnLookInTrade, &EventCallback::playerOnLookInTrade, player, tradePartner, item, lookDistance);
+				g_callbacks().executeCallback(EventCallback_t::playerOnLookInTrade, player, tradePartner, item, lookDistance);
 				return;
 			}
 		}
@@ -5484,7 +5510,7 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::playerOnLookInShop, &EventCallback::playerOnLookInShop, player, &it, count)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnLookInShop, player, &it, count)) {
 		return;
 	}
 
@@ -5526,7 +5552,7 @@ void Game::playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos,
 
 	// Parse onLook from event player
 	g_events().eventPlayerOnLook(player, pos, thing, stackPos, lookDistance);
-	g_callbacks().executeCallback(EventCallback_t::playerOnLook, &EventCallback::playerOnLook, player, pos, thing, stackPos, lookDistance);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLook, player, thing, pos, lookDistance);
 }
 
 void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
@@ -5561,7 +5587,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	g_events().eventPlayerOnLookInBattleList(player, creature, lookDistance);
-	g_callbacks().executeCallback(EventCallback_t::playerOnLookInBattleList, &EventCallback::playerOnLookInBattleList, player, creature, lookDistance);
+	g_callbacks().executeCallback(EventCallback_t::playerOnLookInBattleList, player, creature, lookDistance);
 }
 
 void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, const std::shared_ptr<Item> &defaultItem, bool lootAllCorpses, bool autoLoot) {
@@ -5705,6 +5731,8 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 			}
 		}
 	}
+
+	corpse->sendUpdateToClient(player);
 }
 
 void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses) {
@@ -6127,7 +6155,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir) {
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::playerOnTurn, &EventCallback::playerOnTurn, player, dir)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::playerOnTurn, player, dir)) {
 		return;
 	}
 
@@ -6312,7 +6340,7 @@ void Game::playerShowQuestLog(uint32_t playerId) {
 	}
 
 	g_events().eventPlayerOnRequestQuestLog(player);
-	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLog, &EventCallback::playerOnRequestQuestLog, player);
+	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLog, player);
 }
 
 void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
@@ -6322,7 +6350,7 @@ void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
 	}
 
 	g_events().eventPlayerOnRequestQuestLine(player, questId);
-	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLine, &EventCallback::playerOnRequestQuestLine, player, questId);
+	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLine, player, questId);
 }
 
 void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text) {
@@ -6672,7 +6700,7 @@ void Game::internalCreatureChangeOutfit(const std::shared_ptr<Creature> &creatur
 		return;
 	}
 
-	if (!g_callbacks().checkCallback(EventCallback_t::creatureOnChangeOutfit, &EventCallback::creatureOnChangeOutfit, creature, outfit)) {
+	if (!g_callbacks().checkCallback(EventCallback_t::creatureOnChangeOutfit, creature, outfit)) {
 		return;
 	}
 
@@ -7409,7 +7437,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 		if (!isEvent) {
 			g_events().eventCreatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
-			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, &EventCallback::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
+			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
 		}
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
@@ -8983,7 +9011,7 @@ void Game::playerReportRuleViolationReport(uint32_t playerId, const std::string 
 	}
 
 	g_events().eventPlayerOnReportRuleViolation(player, targetName, reportType, reportReason, comment, translation);
-	g_callbacks().executeCallback(EventCallback_t::playerOnReportRuleViolation, &EventCallback::playerOnReportRuleViolation, player, targetName, reportType, reportReason, comment, translation);
+	g_callbacks().executeCallback(EventCallback_t::playerOnReportRuleViolation, player, targetName, reportType, reportReason, comment, translation);
 }
 
 void Game::playerReportBug(uint32_t playerId, const std::string &message, const Position &position, uint8_t category) {
@@ -8993,7 +9021,7 @@ void Game::playerReportBug(uint32_t playerId, const std::string &message, const 
 	}
 
 	g_events().eventPlayerOnReportBug(player, message, position, category);
-	g_callbacks().executeCallback(EventCallback_t::playerOnReportBug, &EventCallback::playerOnReportBug, player, message, position, category);
+	g_callbacks().executeCallback(EventCallback_t::playerOnReportBug, player, message, position, category);
 }
 
 void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, const std::string &date, const std::string &description, const std::string &comment) {
@@ -9293,6 +9321,15 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
+	const uint8_t maxTier = static_cast<uint8_t>(g_configManager().getNumber(FORGE_MAX_ITEM_TIER));
+	if (tier > maxTier) {
+		tier = maxTier;
+	}
+
+	if (tier > 0 && it.upgradeClassification == 0) {
+		tier = 0;
+	}
+
 	uint64_t totalPrice = price * amount;
 	uint64_t totalFee = totalPrice * 0.02; // 2% fee
 	uint64_t minFee = 20; // Min fee is 20gp
@@ -9405,6 +9442,10 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
+		const uint8_t maxTier = static_cast<uint8_t>(g_configManager().getNumber(FORGE_MAX_ITEM_TIER));
+		const uint8_t offerTier = it.upgradeClassification > 0 ? std::min<uint8_t>(offer.tier, maxTier) : 0;
+		offer.tier = offerTier;
+
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
 			player->getAccount()->addCoins(CoinType::Transferable, offer.amount, "");
@@ -9418,8 +9459,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 					break;
 				}
 
-				if (offer.tier > 0) {
-					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
+				if (offerTier > 0) {
+					item->setTier(offerTier);
 				}
 
 				tmpAmount -= stackCount;
@@ -9438,8 +9479,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 					break;
 				}
 
-				if (offer.tier > 0) {
-					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
+				if (offerTier > 0) {
+					item->setTier(offerTier);
 				}
 			}
 		}
@@ -9486,6 +9527,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		offerStatus << "Failed to load item id";
 		return;
 	}
+
+	const uint8_t maxTier = static_cast<uint8_t>(g_configManager().getNumber(FORGE_MAX_ITEM_TIER));
+	const uint8_t offerTier = it.upgradeClassification > 0 ? std::min<uint8_t>(offer.tier, maxTier) : 0;
+	offer.tier = offerTier;
 
 	if (amount == 0 || (!it.stackable && amount > 2000) || (it.stackable && amount > 64000) || amount > offer.amount) {
 		offerStatus << "Invalid offer amount " << amount << " for player " << player->getName();
@@ -9544,7 +9589,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				"Sold on Market"
 			);
 		} else {
-			if (!removeOfferItems(player, depotLocker, it, amount, offer.tier, offerStatus)) {
+			if (!removeOfferItems(player, depotLocker, it, amount, offerTier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
 				return;
 			}
@@ -9741,6 +9786,11 @@ void Game::playerForgeFuseItems(uint32_t playerId, ForgeAction_t actionType, uin
 
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	if (const auto scopedForgeChance = g_kv().scoped("eventscheduler")->get("forge-chance")) {
+		auto forgeChance = static_cast<int>(scopedForgeChance->getNumber());
+		int adjustedSuccess = baseSuccess + forgeChance - 100;
+		baseSuccess = static_cast<uint8_t>(std::clamp(adjustedSuccess, 0, 100));
+	}
 	auto coreSuccess = usedCore ? g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE) : 0;
 	auto finalRate = baseSuccess + coreSuccess;
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= finalRate;
@@ -10928,14 +10978,14 @@ ReturnValue Game::beforeCreatureZoneChange(const std::shared_ptr<Creature> &crea
 	}
 
 	for (const auto &zone : zonesLeaving) {
-		bool allowed = g_callbacks().checkCallback(EventCallback_t::zoneBeforeCreatureLeave, &EventCallback::zoneBeforeCreatureLeave, zone, creature);
+		bool allowed = g_callbacks().checkCallback(EventCallback_t::zoneBeforeCreatureLeave, zone, creature);
 		if (!force && !allowed) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
 
 	for (const auto &zone : zonesEntering) {
-		bool allowed = g_callbacks().checkCallback(EventCallback_t::zoneBeforeCreatureEnter, &EventCallback::zoneBeforeCreatureEnter, zone, creature);
+		bool allowed = g_callbacks().checkCallback(EventCallback_t::zoneBeforeCreatureEnter, zone, creature);
 		if (!force && !allowed) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
@@ -10962,10 +11012,10 @@ void Game::afterCreatureZoneChange(const std::shared_ptr<Creature> &creatures, c
 	}
 
 	for (const auto &zone : zonesLeaving) {
-		g_callbacks().executeCallback(EventCallback_t::zoneAfterCreatureLeave, &EventCallback::zoneAfterCreatureLeave, zone, creature);
+		g_callbacks().executeCallback(EventCallback_t::zoneAfterCreatureLeave, zone, creature);
 	}
 	for (const auto &zone : zonesEntering) {
-		g_callbacks().executeCallback(EventCallback_t::zoneAfterCreatureEnter, &EventCallback::zoneAfterCreatureEnter, zone, creature);
+		g_callbacks().executeCallback(EventCallback_t::zoneAfterCreatureEnter, zone, creature);
 	}
 }
 
@@ -11352,7 +11402,7 @@ void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uin
 
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11381,7 +11431,7 @@ void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseI
 
 	std::shared_ptr<Player> player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11410,7 +11460,7 @@ void Game::playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, ui
 
 	const std::shared_ptr<Player> &owner = getPlayerByID(playerId);
 	if (!owner) {
-		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11449,7 +11499,7 @@ void Game::playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t house
 
 	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11493,7 +11543,7 @@ void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t house
 
 	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 
@@ -11527,7 +11577,7 @@ void Game::playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t house
 
 	const std::shared_ptr<Player> &player = getPlayerByID(playerId);
 	if (!player) {
-		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
+		g_logger().warn("[{}] Player {} not found while handling house auction request.", __FUNCTION__, playerId);
 		return;
 	}
 

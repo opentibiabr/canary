@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -151,7 +151,10 @@ void Protocol::XTEA_transform(uint8_t* buffer, size_t messageLength, bool encryp
 
 	while (readPos < messageLength) {
 		std::array<uint8_t, 8> tempBuffer;
-		std::ranges::copy_n(buffer + readPos, 8, tempBuffer.begin());
+		if (std::memcpy(tempBuffer.data(), buffer + readPos, tempBuffer.size()) == nullptr) {
+			g_logger().error("[{}] memcpy failed while preparing XTEA block", __FUNCTION__);
+			return;
+		}
 
 		// Convert bytes to uint32_t considering little-endian order
 		std::array<uint8_t, 4> bytes0;

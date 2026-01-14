@@ -43997,6 +43997,10 @@ Awarded by TibiaMagazine.com.ve"/>
 	</item>
 	<item id="22119" article="a" name="burst arrow">
 		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="burstarrow"/>
+		<attribute key="maxhitchance" value="100"/>
 		<attribute key="attack" value="27"/>
 		<attribute key="weight" value="90"/>
 	</item>
@@ -74889,6 +74893,9 @@ Granted by TibiaGoals.com"/>
 	</item>
 	<item id="42745" article="a" name="open door">
 		<attribute key="type" value="door"/>
+	</item>
+	<item id="43901" article="a" name="toy ball">
+		<attribute key="weight" value="100" />
 	</item>
 	<item id="43952" article="a" name="closed door">
 		<attribute key="type" value="door"/>

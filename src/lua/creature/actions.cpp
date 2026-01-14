@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -373,6 +373,7 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, cons
 			player->onCloseContainer(openContainer);
 			player->closeContainer(oldContainerId);
 		} else {
+			container->clearLootHighlight();
 			player->addContainer(index, openContainer);
 			player->onSendContainer(openContainer);
 		}

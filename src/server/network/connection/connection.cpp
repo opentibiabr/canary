@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -135,7 +135,7 @@ void Connection::parseProxyIdentification(const std::error_code &error) {
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
 		if (error != asio::error::operation_aborted && error != asio::error::eof && error != asio::error::connection_reset) {
-			g_logger().error("[Connection::parseProxyIdentification] - Read error: {}", error.message());
+			g_logger().debug("[Connection::parseProxyIdentification] - Read error: {}", error.message());
 		}
 		close(FORCE_CLOSE);
 		return;
@@ -239,7 +239,7 @@ void Connection::parsePacket(const std::error_code &error) {
 
 	if (error || connectionState == CONNECTION_STATE_CLOSED) {
 		if (error) {
-			g_logger().error("[Connection::parsePacket] - Read error: {}", error.message());
+			g_logger().debug("[Connection::parsePacket] - Read error: {}", error.message());
 		}
 		close(FORCE_CLOSE);
 		return;

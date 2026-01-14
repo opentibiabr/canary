@@ -125,8 +125,15 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 		return false
 	end
 
+	local eventSpeedMultiplier = 1
+	local scopedFastExercise = KV.scoped("eventscheduler"):get("fast-exercise")
+	if scopedFastExercise then
+		eventSpeedMultiplier = 0.5
+		logger.debug("Fast exercise is enabled.")
+	end
+
 	local vocation = player:getVocation()
-	_G.OnExerciseTraining[playerId].event = addEvent(exerciseTrainingEvent, vocation:getBaseAttackSpeed() / configManager.getFloat(configKeys.RATE_EXERCISE_TRAINING_SPEED), playerId, tilePosition, weaponId, dummyId)
+	_G.OnExerciseTraining[playerId].event = addEvent(exerciseTrainingEvent, (vocation:getBaseAttackSpeed() / configManager.getFloat(configKeys.RATE_EXERCISE_TRAINING_SPEED)) * eventSpeedMultiplier, playerId, tilePosition, weaponId, dummyId)
 	return true
 end
 

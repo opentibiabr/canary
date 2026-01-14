@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -629,6 +629,8 @@ CombatType_t ItemParse::parseFieldCombatType(pugi::xml_attribute valueAttribute)
 		return COMBAT_DROWNDAMAGE;
 	} else if (lowerStringValue == "physical") {
 		return COMBAT_PHYSICALDAMAGE;
+	} else if (lowerStringValue == "agony") {
+		return COMBAT_AGONYDAMAGE;
 	} else {
 		g_logger().warn("[Items::parseItemNode] Unknown field value {}", valueAttribute.as_string());
 	}

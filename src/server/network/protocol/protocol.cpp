@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -151,7 +151,10 @@ void Protocol::XTEA_transform(uint8_t* buffer, size_t messageLength, bool encryp
 
 	while (readPos < messageLength) {
 		std::array<uint8_t, 8> tempBuffer;
-		std::ranges::copy_n(buffer + readPos, 8, tempBuffer.begin());
+		if (std::memcpy(tempBuffer.data(), buffer + readPos, tempBuffer.size()) == nullptr) {
+			g_logger().error("[{}] memcpy failed while preparing XTEA block", __FUNCTION__);
+			return;
+		}
 
 		// Convert bytes to uint32_t considering little-endian order
 		std::array<uint8_t, 4> bytes0;
@@ -201,11 +204,16 @@ void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
 
 bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
+	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	if ((msgLength % 8) != 0) {
+		g_logger().error("XTEA_decrypt Failed - invalid block size: {}", msgLength);
+		for (int i = 0; i < msgLength; ++i) {
+			fmt::print("{:02X} ", buffer[i]);
+		}
+		fmt::print("\n");
 		return false;
 	}
 
-	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	size_t messageLength = msgLength;
 
 	XTEA_transform(buffer, messageLength, false);
@@ -213,10 +221,11 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 	uint8_t paddingSize = msg.getByte();
 	uint16_t innerLength = messageLength - paddingSize;
 	if (innerLength + paddingSize > msgLength) {
+		g_logger().error("XTEA_decrypt Failed - invalid inner length: {} + {} > {}", innerLength, paddingSize, msgLength);
 		return false;
 	}
 
-	msg.setLength(innerLength);
+	msg.setLength(messageLength - paddingSize);
 	return true;
 }
 

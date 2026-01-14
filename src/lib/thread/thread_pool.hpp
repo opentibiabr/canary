@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -29,6 +29,15 @@ public:
 	template <typename F>
 	auto submit_loop(std::size_t first, std::size_t last, F &&f) {
 		return pool->submit_loop(first, last, std::forward<F>(f));
+	}
+
+	template <typename F, typename... Args>
+	auto submit_task(F &&f, Args &&... args) {
+		return pool->submit_task(std::forward<F>(f), std::forward<Args>(args)...);
+	}
+
+	void wait_for_tasks() {
+		pool->wait();
 	}
 
 	auto get_thread_count() const noexcept {

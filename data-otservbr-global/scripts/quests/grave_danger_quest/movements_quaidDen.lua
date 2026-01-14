@@ -13,5 +13,5 @@ function quaidDen.onStepIn(creature, item, position, fromPosition)
 	return true
 end
 
-quaidDen:id(31636)
+quaidDen:id(31733)
 quaidDen:register()

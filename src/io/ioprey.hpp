@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -17,10 +17,6 @@ class TaskHuntingSlot;
 class TaskHuntingOption;
 class NetworkMessage;
 class Player;
-
-static const std::unique_ptr<PreySlot> &PreySlotNull {};
-static const std::unique_ptr<TaskHuntingSlot> &TaskHuntingSlotNull {};
-static const std::unique_ptr<TaskHuntingOption> &TaskHuntingOptionNull {};
 
 enum PreySlot_t : uint8_t {
 	PreySlot_One = 0,
@@ -214,6 +210,10 @@ public:
 	uint16_t firstReward = 0;
 	uint16_t secondReward = 0;
 };
+
+static const std::unique_ptr<PreySlot> &PreySlotNull {};
+static const std::unique_ptr<TaskHuntingSlot> &TaskHuntingSlotNull {};
+static const std::unique_ptr<TaskHuntingOption> &TaskHuntingOptionNull {};
 
 class IOPrey {
 public:

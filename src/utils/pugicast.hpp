@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -48,5 +48,32 @@ namespace pugi {
 
 		// Return a default value if no exception is thrown
 		return T {};
+	}
+
+	// Template specialization for floating point types on macOS where std::from_chars might not support them
+	template <>
+	inline float cast<float>(const pugi::char_t* str) {
+		try {
+			float value = std::stof(str);
+			return std::clamp(value, std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max());
+		} catch (const std::invalid_argument &) {
+			logError(fmt::format("[{}] Invalid argument {}", __FUNCTION__, str));
+		} catch (const std::out_of_range &) {
+			logError(fmt::format("[{}] Result out of range: {}", __FUNCTION__, str));
+		}
+		return 0.0f;
+	}
+
+	template <>
+	inline double cast<double>(const pugi::char_t* str) {
+		try {
+			double value = std::stod(str);
+			return std::clamp(value, std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max());
+		} catch (const std::invalid_argument &) {
+			logError(fmt::format("[{}] Invalid argument {}", __FUNCTION__, str));
+		} catch (const std::out_of_range &) {
+			logError(fmt::format("[{}] Result out of range: {}", __FUNCTION__, str));
+		}
+		return 0.0;
 	}
 }

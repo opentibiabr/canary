@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -172,7 +172,7 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 
 	if (createItem) {
 		if (!Item::items.hasItemType(itemId)) {
-			Lua::reportErrorFunc("Not found item with id: " + itemId);
+			Lua::reportErrorFunc("Not found item with id: " + std::to_string(itemId));
 			Lua::pushBoolean(L, false);
 			return 1;
 		}

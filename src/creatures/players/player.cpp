@@ -2610,7 +2610,7 @@ void Player::openImbuementWindow(const std::shared_ptr<Item> &item) {
 
 	updateImbuementTrackerStats();
 
-	client->openImbuementWindow(item);
+	client->sendOpenImbuementWindow(item);
 }
 
 // inventory
@@ -8564,9 +8564,9 @@ void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &contai
 }
 
 // Monk Update
-void Player::sendMonkData(MonkData_t type, uint8_t value) {
+void Player::sendMonkState(MonkData_t type, uint8_t value) {
 	if (client) {
-		client->sendMonkData(type, value);
+		client->sendMonkState(type, value);
 	}
 }
 
@@ -12193,7 +12193,7 @@ void Player::setVirtue(Virtue_t newVirtue) {
 	virtue = newVirtue;
 
 	sendSkills();
-	sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
+	sendMonkState(MonkData_t::Virtue, enumToValue(virtue));
 }
 
 void Player::setSerene(bool b, int32_t ticks /* = -1 */) {
@@ -12219,12 +12219,12 @@ void Player::setSerene(bool b, int32_t ticks /* = -1 */) {
 
 void Player::emptyHarmony() {
 	harmony = 0;
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 void Player::fillHarmony() {
 	buildHarmony(5);
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 void Player::buildHarmony(uint8_t charges /* = 1 */) {
@@ -12241,7 +12241,7 @@ void Player::buildHarmony(uint8_t charges /* = 1 */) {
 
 	harmony += charges;
 
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 void Player::spendHarmony() {
@@ -12253,7 +12253,7 @@ void Player::spendHarmony() {
 		buildHarmony();
 	}
 
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 uint8_t Player::getHarmony() {

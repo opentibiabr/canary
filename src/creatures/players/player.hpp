@@ -908,7 +908,7 @@ public:
 	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const;
 
 	// Monk Update
-	void sendMonkData(MonkData_t type, uint8_t value);
+	void sendMonkState(MonkData_t type, uint8_t value);
 	void updateAimAtTargetSpells(uint16_t spellId, uint8_t state);
 	std::unordered_set<uint16_t> getAimAtTargetSpells() const;
 

@@ -263,7 +263,7 @@ private:
 	void parseCloseChannel(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
+	void AddImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -280,7 +280,7 @@ private:
 	void sendIconBakragore(const IconBakragore icon);
 	void sendFYIBox(const std::string &message);
 
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
+	void sendOpenImbuementWindow(const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -296,14 +296,14 @@ private:
 
 	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence);
 	void sendForgeHistory(uint8_t page);
-	void sendForgeSkillStats(NetworkMessage &msg) const;
+	void AddForgeSkillStats(NetworkMessage &msg) const;
 	double getForgeSkillStat(Slots_t slot, bool applyAmplification = true) const;
 
 	void sendBosstiaryData();
 	void parseSendBosstiary();
 	void parseSendBosstiarySlots();
 	void parseBosstiarySlot(NetworkMessage &msg);
-	void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
+	void AddPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
 	void sendMonsterPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 	void parseSetMonsterPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
@@ -515,7 +515,7 @@ private:
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
 	void parsePlayerTyping(NetworkMessage &msg);
 	void AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit);
-	void sendOutfitWindowCustomOTCR(NetworkMessage &msg);
+	void addOutfitWindowFeaturesOTCR(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
@@ -539,7 +539,7 @@ private:
 	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
 	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
 	 */
-	void sendMonkData(MonkData_t type, uint8_t value);
+	void sendMonkState(MonkData_t type, uint8_t value);
 	/**
 	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
 	 *
@@ -579,9 +579,9 @@ private:
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
-	void addBless();
+	void AddBlessings();
 	void parsePacketDead(uint8_t recvbyte);
-	void addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
+	void AddCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);

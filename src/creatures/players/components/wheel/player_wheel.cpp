@@ -1546,24 +1546,9 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
 }
 
 void PlayerWheel::sendGiftOfLifeCooldown() const {
-	if (!m_player.client || m_player.client->oldProtocol) {
-		return;
-	}
-
-	NetworkMessage msg;
-	msg.addByte(0x5E);
-	msg.addByte(0x01); // Gift of life ID
-	msg.addByte(0x00); // Cooldown ENUM
-	msg.add<uint32_t>(getGiftOfCooldown());
-	msg.add<uint32_t>(getGiftOfLifeTotalCooldown());
-	// Checking if the cooldown if decreasing or it's stopped
-	if (m_player.getZoneType() != ZONE_PROTECTION && m_player.hasCondition(CONDITION_INFIGHT)) {
-		msg.addByte(0x01);
-	} else {
-		msg.addByte(0x00);
-	}
-
-	m_player.client->writeToOutputBuffer(msg);
+	// gift of life passive id is 1
+	bool paused = m_player.getZoneType() == ZONE_PROTECTION || !m_player.hasCondition(CONDITION_INFIGHT);
+	m_player.sendPassiveCooldown(1, getGiftOfCooldown(), getGiftOfLifeTotalCooldown(), paused);
 }
 
 bool PlayerWheel::checkSavePointsBySlotType(WheelSlots_t slotType, uint16_t points) {

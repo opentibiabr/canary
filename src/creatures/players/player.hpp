@@ -266,7 +266,7 @@ public:
 
 	void sendFYIBox(const std::string &message) const;
 
-	void parseBestiarySendRaces() const;
+	void sendBestiaryRaces() const;
 	void sendBestiaryCharms() const;
 	void addBestiaryKillCount(uint16_t raceid, uint32_t amount);
 	uint32_t getBestiaryKillCount(uint16_t raceid) const;
@@ -895,6 +895,7 @@ public:
 	void sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType) const;
 	void sendSpellCooldown(uint16_t spellId, uint32_t time) const;
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) const;
+	void sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused) const;
 	void sendUseItemCooldown(uint32_t time) const;
 	void reloadCreature(const std::shared_ptr<Creature> &creature) const;
 	void sendModalWindow(const ModalWindow &modalWindow);

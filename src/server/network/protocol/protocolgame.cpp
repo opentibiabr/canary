@@ -528,11 +528,13 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		if (isOTC && otclientV8 == 0) {
 			sendOTCRFeatures();
 		}
+#ifndef PROTOCOL_OTC_DISABLE_EXTENDED_OPCODE
 		NetworkMessage opcodeMessage;
 		opcodeMessage.addByte(0x32);
 		opcodeMessage.addByte(0x00);
 		opcodeMessage.add<uint16_t>(0x00);
 		writeToOutputBuffer(opcodeMessage);
+#endif
 	}
 
 	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
@@ -1373,13 +1375,13 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			parseVipGroupActions(msg);
 			break;
 		case 0xE1:
-			parseBestiarySendRaces();
+			sendBestiaryRaces();
 			break;
 		case 0xE2:
 			parseBestiarySendCreatures(msg);
 			break;
 		case 0xE3:
-			parseBestiarysendMonsterData(msg);
+			parseSendBestiaryMonsterData(msg);
 			break;
 		case 0xE4:
 			parseSendBuyCharmRune(msg);
@@ -2399,7 +2401,8 @@ void ProtocolGame::parseRuleViolationReport(NetworkMessage &msg) {
 	g_game().playerReportRuleViolationReport(player->getID(), targetName, reportType, reportReason, comment, translation);
 }
 
-void ProtocolGame::parseBestiarySendRaces() {
+void ProtocolGame::sendBestiaryRaces() {
+#ifndef PROTOCOL_DISABLE_BESTIARY
 	if (oldProtocol) {
 		return;
 	}
@@ -2429,6 +2432,7 @@ void ProtocolGame::parseBestiarySendRaces() {
 	writeToOutputBuffer(msg);
 
 	player->sendBestiaryCharms();
+#endif
 }
 
 void ProtocolGame::sendBestiaryEntryChanged(uint16_t raceid) {
@@ -2444,7 +2448,7 @@ void ProtocolGame::sendBestiaryEntryChanged(uint16_t raceid) {
 #endif
 }
 
-void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
+void ProtocolGame::parseSendBestiaryMonsterData(NetworkMessage &msg) {
 	if (oldProtocol) {
 		return;
 	}
@@ -2464,14 +2468,14 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	}
 
 	if (!mtype) {
-		g_logger().warn("[ProtocolGame::parseBestiarysendMonsterData] - "
+		g_logger().warn("[ProtocolGame::parseSendBestiaryMonsterData] - "
 		                "MonsterType was not found");
 		return;
 	}
 
 	uint32_t killCounter = player->getBestiaryKillCount(raceId);
 	uint8_t currentLevel = g_iobestiary().getKillStatus(mtype, killCounter);
-
+#ifndef PROTOCOL_DISABLE_BESTIARY
 	NetworkMessage newmsg;
 	newmsg.addByte(0xD7);
 	newmsg.add<uint16_t>(raceId);
@@ -2561,6 +2565,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 	}
 
 	writeToOutputBuffer(newmsg);
+#endif
 }
 
 void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
@@ -8083,6 +8088,28 @@ void ProtocolGame::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) {
 #endif
 }
 
+void ProtocolGame::sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused) {
+#ifndef PROTOCOL_DISABLE_PASSIVE_COOLDOWNS
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x5E);
+	msg.addByte(passiveId);
+
+	// message mode
+	// 0 - passive cooldown - reads [u32, u32, u8]
+	// 1 - unknown - reads [u8, u8]
+	msg.addByte(0x00);
+
+	msg.add<uint32_t>(currentCooldown);
+	msg.add<uint32_t>(maxCooldown);
+	msg.addByte(paused ? 0x00 : 0x01);
+	writeToOutputBuffer(msg);
+#endif
+}
+
 void ProtocolGame::sendUseItemCooldown(uint32_t time) {
 #ifndef PROTOCOL_DISABLE_USE_ITEM_COOLDOWN
 	if (!player || oldProtocol) {
@@ -10496,6 +10523,7 @@ void ProtocolGame::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType ty
 }
 
 void ProtocolGame::sendHousesInfo() {
+#ifndef PROTOCOL_DISABLE_CYCLOPEDIA_HOUSES
 	NetworkMessage msg;
 
 	uint32_t houseClientId = 0;
@@ -10528,6 +10556,7 @@ void ProtocolGame::sendHousesInfo() {
 	}
 
 	writeToOutputBuffer(msg);
+#endif
 }
 
 void ProtocolGame::sendMonkState(MonkData_t type, uint8_t value) {

@@ -1290,6 +1290,9 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 	// The apply extensions can't modifify the damage value, so we need to create a copy of the damage value
 	auto extensionsDamage = tmpDamage;
 	applyExtensions(caster, affectedTargets, extensionsDamage, params);
+	if (affectedTargets.size() == 1) {
+		tmpDamage = extensionsDamage;
+	}
 	for (const auto &tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
 			continue;
@@ -2404,9 +2407,9 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			// If is single target, apply the damage directly
 			if (isSingleCombat) {
 				damage = targetDamage;
+			} else {
+				targetCreature->setCombatDamage(targetDamage);
 			}
-
-			targetCreature->setCombatDamage(targetDamage);
 		}
 	} else if (monster) {
 		baseChance = monster->getCriticalChance() * 100;

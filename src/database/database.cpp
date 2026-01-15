@@ -68,7 +68,6 @@ void Database::createDatabaseBackup(bool compress) const {
 
 	// Get current time for formatting
 	auto now = std::chrono::system_clock::now();
-	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 	std::string formattedDate = fmt::format("{:%Y-%m-%d}", now);
 	std::string formattedTime = fmt::format("{:%H-%M-%S}", now);
 

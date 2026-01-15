@@ -16,7 +16,6 @@ class Item;
 class Creature;
 class Player;
 struct Position;
-class RSAManager;
 
 class NetworkMessage {
 public:

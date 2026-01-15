@@ -237,16 +237,22 @@ bool RSAManager::loadPEM(const std::string &filename) {
 		return false;
 	}
 
-	// Transfer ownership to member smart pointers
-	n.reset(n_raw);
-	d.reset(d_raw);
+	// Extract to temporaries first to ensure atomicity
+	// We use OpenSSLPtr (local type) for temporary management
+	OpenSSLPtr<BIGNUM> n_temp(n_raw, BN_free);
+	OpenSSLPtr<BIGNUM> d_temp(d_raw, BN_free);
 
-	// Re-compute Montgomery Context
+	// Re-compute Montgomery Context use n_temp
 	OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
-	if (!ctx || !BN_MONT_CTX_set(mont_ctx.get(), n.get(), ctx.get())) {
+	if (!ctx || !BN_MONT_CTX_set(mont_ctx.get(), n_temp.get(), ctx.get())) {
 		logger.error("RSAManager::loadPEM: Failed to setup Montgomery Context");
 		return false;
 	}
+
+	// Commit all changes atomically
+	// Transfer ownership from local OpenSSLPtr (void deleter) to member BnPtr (BNDeleter)
+	n.reset(n_temp.release());
+	d.reset(d_temp.release());
 
 	return true;
 }

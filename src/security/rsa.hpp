@@ -11,31 +11,29 @@
 
 class Logger;
 
-class RSA {
+class RSAManager {
 public:
-	explicit RSA(Logger &logger);
-	~RSA();
-
 	// Singleton - ensures we don't accidentally copy it
-	RSA(RSA const &) = delete;
-	void operator=(RSA const &) = delete;
+	RSAManager(const RSAManager &) = delete;
+	void operator=(const RSAManager &) = delete;
 
-	static RSA &getInstance();
+	static RSAManager &getInstance();
+
+	explicit RSAManager(Logger &logger);
+	~RSAManager();
 
 	void start();
 
 	void setKey(const char* pString, const char* qString, int base = 10);
 	void decrypt(char* msg) const;
 
-	std::string base64Decrypt(const std::string &input) const;
-	uint16_t decodeLength(char*&pos) const;
-	void readHexString(char*&pos, uint16_t length, std::string &output) const;
 	bool loadPEM(const std::string &filename);
 
 private:
 	Logger &logger;
-	mpz_t n {};
-	mpz_t d {};
+	BIGNUM* n = nullptr;
+	BIGNUM* d = nullptr;
+	BN_MONT_CTX* mont_ctx = nullptr;
 };
 
-constexpr auto g_RSA = RSA::getInstance;
+constexpr auto g_RSA = RSAManager::getInstance;

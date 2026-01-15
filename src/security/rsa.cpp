@@ -11,24 +11,29 @@
 
 #include "lib/di/container.hpp"
 
-RSAManager::RSAManager(Logger &logger) :
-	logger(logger) {
-	n = BN_new();
-	d = BN_new();
-	mont_ctx = BN_MONT_CTX_new();
+namespace {
+	// Helper for local unique_ptr managing OpenSSL objects
+	// Use a more flexible deleter type to handle both void(*)() and int(*)() functions
+	template <typename T, typename Deleter = void (*)(T*)>
+	using OpenSSLPtr = std::unique_ptr<T, Deleter>;
+
+	// BIO_free returns int, so we need a wrapper or cast if we used the strict template.
+	// But using the Deleter template parameter defaults to void(*)(T*) which works for BN_free.
+	// For BIO_free we can pass the specific type.
 }
 
-RSAManager::~RSAManager() {
-	if (n) {
-		BN_free(n);
-	}
-	if (d) {
-		BN_free(d);
-	}
-	if (mont_ctx) {
-		BN_MONT_CTX_free(mont_ctx);
+RSAManager::RSAManager(Logger &logger) :
+	logger(logger) {
+	n.reset(BN_new());
+	d.reset(BN_new());
+	mont_ctx.reset(BN_MONT_CTX_new());
+
+	if (!n || !d || !mont_ctx) {
+		throw std::runtime_error("Failed to allocate OpenSSL BIGNUM/Context structures (BN_new/BN_MONT_CTX_new returned null).");
 	}
 }
+
+// Destructor is defaulted in header
 
 RSAManager &RSAManager::getInstance() {
 	return inject<RSAManager>();
@@ -52,79 +57,137 @@ void RSAManager::start() {
 }
 
 void RSAManager::setKey(const char* pString, const char* qString, int base /* = 10*/) {
-	BN_CTX* ctx = BN_CTX_new();
-	BIGNUM* p = BN_new();
-	BIGNUM* q = BN_new();
-	BIGNUM* e = BN_new();
-	BIGNUM* p_minus_1 = BN_new();
-	BIGNUM* q_minus_1 = BN_new();
-	BIGNUM* phi = BN_new();
-
-	// Parse p and q
-	if (base == 10) {
-		BN_dec2bn(&p, pString);
-		BN_dec2bn(&q, qString);
-	} else {
-		BN_hex2bn(&p, pString);
-		BN_hex2bn(&q, qString);
+	// RAII Context
+	OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
+	if (!ctx) {
+		throw std::runtime_error("Failed to allocate BN_CTX in setKey");
 	}
 
+	// Helper to check OpenSSL success returns (1 = success, 0 = failure)
+	auto check = [](int result, const char* msg) {
+		if (result == 0) {
+			throw std::runtime_error(msg);
+		}
+	};
+
+	// Use raw pointers for parsing to let OpenSSL allocate/manage them,
+	// then transfer ownership to RAII wrappers immediately.
+	BIGNUM* p_raw = nullptr;
+	BIGNUM* q_raw = nullptr;
+
+	try {
+		// Parse p and q
+		if (base == 10) {
+			check(BN_dec2bn(&p_raw, pString), "Failed to parse p (decimal)");
+			check(BN_dec2bn(&q_raw, qString), "Failed to parse q (decimal)");
+		} else {
+			check(BN_hex2bn(&p_raw, pString), "Failed to parse p (hex)");
+			check(BN_hex2bn(&q_raw, qString), "Failed to parse q (hex)");
+		}
+	} catch (...) {
+		// If parsing fails mid-way, we must free what was allocated
+		if (p_raw) {
+			BN_free(p_raw);
+		}
+		if (q_raw) {
+			BN_free(q_raw);
+		}
+		throw;
+	}
+
+	// Transfer to smart pointers
+	OpenSSLPtr<BIGNUM> p(p_raw, BN_free);
+	OpenSSLPtr<BIGNUM> q(q_raw, BN_free);
+
+	// Other variables can be allocated normally
+	auto make_bn = []() {
+		BIGNUM* ptr = BN_new();
+		if (!ptr) {
+			throw std::bad_alloc();
+		}
+		return OpenSSLPtr<BIGNUM>(ptr, BN_free);
+	};
+
+	auto e = make_bn();
+	auto phi = make_bn();
+
 	// e = 65537
-	BN_set_word(e, 65537);
+	check(BN_set_word(e.get(), 65537), "BN_set_word failed");
 
 	// n = p * q
-	BN_mul(n, p, q, ctx);
+	check(BN_mul(n.get(), p.get(), q.get(), ctx.get()), "BN_mul (n=p*q) failed");
 
 	// phi = (p - 1)(q - 1)
-	BN_sub_word(p, 1); // p = p - 1
-	BN_sub_word(q, 1); // q = q - 1
-	BN_mul(phi, p, q, ctx);
+	check(BN_sub_word(p.get(), 1), "BN_sub_word (p-1) failed");
+	check(BN_sub_word(q.get(), 1), "BN_sub_word (q-1) failed");
+	check(BN_mul(phi.get(), p.get(), q.get(), ctx.get()), "BN_mul (phi) failed");
 
 	// d = e^-1 mod phi
-	BN_mod_inverse(d, e, phi, ctx);
+	if (!BN_mod_inverse(d.get(), e.get(), phi.get(), ctx.get())) {
+		throw std::runtime_error("BN_mod_inverse failed");
+	}
 
 	// Pre-compute Montgomery context for n
-	BN_MONT_CTX_set(mont_ctx, n, ctx);
-
-	BN_free(p);
-	BN_free(q);
-	BN_free(e);
-	BN_free(p_minus_1);
-	BN_free(q_minus_1);
-	BN_free(phi);
-	BN_CTX_free(ctx);
+	if (!BN_MONT_CTX_set(mont_ctx.get(), n.get(), ctx.get())) {
+		throw std::runtime_error("BN_MONT_CTX_set failed");
+	}
 }
 
 void RSAManager::decrypt(char* msg) const {
-	// Thread-local memory pool: initialized once per thread, reused forever.
-	// Zero allocation cost after first run.
-	static thread_local BN_CTX* ctx = BN_CTX_new();
+	// Thread-local BN_CTX. Using unique_ptr with custom deleter.
+	// Initialized once per thread.
+	static thread_local OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
 
-	BN_CTX_start(ctx);
+	if (!ctx) {
+		// Try to recover if previous alloc failed (unlikely for thread_local static but safe)
+		ctx.reset(BN_CTX_new());
+		if (!ctx) {
+			logger.error("RSAManager::decrypt: Failed to allocate thread-local BN_CTX");
+			return;
+		}
+	}
 
-	// Get temporary variables from the pool (no malloc)
-	BIGNUM* c = BN_CTX_get(ctx);
-	BIGNUM* m = BN_CTX_get(ctx);
+	BN_CTX_start(ctx.get());
+
+	// Ensure we clean up the stack frame in BN_CTX
+	// Simple RAII for BN_CTX_start/end
+	struct BNCTXFrame {
+		BN_CTX* c;
+		explicit BNCTXFrame(BN_CTX* c) :
+			c(c) { }
+		~BNCTXFrame() {
+			BN_CTX_end(c);
+		}
+	} frame(ctx.get());
+
+	BIGNUM* c = BN_CTX_get(ctx.get());
+	BIGNUM* m = BN_CTX_get(ctx.get());
+
+	if (!c || !m) {
+		logger.error("RSAManager::decrypt: BN_CTX_get failed (stack exhausted?)");
+		return;
+	}
 
 	// Convert raw bytes (128 bytes) to BIGNUM
-	// OpenSSL BN_bin2bn expects big-endian. Tibia protocol sends 128 bytes.
-	// We assume msg is a pointer to the 128 bytes buffer.
-	BN_bin2bn(reinterpret_cast<const unsigned char*>(msg), 128, c);
+	if (!BN_bin2bn(reinterpret_cast<const unsigned char*>(msg), 128, c)) {
+		logger.error("RSAManager::decrypt: BN_bin2bn failed");
+		return;
+	}
 
-	// Optimized: Use Montgomery Multiplication
-	BN_mod_exp_mont(m, c, d, n, ctx, mont_ctx);
+	// Montgomery Exponentiation: m = c^d mod n
+	if (!BN_mod_exp_mont(m, c, d.get(), n.get(), ctx.get(), mont_ctx.get())) {
+		unsigned long err = ERR_get_error();
+		logger.error("RSAManager::decrypt: BN_mod_exp_mont failed: {}", ERR_error_string(err, nullptr));
+		return;
+	}
 
 	// Convert back to bytes
-	// The result 'm' needs to be exported to the 'msg' buffer.
-	// Note: BN_bn2bin exports only the significant bytes (no leading zeros).
-	// We must pad it to 128 bytes.
-
 	int num_bytes = BN_num_bytes(m);
 	int padding = 128 - num_bytes;
 
 	if (padding < 0) {
-		// Should not happen if modulus is 1024 bits
-		padding = 0;
+		logger.error("RSAManager::decrypt: Decrypted data length ({}) exceeds buffer (128)", num_bytes);
+		return;
 	}
 
 	// Zero out padding
@@ -133,47 +196,57 @@ void RSAManager::decrypt(char* msg) const {
 	}
 
 	// Write key bytes
-	BN_bn2bin(m, reinterpret_cast<unsigned char*>(msg) + padding);
-
-	// Release variables back to the pool (no free)
-	BN_CTX_end(ctx);
+	if (BN_bn2bin(m, reinterpret_cast<unsigned char*>(msg) + padding) != num_bytes) {
+		logger.error("RSAManager::decrypt: BN_bn2bin size mismatch");
+	}
 }
 
 bool RSAManager::loadPEM(const std::string &filename) {
-	// OpenSSL native PEM reading
-	FILE* fp = fopen(filename.c_str(), "r");
-	if (!fp) {
+	// BIO_free returns int so we specify the deleter type explicitly
+	OpenSSLPtr<BIO, int (*)(BIO*)> bio(BIO_new_file(filename.c_str(), "r"), BIO_free);
+	if (!bio) {
+		// Not necessarily an error if file doesn't exist, we fallback
 		return false;
 	}
 
-	// Read generic private key (handles RSA headers, PKCS#1, PKCS#8)
-	// We use standard RSA structure helper
-	::RSA* rsa_key = PEM_read_RSAPrivateKey(fp, nullptr, nullptr, nullptr);
-	fclose(fp);
+	OpenSSLPtr<EVP_PKEY> pkey(
+		PEM_read_bio_PrivateKey(bio.get(), nullptr, nullptr, nullptr),
+		EVP_PKEY_free
+	);
 
-	if (!rsa_key) {
+	if (!pkey) {
 		unsigned long err = ERR_get_error();
-		logger.error("OpenSSL PEM read error: {}", ERR_error_string(err, nullptr));
+		logger.error("RSAManager::loadPEM: OpenSSL PEM read error: {}", ERR_error_string(err, nullptr));
 		return false;
 	}
 
-	const BIGNUM *rn, *re, *rd;
-	RSA_get0_key(rsa_key, &rn, &re, &rd);
+	BIGNUM* n_raw = nullptr;
+	BIGNUM* d_raw = nullptr;
 
-	if (rn && rd) {
-		BN_copy(n, rn);
-		BN_copy(d, rd);
-
-		// Pre-compute Montgomery context for loaded key
-		BN_CTX* ctx = BN_CTX_new();
-		BN_MONT_CTX_set(mont_ctx, n, ctx);
-		BN_CTX_free(ctx);
-
-		RSA_free(rsa_key);
-		return true;
+	// OpenSSL 3.0+ way to get parameters
+	// If this fails (e.g. key type is not RSA), we error out.
+	if (!EVP_PKEY_get_bn_param(pkey.get(), "n", &n_raw) || !EVP_PKEY_get_bn_param(pkey.get(), "d", &d_raw)) {
+		logger.error("RSAManager::loadPEM: Failed to extract 'n' or 'd' from private key (is it RSA?)");
+		// Note: EVP_PKEY_get_bn_param allocates new BIGNUMs if successful
+		if (n_raw) {
+			BN_free(n_raw);
+		}
+		if (d_raw) {
+			BN_free(d_raw);
+		}
+		return false;
 	}
 
-	RSA_free(rsa_key);
-	logger.error("PEM file did not contain a valid RSA private key (missing n or d).");
-	return false;
+	// Transfer ownership to member smart pointers
+	n.reset(n_raw);
+	d.reset(d_raw);
+
+	// Re-compute Montgomery Context
+	OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
+	if (!ctx || !BN_MONT_CTX_set(mont_ctx.get(), n.get(), ctx.get())) {
+		logger.error("RSAManager::loadPEM: Failed to setup Montgomery Context");
+		return false;
+	}
+
+	return true;
 }

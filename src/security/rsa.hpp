@@ -20,7 +20,7 @@ public:
 	static RSAManager &getInstance();
 
 	explicit RSAManager(Logger &logger);
-	~RSAManager();
+	~RSAManager() = default;
 
 	void start();
 
@@ -30,10 +30,24 @@ public:
 	bool loadPEM(const std::string &filename);
 
 private:
+	struct BNDeleter {
+		void operator()(BIGNUM* p) const {
+			BN_free(p);
+		}
+	};
+	struct BNMontCtxDeleter {
+		void operator()(BN_MONT_CTX* p) const {
+			BN_MONT_CTX_free(p);
+		}
+	};
+
+	using BnPtr = std::unique_ptr<BIGNUM, BNDeleter>;
+	using BnMontCtxPtr = std::unique_ptr<BN_MONT_CTX, BNMontCtxDeleter>;
+
 	Logger &logger;
-	BIGNUM* n = nullptr;
-	BIGNUM* d = nullptr;
-	BN_MONT_CTX* mont_ctx = nullptr;
+	BnPtr n;
+	BnPtr d;
+	BnMontCtxPtr mont_ctx;
 };
 
 constexpr auto g_RSA = RSAManager::getInstance;

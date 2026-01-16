@@ -813,20 +813,30 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string password;
 
 	if (authType != "session") {
-		size_t pos = sessionKey.find('\n');
-		if (pos == std::string::npos) {
+		// the login server may deliver the session key in two formats:
+		// email\npassword
+		// email\npassword\ntoken\ntimestamp
+		// this ensures that both of them are handled properly
+		std::vector<std::string> sessionKeyParts;
+
+		size_t start = 0;
+		size_t end;
+		while ((end = sessionKey.find('\n', start)) != std::string::npos) {
+				sessionKeyParts.push_back(sessionKey.substr(start, end - start));
+				start = end + 1;
+		}
+		sessionKeyParts.push_back(sessionKey.substr(start));
+
+		// check if login/password are in use
+		if (sessionKeyParts.size() < 2 || sessionKeyParts.at(0).empty() || sessionKeyParts.at(1).empty()) {
 			ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
 			disconnectClient(ss.str());
 			return;
 		}
-		accountDescriptor = sessionKey.substr(0, pos);
-		if (accountDescriptor.empty()) {
-			ss.str(std::string());
-			ss << "You must enter your " << (oldProtocol ? "username" : "email") << ".";
-			disconnectClient(ss.str());
-			return;
-		}
-		password = sessionKey.substr(pos + 1);
+
+		// user credentials
+		accountDescriptor = sessionKeyParts.at(0);
+		password = sessionKeyParts.at(1);
 	}
 
 	if (!oldProtocol && operatingSystem == CLIENTOS_NEW_LINUX) {
@@ -7120,6 +7130,128 @@ void ProtocolGame::sendPlayerVocation(const std::shared_ptr<Player> &target) {
 #endif
 }
 
+void ProtocolGame::sendLocalPlayer(const Position &pos, const bool isLogin) {
+	sendServerConfig();
+
+	// Allow bug report (Ctrl + Z)
+	sendAllowBugReport();
+
+	sendTibiaTime(g_game().getLightHour());
+	sendPendingStateEntered();
+	sendEnterWorld();
+	sendMapDescription(pos);
+
+	if (isLogin) {
+		sendMagicEffect(pos, CONST_ME_TELEPORT);
+		sendDisableLoginMusic();
+	}
+
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		sendInventoryItem(static_cast<Slots_t>(i), player->getInventoryItem(static_cast<Slots_t>(i)));
+	}
+
+	sendStats();
+	sendSkills();
+	sendBlessStatus();
+	sendPremiumTrigger();
+	sendItemsPrice();
+	sendPreyPrices();
+	player->sendPreyData();
+	player->sendTaskHuntingData();
+	sendForgingData();
+
+	// gameworld light-settings
+	sendWorldLight(g_game().getWorldLightInfo());
+
+	// player light level
+	sendCreatureLight(player);
+
+	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
+		sendMonkState(MonkData_t::Harmony, player->getHarmony());
+		auto virtue = player->getVirtue();
+		virtue = virtue != Virtue_t::None ? virtue : Virtue_t::Harmony;
+		sendMonkState(MonkData_t::Virtue, enumToValue(virtue));
+		sendMonkState(MonkData_t::Serenity, 1);
+	}
+
+	sendVIPGroups();
+	sendFullVipList();
+
+	sendInventoryIds();
+	std::shared_ptr<Item> slotItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+	if (slotItem) {
+		player->setMainBackpackUnassigned(slotItem->getContainer());
+	}
+
+	sendLootContainers();
+	sendBasicData();
+	sendHousesInfo();
+	// Wheel of destiny cooldown
+	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
+		player->wheel().sendGiftOfLifeCooldown();
+	}
+
+	player->sendClientCheck();
+	player->sendGameNews();
+	player->sendIcons();
+
+	// Send open containers after login.
+	if (isLogin) {
+		player->openPlayerContainers();
+	}
+
+	if (isLogin) {
+		player->sendSpellCooldowns();
+	}
+}
+
+void ProtocolGame::sendServerConfig() {
+#ifndef PROTOCOL_DISABLE_SERVER_CONFIG
+	NetworkMessage msg;
+	msg.addByte(0x17);
+
+	// local player id
+	msg.add<uint32_t>(player->getID());
+
+	// server tickrate (50ms)
+	msg.add<uint16_t>(SERVER_BEAT);
+
+	// speed formula
+	msg.addDouble(Creature::speedA, 3);
+	msg.addDouble(Creature::speedB, 3);
+	msg.addDouble(Creature::speedC, 3);
+
+	// allow bug reporting (Ctrl + Z)
+	if (oldProtocol) {
+		if (player->getAccountType() >= ACCOUNT_TYPE_NORMAL) {
+			msg.addByte(0x01);
+		} else {
+			msg.addByte(0x00);
+		}
+	}
+
+	// can change pvp framing option
+	msg.addByte(0x00);
+
+	// show advanced pvp mode buttons
+	// 0x00 on retro pvp worlds
+	msg.addByte(0x00);
+
+	// store images url
+	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
+
+	// store coins unit size in market and transfer (default: 25)
+	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
+
+	if (!oldProtocol) {
+		// exiva settings button enabled
+		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00);
+	}
+
+	writeToOutputBuffer(msg);
+#endif
+}
+
 void ProtocolGame::sendFYIBox(const std::string &message) {
 #ifndef PROTOCOL_DISABLE_FYI_BOX
 	NetworkMessage msg;
@@ -7270,7 +7402,7 @@ void ProtocolGame::sendAllowBugReport() {
 }
 
 void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, const Position &pos, int32_t stackpos, bool isLogin) {
-#ifndef PROTOCOL_DISABLE_UPDATE_TILE
+#ifndef PROTOCOL_DISABLE_ADD_CREATURE
 	if (!canSee(pos)) {
 		return;
 	}
@@ -7304,137 +7436,8 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		return;
 	}
 
-	NetworkMessage msg;
-	msg.addByte(0x17);
-
-	msg.add<uint32_t>(player->getID());
-	msg.add<uint16_t>(SERVER_BEAT); // beat duration (50)
-
-	msg.addDouble(Creature::speedA, 3);
-	msg.addDouble(Creature::speedB, 3);
-	msg.addDouble(Creature::speedC, 3);
-
-	// Allow bug report (Ctrl + Z)
-	if (oldProtocol) {
-		if (player->getAccountType() >= ACCOUNT_TYPE_NORMAL) {
-			msg.addByte(0x01);
-		} else {
-			msg.addByte(0x00);
-		}
-	}
-
-	msg.addByte(0x00); // can change pvp framing option
-	msg.addByte(0x00); // expert mode button enabled
-
-	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
-	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
-
-	if (!oldProtocol) {
-		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
-	}
-
-	writeToOutputBuffer(msg);
-
-	// Allow bug report (Ctrl + Z)
-	sendAllowBugReport();
-
-	sendTibiaTime(g_game().getLightHour());
-	sendPendingStateEntered();
-	sendEnterWorld();
-	sendMapDescription(pos);
 	loggedIn = true;
-
-	if (isLogin) {
-		sendMagicEffect(pos, CONST_ME_TELEPORT);
-		sendDisableLoginMusic();
-	}
-
-	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
-		sendInventoryItem(static_cast<Slots_t>(i), player->getInventoryItem(static_cast<Slots_t>(i)));
-	}
-
-	sendStats();
-	sendSkills();
-	sendBlessStatus();
-	sendPremiumTrigger();
-	sendItemsPrice();
-	sendPreyPrices();
-	player->sendPreyData();
-	player->sendTaskHuntingData();
-	sendForgingData();
-
-	// gameworld light-settings
-	sendWorldLight(g_game().getWorldLightInfo());
-
-	// player light level
-	sendCreatureLight(creature);
-
-	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
-		sendMonkState(MonkData_t::Harmony, player->getHarmony());
-		auto virtue = player->getVirtue();
-		virtue = virtue != Virtue_t::None ? virtue : Virtue_t::Harmony;
-		sendMonkState(MonkData_t::Virtue, enumToValue(virtue));
-		sendMonkState(MonkData_t::Serenity, 1);
-	}
-
-	sendVIPGroups();
-
-	const auto &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
-
-	if (player->isAccessPlayer()) {
-		for (const VIPEntry &entry : vipEntries) {
-			VipStatus_t vipStatus;
-
-			std::shared_ptr<Player> vipPlayer = g_game().getPlayerByGUID(entry.guid);
-			if (!vipPlayer) {
-				vipStatus = VipStatus_t::Offline;
-			} else {
-				vipStatus = vipPlayer->vip().getStatus();
-			}
-
-			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
-		}
-	} else {
-		for (const VIPEntry &entry : vipEntries) {
-			VipStatus_t vipStatus;
-
-			std::shared_ptr<Player> vipPlayer = g_game().getPlayerByGUID(entry.guid);
-			if (!vipPlayer || vipPlayer->isInGhostMode()) {
-				vipStatus = VipStatus_t::Offline;
-			} else {
-				vipStatus = vipPlayer->vip().getStatus();
-			}
-
-			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
-		}
-	}
-
-	sendInventoryIds();
-	std::shared_ptr<Item> slotItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-	if (slotItem) {
-		player->setMainBackpackUnassigned(slotItem->getContainer());
-	}
-
-	sendLootContainers();
-	sendBasicData();
-	sendHousesInfo();
-	// Wheel of destiny cooldown
-	if (!oldProtocol && g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
-		player->wheel().sendGiftOfLifeCooldown();
-	}
-
-	player->sendClientCheck();
-	player->sendGameNews();
-	player->sendIcons();
-
-	// Send open containers after login.
-	if (isLogin) {
-		player->openPlayerContainers();
-	}
-
-	if (isLogin) {
-		player->sendSpellCooldowns();
-	}
+	sendLocalPlayer(pos, isLogin);
 #endif
 }
 
@@ -8054,6 +8057,23 @@ void ProtocolGame::sendVIPGroups() {
 
 	writeToOutputBuffer(msg);
 #endif
+}
+
+void ProtocolGame::sendFullVipList() {
+	const auto &vipEntries = IOLoginData::getVIPEntries(player->getAccountId());
+	const bool canSeeGhost = player->isAccessPlayer();
+	for (const VIPEntry &entry : vipEntries) {
+		VipStatus_t vipStatus;
+
+		std::shared_ptr<Player> vipPlayer = g_game().getPlayerByGUID(entry.guid);
+		if (!vipPlayer || !canSeeGhost && vipPlayer->isInGhostMode()) {
+			vipStatus = VipStatus_t::Offline;
+		} else {
+			vipStatus = vipPlayer->vip().getStatus();
+		}
+
+		sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
+	}
 }
 
 void ProtocolGame::sendSpellCooldown(uint16_t spellId, uint32_t time) {

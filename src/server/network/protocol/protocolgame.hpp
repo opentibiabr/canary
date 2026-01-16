@@ -323,6 +323,9 @@ private:
 	void sendPartyCreatureShowStatus(const std::shared_ptr<Creature> &target, bool showStatus);
 	void sendPartyPlayerVocation(const std::shared_ptr<Player> &target);
 	void sendPlayerVocation(const std::shared_ptr<Player> &target);
+
+	void sendLocalPlayer(const Position &pos, const bool isLogin);
+	void sendServerConfig();
 	void sendSkills();
 	void sendPing();
 	void sendPingBack();
@@ -402,6 +405,7 @@ private:
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
 	void sendVIPGroups();
+	void sendFullVipList();
 
 	void sendPendingStateEntered();
 	void sendEnterWorld();

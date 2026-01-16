@@ -695,6 +695,8 @@ public:
 	ReturnValue addItemFromStash(uint16_t itemId, uint32_t itemCount);
 	void stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems);
 	struct AddItemBatchOptions {
+		addItemBatchOptions() = default;
+
 		uint8_t subType = 0;
 		uint32_t flags = 0;
 		uint8_t tier = 0;

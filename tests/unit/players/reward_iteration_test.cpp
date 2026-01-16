@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+
 #include "creatures/players/player.hpp"
 #include "items/containers/container.hpp"
 #include "test_items.hpp"
@@ -13,6 +15,7 @@ protected:
 		TestItems::init();
 	}
 
+private:
 	InjectionFixture fixture_ {};
 };
 
@@ -39,9 +42,10 @@ TEST_F(PlayerRewardIterationTest, ForEachRewardItemSkipsRewardContainersAndVisit
 	std::vector<uint16_t> ids;
 	ids.reserve(rewards.size());
 	for (const auto &item : rewards) {
-		ids.emplace_back(item->getID());
+		const auto &added = ids.emplace_back(item->getID());
+		(void)added;
 	}
-	std::sort(ids.begin(), ids.end());
+	std::ranges::sort(ids);
 	EXPECT_EQ(ids, (std::vector<uint16_t> { 100, 101, 102, 1987 }));
 }
 
@@ -65,8 +69,9 @@ TEST_F(PlayerRewardIterationTest, ForEachRewardItemTraversesNestedNormalContaine
 	std::vector<uint16_t> visited;
 	visited.reserve(rewards.size());
 	for (const auto &item : rewards) {
-		visited.emplace_back(item->getID());
+		const auto &added = visited.emplace_back(item->getID());
+		(void)added;
 	}
-	std::sort(visited.begin(), visited.end());
+	std::ranges::sort(visited);
 	EXPECT_EQ(visited, (std::vector<uint16_t> { 105, 1987 }));
 }

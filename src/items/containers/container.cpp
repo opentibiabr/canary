@@ -709,17 +709,15 @@ std::shared_ptr<Cylinder> Container::queryDestination(int32_t &index, const std:
 		return getContainer();
 	}
 
-	if (index == 255 /*add wherever*/) {
-		index = INDEX_WHEREEVER;
-		destItem = nullptr;
-	} else if (index >= static_cast<int32_t>(capacity()) && !hasPagination()) {
-		/*
-		if you have a container, maximize it to show all 20 slots
-		then you open a bag that is inside the container you will have a bag with 8 slots
-		and a "grey" area where the other 12 slots where from the container
-		if you drop the item on that grey area
-		the client calculates the slot position as if the bag has 20 slots
-		*/
+	const bool isOutOfRange = index >= static_cast<int32_t>(capacity()) && !hasPagination();
+	/*
+	if you have a container, maximize it to show all 20 slots
+	then you open a bag that is inside the container you will have a bag with 8 slots
+	and a "grey" area where the other 12 slots where from the container
+	if you drop the item on that grey area
+	the client calculates the slot position as if the bag has 20 slots
+	*/
+	if (index == 255 /*add wherever*/ || isOutOfRange) {
 		index = INDEX_WHEREEVER;
 		destItem = nullptr;
 	}
@@ -913,7 +911,7 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 
 	if (removed->isStackable() && count < removed->getItemCount()) {
 		const int32_t oldWeight = removed->getWeight();
-		const uint8_t newCount = static_cast<uint8_t>(removed->getItemCount() - count);
+		const auto newCount = static_cast<uint8_t>(removed->getItemCount() - count);
 		removed->setItemCount(newCount);
 		weightDiff = -oldWeight + removed->getWeight();
 
@@ -959,8 +957,8 @@ int32_t Container::getThingIndex(const std::shared_ptr<Thing> &thing) const {
 	}
 
 	auto rawPtr = item.get();
-	for (const std::shared_ptr<Item> &item : itemlist) {
-		if (item.get() == rawPtr) {
+	for (const std::shared_ptr<Item> &listItem : itemlist) {
+		if (listItem.get() == rawPtr) {
 			return index;
 		}
 		++index;
@@ -1156,7 +1154,8 @@ ContainerIterator::ContainerIterator(const std::shared_ptr<const Container> &con
 		const auto &items = container->getItemList();
 
 		states.emplace_back(container, items, 0, 1);
-		visitedContainers.insert(container.get());
+		const auto insertResult = visitedContainers.insert(container.get());
+		(void)insertResult;
 	}
 }
 

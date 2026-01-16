@@ -8000,7 +8000,8 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 	auto selfPlayer = getPlayer();
 	if (link == LINK_OWNER) {
 		// calling movement scripts
-		g_moveEvents().onPlayerEquip(selfPlayer, thing->getItem(), static_cast<Slots_t>(index), false);
+		const auto equipResult = g_moveEvents().onPlayerEquip(selfPlayer, thing->getItem(), static_cast<Slots_t>(index), false);
+		(void)equipResult;
 	}
 
 	bool requireListUpdate = true;
@@ -8434,7 +8435,8 @@ void Player::closeContainersOutOfRange() {
 
 		if (shouldCloseContainer(container)) {
 			checkLootContainers(container);
-			containersToClose.emplace_back(containerId);
+			const auto &added = containersToClose.emplace_back(containerId);
+			(void)added;
 		}
 	}
 

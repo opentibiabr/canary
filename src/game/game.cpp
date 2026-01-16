@@ -2745,7 +2745,8 @@ void Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, u
 
 			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
 			if (ret != RETURNVALUE_NOERROR) {
-				internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				const auto fallbackResult = internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				(void)fallbackResult;
 			}
 
 			count -= createCount;
@@ -3120,7 +3121,8 @@ std::shared_ptr<Container> Game::findManagedContainer(
 		const auto fbItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 		const auto mainBp = fbItem ? fbItem->getContainer() : nullptr;
 		if (mainBp) {
-			player->refreshManagedContainer(OBJECTCATEGORY_DEFAULT, mainBp, isLootContainer);
+			const auto previousContainer = player->refreshManagedContainer(OBJECTCATEGORY_DEFAULT, mainBp, isLootContainer);
+			(void)previousContainer;
 			player->sendInventoryItem(CONST_SLOT_BACKPACK, player->getInventoryItem(CONST_SLOT_BACKPACK));
 			result = mainBp;
 			fallbackConsumed = true;
@@ -3193,7 +3195,8 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
 	if (batchUpdate) {
-		batchUpdate->add(lootContainer);
+		const auto addResult = batchUpdate->add(lootContainer);
+		(void)addResult;
 	}
 
 	ReturnValue ret;
@@ -3208,7 +3211,8 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 			break;
 		}
 		if (batchUpdate) {
-			batchUpdate->add(lootContainer);
+			const auto addResult = batchUpdate->add(lootContainer);
+			(void)addResult;
 		}
 		fallbackConsumed = fallbackConsumed || (nextContainer == nullptr);
 	} while (remainderCount != 0);
@@ -7103,7 +7107,8 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 			}
 
 			if (splash) {
-				internalAddItem(target->getTile(), splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				const auto addResult = internalAddItem(target->getTile(), splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
+				(void)addResult;
 				splash->startDecaying();
 			}
 
@@ -10607,7 +10612,8 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			// If the fiendish is no longer on the map, we remove it from the vector
 			auto monster = getMonsterByID(monsterId);
 			if (!monster) {
-				removeFiendishMonster(monsterId);
+				const auto removed = removeFiendishMonster(monsterId);
+				(void)removed;
 				continue;
 			}
 
@@ -10616,7 +10622,8 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			    // Condition
 			    getFiendishMonsters().size() >= fiendishLimit) {
 				monster->clearFiendishStatus();
-				removeFiendishMonster(monsterId);
+				const auto removed = removeFiendishMonster(monsterId);
+				(void)removed;
 				break;
 			}
 		}
@@ -10712,13 +10719,15 @@ void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &mo
 	}
 
 	monster->clearFiendishStatus();
-	removeFiendishMonster(monsterId, false);
+	const auto removed = removeFiendishMonster(monsterId, false);
+	(void)removed;
 	makeFiendishMonster();
 }
 
 bool Game::removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create) {
 	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
-		removeFiendishMonster(id, create);
+		const auto removed = removeFiendishMonster(id, create);
+		(void)removed;
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
 		removeInfluencedMonster(id, create);
 	}
@@ -10730,7 +10739,8 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 	if (auto find = influencedMonsters.find(id);
 	    // Condition
 	    find != influencedMonsters.end()) {
-		influencedMonsters.erase(find);
+		const auto erased = influencedMonsters.erase(find);
+		(void)erased;
 
 		if (create) {
 			g_dispatcher().scheduleEvent(
@@ -10747,7 +10757,8 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 	if (auto find = fiendishMonsters.find(id);
 	    // Condition
 	    find != fiendishMonsters.end()) {
-		fiendishMonsters.erase(find);
+		const auto erased = fiendishMonsters.erase(find);
+		(void)erased;
 		checkForgeEventId(id);
 
 		if (create) {
@@ -10780,7 +10791,8 @@ void Game::updateForgeableMonsters() {
 
 	for (const auto &monsterId : getFiendishMonsters()) {
 		if (!getMonsterByID(monsterId)) {
-			removeFiendishMonster(monsterId);
+			const auto removed = removeFiendishMonster(monsterId);
+			(void)removed;
 		}
 	}
 

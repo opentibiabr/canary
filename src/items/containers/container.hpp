@@ -246,8 +246,8 @@ public:
 	bool isHoldingItem(const std::shared_ptr<Item> &item);
 	bool isHoldingItemWithId(uint16_t id);
 
-	uint32_t getItemHoldingCount() const;
-	uint32_t getContainerHoldingCount() const;
+	[[nodiscard]] uint32_t getItemHoldingCount() const;
+	[[nodiscard]] uint32_t getContainerHoldingCount() const;
 	uint16_t getFreeSlots() const;
 	uint32_t getWeight() const final;
 
@@ -384,7 +384,6 @@ private:
 
 	void updateItemCountCache();
 
-private:
 	bool m_batching = false;
 
 	friend class ContainerIterator;

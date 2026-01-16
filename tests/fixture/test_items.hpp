@@ -2,7 +2,7 @@
 
 #include "items/item.hpp"
 
-namespace {
+namespace test_items {
 	inline void seedFallbackTestItems() {
 		auto &items = Item::items.getItems();
 		constexpr uint16_t kFallbackRewardContainer = 1987;
@@ -80,10 +80,11 @@ class TestItems final {
 public:
 	static void init() {
 		static const bool loaded = [] {
-			Item::items.loadFromXml();
+			const auto loadedItems = Item::items.loadFromXml();
+			(void)loadedItems;
 			return true;
 		}();
 		(void)loaded;
-		ensureTestItemTypes();
+		test_items::ensureTestItemTypes();
 	}
 };

@@ -571,7 +571,7 @@ public:
 		return position;
 	}
 
-	const Position &getPosition() const override final {
+	const Position &getPosition() const final {
 		return position;
 	}
 

@@ -90,8 +90,16 @@ public:
 	void onThink(uint32_t interval) override;
 	void onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
 	void onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore, uint64_t &totalPrice);
+	struct SellItemContext {
+		SellItemContext() = default;
+
+		uint64_t &totalPrice;
+		std::shared_ptr<Container> lootPouch {};
+		BatchUpdate* batchUpdate = nullptr;
+	};
+
 	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint32_t amount, bool ignore);
-	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint32_t amount, bool ignore, uint64_t &totalPrice, const std::shared_ptr<Container> &lootPouch = nullptr, BatchUpdate* batchUpdate = nullptr);
+	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint32_t amount, bool ignore, const SellItemContext &context);
 	void onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count);
 	void onPlayerCloseChannel(const std::shared_ptr<Creature> &creature);
 	void onPlacedCreature() override;

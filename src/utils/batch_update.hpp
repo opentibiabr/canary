@@ -22,11 +22,25 @@ class Container;
 class BatchUpdate : public SharedObject {
 public:
 	explicit BatchUpdate(const std::shared_ptr<Player> &actor);
+	BatchUpdate(const BatchUpdate &) = delete;
+	BatchUpdate &operator=(const BatchUpdate &) = delete;
+	BatchUpdate(BatchUpdate &&) = delete;
+	BatchUpdate &operator=(BatchUpdate &&) = delete;
 	bool add(const std::shared_ptr<Container> &container);
 	void addContainers(const std::vector<std::shared_ptr<Container>> &containerVector);
-	~BatchUpdate();
 
 private:
-	std::weak_ptr<Player> m_actor;
-	std::vector<std::weak_ptr<Container>> m_cached;
+	struct State {
+		explicit State(const std::shared_ptr<Player> &actor);
+		~State();
+		State(const State &) = delete;
+		State &operator=(const State &) = delete;
+		State(State &&) = delete;
+		State &operator=(State &&) = delete;
+
+		std::weak_ptr<Player> actor;
+		std::vector<std::weak_ptr<Container>> cached;
+	};
+
+	State m_state;
 };

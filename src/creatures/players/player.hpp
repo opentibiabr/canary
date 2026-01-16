@@ -563,6 +563,7 @@ public:
 
 	std::vector<std::shared_ptr<Item>> getRewardsFromContainer(const std::shared_ptr<Container> &container) const;
 
+	using Thing::getDepotChest;
 	std::shared_ptr<DepotChest> getDepotChest(uint32_t depotId, bool autoCreate);
 	std::shared_ptr<DepotLocker> getDepotLocker(uint32_t depotId);
 	void onReceiveMail();
@@ -627,9 +628,9 @@ public:
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;
 	bool isAttackable() const override;
-	virtual void beginBatchUpdate();
-	virtual void endBatchUpdate();
-	virtual void sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t firstIndex = 0);
+	void beginBatchUpdate();
+	void endBatchUpdate();
+	void sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t firstIndex = 0);
 	bool isBatching() const {
 		return m_batching;
 	}

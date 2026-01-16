@@ -27,6 +27,12 @@ namespace {
 		}
 	};
 
+	template <typename Func>
+	void withBatchUpdate(const std::shared_ptr<Player> &player, Func &&action) {
+		BatchUpdate batch(player);
+		action(batch);
+	}
+
 }
 
 class BatchUpdateTest : public ::testing::Test {
@@ -39,13 +45,12 @@ protected:
 TEST_F(BatchUpdateTest, DeduplicatesContainersAndBalancesBeginEndCalls) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	{
-		BatchUpdate batch(player);
+	withBatchUpdate(player, [&](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
 		EXPECT_FALSE(batch.add(c1));
 		EXPECT_TRUE(player->isBatching());
 		EXPECT_EQ(c1->beginCount, 1);
-	}
+	});
 	EXPECT_FALSE(player->isBatching());
 	EXPECT_EQ(c1->endCount, 1);
 }
@@ -64,14 +69,13 @@ TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	{
-		BatchUpdate batch(player);
+	withBatchUpdate(player, [&](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
 		batch.addContainers({ c1, c2 });
 		EXPECT_TRUE(player->isBatching());
 		EXPECT_EQ(c1->beginCount, 1);
 		EXPECT_EQ(c2->beginCount, 1);
-	}
+	});
 	EXPECT_FALSE(player->isBatching());
 	EXPECT_EQ(c1->endCount, 1);
 	EXPECT_EQ(c2->endCount, 1);
@@ -80,11 +84,10 @@ TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
 TEST_F(BatchUpdateTest, EndBatchUpdateHandlesExpiredActor) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	{
-		BatchUpdate batch(player);
+	withBatchUpdate(player, [&](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
 		player.reset();
-	}
+	});
 	EXPECT_EQ(c1->endCount, 1);
 }
 
@@ -103,13 +106,12 @@ TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	{
-		BatchUpdate batch(player);
+	withBatchUpdate(player, [&](BatchUpdate &batch) {
 		batch.addContainers({ nullptr, c1, c1, c2, nullptr });
 		EXPECT_TRUE(player->isBatching());
 		EXPECT_EQ(c1->beginCount, 1);
 		EXPECT_EQ(c2->beginCount, 1);
-	}
+	});
 	EXPECT_FALSE(player->isBatching());
 	EXPECT_EQ(c1->endCount, 1);
 	EXPECT_EQ(c2->endCount, 1);
@@ -117,9 +119,8 @@ TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
 
 TEST_F(BatchUpdateTest, EmptyScopeBalancesBatchingState) {
 	auto player = std::make_shared<Player>();
-	{
-		BatchUpdate batch(player);
+	withBatchUpdate(player, [&](BatchUpdate &) {
 		EXPECT_TRUE(player->isBatching());
-	}
+	});
 	EXPECT_FALSE(player->isBatching());
 }

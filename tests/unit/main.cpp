@@ -20,7 +20,8 @@ int main(int argc, char** argv) {
 	const std::filesystem::path sourceDir = TESTS_SOURCE_DIR;
 	std::filesystem::current_path(sourceDir);
 	const std::filesystem::path configPath = sourceDir / "config.lua.dist";
-	config.setConfigFileLua(configPath.string());
+	const auto configSet = config.setConfigFileLua(configPath.string());
+	(void)configSet;
 	if (!config.load()) {
 		std::cerr << "Failed to load config file." << std::endl;
 		return 1;

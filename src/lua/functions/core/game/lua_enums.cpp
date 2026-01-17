@@ -77,6 +77,7 @@ void LuaEnums::init(lua_State* L) {
 	initConditionEnums(L);
 	initConditionIdEnums(L);
 	initConditionParamEnums(L);
+	initEffectOriginEnums(L);
 	initConstMeEnums(L);
 	initConstAniEnums(L);
 	initConstPropEnums(L);
@@ -412,6 +413,12 @@ void LuaEnums::initConcoctionsEnum(lua_State* L) {
 	registerEnumNamespace(L, luaNamespace, Concoction_t::HolyAmplification);
 	registerEnumNamespace(L, luaNamespace, Concoction_t::DeathAmplification);
 	registerEnumNamespace(L, luaNamespace, Concoction_t::PhysicalAmplification);
+}
+
+void LuaEnums::initEffectOriginEnums(lua_State* L) {
+	for (auto value : magic_enum::enum_values<MagicEffectSources>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 void LuaEnums::initConstMeEnums(lua_State* L) {

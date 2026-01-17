@@ -310,7 +310,7 @@ private:
 	void sendBosstiaryEntryChanged(uint32_t bossid);
 
 	void sendAllowBugReport();
-	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, uint8_t effectSource = ME_SOURCE_DEFAULT);
 	void sendMagicEffect(const Position &pos, uint16_t type, uint8_t effectSource = ME_SOURCE_DEFAULT);
 	void removeMagicEffect(const Position &pos, uint16_t type);
 	void sendRestingStatus(uint8_t protection);

@@ -2137,9 +2137,9 @@ void Player::sendPlayerVocation(const std::shared_ptr<Player> &player) const {
 	}
 }
 
-void Player::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) const {
+void Player::sendDistanceShoot(const Position &from, const Position &to, uint16_t type, uint8_t effectSource) const {
 	if (client) {
-		client->sendDistanceShoot(from, to, type);
+		client->sendDistanceShoot(from, to, type, effectSource);
 	}
 }
 

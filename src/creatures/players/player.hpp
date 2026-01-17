@@ -977,7 +977,7 @@ public:
 	void sendPartyCreatureShowStatus(const std::shared_ptr<Creature> &creature, bool showStatus) const;
 	void sendPartyPlayerVocation(const std::shared_ptr<Player> &player) const;
 	void sendPlayerVocation(const std::shared_ptr<Player> &player) const;
-	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type) const;
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, uint8_t effectSource = ME_SOURCE_DEFAULT) const;
 	void sendHouseWindow(const std::shared_ptr<House> &house, uint32_t listId) const;
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) const;
 	void sendClosePrivate(uint16_t channelId);

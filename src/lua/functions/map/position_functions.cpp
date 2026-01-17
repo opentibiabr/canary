@@ -186,7 +186,7 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 	MagicEffectClasses magicEffect = Lua::getNumber<MagicEffectClasses>(L, 2);
 	MagicEffectSources effectSource = Lua::getNumber<MagicEffectSources>(L, 4, ME_SOURCE_DEFAULT);
-	if (effectSource >= ME_SOURCE_LAST) {
+	if (effectSource > ME_SOURCE_LAST) {
 		g_logger().warn("[PositionFunctions::luaPositionSendMagicEffect] Unsupported effect source '{}' for magic effect {}.", fmt::underlying(effectSource), fmt::underlying(magicEffect));
 		effectSource = ME_SOURCE_DEFAULT;
 	}
@@ -242,7 +242,7 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
 	CreatureVector spectators;
-	if (lua_gettop(L) >= 4) {
+	if (lua_gettop(L) >= 4 && !Lua::isNil(L, 4)) {
 		const auto &player = Lua::getPlayer(L, 4);
 		if (!player) {
 			Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -260,10 +260,16 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 		return 1;
 	}
 
+	MagicEffectSources effectSource = Lua::getNumber<MagicEffectSources>(L, 5, ME_SOURCE_DEFAULT);
+	if (effectSource > ME_SOURCE_LAST) {
+		g_logger().warn("[PositionFunctions::luaPositionSendDistanceEffect] Unsupported effect source '{}' for magic effect {}.", fmt::underlying(effectSource), fmt::underlying(distanceEffect));
+		effectSource = ME_SOURCE_DEFAULT;
+	}
+
 	if (!spectators.empty()) {
-		Game::addDistanceEffect(spectators, position, positionEx, distanceEffect);
+		Game::addDistanceEffect(spectators, position, positionEx, distanceEffect, effectSource);
 	} else {
-		g_game().addDistanceEffect(position, positionEx, distanceEffect);
+		g_game().addDistanceEffect(position, positionEx, distanceEffect, effectSource);
 	}
 
 	Lua::pushBoolean(L, true);

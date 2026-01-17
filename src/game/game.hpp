@@ -489,8 +489,8 @@ public:
 	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
 	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
-	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
-	static void addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
+	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
+	static void addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
 
 	int32_t getLightHour() const {
 		return lightHour;

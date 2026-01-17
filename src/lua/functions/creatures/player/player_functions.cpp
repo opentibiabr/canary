@@ -2473,12 +2473,15 @@ int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
 	const uint64_t money = Lua::getNumber<uint64_t>(L, 2);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		g_game().addMoney(player, money);
-		Lua::pushBoolean(L, true);
+		uint32_t flags = 0;
+		auto [addedMoney, returnValue] = g_game().addMoney(player, money, flags);
+		lua_pushinteger(L, addedMoney);
+		lua_pushinteger(L, static_cast<int>(returnValue));
 	} else {
 		lua_pushnil(L);
+		lua_pushnil(L);
 	}
-	return 1;
+	return 2;
 }
 
 int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {

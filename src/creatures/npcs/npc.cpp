@@ -62,7 +62,9 @@ namespace {
 		}
 
 		const auto slotsNeeded = calculateSlotsNeeded(itemType, amount, inBackpacks);
-		return (static_cast<double>(tile->getItemList()->size()) + (slotsNeeded - player->getFreeBackpackSlots())) > 30;
+		const auto* itemList = tile->getItemList();
+		const auto itemCount = itemList ? static_cast<double>(itemList->size()) : 0.0;
+		return (itemCount + (slotsNeeded - player->getFreeBackpackSlots())) > 30;
 	}
 
 	uint32_t calculateBagsCost(const ItemType &itemType, uint16_t amount, bool inBackpacks) {
@@ -85,7 +87,8 @@ namespace {
 			return false;
 		}
 
-		if (player->getItemTypeCount(currency) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost)) {
+		const auto* cylinder = static_cast<const Cylinder*>(player.get());
+		if (cylinder->getItemTypeCount(currency) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost)) {
 			g_logger().error("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);
 			g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, npcName, player->getPosition().toString());
 			return true;
@@ -477,7 +480,7 @@ void Npc::onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemId
 
 void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore) {
 	uint64_t totalPrice = 0;
-	onPlayerSellItem(player, itemId, subType, amount, ignore, { totalPrice });
+	onPlayerSellItem(player, itemId, subType, amount, ignore, SellItemContext(totalPrice));
 }
 
 void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore, uint64_t &totalPrice) {
@@ -637,7 +640,9 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 	}
 
 	if (itemId == ITEM_GOLD_POUCH && context.lootPouch == nullptr) {
-		onPlayerSellAllLoot(player, ignore, context.totalPrice);
+		uint64_t totalPrice = 0;
+		auto &totalPriceRef = context.totalPrice ? *context.totalPrice : totalPrice;
+		onPlayerSellAllLoot(player, ignore, totalPriceRef);
 		return;
 	}
 
@@ -717,10 +722,12 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		return;
 	}
 
-	auto totalCost = static_cast<uint64_t>(sellPrice * removed);
+	auto totalCost = static_cast<uint64_t>(sellPrice) * removed;
 
 	if (totalCost && getCurrency() == ITEM_GOLD_COIN) {
-		context.totalPrice += totalCost;
+		if (context.totalPrice) {
+			*context.totalPrice += totalCost;
+		}
 		if (g_configManager().getBoolean(AUTOBANK)) {
 			player->setBankBalance(player->getBankBalance() + totalCost);
 			if (!context.lootPouch) {

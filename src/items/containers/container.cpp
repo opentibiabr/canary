@@ -812,9 +812,9 @@ void Container::updateThing(const std::shared_ptr<Thing> &thing, uint16_t itemId
 	}
 
 	const int32_t oldWeight = item->getWeight();
+	updateCacheOnRemove(item);
 	item->setID(itemId);
 	item->setSubType(count);
-	updateCacheOnRemove(item);
 	updateCacheOnAdd(item);
 	updateItemWeight(-oldWeight + item->getWeight());
 
@@ -939,6 +939,10 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 		} else {
 			removed->resetParent();
 			itemlist.erase(itemlist.begin() + static_cast<std::ptrdiff_t>(index));
+		}
+
+		if (getParent()) {
+			postRemoveNotification(removed, nullptr, static_cast<int32_t>(index), LINK_PARENT);
 		}
 	}
 
@@ -1162,11 +1166,13 @@ ContainerIterator::ContainerIterator(const std::shared_ptr<const Container> &con
 bool ContainerIterator::hasNext() const {
 	while (!states.empty()) {
 		auto &s = states.back();
-		if (!s.container.lock()) {
+		auto lockedContainer = s.container.lock();
+		if (!lockedContainer) {
 			states.pop_back();
 			continue;
 		}
-		if (s.index < s.items->size()) {
+		const auto* items = s.items;
+		if (items && s.index < items->size()) {
 			return true;
 		}
 		states.pop_back();
@@ -1178,16 +1184,18 @@ void ContainerIterator::advance() {
 	while (!states.empty()) {
 		auto &top = states.back();
 
-		if (!top.container.lock()) {
+		auto lockedContainer = top.container.lock();
+		if (!lockedContainer) {
 			states.pop_back();
 			continue;
 		}
-		if (top.index >= top.items->size()) {
+		const auto* items = top.items;
+		if (!items || top.index >= items->size()) {
 			states.pop_back();
 			continue;
 		}
 
-		const auto &currentItem = (*top.items)[top.index];
+		const auto &currentItem = (*items)[top.index];
 		++top.index;
 
 		if (!currentItem) {
@@ -1227,7 +1235,8 @@ std::shared_ptr<Item> ContainerIterator::operator*() const {
 	}
 
 	const auto &top = states.back();
-	if (!top.container.lock()) {
+	auto lockedContainer = top.container.lock();
+	if (!lockedContainer) {
 		return nullptr;
 	}
 

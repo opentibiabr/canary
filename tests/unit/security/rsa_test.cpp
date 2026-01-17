@@ -41,15 +41,25 @@ private:
 };
 
 TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
-	const std::filesystem::path previousPath = std::filesystem::current_path();
 	const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "canary_rsa_test";
-	const auto created = std::filesystem::create_directories(tempPath);
-	(void)created;
+	std::error_code error;
+	std::filesystem::remove_all(tempPath, error);
+	std::filesystem::create_directories(tempPath, error);
+
+	struct ScopedTempDir {
+		std::filesystem::path previousPath;
+		std::filesystem::path tempPath;
+
+		~ScopedTempDir() {
+			std::error_code cleanupError;
+			std::filesystem::current_path(previousPath, cleanupError);
+			std::filesystem::remove_all(tempPath, cleanupError);
+		}
+	};
+
+	ScopedTempDir guard { std::filesystem::current_path(), tempPath };
 	std::filesystem::current_path(tempPath);
 	DI::create<RSA &>().start();
-	std::filesystem::current_path(previousPath);
-	const auto removed = std::filesystem::remove_all(tempPath);
-	(void)removed;
 
 	auto &logger = testLogger();
 

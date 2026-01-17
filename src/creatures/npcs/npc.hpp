@@ -92,8 +92,12 @@ public:
 	void onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore, uint64_t &totalPrice);
 	struct SellItemContext {
 		SellItemContext() = default;
+		explicit SellItemContext(uint64_t &price, const std::shared_ptr<Container> &lootPouchIn = {}, BatchUpdate* batchUpdateIn = nullptr) :
+			totalPrice(&price),
+			lootPouch(lootPouchIn),
+			batchUpdate(batchUpdateIn) { }
 
-		uint64_t &totalPrice;
+		uint64_t* totalPrice = nullptr;
 		std::shared_ptr<Container> lootPouch {};
 		BatchUpdate* batchUpdate = nullptr;
 	};

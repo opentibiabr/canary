@@ -1549,6 +1549,9 @@ std::shared_ptr<Container> Player::getManagedContainer(ObjectCategory_t category
 	std::shared_ptr<Container> container = nullptr;
 	if (it != m_managedContainers.end()) {
 		container = isLootContainer ? it->second.first : it->second.second;
+		if (!isLootContainer && !container) {
+			container = it->second.first;
+		}
 	}
 
 	if (!container && category != OBJECTCATEGORY_DEFAULT) {

@@ -1,6 +1,7 @@
 math.randomseed(os.time())
 
 dofile(DATA_DIRECTORY .. "/lib/lib.lua")
+dofile(DATA_DIRECTORY .. "/scripts/creaturescripts/customs/freequests.lua")
 local startupFile = io.open(DATA_DIRECTORY .. "/startup/startup.lua", "r")
 if startupFile ~= nil then
 	io.close(startupFile)
@@ -104,6 +105,45 @@ table.contains = function(array, value)
 		end
 	end
 	return false
+end
+
+-- Free Quests System Integration
+function setTableQuestFree(questTable)
+	if not questTable or type(questTable) ~= "table" then
+		logger.error("[ERROR] setTableQuestFree: Invalid questTable parameter")
+		return false
+	end
+
+	local validQuests = 0
+	local invalidQuests = 0
+
+	-- Validate and process each quest entry
+	for i, quest in ipairs(questTable) do
+		if type(quest) == "table" and quest.storageName and type(quest.storageName) == "string" and quest.storage and type(quest.storage) == "number" and quest.storageValue and type(quest.storageValue) == "number" then
+			if Game.addFreeQuestData then
+				if Game.addFreeQuestData(quest.storageName, quest.storage, quest.storageValue) then
+					validQuests = validQuests + 1
+				else
+					logger.warning(string.format("[WARNING] Failed to add quest: %s (storage: %d, value: %d)", quest.storageName, quest.storage, quest.storageValue))
+					invalidQuests = invalidQuests + 1
+				end
+			else
+				logger.error("[ERROR] Game.addFreeQuestData function not available")
+				return false
+			end
+		else
+			logger.warning(string.format("[WARNING] Invalid quest entry at index %d", i))
+			invalidQuests = invalidQuests + 1
+		end
+	end
+
+	logger.info(string.format("FreeQuests loaded %d valid quests, %d invalid entries", validQuests, invalidQuests))
+	return validQuests > 0
+end
+
+-- Load Free Quests data if questTable is available and system is enabled
+if questTable and type(questTable) == "table" and configManager.getBoolean(configKeys.TOGGLE_FREE_QUEST) then
+	setTableQuestFree(questTable)
 end
 
 -- for use of: data\scripts\globalevents\customs\save_interval.lua

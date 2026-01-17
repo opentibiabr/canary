@@ -485,8 +485,8 @@ public:
 	static void addCreatureHealth(const CreatureVector &spectators, const std::shared_ptr<Creature> &target);
 	void addPlayerMana(const std::shared_ptr<Player> &target);
 	void addPlayerVocation(const std::shared_ptr<Player> &target);
-	void addMagicEffect(const Position &pos, uint16_t effect);
-	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
+	void addMagicEffect(const Position &pos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
+	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
 	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
 	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);

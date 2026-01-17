@@ -2232,9 +2232,9 @@ void Player::sendGameNews() const {
 	}
 }
 
-void Player::sendMagicEffect(const Position &pos, uint16_t type) const {
+void Player::sendMagicEffect(const Position &pos, uint16_t type, uint8_t effectSource) const {
 	if (client) {
-		client->sendMagicEffect(pos, type);
+		client->sendMagicEffect(pos, type, effectSource);
 	}
 }
 

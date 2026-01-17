@@ -41,6 +41,18 @@ enum Cipbia_Elementals_t : uint8_t {
 	CIPBIA_ELEMENTAL_UNDEFINED = 12,
 };
 
+enum MagicEffectSources : uint8_t {
+	ME_SOURCE_DEFAULT = 0, // always 100% opacity, not configurable
+
+	// configurable by sliders in client
+	ME_SOURCE_OWN = 1,
+	ME_SOURCE_OTHER_PLAYER = 2,
+	ME_SOURCE_MONSTER = 3,
+	ME_SOURCE_BOSS = 4,
+
+	ME_SOURCE_LAST
+};
+
 enum MagicEffectClasses : uint16_t {
 	CONST_ME_NONE,
 

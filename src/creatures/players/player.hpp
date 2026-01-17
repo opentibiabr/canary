@@ -987,7 +987,7 @@ public:
 	void removeBakragoreIcon(const IconBakragore icon);
 	void sendClientCheck() const;
 	void sendGameNews() const;
-	void sendMagicEffect(const Position &pos, uint16_t type) const;
+	void sendMagicEffect(const Position &pos, uint16_t type, uint8_t effectSource = ME_SOURCE_DEFAULT) const;
 	void removeMagicEffect(const Position &pos, uint16_t type) const;
 	void sendPing();
 	void sendPingBack() const;

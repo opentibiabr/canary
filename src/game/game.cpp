@@ -8259,15 +8259,15 @@ void Game::addPlayerVocation(const std::shared_ptr<Player> &target) {
 	}
 }
 
-void Game::addMagicEffect(const Position &pos, uint16_t effect) {
+void Game::addMagicEffect(const Position &pos, uint16_t effect, uint8_t effectSource) {
 	auto spectators = Spectators().find<Player>(pos, true);
-	addMagicEffect(spectators.data(), pos, effect);
+	addMagicEffect(spectators.data(), pos, effect, effectSource);
 }
 
-void Game::addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect) {
+void Game::addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, uint8_t effectSource) {
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendMagicEffect(pos, effect);
+			tmpPlayer->sendMagicEffect(pos, effect, effectSource);
 		}
 	}
 }

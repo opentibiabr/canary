@@ -6922,7 +6922,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 #endif
 }
 
-void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type, uint8_t effectSource) {
 #ifndef PROTOCOL_DISABLE_MAGIC_EFFECTS
 	if (!canSee(pos) || (oldProtocol && type > 0xFF)) {
 		return;
@@ -6938,6 +6938,7 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 		msg.addPosition(pos);
 		msg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
 		msg.add<uint16_t>(type);
+		msg.addByte(effectSource);
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);

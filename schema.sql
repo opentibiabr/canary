@@ -854,7 +854,7 @@ CREATE TABLE IF NOT EXISTS `kv_store` (
 -- Create Account god/god
 INSERT INTO `accounts`
 (`id`, `name`, `email`, `password`, `type`) VALUES
-(1, 'god', '@god', '21298df8a3277357ee55b01df9530b535cf08ec1', 5);
+(1, 'god', '@god', '21298df8a3277357ee55b01df9530b535cf08ec1', 6);
 
 -- Create player on GOD account
 -- Create sample characters

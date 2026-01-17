@@ -3679,7 +3679,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
-	msg.addByte(player->getLevelPercent());
+	msg.addByte(player->getLevelProgress());
 	msg.add<uint16_t>(player->getBaseXpGain()); // BaseXPGainRate
 	msg.add<uint16_t>(player->getDisplayGrindingXpBoost()); // LowLevelBonus
 	msg.add<uint16_t>(player->getDisplayXpBoostPercent()); // XPBoost
@@ -4590,11 +4590,13 @@ void ProtocolGame::sendBasicData() {
 	}
 	msg.addByte(vocation->getClientId());
 
-	// Prey window
+	// can open prey dialog
+	// 0 - client message: not reached main yet
+	// 1 - prey dialog allowed
 	if (vocationId == 0 && player->getGroup()->id < GROUP_TYPE_GAMEMASTER) {
 		msg.addByte(0);
 	} else {
-		msg.addByte(1); // has reached Main (allow player to open Prey window)
+		msg.addByte(1);
 	}
 
 	// Filter only valid ids
@@ -8460,6 +8462,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
+	// health
 	if (oldProtocol) {
 		msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
@@ -8468,26 +8471,35 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 		msg.add<uint32_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<int32_t>::max()));
 	}
 
+	// cap
 	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	if (oldProtocol) {
 		msg.add<uint32_t>(player->getFreeCapacity());
 	}
 
+	// exp
 	msg.add<uint64_t>(player->getExperience());
 
+	// level
 	msg.add<uint16_t>(player->getLevel());
-	msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
 
+	// level %
+	if (!oldProtocol) {
+		msg.add<uint16_t>(std::min<uint16_t>(player->getLevelProgress(), 1000));
+	} else {
+		msg.addByte(std::min<uint8_t>(player->getLevelProgress() / 100, 100));
+	}
+
+	// exp rate
 	msg.add<uint16_t>(player->getBaseXpGain()); // base xp gain rate
-
 	if (oldProtocol) {
 		msg.add<uint16_t>(player->getVoucherXpBoost()); // xp voucher
 	}
-
 	msg.add<uint16_t>(player->getDisplayGrindingXpBoost()); // low level bonus
 	msg.add<uint16_t>(player->getDisplayXpBoostPercent()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
+	// mana
 	if (!oldProtocol) {
 		msg.add<uint32_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<int32_t>::max()));
 		msg.add<uint32_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<int32_t>::max()));
@@ -8495,25 +8507,33 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 		msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 
+		// magic level (old protocol)
 		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint8_t>::max())));
 		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint8_t>::max())));
 		msg.addByte(std::min<uint8_t>(static_cast<uint8_t>(player->getMagicLevelPercent()), 100));
 	}
 
+	// soul
 	msg.addByte(player->getSoul());
 
+	// stamina
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
+	// speed
 	msg.add<uint16_t>(player->getBaseSpeed());
 
+	// regeneration (food)
 	std::shared_ptr<Condition> condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
 
+	// offline training
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 
+	// XP boost
 	msg.add<uint16_t>(player->getXpBoostTime()); // xp boost time (seconds)
-	msg.addByte(1); // enables exp boost in the store
+	msg.addByte(1); // show XP BOOST store button in skills window
 
+	// new mana shield
 	if (!oldProtocol) {
 		msg.add<uint32_t>(player->getManaShield()); // remaining mana shield
 		msg.add<uint32_t>(player->getMaxManaShield()); // total mana shield

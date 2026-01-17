@@ -1201,7 +1201,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 
 	double_t newPercent;
 	if (nextReqTries > currReqTries) {
-		newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
+		newPercent = Player::calculateLevelProgress(skills[skill].tries, nextReqTries);
 	} else {
 		newPercent = 0;
 	}
@@ -3371,7 +3371,7 @@ void Player::addManaSpent(uint64_t amount) {
 
 	const uint8_t oldPercent = magLevelPercent;
 	if (nextReqMana > currReqMana) {
-		magLevelPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+		magLevelPercent = Player::calculateLevelProgress(manaSpent, nextReqMana);
 	} else {
 		magLevelPercent = 0;
 	}
@@ -3392,7 +3392,7 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 	uint64_t rawExp = exp;
 	if (currLevelExp >= nextLevelExp) {
 		// player has reached max level
-		levelPercent = 0;
+		levelProgress = 0;
 		sendStats();
 		return;
 	}
@@ -3511,9 +3511,9 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 	}
 
 	if (nextLevelExp > currLevelExp) {
-		levelPercent = Player::getPercentLevel(experience - currLevelExp, nextLevelExp - currLevelExp);
+		levelProgress = Player::calculateLevelProgress(experience - currLevelExp, nextLevelExp - currLevelExp);
 	} else {
-		levelPercent = 0;
+		levelProgress = 0;
 	}
 	sendStats();
 	sendExperienceTracker(rawExp, exp);
@@ -3596,24 +3596,26 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 
 	const uint64_t nextLevelExp = Player::getExpForLevel(level + 1);
 	if (nextLevelExp > currLevelExp) {
-		levelPercent = Player::getPercentLevel(experience - currLevelExp, nextLevelExp - currLevelExp);
+		levelProgress = Player::calculateLevelProgress(experience - currLevelExp, nextLevelExp - currLevelExp);
 	} else {
-		levelPercent = 0;
+		levelProgress = 0;
 	}
 	sendStats();
 	sendExperienceTracker(0, -static_cast<int64_t>(exp));
 }
 
-double_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount) {
+uint16_t Player::calculateLevelProgress(uint64_t count, uint64_t nextLevelCount) {
 	if (nextLevelCount == 0) {
 		return 0;
 	}
 
-	const double_t result = round(((count * 100.) / nextLevelCount) * 100.) / 100.;
-	if (result > 100) {
-		return 0;
+	uint64_t result = (count * 10000) / nextLevelCount;
+
+	if (result > 10000) {
+		result = 10000;
 	}
-	return result;
+
+	return static_cast<uint16_t>(result);
 }
 
 void Player::onBlockHit() {
@@ -3881,7 +3883,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 		uint64_t nextReqMana = vocation->getReqMana(magLevel + 1);
 		if (nextReqMana > vocation->getReqMana(magLevel)) {
-			magLevelPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+			magLevelPercent = Player::calculateLevelProgress(manaSpent, nextReqMana);
 		} else {
 			magLevelPercent = 0;
 		}
@@ -3922,7 +3924,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			}
 
 			skills[i].tries = std::max<int32_t>(0, skills[i].tries - lostSkillTries);
-			skills[i].percent = Player::getPercentLevel(skills[i].tries, vocation->getReqSkillTries(i, skills[i].level));
+			skills[i].percent = Player::calculateLevelProgress(skills[i].tries, vocation->getReqSkillTries(i, skills[i].level));
 		}
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostExp.str());
@@ -3950,9 +3952,9 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			uint64_t currLevelExp = Player::getExpForLevel(level);
 			uint64_t nextLevelExp = Player::getExpForLevel(level + 1);
 			if (nextLevelExp > currLevelExp) {
-				levelPercent = Player::getPercentLevel(experience - currLevelExp, nextLevelExp - currLevelExp);
+				levelProgress = Player::calculateLevelProgress(experience - currLevelExp, nextLevelExp - currLevelExp);
 			} else {
-				levelPercent = 0;
+				levelProgress = 0;
 			}
 		}
 
@@ -6865,7 +6867,7 @@ double Player::getLostPercent() const {
 
 	double lossPercent;
 	if (level >= 24) {
-		const double tmpLevel = level + (levelPercent / 100.);
+		const double tmpLevel = level + (levelProgress / 100.);
 		lossPercent = ((tmpLevel + 50) * 50 * ((tmpLevel * tmpLevel) - (5 * tmpLevel) + 8)) / experience;
 	} else {
 		percentReduction = (percentReduction >= 0.40 ? 0.50 : percentReduction);
@@ -7640,7 +7642,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 
 		uint8_t newPercent;
 		if (nextReqMana > currReqMana) {
-			newPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+			newPercent = Player::calculateLevelProgress(manaSpent, nextReqMana);
 			newPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 		} else {
 			newPercent = 0;
@@ -7701,7 +7703,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 
 		uint8_t newPercent;
 		if (nextReqTries > currReqTries) {
-			newPercent = Player::getPercentLevel(skills[skill].tries, nextReqTries);
+			newPercent = Player::calculateLevelProgress(skills[skill].tries, nextReqTries);
 			newPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 		} else {
 			newPercent = 0;

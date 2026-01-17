@@ -1607,7 +1607,7 @@ int PlayerFunctions::luaPlayerSetMagicLevel(lua_State* L) {
 			const uint64_t manaSpent = Lua::getNumber<uint64_t>(L, 3);
 			const uint64_t nextReqMana = player->vocation->getReqMana(level + 1);
 			player->manaSpent = manaSpent;
-			player->magLevelPercent = Player::getPercentLevel(manaSpent, nextReqMana);
+			player->magLevelPercent = Player::calculateLevelProgress(manaSpent, nextReqMana);
 		} else {
 			player->manaSpent = 0;
 			player->magLevelPercent = 0;
@@ -1632,7 +1632,7 @@ int PlayerFunctions::luaPlayerSetSkillLevel(lua_State* L) {
 			const uint64_t tries = Lua::getNumber<uint64_t>(L, 4);
 			const uint64_t nextReqTries = player->vocation->getReqSkillTries(skillType, level + 1);
 			player->skills[skillType].tries = tries;
-			player->skills[skillType].percent = Player::getPercentLevel(tries, nextReqTries);
+			player->skills[skillType].percent = Player::calculateLevelProgress(tries, nextReqTries);
 		} else {
 			player->skills[skillType].tries = 0;
 			player->skills[skillType].percent = 0;

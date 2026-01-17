@@ -4060,6 +4060,9 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 		msg.addByte(hItem_it.second);
 	}
 
+	// the packet should end with u16 but something was added in the middle
+	// this is a placeholder
+	msg.addByte(0);
 	writeToOutputBuffer(msg);
 #endif
 }
@@ -4420,6 +4423,44 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 		msg.addByte(0x00);
 	}
 
+	// wheel of destiny stats were added
+	// currently this page displays incorrectly
+	// this needs a refactor
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.add<uint16_t>(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
+	msg.add<uint32_t>(0);
+	msg.addByte(0);
 	writeToOutputBuffer(msg);
 #endif
 }
@@ -4540,6 +4581,11 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 	}
 
 	msg.addByte(0x00);
+
+	// ??
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
 
 	writeToOutputBuffer(msg);
 #endif

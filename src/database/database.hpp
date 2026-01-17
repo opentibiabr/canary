@@ -231,21 +231,22 @@ public:
 	DBTransaction &operator=(const DBTransaction &&) = delete;
 
 	template <typename Func>
-	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();
-		if (changesExpected) {
-			DBTransaction transaction;
-			try {
-				transaction.begin();
-				transaction.commit();
-				return changesExpected;
-			} catch (const std::exception &exception) {
-				transaction.rollback();
-				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
-				return false;
-			}
-		} else {
-			return true;
+	static bool executeWithinTransaction(const Func &callback)
+		requires std::invocable<Func>
+	{
+		DBTransaction transaction;
+		try {
+			transaction.begin();
+
+			const bool result = callback();
+
+			transaction.commit();
+
+			return result;
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 

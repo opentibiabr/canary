@@ -45,7 +45,7 @@ protected:
 TEST_F(BatchUpdateTest, DeduplicatesContainersAndBalancesBeginEndCalls) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	withBatchUpdate(player, [&](BatchUpdate &batch) {
+	withBatchUpdate(player, [&player, &c1](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
 		EXPECT_FALSE(batch.add(c1));
 		EXPECT_TRUE(player->isBatching());
@@ -69,7 +69,7 @@ TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	withBatchUpdate(player, [&](BatchUpdate &batch) {
+	withBatchUpdate(player, [&player, &c1, &c2](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
 		batch.addContainers({ c1, c2 });
 		EXPECT_TRUE(player->isBatching());
@@ -84,7 +84,7 @@ TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
 TEST_F(BatchUpdateTest, EndBatchUpdateHandlesExpiredActor) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	withBatchUpdate(player, [&](BatchUpdate &batch) {
+	withBatchUpdate(player, [&player, &c1](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
 		player.reset();
 	});
@@ -106,7 +106,7 @@ TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
 	auto player = std::make_shared<Player>();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
-	withBatchUpdate(player, [&](BatchUpdate &batch) {
+	withBatchUpdate(player, [&player, &c1, &c2](BatchUpdate &batch) {
 		batch.addContainers({ nullptr, c1, c1, c2, nullptr });
 		EXPECT_TRUE(player->isBatching());
 		EXPECT_EQ(c1->beginCount, 1);
@@ -119,7 +119,7 @@ TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
 
 TEST_F(BatchUpdateTest, EmptyScopeBalancesBatchingState) {
 	auto player = std::make_shared<Player>();
-	withBatchUpdate(player, [&](BatchUpdate &) {
+	withBatchUpdate(player, [&player](BatchUpdate &) {
 		EXPECT_TRUE(player->isBatching());
 	});
 	EXPECT_FALSE(player->isBatching());

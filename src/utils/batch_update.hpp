@@ -22,6 +22,7 @@ class Container;
 class BatchUpdate : public SharedObject {
 public:
 	explicit BatchUpdate(const std::shared_ptr<Player> &actor);
+	~BatchUpdate();
 	BatchUpdate(const BatchUpdate &) = delete;
 	BatchUpdate &operator=(const BatchUpdate &) = delete;
 	BatchUpdate(BatchUpdate &&) = delete;
@@ -32,7 +33,6 @@ public:
 private:
 	struct State {
 		explicit State(const std::shared_ptr<Player> &actor);
-		~State();
 		State(const State &) = delete;
 		State &operator=(const State &) = delete;
 		State(State &&) = delete;

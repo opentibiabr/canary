@@ -476,6 +476,10 @@ void Container::onAddContainerItem(const std::shared_ptr<Item> &item) {
 }
 
 void Container::onUpdateContainerItem(uint32_t index, const std::shared_ptr<Item> &oldItem, const std::shared_ptr<Item> &newItem) {
+	if (m_batching) {
+		return;
+	}
+
 	const auto &holdingPlayer = getHoldingPlayer();
 	const auto &thisContainer = getContainer();
 	if (holdingPlayer) {

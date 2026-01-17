@@ -39,7 +39,9 @@ void Metrics::init(Options opts) {
 		p->AddMetricReader(std::move(prometheusExporter));
 	}
 
-	metrics_api::Provider::SetMeterProvider(std::move(provider));
+	// Convert unique_ptr to shared_ptr for OpenTelemetry v1.20+
+	std::shared_ptr<metrics_api::MeterProvider> sharedProvider(provider.release());
+	metrics_api::Provider::SetMeterProvider(sharedProvider);
 	initHistograms();
 }
 

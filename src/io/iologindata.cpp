@@ -10,6 +10,7 @@
 #include "io/iologindata.hpp"
 
 #include "account/account.hpp"
+#include "account/account_repository.hpp"
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "io/functions/iologindata_load_player.hpp"

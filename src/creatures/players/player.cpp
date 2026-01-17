@@ -40,6 +40,7 @@
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
+#include "utils/batch_update.hpp"
 #include "grouping/guild.hpp"
 #include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
@@ -1621,6 +1622,14 @@ void Player::setMainBackpackUnassigned(const std::shared_ptr<Container> &contain
 		sendInventoryItem(CONST_SLOT_BACKPACK, container);
 		sendLootContainers();
 	}
+}
+
+bool Player::isHoldingItem(const std::shared_ptr<Item> &item) const {
+	if (!item) {
+		return false;
+	}
+
+	return item->getTopParent().get() == this;
 }
 
 bool Player::updateKillTracker(const std::shared_ptr<Container> &corpse, const std::string &playerName, const Outfit_t &creatureOutfit) const {
@@ -7248,6 +7257,9 @@ uint64_t Player::getSpentMana() const {
 }
 
 bool Player::hasFlag(PlayerFlags_t flag) const {
+	if (!group) {
+		return false;
+	}
 	return group->flags[static_cast<std::size_t>(flag)];
 }
 
@@ -7981,9 +7993,15 @@ void Player::onThink(uint32_t interval) {
 }
 
 void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link) {
+	if (m_batching) {
+		return;
+	}
+
+	auto selfPlayer = getPlayer();
 	if (link == LINK_OWNER) {
 		// calling movement scripts
-		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index), false);
+		const auto equipResult = g_moveEvents().onPlayerEquip(selfPlayer, thing->getItem(), static_cast<Slots_t>(index), false);
+		(void)equipResult;
 	}
 
 	bool requireListUpdate = true;
@@ -7991,9 +8009,9 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 		const auto &item = oldParent ? oldParent->getItem() : nullptr;
 		const auto &container = item ? item->getContainer() : nullptr;
 		if (container) {
-			requireListUpdate = container->getHoldingPlayer() != getPlayer();
+			requireListUpdate = container->getHoldingPlayer() != selfPlayer;
 		} else {
-			requireListUpdate = oldParent != getPlayer();
+			requireListUpdate = oldParent != selfPlayer;
 		}
 
 		updateInventoryWeight();
@@ -8002,8 +8020,9 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 		sendStats();
 	}
 
-	if (const auto &item = thing->getItem()) {
+	if (const auto item = thing->getItem()) {
 		if (const auto &container = item->getContainer()) {
+			checkLootContainers(container);
 			onSendContainer(container);
 		}
 
@@ -8011,30 +8030,14 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 			updateSaleShopList(item);
 		}
 	} else if (const auto &creature = thing->getCreature()) {
-		if (creature == getPlayer()) {
-			// check containers
-			std::vector<std::shared_ptr<Container>> containers;
-
-			for (const auto &[containerId, containerInfo] : openContainers) {
-				const auto &container = containerInfo.container;
-				if (container == nullptr) {
-					continue;
-				}
-
-				if (!Position::areInRange<1, 1, 0>(container->getPosition(), getPosition())) {
-					containers.emplace_back(container);
-				}
-			}
-
-			for (const auto &container : containers) {
-				autoCloseContainers(container);
-			}
+		if (creature == selfPlayer) {
+			closeContainersOutOfRange();
 		}
 	}
 }
 
 void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link) {
-	if (!thing) {
+	if (!thing || m_batching) {
 		return;
 	}
 
@@ -8063,37 +8066,13 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 		sendStats();
 	}
 
-	if (const auto &item = copyThing->getItem()) {
+	if (const auto &item = thing->getItem()) {
 		if (const auto &container = item->getContainer()) {
 			checkLootContainers(container);
-
-			if (container->isRemoved() || !Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
+			if (shouldCloseContainer(container)) {
 				autoCloseContainers(container);
-			} else if (container->getTopParent() == getPlayer()) {
-				onSendContainer(container);
-			} else if (const auto &topContainer = std::dynamic_pointer_cast<Container>(container->getTopParent())) {
-				if (const auto &depotChest = std::dynamic_pointer_cast<DepotChest>(topContainer)) {
-					bool isOwner = false;
-
-					for (const auto &[depotId, depotChestMap] : depotChests) {
-						if (depotId == 0) {
-							continue;
-						}
-
-						if (depotChestMap == depotChest) {
-							isOwner = true;
-							onSendContainer(container);
-						}
-					}
-
-					if (!isOwner) {
-						autoCloseContainers(container);
-					}
-				} else {
-					onSendContainer(container);
-				}
 			} else {
-				autoCloseContainers(container);
+				onSendContainer(container);
 			}
 		}
 
@@ -8404,6 +8383,102 @@ void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &contai
 	if (client) {
 		client->sendContainer(cid, container, hasParent, firstIndex);
 	}
+}
+
+void Player::beginBatchUpdate() {
+	m_batching = true;
+}
+
+void Player::endBatchUpdate() {
+	if (!m_batching) {
+		return;
+	}
+	updateState();
+	m_batching = false;
+}
+
+void Player::sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t /*firstIndex*/) {
+	if (!container || !client) {
+		g_logger().warn("Player::sendBatchUpdateContainer - Invalid container or client for player {}.", getName());
+		return;
+	}
+
+	if (!m_batching) {
+		updateState();
+	}
+
+	for (const auto &[cid, containerInfo] : openContainers) {
+		if (containerInfo.container.get() == container) {
+			auto sharedContainer = containerInfo.container;
+			checkLootContainers(sharedContainer);
+			client->sendContainer(cid, sharedContainer, hasParent, containerInfo.index);
+			g_logger().debug("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
+		}
+	}
+
+	closeContainersOutOfRange();
+	g_logger().debug("Player::sendBatchUpdateContainer - Closed out of range containers for player {}.", getName());
+}
+
+void Player::closeContainersOutOfRange() {
+	if (!client) {
+		return;
+	}
+
+	std::vector<uint8_t> containersToClose;
+
+	for (const auto &[containerId, containerInfo] : openContainers) {
+		const auto &container = containerInfo.container;
+		if (!container) {
+			continue;
+		}
+
+		if (shouldCloseContainer(container)) {
+			checkLootContainers(container);
+			const auto &added = containersToClose.emplace_back(containerId);
+			(void)added;
+		}
+	}
+
+	for (const uint8_t containerId : containersToClose) {
+		g_logger().debug("Player::closeContainersOutOfRange - Closing container {} for player {} due to out of range.", containerId, getName());
+		closeContainer(containerId);
+		client->sendCloseContainer(containerId);
+	}
+}
+
+bool Player::shouldCloseContainer(const std::shared_ptr<Container> &container) const {
+	if (!container || container->isRemoved()) {
+		return true;
+	}
+
+	auto topParent = container->getTopParent();
+	if (!topParent) {
+		return true;
+	}
+	if (topParent == getPlayer()) {
+		return false;
+	}
+
+	if (auto topItem = topParent->getItem()) {
+		if (Position::areInRange<1, 1, 0>(getPosition(), topItem->getPosition())) {
+			return false;
+		}
+	}
+
+	if (const auto &depotChest = topParent->getDepotChest()) {
+		for (const auto &[depotId, chest] : depotChests) {
+			if (depotId != 0 && chest == depotChest) {
+				return false;
+			}
+		}
+	}
+
+	if (!Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
+		return true;
+	}
+
+	return false;
 }
 
 // inventory

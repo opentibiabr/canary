@@ -239,6 +239,10 @@ public:
 		return tilePos;
 	}
 
+	const Position &getPosition() const final {
+		return tilePos;
+	}
+
 	bool isRemoved() final {
 		return false;
 	}

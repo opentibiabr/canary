@@ -666,8 +666,29 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
-			const auto addResult = addCustomCurrencyItems(player, getCurrency(), totalCost, getName(), "[Npc::onPlayerSellAllLoot]", "[Npc::onPlayerSellItem]");
-			(void)addResult;
+			if (!addCustomCurrencyItems(
+					player,
+					getCurrency(),
+					totalCost,
+					getName(),
+					"[Npc::onPlayerSellAllLoot]",
+					"[Npc::onPlayerSellItem]"
+				)) {
+
+				g_logger().error(
+					"[Npc::onPlayerSellAllLoot] - Failed to add custom currency {} (amount {}) to player {}. Sale aborted.",
+					getCurrency(),
+					totalCost,
+					player->getName()
+				);
+
+				player->sendTextMessage(
+					MESSAGE_EVENT_ADVANCE,
+					"An error occurred while completing the sale of your loot. No items were exchanged."
+				);
+
+				return;
+			}
 		}
 
 		const auto &itemName = Item::items.getItemType(itemId).name;
@@ -756,8 +777,29 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		}
 		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 	} else if (totalCost) {
-		const auto addResult = addCustomCurrencyItems(player, getCurrency(), totalCost, getName(), "[Npc::onPlayerSellItem]", "[Npc::onPlayerSellItem]");
-		(void)addResult;
+		if (!addCustomCurrencyItems(
+				player,
+				getCurrency(),
+				totalCost,
+				getName(),
+				"[Npc::onPlayerSellItem]",
+				"[Npc::onPlayerSellItem]"
+			)) {
+
+			g_logger().error(
+				"[Npc::onPlayerSellItem] - Failed to add custom currency {} (amount {}) to player {}. Sale aborted.",
+				getCurrency(),
+				totalCost,
+				player->getName()
+			);
+
+			player->sendTextMessage(
+				MESSAGE_EVENT_ADVANCE,
+				"An error occurred while completing the sale. Your items were not exchanged."
+			);
+
+			return;
+		}
 	}
 
 	if (context.lootPouch) {

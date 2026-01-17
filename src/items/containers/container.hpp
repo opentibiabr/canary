@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <unordered_set>
-
 #include "items/cylinder.hpp"
 #include "items/item.hpp"
 #include "items/tile.hpp"

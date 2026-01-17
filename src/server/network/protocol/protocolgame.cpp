@@ -4921,6 +4921,13 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendOpenPvpSituations(const uint8_t &openPvpSituations) {
+	NetworkMessage msg;
+	msg.addByte(0xB8);
+	msg.addByte(openPvpSituations);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
 	if (!player || !container) {
 		return;

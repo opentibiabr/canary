@@ -288,10 +288,10 @@ void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreC
 		return;
 	}
 
-	addEventWalk(listWalkDir.size() == 1);
+	addEventWalk();
 }
 
-void Creature::addEventWalk(bool firstStep) {
+void Creature::addEventWalk() {
 	cancelNextWalk = false;
 
 	if (getStepSpeed() <= 0) {
@@ -302,19 +302,13 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	const int64_t ticks = getEventStepTicks(firstStep);
-	if (ticks <= 0) {
-		return;
-	}
-
-	safeCall([this, ticks]() {
-		// Take first step right away, but still queue the next
-		if (ticks == 1) {
-			onCreatureWalk();
+	safeCall([this] {
+		const int64_t ticks = getEventStepTicks();
+		if (ticks <= 0) {
+			return;
 		}
-
 		eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
+			static_cast<uint32_t>(ticks), [self = std::weak_ptr(getCreature())] {
 				if (const auto &creature = self.lock()) {
 					creature->onCreatureWalk();
 				}
@@ -1487,14 +1481,9 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	return duration;
 }
 
-int64_t Creature::getEventStepTicks(bool onlyDelay) {
-	int64_t ret = getWalkDelay();
-	if (ret <= 0) {
-		const uint16_t stepDuration = getStepDuration();
-		ret = onlyDelay && stepDuration > 0 ? 1 : stepDuration * lastStepCost;
-	}
-
-	return ret;
+int64_t Creature::getEventStepTicks() {
+	const int64_t ret = getWalkDelay();
+	return ret <= 0 ? getStepDuration() * lastStepCost : ret;
 }
 
 LightInfo Creature::getCreatureLight() const {

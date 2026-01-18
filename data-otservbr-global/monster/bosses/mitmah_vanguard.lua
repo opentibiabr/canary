@@ -18,16 +18,20 @@ monster.bosstiary = {
 	bossRace = RARITY_ARCHFOE,
 }
 
-monster.health = 250000
-monster.maxHealth = 250000
+monster.events = {
+	"iksupanBossesDeath",
+}
+
+monster.health = 200000
+monster.maxHealth = 200000
 monster.race = "blood"
 monster.corpse = 44687
-monster.speed = 450
+monster.speed = 350
 monster.manaCost = 0
 
 monster.changeTarget = {
-	interval = 10000,
-	chance = 20,
+	interval = 5000,
+	chance = 0,
 }
 
 monster.strategiesTarget = {
@@ -67,66 +71,62 @@ monster.voices = {
 	chance = 10,
 	{ text = "Die, human. Now!", yell = true },
 	{ text = "FEAR THE CURSE!", yell = true },
-	{ text = "You're the intruder.", yell = true },
-	{ text = "The Iks have always been ours.", yell = true },
-	{ text = "NOW TREMBLE!", "GOT YOU NOW!", yell = true },
+	{ text = "You're the intruder.", yell = false },
+	{ text = "Awrrrgh!", yell = false },
+	{ text = "The iks have always been ours.", yell = true },
+	{ text = "Hwaaarrrh!!!", yell = true },
+	{ text = "Wraaahgh?!", yell = true },
+	{ text = "NOW TREMBLE!", yell = true },
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 895000, maxCount = 400 },
-	{ name = "platinum coin", chance = 655000, maxCount = 15 },
-	{ name = "crystal coin", chance = 325000, maxCount = 5 },
-	{ name = "great health potion", chance = 288900, maxCount = 15 },
-	{ name = "great mana potion", chance = 281500 },
-	{ name = "great spirit potion", chance = 65337, maxCount = 45 },
-	{ name = "ultimate health potion", chance = 214800, maxCount = 12 },
-	{ name = "ultimate mana potion", chance = 155600, maxCount = 15 },
-	{ name = "supreme health potion", chance = 33385, maxCount = 23 },
-	{ name = "yellow gem", chance = 11604, maxCount = 5 },
-	{ name = "blue gem", chance = 14144, maxCount = 5 },
-	{ name = "green gem", chance = 11221, maxCount = 4 },
-	{ name = "giant topaz", chance = 11191, maxCount = 1 },
-	{ name = "giant emerald", chance = 11191, maxCount = 1 },
-	{ name = "giant sapphire", chance = 11191, maxCount = 1 },
-	{ name = "giant amethyst", chance = 12527, maxCount = 1 },
-	{ name = "white gem", chance = 311100 },
-	{ name = "yellow gem", chance = 251900 },
-	{ name = "blue gem", chance = 222200 },
-	{ name = "crystal of the mitmah", chance = 451900 },
-	{ name = "broken mitmah necklace", chance = 548100 },
-	{ name = "broken mitmah chestplate", chance = 44400 },
-	{ name = "splintered mitmah gem", chance = 3700 },
-	{ name = "stoic iks boots", chance = 500 },
-	{ name = "stoic iks faulds", chance = 500 },
-	{ name = "stoic iks casque", chance = 500 },
-	{ name = "stoic iks cuirass", chance = 500 },
-	{ name = "stoic iks chestplate", chance = 500 },
-	{ name = "stoic iks sandals", chance = 500 },
-	{ name = "stoic iks headpiece", chance = 500 },
-	{ name = "stoic iks culet", chance = 500 },
+	{ name = "gold coin", chance = 100000, minCount = 1, maxCount = 360 },
+	{ name = "platinum coin", chance = 20000, maxCount = 60 },
+	{ name = "great health potion", chance = 40000, maxCount = 13 },
+	{ name = "broken mitmah necklace", chance = 40000, maxCount = 1 },
+	{ name = "crystal of the mitmah", chance = 40000, maxCount = 1 },
+	{ name = "great spirit potion", chance = 25530, maxCount = 9 },
+	{ name = "great mana potion", chance = 34040, maxCount = 13 },
+	{ name = "white gem", chance = 15000 },
+	{ name = "yellow gem", chance = 15000, maxCount = 2 },
+	{ name = "blue gem", chance = 15000 },
+	{ name = "broken mitmah chestplate", chance = 9000 },
+	{ name = "giant sapphire", chance = 9000 },
+	{ name = "splintered mitmah gem", chance = 9000 },
+	{ name = "amber with a bug", chance = 3190 },
+	{ name = "amber", chance = 5320 },
+	{ name = "stoic iks boots", chance = 452 },
+	{ name = "stoic iks casque", chance = 372 },
+	{ name = "stoic iks chestplate", chance = 545 },
+	{ name = "stoic iks robe", chance = 545 },
+	{ name = "stoic iks culet", chance = 362 },
+	{ name = "stoic iks faulds", chance = 460 },
+	{ name = "stoic iks headpiece", chance = 552 },
+	{ name = "stoic iks sandals", chance = 665 },
+	{ name = "stoic iks cuirass", chance = 382 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 1700, chance = 100, minDamage = -400, maxDamage = -856 },
-	{ name = "melee", interval = 2500, chance = 100, minDamage = -500, maxDamage = -1256 },
-	{ name = "hugeblackring", interval = 3500, chance = 20, minDamage = -700, maxDamage = -1500, target = false },
-	{ name = "combat", interval = 3000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -4500, maxDamage = -6000, radius = 9, effect = CONST_ME_SLASH, target = false },
-	{ name = "combat", interval = 2500, chance = 33, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -1500, length = 8, spread = 0, effect = CONST_ME_PURPLEENERGY, target = false },
-	{ name = "combat", interval = 2000, chance = 50, type = COMBAT_FIREDAMAGE, minDamage = -600, maxDamage = -1000, length = 8, spread = 2, effect = CONST_ME_HITBYFIRE, target = false },
-	{ name = "combat", interval = 1000, chance = 30, type = COMBAT_ENERGYDAMAGE, minDamage = -400, maxDamage = -600, range = 7, radius = 2, shootEffect = CONST_ANI_BOLT, effect = CONST_ME_ENERGYHIT, target = true },
+	{ name = "melee", interval = 1500, chance = 100, minDamage = -600, maxDamage = -800 },
+	{ name = "combat", interval = 2000, chance = 25, type = COMBAT_ENERGYDAMAGE, minDamage = -300, maxDamage = -400, range = 8, effect = CONST_ME_ENERGYHIT, shootType = CONST_ANI_BOLT, target = true }, -- bolt
+	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_ENERGYDAMAGE, minDamage = -500, maxDamage = -1200, length = 12, spread = 0, effect = CONST_ME_ENERGYHIT, target = false }, -- beam
+	{ name = "combat", interval = 4000, chance = 10, type = COMBAT_ENERGYDAMAGE, minDamage = -4300, maxDamage = -5970, radius = 10, effect = CONST_ME_SLASH, target = false }, -- slash ring
+	{ name = "boulder ring", interval = 2000, chance = 20, minDamage = -460, maxDamage = -850, target = false },
+	{ name = "root", interval = 4000, chance = 10, target = true },
 }
 
 monster.defenses = {
-	defense = 64,
-	armor = 0,
+	defense = 150,
+	armor = 150,
 	--	mitigation = ???,
+	{ name = "combat", interval = 10000, chance = 10, type = COMBAT_HEALING, minDamage = 1000, maxDamage = 2500, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = 5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
-	{ type = COMBAT_FIREDAMAGE, percent = 5 },
+	{ type = COMBAT_FIREDAMAGE, percent = 30 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
@@ -141,5 +141,19 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onThink = function(monster, interval) end
+
+mType.onAppear = function(monster, creature)
+	if monster:getType():isRewardBoss() then
+		monster:setReward(true)
+	end
+end
+
+mType.onDisappear = function(monster, creature) end
+
+mType.onMove = function(monster, creature, fromPosition, toPosition) end
+
+mType.onSay = function(monster, creature, type, message) end
 
 mType:register(monster)

@@ -11696,6 +11696,12 @@ void Player::sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Ite
 	}
 }
 
+void Player::sendNpcChatWindow() const {
+	if (client) {
+		client->sendNpcChatWindow();
+	}
+}
+
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/
@@ -12335,4 +12341,19 @@ void Player::sendSpellCooldowns() {
 			sendSpellCooldown(spellId, ticks);
 		}
 	}
+}
+
+void Player::addNpcFocus(const uint32_t npcId, const uint16_t buttonFlags) {
+	focusedNpcs[npcId] = buttonFlags;
+
+	// update ui with new npc
+	sendNpcChatWindow();
+}
+
+void Player::removeNpcFocus(const uint32_t npcId) {
+	// clear from the map
+	focusedNpcs.erase(npcId);
+
+	// update ui
+	sendNpcChatWindow();
 }

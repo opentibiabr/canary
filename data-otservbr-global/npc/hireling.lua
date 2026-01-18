@@ -789,12 +789,29 @@ function createHirelingType(HirelingName)
 		return true
 	end
 
+	local function greetCallback(npc, creature)
+		if hireling:hasSkill(HIRELING_SKILLS.TRADER[2]) then
+			npc:setDialogueButton(KEYWORDBUTTONICON_POTIONTRADE)
+			npc:setDialogueButton(KEYWORDBUTTONICON_EQUIPMENTTRADE)
+		end
+
+		if hireling:hasSkill(HIRELING_SKILLS.BANKER[2]) then
+			npc:setDialogueButton(KEYWORDBUTTONICON_DEPOSITALL)
+			npc:setDialogueButton(KEYWORDBUTTONICON_WITHDRAW)
+			npc:setDialogueButton(KEYWORDBUTTONICON_BALANCE)
+		end
+
+		return true
+	end
+
+	npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 	npcHandler:setMessage(MESSAGE_GREET, "It is good to see you. I'm always at your {service}.")
 	npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|, I'll be here if you need me again.")
 	npcHandler:setMessage(MESSAGE_WALKAWAY, "Come back soon!")
 
 	npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 	npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
+
 
 	npcType:register(npcConfig)
 end

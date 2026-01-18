@@ -102,6 +102,7 @@ void LuaEnums::init(lua_State* L) {
 	initTextColorEnums(L);
 	initTileStateEnums(L);
 	initSpeechBubbleEnums(L);
+	initKeywordButtonIcons(L);
 	initMapMarkEnums(L);
 	initReturnValueEnums(L);
 	initReloadTypeEnums(L);
@@ -910,6 +911,13 @@ void LuaEnums::initSpeechBubbleEnums(lua_State* L) {
 	registerEnum(L, SPEECHBUBBLE_QUEST);
 	registerEnum(L, SPEECHBUBBLE_QUESTTRADER);
 	registerEnum(L, SPEECHBUBBLE_HIRELING);
+}
+
+// Use with npc:setDialogueButton
+void LuaEnums::initKeywordButtonIcons(lua_State* L) {
+	for (auto value : magic_enum::enum_values<KeywordButtonIcon>()) {
+		registerMagicEnum(L, value);
+	}
 }
 
 // Use with player:addMapMark

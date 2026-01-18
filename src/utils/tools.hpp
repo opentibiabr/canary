@@ -18,6 +18,7 @@ struct Position;
 enum CombatType_t : uint8_t;
 enum Direction : uint8_t;
 enum MagicEffectClasses : uint16_t;
+enum KeywordButtonIcon : uint16_t;
 enum ShootType_t : uint8_t;
 enum Ammo_t : uint8_t;
 enum WeaponAction_t : uint8_t;
@@ -105,6 +106,7 @@ std::string convertIPToString(uint32_t ip);
 void trimString(std::string &str);
 
 MagicEffectClasses getMagicEffect(const std::string &strValue);
+std::string getNpcButtonText(KeywordButtonIcon buttonEnum);
 ShootType_t getShootType(const std::string &strValue);
 Ammo_t getAmmoType(const std::string &strValue);
 WeaponAction_t getWeaponAction(const std::string &strValue);

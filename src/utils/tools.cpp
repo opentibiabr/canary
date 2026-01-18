@@ -901,6 +901,28 @@ SpawnTypeNames spawnTypeNames = {
 	{ "nightandcave", RESPAWN_IN_NIGHT_CAVE },
 };
 
+using KeywordButtonIconNames = phmap::flat_hash_map<KeywordButtonIcon, std::string>;
+KeywordButtonIconNames keywordButtonIconNames = {
+	{ KEYWORDBUTTONICON_GENERALTRADE, "trade" },
+	{ KEYWORDBUTTONICON_POTIONTRADE, "potions" },
+	{ KEYWORDBUTTONICON_EQUIPMENTTRADE, "equipment" },
+	{ KEYWORDBUTTONICON_SAIL, "passage" },
+	{ KEYWORDBUTTONICON_DEPOSITALL, "deposit all" },
+	{ KEYWORDBUTTONICON_WITHDRAW, "withdraw" },
+	{ KEYWORDBUTTONICON_BALANCE, "balance" },
+	{ KEYWORDBUTTONICON_YES, "yes" },
+	{ KEYWORDBUTTONICON_NO, "no" },
+	{ KEYWORDBUTTONICON_BYE, "bye" },
+};
+
+std::string getNpcButtonText(KeywordButtonIcon buttonEnum) {
+	const auto buttonText = keywordButtonIconNames.find(buttonEnum);
+	if (buttonText != keywordButtonIconNames.end()) {
+		return buttonText->second;
+	}
+	return "";
+}
+
 MagicEffectClasses getMagicEffect(const std::string &strValue) {
 	const auto magicEffect = magicEffectNames.find(strValue);
 	if (magicEffect != magicEffectNames.end()) {

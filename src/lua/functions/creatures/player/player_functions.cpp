@@ -13,6 +13,7 @@
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
+#include "creatures/npcs/npc.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"

@@ -13,6 +13,7 @@
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/stash_definitions.hpp"
+#include "creatures/npcs/npc.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -375,6 +376,7 @@ private:
 	void sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType);
 
 	void sendShop(const std::shared_ptr<Npc> &npc);
+	void sendNpcChatWindow();
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
@@ -587,12 +589,18 @@ private:
 	void AddBlessings();
 	void parsePacketDead(uint8_t recvbyte);
 	void AddCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
-
+	void AddNpcButton(NetworkMessage &msg, const KeywordButtonIcon buttonId);
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();
+
+	static void addNPCButtonIfExists(std::vector<KeywordButtonIcon>& buttons, KeywordButtonIcon icon, uint16_t flags) {
+		if ((flags & (1 << icon)) != 0) {
+			buttons.push_back(icon);
+		}
+	}
 
 	uint8_t m_playerDeathTime = 0;
 

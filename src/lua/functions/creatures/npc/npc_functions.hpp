@@ -49,5 +49,10 @@ private:
 
 	static int luaNpcGetDistanceTo(lua_State* L);
 
+	static int luaNpcHasDialogueButton(lua_State* L);
+	static int luaNpcSetDialogueButton(lua_State* L);
+	static int luaNpcRemoveDialogueButton(lua_State* L);
+	static int luaNpcGetDialogueButtons(lua_State* L);
+
 	friend class CreatureFunctions;
 };

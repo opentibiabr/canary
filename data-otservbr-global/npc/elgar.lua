@@ -85,5 +85,8 @@ npcHandler:setCallback(CALLBACK_GREET, NpcBankGreetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
+-- add bank buttons to the npc ui
+npcType:addBankButtons()
+
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)

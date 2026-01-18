@@ -1342,6 +1342,8 @@ public:
 
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items) const;
 
+	void sendNpcChatWindow() const;
+
 	/*******************************************************************************
 	 * Hazard system
 	 ******************************************************************************/
@@ -1465,6 +1467,9 @@ public:
 
 	void sendSpellCooldowns();
 
+	void addNpcFocus(const uint32_t npcId, const uint16_t buttonFlags);
+	void removeNpcFocus(const uint32_t npcId);
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1571,6 +1576,8 @@ private:
 
 	std::vector<std::unique_ptr<PreySlot>> preys;
 	std::vector<std::unique_ptr<TaskHuntingSlot>> taskHunting;
+
+	std::map<uint32_t, uint16_t> focusedNpcs;
 
 	GuildWarVector guildWarVector;
 

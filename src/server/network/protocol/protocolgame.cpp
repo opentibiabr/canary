@@ -19,7 +19,6 @@
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/monsters/monsters.hpp"
-#include "creatures/npcs/npc.hpp"
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
@@ -3457,6 +3456,11 @@ void ProtocolGame::AddCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 	}
 }
 
+void ProtocolGame::AddNpcButton(NetworkMessage &msg, const KeywordButtonIcon buttonId) {
+	msg.addByte(buttonId);
+	msg.addString(getNpcButtonText(static_cast<KeywordButtonIcon>(buttonId)));
+}
+
 void ProtocolGame::sendCreatureIcon(const std::shared_ptr<Creature> &creature) {
 #ifndef PROTOCOL_DISABLE_UPDATE_ICONS
 	if (!creature || !player || oldProtocol) {
@@ -5285,6 +5289,65 @@ void ProtocolGame::sendShop(const std::shared_ptr<Npc> &npc) {
 	writeToOutputBuffer(msg);
 	g_logger().debug("ProtocolGame::sendShop - Time: {} ms, shop items: {}", brenchmark.duration(), shoplist.size());
 #endif
+}
+
+void ProtocolGame::sendNpcChatWindow() {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x1C);
+	const auto &npcs = player->focusedNpcs;
+
+	size_t npcCount = npcs.size();
+
+	// safety check: when the amount of focused npcs is over 255, something is certainly wrong
+	// do not send them in such situation
+	bool hasData = npcCount != 0 && npcCount <= std::numeric_limits<uint8_t>::max();
+	msg.addByte(hasData ? 0 : 1);
+	if (!hasData) {
+		writeToOutputBuffer(msg);
+		return;
+	}
+
+	// combined enums
+	uint16_t buttons = 0;
+	msg.addByte(npcCount);
+
+	for (const auto &npc : npcs) {
+		// add npc id
+		msg.add<uint32_t>(npc.first);
+
+		// combine flags
+		buttons |= npc.second;
+	}
+
+	// yes / no / bye are always at the front
+	std::vector<KeywordButtonIcon> buttonList = {KEYWORDBUTTONICON_YES, KEYWORDBUTTONICON_NO, KEYWORDBUTTONICON_BYE};
+
+	// the buttons in the game screen follow specific order
+
+	// trade buttons are first
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_GENERALTRADE, buttons);
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_POTIONTRADE, buttons);
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_EQUIPMENTTRADE, buttons);
+
+	// deposit/withdraw are swapped
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_WITHDRAW, buttons);
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_DEPOSITALL, buttons);
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_BALANCE, buttons);
+
+	// travel button is at the end
+	addNPCButtonIfExists(buttonList, KEYWORDBUTTONICON_SAIL, buttons);
+
+	// add buttons to the packet
+	msg.addByte(buttonList.size());
+	for (const auto& buttonId : buttonList) {
+		AddNpcButton(msg, static_cast<KeywordButtonIcon>(buttonId));
+	}
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendCloseShop() {

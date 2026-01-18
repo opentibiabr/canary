@@ -55,6 +55,7 @@ private:
 	static void initTextColorEnums(lua_State* L);
 	static void initTileStateEnums(lua_State* L);
 	static void initSpeechBubbleEnums(lua_State* L);
+	static void initKeywordButtonIcons(lua_State* L);
 	static void initMapMarkEnums(lua_State* L);
 	static void initReturnValueEnums(lua_State* L);
 	static void initReloadTypeEnums(lua_State* L);

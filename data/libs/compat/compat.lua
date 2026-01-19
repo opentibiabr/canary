@@ -1605,21 +1605,5 @@ end
 -- in 15.20 the screenshot packet structure got completely reworked
 -- this function is added for compatibility
 function Player:takeScreenshot()
-	logger.warn("[Player:takeScreenshot] - This function is deprecated. Please use Player:sendClientNotification instead.")
---[[
-	SCREENSHOT_TYPE_NONE = 0,
-	SCREENSHOT_TYPE_ACHIEVEMENT = 1,
-	SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED = 2,
-	SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED = 3,
-	SCREENSHOT_TYPE_BOSSDEFEATED = 4,
-	SCREENSHOT_TYPE_DEATHPVE = 5,
-	SCREENSHOT_TYPE_DEATHPVP = 6,
-	SCREENSHOT_TYPE_LEVELUP = 7,
-	SCREENSHOT_TYPE_PLAYERKILLASSIST = 8,
-	SCREENSHOT_TYPE_PLAYERKILL = 9,
-	SCREENSHOT_TYPE_PLAYERATTACKING = 10,
-	SCREENSHOT_TYPE_TREASUREFOUND = 11,
-	SCREENSHOT_TYPE_SKILLUP = 12,
-	SCREENSHOT_TYPE_GIFTOFLIFE = 13,
-]]
+	logger.warn("[Player:takeScreenshot] - This function is deprecated. Please use Player:sendClientEvent instead.")
 end

@@ -1180,11 +1180,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 		std::ostringstream ss;
 		ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-		if (skill == SKILL_LEVEL) {
-			sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
-		} else {
-			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
-		}
+		sendSkillAdvance(skill, skills[skill].level);
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), skill, (skills[skill].level - 1), skills[skill].level);
 
@@ -3354,10 +3350,8 @@ void Player::addManaSpent(uint64_t amount) {
 		std::ostringstream ss;
 		ss << "You advanced to magic level " << magLevel << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
-
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_MAGLEVEL, magLevel - 1, magLevel);
-		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+		sendSkillAdvance(SKILL_MAGLEVEL, magLevel);
 
 		sendUpdateStats = true;
 		currReqMana = nextReqMana;
@@ -3507,7 +3501,7 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		std::ostringstream ss;
 		ss << "You advanced from Level " << prevLevel << " to Level " << level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-		sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
+		sendSkillAdvance(SKILL_LEVEL, level);
 	}
 
 	if (nextLevelExp > currLevelExp) {
@@ -6415,7 +6409,7 @@ bool Player::canWear(uint16_t lookType, uint8_t addons) const {
 		return true;
 	}
 
-	const auto &outfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), lookType);
+	const auto &outfit = Outfits::getInstance().getOutfitByLookType(getSex(), lookType);
 	if (!outfit) {
 		return false;
 	}
@@ -6463,6 +6457,12 @@ void Player::addOutfit(uint16_t lookType, uint8_t addons) {
 		}
 	}
 	outfits.emplace_back(lookType, addons);
+
+	const auto ptr = shared_from_this();
+	auto outfit = g_game().outfits.getOutfitByLookType(getSex(), lookType);
+	if (outfit) {
+		sendUnlockedSkin(outfit->name, lookType, std::clamp<uint8_t>(addons, 0, 2));
+	}
 }
 
 bool Player::removeOutfit(uint16_t lookType) {
@@ -7456,7 +7456,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getPlayer(), defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(getSex(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}
@@ -7637,7 +7637,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to magic level " << magLevel << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+			sendSkillAdvance(SKILL_MAGLEVEL, magLevel);
 		}
 
 		uint8_t newPercent;
@@ -7694,11 +7694,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-			if (skill == SKILL_LEVEL) {
-				sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
-			} else {
-				sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
-			}
+			sendSkillAdvance(skill, skills[skill].level);
 		}
 
 		uint8_t newPercent;
@@ -8011,9 +8007,51 @@ void Player::sendOpenStash(bool isNpc) const {
 	}
 }
 
-void Player::sendTakeScreenshot(Screenshot_t screenshotType) const {
+void Player::sendClientEvent(ClientEvent_t eventType) const {
 	if (client) {
-		client->sendTakeScreenshot(screenshotType);
+		client->sendClientEvent(eventType);
+	}
+}
+
+void Player::sendUnlockedAchievement(const std::string &achievement) const {
+	if (client) {
+		client->sendUnlockedAchievement(achievement);
+	}
+}
+
+void Player::sendUnlockedTitle(const std::string &title) const {
+	if (client) {
+		client->sendUnlockedTitle(title);
+	}
+}
+
+void Player::sendUnlockedSkin(const std::string &skinName, uint16_t lookType, uint8_t skinType) const {
+	if (client) {
+		client->sendUnlockedSkin(skinName, lookType, skinType);
+	}
+}
+
+void Player::sendSkillAdvance(skills_t skill, uint16_t newLevel) const {
+	if (client) {
+		client->sendSkillAdvance(skill, newLevel);
+	}
+}
+
+void Player::sendProgressRace(uint16_t raceId, uint8_t progressLevel, bool isBoss) const {
+	if (client) {
+		client->sendProgressRace(raceId, progressLevel, isBoss);
+	}
+}
+
+void Player::sendProgressQuest(const std::string &questName, bool isCompleted) const {
+	if (client) {
+		client->sendProgressQuest(questName, isCompleted);
+	}
+}
+
+void Player::sendProficiencyProgress(uint16_t itemId, const std::string &message) const {
+	if (client) {
+		client->sendProficiencyProgress(itemId, message);
 	}
 }
 

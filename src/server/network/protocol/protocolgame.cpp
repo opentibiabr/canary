@@ -4195,7 +4195,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection() {
 	// Outfit description
 	playerDescriptionSize++;
 	msg.addString("Outfit");
-	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player, player->getDefaultOutfit().lookType)) {
+	if (const auto outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
 		msg.addString(outfit->name);
 	} else {
 		msg.addString("unknown");
@@ -8409,10 +8409,6 @@ void ProtocolGame::sendPreyPrices() {
 	if (!oldProtocol) {
 		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)));
 		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)));
-		msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
-		msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
-		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)));
-		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
 	}
 
 	writeToOutputBuffer(msg);
@@ -10340,20 +10336,161 @@ void ProtocolGame::sendDisableLoginMusic() {
 #endif
 }
 
-void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
-// in ~15.20 this packet has two functions
+void ProtocolGame::sendClientEvent(ClientEvent_t eventType) {
+// before 15.20 this was a screenshot packet
+// in ~15.20 this packet got two functions
 // 1. notification popup in client
 // 2. triggering a screenshot
 #ifndef PROTOCOL_DISABLE_MILESTONES
-	if (screenshotType == SCREENSHOT_TYPE_NONE || oldProtocol) {
+	if (eventType == CLIENT_EVENT_NONE || oldProtocol) {
 		return;
 	}
 
 	NetworkMessage msg;
 	msg.addByte(0x75);
-	msg.addByte(screenshotType);
+	msg.addByte(CLIENT_EVENT_TYPE_SIMPLE);
+	msg.addByte(eventType);
 	writeToOutputBuffer(msg);
 #endif
+}
+
+void ProtocolGame::sendUnlockedAchievement(const std::string& achievement) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(CLIENT_EVENT_TYPE_ACHIEVEMENT);
+	msg.addString(achievement);
+	writeToOutputBuffer(msg);
+	#endif
+}
+
+void ProtocolGame::sendUnlockedTitle(const std::string &title) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(CLIENT_EVENT_TYPE_TITLE);
+	msg.addString(title);
+	writeToOutputBuffer(msg);
+	#endif
+}
+
+void ProtocolGame::sendUnlockedSkin(const std::string &skinName, uint16_t lookType, uint8_t skinType) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(CLIENT_EVENT_TYPE_COSMETIC);
+	msg.add<uint16_t>(lookType);
+	msg.addString(skinName);
+	msg.addByte(skinType); // 0 - outfit, 1 and 2 - addon, 3 - mount (client does not support "full outfit unlocked")
+	writeToOutputBuffer(msg);
+	#endif
+}
+
+void ProtocolGame::sendSkillAdvance(skills_t skill, uint16_t newLevel) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	if (skill == SKILL_LEVEL) {
+		msg.addByte(CLIENT_EVENT_TYPE_LEVEL);
+	} else {
+		msg.addByte(CLIENT_EVENT_TYPE_SKILL);
+		uint8_t skillId;
+		switch (skill) {
+			case SKILL_MAGLEVEL:
+				skillId = 1;
+				break;
+			case SKILL_SWORD:
+				skillId = 2;
+				break;
+			case SKILL_CLUB:
+				skillId = 3;
+				break;
+			case SKILL_AXE:
+				skillId = 4;
+				break;
+			case SKILL_FIST:
+				skillId = 5;
+				break;
+			case SKILL_DISTANCE:
+				skillId = 6;
+				break;
+			case SKILL_SHIELD:
+				skillId = 7;
+				break;
+			case SKILL_FISHING:
+				skillId = 8;
+				break;
+			default:
+				skillId = 0;
+				break;
+		}
+		msg.addByte(skillId);
+	}
+
+	msg.add<uint16_t>(newLevel);
+	writeToOutputBuffer(msg);
+	#endif
+}
+
+void ProtocolGame::sendProgressRace(uint16_t raceId, uint8_t progressLevel, bool isBoss) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(isBoss ? CLIENT_EVENT_TYPE_BOSSTIARY : CLIENT_EVENT_TYPE_BESTIARY);
+	msg.add<uint16_t>(raceId);
+	msg.addByte(progressLevel);
+	writeToOutputBuffer(msg);
+	#endif
+}
+
+void ProtocolGame::sendProgressQuest(const std::string &questName, bool isCompleted) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(CLIENT_EVENT_TYPE_QUEST);
+	msg.addString(questName);
+	msg.addByte(isCompleted ? 1 : 0);
+	writeToOutputBuffer(msg);
+	#endif
+}
+
+void ProtocolGame::sendProficiencyProgress(uint16_t itemId, const std::string &message) {
+	#ifndef PROTOCOL_DISABLE_MILESTONES
+	if (oldProtocol) {
+			return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x75);
+	msg.addByte(CLIENT_EVENT_TYPE_PROFICIENCY);
+	msg.add<uint16_t>(itemId);
+	msg.addString(message);
+	writeToOutputBuffer(msg);
+	#endif
 }
 
 void ProtocolGame::sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId) {

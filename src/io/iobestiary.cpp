@@ -380,22 +380,22 @@ void IOBestiary::addMinorCharmEchoes(const std::shared_ptr<Player> &player, uint
 }
 
 void IOBestiary::addBestiaryKill(const std::shared_ptr<Player> &player, const std::shared_ptr<MonsterType> &mtype, uint32_t amount /*= 1*/) {
-	uint16_t raceid = mtype->info.raceid;
-	if (raceid == 0 || !player || !mtype) {
+	uint16_t raceId = mtype->info.raceid;
+	if (raceId == 0 || !player || !mtype) {
 		return;
 	}
-	uint32_t curCount = player->getBestiaryKillCount(raceid);
+	uint32_t curCount = player->getBestiaryKillCount(raceId);
 	std::ostringstream ss;
 
-	player->addBestiaryKillCount(raceid, amount);
+	player->addBestiaryKillCount(raceId, amount);
 
-	if ((curCount == 0) || // Initial kill stage
-	    (curCount < mtype->info.bestiaryFirstUnlock && (curCount + amount) >= mtype->info.bestiaryFirstUnlock) || // First kill stage reached
-	    (curCount < mtype->info.bestiarySecondUnlock && (curCount + amount) >= mtype->info.bestiarySecondUnlock) || // Second kill stage reached
-	    (curCount < mtype->info.bestiaryToUnlock && (curCount + amount) >= mtype->info.bestiaryToUnlock)) { // Final kill stage reached
+	uint8_t oldRank = getKillStatus(mtype, curCount);
+	uint8_t newRank = getKillStatus(mtype, curCount + amount);
+	if (oldRank != newRank) {
 		ss << "You unlocked details for the creature '" << mtype->name << "'";
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
-		player->sendBestiaryEntryChanged(raceid);
+		player->sendBestiaryEntryChanged(raceId);
+		player->sendProgressRace(raceId, newRank);
 
 		if ((curCount + amount) >= mtype->info.bestiaryToUnlock) {
 			addCharmPoints(player, mtype->info.bestiaryCharmsPoints);

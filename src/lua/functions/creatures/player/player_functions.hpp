@@ -383,7 +383,9 @@ class PlayerFunctions {
 
 	static int luaPlayerCreateTransactionSummary(lua_State* L);
 
-	static int luaPlayerTakeScreenshot(lua_State* L);
+	static int luaPlayerSendClientEvent(lua_State* L);
+	static int luaPlayerSendQuestStatusUpdate(lua_State* L);
+
 	static int luaPlayerSendIconBakragore(lua_State* L);
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 

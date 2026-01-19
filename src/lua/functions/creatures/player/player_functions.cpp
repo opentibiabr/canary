@@ -399,7 +399,9 @@ void PlayerFunctions::init(lua_State* L) {
 	// Store Summary
 	Lua::registerMethod(L, "Player", "createTransactionSummary", PlayerFunctions::luaPlayerCreateTransactionSummary);
 
-	Lua::registerMethod(L, "Player", "takeScreenshot", PlayerFunctions::luaPlayerTakeScreenshot);
+	Lua::registerMethod(L, "Player", "sendClientEvent", PlayerFunctions::luaPlayerSendClientEvent);
+	Lua::registerMethod(L, "Player", "sendQuestProgress", PlayerFunctions::luaPlayerSendQuestStatusUpdate);
+
 	Lua::registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
 	Lua::registerMethod(L, "Player", "removeIconBakragore", PlayerFunctions::luaPlayerRemoveIconBakragore);
 	Lua::registerMethod(L, "Player", "sendCreatureAppear", PlayerFunctions::luaPlayerSendCreatureAppear);
@@ -2802,18 +2804,20 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 		return 1;
 	}
 
-	uint8_t mountId;
+	std::shared_ptr<Mount> mount;
 	if (Lua::isNumber(L, 2)) {
-		mountId = Lua::getNumber<uint8_t>(L, 2);
+		mount = g_game().mounts->getMountByID(Lua::getNumber<uint8_t>(L, 2));
 	} else {
-		const auto &mount = g_game().mounts->getMountByName(Lua::getString(L, 2));
-		if (!mount) {
-			lua_pushnil(L);
-			return 1;
-		}
-		mountId = mount->id;
+		mount = g_game().mounts->getMountByName(Lua::getString(L, 2));
 	}
-	Lua::pushBoolean(L, player->tameMount(mountId));
+
+	if (!mount || mount->id == 0) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->sendUnlockedSkin(mount->name, mount->clientId, 3);
+	Lua::pushBoolean(L, player->tameMount(mount->id));
 	return 1;
 }
 
@@ -4702,16 +4706,23 @@ int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
 		return 1;
 	}
 
-	uint16_t achievementId = 0;
+	// get achievement object
+	Achievement achievement;
 	if (Lua::isNumber(L, 2)) {
-		achievementId = Lua::getNumber<uint16_t>(L, 2);
+		achievement = g_game().getAchievementById(Lua::getNumber<uint16_t>(L, 2));
 	} else {
-		achievementId = g_game().getAchievementByName(Lua::getString(L, 2)).id;
+		achievement = g_game().getAchievementByName(Lua::getString(L, 2));
 	}
 
-	const bool success = player->achiev().add(achievementId, Lua::getBoolean(L, 3, true));
+	// achievement not found
+	if (achievement.id == 0) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const bool success = player->achiev().add(achievement.id, Lua::getBoolean(L, 3, true));
 	if (success) {
-		player->sendTakeScreenshot(SCREENSHOT_TYPE_ACHIEVEMENT);
+		player->sendUnlockedAchievement(achievement.name);
 	}
 
 	Lua::pushBoolean(L, success);
@@ -4802,8 +4813,14 @@ int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
 		return 1;
 	}
 
-	player->title().manage(true, Lua::getNumber<uint8_t>(L, 2, 0));
-	Lua::pushBoolean(L, true);
+	uint8_t titleId = Lua::getNumber<uint8_t>(L, 2, 0);
+	const bool success = player->title().manage(true, titleId);
+	if (success) {
+		const auto &title = g_game().getTitleById(titleId);
+		player->sendUnlockedTitle(player->getSex() == PLAYERSEX_MALE ? title.m_maleName : title.m_femaleName);
+	}
+
+	Lua::pushBoolean(L, success);
 	return 1;
 }
 
@@ -4870,18 +4887,31 @@ int PlayerFunctions::luaPlayerCreateTransactionSummary(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerTakeScreenshot(lua_State* L) {
-	// player:takeScreenshot(screenshotType)
+int PlayerFunctions::luaPlayerSendClientEvent(lua_State* L) {
+	// player:sendClientEvent(eventType)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	const auto screenshotType = Lua::getNumber<Screenshot_t>(L, 2);
-	player->sendTakeScreenshot(screenshotType);
+	const auto eventType = Lua::getNumber<ClientEvent_t>(L, 2);
+	player->sendClientEvent(eventType);
 	Lua::pushBoolean(L, true);
 	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendQuestStatusUpdate(lua_State* L) {
+	// player:sendQuestProgress(questName, isCompleted)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->sendProgressQuest(Lua::getString(L, 2), Lua::getBoolean(L, 3, false));
+	Lua::pushBoolean(L, true);
+	return 0;
 }
 
 int PlayerFunctions::luaPlayerSendIconBakragore(lua_State* L) {

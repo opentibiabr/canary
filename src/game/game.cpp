@@ -4507,7 +4507,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		name << Item::items[item->getID()].name << " displaying the ";
 		bool outfited = false;
 		if (outfit.lookType != 0) {
-			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
+			const auto &outfitInfo = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 			if (!outfitInfo) {
 				return;
 			}
@@ -6212,7 +6212,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 		outfit.lookMount = randomMount->clientId;
 	}
 
-	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
+	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 	if (!playerOutfit || !setMount) {
 		outfit.lookMount = 0;
 	}

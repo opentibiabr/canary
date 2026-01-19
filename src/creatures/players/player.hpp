@@ -866,10 +866,9 @@ public:
 
 	size_t getMaxDepotItems() const;
 
-	// tile
 	// send methods
+
 	// tile
-	// send methods
 	void sendAddTileItem(const std::shared_ptr<Tile> &itemTile, const Position &pos, const std::shared_ptr<Item> &item);
 	void sendUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &item);
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) const;
@@ -902,6 +901,7 @@ public:
 
 	// container
 	void closeAllExternalContainers();
+
 	// container
 	void sendAddContainerItem(const std::shared_ptr<Container> &container, std::shared_ptr<Item> item);
 	void sendUpdateContainerItem(const std::shared_ptr<Container> &container, uint16_t slot, const std::shared_ptr<Item> &newItem);
@@ -1067,7 +1067,14 @@ public:
 
 	void sendOpenStash(bool isNpc = false) const;
 
-	void sendTakeScreenshot(Screenshot_t screenshotType) const;
+	void sendClientEvent(ClientEvent_t EventType) const;
+	void sendUnlockedAchievement(const std::string& achievement) const;
+	void sendUnlockedTitle(const std::string& title) const;
+	void sendUnlockedSkin(const std::string& skinName, uint16_t lookType, uint8_t skinType) const;
+	void sendSkillAdvance(skills_t skill, uint16_t newLevel) const;
+	void sendProgressRace(uint16_t raceId, uint8_t progressLevel, bool isBoss = false) const;
+	void sendProgressQuest(const std::string& questName, bool isCompleted = false) const;
+	void sendProficiencyProgress(uint16_t itemId, const std::string& message) const;
 
 	void onThink(uint32_t interval) override;
 

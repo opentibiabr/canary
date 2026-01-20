@@ -4921,7 +4921,7 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendOpenPvpSituations(const uint8_t &openPvpSituations) {
+void ProtocolGame::sendOpenPvpSituations(uint8_t openPvpSituations) {
 	NetworkMessage msg;
 	msg.addByte(0xB8);
 	msg.addByte(openPvpSituations);

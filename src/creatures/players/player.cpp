@@ -5959,6 +5959,7 @@ void Player::onEndCondition(ConditionType_t type) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
+		sendOpenPvpSituations();
 
 		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
 			setSkull(SKULL_NONE);
@@ -6679,7 +6680,7 @@ Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
 
 	info.remainingSeconds = ticks;
 	if (ticks > 0) {
-		info.remainingDays = static_cast<uint8_t>(std::floor(static_cast<double>(ticks) / (24 * 60 * 60)));
+		info.remainingDays = static_cast<uint8_t>(std::min(std::ceil(static_cast<double>(ticks) / (24 * 60 * 60)), 255.0));
 	}
 
 	return info;
@@ -7340,21 +7341,27 @@ void Player::sendUnjustifiedPoints() const {
 
 		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
-		auto dayMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-		auto weekMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-		auto monthMax = ((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+		const double dayMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+		const double weekMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+		const double monthMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
-		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
-		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
-		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
+		const double dayProgressRaw = dayMax > 0 ? std::round(dayKills / dayMax * 100.0) : 0.0;
+		const double weekProgressRaw = weekMax > 0 ? std::round(weekKills / weekMax * 100.0) : 0.0;
+		const double monthProgressRaw = monthMax > 0 ? std::round(monthKills / monthMax * 100.0) : 0.0;
+		const uint8_t dayProgress = static_cast<uint8_t>(std::min(dayProgressRaw, 100.0));
+		const uint8_t weekProgress = static_cast<uint8_t>(std::min(weekProgressRaw, 100.0));
+		const uint8_t monthProgress = static_cast<uint8_t>(std::min(monthProgressRaw, 100.0));
+		const uint8_t dayLeft = static_cast<uint8_t>(std::min(dayMax > 0 ? std::max(dayMax - dayKills, 0.0) : 0.0, 255.0));
+		const uint8_t weekLeft = static_cast<uint8_t>(std::min(weekMax > 0 ? std::max(weekMax - weekKills, 0.0) : 0.0, 255.0));
+		const uint8_t monthLeft = static_cast<uint8_t>(std::min(monthMax > 0 ? std::max(monthMax - monthKills, 0.0) : 0.0, 255.0));
 		const auto info = computeSkullTimeFromLastKill();
-		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), info.remainingDays);
+		client->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, info.remainingDays);
 	}
 }
 
 void Player::sendOpenPvpSituations() {
 	if (client) {
-		client->sendOpenPvpSituations(static_cast<uint8_t>(attackedSet.size()));
+		client->sendOpenPvpSituations(static_cast<uint8_t>(std::min(attackedSet.size(), static_cast<size_t>(std::numeric_limits<uint8_t>::max()))));
 	}
 }
 

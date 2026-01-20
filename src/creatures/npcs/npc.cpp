@@ -243,7 +243,7 @@ namespace {
 		);
 	}
 
-	bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const SellItemContext &context) {
+	bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
 		if (!totalCost) {
 			return true;
 		}

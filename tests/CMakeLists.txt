@@ -24,7 +24,8 @@ function(
 
     target_compile_definitions(
         ${TARGET_NAME}
-        PUBLIC -DDEBUG_LOG -DBUILD_TESTS
+        PUBLIC -DDEBUG_LOG
+               -DBUILD_TESTS
                TESTS_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"
     )
 

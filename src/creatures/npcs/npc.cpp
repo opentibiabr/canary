@@ -98,7 +98,7 @@ namespace {
 	}
 
 	bool addCustomCurrencyItems(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const char* createErrorContext, const char* addErrorContext) {
-		constexpr uint64_t kMaxStack = static_cast<uint64_t>(std::numeric_limits<uint16_t>::max());
+		constexpr auto kMaxStack = static_cast<uint64_t>(std::numeric_limits<uint16_t>::max());
 		uint64_t remainingCost = totalCost;
 		while (remainingCost > 0) {
 			const auto stackSize = static_cast<uint16_t>(std::min<uint64_t>(remainingCost, kMaxStack));
@@ -190,6 +190,111 @@ namespace {
 		}
 
 		return removed;
+	}
+
+	void applyGoldSaleProceeds(const std::shared_ptr<Player> &player, uint64_t totalCost, bool notifyBankTransfer) {
+		if (g_configManager().getBoolean(AUTOBANK)) {
+			player->setBankBalance(player->getBankBalance() + totalCost);
+			if (notifyBankTransfer) {
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, fmt::format("{} gold coins transferred to your bank.", totalCost));
+			}
+		} else {
+			g_game().addMoney(player, totalCost);
+		}
+		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
+	}
+
+	bool applyCustomSaleProceeds(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const char* createErrorContext, const char* addErrorContext, const char* errorContext, const char* failureMessage) {
+		if (addCustomCurrencyItems(player, currency, totalCost, npcName, createErrorContext, addErrorContext)) {
+			return true;
+		}
+
+		g_logger().error(
+			"{} - Failed to add custom currency {} (amount {}) to player {}. Sale aborted.",
+			errorContext,
+			currency,
+			totalCost,
+			player->getName()
+		);
+
+		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, failureMessage);
+		return false;
+	}
+
+	bool applySaleProceedsForLoot(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName) {
+		if (!totalCost) {
+			return true;
+		}
+
+		if (currency == ITEM_GOLD_COIN) {
+			applyGoldSaleProceeds(player, totalCost, false);
+			return true;
+		}
+
+		return applyCustomSaleProceeds(
+			player,
+			currency,
+			totalCost,
+			npcName,
+			"[Npc::onPlayerSellAllLoot]",
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellAllLoot]",
+			"An error occurred while completing the sale of your loot. No items were exchanged."
+		);
+	}
+
+	bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const SellItemContext &context) {
+		if (!totalCost) {
+			return true;
+		}
+
+		if (currency == ITEM_GOLD_COIN) {
+			if (context.totalPrice) {
+				*context.totalPrice += totalCost;
+			}
+			applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
+			return true;
+		}
+
+		return applyCustomSaleProceeds(
+			player,
+			currency,
+			totalCost,
+			npcName,
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellItem]",
+			"An error occurred while completing the sale. Your items were not exchanged."
+		);
+	}
+
+	void sendSaleLetterIfNeeded(const std::shared_ptr<Player> &player, BatchUpdate &batching, const std::string &log, uint64_t totalPrice, const std::string &npcName) {
+		if (totalPrice == 0 || log.empty()) {
+			return;
+		}
+
+		const auto &storeInbox = player->getStoreInbox();
+		if (!storeInbox) {
+			g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), npcName);
+			return;
+		}
+
+		const auto addResult = batching.add(storeInbox);
+		(void)addResult;
+
+		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
+		if (!letter) {
+			return;
+		}
+
+		letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", npcName));
+		letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
+		letter->setAttribute(ItemAttribute_t::TEXT, log);
+		const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		if (returnValue != RETURNVALUE_NOERROR) {
+			g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), npcName, getReturnMessage(returnValue));
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
+		}
 	}
 }
 
@@ -657,38 +762,8 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 		totalPrice += totalCost;
 
-		if (getCurrency() == ITEM_GOLD_COIN) {
-			if (g_configManager().getBoolean(AUTOBANK)) {
-				player->setBankBalance(player->getBankBalance() + totalCost);
-			} else {
-				g_game().addMoney(player, totalCost);
-			}
-
-			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
-		} else {
-			if (!addCustomCurrencyItems(
-					player,
-					getCurrency(),
-					totalCost,
-					getName(),
-					"[Npc::onPlayerSellAllLoot]",
-					"[Npc::onPlayerSellItem]"
-				)) {
-
-				g_logger().error(
-					"[Npc::onPlayerSellAllLoot] - Failed to add custom currency {} (amount {}) to player {}. Sale aborted.",
-					getCurrency(),
-					totalCost,
-					player->getName()
-				);
-
-				player->sendTextMessage(
-					MESSAGE_EVENT_ADVANCE,
-					"An error occurred while completing the sale of your loot. No items were exchanged."
-				);
-
-				return;
-			}
+		if (!applySaleProceedsForLoot(player, getCurrency(), totalCost, getName())) {
+			return;
 		}
 
 		const auto &itemName = Item::items.getItemType(itemId).name;
@@ -707,28 +782,7 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 	player->sendTextMessage(MESSAGE_TRANSACTION, finalMessage);
 	g_logger().debug("Npc::onPlayerSellItem Finished npc sell items");
 
-	if (totalPrice > 0 && !log.empty()) {
-		const auto &storeInbox = player->getStoreInbox();
-		if (!storeInbox) {
-			g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), getName());
-			return;
-		}
-
-		const auto addResult = batching.add(storeInbox);
-		(void)addResult;
-
-		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
-		if (letter) {
-			letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", getName()));
-			letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
-			letter->setAttribute(ItemAttribute_t::TEXT, log);
-			const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
-			if (returnValue != RETURNVALUE_NOERROR) {
-				g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), getName(), getReturnMessage(returnValue));
-				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
-			}
-		}
-	}
+	sendSaleLetterIfNeeded(player, batching, log, totalPrice, getName());
 }
 
 void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore, const SellItemContext &context) {
@@ -763,43 +817,8 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 
 	auto totalCost = static_cast<uint64_t>(sellPrice) * removed;
 
-	if (totalCost && getCurrency() == ITEM_GOLD_COIN) {
-		if (context.totalPrice) {
-			*context.totalPrice += totalCost;
-		}
-		if (g_configManager().getBoolean(AUTOBANK)) {
-			player->setBankBalance(player->getBankBalance() + totalCost);
-			if (!context.lootPouch) {
-				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, fmt::format("{} gold coins transferred to your bank.", totalCost));
-			}
-		} else {
-			g_game().addMoney(player, totalCost);
-		}
-		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
-	} else if (totalCost) {
-		if (!addCustomCurrencyItems(
-				player,
-				getCurrency(),
-				totalCost,
-				getName(),
-				"[Npc::onPlayerSellItem]",
-				"[Npc::onPlayerSellItem]"
-			)) {
-
-			g_logger().error(
-				"[Npc::onPlayerSellItem] - Failed to add custom currency {} (amount {}) to player {}. Sale aborted.",
-				getCurrency(),
-				totalCost,
-				player->getName()
-			);
-
-			player->sendTextMessage(
-				MESSAGE_EVENT_ADVANCE,
-				"An error occurred while completing the sale. Your items were not exchanged."
-			);
-
-			return;
-		}
+	if (!applySaleProceedsForItem(player, getCurrency(), totalCost, getName(), context)) {
+		return;
 	}
 
 	if (context.lootPouch) {

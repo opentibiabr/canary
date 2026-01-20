@@ -10,6 +10,7 @@
 
 #include <filesystem>
 #include <gtest/gtest.h>
+#include <memory>
 
 #include "lib/logging/in_memory_logger.hpp"
 #include "security/rsa.hpp"
@@ -48,27 +49,14 @@ TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
 	const auto createResult = std::filesystem::create_directories(tempPath, error);
 	(void)createResult;
 
-	struct ScopedTempDir {
-		std::filesystem::path previousPath;
-		std::filesystem::path tempPath;
-
-		ScopedTempDir(const ScopedTempDir &) = delete;
-		ScopedTempDir &operator=(const ScopedTempDir &) = delete;
-		ScopedTempDir(ScopedTempDir &&) = delete;
-		ScopedTempDir &operator=(ScopedTempDir &&) = delete;
-
-		ScopedTempDir(std::filesystem::path prev, std::filesystem::path tmp) :
-			previousPath(std::move(prev)), tempPath(std::move(tmp)) { }
-
-		~ScopedTempDir() {
-			std::error_code cleanupError;
-			std::filesystem::current_path(previousPath, cleanupError);
-			const auto cleanupResult = std::filesystem::remove_all(tempPath, cleanupError);
-			(void)cleanupResult;
-		}
+	const auto previousPath = std::filesystem::current_path();
+	const auto cleanup = [previousPath, tempPath](void*) mutable {
+		std::error_code cleanupError;
+		std::filesystem::current_path(previousPath, cleanupError);
+		const auto cleanupResult = std::filesystem::remove_all(tempPath, cleanupError);
+		(void)cleanupResult;
 	};
-
-	ScopedTempDir guard { std::filesystem::current_path(), tempPath };
+	auto guard = std::unique_ptr<void, decltype(cleanup)>(nullptr, cleanup);
 	std::filesystem::current_path(tempPath);
 	DI::create<RSA &>().start();
 

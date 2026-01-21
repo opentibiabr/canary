@@ -4276,6 +4276,9 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 }
 
 void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
+// to do in the future: stat system needs a rework
+// caching stats on the player will cost more memory, but will save cpu
+// by not having to access every inventory item separately
 #ifndef PROTOCOL_DISABLE_CHARACTER_INFO
 	if (!player || oldProtocol) {
 		return;
@@ -4286,11 +4289,190 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_OFFENCESTATS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
+	// crit chance
+	msg.addDouble(player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) / 10000.); // total
+	msg.addDouble(0); // equipment
+	msg.addDouble(0); // flat bonus
+	msg.addDouble(0); // imbuement
+	msg.addDouble(0); // wheel
+	msg.addDouble(0); // concoction
+
+	// crit damage
+	msg.addDouble(0); // total
+	msg.addDouble(0); // equipment
+	msg.addDouble(0); // flat bonus
+	msg.addDouble(0); // imbuement
+	msg.addDouble(0); // wheel
+	msg.addDouble(0); // concoction
+
+	// life leech
+	msg.addDouble(0); // total
+	msg.addDouble(0); // equipment
+	msg.addDouble(0); // imbuemement
+	msg.addDouble(0); // wheel
+	msg.addDouble(0); // event bonus
+
+	// mana leech
+	msg.addDouble(0); // total
+	msg.addDouble(0); // equipment
+	msg.addDouble(0); // imbuemement
+	msg.addDouble(0); // wheel
+	msg.addDouble(0); // event bonus
+
+	// onslaught
+	msg.addDouble(0); // total
+	msg.addDouble(0); // equipment
+	msg.addDouble(0); // amplification
+	msg.addDouble(0); // event bonus
+
+	msg.addDouble(player->getCleavePercent() / 100.); // cleave
+
+	// perfect shot
+	for (int range = 1; range < 8; range++) {
+		msg.add<uint16_t>(static_cast<uint16_t>(player->getPerfectShotDamage(range)));
+	}
+
+	// flat damage and healing
+	msg.add<uint16_t>(100); // total
+	msg.add<uint16_t>(10); // level
+	msg.add<uint16_t>(10); // wheel
+
+	// attack
+	msg.add<uint16_t>(100); // total
+	msg.add<uint16_t>(10); // flat
+	msg.add<uint16_t>(5); // equipment
+
+	// attack bonus from skill
+	msg.addByte(0); // skill id (	see hardcodedskillids)
+	msg.add<uint16_t>(0); // bonus points
+
+	msg.add<uint16_t>(0); // combat tactics
+	msg.addByte(0); // element
+
+	// damage conversion
+	msg.addDouble(0); // % amount
+	msg.addByte(0); // new element
+
+	// distance fighting accuracy
+	uint8_t ranges = 0;
+	msg.addByte(ranges);
+	for (int i = 0; i < ranges; i++) {
+		msg.addByte(i); // range
+		msg.addDouble(i + 10); // change to hit (placeholder)
+	}
+
+	// damage against powerful foes
+	msg.addDouble(0);
+
+	// damage against specific targets
+	uint16_t targetCount = 0;
+	msg.add<uint16_t>(targetCount);
+	for (int i = 0; i < targetCount; i++) {
+		// +x% against target name
+		msg.addString("placeholder");
+		msg.addDouble(1.25);
+	}
+
+	// critical chance by type
+	uint8_t elementCount = 0;
+	msg.addByte(elementCount);
+	for (int i = 0; i < elementCount; i++) {
+		// +x% for (element) spells and runes
+		msg.addByte(i); // element id
+		msg.addDouble(10); // modifier
+	}
+
+	// +x% for offensive runes
+	msg.addDouble(0);
+
+	// +x% for auto-attack
+	msg.addDouble(0);
+
+	// critical damage by type
+	uint8_t critDmgElemCount = 0;
+	msg.addByte(critDmgElemCount);
+	for (int i = 0; i < critDmgElemCount; i++) {
+		// +x% for (element) spells and runes
+		msg.addByte(i); // element id
+		msg.addDouble(10); // modifier
+	}
+
+	// crit dmg: +x% for offensive runes
+	msg.addDouble(0);
+
+	// crit dmg: +x% for auto-attack
+	msg.addDouble(0);
+
+	msg.add<uint16_t>(0); // life gain on hit
+	msg.add<uint16_t>(0); // mana gain on hit
+	msg.add<uint16_t>(0); // life gain on kill
+	msg.add<uint16_t>(0); // mana gain on kill
+
+	// auto attack extra damage [double], [double] from skillId
+	uint8_t adExtraDmgCount = 0;
+	msg.addByte(adExtraDmgCount);
+	for (int i = 0; i < adExtraDmgCount; i++) {
+		// skill id, uses same enums as in HardcodedSkillIds
+		msg.addByte(7 + i);
+
+		// value a
+		msg.addDouble(0);
+
+		// value b
+		msg.addDouble(0);
+	}
+
+	// extra spell damage [double], [double] from skillId
+	uint8_t spellExtraCount = 0;
+	msg.addByte(spellExtraCount);
+	for (int i = 0; i < spellExtraCount; i++) {
+		// skill id, uses same enums as in HardcodedSkillIds
+		msg.addByte(7 + i);
+
+		// value a
+		msg.addDouble(0);
+
+		// value b
+		msg.addDouble(0);
+	}
+
+	// extra spell healing [double], [double] from skillId
+	uint8_t spellExtraHealingCount = 0;
+	msg.addByte(spellExtraHealingCount);
+	for (int i = 0; i < spellExtraHealingCount; i++) {
+		// skill id, uses same enums as in HardcodedSkillIds
+		msg.addByte(7 + i);
+
+		// value a
+		msg.addDouble(0);
+
+		// value b
+		msg.addDouble(0);
+	}
+
+	// damage to targets above 95% hp
+	msg.addDouble(0);
+
+	// damage to targets below 30% hp
+	msg.addDouble(0);
+
+	// armor penetration multiplier
+	msg.addDouble(0);
+
+	// elemental pierce
+	uint8_t elemPierceBonuses = 2;
+	msg.addByte(elemPierceBonuses);
+	for (int i; i < elemPierceBonuses; i++) {
+		msg.addByte(i); // element id
+		msg.addDouble(10); // modifier
+	}
+
+	/*
 	msg.addDouble(player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) / 10000.); // Crit Chance Total
-	msg.addDouble(0.00);
-	msg.addDouble(0.00);
-	msg.addDouble(0.00);
-	msg.addDouble(0.00);
+	msg.addDouble(0.01);
+	msg.addDouble(0.01);
+	msg.addDouble(0.01);
+	msg.addDouble(0.01);
 
 	addCyclopediaSkills(player, msg, SKILL_CRITICAL_HIT_DAMAGE);
 	addCyclopediaSkills(player, msg, SKILL_LIFE_LEECH_AMOUNT);
@@ -4426,45 +4608,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 		msg.addByte(0x00);
 		msg.addByte(0x00);
 	}
-
-	// wheel of destiny stats were added
-	// currently this page displays incorrectly
-	// this needs a refactor
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.add<uint16_t>(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
+*/
 	writeToOutputBuffer(msg);
 #endif
 }

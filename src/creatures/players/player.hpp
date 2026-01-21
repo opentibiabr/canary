@@ -715,7 +715,7 @@ public:
 		uint16_t itemId,
 		uint32_t totalCount,
 		uint32_t &actuallyAdded,
-		const AddItemBatchOptions &options = {}
+		const AddItemBatchOptions &options
 	);
 	std::vector<std::shared_ptr<Container>> getAllContainers(bool onlyFromMainBackpack = true) const;
 	std::shared_ptr<Container> getBackpack() const;

@@ -6790,7 +6790,7 @@ void Player::updateBaseSpeed() {
 	if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
 		baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 	} else {
-		baseSpeed = PLAYER_MAX_SPEED;
+		baseSpeed = PLAYER_MAX_STAFF_SPEED;
 	}
 }
 

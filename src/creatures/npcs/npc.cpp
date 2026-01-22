@@ -182,7 +182,7 @@ namespace {
 				(void)addResult;
 			}
 
-			const auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
+			const auto removeCount = std::min<uint32_t>(toRemove, static_cast<uint32_t>(item->getItemCount()));
 			if (player->removeItem(item, removeCount) != RETURNVALUE_NOERROR) {
 				g_logger().error("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), npcName);
 				continue;

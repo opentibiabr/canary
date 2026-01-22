@@ -50,7 +50,7 @@ TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
 	(void)createResult;
 
 	const auto previousPath = std::filesystem::current_path();
-	const auto cleanup = [previousPath, tempPath](void*) mutable {
+	const auto cleanup = [previousPath, tempPath](void*) {
 		std::error_code cleanupError;
 		std::filesystem::current_path(previousPath, cleanupError);
 		const auto cleanupResult = std::filesystem::remove_all(tempPath, cleanupError);

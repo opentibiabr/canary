@@ -78,10 +78,12 @@ namespace {
 
 	bool hasInsufficientFunds(const std::shared_ptr<Player> &player, uint16_t itemId, const std::string &npcName, uint16_t currency, uint32_t totalCost, uint32_t bagsCost) {
 		if (currency == ITEM_GOLD_COIN) {
-			if ((player->getMoney() + player->getBankBalance()) < totalCost) {
+			const uint64_t totalRequired = static_cast<uint64_t>(totalCost) + bagsCost;
+			const uint64_t availableFunds = static_cast<uint64_t>(player->getMoney()) + player->getBankBalance();
+			if (availableFunds < totalRequired) {
 				g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);
 				g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, npcName, player->getPosition().toString());
-				g_metrics().addCounter("balance_decrease", totalCost, { { "player", player->getName() }, { "context", "npc_purchase" } });
+				g_metrics().addCounter("balance_decrease", totalRequired, { { "player", player->getName() }, { "context", "npc_purchase" } });
 				return true;
 			}
 			return false;
@@ -98,10 +100,11 @@ namespace {
 	}
 
 	bool addCustomCurrencyItems(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const char* createErrorContext, const char* addErrorContext) {
-		constexpr auto kMaxStack = static_cast<uint64_t>(std::numeric_limits<uint16_t>::max());
+		const auto &currencyType = Item::items[currency];
+		const auto maxStack = static_cast<uint64_t>(currencyType.stackable ? currencyType.stackSize : 1);
 		uint64_t remainingCost = totalCost;
 		while (remainingCost > 0) {
-			const auto stackSize = static_cast<uint16_t>(std::min<uint64_t>(remainingCost, kMaxStack));
+			const auto stackSize = static_cast<uint16_t>(std::min<uint64_t>(remainingCost, maxStack));
 			const auto &newItem = Item::CreateItem(currency, stackSize);
 			if (!newItem) {
 				g_logger().error("{} - Failed to create custom currency item {} for npc {}", createErrorContext, currency, npcName);

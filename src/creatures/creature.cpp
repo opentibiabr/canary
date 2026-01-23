@@ -303,6 +303,10 @@ void Creature::addEventWalk() {
 	}
 
 	safeCall([this] {
+		if (eventWalk != 0) {
+			return;
+		}
+
 		const int64_t ticks = getEventStepTicks();
 		if (ticks <= 0) {
 			return;

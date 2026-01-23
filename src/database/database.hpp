@@ -243,7 +243,9 @@ public:
 
 			const bool result = callback();
 
-			transaction.commit();
+			if (!transaction.commit()) {
+				return false;
+			}
 
 			return result;
 		} catch (const std::exception &exception) {
@@ -288,21 +290,28 @@ private:
 		}
 	}
 
-	void commit() {
+	bool commit() {
 		// Ensure that the transaction has been started
 		if (state != STATE_START) {
 			g_logger().error("Transaction not started");
-			return;
+			return false;
 		}
 
 		try {
 			// Commit the transaction
 			state = STATE_COMMIT;
-			Database::getInstance().commit();
+			if (!Database::getInstance().commit()) {
+				state = STATE_NO_START;
+				g_logger().error("[{}] Commit returned false", __FUNCTION__);
+				return false;
+			}
+
+			return true;
 		} catch (const std::exception &exception) {
 			// An error occurred while committing the transaction
 			state = STATE_NO_START;
 			g_logger().error("[{}] An error occurred while committing the transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 

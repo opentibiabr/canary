@@ -1,0 +1,73 @@
+local quest = {
+	name = "The Queen of the Banshees",
+	startStorageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.FirstSeal,
+	startStorageValue = 1,
+	missions = {
+		[1] = {
+			name = "The Hidden Seal",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.FirstSeal,
+			missionId = 1,
+			startValue = 1,
+			endValue = 1,
+			description = "You broke the first seal.",
+		},
+		[2] = {
+			name = "The Plague Seal",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.SecondSeal,
+			missionId = 2,
+			startValue = 1,
+			endValue = 1,
+			description = "You broke the second seal.",
+		},
+		[3] = {
+			name = "The Seal of Demonrage",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.ThirdSeal,
+			missionId = 3,
+			startValue = 1,
+			endValue = 1,
+			description = "You broke the third seal.",
+		},
+		[4] = {
+			name = "The Seal of Sacrifice",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.FourthSeal,
+			missionId = 4,
+			startValue = 1,
+			endValue = 1,
+			description = "You broke the fourth seal.",
+		},
+		[5] = {
+			name = "The Seal of True Path",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.FifthSeal,
+			missionId = 5,
+			startValue = 1,
+			endValue = 1,
+			description = "You broke the fifth seal.",
+		},
+		[6] = {
+			name = "The Seal of Logic",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.SixthSeal,
+			missionId = 6,
+			startValue = 1,
+			endValue = 1,
+			description = "You broke the sixth seal.",
+		},
+		[7] = {
+			name = "The Kiss of the Banshee Queen",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.LastSeal,
+			missionId = 7,
+			startValue = 1,
+			endValue = 1,
+			description = "The Banshee Queen kissed you. This meant your death, and part of your soul always belongs to her now. You broke the last seal.",
+		},
+		[8] = {
+			name = "The Final Battle",
+			storageId = Storage.Quest.U7_2.TheQueenOfTheBanshees.FinalBattle,
+			missionId = 8,
+			startValue = 1,
+			endValue = 1,
+			description = "You have braved all dangers of the Banshee Quest and escaped the dungeon alive. The end room is sealed for you from now on.",
+		},
+	},
+}
+
+return quest

@@ -1,10 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
+ * Website: https://docs.opentibiabr.com/
  */
 
 // Player.hpp already includes the wheel
@@ -317,7 +317,10 @@ namespace {
 } // namespace
 
 PlayerWheel::PlayerWheel(Player &initPlayer) :
-	m_pointsPerLevel(g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL)), m_player(initPlayer) {
+	m_player(initPlayer) { }
+
+void PlayerWheel::init() {
+	m_pointsPerLevel = g_configManager().getNumber(WHEEL_POINTS_PER_LEVEL);
 }
 
 bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) const {
@@ -454,7 +457,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_GREEN_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	// Red quadrant
@@ -581,7 +584,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_RED_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	// Purple quadrant
@@ -708,7 +711,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_PURPLE_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	// Blue quadrant
@@ -835,7 +838,7 @@ bool PlayerWheel::canPlayerSelectPointOnSlot(WheelSlots_t slot, bool recursive) 
 			return true;
 		}
 	} else if (slot == WheelSlots_t::SLOT_BLUE_50) {
-		return (recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true;
+		return ((recursive && (getPointsBySlotType(slot) == getMaxPointsPerSlot(slot))) || true);
 	}
 
 	return false;

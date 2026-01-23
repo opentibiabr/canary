@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -13,12 +13,14 @@
 #include "creatures/players/animus_mastery/animus_mastery.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/components/player_storage.hpp"
 #include "game/game.hpp"
 #include "io/ioprey.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "creatures/players/player.hpp"
+#include "io/player_storage_repository.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -709,36 +711,11 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 
 bool IOLoginDataSave::savePlayerForgeHistory(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[IOLoginDataSave::savePlayerForgeHistory] - Player nullptr");
 		return false;
 	}
 
-	std::ostringstream query;
-	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
-	if (!Database::getInstance().executeQuery(query.str())) {
-		return false;
-	}
-
-	query.str("");
-	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
-	for (const auto &history : player->getForgeHistory()) {
-		const auto stringDescription = Database::getInstance().escapeString(history.description);
-		auto actionString = magic_enum::enum_integer(history.actionType);
-		// Append query informations
-		query << player->getGUID() << ','
-			  << std::to_string(actionString) << ','
-			  << stringDescription << ','
-			  << history.createdAt << ','
-			  << history.success;
-
-		if (!insertQuery.addRow(query)) {
-			return false;
-		}
-	}
-	if (!insertQuery.execute()) {
-		return false;
-	}
-	return true;
+	return player->forgeHistory().save();
 }
 
 bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player) {
@@ -787,31 +764,24 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 
 bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 	if (!player) {
-		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return false;
 	}
 
-	Database &db = Database::getInstance();
-	std::ostringstream query;
-	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
-	if (!db.executeQuery(query.str())) {
+	auto &storage = player->storage();
+	storage.prepareForPersist();
+	auto delta = storage.delta();
+	auto guid = player->getGUID();
+	auto &repo = g_playerStorageRepository();
+
+	if (!delta.deletions.empty() && !repo.deleteKeys(guid, delta.deletions)) {
 		return false;
 	}
 
-	query.str("");
-
-	DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
-	player->genReservedStorageRange();
-
-	for (const auto &[key, value] : player->storageMap) {
-		query << player->getGUID() << ',' << key << ',' << value;
-		if (!storageQuery.addRow(query)) {
-			return false;
-		}
-	}
-
-	if (!storageQuery.execute()) {
+	if (!delta.upserts.empty() && !repo.upsert(guid, delta.upserts)) {
 		return false;
 	}
+
+	storage.clearDirty();
 	return true;
 }

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -12,6 +12,8 @@
 #include "items/cylinder.hpp"
 #include "items/item.hpp"
 #include "items/tile.hpp"
+
+#include "enums/container_type.hpp"
 
 class Container;
 class DepotChest;
@@ -285,6 +287,14 @@ public:
 	bool isBrowseFieldAndHoldsRewardChest();
 	bool isInsideContainerWithId(uint16_t id);
 
+	ContainerSpecial_t getSpecialCategory(const std::shared_ptr<Player> &player);
+	std::pair<uint32_t, uint32_t> getObjectCategoryFlags(const std::shared_ptr<Player> &player) const;
+	uint32_t getAmmoAmount(const std::shared_ptr<Player> &player) const;
+	void clearLootHighlight(const std::shared_ptr<Player> &player = nullptr);
+	[[nodiscard]] bool hasLootHighlight() const {
+		return m_lootHighlightActive;
+	}
+
 protected:
 	uint32_t m_maxItems {};
 	uint32_t maxSize {};
@@ -294,6 +304,7 @@ protected:
 
 	bool unlocked {};
 	bool pagination {};
+	bool m_lootHighlightActive { true };
 
 	friend class MapCache;
 

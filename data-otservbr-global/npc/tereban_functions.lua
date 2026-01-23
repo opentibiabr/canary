@@ -138,7 +138,7 @@ function ParseTerebanSay(npc, creature, message, npcHandler)
 				end
 
 				player:setStorageValue(Storage.Quest.U8_6.AFathersBurden.Status, 2)
-				player:addItem(oldCape, 1)
+				player:addItem(11701, 1)
 				player:addExperience(8000, true)
 				npcHandler:say({
 					"I'm so glad I finally have all the parts for the presents. Your reward is my eternal gratitude. Well, that and some gold of course. ...",

@@ -236,7 +236,10 @@ public:
 	{
 		DBTransaction transaction;
 		try {
-			transaction.begin();
+			if (!transaction.begin()) {
+				g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
+				return false;
+			}
 
 			const bool result = callback();
 

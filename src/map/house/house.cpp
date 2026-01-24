@@ -297,6 +297,8 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player) const {
 		}
 	}
 
+	// Note: totalItemsFound and totalItemsMoved are unsigned. The explicit check
+	// avoids relying on unsigned underflow wraparound and makes the intent clear.
 	const uint32_t totalItemsMissing = totalItemsFound > totalItemsMoved ? totalItemsFound - totalItemsMoved : 0;
 	g_logger().info("[House::transferToDepot] Transfer finished for player '{}'. Total items processed: {}, moved: {}, missing: {}", player->getName(), totalItemsFound, totalItemsMoved, totalItemsMissing);
 	return true;

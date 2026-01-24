@@ -372,8 +372,8 @@ private:
 	mutable std::size_t itemsFound = 0;
 	mutable std::size_t itemsMoved = 0;
 
-	mutable uint32_t totalItemsFound = 0;
-	mutable uint32_t totalItemsMoved = 0;
+	mutable std::size_t totalItemsFound = 0;
+	mutable std::size_t totalItemsMoved = 0;
 };
 
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;

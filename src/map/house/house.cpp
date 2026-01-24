@@ -346,7 +346,7 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 
 		const auto &itemParent = item->getParent();
 		if (!itemParent) {
-			g_logger().warn("[{}] wrapable item '{}' (id: {}) is alredy wrapped, skipping move for avoid duplication", __FUNCTION__, item->getName(), item->getID());
+			g_logger().warn("[{}] item '{}' (id: {}) has no parent (already wrapped or removed), skipping move to avoid duplication", __FUNCTION__, item->getName(), item->getID());
 			continue;
 		}
 
@@ -472,7 +472,9 @@ void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::
 		}
 	}
 
-	moveItemList.push_back(container);
+	if (container->isPickupable()) {
+		moveItemList.push_back(container);
+	}
 }
 
 bool House::getAccessList(uint32_t listId, std::string &list) const {

@@ -2305,8 +2305,21 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 	if (lastHitCreature) {
 		resolvedPlayer = lastHitCreature->getPlayer();
-	} else if (attackedCreature) {
+		if (!resolvedPlayer) {
+			const auto &lastHitMaster = lastHitCreature->getMaster();
+			if (lastHitMaster) {
+				resolvedPlayer = lastHitMaster->getPlayer();
+			}
+		}
+	}
+	if (!resolvedPlayer && attackedCreature) {
 		resolvedPlayer = attackedCreature->getPlayer();
+		if (!resolvedPlayer) {
+			const auto &attackedMaster = attackedCreature->getMaster();
+			if (attackedMaster) {
+				resolvedPlayer = attackedMaster->getPlayer();
+			}
+		}
 	}
 
 	const auto &targetPlayer = resolvedPlayer;

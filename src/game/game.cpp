@@ -71,25 +71,24 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
-	inline thread_local std::unordered_set<const Thing*> teleportStack;
-
-	[[nodiscard]] const std::unordered_set<const Thing*>& getTeleportStack() {
-		return teleportStack;
+	inline std::unordered_set<const Thing*>& teleportStack() {
+		static thread_local std::unordered_set<const Thing*> stack;
+		return stack;
 	}
 
 	inline bool tryInsertTeleportStack(const Thing* thing) {
-		return teleportStack.insert(thing).second;
+		return teleportStack().insert(thing).second;
 	}
 
 	inline bool eraseTeleportStack(const Thing* thing) {
-		return teleportStack.erase(thing) > 0;
+		return teleportStack().erase(thing) > 0;
 	}
 
 	struct TeleportStackCleaner {
 		void operator()(const Thing* thing) const {
-		if (!eraseTeleportStack(thing)) {
-			g_logger().error("[{}] Teleport stack cleanup failed", __FUNCTION__);
-		}
+			if (!eraseTeleportStack(thing)) {
+				g_logger().error("[{}] Teleport stack cleanup failed", __FUNCTION__);
+			}
 		}
 	};
 
@@ -2932,7 +2931,6 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	const auto& teleportStack = InternalGame::getTeleportStack();
 	const Thing* teleportThing = thing.get();
 	if (!InternalGame::tryInsertTeleportStack(teleportThing)) {
 		if (const auto creature = thing->getCreature()) {

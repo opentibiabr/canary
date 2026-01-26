@@ -25,6 +25,7 @@
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "lua/docgen/lua_api_doc_generator.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -59,6 +60,9 @@ int CanaryServer::run() {
 	g_dispatcher().addEvent(
 		[this] {
 			try {
+				LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), logger);
+				apiDocGenerator.generate();
+				logger.info("Lua API documentation generated successfully.");
 				loadConfigLua();
 				validateDatapack();
 

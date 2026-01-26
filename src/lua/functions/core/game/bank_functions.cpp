@@ -15,171 +15,161 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void BankFunctions::init(lua_State* L) {
-	Lua::registerTable(L, "Bank");
-	Lua::registerMethod(L, "Bank", "credit", BankFunctions::luaBankCredit);
-	Lua::registerMethod(L, "Bank", "debit", BankFunctions::luaBankDebit);
-	Lua::registerMethod(L, "Bank", "balance", BankFunctions::luaBankBalance);
-	Lua::registerMethod(L, "Bank", "hasBalance", BankFunctions::luaBankHasBalance);
-	Lua::registerMethod(L, "Bank", "transfer", BankFunctions::luaBankTransfer);
-	Lua::registerMethod(L, "Bank", "transferToGuild", BankFunctions::luaBankTransferToGuild);
-	Lua::registerMethod(L, "Bank", "withdraw", BankFunctions::luaBankWithdraw);
-	Lua::registerMethod(L, "Bank", "deposit", BankFunctions::luaBankDeposit);
-}
+	sol::state_view lua(L);
+	auto bankTable = lua.create_named_table("Bank");
 
-int BankFunctions::luaBankCredit(lua_State* L) {
-	// Bank.credit(playerOrGuild, amount)
-	const auto &bank = getBank(L, 1);
-	if (bank == nullptr) {
-		Lua::reportErrorFunc("Bank is nullptr");
-		return 1;
-	}
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 2);
-	Lua::pushBoolean(L, bank->credit(amount));
-	return 1;
-}
-
-int BankFunctions::luaBankDebit(lua_State* L) {
-	// Bank.debit(playerOrGuild, amount)
-	const auto &bank = getBank(L, 1);
-	if (bank == nullptr) {
-		Lua::reportErrorFunc("Bank is nullptr");
-		return 1;
-	}
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 2);
-	Lua::pushBoolean(L, bank->debit(amount));
-	return 1;
-}
-
-int BankFunctions::luaBankBalance(lua_State* L) {
-	// Bank.balance(playerOrGuild[, amount]])
-	const auto &bank = getBank(L, 1);
-	if (bank == nullptr) {
-		Lua::reportErrorFunc("Bank is nullptr");
-		return 1;
-	}
-	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, bank->balance());
-		return 1;
-	}
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 2);
-	Lua::pushBoolean(L, bank->balance(amount));
-	return 1;
-}
-
-int BankFunctions::luaBankHasBalance(lua_State* L) {
-	// Bank.hasBalance(playerOrGuild, amount)
-	const auto &bank = getBank(L, 1);
-	if (bank == nullptr) {
-		Lua::reportErrorFunc("Bank is nullptr");
-		return 1;
-	}
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 2);
-	Lua::pushBoolean(L, bank->hasBalance(amount));
-	return 1;
-}
-
-int BankFunctions::luaBankTransfer(lua_State* L) {
-	// Bank.transfer(fromPlayerOrGuild, toPlayerOrGuild, amount)
-	const auto &source = getBank(L, 1);
-	if (source == nullptr) {
-		g_logger().debug("BankFunctions::luaBankTransfer: source is null");
-		Lua::reportErrorFunc("Bank is nullptr");
-		return 1;
-	}
-	const auto &destination = getBank(L, 2);
-	if (destination == nullptr) {
-		g_logger().debug("BankFunctions::luaBankTransfer: destination is null");
-		Lua::reportErrorFunc("Bank is nullptr");
-		return 1;
-	}
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 3);
-	Lua::pushBoolean(L, source->transferTo(destination, amount));
-	return 1;
-}
-
-int BankFunctions::luaBankTransferToGuild(lua_State* L) {
-	// Bank.transfer(fromPlayerOrGuild, toGuild, amount)
-	const auto &source = getBank(L, 1);
-	if (source == nullptr) {
-		Lua::reportErrorFunc("Source is nullptr");
-		return 1;
-	}
-	const auto &destination = getBank(L, 2, true /* isGuild */);
-	if (destination == nullptr) {
-		Lua::reportErrorFunc("Destination is nullptr");
-		return 1;
-	}
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 3);
-	Lua::pushBoolean(L, source->transferTo(destination, amount));
-	return 1;
-}
-
-int BankFunctions::luaBankWithdraw(lua_State* L) {
-	// Bank.withdraw(player, amount[, source = player])
-	const auto &player = Lua::getPlayer(L, 1);
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		return 1;
-	}
-
-	const uint64_t amount = Lua::getNumber<uint64_t>(L, 2);
-	if (lua_gettop(L) == 2) {
-		auto bank = std::make_shared<Bank>(player);
-		Lua::pushBoolean(L, bank->withdraw(player, amount));
-		return 1;
-	}
-	const auto &source = getBank(L, 3);
-	if (source == nullptr) {
-		Lua::reportErrorFunc("Source is nullptr");
-		return 1;
-	}
-	Lua::pushBoolean(L, source->withdraw(player, amount));
-	return 1;
-}
-
-int BankFunctions::luaBankDeposit(lua_State* L) {
-	// Bank.deposit(player, amount[, destination = player])
-	const auto &player = Lua::getPlayer(L, 1);
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		return 1;
-	}
-	auto bank = std::make_shared<Bank>(player);
-
-	uint64_t amount = 0;
-	if (lua_isnumber(L, 2)) {
-		amount = Lua::getNumber<uint64_t>(L, 2);
-	} else if (lua_isnil(L, 2)) {
-		amount = player->getMoney();
-	}
-
-	if (lua_gettop(L) == 2) {
-		Lua::pushBoolean(L, g_game().removeMoney(player, amount) && bank->credit(amount));
-		return 1;
-	}
-	const auto &destination = getBank(L, 3);
-	if (destination == nullptr) {
-		Lua::reportErrorFunc("Destination is nullptr");
-		return 1;
-	}
-	Lua::pushBoolean(L, g_game().removeMoney(player, amount) && destination->credit(amount));
-	return 1;
-}
-
-std::shared_ptr<Bank> BankFunctions::getBank(lua_State* L, int32_t arg, bool isGuild /*= false*/) {
-	if (Lua::getUserdataType(L, arg) == LuaData_t::Guild) {
-		return std::make_shared<Bank>(Lua::getGuild(L, arg));
-	}
-	if (isGuild) {
-		const auto &guild = Lua::getGuild(L, arg, true);
-		if (!guild) {
-			return nullptr;
+	bankTable.set_function("credit", [](sol::object playerOrGuild, uint64_t amount) {
+		const auto &bank = getBank(playerOrGuild);
+		if (!bank) {
+			Lua::reportErrorFunc("Bank is nullptr");
+			return false;
 		}
-		return std::make_shared<Bank>(guild);
+		return bank->credit(amount);
+	});
+
+	bankTable.set_function("debit", [](sol::object playerOrGuild, uint64_t amount) {
+		const auto &bank = getBank(playerOrGuild);
+		if (!bank) {
+			Lua::reportErrorFunc("Bank is nullptr");
+			return false;
+		}
+		return bank->debit(amount);
+	});
+
+	bankTable.set_function("balance", [](sol::object playerOrGuild, sol::optional<uint64_t> amount) {
+		const auto &bank = getBank(playerOrGuild);
+		if (!bank) {
+			Lua::reportErrorFunc("Bank is nullptr");
+			return sol::make_object(playerOrGuild.lua_state(), false);
+		}
+		if (!amount) {
+			return sol::make_object(playerOrGuild.lua_state(), bank->balance());
+		}
+		return sol::make_object(playerOrGuild.lua_state(), bank->balance(amount.value()));
+	});
+
+	bankTable.set_function("hasBalance", [](sol::object playerOrGuild, uint64_t amount) {
+		const auto &bank = getBank(playerOrGuild);
+		if (!bank) {
+			Lua::reportErrorFunc("Bank is nullptr");
+			return false;
+		}
+		return bank->hasBalance(amount);
+	});
+
+	bankTable.set_function("transfer", [](sol::object fromPlayerOrGuild, sol::object toPlayerOrGuild, uint64_t amount) {
+		const auto &source = getBank(fromPlayerOrGuild);
+		if (!source) {
+			g_logger().debug("BankFunctions::transfer: source is null");
+			Lua::reportErrorFunc("Bank is nullptr");
+			return false;
+		}
+		const auto &destination = getBank(toPlayerOrGuild);
+		if (!destination) {
+			g_logger().debug("BankFunctions::transfer: destination is null");
+			Lua::reportErrorFunc("Bank is nullptr");
+			return false;
+		}
+		return source->transferTo(destination, amount);
+	});
+
+	bankTable.set_function("transferToGuild", [](sol::object fromPlayerOrGuild, sol::object toGuild, uint64_t amount) {
+		const auto &source = getBank(fromPlayerOrGuild);
+		if (!source) {
+			Lua::reportErrorFunc("Source is nullptr");
+			return false;
+		}
+		const auto &destination = getBank(toGuild, true);
+		if (!destination) {
+			Lua::reportErrorFunc("Destination is nullptr");
+			return false;
+		}
+		return source->transferTo(destination, amount);
+	});
+
+	bankTable.set_function("withdraw", [](std::shared_ptr<Player> player, uint64_t amount, sol::optional<sol::object> sourceObj) {
+		if (!player) {
+			Lua::reportErrorFunc("Player not found");
+			return false;
+		}
+
+		if (!sourceObj) {
+			auto bank = std::make_shared<Bank>(player);
+			return bank->withdraw(player, amount);
+		}
+
+		const auto &source = getBank(sourceObj.value());
+		if (!source) {
+			Lua::reportErrorFunc("Source is nullptr");
+			return false;
+		}
+		return source->withdraw(player, amount);
+	});
+
+	bankTable.set_function("deposit", [](std::shared_ptr<Player> player, sol::object amountOrNil, sol::optional<sol::object> destinationObj) {
+		if (!player) {
+			Lua::reportErrorFunc("Player not found");
+			return false;
+		}
+
+		uint64_t amount = 0;
+		if (amountOrNil.is<uint64_t>()) {
+			amount = amountOrNil.as<uint64_t>();
+		} else {
+			amount = player->getMoney();
+		}
+
+		if (!destinationObj) {
+			auto bank = std::make_shared<Bank>(player);
+			return g_game().removeMoney(player, amount) && bank->credit(amount);
+		}
+
+		const auto &destination = getBank(destinationObj.value());
+		if (!destination) {
+			Lua::reportErrorFunc("Destination is nullptr");
+			return false;
+		}
+		return g_game().removeMoney(player, amount) && destination->credit(amount);
+	});
+}
+
+std::shared_ptr<Bank> BankFunctions::getBank(sol::object arg, bool isGuild /*= false*/) {
+	if (arg.is<std::shared_ptr<Guild>>()) {
+		return std::make_shared<Bank>(arg.as<std::shared_ptr<Guild>>());
 	}
-	const auto &player = Lua::getPlayer(L, arg, true);
-	if (!player) {
+
+	if (isGuild) {
+		// Try to get guild by ID or name if passed as number/string
+		if (arg.is<uint64_t>()) {
+			auto guild = g_game().getGuild(arg.as<uint64_t>(), true);
+			if (guild) {
+				return std::make_shared<Bank>(guild);
+			}
+		} else if (arg.is<std::string>()) {
+			auto guild = g_game().getGuildByName(arg.as<std::string>(), true);
+			if (guild) {
+				return std::make_shared<Bank>(guild);
+			}
+		}
 		return nullptr;
 	}
-	return std::make_shared<Bank>(player);
+
+	if (arg.is<std::shared_ptr<Player>>()) {
+		return std::make_shared<Bank>(arg.as<std::shared_ptr<Player>>());
+	}
+
+	// Try to get player by ID or name if passed as number/string
+	if (arg.is<uint64_t>()) {
+		auto player = g_game().getPlayerByID(arg.as<uint64_t>(), true);
+		if (player) {
+			return std::make_shared<Bank>(player);
+		}
+	} else if (arg.is<std::string>()) {
+		auto player = g_game().getPlayerByName(arg.as<std::string>(), true);
+		if (player) {
+			return std::make_shared<Bank>(player);
+		}
+	}
+
+	return nullptr;
 }

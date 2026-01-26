@@ -13,6 +13,7 @@
 #include "declarations.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "items/weapons/weapons.hpp"
+#include <sol/sol.hpp>
 
 #include "lua/global/lua_timer_event_descr.hpp"
 
@@ -52,11 +53,17 @@ public:
 
 	void collectGarbage() const;
 
+	std::optional<sol::state_view> &getSolState() {
+		return solState;
+	}
+
 private:
 	void executeTimerEvent(uint32_t eventIndex);
 
 	std::unordered_map<uint32_t, LuaTimerEventDesc> timerEvents;
 	uint32_t lastEventTimerId = 1;
+
+	std::optional<sol::state_view> solState;
 
 	phmap::flat_hash_map<uint32_t, std::unique_ptr<AreaCombat>> areaMap;
 	phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> areaIdMap;

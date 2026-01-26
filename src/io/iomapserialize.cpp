@@ -68,6 +68,9 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			g_logger().warn("[BedFix] House bug detected at {}, correcting bed.", pos);
 
 			bed->forceClearSleeper();
+			if (next && next->getNextBedItem() == bed) {
+				next->forceClearSleeper();
+			}
 		}
 	}
 
@@ -161,7 +164,6 @@ bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cyli
 				// Remove only not movable and not sleeper bed
 				auto bed = item->getBed();
 				if (isHouseItem && iType.isBed() && bed && bed->getSleeper() == 0 && !iType.movable) {
-					bedsToCheck.push_back(bed);
 					return false;
 				}
 				std::shared_ptr<Container> container = item->getContainer();

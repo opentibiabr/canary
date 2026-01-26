@@ -71,7 +71,7 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
-	inline std::unordered_set<const Thing*>& teleportStack() {
+	inline std::unordered_set<const Thing*> &teleportStack() {
 		static thread_local std::unordered_set<const Thing*> stack;
 		return stack;
 	}
@@ -2934,20 +2934,18 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 	const Thing* teleportThing = thing.get();
 	if (!InternalGame::tryInsertTeleportStack(teleportThing)) {
 		if (const auto creature = thing->getCreature()) {
-			g_logger().error("[{}] Teleport recursion detected for creature {} at {}",
-				__FUNCTION__, creature->getName(), creature->getPosition().toString());
+			g_logger().error("[{}] Teleport recursion detected for creature {} at {}", __FUNCTION__, creature->getName(), creature->getPosition().toString());
 		} else if (const auto item = thing->getItem()) {
-			g_logger().error("[{}] Teleport recursion detected for item {} at {}",
-				__FUNCTION__, item->getName(), item->getPosition().toString());
+			g_logger().error("[{}] Teleport recursion detected for item {} at {}", __FUNCTION__, item->getName(), item->getPosition().toString());
 		} else {
 			g_logger().error("[{}] Teleport recursion detected", __FUNCTION__);
 		}
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	auto teleportStackGuard =std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
+	auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
 
-	auto teleportStackGuard =std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
+	auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
 
 	if (newPos == thing->getPosition()) {
 		return RETURNVALUE_CONTACTADMINISTRATOR;

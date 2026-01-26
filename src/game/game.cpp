@@ -71,7 +71,7 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
-	inline std::unordered_set<const Thing*> &teleportStack() {
+	[[nodiscard]] inline std::unordered_set<const Thing*> &teleportStack() {
 		static thread_local std::unordered_set<const Thing*> stack;
 		return stack;
 	}
@@ -2942,8 +2942,6 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 		}
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-
-	auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
 
 	auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
 

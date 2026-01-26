@@ -71,8 +71,8 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
-	std::unordered_set<const Thing*> &getTeleportStack() {
-		static thread_local std::unordered_set<const Thing*> teleportStack;
+	[[nodiscard]] std::unordered_set<const Thing*> &getTeleportStack() {
+		static inline thread_local std::unordered_set<const Thing*> teleportStack;
 		return teleportStack;
 	}
 
@@ -2938,8 +2938,8 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	const auto insertResult = teleportStack.insert(teleportThing);
-	if (!insertResult.second) {
+	const auto [it, inserted] = teleportStack.insert(teleportThing);
+	if (!inserted) {
 		if (const auto creature = thing->getCreature()) {
 			g_logger().error("[{}] Teleport recursion detected for creature {} at {}", __FUNCTION__, creature->getName(), creature->getPosition().toString());
 		} else if (const auto item = thing->getItem()) {

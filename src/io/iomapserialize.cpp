@@ -62,14 +62,12 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 
 	for (const auto &bed : bedsToCheck) {
 		const auto &next = bed->getNextBedItem();
-		if (!next || !bed->isBedComplete(next)) {
+		const bool isComplete = next && (bed->isBedComplete(next) || next->isBedComplete(bed));
+		if (!isComplete) {
 			const Position &pos = bed->getPosition();
 			g_logger().warn("[BedFix] House bug detected at {}, correcting bed.", pos);
 
 			bed->forceClearSleeper();
-			if (next) {
-				next->forceClearSleeper();
-			}
 		}
 	}
 

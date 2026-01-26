@@ -474,7 +474,7 @@ void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::
 		}
 	}
 
-	if (container->isPickupable()) {
+	if (container->isPickupable() && !container->isWrapable()) {
 		moveItemList.push_back(container);
 	}
 }

@@ -19,10 +19,13 @@ BatchUpdate::State::State(const std::shared_ptr<Player> &actor) :
 	}
 }
 
-BatchUpdate::State::~State() {
-	const auto actorLocked = actor.lock();
+BatchUpdate::BatchUpdate(const std::shared_ptr<Player> &actor) :
+	m_state(actor) { }
+
+BatchUpdate::~BatchUpdate() {
+	const auto actorLocked = m_state.actor.lock();
 	auto* actorPtr = actorLocked.get();
-	for (const auto &containerWeak : cached) {
+	for (const auto &containerWeak : m_state.cached) {
 		if (auto container = containerWeak.lock()) {
 			container->endBatchUpdate(actorPtr);
 		}
@@ -31,9 +34,6 @@ BatchUpdate::State::~State() {
 		actorLocked->endBatchUpdate();
 	}
 }
-
-BatchUpdate::BatchUpdate(const std::shared_ptr<Player> &actor) :
-	m_state(actor) { }
 
 bool BatchUpdate::add(const std::shared_ptr<Container> &container) {
 	if (!container) {

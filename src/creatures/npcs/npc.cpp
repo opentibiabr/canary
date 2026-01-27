@@ -89,7 +89,7 @@ namespace {
 			return false;
 		}
 
-		const auto* cylinder = static_cast<const Cylinder*>(player.get());
+		const Cylinder* cylinder = player.get();
 		if (cylinder->getItemTypeCount(currency) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost)) {
 			g_logger().error("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);
 			g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, npcName, player->getPosition().toString());
@@ -123,7 +123,7 @@ namespace {
 		return true;
 	}
 
-	uint32_t getSellPriceForItem(const std::vector<ShopBlock> &shopVector, uint16_t itemId) {
+	[[nodiscard]] uint32_t getSellPriceForItem(const std::vector<ShopBlock> &shopVector, uint16_t itemId) {
 		for (const ShopBlock &shopBlock : shopVector) {
 			if (itemId == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
 				return shopBlock.itemSellPrice;
@@ -207,20 +207,27 @@ namespace {
 		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 	}
 
-	bool applyCustomSaleProceeds(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const char* createErrorContext, const char* addErrorContext, const char* errorContext, const char* failureMessage) {
-		if (addCustomCurrencyItems(player, currency, totalCost, npcName, createErrorContext, addErrorContext)) {
+	struct CustomSaleContext {
+		const char* createErrorContext;
+		const char* addErrorContext;
+		const char* errorContext;
+		const char* failureMessage;
+	};
+
+	bool applyCustomSaleProceeds(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const CustomSaleContext &context) {
+		if (addCustomCurrencyItems(player, currency, totalCost, npcName, context.createErrorContext, context.addErrorContext)) {
 			return true;
 		}
 
 		g_logger().error(
 			"{} - Failed to add custom currency {} (amount {}) to player {}. Sale aborted.",
-			errorContext,
+			context.errorContext,
 			currency,
 			totalCost,
 			player->getName()
 		);
 
-		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, failureMessage);
+		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, context.failureMessage);
 		return false;
 	}
 
@@ -239,10 +246,12 @@ namespace {
 			currency,
 			totalCost,
 			npcName,
-			"[Npc::onPlayerSellAllLoot]",
-			"[Npc::onPlayerSellItem]",
-			"[Npc::onPlayerSellAllLoot]",
-			"An error occurred while completing the sale of your loot. No items were exchanged."
+			CustomSaleContext{
+				"[Npc::onPlayerSellAllLoot]",
+				"[Npc::onPlayerSellItem]",
+				"[Npc::onPlayerSellAllLoot]",
+				"An error occurred while completing the sale of your loot. No items were exchanged."
+			}
 		);
 	}
 
@@ -264,10 +273,12 @@ namespace {
 			currency,
 			totalCost,
 			npcName,
-			"[Npc::onPlayerSellItem]",
-			"[Npc::onPlayerSellItem]",
-			"[Npc::onPlayerSellItem]",
-			"An error occurred while completing the sale. Your items were not exchanged."
+			CustomSaleContext{
+				"[Npc::onPlayerSellItem]",
+				"[Npc::onPlayerSellItem]",
+				"[Npc::onPlayerSellItem]",
+				"An error occurred while completing the sale. Your items were not exchanged."
+			}
 		);
 	}
 
@@ -373,7 +384,7 @@ void Npc::setName(std::string newName) const {
 	npcType->name = std::move(newName);
 }
 
-const std::string &Npc::getLowerName() const {
+[[nodiscard]] const std::string &Npc::getLowerName() const {
 	return npcType->m_lowerName;
 }
 
@@ -381,7 +392,7 @@ CreatureType_t Npc::getType() const {
 	return CREATURETYPE_NPC;
 }
 
-const Position &Npc::getMasterPos() const {
+[[nodiscard]] const Position &Npc::getMasterPos() const {
 	return masterPos;
 }
 
@@ -926,7 +937,7 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 	if (Direction newDirection;
 	    getRandomStep(newDirection)) {
-		listWalkDir.emplace_back(newDirection);
+		listWalkDir.push_back(newDirection);
 		addEventWalk();
 	}
 
@@ -982,7 +993,7 @@ void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	}
 
 	if (playerInteractionsOrder.empty() || std::ranges::find(playerInteractionsOrder, playerId) == playerInteractionsOrder.end()) {
-		playerInteractionsOrder.emplace_back(playerId);
+		playerInteractionsOrder.push_back(playerId);
 		turnToCreature(creature);
 	}
 

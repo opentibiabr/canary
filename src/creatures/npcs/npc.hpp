@@ -52,11 +52,11 @@ public:
 
 	void setName(std::string newName) const;
 
-	const std::string &getLowerName() const;
+	[[nodiscard]] const std::string &getLowerName() const;
 
 	CreatureType_t getType() const override;
 
-	const Position &getMasterPos() const;
+	[[nodiscard]] const Position &getMasterPos() const;
 	void setMasterPos(Position pos);
 
 	uint8_t getSpeechBubble() const override;

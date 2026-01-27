@@ -965,9 +965,12 @@ bool Container::removeItemById(uint16_t itemId, uint32_t count, int32_t subType 
 		}
 
 		uint32_t stack = item->getItemCount();
-		uint32_t toRemove = std::min<uint32_t>(stack, count - removed);
-		g_game().internalRemoveItem(item, toRemove);
-		removed += toRemove;
+		const auto removeCount = std::min<uint32_t>(stack, count - removed);
+		const auto returnValue = g_game().internalRemoveItem(item, removeCount);
+		if (returnValue != RETURNVALUE_NOERROR) {
+			continue;
+		}
+		removed += removeCount;
 		if (removed >= count) {
 			break;
 		}

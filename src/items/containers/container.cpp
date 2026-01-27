@@ -1126,6 +1126,7 @@ uint32_t Container::removeAllItems(const std::shared_ptr<Player> &actor, bool is
 	beginBatchUpdate();
 
 	uint32_t removedCount = 0;
+	std::vector<std::shared_ptr<Item>> itemsToRemove;
 
 	if (isRecursive) {
 		for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
@@ -1133,8 +1134,7 @@ uint32_t Container::removeAllItems(const std::shared_ptr<Player> &actor, bool is
 			if (!item) {
 				continue;
 			}
-			removeThing(item, item->getItemCount());
-			++removedCount;
+			itemsToRemove.push_back(item);
 		}
 	} else {
 		const auto &itemList = getItemList();
@@ -1142,9 +1142,13 @@ uint32_t Container::removeAllItems(const std::shared_ptr<Player> &actor, bool is
 			if (!item) {
 				continue;
 			}
-			removeThing(item, item->getItemCount());
-			++removedCount;
+			itemsToRemove.push_back(item);
 		}
+	}
+
+	for (const auto &item : itemsToRemove) {
+		removeThing(item, item->getItemCount());
+		++removedCount;
 	}
 
 	endBatchUpdate(actor.get());

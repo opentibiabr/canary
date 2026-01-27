@@ -6803,14 +6803,12 @@ void Player::checkSkullTicks(int64_t ticks) {
 }
 
 void Player::updateBaseSpeed() {
-	if (baseSpeed >= PLAYER_MAX_SPEED) {
-		return;
-	}
-
+	const uint16_t maxSpeed = hasFlag(PlayerFlags_t::SetMaxSpeed) ? PLAYER_MAX_STAFF_SPEED : PLAYER_MAX_SPEED;
 	if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
-		baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
+		const uint32_t computedSpeed = vocation->getBaseSpeed() + (level - 1);
+		baseSpeed = static_cast<uint16_t>(std::min<uint32_t>(computedSpeed, maxSpeed));
 	} else {
-		baseSpeed = PLAYER_MAX_SPEED;
+		baseSpeed = maxSpeed;
 	}
 }
 

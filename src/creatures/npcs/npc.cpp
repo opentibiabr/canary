@@ -755,14 +755,13 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 			continue;
 		}
 
-		lootPouch->removeItemByIndex(index, removeCount);
 		it->second.amount += removeCount;
 	}
 
 	std::string log;
 	log.reserve(saleData.size() * 64); // Median of 64 bytes per line
 	uint32_t totalItemsSold = 0;
-	for (auto &[itemId, data] : saleData) {
+	for (const auto &[itemId, data] : saleData) {
 		if (data.amount == 0) {
 			continue;
 		}
@@ -774,16 +773,23 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 		totalPrice += totalCost;
 
-		if (!applySaleProceedsForLoot(player, getCurrency(), totalCost, getName())) {
-			// The loot pouch items are already removed and previous proceeds credited,
-			// so failures here leave the player with a partial sale. Consider batching
-			// proceeds or rolling back removals when custom currency creation fails.
-			return;
-		}
-
 		const auto &itemName = Item::items.getItemType(itemId).name;
 		log += fmt::format("Sold {}x {} for {} gold.\n", data.amount, itemName, totalCost);
 		totalItemsSold += data.amount;
+	}
+
+	if (totalPrice > 0) {
+		if (!applySaleProceedsForLoot(player, getCurrency(), totalPrice, getName())) {
+			return;
+		}
+
+		for (const auto &[itemId, data] : saleData) {
+			if (data.amount == 0) {
+				continue;
+			}
+
+			removeItemsFromLootPouch(lootPouch, itemId, data.amount, &batching);
+		}
 	}
 
 	std::string finalMessage;

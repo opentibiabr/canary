@@ -250,10 +250,6 @@ namespace {
 				"[Npc::onPlayerSellAllLoot]",
 				"[Npc::onPlayerSellAllLoot]",
 				"[Npc::onPlayerSellAllLoot]",
-				"An error occurred while completing the sale of your loot. No items were exchanged." } CustomSaleContext {
-				"[Npc::onPlayerSellAllLoot]",
-				"[Npc::onPlayerSellAllLoot]",
-				"[Npc::onPlayerSellAllLoot]",
 				"An error occurred while completing the sale of your loot. No items were exchanged." }
 		);
 	}

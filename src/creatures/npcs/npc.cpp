@@ -79,7 +79,7 @@ namespace {
 	bool hasInsufficientFunds(const std::shared_ptr<Player> &player, uint16_t itemId, const std::string &npcName, uint16_t currency, uint32_t totalCost, uint32_t bagsCost) {
 		if (currency == ITEM_GOLD_COIN) {
 			const uint64_t totalRequired = static_cast<uint64_t>(totalCost) + bagsCost;
-			const uint64_t availableFunds = static_cast<uint64_t>(player->getMoney()) + player->getBankBalance();
+			const uint64_t availableFunds = player->getMoney() + player->getBankBalance();
 			if (availableFunds < totalRequired) {
 				g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);
 				g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, npcName, player->getPosition().toString());
@@ -775,6 +775,9 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 		totalPrice += totalCost;
 
 		if (!applySaleProceedsForLoot(player, getCurrency(), totalCost, getName())) {
+			// The loot pouch items are already removed and previous proceeds credited,
+			// so failures here leave the player with a partial sale. Consider batching
+			// proceeds or rolling back removals when custom currency creation fails.
 			return;
 		}
 

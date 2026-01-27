@@ -88,7 +88,7 @@ void Player::initForTests() {
 }
 
 std::shared_ptr<Player> Player::createForTests() {
-	auto player = std::shared_ptr<Player>(new Player(/*ctor minimal*/));
+	auto player = std::make_shared<Player>();
 	player->setName("Testing");
 	player->initForTests();
 	return player;

@@ -52,7 +52,9 @@ endif()
 # Sets the NDEBUG macro for Release and RelWithDebInfo configurations.
 target_compile_definitions(
     ${PROJECT_NAME}_lib
-    PUBLIC $<$<CONFIG:Release>:NDEBUG> $<$<CONFIG:RelWithDebInfo>:NDEBUG>
+    PUBLIC $<$<CONFIG:Release>:NDEBUG>
+           $<$<CONFIG:RelWithDebInfo>:NDEBUG>
+           $<$<BOOL:${BUILD_TESTING}>:BUILD_TESTS>
 )
 
 # Configurar IPO e Linkagem Incremental

@@ -1099,6 +1099,36 @@ void Container::endBatchUpdate(Player* actor) {
 	}
 }
 
+uint32_t Container::removeAllItems(const std::shared_ptr<Player> &actor, bool isRecursive /*= false*/) {
+	beginBatchUpdate();
+
+	uint32_t removedCount = 0;
+
+	if (isRecursive) {
+		for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+			const auto &item = *it;
+			if (!item) {
+				continue;
+			}
+			removeThing(item, item->getItemCount());
+			++removedCount;
+		}
+	} else {
+		const auto &itemList = getItemList();
+		for (const auto &item : itemList) {
+			if (!item) {
+				continue;
+			}
+			removeThing(item, item->getItemCount());
+			++removedCount;
+		}
+	}
+
+	endBatchUpdate(actor.get());
+
+	return removedCount;
+}
+
 void Container::removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateToClient /* = false*/) {
 	if (thing == nullptr) {
 		return;

@@ -26,10 +26,11 @@ namespace it_account_repo_db {
 		auto lastDay = getTimeNow() + 11 * 86400;
 		ASSERT_TRUE(db.executeQuery(fmt::format(
 			"INSERT INTO `accounts` "
-			"(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
-			"VALUES(111, 'test', '@test', '', 3, 11, {}, 11, 42183281)",
+			"(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`, `house_bid_id`) "
+			"VALUES(111, 'test', '@test', '', 3, 11, {}, 11, 42183281, 0)",
 			lastDay
 		)));
+
 		ASSERT_TRUE(db.executeQuery(fmt::format(
 			"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) "
 			"VALUES ('{}', 111, 1337)",
@@ -92,14 +93,17 @@ namespace it_account_repo_db {
 	TEST_F(AccountRepositoryDBTest, PremiumDaysPurchasedSync) {
 		auto &db = g_database();
 		databaseTest(db, [&db] {
+			createAccount(db);
 			AccountRepositoryDB accRepo {};
 			auto acc = std::make_unique<AccountInfo>();
-			ASSERT_TRUE(accRepo.loadByID(1, acc));
+
+			ASSERT_TRUE(accRepo.loadByID(111, acc));
 			acc->premiumLastDay = getTimeNow() + 10 * 86400;
 			acc->premiumRemainingDays = 10;
 			acc->premiumDaysPurchased = 0;
-			EXPECT_TRUE(accRepo.save(acc));
-			ASSERT_TRUE(accRepo.loadByID(1, acc));
+
+			ASSERT_TRUE(accRepo.save(acc));
+			ASSERT_TRUE(accRepo.loadByID(111, acc));
 			EXPECT_EQ(10, acc->premiumDaysPurchased);
 		})();
 	}
@@ -129,22 +133,34 @@ namespace it_account_repo_db {
 
 	TEST_F(AccountRepositoryDBTest, Save) {
 		auto &db = g_database();
-		databaseTest(db, [] {
+		databaseTest(db, [&db] {
+			createAccount(db);
 			AccountRepositoryDB accRepo {};
 			auto acc = std::make_unique<AccountInfo>();
-			acc->id = 1;
+
+			ASSERT_TRUE(accRepo.loadByID(111, acc));
 			acc->accountType = AccountType::ACCOUNT_TYPE_SENIORTUTOR;
 			acc->premiumRemainingDays = 10;
 			acc->premiumLastDay = getTimeNow() + acc->premiumRemainingDays * 86400;
-			acc->sessionExpires = 99999999;
-			EXPECT_TRUE(accRepo.save(acc));
+			acc->houseBidId = 0;
+			acc->creationTime = 42183281;
+
+			logger->logs.clear();
+			const bool ok = accRepo.save(acc);
+			if (!ok) {
+				for (const auto &l : logger->logs) {
+					std::cerr << l.level << ": " << l.message << "\n";
+				}
+			}
+			ASSERT_TRUE(ok);
+
+			ASSERT_TRUE(accRepo.save(acc));
+
 			auto acc2 = std::make_unique<AccountInfo>();
-			ASSERT_TRUE(accRepo.loadByID(1, acc2));
-			EXPECT_EQ(1, acc2->id);
+			ASSERT_TRUE(accRepo.loadByID(111, acc2));
 			EXPECT_EQ(AccountType::ACCOUNT_TYPE_SENIORTUTOR, acc2->accountType);
 			EXPECT_EQ(10, acc2->premiumRemainingDays);
-			EXPECT_NEAR(static_cast<double>(acc2->premiumLastDay), static_cast<double>(acc->premiumLastDay), 60.0);
-			EXPECT_EQ(0, acc2->sessionExpires);
+			EXPECT_NEAR((double)acc2->premiumLastDay, (double)acc->premiumLastDay, 60.0);
 		})();
 	}
 

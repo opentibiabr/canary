@@ -80,7 +80,18 @@ Player::Player() :
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this),
-	m_forgeHistoryPlayer(*this) {
+	m_forgeHistoryPlayer(*this) { }
+
+void Player::initForTests() {
+	g_game().addPlayer(static_self_cast<Player>());
+	client.reset();
+}
+
+std::shared_ptr<Player> Player::createForTests() {
+	auto player = std::shared_ptr<Player>(new Player(/*ctor minimal*/));
+	player->setName("Testing");
+	player->initForTests();
+	return player;
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -6985,10 +6996,18 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 }
 
 bool Player::isAccessPlayer() const {
+	if (!group) {
+		return false;
+	}
+
 	return group->access;
 }
 
 bool Player::isPlayerGroup() const {
+	if (!group) {
+		return false;
+	}
+
 	return group->id <= GROUP_TYPE_SENIORTUTOR;
 }
 

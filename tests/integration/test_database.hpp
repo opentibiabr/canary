@@ -100,7 +100,7 @@ public:
 		std::string host = get(env, "TEST_DB_HOST", "127.0.0.1");
 		std::string user = get(env, "TEST_DB_USER", "root");
 		std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
-		std::string database = get(env, "TEST_DB_NAME", "otservbr-global");
+		std::string database = get(env, "TEST_DB_NAME", "otservbr-global-test");
 		std::string portStr = get(env, "TEST_DB_PORT", "3306");
 		auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
 		std::string sock = get(env, "TEST_DB_SOCKET", "");

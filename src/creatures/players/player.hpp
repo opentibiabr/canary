@@ -109,6 +109,12 @@ static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max(
 static constexpr uint16_t PLAYER_MIN_SPEED = 10;
 static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
+#ifdef BUILD_TESTS
+	#define PRIVATE_FOR_TESTS public
+#else
+	#define PRIVATE_FOR_TESTS private
+#endif
+
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
 	class PlayerLock {
@@ -124,8 +130,7 @@ public:
 			player->mutex.unlock();
 		}
 
-	private:
-		const std::shared_ptr<Player> &player;
+		PRIVATE_FOR_TESTS : const std::shared_ptr<Player> &player;
 	};
 
 	/**
@@ -138,6 +143,10 @@ public:
 	 *
 	 */
 	explicit Player();
+
+	static std::shared_ptr<Player> createForTests();
+
+	void initForTests();
 
 	explicit Player(std::shared_ptr<ProtocolGame> p);
 	~Player() override;
@@ -1373,8 +1382,7 @@ public:
 		return m_managedContainers;
 	}
 
-private:
-	friend class PlayerLock;
+	PRIVATE_FOR_TESTS : friend class PlayerLock;
 	std::mutex mutex;
 
 	static uint32_t playerFirstID;

@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "utils/batch_update.hpp"
+
 #include "creatures/players/player.hpp"
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
@@ -123,4 +124,26 @@ TEST_F(BatchUpdateTest, EmptyScopeBalancesBatchingState) {
 		EXPECT_TRUE(player->isBatching());
 	});
 	EXPECT_FALSE(player->isBatching());
+}
+
+TEST_F(BatchUpdateTest, ContainerBatchingSuppressesUpdateCallbacks) {
+	auto player = std::make_shared<Player>();
+	auto container = std::make_shared<Container>(ITEM_GOLD_POUCH, 10);
+	auto item = Item::CreateItem(ITEM_GOLD_COIN, 5);
+	ASSERT_NE(item, nullptr);
+	container->addThing(item);
+	player->internalAddThing(CONST_SLOT_BACKPACK, container);
+
+	player->tradeItem = item;
+	player->setTradeState(TRADE_ACKNOWLEDGE);
+
+	container->beginBatchUpdate();
+	container->onUpdateContainerItem(0, item, item);
+	EXPECT_EQ(player->getTradeState(), TRADE_ACKNOWLEDGE);
+	EXPECT_EQ(player->tradeItem, item);
+	container->endBatchUpdate(nullptr);
+
+	container->onUpdateContainerItem(0, item, item);
+	EXPECT_EQ(player->getTradeState(), TRADE_NONE);
+	EXPECT_EQ(player->tradeItem, nullptr);
 }

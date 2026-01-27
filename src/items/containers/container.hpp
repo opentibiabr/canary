@@ -22,6 +22,12 @@ class RewardChest;
 class Reward;
 class Player;
 
+#ifdef BUILD_TESTS
+	#define PRIVATE_FOR_TESTS public
+#else
+	#define PRIVATE_FOR_TESTS private
+#endif
+
 class ContainerIterator {
 public:
 	/**
@@ -68,17 +74,17 @@ public:
 
 	size_t getCurrentIndex() const;
 
-private:
-	/**
-	 * @brief Represents the state of the iterator at a given point in time.
-	 *
-	 * This structure is used to keep track of the current container,
-	 * the index of the current item within that container, and the depth
-	 * of traversal for nested containers. It is primarily used in the
-	 * ContainerIterator to manage the state of the iteration as it traverses
-	 * through containers and their sub-containers.
-	 */
-	struct IteratorState {
+	PRIVATE_FOR_TESTS :
+		/**
+	     * @brief Represents the state of the iterator at a given point in time.
+	     *
+	     * This structure is used to keep track of the current container,
+	     * the index of the current item within that container, and the depth
+	     * of traversal for nested containers. It is primarily used in the
+	     * ContainerIterator to manage the state of the iteration as it traverses
+	     * through containers and their sub-containers.
+	     */
+		struct IteratorState {
 		/**
 		 * @brief The container being iterated over.
 		 */
@@ -299,6 +305,7 @@ public:
 	void internalAddThing(const std::shared_ptr<Thing> &thing) final;
 	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
 
+	uint32_t removeAllItems(const std::shared_ptr<Player> &actor, bool isRecursive = false);
 	virtual void removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateToClient = false);
 
 	uint32_t getOwnerId() const final;
@@ -329,8 +336,7 @@ protected:
 
 	friend class MapCache;
 
-private:
-	uint32_t m_cachedContainerCount {};
+	PRIVATE_FOR_TESTS : uint32_t m_cachedContainerCount {};
 	uint32_t m_cachedItemCount {};
 
 	void onAddContainerItem(const std::shared_ptr<Item> &item);

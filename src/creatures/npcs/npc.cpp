@@ -251,10 +251,15 @@ namespace {
 				"[Npc::onPlayerSellAllLoot]",
 				"[Npc::onPlayerSellAllLoot]",
 				"An error occurred while completing the sale of your loot. No items were exchanged." }
+			CustomSaleContext {
+				"[Npc::onPlayerSellAllLoot]",
+				"[Npc::onPlayerSellAllLoot]",
+				"[Npc::onPlayerSellAllLoot]",
+				"An error occurred while completing the sale of your loot. No items were exchanged." }
 		);
 	}
-		);
-}
+
+bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
 
 bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
 	if (!totalCost) {

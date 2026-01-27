@@ -254,33 +254,31 @@ namespace {
 		);
 	}
 
-	bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
+bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
+	if (!totalCost) {
+		return true;
+	}
 
-		bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
-			if (!totalCost) {
-				return true;
-			}
-
-			if (currency == ITEM_GOLD_COIN) {
-				if (context.totalPrice) {
-					*context.totalPrice += totalCost;
-				}
-				applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
-				return true;
-			}
-
-			return applyCustomSaleProceeds(
-				player,
-				currency,
-				totalCost,
-				npcName,
-				CustomSaleContext {
-					"[Npc::onPlayerSellItem]",
-					"[Npc::onPlayerSellItem]",
-					"[Npc::onPlayerSellItem]",
-					"An error occurred while completing the sale. Your items were not exchanged." }
-			);
+	if (currency == ITEM_GOLD_COIN) {
+		if (context.totalPrice) {
+			*context.totalPrice += totalCost;
 		}
+		applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
+		return true;
+	}
+
+	return applyCustomSaleProceeds(
+		player,
+		currency,
+		totalCost,
+		npcName,
+		CustomSaleContext {
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellItem]",
+			"An error occurred while completing the sale. Your items were not exchanged." }
+	);
+}
 
 		void sendSaleLetterIfNeeded(const std::shared_ptr<Player> &player, BatchUpdate &batching, const std::string &log, uint64_t totalPrice, const std::string &npcName) {
 			if (totalPrice == 0 || log.empty()) {

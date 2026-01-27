@@ -254,62 +254,62 @@ namespace {
 		);
 	}
 		);
+}
+
+bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
+	if (!totalCost) {
+		return true;
 	}
 
-	bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
-		if (!totalCost) {
-			return true;
+	if (currency == ITEM_GOLD_COIN) {
+		if (context.totalPrice) {
+			*context.totalPrice += totalCost;
 		}
-
-		if (currency == ITEM_GOLD_COIN) {
-			if (context.totalPrice) {
-				*context.totalPrice += totalCost;
-			}
-			applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
-			return true;
-		}
-
-		return applyCustomSaleProceeds(
-			player,
-			currency,
-			totalCost,
-			npcName,
-			CustomSaleContext {
-				"[Npc::onPlayerSellItem]",
-				"[Npc::onPlayerSellItem]",
-				"[Npc::onPlayerSellItem]",
-				"An error occurred while completing the sale. Your items were not exchanged." }
-		);
+		applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
+		return true;
 	}
 
-	void sendSaleLetterIfNeeded(const std::shared_ptr<Player> &player, BatchUpdate &batching, const std::string &log, uint64_t totalPrice, const std::string &npcName) {
-		if (totalPrice == 0 || log.empty()) {
-			return;
-		}
+	return applyCustomSaleProceeds(
+		player,
+		currency,
+		totalCost,
+		npcName,
+		CustomSaleContext {
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellItem]",
+			"[Npc::onPlayerSellItem]",
+			"An error occurred while completing the sale. Your items were not exchanged." }
+	);
+}
 
-		const auto &storeInbox = player->getStoreInbox();
-		if (!storeInbox) {
-			g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), npcName);
-			return;
-		}
-
-		const auto addResult = batching.add(storeInbox);
-		(void)addResult;
-
-		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
-		if (!letter) {
-			return;
-		}
-
-		letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", npcName));
-		letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
-		letter->setAttribute(ItemAttribute_t::TEXT, log);
-		const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
-		if (returnValue != RETURNVALUE_NOERROR) {
-			g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), npcName, getReturnMessage(returnValue));
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
-		}
+void sendSaleLetterIfNeeded(const std::shared_ptr<Player> &player, BatchUpdate &batching, const std::string &log, uint64_t totalPrice, const std::string &npcName) {
+	if (totalPrice == 0 || log.empty()) {
+		return;
 	}
+
+	const auto &storeInbox = player->getStoreInbox();
+	if (!storeInbox) {
+		g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), npcName);
+		return;
+	}
+
+	const auto addResult = batching.add(storeInbox);
+	(void)addResult;
+
+	auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
+	if (!letter) {
+		return;
+	}
+
+	letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", npcName));
+	letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
+	letter->setAttribute(ItemAttribute_t::TEXT, log);
+	const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), npcName, getReturnMessage(returnValue));
+		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
+	}
+}
 }
 
 std::shared_ptr<Npc> Npc::createNpc(const std::string &name) {

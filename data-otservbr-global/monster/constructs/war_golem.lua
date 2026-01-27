@@ -95,7 +95,7 @@ monster.loot = {
 	{ id = 3413, chance = 6500 }, -- battle shield
 	{ id = 7643, chance = 10080 }, -- ultimate health potion
 	{ id = 238, chance = 8860 }, -- great mana potion
-	{ name = "war crystal", chance = 8200 }, 
+	{ name = "war crystal", chance = 8200 },
 	{ id = 5880, chance = 1920 }, -- iron ore
 	{ id = 7439, chance = 900 }, -- berserk potion
 	{ id = 3326, chance = 6400 }, -- epee

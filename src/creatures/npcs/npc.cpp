@@ -254,866 +254,866 @@ namespace {
 		);
 	}
 
-bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
-	if (!totalCost) {
-		return true;
-	}
-
-	if (currency == ITEM_GOLD_COIN) {
-		if (context.totalPrice) {
-			*context.totalPrice += totalCost;
+	bool applySaleProceedsForItem(const std::shared_ptr<Player> &player, uint16_t currency, uint64_t totalCost, const std::string &npcName, const Npc::SellItemContext &context) {
+		if (!totalCost) {
+			return true;
 		}
-		applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
-		return true;
+
+		if (currency == ITEM_GOLD_COIN) {
+			if (context.totalPrice) {
+				*context.totalPrice += totalCost;
+			}
+			applyGoldSaleProceeds(player, totalCost, !context.lootPouch);
+			return true;
+		}
+
+		return applyCustomSaleProceeds(
+			player,
+			currency,
+			totalCost,
+			npcName,
+			CustomSaleContext {
+				"[Npc::onPlayerSellItem]",
+				"[Npc::onPlayerSellItem]",
+				"[Npc::onPlayerSellItem]",
+				"An error occurred while completing the sale. Your items were not exchanged." }
+		);
 	}
 
-	return applyCustomSaleProceeds(
-		player,
-		currency,
-		totalCost,
-		npcName,
-		CustomSaleContext {
-			"[Npc::onPlayerSellItem]",
-			"[Npc::onPlayerSellItem]",
-			"[Npc::onPlayerSellItem]",
-			"An error occurred while completing the sale. Your items were not exchanged." }
-	);
+	void sendSaleLetterIfNeeded(const std::shared_ptr<Player> &player, BatchUpdate &batching, const std::string &log, uint64_t totalPrice, const std::string &npcName) {
+		if (totalPrice == 0 || log.empty()) {
+			return;
+		}
+
+		const auto &storeInbox = player->getStoreInbox();
+		if (!storeInbox) {
+			g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), npcName);
+			return;
+		}
+
+		const auto addResult = batching.add(storeInbox);
+		(void)addResult;
+
+		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
+		if (!letter) {
+			return;
+		}
+
+		letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", npcName));
+		letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
+		letter->setAttribute(ItemAttribute_t::TEXT, log);
+		const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		if (returnValue != RETURNVALUE_NOERROR) {
+			g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), npcName, getReturnMessage(returnValue));
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
+		}
+	}
 }
 
-		void sendSaleLetterIfNeeded(const std::shared_ptr<Player> &player, BatchUpdate &batching, const std::string &log, uint64_t totalPrice, const std::string &npcName) {
-			if (totalPrice == 0 || log.empty()) {
-				return;
-			}
+std::shared_ptr<Npc> Npc::createNpc(const std::string &name) {
+	const auto &npcType = g_npcs().getNpcType(name);
+	if (!npcType) {
+		return nullptr;
+	}
+	return std::make_shared<Npc>(npcType);
+}
 
-			const auto &storeInbox = player->getStoreInbox();
-			if (!storeInbox) {
-				g_logger().error("[Npc::onPlayerSellAllLoot] - Store inbox is nullptr for player {} when sending sale letter (npc: {})", player->getName(), npcName);
-				return;
-			}
+Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
+	Creature(),
+	strDescription(npcType->nameDescription),
+	npcType(npcType) {
+	defaultOutfit = npcType->info.outfit;
+	currentOutfit = npcType->info.outfit;
+	const float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
+	health = npcType->info.health * multiplier;
+	healthMax = npcType->info.healthMax * multiplier;
+	baseSpeed = npcType->info.baseSpeed;
+	internalLight = npcType->info.light;
+	floorChange = npcType->info.floorChange;
 
-			const auto addResult = batching.add(storeInbox);
-			(void)addResult;
+	// register creature events
+	for (const std::string &scriptName : npcType->info.scripts) {
+		if (!registerCreatureEvent(scriptName)) {
+			g_logger().warn("Unknown event name: {}", scriptName);
+		}
+	}
+}
 
-			auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
-			if (!letter) {
-				return;
-			}
+Npc &Npc::getInstance() {
+	return inject<Npc>();
+}
 
-			letter->setAttribute(ItemAttribute_t::WRITER, fmt::format("Npc Seller: {}", npcName));
-			letter->setAttribute(ItemAttribute_t::DATE, getTimeNow());
-			letter->setAttribute(ItemAttribute_t::TEXT, log);
-			const auto returnValue = g_game().internalAddItem(storeInbox, letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
-			if (returnValue != RETURNVALUE_NOERROR) {
-				g_logger().error("[Npc::onPlayerSellAllLoot] - Failed to add sale letter for player {} to store inbox (npc: {}), error: {}", player->getName(), npcName, getReturnMessage(returnValue));
-				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, getReturnMessage(returnValue));
-			}
+std::shared_ptr<Npc> Npc::getNpc() {
+	return static_self_cast<Npc>();
+}
+
+std::shared_ptr<const Npc> Npc::getNpc() const {
+	return static_self_cast<Npc>();
+}
+
+void Npc::setID() {
+	if (id == 0) {
+		id = npcAutoID++;
+	}
+}
+
+void Npc::addList() {
+	g_game().addNpc(static_self_cast<Npc>());
+}
+
+const std::string &Npc::getName() const {
+	return npcType->name;
+}
+
+// Real npc name, set on npc creation "createNpcType(typeName)"
+const std::string &Npc::getTypeName() const {
+	return npcType->typeName;
+}
+
+const std::string &Npc::getNameDescription() const {
+	return npcType->nameDescription;
+}
+
+std::string Npc::getDescription(int32_t) {
+	return strDescription + '.';
+}
+
+void Npc::setName(std::string newName) const {
+	npcType->name = std::move(newName);
+}
+
+[[nodiscard]] const std::string &Npc::getLowerName() const {
+	return npcType->m_lowerName;
+}
+
+CreatureType_t Npc::getType() const {
+	return CREATURETYPE_NPC;
+}
+
+[[nodiscard]] const Position &Npc::getMasterPos() const {
+	return masterPos;
+}
+
+void Npc::setMasterPos(Position pos) {
+	masterPos = pos;
+}
+
+uint8_t Npc::getSpeechBubble() const {
+	return npcType->info.speechBubble;
+}
+
+void Npc::setSpeechBubble(const uint8_t bubble) const {
+	npcType->info.speechBubble = bubble;
+}
+
+uint16_t Npc::getCurrency() const {
+	return npcType->info.currencyId;
+}
+
+void Npc::setCurrency(uint16_t currency) {
+	npcType->info.currencyId = currency;
+}
+
+const std::vector<ShopBlock> &Npc::getShopItemVector(uint32_t playerGUID) const {
+	if (playerGUID != 0) {
+		auto it = shopPlayers.find(playerGUID);
+		if (it != shopPlayers.end() && !it->second.empty()) {
+			return it->second;
 		}
 	}
 
-	std::shared_ptr<Npc> Npc::createNpc(const std::string &name) {
-		const auto &npcType = g_npcs().getNpcType(name);
-		if (!npcType) {
-			return nullptr;
-		}
-		return std::make_shared<Npc>(npcType);
+	return npcType->info.shopItemVector;
+}
+
+bool Npc::isPushable() {
+	return npcType->info.pushable;
+}
+
+bool Npc::isAttackable() const {
+	return false;
+}
+
+void Npc::removeList() {
+	g_game().removeNpc(static_self_cast<Npc>());
+}
+
+bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
+	if (pos.z != getPosition().z) {
+		return false;
 	}
+	return Creature::canSee(getPosition(), pos, range, range);
+}
 
-	Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
-		Creature(),
-		strDescription(npcType->nameDescription),
-		npcType(npcType) {
-		defaultOutfit = npcType->info.outfit;
-		currentOutfit = npcType->info.outfit;
-		const float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
-		health = npcType->info.health * multiplier;
-		healthMax = npcType->info.healthMax * multiplier;
-		baseSpeed = npcType->info.baseSpeed;
-		internalLight = npcType->info.light;
-		floorChange = npcType->info.floorChange;
+bool Npc::canSeeInvisibility() const {
+	return true;
+}
 
-		// register creature events
-		for (const std::string &scriptName : npcType->info.scripts) {
-			if (!registerCreatureEvent(scriptName)) {
-				g_logger().warn("Unknown event name: {}", scriptName);
-			}
-		}
-	}
+RespawnType Npc::getRespawnType() const {
+	return npcType->info.respawnType;
+}
 
-	Npc &Npc::getInstance() {
-		return inject<Npc>();
-	}
+void Npc::setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
+	spawnNpc = newSpawn;
+}
 
-	std::shared_ptr<Npc> Npc::getNpc() {
-		return static_self_cast<Npc>();
-	}
-
-	std::shared_ptr<const Npc> Npc::getNpc() const {
-		return static_self_cast<Npc>();
-	}
-
-	void Npc::setID() {
-		if (id == 0) {
-			id = npcAutoID++;
-		}
-	}
-
-	void Npc::addList() {
-		g_game().addNpc(static_self_cast<Npc>());
-	}
-
-	const std::string &Npc::getName() const {
-		return npcType->name;
-	}
-
-	// Real npc name, set on npc creation "createNpcType(typeName)"
-	const std::string &Npc::getTypeName() const {
-		return npcType->typeName;
-	}
-
-	const std::string &Npc::getNameDescription() const {
-		return npcType->nameDescription;
-	}
-
-	std::string Npc::getDescription(int32_t) {
-		return strDescription + '.';
-	}
-
-	void Npc::setName(std::string newName) const {
-		npcType->name = std::move(newName);
-	}
-
-	[[nodiscard]] const std::string &Npc::getLowerName() const {
-		return npcType->m_lowerName;
-	}
-
-	CreatureType_t Npc::getType() const {
-		return CREATURETYPE_NPC;
-	}
-
-	[[nodiscard]] const Position &Npc::getMasterPos() const {
-		return masterPos;
-	}
-
-	void Npc::setMasterPos(Position pos) {
-		masterPos = pos;
-	}
-
-	uint8_t Npc::getSpeechBubble() const {
-		return npcType->info.speechBubble;
-	}
-
-	void Npc::setSpeechBubble(const uint8_t bubble) const {
-		npcType->info.speechBubble = bubble;
-	}
-
-	uint16_t Npc::getCurrency() const {
-		return npcType->info.currencyId;
-	}
-
-	void Npc::setCurrency(uint16_t currency) {
-		npcType->info.currencyId = currency;
-	}
-
-	const std::vector<ShopBlock> &Npc::getShopItemVector(uint32_t playerGUID) const {
-		if (playerGUID != 0) {
-			auto it = shopPlayers.find(playerGUID);
-			if (it != shopPlayers.end() && !it->second.empty()) {
-				return it->second;
-			}
-		}
-
-		return npcType->info.shopItemVector;
-	}
-
-	bool Npc::isPushable() {
-		return npcType->info.pushable;
-	}
-
-	bool Npc::isAttackable() const {
+bool Npc::isInteractingWithPlayer(uint32_t playerId) {
+	if (playerInteractions.empty()) {
 		return false;
 	}
 
-	void Npc::removeList() {
-		g_game().removeNpc(static_self_cast<Npc>());
+	if (!playerInteractions.contains(playerId)) {
+		return false;
+	}
+	return true;
+}
+
+bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
+	if (playerInteractions.empty()) {
+		return false;
 	}
 
-	bool Npc::canInteract(const Position &pos, uint32_t range /* = 4 */) {
-		if (pos.z != getPosition().z) {
-			return false;
-		}
-		return Creature::canSee(getPosition(), pos, range, range);
+	auto it = playerInteractions.find(playerId);
+	if (it == playerInteractions.end()) {
+		return false;
+	}
+	return it->second == topicId;
+}
+
+void Npc::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
+	Creature::onCreatureAppear(creature, isLogin);
+
+	if (const auto &player = creature->getPlayer()) {
+		onPlayerAppear(player);
 	}
 
-	bool Npc::canSeeInvisibility() const {
-		return true;
+	// onCreatureAppear(self, creature)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.creatureAppearEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(creature);
 	}
 
-	RespawnType Npc::getRespawnType() const {
-		return npcType->info.respawnType;
+	if (callback.persistLuaState()) {
+		return;
+	}
+}
+
+void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) {
+	Creature::onRemoveCreature(creature, isLogout);
+
+	// onCreatureDisappear(self, creature)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.creatureDisappearEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(creature);
 	}
 
-	void Npc::setSpawnNpc(const std::shared_ptr<SpawnNpc> &newSpawn) {
-		spawnNpc = newSpawn;
+	if (callback.persistLuaState()) {
+		return;
 	}
 
-	bool Npc::isInteractingWithPlayer(uint32_t playerId) {
-		if (playerInteractions.empty()) {
-			return false;
-		}
-
-		if (!playerInteractions.contains(playerId)) {
-			return false;
-		}
-		return true;
+	if (const auto &player = creature->getPlayer()) {
+		removeShopPlayer(player->getGUID());
+		onPlayerDisappear(player);
 	}
 
-	bool Npc::isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
-		if (playerInteractions.empty()) {
-			return false;
-		}
+	if (spawnNpc) {
+		spawnNpc->startSpawnNpcCheck();
+	}
+}
 
-		auto it = playerInteractions.find(playerId);
-		if (it == playerInteractions.end()) {
-			return false;
-		}
-		return it->second == topicId;
+void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
+	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
+
+	// onCreatureMove(self, creature, oldPosition, newPosition)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.creatureMoveEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(creature);
+		callback.pushPosition(oldPos);
+		callback.pushPosition(newPos);
 	}
 
-	void Npc::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
-		Creature::onCreatureAppear(creature, isLogin);
-
-		if (const auto &player = creature->getPlayer()) {
-			onPlayerAppear(player);
-		}
-
-		// onCreatureAppear(self, creature)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.creatureAppearEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(creature);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
-		}
+	if (callback.persistLuaState()) {
+		return;
 	}
 
-	void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) {
-		Creature::onRemoveCreature(creature, isLogout);
-
-		// onCreatureDisappear(self, creature)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.creatureDisappearEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(creature);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
-		}
-
-		if (const auto &player = creature->getPlayer()) {
-			removeShopPlayer(player->getGUID());
-			onPlayerDisappear(player);
-		}
-
-		if (spawnNpc) {
-			spawnNpc->startSpawnNpcCheck();
-		}
+	if (creature == getNpc() && !canInteract(oldPos)) {
+		resetPlayerInteractions();
+		closeAllShopWindows();
 	}
 
-	void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
-		Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
-
-		// onCreatureMove(self, creature, oldPosition, newPosition)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.creatureMoveEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(creature);
-			callback.pushPosition(oldPos);
-			callback.pushPosition(newPos);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
-		}
-
-		if (creature == getNpc() && !canInteract(oldPos)) {
-			resetPlayerInteractions();
-			closeAllShopWindows();
-		}
-
-		if (const auto &player = creature->getPlayer()) {
-			handlePlayerMove(player, newPos);
-		}
+	if (const auto &player = creature->getPlayer()) {
+		handlePlayerMove(player, newPos);
 	}
+}
 
-	void Npc::manageIdle() {
-		if (creatureCheck && playerSpectators.empty()) {
-			Game::removeCreatureCheck(static_self_cast<Npc>());
-		} else if (!creatureCheck) {
-			g_game().addCreatureCheck(static_self_cast<Npc>());
-		}
+void Npc::manageIdle() {
+	if (creatureCheck && playerSpectators.empty()) {
+		Game::removeCreatureCheck(static_self_cast<Npc>());
+	} else if (!creatureCheck) {
+		g_game().addCreatureCheck(static_self_cast<Npc>());
 	}
+}
 
-	void Npc::onPlayerAppear(const std::shared_ptr<Player> &player) {
-		if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
-			return;
-		}
-		playerSpectators.emplace(player);
+void Npc::onPlayerAppear(const std::shared_ptr<Player> &player) {
+	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
+		return;
+	}
+	playerSpectators.emplace(player);
+	manageIdle();
+}
+
+void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
+	removePlayerInteraction(player);
+	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
+		playerSpectators.erase(player);
 		manageIdle();
 	}
+}
 
-	void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
-		removePlayerInteraction(player);
-		if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
-			playerSpectators.erase(player);
-			manageIdle();
+void Npc::onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) {
+	Creature::onCreatureSay(creature, type, text);
+
+	if (!creature->getPlayer()) {
+		return;
+	}
+
+	// onCreatureSay(self, creature, type, message)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.creatureSayEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(creature);
+		callback.pushNumber(type);
+		callback.pushString(text);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+}
+
+void Npc::onThinkSound(uint32_t interval) {
+	if (npcType->info.soundSpeedTicks == 0) {
+		return;
+	}
+
+	soundTicks += interval;
+	if (soundTicks >= npcType->info.soundSpeedTicks) {
+		soundTicks = 0;
+
+		if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+			const auto index = uniform_random(0, npcType->info.soundVector.size() - 1);
+			g_game().sendSingleSoundEffect(static_self_cast<Npc>()->getPosition(), npcType->info.soundVector[index], getNpc());
+		}
+	}
+}
+
+void Npc::onThink(uint32_t interval) {
+	Creature::onThink(interval);
+
+	// onThink(self, interval)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.thinkEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushNumber(interval);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+
+	if (!npcType->canSpawn(position)) {
+		g_game().removeCreature(static_self_cast<Npc>());
+	}
+
+	if (!isInSpawnRange(position)) {
+		g_game().internalTeleport(static_self_cast<Npc>(), masterPos);
+		resetPlayerInteractions();
+		closeAllShopWindows();
+	}
+
+	if (!playerSpectators.empty()) {
+		onThinkYell(interval);
+		onThinkWalk(interval);
+		onThinkSound(interval);
+	}
+}
+
+void Npc::onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
+	if (player == nullptr) {
+		g_logger().error("[Npc::onPlayerBuyItem] - Player is nullptr");
+		return;
+	}
+
+	// Check if the player not have empty slots or the item is not a container
+	if (isBackpackSlotUnavailable(player, itemId, ignore)) {
+		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
+	const auto &itemType = Item::items[itemId];
+	if (exceedsTileLimit(player, itemType, amount, inBackpacks, ignore)) {
+		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+		return;
+	}
+
+	uint32_t buyPrice = 0;
+	const auto &shopVector = getShopItemVector(player->getGUID());
+	for (const ShopBlock &shopBlock : shopVector) {
+		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
+			buyPrice = shopBlock.itemBuyPrice;
 		}
 	}
 
-	void Npc::onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) {
-		Creature::onCreatureSay(creature, type, text);
-
-		if (!creature->getPlayer()) {
-			return;
-		}
-
-		// onCreatureSay(self, creature, type, message)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.creatureSayEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(creature);
-			callback.pushNumber(type);
-			callback.pushString(text);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
-		}
+	const uint32_t totalCost = buyPrice * amount;
+	const uint32_t bagsCost = calculateBagsCost(itemType, amount, inBackpacks);
+	if (hasInsufficientFunds(player, itemId, getName(), getCurrency(), totalCost, bagsCost)) {
+		return;
 	}
 
-	void Npc::onThinkSound(uint32_t interval) {
-		if (npcType->info.soundSpeedTicks == 0) {
-			return;
-		}
-
-		soundTicks += interval;
-		if (soundTicks >= npcType->info.soundSpeedTicks) {
-			soundTicks = 0;
-
-			if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-				const auto index = uniform_random(0, npcType->info.soundVector.size() - 1);
-				g_game().sendSingleSoundEffect(static_self_cast<Npc>()->getPosition(), npcType->info.soundVector[index], getNpc());
-			}
-		}
+	// npc:onBuyItem(player, itemId, subType, amount, ignore, inBackpacks, totalCost)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.playerBuyEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(player);
+		callback.pushNumber(itemId);
+		callback.pushNumber(subType);
+		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
+		callback.pushBoolean(inBackpacks);
+		callback.pushNumber(totalCost);
 	}
 
-	void Npc::onThink(uint32_t interval) {
-		Creature::onThink(interval);
+	if (callback.persistLuaState()) {
+		return;
+	}
+}
 
-		// onThink(self, interval)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.thinkEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushNumber(interval);
-		}
+void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore) {
+	uint64_t totalPrice = 0;
+	onPlayerSellItem(player, itemId, subType, amount, ignore, SellItemContext(totalPrice));
+}
 
-		if (callback.persistLuaState()) {
-			return;
-		}
-
-		if (!npcType->canSpawn(position)) {
-			g_game().removeCreature(static_self_cast<Npc>());
-		}
-
-		if (!isInSpawnRange(position)) {
-			g_game().internalTeleport(static_self_cast<Npc>(), masterPos);
-			resetPlayerInteractions();
-			closeAllShopWindows();
-		}
-
-		if (!playerSpectators.empty()) {
-			onThinkYell(interval);
-			onThinkWalk(interval);
-			onThinkSound(interval);
-		}
+void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore, uint64_t &totalPrice) {
+	if (!player) {
+		return;
 	}
 
-	void Npc::onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks) {
-		if (player == nullptr) {
-			g_logger().error("[Npc::onPlayerBuyItem] - Player is nullptr");
-			return;
-		}
-
-		// Check if the player not have empty slots or the item is not a container
-		if (isBackpackSlotUnavailable(player, itemId, ignore)) {
-			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
-			return;
-		}
-
-		const auto &itemType = Item::items[itemId];
-		if (exceedsTileLimit(player, itemType, amount, inBackpacks, ignore)) {
-			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
-			return;
-		}
-
-		uint32_t buyPrice = 0;
-		const auto &shopVector = getShopItemVector(player->getGUID());
-		for (const ShopBlock &shopBlock : shopVector) {
-			if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
-				buyPrice = shopBlock.itemBuyPrice;
-			}
-		}
-
-		const uint32_t totalCost = buyPrice * amount;
-		const uint32_t bagsCost = calculateBagsCost(itemType, amount, inBackpacks);
-		if (hasInsufficientFunds(player, itemId, getName(), getCurrency(), totalCost, bagsCost)) {
-			return;
-		}
-
-		// npc:onBuyItem(player, itemId, subType, amount, ignore, inBackpacks, totalCost)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.playerBuyEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(player);
-			callback.pushNumber(itemId);
-			callback.pushNumber(subType);
-			callback.pushNumber(amount);
-			callback.pushBoolean(ignore);
-			callback.pushBoolean(inBackpacks);
-			callback.pushNumber(totalCost);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
-		}
+	const auto &lootPouch = player->getLootPouch();
+	if (!lootPouch) {
+		return;
 	}
 
-	void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore) {
-		uint64_t totalPrice = 0;
-		onPlayerSellItem(player, itemId, subType, amount, ignore, SellItemContext(totalPrice));
+	struct LootSaleData {
+		uint32_t price = 0;
+		uint32_t amount = 0;
+	};
+
+	const auto &shopVector = getShopItemVector(player->getGUID());
+	phmap::flat_hash_map<uint16_t, LootSaleData> saleData;
+	saleData.reserve(shopVector.size());
+	for (const ShopBlock &shopBlock : shopVector) {
+		if (shopBlock.itemSellPrice == 0) {
+			continue;
+		}
+
+		auto &data = saleData[shopBlock.itemId];
+		data.price = shopBlock.itemSellPrice;
 	}
 
-	void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore, uint64_t &totalPrice) {
-		if (!player) {
+	BatchUpdate batching(player);
+	if (!saleData.empty()) {
+		const auto addResult = batching.add(lootPouch);
+		(void)addResult;
+	}
+
+	for (size_t index = lootPouch->size(); index > 0;) {
+		--index;
+
+		const auto &list = lootPouch->getItemList();
+		if (index >= list.size()) {
+			continue;
+		}
+
+		const auto &item = list[index];
+		if (!item) {
+			continue;
+		}
+
+		const auto it = saleData.find(item->getID());
+		if (it == saleData.end()) {
+			continue;
+		}
+
+		if (item->getTier() > 0 || item->hasImbuements()) {
+			continue;
+		}
+
+		const auto removeCount = static_cast<uint32_t>(item->getItemAmount());
+		if (removeCount == 0) {
+			continue;
+		}
+
+		it->second.amount += removeCount;
+	}
+
+	std::string log;
+	log.reserve(saleData.size() * 64); // Median of 64 bytes per line
+	uint32_t totalItemsSold = 0;
+	for (const auto &[itemId, data] : saleData) {
+		if (data.amount == 0) {
+			continue;
+		}
+
+		const auto totalCost = static_cast<uint64_t>(data.price) * data.amount;
+		if (!totalCost) {
+			continue;
+		}
+
+		totalPrice += totalCost;
+
+		const auto &itemName = Item::items.getItemType(itemId).name;
+		log += fmt::format("Sold {}x {} for {} gold.\n", data.amount, itemName, totalCost);
+		totalItemsSold += data.amount;
+	}
+
+	if (totalPrice > 0) {
+		if (!applySaleProceedsForLoot(player, getCurrency(), totalPrice, getName())) {
 			return;
 		}
 
-		const auto &lootPouch = player->getLootPouch();
-		if (!lootPouch) {
-			return;
-		}
-
-		struct LootSaleData {
-			uint32_t price = 0;
-			uint32_t amount = 0;
-		};
-
-		const auto &shopVector = getShopItemVector(player->getGUID());
-		phmap::flat_hash_map<uint16_t, LootSaleData> saleData;
-		saleData.reserve(shopVector.size());
-		for (const ShopBlock &shopBlock : shopVector) {
-			if (shopBlock.itemSellPrice == 0) {
-				continue;
-			}
-
-			auto &data = saleData[shopBlock.itemId];
-			data.price = shopBlock.itemSellPrice;
-		}
-
-		BatchUpdate batching(player);
-		if (!saleData.empty()) {
-			const auto addResult = batching.add(lootPouch);
-			(void)addResult;
-		}
-
-		for (size_t index = lootPouch->size(); index > 0;) {
-			--index;
-
-			const auto &list = lootPouch->getItemList();
-			if (index >= list.size()) {
-				continue;
-			}
-
-			const auto &item = list[index];
-			if (!item) {
-				continue;
-			}
-
-			const auto it = saleData.find(item->getID());
-			if (it == saleData.end()) {
-				continue;
-			}
-
-			if (item->getTier() > 0 || item->hasImbuements()) {
-				continue;
-			}
-
-			const auto removeCount = static_cast<uint32_t>(item->getItemAmount());
-			if (removeCount == 0) {
-				continue;
-			}
-
-			it->second.amount += removeCount;
-		}
-
-		std::string log;
-		log.reserve(saleData.size() * 64); // Median of 64 bytes per line
-		uint32_t totalItemsSold = 0;
 		for (const auto &[itemId, data] : saleData) {
 			if (data.amount == 0) {
 				continue;
 			}
 
-			const auto totalCost = static_cast<uint64_t>(data.price) * data.amount;
-			if (!totalCost) {
-				continue;
-			}
-
-			totalPrice += totalCost;
-
-			const auto &itemName = Item::items.getItemType(itemId).name;
-			log += fmt::format("Sold {}x {} for {} gold.\n", data.amount, itemName, totalCost);
-			totalItemsSold += data.amount;
-		}
-
-		if (totalPrice > 0) {
-			if (!applySaleProceedsForLoot(player, getCurrency(), totalPrice, getName())) {
-				return;
-			}
-
-			for (const auto &[itemId, data] : saleData) {
-				if (data.amount == 0) {
-					continue;
-				}
-
-				removeItemsFromLootPouch(lootPouch, itemId, data.amount, &batching);
-			}
-		}
-
-		std::string finalMessage;
-		if (totalPrice == 0) {
-			const auto &appendResult = finalMessage.append("You have no items in your loot pouch.");
-			(void)appendResult;
-		} else {
-			finalMessage = fmt::format("You sold {} item{} from your loot pouch for {} gold. A letter with the full list has been sent to your store inbox.", totalItemsSold, (totalItemsSold == 1 ? "" : "s"), totalPrice);
-		}
-
-		player->sendTextMessage(MESSAGE_TRANSACTION, finalMessage);
-		g_logger().debug("Npc::onPlayerSellItem Finished npc sell items");
-
-		sendSaleLetterIfNeeded(player, batching, log, totalPrice, getName());
-	}
-
-	void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore, const SellItemContext &context) {
-		if (!player) {
-			return;
-		}
-
-		if (itemId == ITEM_GOLD_POUCH && context.lootPouch == nullptr) {
-			uint64_t totalPrice = 0;
-			auto &totalPriceRef = context.totalPrice ? *context.totalPrice : totalPrice;
-			onPlayerSellAllLoot(player, ignore, totalPriceRef);
-			return;
-		}
-
-		const auto &itemType = Item::items[itemId];
-		const auto &shopVector = getShopItemVector(player->getGUID());
-		const auto sellPrice = getSellPriceForItem(shopVector, itemType.id);
-		if (sellPrice == 0) {
-			return;
-		}
-
-		const auto removed = context.lootPouch
-			? removeItemsFromLootPouch(context.lootPouch, itemId, amount, context.batchUpdate)
-			: removeItemsFromInventory(player, itemId, ignore, amount, context.batchUpdate, getName());
-
-		if (removed == 0) {
-			if (!context.lootPouch) {
-				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no items to sell.");
-			}
-			return;
-		}
-
-		auto totalCost = static_cast<uint64_t>(sellPrice) * removed;
-
-		if (!applySaleProceedsForItem(player, getCurrency(), totalCost, getName(), context)) {
-			return;
-		}
-
-		if (context.lootPouch) {
-			return;
-		}
-
-		// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(player);
-			callback.pushNumber(itemType.id);
-			callback.pushNumber(subType);
-			callback.pushNumber(removed);
-			callback.pushBoolean(ignore);
-			callback.pushString(itemType.name);
-			callback.pushNumber(totalCost);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
+			removeItemsFromLootPouch(lootPouch, itemId, data.amount, &batching);
 		}
 	}
 
-	void Npc::onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType) {
-		if (!player) {
-			return;
-		}
-
-		// onPlayerCheckItem(self, player, itemId, subType)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.playerLookEvent)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(player);
-			callback.pushNumber(itemId);
-			callback.pushNumber(subType);
-		}
-
-		if (callback.persistLuaState()) {
-			return;
-		}
+	std::string finalMessage;
+	if (totalPrice == 0) {
+		const auto &appendResult = finalMessage.append("You have no items in your loot pouch.");
+		(void)appendResult;
+	} else {
+		finalMessage = fmt::format("You sold {} item{} from your loot pouch for {} gold. A letter with the full list has been sent to your store inbox.", totalItemsSold, (totalItemsSold == 1 ? "" : "s"), totalPrice);
 	}
 
-	void Npc::onPlayerCloseChannel(const std::shared_ptr<Creature> &creature) {
-		const auto &player = creature->getPlayer();
-		if (!player) {
-			return;
-		}
+	player->sendTextMessage(MESSAGE_TRANSACTION, finalMessage);
+	g_logger().debug("Npc::onPlayerSellItem Finished npc sell items");
 
-		// onPlayerCloseChannel(npc, player)
-		auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
-		if (callback.startScriptInterface(npcType->info.playerCloseChannel)) {
-			callback.pushSpecificCreature(static_self_cast<Npc>());
-			callback.pushCreature(player);
-		}
+	sendSaleLetterIfNeeded(player, batching, log, totalPrice, getName());
+}
 
-		if (callback.persistLuaState()) {
-			return;
-		}
-
-		removePlayerInteraction(player);
+void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore, const SellItemContext &context) {
+	if (!player) {
+		return;
 	}
 
-	void Npc::onThinkYell(uint32_t interval) {
-		if (npcType->info.yellSpeedTicks == 0) {
-			return;
+	if (itemId == ITEM_GOLD_POUCH && context.lootPouch == nullptr) {
+		uint64_t totalPrice = 0;
+		auto &totalPriceRef = context.totalPrice ? *context.totalPrice : totalPrice;
+		onPlayerSellAllLoot(player, ignore, totalPriceRef);
+		return;
+	}
+
+	const auto &itemType = Item::items[itemId];
+	const auto &shopVector = getShopItemVector(player->getGUID());
+	const auto sellPrice = getSellPriceForItem(shopVector, itemType.id);
+	if (sellPrice == 0) {
+		return;
+	}
+
+	const auto removed = context.lootPouch
+		? removeItemsFromLootPouch(context.lootPouch, itemId, amount, context.batchUpdate)
+		: removeItemsFromInventory(player, itemId, ignore, amount, context.batchUpdate, getName());
+
+	if (removed == 0) {
+		if (!context.lootPouch) {
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no items to sell.");
 		}
+		return;
+	}
 
-		yellTicks += interval;
-		if (yellTicks >= npcType->info.yellSpeedTicks) {
-			yellTicks = 0;
+	auto totalCost = static_cast<uint64_t>(sellPrice) * removed;
 
-			if (!npcType->info.voiceVector.empty() && (npcType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-				const uint32_t index = uniform_random(0, npcType->info.voiceVector.size() - 1);
-				const auto &[text, yellText] = npcType->info.voiceVector[index];
+	if (!applySaleProceedsForItem(player, getCurrency(), totalCost, getName(), context)) {
+		return;
+	}
 
-				if (yellText) {
-					g_game().internalCreatureSay(static_self_cast<Npc>(), TALKTYPE_YELL, text, false);
-				} else {
-					g_game().internalCreatureSay(static_self_cast<Npc>(), TALKTYPE_SAY, text, false);
-				}
+	if (context.lootPouch) {
+		return;
+	}
+
+	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(player);
+		callback.pushNumber(itemType.id);
+		callback.pushNumber(subType);
+		callback.pushNumber(removed);
+		callback.pushBoolean(ignore);
+		callback.pushString(itemType.name);
+		callback.pushNumber(totalCost);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+}
+
+void Npc::onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType) {
+	if (!player) {
+		return;
+	}
+
+	// onPlayerCheckItem(self, player, itemId, subType)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.playerLookEvent)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(player);
+		callback.pushNumber(itemId);
+		callback.pushNumber(subType);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+}
+
+void Npc::onPlayerCloseChannel(const std::shared_ptr<Creature> &creature) {
+	const auto &player = creature->getPlayer();
+	if (!player) {
+		return;
+	}
+
+	// onPlayerCloseChannel(npc, player)
+	auto callback = CreatureCallback(npcType->info.scriptInterface, getNpc());
+	if (callback.startScriptInterface(npcType->info.playerCloseChannel)) {
+		callback.pushSpecificCreature(static_self_cast<Npc>());
+		callback.pushCreature(player);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+
+	removePlayerInteraction(player);
+}
+
+void Npc::onThinkYell(uint32_t interval) {
+	if (npcType->info.yellSpeedTicks == 0) {
+		return;
+	}
+
+	yellTicks += interval;
+	if (yellTicks >= npcType->info.yellSpeedTicks) {
+		yellTicks = 0;
+
+		if (!npcType->info.voiceVector.empty() && (npcType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+			const uint32_t index = uniform_random(0, npcType->info.voiceVector.size() - 1);
+			const auto &[text, yellText] = npcType->info.voiceVector[index];
+
+			if (yellText) {
+				g_game().internalCreatureSay(static_self_cast<Npc>(), TALKTYPE_YELL, text, false);
+			} else {
+				g_game().internalCreatureSay(static_self_cast<Npc>(), TALKTYPE_SAY, text, false);
 			}
 		}
 	}
+}
 
-	void Npc::onThinkWalk(uint32_t interval) {
-		if (npcType->info.walkInterval == 0 || baseSpeed == 0) {
-			return;
-		}
+void Npc::onThinkWalk(uint32_t interval) {
+	if (npcType->info.walkInterval == 0 || baseSpeed == 0) {
+		return;
+	}
 
-		// If talking, no walking
-		if (!playerInteractions.empty()) {
-			walkTicks = 0;
-			eventWalk = 0;
-			return;
-		}
-
-		walkTicks += interval;
-		if (walkTicks < npcType->info.walkInterval) {
-			return;
-		}
-
-		if (Direction newDirection;
-		    getRandomStep(newDirection)) {
-			listWalkDir.push_back(newDirection);
-			addEventWalk();
-		}
-
+	// If talking, no walking
+	if (!playerInteractions.empty()) {
 		walkTicks = 0;
+		eventWalk = 0;
+		return;
 	}
 
-	void Npc::onCreatureWalk() {
-		Creature::onCreatureWalk();
-		phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	walkTicks += interval;
+	if (walkTicks < npcType->info.walkInterval) {
+		return;
 	}
 
-	void Npc::onPlacedCreature() {
-		loadPlayerSpectators();
+	if (Direction newDirection;
+	    getRandomStep(newDirection)) {
+		listWalkDir.push_back(newDirection);
+		addEventWalk();
 	}
 
-	void Npc::loadPlayerSpectators() {
-		const auto &spec = Spectators().find<Player>(position, true);
-		for (const auto &creature : spec) {
-			if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-				playerSpectators.emplace(creature->getPlayer());
-			}
+	walkTicks = 0;
+}
+
+void Npc::onCreatureWalk() {
+	Creature::onCreatureWalk();
+	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+}
+
+void Npc::onPlacedCreature() {
+	loadPlayerSpectators();
+}
+
+void Npc::loadPlayerSpectators() {
+	const auto &spec = Spectators().find<Player>(position, true);
+	for (const auto &creature : spec) {
+		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+			playerSpectators.emplace(creature->getPlayer());
 		}
 	}
+}
 
-	bool Npc::isInSpawnRange(const Position &pos) const {
-		if (!spawnNpc) {
-			return true;
-		}
-
-		if (Npc::despawnRadius == 0) {
-			return true;
-		}
-
-		if (!SpawnsNpc::isInZone(masterPos, Npc::despawnRadius, pos)) {
-			return false;
-		}
-
-		if (Npc::despawnRange == 0) {
-			return true;
-		}
-
-		if (Position::getDistanceZ(pos, masterPos) > Npc::despawnRange) {
-			return false;
-		}
-
+bool Npc::isInSpawnRange(const Position &pos) const {
+	if (!spawnNpc) {
 		return true;
 	}
 
-	void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
-		const auto &creature = g_game().getCreatureByID(playerId);
-		if (!creature) {
-			return;
-		}
-
-		if (playerInteractionsOrder.empty() || std::ranges::find(playerInteractionsOrder, playerId) == playerInteractionsOrder.end()) {
-			playerInteractionsOrder.push_back(playerId);
-			turnToCreature(creature);
-		}
-
-		playerInteractions[playerId] = topicId;
-	}
-
-	void Npc::removePlayerInteraction(const std::shared_ptr<Player> &player) {
-		auto view = std::ranges::remove(playerInteractionsOrder, player->getID());
-		playerInteractionsOrder.erase(view.begin(), view.end());
-		if (playerInteractions.contains(player->getID())) {
-			playerInteractions.erase(player->getID());
-			player->closeShopWindow();
-		}
-
-		if (!playerInteractionsOrder.empty()) {
-			if (const auto &creature = g_game().getCreatureByID(playerInteractionsOrder.back())) {
-				turnToCreature(creature);
-			}
-		}
-	}
-
-	void Npc::resetPlayerInteractions() {
-		playerInteractions.clear();
-	}
-
-	bool Npc::canWalkTo(const Position &fromPos, Direction dir) {
-		if (npcType->info.walkRadius == 0) {
-			return false;
-		}
-
-		const Position toPos = getNextPosition(dir, fromPos);
-		if (!SpawnsNpc::isInZone(masterPos, npcType->info.walkRadius, toPos)) {
-			return false;
-		}
-
-		const auto &toTile = g_game().map.getTile(toPos);
-		if (!toTile || toTile->queryAdd(0, getNpc(), 1, 0) != RETURNVALUE_NOERROR) {
-			return false;
-		}
-
-		if (!floorChange && (toTile->hasFlag(TILESTATE_FLOORCHANGE) || toTile->getTeleportItem())) {
-			return false;
-		}
-
-		if (!ignoreHeight && toTile->hasHeight(1)) {
-			return false;
-		}
-
+	if (Npc::despawnRadius == 0) {
 		return true;
 	}
 
-	bool Npc::getNextStep(Direction &nextDirection, uint32_t &flags) {
-		return Creature::getNextStep(nextDirection, flags);
-	}
-
-	bool Npc::getRandomStep(Direction &moveDirection) {
-		static std::vector<Direction> directionvector {
-			Direction::DIRECTION_NORTH,
-			Direction::DIRECTION_WEST,
-			Direction::DIRECTION_EAST,
-			Direction::DIRECTION_SOUTH
-		};
-		std::ranges::shuffle(directionvector, getRandomGenerator());
-
-		for (const Position &creaturePos = getPosition();
-		     const Direction &direction : directionvector) {
-			if (canWalkTo(creaturePos, direction)) {
-				moveDirection = direction;
-				return true;
-			}
-		}
+	if (!SpawnsNpc::isInZone(masterPos, Npc::despawnRadius, pos)) {
 		return false;
 	}
 
-	void Npc::setNormalCreatureLight() {
-		internalLight = npcType->info.light;
+	if (Npc::despawnRange == 0) {
+		return true;
 	}
 
-	bool Npc::isShopPlayer(uint32_t playerGUID) const {
-		return shopPlayers.contains(playerGUID);
+	if (Position::getDistanceZ(pos, masterPos) > Npc::despawnRange) {
+		return false;
 	}
 
-	void Npc::addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems) {
-		shopPlayers.try_emplace(playerGUID, shopItems);
+	return true;
+}
+
+void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
+	const auto &creature = g_game().getCreatureByID(playerId);
+	if (!creature) {
+		return;
 	}
 
-	void Npc::removeShopPlayer(uint32_t playerGUID) {
-		shopPlayers.erase(playerGUID);
+	if (playerInteractionsOrder.empty() || std::ranges::find(playerInteractionsOrder, playerId) == playerInteractionsOrder.end()) {
+		playerInteractionsOrder.push_back(playerId);
+		turnToCreature(creature);
 	}
 
-	void Npc::closeAllShopWindows() {
-		for (auto it = shopPlayers.begin(); it != shopPlayers.end();) {
-			const auto &player = g_game().getPlayerByGUID(it->first);
-			if (player) {
-				player->closeShopWindow();
-			}
-		}
+	playerInteractions[playerId] = topicId;
+}
 
-		if (!shopPlayers.empty()) {
-			shopPlayers.clear();
-		}
+void Npc::removePlayerInteraction(const std::shared_ptr<Player> &player) {
+	auto view = std::ranges::remove(playerInteractionsOrder, player->getID());
+	playerInteractionsOrder.erase(view.begin(), view.end());
+	if (playerInteractions.contains(player->getID())) {
+		playerInteractions.erase(player->getID());
+		player->closeShopWindow();
 	}
 
-	void Npc::handlePlayerMove(const std::shared_ptr<Player> &player, const Position &newPos) {
-		if (!canInteract(newPos)) {
-			onPlayerCloseChannel(player);
-		} else if (canInteract(newPos) && !playerInteractionsOrder.empty() && playerInteractionsOrder.back() == player->getID()) {
-			turnToCreature(player);
-		}
-
-		if (canSee(newPos)) {
-			onPlayerAppear(player);
-		} else {
-			onPlayerDisappear(player);
+	if (!playerInteractionsOrder.empty()) {
+		if (const auto &creature = g_game().getCreatureByID(playerInteractionsOrder.back())) {
+			turnToCreature(creature);
 		}
 	}
+}
+
+void Npc::resetPlayerInteractions() {
+	playerInteractions.clear();
+}
+
+bool Npc::canWalkTo(const Position &fromPos, Direction dir) {
+	if (npcType->info.walkRadius == 0) {
+		return false;
+	}
+
+	const Position toPos = getNextPosition(dir, fromPos);
+	if (!SpawnsNpc::isInZone(masterPos, npcType->info.walkRadius, toPos)) {
+		return false;
+	}
+
+	const auto &toTile = g_game().map.getTile(toPos);
+	if (!toTile || toTile->queryAdd(0, getNpc(), 1, 0) != RETURNVALUE_NOERROR) {
+		return false;
+	}
+
+	if (!floorChange && (toTile->hasFlag(TILESTATE_FLOORCHANGE) || toTile->getTeleportItem())) {
+		return false;
+	}
+
+	if (!ignoreHeight && toTile->hasHeight(1)) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Npc::getNextStep(Direction &nextDirection, uint32_t &flags) {
+	return Creature::getNextStep(nextDirection, flags);
+}
+
+bool Npc::getRandomStep(Direction &moveDirection) {
+	static std::vector<Direction> directionvector {
+		Direction::DIRECTION_NORTH,
+		Direction::DIRECTION_WEST,
+		Direction::DIRECTION_EAST,
+		Direction::DIRECTION_SOUTH
+	};
+	std::ranges::shuffle(directionvector, getRandomGenerator());
+
+	for (const Position &creaturePos = getPosition();
+	     const Direction &direction : directionvector) {
+		if (canWalkTo(creaturePos, direction)) {
+			moveDirection = direction;
+			return true;
+		}
+	}
+	return false;
+}
+
+void Npc::setNormalCreatureLight() {
+	internalLight = npcType->info.light;
+}
+
+bool Npc::isShopPlayer(uint32_t playerGUID) const {
+	return shopPlayers.contains(playerGUID);
+}
+
+void Npc::addShopPlayer(uint32_t playerGUID, const std::vector<ShopBlock> &shopItems) {
+	shopPlayers.try_emplace(playerGUID, shopItems);
+}
+
+void Npc::removeShopPlayer(uint32_t playerGUID) {
+	shopPlayers.erase(playerGUID);
+}
+
+void Npc::closeAllShopWindows() {
+	for (auto it = shopPlayers.begin(); it != shopPlayers.end();) {
+		const auto &player = g_game().getPlayerByGUID(it->first);
+		if (player) {
+			player->closeShopWindow();
+		}
+	}
+
+	if (!shopPlayers.empty()) {
+		shopPlayers.clear();
+	}
+}
+
+void Npc::handlePlayerMove(const std::shared_ptr<Player> &player, const Position &newPos) {
+	if (!canInteract(newPos)) {
+		onPlayerCloseChannel(player);
+	} else if (canInteract(newPos) && !playerInteractionsOrder.empty() && playerInteractionsOrder.back() == player->getID()) {
+		turnToCreature(player);
+	}
+
+	if (canSee(newPos)) {
+		onPlayerAppear(player);
+	} else {
+		onPlayerDisappear(player);
+	}
+}

@@ -246,12 +246,11 @@ namespace {
 			currency,
 			totalCost,
 			npcName,
-			CustomSaleContext{
+			CustomSaleContext {
 				"[Npc::onPlayerSellAllLoot]",
 				"[Npc::onPlayerSellItem]",
 				"[Npc::onPlayerSellAllLoot]",
-				"An error occurred while completing the sale of your loot. No items were exchanged."
-			}
+				"An error occurred while completing the sale of your loot. No items were exchanged." }
 		);
 	}
 
@@ -273,12 +272,11 @@ namespace {
 			currency,
 			totalCost,
 			npcName,
-			CustomSaleContext{
+			CustomSaleContext {
 				"[Npc::onPlayerSellItem]",
 				"[Npc::onPlayerSellItem]",
 				"[Npc::onPlayerSellItem]",
-				"An error occurred while completing the sale. Your items were not exchanged."
-			}
+				"An error occurred while completing the sale. Your items were not exchanged." }
 		);
 	}
 

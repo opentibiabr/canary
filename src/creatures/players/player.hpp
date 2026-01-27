@@ -333,6 +333,15 @@ public:
 	void clearPartyInvitations();
 
 	void sendUnjustifiedPoints() const;
+	void sendOpenPvpSituations();
+	void refreshSkullTicksFromLastKill();
+	void updateLastKillTimeCache(time_t killTime);
+	struct SkullTimeInfo {
+		int64_t remainingSeconds { 0 };
+		uint8_t remainingDays { 0 };
+	};
+
+	SkullTimeInfo computeSkullTimeFromLastKill() const;
 
 	GuildEmblems_t getGuildEmblem(const std::shared_ptr<Player> &player) const;
 
@@ -1497,6 +1506,8 @@ private:
 	uint64_t forgeDustLevel = 0;
 	int64_t lastFailedFollow = 0;
 	int64_t skullTicks = 0;
+	mutable int64_t m_lastKillTimeCache = 0;
+	mutable bool m_lastKillTimeCached = false;
 	int64_t lastWalkthroughAttempt = 0;
 	int64_t lastToggleMount = 0;
 	int64_t lastUIInteraction = 0;

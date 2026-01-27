@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -530,7 +530,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 
 	if (g_game().getWorldType() == WORLD_TYPE_NO_PVP && !player->isFirstOnStack()) {
 		const auto &instantSpell = g_spells().getInstantSpell(getName());
-		if (instantSpell && !instantSpell->getNeedCasterTargetOrDirection() || !getNeedTarget()) {
+		if ((instantSpell && !instantSpell->getNeedCasterTargetOrDirection()) || !getNeedTarget()) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return false;
 		}
@@ -556,6 +556,13 @@ bool Spell::playerInstantSpellCheck(const std::shared_ptr<Player> &player, const
 	}
 
 	const auto &tile = g_game().map.getOrCreateTile(toPos);
+	if (!tile) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_logger().error("[Spell::playerInstantSpellCheck] - Invalid tile at position: {}, player: {}", toPos.toString(), player->getName());
+		return false;
+	}
+
 	if (blockingCreature && tile->getBottomVisibleCreature(player) != nullptr) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -595,6 +602,7 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_logger().error("[Spell::playerRuneSpellCheck] - Invalid tile at position: {}, player: {}", toPos.toString(), player->getName());
 		return false;
 	}
 
@@ -1179,6 +1187,10 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 }
 
 bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const {
+	if (!creature || !target) {
+		return false;
+	}
+
 	const Position &fromPos = creature->getPosition();
 	const Position &toPos = target->getPosition();
 	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {

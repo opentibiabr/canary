@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -56,15 +56,17 @@ struct DispatcherContext {
 	}
 
 private:
+	inline static constexpr std::string_view defaultTaskName { "ThreadPool::call" };
+
 	void reset() {
 		group = TaskGroup::ThreadPool;
 		type = DispatcherType::None;
-		taskName = "ThreadPool::call";
+		taskName = defaultTaskName;
 	}
 
 	DispatcherType type = DispatcherType::None;
 	TaskGroup group = TaskGroup::ThreadPool;
-	std::string_view taskName;
+	std::string_view taskName = defaultTaskName;
 
 	friend class Dispatcher;
 };

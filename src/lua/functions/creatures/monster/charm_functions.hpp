@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -17,6 +17,7 @@ private:
 	static int luaCharmCreate(lua_State* L);
 	static int luaCharmName(lua_State* L);
 	static int luaCharmDescription(lua_State* L);
+	static int luaCharmCategory(lua_State* L);
 	static int luaCharmType(lua_State* L);
 	static int luaCharmPoints(lua_State* L);
 	static int luaCharmDamageType(lua_State* L);

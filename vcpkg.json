@@ -9,6 +9,7 @@
     "bext-ut",
     "curl",
     "eventpp",
+    "gtest",
     "libmariadb",
     "luajit",
     "magic-enum",
@@ -20,6 +21,7 @@
     "zlib",
     "bshoshany-thread-pool",
     "atomic-queue",
+    "nlohmann-json",
     {
       "name": "opentelemetry-cpp",
       "default-features": true,
@@ -27,7 +29,7 @@
     },
     {
       "name": "gmp",
-      "platform": "linux"
+      "platform": "linux | osx"
     },
     {
       "name": "mpir",

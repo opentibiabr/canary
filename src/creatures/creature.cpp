@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -676,6 +676,14 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_INK);
 				break;
 
+			case RACE_CHOCOLATE:
+				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_CHOCOLATE);
+				break;
+
+			case RACE_CANDY:
+				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_CANDY);
+				break;
+
 			default:
 				splash = nullptr;
 				break;
@@ -698,14 +706,13 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 			if (corpseContainer && player && !disallowedCorpses) {
 				const auto &monster = getMonster();
 				if (monster && !monster->isRewardBoss()) {
-					std::ostringstream lootMessage;
 					auto collorMessage = player->getProtocolVersion() > 1200;
-					lootMessage << "Loot of " << getNameDescription() << ": " << corpseContainer->getContentDescription(collorMessage) << ".";
 					auto suffix = corpseContainer->getAttribute<std::string>(ItemAttribute_t::LOOTMESSAGE_SUFFIX);
+					std::string lootMessage = fmt::format("Loot of {}: {}", getNameDescription(), corpseContainer->getContentDescription(collorMessage));
 					if (!suffix.empty()) {
-						lootMessage << suffix;
+						lootMessage = fmt::format("{} ({})", lootMessage, suffix);
 					}
-					player->sendLootMessage(lootMessage.str());
+					player->sendLootMessage(fmt::format("{}.", lootMessage));
 				}
 
 				FindPathParams fpp;
@@ -724,6 +731,8 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 					},
 					                        "Game::playerQuickLootCorpse");
 				}
+
+				corpse->sendUpdateToClient(player);
 			}
 		}
 
@@ -1382,6 +1391,30 @@ std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type, Conditio
 		}
 	}
 	return nullptr;
+}
+
+std::vector<std::shared_ptr<Condition>> Creature::getCleansableConditions() const {
+	std::vector<std::shared_ptr<Condition>> cleansableConditions;
+	for (const auto &condition : conditions) {
+		switch (condition->getType()) {
+			case CONDITION_POISON:
+			case CONDITION_FIRE:
+			case CONDITION_ENERGY:
+			case CONDITION_FREEZING:
+			case CONDITION_CURSED:
+			case CONDITION_DAZZLED:
+			case CONDITION_BLEEDING:
+			case CONDITION_PARALYZE:
+			case CONDITION_ROOTED:
+			case CONDITION_FEARED:
+				cleansableConditions.emplace_back(condition);
+				break;
+
+			default:
+				break;
+		}
+	}
+	return cleansableConditions;
 }
 
 std::vector<std::shared_ptr<Condition>> Creature::getConditionsByType(ConditionType_t type) const {

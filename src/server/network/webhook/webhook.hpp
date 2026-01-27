@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -14,6 +14,9 @@
 struct WebhookTask {
 	std::string payload;
 	std::string url;
+
+	WebhookTask(std::string p, std::string u) :
+		payload(std::move(p)), url(std::move(u)) { }
 };
 
 class Webhook {

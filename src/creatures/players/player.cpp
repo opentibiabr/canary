@@ -8074,15 +8074,15 @@ void Player::onThink(uint32_t interval) {
 }
 
 void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link) {
-	if (m_batching) {
-		return;
-	}
-
 	auto selfPlayer = getPlayer();
 	if (link == LINK_OWNER) {
 		// calling movement scripts
 		const auto equipResult = g_moveEvents().onPlayerEquip(selfPlayer, thing->getItem(), static_cast<Slots_t>(index), false);
 		(void)equipResult;
+	}
+
+	if (m_batching) {
+		return;
 	}
 
 	bool requireListUpdate = true;
@@ -8118,7 +8118,7 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 }
 
 void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &newParent, int32_t index, CylinderLink_t link) {
-	if (!thing || m_batching) {
+	if (!thing) {
 		return;
 	}
 
@@ -8129,6 +8129,10 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 		if (const auto &item = copyThing->getItem()) {
 			g_moveEvents().onPlayerDeEquip(getPlayer(), item, static_cast<Slots_t>(index));
 		}
+	}
+
+	if (m_batching) {
+		return;
 	}
 	bool requireListUpdate = true;
 

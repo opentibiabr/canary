@@ -132,7 +132,7 @@ public:
 
 		PRIVATE_FOR_TESTS :
 
-		const std::shared_ptr<Player> &player;
+			const std::shared_ptr<Player> &player;
 	};
 
 	/**
@@ -1386,7 +1386,7 @@ public:
 
 	PRIVATE_FOR_TESTS :
 
-	friend class PlayerLock;
+		friend class PlayerLock;
 	std::mutex mutex;
 
 	static uint32_t playerFirstID;

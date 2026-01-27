@@ -340,7 +340,7 @@ protected:
 
 	PRIVATE_FOR_TESTS :
 
-	uint32_t m_cachedContainerCount {};
+		uint32_t m_cachedContainerCount {};
 	uint32_t m_cachedItemCount {};
 
 	void onAddContainerItem(const std::shared_ptr<Item> &item);

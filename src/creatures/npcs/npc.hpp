@@ -19,6 +19,7 @@ class Tile;
 class Creature;
 class Game;
 class SpawnNpc;
+class BatchUpdate;
 
 class Npc final : public Creature {
 public:
@@ -51,11 +52,11 @@ public:
 
 	void setName(std::string newName) const;
 
-	const std::string &getLowerName() const;
+	[[nodiscard]] const std::string &getLowerName() const;
 
 	CreatureType_t getType() const override;
 
-	const Position &getMasterPos() const;
+	[[nodiscard]] const Position &getMasterPos() const;
 	void setMasterPos(Position pos);
 
 	uint8_t getSpeechBubble() const override;
@@ -88,9 +89,21 @@ public:
 	void onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) override;
 	void onThink(uint32_t interval) override;
 	void onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, bool inBackpacks);
-	void onPlayerSellAllLoot(uint32_t playerId, uint16_t itemid, bool ignore, uint64_t totalPrice);
-	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore);
-	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint16_t amount, bool ignore, uint64_t &totalPrice, const std::shared_ptr<Cylinder> &parent = nullptr);
+	void onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore, uint64_t &totalPrice);
+	struct SellItemContext {
+		SellItemContext() = default;
+		explicit SellItemContext(uint64_t &price, const std::shared_ptr<Container> &lootPouchIn = {}, BatchUpdate* batchUpdateIn = nullptr) :
+			totalPrice(&price),
+			lootPouch(lootPouchIn),
+			batchUpdate(batchUpdateIn) { }
+
+		uint64_t* totalPrice = nullptr;
+		std::shared_ptr<Container> lootPouch {};
+		BatchUpdate* batchUpdate = nullptr;
+	};
+
+	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint32_t amount, bool ignore);
+	void onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count, uint32_t amount, bool ignore, const SellItemContext &context);
 	void onPlayerCheckItem(const std::shared_ptr<Player> &player, uint16_t itemid, uint8_t count);
 	void onPlayerCloseChannel(const std::shared_ptr<Creature> &creature);
 	void onPlacedCreature() override;

@@ -33,6 +33,7 @@
 #include "enums/player_icons.hpp"
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
+#include "game/functions/game_freequests.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
@@ -6079,6 +6080,9 @@ void Player::onPlacedCreature() {
 	if (!g_creatureEvents().playerLogin(static_self_cast<Player>())) {
 		removePlayer(true);
 	}
+
+	// Apply free quests system
+	g_gameFreeQuests().applyFreeQuestsToPlayer(static_self_cast<Player>());
 
 	this->onChangeZone(this->getZoneType());
 

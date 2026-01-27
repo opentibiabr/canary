@@ -52,6 +52,9 @@ std::shared_ptr<Container> Container::createBrowseField(const std::shared_ptr<Ti
 
 	const TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
+		std::vector<std::shared_ptr<Item>> itemsToAdd;
+		itemsToAdd.reserve(itemVector->size());
+
 		for (const auto &item : *itemVector) {
 			if (!item) {
 				continue;
@@ -65,9 +68,11 @@ std::shared_ptr<Container> Container::createBrowseField(const std::shared_ptr<Ti
 				continue;
 			}
 
-			// Add the item to the new container and set its parent.
-			newContainer->itemlist.push_front(item);
-			item->setParent(newContainer);
+			itemsToAdd.push_back(item);
+		}
+
+		for (auto it = itemsToAdd.rbegin(); it != itemsToAdd.rend(); ++it) {
+			newContainer->addItem(*it);
 		}
 	}
 
@@ -884,15 +889,7 @@ void Container::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count)
 			onUpdateContainerItem(index, item, item);
 		}
 	} else {
-		updateItemWeight(-static_cast<int32_t>(item->getWeight()));
-
-		// send change to client
-		if (getParent()) {
-			onRemoveContainerItem(index, item);
-		}
-
-		item->resetParent();
-		itemlist.erase(itemlist.begin() + index);
+		removeItemByIndex(static_cast<size_t>(index), count);
 
 		if (isCorpse() && empty()) {
 			clearLootHighlight();

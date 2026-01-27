@@ -130,7 +130,9 @@ public:
 			player->mutex.unlock();
 		}
 
-		PRIVATE_FOR_TESTS : const std::shared_ptr<Player> &player;
+		PRIVATE_FOR_TESTS :
+
+		const std::shared_ptr<Player> &player;
 	};
 
 	/**
@@ -1382,7 +1384,9 @@ public:
 		return m_managedContainers;
 	}
 
-	PRIVATE_FOR_TESTS : friend class PlayerLock;
+	PRIVATE_FOR_TESTS :
+
+	friend class PlayerLock;
 	std::mutex mutex;
 
 	static uint32_t playerFirstID;

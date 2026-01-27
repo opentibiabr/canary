@@ -953,6 +953,32 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 	updateItemWeight(weightDiff);
 }
 
+bool Container::removeItemById(uint16_t itemId, uint32_t count, int32_t subType /*= -1*/) {
+	if (getItemTypeCount(itemId, subType) < count) {
+		return false;
+	}
+
+	uint32_t removed = 0;
+	for (const auto &item : getItems(false)) {
+		if (item->getID() != itemId) {
+			continue;
+		}
+		if (subType > -1 && item->getSubType() != subType) {
+			continue;
+		}
+
+		uint32_t stack = item->getItemCount();
+		uint32_t toRemove = std::min<uint32_t>(stack, count - removed);
+		g_game().internalRemoveItem(item, toRemove);
+		removed += toRemove;
+		if (removed >= count) {
+			break;
+		}
+	}
+
+	return true;
+}
+
 int32_t Container::getThingIndex(const std::shared_ptr<Thing> &thing) const {
 	int32_t index = 0;
 	if (thing == nullptr) {

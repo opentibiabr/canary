@@ -290,6 +290,8 @@ public:
 	 */
 	virtual void removeItemByIndex(size_t index, uint32_t count);
 
+	bool removeItemById(uint16_t itemId, uint32_t count, int32_t subType = -1);
+
 	int32_t getThingIndex(const std::shared_ptr<Thing> &thing) const final;
 	size_t getFirstIndex() const final;
 	size_t getLastIndex() const final;
@@ -336,7 +338,9 @@ protected:
 
 	friend class MapCache;
 
-	PRIVATE_FOR_TESTS : uint32_t m_cachedContainerCount {};
+	PRIVATE_FOR_TESTS :
+
+	uint32_t m_cachedContainerCount {};
 	uint32_t m_cachedItemCount {};
 
 	void onAddContainerItem(const std::shared_ptr<Item> &item);

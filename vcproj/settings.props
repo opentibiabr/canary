@@ -14,7 +14,6 @@
       WS2_32.lib;
       pugixml.lib;
       lua51.lib;
-      mpir.lib;
       libmariadb.lib;
       abseil_dll.lib;
       argon2.lib;

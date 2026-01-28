@@ -9778,9 +9778,9 @@ void ProtocolGame::sendAmbientSoundEffect(const SoundAmbientEffect_t id) {
 	}
 
 	NetworkMessage msg;
-    msg.addByte(0x85);
-    msg.addByte(0x00);
-    msg.add<uint16_t>(id);
+	msg.addByte(0x85);
+	msg.addByte(0x00);
+	msg.add<uint16_t>(id);
 	writeToOutputBuffer(msg);
 }
 
@@ -9790,9 +9790,9 @@ void ProtocolGame::sendMusicSoundEffect(const SoundMusicEffect_t id) {
 	}
 
 	NetworkMessage msg;
-    msg.addByte(0x85);
-    msg.addByte(0x01);
-    msg.add<uint16_t>(id);
+	msg.addByte(0x85);
+	msg.addByte(0x01);
+	msg.add<uint16_t>(id);
 	writeToOutputBuffer(msg);
 }
 
@@ -9838,8 +9838,8 @@ void ProtocolGame::sendDisableLoginMusic() {
 
 	NetworkMessage msg;
 	msg.addByte(0x85);
-    msg.addByte(0x01);
-    msg.add<uint16_t>(0x00);
+	msg.addByte(0x01);
+	msg.add<uint16_t>(0x00);
 	writeToOutputBuffer(msg);
 }
 

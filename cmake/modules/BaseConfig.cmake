@@ -82,6 +82,11 @@ find_package(
     CONFIG
     REQUIRED
 )
+find_package(
+    sol2
+    CONFIG
+    REQUIRED
+)
 find_package(spdlog REQUIRED)
 find_package(
     unofficial-argon2

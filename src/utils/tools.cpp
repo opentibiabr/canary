@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -247,7 +247,7 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 }
 
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement) {
-	if (str.empty()) {
+	if (str.empty() || sought.empty()) {
 		return;
 	}
 
@@ -993,13 +993,13 @@ std::string getSkillName(uint8_t skillid) {
 			return "life leech chance";
 
 		case SKILL_LIFE_LEECH_AMOUNT:
-			return "life leech amount";
+			return "life leech";
 
 		case SKILL_MANA_LEECH_CHANCE:
 			return "mana leech chance";
 
 		case SKILL_MANA_LEECH_AMOUNT:
-			return "mana leech amount";
+			return "mana leech";
 
 		case SKILL_MAGLEVEL:
 			return "magic level";

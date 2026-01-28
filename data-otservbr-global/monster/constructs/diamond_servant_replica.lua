@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Diamond Servant Replica")
 local monster = {}
 
 monster.description = "a diamond servant replica"
-monster.experience = 700
+monster.experience = 1400
 monster.outfit = {
 	lookType = 397,
 	lookHead = 0,
@@ -80,7 +80,7 @@ monster.voices = {
 monster.loot = {
 	{ id = 9655, chance = 5040 }, -- gear crystal
 	{ id = 8775, chance = 5070 }, -- gear wheel
-	{ id = 3031, chance = 94130, maxCount = 179 }, -- gold coin
+	{ id = 3031, chance = 94130, maxCount = 358 }, -- gold coin
 	{ id = 5944, chance = 44990 }, -- soul orb
 	{ id = 3061, chance = 9150 }, -- life crystal
 	{ id = 237, chance = 5980 }, -- strong mana potion
@@ -108,7 +108,7 @@ monster.defenses = {
 	defense = 45,
 	armor = 25,
 	mitigation = 0.83,
-	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_HEALING, minDamage = 50, maxDamage = 150, effect = CONST_ME_MAGIC_BLUE, target = false },
+	{ name = "combat", interval = 2000, chance = 11, type = COMBAT_HEALING, minDamage = 50, maxDamage = 130, effect = CONST_ME_MAGIC_BLUE, target = false },
 	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_HEALING, effect = CONST_ME_YELLOWENERGY, target = false },
 }
 

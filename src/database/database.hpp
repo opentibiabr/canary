@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -141,6 +141,11 @@ public:
 				else if constexpr (std::is_same_v<T, int64_t>) {
 					// Use std::stoll to convert string to int64_t
 					data = static_cast<T>(std::stoll(row[it->second]));
+				}
+				// Check if the type T is time_t
+				else if constexpr (std::is_same_v<T, time_t>) {
+					// Use std::stoll to convert string to time_t (usually long long)
+					data = static_cast<T>(std::stoll(row[it->second]));
 				} else {
 					// Throws exception indicating that type T is invalid
 					g_logger().error("Invalid signed type T");
@@ -226,21 +231,27 @@ public:
 	DBTransaction &operator=(const DBTransaction &&) = delete;
 
 	template <typename Func>
-	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();
-		if (changesExpected) {
-			DBTransaction transaction;
-			try {
-				transaction.begin();
-				transaction.commit();
-				return changesExpected;
-			} catch (const std::exception &exception) {
-				transaction.rollback();
-				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+	static bool executeWithinTransaction(const Func &callback)
+		requires std::invocable<Func>
+	{
+		DBTransaction transaction;
+		try {
+			if (!transaction.begin()) {
+				g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
 				return false;
 			}
-		} else {
-			return true;
+
+			const bool result = callback();
+
+			if (!transaction.commit()) {
+				return false;
+			}
+
+			return result;
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 
@@ -279,21 +290,28 @@ private:
 		}
 	}
 
-	void commit() {
+	bool commit() {
 		// Ensure that the transaction has been started
 		if (state != STATE_START) {
 			g_logger().error("Transaction not started");
-			return;
+			return false;
 		}
 
 		try {
 			// Commit the transaction
 			state = STATE_COMMIT;
-			Database::getInstance().commit();
+			if (!Database::getInstance().commit()) {
+				state = STATE_NO_START;
+				g_logger().error("[{}] Commit returned false", __FUNCTION__);
+				return false;
+			}
+
+			return true;
 		} catch (const std::exception &exception) {
 			// An error occurred while committing the transaction
 			state = STATE_NO_START;
 			g_logger().error("[{}] An error occurred while committing the transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 

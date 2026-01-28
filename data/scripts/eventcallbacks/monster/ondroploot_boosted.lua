@@ -21,10 +21,10 @@ function callback.monsterOnDropLoot(monster, corpse)
 	end
 
 	local factor = 1.0
-	local msgSuffix = " (boosted loot)"
-	corpse:addLoot(mType:generateLootRoll({ factor = factor, gut = false }, {}, player))
-
 	local existingSuffix = corpse:getAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX) or ""
+	local msgSuffix = string.len(existingSuffix) > 0 and ", boosted loot" or "boosted loot"
+
+	corpse:addLoot(mType:generateLootRoll({ factor = factor, gut = false }, {}, player))
 	corpse:setAttribute(ITEM_ATTRIBUTE_LOOTMESSAGE_SUFFIX, existingSuffix .. msgSuffix)
 end
 

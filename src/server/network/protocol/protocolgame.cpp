@@ -4921,6 +4921,13 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendOpenPvpSituations(uint8_t openPvpSituations) {
+	NetworkMessage msg;
+	msg.addByte(0xB8);
+	msg.addByte(openPvpSituations);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
 	if (!player || !container) {
 		return;
@@ -5304,16 +5311,34 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker, true);
-	msg.add<uint16_t>(lockerItems.size());
+	auto totalItemsCountPosition = msg.getBufferPosition();
+	msg.skipBytes(2); // Total items count
+
+	const uint16_t entriesLimit = std::numeric_limits<uint16_t>::max();
+	uint16_t entriesSent = 0;
+	bool limitReached = false;
 	for (const auto &[itemId, tierAndCountMap] : lockerItems) {
 		for (const auto &[tier, count] : tierAndCountMap) {
+			if (entriesSent >= entriesLimit) {
+				limitReached = true;
+				break;
+			}
 			msg.add<uint16_t>(itemId);
 			if (!oldProtocol && Item::items[itemId].upgradeClassification > 0) {
 				msg.addByte(tier);
 			}
 			msg.add<uint16_t>(static_cast<uint16_t>(count));
+			++entriesSent;
+		}
+		if (limitReached) {
+			break;
 		}
 	}
+
+	auto endPosition = msg.getBufferPosition();
+	msg.setBufferPosition(totalItemsCountPosition);
+	msg.add<uint16_t>(entriesSent);
+	msg.setBufferPosition(endPosition);
 
 	writeToOutputBuffer(msg);
 

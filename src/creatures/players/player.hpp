@@ -106,6 +106,7 @@ struct OpenContainer {
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
+static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 1500;
 static constexpr uint16_t PLAYER_MIN_SPEED = 10;
 static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
@@ -333,6 +334,15 @@ public:
 	void clearPartyInvitations();
 
 	void sendUnjustifiedPoints() const;
+	void sendOpenPvpSituations();
+	void refreshSkullTicksFromLastKill();
+	void updateLastKillTimeCache(time_t killTime);
+	struct SkullTimeInfo {
+		int64_t remainingSeconds { 0 };
+		uint8_t remainingDays { 0 };
+	};
+
+	SkullTimeInfo computeSkullTimeFromLastKill() const;
 
 	GuildEmblems_t getGuildEmblem(const std::shared_ptr<Player> &player) const;
 
@@ -1487,6 +1497,8 @@ private:
 	uint64_t forgeDustLevel = 0;
 	int64_t lastFailedFollow = 0;
 	int64_t skullTicks = 0;
+	mutable int64_t m_lastKillTimeCache = 0;
+	mutable bool m_lastKillTimeCached = false;
 	int64_t lastWalkthroughAttempt = 0;
 	int64_t lastToggleMount = 0;
 	int64_t lastUIInteraction = 0;
@@ -1650,7 +1662,8 @@ private:
 
 	void updateItemsLight(bool internal = false);
 	uint16_t getStepSpeed() const override {
-		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
+		const uint16_t maxStepSpeed = hasFlag(PlayerFlags_t::SetMaxSpeed) ? PLAYER_MAX_STAFF_SPEED : PLAYER_MAX_SPEED;
+		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(maxStepSpeed, getSpeed()));
 	}
 	void updateBaseSpeed();
 

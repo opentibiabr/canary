@@ -72,6 +72,13 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
+	if (destPos.x == 0 && destPos.y == 0 && destPos.z == 0) {
+		const auto &thingCreature = thing->getCreature();
+		const auto thingCreatureName = thingCreature ? thingCreature->getName() : "Unknown";
+		g_logger().debug("[Teleport:addThing] Skipping teleport with invalid destPos (0, 0, 0) at tile {}, for creature: {}", getPosition().toString(), thingCreatureName);
+		return;
+	}
+
 	const std::shared_ptr<Tile> &destTile = g_game().map.getTile(destPos);
 	if (!destTile) {
 		return;

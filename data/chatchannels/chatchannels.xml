@@ -8,4 +8,5 @@
 	<channel id="7" name="Help" public="1" script="help.lua" />
 	<channel id="8" name="Gamemaster" script="gamemaster.lua" />
 	<channel id="11" name="Guild Leaders" script="guild_leaders.lua" />
+	<channel id="32" name="Lua" script="lua_channel.lua" />
 </channels>

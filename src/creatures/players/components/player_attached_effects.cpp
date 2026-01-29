@@ -92,7 +92,7 @@ bool PlayerAttachedEffects::toggleWing(bool wing) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer, defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer->getSex(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}
@@ -281,7 +281,7 @@ bool PlayerAttachedEffects::toggleAura(bool aura) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer, defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer->getSex(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}
@@ -469,7 +469,7 @@ bool PlayerAttachedEffects::toggleEffect(bool effect) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer, defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer->getSex(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}
@@ -626,7 +626,7 @@ bool PlayerAttachedEffects::toggleShader(bool shader) {
 			return false;
 		}
 
-		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer, defaultOutfit.lookType);
+		const auto &playerOutfit = Outfits::getInstance().getOutfitByLookType(thisPlayer->getSex(), defaultOutfit.lookType);
 		if (!playerOutfit) {
 			return false;
 		}

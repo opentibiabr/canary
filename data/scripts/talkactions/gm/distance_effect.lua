@@ -9,7 +9,9 @@ function magicEffect.onSay(player, words, param)
 		return true
 	end
 
-	local effect = tonumber(param)
+	local split = param:split(",")
+
+	local effect = tonumber(split[1])
 	if effect ~= nil and effect > 0 then
 		local playerPos = player:getPosition()
 		local direction = player:getDirection()
@@ -26,7 +28,7 @@ function magicEffect.onSay(player, words, param)
 			targetPos.x = targetPos.x - distance
 		end
 
-		player:getPosition():sendDistanceEffect(targetPos, effect)
+		player:getPosition():sendDistanceEffect(targetPos, effect, nil, tonumber(split[2]))
 	end
 
 	return true

@@ -94,5 +94,8 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Recommend us if you were sati
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
+-- add "passage" button to npc ui
+npcType:addButton(KEYWORDBUTTONICON_SAIL)
+
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)

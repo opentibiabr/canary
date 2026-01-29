@@ -57,7 +57,6 @@ bool PlayerTitle::manage(bool canAdd, uint8_t id, uint32_t timestamp /* = 0*/) {
 	m_titlesUnlocked.emplace_back(title, toSaveTimeStamp);
 	m_titlesUnlocked.shrink_to_fit();
 	g_logger().debug("[{}] - Added title: {}", __FUNCTION__, title.m_maleName);
-
 	return true;
 }
 

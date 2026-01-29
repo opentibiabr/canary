@@ -52,6 +52,14 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 			g_logger().warn("Unknown event name: {}", scriptName);
 		}
 	}
+
+	// add buttons set by npcType
+	buttonFlags |= npcType->info.buttonFlags;
+
+	// add "trade" button when npcType has a shop
+	if (npcType->info.shopItemVector.size() > 0) {
+		buttonFlags |= (1 << KEYWORDBUTTONICON_GENERALTRADE);
+	}
 }
 
 Npc &Npc::getInstance() {
@@ -714,14 +722,15 @@ bool Npc::isInSpawnRange(const Position &pos) const {
 }
 
 void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
-	const auto &creature = g_game().getCreatureByID(playerId);
-	if (!creature) {
+	const auto &player = g_game().getPlayerByID(playerId);
+	if (!player) {
 		return;
 	}
 
 	if (playerInteractionsOrder.empty() || std::ranges::find(playerInteractionsOrder, playerId) == playerInteractionsOrder.end()) {
 		playerInteractionsOrder.emplace_back(playerId);
-		turnToCreature(creature);
+		player->addNpcFocus(getID(), buttonFlags);
+		turnToCreature(player);
 	}
 
 	playerInteractions[playerId] = topicId;
@@ -733,6 +742,7 @@ void Npc::removePlayerInteraction(const std::shared_ptr<Player> &player) {
 	if (playerInteractions.contains(player->getID())) {
 		playerInteractions.erase(player->getID());
 		player->closeShopWindow();
+		player->removeNpcFocus(getID());
 	}
 
 	if (!playerInteractionsOrder.empty()) {

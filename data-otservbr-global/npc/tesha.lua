@@ -153,4 +153,7 @@ end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end
 
+-- add bank buttons to the npc ui
+npcType:addBankButtons()
+
 npcType:register(npcConfig)

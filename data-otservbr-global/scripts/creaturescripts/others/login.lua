@@ -37,6 +37,11 @@ function playerLogin.onLogin(player)
 			player:openChannel(0x00) -- guild
 		end
 	end
+
+	if player:canUseLuaChat() then
+		player:openChannel(CHANNEL_LUA)
+	end
+
 	return true
 end
 

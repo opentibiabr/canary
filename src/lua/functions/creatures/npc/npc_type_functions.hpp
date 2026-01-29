@@ -64,5 +64,9 @@ private:
 	static int luaNpcTypeAddSound(lua_State* L);
 	static int luaNpcTypeGetSounds(lua_State* L);
 
+	static int luaNpcTypeHasButton(lua_State* L);
+	static int luaNpcTypeAddButton(lua_State* L);
+	static int luaNpcTypeRemoveButton(lua_State* L);
+
 	friend class GameFunctions;
 };

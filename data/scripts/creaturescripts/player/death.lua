@@ -194,10 +194,10 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	local killerName, byPlayer = getKillerInfo(killer)
 	local mostDamageName, byPlayerMostDamage = getMostDamageInfo(mostDamageKiller)
 
-	player:takeScreenshot(byPlayer and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
+	player:sendClientEvent(byPlayer and CLIENT_EVENT_DEATHPVP or CLIENT_EVENT_DEATHPVE)
 
 	if mostDamageKiller and mostDamageKiller:isPlayer() then
-		mostDamageKiller:takeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)
+		mostDamageKiller:sendClientEvent(CLIENT_EVENT_PLAYERKILL)
 	end
 
 	local playerGuid = player:getGuid()

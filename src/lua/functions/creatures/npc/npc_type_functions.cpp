@@ -71,6 +71,10 @@ void NpcTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "NpcType", "soundSpeedTicks", NpcTypeFunctions::luaNpcTypeSoundSpeedTicks);
 	Lua::registerMethod(L, "NpcType", "addSound", NpcTypeFunctions::luaNpcTypeAddSound);
 	Lua::registerMethod(L, "NpcType", "getSounds", NpcTypeFunctions::luaNpcTypeGetSounds);
+
+	Lua::registerMethod(L, "NpcType", "hasButton", NpcTypeFunctions::luaNpcTypeHasButton);
+	Lua::registerMethod(L, "NpcType", "addButton", NpcTypeFunctions::luaNpcTypeAddButton);
+	Lua::registerMethod(L, "NpcType", "removeButton", NpcTypeFunctions::luaNpcTypeRemoveButton);
 }
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock> &shopVector) {
@@ -626,5 +630,46 @@ int NpcTypeFunctions::luaNpcTypeGetSounds(lua_State* L) {
 		lua_pushnumber(L, static_cast<lua_Number>(sound));
 		lua_rawseti(L, -2, index);
 	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeHasButton(lua_State* L) {
+	// npcType:addButton(buttonId)
+	const auto &npcType = Lua::getUserdataShared<NpcType>(L, 1, "NpcType");
+	if (!npcType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto flag = 1 << Lua::getNumber<KeywordButtonIcon>(L, 2);
+	Lua::pushBoolean(L, (npcType->info.buttonFlags & flag) != 0);
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeAddButton(lua_State* L) {
+	// npcType:addButton(buttonId)
+	const auto &npcType = Lua::getUserdataShared<NpcType>(L, 1, "NpcType");
+	if (!npcType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto flag = 1 << Lua::getNumber<KeywordButtonIcon>(L, 2);
+	npcType->info.buttonFlags |= flag;
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeRemoveButton(lua_State* L) {
+	// npcType:removeButton(buttonId)
+	const auto &npcType = Lua::getUserdataShared<NpcType>(L, 1, "NpcType");
+	if (!npcType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	auto flag = 1 << Lua::getNumber<KeywordButtonIcon>(L, 2);
+	npcType->info.buttonFlags &= ~flag;
+	Lua::pushBoolean(L, true);
 	return 1;
 }

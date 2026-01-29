@@ -22,6 +22,42 @@
 #include "lua/scripts/scripts.hpp"
 #include "lib/di/container.hpp"
 
+namespace {
+	void applySanctuaryEffect(const std::shared_ptr<Player> &player, uint8_t harmonies) {
+		uint32_t sanctuarySubId = magic_enum::enum_integer(AttrSubId_t::Sanctuary);
+		if (!player->wheel().getInstant(WheelInstant_t::SANCTUARY) || harmonies == 0 || player->hasCondition(CONDITION_ATTRIBUTES, sanctuarySubId)) {
+			return;
+		}
+
+		const auto &item = Item::CreateItem(ITEM_SANCTUARY);
+		const auto &tile = player->getTile();
+		if (tile && item) {
+			g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			item->startDecaying();
+		}
+
+		int32_t bonus = 100 + 2 * harmonies;
+		const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_ATTRIBUTES, 5 * 1000, 0, false, sanctuarySubId, false);
+		condition->setParam(CONDITION_PARAM_BUFF_DAMAGEDEALT, bonus);
+		condition->setParam(CONDITION_PARAM_BUFF_HEALINGDEALT, bonus);
+		player->addCondition(condition);
+	}
+
+	void applyInstantSpellDirection(const std::shared_ptr<Player> &player, LuaVariant &variant, const Position &casterPos, uint16_t spellId) {
+		Direction direction = player->getDirection();
+		const auto &target = player->getAttackedCreature();
+		if (target) {
+			variant.type = VARIANT_TARGETPOSITION;
+			const auto &aimAtTargetSpellIds = player->getAimAtTargetSpells();
+			if (aimAtTargetSpellIds.find(spellId) != aimAtTargetSpellIds.end()) {
+				direction = getPrimaryDirection(casterPos, target->getPosition());
+			}
+		}
+
+		variant.pos = Spells::getCasterPosition(player, direction);
+	}
+}
+
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
@@ -160,6 +196,11 @@ bool Spells::registerRuneLuaEvent(const std::shared_ptr<RuneSpell> &rune) {
 	}
 
 	return false;
+}
+
+bool Spells::isMonkShrineSpell(const std::string &name) const {
+	// Compare against known Monk Shrine spell names
+	return name == "Mystic Repulse" || name == "Forceful Uppercut" || name == "Focus Harmony";
 }
 
 std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId) {
@@ -509,6 +550,7 @@ bool Spell::playerSpellCheck(const std::shared_ptr<Player> &player) const {
 
 	if (needWeapon) {
 		switch (player->getWeaponType()) {
+			case WEAPON_FIST:
 			case WEAPON_SWORD:
 			case WEAPON_CLUB:
 			case WEAPON_AXE:
@@ -805,6 +847,17 @@ void Spell::setSpellId(uint16_t id) {
 
 void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
 	if (finishedCast) {
+		if (isSpender()) {
+			uint8_t harmonies = player->getHarmony();
+			player->spendHarmony();
+			player->clearCooldowns(false, true, 2 * 1000 * harmonies);
+			applySanctuaryEffect(player, harmonies);
+		}
+
+		if (isBuilder()) {
+			player->buildHarmony();
+		}
+
 		if (!player->hasFlag(PlayerFlags_t::HasNoExhaustion)) {
 			applyCooldownConditions(player);
 		}
@@ -1155,11 +1208,11 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 		var.text = param;
 	} else {
 		var.type = VARIANT_POSITION;
+		auto variantPosition = player->getPosition();
+		var.pos = variantPosition;
 
 		if (needDirection) {
-			var.pos = Spells::getCasterPosition(player, player->getDirection());
-		} else {
-			var.pos = player->getPosition();
+			applyInstantSpellDirection(player, var, variantPosition, getSpellId());
 		}
 
 		if (!playerInstantSpellCheck(player, var.pos)) {
@@ -1513,4 +1566,24 @@ void RuneSpell::setCharges(uint32_t c) {
 		hasCharges = true;
 	}
 	charges = c;
+}
+
+// Returns true if the spell is classified as a "Builder" monk spell.
+bool Spell::isBuilder() const {
+	return monkSpellType == MonkSpell_t::Builder;
+}
+
+// Returns true if the spell is classified as a "Spender" monk spell.
+bool Spell::isSpender() const {
+	return monkSpellType == MonkSpell_t::Spender;
+}
+
+// Retrieves the current monk spell type assigned to this spell.
+MonkSpell_t Spell::getMonkSpellType() const {
+	return monkSpellType;
+}
+
+// Sets the monk spell type for this spell.
+void Spell::setMonkSpellType(MonkSpell_t type) {
+	monkSpellType = type;
 }

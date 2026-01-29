@@ -450,7 +450,7 @@ public:
 	void checkCreatures();
 	void checkLight();
 
-	bool combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool checkDefense, bool checkArmor, bool field);
+	bool combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool checkDefense, bool checkArmor, bool field, bool condition = false);
 
 	void combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Creature> &target, TextColor_t &color, uint16_t &effect);
 
@@ -485,12 +485,12 @@ public:
 	static void addCreatureHealth(const CreatureVector &spectators, const std::shared_ptr<Creature> &target);
 	void addPlayerMana(const std::shared_ptr<Player> &target);
 	void addPlayerVocation(const std::shared_ptr<Player> &target);
-	void addMagicEffect(const Position &pos, uint16_t effect);
-	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
+	void addMagicEffect(const Position &pos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
+	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
 	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
-	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
-	static void addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
+	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
+	static void addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect, uint8_t effectSource = ME_SOURCE_DEFAULT);
 
 	int32_t getLightHour() const {
 		return lightHour;
@@ -695,16 +695,17 @@ public:
 	void refreshItem(const std::shared_ptr<Item> &item);
 
 	/**
-	 * @brief Finds the managed container for loot or obtain based on the given parameters.
+	 * @brief Returns the appropriate managed container for storing items.
 	 *
-	 * @param player Pointer to the player object.
-	 * @param fallbackConsumed Reference to a boolean flag indicating whether a fallback has been consumed.
-	 * @param category The category of the object.
+	 * @param player The player to check containers for.
+	 * @param fallbackConsumed Will be set to true if the system had to fallback to a default container.
+	 * @param category Category of the object (e.g., loot, obtain).
+	 * @param isLootContainer Whether the container is specifically for loot.
 	 *
-	 * @note If it's enabled in config.lua to use the gold pouch to store any item, then the system will check whether the player has a loot pouch.
-	 * @note If the player does have one, the loot pouch will be used instead of the managed containers.
+	 * @details If `storeAnyItemInGoldPouch = true` in config.lua, and the player has a loot pouch,
+	 * that pouch will be preferred over other managed containers.
 	 *
-	 * @return Pointer to the managed container or nullptr if not found.
+	 * @return The selected container, or nullptr if none found.
 	 */
 	std::shared_ptr<Container> findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer);
 

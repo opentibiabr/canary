@@ -67,18 +67,18 @@ namespace {
 		return (itemCount + (slotsNeeded - player->getFreeBackpackSlots())) > 30;
 	}
 
-	uint32_t calculateBagsCost(const ItemType &itemType, uint16_t amount, bool inBackpacks) {
+	uint64_t calculateBagsCost(const ItemType &itemType, uint16_t amount, bool inBackpacks) {
 		if (!inBackpacks) {
 			return 0;
 		}
 
 		const auto slotsNeeded = calculateSlotsNeeded(itemType, amount, true);
-		return kShoppingBagPrice * static_cast<uint32_t>(slotsNeeded);
+		return kShoppingBagPrice * static_cast<uint64_t>(slotsNeeded);
 	}
 
-	bool hasInsufficientFunds(const std::shared_ptr<Player> &player, uint16_t itemId, const std::string &npcName, uint16_t currency, uint32_t totalCost, uint32_t bagsCost) {
+	bool hasInsufficientFunds(const std::shared_ptr<Player> &player, uint16_t itemId, const std::string &npcName, uint16_t currency, uint64_t totalCost, uint64_t bagsCost) {
 		if (currency == ITEM_GOLD_COIN) {
-			const uint64_t totalRequired = static_cast<uint64_t>(totalCost) + bagsCost;
+			const uint64_t totalRequired = totalCost + bagsCost;
 			const uint64_t availableFunds = player->getMoney() + player->getBankBalance();
 			if (availableFunds < totalRequired) {
 				g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);

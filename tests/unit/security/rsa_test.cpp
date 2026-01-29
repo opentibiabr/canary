@@ -50,13 +50,13 @@ TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
 	(void)createResult;
 
 	const auto previousPath = std::filesystem::current_path();
-	const auto cleanup = [previousPath, tempPath](void*) {
+	const auto cleanup = [previousPath, tempPath](const std::filesystem::path*) {
 		std::error_code cleanupError;
 		std::filesystem::current_path(previousPath, cleanupError);
 		const auto cleanupResult = std::filesystem::remove_all(tempPath, cleanupError);
 		(void)cleanupResult;
 	};
-	auto guard = std::unique_ptr<void, decltype(cleanup)>(nullptr, cleanup);
+	auto guard = std::unique_ptr<const std::filesystem::path, decltype(cleanup)>(nullptr, cleanup);
 	std::filesystem::current_path(tempPath);
 	DI::create<RSA &>().start();
 

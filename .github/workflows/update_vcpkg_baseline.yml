@@ -23,7 +23,18 @@ jobs:
         id: vcpkg
         run: |
           LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/vcpkg/releases/latest | jq -r '.tag_name')
-          LATEST_BASELINE=$(curl -s https://api.github.com/repos/microsoft/vcpkg/git/ref/tags/$LATEST_TAG | jq -r '.object.sha')
+          echo "Latest tag: $LATEST_TAG"
+          
+          # Get the commit SHA that the tag points to (handles annotated tags)
+          LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG^{} | cut -f1)
+          
+          # Fallback if ^{} doesn't work
+          if [ -z "$LATEST_BASELINE" ]; then
+            LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
+          fi
+          
+          echo "Baseline SHA: $LATEST_BASELINE"
+          
           CURRENT_BASELINE=$(jq -r '."builtin-baseline"' vcpkg.json)
           
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
@@ -49,13 +60,31 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Verifica se a branch já existe remotamente
           if git ls-remote --heads origin ${BRANCH_NAME} | grep -q ${BRANCH_NAME}; then
             echo "Branch ${BRANCH_NAME} already exists remotely"
             
-            # Verifica se já existe PR aberto
             if gh pr list --head ${BRANCH_NAME} --state open | grep -q .; then
-              echo "PR already exists for this branch, skipping"
+              echo "PR already exists for this branch"
+              
+              git fetch origin ${BRANCH_NAME}
+              git checkout ${BRANCH_NAME}
+              
+              CURRENT_IN_BRANCH=$(jq -r '."builtin-baseline"' vcpkg.json)
+              if [ "$CURRENT_IN_BRANCH" != "${NEW_BASELINE}" ]; then
+                echo "Updating existing PR with new baseline"
+                
+                jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
+                mv vcpkg.json.tmp vcpkg.json
+                
+                git add vcpkg.json
+                git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
+                git push origin ${BRANCH_NAME}
+                
+                PR_NUMBER=$(gh pr list --head ${BRANCH_NAME} --state open --json number --jq '.[0].number')
+                gh pr comment ${PR_NUMBER} --body "🔄 Updated to latest vcpkg baseline **${RELEASE_TAG}** (\`${NEW_BASELINE}\`)"
+              else
+                echo "PR already has the latest baseline"
+              fi
               exit 0
             else
               echo "Branch exists but no PR found, deleting and recreating"
@@ -105,7 +134,14 @@ jobs:
         id: vcpkg
         run: |
           LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/vcpkg/releases/latest | jq -r '.tag_name')
-          LATEST_BASELINE=$(curl -s https://api.github.com/repos/microsoft/vcpkg/git/ref/tags/$LATEST_TAG | jq -r '.object.sha')
+          echo "Latest tag: $LATEST_TAG"
+
+          LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
+          echo "Baseline SHA: $LATEST_BASELINE"
+
+          if [ -z "$LATEST_BASELINE" ]; then
+            LATEST_BASELINE=$(curl -s "https://api.github.com/repos/microsoft/vcpkg/git/refs/tags/$LATEST_TAG" | jq -r '.object.sha')
+          fi
           
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "baseline=$LATEST_BASELINE" >> $GITHUB_OUTPUT

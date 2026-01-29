@@ -136,12 +136,10 @@ jobs:
           # Pega a última release
           LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/vcpkg/releases/latest | jq -r '.tag_name')
           echo "Latest tag: $LATEST_TAG"
-          
-          # Pega o commit SHA diretamente da ref da tag
+
           LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
           echo "Baseline SHA: $LATEST_BASELINE"
-          
-          # Se não conseguiu, tenta via API dereferenciando a tag
+
           if [ -z "$LATEST_BASELINE" ]; then
             LATEST_BASELINE=$(curl -s "https://api.github.com/repos/microsoft/vcpkg/git/refs/tags/$LATEST_TAG" | jq -r '.object.sha')
           fi

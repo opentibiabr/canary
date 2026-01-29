@@ -133,7 +133,6 @@ jobs:
       - name: Get latest vcpkg release
         id: vcpkg
         run: |
-          # Pega a última release
           LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/vcpkg/releases/latest | jq -r '.tag_name')
           echo "Latest tag: $LATEST_TAG"
 

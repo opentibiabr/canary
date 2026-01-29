@@ -25,7 +25,10 @@
     {
       "name": "opentelemetry-cpp",
       "default-features": true,
-      "features": ["otlp-http", "prometheus"]
+      "features": [
+        "otlp-http",
+        "prometheus"
+      ]
     },
     {
       "name": "gmp",
@@ -36,5 +39,5 @@
       "platform": "windows"
     }
   ],
-  "builtin-baseline": "d6995a0cf3cafda5e9e52749fad075dd62bfd90c"
+  "builtin-baseline": "23dc124705fcac41cf35c33dd9541f5094a9c19f"
 }

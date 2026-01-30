@@ -12,13 +12,9 @@ function forcePeriodCommand.onSay(player, words, param)
 	if param == "day" or param == "night" then
 		forcePeriod = param
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Forcing period: " .. param)
-		-- Trigger the period change event
-		local period = param == "night" and LIGHT_STATE_SUNSET or LIGHT_STATE_SUNRISE
 	elseif param == "auto" then
 		forcePeriod = false
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Automatic period restored.")
-		-- Trigger the period change event with the current game period
-		local period = getTibiaTimerDayOrNight() == "night" and LIGHT_STATE_SUNSET or LIGHT_STATE_SUNRISE
 	else
 		player:sendCancelMessage("Usage: /forceperiod day|night|auto")
 		return true

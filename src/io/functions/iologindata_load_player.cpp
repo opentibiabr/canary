@@ -579,15 +579,15 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 						container->internalAddThing(item);
 						// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
 						itemsToStartDecaying.emplace_back(item);
-						if (container->hasImbuements()) {
-							imbuedItemsToStartDecay.emplace_back(container);
+						if (item->hasImbuements()) {
+							imbuedItemsToStartDecay.emplace_back(item);
 						}
 					}
 				}
 
 				const std::shared_ptr<Container> &itemContainer = item->getContainer();
 				if (itemContainer) {
-					if (itemContainer->hasImbuements()) {
+					if (itemContainer.get() != item.get() && itemContainer->hasImbuements()) {
 						imbuedItemsToStartDecay.emplace_back(itemContainer);
 					}
 					for (const bool isLootContainer : { true, false }) {

@@ -58,7 +58,7 @@ TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
 	};
 	auto guard = std::unique_ptr<const std::filesystem::path, decltype(cleanup)>(nullptr, cleanup);
 	std::filesystem::current_path(tempPath);
-	DI::create<RSA &>().start();
+	DI::create<RSAManager &>().start();
 
 	auto &logger = testLogger();
 

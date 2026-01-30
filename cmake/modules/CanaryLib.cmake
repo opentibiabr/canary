@@ -80,7 +80,6 @@ target_include_directories(
     ${PROJECT_NAME}_lib
     PUBLIC ${BOOST_DI_INCLUDE_DIRS}
            ${CMAKE_SOURCE_DIR}/src
-           ${GMP_INCLUDE_DIRS}
            ${LUAJIT_INCLUDE_DIRS}
            ${PARALLEL_HASHMAP_INCLUDE_DIRS}
            ${ATOMIC_QUEUE_INCLUDE_DIRS}
@@ -91,8 +90,7 @@ target_include_directories(
 # *****************************************************************************
 target_link_libraries(
     ${PROJECT_NAME}_lib
-    PUBLIC ${GMP_LIBRARIES}
-           ${LUAJIT_LIBRARIES}
+    PUBLIC ${LUAJIT_LIBRARIES}
            CURL::libcurl
            ZLIB::ZLIB
            absl::any
@@ -111,6 +109,7 @@ target_link_libraries(
            unofficial::libmariadb
            nlohmann_json::nlohmann_json
            protobuf
+           OpenSSL::SSL
 )
 
 if(FEATURE_METRICS)

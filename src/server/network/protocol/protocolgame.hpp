@@ -390,7 +390,7 @@ private:
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force = false);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
@@ -557,6 +557,8 @@ private:
 
 	uint16_t otclientV8 = 0;
 
+	// ProtocolGame instances are per-connection and handled on the connection thread,
+	// so the fine-grained throttle here does not require cross-thread synchronization.
 	uint64_t m_nextPartyAnalyzerUpdate = 0;
 
 	void sendOpenStash();

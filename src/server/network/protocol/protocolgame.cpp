@@ -63,6 +63,8 @@
 // This "getIteration" function will allow us to get the total number of iterations that run within a specific map
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
+	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
+
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
@@ -2825,6 +2827,7 @@ void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg) const {
 		}
 		party->reloadPrices();
 		party->updateTrackerAnalyzer();
+		player->updatePartyTrackerAnalyzer(true);
 	}
 }
 
@@ -8480,17 +8483,21 @@ void ProtocolGame::sendSpecialContainersAvailable() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party) {
+void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force) {
 	if (oldProtocol || !player || !party || !party->getLeader()) {
 		return;
 	}
 
+	if (force) {
+		m_nextPartyAnalyzerUpdate = 0;
+	}
+
 	const uint64_t currentTime = OTSYS_TIME();
-	if (currentTime < m_nextPartyAnalyzerUpdate) {
+	if (!force && currentTime < m_nextPartyAnalyzerUpdate) {
 		return;
 	}
 
-	m_nextPartyAnalyzerUpdate = currentTime + 1000;
+	m_nextPartyAnalyzerUpdate = currentTime + PARTY_ANALYZER_THROTTLE_MS;
 
 	NetworkMessage msg;
 	msg.addByte(0x2B);

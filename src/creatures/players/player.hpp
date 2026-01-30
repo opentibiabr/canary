@@ -1054,7 +1054,7 @@ public:
 
 	bool updateKillTracker(const std::shared_ptr<Container> &corpse, const std::string &playerName, const Outfit_t &creatureOutfit) const;
 
-	void updatePartyTrackerAnalyzer() const;
+	void updatePartyTrackerAnalyzer(bool force = false) const;
 
 	void sendLootStats(const std::shared_ptr<Item> &item, uint8_t count);
 	void updateSupplyTracker(const std::shared_ptr<Item> &item);

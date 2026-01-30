@@ -86,7 +86,9 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 				while (std::getline(iss, line)) {
 					if (line.find("Name: ") == 0) {
 						auto trim_cr = [](std::string &s) {
-							if (!s.empty() && s.back() == '\r') s.pop_back();
+							if (!s.empty() && s.back() == '\r') {
+								s.pop_back();
+							}
 						};
 						std::string name = line.substr(6);
 						trim_cr(name);

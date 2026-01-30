@@ -28,6 +28,8 @@ enum SpellGroup_t : uint8_t;
 enum Slots_t : uint8_t;
 enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
+enum SoundMusicEffect_t : uint8_t;
+enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
@@ -330,6 +332,7 @@ private:
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
+	void sendOpenPvpSituations(uint8_t openPvpSituations);
 
 	void sendCancelWalk();
 	void sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint16_t speed);
@@ -566,6 +569,8 @@ private:
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
+	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();

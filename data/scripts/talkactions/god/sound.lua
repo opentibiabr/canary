@@ -123,3 +123,42 @@ end
 globalsound:separator(" ")
 globalsound:groupType("god")
 globalsound:register()
+
+---------------- // ----------------
+local ambientSoundCommand = TalkAction("/ambientsound")
+
+function ambientSoundCommand.onSay(player, words, param)
+	logCommand(player, words, param)
+
+	local soundId = tonumber(param)
+	if not soundId then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Uso correto: /ambientsound <id> ou /ambientsound disable")
+		return false
+	end
+
+	player:sendAmbientSoundEffect(soundId)
+	return true
+end
+
+ambientSoundCommand:separator(" ")
+ambientSoundCommand:groupType("gamemaster")
+ambientSoundCommand:register()
+
+---------------- // ----------------
+local musicSoundCommand = TalkAction("/musicsound")
+
+function musicSoundCommand.onSay(player, words, param)
+	logCommand(player, words, param)
+	local soundId = tonumber(param)
+	if not soundId then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Uso correto: /musicsound <id> ou /musicsound disable")
+		return false
+	end
+
+	player:sendMusicSoundEffect(soundId)
+	return true
+end
+
+musicSoundCommand:separator(" ")
+musicSoundCommand:groupType("gamemaster")
+musicSoundCommand:register()

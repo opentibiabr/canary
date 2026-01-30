@@ -46,9 +46,23 @@ local function getMostDamageInfo(mostDamageKiller)
 	return mostDamageKillerName, byPlayerMostDamage
 end
 
-local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDamageName, byPlayerMostDamage, unjustified, mostDamageUnjustified)
+local function serializeParticipants(participants)
+	if not participants or #participants == 0 then
+		return ""
+	end
+
+	local result = {}
+	for _, participant in ipairs(participants) do
+		local entry = string.format("Name: %s\nType: %s", participant.name, participant.type)
+		result[#result + 1] = entry
+	end
+	return table.concat(result, "\n\n")
+end
+
+local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDamageName, byPlayerMostDamage, unjustified, mostDamageUnjustified, participants)
+	local participantsString = serializeParticipants(participants)
 	local query = string.format(
-		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`) " .. "VALUES (%d, %d, %d, %s, %d, %s, %d, %d, %d)",
+		"INSERT INTO `player_deaths` (`player_id`, `time`, `level`, `killed_by`, `is_player`, `mostdamage_by`, `mostdamage_is_player`, `unjustified`, `mostdamage_unjustified`, `participants`) " .. "VALUES (%d, %d, %d, %s, %d, %s, %d, %d, %d, %s)",
 		playerGuid,
 		os.time(),
 		player:getLevel(),
@@ -57,7 +71,8 @@ local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDam
 		db.escapeString(mostDamageName),
 		byPlayerMostDamage,
 		unjustified and 1 or 0,
-		mostDamageUnjustified and 1 or 0
+		mostDamageUnjustified and 1 or 0,
+		db.escapeString(participantsString)
 	)
 	db.query(query)
 end
@@ -168,6 +183,14 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		return
 	end
 
+	local killers = player:getKillers(false)
+	local participants = {}
+	for _, entry in ipairs(killers) do
+		local name = entry:isMonster() and entry:getType():getNameDescription() or entry:getName()
+		local type = entry:isPlayer() and "player" or "monster"
+		participants[#participants + 1] = { name = name, type = type }
+	end
+
 	local killerName, byPlayer = getKillerInfo(killer)
 	local mostDamageName, byPlayerMostDamage = getMostDamageInfo(mostDamageKiller)
 
@@ -178,7 +201,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	end
 
 	local playerGuid = player:getGuid()
-	saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDamageName, byPlayerMostDamage, unjustified, mostDamageUnjustified)
+	saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDamageName, byPlayerMostDamage, unjustified, mostDamageUnjustified, participants)
 
 	Webhook.sendMessage(":skull_crossbones: " .. player:getMarkdownLink() .. " has died. Killed at level _" .. player:getLevel() .. "_ by **" .. killerName .. "**.", announcementChannels["player-kills"])
 	handleGuildWar(player, killer, mostDamageKiller, killerName, mostDamageName)

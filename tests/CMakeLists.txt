@@ -1,32 +1,64 @@
-find_package(ut CONFIG REQUIRED)
+if(NOT BUILD_TESTING)
+    return()
+endif()
 
-enable_testing()
+find_package(
+    GTest
+    CONFIG
+    REQUIRED
+)
 
-function(setup_test TARGET_NAME DIR)
-    add_executable(${TARGET_NAME} main.cpp)
+include(GoogleTest)
 
-    target_compile_definitions(${TARGET_NAME} PUBLIC -DDEBUG_LOG)
-    target_link_libraries(${TARGET_NAME}  PRIVATE Boost::ut ${PROJECT_NAME}_lib)
-    target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/tests/fixture PRIVATE ${CMAKE_SOURCE_DIR}/tests/${DIR})
+function(
+    setup_test
+    TARGET_NAME
+    DIR
+)
+    add_executable(${TARGET_NAME})
 
-    if(SPEED_UP_BUILD_UNITY AND (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "Release"))
-        set_target_properties(${TARGET_NAME} PROPERTIES UNITY_BUILD ON)
-        log_option_enabled("Build unity for speed up compilation for target ${TARGET_NAME}")
-    else()
-        log_option_disabled("Build unity")
-    endif()
+    target_sources(
+        ${TARGET_NAME}
+        PRIVATE ${CMAKE_SOURCE_DIR}/tests/${DIR}/main.cpp
+    )
 
+    target_compile_definitions(
+        ${TARGET_NAME}
+        PUBLIC -DDEBUG_LOG -DBUILD_TESTS
+    )
+
+    target_link_libraries(
+        ${TARGET_NAME}
+        PRIVATE ${PROJECT_NAME}_lib GTest::gtest
+    )
+
+    target_include_directories(
+        ${TARGET_NAME}
+        PRIVATE ${CMAKE_SOURCE_DIR}/tests/fixture
+                ${CMAKE_SOURCE_DIR}/tests/${DIR}
+    )
+
+    target_compile_features(
+        ${TARGET_NAME}
+        PRIVATE cxx_std_20
+    )
+
+    setup_target(${TARGET_NAME})
     configure_linking(${TARGET_NAME})
 
-    add_test(NAME ${DIR} COMMAND ${TARGET_NAME})
-    if(RUN_TESTS_AFTER_BUILD)
-        add_custom_command(
-                TARGET ${TARGET_NAME} POST_BUILD
-                COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-                COMMENT "Running ctest ${DIR} after building ${TARGET_NAME}"
-                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
-        )
-    endif (RUN_TESTS_AFTER_BUILD)
+    set_target_properties(
+        ${TARGET_NAME}
+        PROPERTIES UNITY_BUILD OFF
+                   INTERPROCEDURAL_OPTIMIZATION OFF
+    )
+    log_option_disabled("Build unity")
+
+    gtest_discover_tests(
+        ${TARGET_NAME}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
+        PROPERTIES
+        TIMEOUT 120
+    )
 endfunction()
 
 add_subdirectory(unit)

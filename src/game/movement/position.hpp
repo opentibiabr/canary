@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -127,3 +127,16 @@ namespace std {
 
 std::ostream &operator<<(std::ostream &, const Position &);
 std::ostream &operator<<(std::ostream &, const Direction &);
+
+// Automatic conversion to string from Position
+template <>
+struct fmt::formatter<Position> {
+	constexpr auto parse(format_parse_context &ctx) {
+		return ctx.begin();
+	}
+
+	template <typename FormatContext>
+	auto format(const Position &pos, FormatContext &ctx) const {
+		return format_to(ctx.out(), "({}, {}, {})", pos.x, pos.y, pos.z);
+	}
+};

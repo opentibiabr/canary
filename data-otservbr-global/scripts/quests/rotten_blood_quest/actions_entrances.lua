@@ -88,7 +88,7 @@ function bakragoreEntrance.onUse(player, item, fromPosition, target, toPosition,
 		return false
 	end
 
-	if entrance.position == position then
+	if entrance.position == item:getPosition() then
 		player:teleportTo(entrance.destination)
 		player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	end

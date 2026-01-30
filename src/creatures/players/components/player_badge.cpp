@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -139,8 +139,9 @@ std::vector<std::shared_ptr<Player>> PlayerBadge::getPlayersInfoByAccount(const 
 			auto player = std::make_shared<Player>(nullptr);
 			player->setName(result->getString("name"));
 			player->setLevel(result->getNumber<uint32_t>("level"));
-			player->setVocation(result->getNumber<uint16_t>("vocation"));
-			players.push_back(player);
+			if (player->setVocation(result->getNumber<uint16_t>("vocation"))) {
+				players.push_back(player);
+			}
 		} while (result->next());
 	}
 

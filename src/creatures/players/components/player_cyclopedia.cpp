@@ -85,10 +85,15 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 				std::string line;
 				while (std::getline(iss, line)) {
 					if (line.find("Name: ") == 0) {
+						auto trim_cr = [](std::string &s) {
+							if (!s.empty() && s.back() == '\r') s.pop_back();
+						};
 						std::string name = line.substr(6);
+						trim_cr(name);
 						std::string typeLine;
 						if (std::getline(iss, typeLine) && typeLine.find("Type: ") == 0) {
 							std::string type = typeLine.substr(6);
+							trim_cr(type);
 							// Skip only if not already skipped (mimic PHP logic)
 							if ((name == killed_by || name == mostdamage_by) && skipped.find(name) == skipped.end()) {
 								skipped.insert(name);

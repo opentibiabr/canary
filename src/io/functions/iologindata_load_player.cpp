@@ -548,7 +548,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 
 	ItemsMap inventoryItems;
 	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
-	std::vector<std::shared_ptr<Item>> itemsToStartDecayImbuement;
+	std::vector<std::shared_ptr<Item>> imbuedItemsToStartDecay;
 
 	try {
 		if ((result = g_database().storeQuery(query))) {
@@ -566,7 +566,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 					player->internalAddThing(pid, item);
 					item->startDecaying();
 					if (item->hasImbuements()) {
-						itemsToStartDecayImbuement.emplace_back(item);
+						imbuedItemsToStartDecay.emplace_back(item);
 					}
 				} else {
 					ItemsMap::const_iterator it2 = inventoryItems.find(pid);
@@ -580,7 +580,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 						// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
 						itemsToStartDecaying.emplace_back(item);
 						if (container->hasImbuements()) {
-							itemsToStartDecayImbuement.emplace_back(container);
+							imbuedItemsToStartDecay.emplace_back(container);
 						}
 					}
 				}
@@ -588,7 +588,7 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 				const std::shared_ptr<Container> &itemContainer = item->getContainer();
 				if (itemContainer) {
 					if (itemContainer->hasImbuements()) {
-						itemsToStartDecayImbuement.emplace_back(itemContainer);
+						imbuedItemsToStartDecay.emplace_back(itemContainer);
 					}
 					for (const bool isLootContainer : { true, false }) {
 						const auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
@@ -611,8 +611,8 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 			item->startDecaying();
 		}
 
-		// Start imbuement decay on login for items with imbuements
-		for (const auto &item : itemsToStartDecayImbuement) {
+		// Start imbuement decay on login for imbued items
+		for (const auto &item : imbuedItemsToStartDecay) {
 			g_imbuementDecay().startImbuementDecay(item);
 		}
 

@@ -124,7 +124,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 					} else if (type == "monster") {
 						monsters.push_back(entry);
 					} else {
-					    g_logger().warn("Unrecognized participant type '{}' for name '{}'", type, name);
+						g_logger().warn("Unrecognized participant type '{}' for name '{}'", type, name);
 					}
 				}
 

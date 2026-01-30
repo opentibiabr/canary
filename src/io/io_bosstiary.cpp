@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -182,7 +182,9 @@ void IOBosstiary::addBosstiaryKill(const std::shared_ptr<Player> &player, const 
 
 	auto oldBossLevel = getBossCurrentLevel(player, bossId);
 	player->addBestiaryKillCount(bossId, amount);
-	player->refreshCyclopediaMonsterTracker(true);
+	if (player->isBossOnBosstiaryTracker(mtype)) {
+		player->refreshCyclopediaMonsterTracker(true);
+	}
 	auto newBossLevel = getBossCurrentLevel(player, bossId);
 	if (oldBossLevel == newBossLevel) {
 		return;

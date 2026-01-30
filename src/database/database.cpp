@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -68,9 +68,8 @@ void Database::createDatabaseBackup(bool compress) const {
 
 	// Get current time for formatting
 	auto now = std::chrono::system_clock::now();
-	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-	std::string formattedDate = fmt::format("{:%Y-%m-%d}", fmt::localtime(now_c));
-	std::string formattedTime = fmt::format("{:%H-%M-%S}", fmt::localtime(now_c));
+	std::string formattedDate = fmt::format("{:%Y-%m-%d}", now);
+	std::string formattedTime = fmt::format("{:%H-%M-%S}", now);
 
 	// Create a backup directory based on the current date
 	std::string backupDir = fmt::format("database_backup/{}/", formattedDate);
@@ -142,7 +141,8 @@ void Database::createDatabaseBackup(bool compress) const {
 				for (const auto &file : std::filesystem::directory_iterator(entry)) {
 					if (file.path().extension() == ".gz") {
 						auto fileTime = std::filesystem::last_write_time(file);
-						auto fileTimeSystemClock = std::chrono::clock_cast<std::chrono::system_clock>(fileTime);
+						auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(fileTime - std::filesystem::file_time_type::clock::now() + std::chrono::system_clock::now());
+						auto fileTimeSystemClock = std::chrono::system_clock::time_point { sctp.time_since_epoch() };
 
 						if (fileTimeSystemClock < sevenDaysAgo) {
 							std::filesystem::remove(file);

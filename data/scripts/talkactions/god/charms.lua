@@ -33,6 +33,43 @@ addCharm:groupType("god")
 addCharm:register()
 
 ---------------- // ----------------
+
+local addMinorCharm = TalkAction("/addminorcharms")
+
+function addMinorCharm.onSay(player, words, param)
+	-- create log
+	logCommand(player, words, param)
+
+	local usage = "/addminorcharms PLAYER NAME,AMOUNT"
+	if param == "" then
+		player:sendCancelMessage("Command param required. Usage: " .. usage)
+		return true
+	end
+	local split = param:split(",")
+	if not split[2] then
+		player:sendCancelMessage("Insufficient parameters. Usage: " .. usage)
+		return true
+	end
+	local target = Player(split[1])
+	if not target then
+		player:sendCancelMessage("A player with that name is not online.")
+		return true
+	end
+
+	split[2] = split[2]:trimSpace()
+
+	player:sendCancelMessage("Added " .. split[2] .. " minor charm points to character '" .. target:getName() .. "'.")
+	target:sendCancelMessage("Received " .. split[2] .. " minor charm points!")
+	target:addMinorCharmEchoes(tonumber(split[2]))
+	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
+end
+
+addMinorCharm:separator(" ")
+addMinorCharm:groupType("god")
+addMinorCharm:register()
+
+---------------- // ----------------
+
 local resetCharm = TalkAction("/resetcharms")
 
 function resetCharm.onSay(player, words, param)
@@ -143,7 +180,6 @@ function setBestiary.onSay(player, words, param)
 	end
 
 	local monsterName = split[2]
-
 	-- If "all" is specified, iterate through all monsters
 	if monsterName:lower() == "all" then
 		local monsterList = Game.getMonsterTypes() -- Retrieves all available monsters

@@ -40,7 +40,7 @@ private:
 };
 
 TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
-	DI::create<RSA &>().start();
+	DI::create<RSAManager &>().start();
 
 	auto &logger = testLogger();
 

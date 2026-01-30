@@ -98,7 +98,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 							std::string type = typeLine.substr(6);
 							trim_cr(type);
 							// Skip only if not already skipped (mimic PHP logic)
-							if ((name == killed_by || name == mostdamage_by) && skipped.find(name) == skipped.end()) {
+							if ((name == killed_by || name == mostdamage_by) && !skipped.contains(name)) {
 								skipped.insert(name);
 								continue;
 							}

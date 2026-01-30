@@ -69,12 +69,15 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 				cause.append(fmt::format(" by {}", killed_by));
 			}
 			if (!mostdamage_by.empty()) {
-				if (mostdamage_by != killed_by) {
+				if (killed_by.empty()) {
+					cause.append(fmt::format(" by {}", mostdamage_by));
+				} else if (mostdamage_by != killed_by) {
 					cause.append(fmt::format(" and by {}", mostdamage_by));
 				} else {
-					cause.append(" <b>(soloed)</b>");
+					cause.append("<b>(soloed)</b>");
 				}
 			}
+
 			if (!participants.empty()) {
 				std::map<std::string, std::pair<int, std::string>> participantCount;
 				std::set<std::string> skipped; // Track skipped names like PHP
@@ -83,8 +86,9 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 				while (std::getline(iss, line)) {
 					if (line.find("Name: ") == 0) {
 						std::string name = line.substr(6);
-						if (std::getline(iss, line) && line.find("Type: ") == 0) {
-							std::string type = line.substr(6);
+						std::string typeLine;
+						if (std::getline(iss, typeLine) && typeLine.find("Type: ") == 0) {
+							std::string type = typeLine.substr(6);
 							// Skip only if not already skipped (mimic PHP logic)
 							if ((name == killed_by || name == mostdamage_by) && skipped.find(name) == skipped.end()) {
 								skipped.insert(name);
@@ -92,6 +96,8 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 							}
 							participantCount[name].first++; // Increment count
 							participantCount[name].second = type; // Store type
+						} else {
+							g_logger().warn("Malformed participant entry for name '{}': expected 'Type: ' line", name);
 						}
 					}
 				}

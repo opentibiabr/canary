@@ -36,7 +36,7 @@ void PlayerCyclopedia::loadSummaryData() const {
 void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) const {
 	Benchmark bm_check;
 	uint32_t offset = static_cast<uint32_t>(page - 1) * entriesPerPage;
-	const auto query = fmt::format("SELECT `time`, `level`, `killed_by`, `mostdamage_by`, `participants`, (select count(*) FROM `player_deaths` WHERE `player_id` = {}) as `entries` FROM `player_deaths` WHERE `player_id` = {} AND `time` >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 30 DAY)) ORDER BY `time` DESC LIMIT {}, {}", m_player.getGUID(), m_player.getGUID(), offset, entriesPerPage);
+	const auto query = fmt::format("SELECT `time`, `level`, `killed_by`, `mostdamage_by`, `participants`, (select count(*) FROM `player_deaths` WHERE `player_id` = {} AND `time` >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 30 DAY))) as `entries` FROM `player_deaths` WHERE `player_id` = {} AND `time` >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 30 DAY)) ORDER BY `time` DESC LIMIT {}, {}", m_player.getGUID(), m_player.getGUID(), offset, entriesPerPage);
 
 	uint32_t playerID = m_player.getID();
 	const std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](const DBResult_ptr &result, bool) {

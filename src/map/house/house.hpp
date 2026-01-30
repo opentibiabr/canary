@@ -364,6 +364,16 @@ private:
 
 	void handleContainer(ItemList &moveItemList, const std::shared_ptr<Item> &item) const;
 	void handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const;
+	void collectMovableItemsFromContainer(ItemList &moveItemList, const std::shared_ptr<Container> &container, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const;
+
+	mutable std::vector<std::string> failedItemTransfers;
+	mutable std::vector<std::string> movedItemsLog;
+
+	mutable std::size_t itemsFound = 0;
+	mutable std::size_t itemsMoved = 0;
+
+	mutable std::size_t totalItemsFound = 0;
+	mutable std::size_t totalItemsMoved = 0;
 };
 
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;

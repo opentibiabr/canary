@@ -92,6 +92,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 						};
 						std::string name = line.substr(6);
 						trim_cr(name);
+						const auto pos = iss.tellg();
 						std::string typeLine;
 						if (std::getline(iss, typeLine) && typeLine.find("Type: ") == 0) {
 							std::string type = typeLine.substr(6);
@@ -105,6 +106,9 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 							participantCount[name].second = type; // Store type
 						} else {
 							g_logger().warn("Malformed participant entry for name '{}': expected 'Type: ' line", name);
+							if (pos != std::istringstream::pos_type(-1)) {
+								iss.seekg(pos);
+							}
 						}
 					}
 				}
@@ -119,6 +123,8 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 						players.push_back(entry);
 					} else if (type == "monster") {
 						monsters.push_back(entry);
+					} else {
+					    g_logger().warn("Unrecognized participant type '{}' for name '{}'", type, name);
 					}
 				}
 

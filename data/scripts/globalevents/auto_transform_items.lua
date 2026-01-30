@@ -58,24 +58,26 @@ function autoTransformItemsEvent.onThink(interval, lastExecution)
 			data.currentMs = 0
 			for _, items in ipairs(data.items) do
 				local tile = Tile(items.position)
-				if tile then
+				-- postpone the cycle while a creature stands on the tile
+				if tile and tile:getCreatureCount() == 0 then
 					local prevId = items.ids[items.index]
 					local nextIndex = items.index + 1
 					if nextIndex > #items.ids then
-						items.index = 1
-					else
-						items.index = nextIndex
+						nextIndex = 1
 					end
-					local nextId = items.ids[items.index]
+					local nextId = items.ids[nextIndex]
 					if prevId ~= nextId then
 						local targetItem = tile:getItemById(prevId)
-						if targetItem then
-							targetItem:transform(nextId)
-							-- some items have default decay, but in this case we deactivate it because we are controlling the item's transformations
-							targetItem:setAttribute(ITEM_ATTRIBUTE_DECAYSTATE, 0)
-							if items.onTransform then
-								items.onTransform(tile, targetItem)
+						if targetItem and targetItem:transform(nextId) then
+							local transformedItem = tile:getItemById(nextId)
+							if transformedItem then
+								-- some items have default decay, but in this case we deactivate it because we are controlling the item's transformations
+								transformedItem:setAttribute(ITEM_ATTRIBUTE_DECAYSTATE, 0)
+								if items.onTransform then
+									items.onTransform(tile, transformedItem)
+								end
 							end
+							items.index = nextIndex
 						end
 					end
 				end

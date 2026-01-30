@@ -85,12 +85,20 @@ function trapEvent.onStepOut(creature, item, position, fromPosition)
 	if trap and trap.secondsInterval then
 		-- trap.secondsInterval determines how long after
 		-- the trap re-arms
-		if not trap.positions[position:toString()] then
-			trap.positions[position:toString()] = true
+		local posKey = position:toString()
+		if not trap.positions[posKey] then
+			trap.positions[posKey] = true
+			local rearmItemId = item:getId()
+			local rearmX, rearmY, rearmZ = position.x, position.y, position.z
 			addEvent(function()
-				trap.positions[position:toString()] = nil
-				if item then
-					item:transform(item:getId() - 1)
+				trap.positions[posKey] = nil
+				local rearmTile = Tile(Position(rearmX, rearmY, rearmZ))
+				if not rearmTile then
+					return
+				end
+				local trapItem = rearmTile:getItemById(rearmItemId)
+				if trapItem then
+					trapItem:transform(rearmItemId - 1)
 				end
 			end, trap.secondsInterval * 1000)
 		end

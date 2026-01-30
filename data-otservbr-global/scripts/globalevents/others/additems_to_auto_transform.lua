@@ -23,7 +23,7 @@ local slitsBlades = {
 local function onTransformIntoSpikes(tile, item)
 	if not tile:hasFlag(TILESTATE_PROTECTIONZONE) and item:getId() == 2148 then
 		for _, creature in ipairs(tile:getCreatures()) do
-			doTargetCombatHealth(0, creature, COMBAT_PHYSICALDAMAGE, -15, -30, CONST_ME_NONE)
+			doTargetCombatHealth(0, creature, COMBAT_PHYSICALDAMAGE, -50, -100, CONST_ME_NONE)
 		end
 	end
 end

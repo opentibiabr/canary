@@ -119,5 +119,8 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Oh well.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
+-- add "passage" button to npc ui
+npcType:addButton(KEYWORDBUTTONICON_SAIL)
+
 -- npcType registering the npcConfig table
 npcType:register(npcConfig)

@@ -30,6 +30,7 @@ private:
 	static void initConditionParamEnums(lua_State* L);
 	static void initAttributeConditionSubIdEnums(lua_State* L);
 	static void initConcoctionsEnum(lua_State* L);
+	static void initEffectOriginEnums(lua_State* L);
 	static void initConstMeEnums(lua_State* L);
 	static void initConstAniEnums(lua_State* L);
 	static void initConstPropEnums(lua_State* L);
@@ -54,6 +55,7 @@ private:
 	static void initTextColorEnums(lua_State* L);
 	static void initTileStateEnums(lua_State* L);
 	static void initSpeechBubbleEnums(lua_State* L);
+	static void initKeywordButtonIcons(lua_State* L);
 	static void initMapMarkEnums(lua_State* L);
 	static void initReturnValueEnums(lua_State* L);
 	static void initReloadTypeEnums(lua_State* L);
@@ -68,4 +70,35 @@ private:
 	static void ambientsSoundEnums(lua_State* L);
 	static void musicsSoundEnums(lua_State* L);
 	static void initWheelEnums(lua_State* L);
+
+	/**
+	 * @brief Registers all enum values of Virtue_t into the Lua environment.
+	 *
+	 * This function iterates over all values of the Virtue_t enum using magic_enum
+	 * and registers them into Lua under the "Virtue_" namespace.
+	 *
+	 * Example usage in Lua after registration:
+	 * @code
+	 * print(Virtue_Harmony) -- prints the corresponding enum value
+	 * @endcode
+	 *
+	 * @param L The Lua state pointer.
+	 */
+	static void initVirtueEnums(lua_State* L);
+	/**
+	 * @brief Registers all enum values of MonkSpell_t into the Lua environment.
+	 *
+	 * This function exposes the MonkSpell_t enum to Lua using the "MonkSpell_" namespace.
+	 * It allows Lua scripts to refer to specific monk spell types by name.
+	 *
+	 * Example usage in Lua after registration:
+	 * @code
+	 * if spell:getType() == MonkSpell_Builder then
+	 *     -- do something
+	 * end
+	 * @endcode
+	 *
+	 * @param L The Lua state pointer.
+	 */
+	static void initMonkSpellTypeEnums(lua_State* L);
 };

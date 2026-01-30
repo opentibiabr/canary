@@ -54,14 +54,20 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 	damage.origin = params.origin;
 	damage.primary.type = params.combatType;
 
+	// If the caster is a player and their vocation is "Monk" (CipSoft style),
+	// and the spell being cast is not a healing spell,
+	// we attempt to apply the elemental bond of the equipped weapon to the damage type.
+	// Otherwise, we fallback to the default combat type from the spell parameters.
+	const auto &casterPlayer = creature ? creature->getPlayer() : nullptr;
+	if (casterPlayer && casterPlayer->getPlayerVocationEnum() == VOCATION_MONK_CIP && !instantSpellName.empty() && params.combatType != COMBAT_HEALING) {
+		const auto &weapon = casterPlayer->getWeapon(true);
+		damage.primary.type = weapon ? Item::items[weapon->getID()].elementalBond : params.combatType;
+	}
+
 	damage.instantSpellName = instantSpellName;
 	damage.runeSpellName = runeSpellName;
 	// Wheel of destiny
-	std::shared_ptr<Spell> wheelSpell = nullptr;
-	std::shared_ptr<Player> attackerPlayer = creature ? creature->getPlayer() : nullptr;
-	if (attackerPlayer) {
-		wheelSpell = attackerPlayer->wheel().getCombatDataSpell(damage);
-	}
+	const auto &wheelSpell = casterPlayer ? casterPlayer->wheel().getCombatDataSpell(damage) : nullptr;
 	// End
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
 		damage.primary.value = normal_random(
@@ -106,8 +112,8 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 				}
 			}
 		}
-		if (attackerPlayer && wheelSpell && wheelSpell->isInstant()) {
-			wheelSpell->getCombatDataAugment(attackerPlayer, damage);
+		if (casterPlayer && wheelSpell && wheelSpell->isInstant()) {
+			wheelSpell->getCombatDataAugment(casterPlayer, damage);
 		}
 	}
 
@@ -524,7 +530,7 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 		}
 
 		case COMBAT_PARAM_CHAIN_EFFECT: {
-			params.chainEffect = static_cast<uint8_t>(value);
+			params.chainEffect = static_cast<uint16_t>(value);
 			return true;
 		}
 	}
@@ -610,6 +616,55 @@ CallBack* Combat::getCallback(CallBackParam_t key) const {
 	return nullptr;
 }
 
+void Combat::applyMantraAbsorb(const std::shared_ptr<Player> &player, CombatType_t combatType, int32_t &value) {
+	if (!player) {
+		return;
+	}
+
+	// Get the shared mantra value if active (subtract base 100 from buff)
+	int32_t sharedMantra = player->getBuff(BUFF_MANTRA) - 100;
+
+	// Combine individual mantra and shared mantra
+	int32_t mantra = player->getMantra() + sharedMantra;
+	if (mantra <= 0) {
+		return;
+	}
+
+	// Apply mantra absorption only for elemental damage types
+	if (combatType == COMBAT_FIREDAMAGE || combatType == COMBAT_ICEDAMAGE || combatType == COMBAT_ENERGYDAMAGE || combatType == COMBAT_EARTHDAMAGE) {
+		value -= mantra;
+	}
+}
+
+void Combat::harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std::shared_ptr<Player> &targetPlayer, const uint8_t charges) {
+	CombatDamage damage;
+	CombatParams combatParams;
+
+	// Each charge increases healing by 5%
+	double multiplier = 1.0 + 0.05 * charges;
+
+	// Get base healing value from caster
+	uint16_t damageAndHealing = casterPlayer->calculateFlatDamageHealing();
+
+	// Calculate min and max healing, apply multiplier
+	auto damageAndHealingMin = static_cast<int32_t>(std::ceil(damageAndHealing * 2 * multiplier));
+	damageAndHealingMin = std::max<int32_t>(10, damageAndHealingMin); // Enforce minimum
+
+	auto damageAndHealingMax = static_cast<int32_t>(std::ceil(damageAndHealing * 2.3 * multiplier));
+	damageAndHealingMax = std::max<int32_t>(25, damageAndHealingMax); // Enforce minimum
+
+	// Setup non-aggressive healing parameters
+	combatParams.aggressive = false;
+	combatParams.impactEffect = CONST_ME_MAGIC_BLUE;
+
+	// Set healing type and random healing amount
+	damage.primary.type = COMBAT_HEALING;
+	damage.primary.value = normal_random(damageAndHealingMin, damageAndHealingMax);
+
+	// Apply healing to the target
+	Combat::doCombatHealth(nullptr, targetPlayer, damage, combatParams);
+}
+
 void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data) {
 	if (!data) {
 		g_logger().error("[{}]: CombatDamage is nullptr", __FUNCTION__);
@@ -658,8 +713,31 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			}
 		}
 
-		if (targetPlayer && damage.primary.type == COMBAT_HEALING) {
-			damage.primary.value *= targetPlayer->getBuff(BUFF_HEALINGRECEIVED) / 100.;
+		if (damage.primary.type == COMBAT_HEALING) {
+			damage.primary.value *= attackerPlayer->getBuff(BUFF_HEALINGDEALT) / 100.;
+
+			if (targetPlayer) {
+				damage.primary.value *= targetPlayer->getBuff(BUFF_HEALINGRECEIVED) / 100.;
+			}
+
+			if (params.origin != ORIGIN_HARMONY && attackerPlayer->getVirtue() == Virtue_t::Sustain && attackerPlayer->getPlayerVocationEnum() == VOCATION_MONK_CIP) {
+				damage.primary.value *= attackerPlayer->hasCondition(CONDITION_SERENE) ? 1.70 : 1.35;
+			}
+		} else if (damage.origin == ORIGIN_FIST || damage.origin == ORIGIN_RANGED) {
+			damage.primary.value *= attackerPlayer->getBuff(BUFF_AUTOATTACKDEALT) / 100.;
+			damage.secondary.value *= attackerPlayer->getBuff(BUFF_AUTOATTACKDEALT) / 100.;
+		}
+
+		if (attackerPlayer && attackerPlayer->getPlayerVocationEnum() == VOCATION_MONK_CIP && damage.origin == ORIGIN_FIST) {
+			auto bonusMantra = attackerPlayer->getMantra();
+			auto bonusAscetic = attackerPlayer->wheel().getStage(WheelStage_t::ASCETIC);
+			damage.primary.value -= bonusMantra * bonusAscetic;
+			const auto monkMeeleBonus = attackerPlayer->kv()->get("monk-basic-atk-bonus");
+			if (monkMeeleBonus.has_value()) {
+				bool isSerene = attackerPlayer->hasCondition(CONDITION_SERENE);
+				int32_t bonus = 1 + (isSerene ? 0.10 : 0.05) * monkMeeleBonus.value().getNumber();
+				damage.primary.value *= bonus;
+			}
 		}
 
 		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
@@ -885,6 +963,47 @@ void Combat::CombatNullFunc(const std::shared_ptr<Creature> &caster, const std::
 	CombatDispelFunc(caster, target, params, nullptr);
 }
 
+uint16_t Combat::monkEffectByElementalBond(CombatType_t combatType, uint16_t effect) {
+	if (combatType == COMBAT_NONE || combatType == COMBAT_PHYSICALDAMAGE) {
+		return effect; // No change needed for non-elemental or physical
+	}
+
+	// Replace base white effects with colored variants depending on the element
+	if (effect == CONST_ME_WHIRLWIND_BLOW_WHITE) {
+		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_WHIRLWIND_BLOW_GREEN : CONST_ME_WHIRLWIND_BLOW_PINK;
+	} else if (effect == CONST_ME_PULSE_WHITE) {
+		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_PULSE_GREEN : CONST_ME_PULSE_PINK;
+	} else if (effect == CONST_ME_CLAW_WHITE) {
+		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_CLAW_GREEN : CONST_ME_CLAW_PINK;
+	} else if (effect == CONST_ME_BLOW_WHITE) {
+		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_BLOW_GREEN : CONST_ME_BLOW_PINK;
+	} else if (effect == CONST_ME_OUTBURST_WHITE) {
+		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_OUTBURST_GREEN : CONST_ME_OUTBURST_PINK;
+	} else if (effect == CONST_ME_WHITE_ENERGY_SPARK) {
+		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_GREEN_ENERGY_SPARK : CONST_ME_PINK_ENERGY_SPARK;
+	}
+
+	return effect;
+}
+
+void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Position &position, uint16_t effect) {
+	const auto &casterPlayer = caster ? caster->getPlayer() : nullptr;
+
+	// If not a Monk player, use the original effect
+	if (!casterPlayer || casterPlayer->getPlayerVocationEnum() != VOCATION_MONK_CIP) {
+		g_game().addMagicEffect(position, effect);
+		return;
+	}
+
+	// If Monk has an elemental weapon, adjust the effect
+	if (const auto &weapon = casterPlayer->getWeapon(true)) {
+		const auto &it = Item::items[weapon->getID()];
+		effect = monkEffectByElementalBond(it.elementalBond, effect);
+	}
+
+	g_game().addMagicEffect(position, effect);
+}
+
 void Combat::combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, const CombatParams &params) {
 	if (params.itemId != 0) {
 		uint16_t itemId = params.itemId;
@@ -964,7 +1083,7 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 	}
 
 	if (params.impactEffect != CONST_ME_NONE) {
-		Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
+		Combat::sendCombatEffect(caster, tile->getPosition(), params.impactEffect);
 	}
 
 	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
@@ -998,6 +1117,9 @@ void Combat::addDistanceEffect(const std::shared_ptr<Creature> &caster, const Po
 		}
 
 		switch (player->getWeaponType()) {
+			case WEAPON_FIST:
+				effect = CONST_ANI_CAKE;
+				break;
 			case WEAPON_AXE:
 				effect = CONST_ANI_WHIRLWINDAXE;
 				break;
@@ -1026,7 +1148,7 @@ void Combat::addDistanceEffect(const std::shared_ptr<Creature> &caster, const Po
 	}
 }
 
-void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t effect) {
+void Combat::doChainEffect(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &dest, uint16_t effect) {
 	if (effect > 0) {
 		std::vector<Direction> dirList;
 
@@ -1038,10 +1160,10 @@ void Combat::doChainEffect(const Position &origin, const Position &dest, uint8_t
 		if (g_game().map.getPathMatching(origin, dirList, FrozenPathingConditionCall(dest), fpp)) {
 			for (const auto &dir : dirList) {
 				pos = getNextPosition(dir, pos);
-				g_game().addMagicEffect(pos, effect);
+				Combat::sendCombatEffect(caster, pos, effect);
 			}
 		}
-		g_game().addMagicEffect(dest, effect);
+		Combat::sendCombatEffect(caster, dest, effect);
 	}
 }
 
@@ -1092,6 +1214,9 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	setChainCallback(g_configManager().getNumber(COMBAT_CHAIN_TARGETS), 1, true);
 
 	switch (weaponType) {
+		case WEAPON_FIST:
+			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_FIST), HUMAN_CLOSE_ATK_FIST, CONST_ME_SLASH);
+			break;
 		case WEAPON_SWORD:
 			setCommonValues(g_configManager().getFloat(COMBAT_CHAIN_SKILL_FORMULA_SWORD), MELEE_ATK_SWORD, CONST_ME_SLASH);
 			break;
@@ -1152,7 +1277,7 @@ bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::s
 			g_dispatcher().scheduleEvent(
 				delay, [combat, caster, nextTarget, from, affected]() {
 					if (combat && caster && nextTarget) {
-						Combat::doChainEffect(from, nextTarget->getPosition(), combat->params.chainEffect);
+						Combat::doChainEffect(caster, from, nextTarget->getPosition(), combat->params.chainEffect);
 						combat->doCombat(caster, nextTarget, from, affected);
 					}
 				},
@@ -1354,7 +1479,7 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 	if ((caster && target)
 	    && (caster == target || canCombat)
 	    && (params.impactEffect != CONST_ME_NONE)) {
-		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
+		Combat::sendCombatEffect(caster, target->getPosition(), params.impactEffect);
 	}
 
 	if (target && params.combatType == COMBAT_HEALING) {
@@ -1423,7 +1548,7 @@ void Combat::doCombatMana(const std::shared_ptr<Creature> &caster, const std::sh
 	if ((caster && target)
 	    && (caster == target || canCombat)
 	    && (params.impactEffect != CONST_ME_NONE)) {
-		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
+		Combat::sendCombatEffect(caster, target->getPosition(), params.impactEffect);
 	}
 
 	std::vector<std::shared_ptr<Creature>> affectedTargets;
@@ -1461,7 +1586,7 @@ void Combat::doCombatCondition(const std::shared_ptr<Creature> &caster, const Po
 void Combat::doCombatCondition(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params) {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
 	if ((caster == target || canCombat) && params.impactEffect != CONST_ME_NONE) {
-		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
+		Combat::sendCombatEffect(caster, target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {
@@ -1492,7 +1617,7 @@ void Combat::doCombatDispel(const std::shared_ptr<Creature> &caster, const std::
 	if ((caster && target)
 	    && (caster == target || canCombat)
 	    && (params.impactEffect != CONST_ME_NONE)) {
-		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
+		Combat::sendCombatEffect(caster, target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {

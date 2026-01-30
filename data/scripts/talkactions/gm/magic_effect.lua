@@ -9,9 +9,12 @@ function magicEffect.onSay(player, words, param)
 		return true
 	end
 
-	local effect = tonumber(param)
+	local split = param:split(",")
+	
+
+	local effect = tonumber(split[1])
 	if effect ~= nil and effect > 0 then
-		player:getPosition():sendMagicEffect(effect)
+		player:getPosition():sendMagicEffect(effect, nil, tonumber(split[2]))
 	end
 
 	return true

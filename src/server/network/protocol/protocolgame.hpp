@@ -12,6 +12,8 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
+#include "creatures/players/stash_definitions.hpp"
+#include "creatures/npcs/npc.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -33,6 +35,7 @@ enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
+enum class MonkData_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -70,7 +73,6 @@ using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
@@ -184,7 +186,7 @@ private:
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
-	void parseBestiarySendRaces();
+	void sendBestiaryRaces();
 	void parseBestiarySendCreatures(NetworkMessage &msg);
 	void sendBestiaryCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
@@ -196,7 +198,7 @@ private:
 	void parseLeaderFinderWindow(NetworkMessage &msg);
 	void parseMemberFinderWindow(NetworkMessage &msg);
 	void parseSendBuyCharmRune(NetworkMessage &msg);
-	void parseBestiarysendMonsterData(NetworkMessage &msg);
+	void parseSendBestiaryMonsterData(NetworkMessage &msg);
 	void parseCyclopediaMonsterTracker(NetworkMessage &msg);
 
 	void parseTeleport(NetworkMessage &msg);
@@ -264,7 +266,7 @@ private:
 	void parseCloseChannel(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
+	void AddImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -281,7 +283,7 @@ private:
 	void sendIconBakragore(const IconBakragore icon);
 	void sendFYIBox(const std::string &message);
 
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
+	void sendOpenImbuementWindow(const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -297,22 +299,22 @@ private:
 
 	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence);
 	void sendForgeHistory(uint8_t page);
-	void sendForgeSkillStats(NetworkMessage &msg) const;
+	void AddForgeSkillStats(NetworkMessage &msg) const;
 	double getForgeSkillStat(Slots_t slot, bool applyAmplification = true) const;
 
 	void sendBosstiaryData();
 	void parseSendBosstiary();
 	void parseSendBosstiarySlots();
 	void parseBosstiarySlot(NetworkMessage &msg);
-	void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
+	void AddPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
 	void sendMonsterPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 	void parseSetMonsterPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
 	void sendBosstiaryEntryChanged(uint32_t bossid);
 
 	void sendAllowBugReport();
-	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);
-	void sendMagicEffect(const Position &pos, uint16_t type);
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, uint8_t effectSource = ME_SOURCE_DEFAULT);
+	void sendMagicEffect(const Position &pos, uint16_t type, uint8_t effectSource = ME_SOURCE_DEFAULT);
 	void removeMagicEffect(const Position &pos, uint16_t type);
 	void sendRestingStatus(uint8_t protection);
 	void sendCreatureHealth(const std::shared_ptr<Creature> &creature);
@@ -324,6 +326,9 @@ private:
 	void sendPartyCreatureShowStatus(const std::shared_ptr<Creature> &target, bool showStatus);
 	void sendPartyPlayerVocation(const std::shared_ptr<Player> &target);
 	void sendPlayerVocation(const std::shared_ptr<Player> &target);
+
+	void sendLocalPlayer(const Position &pos, const bool isLogin);
+	void sendServerConfig();
 	void sendSkills();
 	void sendPing();
 	void sendPingBack();
@@ -374,6 +379,7 @@ private:
 	void sendCreatureType(const std::shared_ptr<Creature> &creature, uint8_t creatureType);
 
 	void sendShop(const std::shared_ptr<Npc> &npc);
+	void sendNpcChatWindow();
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
@@ -404,6 +410,7 @@ private:
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
 	void sendVIPGroups();
+	void sendFullVipList();
 
 	void sendPendingStateEntered();
 	void sendEnterWorld();
@@ -420,6 +427,7 @@ private:
 
 	void sendSpellCooldown(uint16_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
+	void sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused);
 	void sendUseItemCooldown(uint32_t time);
 
 	void sendCoinBalance();
@@ -517,7 +525,7 @@ private:
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
 	void parsePlayerTyping(NetworkMessage &msg);
 	void AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit);
-	void sendOutfitWindowCustomOTCR(NetworkMessage &msg);
+	void addOutfitWindowFeaturesOTCR(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
@@ -532,6 +540,24 @@ private:
 	void sendOpenWheelWindow(uint32_t ownerId);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
+
+	/**
+	 * @brief Sends monk-specific data to the client.
+	 *
+	 * This function is used to communicate changes related to monk gameplay elements, like Harmony, Serenity, or Virtue states.
+	 *
+	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
+	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
+	 */
+	void sendMonkState(MonkData_t type, uint8_t value);
+	/**
+	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
+	 *
+	 * This function processes a list of spells and whether the player wants them to aim at their current target.
+	 *
+	 * @param msg The network message containing the spell list and aim states.
+	 */
+	void parseAimAtTarget(NetworkMessage &msg);
 
 	friend class Player;
 	friend class PlayerWheel;
@@ -563,17 +589,32 @@ private:
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
-	void addBless();
+	void AddBlessings();
 	void parsePacketDead(uint8_t recvbyte);
-	void addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
-
+	void AddCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
+	void AddNpcButton(NetworkMessage &msg, const KeywordButtonIcon buttonId);
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
 	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
 	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
-	void sendTakeScreenshot(Screenshot_t screenshotType);
+	// milestones
+	void sendClientEvent(ClientEvent_t eventType);
+	void sendUnlockedAchievement(const std::string& achievement);
+	void sendUnlockedTitle(const std::string& title);
+	void sendUnlockedSkin(const std::string& skinName, uint16_t lookType, uint8_t skinType);
+	void sendSkillAdvance(skills_t skill, uint16_t newLevel);
+	void sendProgressRace(uint16_t raceId, uint8_t progressLevel, bool isBoss);
+	void sendProgressQuest(const std::string& questName, bool isCompleted);
+	void sendProficiencyProgress(uint16_t itemId, const std::string& message);
+
 	void sendDisableLoginMusic();
+
+	static void addNPCButtonIfExists(std::vector<KeywordButtonIcon>& buttons, KeywordButtonIcon icon, uint16_t flags) {
+		if ((flags & (1 << icon)) != 0) {
+			buttons.push_back(icon);
+		}
+	}
 
 	uint8_t m_playerDeathTime = 0;
 

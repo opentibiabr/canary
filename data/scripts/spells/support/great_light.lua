@@ -17,7 +17,7 @@ end
 spell:name("Great Light")
 spell:words("utevo gran lux")
 spell:group("support")
-spell:vocation("druid;true", "elder druid;true", "knight;true", "elite knight;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "knight;true", "elite knight;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true", "monk;true", "exalted monk;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_GREAT_LIGHT)
 spell:id(11)
 spell:cooldown(2 * 1000)

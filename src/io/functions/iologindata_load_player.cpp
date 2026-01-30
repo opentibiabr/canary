@@ -28,6 +28,7 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 #include "io/player_storage_repository.hpp"
+#include "kv/kv.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
 	try {
@@ -158,7 +159,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 		manaSpent = 0;
 	}
 	player->manaSpent = manaSpent;
-	player->magLevelPercent = Player::getPercentLevel(player->manaSpent, nextManaCount);
+	player->magLevelPercent = Player::calculateLevelProgress(player->manaSpent, nextManaCount);
 	player->health = result->getNumber<int32_t>("health");
 	player->healthMax = result->getNumber<int32_t>("healthmax");
 	player->isDailyReward = static_cast<uint8_t>(result->getNumber<uint16_t>("isreward"));
@@ -234,9 +235,9 @@ void IOLoginDataLoad::loadPlayerExperience(const std::shared_ptr<Player> &player
 	player->experience = experience;
 
 	if (currExpCount < nextExpCount) {
-		player->levelPercent = static_cast<uint8_t>(std::round(Player::getPercentLevel(player->experience - currExpCount, nextExpCount - currExpCount)));
+		player->levelProgress = static_cast<uint16_t>(std::round(Player::calculateLevelProgress(player->experience - currExpCount, nextExpCount - currExpCount)));
 	} else {
-		player->levelPercent = 0;
+		player->levelProgress = 0;
 	}
 }
 
@@ -361,7 +362,7 @@ void IOLoginDataLoad::loadPlayerSkill(const std::shared_ptr<Player> &player, con
 
 		player->skills[i].level = skillLevel;
 		player->skills[i].tries = skillTries;
-		player->skills[i].percent = Player::getPercentLevel(skillTries, nextSkillTries);
+		player->skills[i].percent = Player::calculateLevelProgress(skillTries, nextSkillTries);
 	}
 }
 
@@ -989,6 +990,15 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 
 	player->initializePrey();
 	player->initializeTaskHunting();
+	// Load and apply the player's Virtue from the saved spell data, if available
+	auto kv = player->kv()->scoped("spells");
+	if (auto kvOpt = kv->get("virtue")) {
+		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()));
+	}
+
+	if (auto kvOpt = kv->get("harmony")) {
+		player->setHarmony(kvOpt->getNumber());
+	}
 }
 
 void IOLoginDataLoad::loadPlayerUpdateSystem(const std::shared_ptr<Player> &player) {

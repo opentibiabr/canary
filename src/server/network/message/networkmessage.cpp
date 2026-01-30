@@ -311,3 +311,31 @@ void NetworkMessage::append(const NetworkMessage &other) {
 	// Debugging output after appending
 	g_logger().debug("After append: New Length = {}, New Position = {}", info.length, info.position);
 }
+
+bool NetworkMessage::writeCount(uint32_t count) {
+	if (count < 0x40) {
+		// 6 bits (single byte)
+		addByte(count);
+	} else if (count < 0x4000) {
+		// 14 bits (two bytes)
+		uint8_t firstByte = (count >> 8) | 0x40;
+		uint8_t secondByte = count & 0xFF;
+		addByte(firstByte);
+		addByte(secondByte);
+	} else if (count < 0x40000000) {
+		// 30 bits (four bytes)
+		uint8_t b1 = (count >> 24) | 0x80;
+		uint8_t b2 = (count >> 16) & 0xFF;
+		uint8_t b3 = (count >> 8) & 0xFF;
+		uint8_t b4 = count & 0xFF;
+		addByte(b1);
+		addByte(b2);
+		addByte(b3);
+		addByte(b4);
+	} else {
+		g_logger().error("[writeCount] count={} is too large to encode.", count);
+		return false;
+	}
+
+	return true;
+}

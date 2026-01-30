@@ -1,34 +1,26 @@
 local mType = Game.createMonsterType("The Rootkraken")
 local monster = {}
 
-monster.description = "the rootkraken"
-monster.experience = 700000
+monster.name = "The Rootkraken"
+monster.experience = 600000
 monster.outfit = {
 	lookType = 1765,
-	lookHead = 0,
-	lookBody = 0,
-	lookLegs = 0,
-	lookFeet = 0,
-	lookAddons = 0,
-	lookMount = 0,
 }
-monster.events = {}
 
 monster.bosstiary = {
 	bossRaceId = 2528,
 	bossRace = RARITY_ARCHFOE,
 }
 
-monster.health = 350000
-monster.maxHealth = 350000
-monster.race = "blood"
-monster.corpse = 49120
-monster.speed = 170
-monster.manaCost = 0
+monster.health = 360000
+monster.maxHealth = 360000
+monster.race = "venom"
+monster.corpse = 49124
+monster.speed = 180
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10,
+	chance = 25,
 }
 
 monster.strategiesTarget = {
@@ -39,23 +31,23 @@ monster.strategiesTarget = {
 }
 
 monster.flags = {
-	summonable = false,
 	attackable = true,
 	hostile = true,
+	summonable = false,
 	convinceable = false,
-	pushable = false,
-	rewardBoss = true,
 	illusionable = false,
-	canPushItems = true,
-	canPushCreatures = true,
-	staticAttackChance = 95,
+	boss = true,
+	rewardBoss = true,
+	ignoreSpawnBlock = false,
+	pushable = false,
+	canPushItems = false,
+	canPushCreatures = false,
+	staticAttackChance = 90,
 	targetDistance = 1,
-	runHealth = 0,
 	healthHidden = false,
-	isBlockable = false,
-	canWalkOnEnergy = true,
-	canWalkOnFire = true,
-	canWalkOnPoison = true,
+	canWalkOnEnergy = false,
+	canWalkOnFire = false,
+	canWalkOnPoison = false,
 }
 
 monster.light = {
@@ -66,45 +58,50 @@ monster.light = {
 monster.voices = {
 	interval = 5000,
 	chance = 10,
-	{ text = "Chrrrk!", yell = false },
+	{ text = "", yell = false },
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 3 },
-	{ name = "platinum coin", chance = 100000, maxCount = 93 },
-	{ name = "ultimate health potion", chance = 42590, maxCount = 19 },
-	{ name = "great spirit potion", chance = 42590, maxCount = 7 },
-	{ name = "great mana potion", chance = 31480, maxCount = 14 },
-	{ name = "supreme health potion", chance = 31480, maxCount = 4 },
-	{ name = "ultimate spirit potion", chance = 25930, maxCount = 14 },
-	{ id = 3037, chance = 24070 }, -- yellow gem
-	{ name = "amber with a bug", chance = 18520 },
-	{ name = "giant topaz", chance = 7410 },
-	{ name = "amber crusher", chance = 1850 },
-	{ id = 47375, chance = 300 }, -- amber axe
-	{ id = 47369, chance = 200 }, -- amber greataxe
-	{ id = 47368, chance = 200 }, -- amber slayer
-	{ id = 47374, chance = 300 }, -- amber sabre
-	{ id = 47376, chance = 300 }, -- amber cudgel
-	{ id = 47370, chance = 200 }, -- amber bludgeon
-	{ id = 47371, chance = 200 }, -- amber bow
-	{ id = 47377, chance = 300 }, -- amber crossbow
-	{ id = 47372, chance = 300 }, -- amber wand
-	{ id = 47373, chance = 300 }, -- amber rod
-	{ id = 48514, chance = 250 }, -- strange inedible fruit
+	{ id = 3043, chance = 100000, maxCount = 3 }, -- crystal coin
+	{ id = 3035, chance = 100000, maxCount = 100 }, -- platinum coin
+	{ id = 32626, chance = 44444 }, -- amber
+	{ id = 7643, chance = 42593, maxCount = 20 }, -- ultimate health potion
+	{ id = 7642, chance = 42593, maxCount = 14 }, -- great spirit potion
+	{ id = 238, chance = 31481, maxCount = 14 }, -- great mana potion
+	{ id = 23375, chance = 31481, maxCount = 8 }, -- supreme health potion
+	{ id = 23374, chance = 25926, maxCount = 15 }, -- ultimate spirit potion
+	{ id = 237, chance = 25926, maxCount = 20 }, -- strong mana potion
+	{ id = 3037, chance = 24074, maxCount = 2 }, -- yellow gem
+	{ id = 32769, chance = 20370, maxCount = 2 }, -- white gem
+	{ id = 47368, chance = 20000 }, -- amber slayer
+	{ id = 47369, chance = 20000 }, -- amber greataxe
+	{ id = 47370, chance = 20000 }, -- amber bludgeon
+	{ id = 47374, chance = 20000 }, -- amber sabre
+	{ id = 47375, chance = 20000 }, -- amber axe
+	{ id = 47376, chance = 20000 }, -- amber cudgel
+	{ id = 47377, chance = 20000 }, -- amber crossbow
+	{ id = 50239, chance = 20000 }, -- amber kusarigama
+	{ id = 32624, chance = 18519 }, -- amber with a bug
+	{ id = 32625, chance = 18519 }, -- amber with a dragonfly
+	{ id = 3041, chance = 18519, maxCount = 2 }, -- blue gem
+	{ id = 32623, chance = 7407 }, -- giant topa
+	{ id = 48516, chance = 5556 }, -- root tentacle
+	{ id = 32622, chance = 5556 }, -- giant amethyst
+	{ id = 30061, chance = 3704 }, -- giant sapphire
+	{ id = 48517, chance = 1852 }, -- fish eye
+	{ id = 30060, chance = 1852 }, -- giant emerald
+	{ id = 48514, chance = 1852 }, -- strange inedible fruit
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = -650, maxDamage = -1650 },
-	{ name = "rootkraken", interval = 2500, chance = 20 },
-	{ name = "combat", interval = 2500, chance = 23, type = COMBAT_DEATHDAMAGE, minDamage = -700, maxDamage = -1390, range = 5, effect = CONST_ME_REAPER, target = true },
-	{ name = "rootkrakentwo", interval = 2000, chance = 20 },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -800, maxDamage = -1200 },
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_DEATHDAMAGE, minDamage = -450, maxDamage = -700, range = 6, shootEffect = CONST_ANI_DEATH, target = false },
 }
 
 monster.defenses = {
-	defense = 76,
-	armor = 76,
-	mitigation = 2.02,
+	defense = 85,
+	armor = 85,
+	mitigation = 2.00,
 }
 
 monster.elements = {
@@ -124,6 +121,7 @@ monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
+	{ type = "drunk", condition = true },
 	{ type = "bleed", condition = false },
 }
 

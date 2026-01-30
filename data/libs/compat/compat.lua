@@ -1601,3 +1601,9 @@ function doSetCreatureLight(cid, lightLevel, lightColor, time)
 	creature:addCondition(condition)
 	return true
 end
+
+-- in 15.20 the screenshot packet structure got completely reworked
+-- this function is added for compatibility
+function Player:takeScreenshot()
+	logger.warn("[Player:takeScreenshot] - This function is deprecated. Please use Player:sendClientEvent instead.")
+end

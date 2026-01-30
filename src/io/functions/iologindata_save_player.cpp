@@ -21,6 +21,7 @@
 #include "items/containers/rewards/reward.hpp"
 #include "creatures/players/player.hpp"
 #include "io/player_storage_repository.hpp"
+#include "kv/kv.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -164,6 +165,8 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}
+
+	savePlayerSystems(player);
 
 	Database &db = Database::getInstance();
 
@@ -628,9 +631,9 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 					  << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propPreyStream;
-				std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
+				for (uint16_t raceId : slot->raceIdList) {
 					propPreyStream.write<uint16_t>(raceId);
-				});
+				}
 
 				size_t preySize;
 				const char* preyList = propPreyStream.getStream(preySize);
@@ -681,9 +684,9 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				query << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propTaskHuntingStream;
-				std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
+				for (uint16_t raceId : slot->raceIdList) {
 					propTaskHuntingStream.write<uint16_t>(raceId);
-				});
+				}
 
 				size_t taskHuntingSize;
 				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
@@ -784,4 +787,21 @@ bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 
 	storage.clearDirty();
 	return true;
+}
+
+void IOLoginDataSave::savePlayerSystems(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return;
+	}
+
+	// Save the player's Virtue to persistent storage if it's set
+	auto virtue = player->getVirtue();
+	if (virtue > Virtue_t::None) {
+		player->kv()->scoped("spells")->set("virtue", static_cast<uint8_t>(virtue));
+	}
+
+	auto harmony = player->getHarmony();
+	if (harmony > 0) {
+		player->kv()->scoped("spells")->set("harmony", harmony);
+	}
 }

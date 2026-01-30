@@ -18,6 +18,7 @@ struct Position;
 enum CombatType_t : uint8_t;
 enum Direction : uint8_t;
 enum MagicEffectClasses : uint16_t;
+enum KeywordButtonIcon : uint16_t;
 enum ShootType_t : uint8_t;
 enum Ammo_t : uint8_t;
 enum WeaponAction_t : uint8_t;
@@ -105,6 +106,7 @@ std::string convertIPToString(uint32_t ip);
 void trimString(std::string &str);
 
 MagicEffectClasses getMagicEffect(const std::string &strValue);
+std::string getNpcButtonText(KeywordButtonIcon buttonEnum);
 ShootType_t getShootType(const std::string &strValue);
 Ammo_t getAmmoType(const std::string &strValue);
 WeaponAction_t getWeaponAction(const std::string &strValue);
@@ -215,3 +217,26 @@ const std::map<uint8_t, uint16_t> &getMaxValuePerSkill();
 
 float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer = false);
 uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted = false);
+
+/**
+ * @brief Converts a client-side vocation ID to the internal vocation ID.
+ *
+ * This function maps the CipSoft client vocation ID to the server's internal vocation ID.
+ * If the client ID is not recognized, returns 0xFFFFFFFF.
+ *
+ * @param clientId The vocation ID as used by the client.
+ * @return The corresponding internal vocation ID, or 0xFFFFFFFF if invalid.
+ */
+uint32_t getVocationIdFromClientId(uint32_t clientId);
+
+/**
+ * @brief Gets the primary cardinal direction from one position to another.
+ *
+ * Compares the horizontal and vertical deltas to determine whether
+ * east/west or north/south is the dominant direction.
+ *
+ * @param from The starting position.
+ * @param to The destination position.
+ * @return The main direction from 'from' to 'to'.
+ */
+Direction getPrimaryDirection(const Position &from, const Position &to);

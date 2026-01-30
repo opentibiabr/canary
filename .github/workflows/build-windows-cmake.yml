@@ -7,6 +7,7 @@ on:
     paths:
       - "src/**"
       - "tests/**/*.cpp"
+      - "vcpkg.json"
   merge_group:
   push:
     paths:

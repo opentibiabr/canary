@@ -72,7 +72,7 @@ void PlayerCyclopedia::loadDeathHistory(uint16_t page, uint16_t entriesPerPage) 
 				if (mostdamage_by != killed_by) {
 					cause.append(fmt::format(" and by {}", mostdamage_by));
 				} else {
-					cause.append(" <b>(soled)</b>");
+					cause.append(" <b>(soloed)</b>");
 				}
 			}
 			if (!participants.empty()) {

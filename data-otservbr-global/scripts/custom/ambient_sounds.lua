@@ -40,7 +40,9 @@ local ambientZones = {
 
 -- Function to get the current sound based on period
 local function getCurrentSound(zoneData, period)
-	if period == LIGHT_STATE_SUNRISE then
+	if period == LIGHT_STATE_NIGHT then
+		return zoneData.soundEnterNight
+	elseif period == LIGHT_STATE_SUNRISE then
 		return zoneData.soundEnterDay
 	elseif period == LIGHT_STATE_SUNSET then
 		return zoneData.soundEnterNight

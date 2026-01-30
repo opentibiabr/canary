@@ -83,7 +83,6 @@ namespace {
 			if (availableFunds < totalRequired) {
 				g_logger().error("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);
 				g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, npcName, player->getPosition().toString());
-				g_metrics().addCounter("balance_decrease", totalRequired, { { "player", player->getName() }, { "context", "npc_purchase" } });
 				return true;
 			}
 			return false;
@@ -668,8 +667,13 @@ void Npc::onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemId
 
 	const uint32_t totalCost = buyPrice * amount;
 	const uint32_t bagsCost = calculateBagsCost(itemType, amount, inBackpacks);
+	const uint64_t totalRequired = static_cast<uint64_t>(totalCost) + bagsCost;
 	if (hasInsufficientFunds(player, itemId, getName(), getCurrency(), totalCost, bagsCost)) {
 		return;
+	}
+
+	if (getCurrency() == ITEM_GOLD_COIN) {
+		g_metrics().addCounter("balance_decrease", totalRequired, { { "player", player->getName() }, { "context", "npc_purchase" } });
 	}
 
 	// npc:onBuyItem(player, itemId, subType, amount, ignore, inBackpacks, totalCost)

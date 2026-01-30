@@ -1363,25 +1363,25 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 				return;
 			}
 		}
-		
+
 		if (caster && caster->getPlayer() && target->getMonster()) {
 			return;
 		}
-		
+
 		if (target->isSummon() && caster && caster->getMonster()) {
 			const auto &targetMaster = target->getMaster();
 			if (targetMaster && targetMaster->getPlayer()) {
 				return;
 			}
 		}
-		
+
 		if (caster && caster->getPlayer() && target->isSummon()) {
 			const auto &targetMaster = target->getMaster();
 			if (targetMaster && targetMaster->getPlayer()) {
 				return;
 			}
 		}
-		
+
 		if (caster && caster->getMonster() && target->getPlayer()) {
 			return;
 		}

@@ -110,6 +110,12 @@ static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 1500;
 static constexpr uint16_t PLAYER_MIN_SPEED = 10;
 static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
+#ifdef BUILD_TESTS
+	#define PRIVATE_FOR_TESTS public
+#else
+	#define PRIVATE_FOR_TESTS private
+#endif
+
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
 	class PlayerLock {
@@ -125,8 +131,9 @@ public:
 			player->mutex.unlock();
 		}
 
-	private:
-		const std::shared_ptr<Player> &player;
+		PRIVATE_FOR_TESTS :
+
+			const std::shared_ptr<Player> &player;
 	};
 
 	/**
@@ -139,6 +146,10 @@ public:
 	 *
 	 */
 	explicit Player();
+
+	static std::shared_ptr<Player> createForTests();
+
+	void initForTests();
 
 	explicit Player(std::shared_ptr<ProtocolGame> p);
 	~Player() override;
@@ -381,6 +392,8 @@ public:
 	void addContainer(uint8_t cid, const std::shared_ptr<Container> &container);
 	void closeContainer(uint8_t cid);
 	void setContainerIndex(uint8_t cid, uint16_t index);
+	void closeContainersOutOfRange();
+	bool shouldCloseContainer(const std::shared_ptr<Container> &container) const;
 
 	std::shared_ptr<Container> getContainerByID(uint8_t cid);
 	int8_t getContainerID(const std::shared_ptr<Container> &container) const;
@@ -571,6 +584,7 @@ public:
 
 	std::vector<std::shared_ptr<Item>> getRewardsFromContainer(const std::shared_ptr<Container> &container) const;
 
+	using Thing::getDepotChest;
 	std::shared_ptr<DepotChest> getDepotChest(uint32_t depotId, bool autoCreate);
 	std::shared_ptr<DepotLocker> getDepotLocker(uint32_t depotId);
 	void onReceiveMail();
@@ -579,6 +593,7 @@ public:
 	std::shared_ptr<Container> refreshManagedContainer(ObjectCategory_t category, const std::shared_ptr<Container> &container, bool isLootContainer, bool loading = false);
 	std::shared_ptr<Container> getManagedContainer(ObjectCategory_t category, bool isLootContainer) const;
 	void setMainBackpackUnassigned(const std::shared_ptr<Container> &container);
+	bool isHoldingItem(const std::shared_ptr<Item> &item) const;
 
 	bool canSee(const Position &pos) override;
 	bool canSeeCreature(const std::shared_ptr<Creature> &creature) const override;
@@ -634,6 +649,12 @@ public:
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;
 	bool isAttackable() const override;
+	void beginBatchUpdate();
+	void endBatchUpdate();
+	void sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t firstIndex = 0);
+	bool isBatching() const {
+		return m_batching;
+	}
 	static bool lastHitIsPlayer(const std::shared_ptr<Creature> &lastHitCreature);
 
 	// stash functions
@@ -1368,8 +1389,9 @@ public:
 		return m_managedContainers;
 	}
 
-private:
-	friend class PlayerLock;
+	PRIVATE_FOR_TESTS :
+
+		friend class PlayerLock;
 	std::mutex mutex;
 
 	static uint32_t playerFirstID;
@@ -1728,6 +1750,7 @@ private:
 	PlayerForgeHistory m_forgeHistoryPlayer;
 
 	std::mutex quickLootMutex;
+	bool m_batching = false;
 
 	std::shared_ptr<Account> account;
 	bool online = true;

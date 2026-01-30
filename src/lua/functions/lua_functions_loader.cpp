@@ -87,6 +87,8 @@ std::string Lua::getErrorDesc(ErrorCode_t code) {
 			return "TalkAction not found";
 		case LUA_ERROR_ZONE_NOT_FOUND:
 			return "Zone not found";
+		case LUA_ERROR_BATCHUPDATE_NOT_FOUND:
+			return "BatchUpdate not found";
 		default:
 			return "Bad error code";
 	}

@@ -36,7 +36,6 @@ jobs:
         if: ${{ github.ref != 'refs/heads/main' }}
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python

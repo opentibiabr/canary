@@ -197,6 +197,7 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "addItem", PlayerFunctions::luaPlayerAddItem);
 	Lua::registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
+	Lua::registerMethod(L, "Player", "addItemBatchToPaginedContainer", PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer);
 	Lua::registerMethod(L, "Player", "addItemStash", PlayerFunctions::luaPlayerAddItemStash);
 	Lua::registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 	Lua::registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
@@ -216,6 +217,8 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "openChannel", PlayerFunctions::luaPlayerOpenChannel);
 
 	Lua::registerMethod(L, "Player", "getSlotItem", PlayerFunctions::luaPlayerGetSlotItem);
+	Lua::registerMethod(L, "Player", "getBackpack", PlayerFunctions::luaPlayerGetBackpack);
+	Lua::registerMethod(L, "Player", "getLootPouch", PlayerFunctions::luaPlayerGetLootPouch);
 
 	Lua::registerMethod(L, "Player", "getParty", PlayerFunctions::luaPlayerGetParty);
 
@@ -2349,6 +2352,42 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer(lua_State* L) {
+	// player:addItemBatchToPaginedContainer(container, itemId, count = 1, tier = 0, flags = 0)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &container = Lua::getUserdataShared<Container>(L, 2, "Container");
+	if (!container || !container->hasPagination()) {
+		player->sendCancelMessage("Invalid or non-paginated container.");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
+
+	const auto itemId = Lua::getNumber<uint16_t>(L, 3);
+	if (itemId == 0) {
+		player->sendCancelMessage("Invalid item id.");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
+	const auto count = Lua::getNumber<uint32_t>(L, 4, 1);
+	const auto tier = Lua::getNumber<uint8_t>(L, 5, 0);
+	const auto flags = Lua::getNumber<uint32_t>(L, 6, 0);
+
+	uint32_t actuallyAdded = 0;
+	const auto ret = player->addItemBatchToPaginedContainer(container, itemId, count, actuallyAdded, flags, tier);
+
+	if (ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+	}
+
+	lua_pushnumber(L, actuallyAdded);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddItemStash(lua_State* L) {
 	// player:addItemStash(itemId, count = 1)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -2674,6 +2713,42 @@ int PlayerFunctions::luaPlayerGetSlotItem(lua_State* L) {
 	if (item) {
 		Lua::pushUserdata<Item>(L, item);
 		Lua::setItemMetatable(L, -1, item);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBackpack(lua_State* L) {
+	// player:getBackpack()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &backpack = player->getBackpack();
+	if (backpack) {
+		Lua::pushUserdata<Container>(L, backpack);
+		Lua::setItemMetatable(L, -1, backpack);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLootPouch(lua_State* L) {
+	// player:getLootPouch()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &lootPouch = player->getLootPouch();
+	if (lootPouch) {
+		Lua::pushUserdata<Container>(L, lootPouch);
+		Lua::setItemMetatable(L, -1, lootPouch);
 	} else {
 		lua_pushnil(L);
 	}

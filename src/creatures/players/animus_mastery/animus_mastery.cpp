@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -15,7 +15,9 @@
 #include "utils/tools.hpp"
 
 AnimusMastery::AnimusMastery(Player &player) :
-	m_player(player) {
+	m_player(player) { }
+
+void AnimusMastery::init() {
 	maxMonsterXpMultiplier = g_configManager().getFloat(ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER);
 	monsterXpMultiplier = g_configManager().getFloat(ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER);
 	monstersXpMultiplier = g_configManager().getFloat(ANIMUS_MASTERY_MONSTERS_XP_MULTIPLIER);

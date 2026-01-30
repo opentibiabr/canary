@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -59,6 +59,23 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			loadItem(propStream, tile, true);
 		}
 	} while (result->next());
+
+	for (const auto &bed : bedsToCheck) {
+		const auto &next = bed->getNextBedItem();
+		const bool isComplete = next && (bed->isBedComplete(next) || next->isBedComplete(bed));
+		if (!isComplete) {
+			const Position &pos = bed->getPosition();
+			g_logger().warn("[BedFix] House bug detected at {}, correcting bed.", pos);
+
+			bed->forceClearSleeper();
+			if (next && next->getNextBedItem() == bed) {
+				next->forceClearSleeper();
+			}
+		}
+	}
+
+	bedsToCheck.clear();
+
 	g_logger().info("Loaded house items in {} milliseconds", bm_context.duration());
 }
 
@@ -160,6 +177,12 @@ bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cyli
 				g_logger().warn("Deserialization error in {}", id);
 
 				return false;
+			}
+
+			if (const auto &bed = item->getBed()) {
+				if (bed->getSleeper() != 0) {
+					bedsToCheck.push_back(bed);
+				}
 			}
 		}
 	} else {

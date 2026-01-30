@@ -27,7 +27,7 @@ FROM dependencies AS build
 COPY . /srv/
 WORKDIR /srv
 
-RUN export VCPKG_ROOT=/opt/vcpkg/ && VCPKG_FORCE_SYSTEM_BINARIES=1 cmake --preset linux-release && cmake --build --preset linux-release
+RUN export VCPKG_ROOT=/opt/vcpkg/ && VCPKG_FORCE_SYSTEM_BINARIES=1 cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON && cmake --build --preset linux-release
 
 # Stage 3: load data and execute
 FROM ubuntu:24.04

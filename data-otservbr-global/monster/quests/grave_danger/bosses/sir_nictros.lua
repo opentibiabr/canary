@@ -20,14 +20,13 @@ monster.corpse = 31599
 monster.speed = 125
 monster.manaCost = 0
 
-monster.events = {
-	"sir_nictros_health",
-	"brothers_summon",
-}
-
 monster.changeTarget = {
 	interval = 4000,
 	chance = 10,
+}
+
+monster.events = {
+	"BossHealthCheck",
 }
 
 monster.bosstiary = {

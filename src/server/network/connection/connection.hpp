@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -18,6 +18,8 @@ static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;
 
 class Protocol;
 using Protocol_ptr = std::shared_ptr<Protocol>;
+class ProtocolGame;
+using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 class Connection;

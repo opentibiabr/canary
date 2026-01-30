@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -92,8 +92,11 @@ format_as(E e) {
 	return static_cast<std::underlying_type_t<E>>(e);
 }
 
-// GMP
-#include <gmp.h>
+// OpenSSL
+#include <openssl/bn.h>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
 
 // LUA
 #if __has_include("luajit/lua.hpp")

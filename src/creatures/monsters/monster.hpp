@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -61,7 +61,7 @@ public:
 	RaceType_t getRace() const override;
 	float getMitigation() const override;
 	int32_t getArmor() const override;
-	int32_t getDefense() const override;
+	int32_t getDefense(bool = false) const override;
 
 	void addDefense(int32_t defense);
 
@@ -153,6 +153,8 @@ public:
 
 	bool isTarget(const std::shared_ptr<Creature> &creature);
 	bool isFleeing() const;
+
+	void setFatalHoldDuration(int32_t value);
 
 	bool getDistanceStep(const Position &targetPos, Direction &direction, bool flee = false);
 	bool isTargetNearby() const;
@@ -263,7 +265,7 @@ private:
 	std::string m_lowerName;
 	std::string nameDescription;
 
-	std::shared_ptr<MonsterType> mType;
+	std::shared_ptr<MonsterType> m_monsterType;
 	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
 
 	int64_t lastMeleeAttack = 0;
@@ -282,6 +284,7 @@ private:
 	int32_t minCombatValue = 0;
 	int32_t maxCombatValue = 0;
 	int32_t m_targetChangeCooldown = 0;
+	int32_t fatalHoldDuration = 0;
 	int32_t challengeFocusDuration = 0;
 	int32_t stepDuration = 0;
 	int32_t targetDistance = 1;
@@ -296,6 +299,7 @@ private:
 
 	Position masterPos;
 
+	bool canFlee = false;
 	bool isWalkingBack = false;
 	bool isIdle = true;
 	bool extraMeleeAttack = false;
@@ -343,6 +347,21 @@ private:
 	bool canWalkTo(Position pos, Direction direction);
 
 	static bool pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection);
+	/**
+	 * @brief Attempts to push or remove movable blocking items stacked on a tile in a given direction.
+	 *
+	 * Processes the tile's "down" items (bottom-to-top) and, for each movable item that blocks pathing or is solid,
+	 * attempts to push it into the adjacent tile in nextDirection or, failing that, removes the item.
+	 * Will not operate on house tiles or when the tile has no items. When one or more items are removed, a puff
+	 * visual effect is produced at the tile position.
+	 *
+	 * Behavior specifics:
+	 * - Only items that are movable, can be moved, and currently reside on the provided tile are considered.
+	 * - Stops after successfully pushing up to 20 items and removing up to 10 items (these counters are independent).
+	 *
+	 * @param tile Shared pointer to the tile whose items should be processed.
+	 * @param nextDirection Direction in which items should be pushed.
+	 */
 	static void pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection);
 	static bool pushCreature(const std::shared_ptr<Creature> &creature);
 	static void pushCreatures(const std::shared_ptr<Tile> &tile);

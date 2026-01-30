@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -285,11 +285,22 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player) const {
 	if (townId == 0 || !player) {
 		return false;
 	}
+
+	itemsFound = 0;
+	itemsMoved = 0;
+	totalItemsFound = 0;
+	totalItemsMoved = 0;
+
 	for (const auto &tile : houseTiles) {
 		if (!transferToDepot(player, tile)) {
 			return false;
 		}
 	}
+
+	// Note: totalItemsFound and totalItemsMoved are unsigned. The explicit check
+	// avoids relying on unsigned underflow wraparound and makes the intent clear.
+	const uint32_t totalItemsMissing = totalItemsFound > totalItemsMoved ? totalItemsFound - totalItemsMoved : 0;
+	g_logger().info("[House::transferToDepot] Transfer finished for player '{}'. Total items processed: {}, moved: {}, missing: {}", player->getName(), totalItemsFound, totalItemsMoved, totalItemsMissing);
 	return true;
 }
 
@@ -302,6 +313,11 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 		return false;
 	}
 
+	failedItemTransfers.clear();
+	movedItemsLog.clear();
+	itemsFound = 0;
+	itemsMoved = 0;
+
 	ItemList moveItemList;
 	if (const TileItemVector* items = tile->getItemList()) {
 		for (const auto &item : *items) {
@@ -309,14 +325,13 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 				handleWrapableItem(moveItemList, item, player, tile);
 			} else if (item->isPickupable()) {
 				moveItemList.push_back(item);
-			} else {
-				handleContainer(moveItemList, item);
+			} else if (const auto &container = item->getContainer()) {
+				collectMovableItemsFromContainer(moveItemList, container, player, tile);
 			}
 		}
 	}
 
 	std::unordered_set<std::shared_ptr<Player>> playersToSave = { player };
-
 	for (const auto &item : moveItemList) {
 		std::shared_ptr<Player> targetPlayer = player;
 
@@ -331,12 +346,54 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 			}
 		}
 
-		g_game().internalMoveItem(item->getParent(), targetPlayer->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT);
+		const auto &itemParent = item->getParent();
+		if (!itemParent) {
+			g_logger().warn("[{}] item '{}' (id: {}) has no parent (already wrapped or removed), skipping move to avoid duplication", __FUNCTION__, item->getName(), item->getID());
+			continue;
+		}
+
+		ReturnValue result = g_game().internalMoveItem(itemParent, targetPlayer->getInbox(), INDEX_WHEREEVER, item, item->getItemCount(), nullptr, FLAG_NOLIMIT, targetPlayer);
+		if (result != RETURNVALUE_NOERROR) {
+			g_logger().error("[{}] Failed to transfer item '{}' (id: {}, pos: {}) to '{}', error: {}", __FUNCTION__, item->getName(), item->getID(), tile->getPosition(), targetPlayer->getName(), result);
+			failedItemTransfers.push_back(fmt::format("{} (id: {}) at {}", item->getName(), item->getID(), tile->getPosition().toString()));
+			continue;
+		}
+
+		++itemsMoved;
+		if (item->isWrapContainer()) {
+			auto unWrapAttribute = item->getCustomAttribute("unWrapId");
+			uint16_t unWrapId = 0;
+			if (unWrapAttribute != nullptr) {
+				unWrapId = static_cast<uint16_t>(unWrapAttribute->getInteger());
+			}
+			const auto &itemType = Item::items[unWrapId];
+			movedItemsLog.emplace_back(fmt::format("{} (wrapped from {} id: {}) at {}", item->getName(), itemType.name, itemType.id, tile->getPosition().toString()));
+			continue;
+		}
+		movedItemsLog.emplace_back(fmt::format("{} (id: {}) at {}", item->getName(), item->getID(), tile->getPosition().toString()));
+	}
+
+	itemsFound = itemsMoved + static_cast<uint32_t>(failedItemTransfers.size());
+
+	if (itemsFound > 0 || itemsMoved > 0) {
+		g_logger().info("[House::transferToDepot] {} items found, {} items successfully transferred for player '{}'", itemsFound, itemsMoved, player->getName());
+
+		for (const auto &moved : movedItemsLog) {
+			g_logger().info("[House::transferToDepot] Moved: {}", moved);
+		}
+
+		if (!failedItemTransfers.empty()) {
+			for (const auto &entry : failedItemTransfers) {
+				g_logger().warn("[House::transferToDepot] Failed to transfer: {}", entry);
+			}
+		}
 	}
 	for (const auto &playerToSave : playersToSave) {
 		g_saveManager().savePlayer(playerToSave);
 	}
 
+	totalItemsFound += itemsFound;
+	totalItemsMoved += itemsMoved;
 	return true;
 }
 
@@ -380,9 +437,13 @@ void House::setNewOwnership() {
 }
 
 void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const {
+	if (!item || !houseTile) {
+		return;
+	}
+
 	if (item->isWrapContainer()) {
-		g_logger().debug("[{}] found wrapable item '{}'", __FUNCTION__, item->getName());
-		handleContainer(moveItemList, item);
+		g_logger().debug("[{}] found wrapable container '{}'", __FUNCTION__, item->getName());
+		collectMovableItemsFromContainer(moveItemList, item->getContainer(), player, houseTile);
 	}
 
 	const auto &newItem = g_game().wrapItem(item, houseTile->getHouse());
@@ -394,11 +455,27 @@ void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Ite
 	moveItemList.push_back(newItem);
 }
 
-void House::handleContainer(ItemList &moveItemList, const std::shared_ptr<Item> &item) const {
-	if (const auto &container = item->getContainer()) {
-		for (const auto &containerItem : container->getItemList()) {
-			moveItemList.push_back(containerItem);
+void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::shared_ptr<Container> &container, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const {
+	if (!container) {
+		return;
+	}
+
+	for (const auto &item : container->getItemList()) {
+		if (!item) {
+			continue;
 		}
+
+		if (item->isWrapable()) {
+			handleWrapableItem(moveItemList, item, player, houseTile);
+		} else if (item->isPickupable()) {
+			moveItemList.push_back(item);
+		} else if (const auto &innerContainer = item->getContainer()) {
+			collectMovableItemsFromContainer(moveItemList, innerContainer, player, houseTile);
+		}
+	}
+
+	if (container->isPickupable() && !container->isWrapable()) {
+		moveItemList.push_back(container);
 	}
 }
 

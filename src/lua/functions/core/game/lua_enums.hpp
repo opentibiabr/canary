@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -65,5 +65,7 @@ private:
 	static void spelltSoundEnums(lua_State* L);
 	static void monsterSoundEnums(lua_State* L);
 	static void effectsSoundEnums(lua_State* L);
+	static void ambientsSoundEnums(lua_State* L);
+	static void musicsSoundEnums(lua_State* L);
 	static void initWheelEnums(lua_State* L);
 };

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -3029,9 +3029,41 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 }
 
 void Player::updateImbuementTrackerStats() const {
-	if (imbuementTrackerWindowOpen) {
-		g_game().playerRequestInventoryImbuements(getID(), true);
+	if (!imbuementTrackerWindowOpen) {
+		if (m_pendingImbuementTrackerEventId != 0) {
+			g_dispatcher().stopEvent(m_pendingImbuementTrackerEventId);
+			m_pendingImbuementTrackerEventId = 0;
+		}
+		m_hasPendingImbuementTrackerUpdate = false;
+		return;
 	}
+
+	const int64_t currentTime = OTSYS_TIME();
+	const int64_t elapsed = currentTime - m_lastImbuementTrackerUpdate;
+	if (elapsed < 1000) {
+		if (!m_hasPendingImbuementTrackerUpdate) {
+			m_hasPendingImbuementTrackerUpdate = true;
+			const uint32_t delay = std::max<uint32_t>(static_cast<uint32_t>(1000 - elapsed), SCHEDULER_MINTICKS);
+			m_pendingImbuementTrackerEventId = g_dispatcher().scheduleEvent(
+				delay,
+				[playerId = getID()] {
+					const auto &player = g_game().getPlayerByID(playerId);
+					if (!player || player->isRemoved()) {
+						return;
+					}
+
+					player->m_hasPendingImbuementTrackerUpdate = false;
+					player->m_pendingImbuementTrackerEventId = 0;
+					player->updateImbuementTrackerStats();
+				},
+				__FUNCTION__
+			);
+		}
+		return;
+	}
+
+	m_lastImbuementTrackerUpdate = currentTime;
+	g_game().playerRequestInventoryImbuements(getID(), true);
 }
 
 // User Interface action exhaustion
@@ -5872,6 +5904,7 @@ void Player::onEndCondition(ConditionType_t type) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
+		sendOpenPvpSituations();
 
 		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
 			setSkull(SKULL_NONE);
@@ -5968,12 +6001,14 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 	}
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onAttacked() {
 	Creature::onAttacked();
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onIdleStatus() {
@@ -5992,7 +6027,9 @@ void Player::onPlacedCreature() {
 
 	this->onChangeZone(this->getZoneType());
 
+	refreshSkullTicksFromLastKill();
 	sendUnjustifiedPoints();
+	sendOpenPvpSituations();
 
 	const auto activeEvents = g_eventsScheduler().getActiveEvents();
 	if (!activeEvents.empty()) {
@@ -6548,6 +6585,52 @@ void Player::setSkullTicks(int64_t ticks) {
 	skullTicks = ticks;
 }
 
+void Player::refreshSkullTicksFromLastKill() {
+	const auto info = computeSkullTimeFromLastKill();
+	setSkullTicks(info.remainingSeconds);
+}
+
+void Player::updateLastKillTimeCache(time_t killTime) {
+	if (killTime <= 0) {
+		return;
+	}
+
+	m_lastKillTimeCache = std::max<int64_t>(m_lastKillTimeCache, killTime);
+	m_lastKillTimeCached = true;
+}
+
+Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
+	SkullTimeInfo info;
+	int64_t ticks = skullTicks;
+
+	if (ticks == 0 && (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK)) {
+		int64_t lastKillTime = 0;
+		if (m_lastKillTimeCached) {
+			lastKillTime = m_lastKillTimeCache;
+		} else {
+			for (const auto &kill : unjustifiedKills) {
+				lastKillTime = std::max<int64_t>(lastKillTime, kill.time);
+			}
+
+			m_lastKillTimeCache = lastKillTime;
+			m_lastKillTimeCached = true;
+		}
+
+		if (lastKillTime > 0) {
+			const int64_t now = getTimeNow();
+			const int64_t duration = static_cast<int64_t>(g_configManager().getNumber(getSkull() == SKULL_RED ? RED_SKULL_DURATION : BLACK_SKULL_DURATION)) * 24 * 60 * 60;
+			ticks = std::max<int64_t>(0, duration - (now - lastKillTime));
+		}
+	}
+
+	info.remainingSeconds = ticks;
+	if (ticks > 0) {
+		info.remainingDays = static_cast<uint8_t>(std::min(std::ceil(static_cast<double>(ticks) / (24 * 60 * 60)), 255.0));
+	}
+
+	return info;
+}
+
 bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
@@ -6583,7 +6666,9 @@ void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
 
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
-	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	const auto killTime = time(nullptr);
+	unjustifiedKills.emplace_back(attacked->getGUID(), killTime, true);
+	updateLastKillTimeCache(killTime);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
@@ -6643,14 +6728,12 @@ void Player::checkSkullTicks(int64_t ticks) {
 }
 
 void Player::updateBaseSpeed() {
-	if (baseSpeed >= PLAYER_MAX_SPEED) {
-		return;
-	}
-
+	const uint16_t maxSpeed = hasFlag(PlayerFlags_t::SetMaxSpeed) ? PLAYER_MAX_STAFF_SPEED : PLAYER_MAX_SPEED;
 	if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
-		baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
+		const uint32_t computedSpeed = vocation->getBaseSpeed() + (level - 1);
+		baseSpeed = static_cast<uint16_t>(std::min<uint32_t>(computedSpeed, maxSpeed));
 	} else {
-		baseSpeed = PLAYER_MAX_SPEED;
+		baseSpeed = maxSpeed;
 	}
 }
 
@@ -7199,20 +7282,29 @@ void Player::sendUnjustifiedPoints() const {
 			}
 		}
 
-		const bool isRed = getSkull() == SKULL_RED;
+		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
-		auto dayMax = ((isRed ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-		auto weekMax = ((isRed ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-		auto monthMax = ((isRed ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+		const double dayMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+		const double weekMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+		const double monthMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
-		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
-		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
-		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
-		uint8_t skullDuration = 0;
-		if (skullTicks != 0) {
-			skullDuration = std::floor<uint8_t>(skullTicks / (24 * 60 * 60 * 1000));
-		}
-		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
+		const double dayProgressRaw = dayMax > 0 ? std::round(dayKills / dayMax * 100.0) : 0.0;
+		const double weekProgressRaw = weekMax > 0 ? std::round(weekKills / weekMax * 100.0) : 0.0;
+		const double monthProgressRaw = monthMax > 0 ? std::round(monthKills / monthMax * 100.0) : 0.0;
+		const uint8_t dayProgress = static_cast<uint8_t>(std::min(dayProgressRaw, 100.0));
+		const uint8_t weekProgress = static_cast<uint8_t>(std::min(weekProgressRaw, 100.0));
+		const uint8_t monthProgress = static_cast<uint8_t>(std::min(monthProgressRaw, 100.0));
+		const uint8_t dayLeft = static_cast<uint8_t>(std::min(dayMax > 0 ? std::max(dayMax - dayKills, 0.0) : 0.0, 255.0));
+		const uint8_t weekLeft = static_cast<uint8_t>(std::min(weekMax > 0 ? std::max(weekMax - weekKills, 0.0) : 0.0, 255.0));
+		const uint8_t monthLeft = static_cast<uint8_t>(std::min(monthMax > 0 ? std::max(monthMax - monthKills, 0.0) : 0.0, 255.0));
+		const auto info = computeSkullTimeFromLastKill();
+		client->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, info.remainingDays);
+	}
+}
+
+void Player::sendOpenPvpSituations() {
+	if (client) {
+		client->sendOpenPvpSituations(static_cast<uint8_t>(std::min(attackedSet.size(), static_cast<size_t>(std::numeric_limits<uint8_t>::max()))));
 	}
 }
 
@@ -7867,8 +7959,8 @@ void Player::onThink(uint32_t interval) {
 	const auto &playerTile = getTile();
 	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
 	idleTime += interval;
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	if (kickAfterMinutes > 0 && playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			removePlayer(true);
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
@@ -10421,6 +10513,18 @@ void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, Source
 void Player::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) const {
 	if (client) {
 		client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
+	}
+}
+
+void Player::sendAmbientSoundEffect(const SoundAmbientEffect_t id) const {
+	if (client) {
+		client->sendAmbientSoundEffect(id);
+	}
+}
+
+void Player::sendMusicSoundEffect(const SoundMusicEffect_t id) const {
+	if (client) {
+		client->sendMusicSoundEffect(id);
 	}
 }
 

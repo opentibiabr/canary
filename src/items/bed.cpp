@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -21,6 +21,18 @@
 BedItem::BedItem(uint16_t id) :
 	Item(id) {
 	internalRemoveSleeper();
+}
+
+void BedItem::forceClearSleeper() {
+	if (sleeperGUID != 0) {
+		g_game().removeBedSleeper(sleeperGUID);
+	}
+
+	sleeperGUID = 0;
+	sleepStart = 0;
+	setAttribute(ItemAttribute_t::DESCRIPTION, "Nobody is sleeping there.");
+
+	updateAppearance(nullptr);
 }
 
 Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream &propStream) {

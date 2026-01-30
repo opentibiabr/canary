@@ -33,7 +33,7 @@ class CanaryServer {
 public:
 	explicit CanaryServer(
 		Logger &logger,
-		RSA &rsa,
+		RSAManager &rsa,
 		ServiceManager &serviceManager
 	);
 
@@ -47,7 +47,7 @@ private:
 	};
 
 	Logger &logger;
-	RSA &rsa;
+	RSAManager &rsa;
 	ServiceManager &serviceManager;
 
 	LoaderStatus loaderStatus = LoaderStatus::LOADING;

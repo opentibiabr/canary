@@ -41,8 +41,6 @@ namespace {
 			} catch (const std::exception &e) {
 				// If resize fails during cleanup, leave the vector state as is.
 				(void)e;
-			} catch (...) {
-				// Prevent exception propagation from destructor
 			}
 		}
 

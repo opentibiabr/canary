@@ -50,7 +50,7 @@ public:
 	}
 
 	StatisticsMap getPurchaseStatisticsCopy() const;
-  StatisticsMap getSaleStatisticsCopy() const;
+	StatisticsMap getSaleStatisticsCopy() const;
 
 	static uint8_t getTierFromDatabaseTable(const std::string &string);
 

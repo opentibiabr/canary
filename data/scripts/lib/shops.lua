@@ -1537,55 +1537,26 @@ LootShopConfigTable = {
 	},
 }
 
+-- ATTENTION: Only use it to create value for custom items that are not bought by any NPC.
+-- Adding items here will generate value for party hunt analyser but not to cyclopedia.
 local garbage = {
-	"Spatial Warp Almanac",
-	"assassin star",
-	"big bone",
-	"bug meat",
-	"cape",
-	"combat knife",
-	"dirty cape",
-	"dirty fur",
-	"energy bar",
-	"fishbone",
-	"flash arrow",
-	"great health potion",
-	"great mana potion",
-	"great spirit potion",
-	"ham",
-	"health potion",
-	"knife",
-	"mana potion",
-	"royal star",
-	"strong health potion",
-	"strong mana potion",
-	"supreme health potion",
-	"the spatial warp almanac",
-	"ultimate health potion",
-	"ultimate mana potion",
-	"ultimate spirit potion",
-	"onyx arrow",
-	"small stone",
-	1047, -- bone
-	1048, -- bone
-	3115, -- bone
-	2920, -- torch
-	6558, -- demonic blood
-	27509, -- heavy crystal fragment
-	27713, -- heavy crystal fragment
+	--"Spatial Warp Almanac",
+	--6558, -- demonic blood
 }
 
 LootShopConfigTable["garbage"] = {}
 
-for _, itemNameOrId in ipairs(garbage) do
-	local item = ItemType(itemNameOrId)
-	if item and item:getId() > 0 then
-		local suplyShop = FindSupplyShopItem(item:getName())
-		local price = 1
-		if suplyShop then
-			price = math.ceil(suplyShop.buy / 3)
+if #garbage > 0 then
+	for _, itemNameOrId in ipairs(garbage) do
+		local item = ItemType(itemNameOrId)
+		if item and item:getId() > 0 then
+			local suplyShop = FindSupplyShopItem(item:getName())
+			local price = 1
+			if suplyShop then
+				price = math.ceil(suplyShop.buy / 3)
+			end
+			table.insert(LootShopConfigTable["garbage"], { itemName = item:getName(), clientId = item:getId(), sell = price })
 		end
-		table.insert(LootShopConfigTable["garbage"], { itemName = item:getName(), clientId = item:getId(), sell = price })
 	end
 end
 

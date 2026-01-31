@@ -11,9 +11,9 @@ jobs:
       - name: Install VS 2026 Build Tools (v145 toolset)
         shell: pwsh
         run: |
-          choco install visualstudio2026buildtools --version 18.0.0.0 --yes
-          # Wait for installation to settle if needed, or simply proceed
-          
+          choco install visualstudio2026-workload-vctools --yes --ignore-package-exit-codes=3010
+          # The tools are usually available immediately after installation without reboot
+
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
         with:

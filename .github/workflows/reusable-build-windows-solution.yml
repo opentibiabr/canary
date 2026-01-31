@@ -34,15 +34,22 @@ jobs:
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
+          vcpkgDirectory: ${{ github.workspace }}/vcpkg
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Build project
         env:
           GITHUB_WORKSPACE: ${{ github.workspace }}
-          # The vcpkg integration is done via MSBuild properties since we define VCPKG_ROOT via run-vcpkg
         run: |
-          msbuild.exe /p:VcpkgEnableManifest=true /p:Configuration=Debug /p:Platform=x64 /p:VcpkgRoot="${{ github.workspace }}/vcpkg" /p:GITHUB_WORKSPACE="${{ github.workspace }}" vcproj/canary.sln
+          msbuild.exe /p:VcpkgEnableManifest=true `
+                      /p:Configuration=Debug `
+                      /p:Platform=x64 `
+                      /p:VcpkgRoot="${{ github.workspace }}/vcpkg" `
+                      /p:GITHUB_WORKSPACE="${{ github.workspace }}" `
+                      /p:ForceImportAfterCppProps="${{ github.workspace }}/vcpkg/scripts/buildsystems/msbuild/vcpkg.props" `
+                      /p:ForceImportAfterCppTargets="${{ github.workspace }}/vcpkg/scripts/buildsystems/msbuild/vcpkg.targets" `
+                      vcproj/canary.sln
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

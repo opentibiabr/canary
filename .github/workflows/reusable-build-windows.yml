@@ -5,9 +5,27 @@ on:
 
 jobs:
   build:
-    name: Compile (CMake)
+    name: Compile (${{ matrix.type }})
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [CMake, Solution]
     runs-on: windows-2025
     steps:
+      - name: Install VS 2026 Build Tools (v145 toolset)
+        if: matrix.type == 'Solution'
+        shell: pwsh
+        run: |
+          choco install visualstudio2026-workload-vctools --yes --ignore-package-exit-codes=3010
+          # The tools are usually available immediately after installation without reboot
+
+      - name: Setup MSBuild.exe
+        if: matrix.type == 'Solution'
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-prerelease: true
+          vs-version: "latest"
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -27,9 +45,11 @@ jobs:
           echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Remove Windows pre-installed MySQL
+        if: matrix.type == 'CMake'
         run: rm -r -fo C:/mysql*
 
       - name: CCache
+        if: matrix.type == 'CMake'
         uses: hendrikmuhs/ccache-action@v1.2.20
         with:
           max-size: "1G"
@@ -41,11 +61,34 @@ jobs:
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
+          vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || '' }}
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Run CMake
+        if: matrix.type == 'CMake'
         uses: lukka/run-cmake@v10
         with:
           configurePreset: windows-release
           buildPreset: windows-release
+
+      - name: Build project (MSBuild)
+        if: matrix.type == 'Solution'
+        shell: pwsh
+        run: |
+          $vcpkgRoot = Join-Path (Get-Location) "vcpkg"
+          msbuild.exe /p:VcpkgEnableManifest=true `
+                      /p:Configuration=Debug `
+                      /p:Platform=x64 `
+                      /p:VcpkgRoot="$vcpkgRoot" `
+                      /p:GITHUB_WORKSPACE="${{ github.workspace }}" `
+                      vcproj/canary.sln
+
+      - name: Upload artifacts
+        if: matrix.type == 'Solution'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-solution-debug
+          path: |
+            ${{ github.workspace }}/*.dll
+            ${{ github.workspace }}/*.exe

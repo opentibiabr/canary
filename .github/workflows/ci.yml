@@ -53,17 +53,10 @@ jobs:
     secrets: inherit
 
   build-windows:
-    name: Build - Windows (CMake)
+    name: Build - Windows
     needs: [checks, tests-lua]
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/reusable-build-windows.yml
-    secrets: inherit
-
-  build-windows-solution:
-    name: Build - Windows (Solution)
-    needs: [checks, tests-lua]
-    if: github.event.pull_request.draft == false
-    uses: ./.github/workflows/reusable-build-windows-solution.yml
     secrets: inherit
 
   build-macos:

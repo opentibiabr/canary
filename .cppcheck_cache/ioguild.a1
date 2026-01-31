@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="14321463311813420315">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="Guild"/>
+    <functioncall functionName="addRank"/>
+    <functioncall functionName="escapeString"/>
+    <functioncall functionName="executeQuery"/>
+    <functioncall functionName="getBankBalance"/>
+    <functioncall functionName="getId"/>
+    <functioncall functionName="getInstance"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getString"/>
+    <functioncall functionName="make_shared"/>
+    <functioncall functionName="next"/>
+    <functioncall functionName="push_back"/>
+    <functioncall functionName="setBankBalance"/>
+    <functioncall functionName="storeQuery"/>
+    <functioncall functionName="str"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="uint16_t"/>
+    <functioncall functionName="uint32_t"/>
+    <functioncall functionName="uint64_t"/>
+  </FileInfo>
+</analyzerinfo>

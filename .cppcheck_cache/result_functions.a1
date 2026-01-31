@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="5879360426600211727">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="false"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getResultByID"/>
+    <functioncall functionName="getStream"/>
+    <functioncall functionName="getString"/>
+    <functioncall functionName="int64_t"/>
+    <functioncall functionName="luaResultFree"/>
+    <functioncall functionName="luaResultGetNumber"/>
+    <functioncall functionName="luaResultGetStream"/>
+    <functioncall functionName="luaResultGetString"/>
+    <functioncall functionName="luaResultNext"/>
+    <functioncall functionName="lua_pushlstring"/>
+    <functioncall functionName="lua_pushnumber"/>
+    <functioncall functionName="next"/>
+    <functioncall functionName="pushBoolean"/>
+    <functioncall functionName="pushString"/>
+    <functioncall functionName="registerMethod"/>
+    <functioncall functionName="registerTable"/>
+    <functioncall functionName="removeResult"/>
+    <functioncall functionName="uint32_t"/>
+  </FileInfo>
+</analyzerinfo>

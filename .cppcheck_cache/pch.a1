@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="5273174407548358322">
+  <FileInfo check="Class">
+<class name="Message &lt; CommandType &gt;" file="src/lib/messaging/message.hpp" line="15" col="1" hash="8379139497391668923"/>
+<class name="Message &lt; EventType &gt;" file="src/lib/messaging/message.hpp" line="15" col="1" hash="14110570152420040733"/>
+  </FileInfo>
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="src/utils/vectorset.hpp:57:8" my-argnr="1" my-argname="list" file="src/utils/vectorset.hpp" line="59" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorset.hpp:62:8" my-argnr="1" my-argname="list" file="src/utils/vectorset.hpp" line="64" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:82:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="84" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:88:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="90" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:94:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="96" col="68" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:102:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="104" col="68" value="0"/>
+    <unsafe-usage my-id="src/lib/messaging/message.hpp:24:11" my-argnr="1" my-argname="msg" file="src/lib/messaging/message.hpp" line="25" col="10" value="0"/>
+  </FileInfo>
+  <FileInfo check="Class">
+<class name="Message &lt; CommandType &gt;" file="src/lib/messaging/message.hpp" line="15" col="1" hash="8379139497391668923"/>
+<class name="Message &lt; EventType &gt;" file="src/lib/messaging/message.hpp" line="15" col="1" hash="14110570152420040733"/>
+  </FileInfo>
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="src/utils/vectorset.hpp:57:8" my-argnr="1" my-argname="list" file="src/utils/vectorset.hpp" line="59" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorset.hpp:62:8" my-argnr="1" my-argname="list" file="src/utils/vectorset.hpp" line="64" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:82:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="84" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:88:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="90" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:94:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="96" col="68" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:102:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="104" col="68" value="0"/>
+    <unsafe-usage my-id="src/lib/messaging/message.hpp:24:11" my-argnr="1" my-argname="msg" file="src/lib/messaging/message.hpp" line="25" col="10" value="0"/>
+  </FileInfo>
+  <FileInfo check="Class">
+<class name="Message &lt; CommandType &gt;" file="src/lib/messaging/message.hpp" line="15" col="1" hash="8379139497391668923"/>
+<class name="Message &lt; EventType &gt;" file="src/lib/messaging/message.hpp" line="15" col="1" hash="14110570152420040733"/>
+  </FileInfo>
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="src/utils/vectorset.hpp:57:8" my-argnr="1" my-argname="list" file="src/utils/vectorset.hpp" line="59" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorset.hpp:62:8" my-argnr="1" my-argname="list" file="src/utils/vectorset.hpp" line="64" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:82:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="84" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:88:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="90" col="45" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:94:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="96" col="68" value="0"/>
+    <unsafe-usage my-id="src/utils/vectorsort.hpp:102:8" my-argnr="1" my-argname="list" file="src/utils/vectorsort.hpp" line="104" col="68" value="0"/>
+    <unsafe-usage my-id="src/lib/messaging/message.hpp:24:11" my-argnr="1" my-argname="msg" file="src/lib/messaging/message.hpp" line="25" col="10" value="0"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="contains" lineNumber="23"/>
+    <functiondecl functionName="erase" lineNumber="28"/>
+    <functiondecl functionName="erase_if" lineNumber="41"/>
+    <functiondecl functionName="insert" lineNumber="46"/>
+    <functiondecl functionName="emplace" lineNumber="52"/>
+    <functiondecl functionName="insertAll" lineNumber="57"/>
+    <functiondecl functionName="insertAll" lineNumber="62"/>
+    <functiondecl functionName="insert" lineNumber="67"/>
+    <functiondecl functionName="insert" lineNumber="72"/>
+    <functiondecl functionName="insert" lineNumber="78"/>
+    <functiondecl functionName="empty" lineNumber="83"/>
+    <functiondecl functionName="size" lineNumber="87"/>
+    <functiondecl functionName="begin" lineNumber="92"/>
+    <functiondecl functionName="end" lineNumber="97"/>
+    <functiondecl functionName="clear" lineNumber="101"/>
+    <functiondecl functionName="reserve" lineNumber="105"/>
+    <functiondecl functionName="data" lineNumber="109"/>
+    <functiondecl functionName="update" lineNumber="120"/>
+    <functiondecl functionName="assign" lineNumber="39"/>
+    <functiondecl functionName="contains" lineNumber="43"/>
+    <functiondecl functionName="erase" lineNumber="48"/>
+    <functiondecl functionName="erase" lineNumber="60"/>
+    <functiondecl functionName="erase_if" lineNumber="72"/>
+    <functiondecl functionName="front" lineNumber="77"/>
+    <functiondecl functionName="pop_back" lineNumber="82"/>
+    <functiondecl functionName="back" lineNumber="87"/>
+    <functiondecl functionName="push_front" lineNumber="92"/>
+    <functiondecl functionName="push_front" lineNumber="97"/>
+    <functiondecl functionName="emplace_front" lineNumber="103"/>
+    <functiondecl functionName="push_back" lineNumber="108"/>
+    <functiondecl functionName="push_back" lineNumber="112"/>
+    <functiondecl functionName="emplace_back" lineNumber="117"/>
+    <functiondecl functionName="empty" lineNumber="121"/>
+    <functiondecl functionName="size" lineNumber="125"/>
+    <functiondecl functionName="begin" lineNumber="129"/>
+    <functiondecl functionName="end" lineNumber="134"/>
+    <functiondecl functionName="clear" lineNumber="138"/>
+    <functiondecl functionName="reserve" lineNumber="143"/>
+    <functiondecl functionName="data" lineNumber="148"/>
+    <functiondecl functionName="update" lineNumber="159"/>
+    <functiondecl functionName="contains" lineNumber="22"/>
+    <functiondecl functionName="erase" lineNumber="27"/>
+    <functiondecl functionName="erase" lineNumber="39"/>
+    <functiondecl functionName="erase_if" lineNumber="51"/>
+    <functiondecl functionName="front" lineNumber="56"/>
+    <functiondecl functionName="pop_back" lineNumber="61"/>
+    <functiondecl functionName="back" lineNumber="66"/>
+    <functiondecl functionName="push_back" lineNumber="71"/>
+    <functiondecl functionName="push_back" lineNumber="76"/>
+    <functiondecl functionName="insert_all" lineNumber="82"/>
+    <functiondecl functionName="insert_all" lineNumber="88"/>
+    <functiondecl functionName="join" lineNumber="94"/>
+    <functiondecl functionName="join" lineNumber="102"/>
+    <functiondecl functionName="emplace_back" lineNumber="110"/>
+    <functiondecl functionName="partial_sort" lineNumber="115"/>
+    <functiondecl functionName="notify_sort" lineNumber="122"/>
+    <functiondecl functionName="empty" lineNumber="126"/>
+    <functiondecl functionName="size" lineNumber="130"/>
+    <functiondecl functionName="begin" lineNumber="134"/>
+    <functiondecl functionName="end" lineNumber="139"/>
+    <functiondecl functionName="clear" lineNumber="143"/>
+    <functiondecl functionName="reserve" lineNumber="148"/>
+    <functiondecl functionName="data" lineNumber="152"/>
+    <functiondecl functionName="update" lineNumber="163"/>
+    <functiondecl functionName="format_as" lineNumber="91"/>
+    <functiondecl functionName="asSharedObject" lineNumber="23"/>
+    <functiondecl functionName="static_self_cast" lineNumber="28"/>
+    <functiondecl functionName="static_self_cast" lineNumber="33"/>
+    <functiondecl functionName="dynamic_self_cast" lineNumber="38"/>
+    <functiondecl functionName="static_self_cast" lineNumber="43"/>
+    <functiondecl functionName="dynamic_self_cast" lineNumber="48"/>
+    <functiondecl functionName="getEvent" lineNumber="24"/>
+    <functiondecl functionName="command" lineNumber="26"/>
+    <functiondecl functionName="event" lineNumber="22"/>
+    <functiondecl functionName="debug" lineNumber="42"/>
+    <functiondecl functionName="trace" lineNumber="43"/>
+    <functiondecl functionName="debug" lineNumber="46"/>
+    <functiondecl functionName="trace" lineNumber="49"/>
+    <functiondecl functionName="contains" lineNumber="23"/>
+    <functiondecl functionName="erase" lineNumber="28"/>
+    <functiondecl functionName="erase_if" lineNumber="41"/>
+    <functiondecl functionName="insert" lineNumber="46"/>
+    <functiondecl functionName="emplace" lineNumber="52"/>
+    <functiondecl functionName="insertAll" lineNumber="57"/>
+    <functiondecl functionName="insertAll" lineNumber="62"/>
+    <functiondecl functionName="insert" lineNumber="67"/>
+    <functiondecl functionName="insert" lineNumber="72"/>
+    <functiondecl functionName="insert" lineNumber="78"/>
+    <functiondecl functionName="empty" lineNumber="83"/>
+    <functiondecl functionName="size" lineNumber="87"/>
+    <functiondecl functionName="begin" lineNumber="92"/>
+    <functiondecl functionName="end" lineNumber="97"/>
+    <functiondecl functionName="clear" lineNumber="101"/>
+    <functiondecl functionName="reserve" lineNumber="105"/>
+    <functiondecl functionName="data" lineNumber="109"/>
+    <functiondecl functionName="update" lineNumber="120"/>
+    <functiondecl functionName="assign" lineNumber="39"/>
+    <functiondecl functionName="contains" lineNumber="43"/>
+    <functiondecl functionName="erase" lineNumber="48"/>
+    <functiondecl functionName="erase" lineNumber="60"/>
+    <functiondecl functionName="erase_if" lineNumber="72"/>
+    <functiondecl functionName="front" lineNumber="77"/>
+    <functiondecl functionName="pop_back" lineNumber="82"/>
+    <functiondecl functionName="back" lineNumber="87"/>
+    <functiondecl functionName="push_front" lineNumber="92"/>
+    <functiondecl functionName="push_front" lineNumber="97"/>
+    <functiondecl functionName="emplace_front" lineNumber="103"/>
+    <functiondecl functionName="push_back" lineNumber="108"/>
+    <functiondecl functionName="push_back" lineNumber="112"/>
+    <functiondecl functionName="emplace_back" lineNumber="117"/>
+    <functiondecl functionName="empty" lineNumber="121"/>
+    <functiondecl functionName="size" lineNumber="125"/>
+    <functiondecl functionName="begin" lineNumber="129"/>
+    <functiondecl functionName="end" lineNumber="134"/>
+    <functiondecl functionName="clear" lineNumber="138"/>
+    <functiondecl functionName="reserve" lineNumber="143"/>
+    <functiondecl functionName="data" lineNumber="148"/>
+    <functiondecl functionName="update" lineNumber="159"/>
+    <functiondecl functionName="contains" lineNumber="22"/>
+    <functiondecl functionName="erase" lineNumber="27"/>
+    <functiondecl functionName="erase" lineNumber="39"/>
+    <functiondecl functionName="erase_if" lineNumber="51"/>
+    <functiondecl functionName="front" lineNumber="56"/>
+    <functiondecl functionName="pop_back" lineNumber="61"/>
+    <functiondecl functionName="back" lineNumber="66"/>
+    <functiondecl functionName="push_back" lineNumber="71"/>
+    <functiondecl functionName="push_back" lineNumber="76"/>
+    <functiondecl functionName="insert_all" lineNumber="82"/>
+    <functiondecl functionName="insert_all" lineNumber="88"/>
+    <functiondecl functionName="join" lineNumber="94"/>
+    <functiondecl functionName="join" lineNumber="102"/>
+    <functiondecl functionName="emplace_back" lineNumber="110"/>
+    <functiondecl functionName="partial_sort" lineNumber="115"/>
+    <functiondecl functionName="notify_sort" lineNumber="122"/>
+    <functiondecl functionName="empty" lineNumber="126"/>
+    <functiondecl functionName="size" lineNumber="130"/>
+    <functiondecl functionName="begin" lineNumber="134"/>
+    <functiondecl functionName="end" lineNumber="139"/>
+    <functiondecl functionName="clear" lineNumber="143"/>
+    <functiondecl functionName="reserve" lineNumber="148"/>
+    <functiondecl functionName="data" lineNumber="152"/>
+    <functiondecl functionName="update" lineNumber="163"/>
+    <functiondecl functionName="format_as" lineNumber="91"/>
+    <functiondecl functionName="asSharedObject" lineNumber="23"/>
+    <functiondecl functionName="static_self_cast" lineNumber="28"/>
+    <functiondecl functionName="static_self_cast" lineNumber="33"/>
+    <functiondecl functionName="dynamic_self_cast" lineNumber="38"/>
+    <functiondecl functionName="static_self_cast" lineNumber="43"/>
+    <functiondecl functionName="dynamic_self_cast" lineNumber="48"/>
+    <functiondecl functionName="getEvent" lineNumber="24"/>
+    <functiondecl functionName="command" lineNumber="26"/>
+    <functiondecl functionName="event" lineNumber="22"/>
+    <functiondecl functionName="debug" lineNumber="33"/>
+    <functiondecl functionName="trace" lineNumber="38"/>
+    <functiondecl functionName="mm_ctz" lineNumber="59"/>
+    <functiondecl functionName="contains" lineNumber="23"/>
+    <functiondecl functionName="erase" lineNumber="28"/>
+    <functiondecl functionName="erase_if" lineNumber="41"/>
+    <functiondecl functionName="insert" lineNumber="46"/>
+    <functiondecl functionName="emplace" lineNumber="52"/>
+    <functiondecl functionName="insertAll" lineNumber="57"/>
+    <functiondecl functionName="insertAll" lineNumber="62"/>
+    <functiondecl functionName="insert" lineNumber="67"/>
+    <functiondecl functionName="insert" lineNumber="72"/>
+    <functiondecl functionName="insert" lineNumber="78"/>
+    <functiondecl functionName="empty" lineNumber="83"/>
+    <functiondecl functionName="size" lineNumber="87"/>
+    <functiondecl functionName="begin" lineNumber="92"/>
+    <functiondecl functionName="end" lineNumber="97"/>
+    <functiondecl functionName="clear" lineNumber="101"/>
+    <functiondecl functionName="reserve" lineNumber="105"/>
+    <functiondecl functionName="data" lineNumber="109"/>
+    <functiondecl functionName="update" lineNumber="120"/>
+    <functiondecl functionName="assign" lineNumber="39"/>
+    <functiondecl functionName="contains" lineNumber="43"/>
+    <functiondecl functionName="erase" lineNumber="48"/>
+    <functiondecl functionName="erase" lineNumber="60"/>
+    <functiondecl functionName="erase_if" lineNumber="72"/>
+    <functiondecl functionName="front" lineNumber="77"/>
+    <functiondecl functionName="pop_back" lineNumber="82"/>
+    <functiondecl functionName="back" lineNumber="87"/>
+    <functiondecl functionName="push_front" lineNumber="92"/>
+    <functiondecl functionName="push_front" lineNumber="97"/>
+    <functiondecl functionName="emplace_front" lineNumber="103"/>
+    <functiondecl functionName="push_back" lineNumber="108"/>
+    <functiondecl functionName="push_back" lineNumber="112"/>
+    <functiondecl functionName="emplace_back" lineNumber="117"/>
+    <functiondecl functionName="empty" lineNumber="121"/>
+    <functiondecl functionName="size" lineNumber="125"/>
+    <functiondecl functionName="begin" lineNumber="129"/>
+    <functiondecl functionName="end" lineNumber="134"/>
+    <functiondecl functionName="clear" lineNumber="138"/>
+    <functiondecl functionName="reserve" lineNumber="143"/>
+    <functiondecl functionName="data" lineNumber="148"/>
+    <functiondecl functionName="update" lineNumber="159"/>
+    <functiondecl functionName="contains" lineNumber="22"/>
+    <functiondecl functionName="erase" lineNumber="27"/>
+    <functiondecl functionName="erase" lineNumber="39"/>
+    <functiondecl functionName="erase_if" lineNumber="51"/>
+    <functiondecl functionName="front" lineNumber="56"/>
+    <functiondecl functionName="pop_back" lineNumber="61"/>
+    <functiondecl functionName="back" lineNumber="66"/>
+    <functiondecl functionName="push_back" lineNumber="71"/>
+    <functiondecl functionName="push_back" lineNumber="76"/>
+    <functiondecl functionName="insert_all" lineNumber="82"/>
+    <functiondecl functionName="insert_all" lineNumber="88"/>
+    <functiondecl functionName="join" lineNumber="94"/>
+    <functiondecl functionName="join" lineNumber="102"/>
+    <functiondecl functionName="emplace_back" lineNumber="110"/>
+    <functiondecl functionName="partial_sort" lineNumber="115"/>
+    <functiondecl functionName="notify_sort" lineNumber="122"/>
+    <functiondecl functionName="empty" lineNumber="126"/>
+    <functiondecl functionName="size" lineNumber="130"/>
+    <functiondecl functionName="begin" lineNumber="134"/>
+    <functiondecl functionName="end" lineNumber="139"/>
+    <functiondecl functionName="clear" lineNumber="143"/>
+    <functiondecl functionName="reserve" lineNumber="148"/>
+    <functiondecl functionName="data" lineNumber="152"/>
+    <functiondecl functionName="update" lineNumber="163"/>
+    <functiondecl functionName="format_as" lineNumber="91"/>
+    <functiondecl functionName="asSharedObject" lineNumber="23"/>
+    <functiondecl functionName="static_self_cast" lineNumber="28"/>
+    <functiondecl functionName="static_self_cast" lineNumber="33"/>
+    <functiondecl functionName="dynamic_self_cast" lineNumber="38"/>
+    <functiondecl functionName="static_self_cast" lineNumber="43"/>
+    <functiondecl functionName="dynamic_self_cast" lineNumber="48"/>
+    <functiondecl functionName="getEvent" lineNumber="24"/>
+    <functiondecl functionName="command" lineNumber="26"/>
+    <functiondecl functionName="event" lineNumber="22"/>
+    <functiondecl functionName="debug" lineNumber="42"/>
+    <functiondecl functionName="trace" lineNumber="43"/>
+    <functiondecl functionName="debug" lineNumber="46"/>
+    <functiondecl functionName="trace" lineNumber="49"/>
+    <functioncall functionName="ACCOUNT_TYPE_NONE"/>
+    <functioncall functionName="Args"/>
+    <functioncall functionName="E"/>
+    <functioncall functionName="IMessageListener"/>
+    <functioncall functionName="MessageDispatcher"/>
+    <functioncall functionName="SharedObject"/>
+    <functioncall functionName="SourceType"/>
+    <functioncall functionName="T"/>
+    <functioncall functionName="TargetType"/>
+    <functioncall functionName="_BitScanForward"/>
+    <functioncall functionName="_Valty"/>
+    <functioncall functionName="assign"/>
+    <functioncall functionName="back"/>
+    <functioncall functionName="begin"/>
+    <functioncall functionName="binary_search"/>
+    <functioncall functionName="clear"/>
+    <functioncall functionName="data"/>
+    <functioncall functionName="debug"/>
+    <functioncall functionName="dynamic_pointer_cast"/>
+    <functioncall functionName="emplace_back"/>
+    <functioncall functionName="emplace_front"/>
+    <functioncall functionName="empty"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="erase"/>
+    <functioncall functionName="erase_if"/>
+    <functioncall functionName="false"/>
+    <functioncall functionName="find"/>
+    <functioncall functionName="format"/>
+    <functioncall functionName="forward"/>
+    <functioncall functionName="forward_iterator"/>
+    <functioncall functionName="front"/>
+    <functioncall functionName="getInstance"/>
+    <functioncall functionName="insert"/>
+    <functioncall functionName="is_enum_v"/>
+    <functioncall functionName="less"/>
+    <functioncall functionName="lower_bound"/>
+    <functioncall functionName="make_move_iterator"/>
+    <functioncall functionName="move"/>
+    <functioncall functionName="pop_back"/>
+    <functioncall functionName="push_back"/>
+    <functioncall functionName="reserve"/>
+    <functioncall functionName="reverse"/>
+    <functioncall functionName="shared_from_this"/>
+    <functioncall functionName="shared_ptr"/>
+    <functioncall functionName="size"/>
+    <functioncall functionName="sort"/>
+    <functioncall functionName="static_pointer_cast"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="trace"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="underlying_type_t"/>
+    <functioncall functionName="unique"/>
+    <functioncall functionName="update"/>
+  </FileInfo>
+</analyzerinfo>

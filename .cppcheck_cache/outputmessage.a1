@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="6385833847759836049">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="LockfreePoolingAllocator"/>
+    <functioncall functionName="OutputMessage"/>
+    <functioncall functionName="OutputMessagePool"/>
+    <functioncall functionName="allocate_shared"/>
+    <functioncall functionName="back"/>
+    <functioncall functionName="bufferedProtocols"/>
+    <functioncall functionName="count"/>
+    <functioncall functionName="emplace_back"/>
+    <functioncall functionName="empty"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="find"/>
+    <functioncall functionName="g_dispatcher"/>
+    <functioncall functionName="getCurrentBuffer"/>
+    <functioncall functionName="inject"/>
+    <functioncall functionName="move"/>
+    <functioncall functionName="pop_back"/>
+    <functioncall functionName="scheduleEvent"/>
+    <functioncall functionName="scheduleSendAll"/>
+    <functioncall functionName="send"/>
+    <functioncall functionName="sendAll"/>
+  </FileInfo>
+</analyzerinfo>

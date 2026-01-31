@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="506225944971715093">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="AccountRepository"/>
+    <functioncall functionName="inject"/>
+  </FileInfo>
+</analyzerinfo>

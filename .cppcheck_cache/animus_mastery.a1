@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="1492069482216557329">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER"/>
+    <functioncall functionName="ANIMUS_MASTERY_MONSTERS_TO_INCREASE_XP_MULTIPLIER"/>
+    <functioncall functionName="ANIMUS_MASTERY_MONSTERS_XP_MULTIPLIER"/>
+    <functioncall functionName="ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER"/>
+    <functioncall functionName="animusMasteries"/>
+    <functioncall functionName="asLowerCaseString"/>
+    <functioncall functionName="clamp"/>
+    <functioncall functionName="emplace_back"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="erase_if"/>
+    <functioncall functionName="find"/>
+    <functioncall functionName="for_each"/>
+    <functioncall functionName="g_configManager"/>
+    <functioncall functionName="getFloat"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="has"/>
+    <functioncall functionName="m_player"/>
+    <functioncall functionName="max"/>
+    <functioncall functionName="maxMonsterXpMultiplier"/>
+    <functioncall functionName="min"/>
+    <functioncall functionName="monstersAmountToMultiply"/>
+    <functioncall functionName="readString"/>
+    <functioncall functionName="size"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="uint16_t"/>
+    <functioncall functionName="writeString"/>
+  </FileInfo>
+</analyzerinfo>

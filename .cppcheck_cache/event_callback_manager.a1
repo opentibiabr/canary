@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="5213287198523325382">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="CallbackPtr"/>
+    <functioncall functionName="any_of"/>
+    <functioncall functionName="empty"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="erase"/>
+    <functioncall functionName="find_if"/>
+    <functioncall functionName="g_logger"/>
+    <functioncall functionName="getName"/>
+    <functioncall functionName="getPriority"/>
+    <functioncall functionName="getType"/>
+    <functioncall functionName="insert"/>
+    <functioncall functionName="kDefaultReserve"/>
+    <functioncall functionName="reserve"/>
+    <functioncall functionName="skipDuplicationCheck"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="warn"/>
+  </FileInfo>
+</analyzerinfo>

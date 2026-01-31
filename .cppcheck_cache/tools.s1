@@ -1,0 +1,91 @@
+printXMLError call:[c_str,clear,description,error,fclose,fopen,fread,g_logger,length,push_back,while] noreturn:[clear,error,push_back]
+circularShift call:[return]
+processSHA1MessageBlock call:[circularShift] noreturn:[circularShift]
+transformToSHA1 call:[processSHA1MessageBlock,string] noreturn:[string]
+getStashSize call:[ceil] noreturn:[ceil]
+generateToken call:[append,assign,iKeyPad,insert,length,message,min,oKeyPad,push_back,reserve,stol,substr,to_string,transformToSHA1] noreturn:[push_back]
+replaceString call:[empty,find,length,replace] noreturn:[replace]
+trim_right call:[erase,find_last_not_of] noreturn:[erase]
+trim_left call:[erase,find_first_not_of] noreturn:[erase]
+keepFirstWordOnly call:[erase,find] noreturn:[erase]
+toLowerCaseString call:[begin,transform] noreturn:[transform]
+asLowerCaseString call:[toLowerCaseString]
+asUpperCaseString call:[begin,transform]
+toCamelCase call:[isspace,tolower,toupper] noreturn:[tolower]
+toPascalCase call:[isspace,toupper]
+toSnakeCase call:[isspace,isupper,tolower] noreturn:[tolower]
+toKebabCase call:[isspace,isupper,tolower] noreturn:[tolower]
+toStartCaseWithSpace call:[isupper,length,tolower,toupper] noreturn:[tolower,toupper]
+explodeString call:[find,push_back,size,substr] noreturn:[size]
+vectorAtoi call:[push_back,stoi] noreturn:[push_back]
+getRandomGenerator call:[generator,rd]
+uniform_random call:[getRandomGenerator,param_type,swap,uniformRand] noreturn:[swap,uniformRand]
+normal_random call:[getRandomGenerator,lround,minmax,normalRand,while] noreturn:[lround,normalRand]
+boolean_random call:[booleanRand,getRandomGenerator,param_type] noreturn:[booleanRand]
+trimString call:[erase,find_first_not_of,find_last_not_of] noreturn:[erase]
+convertIPToString call:[data,format_to_n,min,size,string] noreturn:[string]
+formatDate call:[error,format,from_time_t,g_logger,what] noreturn:[error,format]
+formatDateShort call:[error,format,from_time_t,g_logger,what] noreturn:[error,format]
+formatDateTime call:[error,format,from_time_t,g_logger,what] noreturn:[error,format]
+formatEnumName call:[begin,end,replace,tolower,transform] noreturn:[tolower]
+getTimeNow call:[now,to_time_t] noreturn:[to_time_t]
+getTimeMsNow call:[count,now,time_since_epoch] noreturn:[count]
+getTimeUsNow call:[count,now,time_since_epoch] noreturn:[count]
+getBedPart
+getDirection
+getNextPosition
+getDirectionTo call:[abs,getOffsetX,getOffsetY]
+getMagicEffect global:[magicEffectNames] call:[end,find]
+getShootType global:[shootTypeNames] call:[end,find]
+getAmmoType global:[ammoTypeNames] call:[end,find]
+getWeaponAction global:[weaponActionNames] call:[end,find]
+getSkullType global:[skullNames] call:[end,find]
+getImbuementType global:[imbuementTypeNames] call:[end,find]
+getSpawnType global:[spawnTypeNames] call:[end,find]
+getSkillName
+adlerChecksum call:[return,while]
+ucfirst call:[toupper]
+ucwords call:[front,length,toupper] noreturn:[toupper]
+booleanString call:[empty,front,tolower]
+getWeaponName
+getWeaponType call:[end,find]
+getMoveEventType call:[end,find]
+getCombatName global:[combatTypeNames] call:[end,find]
+getCombatTypeByName global:[combatTypeNames] call:[end,find_if]
+combatTypeToIndex call:[column,enum_index,error,function_name,g_logger,has_value,line,underlying,value] noreturn:[error,value]
+combatTypeToName call:[empty,enum_name,error,formatEnumName,g_logger,underlying] noreturn:[error,formatEnumName]
+indexToCombatType
+stringToItemAttribute call:[error,g_logger]
+getFirstLine call:[length,push_back,reserve] noreturn:[push_back]
+getReturnMessage
+UPDATE_OTSYS_TIME global:[OTSYSTIME] call:[count,now,time_since_epoch] noreturn:[count]
+OTSYS_TIME global:[OTSYSTIME] call:[count,now,time_since_epoch] noreturn:[count]
+stringToSpellGroup call:[asLowerCaseString]
+capitalizeWords call:[size,toLowerCaseString,toupper] noreturn:[toupper]
+capitalizeWordsIgnoringString call:[cmp_greater,find,size,toLowerCaseString,toupper]
+consoleHandlerExit call:[error,g_logger,getchar,isatty] noreturn:[getchar]
+validateName call:[back_inserter,begin,copy,end,find,length,regexValidChars,regex_match,ss]
+isCaskItem call:[return]
+getObjectCategoryName
+isValidObjectCategory call:[contains] noreturn:[contains]
+forgeBonus
+formatPrice call:[regex,regex_replace,reverse] noreturn:[regex_replace]
+getPlayerSubjectPronoun
+getPlayerObjectPronoun
+getPlayerPossessivePronoun
+getPlayerReflexivePronoun
+getVerbForPronoun
+formatWithArticle call:[begin,empty,end,equal,format,front,removeArticle,size,substr,tolower] noreturn:[format,substr,tolower]
+split call:[getline,push_back,tokenStream,trimString] noreturn:[push_back]
+getFormattedTimeRemaining call:[floor,getTimeNow,str] noreturn:[str]
+getNumberOfCores call:[hardware_concurrency]
+getCipbiaElement
+formatNumber call:[insert,length,to_string]
+sleep_for call:[milliseconds,sleep_for] noreturn:[sleep_for]
+toKey call:[asLowerCaseString,erase_if,isspace,replace] noreturn:[isspace]
+convertWheelGemAffinityToDomain call:[error,g_logger]
+caseInsensitiveCompare call:[begin,equal,min,size,tolower] noreturn:[equal,min,size,tolower]
+printStackTrace call:[GetStackTrace,InitializeSymbolizer,Symbolize,data,g_logger,getLevel,info,sizeof] noreturn:[info]
+getMaxValuePerSkill call:[g_configManager,getNumber]
+calculateEquipmentLoss
+calculateMaxPvpReduction

@@ -1,0 +1,2 @@
+initParsePlayerFlagMap call:[begin,data,end,enum_name,name,transform]
+parseGroupFlags call:[asLowerCaseString,as_bool,child,children,end,find,first_attribute,getFlagNumber,name]

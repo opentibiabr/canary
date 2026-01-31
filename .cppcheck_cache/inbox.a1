@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="7582629973087801517">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="Container"/>
+    <functioncall functionName="Creature"/>
+    <functioncall functionName="Cylinder"/>
+    <functioncall functionName="CylinderLink_t"/>
+    <functioncall functionName="FLAG_NOLIMIT"/>
+    <functioncall functionName="LINK_PARENT"/>
+    <functioncall functionName="MAX_INBOX_ITEMS"/>
+    <functioncall functionName="RETURNVALUE_CANNOTPICKUP"/>
+    <functioncall functionName="RETURNVALUE_CONTAINERNOTENOUGHROOM"/>
+    <functioncall functionName="RETURNVALUE_DEPOTISFULL"/>
+    <functioncall functionName="RETURNVALUE_NOERROR"/>
+    <functioncall functionName="RETURNVALUE_NOTPOSSIBLE"/>
+    <functioncall functionName="RETURNVALUE_THISISIMPOSSIBLE"/>
+    <functioncall functionName="Thing"/>
+    <functioncall functionName="false"/>
+    <functioncall functionName="g_configManager"/>
+    <functioncall functionName="get"/>
+    <functioncall functionName="getContainer"/>
+    <functioncall functionName="getItem"/>
+    <functioncall functionName="getItemHoldingCount"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getParent"/>
+    <functioncall functionName="getTopParent"/>
+    <functioncall functionName="hasBitSet"/>
+    <functioncall functionName="isPickupable"/>
+    <functioncall functionName="lock"/>
+    <functioncall functionName="max"/>
+    <functioncall functionName="postAddNotification"/>
+    <functioncall functionName="postRemoveNotification"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="uint32_t"/>
+  </FileInfo>
+</analyzerinfo>

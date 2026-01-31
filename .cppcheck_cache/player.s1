@@ -1,0 +1,19 @@
+FamiliarEntry
+Familiar
+GuildRank
+Guild
+isGuild
+setOnline
+isOnline
+getId
+getName
+getMembersOnline
+getMemberCountOnline call:[size] noreturn:[size]
+getMemberCount
+setMemberCount
+getBankBalance
+setBankBalance
+getRanks
+getMotd
+setMotd
+sendStowItems call:[emplace_back,getContainer,getID,getItemAmount,getStowableItems,min]

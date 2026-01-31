@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="9166102527379712852">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="Container"/>
+    <functioncall functionName="Creature"/>
+    <functioncall functionName="Cylinder"/>
+    <functioncall functionName="CylinderLink_t"/>
+    <functioncall functionName="FLAG_NOLIMIT"/>
+    <functioncall functionName="LINK_PARENT"/>
+    <functioncall functionName="RETURNVALUE_DEPOTISFULL"/>
+    <functioncall functionName="RETURNVALUE_ITEMISNOTYOURS"/>
+    <functioncall functionName="RETURNVALUE_NOTPOSSIBLE"/>
+    <functioncall functionName="Thing"/>
+    <functioncall functionName="get"/>
+    <functioncall functionName="getContainer"/>
+    <functioncall functionName="getItem"/>
+    <functioncall functionName="getItemCount"/>
+    <functioncall functionName="getItemHoldingCount"/>
+    <functioncall functionName="getParent"/>
+    <functioncall functionName="getRealParent"/>
+    <functioncall functionName="getTopParent"/>
+    <functioncall functionName="hasBitSet"/>
+    <functioncall functionName="hasOwner"/>
+    <functioncall functionName="isOwner"/>
+    <functioncall functionName="isStackable"/>
+    <functioncall functionName="lock"/>
+    <functioncall functionName="postAddNotification"/>
+    <functioncall functionName="postRemoveNotification"/>
+    <functioncall functionName="queryAdd"/>
+    <functioncall functionName="true"/>
+  </FileInfo>
+</analyzerinfo>

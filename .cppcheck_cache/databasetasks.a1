@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="6116928059965059501">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="DBResult_ptr"/>
+    <functioncall functionName="DatabaseTasks"/>
+    <functioncall functionName="__FUNCTION__"/>
+    <functioncall functionName="addEvent"/>
+    <functioncall functionName="callback"/>
+    <functioncall functionName="detach_task"/>
+    <functioncall functionName="executeQuery"/>
+    <functioncall functionName="g_dispatcher"/>
+    <functioncall functionName="inject"/>
+    <functioncall functionName="storeQuery"/>
+    <functioncall functionName="true"/>
+  </FileInfo>
+</analyzerinfo>

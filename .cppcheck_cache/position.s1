@@ -1,0 +1,2 @@
+operator<< call:[toString] noreturn:[toString]
+operator<< call:[end,find]

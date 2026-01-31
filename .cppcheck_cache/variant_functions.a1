@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="4633519953896765877">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="Position"/>
+    <functioncall functionName="VARIANT_NUMBER"/>
+    <functioncall functionName="VARIANT_POSITION"/>
+    <functioncall functionName="VARIANT_STRING"/>
+    <functioncall functionName="VARIANT_TARGETPOSITION"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getPosition"/>
+    <functioncall functionName="getString"/>
+    <functioncall functionName="getThing"/>
+    <functioncall functionName="getVariant"/>
+    <functioncall functionName="isNumber"/>
+    <functioncall functionName="isString"/>
+    <functioncall functionName="isTable"/>
+    <functioncall functionName="isUserdata"/>
+    <functioncall functionName="luaVariantCreate"/>
+    <functioncall functionName="luaVariantGetNumber"/>
+    <functioncall functionName="luaVariantGetPosition"/>
+    <functioncall functionName="luaVariantGetString"/>
+    <functioncall functionName="lua_pushnumber"/>
+    <functioncall functionName="pushPosition"/>
+    <functioncall functionName="pushString"/>
+    <functioncall functionName="pushVariant"/>
+    <functioncall functionName="registerClass"/>
+    <functioncall functionName="registerMethod"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="uint32_t"/>
+  </FileInfo>
+</analyzerinfo>

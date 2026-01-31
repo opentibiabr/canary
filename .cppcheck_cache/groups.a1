@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="13879159191363819402">
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="src/creatures/players/grouping/groups.cpp:51:6" my-argnr="2" my-argname="groupNode" file="src/creatures/players/grouping/groups.cpp" line="52" col="34" value="0"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="initParsePlayerFlagMap" lineNumber="19"/>
+    <functiondecl functionName="parseGroupFlags" lineNumber="51"/>
+    <functioncall functionName="CORE_DIRECTORY"/>
+    <functioncall functionName="FlagLast"/>
+    <functioncall functionName="Group"/>
+    <functioncall functionName="PlayerFlags_t"/>
+    <functioncall functionName="__FUNCTION__"/>
+    <functioncall functionName="asLowerCaseString"/>
+    <functioncall functionName="as_bool"/>
+    <functioncall functionName="as_string"/>
+    <functioncall functionName="as_uint"/>
+    <functioncall functionName="attribute"/>
+    <functioncall functionName="begin"/>
+    <functioncall functionName="c_str"/>
+    <functioncall functionName="cast"/>
+    <functioncall functionName="child"/>
+    <functioncall functionName="children"/>
+    <functioncall functionName="clear"/>
+    <functioncall functionName="data"/>
+    <functioncall functionName="emplace_back"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="enum_integer"/>
+    <functioncall functionName="enum_name"/>
+    <functioncall functionName="enum_value"/>
+    <functioncall functionName="enum_values"/>
+    <functioncall functionName="false"/>
+    <functioncall functionName="find"/>
+    <functioncall functionName="find_if"/>
+    <functioncall functionName="first_attribute"/>
+    <functioncall functionName="flags"/>
+    <functioncall functionName="g_configManager"/>
+    <functioncall functionName="g_game"/>
+    <functioncall functionName="getFlagFromNumber"/>
+    <functioncall functionName="getFlagNumber"/>
+    <functioncall functionName="getGroups"/>
+    <functioncall functionName="getString"/>
+    <functioncall functionName="groups_vector"/>
+    <functioncall functionName="initParsePlayerFlagMap"/>
+    <functioncall functionName="load"/>
+    <functioncall functionName="load_file"/>
+    <functioncall functionName="make_shared"/>
+    <functioncall functionName="name"/>
+    <functioncall functionName="parseGroupFlags"/>
+    <functioncall functionName="printXMLError"/>
+    <functioncall functionName="shared_ptr"/>
+    <functioncall functionName="shrink_to_fit"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="tolower"/>
+    <functioncall functionName="transform"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="uint32_t"/>
+    <functioncall functionName="uint8_t"/>
+    <functioncall functionName="value"/>
+  </FileInfo>
+</analyzerinfo>

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="1098311420515067882">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="FlagLast"/>
+    <functioncall functionName="Group"/>
+    <functioncall functionName="PlayerFlags_t"/>
+    <functioncall functionName="enum_integer"/>
+    <functioncall functionName="g_game"/>
+    <functioncall functionName="getFlagNumber"/>
+    <functioncall functionName="getGroup"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getUserdataShared"/>
+    <functioncall functionName="luaGroupCreate"/>
+    <functioncall functionName="luaGroupGetAccess"/>
+    <functioncall functionName="luaGroupGetFlags"/>
+    <functioncall functionName="luaGroupGetId"/>
+    <functioncall functionName="luaGroupGetMaxDepotItems"/>
+    <functioncall functionName="luaGroupGetMaxVipEntries"/>
+    <functioncall functionName="luaGroupGetName"/>
+    <functioncall functionName="luaGroupHasFlag"/>
+    <functioncall functionName="luaUserdataCompare"/>
+    <functioncall functionName="lua_Number"/>
+    <functioncall functionName="lua_pushnil"/>
+    <functioncall functionName="lua_pushnumber"/>
+    <functioncall functionName="pushBoolean"/>
+    <functioncall functionName="pushString"/>
+    <functioncall functionName="pushUserdata"/>
+    <functioncall functionName="registerMetaMethod"/>
+    <functioncall functionName="registerMethod"/>
+    <functioncall functionName="registerSharedClass"/>
+    <functioncall functionName="set"/>
+    <functioncall functionName="setMetatable"/>
+    <functioncall functionName="to_ulong"/>
+    <functioncall functionName="uint32_t"/>
+  </FileInfo>
+</analyzerinfo>

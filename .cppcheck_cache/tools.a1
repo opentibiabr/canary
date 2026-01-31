@@ -1,0 +1,612 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="7775783945555390744">
+  <FileInfo check="ctu">
+<function-call call-id="src/utils/tools.cpp:75:13" call-funcname="processSHA1MessageBlock" call-argnr="1" file="src/utils/tools.cpp" line="154" col="27" call-argexpr="messageBlock" call-argvaluetype="7" call-argvalue="64"/><function-call call-id="src/utils/tools.cpp:75:13" call-funcname="processSHA1MessageBlock" call-argnr="2" file="src/utils/tools.cpp" line="154" col="27" call-argexpr="H" call-argvaluetype="7" call-argvalue="20"/><function-call call-id="src/utils/tools.cpp:75:13" call-funcname="processSHA1MessageBlock" call-argnr="1" file="src/utils/tools.cpp" line="166" col="26" call-argexpr="messageBlock" call-argvaluetype="7" call-argvalue="64"/><function-call call-id="src/utils/tools.cpp:75:13" call-funcname="processSHA1MessageBlock" call-argnr="2" file="src/utils/tools.cpp" line="166" col="26" call-argexpr="H" call-argvaluetype="7" call-argvalue="20"/><function-call call-id="src/utils/tools.cpp:75:13" call-funcname="processSHA1MessageBlock" call-argnr="1" file="src/utils/tools.cpp" line="184" col="25" call-argexpr="messageBlock" call-argvaluetype="7" call-argvalue="64"/><function-call call-id="src/utils/tools.cpp:75:13" call-funcname="processSHA1MessageBlock" call-argnr="2" file="src/utils/tools.cpp" line="184" col="25" call-argexpr="H" call-argvaluetype="7" call-argvalue="20"/>  </FileInfo>
+  <FileInfo check="Bounds checking">
+    <array-index>
+    <unsafe-usage my-id="src/utils/tools.cpp:75:13" my-argnr="2" my-argname="H" file="src/utils/tools.cpp" line="86" col="15" value="0"/>
+    </array-index>
+  </FileInfo>
+  <FileInfo check="Null pointer">
+    <unsafe-usage my-id="src/utils/tools.cpp:75:13" my-argnr="2" my-argname="H" file="src/utils/tools.cpp" line="86" col="15" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:1571:14" my-argnr="1" my-argname="value" file="src/utils/tools.cpp" line="1572" col="47" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:1610:6" my-argnr="1" my-argname="source" file="src/utils/tools.cpp" line="1611" col="20" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:1622:6" my-argnr="1" my-argname="source" file="src/utils/tools.cpp" line="1623" col="20" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:2030:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="2031" col="38" value="0"/>
+  </FileInfo>
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="src/utils/tools.cpp:23:6" my-argnr="3" my-argname="result" file="src/utils/tools.cpp" line="24" col="66" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:75:13" my-argnr="2" my-argname="H" file="src/utils/tools.cpp" line="86" col="15" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:131:13" my-argnr="1" my-argname="input" file="src/utils/tools.cpp" line="145" col="23" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:197:10" my-argnr="1" my-argname="itemList" file="src/utils/tools.cpp" line="199" col="41" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:205:13" my-argnr="1" my-argname="key" file="src/utils/tools.cpp" line="214" col="26" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:249:6" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="250" col="6" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:259:6" my-argnr="1" my-argname="source" file="src/utils/tools.cpp" line="260" col="2" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:263:6" my-argnr="1" my-argname="source" file="src/utils/tools.cpp" line="264" col="2" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:267:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="268" col="26" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:290:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="294" col="23" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:310:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="314" col="23" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:330:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="332" col="23" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:346:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="348" col="23" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:362:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="364" col="25" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:378:14" my-argnr="1" my-argname="inString" file="src/utils/tools.cpp" line="387" col="25" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:432:6" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="433" col="2" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:1069:6" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="1070" col="6" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:1276:13" my-argnr="1" my-argname="str" file="src/utils/tools.cpp" line="1278" col="20" value="0"/>
+    <unsafe-usage my-id="src/utils/tools.cpp:1902:13" my-argnr="1" my-argname="value" file="src/utils/tools.cpp" line="1903" col="6" value="0"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="printXMLError" lineNumber="23"/>
+    <functiondecl functionName="circularShift" lineNumber="71"/>
+    <functiondecl functionName="processSHA1MessageBlock" lineNumber="75"/>
+    <functiondecl functionName="transformToSHA1" lineNumber="131"/>
+    <functiondecl functionName="getStashSize" lineNumber="197"/>
+    <functiondecl functionName="generateToken" lineNumber="205"/>
+    <functiondecl functionName="replaceString" lineNumber="249"/>
+    <functiondecl functionName="trim_right" lineNumber="259"/>
+    <functiondecl functionName="trim_left" lineNumber="263"/>
+    <functiondecl functionName="keepFirstWordOnly" lineNumber="267"/>
+    <functiondecl functionName="toLowerCaseString" lineNumber="276"/>
+    <functiondecl functionName="asLowerCaseString" lineNumber="280"/>
+    <functiondecl functionName="asUpperCaseString" lineNumber="285"/>
+    <functiondecl functionName="toCamelCase" lineNumber="290"/>
+    <functiondecl functionName="toPascalCase" lineNumber="310"/>
+    <functiondecl functionName="toSnakeCase" lineNumber="330"/>
+    <functiondecl functionName="toKebabCase" lineNumber="346"/>
+    <functiondecl functionName="toStartCaseWithSpace" lineNumber="362"/>
+    <functiondecl functionName="explodeString" lineNumber="378"/>
+    <functiondecl functionName="vectorAtoi" lineNumber="391"/>
+    <functiondecl functionName="getRandomGenerator" lineNumber="399"/>
+    <functiondecl functionName="uniform_random" lineNumber="405"/>
+    <functiondecl functionName="normal_random" lineNumber="416"/>
+    <functiondecl functionName="boolean_random" lineNumber="427"/>
+    <functiondecl functionName="trimString" lineNumber="432"/>
+    <functiondecl functionName="convertIPToString" lineNumber="437"/>
+    <functiondecl functionName="formatDate" lineNumber="446"/>
+    <functiondecl functionName="formatDateShort" lineNumber="456"/>
+    <functiondecl functionName="formatDateTime" lineNumber="466"/>
+    <functiondecl functionName="formatEnumName" lineNumber="476"/>
+    <functiondecl functionName="getTimeNow" lineNumber="483"/>
+    <functiondecl functionName="getTimeMsNow" lineNumber="487"/>
+    <functiondecl functionName="getTimeUsNow" lineNumber="492"/>
+    <functiondecl functionName="getBedPart" lineNumber="497"/>
+    <functiondecl functionName="getDirection" lineNumber="507"/>
+    <functiondecl functionName="getNextPosition" lineNumber="531"/>
+    <functiondecl functionName="getDirectionTo" lineNumber="576"/>
+    <functiondecl functionName="getMagicEffect" lineNumber="906"/>
+    <functiondecl functionName="getShootType" lineNumber="914"/>
+    <functiondecl functionName="getAmmoType" lineNumber="922"/>
+    <functiondecl functionName="getWeaponAction" lineNumber="930"/>
+    <functiondecl functionName="getSkullType" lineNumber="938"/>
+    <functiondecl functionName="getImbuementType" lineNumber="946"/>
+    <functiondecl functionName="getSpawnType" lineNumber="958"/>
+    <functiondecl functionName="getSkillName" lineNumber="966"/>
+    <functiondecl functionName="adlerChecksum" lineNumber="1018"/>
+    <functiondecl functionName="ucfirst" lineNumber="1043"/>
+    <functiondecl functionName="ucwords" lineNumber="1053"/>
+    <functiondecl functionName="booleanString" lineNumber="1069"/>
+    <functiondecl functionName="getWeaponName" lineNumber="1078"/>
+    <functiondecl functionName="getWeaponType" lineNumber="1099"/>
+    <functiondecl functionName="getMoveEventType" lineNumber="1120"/>
+    <functiondecl functionName="getCombatName" lineNumber="1140"/>
+    <functiondecl functionName="getCombatTypeByName" lineNumber="1148"/>
+    <functiondecl functionName="combatTypeToIndex" lineNumber="1156"/>
+    <functiondecl functionName="combatTypeToName" lineNumber="1169"/>
+    <functiondecl functionName="indexToCombatType" lineNumber="1182"/>
+    <functiondecl functionName="stringToItemAttribute" lineNumber="1186"/>
+    <functiondecl functionName="getFirstLine" lineNumber="1276"/>
+    <functiondecl functionName="getReturnMessage" lineNumber="1288"/>
+    <functiondecl functionName="UPDATE_OTSYS_TIME" lineNumber="1560"/>
+    <functiondecl functionName="OTSYS_TIME" lineNumber="1564"/>
+    <functiondecl functionName="stringToSpellGroup" lineNumber="1571"/>
+    <functiondecl functionName="capitalizeWords" lineNumber="1610"/>
+    <functiondecl functionName="capitalizeWordsIgnoringString" lineNumber="1622"/>
+    <functiondecl functionName="consoleHandlerExit" lineNumber="1642"/>
+    <functiondecl functionName="validateName" lineNumber="1649"/>
+    <functiondecl functionName="isCaskItem" lineNumber="1680"/>
+    <functiondecl functionName="getObjectCategoryName" lineNumber="1684"/>
+    <functiondecl functionName="isValidObjectCategory" lineNumber="1745"/>
+    <functiondecl functionName="forgeBonus" lineNumber="1779"/>
+    <functiondecl functionName="formatPrice" lineNumber="1816"/>
+    <functiondecl functionName="getPlayerSubjectPronoun" lineNumber="1827"/>
+    <functiondecl functionName="getPlayerObjectPronoun" lineNumber="1844"/>
+    <functiondecl functionName="getPlayerPossessivePronoun" lineNumber="1861"/>
+    <functiondecl functionName="getPlayerReflexivePronoun" lineNumber="1878"/>
+    <functiondecl functionName="getVerbForPronoun" lineNumber="1895"/>
+    <functiondecl functionName="formatWithArticle" lineNumber="1902"/>
+    <functiondecl functionName="split" lineNumber="1927"/>
+    <functiondecl functionName="getFormattedTimeRemaining" lineNumber="1939"/>
+    <functiondecl functionName="getNumberOfCores" lineNumber="1968"/>
+    <functiondecl functionName="getCipbiaElement" lineNumber="1973"/>
+    <functiondecl functionName="formatNumber" lineNumber="2011"/>
+    <functiondecl functionName="sleep_for" lineNumber="2021"/>
+    <functiondecl functionName="toKey" lineNumber="2030"/>
+    <functiondecl functionName="convertWheelGemAffinityToDomain" lineNumber="2039"/>
+    <functiondecl functionName="caseInsensitiveCompare" lineNumber="2055"/>
+    <functiondecl functionName="printStackTrace" lineNumber="2070"/>
+    <functiondecl functionName="getMaxValuePerSkill" lineNumber="2090"/>
+    <functiondecl functionName="calculateEquipmentLoss" lineNumber="2100"/>
+    <functiondecl functionName="calculateMaxPvpReduction" lineNumber="2127"/>
+    <functioncall functionName="ACTIONID"/>
+    <functioncall functionName="AMMO_ARROW"/>
+    <functioncall functionName="AMMO_BOLT"/>
+    <functioncall functionName="AMMO_NONE"/>
+    <functioncall functionName="AMMO_SNOWBALL"/>
+    <functioncall functionName="AMMO_SPEAR"/>
+    <functioncall functionName="AMMO_STONE"/>
+    <functioncall functionName="AMMO_THROWINGKNIFE"/>
+    <functioncall functionName="AMMO_THROWINGSTAR"/>
+    <functioncall functionName="AMOUNT"/>
+    <functioncall functionName="ARMOR"/>
+    <functioncall functionName="ARTICLE"/>
+    <functioncall functionName="ATTACK"/>
+    <functioncall functionName="AUTHENTICATOR_DIGITS"/>
+    <functioncall functionName="Ammo_t"/>
+    <functioncall functionName="BED_BLANKET_PART"/>
+    <functioncall functionName="BED_NONE_PART"/>
+    <functioncall functionName="BED_PILLOW_PART"/>
+    <functioncall functionName="CHARGES"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_AGONY"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_DEATH"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_DROWN"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_EARTH"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_ENERGY"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_FIRE"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_HEALING"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_HOLY"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_ICE"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_LIFEDRAIN"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_MANADRAIN"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_PHYSICAL"/>
+    <functioncall functionName="CIPBIA_ELEMENTAL_UNDEFINED"/>
+    <functioncall functionName="COMBAT_AGONYDAMAGE"/>
+    <functioncall functionName="COMBAT_DEATHDAMAGE"/>
+    <functioncall functionName="COMBAT_DROWNDAMAGE"/>
+    <functioncall functionName="COMBAT_EARTHDAMAGE"/>
+    <functioncall functionName="COMBAT_ENERGYDAMAGE"/>
+    <functioncall functionName="COMBAT_FIREDAMAGE"/>
+    <functioncall functionName="COMBAT_HEALING"/>
+    <functioncall functionName="COMBAT_HOLYDAMAGE"/>
+    <functioncall functionName="COMBAT_ICEDAMAGE"/>
+    <functioncall functionName="COMBAT_LIFEDRAIN"/>
+    <functioncall functionName="COMBAT_MANADRAIN"/>
+    <functioncall functionName="COMBAT_NEUTRALDAMAGE"/>
+    <functioncall functionName="COMBAT_NONE"/>
+    <functioncall functionName="COMBAT_PHYSICALDAMAGE"/>
+    <functioncall functionName="COMBAT_UNDEFINEDDAMAGE"/>
+    <functioncall functionName="CONST_ANI_ARROW"/>
+    <functioncall functionName="CONST_ANI_BOLT"/>
+    <functioncall functionName="CONST_ANI_BURSTARROW"/>
+    <functioncall functionName="CONST_ANI_CAKE"/>
+    <functioncall functionName="CONST_ANI_CRYSTALLINEARROW"/>
+    <functioncall functionName="CONST_ANI_DEATH"/>
+    <functioncall functionName="CONST_ANI_DIAMONDARROW"/>
+    <functioncall functionName="CONST_ANI_DRILLBOLT"/>
+    <functioncall functionName="CONST_ANI_EARTH"/>
+    <functioncall functionName="CONST_ANI_EARTHARROW"/>
+    <functioncall functionName="CONST_ANI_ENCHANTEDSPEAR"/>
+    <functioncall functionName="CONST_ANI_ENERGY"/>
+    <functioncall functionName="CONST_ANI_ENERGYBALL"/>
+    <functioncall functionName="CONST_ANI_ENVENOMEDARROW"/>
+    <functioncall functionName="CONST_ANI_ETHEREALSPEAR"/>
+    <functioncall functionName="CONST_ANI_EXPLOSION"/>
+    <functioncall functionName="CONST_ANI_FIRE"/>
+    <functioncall functionName="CONST_ANI_FLAMMINGARROW"/>
+    <functioncall functionName="CONST_ANI_FLASHARROW"/>
+    <functioncall functionName="CONST_ANI_GLOOTHSPEAR"/>
+    <functioncall functionName="CONST_ANI_GREENSTAR"/>
+    <functioncall functionName="CONST_ANI_HOLY"/>
+    <functioncall functionName="CONST_ANI_HUNTINGSPEAR"/>
+    <functioncall functionName="CONST_ANI_ICE"/>
+    <functioncall functionName="CONST_ANI_INFERNALBOLT"/>
+    <functioncall functionName="CONST_ANI_LARGEROCK"/>
+    <functioncall functionName="CONST_ANI_LEAFSTAR"/>
+    <functioncall functionName="CONST_ANI_NONE"/>
+    <functioncall functionName="CONST_ANI_ONYXARROW"/>
+    <functioncall functionName="CONST_ANI_PIERCINGBOLT"/>
+    <functioncall functionName="CONST_ANI_POISON"/>
+    <functioncall functionName="CONST_ANI_POISONARROW"/>
+    <functioncall functionName="CONST_ANI_POWERBOLT"/>
+    <functioncall functionName="CONST_ANI_PRISMATICBOLT"/>
+    <functioncall functionName="CONST_ANI_REDSTAR"/>
+    <functioncall functionName="CONST_ANI_ROYALSPEAR"/>
+    <functioncall functionName="CONST_ANI_ROYALSTAR"/>
+    <functioncall functionName="CONST_ANI_SHIVERARROW"/>
+    <functioncall functionName="CONST_ANI_SIMPLEARROW"/>
+    <functioncall functionName="CONST_ANI_SMALLEARTH"/>
+    <functioncall functionName="CONST_ANI_SMALLHOLY"/>
+    <functioncall functionName="CONST_ANI_SMALLICE"/>
+    <functioncall functionName="CONST_ANI_SMALLSTONE"/>
+    <functioncall functionName="CONST_ANI_SNIPERARROW"/>
+    <functioncall functionName="CONST_ANI_SNOWBALL"/>
+    <functioncall functionName="CONST_ANI_SPEAR"/>
+    <functioncall functionName="CONST_ANI_SPECTRALBOLT"/>
+    <functioncall functionName="CONST_ANI_SUDDENDEATH"/>
+    <functioncall functionName="CONST_ANI_TARSALARROW"/>
+    <functioncall functionName="CONST_ANI_THROWINGKNIFE"/>
+    <functioncall functionName="CONST_ANI_THROWINGSTAR"/>
+    <functioncall functionName="CONST_ANI_VORTEXBOLT"/>
+    <functioncall functionName="CONST_ANI_WHIRLWINDAXE"/>
+    <functioncall functionName="CONST_ANI_WHIRLWINDCLUB"/>
+    <functioncall functionName="CONST_ANI_WHIRLWINDSWORD"/>
+    <functioncall functionName="CONST_ME_ASSASSIN"/>
+    <functioncall functionName="CONST_ME_BATS"/>
+    <functioncall functionName="CONST_ME_BIGCLOUDS"/>
+    <functioncall functionName="CONST_ME_BIGPLANTS"/>
+    <functioncall functionName="CONST_ME_BLACKSMOKE"/>
+    <functioncall functionName="CONST_ME_BLOCKHIT"/>
+    <functioncall functionName="CONST_ME_BLOODYSTEPS"/>
+    <functioncall functionName="CONST_ME_BLUE_ENERGY_SPARK"/>
+    <functioncall functionName="CONST_ME_BLUE_FIREWORKS"/>
+    <functioncall functionName="CONST_ME_BLUE_GHOST"/>
+    <functioncall functionName="CONST_ME_BUBBLES"/>
+    <functioncall functionName="CONST_ME_CAKE"/>
+    <functioncall functionName="CONST_ME_CARNIPHILA"/>
+    <functioncall functionName="CONST_ME_CONFETTI_HORIZONTAL"/>
+    <functioncall functionName="CONST_ME_CONFETTI_VERTICAL"/>
+    <functioncall functionName="CONST_ME_CRAPS"/>
+    <functioncall functionName="CONST_ME_CRITICAL_DAMAGE"/>
+    <functioncall functionName="CONST_ME_DAZZLING"/>
+    <functioncall functionName="CONST_ME_DEVOVORGA"/>
+    <functioncall functionName="CONST_ME_DODGE"/>
+    <functioncall functionName="CONST_ME_DRAGONHEAD"/>
+    <functioncall functionName="CONST_ME_DRAWBLOOD"/>
+    <functioncall functionName="CONST_ME_EARLY_THUNDER"/>
+    <functioncall functionName="CONST_ME_ENERGYAREA"/>
+    <functioncall functionName="CONST_ME_ENERGYHIT"/>
+    <functioncall functionName="CONST_ME_EXPLOSIONAREA"/>
+    <functioncall functionName="CONST_ME_EXPLOSIONHIT"/>
+    <functioncall functionName="CONST_ME_FATAL"/>
+    <functioncall functionName="CONST_ME_FERUMBRAS"/>
+    <functioncall functionName="CONST_ME_FERUMBRAS_1"/>
+    <functioncall functionName="CONST_ME_FERUMBRAS_2"/>
+    <functioncall functionName="CONST_ME_FIREAREA"/>
+    <functioncall functionName="CONST_ME_FIREATTACK"/>
+    <functioncall functionName="CONST_ME_FIREWORK_BLUE"/>
+    <functioncall functionName="CONST_ME_FIREWORK_RED"/>
+    <functioncall functionName="CONST_ME_FIREWORK_YELLOW"/>
+    <functioncall functionName="CONST_ME_GAZHARAGOTH"/>
+    <functioncall functionName="CONST_ME_GIANTICE"/>
+    <functioncall functionName="CONST_ME_GIFT_WRAPS"/>
+    <functioncall functionName="CONST_ME_GREENSMOKE"/>
+    <functioncall functionName="CONST_ME_GREEN_ENERGY_SPARK"/>
+    <functioncall functionName="CONST_ME_GREEN_FIREWORKS"/>
+    <functioncall functionName="CONST_ME_GREEN_RINGS"/>
+    <functioncall functionName="CONST_ME_GROUNDSHAKER"/>
+    <functioncall functionName="CONST_ME_HEARTS"/>
+    <functioncall functionName="CONST_ME_HITAREA"/>
+    <functioncall functionName="CONST_ME_HITBYFIRE"/>
+    <functioncall functionName="CONST_ME_HITBYPOISON"/>
+    <functioncall functionName="CONST_ME_HOLYAREA"/>
+    <functioncall functionName="CONST_ME_HOLYDAMAGE"/>
+    <functioncall functionName="CONST_ME_HORESTIS"/>
+    <functioncall functionName="CONST_ME_HOURGLASS"/>
+    <functioncall functionName="CONST_ME_ICEAREA"/>
+    <functioncall functionName="CONST_ME_ICEATTACK"/>
+    <functioncall functionName="CONST_ME_ICETORNADO"/>
+    <functioncall functionName="CONST_ME_INSECTS"/>
+    <functioncall functionName="CONST_ME_LOSEENERGY"/>
+    <functioncall functionName="CONST_ME_MAD_MAGE"/>
+    <functioncall functionName="CONST_ME_MAGIC_BLUE"/>
+    <functioncall functionName="CONST_ME_MAGIC_GREEN"/>
+    <functioncall functionName="CONST_ME_MAGIC_POWDER"/>
+    <functioncall functionName="CONST_ME_MAGIC_RED"/>
+    <functioncall functionName="CONST_ME_MIRRORHORIZONTAL"/>
+    <functioncall functionName="CONST_ME_MIRRORVERTICAL"/>
+    <functioncall functionName="CONST_ME_MORTAREA"/>
+    <functioncall functionName="CONST_ME_NONE"/>
+    <functioncall functionName="CONST_ME_ORANGE_ENERGY_SPARK"/>
+    <functioncall functionName="CONST_ME_ORANGE_FIREWORKS"/>
+    <functioncall functionName="CONST_ME_ORCSHAMAN"/>
+    <functioncall functionName="CONST_ME_ORCSHAMAN_FIRE"/>
+    <functioncall functionName="CONST_ME_PINK_BEAM"/>
+    <functioncall functionName="CONST_ME_PINK_ENERGY_SPARK"/>
+    <functioncall functionName="CONST_ME_PINK_FIREWORKS"/>
+    <functioncall functionName="CONST_ME_PINK_VORTEX"/>
+    <functioncall functionName="CONST_ME_PIXIE_COMING"/>
+    <functioncall functionName="CONST_ME_PIXIE_EXPLOSION"/>
+    <functioncall functionName="CONST_ME_PIXIE_GOING"/>
+    <functioncall functionName="CONST_ME_PLANTATTACK"/>
+    <functioncall functionName="CONST_ME_PLUNGING_FISH"/>
+    <functioncall functionName="CONST_ME_POFF"/>
+    <functioncall functionName="CONST_ME_POISONAREA"/>
+    <functioncall functionName="CONST_ME_PURPLEENERGY"/>
+    <functioncall functionName="CONST_ME_PURPLESMOKE"/>
+    <functioncall functionName="CONST_ME_RAGIAZ_BONECAPSULE"/>
+    <functioncall functionName="CONST_ME_REDSMOKE"/>
+    <functioncall functionName="CONST_ME_SKULLHORIZONTAL"/>
+    <functioncall functionName="CONST_ME_SKULLVERTICAL"/>
+    <functioncall functionName="CONST_ME_SLEEP"/>
+    <functioncall functionName="CONST_ME_SMALLCLOUDS"/>
+    <functioncall functionName="CONST_ME_SMALLPLANTS"/>
+    <functioncall functionName="CONST_ME_SMOKE"/>
+    <functioncall functionName="CONST_ME_SOUND_BLUE"/>
+    <functioncall functionName="CONST_ME_SOUND_GREEN"/>
+    <functioncall functionName="CONST_ME_SOUND_PURPLE"/>
+    <functioncall functionName="CONST_ME_SOUND_RED"/>
+    <functioncall functionName="CONST_ME_SOUND_WHITE"/>
+    <functioncall functionName="CONST_ME_SOUND_YELLOW"/>
+    <functioncall functionName="CONST_ME_SPARKLING"/>
+    <functioncall functionName="CONST_ME_STEPSHORIZONTAL"/>
+    <functioncall functionName="CONST_ME_STEPSVERTICAL"/>
+    <functioncall functionName="CONST_ME_STONES"/>
+    <functioncall functionName="CONST_ME_STONE_STORM"/>
+    <functioncall functionName="CONST_ME_STORM"/>
+    <functioncall functionName="CONST_ME_STUN"/>
+    <functioncall functionName="CONST_ME_TELEPORT"/>
+    <functioncall functionName="CONST_ME_THUNDER"/>
+    <functioncall functionName="CONST_ME_TREASURE_MAP"/>
+    <functioncall functionName="CONST_ME_TUTORIALARROW"/>
+    <functioncall functionName="CONST_ME_TUTORIALSQUARE"/>
+    <functioncall functionName="CONST_ME_WATERCREATURE"/>
+    <functioncall functionName="CONST_ME_WATERSPLASH"/>
+    <functioncall functionName="CONST_ME_WHITE_ENERGY_SPARK"/>
+    <functioncall functionName="CONST_ME_YALAHARIGHOST"/>
+    <functioncall functionName="CONST_ME_YELLOWENERGY"/>
+    <functioncall functionName="CONST_ME_YELLOWSMOKE"/>
+    <functioncall functionName="CONST_ME_YELLOW_ENERGY_SPARK"/>
+    <functioncall functionName="CONST_ME_YELLOW_RINGS"/>
+    <functioncall functionName="CORPSEOWNER"/>
+    <functioncall functionName="CRITICALCHANCE"/>
+    <functioncall functionName="CombatType_t"/>
+    <functioncall functionName="DATE"/>
+    <functioncall functionName="DECAYSTATE"/>
+    <functioncall functionName="DEFENSE"/>
+    <functioncall functionName="DESCRIPTION"/>
+    <functioncall functionName="DIRECTION_EAST"/>
+    <functioncall functionName="DIRECTION_NONE"/>
+    <functioncall functionName="DIRECTION_NORTH"/>
+    <functioncall functionName="DIRECTION_NORTHEAST"/>
+    <functioncall functionName="DIRECTION_NORTHWEST"/>
+    <functioncall functionName="DIRECTION_SOUTH"/>
+    <functioncall functionName="DIRECTION_SOUTHEAST"/>
+    <functioncall functionName="DIRECTION_SOUTHWEST"/>
+    <functioncall functionName="DIRECTION_WEST"/>
+    <functioncall functionName="DOORID"/>
+    <functioncall functionName="DURATION"/>
+    <functioncall functionName="DURATION_TIMESTAMP"/>
+    <functioncall functionName="EXTRADEFENSE"/>
+    <functioncall functionName="FLUIDTYPE"/>
+    <functioncall functionName="GetStackTrace"/>
+    <functioncall functionName="HITCHANCE"/>
+    <functioncall functionName="IMBUEMENT_CRITICAL_HIT"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_DAMAGE"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_PROTECTION_DEATH"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_PROTECTION_EARTH"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_PROTECTION_FIRE"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_PROTECTION_HOLY"/>
+    <functioncall functionName="IMBUEMENT_ELEMENTAL_PROTECTION_ICE"/>
+    <functioncall functionName="IMBUEMENT_INCREASE_CAPACITY"/>
+    <functioncall functionName="IMBUEMENT_INCREASE_SPEED"/>
+    <functioncall functionName="IMBUEMENT_LIFE_LEECH"/>
+    <functioncall functionName="IMBUEMENT_MANA_LEECH"/>
+    <functioncall functionName="IMBUEMENT_NONE"/>
+    <functioncall functionName="IMBUEMENT_SKILLBOOST_AXE"/>
+    <functioncall functionName="IMBUEMENT_SKILLBOOST_CLUB"/>
+    <functioncall functionName="IMBUEMENT_SKILLBOOST_DISTANCE"/>
+    <functioncall functionName="IMBUEMENT_SKILLBOOST_MAGIC_LEVEL"/>
+    <functioncall functionName="IMBUEMENT_SKILLBOOST_SHIELDING"/>
+    <functioncall functionName="IMBUEMENT_SKILLBOOST_SWORD"/>
+    <functioncall functionName="INVALID_CHARACTER"/>
+    <functioncall functionName="INVALID_FORBIDDEN"/>
+    <functioncall functionName="INVALID_LENGTH"/>
+    <functioncall functionName="INVALID_TOKEN_LENGTH"/>
+    <functioncall functionName="ImbuementTypes_t"/>
+    <functioncall functionName="InitializeSymbolizer"/>
+    <functioncall functionName="LOOTMESSAGE_SUFFIX"/>
+    <functioncall functionName="MOVE_EVENT_ADD_ITEM"/>
+    <functioncall functionName="MOVE_EVENT_ADD_ITEM_ITEMTILE"/>
+    <functioncall functionName="MOVE_EVENT_DEEQUIP"/>
+    <functioncall functionName="MOVE_EVENT_EQUIP"/>
+    <functioncall functionName="MOVE_EVENT_NONE"/>
+    <functioncall functionName="MOVE_EVENT_REMOVE_ITEM"/>
+    <functioncall functionName="MOVE_EVENT_REMOVE_ITEM_ITEMTILE"/>
+    <functioncall functionName="MOVE_EVENT_STEP_IN"/>
+    <functioncall functionName="MOVE_EVENT_STEP_OUT"/>
+    <functioncall functionName="MagicEffectClasses"/>
+    <functioncall functionName="MoveEvent_t"/>
+    <functioncall functionName="NAME"/>
+    <functioncall functionName="NONE"/>
+    <functioncall functionName="OBJECTCATEGORY_AMMO"/>
+    <functioncall functionName="OBJECTCATEGORY_ARMORS"/>
+    <functioncall functionName="OBJECTCATEGORY_AXES"/>
+    <functioncall functionName="OBJECTCATEGORY_BOOTS"/>
+    <functioncall functionName="OBJECTCATEGORY_CLUBS"/>
+    <functioncall functionName="OBJECTCATEGORY_CONTAINERS"/>
+    <functioncall functionName="OBJECTCATEGORY_CREATUREPRODUCTS"/>
+    <functioncall functionName="OBJECTCATEGORY_DECORATION"/>
+    <functioncall functionName="OBJECTCATEGORY_DEFAULT"/>
+    <functioncall functionName="OBJECTCATEGORY_DISTANCEWEAPONS"/>
+    <functioncall functionName="OBJECTCATEGORY_FOOD"/>
+    <functioncall functionName="OBJECTCATEGORY_GOLD"/>
+    <functioncall functionName="OBJECTCATEGORY_HELMETS"/>
+    <functioncall functionName="OBJECTCATEGORY_LEGS"/>
+    <functioncall functionName="OBJECTCATEGORY_NECKLACES"/>
+    <functioncall functionName="OBJECTCATEGORY_NONE"/>
+    <functioncall functionName="OBJECTCATEGORY_OTHERS"/>
+    <functioncall functionName="OBJECTCATEGORY_POTIONS"/>
+    <functioncall functionName="OBJECTCATEGORY_PREMIUMSCROLLS"/>
+    <functioncall functionName="OBJECTCATEGORY_QUIVERS"/>
+    <functioncall functionName="OBJECTCATEGORY_RINGS"/>
+    <functioncall functionName="OBJECTCATEGORY_RUNES"/>
+    <functioncall functionName="OBJECTCATEGORY_SHIELDS"/>
+    <functioncall functionName="OBJECTCATEGORY_SWORDS"/>
+    <functioncall functionName="OBJECTCATEGORY_TIBIACOINS"/>
+    <functioncall functionName="OBJECTCATEGORY_TOOLS"/>
+    <functioncall functionName="OBJECTCATEGORY_VALUABLES"/>
+    <functioncall functionName="OBJECTCATEGORY_WANDS"/>
+    <functioncall functionName="OWNER"/>
+    <functioncall functionName="ObjectCategory_t"/>
+    <functioncall functionName="PLURALNAME"/>
+    <functioncall functionName="RESPAWN_IN_ALL"/>
+    <functioncall functionName="RESPAWN_IN_DAY"/>
+    <functioncall functionName="RESPAWN_IN_DAY_CAVE"/>
+    <functioncall functionName="RESPAWN_IN_NIGHT"/>
+    <functioncall functionName="RESPAWN_IN_NIGHT_CAVE"/>
+    <functioncall functionName="SHOOTRANGE"/>
+    <functioncall functionName="SKILL_CRITICAL_HIT_CHANCE"/>
+    <functioncall functionName="SKILL_LIFE_LEECH_CHANCE"/>
+    <functioncall functionName="SKILL_MANA_LEECH_CHANCE"/>
+    <functioncall functionName="SKULL_BLACK"/>
+    <functioncall functionName="SKULL_GREEN"/>
+    <functioncall functionName="SKULL_NONE"/>
+    <functioncall functionName="SKULL_ORANGE"/>
+    <functioncall functionName="SKULL_RED"/>
+    <functioncall functionName="SKULL_WHITE"/>
+    <functioncall functionName="SKULL_YELLOW"/>
+    <functioncall functionName="SPELLGROUP_ATTACK"/>
+    <functioncall functionName="SPELLGROUP_BURSTS_OF_NATURE"/>
+    <functioncall functionName="SPELLGROUP_CRIPPLING"/>
+    <functioncall functionName="SPELLGROUP_FOCUS"/>
+    <functioncall functionName="SPELLGROUP_GREAT_BEAMS"/>
+    <functioncall functionName="SPELLGROUP_HEALING"/>
+    <functioncall functionName="SPELLGROUP_NONE"/>
+    <functioncall functionName="SPELLGROUP_SPECIAL"/>
+    <functioncall functionName="SPELLGROUP_SUPPORT"/>
+    <functioncall functionName="SPELLGROUP_ULTIMATESTRIKES"/>
+    <functioncall functionName="STDIN_FILENO"/>
+    <functioncall functionName="STORE"/>
+    <functioncall functionName="ShootType_t"/>
+    <functioncall functionName="Skulls_t"/>
+    <functioncall functionName="SpawnType_t"/>
+    <functioncall functionName="Symbolize"/>
+    <functioncall functionName="TEXT"/>
+    <functioncall functionName="TIER"/>
+    <functioncall functionName="UNIQUEID"/>
+    <functioncall functionName="VALID"/>
+    <functioncall functionName="WEAPONACTION_MOVE"/>
+    <functioncall functionName="WEAPONACTION_NONE"/>
+    <functioncall functionName="WEAPONACTION_REMOVECHARGE"/>
+    <functioncall functionName="WEAPONACTION_REMOVECOUNT"/>
+    <functioncall functionName="WEAPON_AMMO"/>
+    <functioncall functionName="WEAPON_AXE"/>
+    <functioncall functionName="WEAPON_CLUB"/>
+    <functioncall functionName="WEAPON_DISTANCE"/>
+    <functioncall functionName="WEAPON_MISSILE"/>
+    <functioncall functionName="WEAPON_NONE"/>
+    <functioncall functionName="WEAPON_SHIELD"/>
+    <functioncall functionName="WEAPON_SWORD"/>
+    <functioncall functionName="WEAPON_WAND"/>
+    <functioncall functionName="WEIGHT"/>
+    <functioncall functionName="WRITER"/>
+    <functioncall functionName="WeaponAction_t"/>
+    <functioncall functionName="WeaponType_t"/>
+    <functioncall functionName="__FUNCTION__"/>
+    <functioncall functionName="abs"/>
+    <functioncall functionName="append"/>
+    <functioncall functionName="asLowerCaseString"/>
+    <functioncall functionName="assign"/>
+    <functioncall functionName="back_inserter"/>
+    <functioncall functionName="begin"/>
+    <functioncall functionName="booleanRand"/>
+    <functioncall functionName="c_str"/>
+    <functioncall functionName="ceil"/>
+    <functioncall functionName="circularShift"/>
+    <functioncall functionName="clear"/>
+    <functioncall functionName="cmp_greater"/>
+    <functioncall functionName="column"/>
+    <functioncall functionName="contains"/>
+    <functioncall functionName="copy"/>
+    <functioncall functionName="count"/>
+    <functioncall functionName="data"/>
+    <functioncall functionName="description"/>
+    <functioncall functionName="duration_cast"/>
+    <functioncall functionName="empty"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="enum_index"/>
+    <functioncall functionName="enum_name"/>
+    <functioncall functionName="equal"/>
+    <functioncall functionName="erase"/>
+    <functioncall functionName="erase_if"/>
+    <functioncall functionName="error"/>
+    <functioncall functionName="false"/>
+    <functioncall functionName="fclose"/>
+    <functioncall functionName="find"/>
+    <functioncall functionName="find_first_not_of"/>
+    <functioncall functionName="find_if"/>
+    <functioncall functionName="find_last_not_of"/>
+    <functioncall functionName="float_t"/>
+    <functioncall functionName="floor"/>
+    <functioncall functionName="fopen"/>
+    <functioncall functionName="format"/>
+    <functioncall functionName="formatEnumName"/>
+    <functioncall functionName="format_first_only"/>
+    <functioncall functionName="format_to_n"/>
+    <functioncall functionName="fread"/>
+    <functioncall functionName="from_time_t"/>
+    <functioncall functionName="front"/>
+    <functioncall functionName="function_name"/>
+    <functioncall functionName="g_configManager"/>
+    <functioncall functionName="g_logger"/>
+    <functioncall functionName="generator"/>
+    <functioncall functionName="getLevel"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getOffsetX"/>
+    <functioncall functionName="getOffsetY"/>
+    <functioncall functionName="getRandomGenerator"/>
+    <functioncall functionName="getTimeNow"/>
+    <functioncall functionName="getchar"/>
+    <functioncall functionName="getline"/>
+    <functioncall functionName="hardware_concurrency"/>
+    <functioncall functionName="has_value"/>
+    <functioncall functionName="iKeyPad"/>
+    <functioncall functionName="info"/>
+    <functioncall functionName="insert"/>
+    <functioncall functionName="int32_t"/>
+    <functioncall functionName="isatty"/>
+    <functioncall functionName="isspace"/>
+    <functioncall functionName="isupper"/>
+    <functioncall functionName="length"/>
+    <functioncall functionName="line"/>
+    <functioncall functionName="lround"/>
+    <functioncall functionName="message"/>
+    <functioncall functionName="microseconds"/>
+    <functioncall functionName="milliseconds"/>
+    <functioncall functionName="min"/>
+    <functioncall functionName="minmax"/>
+    <functioncall functionName="normalRand"/>
+    <functioncall functionName="now"/>
+    <functioncall functionName="oKeyPad"/>
+    <functioncall functionName="param_type"/>
+    <functioncall functionName="processSHA1MessageBlock"/>
+    <functioncall functionName="push_back"/>
+    <functioncall functionName="rd"/>
+    <functioncall functionName="regex"/>
+    <functioncall functionName="regexValidChars"/>
+    <functioncall functionName="regex_match"/>
+    <functioncall functionName="regex_replace"/>
+    <functioncall functionName="removeArticle"/>
+    <functioncall functionName="replace"/>
+    <functioncall functionName="reserve"/>
+    <functioncall functionName="reverse"/>
+    <functioncall functionName="size"/>
+    <functioncall functionName="sleep_for"/>
+    <functioncall functionName="ss"/>
+    <functioncall functionName="stackSize"/>
+    <functioncall functionName="stoi"/>
+    <functioncall functionName="stol"/>
+    <functioncall functionName="str"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="substr"/>
+    <functioncall functionName="swap"/>
+    <functioncall functionName="time_since_epoch"/>
+    <functioncall functionName="toLowerCaseString"/>
+    <functioncall functionName="to_string"/>
+    <functioncall functionName="to_time_t"/>
+    <functioncall functionName="tokenStream"/>
+    <functioncall functionName="tolower"/>
+    <functioncall functionName="toupper"/>
+    <functioncall functionName="transform"/>
+    <functioncall functionName="transformToSHA1"/>
+    <functioncall functionName="trimString"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="uint16_t"/>
+    <functioncall functionName="uint32_t"/>
+    <functioncall functionName="uint8_t"/>
+    <functioncall functionName="underlying"/>
+    <functioncall functionName="uniformRand"/>
+    <functioncall functionName="value"/>
+    <functioncall functionName="what"/>
+  </FileInfo>
+</analyzerinfo>

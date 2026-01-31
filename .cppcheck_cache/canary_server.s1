@@ -1,0 +1,212 @@
+operator() call:[BN_free] noreturn:[BN_free]
+operator() call:[BN_MONT_CTX_free] noreturn:[BN_MONT_CTX_free]
+is_single_socket
+is_checksummed
+get_protocol_identifier
+get_protocol_name call:[protocol_name] noreturn:[protocol_name]
+make_protocol
+ServicePort
+is_running call:[empty]
+add call:[add_service,end,error,find,g_logger,get_protocol_names,is_single_socket,open,protocol_name] noreturn:[add_service]
+FailedToInitializeCanary
+what call:[c_str] noreturn:[c_str]
+setConfigFileLua
+getConfigFileLua
+FamiliarEntry
+Familiar
+BaseImbuement
+CategoryImbuement
+Imbuement
+isStorageKeyInRange
+IsConditionSuppressible call:[any_of] noreturn:[any_of]
+CreatureIcon
+CreatureIcon
+isNone
+isSet call:[isNone] noreturn:[isNone]
+serialize
+VIPEntry
+VIPGroupEntry
+Kill
+RecentDeathEntry
+RecentPvPKillEntry
+MarketOfferEx
+ProtocolFamiliars
+LightInfo
+isEmpty call:[empty] noreturn:[empty]
+LootBlock
+ShopBlock
+operator==
+PartyAnalyzer
+MarketStatistics
+AugmentInfo
+HighscoreCharacter
+ModalWindow
+Position
+areInRange call:[getDistanceX,getDistanceY]
+areInRange call:[getDistanceX,getDistanceY,getDistanceZ]
+getOffsetX call:[getX] noreturn:[getX]
+getOffsetY call:[getY] noreturn:[getY]
+getOffsetZ call:[getZ] noreturn:[getZ]
+getDistanceX call:[abs,getOffsetX] noreturn:[abs]
+getDistanceY call:[abs,getOffsetY] noreturn:[abs]
+getDistanceZ call:[abs,getOffsetZ] noreturn:[abs]
+getDiagonalDistance call:[getDistanceX,getDistanceY,max] noreturn:[max]
+operator< call:[return]
+operator>
+operator==
+operator!=
+operator+ call:[Position] noreturn:[Position]
+operator- call:[Position] noreturn:[Position]
+toString call:[append,getX,getY,getZ,to_string] noreturn:[append]
+getX
+getY
+getZ
+operator()
+parse call:[begin] noreturn:[begin]
+format call:[format_to,out] noreturn:[format_to]
+getMapDimensions
+getWorldType
+getTeamFinderList
+getPlayersOnline call:[size] noreturn:[size]
+getMonstersOnline call:[size] noreturn:[size]
+getNpcsOnline call:[size] noreturn:[size]
+getPlayersRecord
+addItemsClassification call:[push_back] noreturn:[push_back]
+getBestiaryList
+setBoostedName call:[g_logger,info] noreturn:[info]
+getBoostedMonsterName
+getLightHour
+getMotdHash
+getMotdNum
+incrementMotdNum
+getItemsPrice
+getGuilds
+getPlayers
+getMonsters
+getNpcs
+getItemsClassifications
+getTilesToClean
+addTileToClean call:[emplace] noreturn:[emplace]
+removeTileToClean call:[erase] noreturn:[erase]
+clearTilesToClean call:[clear] noreturn:[clear]
+addCharmRune call:[push_back,shrink_to_fit] noreturn:[shrink_to_fit]
+getCharmList
+isMagicEffectRegistered call:[end,find] noreturn:[end]
+isDistanceEffectRegistered call:[end,find] noreturn:[end]
+isLookTypeRegistered call:[end,find] noreturn:[end]
+setCreateLuaItems
+getFiendishMonsters
+getInfluencedMonsters
+getId
+getDelay
+getContext
+getTime
+isCycle
+isCanceled
+cancel
+hasTraceableContext call:[contains] noreturn:[contains]
+operator() call:[getTime] noreturn:[getTime]
+isGroup
+isAsync
+getGroup
+getName
+getType
+reset
+Dispatcher call:[capacity,emplace_back,get_thread_count,reserve] noreturn:[emplace_back,reserve]
+cycleEvent call:[move,scheduleEvent] noreturn:[scheduleEvent]
+scheduleEvent call:[move,scheduleEvent] noreturn:[scheduleEvent]
+asyncCycleEvent call:[asyncEvent,f,move,scheduleEvent] noreturn:[asyncEvent,f,scheduleEvent]
+asyncScheduleEvent call:[asyncEvent,f,move,scheduleEvent] noreturn:[asyncEvent,f,scheduleEvent]
+getDispatcherCycle
+context
+getThreadTask call:[getThreadId]
+scheduleEvent call:[move,scheduleEvent] noreturn:[scheduleEvent]
+shutdown call:[notify_all]
+checkPendingTasks call:[empty]
+notify call:[notify_one] noreturn:[notify_one]
+generatePartition call:[ceil,emplace_back,get_thread_count,reserve] noreturn:[emplace_back]
+ThreadTask call:[reserve] noreturn:[reserve]
+getInstance
+getExpSchedule
+setExpSchedule
+getLootSchedule
+setLootSchedule
+getBossLootSchedule
+setBossLootSchedule
+getSpawnMonsterSchedule
+setSpawnMonsterSchedule
+getSkillSchedule
+setSkillSchedule
+Area
+intersects
+intersects call:[intersects] noreturn:[intersects]
+contains
+toString call:[format,toString] noreturn:[format]
+PositionIterator
+operator*
+operator++
+operator!=
+begin call:[PositionIterator] noreturn:[PositionIterator]
+end call:[PositionIterator,endPosition] noreturn:[PositionIterator]
+operator() call:[expired,get,lock]
+operator() call:[lock] noreturn:[lock]
+operator() call:[getID,lock]
+operator() call:[expired,getID,lock] noreturn:[getID]
+lock call:[begin,end,erase,expired,lock,push_back] noreturn:[erase]
+Zone
+Zone
+getName
+addPosition call:[emplace] noreturn:[emplace]
+removePosition call:[erase] noreturn:[erase]
+setRemoveDestination
+getMonsterVariant
+isStatic
+refreshAll call:[refresh] noreturn:[refresh]
+getInstance
+getPurchaseStatistics
+getSaleStatistics
+isOccupied
+canSelect call:[return] noreturn:[return]
+eraseBonus
+removeMonsterType call:[begin,end,erase,remove] noreturn:[erase]
+isOccupied
+canSelect call:[return] noreturn:[return]
+eraseTask
+removeMonsterType call:[begin,end,erase,remove] noreturn:[erase]
+isCreatureOnList call:[begin,end,find_if] noreturn:[end]
+detach_task call:[detach_task] noreturn:[detach_task]
+submit_loop call:[submit_loop] noreturn:[submit_loop]
+submit_task call:[submit_task] noreturn:[submit_task]
+wait_for_tasks call:[wait] noreturn:[wait]
+get_thread_count call:[get_thread_count] noreturn:[get_thread_count]
+getThreadId call:[fetch_add,load] noreturn:[load]
+isStopped
+getEventType
+isLoaded
+getRecvbyte
+getDelay
+getInstance
+isShuttingDown
+getScriptInterface
+protocol_name
+ProtocolLogin
+protocol_name
+ProtocolStatus
+WebhookTask
+Vocation
+CanaryServer global:[g_dispatcher,g_game] call:[OTSYS_TIME,g_dispatcher,g_game,init,logInfos,setGameState,set_new_handler,srand,toggleForceCloseButton] noreturn:[init]
+run global:[CLIENT_VERSION,g_configManager,g_dispatcher,g_game,g_webhook] call:[addEvent,checkExpiredOffers,count,error,g_configManager,g_dispatcher,g_game,g_logger,g_webhook,get,getBoolean,getInstance,getString,geteuid,getuid,info,initializeDatabase,is_running,isatty,loadConfigLua,loadMaps,loadModules,lock,milliseconds,minutes,notify_all,now,run,seconds,sendMessage,setGameState,setLevel,setWorldType,setupHousesRent,shutdown,sleep_for,start,transferHouseItemsToDepot,updateStatistics,validateDatapack,warn,what] noreturn:[error,get,notify_all,sendMessage,sleep_for,warn]
+setWorldType global:[g_configManager,g_game] call:[FailedToInitializeCanary,asLowerCaseString,asUpperCaseString,debug,format,g_configManager,g_game,getString,setWorldType] noreturn:[FailedToInitializeCanary,debug,setWorldType]
+loadMaps global:[g_configManager,g_game] call:[FailedToInitializeCanary,g_configManager,g_game,getBoolean,getString,loadCustomMaps,loadMainMap,refreshAll,what] noreturn:[FailedToInitializeCanary,loadCustomMaps,refreshAll]
+setupHousesRent global:[g_configManager,g_game] call:[asLowerCaseString,g_configManager,g_game,getString,payHouses] noreturn:[payHouses]
+logInfos global:[SERVER_RELEASE_VERSION] call:[debug,getCompiler,getPlatform,info] noreturn:[info]
+toggleForceCloseButton
+badAllocationHandler call:[error,exit,g_logger,getchar,isatty,shutdown] noreturn:[exit,getchar]
+getPlatform
+getCompiler
+loadConfigLua global:[g_configManager] call:[c_test,close,config_lua,config_lua_dist,g_configManager,getConfigFileLua,info,is_open,load,modulesLoadHelper,rdbuf,setConfigFileLua] noreturn:[close,modulesLoadHelper]
+validateDatapack global:[g_configManager] call:[FailedToInitializeCanary,format,g_configManager,getBoolean,getString] noreturn:[FailedToInitializeCanary]
+initializeDatabase global:[g_configManager] call:[FailedToInitializeCanary,connect,debug,format,g_configManager,g_logger,getBoolean,getClientVersion,getConfigFileLua,getInstance,info,isDatabaseSetup,optimizeTables,updateDatabase] noreturn:[FailedToInitializeCanary,debug,info]
+loadModules global:[g_configManager,g_events,g_eventsScheduler,g_game,g_imbuements,g_ioBosstiary,g_ioprey,g_luaEnvironment,g_modules,g_npcs,g_scripts,g_storages,g_vocations] call:[debug,g_configManager,g_events,g_eventsScheduler,g_game,g_imbuements,g_ioBosstiary,g_ioprey,g_luaEnvironment,g_modules,g_npcs,g_scripts,g_storages,g_vocations,getInstance,getLuaState,getString,info,initState,initializeTaskHuntOptions,load,loadAppearanceProtobuf,loadBoostedBoss,loadBoostedCreature,loadFile,loadFromXML,loadFromXml,loadScheduleEventFromJson,loadScheduleEventFromXml,loadScripts,logCyclopediaStats,modulesLoadHelper] noreturn:[initState,logCyclopediaStats]
+modulesLoadHelper call:[FailedToInitializeCanary,debug,format] noreturn:[FailedToInitializeCanary]
+shutdown global:[g_dispatcher,g_threadPool] call:[createDatabaseBackup,g_database,g_dispatcher,g_metrics,g_threadPool,shutdown] noreturn:[shutdown]

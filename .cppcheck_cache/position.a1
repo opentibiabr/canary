@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="12189575923193444857">
+  <FileInfo check="Uninitialized variables">
+    <unsafe-usage my-id="src/game/movement/position.cpp:32:15" my-argnr="1" my-argname="os" file="src/game/movement/position.cpp" line="33" col="9" value="0"/>
+    <unsafe-usage my-id="src/game/movement/position.cpp:32:15" my-argnr="2" my-argname="pos" file="src/game/movement/position.cpp" line="33" col="15" value="0"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="DIRECTION_EAST"/>
+    <functioncall functionName="DIRECTION_NORTH"/>
+    <functioncall functionName="DIRECTION_NORTHEAST"/>
+    <functioncall functionName="DIRECTION_NORTHWEST"/>
+    <functioncall functionName="DIRECTION_SOUTH"/>
+    <functioncall functionName="DIRECTION_SOUTHEAST"/>
+    <functioncall functionName="DIRECTION_SOUTHWEST"/>
+    <functioncall functionName="DIRECTION_WEST"/>
+    <functioncall functionName="Direction"/>
+    <functioncall functionName="begin"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="find"/>
+    <functioncall functionName="front"/>
+    <functioncall functionName="getDistanceX"/>
+    <functioncall functionName="getDistanceY"/>
+    <functioncall functionName="getRandomGenerator"/>
+    <functioncall functionName="shuffle"/>
+    <functioncall functionName="sqrt"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="toString"/>
+  </FileInfo>
+</analyzerinfo>

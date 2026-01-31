@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="6612251087883045343">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="Logger"/>
+    <functioncall functionName="SPDLOG_CRITICAL"/>
+    <functioncall functionName="SPDLOG_DEBUG"/>
+    <functioncall functionName="SPDLOG_ERROR"/>
+    <functioncall functionName="SPDLOG_INFO"/>
+    <functioncall functionName="SPDLOG_TRACE"/>
+    <functioncall functionName="SPDLOG_WARN"/>
+    <functioncall functionName="begin"/>
+    <functioncall functionName="debug"/>
+    <functioncall functionName="end"/>
+    <functioncall functionName="from_str"/>
+    <functioncall functionName="get_level"/>
+    <functioncall functionName="inject"/>
+    <functioncall functionName="setLevel"/>
+    <functioncall functionName="set_level"/>
+    <functioncall functionName="set_pattern"/>
+    <functioncall functionName="to_string_view"/>
+  </FileInfo>
+</analyzerinfo>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="13536867954827576657">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="CustomAttribute"/>
+    <functioncall functionName="__FUNCTION__"/>
+    <functioncall functionName="error"/>
+    <functioncall functionName="false"/>
+    <functioncall functionName="g_logger"/>
+    <functioncall functionName="get"/>
+    <functioncall functionName="getAttribute"/>
+    <functioncall functionName="getBool"/>
+    <functioncall functionName="getDouble"/>
+    <functioncall functionName="getInteger"/>
+    <functioncall functionName="getString"/>
+    <functioncall functionName="hasValue"/>
+    <functioncall functionName="holds_alternative"/>
+    <functioncall functionName="int64_t"/>
+    <functioncall functionName="lua_Number"/>
+    <functioncall functionName="lua_pushnil"/>
+    <functioncall functionName="lua_pushnumber"/>
+    <functioncall functionName="move"/>
+    <functioncall functionName="pushBoolean"/>
+    <functioncall functionName="pushString"/>
+    <functioncall functionName="read"/>
+    <functioncall functionName="readString"/>
+    <functioncall functionName="string"/>
+    <functioncall functionName="stringKey"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="uint8_t"/>
+    <functioncall functionName="value"/>
+    <functioncall functionName="write"/>
+    <functioncall functionName="writeString"/>
+  </FileInfo>
+</analyzerinfo>

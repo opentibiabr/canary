@@ -1,0 +1,6 @@
+setProtoStringValue call:[set_str_value] noreturn:[set_str_value]
+setProtoBooleanValue call:[set_bool_value] noreturn:[set_bool_value]
+setProtoIntValue call:[set_int_value] noreturn:[set_int_value]
+setProtoDoubleValue call:[set_double_value] noreturn:[set_double_value]
+setProtoArrayValue call:[add_values,mutable_array_value,toProto] noreturn:[toProto]
+setProtoMapValue call:[add_items,mutable_map_value,mutable_value,set_key,toProto] noreturn:[toProto]

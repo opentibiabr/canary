@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="17124289915377698012">
+  <FileInfo check="CheckUnusedFunctions">
+    <functioncall functionName="ConfigKey_t"/>
+    <functioncall functionName="__FUNCTION__"/>
+    <functioncall functionName="data"/>
+    <functioncall functionName="debug"/>
+    <functioncall functionName="enum_name"/>
+    <functioncall functionName="enum_values"/>
+    <functioncall functionName="g_configManager"/>
+    <functioncall functionName="g_logger"/>
+    <functioncall functionName="getBoolean"/>
+    <functioncall functionName="getFloat"/>
+    <functioncall functionName="getNumber"/>
+    <functioncall functionName="getString"/>
+    <functioncall functionName="luaConfigManagerGetBoolean"/>
+    <functioncall functionName="luaConfigManagerGetFloat"/>
+    <functioncall functionName="luaConfigManagerGetNumber"/>
+    <functioncall functionName="luaConfigManagerGetString"/>
+    <functioncall functionName="lua_pushnumber"/>
+    <functioncall functionName="pushBoolean"/>
+    <functioncall functionName="pushString"/>
+    <functioncall functionName="registerMethod"/>
+    <functioncall functionName="registerTable"/>
+    <functioncall functionName="registerVariable"/>
+    <functioncall functionName="reportErrorFunc"/>
+    <functioncall functionName="round"/>
+    <functioncall functionName="true"/>
+    <functioncall functionName="underlying"/>
+  </FileInfo>
+</analyzerinfo>

@@ -1,0 +1,2 @@
+static_tryGetItemFromCache global:[items] call:[hash,try_emplace]
+static_tryGetTileFromCache global:[tiles] call:[hash,try_emplace]

@@ -1576,9 +1576,9 @@ bool Player::updateKillTracker(const std::shared_ptr<Container> &corpse, const s
 	return false;
 }
 
-void Player::updatePartyTrackerAnalyzer() const {
+void Player::updatePartyTrackerAnalyzer(bool force) const {
 	if (client && m_party) {
-		client->updatePartyTrackerAnalyzer(m_party);
+		client->updatePartyTrackerAnalyzer(m_party, force);
 	}
 }
 

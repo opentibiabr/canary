@@ -15,7 +15,6 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "game/game.hpp"
 #include "game/movement/position.hpp"
-#include "lib/di/container.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 

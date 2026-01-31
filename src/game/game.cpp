@@ -3366,41 +3366,66 @@ ObjectCategory_t Game::getObjectCategory(const ItemType &it) {
 
 uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
 	uint64_t total = 0;
-	g_logger().debug("[getItemMarketPrice] - Starting calculation with " + std::to_string(itemMap.size()) + " items, buyPrice: " + (buyPrice ? "true" : "false"));
+	g_logger().debug("[{}] - Starting calculation with {} items, buyPrice: {}", __FUNCTION__, itemMap.size(), buyPrice);
 
 	for (const auto &it : itemMap) {
+		const uint16_t itemId = it.first;
+		const uint64_t count = it.second;
+
 		uint64_t itemValue = 0;
-		if (it.first == ITEM_GOLD_COIN) {
-			itemValue = it.second;
+
+		if (itemId == ITEM_GOLD_COIN) {
+			itemValue = count; // 1 per coin
 			total += itemValue;
-			g_logger().debug("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + " (GOLD_COIN), Count " + std::to_string(it.second) + ", Value per unit: 1, Total value: " + std::to_string(itemValue));
-		} else if (it.first == ITEM_PLATINUM_COIN) {
-			itemValue = 100 * it.second;
-			total += itemValue;
-			g_logger().debug("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + " (PLATINUM_COIN), Count " + std::to_string(it.second) + ", Value per unit: 100, Total value: " + std::to_string(itemValue));
-		} else if (it.first == ITEM_CRYSTAL_COIN) {
-			itemValue = 10000 * it.second;
-			total += itemValue;
-			g_logger().debug("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + " (CRYSTAL_COIN), Count " + std::to_string(it.second) + ", Value per unit: 10000, Total value: " + std::to_string(itemValue));
-		} else {
-			auto marketIt = itemsPriceMap.find(it.first);
-			if (marketIt != itemsPriceMap.end()) {
-				for (auto &[tier, price] : (*marketIt).second) {
-					itemValue = price * it.second;
-					total += itemValue;
-					g_logger().debug("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + ", Count " + std::to_string(it.second) + ", Tier " + std::to_string(tier) + ", Using MARKET_PRICE: " + std::to_string(price) + " per item, Total value: " + std::to_string(itemValue));
-				}
-			} else {
-				const ItemType &iType = Item::items[it.first];
-				uint64_t npcPrice = buyPrice ? iType.buyPrice : iType.sellPrice;
-				itemValue = npcPrice * it.second;
-				total += itemValue;
-				g_logger().debug("[getItemMarketPrice] - Item ID " + std::to_string(it.first) + ", Count " + std::to_string(it.second) + ", Using NPC_PRICE (" + (buyPrice ? "buy" : "sell") + "): " + std::to_string(npcPrice) + " per item, Total value: " + std::to_string(itemValue));
-			}
+			g_logger().debug("[{}] - Item {} (GOLD_COIN), count {}, unit 1, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
 		}
+
+		if (itemId == ITEM_PLATINUM_COIN) {
+			itemValue = 100ULL * count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (PLATINUM_COIN), count {}, unit 100, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		if (itemId == ITEM_CRYSTAL_COIN) {
+			itemValue = 10000ULL * count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (CRYSTAL_COIN), count {}, unit 10000, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		const auto marketIt = itemsPriceMap.find(itemId);
+		if (marketIt != itemsPriceMap.end()) {
+			// No tier parameter here: use tier 0 by default (matches getItemMarketAveragePrice behavior),
+			// fallback to the first available tier if tier 0 doesn't exist.
+			const auto &tierMap = marketIt->second;
+
+			auto tierIt = tierMap.find(0);
+			if (tierIt == tierMap.end() && !tierMap.empty()) {
+				tierIt = tierMap.begin();
+			}
+
+			if (tierIt != tierMap.end()) {
+				const uint64_t price = tierIt->second;
+				itemValue = price * count;
+				total += itemValue;
+				g_logger().debug("[{}] - Item {}, count {}, tier {}, MARKET_PRICE {}, total {}",
+					__FUNCTION__, itemId, count, tierIt->first, price, itemValue);
+			}
+			continue;
+		}
+
+		const ItemType &iType = Item::items[itemId];
+		const uint64_t npcPrice = buyPrice ? iType.buyPrice : iType.sellPrice;
+		itemValue = npcPrice * count;
+		total += itemValue;
+
+		g_logger().debug("[{}] - Item {}, count {}, NPC_PRICE({}), unit {}, total {}",
+			__FUNCTION__, itemId, count, buyPrice ? "buy" : "sell", npcPrice, itemValue);
 	}
 
-	g_logger().debug("[getItemMarketPrice] - Final total: " + std::to_string(total));
+	g_logger().debug("[{}] - Final total: {}", __FUNCTION__, total);
 	return total;
 }
 

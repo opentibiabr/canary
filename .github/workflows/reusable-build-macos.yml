@@ -3,9 +3,6 @@ name: Reusable macOS Build
 on:
   workflow_call:
 
-env:
-  VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
-
 jobs:
   build:
     name: Compile (macOS)

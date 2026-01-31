@@ -3,9 +3,6 @@ name: Reusable Linux Build
 on:
   workflow_call:
 
-env:
-  VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
-
 jobs:
   build:
     name: Compile (${{ matrix.buildtype }})
@@ -14,6 +11,9 @@ jobs:
       matrix:
         buildtype: [linux-release, linux-debug]
     runs-on: ubuntu-24.04
+    env:
+      CC: gcc-13
+      CXX: g++-13
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,7 +33,12 @@ jobs:
           echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> "$GITHUB_ENV"
 
       - name: Install Linux Dependencies
-        run: sudo apt-get update && sudo apt-get install -y ccache ninja-build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache ninja-build gcc-13 g++-13
+          # Ensure ninja is in the path and named correctly
+          sudo ln -sf /usr/bin/ninja /usr/bin/ninja-build
+          ninja --version
 
       - name: CCache
         uses: hendrikmuhs/ccache-action@v1.2.20

@@ -29,8 +29,17 @@ namespace {
 			itemType.setImbuementType(IMBUEMENT_SKILLBOOST_DISTANCE, 1);
 		}
 
-		~ItemTypeScope() {
-			Item::items.getItems().resize(originalSize);
+		~ItemTypeScope() noexcept {
+			auto &items = Item::items.getItems();
+			if (items.size() == originalSize) {
+				return;
+			}
+			try {
+				items.resize(originalSize);
+			} catch (const std::exception &) {
+				// If resize fails during cleanup, leave the vector state as is.
+			} catch (...) {
+			}
 		}
 
 		size_t originalSize = 0;

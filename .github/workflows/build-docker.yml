@@ -16,16 +16,11 @@ on:
     branches:
       - main
 
-jobs:
-  cancel-runs:
-    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ github.token }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
+jobs:
   build_docker_x86:
     if: ${{ github.event_name == 'push' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest

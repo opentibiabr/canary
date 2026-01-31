@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
+#include "items/items_definitions.hpp"
 
 class Player;
 class Item;
@@ -124,3 +125,29 @@ private:
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };
+
+class ImbuementDecay {
+public:
+	// ImbuementDecay tracks timer persistence for items that currently have active imbuements.
+	ImbuementDecay() = default;
+
+	// Non-copyable
+	ImbuementDecay(const ImbuementDecay &) = delete;
+	ImbuementDecay &operator=(const ImbuementDecay &) = delete;
+
+	static ImbuementDecay &getInstance();
+
+	void startImbuementDecay(const std::shared_ptr<Item> &item);
+	void stopImbuementDecay(const std::shared_ptr<Item> &item);
+	void checkImbuementDecay();
+
+private:
+	bool canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const;
+
+	std::unordered_set<std::shared_ptr<Item>> m_itemsToDecay;
+	std::unordered_map<std::shared_ptr<Item>, int64_t> m_itemLastUpdate;
+	int64_t m_lastUpdateTime = 0;
+	uint32_t m_eventId { 0 };
+};
+
+constexpr auto g_imbuementDecay = ImbuementDecay::getInstance;

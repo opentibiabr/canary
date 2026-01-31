@@ -5,6 +5,7 @@ on:
 
 jobs:
   build:
+    name: Image Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

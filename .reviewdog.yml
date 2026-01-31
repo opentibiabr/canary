@@ -2,7 +2,7 @@
 runner:
 
   cppcheck:
-    cmd: cppcheck --enable=all --template="{file}:{line}:{message}" src/
+    cmd: cppcheck -j 2 --enable=warning,performance,portability --cppcheck-build-dir=.cppcheck_cache --template="{file}:{line}:{message}" src/
     errorformat:
       - "%f:%l:%m"
     level: warning

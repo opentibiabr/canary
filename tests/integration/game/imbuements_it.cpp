@@ -29,6 +29,8 @@ namespace {
 			itemType.setImbuementType(IMBUEMENT_SKILLBOOST_DISTANCE, 1);
 		}
 
+		// Rule of Zero: This struct uses a custom destructor for RAII cleanup of global state.
+		// While it doesn't strictly follow the Rule of Zero, its purpose is limited to test scoping.
 		~ItemTypeScope() noexcept {
 			auto &items = Item::items.getItems();
 			if (items.size() == originalSize) {
@@ -36,9 +38,11 @@ namespace {
 			}
 			try {
 				items.resize(originalSize);
-			} catch (const std::exception &) {
+			} catch (const std::exception &e) {
 				// If resize fails during cleanup, leave the vector state as is.
+				(void)e;
 			} catch (...) {
+				// Prevent exception propagation from destructor
 			}
 		}
 

@@ -266,7 +266,7 @@ void IOLoginDataLoad::loadPlayerConditions(const std::shared_ptr<Player> &player
 	auto condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.emplace_back(condition);
+			(void)player->storedConditionList.emplace_back(condition);
 		}
 		condition = Condition::createCondition(propStream);
 	}
@@ -381,7 +381,7 @@ void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBR
 		do {
 			auto killTime = result->getNumber<time_t>("time");
 			if ((time(nullptr) - killTime) <= fragTime) {
-				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
+				(void)player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
 				lastKillTime = std::max<int64_t>(lastKillTime, killTime);
 			}
 		} while (result->next());
@@ -533,7 +533,7 @@ void IOLoginDataLoad::loadPlayerInstantSpellList(const std::shared_ptr<Player> &
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_back(result->getString("name"));
+			(void)player->learnedInstantSpellList.emplace_back(result->getString("name"));
 		} while (result->next());
 	}
 }
@@ -551,56 +551,64 @@ void IOLoginDataLoad::loadPlayerInventoryItems(const std::shared_ptr<Player> &pl
 	std::vector<std::shared_ptr<Item>> imbuedItemsToStartDecay;
 
 	try {
-		if ((result = g_database().storeQuery(query))) {
-			loadItems(inventoryItems, result, player);
+		if (!(result = g_database().storeQuery(query))) {
+			return;
+		}
 
-			for (auto it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
-				const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
-				const auto &item = pair.first;
-				if (!item) {
+		loadItems(inventoryItems, result, player);
+
+		for (auto it = inventoryItems.rbegin(), end = inventoryItems.rend(); it != end; ++it) {
+			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
+			const auto &item = pair.first;
+			if (!item) {
+				continue;
+			}
+
+			int32_t pid = pair.second;
+			if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
+				player->internalAddThing(pid, item);
+				item->startDecaying();
+				if (item->hasImbuements()) {
+					(void)imbuedItemsToStartDecay.emplace_back(item);
+				}
+			} else {
+				ItemsMap::const_iterator it2 = inventoryItems.find(pid);
+				if (it2 == inventoryItems.end()) {
 					continue;
 				}
 
-				int32_t pid = pair.second;
-				if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
-					player->internalAddThing(pid, item);
-					item->startDecaying();
-					if (item->hasImbuements()) {
-						imbuedItemsToStartDecay.emplace_back(item);
-					}
-				} else {
-					ItemsMap::const_iterator it2 = inventoryItems.find(pid);
-					if (it2 == inventoryItems.end()) {
-						continue;
-					}
-
-					const std::shared_ptr<Container> &container = it2->second.first->getContainer();
-					if (container) {
-						container->internalAddThing(item);
-						// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
-						itemsToStartDecaying.emplace_back(item);
-						if (item->hasImbuements()) {
-							imbuedItemsToStartDecay.emplace_back(item);
-						}
-					}
+				const std::shared_ptr<Container> &container = it2->second.first->getContainer();
+				if (!container) {
+					continue;
 				}
 
-				const std::shared_ptr<Container> &itemContainer = item->getContainer();
-				if (itemContainer) {
-					if (itemContainer.get() != item.get() && itemContainer->hasImbuements()) {
-						imbuedItemsToStartDecay.emplace_back(itemContainer);
-					}
-					for (const bool isLootContainer : { true, false }) {
-						const auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
-						if (item->hasAttribute(checkAttribute)) {
-							const auto flags = item->getAttribute<uint32_t>(checkAttribute);
+				container->internalAddThing(item);
+				// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
+				(void)itemsToStartDecaying.emplace_back(item);
+				if (item->hasImbuements()) {
+					(void)imbuedItemsToStartDecay.emplace_back(item);
+				}
+			}
 
-							for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
-								if (hasBitSet(1 << category, flags)) {
-									player->refreshManagedContainer(static_cast<ObjectCategory_t>(category), itemContainer, isLootContainer, true);
-								}
-							}
-						}
+			const std::shared_ptr<Container> &itemContainer = item->getContainer();
+			if (!itemContainer) {
+				continue;
+			}
+
+			if (itemContainer.get() != item.get() && itemContainer->hasImbuements()) {
+				(void)imbuedItemsToStartDecay.emplace_back(itemContainer);
+			}
+
+			for (const bool isLootContainer : { true, false }) {
+				const auto checkAttribute = isLootContainer ? ItemAttribute_t::QUICKLOOTCONTAINER : ItemAttribute_t::OBTAINCONTAINER;
+				if (!item->hasAttribute(checkAttribute)) {
+					continue;
+				}
+
+				const auto flags = item->getAttribute<uint32_t>(checkAttribute);
+				for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
+					if (hasBitSet(1 << category, flags)) {
+						player->refreshManagedContainer(static_cast<ObjectCategory_t>(category), itemContainer, isLootContainer, true);
 					}
 				}
 			}
@@ -685,7 +693,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player
 				if (container) {
 					container->internalAddThing(item);
 					// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
-					itemsToStartDecaying.emplace_back(item);
+					(void)itemsToStartDecaying.emplace_back(item);
 				}
 			}
 		}
@@ -735,7 +743,7 @@ void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player
 				const std::shared_ptr<Container> &container = inboxIt->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
-					itemsToStartDecaying.emplace_back(item);
+					(void)itemsToStartDecaying.emplace_back(item);
 				}
 			}
 		}

@@ -36,25 +36,25 @@ namespace test::imbuements {
 			std::filesystem::current_path(repoRoot_);
 
 			previousConfigFile_ = g_configManager().getConfigFileLua();
-			g_configManager().setConfigFileLua("tests/fixture/config/imbuements_test.lua");
+			(void)g_configManager().setConfigFileLua("tests/fixture/config/imbuements_test.lua");
 			ASSERT_TRUE(g_configManager().reload());
 			ASSERT_TRUE(g_vocations().reload());
 			ASSERT_TRUE(g_imbuements().reload());
 		}
 
 		void TearDown() override {
-			g_configManager().setConfigFileLua(previousConfigFile_);
+			(void)g_configManager().setConfigFileLua(previousConfigFile_);
 			(void)g_configManager().reload();
 			(void)g_vocations().reload();
 			(void)g_imbuements().reload();
 			std::filesystem::current_path(previousPath_);
 		}
 
+	private:
 		std::filesystem::path repoRoot_ {};
 		std::filesystem::path previousPath_ {};
 		std::string previousConfigFile_ {};
 
-	private:
 		inline static di::extension::injector<> injector_ {};
 		inline static bool ownsContainer_ = false;
 

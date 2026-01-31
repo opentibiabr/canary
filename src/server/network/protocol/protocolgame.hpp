@@ -12,6 +12,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
+#include "creatures/players/stash_definitions.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -33,6 +34,7 @@ enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
+enum class MonkData_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -70,7 +72,6 @@ using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
@@ -532,6 +533,24 @@ private:
 	void sendOpenWheelWindow(uint32_t ownerId);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
+
+	/**
+	 * @brief Sends monk-specific data to the client.
+	 *
+	 * This function is used to communicate changes related to monk gameplay elements, like Harmony, Serenity, or Virtue states.
+	 *
+	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
+	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
+	 */
+	void sendMonkData(MonkData_t type, uint8_t value);
+	/**
+	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
+	 *
+	 * This function processes a list of spells and whether the player wants them to aim at their current target.
+	 *
+	 * @param msg The network message containing the spell list and aim states.
+	 */
+	void parseAimAtTarget(NetworkMessage &msg);
 
 	friend class Player;
 	friend class PlayerWheel;

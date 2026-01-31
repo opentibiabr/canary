@@ -159,6 +159,7 @@ function removeMainlandSmugglingItems(player)
 		7876, -- Small health potion
 		21352, -- Lightest missile rune
 		21351, -- Light stone shower rune
+		50166, -- Light Jo Staff
 	}
 	for i = 1, #smugglingItemIds do
 		local smugglingItemAmount = player:getItemCount(smugglingItemIds[i])

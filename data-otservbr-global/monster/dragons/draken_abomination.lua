@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("Draken Abomination")
 local monster = {}
 
 monster.description = "a draken abomination"
-monster.experience = 3800
+monster.experience = 4500
 monster.outfit = {
 	lookType = 357,
 	lookHead = 0,

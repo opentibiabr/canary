@@ -303,6 +303,7 @@ class PlayerFunctions {
 	static int luaPlayerGetWheelSpellAdditionalArea(lua_State* L);
 	static int luaPlayerGetWheelSpellAdditionalTarget(lua_State* L);
 	static int luaPlayerGetWheelSpellAdditionalDuration(lua_State* L);
+	static int luaPlayerGetWheelSpellAdditionalDamage(lua_State* L);
 	static int luaPlayerWheelUnlockScroll(lua_State* L);
 
 	static int luaPlayerOpenForge(lua_State* L);
@@ -398,6 +399,14 @@ class PlayerFunctions {
 	static int luaPlayerSetMapShader(lua_State* L);
 	static int luaPlayerAddCustomOutfit(lua_State* L);
 	static int luaPlayerRemoveCustomOutfit(lua_State* L);
+
+	static int luaPlayerSetSerene(lua_State* L);
+	static int luaPlayerSetVirtue(lua_State* L);
+	static int luaPlayerGetVirtue(lua_State* L);
+	static int luaPlayerFillHarmony(lua_State* L);
+	static int luaPlayerGetHarmony(lua_State* L);
+	static int luaPlayerGetHarmonyDamage(lua_State* L);
+	static int luaCalculateFlatDamageHealing(lua_State* L);
 
 	friend class CreatureFunctions;
 };

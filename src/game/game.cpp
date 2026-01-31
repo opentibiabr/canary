@@ -3410,8 +3410,7 @@ uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, b
 				const uint64_t price = tierIt->second;
 				itemValue = price * count;
 				total += itemValue;
-				g_logger().debug("[{}] - Item {}, count {}, tier {}, MARKET_PRICE {}, total {}",
-					__FUNCTION__, itemId, count, tierIt->first, price, itemValue);
+				g_logger().debug("[{}] - Item {}, count {}, tier {}, MARKET_PRICE {}, total {}", __FUNCTION__, itemId, count, tierIt->first, price, itemValue);
 			}
 			continue;
 		}
@@ -3421,8 +3420,7 @@ uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, b
 		itemValue = npcPrice * count;
 		total += itemValue;
 
-		g_logger().debug("[{}] - Item {}, count {}, NPC_PRICE({}), unit {}, total {}",
-			__FUNCTION__, itemId, count, buyPrice ? "buy" : "sell", npcPrice, itemValue);
+		g_logger().debug("[{}] - Item {}, count {}, NPC_PRICE({}), unit {}, total {}", __FUNCTION__, itemId, count, buyPrice ? "buy" : "sell", npcPrice, itemValue);
 	}
 
 	g_logger().debug("[{}] - Final total: {}", __FUNCTION__, total);

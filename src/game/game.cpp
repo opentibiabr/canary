@@ -3437,38 +3437,42 @@ uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
 		return 10000;
 	}
 
-	// Get historical market statistics for this item
-	const auto &purchaseStats = IOMarket::getInstance().getPurchaseStatistics();
-	const auto &saleStats = IOMarket::getInstance().getSaleStatistics();
+	const auto &market = IOMarket::getInstance();
 
 	uint64_t purchaseAverage = 0;
 	uint64_t saleAverage = 0;
 	bool hasPurchaseData = false;
 	bool hasSaleData = false;
 
+	// Take consistent snapshots under lock to avoid data races with updateStatistics().
+	const auto purchaseStats = market.getPurchaseStatisticsCopy();
+	const auto saleStats = market.getSaleStatisticsCopy();
+
 	// Calculate average from purchase history (people buying items)
-	auto purchaseIt = purchaseStats.find(itemId);
-	if (purchaseIt != purchaseStats.end()) {
-		auto tierIt = purchaseIt->second.find(tier);
-		if (tierIt != purchaseIt->second.end() && tierIt->second.numTransactions > 0) {
-			purchaseAverage = tierIt->second.totalPrice / tierIt->second.numTransactions;
-			hasPurchaseData = true;
+	if (const auto purchaseIt = purchaseStats.find(itemId); purchaseIt != purchaseStats.end()) {
+		if (const auto tierIt = purchaseIt->second.find(tier); tierIt != purchaseIt->second.end()) {
+			const auto &s = tierIt->second;
+			if (s.numTransactions > 0) {
+				purchaseAverage = s.totalPrice / s.numTransactions;
+				hasPurchaseData = true;
+			}
 		}
 	}
 
 	// Calculate average from sale history (people selling items)
-	auto saleIt = saleStats.find(itemId);
-	if (saleIt != saleStats.end()) {
-		auto tierIt = saleIt->second.find(tier);
-		if (tierIt != saleIt->second.end() && tierIt->second.numTransactions > 0) {
-			saleAverage = tierIt->second.totalPrice / tierIt->second.numTransactions;
-			hasSaleData = true;
+	if (const auto saleIt = saleStats.find(itemId); saleIt != saleStats.end()) {
+		if (const auto tierIt = saleIt->second.find(tier); tierIt != saleIt->second.end()) {
+			const auto &s = tierIt->second;
+			if (s.numTransactions > 0) {
+				saleAverage = s.totalPrice / s.numTransactions;
+				hasSaleData = true;
+			}
 		}
 	}
 
-	// Return average of purchase and sale historical data
+	// Return average of purchase and sale historical data (overflow-safe)
 	if (hasPurchaseData && hasSaleData) {
-		return (purchaseAverage + saleAverage) / 2;
+		return (purchaseAverage & saleAverage) + ((purchaseAverage ^ saleAverage) >> 1);
 	} else if (hasPurchaseData) {
 		return purchaseAverage;
 	} else if (hasSaleData) {

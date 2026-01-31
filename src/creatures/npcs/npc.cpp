@@ -490,8 +490,12 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
+		std::string context = fmt::format("Npc::onPlayerSellAllLoot@{}:{}:{}", player->getName(), itemId, getName());
 		g_dispatcher().scheduleEvent(
-			SCHEDULER_MINTICKS, [this, playerId = player->getID(), itemId, ignore] { onPlayerSellAllLoot(playerId, itemId, ignore, 0); }, __FUNCTION__
+			SCHEDULER_MINTICKS, [this, playerId = player->getID(), itemId, ignore] {
+				onPlayerSellAllLoot(playerId, itemId, ignore, 0);
+			},
+			context
 		);
 		return;
 	}
@@ -554,14 +558,29 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 			totalPrice += totalCost;
 			if (g_configManager().getBoolean(AUTOBANK)) {
 				player->setBankBalance(player->getBankBalance() + totalCost);
+				const std::string msg = fmt::format("{}, gold coins transfered to your bank.", totalPrice);
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, msg);
 			} else {
-				g_game().addMoney(player, totalCost);
+				uint32_t flags = FLAG_DROPONMAP;
+				auto [addedMoney, returnValue] = g_game().addMoney(player, totalCost, flags);
+
+				if (addedMoney < totalCost) {
+					uint64_t refund = totalCost - addedMoney;
+					g_logger().warn("[Npc::onPlayerSellItem] - Only delivered {} of {} gold to player {} ({} gold could not be delivered). Reason: {}", addedMoney, totalCost, player->getName(), refund, getReturnMessage(returnValue));
+
+					std::string msg = fmt::format("Warning: only {} of {} gold coins were delivered to your inventory. {}", addedMoney, totalCost, getReturnMessage(returnValue));
+					player->sendTextMessage(MESSAGE_EVENT_ADVANCE, msg);
+				}
 			}
 			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
 			const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
 			if (newItem) {
-				g_game().internalPlayerAddItem(player, newItem, true);
+				auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
+				if (returnValue != RETURNVALUE_NOERROR) {
+					g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+					return;
+				}
 			}
 		}
 	}

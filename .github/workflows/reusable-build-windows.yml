@@ -6,7 +6,9 @@ on:
 jobs:
   build:
     name: Compile (CMake)
-    runs-on: windows-latest
+    runs-on: windows-2025
+    env:
+      VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

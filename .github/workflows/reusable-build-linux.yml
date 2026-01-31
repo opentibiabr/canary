@@ -14,6 +14,7 @@ jobs:
     env:
       CC: gcc-13
       CXX: g++-13
+      VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

@@ -4,11 +4,12 @@ on:
   workflow_call:
 
 env:
-  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+  VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
 
 jobs:
   build:
-    runs-on: windows-2022
+    name: Compile (MSBuild)
+    runs-on: windows-latest
     steps:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
@@ -50,8 +51,6 @@ jobs:
                       /p:Platform=x64 `
                       /p:VcpkgRoot="$vcpkgRoot" `
                       /p:GITHUB_WORKSPACE="${{ github.workspace }}" `
-                      /p:ForceImportAfterCppProps="$vcpkgProps" `
-                      /p:ForceImportAfterCppTargets="$vcpkgTargets" `
                       vcproj/canary.sln
 
       - name: Upload artifacts

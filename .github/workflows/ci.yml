@@ -46,7 +46,7 @@ jobs:
   # --- Heavy Builds ---
 
   build-linux:
-    name: Build
+    name: Build - Linux
     needs: [checks, tests-lua]
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/reusable-build-linux.yml
@@ -67,14 +67,14 @@ jobs:
     secrets: inherit
 
   build-macos:
-    name: Build
+    name: Build - macOS
     needs: [checks, tests-lua]
     if: github.event.pull_request.draft == false
     uses: ./.github/workflows/reusable-build-macos.yml
     secrets: inherit
 
   build-docker:
-    name: Build
+    name: Build - Docker
     needs: [checks, tests-lua]
     if: github.event_name == 'push' || !github.event.pull_request.draft
     uses: ./.github/workflows/reusable-build-docker.yml

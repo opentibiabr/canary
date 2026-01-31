@@ -4,10 +4,11 @@ on:
   workflow_call:
 
 env:
-  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+  VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
 
 jobs:
   build:
+    name: Compile (${{ matrix.buildtype }})
     strategy:
       fail-fast: false
       matrix:

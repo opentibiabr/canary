@@ -352,25 +352,26 @@ void IOMarket::updateStatistics() {
 	);
 
 	DBResult_ptr result = g_database().storeQuery(query);
+	if (!result) {
+		return;
+	}
 
 	StatisticsMap newPurchase;
 	StatisticsMap newSale;
 
-	if (result) {
-		do {
-			const auto tier = getTierFromDatabaseTable(result->getString("tier"));
-			const auto itemId = result->getNumber<uint16_t>("itemtype");
+	do {
+		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		const auto itemId = result->getNumber<uint16_t>("itemtype");
 
-			MarketStatistics &s = (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY)
-				? newPurchase[itemId][tier]
-				: newSale[itemId][tier];
+		MarketStatistics &s = (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY)
+			? newPurchase[itemId][tier]
+			: newSale[itemId][tier];
 
-			s.numTransactions = result->getNumber<uint32_t>("num");
-			s.lowestPrice = result->getNumber<uint64_t>("min");
-			s.totalPrice = result->getNumber<uint64_t>("sum");
-			s.highestPrice = result->getNumber<uint64_t>("max");
-		} while (result->next());
-	}
+		s.numTransactions = result->getNumber<uint32_t>("num");
+		s.lowestPrice = result->getNumber<uint64_t>("min");
+		s.totalPrice = result->getNumber<uint64_t>("sum");
+		s.highestPrice = result->getNumber<uint64_t>("max");
+	} while (result->next());
 
 	{
 		std::lock_guard<std::mutex> lock(statisticsMutex);

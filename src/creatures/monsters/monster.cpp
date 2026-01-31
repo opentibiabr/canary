@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -16,7 +16,6 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "items/tile.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/spectators.hpp"
 #include "io/iobestiary.hpp"
@@ -1457,10 +1456,18 @@ void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &next
 	uint32_t moveCount = 0;
 	uint32_t removeCount = 0;
 	int32_t downItemSize = tile->getDownItemCount();
+	std::vector<std::shared_ptr<Item>> downItems;
+	downItems.reserve(downItemSize);
+	for (int32_t i = 0; i < downItemSize; ++i) {
+		downItems.push_back(items->at(i));
+	}
 
-	for (int32_t i = downItemSize; --i >= 0;) {
-		const auto &item = items->at(i);
+	for (auto i = static_cast<int32_t>(downItems.size()); --i >= 0;) {
+		const auto &item = downItems.at(i);
 		if (!item || !item->hasProperty(CONST_PROP_MOVABLE) || !item->canBeMoved()) {
+			continue;
+		}
+		if (item->getTile() != tile) {
 			continue;
 		}
 		if (!item->hasProperty(CONST_PROP_BLOCKPATH) && !item->hasProperty(CONST_PROP_BLOCKSOLID)) {
@@ -1485,7 +1492,7 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 		DIRECTION_WEST, DIRECTION_EAST,
 		DIRECTION_SOUTH
 	};
-	std::ranges::shuffle(dirList, getRandomGenerator());
+	[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 
 	for (const Direction &dir : dirList) {
 		const Position &tryPos = Spells::getCasterPosition(creature, dir);
@@ -1639,7 +1646,7 @@ bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirectio
 		DIRECTION_WEST, DIRECTION_EAST,
 		DIRECTION_SOUTH
 	};
-	std::ranges::shuffle(dirList, getRandomGenerator());
+	[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 
 	for (const Direction &dir : dirList) {
 		if (canWalkTo(creaturePos, dir)) {
@@ -1704,7 +1711,7 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	}
 
 	if (!dirList.empty()) {
-		std::ranges::shuffle(dirList, getRandomGenerator());
+		[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
 		return true;
 	}
@@ -2297,13 +2304,33 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) {
 	return false;
 }
 
-void Monster::death(const std::shared_ptr<Creature> &) {
+void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
 	const auto &attackedCreature = getAttackedCreature();
-	const auto &targetPlayer = attackedCreature ? attackedCreature->getPlayer() : nullptr;
-	setAttackedCreature(nullptr);
+	std::shared_ptr<Player> resolvedPlayer;
+
+	if (lastHitCreature) {
+		resolvedPlayer = lastHitCreature->getPlayer();
+		if (!resolvedPlayer) {
+			const auto &lastHitMaster = lastHitCreature->getMaster();
+			if (lastHitMaster) {
+				resolvedPlayer = lastHitMaster->getPlayer();
+			}
+		}
+	}
+	if (!resolvedPlayer && attackedCreature) {
+		resolvedPlayer = attackedCreature->getPlayer();
+		if (!resolvedPlayer) {
+			const auto &attackedMaster = attackedCreature->getMaster();
+			if (attackedMaster) {
+				resolvedPlayer = attackedMaster->getPlayer();
+			}
+		}
+	}
+
+	const auto &targetPlayer = resolvedPlayer;
 
 	for (const auto &summon : m_summons) {
 		if (!summon) {
@@ -2467,8 +2494,8 @@ void Monster::dropLoot(const std::shared_ptr<Container> &corpse, const std::shar
 			}
 		}
 		if (!this->isRewardBoss() && g_configManager().getNumber(RATE_LOOT) > 0) {
-			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, &EventCallback::monsterOnDropLoot, getMonster(), corpse);
-			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, &EventCallback::monsterPostDropLoot, getMonster(), corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterOnDropLoot, getMonster(), corpse);
+			g_callbacks().executeCallback(EventCallback_t::monsterPostDropLoot, getMonster(), corpse);
 		}
 	}
 }

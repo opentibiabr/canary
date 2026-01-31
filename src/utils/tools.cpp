@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -247,7 +247,7 @@ std::string generateToken(const std::string &key, uint32_t ticks) {
 }
 
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement) {
-	if (str.empty()) {
+	if (str.empty() || sought.empty()) {
 		return;
 	}
 
@@ -445,7 +445,8 @@ std::string convertIPToString(uint32_t ip) {
 
 std::string formatDate(time_t time) {
 	try {
-		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date with error code {}", exception.what());
 	}
@@ -454,18 +455,20 @@ std::string formatDate(time_t time) {
 
 std::string formatDateShort(time_t time) {
 	try {
-		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%Y-%m-%d %X}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date short with error code {}", exception.what());
 	}
 	return {};
 }
 
-std::string formatTime(time_t time) {
+std::string formatDateTime(int64_t ms) {
 	try {
-		return fmt::format("{:%H:%M:%S}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
+		return fmt::format("{:%Y-%m-%d %H:%M:%S}", tp);
 	} catch (const std::out_of_range &exception) {
-		g_logger().error("Failed to format time with error code {}", exception.what());
+		g_logger().error("Failed to format datetime with error code {}", exception.what());
 	}
 	return {};
 }

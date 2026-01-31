@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -375,12 +375,16 @@ void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBR
 	std::ostringstream query;
 	query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
+		int64_t lastKillTime = 0;
+		const int64_t fragTime = g_configManager().getNumber(FRAG_TIME);
 		do {
 			auto killTime = result->getNumber<time_t>("time");
-			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
+			if ((time(nullptr) - killTime) <= fragTime) {
 				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
+				lastKillTime = std::max<int64_t>(lastKillTime, killTime);
 			}
 		} while (result->next());
+		player->updateLastKillTimeCache(lastKillTime);
 	}
 }
 
@@ -872,28 +876,14 @@ void IOLoginDataLoad::loadPlayerTaskHuntingClass(const std::shared_ptr<Player> &
 	}
 }
 
-void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &player, DBResult_ptr result) {
+void IOLoginDataLoad::loadPlayerForgeHistory(const std::shared_ptr<Player> &player) {
 	if (!player) {
 		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
-	auto playerGUID = player->getGUID();
-
-	auto query = fmt::format(
-		"SELECT id, action_type, description, done_at, is_success FROM forge_history WHERE player_id = {}",
-		playerGUID
-	);
-	if ((result = Database::getInstance().storeQuery(query))) {
-		do {
-			auto actionEnum = magic_enum::enum_value<ForgeAction_t>(result->getNumber<uint16_t>("action_type"));
-			ForgeHistory history;
-			history.actionType = actionEnum;
-			history.description = result->getString("description");
-			history.createdAt = result->getNumber<time_t>("done_at");
-			history.success = result->getNumber<bool>("is_success");
-			player->setForgeHistory(history);
-		} while (result->next());
+	if (!player->forgeHistory().load()) {
+		g_logger().warn("[{}] - Failed to load forge history for player: {}", __FUNCTION__, player->getName());
 	}
 }
 

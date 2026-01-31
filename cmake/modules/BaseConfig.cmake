@@ -38,7 +38,7 @@ find_package(
     CONFIG
     REQUIRED
 )
-find_package(GMP REQUIRED)
+find_package(OpenSSL REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(MySQL REQUIRED)
 find_package(Protobuf REQUIRED)
@@ -90,6 +90,11 @@ find_package(
 )
 find_package(
     unofficial-libmariadb
+    CONFIG
+    REQUIRED
+)
+find_package(
+    nlohmann_json
     CONFIG
     REQUIRED
 )

@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -23,6 +23,7 @@
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
+#include "creatures/players/components/player_forge_history.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
@@ -34,6 +35,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/events_scheduler.hpp"
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
@@ -50,7 +52,6 @@
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
-#include "lua/callbacks/event_callback.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
 #include "lua/creature/creatureevent.hpp"
@@ -77,7 +78,8 @@ Player::Player() :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -93,7 +95,8 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_playerVIP(*this),
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
-	m_storage(*this) {
+	m_storage(*this),
+	m_forgeHistoryPlayer(*this) {
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }
@@ -1107,7 +1110,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, count);
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), std::ref(skill), std::ref(count));
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), std::ref(skill), std::ref(count));
 	if (count == 0) {
 		return;
 	}
@@ -1629,9 +1632,9 @@ bool Player::updateKillTracker(const std::shared_ptr<Container> &corpse, const s
 	return false;
 }
 
-void Player::updatePartyTrackerAnalyzer() const {
+void Player::updatePartyTrackerAnalyzer(bool force) const {
 	if (client && m_party) {
-		client->updatePartyTrackerAnalyzer(m_party);
+		client->updatePartyTrackerAnalyzer(m_party, force);
 	}
 }
 
@@ -2641,7 +2644,7 @@ void Player::onChangeZone(ZoneType_t zone) {
 	sendIcons();
 	g_events().eventPlayerOnChangeZone(static_self_cast<Player>(), zone);
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, &EventCallback::playerOnChangeZone, getPlayer(), zone);
+	g_callbacks().executeCallback(EventCallback_t::playerOnChangeZone, getPlayer(), zone);
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone) {
@@ -2724,7 +2727,7 @@ void Player::onWalk(Direction &dir) {
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, &EventCallback::playerOnWalk, getPlayer(), dir);
+	g_callbacks().executeCallback(EventCallback_t::playerOnWalk, getPlayer(), dir);
 }
 
 void Player::checkTradeState(const std::shared_ptr<Item> &item) {
@@ -3081,9 +3084,41 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 }
 
 void Player::updateImbuementTrackerStats() const {
-	if (imbuementTrackerWindowOpen) {
-		g_game().playerRequestInventoryImbuements(getID(), true);
+	if (!imbuementTrackerWindowOpen) {
+		if (m_pendingImbuementTrackerEventId != 0) {
+			g_dispatcher().stopEvent(m_pendingImbuementTrackerEventId);
+			m_pendingImbuementTrackerEventId = 0;
+		}
+		m_hasPendingImbuementTrackerUpdate = false;
+		return;
 	}
+
+	const int64_t currentTime = OTSYS_TIME();
+	const int64_t elapsed = currentTime - m_lastImbuementTrackerUpdate;
+	if (elapsed < 1000) {
+		if (!m_hasPendingImbuementTrackerUpdate) {
+			m_hasPendingImbuementTrackerUpdate = true;
+			const uint32_t delay = std::max<uint32_t>(static_cast<uint32_t>(1000 - elapsed), SCHEDULER_MINTICKS);
+			m_pendingImbuementTrackerEventId = g_dispatcher().scheduleEvent(
+				delay,
+				[playerId = getID()] {
+					const auto &player = g_game().getPlayerByID(playerId);
+					if (!player || player->isRemoved()) {
+						return;
+					}
+
+					player->m_hasPendingImbuementTrackerUpdate = false;
+					player->m_pendingImbuementTrackerEventId = 0;
+					player->updateImbuementTrackerStats();
+				},
+				__FUNCTION__
+			);
+		}
+		return;
+	}
+
+	m_lastImbuementTrackerUpdate = currentTime;
+	g_game().playerRequestInventoryImbuements(getID(), true);
 }
 
 // User Interface action exhaustion
@@ -3243,7 +3278,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, amount);
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, amount);
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -3301,7 +3336,7 @@ void Player::addExperience(const std::shared_ptr<Creature> &target, uint64_t exp
 		return;
 	}
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, &EventCallback::playerOnGainExperience, getPlayer(), target, std::ref(exp), std::ref(rawExp));
+	g_callbacks().executeCallback(EventCallback_t::playerOnGainExperience, getPlayer(), target, std::ref(exp), std::ref(rawExp));
 
 	g_events().eventPlayerOnGainExperience(static_self_cast<Player>(), target, exp, rawExp);
 	if (exp == 0) {
@@ -3429,7 +3464,7 @@ void Player::removeExperience(uint64_t exp, bool sendText /* = false*/) {
 	}
 
 	g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), exp);
-	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), std::ref(exp));
+	g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, getPlayer(), std::ref(exp));
 	if (exp == 0) {
 		return;
 	}
@@ -3795,7 +3830,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		g_logger().debug("[{}] - experience lost {}", __FUNCTION__, expLoss);
 
 		g_events().eventPlayerOnLoseExperience(static_self_cast<Player>(), expLoss);
-		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, &EventCallback::playerOnLoseExperience, getPlayer(), expLoss);
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoseExperience, getPlayer(), expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -5924,6 +5959,7 @@ void Player::onEndCondition(ConditionType_t type) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
+		sendOpenPvpSituations();
 
 		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
 			setSkull(SKULL_NONE);
@@ -6020,12 +6056,14 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 	}
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onAttacked() {
 	Creature::onAttacked();
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onIdleStatus() {
@@ -6044,7 +6082,21 @@ void Player::onPlacedCreature() {
 
 	this->onChangeZone(this->getZoneType());
 
+	refreshSkullTicksFromLastKill();
 	sendUnjustifiedPoints();
+	sendOpenPvpSituations();
+
+	const auto activeEvents = g_eventsScheduler().getActiveEvents();
+	if (!activeEvents.empty()) {
+		std::string eventsList;
+		for (size_t i = 0; i < activeEvents.size(); ++i) {
+			eventsList.append(activeEvents[i]);
+			if (i < activeEvents.size() - 1) {
+				eventsList.append(", ");
+			}
+		}
+		g_logger().info("[{}] Active EventScheduler: {}", getName(), eventsList);
+	}
 }
 
 void Player::onAttackedCreatureDrainHealth(const std::shared_ptr<Creature> &target, int32_t points) {
@@ -6131,6 +6183,14 @@ void Player::addBestiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BESTIARY_KILL_MULTIPLIER);
+
+	auto scopedDoubleBestiary = g_kv().scoped("eventscheduler")->get("double-bestiary");
+	bool doubleBestiaryEnabled = scopedDoubleBestiary && scopedDoubleBestiary->get<bool>();
+	if (doubleBestiaryEnabled) {
+		kills *= 2;
+		g_logger().debug("[{}] double bestiary is enabled.", __FUNCTION__);
+	}
+
 	if (isConcoctionActive(Concoction_t::BestiaryBetterment)) {
 		kills *= 2;
 	}
@@ -6142,6 +6202,14 @@ void Player::addBosstiaryKill(const std::shared_ptr<MonsterType> &mType) {
 		return;
 	}
 	uint32_t kills = g_configManager().getNumber(BOSSTIARY_KILL_MULTIPLIER);
+
+	auto scopedDoubleBosstiary = g_kv().scoped("eventscheduler")->get("double-bosstiary");
+	bool doubleBosstiaryEnabled = scopedDoubleBosstiary && scopedDoubleBosstiary->get<bool>();
+	if (doubleBosstiaryEnabled) {
+		kills *= 2;
+		g_logger().debug("[{}] double bosstiary is enabled.", __FUNCTION__);
+	}
+
 	if (g_ioBosstiary().getBoostedBossId() == mType->info.raceid) {
 		kills *= g_configManager().getNumber(BOOSTED_BOSS_KILL_BONUS);
 	}
@@ -6572,6 +6640,52 @@ void Player::setSkullTicks(int64_t ticks) {
 	skullTicks = ticks;
 }
 
+void Player::refreshSkullTicksFromLastKill() {
+	const auto info = computeSkullTimeFromLastKill();
+	setSkullTicks(info.remainingSeconds);
+}
+
+void Player::updateLastKillTimeCache(time_t killTime) {
+	if (killTime <= 0) {
+		return;
+	}
+
+	m_lastKillTimeCache = std::max<int64_t>(m_lastKillTimeCache, killTime);
+	m_lastKillTimeCached = true;
+}
+
+Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
+	SkullTimeInfo info;
+	int64_t ticks = skullTicks;
+
+	if (ticks == 0 && (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK)) {
+		int64_t lastKillTime = 0;
+		if (m_lastKillTimeCached) {
+			lastKillTime = m_lastKillTimeCache;
+		} else {
+			for (const auto &kill : unjustifiedKills) {
+				lastKillTime = std::max<int64_t>(lastKillTime, kill.time);
+			}
+
+			m_lastKillTimeCache = lastKillTime;
+			m_lastKillTimeCached = true;
+		}
+
+		if (lastKillTime > 0) {
+			const int64_t now = getTimeNow();
+			const int64_t duration = static_cast<int64_t>(g_configManager().getNumber(getSkull() == SKULL_RED ? RED_SKULL_DURATION : BLACK_SKULL_DURATION)) * 24 * 60 * 60;
+			ticks = std::max<int64_t>(0, duration - (now - lastKillTime));
+		}
+	}
+
+	info.remainingSeconds = ticks;
+	if (ticks > 0) {
+		info.remainingDays = static_cast<uint8_t>(std::min(std::ceil(static_cast<double>(ticks) / (24 * 60 * 60)), 255.0));
+	}
+
+	return info;
+}
+
 bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
@@ -6607,7 +6721,9 @@ void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
 
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
-	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	const auto killTime = time(nullptr);
+	unjustifiedKills.emplace_back(attacked->getGUID(), killTime, true);
+	updateLastKillTimeCache(killTime);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
@@ -6667,14 +6783,12 @@ void Player::checkSkullTicks(int64_t ticks) {
 }
 
 void Player::updateBaseSpeed() {
-	if (baseSpeed >= PLAYER_MAX_SPEED) {
-		return;
-	}
-
+	const uint16_t maxSpeed = hasFlag(PlayerFlags_t::SetMaxSpeed) ? PLAYER_MAX_STAFF_SPEED : PLAYER_MAX_SPEED;
 	if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
-		baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
+		const uint32_t computedSpeed = vocation->getBaseSpeed() + (level - 1);
+		baseSpeed = static_cast<uint16_t>(std::min<uint32_t>(computedSpeed, maxSpeed));
 	} else {
-		baseSpeed = PLAYER_MAX_SPEED;
+		baseSpeed = maxSpeed;
 	}
 }
 
@@ -7223,20 +7337,29 @@ void Player::sendUnjustifiedPoints() const {
 			}
 		}
 
-		const bool isRed = getSkull() == SKULL_RED;
+		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
-		auto dayMax = ((isRed ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-		auto weekMax = ((isRed ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-		auto monthMax = ((isRed ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+		const double dayMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+		const double weekMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+		const double monthMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
-		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
-		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
-		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
-		uint8_t skullDuration = 0;
-		if (skullTicks != 0) {
-			skullDuration = std::floor<uint8_t>(skullTicks / (24 * 60 * 60 * 1000));
-		}
-		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
+		const double dayProgressRaw = dayMax > 0 ? std::round(dayKills / dayMax * 100.0) : 0.0;
+		const double weekProgressRaw = weekMax > 0 ? std::round(weekKills / weekMax * 100.0) : 0.0;
+		const double monthProgressRaw = monthMax > 0 ? std::round(monthKills / monthMax * 100.0) : 0.0;
+		const uint8_t dayProgress = static_cast<uint8_t>(std::min(dayProgressRaw, 100.0));
+		const uint8_t weekProgress = static_cast<uint8_t>(std::min(weekProgressRaw, 100.0));
+		const uint8_t monthProgress = static_cast<uint8_t>(std::min(monthProgressRaw, 100.0));
+		const uint8_t dayLeft = static_cast<uint8_t>(std::min(dayMax > 0 ? std::max(dayMax - dayKills, 0.0) : 0.0, 255.0));
+		const uint8_t weekLeft = static_cast<uint8_t>(std::min(weekMax > 0 ? std::max(weekMax - weekKills, 0.0) : 0.0, 255.0));
+		const uint8_t monthLeft = static_cast<uint8_t>(std::min(monthMax > 0 ? std::max(monthMax - monthKills, 0.0) : 0.0, 255.0));
+		const auto info = computeSkullTimeFromLastKill();
+		client->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, info.remainingDays);
+	}
+}
+
+void Player::sendOpenPvpSituations() {
+	if (client) {
+		client->sendOpenPvpSituations(static_cast<uint8_t>(std::min(attackedSet.size(), static_cast<size_t>(std::numeric_limits<uint8_t>::max()))));
 	}
 }
 
@@ -7468,7 +7591,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), SKILL_MAGLEVEL, tries);
-		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, std::ref(tries));
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), SKILL_MAGLEVEL, std::ref(tries));
 
 		uint32_t currMagLevel = magLevel;
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -7524,7 +7647,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
 		g_events().eventPlayerOnGainSkillTries(static_self_cast<Player>(), skill, tries);
-		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, &EventCallback::playerOnGainSkillTries, getPlayer(), skill, tries);
+		g_callbacks().executeCallback(EventCallback_t::playerOnGainSkillTries, getPlayer(), skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -7891,8 +8014,8 @@ void Player::onThink(uint32_t interval) {
 	const auto &playerTile = getTile();
 	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
 	idleTime += interval;
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
-		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
+	if (kickAfterMinutes > 0 && playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			removePlayer(true);
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
@@ -7914,7 +8037,7 @@ void Player::onThink(uint32_t interval) {
 	// Wheel of destiny major spells
 	wheel().onThink();
 
-	g_callbacks().executeCallback(EventCallback_t::playerOnThink, &EventCallback::playerOnThink, getPlayer(), interval);
+	g_callbacks().executeCallback(EventCallback_t::playerOnThink, getPlayer(), interval);
 }
 
 void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std::shared_ptr<Cylinder> &oldParent, int32_t index, CylinderLink_t link) {
@@ -9931,7 +10054,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 	history.firstItemName = firstForgingItem->getName();
 	history.secondItemName = secondForgingItem->getName();
 	history.bonus = bonus;
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
@@ -10062,7 +10185,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 
 	history.firstItemName = Item::items[donorItemId].name;
 	history.secondItemName = newReceiveItem->getName();
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
@@ -10146,7 +10269,7 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 		addForgeDustLevel(1);
 	}
 
-	history.createdAt = getTimeNow();
+	history.createdAt = getTimeMsNow();
 	registerForgeHistoryDescription(history);
 	sendForgingData();
 }
@@ -10226,14 +10349,6 @@ void Player::removeForgeDustLevel(uint64_t amount) {
 
 uint64_t Player::getForgeDustLevel() const {
 	return forgeDustLevel;
-}
-
-std::vector<ForgeHistory> &Player::getForgeHistory() {
-	return forgeHistoryVector;
-}
-
-void Player::setForgeHistory(const ForgeHistory &history) {
-	forgeHistoryVector.emplace_back(history);
 }
 
 void Player::registerForgeHistoryDescription(ForgeHistory history) {
@@ -10386,7 +10501,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 
 	history.description = detailsResponse.str();
 
-	setForgeHistory(history);
+	forgeHistory().add(history);
 }
 
 // Quickloot
@@ -10453,6 +10568,18 @@ void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, Source
 void Player::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) const {
 	if (client) {
 		client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
+	}
+}
+
+void Player::sendAmbientSoundEffect(const SoundAmbientEffect_t id) const {
+	if (client) {
+		client->sendAmbientSoundEffect(id);
+	}
+}
+
+void Player::sendMusicSoundEffect(const SoundMusicEffect_t id) const {
+	if (client) {
+		client->sendMusicSoundEffect(id);
 	}
 }
 
@@ -11103,6 +11230,15 @@ PlayerCyclopedia &Player::cyclopedia() {
 
 const PlayerCyclopedia &Player::cyclopedia() const {
 	return m_playerCyclopedia;
+}
+
+// Forge history interface
+PlayerForgeHistory &Player::forgeHistory() {
+	return m_forgeHistoryPlayer;
+}
+
+const PlayerForgeHistory &Player::forgeHistory() const {
+	return m_forgeHistoryPlayer;
 }
 
 // VIP interface

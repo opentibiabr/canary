@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -347,6 +347,21 @@ private:
 	bool canWalkTo(Position pos, Direction direction);
 
 	static bool pushItem(const std::shared_ptr<Item> &item, const Direction &nextDirection);
+	/**
+	 * @brief Attempts to push or remove movable blocking items stacked on a tile in a given direction.
+	 *
+	 * Processes the tile's "down" items (bottom-to-top) and, for each movable item that blocks pathing or is solid,
+	 * attempts to push it into the adjacent tile in nextDirection or, failing that, removes the item.
+	 * Will not operate on house tiles or when the tile has no items. When one or more items are removed, a puff
+	 * visual effect is produced at the tile position.
+	 *
+	 * Behavior specifics:
+	 * - Only items that are movable, can be moved, and currently reside on the provided tile are considered.
+	 * - Stops after successfully pushing up to 20 items and removing up to 10 items (these counters are independent).
+	 *
+	 * @param tile Shared pointer to the tile whose items should be processed.
+	 * @param nextDirection Direction in which items should be pushed.
+	 */
 	static void pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection);
 	static bool pushCreature(const std::shared_ptr<Creature> &creature);
 	static void pushCreatures(const std::shared_ptr<Tile> &tile);

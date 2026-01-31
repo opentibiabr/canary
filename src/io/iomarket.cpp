@@ -379,12 +379,12 @@ void IOMarket::updateStatistics() {
 	}
 }
 
-IOMarket::StatisticsMap IOMarket::getPurchaseStatisticsCopy() const {
+IOMarket::StatisticsMap IOMarket::getPurchaseStatistics() const {
 	std::lock_guard<std::mutex> lock(statisticsMutex);
 	return purchaseStatistics;
 }
 
-IOMarket::StatisticsMap IOMarket::getSaleStatisticsCopy() const {
+IOMarket::StatisticsMap IOMarket::getSaleStatistics() const {
 	std::lock_guard<std::mutex> lock(statisticsMutex);
 	return saleStatistics;
 }

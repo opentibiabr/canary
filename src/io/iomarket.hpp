@@ -49,9 +49,13 @@ public:
 		return saleStatistics;
 	}
 
+	StatisticsMap getPurchaseStatisticsCopy() const;
+  StatisticsMap getSaleStatisticsCopy() const;
+
 	static uint8_t getTierFromDatabaseTable(const std::string &string);
 
 private:
+	mutable std::mutex statisticsMutex;
 	// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
 	StatisticsMap purchaseStatistics;
 	StatisticsMap saleStatistics;

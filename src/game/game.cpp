@@ -3445,8 +3445,8 @@ uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
 	bool hasSaleData = false;
 
 	// Take consistent snapshots under lock to avoid data races with updateStatistics().
-	const auto purchaseStats = market.getPurchaseStatisticsCopy();
-	const auto saleStats = market.getSaleStatisticsCopy();
+	const auto purchaseStats = market.getPurchaseStatistics();
+	const auto saleStats = market.getSaleStatistics();
 
 	// Calculate average from purchase history (people buying items)
 	if (const auto purchaseIt = purchaseStats.find(itemId); purchaseIt != purchaseStats.end()) {

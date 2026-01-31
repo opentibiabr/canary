@@ -39,16 +39,19 @@ jobs:
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 
       - name: Build project
-        env:
-          GITHUB_WORKSPACE: ${{ github.workspace }}
+        shell: pwsh
         run: |
+          $vcpkgRoot = Join-Path (Get-Location) "vcpkg"
+          $vcpkgProps = Join-Path $vcpkgRoot "scripts/buildsystems/msbuild/vcpkg.props"
+          $vcpkgTargets = Join-Path $vcpkgRoot "scripts/buildsystems/msbuild/vcpkg.targets"
+          
           msbuild.exe /p:VcpkgEnableManifest=true `
                       /p:Configuration=Debug `
                       /p:Platform=x64 `
-                      /p:VcpkgRoot="${{ github.workspace }}/vcpkg" `
+                      /p:VcpkgRoot="$vcpkgRoot" `
                       /p:GITHUB_WORKSPACE="${{ github.workspace }}" `
-                      /p:ForceImportAfterCppProps="${{ github.workspace }}/vcpkg/scripts/buildsystems/msbuild/vcpkg.props" `
-                      /p:ForceImportAfterCppTargets="${{ github.workspace }}/vcpkg/scripts/buildsystems/msbuild/vcpkg.targets" `
+                      /p:ForceImportAfterCppProps="$vcpkgProps" `
+                      /p:ForceImportAfterCppTargets="$vcpkgTargets" `
                       vcproj/canary.sln
 
       - name: Upload artifacts

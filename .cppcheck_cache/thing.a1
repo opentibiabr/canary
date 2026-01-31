@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<analyzerinfo hash="10447059444309627451">
-  <FileInfo check="CheckUnusedFunctions">
-    <functioncall functionName="getPosition"/>
-    <functioncall functionName="getTile"/>
-  </FileInfo>
-</analyzerinfo>

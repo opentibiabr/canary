@@ -1,7 +1,0 @@
-getVectorIterationIncreaseCount
-addOutfitAndMountBytes call:[addByte,getCustomAttribute] noreturn:[addByte]
-sendBosstiarySlotsBytes call:[addByte] noreturn:[addByte]
-handleImbuementDamage call:[addByte,addDouble,getCipbiaElement,getID,getImbuementInfo,getWeapon] noreturn:[addByte]
-calculateAbsorbValues call:[addByte,addDouble,combatTypeToName,debug,floor,g_configManager,g_logger,getAbsorbPercent,getBoolean,getCipbiaElement,getID,getImbuementInfo,getInventoryItem,getName,getResistance,indexToCombatType,isItemAbilityEnabled,wheel] noreturn:[addByte,getResistance]
-addCyclopediaSkills call:[addDouble,checkAvatarSkill,getInventoryItem,getMajorStatConditional,getSkill,getSkillLevel,getStat,wheel] noreturn:[addDouble,checkAvatarSkill,getSkill,getStat]
-sendContainerCategory < ContainerCategory_t > call:[addByte,addString,data,debug,enum_name,g_logger,size,toStartCaseWithSpace] noreturn:[addString]

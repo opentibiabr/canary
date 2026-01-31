@@ -1,2 +1,0 @@
-registerWheelSpellTable call:[g_logger,g_spells,getInstantSpellByName,getName,registerWheelSpellTable,setWheelOfDestinyBoost,setWheelOfDestinyUpgraded,trace,warn] noreturn:[registerWheelSpellTable,setWheelOfDestinyBoost,setWheelOfDestinyUpgraded,warn]
-bindMapFunction call:[bind] noreturn:[bind]

@@ -395,6 +395,9 @@ canary.old
 # VCPKG
 vcpkg_installed
 
+# Cppcheck Cache
+.cppcheck_cache/
+
 # DB Backups
 database_backup
 

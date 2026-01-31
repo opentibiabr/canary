@@ -1,3 +1,0 @@
-checkSpellArea call:[debug,g_logger,ssize]
-checkSpellAdditionalTarget call:[debug,g_logger,ssize]
-checkSpellAdditionalDuration call:[debug,g_logger,ssize]

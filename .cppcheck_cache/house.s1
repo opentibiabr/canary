@@ -1,1 +1,0 @@
-getGuildByName call:[g_game,getGuild,getGuildIdByName,loadGuild] noreturn:[loadGuild]

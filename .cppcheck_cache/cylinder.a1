@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<analyzerinfo hash="1525105460786249129">
-  <FileInfo check="CheckUnusedFunctions">
-    <functioncall functionName="Thing"/>
-    <functioncall functionName="VirtualCylinder"/>
-    <functioncall functionName="uint32_t"/>
-  </FileInfo>
-</analyzerinfo>

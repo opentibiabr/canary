@@ -62,6 +62,7 @@ jobs:
           author_name: GitHub Actions
           author_email: github-actions[bot]@users.noreply.github.com
           message: "style: auto-formatting (clang/stylua/cmake)"
+          add: "['src', 'tests', 'data', 'CMakeLists.txt', '*.cmake']"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

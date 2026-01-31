@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<analyzerinfo hash="8698145666521684033">
-  <FileInfo check="CheckUnusedFunctions">
-    <functiondecl functionName="logError" lineNumber="11"/>
-    <functioncall functionName="error"/>
-    <functioncall functionName="g_logger"/>
-  </FileInfo>
-</analyzerinfo>

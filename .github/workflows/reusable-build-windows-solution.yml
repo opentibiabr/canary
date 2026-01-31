@@ -7,14 +7,12 @@ jobs:
   build:
     name: Compile (MSBuild)
     runs-on: windows-2025
-    env:
-      VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
     steps:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
         with:
           vs-prerelease: true
-          vs-version: "latest"
+          vs-version: "18"
 
       - name: Checkout repository
         uses: actions/checkout@v4

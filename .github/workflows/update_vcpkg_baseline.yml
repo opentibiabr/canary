@@ -32,7 +32,12 @@ jobs:
           if [ -z "$LATEST_BASELINE" ]; then
             LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
           fi
-          
+
+          if [ -z "$LATEST_BASELINE" ]; then
+            echo "Failed to resolve vcpkg baseline SHA for tag ${LATEST_TAG}" >&2
+            exit 1
+          fi
+
           echo "Baseline SHA: $LATEST_BASELINE"
           
           CURRENT_BASELINE=$(jq -r '."builtin-baseline"' vcpkg.json)

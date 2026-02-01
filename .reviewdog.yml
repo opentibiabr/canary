@@ -2,7 +2,7 @@
 runner:
 
   cppcheck:
-    cmd: cppcheck --enable=all --template="{file}:{line}:{message}" src/
+    cmd: cppcheck --enable=all --template="{file}:{line}:{message}" --cppcheck-build-dir=.cppcheck_cache -j 2 -i src/protobuf src/ tests/
     errorformat:
       - "%f:%l:%m"
     level: warning

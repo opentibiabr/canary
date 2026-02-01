@@ -25,9 +25,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .cppcheck_cache
-          key: cppcheck-cache-${{ github.run_id }}
+          key: cppcheck-cache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
-            cppcheck-cache-
+            cppcheck-cache-${{ runner.os }}-
 
       - name: Initialize Cppcheck Cache Dir
         run: mkdir -p .cppcheck_cache

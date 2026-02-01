@@ -143,14 +143,14 @@ jobs:
 
           # Get the commit SHA (peeled tag)
           LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG^{} | cut -f1)
-          
+
           # Fallback if ^{} doesn't work
           if [ -z "$LATEST_BASELINE" ]; then
             LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
           fi
-          
+
           echo "Baseline SHA: $LATEST_BASELINE"
-          
+
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "baseline=$LATEST_BASELINE" >> $GITHUB_OUTPUT
 

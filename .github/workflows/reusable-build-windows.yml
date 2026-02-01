@@ -77,10 +77,13 @@ jobs:
         shell: pwsh
         run: |
           $vcpkgRoot = Join-Path (Get-Location) "vcpkg"
+          $outDir = Join-Path (Get-Location) "artifacts"
+          New-Item -ItemType Directory -Force -Path $outDir
           msbuild.exe /p:VcpkgEnableManifest=true `
                       /p:Configuration=Debug `
                       /p:Platform=x64 `
                       /p:VcpkgRoot="$vcpkgRoot" `
+                      /p:OutDir="$outDir\\" `
                       /p:GITHUB_WORKSPACE="${{ github.workspace }}" `
                       vcproj/canary.sln
 
@@ -89,6 +92,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-solution-debug
-          path: |
-            ${{ github.workspace }}/*.dll
-            ${{ github.workspace }}/*.exe
+          path: artifacts/

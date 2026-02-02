@@ -44,6 +44,11 @@ public:
 	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
 	StatisticsMap getPurchaseStatistics() const;
 	StatisticsMap getSaleStatistics() const;
+	struct StatisticsSnapshot {
+		std::optional<MarketStatistics> purchase;
+		std::optional<MarketStatistics> sale;
+	};
+	StatisticsSnapshot getStatistics(uint16_t itemId, uint8_t tier) const;
 
 	static uint8_t getTierFromDatabaseTable(const std::string &string);
 

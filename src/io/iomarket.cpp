@@ -388,3 +388,22 @@ IOMarket::StatisticsMap IOMarket::getSaleStatistics() const {
 	std::scoped_lock lock(statisticsMutex);
 	return saleStatistics;
 }
+
+IOMarket::StatisticsSnapshot IOMarket::getStatistics(uint16_t itemId, uint8_t tier) const {
+	StatisticsSnapshot snapshot;
+	std::scoped_lock lock(statisticsMutex);
+
+	if (const auto purchaseIt = purchaseStatistics.find(itemId); purchaseIt != purchaseStatistics.end()) {
+		if (const auto tierIt = purchaseIt->second.find(tier); tierIt != purchaseIt->second.end()) {
+			snapshot.purchase = tierIt->second;
+		}
+	}
+
+	if (const auto saleIt = saleStatistics.find(itemId); saleIt != saleStatistics.end()) {
+		if (const auto tierIt = saleIt->second.find(tier); tierIt != saleIt->second.end()) {
+			snapshot.sale = tierIt->second;
+		}
+	}
+
+	return snapshot;
+}

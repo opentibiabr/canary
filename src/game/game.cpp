@@ -3427,32 +3427,21 @@ uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
 	}
 
 	const auto &market = IOMarket::getInstance();
-	const auto purchaseStats = market.getPurchaseStatistics();
-	const auto saleStats = market.getSaleStatistics();
+	const auto snapshot = market.getStatistics(itemId, tier);
 
 	uint64_t purchaseAverage = 0;
 	uint64_t saleAverage = 0;
 	bool hasPurchaseData = false;
 	bool hasSaleData = false;
 
-	if (const auto purchaseIt = purchaseStats.find(itemId); purchaseIt != purchaseStats.end()) {
-		if (const auto tierIt = purchaseIt->second.find(tier); tierIt != purchaseIt->second.end()) {
-			const auto &s = tierIt->second;
-			if (s.numTransactions > 0) {
-				purchaseAverage = s.totalPrice / s.numTransactions;
-				hasPurchaseData = true;
-			}
-		}
+	if (snapshot.purchase && snapshot.purchase->numTransactions > 0) {
+		purchaseAverage = snapshot.purchase->totalPrice / snapshot.purchase->numTransactions;
+		hasPurchaseData = true;
 	}
 
-	if (const auto saleIt = saleStats.find(itemId); saleIt != saleStats.end()) {
-		if (const auto tierIt = saleIt->second.find(tier); tierIt != saleIt->second.end()) {
-			const auto &s = tierIt->second;
-			if (s.numTransactions > 0) {
-				saleAverage = s.totalPrice / s.numTransactions;
-				hasSaleData = true;
-			}
-		}
+	if (snapshot.sale && snapshot.sale->numTransactions > 0) {
+		saleAverage = snapshot.sale->totalPrice / snapshot.sale->numTransactions;
+		hasSaleData = true;
 	}
 
 	if (hasPurchaseData && hasSaleData) {

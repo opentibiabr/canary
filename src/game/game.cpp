@@ -3394,11 +3394,7 @@ uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, b
 		const auto marketIt = itemsPriceMap.find(itemId);
 		if (marketIt != itemsPriceMap.end()) {
 			const auto &tierMap = marketIt->second;
-			auto tierIt = tierMap.find(0);
-			if (tierIt == tierMap.end() && !tierMap.empty()) {
-				tierIt = tierMap.begin();
-			}
-
+			const auto tierIt = tierMap.find(0);
 			if (tierIt != tierMap.end()) {
 				const uint64_t price = tierIt->second;
 				itemValue = price * count;

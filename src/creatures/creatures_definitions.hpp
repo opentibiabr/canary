@@ -1819,12 +1819,7 @@ struct AnalyzerItemKey {
 		itemId(id),
 		tier(tierIndex) { }
 
-	bool operator<(const AnalyzerItemKey &other) const {
-		if (itemId != other.itemId) {
-			return itemId < other.itemId;
-		}
-		return tier < other.tier;
-	}
+	auto operator<=>(const AnalyzerItemKey &other) const = default;
 };
 
 struct PartyAnalyzer {

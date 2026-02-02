@@ -48,6 +48,7 @@
 #include <stack>
 #include <source_location>
 #include <span>
+#include <compare>
 
 // --------------------
 // System Includes

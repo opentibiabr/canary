@@ -21,17 +21,6 @@ jobs:
       - name: Setup reviewdog
         uses: reviewdog/action-setup@v1.0.3
 
-      - name: Cppcheck Cache
-        uses: actions/cache@v4
-        with:
-          path: .cppcheck_cache
-          key: cppcheck-cache-${{ github.run_id }}
-          restore-keys: |
-            cppcheck-cache-
-
-      - name: Initialize Cppcheck Cache Dir
-        run: mkdir -p .cppcheck_cache
-
       - name: Setup Dependencies
         run: |
           sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check cppcheck libxml2-utils python3-pip
@@ -62,7 +51,12 @@ jobs:
           author_name: GitHub Actions
           author_email: github-actions[bot]@users.noreply.github.com
           message: "style: auto-formatting (clang/stylua/cmake)"
-          add: "['src', 'tests', 'data', 'CMakeLists.txt', '*.cmake']"
+          add: |
+            src
+            tests
+            data
+            CMakeLists.txt
+            **/*.cmake
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

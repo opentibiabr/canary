@@ -463,7 +463,6 @@
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.props" Condition="'$(VcpkgRoot)' != '' and Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.props')" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <Import Project="settings.props" />
@@ -618,6 +617,6 @@
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets" Condition="Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets')" />
+    <Import Project="$(VcpkgRoot)\\scripts\\buildsystems\\msbuild\\vcpkg.targets" Condition="Exists('$(VcpkgRoot)\\scripts\\buildsystems\\msbuild\\vcpkg.targets')" />
   </ImportGroup>
 </Project>

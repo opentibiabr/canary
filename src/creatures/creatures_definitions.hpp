@@ -19,6 +19,7 @@
 	#include <cstdint>
 	#include <memory>
 	#include <cmath>
+	#include <compare>
 #endif
 
 // Enum

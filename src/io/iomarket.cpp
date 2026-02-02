@@ -356,19 +356,35 @@ void IOMarket::updateStatistics() {
 		return;
 	}
 
-	do {
-		MarketStatistics* statistics = nullptr;
-		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
-		auto itemId = result->getNumber<uint16_t>("itemtype");
-		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
-			statistics = &purchaseStatistics[itemId][tier];
-		} else {
-			statistics = &saleStatistics[itemId][tier];
-		}
+	StatisticsMap newPurchase;
+	StatisticsMap newSale;
 
-		statistics->numTransactions = result->getNumber<uint32_t>("num");
-		statistics->lowestPrice = result->getNumber<uint64_t>("min");
-		statistics->totalPrice = result->getNumber<uint64_t>("sum");
-		statistics->highestPrice = result->getNumber<uint64_t>("max");
+	do {
+		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		const auto itemId = result->getNumber<uint16_t>("itemtype");
+		auto &statistics = (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY)
+			? newPurchase[itemId][tier]
+			: newSale[itemId][tier];
+
+		statistics.numTransactions = result->getNumber<uint32_t>("num");
+		statistics.lowestPrice = result->getNumber<uint64_t>("min");
+		statistics.totalPrice = result->getNumber<uint64_t>("sum");
+		statistics.highestPrice = result->getNumber<uint64_t>("max");
 	} while (result->next());
+
+	{
+		std::scoped_lock lock(statisticsMutex);
+		purchaseStatistics.swap(newPurchase);
+		saleStatistics.swap(newSale);
+	}
+}
+
+IOMarket::StatisticsMap IOMarket::getPurchaseStatistics() const {
+	std::scoped_lock lock(statisticsMutex);
+	return purchaseStatistics;
+}
+
+IOMarket::StatisticsMap IOMarket::getSaleStatistics() const {
+	std::scoped_lock lock(statisticsMutex);
+	return saleStatistics;
 }

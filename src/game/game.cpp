@@ -3419,6 +3419,57 @@ uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, b
 	return total;
 }
 
+uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
+	if (itemId == ITEM_GOLD_COIN) {
+		return 1;
+	}
+	if (itemId == ITEM_PLATINUM_COIN) {
+		return 100;
+	}
+	if (itemId == ITEM_CRYSTAL_COIN) {
+		return 10000;
+	}
+
+	const auto &market = IOMarket::getInstance();
+	const auto purchaseStats = market.getPurchaseStatistics();
+	const auto saleStats = market.getSaleStatistics();
+
+	uint64_t purchaseAverage = 0;
+	uint64_t saleAverage = 0;
+	bool hasPurchaseData = false;
+	bool hasSaleData = false;
+
+	if (const auto purchaseIt = purchaseStats.find(itemId); purchaseIt != purchaseStats.end()) {
+		if (const auto tierIt = purchaseIt->second.find(tier); tierIt != purchaseIt->second.end()) {
+			const auto &s = tierIt->second;
+			if (s.numTransactions > 0) {
+				purchaseAverage = s.totalPrice / s.numTransactions;
+				hasPurchaseData = true;
+			}
+		}
+	}
+
+	if (const auto saleIt = saleStats.find(itemId); saleIt != saleStats.end()) {
+		if (const auto tierIt = saleIt->second.find(tier); tierIt != saleIt->second.end()) {
+			const auto &s = tierIt->second;
+			if (s.numTransactions > 0) {
+				saleAverage = s.totalPrice / s.numTransactions;
+				hasSaleData = true;
+			}
+		}
+	}
+
+	if (hasPurchaseData && hasSaleData) {
+		return (purchaseAverage & saleAverage) + ((purchaseAverage ^ saleAverage) >> 1);
+	} else if (hasPurchaseData) {
+		return purchaseAverage;
+	} else if (hasSaleData) {
+		return saleAverage;
+	}
+
+	return 0;
+}
+
 std::shared_ptr<Item> searchForItem(const std::shared_ptr<Container> &container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/) {
 	if (!container) {
 		return nullptr;

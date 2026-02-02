@@ -42,12 +42,8 @@ public:
 	void updateStatistics();
 
 	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
-	const StatisticsMap &getPurchaseStatistics() const {
-		return purchaseStatistics;
-	}
-	const StatisticsMap &getSaleStatistics() const {
-		return saleStatistics;
-	}
+	StatisticsMap getPurchaseStatistics() const;
+	StatisticsMap getSaleStatistics() const;
 
 	static uint8_t getTierFromDatabaseTable(const std::string &string);
 
@@ -55,4 +51,5 @@ private:
 	// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
 	StatisticsMap purchaseStatistics;
 	StatisticsMap saleStatistics;
+	mutable std::mutex statisticsMutex;
 };

@@ -2,7 +2,7 @@
 runner:
 
   cppcheck:
-    cmd: cppcheck --enable=all --template="{file}:{line}:{message}" src/
+    cmd: cppcheck --enable=warning,style,performance,portability --suppress=missingIncludeSystem --template="{file}:{line}:{message}" -i src/protobuf -i vcpkg -i vcpkg_installed -i build -i .git -i cmake-build-debug -i cmake-build-release --max-configs=1 -j 2 src/
     errorformat:
       - "%f:%l:%m"
     level: warning

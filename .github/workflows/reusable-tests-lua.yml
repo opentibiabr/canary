@@ -1,0 +1,18 @@
+name: Reusable Lua Tests
+
+on:
+  workflow_call:
+
+jobs:
+  job:
+    name: Run Lua Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update
+        run: sudo apt-get update
+      - name: Setup Lua
+        run: sudo apt-get install -y libluajit-5.1-dev
+      - name: Check out code.
+        uses: actions/checkout@v4
+      - name: Run Tests
+        run: echo "Running Lua tests..."

@@ -32,7 +32,12 @@ jobs:
           if [ -z "$LATEST_BASELINE" ]; then
             LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
           fi
-          
+
+          if [ -z "$LATEST_BASELINE" ]; then
+            echo "Failed to resolve vcpkg baseline SHA for tag ${LATEST_TAG}" >&2
+            exit 1
+          fi
+
           echo "Baseline SHA: $LATEST_BASELINE"
           
           CURRENT_BASELINE=$(jq -r '."builtin-baseline"' vcpkg.json)
@@ -136,13 +141,16 @@ jobs:
           LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/vcpkg/releases/latest | jq -r '.tag_name')
           echo "Latest tag: $LATEST_TAG"
 
-          LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
+          # Get the commit SHA (peeled tag)
+          LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG^{} | cut -f1)
+
+          # Fallback if ^{} doesn't work
+          if [ -z "$LATEST_BASELINE" ]; then
+            LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git refs/tags/$LATEST_TAG | cut -f1)
+          fi
+
           echo "Baseline SHA: $LATEST_BASELINE"
 
-          if [ -z "$LATEST_BASELINE" ]; then
-            LATEST_BASELINE=$(curl -s "https://api.github.com/repos/microsoft/vcpkg/git/refs/tags/$LATEST_TAG" | jq -r '.object.sha')
-          fi
-          
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "baseline=$LATEST_BASELINE" >> $GITHUB_OUTPUT
 

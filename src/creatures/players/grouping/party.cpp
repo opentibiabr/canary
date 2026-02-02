@@ -812,10 +812,11 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	}
 
 	uint32_t count = std::max<uint32_t>(1, item->getItemCount());
-	if (auto it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
+	const AnalyzerItemKey key(item->getID(), item->getTier());
+	if (auto it = playerAnalyzer->lootMap.find(key); it != playerAnalyzer->lootMap.end()) {
 		it->second += count;
 	} else {
-		playerAnalyzer->lootMap.insert({ item->getID(), count });
+		playerAnalyzer->lootMap.emplace(key, count);
 	}
 
 	if (priceType == LEADER_PRICE) {
@@ -839,10 +840,11 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 		membersData.emplace_back(playerAnalyzer);
 	}
 
-	if (auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
+	const AnalyzerItemKey key(item->getID(), item->getTier());
+	if (auto it = playerAnalyzer->supplyMap.find(key); it != playerAnalyzer->supplyMap.end()) {
 		it->second += 1;
 	} else {
-		playerAnalyzer->supplyMap.insert({ item->getID(), 1 });
+		playerAnalyzer->supplyMap.emplace(key, 1);
 	}
 
 	if (priceType == LEADER_PRICE) {
@@ -899,21 +901,60 @@ void Party::reloadPrices() const {
 		return;
 	}
 
+	const auto &itemsPrice = g_game().getItemsPrice();
+	const auto lookupTierPrice = [&itemsPrice](uint16_t itemId, uint8_t tier) {
+		auto itemIt = itemsPrice.find(itemId);
+		if (itemIt == itemsPrice.end()) {
+			return uint64_t{ 0 };
+		}
+
+		auto tierIt = itemIt->second.find(tier);
+		if (tierIt != itemIt->second.end()) {
+			return tierIt->second;
+		}
+
+		if (!itemIt->second.empty()) {
+			return itemIt->second.begin()->second;
+		}
+
+		return uint64_t{ 0 };
+	};
+
 	for (const auto &analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
-			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
-			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+			analyzer->lootPrice = 0;
+			for (const auto &[key, amount] : analyzer->lootMap) {
+				auto averagePrice = lookupTierPrice(key.itemId, key.tier);
+				if (averagePrice > 0) {
+					analyzer->lootPrice += averagePrice * amount;
+				} else {
+					const std::map<uint16_t, uint64_t> singleItemMap { { key.itemId, amount } };
+					analyzer->lootPrice += g_game().getItemMarketPrice(singleItemMap, false);
+				}
+			}
+
+			analyzer->supplyPrice = 0;
+			for (const auto &[key, amount] : analyzer->supplyMap) {
+				auto averagePrice = lookupTierPrice(key.itemId, key.tier);
+				if (averagePrice > 0) {
+					analyzer->supplyPrice += averagePrice * amount;
+				} else {
+					const std::map<uint16_t, uint64_t> singleItemMap { { key.itemId, amount } };
+					analyzer->supplyPrice += g_game().getItemMarketPrice(singleItemMap, true);
+				}
+			}
+
 			continue;
 		}
 
 		analyzer->lootPrice = 0;
-		for (const auto &[itemId, price] : analyzer->lootMap) {
-			analyzer->lootPrice += leader->getItemCustomPrice(itemId) * price;
+		for (const auto &[key, amount] : analyzer->lootMap) {
+			analyzer->lootPrice += leader->getItemCustomPrice(key.itemId) * amount;
 		}
 
 		analyzer->supplyPrice = 0;
-		for (const auto &[itemId, price] : analyzer->supplyMap) {
-			analyzer->supplyPrice += leader->getItemCustomPrice(itemId, true) * price;
+		for (const auto &[key, amount] : analyzer->supplyMap) {
+			analyzer->supplyPrice += leader->getItemCustomPrice(key.itemId, true) * amount;
 		}
 	}
 }

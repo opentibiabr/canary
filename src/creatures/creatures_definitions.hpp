@@ -1810,6 +1810,23 @@ struct voiceBlock_t {
 	bool yellText;
 };
 
+struct AnalyzerItemKey {
+	uint16_t itemId = 0;
+	uint8_t tier = 0;
+
+	AnalyzerItemKey() = default;
+	AnalyzerItemKey(uint16_t id, uint8_t tierIndex) :
+		itemId(id),
+		tier(tierIndex) { }
+
+	bool operator<(const AnalyzerItemKey &other) const {
+		if (itemId != other.itemId) {
+			return itemId < other.itemId;
+		}
+		return tier < other.tier;
+	}
+};
+
 struct PartyAnalyzer {
 	PartyAnalyzer(uint32_t playerId, std::string playerName) :
 		id(playerId),
@@ -1824,6 +1841,6 @@ struct PartyAnalyzer {
 	uint64_t lootPrice = 0;
 	uint64_t supplyPrice = 0;
 
-	std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
-	std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
+	std::map<AnalyzerItemKey, uint64_t> lootMap; // [itemID, tier] = amount
+	std::map<AnalyzerItemKey, uint64_t> supplyMap; // [itemID, tier] = amount
 };

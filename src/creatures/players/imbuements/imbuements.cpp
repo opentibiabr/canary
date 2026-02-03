@@ -474,7 +474,7 @@ void ImbuementDecay::startImbuementDecay(const std::shared_ptr<Item> &item) {
 
 	const int64_t now = OTSYS_TIME();
 
-	m_itemsToDecay.emplace(key, TrackedImbuementItem{ item, now });
+	m_itemsToDecay.emplace(key, TrackedImbuementItem { item, now });
 
 	if (m_eventId == 0) {
 		m_eventId = g_dispatcher().scheduleEvent(

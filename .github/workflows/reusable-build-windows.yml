@@ -63,7 +63,8 @@ jobs:
       - name: Setup NuGet for vcpkg
         shell: pwsh
         run: |
-          & $(vcpkg fetch nuget) sources add `
+          $nuget = (vcpkg fetch nuget | Select-Object -Last 1)
+          & $nuget sources add `
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
             -storepasswordincleartext `
             -name "GitHubPackages" `

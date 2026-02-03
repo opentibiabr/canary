@@ -40,7 +40,8 @@ jobs:
 
       - name: Setup NuGet for vcpkg
         run: |
-          mono $(vcpkg fetch nuget) sources add \
+          nuget=$(vcpkg fetch nuget | tail -n 1)
+          $nuget sources add \
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             -storepasswordincleartext \
             -name "GitHubPackages" \

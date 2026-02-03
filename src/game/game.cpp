@@ -3363,27 +3363,93 @@ ObjectCategory_t Game::getObjectCategory(const ItemType &it) {
 
 uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
 	uint64_t total = 0;
-	for (const auto &it : itemMap) {
-		if (it.first == ITEM_GOLD_COIN) {
-			total += it.second;
-		} else if (it.first == ITEM_PLATINUM_COIN) {
-			total += 100 * it.second;
-		} else if (it.first == ITEM_CRYSTAL_COIN) {
-			total += 10000 * it.second;
-		} else {
-			auto marketIt = itemsPriceMap.find(it.first);
-			if (marketIt != itemsPriceMap.end()) {
-				for (auto &[tier, price] : (*marketIt).second) {
-					total += price * it.second;
-				}
-			} else {
-				const ItemType &iType = Item::items[it.first];
-				total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+	g_logger().debug("[{}] - Starting calculation with {} items, buyPrice: {}", __FUNCTION__, itemMap.size(), buyPrice);
+
+	for (const auto &[itemId, count] : itemMap) {
+		uint64_t itemValue = 0;
+		if (itemId == ITEM_GOLD_COIN) {
+			itemValue = count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (GOLD_COIN), count {}, unit 1, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		if (itemId == ITEM_PLATINUM_COIN) {
+			itemValue = 100 * count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (PLATINUM_COIN), count {}, unit 100, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		if (itemId == ITEM_CRYSTAL_COIN) {
+			itemValue = 10000 * count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (CRYSTAL_COIN), count {}, unit 10000, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		const auto marketIt = itemsPriceMap.find(itemId);
+		if (marketIt != itemsPriceMap.end()) {
+			const auto &tierMap = marketIt->second;
+			const auto tierIt = tierMap.find(0);
+			if (tierIt != tierMap.end()) {
+				const uint64_t price = tierIt->second;
+				itemValue = price * count;
+				total += itemValue;
+				g_logger().debug("[{}] - Item {}, count {}, tier {}, MARKET_PRICE {}, total {}", __FUNCTION__, itemId, count, tierIt->first, price, itemValue);
+				continue;
 			}
 		}
+
+		const ItemType &iType = Item::items[itemId];
+		const uint64_t npcPrice = buyPrice ? iType.buyPrice : iType.sellPrice;
+		itemValue = npcPrice * count;
+		total += itemValue;
+		g_logger().debug("[{}] - Item {}, count {}, NPC_PRICE({}), unit {}, total {}", __FUNCTION__, itemId, count, buyPrice ? "buy" : "sell", npcPrice, itemValue);
 	}
 
+	g_logger().debug("[{}] - Final total: {}", __FUNCTION__, total);
 	return total;
+}
+
+uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
+	if (itemId == ITEM_GOLD_COIN) {
+		return 1;
+	}
+	if (itemId == ITEM_PLATINUM_COIN) {
+		return 100;
+	}
+	if (itemId == ITEM_CRYSTAL_COIN) {
+		return 10000;
+	}
+
+	const auto &market = IOMarket::getInstance();
+	const auto snapshot = market.getStatistics(itemId, tier);
+
+	uint64_t purchaseAverage = 0;
+	uint64_t saleAverage = 0;
+	bool hasPurchaseData = false;
+	bool hasSaleData = false;
+
+	if (snapshot.purchase && snapshot.purchase->numTransactions > 0) {
+		purchaseAverage = snapshot.purchase->totalPrice / snapshot.purchase->numTransactions;
+		hasPurchaseData = true;
+	}
+
+	if (snapshot.sale && snapshot.sale->numTransactions > 0) {
+		saleAverage = snapshot.sale->totalPrice / snapshot.sale->numTransactions;
+		hasSaleData = true;
+	}
+
+	if (hasPurchaseData && hasSaleData) {
+		return (purchaseAverage & saleAverage) + ((purchaseAverage ^ saleAverage) >> 1);
+	} else if (hasPurchaseData) {
+		return purchaseAverage;
+	} else if (hasSaleData) {
+		return saleAverage;
+	}
+
+	return 0;
 }
 
 std::shared_ptr<Item> searchForItem(const std::shared_ptr<Container> &container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/) {

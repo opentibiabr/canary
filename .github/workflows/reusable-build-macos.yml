@@ -43,6 +43,7 @@ jobs:
 
       - name: Setup NuGet for vcpkg
         run: |
+          unset VCPKG_FORCE_SYSTEM_BINARIES
           NUGET_PATH=$(vcpkg fetch nuget | tail -n 1)
           mono "$NUGET_PATH" sources add \
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \

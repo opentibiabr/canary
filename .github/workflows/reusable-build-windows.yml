@@ -3,6 +3,10 @@ name: Reusable Windows Build
 on:
   workflow_call:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     name: Compile (${{ matrix.type }})
@@ -11,13 +15,14 @@ jobs:
       matrix:
         type: [CMake, Solution]
     runs-on: windows-2025
+    env:
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
         if: matrix.type == 'Solution'
         shell: pwsh
         run: |
           choco install visualstudio2026-workload-vctools --yes --ignore-package-exit-codes=3010
-          # The tools are usually available immediately after installation without reboot
 
       - name: Setup MSBuild.exe
         if: matrix.type == 'Solution'
@@ -33,20 +38,20 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-              core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Get vcpkg baseline
-        id: vcpkg-baseline
         shell: pwsh
         run: |
           $json = Get-Content vcpkg.json -Raw | ConvertFrom-Json
           $vcpkgCommitId = $json.'builtin-baseline'
-          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Remove Windows pre-installed MySQL
         if: matrix.type == 'CMake'
-        run: rm -r -fo C:/mysql*
+        shell: pwsh
+        run: Remove-Item -Recurse -Force C:\mysql* -ErrorAction SilentlyContinue
 
       - name: CCache
         if: matrix.type == 'CMake'
@@ -58,9 +63,31 @@ jobs:
           restore-keys: |
             ccache-windows
 
+      # IMPORTANT: configure the nuget.exe that MSBuild/vcpkg.targets actually uses (Chocolatey)
+      - name: Setup NuGet source for GitHub Packages (for MSBuild/vcpkg.targets)
+        shell: pwsh
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.token }}
+        run: |
+          $feed = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+          $nuget = (Get-Command nuget.exe -ErrorAction SilentlyContinue).Source
+          if (-not $nuget) { throw "nuget.exe not found in PATH" }
+
+          & $nuget sources remove -Name "GitHubPackages" | Out-Null 2>$null
+          & $nuget sources add `
+            -Name "GitHubPackages" `
+            -Source $feed `
+            -UserName "${{ github.repository_owner }}" `
+            -Password "$env:NUGET_AUTH_TOKEN" `
+            -StorePasswordInClearText
+
+          & $nuget sources list
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         with:
+          # For Solution builds, keep vcpkg inside repo to match your msbuild /p:VcpkgRoot
           vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || '' }}
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
@@ -78,14 +105,16 @@ jobs:
         run: |
           $vcpkgRoot = Join-Path (Get-Location) "vcpkg"
           $outDir = Join-Path (Get-Location) "artifacts"
-          New-Item -ItemType Directory -Force -Path $outDir
-          msbuild.exe /p:VcpkgEnableManifest=true `
-                      /p:Configuration=Debug `
-                      /p:Platform=x64 `
-                      /p:VcpkgRoot="$vcpkgRoot" `
-                      /p:OutDir="$outDir\\" `
-                      /p:GITHUB_WORKSPACE="${{ github.workspace }}" `
-                      vcproj/canary.sln
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+
+          msbuild.exe vcproj/canary.sln `
+            /m `
+            /p:Configuration=Debug `
+            /p:Platform=x64 `
+            /p:VcpkgEnableManifest=true `
+            /p:VcpkgRoot="$vcpkgRoot" `
+            /p:OutDir="$outDir\\" `
+            /p:GITHUB_WORKSPACE="${{ github.workspace }}"
 
       - name: Upload artifacts
         if: matrix.type == 'Solution'

@@ -3,6 +3,10 @@ name: Reusable Linux Build
 on:
   workflow_call:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     name: Compile (${{ matrix.buildtype }})
@@ -15,6 +19,7 @@ jobs:
       CC: gcc-13
       CXX: g++-13
       VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+      VCPKG_NUGET_API_KEY: ${{ github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

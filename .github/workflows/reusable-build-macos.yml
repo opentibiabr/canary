@@ -5,7 +5,7 @@ on:
 
 permissions:
   contents: read
-  packages: read
+  packages: write
 
 jobs:
   build:
@@ -13,6 +13,7 @@ jobs:
     runs-on: macos-latest
     env:
       VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+      VCPKG_NUGET_API_KEY: ${{ github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

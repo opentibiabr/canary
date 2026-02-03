@@ -11,6 +11,8 @@ jobs:
       matrix:
         type: [CMake, Solution]
     runs-on: windows-2025
+    env:
+      VCPKG_BINARY_SOURCES: "clear;gha,readwrite"
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
         if: matrix.type == 'Solution'

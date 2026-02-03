@@ -142,11 +142,14 @@ public:
 	void checkImbuementDecay();
 
 private:
+	struct TrackedImbuementItem {
+		std::weak_ptr<Item> item;
+		int64_t lastUpdate = 0;
+	};
+
 	bool canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const;
 
-	std::unordered_set<std::shared_ptr<Item>> m_itemsToDecay;
-	std::unordered_map<std::shared_ptr<Item>, int64_t> m_itemLastUpdate;
-	int64_t m_lastUpdateTime = 0;
+	std::unordered_map<Item*, TrackedImbuementItem> m_itemsToDecay;
 	uint32_t m_eventId { 0 };
 };
 

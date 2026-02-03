@@ -461,19 +461,22 @@ void ImbuementDecay::startImbuementDecay(const std::shared_ptr<Item> &item) {
 		return;
 	}
 
-	if (m_itemsToDecay.find(item) != m_itemsToDecay.end()) {
-		return;
+	const auto key = item.get();
+	const auto existing = m_itemsToDecay.find(key);
+	if (existing != m_itemsToDecay.end()) {
+		if (!existing->second.item.expired()) {
+			return;
+		}
+		m_itemsToDecay.erase(existing);
 	}
 
 	g_logger().debug("Starting imbuement decay for item {}", item->getName());
 
 	const int64_t now = OTSYS_TIME();
 
-	m_itemsToDecay.insert(item);
-	m_itemLastUpdate[item] = now;
+	m_itemsToDecay.emplace(key, TrackedImbuementItem{ item, now });
 
 	if (m_eventId == 0) {
-		m_lastUpdateTime = now;
 		m_eventId = g_dispatcher().scheduleEvent(
 			1000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
 		);
@@ -487,48 +490,15 @@ void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
 		return;
 	}
 
-	if (m_itemsToDecay.find(item) == m_itemsToDecay.end()) {
+	const auto key = item.get();
+	const auto it = m_itemsToDecay.find(key);
+	if (it == m_itemsToDecay.end()) {
 		return;
 	}
 
 	g_logger().debug("Stopping imbuement decay for item {}", item->getName());
 
-	if (m_lastUpdateTime == 0) {
-		m_itemsToDecay.erase(item);
-		return;
-	}
-
-	const int64_t currentTime = OTSYS_TIME();
-	int64_t lastUpdate = m_lastUpdateTime;
-	const auto lastUpdateIt = m_itemLastUpdate.find(item);
-	if (lastUpdateIt != m_itemLastUpdate.end()) {
-		lastUpdate = lastUpdateIt->second;
-	}
-	const uint32_t elapsedSeconds = lastUpdate == 0 ? 0 : static_cast<uint32_t>(std::max<int64_t>(0, currentTime - lastUpdate) / 1000);
-
-	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); ++slotid) {
-		ImbuementInfo imbuementInfo;
-		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-			continue;
-		}
-
-		if (!canDecayImbuement(item, imbuementInfo)) {
-			continue;
-		}
-
-		uint32_t duration = imbuementInfo.duration > elapsedSeconds ? imbuementInfo.duration - elapsedSeconds : 0;
-		item->decayImbuementTime(slotid, imbuementInfo.imbuement->getID(), duration);
-
-		if (duration == 0) {
-			if (auto player = item->getHoldingPlayer()) {
-				player->removeItemImbuementStats(imbuementInfo.imbuement);
-				player->updateImbuementTrackerStats();
-			}
-		}
-	}
-
-	m_itemsToDecay.erase(item);
-	m_itemLastUpdate.erase(item);
+	m_itemsToDecay.erase(it);
 
 	if (m_itemsToDecay.empty() && m_eventId != 0) {
 		g_dispatcher().stopEvent(m_eventId);
@@ -538,17 +508,15 @@ void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
 }
 
 void ImbuementDecay::checkImbuementDecay() {
-	int64_t currentTime = OTSYS_TIME();
-	m_lastUpdateTime = currentTime;
+	const int64_t currentTime = OTSYS_TIME();
 
 	g_logger().trace("Checking imbuement decay for {} items.", m_itemsToDecay.size());
 
-	std::vector<std::shared_ptr<Item>> itemsToRemove;
-
-	for (const auto &item : m_itemsToDecay) {
+	for (auto it = m_itemsToDecay.begin(); it != m_itemsToDecay.end();) {
+		auto item = it->second.item.lock();
 		if (!item) {
 			g_logger().error("[{}] item is nullptr", __FUNCTION__);
-			itemsToRemove.push_back(item);
+			it = m_itemsToDecay.erase(it);
 			continue;
 		}
 
@@ -556,14 +524,13 @@ void ImbuementDecay::checkImbuementDecay() {
 		auto player = item->getHoldingPlayer();
 		if (!player) {
 			g_logger().debug("Item {} is not held by any player. Skipping decay.", item->getName());
-			itemsToRemove.push_back(item);
+			it = m_itemsToDecay.erase(it);
 			continue;
 		}
 
 		bool hasImbuements = false;
 
-		const auto lastUpdateIt = m_itemLastUpdate.find(item);
-		const int64_t lastUpdate = lastUpdateIt != m_itemLastUpdate.end() ? lastUpdateIt->second : currentTime;
+		const int64_t lastUpdate = it->second.lastUpdate == 0 ? currentTime : it->second.lastUpdate;
 		const int64_t elapsedTime = std::max<int64_t>(0, currentTime - lastUpdate);
 		const uint32_t elapsedSeconds = static_cast<uint32_t>(elapsedTime / 1000);
 
@@ -601,16 +568,12 @@ void ImbuementDecay::checkImbuementDecay() {
 		}
 
 		if (!hasImbuements) {
-			itemsToRemove.push_back(item);
+			it = m_itemsToDecay.erase(it);
+			continue;
 		}
 
-		m_itemLastUpdate[item] = currentTime;
-	}
-
-	// Remove items whose imbuements have expired
-	for (const auto &item : itemsToRemove) {
-		m_itemsToDecay.erase(item);
-		m_itemLastUpdate.erase(item);
+		it->second.lastUpdate = currentTime;
+		++it;
 	}
 
 	// Reschedule the event if there are still items

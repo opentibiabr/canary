@@ -51,8 +51,8 @@ jobs:
 
       - name: Setup NuGet for vcpkg
         run: |
-          nuget=$(vcpkg fetch nuget | tail -n 1)
-          $nuget sources add \
+          NUGET_PATH=$(vcpkg fetch nuget 2>&1 | tail -n 1)
+          "$NUGET_PATH" sources add \
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             -storepasswordincleartext \
             -name "GitHubPackages" \

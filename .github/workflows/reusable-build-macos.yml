@@ -8,7 +8,7 @@ jobs:
     name: Compile (macOS)
     runs-on: macos-latest
     env:
-      VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,6 +37,15 @@ jobs:
           key: ccache-macos-release
           restore-keys: |
             ccache-macos
+
+      - name: Setup NuGet for vcpkg
+        run: |
+          mono $(vcpkg fetch nuget) sources add \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            -storepasswordincleartext \
+            -name "GitHubPackages" \
+            -username "${{ github.repository_owner }}" \
+            -password "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11

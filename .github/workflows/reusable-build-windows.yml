@@ -12,7 +12,7 @@ jobs:
         type: [CMake, Solution]
     runs-on: windows-2025
     env:
-      VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
         if: matrix.type == 'Solution'
@@ -59,6 +59,16 @@ jobs:
           key: ccache-windows-release
           restore-keys: |
             ccache-windows
+
+      - name: Setup NuGet for vcpkg
+        shell: pwsh
+        run: |
+          & $(vcpkg fetch nuget) sources add `
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
+            -storepasswordincleartext `
+            -name "GitHubPackages" `
+            -username "${{ github.repository_owner }}" `
+            -password "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11

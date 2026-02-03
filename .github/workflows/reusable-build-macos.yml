@@ -25,7 +25,6 @@ jobs:
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Get vcpkg baseline
-        id: vcpkg-baseline
         shell: bash
         run: |
           set -euo pipefail
@@ -38,6 +37,8 @@ jobs:
           set -euo pipefail
           brew update
           brew install ccache ninja pkg-config mono
+          which ninja
+          ninja --version
 
       - name: CCache
         uses: hendrikmuhs/ccache-action@v1.2.20
@@ -47,15 +48,21 @@ jobs:
           restore-keys: |
             ccache-macos
 
-      - name: Setup NuGet for vcpkg
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Setup NuGet source for vcpkg (GitHub Packages)
         shell: bash
         env:
           NUGET_AUTH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
           unset VCPKG_FORCE_SYSTEM_BINARIES
 
-          # vcpkg may print the path among other lines; select absolute path lines
           NUGET_PATH="$(vcpkg fetch nuget 2>&1 | grep -E '^/' | tail -n 1)"
           if [[ -z "${NUGET_PATH}" || ! -f "${NUGET_PATH}" ]]; then
             echo "Failed to locate NuGet fetched by vcpkg."
@@ -63,7 +70,6 @@ jobs:
             exit 1
           fi
 
-          # idempotent
           mono "${NUGET_PATH}" sources remove -name "GitHubPackages" >/dev/null 2>&1 || true
           mono "${NUGET_PATH}" sources add \
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
@@ -72,14 +78,16 @@ jobs:
             -username "${{ github.repository_owner }}" \
             -password "${NUGET_AUTH_TOKEN}"
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
-          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+      - name: Configure (CMake preset)
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          cmake --preset macos-release
 
-      - name: Run CMake
-        uses: lukka/run-cmake@v10
-        with:
-          configurePreset: macos-release
-          buildPreset: macos-release
+      - name: Build (CMake preset)
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          cmake --build --preset macos-release

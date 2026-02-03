@@ -475,9 +475,9 @@ void ImbuementDecay::startImbuementDecay(const std::shared_ptr<Item> &item) {
 	if (m_eventId == 0) {
 		m_lastUpdateTime = now;
 		m_eventId = g_dispatcher().scheduleEvent(
-			60000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
+			1000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
 		);
-		g_logger().trace("Scheduled imbuement decay check every 60 seconds.");
+		g_logger().trace("Scheduled imbuement decay check every 1 second.");
 	}
 }
 
@@ -616,7 +616,7 @@ void ImbuementDecay::checkImbuementDecay() {
 	// Reschedule the event if there are still items
 	if (!m_itemsToDecay.empty()) {
 		m_eventId = g_dispatcher().scheduleEvent(
-			60000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
+			1000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
 		);
 		g_logger().trace("Re-scheduled imbuement decay check.");
 	} else {

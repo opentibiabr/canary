@@ -64,7 +64,7 @@ RUN --mount=type=secret,id=github_token \
 			"</configuration>" \
 			> "${NUGET_CONFIG}"; \
 		VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}" \
-		VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},write;nugettimeout,1200" \
+		VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},read;nugettimeout,1200" \
 		/opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install; \
 		rm -f "${NUGET_CONFIG}"; \
 		unset NUGET_AUTH_TOKEN'
@@ -75,7 +75,7 @@ WORKDIR /srv/build
 COPY src ./src
 COPY cmake ./cmake
 COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json ./
-RUN ./recompile.sh "/opt"
+RUN export VCPKG_BINARY_SOURCES=clear && ./recompile.sh "/opt"
 
 # Stage 3: execute
 FROM ubuntu:24.04 AS prod

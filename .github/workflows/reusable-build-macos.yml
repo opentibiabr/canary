@@ -100,7 +100,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          logs=$(find build -name "vcpkg-manifest-install.log" -print)
+          logs=$(find . -name "vcpkg-manifest-install.log" -print)
           if [[ -z "${logs}" ]]; then
             echo "No vcpkg manifest logs found." >&2
             exit 1

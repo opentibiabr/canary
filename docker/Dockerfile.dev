@@ -36,6 +36,11 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
 WORKDIR /opt/vcpkg_manifest
 COPY vcpkg.json /opt/vcpkg_manifest/
 
+RUN --mount=type=secret,id=github_token \
+	--mount=type=cache,target=/opt/vcpkg/downloads \
+	--mount=type=cache,target=/opt/vcpkg/buildtrees \
+	--mount=type=cache,target=/opt/vcpkg/packages \
+	--mount=type=cache,target=/root/.cache/vcpkg \
 	/bin/bash -euo pipefail -c '\
 		if [ ! -s /run/secrets/github_token ]; then \
 			echo "Missing /run/secrets/github_token" >&2; \

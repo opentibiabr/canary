@@ -92,7 +92,7 @@ jobs:
           path: build/${{ matrix.buildtype }}/bin/
 
       - name: Verify vcpkg binary cache push
-        if: always()
+        if: success() && github.event.pull_request.head.repo.full_name == github.repository
         shell: bash
         run: |
           set -euo pipefail

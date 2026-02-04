@@ -134,7 +134,7 @@ jobs:
             /p:GITHUB_WORKSPACE="${{ github.workspace }}"
 
       - name: Verify vcpkg binary cache push
-        if: matrix.type == 'CMake'
+        if: matrix.type == 'CMake' && success() && github.event.pull_request.head.repo.full_name == github.repository
         shell: pwsh
         run: |
           $logs = Get-ChildItem -Path . -Recurse -Filter vcpkg-manifest-install.log -ErrorAction SilentlyContinue

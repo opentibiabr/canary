@@ -65,7 +65,7 @@ RUN --mount=type=secret,id=github_token \
 			"</configuration>" \
 			> "${NUGET_CONFIG}"; \
 		export VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}"; \
-		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},read;nugettimeout,1200"; \
+		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,1200"; \
 		/opt/vcpkg/vcpkg install --x-manifest-root=/opt/vcpkg_manifest --x-install-root=/opt/vcpkg_installed --triplet=x64-linux --host-triplet=x64-linux; \
 		rm -f "${NUGET_CONFIG}"; \
 		unset NUGET_AUTH_TOKEN'

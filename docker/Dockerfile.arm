@@ -31,13 +31,10 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
 	&& git checkout $vcpkgCommitId \
 	&& ./bootstrap-vcpkg.sh
 
-WORKDIR /opt/build
-COPY . /opt/build/
-RUN --mount=type=secret,id=github_token \
-	--mount=type=cache,target=/opt/vcpkg/downloads \
-	--mount=type=cache,target=/opt/vcpkg/buildtrees \
-	--mount=type=cache,target=/opt/vcpkg/packages \
-	--mount=type=cache,target=/root/.cache/vcpkg \
+# Install dependencies using manifest mode standalone
+WORKDIR /opt/vcpkg_manifest
+COPY vcpkg.json /opt/vcpkg_manifest/
+
 	/bin/bash -euo pipefail -c '\
 		if [ ! -s /run/secrets/github_token ]; then \
 			echo "Missing /run/secrets/github_token" >&2; \
@@ -64,9 +61,8 @@ RUN --mount=type=secret,id=github_token \
 			> "${NUGET_CONFIG}"; \
 		export VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}"; \
 		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},read;nugettimeout,1200"; \
-		export VCPKG_ROOT=/opt/vcpkg; \
 		export VCPKG_FORCE_SYSTEM_BINARIES=1; \
-		cd /opt/build && cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON; \
+		/opt/vcpkg/vcpkg install --x-manifest-root=/opt/vcpkg_manifest --x-install-root=/opt/vcpkg_installed; \
 		rm -f "${NUGET_CONFIG}"; \
 		unset NUGET_AUTH_TOKEN'
 
@@ -74,13 +70,11 @@ RUN --mount=type=secret,id=github_token \
 FROM dependencies AS build
 
 COPY . /srv/
-WORKDIR /srv
-
 # Copy the vcpkg_installed directory from dependencies stage
-COPY --from=dependencies /opt/build/vcpkg_installed ./vcpkg_installed
+COPY --from=dependencies /opt/vcpkg_installed /srv/vcpkg_installed
 
 RUN export VCPKG_ROOT=/opt/vcpkg/ && \
-    VCPKG_FORCE_SYSTEM_BINARIES=1 cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DVCPKG_MANIFEST_INSTALL=OFF && \
+    VCPKG_FORCE_SYSTEM_BINARIES=1 cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DVCPKG_MANIFEST_INSTALL=OFF -DVCPKG_INSTALLED_DIR=/srv/vcpkg_installed && \
     cmake --build --preset linux-release
 
 # Stage 3: load data and execute

@@ -33,7 +33,9 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
     && ./bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg
-COPY vcpkg.json /opt/vcpkg/
+COPY vcpkg.json CMakeLists.txt CMakePresets.json /opt/vcpkg/
+COPY cmake /opt/vcpkg/cmake
+COPY recompile.sh /opt/vcpkg/
 RUN --mount=type=secret,id=github_token \
 	--mount=type=cache,target=/opt/vcpkg/downloads \
 	--mount=type=cache,target=/opt/vcpkg/buildtrees \
@@ -63,9 +65,9 @@ RUN --mount=type=secret,id=github_token \
 			"  </config>" \
 			"</configuration>" \
 			> "${NUGET_CONFIG}"; \
-		VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}" \
-		VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},read;nugettimeout,1200" \
-		/opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install; \
+		export VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}"; \
+		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},read;nugettimeout,1200"; \
+		./recompile.sh "/opt"; \
 		rm -f "${NUGET_CONFIG}"; \
 		unset NUGET_AUTH_TOKEN'
 
@@ -75,7 +77,10 @@ WORKDIR /srv/build
 COPY src ./src
 COPY cmake ./cmake
 COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json ./
-RUN ./recompile.sh "/opt"
+# Copy the vcpkg_installed directory from dependencies stage
+COPY --from=dependencies /opt/vcpkg/vcpkg_installed ./vcpkg_installed
+
+RUN export VCPKG_MANIFEST_INSTALL=OFF && ./recompile.sh "/opt"
 
 
 # Stage 3: execute

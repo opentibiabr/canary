@@ -3,6 +3,10 @@ name: Reusable Docker Build
 on:
   workflow_call:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     name: Image Build
@@ -32,12 +36,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v5
         with:
           context: .
           file: docker/Dockerfile.x86
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          push: true
           build-args: |
             VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
             VCPKG_FEED_USERNAME=${{ github.repository_owner }}
@@ -49,3 +54,27 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Build and export (PR)
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.x86
+          push: false
+          outputs: type=local,dest=artifacts/docker-rootfs
+          build-args: |
+            VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+            VCPKG_FEED_USERNAME=${{ github.repository_owner }}
+            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600
+          secrets: |
+            github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Upload docker artifact
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-canary
+          path: artifacts/docker-rootfs/bin/canary

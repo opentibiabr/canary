@@ -18,6 +18,7 @@ jobs:
     env:
       VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
       VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+      SCCACHE_DIR: ${{ github.workspace }}\.sccache
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
         if: matrix.type == 'Solution'
@@ -53,6 +54,11 @@ jobs:
         if: matrix.type == 'CMake'
         shell: pwsh
         run: Remove-Item -Recurse -Force C:\mysql* -ErrorAction SilentlyContinue
+
+      - name: Prepare sccache directory
+        if: matrix.type == 'CMake'
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force -Path $env:SCCACHE_DIR | Out-Null
 
       - name: CCache
         if: matrix.type == 'CMake'
@@ -101,6 +107,13 @@ jobs:
         with:
           configurePreset: windows-release
           buildPreset: windows-release
+
+      - name: Upload artifacts (CMake)
+        if: matrix.type == 'CMake'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-cmake-release
+          path: build/windows-release/bin/
 
       - name: Build project (MSBuild)
         if: matrix.type == 'Solution'

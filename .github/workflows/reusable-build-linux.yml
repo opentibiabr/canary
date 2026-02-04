@@ -84,6 +84,12 @@ jobs:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.buildtype }}
+          path: build/${{ matrix.buildtype }}/bin/
+
       - name: Verify vcpkg binary cache push
         if: always()
         shell: bash

@@ -95,6 +95,12 @@ jobs:
           unset VCPKG_FORCE_SYSTEM_BINARIES
           cmake --build --preset macos-release
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: build/macos-release/bin/
+
       - name: Verify vcpkg binary cache push
         if: always()
         shell: bash

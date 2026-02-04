@@ -39,17 +39,18 @@ RUN --mount=type=secret,id=github_token \
 	--mount=type=cache,target=/opt/vcpkg/buildtrees \
 	--mount=type=cache,target=/opt/vcpkg/packages \
 	--mount=type=cache,target=/root/.cache/vcpkg \
-	set -euo pipefail \
-	&& NUGET_PATH=$(/opt/vcpkg/vcpkg fetch nuget | tail -n 1) \
-	&& NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token) \
-	&& mono "$NUGET_PATH" sources add \
-		-source "${VCPKG_FEED_URL}" \
-		-storepasswordincleartext \
-		-name "GitHubPackages" \
-		-username "${VCPKG_FEED_USERNAME}" \
-		-password "${NUGET_AUTH_TOKEN}" \
-	&& mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" -source "${VCPKG_FEED_URL}" \
-	&& /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+	/bin/bash -euo pipefail -c '
+		NUGET_PATH=$(/opt/vcpkg/vcpkg fetch nuget | tail -n 1)
+		NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token)
+		mono "$NUGET_PATH" sources add \
+			-source "${VCPKG_FEED_URL}" \
+			-storepasswordincleartext \
+			-name "GitHubPackages" \
+			-username "${VCPKG_FEED_USERNAME}" \
+			-password "${NUGET_AUTH_TOKEN}"
+		mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" -source "${VCPKG_FEED_URL}"
+		/opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+	'
 
 # Stage 2: create build
 FROM dependencies AS build

@@ -1,10 +1,24 @@
+# syntax=docker/dockerfile:1.7
+
 # Stage 1: Download all dependencies
 FROM ubuntu:24.04 AS dependencies
 
-RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
+ENV TZ=Etc/UTC
+ARG VCPKG_FEED_URL
+ARG VCPKG_FEED_USERNAME
+ARG VCPKG_BINARY_SOURCES
+ENV VCPKG_BINARY_SOURCES=${VCPKG_BINARY_SOURCES}
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+	apt-get update && apt-get install -y --no-install-recommends cmake git \
 	unzip build-essential ca-certificates curl zip unzip tar \
 	pkg-config ninja-build autoconf automake libtool libluajit-5.1-dev libluajit-5.1-common \
-	python3 \
+	python3 mono-complete tzdata \
+	&& ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+	&& echo "${TZ}" > /etc/timezone \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -19,7 +33,22 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
 
 WORKDIR /opt/vcpkg
 COPY vcpkg.json /opt/vcpkg/
-RUN VCPKG_FORCE_SYSTEM_BINARIES=1 /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+RUN --mount=type=secret,id=github_token \
+	--mount=type=cache,target=/opt/vcpkg/downloads \
+	--mount=type=cache,target=/opt/vcpkg/buildtrees \
+	--mount=type=cache,target=/opt/vcpkg/packages \
+	--mount=type=cache,target=/root/.cache/vcpkg \
+	set -euo pipefail \
+	&& NUGET_PATH=$(/opt/vcpkg/vcpkg fetch nuget | tail -n 1) \
+	&& NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token) \
+	&& mono "$NUGET_PATH" sources add \
+		-source "${VCPKG_FEED_URL}" \
+		-storepasswordincleartext \
+		-name "GitHubPackages" \
+		-username "${VCPKG_FEED_USERNAME}" \
+		-password "${NUGET_AUTH_TOKEN}" \
+	&& mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" -source "${VCPKG_FEED_URL}" \
+	&& VCPKG_FORCE_SYSTEM_BINARIES=1 /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
 
 # Stage 2: create build
 FROM dependencies AS build
@@ -31,6 +60,9 @@ RUN export VCPKG_ROOT=/opt/vcpkg/ && VCPKG_FORCE_SYSTEM_BINARIES=1 cmake --prese
 
 # Stage 3: load data and execute
 FROM ubuntu:24.04
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
+ENV TZ=Etc/UTC
 
 VOLUME [ "/data" ]
 
@@ -43,8 +75,12 @@ COPY config.lua.dist /canary/config.lua
 
 WORKDIR /canary
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	mariadb-client libluajit-5.1-dev libluajit-5.1-common wget curl \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+	apt-get update && apt-get install -y --no-install-recommends \
+	mariadb-client libluajit-5.1-dev libluajit-5.1-common wget curl tzdata \
+	&& ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+	&& echo "${TZ}" > /etc/timezone \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

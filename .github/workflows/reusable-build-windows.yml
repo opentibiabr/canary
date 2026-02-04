@@ -107,6 +107,7 @@ jobs:
         with:
           configurePreset: windows-release
           buildPreset: windows-release
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
 
       - name: Upload artifacts (CMake)
         if: matrix.type == 'CMake'

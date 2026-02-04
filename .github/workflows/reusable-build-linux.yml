@@ -83,6 +83,7 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

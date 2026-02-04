@@ -10,7 +10,6 @@
 #include "../../shared/game/events_scheduler_test_fixture.hpp"
 #include "../../shared/game/events_scheduler_test_helpers.hpp"
 
-
 using test::events_scheduler::EventsSchedulerTestBase;
 using test::events_scheduler::expectActiveEventsContain;
 using test::events_scheduler::expectEventScopeBool;

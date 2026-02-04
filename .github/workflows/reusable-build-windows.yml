@@ -83,6 +83,8 @@ jobs:
             -Password "$env:NUGET_AUTH_TOKEN" `
             -StorePasswordInClearText
 
+          & $nuget setapikey "$env:NUGET_AUTH_TOKEN" -Source $feed
+
           & $nuget sources list
 
       - name: Setup vcpkg

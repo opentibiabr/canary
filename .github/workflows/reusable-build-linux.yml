@@ -58,6 +58,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y mono-complete
 
       - name: Setup NuGet for vcpkg
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.token }}
         run: |
           unset VCPKG_FORCE_SYSTEM_BINARIES
           NUGET_PATH=$(vcpkg fetch nuget | tail -n 1)
@@ -66,7 +68,9 @@ jobs:
             -storepasswordincleartext \
             -name "GitHubPackages" \
             -username "${{ github.repository_owner }}" \
-            -password "${{ secrets.GITHUB_TOKEN }}"
+            -password "${NUGET_AUTH_TOKEN}"
+          mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11

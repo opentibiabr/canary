@@ -78,6 +78,8 @@ jobs:
             -name "GitHubPackages" \
             -username "${{ github.repository_owner }}" \
             -password "${NUGET_AUTH_TOKEN}"
+          mono "${NUGET_PATH}" setapikey "${NUGET_AUTH_TOKEN}" \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: Configure (CMake preset)
         shell: bash

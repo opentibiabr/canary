@@ -102,7 +102,7 @@ jobs:
           path: build/macos-release/bin/
 
       - name: Verify vcpkg binary cache push
-        if: success() && github.event.pull_request.head.repo.full_name == github.repository
+        if: success() && github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository
         shell: bash
         run: |
           set -euo pipefail

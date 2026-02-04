@@ -86,7 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           unset VCPKG_FORCE_SYSTEM_BINARIES
-          cmake --preset macos-release
+          cmake --preset macos-release -DTOGGLE_BIN_FOLDER=ON
 
       - name: Build (CMake preset)
         shell: bash

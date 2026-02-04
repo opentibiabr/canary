@@ -72,6 +72,18 @@ jobs:
           mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" \
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Run CMake
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
+
       - name: Verify vcpkg binary cache push
         if: always()
         shell: bash
@@ -86,15 +98,3 @@ jobs:
             echo "Binary cache push reported 0 caches." >&2
             exit 1
           fi
-
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
-          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
-
-      - name: Run CMake
-        uses: lukka/run-cmake@v10
-        with:
-          configurePreset: ${{ matrix.buildtype }}
-          buildPreset: ${{ matrix.buildtype }}

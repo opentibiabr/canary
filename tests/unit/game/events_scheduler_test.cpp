@@ -10,6 +10,16 @@
 #include "../../shared/game/events_scheduler_test_fixture.hpp"
 #include "../../shared/game/events_scheduler_test_helpers.hpp"
 
+namespace {
+	bool toLocalTime(std::time_t time, std::tm &out) {
+#if defined(_WIN32) || defined(_WIN64)
+		return localtime_s(&out, &time) == 0;
+#else
+		return localtime_r(&time, &out) != nullptr;
+#endif
+	}
+} // namespace
+
 using test::events_scheduler::EventsSchedulerTestBase;
 using test::events_scheduler::expectActiveEventsContain;
 using test::events_scheduler::expectEventScopeBool;
@@ -118,24 +128,20 @@ TEST_F(EventsSchedulerJsonTest, ReloadingClearsPreviousModifiers) {
 }
 
 TEST_F(EventsSchedulerJsonTest, RespectsEventHoursFromJson) {
-	auto now = std::time(nullptr);
+	const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	auto activeStartTs = now - 1800;
 	auto activeEndTs = now + 1800;
 	auto inactiveStartTs = now - 7200;
 	auto inactiveEndTs = now - 1800;
 
-	const auto* activeStartInfoPtr = std::localtime(&activeStartTs);
-	ASSERT_NE(activeStartInfoPtr, nullptr);
-	const auto activeStartInfo = *activeStartInfoPtr;
-	const auto* activeEndInfoPtr = std::localtime(&activeEndTs);
-	ASSERT_NE(activeEndInfoPtr, nullptr);
-	const auto activeEndInfo = *activeEndInfoPtr;
-	const auto* inactiveStartInfoPtr = std::localtime(&inactiveStartTs);
-	ASSERT_NE(inactiveStartInfoPtr, nullptr);
-	const auto inactiveStartInfo = *inactiveStartInfoPtr;
-	const auto* inactiveEndInfoPtr = std::localtime(&inactiveEndTs);
-	ASSERT_NE(inactiveEndInfoPtr, nullptr);
-	const auto inactiveEndInfo = *inactiveEndInfoPtr;
+	std::tm activeStartInfo {};
+	ASSERT_TRUE(toLocalTime(activeStartTs, activeStartInfo));
+	std::tm activeEndInfo {};
+	ASSERT_TRUE(toLocalTime(activeEndTs, activeEndInfo));
+	std::tm inactiveStartInfo {};
+	ASSERT_TRUE(toLocalTime(inactiveStartTs, inactiveStartInfo));
+	std::tm inactiveEndInfo {};
+	ASSERT_TRUE(toLocalTime(inactiveEndTs, inactiveEndInfo));
 
 	const auto formatDate = [](const std::tm &timeInfo) {
 		std::ostringstream stream;

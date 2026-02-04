@@ -612,8 +612,13 @@ void House::calculateBidEndDate(uint8_t daysToEnd) {
 	std::chrono::system_clock::time_point targetTime = targetDay + std::chrono::hours(hour) + std::chrono::minutes(min) + std::chrono::seconds(sec);
 
 	std::time_t resultTime = std::chrono::system_clock::to_time_t(targetTime);
-	std::tm* localTime = std::localtime(&resultTime);
-	auto bidEndDate = static_cast<uint32_t>(std::mktime(localTime));
+	std::tm localTime {};
+#if defined(_WIN32) || defined(_WIN64)
+	localtime_s(&localTime, &resultTime);
+#else
+	localtime_r(&resultTime, &localTime);
+#endif
+	auto bidEndDate = static_cast<uint32_t>(std::mktime(&localTime));
 
 	this->m_bidEndDate = bidEndDate;
 }

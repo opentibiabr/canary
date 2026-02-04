@@ -62,7 +62,8 @@ RUN --mount=type=secret,id=github_token \
 			"  </config>" \
 			"</configuration>" \
 			> "${NUGET_CONFIG}"; \
-		VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,600" \
+		VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}" \
+		VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,1200" \
 		VCPKG_FORCE_SYSTEM_BINARIES=1 \
 		/opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install; \
 		rm -f "${NUGET_CONFIG}"; \

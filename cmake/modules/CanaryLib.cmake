@@ -125,7 +125,6 @@ if(FEATURE_METRICS)
     )
 endif()
 
-
 if(MSVC)
     if(BUILD_STATIC_LIBRARY)
         set(VCPKG_TARGET_TRIPLET

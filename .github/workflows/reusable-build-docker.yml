@@ -41,7 +41,7 @@ jobs:
           build-args: |
             VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
             VCPKG_FEED_USERNAME=${{ github.repository_owner }}
-            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read;nugettimeout,600
+            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600
           secrets: |
             github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
           tags: |

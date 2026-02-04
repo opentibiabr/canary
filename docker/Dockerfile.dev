@@ -39,11 +39,29 @@ RUN --mount=type=secret,id=github_token \
 	--mount=type=cache,target=/opt/vcpkg/buildtrees \
 	--mount=type=cache,target=/opt/vcpkg/packages \
 	--mount=type=cache,target=/root/.cache/vcpkg \
-	/bin/bash -euo pipefail -c "NUGET_PATH=$(/opt/vcpkg/vcpkg fetch nuget | tail -n 1) \
-	&& NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token) \
-	&& mono \"$NUGET_PATH\" sources add -source \"${VCPKG_FEED_URL}\" -storepasswordincleartext -name \"GitHubPackages\" -username \"${VCPKG_FEED_USERNAME}\" -password \"$NUGET_AUTH_TOKEN\" \
-	&& mono \"$NUGET_PATH\" setapikey \"$NUGET_AUTH_TOKEN\" -source \"${VCPKG_FEED_URL}\" \
-	&& /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install"
+	/bin/bash -euo pipefail -c 'if [ ! -s /run/secrets/github_token ]; then echo "Missing /run/secrets/github_token" >&2; exit 1; fi
+	NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token)
+	NUGET_CONFIG=$(mktemp /tmp/nuget.XXXXXX.config)
+	cat > "${NUGET_CONFIG}" <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="GitHubPackages" value="${VCPKG_FEED_URL}" />
+  </packageSources>
+  <packageSourceCredentials>
+    <GitHubPackages>
+      <add key="Username" value="${VCPKG_FEED_USERNAME}" />
+      <add key="ClearTextPassword" value="${NUGET_AUTH_TOKEN}" />
+    </GitHubPackages>
+  </packageSourceCredentials>
+  <config>
+    <add key="defaultPushSource" value="GitHubPackages" />
+  </config>
+</configuration>
+EOF
+	VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,600" /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+	rm -f "${NUGET_CONFIG}"
+	unset NUGET_AUTH_TOKEN'
 
 # Stage 2: create build
 FROM dependencies AS build

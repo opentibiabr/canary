@@ -125,20 +125,6 @@ if(FEATURE_METRICS)
     )
 endif()
 
-if(CMAKE_BUILD_TYPE
-   MATCHES
-   Debug
-)
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC ${ZLIB_LIBRARY_DEBUG}
-    )
-else()
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC ${ZLIB_LIBRARY_RELEASE}
-    )
-endif()
 
 if(MSVC)
     if(BUILD_STATIC_LIBRARY)

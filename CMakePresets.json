@@ -28,6 +28,7 @@
       "description": "Windows Release Build",
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "VCPKG_HOST_TRIPLET": "x64-windows-static",
         "VCPKG_BUILD_TYPE": "release",
         "BUILD_TESTING": "OFF"
       },
@@ -46,6 +47,7 @@
         "DEBUG_LOG": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
         "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_HOST_TRIPLET": "x64-windows",
         "BUILD_TESTING": "ON"
       }
     },
@@ -61,6 +63,7 @@
         "BUILD_STATIC_LIBRARY": "OFF",
         "SPEED_UP_BUILD_UNITY": "OFF",
         "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_HOST_TRIPLET": "x64-windows",
         "VCPKG_BUILD_TYPE": "debug",
         "BUILD_TESTING": "ON"
       }
@@ -75,6 +78,7 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
+        "VCPKG_HOST_TRIPLET": "x64-linux",
         "VCPKG_BUILD_TYPE": "release",
         "BUILD_TESTING": "OFF"
       },
@@ -94,6 +98,7 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "DEBUG_LOG": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
+        "VCPKG_HOST_TRIPLET": "x64-linux",
         "VCPKG_BUILD_TYPE": "debug",
         "BUILD_TESTING": "ON"
       }
@@ -108,6 +113,7 @@
         "DEBUG_LOG": "ON",
         "ASAN_ENABLED": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
+        "VCPKG_HOST_TRIPLET": "x64-linux",
         "VCPKG_BUILD_TYPE": "debug",
         "BUILD_TESTING": "ON"
       }
@@ -122,6 +128,7 @@
         "CMAKE_C_COMPILER": "/usr/bin/clang",
         "DEBUG_LOG": "ON",
         "VCPKG_TARGET_TRIPLET": "arm64-osx",
+        "VCPKG_HOST_TRIPLET": "arm64-osx",
         "VCPKG_BUILD_TYPE": "release",
         "BUILD_TESTING": "OFF"
       },
@@ -142,6 +149,7 @@
         "DEBUG_LOG": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
         "SPEED_UP_BUILD_UNITY": "OFF",
+        "VCPKG_HOST_TRIPLET": "arm64-osx",
         "VCPKG_BUILD_TYPE": "debug",
         "BUILD_TESTING": "ON"
       }

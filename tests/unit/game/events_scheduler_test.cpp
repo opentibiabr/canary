@@ -18,6 +18,16 @@ using test::events_scheduler::expectEventScopeMissing;
 using test::events_scheduler::expectScheduleRates;
 using test::events_scheduler::expectSingleActiveEvent;
 
+namespace {
+	bool toLocalTime(std::time_t time, std::tm &out) {
+#if defined(_WIN32) || defined(_WIN64)
+		return localtime_s(&out, &time) == 0;
+#else
+		return localtime_r(&time, &out) != nullptr;
+#endif
+	}
+} // namespace
+
 class EventsSchedulerJsonTest : public EventsSchedulerTestBase {
 protected:
 	InjectionFixture fixture_ {};

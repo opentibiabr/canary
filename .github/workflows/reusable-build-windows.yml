@@ -16,8 +16,8 @@ jobs:
         type: [CMake, Solution]
     runs-on: windows-2025
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
-      VCPKG_NUGET_API_KEY: ${{ github.token }}
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
         if: matrix.type == 'Solution'
@@ -68,7 +68,7 @@ jobs:
       - name: Setup NuGet source for GitHub Packages (for MSBuild/vcpkg.targets)
         shell: pwsh
         env:
-          NUGET_AUTH_TOKEN: ${{ github.token }}
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
         run: |
           $feed = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
@@ -118,6 +118,22 @@ jobs:
             /p:VcpkgRoot="$vcpkgRoot" `
             /p:OutDir="$outDir\\" `
             /p:GITHUB_WORKSPACE="${{ github.workspace }}"
+
+      - name: Verify vcpkg binary cache push
+        if: always()
+        shell: pwsh
+        run: |
+          $logs = Get-ChildItem -Path build -Recurse -Filter vcpkg-manifest-install.log -ErrorAction SilentlyContinue
+          if (-not $logs) {
+            Write-Error "No vcpkg manifest logs found."
+            exit 1
+          }
+          foreach ($log in $logs) {
+            if (Select-String -Path $log.FullName -Pattern "to 0 binary cache\(s\)") {
+              Write-Error "Binary cache push reported 0 caches."
+              exit 1
+            }
+          }
 
       - name: Upload artifacts
         if: matrix.type == 'Solution'

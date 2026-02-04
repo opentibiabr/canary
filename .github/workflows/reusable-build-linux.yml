@@ -18,8 +18,8 @@ jobs:
     env:
       CC: gcc-13
       CXX: g++-13
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
-      VCPKG_NUGET_API_KEY: ${{ github.token }}
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -59,7 +59,7 @@ jobs:
 
       - name: Setup NuGet for vcpkg
         env:
-          NUGET_AUTH_TOKEN: ${{ github.token }}
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
         run: |
           unset VCPKG_FORCE_SYSTEM_BINARIES
           NUGET_PATH=$(vcpkg fetch nuget | tail -n 1)
@@ -71,6 +71,21 @@ jobs:
             -password "${NUGET_AUTH_TOKEN}"
           mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" \
             -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: Verify vcpkg binary cache push
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          logs=$(find build -name "vcpkg-manifest-install.log" -print)
+          if [[ -z "${logs}" ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi
+          if grep -q "to 0 binary cache(s)" ${logs}; then
+            echo "Binary cache push reported 0 caches." >&2
+            exit 1
+          fi
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11

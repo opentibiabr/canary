@@ -139,6 +139,37 @@
         "BUILD_TESTING": "ON"
       }
     }
+    ,
+    {
+      "name": "windows-release-metrics",
+      "inherits": "windows-release",
+      "displayName": "Windows - Release + Metrics",
+      "description": "Windows Release Build with metrics enabled",
+      "cacheVariables": {
+        "FEATURE_METRICS": "ON",
+        "VCPKG_MANIFEST_FEATURES": "metrics"
+      }
+    },
+    {
+      "name": "linux-release-metrics",
+      "inherits": "linux-release",
+      "displayName": "Linux - Release + Metrics",
+      "description": "Linux Release Build with metrics enabled",
+      "cacheVariables": {
+        "FEATURE_METRICS": "ON",
+        "VCPKG_MANIFEST_FEATURES": "metrics"
+      }
+    },
+    {
+      "name": "macos-release-metrics",
+      "inherits": "macos-release",
+      "displayName": "macOS - Release + Metrics",
+      "description": "macOS Release Build with metrics enabled",
+      "cacheVariables": {
+        "FEATURE_METRICS": "ON",
+        "VCPKG_MANIFEST_FEATURES": "metrics"
+      }
+    }
   ],
   "buildPresets": [
     { "name": "linux-release", "configurePreset": "linux-release" },
@@ -150,7 +181,10 @@
     },
     { "name": "windows-debug", "configurePreset": "windows-debug" },
     { "name": "macos-release", "configurePreset": "macos-release" },
-    { "name": "macos-debug", "configurePreset": "macos-debug" }
+    { "name": "macos-debug", "configurePreset": "macos-debug" },
+    { "name": "windows-release-metrics", "configurePreset": "windows-release-metrics" },
+    { "name": "linux-release-metrics", "configurePreset": "linux-release-metrics" },
+    { "name": "macos-release-metrics", "configurePreset": "macos-release-metrics" }
   ],
   "testPresets": [
     {

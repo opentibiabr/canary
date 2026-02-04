@@ -10,15 +10,6 @@
 #include "../../shared/game/events_scheduler_test_fixture.hpp"
 #include "../../shared/game/events_scheduler_test_helpers.hpp"
 
-namespace {
-	bool toLocalTime(std::time_t time, std::tm &out) {
-#if defined(_WIN32) || defined(_WIN64)
-		return localtime_s(&out, &time) == 0;
-#else
-		return localtime_r(&time, &out) != nullptr;
-#endif
-	}
-} // namespace
 
 using test::events_scheduler::EventsSchedulerTestBase;
 using test::events_scheduler::expectActiveEventsContain;

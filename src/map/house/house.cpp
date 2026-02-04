@@ -613,12 +613,23 @@ void House::calculateBidEndDate(uint8_t daysToEnd) {
 
 	std::time_t resultTime = std::chrono::system_clock::to_time_t(targetTime);
 	std::tm localTime {};
+	bool timeConversionOk = true;
 #if defined(_WIN32) || defined(_WIN64)
-	localtime_s(&localTime, &resultTime);
+	if (localtime_s(&localTime, &resultTime) != 0) {
+		timeConversionOk = false;
+	}
 #else
-	localtime_r(&resultTime, &localTime);
+	if (localtime_r(&resultTime, &localTime) == nullptr) {
+		timeConversionOk = false;
+	}
 #endif
-	auto bidEndDate = static_cast<uint32_t>(std::mktime(&localTime));
+	uint32_t bidEndDate;
+	if (timeConversionOk) {
+		bidEndDate = static_cast<uint32_t>(std::mktime(&localTime));
+	} else {
+		// Fallback: use the original time_t value if localtime conversion fails
+		bidEndDate = static_cast<uint32_t>(resultTime);
+	}
 
 	this->m_bidEndDate = bidEndDate;
 }

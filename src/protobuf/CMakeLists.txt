@@ -30,11 +30,11 @@ else()
 endif()
 
 target_link_libraries(
-    ${PROJECT_NAME}
+    ${CORE_TARGET_NAME}
     PUBLIC protobuf::libprotobuf
 )
 target_include_directories(
-    ${PROJECT_NAME}
+    ${CORE_TARGET_NAME}
     PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
 )
 

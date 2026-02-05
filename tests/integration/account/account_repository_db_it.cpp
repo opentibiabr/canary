@@ -69,7 +69,7 @@ namespace it_account_repo_db {
 		auto &db = g_database();
 		databaseTest(db, [&db] {
 			AccountRepositoryDB accRepo {};
-			createAccount(db);
+			ASSERT_NO_FATAL_FAILURE(createAccount(db));
 			auto acc = std::make_unique<AccountInfo>();
 			ASSERT_TRUE(accRepo.loadByEmailOrName(false, "@test", acc));
 			assertAccountLoad(*acc);
@@ -81,7 +81,7 @@ namespace it_account_repo_db {
 		auto &db = g_database();
 		databaseTest(db, [&db] {
 			AccountRepositoryDB accRepo {};
-			createAccount(db);
+			ASSERT_NO_FATAL_FAILURE(createAccount(db));
 			auto acc = std::make_unique<AccountInfo>();
 			ASSERT_TRUE(accRepo.loadBySession("test", acc));
 			assertAccountLoad(*acc);

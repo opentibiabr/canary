@@ -175,15 +175,21 @@ if(OPTIONS_ENABLE_SCCACHE)
 endif()
 
 # *****************************************************************************
+# Options for Targets
+# *****************************************************************************
+option(
+    CANARY_BUILD_SERVER
+    "Build server executable"
+    ON
+)
+option(
+    CANARY_BUILD_TESTS
+    "Build unit tests"
+    ON
+)
+
+# *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src)
-
-include(CTest)
-if(BUILD_TESTING)
-    log_option_enabled("tests")
-    add_subdirectory(tests)
-    enable_testing()
-else()
-    log_option_disabled("tests")
-endif()
+add_subdirectory(tests)

@@ -81,7 +81,7 @@ namespace it_account_repo_db {
 		EXPECT_EQ(0u, acc.players.size());
 		EXPECT_FALSE(acc.oldProtocol);
 		EXPECT_EQ(11, acc.premiumDaysPurchased);
-		EXPECT_NEAR(static_cast<double>(acc.creationTime), 42183281.0, 60.0 * 60.0 * 1000.0);
+		EXPECT_NEAR(static_cast<double>(acc.creationTime), 42183281.0, 1.0);
 	}
 
 	TEST_F(AccountRepositoryDBTest, LoadByID) {

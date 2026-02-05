@@ -32,7 +32,7 @@ namespace it_player_storage_repo_db {
 			}
 		}
 
-		const auto playerInserted = db.executeQuery(fmt::format("INSERT INTO `players` (`id`,`name`,`account_id`,`conditions`,`comment`) VALUES ({}, 'player_{}', {}, '', '')", playerId, playerId, accountId));
+		const auto playerInserted = db.executeQuery(fmt::format("INSERT INTO `players` (`id`,`name`,`account_id`,`conditions`) VALUES ({}, 'player_{}', {}, '')", playerId, playerId, accountId));
 		if (!playerInserted) {
 			auto &logger = dynamic_cast<InMemoryLogger &>(g_logger());
 			for (const auto &log : logger.logs) {

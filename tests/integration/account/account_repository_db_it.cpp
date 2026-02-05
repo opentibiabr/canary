@@ -58,8 +58,8 @@ namespace it_account_repo_db {
 			FAIL() << "Failed to insert account_sessions";
 		}
 
-		if (!db.executeQuery(fmt::format("INSERT INTO `players` (`name`, `account_id`, `conditions`, `deletion`, `comment`) "
-		                                 "VALUES ('deleted_{}', {}, '', {}, '')",
+		if (!db.executeQuery(fmt::format("INSERT INTO `players` (`name`, `account_id`, `conditions`, `deletion`) "
+		                                 "VALUES ('deleted_{}', {}, '', {})",
 		                                 ids.name, ids.id, getTimeNow() + 1))) {
 			for (const auto &log : AccountRepositoryDBTest::logger->logs) {
 				if (log.level == "error") {

@@ -5,14 +5,14 @@ on:
 
 permissions:
   contents: read
-  packages: read
+  packages: write
 
 jobs:
   build:
     name: Compile (macOS)
     runs-on: macos-latest
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,7 +57,7 @@ jobs:
       - name: Setup NuGet source for vcpkg (GitHub Packages)
         shell: bash
         env:
-          NUGET_AUTH_TOKEN: ${{ github.token }}
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
         run: |
           set -euo pipefail
 
@@ -77,13 +77,15 @@ jobs:
             -name "GitHubPackages" \
             -username "${{ github.repository_owner }}" \
             -password "${NUGET_AUTH_TOKEN}"
+          mono "${NUGET_PATH}" setapikey "${NUGET_AUTH_TOKEN}" \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
       - name: Configure (CMake preset)
         shell: bash
         run: |
           set -euo pipefail
           unset VCPKG_FORCE_SYSTEM_BINARIES
-          cmake --preset macos-release
+          cmake --preset macos-release -DTOGGLE_BIN_FOLDER=ON
 
       - name: Build (CMake preset)
         shell: bash
@@ -91,3 +93,26 @@ jobs:
           set -euo pipefail
           unset VCPKG_FORCE_SYSTEM_BINARIES
           cmake --build --preset macos-release
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: build/macos-release
+
+      - name: Verify vcpkg binary cache push
+        if: success() && ((github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
+        shell: bash
+        run: |
+          set -euo pipefail
+          logs=$(find . -name "vcpkg-manifest-install.log" -print0)
+          if [[ -z "${logs}" ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi
+          while IFS= read -r -d '' log; do
+            if grep -q "to 0 binary cache(s)" -- "$log"; then
+              echo "Binary cache push reported 0 caches." >&2
+              exit 1
+            fi
+          done <<< "${logs}"

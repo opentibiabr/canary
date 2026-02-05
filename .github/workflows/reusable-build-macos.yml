@@ -12,8 +12,7 @@ jobs:
     name: Compile (macOS)
     runs-on: macos-latest
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
-      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+      VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -99,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-release
-          path: build/macos-release/bin/
+          path: build/macos-release
 
       - name: Verify vcpkg binary cache push
         if: success() && github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository

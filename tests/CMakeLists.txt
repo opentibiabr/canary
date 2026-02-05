@@ -111,20 +111,6 @@ function(
         endif()
     endif()
 
-    # Diagnostics: Force run the executable to ensure it works and environment
-    # is correct This will break the build if the executable crashes or misses
-    # DLLs/SOs
-    add_custom_command(
-        TARGET ${TARGET_NAME}
-        POST_BUILD
-        COMMAND
-            ${CMAKE_COMMAND} -E echo
-            "Test Executable Path: $<TARGET_FILE:${TARGET_NAME}>"
-        COMMAND ${TARGET_NAME} --gtest_list_tests
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
-        COMMENT "Verifying test executable ${TARGET_NAME} can run..."
-    )
-
     gtest_discover_tests(
         ${TARGET_NAME}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}

@@ -30,7 +30,7 @@ else()
 endif()
 
 target_link_libraries(
-    ${CORE_TARGET_NAME}
+    ${PROJECT_NAME}
     PUBLIC protobuf::libprotobuf
 )
 target_include_directories(

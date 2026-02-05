@@ -116,6 +116,3 @@ jobs:
               exit 1
             fi
           done <<< "${logs}"
-            echo "Binary cache push reported 0 caches." >&2
-            exit 1
-          fi

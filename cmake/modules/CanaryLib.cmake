@@ -160,10 +160,14 @@ foreach(
     endif()
 
     # === Optimization Flags ===
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    if(CMAKE_CXX_COMPILER_ID
+       MATCHES
+       "GNU|Clang"
+    )
         target_compile_options(
             ${core_target}
-            PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-O3 -march=native>
+            PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-O3
+                    -march=native>
         )
     elseif(MSVC)
         target_compile_options(

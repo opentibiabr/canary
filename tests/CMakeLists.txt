@@ -60,6 +60,18 @@ function(
         PRIVATE cxx_std_20
     )
 
+    if(USE_PRECOMPILED_HEADER)
+        target_precompile_headers(
+            ${TARGET_NAME}
+            PRIVATE
+            ${CMAKE_SOURCE_DIR}/tests/test_pch.hpp
+        )
+        target_compile_definitions(
+            ${TARGET_NAME}
+            PRIVATE USE_PRECOMPILED_HEADERS
+        )
+    endif()
+
     # Note: setup_target is internal, assume it works for generic targets
     if(COMMAND setup_target)
         setup_target(${TARGET_NAME})

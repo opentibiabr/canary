@@ -24,20 +24,22 @@ namespace it_player_storage_repo_db {
 			fmt::format("INSERT INTO `accounts` (`id`,`name`,`password`,`email`) VALUES ({}, 'acc_{}', '', 'test@test.com')", accountId, accountId)
 		);
 		if (!accountInserted) {
-			auto &logger = dynamic_cast<InMemoryLogger &>(g_logger());
-			for (const auto &log : logger.logs) {
-				if (log.level == "error") {
-					std::cerr << "DB Error (accounts): " << log.message << std::endl;
+			if (auto* logger = dynamic_cast<InMemoryLogger*>(&g_logger())) {
+				for (const auto &log : logger->logs) {
+					if (log.level == "error") {
+						std::cerr << "DB Error (accounts): " << log.message << std::endl;
+					}
 				}
 			}
 		}
 
 		const auto playerInserted = db.executeQuery(fmt::format("INSERT INTO `players` (`id`,`name`,`account_id`,`conditions`) VALUES ({}, 'player_{}', {}, '')", playerId, playerId, accountId));
 		if (!playerInserted) {
-			auto &logger = dynamic_cast<InMemoryLogger &>(g_logger());
-			for (const auto &log : logger.logs) {
-				if (log.level == "error") {
-					std::cerr << "DB Error (players): " << log.message << std::endl;
+			if (auto* logger = dynamic_cast<InMemoryLogger*>(&g_logger())) {
+				for (const auto &log : logger->logs) {
+					if (log.level == "error") {
+						std::cerr << "DB Error (players): " << log.message << std::endl;
+					}
 				}
 			}
 		}

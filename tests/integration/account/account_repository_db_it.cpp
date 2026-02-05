@@ -34,6 +34,9 @@ namespace it_account_repo_db {
 	InMemoryLogger* AccountRepositoryDBTest::logger = nullptr;
 
 	inline void createAccount(Database &db, const TestIds &ids, const std::string &password = "") {
+		if (AccountRepositoryDBTest::logger) {
+			AccountRepositoryDBTest::logger->logs.clear();
+		}
 		auto lastDay = getTimeNow() + 11 * 86400;
 		if (!db.executeQuery(fmt::format("INSERT INTO `accounts` "
 		                                 "(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
@@ -125,7 +128,7 @@ namespace it_account_repo_db {
 		databaseTest(db, [&db] {
 			AccountRepositoryDB accRepo {};
 			auto ids = getTestIds();
-			createAccount(db, ids);
+			ASSERT_NO_FATAL_FAILURE(createAccount(db, ids));
 			auto acc = std::make_unique<AccountInfo>();
 			ASSERT_TRUE(accRepo.loadByID(ids.id, acc));
 			acc->premiumLastDay = getTimeNow() + 10 * 86400;
@@ -142,7 +145,7 @@ namespace it_account_repo_db {
 		databaseTest(db, [&db] {
 			AccountRepositoryDB accRepo {};
 			auto ids = getTestIds();
-			createAccount(db, ids, "21298df8a3277357ee55b01df9530b535cf08ec1");
+			ASSERT_NO_FATAL_FAILURE(createAccount(db, ids, "21298df8a3277357ee55b01df9530b535cf08ec1"));
 			std::string password {};
 			EXPECT_TRUE(accRepo.getPassword(ids.id, password));
 			EXPECT_EQ(std::string { "21298df8a3277357ee55b01df9530b535cf08ec1" }, password);
@@ -170,7 +173,7 @@ namespace it_account_repo_db {
 			// We need an account to save, but Save() updates, it doesn't INSERT?
 			// The original test set id=1. Save() likely does UPDATE.
 			// Let's create account first.
-			createAccount(db, ids);
+			ASSERT_NO_FATAL_FAILURE(createAccount(db, ids));
 
 			auto acc = std::make_unique<AccountInfo>();
 			acc->id = ids.id;

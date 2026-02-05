@@ -34,7 +34,7 @@ target_link_libraries(
     PUBLIC protobuf::libprotobuf
 )
 target_include_directories(
-    ${CORE_TARGET_NAME}
+    ${PROJECT_NAME}
     PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
 )
 

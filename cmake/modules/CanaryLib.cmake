@@ -25,6 +25,12 @@ target_sources(
     PRIVATE canary_server.cpp
 )
 
+# === OpenMP ===
+# Find it once, outside the loop
+if(OPTIONS_ENABLE_OPENMP)
+    find_package(OpenMP)
+endif()
+
 # Iterate over all core targets (canary_core and/or canary executable)
 foreach(
     core_target IN
@@ -145,7 +151,6 @@ foreach(
 
     # === OpenMP ===
     if(OPTIONS_ENABLE_OPENMP)
-        find_package(OpenMP)
         if(OpenMP_CXX_FOUND)
             target_link_libraries(
                 ${core_target}
@@ -155,27 +160,16 @@ foreach(
     endif()
 
     # === Optimization Flags ===
-    if(CMAKE_BUILD_TYPE
-       STREQUAL
-       "RelWithDebInfo"
-       OR CMAKE_BUILD_TYPE
-          STREQUAL
-          "Release"
-    )
-        if(CMAKE_CXX_COMPILER_ID
-           MATCHES
-           "GNU|Clang"
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(
+            ${core_target}
+            PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-O3 -march=native>
         )
-            target_compile_options(
-                ${core_target}
-                PRIVATE -O3 -march=native
-            )
-        elseif(MSVC)
-            target_compile_options(
-                ${core_target}
-                PRIVATE /O2
-            )
-        endif()
+    elseif(MSVC)
+        target_compile_options(
+            ${core_target}
+            PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:/O2>
+        )
     endif()
 
 endforeach()

@@ -7,32 +7,95 @@ cmake_minimum_required(
 include(BaseConfig)
 include(GNUInstallDirs)
 
-# Import configurations, source definitions, and linker settings
-include(CanaryLib)
+# Import configurations, source definitions, and linker settings Note: CanaryLib
+# now expects CORE_TARGET_NAME to be defined and CANARY_CORE_TARGETS to be
+# populated.
 
-# Define main executable target, set it up and link to main library
-add_executable(
-    ${PROJECT_NAME}
-    main.cpp
+set(CANARY_CORE_TARGETS
+    ""
 )
 
-if(MSVC)
-    # Add executable icon for Windows
-    target_sources(
-        ${PROJECT_NAME}
-        PRIVATE ../cmake/canary.rc
+if(CANARY_BUILD_TESTS)
+    # Split Mode: Core is a Static Lib
+    add_library(canary_core STATIC)
+    set(CORE_TARGET_NAME
+        canary_core
     )
+    list(
+        APPEND
+        CANARY_CORE_TARGETS
+        canary_core
+    )
+    setup_target(canary_core)
+
+    if(CANARY_BUILD_SERVER)
+        add_executable(
+            ${PROJECT_NAME}
+            main.cpp
+        )
+        target_link_libraries(
+            ${PROJECT_NAME}
+            PRIVATE canary_core
+        )
+
+        # MSVC Icon
+        if(MSVC)
+            target_sources(
+                ${PROJECT_NAME}
+                PRIVATE ../cmake/canary.rc
+            )
+        endif()
+
+        setup_target(${PROJECT_NAME})
+        set_output_directory(${PROJECT_NAME})
+        configure_linking(${PROJECT_NAME})
+    endif()
+else()
+    # Fold Mode: Core sources go directly into Exe In this mode we ALWAYS build
+    # the server, otherwise there is no target
+    add_executable(
+        ${PROJECT_NAME}
+        main.cpp
+    )
+    set(CORE_TARGET_NAME
+        ${PROJECT_NAME}
+    )
+    list(
+        APPEND
+        CANARY_CORE_TARGETS
+        ${PROJECT_NAME}
+    )
+
+    # MSVC Icon
+    if(MSVC)
+        target_sources(
+            ${PROJECT_NAME}
+            PRIVATE ../cmake/canary.rc
+        )
+    endif()
+
+    setup_target(${PROJECT_NAME})
+    set_output_directory(${PROJECT_NAME})
+    configure_linking(${PROJECT_NAME})
+
+    # Exclude from all if server build is disabled (but we just created it
+    # above) This mimics OTClient logic where main target defines existence
+    if(NOT CANARY_BUILD_SERVER)
+        set_target_properties(
+            ${PROJECT_NAME}
+            PROPERTIES EXCLUDE_FROM_ALL ON
+        )
+        if(MSVC)
+            set_target_properties(
+                ${PROJECT_NAME}
+                PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD ON
+            )
+        endif()
+    endif()
 endif()
 
-setup_target(${PROJECT_NAME})
-set_output_directory(${PROJECT_NAME})
-target_link_libraries(
-    ${PROJECT_NAME}
-    PRIVATE ${PROJECT_NAME}_lib
-)
-
-# Configurar IPO e Linkagem Incremental para o executável
-configure_linking(${PROJECT_NAME})
+# Include CanaryLib which populates sources/settings on CORE_TARGET_NAME
+include(CanaryLib)
 
 # Compiler warnings and options
 if(UNIX)
@@ -40,17 +103,16 @@ if(UNIX)
        STREQUAL
        "Debug"
     )
-        target_compile_options(
-            ${PROJECT_NAME}_lib
-            PRIVATE -Wall
-                    -Wextra
-                    -Wpedantic
+        foreach(
+            core_target IN
+            LISTS CANARY_CORE_TARGETS
         )
-        target_compile_options(
-            ${PROJECT_NAME}
-            PRIVATE -Wall
-                    -Wextra
-                    -Wpedantic
-        )
+            target_compile_options(
+                ${core_target}
+                PRIVATE -Wall
+                        -Wextra
+                        -Wpedantic
+            )
+        endforeach()
     endif()
 endif()

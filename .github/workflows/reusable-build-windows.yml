@@ -16,7 +16,9 @@ jobs:
         type: [CMake, Solution]
     runs-on: windows-2025
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+      SCCACHE_DIR: ${{ github.workspace }}\.sccache
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
         if: matrix.type == 'Solution'
@@ -53,6 +55,11 @@ jobs:
         shell: pwsh
         run: Remove-Item -Recurse -Force C:\mysql* -ErrorAction SilentlyContinue
 
+      - name: Prepare sccache directory
+        if: matrix.type == 'CMake'
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force -Path $env:SCCACHE_DIR | Out-Null
+
       - name: CCache
         if: matrix.type == 'CMake'
         uses: hendrikmuhs/ccache-action@v1.2.20
@@ -67,7 +74,7 @@ jobs:
       - name: Setup NuGet source for GitHub Packages (for MSBuild/vcpkg.targets)
         shell: pwsh
         env:
-          NUGET_AUTH_TOKEN: ${{ github.token }}
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
         run: |
           $feed = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
@@ -81,6 +88,8 @@ jobs:
             -UserName "${{ github.repository_owner }}" `
             -Password "$env:NUGET_AUTH_TOKEN" `
             -StorePasswordInClearText
+
+          & $nuget setapikey "$env:NUGET_AUTH_TOKEN" -Source $feed
 
           & $nuget sources list
 
@@ -98,6 +107,14 @@ jobs:
         with:
           configurePreset: windows-release
           buildPreset: windows-release
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+
+      - name: Upload artifacts (CMake)
+        if: matrix.type == 'CMake'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-cmake-release
+          path: build/windows-release/bin/
 
       - name: Build project (MSBuild)
         if: matrix.type == 'Solution'
@@ -115,6 +132,22 @@ jobs:
             /p:VcpkgRoot="$vcpkgRoot" `
             /p:OutDir="$outDir\\" `
             /p:GITHUB_WORKSPACE="${{ github.workspace }}"
+
+      - name: Verify vcpkg binary cache push
+        if: matrix.type == 'CMake' && success() && (github.event_name == 'push' || (github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository))
+        shell: pwsh
+        run: |
+          $logs = Get-ChildItem -Path . -Recurse -Filter vcpkg-manifest-install.log -ErrorAction SilentlyContinue
+          if (-not $logs) {
+            Write-Error "No vcpkg manifest logs found."
+            exit 1
+          }
+          foreach ($log in $logs) {
+            if (Select-String -Path $log.FullName -Pattern "to 0 binary cache\(s\)") {
+              Write-Error "Binary cache push reported 0 caches."
+              exit 1
+            }
+          }
 
       - name: Upload artifacts
         if: matrix.type == 'Solution'

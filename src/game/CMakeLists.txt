@@ -1,5 +1,5 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE functions/game_reload.cpp
             game.cpp
             bank/bank.cpp

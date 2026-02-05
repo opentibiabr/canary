@@ -1,6 +1,11 @@
-#include "pch.hpp"
-
-#include <gtest/gtest.h>
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2023 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
 
 #include "lua/callbacks/event_callback_manager.hpp"
 #include "lua/scripts/luascript.hpp"
@@ -71,20 +76,22 @@ TEST(EventCallbackManagerTest, RegistrationSorting) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto cb1 = std::make_shared<EventCallback>("cb1", false, &iface);
-	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setType(playerOnTradeRequest);
 	cb1->setPriority(5);
 	cb1->setScriptId(1);
 
 	auto cb2 = std::make_shared<EventCallback>("cb2", false, &iface);
-	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setType(playerOnTradeRequest);
 	cb2->setPriority(10);
 	cb2->setScriptId(1);
 
 	mgr.registerCallback(cb1);
 	mgr.registerCallback(cb2);
 
-	const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	const auto &vec = mgr.getCallbacks(playerOnTradeRequest);
 	ASSERT_EQ(vec.size(), std::size_t { 2 });
 	EXPECT_EQ(vec[0], cb2);
 	EXPECT_EQ(vec[1], cb1);
@@ -94,20 +101,22 @@ TEST(EventCallbackManagerTest, RegistrationTieOrder) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto cb1 = std::make_shared<EventCallback>("a", false, &iface);
-	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setType(playerOnTradeRequest);
 	cb1->setPriority(5);
 	cb1->setScriptId(1);
 
 	auto cb2 = std::make_shared<EventCallback>("b", false, &iface);
-	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setType(playerOnTradeRequest);
 	cb2->setPriority(5);
 	cb2->setScriptId(1);
 
 	mgr.registerCallback(cb1);
 	mgr.registerCallback(cb2);
 
-	const auto &vec = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	const auto &vec = mgr.getCallbacks(playerOnTradeRequest);
 	ASSERT_EQ(vec.size(), std::size_t { 2 });
 	EXPECT_EQ(vec[0], cb1);
 	EXPECT_EQ(vec[1], cb2);
@@ -118,18 +127,20 @@ TEST(EventCallbackManagerTest, DispatchShortCircuit) {
 	DummyScriptInterface second(true);
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto cb1 = std::make_shared<EventCallback>("cb1", false, &first);
-	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setType(playerOnTradeRequest);
 	cb1->setScriptId(1);
 
 	auto cb2 = std::make_shared<EventCallback>("cb2", false, &second);
-	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setType(playerOnTradeRequest);
 	cb2->setScriptId(1);
 
 	mgr.registerCallback(cb1);
 	mgr.registerCallback(cb2);
 
-	const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
+	const bool ok = mgr.checkCallback(playerOnTradeRequest);
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(first.calls, 1);
 	EXPECT_EQ(second.calls, 0);
@@ -155,18 +166,20 @@ TEST(EventCallbackManagerTest, DispatchAllOk) {
 	DummyScriptInterface b(true);
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto cb1 = std::make_shared<EventCallback>("cb1", false, &a);
-	cb1->setType(EventCallback_t::playerOnTradeRequest);
+	cb1->setType(playerOnTradeRequest);
 	cb1->setScriptId(1);
 
 	auto cb2 = std::make_shared<EventCallback>("cb2", false, &b);
-	cb2->setType(EventCallback_t::playerOnTradeRequest);
+	cb2->setType(playerOnTradeRequest);
 	cb2->setScriptId(1);
 
 	mgr.registerCallback(cb1);
 	mgr.registerCallback(cb2);
 
-	const bool ok = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
+	const bool ok = mgr.checkCallback(playerOnTradeRequest);
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(a.calls, 1);
 	EXPECT_EQ(b.calls, 1);
@@ -178,23 +191,25 @@ TEST(EventCallbackManagerTest, DispatchSkipsDisabledAndInvalid) {
 	DummyScriptInterface c(true);
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto disabled = std::make_shared<EventCallback>("disabled", false, &a);
-	disabled->setType(EventCallback_t::playerOnTradeRequest);
+	disabled->setType(playerOnTradeRequest);
 	disabled->setScriptId(1);
 	disabled->setEnabled(false);
 
 	auto invalid = std::make_shared<EventCallback>("invalid", false, &b);
-	invalid->setType(EventCallback_t::playerOnTradeRequest);
+	invalid->setType(playerOnTradeRequest);
 
 	auto ok = std::make_shared<EventCallback>("ok", false, &c);
-	ok->setType(EventCallback_t::playerOnTradeRequest);
+	ok->setType(playerOnTradeRequest);
 	ok->setScriptId(1);
 
 	mgr.registerCallback(disabled);
 	mgr.registerCallback(invalid);
 	mgr.registerCallback(ok);
 
-	const bool allOk = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
+	const bool allOk = mgr.checkCallback(playerOnTradeRequest);
 	EXPECT_TRUE(allOk);
 	EXPECT_EQ(a.calls, 0);
 	EXPECT_EQ(b.calls, 0);
@@ -206,23 +221,25 @@ TEST(EventCallbackManagerTest, TypeIsolation) {
 	DummyScriptInterface move(true);
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto cbTrade = std::make_shared<EventCallback>("trade", false, &trade);
-	cbTrade->setType(EventCallback_t::playerOnTradeRequest);
+	cbTrade->setType(playerOnTradeRequest);
 	cbTrade->setScriptId(1);
 
 	auto cbMove = std::make_shared<EventCallback>("move", false, &move);
-	cbMove->setType(EventCallback_t::playerOnMoveCreature);
+	cbMove->setType(playerOnMoveCreature);
 	cbMove->setScriptId(1);
 
 	mgr.registerCallback(cbTrade);
 	mgr.registerCallback(cbMove);
 
-	const bool okTrade = mgr.checkCallback(EventCallback_t::playerOnTradeRequest);
+	const bool okTrade = mgr.checkCallback(playerOnTradeRequest);
 	EXPECT_TRUE(okTrade);
 	EXPECT_EQ(trade.calls, 1);
 	EXPECT_EQ(move.calls, 0);
 
-	const bool okMove = mgr.checkCallback(EventCallback_t::playerOnMoveCreature);
+	const bool okMove = mgr.checkCallback(playerOnMoveCreature);
 	EXPECT_TRUE(okMove);
 	EXPECT_EQ(trade.calls, 1);
 	EXPECT_EQ(move.calls, 1);
@@ -232,18 +249,20 @@ TEST(EventCallbackManagerTest, RegisterDupBlocksWhenSkipFalse) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto a = std::make_shared<EventCallback>("X", false, &iface);
-	a->setType(EventCallback_t::playerOnTradeRequest);
+	a->setType(playerOnTradeRequest);
 	a->setScriptId(1);
 
 	auto b = std::make_shared<EventCallback>("X", false, &iface);
-	b->setType(EventCallback_t::playerOnTradeRequest);
+	b->setType(playerOnTradeRequest);
 	b->setScriptId(1);
 
 	mgr.registerCallback(a);
 	mgr.registerCallback(b);
 
-	const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	const auto &v = mgr.getCallbacks(playerOnTradeRequest);
 	ASSERT_EQ(v.size(), std::size_t { 1 });
 	EXPECT_EQ(v[0], a);
 }
@@ -252,19 +271,21 @@ TEST(EventCallbackManagerTest, RegisterDupAllowedWhenSkipTrue) {
 	DummyScriptInterface iface;
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto a = std::make_shared<EventCallback>("Y", false, &iface);
-	a->setType(EventCallback_t::playerOnTradeRequest);
+	a->setType(playerOnTradeRequest);
 	a->setScriptId(1);
 
 	auto b = std::make_shared<EventCallback>("Y", false, &iface);
-	b->setType(EventCallback_t::playerOnTradeRequest);
+	b->setType(playerOnTradeRequest);
 	b->setScriptId(1);
 	b->setSkipDuplicationCheck(true);
 
 	mgr.registerCallback(a);
 	mgr.registerCallback(b);
 
-	const auto &v = mgr.getCallbacks(EventCallback_t::playerOnTradeRequest);
+	const auto &v = mgr.getCallbacks(playerOnTradeRequest);
 	ASSERT_EQ(v.size(), std::size_t { 2 });
 	EXPECT_EQ(v[0], a);
 	EXPECT_EQ(v[1], b);
@@ -280,19 +301,21 @@ TEST(EventCallbackManagerTest, DamageRoundtripMutationOk) {
 
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto cb1 = std::make_shared<EventCallback>("cb1", false, &a);
-	cb1->setType(EventCallback_t::creatureOnCombat);
+	cb1->setType(creatureOnCombat);
 	cb1->setScriptId(1);
 
 	auto cb2 = std::make_shared<EventCallback>("cb2", false, &b);
-	cb2->setType(EventCallback_t::creatureOnCombat);
+	cb2->setType(creatureOnCombat);
 	cb2->setScriptId(1);
 
 	mgr.registerCallback(cb1);
 	mgr.registerCallback(cb2);
 
 	const bool ok = mgr.checkCallback(
-		EventCallback_t::creatureOnCombat,
+		creatureOnCombat,
 		nullptr, nullptr, std::ref(dmg)
 	);
 
@@ -313,13 +336,15 @@ TEST(EventCallbackManagerTest, DamageShortCircuitMutationStops) {
 
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto a = std::make_shared<EventCallback>("a", false, &stop);
-	a->setType(EventCallback_t::creatureOnCombat);
+	a->setType(creatureOnCombat);
 	a->setPriority(10);
 	a->setScriptId(1);
 
 	auto b = std::make_shared<EventCallback>("b", false, &after);
-	b->setType(EventCallback_t::creatureOnCombat);
+	b->setType(creatureOnCombat);
 	b->setPriority(5);
 	b->setScriptId(1);
 
@@ -327,7 +352,7 @@ TEST(EventCallbackManagerTest, DamageShortCircuitMutationStops) {
 	mgr.registerCallback(b);
 
 	const bool ok = mgr.checkCallback(
-		EventCallback_t::creatureOnCombat,
+		creatureOnCombat,
 		nullptr, nullptr, std::ref(dmg)
 	);
 
@@ -348,13 +373,15 @@ TEST(EventCallbackManagerTest, DupSkipTruePriorityOrder) {
 
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto a = std::make_shared<EventCallback>("same", false, &lo);
-	a->setType(EventCallback_t::creatureOnCombat);
+	a->setType(creatureOnCombat);
 	a->setPriority(5);
 	a->setScriptId(1);
 
 	auto b = std::make_shared<EventCallback>("same", false, &hi);
-	b->setType(EventCallback_t::creatureOnCombat);
+	b->setType(creatureOnCombat);
 	b->setPriority(10);
 	b->setScriptId(1);
 	b->setSkipDuplicationCheck(true);
@@ -362,12 +389,12 @@ TEST(EventCallbackManagerTest, DupSkipTruePriorityOrder) {
 	mgr.registerCallback(a);
 	mgr.registerCallback(b);
 
-	const auto &v = mgr.getCallbacks(EventCallback_t::creatureOnCombat);
+	const auto &v = mgr.getCallbacks(creatureOnCombat);
 	ASSERT_EQ(v.size(), std::size_t { 2 });
 	EXPECT_EQ(v[0], b);
 	EXPECT_EQ(v[1], a);
 
-	const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
+	const bool ok = mgr.checkCallback(creatureOnCombat, nullptr, nullptr, std::ref(dmg));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(hi.calls, 1);
 	EXPECT_EQ(lo.calls, 1);
@@ -379,22 +406,24 @@ TEST(EventCallbackManagerTest, SameNameDifferentTypesOk) {
 	DummyScriptInterface b(true);
 	EventCallbackManager mgr;
 
+	using enum EventCallback_t;
+
 	auto c1 = std::make_shared<EventCallback>("dup", false, &a);
-	c1->setType(EventCallback_t::playerOnTradeRequest);
+	c1->setType(playerOnTradeRequest);
 	c1->setScriptId(1);
 
 	auto c2 = std::make_shared<EventCallback>("dup", false, &b);
-	c2->setType(EventCallback_t::playerOnMoveCreature);
+	c2->setType(playerOnMoveCreature);
 	c2->setScriptId(1);
 
 	mgr.registerCallback(c1);
 	mgr.registerCallback(c2);
 
-	EXPECT_TRUE(mgr.checkCallback(EventCallback_t::playerOnTradeRequest));
+	EXPECT_TRUE(mgr.checkCallback(playerOnTradeRequest));
 	EXPECT_EQ(a.calls, 1);
 	EXPECT_EQ(b.calls, 0);
 
-	EXPECT_TRUE(mgr.checkCallback(EventCallback_t::playerOnMoveCreature));
+	EXPECT_TRUE(mgr.checkCallback(playerOnMoveCreature));
 	EXPECT_EQ(a.calls, 1);
 	EXPECT_EQ(b.calls, 1);
 }
@@ -402,7 +431,8 @@ TEST(EventCallbackManagerTest, SameNameDifferentTypesOk) {
 TEST(EventCallbackManagerTest, NoListenersReturnsTrue) {
 	EventCallbackManager mgr;
 	CombatDamage dmg {};
-	const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
+	using enum EventCallback_t;
+	const bool ok = mgr.checkCallback(creatureOnCombat, nullptr, nullptr, std::ref(dmg));
 	EXPECT_TRUE(ok);
 }
 
@@ -411,7 +441,8 @@ TEST(EventCallbackManagerTest, NoListenersOk) {
 	CombatDamage dmg {};
 	dmg.primary.value = 1;
 	dmg.secondary.value = 2;
-	const bool ok = mgr.checkCallback(EventCallback_t::creatureOnCombat, nullptr, nullptr, std::ref(dmg));
+	using enum EventCallback_t;
+	const bool ok = mgr.checkCallback(creatureOnCombat, nullptr, nullptr, std::ref(dmg));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(dmg.primary.value, 1);
 	EXPECT_EQ(dmg.secondary.value, 2);

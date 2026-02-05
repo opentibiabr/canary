@@ -96,6 +96,14 @@ jobs:
           buildPreset: ${{ matrix.buildtype }}
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
 
+      - name: Import Database Schema
+        if: matrix.buildtype == 'linux-debug'
+        run: |
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          mysql -h 127.0.0.1 -u root -proot otservbr-global < schema.sql
+          mysql -h 127.0.0.1 -u root -proot otservbr-global < docker/data/01-test_account.sql
+          mysql -h 127.0.0.1 -u root -proot otservbr-global < docker/data/02-test_account_players.sql
+
       - name: Run Tests
         if: matrix.buildtype == 'linux-debug'
         env:

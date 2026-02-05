@@ -202,5 +202,5 @@ TEST_F(EventsSchedulerJsonTest, RespectsEventHoursFromJson) {
 
 	expectSingleActiveEvent("Active With Hours");
 	const auto activeEvents = g_eventsScheduler().getActiveEvents();
-	EXPECT_EQ(activeEvents.end(), std::find(activeEvents.begin(), activeEvents.end(), "Expired With Hours"));
+	EXPECT_EQ(activeEvents.end(), std::ranges::find(activeEvents, "Expired With Hours"));
 }

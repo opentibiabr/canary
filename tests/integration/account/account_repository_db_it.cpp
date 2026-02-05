@@ -13,9 +13,10 @@ namespace it_account_repo_db {
 	};
 
 	inline TestIds getTestIds() {
-		static std::atomic<uint32_t> counter { 10000 };
-		// Use a large offset based on time to avoid collision between processes
-		auto base = static_cast<uint32_t>(std::time(nullptr) & 0xFFFF) * 1000;
+		static std::atomic<uint32_t> counter { 1 };
+		// Use high-resolution clock to avoid collision between parallel processes
+		// Mask with 0x3FFFFFFF to ensure positive signed 32-bit integer (max ~1 billion)
+		static const uint32_t base = (static_cast<uint32_t>(std::chrono::high_resolution_clock::now().time_since_epoch().count()) & 0x3FFFFFFF) + 10000000;
 		auto idx = counter.fetch_add(1);
 		uint32_t id = base + idx;
 		return { id, fmt::format("test_{}", id), fmt::format("{}@test.com", id) };

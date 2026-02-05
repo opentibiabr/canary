@@ -56,7 +56,7 @@ namespace test::events_scheduler {
 		const auto activeEvents = g_eventsScheduler().getActiveEvents();
 		ASSERT_EQ(expectedEvents.size(), activeEvents.size());
 		for (const auto &eventName : expectedEvents) {
-			EXPECT_NE(activeEvents.end(), std::find(activeEvents.begin(), activeEvents.end(), eventName));
+			EXPECT_NE(activeEvents.end(), std::ranges::find(activeEvents, eventName));
 		}
 	}
 

@@ -15,6 +15,9 @@ This project adheres to the [Contributor Covenant Code of Conduct](https://githu
 
 ## Getting Started
 
+### 📖 Developer Guide
+For detailed instructions on how to set up your environment, build the project, and understand the codebase, please read our [Developer Guide](docs/DEVELOPER_GUIDE.md).
+
 ### Issues
 
 - **Bug Reports**: If you encounter any bugs or issues while using Canary, please submit them via our [bug report template](https://github.com/opentibiabr/canary/blob/main/.github/ISSUE_TEMPLATE/bug.yaml).

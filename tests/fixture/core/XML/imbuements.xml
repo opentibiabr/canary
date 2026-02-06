@@ -1,0 +1,9 @@
+<imbuements>
+	<base id="1" name="Basic" price="0" protectionPrice="0" percent="42" removecost="0" duration="3600" />
+	<category id="15" name="Skillboost (Distance Fighting)" agressive="1" />
+
+	<imbuement name="Precision" base="1" category="15" iconid="1" premium="0" storage="0">
+		<attribute key="description" value="Boosts distance." />
+		<attribute key="effect" type="skill" value="distance" bonus="3" />
+	</imbuement>
+</imbuements>

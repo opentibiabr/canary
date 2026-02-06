@@ -44,6 +44,7 @@
 #include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
 #include "io/ioprey.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
@@ -940,63 +941,6 @@ void Player::updateInventoryWeight() {
 	}
 }
 
-void Player::updateInventoryImbuement() {
-	// Get the tile the player is currently on
-	const auto &playerTile = getTile();
-	// Check if the player is in a protection zone
-	const bool &isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
-	// Check if the player is in fight mode
-	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
-	bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
-
-	// Iterate through all items in the player's inventory
-	for (const auto &[slodNumber, item] : getAllSlotItems()) {
-		// Iterate through all imbuement slots on the item
-		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-			ImbuementInfo imbuementInfo;
-			// Get the imbuement information for the current slot
-			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-				// If no imbuement is found, continue to the next slot
-				continue;
-			}
-
-			// Imbuement from imbuementInfo, this variable reduces code complexity
-			const auto imbuement = imbuementInfo.imbuement;
-			// Get the category of the imbuement
-			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
-			// Parent of the imbued item
-			const auto &parent = item->getParent();
-			const bool &isInBackpack = parent && parent->getContainer();
-			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
-			if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
-				continue;
-			}
-			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
-			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != getPlayer()) {
-				continue;
-			}
-
-			// If the imbuement's duration is 0, remove its stats and continue to the next slot
-			if (imbuementInfo.duration == 0) {
-				removeItemImbuementStats(imbuement);
-				updateImbuementTrackerStats();
-				continue;
-			}
-
-			g_logger().trace("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
-			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
-			const uint32_t duration = std::max<uint32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
-			// Update the imbuement's duration in the item
-			item->decayImbuementTime(slotid, imbuement->getID(), duration);
-
-			if (duration == 0) {
-				removeItemImbuementStats(imbuement);
-				updateImbuementTrackerStats();
-			}
-		}
-	}
-}
-
 phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> Player::getAllSlotItems() const {
 	phmap::flat_hash_map<uint8_t, std::shared_ptr<Item>> itemMap;
 	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
@@ -1632,9 +1576,9 @@ bool Player::updateKillTracker(const std::shared_ptr<Container> &corpse, const s
 	return false;
 }
 
-void Player::updatePartyTrackerAnalyzer() const {
+void Player::updatePartyTrackerAnalyzer(bool force) const {
 	if (client && m_party) {
-		client->updatePartyTrackerAnalyzer(m_party);
+		client->updatePartyTrackerAnalyzer(m_party, force);
 	}
 }
 
@@ -2551,6 +2495,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 			addItemImbuementStats(imbuement);
 		}
 		item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
+		g_imbuementDecay().startImbuementDecay(item);
 	}
 
 	openImbuementWindow(item);
@@ -5959,6 +5904,7 @@ void Player::onEndCondition(ConditionType_t type) {
 		onIdleStatus();
 		pzLocked = false;
 		clearAttacked();
+		sendOpenPvpSituations();
 
 		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
 			setSkull(SKULL_NONE);
@@ -6055,12 +6001,14 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 	}
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onAttacked() {
 	Creature::onAttacked();
 
 	addInFightTicks();
+	sendOpenPvpSituations();
 }
 
 void Player::onIdleStatus() {
@@ -6079,7 +6027,9 @@ void Player::onPlacedCreature() {
 
 	this->onChangeZone(this->getZoneType());
 
+	refreshSkullTicksFromLastKill();
 	sendUnjustifiedPoints();
+	sendOpenPvpSituations();
 
 	const auto activeEvents = g_eventsScheduler().getActiveEvents();
 	if (!activeEvents.empty()) {
@@ -6635,6 +6585,52 @@ void Player::setSkullTicks(int64_t ticks) {
 	skullTicks = ticks;
 }
 
+void Player::refreshSkullTicksFromLastKill() {
+	const auto info = computeSkullTimeFromLastKill();
+	setSkullTicks(info.remainingSeconds);
+}
+
+void Player::updateLastKillTimeCache(time_t killTime) {
+	if (killTime <= 0) {
+		return;
+	}
+
+	m_lastKillTimeCache = std::max<int64_t>(m_lastKillTimeCache, killTime);
+	m_lastKillTimeCached = true;
+}
+
+Player::SkullTimeInfo Player::computeSkullTimeFromLastKill() const {
+	SkullTimeInfo info;
+	int64_t ticks = skullTicks;
+
+	if (ticks == 0 && (getSkull() == SKULL_RED || getSkull() == SKULL_BLACK)) {
+		int64_t lastKillTime = 0;
+		if (m_lastKillTimeCached) {
+			lastKillTime = m_lastKillTimeCache;
+		} else {
+			for (const auto &kill : unjustifiedKills) {
+				lastKillTime = std::max<int64_t>(lastKillTime, kill.time);
+			}
+
+			m_lastKillTimeCache = lastKillTime;
+			m_lastKillTimeCached = true;
+		}
+
+		if (lastKillTime > 0) {
+			const int64_t now = getTimeNow();
+			const int64_t duration = static_cast<int64_t>(g_configManager().getNumber(getSkull() == SKULL_RED ? RED_SKULL_DURATION : BLACK_SKULL_DURATION)) * 24 * 60 * 60;
+			ticks = std::max<int64_t>(0, duration - (now - lastKillTime));
+		}
+	}
+
+	info.remainingSeconds = ticks;
+	if (ticks > 0) {
+		info.remainingDays = static_cast<uint8_t>(std::min(std::ceil(static_cast<double>(ticks) / (24 * 60 * 60)), 255.0));
+	}
+
+	return info;
+}
+
 bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
@@ -6670,7 +6666,9 @@ void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
 
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
-	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	const auto killTime = time(nullptr);
+	unjustifiedKills.emplace_back(attacked->getGUID(), killTime, true);
+	updateLastKillTimeCache(killTime);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
@@ -6730,14 +6728,12 @@ void Player::checkSkullTicks(int64_t ticks) {
 }
 
 void Player::updateBaseSpeed() {
-	if (baseSpeed >= PLAYER_MAX_SPEED) {
-		return;
-	}
-
+	const uint16_t maxSpeed = hasFlag(PlayerFlags_t::SetMaxSpeed) ? PLAYER_MAX_STAFF_SPEED : PLAYER_MAX_SPEED;
 	if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
-		baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
+		const uint32_t computedSpeed = vocation->getBaseSpeed() + (level - 1);
+		baseSpeed = static_cast<uint16_t>(std::min<uint32_t>(computedSpeed, maxSpeed));
 	} else {
-		baseSpeed = PLAYER_MAX_SPEED;
+		baseSpeed = maxSpeed;
 	}
 }
 
@@ -7286,20 +7282,29 @@ void Player::sendUnjustifiedPoints() const {
 			}
 		}
 
-		const bool isRed = getSkull() == SKULL_RED;
+		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
-		auto dayMax = ((isRed ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
-		auto weekMax = ((isRed ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
-		auto monthMax = ((isRed ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
+		const double dayMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
+		const double weekMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));
+		const double monthMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(MONTH_KILLS_TO_RED));
 
-		const uint8_t dayProgress = std::min(std::round(dayKills / dayMax * 100), 100.0);
-		const uint8_t weekProgress = std::min(std::round(weekKills / weekMax * 100), 100.0);
-		const uint8_t monthProgress = std::min(std::round(monthKills / monthMax * 100), 100.0);
-		uint8_t skullDuration = 0;
-		if (skullTicks != 0) {
-			skullDuration = std::floor<uint8_t>(skullTicks / (24 * 60 * 60 * 1000));
-		}
-		client->sendUnjustifiedPoints(dayProgress, std::max(dayMax - dayKills, 0.0), weekProgress, std::max(weekMax - weekKills, 0.0), monthProgress, std::max(monthMax - monthKills, 0.0), skullDuration);
+		const double dayProgressRaw = dayMax > 0 ? std::round(dayKills / dayMax * 100.0) : 0.0;
+		const double weekProgressRaw = weekMax > 0 ? std::round(weekKills / weekMax * 100.0) : 0.0;
+		const double monthProgressRaw = monthMax > 0 ? std::round(monthKills / monthMax * 100.0) : 0.0;
+		const uint8_t dayProgress = static_cast<uint8_t>(std::min(dayProgressRaw, 100.0));
+		const uint8_t weekProgress = static_cast<uint8_t>(std::min(weekProgressRaw, 100.0));
+		const uint8_t monthProgress = static_cast<uint8_t>(std::min(monthProgressRaw, 100.0));
+		const uint8_t dayLeft = static_cast<uint8_t>(std::min(dayMax > 0 ? std::max(dayMax - dayKills, 0.0) : 0.0, 255.0));
+		const uint8_t weekLeft = static_cast<uint8_t>(std::min(weekMax > 0 ? std::max(weekMax - weekKills, 0.0) : 0.0, 255.0));
+		const uint8_t monthLeft = static_cast<uint8_t>(std::min(monthMax > 0 ? std::max(monthMax - monthKills, 0.0) : 0.0, 255.0));
+		const auto info = computeSkullTimeFromLastKill();
+		client->sendUnjustifiedPoints(dayProgress, dayLeft, weekProgress, weekLeft, monthProgress, monthLeft, info.remainingDays);
+	}
+}
+
+void Player::sendOpenPvpSituations() {
+	if (client) {
+		client->sendOpenPvpSituations(static_cast<uint8_t>(std::min(attackedSet.size(), static_cast<size_t>(std::numeric_limits<uint8_t>::max()))));
 	}
 }
 
@@ -10508,6 +10513,18 @@ void Player::sendSingleSoundEffect(const Position &pos, SoundEffect_t id, Source
 void Player::sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) const {
 	if (client) {
 		client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
+	}
+}
+
+void Player::sendAmbientSoundEffect(const SoundAmbientEffect_t id) const {
+	if (client) {
+		client->sendAmbientSoundEffect(id);
+	}
+}
+
+void Player::sendMusicSoundEffect(const SoundMusicEffect_t id) const {
+	if (client) {
+		client->sendMusicSoundEffect(id);
 	}
 }
 

@@ -1,0 +1,77 @@
+name: Reusable Fast Checks
+
+on:
+  workflow_call:
+
+jobs:
+  run-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1.0.3
+
+      - name: Setup Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check cppcheck libxml2-utils python3-pip
+
+      - name: Run clang format lint
+        uses: DoozyX/clang-format-lint-action@v0.17
+        with:
+          source: "src tests"
+          exclude: "src/protobuf"
+          extensions: "cpp,hpp,h"
+          clangFormatVersion: 17
+          inplace: true
+
+      - uses: JohnnyMorganz/stylua-action@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: .
+
+      - name: Run cmake-format
+        run: |
+          pip install cmakelang PyYAML
+          find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
+
+      - name: Commit formatting changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Actions
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: "style: auto-formatting (clang/stylua/cmake)"
+          add: |
+            src
+            tests
+            data
+            CMakeLists.txt
+            **/*.cmake
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Analysis (Reviewdog)
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          reviewdog -reporter=github-pr-check -runners=luac
+          reviewdog -reporter=github-pr-check -runners=luacheck
+          reviewdog -reporter=github-pr-check -runners=xmllint
+          reviewdog -reporter=github-pr-check -runners=cppcheck
+
+      - name: Run yamllint
+        uses: reviewdog/action-yamllint@v1.6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check

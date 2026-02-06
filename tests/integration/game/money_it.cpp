@@ -52,17 +52,38 @@ namespace {
 		}
 	};
 
+	class ScopeExit {
+	public:
+		explicit ScopeExit(std::function<void()> fn) :
+			fn_(std::move(fn)) { }
+
+		ScopeExit(const ScopeExit &) = delete;
+		ScopeExit &operator=(const ScopeExit &) = delete;
+
+		ScopeExit(ScopeExit &&) noexcept = default;
+		ScopeExit &operator=(ScopeExit &&) noexcept = default;
+
+		~ScopeExit() {
+			if (fn_) {
+				fn_();
+			}
+		}
+
+	private:
+		std::function<void()> fn_;
+	};
+
 	struct ItemTypeScope {
 		ItemTypeScope() {
 			auto &items = Item::items.getItems();
-			originalSize_ = items.size();
+			const size_t originalSize = items.size();
 
 			containerSmallId_ = static_cast<uint16_t>(items.size() + 1);
 			containerLargeId_ = static_cast<uint16_t>(items.size() + 2);
 
-			originalGold_ = stashIfDefault(ITEM_GOLD_COIN, originalSize_);
-			originalPlatinum_ = stashIfDefault(ITEM_PLATINUM_COIN, originalSize_);
-			originalCrystal_ = stashIfDefault(ITEM_CRYSTAL_COIN, originalSize_);
+			auto originalGold = stashIfDefault(ITEM_GOLD_COIN, originalSize);
+			auto originalPlatinum = stashIfDefault(ITEM_PLATINUM_COIN, originalSize);
+			auto originalCrystal = stashIfDefault(ITEM_CRYSTAL_COIN, originalSize);
 
 			const uint16_t maxId = std::max<uint16_t>(
 				containerLargeId_,
@@ -78,32 +99,41 @@ namespace {
 
 			setupContainer(containerSmallId_, 1);
 			setupContainer(containerLargeId_, 2);
-		}
 
-		~ItemTypeScope() noexcept {
-			restoreIfStashed(ITEM_GOLD_COIN, originalGold_);
-			restoreIfStashed(ITEM_PLATINUM_COIN, originalPlatinum_);
-			restoreIfStashed(ITEM_CRYSTAL_COIN, originalCrystal_);
+			CleanupState cleanupState {
+				originalSize,
+				std::move(originalGold),
+				std::move(originalPlatinum),
+				std::move(originalCrystal),
+			};
+			cleanup_.emplace([state = std::move(cleanupState)]() mutable {
+				restoreIfStashed(ITEM_GOLD_COIN, state.originalGold);
+				restoreIfStashed(ITEM_PLATINUM_COIN, state.originalPlatinum);
+				restoreIfStashed(ITEM_CRYSTAL_COIN, state.originalCrystal);
 
-			auto &items = Item::items.getItems();
-			if (items.size() > originalSize_) {
-				try {
-					items.resize(originalSize_);
-				} catch (const std::exception &) {
-					// If resize fails during cleanup, leave the vector state as is.
+				auto &items = Item::items.getItems();
+				if (items.size() > state.originalSize) {
+					items.resize(state.originalSize);
 				}
-			}
+			});
 		}
 
-		uint16_t containerSmallId() const {
+		[[nodiscard]] uint16_t containerSmallId() const {
 			return containerSmallId_;
 		}
 
-		uint16_t containerLargeId() const {
+		[[nodiscard]] uint16_t containerLargeId() const {
 			return containerLargeId_;
 		}
 
 	private:
+		struct CleanupState {
+			size_t originalSize = 0;
+			std::optional<ItemType> originalGold;
+			std::optional<ItemType> originalPlatinum;
+			std::optional<ItemType> originalCrystal;
+		};
+
 		static void setupCoin(uint16_t id) {
 			auto &itemType = Item::items.getItemType(id);
 			if (itemType.id != 0) {
@@ -142,12 +172,9 @@ namespace {
 			Item::items.getItemType(id) = std::move(*stash);
 		}
 
-		size_t originalSize_ = 0;
 		uint16_t containerSmallId_ = 0;
 		uint16_t containerLargeId_ = 0;
-		std::optional<ItemType> originalGold_ {};
-		std::optional<ItemType> originalPlatinum_ {};
-		std::optional<ItemType> originalCrystal_ {};
+		std::optional<ScopeExit> cleanup_ {};
 	};
 
 } // namespace

@@ -580,7 +580,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 				);
 				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, msg);
 			} else {
-				uint32_t flags = FLAG_DROPONMAP;
+				uint32_t flags = 0;
 				auto [addedMoney, returnValue] = g_game().addMoney(player, totalCost, flags);
 				deliveredAmount = addedMoney;
 

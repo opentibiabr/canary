@@ -9,117 +9,117 @@
 
 namespace {
 
-class MoneyIntegrationTest : public ::testing::Test {
-protected:
-	void SetUp() override {
-		previousPath_ = std::filesystem::current_path();
-		repoRoot_ = detectRepoRoot(previousPath_);
-		ASSERT_FALSE(repoRoot_.empty()) << "Could not locate repository root";
-		std::filesystem::current_path(repoRoot_);
+	class MoneyIntegrationTest : public ::testing::Test {
+	protected:
+		void SetUp() override {
+			previousPath_ = std::filesystem::current_path();
+			repoRoot_ = detectRepoRoot(previousPath_);
+			ASSERT_FALSE(repoRoot_.empty()) << "Could not locate repository root";
+			std::filesystem::current_path(repoRoot_);
 
-		previousConfigFile_ = g_configManager().getConfigFileLua();
-		g_configManager().setConfigFileLua("tests/fixture/config/imbuements_test.lua");
-		ASSERT_TRUE(g_configManager().reload());
-	}
+			previousConfigFile_ = g_configManager().getConfigFileLua();
+			g_configManager().setConfigFileLua("tests/fixture/config/imbuements_test.lua");
+			ASSERT_TRUE(g_configManager().reload());
+		}
 
-	void TearDown() override {
-		g_configManager().setConfigFileLua(previousConfigFile_);
-		(void)g_configManager().reload();
-		std::filesystem::current_path(previousPath_);
-	}
+		void TearDown() override {
+			g_configManager().setConfigFileLua(previousConfigFile_);
+			(void)g_configManager().reload();
+			std::filesystem::current_path(previousPath_);
+		}
 
-private:
-	std::filesystem::path repoRoot_ {};
-	std::filesystem::path previousPath_ {};
-	std::string previousConfigFile_ {};
+	private:
+		std::filesystem::path repoRoot_ {};
+		std::filesystem::path previousPath_ {};
+		std::string previousConfigFile_ {};
 
-	[[nodiscard]] static std::filesystem::path detectRepoRoot(std::filesystem::path start) {
-		const auto configPath = std::filesystem::path("tests/fixture/config/imbuements_test.lua");
-		while (!start.empty()) {
-			std::error_code configEc;
-			const auto configExists = std::filesystem::exists(start / configPath, configEc);
-			if (!configEc && configExists) {
-				return start;
+		[[nodiscard]] static std::filesystem::path detectRepoRoot(std::filesystem::path start) {
+			const auto configPath = std::filesystem::path("tests/fixture/config/imbuements_test.lua");
+			while (!start.empty()) {
+				std::error_code configEc;
+				const auto configExists = std::filesystem::exists(start / configPath, configEc);
+				if (!configEc && configExists) {
+					return start;
+				}
+
+				if (!start.has_parent_path() || start.parent_path() == start) {
+					break;
+				}
+				start = start.parent_path();
 			}
 
-			if (!start.has_parent_path() || start.parent_path() == start) {
-				break;
+			return {};
+		}
+	};
+
+	struct ItemTypeScope {
+		ItemTypeScope() {
+			auto &items = Item::items.getItems();
+			originalSize_ = items.size();
+
+			containerSmallId_ = static_cast<uint16_t>(items.size() + 1);
+			containerLargeId_ = static_cast<uint16_t>(items.size() + 2);
+
+			const uint16_t maxId = std::max<uint16_t>(
+				containerLargeId_,
+				std::max<uint16_t>(ITEM_GOLD_COIN, std::max<uint16_t>(ITEM_PLATINUM_COIN, ITEM_CRYSTAL_COIN))
+			);
+			if (items.size() <= maxId) {
+				items.resize(static_cast<size_t>(maxId) + 1);
 			}
-			start = start.parent_path();
+
+			setupCoin(ITEM_GOLD_COIN);
+			setupCoin(ITEM_PLATINUM_COIN);
+			setupCoin(ITEM_CRYSTAL_COIN);
+
+			setupContainer(containerSmallId_, 1);
+			setupContainer(containerLargeId_, 2);
 		}
 
-		return {};
-	}
-};
-
-struct ItemTypeScope {
-	ItemTypeScope() {
-		auto &items = Item::items.getItems();
-		originalSize_ = items.size();
-
-		containerSmallId_ = static_cast<uint16_t>(items.size() + 1);
-		containerLargeId_ = static_cast<uint16_t>(items.size() + 2);
-
-		const uint16_t maxId = std::max<uint16_t>(
-			containerLargeId_,
-			std::max<uint16_t>(ITEM_GOLD_COIN, std::max<uint16_t>(ITEM_PLATINUM_COIN, ITEM_CRYSTAL_COIN))
-		);
-		if (items.size() <= maxId) {
-			items.resize(static_cast<size_t>(maxId) + 1);
-		}
-
-		setupCoin(ITEM_GOLD_COIN);
-		setupCoin(ITEM_PLATINUM_COIN);
-		setupCoin(ITEM_CRYSTAL_COIN);
-
-		setupContainer(containerSmallId_, 1);
-		setupContainer(containerLargeId_, 2);
-	}
-
-	~ItemTypeScope() noexcept {
-		auto &items = Item::items.getItems();
-		if (items.size() > originalSize_) {
-			try {
-				items.resize(originalSize_);
-			} catch (const std::exception &) {
-				// If resize fails during cleanup, leave the vector state as is.
+		~ItemTypeScope() noexcept {
+			auto &items = Item::items.getItems();
+			if (items.size() > originalSize_) {
+				try {
+					items.resize(originalSize_);
+				} catch (const std::exception &) {
+					// If resize fails during cleanup, leave the vector state as is.
+				}
 			}
 		}
-	}
 
-	uint16_t containerSmallId() const {
-		return containerSmallId_;
-	}
-
-	uint16_t containerLargeId() const {
-		return containerLargeId_;
-	}
-
-private:
-	static void setupCoin(uint16_t id) {
-		auto &itemType = Item::items.getItemType(id);
-		if (itemType.id != 0) {
-			return;
+		uint16_t containerSmallId() const {
+			return containerSmallId_;
 		}
-		itemType = ItemType {};
-		itemType.id = id;
-		itemType.stackable = true;
-		itemType.pickupable = true;
-	}
 
-	static void setupContainer(uint16_t id, uint16_t capacity) {
-		auto &itemType = Item::items.getItemType(id);
-		itemType = ItemType {};
-		itemType.id = id;
-		itemType.group = ITEM_GROUP_CONTAINER;
-		itemType.maxItems = capacity;
-		itemType.pickupable = true;
-	}
+		uint16_t containerLargeId() const {
+			return containerLargeId_;
+		}
 
-	size_t originalSize_ = 0;
-	uint16_t containerSmallId_ = 0;
-	uint16_t containerLargeId_ = 0;
-};
+	private:
+		static void setupCoin(uint16_t id) {
+			auto &itemType = Item::items.getItemType(id);
+			if (itemType.id != 0) {
+				return;
+			}
+			itemType = ItemType {};
+			itemType.id = id;
+			itemType.stackable = true;
+			itemType.pickupable = true;
+		}
+
+		static void setupContainer(uint16_t id, uint16_t capacity) {
+			auto &itemType = Item::items.getItemType(id);
+			itemType = ItemType {};
+			itemType.id = id;
+			itemType.group = ITEM_GROUP_CONTAINER;
+			itemType.maxItems = capacity;
+			itemType.pickupable = true;
+		}
+
+		size_t originalSize_ = 0;
+		uint16_t containerSmallId_ = 0;
+		uint16_t containerLargeId_ = 0;
+	};
 
 } // namespace
 

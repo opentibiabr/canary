@@ -512,6 +512,8 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		return;
 	}
 
+	const bool needsRefundOnFailure = (getCurrency() != ITEM_GOLD_COIN);
+	std::vector<std::shared_ptr<Item>> removedItemsForRefund;
 	auto toRemove = amount;
 	for (const auto &item : player->getInventoryItemsFromId(itemId, ignore)) {
 		if (!item || item->getTier() > 0 || item->hasImbuements()) {
@@ -535,9 +537,20 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 
 		auto removeCount = std::min<uint16_t>(toRemove, item->getItemCount());
 
+		std::shared_ptr<Item> refundItem = nullptr;
+		if (needsRefundOnFailure) {
+			refundItem = item->clone();
+			if (refundItem && item->isStackable() && removeCount < refundItem->getItemCount()) {
+				refundItem->setItemCount(static_cast<uint8_t>(removeCount));
+			}
+		}
+
 		if (g_game().internalRemoveItem(item, removeCount) != RETURNVALUE_NOERROR) {
 			g_logger().error("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
 			continue;
+		}
+		if (refundItem) {
+			removedItemsForRefund.push_back(refundItem);
 		}
 
 		toRemove -= removeCount;
@@ -559,8 +572,12 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 			uint64_t deliveredAmount = 0;
 			if (g_configManager().getBoolean(AUTOBANK)) {
 				player->setBankBalance(player->getBankBalance() + totalCost);
+				player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
 				deliveredAmount = totalCost;
-				const std::string msg = fmt::format("Transferred {} gold coins to your bank.", totalCost);
+				const std::string msg = fmt::format(
+					"Sold {}x {} for {} gold, which was sent to your bank.",
+					totalRemoved, itemType.name, totalCost
+				);
 				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, msg);
 			} else {
 				uint32_t flags = FLAG_DROPONMAP;
@@ -588,6 +605,21 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 				auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
 				if (returnValue != RETURNVALUE_NOERROR) {
 					g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+					if (!removedItemsForRefund.empty()) {
+						for (const auto &refundItem : removedItemsForRefund) {
+							const auto refundRet = g_game().internalPlayerAddItem(player, refundItem, true);
+							if (refundRet != RETURNVALUE_NOERROR) {
+								g_logger().error(
+									"[Npc::onPlayerSellItem] - Failed to refund item {} to player {} after currency delivery failure (error: {}).",
+									refundItem->getID(), player->getName(), getReturnMessage(refundRet)
+								);
+							}
+						}
+						player->sendTextMessage(
+							MESSAGE_EVENT_ADVANCE,
+							"Could not deliver the reward items. Your sold items were returned to you."
+						);
+					}
 					return;
 				}
 			}

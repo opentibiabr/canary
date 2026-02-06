@@ -2475,7 +2475,7 @@ int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
 	const uint64_t money = Lua::getNumber<uint64_t>(L, 2);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		const auto flags = static_cast<uint32_t>(Lua::getNumber<int32_t>(L, 3, 0));
+		const auto flags = Lua::getNumber<uint32_t>(L, 3, 0);
 		auto [addedMoney, returnValue] = g_game().addMoney(player, money, flags);
 		Lua::pushBoolean(L, addedMoney == money);
 		lua_pushinteger(L, addedMoney);

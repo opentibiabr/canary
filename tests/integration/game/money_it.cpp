@@ -1,3 +1,10 @@
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <exception>
+#include <filesystem>
+#include <optional>
+
 #include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/grouping/groups.hpp"
@@ -60,6 +67,10 @@ namespace {
 			containerSmallId_ = static_cast<uint16_t>(items.size() + 1);
 			containerLargeId_ = static_cast<uint16_t>(items.size() + 2);
 
+			originalGold_ = stashIfDefault(ITEM_GOLD_COIN, originalSize_);
+			originalPlatinum_ = stashIfDefault(ITEM_PLATINUM_COIN, originalSize_);
+			originalCrystal_ = stashIfDefault(ITEM_CRYSTAL_COIN, originalSize_);
+
 			const uint16_t maxId = std::max<uint16_t>(
 				containerLargeId_,
 				std::max<uint16_t>(ITEM_GOLD_COIN, std::max<uint16_t>(ITEM_PLATINUM_COIN, ITEM_CRYSTAL_COIN))
@@ -77,6 +88,10 @@ namespace {
 		}
 
 		~ItemTypeScope() noexcept {
+			restoreIfStashed(ITEM_GOLD_COIN, originalGold_);
+			restoreIfStashed(ITEM_PLATINUM_COIN, originalPlatinum_);
+			restoreIfStashed(ITEM_CRYSTAL_COIN, originalCrystal_);
+
 			auto &items = Item::items.getItems();
 			if (items.size() > originalSize_) {
 				try {
@@ -116,9 +131,30 @@ namespace {
 			itemType.pickupable = true;
 		}
 
+		static std::optional<ItemType> stashIfDefault(uint16_t id, size_t originalSize) {
+			if (id >= originalSize) {
+				return std::nullopt;
+			}
+			auto &itemType = Item::items.getItemType(id);
+			if (itemType.id != 0) {
+				return std::nullopt;
+			}
+			return std::optional<ItemType>(std::move(itemType));
+		}
+
+		static void restoreIfStashed(uint16_t id, std::optional<ItemType> &stash) {
+			if (!stash) {
+				return;
+			}
+			Item::items.getItemType(id) = std::move(*stash);
+		}
+
 		size_t originalSize_ = 0;
 		uint16_t containerSmallId_ = 0;
 		uint16_t containerLargeId_ = 0;
+		std::optional<ItemType> originalGold_ {};
+		std::optional<ItemType> originalPlatinum_ {};
+		std::optional<ItemType> originalCrystal_ {};
 	};
 
 } // namespace

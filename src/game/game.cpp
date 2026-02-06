@@ -2769,10 +2769,18 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 		player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
 		uint64_t newBalance = player->getBankBalance();
 
-		g_logger().info(
-			"Game::removeMoney: debited {} gold from player {}'s bank. Old balance: {}, new balance: {}.",
-			money, player->getName(), oldBalance, newBalance
-		);
+		const uint64_t expectedBalance = oldBalance - money;
+		if (newBalance != expectedBalance) {
+			g_logger().error(
+				"Game::removeMoney: inconsistent bank debit for player {}. Old balance: {}, expected: {}, got: {}.",
+				player->getName(), oldBalance, expectedBalance, newBalance
+			);
+		} else {
+			g_logger().debug(
+				"Game::removeMoney: debited {} gold from player {}'s bank. Old balance: {}, new balance: {}.",
+				money, player->getName(), oldBalance, newBalance
+			);
+		}
 	}
 
 	return true;

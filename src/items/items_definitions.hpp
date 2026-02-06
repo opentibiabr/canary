@@ -469,14 +469,14 @@ enum ZoneType_t : uint8_t {
 };
 
 enum CylinderFlags_t {
-	FLAG_NOLIMIT = 1 << 0, // Bypass limits like capacity/container limits, blocking items/creatures etc.
-	FLAG_IGNOREBLOCKITEM = 1 << 1, // Bypass movable blocking item checks
-	FLAG_IGNOREBLOCKCREATURE = 1 << 2, // Bypass creature checks
-	FLAG_CHILDISOWNER = 1 << 3, // Used by containers to query capacity of the carrier (player)
-	FLAG_PATHFINDING = 1 << 4, // An additional check is done for floor changing/teleport items
-	FLAG_IGNOREFIELDDAMAGE = 1 << 5, // Bypass field damage checks
-	FLAG_IGNORENOTMOVABLE = 1 << 6, // Bypass check for mobility
-	FLAG_IGNOREAUTOSTACK = 1 << 7, // queryDestination will not try to stack items together
+	FLAG_NOLIMIT = 1u << 0, // Bypass limits like capacity/container limits, blocking items/creatures etc.
+	FLAG_IGNOREBLOCKITEM = 1u << 1, // Bypass movable blocking item checks
+	FLAG_IGNOREBLOCKCREATURE = 1u << 2, // Bypass creature checks
+	FLAG_CHILDISOWNER = 1u << 3, // Used by containers to query capacity of the carrier (player)
+	FLAG_PATHFINDING = 1u << 4, // An additional check is done for floor changing/teleport items
+	FLAG_IGNOREFIELDDAMAGE = 1u << 5, // Bypass field damage checks
+	FLAG_IGNORENOTMOVABLE = 1u << 6, // Bypass check for mobility
+	FLAG_IGNOREAUTOSTACK = 1u << 7, // queryDestination will not try to stack items together
 	FLAG_DROPONMAP = 1u << 8, // Drop item on map
 };
 

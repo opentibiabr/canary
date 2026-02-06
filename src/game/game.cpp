@@ -2803,9 +2803,9 @@ std::pair<uint64_t, ReturnValue> Game::addMoney(const std::shared_ptr<Cylinder> 
 	ReturnValue returnValue = RETURNVALUE_NOERROR;
 	uint64_t totalAdded = 0;
 
-	auto addCoins = [&](uint16_t itemId, uint32_t count, uint64_t unitValue) {
+	auto addCoins = [&](uint16_t itemId, uint64_t count, uint64_t unitValue) {
 		while (count > 0) {
-			const uint16_t createCount = std::min<uint32_t>(100, count);
+			const uint16_t createCount = static_cast<uint16_t>(std::min<uint64_t>(100, count));
 			const auto &remaindItem = Item::CreateItem(itemId, createCount);
 			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
 			if (ret != RETURNVALUE_NOERROR) {
@@ -2825,11 +2825,11 @@ std::pair<uint64_t, ReturnValue> Game::addMoney(const std::shared_ptr<Cylinder> 
 		}
 	};
 
-	uint32_t crystalCoins = money / 10000;
+	uint64_t crystalCoins = money / 10000;
 	money -= crystalCoins * 10000;
 	addCoins(ITEM_CRYSTAL_COIN, crystalCoins, 10000);
 
-	uint16_t platinumCoins = money / 100;
+	uint64_t platinumCoins = money / 100;
 	money -= platinumCoins * 100;
 	addCoins(ITEM_PLATINUM_COIN, platinumCoins, 100);
 

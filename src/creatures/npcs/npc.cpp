@@ -602,42 +602,78 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 			g_metrics().addCounter("balance_increase", deliveredAmount, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
 			const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
-			if (newItem) {
-				auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
-				if (returnValue != RETURNVALUE_NOERROR) {
-					g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
-					if (!removedItemsForRefund.empty()) {
-						bool allRefunded = true;
-						for (const auto &refundItem : removedItemsForRefund) {
-							auto refundRet = g_game().internalPlayerAddItem(player, refundItem, true);
-							if (refundRet != RETURNVALUE_NOERROR) {
-								ReturnValue fallbackRet = RETURNVALUE_NOTPOSSIBLE;
-								if (const auto &inbox = player->getInbox()) {
-									fallbackRet = g_game().internalAddItem(
-										std::static_pointer_cast<Cylinder>(inbox),
-										refundItem,
-										INDEX_WHEREEVER,
-										FLAG_NOLIMIT
-									);
-								}
-								if (fallbackRet != RETURNVALUE_NOERROR) {
-									allRefunded = false;
-									g_logger().error(
-										"[Npc::onPlayerSellItem] - Failed to refund item {} to player {} after currency delivery failure (primary: {}, fallback: {}).",
-										refundItem->getID(), player->getName(), getReturnMessage(refundRet), getReturnMessage(fallbackRet)
-									);
-								}
+			if (!newItem) {
+				g_logger().error(
+					"[Npc::onPlayerSellItem] - Failed to create custom currency item {} for player {} on npc {}.",
+					getCurrency(), player->getName(), getName()
+				);
+				if (!removedItemsForRefund.empty()) {
+					bool allRefunded = true;
+					for (const auto &refundItem : removedItemsForRefund) {
+						auto refundRet = g_game().internalPlayerAddItem(player, refundItem, true);
+						if (refundRet != RETURNVALUE_NOERROR) {
+							ReturnValue fallbackRet = RETURNVALUE_NOTPOSSIBLE;
+							if (const auto &inbox = player->getInbox()) {
+								fallbackRet = g_game().internalAddItem(
+									std::static_pointer_cast<Cylinder>(inbox),
+									refundItem,
+									INDEX_WHEREEVER,
+									FLAG_NOLIMIT
+								);
+							}
+							if (fallbackRet != RETURNVALUE_NOERROR) {
+								allRefunded = false;
+								g_logger().error(
+									"[Npc::onPlayerSellItem] - Failed to refund item {} to player {} after currency creation failure (primary: {}, fallback: {}).",
+									refundItem->getID(), player->getName(), getReturnMessage(refundRet), getReturnMessage(fallbackRet)
+								);
 							}
 						}
-						player->sendTextMessage(
-							MESSAGE_EVENT_ADVANCE,
-							allRefunded
-								? "Could not deliver the reward items. Your sold items were returned to you."
-								: "Could not deliver the reward items. Some sold items could not be returned; please contact staff."
-						);
 					}
-					return;
+					player->sendTextMessage(
+						MESSAGE_EVENT_ADVANCE,
+						allRefunded
+							? "Could not deliver the reward items. Your sold items were returned to you."
+							: "Could not deliver the reward items. Some sold items could not be returned; please contact staff."
+					);
 				}
+				return;
+			}
+
+			auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
+			if (returnValue != RETURNVALUE_NOERROR) {
+				g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+				if (!removedItemsForRefund.empty()) {
+					bool allRefunded = true;
+					for (const auto &refundItem : removedItemsForRefund) {
+						auto refundRet = g_game().internalPlayerAddItem(player, refundItem, true);
+						if (refundRet != RETURNVALUE_NOERROR) {
+							ReturnValue fallbackRet = RETURNVALUE_NOTPOSSIBLE;
+							if (const auto &inbox = player->getInbox()) {
+								fallbackRet = g_game().internalAddItem(
+									std::static_pointer_cast<Cylinder>(inbox),
+									refundItem,
+									INDEX_WHEREEVER,
+									FLAG_NOLIMIT
+								);
+							}
+							if (fallbackRet != RETURNVALUE_NOERROR) {
+								allRefunded = false;
+								g_logger().error(
+									"[Npc::onPlayerSellItem] - Failed to refund item {} to player {} after currency delivery failure (primary: {}, fallback: {}).",
+									refundItem->getID(), player->getName(), getReturnMessage(refundRet), getReturnMessage(fallbackRet)
+								);
+							}
+						}
+					}
+					player->sendTextMessage(
+						MESSAGE_EVENT_ADVANCE,
+						allRefunded
+							? "Could not deliver the reward items. Your sold items were returned to you."
+							: "Could not deliver the reward items. Some sold items could not be returned; please contact staff."
+					);
+				}
+				return;
 			}
 		}
 	}

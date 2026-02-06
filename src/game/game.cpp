@@ -2807,18 +2807,45 @@ std::pair<uint64_t, ReturnValue> Game::addMoney(const std::shared_ptr<Cylinder> 
 		while (count > 0) {
 			const uint16_t createCount = static_cast<uint16_t>(std::min<uint64_t>(100, count));
 			const auto &remaindItem = Item::CreateItem(itemId, createCount);
-			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
-			if (ret != RETURNVALUE_NOERROR) {
-				if ((flags & FLAG_DROPONMAP) != 0 && cylinder->getTile()) {
-					ret = internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			uint32_t remainderCount = 0;
+			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags, false, remainderCount);
+
+			uint32_t placed = 0;
+			if (ret == RETURNVALUE_NOERROR) {
+				placed = createCount - remainderCount;
+				if (placed > 0) {
+					totalAdded += static_cast<uint64_t>(placed) * unitValue;
 				}
 			}
 
-			if (ret == RETURNVALUE_NOERROR) {
-				totalAdded += static_cast<uint64_t>(createCount) * unitValue;
-			} else {
-				returnValue = ret;
-				break;
+			if (ret != RETURNVALUE_NOERROR || remainderCount != 0) {
+				if ((flags & FLAG_DROPONMAP) != 0 && cylinder->getTile()) {
+					const uint16_t dropCount = static_cast<uint16_t>(createCount - placed);
+					if (dropCount > 0) {
+						const auto &dropItem = Item::CreateItem(itemId, dropCount);
+						uint32_t dropRemainder = 0;
+						ReturnValue dropRet = internalAddItem(cylinder->getTile(), dropItem, INDEX_WHEREEVER, FLAG_NOLIMIT, false, dropRemainder);
+						if (dropRet == RETURNVALUE_NOERROR) {
+							const uint32_t dropPlaced = dropCount - dropRemainder;
+							if (dropPlaced > 0) {
+								totalAdded += static_cast<uint64_t>(dropPlaced) * unitValue;
+							}
+							if (dropRemainder != 0) {
+								returnValue = RETURNVALUE_NOTENOUGHROOM;
+								break;
+							}
+						} else {
+							returnValue = dropRet;
+							break;
+						}
+					} else if (ret != RETURNVALUE_NOERROR) {
+						returnValue = ret;
+						break;
+					}
+				} else {
+					returnValue = (ret != RETURNVALUE_NOERROR) ? ret : RETURNVALUE_NOTENOUGHROOM;
+					break;
+				}
 			}
 
 			count -= createCount;

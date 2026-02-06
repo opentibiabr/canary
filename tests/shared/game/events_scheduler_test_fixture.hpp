@@ -19,7 +19,9 @@ namespace test::events_scheduler {
 			originalEventsJson_ = readEventsJson();
 
 			previousConfigFile_ = g_configManager().getConfigFileLua();
-			g_configManager().setConfigFileLua("tests/fixture/config/events_scheduler_test.lua");
+			runtimeConfigFile_ = repoRoot_ / "tests/fixture/config/events_scheduler_test_runtime.lua";
+			writeRuntimeConfigFile();
+			g_configManager().setConfigFileLua(runtimeConfigFile_.string());
 			ASSERT_TRUE(g_configManager().reload());
 
 			resetSchedulerState();
@@ -31,6 +33,8 @@ namespace test::events_scheduler {
 			resetSchedulerState();
 			writeEventsJson(originalEventsJson_);
 			g_configManager().setConfigFileLua(previousConfigFile_);
+			(void)g_configManager().reload();
+			removeRuntimeConfigFile();
 			std::filesystem::current_path(previousPath_);
 		}
 
@@ -67,9 +71,26 @@ namespace test::events_scheduler {
 			file.flush();
 		}
 
+		void writeRuntimeConfigFile() const {
+			std::ofstream file(runtimeConfigFile_);
+			EXPECT_TRUE(file.is_open());
+			const auto corePath = (repoRoot_ / "tests/fixture/core").generic_string();
+			file << "coreDirectory = \"" << corePath << "\"\n";
+			file.flush();
+		}
+
+		void removeRuntimeConfigFile() const {
+			if (runtimeConfigFile_.empty()) {
+				return;
+			}
+			std::error_code ec;
+			std::filesystem::remove(runtimeConfigFile_, ec);
+		}
+
 		std::filesystem::path repoRoot_ {};
 		std::filesystem::path previousPath_ {};
 		std::filesystem::path eventsJsonPath_ {};
+		std::filesystem::path runtimeConfigFile_ {};
 		std::string originalEventsJson_ {};
 		std::string previousConfigFile_ {};
 

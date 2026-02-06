@@ -661,9 +661,12 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 			};
 
 			uint64_t remaining = totalCost;
+			const auto &currencyType = Item::items[getCurrency()];
+			const uint16_t stackSize = currencyType.stackable ? currencyType.stackSize : 1;
+			const uint16_t maxChunk = stackSize > 0 ? stackSize : 1;
 			while (remaining > 0) {
 				const uint16_t chunk = static_cast<uint16_t>(
-					std::min<uint64_t>(remaining, std::numeric_limits<uint16_t>::max())
+					std::min<uint64_t>(remaining, maxChunk)
 				);
 				const auto &chunkItem = Item::CreateItem(getCurrency(), chunk);
 				if (!chunkItem) {

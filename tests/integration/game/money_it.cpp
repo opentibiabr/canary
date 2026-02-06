@@ -1,10 +1,3 @@
-#include <gtest/gtest.h>
-
-#include <algorithm>
-#include <exception>
-#include <filesystem>
-#include <optional>
-
 #include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/grouping/groups.hpp"

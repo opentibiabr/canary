@@ -2726,7 +2726,11 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 			if (expectedChange > 0) {
 				auto [addedMoney, returnValue] = addMoney(cylinder, expectedChange, flags);
 
-				if (addedMoney < expectedChange && returnValue == RETURNVALUE_NOTENOUGHCAPACITY) {
+				if (addedMoney < expectedChange
+				    && (flags & FLAG_DROPONMAP) == 0
+				    && (returnValue == RETURNVALUE_NOTENOUGHCAPACITY
+				        || returnValue == RETURNVALUE_NOTENOUGHROOM
+				        || returnValue == RETURNVALUE_CONTAINERNOTENOUGHROOM)) {
 					std::tie(addedMoney, returnValue) = addMoney(cylinder, expectedChange, flags | FLAG_DROPONMAP);
 				}
 

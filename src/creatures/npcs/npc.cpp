@@ -490,7 +490,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		return;
 	}
 	if (itemId == ITEM_GOLD_POUCH) {
-		std::string context = fmt::format("Npc::onPlayerSellAllLoot@{}:{}:{}", player->getName(), itemId, getName());
+		std::string context = fmt::format("Npc::onPlayerSellAllLoot@{}:{}", player->getID(), itemId);
 		g_dispatcher().scheduleEvent(
 			SCHEDULER_MINTICKS, [this, playerId = player->getID(), itemId, ignore] {
 				onPlayerSellAllLoot(playerId, itemId, ignore, 0);
@@ -556,29 +556,38 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 	if (totalRemoved > 0 && totalCost > 0) {
 		if (getCurrency() == ITEM_GOLD_COIN) {
 			totalPrice += totalCost;
+			uint64_t deliveredAmount = 0;
 			if (g_configManager().getBoolean(AUTOBANK)) {
 				player->setBankBalance(player->getBankBalance() + totalCost);
-				const std::string msg = fmt::format("{}, gold coins transfered to your bank.", totalPrice);
+				deliveredAmount = totalCost;
+				const std::string msg = fmt::format("Transferred {} gold coins to your bank.", totalCost);
 				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, msg);
 			} else {
 				uint32_t flags = FLAG_DROPONMAP;
 				auto [addedMoney, returnValue] = g_game().addMoney(player, totalCost, flags);
+				deliveredAmount = addedMoney;
 
 				if (addedMoney < totalCost) {
 					uint64_t refund = totalCost - addedMoney;
-					g_logger().warn("[Npc::onPlayerSellItem] - Only delivered {} of {} gold to player {} ({} gold could not be delivered). Reason: {}", addedMoney, totalCost, player->getName(), refund, getReturnMessage(returnValue));
+					player->setBankBalance(player->getBankBalance() + refund);
+					player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+					g_logger().warn("[Npc::onPlayerSellItem] - Only delivered {} of {} gold to player {}. Refunded {} gold to bank. Reason: {}", addedMoney, totalCost, player->getName(), refund, getReturnMessage(returnValue));
 
-					std::string msg = fmt::format("Warning: only {} of {} gold coins were delivered to your inventory. {}", addedMoney, totalCost, getReturnMessage(returnValue));
+					std::string msg = fmt::format(
+						"Only {} of {} gold coins were delivered to your inventory. The remaining {} was deposited in your bank. {}",
+						addedMoney, totalCost, refund, getReturnMessage(returnValue)
+					);
 					player->sendTextMessage(MESSAGE_EVENT_ADVANCE, msg);
+					g_metrics().addCounter("balance_increase", refund, { { "player", player->getName() }, { "context", "npc_sale_refund" } });
 				}
 			}
-			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
+			g_metrics().addCounter("balance_increase", deliveredAmount, { { "player", player->getName() }, { "context", "npc_sale" } });
 		} else {
 			const auto &newItem = Item::CreateItem(getCurrency(), totalCost);
 			if (newItem) {
 				auto returnValue = g_game().internalPlayerAddItem(player, newItem, true);
 				if (returnValue != RETURNVALUE_NOERROR) {
-					g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error code: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
+					g_logger().error("[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error: {}", player->getName(), newItem->getID(), getName(), getReturnMessage(returnValue));
 					return;
 				}
 			}

@@ -2711,7 +2711,11 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 		const std::shared_ptr<Item> &item = moneyEntry.second;
 
 		if (moneyEntry.first < money) {
-			player->removeItem(item);
+			if (player) {
+				player->removeItem(item);
+			} else {
+				internalRemoveItem(item);
+			}
 			money -= moneyEntry.first;
 		} else if (moneyEntry.first > money) {
 			const uint32_t worth = moneyEntry.first / item->getItemCount();
@@ -2737,21 +2741,32 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 				}
 			}
 
-			player->removeItem(item, removeCount);
-			player->updateState();
+			if (player) {
+				player->removeItem(item, removeCount);
+				player->updateState();
+			} else {
+				internalRemoveItem(item, removeCount);
+			}
 			return true;
 		} else {
-			player->removeItem(item);
-			player->updateState();
+			if (player) {
+				player->removeItem(item);
+				player->updateState();
+			} else {
+				internalRemoveItem(item);
+			}
 			return true;
 		}
 	}
 
-	player->updateState();
+	if (player) {
+		player->updateState();
+	}
 
 	if (useBalance && player && player->getBankBalance() >= money) {
 		uint64_t oldBalance = player->getBankBalance();
 		player->setBankBalance(oldBalance - money);
+		player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
 		uint64_t newBalance = player->getBankBalance();
 
 		g_logger().info(

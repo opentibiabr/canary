@@ -2471,19 +2471,21 @@ int PlayerFunctions::luaPlayerGetMoney(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
-	// player:addMoney(money)
+	// player:addMoney(money[, flags = 0]) -> success, addedMoney, returnValue
 	const uint64_t money = Lua::getNumber<uint64_t>(L, 2);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		uint32_t flags = 0;
+		const auto flags = static_cast<uint32_t>(Lua::getNumber<int32_t>(L, 3, 0));
 		auto [addedMoney, returnValue] = g_game().addMoney(player, money, flags);
+		Lua::pushBoolean(L, addedMoney == money);
 		lua_pushinteger(L, addedMoney);
 		lua_pushinteger(L, static_cast<int>(returnValue));
 	} else {
 		lua_pushnil(L);
 		lua_pushnil(L);
+		lua_pushnil(L);
 	}
-	return 2;
+	return 3;
 }
 
 int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {

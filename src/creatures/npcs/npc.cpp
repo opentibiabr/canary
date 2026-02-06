@@ -15,6 +15,7 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "items/containers/inbox/inbox.hpp"
 #include "lib/metrics/metrics.hpp"
 #include "lua/callbacks/creaturecallback.hpp"
 #include "lua/global/shared_object.hpp"
@@ -612,7 +613,12 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 							if (refundRet != RETURNVALUE_NOERROR) {
 								ReturnValue fallbackRet = RETURNVALUE_NOTPOSSIBLE;
 								if (const auto &inbox = player->getInbox()) {
-									fallbackRet = g_game().internalAddItem(inbox, refundItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
+									fallbackRet = g_game().internalAddItem(
+										std::static_pointer_cast<Cylinder>(inbox),
+										refundItem,
+										INDEX_WHEREEVER,
+										FLAG_NOLIMIT
+									);
 								}
 								if (fallbackRet != RETURNVALUE_NOERROR) {
 									allRefunded = false;

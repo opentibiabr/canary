@@ -793,6 +793,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		if (!delivered) {
 			return;
 		}
+		totalPrice += totalCost;
 	}
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)

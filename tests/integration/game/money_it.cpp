@@ -52,27 +52,6 @@ namespace {
 		}
 	};
 
-	class ScopeExit {
-	public:
-		explicit ScopeExit(std::function<void()> fn) :
-			fn_(std::move(fn)) { }
-
-		ScopeExit(const ScopeExit &) = delete;
-		ScopeExit &operator=(const ScopeExit &) = delete;
-
-		ScopeExit(ScopeExit &&) noexcept = default;
-		ScopeExit &operator=(ScopeExit &&) noexcept = default;
-
-		~ScopeExit() {
-			if (fn_) {
-				fn_();
-			}
-		}
-
-	private:
-		std::function<void()> fn_;
-	};
-
 	struct ItemTypeScope {
 		ItemTypeScope() {
 			auto &items = Item::items.getItems();
@@ -106,16 +85,7 @@ namespace {
 				std::move(originalPlatinum),
 				std::move(originalCrystal),
 			};
-			cleanup_.emplace([state = std::move(cleanupState)]() mutable {
-				restoreIfStashed(ITEM_GOLD_COIN, state.originalGold);
-				restoreIfStashed(ITEM_PLATINUM_COIN, state.originalPlatinum);
-				restoreIfStashed(ITEM_CRYSTAL_COIN, state.originalCrystal);
-
-				auto &items = Item::items.getItems();
-				if (items.size() > state.originalSize) {
-					items.resize(state.originalSize);
-				}
-			});
+			cleanup_.emplace(std::move(cleanupState));
 		}
 
 		[[nodiscard]] uint16_t containerSmallId() const {
@@ -132,6 +102,24 @@ namespace {
 			std::optional<ItemType> originalGold;
 			std::optional<ItemType> originalPlatinum;
 			std::optional<ItemType> originalCrystal;
+		};
+
+		struct CleanupGuard {
+			explicit CleanupGuard(CleanupState stateIn) :
+				state(std::move(stateIn)) { }
+
+			~CleanupGuard() {
+				restoreIfStashed(ITEM_GOLD_COIN, state.originalGold);
+				restoreIfStashed(ITEM_PLATINUM_COIN, state.originalPlatinum);
+				restoreIfStashed(ITEM_CRYSTAL_COIN, state.originalCrystal);
+
+				auto &items = Item::items.getItems();
+				if (items.size() > state.originalSize) {
+					items.resize(state.originalSize);
+				}
+			}
+
+			CleanupState state;
 		};
 
 		static void setupCoin(uint16_t id) {
@@ -174,7 +162,7 @@ namespace {
 
 		uint16_t containerSmallId_ = 0;
 		uint16_t containerLargeId_ = 0;
-		std::optional<ScopeExit> cleanup_ {};
+		std::optional<CleanupGuard> cleanup_ {};
 	};
 
 } // namespace

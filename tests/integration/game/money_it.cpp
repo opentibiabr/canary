@@ -53,6 +53,38 @@ namespace {
 	};
 
 	struct ItemTypeScope {
+	private:
+		struct CleanupState {
+			size_t originalSize = 0;
+			std::optional<ItemType> originalGold;
+			std::optional<ItemType> originalPlatinum;
+			std::optional<ItemType> originalCrystal;
+		};
+
+		struct CleanupDeleter {
+			void operator()(CleanupState *state) const noexcept {
+				if (!state) {
+					return;
+				}
+				try {
+					restoreIfStashed(ITEM_GOLD_COIN, state->originalGold);
+					restoreIfStashed(ITEM_PLATINUM_COIN, state->originalPlatinum);
+					restoreIfStashed(ITEM_CRYSTAL_COIN, state->originalCrystal);
+
+					auto &items = Item::items.getItems();
+					if (items.size() > state->originalSize) {
+						items.resize(state->originalSize);
+					}
+				} catch (...) {
+					// Best-effort cleanup in a noexcept context.
+				}
+				delete state;
+			}
+		};
+
+		using CleanupPtr = std::unique_ptr<CleanupState, CleanupDeleter>;
+
+	public:
 		ItemTypeScope() {
 			auto &items = Item::items.getItems();
 			const size_t originalSize = items.size();
@@ -79,13 +111,12 @@ namespace {
 			setupContainer(containerSmallId_, 1);
 			setupContainer(containerLargeId_, 2);
 
-			CleanupState cleanupState {
+			cleanup_ = CleanupPtr(new CleanupState {
 				originalSize,
 				std::move(originalGold),
 				std::move(originalPlatinum),
 				std::move(originalCrystal),
-			};
-			cleanup_.emplace(std::move(cleanupState));
+			});
 		}
 
 		[[nodiscard]] uint16_t containerSmallId() const {
@@ -97,31 +128,6 @@ namespace {
 		}
 
 	private:
-		struct CleanupState {
-			size_t originalSize = 0;
-			std::optional<ItemType> originalGold;
-			std::optional<ItemType> originalPlatinum;
-			std::optional<ItemType> originalCrystal;
-		};
-
-		struct CleanupGuard {
-			explicit CleanupGuard(CleanupState stateIn) :
-				state(std::move(stateIn)) { }
-
-			~CleanupGuard() {
-				restoreIfStashed(ITEM_GOLD_COIN, state.originalGold);
-				restoreIfStashed(ITEM_PLATINUM_COIN, state.originalPlatinum);
-				restoreIfStashed(ITEM_CRYSTAL_COIN, state.originalCrystal);
-
-				auto &items = Item::items.getItems();
-				if (items.size() > state.originalSize) {
-					items.resize(state.originalSize);
-				}
-			}
-
-			CleanupState state;
-		};
-
 		static void setupCoin(uint16_t id) {
 			auto &itemType = Item::items.getItemType(id);
 			if (itemType.id != 0) {
@@ -162,7 +168,7 @@ namespace {
 
 		uint16_t containerSmallId_ = 0;
 		uint16_t containerLargeId_ = 0;
-		std::optional<CleanupGuard> cleanup_ {};
+		CleanupPtr cleanup_ {};
 	};
 
 } // namespace

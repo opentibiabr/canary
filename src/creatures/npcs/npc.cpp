@@ -191,7 +191,7 @@ namespace {
 
 		uint64_t remaining = deliveredCurrency;
 		while (remaining > 0) {
-			const uint32_t chunk = static_cast<uint32_t>(
+			const auto chunk = static_cast<uint32_t>(
 				std::min<uint64_t>(remaining, std::numeric_limits<uint32_t>::max())
 			);
 			if (!player->removeItemOfType(currencyId, chunk, -1, false)) {

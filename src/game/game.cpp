@@ -2666,8 +2666,8 @@ namespace {
 
 		const uint32_t worth = item->getWorth();
 		if (worth != 0) {
-			collection.total += worth;
-			collection.moneyMap.emplace(worth, item);
+			const auto it = collection.moneyMap.emplace(worth, item);
+			collection.total += it->first;
 		}
 	}
 
@@ -2686,7 +2686,8 @@ namespace {
 
 		size_t i = 0;
 		while (i < containers.size()) {
-			const auto &container = containers[i++];
+			const auto &container = containers[i];
+			++i;
 			for (const auto &item : container->getItemList()) {
 				collectMoneyFromItem(item, containers, collection);
 			}
@@ -2701,9 +2702,10 @@ namespace {
 		const std::shared_ptr<Item> &item,
 		uint32_t count
 	) {
+		const auto removeCount = count == 0 ? -1 : static_cast<int32_t>(count);
 		const auto ret = player
 			? player->removeItem(item, count)
-			: game.internalRemoveItem(item, count == 0 ? -1 : static_cast<int32_t>(count));
+			: game.internalRemoveItem(item, removeCount);
 		if (ret != RETURNVALUE_NOERROR) {
 			g_logger().error(
 				"Game::removeMoney: failed to remove item {} from {} (reason {}).",
@@ -2759,36 +2761,37 @@ namespace {
 		uint64_t &money,
 		uint32_t flags
 	) {
+		using enum MoneyRemovalOutcome;
 		if (worth < money) {
 			if (!removeItemFromOwner(game, player, item, 0)) {
-				return MoneyRemovalOutcome::Failed;
+				return Failed;
 			}
 			money -= worth;
-			return MoneyRemovalOutcome::Continue;
+			return Continue;
 		}
 
 		if (worth > money) {
 			const uint64_t unitWorth = worth / item->getItemCount();
-			const uint32_t removeCount = static_cast<uint32_t>((money + unitWorth - 1) / unitWorth);
+			const auto removeCount = static_cast<uint32_t>((money + unitWorth - 1) / unitWorth);
 			const uint64_t expectedChange = (unitWorth * removeCount) - money;
 
 			if (expectedChange > 0 && !deliverChange(game, cylinder, expectedChange, flags, player ? player->getName() : "unknown")) {
-				return MoneyRemovalOutcome::Failed;
+				return Failed;
 			}
 
 			if (!removeItemFromOwner(game, player, item, removeCount)) {
-				return MoneyRemovalOutcome::Failed;
+				return Failed;
 			}
 
 			money = 0;
-			return MoneyRemovalOutcome::Done;
+			return Done;
 		}
 
 		if (!removeItemFromOwner(game, player, item, 0)) {
-			return MoneyRemovalOutcome::Failed;
+			return Failed;
 		}
 		money = 0;
-		return MoneyRemovalOutcome::Done;
+		return Done;
 	}
 
 	struct AddItemOutcome {
@@ -2836,7 +2839,7 @@ namespace {
 			return outcome.ret != RETURNVALUE_NOERROR ? outcome.ret : RETURNVALUE_NOTENOUGHROOM;
 		}
 
-		const uint16_t dropCount = static_cast<uint16_t>(count - outcome.placed);
+		const auto dropCount = static_cast<uint16_t>(count - outcome.placed);
 		if (dropCount == 0) {
 			return outcome.ret != RETURNVALUE_NOERROR ? outcome.ret : RETURNVALUE_NOTENOUGHROOM;
 		}
@@ -2865,7 +2868,7 @@ namespace {
 		uint64_t &totalAdded
 	) {
 		while (count > 0) {
-			const uint16_t createCount = static_cast<uint16_t>(std::min<uint64_t>(100, count));
+			const auto createCount = static_cast<uint16_t>(std::min<uint64_t>(100, count));
 			const auto ret = addCoinStack(game, cylinder, itemId, createCount, unitValue, flags, totalAdded);
 			if (ret != RETURNVALUE_NOERROR) {
 				return ret;
@@ -2896,21 +2899,21 @@ bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money
 		return false;
 	}
 
+	using enum MoneyRemovalOutcome;
 	bool removedItems = false;
-	for (const auto &moneyEntry : collection.moneyMap) {
-		const auto &item = moneyEntry.second;
-		const auto outcome = processMoneyEntry(*this, player, cylinder, item, moneyEntry.first, money, flags);
-		if (outcome == MoneyRemovalOutcome::Failed) {
+	for (const auto &[worth, item] : collection.moneyMap) {
+		const auto outcome = processMoneyEntry(*this, player, cylinder, item, worth, money, flags);
+		if (outcome == Failed) {
 			if (player && removedItems) {
 				player->updateState();
 			}
 			return false;
 		}
-		if (outcome == MoneyRemovalOutcome::Done) {
+		if (outcome == Done) {
 			removedItems = true;
 			break;
 		}
-		if (outcome == MoneyRemovalOutcome::Continue) {
+		if (outcome == Continue) {
 			removedItems = true;
 		}
 	}

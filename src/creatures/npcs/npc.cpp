@@ -83,7 +83,9 @@ namespace {
 			if (needsRefundOnFailure) {
 				refundItem = item->clone();
 				if (refundItem && item->isStackable() && removeCount < refundItem->getItemCount()) {
-					refundItem->setItemCount(static_cast<uint8_t>(removeCount));
+					refundItem->setItemCount(static_cast<uint8_t>(
+						std::min<uint16_t>(removeCount, std::numeric_limits<uint8_t>::max())
+					));
 				}
 			}
 
@@ -184,20 +186,27 @@ namespace {
 		return allRefunded;
 	}
 
-	void rollbackCurrency(const std::shared_ptr<Player> &player, uint16_t currencyId, uint64_t deliveredCurrency, std::string_view context) {
-		if (deliveredCurrency == 0) {
+	void rollbackCurrency(
+		const std::shared_ptr<Player> &player,
+		uint16_t currencyId,
+		uint64_t originalCurrency,
+		uint64_t deliveredCurrency,
+		std::string_view context
+	) {
+		const auto currentCurrency = static_cast<uint64_t>(player->getItemTypeCount(currencyId));
+		if (currentCurrency <= originalCurrency) {
 			return;
 		}
 
-		uint64_t remaining = deliveredCurrency;
+		uint64_t remaining = currentCurrency - originalCurrency;
 		while (remaining > 0) {
 			const auto chunk = static_cast<uint32_t>(
 				std::min<uint64_t>(remaining, std::numeric_limits<uint32_t>::max())
 			);
 			if (!player->removeItemOfType(currencyId, chunk, -1, false)) {
 				g_logger().error(
-					"[Npc::onPlayerSellItem] - Failed to rollback {} currency items for player {} after {} failure.",
-					deliveredCurrency, player->getName(), context
+					"[Npc::onPlayerSellItem] - Failed to rollback {} of {} currency items for player {} after {} failure.",
+					remaining, deliveredCurrency, player->getName(), context
 				);
 				break;
 			}
@@ -212,6 +221,7 @@ namespace {
 		const std::vector<std::shared_ptr<Item>> &refundItems,
 		const std::string &npcName
 	) {
+		const auto originalCurrency = static_cast<uint64_t>(player->getItemTypeCount(currencyId));
 		uint64_t deliveredCurrency = 0;
 		uint64_t remaining = totalCost;
 		const auto &currencyType = Item::items[currencyId];
@@ -228,7 +238,7 @@ namespace {
 					"[Npc::onPlayerSellItem] - Failed to create custom currency item {} (chunk {}) for player {} on npc {}.",
 					currencyId, chunk, player->getName(), npcName
 				);
-				rollbackCurrency(player, currencyId, deliveredCurrency, "currency creation");
+				rollbackCurrency(player, currencyId, originalCurrency, deliveredCurrency, "currency creation");
 				const bool refunded = refundSoldItems(player, refundItems, "currency creation");
 				if (!refunded) {
 					g_logger().warn(
@@ -245,7 +255,7 @@ namespace {
 					"[Npc::onPlayerSellItem] - Player: {} have a problem with custom currency, for add item: {} on shop for npc: {}, error: {}",
 					player->getName(), chunkItem->getID(), npcName, getReturnMessage(returnValue)
 				);
-				rollbackCurrency(player, currencyId, deliveredCurrency, "currency delivery");
+				rollbackCurrency(player, currencyId, originalCurrency, deliveredCurrency, "currency delivery");
 				const bool refunded = refundSoldItems(player, refundItems, "currency delivery");
 				if (!refunded) {
 					g_logger().warn(

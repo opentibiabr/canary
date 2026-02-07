@@ -186,6 +186,17 @@ namespace {
 		return allRefunded;
 	}
 
+	uint64_t countInventoryCurrency(const std::shared_ptr<Player> &player, uint16_t currencyId) {
+		uint64_t count = 0;
+		for (const auto &item : player->getAllInventoryItems()) {
+			if (!item || item->getID() != currencyId) {
+				continue;
+			}
+			count += Item::countByType(item, -1);
+		}
+		return count;
+	}
+
 	void rollbackCurrency(
 		const std::shared_ptr<Player> &player,
 		uint16_t currencyId,
@@ -193,7 +204,7 @@ namespace {
 		uint64_t deliveredCurrency,
 		std::string_view context
 	) {
-		const auto currentCurrency = static_cast<uint64_t>(player->getItemTypeCount(currencyId));
+		const auto currentCurrency = countInventoryCurrency(player, currencyId);
 		if (currentCurrency <= originalCurrency) {
 			return;
 		}
@@ -221,7 +232,7 @@ namespace {
 		const std::vector<std::shared_ptr<Item>> &refundItems,
 		const std::string &npcName
 	) {
-		const auto originalCurrency = static_cast<uint64_t>(player->getItemTypeCount(currencyId));
+		const auto originalCurrency = countInventoryCurrency(player, currencyId);
 		uint64_t deliveredCurrency = 0;
 		uint64_t remaining = totalCost;
 		const auto &currencyType = Item::items[currencyId];

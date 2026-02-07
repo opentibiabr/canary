@@ -62,7 +62,7 @@ namespace {
 		};
 
 		struct CleanupDeleter {
-			void operator()(CleanupState *state) const noexcept {
+			void operator()(CleanupState* state) const noexcept {
 				if (!state) {
 					return;
 				}

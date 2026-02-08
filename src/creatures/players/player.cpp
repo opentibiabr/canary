@@ -7288,7 +7288,6 @@ void Player::sendUnjustifiedPoints() const {
 		}
 
 		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
-		const bool isRedOrBlack = getSkull() == SKULL_RED || getSkull() == SKULL_BLACK;
 
 		const double dayMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(DAY_KILLS_TO_RED));
 		const double weekMax = static_cast<double>((isRedOrBlack ? 2 : 1) * g_configManager().getNumber(WEEK_KILLS_TO_RED));

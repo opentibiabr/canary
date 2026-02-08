@@ -334,8 +334,6 @@ private:
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
 	void sendOpenPvpSituations(uint8_t openPvpSituations);
 
-	void sendOpenPvpSituations(const uint8_t &openPvpSituations);
-
 	void sendCancelWalk();
 	void sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint16_t speed);
 	void sendCancelTarget();

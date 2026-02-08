@@ -20,7 +20,7 @@ namespace test::events_scheduler {
 
 			previousConfigFile_ = g_configManager().getConfigFileLua();
 			runtimeConfigFile_ = repoRoot_ / "tests/fixture/config/events_scheduler_test_runtime.lua";
-			writeRuntimeConfigFile();
+			ASSERT_TRUE(writeRuntimeConfigFile()) << "Failed to write runtime config file: " << runtimeConfigFile_.string();
 			g_configManager().setConfigFileLua(runtimeConfigFile_.string());
 			ASSERT_TRUE(g_configManager().reload());
 
@@ -71,12 +71,15 @@ namespace test::events_scheduler {
 			file.flush();
 		}
 
-		void writeRuntimeConfigFile() const {
+		[[nodiscard]] bool writeRuntimeConfigFile() const {
 			std::ofstream file(runtimeConfigFile_);
-			EXPECT_TRUE(file.is_open());
+			if (!file.is_open()) {
+				return false;
+			}
 			const auto corePath = (repoRoot_ / "tests/fixture/core").generic_string();
 			file << "coreDirectory = \"" << corePath << "\"\n";
 			file.flush();
+			return file.good();
 		}
 
 		void removeRuntimeConfigFile() const {

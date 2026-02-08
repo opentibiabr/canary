@@ -38,7 +38,7 @@ find_package(
     CONFIG
     REQUIRED
 )
-find_package(GMP REQUIRED)
+find_package(OpenSSL REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(MySQL REQUIRED)
 find_package(Protobuf REQUIRED)

@@ -1,5 +1,5 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE house_functions.cpp
             position_functions.cpp
             teleport_functions.cpp

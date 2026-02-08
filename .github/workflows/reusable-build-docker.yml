@@ -1,0 +1,80 @@
+name: Reusable Docker Build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Image Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.15
+        with:
+          versionSpec: "5.x"
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.15
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.x86
+          push: true
+          build-args: |
+            VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+            VCPKG_FEED_USERNAME=${{ github.repository_owner }}
+            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read;nugettimeout,1200
+          secrets: |
+            github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and export (PR)
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.x86
+          push: false
+          outputs: type=local,dest=artifacts/docker-rootfs
+          build-args: |
+            VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+            VCPKG_FEED_USERNAME=${{ github.repository_owner }}
+            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read;nugettimeout,1200
+          secrets: |
+            github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Upload docker artifact
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-canary
+          path: artifacts/docker-rootfs/bin/canary

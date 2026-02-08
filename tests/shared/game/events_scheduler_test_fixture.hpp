@@ -1,13 +1,5 @@
 #pragma once
 
-#include <filesystem>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <system_error>
-
-#include <gtest/gtest.h>
-
 #include "config/configmanager.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "kv/kv.hpp"

@@ -1,5 +1,5 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE di/soft_singleton.cpp
             logging/logger.cpp
             logging/log_with_spd_log.cpp

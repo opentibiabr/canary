@@ -1,10 +1,24 @@
+# syntax=docker/dockerfile:1.7
+
 # Stage 1: Download all dependencies
 FROM ubuntu:24.04 AS dependencies
 
-RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
+ENV TZ=Etc/UTC
+ARG VCPKG_FEED_URL
+ARG VCPKG_FEED_USERNAME
+ARG VCPKG_BINARY_SOURCES
+ENV VCPKG_BINARY_SOURCES=${VCPKG_BINARY_SOURCES}
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+	apt-get update && apt-get install -y --no-install-recommends cmake git \
 	unzip build-essential ca-certificates curl zip unzip tar \
 	pkg-config ninja-build autoconf automake libtool \
-	python3 \
+	python3 mono-complete tzdata \
+	&& ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+	&& echo "${TZ}" > /etc/timezone \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -17,9 +31,44 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
 	&& git checkout $vcpkgCommitId \
 	&& ./bootstrap-vcpkg.sh
 
-WORKDIR /opt/vcpkg
-COPY vcpkg.json /opt/vcpkg/
-RUN /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+# Install dependencies using manifest mode standalone
+WORKDIR /opt/vcpkg_manifest
+COPY vcpkg.json /opt/vcpkg_manifest/
+
+RUN --mount=type=secret,id=github_token \
+	--mount=type=cache,target=/opt/vcpkg/downloads \
+	--mount=type=cache,target=/opt/vcpkg/buildtrees \
+	--mount=type=cache,target=/opt/vcpkg/packages \
+	--mount=type=cache,target=/root/.cache/vcpkg \
+	/bin/bash -euo pipefail -c '\
+		if [ ! -s /run/secrets/github_token ]; then \
+			echo "Missing /run/secrets/github_token" >&2; \
+			exit 1; \
+		fi; \
+		NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token); \
+		NUGET_CONFIG=/tmp/nuget.config; \
+		printf "%s\n" \
+			"<?xml version=\"1.0\" encoding=\"utf-8\"?>" \
+			"<configuration>" \
+			"  <packageSources>" \
+			"    <add key=\"GitHubPackages\" value=\"${VCPKG_FEED_URL}\" />" \
+			"  </packageSources>" \
+			"  <packageSourceCredentials>" \
+			"    <GitHubPackages>" \
+			"      <add key=\"Username\" value=\"${VCPKG_FEED_USERNAME}\" />" \
+			"      <add key=\"ClearTextPassword\" value=\"${NUGET_AUTH_TOKEN}\" />" \
+			"    </GitHubPackages>" \
+			"  </packageSourceCredentials>" \
+			"  <config>" \
+			"    <add key=\"defaultPushSource\" value=\"GitHubPackages\" />" \
+			"  </config>" \
+			"</configuration>" \
+			> "${NUGET_CONFIG}"; \
+		export VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}"; \
+		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,1200"; \
+		/opt/vcpkg/vcpkg install --x-manifest-root=/opt/vcpkg_manifest --x-install-root=/opt/vcpkg_installed --triplet=x64-linux --host-triplet=x64-linux; \
+		rm -f "${NUGET_CONFIG}"; \
+		unset NUGET_AUTH_TOKEN'
 
 # Stage 2: create build
 FROM dependencies AS build
@@ -27,10 +76,18 @@ FROM dependencies AS build
 COPY . /srv/
 WORKDIR /srv
 
-RUN export VCPKG_ROOT=/opt/vcpkg/ && cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON && cmake --build --preset linux-release
+# Copy the vcpkg_installed directory from dependencies stage
+COPY --from=dependencies /opt/vcpkg_installed /srv/vcpkg_installed
+
+RUN export VCPKG_ROOT=/opt/vcpkg/ && \
+    cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DVCPKG_MANIFEST_INSTALL=OFF -DVCPKG_INSTALLED_DIR=/srv/vcpkg_installed && \
+    cmake --build --preset linux-release
 
 # Stage 3: load data and execute
 FROM ubuntu:24.04
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
+ENV TZ=Etc/UTC
 VOLUME [ "/data" ]
 
 COPY --from=build /srv/build/linux-release/bin/canary /bin/canary
@@ -42,8 +99,12 @@ COPY config.lua.dist /canary/config.lua
 
 WORKDIR /canary
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	mariadb-client curl \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+	apt-get update && apt-get install -y --no-install-recommends \
+	mariadb-client curl tzdata \
+	&& ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+	&& echo "${TZ}" > /etc/timezone \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

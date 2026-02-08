@@ -7,7 +7,7 @@ cmake_minimum_required(
 # -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake
 # .. Needed libs are in file vcpkg.json Windows required libs: .\vcpkg install
 # --triplet x64-windows asio pugixml spdlog curl protobuf parallel-hashmap
-# magic-enum mio luajit libmariadb mpir abseil bshoshany-thread-pool
+# magic-enum mio luajit libmariadb openssl abseil bshoshany-thread-pool
 
 if(DEFINED ENV{VCPKG_ROOT}
    AND NOT
@@ -175,15 +175,25 @@ if(OPTIONS_ENABLE_SCCACHE)
 endif()
 
 # *****************************************************************************
+# Options for Targets
+# *****************************************************************************
+option(
+    CANARY_BUILD_SERVER
+    "Build server executable"
+    ON
+)
+option(
+    CANARY_BUILD_TESTS
+    "Build unit tests"
+    ON
+)
+
+if(CANARY_BUILD_TESTS)
+    enable_testing()
+endif()
+
+# *****************************************************************************
 # Add project
 # *****************************************************************************
 add_subdirectory(src)
-
-include(CTest)
-if(BUILD_TESTING)
-    log_option_enabled("tests")
-    add_subdirectory(tests)
-    enable_testing()
-else()
-    log_option_disabled("tests")
-endif()
+add_subdirectory(tests)

@@ -1,0 +1,157 @@
+name: Reusable Windows Build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Compile (${{ matrix.type }})
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [CMake, Solution]
+    runs-on: windows-2025
+    env:
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+      SCCACHE_DIR: ${{ github.workspace }}\.sccache
+    steps:
+      - name: Install VS 2026 Build Tools (v145 toolset)
+        if: matrix.type == 'Solution'
+        shell: pwsh
+        run: |
+          choco install visualstudio2026-workload-vctools --yes --ignore-package-exit-codes=3010
+
+      - name: Setup MSBuild.exe
+        if: matrix.type == 'Solution'
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-prerelease: true
+          vs-version: "latest"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Get vcpkg baseline
+        shell: pwsh
+        run: |
+          $json = Get-Content vcpkg.json -Raw | ConvertFrom-Json
+          $vcpkgCommitId = $json.'builtin-baseline'
+          "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Remove Windows pre-installed MySQL
+        if: matrix.type == 'CMake'
+        shell: pwsh
+        run: Remove-Item -Recurse -Force C:\mysql* -ErrorAction SilentlyContinue
+
+      - name: Prepare sccache directory
+        if: matrix.type == 'CMake'
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force -Path $env:SCCACHE_DIR | Out-Null
+
+      - name: CCache
+        if: matrix.type == 'CMake'
+        uses: hendrikmuhs/ccache-action@v1.2.20
+        with:
+          max-size: "1G"
+          variant: "sccache"
+          key: ccache-windows-release
+          restore-keys: |
+            ccache-windows
+
+      # IMPORTANT: configure the nuget.exe that MSBuild/vcpkg.targets actually uses (Chocolatey)
+      - name: Setup NuGet source for GitHub Packages (for MSBuild/vcpkg.targets)
+        shell: pwsh
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+        run: |
+          $feed = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+          $nuget = (Get-Command nuget.exe -ErrorAction SilentlyContinue).Source
+          if (-not $nuget) { throw "nuget.exe not found in PATH" }
+
+          & $nuget sources remove -Name "GitHubPackages" | Out-Null 2>$null
+          & $nuget sources add `
+            -Name "GitHubPackages" `
+            -Source $feed `
+            -UserName "${{ github.repository_owner }}" `
+            -Password "$env:NUGET_AUTH_TOKEN" `
+            -StorePasswordInClearText
+
+          & $nuget setapikey "$env:NUGET_AUTH_TOKEN" -Source $feed
+
+          & $nuget sources list
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          # For Solution builds, keep vcpkg inside repo to match your msbuild /p:VcpkgRoot
+          vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || '' }}
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Run CMake
+        if: matrix.type == 'CMake'
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: windows-release
+          buildPreset: windows-release
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+
+      - name: Upload artifacts (CMake)
+        if: matrix.type == 'CMake'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-cmake-release
+          path: build/windows-release/bin/
+
+      - name: Build project (MSBuild)
+        if: matrix.type == 'Solution'
+        shell: pwsh
+        run: |
+          $vcpkgRoot = Join-Path (Get-Location) "vcpkg"
+          $outDir = Join-Path (Get-Location) "artifacts"
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+
+          msbuild.exe vcproj/canary.sln `
+            /m `
+            /p:Configuration=Debug `
+            /p:Platform=x64 `
+            /p:VcpkgEnableManifest=true `
+            /p:VcpkgRoot="$vcpkgRoot" `
+            /p:OutDir="$outDir\\" `
+            /p:GITHUB_WORKSPACE="${{ github.workspace }}"
+
+      - name: Verify vcpkg binary cache push
+        if: matrix.type == 'CMake' && success() && (github.event_name == 'push' || (github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository))
+        shell: pwsh
+        run: |
+          $logs = Get-ChildItem -Path . -Recurse -Filter vcpkg-manifest-install.log -ErrorAction SilentlyContinue
+          if (-not $logs) {
+            Write-Error "No vcpkg manifest logs found."
+            exit 1
+          }
+          foreach ($log in $logs) {
+            if (Select-String -Path $log.FullName -Pattern "to 0 binary cache\(s\)") {
+              Write-Error "Binary cache push reported 0 caches."
+              exit 1
+            }
+          }
+
+      - name: Upload artifacts
+        if: matrix.type == 'Solution'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-solution-debug
+          path: artifacts/

@@ -1,0 +1,134 @@
+name: Reusable Linux Build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Compile (${{ matrix.buildtype }})
+    strategy:
+      fail-fast: false
+      matrix:
+        buildtype: [linux-release, linux-debug]
+    runs-on: ubuntu-24.04
+    env:
+      CC: gcc-13
+      CXX: g++-13
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: otservbr-global
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+              core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Get vcpkg baseline
+        id: vcpkg-baseline
+        shell: bash
+        run: |
+          vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> "$GITHUB_ENV"
+
+      - name: Install Linux Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache ninja-build gcc-13 g++-13
+          # Ensure ninja is in the path and named correctly
+          sudo ln -sf /usr/bin/ninja /usr/bin/ninja-build
+          ninja --version
+
+      - name: CCache
+        uses: hendrikmuhs/ccache-action@v1.2.20
+        with:
+          max-size: "1G"
+          key: ccache-linux-${{ matrix.buildtype }}
+          restore-keys: |
+            ccache-linux
+
+      - name: Install mono for NuGet
+        run: sudo apt-get update && sudo apt-get install -y mono-complete
+
+      - name: Setup NuGet for vcpkg
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+        run: |
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          NUGET_PATH=$(vcpkg fetch nuget | tail -n 1)
+          mono "$NUGET_PATH" sources add \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            -storepasswordincleartext \
+            -name "GitHubPackages" \
+            -username "${{ github.repository_owner }}" \
+            -password "${NUGET_AUTH_TOKEN}"
+          mono "$NUGET_PATH" setapikey "${NUGET_AUTH_TOKEN}" \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Run CMake
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+
+      - name: Import Database Schema
+        if: matrix.buildtype == 'linux-debug'
+        run: |
+          sudo apt-get update && sudo apt-get install -y mysql-client
+          mysql -h 127.0.0.1 -u root -proot otservbr-global < schema.sql
+          mysql -h 127.0.0.1 -u root -proot otservbr-global < docker/data/01-test_account.sql
+          mysql -h 127.0.0.1 -u root -proot otservbr-global < docker/data/02-test_account_players.sql
+
+      - name: Run Tests
+        if: matrix.buildtype == 'linux-debug'
+        env:
+          TEST_DB_PASSWORD: root
+        run: ctest --test-dir build/${{ matrix.buildtype }} --output-on-failure --parallel 2
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.buildtype }}
+          path: build/${{ matrix.buildtype }}/bin/
+
+      - name: Verify vcpkg binary cache push
+        if: success() && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          logs=$(find . -name "vcpkg-manifest-install.log" -print0)
+          if [[ -z "${logs}" ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi
+          while IFS= read -r -d '' log; do
+            if grep -q "to 0 binary cache(s)" -- "$log"; then
+              echo "Binary cache push reported 0 caches." >&2
+              exit 1
+            fi
+          done <<< "${logs}"

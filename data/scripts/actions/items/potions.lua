@@ -69,14 +69,13 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 		player:say(potion.description, MESSAGE_POTION)
 		return true
 	end
-	
+
 	--CHECK IF PLAYER HAS POTION BUFF ACTIVE--
 	if player:getStorageValue(20002) < 1 then
 		player:setStorageValue(20001, 0)
 	end
 
 	if potion.health or potion.mana or potion.combat then
-
 		--BUFF SYSTEM
 		local multiplier = 1 + (player:getStorageValue(20001) / 10)
 

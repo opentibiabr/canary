@@ -125,7 +125,7 @@ local function handleTaskHuntingDescription(inspectedThing, lookDistance)
 
 	if inspectedThing:isPlayer() then
 		local playerRank = inspectedThing:getRankTask() or "Newbie"
-		descriptionText = descriptionText .."\n Rank Task: [".. playerRank.."]"
+		descriptionText = descriptionText .. "\n Rank Task: [" .. playerRank .. "]"
 	end
 
 	return descriptionText

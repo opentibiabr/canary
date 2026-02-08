@@ -488,7 +488,7 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 		return false
 	end
 
-	Webhook.sendMessage("[New report]["..reportType.."]: " .. self:getCustomMarkdown() .. " has reported " .. p:getCustomMarkdown() .. " for the reason: "..reportReason.. " with the comments: ".. comment .. ".", announcementChannels["reports"])
+	Webhook.sendMessage("[New report][" .. reportType .. "]: " .. self:getCustomMarkdown() .. " has reported " .. p:getCustomMarkdown() .. " for the reason: " .. reportReason .. " with the comments: " .. comment .. ".", announcementChannels["reports"])
 	return
 end
 
@@ -516,22 +516,21 @@ function Player:onReportBug(message, position, category)
 	io.write("Comment: " .. messageCleanse .. "\n")
 	io.close(file)
 
-
-	local config ={
+	local config = {
 		[BUG_CATEGORY_MAP] = "MAP",
 		[BUG_CATEGORY_TYPO] = "TYPO",
 		[BUG_CATEGORY_TECHNICAL] = "TECH",
 		[BUG_CATEGORY_OTHER] = "OTHER",
 	}
-	
+
 	if category == BUG_CATEGORY_MAP then
-		Webhook.sendMessage("[New report][".. config[category] .."]: ".. self:getCustomMarkdown() .. " has reported map position: " .. position.x .. ", " .. position.y .. ", " .. position.z .. ", with the comments: ".. messageCleanse .. ".", announcementChannels["reports"])
+		Webhook.sendMessage("[New report][" .. config[category] .. "]: " .. self:getCustomMarkdown() .. " has reported map position: " .. position.x .. ", " .. position.y .. ", " .. position.z .. ", with the comments: " .. messageCleanse .. ".", announcementChannels["reports"])
 	elseif category == BUG_CATEGORY_TYPO then
-		Webhook.sendMessage("[New report][".. config[category] .."]: ".. self:getCustomMarkdown() .. " has reported something wrong close to its position: "  .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ", with the comments: ".. messageCleanse .. ".", announcementChannels["reports"])
+		Webhook.sendMessage("[New report][" .. config[category] .. "]: " .. self:getCustomMarkdown() .. " has reported something wrong close to its position: " .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ", with the comments: " .. messageCleanse .. ".", announcementChannels["reports"])
 	elseif category == BUG_CATEGORY_TECHNICAL then
-		Webhook.sendMessage("[New report][".. config[category] .."]: ".. self:getCustomMarkdown() .. " has reported a technical error in its position: "  .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z ..  ", with the comments: ".. messageCleanse .. ".", announcementChannels["reports"])
+		Webhook.sendMessage("[New report][" .. config[category] .. "]: " .. self:getCustomMarkdown() .. " has reported a technical error in its position: " .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ", with the comments: " .. messageCleanse .. ".", announcementChannels["reports"])
 	elseif category == BUG_CATEGORY_OTHER then
-		Webhook.sendMessage("[New report][".. config[category] .."]: ".. self:getCustomMarkdown() .. " has reported other error in its position: " .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ", with the comments: ".. messageCleanse .. ".", announcementChannels["reports"])
+		Webhook.sendMessage("[New report][" .. config[category] .. "]: " .. self:getCustomMarkdown() .. " has reported other error in its position: " .. playerPosition.x .. ", " .. playerPosition.y .. ", " .. playerPosition.z .. ", with the comments: " .. messageCleanse .. ".", announcementChannels["reports"])
 	end
 
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
@@ -567,28 +566,30 @@ function Player:onGainExperience(target, exp, rawExp)
 	-- Online Players Experience Adjustments
 
 	local expOnlineBonus = {
-		[{2, 99}] = 5,
-		[{100, 199}] = 8,
-		[{200, 349}] = 10,
-		[{350, 449}] = 15,
-		[{450, 699}] = 20,
-		[{700}] = 30
+		[{ 2, 99 }] = 5,
+		[{ 100, 199 }] = 8,
+		[{ 200, 349 }] = 10,
+		[{ 350, 449 }] = 15,
+		[{ 450, 699 }] = 20,
+		[{ 700 }] = 30,
 	}
-	table.sort(expOnlineBonus, function(a, b) return a > b end)
+	table.sort(expOnlineBonus, function(a, b)
+		return a > b
+	end)
 
 	local players = #Game.getPlayers()
-    for range, bonus in pairs(expOnlineBonus) do
-        if players >= range[1] and (players <= (range[2] or math.huge)) then
-            exp = exp * (1 + (bonus / 100))
-            break
-        end
-    end
+	for range, bonus in pairs(expOnlineBonus) do
+		if players >= range[1] and (players <= (range[2] or math.huge)) then
+			exp = exp * (1 + (bonus / 100))
+			break
+		end
+	end
 
 	-- Drop Exp Bonus
 	if self:getStorageValue(6000) >= os.time() then
-        exp = exp * (1 + (10 / 100))
+		exp = exp * (1 + (10 / 100))
 		--self:sendTextMessage(MESSAGE_LOOT, string.format("{%d|%s} You have won {%d|%s} more experience. TEST: {%d|%s}", MESSAGE_COLOR_YELLOW, "[EXP BONUS]", MESSAGE_COLOR_YELLOW, "10%", MESSAGE_COLOR_PURPLE, exp))
-    end
+	end
 
 	-- Soul regeneration
 	local vocation = self:getVocation()

@@ -497,16 +497,16 @@ if NpcHandler == nil then
 	end
 
 	function NpcHandler:onTradeRequest(npc, player, message)
-        if self:checkInteraction(npc, player) then
-            if npc:getName() == 'Hunt Refiller' then
-                if not HUNT_REFILLER[player:getId()] or (HUNT_REFILLER[player:getId()] and HUNT_REFILLER[player:getId()].npc ~= npc:getId()) then
-                    return false
-                end
-            end
-            self:tradeRequest(npc, player, message)
-            return true
-        end
-    end
+		if self:checkInteraction(npc, player) then
+			if npc:getName() == "Hunt Refiller" then
+				if not HUNT_REFILLER[player:getId()] or (HUNT_REFILLER[player:getId()] and HUNT_REFILLER[player:getId()].npc ~= npc:getId()) then
+					return false
+				end
+			end
+			self:tradeRequest(npc, player, message)
+			return true
+		end
+	end
 
 	-- Handles onThink events. If you wish to handle this yourself, please use the CALLBACK_ON_THINK callback.
 	function NpcHandler:onThink(npc, interval)

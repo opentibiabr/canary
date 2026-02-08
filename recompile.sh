@@ -27,7 +27,7 @@ check_architecture() {
 		info "its architecture is ARM"
 		ARCHITECTUREVALUE=1
 	else
-		info "its architecture is ARM $ARCHITECTURE"
+		info "its architecture is $ARCHITECTURE"
 	fi
 }
 

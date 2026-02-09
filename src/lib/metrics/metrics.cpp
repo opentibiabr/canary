@@ -76,7 +76,7 @@ void Metrics::initHistograms() {
 		};
 		// clang-format on
 
-		auto view = metrics_sdk::ViewFactory::Create(name, "Latency", metrics_sdk::AggregationType::kHistogram, std::shared_ptr<metrics_sdk::AggregationConfig>(std::move(aggregationConfig)));
+		auto view = metrics_sdk::ViewFactory::Create(name, "Latency", metrics_sdk::AggregationType::kHistogram, std::move(aggregationConfig));
 		auto provider = metrics_api::Provider::GetMeterProvider();
 		auto* p = static_cast<metrics_sdk::MeterProvider*>(provider.get());
 		p->AddView(std::move(instrumentSelector), std::move(meterSelector), std::move(view));

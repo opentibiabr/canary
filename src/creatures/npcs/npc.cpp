@@ -7,6 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lib/di/container.hpp"
 #include "creatures/npcs/npc.hpp"
 
 #include "config/configmanager.hpp"

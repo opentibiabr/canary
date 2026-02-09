@@ -183,10 +183,12 @@ bool Bank::withdraw(const std::shared_ptr<Player> &player, uint64_t amount) {
 				addedMoney, amount, player->getName(), refund, oldBalance, newBalance
 			);
 		}
-		player->sendTextMessage(
-			MESSAGE_EVENT_ADVANCE,
-			fmt::format("Only {} of {} gold coins were delivered to your inventory. {}", addedMoney, amount, getReturnMessage(returnValue))
-		);
+		if (addedMoney > 0) {
+			player->sendTextMessage(
+				MESSAGE_EVENT_ADVANCE,
+				fmt::format("Only {} of {} gold coins were delivered to your inventory. {}", addedMoney, amount, getReturnMessage(returnValue))
+			);
+		}
 	}
 
 	g_metrics().addCounter("balance_decrease", addedMoney, { { "player", player->getName() }, { "context", "bank_withdraw" } });

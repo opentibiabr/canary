@@ -39,7 +39,9 @@ void Metrics::init(Options opts) {
 		p->AddMetricReader(std::move(prometheusExporter));
 	}
 
-	metrics_api::Provider::SetMeterProvider(std::shared_ptr<metrics_api::MeterProvider>(std::move(provider)));
+	metrics_api::Provider::SetMeterProvider(
+		opentelemetry::nostd::shared_ptr<metrics_api::MeterProvider>(provider.release())
+	);
 	initHistograms();
 }
 

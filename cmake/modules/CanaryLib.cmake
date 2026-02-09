@@ -122,7 +122,7 @@ foreach(
     if(FEATURE_METRICS)
         target_compile_definitions(
             ${core_target}
-            PUBLIC -FEATURE_METRICS
+            PUBLIC FEATURE_METRICS
         )
         target_link_libraries(
             ${core_target}

@@ -54,10 +54,6 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 	}
 }
 
-Npc &Npc::getInstance() {
-	return inject<Npc>();
-}
-
 std::shared_ptr<Npc> Npc::getNpc() {
 	return static_self_cast<Npc>();
 }

@@ -33,8 +33,6 @@ public:
 	Npc(const Npc &) = delete;
 	void operator=(const std::shared_ptr<Npc> &) = delete;
 
-	static Npc &getInstance();
-
 	std::shared_ptr<Npc> getNpc() override;
 	std::shared_ptr<const Npc> getNpc() const override;
 
@@ -149,5 +147,3 @@ private:
 	void handlePlayerMove(const std::shared_ptr<Player> &player, const Position &newPos);
 	void loadPlayerSpectators();
 };
-
-constexpr auto g_npc = Npc::getInstance;

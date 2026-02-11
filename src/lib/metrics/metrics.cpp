@@ -48,7 +48,7 @@ void Metrics::initHistograms() {
 		auto instrumentSelector = metrics_sdk::InstrumentSelectorFactory::Create(metrics_sdk::InstrumentType::kHistogram, name, "us");
 		auto meterSelector = metrics_sdk::MeterSelectorFactory::Create("performance", otelVersion, otelSchema);
 
-		auto aggregationConfig = std::make_unique<metrics_sdk::HistogramAggregationConfig>();
+		auto aggregationConfig = std::make_shared<metrics_sdk::HistogramAggregationConfig>();
 		// TODO: migrate to ExponentialHistogramIndexer when that's available
 		// clang-format off
 		aggregationConfig->boundaries_ = {

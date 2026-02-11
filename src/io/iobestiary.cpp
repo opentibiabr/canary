@@ -7,6 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "lib/di/container.hpp"
 #include "io/iobestiary.hpp"
 
 #include "creatures/combat/combat.hpp"

@@ -8,7 +8,7 @@ target_sources(
 
 if(FEATURE_METRICS)
     target_sources(
-        ${PROJECT_NAME}_lib
+        ${CORE_TARGET_NAME}
         PRIVATE metrics/metrics.cpp
     )
 endif()

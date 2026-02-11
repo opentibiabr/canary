@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-#include <memory>
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"

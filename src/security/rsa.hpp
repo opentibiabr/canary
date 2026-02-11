@@ -22,7 +22,7 @@ public:
 	explicit RSAManager(Logger &logger);
 	~RSAManager() = default;
 
-	void start();
+	void start(const std::string &filename = "key.pem");
 
 	void setKey(const char* pString, const char* qString, int base = 10);
 	void decrypt(char* msg) const;

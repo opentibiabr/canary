@@ -7,7 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "lib/di/container.hpp"
 #include "creatures/npcs/npc.hpp"
 
 #include "config/configmanager.hpp"
@@ -53,10 +52,6 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 			g_logger().warn("Unknown event name: {}", scriptName);
 		}
 	}
-}
-
-Npc &Npc::getInstance() {
-	return inject<Npc>();
 }
 
 std::shared_ptr<Npc> Npc::getNpc() {

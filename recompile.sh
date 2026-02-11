@@ -24,7 +24,7 @@ check_command() {
 
 check_architecture() {
 	if [[ $ARCHITECTURE == "aarch64"* ]]; then
-		info "its architecture is ARM"
+		info "its architecture is $ARCHITECTURE (ARM)"
 		ARCHITECTUREVALUE=1
 	else
 		info "its architecture is $ARCHITECTURE"

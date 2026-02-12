@@ -9,10 +9,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Git
         run: |
@@ -24,7 +20,7 @@ jobs:
 
       - name: Setup Dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check cppcheck libxml2-utils python3-pip
+          sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev luajit lua-check cppcheck libxml2-utils python3-pip
 
       - name: Run clang format lint
         uses: DoozyX/clang-format-lint-action@v0.17
@@ -47,6 +43,7 @@ jobs:
           find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
 
       - name: Commit formatting changes
+        if: github.event_name == 'pull_request'
         uses: EndBug/add-and-commit@v9
         with:
           author_name: GitHub Actions

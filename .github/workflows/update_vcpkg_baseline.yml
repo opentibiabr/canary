@@ -5,13 +5,12 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   update-baseline-on-main:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     if: github.ref == 'refs/heads/main'
     outputs:
       tag: ${{ steps.vcpkg.outputs.tag }}
@@ -93,12 +92,8 @@ jobs:
 
             gh pr edit ${EXISTING_PR} --title "chore: Update vcpkg baseline to ${RELEASE_TAG}"
 
-            COMMENT_BODY="🔄 Updated to vcpkg **${RELEASE_TAG}**
-
-**Previous baseline:** \`${CURRENT_IN_BRANCH}\`
-**New baseline:** \`${NEW_BASELINE}\`
-
-**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/${RELEASE_TAG}"
+            printf -v COMMENT_BODY '🔄 Updated to vcpkg **%s**\n\n**Previous baseline:** `%s`\n**New baseline:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s' \
+              "${RELEASE_TAG}" "${CURRENT_IN_BRANCH}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
             gh pr comment ${EXISTING_PR} --body "${COMMENT_BODY}"
 
@@ -122,18 +117,8 @@ jobs:
             git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
             git push -f origin ${BRANCH_NAME}
 
-            PR_BODY="## vcpkg Baseline Update
-
-This PR updates the vcpkg baseline to the latest release.
-
-**Release:** \`${RELEASE_TAG}\`
-**Previous:** \`${PREVIOUS}\`
-**New:** \`${NEW_BASELINE}\`
-
-**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/${RELEASE_TAG}
-
----
-🤖 This PR is automatically updated when new vcpkg releases are published"
+            printf -v PR_BODY '## vcpkg Baseline Update\n\nThis PR updates the vcpkg baseline to the latest release.\n\n**Release:** `%s`\n**Previous:** `%s`\n**New:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s\n\n---\n🤖 This PR is automatically updated when new vcpkg releases are published' \
+              "${RELEASE_TAG}" "${PREVIOUS}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
             gh pr create \
               --title "chore: Update vcpkg baseline to ${RELEASE_TAG}" \
@@ -146,6 +131,9 @@ This PR updates the vcpkg baseline to the latest release.
 
   update-existing-prs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     needs: update-baseline-on-main
     if: always()
     steps:

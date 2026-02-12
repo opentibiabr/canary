@@ -1482,8 +1482,32 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 		Combat::sendCombatEffect(caster, target->getPosition(), params.impactEffect);
 	}
 
-	if (target && params.combatType == COMBAT_HEALING && target->getMonster()) {
-		if (target != caster) {
+	if (target && params.combatType == COMBAT_HEALING) {
+		if (caster && caster->isSummon() && caster != target) {
+			if (!target->getPlayer()) {
+				return;
+			}
+		}
+
+		if (caster && caster->getPlayer() && target->getMonster()) {
+			return;
+		}
+
+		if (target->isSummon() && caster && caster->getMonster()) {
+			const auto &targetMaster = target->getMaster();
+			if (targetMaster && targetMaster->getPlayer()) {
+				return;
+			}
+		}
+
+		if (caster && caster->getPlayer() && target->isSummon()) {
+			const auto &targetMaster = target->getMaster();
+			if (targetMaster && targetMaster->getPlayer()) {
+				return;
+			}
+		}
+
+		if (caster && caster->getMonster() && target->getPlayer()) {
 			return;
 		}
 	}

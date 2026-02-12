@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "data/**"
+      - "vcpkg.json"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - ".github/workflows/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "data/**"
+      - "vcpkg.json"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - ".github/workflows/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # --- Fast Checks ---
+
+  checks:
+    name: Fast Checks
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    uses: ./.github/workflows/reusable-checks.yml
+    secrets: inherit
+
+  tests-lua:
+    name: Lua Tests
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    uses: ./.github/workflows/reusable-tests-lua.yml
+    secrets: inherit
+
+  # --- Heavy Builds ---
+
+  build-linux:
+    name: Build - Linux
+    needs: [checks, tests-lua]
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    uses: ./.github/workflows/reusable-build-linux.yml
+    secrets: inherit
+
+  build-windows:
+    name: Build - Windows
+    needs: [checks, tests-lua]
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    uses: ./.github/workflows/reusable-build-windows.yml
+    secrets: inherit
+
+  build-macos:
+    name: Build - macOS
+    needs: [checks, tests-lua]
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    uses: ./.github/workflows/reusable-build-macos.yml
+    secrets: inherit
+
+  build-docker:
+    name: Build - Docker
+    needs: [checks, tests-lua]
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || !github.event.pull_request.draft)
+    uses: ./.github/workflows/reusable-build-docker.yml
+    secrets: inherit

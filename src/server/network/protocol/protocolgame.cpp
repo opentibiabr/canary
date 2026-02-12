@@ -63,6 +63,8 @@
 // This "getIteration" function will allow us to get the total number of iterations that run within a specific map
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
+	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
+
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
@@ -2829,6 +2831,7 @@ void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg) const {
 		}
 		party->reloadPrices();
 		party->updateTrackerAnalyzer();
+		player->updatePartyTrackerAnalyzer(true);
 	}
 }
 
@@ -4881,6 +4884,13 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendOpenPvpSituations(uint8_t openPvpSituations) {
+	NetworkMessage msg;
+	msg.addByte(0xB8);
+	msg.addByte(openPvpSituations);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) {
 	if (!player || !container) {
 		return;
@@ -5264,16 +5274,34 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker, true);
-	msg.add<uint16_t>(lockerItems.size());
+	auto totalItemsCountPosition = msg.getBufferPosition();
+	msg.skipBytes(2); // Total items count
+
+	const uint16_t entriesLimit = std::numeric_limits<uint16_t>::max();
+	uint16_t entriesSent = 0;
+	bool limitReached = false;
 	for (const auto &[itemId, tierAndCountMap] : lockerItems) {
 		for (const auto &[tier, count] : tierAndCountMap) {
+			if (entriesSent >= entriesLimit) {
+				limitReached = true;
+				break;
+			}
 			msg.add<uint16_t>(itemId);
 			if (!oldProtocol && Item::items[itemId].upgradeClassification > 0) {
 				msg.addByte(tier);
 			}
 			msg.add<uint16_t>(static_cast<uint16_t>(count));
+			++entriesSent;
+		}
+		if (limitReached) {
+			break;
 		}
 	}
+
+	auto endPosition = msg.getBufferPosition();
+	msg.setBufferPosition(totalItemsCountPosition);
+	msg.add<uint16_t>(entriesSent);
+	msg.setBufferPosition(endPosition);
 
 	writeToOutputBuffer(msg);
 
@@ -8481,10 +8509,21 @@ void ProtocolGame::sendSpecialContainersAvailable() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party) {
+void ProtocolGame::updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force) {
 	if (oldProtocol || !player || !party || !party->getLeader()) {
 		return;
 	}
+
+	if (force) {
+		m_nextPartyAnalyzerUpdate = 0;
+	}
+
+	const uint64_t currentTime = OTSYS_TIME();
+	if (!force && currentTime < m_nextPartyAnalyzerUpdate) {
+		return;
+	}
+
+	m_nextPartyAnalyzerUpdate = currentTime + PARTY_ANALYZER_THROTTLE_MS;
 
 	NetworkMessage msg;
 	msg.addByte(0x2B);
@@ -9750,6 +9789,30 @@ void ProtocolGame::sendDoubleSoundEffect(
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendAmbientSoundEffect(const SoundAmbientEffect_t id) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x85);
+	msg.addByte(0x00);
+	msg.add<uint16_t>(id);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendMusicSoundEffect(const SoundMusicEffect_t id) {
+	if (oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x85);
+	msg.addByte(0x01);
+	msg.add<uint16_t>(id);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::parseOpenWheel(NetworkMessage &msg) {
 	if (oldProtocol || !g_configManager().getBoolean(TOGGLE_WHEELSYSTEM)) {
 		return;
@@ -9793,8 +9856,7 @@ void ProtocolGame::sendDisableLoginMusic() {
 	NetworkMessage msg;
 	msg.addByte(0x85);
 	msg.addByte(0x01);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
+	msg.add<uint16_t>(0x00);
 	writeToOutputBuffer(msg);
 }
 

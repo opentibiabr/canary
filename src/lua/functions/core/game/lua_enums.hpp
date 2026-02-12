@@ -65,6 +65,8 @@ private:
 	static void spelltSoundEnums(lua_State* L);
 	static void monsterSoundEnums(lua_State* L);
 	static void effectsSoundEnums(lua_State* L);
+	static void ambientsSoundEnums(lua_State* L);
+	static void musicsSoundEnums(lua_State* L);
 	static void initWheelEnums(lua_State* L);
 
 	/**

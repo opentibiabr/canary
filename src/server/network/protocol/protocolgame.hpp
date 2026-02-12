@@ -29,6 +29,8 @@ enum SpellGroup_t : uint8_t;
 enum Slots_t : uint8_t;
 enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
+enum SoundMusicEffect_t : uint8_t;
+enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
@@ -331,6 +333,7 @@ private:
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
+	void sendOpenPvpSituations(uint8_t openPvpSituations);
 
 	void sendCancelWalk();
 	void sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint16_t speed);
@@ -391,7 +394,7 @@ private:
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force = false);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
@@ -576,6 +579,10 @@ private:
 
 	uint16_t otclientV8 = 0;
 
+	// ProtocolGame instances are per-connection and handled on the connection thread,
+	// so the fine-grained throttle here does not require cross-thread synchronization.
+	uint64_t m_nextPartyAnalyzerUpdate = 0;
+
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
@@ -585,6 +592,8 @@ private:
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
+	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();

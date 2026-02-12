@@ -888,17 +888,22 @@ void Party::addPlayerLoot(const std::shared_ptr<Player> &player, const std::shar
 	}
 
 	uint32_t count = std::max<uint32_t>(1, item->getItemCount());
-	if (auto it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
-		it->second += count;
-	} else {
-		playerAnalyzer->lootMap.insert({ item->getID(), count });
+	const AnalyzerItemKey key(item->getID(), item->getTier());
+	const auto [lootIt, lootInserted] = playerAnalyzer->lootMap.emplace(key, count);
+	if (!lootInserted) {
+		lootIt->second += count;
 	}
 
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
-		const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
-		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
+		if (averagePrice > 0) {
+			playerAnalyzer->lootPrice += averagePrice * count;
+		} else {
+			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), count } };
+			playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+		}
 	}
 	updateTrackerAnalyzer();
 }
@@ -915,17 +920,22 @@ void Party::addPlayerSupply(const std::shared_ptr<Player> &player, const std::sh
 		membersData.emplace_back(playerAnalyzer);
 	}
 
-	if (auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
-		it->second += 1;
-	} else {
-		playerAnalyzer->supplyMap.insert({ item->getID(), 1 });
+	const AnalyzerItemKey key(item->getID(), item->getTier());
+	const auto [supplyIt, supplyInserted] = playerAnalyzer->supplyMap.emplace(key, 1);
+	if (!supplyInserted) {
+		supplyIt->second += 1;
 	}
 
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		const std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
-		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+		uint64_t averagePrice = g_game().getItemMarketAveragePrice(item->getID(), item->getTier());
+		if (averagePrice > 0) {
+			playerAnalyzer->supplyPrice += averagePrice;
+		} else {
+			const std::map<uint16_t, uint64_t> itemMap { { item->getID(), 1 } };
+			playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+		}
 	}
 	updateTrackerAnalyzer();
 }
@@ -975,21 +985,36 @@ void Party::reloadPrices() const {
 		return;
 	}
 
+	const auto sumMarketPrice = [](const std::map<AnalyzerItemKey, uint64_t> &itemMap, bool buyPrice) {
+		uint64_t total = 0;
+		for (const auto &[key, amount] : itemMap) {
+			auto averagePrice = g_game().getItemMarketAveragePrice(key.itemId, key.tier);
+			if (averagePrice > 0) {
+				total += averagePrice * amount;
+				continue;
+			}
+
+			const std::map<uint16_t, uint64_t> singleItemMap { { key.itemId, amount } };
+			total += g_game().getItemMarketPrice(singleItemMap, buyPrice);
+		}
+		return total;
+	};
+
+	const auto sumLeaderPrice = [&leader](const std::map<AnalyzerItemKey, uint64_t> &itemMap, bool supplyPrice) {
+		uint64_t total = 0;
+		for (const auto &[key, amount] : itemMap) {
+			total += leader->getItemCustomPrice(key.itemId, supplyPrice) * amount;
+		}
+		return total;
+	};
+
 	for (const auto &analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
-			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
-			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
-			continue;
-		}
-
-		analyzer->lootPrice = 0;
-		for (const auto &[itemId, price] : analyzer->lootMap) {
-			analyzer->lootPrice += leader->getItemCustomPrice(itemId) * price;
-		}
-
-		analyzer->supplyPrice = 0;
-		for (const auto &[itemId, price] : analyzer->supplyMap) {
-			analyzer->supplyPrice += leader->getItemCustomPrice(itemId, true) * price;
+			analyzer->lootPrice = sumMarketPrice(analyzer->lootMap, false);
+			analyzer->supplyPrice = sumMarketPrice(analyzer->supplyMap, true);
+		} else {
+			analyzer->lootPrice = sumLeaderPrice(analyzer->lootMap, false);
+			analyzer->supplyPrice = sumLeaderPrice(analyzer->supplyMap, true);
 		}
 	}
 }

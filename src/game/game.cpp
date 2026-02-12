@@ -204,14 +204,14 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
-	offlineTrainingWindow.choices.emplace_back({ "Fist Fighting and Shielding", SKILL_FIST });
-	offlineTrainingWindow.choices.emplace_back({ "Sword Fighting and Shielding", SKILL_SWORD });
-	offlineTrainingWindow.choices.emplace_back({ "Axe Fighting and Shielding", SKILL_AXE });
-	offlineTrainingWindow.choices.emplace_back({ "Club Fighting and Shielding", SKILL_CLUB });
-	offlineTrainingWindow.choices.emplace_back({ "Distance Fighting and Shielding", SKILL_DISTANCE });
-	offlineTrainingWindow.choices.emplace_back({ "Magic Level and Shielding", SKILL_MAGLEVEL });
-	offlineTrainingWindow.buttons.emplace_back({ "Okay", 1 });
-	offlineTrainingWindow.buttons.emplace_back({ "Cancel", 0 });
+	offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
+	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
+	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
+	offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
+	offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
+	offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
+	offlineTrainingWindow.buttons.emplace_back("Okay", 1);
+	offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;

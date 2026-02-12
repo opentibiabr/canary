@@ -90,7 +90,7 @@ enum class WheelStage_t : uint8_t {
 	SPIRITUAL_OUTBURST = 14,
 	ASCETIC = 15,
 
-	STAGE_COUNT = 16
+	STAGE_COUNT // Always last
 };
 
 enum class WheelOnThink_t : uint8_t {
@@ -125,7 +125,7 @@ enum class WheelStat_t : uint8_t {
 	DODGE = 14,
 	CRITICAL_DAMAGE = 15,
 
-	TOTAL_COUNT = 16
+	TOTAL_COUNT // Always last
 };
 
 enum class WheelMajor_t : uint8_t {
@@ -187,7 +187,7 @@ enum class WheelSpellBoost_t : uint8_t {
 	CRITICAL_DAMAGE = 11,
 	CRITICAL_CHANCE = 12,
 
-	TOTAL_COUNT = 13
+	TOTAL_COUNT // Always last
 };
 
 /**

@@ -8025,20 +8025,17 @@ namespace {
 			return false;
 		}
 
-		const Position &playerPosition = player.getPosition();
-		for (const auto &member : party->getMembers()) {
-			const Position &memberPosition = member->getPosition();
+		const Position playerPosition = player.getPosition();
+		return std::any_of(party->getMembers().begin(), party->getMembers().end(), [&](const auto &member) {
+			const Position memberPosition = member->getPosition();
 			if (Position::getDistanceZ(playerPosition, memberPosition) > 0) {
-				continue;
+				return false;
 			}
+
 			const auto offsetX = Position::getDistanceX(playerPosition, memberPosition);
 			const auto offsetY = Position::getDistanceY(playerPosition, memberPosition);
-			if (offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y) {
-				return true;
-			}
-		}
-
-		return false;
+			return offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y;
+		});
 	}
 
 	bool hasTooManyCreaturesNearby(Player &player) {

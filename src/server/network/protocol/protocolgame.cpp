@@ -7203,9 +7203,6 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	// Send open containers after login.
 	if (isLogin) {
 		player->openPlayerContainers();
-	}
-
-	if (isLogin) {
 		player->sendSpellCooldowns();
 	}
 }

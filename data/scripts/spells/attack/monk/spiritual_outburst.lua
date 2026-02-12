@@ -31,7 +31,6 @@ combatRecast:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChainRecast")
 
 function getChainValueRecast(creature)
 	local targets = 6
-	local player = creature:getPlayer()
 	return targets, 2, false
 end
 
@@ -64,7 +63,6 @@ combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 function getChainValue(creature)
 	local targets = 6
-	local player = creature:getPlayer()
 	return targets, 2, false
 end
 
@@ -87,9 +85,9 @@ function spell.onCastSpell(creature, var)
 
 	if player and player:getHarmony() == 5 then
 		addEvent(function(playerGuid, spellVar)
-			local player = Player(playerGuid)
-			if player then
-				combatRecast:execute(player, spellVar)
+			local recastPlayer = Player(playerGuid)
+			if recastPlayer then
+				combatRecast:execute(recastPlayer, spellVar)
 			end
 		end, 1000, player:getGuid(), var)
 	end

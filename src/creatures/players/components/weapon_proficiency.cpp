@@ -1086,22 +1086,13 @@ void WeaponProficiency::applySkillSpellPercentage(CombatDamage &damage, bool hea
 			continue;
 		}
 
-		const auto bonusDamage = m_player.getSkillLevel(skill) * skillPercentageValue;
+		const auto bonusDamage = std::ceil(m_player.getSkillLevel(skill) * skillPercentageValue);
 
 		if (damage.primary.type != COMBAT_NONE) {
-			damage.primary.value = std::abs(damage.primary.value) + std::ceil(bonusDamage);
+			damage.primary.value += (damage.primary.value < 0 ? -bonusDamage : bonusDamage);
 		}
 		if (damage.secondary.type != COMBAT_NONE) {
-			damage.secondary.value = std::abs(damage.secondary.value) + std::ceil(bonusDamage);
-		}
-	}
-
-	if (!healing) {
-		if (damage.primary.type != COMBAT_NONE) {
-			damage.primary.value = -damage.primary.value;
-		}
-		if (damage.secondary.type != COMBAT_NONE) {
-			damage.secondary.value = -damage.secondary.value;
+			damage.secondary.value += (damage.secondary.value < 0 ? -bonusDamage : bonusDamage);
 		}
 	}
 }

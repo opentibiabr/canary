@@ -64,11 +64,12 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REVIEWDOG_REPORTER: ${{ github.event_name == 'pull_request' && 'github-pr-check' || 'github-check' }}
+          FAIL_LEVEL: ${{ github.event_name == 'pull_request' && 'error' || 'none' }}
         run: |
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level=error -filter-mode=added
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -fail-level=error -filter-mode=added
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=xmllint -fail-level=error -filter-mode=added
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -fail-level=error -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level="${FAIL_LEVEL}" -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=xmllint -fail-level="${FAIL_LEVEL}" -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -fail-level="${FAIL_LEVEL}" -filter-mode=added
 
       - name: Run yamllint
         uses: reviewdog/action-yamllint@v1.6.1

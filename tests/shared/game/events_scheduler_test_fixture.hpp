@@ -86,6 +86,25 @@ namespace test::events_scheduler {
 			file.flush();
 		}
 
+		[[nodiscard]] bool writeRuntimeConfigFile() const {
+			std::ofstream file(runtimeConfigFile_);
+			if (!file.is_open()) {
+				return false;
+			}
+			const auto corePath = (repoRoot_ / "tests/fixture/core").generic_string();
+			file << "coreDirectory = \"" << corePath << "\"\n";
+			file.flush();
+			return file.good();
+		}
+
+		void removeRuntimeConfigFile() const {
+			if (runtimeConfigFile_.empty()) {
+				return;
+			}
+			std::error_code ec;
+			std::filesystem::remove(runtimeConfigFile_, ec);
+		}
+
 		std::filesystem::path repoRoot_ {};
 		std::filesystem::path previousPath_ {};
 		std::filesystem::path fixtureEventsJsonPath_ {};

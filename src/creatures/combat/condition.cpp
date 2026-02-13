@@ -538,7 +538,7 @@ ConditionSerene::ConditionSerene(ConditionId_t initId, ConditionType_t initType,
 
 bool ConditionSerene::startCondition(std::shared_ptr<Creature> creature) {
 	if (const auto &player = creature->getPlayer()) {
-		player->sendMonkData(MonkData_t::Serenity, 0x01);
+		player->sendMonkState(MonkData_t::Serenity, 0x01);
 	}
 	return Condition::startCondition(creature);
 }
@@ -549,7 +549,7 @@ bool ConditionSerene::executeCondition(const std::shared_ptr<Creature> &creature
 
 void ConditionSerene::endCondition(std::shared_ptr<Creature> creature) {
 	if (const auto &player = creature->getPlayer()) {
-		player->sendMonkData(MonkData_t::Serenity, 0x00);
+		player->sendMonkState(MonkData_t::Serenity, 0x00);
 	}
 }
 

@@ -146,8 +146,6 @@ int LootFunctions::luaLootSetChance(lua_State* L) {
 	return luaLootSetter<uint32_t, &LootBlock::chance>(L);
 }
 
-// luaLootSetMinCount and luaLootSetMaxCount are now using the template above
-
 int LootFunctions::luaLootSetActionId(lua_State* L) {
 	return luaLootSetter<int32_t, &LootBlock::actionId>(L);
 }

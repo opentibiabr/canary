@@ -63,7 +63,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				g_logger().warn("Missing id for base entry");
 				continue;
 			}
-			[[maybe_unused]] auto &unusedBase = basesImbuement.emplace_back(
+			[[maybe_unused]] const auto &unusedBase = basesImbuement.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
 				baseNode.attribute("name").as_string(),
 				pugi::cast<uint32_t>(baseNode.attribute("price").value()),
@@ -80,7 +80,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				g_logger().warn("Missing id for category entry");
 				continue;
 			}
-			[[maybe_unused]] auto &unusedCategory = categoriesImbuement.emplace_back(
+			[[maybe_unused]] const auto &unusedCategory = categoriesImbuement.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
 				baseNode.attribute("name").as_string(),
 				baseNode.attribute("agressive").as_bool(true)
@@ -168,6 +168,8 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				if (strcasecmp(type.c_str(), "scroll") == 0) {
 					if ((attr = childNode.attribute("value"))) {
 						imbuement.scrollId = pugi::cast<uint16_t>(attr.value());
+					} else {
+						g_logger().warn("Missing scroll ID for imbuement name '{}'", imbuement.name);
 					}
 				} else if (strcasecmp(type.c_str(), "item") == 0) {
 					if (!((attr = childNode.attribute("value")))) {
@@ -190,7 +192,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						continue;
 					}
 
-					[[maybe_unused]] auto &unusedItem = imbuement.items.emplace_back(sourceId, count);
+					[[maybe_unused]] const auto &unusedItem = imbuement.items.emplace_back(sourceId, count);
 
 				} else if (strcasecmp(type.c_str(), "description") == 0) {
 					std::string description = imbuement.name;
@@ -328,6 +330,9 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 
 			if (imbuement.scrollId != 0) {
+				if (scrollIdMap.contains(imbuement.scrollId)) {
+					g_logger().warn("Duplicate scroll ID {} for imbuement '{}', overwriting previous mapping", imbuement.scrollId, imbuement.name);
+				}
 				scrollIdMap[imbuement.scrollId] = &imbuement;
 			}
 		}
@@ -369,9 +374,6 @@ std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> 
 
 	for (auto &[key, value] : imbuementMap) {
 		Imbuement* imbuement = &value;
-		if (!imbuement) {
-			continue;
-		}
 
 		if (scroll && imbuement->getScrollItemID() == 0) {
 			continue;

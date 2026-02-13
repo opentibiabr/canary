@@ -1,4 +1,4 @@
-local saveTimeStr = "00:00"
+local saveTimeStr = configManager.getString(configKeys.GLOBAL_SERVER_SAVE_TIME) or "00:00"
 local isSaveScheduled = false
 
 local function serverSave(interval)

@@ -240,8 +240,9 @@ void WeaponProficiency::save(uint16_t weaponId) const {
 }
 
 bool WeaponProficiency::saveAll() const {
+	auto wp_kv = m_player.kv()->scoped("weapon-proficiency");
 	for (const auto &[weaponId, weaponData] : proficiency) {
-		m_player.kv()->scoped("weapon-proficiency")->set(std::to_string(weaponId), serialize(weaponData));
+		wp_kv->set(std::to_string(weaponId), serialize(weaponData));
 	}
 
 	return true;
@@ -276,7 +277,7 @@ std::vector<ProficiencyPerk> WeaponProficiency::deserializePerks(const ValueWrap
 	std::vector<ProficiencyPerk> perks;
 
 	for (const auto &item : array) {
-		[[maybe_unused]] auto &unusedPerk = perks.emplace_back(deserializePerk(item));
+		perks.emplace_back(deserializePerk(item));
 	}
 
 	return perks;
@@ -567,11 +568,12 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 
 uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 	const auto &experienceArray = getExperienceArray(weaponId);
-	if (proficiencies.find(Item::items[weaponId].proficiencyId) == proficiencies.end()) {
+	auto prof_it = proficiencies.find(Item::items[weaponId].proficiencyId);
+	if (prof_it == proficiencies.end()) {
 		g_logger().error("{} - Proficiency not found for weapon ID: {}", __FUNCTION__, weaponId);
 		return 0;
 	}
-	const auto &proficiencyInfo = proficiencies.at(Item::items[weaponId].proficiencyId);
+	const auto &proficiencyInfo = prof_it->second;
 	if (!proficiency.contains(weaponId)) {
 		return experienceArray[experienceArray.size() - 1];
 	}
@@ -1158,11 +1160,12 @@ std::optional<std::pair<uint8_t, double>> WeaponProficiency::getActiveElementalC
 	const auto weaponId = m_player.getWeaponId(true);
 
 	const auto &perks = getSelectedPerks(weaponId);
-	for (const auto &perk : perks) {
-		if (perk.type == criticalType && perk.element != COMBAT_NONE) {
-			const auto cipElement = getCipbiaElement(perk.element);
-			return std::make_pair(cipElement, perk.value);
-		}
+	auto it = std::find_if(perks.begin(), perks.end(), [&](const auto &perk) {
+		return perk.type == criticalType && perk.element != COMBAT_NONE;
+	});
+
+	if (it != perks.end()) {
+		return std::make_pair(getCipbiaElement(it->element), it->value);
 	}
 
 	return std::nullopt;

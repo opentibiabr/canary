@@ -2,10 +2,9 @@
 runner:
 
   cppcheck:
-    cmd: cppcheck --enable=warning,style,performance,portability --suppress=missingIncludeSystem --template="{file}:{line}:{message}" -i src/protobuf -i vcpkg -i vcpkg_installed -i build -i .git -i cmake-build-debug -i cmake-build-release --max-configs=1 -j 2 src/
+    cmd: cppcheck --enable=warning,style,performance,portability --suppress=missingIncludeSystem --template="{file}:{line}:{severity}:{message}" -i src/protobuf -i vcpkg -i vcpkg_installed -i build -i .git -i cmake-build-debug -i cmake-build-release --max-configs=1 -j 2 src/ | sed 's/:error:/:E:/;s/:warning:/:W:/;s/:style:/:I:/;s/:performance:/:I:/;s/:portability:/:I:/'
     errorformat:
-      - "%f:%l:%m"
-    level: warning
+      - "%f:%l:%t:%m"
 
   luacheck:
     cmd: luacheck --formatter=plain --no-color --no-config --no-global \
@@ -20,10 +19,10 @@ runner:
     cmd: find data/ -name '*.lua' -exec sh -c 'luajit -b "$1" /dev/null' _ {} \;
     errorformat:
       - "%r: %f:%l: %m"
-    level: warning
+    level: error
 
   xmllint:
     cmd: find data/ -name '*.xml' -exec xmllint --noout {} \;
     errorformat:
       - "%f:%l: %m"
-    level: warning
+    level: error

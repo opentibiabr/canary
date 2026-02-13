@@ -253,14 +253,14 @@ WeaponProficiencyData WeaponProficiency::deserialize(const ValueWrapper &val) {
 	}
 
 	WeaponProficiencyData weaponData;
-	if (auto it = map.find("experience"); it != map.end()) {
-		weaponData.experience = static_cast<uint32_t>(it->second->get<IntType>());
+	if (auto expIt = map.find("experience"); expIt != map.end()) {
+		weaponData.experience = static_cast<uint32_t>(expIt->second->get<IntType>());
 	}
-	if (auto it = map.find("mastered"); it != map.end()) {
-		weaponData.mastered = it->second->get<BooleanType>();
+	if (auto masteredIt = map.find("mastered"); masteredIt != map.end()) {
+		weaponData.mastered = masteredIt->second->get<BooleanType>();
 	}
-	if (auto it = map.find("perks"); it != map.end()) {
-		weaponData.perks = deserializePerks(it->second->getVariant());
+	if (auto perksIt = map.find("perks"); perksIt != map.end()) {
+		weaponData.perks = deserializePerks(perksIt->second->getVariant());
 	}
 
 	return weaponData;

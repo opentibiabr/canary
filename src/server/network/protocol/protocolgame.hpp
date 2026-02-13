@@ -111,7 +111,7 @@ public:
 	void AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const;
 
-	uint16_t getVersion() const {
+	[[nodiscard]] uint16_t getVersion() const {
 		return version;
 	}
 

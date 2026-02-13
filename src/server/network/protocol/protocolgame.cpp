@@ -1602,12 +1602,12 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 			if (checkPlayer) {
 				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
 					removedKnown = *it;
-					knownCreatureSet.erase(it);
+					[[maybe_unused]] auto it_erase = knownCreatureSet.erase(it);
 					return;
 				}
 			} else if (!canSee(creature)) {
 				removedKnown = *it;
-				knownCreatureSet.erase(it);
+				[[maybe_unused]] auto it_erase = knownCreatureSet.erase(it);
 				return;
 			}
 		}
@@ -1619,7 +1619,7 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 		}
 
 		removedKnown = *it;
-		knownCreatureSet.erase(it);
+		[[maybe_unused]] auto it_erase = knownCreatureSet.erase(it);
 	} else {
 		removedKnown = 0;
 	}
@@ -2713,8 +2713,8 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 	}
 
 	uint16_t membersSize = 1;
-	for (auto memberPair : teamAssemble->membersMap) {
-		std::shared_ptr<Player> member = g_game().getPlayerByGUID(memberPair.first);
+	for (const auto &[memberGUID, memberStatus] : teamAssemble->membersMap) {
+		std::shared_ptr<Player> member = g_game().getPlayerByGUID(memberGUID);
 		if (member) {
 			membersSize += 1;
 		}
@@ -2732,8 +2732,20 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 	msg.addByte(leader->getVocation()->getClientId());
 	msg.addByte(3);
 
-	for (auto memberPair : teamAssemble->membersMap) {
-		std::shared_ptr<Player> member = g_game().getPlayerByGUID(memberPair.first);
+	const auto countPos = msg.getBufferPosition();
+	uint8_t count = 0;
+
+	for (const auto &[memberGUID, memberStatus] : teamAssemble->membersMap) {
+		auto member = g_game().getPlayerByGUID(memberGUID);
+		if (!member) {
+			continue;
+		}
+
+		++count;
+	}
+
+	for (const auto &[memberGUID, memberStatus] : teamAssemble->membersMap) {
+		auto member = g_game().getPlayerByGUID(memberGUID);
 		if (!member) {
 			continue;
 		}
@@ -2741,8 +2753,11 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset) {
 		msg.addString(member->getName());
 		msg.add<uint16_t>(member->getLevel());
 		msg.addByte(member->getVocation()->getClientId());
-		msg.addByte(memberPair.second);
+		msg.addByte(memberStatus);
 	}
+
+	msg.setBufferPosition(countPos);
+	msg.addByte(count);
 
 	writeToOutputBuffer(msg);
 }
@@ -2797,12 +2812,12 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 	if (teamAssemble->partyBool && party) {
 		for (const std::shared_ptr<Player> &member : party->getMembers()) {
 			if (member && member->getGUID() != player->getGUID()) {
-				teamAssemble->membersMap.insert({ member->getGUID(), 3 });
+				[[maybe_unused]] auto result = teamAssemble->membersMap.insert({ member->getGUID(), 3 });
 			}
 		}
 		auto partyLeader = party->getLeader();
 		if (partyLeader && partyLeader->getGUID() != player->getGUID()) {
-			teamAssemble->membersMap.insert({ partyLeader->getGUID(), 3 });
+			[[maybe_unused]] auto result = teamAssemble->membersMap.insert({ partyLeader->getGUID(), 3 });
 		}
 	}
 }
@@ -2863,9 +2878,9 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg) {
 			}
 
 			uint8_t memberStatus = msg.getByte();
-			for (auto &memberPair : teamAssemble->membersMap) {
-				if (memberPair.first == memberID) {
-					memberPair.second = memberStatus;
+			for (auto &[guid, status] : teamAssemble->membersMap) {
+				if (guid == memberID) {
+					status = memberStatus;
 				}
 			}
 
@@ -2922,11 +2937,11 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 
 		if (action == 1) {
 			leader->sendTextMessage(MESSAGE_STATUS, "There is a new request to join your team.");
-			teamAssemble->membersMap.insert({ player->getGUID(), 1 });
+			[[maybe_unused]] auto result = teamAssemble->membersMap.insert({ player->getGUID(), 1 });
 		} else {
 			for (auto itt = teamAssemble->membersMap.begin(), end = teamAssemble->membersMap.end(); itt != end; ++itt) {
 				if (itt->first == player->getGUID()) {
-					teamAssemble->membersMap.erase(itt);
+					[[maybe_unused]] auto it = teamAssemble->membersMap.erase(itt);
 					break;
 				}
 			}
@@ -3089,7 +3104,7 @@ void ProtocolGame::parseBestiarySendCreatures(NetworkMessage &msg) {
 			if (player->getBestiaryKillCount(raceid) > 0) {
 				auto it = mtype_list.find(raceid);
 				if (it != mtype_list.end()) {
-					race.insert({ raceid, it->second });
+					[[maybe_unused]] auto result = race.insert({ raceid, it->second });
 				}
 			}
 		}
@@ -3943,10 +3958,10 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	msg.addByte(cyclopediaSummary.m_hirelings); // getHirelingsObtained
 
 	std::vector<uint16_t> m_hSkills;
-	for (const auto &it : g_game().getHirelingSkills()) {
-		if (player->kv()->scoped("hireling-skills")->get(it.second)) {
-			m_hSkills.emplace_back(it.first);
-			g_logger().debug("skill id: {}, name: {}", it.first, it.second);
+	for (const auto &[skillId, skillName] : g_game().getHirelingSkills()) {
+		if (player->kv()->scoped("hireling-skills")->get(skillName)) {
+			m_hSkills.emplace_back(skillId);
+			g_logger().debug("skill id: {}, name: {}", skillId, skillName);
 		}
 	}
 	msg.addByte(m_hSkills.size());
@@ -3969,11 +3984,11 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 
 	auto houseItems = player->cyclopedia().getResult(static_cast<uint8_t>(Summary_t::HOUSE_ITEMS));
 	msg.add<uint16_t>(houseItems.size());
-	for (const auto &hItem_it : houseItems) {
-		const ItemType &it = Item::items[hItem_it.first];
+	for (const auto &[itemId, count] : houseItems) {
+		const ItemType &it = Item::items[itemId];
 		msg.add<uint16_t>(it.id); // Item ID
 		msg.addString(it.name);
-		msg.addByte(hItem_it.second);
+		msg.addByte(count);
 	}
 
 	writeToOutputBuffer(msg);
@@ -4432,15 +4447,22 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 	msg.addByte(magic_enum::enum_count<Blessings>() - 1); // Skip Twist of Fate
 
 	auto activeConcoctions = player->getActiveConcoctions();
-	msg.addByte(activeConcoctions.size());
-	for (const auto &concoction : activeConcoctions) {
-		if (concoction.second == 0) {
-			continue;
+	for (const auto &[concoctionId, duration] : activeConcoctions) {
+		if (duration == 0) {
+			g_logger().error(
+				"sendCyclopediaCharacterMiscStats: Player {} has concoction with itemId {} and timeLeft 0, this should not happen.",
+				player->getName(), concoctionId
+			);
+			player->updateConcoction(concoctionId, duration);
 		}
-		msg.add<uint16_t>(concoction.first);
+	}
+
+	msg.addByte(activeConcoctions.size());
+	for (const auto &[concoctionId, duration] : activeConcoctions) {
+		msg.add<uint16_t>(concoctionId);
 		msg.addByte(0x00);
 		msg.addByte(0x00);
-		msg.add<uint32_t>(concoction.second);
+		msg.add<uint32_t>(duration);
 	}
 
 	msg.addByte(0x00);
@@ -8423,7 +8445,7 @@ void ProtocolGame::openImbuementWindow(const std::shared_ptr<Item> &item) {
 	msg.addByte(item->getImbuementSlot());
 
 	// Send imbuement time
-	for (uint8_t slotid = 0; slotid < static_cast<uint8_t>(item->getImbuementSlot()); slotid++) {
+	for (auto slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 			msg.addByte(0x00);
@@ -8892,11 +8914,13 @@ void ProtocolGame::sendOTCRFeatures() {
 	auto totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());
 	msg.add<uint16_t>(totalFeatures);
 	for (auto feature : enabledFeatures) {
-		msg.addByte(static_cast<uint8_t>(feature));
+		auto featureByte = static_cast<uint8_t>(feature);
+		msg.addByte(featureByte);
 		msg.addByte(0x01);
 	}
 	for (auto feature : disabledFeatures) {
-		msg.addByte(static_cast<uint8_t>(feature));
+		auto featureByte = static_cast<uint8_t>(feature);
+		msg.addByte(featureByte);
 		msg.addByte(0x00);
 	}
 	writeToOutputBuffer(msg);
@@ -9265,7 +9289,7 @@ void ProtocolGame::sendUpdateCreature(const std::shared_ptr<Creature> &creature)
 
 void ProtocolGame::getForgeInfoMap(const std::shared_ptr<Item> &item, std::map<uint16_t, std::map<uint8_t, uint16_t>> &itemsMap) const {
 	std::map<uint8_t, uint16_t> itemInfo;
-	itemInfo.insert({ item->getTier(), item->getItemCount() });
+	[[maybe_unused]] auto result = itemInfo.insert({ item->getTier(), item->getItemCount() });
 	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
 	if (!inserted) {
 		auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
@@ -9480,7 +9504,7 @@ void ProtocolGame::parseSendBosstiarySlots() {
 	auto bossesUnlockedList = g_ioBosstiary().getBosstiaryFinished(player);
 	if (auto it = std::ranges::find(bossesUnlockedList.begin(), bossesUnlockedList.end(), boostedBossId);
 	    it != bossesUnlockedList.end()) {
-		bossesUnlockedList.erase(it);
+		[[maybe_unused]] auto it_erase = bossesUnlockedList.erase(it);
 	}
 	auto bossesUnlockedSize = static_cast<uint16_t>(bossesUnlockedList.size());
 

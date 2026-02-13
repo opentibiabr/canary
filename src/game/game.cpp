@@ -204,14 +204,14 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
-	offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
-	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
-	offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
-	offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
-	offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
-	offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
-	offlineTrainingWindow.buttons.emplace_back("Okay", 1);
-	offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
+	[[maybe_unused]] auto &choices1 = offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
+	[[maybe_unused]] auto &choices2 = offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
+	[[maybe_unused]] auto &choices3 = offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
+	[[maybe_unused]] auto &choices4 = offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
+	[[maybe_unused]] auto &choices5 = offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
+	[[maybe_unused]] auto &choices6 = offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
+	[[maybe_unused]] auto &button1 = offlineTrainingWindow.buttons.emplace_back("Okay", 1);
+	[[maybe_unused]] auto &button2 = offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
@@ -10730,7 +10730,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 		influencedMonsters.erase(find);
 
 		if (create) {
-			g_dispatcher().scheduleEvent(
+			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 				10 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
 			);
 		}
@@ -10748,7 +10748,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 		checkForgeEventId(id);
 
 		if (create) {
-			g_dispatcher().scheduleEvent(
+			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 				270 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster"
 			);
 		}
@@ -10907,7 +10907,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		}
 	}
 
-	g_dispatcher().scheduleEvent(
+	[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
 	);
 }

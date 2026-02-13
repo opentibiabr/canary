@@ -10362,7 +10362,7 @@ void Player::triggerTranscendence() {
 			},
 			__FUNCTION__
 		);
-		g_dispatcher().scheduleEvent(task);
+		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(task);
 
 		wheel().sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());

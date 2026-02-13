@@ -2498,11 +2498,9 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 	const auto &player = caster->getPlayer();
 	const auto &monster = caster->getMonster();
 
-	uint16_t baseChance = 0;
-	int32_t baseBonus = 0;
 	if (player) {
-		baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;
-		baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + player->getBaseCritical().damage * 10000;
+		uint16_t baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;
+		int32_t baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + player->getBaseCritical().damage * 10000;
 
 		uint16_t lowBlowRaceid = player->parseRacebyCharm(CHARM_LOW);
 		uint16_t savageBlowRaceid = player->parseRacebyCharm(CHARM_SAVAGE);

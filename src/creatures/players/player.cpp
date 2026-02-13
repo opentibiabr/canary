@@ -2619,7 +2619,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	ImbuementInfo imbuementInfo;
 	if (item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
-		sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		sendImbuementResult("An error occurred, please reopen imbuement window.");
 		return;
 	}
 
@@ -2722,7 +2722,7 @@ void Player::onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot) {
 	ImbuementInfo imbuementInfo;
 	if (!item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
-		sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		sendImbuementResult("An error occurred, please reopen imbuement window.");
 		return;
 	}
 

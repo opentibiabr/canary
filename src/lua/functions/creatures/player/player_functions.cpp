@@ -5255,6 +5255,6 @@ int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
 	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
 
 	player->weaponProficiency().addExperience(experience, itemId);
-	
+
 	return 1;
 }

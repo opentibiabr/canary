@@ -281,7 +281,7 @@ enum class Augment_t : uint8_t {
 	BaseHealing = 3,
 	DurationIncreased = 4, // Not implemented to use in items.xml
 	AditionalTargets = 5, // Not implemented to use in items.xml
-	Cooldown = 6, 
+	Cooldown = 6,
 	SecondaryGroupCooldown = 7, // Not implemented to use in items.xml
 	AffectedAreaEnlarged = 8, // Not implemented to use in items.xml
 	IncreasedDamageReduction = 9, // Not implemented to use in items.xml

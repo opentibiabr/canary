@@ -14,13 +14,17 @@ local function getTimeLeftMs()
 	local h, m = saveTimeStr:match("^(%d+):(%d+)$")
 	h, m = tonumber(h), tonumber(m)
 
-	local now  = os.date("*t")
-	local save = os.time{
-		year = now.year, month = now.month, day = now.day,
-		hour = h, min = m, sec = 0
-	}
+	local now = os.date("*t")
+	local save = os.time({
+		year = now.year,
+		month = now.month,
+		day = now.day,
+		hour = h,
+		min = m,
+		sec = 0,
+	})
 	if save <= os.time() then
-		save = save + 24*60*60 
+		save = save + 24 * 60 * 60
 	end
 	return (save - os.time()) * 1000
 end
@@ -34,7 +38,7 @@ function save.onTime(interval)
 
 	local WARNING = 60 * 1000
 	local timeLeft = getTimeLeftMs()
-	local delay	= math.min(WARNING, timeLeft - 1000)
+	local delay = math.min(WARNING, timeLeft - 1000)
 
 	if delay <= 0 then
 		serverSave(interval)
@@ -42,11 +46,7 @@ function save.onTime(interval)
 	end
 
 	local secs = math.floor(delay / 1000)
-	local msg  = string.format(
-		"The server will save all accounts within %d seconds. " ..
-		"You might lag or freeze for 5 seconds, please find a safe place.",
-		secs
-	)
+	local msg = string.format("The server will save all accounts within %d seconds. " .. "You might lag or freeze for 5 seconds, please find a safe place.", secs)
 
 	Game.broadcastMessage(msg, MESSAGE_GAME_HIGHLIGHT)
 	logger.info(msg)

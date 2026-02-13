@@ -268,7 +268,6 @@ enum MagicEffectClasses : uint16_t {
 	CONST_ME_GREEN_ELECTRIC_SPARK = 302,
 	CONST_ME_PURPLE_ELECTRIC_SPARK = 303,
 
-
 	CONST_ME_LAST
 };
 

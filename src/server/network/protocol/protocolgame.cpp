@@ -4661,7 +4661,7 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 		msg.addByte(key.second); // Augment Type
 		msg.addDouble(value); // Spell Augment Value
 	}
-	
+
 	writeToOutputBuffer(msg);
 }
 

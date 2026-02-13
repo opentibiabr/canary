@@ -2592,7 +2592,7 @@ bool Player::clearAllImbuements(const std::shared_ptr<Item> &item) {
 		return false;
 	}
 
-	for (const auto& [slot, imbuementInfo] : imbuementsToRemove) {
+	for (const auto &[slot, imbuementInfo] : imbuementsToRemove) {
 		if (item->getParent() == getPlayer()) {
 			removeItemImbuementStats(imbuementInfo.imbuement);
 		}

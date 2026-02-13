@@ -22,4 +22,3 @@ end
 weaponProficiency:separator(" ")
 weaponProficiency:groupType("god")
 weaponProficiency:register()
-

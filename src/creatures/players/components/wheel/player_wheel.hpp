@@ -211,8 +211,8 @@ public:
 			addValue(Augment_t::SecondaryGroupCooldown, -(bonus.decrease.secondaryGroupCooldown / 1000.0));
 			addValue(Augment_t::AffectedAreaEnlarged, bonus.increase.area);
 			addValue(Augment_t::IncreasedDamageReduction, bonus.increase.damageReduction / 100.0);
-			//addValue(Augment_t::EnhancedEffect, bonus.decrease.cooldown);
-			//addValue(Augment_t::IncreasedSkill, bonus.decrease.cooldown);
+			// addValue(Augment_t::EnhancedEffect, bonus.decrease.cooldown);
+			// addValue(Augment_t::IncreasedSkill, bonus.decrease.cooldown);
 			addValue(Augment_t::LifeLeech, bonus.leech.life / 100.0);
 			addValue(Augment_t::ManaLeech, bonus.leech.mana / 100.0);
 			addValue(Augment_t::CriticalExtraDamage, bonus.increase.criticalDamage / 100.0);

@@ -41,19 +41,16 @@ int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot(monsterName) will create a new loot item
 	const int argc = lua_gettop(L);
 
-	std::shared_ptr<Loot> loot;
+	std::shared_ptr<Loot> loot = std::make_shared<Loot>();
 
-	std::string monsterName;
 	if (argc >= 2) {
 		if (!Lua::isString(L, 2)) {
 			luaL_error(L, "Loot([monsterName]) expects argument #1 to be a string");
 			return 0;
 		}
 
-		monsterName = Lua::getString(L, 2);
+		std::string monsterName = Lua::getString(L, 2);
 		loot = std::make_shared<Loot>(monsterName);
-	} else {
-		loot = std::make_shared<Loot>();
 	}
 
 	Lua::pushUserdata<Loot>(L, loot);

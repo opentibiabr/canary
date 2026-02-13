@@ -261,8 +261,8 @@ void Items::loadFromProtobuf() {
 		if (object.flags().has_proficiency() && object.flags().proficiency().has_proficiency_id()) {
 			auto &proficiencies = WeaponProficiency::getProficiencies();
 			const auto proficiencyId = static_cast<uint16_t>(object.flags().proficiency().proficiency_id());
-			auto it = proficiencies.find(proficiencyId);
-			if (it == proficiencies.end()) {
+			auto profIt = proficiencies.find(proficiencyId);
+			if (profIt == proficiencies.end()) {
 				g_logger().warn("[Items::loadFromProtobuf] - Unknown Proficiency ID '{}'", proficiencyId);
 			} else {
 				iType.proficiencyId = proficiencyId;

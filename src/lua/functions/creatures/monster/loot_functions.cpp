@@ -38,8 +38,24 @@ void LootFunctions::init(lua_State* L) {
 }
 
 int LootFunctions::luaCreateLoot(lua_State* L) {
-	// Loot() will create a new loot item
-	auto loot = std::make_shared<Loot>();
+	// Loot(monsterName) will create a new loot item
+	const int argc = lua_gettop(L);
+
+	std::shared_ptr<Loot> loot;
+
+	std::string monsterName;
+	if (argc >= 1) {
+		if (!Lua::isString(L, 2)) {
+			luaL_error(L, "Loot([monsterName]) expects argument #1 to be a string");
+			return 0;
+		}
+
+		monsterName = Lua::getString(L, 2);
+		loot = std::make_shared<Loot>(monsterName);
+	} else {
+		loot = std::make_shared<Loot>();
+	}
+
 	Lua::pushUserdata<Loot>(L, loot);
 	Lua::setMetatable(L, -1, "Loot");
 	return 1;
@@ -68,12 +84,14 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
 	if (loot && Lua::isString(L, 2)) {
 		auto name = Lua::getString(L, 2);
+		const auto &monsterName = loot->monsterName;
+		const auto monsterContext = monsterName.empty() ? "" : " (monster: " + monsterName + ")";
 		const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
-			                "Unknown loot item '{}'",
-			                name);
+			                "Unknown loot item '{}'{}",
+			                name, monsterContext);
 			lua_pushnil(L);
 			return 1;
 		}
@@ -88,8 +106,8 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 				conflictingIds += std::to_string(it->second);
 			}
 			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
-			                "Duplicate item name '{}' found with IDs: [{}]. Using first ID: {}",
-			                name, conflictingIds, ids.first->second);
+			                "Duplicate item name '{}' found with IDs: [{}]. Using first ID: {}{}",
+			                name, conflictingIds, ids.first->second, monsterContext);
 		}
 
 		loot->lootBlock.id = ids.first->second;

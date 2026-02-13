@@ -7233,25 +7233,16 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
-		uint8_t perfectShotRange = 0;
-
-		if (itemType.abilities && itemType.abilities->perfectShotRange) {
-			perfectShotRange = itemType.abilities->perfectShotRange;
-		} else {
-			perfectShotRange = perfectShotBonus.range;
-		}
-
-		if (perfectShotRange <= 0) {
+		if (!itemType.abilities || itemType.abilities->perfectShotRange == 0 || itemType.abilities->perfectShotDamage == 0) {
 			continue;
 		}
+		perfectShotRange = itemType.abilities->perfectShotRange;
 
 		if (perfectShotRange == range) {
-			if (itemType.abilities) {
-				result += itemType.abilities->perfectShotDamage;
-				const uint16_t charges = item->getCharges();
-				if (useCharges && charges != 0) {
-					g_game().transformItem(item, item->getID(), charges - 1);
-				}
+			result += itemType.abilities->perfectShotDamage;
+			const uint16_t charges = item->getCharges();
+			if (useCharges && charges != 0) {
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 		}
 	}

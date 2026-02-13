@@ -725,8 +725,6 @@ int32_t Player::getDefense(bool sendToClient /* = false*/) const {
 
 	if (weapon) {
 		defenseValue = weapon->getDefense() + weapon->getExtraDefense();
-		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
-		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::WEAPON_SHIELD_MODIFIER);
 		defenseSkill = getWeaponSkill(weapon);
 	}
 
@@ -740,6 +738,9 @@ int32_t Player::getDefense(bool sendToClient /* = false*/) const {
 		}
 		defenseSkill = getSkillLevel(SKILL_SHIELD);
 	}
+
+	defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
+	defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::WEAPON_SHIELD_MODIFIER);
 
 	if (defenseSkill == 0) {
 		switch (fightMode) {
@@ -764,8 +765,6 @@ uint16_t Player::getDefenseEquipment() const {
 
 	if (weapon) {
 		defenseValue = weapon->getDefense() + weapon->getExtraDefense();
-		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
-		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::WEAPON_SHIELD_MODIFIER);
 	}
 
 	if (shield) {
@@ -774,6 +773,9 @@ uint16_t Player::getDefenseEquipment() const {
 			defenseValue += wheel().getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
 		}
 	}
+
+	defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
+	defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::WEAPON_SHIELD_MODIFIER);
 
 	return defenseValue;
 }

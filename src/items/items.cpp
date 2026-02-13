@@ -17,6 +17,7 @@
 #include "utils/pugicast.hpp"
 #include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
 
 #include <appearances.pb.h>
 

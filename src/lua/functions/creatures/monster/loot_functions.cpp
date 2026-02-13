@@ -44,7 +44,7 @@ int LootFunctions::luaCreateLoot(lua_State* L) {
 	std::shared_ptr<Loot> loot;
 
 	std::string monsterName;
-	if (argc >= 1) {
+	if (argc >= 2) {
 		if (!Lua::isString(L, 2)) {
 			luaL_error(L, "Loot([monsterName]) expects argument #1 to be a string");
 			return 0;

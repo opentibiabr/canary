@@ -330,8 +330,8 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 
 			if (imbuement.scrollId != 0) {
-				auto [it, inserted] = scrollIdMap.emplace(imbuement.scrollId, &imbuement);
-				if (!inserted) {
+				auto [it, scrollInserted] = scrollIdMap.emplace(imbuement.scrollId, &imbuement);
+				if (!scrollInserted) {
 					g_logger().warn("Duplicate scroll ID {} for imbuement '{}', already mapped to '{}'", imbuement.scrollId, imbuement.name, it->second->getName());
 					it->second = &imbuement;
 				}

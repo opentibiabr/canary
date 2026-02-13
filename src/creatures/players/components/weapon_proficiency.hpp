@@ -88,7 +88,7 @@ public:
 	[[nodiscard]] uint32_t getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const;
 	void addSpellBonus(uint16_t spellId, const WeaponProficiencySpells::Bonus &bonus);
 
-	void addPerfectShotBonus(uint8_t range, uint8_t damage);
+	void setPerfectShotBonus(uint8_t range, double_t damage);
 	[[nodiscard]] const WeaponProficiencyPerfectShotBonus &getPerfectShotBonus() const;
 	void resetPerfectShotBonus();
 

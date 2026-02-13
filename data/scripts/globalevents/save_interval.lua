@@ -16,17 +16,17 @@ end
 
 local function getTimeLeftMs(timeStr)
 	if type(timeStr) ~= "string" then
-		return 0
+		return nil
 	end
 
-	local hStr, mStr = timeStr:match("^(%d%d):(%d%d)$")
+	local hStr, mStr = timeStr:match("^(%d+):(%d+)$")
 	if not hStr or not mStr then
-		return 0
+		return nil
 	end
 
 	local h, m = tonumber(hStr), tonumber(mStr)
 	if not h or not m or h < 0 or h > 23 or m < 0 or m > 59 then
-		return 0
+		return nil
 	end
 
 	local nowTs = os.time()
@@ -61,7 +61,7 @@ function save.onTime(interval)
 	local WARNING = 60 * 1000
 	local timeLeft = getTimeLeftMs(saveTimeStr)
 
-	if timeLeft > WARNING then
+	if not timeLeft or timeLeft > WARNING then
 		return true
 	end
 

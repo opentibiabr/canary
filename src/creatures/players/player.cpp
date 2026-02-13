@@ -12612,7 +12612,7 @@ void Player::sendSpellCooldowns() {
 
 void Player::sendWeaponProficiency(uint16_t weaponId /* = 0 */) {
 	if (weaponId == 0) {
-		const auto &weapon = getWeapon();
+		const auto &weapon = getWeapon(true);
 		if (weapon) {
 			weaponId = weapon->getID();
 		}

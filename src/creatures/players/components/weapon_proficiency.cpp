@@ -428,7 +428,7 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 				addSkillBonus(selectedPerk.type == LIFE_LEECH ? SKILL_LIFE_LEECH_AMOUNT : SKILL_MANA_LEECH_AMOUNT, selectedPerk.value * 10000);
 				break;
 			case PERFECT_SHOT_DAMAGE:
-				addPerfectShotBonus(selectedPerk.range, selectedPerk.value);
+				setPerfectShotBonus(selectedPerk.range, selectedPerk.value);
 				break;
 			case SKILL_PERCENTAGE_AUTO_ATTACK:
 				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::AutoAttack, selectedPerk.value);
@@ -575,6 +575,10 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 		return 0;
 	}
 	const auto &proficiencyInfo = prof_it->second;
+	if (experienceArray.empty()) {
+		return 0;
+	}
+
 	if (!proficiency.contains(weaponId)) {
 		return experienceArray[experienceArray.size() - 1];
 	}
@@ -907,8 +911,8 @@ void WeaponProficiency::addSpellBonus(uint16_t spellId, const WeaponProficiencyS
 	m_spellsBonuses[spellId] = bonus;
 }
 
-void WeaponProficiency::addPerfectShotBonus(uint8_t range, uint8_t damage) {
-	m_perfectShot.range += range;
+void WeaponProficiency::setPerfectShotBonus(uint8_t range, double_t damage) {
+	m_perfectShot.range = range;
 	m_perfectShot.damage += damage;
 }
 

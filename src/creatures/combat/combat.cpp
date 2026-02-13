@@ -742,7 +742,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			damage.secondary.value *= attackerPlayer->getBuff(BUFF_AUTOATTACKDEALT) / 100.;
 		}
 
-		if (attackerPlayer && attackerPlayer->getPlayerVocationEnum() == VOCATION_MONK_CIP && damage.origin == ORIGIN_FIST) {
+		if (attackerPlayer->getPlayerVocationEnum() == VOCATION_MONK_CIP && damage.origin == ORIGIN_FIST) {
 			auto bonusMantra = attackerPlayer->getMantra();
 			auto bonusAscetic = attackerPlayer->wheel().getStage(WheelStage_t::ASCETIC);
 			damage.primary.value -= bonusMantra * bonusAscetic;
@@ -755,11 +755,9 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			}
 		}
 
-		if (attackerPlayer) {
-			attackerPlayer->weaponProficiency().applySkillAutoAttackPercentage(damage);
-			attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage);
-			attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage, true);
-		}
+		attackerPlayer->weaponProficiency().applySkillAutoAttackPercentage(damage);
+		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage);
+		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage, true);
 
 		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);

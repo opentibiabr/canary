@@ -2812,12 +2812,12 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg) {
 	if (teamAssemble->partyBool && party) {
 		for (const std::shared_ptr<Player> &member : party->getMembers()) {
 			if (member && member->getGUID() != player->getGUID()) {
-				[[maybe_unused]] auto result = teamAssemble->membersMap.insert({ member->getGUID(), 3 });
+				[[maybe_unused]] auto [it_member, inserted_member] = teamAssemble->membersMap.insert({ member->getGUID(), 3 });
 			}
 		}
 		auto partyLeader = party->getLeader();
 		if (partyLeader && partyLeader->getGUID() != player->getGUID()) {
-			[[maybe_unused]] auto result = teamAssemble->membersMap.insert({ partyLeader->getGUID(), 3 });
+			[[maybe_unused]] auto [it_leader, inserted_leader] = teamAssemble->membersMap.insert({ partyLeader->getGUID(), 3 });
 		}
 	}
 }
@@ -2937,7 +2937,7 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg) {
 
 		if (action == 1) {
 			leader->sendTextMessage(MESSAGE_STATUS, "There is a new request to join your team.");
-			[[maybe_unused]] auto result = teamAssemble->membersMap.insert({ player->getGUID(), 1 });
+			[[maybe_unused]] auto [it_request, inserted_request] = teamAssemble->membersMap.insert({ player->getGUID(), 1 });
 		} else {
 			for (auto itt = teamAssemble->membersMap.begin(), end = teamAssemble->membersMap.end(); itt != end; ++itt) {
 				if (itt->first == player->getGUID()) {
@@ -3104,7 +3104,7 @@ void ProtocolGame::parseBestiarySendCreatures(NetworkMessage &msg) {
 			if (player->getBestiaryKillCount(raceid) > 0) {
 				auto it = mtype_list.find(raceid);
 				if (it != mtype_list.end()) {
-					[[maybe_unused]] auto result = race.insert({ raceid, it->second });
+					[[maybe_unused]] auto [it_race, inserted_race] = race.try_emplace(raceid, it->second);
 				}
 			}
 		}
@@ -3960,7 +3960,7 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	std::vector<uint16_t> m_hSkills;
 	for (const auto &[skillId, skillName] : g_game().getHirelingSkills()) {
 		if (player->kv()->scoped("hireling-skills")->get(skillName)) {
-			m_hSkills.emplace_back(skillId);
+			[[maybe_unused]] auto &skill_ref = m_hSkills.emplace_back(skillId);
 			g_logger().debug("skill id: {}, name: {}", skillId, skillName);
 		}
 	}
@@ -6025,7 +6025,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page) {
 		pageLastEntry = historyVectorLen > currentPage * 9 ? std::clamp<uint16_t>(historyVectorLen - currentPage * 9, 0, std::numeric_limits<uint16_t>::max()) : 0;
 
 		for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
-			historyPerPage.emplace_back(historyVector[entry - 1]);
+			[[maybe_unused]] auto &history_ref = historyPerPage.emplace_back(historyVector[entry - 1]);
 		}
 	}
 
@@ -7487,6 +7487,7 @@ void ProtocolGame::sendOutfitWindow() {
 			}
 
 			protocolOutfits.emplace_back(outfit->name, outfit->lookType, addons);
+			[[maybe_unused]] auto &outfit_ref = protocolOutfits.back();
 			// Game client doesn't allow more than 100 outfits
 			if (protocolOutfits.size() == 150) {
 				break;
@@ -8914,12 +8915,12 @@ void ProtocolGame::sendOTCRFeatures() {
 	auto totalFeatures = static_cast<uint16_t>(enabledFeatures.size() + disabledFeatures.size());
 	msg.add<uint16_t>(totalFeatures);
 	for (auto feature : enabledFeatures) {
-		auto featureByte = static_cast<uint8_t>(feature);
+		uint8_t featureByte = feature;
 		msg.addByte(featureByte);
 		msg.addByte(0x01);
 	}
 	for (auto feature : disabledFeatures) {
-		auto featureByte = static_cast<uint8_t>(feature);
+		uint8_t featureByte = feature;
 		msg.addByte(featureByte);
 		msg.addByte(0x00);
 	}

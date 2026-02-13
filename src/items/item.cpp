@@ -2077,7 +2077,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		if (it.elementalBond != COMBAT_NONE) {
-			[[maybe_unused]] auto &desc = descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
+			[[maybe_unused]] auto &[desc_key, desc_val] = descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
 		}
 	} else {
 		if (!it.description.empty()) {
@@ -2267,11 +2267,11 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		if (it.upgradeClassification > 0) {
-			[[maybe_unused]] auto &desc1 = descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
+			[[maybe_unused]] auto &[desc1_key, desc1_val] = descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
 		}
 
 		if (it.elementalBond != COMBAT_NONE) {
-			[[maybe_unused]] auto &desc2 = descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
+			[[maybe_unused]] auto &[desc2_key, desc2_val] = descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
 		}
 	}
 	descriptions.shrink_to_fit();

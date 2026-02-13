@@ -204,14 +204,14 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
-	[[maybe_unused]] auto &choices1 = offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
-	[[maybe_unused]] auto &choices2 = offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
-	[[maybe_unused]] auto &choices3 = offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
-	[[maybe_unused]] auto &choices4 = offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
-	[[maybe_unused]] auto &choices5 = offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
-	[[maybe_unused]] auto &choices6 = offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
-	[[maybe_unused]] auto &button1 = offlineTrainingWindow.buttons.emplace_back("Okay", 1);
-	[[maybe_unused]] auto &button2 = offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
+	[[maybe_unused]] auto &[choices1_text, choices1_value] = offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
+	[[maybe_unused]] auto &[choices2_text, choices2_value] = offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
+	[[maybe_unused]] auto &[choices3_text, choices3_value] = offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
+	[[maybe_unused]] auto &[choices4_text, choices4_value] = offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
+	[[maybe_unused]] auto &[choices5_text, choices5_value] = offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
+	[[maybe_unused]] auto &[choices6_text, choices6_value] = offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
+	[[maybe_unused]] auto &[button1_text, button1_value] = offlineTrainingWindow.buttons.emplace_back("Okay", 1);
+	[[maybe_unused]] auto &[button2_text, button2_value] = offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;

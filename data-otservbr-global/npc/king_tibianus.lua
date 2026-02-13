@@ -196,6 +196,7 @@ local node1 = keywordHandler:addKeyword({ "promot" }, StdModule.say, {
 })
 node1:addChildKeyword({ "yes" }, StdModule.promotePlayer, {
 	npcHandler = npcHandler,
+	monk = true,
 	cost = 20000,
 	level = 20,
 	text = "Congratulations! You are now promoted.",

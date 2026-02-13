@@ -380,22 +380,6 @@ LeverUnique = {
 		itemPos = { x = 32873, y = 32263, z = 14 },
 	},
 	-- The Pits of Inferno Quest
-	[2025] = {
-		itemId = 2772,
-		itemPos = { x = 32820, y = 32321, z = 10 },
-	},
-	[2026] = {
-		itemId = 2772,
-		itemPos = { x = 32820, y = 32345, z = 10 },
-	},
-	[2027] = {
-		itemId = 2772,
-		itemPos = { x = 32847, y = 32339, z = 10 },
-	},
-	[2028] = {
-		itemId = 2772,
-		itemPos = { x = 32847, y = 32327, z = 10 },
-	},
 	[2050] = {
 		itemId = 2772,
 		itemPos = { x = 32874, y = 32334, z = 12 },

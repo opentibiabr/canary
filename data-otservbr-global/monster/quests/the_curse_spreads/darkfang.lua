@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "bonebreaker", chance = 400 },
 	{ name = "dreaded cleaver", chance = 400 },
 	{ name = "werewolf amulet", chance = 400 },
-	{ name = "sai", chance = 250 },
+	{ name = "traditional sai", chance = 250 },
 	{ id = 7394, chance = 13600000 }, -- wolf trophy
 	{ name = "silver token", chance = 250 },
 	{ name = "wolf backpack", chance = 100 },

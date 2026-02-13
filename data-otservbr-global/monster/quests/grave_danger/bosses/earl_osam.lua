@@ -87,6 +87,7 @@ monster.loot = {
 	{ name = "bullseye potion", minCount = 0, maxCount = 10, chance = 12000 },
 	{ name = "mastermind potion", minCount = 0, maxCount = 10, chance = 12000 },
 	{ name = "berserk potion", minCount = 0, maxCount = 10, chance = 12000 },
+	{ name = "transcendence potion", minCount = 0, maxCount = 10, chance = 12000 },
 	{ name = "piece of draconian steel", minCount = 0, maxCount = 3, chance = 9000 },
 	{ id = 3039, minCount = 0, maxCount = 2, chance = 12000 }, -- red gem
 	{ name = "silver token", minCount = 0, maxCount = 2, chance = 9500 },

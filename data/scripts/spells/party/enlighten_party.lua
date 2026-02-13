@@ -30,7 +30,7 @@ function spell.onCastSpell(creature, var)
 		position:sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
-	
+
 	membersList[#membersList + 1] = party:getLeader()
 
 	local affectedList = {}

@@ -9094,9 +9094,7 @@ ReturnValue Player::addItemBatch(
 
 	uint32_t remaining = totalCount;
 	const uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
-	const bool hasFreeSlots =
-		std::ranges::any_of(inventory, [](const auto &it) { return !it; }) ||
-		std::ranges::any_of(containersCache, [](const auto &c) { return c && c->capacity() > c->size(); });
+	const bool hasFreeSlots = std::ranges::any_of(inventory, [](const auto &it) { return !it; }) || std::ranges::any_of(containersCache, [](const auto &c) { return c && c->capacity() > c->size(); });
 
 	AddItemBatchState state { totalCount, remaining, actuallyAdded };
 

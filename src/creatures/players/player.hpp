@@ -1478,8 +1478,8 @@ public:
 
 	void sendSpellCooldowns();
 
-	void updateFood(uint16_t itemId, uint16_t timeLeft);
-	const std::map<uint16_t, uint16_t> &getActiveFoods() const;
+	void updateFood(uint16_t itemId, uint32_t timeLeft);
+	const std::map<uint16_t, uint32_t> &getActiveFoods() const;
 	bool isFoodActive(uint16_t itemId) const;
 
 private:
@@ -1572,7 +1572,7 @@ private:
 	std::map<uint8_t, int64_t> moduleDelayMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
-	std::map<uint16_t, uint16_t> m_activeFoods;
+	std::map<uint16_t, uint32_t> m_activeFoods;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 

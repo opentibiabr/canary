@@ -4629,7 +4629,7 @@ int PlayerFunctions::luaPlayerUpdateFood(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	player->updateFood(Lua::getNumber<uint16_t>(L, 2), Lua::getNumber<uint16_t>(L, 3));
+	player->updateFood(Lua::getNumber<uint16_t>(L, 2), Lua::getNumber<uint32_t>(L, 3));
 	Lua::pushBoolean(L, true);
 	return 1;
 }

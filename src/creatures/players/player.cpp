@@ -5333,24 +5333,23 @@ bool Player::isConcoctionActive(Concoction_t concotion) const {
 }
 
 // Food system
-void Player::updateFood(uint16_t itemId, uint16_t timeLeft) {
+void Player::updateFood(uint16_t itemId, uint32_t timeLeft) {
 	if (timeLeft == 0) {
-		m_activeFoods.erase(itemId);
+		[[maybe_unused]] auto erased = m_activeFoods.erase(itemId);
 	} else {
 		m_activeFoods[itemId] = timeLeft;
 	}
 }
 
-const std::map<uint16_t, uint16_t> &Player::getActiveFoods() const {
+const std::map<uint16_t, uint32_t> &Player::getActiveFoods() const {
 	return m_activeFoods;
 }
 
 bool Player::isFoodActive(uint16_t itemId) const {
-	if (!m_activeFoods.contains(itemId)) {
-		return false;
+	if (auto it = m_activeFoods.find(itemId); it != m_activeFoods.end()) {
+		return it->second > 0;
 	}
-	const auto timeLeft = m_activeFoods.at(itemId);
-	return timeLeft > 0;
+	return false;
 }
 
 bool Player::checkAutoLoot(bool isBoss) const {

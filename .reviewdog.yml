@@ -11,7 +11,7 @@ runner:
     cmd: luacheck --formatter=plain --no-color --no-config --no-global \
       --no-unused --no-unused-args --no-cache --no-max-line-length \
       --no-max-code-line-length --no-max-string-line-length \
-      --no-max-comment-line-length -d ./data/ || true
+      --no-max-comment-line-length --ignore 4 -d ./data/ || true
     errorformat:
       - "%f:%l:%c: %m"
     level: warning

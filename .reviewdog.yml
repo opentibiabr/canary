@@ -2,7 +2,7 @@
 runner:
 
   cppcheck:
-    cmd: cppcheck --enable=warning,style,performance,portability --suppress=missingIncludeSystem --template="{file}:{line}:{severity}:{message}" -i src/protobuf -i vcpkg -i vcpkg_installed -i build -i .git -i cmake-build-debug -i cmake-build-release --max-configs=1 -j 2 src/ | sed 's/:error:/:E:/;s/:warning:/:W:/;s/:style:/:I:/;s/:performance:/:I:/;s/:portability:/:I:/'
+    cmd: cppcheck --enable=warning,style,performance,portability --suppress=missingIncludeSystem --template="{file}:{line}:{severity}:{message}" -i src/protobuf -i vcpkg -i vcpkg_installed -i build -i .git -i cmake-build-debug -i cmake-build-release --max-configs=1 -j 2 src/ 2>&1 | sed 's/:error:/:E:/;s/:warning:/:W:/;s/:style:/:I:/;s/:performance:/:I:/;s/:portability:/:I:/'
     errorformat:
       - "%f:%l:%t:%m"
 

@@ -2608,8 +2608,8 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			}
 		}
 	} else if (monster) {
-		baseChance = monster->getCriticalChance() * 100;
-		baseBonus = monster->getCriticalDamage() * 100;
+		uint16_t baseChance = monster->getCriticalChance() * 100;
+		int32_t baseBonus = monster->getCriticalDamage() * 100;
 		baseBonus += damage.criticalDamage;
 		double multiplier = 1.0 + static_cast<double>(baseBonus) / 10000;
 		baseChance += static_cast<uint16_t>(damage.criticalChance);

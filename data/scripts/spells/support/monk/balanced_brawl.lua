@@ -4,7 +4,7 @@ combat:setArea(createCombatArea(AREA_BALANCED_BRAWL))
 
 local challengeTime = 16 * 1000
 
-local function onTargetCreature_BalancedBrawl(creature, target)
+function onTargetCreature_BalancedBrawl(creature, target)
 	if target and target:isMonster() then
 		target:changeTargetDistance(1, challengeTime)
 	end

@@ -893,7 +893,7 @@ void WeaponProficiency::addSpellBonus(uint16_t spellId, const WeaponProficiencyS
 		it->second.decrease.manaCost += bonus.decrease.manaCost;
 		it->second.decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
 		it->second.increase.additionalTarget += bonus.increase.additionalTarget;
-		it->second.increase.area += bonus.increase.area;
+		it->second.increase.area = it->second.increase.area || bonus.increase.area;
 		it->second.increase.criticalChance += bonus.increase.criticalChance;
 		it->second.increase.criticalDamage += bonus.increase.criticalDamage;
 		it->second.increase.damage += bonus.increase.damage;

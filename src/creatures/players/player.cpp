@@ -7236,7 +7236,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 		if (!itemType.abilities || itemType.abilities->perfectShotRange == 0 || itemType.abilities->perfectShotDamage == 0) {
 			continue;
 		}
-		perfectShotRange = itemType.abilities->perfectShotRange;
+		uint8_t perfectShotRange = itemType.abilities->perfectShotRange;
 
 		if (perfectShotRange == range) {
 			result += itemType.abilities->perfectShotDamage;

@@ -110,12 +110,11 @@ struct ProficiencyLevel {
 
 struct Proficiency {
 	Proficiency() = default;
-	Proficiency(uint16_t id, uint16_t weaponId) :
-		id(id), weaponId(weaponId) { }
+	explicit Proficiency(uint16_t id) :
+		id(id) { }
 
 	uint16_t id = 0;
 	std::vector<ProficiencyLevel> level = {};
-	uint16_t weaponId = 0;
 	uint8_t maxLevel = 0;
 };
 

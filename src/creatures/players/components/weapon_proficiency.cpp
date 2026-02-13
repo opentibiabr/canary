@@ -215,11 +215,18 @@ void WeaponProficiency::load() {
 			continue;
 		}
 
+		// Validate that the stored weapon ID has a valid proficiencyId
+		const auto weaponId = static_cast<uint16_t>(parsedId);
+		if (weaponId == 0 || weaponId >= Item::items.size() || Item::items[weaponId].proficiencyId == 0) {
+			g_logger().warn("{} - Skipping invalid weapon proficiency data for weapon ID '{}' (player: {})", __FUNCTION__, parsedId, m_player.getName());
+			continue;
+		}
+
 		const auto &kv = wp_kv->get(key);
 		if (!kv.has_value()) {
 			continue;
 		}
-		proficiency[parsedId] = deserialize(kv.value());
+		proficiency[weaponId] = deserialize(kv.value());
 	}
 }
 
@@ -556,7 +563,12 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	weaponId = weaponId > 0 ? weaponId : m_player.getWeaponId(true);
 
 	if (weaponId == 0) {
-		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
+		return;
+	}
+
+	// Validate that the item has a valid proficiency
+	if (weaponId >= Item::items.size() || Item::items[weaponId].proficiencyId == 0) {
+		g_logger().debug("{} - Weapon ID '{}' has no proficiency assigned", __FUNCTION__, weaponId);
 		return;
 	}
 

@@ -265,12 +265,6 @@ void Items::loadFromProtobuf() {
 				g_logger().warn("[Items::loadFromProtobuf] - Unknown Proficiency ID '{}'", proficiencyId);
 			} else {
 				iType.proficiencyId = proficiencyId;
-				auto &proficiency = it->second;
-				// Only map the first item to this proficiency ID
-				if (proficiency.weaponId == 0) {
-					proficiency.weaponId = iType.id;
-				}
-				// If already mapped, silently skip (don't overwrite)
 			}
 		}
 

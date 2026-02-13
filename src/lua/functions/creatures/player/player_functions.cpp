@@ -5261,6 +5261,13 @@ int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
 		return 1;
 	}
 
+	// Validate that the item has a valid proficiency
+	if (itemId > 0 && (itemId >= Item::items.size() || Item::items[itemId].proficiencyId == 0)) {
+		g_logger().warn("[{}] - Item ID '{}' has no proficiency assigned", __FUNCTION__, itemId);
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
 	player->weaponProficiency().addExperience(experience, itemId);
 
 	Lua::pushBoolean(L, true);

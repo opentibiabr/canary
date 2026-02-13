@@ -287,6 +287,10 @@ void IOLoginData::saveOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &pla
 	player->wheel().saveKVModGrades();
 	player->wheel().saveKVScrolls();
 
+	if (!player->weaponProficiency().saveAll()) {
+		throw DatabaseException("[IOLoginData::saveOnlyDataForOnlinePlayer] - Failed to save player weapon proficiency: " + player->getName());
+	}
+
 	if (!IOLoginDataSave::savePlayerStorage(player)) {
 		throw DatabaseException("[IOLoginDataSave::savePlayerStorage] - Failed to save player storage: " + player->getName());
 	}

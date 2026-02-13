@@ -30,6 +30,8 @@
 #include "creatures/players/components/player_vip.hpp"
 #include "creatures/players/components/wheel/wheel_gems.hpp"
 #include "creatures/players/components/player_attached_effects.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
+#include "utils/hash.hpp"
 
 class House;
 class NetworkMessage;
@@ -81,6 +83,7 @@ enum class HouseAuctionType : uint8_t;
 enum class BidErrorMessage : uint8_t;
 enum class TransferErrorMessage : uint8_t;
 enum class AcceptTransferErrorMessage : uint8_t;
+enum class ImbuementAction : uint8_t;
 enum ObjectCategory_t : uint8_t;
 enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;
@@ -94,6 +97,16 @@ using ItemVector = std::vector<std::shared_ptr<Item>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
+
+struct SkillsEquipment {
+	double_t equipment = 0;
+	double_t imbuement = 0;
+};
+
+struct BaseCritical {
+	double_t chance = 0.05;
+	double_t damage = 0.1;
+};
 
 struct CharmInfo {
 	uint16_t raceId = 0;
@@ -155,6 +168,11 @@ public:
 	std::shared_ptr<const Player> getPlayer() const override {
 		return static_self_cast<Player>();
 	}
+
+	void sendWeaponProficiency(uint16_t weaponId = 0);
+
+	const std::array<SkillsEquipment, SKILL_LAST + 1> getSkillsEquipment() const;
+	const BaseCritical &getBaseCritical() const;
 
 	/**
 	 * @brief Gets the current virtue of the player.
@@ -768,6 +786,7 @@ public:
 
 	void updateLastAggressiveAction();
 
+	uint16_t getWeaponId(bool ignoreAmmo = false) const;
 	std::shared_ptr<Item> getWeapon(Slots_t slot, bool ignoreAmmo) const;
 	std::shared_ptr<Item> getWeapon(bool ignoreAmmo = false) const;
 	WeaponType_t getWeaponType() const;
@@ -1040,9 +1059,12 @@ public:
 	void sendResourceBalance(Resource_t resourceType, uint64_t value) const;
 	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess = false) const;
 	// Imbuements
-	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm);
+	void applyScrollImbuement(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &scrollItem);
+	void createScrollImbuement(const Imbuement* imbuement);
+	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot);
 	void onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot);
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
+	bool clearAllImbuements(const std::shared_ptr<Item> &item);
+	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message) const;
 	void closeImbuementWindow() const;
 	void sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos) const;
@@ -1399,6 +1421,8 @@ public:
 	// Gets the equipped items with augment
 	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;
 
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getEquippedAugments() const;
+
 	/**
 	 * @brief Get the equipped items of the player->
 	 * @details This function returns a vector containing the items currently equipped by the player
@@ -1442,8 +1466,13 @@ public:
 	PlayerAttachedEffects &attachedEffects();
 	const PlayerAttachedEffects &attachedEffects() const;
 
+	// Player storage interface
 	PlayerStorage &storage();
 	const PlayerStorage &storage() const;
+
+	// Player weapon proficiency interface
+	WeaponProficiency &weaponProficiency();
+	const WeaponProficiency &weaponProficiency() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -1606,6 +1635,8 @@ private:
 
 	time_t lastLoginSaved = 0;
 	time_t lastLogout = 0;
+
+	BaseCritical baseCritical;
 
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
@@ -1848,6 +1879,7 @@ private:
 	PlayerAttachedEffects m_playerAttachedEffects;
 	PlayerStorage m_storage;
 	PlayerForgeHistory m_forgeHistoryPlayer;
+	WeaponProficiency m_weaponProficiency;
 
 	std::mutex quickLootMutex;
 

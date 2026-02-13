@@ -15,6 +15,7 @@ namespace pugi {
 
 struct Position;
 
+enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
 enum Direction : uint8_t;
 enum MagicEffectClasses : uint16_t;
@@ -33,6 +34,7 @@ enum class ItemAttribute_t : uint64_t;
 enum ReturnValue : uint16_t;
 enum SpellGroup_t : uint8_t;
 enum Cipbia_Elementals_t : uint8_t;
+enum class CipbiaSkills_t : uint8_t;
 enum PlayerPronoun_t : uint8_t;
 enum PlayerSex_t : uint8_t;
 
@@ -41,6 +43,8 @@ enum PlayerSex_t : uint8_t;
 #endif
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result);
+
+uint8_t undoShift(uint64_t value);
 
 std::string transformToSHA1(const std::string &input);
 
@@ -176,7 +180,10 @@ std::vector<std::string> split(const std::string &str, char delimiter = ',');
 std::string getFormattedTimeRemaining(uint32_t time);
 
 unsigned int getNumberOfCores();
+CipbiaSkills_t getCipbiaSkill(skills_t skill);
+skills_t getSkillsFromCipbiaSkill(CipbiaSkills_t cipbiaSkills);
 
+CombatType_t getCombatFromCipbiaElement(Cipbia_Elementals_t combatType);
 Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType);
 
 std::string formatNumber(uint64_t number);
@@ -191,7 +198,7 @@ std::string formatWithArticle(const std::string &value, bool withSpace = true);
 
 std::string toKey(const std::string &str);
 
-static inline double quadraticPoly(double a, double b, double c, double x) {
+inline double quadraticPoly(double a, double b, double c, double x) {
 	return a * x * x + b * x + c;
 }
 

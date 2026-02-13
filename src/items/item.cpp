@@ -468,6 +468,21 @@ bool Item::hasImbuementAttribute(const std::string &attributeSlot) const {
 	return getCustomAttribute(attributeSlot) != nullptr;
 }
 
+int8_t Item::getFreeImbuementSlot() const {
+	if (getImbuementSlot() == 0) {
+		return -1;
+	}
+
+	for (uint8_t slotId = 0; slotId < getImbuementSlot(); slotId++) {
+		ImbuementInfo imbuementInfo;
+		if (!getImbuementInfo(slotId, &imbuementInfo)) {
+			return slotId;
+		}
+	}
+
+	return -1;
+}
+
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo* imbuementInfo) const {
 	std::string attributeSlot = std::to_string(ITEM_IMBUEMENT_SLOT + slot);
 	if (!hasImbuementAttribute(attributeSlot)) {
@@ -503,7 +518,7 @@ bool Item::canAddImbuement(uint8_t slot, const std::shared_ptr<Player> &player, 
 	// Checks if the item already has the imbuement category id
 	if (hasImbuementCategoryId(categoryImbuement->id)) {
 		g_logger().error("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
-		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		player->sendImbuementResult("This item already has this imbuement type.");
 		return false;
 	}
 

@@ -5341,7 +5341,7 @@ void Player::updateFood(uint16_t itemId, uint16_t timeLeft) {
 	}
 }
 
-std::map<uint16_t, uint16_t> Player::getActiveFoods() const {
+const std::map<uint16_t, uint16_t> &Player::getActiveFoods() const {
 	return m_activeFoods;
 }
 

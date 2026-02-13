@@ -1479,7 +1479,7 @@ public:
 	void sendSpellCooldowns();
 
 	void updateFood(uint16_t itemId, uint16_t timeLeft);
-	std::map<uint16_t, uint16_t> getActiveFoods() const;
+	const std::map<uint16_t, uint16_t> &getActiveFoods() const;
 	bool isFoodActive(uint16_t itemId) const;
 
 private:

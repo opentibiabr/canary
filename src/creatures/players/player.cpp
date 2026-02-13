@@ -12357,7 +12357,7 @@ void Player::sendSpellCooldowns() {
 		}
 
 		if (type == CONDITION_SPELLGROUPCOOLDOWN) {
-			SpellGroup_t spellGroupId = static_cast<SpellGroup_t>(subId > maxu16 ? 0u : static_cast<uint16_t>(subId));
+			auto spellGroupId = static_cast<SpellGroup_t>(subId > maxu16 ? 0u : static_cast<uint16_t>(subId));
 			sendSpellGroupCooldown(spellGroupId, ticks);
 			continue;
 		}

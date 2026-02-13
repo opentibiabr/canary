@@ -534,22 +534,22 @@ void Game::start(ServiceManager* manager) {
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
-	g_dispatcher().scheduleEvent(
+	[[maybe_unused]] auto eventId1 = g_dispatcher().scheduleEvent(
 		EVENT_MS + 1000, [this] { createFiendishMonsters(); }, "Game::createFiendishMonsters"
 	);
-	g_dispatcher().scheduleEvent(
+	[[maybe_unused]] auto eventId2 = g_dispatcher().scheduleEvent(
 		EVENT_MS + 1000, [this] { createInfluencedMonsters(); }, "Game::createInfluencedMonsters"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId3 = g_dispatcher().cycleEvent(
 		EVENT_MS, [this] { updateForgeableMonsters(); }, "Game::updateForgeableMonsters"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId4 = g_dispatcher().cycleEvent(
 		EVENT_LIGHTINTERVAL_MS, [this] { checkLight(); }, "Game::checkLight"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId5 = g_dispatcher().cycleEvent(
 		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId6 = g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
 	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES);
@@ -558,12 +558,12 @@ void Game::start(ServiceManager* manager) {
 		if (marketItemsPriceIntervalMS < 60000) {
 			marketItemsPriceIntervalMS = 60000;
 		}
-		g_dispatcher().cycleEvent(
+		[[maybe_unused]] auto eventId7 = g_dispatcher().cycleEvent(
 			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
 		);
 	}
 
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId8 = g_dispatcher().cycleEvent(
 		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
 	);
 }

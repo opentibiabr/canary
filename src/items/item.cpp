@@ -2271,7 +2271,7 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		if (it.elementalBond != COMBAT_NONE) {
-			descriptions.push_back({ "Elemental Bond", toPascalCase(getCombatName(it.elementalBond)) });
+			descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
 		}
 	}
 	descriptions.shrink_to_fit();

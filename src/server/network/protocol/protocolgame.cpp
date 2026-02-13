@@ -912,7 +912,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
-		g_dispatcher().scheduleEvent(
+		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 			1000, [self = getThis()] { self->disconnect(); }, "ProtocolGame::disconnect"
 		);
 		return;
@@ -1018,7 +1018,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		g_dispatcher().scheduleEvent(
+		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 			100, [self = getThis()] { self->sendPing(); }, "ProtocolGame::sendPing"
 		);
 
@@ -1036,7 +1036,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		g_dispatcher().scheduleEvent(
+		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 			100, [self = getThis()] { self->sendPingBack(); }, "ProtocolGame::sendPingBack"
 		);
 		return;

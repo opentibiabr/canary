@@ -552,6 +552,9 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	}
 
 	const auto &playerProficiency = proficiency.at(weaponId);
+	if (proficiencyInfo.maxLevel == 0) {
+		return 0;
+	}
 	const uint8_t maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel - 1));
 	for (uint8_t i = 0; i < maxExpLevels; ++i) {
 		if (playerProficiency.experience >= experienceArray[i]) {
@@ -576,6 +579,9 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 		return experienceArray[experienceArray.size() - 1];
 	}
 
+	if (proficiencyInfo.maxLevel == 0) {
+		return 0;
+	}
 	size_t masteryIndex = std::min<size_t>(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel - 1));
 	if (masteryIndex > 0) {
 		return experienceArray[masteryIndex - 1];

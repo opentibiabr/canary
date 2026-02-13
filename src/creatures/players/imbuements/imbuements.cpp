@@ -330,10 +330,11 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 
 			if (imbuement.scrollId != 0) {
-				if (scrollIdMap.contains(imbuement.scrollId)) {
-					g_logger().warn("Duplicate scroll ID {} for imbuement '{}', overwriting previous mapping", imbuement.scrollId, imbuement.name);
+				auto [it, inserted] = scrollIdMap.emplace(imbuement.scrollId, &imbuement);
+				if (!inserted) {
+					g_logger().warn("Duplicate scroll ID {} for imbuement '{}', already mapped to '{}'", imbuement.scrollId, imbuement.name, it->second->getName());
+					it->second = &imbuement;
 				}
-				scrollIdMap[imbuement.scrollId] = &imbuement;
 			}
 		}
 	}

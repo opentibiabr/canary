@@ -1478,6 +1478,10 @@ public:
 
 	void sendSpellCooldowns();
 
+	void updateFood(uint16_t itemId, uint32_t timeLeft);
+	const std::map<uint16_t, uint32_t> &getActiveFoods() const;
+	bool isFoodActive(uint16_t itemId) const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1567,6 +1571,8 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
+
+	std::map<uint16_t, uint32_t> m_activeFoods;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 

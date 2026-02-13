@@ -21,8 +21,6 @@
 #include "utils/hash.hpp"
 #include "kv/value_wrapper.hpp"
 
-#include <nlohmann/json.hpp>
-
 #include "kv/kv.hpp"
 
 namespace AugmentType {

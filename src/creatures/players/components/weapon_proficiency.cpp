@@ -908,8 +908,8 @@ void WeaponProficiency::addSpellBonus(uint16_t spellId, const WeaponProficiencyS
 }
 
 void WeaponProficiency::addPerfectShotBonus(uint8_t range, uint8_t damage) {
-	m_perfectShot.range = range;
-	m_perfectShot.damage = damage;
+	m_perfectShot.range += range;
+	m_perfectShot.damage += damage;
 }
 
 const WeaponProficiencyPerfectShotBonus &WeaponProficiency::getPerfectShotBonus() const {
@@ -1093,8 +1093,12 @@ void WeaponProficiency::applySkillSpellPercentage(CombatDamage &damage, bool hea
 	}
 
 	if (!healing) {
-		damage.primary.value = -damage.primary.value;
-		damage.secondary.value = -damage.secondary.value;
+		if (damage.primary.type != COMBAT_NONE) {
+			damage.primary.value = -damage.primary.value;
+		}
+		if (damage.secondary.type != COMBAT_NONE) {
+			damage.secondary.value = -damage.secondary.value;
+		}
 	}
 }
 
@@ -1188,4 +1192,5 @@ void WeaponProficiency::clearAllStats() {
 	m_generalCritical.clear();
 	m_elementCritical.fill({});
 	m_spellsBonuses.clear();
+	resetPerfectShotBonus();
 }

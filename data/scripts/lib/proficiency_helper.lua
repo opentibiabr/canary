@@ -17,9 +17,10 @@ function createProficiencyCatalyst(itemId, experience)
 			return true
 		end
 
-		player:addWeaponExperience(experience, weaponId)
-		item:remove(1)
-		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+		if player:addWeaponExperience(experience, weaponId) then
+			item:remove(1)
+			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+		end
 		return true
 	end
 

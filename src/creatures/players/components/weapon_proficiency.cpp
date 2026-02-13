@@ -159,7 +159,7 @@ static void registerLevels(const nlohmann::json &levelsJson, Proficiency &profic
 	proficiency.maxLevel = levelIndex;
 }
 
-std::unordered_map<uint16_t, Proficiency> &WeaponProficiency::getProficiencies() {
+[[nodiscard]] std::unordered_map<uint16_t, Proficiency> &WeaponProficiency::getProficiencies() {
 	return proficiencies;
 }
 
@@ -210,8 +210,11 @@ void WeaponProficiency::load() {
 		int parsedId = 0;
 		try {
 			parsedId = std::stoi(key);
-		} catch (const std::exception &e) {
+		} catch (const std::invalid_argument &e) {
 			g_logger().error("{} - Invalid key '{}' in weapon-proficiency KV: {}", __FUNCTION__, key, e.what());
+			continue;
+		} catch (const std::out_of_range &e) {
+			g_logger().error("{} - Out of range key '{}' in weapon-proficiency KV: {}", __FUNCTION__, key, e.what());
 			continue;
 		}
 
@@ -222,20 +225,18 @@ void WeaponProficiency::load() {
 			continue;
 		}
 
-		const auto &kv = wp_kv->get(key);
-		if (!kv.has_value()) {
+		auto kv_it = wp_kv->get(key);
+		if (!kv_it.has_value()) {
 			continue;
 		}
-		proficiency[weaponId] = deserialize(kv.value());
+		proficiency[weaponId] = deserialize(kv_it.value());
 	}
 }
 
 void WeaponProficiency::save(uint16_t weaponId) const {
-	if (!proficiency.contains(weaponId)) {
-		return;
+	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
+		m_player.kv()->scoped("weapon-proficiency")->set(std::to_string(weaponId), serialize(it->second));
 	}
-
-	m_player.kv()->scoped("weapon-proficiency")->set(std::to_string(weaponId), serialize(proficiency.at(weaponId)));
 }
 
 bool WeaponProficiency::saveAll() const {
@@ -275,7 +276,7 @@ std::vector<ProficiencyPerk> WeaponProficiency::deserializePerks(const ValueWrap
 	std::vector<ProficiencyPerk> perks;
 
 	for (const auto &item : array) {
-		perks.emplace_back(deserializePerk(item));
+		[[maybe_unused]] auto &unusedPerk = perks.emplace_back(deserializePerk(item));
 	}
 
 	return perks;
@@ -355,69 +356,93 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 	for (const auto &selectedPerk : perks) {
 		WeaponProficiencyCriticalBonus criticalBonus;
 		WeaponProficiencySpells::Bonus augmentBonus;
-		if (selectedPerk.type == SPELL_AUGMENT) {
-			switch (selectedPerk.augmentType) {
-				case AugmentType::DAMAGE:
-					augmentBonus.increase.damage = selectedPerk.value;
-					break;
-				case AugmentType::HEAL:
-					augmentBonus.increase.heal = selectedPerk.value;
-					break;
-				case AugmentType::COOLDOWN:
-					augmentBonus.decrease.cooldown = std::abs(selectedPerk.value);
-					break;
-				case AugmentType::LIFE_LEECH:
-					augmentBonus.leech.life = selectedPerk.value;
-					break;
-				case AugmentType::MANA_LEECH:
-					augmentBonus.leech.mana = selectedPerk.value;
-					break;
-				case AugmentType::CRITICAL_DAMAGE:
-					augmentBonus.increase.criticalDamage = selectedPerk.value;
-					break;
-				case AugmentType::CRITICAL_CHANCE:
-					augmentBonus.increase.criticalChance = selectedPerk.value;
-					break;
-				default:
-					g_logger().error("[{}] - Unknown augment type {}", __FUNCTION__, selectedPerk.augmentType);
+
+		switch (selectedPerk.type) {
+			case SPELL_AUGMENT: {
+				switch (selectedPerk.augmentType) {
+					case AugmentType::DAMAGE:
+						augmentBonus.increase.damage = selectedPerk.value;
+						break;
+					case AugmentType::HEAL:
+						augmentBonus.increase.heal = selectedPerk.value;
+						break;
+					case AugmentType::COOLDOWN:
+						augmentBonus.decrease.cooldown = std::abs(selectedPerk.value);
+						break;
+					case AugmentType::LIFE_LEECH:
+						augmentBonus.leech.life = selectedPerk.value;
+						break;
+					case AugmentType::MANA_LEECH:
+						augmentBonus.leech.mana = selectedPerk.value;
+						break;
+					case AugmentType::CRITICAL_DAMAGE:
+						augmentBonus.increase.criticalDamage = selectedPerk.value;
+						break;
+					case AugmentType::CRITICAL_CHANCE:
+						augmentBonus.increase.criticalChance = selectedPerk.value;
+						break;
+					default:
+						g_logger().error("[{}] - Unknown augment type {}", __FUNCTION__, selectedPerk.augmentType);
+						continue;
+				}
+				addSpellBonus(selectedPerk.spellId, augmentBonus);
+				break;
 			}
-			addSpellBonus(selectedPerk.spellId, augmentBonus);
-		} else if (selectedPerk.type == SPECIALIZED_MAGIC_LEVEL) {
-			addSpecializedMagic(selectedPerk.element, selectedPerk.value);
-		} else if (selectedPerk.type == AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE || selectedPerk.type == AUTO_ATTACK_CRITICAL_HIT_CHANCE) {
-			criticalBonus.chance = selectedPerk.type == AUTO_ATTACK_CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
-			criticalBonus.damage = selectedPerk.type == AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-			addAutoAttackCritical(criticalBonus);
-		} else if (selectedPerk.type == ELEMENTAL_HIT_CHANCE || selectedPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE) {
-			criticalBonus.chance = selectedPerk.type == ELEMENTAL_HIT_CHANCE ? selectedPerk.value : 0;
-			criticalBonus.damage = selectedPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-			addElementCritical(selectedPerk.element, criticalBonus);
-		} else if (selectedPerk.type == RUNE_CRITICAL_HIT_CHANCE || selectedPerk.type == RUNE_CRITICAL_EXTRA_DAMAGE) {
-			criticalBonus.chance = selectedPerk.type == RUNE_CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
-			criticalBonus.damage = selectedPerk.type == RUNE_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-			addRunesCritical(criticalBonus);
-		} else if (selectedPerk.type == CRITICAL_HIT_CHANCE || selectedPerk.type == CRITICAL_EXTRA_DAMAGE) {
-			criticalBonus.chance = selectedPerk.type == CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
-			criticalBonus.damage = selectedPerk.type == CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-			addGeneralCritical(criticalBonus);
-		} else if (selectedPerk.type == BESTIARY) {
-			addBestiaryDamage(selectedPerk.bestiaryId, selectedPerk.value);
-		} else if (selectedPerk.type == POWERFUL_FOE_BONUS) {
-			addPowerfulFoeDamage(selectedPerk.value);
-		} else if (selectedPerk.type == SKILL_BONUS) {
-			addSkillBonus(selectedPerk.skillId, selectedPerk.value);
-		} else if (selectedPerk.type == LIFE_LEECH || selectedPerk.type == MANA_LEECH) {
-			addSkillBonus(selectedPerk.type == LIFE_LEECH ? SKILL_LIFE_LEECH_AMOUNT : SKILL_MANA_LEECH_AMOUNT, selectedPerk.value * 10000);
-		} else if (selectedPerk.type == PERFECT_SHOT_DAMAGE) {
-			addPerfectShotBonus(selectedPerk.range, selectedPerk.value);
-		} else if (selectedPerk.type == SKILL_PERCENTAGE_AUTO_ATTACK) {
-			addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::AutoAttack, selectedPerk.value);
-		} else if (selectedPerk.type == SKILL_PERCENTAGE_SPELL_DAMAGE) {
-			addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::SpellDamage, selectedPerk.value);
-		} else if (selectedPerk.type == SKILL_PERCENTAGE_SPELL_HEALING) {
-			addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::SpellHealing, selectedPerk.value);
-		} else {
-			addStat(selectedPerk.type, selectedPerk.value);
+			case SPECIALIZED_MAGIC_LEVEL:
+				addSpecializedMagic(selectedPerk.element, selectedPerk.value);
+				break;
+			case AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE:
+			case AUTO_ATTACK_CRITICAL_HIT_CHANCE:
+				criticalBonus.chance = selectedPerk.type == AUTO_ATTACK_CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
+				criticalBonus.damage = selectedPerk.type == AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
+				addAutoAttackCritical(criticalBonus);
+				break;
+			case ELEMENTAL_HIT_CHANCE:
+			case ELEMENTAL_CRITICAL_EXTRA_DAMAGE:
+				criticalBonus.chance = selectedPerk.type == ELEMENTAL_HIT_CHANCE ? selectedPerk.value : 0;
+				criticalBonus.damage = selectedPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
+				addElementCritical(selectedPerk.element, criticalBonus);
+				break;
+			case RUNE_CRITICAL_HIT_CHANCE:
+			case RUNE_CRITICAL_EXTRA_DAMAGE:
+				criticalBonus.chance = selectedPerk.type == RUNE_CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
+				criticalBonus.damage = selectedPerk.type == RUNE_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
+				addRunesCritical(criticalBonus);
+				break;
+			case CRITICAL_HIT_CHANCE:
+			case CRITICAL_EXTRA_DAMAGE:
+				criticalBonus.chance = selectedPerk.type == CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
+				criticalBonus.damage = selectedPerk.type == CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
+				addGeneralCritical(criticalBonus);
+				break;
+			case BESTIARY:
+				addBestiaryDamage(selectedPerk.bestiaryId, selectedPerk.value);
+				break;
+			case POWERFUL_FOE_BONUS:
+				addPowerfulFoeDamage(selectedPerk.value);
+				break;
+			case SKILL_BONUS:
+				addSkillBonus(selectedPerk.skillId, selectedPerk.value);
+				break;
+			case LIFE_LEECH:
+			case MANA_LEECH:
+				addSkillBonus(selectedPerk.type == LIFE_LEECH ? SKILL_LIFE_LEECH_AMOUNT : SKILL_MANA_LEECH_AMOUNT, selectedPerk.value * 10000);
+				break;
+			case PERFECT_SHOT_DAMAGE:
+				addPerfectShotBonus(selectedPerk.range, selectedPerk.value);
+				break;
+			case SKILL_PERCENTAGE_AUTO_ATTACK:
+				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::AutoAttack, selectedPerk.value);
+				break;
+			case SKILL_PERCENTAGE_SPELL_DAMAGE:
+				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::SpellDamage, selectedPerk.value);
+				break;
+			case SKILL_PERCENTAGE_SPELL_HEALING:
+				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::SpellHealing, selectedPerk.value);
+				break;
+			default:
+				addStat(selectedPerk.type, selectedPerk.value);
+				break;
 		}
 	}
 
@@ -425,16 +450,16 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 }
 
 std::vector<ProficiencyPerk> WeaponProficiency::getSelectedPerks(uint16_t weaponId) const {
-	if (proficiency.find(weaponId) == proficiency.end()) {
-		return {};
+	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
+		return it->second.perks;
 	}
 
-	return proficiency.at(weaponId).perks;
+	return {};
 }
 
 void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
-	if (proficiency.find(weaponId) != proficiency.end()) {
-		proficiency.at(weaponId).perks.clear();
+	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
+		it->second.perks.clear();
 	}
 }
 
@@ -451,7 +476,7 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 	}
 
 	auto proficiencyId = Item::items[weaponId].proficiencyId;
-	if (proficiencies.find(proficiencyId) == proficiencies.end()) {
+	if (!proficiencies.contains(proficiencyId)) {
 		g_logger().error("{} - Proficiency not found for weapon ID: {}", __FUNCTION__, weaponId);
 		return;
 	}
@@ -469,8 +494,8 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 	}
 	const auto &selectedPerk = selectedLevel.perks.at(perkIndex);
 
-	if (proficiency.find(weaponId) != proficiency.end()) {
-		proficiency.at(weaponId).perks.emplace_back(selectedPerk);
+	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
+		it->second.perks.emplace_back(selectedPerk);
 	}
 }
 
@@ -516,13 +541,14 @@ const std::vector<uint32_t> &WeaponProficiency::getExperienceArray(uint16_t weap
 uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	const auto &experienceArray = getExperienceArray(weaponId);
 
-	if (proficiencies.find(Item::items[weaponId].proficiencyId) == proficiencies.end()) {
+	auto prof_it = proficiencies.find(Item::items[weaponId].proficiencyId);
+	if (prof_it == proficiencies.end()) {
 		g_logger().error("{} - Proficiency not found for weapon ID: {}", __FUNCTION__, weaponId);
 		return 0;
 	}
 
-	const auto &proficiencyInfo = proficiencies.at(Item::items[weaponId].proficiencyId);
-	if (proficiency.find(weaponId) == proficiency.end()) {
+	const auto &proficiencyInfo = prof_it->second;
+	if (!proficiency.contains(weaponId)) {
 		return experienceArray[0];
 	}
 
@@ -546,17 +572,15 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 		return 0;
 	}
 	const auto &proficiencyInfo = proficiencies.at(Item::items[weaponId].proficiencyId);
-	if (experienceArray.empty() || proficiencyInfo.maxLevel <= 1) {
-		return 0;
-	}
-
-	const uint8_t masteryIndex = static_cast<uint8_t>(std::min<size_t>(experienceArray.size() - 1, proficiencyInfo.maxLevel - 2));
-
-	if (proficiency.find(weaponId) == proficiency.end()) {
+	if (!proficiency.contains(weaponId)) {
 		return experienceArray[experienceArray.size() - 1];
 	}
 
-	return experienceArray[masteryIndex];
+	size_t masteryIndex = std::min<size_t>(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel - 1));
+	if (masteryIndex > 0) {
+		return experienceArray[masteryIndex - 1];
+	}
+	return 0;
 }
 
 void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* = 0 */) {
@@ -579,7 +603,7 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	uint32_t maxExperience = getMaxExperience(weaponId);
 
 	if (!proficiency.contains(weaponId)) {
-		proficiency.emplace(weaponId, experience > maxExperience ? maxExperience : experience);
+		[[maybe_unused]] const auto &unusedProficiency = proficiency.emplace(weaponId, experience > maxExperience ? maxExperience : experience);
 		m_player.sendWeaponProficiency(weaponId);
 
 		return;
@@ -653,7 +677,8 @@ bool WeaponProficiency::isUpgradeAvailable(uint16_t weaponId /* = 0 */) const {
 
 	const auto &playerProficiency = proficiency.at(weaponId);
 
-	for (uint8_t i = 0; i < proficiencyInfo.maxLevel; ++i) {
+	size_t limit = std::min(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel));
+	for (size_t i = 0; i < limit; ++i) {
 		if (playerProficiency.experience < experienceArray[i]) {
 			break;
 		}
@@ -690,17 +715,18 @@ void WeaponProficiency::resetStats() {
 }
 
 void WeaponProficiency::addSkillPercentage(skills_t skill, SkillPercentage_t type, double_t value) {
+	using enum SkillPercentage_t;
 	auto &skillPercentage = m_skillPercentages[skill];
 	skillPercentage.skill = skill;
 
 	switch (type) {
-		case SkillPercentage_t::AutoAttack:
+		case AutoAttack:
 			skillPercentage.autoAttack += value;
 			break;
-		case SkillPercentage_t::SpellDamage:
+		case SpellDamage:
 			skillPercentage.spellDamage += value;
 			break;
-		case SkillPercentage_t::SpellHealing:
+		case SpellHealing:
 			skillPercentage.spellHealing += value;
 			break;
 		default:
@@ -708,8 +734,12 @@ void WeaponProficiency::addSkillPercentage(skills_t skill, SkillPercentage_t typ
 	}
 }
 
-const SkillPercentage &WeaponProficiency::getSkillPercentage() const {
-	return m_skillPercentage;
+const SkillPercentage &WeaponProficiency::getSkillPercentage(skills_t skill) const {
+	static const SkillPercentage defaultSkillPercentage;
+	if (auto it = m_skillPercentages.find(skill); it != m_skillPercentages.end()) {
+		return it->second;
+	}
+	return defaultSkillPercentage;
 }
 
 void WeaponProficiency::addSpecializedMagic(CombatType_t type, uint16_t value) {
@@ -819,11 +849,12 @@ void WeaponProficiency::addElementCritical(CombatType_t type, const WeaponProfic
 uint32_t WeaponProficiency::getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const {
 	using enum WeaponProficiencySpellBoost_t;
 
-	if (!m_spellsBonuses.contains(spellId)) {
+	auto it = m_spellsBonuses.find(spellId);
+	if (it == m_spellsBonuses.end()) {
 		return 0;
 	}
 
-	const auto &[leech, increase, decrease] = m_spellsBonuses.at(spellId);
+	const auto &[leech, increase, decrease] = it->second;
 	switch (boost) {
 		case COOLDOWN:
 			return decrease.cooldown;
@@ -851,20 +882,20 @@ uint32_t WeaponProficiency::getSpellBonus(uint16_t spellId, WeaponProficiencySpe
 }
 
 void WeaponProficiency::addSpellBonus(uint16_t spellId, const WeaponProficiencySpells::Bonus &bonus) {
-	if (m_spellsBonuses.contains(spellId)) {
-		m_spellsBonuses[spellId].decrease.cooldown += bonus.decrease.cooldown;
-		m_spellsBonuses[spellId].decrease.manaCost += bonus.decrease.manaCost;
-		m_spellsBonuses[spellId].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-		m_spellsBonuses[spellId].increase.additionalTarget += bonus.increase.additionalTarget;
-		m_spellsBonuses[spellId].increase.area = m_spellsBonuses[spellId].increase.area || bonus.increase.area;
-		m_spellsBonuses[spellId].increase.criticalChance += bonus.increase.criticalChance;
-		m_spellsBonuses[spellId].increase.criticalDamage += bonus.increase.criticalDamage;
-		m_spellsBonuses[spellId].increase.damage += bonus.increase.damage;
-		m_spellsBonuses[spellId].increase.damageReduction += bonus.increase.damageReduction;
-		m_spellsBonuses[spellId].increase.duration += bonus.increase.duration;
-		m_spellsBonuses[spellId].increase.heal += bonus.increase.heal;
-		m_spellsBonuses[spellId].leech.life += bonus.leech.life;
-		m_spellsBonuses[spellId].leech.mana += bonus.leech.mana;
+	if (auto it = m_spellsBonuses.find(spellId); it != m_spellsBonuses.end()) {
+		it->second.decrease.cooldown += bonus.decrease.cooldown;
+		it->second.decrease.manaCost += bonus.decrease.manaCost;
+		it->second.decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
+		it->second.increase.additionalTarget += bonus.increase.additionalTarget;
+		it->second.increase.area = it->second.increase.area || bonus.increase.area;
+		it->second.increase.criticalChance += bonus.increase.criticalChance;
+		it->second.increase.criticalDamage += bonus.increase.criticalDamage;
+		it->second.increase.damage += bonus.increase.damage;
+		it->second.increase.damageReduction += bonus.increase.damageReduction;
+		it->second.increase.duration += bonus.increase.duration;
+		it->second.increase.heal += bonus.increase.heal;
+		it->second.leech.life += bonus.leech.life;
+		it->second.leech.mana += bonus.leech.mana;
 		return;
 	}
 	m_spellsBonuses[spellId] = bonus;
@@ -884,16 +915,16 @@ void WeaponProficiency::resetPerfectShotBonus() {
 }
 
 double_t WeaponProficiency::getBestiaryDamage(uint8_t race) const {
-	if (!m_bestiaryDamage.contains(race)) {
-		return 0;
+	if (auto it = m_bestiaryDamage.find(race); it != m_bestiaryDamage.end()) {
+		return it->second;
 	}
 
-	return m_bestiaryDamage.at(race);
+	return 0;
 }
 
 void WeaponProficiency::addBestiaryDamage(uint8_t race, double_t bonus) {
-	if (m_bestiaryDamage.contains(race)) {
-		m_bestiaryDamage[race] += bonus;
+	if (auto it = m_bestiaryDamage.find(race); it != m_bestiaryDamage.end()) {
+		it->second += bonus;
 		return;
 	}
 	m_bestiaryDamage[race] = bonus;
@@ -908,8 +939,6 @@ uint16_t WeaponProficiency::getSkillValueFromWeapon() const {
 	if (!weapon) {
 		return 0;
 	}
-
-	uint16_t skill = 0;
 
 	switch (Item::items[weapon->getID()].type) {
 		case ITEM_TYPE_SWORD:
@@ -1093,13 +1122,13 @@ void WeaponProficiency::applyOn(WeaponProficiencyHealth_t healthType, WeaponProf
 }
 
 void WeaponProficiency::applySpellAugment(CombatDamage &damage, uint16_t spellId) const {
-	if (m_spellsBonuses.contains(spellId)) {
-		damage.damageMultiplier += m_spellsBonuses.at(spellId).increase.damage * 10000;
-		damage.healingMultiplier += m_spellsBonuses.at(spellId).increase.heal * 10000;
-		damage.criticalChance += m_spellsBonuses.at(spellId).increase.criticalChance * 10000;
-		damage.criticalDamage += m_spellsBonuses.at(spellId).increase.criticalDamage * 10000;
-		damage.lifeLeech += m_spellsBonuses.at(spellId).leech.life * 10000;
-		damage.manaLeech += m_spellsBonuses.at(spellId).leech.mana * 10000;
+	if (auto it = m_spellsBonuses.find(spellId); it != m_spellsBonuses.end()) {
+		damage.damageMultiplier += it->second.increase.damage * 10000;
+		damage.healingMultiplier += it->second.increase.heal * 10000;
+		damage.criticalChance += it->second.increase.criticalChance * 10000;
+		damage.criticalDamage += it->second.increase.criticalDamage * 10000;
+		damage.lifeLeech += it->second.leech.life * 10000;
+		damage.manaLeech += it->second.leech.mana * 10000;
 	}
 }
 

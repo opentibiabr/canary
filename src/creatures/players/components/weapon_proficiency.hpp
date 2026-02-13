@@ -26,9 +26,9 @@ class WeaponProficiency {
 public:
 	explicit WeaponProficiency(Player &player);
 
-	static bool loadFromJson(bool reload = false);
+	[[nodiscard]] static bool loadFromJson(bool reload = false);
 
-	static std::unordered_map<uint16_t, Proficiency> &getProficiencies();
+	[[nodiscard]] static std::unordered_map<uint16_t, Proficiency> &getProficiencies();
 
 	void load();
 	void save(uint16_t weaponId) const;
@@ -50,53 +50,53 @@ public:
 	uint32_t nextLevelExperience(uint16_t weaponId);
 	uint32_t getMaxExperience(uint16_t weaponId) const;
 	void addExperience(uint32_t experience, uint16_t weaponId = 0);
-	uint32_t getBosstiaryExperience(BosstiaryRarity_t rarity) const;
-	uint32_t getBestiaryExperience(uint8_t monsterStar) const;
-	uint32_t getExperience(uint16_t weaponId = 0) const;
-	bool isUpgradeAvailable(uint16_t weaponId = 0) const;
+	[[nodiscard]] uint32_t getBosstiaryExperience(BosstiaryRarity_t rarity) const;
+	[[nodiscard]] uint32_t getBestiaryExperience(uint8_t monsterStar) const;
+	[[nodiscard]] uint32_t getExperience(uint16_t weaponId = 0) const;
+	[[nodiscard]] bool isUpgradeAvailable(uint16_t weaponId = 0) const;
 
 	void addStat(WeaponProficiencyBonus_t stat, double_t value);
-	double_t getStat(WeaponProficiencyBonus_t stat) const;
+	[[nodiscard]] double_t getStat(WeaponProficiencyBonus_t stat) const;
 	void resetStats();
 
 	void addSkillPercentage(skills_t skill, SkillPercentage_t type, double_t value);
 
-	uint16_t getSpecializedMagic(CombatType_t type) const;
+	[[nodiscard]] uint16_t getSpecializedMagic(CombatType_t type) const;
 	void addSpecializedMagic(CombatType_t type, uint16_t value);
 	void resetSpecializedMagic();
 
-	uint32_t getSkillBonus(skills_t type) const;
+	[[nodiscard]] uint32_t getSkillBonus(skills_t type) const;
 	void addSkillBonus(skills_t type, uint32_t value);
 	void resetSkillBonuses();
 
-	double_t getPowerfulFoeDamage() const;
+	[[nodiscard]] double_t getPowerfulFoeDamage() const;
 	void addPowerfulFoeDamage(double_t percent);
 	void resetPowerfulFoeDamage();
 
-	const WeaponProficiencyCriticalBonus &getAutoAttackCritical() const;
+	[[nodiscard]] const WeaponProficiencyCriticalBonus &getAutoAttackCritical() const;
 	void addAutoAttackCritical(const WeaponProficiencyCriticalBonus &bonus);
 
-	const WeaponProficiencyCriticalBonus &getRunesCritical() const;
+	[[nodiscard]] const WeaponProficiencyCriticalBonus &getRunesCritical() const;
 	void addRunesCritical(const WeaponProficiencyCriticalBonus &bonus);
 
-	const WeaponProficiencyCriticalBonus &getGeneralCritical() const;
+	[[nodiscard]] const WeaponProficiencyCriticalBonus &getGeneralCritical() const;
 	void addGeneralCritical(const WeaponProficiencyCriticalBonus &bonus);
 
-	WeaponProficiencyCriticalBonus getElementCritical(CombatType_t type) const;
+	[[nodiscard]] WeaponProficiencyCriticalBonus getElementCritical(CombatType_t type) const;
 	void addElementCritical(CombatType_t type, const WeaponProficiencyCriticalBonus &bonus);
 
-	uint32_t getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const;
+	[[nodiscard]] uint32_t getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const;
 	void addSpellBonus(uint16_t spellId, const WeaponProficiencySpells::Bonus &bonus);
 
 	void addPerfectShotBonus(uint8_t range, uint8_t damage);
-	const WeaponProficiencyPerfectShotBonus &getPerfectShotBonus() const;
+	[[nodiscard]] const WeaponProficiencyPerfectShotBonus &getPerfectShotBonus() const;
 	void resetPerfectShotBonus();
 
-	double_t getBestiaryDamage(uint8_t raceId) const;
+	[[nodiscard]] double_t getBestiaryDamage(uint8_t raceId) const;
 	void addBestiaryDamage(uint8_t raceId, double_t bonus);
 	void resetBestiaryDamage();
 
-	uint16_t getSkillValueFromWeapon() const;
+	[[nodiscard]] uint16_t getSkillValueFromWeapon() const;
 
 	void applyAutoAttackCritical(CombatDamage &damage) const;
 	void applyRunesCritical(CombatDamage &damage, bool aggressive) const;
@@ -113,10 +113,10 @@ public:
 
 	void applySpellAugment(CombatDamage &damage, uint16_t spellId) const;
 
-	const SkillPercentage &getSkillPercentage() const;
+	[[nodiscard]] const SkillPercentage &getSkillPercentage(skills_t skill) const;
 
-	std::vector<std::pair<std::string, double>> getActiveBestiariesDamage() const;
-	std::optional<std::pair<uint8_t, double>> getActiveElementalCriticalType(WeaponProficiencyBonus_t criticalType) const;
+	[[nodiscard]] std::vector<std::pair<std::string, double>> getActiveBestiariesDamage() const;
+	[[nodiscard]] std::optional<std::pair<uint8_t, double>> getActiveElementalCriticalType(WeaponProficiencyBonus_t criticalType) const;
 
 	void clearAllStats();
 
@@ -133,7 +133,6 @@ private:
 
 	std::array<double_t, magic_enum::enum_count<WeaponProficiencyBonus_t>() + 1> m_stats = { 0 };
 
-	SkillPercentage m_skillPercentage;
 	std::unordered_map<skills_t, SkillPercentage> m_skillPercentages;
 
 	std::array<uint16_t, COMBAT_COUNT + 1> m_specializedMagic = { 0 };

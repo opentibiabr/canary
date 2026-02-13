@@ -63,7 +63,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				g_logger().warn("Missing id for base entry");
 				continue;
 			}
-			basesImbuement.emplace_back(
+			[[maybe_unused]] auto &unusedBase = basesImbuement.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
 				baseNode.attribute("name").as_string(),
 				pugi::cast<uint32_t>(baseNode.attribute("price").value()),
@@ -80,7 +80,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				g_logger().warn("Missing id for category entry");
 				continue;
 			}
-			categoriesImbuement.emplace_back(
+			[[maybe_unused]] auto &unusedCategory = categoriesImbuement.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
 				baseNode.attribute("name").as_string(),
 				baseNode.attribute("agressive").as_bool(true)
@@ -190,7 +190,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						continue;
 					}
 
-					imbuement.items.emplace_back(sourceId, count);
+					[[maybe_unused]] auto &unusedItem = imbuement.items.emplace_back(sourceId, count);
 
 				} else if (strcasecmp(type.c_str(), "description") == 0) {
 					std::string description = imbuement.name;
@@ -396,7 +396,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> 
 			continue;
 		}
 
-		imbuements.emplace_back(imbuement);
+		[[maybe_unused]] auto &unusedImbuement = imbuements.emplace_back(imbuement);
 	}
 
 	return imbuements;

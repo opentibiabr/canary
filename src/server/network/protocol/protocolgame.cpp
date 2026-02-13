@@ -1834,7 +1834,7 @@ void ProtocolGame::parseToggleMount(NetworkMessage &msg) {
 
 void ProtocolGame::parseApplyImbuement(NetworkMessage &msg) {
 	uint8_t slot = msg.getByte();
-	auto imbuementId = msg.get<uint32_t>();
+	auto imbuementId = msg.get<uint16_t>();
 	g_game().playerApplyImbuement(player->getID(), imbuementId, slot);
 }
 
@@ -4487,18 +4487,40 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	msg.add<uint16_t>(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::LIFE_GAIN_ON_KILL)); // Life Gain on Kill
 	msg.add<uint16_t>(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::MANA_GAIN_ON_KILL)); // Mana Gain on Kill
 
-	const auto &skillPercentage = player->weaponProficiency().getSkillPercentage();
+	skills_t skill = SKILL_NONE;
+	if (weapon) {
+		switch (Item::items[weapon->getID()].type) {
+			case ITEM_TYPE_SWORD:
+				skill = SKILL_SWORD;
+				break;
+			case ITEM_TYPE_AXE:
+				skill = SKILL_AXE;
+				break;
+			case ITEM_TYPE_CLUB:
+				skill = SKILL_CLUB;
+				break;
+			case ITEM_TYPE_WAND:
+				skill = SKILL_MAGLEVEL;
+				break;
+			case ITEM_TYPE_DISTANCE:
+				skill = SKILL_DISTANCE;
+				break;
+			default:
+				break;
+		}
+	}
+
+	const auto &skillPercentage = player->weaponProficiency().getSkillPercentage(skill);
 
 	double playerSkill = 0.0;
-	if (skillPercentage.skill) {
+	if (skillPercentage.skill != SKILL_NONE) {
 		playerSkill = skillPercentage.skill == SKILL_MAGLEVEL ? player->getMagicLevel() : player->getSkillLevel(skillPercentage.skill);
 	}
-	const auto cipbiaSkill = static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill));
 
 	bool hasAutoAttackSkill = skillPercentage.skill != SKILL_NONE && skillPercentage.autoAttack;
 	msg.addByte(hasAutoAttackSkill); // Has Auto Attack Skill
 	if (hasAutoAttackSkill) {
-		msg.addByte(cipbiaSkill); // Auto Attack Skill ID
+		msg.addByte(static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill))); // Auto Attack Skill ID
 		msg.addDouble(skillPercentage.autoAttack); // Percent Auto Attack Skill
 		msg.addDouble(std::round(playerSkill * skillPercentage.autoAttack)); // Applied Auto Attack Value
 	}
@@ -4506,7 +4528,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	bool hasSpellDamage = skillPercentage.skill != SKILL_NONE && skillPercentage.spellDamage;
 	msg.addByte(hasSpellDamage); // Has Spell Damage
 	if (hasSpellDamage) {
-		msg.addByte(cipbiaSkill); // Spell Damage Skill ID
+		msg.addByte(static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill))); // Spell Damage Skill ID
 		msg.addDouble(skillPercentage.spellDamage); // Percent Spell Damage
 		msg.addDouble(std::round(playerSkill * skillPercentage.spellDamage)); // Applied Spell Damage Value
 	}
@@ -4514,7 +4536,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	bool hasSpellHealing = skillPercentage.skill != SKILL_NONE && skillPercentage.spellHealing;
 	msg.addByte(hasSpellHealing); // Has Spell Healing
 	if (hasSpellHealing) {
-		msg.addByte(cipbiaSkill); // Spell Healing Skill ID
+		msg.addByte(static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill))); // Spell Healing Skill ID
 		msg.addDouble(skillPercentage.spellHealing); // Percent Spell Healing Skill
 		msg.addDouble(std::round(playerSkill * skillPercentage.spellHealing)); // Applied Spell Healing Value
 	}
@@ -10494,6 +10516,10 @@ void ProtocolGame::parseAimAtTarget(NetworkMessage &msg) {
 }
 
 void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
 	NetworkMessage msg;
 
 	msg.addByte(0x5C);
@@ -10506,8 +10532,11 @@ void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
 }
 
 void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
-	NetworkMessage msg;
+	if (!player || oldProtocol) {
+		return;
+	}
 
+	NetworkMessage msg;
 	msg.addByte(0xC4);
 
 	msg.add<uint16_t>(weaponId);

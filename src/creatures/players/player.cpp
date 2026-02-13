@@ -2489,6 +2489,7 @@ void Player::applyScrollImbuement(const std::shared_ptr<Item> &item, const std::
 	}
 
 	item->setImbuement(freeImbuementSlot, imbuement->getID(), baseImbuement->duration);
+	g_imbuementDecay().startImbuementDecay(item);
 
 	if (item->getParent() == getPlayer()) {
 		addItemImbuementStats(imbuement);

@@ -2566,17 +2566,17 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> Pl
 	const auto &ioBonusData = g_game().getIOWheel()->getWheelBonusData();
 
 	auto registerAugment = [&](const uint16_t spellId, const std::string &spellName, uint8_t grade, std::unordered_set<uint16_t> registeredSpells) {
-		for (const auto &spellId : registeredSpells) {
+		for (const auto &currentSpellId : registeredSpells) {
 			if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_SORCERER) {
-				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.sorcerer, wheelAugments);
+				getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.sorcerer, wheelAugments);
 			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_DRUID) {
-				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.druid, wheelAugments);
+				getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.druid, wheelAugments);
 			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_PALADIN) {
-				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.paladin, wheelAugments);
+				getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.paladin, wheelAugments);
 			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_KNIGHT) {
-				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.knight, wheelAugments);
+				getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.knight, wheelAugments);
 			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_MONK) {
-				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.monk, wheelAugments);
+				getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.monk, wheelAugments);
 			}
 		}
 	};

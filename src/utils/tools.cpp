@@ -69,6 +69,10 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 }
 
 uint8_t undoShift(uint64_t value) {
+	if (value == 0) {
+		return 0;
+	}
+
 	auto trailingZeros = std::countr_zero(value);
 	if (trailingZeros < 2) {
 		return 0;

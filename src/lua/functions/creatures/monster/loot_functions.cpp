@@ -61,22 +61,32 @@ int LootFunctions::luaCreateLoot(lua_State* L) {
 	return 1;
 }
 
-int LootFunctions::luaLootSetId(lua_State* L) {
-	// loot:setId(id)
+template <typename T, auto member>
+static int luaLootSetter(lua_State* L) {
 	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
 	if (loot) {
-		if (Lua::isNumber(L, 2)) {
-			loot->lootBlock.id = Lua::getNumber<uint16_t>(L, 2);
-			Lua::pushBoolean(L, true);
-		} else {
-			g_logger().warn("[LootFunctions::luaLootSetId] - "
-			                "Unknown loot item loot, int value expected");
-			lua_pushnil(L);
-		}
+		loot->lootBlock.*member = Lua::getNumber<T>(L, 2);
+		Lua::pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}
 	return 1;
+}
+
+template <auto member>
+static int luaLootStringSetter(lua_State* L) {
+	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
+	if (loot) {
+		loot->lootBlock.*member = Lua::getString(L, 2);
+		Lua::pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int LootFunctions::luaLootSetId(lua_State* L) {
+	return luaLootSetter<uint16_t, &LootBlock::id>(L);
 }
 
 int LootFunctions::luaLootSetIdFromName(lua_State* L) {
@@ -120,172 +130,62 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 	return 1;
 }
 
-int LootFunctions::luaLootSetSubType(lua_State* L) {
-	// loot:setSubType(type)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.subType = Lua::getNumber<uint16_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int LootFunctions::luaLootSetChance(lua_State* L) {
-	// loot:setChance(chance)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.chance = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int LootFunctions::luaLootSetMinCount(lua_State* L) {
-	// loot:setMinCount(min)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.countmin = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<uint32_t, &LootBlock::countmin>(L);
 }
 
 int LootFunctions::luaLootSetMaxCount(lua_State* L) {
-	// loot:setMaxCount(max)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.countmax = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<uint32_t, &LootBlock::countmax>(L);
 }
 
+int LootFunctions::luaLootSetSubType(lua_State* L) {
+	return luaLootSetter<int32_t, &LootBlock::subType>(L);
+}
+
+int LootFunctions::luaLootSetChance(lua_State* L) {
+	return luaLootSetter<uint32_t, &LootBlock::chance>(L);
+}
+
+// luaLootSetMinCount and luaLootSetMaxCount are now using the template above
+
 int LootFunctions::luaLootSetActionId(lua_State* L) {
-	// loot:setActionId(actionid)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.actionId = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::actionId>(L);
 }
 
 int LootFunctions::luaLootSetText(lua_State* L) {
-	// loot:setText(text)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.text = Lua::getString(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootStringSetter<&LootBlock::text>(L);
 }
 
 int LootFunctions::luaLootSetNameItem(lua_State* L) {
-	// loot:setNameItem(name)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.name = Lua::getString(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootStringSetter<&LootBlock::name>(L);
 }
 
 int LootFunctions::luaLootSetArticle(lua_State* L) {
-	// loot:setArticle(article)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.article = Lua::getString(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootStringSetter<&LootBlock::article>(L);
 }
 
 int LootFunctions::luaLootSetAttack(lua_State* L) {
-	// loot:setAttack(attack)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.attack = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::attack>(L);
 }
 
 int LootFunctions::luaLootSetDefense(lua_State* L) {
-	// loot:setDefense(defense)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.defense = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::defense>(L);
 }
 
 int LootFunctions::luaLootSetExtraDefense(lua_State* L) {
-	// loot:setExtraDefense(defense)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.extraDefense = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::extraDefense>(L);
 }
 
 int LootFunctions::luaLootSetArmor(lua_State* L) {
-	// loot:setArmor(armor)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.armor = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::armor>(L);
 }
 
 int LootFunctions::luaLootSetShootRange(lua_State* L) {
-	// loot:setShootRange(range)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.shootRange = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::shootRange>(L);
 }
 
 int LootFunctions::luaLootSetHitChance(lua_State* L) {
-	// loot:setHitChance(chance)
-	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot) {
-		loot->lootBlock.hitChance = Lua::getNumber<uint32_t>(L, 2);
-		Lua::pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+	return luaLootSetter<int32_t, &LootBlock::hitChance>(L);
 }
 
 int LootFunctions::luaLootSetUnique(lua_State* L) {

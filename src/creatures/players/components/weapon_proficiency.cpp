@@ -95,7 +95,7 @@ void WeaponProficiency::registerPerks(const json &perksJson, ProficiencyLevel &p
 		}
 		if (perkJson.contains("SkillId")) {
 			const auto skill = perkJson["SkillId"].get<uint8_t>();
-			
+
 			const auto skillOpt = magic_enum::enum_cast<CipbiaSkills_t>(skill);
 			if (skillOpt.has_value()) {
 				proficiencyPerk.skillId = getSkillsFromCipbiaSkill(skillOpt.value());
@@ -447,7 +447,7 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> We
 	return augments;
 }
 
-const std::array<uint32_t, 9>& WeaponProficiency::getExperienceArray(uint16_t weaponId) const {
+const std::array<uint32_t, 9> &WeaponProficiency::getExperienceArray(uint16_t weaponId) const {
 	auto &experienceArray = standardExperience;
 
 	if (weaponId == 0) {
@@ -719,7 +719,7 @@ const WeaponProficiencyCriticalBonus &WeaponProficiency::getRunesCritical() cons
 	return m_runesCritical;
 }
 
-void WeaponProficiency::addRunesCritical(const WeaponProficiencyCriticalBonus& bonus) {
+void WeaponProficiency::addRunesCritical(const WeaponProficiencyCriticalBonus &bonus) {
 	m_runesCritical.chance += bonus.chance;
 	m_runesCritical.damage += bonus.damage;
 }
@@ -1087,4 +1087,3 @@ void WeaponProficiency::clearAllStats() {
 	m_elementCritical.fill({});
 	m_spellsBonuses.clear();
 }
-	

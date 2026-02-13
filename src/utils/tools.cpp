@@ -882,6 +882,7 @@ const ImbuementTypeNames imbuementTypeNames = {
 	{ "elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY },
 	{ "elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY },
 	{ "increase speed", IMBUEMENT_INCREASE_SPEED },
+	{ "skillboost fist", IMBUEMENT_SKILLBOOST_FIST },
 	{ "skillboost axe", IMBUEMENT_SKILLBOOST_AXE },
 	{ "skillboost sword", IMBUEMENT_SKILLBOOST_SWORD },
 	{ "skillboost club", IMBUEMENT_SKILLBOOST_CLUB },
@@ -1077,6 +1078,8 @@ bool booleanString(const std::string &str) {
 
 std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
+		case WEAPON_FIST:
+			return "fist";
 		case WEAPON_SWORD:
 			return "sword";
 		case WEAPON_CLUB:
@@ -1099,6 +1102,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 WeaponType_t getWeaponType(const std::string &name) {
 	static const std::unordered_map<std::string, WeaponType_t> type_mapping = {
 		{ "none", WeaponType_t::WEAPON_NONE },
+		{ "fist", WeaponType_t::WEAPON_FIST },
 		{ "sword", WeaponType_t::WEAPON_SWORD },
 		{ "club", WeaponType_t::WEAPON_CLUB },
 		{ "axe", WeaponType_t::WEAPON_AXE },
@@ -1216,6 +1220,9 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 	}
 	if (str == "weight") {
 		return ItemAttribute_t::WEIGHT;
+	}
+	if (str == "mantra") {
+		return ItemAttribute_t::MANTRA;
 	}
 	if (str == "attack") {
 		return ItemAttribute_t::ATTACK;
@@ -1597,6 +1604,9 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
 	if (tmpStr == "greatbeams" || tmpStr == "10") {
 		return SPELLGROUP_GREAT_BEAMS;
 	}
+	if (tmpStr == "virtue" || tmpStr == "11") {
+		return SPELLGROUP_VIRTUE;
+	}
 
 	return SPELLGROUP_NONE;
 }
@@ -1735,6 +1745,8 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 			return "Gold";
 		case OBJECTCATEGORY_QUIVERS:
 			return "Quiver";
+		case OBJECTCATEGORY_FISTWEAPONS:
+			return "Fist Weapons";
 		case OBJECTCATEGORY_DEFAULT:
 			return "Unassigned Loot";
 		default:
@@ -1770,6 +1782,7 @@ bool isValidObjectCategory(ObjectCategory_t category) {
 		OBJECTCATEGORY_TIBIACOINS,
 		OBJECTCATEGORY_CREATUREPRODUCTS,
 		OBJECTCATEGORY_QUIVERS,
+		OBJECTCATEGORY_FISTWEAPONS,
 		OBJECTCATEGORY_GOLD,
 		OBJECTCATEGORY_DEFAULT,
 	};
@@ -2136,4 +2149,40 @@ uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted /* = false*
 	}
 
 	return result;
+}
+
+uint32_t getVocationIdFromClientId(uint32_t clientId) {
+	if (clientId == 0xFFFFFFFF) {
+		return clientId;
+	}
+
+	// Mapping from client vocation ID to internal server vocation ID
+	static const std::unordered_map<uint32_t, uint32_t> CIP_TO_INTERNAL = {
+		{ VOCATION_KNIGHT_CIP, VOCATION_KNIGHT },
+		{ VOCATION_PALADIN_CIP, VOCATION_PALADIN },
+		{ VOCATION_SORCERER_CIP, VOCATION_SORCERER },
+		{ VOCATION_DRUID_CIP, VOCATION_DRUID },
+		{ VOCATION_MONK_CIP, VOCATION_MONK },
+		{ VOCATION_NONE, VOCATION_NONE }
+	};
+
+	// Try to find the clientId in the map
+	const auto it = CIP_TO_INTERNAL.find(clientId);
+	if (it != CIP_TO_INTERNAL.end()) {
+		return it->second;
+	}
+
+	// Return fallback value if not found
+	return 0xFFFFFFFF;
+}
+
+Direction getPrimaryDirection(const Position &from, const Position &to) {
+	int dx = to.x - from.x;
+	int dy = to.y - from.y;
+
+	// Determine whether horizontal or vertical movement is dominant
+	if (std::abs(dx) > std::abs(dy)) {
+		return (dx > 0) ? DIRECTION_EAST : DIRECTION_WEST;
+	}
+	return (dy > 0) ? DIRECTION_SOUTH : DIRECTION_NORTH;
 }

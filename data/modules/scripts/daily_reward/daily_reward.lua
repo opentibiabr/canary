@@ -71,6 +71,7 @@ local DailyRewardItems = {
 	[VOCATION.BASE_ID.DRUID] = { 266, 268, 237, 238, 23373, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3156, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
 	[VOCATION.BASE_ID.SORCERER] = { 266, 268, 237, 238, 23373, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
 	[VOCATION.BASE_ID.KNIGHT] = { 266, 236, 239, 7643, 23375, 268, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
+	[VOCATION.BASE_ID.MONK] = { 266, 236, 268, 237, 7642, 23374, 3203, 3161, 3178, 3153, 3197, 3149, 3164, 3200, 3192, 3188, 3190, 3189, 3191, 3158, 3152, 3180, 3173, 3176, 3195, 3175, 3155, 3202 },
 }
 
 DailyReward = {
@@ -137,7 +138,7 @@ DailyReward = {
 		[6] = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
-			items = { 28540, 28541, 28542, 28543, 28544, 28545, 44064 },
+			items = { 28540, 28541, 28542, 28543, 28544, 28545, 44064, 50292 },
 			freeAccount = 1,
 			premiumAccount = 2,
 			itemCharges = 50,
@@ -421,7 +422,7 @@ function Player.selectDailyReward(self, msg)
 	-- Items as reward
 	if dailyTable.type == DAILY_REWARD_TYPE_ITEM then
 		local items = {}
-		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()]
+		local possibleItems = DailyRewardItems[self:getVocation():getBaseId()] or DailyRewardItems[0]
 		if dailyTable.items then
 			possibleItems = dailyTable.items
 		end
@@ -554,7 +555,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 	end
 
 	if systemType == DAILY_REWARD_SYSTEM_TYPE_ONE then
-		rewards = DailyRewardItems[self:getVocation():getBaseId()]
+		rewards = DailyRewardItems[self:getVocation():getBaseId()] or DailyRewardItems[0]
 		if dailyTable.items then
 			rewards = dailyTable.items
 		end

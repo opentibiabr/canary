@@ -10,9 +10,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref }}
 
       - name: Set up Git
         run: |
@@ -24,7 +22,7 @@ jobs:
 
       - name: Setup Dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check cppcheck libxml2-utils python3-pip
+          sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev luajit lua-check cppcheck libxml2-utils python3-pip
 
       - name: Run clang format lint
         uses: DoozyX/clang-format-lint-action@v0.17
@@ -47,6 +45,7 @@ jobs:
           find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
 
       - name: Commit formatting changes
+        if: github.event_name == 'pull_request'
         uses: EndBug/add-and-commit@v9
         with:
           author_name: GitHub Actions
@@ -64,11 +63,12 @@ jobs:
       - name: Run Analysis (Reviewdog)
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEWDOG_REPORTER: ${{ github.event_name == 'pull_request' && 'github-pr-check' || 'github-check' }}
         run: |
-          reviewdog -reporter=github-pr-check -runners=luac
-          reviewdog -reporter=github-pr-check -runners=luacheck
-          reviewdog -reporter=github-pr-check -runners=xmllint
-          reviewdog -reporter=github-pr-check -runners=cppcheck
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level=error -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -fail-level=error -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=xmllint -fail-level=error -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -fail-level=error -filter-mode=added
 
       - name: Run yamllint
         uses: reviewdog/action-yamllint@v1.6.1

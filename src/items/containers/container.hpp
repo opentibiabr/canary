@@ -295,6 +295,20 @@ public:
 		return m_lootHighlightActive;
 	}
 
+	/**
+	 * @brief Checks whether the item is a browse field.
+	 *
+	 * @return true if the item ID is ITEM_BROWSEFIELD, false otherwise.
+	 */
+	bool isBrowsefield() const override {
+		// Returns true only if the item is a browse field type
+		if (getID() == ITEM_BROWSEFIELD) {
+			return true;
+		}
+
+		return false;
+	}
+
 protected:
 	uint32_t m_maxItems {};
 	uint32_t maxSize {};

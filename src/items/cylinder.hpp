@@ -170,6 +170,10 @@ public:
 	virtual void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing);
 
 	virtual void startDecaying();
+
+	virtual bool isBrowsefield() const {
+		return false;
+	}
 };
 
 class VirtualCylinder final : public Cylinder {

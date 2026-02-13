@@ -108,7 +108,9 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
 	} else if (augmentInfo->type == Augment_t::Base) {
 		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
-		return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
+		if (spell) {
+			return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
+		}
 	}
 
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
@@ -246,6 +248,7 @@ void Items::loadFromProtobuf() {
 		iType.expire = object.flags().expire();
 		iType.expireStop = object.flags().expirestop();
 		iType.isWrapKit = object.flags().wrapkit();
+		iType.isDualWielding = object.flags().dual_wielding();
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });

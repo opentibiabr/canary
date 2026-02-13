@@ -21,7 +21,7 @@ end
 spell:name("Magic Patch")
 spell:words("exura infir")
 spell:group("healing")
-spell:vocation("druid;true", "elder druid;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true", "monk;true", "exalted monk;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_MAGIC_PATCH)
 spell:id(174)
 spell:cooldown(1 * 1000)

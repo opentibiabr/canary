@@ -101,7 +101,7 @@ monster.loot = {
 	{ name = "great mana potion", chance = 15000, maxCount = 3 },
 	{ name = "great health potion", chance = 15000, maxCount = 2 },
 	{ name = "gold ingot", chance = 2300 },
-	{ name = "sai", chance = 1460 },
+	{ name = "traditional sai", chance = 1460 },
 	{ name = "violet crystal shard", chance = 3000 },
 	{ name = "brown crystal splinter", chance = 16000 },
 	{ name = "red crystal fragment", chance = 7600 },

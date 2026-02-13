@@ -84,6 +84,7 @@ monster.loot = {
 	{ name = "yellow gem", chance = 90000 },
 	{ name = "wand of voodoo", chance = 90000 },
 	{ name = "mastermind potion", chance = 30000, maxCount = 2 },
+	{ name = "transcendence potion", chance = 30000, maxCount = 2 },
 	{ name = "onyx chip", chance = 30000, maxCount = 12 },
 	{ name = "small diamond", chance = 30000, maxCount = 12 },
 	{ name = "small emerald", chance = 30000, maxCount = 12 },

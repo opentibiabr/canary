@@ -34,8 +34,8 @@ function playerLoginGlobal.onLogin(player)
 	end
 
 	-- Boosted
-	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Today's boosted creature: %s.\nBoosted creatures yield more experience points, carry more loot than usual, and respawn at a faster rate.", Game.getBoostedCreature()))
-	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Today's boosted boss: %s.\nBoosted bosses contain more loot and count more kills for your Bosstiary.", Game.getBoostedBoss()))
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Today's boosted creature: %s.", Game.getBoostedCreature()))
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, string.format("Today's boosted boss: %s.", Game.getBoostedBoss()))
 
 	-- Rewards
 	local rewards = #player:getRewardList()
@@ -160,6 +160,14 @@ function playerLoginGlobal.onLogin(player)
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")
 	player:registerEvent("UpdatePlayerOnAdvancedLevel")
+
+	if vocation and vocation:getBaseId() == VOCATION.BASE_ID.MONK then
+		local kv = player:kv()
+		if (kv:get("monk-basic-atk-bonus") or 0) < 10 then
+			logger.info("Setting monk basic attack bonus 10 for player: {}.", player:getName())
+			kv:set("monk-basic-atk-bonus", 10)
+		end
+	end
 	return true
 end
 

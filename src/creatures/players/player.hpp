@@ -16,6 +16,7 @@
 #include "items/cylinder.hpp"
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
+#include "creatures/players/stash_definitions.hpp"
 
 // Player components are decoupled to reduce complexity. Keeping includes here aids in clarity and maintainability, but avoid including player.hpp in headers to prevent circular dependencies.
 #include "creatures/players/animus_mastery/animus_mastery.hpp"
@@ -73,6 +74,7 @@ struct Outfit_t;
 struct TextMessage;
 struct HighscoreCharacter;
 
+enum class MonkData_t : uint8_t;
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
 enum class HouseAuctionType : uint8_t;
@@ -153,6 +155,62 @@ public:
 	std::shared_ptr<const Player> getPlayer() const override {
 		return static_self_cast<Player>();
 	}
+
+	/**
+	 * @brief Gets the current virtue of the player.
+	 * @return The virtue as Virtue_t.
+	 */
+	Virtue_t getVirtue() const;
+
+	/**
+	 * @brief Sets the player's virtue.
+	 * @param virtue The virtue to set.
+	 */
+	void setVirtue(Virtue_t virtue);
+
+	/**
+	 * @brief Sets the player's serene state.
+	 * @param b Whether the player is serene.
+	 * @param ticks Duration of the effect in ticks (default -1 for indefinite).
+	 */
+	void setSerene(bool b, int32_t ticks = -1);
+
+	/**
+	 * @brief Empties the player's Harmony bar.
+	 */
+	void emptyHarmony();
+
+	/**
+	 * @brief Fills the player's Harmony bar completely.
+	 */
+	void fillHarmony();
+
+	/**
+	 * @brief Increases Harmony charges.
+	 * @param charges Number of charges to add (default is 1).
+	 */
+	void buildHarmony(uint8_t charges = 1);
+
+	/**
+	 * @brief Spends all Harmony charges.
+	 */
+	void spendHarmony();
+
+	/**
+	 * @brief Gets the current number of Harmony charges.
+	 * @return Number of Harmony charges.
+	 */
+	uint8_t getHarmony();
+
+	void setHarmony(uint8_t newHarmony);
+
+	/**
+	 * @brief Calculates bonus damage range based on Harmony state.
+	 * @param min Minimum base damage.
+	 * @param max Maximum base damage.
+	 * @return Pair containing final min and max damage.
+	 */
+	std::pair<uint64_t, uint64_t> getHarmonyDamage(double min, double max);
 
 	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, const std::string &context);
 
@@ -618,6 +676,13 @@ public:
 	bool closeShopWindow();
 	bool updateSaleShopList(const std::shared_ptr<Item> &item);
 	void updateSaleShopList();
+	/**
+	 * @brief Refreshes the player's current state.
+	 *
+	 * Updates various player-related status indicators including inventory weight,
+	 * light emitted by items, inventory display, and stats.
+	 * If the player is a shop owner, it also refreshes the sale shop list.
+	 */
 	void updateState();
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
@@ -639,6 +704,14 @@ public:
 	// stash functions
 	ReturnValue addItemFromStash(uint16_t itemId, uint32_t itemCount);
 	void stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems);
+	struct AddItemBatchOptions {
+		uint8_t subType = 0;
+		uint32_t flags = 0;
+		uint8_t tier = 0;
+		bool dropOnMap = false;
+		bool inBackpacks = false;
+		uint16_t backpackId = ITEM_BACKPACK;
+	};
 
 	ReturnValue addItemBatchToPaginedContainer(
 		const std::shared_ptr<Container> &container,
@@ -647,6 +720,12 @@ public:
 		uint32_t &actuallyAdded,
 		uint32_t flags = 0,
 		uint8_t tier = 0
+	);
+	ReturnValue addItemBatch(
+		uint16_t itemId,
+		uint32_t totalCount,
+		uint32_t &actuallyAdded,
+		const AddItemBatchOptions &options
 	);
 	std::vector<std::shared_ptr<Container>> getAllContainers(bool onlyFromMainBackpack = true) const;
 	std::shared_ptr<Container> getBackpack() const;
@@ -694,6 +773,15 @@ public:
 	WeaponType_t getWeaponType() const;
 	int32_t getWeaponSkill(const std::shared_ptr<Item> &item) const;
 	void getShieldAndWeapon(std::shared_ptr<Item> &shield, std::shared_ptr<Item> &weapon) const;
+	/**
+	 * @brief Calculates a level-based flat damage or healing value.
+	 *
+	 * This function returns a value that increases progressively with the player's level,
+	 * using tiered thresholds and diminishing scaling factors.
+	 * It is used to determine the base value of damage or healing spells that scale with level.
+	 *
+	 * @return A uint16_t representing the computed base damage/heal value for the player's current level.
+	 */
 	uint16_t calculateFlatDamageHealing() const;
 	uint16_t attackTotal(uint16_t flatBonus, uint16_t equipment, uint16_t skill) const;
 	uint16_t attackRawTotal(uint16_t flatBonus, uint16_t equipment, uint16_t skill) const;
@@ -714,6 +802,19 @@ public:
 	float getAttackFactor() const override;
 	float getDefenseFactor(bool sendToClient) const override;
 	float getMitigation() const override;
+
+	/**
+	 * @brief Calculates the total mantra value from equipped items.
+	 *
+	 * Iterates over a predefined set of armor and accessory slots, summing up
+	 * the mantra value provided by each equipped item. This value is used for
+	 * determining monk-related mechanics like buffs and shared bonuses.
+	 *
+	 * @return Total mantra value from all valid equipment slots.
+	 */
+	int32_t getMantra() const;
+	int32_t getPartyMantra() const;
+	void updatePartyMantra() const;
 
 	void addInFightTicks(bool pzlock = false);
 
@@ -815,6 +916,11 @@ public:
 	void sendUpdateContainerItem(const std::shared_ptr<Container> &container, uint16_t slot, const std::shared_ptr<Item> &newItem);
 	void sendRemoveContainerItem(const std::shared_ptr<Container> &container, uint16_t slot);
 	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const;
+
+	// Monk Update
+	void sendMonkData(MonkData_t type, uint8_t value);
+	void updateAimAtTargetSpells(uint16_t spellId, uint8_t state);
+	std::unordered_set<uint16_t> getAimAtTargetSpells() const;
 
 	// inventory
 	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) const;
@@ -1105,7 +1211,7 @@ public:
 	uint16_t parseRacebyCharm(charmRune_t charmId, bool set = false, uint16_t newRaceid = 0);
 
 	uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
-	uint16_t getFreeBackpackSlots() const;
+	uint32_t getFreeBackpackSlots() const;
 
 	bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
@@ -1368,6 +1474,10 @@ public:
 		return m_managedContainers;
 	}
 
+	void clearCooldowns(bool spenders = false, bool builders = false, int32_t ticks = 0);
+
+	void sendSpellCooldowns();
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1379,6 +1489,7 @@ private:
 
 	void checkTradeState(const std::shared_ptr<Item> &item);
 	bool hasCapacity(const std::shared_ptr<Item> &item, uint32_t count) const;
+	bool processStashItem(const std::shared_ptr<Item> &item, uint16_t itemCount, uint16_t &refreshDepotSearchOnItem);
 
 	void checkLootContainers(const std::shared_ptr<Container> &item);
 
@@ -1387,6 +1498,7 @@ private:
 	void removeExperience(uint64_t exp, bool sendText = false);
 
 	void updateInventoryWeight();
+	void updateSerenityState();
 
 	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);
@@ -1436,6 +1548,18 @@ private:
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
 
+	double_t getHarmonyBonus();
+
+	/**
+	 * @brief Heals the player or a nearby party member using Harmony charges.
+	 *
+	 * This function attempts to find the party member with the lowest health within the player's screen range
+	 * and applies a Harmony heal to them. If no valid party member is found, the healing is applied to the player themselves.
+	 *
+	 * @param charges The number of Harmony charges to apply. Defaults to 1.
+	 */
+	void healFromHarmony(uint8_t charges = 1);
+
 	phmap::flat_hash_set<uint32_t> attackedSet {};
 
 	std::map<uint8_t, OpenContainer> openContainers;
@@ -1466,6 +1590,10 @@ private:
 
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
+
+	uint8_t harmony = 0;
+	Virtue_t virtue = Virtue_t::None;
+	std::unordered_set<uint16_t> aimAtTargetSpellIds;
 
 	std::string name;
 	std::string guildNick;
@@ -1685,7 +1813,6 @@ private:
 	bool isDead() const override;
 
 	void triggerMomentum();
-	void clearCooldowns();
 	void triggerTranscendence();
 
 	friend class Game;

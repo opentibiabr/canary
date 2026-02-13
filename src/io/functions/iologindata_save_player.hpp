@@ -30,6 +30,12 @@ public:
 	static bool savePlayerForgeHistory(const std::shared_ptr<Player> &player);
 	static bool savePlayerBosstiary(const std::shared_ptr<Player> &player);
 	static bool savePlayerStorage(const std::shared_ptr<Player> &player);
+	/**
+	 * @brief Saves the player's systems state to persistent key-value storage.
+	 *
+	 * @param player A shared pointer to the player whose virtue state should be saved.
+	 */
+	static void savePlayerSystems(const std::shared_ptr<Player> &player);
 
 protected:
 	using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;

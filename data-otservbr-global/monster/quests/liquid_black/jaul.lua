@@ -78,6 +78,7 @@ monster.loot = {
 	{ name = "depth calcei", chance = 1100 },
 	{ id = 13995, chance = 1400 }, -- depth galea
 	{ name = "depth lorica", chance = 800 },
+	{ name = "depth claws", chance = 650 },
 	{ name = "ornate chestplate", chance = 650, unique = true },
 	{ name = "ornate legs", chance = 740 },
 	{ name = "ornate mace", chance = 1500 },

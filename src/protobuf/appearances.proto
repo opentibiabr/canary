@@ -43,6 +43,7 @@ enum ITEM_CATEGORY {
 	ITEM_CATEGORY_CREATURE_PRODUCTS = 24;
 	ITEM_CATEGORY_QUIVER = 25;
 	ITEM_CATEGORY_SOULCORES = 26;
+	ITEM_CATEGORY_FIST_WEAPONS = 27;
 }
 
 enum PLAYER_PROFESSION {
@@ -52,6 +53,7 @@ enum PLAYER_PROFESSION {
 	PLAYER_PROFESSION_PALADIN = 2;
 	PLAYER_PROFESSION_SORCERER = 3;
 	PLAYER_PROFESSION_DRUID = 4;
+	PLAYER_PROFESSION_MONK = 5;
 	PLAYER_PROFESSION_PROMOTED = 10;
 }
 
@@ -179,6 +181,8 @@ message AppearanceFlags {
 	optional bool expire = 55;
 	optional bool expirestop = 56;
 	optional bool wrapkit = 57;
+	optional AppearanceFlagSkillWheelGem skillwheel_gem = 58;
+	optional bool dual_wielding = 59;
 }
 
 message AppearanceFlagUpgradeClassification {
@@ -254,6 +258,11 @@ message AppearanceFlagChangedToExpire {
 
 message AppearanceFlagCyclopedia {
 	optional uint32 cyclopedia_type = 1;
+}
+
+message AppearanceFlagSkillWheelGem {
+  optional uint32 gem_quality_id = 1;
+  optional uint32 vocation_id = 2;
 }
 
 message SpecialMeaningAppearanceIds {

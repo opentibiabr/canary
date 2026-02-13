@@ -72,6 +72,7 @@ private:
 
 	friend class ConditionDamage;
 	friend class ConditionGeneric;
+	friend class ConditionSerene;
 };
 
 class ConditionGeneric : public Condition {
@@ -84,6 +85,62 @@ public:
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
 	std::unordered_set<PlayerIcon> getIcons() const override;
 
+	std::shared_ptr<Condition> clone() const override;
+};
+
+/**
+ * @class ConditionSerene
+ * @brief Special condition used by the Monk vocation to apply a serenity state.
+ *
+ * Handles visual and gameplay effects related to the serene condition.
+ */
+class ConditionSerene : public Condition {
+public:
+	/**
+	 * @brief Constructs a new ConditionSerene.
+	 * @param initId The condition ID.
+	 * @param initType The condition type.
+	 * @param initTicks Duration in ticks.
+	 * @param initBuff Whether this condition is a buff.
+	 * @param initSubId Optional sub ID.
+	 * @param isPersistent Whether the condition should persist across sessions.
+	 */
+	ConditionSerene(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff = false, uint32_t initSubId = 0, bool isPersistent = false);
+
+	/**
+	 * @brief Starts the serene condition on the creature.
+	 * Sends serenity ON flag to the player.
+	 * @param creature The target creature.
+	 * @return True if condition was started successfully.
+	 */
+	bool startCondition(std::shared_ptr<Creature> creature) override;
+
+	/**
+	 * @brief Executes the serene condition logic each interval.
+	 * @param creature The affected creature.
+	 * @param interval The interval in milliseconds.
+	 * @return True if condition should continue.
+	 */
+	bool executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) override;
+
+	/**
+	 * @brief Ends the serene condition on the creature.
+	 * Sends serenity OFF flag to the player.
+	 * @param creature The affected creature.
+	 */
+	void endCondition(std::shared_ptr<Creature> creature) override;
+
+	/**
+	 * @brief Adds or refreshes a serene condition on the creature.
+	 * @param creature The affected creature.
+	 * @param condition The new condition to be added.
+	 */
+	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) override;
+
+	/**
+	 * @brief Creates a copy of this serene condition.
+	 * @return A new instance of ConditionSerene.
+	 */
 	std::shared_ptr<Condition> clone() const override;
 };
 
@@ -276,7 +333,7 @@ private:
 	std::list<IntervalInfo> damageList;
 
 	bool getNextDamage(int32_t &damage);
-	bool doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) const;
+	bool doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange, bool start = false) const;
 
 	bool updateCondition(const std::shared_ptr<Condition> &addCondition) override;
 };

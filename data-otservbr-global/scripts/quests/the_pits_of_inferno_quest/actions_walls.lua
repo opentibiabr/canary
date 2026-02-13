@@ -1,8 +1,9 @@
-local pos = {
-	[2025] = { x = 32831, y = 32333, z = 11 },
-	[2026] = { x = 32833, y = 32333, z = 11 },
-	[2027] = { x = 32835, y = 32333, z = 11 },
-	[2028] = { x = 32837, y = 32333, z = 11 },
+local config = {
+	{ leverPos = Position(32820, 32321, 10), firewallPos = Position(32831, 32333, 11) },
+	{ leverPos = Position(32820, 32345, 10), firewallPos = Position(32833, 32333, 11) },
+	{ leverPos = Position(32847, 32339, 10), firewallPos = Position(32835, 32333, 11) },
+	{ leverPos = Position(32847, 32327, 10), firewallPos = Position(32837, 32333, 11) },
+	{ leverPos = Position(32813, 32329, 10), firewallPos = Position(32839, 32333, 11) },
 }
 
 local function doRemoveFirewalls(fwPos)
@@ -17,19 +18,24 @@ end
 
 local pitsOfInfernoWalls = Action()
 function pitsOfInfernoWalls.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if item.itemid == 2772 then
-		doRemoveFirewalls(pos[item.uid])
-		Position(pos[item.uid]):sendMagicEffect(CONST_ME_FIREAREA)
-	else
-		Game.createItem(6288, 1, pos[item.uid])
-		Position(pos[item.uid]):sendMagicEffect(CONST_ME_FIREAREA)
+	for i = 1, #config do
+		local data = config[i]
+		if fromPosition == data.leverPos then
+			local firewallPos = data.firewallPos
+			if item.itemid == 2772 then
+				doRemoveFirewalls(firewallPos)
+				Position(firewallPos):sendMagicEffect(CONST_ME_FIREAREA)
+			else
+				Game.createItem(6288, 1, firewallPos)
+				Position(firewallPos):sendMagicEffect(CONST_ME_FIREAREA)
+			end
+			item:transform(item.itemid == 2772 and 2773 or 2772)
+		end
 	end
-	item:transform(item.itemid == 2772 and 2773 or 2772)
 	return true
 end
 
-for unique, info in pairs(pos) do
-	pitsOfInfernoWalls:uid(unique)
+for _, data in ipairs(config) do
+	pitsOfInfernoWalls:position(data.leverPos)
 end
-
 pitsOfInfernoWalls:register()

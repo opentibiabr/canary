@@ -323,19 +323,6 @@ The humans have availed themselves well of this opportunity. Under the wise guid
 It may be that this is yet another one of Zathroth's wicked ploys. It is well known that his most diabolic minions, the gruesome demons, are lurking in the shadows, biding their time. Who knows - perhaps Tibia is on the brink of another cataclysmic war, and a new twilight will fall on the world. Fate alone knows what the future has in store for Tibia. Let us all hope and pray that the humans' unity will not break just when it is needed most.
 		]],
 	},
-	[25] = {
-		itemId = 2831,
-		position = { x = 32054, y = 31894, z = 4 },
-		text = [[
-GV.i Part 1: The Age of Chaos
-
-Uman looked with sadness at the damage his evil half had done to the creation Fardos and he had worked for so hard. He felt that Zathroth had finally gone too far. In his desperation he turned to Fardos for advice. Together, they decided that it would be best to sever the bond between Uman and Zathroth once and for all. They set about to this task with great energy, and their efforts soon enough appeared to be crowned with success. However, the weaker the bond between Uman and Zathroth became, the weaker Uman himself grew, and in the end they realised that the duality could not be separated without endangering Uman's very existence. At last the invocation was aborted. Uman had to accept the fact that the duality between Zathroth and himself could not be broken, and that their fate and indeed their very existence were intertwined for eternity.
-
-However, Uman's and Fardos's joint efforts did not remain entirely without consequence, for during the unsuccessful attempt to separate the double god a small part broke away from it. This tiny shard grew and expanded until it took shape and eventually became a sentient creature of its own. This was the hour Kirok the Mad was born. Owing to his peculiar ancestry this strange god has a twisted or, as some say, a schizophrenic nature. He inherited Uman's creative mind and his inquisitive nature, so that he eventually became the patron god of all those who follow the path of science and research. However, the one trait Kirok is really famous for is his twisted sense of humour. He adores bad taste and ingenious pranks, and this peculiar characteristic makes him the favourite of bards, jesters and of all other kinds of suspicious people.
-
-While Fardos and Uman were working hard on their spell, Zathroth's minions went on to lay waste to the elder gods' precious creation, and the devastation continued without pause. It seemed as though the whole world was doomed to perish. However, some of the lesser gods who were tired of just standing by while their beloved Tibia was ravaged. They decided to put up resistance against the reckless hordes. Bastesh the Mistress of the Sea created huge, mysterious creatures that were both elegant and fierce, and she populated her beloved ocean with them to make sure Zathroth's minions would never defile its pure waters. However, there was little she could do to help her cousins who lived on the dry land. Of all her creatures the only ones to survive on land were the dextrous and venomous snakes. Crunor and Nornur, too, created creatures to fight against Brog's and Zathroth's hordes: Crunor the Lord of the Trees created fierce wolves, while Nornur equipped his beloved spiders with deadly poison to make them more powerful.
-		]],
-	},
 	[26] = {
 		containerId = 2435,
 		itemId = 129,
@@ -433,7 +420,7 @@ The Sea Serpent is as huge as a house and can swallow a small ship in one bite. 
 	[35] = {
 		containerId = 2435,
 		itemId = 2831,
-		position = { x = 32061, y = 31894, z = 4 },
+		position = { x = 32075, y = 31894, z = 4 }, -- Cipsoft didn't put this back in the game
 		text = [[
 V.i Part 2: The Age of Chaos
 
@@ -442,7 +429,7 @@ However, for all their efforts, the gods could not create creatures that were a 
 For centuries they had propagated and expanded in silence, largely unnoticed by all other creatures. But now that Garsharak, the very first and strongest of their race, sent them into the world they knew neither restraint nor mercy. The orcish armies were routed by the relentless flames of magical dragon fire, and soon that proud though barbaric race, who until then had not known the meaning of the word defeat, was driven into the shelter of subterranean settlements. Their allies, the mighty cyclopes, fared no better. Although they won a number of notable victories using their powerful weapons and armour, they, too, had to yield to the superior power of the dreaded dragons. They joined their former allies, the orcs, and their weak cousins, the trolls, in their subterranean exile. Their proud cities that had been built in the course of centuries were burnt down to the ground, and their renowned forges were lost forever.
 
 Thus the dragons had taken over the rule of the land, but the war was by no means over. Their bitter enemies, cyclopes and orcs, resented what they felt was an imprisonment in the bowels of the earth, and they continued the fight from their subterranean hideouts. And in fact the dragons, who had already been weakened in the course of the previous battles, suffered serious losses. But now war also erupted among the former allies, as cyclopes and orcs competed for food and space in their subterranean abodes. And even though no side was strong enough to overcome the others the war went on with undiminished force, and all of the races suffered greatly in the epic struggle. The land was scattered with bodies, and while it seemed that life itself would be wiped from the face of Tibia the losses of all races that were involved daily grew in number. It was as if the living would drown in the bodies of the slain.
-]],
+		]],
 	},
 	[36] = {
 		containerId = 2459,

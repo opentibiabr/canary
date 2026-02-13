@@ -22,7 +22,37 @@
 	#include <compare>
 #endif
 
-// Enum
+// Enums
+
+/**
+ * @brief Represents different types of Monk-related status flags.
+ */
+enum class MonkData_t : uint8_t {
+	Harmony = 0x00, ///< Indicates the player has the Harmony effect.
+	Serenity = 0x01, ///< Indicates the player has the Serenity effect.
+	Virtue = 0x02, ///< Indicates the player has the Virtue effect.
+};
+
+/**
+ * @brief Identifies the category of a Monk spell.
+ */
+enum class MonkSpell_t : uint8_t {
+	None = 0x00, ///< Not a Monk spell.
+	Builder = 0x01, ///< Monk spell that builds up energy or combo.
+	Spender = 0x02, ///< Monk spell that consumes built-up energy.
+};
+
+/**
+ * @brief Represents the Monk Virtue types.
+ * @note Do not change the order. It is hardcoded in CipSoft's client.
+ */
+enum class Virtue_t : uint8_t {
+	None = 0x00, ///< No virtue selected.
+	Harmony = 0x01, ///< Virtue of balance and unity.
+	Justice = 0x02, ///< Virtue of fairness and retribution.
+	Sustain = 0x03, ///< Virtue of endurance and support.
+};
+
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,
@@ -118,6 +148,9 @@ enum ConditionType_t : uint8_t {
 	CONDITION_BAKRAGORE = 34,
 	CONDITION_GOSHNARTAINT = 35,
 	CONDITION_POWERLESS = 36,
+	CONDITION_AGONY = 37,
+	CONDITION_SERENE = 38,
+	CONDITION_MENTOROTHER = 39,
 
 	// Need the last ever
 	CONDITION_COUNT
@@ -225,6 +258,9 @@ enum ConditionParam_t {
 	CONDITION_PARAM_INCREASE_DROWNPERCENT = 81,
 	CONDITION_PARAM_CHARM_CHANCE_MODIFIER = 82,
 	CONDITION_PARAM_BUFF_HEALINGRECEIVED = 83,
+	CONDITION_PARAM_BUFF_HEALINGDEALT = 84,
+	CONDITION_PARAM_BUFF_HARMONYBONUS = 85,
+	CONDITION_PARAM_BUFF_AUTOATTACKDEALT = 86,
 };
 
 enum stats_t {
@@ -239,12 +275,16 @@ enum stats_t {
 };
 
 enum buffs_t {
+	BUFF_AUTOATTACKDEALT,
 	BUFF_DAMAGEDEALT,
 	BUFF_DAMAGERECEIVED,
 	BUFF_HEALINGRECEIVED,
+	BUFF_HEALINGDEALT,
+	BUFF_HARMONYBONUS,
+	BUFF_MANTRA,
 
-	BUFF_FIRST = BUFF_DAMAGEDEALT,
-	BUFF_LAST = BUFF_HEALINGRECEIVED,
+	BUFF_FIRST = BUFF_AUTOATTACKDEALT,
+	BUFF_LAST = BUFF_MANTRA,
 };
 
 enum formulaType_t {
@@ -276,6 +316,8 @@ enum CombatOrigin : uint8_t {
 	ORIGIN_SPELL,
 	ORIGIN_MELEE,
 	ORIGIN_RANGED,
+	ORIGIN_HARMONY, // ONLY HARMONY HEAL WILL HAVE ITS ORIGIN FROM HARMONY
+	ORIGIN_FIST,
 };
 
 enum CallBackParam_t {
@@ -723,6 +765,7 @@ enum SpellGroup_t : uint8_t {
 	SPELLGROUP_ULTIMATESTRIKES = 8,
 	SPELLGROUP_BURSTS_OF_NATURE = 9,
 	SPELLGROUP_GREAT_BEAMS = 10,
+	SPELLGROUP_VIRTUE = 11,
 };
 
 enum ChannelEvent_t : uint8_t {
@@ -749,13 +792,16 @@ enum Vocation_t : uint16_t {
 	VOCATION_ELDER_DRUID = 6,
 	VOCATION_ROYAL_PALADIN = 7,
 	VOCATION_ELITE_KNIGHT = 8,
-	VOCATION_LAST = VOCATION_ELITE_KNIGHT,
+	VOCATION_MONK = 9,
+	VOCATION_EXALTED_MONK = 10,
+	VOCATION_LAST = VOCATION_EXALTED_MONK,
 
 	// Cip tibia client ids
 	VOCATION_KNIGHT_CIP = 1,
 	VOCATION_PALADIN_CIP = 2,
 	VOCATION_SORCERER_CIP = 3,
-	VOCATION_DRUID_CIP = 4
+	VOCATION_DRUID_CIP = 4,
+	VOCATION_MONK_CIP = 5,
 };
 
 enum FightMode_t : uint8_t {
@@ -781,9 +827,9 @@ enum TradeState_t : uint8_t {
 
 enum CombatType_t : uint8_t {
 	COMBAT_PHYSICALDAMAGE = 0,
-	COMBAT_ENERGYDAMAGE = 1,
+	COMBAT_FIREDAMAGE = 1,
 	COMBAT_EARTHDAMAGE = 2,
-	COMBAT_FIREDAMAGE = 3,
+	COMBAT_ENERGYDAMAGE = 3,
 	COMBAT_UNDEFINEDDAMAGE = 4,
 	COMBAT_LIFEDRAIN = 5,
 	COMBAT_MANADRAIN = 6,
@@ -1652,16 +1698,6 @@ struct HistoryMarketOffer {
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
 using StashItemList = std::map<uint16_t, uint32_t>;
-
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
-/*
-    > ItemsTierCountList structure:
-    |- [itemID]
-        |- [itemTier]
-            |- Count
-        | ...
-    | ...
-*/
 
 struct ProtocolFamiliars {
 	ProtocolFamiliars(const std::string &initName, uint16_t initLookType) :

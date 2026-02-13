@@ -19,6 +19,21 @@
 #include "lua/global/lua_variant.hpp"
 #include "creatures/players/player.hpp"
 
+namespace {
+	void sendWeaponSoundEffect(const std::shared_ptr<Player> &player, const CombatParams &params) {
+		if (!player) {
+			return;
+		}
+
+		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+			return;
+		}
+
+		g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+	}
+}
+
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 
@@ -218,7 +233,12 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 	params.soundImpactEffect = SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 
 	CombatDamage damage;
-	damage.origin = ORIGIN_MELEE;
+	if (player->getPlayerVocationEnum() == VOCATION_MONK_CIP) {
+		damage.origin = ORIGIN_FIST;
+	} else {
+		damage.origin = ORIGIN_MELEE;
+	}
+
 	damage.primary.type = params.combatType;
 	damage.primary.value = -normal_random(0, maxDamage);
 
@@ -231,13 +251,7 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 }
 
 void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent) const {
-	if (player) {
-		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-		} else {
-			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-		}
-	}
+	sendWeaponSoundEffect(player, params);
 
 	if (isLoadedScriptId()) {
 		if (cleavePercent != 0) {
@@ -258,6 +272,10 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		}
 		damage.primary.type = params.combatType;
 		damage.secondary.type = getElementType();
+
+		if (item->getWeaponType() == WEAPON_FIST) {
+			damage.origin = ORIGIN_FIST;
+		}
 
 		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		const int32_t physicalAttack = item->getAttack();
@@ -577,6 +595,10 @@ bool WeaponMelee::getSkillType(const std::shared_ptr<Player> &player, const std:
 
 	const WeaponType_t weaponType = item->getWeaponType();
 	switch (weaponType) {
+		case WEAPON_FIST: {
+			skill = SKILL_FIST;
+			return true;
+		}
 		case WEAPON_SWORD: {
 			skill = SKILL_SWORD;
 			return true;

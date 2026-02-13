@@ -3,6 +3,7 @@ FAMILIAR_ID = {
 	[VOCATION.BASE_ID.DRUID] = { id = 993, name = "Druid familiar" },
 	[VOCATION.BASE_ID.PALADIN] = { id = 992, name = "Paladin familiar" },
 	[VOCATION.BASE_ID.KNIGHT] = { id = 991, name = "Knight familiar" },
+	[VOCATION.BASE_ID.MONK] = { id = 1818, name = "Monk familiar" },
 }
 
 FAMILIAR_TIMER = {

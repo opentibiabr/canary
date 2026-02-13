@@ -22,6 +22,7 @@
 	<category id="15" name="Skillboost (Distance Fighting)" agressive="1" />
 	<category id="16" name="Skillboost (Magic Level)" agressive="1" />
 	<category id="17" name="Increase Capacity" agressive="0" />
+	<category id="18" name="Skillboost (Fist Fighting)" agressive="1" />
 
 	<!-- Damage Imbuement -->
 	<imbuement name="Scorch" base="1" subgroup=" (Fire)" category="0" iconid="13" premium="0" storage="0" sound="2002">
@@ -407,6 +408,24 @@
 		<attribute key="item" value="9635" count="25" />
 		<attribute key="item" value="11452" count="15" />
 		<attribute key="item" value="10309" count="15" />
+	</imbuement>
+	<imbuement name="Punch" base="1" category="18" iconid="61" premium="0" storage="0">
+		<attribute key="description" value="Raises fist fighting skill by 1." />
+		<attribute key="effect" type="skill" value="fist" bonus="1" />
+		<attribute key="item" value="9690" count="20" />
+	</imbuement>
+	<imbuement name="Punch" base="2" category="18" iconid="61" premium="1" storage="0">
+		<attribute key="description" value="Raises fist fighting skill by 2." />
+		<attribute key="effect" type="skill" value="fist" bonus="2" />
+		<attribute key="item" value="9690" count="20" />
+		<attribute key="item" value="11489" count="25" />
+	</imbuement>
+	<imbuement name="Punch" base="3" category="18" iconid="61" premium="1" storage="50492">
+		<attribute key="description" value="Raises fist fighting skill by 4." />
+		<attribute key="effect" type="skill" value="fist" bonus="4" />
+		<attribute key="item" value="9690" count="20" />
+		<attribute key="item" value="11489" count="25" />
+		<attribute key="item" value="40529" count="10" />
 	</imbuement>
 	<!-- Capacity Imbuement -->
 	<imbuement name="Featherweight" base="1" category="17" iconid="76" premium="0" storage="0">

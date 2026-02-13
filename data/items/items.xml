@@ -84613,7 +84613,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="energymagiclevelpoints" value="6"/>
 		<attribute key="firemagiclevelpoints" value="3"/>
 		<attribute key="absorbpercentearth" value="8"/>
-		<attribute key="weight" value="39000"/>
+		<attribute key="weight" value="3900"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="life leech" value="3"/>
 			<attribute key="elemental protection ice" value="3"/>

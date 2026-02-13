@@ -4465,7 +4465,14 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 		msg.add<uint32_t>(duration);
 	}
 
-	msg.addByte(0x00);
+	const auto &activeFoods = player->getActiveFoods();
+	msg.addByte(activeFoods.size());
+	for (const auto &[foodId, duration] : activeFoods) {
+		msg.add<uint16_t>(foodId);
+		msg.addByte(0x00);
+		msg.addByte(0x00);
+		msg.add<uint32_t>(duration);
+	}
 
 	writeToOutputBuffer(msg);
 }

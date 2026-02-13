@@ -361,6 +361,7 @@ class PlayerFunctions {
 
 	// Concoction system
 	static int luaPlayerUpdateConcoction(lua_State* L);
+	static int luaPlayerUpdateFood(lua_State* L);
 	static int luaPlayerClearSpellCooldowns(lua_State* L);
 
 	static int luaPlayerIsVip(lua_State* L);

@@ -5332,6 +5332,27 @@ bool Player::isConcoctionActive(Concoction_t concotion) const {
 	return timeLeft > 0;
 }
 
+// Food system
+void Player::updateFood(uint16_t itemId, uint16_t timeLeft) {
+	if (timeLeft == 0) {
+		m_activeFoods.erase(itemId);
+	} else {
+		m_activeFoods[itemId] = timeLeft;
+	}
+}
+
+std::map<uint16_t, uint16_t> Player::getActiveFoods() const {
+	return m_activeFoods;
+}
+
+bool Player::isFoodActive(uint16_t itemId) const {
+	if (!m_activeFoods.contains(itemId)) {
+		return false;
+	}
+	const auto timeLeft = m_activeFoods.at(itemId);
+	return timeLeft > 0;
+}
+
 bool Player::checkAutoLoot(bool isBoss) const {
 	if (!g_configManager().getBoolean(AUTOLOOT)) {
 		return false;

@@ -36,11 +36,9 @@ Imbuement* Imbuements::getImbuement(uint16_t id) {
 	return &it->second;
 }
 
-Imbuement* Imbuements::getImbuementByScrollID(uint16_t imbuementScrollId) {
-	for (auto &[key, value] : imbuementMap) {
-		if (value.scrollId == imbuementScrollId) {
-			return &value;
-		}
+Imbuement* Imbuements::getImbuementByScrollID(uint16_t scrollId) {
+	if (auto it = scrollIdMap.find(scrollId); it != scrollIdMap.end()) {
+		return it->second;
 	}
 
 	return nullptr;
@@ -169,7 +167,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				std::string type = attr.as_string();
 				if (strcasecmp(type.c_str(), "scroll") == 0) {
 					if ((attr = childNode.attribute("value"))) {
-						imbuement.scrollId = attr.as_uint();
+						imbuement.scrollId = pugi::cast<uint16_t>(attr.value());
 					}
 				} else if (strcasecmp(type.c_str(), "item") == 0) {
 					if (!((attr = childNode.attribute("value")))) {
@@ -328,6 +326,10 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 					}
 				}
 			}
+
+			if (imbuement.scrollId != 0) {
+				scrollIdMap[imbuement.scrollId] = &imbuement;
+			}
 		}
 	}
 
@@ -336,6 +338,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 
 bool Imbuements::reload() {
 	imbuementMap.clear();
+	scrollIdMap.clear();
 	basesImbuement.clear();
 	categoriesImbuement.clear();
 

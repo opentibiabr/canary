@@ -77231,52 +77231,6 @@ Granted by TibiaGoals.com"/>
 	<item id="45160" article="a" name="ramp">
 		<attribute key="floorchange" value="south"/>
 	</item>
-	<item id="45641" article="a" name="candy necklace">
-		<attribute key="primarytype" value="amulets and necklaces"/>
-		<attribute key="description" value="This necklace provides a sugary barrier against attacks."/>
-		<attribute key="showAttributes" value="1"/>
-		<attribute key="absorbpercentphysical" value="3"/>
-		<attribute key="absorbpercentenergy" value="6"/>
-		<attribute key="absorbpercentpoison" value="-5"/>
-		<attribute key="armor" value="2"/>
-		<attribute key="weight" value="510"/>
-		<attribute key="script" value="moveevent">
-			<attribute key="level" value="220"/>
-			<attribute key="slot" value="necklace"/>
-		</attribute>
-	</item>
-	<item id="45643" article="a" name="biscuit barrier">
-		<attribute key="primarytype" value="shields"/>
-		<attribute key="weaponType" value="shield"/>
-		<attribute key="description" value="This tasty-looking shield protects from damage and boosts your regeneration."/>
-		<attribute key="absorbpercentphysical" value="3"/>
-		<attribute key="absorbpercentfire" value="5"/>
-		<attribute key="lifeleechamount" value="200"/>
-		<attribute key="manaticks" value="3000"/>
-		<attribute key="managain" value="4"/>
-		<attribute key="healthticks" value="3000"/>
-		<attribute key="healthgain" value="1"/>
-		<attribute key="skillshield" value="2"/>
-		<attribute key="defense" value="36"/>
-		<attribute key="weight" value="5200"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="elemental protection death" value="3"/>
-			<attribute key="elemental protection earth" value="3"/>
-			<attribute key="elemental protection ice" value="3"/>
-			<attribute key="elemental protection energy" value="3"/>
-			<attribute key="elemental protection holy" value="3"/>
-		</attribute>
-		<attribute key="augments" value="1">
-			<attribute key="wound cleansing" value="base healing">
-				<attribute key="value" value="16"/>
-			</attribute>
-		</attribute>
-		<attribute key="script" value="moveevent">
-			<attribute key="level" value="200"/>
-			<attribute key="slot" value="shield"/>
-			<attribute key="vocation" value="Knight;true, Elite Knight"/>
-		</attribute>
-	</item>
 	<item id="45639" article="a" name="cocoa grimoire">
 		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="description" value="This spellbook was made from rich dark chocolate and is filled with powerful knowledge."/>
@@ -80460,12 +80414,6 @@ Granted by TibiaGoals.com"/>
 	<item id="48190" article="an" name="intricate cage key">
 		<attribute key="primarytype" value="keys"/>
 		<attribute key="weight" value="100"/>
-	</item>
-	<item id="48251" article="a" name="wafer paper flower">
-		<attribute key="weight" value="5"/>
-	</item>
-	<item id="48255" article="a" name="lime tart">
-		<attribute key="weight" value="250"/>
 	</item>
 	<item id="48249" article="a" name="milk chocolate coin">
 		<attribute key="weight" value="10"/>
@@ -84747,7 +84695,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="magiclevelpoints" value="2"/>
 		<attribute key="absorbpercentdeath" value="4"/>
 		<attribute key="weight" value="1150"/>
-		<attribute key="augments" value="2">
+		<attribute key="augments" value="1">
 			<attribute key="ultimate terra strike" value="base damage">
 				<attribute key="value" value="33"/>
 			</attribute>
@@ -84779,7 +84727,8 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Monk;true, Exalted Monk"/>
 		</attribute>
 	</item>
-	<item id="51268" name="norcferatu goretrampers">
+	<item id="51268" article="a" name="norcferatu goretrampers">
+		<attribute key="primarytype" value="boots"/>
 		<attribute key="absorbpercentphysical" value="5"/>
 		<attribute key="absorbpercentearth" value="3"/>
 		<attribute key="speed" value="15"/>
@@ -84800,7 +84749,8 @@ Granted by TibiaGoals.com"/>
 			<attribute key="vocation" value="Knight;true, Elite Knight"/>
 		</attribute>
 	</item>
-	<item id="51269" name="norcferatu fangstompers">
+	<item id="51269" article="a" name="norcferatu fangstompers">
+		<attribute key="primarytype" value="boots"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="magiclevelpoints" value="1"/>
 		<attribute key="absorbpercentdeath" value="3"/>
@@ -84962,7 +84912,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost fist" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="sweeping takedown" value="base">
+			<attribute key="sweeping takedown" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>

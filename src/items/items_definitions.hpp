@@ -280,7 +280,7 @@ enum class Augment_t : uint8_t {
 	BaseDamage = 2,
 	BaseHealing = 3,
 	DurationIncreased = 4, // Not implemented to use in items.xml
-	AditionalTargets = 5, // Not implemented to use in items.xml
+	AdditionalTargets = 5, // Not implemented to use in items.xml
 	Cooldown = 6,
 	SecondaryGroupCooldown = 7, // Not implemented to use in items.xml
 	AffectedAreaEnlarged = 8, // Not implemented to use in items.xml
@@ -638,7 +638,6 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_SCRIPT,
 	ITEM_PARSE_AUGMENT,
 	ITEM_PARSE_ELEMENTALBOND,
-	ITEM_PARSE_PROFICIENCY,
 };
 
 struct ImbuementInfo {

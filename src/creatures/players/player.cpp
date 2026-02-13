@@ -2483,12 +2483,12 @@ void Player::applyScrollImbuement(const std::shared_ptr<Item> &item, const std::
 		return;
 	}
 
-	item->setImbuement(freeImbuementSlot, imbuement->getID(), baseImbuement->duration);
-
 	if (g_game().internalRemoveItem(scrollItem, 1) != RETURNVALUE_NOERROR) {
 		g_logger().error("[Player::applyScrollImbuement] - Failed to remove scroll item {} from player {}", scrollItem->getID(), getName());
 		return;
 	}
+
+	item->setImbuement(freeImbuementSlot, imbuement->getID(), baseImbuement->duration);
 
 	if (item->getParent() == getPlayer()) {
 		addItemImbuementStats(imbuement);
@@ -2689,7 +2689,6 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	}
 
 	if (uniform_random(1, 100) > baseImbuement->percent) {
-		openImbuementWindow(ImbuementAction::PickItem, item);
 		sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
 		openImbuementWindow(ImbuementAction::PickItem, item);
 		return;
@@ -7244,10 +7243,12 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 		}
 
 		if (perfectShotRange == range) {
-			result += itemType.abilities->perfectShotDamage;
-			const uint16_t charges = item->getCharges();
-			if (useCharges && charges != 0) {
-				g_game().transformItem(item, item->getID(), charges - 1);
+			if (itemType.abilities) {
+				result += itemType.abilities->perfectShotDamage;
+				const uint16_t charges = item->getCharges();
+				if (useCharges && charges != 0) {
+					g_game().transformItem(item, item->getID(), charges - 1);
+				}
 			}
 		}
 	}
@@ -12398,8 +12399,10 @@ const std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() c
 				continue;
 			}
 
-			const auto &itemType = Item::items[item->getID()];
-			skillEquipment.equipment += itemType.abilities->skills[skill] / 10000.0;
+			const ItemType &itemType = Item::items[item->getID()];
+			if (itemType.abilities) {
+				skillEquipment.equipment += itemType.abilities->skills[skill] / 10000.0;
+			}
 
 			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;
@@ -12407,7 +12410,9 @@ const std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() c
 					continue;
 				}
 
-				skillEquipment.imbuement += imbuementInfo.imbuement->skills[skill] / 10000.0;
+				if (imbuementInfo.imbuement) {
+					skillEquipment.imbuement += imbuementInfo.imbuement->skills[skill] / 10000.0;
+				}
 			}
 		}
 

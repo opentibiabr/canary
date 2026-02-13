@@ -132,7 +132,7 @@ void Weapon::configureWeapon(const ItemType &it) {
 	id = it.id;
 }
 
-int32_t Weapon::playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t shootRange) const {
+int32_t Weapon::playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, int32_t shootRange) const {
 	shootRange += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_RANGE);
 
 	const Position &playerPos = player->getPosition();

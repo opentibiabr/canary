@@ -198,7 +198,7 @@ std::string formatWithArticle(const std::string &value, bool withSpace = true);
 
 std::string toKey(const std::string &str);
 
-static inline double quadraticPoly(double a, double b, double c, double x) {
+inline double quadraticPoly(double a, double b, double c, double x) {
 	return a * x * x + b * x + c;
 }
 

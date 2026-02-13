@@ -266,7 +266,6 @@ namespace {
 	 */
 	void addCyclopediaSkills(std::shared_ptr<Player> &player, NetworkMessage &msg, skills_t skill, const SkillsEquipment &skillEquipment) {
 		const auto skillTotal = player->getSkillLevel(skill);
-		const auto &playerItem = player->getInventoryItem(CONST_SLOT_LEFT);
 
 		double skillWheel = 0.0;
 		const auto &playerWheel = player->wheel();
@@ -294,21 +293,21 @@ namespace {
 	void addCyclopediaCriticalSkill(std::shared_ptr<Player> &player, NetworkMessage &msg, skills_t skill, const SkillsEquipment &skillEquipment) {
 		const auto &playerBaseCritical = player->getBaseCritical();
 
-		double concotionCritical = 0.0;
+		double concoctionCritical = 0.0;
 		double baseCritical = skill == SKILL_CRITICAL_HIT_CHANCE ? playerBaseCritical.chance : playerBaseCritical.damage;
 		double wheelCritical = player->wheel().getStat(skill == SKILL_CRITICAL_HIT_CHANCE ? WheelStat_t::CRITICAL_CHANCE : WheelStat_t::CRITICAL_DAMAGE) / 10000.0;
 
 		const auto &proficiencyCritical = player->weaponProficiency().getGeneralCritical();
 		double proficiencyCriticalValue = skill == SKILL_CRITICAL_HIT_CHANCE ? proficiencyCritical.chance : proficiencyCritical.damage;
 		double skillEquipmentValue = skillEquipment.equipment + proficiencyCriticalValue;
-		const auto totalCritical = baseCritical + skillEquipmentValue + wheelCritical + skillEquipment.imbuement + concotionCritical;
+		const auto totalCritical = baseCritical + skillEquipmentValue + wheelCritical + skillEquipment.imbuement + concoctionCritical;
 
 		msg.addDouble(totalCritical);
 		msg.addDouble(baseCritical);
 		msg.addDouble(skillEquipmentValue);
 		msg.addDouble(skillEquipment.imbuement);
 		msg.addDouble(wheelCritical);
-		msg.addDouble(concotionCritical);
+		msg.addDouble(concoctionCritical);
 	}
 } // namespace
 
@@ -2193,9 +2192,8 @@ void ProtocolGame::parseInspectionObject(NetworkMessage &msg) {
 		uint16_t itemCount = msg.getByte();
 		g_game().playerInspectItem(player, itemId, static_cast<int8_t>(itemCount), (inspectionType == INSPECT_CYCLOPEDIA));
 	} else if (inspectionType == INSPECT_PROFICIENCY) {
-		auto itemId = msg.get<uint16_t>();
-		auto unknownByte = msg.getByte();
-		auto experience = player->weaponProficiency().getExperience(itemId);
+		const auto itemId = msg.get<uint16_t>();
+		msg.getByte(); // Unknown byte
 		sendWeaponProficiencyWindow(itemId);
 	}
 }
@@ -2290,6 +2288,10 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseImbuementAction(NetworkMessage &msg) {
+	if (oldProtocol) {
+		return;
+	}
+
 	auto action = static_cast<ImbuementAction>(msg.getByte()); // 0x01 - pick item, 0x02 - scroll imbuement
 
 	std::shared_ptr<Item> item = nullptr;
@@ -2312,6 +2314,9 @@ void ProtocolGame::parseImbuementAction(NetworkMessage &msg) {
 			slotId -= 0x40;
 			const auto &container = player->getContainerByID(slotId);
 			item = container ? container->getItemByIndex(slotIndex) : nullptr;
+			if (!item || item->getID() != itemId) {
+				return;
+			}
 		} else {
 			item = player->getInventoryItem(static_cast<Slots_t>(slotId));
 			if (!item || item->getID() != itemId) {
@@ -2324,6 +2329,10 @@ void ProtocolGame::parseImbuementAction(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
+	if (oldProtocol) {
+		return;
+	}
+
 	auto action = msg.getByte();
 	auto weaponId = msg.get<uint16_t>();
 
@@ -2346,7 +2355,10 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 			player->weaponProficiency().applyPerks(weaponId);
 		}
 	} else if (action == 0x02) {
-		player->weaponProficiency().clearAllStats();
+		const auto equippedWeaponId = player->getWeaponId(true);
+		if (equippedWeaponId != 0 && weaponId == equippedWeaponId) {
+			player->weaponProficiency().clearAllStats();
+		}
 		player->weaponProficiency().clearSelectedPerks(weaponId);
 	}
 
@@ -4318,7 +4330,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	}
 
 	const auto flatBonus = player->calculateFlatDamageHealing();
-	double flatDamageHealingUnknown = 0.0;
+	uint16_t flatDamageHealingUnknown = 0;
 	msg.add<uint16_t>(flatBonus); // Flat Damage and Healing Total
 	msg.add<uint16_t>(flatBonus);
 	msg.add<uint16_t>(flatDamageHealingUnknown);
@@ -4631,7 +4643,7 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 
 	uint8_t activeFoods = 0; // TODO: MODIFY FOODS TO BE LIKE CONCOCTIONS
 	msg.addByte(activeFoods);
-	for (uint8_t i; activeFoods < 0; ++i) {
+	for (uint8_t i = 0; i < activeFoods; ++i) {
 		msg.add<uint16_t>(0x00); // Item ID
 		msg.addByte(0x00);
 		msg.addByte(0x00);
@@ -8602,7 +8614,6 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction /* = false */) const {
 	Imbuement* imbuement = g_imbuements().getImbuement(imbuementID);
 	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
-	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 
 	msg.add<uint32_t>(imbuement->getID());
 	msg.addString(fmt::format("{} {}", baseImbuement->name, imbuement->getName()));
@@ -8638,22 +8649,20 @@ void ProtocolGame::addAvailableImbuementsInfo(NetworkMessage &msg, const std::sh
 		const auto &imbuementItems = imbuement->getItems();
 		for (const auto &[id, _] : imbuementItems) {
 			if (!neededItems.count(id)) {
-				neededItems[id] = player->getItemTypeCount(id);
-				uint32_t stashCount = player->getStashItemCount(id);
-				if (stashCount > 0) {
-					neededItems[id] += stashCount;
-				}
+				const uint32_t invCount = player->getItemTypeCount(id);
+				const uint32_t stashCount = player->getStashItemCount(id);
+				const uint32_t total = invCount + stashCount;
+				neededItems[id] = static_cast<uint16_t>(std::min<uint32_t>(total, std::numeric_limits<uint16_t>::max()));
 			}
 		}
 	}
 
 	if (isScrollAction) {
 		if (!neededItems.count(ITEM_EMPTY_IMBUEMENT_SCROLL)) {
-			neededItems[ITEM_EMPTY_IMBUEMENT_SCROLL] = player->getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
-			uint32_t stashCount = player->getStashItemCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
-			if (stashCount > 0) {
-				neededItems[ITEM_EMPTY_IMBUEMENT_SCROLL] += stashCount;
-			}
+			const uint32_t invCount = player->getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
+			const uint32_t stashCount = player->getStashItemCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
+			const uint32_t total = invCount + stashCount;
+			neededItems[ITEM_EMPTY_IMBUEMENT_SCROLL] = static_cast<uint16_t>(std::min<uint32_t>(total, std::numeric_limits<uint16_t>::max()));
 		}
 	}
 }
@@ -8668,9 +8677,8 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 
 	phmap::flat_hash_map<uint16_t, uint16_t> neededItems;
 
-	const auto emptyImbuementScrolls = player->getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
-
 	msg.addByte(static_cast<uint8_t>(action));
+	const auto emptyImbuementScrolls = player->getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL) + player->getStashItemCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
 	msg.addByte(emptyImbuementScrolls > 0 ? 0x01 : 0x00);
 	if (action == ImbuementAction::Open) {
 		msg.add<uint16_t>(0);
@@ -10507,12 +10515,12 @@ void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
 
 	const auto &selectedPerks = player->weaponProficiency().getSelectedPerks(weaponId);
 
-	msg.addByte(selectedPerks.size());
-	if (selectedPerks.size() > 0) {
-		for (const auto &perk : selectedPerks) {
-			msg.addByte(perk.level);
-			msg.addByte(perk.index);
-		}
+	const uint8_t perkCount = static_cast<uint8_t>(std::min<size_t>(selectedPerks.size(), std::numeric_limits<uint8_t>::max()));
+	msg.addByte(perkCount);
+	for (size_t i = 0; i < perkCount; ++i) {
+		const auto &perk = selectedPerks[i];
+		msg.addByte(perk.level);
+		msg.addByte(perk.index);
 	}
 
 	writeToOutputBuffer(msg);

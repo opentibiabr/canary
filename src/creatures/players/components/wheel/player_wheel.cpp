@@ -326,8 +326,8 @@ namespace {
 			g_logger().debug("spell target stage {}, grade {}", stage, size);
 			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
 				const auto &spellData = spellTable.grade[stage];
-				if (spellData.increase.aditionalTarget) {
-					return spellData.increase.aditionalTarget;
+				if (spellData.increase.additionalTarget) {
+					return spellData.increase.additionalTarget;
 				}
 			}
 		}
@@ -1313,7 +1313,7 @@ void PlayerWheel::addSpellBonus(const std::string &spellName, const WheelSpells:
 		m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
 		m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
 		m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-		m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
+		m_spellsBonuses[spellName].increase.additionalTarget += bonus.increase.additionalTarget;
 		m_spellsBonuses[spellName].increase.area = bonus.increase.area;
 		m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
 		m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
@@ -2581,25 +2581,20 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> Pl
 		}
 	};
 
-	std::unordered_set<uint16_t> registeredSpells;
+	std::unordered_map<uint16_t, uint8_t> spellGrades;
 	for (const auto &spellName : m_playerBonusData.spells) {
-		uint8_t grade = 1;
 		const auto &spell = g_spells().getSpellByName(spellName);
 		if (!spell) {
 			continue;
 		}
 
 		auto spellId = spell->getSpellId();
-		if (!registeredSpells.contains(spellId)) {
-			registeredSpells.emplace(spellId);
+		spellGrades[spellId]++;
 
-			registerAugment(spellId, spellName, grade, registeredSpells);
+		uint8_t grade = spellGrades[spellId];
 
-			continue;
-		}
-
-		grade = 2;
-
+		std::unordered_set<uint16_t> registeredSpells;
+		registeredSpells.emplace(spellId);
 		registerAugment(spellId, spellName, grade, registeredSpells);
 	}
 

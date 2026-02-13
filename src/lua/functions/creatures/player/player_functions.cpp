@@ -3337,6 +3337,7 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 	const auto &item = Lua::getUserdataShared<Item>(L, 3, "Item");
 
 	player->openImbuementWindow(action, item);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 
@@ -5238,7 +5239,7 @@ int PlayerFunctions::luaPlayerSetSpeed(lua_State* L) {
 	}
 
 	const int32_t speed = Lua::getNumber<int32_t>(L, 2);
-	g_game().changePlayerSpeed(player, speed);
+	g_game().setCreatureSpeed(player, speed);
 	Lua::pushBoolean(L, true);
 	return 1;
 }
@@ -5248,13 +5249,20 @@ int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
 		return 1;
 	}
 
 	const auto experience = Lua::getNumber<uint32_t>(L, 2);
 	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
 
+	if (experience == 0) {
+		Lua::pushBoolean(L, true);
+		return 1;
+	}
+
 	player->weaponProficiency().addExperience(experience, itemId);
 
+	Lua::pushBoolean(L, true);
 	return 1;
 }

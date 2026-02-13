@@ -2375,7 +2375,7 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 	}
 
 	const auto weaponExperienceFromBestiary = targetPlayer->weaponProficiency().getBestiaryExperience(m_monsterType->info.bestiaryStars);
-	if (weaponExperienceFromBestiary) {
+	if (weaponExperienceFromBestiary > 0) {
 		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBestiary);
 	}
 }

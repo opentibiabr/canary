@@ -759,15 +759,17 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage);
 		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage, true);
 
-		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::LIFE, WeaponProficiencyGain_t::HIT);
-		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::HIT);
-
 		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
+	}
+
+	if (attackerPlayer) {
+		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::LIFE, WeaponProficiencyGain_t::HIT);
+		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::HIT);
 	}
 
 	// Player attacking monster

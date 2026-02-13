@@ -356,6 +356,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, AUGMENT_POWERFUL_IMPACT_PERCENT, "augmentPowerfulImpactPercent", 10);
 	loadIntConfig(L, AUGMENT_STRONG_IMPACT_PERCENT, "augmentStrongImpactPercent", 7);
 	loadIntConfig(L, ANIMUS_MASTERY_MONSTERS_TO_INCREASE_XP_MULTIPLIER, "animusMasteryMonstersToIncreaseXpMultiplier", 10);
+	loadIntConfig(L, WEAPON_PROFICIENCY_MAX_LEVELS, "weaponProficiencyMaxLevels", 10);
+	loadIntConfig(L, WEAPON_PROFICIENCY_MAX_PERKS_PER_LEVEL, "weaponProficiencyMaxPerksPerLevel", 6);
 
 	loadStringConfig(L, CORE_DIRECTORY, "coreDirectory", "data");
 	loadStringConfig(L, DATA_DIRECTORY, "dataPackDirectory", "data-otservbr-global");

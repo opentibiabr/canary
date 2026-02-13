@@ -201,12 +201,15 @@ public:
 				continue;
 			}
 
+			if (grade >= spellBonus.grade.size()) {
+				continue;
+			}
 			const auto &bonus = spellBonus.grade[grade];
 			addValue(Augment_t::ManaCost, -bonus.decrease.manaCost);
 			addValue(Augment_t::BaseDamage, bonus.increase.damage / 100.0);
 			addValue(Augment_t::BaseHealing, bonus.increase.heal / 100.0);
 			addValue(Augment_t::DurationIncreased, bonus.increase.duration);
-			addValue(Augment_t::AditionalTargets, bonus.increase.aditionalTarget);
+			addValue(Augment_t::AdditionalTargets, bonus.increase.additionalTarget);
 			addValue(Augment_t::Cooldown, -(bonus.decrease.cooldown / 1000.0));
 			addValue(Augment_t::SecondaryGroupCooldown, -(bonus.decrease.secondaryGroupCooldown / 1000.0));
 			addValue(Augment_t::AffectedAreaEnlarged, bonus.increase.area);

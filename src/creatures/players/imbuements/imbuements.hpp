@@ -55,7 +55,7 @@ public:
 	static Imbuements &getInstance();
 
 	Imbuement* getImbuement(uint16_t id);
-	Imbuement* getImbuementByScrollID(uint16_t imbuementScrollId);
+	Imbuement* getImbuementByScrollID(uint16_t scrollId);
 
 	BaseImbuement* getBaseByID(uint16_t id);
 	CategoryImbuement* getCategoryByID(uint16_t id);
@@ -67,6 +67,7 @@ protected:
 
 private:
 	std::map<uint32_t, Imbuement> imbuementMap;
+	std::unordered_map<uint16_t, Imbuement*> scrollIdMap;
 
 	std::vector<BaseImbuement> basesImbuement;
 	std::vector<CategoryImbuement> categoriesImbuement;

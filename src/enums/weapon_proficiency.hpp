@@ -1,6 +1,6 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2024 OpenTibiaBR <opentibiabr@outlook.com>
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
  * Repository: https://github.com/opentibiabr/canary
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
@@ -41,9 +41,9 @@ enum class WeaponProficiencyBonus_t : uint8_t {
 	PERFECT_SHOT_DAMAGE = 22, // bonus damage when hitting a target with a perfect shot - OK
 	RANGED_HIT_CHANCE = 23, // chance to hit a target with ranged attacks - OK
 	ATTACK_RANGE = 24, // the range of the weapon, how far it can hit a target (increases the current range of the weapon) - OK
-	SKILL_PERCENTAGE_AUTO_ATTACK = 25, // a porcentage of your current skill level as extra damage on auto attacks - OK
-	SKILL_PERCENTAGE_SPELL_DAMAGE = 26, // a porcentage of your current skill level as extra damage for spells - OK
-	SKILL_PERCENTAGE_SPELL_HEALING = 27, // a porcentage of your current skill level as extra healing for spells - OK
+	SKILL_PERCENTAGE_AUTO_ATTACK = 25, // a percentage of your current skill level as extra damage on auto attacks - OK
+	SKILL_PERCENTAGE_SPELL_DAMAGE = 26, // a percentage of your current skill level as extra damage for spells - OK
+	SKILL_PERCENTAGE_SPELL_HEALING = 27, // a percentage of your current skill level as extra healing for spells - OK
 };
 
 enum class SkillPercentage_t : uint8_t {
@@ -105,7 +105,7 @@ struct ProficiencyPerk {
 };
 
 struct ProficiencyLevel {
-	std::array<ProficiencyPerk, 6> perks = {};
+	std::vector<ProficiencyPerk> perks = {};
 };
 
 struct Proficiency {
@@ -114,7 +114,7 @@ struct Proficiency {
 		id(id), weaponId(weaponId) { }
 
 	uint16_t id = 0;
-	std::array<ProficiencyLevel, 10> level = {};
+	std::vector<ProficiencyLevel> level = {};
 	uint16_t weaponId = 0;
 	uint8_t maxLevel = 0;
 };
@@ -127,7 +127,7 @@ struct WeaponProficiencyData {
 
 struct WeaponProficiencyBonusStat {
 	CombatType_t element = COMBAT_NONE;
-	uint32_t value;
+	uint32_t value = 0;
 };
 
 struct WeaponProficiencyPerfectShotBonus {
@@ -165,17 +165,17 @@ namespace WeaponProficiencySpells {
 		bool area = false;
 		double_t damage = 0;
 		double_t heal = 0;
-		int aditionalTarget = 0;
+		int32_t additionalTarget = 0;
 		double_t damageReduction = 0;
-		int duration = 0;
+		int32_t duration = 0;
 		double_t criticalDamage = 0;
 		double_t criticalChance = 0;
 	};
 
 	struct Decrease {
-		int cooldown = 0;
-		int manaCost = 0;
-		int secondaryGroupCooldown = 0;
+		int32_t cooldown = 0;
+		int32_t manaCost = 0;
+		int32_t secondaryGroupCooldown = 0;
 	};
 
 	struct Leech {

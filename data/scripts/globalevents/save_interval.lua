@@ -1,3 +1,5 @@
+local saveTimeStr = "00:00"
+
 local function serverSave(interval)
 	if configManager.getBoolean(configKeys.TOGGLE_SAVE_INTERVAL_CLEAN_MAP) then
 		cleanMap()
@@ -10,47 +12,63 @@ local function serverSave(interval)
 	Webhook.sendMessage("Server save", message, WEBHOOK_COLOR_WARNING)
 end
 
-local function getTimeLeftMs()
-	local h, m = saveTimeStr:match("^(%d+):(%d+)$")
-	h, m = tonumber(h), tonumber(m)
+local function getTimeLeftMs(timeStr)
+	if type(timeStr) ~= "string" then
+		return 0
+	end
 
-	local now = os.date("*t")
-	local save = os.time({
-		year = now.year,
-		month = now.month,
-		day = now.day,
+	local hStr, mStr = timeStr:match("^(%d%d):(%d%d)$")
+	if not hStr or not mStr then
+		return 0
+	end
+
+	local h, m = tonumber(hStr), tonumber(mStr)
+	if not h or not m or h < 0 or h > 23 or m < 0 or m > 59 then
+		return 0
+	end
+
+	local nowTs = os.time()
+	local nowDate = os.date("*t", nowTs)
+	local saveTs = os.time({
+		year = nowDate.year,
+		month = nowDate.month,
+		day = nowDate.day,
 		hour = h,
 		min = m,
 		sec = 0,
 	})
-	if save <= os.time() then
-		save = save + 24 * 60 * 60
+
+	if saveTs <= nowTs then
+		saveTs = saveTs + 24 * 60 * 60
 	end
-	return (save - os.time()) * 1000
+
+	return (saveTs - nowTs) * 1000
 end
 
 local save = GlobalEvent("save")
 
 function save.onTime(interval)
 	if not configManager.getBoolean(configKeys.TOGGLE_SAVE_INTERVAL) then
-		return false
-	end
-
-	local WARNING = 60 * 1000
-	local timeLeft = getTimeLeftMs()
-	local delay = math.min(WARNING, timeLeft - 1000)
-
-	if delay <= 0 then
-		serverSave(interval)
 		return true
 	end
 
-	local secs = math.floor(delay / 1000)
-	local msg = string.format("The server will save all accounts within %d seconds. " .. "You might lag or freeze for 5 seconds, please find a safe place.", secs)
+	local WARNING = 60 * 1000
+	local timeLeft = getTimeLeftMs(saveTimeStr)
 
-	Game.broadcastMessage(msg, MESSAGE_GAME_HIGHLIGHT)
-	logger.info(msg)
-	addEvent(serverSave, delay, interval)
+	if timeLeft > WARNING then
+		return true
+	end
+
+	if timeLeft <= 1000 then
+		serverSave(interval)
+	else
+		local secs = math.floor(timeLeft / 1000)
+		local msg = string.format("The server will save all accounts within %d seconds. " .. "You might lag or freeze for 5 seconds, please find a safe place.", secs)
+		Game.broadcastMessage(msg, MESSAGE_GAME_HIGHLIGHT)
+		logger.info(msg)
+		addEvent(serverSave, timeLeft - 1000, interval)
+	end
+
 	return true
 end
 

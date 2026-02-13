@@ -69,7 +69,11 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 }
 
 uint8_t undoShift(uint64_t value) {
-	return std::countr_zero(value) - 2;
+	auto trailingZeros = std::countr_zero(value);
+	if (trailingZeros < 2) {
+		return 0;
+	}
+	return trailingZeros - 2;
 }
 
 static uint32_t circularShift(int bits, uint32_t value) {

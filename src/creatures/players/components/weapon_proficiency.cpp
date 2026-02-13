@@ -7,19 +7,37 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-// Player.hpp already includes the weapon proficiency
+// Player.hpp already includes the weapon
 #include "creatures/players/player.hpp"
+#include "creatures/monsters/monster.hpp"
 #include "items/weapons/weapons.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "canary_server.hpp"
 
 #include "config/configmanager.hpp"
 #include "io/fileloader.hpp"
+#include "io/io_bosstiary.hpp"
 #include "utils/tools.hpp"
 #include "utils/hash.hpp"
+#include "kv/value_wrapper.hpp"
+
+#include <nlohmann/json.hpp>
+
+#include "kv/kv.hpp"
+
+namespace AugmentType {
+	constexpr uint8_t DAMAGE = 2;
+	constexpr uint8_t HEAL = 3;
+	constexpr uint8_t COOLDOWN = 6;
+	constexpr uint8_t LIFE_LEECH = 14;
+	constexpr uint8_t MANA_LEECH = 15;
+	constexpr uint8_t CRITICAL_DAMAGE = 16;
+	constexpr uint8_t CRITICAL_CHANCE = 17;
+}
 
 std::unordered_map<uint16_t, Proficiency> WeaponProficiency::proficiencies;
 
-std::array<uint32_t, 9> WeaponProficiency::crossbowExperience = {
+std::vector<uint32_t> WeaponProficiency::crossbowExperience = {
 	600,
 	8000,
 	30000,
@@ -31,7 +49,7 @@ std::array<uint32_t, 9> WeaponProficiency::crossbowExperience = {
 	30000000
 };
 
-std::array<uint32_t, 9> WeaponProficiency::knightExperience = {
+std::vector<uint32_t> WeaponProficiency::knightExperience = {
 	1250,
 	20000,
 	80000,
@@ -43,7 +61,7 @@ std::array<uint32_t, 9> WeaponProficiency::knightExperience = {
 	60000000
 };
 
-std::array<uint32_t, 9> WeaponProficiency::standardExperience = {
+std::vector<uint32_t> WeaponProficiency::standardExperience = {
 	1750,
 	25000,
 	100000,
@@ -58,12 +76,13 @@ std::array<uint32_t, 9> WeaponProficiency::standardExperience = {
 WeaponProficiency::WeaponProficiency(Player &player) :
 	m_player(player) { }
 
-void WeaponProficiency::registerPerks(const json &perksJson, ProficiencyLevel &proficiencyLevel) {
+static void registerPerks(const nlohmann::json &perksJson, ProficiencyLevel &proficiencyLevel) {
 	using enum WeaponProficiencyBonus_t;
 
 	uint8_t perkIndex = 0;
+	const uint8_t maxPerks = g_configManager().getNumber(WEAPON_PROFICIENCY_MAX_PERKS_PER_LEVEL);
 	for (const auto &perkJson : perksJson) {
-		if (perkIndex > proficiencyLevel.perks.max_size()) {
+		if (perkIndex >= maxPerks) {
 			g_logger().error("{} - Proficiency level exceeded the maximum perks, skipping perk index above {}", __FUNCTION__, perkIndex + 1);
 			break;
 		}
@@ -112,31 +131,32 @@ void WeaponProficiency::registerPerks(const json &perksJson, ProficiencyLevel &p
 
 		proficiencyPerk.index = perkIndex;
 
-		proficiencyLevel.perks[perkIndex] = proficiencyPerk;
+		proficiencyLevel.perks.push_back(std::move(proficiencyPerk));
 		perkIndex++;
 	}
 }
 
-void WeaponProficiency::registerLevels(const json &levelsJson, Proficiency &proficiency) {
+static void registerLevels(const nlohmann::json &levelsJson, Proficiency &proficiency) {
 	uint8_t levelIndex = 0;
+	const uint8_t maxLevels = g_configManager().getNumber(WEAPON_PROFICIENCY_MAX_LEVELS);
 	for (const auto &levelJson : levelsJson) {
-		ProficiencyLevel proficiencyLevel;
-		WeaponProficiency::registerPerks(levelJson["Perks"], proficiencyLevel);
-
-		if (levelIndex > proficiency.level.max_size()) {
+		if (levelIndex >= maxLevels) {
 			g_logger().error("{} - Proficiency '{}' exceeded the maximum level, skipping levels above {}", __FUNCTION__, proficiency.id, levelIndex + 1);
 			break;
 		}
+
+		ProficiencyLevel proficiencyLevel;
+		registerPerks(levelJson["Perks"], proficiencyLevel);
 
 		for (auto &perk : proficiencyLevel.perks) {
 			perk.level = levelIndex;
 		}
 
-		proficiency.level[levelIndex] = proficiencyLevel;
+		proficiency.level.push_back(std::move(proficiencyLevel));
 		levelIndex++;
 	}
 
-	proficiency.maxLevel = levelIndex + 1;
+	proficiency.maxLevel = levelIndex;
 }
 
 std::unordered_map<uint16_t, Proficiency> &WeaponProficiency::getProficiencies() {
@@ -154,18 +174,14 @@ bool WeaponProficiency::loadFromJson(bool reload /* = false */) {
 	auto folder = fmt::format("{}/items/proficiencies.json", coreFolder);
 	std::ifstream file(folder);
 	if (!file.is_open()) {
-		g_logger().error("{} - Unable to open file '{}'", __FUNCTION__, folder);
-		consoleHandlerExit();
-		return false;
+		throw FailedToInitializeCanary(fmt::format("{} - Unable to open file '{}'", __FUNCTION__, folder));
 	}
 
-	json proficienciesJson;
+	nlohmann::json proficienciesJson;
 	try {
 		file >> proficienciesJson;
-	} catch (const json::parse_error &e) {
-		g_logger().error("{} - JSON parsing error in file '{}': {}", __FUNCTION__, folder, e.what());
-		consoleHandlerExit();
-		return false;
+	} catch (const nlohmann::json::parse_error &e) {
+		throw FailedToInitializeCanary(fmt::format("{} - JSON parsing error in file '{}': {}", __FUNCTION__, folder, e.what()));
 	}
 
 	try {
@@ -173,14 +189,12 @@ bool WeaponProficiency::loadFromJson(bool reload /* = false */) {
 			Proficiency proficiency;
 			proficiency.id = proficiencyJson["ProficiencyId"].get<uint16_t>();
 
-			WeaponProficiency::registerLevels(proficiencyJson["Levels"], proficiency);
+			registerLevels(proficiencyJson["Levels"], proficiency);
 
-			proficiencies[proficiency.id] = proficiency;
+			proficiencies[proficiency.id] = std::move(proficiency);
 		}
-	} catch (const json::exception &e) {
-		g_logger().error("{} - JSON exception in file '{}': {}", __FUNCTION__, folder, e.what());
-		consoleHandlerExit();
-		return false;
+	} catch (const nlohmann::json::exception &e) {
+		throw FailedToInitializeCanary(fmt::format("{} - JSON exception in file '{}': {}", __FUNCTION__, folder, e.what()));
 	}
 
 	g_logger().info("Weapon proficiencies loaded!");
@@ -191,12 +205,21 @@ bool WeaponProficiency::loadFromJson(bool reload /* = false */) {
 void WeaponProficiency::load() {
 	proficiency.clear();
 
-	for (const auto &key : m_player.kv()->scoped("weapon-proficiency")->keys()) {
-		const auto &kv = m_player.kv()->scoped("weapon-proficiency")->get(key);
+	auto wp_kv = m_player.kv()->scoped("weapon-proficiency");
+	for (const auto &key : wp_kv->keys()) {
+		int parsedId = 0;
+		try {
+			parsedId = std::stoi(key);
+		} catch (const std::exception &e) {
+			g_logger().error("{} - Invalid key '{}' in weapon-proficiency KV: {}", __FUNCTION__, key, e.what());
+			continue;
+		}
+
+		const auto &kv = wp_kv->get(key);
 		if (!kv.has_value()) {
 			continue;
 		}
-		proficiency[std::stoi(key)] = (deserialize(kv.value()));
+		proficiency[parsedId] = deserialize(kv.value());
 	}
 }
 
@@ -208,10 +231,12 @@ void WeaponProficiency::save(uint16_t weaponId) const {
 	m_player.kv()->scoped("weapon-proficiency")->set(std::to_string(weaponId), serialize(proficiency.at(weaponId)));
 }
 
-void WeaponProficiency::saveAll() const {
+bool WeaponProficiency::saveAll() const {
 	for (const auto &[weaponId, weaponData] : proficiency) {
 		m_player.kv()->scoped("weapon-proficiency")->set(std::to_string(weaponId), serialize(weaponData));
 	}
+
+	return true;
 }
 
 WeaponProficiencyData WeaponProficiency::deserialize(const ValueWrapper &val) {
@@ -221,9 +246,15 @@ WeaponProficiencyData WeaponProficiency::deserialize(const ValueWrapper &val) {
 	}
 
 	WeaponProficiencyData weaponData;
-	weaponData.experience = static_cast<uint32_t>(map["experience"]->get<IntType>());
-	weaponData.mastered = map["mastered"]->get<BooleanType>();
-	weaponData.perks = deserializePerks(map["perks"]->getVariant());
+	if (auto it = map.find("experience"); it != map.end()) {
+		weaponData.experience = static_cast<uint32_t>(it->second->get<IntType>());
+	}
+	if (auto it = map.find("mastered"); it != map.end()) {
+		weaponData.mastered = it->second->get<BooleanType>();
+	}
+	if (auto it = map.find("perks"); it != map.end()) {
+		weaponData.perks = deserializePerks(it->second->getVariant());
+	}
 
 	return weaponData;
 }
@@ -251,22 +282,33 @@ ProficiencyPerk WeaponProficiency::deserializePerk(const ValueWrapper &val) {
 
 	ProficiencyPerk perk;
 
-	perk.index = static_cast<uint8_t>(map["index"]->get<IntType>());
-	perk.type = static_cast<WeaponProficiencyBonus_t>(map["type"]->get<IntType>());
-	perk.value = map["value"]->get<DoubleType>();
-	perk.level = static_cast<uint8_t>(map["level"]->get<IntType>());
-	perk.augmentType = static_cast<uint8_t>(map["augmentType"]->get<IntType>());
-	perk.bestiaryId = static_cast<uint16_t>(map["bestiaryId"]->get<IntType>());
-	perk.bestiaryName = map["bestiaryName"]->get<StringType>();
-	perk.element = static_cast<CombatType_t>(map["element"]->get<IntType>());
-	perk.range = static_cast<uint8_t>(map["range"]->get<IntType>());
-	perk.skillId = static_cast<skills_t>(map["skillId"]->get<IntType>());
-	perk.spellId = static_cast<uint16_t>(map["spellId"]->get<IntType>());
+	auto getInt = [&](const std::string &key) -> int64_t {
+		if (auto it = map.find(key); it != map.end()) {
+			return it->second->get<IntType>();
+		}
+		return 0;
+	};
+
+	perk.index = static_cast<uint8_t>(getInt("index"));
+	perk.type = static_cast<WeaponProficiencyBonus_t>(getInt("type"));
+	if (auto it = map.find("value"); it != map.end()) {
+		perk.value = it->second->get<DoubleType>();
+	}
+	perk.level = static_cast<uint8_t>(getInt("level"));
+	perk.augmentType = static_cast<uint8_t>(getInt("augmentType"));
+	perk.bestiaryId = static_cast<uint16_t>(getInt("bestiaryId"));
+	if (auto it = map.find("bestiaryName"); it != map.end()) {
+		perk.bestiaryName = it->second->get<StringType>();
+	}
+	perk.element = static_cast<CombatType_t>(getInt("element"));
+	perk.range = static_cast<uint8_t>(getInt("range"));
+	perk.skillId = static_cast<skills_t>(getInt("skillId"));
+	perk.spellId = static_cast<uint16_t>(getInt("spellId"));
 
 	return perk;
 }
 
-ValueWrapper WeaponProficiency::serialize(WeaponProficiencyData weaponData) const {
+ValueWrapper WeaponProficiency::serialize(const WeaponProficiencyData &weaponData) const {
 	return {
 		std::pair<const std::string, ValueWrapper> { "experience", ValueWrapper(static_cast<IntType>(weaponData.experience)) },
 		std::pair<const std::string, ValueWrapper> { "mastered", ValueWrapper(weaponData.mastered) },
@@ -308,25 +350,25 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 		WeaponProficiencySpells::Bonus augmentBonus;
 		if (selectedPerk.type == SPELL_AUGMENT) {
 			switch (selectedPerk.augmentType) {
-				case 2:
+				case AugmentType::DAMAGE:
 					augmentBonus.increase.damage = selectedPerk.value;
 					break;
-				case 3:
+				case AugmentType::HEAL:
 					augmentBonus.increase.heal = selectedPerk.value;
 					break;
-				case 6:
+				case AugmentType::COOLDOWN:
 					augmentBonus.decrease.cooldown = std::abs(selectedPerk.value);
 					break;
-				case 14:
+				case AugmentType::LIFE_LEECH:
 					augmentBonus.leech.life = selectedPerk.value;
 					break;
-				case 15:
+				case AugmentType::MANA_LEECH:
 					augmentBonus.leech.mana = selectedPerk.value;
 					break;
-				case 16:
+				case AugmentType::CRITICAL_DAMAGE:
 					augmentBonus.increase.criticalDamage = selectedPerk.value;
 					break;
-				case 17:
+				case AugmentType::CRITICAL_CHANCE:
 					augmentBonus.increase.criticalChance = selectedPerk.value;
 					break;
 				default:
@@ -408,13 +450,13 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 	}
 
 	const auto &allProficiencies = proficiencies.at(proficiencyId);
-	if (level > allProficiencies.level.max_size()) {
+	if (level >= allProficiencies.level.size()) {
 		g_logger().error("{} - Proficiency level exceeds maximum size for weapon ID: {}", __FUNCTION__, weaponId);
 		return;
 	}
 	const auto &selectedLevel = allProficiencies.level.at(level);
 
-	if (perkIndex > selectedLevel.perks.max_size()) {
+	if (perkIndex >= selectedLevel.perks.size()) {
 		g_logger().error("{} - Proficiency level {} exceeds maximum perks size for weapon ID: {}", __FUNCTION__, level, weaponId);
 		return;
 	}
@@ -447,21 +489,21 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> We
 	return augments;
 }
 
-const std::array<uint32_t, 9> &WeaponProficiency::getExperienceArray(uint16_t weaponId) const {
-	auto &experienceArray = standardExperience;
-
+const std::vector<uint32_t> &WeaponProficiency::getExperienceArray(uint16_t weaponId) const {
 	if (weaponId == 0) {
 		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
-		return experienceArray;
+		return standardExperience;
+	}
+
+	if (Item::items[weaponId].ammoType == AMMO_BOLT) {
+		return crossbowExperience;
 	}
 
 	if (!Item::items[weaponId].vocationString.empty()) {
-		experienceArray = knightExperience;
-	} else if (Item::items[weaponId].ammoType == AMMO_BOLT) {
-		experienceArray = crossbowExperience;
+		return knightExperience;
 	}
 
-	return experienceArray;
+	return standardExperience;
 }
 
 uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
@@ -478,7 +520,8 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	}
 
 	const auto &playerProficiency = proficiency.at(weaponId);
-	for (uint8_t i = 0; i < (proficiencyInfo.maxLevel - 1) + 2; ++i) {
+	const uint8_t maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel - 1));
+	for (uint8_t i = 0; i < maxExpLevels; ++i) {
 		if (playerProficiency.experience >= experienceArray[i]) {
 			continue;
 		}
@@ -496,13 +539,17 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 		return 0;
 	}
 	const auto &proficiencyInfo = proficiencies.at(Item::items[weaponId].proficiencyId);
-	uint8_t masteryLevel = (proficiencyInfo.maxLevel - 1) + 2;
+	if (experienceArray.empty() || proficiencyInfo.maxLevel <= 1) {
+		return 0;
+	}
 
-	if (proficiency.find(weaponId) == proficiency.end() || masteryLevel > experienceArray.size() - 1) {
+	const uint8_t masteryIndex = static_cast<uint8_t>(std::min<size_t>(experienceArray.size() - 1, proficiencyInfo.maxLevel - 2));
+
+	if (proficiency.find(weaponId) == proficiency.end()) {
 		return experienceArray[experienceArray.size() - 1];
 	}
 
-	return experienceArray[masteryLevel];
+	return experienceArray[masteryIndex];
 }
 
 void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* = 0 */) {
@@ -555,7 +602,11 @@ uint32_t WeaponProficiency::getBosstiaryExperience(BosstiaryRarity_t rarity) con
 }
 
 uint32_t WeaponProficiency::getBestiaryExperience(uint8_t monsterStar) const {
-	return -1.133 * std::pow(monsterStar, 5) + 14.083 * std::pow(monsterStar, 4) + -59.666 * std::pow(monsterStar, 3) + 102.916 * std::pow(monsterStar, 2) + -27.2 * monsterStar + 1.0;
+	if (monsterStar > 5) { // Assuming 5 is max star
+		monsterStar = 5;
+	}
+	double poly = -1.133 * std::pow(monsterStar, 5) + 14.083 * std::pow(monsterStar, 4) + -59.666 * std::pow(monsterStar, 3) + 102.916 * std::pow(monsterStar, 2) + -27.2 * monsterStar + 1.0;
+	return static_cast<uint32_t>(std::max(0.0, poly));
 }
 
 uint32_t WeaponProficiency::getExperience(uint16_t weaponId /* = 0 */) const {
@@ -627,17 +678,18 @@ void WeaponProficiency::resetStats() {
 }
 
 void WeaponProficiency::addSkillPercentage(skills_t skill, SkillPercentage_t type, double_t value) {
-	m_skillPercentage.skill = skill;
+	auto &skillPercentage = m_skillPercentages[skill];
+	skillPercentage.skill = skill;
 
 	switch (type) {
 		case SkillPercentage_t::AutoAttack:
-			m_skillPercentage.autoAttack += value;
+			skillPercentage.autoAttack += value;
 			break;
 		case SkillPercentage_t::SpellDamage:
-			m_skillPercentage.spellDamage += value;
+			skillPercentage.spellDamage += value;
 			break;
 		case SkillPercentage_t::SpellHealing:
-			m_skillPercentage.spellHealing += value;
+			skillPercentage.spellHealing += value;
 			break;
 		default:
 			break;
@@ -733,13 +785,12 @@ void WeaponProficiency::addGeneralCritical(const WeaponProficiencyCriticalBonus 
 	m_generalCritical.damage += bonus.damage;
 }
 
-const WeaponProficiencyCriticalBonus &WeaponProficiency::getElementCritical(CombatType_t type) const {
+WeaponProficiencyCriticalBonus WeaponProficiency::getElementCritical(CombatType_t type) const {
 	auto enumValue = static_cast<uint8_t>(type);
-	try {
+	if (enumValue < m_elementCritical.size()) {
 		return m_elementCritical.at(enumValue);
-	} catch (const std::out_of_range &e) {
-		g_logger().error("[{}]. Instant type {}. Error message: {}", __FUNCTION__, enumValue, e.what());
 	}
+	g_logger().error("[{}]. Instant type {} is out of range.", __FUNCTION__, enumValue);
 	return {};
 }
 
@@ -792,8 +843,8 @@ void WeaponProficiency::addSpellBonus(uint16_t spellId, const WeaponProficiencyS
 		m_spellsBonuses[spellId].decrease.cooldown += bonus.decrease.cooldown;
 		m_spellsBonuses[spellId].decrease.manaCost += bonus.decrease.manaCost;
 		m_spellsBonuses[spellId].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-		m_spellsBonuses[spellId].increase.aditionalTarget += bonus.increase.aditionalTarget;
-		m_spellsBonuses[spellId].increase.area = bonus.increase.area;
+		m_spellsBonuses[spellId].increase.additionalTarget += bonus.increase.additionalTarget;
+		m_spellsBonuses[spellId].increase.area = m_spellsBonuses[spellId].increase.area || bonus.increase.area;
 		m_spellsBonuses[spellId].increase.criticalChance += bonus.increase.criticalChance;
 		m_spellsBonuses[spellId].increase.criticalDamage += bonus.increase.criticalDamage;
 		m_spellsBonuses[spellId].increase.damage += bonus.increase.damage;
@@ -911,8 +962,8 @@ void WeaponProficiency::applyBossDamage(CombatDamage &damage, const std::shared_
 		return;
 	}
 
-	const auto isBoss = monster->getMonsterType()->isBoss();
-	if (isBoss) {
+	const auto mt = monster->getMonsterType();
+	if (mt && mt->isBoss()) {
 		const auto bonusDamage = getStat(POWERFUL_FOE_BONUS);
 		damage.primary.value *= 1 + bonusDamage;
 		damage.secondary.value *= 1 + bonusDamage;
@@ -926,7 +977,8 @@ void WeaponProficiency::applyPowerfulFoeDamage(CombatDamage &damage, const std::
 	}
 
 	const auto forgeStack = monster->getForgeStack();
-	if (forgeStack > 0 || monster->getMonsterType()->isBoss()) {
+	const auto mt = monster->getMonsterType();
+	if (forgeStack > 0 || (mt && mt->isBoss())) {
 		const auto bonusDamage = getPowerfulFoeDamage();
 		damage.primary.value *= 1 + bonusDamage;
 		damage.secondary.value *= 1 + bonusDamage;
@@ -945,18 +997,19 @@ void WeaponProficiency::applySkillAutoAttackPercentage(CombatDamage &damage) con
 		return;
 	}
 
-	const auto &skillPercentage = getSkillPercentage();
-	if (skillPercentage.autoAttack <= 0) {
-		return;
-	}
+	for (const auto &[skill, skillPercentage] : m_skillPercentages) {
+		if (skillPercentage.autoAttack <= 0) {
+			continue;
+		}
 
-	const auto bonusDamage = m_player.getSkillLevel(skillPercentage.skill) * skillPercentage.autoAttack;
+		const auto bonusDamage = m_player.getSkillLevel(skill) * skillPercentage.autoAttack;
 
-	if (damage.primary.type != COMBAT_NONE) {
-		damage.primary.value -= std::ceil(bonusDamage);
-	}
-	if (damage.secondary.type != COMBAT_NONE) {
-		damage.secondary.value -= std::ceil(bonusDamage);
+		if (damage.primary.type != COMBAT_NONE) {
+			damage.primary.value -= std::ceil(bonusDamage);
+		}
+		if (damage.secondary.type != COMBAT_NONE) {
+			damage.secondary.value -= std::ceil(bonusDamage);
+		}
 	}
 }
 
@@ -976,19 +1029,20 @@ void WeaponProficiency::applySkillSpellPercentage(CombatDamage &damage, bool hea
 		return;
 	}
 
-	const auto &skillPercentage = getSkillPercentage();
-	const auto skillPercentageValue = healing ? skillPercentage.spellHealing : skillPercentage.spellDamage;
-	if (skillPercentageValue <= 0) {
-		return;
-	}
+	for (const auto &[skill, skillPercentage] : m_skillPercentages) {
+		const auto skillPercentageValue = healing ? skillPercentage.spellHealing : skillPercentage.spellDamage;
+		if (skillPercentageValue <= 0) {
+			continue;
+		}
 
-	const auto bonusDamage = m_player.getSkillLevel(skillPercentage.skill) * skillPercentageValue;
+		const auto bonusDamage = m_player.getSkillLevel(skill) * skillPercentageValue;
 
-	if (damage.primary.type != COMBAT_NONE) {
-		damage.primary.value = std::abs(damage.primary.value) + std::ceil(bonusDamage);
-	}
-	if (damage.secondary.type != COMBAT_NONE) {
-		damage.secondary.value = std::abs(damage.secondary.value) + std::ceil(bonusDamage);
+		if (damage.primary.type != COMBAT_NONE) {
+			damage.primary.value = std::abs(damage.primary.value) + std::ceil(bonusDamage);
+		}
+		if (damage.secondary.type != COMBAT_NONE) {
+			damage.secondary.value = std::abs(damage.secondary.value) + std::ceil(bonusDamage);
+		}
 	}
 
 	if (!healing) {
@@ -1080,7 +1134,7 @@ void WeaponProficiency::clearAllStats() {
 	resetPowerfulFoeDamage();
 	resetBestiaryDamage();
 
-	m_skillPercentage.clear();
+	m_skillPercentages.clear();
 	m_autoAttackCritical.clear();
 	m_runesCritical.clear();
 	m_generalCritical.clear();

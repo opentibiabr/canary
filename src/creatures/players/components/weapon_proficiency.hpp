@@ -9,37 +9,35 @@
 
 #pragma once
 
-#include <nlohmann/json.hpp>
 #include "enums/weapon_proficiency.hpp"
 #include "creatures/creatures_definitions.hpp"
-#include "creatures/monsters/monster.hpp"
-#include "io/io_bosstiary.hpp"
 #include "utils/hash.hpp"
-#include "kv/kv.hpp"
 
-using json = nlohmann::json;
+enum class BosstiaryRarity_t : uint8_t;
 
+class Monster;
 class Player;
+class ValueWrapper;
+
+struct WeaponProficiencyData;
+struct Proficiency;
 
 class WeaponProficiency {
 public:
-	WeaponProficiency() = default;
 	explicit WeaponProficiency(Player &player);
 
 	static bool loadFromJson(bool reload = false);
-	static void registerLevels(const json &levelsJson, Proficiency &proficiency);
-	static void registerPerks(const json &perksJson, ProficiencyLevel &proficiencyLevel);
 
 	static std::unordered_map<uint16_t, Proficiency> &getProficiencies();
 
 	void load();
 	void save(uint16_t weaponId) const;
-	void saveAll() const;
+	bool saveAll() const;
 
-	WeaponProficiencyData deserialize(const ValueWrapper &val);
-	ProficiencyPerk deserializePerk(const ValueWrapper &val);
-	std::vector<ProficiencyPerk> deserializePerks(const ValueWrapper &val);
-	ValueWrapper serialize(WeaponProficiencyData weaponData) const;
+	static WeaponProficiencyData deserialize(const ValueWrapper &val);
+	static ProficiencyPerk deserializePerk(const ValueWrapper &val);
+	static std::vector<ProficiencyPerk> deserializePerks(const ValueWrapper &val);
+	ValueWrapper serialize(const WeaponProficiencyData &weaponData) const;
 	ValueWrapper serializePerk(const ProficiencyPerk &perk) const;
 	std::vector<ValueWrapper> serializePerks(const std::vector<ProficiencyPerk> &perks) const;
 
@@ -48,7 +46,7 @@ public:
 	void clearSelectedPerks(uint16_t weaponId);
 	void setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
 	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getActiveAugments(uint16_t weaponId = 0);
-	const std::array<uint32_t, 9> &getExperienceArray(uint16_t weaponId) const;
+	const std::vector<uint32_t> &getExperienceArray(uint16_t weaponId) const;
 	uint32_t nextLevelExperience(uint16_t weaponId);
 	uint32_t getMaxExperience(uint16_t weaponId) const;
 	void addExperience(uint32_t experience, uint16_t weaponId = 0);
@@ -62,7 +60,6 @@ public:
 	void resetStats();
 
 	void addSkillPercentage(skills_t skill, SkillPercentage_t type, double_t value);
-	const SkillPercentage &getSkillPercentage() const;
 
 	uint16_t getSpecializedMagic(CombatType_t type) const;
 	void addSpecializedMagic(CombatType_t type, uint16_t value);
@@ -85,7 +82,7 @@ public:
 	const WeaponProficiencyCriticalBonus &getGeneralCritical() const;
 	void addGeneralCritical(const WeaponProficiencyCriticalBonus &bonus);
 
-	const WeaponProficiencyCriticalBonus &getElementCritical(CombatType_t type) const;
+	WeaponProficiencyCriticalBonus getElementCritical(CombatType_t type) const;
 	void addElementCritical(CombatType_t type, const WeaponProficiencyCriticalBonus &bonus);
 
 	uint32_t getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const;
@@ -116,6 +113,8 @@ public:
 
 	void applySpellAugment(CombatDamage &damage, uint16_t spellId) const;
 
+	const SkillPercentage &getSkillPercentage() const;
+
 	std::vector<std::pair<std::string, double>> getActiveBestiariesDamage() const;
 	std::optional<std::pair<uint8_t, double>> getActiveElementalCriticalType(WeaponProficiencyBonus_t criticalType) const;
 
@@ -128,13 +127,14 @@ private:
 
 	static std::unordered_map<uint16_t, Proficiency> proficiencies;
 
-	static std::array<uint32_t, 9> crossbowExperience;
-	static std::array<uint32_t, 9> standardExperience;
-	static std::array<uint32_t, 9> knightExperience;
+	static std::vector<uint32_t> crossbowExperience;
+	static std::vector<uint32_t> standardExperience;
+	static std::vector<uint32_t> knightExperience;
 
 	std::array<double_t, magic_enum::enum_count<WeaponProficiencyBonus_t>() + 1> m_stats = { 0 };
 
 	SkillPercentage m_skillPercentage;
+	std::unordered_map<skills_t, SkillPercentage> m_skillPercentages;
 
 	std::array<uint16_t, COMBAT_COUNT + 1> m_specializedMagic = { 0 };
 

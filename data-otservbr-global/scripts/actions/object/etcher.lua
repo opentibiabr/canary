@@ -15,6 +15,8 @@ function etcher.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have cleared all imbuements from the item.")
 		item:remove(1)
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+	else
+		player:sendCancelMessage("This item has no imbuements to clear.")
 	end
 
 	return true

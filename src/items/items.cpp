@@ -137,6 +137,17 @@ bool Items::reload() {
 	return true;
 }
 
+ItemTypes_t protoItemCategoryToCpp(uint32_t protoCategory) {
+	// Protobuf enums for categories (values 1-31)
+	// We map them to our internal ItemTypes_t
+	if (protoCategory >= 1 && protoCategory <= 27) {
+		return static_cast<ItemTypes_t>(protoCategory);
+	}
+	// Add specific mappings if protobuf categories diverge or extend beyond 27
+	// Currently, values above 27 in proto don't have exact matches in ItemTypes_t (1-27)
+	return ITEM_TYPE_OTHER;
+}
+
 void Items::loadFromProtobuf() {
 	using namespace Canary::protobuf::appearances;
 
@@ -203,7 +214,7 @@ void Items::loadFromProtobuf() {
 		}
 
 		if (object.flags().has_market()) {
-			iType.type = static_cast<ItemTypes_t>(object.flags().market().category());
+			iType.type = protoItemCategoryToCpp(object.flags().market().category());
 		}
 
 		iType.name = object.name();
@@ -255,7 +266,11 @@ void Items::loadFromProtobuf() {
 			} else {
 				iType.proficiencyId = proficiencyId;
 				auto &proficiency = it->second;
-				proficiency.weaponId = iType.id;
+				// Only map the first item to this proficiency ID
+				if (proficiency.weaponId == 0) {
+					proficiency.weaponId = iType.id;
+				}
+				// If already mapped, silently skip (don't overwrite)
 			}
 		}
 

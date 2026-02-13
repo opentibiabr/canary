@@ -15,6 +15,7 @@ function weaponProficiency.onSay(player, words, param)
 	end
 
 	player:addWeaponExperience(experience, 0)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Added %d weapon experience to your equipped weapon.", experience))
 
 	return true
 end

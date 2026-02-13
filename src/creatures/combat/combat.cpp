@@ -755,9 +755,11 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			}
 		}
 
-		attackerPlayer->weaponProficiency().applySkillAutoAttackPercentage(damage);
-		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage);
-		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage, true);
+		if (attackerPlayer) {
+			attackerPlayer->weaponProficiency().applySkillAutoAttackPercentage(damage);
+			attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage);
+			attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage, true);
+		}
 
 		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);

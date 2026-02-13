@@ -72,18 +72,24 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
-			                "Unknown loot item {}",
+			                "Unknown loot item '{}'",
 			                name);
 			lua_pushnil(L);
 			return 1;
 		}
 
 		if (std::next(ids.first) != ids.second) {
+			// Build a list of all conflicting IDs for a useful debug message
+			std::string conflictingIds;
+			for (auto it = ids.first; it != ids.second; ++it) {
+				if (!conflictingIds.empty()) {
+					conflictingIds += ", ";
+				}
+				conflictingIds += std::to_string(it->second);
+			}
 			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
-			                "Non-unique loot item {}",
-			                name);
-			lua_pushnil(L);
-			return 1;
+			                "Duplicate item name '{}' found with IDs: [{}]. Using first ID: {}",
+			                name, conflictingIds, ids.first->second);
 		}
 
 		loot->lootBlock.id = ids.first->second;

@@ -57261,9 +57261,6 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="900"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="paralysis removal" value="3"/>
-		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="220"/>
 			<attribute key="slot" value="feet"/>
@@ -77342,7 +77339,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost shielding" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="wound cleansing" value="base">
+			<attribute key="wound cleansing" value="base damage">
 				<attribute key="value" value="17"/>
 			</attribute>
 		</attribute>
@@ -84741,7 +84738,6 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="3"/>
-			<attribute key="paralysis removal" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet"/>
@@ -84763,7 +84759,6 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="increase speed" value="3"/>
-			<attribute key="paralysis removal" value="3"/>
 		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="slot" value="feet"/>

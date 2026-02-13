@@ -35991,6 +35991,13 @@
 		<attribute key="attack" value="23"/>
 		<attribute key="defense" value="14"/>
 		<attribute key="weight" value="4500"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental damage" value="3"/>
+			<attribute key="life leech" value="3"/>
+			<attribute key="mana leech" value="3"/>
+			<attribute key="critical hit" value="3"/>
+			<attribute key="skillboost fist" value="3"/>
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="10"/>
 			<attribute key="unproperly" value="true"/>
@@ -57254,7 +57261,9 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="900"/>
-		<attribute key="imbuementslot" value="1"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="paralysis removal" value="3"/>
+		</attribute>
 		<attribute key="script" value="moveevent">
 			<attribute key="level" value="220"/>
 			<attribute key="slot" value="feet"/>
@@ -75573,7 +75582,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75605,7 +75614,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -75637,7 +75646,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75669,7 +75678,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -75701,7 +75710,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75733,7 +75742,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -75763,7 +75772,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75792,7 +75801,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost sword" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -75821,7 +75830,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75850,7 +75859,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost club" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -75879,7 +75888,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75908,7 +75917,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost axe" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="fierce berserk" value="base">
+			<attribute key="fierce berserk" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -75963,7 +75972,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="base">
+			<attribute key="divine caldera" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -75995,7 +76004,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="base">
+			<attribute key="divine caldera" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -76027,7 +76036,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="base">
+			<attribute key="divine caldera" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -76059,7 +76068,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost distance" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine caldera" value="base">
+			<attribute key="divine caldera" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -76114,10 +76123,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="hell's core" value="base">
+			<attribute key="hell's core" value="base damage">
 				<attribute key="value" value="3"/>
 			</attribute>
-			<attribute key="energy wave" value="base">
+			<attribute key="energy wave" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -76155,10 +76164,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="hell's core" value="base">
+			<attribute key="hell's core" value="base damage">
 				<attribute key="value" value="6"/>
 			</attribute>
-			<attribute key="energy wave" value="base">
+			<attribute key="energy wave" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -76225,10 +76234,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="eternal winter" value="base">
+			<attribute key="eternal winter" value="base damage">
 				<attribute key="value" value="3"/>
 			</attribute>
-			<attribute key="terra wave" value="base">
+			<attribute key="terra wave" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -76266,10 +76275,10 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="eternal winter" value="base">
+			<attribute key="eternal winter" value="base damage">
 				<attribute key="value" value="6"/>
 			</attribute>
-			<attribute key="terra wave" value="base">
+			<attribute key="terra wave" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -76583,7 +76592,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="elemental protection holy" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="wrath of nature" value="base">
+			<attribute key="wrath of nature" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -76748,7 +76757,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost magic level" value="2"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="divine missile" value="base">
+			<attribute key="divine missile" value="base damage">
 				<attribute key="value" value="6"/>
 			</attribute>
 		</attribute>
@@ -76806,7 +76815,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentenergy" value="2"/>
 		<attribute key="weight" value="5100"/>
 		<attribute key="augments" value="1">
-			<attribute key="intense wound cleansing" value="base">
+			<attribute key="intense wound cleansing" value="base healing">
 				<attribute key="value" value="50"/>
 			</attribute>
 		</attribute>
@@ -76823,10 +76832,10 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentfire" value="6"/>
 		<attribute key="weight" value="3400"/>
 		<attribute key="augments" value="1">
-			<attribute key="great energy beam" value="base">
+			<attribute key="great energy beam" value="base damage">
 				<attribute key="value" value="7"/>
 			</attribute>
-			<attribute key="great death beam" value="base">
+			<attribute key="great death beam" value="base damage">
 				<attribute key="value" value="7"/>
 			</attribute>
 		</attribute>
@@ -77222,6 +77231,52 @@ Granted by TibiaGoals.com"/>
 	<item id="45160" article="a" name="ramp">
 		<attribute key="floorchange" value="south"/>
 	</item>
+	<item id="45641" article="a" name="candy necklace">
+		<attribute key="primarytype" value="amulets and necklaces"/>
+		<attribute key="description" value="This necklace provides a sugary barrier against attacks."/>
+		<attribute key="showAttributes" value="1"/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentenergy" value="6"/>
+		<attribute key="absorbpercentpoison" value="-5"/>
+		<attribute key="armor" value="2"/>
+		<attribute key="weight" value="510"/>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="220"/>
+			<attribute key="slot" value="necklace"/>
+		</attribute>
+	</item>
+	<item id="45643" article="a" name="biscuit barrier">
+		<attribute key="primarytype" value="shields"/>
+		<attribute key="weaponType" value="shield"/>
+		<attribute key="description" value="This tasty-looking shield protects from damage and boosts your regeneration."/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentfire" value="5"/>
+		<attribute key="lifeleechamount" value="200"/>
+		<attribute key="manaticks" value="3000"/>
+		<attribute key="managain" value="4"/>
+		<attribute key="healthticks" value="3000"/>
+		<attribute key="healthgain" value="1"/>
+		<attribute key="skillshield" value="2"/>
+		<attribute key="defense" value="36"/>
+		<attribute key="weight" value="5200"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="wound cleansing" value="base healing">
+				<attribute key="value" value="16"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="200"/>
+			<attribute key="slot" value="shield"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
 	<item id="45639" article="a" name="cocoa grimoire">
 		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="description" value="This spellbook was made from rich dark chocolate and is filled with powerful knowledge."/>
@@ -77241,7 +77296,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost shielding" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="ultimate flame strike" value="base">
+			<attribute key="ultimate flame strike" value="base damage">
 				<attribute key="value" value="33"/>
 			</attribute>
 		</attribute>
@@ -77272,7 +77327,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost shielding" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="ultimate ice strike" value="base">
+			<attribute key="ultimate ice strike" value="base damage">
 				<attribute key="value" value="33"/>
 			</attribute>
 		</attribute>
@@ -77524,7 +77579,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="magiclevelpoints" value="3"/>
 		<attribute key="energymagiclevelpoints" value="2"/>
 		<attribute key="range" value="5"/>
-		<attribute key="weight" value="2200"/>
+		<attribute key="weight" value="2000"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -80402,10 +80457,20 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="food"/>
 		<attribute key="weight" value="20"/>
 	</item>
-	<item id="48249" article="an" name="milk chocolate coin">
+	<item id="48190" article="an" name="intricate cage key">
+		<attribute key="primarytype" value="keys"/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="48251" article="a" name="wafer paper flower">
+		<attribute key="weight" value="5"/>
+	</item>
+	<item id="48255" article="a" name="lime tart">
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="48249" article="a" name="milk chocolate coin">
+		<attribute key="weight" value="10"/>
 		<attribute key="loottype" value="creature products" />
 		<attribute key="primarytype" value="valuables"/>
-		<attribute key="weight" value="1"/>
 	</item>
 	<item id="48250" article="a" name="dark chocolate coin">
 		<attribute key="loottype" value="creature products" />
@@ -81949,7 +82014,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="skilldist" value="2"/>
 		<attribute key="lifeleechamount" value="2900"/>
 		<attribute key="weight" value="5600"/>
-		<attribute key="imbuementslot" value="2">
+		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="mana leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -81997,7 +82062,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="criticalhitdamage" value="5800"/>
 		<attribute key="absorbpercentice" value="4"/>
 		<attribute key="weight" value="5900"/>
-		<attribute key="imbuementslot" value="2">
+		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="mana leech" value="3"/>
@@ -82043,7 +82108,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="skilldist" value="2"/>
 		<attribute key="manaleechamount" value="1000"/>
 		<attribute key="weight" value="5900"/>
-		<attribute key="imbuementslot" value="2">
+		<attribute key="imbuementslot" value="3">
 			<attribute key="elemental damage" value="3"/>
 			<attribute key="life leech" value="3"/>
 			<attribute key="critical hit" value="3"/>
@@ -83070,7 +83135,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost fist" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="sweeping takedown" value="base">
+			<attribute key="sweeping takedown" value="base damage">
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
@@ -83102,7 +83167,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost fist" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="sweeping takedown" value="base">
+			<attribute key="sweeping takedown" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -83275,7 +83340,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost fist" value="3"/>
 		</attribute>
 	</item>
-	<item id="50166" article="a" name="light jo staff">
+	<item id="50166" article="a" name="simple jo staff">
 		<attribute key="primarytype" value="fist weapons"/>
 		<attribute key="weapontype" value="fist"/>
 		<attribute key="attack" value="10"/>
@@ -83283,6 +83348,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="skillfist" value="1"/>
 		<attribute key="elementalbond" value="energy"/>
 		<attribute key="slottype" value="two-handed"/>
+		<attribute key="weight" value="1700"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="0"/>
 			<attribute key="unproperly" value="true"/>
@@ -83438,7 +83504,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="skillboost fist" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="depth claws" value="base">
+			<attribute key="depth claws" value="base damage">
 				<attribute key="value" value="14"/>
 			</attribute>
 		</attribute>
@@ -83935,7 +84001,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="elemental protection holy" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="spirit mend" value="base">
+			<attribute key="spirit mend" value="base healing">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -84105,6 +84171,9 @@ Granted by TibiaGoals.com"/>
 			<attribute key="elemental protection holy" value="3"/>
 		</attribute>
 		<attribute key="augments" value="1">
+			<attribute key="greater tiger clash" value="life leech">
+				<attribute key="value" value="5"/>
+			</attribute>
 			<attribute key="flurry of blows" value="life leech">
 				<attribute key="value" value="3"/>
 			</attribute>
@@ -84186,7 +84255,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="legs"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="double jab" value="base">
+			<attribute key="double jab" value="base damage">
 				<attribute key="value" value="12"/>
 			</attribute>
 		</attribute>
@@ -84233,7 +84302,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="greater tiger clash" value="base">
+			<attribute key="greater tiger clash" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -84263,7 +84332,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="greater tiger clash" value="base">
+			<attribute key="greater tiger clash" value="base damage">
 				<attribute key="value" value="16"/>
 			</attribute>
 		</attribute>
@@ -84286,7 +84355,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="greater tiger clash" value="base">
+			<attribute key="greater tiger clash" value="base damage">
 				<attribute key="value" value="12"/>
 			</attribute>
 		</attribute>
@@ -84299,8 +84368,8 @@ Granted by TibiaGoals.com"/>
 		<attribute key="armor" value="4"/>
 		<attribute key="weight" value="1000"/>
 		<attribute key="augments" value="1">
-			<attribute key="chained penance" value="base">
-				<attribute key="value" value="6" />
+			<attribute key="chained penance" value="base damage">
+				<attribute key="value" value="6"/>
 			</attribute>
 		</attribute>
 		<attribute key="imbuementslot" value="1">
@@ -84468,7 +84537,7 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="feet"/>
 		</attribute>
 		<attribute key="augments" value="1">
-			<attribute key="greater flurry of blows" value="base">
+			<attribute key="greater flurry of blows" value="base damage">
 				<attribute key="value" value="8"/>
 			</attribute>
 		</attribute>
@@ -84511,6 +84580,246 @@ Granted by TibiaGoals.com"/>
 	<item id="51259" article="a" name="reality splinter">
 		<attribute key="primarytype" value="creature products"/>
 		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51260" article="an" name="norcferatu skullguard">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="armor" value="9"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="absorbpercentphysical" value="3"/>
+		<attribute key="absorbpercentice" value="6"/>
+		<attribute key="weight" value="3200"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="augments" value="2">
+			<attribute key="ethereal spear" value="base damage">
+				<attribute key="value" value="40"/>
+			</attribute>
+			<attribute key="ethereal spear" value="critical hit chance">
+				<attribute key="value" value="2"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="270"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="51261" article="an" name="norcferatu bonehood">
+		<attribute key="primarytype" value="helmets"/>
+		<attribute key="armor" value="5"/>
+		<attribute key="mantra" value="8"/>
+		<attribute key="skillfist" value="2"/>
+		<attribute key="absorbpercentphysical" value="2"/>
+		<attribute key="absorbpercentice" value="5"/>
+		<attribute key="weight" value="1400"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="augments" value="2">
+			<attribute key="greater tiger clash" value="base damage">
+				<attribute key="value" value="33"/>
+			</attribute>
+			<attribute key="greater tiger clash" value="critical extra damage">
+				<attribute key="value" value="10"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="230"/>
+			<attribute key="slot" value="head"/>
+			<attribute key="vocation" value="Monk;true, Exalted Monk"/>
+		</attribute>
+	</item>
+	<item id="51262" article="a" name="norcferatu tuskplate">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="armor" value="22"/>
+		<attribute key="skillsword" value="3"/>
+		<attribute key="skillaxe" value="3"/>
+		<attribute key="skillclub" value="3"/>
+		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="weight" value="14800"/>
+		<attribute key="augments" value="2">
+			<attribute key="brutal strike" value="cooldown">
+				<attribute key="value" value="2000"/>
+			</attribute>
+			<attribute key="brutal strike" value="critical extra damage">
+				<attribute key="value" value="10"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="270"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="51263" article="a" name="norcferatu bloodhide">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="armor" value="16"/>
+		<attribute key="energymagiclevelpoints" value="6"/>
+		<attribute key="firemagiclevelpoints" value="3"/>
+		<attribute key="absorbpercentearth" value="8"/>
+		<attribute key="weight" value="39000"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="augments" value="2">
+			<attribute key="ultimate energy strike" value="critical extra damage">
+				<attribute key="value" value="14"/>
+			</attribute>
+			<attribute key="ultimate energy strike" value="critical hit chance">
+				<attribute key="value" value="5"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="270"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+		</attribute>
+	</item>
+	<item id="51264" article="a" name="norcferatu bonecloak">
+		<attribute key="primarytype" value="armors"/>
+		<attribute key="armor" value="16"/>
+		<attribute key="earthmagiclevelpoints" value="6"/>
+		<attribute key="healingmagiclevelpoints" value="3"/>
+		<attribute key="absorbpercentice" value="8"/>
+		<attribute key="weight" value="4200"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection holy" value="3"/>
+		</attribute>
+		<attribute key="augments" value="2">
+			<attribute key="ultimate terra strike" value="critical extra damage">
+				<attribute key="value" value="14"/>
+			</attribute>
+			<attribute key="ultimate terra strike" value="critical hit chance">
+				<attribute key="value" value="5"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="270"/>
+			<attribute key="slot" value="armor"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="51265" article="a" name="norcferatu thornwraps">
+		<attribute key="primarytype" value="legs"/>
+		<attribute key="armor" value="9"/>
+		<attribute key="skilldist" value="2"/>
+		<attribute key="absorbpercentphysical" value="4"/>
+		<attribute key="absorbpercentdeath" value="4"/>
+		<attribute key="weight" value="1150"/>
+		<attribute key="augments" value="2">
+			<attribute key="ethereal spear" value="base damage">
+				<attribute key="value" value="40"/>
+			</attribute>
+			<attribute key="ethereal spear" value="critical extra damage">
+				<attribute key="value" value="8"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="270"/>
+			<attribute key="slot" value="legs"/>
+			<attribute key="vocation" value="Paladin;true, Royal Paladin"/>
+		</attribute>
+	</item>
+	<item id="51266" article="a" name="norcferatu bloodstrider">
+		<attribute key="primarytype" value="legs"/>
+		<attribute key="armor" value="8"/>
+		<attribute key="magiclevelpoints" value="2"/>
+		<attribute key="absorbpercentdeath" value="4"/>
+		<attribute key="weight" value="1150"/>
+		<attribute key="augments" value="2">
+			<attribute key="ultimate terra strike" value="base damage">
+				<attribute key="value" value="33"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="270"/>
+			<attribute key="slot" value="legs"/>
+			<attribute key="vocation" value="Druid;true, Elder Druid"/>
+		</attribute>
+	</item>
+	<item id="51267" article="a" name="norcferatu fleshguards">
+		<attribute key="primarytype" value="legs"/>
+		<attribute key="armor" value="5"/>
+		<attribute key="mantra" value="6"/>
+		<attribute key="skillfist" value="2"/>
+		<attribute key="absorbpercentdeath" value="4"/>
+		<attribute key="weight" value="1150"/>
+		<attribute key="augments" value="2">
+			<attribute key="greater tiger clash" value="critical hit chance">
+				<attribute key="value" value="2"/>
+			</attribute>
+			<attribute key="greater tiger clash" value="critical extra damage">
+				<attribute key="value" value="10"/>
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="230"/>
+			<attribute key="slot" value="legs"/>
+			<attribute key="vocation" value="Monk;true, Exalted Monk"/>
+		</attribute>
+	</item>
+	<item id="51268" name="norcferatu goretrampers">
+		<attribute key="absorbpercentphysical" value="5"/>
+		<attribute key="absorbpercentearth" value="3"/>
+		<attribute key="speed" value="15"/>
+		<attribute key="armor" value="3"/>
+		<attribute key="weight" value="1250"/>
+		<attribute key="augments" value="1">
+			<attribute key="brutal strike" value="base damage">
+				<attribute key="value" value="33"/>
+			</attribute>
+		</attribute>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+			<attribute key="paralysis removal" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="feet"/>
+			<attribute key="level" value="270"/>
+			<attribute key="vocation" value="Knight;true, Elite Knight"/>
+		</attribute>
+	</item>
+	<item id="51269" name="norcferatu fangstompers">
+		<attribute key="armor" value="2"/>
+		<attribute key="magiclevelpoints" value="1"/>
+		<attribute key="absorbpercentdeath" value="3"/>
+		<attribute key="speed" value="15"/>
+		<attribute key="weight" value="1250"/>
+		<attribute key="augments" value="1">
+			<attribute key="ultimate energy strike" value="base damage">
+				<attribute key="value" value="33"/>
+			</attribute>
+		</attribute>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3"/>
+			<attribute key="paralysis removal" value="3"/>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="feet"/>
+			<attribute key="level" value="270"/>
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer"/>
+		</attribute>
 	</item>
 	<item id="51276" name="spirited soil">
 		<attribute key="primarytype" value="creature products"/>
@@ -84657,5 +84966,287 @@ Granted by TibiaGoals.com"/>
 				<attribute key="value" value="4"/>
 			</attribute>
 		</attribute>
+	</item>
+	<item id="51588" article="a" name="proficiency catalyst">
+		<attribute key="primarytype" value="other items"/>
+		<attribute key="weight" value="500"/>
+	</item>
+	<item id="51589" article="a" name="greater proficiency catalyst">
+		<attribute key="primarytype" value="other items"/>
+		<attribute key="weight" value="750"/>
+	</item>
+	<item id="51442" article="a" name="blank imbuement scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51443" article="a" name="etcher">
+		<attribute key="weight" value="150"/>
+	</item>
+	<item id="51444" article="a" name="powerful bash scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51445" article="a" name="powerful blockade scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51446" article="a" name="powerful chop scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51447" article="a" name="powerful cloud fabric scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51448" article="a" name="powerful demon presence scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51449" article="a" name="powerful dragon hide scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51450" article="a" name="powerful electrify scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51451" article="a" name="powerful epiphany scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51452" article="a" name="powerful featherweight scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51453" article="a" name="powerful frost scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51454" article="a" name="powerful lich shroud scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51455" article="a" name="powerful precision scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51456" article="a" name="powerful punch scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51457" article="a" name="powerful quara scale scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51458" article="a" name="powerful reap scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51459" article="a" name="powerful scorch scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51460" article="a" name="powerful slash scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51461" article="a" name="powerful snake skin scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51462" article="a" name="powerful strike scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51463" article="a" name="powerful swiftness scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51464" article="a" name="powerful vampirism scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51465" article="a" name="powerful venom scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51466" article="a" name="powerful vibrancy scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51467" article="a" name="powerful void scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51641" article="an" name="norcferatu heartless soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51642" article="an" name="varg soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51643" article="an" name="norcferatu nightweaver soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51644" article="an" name="dworc shadowstalker soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51645" article="an" name="orclops bloodbreaker soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51646" article="an" name="gloom maw soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51647" article="an" name="cinder wyrmling soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51648" article="an" name="bramble wyrmling soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51649" article="an" name="headwalker soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51650" article="an" name="bluebeak soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51651" article="an" name="hawk hopper soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51652" article="an" name="shell drake soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51653" article="an" name="crusader soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51654" article="an" name="lion hydra soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51721" article="an" name="ink splash soul core">
+		<attribute key="primarytype" value="soul cores"/>
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
+		<attribute key="weight" value="100"/>
+	</item>
+	<item id="51724" article="a" name="intricate bash scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51725" article="a" name="intricate blockade scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51726" article="a" name="intricate chop scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51727" article="a" name="intricate cloud fabric scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51728" article="a" name="intricate demon presence scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51729" article="a" name="intricate dragon hide scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51730" article="a" name="intricate electrify scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51731" article="a" name="intricate epiphany scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51732" article="a" name="intricate featherweight scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51733" article="a" name="intricate frost scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51734" article="a" name="intricate lich shroud scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51735" article="a" name="intricate precision scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51736" article="a" name="intricate punch scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51737" article="a" name="intricate quara scale scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51738" article="a" name="intricate reap scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51739" article="a" name="intricate scorch scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51740" article="a" name="intricate slash scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51741" article="a" name="intricate snake skin scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51742" article="a" name="intricate strike scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51743" article="a" name="intricate swiftness scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51744" article="a" name="intricate vampirism scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51745" article="a" name="intricate venom scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51746" article="a" name="intricate vibrancy scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
+	</item>
+	<item id="51747" article="a" name="intricate void scroll">
+		<attribute key="primarytype" value="imbuement scrolls"/>
+		<attribute key="weight" value="250"/>
 	</item>
 </items>

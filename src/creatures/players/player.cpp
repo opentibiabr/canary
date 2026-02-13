@@ -28,6 +28,7 @@
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
+#include "enums/imbuement.hpp"
 #include "enums/object_category.hpp"
 #include "enums/player_blessings.hpp"
 #include "enums/player_icons.hpp"
@@ -81,7 +82,8 @@ Player::Player() :
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this),
-	m_forgeHistoryPlayer(*this) {
+	m_forgeHistoryPlayer(*this),
+	m_weaponProficiency(*this) {
 }
 
 Player::Player(std::shared_ptr<ProtocolGame> p) :
@@ -98,7 +100,10 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	m_animusMastery(*this),
 	m_playerAttachedEffects(*this),
 	m_storage(*this),
-	m_forgeHistoryPlayer(*this) {
+	m_forgeHistoryPlayer(*this),
+	m_weaponProficiency(*this) {
+	baseCritical.chance = g_configManager().getFloat(PLAYER_BASE_CRITICAL_CHANCE);
+	baseCritical.damage = g_configManager().getFloat(PLAYER_BASE_CRITICAL_DAMAGE);
 	m_wheelPlayer.init();
 	m_animusMastery.init();
 }
@@ -329,6 +334,15 @@ void Player::removeConditionSuppressions(const std::vector<ConditionType_t> &toR
 			}
 		}
 	}
+}
+
+uint16_t Player::getWeaponId(bool ignoreAmmo /* = false */) const {
+	const auto &weapon = getWeapon(ignoreAmmo);
+	if (!weapon) {
+		return 0;
+	}
+
+	return weapon->getID();
 }
 
 std::shared_ptr<Item> Player::getWeapon(Slots_t slot, bool ignoreAmmo) const {
@@ -711,6 +725,8 @@ int32_t Player::getDefense(bool sendToClient /* = false*/) const {
 
 	if (weapon) {
 		defenseValue = weapon->getDefense() + weapon->getExtraDefense();
+		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
+		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::WEAPON_SHIELD_MODIFIER);
 		defenseSkill = getWeaponSkill(weapon);
 	}
 
@@ -748,6 +764,8 @@ uint16_t Player::getDefenseEquipment() const {
 
 	if (weapon) {
 		defenseValue = weapon->getDefense() + weapon->getExtraDefense();
+		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
+		defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::WEAPON_SHIELD_MODIFIER);
 	}
 
 	if (shield) {
@@ -2445,8 +2463,146 @@ void Player::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, ui
 }
 
 // Imbuements
+void Player::applyScrollImbuement(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &scrollItem) {
+	if (!item || !scrollItem) {
+		return;
+	}
 
-void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm) {
+	const auto freeImbuementSlot = item->getFreeImbuementSlot();
+	if (freeImbuementSlot < 0) {
+		return;
+	}
+
+	const Imbuement* imbuement = g_imbuements().getImbuementByScrollID(scrollItem->getID());
+	if (!imbuement) {
+		return;
+	}
+
+	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement) {
+		return;
+	}
+
+	item->setImbuement(freeImbuementSlot, imbuement->getID(), baseImbuement->duration);
+
+	if (g_game().internalRemoveItem(scrollItem, 1) != RETURNVALUE_NOERROR) {
+		g_logger().error("[Player::applyScrollImbuement] - Failed to remove scroll item {} from player {}", scrollItem->getID(), getName());
+		return;
+	}
+
+	if (item->getParent() == getPlayer()) {
+		addItemImbuementStats(imbuement);
+	}
+}
+
+void Player::createScrollImbuement(const Imbuement* imbuement) {
+	if (!imbuement) {
+		return;
+	}
+
+	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement) {
+		return;
+	}
+
+	const auto &items = imbuement->getItems();
+	for (auto &[id, amount] : items) {
+		const auto playerItemAmount = getItemTypeCount(id) + getStashItemCount(id);
+		if (playerItemAmount < amount) {
+			sendImbuementResult("You don't have all necessary items.");
+			return;
+		}
+	}
+
+	auto emptyScrollsCount = getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL) + getStashItemCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
+	if (emptyScrollsCount == 0) {
+		sendImbuementResult("You don't have all necessary items.");
+		return;
+	}
+
+	uint32_t price = baseImbuement->price;
+	if (!g_game().removeMoney(static_self_cast<Player>(), price, 0, true)) {
+		const std::string message = fmt::format("You don't have {} gold coins.", price);
+
+		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
+		sendImbuementResult(message);
+		return;
+	}
+
+	g_metrics().addCounter("balance_decrease", price, { { "player", getName() }, { "context", "apply_imbuement" } });
+
+	for (const auto &[key, value] : items) {
+		const uint32_t inventoryItemCount = getItemTypeCount(key);
+		if (inventoryItemCount >= value) {
+			removeItemOfType(key, value, -1, true);
+			continue;
+		}
+
+		uint32_t mathItemCount = value;
+		if (inventoryItemCount > 0 && removeItemOfType(key, inventoryItemCount, -1, false)) {
+			mathItemCount = mathItemCount - inventoryItemCount;
+		}
+
+		const ItemType &itemType = Item::items[key];
+
+		const auto withdrawItemMessage = fmt::format("Using {}x {} from your stash.", mathItemCount, itemType.name);
+		withdrawItem(itemType.id, mathItemCount);
+		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage);
+	}
+
+	if (!removeItemCountById(ITEM_EMPTY_IMBUEMENT_SCROLL, 1, true)) {
+		g_logger().error("Failed to remove empty imbuement scroll from player with name {}", getName());
+		return;
+	}
+
+	const auto imbuementScrollId = imbuement->getScrollItemID();
+	const auto &imbuementScroll = Item::CreateItem(imbuementScrollId, 1);
+	ReturnValue ret = g_game().internalAddItem(static_self_cast<Player>(), imbuementScroll, INDEX_WHEREEVER, 0);
+	if (ret != RETURNVALUE_NOERROR) {
+		g_logger().error("Failed to add imbuement scroll id '{}' to player with name {}", imbuementScrollId, getName());
+		sendImbuementResult("Failed to add imbuement scroll. Please contact administration.");
+		return;
+	}
+
+	openImbuementWindow(ImbuementAction::Scroll, nullptr);
+}
+
+bool Player::clearAllImbuements(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		return false;
+	}
+
+	auto itemSlots = item->getImbuementSlot();
+	if (itemSlots == 0) {
+		sendTextMessage(MESSAGE_FAILURE, "Sorry, not possible.");
+		return false;
+	}
+
+	std::vector<std::pair<uint8_t, ImbuementInfo>> imbuementsToRemove;
+
+	for (uint8_t slot = 0; slot < itemSlots; slot++) {
+		ImbuementInfo imbuementInfo;
+		if (item->getImbuementInfo(slot, &imbuementInfo) && imbuementInfo.imbuement) {
+			imbuementsToRemove.emplace_back(slot, imbuementInfo);
+		}
+	}
+
+	if (imbuementsToRemove.empty()) {
+		sendTextMessage(MESSAGE_FAILURE, "Sorry, not possible.");
+		return false;
+	}
+
+	for (const auto& [slot, imbuementInfo] : imbuementsToRemove) {
+		if (item->getParent() == getPlayer()) {
+			removeItemImbuementStats(imbuementInfo.imbuement);
+		}
+		item->clearImbuement(slot, imbuementInfo.imbuement->getID());
+	}
+
+	return true;
+}
+
+void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot) {
 	if (!imbuement || !item) {
 		return;
 	}
@@ -2460,7 +2616,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	ImbuementInfo imbuementInfo;
 	if (item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
-		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
 
@@ -2473,7 +2629,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		if (item->getImbuementInfo(i, &existingImbuement) && existingImbuement.imbuement) {
 			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
 				g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
-				this->sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
+				sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
 				return;
 			}
 		}
@@ -2500,7 +2656,6 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	}
 
 	uint32_t price = baseImbuement->price;
-	price += protectionCharm ? baseImbuement->protectionPrice : 0;
 
 	if (!g_game().removeMoney(thisPlayer, price, 0, true)) {
 		const std::string message = fmt::format("You don't have {} gold coins.", price);
@@ -2533,10 +2688,10 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
 
-	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent) {
-		openImbuementWindow(item);
+	if (uniform_random(1, 100) > baseImbuement->percent) {
+		openImbuementWindow(ImbuementAction::PickItem, item);
 		sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
-		openImbuementWindow(item);
+		openImbuementWindow(ImbuementAction::PickItem, item);
 		return;
 	}
 
@@ -2554,7 +2709,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		g_imbuementDecay().startImbuementDecay(item);
 	}
 
-	openImbuementWindow(item);
+	openImbuementWindow(ImbuementAction::PickItem, item);
 }
 
 void Player::onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot) {
@@ -2565,7 +2720,7 @@ void Player::onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot) {
 	ImbuementInfo imbuementInfo;
 	if (!item->getImbuementInfo(slot, &imbuementInfo)) {
 		g_logger().error("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
-		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
 
@@ -2578,8 +2733,8 @@ void Player::onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot) {
 		const std::string message = fmt::format("You don't have {} gold coins.", baseImbuement->removeCost);
 
 		g_logger().error("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
-		this->sendImbuementResult(message);
-		this->openImbuementWindow(item);
+		sendImbuementResult(message);
+		openImbuementWindow(ImbuementAction::PickItem, item);
 		return;
 	}
 	g_metrics().addCounter("balance_decrease", baseImbuement->removeCost, { { "player", getName() }, { "context", "clear_imbuement" } });
@@ -2589,28 +2744,17 @@ void Player::onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot) {
 	}
 
 	item->clearImbuement(slot, imbuementInfo.imbuement->getID());
-	this->openImbuementWindow(item);
+	openImbuementWindow(ImbuementAction::PickItem, item);
 }
 
-void Player::openImbuementWindow(const std::shared_ptr<Item> &item) {
-	if (!client || !item) {
-		return;
-	}
-
-	if (item->getImbuementSlot() <= 0) {
-		this->sendTextMessage(MESSAGE_EVENT_ADVANCE, "This item is not imbuable.");
-		return;
-	}
-
-	const auto &itemParent = item->getTopParent();
-	if (itemParent && itemParent != getPlayer()) {
-		this->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to pick up the item to imbue it.");
+void Player::openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item) {
+	if (!client) {
 		return;
 	}
 
 	updateImbuementTrackerStats();
 
-	client->openImbuementWindow(item);
+	client->openImbuementWindow(action, item);
 }
 
 // inventory
@@ -5556,6 +5700,34 @@ std::vector<std::shared_ptr<Item>> Player::getEquippedAugmentItems() const {
 	return equippedAugmentItems;
 }
 
+std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> Player::getEquippedAugments() const {
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> equippedAugments;
+
+	const auto &equippedAugmentItems = getEquippedAugmentItems();
+	for (const auto &item : equippedAugmentItems) {
+		for (const auto &augment : item->getAugments()) {
+			if (augment->type == Augment_t::None) {
+				continue;
+			}
+
+			const auto &spell = g_spells().getInstantSpellByName(augment->spellName);
+			const auto spellId = spell ? spell->getSpellId() : 0;
+
+			if (spellId == 0) {
+				continue;
+			}
+
+			const auto key = std::make_pair(spellId, static_cast<uint8_t>(augment->type));
+
+			double divisor = augment->type == Augment_t::Cooldown ? -1000.0 : 100.0;
+
+			equippedAugments[key] += augment->value / divisor;
+		}
+	}
+
+	return equippedAugments;
+}
+
 std::vector<std::shared_ptr<Item>> Player::getEquippedItems() const {
 	static const std::vector valid_slots {
 		CONST_SLOT_HEAD,
@@ -6988,7 +7160,14 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel += m_wheelPlayer.getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
 		skillLevel += m_wheelPlayer.getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
 		skillLevel += m_wheelPlayer.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
+		skillLevel += m_weaponProficiency.getGeneralCritical().damage * 10000;
+	} else if (skill == SKILL_CRITICAL_HIT_CHANCE) {
+		skillLevel += m_weaponProficiency.getGeneralCritical().chance * 10000;
 	}
+
+	// Weapon proficiency
+	const auto weaponProficiencySkill = m_weaponProficiency.getSkillBonus(skill);
+	skillLevel += weaponProficiencySkill;
 
 	const int32_t avatarCritChance = m_wheelPlayer.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_CHANCE);
 	if (skill == SKILL_CRITICAL_HIT_CHANCE && avatarCritChance > 0) {
@@ -7045,17 +7224,26 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 		result = it->second;
 	}
 
+	const auto &perfectShotBonus = weaponProficiency().getPerfectShotBonus();
+	if (perfectShotBonus.range == range) {
+		result += perfectShotBonus.damage;
+	}
+
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
-		if (!itemType.abilities) {
+		uint8_t perfectShotRange = 0;
+
+		if (itemType.abilities && itemType.abilities->perfectShotRange) {
+			perfectShotRange = itemType.abilities->perfectShotRange;
+		} else {
+			perfectShotRange = perfectShotBonus.range;
+		}
+
+		if (perfectShotRange <= 0) {
 			continue;
 		}
 
-		if (!itemType.abilities->perfectShotRange) {
-			continue;
-		}
-
-		if (itemType.abilities->perfectShotRange == range) {
+		if (perfectShotRange == range) {
 			result += itemType.abilities->perfectShotDamage;
 			const uint16_t charges = item->getCharges();
 			if (useCharges && charges != 0) {
@@ -7079,7 +7267,9 @@ void Player::setPerfectShotDamage(uint8_t range, int32_t damage) {
 }
 
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
-	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)] + m_wheelPlayer.getSpecializedMagic(combat);
+	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
+	result += m_wheelPlayer.getSpecializedMagic(combat);
+	result += m_weaponProficiency.getSpecializedMagic(combat);
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {
@@ -8199,6 +8389,7 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 			}
 		}
 	}
+
 	bool requireListUpdate = true;
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
@@ -11822,6 +12013,15 @@ const PlayerStorage &Player::storage() const {
 	return m_storage;
 }
 
+// Weapon Proficiency interface
+WeaponProficiency &Player::weaponProficiency() {
+	return m_weaponProficiency;
+}
+
+const WeaponProficiency &Player::weaponProficiency() const {
+	return m_weaponProficiency;
+}
+
 void Player::sendLootMessage(const std::string &message) const {
 	const auto &party = getParty();
 	if (!party) {
@@ -12135,12 +12335,17 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 bool Player::isFirstOnStack() const {
 	const auto &playerTile = getTile();
 	if (!playerTile) {
-		return false;
+		return true;
 	}
 
 	const auto &bottomCreature = playerTile->getBottomCreature();
 	const auto &bottomPlayer = bottomCreature ? bottomCreature->getPlayer() : nullptr;
 	if (!bottomPlayer) {
+		return false;
+	}
+
+	if (hasCondition(CONDITION_SPELLCOOLDOWN)) {
+		g_logger().warn("[isFirstOnStack] cooldown error for player: {}", getName());
 		return false;
 	}
 
@@ -12179,6 +12384,41 @@ void Player::resetOldCharms() {
 	setCharmPoints(totalRefund);
 
 	g_logger().info("Player: {}, recalculated charm points based on unlocked bestiary: {}", getName(), totalRefund);
+}
+
+const std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() const {
+	std::array<SkillsEquipment, SKILL_LAST + 1> skillsEquipment = {};
+	for (uint16_t skill = SKILL_FIRST; skill <= SKILL_LAST; skill++) {
+		SkillsEquipment skillEquipment = {};
+
+		for (uint32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; ++slot) {
+			const auto slotType = static_cast<Slots_t>(slot);
+			const auto &item = getInventoryItem(slotType);
+			if (!item) {
+				continue;
+			}
+
+			const auto &itemType = Item::items[item->getID()];
+			skillEquipment.equipment += itemType.abilities->skills[skill] / 10000.0;
+
+			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+				ImbuementInfo imbuementInfo;
+				if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+					continue;
+				}
+
+				skillEquipment.imbuement += imbuementInfo.imbuement->skills[skill] / 10000.0;
+			}
+		}
+
+		skillsEquipment[skill] = skillEquipment;
+	}
+
+	return skillsEquipment;
+}
+
+const BaseCritical &Player::getBaseCritical() const {
+	return baseCritical;
 }
 
 Virtue_t Player::getVirtue() const {
@@ -12368,5 +12608,18 @@ void Player::sendSpellCooldowns() {
 			continue;
 		}
 		sendSpellCooldown(spellId, ticks);
+	}
+}
+
+void Player::sendWeaponProficiency(uint16_t weaponId /* = 0 */) {
+	if (weaponId == 0) {
+		const auto &weapon = getWeapon();
+		if (weapon) {
+			weaponId = weapon->getID();
+		}
+	}
+
+	if (client) {
+		client->sendWeaponProficiency(weaponId);
 	}
 }

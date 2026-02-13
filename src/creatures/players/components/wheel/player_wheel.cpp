@@ -2560,6 +2560,52 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 	}
 }
 
+std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> PlayerWheel::getActiveAugments() const {
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> wheelAugments;
+
+	const auto &ioBonusData = g_game().getIOWheel()->getWheelBonusData();
+
+	auto registerAugment = [&](const uint16_t spellId, const std::string &spellName, uint8_t grade, std::unordered_set<uint16_t> registeredSpells) {
+		for (const auto &spellId : registeredSpells) {
+			if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_SORCERER) {
+				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.sorcerer, wheelAugments);
+			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_DRUID) {
+				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.druid, wheelAugments);
+			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_PALADIN) {
+				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.paladin, wheelAugments);
+			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_KNIGHT) {
+				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.knight, wheelAugments);
+			} else if (m_player.getVocation()->getBaseId() == Vocation_t::VOCATION_MONK) {
+				getAugmentsByVocation(spellId, spellName, grade, ioBonusData.spells.monk, wheelAugments);
+			}
+		}
+	};
+
+	std::unordered_set<uint16_t> registeredSpells;
+	for (const auto &spellName : m_playerBonusData.spells) {
+		uint8_t grade = 1;
+		const auto &spell = g_spells().getSpellByName(spellName);
+		if (!spell) {
+			continue;
+		}
+
+		auto spellId = spell->getSpellId();
+		if (!registeredSpells.contains(spellId)) {
+			registeredSpells.emplace(spellId);
+
+			registerAugment(spellId, spellName, grade, registeredSpells);
+
+			continue;
+		}
+
+		grade = 2;
+
+		registerAugment(spellId, spellName, grade, registeredSpells);
+	}
+
+	return wheelAugments;
+}
+
 void PlayerWheel::addSpellToVector(const std::string &spellName) {
 	m_playerBonusData.spells.emplace_back(spellName);
 }

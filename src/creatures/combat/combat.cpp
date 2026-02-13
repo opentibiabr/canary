@@ -121,6 +121,7 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 		}
 		if (casterPlayer && wheelSpell && wheelSpell->isInstant()) {
 			wheelSpell->getCombatDataAugment(casterPlayer, damage);
+			casterPlayer->weaponProficiency().applySpellAugment(damage, wheelSpell->getSpellId());
 		}
 	}
 
@@ -754,6 +755,13 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			}
 		}
 
+		attackerPlayer->weaponProficiency().applySkillAutoAttackPercentage(damage);
+		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage);
+		attackerPlayer->weaponProficiency().applySkillSpellPercentage(damage, true);
+
+		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::LIFE, WeaponProficiencyGain_t::HIT);
+		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::HIT);
+
 		damage.damageMultiplier += attackerPlayer->wheel().getMajorStatConditional("Divine Empowerment", WheelMajor_t::DAMAGE);
 		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
@@ -769,6 +777,10 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
 			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
 		}
+
+		attackerPlayer->weaponProficiency().applyBestiaryDamage(damage, targetMonster);
+		attackerPlayer->weaponProficiency().applyBossDamage(damage, targetMonster);
+		attackerPlayer->weaponProficiency().applyPowerfulFoeDamage(damage, targetMonster);
 
 		// Monster type onPlayerAttack event
 		targetMonster->onAttackedByPlayer(attackerPlayer);
@@ -1009,7 +1021,7 @@ uint16_t Combat::monkEffectByElementalBond(CombatType_t combatType, uint16_t eff
 					return effect; // fallback: WHITE
 			}
 		case CONST_ME_WHITE_ENERGY_SPARK:
-			return effect; // Não possui variantes
+			return effect; // Don't have variants
 		default:
 			return effect;
 	}
@@ -2483,13 +2495,17 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 	const auto &monster = caster->getMonster();
 
 	uint16_t baseChance = 0;
-	int32_t baseBonus = 50;
+	int32_t baseBonus = 0;
 	if (player) {
-		baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-		baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE);
+		baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;
+		baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + player->getBaseCritical().damage * 10000;
 
 		uint16_t lowBlowRaceid = player->parseRacebyCharm(CHARM_LOW);
 		uint16_t savageBlowRaceid = player->parseRacebyCharm(CHARM_SAVAGE);
+
+		player->weaponProficiency().applyAutoAttackCritical(damage);
+		player->weaponProficiency().applyRunesCritical(damage, params.aggressive);
+		player->weaponProficiency().applyElementCritical(damage);
 
 		baseBonus += damage.criticalDamage;
 		baseChance += static_cast<uint16_t>(damage.criticalChance);

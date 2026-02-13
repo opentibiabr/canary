@@ -5,11 +5,7 @@ function imbuement.onUse(player, item, fromPosition, target, toPosition, isHotke
 		return player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You did not collect enough knowledge from the ancient Shapers. Visit the Shaper temple in Thais for help.")
 	end
 
-	if type(target) ~= "userdata" or not target:isItem() then
-		return player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can only use the shrine on an valid item.")
-	end
-
-	player:openImbuementWindow(target)
+	player:openImbuementWindow()
 	return true
 end
 

@@ -33,6 +33,7 @@
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -78,6 +79,7 @@ int CanaryServer::run() {
 #endif
 				rsa.start();
 				initializeDatabase();
+				WeaponProficiency::loadFromJson();
 				loadModules();
 				setWorldType();
 				loadMaps();

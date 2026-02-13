@@ -106,11 +106,8 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
 	} else if (augmentInfo->type == Augment_t::Cooldown) {
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
-	} else if (augmentInfo->type == Augment_t::Base) {
-		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
-		if (spell) {
-			return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
-		}
+	} else if (augmentInfo->type == Augment_t::BaseDamage || augmentInfo->type == Augment_t::BaseHealing) {
+		return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
 	}
 
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
@@ -249,6 +246,18 @@ void Items::loadFromProtobuf() {
 		iType.expireStop = object.flags().expirestop();
 		iType.isWrapKit = object.flags().wrapkit();
 		iType.isDualWielding = object.flags().dual_wielding();
+		if (object.flags().has_proficiency() && object.flags().proficiency().has_proficiency_id()) {
+			auto &proficiencies = WeaponProficiency::getProficiencies();
+			const auto proficiencyId = static_cast<uint16_t>(object.flags().proficiency().proficiency_id());
+			auto it = proficiencies.find(proficiencyId);
+			if (it == proficiencies.end()) {
+				g_logger().warn("[Items::loadFromProtobuf] - Unknown Proficiency ID '{}'", proficiencyId);
+			} else {
+				iType.proficiencyId = proficiencyId;
+				auto &proficiency = it->second;
+				proficiency.weaponId = iType.id;
+			}
+		}
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });

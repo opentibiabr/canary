@@ -64,6 +64,7 @@ monster.loot = {
 	{ id = 3379, chance = 4140 }, -- doublet
 	{ id = 17458, chance = 11940 }, -- damselfly wing
 	{ id = 17463, chance = 10130 }, -- damselfly eye
+	{ id = 50166, chance = 3140 }, -- simple jo staff
 	{ id = 3031, chance = 100000, maxCount = 12 }, -- gold coin
 	{ id = 266, chance = 3630 }, -- health potion
 	{ id = 268, chance = 3800 }, -- mana potion

@@ -36,6 +36,16 @@ Imbuement* Imbuements::getImbuement(uint16_t id) {
 	return &it->second;
 }
 
+Imbuement* Imbuements::getImbuementByScrollID(uint16_t imbuementScrollId) {
+	for (auto &[key, value] : imbuementMap) {
+		if (value.scrollId == imbuementScrollId) {
+			return &value;
+		}
+	}
+
+	return nullptr;
+}
+
 bool Imbuements::loadFromXml(bool /* reloading */) {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/imbuements.xml";
@@ -157,7 +167,11 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				}
 
 				std::string type = attr.as_string();
-				if (strcasecmp(type.c_str(), "item") == 0) {
+				if (strcasecmp(type.c_str(), "scroll") == 0) {
+					if ((attr = childNode.attribute("value"))) {
+						imbuement.scrollId = attr.as_uint();
+					}
+				} else if (strcasecmp(type.c_str(), "item") == 0) {
 					if (!((attr = childNode.attribute("value")))) {
 						g_logger().warn("Missing item ID for imbuement name '{}'", imbuement.name);
 						continue;
@@ -347,12 +361,16 @@ CategoryImbuement* Imbuements::getCategoryByID(uint16_t id) {
 	return categoryImbuements != categoriesImbuement.end() ? &*categoryImbuements : nullptr;
 }
 
-std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) {
+std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item /* = nullptr */, bool scroll /* = false */) {
 	std::vector<Imbuement*> imbuements;
 
 	for (auto &[key, value] : imbuementMap) {
 		Imbuement* imbuement = &value;
 		if (!imbuement) {
+			continue;
+		}
+
+		if (scroll && imbuement->getScrollItemID() == 0) {
 			continue;
 		}
 
@@ -366,12 +384,12 @@ std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> 
 
 		// Send only the imbuements registered on item (in items.xml) to the imbuement window
 		const CategoryImbuement* categoryImbuement = getCategoryByID(imbuement->getCategory());
-		if (!item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+		if (item && !item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 			continue;
 		}
 
 		// If the item is already imbued with an imbuement, remove the imbuement from the next free slot
-		if (item->hasImbuementCategoryId(categoryImbuement->id)) {
+		if (item && item->hasImbuementCategoryId(categoryImbuement->id)) {
 			continue;
 		}
 
@@ -586,4 +604,8 @@ void ImbuementDecay::checkImbuementDecay() {
 		m_eventId = 0;
 		g_logger().trace("No more items to decay. Stopped imbuement decay scheduler.");
 	}
+}
+
+uint16_t Imbuement::getScrollItemID() const {
+	return scrollId;
 }

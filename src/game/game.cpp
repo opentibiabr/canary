@@ -3522,7 +3522,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 				[this, playerId, itemId, hasTier, tier] {
 					playerEquipItem(playerId, itemId, hasTier, tier);
 				},
-				__FUNCTION__
+				fmt::format("{} - Player::setNextActionTask ", __FUNCTION__)
 			);
 			player->setNextActionTask(task);
 		}
@@ -6142,7 +6142,7 @@ void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::str
 	player->vip().edit(guid, description, icon, notify, vipGroupsId);
 }
 
-void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {
+void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -6155,12 +6155,13 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 
 	player->updateUIExhausted();
 
-	if (!player->hasImbuingItem()) {
+	Imbuement* imbuement = g_imbuements().getImbuement(imbuementid);
+	if (!imbuement) {
 		return;
 	}
 
-	Imbuement* imbuement = g_imbuements().getImbuement(imbuementid);
-	if (!imbuement) {
+	if (!player->hasImbuingItem()) {
+		player->createScrollImbuement(imbuement);
 		return;
 	}
 
@@ -6175,7 +6176,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 		return;
 	}
 
-	player->onApplyImbuement(imbuement, item, slot, protectionCharm);
+	player->onApplyImbuement(imbuement, item, slot);
 }
 
 void Game::playerClearImbuement(uint32_t playerid, uint8_t slot) {
@@ -7486,7 +7487,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY, true);
 				const auto &item = attackerPlayer->getWeapon();
 				if (item && item->getWeaponType() == WEAPON_DISTANCE) {
-					std::shared_ptr<Item> quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
+					const auto &quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
 					if (quiver && quiver->getWeaponType()) {
 						if (quiver->getPerfectShotRange() == distanceX) {
 							damageX -= quiver->getPerfectShotDamage();
@@ -7984,19 +7985,18 @@ void Game::applyManaLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	// Wheel of destiny bonus - mana leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
-
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
 	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
-	if (normal_random(0, 100) >= manaChance) {
-		return;
-	}
+
 	// Void charm rune
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
 			manaSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VOID)] * 100;
 		}
+	}
+
+	if (manaSkill == 0) {
+		return;
 	}
 
 	CombatParams tmpParams;
@@ -8015,17 +8015,17 @@ void Game::applyLifeLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	// Wheel of destiny bonus - life leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
 	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
-	if (normal_random(0, 100) >= lifeChance) {
-		return;
-	}
+
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 			lifeSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VAMP)] * 100;
 		}
+	}
+
+	if (lifeSkill == 0) {
+		return;
 	}
 
 	CombatParams tmpParams;

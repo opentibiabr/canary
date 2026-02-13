@@ -55,13 +55,20 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 	damage.primary.type = params.combatType;
 
 	// If the caster is a player and their vocation is "Monk" (CipSoft style),
-	// and the spell being cast is not a healing spell,
-	// we attempt to apply the elemental bond of the equipped weapon to the damage type.
-	// Otherwise, we fallback to the default combat type from the spell parameters.
+	// and the spell isn't a healing spell, try applying the elementalBond from the equipped weapon if it exists and is valid.
 	const auto &casterPlayer = creature ? creature->getPlayer() : nullptr;
 	if (casterPlayer && casterPlayer->getPlayerVocationEnum() == VOCATION_MONK_CIP && !instantSpellName.empty() && params.combatType != COMBAT_HEALING) {
 		const auto &weapon = casterPlayer->getWeapon(true);
-		damage.primary.type = weapon ? Item::items[weapon->getID()].elementalBond : params.combatType;
+		if (weapon) {
+			CombatType_t bond = Item::items[weapon->getID()].elementalBond;
+			if (bond != COMBAT_NONE) {
+				damage.primary.type = bond;
+			} else {
+				damage.primary.type = params.combatType;
+			}
+		} else {
+			damage.primary.type = params.combatType;
+		}
 	}
 
 	damage.instantSpellName = instantSpellName;
@@ -632,13 +639,19 @@ void Combat::applyMantraAbsorb(const std::shared_ptr<Player> &player, CombatType
 
 	// Apply mantra absorption only for elemental damage types
 	if (combatType == COMBAT_FIREDAMAGE || combatType == COMBAT_ICEDAMAGE || combatType == COMBAT_ENERGYDAMAGE || combatType == COMBAT_EARTHDAMAGE) {
-		value -= mantra;
+		if (value < 0) {
+			value += std::min(mantra, -value);
+		}
 	}
 }
 
 void Combat::harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std::shared_ptr<Player> &targetPlayer, const uint8_t charges) {
+	if (!casterPlayer || !targetPlayer) {
+		return;
+	}
 	CombatDamage damage;
 	CombatParams combatParams;
+	combatParams.origin = ORIGIN_HARMONY;
 
 	// Each charge increases healing by 5%
 	double multiplier = 1.0 + 0.05 * charges;
@@ -662,7 +675,7 @@ void Combat::harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std:
 	damage.primary.value = normal_random(damageAndHealingMin, damageAndHealingMax);
 
 	// Apply healing to the target
-	Combat::doCombatHealth(nullptr, targetPlayer, damage, combatParams);
+	Combat::doCombatHealth(casterPlayer, targetPlayer, damage, combatParams);
 }
 
 void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data) {
@@ -735,8 +748,9 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			const auto monkMeeleBonus = attackerPlayer->kv()->get("monk-basic-atk-bonus");
 			if (monkMeeleBonus.has_value()) {
 				bool isSerene = attackerPlayer->hasCondition(CONDITION_SERENE);
-				int32_t bonus = 1 + (isSerene ? 0.10 : 0.05) * monkMeeleBonus.value().getNumber();
-				damage.primary.value *= bonus;
+				double bonusMultiplier = 1.0 + (isSerene ? 0.10 : 0.05) * monkMeeleBonus.value().getNumber();
+				double newValue = static_cast<double>(damage.primary.value) * bonusMultiplier;
+				damage.primary.value = static_cast<int32_t>(std::round(newValue));
 			}
 		}
 
@@ -964,26 +978,41 @@ void Combat::CombatNullFunc(const std::shared_ptr<Creature> &caster, const std::
 }
 
 uint16_t Combat::monkEffectByElementalBond(CombatType_t combatType, uint16_t effect) {
-	if (combatType == COMBAT_NONE || combatType == COMBAT_PHYSICALDAMAGE) {
-		return effect; // No change needed for non-elemental or physical
+	switch (effect) {
+		case CONST_ME_WHIRLWIND_BLOW_WHITE:
+		case CONST_ME_PULSE_WHITE:
+		case CONST_ME_CLAW_WHITE:
+		case CONST_ME_OUTBURST_WHITE:
+			switch (combatType) {
+				case COMBAT_NONE:
+				case COMBAT_PHYSICALDAMAGE:
+					return effect; // WHITE
+				case COMBAT_EARTHDAMAGE:
+					return effect + 1; // GREEN
+				case COMBAT_FIREDAMAGE:
+					return effect + 2; // PINK
+				default:
+					return effect; // fallback: WHITE
+			}
+		case CONST_ME_BLOW_WHITE:
+			switch (combatType) {
+				case COMBAT_NONE:
+				case COMBAT_PHYSICALDAMAGE:
+					return effect; // WHITE
+				case COMBAT_EARTHDAMAGE:
+					return effect + 1; // GREEN
+				case COMBAT_ICEDAMAGE:
+					return effect + 2; // BLUE
+				case COMBAT_FIREDAMAGE:
+					return effect + 3; // PINK
+				default:
+					return effect; // fallback: WHITE
+			}
+		case CONST_ME_WHITE_ENERGY_SPARK:
+			return effect; // Não possui variantes
+		default:
+			return effect;
 	}
-
-	// Replace base white effects with colored variants depending on the element
-	if (effect == CONST_ME_WHIRLWIND_BLOW_WHITE) {
-		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_WHIRLWIND_BLOW_GREEN : CONST_ME_WHIRLWIND_BLOW_PINK;
-	} else if (effect == CONST_ME_PULSE_WHITE) {
-		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_PULSE_GREEN : CONST_ME_PULSE_PINK;
-	} else if (effect == CONST_ME_CLAW_WHITE) {
-		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_CLAW_GREEN : CONST_ME_CLAW_PINK;
-	} else if (effect == CONST_ME_BLOW_WHITE) {
-		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_BLOW_GREEN : CONST_ME_BLOW_PINK;
-	} else if (effect == CONST_ME_OUTBURST_WHITE) {
-		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_OUTBURST_GREEN : CONST_ME_OUTBURST_PINK;
-	} else if (effect == CONST_ME_WHITE_ENERGY_SPARK) {
-		effect = combatType == COMBAT_EARTHDAMAGE ? CONST_ME_GREEN_ENERGY_SPARK : CONST_ME_PINK_ENERGY_SPARK;
-	}
-
-	return effect;
 }
 
 void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Position &position, uint16_t effect) {

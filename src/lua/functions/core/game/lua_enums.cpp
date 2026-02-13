@@ -214,6 +214,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, ZONE_NORMAL);
 
 	registerEnum(L, WEAPON_NONE);
+	registerEnum(L, WEAPON_FIST);
 	registerEnum(L, WEAPON_SWORD);
 	registerEnum(L, WEAPON_CLUB);
 	registerEnum(L, WEAPON_AXE);

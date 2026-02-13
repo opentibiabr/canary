@@ -39,7 +39,7 @@ function Shrines.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			end, 30 * 1000)
 
 			local shrinesStorage = Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount
-			if player:getStorageValue(shrinesStorage) ~= index or player:getLevel() > shrine.level then
+			if player:getStorageValue(shrinesStorage) ~= index or player:getLevel() < shrine.level then
 				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The Three-Fold Path dictates the order of the shrines to visit and when to do this. This is either not the time for this shrine or you are not yet experienced enough to prepare yourself for the gifts of the Merudri.")
 				return false
 			end
@@ -51,7 +51,7 @@ function Shrines.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				player:addExperience(exp, true)
 			end
 
-			player:setStorageValue(shrinesStorage, index)
+			player:setStorageValue(shrinesStorage, index + 1)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("You honour the ways of the Merudri at the shrine of %s.", shrine.name))
 		end
 	end

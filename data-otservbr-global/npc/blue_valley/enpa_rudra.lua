@@ -23,13 +23,6 @@ npcConfig.flags = {
 	floorchange = false,
 }
 
-npcConfig.voices = {
-	interval = 15000,
-	chance = 0,
-	{
-		text = "",
-	},
-}
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -321,7 +314,7 @@ keywordHandler:addKeyword({ "rune spells" }, StdModule.say, {
 
 keywordHandler:addKeyword({ "support rune spells" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "In this category I have 'PDestroy Field Rune{' and '{Disintegrate Rune}'.",
+	text = "In this category I have '{Destroy Field Rune}' and '{Disintegrate Rune}'.",
 })
 
 keywordHandler:addKeyword({ "seek", "Seek" }, StdModule.say, {
@@ -335,11 +328,13 @@ keywordHandler:addKeyword({ "seek", "Seek" }, StdModule.say, {
 
 keywordHandler:addKeyword({ "three-fold path", "Three-Fold Path" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "All initiates have to undergo the Three-Fold path to understand the way of the Merudri and become true warrior monks. ...",
-	"Many generations of monks have been chosen to travel the world of Tibia incognito to study and learn the ways of the outside world. The pilgrims are not to take part in skirmishes or settle down outside of the valley. ...",
-	"Learning, documenting and training, they eventually find their way back to the valley after years of wandering. Embracing the three elements of harmony, enlightenment and power. ...",
-	"These three elements of totality are to be found among the Merudri shrines which dot Tibian landscapes all over our world. ...",
-	"Enpa-Deia Pema will answer all your questions concerning our sacred pilgrimage.",
+	text = {
+		"All initiates have to undergo the Three-Fold path to understand the way of the Merudri and become true warrior monks. ...",
+		"Many generations of monks have been chosen to travel the world of Tibia incognito to study and learn the ways of the outside world. The pilgrims are not to take part in skirmishes or settle down outside of the valley. ...",
+		"Learning, documenting and training, they eventually find their way back to the valley after years of wandering. Embracing the three elements of harmony, enlightenment and power. ...",
+		"These three elements of totality are to be found among the Merudri shrines which dot Tibian landscapes all over our world. ...",
+		"Enpa-Deia Pema will answer all your questions concerning our sacred pilgrimage.",
+	},
 })
 
 keywordHandler:addKeyword({ "king", "King" }, StdModule.say, {
@@ -378,14 +373,14 @@ keywordHandler:addKeyword({ "enpa-deia", "Enpa-Deia" }, StdModule.say, {
 	},
 })
 
-keywordHandler:addKeyword({ "semi-enpa", "Sempi-Enpa" }, StdModule.say, {
+keywordHandler:addKeyword({ "sempi-enpa", "Sempi-Enpa" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
-		"There comes a time when an Enpa reaches the utmost level of harmony, enlightenment and control. In this completely serene state, he can focus all his energy and wield tremendous power over himself - and others. ...",
-		"It is possible for an Enpa to move on to a higher state and leave the physical body to become Dhar-Enpa. After this, most of the mind of an Enpa is focused on control and containment. ...",
-		"Once a Dhar-Enpa decides to essentially become one with our world itself, he becomes Sempi-Enpa, eternal and powerful beyond imagination. ...",
-		"Dhar-Enpa Gaan decided to leave his metaphysical state and become Sempi-Enpa to close the reality rift and seal the Yng from ever trespassing the valley again. He closed the rift but was not able to contain and control his power. ...",
-		"Lost in a dimensional pocket that formed during the closing of the rift, he is lost to the Merudri and a potential threat to everything in this realm. It is for this reason, that only one other Enpa has decided to become Dhar-Enpa ever since.",
+		"Sempi-Enpa is the highest state of existence a Dhar-Enpa can achieve - transcending the metaphysical form to become one with the world itself. Eternal, omnipresent, and wielding power beyond mortal comprehension. ...",
+		"A Sempi-Enpa exists everywhere and nowhere, their consciousness merged with the very fabric of reality. They can shape the world, seal dimensional rifts, and protect entire realms from otherworldly threats. ...",
+		"However, this transcendence comes at a terrible cost. The Sempi-Enpa loses all connection to their former self, their humanity consumed by the vastness of their new existence. ...",
+		"Dhar-Enpa Gaan achieved this state to seal the reality rift and banish the Yng forever. But the power overwhelmed him - he lost control and became trapped in a dimensional pocket of his own creation. ...",
+		"Now he exists as a mad god, neither fully in our world nor completely beyond it. A cautionary tale of ultimate power and ultimate sacrifice. This is why no Dhar-Enpa has dared attempt transcendence since.",
 	},
 })
 
@@ -397,11 +392,11 @@ keywordHandler:addKeyword({ "yng", "Yng" }, StdModule.say, {
 keywordHandler:addKeyword({ "dhar-enpa", "Dhar-Enpa" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
-		"There comes a time when an Enpa reaches the utmost level of harmony, enlightenment and control. In this completely serene state, he can focus all his energy and wield tremendous power over himself - and others. ...",
-		"It is possible for an Enpa to move on to a higher state and leave the physical body to become Dhar-Enpa. After this, most of the mind of an Enpa is focused on control and containment. ...",
-		"Once a Dhar-Enpa decides to essentially become one with our world itself, he becomes Sempi-Enpa, eternal and powerful beyond imagination. ...",
-		"Dhar-Enpa Gaan decided to leave his metaphysical state and become Sempi-Enpa to close the reality rift and seal the Yng from ever trespassing the valley again. He closed the rift but was not able to contain and control his power. ...",
-		"Lost in a dimensional pocket that formed during the closing of the rift, he is lost to the Merudri and a potential threat to everything in this realm. It is for this reason, that only one other Enpa has decided to become Dhar-Enpa ever since.",
+		"When an Enpa reaches perfect harmony, enlightenment and control, they may choose to transcend their physical form and become Dhar-Enpa - a metaphysical being of pure consciousness and will. ...",
+		"In this state, the Dhar-Enpa exists between worlds, no longer bound by flesh but not yet merged with reality itself. Their entire focus shifts to control and containment of their immense power. ...",
+		"A Dhar-Enpa can influence the physical world through sheer force of will, but they must constantly maintain perfect balance. One moment of lost control could have catastrophic consequences. ...",
+		"Dhar-Enpa Gaan was the first to achieve this state. He used his metaphysical power to help seal the reality rift and protect the valley from the Yng. But he knew containment alone would not be enough. ...",
+		"That is why he made the ultimate choice - to transcend even further and become Sempi-Enpa, risking everything to permanently seal the rift. Since his tragic fate, only one other Enpa has dared become Dhar-Enpa.",
 	},
 })
 
@@ -412,7 +407,7 @@ keywordHandler:addKeyword({ "job", "Job" }, StdModule.say, {
 
 keywordHandler:addKeyword({ "name", "Name" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I am Enpa Ruda, welcome to the {valley}.",
+	text = "I am Enpa Rudra, welcome to the {valley}.",
 })
 
 keywordHandler:addKeyword({ "valley", "Valley" }, StdModule.say, {
@@ -444,9 +439,8 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local function creatureSayCallback(npc, creature, type, message)
+local function creatureSayCallback(npc, creature, msgType, message)
 	local player = Player(creature)
-	local playerId = player:getId()
 
 	if not npcHandler:checkInteraction(npc, creature) then
 		return false
@@ -454,21 +448,32 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "pilgrimage") then
 		local shrinesCount = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount)
+		-- Normalize shrinesCount: if nil, not a number, or negative, set to 0
+		if not shrinesCount or type(shrinesCount) ~= "number" or shrinesCount < 0 then
+			shrinesCount = 0
+		end
+		
 		if shrinesCount >= #TheWayOfTheMonkShrines then
 			npcHandler:say("You are a monk of the Merudri, enlightened and beyond the Three-Fold Path. You have visited all of our ancestral shrines and embraced eternity. The Enpa will see you now.", npc, creature)
-		else
+		elseif shrinesCount > 0 and shrinesCount < #TheWayOfTheMonkShrines then
 			local currentShrine = TheWayOfTheMonkShrines[shrinesCount]
 			local nextShrine = TheWayOfTheMonkShrines[shrinesCount + 1]
-			npcHandler:say(string.format("You are an initiate of the Merudri, inducted and on the Three-Fold Path. You have visited the second of the shrines and embraced '%s'. ...", currentShrine.name), npc, creature)
+			local ordinals = {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"}
+			local ordinal = ordinals[shrinesCount] or tostring(shrinesCount)
+			npcHandler:say(string.format("You are an initiate of the Merudri, inducted and on the Three-Fold Path. You have visited the %s of the shrines and embraced '%s'. ...", ordinal, currentShrine.name), npc, creature)
 			npcHandler:say(string.format("The next step, embracing '%s', will lead you to the south of Thais, away from the city.", nextShrine.name), npc, creature)
+		else
+			-- shrinesCount is 0, player hasn't started yet
+			local firstShrine = TheWayOfTheMonkShrines[1]
+			if firstShrine then
+				npcHandler:say(string.format("You are an initiate of the Merudri, ready to begin the Three-Fold Path. Your first step is to embrace '%s'.", firstShrine.name), npc, creature)
+			end
 		end
 	end
 	return true
 end
 
 local function greetCallback(npc, creature)
-	local player = Player(creature)
-	local playerId = player:getId()
 	npcHandler:setMessage(MESSAGE_GREET, "I welcome you, monk. Now that you have been brought here, tell me what you seek in this most sacred place. I can also teach you {spells} or {promote} you.")
 	return true
 end

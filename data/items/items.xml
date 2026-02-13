@@ -73801,6 +73801,23 @@ Granted by TibiaGoals.com"/>
 	<item id="40434" name="stairs">
 		<attribute key="floorchange" value="south"/>
 	</item>
+	<item id="40522" name="daedal chisel">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="100"/>
+		<attribute key="description" value="A richly ornamented chisel with crude but complex symbols and signs. The intense workmanship this ancient tool underwent made it brittle and fragile. Used in an Iks ritual to destroy urns."/>
+	</item>
+	<item id="40527" name="rotten feather">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="20"/>
+	</item>
+	<item id="40528" name="ritual tooth">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="55"/>
+	</item>
+	<item id="40529" name="gold-brocaded cloth">
+		<attribute key="primarytype" value="creature products"/>
+		<attribute key="weight" value="210"/>
+	</item>
 	<item id="40530" name="broken macuahuitl">
 		<attribute key="primarytype" value="creature products"/>
 		<attribute key="description" value="This macuahuitl was a once legendary obsidian sword wielded by the ancient Iks"/>

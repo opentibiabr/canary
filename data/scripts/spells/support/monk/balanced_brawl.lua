@@ -4,14 +4,14 @@ combat:setArea(createCombatArea(AREA_BALANCED_BRAWL))
 
 local challengeTime = 16 * 1000
 
-function onTargetCreature(creature, target)
+local function onTargetCreature_BalancedBrawl(creature, target)
 	if target and target:isMonster() then
 		target:changeTargetDistance(1, challengeTime)
 	end
 	return true
 end
 
-combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")
+combat:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature_BalancedBrawl")
 
 local spell = Spell("instant")
 

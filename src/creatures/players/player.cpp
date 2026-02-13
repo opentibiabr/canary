@@ -524,13 +524,13 @@ uint8_t Player::getWeaponSkillId(const std::shared_ptr<Item> &item) const {
 
 uint16_t Player::calculateFlatDamageHealing() const {
 	double previousLevelsAggregatedBaseline = 0.0;
-	uint16_t currentLevelBaseline = 0;
+	uint32_t currentLevelBaseline = 0;
 	double currentLevelFactor = 1.0 / 5.0;
 
 	// Starting threshold and increment steps
-	uint16_t threshold = 500;
-	uint16_t thresholdStep = 600;
-	uint16_t tierIndex = 1;
+	uint32_t threshold = 500;
+	uint32_t thresholdStep = 600;
+	uint32_t tierIndex = 1;
 
 	// Progressively reduce the scaling factor as the level increases
 	while (level >= threshold) {
@@ -544,7 +544,8 @@ uint16_t Player::calculateFlatDamageHealing() const {
 	}
 
 	// Final value includes all completed tiers plus partial progression into the next
-	return std::ceil(previousLevelsAggregatedBaseline + (level - currentLevelBaseline) * currentLevelFactor);
+	uint32_t computed = std::ceil(previousLevelsAggregatedBaseline + (level - currentLevelBaseline) * currentLevelFactor);
+	return std::min<uint32_t>(computed, std::numeric_limits<uint16_t>::max());
 }
 
 uint16_t Player::attackTotal(uint16_t flatBonus, uint16_t equipment, uint16_t skill) const {
@@ -4857,8 +4858,10 @@ bool Player::processStashItem(const std::shared_ptr<Item> &item, uint16_t itemCo
 		}
 
 		if (inventoryItem == item) {
-			if (g_moveEvents().onPlayerDeEquip(selfPlayer, item, static_cast<Slots_t>(i)) == 0) {
-				return false;
+			if (!item->isStackable() || itemCount >= item->getItemCount()) {
+				if (g_moveEvents().onPlayerDeEquip(selfPlayer, item, static_cast<Slots_t>(i)) == 0) {
+					return false;
+				}
 			}
 		}
 	}
@@ -8026,7 +8029,10 @@ namespace {
 		}
 
 		const Position &playerPosition = player.getPosition();
-		for (const auto &member : party->getMembers()) {
+		for (const auto &member : party->getPlayers()) {
+			if (!member || member.get() == &player) {
+				continue;
+			}
 			const Position &memberPosition = member->getPosition();
 			if (Position::getDistanceZ(playerPosition, memberPosition) > 0) {
 				continue;
@@ -8804,7 +8810,7 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 						break;
 					}
 
-					const auto &newItem = Item::createItemBatch(itemId, toCreate);
+					const auto &newItem = Item::createItemBatch(itemId, toCreate, 0);
 					if (!newItem) {
 						g_logger().warn("[addItemFromStash] Failed to create new stackable itemId: {} for player {}", itemId, getName());
 						break;
@@ -8839,7 +8845,7 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 			}
 
 			if (targetContainer->capacity() > targetContainer->size()) {
-				const auto &newItem = Item::createItemBatch(itemId, 1);
+				const auto &newItem = Item::createItemBatch(itemId, 1, 0);
 				if (!newItem) {
 					g_logger().warn("[addItemFromStash] Failed to create new itemId: {} for player {}", itemId, getName());
 					break;
@@ -8964,7 +8970,7 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 	while (remaining > 0) {
 		uint32_t toStack = std::min(remaining, maxStackSize);
 
-		std::shared_ptr<Item> newItem = Item::createItemBatch(itemId, toStack);
+		std::shared_ptr<Item> newItem = Item::createItemBatch(itemId, toStack, 0);
 		if (!newItem) {
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
@@ -9024,7 +9030,7 @@ ReturnValue Player::addItemBatch(
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
-		const auto &newItem = Item::createItemBatch(itemId, totalCount, true);
+		const auto &newItem = Item::createItemBatch(itemId, totalCount, 0, true);
 		if (!newItem) {
 			g_logger().error("[Player::addItemBatch] Failed to create non-movable item {} for player {}", itemId, getName());
 			return RETURNVALUE_NOTPOSSIBLE;
@@ -9066,11 +9072,19 @@ ReturnValue Player::addItemBatch(
 	auto collectStackableItems = [&](const std::vector<std::shared_ptr<Container>> &containers) {
 		std::vector<std::shared_ptr<Item>> stackableItemsCache;
 		stackableItemsCache.reserve(128);
+		// Container-held items
 		for (const auto &container : containers) {
 			for (const auto &item : container->getItemList()) {
 				if (item->getID() == itemId && item->isStackable() && item->getItemCount() < item->getStackSize()) {
 					stackableItemsCache.push_back(item);
 				}
+			}
+		}
+		// Inventory slot items
+		for (int slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+			const auto &invItem = getInventoryItem(static_cast<Slots_t>(slot));
+			if (invItem && invItem->getID() == itemId && invItem->isStackable() && invItem->getItemCount() < invItem->getStackSize()) {
+				stackableItemsCache.push_back(invItem);
 			}
 		}
 		return stackableItemsCache;
@@ -9080,7 +9094,10 @@ ReturnValue Player::addItemBatch(
 
 	uint32_t remaining = totalCount;
 	const uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
-	const bool hasFreeSlots = remaining > 0;
+	const bool hasFreeSlots =
+		std::ranges::any_of(inventory, [](const auto &it) { return !it; }) ||
+		std::ranges::any_of(containersCache, [](const auto &c) { return c && c->capacity() > c->size(); });
+
 	AddItemBatchState state { totalCount, remaining, actuallyAdded };
 
 	auto checkOverflow = [&](const char* errorCode, bool setError) {
@@ -9110,6 +9127,9 @@ ReturnValue Player::addItemBatch(
 					existingItem->getID(),
 					existingItem->getItemCount() + toStack
 				);
+			} else {
+				// Inventory slot item: atualiza diretamente
+				existingItem->setItemCount(existingItem->getItemCount() + toStack);
 			}
 
 			state.actuallyAdded += toStack;
@@ -9159,7 +9179,7 @@ ReturnValue Player::addItemBatch(
 
 			Slots_t updateSlot = slotType;
 			const auto &mainBackpack = getInventoryItem(CONST_SLOT_BACKPACK);
-			if (options.backpackId == ITEM_SHOPPING_BAG && !mainBackpack && options.inBackpacks && queryAdd(CONST_SLOT_BACKPACK, newItem, toStack, flags)) {
+			if (options.backpackId == ITEM_SHOPPING_BAG && !mainBackpack && options.inBackpacks && queryAdd(CONST_SLOT_BACKPACK, newItem, toStack, flags) == RETURNVALUE_NOERROR) {
 				addThing(CONST_SLOT_BACKPACK, newItem);
 				updateSlot = CONST_SLOT_BACKPACK;
 			} else {
@@ -10269,12 +10289,21 @@ void Player::clearCooldowns(bool spenders /* = false */, bool builders /* = fals
 		auto spellId = checkSpellId > maxu16 ? 0u : static_cast<uint16_t>(checkSpellId);
 		const auto &spell = g_spells().getInstantSpellById(spellId);
 		if (!spell) {
-			++it;
-			g_logger().error("{} - Player {} has a cooldown for an invalid spellId {}.", __FUNCTION__, getName(), spellId);
-			continue;
+			if (type == CONDITION_SPELLCOOLDOWN) {
+				++it;
+				g_logger().error("{} - Player {} has a cooldown for an invalid spellId {}.", __FUNCTION__, getName(), spellId);
+				continue;
+			} else if (type == CONDITION_SPELLGROUPCOOLDOWN) {
+				// Allow clearing group even without spell
+				condItem->setTicks(ticks > 0 ? std::max(0, condItem->getTicks() - ticks) : 0);
+				uint32_t updatedTicks = std::max<uint32_t>(0, condItem->getTicks());
+				sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), updatedTicks);
+				++it;
+				continue;
+			}
 		}
 		if (type == CONDITION_SPELLCOOLDOWN || type == CONDITION_SPELLGROUPCOOLDOWN) {
-			if ((spenders && spell->isSpender()) || (builders && spell->isBuilder()) || (!spenders && !builders)) {
+			if ((spenders && spell && spell->isSpender()) || (builders && spell && spell->isBuilder()) || (!spenders && !builders)) {
 				condItem->setTicks(ticks > 0 ? std::max(0, condItem->getTicks() - ticks) : 0);
 				uint32_t updatedTicks = std::max<uint32_t>(0, condItem->getTicks());
 				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), updatedTicks) : sendSpellCooldown(spellId, updatedTicks);
@@ -12117,11 +12146,6 @@ bool Player::isFirstOnStack() const {
 		return false;
 	}
 
-	if (hasCondition(CONDITION_SPELLCOOLDOWN)) {
-		g_logger().warn("[isFirstOnStack] cooldown error for player: {}", getName());
-		return false;
-	}
-
 	return this == bottomPlayer.get();
 }
 
@@ -12210,6 +12234,11 @@ void Player::buildHarmony(uint8_t charges /* = 1 */) {
 		return;
 	}
 
+	charges = std::min<uint8_t>(charges, 5 - harmony);
+	if (charges == 0) {
+		return;
+	}
+
 	healFromHarmony(charges);
 
 	harmony += charges;
@@ -12250,8 +12279,9 @@ double_t Player::getHarmonyBonus() {
 
 	harmonyBaseBonus += m_wheelPlayer.getStage(WheelStage_t::ASCETIC);
 
-	const auto harmonyBuff = getBuff(BUFF_HARMONYBONUS) - 100;
-	if (harmonyBuff != 0) {
+	const auto rawHarmonyBuff = getBuff(BUFF_HARMONYBONUS);
+	if (rawHarmonyBuff != 0) {
+		const auto harmonyBuff = rawHarmonyBuff - 100;
 		harmonyBaseBonus += harmonyBuff;
 	}
 
@@ -12297,8 +12327,8 @@ void Player::healFromHarmony(uint8_t charges /* = 1 */) {
 				continue;
 			}
 
-			// Select member with equal or lower health as target over self
-			if (partyMember->getHealth() >= targetPlayer->getHealth()) {
+			// Select the most injured visible party member over self
+			if (partyMember->getHealth() < targetPlayer->getHealth()) {
 				targetPlayer = partyMember;
 			}
 		}
@@ -12323,21 +12353,22 @@ void Player::sendSpellCooldowns() {
 			continue;
 		}
 
-		uint16_t spellId = subId > maxu16 ? 0u : static_cast<uint16_t>(subId);
-		const auto &spell = g_spells().getInstantSpellById(spellId);
-		if (!spell) {
-			continue;
-		}
-
 		const uint32_t ticks = std::max<int32_t>(0, condItem->getTicks());
 		if (ticks == 0) {
 			continue;
 		}
 
 		if (type == CONDITION_SPELLGROUPCOOLDOWN) {
-			sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), ticks);
-		} else {
-			sendSpellCooldown(spellId, ticks);
+			SpellGroup_t spellGroupId = static_cast<SpellGroup_t>(subId > maxu16 ? 0u : static_cast<uint16_t>(subId));
+			sendSpellGroupCooldown(spellGroupId, ticks);
+			continue;
 		}
+
+		uint16_t spellId = subId > maxu16 ? 0u : static_cast<uint16_t>(subId);
+		const auto &spell = g_spells().getInstantSpellById(spellId);
+		if (!spell) {
+			continue;
+		}
+		sendSpellCooldown(spellId, ticks);
 	}
 }

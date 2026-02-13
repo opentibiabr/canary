@@ -32,7 +32,7 @@ function inServiceYalaharReward.onUse(player, item, fromPosition, target, toPosi
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 54)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission10, 5) -- StorageValue for Questlog "Mission 10: The Final Battle"
 			player:addItem(50289, 1)
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a yalahari footwraps.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a pair of yalahari footwraps.")
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 		end

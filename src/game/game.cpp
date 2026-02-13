@@ -6915,6 +6915,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 
 		if (!condition) {
 			Combat::applyMantraAbsorb(targetPlayer, damage.primary.type, damage.primary.value);
+			damage.primary.value = std::max<int32_t>(damage.primary.value, 0);
 		}
 
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
@@ -6989,6 +6990,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 
 		if (!condition) {
 			Combat::applyMantraAbsorb(targetPlayer, damage.secondary.type, damage.secondary.value);
+			damage.secondary.value = std::max<int32_t>(damage.secondary.value, 0);
 		}
 
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);

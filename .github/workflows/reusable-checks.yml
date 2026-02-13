@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
 
       - name: Set up Git
         run: |
@@ -43,7 +45,7 @@ jobs:
           find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
 
       - name: Commit formatting changes
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event_name == 'pull_request'
         uses: EndBug/add-and-commit@v9
         with:
           author_name: GitHub Actions
@@ -64,7 +66,7 @@ jobs:
           REVIEWDOG_REPORTER: ${{ github.event_name == 'pull_request' && 'github-pr-check' || 'github-check' }}
         run: |
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level=error -filter-mode=added
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -fail-level=error -filter-mode=added
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=xmllint -fail-level=error -filter-mode=added
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -fail-level=error -filter-mode=added
 

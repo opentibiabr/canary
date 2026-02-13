@@ -353,6 +353,8 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
 	Lua::registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
+	Lua::registerMethod(L, "Player", "sendAmbientSoundEffect", PlayerFunctions::luaPlayerSendAmbientSoundEffect);
+	Lua::registerMethod(L, "Player", "sendMusicSoundEffect", PlayerFunctions::luaPlayerSendMusicSoundEffect);
 
 	Lua::registerMethod(L, "Player", "getName", PlayerFunctions::luaPlayerGetName);
 	Lua::registerMethod(L, "Player", "changeName", PlayerFunctions::luaPlayerChangeName);
@@ -4188,6 +4190,38 @@ int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
 	const bool actor = Lua::getBoolean(L, 4, true);
 
 	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL, secondarySoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendAmbientSoundEffect(lua_State* L) {
+	// player:sendAmbientSoundEffect(id)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 0;
+	}
+
+	const SoundAmbientEffect_t id = Lua::getNumber<SoundAmbientEffect_t>(L, 2);
+
+	player->sendAmbientSoundEffect(id);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendMusicSoundEffect(lua_State* L) {
+	// player:sendMusicSoundEffect(id)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 0;
+	}
+
+	const SoundMusicEffect_t id = Lua::getNumber<SoundMusicEffect_t>(L, 2);
+
+	player->sendMusicSoundEffect(id);
 	Lua::pushBoolean(L, true);
 	return 1;
 }

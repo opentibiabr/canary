@@ -25,12 +25,13 @@ function spell.onCastSpell(creature, var)
 	end
 
 	local membersList = party:getMembers()
-	membersList[#membersList + 1] = party:getLeader()
-	if membersList == nil or type(membersList) ~= "table" or #membersList <= 1 then
+	if not membersList or type(membersList) ~= "table" then
 		creature:sendCancelMessage("No party members in range.")
 		position:sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
+
+	membersList[#membersList + 1] = party:getLeader()
 
 	local affectedList = {}
 	for _, targetPlayer in ipairs(membersList) do
@@ -78,7 +79,7 @@ spell:id(278)
 spell:cooldown(5 * 60 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(32)
-spell:mana(75)
+spell:mana(baseMana)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
 spell:isPremium(true)

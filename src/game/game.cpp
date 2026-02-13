@@ -204,14 +204,14 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
-	offlineTrainingWindow.choices.push_back({ "Fist Fighting and Shielding", SKILL_FIST });
-	offlineTrainingWindow.choices.push_back({ "Sword Fighting and Shielding", SKILL_SWORD });
-	offlineTrainingWindow.choices.push_back({ "Axe Fighting and Shielding", SKILL_AXE });
-	offlineTrainingWindow.choices.push_back({ "Club Fighting and Shielding", SKILL_CLUB });
-	offlineTrainingWindow.choices.push_back({ "Distance Fighting and Shielding", SKILL_DISTANCE });
-	offlineTrainingWindow.choices.push_back({ "Magic Level and Shielding", SKILL_MAGLEVEL });
-	offlineTrainingWindow.buttons.push_back({ "Okay", 1 });
-	offlineTrainingWindow.buttons.push_back({ "Cancel", 0 });
+	[[maybe_unused]] auto &[choices1_text, choices1_value] = offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
+	[[maybe_unused]] auto &[choices2_text, choices2_value] = offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
+	[[maybe_unused]] auto &[choices3_text, choices3_value] = offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
+	[[maybe_unused]] auto &[choices4_text, choices4_value] = offlineTrainingWindow.choices.emplace_back("Club Fighting and Shielding", SKILL_CLUB);
+	[[maybe_unused]] auto &[choices5_text, choices5_value] = offlineTrainingWindow.choices.emplace_back("Distance Fighting and Shielding", SKILL_DISTANCE);
+	[[maybe_unused]] auto &[choices6_text, choices6_value] = offlineTrainingWindow.choices.emplace_back("Magic Level and Shielding", SKILL_MAGLEVEL);
+	[[maybe_unused]] auto &[button1_text, button1_value] = offlineTrainingWindow.buttons.emplace_back("Okay", 1);
+	[[maybe_unused]] auto &[button2_text, button2_value] = offlineTrainingWindow.buttons.emplace_back("Cancel", 0);
 	offlineTrainingWindow.defaultEscapeButton = 1;
 	offlineTrainingWindow.defaultEnterButton = 0;
 	offlineTrainingWindow.priority = true;
@@ -534,25 +534,22 @@ void Game::start(ServiceManager* manager) {
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
-	g_dispatcher().scheduleEvent(
+	[[maybe_unused]] auto eventId1 = g_dispatcher().scheduleEvent(
 		EVENT_MS + 1000, [this] { createFiendishMonsters(); }, "Game::createFiendishMonsters"
 	);
-	g_dispatcher().scheduleEvent(
+	[[maybe_unused]] auto eventId2 = g_dispatcher().scheduleEvent(
 		EVENT_MS + 1000, [this] { createInfluencedMonsters(); }, "Game::createInfluencedMonsters"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId3 = g_dispatcher().cycleEvent(
 		EVENT_MS, [this] { updateForgeableMonsters(); }, "Game::updateForgeableMonsters"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId4 = g_dispatcher().cycleEvent(
 		EVENT_LIGHTINTERVAL_MS, [this] { checkLight(); }, "Game::checkLight"
 	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId5 = g_dispatcher().cycleEvent(
 		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
 	);
-	g_dispatcher().cycleEvent(
-		EVENT_IMBUEMENT_INTERVAL, [this] { checkImbuements(); }, "Game::checkImbuements"
-	);
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId6 = g_dispatcher().cycleEvent(
 		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
 	);
 	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES);
@@ -561,12 +558,12 @@ void Game::start(ServiceManager* manager) {
 		if (marketItemsPriceIntervalMS < 60000) {
 			marketItemsPriceIntervalMS = 60000;
 		}
-		g_dispatcher().cycleEvent(
+		[[maybe_unused]] auto eventId7 = g_dispatcher().cycleEvent(
 			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
 		);
 	}
 
-	g_dispatcher().cycleEvent(
+	[[maybe_unused]] auto eventId8 = g_dispatcher().cycleEvent(
 		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
 	);
 }
@@ -3370,27 +3367,93 @@ ObjectCategory_t Game::getObjectCategory(const ItemType &it) {
 
 uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint64_t> &itemMap, bool buyPrice) const {
 	uint64_t total = 0;
-	for (const auto &it : itemMap) {
-		if (it.first == ITEM_GOLD_COIN) {
-			total += it.second;
-		} else if (it.first == ITEM_PLATINUM_COIN) {
-			total += 100 * it.second;
-		} else if (it.first == ITEM_CRYSTAL_COIN) {
-			total += 10000 * it.second;
-		} else {
-			auto marketIt = itemsPriceMap.find(it.first);
-			if (marketIt != itemsPriceMap.end()) {
-				for (auto &[tier, price] : (*marketIt).second) {
-					total += price * it.second;
-				}
-			} else {
-				const ItemType &iType = Item::items[it.first];
-				total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+	g_logger().debug("[{}] - Starting calculation with {} items, buyPrice: {}", __FUNCTION__, itemMap.size(), buyPrice);
+
+	for (const auto &[itemId, count] : itemMap) {
+		uint64_t itemValue = 0;
+		if (itemId == ITEM_GOLD_COIN) {
+			itemValue = count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (GOLD_COIN), count {}, unit 1, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		if (itemId == ITEM_PLATINUM_COIN) {
+			itemValue = 100 * count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (PLATINUM_COIN), count {}, unit 100, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		if (itemId == ITEM_CRYSTAL_COIN) {
+			itemValue = 10000 * count;
+			total += itemValue;
+			g_logger().debug("[{}] - Item {} (CRYSTAL_COIN), count {}, unit 10000, total {}", __FUNCTION__, itemId, count, itemValue);
+			continue;
+		}
+
+		const auto marketIt = itemsPriceMap.find(itemId);
+		if (marketIt != itemsPriceMap.end()) {
+			const auto &tierMap = marketIt->second;
+			const auto tierIt = tierMap.find(0);
+			if (tierIt != tierMap.end()) {
+				const uint64_t price = tierIt->second;
+				itemValue = price * count;
+				total += itemValue;
+				g_logger().debug("[{}] - Item {}, count {}, tier {}, MARKET_PRICE {}, total {}", __FUNCTION__, itemId, count, tierIt->first, price, itemValue);
+				continue;
 			}
 		}
+
+		const ItemType &iType = Item::items[itemId];
+		const uint64_t npcPrice = buyPrice ? iType.buyPrice : iType.sellPrice;
+		itemValue = npcPrice * count;
+		total += itemValue;
+		g_logger().debug("[{}] - Item {}, count {}, NPC_PRICE({}), unit {}, total {}", __FUNCTION__, itemId, count, buyPrice ? "buy" : "sell", npcPrice, itemValue);
 	}
 
+	g_logger().debug("[{}] - Final total: {}", __FUNCTION__, total);
 	return total;
+}
+
+uint64_t Game::getItemMarketAveragePrice(uint16_t itemId, uint8_t tier) const {
+	if (itemId == ITEM_GOLD_COIN) {
+		return 1;
+	}
+	if (itemId == ITEM_PLATINUM_COIN) {
+		return 100;
+	}
+	if (itemId == ITEM_CRYSTAL_COIN) {
+		return 10000;
+	}
+
+	const auto &market = IOMarket::getInstance();
+	const auto snapshot = market.getStatistics(itemId, tier);
+
+	uint64_t purchaseAverage = 0;
+	uint64_t saleAverage = 0;
+	bool hasPurchaseData = false;
+	bool hasSaleData = false;
+
+	if (snapshot.purchase && snapshot.purchase->numTransactions > 0) {
+		purchaseAverage = snapshot.purchase->totalPrice / snapshot.purchase->numTransactions;
+		hasPurchaseData = true;
+	}
+
+	if (snapshot.sale && snapshot.sale->numTransactions > 0) {
+		saleAverage = snapshot.sale->totalPrice / snapshot.sale->numTransactions;
+		hasSaleData = true;
+	}
+
+	if (hasPurchaseData && hasSaleData) {
+		return (purchaseAverage & saleAverage) + ((purchaseAverage ^ saleAverage) >> 1);
+	} else if (hasPurchaseData) {
+		return purchaseAverage;
+	} else if (hasSaleData) {
+		return saleAverage;
+	}
+
+	return 0;
 }
 
 std::shared_ptr<Item> searchForItem(const std::shared_ptr<Container> &container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/) {
@@ -6852,6 +6915,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 
 		if (!condition) {
 			Combat::applyMantraAbsorb(targetPlayer, damage.primary.type, damage.primary.value);
+			damage.primary.value = std::max<int32_t>(damage.primary.value, 0);
 		}
 
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
@@ -6926,6 +6990,7 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 
 		if (!condition) {
 			Combat::applyMantraAbsorb(targetPlayer, damage.secondary.type, damage.secondary.value);
+			damage.secondary.value = std::max<int32_t>(damage.secondary.value, 0);
 		}
 
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
@@ -8295,16 +8360,6 @@ void Game::addDistanceEffect(const CreatureVector &spectators, const Position &f
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
 		}
-	}
-}
-
-void Game::checkImbuements() const {
-	for (const auto &[mapPlayerId, mapPlayer] : getPlayers()) {
-		if (!mapPlayer) {
-			continue;
-		}
-
-		mapPlayer->updateInventoryImbuement();
 	}
 }
 
@@ -10675,7 +10730,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 		influencedMonsters.erase(find);
 
 		if (create) {
-			g_dispatcher().scheduleEvent(
+			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 				10 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
 			);
 		}
@@ -10693,7 +10748,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 		checkForgeEventId(id);
 
 		if (create) {
-			g_dispatcher().scheduleEvent(
+			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 				270 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster"
 			);
 		}
@@ -10852,7 +10907,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		}
 	}
 
-	g_dispatcher().scheduleEvent(
+	[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
 		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
 	);
 }

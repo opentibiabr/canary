@@ -29,6 +29,8 @@ enum SpellGroup_t : uint8_t;
 enum Slots_t : uint8_t;
 enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
+enum SoundMusicEffect_t : uint8_t;
+enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
@@ -109,7 +111,7 @@ public:
 	void AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const;
 
-	uint16_t getVersion() const {
+	[[nodiscard]] uint16_t getVersion() const {
 		return version;
 	}
 
@@ -183,7 +185,7 @@ private:
 	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
-	void sendBestiaryRaces();
+	void parseBestiarySendRaces();
 	void parseBestiarySendCreatures(NetworkMessage &msg);
 	void sendBestiaryCharms();
 	void sendBestiaryEntryChanged(uint16_t raceid);
@@ -195,7 +197,7 @@ private:
 	void parseLeaderFinderWindow(NetworkMessage &msg);
 	void parseMemberFinderWindow(NetworkMessage &msg);
 	void parseSendBuyCharmRune(NetworkMessage &msg);
-	void parseSendBestiaryMonsterData(NetworkMessage &msg);
+	void parseBestiarysendMonsterData(NetworkMessage &msg);
 	void parseCyclopediaMonsterTracker(NetworkMessage &msg);
 
 	void parseTeleport(NetworkMessage &msg);
@@ -263,7 +265,7 @@ private:
 	void parseCloseChannel(NetworkMessage &msg);
 
 	// Imbuement info
-	void AddImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
+	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	// Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -280,7 +282,7 @@ private:
 	void sendIconBakragore(const IconBakragore icon);
 	void sendFYIBox(const std::string &message);
 
-	void sendOpenImbuementWindow(const std::shared_ptr<Item> &item);
+	void openImbuementWindow(const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -296,14 +298,14 @@ private:
 
 	void sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId, uint8_t leftTier, uint16_t rightItemId, uint8_t rightTier, bool success, uint8_t bonus, uint8_t coreCount, bool convergence);
 	void sendForgeHistory(uint8_t page);
-	void AddForgeSkillStats(NetworkMessage &msg) const;
+	void sendForgeSkillStats(NetworkMessage &msg) const;
 	double getForgeSkillStat(Slots_t slot, bool applyAmplification = true) const;
 
 	void sendBosstiaryData();
 	void parseSendBosstiary();
 	void parseSendBosstiarySlots();
 	void parseBosstiarySlot(NetworkMessage &msg);
-	void AddPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
+	void sendPodiumDetails(NetworkMessage &msg, const std::vector<uint16_t> &toSendMonsters, bool isBoss) const;
 	void sendMonsterPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackPos);
 	void parseSetMonsterPodium(NetworkMessage &msg) const;
 	void sendBosstiaryCooldownTimer();
@@ -331,6 +333,7 @@ private:
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
+	void sendOpenPvpSituations(uint8_t openPvpSituations);
 
 	void sendCancelWalk();
 	void sendChangeSpeed(const std::shared_ptr<Creature> &creature, uint16_t speed);
@@ -391,7 +394,7 @@ private:
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force = false);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
@@ -418,7 +421,6 @@ private:
 
 	void sendSpellCooldown(uint16_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
-	void sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused);
 	void sendUseItemCooldown(uint32_t time);
 
 	void sendCoinBalance();
@@ -516,7 +518,7 @@ private:
 	void sendPlayerTyping(const std::shared_ptr<Creature> &creature, uint8_t typing);
 	void parsePlayerTyping(NetworkMessage &msg);
 	void AddOutfitCustomOTCR(NetworkMessage &msg, const Outfit_t &outfit);
-	void addOutfitWindowFeaturesOTCR(NetworkMessage &msg);
+	void sendOutfitWindowCustomOTCR(NetworkMessage &msg);
 
 	void parseInventoryImbuements(NetworkMessage &msg);
 	void sendInventoryImbuements(const std::map<Slots_t, std::shared_ptr<Item>> &items);
@@ -540,7 +542,7 @@ private:
 	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
 	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
 	 */
-	void sendMonkState(MonkData_t type, uint8_t value);
+	void sendMonkData(MonkData_t type, uint8_t value);
 	/**
 	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
 	 *
@@ -577,15 +579,21 @@ private:
 
 	uint16_t otclientV8 = 0;
 
+	// ProtocolGame instances are per-connection and handled on the connection thread,
+	// so the fine-grained throttle here does not require cross-thread synchronization.
+	uint64_t m_nextPartyAnalyzerUpdate = 0;
+
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
-	void AddBlessings();
+	void addBless();
 	void parsePacketDead(uint8_t recvbyte);
-	void AddCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
+	void addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Creature> &creature);
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
+	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();

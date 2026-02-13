@@ -9,6 +9,14 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstddef>
+	#include <cstdint>
+	#include <functional>
+	#include <unordered_map>
+	#include <utility>
+#endif
+
 /**
  * @brief Custom hash function for std::pair<uint16_t, uint8_t> to be used in unordered_map.
  */

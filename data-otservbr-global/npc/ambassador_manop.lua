@@ -27,7 +27,7 @@ npcConfig.voices = {
 	interval = 15000,
 	chance = 50,
 	{
-		text = "Harmony. Enlightment. Power.",
+		text = "Harmony. Enlightenment. Power.",
 	},
 }
 
@@ -119,8 +119,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	hasQuestLine = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.QuestLine) > 0
-	hasAtLeastOneShrine = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportFirstShrine) > 0 or player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportSecondShrine) > 0 or player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportThirdShrine) > 0 or player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportFourthShrine) > 0
+	local hasQuestLine = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.QuestLine) > 0
+	local hasAtLeastOneShrine = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportFirstShrine) > 0
+		or player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportSecondShrine) > 0
+		or player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportThirdShrine) > 0
+		or player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.DawnportFourthShrine) > 0
 
 	-- Heal and help dialog
 	if MsgContains(message, "invitation") and npcHandler:getTopic(playerId) == 0 then
@@ -174,7 +177,7 @@ end
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Safe passage, traveller.")
-npcHandler:setMessage(MESSAGE_WALKAWAY, "Harmony. Enlightment. Power.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Harmony. Enlightenment. Power.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

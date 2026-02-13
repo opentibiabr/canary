@@ -11,8 +11,8 @@ function resetCooldowns.onSay(player, words, param)
 
 	local target = Player(param)
 	if not target then
-		player:sendCancelMessage("The given player name not exists or it is not online.")
-		position:sendMagicEffect(CONST_ME_POFF)
+		player:sendCancelMessage("The given player name does not exist or is not online.")
+		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return true
 	end
 

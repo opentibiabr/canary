@@ -4,7 +4,7 @@ local monster = {}
 monster.description = "a monk familiar"
 monster.experience = 0
 monster.outfit = {
-	--lookType = 1818,
+	lookType = 1818,
 	lookHead = 0,
 	lookBody = 0,
 	lookLegs = 0,
@@ -76,7 +76,6 @@ monster.attacks = {
 monster.defenses = {
 	defense = 55,
 	armor = 55,
-	--	mitigation = ???,
 	{ name = "combat", interval = 2000, chance = 75, type = COMBAT_HEALING, minDamage = 450, maxDamage = 450, effect = CONST_ME_MAGIC_GREEN, target = false },
 }
 

@@ -36,7 +36,7 @@
 
 CanaryServer::CanaryServer(
 	Logger &logger,
-	RSA &rsa,
+	RSAManager &rsa,
 	ServiceManager &serviceManager
 ) :
 	logger(logger),
@@ -143,12 +143,12 @@ int CanaryServer::run() {
 		auto now = std::chrono::steady_clock::now();
 
 		if (now - lastLog >= warnEvery) {
-			logger.warn("Startup still running ({} s)…", std::chrono::duration_cast<std::chrono::seconds>(now - start).count());
+			logger.warn("Startup still running ({} s)...", std::chrono::duration_cast<std::chrono::seconds>(now - start).count());
 			lastLog = now;
 		}
 
 		if (now - start > timeout) {
-			logger.error("Startup exceeded {} minutes – aborting.", std::chrono::duration_cast<std::chrono::minutes>(timeout).count());
+			logger.error("Startup exceeded {} minutes - aborting.", std::chrono::duration_cast<std::chrono::minutes>(timeout).count());
 			shutdown();
 			return EXIT_FAILURE;
 		}
@@ -340,11 +340,9 @@ void CanaryServer::validateDatapack() {
 	const auto datapackName = g_configManager().getString(DATA_DIRECTORY);
 
 	if (!useAnyDatapack && datapackName != "data-canary" && datapackName != "data-otservbr-global") {
-		throw FailedToInitializeCanary(fmt::format(
-			"The datapack folder name '{}' is wrong. Valid names: 'data-canary', "
-			"'data-otservbr-global', or set USE_ANY_DATAPACK_FOLDER = true in config.lua.",
-			datapackName
-		));
+		throw FailedToInitializeCanary(fmt::format("The datapack folder name '{}' is wrong. Valid names: 'data-canary', "
+		                                           "'data-otservbr-global', or set USE_ANY_DATAPACK_FOLDER = true in config.lua.",
+		                                           datapackName));
 	}
 }
 
@@ -357,10 +355,7 @@ void CanaryServer::initializeDatabase() {
 
 	logger.debug("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
-		throw FailedToInitializeCanary(fmt::format(
-			"The database you have specified in {} is empty, please import the schema.sql to your database.",
-			g_configManager().getConfigFileLua()
-		));
+		throw FailedToInitializeCanary(fmt::format("The database you have specified in {} is empty, please import the schema.sql to your database.", g_configManager().getConfigFileLua()));
 	}
 
 	DatabaseManager::updateDatabase();

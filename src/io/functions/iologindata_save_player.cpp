@@ -631,9 +631,9 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 					  << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propPreyStream;
-				for (uint16_t raceId : slot->raceIdList) {
+				[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
 					propPreyStream.write<uint16_t>(raceId);
-				}
+				});
 
 				size_t preySize;
 				const char* preyList = propPreyStream.getStream(preySize);
@@ -684,9 +684,9 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				query << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propTaskHuntingStream;
-				for (uint16_t raceId : slot->raceIdList) {
+				[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
 					propTaskHuntingStream.write<uint16_t>(raceId);
-				}
+				});
 
 				size_t taskHuntingSize;
 				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);

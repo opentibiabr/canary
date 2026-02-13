@@ -40,7 +40,7 @@ struct ForgeHistory {
 
 class PlayerForgeHistory {
 public:
-	PlayerForgeHistory() = default;
+	PlayerForgeHistory() = delete;
 	explicit PlayerForgeHistory(Player &player);
 
 	const std::vector<ForgeHistory> &get() const;

@@ -48,6 +48,7 @@
 #include <stack>
 #include <source_location>
 #include <span>
+#include <compare>
 
 // --------------------
 // System Includes
@@ -92,8 +93,11 @@ format_as(E e) {
 	return static_cast<std::underlying_type_t<E>>(e);
 }
 
-// GMP
-#include <gmp.h>
+// OpenSSL
+#include <openssl/bn.h>
+#include <openssl/rsa.h>
+#include <openssl/pem.h>
+#include <openssl/err.h>
 
 // LUA
 #if __has_include("luajit/lua.hpp")

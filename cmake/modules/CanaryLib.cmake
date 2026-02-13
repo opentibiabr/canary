@@ -1,8 +1,7 @@
-# Define and setup CanaryLib main library target
-add_library(${PROJECT_NAME}_lib)
-setup_target(${PROJECT_NAME}_lib)
+# NOTE: Target creation is now handled in src/CMakeLists.txt This file applies
+# configuration to targets in CANARY_CORE_TARGETS
 
-# Add subdirectories
+# Add subdirectories - these use ${CORE_TARGET_NAME} to add sources
 add_subdirectory(account)
 add_subdirectory(config)
 add_subdirectory(creatures)
@@ -19,185 +18,174 @@ add_subdirectory(security)
 add_subdirectory(server)
 add_subdirectory(utils)
 
-# Add more global sources - please add preferably in the sub_directory
-# CMakeLists.
+# Add more global sources Note: target_sources works on a specific target, we
+# use the primary core name
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE canary_server.cpp
 )
 
-# Conditional Precompiled Headers
-if(USE_PRECOMPILED_HEADER)
-    target_precompile_headers(
-        ${PROJECT_NAME}_lib
-        PUBLIC
-        pch.hpp
-    )
+# === OpenMP ===
+# Find it once, outside the loop
+if(OPTIONS_ENABLE_OPENMP)
+    find_package(OpenMP)
+endif()
+
+# Iterate over all core targets (canary_core and/or canary executable)
+foreach(
+    core_target IN
+    LISTS CANARY_CORE_TARGETS
+)
+
+    # Conditional Precompiled Headers
+    if(USE_PRECOMPILED_HEADER)
+        target_precompile_headers(
+            ${core_target}
+            PUBLIC
+            pch.hpp
+        )
+        target_compile_definitions(
+            ${core_target}
+            PUBLIC USE_PRECOMPILED_HEADERS
+        )
+    endif()
+
+    # *****************************************************************************
+    # Build flags
+    # *****************************************************************************
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        target_compile_options(
+            ${core_target}
+            PRIVATE -Wno-deprecated-declarations
+        )
+    endif()
+
+    # Sets the NDEBUG macro
     target_compile_definitions(
-        ${PROJECT_NAME}_lib
-        PUBLIC USE_PRECOMPILED_HEADERS
+        ${core_target}
+        PUBLIC $<$<CONFIG:Release>:NDEBUG> $<$<CONFIG:RelWithDebInfo>:NDEBUG>
     )
-endif()
 
-# *****************************************************************************
-# Build flags - need to be set before the links and sources
-# *****************************************************************************
-if(CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(
-        ${PROJECT_NAME}_lib
-        PRIVATE -Wno-deprecated-declarations
+    # Configurar IPO e Linkagem Incremental Note: configure_linking was already
+    # called for executable in src/CMakeLists.txt But for a static lib
+    # (canary_core) it might be redundant or harmless. configure_linking handles
+    # IPO logic.
+    configure_linking(${core_target})
+
+    # === UNITY BUILD ===
+    if(SPEED_UP_BUILD_UNITY)
+        set_target_properties(
+            ${core_target}
+            PROPERTIES UNITY_BUILD ON
+        )
+    endif()
+
+    # *****************************************************************************
+    # Target include directories
+    # *****************************************************************************
+    target_include_directories(
+        ${core_target}
+        PUBLIC ${BOOST_DI_INCLUDE_DIRS}
+               ${CMAKE_SOURCE_DIR}/src
+               ${LUAJIT_INCLUDE_DIRS}
+               ${PARALLEL_HASHMAP_INCLUDE_DIRS}
+               ${ATOMIC_QUEUE_INCLUDE_DIRS}
     )
-endif()
 
-# Sets the NDEBUG macro for Release and RelWithDebInfo configurations.
-target_compile_definitions(
-    ${PROJECT_NAME}_lib
-    PUBLIC $<$<CONFIG:Release>:NDEBUG> $<$<CONFIG:RelWithDebInfo>:NDEBUG>
-)
-
-# Configurar IPO e Linkagem Incremental
-configure_linking(${PROJECT_NAME}_lib)
-
-# === UNITY BUILD (compile time reducer) ===
-if(SPEED_UP_BUILD_UNITY)
-    set_target_properties(
-        ${PROJECT_NAME}_lib
-        PROPERTIES UNITY_BUILD ON
-    )
-    log_option_enabled(
-        "Build unity for speed up compilation for taget ${PROJECT_NAME}_lib"
-    )
-else()
-    log_option_disabled("Build unity")
-endif()
-
-# *****************************************************************************
-# Target include directories - to allow #include
-# *****************************************************************************
-target_include_directories(
-    ${PROJECT_NAME}_lib
-    PUBLIC ${BOOST_DI_INCLUDE_DIRS}
-           ${CMAKE_SOURCE_DIR}/src
-           ${GMP_INCLUDE_DIRS}
-           ${LUAJIT_INCLUDE_DIRS}
-           ${PARALLEL_HASHMAP_INCLUDE_DIRS}
-           ${ATOMIC_QUEUE_INCLUDE_DIRS}
-)
-
-# *****************************************************************************
-# Target links to external dependencies
-# *****************************************************************************
-target_link_libraries(
-    ${PROJECT_NAME}_lib
-    PUBLIC ${GMP_LIBRARIES}
-           ${LUAJIT_LIBRARIES}
-           CURL::libcurl
-           ZLIB::ZLIB
-           absl::any
-           absl::log
-           absl::base
-           absl::bits
-           asio::asio
-           eventpp::eventpp
-           fmt::fmt
-           magic_enum::magic_enum
-           mio::mio
-           protobuf::libprotobuf
-           pugixml::pugixml
-           spdlog::spdlog
-           unofficial::argon2::libargon2
-           unofficial::libmariadb
-           nlohmann_json::nlohmann_json
-           protobuf
-)
-
-if(FEATURE_METRICS)
-    add_definitions(-DFEATURE_METRICS)
+    # *****************************************************************************
+    # Target links to external dependencies
+    # *****************************************************************************
     target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC opentelemetry-cpp::common
-               opentelemetry-cpp::metrics
-               opentelemetry-cpp::api
-               opentelemetry-cpp::ext
-               opentelemetry-cpp::sdk
-               opentelemetry-cpp::logs
-               opentelemetry-cpp::ostream_metrics_exporter
-               opentelemetry-cpp::prometheus_exporter
+        ${core_target}
+        PUBLIC ${LUAJIT_LIBRARIES}
+               CURL::libcurl
+               ZLIB::ZLIB
+               absl::any
+               absl::log
+               absl::base
+               absl::bits
+               asio::asio
+               eventpp::eventpp
+               fmt::fmt
+               magic_enum::magic_enum
+               mio::mio
+               protobuf::libprotobuf
+               pugixml::pugixml
+               spdlog::spdlog
+               unofficial::argon2::libargon2
+               unofficial::libmariadb
+               nlohmann_json::nlohmann_json
+               protobuf
+               OpenSSL::SSL
     )
-endif()
 
-if(CMAKE_BUILD_TYPE
-   MATCHES
-   Debug
-)
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC ${ZLIB_LIBRARY_DEBUG}
-    )
-else()
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC ${ZLIB_LIBRARY_RELEASE}
-    )
-endif()
+    if(FEATURE_METRICS)
+        target_compile_definitions(
+            ${core_target}
+            PUBLIC FEATURE_METRICS
+        )
+        target_link_libraries(
+            ${core_target}
+            PUBLIC opentelemetry-cpp::common
+                   opentelemetry-cpp::metrics
+                   opentelemetry-cpp::api
+                   opentelemetry-cpp::ext
+                   opentelemetry-cpp::sdk
+                   opentelemetry-cpp::logs
+                   opentelemetry-cpp::ostream_metrics_exporter
+                   opentelemetry-cpp::prometheus_exporter
+        )
+    endif()
 
-if(MSVC)
-    if(BUILD_STATIC_LIBRARY)
-        set(VCPKG_TARGET_TRIPLET
-            "x64-windows-static"
-            CACHE STRING ""
+    if(MSVC)
+        target_link_libraries(
+            ${core_target}
+            PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS}
         )
     else()
-        set(VCPKG_TARGET_TRIPLET
-            "x64-windows"
-            CACHE STRING ""
-        )
-    endif()
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_CLIENT_LIBS}
-    )
-else()
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PUBLIC Threads::Threads
-    )
-endif()
-
-# === OpenMP ===
-if(OPTIONS_ENABLE_OPENMP)
-    log_option_enabled("openmp")
-    find_package(OpenMP)
-    if(OpenMP_CXX_FOUND)
         target_link_libraries(
-            ${PROJECT_NAME}_lib
-            PUBLIC OpenMP::OpenMP_CXX
+            ${core_target}
+            PUBLIC Threads::Threads
         )
     endif()
-else()
-    log_option_disabled("openmp")
-endif()
 
-# === Optimization Flags ===
-if(CMAKE_BUILD_TYPE
-   STREQUAL
-   "RelWithDebInfo"
-   OR CMAKE_BUILD_TYPE
-      STREQUAL
-      "Release"
-)
+    # === OpenMP ===
+    if(OPTIONS_ENABLE_OPENMP)
+        if(OpenMP_CXX_FOUND)
+            target_link_libraries(
+                ${core_target}
+                PUBLIC OpenMP::OpenMP_CXX
+            )
+        endif()
+    endif()
+
+    # === Optimization Flags ===
     if(CMAKE_CXX_COMPILER_ID
        MATCHES
        "GNU|Clang"
     )
         target_compile_options(
-            ${PROJECT_NAME}_lib
-            PRIVATE -O3 -march=native
+            ${core_target}
+            PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-O3
+                    -march=native>
         )
     elseif(MSVC)
         target_compile_options(
-            ${PROJECT_NAME}_lib
-            PRIVATE /O2
+            ${core_target}
+            PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:/O2>
         )
     endif()
+
+endforeach()
+
+if(SPEED_UP_BUILD_UNITY)
+    log_option_enabled("Build unity for speed up compilation")
+else()
+    log_option_disabled("Build unity")
+endif()
+
+if(OPTIONS_ENABLE_OPENMP)
+    log_option_enabled("openmp")
+else()
+    log_option_disabled("openmp")
 endif()

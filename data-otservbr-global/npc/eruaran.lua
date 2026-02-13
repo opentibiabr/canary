@@ -234,15 +234,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "create") then
-		npcHandler:say("You can try to create {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)
+		npcHandler:say("You can try to create {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s, {spellbook}s and {katar}s.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		action[playerId] = ACTION.CREATE
 	elseif MsgContains(message, "improve") then
-		npcHandler:say("The raw object is nothing but a pale of shadow of its potential. As unsafe and unpredictable the imporvement is, it might boot the powers of your item immensely. You can try to improve {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)
+		npcHandler:say("The raw object is nothing but a pale of shadow of its potential. As unsafe and unpredictable the imporvement is, it might boot the powers of your item immensely. You can try to improve {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s, {spellbook}s and {katar}s.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		action[playerId] = ACTION.IMPROVE
 	elseif MsgContains(message, "transform") then
-		npcHandler:say("From time to time fate smiles upon those who take great risks and have strong dreams! If you have the {ingredients}, we can try to give the ultimate refinement to {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)
+		npcHandler:say("From time to time fate smiles upon those who take great risks and have strong dreams! If you have the {ingredients}, we can try to give the ultimate refinement to {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s, {spellbook}s and {katar}s.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		action[playerId] = ACTION.TRANSFORM
 	elseif MsgContains(message, "sword") and npcHandler:getTopic(playerId) == 1 then

@@ -18,7 +18,7 @@ function spell.onCastSpell(creature, variant)
 	return combat:execute(creature, variant)
 end
 
-spell:name("Heal Friend")
+spell:name("Restore Balance")
 spell:words("exura tio sio")
 spell:group("healing")
 spell:vocation("monk;true", "exalted monk;true")

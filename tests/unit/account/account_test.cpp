@@ -6,9 +6,6 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#include "pch.hpp"
-
-#include <gtest/gtest.h>
 
 #include "account/account.hpp"
 #include "utils/tools.hpp"

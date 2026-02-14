@@ -2,6 +2,10 @@ local exhaustionTime = 10
 
 local exerciseWeaponsTable = {
 	-- MELE
+	[50292] = { skill = SKILL_FIST },
+	[50293] = { skill = SKILL_FIST },
+	[50294] = { skill = SKILL_FIST },
+	[50295] = { skill = SKILL_FIST },
 	[28540] = { skill = SKILL_SWORD },
 	[28552] = { skill = SKILL_SWORD },
 	[35279] = { skill = SKILL_SWORD },

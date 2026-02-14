@@ -27,10 +27,19 @@ function inServiceYalaharReward.onUse(player, item, fromPosition, target, toPosi
 		else
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 		end
+	elseif item.uid == 30091 then
+		if player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 53 then
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 54)
+			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission10, 5) -- StorageValue for Questlog "Mission 10: The Final Battle"
+			player:addItem(50289, 1)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a pair of yalahari footwraps.")
+		else
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
+		end
 	end
 
 	return true
 end
 
-inServiceYalaharReward:uid(3088, 3089, 3090)
+inServiceYalaharReward:uid(3088, 3089, 3090, 30091)
 inServiceYalaharReward:register()

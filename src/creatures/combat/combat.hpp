@@ -106,7 +106,7 @@ struct CombatParams {
 	bool aggressive = true;
 	bool useCharges = false;
 
-	uint8_t chainEffect = CONST_ME_NONE;
+	uint16_t chainEffect = CONST_ME_NONE;
 };
 
 using CombatFunction = std::function<void(std::shared_ptr<Creature>, std::shared_ptr<Creature>, const CombatParams &, CombatDamage*)>;
@@ -245,8 +245,32 @@ public:
 	void setupChain(const std::shared_ptr<Weapon> &weapon);
 	bool doCombatChain(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive) const;
 
+	/**
+	 * @brief Applies mantra absorption to elemental combat damage.
+	 *
+	 * If the player has a mantra active (either individual or shared),
+	 * it reduces the incoming elemental damage based on the total mantra value.
+	 *
+	 * @param player The player receiving damage.
+	 * @param combatType The type of combat damage (fire, ice, energy, or earth).
+	 * @param value Reference to the damage value to be modified.
+	 */
+	static void applyMantraAbsorb(const std::shared_ptr<Player> &player, CombatType_t combatType, int32_t &value);
+
+	/**
+	 * @brief Applies healing to a target player using the Harmony effect.
+	 *
+	 * The amount of healing is based on the caster's healing stat and the number of Harmony charges.
+	 * Each charge increases healing by 5%. The healing is not aggressive and uses a blue magic effect.
+	 *
+	 * @param casterPlayer The player casting the Harmony heal.
+	 * @param targetPlayer The player receiving the heal.
+	 * @param charges The number of Harmony charges active on the caster.
+	 */
+	static void harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std::shared_ptr<Player> &targetPlayer, const uint8_t charges);
+
 private:
-	static void doChainEffect(const Position &origin, const Position &pos, uint8_t effect);
+	static void doChainEffect(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, uint16_t effect);
 	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, const std::shared_ptr<Creature> &initialTarget = nullptr);
 	static bool isValidChainTarget(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &currentTarget, const std::shared_ptr<Creature> &potentialTarget, const CombatParams &params, bool aggressive);
 
@@ -279,6 +303,30 @@ private:
 	static void CombatConditionFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data);
 	static void CombatDispelFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data);
 	static void CombatNullFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data);
+
+	/**
+	 * @brief Modifies a white base magic effect according to the Monk's elemental bond.
+	 *
+	 * If the caster is a Monk and the base effect is white (e.g., CONST_ME_WHIRLWIND_BLOW_WHITE),
+	 * this function replaces it with a green (Earth) or pink (other element) variant depending on the combat type.
+	 *
+	 * @param combatType The elemental combat type of the effect.
+	 * @param effect The base white visual effect.
+	 * @return The adjusted effect based on combat type.
+	 */
+	static uint16_t monkEffectByElementalBond(CombatType_t combatType, uint16_t effect);
+
+	/**
+	 * @brief Sends a magic effect to a position, adjusting it for Monk vocation if applicable.
+	 *
+	 * If the caster is a Monk with an elemental bond, the effect is adjusted using the Monk-specific variant
+	 * before being displayed. Otherwise, the original effect is used.
+	 *
+	 * @param caster The creature casting the effect (can be null).
+	 * @param position The position where the effect will be shown.
+	 * @param effect The base effect to be displayed.
+	 */
+	static void sendCombatEffect(const std::shared_ptr<Creature> &caster, const Position &position, uint16_t effect);
 
 	static void combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, const CombatParams &params);
 

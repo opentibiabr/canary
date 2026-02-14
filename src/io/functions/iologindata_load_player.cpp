@@ -29,6 +29,7 @@
 #include "creatures/players/player.hpp"
 #include "utils/tools.hpp"
 #include "io/player_storage_repository.hpp"
+#include "kv/kv.hpp"
 
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
 	try {
@@ -1013,6 +1014,15 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 
 	player->initializePrey();
 	player->initializeTaskHunting();
+	// Load and apply the player's Virtue from the saved spell data, if available
+	auto kv = player->kv()->scoped("spells");
+	if (auto kvOpt = kv->get("virtue")) {
+		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()));
+	}
+
+	if (auto kvOpt = kv->get("harmony")) {
+		player->setHarmony(kvOpt->getNumber());
+	}
 }
 
 void IOLoginDataLoad::loadPlayerUpdateSystem(const std::shared_ptr<Player> &player) {

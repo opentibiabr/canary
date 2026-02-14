@@ -82,7 +82,7 @@ enum class WheelGemBasicModifier_t : uint8_t {
 	General_MitigationMultiplier,
 
 	Vocation_Health,
-	// Vocation_Mana_Capacity = 32, INVALID MODIFIER, WILL BE DISPLAYED AS (UNKNOWN)
+	// Vocation_Mana_Capacity = 32, // INVALID MODIFIER, WILL BE DISPLAYED AS (UNKNOWN)
 	Vocation_Mana_FireResistance = 33,
 	Vocation_Mana_EnergyResistance,
 	Vocation_Mana_Earth_Resistance,
@@ -182,4 +182,23 @@ enum class WheelGemSupremeModifier_t : uint8_t {
 	Druid_RevelationMastery_AvatarOfNature,
 	Druid_RevelationMastery_BlessingOfTheGrove,
 	Druid_RevelationMastery_TwinBursts,
+
+	Monk_AvatarOfBalance_Cooldown,
+	Monk_SpiritMend_HealingIncreased,
+	Monk_SpiritualOutburst_DamageIncrease,
+	Monk_SpiritualOutburst_CriticalExtraDamage,
+	Monk_ForcefulUppercut_DamageIncrease,
+	Monk_ForcefulUppercut_CriticalExtraDamage,
+	Monk_FlurryOfBlows_DamageIncrease,
+	Monk_FlurryOfBlows_CriticalExtraDamage,
+	Monk_GreaterFlurryOfBlows_DamageIncrease,
+	Monk_GreaterFlurryOfBlows_CriticalExtraDamage,
+	Monk_SweepingTakedown_DamageIncrease,
+	Monk_SweepingTakedown_CriticalExtraDamage,
+	Monk_FocusSerenity_Cooldown,
+	Monk_FocusHarmony_Cooldown,
+	Monk_MassSpiritMend_HealingIncrease,
+	Monk_RevelationMastery_AvatarOfBalance,
+	Monk_RevelationMastery_SpiritualBurst,
+	Monk_RevelationMastery_Ascetic,
 };

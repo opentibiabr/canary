@@ -29,9 +29,13 @@ function spell.onCastSpell(creature, var)
 	local position = creature:getPosition()
 	for x = -1, 1 do
 		for y = -1, 1 do
-			local item = Game.createItem(ITEM_DIVINE_EMPOWERMENT, 1, Position(position.x + x, position.y + y, position.z))
-			if item then
-				item:setAttribute(ITEM_ATTRIBUTE_OWNER, creature:getId())
+			local pos = Position(position.x + x, position.y + y, position.z)
+			local tile = Tile(pos)
+			if tile and not tile:hasFlag(bit.bor(TILESTATE_IMMOVABLEBLOCKSOLID, TILESTATE_FLOORCHANGE)) then
+				local item = Game.createItem(ITEM_DIVINE_EMPOWERMENT, 1, pos)
+				if item then
+					item:setAttribute(ITEM_ATTRIBUTE_OWNER, creature:getId())
+				end
 			end
 		end
 	end

@@ -204,8 +204,17 @@ private:
 
 class Item : virtual public Thing, public ItemProperties, public SharedObject {
 public:
-	// Create a new item batch, it can use custom charges/count and wrappable
-	static std::shared_ptr<Item> createItemBatch(uint16_t itemId, uint32_t count, bool wrappable = false);
+	/**
+	 * @brief Creates a new item with the specified ID and count, optionally wrappable.
+	 *
+	 * This is a convenience wrapper around CreateItem that returns a shared_ptr<Item>.
+	 *
+	 * @param itemId The ID of the item to create.
+	 * @param count The number of items to create (used for stackables or charges).
+	 * @param wrappable If true, the item will be marked as wrappable.
+	 * @return std::shared_ptr<Item> The created item instance.
+	 */
+	static std::shared_ptr<Item> createItemBatch(uint16_t itemId, uint32_t count, uint8_t subType = 0, bool wrappable = false);
 	// Factory member to create item of right type based on type
 	static std::shared_ptr<Item> CreateItem(uint16_t type, uint16_t count = 0, Position* itemPosition = nullptr, bool createWrappableItem = false, bool customCharges = false);
 	static std::shared_ptr<Container> CreateItemAsContainer(uint16_t type, uint16_t size);
@@ -449,6 +458,22 @@ public:
 			return getAttribute<int8_t>(ItemAttribute_t::HITCHANCE);
 		}
 		return items[id].hitChance;
+	}
+
+	/**
+	 * @brief Retrieves the mantra value of the item.
+	 *
+	 * This function checks if the item has a custom MANTRA attribute.
+	 * If it does, the custom value is returned. Otherwise, the default
+	 * mantra value from the item type definition is returned.
+	 *
+	 * @return The mantra value as an integer.
+	 */
+	int32_t getMantra() const {
+		if (hasAttribute(ItemAttribute_t::MANTRA)) {
+			return getAttribute<int32_t>(ItemAttribute_t::MANTRA);
+		}
+		return items[id].mantra;
 	}
 
 	uint32_t getWorth() const;

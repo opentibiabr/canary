@@ -220,6 +220,19 @@ ReturnValue Actions::canUseFar(const std::shared_ptr<Creature> &creature, const 
 }
 
 std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
+	if (const auto iteratePositions = actionPositionMap.find(item->getPosition());
+	    iteratePositions != actionPositionMap.end()) {
+		if (const auto &tile = item->getTile()) {
+			if (const auto &player = item->getHoldingPlayer();
+			    player && item->getTopParent() == player) {
+				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
+				return nullptr;
+			}
+
+			return iteratePositions->second;
+		}
+	}
+
 	if (item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		const auto it = uniqueItemMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueItemMap.end()) {
@@ -237,19 +250,6 @@ std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
 	const auto it = useItemMap.find(item->getID());
 	if (it != useItemMap.end()) {
 		return it->second;
-	}
-
-	if (const auto iteratePositions = actionPositionMap.find(item->getPosition());
-	    iteratePositions != actionPositionMap.end()) {
-		if (const auto &tile = item->getTile()) {
-			if (const auto &player = item->getHoldingPlayer();
-			    player && item->getTopParent() == player) {
-				g_logger().debug("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
-				return nullptr;
-			}
-
-			return iteratePositions->second;
-		}
 	}
 
 	// rune items

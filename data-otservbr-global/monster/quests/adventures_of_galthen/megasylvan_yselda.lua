@@ -76,6 +76,7 @@ monster.loot = {
 	{ id = 7439, chance = 21430, minCount = 1, maxCount = 16 }, -- berserk potion
 	{ id = 3041, chance = 18570, count = 1 }, -- blue gem
 	{ id = 7440, chance = 17140, minCount = 4, maxCount = 19 }, -- mastermind potion
+	{ id = 51302, chance = 17140, minCount = 1, maxCount = 15 }, -- transcendence potion
 	{ id = 3038, chance = 17140, minCount = 1, maxCount = 2 }, -- green gem
 	{ id = 3036, chance = 15710, minCount = 1, maxCount = 2 }, -- violet gem
 	{ id = 3039, chance = 14290, minCount = 1, maxCount = 2 }, -- red gem

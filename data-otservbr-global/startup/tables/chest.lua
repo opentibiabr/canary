@@ -21,15 +21,15 @@
 		storage = xxxxx
 	},
 
-		Example using KV:
-		[xxxx] = {
-			useKV = true,
-			itemId = xxxx,
-			itemPos = {x = xxxxx, y = xxxxx, z = x},
-			container = xxxx, (it's for use reward in a container, only put the id of the container here)
-			reward = {{xxxx, x}},
-			questName = "testkv",
-		}
+	Example using KV:
+	[xxxx] = {
+		useKV = true,
+		itemId = xxxx,
+		itemPos = {x = xxxxx, y = xxxxx, z = x},
+		container = xxxx, (it's for use reward in a container, only put the id of the container here)
+		reward = {{xxxx, x}},
+		questName = "testkv",
+	}
 
 	Note:
 	The "for use of the map" variables are only used to create the action or unique on the map during startup
@@ -2543,6 +2543,13 @@ ChestUnique = {
 		weight = 151.00,
 		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestBag,
 	},
+	[14092] = {
+		itemId = 2473,
+		itemPos = { x = 33074, y = 31170, z = 8 },
+		reward = { { 50263, 1 } },
+		weight = 29.00,
+		storage = Storage.Quest.U8_6.WrathOfTheEmperor.ChestItems,
+	},
 	[6299] = {
 		itemId = 2473,
 		itemPos = { x = 33076, y = 31170, z = 8 },
@@ -2979,4 +2986,5 @@ ChestUnique = {
 		itemId = 2472,
 		itemPos = { x = 32620, y = 32198, z = 10 },
 	},
+	-- 14092 used in Wrath of the Emperor Quest
 }

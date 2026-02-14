@@ -69,10 +69,16 @@ public:
 				std::string name;
 			};
 
+			struct Monk {
+				std::array<WheelSpells::Bonus, 3> grade;
+				std::string name;
+			};
+
 			std::array<Druid, 5> druid;
 			std::array<Knight, 5> knight;
 			std::array<Paladin, 5> paladin;
 			std::array<Sorcerer, 5> sorcerer;
+			std::array<Monk, 5> monk;
 		};
 
 		Spells spells;
@@ -227,6 +233,15 @@ private:
 	void initializeSorcererSpells();
 
 	/**
+	 * @brief Initializes the bonus effects for Monk-specific spells in the Wheel system.
+	 *
+	 * This method sets up all Monk spell entries with their respective bonuses
+	 * for each grade (typically grade 1 and 2). These bonuses include healing,
+	 * cooldown reduction, damage, leech effects, area effects, and critical modifiers.
+	 */
+	void initializeMonkSpells();
+
+	/**
 	 * @brief Checks if the number of points is equal to the player's points in the specified slot type.
 	 * @param player The player whose points will be checked.
 	 * @param points The number of points to be compared.
@@ -262,6 +277,14 @@ private:
 	 * @return true if the vocation ID corresponds to a druid, false otherwise.
 	 */
 	bool isDruid(uint8_t vocationId) const;
+
+	/**
+	 * @brief Determines whether the given vocation ID belongs to the Monk class.
+	 *
+	 * @param vocationId The ID of the vocation to check.
+	 * @return true if the vocation is a Monk; false otherwise.
+	 */
+	[[nodiscard]] bool isMonk(uint8_t vocationId) const;
 
 	/**
 	 * @brief Adds a spell to the player's bonus data if the number of points is equal to the player's points in the specified slot type.

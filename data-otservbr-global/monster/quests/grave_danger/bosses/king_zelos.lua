@@ -81,6 +81,7 @@ monster.loot = {
 	{ name = "galea mortis", chance = 550 },
 	{ name = "shadow cowl", chance = 530 },
 	{ name = "toga mortis", chance = 500 },
+	{ name = "death oyoroi", chance = 500 },
 }
 
 monster.attacks = {

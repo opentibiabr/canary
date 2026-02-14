@@ -23,4 +23,10 @@
 	<familiar vocation="8" lookType="991" name="Skullfrost" premium="yes" unlocked="no" enabled="yes" />
 	<familiar vocation="4" lookType="1365" name="Snowbash" premium="yes" unlocked="no" enabled="yes" type="quest" />
 	<familiar vocation="8" lookType="1365" name="Snowbash" premium="yes" unlocked="no" enabled="yes" type="quest" />
+
+	<!-- Monk -->
+	<familiar vocation="9" lookType="1818" name="Omniphant" premium="yes" unlocked="no" enabled="yes" />
+	<familiar vocation="10" lookType="1818" name="Omniphant" premium="yes" unlocked="no" enabled="yes" />
+	<familiar vocation="9" lookType="1819" name="Moonhunter" premium="yes" unlocked="no" enabled="yes" type="quest" />
+	<familiar vocation="10" lookType="1819" name="Moonhunter" premium="yes" unlocked="no" enabled="yes" type="quest" />
 </familiars>

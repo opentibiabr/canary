@@ -11,6 +11,12 @@ mastermind:setParameter(CONDITION_PARAM_SUBID, JeanPierreMagicLevel)
 mastermind:setParameter(CONDITION_PARAM_STAT_MAGICPOINTS, 3)
 mastermind:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
+local transcendence = Condition(CONDITION_ATTRIBUTES)
+transcendence:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
+transcendence:setParameter(CONDITION_PARAM_SUBID, AttrSubId_JeanPierreMelee)
+transcendence:setParameter(CONDITION_PARAM_SKILL_FIST, 4)
+transcendence:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
+
 local bullseye = Condition(CONDITION_ATTRIBUTES)
 bullseye:setParameter(CONDITION_PARAM_TICKS, 10 * 60 * 1000)
 bullseye:setParameter(CONDITION_PARAM_SUBID, JeanPierreDistance)
@@ -37,9 +43,9 @@ local function magicshield(player)
 end
 
 local potions = {
-	[236] = { health = { 250, 350 }, vocations = { VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.KNIGHT }, level = 50, flask = 283, description = "Only knights and paladins of level 50 or above may drink this fluid." },
+	[236] = { health = { 250, 350 }, vocations = { VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.KNIGHT, VOCATION.BASE_ID.MONK }, level = 50, flask = 283, description = "Only knights, paladins and monks of level 50 or above may drink this fluid." },
 	[237] = { mana = { 115, 185 }, level = 50, flask = 283, description = "Only players of level 50 or above may drink this fluid." },
-	[238] = { mana = { 150, 250 }, vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID, VOCATION.BASE_ID.PALADIN }, level = 80, flask = 284, description = "Only sorcerers, druids and paladins of level 80 or above may drink this fluid." },
+	[238] = { mana = { 150, 250 }, vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID, VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.MONK }, level = 80, flask = 284, description = "Only sorcerers, druids, paladins and monks of level 80 or above may drink this fluid." },
 	[239] = { health = { 425, 575 }, vocations = { VOCATION.BASE_ID.KNIGHT }, level = 80, flask = 284, description = "Only knights of level 80 or above may drink this fluid." },
 	[266] = { health = { 125, 175 }, flask = 285 },
 	[268] = { mana = { 75, 125 }, flask = 285 },
@@ -47,14 +53,23 @@ local potions = {
 	[7439] = { vocations = { VOCATION.BASE_ID.KNIGHT }, condition = berserk, effect = CONST_ME_MAGIC_RED, description = "Only knights may drink this potion.", text = "You feel stronger.", achievement = "Berserker" },
 	[7440] = { vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, condition = mastermind, effect = CONST_ME_MAGIC_BLUE, description = "Only sorcerers and druids may drink this potion.", text = "You feel smarter.", achievement = "Mastermind" },
 	[7443] = { vocations = { VOCATION.BASE_ID.PALADIN }, condition = bullseye, effect = CONST_ME_MAGIC_GREEN, description = "Only paladins may drink this potion.", text = "You feel more accurate.", achievement = "Sharpshooter" },
-	[7642] = { health = { 250, 350 }, mana = { 100, 200 }, vocations = { VOCATION.BASE_ID.PALADIN }, level = 80, flask = 284, description = "Only paladins of level 80 or above may drink this fluid." },
+	[7642] = { health = { 250, 350 }, mana = { 100, 200 }, vocations = { VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.MONK }, level = 80, flask = 284, description = "Only paladins and monks of level 80 or above may drink this fluid." },
 	[7643] = { health = { 650, 850 }, vocations = { VOCATION.BASE_ID.KNIGHT }, level = 130, flask = 284, description = "Only knights of level 130 or above may drink this fluid." },
 	[7644] = { combat = antidote, flask = 285 },
 	[7876] = { health = { 60, 90 }, flask = 285 },
 	[23373] = { mana = { 425, 575 }, vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, level = 130, flask = 284, description = "Only druids and sorcerers of level 130 or above may drink this fluid." },
-	[23374] = { health = { 420, 580 }, mana = { 250, 350 }, vocations = { VOCATION.BASE_ID.PALADIN }, level = 130, flask = 284, description = "Only paladins of level 130 or above may drink this fluid." },
+	[23374] = { health = { 420, 580 }, mana = { 250, 350 }, vocations = { VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.MONK }, level = 130, flask = 284, description = "Only paladins and monks of level 130 or above may drink this fluid." },
 	[23375] = { health = { 875, 1125 }, vocations = { VOCATION.BASE_ID.KNIGHT }, level = 200, flask = 284, description = "Only knights of level 200 or above may drink this fluid." },
 	[35563] = { vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, level = 14, func = magicshield, effect = CONST_ME_ENERGYAREA, description = "Only sorcerers and druids of level 14 or above may drink this potion." },
+	[49271] = {
+		vocations = {
+			VOCATION.BASE_ID.MONK,
+		},
+		condition = transcendence,
+		effect = CONST_ME_MAGIC_GREEN,
+		description = "Only monks may drink this potion.",
+		text = "You feel more balanced.",
+	},
 }
 
 local flaskPotion = Action()

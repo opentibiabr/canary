@@ -625,6 +625,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	player->sendStats();
 	player->sendSkills();
+	player->updatePartyMantra();
 	return 1;
 }
 
@@ -713,6 +714,7 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 
 	player->sendStats();
 	player->sendSkills();
+	player->updatePartyMantra();
 	return 1;
 }
 

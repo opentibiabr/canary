@@ -37,13 +37,13 @@ jobs:
 
   checks:
     name: Fast Checks
-    if: github.event.pull_request.draft == false
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
     uses: ./.github/workflows/reusable-checks.yml
     secrets: inherit
 
   tests-lua:
     name: Lua Tests
-    if: github.event.pull_request.draft == false
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
     uses: ./.github/workflows/reusable-tests-lua.yml
     secrets: inherit
 
@@ -52,27 +52,27 @@ jobs:
   build-linux:
     name: Build - Linux
     needs: [checks, tests-lua]
-    if: github.event.pull_request.draft == false
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
     uses: ./.github/workflows/reusable-build-linux.yml
     secrets: inherit
 
   build-windows:
     name: Build - Windows
     needs: [checks, tests-lua]
-    if: github.event.pull_request.draft == false
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
     uses: ./.github/workflows/reusable-build-windows.yml
     secrets: inherit
 
   build-macos:
     name: Build - macOS
     needs: [checks, tests-lua]
-    if: github.event.pull_request.draft == false
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
     uses: ./.github/workflows/reusable-build-macos.yml
     secrets: inherit
 
   build-docker:
     name: Build - Docker
     needs: [checks, tests-lua]
-    if: github.event_name == 'push' || !github.event.pull_request.draft
+    if: needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || !github.event.pull_request.draft)
     uses: ./.github/workflows/reusable-build-docker.yml
     secrets: inherit

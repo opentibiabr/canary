@@ -82,6 +82,7 @@ monster.loot = {
 	{ name = "ultimate spirit potion", chance = 23530, maxCount = 6 },
 	{ name = "bullseye potion", chance = 19610, maxCount = 10 },
 	{ name = "mastermind potion", chance = 19610, maxCount = 10 },
+	{ name = "transcendence potion", chance = 19610, maxCount = 10 },
 	{ name = "death toll", chance = 13730, maxCount = 2 },
 	{ name = "ivory comb", chance = 13730 },
 	{ name = "angel figurine", chance = 11760 },

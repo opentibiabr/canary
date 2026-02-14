@@ -50,6 +50,10 @@ void ThreadPool::shutdown() {
 	stopped = true;
 
 	logger.info("Shutting down thread pool...");
+
+	// Trigger graceful shutdown
+	g_game().setGameState(GAME_STATE_SHUTDOWN);
+
 	pool.reset();
 
 	std::signal(SIGINT, SIG_DFL);

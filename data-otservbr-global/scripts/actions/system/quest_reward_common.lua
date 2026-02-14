@@ -269,4 +269,6 @@ for uniqueRange = 10000, 12000 do
 	questReward:uid(uniqueRange)
 end
 
+questReward:uid(14092)
+
 questReward:register()

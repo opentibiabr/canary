@@ -46,33 +46,58 @@ std::shared_ptr<Player> Party::getMantraHolder() const {
 
 std::vector<std::shared_ptr<Player>> Party::getPlayers() const {
 	std::vector<std::shared_ptr<Player>> players;
+	players.reserve(memberList.size() + 1);
 	for (auto &member : memberList) {
+		if (!member) {
+			continue;
+		}
 		players.push_back(member);
 	}
-	players.push_back(getLeader());
+
+	if (const auto &leader = getLeader()) {
+		players.push_back(leader);
+	}
 	return players;
 }
 
 std::vector<std::shared_ptr<Player>> Party::getMembers() {
-	return memberList;
+	std::vector<std::shared_ptr<Player>> members;
+	members.reserve(memberList.size());
+	std::ranges::copy_if(memberList, std::back_inserter(members), [](const auto &member) {
+		return member != nullptr;
+	});
+	return members;
 }
 
 std::vector<std::shared_ptr<Player>> Party::getInvitees() {
-	return inviteList;
+	std::vector<std::shared_ptr<Player>> invitees;
+	invitees.reserve(inviteList.size());
+	std::ranges::copy_if(inviteList, std::back_inserter(invitees), [](const auto &invitee) {
+		return invitee != nullptr;
+	});
+	return invitees;
 }
 
 size_t Party::getMemberCount() const {
-	return memberList.size();
+	return std::ranges::count_if(memberList, [](const auto &member) {
+		return member != nullptr;
+	});
 }
 
 size_t Party::getInvitationCount() const {
-	return inviteList.size();
+	return std::ranges::count_if(inviteList, [](const auto &invitee) {
+		return invitee != nullptr;
+	});
 }
 
 uint8_t Party::getUniqueVocationsCount() const {
 	std::unordered_set<uint8_t> uniqueVocations;
 
 	for (const auto &player : getPlayers()) {
+		if (!player) {
+			continue;
+		}
+
 		if (uniqueVocations.size() >= 4) {
 			break;
 		}

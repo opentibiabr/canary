@@ -3217,7 +3217,7 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 		}
 	}
 
-	if (!player->quickLootListItemIds.empty()) {
+	if (isLootContainer && !player->quickLootListItemIds.empty()) {
 		uint16_t itemId = item->getID();
 		bool isInList = std::ranges::find(player->quickLootListItemIds, itemId) != player->quickLootListItemIds.end();
 		if (player->quickLootFilter == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !isInList) {
@@ -5867,11 +5867,6 @@ void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t categor
 	auto allowConfig = g_configManager().getBoolean(TOGGLE_GOLD_POUCH_ALLOW_ANYTHING) || g_configManager().getBoolean(TOGGLE_GOLD_POUCH_QUICKLOOT_ONLY);
 	if (!container || ((container->getID() == ITEM_GOLD_POUCH && category != OBJECTCATEGORY_GOLD) && !allowConfig)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-		return;
-	}
-
-	if (container->getID() == ITEM_GOLD_POUCH && !isLootContainer) {
-		player->sendTextMessage(MESSAGE_FAILURE, "You can only set the gold pouch as a loot container.");
 		return;
 	}
 

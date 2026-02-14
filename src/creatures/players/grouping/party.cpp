@@ -535,7 +535,7 @@ void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string &ms
 }
 
 bool Party::empty() const {
-	return memberList.empty() && inviteList.empty();
+	return getMemberCount() == 0 && getInvitationCount() == 0;
 }
 
 void Party::updateSharedExperience() {

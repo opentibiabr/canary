@@ -90,15 +90,10 @@ size_t Party::getInvitationCount() const {
 	});
 }
 
+//Sorcerer, Druid, Knight, Paladin, Monk.
 uint8_t Party::getUniqueVocationsCount() const {
 	std::unordered_set<uint8_t> uniqueVocations;
-
 	for (const auto &player : getPlayers()) {
-		if (!player) {
-			continue;
-		}
-
-		//Sorcerer, Druid, Knight, Paladin, Monk
 		if (uniqueVocations.size() >= 5) {
 			break;
 		}

@@ -98,7 +98,8 @@ uint8_t Party::getUniqueVocationsCount() const {
 			continue;
 		}
 
-		if (uniqueVocations.size() >= 4) {
+		//Sorcerer, Druid, Knight, Paladin, Monk
+		if (uniqueVocations.size() >= 5) {
 			break;
 		}
 

@@ -14,7 +14,7 @@ local globalTable = {
 
 local elementalSpheresSoils2 = Action()
 function elementalSpheresSoils2.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not table.contains({ 842, 843, 844, 845 }, target.itemid) then
+	if not table.contains({ 842, 843, 844, 845, 846, 847, 848, 849 }, target.itemid) then
 		return false
 	end
 

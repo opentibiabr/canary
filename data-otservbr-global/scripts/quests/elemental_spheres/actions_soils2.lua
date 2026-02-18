@@ -32,7 +32,7 @@ function elementalSpheresSoils2.onUse(player, item, fromPosition, target, toPosi
 	end
 
 	toPosition:sendMagicEffect(CONST_ME_PURPLEENERGY)
-	Game.setStorageValue(globalTable[player:getVocation():getBase():getId()], 1)
+	Game.setStorageValue(globalTable[player:getVocation():getBaseId()], 1)
 	item:remove(1)
 	return true
 end

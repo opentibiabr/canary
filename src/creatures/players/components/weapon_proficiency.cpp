@@ -838,11 +838,14 @@ void WeaponProficiency::addGeneralCritical(const WeaponProficiencyCriticalBonus 
 }
 
 WeaponProficiencyCriticalBonus WeaponProficiency::getElementCritical(CombatType_t type) const {
+	if (type == COMBAT_NONE) {
+		return {};
+	}
 	auto enumValue = static_cast<uint8_t>(type);
 	if (enumValue < m_elementCritical.size()) {
 		return m_elementCritical.at(enumValue);
 	}
-	g_logger().error("[{}]. Instant type {} is out of range.", __FUNCTION__, enumValue);
+	g_logger().error("[{}]. Element type {} is out of range.", __FUNCTION__, enumValue);
 	return {};
 }
 

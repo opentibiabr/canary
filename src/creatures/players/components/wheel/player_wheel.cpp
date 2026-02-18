@@ -1523,7 +1523,7 @@ void PlayerWheel::sendOpenWheelWindow(NetworkMessage &msg, uint32_t ownerId) {
 		msg.add<uint16_t>(getPointsBySlotType(slot));
 	}
 	addPromotionScrolls(msg);
-	msg.addByte(0x00); // Unknown
+	msg.addByte(hasCompletedMonkQuest() ? 10 : 0); // The Way of the Monk quest bonus
 	addGems(msg);
 	addGradeModifiers(msg);
 
@@ -1926,6 +1926,10 @@ uint16_t PlayerWheel::getExtraPoints() const {
 		totalBonus += extraPoints;
 	}
 
+	if (hasCompletedMonkQuest()) {
+		totalBonus += 10;
+	}
+
 	return totalBonus;
 }
 
@@ -1990,6 +1994,14 @@ bool PlayerWheel::canOpenWheel() const {
 	}
 
 	return true;
+}
+
+bool PlayerWheel::hasCompletedMonkQuest() const {
+	if (m_player.getPlayerVocationEnum() != Vocation_t::VOCATION_MONK_CIP) {
+		return false;
+	}
+
+	return m_player.getStorageValue(STORAGEVALUE_WAY_OF_THE_MONK_SHRINES_COUNT) >= 11;
 }
 
 uint8_t PlayerWheel::getOptions(uint32_t ownerId) const {

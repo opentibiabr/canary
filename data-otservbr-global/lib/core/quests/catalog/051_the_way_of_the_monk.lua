@@ -1,3 +1,5 @@
+local monkQuestTotalShrines = math.max(1, configManager.getNumber(configKeys.MONK_QUEST_TOTAL_SHRINES))
+
 local quest = {
 	name = "The Way of the Monk",
 	startStorageId = Storage.Quest.U14_15.TheWayOfTheMonk.QuestLine,
@@ -21,11 +23,15 @@ local quest = {
 				end,
 				[2] = function(player)
 					return string.format(
-						"You have chosen the path of the monk. Find the Blue Valley and visit the Enpa to learn more about the warrior monks and the way of the Merudri. Visit all eleven shrines of the Merudri to complete your pilgrimage on the Tree-Fold Path. Consult Enpa-Dela Pema in the Blue Valley to reveal more about this journey.\n\nMost recent visited Merudri shrine: %s/11",
-						player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount)
+						"You have chosen the path of the monk. Find the Blue Valley and visit the Enpa to learn more about the warrior monks and the way of the Merudri. Visit all %d shrines of the Merudri to complete your pilgrimage on the Tree-Fold Path. Consult Enpa-Dela Pema in the Blue Valley to reveal more about this journey.\n\nMost recent visited Merudri shrine: %s/%d",
+						monkQuestTotalShrines,
+						player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount),
+						monkQuestTotalShrines
 					)
 				end,
-				[3] = "You have visited all eleven shrines.",
+				[3] = function()
+					return string.format("You have visited all %d shrines.", monkQuestTotalShrines)
+				end,
 			},
 		},
 	},

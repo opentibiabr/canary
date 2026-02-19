@@ -29,7 +29,7 @@ function elementalSpheresMachine1.onUse(player, item, fromPosition, target, toPo
 		toPosition.x = toPosition.x + (item.itemid == 846 and 1 or -1)
 		local tile = toPosition:getTile()
 		if tile then
-			local thing = tile:getItemById(item.itemid == 842 and 843 or 842)
+			local thing = tile:getItemById(item.itemid == 846 and 847 or 846)
 			if thing then
 				thing:transform(thing.itemid - 4)
 			end
@@ -39,5 +39,5 @@ function elementalSpheresMachine1.onUse(player, item, fromPosition, target, toPo
 	return true
 end
 
-elementalSpheresMachine1:id(842, 843)
+elementalSpheresMachine1:id(842, 843, 846, 847)
 elementalSpheresMachine1:register()

@@ -84500,6 +84500,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="charges" value="14400"/>
 		<attribute key="weight" value="1000"/>
 	</item>
+	<item id="50296" article="a" name="skill trainer">
+		<attribute key="description" value="Use this statue to train your fist fighting and shielding skill offline."/>
+	</item>
 	<item id="50308" article="a" name="monk pedestal">
 		<attribute key="primarytype" value="artificial tiles"/>
 	</item>

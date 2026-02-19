@@ -18,6 +18,7 @@ function coconutShrimpBake.onUse(player, item, fromPosition, target, toPosition,
 		return true
 	end
 
+	player:updateFood(item:getId(), 86400)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your underwater walking speed while wearing a " .. headItem:getName() .. " has increased for twenty-four hours.")
 	player:say("Yum.", TALKTYPE_MONSTER_SAY)
 	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)

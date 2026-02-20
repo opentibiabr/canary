@@ -232,6 +232,9 @@ pvpMaxLevelDifference = 0
 -- NOTE: only the wheel points are modified, all other data is on the client executable and cannot be modified
 wheelSystemEnabled = true
 wheelPointsPerLevel = 1
+-- NOTE: monkQuestTotalShrines uses the same completion threshold used by the server storage check.
+monkQuestTotalShrines = 11
+wheelMonkQuestBonus = 10
 
 -- Gem Atelier
 wheelAtelierRotateLesserCost = 125000

@@ -82642,6 +82642,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="5"/>
 	</item>
+	<item id="49937" article="a" name="ramp">
+		<attribute key="floorchange" value="north"/>
+	</item>
 	<item id="49995" article="a" name="dead brinebrute inferniarch">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="60"/>

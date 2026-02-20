@@ -92,11 +92,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:say("You do not need any healing right now.", npc, creature)
 	elseif MsgContains(message, "pilgrimage") then
 		local shrinesCount = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount)
-		-- Normalize shrinesCount: if nil or negative, set to 0
-		if shrinesCount < 0 then
+		-- Normalize shrinesCount: guard against nil/non-number and negative values
+		if type(shrinesCount) ~= "number" or shrinesCount < 0 then
 			shrinesCount = 0
 		end
-		
+
 		if shrinesCount >= monkQuestTotalShrines then
 			npcHandler:say("You are a monk of the Merudri, enlightened and beyond the Three-Fold Path. You have visited all of our ancestral shrines and embraced eternity. The Enpa will see you now.", npc, creature)
 		elseif shrinesCount > 0 and shrinesCount < monkQuestTotalShrines then

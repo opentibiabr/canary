@@ -36,7 +36,6 @@
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
-
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
 #include "grouping/familiars.hpp"
@@ -62,6 +61,7 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/combat/spells.hpp"
+#include "utils/definitions.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -2610,7 +2610,7 @@ void Player::openImbuementWindow(const std::shared_ptr<Item> &item) {
 
 	updateImbuementTrackerStats();
 
-	client->openImbuementWindow(item);
+	client->sendOpenImbuementWindow(item);
 }
 
 // inventory
@@ -8000,9 +8000,11 @@ void Player::sendFightModes() const {
 }
 
 void Player::sendNetworkMessage(NetworkMessage &message) const {
+#ifndef PROTOCOL_DISABLE_LUA_MESSAGES
 	if (client) {
 		client->writeToOutputBuffer(message);
 	}
+#endif
 }
 
 void Player::receivePing() {
@@ -8432,6 +8434,12 @@ void Player::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time) const {
 	}
 }
 
+void Player::sendPassiveCooldown(uint8_t passiveId, uint32_t currentCooldown, uint32_t maxCooldown, bool paused) const {
+	if (client) {
+		client->sendPassiveCooldown(passiveId, currentCooldown, maxCooldown, paused);
+	}
+}
+
 void Player::sendUseItemCooldown(uint32_t time) const {
 	if (client) {
 		client->sendUseItemCooldown(time);
@@ -8564,9 +8572,9 @@ void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &contai
 }
 
 // Monk Update
-void Player::sendMonkData(MonkData_t type, uint8_t value) {
+void Player::sendMonkState(MonkData_t type, uint8_t value) {
 	if (client) {
-		client->sendMonkData(type, value);
+		client->sendMonkState(type, value);
 	}
 }
 
@@ -9659,10 +9667,12 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
+#ifndef PROTOCOL_DISABLE_HUNTING_TASKS
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
 		auto buffer = g_ioprey().getTaskHuntingBaseDate();
 		client->writeToOutputBuffer(buffer);
 	}
+#endif
 }
 
 bool Player::isCreatureUnlockedOnTaskHunting(const std::shared_ptr<MonsterType> &mtype) const {
@@ -11932,9 +11942,9 @@ void Player::sendFYIBox(const std::string &message) const {
 	}
 }
 
-void Player::parseBestiarySendRaces() const {
+void Player::sendBestiaryRaces() const {
 	if (client) {
-		client->parseBestiarySendRaces();
+		client->sendBestiaryRaces();
 	}
 }
 
@@ -12193,7 +12203,7 @@ void Player::setVirtue(Virtue_t newVirtue) {
 	virtue = newVirtue;
 
 	sendSkills();
-	sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
+	sendMonkState(MonkData_t::Virtue, enumToValue(virtue));
 }
 
 void Player::setSerene(bool b, int32_t ticks /* = -1 */) {
@@ -12219,12 +12229,12 @@ void Player::setSerene(bool b, int32_t ticks /* = -1 */) {
 
 void Player::emptyHarmony() {
 	harmony = 0;
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 void Player::fillHarmony() {
 	buildHarmony(5);
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 void Player::buildHarmony(uint8_t charges /* = 1 */) {
@@ -12241,7 +12251,7 @@ void Player::buildHarmony(uint8_t charges /* = 1 */) {
 
 	harmony += charges;
 
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 void Player::spendHarmony() {
@@ -12253,7 +12263,7 @@ void Player::spendHarmony() {
 		buildHarmony();
 	}
 
-	sendMonkData(MonkData_t::Harmony, harmony);
+	sendMonkState(MonkData_t::Harmony, harmony);
 }
 
 uint8_t Player::getHarmony() {

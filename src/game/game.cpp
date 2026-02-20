@@ -71,6 +71,35 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
+	[[nodiscard]] inline std::unordered_set<const Thing*> &teleportStack() {
+		static thread_local std::unordered_set<const Thing*> stack;
+		return stack;
+	}
+
+	inline bool tryInsertTeleportStack(const Thing* thing) {
+		return teleportStack().insert(thing).second;
+	}
+
+	inline bool eraseTeleportStack(const Thing* thing) {
+		return teleportStack().erase(thing) > 0;
+	}
+
+	struct TeleportStackCleaner {
+		void operator()(const Thing* thing) const {
+			if (!eraseTeleportStack(thing)) {
+				g_logger().error("[{}] Teleport stack cleanup failed", __FUNCTION__);
+			}
+		}
+	};
+
+	struct TeleportLogState {
+		uint32_t count = 0;
+		uint64_t nextLogMs = 0;
+		uint64_t delayMs = 1000; // Start in 1s
+	};
+
+	static std::unordered_map<uint32_t, TeleportLogState> teleportLog;
+
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
 			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
@@ -2907,6 +2936,47 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 		g_logger().error("[{}] thing is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
+
+	const Thing* teleportThing = thing.get();
+	if (!InternalGame::tryInsertTeleportStack(teleportThing)) {
+		const uint64_t now = OTSYS_TIME();
+
+		uint32_t id = 0;
+		if (const auto creature = thing->getCreature()) {
+			id = creature->getID();
+		} else if (const auto item = thing->getItem()) {
+			// Simple hash: itemId + position
+			const auto &pos = item->getPosition();
+			id = static_cast<uint32_t>(
+				item->getID() ^ (pos.x << 16) ^ (pos.y << 1) ^ (pos.z << 24)
+			);
+		} else {
+			id = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(teleportThing) & 0xFFFFFFFFu);
+		}
+
+		auto &state = InternalGame::teleportLog[id];
+		state.count++;
+
+		if (now >= state.nextLogMs) {
+			if (const auto creature = thing->getCreature()) {
+				g_logger().error("[{}] Teleport recursion detected for creature {} at {} (count={})", __FUNCTION__, creature->getName(), creature->getPosition().toString(), state.count);
+			} else if (const auto item = thing->getItem()) {
+				g_logger().error("[{}] Teleport recursion detected for item {} at {} (count={})", __FUNCTION__, item->getName(), item->getPosition().toString(), state.count);
+			} else {
+				g_logger().error("[{}] Teleport recursion detected (count={})", __FUNCTION__, state.count);
+			}
+
+			if (state.delayMs == 0) {
+				state.delayMs = 1000; // start at 1s
+			}
+			state.delayMs = std::min<uint64_t>(state.delayMs * 2, 60000); // cap at 60s
+			state.nextLogMs = now + state.delayMs;
+		}
+
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
 
 	if (newPos == thing->getPosition()) {
 		return RETURNVALUE_CONTACTADMINISTRATOR;

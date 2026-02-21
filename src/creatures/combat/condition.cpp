@@ -1637,10 +1637,6 @@ bool ConditionDamage::setParam(ConditionParam_t param, int32_t value) {
 	bool ret = Condition::setParam(param, value);
 
 	switch (param) {
-		case CONDITION_PARAM_OWNER:
-			owner = value;
-			return true;
-
 		case CONDITION_PARAM_FORCEUPDATE:
 			forceUpdate = (value != 0);
 			return true;
@@ -1692,7 +1688,7 @@ bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStre
 	} else if (attr == CONDITIONATTR_PERIODDAMAGE) {
 		return propStream.read<int32_t>(periodDamage);
 	} else if (attr == CONDITIONATTR_OWNER) {
-		return propStream.skip(4);
+		return propStream.read<uint32_t>(owner);
 	} else if (attr == CONDITIONATTR_INTERVALDATA) {
 		IntervalInfo damageInfo {};
 		if (!propStream.read<IntervalInfo>(damageInfo)) {
@@ -1716,6 +1712,11 @@ void ConditionDamage::serialize(PropWriteStream &propWriteStream) {
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_PERIODDAMAGE);
 	propWriteStream.write<int32_t>(periodDamage);
+
+	if (owner != 0) {
+		propWriteStream.write<uint8_t>(CONDITIONATTR_OWNER);
+		propWriteStream.write<uint32_t>(owner);
+	}
 
 	for (const IntervalInfo &intervalInfo : damageList) {
 		propWriteStream.write<uint8_t>(CONDITIONATTR_INTERVALDATA);
@@ -2452,7 +2453,7 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 					}
 
 					// Only consider Vibrancy / Paralysis Deflection category
-					if (info.imbuement->getCategory() != 19) {
+					if (info.imbuement->getCategory() != IMBUEMENT_PARALYSIS_DEFLECTION) {
 						continue;
 					}
 
@@ -2460,10 +2461,17 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 					uint8_t chance = info.imbuement->paralysisRemoveChance;
 					if (chance == 0) {
 						switch (info.imbuement->getBaseID()) {
-							case 1: chance = 15; break;
-							case 2: chance = 25; break;
-							case 3: chance = 50; break;
-							default: break;
+							case 1:
+								chance = 15;
+								break;
+							case 2:
+								chance = 25;
+								break;
+							case 3:
+								chance = 50;
+								break;
+							default:
+								break;
 						}
 					}
 
@@ -2478,9 +2486,12 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 				// The incoming condition (new paralyse attempt)
 				const auto &incomingSpeed = addCondition->static_self_cast<ConditionSpeed>();
 
-				// Best-effort attacker from incoming condition owner (set via CONDITION_PARAM_OWNER)
-				auto attackerCreature = (incomingSpeed->owner != 0) ? g_game().getCreatureByID(incomingSpeed->owner) : nullptr;
-				auto attackerPlayer = attackerCreature ? attackerCreature->getPlayer() : nullptr;
+				// Best-effort attacker solution (handles OWNER as Player GUID or Creature ID)
+				auto attackerPlayer = (incomingSpeed->owner != 0) ? g_game().getPlayerByGUID(incomingSpeed->owner) : nullptr;
+				auto attackerCreature = attackerPlayer ? attackerPlayer->getCreature() : ((incomingSpeed->owner != 0) ? g_game().getCreatureByID(incomingSpeed->owner) : nullptr);
+				if (!attackerPlayer && attackerCreature) {
+					attackerPlayer = attackerCreature->getPlayer();
+				}
 
 				// PvP: deflect additional paralyse attempts back to aggressor (unless aggressor also has Vibrancy)
 				if (pvpDeflect && attackerPlayer) {
@@ -2510,7 +2521,7 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		}
 	}
 	// /////////Fim codigo/////////
-if (ticks == -1 && addCondition->getTicks() > 0) {
+	if (ticks == -1 && addCondition->getTicks() > 0) {
 		return;
 	}
 

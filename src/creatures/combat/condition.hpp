@@ -327,7 +327,6 @@ private:
 	bool forceUpdate = false;
 	bool delayed = false;
 	bool field = false;
-	uint32_t owner = 0;
 
 	bool init();
 

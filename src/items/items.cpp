@@ -364,8 +364,13 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		// Custom imbuement support: Vibrancy / Paralysis Deflection
 		if (tmpStrValue == "paralysis deflection" || tmpStrValue == "vibrancy") {
 			// value = max tier allowed on this item (1..3)
-			const uint16_t tier = valueAttribute.as_uint();
-			itemType.setImbuementType(IMBUEMENT_PARALYSIS_DEFLECTION, tier);
+			const uint32_t tier = valueAttribute.as_uint();
+			const uint32_t clampedTier32 = std::clamp<uint32_t>(tier, 1u, static_cast<uint32_t>(IMBUEMENT_MAX_TIER));
+			const uint16_t clampedTier = static_cast<uint16_t>(clampedTier32);
+			if (tier == 0 || tier > IMBUEMENT_MAX_TIER) {
+				g_logger().warn("[Items::parseItemNode] - Invalid tier '{}' for imbuement '{}' on item '{}', clamping to '{}'.", tier, tmpStrValue, id, clampedTier);
+			}
+			itemType.setImbuementType(IMBUEMENT_PARALYSIS_DEFLECTION, clampedTier);
 			continue;
 		}
 

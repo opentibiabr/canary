@@ -34744,7 +34744,7 @@
 		<attribute key="description" value="Use this statue to train your magic level and shielding skill offline."/>
 	</item>
 	<item id="50296" article="a" name="skill trainer">
-		<attribute key="description" value="Use this statue to train your fist fighting and shielding skill offline"/>
+		<attribute key="description" value="Use this statue to train your fist fighting and shielding skill offline."/>
 	</item>
 	<item id="16203" name="timber floor">
 		<attribute key="primarytype" value="artificial tiles"/>

@@ -55,6 +55,7 @@ public:
 	bool isRemovableOnDeath() const;
 
 protected:
+	uint32_t owner = 0;
 	uint8_t drainBodyStage = 0;
 	int64_t endTime {};
 	uint32_t subId {};

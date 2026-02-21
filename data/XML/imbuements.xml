@@ -23,6 +23,7 @@
 	<category id="16" name="Skillboost (Magic Level)" agressive="1" />
 	<category id="17" name="Increase Capacity" agressive="0" />
 	<category id="18" name="Skillboost (Fist Fighting)" agressive="1" />
+	<category id="19" name="Paralysis Deflection" agressive="0" />
 
 	<!-- Damage Imbuement -->
 	<imbuement name="Scorch" base="1" subgroup=" (Fire)" category="0" iconid="13" premium="0" storage="0" sound="2002">
@@ -299,6 +300,27 @@
 		<attribute key="item" value="17458" count="15" />
 		<attribute key="item" value="10302" count="25" />
 		<attribute key="item" value="14081" count="20" />
+	</imbuement>
+	<!-- Paralysis Deflection (Boots) -->
+	<imbuement name="Vibrancy" base="1" category="19" iconid="79" premium="0" storage="0">
+		<attribute key="description" value="Removes paralysis with a chance of 15% and always deflects PvP paralysis upon additional paralyse attacks." />
+		<attribute key="effect" type="paralysis" chance="15" pvpDeflect="1" />
+		<attribute key="item" value="22053" count="20" />
+	</imbuement>
+	
+	<imbuement name="Vibrancy" base="2" category="19" iconid="79" premium="1" storage="0">
+		<attribute key="description" value="Removes paralysis with a chance of 25% and always deflects PvP paralysis upon additional paralyse attacks." />
+		<attribute key="effect" type="paralysis" chance="25" pvpDeflect="1" />
+		<attribute key="item" value="22053" count="20" />
+		<attribute key="item" value="23507" count="15" />
+	</imbuement>
+	
+	<imbuement name="Vibrancy" base="3" category="19" iconid="79" premium="1" storage="0">
+		<attribute key="description" value="Removes paralysis with a chance of 50% and always deflects PvP paralysis upon additional paralyse attacks." />
+		<attribute key="effect" type="paralysis" chance="50" pvpDeflect="1" />
+		<attribute key="item" value="22053" count="20" />
+		<attribute key="item" value="23507" count="15" />
+		<attribute key="item" value="28567" count="5" />
 	</imbuement>
 	<!-- Skills Imbuements -->
 	<imbuement name="Chop" base="1" category="11" iconid="52" premium="0" storage="0">

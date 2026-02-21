@@ -361,6 +361,14 @@ void Items::parseItemNode(const pugi::xml_node &itemNode, uint16_t id) {
 		}
 
 		const std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
+		// Custom imbuement support: Vibrancy / Paralysis Deflection
+		if (tmpStrValue == "paralysis deflection" || tmpStrValue == "vibrancy") {
+			// value = max tier allowed on this item (1..3)
+			const uint16_t tier = valueAttribute.as_uint();
+			itemType.setImbuementType(IMBUEMENT_PARALYSIS_DEFLECTION, tier);
+			continue;
+		}
+
 		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
 		if (parseAttribute != ItemParseAttributesMap.end()) {
 			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);

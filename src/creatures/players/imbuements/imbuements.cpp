@@ -311,7 +311,30 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						}
 
 						imbuement.capacity = pugi::cast<uint32_t>(attr.value());
+
+					} else if (strcasecmp(effecttype.c_str(), "paralysis") == 0 || strcasecmp(effecttype.c_str(), "vibrancy") == 0) {
+						/////////Imbuement Vibrancy/////////
+						// Accept both 'chance' and 'value' as percent (0-100)
+						uint32_t chancePercent = 0;
+						if ((attr = childNode.attribute("chance"))) {
+							chancePercent = std::min<uint32_t>(100, pugi::cast<uint32_t>(attr.value()));
+						} else if ((attr = childNode.attribute("value"))) {
+							chancePercent = std::min<uint32_t>(100, pugi::cast<uint32_t>(attr.value()));
+						} else {
+							g_logger().warn("Missing paralysis chance/value for imbuement name {}", imbuement.name);
+							continue;
+						}
+
+						imbuement.paralysisRemoveChance = static_cast<uint8_t>(chancePercent);
+
+						// Optional: deflect additional PvP paralyse attacks
+						uint32_t pvpDeflect = 0;
+						if ((attr = childNode.attribute("pvpDeflect"))) {
+							pvpDeflect = pugi::cast<uint32_t>(attr.value());
+						}
+						imbuement.pvpParalysisDeflect = (pvpDeflect != 0);
 					}
+
 				}
 			}
 		}

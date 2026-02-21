@@ -34,6 +34,9 @@ bool Condition::setParam(ConditionParam_t param, int32_t value) {
 			return true;
 		}
 
+		case CONDITION_PARAM_OWNER:
+			owner = static_cast<uint32_t>(value);
+			return true;
 		case CONDITION_PARAM_DRAIN_BODY: {
 			drainBodyStage = std::min(static_cast<uint8_t>(value), std::numeric_limits<uint8_t>::max());
 			return true;
@@ -1634,10 +1637,6 @@ bool ConditionDamage::setParam(ConditionParam_t param, int32_t value) {
 	bool ret = Condition::setParam(param, value);
 
 	switch (param) {
-		case CONDITION_PARAM_OWNER:
-			owner = value;
-			return true;
-
 		case CONDITION_PARAM_FORCEUPDATE:
 			forceUpdate = (value != 0);
 			return true;
@@ -1689,7 +1688,7 @@ bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStre
 	} else if (attr == CONDITIONATTR_PERIODDAMAGE) {
 		return propStream.read<int32_t>(periodDamage);
 	} else if (attr == CONDITIONATTR_OWNER) {
-		return propStream.skip(4);
+		return propStream.read<uint32_t>(owner);
 	} else if (attr == CONDITIONATTR_INTERVALDATA) {
 		IntervalInfo damageInfo {};
 		if (!propStream.read<IntervalInfo>(damageInfo)) {
@@ -1713,6 +1712,11 @@ void ConditionDamage::serialize(PropWriteStream &propWriteStream) {
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_PERIODDAMAGE);
 	propWriteStream.write<int32_t>(periodDamage);
+
+	if (owner != 0) {
+		propWriteStream.write<uint8_t>(CONDITIONATTR_OWNER);
+		propWriteStream.write<uint32_t>(owner);
+	}
 
 	for (const IntervalInfo &intervalInfo : damageList) {
 		propWriteStream.write<uint8_t>(CONDITIONATTR_INTERVALDATA);
@@ -2337,6 +2341,9 @@ void ConditionSpeed::getFormulaValues(int32_t var, int32_t &min, int32_t &max) c
 
 bool ConditionSpeed::setParam(ConditionParam_t param, int32_t value) {
 	Condition::setParam(param, value);
+	if (param == CONDITION_PARAM_OWNER) {
+		return true;
+	}
 	if (param != CONDITION_PARAM_SPEED) {
 		return false;
 	}
@@ -2421,6 +2428,99 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 		return;
 	}
 
+	// /////////Imbuement Vibrancy/////////
+	// Tibia-like Vibrancy behaviour:
+	// - Triggers on additional paralyse attempts (this method is called when refreshing an existing paralyse).
+	// - Chance (15/25/50) to cancel the INITIAL paralyse when receiving a NEW paralyse attempt (PvE & PvP).
+	// - In PvP only: additional paralyse attempts are deflected/repelled back to the aggressor (no ping-pong if aggressor also has Vibrancy).
+	if (conditionType == CONDITION_PARALYZE) {
+		auto targetPlayer = creature ? creature->getPlayer() : nullptr;
+		if (targetPlayer) {
+			auto boots = targetPlayer->getInventoryItem(CONST_SLOT_FEET);
+
+			auto getVibrancyData = [](const std::shared_ptr<Item> &it) -> std::pair<uint8_t, bool> {
+				uint8_t removeChance = 0;
+				bool pvpDeflect = false;
+				if (!it) {
+					return { removeChance, pvpDeflect };
+				}
+
+				const uint8_t slots = it->getImbuementSlot();
+				for (uint8_t slot = 0; slot < slots; ++slot) {
+					ImbuementInfo info;
+					if (!it->getImbuementInfo(slot, &info) || !info.imbuement) {
+						continue;
+					}
+
+					// Only consider Vibrancy / Paralysis Deflection category
+					if (info.imbuement->getCategory() != IMBUEMENT_PARALYSIS_DEFLECTION) {
+						continue;
+					}
+
+					// Prefer parsed chance; fallback to base tier mapping if missing
+					uint8_t chance = info.imbuement->paralysisRemoveChance;
+					if (chance == 0) {
+						switch (info.imbuement->getBaseID()) {
+							case 1:
+								chance = 15;
+								break;
+							case 2:
+								chance = 25;
+								break;
+							case 3:
+								chance = 50;
+								break;
+							default:
+								break;
+						}
+					}
+
+					removeChance = std::max<uint8_t>(removeChance, chance);
+					pvpDeflect = pvpDeflect || info.imbuement->pvpParalysisDeflect;
+				}
+				return { removeChance, pvpDeflect };
+			};
+
+			const auto [removeChance, pvpDeflect] = getVibrancyData(boots);
+			if (removeChance > 0 || pvpDeflect) {
+				// The incoming condition (new paralyse attempt)
+				const auto &incomingSpeed = addCondition->static_self_cast<ConditionSpeed>();
+
+				// Best-effort attacker solution (handles OWNER as Player GUID or Creature ID)
+				auto attackerPlayer = (incomingSpeed->owner != 0) ? g_game().getPlayerByGUID(incomingSpeed->owner) : nullptr;
+				auto attackerCreature = attackerPlayer ? attackerPlayer->getCreature() : ((incomingSpeed->owner != 0) ? g_game().getCreatureByID(incomingSpeed->owner) : nullptr);
+				if (!attackerPlayer && attackerCreature) {
+					attackerPlayer = attackerCreature->getPlayer();
+				}
+
+				// PvP: deflect additional paralyse attempts back to aggressor (unless aggressor also has Vibrancy)
+				if (pvpDeflect && attackerPlayer) {
+					const auto [atkChance, atkDeflect] = getVibrancyData(attackerPlayer->getInventoryItem(CONST_SLOT_FEET));
+					if (!atkDeflect) {
+						auto reflected = incomingSpeed->clone();
+						if (reflected) {
+							reflected->setParam(CONDITION_PARAM_OWNER, 0); // avoid ping-pong
+							attackerCreature->addCondition(reflected);
+						}
+					}
+				}
+
+				// Chance: cancel the initial paralyse when receiving this additional attempt (PvE & PvP)
+				if (removeChance > 0 && uniform_random(1, 100) <= removeChance) {
+					creature->removeCondition(CONDITION_PARALYZE);
+					TextMessage message(MESSAGE_EVENT_ADVANCE, "You are unparalyzed by vibrancy.");
+					targetPlayer->sendTextMessage(message);
+					return; // block refresh/stacking
+				}
+
+				// PvP: do not refresh/stack paralyse on the target when deflect is enabled
+				if (pvpDeflect && attackerPlayer) {
+					return;
+				}
+			}
+		}
+	}
+	// /////////Fim codigo/////////
 	if (ticks == -1 && addCondition->getTicks() > 0) {
 		return;
 	}

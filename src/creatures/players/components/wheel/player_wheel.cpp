@@ -326,8 +326,8 @@ namespace {
 			g_logger().debug("spell target stage {}, grade {}", stage, size);
 			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
 				const auto &spellData = spellTable.grade[stage];
-				if (spellData.increase.aditionalTarget) {
-					return spellData.increase.aditionalTarget;
+				if (spellData.increase.additionalTarget) {
+					return spellData.increase.additionalTarget;
 				}
 			}
 		}
@@ -1313,7 +1313,7 @@ void PlayerWheel::addSpellBonus(const std::string &spellName, const WheelSpells:
 		m_spellsBonuses[spellName].decrease.cooldown += bonus.decrease.cooldown;
 		m_spellsBonuses[spellName].decrease.manaCost += bonus.decrease.manaCost;
 		m_spellsBonuses[spellName].decrease.secondaryGroupCooldown += bonus.decrease.secondaryGroupCooldown;
-		m_spellsBonuses[spellName].increase.aditionalTarget += bonus.increase.aditionalTarget;
+		m_spellsBonuses[spellName].increase.additionalTarget += bonus.increase.additionalTarget;
 		m_spellsBonuses[spellName].increase.area = bonus.increase.area;
 		m_spellsBonuses[spellName].increase.criticalChance += bonus.increase.criticalChance;
 		m_spellsBonuses[spellName].increase.criticalDamage += bonus.increase.criticalDamage;
@@ -2558,6 +2558,44 @@ void PlayerWheel::loadDedicationAndConvictionPerks() {
 			}
 		}
 	}
+}
+
+std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> PlayerWheel::getActiveAugments() const {
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> wheelAugments;
+
+	const auto &ioBonusData = g_game().getIOWheel()->getWheelBonusData();
+
+	auto registerAugment = [&](const uint16_t currentSpellId, const std::string &spellName, uint8_t grade) {
+		const auto vocationBaseId = m_player.getVocation()->getBaseId();
+		if (vocationBaseId == Vocation_t::VOCATION_SORCERER) {
+			getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.sorcerer, wheelAugments);
+		} else if (vocationBaseId == Vocation_t::VOCATION_DRUID) {
+			getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.druid, wheelAugments);
+		} else if (vocationBaseId == Vocation_t::VOCATION_PALADIN) {
+			getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.paladin, wheelAugments);
+		} else if (vocationBaseId == Vocation_t::VOCATION_KNIGHT) {
+			getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.knight, wheelAugments);
+		} else if (vocationBaseId == Vocation_t::VOCATION_MONK) {
+			getAugmentsByVocation(currentSpellId, spellName, grade, ioBonusData.spells.monk, wheelAugments);
+		}
+	};
+
+	std::unordered_map<uint16_t, uint8_t> spellGrades;
+	for (const auto &spellName : m_playerBonusData.spells) {
+		const auto &spell = g_spells().getSpellByName(spellName);
+		if (!spell) {
+			continue;
+		}
+
+		auto spellId = spell->getSpellId();
+		spellGrades[spellId]++;
+
+		uint8_t grade = spellGrades[spellId];
+
+		registerAugment(spellId, spellName, grade);
+	}
+
+	return wheelAugments;
 }
 
 void PlayerWheel::addSpellToVector(const std::string &spellName) {

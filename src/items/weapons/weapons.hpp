@@ -64,7 +64,7 @@ public:
 		return false;
 	}
 
-	int32_t playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t shootRange) const;
+	int32_t playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, int32_t shootRange) const;
 	static bool useFist(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target);
 	virtual bool useWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target) const;
 

@@ -623,6 +623,12 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 		player->setMainBackpackUnassigned(item->getContainer());
 	}
 
+	if (slot == CONST_SLOT_LEFT) {
+		player->weaponProficiency().clearAllStats();
+		player->weaponProficiency().applyPerks(item->getID());
+		player->sendWeaponProficiency(item->getID());
+	}
+
 	player->sendStats();
 	player->sendSkills();
 	player->updatePartyMantra();
@@ -710,6 +716,11 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 
 	if (it.transformDeEquipTo != 0) {
 		g_game().transformItem(item, it.transformDeEquipTo);
+	}
+
+	if (slot == CONST_SLOT_LEFT) {
+		player->weaponProficiency().clearAllStats();
+		player->sendWeaponProficiency(item->getID());
 	}
 
 	player->sendStats();

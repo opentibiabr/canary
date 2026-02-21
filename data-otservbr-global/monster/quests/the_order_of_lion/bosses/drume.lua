@@ -93,7 +93,7 @@ monster.loot = {
 	{ name = "royal star", chance = 31325, maxCount = 100 },
 	{ name = "bullseye potion", chance = 22590, maxCount = 10 },
 	{ name = "berserk potion", chance = 21988, maxCount = 10 },
-	{ name = "transcendence potion", chance = 21988, maxCount = 10 },
+	{ id = 49271, chance = 21988, maxCount = 10 }, -- transcendence potion
 	{ name = "blue gem", chance = 21687, maxCount = 2 },
 	{ name = "mastermind potion", chance = 17771, maxCount = 10 },
 	{ name = "green gem", chance = 17470, maxCount = 2 },

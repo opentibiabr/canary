@@ -86,7 +86,7 @@ monster.loot = {
 	{ name = "dragon figurine", chance = 10000, maxCount = 1 },
 	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
 	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "transcendence potion", chance = 15000, minCount = 10, maxCount = 25 },
+	{ id = 49271, chance = 15000, minCount = 10, maxCount = 25 }, -- transcendence potion
 	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
 	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
 	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },

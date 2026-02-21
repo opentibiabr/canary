@@ -36,6 +36,14 @@ Imbuement* Imbuements::getImbuement(uint16_t id) {
 	return &it->second;
 }
 
+Imbuement* Imbuements::getImbuementByScrollID(uint16_t scrollId) {
+	if (auto it = scrollIdMap.find(scrollId); it != scrollIdMap.end()) {
+		return it->second;
+	}
+
+	return nullptr;
+}
+
 bool Imbuements::loadFromXml(bool /* reloading */) {
 	pugi::xml_document doc;
 	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/imbuements.xml";
@@ -55,7 +63,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				g_logger().warn("Missing id for base entry");
 				continue;
 			}
-			basesImbuement.emplace_back(
+			[[maybe_unused]] const auto &unusedBase = basesImbuement.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
 				baseNode.attribute("name").as_string(),
 				pugi::cast<uint32_t>(baseNode.attribute("price").value()),
@@ -72,7 +80,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				g_logger().warn("Missing id for category entry");
 				continue;
 			}
-			categoriesImbuement.emplace_back(
+			[[maybe_unused]] const auto &unusedCategory = categoriesImbuement.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
 				baseNode.attribute("name").as_string(),
 				baseNode.attribute("agressive").as_bool(true)
@@ -157,7 +165,13 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				}
 
 				std::string type = attr.as_string();
-				if (strcasecmp(type.c_str(), "item") == 0) {
+				if (strcasecmp(type.c_str(), "scroll") == 0) {
+					if ((attr = childNode.attribute("value"))) {
+						imbuement.scrollId = pugi::cast<uint16_t>(attr.value());
+					} else {
+						g_logger().warn("Missing scroll ID for imbuement name '{}'", imbuement.name);
+					}
+				} else if (strcasecmp(type.c_str(), "item") == 0) {
 					if (!((attr = childNode.attribute("value")))) {
 						g_logger().warn("Missing item ID for imbuement name '{}'", imbuement.name);
 						continue;
@@ -178,7 +192,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						continue;
 					}
 
-					imbuement.items.emplace_back(sourceId, count);
+					[[maybe_unused]] const auto &unusedItem = imbuement.items.emplace_back(sourceId, count);
 
 				} else if (strcasecmp(type.c_str(), "description") == 0) {
 					std::string description = imbuement.name;
@@ -314,6 +328,14 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 					}
 				}
 			}
+
+			if (imbuement.scrollId != 0) {
+				auto [it, scrollInserted] = scrollIdMap.emplace(imbuement.scrollId, &imbuement);
+				if (!scrollInserted) {
+					g_logger().warn("Duplicate scroll ID {} for imbuement '{}', already mapped to '{}'", imbuement.scrollId, imbuement.name, it->second->getName());
+					it->second = &imbuement;
+				}
+			}
 		}
 	}
 
@@ -322,6 +344,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 
 bool Imbuements::reload() {
 	imbuementMap.clear();
+	scrollIdMap.clear();
 	basesImbuement.clear();
 	categoriesImbuement.clear();
 
@@ -347,12 +370,13 @@ CategoryImbuement* Imbuements::getCategoryByID(uint16_t id) {
 	return categoryImbuements != categoriesImbuement.end() ? &*categoryImbuements : nullptr;
 }
 
-std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) {
+std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item /* = nullptr */, bool scroll /* = false */) {
 	std::vector<Imbuement*> imbuements;
 
 	for (auto &[key, value] : imbuementMap) {
 		Imbuement* imbuement = &value;
-		if (!imbuement) {
+
+		if (scroll && imbuement->getScrollItemID() == 0) {
 			continue;
 		}
 
@@ -366,16 +390,16 @@ std::vector<Imbuement*> Imbuements::getImbuements(const std::shared_ptr<Player> 
 
 		// Send only the imbuements registered on item (in items.xml) to the imbuement window
 		const CategoryImbuement* categoryImbuement = getCategoryByID(imbuement->getCategory());
-		if (!item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+		if (item && !item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 			continue;
 		}
 
 		// If the item is already imbued with an imbuement, remove the imbuement from the next free slot
-		if (item->hasImbuementCategoryId(categoryImbuement->id)) {
+		if (item && item->hasImbuementCategoryId(categoryImbuement->id)) {
 			continue;
 		}
 
-		imbuements.emplace_back(imbuement);
+		[[maybe_unused]] auto &unusedImbuement = imbuements.emplace_back(imbuement);
 	}
 
 	return imbuements;
@@ -586,4 +610,8 @@ void ImbuementDecay::checkImbuementDecay() {
 		m_eventId = 0;
 		g_logger().trace("No more items to decay. Stopped imbuement decay scheduler.");
 	}
+}
+
+uint16_t Imbuement::getScrollItemID() const {
+	return scrollId;
 }

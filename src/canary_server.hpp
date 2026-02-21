@@ -69,5 +69,5 @@ private:
 	void setWorldType();
 	void loadMaps() const;
 	void setupHousesRent();
-	void modulesLoadHelper(bool loaded, std::string moduleName);
+	void modulesLoadHelper(bool loaded, std::string_view identifier);
 };

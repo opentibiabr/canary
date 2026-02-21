@@ -90,6 +90,16 @@ maxContainer = 500
 maxContainerDepth = 200
 maxInboxItems = 0
 
+-- Player base critical
+-- NOTE: 0.05 means 5%
+playerBaseCriticalChance = 0.05
+-- NOTE: 0.1 means 10%
+playerBaseCriticalDamage = 0.1
+
+-- Weapon Proficiency
+weaponProficiencyMaxLevels = 10
+weaponProficiencyMaxPerksPerLevel = 6
+
 -- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
 -- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
 -- NOTE: animusMasteryMonsterXpMultiplier is the monster experience multiplier that has the animus mastery unlocked.

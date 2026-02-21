@@ -330,6 +330,8 @@ public:
 	uint8_t imbuementSlot = 0;
 	uint8_t stackSize = 100;
 
+	uint16_t proficiencyId = 0;
+
 	int8_t hitChance = 0;
 
 	std::vector<std::shared_ptr<AugmentInfo>> augments;

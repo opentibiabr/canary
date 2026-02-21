@@ -12,6 +12,8 @@
 #include "creatures/creatures_definitions.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/players/components/wheel/wheel_spells.hpp"
+#include "utils/hash.hpp"
+#include "items/items_definitions.hpp"
 
 class Creature;
 class IOWheel;
@@ -176,6 +178,52 @@ public:
 	void loadPlayerBonusData();
 
 	void loadDedicationAndConvictionPerks();
+
+	template <typename VocationArray>
+	void getAugmentsByVocation(
+		const uint16_t spellId,
+		const std::string &spellName,
+		uint8_t grade,
+		const VocationArray &vocSpells,
+		std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> &map
+	) const {
+		// helper: add or accumulate value into map
+		auto addValue = [&](Augment_t augmentType, double value) {
+			if (value == 0.0) {
+				return;
+			}
+			const auto key = std::make_pair(spellId, magic_enum::enum_integer(augmentType));
+			map[key] += value;
+		};
+
+		for (const auto &spellBonus : vocSpells) {
+			if (spellBonus.name != spellName) {
+				continue;
+			}
+
+			if (grade >= spellBonus.grade.size()) {
+				continue;
+			}
+			const auto &bonus = spellBonus.grade[grade];
+			addValue(Augment_t::ManaCost, -bonus.decrease.manaCost);
+			addValue(Augment_t::BaseDamage, bonus.increase.damage / 100.0);
+			addValue(Augment_t::BaseHealing, bonus.increase.heal / 100.0);
+			addValue(Augment_t::DurationIncreased, bonus.increase.duration);
+			addValue(Augment_t::AdditionalTargets, bonus.increase.additionalTarget);
+			addValue(Augment_t::Cooldown, -(bonus.decrease.cooldown / 1000.0));
+			addValue(Augment_t::SecondaryGroupCooldown, -(bonus.decrease.secondaryGroupCooldown / 1000.0));
+			addValue(Augment_t::AffectedAreaEnlarged, bonus.increase.area);
+			addValue(Augment_t::IncreasedDamageReduction, bonus.increase.damageReduction / 100.0);
+			// addValue(Augment_t::EnhancedEffect, bonus.decrease.cooldown);
+			// addValue(Augment_t::IncreasedSkill, bonus.decrease.cooldown);
+			addValue(Augment_t::LifeLeech, bonus.leech.life / 100.0);
+			addValue(Augment_t::ManaLeech, bonus.leech.mana / 100.0);
+			addValue(Augment_t::CriticalExtraDamage, bonus.increase.criticalDamage / 100.0);
+			addValue(Augment_t::CriticalHitChance, bonus.increase.criticalChance / 100.0);
+		}
+	}
+
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getActiveAugments() const;
 
 	/**
 	 * @brief Adds a spell to the spells vector.

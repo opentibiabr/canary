@@ -55,10 +55,11 @@ public:
 	static Imbuements &getInstance();
 
 	Imbuement* getImbuement(uint16_t id);
+	Imbuement* getImbuementByScrollID(uint16_t scrollId);
 
 	BaseImbuement* getBaseByID(uint16_t id);
 	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
+	std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item = nullptr, bool scroll = false);
 
 protected:
 	friend class Imbuement;
@@ -66,6 +67,7 @@ protected:
 
 private:
 	std::map<uint32_t, Imbuement> imbuementMap;
+	std::unordered_map<uint16_t, Imbuement*> scrollIdMap;
 
 	std::vector<BaseImbuement> basesImbuement;
 	std::vector<CategoryImbuement> categoriesImbuement;
@@ -97,7 +99,9 @@ public:
 	const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
 
 	uint16_t getIconID() const;
+	uint16_t getScrollItemID() const;
 
+	uint16_t scrollId = 0;
 	uint16_t icon = 1;
 	int32_t stats[maxSkillOrStatId + 1] = {};
 	int32_t skills[SKILL_LAST + 1] = {};

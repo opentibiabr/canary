@@ -103,7 +103,7 @@ monster.loot = {
 	{ name = "magic sulphur", chance = 8490 },
 	{ name = "mastermind potion", chance = 12900, maxCount = 18 },
 	{ name = "mysterious remains", chance = 93400 },
-	{ name = "transcendence potion", chance = 12900, maxCount = 18 },
+	{ id = 49271, chance = 12900, maxCount = 18 }, -- transcendence potion
 	{ name = "piggy bank", chance = 100000 },
 	{ name = "piggy bank", chance = 94340 },
 	{ name = "platinum coin", chance = 100000, maxCount = 9 },

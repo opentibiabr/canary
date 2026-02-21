@@ -91,7 +91,7 @@ monster.loot = {
 	{ name = "berserk potion", chance = 20300, maxCount = 10 },
 	{ name = "blue gem", chance = 18500, maxCount = 2 },
 	{ name = "bullseye potion", chance = 18500, maxCount = 10 },
-	{ name = "transcendence potion", chance = 18500, maxCount = 10 },
+	{ id = 49271, chance = 18500, maxCount = 10 }, -- transcendence potion
 	{ name = "magma coat", chance = 16600 },
 	{ name = "terra rod", chance = 1100 },
 	{ name = "crystal coin", chance = 9200 },

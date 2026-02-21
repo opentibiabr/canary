@@ -146,9 +146,53 @@ bool Bank::withdraw(const std::shared_ptr<Player> &player, uint64_t amount) {
 	if (!debit(amount)) {
 		return false;
 	}
-	g_game().addMoney(player, amount);
-	g_metrics().addCounter("balance_decrease", amount, { { "player", player->getName() }, { "context", "bank_withdraw" } });
-	return true;
+	constexpr uint32_t addMoneyFlags = 0; // Standard withdraw: no special addMoney flags.
+	auto [addedMoney, returnValue] = g_game().addMoney(player, amount, addMoneyFlags);
+
+	if (addedMoney > amount) {
+		g_logger().error(
+			"Bank::withdraw: INCONSISTENT STATE — delivered MORE than requested! Delivered {} of {} gold to player {}",
+			addedMoney, amount, player->getName()
+		);
+		const uint64_t excess = addedMoney - amount;
+		const bool removedExcess = g_game().removeMoney(player, excess);
+		if (!removedExcess) {
+			g_logger().error(
+				"Bank::withdraw: failed to claw back {} excess gold from player {} after over-delivery (delivered {} of {}).",
+				excess, player->getName(), addedMoney, amount
+			);
+		}
+		addedMoney = amount;
+	} else if (addedMoney < amount) {
+		const uint64_t refund = amount - addedMoney;
+
+		uint64_t oldBalance = balance();
+		const bool refundSuccess = credit(refund);
+		uint64_t newBalance = balance();
+
+		if (!refundSuccess) {
+			g_logger().error(
+				"Bank::withdraw: failed to refund {} gold to bank after partial delivery to player {}. "
+				"Bank balance was {} gold, now {} gold.",
+				refund, player->getName(), oldBalance, newBalance
+			);
+		} else {
+			g_logger().warn(
+				"Bank::withdraw: only delivered {} of {} gold to player {}. "
+				"Refunded {} gold to bank. Bank balance was {} gold, now {} gold.",
+				addedMoney, amount, player->getName(), refund, oldBalance, newBalance
+			);
+		}
+		if (addedMoney > 0) {
+			player->sendTextMessage(
+				MESSAGE_EVENT_ADVANCE,
+				fmt::format("Only {} of {} gold coins were delivered to your inventory. {}", addedMoney, amount, getReturnMessage(returnValue))
+			);
+		}
+	}
+
+	g_metrics().addCounter("balance_decrease", addedMoney, { { "player", player->getName() }, { "context", "bank_withdraw" } });
+	return addedMoney != 0;
 }
 
 bool Bank::deposit(const std::shared_ptr<Bank> &destination) {

@@ -617,7 +617,6 @@ function Player:sendHirelingOutfitWindow(hireling)
 	end
 	msg:addU16(outfit.lookMount)
 
-    end
 	if self:isUsingOTCR() then
 		msg:addU16(0) -- lookWing
 		msg:addU16(0) -- lookAura

@@ -52,6 +52,10 @@ function Player.isUsingOtClient(self)
 	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX
 end
 
+function Player.isUsingOTCR(self)
+	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX and self:getClient().os < CLIENTOS_OTCLIENT_MAC
+end
+
 function Player.sendExtendedOpcode(self, opcode, buffer)
 	if not self:isUsingOtClient() then
 		return false

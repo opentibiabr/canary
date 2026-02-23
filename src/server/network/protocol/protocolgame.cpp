@@ -10263,13 +10263,14 @@ void ProtocolGame::parseExivaRestrictions(NetworkMessage &msg) {
 	bool allowOwnGuild = msg.getByte();
 	bool allowOwnParty = msg.getByte();
 	bool allowVipList = msg.getByte();
-	bool allowWhitelist = msg.getByte();
+	bool allowPlayerWhitelist = msg.getByte();
 	bool allowGuildWhitelist = msg.getByte();
 
 	restrictions.allowAll = allowAll;
 	restrictions.allowOwnGuild = allowOwnGuild;
 	restrictions.allowOwnParty = allowOwnParty;
 	restrictions.allowVipList = allowVipList;
+	restrictions.allowPlayerWhitelist = allowPlayerWhitelist;
 	restrictions.allowGuildWhitelist = allowGuildWhitelist;
 
 	std::vector<std::string> addedPlayerNames;
@@ -10333,7 +10334,7 @@ void ProtocolGame::sendExivaRestrictions(
 	msg.addByte(restrictions.allowOwnGuild);
 	msg.addByte(restrictions.allowOwnParty);
 	msg.addByte(restrictions.allowVipList);
-	msg.addByte(restrictions.allowPlayerWhiteList);
+	msg.addByte(restrictions.allowPlayerWhitelist);
 	msg.addByte(restrictions.allowGuildWhitelist);
 
 	if (isLogin) {

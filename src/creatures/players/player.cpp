@@ -6580,7 +6580,7 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
-bool Player::canBeExived(const std::string &spellParam) {
+bool Player::canExiva(const std::string &spellParam) {
 	if (g_game().getWorldType() != WORLD_TYPE_NO_PVP) {
 		return true;
 	}
@@ -6627,7 +6627,7 @@ bool Player::canBeExived(const std::string &spellParam) {
 		}
 	}
 
-	if (targetRestrictions.allowPlayerWhiteList) {
+	if (targetRestrictions.allowPlayerWhitelist) {
 		auto it = std::ranges::find_if(targetRestrictions.playerWhitelist, [&](const auto &playerName) {
 			return playerName == getName();
 		});
@@ -6636,8 +6636,6 @@ bool Player::canBeExived(const std::string &spellParam) {
 			return true;
 		}
 	}
-
-	sendTextMessage(MESSAGE_TRADE, "The character you are trying to find with Exiva is currently protected from your spell.");
 
 	return false;
 }

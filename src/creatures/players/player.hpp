@@ -110,7 +110,7 @@ struct ExivaRestrictions {
 	bool allowOwnGuild = true;
 	bool allowOwnParty = true;
 	bool allowVipList = true;
-	bool allowPlayerWhiteList = true;
+	bool allowPlayerWhitelist = true;
 	bool allowGuildWhitelist = true;
 
 	std::vector<std::string> playerWhitelist;
@@ -890,7 +890,7 @@ public:
 
 	size_t getMaxDepotItems() const;
 
-	bool canBeExived(const std::string &spellParam);
+	bool canExiva(const std::string &spellParam);
 
 	// tile
 	// send methods

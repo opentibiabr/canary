@@ -1050,7 +1050,7 @@ void IOLoginDataLoad::loadPlayerExivaRestrictions(const std::shared_ptr<Player>&
 	restrictions.allowOwnGuild = scope->get("allowOwnGuild").value_or(true);
 	restrictions.allowOwnParty = scope->get("allowOwnParty").value_or(true);
 	restrictions.allowVipList = scope->get("allowVipList").value_or(true);
-	restrictions.allowPlayerWhiteList = scope->get("allowPlayerWhiteList").value_or(true);
+	restrictions.allowPlayerWhitelist = scope->get("allowPlayerWhitelist").value_or(true);
 	restrictions.allowGuildWhitelist = scope->get("allowGuildWhitelist").value_or(true);
 
 	const auto playerWhitelistOpt = scope->get("playerWhitelist");
@@ -1062,7 +1062,7 @@ void IOLoginDataLoad::loadPlayerExivaRestrictions(const std::shared_ptr<Player>&
 	}
 
 	const auto guildWhitelistOpt = scope->get("guildWhitelist");
-	if (playerWhitelistOpt.has_value()) {
+	if (guildWhitelistOpt.has_value()) {
 		const auto guildWhitelist = guildWhitelistOpt.value().get<ArrayType>();
 		for (const auto &playerName : guildWhitelist) {
 			restrictions.guildWhitelist.push_back(playerName);

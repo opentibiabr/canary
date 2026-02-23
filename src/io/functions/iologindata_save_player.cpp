@@ -821,7 +821,7 @@ void IOLoginDataSave::savePlayerExivaRestrictions(const std::shared_ptr<Player> 
 	scope->set("allowOwnGuild", restrictions.allowOwnGuild);
 	scope->set("allowOwnParty", restrictions.allowOwnParty);
 	scope->set("allowVipList", restrictions.allowVipList);
-	scope->set("allowPlayerWhiteList", restrictions.allowPlayerWhiteList);
+	scope->set("allowPlayerWhitelist", restrictions.allowPlayerWhitelist);
 	scope->set("allowGuildWhitelist", restrictions.allowGuildWhitelist);
 
 	ArrayType playerArrayWrapper;

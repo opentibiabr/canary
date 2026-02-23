@@ -125,6 +125,10 @@ TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player,
 		}
 	}
 
+	if (instantSpell->getName() == "Find Person" && !player->canBeExived(param)) {
+		return TALKACTION_FAILED;
+	}
+
 	if (instantSpell->playerCastInstant(player, param)) {
 		words = instantSpell->getWords();
 

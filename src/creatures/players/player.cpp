@@ -6580,6 +6580,68 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
+bool Player::canBeExived(const std::string &spellParam) {
+	if (g_game().getWorldType() != WORLD_TYPE_NO_PVP) {
+		return true;
+	}
+
+	const auto &targetPlayer = g_game().getPlayerByName(spellParam);
+	if (!targetPlayer) {
+		return false;
+	}
+
+	const auto &targetRestrictions = targetPlayer->getExivaRestrictions();
+
+	if (targetRestrictions.allowAll) {
+		return true;
+	}
+
+	if (targetRestrictions.allowOwnGuild) {
+		const auto &sourceGuild = getGuild();
+		const auto &targetGuild = targetPlayer->getGuild();
+		if (sourceGuild && targetGuild && sourceGuild->getId() == targetGuild->getId()) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowOwnParty) {
+		const auto &sourceParty = getParty();
+		const auto &targetParty = targetPlayer->getParty();
+		if (sourceParty && targetParty && sourceParty == targetParty) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowVipList && targetPlayer->vip().exists(account->getID())) {
+		return true;
+	}
+
+	if (targetRestrictions.allowGuildWhitelist) {
+		auto it = std::ranges::find_if(targetRestrictions.guildWhitelist, [&](const auto &guildName) {
+			const auto &guild = getGuild();
+			return guild && guildName == guild->getName();
+		});
+
+		if (it != targetRestrictions.guildWhitelist.end()) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowPlayerWhiteList) {
+		auto it = std::ranges::find_if(targetRestrictions.playerWhitelist, [&](const auto &playerName) {
+			return playerName == getName();
+		});
+
+		if (it != targetRestrictions.playerWhitelist.end()) {
+			return true;
+		}
+	}
+
+	sendTextMessage(MESSAGE_TRADE, "The character you are trying to find with Exiva is currently protected from your spell.");
+
+	return false;
+}
+
 // tile
 // send methods
 // tile
@@ -8570,6 +8632,12 @@ void Player::sendRemoveContainerItem(const std::shared_ptr<Container> &container
 void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const {
 	if (client) {
 		client->sendContainer(cid, container, hasParent, firstIndex);
+	}
+}
+
+void Player::sendExivaRestrictions() {
+	if (client) {
+		client->sendExivaRestrictions();
 	}
 }
 
@@ -12379,4 +12447,8 @@ void Player::sendSpellCooldowns() {
 		}
 		sendSpellCooldown(spellId, ticks);
 	}
+}
+
+ExivaRestrictions &Player::getExivaRestrictions() {
+	return exivaRestrictions;
 }

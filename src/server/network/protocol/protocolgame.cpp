@@ -1329,7 +1329,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xC9: /* update tile */
 			break;
 		case 0xCA:
-			parseUpdateContainer(msg);
+			parseExivaRestrictions(msg);
 			break;
 		case 0xCB:
 			parseBrowseField(msg);
@@ -7125,7 +7125,8 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
 	if (!oldProtocol) {
-		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
+		msg.addByte(g_game().getWorldType() == WORLD_TYPE_NO_PVP ? 0x01 : 0x00); // exiva button enabled
+		sendExivaRestrictions(true);
 	}
 
 	writeToOutputBuffer(msg);
@@ -10253,4 +10254,121 @@ void ProtocolGame::parseAimAtTarget(NetworkMessage &msg) {
 		uint8_t state = msg.getByte(); // State: 1 = enabled, 0 = disabled
 		player->updateAimAtTargetSpells(spellId, state); // Update player's config
 	}
+}
+
+void ProtocolGame::parseExivaRestrictions(NetworkMessage &msg) {
+	auto &restrictions = player->getExivaRestrictions();
+
+	bool allowAll = msg.getByte();
+	bool allowOwnGuild = msg.getByte();
+	bool allowOwnParty = msg.getByte();
+	bool allowVipList = msg.getByte();
+	bool allowWhitelist = msg.getByte();
+	bool allowGuildWhitelist = msg.getByte();
+
+	restrictions.allowAll = allowAll;
+	restrictions.allowOwnGuild = allowOwnGuild;
+	restrictions.allowOwnParty = allowOwnParty;
+	restrictions.allowVipList = allowVipList;
+	restrictions.allowGuildWhitelist = allowGuildWhitelist;
+
+	std::vector<std::string> addedPlayerNames;
+	const auto playerWhiteListSize = msg.get<uint16_t>();
+	for (uint16_t i = 0; i < playerWhiteListSize; i++) {
+		std::string playerName = msg.getString();
+		restrictions.playerWhitelist.push_back(playerName);
+		addedPlayerNames.push_back(playerName);
+	}
+
+	std::vector<std::string> removedPlayerNames;
+	const auto playerWhiteListRemovedSize = msg.get<uint16_t>();
+	for (uint16_t i = 0; i < playerWhiteListRemovedSize; i++) {
+		std::string removedPlayerName = msg.getString();
+
+		restrictions.playerWhitelist.erase(
+			std::remove(restrictions.playerWhitelist.begin(), restrictions.playerWhitelist.end(), removedPlayerName),
+			restrictions.playerWhitelist.end()
+		);
+
+		removedPlayerNames.push_back(removedPlayerName);
+	}
+
+	std::vector<std::string> addedGuildNames;
+	const auto guildWhitelistSize = msg.get<uint16_t>();
+	for (uint16_t i = 0; i < guildWhitelistSize; i++) {
+		std::string guildName = msg.getString();
+		restrictions.guildWhitelist.push_back(guildName);
+		addedGuildNames.push_back(guildName);
+	}
+
+	std::vector<std::string> removedGuildNames;
+	const auto guildWhiteListRemovedSize = msg.get<uint16_t>();
+	for (uint16_t i = 0; i < guildWhiteListRemovedSize; i++) {
+		std::string removedGuildName = msg.getString();
+
+		restrictions.guildWhitelist.erase(
+			std::remove(restrictions.guildWhitelist.begin(), restrictions.guildWhitelist.end(), removedGuildName),
+			restrictions.guildWhitelist.end()
+		);
+
+		removedGuildNames.push_back(removedGuildName);
+	}
+
+	sendExivaRestrictions(false, addedPlayerNames, removedPlayerNames, addedGuildNames, removedGuildNames);
+}
+
+void ProtocolGame::sendExivaRestrictions(
+	bool isLogin /* = false */,
+	const std::vector<std::string> &addedPlayerNames /* = {} */,
+	const std::vector<std::string> &removedPlayerNames /* = {} */,
+	const std::vector<std::string> &addedGuildNames /* = {} */,
+	const std::vector<std::string> &removedGuildNames /* = {} */
+) {
+	const auto &restrictions = player->getExivaRestrictions();
+
+	NetworkMessage msg;
+
+	msg.addByte(0xCA);
+	msg.addByte(restrictions.allowAll);
+	msg.addByte(restrictions.allowOwnGuild);
+	msg.addByte(restrictions.allowOwnParty);
+	msg.addByte(restrictions.allowVipList);
+	msg.addByte(restrictions.allowPlayerWhiteList);
+	msg.addByte(restrictions.allowGuildWhitelist);
+
+	if (isLogin) {
+		msg.add<uint16_t>(restrictions.playerWhitelist.size());
+		for (const auto &name : restrictions.playerWhitelist) {
+			msg.addString(name);
+		}
+		msg.add<uint16_t>(0x00);
+	} else {
+		msg.add<uint16_t>(addedPlayerNames.size());
+		for (const auto &addedName : addedPlayerNames) {
+			msg.addString(addedName);
+		}
+		msg.add<uint16_t>(removedPlayerNames.size());
+		for (const auto &removedName : removedPlayerNames) {
+			msg.addString(removedName);
+		}
+	}
+
+	if (isLogin) {
+		msg.add<uint16_t>(restrictions.guildWhitelist.size());
+		for (const auto &name : restrictions.guildWhitelist) {
+			msg.addString(name);
+		}
+		msg.add<uint16_t>(0x00);
+	} else {
+		msg.add<uint16_t>(addedGuildNames.size());
+		for (const auto &addedName : addedGuildNames) {
+			msg.addString(addedName);
+		}
+		msg.add<uint16_t>(removedGuildNames.size());
+		for (const auto &removedName : removedGuildNames) {
+			msg.addString(removedName);
+		}
+	}
+
+	writeToOutputBuffer(msg);
 }

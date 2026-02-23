@@ -105,6 +105,18 @@ struct OpenContainer {
 	uint16_t index;
 };
 
+struct ExivaRestrictions {
+	bool allowAll = false;
+	bool allowOwnGuild = true;
+	bool allowOwnParty = true;
+	bool allowVipList = true;
+	bool allowPlayerWhiteList = true;
+	bool allowGuildWhitelist = true;
+
+	std::vector<std::string> playerWhitelist;
+	std::vector<std::string> guildWhitelist;
+};
+
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
@@ -155,6 +167,8 @@ public:
 	std::shared_ptr<const Player> getPlayer() const override {
 		return static_self_cast<Player>();
 	}
+
+	ExivaRestrictions &getExivaRestrictions();
 
 	/**
 	 * @brief Gets the current virtue of the player.
@@ -876,6 +890,8 @@ public:
 
 	size_t getMaxDepotItems() const;
 
+	bool canBeExived(const std::string &spellParam);
+
 	// tile
 	// send methods
 	// tile
@@ -916,6 +932,8 @@ public:
 	void sendUpdateContainerItem(const std::shared_ptr<Container> &container, uint16_t slot, const std::shared_ptr<Item> &newItem);
 	void sendRemoveContainerItem(const std::shared_ptr<Container> &container, uint16_t slot);
 	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const;
+
+	void sendExivaRestrictions();
 
 	// Monk Update
 	void sendMonkData(MonkData_t type, uint8_t value);
@@ -1744,6 +1762,8 @@ private:
 	Faction_t faction = FACTION_PLAYER;
 	QuickLootFilter_t quickLootFilter {};
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
+
+	ExivaRestrictions exivaRestrictions;
 
 	bool chaseMode = false;
 	bool secureMode = true;

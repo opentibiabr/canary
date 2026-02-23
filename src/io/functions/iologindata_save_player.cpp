@@ -168,6 +168,8 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	savePlayerSystems(player);
 
+	savePlayerExivaRestrictions(player);
+
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
@@ -804,4 +806,35 @@ void IOLoginDataSave::savePlayerSystems(const std::shared_ptr<Player> &player) {
 	if (harmony > 0) {
 		player->kv()->scoped("spells")->set("harmony", harmony);
 	}
+}
+
+void IOLoginDataSave::savePlayerExivaRestrictions(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return;
+	}
+
+	const auto &restrictions = player->getExivaRestrictions();
+
+	const auto &scope = player->kv()->scoped("exiva-restrictions");
+
+	scope->set("allowAll", restrictions.allowAll);
+	scope->set("allowOwnGuild", restrictions.allowOwnGuild);
+	scope->set("allowOwnParty", restrictions.allowOwnParty);
+	scope->set("allowVipList", restrictions.allowVipList);
+	scope->set("allowPlayerWhiteList", restrictions.allowPlayerWhiteList);
+	scope->set("allowGuildWhitelist", restrictions.allowGuildWhitelist);
+
+	ArrayType playerArrayWrapper;
+	for (const auto &playerName : restrictions.playerWhitelist) {
+		playerArrayWrapper.push_back(playerName);
+	}
+
+	scope->set("playerWhitelist", ValueWrapper(playerArrayWrapper));
+
+	ArrayType guildArrayWrapper;
+	for (const auto &guildName : restrictions.guildWhitelist) {
+		guildArrayWrapper.push_back(guildName);
+	}
+
+	scope->set("guildWhitelist", ValueWrapper(guildArrayWrapper));
 }

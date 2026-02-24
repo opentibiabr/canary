@@ -1036,7 +1036,7 @@ void IOLoginDataLoad::loadPlayerUpdateSystem(const std::shared_ptr<Player> &play
 	player->updateItemsLight(true);
 }
 
-void IOLoginDataLoad::loadPlayerExivaRestrictions(const std::shared_ptr<Player>& player) {
+void IOLoginDataLoad::loadPlayerExivaRestrictions(const std::shared_ptr<Player> &player) {
 	if (!player) {
 		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
@@ -1056,7 +1056,7 @@ void IOLoginDataLoad::loadPlayerExivaRestrictions(const std::shared_ptr<Player>&
 	const auto playerWhitelistOpt = scope->get("playerWhitelist");
 	if (playerWhitelistOpt.has_value()) {
 		const auto playerWhitelist = playerWhitelistOpt.value().get<ArrayType>();
-		for (const auto& playerName : playerWhitelist) {
+		for (const auto &playerName : playerWhitelist) {
 			restrictions.playerWhitelist.push_back(playerName);
 		}
 	}

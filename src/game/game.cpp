@@ -1984,8 +1984,7 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 			}
 
 			if (topParentIsStoreInbox) {
-				// Internal reorganization of the Store Inbox:
-				// allow only the item you have seen from your own Store Inbox and for mobile.
+				// Internal reorganization of the Store Inbox: allow only the item you have seen from your own Store Inbox and for mobile
 				if (!(fromIsStoreInbox && (item->isMovable() || item->getID() == ITEM_GOLD_POUCH))) {
 					return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
 				}

@@ -6612,7 +6612,7 @@ bool Player::canExiva(const std::string &spellParam) {
 		}
 	}
 
-	if (targetRestrictions.allowVipList && targetPlayer->vip().exists(account->getID())) {
+	if (targetRestrictions.allowVipList && targetPlayer->vip().exists(getGUID())) {
 		return true;
 	}
 

@@ -28,15 +28,28 @@ end
 
 -- Stub globals required by npc.lua
 logger = { error = function() end }
-Npc = setmetatable({}, { __call = function() return nil end })
+Npc = setmetatable({}, {
+	__call = function()
+		return nil
+	end,
+})
 TALKTYPE_PRIVATE_NP = 0
 addEvent = function() end
 TAG_PLAYERNAME = 1
 TAG_TIME = 2
 TAG_BLESSCOST = 3
 TAG_PVPBLESSCOST = 4
-Blessings = { getBlessingCost = function() return 0 end, getPvpBlessingCost = function() return 0 end }
-function getFormattedWorldTime() return "" end
+Blessings = {
+	getBlessingCost = function()
+		return 0
+	end,
+	getPvpBlessingCost = function()
+		return 0
+	end,
+}
+function getFormattedWorldTime()
+	return ""
+end
 
 -- Load MsgContains from the real source
 dofile("data/npclib/npc.lua")

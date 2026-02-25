@@ -74,6 +74,10 @@ std::vector<uint32_t> WeaponProficiency::standardExperience = {
 WeaponProficiency::WeaponProficiency(Player &player) :
 	m_player(player) { }
 
+bool WeaponProficiency::isValidWeaponId(uint16_t weaponId) const {
+	return weaponId > 0 && weaponId < Item::items.size();
+}
+
 static void registerPerks(const nlohmann::json &perksJson, ProficiencyLevel &proficiencyLevel) {
 	using enum WeaponProficiencyBonus_t;
 
@@ -218,7 +222,7 @@ void WeaponProficiency::load() {
 
 		// Validate that the stored weapon ID has a valid proficiencyId
 		const auto weaponId = static_cast<uint16_t>(parsedId);
-		if (weaponId == 0 || weaponId >= Item::items.size() || Item::items[weaponId].proficiencyId == 0) {
+		if (!isValidWeaponId(weaponId) || Item::items[weaponId].proficiencyId == 0) {
 			g_logger().warn("{} - Skipping invalid weapon proficiency data for weapon ID '{}' (player: {})", __FUNCTION__, parsedId, m_player.getName());
 			continue;
 		}
@@ -474,6 +478,11 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 		return;
 	}
 
+	if (!isValidWeaponId(weaponId)) {
+		g_logger().error("{} - Weapon ID out of range: {}", __FUNCTION__, weaponId);
+		return;
+	}
+
 	auto proficiencyId = Item::items[weaponId].proficiencyId;
 	if (!proficiencies.contains(proficiencyId)) {
 		g_logger().error("{} - Proficiency not found for weapon ID: {}", __FUNCTION__, weaponId);
@@ -521,16 +530,18 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> We
 }
 
 const std::vector<uint32_t> &WeaponProficiency::getExperienceArray(uint16_t weaponId) const {
-	if (weaponId == 0) {
+	if (!isValidWeaponId(weaponId)) {
 		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
 		return standardExperience;
 	}
 
-	if (Item::items[weaponId].ammoType == AMMO_BOLT) {
+	const auto &itemType = Item::items[weaponId];
+	if (itemType.ammoType == AMMO_BOLT) {
 		return crossbowExperience;
 	}
 
-	if (!Item::items[weaponId].vocationString.empty()) {
+	const auto weaponType = itemType.weaponType;
+	if (weaponType == WEAPON_SWORD || weaponType == WEAPON_CLUB || weaponType == WEAPON_AXE) {
 		return knightExperience;
 	}
 
@@ -538,6 +549,11 @@ const std::vector<uint32_t> &WeaponProficiency::getExperienceArray(uint16_t weap
 }
 
 uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
+	if (!isValidWeaponId(weaponId)) {
+		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
+		return 0;
+	}
+
 	const auto &experienceArray = getExperienceArray(weaponId);
 
 	auto prof_it = proficiencies.find(Item::items[weaponId].proficiencyId);
@@ -568,6 +584,11 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 }
 
 uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
+	if (!isValidWeaponId(weaponId)) {
+		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
+		return 0;
+	}
+
 	const auto &experienceArray = getExperienceArray(weaponId);
 	auto prof_it = proficiencies.find(Item::items[weaponId].proficiencyId);
 	if (prof_it == proficiencies.end()) {
@@ -601,7 +622,7 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	}
 
 	// Validate that the item has a valid proficiency
-	if (weaponId >= Item::items.size() || Item::items[weaponId].proficiencyId == 0) {
+	if (!isValidWeaponId(weaponId) || Item::items[weaponId].proficiencyId == 0) {
 		g_logger().debug("{} - Weapon ID '{}' has no proficiency assigned", __FUNCTION__, weaponId);
 		return;
 	}
@@ -668,6 +689,11 @@ bool WeaponProficiency::isUpgradeAvailable(uint16_t weaponId /* = 0 */) const {
 
 	if (weaponId == 0) {
 		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
+		return false;
+	}
+
+	if (!isValidWeaponId(weaponId)) {
+		g_logger().error("{} - Weapon ID out of range: {}", __FUNCTION__, weaponId);
 		return false;
 	}
 
@@ -958,7 +984,13 @@ uint16_t WeaponProficiency::getSkillValueFromWeapon() const {
 		return 0;
 	}
 
-	switch (Item::items[weapon->getID()].type) {
+	const auto weaponId = weapon->getID();
+	if (!isValidWeaponId(weaponId)) {
+		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
+		return 0;
+	}
+
+	switch (Item::items[weaponId].type) {
 		case ITEM_TYPE_SWORD:
 			return m_player.getSkillLevel(SKILL_SWORD);
 		case ITEM_TYPE_AXE:

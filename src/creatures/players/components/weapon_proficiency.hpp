@@ -121,6 +121,8 @@ public:
 	void clearAllStats();
 
 private:
+	[[nodiscard]] bool isValidWeaponId(uint16_t weaponId) const;
+
 	Player &m_player;
 
 	std::unordered_map<uint16_t, WeaponProficiencyData> proficiency;

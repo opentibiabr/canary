@@ -2304,24 +2304,26 @@ void ProtocolGame::parseImbuementAction(NetworkMessage &msg) {
 		auto itemId = msg.get<uint16_t>();
 		auto slotIndex = msg.getByte();
 
-		if (Item::items[itemId].imbuementSlot <= 0) {
-			return;
-		}
-
-		if (slotId >= 0x40) {
+		const bool isContainerItem = slotId >= 0x40;
+		if (isContainerItem) {
 			// Padding to not conflict with inventory slot
 			// the client sends with this padding
 			slotId -= 0x40;
 			const auto &container = player->getContainerByID(slotId);
 			item = container ? container->getItemByIndex(slotIndex) : nullptr;
-			if (!item || item->getID() != itemId) {
-				return;
-			}
 		} else {
 			item = player->getInventoryItem(static_cast<Slots_t>(slotId));
-			if (!item || item->getID() != itemId) {
-				return;
+		}
+
+		if (!item || item->getID() != itemId) {
+			return;
+		}
+
+		if (item->getImbuementSlot() <= 0) {
+			if (isContainerItem) {
+				player->sendImbuementResult("This item is not imbuable.");
 			}
+			return;
 		}
 	}
 

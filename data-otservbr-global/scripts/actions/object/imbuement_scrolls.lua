@@ -9,8 +9,13 @@ function imbuement.onUse(player, item, fromPosition, target, toPosition, isHotke
 		return true
 	end
 
+	if target:getType():getImbuementSlot() <= 0 then
+		player:sendCancelMessage("This item is not imbuable.")
+		return true
+	end
+
 	player:applyImbuementScroll(target, item)
-	
+
 	return true
 end
 

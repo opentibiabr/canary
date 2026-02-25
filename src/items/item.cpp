@@ -502,16 +502,34 @@ void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 }
 
 bool Item::canAddImbuement(uint8_t slot, const std::shared_ptr<Player> &player, const Imbuement* imbuement) {
+	if (!player) {
+		g_logger().error("[Item::canAddImbuement] - Null player while validating imbuement for item id {}", getID());
+		return false;
+	}
+
+	if (!imbuement) {
+		g_logger().error("[Item::canAddImbuement] - Null imbuement while validating item id {}", getID());
+		player->sendImbuementResult("Invalid imbuement selection.");
+		return false;
+	}
+
 	auto itemSlots = getImbuementSlot();
 	if (itemSlots == 0 || slot >= itemSlots) {
-		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", player->getName(), slot);
+		g_logger().error("[Item::canAddImbuement] - Player {} attempted to apply imbuement in an invalid slot ({})", player->getName(), slot);
 		player->sendImbuementResult("Invalid slot selection.");
 		return false;
 	}
 
-	// Get category imbuement for acess category id
+	// Get category imbuement for access category id
 	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	if (!categoryImbuement) {
+		g_logger().error("[Item::canAddImbuement] - Invalid imbuement category '{}' for item id {}", imbuement->getCategory(), getID());
+		player->sendImbuementResult("This object cannot be imbued with that scroll.");
+		return false;
+	}
+
 	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+		player->sendImbuementResult("This object cannot be imbued with that scroll.");
 		return false;
 	}
 

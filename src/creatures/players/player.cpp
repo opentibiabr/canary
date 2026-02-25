@@ -2485,6 +2485,11 @@ void Player::applyScrollImbuement(const std::shared_ptr<Item> &item, const std::
 		return;
 	}
 
+	const auto &thisPlayer = getPlayer();
+	if (!item->canAddImbuement(static_cast<uint8_t>(freeImbuementSlot), thisPlayer, imbuement)) {
+		return;
+	}
+
 	if (g_game().internalRemoveItem(scrollItem, 1) != RETURNVALUE_NOERROR) {
 		g_logger().error("[Player::applyScrollImbuement] - Failed to remove scroll item {} from player {}", scrollItem->getID(), getName());
 		return;

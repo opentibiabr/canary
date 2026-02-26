@@ -22,7 +22,7 @@ enum class WeaponProficiencyBonus_t : uint8_t {
 	SKILL_BONUS = 3, // bonus to the skill level of the weapon (distance, sword, axe, club, fist, magic, shield, fishing) - OK
 	SPECIALIZED_MAGIC_LEVEL = 4, // bonus magic level for specialized spells - OK
 	SPELL_AUGMENT = 5, // bonus damage against specific creatures based on spell augment - OK
-	BESTIARY = 6, // bonus damage against specific creatures based on bestiary race - OK
+	WEAPON_PROFICIENCY_BESTIARY = 6, // renamed from BESTIARY to avoid shadowing CyclopediaTitle_t::BESTIARY
 	POWERFUL_FOE_BONUS = 7, // bonus damage against bosses, influenced and fiendish creatures - OK
 	CRITICAL_HIT_CHANCE = 8, // chance to deal critical damage with the weapon - OK
 	ELEMENTAL_HIT_CHANCE = 9, // chance to deal elemental damage with the weapon - OK

@@ -121,6 +121,9 @@ public:
 	void clearAllStats();
 
 private:
+	void applyCriticalBonus(const ProficiencyPerk &perk);
+	void applySkillPercentageBonus(const ProficiencyPerk &perk);
+
 	[[nodiscard]] bool isValidWeaponId(uint16_t weaponId) const;
 
 	Player &m_player;

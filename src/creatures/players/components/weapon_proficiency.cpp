@@ -227,11 +227,9 @@ void WeaponProficiency::load() {
 			continue;
 		}
 
-		auto kv_it = wp_kv->get(key);
-		if (!kv_it.has_value()) {
-			continue;
+		if (auto val = wp_kv->get(key); val.has_value()) {
+			proficiency[weaponId] = deserialize(val.value());
 		}
-		proficiency[weaponId] = deserialize(kv_it.value());
 	}
 }
 
@@ -357,11 +355,9 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 
 	const auto &perks = getSelectedPerks(weaponId);
 	for (const auto &selectedPerk : perks) {
-		WeaponProficiencyCriticalBonus criticalBonus;
-		WeaponProficiencySpells::Bonus augmentBonus;
-
 		switch (selectedPerk.type) {
 			case SPELL_AUGMENT: {
+				WeaponProficiencySpells::Bonus augmentBonus;
 				switch (selectedPerk.augmentType) {
 					case AugmentType::DAMAGE:
 						augmentBonus.increase.damage = selectedPerk.value;
@@ -396,29 +392,15 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 				break;
 			case AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE:
 			case AUTO_ATTACK_CRITICAL_HIT_CHANCE:
-				criticalBonus.chance = selectedPerk.type == AUTO_ATTACK_CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
-				criticalBonus.damage = selectedPerk.type == AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-				addAutoAttackCritical(criticalBonus);
-				break;
 			case ELEMENTAL_HIT_CHANCE:
 			case ELEMENTAL_CRITICAL_EXTRA_DAMAGE:
-				criticalBonus.chance = selectedPerk.type == ELEMENTAL_HIT_CHANCE ? selectedPerk.value : 0;
-				criticalBonus.damage = selectedPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-				addElementCritical(selectedPerk.element, criticalBonus);
-				break;
 			case RUNE_CRITICAL_HIT_CHANCE:
 			case RUNE_CRITICAL_EXTRA_DAMAGE:
-				criticalBonus.chance = selectedPerk.type == RUNE_CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
-				criticalBonus.damage = selectedPerk.type == RUNE_CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-				addRunesCritical(criticalBonus);
-				break;
 			case CRITICAL_HIT_CHANCE:
 			case CRITICAL_EXTRA_DAMAGE:
-				criticalBonus.chance = selectedPerk.type == CRITICAL_HIT_CHANCE ? selectedPerk.value : 0;
-				criticalBonus.damage = selectedPerk.type == CRITICAL_EXTRA_DAMAGE ? selectedPerk.value : 0;
-				addGeneralCritical(criticalBonus);
+				applyCriticalBonus(selectedPerk);
 				break;
-			case BESTIARY:
+			case WEAPON_PROFICIENCY_BESTIARY:
 				addBestiaryDamage(selectedPerk.bestiaryId, selectedPerk.value);
 				break;
 			case POWERFUL_FOE_BONUS:
@@ -435,13 +417,9 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 				setPerfectShotBonus(selectedPerk.range, selectedPerk.value);
 				break;
 			case SKILL_PERCENTAGE_AUTO_ATTACK:
-				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::AutoAttack, selectedPerk.value);
-				break;
 			case SKILL_PERCENTAGE_SPELL_DAMAGE:
-				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::SpellDamage, selectedPerk.value);
-				break;
 			case SKILL_PERCENTAGE_SPELL_HEALING:
-				addSkillPercentage(selectedPerk.skillId, SkillPercentage_t::SpellHealing, selectedPerk.value);
+				applySkillPercentageBonus(selectedPerk);
 				break;
 			default:
 				addStat(selectedPerk.type, selectedPerk.value);
@@ -450,6 +428,53 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 	}
 
 	m_player.sendSkills();
+}
+
+void WeaponProficiency::applyCriticalBonus(const ProficiencyPerk &perk) {
+	using enum WeaponProficiencyBonus_t;
+	WeaponProficiencyCriticalBonus criticalBonus;
+	criticalBonus.chance = (perk.type == AUTO_ATTACK_CRITICAL_HIT_CHANCE || perk.type == ELEMENTAL_HIT_CHANCE || perk.type == RUNE_CRITICAL_HIT_CHANCE || perk.type == CRITICAL_HIT_CHANCE) ? perk.value : 0;
+	criticalBonus.damage = (perk.type == AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE || perk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE || perk.type == RUNE_CRITICAL_EXTRA_DAMAGE || perk.type == CRITICAL_EXTRA_DAMAGE) ? perk.value : 0;
+
+	switch (perk.type) {
+		case AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE:
+		case AUTO_ATTACK_CRITICAL_HIT_CHANCE:
+			addAutoAttackCritical(criticalBonus);
+			break;
+		case ELEMENTAL_HIT_CHANCE:
+		case ELEMENTAL_CRITICAL_EXTRA_DAMAGE:
+			addElementCritical(perk.element, criticalBonus);
+			break;
+		case RUNE_CRITICAL_HIT_CHANCE:
+		case RUNE_CRITICAL_EXTRA_DAMAGE:
+			addRunesCritical(criticalBonus);
+			break;
+		case CRITICAL_HIT_CHANCE:
+		case CRITICAL_EXTRA_DAMAGE:
+			addGeneralCritical(criticalBonus);
+			break;
+		default:
+			break;
+	}
+}
+
+void WeaponProficiency::applySkillPercentageBonus(const ProficiencyPerk &perk) {
+	using enum WeaponProficiencyBonus_t;
+	SkillPercentage_t type;
+	switch (perk.type) {
+		case SKILL_PERCENTAGE_AUTO_ATTACK:
+			type = SkillPercentage_t::AutoAttack;
+			break;
+		case SKILL_PERCENTAGE_SPELL_DAMAGE:
+			type = SkillPercentage_t::SpellDamage;
+			break;
+		case SKILL_PERCENTAGE_SPELL_HEALING:
+			type = SkillPercentage_t::SpellHealing;
+			break;
+		default:
+			return;
+	}
+	addSkillPercentage(perk.skillId, type, perk.value);
 }
 
 std::vector<ProficiencyPerk> WeaponProficiency::getSelectedPerks(uint16_t weaponId) const {
@@ -461,9 +486,8 @@ std::vector<ProficiencyPerk> WeaponProficiency::getSelectedPerks(uint16_t weapon
 }
 
 void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
-	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
-		it->second.perks.clear();
-	}
+	[[maybe_unused]] const auto &unusedProficiency = proficiency.erase(weaponId);
+	m_player.sendWeaponProficiency(weaponId);
 }
 
 void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
@@ -489,12 +513,12 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 		return;
 	}
 
-	const auto &allProficiencies = proficiencies.at(proficiencyId);
-	if (level >= allProficiencies.level.size()) {
+	const auto &info = proficiencies.at(proficiencyId);
+	if (level >= info.level.size()) {
 		g_logger().error("{} - Proficiency level exceeds maximum size for weapon ID: {}", __FUNCTION__, weaponId);
 		return;
 	}
-	const auto &selectedLevel = allProficiencies.level.at(level);
+	const auto &selectedLevel = info.level.at(level);
 
 	if (perkIndex >= selectedLevel.perks.size()) {
 		g_logger().error("{} - Proficiency level {} exceeds maximum perks size for weapon ID: {}", __FUNCTION__, level, weaponId);
@@ -503,7 +527,7 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 	const auto &selectedPerk = selectedLevel.perks.at(perkIndex);
 
 	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
-		it->second.perks.emplace_back(selectedPerk);
+		it->second.perks.push_back(selectedPerk);
 	}
 }
 
@@ -595,13 +619,14 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 		g_logger().error("{} - Proficiency not found for weapon ID: {}", __FUNCTION__, weaponId);
 		return 0;
 	}
+
 	const auto &proficiencyInfo = prof_it->second;
 	if (experienceArray.empty()) {
 		return 0;
 	}
 
 	if (!proficiency.contains(weaponId)) {
-		return experienceArray[experienceArray.size() - 1];
+		return experienceArray.back();
 	}
 
 	if (proficiencyInfo.maxLevel == 0) {
@@ -634,7 +659,7 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	uint32_t maxExperience = getMaxExperience(weaponId);
 
 	if (!proficiency.contains(weaponId)) {
-		[[maybe_unused]] const auto &unusedProficiency = proficiency.emplace(weaponId, experience > maxExperience ? maxExperience : experience);
+		[[maybe_unused]] const auto &unusedProficiency = proficiency.emplace(weaponId, std::min(experience, maxExperience));
 		m_player.sendWeaponProficiency(weaponId);
 
 		return;
@@ -1189,7 +1214,7 @@ std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiari
 
 	const auto &perks = getSelectedPerks(weaponId);
 	for (const auto &perk : perks) {
-		if (perk.type == BESTIARY && !perk.bestiaryName.empty()) {
+		if (perk.type == WEAPON_PROFICIENCY_BESTIARY && !perk.bestiaryName.empty()) {
 			bestiariesDamage.emplace_back(perk.bestiaryName, perk.value);
 		}
 	}

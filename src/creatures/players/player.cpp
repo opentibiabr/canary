@@ -62,6 +62,7 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/combat/spells.hpp"
+#include "utils/tools.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -6580,7 +6581,7 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
-bool Player::canExiva(const std::string &spellParam) {
+bool Player::canExiva(const std::string &spellParam) const {
 	if (g_game().getWorldType() != WORLD_TYPE_NO_PVP) {
 		return true;
 	}
@@ -6617,21 +6618,17 @@ bool Player::canExiva(const std::string &spellParam) {
 	}
 
 	if (targetRestrictions.allowGuildWhitelist) {
-		auto it = std::ranges::find_if(targetRestrictions.guildWhitelist, [&](const auto &guildName) {
-			const auto &guild = getGuild();
-			return guild && guildName == guild->getName();
-		});
-
-		if (it != targetRestrictions.guildWhitelist.end()) {
-			return true;
+		const auto &guild = getGuild();
+		if (guild) {
+			auto it = std::ranges::find(targetRestrictions.guildWhitelist, guild->getId());
+			if (it != targetRestrictions.guildWhitelist.end()) {
+				return true;
+			}
 		}
 	}
 
 	if (targetRestrictions.allowPlayerWhitelist) {
-		auto it = std::ranges::find_if(targetRestrictions.playerWhitelist, [&](const auto &playerName) {
-			return playerName == getName();
-		});
-
+		auto it = std::ranges::find(targetRestrictions.playerWhitelist, getGUID());
 		if (it != targetRestrictions.playerWhitelist.end()) {
 			return true;
 		}
@@ -12447,6 +12444,10 @@ void Player::sendSpellCooldowns() {
 	}
 }
 
-ExivaRestrictions &Player::getExivaRestrictions() {
+Player::ExivaRestrictions &Player::getExivaRestrictions() {
+	return exivaRestrictions;
+}
+
+const Player::ExivaRestrictions &Player::getExivaRestrictions() const {
 	return exivaRestrictions;
 }

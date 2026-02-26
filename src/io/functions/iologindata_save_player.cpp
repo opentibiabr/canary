@@ -825,15 +825,15 @@ void IOLoginDataSave::savePlayerExivaRestrictions(const std::shared_ptr<Player> 
 	scope->set("allowGuildWhitelist", restrictions.allowGuildWhitelist);
 
 	ArrayType playerArrayWrapper;
-	for (const auto &playerName : restrictions.playerWhitelist) {
-		playerArrayWrapper.push_back(playerName);
+	for (const auto &playerGuid : restrictions.playerWhitelist) {
+		playerArrayWrapper.push_back(ValueWrapper(static_cast<int>(playerGuid)));
 	}
 
 	scope->set("playerWhitelist", ValueWrapper(playerArrayWrapper));
 
 	ArrayType guildArrayWrapper;
-	for (const auto &guildName : restrictions.guildWhitelist) {
-		guildArrayWrapper.push_back(guildName);
+	for (const auto &guildId : restrictions.guildWhitelist) {
+		guildArrayWrapper.push_back(ValueWrapper(static_cast<int>(guildId)));
 	}
 
 	scope->set("guildWhitelist", ValueWrapper(guildArrayWrapper));

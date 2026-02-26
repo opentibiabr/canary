@@ -1046,26 +1046,38 @@ void IOLoginDataLoad::loadPlayerExivaRestrictions(const std::shared_ptr<Player> 
 
 	const auto &scope = player->kv()->scoped("exiva-restrictions");
 
-	restrictions.allowAll = scope->get("allowAll").value_or(false);
-	restrictions.allowOwnGuild = scope->get("allowOwnGuild").value_or(true);
-	restrictions.allowOwnParty = scope->get("allowOwnParty").value_or(true);
-	restrictions.allowVipList = scope->get("allowVipList").value_or(true);
-	restrictions.allowPlayerWhitelist = scope->get("allowPlayerWhitelist").value_or(true);
-	restrictions.allowGuildWhitelist = scope->get("allowGuildWhitelist").value_or(true);
+	if (auto v = scope->get("allowAll")) {
+		restrictions.allowAll = v->getNumber() != 0;
+	}
+	if (auto v = scope->get("allowOwnGuild")) {
+		restrictions.allowOwnGuild = v->getNumber() != 0;
+	}
+	if (auto v = scope->get("allowOwnParty")) {
+		restrictions.allowOwnParty = v->getNumber() != 0;
+	}
+	if (auto v = scope->get("allowVipList")) {
+		restrictions.allowVipList = v->getNumber() != 0;
+	}
+	if (auto v = scope->get("allowPlayerWhitelist")) {
+		restrictions.allowPlayerWhitelist = v->getNumber() != 0;
+	}
+	if (auto v = scope->get("allowGuildWhitelist")) {
+		restrictions.allowGuildWhitelist = v->getNumber() != 0;
+	}
 
 	const auto playerWhitelistOpt = scope->get("playerWhitelist");
 	if (playerWhitelistOpt.has_value()) {
 		const auto playerWhitelist = playerWhitelistOpt.value().get<ArrayType>();
-		for (const auto &playerName : playerWhitelist) {
-			restrictions.playerWhitelist.push_back(playerName);
+		for (const auto &playerGuid : playerWhitelist) {
+			restrictions.playerWhitelist.push_back(playerGuid.get<IntType>());
 		}
 	}
 
 	const auto guildWhitelistOpt = scope->get("guildWhitelist");
 	if (guildWhitelistOpt.has_value()) {
 		const auto guildWhitelist = guildWhitelistOpt.value().get<ArrayType>();
-		for (const auto &playerName : guildWhitelist) {
-			restrictions.guildWhitelist.push_back(playerName);
+		for (const auto &guildId : guildWhitelist) {
+			restrictions.guildWhitelist.push_back(guildId.get<IntType>());
 		}
 	}
 }

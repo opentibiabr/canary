@@ -105,18 +105,6 @@ struct OpenContainer {
 	uint16_t index;
 };
 
-struct ExivaRestrictions {
-	bool allowAll = false;
-	bool allowOwnGuild = true;
-	bool allowOwnParty = true;
-	bool allowVipList = true;
-	bool allowPlayerWhitelist = true;
-	bool allowGuildWhitelist = true;
-
-	std::vector<std::string> playerWhitelist;
-	std::vector<std::string> guildWhitelist;
-};
-
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
@@ -168,7 +156,20 @@ public:
 		return static_self_cast<Player>();
 	}
 
+	struct ExivaRestrictions {
+		bool allowAll = false;
+		bool allowOwnGuild = true;
+		bool allowOwnParty = true;
+		bool allowVipList = true;
+		bool allowPlayerWhitelist = true;
+		bool allowGuildWhitelist = true;
+
+		std::vector<uint32_t> playerWhitelist;
+		std::vector<uint32_t> guildWhitelist;
+	};
+
 	ExivaRestrictions &getExivaRestrictions();
+	const ExivaRestrictions &getExivaRestrictions() const;
 
 	/**
 	 * @brief Gets the current virtue of the player.
@@ -890,7 +891,7 @@ public:
 
 	size_t getMaxDepotItems() const;
 
-	bool canExiva(const std::string &spellParam);
+	bool canExiva(const std::string &spellParam) const;
 
 	// tile
 	// send methods

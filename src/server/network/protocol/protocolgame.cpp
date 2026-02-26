@@ -10279,7 +10279,7 @@ void ProtocolGame::parseExivaRestrictions(NetworkMessage &msg) {
 	restrictions.allowPlayerWhitelist = allowPlayerWhitelist;
 	restrictions.allowGuildWhitelist = allowGuildWhitelist;
 
-	static constexpr uint16_t MAX_EXIVA_WHITELIST = 100;
+	const int32_t MAX_EXIVA_WHITELIST = g_configManager().getNumber(ConfigKey_t::MAX_EXIVA_WHITELIST);
 
 	std::vector<std::string> addedPlayerNames;
 	std::unordered_set<uint32_t> addedPlayerGuids;

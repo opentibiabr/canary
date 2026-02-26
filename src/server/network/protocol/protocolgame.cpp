@@ -108,7 +108,7 @@ namespace {
 			lookupAttempts++;
 			uint32_t id = lookup(name);
 			if (id != 0 && removedGuids.insert(id).second && std::erase(whitelist, id) > 0) {
-					removedNames.push_back(name);
+				removedNames.push_back(name);
 			}
 		}
 	}

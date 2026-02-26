@@ -76,6 +76,45 @@ namespace {
 		return totalIterationCount;
 	}
 
+	template <typename LookupFunc>
+	void addExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &addedNames, std::unordered_set<uint32_t> &addedGuids, int32_t maxLimit, LookupFunc lookup) {
+		const auto size = msg.get<uint16_t>();
+		uint32_t lookupAttempts = 0;
+		for (uint16_t i = 0; i < size; i++) {
+			std::string name = msg.getString();
+			if (whitelist.size() >= static_cast<size_t>(maxLimit) || addedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
+				continue;
+			}
+
+			lookupAttempts++;
+			uint32_t id = lookup(name);
+			if (id != 0 && addedGuids.insert(id).second && std::ranges::find(whitelist, id) == whitelist.end()) {
+				whitelist.push_back(id);
+				addedNames.push_back(name);
+			}
+		}
+	}
+
+	template <typename LookupFunc>
+	void removeExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &removedNames, std::unordered_set<uint32_t> &removedGuids, int32_t maxLimit, LookupFunc lookup) {
+		const auto size = msg.get<uint16_t>();
+		uint32_t lookupAttempts = 0;
+		for (uint16_t i = 0; i < size; i++) {
+			std::string name = msg.getString();
+			if (removedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
+				continue;
+			}
+
+			lookupAttempts++;
+			uint32_t id = lookup(name);
+			if (id != 0 && removedGuids.insert(id).second) {
+				if (std::erase(whitelist, id) > 0) {
+					removedNames.push_back(name);
+				}
+			}
+		}
+	}
+
 	void addOutfitAndMountBytes(NetworkMessage &msg, const std::shared_ptr<Item> &item, const CustomAttribute* attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false) {
 		auto look = attribute->getAttribute<uint16_t>();
 		msg.add<uint16_t>(look);
@@ -10261,47 +10300,6 @@ void ProtocolGame::parseAimAtTarget(NetworkMessage &msg) {
 		player->updateAimAtTargetSpells(spellId, state); // Update player's config
 	}
 }
-
-namespace {
-	template <typename LookupFunc>
-	void addExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &addedNames, std::unordered_set<uint32_t> &addedGuids, int32_t maxLimit, LookupFunc lookup) {
-		const auto size = msg.get<uint16_t>();
-		uint32_t lookupAttempts = 0;
-		for (uint16_t i = 0; i < size; i++) {
-			std::string name = msg.getString();
-			if (whitelist.size() >= static_cast<size_t>(maxLimit) || addedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
-				continue;
-			}
-
-			lookupAttempts++;
-			uint32_t id = lookup(name);
-			if (id != 0 && addedGuids.insert(id).second && std::ranges::find(whitelist, id) == whitelist.end()) {
-				whitelist.push_back(id);
-				addedNames.push_back(name);
-			}
-		}
-	}
-
-	template <typename LookupFunc>
-	void removeExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &removedNames, std::unordered_set<uint32_t> &removedGuids, int32_t maxLimit, LookupFunc lookup) {
-		const auto size = msg.get<uint16_t>();
-		uint32_t lookupAttempts = 0;
-		for (uint16_t i = 0; i < size; i++) {
-			std::string name = msg.getString();
-			if (removedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
-				continue;
-			}
-
-			lookupAttempts++;
-			uint32_t id = lookup(name);
-			if (id != 0 && removedGuids.insert(id).second) {
-				if (std::erase(whitelist, id) > 0) {
-					removedNames.push_back(name);
-				}
-			}
-		}
-	}
-} // namespace
 
 void ProtocolGame::parseExivaRestrictions(NetworkMessage &msg) {
 	if (!player || g_configManager().getString(WORLD_TYPE) != "no-pvp") {

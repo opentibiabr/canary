@@ -10262,102 +10262,86 @@ void ProtocolGame::parseAimAtTarget(NetworkMessage &msg) {
 	}
 }
 
+namespace {
+	template <typename LookupFunc>
+	void addExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &addedNames, std::unordered_set<uint32_t> &addedGuids, int32_t maxLimit, LookupFunc lookup) {
+		const auto size = msg.get<uint16_t>();
+		uint32_t lookupAttempts = 0;
+		for (uint16_t i = 0; i < size; i++) {
+			std::string name = msg.getString();
+			if (whitelist.size() >= static_cast<size_t>(maxLimit) || addedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
+				continue;
+			}
+
+			lookupAttempts++;
+			uint32_t id = lookup(name);
+			if (id != 0 && addedGuids.insert(id).second && std::ranges::find(whitelist, id) == whitelist.end()) {
+				whitelist.push_back(id);
+				addedNames.push_back(name);
+			}
+		}
+	}
+
+	template <typename LookupFunc>
+	void removeExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &removedNames, std::unordered_set<uint32_t> &removedGuids, int32_t maxLimit, LookupFunc lookup) {
+		const auto size = msg.get<uint16_t>();
+		uint32_t lookupAttempts = 0;
+		for (uint16_t i = 0; i < size; i++) {
+			std::string name = msg.getString();
+			if (removedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
+				continue;
+			}
+
+			lookupAttempts++;
+			uint32_t id = lookup(name);
+			if (id != 0 && removedGuids.insert(id).second) {
+				if (std::erase(whitelist, id) > 0) {
+					removedNames.push_back(name);
+				}
+			}
+		}
+	}
+} // namespace
+
 void ProtocolGame::parseExivaRestrictions(NetworkMessage &msg) {
+	if (!player || g_configManager().getString(WORLD_TYPE) != "no-pvp") {
+		return;
+	}
+
 	auto &restrictions = player->getExivaRestrictions();
 
-	bool allowAll = msg.getByte();
-	bool allowOwnGuild = msg.getByte();
-	bool allowOwnParty = msg.getByte();
-	bool allowVipList = msg.getByte();
-	bool allowPlayerWhitelist = msg.getByte();
-	bool allowGuildWhitelist = msg.getByte();
-
-	restrictions.allowAll = allowAll;
-	restrictions.allowOwnGuild = allowOwnGuild;
-	restrictions.allowOwnParty = allowOwnParty;
-	restrictions.allowVipList = allowVipList;
-	restrictions.allowPlayerWhitelist = allowPlayerWhitelist;
-	restrictions.allowGuildWhitelist = allowGuildWhitelist;
+	restrictions.allowAll = msg.getByte();
+	restrictions.allowOwnGuild = msg.getByte();
+	restrictions.allowOwnParty = msg.getByte();
+	restrictions.allowVipList = msg.getByte();
+	restrictions.allowPlayerWhitelist = msg.getByte();
+	restrictions.allowGuildWhitelist = msg.getByte();
 
 	const int32_t MAX_EXIVA_WHITELIST = g_configManager().getNumber(ConfigKey_t::MAX_EXIVA_WHITELIST);
 
 	std::vector<std::string> addedPlayerNames;
 	std::unordered_set<uint32_t> addedPlayerGuids;
-	uint32_t playerAdditionLookups = 0;
-	const auto playerWhiteListSize = msg.get<uint16_t>();
-	for (uint16_t i = 0; i < playerWhiteListSize; i++) {
-		std::string playerName = msg.getString();
-		if (restrictions.playerWhitelist.size() >= MAX_EXIVA_WHITELIST || addedPlayerGuids.size() >= MAX_EXIVA_WHITELIST || playerAdditionLookups >= static_cast<uint32_t>(MAX_EXIVA_WHITELIST)) {
-			continue;
-		}
-
-		playerAdditionLookups++;
-		uint32_t guid = IOLoginData::getGuidByName(playerName);
-		if (guid != 0 && addedPlayerGuids.insert(guid).second && std::ranges::find(restrictions.playerWhitelist, guid) == restrictions.playerWhitelist.end()) {
-			restrictions.playerWhitelist.push_back(guid);
-			addedPlayerNames.push_back(playerName);
-		}
-	}
+	addExivaEntries(msg, restrictions.playerWhitelist, addedPlayerNames, addedPlayerGuids, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOLoginData::getGuidByName(n);
+	});
 
 	std::vector<std::string> removedPlayerNames;
 	std::unordered_set<uint32_t> removedPlayerGuids;
-	uint32_t playerRemovalLookups = 0;
-	const auto playerWhiteListRemovedSize = msg.get<uint16_t>();
-	for (uint16_t i = 0; i < playerWhiteListRemovedSize; i++) {
-		std::string removedPlayerName = msg.getString();
-		if (removedPlayerGuids.size() >= MAX_EXIVA_WHITELIST || playerRemovalLookups >= static_cast<uint32_t>(MAX_EXIVA_WHITELIST)) {
-			continue;
-		}
-
-		playerRemovalLookups++;
-		uint32_t guid = IOLoginData::getGuidByName(removedPlayerName);
-		if (guid != 0 && removedPlayerGuids.insert(guid).second) {
-			auto it = std::remove(restrictions.playerWhitelist.begin(), restrictions.playerWhitelist.end(), guid);
-			if (it != restrictions.playerWhitelist.end()) {
-				restrictions.playerWhitelist.erase(it, restrictions.playerWhitelist.end());
-				removedPlayerNames.push_back(removedPlayerName);
-			}
-		}
-	}
+	removeExivaEntries(msg, restrictions.playerWhitelist, removedPlayerNames, removedPlayerGuids, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOLoginData::getGuidByName(n);
+	});
 
 	std::vector<std::string> addedGuildNames;
 	std::unordered_set<uint32_t> addedGuildIds;
-	uint32_t guildAdditionLookups = 0;
-	const auto guildWhitelistSize = msg.get<uint16_t>();
-	for (uint16_t i = 0; i < guildWhitelistSize; i++) {
-		std::string guildName = msg.getString();
-		if (restrictions.guildWhitelist.size() >= MAX_EXIVA_WHITELIST || addedGuildIds.size() >= MAX_EXIVA_WHITELIST || guildAdditionLookups >= static_cast<uint32_t>(MAX_EXIVA_WHITELIST)) {
-			continue;
-		}
-
-		guildAdditionLookups++;
-		uint32_t guildId = IOGuild::getGuildIdByName(guildName);
-		if (guildId != 0 && addedGuildIds.insert(guildId).second && std::ranges::find(restrictions.guildWhitelist, guildId) == restrictions.guildWhitelist.end()) {
-			restrictions.guildWhitelist.push_back(guildId);
-			addedGuildNames.push_back(guildName);
-		}
-	}
+	addExivaEntries(msg, restrictions.guildWhitelist, addedGuildNames, addedGuildIds, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOGuild::getGuildIdByName(n);
+	});
 
 	std::vector<std::string> removedGuildNames;
 	std::unordered_set<uint32_t> removedGuildIds;
-	uint32_t guildRemovalLookups = 0;
-	const auto guildWhiteListRemovedSize = msg.get<uint16_t>();
-	for (uint16_t i = 0; i < guildWhiteListRemovedSize; i++) {
-		std::string removedGuildName = msg.getString();
-		if (removedGuildIds.size() >= MAX_EXIVA_WHITELIST || guildRemovalLookups >= static_cast<uint32_t>(MAX_EXIVA_WHITELIST)) {
-			continue;
-		}
-
-		guildRemovalLookups++;
-		uint32_t guildId = IOGuild::getGuildIdByName(removedGuildName);
-		if (guildId != 0 && removedGuildIds.insert(guildId).second) {
-			auto it = std::remove(restrictions.guildWhitelist.begin(), restrictions.guildWhitelist.end(), guildId);
-			if (it != restrictions.guildWhitelist.end()) {
-				restrictions.guildWhitelist.erase(it, restrictions.guildWhitelist.end());
-				removedGuildNames.push_back(removedGuildName);
-			}
-		}
-	}
+	removeExivaEntries(msg, restrictions.guildWhitelist, removedGuildNames, removedGuildIds, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOGuild::getGuildIdByName(n);
+	});
 
 	sendExivaRestrictions(false, addedPlayerNames, removedPlayerNames, addedGuildNames, removedGuildNames);
 }

@@ -6618,9 +6618,9 @@ bool Player::canExiva(const std::string &spellParam) const {
 	}
 
 	if (targetRestrictions.allowGuildWhitelist) {
-		const auto &guild = getGuild();
-		if (guild) {
-			auto it = std::ranges::find(targetRestrictions.guildWhitelist, guild->getId());
+		const auto &playerGuild = getGuild();
+		if (playerGuild) {
+			auto it = std::ranges::find(targetRestrictions.guildWhitelist, playerGuild->getId());
 			if (it != targetRestrictions.guildWhitelist.end()) {
 				return true;
 			}

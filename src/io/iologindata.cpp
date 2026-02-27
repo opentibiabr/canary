@@ -189,6 +189,7 @@ void IOLoginData::loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &pla
 	IOLoginDataLoad::loadPlayerBosstiary(player, result);
 	IOLoginDataLoad::loadPlayerInitializeSystem(player);
 	IOLoginDataLoad::loadPlayerUpdateSystem(player);
+	IOLoginDataLoad::loadPlayerExivaRestrictions(player);
 }
 
 bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {

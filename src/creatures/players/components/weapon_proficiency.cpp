@@ -461,6 +461,7 @@ void WeaponProficiency::applyCriticalBonus(const ProficiencyPerk &perk) {
 void WeaponProficiency::applySkillPercentageBonus(const ProficiencyPerk &perk) {
 	using enum WeaponProficiencyBonus_t;
 	using enum SkillPercentage_t;
+	SkillPercentage_t type;
 	switch (perk.type) {
 		case SKILL_PERCENTAGE_AUTO_ATTACK:
 			type = AutoAttack;

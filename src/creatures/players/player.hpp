@@ -171,7 +171,7 @@ public:
 
 	void sendWeaponProficiency(uint16_t weaponId = 0);
 
-	const std::array<SkillsEquipment, SKILL_LAST + 1> getSkillsEquipment() const;
+	std::array<SkillsEquipment, SKILL_LAST + 1> getSkillsEquipment() const;
 	const BaseCritical &getBaseCritical() const;
 
 	/**

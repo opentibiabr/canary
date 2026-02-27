@@ -44,13 +44,13 @@ enum PlayerSex_t : uint8_t;
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result);
 
-uint8_t undoShift(uint64_t value);
+[[nodiscard]] uint8_t undoShift(uint64_t value);
 
-std::string transformToSHA1(const std::string &input);
+[[nodiscard]] std::string transformToSHA1(const std::string &input);
 
-uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList);
+[[nodiscard]] uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList);
 
-std::string generateToken(const std::string &secret, uint32_t ticks);
+[[nodiscard]] std::string generateToken(const std::string &secret, uint32_t ticks);
 
 void replaceString(std::string &str, const std::string &sought, const std::string &replacement);
 void trim_right(std::string &source, char t);
@@ -58,14 +58,14 @@ void trim_left(std::string &source, char t);
 std::string keepFirstWordOnly(std::string &str);
 
 void toLowerCaseString(std::string &source);
-std::string asLowerCaseString(std::string source);
-std::string asUpperCaseString(std::string source);
+[[nodiscard]] std::string asLowerCaseString(std::string source);
+[[nodiscard]] std::string asUpperCaseString(std::string source);
 
-std::string toCamelCase(const std::string &str);
-std::string toPascalCase(const std::string &str);
-std::string toSnakeCase(const std::string &str);
-std::string toKebabCase(const std::string &str);
-std::string toStartCaseWithSpace(const std::string &str);
+[[nodiscard]] std::string toCamelCase(const std::string &str);
+[[nodiscard]] std::string toPascalCase(const std::string &str);
+[[nodiscard]] std::string toSnakeCase(const std::string &str);
+[[nodiscard]] std::string toKebabCase(const std::string &str);
+[[nodiscard]] std::string toStartCaseWithSpace(const std::string &str);
 
 using StringVector = std::vector<std::string>;
 using IntegerVector = std::vector<int32_t>;
@@ -100,11 +100,11 @@ std::string formatDateTime(int64_t ms);
  * @param name The enum name to format.
  * @return A string with the formatted enum name.
  */
-std::string formatEnumName(std::string_view name);
-std::time_t getTimeNow();
-int64_t getTimeMsNow();
-int64_t getTimeUsNow();
-std::string convertIPToString(uint32_t ip);
+[[nodiscard]] std::string formatEnumName(std::string_view name);
+[[nodiscard]] std::time_t getTimeNow();
+[[nodiscard]] int64_t getTimeMsNow();
+[[nodiscard]] int64_t getTimeUsNow();
+[[nodiscard]] std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string &str);
 
@@ -155,7 +155,7 @@ CombatType_t indexToCombatType(size_t v);
 
 ItemAttribute_t stringToItemAttribute(const std::string &str);
 
-const char* getReturnMessage(ReturnValue value);
+[[nodiscard]] const char* getReturnMessage(ReturnValue value);
 
 void sleep_for(uint64_t ms);
 void capitalizeWords(std::string &source);
@@ -168,7 +168,7 @@ bool isCaskItem(uint16_t itemId);
 std::string getObjectCategoryName(ObjectCategory_t category);
 bool isValidObjectCategory(ObjectCategory_t category);
 
-int64_t OTSYS_TIME(bool useTime = false);
+[[nodiscard]] int64_t OTSYS_TIME(bool useTime = false);
 void UPDATE_OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);

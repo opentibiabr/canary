@@ -103,11 +103,12 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 
 	char signal = augmentInfo->value > 0 ? '-' : '+';
 
+	using enum Augment_t;
 	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
-	} else if (augmentInfo->type == Augment_t::Cooldown) {
+	} else if (augmentInfo->type == Cooldown) {
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
-	} else if (augmentInfo->type == Augment_t::BaseDamage || augmentInfo->type == Augment_t::BaseHealing) {
+	} else if (augmentInfo->type == BaseDamage || augmentInfo->type == BaseHealing) {
 		return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
 	}
 

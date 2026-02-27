@@ -4665,7 +4665,8 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 		msg.add<uint32_t>(duration);
 	}
 
-	uint8_t activeFoods = 0; // TODO: MODIFY FOODS TO BE LIKE CONCOCTIONS
+	// Active foods are not yet implemented (future feature)
+	uint8_t activeFoods = 0;
 	msg.addByte(activeFoods);
 	for (uint8_t i = 0; i < activeFoods; ++i) {
 		msg.add<uint16_t>(0x00); // Item ID
@@ -8650,7 +8651,7 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, b
 
 	auto items = imbuement->getItems();
 	if (isScrollAction) {
-		items.emplace_back(std::make_pair(ITEM_EMPTY_IMBUEMENT_SCROLL, 1));
+		(void)items.emplace_back(std::make_pair(ITEM_EMPTY_IMBUEMENT_SCROLL, 1));
 	}
 	msg.addByte(items.size());
 

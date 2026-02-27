@@ -54,12 +54,12 @@ public:
 
 	static Imbuements &getInstance();
 
-	Imbuement* getImbuement(uint16_t id);
-	Imbuement* getImbuementByScrollID(uint16_t scrollId);
+	[[nodiscard]] Imbuement* getImbuement(uint16_t id);
+	[[nodiscard]] Imbuement* getImbuementByScrollID(uint16_t scrollId);
 
-	BaseImbuement* getBaseByID(uint16_t id);
-	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item = nullptr, bool scroll = false);
+	[[nodiscard]] BaseImbuement* getBaseByID(uint16_t id);
+	[[nodiscard]] CategoryImbuement* getCategoryByID(uint16_t id);
+	[[nodiscard]] std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item = nullptr, bool scroll = false);
 
 protected:
 	friend class Imbuement;
@@ -82,24 +82,24 @@ public:
 	Imbuement(uint16_t initId, uint16_t initBaseId) :
 		id(initId), baseid(initBaseId) { }
 
-	uint16_t getID() const;
+	[[nodiscard]] uint16_t getID() const;
 
-	uint16_t getBaseID() const;
+	[[nodiscard]] uint16_t getBaseID() const;
 
-	uint32_t getStorage() const;
+	[[nodiscard]] uint32_t getStorage() const;
 
-	bool isPremium() const;
-	std::string getName() const;
-	std::string getDescription() const;
+	[[nodiscard]] bool isPremium() const;
+	[[nodiscard]] std::string getName() const;
+	[[nodiscard]] std::string getDescription() const;
 
-	std::string getSubGroup() const;
+	[[nodiscard]] std::string getSubGroup() const;
 
-	uint16_t getCategory() const;
+	[[nodiscard]] uint16_t getCategory() const;
 
-	const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
+	[[nodiscard]] const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
 
-	uint16_t getIconID() const;
-	uint16_t getScrollItemID() const;
+	[[nodiscard]] uint16_t getIconID() const;
+	[[nodiscard]] uint16_t getScrollItemID() const;
 
 	uint16_t scrollId = 0;
 	uint16_t icon = 1;

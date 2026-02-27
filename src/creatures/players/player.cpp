@@ -2514,8 +2514,8 @@ void Player::createScrollImbuement(const Imbuement* imbuement) {
 	}
 
 	const auto &items = imbuement->getItems();
-	for (auto &[id, amount] : items) {
-		const auto playerItemAmount = getItemTypeCount(id) + getStashItemCount(id);
+	for (auto &[itemId, amount] : items) {
+		const auto playerItemAmount = getItemTypeCount(itemId) + getStashItemCount(itemId);
 		if (playerItemAmount < amount) {
 			sendImbuementResult("You don't have all necessary items.");
 			return;
@@ -2591,7 +2591,7 @@ bool Player::clearAllImbuements(const std::shared_ptr<Item> &item) {
 	for (uint8_t slot = 0; slot < itemSlots; slot++) {
 		ImbuementInfo imbuementInfo;
 		if (item->getImbuementInfo(slot, &imbuementInfo) && imbuementInfo.imbuement) {
-			imbuementsToRemove.emplace_back(slot, imbuementInfo);
+			(void)imbuementsToRemove.emplace_back(slot, imbuementInfo);
 		}
 	}
 
@@ -2692,7 +2692,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		const ItemType &itemType = Item::items[key];
 
 		withdrawItemMessage << "Using " << mathItemCount << "x " << itemType.name << " from your stash. ";
-		withdrawItem(itemType.id, mathItemCount);
+		(void)withdrawItem(itemType.id, mathItemCount);
 		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
 
@@ -12396,7 +12396,7 @@ void Player::resetOldCharms() {
 	g_logger().info("Player: {}, recalculated charm points based on unlocked bestiary: {}", getName(), totalRefund);
 }
 
-const std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() const {
+std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() const {
 	std::array<SkillsEquipment, SKILL_LAST + 1> skillsEquipment = {};
 	for (uint16_t skill = SKILL_FIRST; skill <= SKILL_LAST; skill++) {
 		SkillsEquipment skillEquipment = {};
@@ -12415,11 +12415,7 @@ const std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() c
 
 			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;
-				if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-					continue;
-				}
-
-				if (imbuementInfo.imbuement) {
+				if (item->getImbuementInfo(slotid, &imbuementInfo) && imbuementInfo.imbuement) {
 					skillEquipment.imbuement += imbuementInfo.imbuement->skills[skill] / 10000.0;
 				}
 			}

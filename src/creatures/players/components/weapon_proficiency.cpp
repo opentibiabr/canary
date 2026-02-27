@@ -277,7 +277,7 @@ std::vector<ProficiencyPerk> WeaponProficiency::deserializePerks(const ValueWrap
 	std::vector<ProficiencyPerk> perks;
 
 	for (const auto &item : array) {
-		perks.emplace_back(deserializePerk(item));
+		(void)perks.emplace_back(deserializePerk(item));
 	}
 
 	return perks;
@@ -329,7 +329,7 @@ ValueWrapper WeaponProficiency::serializePerk(const ProficiencyPerk &perk) const
 	return {
 		{ "index", static_cast<IntType>(perk.index) },
 		{ "type", static_cast<IntType>(perk.type) },
-		{ "value", static_cast<DoubleType>(perk.value) },
+		{ "value", perk.value },
 		{ "level", static_cast<IntType>(perk.level) },
 		{ "augmentType", static_cast<IntType>(perk.augmentType) },
 		{ "bestiaryId", static_cast<IntType>(perk.bestiaryId) },
@@ -344,7 +344,7 @@ ValueWrapper WeaponProficiency::serializePerk(const ProficiencyPerk &perk) const
 std::vector<ValueWrapper> WeaponProficiency::serializePerks(const std::vector<ProficiencyPerk> &perks) const {
 	std::vector<ValueWrapper> arrayWrapper;
 	for (const auto &perk : perks) {
-		arrayWrapper.emplace_back(serializePerk(perk));
+		(void)arrayWrapper.emplace_back(serializePerk(perk));
 	}
 
 	return arrayWrapper;
@@ -460,16 +460,16 @@ void WeaponProficiency::applyCriticalBonus(const ProficiencyPerk &perk) {
 
 void WeaponProficiency::applySkillPercentageBonus(const ProficiencyPerk &perk) {
 	using enum WeaponProficiencyBonus_t;
-	SkillPercentage_t type;
+	using enum SkillPercentage_t;
 	switch (perk.type) {
 		case SKILL_PERCENTAGE_AUTO_ATTACK:
-			type = SkillPercentage_t::AutoAttack;
+			type = AutoAttack;
 			break;
 		case SKILL_PERCENTAGE_SPELL_DAMAGE:
-			type = SkillPercentage_t::SpellDamage;
+			type = SpellDamage;
 			break;
 		case SKILL_PERCENTAGE_SPELL_HEALING:
-			type = SkillPercentage_t::SpellHealing;
+			type = SpellHealing;
 			break;
 		default:
 			return;
@@ -595,7 +595,7 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	if (proficiencyInfo.maxLevel == 0) {
 		return 0;
 	}
-	const uint8_t maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel - 1));
+	const auto maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel - 1));
 	for (uint8_t i = 0; i < maxExpLevels; ++i) {
 		if (playerProficiency.experience >= experienceArray[i]) {
 			continue;
@@ -659,7 +659,7 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	uint32_t maxExperience = getMaxExperience(weaponId);
 
 	if (!proficiency.contains(weaponId)) {
-		[[maybe_unused]] const auto &unusedProficiency = proficiency.emplace(weaponId, std::min(experience, maxExperience));
+		(void)proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
 		m_player.sendWeaponProficiency(weaponId);
 
 		return;
@@ -681,12 +681,13 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 }
 
 uint32_t WeaponProficiency::getBosstiaryExperience(BosstiaryRarity_t rarity) const {
+	using enum BosstiaryRarity_t;
 	switch (rarity) {
-		case BosstiaryRarity_t::RARITY_BANE:
+		case RARITY_BANE:
 			return 500;
-		case BosstiaryRarity_t::RARITY_ARCHFOE:
+		case RARITY_ARCHFOE:
 			return 5000;
-		case BosstiaryRarity_t::RARITY_NEMESIS:
+		case RARITY_NEMESIS:
 			return 15000;
 		default:
 			return 0;
@@ -702,7 +703,7 @@ uint32_t WeaponProficiency::getBestiaryExperience(uint8_t monsterStar) const {
 }
 
 uint32_t WeaponProficiency::getExperience(uint16_t weaponId /* = 0 */) const {
-	if (proficiency.find(weaponId) == proficiency.end()) {
+	if (!proficiency.contains(weaponId)) {
 		return 0;
 	}
 
@@ -726,11 +727,11 @@ bool WeaponProficiency::isUpgradeAvailable(uint16_t weaponId /* = 0 */) const {
 
 	auto proficiencyId = Item::items[weaponId].proficiencyId;
 
-	if (proficiency.find(weaponId) == proficiency.end()) {
+	if (!proficiency.contains(weaponId)) {
 		return false;
 	}
 
-	if (proficiencies.find(proficiencyId) == proficiencies.end()) {
+	if (!proficiencies.contains(proficiencyId)) {
 		return false;
 	}
 
@@ -1215,7 +1216,7 @@ std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiari
 	const auto &perks = getSelectedPerks(weaponId);
 	for (const auto &perk : perks) {
 		if (perk.type == WEAPON_PROFICIENCY_BESTIARY && !perk.bestiaryName.empty()) {
-			bestiariesDamage.emplace_back(perk.bestiaryName, perk.value);
+			(void)bestiariesDamage.emplace_back(perk.bestiaryName, perk.value);
 		}
 	}
 
@@ -1232,7 +1233,7 @@ std::optional<std::pair<uint8_t, double>> WeaponProficiency::getActiveElementalC
 	const auto weaponId = m_player.getWeaponId(true);
 
 	const auto &perks = getSelectedPerks(weaponId);
-	auto it = std::find_if(perks.begin(), perks.end(), [&](const auto &perk) {
+	auto it = std::ranges::find_if(perks, [&](const auto &perk) {
 		return perk.type == criticalType && perk.element != COMBAT_NONE;
 	});
 

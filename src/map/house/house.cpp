@@ -19,6 +19,7 @@
 #include "lib/metrics/metrics.hpp"
 #include "utils/pugicast.hpp"
 #include "creatures/players/player.hpp"
+#include <unordered_set>
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -898,6 +899,10 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		return false;
 	}
 
+	houseMapClientId.clear();
+	std::unordered_set<uint32_t> seenClientIds;
+	seenClientIds.reserve(houseMap.size());
+
 	for (const auto &houseNode : doc.child("houses").children()) {
 		pugi::xml_attribute houseIdAttribute = houseNode.attribute("houseid");
 		if (!houseIdAttribute) {
@@ -929,7 +934,25 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		house->setRent(pugi::cast<uint32_t>(houseNode.attribute("rent").value()));
 		house->setSize(pugi::cast<uint32_t>(houseNode.attribute("size").value()));
 		house->setTownId(pugi::cast<uint32_t>(houseNode.attribute("townid").value()));
-		house->setClientId(pugi::cast<uint32_t>(houseNode.attribute("clientid").value()));
+		uint32_t clientId = pugi::cast<uint32_t>(houseNode.attribute("clientid").value());
+		if (clientId == 0 || seenClientIds.contains(clientId)) {
+			uint32_t fallbackClientId = static_cast<uint32_t>(houseId);
+			while (fallbackClientId == 0 || seenClientIds.contains(fallbackClientId)) {
+				++fallbackClientId;
+			}
+
+			if (clientId == 0) {
+				g_logger().warn("[Houses::loadHousesXML] - House '{}' (id: {}) has invalid clientid=0. Falling back to clientId={}.",
+				                house->getName(), houseId, fallbackClientId);
+			} else {
+				g_logger().warn("[Houses::loadHousesXML] - Duplicate clientid={} detected for house '{}' (id: {}). Falling back to clientId={}.",
+				                clientId, house->getName(), houseId, fallbackClientId);
+			}
+
+			clientId = fallbackClientId;
+		}
+		seenClientIds.insert(clientId);
+		house->setClientId(clientId);
 
 		auto guildhallAttr = houseNode.attribute("guildhall");
 		if (!guildhallAttr.empty()) {
@@ -944,7 +967,7 @@ bool Houses::loadHousesXML(const std::string &filename) {
 		house->setMaxBeds(maxBeds);
 
 		house->setOwner(0, false);
-		addHouseClientId(house->getClientId(), house);
+		addHouseClientId(clientId, house);
 	}
 	return true;
 }

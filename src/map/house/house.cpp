@@ -942,11 +942,9 @@ bool Houses::loadHousesXML(const std::string &filename) {
 			}
 
 			if (clientId == 0) {
-				g_logger().warn("[Houses::loadHousesXML] - House '{}' (id: {}) has invalid clientid=0. Falling back to clientId={}.",
-				                house->getName(), houseId, fallbackClientId);
+				g_logger().warn("[Houses::loadHousesXML] - House '{}' (id: {}) has invalid clientid=0. Falling back to clientId={}.", house->getName(), houseId, fallbackClientId);
 			} else {
-				g_logger().warn("[Houses::loadHousesXML] - Duplicate clientid={} detected for house '{}' (id: {}). Falling back to clientId={}.",
-				                clientId, house->getName(), houseId, fallbackClientId);
+				g_logger().warn("[Houses::loadHousesXML] - Duplicate clientid={} detected for house '{}' (id: {}). Falling back to clientId={}.", clientId, house->getName(), houseId, fallbackClientId);
 			}
 
 			clientId = fallbackClientId;

@@ -42,7 +42,7 @@ if [ "$OT_SERVER_DATA" = "data-otservbr-global" ] && [ ! -f data-otservbr-global
 	echo "YES"
 
 	echo "Downloading OTBR Map..."
-	curl -L "$OT_SERVER_MAP" -o data-otservbr-global/world/otservbr.otbm
+	curl -Lk "$OT_SERVER_MAP" -o data-otservbr-global/world/otservbr.otbm
 
 	echo "Done"
 

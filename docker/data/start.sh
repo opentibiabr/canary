@@ -42,7 +42,7 @@ if [ "$OT_SERVER_DATA" = "data-otservbr-global" ] && [ ! -f data-otservbr-global
 	echo "YES"
 
 	echo "Downloading OTBR Map..."
-	wget --no-check-certificate "$OT_SERVER_MAP" -O data-otservbr-global/world/otservbr.otbm
+	curl -L "$OT_SERVER_MAP" -o data-otservbr-global/world/otservbr.otbm
 
 	echo "Done"
 

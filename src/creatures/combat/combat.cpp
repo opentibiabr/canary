@@ -1536,7 +1536,7 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 			return;
 		}
 
-		if (target->isSummon() && caster && caster->getMonster()) {
+		if (target->isSummon() && caster && caster->getMonster() && caster != target) {
 			const auto &targetMaster = target->getMaster();
 			if (targetMaster && targetMaster->getPlayer()) {
 				return;

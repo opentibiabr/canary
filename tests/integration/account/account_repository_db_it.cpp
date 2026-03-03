@@ -37,7 +37,7 @@ namespace it_account_repo_db {
 		if (AccountRepositoryDBTest::logger) {
 			AccountRepositoryDBTest::logger->logs.clear();
 		}
-		auto lastDay = getTimeNow() + 11 * 86400;
+		auto lastDay = getTimeNow() + 11 * 86400 + 3600;
 		if (!db.executeQuery(fmt::format("INSERT INTO `accounts` "
 		                                 "(`id`, `name`, `email`, `password`, `type`, `premdays`, `lastday`, `premdays_purchased`, `creation`) "
 		                                 "VALUES({}, '{}', '{}', '{}', 3, 11, {}, 11, 42183281)",

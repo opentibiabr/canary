@@ -89,6 +89,7 @@ maxItem = 5000
 maxContainer = 500
 maxContainerDepth = 200
 maxInboxItems = 0
+maxExivaWhitelist = 100
 
 -- Player base critical
 -- NOTE: 0.05 means 5%

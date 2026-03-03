@@ -35,27 +35,27 @@ std::string LogWithSpdLog::getLevel() const {
 }
 
 void LogWithSpdLog::info(const std::string &msg) const {
-	SPDLOG_INFO(msg);
+	SPDLOG_INFO("{}", msg);
 }
 
 void LogWithSpdLog::warn(const std::string &msg) const {
-	SPDLOG_WARN(msg);
+	SPDLOG_WARN("{}", msg);
 }
 
 void LogWithSpdLog::error(const std::string &msg) const {
-	SPDLOG_ERROR(msg);
+	SPDLOG_ERROR("{}", msg);
 }
 
 void LogWithSpdLog::critical(const std::string &msg) const {
-	SPDLOG_CRITICAL(msg);
+	SPDLOG_CRITICAL("{}", msg);
 }
 
 #if defined(DEBUG_LOG)
 void LogWithSpdLog::debug(const std::string &msg) const {
-	SPDLOG_DEBUG(msg);
+	SPDLOG_DEBUG("{}", msg);
 }
 
 void LogWithSpdLog::trace(const std::string &msg) const {
-	SPDLOG_TRACE(msg);
+	SPDLOG_TRACE("{}", msg);
 }
 #endif

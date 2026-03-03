@@ -8,11 +8,17 @@ jobs:
     name: Run Lua Tests
     runs-on: ubuntu-latest
     steps:
-      - name: Update
-        run: sudo apt-get update
       - name: Setup Lua
-        run: sudo apt-get install -y libluajit-5.1-dev
-      - name: Check out code.
+        run: sudo apt-get update && sudo apt-get install -y luajit
+      - name: Check out code
         uses: actions/checkout@v4
       - name: Run Tests
-        run: echo "Running Lua tests..."
+        run: |
+          failed=0
+          for f in tests/lua/test_*.lua; do
+            echo "=== $f ==="
+            if ! luajit "$f"; then
+              failed=1
+            fi
+          done
+          exit $failed

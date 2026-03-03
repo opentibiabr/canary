@@ -38,6 +38,7 @@
 #include "io/iobestiary.hpp"
 #include "io/iologindata.hpp"
 #include "io/iomarket.hpp"
+#include "io/ioguild.hpp"
 #include "io/ioprey.hpp"
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
@@ -73,6 +74,43 @@ namespace {
 		}
 
 		return totalIterationCount;
+	}
+
+	template <typename LookupFunc>
+	void addExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &addedNames, std::unordered_set<uint32_t> &addedGuids, int32_t maxLimit, LookupFunc lookup) {
+		const auto size = msg.get<uint16_t>();
+		uint32_t lookupAttempts = 0;
+		for (uint16_t i = 0; i < size; i++) {
+			std::string name = msg.getString();
+			if (whitelist.size() >= static_cast<size_t>(maxLimit) || addedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
+				continue;
+			}
+
+			lookupAttempts++;
+			uint32_t id = lookup(name);
+			if (id != 0 && addedGuids.insert(id).second && std::ranges::find(whitelist, id) == whitelist.end()) {
+				whitelist.push_back(id);
+				addedNames.push_back(name);
+			}
+		}
+	}
+
+	template <typename LookupFunc>
+	void removeExivaEntries(NetworkMessage &msg, std::vector<uint32_t> &whitelist, std::vector<std::string> &removedNames, std::unordered_set<uint32_t> &removedGuids, int32_t maxLimit, LookupFunc lookup) {
+		const auto size = msg.get<uint16_t>();
+		uint32_t lookupAttempts = 0;
+		for (uint16_t i = 0; i < size; i++) {
+			std::string name = msg.getString();
+			if (removedGuids.size() >= static_cast<size_t>(maxLimit) || lookupAttempts >= static_cast<uint32_t>(maxLimit)) {
+				continue;
+			}
+
+			lookupAttempts++;
+			uint32_t id = lookup(name);
+			if (id != 0 && removedGuids.insert(id).second && std::erase(whitelist, id) > 0) {
+				removedNames.push_back(name);
+			}
+		}
 	}
 
 	void addOutfitAndMountBytes(NetworkMessage &msg, const std::shared_ptr<Item> &item, const CustomAttribute* attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false) {
@@ -1329,7 +1367,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xC9: /* update tile */
 			break;
 		case 0xCA:
-			parseUpdateContainer(msg);
+			if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+				parseExivaRestrictions(msg);
+			}
 			break;
 		case 0xCB:
 			parseBrowseField(msg);
@@ -7125,7 +7165,11 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
 	if (!oldProtocol) {
-		msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
+		const bool exivaEnabled = g_game().getWorldType() == WORLD_TYPE_NO_PVP;
+		msg.addByte(exivaEnabled ? 0x01 : 0x00); // exiva button enabled
+		if (exivaEnabled) {
+			sendExivaRestrictions(true);
+		}
 	}
 
 	writeToOutputBuffer(msg);
@@ -10253,4 +10297,104 @@ void ProtocolGame::parseAimAtTarget(NetworkMessage &msg) {
 		uint8_t state = msg.getByte(); // State: 1 = enabled, 0 = disabled
 		player->updateAimAtTargetSpells(spellId, state); // Update player's config
 	}
+}
+
+void ProtocolGame::parseExivaRestrictions(NetworkMessage &msg) {
+	if (!player || g_configManager().getString(WORLD_TYPE) != "no-pvp") {
+		return;
+	}
+
+	auto &restrictions = player->getExivaRestrictions();
+
+	restrictions.allowAll = msg.getByte();
+	restrictions.allowOwnGuild = msg.getByte();
+	restrictions.allowOwnParty = msg.getByte();
+	restrictions.allowVipList = msg.getByte();
+	restrictions.allowPlayerWhitelist = msg.getByte();
+	restrictions.allowGuildWhitelist = msg.getByte();
+
+	const int32_t MAX_EXIVA_WHITELIST = g_configManager().getNumber(ConfigKey_t::MAX_EXIVA_WHITELIST);
+
+	std::vector<std::string> addedPlayerNames;
+	std::unordered_set<uint32_t> addedPlayerGuids;
+	addExivaEntries(msg, restrictions.playerWhitelist, addedPlayerNames, addedPlayerGuids, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOLoginData::getGuidByName(n);
+	});
+
+	std::vector<std::string> removedPlayerNames;
+	std::unordered_set<uint32_t> removedPlayerGuids;
+	removeExivaEntries(msg, restrictions.playerWhitelist, removedPlayerNames, removedPlayerGuids, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOLoginData::getGuidByName(n);
+	});
+
+	std::vector<std::string> addedGuildNames;
+	std::unordered_set<uint32_t> addedGuildIds;
+	addExivaEntries(msg, restrictions.guildWhitelist, addedGuildNames, addedGuildIds, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOGuild::getGuildIdByName(n);
+	});
+
+	std::vector<std::string> removedGuildNames;
+	std::unordered_set<uint32_t> removedGuildIds;
+	removeExivaEntries(msg, restrictions.guildWhitelist, removedGuildNames, removedGuildIds, MAX_EXIVA_WHITELIST, [](const std::string &n) {
+		return IOGuild::getGuildIdByName(n);
+	});
+
+	sendExivaRestrictions(false, addedPlayerNames, removedPlayerNames, addedGuildNames, removedGuildNames);
+}
+
+void ProtocolGame::sendExivaRestrictions(
+	bool isLogin /* = false */,
+	const std::vector<std::string> &addedPlayerNames /* = {} */,
+	const std::vector<std::string> &removedPlayerNames /* = {} */,
+	const std::vector<std::string> &addedGuildNames /* = {} */,
+	const std::vector<std::string> &removedGuildNames /* = {} */
+) {
+	const auto &restrictions = player->getExivaRestrictions();
+
+	NetworkMessage msg;
+
+	msg.addByte(0xCA);
+	msg.addByte(restrictions.allowAll);
+	msg.addByte(restrictions.allowOwnGuild);
+	msg.addByte(restrictions.allowOwnParty);
+	msg.addByte(restrictions.allowVipList);
+	msg.addByte(restrictions.allowPlayerWhitelist);
+	msg.addByte(restrictions.allowGuildWhitelist);
+
+	if (isLogin) {
+		msg.add<uint16_t>(restrictions.playerWhitelist.size());
+		for (const auto &guid : restrictions.playerWhitelist) {
+			msg.addString(IOLoginData::getNameByGuid(guid));
+		}
+		msg.add<uint16_t>(0x00);
+	} else {
+		msg.add<uint16_t>(addedPlayerNames.size());
+		for (const auto &addedName : addedPlayerNames) {
+			msg.addString(addedName);
+		}
+		msg.add<uint16_t>(removedPlayerNames.size());
+		for (const auto &removedName : removedPlayerNames) {
+			msg.addString(removedName);
+		}
+	}
+
+	if (isLogin) {
+		msg.add<uint16_t>(restrictions.guildWhitelist.size());
+		for (const auto &guildId : restrictions.guildWhitelist) {
+			auto guild = g_game().getGuild(guildId, true);
+			msg.addString(guild ? guild->getName() : "");
+		}
+		msg.add<uint16_t>(0x00);
+	} else {
+		msg.add<uint16_t>(addedGuildNames.size());
+		for (const auto &addedName : addedGuildNames) {
+			msg.addString(addedName);
+		}
+		msg.add<uint16_t>(removedGuildNames.size());
+		for (const auto &removedName : removedGuildNames) {
+			msg.addString(removedName);
+		}
+	}
+
+	writeToOutputBuffer(msg);
 }

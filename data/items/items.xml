@@ -81442,6 +81442,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
 		<attribute key="weight" value="100"/>
 	</item>
+	<item id="49161" article="a" name="stairs">
+		<attribute key="floorchange" value="down"/>
+	</item>
 	<item id="49163" article="an" name="ominous soul core">
 		<attribute key="primarytype" value="soul cores"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>

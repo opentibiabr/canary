@@ -103,6 +103,13 @@ public:
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t speed = 0;
 	uint32_t capacity = 0;
+
+	/////////Imbuement Vibrancy/////////
+	// Chance (0-100) to remove paralysis when a paralysis condition would be applied
+	uint8_t paralysisRemoveChance = 0;
+	// If true: when receiving additional PvP paralyse attacks while already paralyzed, the new paralyse is deflected (ignored)
+	bool pvpParalysisDeflect = false;
+
 	int16_t absorbPercent[COMBAT_COUNT] = {};
 	int16_t elementDamage = 0;
 	SoundEffect_t soundEffect = SoundEffect_t::SILENCE;

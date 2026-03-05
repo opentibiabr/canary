@@ -1,4 +1,5 @@
-# OpenTibiaBR - Canary
+# Canary 🦜
+> *The next-generation OpenTibia Server Emulator.*
 
 [![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/gvTj5sh9Mp)
 [![CI](https://github.com/opentibiabr/canary/actions/workflows/ci.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/ci.yml)
@@ -6,63 +7,83 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/opentibiabr/canary)
 [![GitHub license](https://img.shields.io/github/license/opentibiabr/canary.svg)](https://github.com/opentibiabr/canary/blob/main/LICENSE)
 
-OpenTibiaBR - Canary is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient)
-or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check
-our [customized tools](https://docs.opentibiabr.com/opentibiabr/downloads/tools). If you want to edit the map, use our own [remere's map editor](https://github.com/opentibiabr/remeres-map-editor/).
+**Canary** is a free, open-source MMORPG server emulator written in C++20 and Lua. It is designed for performance, stability, and ease of use, serving as the modern successor to the OpenTibia legacy.
 
-## Getting Started
+---
 
-- [Gitbook](https://docs.opentibiabr.com/opentibiabr/projects/canary).
-- [Wiki](https://github.com/opentibiabr/canary/wiki).
+## 🚀 Why Canary?
 
-## Running Tests
+- **Modern Core**: Built with C++20 standards for maximum performance.
+- **Robust Scripting**: Extensive Lua API for gameplay systems, events, and AI.
+- **Data Persistence**: Integrated KV (Key-Value) store abstraction on top of MySQL.
+- **Docker First**: Ready-to-deploy containerized environment.
+- **Active Community**: Supported by OpenTibiaBR and a global network of contributors.
 
-Tests can be run directly from the repository root using CMake test presets:
+---
 
+## ⚡ Quick Start
+
+The fastest way to get Canary running is using **Docker**.
+
+### Prerequisites
+- Docker & Docker Compose
+
+### 1-Command Setup
 ```bash
-# Configure and build tests for your platform
-cmake --preset linux-debug && cmake --build --preset linux-debug
-
-# Run all tests
-ctest --preset linux-debug
-
-# For other platforms use:
-# ctest --preset macos-debug
-# ctest --preset windows-debug
+cd docker
+docker-compose up -d
 ```
 
-For detailed testing information including adding tests and framework usage, see [tests/README.md](tests/README.md).
+This will spin up:
+- **Canary Server**: The game server core (Ports: 7171, 7172)
+- **Database**: MariaDB with auto-initialized schema (Port: 3306)
+- **Login Server**: Web API for authentication (Port: 8080)
 
-## Support
+> **Note**: The server creates a default `god` account. Check `schema.sql` or logs for details.
 
-If you need help, please visit our [discord](https://discord.gg/gvTj5sh9Mp). Our issue tracker is not a support forum, and using it as one will result in your issue being closed.
+---
 
-## Contributing
+## 🗺️ Architecture Overview
 
-Here are some ways you can contribute:
+Canary follows a modular architecture separating the core C++ engine from the dynamic Lua content.
 
-- [Issue Tracker](https://github.com/opentibiabr/canary/issues/new/choose).
-- [Pull Request](https://github.com/opentibiabr/canary/pulls).
+```mermaid
+C4Context
+    title System Context Diagram for Canary Server
 
-You are subject to our code of conduct, read at [this link](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md).
+    Person(Player, "Player", "A user playing the game via OTClient")
+    System_Boundary(CanarySystem, "Canary Ecosystem") {
+        System(CanaryServer, "Canary Server", "C++ Core Engine handling game logic, networking, and scripts")
+        System(Database, "MariaDB", "Stores accounts, players, and KV data")
+        System(LoginService, "Login Service", "Handles authentication and world selection")
+    }
 
-## Special Thanks
+    Rel(Player, LoginService, "Authenticates via HTTP/GRPC")
+    Rel(Player, CanaryServer, "Connects via Game Protocol (TCP)")
+    Rel(LoginService, Database, "Verifies credentials")
+    Rel(CanaryServer, Database, "Persists game state & KV data")
+```
 
-- Our contributors ([Canary](https://github.com/opentibiabr/canary/graphs/contributors) | [OTServBR-Global](https://github.com/opentibiabr/otservbr-global/graphs/contributors)).
+---
 
-## Sponsors
+## 📚 Documentation
 
-See our [donate page](https://docs.opentibiabr.com/home/donate).
+We believe in **documentation as a product**. Explore our guides below:
 
-## Project supported by JetBrains
+| Guide | Description |
+| :--- | :--- |
+| [**Architecture Map**](docs/ARCHITECTURE.md) | Deep dive into the C4 Container diagrams, Sequence flows, and Database Schema. |
+| [**Developer Guide**](docs/DEVELOPER_GUIDE.md) | How to build from source, project structure, and the KV System. |
+| [**Contributing**](CONTRIBUTING.md) | Guidelines for submitting PRs, coding standards, and Code of Conduct. |
+| [**KV System**](src/kv/README.md) | Technical reference for the Key-Value storage system. |
 
-We extend our heartfelt gratitude to Jetbrains for generously granting us licenses to collaborate on this and various
-other open-source initiatives.
+---
 
-<a href="https://jb.gg/OpenSourceSupport/?from=https://github.com/opentibiabr/canary/">
-  <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" alt="JetBrains" width="150" />
-</a>
+## 🤝 Support & Community
 
-## Partners
+- **Discord**: [Join our server](https://discord.gg/gvTj5sh9Mp) for real-time support.
+- **Issues**: [Report bugs](https://github.com/opentibiabr/canary/issues) on GitHub.
 
-[![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)
+## 📄 License
+
+Canary is released under the [GNU GPLv3 License](LICENSE).

@@ -5851,6 +5851,87 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 	browseField = false;
 }
 
+void Game::playerLootNearby(uint32_t playerId) {
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const Position &playerPos = player->getPosition();
+	uint32_t totalCorpses = 0;
+	uint32_t totalCorpsesFound = 0;
+
+	// Iterate all tiles within a 1-tile radius around the player (3x3 area)
+	for (int32_t x = -1; x <= 1; ++x) {
+		for (int32_t y = -1; y <= 1; ++y) {
+			const std::shared_ptr<Tile> &tile = map.getTile(
+				static_cast<uint16_t>(playerPos.x + x),
+				static_cast<uint16_t>(playerPos.y + y),
+				playerPos.z
+			);
+			if (!tile) {
+				continue;
+			}
+
+			const TileItemVector* itemVector = tile->getItemList();
+			if (!itemVector) {
+				continue;
+			}
+
+			for (const auto &tileItem : *itemVector) {
+				if (!tileItem) {
+					continue;
+				}
+
+				const auto &corpse = tileItem->getContainer();
+				if (!corpse || !corpse->isCorpse()
+				    || corpse->hasAttribute(ItemAttribute_t::UNIQUEID)
+				    || corpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
+					continue;
+				}
+
+				if (!corpse->isRewardCorpse()
+				    && corpse->getCorpseOwner() != 0
+				    && !player->canOpenCorpse(corpse->getCorpseOwner())) {
+					continue;
+				}
+
+				// Skip completely empty corpses to avoid spam messages
+				if (corpse->empty()) {
+					++totalCorpsesFound;
+					continue;
+				}
+
+				playerQuickLootCorpse(player, corpse, corpse->getPosition());
+				++totalCorpses;
+				++totalCorpsesFound;
+
+				if (totalCorpses >= 30) {
+					break;
+				}
+			}
+
+			if (totalCorpses >= 30) {
+				break;
+			}
+		}
+
+		if (totalCorpses >= 30) {
+			break;
+		}
+	}
+
+	if (totalCorpsesFound == 0) {
+		player->sendCancelMessage("There are no corpses nearby to loot.");
+	} else if (totalCorpses == 0) {
+		player->sendCancelMessage("All nearby corpses are already empty.");
+	} else if (totalCorpses > 1) {
+		std::stringstream ss;
+		ss << "You looted " << totalCorpses << " corpses.";
+		player->sendTextMessage(MESSAGE_LOOT, ss.str());
+	}
+}
+
 void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player || pos.x != 0xffff) {

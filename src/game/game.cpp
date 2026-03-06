@@ -10760,18 +10760,15 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	    forgeableMonsters.size() < influencedLimit) {
-		forgeableMonsters.clear();
-		for (const auto &monster : monsters) {
-			const auto &monsterTile = monster->getTile();
-			if (!monsterTile) {
-				continue;
-			}
+	forgeableMonsters.clear();
+	for (const auto &monster : monsters) {
+		const auto &monsterTile = monster->getTile();
+		if (!monsterTile) {
+			continue;
+		}
 
-			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-				forgeableMonsters.emplace_back(monster->getID());
-			}
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+			forgeableMonsters.emplace_back(monster->getID());
 		}
 	}
 
@@ -10781,9 +10778,20 @@ void Game::updateForgeableMonsters() {
 		}
 	}
 
+	for (const auto &monsterId : getInfluencedMonsters()) {
+		if (!getMonsterByID(monsterId)) {
+			removeInfluencedMonster(monsterId, false);
+		}
+	}
+
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	if (fiendishMonsters.size() < fiendishLimit) {
 		createFiendishMonsters();
+	}
+
+	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT); // Influenced Creatures limit
+	if (influencedMonsters.size() < influencedLimit) {
+		createInfluencedMonsters();
 	}
 }
 
@@ -10807,19 +10815,15 @@ void Game::createFiendishMonsters() {
 }
 
 void Game::createInfluencedMonsters() {
-	uint32_t created = 0;
 	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	while (created < influencedLimit) {
-		if (influencedMonsters.size() >= influencedLimit) {
-			g_logger().warn("[{}] - Returning in creation of Influenced, size: {}, max is: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit);
-			break;
-		}
+	if (influencedMonsters.size() >= influencedLimit) {
+		return;
+	}
 
+	while (influencedMonsters.size() < influencedLimit) {
 		if (makeInfluencedMonster() == 0) {
 			return;
 		}
-
-		created++;
 	}
 }
 

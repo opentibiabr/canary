@@ -607,10 +607,6 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		target:transform(594)
 		target:decay()
 		toPosition:sendMagicEffect(CONST_ME_HITAREA)
-	elseif target.itemid == 6298 and target.actionid > 0 then
-		target:transform(615)
-		target:decay()
-		toPosition:sendMagicEffect(CONST_ME_HITAREA)
 	elseif target.itemid == 21341 then
 		target:transform(21342)
 		target:decay()

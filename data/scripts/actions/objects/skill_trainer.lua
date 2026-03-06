@@ -4,6 +4,7 @@ local setting = {
 	[16200] = SKILL_CLUB,
 	[16201] = SKILL_DISTANCE,
 	[16202] = SKILL_MAGLEVEL,
+	[50296] = SKILL_FIST,
 }
 
 local skillTrainer = Action()

@@ -29,7 +29,7 @@ monster.Bestiary = {
 monster.health = 5000
 monster.maxHealth = 5000
 monster.race = "fire"
-monster.corpse = 0
+monster.corpse = 11317
 monster.speed = 58
 monster.manaCost = 0
 
@@ -76,14 +76,12 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-	{ name = "small enchanted ruby", chance = 14620 },
-}
+monster.loot = {}
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
-	{ name = "ravennouslavalurkerwave", interval = 2000, chance = 15, minDamage = 0, maxDamage = -400, target = false },
-	{ name = "ravennouslavalurkertarget", interval = 2000, chance = 40, minDamage = 0, maxDamage = -400, target = true },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -215 },
+	{ name = "ravennouslavalurkerwave", interval = 2000, chance = 25, minDamage = -90, maxDamage = -120, target = false },
+	{ name = "ravennouslavalurkertarget", interval = 2000, chance = 20, minDamage = -82, maxDamage = -95, target = true },
 }
 
 monster.defenses = {

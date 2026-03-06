@@ -52,6 +52,10 @@ function Player.isUsingOtClient(self)
 	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX
 end
 
+function Player.isUsingOTCR(self)
+	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX and self:getClient().os < CLIENTOS_OTCLIENT_MAC
+end
+
 function Player.sendExtendedOpcode(self, opcode, buffer)
 	if not self:isUsingOtClient() then
 		return false
@@ -159,6 +163,10 @@ function Player:vocationAbbrev()
 		abbrev = abbrev .. name:sub(1, 1)
 	end
 	return abbrev:upper()
+end
+
+function Player.isMonk(self)
+	return table.contains({ VOCATION.ID.MONK, VOCATION.ID.EXALTED_MONK }, self:getVocation():getId())
 end
 
 function Player.isSorcerer(self)

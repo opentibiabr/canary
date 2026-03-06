@@ -35,12 +35,32 @@ public:
 	std::shared_ptr<Party> getParty();
 
 	std::shared_ptr<Player> getLeader() const;
+	std::shared_ptr<Player> getMantraHolder() const;
 	std::vector<std::shared_ptr<Player>> getPlayers() const;
 	std::vector<std::shared_ptr<Player>> getMembers();
 	std::vector<std::shared_ptr<Player>> getInvitees();
 	size_t getMemberCount() const;
 	size_t getInvitationCount() const;
 	uint8_t getUniqueVocationsCount() const;
+
+	/**
+	 * @brief Applies the Guiding Presence effect by sharing half of the mantra value from the mantra holder to other party members.
+	 *
+	 * If a mantra holder exists, their mantra value is halved and distributed as a temporary buff (BUFF_MANTRA)
+	 * to all other members in the party. The holder themselves does not receive the shared buff.
+	 */
+	void applyGuidingPresence(const std::vector<std::shared_ptr<Player>> &members);
+
+	/**
+	 * @brief Updates the current mantra holder in the party based on the players' vocation and their mantra value.
+	 *
+	 * This function checks each player in the party to determine if they are a Monk with the "Guiding Presence" instant
+	 * enabled. If so, and they have a higher mantra value than the current holder, they become the new mantra holder.
+	 * If the current mantra holder no longer qualifies, they are removed.
+	 *
+	 * After determining the new mantra holder, it calls applyGuidingPresence() to apply effects.
+	 */
+	void updateMantraHolder();
 
 	void disband();
 	bool invitePlayer(const std::shared_ptr<Player> &player);
@@ -110,6 +130,7 @@ private:
 	std::vector<std::shared_ptr<Player>> inviteList;
 
 	std::weak_ptr<Player> m_leader;
+	std::weak_ptr<Player> m_mantraHolder;
 
 	bool sharedExpActive = false;
 	bool sharedExpEnabled = false;

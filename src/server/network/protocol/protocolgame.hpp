@@ -12,6 +12,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
+#include "creatures/players/stash_definitions.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -33,6 +34,7 @@ enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
+enum class MonkData_t : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -70,7 +72,6 @@ using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
@@ -110,7 +111,7 @@ public:
 	void AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const;
 
-	uint16_t getVersion() const {
+	[[nodiscard]] uint16_t getVersion() const {
 		return version;
 	}
 
@@ -393,7 +394,7 @@ private:
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force = false);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
@@ -533,6 +534,24 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
+	/**
+	 * @brief Sends monk-specific data to the client.
+	 *
+	 * This function is used to communicate changes related to monk gameplay elements, like Harmony, Serenity, or Virtue states.
+	 *
+	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
+	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
+	 */
+	void sendMonkData(MonkData_t type, uint8_t value);
+	/**
+	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
+	 *
+	 * This function processes a list of spells and whether the player wants them to aim at their current target.
+	 *
+	 * @param msg The network message containing the spell list and aim states.
+	 */
+	void parseAimAtTarget(NetworkMessage &msg);
+
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
@@ -552,13 +571,16 @@ private:
 	bool acceptPackets = false;
 
 	bool loggedIn = false;
-	bool shouldAddExivaRestrictions = false;
 
 	bool oldProtocol = false;
 	bool isOTC = false;
 	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
+
+	// ProtocolGame instances are per-connection and handled on the connection thread,
+	// so the fine-grained throttle here does not require cross-thread synchronization.
+	uint64_t m_nextPartyAnalyzerUpdate = 0;
 
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
@@ -580,4 +602,13 @@ private:
 	void resetPlayerDeathTime() {
 		m_playerDeathTime = 0;
 	}
+
+	void parseExivaRestrictions(NetworkMessage &msg);
+	void sendExivaRestrictions(
+		bool isLogin = false,
+		const std::vector<std::string> &addedPlayerNames = {},
+		const std::vector<std::string> &removedPlayerNames = {},
+		const std::vector<std::string> &addedGuildNames = {},
+		const std::vector<std::string> &removedGuildNames = {}
+	);
 };

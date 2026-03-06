@@ -240,6 +240,7 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_LESSERHEX:
 		case CONDITION_INTENSEHEX:
 		case CONDITION_GREATERHEX:
+		case CONDITION_MENTOROTHER:
 		case CONDITION_ATTRIBUTES:
 			return ObjectPool<ConditionAttributes, 1024>::allocateShared(id, type, ticks, buff, subId);
 
@@ -254,6 +255,9 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 
 		case CONDITION_FEARED:
 			return ObjectPool<ConditionFeared, 1024>::allocateShared(id, type, ticks, buff, subId);
+
+		case CONDITION_SERENE:
+			return ObjectPool<ConditionSerene, 1024>::allocateShared(id, type, ticks, buff, subId);
 
 		case CONDITION_ROOTED:
 		case CONDITION_INFIGHT:
@@ -485,6 +489,10 @@ std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
 			icons.insert(PlayerIcon::Powerless);
 			break;
 
+		case CONDITION_MENTOROTHER:
+			icons.insert(PlayerIcon::MentorOther);
+			break;
+
 		case CONDITION_GOSHNARTAINT:
 			switch (subId) {
 				case 1:
@@ -514,6 +522,49 @@ std::unordered_set<PlayerIcon> ConditionGeneric::getIcons() const {
 
 std::shared_ptr<Condition> ConditionGeneric::clone() const {
 	return std::make_shared<ConditionGeneric>(*this);
+}
+
+/**
+ * @class ConditionSerene
+ * @brief Represents the "Serene" condition used by Monk vocation players.
+ *
+ * Applies a visual serenity effect to the player when active.
+ * - On start: sends serenity state ON to client.
+ * - On end: sends serenity state OFF.
+ * - On add: updates duration and optionally plays a sound.
+ */
+ConditionSerene::ConditionSerene(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId, bool isPersistent) :
+	Condition(initId, initType, initTicks, initBuff, initSubId, isPersistent) { }
+
+bool ConditionSerene::startCondition(std::shared_ptr<Creature> creature) {
+	if (const auto &player = creature->getPlayer()) {
+		player->sendMonkData(MonkData_t::Serenity, 0x01);
+	}
+	return Condition::startCondition(creature);
+}
+
+bool ConditionSerene::executeCondition(const std::shared_ptr<Creature> &creature, int32_t interval) {
+	return Condition::executeCondition(creature, interval);
+}
+
+void ConditionSerene::endCondition(std::shared_ptr<Creature> creature) {
+	if (const auto &player = creature->getPlayer()) {
+		player->sendMonkData(MonkData_t::Serenity, 0x00);
+	}
+}
+
+void ConditionSerene::addCondition(std::shared_ptr<Creature> creature, const std::shared_ptr<Condition> addCondition) {
+	if (updateCondition(addCondition)) {
+		setTicks(addCondition->getTicks());
+
+		if (creature && addSound != SoundEffect_t::SILENCE) {
+			g_game().sendSingleSoundEffect(creature->getPosition(), addSound, creature);
+		}
+	}
+}
+
+std::shared_ptr<Condition> ConditionSerene::clone() const {
+	return std::make_shared<ConditionSerene>(*this);
 }
 
 /**
@@ -1025,8 +1076,23 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 			return true;
 		}
 
+		case CONDITION_PARAM_BUFF_HARMONYBONUS: {
+			buffsPercent[BUFF_HARMONYBONUS] = std::max<int32_t>(0, value);
+			return true;
+		}
+
+		case CONDITION_PARAM_BUFF_HEALINGDEALT: {
+			buffsPercent[BUFF_HEALINGDEALT] = std::max<int32_t>(0, value);
+			return true;
+		}
+
 		case CONDITION_PARAM_BUFF_HEALINGRECEIVED: {
 			buffsPercent[BUFF_HEALINGRECEIVED] = std::max<int32_t>(0, value);
+			return true;
+		}
+
+		case CONDITION_PARAM_BUFF_AUTOATTACKDEALT: {
+			buffsPercent[BUFF_AUTOATTACKDEALT] = std::max<int32_t>(0, value);
 			return true;
 		}
 
@@ -1740,7 +1806,7 @@ bool ConditionDamage::startCondition(std::shared_ptr<Creature> creature) {
 	if (!delayed) {
 		int32_t damage;
 		if (getNextDamage(damage)) {
-			return doDamage(creature, damage);
+			return doDamage(creature, damage, true);
 		}
 	}
 	return true;
@@ -1800,7 +1866,7 @@ bool ConditionDamage::getNextDamage(int32_t &damage) {
 	return false;
 }
 
-bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange) const {
+bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_t healthChange, bool start) const {
 	// Only perform checks and assign attacker if owner is not 0, keeping a const reference to the shared_ptr
 	const auto &attacker = (owner != 0) ? (g_game().getPlayerByGUID(owner) ? g_game().getPlayerByGUID(owner)->getCreature() : g_game().getCreatureByID(owner)) : nullptr;
 	const auto &attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
@@ -1824,7 +1890,7 @@ bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_
 		return false;
 	}
 
-	if (g_game().combatBlockHit(damage, attacker, creature, false, false, field)) {
+	if (g_game().combatBlockHit(damage, attacker, creature, false, false, field, !start)) {
 		return false;
 	}
 
@@ -1878,7 +1944,7 @@ void ConditionDamage::addCondition(std::shared_ptr<Creature> creature, const std
 		if (!delayed) {
 			int32_t damage;
 			if (getNextDamage(damage)) {
-				doDamage(creature, damage);
+				doDamage(creature, damage, true);
 			}
 		}
 	}

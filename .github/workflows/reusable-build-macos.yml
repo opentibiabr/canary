@@ -1,0 +1,118 @@
+name: Reusable macOS Build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Compile (macOS)
+    runs-on: macos-latest
+    env:
+      VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Get vcpkg baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> "$GITHUB_ENV"
+
+      - name: Install macOS dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew update
+          brew install ccache ninja pkg-config mono
+          which ninja
+          ninja --version
+
+      - name: CCache
+        uses: hendrikmuhs/ccache-action@v1.2.20
+        with:
+          max-size: "1G"
+          key: ccache-macos-release
+          restore-keys: |
+            ccache-macos
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Setup NuGet source for vcpkg (GitHub Packages)
+        shell: bash
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+
+          NUGET_PATH="$(vcpkg fetch nuget 2>&1 | grep -E '^/' | tail -n 1)"
+          if [[ -z "${NUGET_PATH}" || ! -f "${NUGET_PATH}" ]]; then
+            echo "Failed to locate NuGet fetched by vcpkg."
+            vcpkg fetch nuget 2>&1 || true
+            exit 1
+          fi
+
+          mono "${NUGET_PATH}" sources remove -name "GitHubPackages" >/dev/null 2>&1 || true
+          mono "${NUGET_PATH}" sources add \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            -storepasswordincleartext \
+            -name "GitHubPackages" \
+            -username "${{ github.repository_owner }}" \
+            -password "${NUGET_AUTH_TOKEN}"
+          mono "${NUGET_PATH}" setapikey "${NUGET_AUTH_TOKEN}" \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: Configure (CMake preset)
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          cmake --preset macos-release -DTOGGLE_BIN_FOLDER=ON
+
+      - name: Build (CMake preset)
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          cmake --build --preset macos-release
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: build/macos-release
+
+      - name: Verify vcpkg binary cache push
+        if: success() && ((github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
+        shell: bash
+        run: |
+          set -euo pipefail
+          logs=$(find . -name "vcpkg-manifest-install.log" -print0)
+          if [[ -z "${logs}" ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi
+          while IFS= read -r -d '' log; do
+            if grep -q "to 0 binary cache(s)" -- "$log"; then
+              echo "Binary cache push reported 0 caches." >&2
+              exit 1
+            fi
+          done <<< "${logs}"

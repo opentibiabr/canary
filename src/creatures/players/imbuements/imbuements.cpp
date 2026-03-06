@@ -12,9 +12,12 @@
 #include "config/configmanager.hpp"
 #include "creatures/players/player.hpp"
 #include "items/item.hpp"
+#include "items/tile.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "lib/di/container.hpp"
 #include "utils/pugicast.hpp"
-#include <utils/tools.hpp>
+#include "utils/const.hpp"
+#include "utils/tools.hpp"
 
 Imbuements &Imbuements::getInstance() {
 	return inject<Imbuements>();
@@ -416,4 +419,171 @@ const std::vector<std::pair<uint16_t, uint16_t>> &Imbuement::getItems() const {
 
 uint16_t Imbuement::getIconID() const {
 	return icon + (baseid - 1);
+}
+
+ImbuementDecay &ImbuementDecay::getInstance() {
+	return inject<ImbuementDecay>();
+}
+
+bool ImbuementDecay::canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const {
+	const auto &player = item->getHoldingPlayer();
+	if (!player) {
+		return false;
+	}
+
+	const auto &playerTile = player->getTile();
+	const bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+	const bool isInFightMode = player->hasCondition(CONDITION_INFIGHT);
+	const bool nonAggressiveFightOnly = g_configManager().getBoolean(TOGGLE_IMBUEMENT_NON_AGGRESSIVE_FIGHT_ONLY);
+	const auto imbuement = imbuementInfo.imbuement;
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	const auto &parent = item->getParent();
+	const bool isInBackpack = parent && parent->getContainer();
+
+	if (categoryImbuement && (categoryImbuement->agressive || nonAggressiveFightOnly) && (isInProtectionZone || !isInFightMode || isInBackpack)) {
+		return false;
+	}
+
+	if (categoryImbuement && !categoryImbuement->agressive && parent && parent != player) {
+		return false;
+	}
+
+	return true;
+}
+
+void ImbuementDecay::startImbuementDecay(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
+		return;
+	}
+
+	if (!item->hasImbuements()) {
+		return;
+	}
+
+	const auto key = item.get();
+	const auto existing = m_itemsToDecay.find(key);
+	if (existing != m_itemsToDecay.end()) {
+		if (!existing->second.item.expired()) {
+			return;
+		}
+		m_itemsToDecay.erase(existing);
+	}
+
+	g_logger().debug("Starting imbuement decay for item {}", item->getName());
+
+	const int64_t now = OTSYS_TIME();
+
+	m_itemsToDecay.emplace(key, TrackedImbuementItem { item, now });
+
+	if (m_eventId == 0) {
+		m_eventId = g_dispatcher().scheduleEvent(
+			1000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
+		);
+		g_logger().trace("Scheduled imbuement decay check every 1 second.");
+	}
+}
+
+void ImbuementDecay::stopImbuementDecay(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		g_logger().error("[{}] item is nullptr", __FUNCTION__);
+		return;
+	}
+
+	const auto key = item.get();
+	const auto it = m_itemsToDecay.find(key);
+	if (it == m_itemsToDecay.end()) {
+		return;
+	}
+
+	g_logger().debug("Stopping imbuement decay for item {}", item->getName());
+
+	m_itemsToDecay.erase(it);
+
+	if (m_itemsToDecay.empty() && m_eventId != 0) {
+		g_dispatcher().stopEvent(m_eventId);
+		m_eventId = 0;
+		g_logger().trace("No more items to decay. Stopped imbuement decay scheduler.");
+	}
+}
+
+void ImbuementDecay::checkImbuementDecay() {
+	const int64_t currentTime = OTSYS_TIME();
+
+	g_logger().trace("Checking imbuement decay for {} items.", m_itemsToDecay.size());
+
+	for (auto it = m_itemsToDecay.begin(); it != m_itemsToDecay.end();) {
+		auto item = it->second.item.lock();
+		if (!item) {
+			g_logger().error("[{}] item is nullptr", __FUNCTION__);
+			it = m_itemsToDecay.erase(it);
+			continue;
+		}
+
+		// Get the player holding the item (if any)
+		auto player = item->getHoldingPlayer();
+		if (!player) {
+			g_logger().debug("Item {} is not held by any player. Skipping decay.", item->getName());
+			it = m_itemsToDecay.erase(it);
+			continue;
+		}
+
+		bool hasImbuements = false;
+
+		const int64_t lastUpdate = it->second.lastUpdate == 0 ? currentTime : it->second.lastUpdate;
+		const int64_t elapsedTime = std::max<int64_t>(0, currentTime - lastUpdate);
+		const uint32_t elapsedSeconds = static_cast<uint32_t>(elapsedTime / 1000);
+
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); ++slotid) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+				g_logger().debug("No imbuement info found for slot {} in item {}", slotid, item->getName());
+				continue;
+			}
+
+			hasImbuements = true;
+
+			if (!canDecayImbuement(item, imbuementInfo)) {
+				continue;
+			}
+
+			const auto imbuement = imbuementInfo.imbuement;
+
+			// If the imbuement's duration is 0, remove its stats and continue to the next slot
+			if (imbuementInfo.duration == 0) {
+				player->removeItemImbuementStats(imbuement);
+				player->updateImbuementTrackerStats();
+				continue;
+			}
+
+			g_logger().debug("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), player->getName());
+			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
+			uint32_t duration = imbuementInfo.duration > elapsedSeconds ? imbuementInfo.duration - elapsedSeconds : 0;
+			item->decayImbuementTime(slotid, imbuement->getID(), duration);
+
+			if (duration == 0) {
+				player->removeItemImbuementStats(imbuement);
+				player->updateImbuementTrackerStats();
+			}
+		}
+
+		if (!hasImbuements) {
+			it = m_itemsToDecay.erase(it);
+			continue;
+		}
+
+		it->second.lastUpdate = currentTime;
+		++it;
+	}
+
+	// Reschedule the event if there are still items
+	if (!m_itemsToDecay.empty()) {
+		m_eventId = g_dispatcher().scheduleEvent(
+			1000, [this] { checkImbuementDecay(); }, "ImbuementDecay::checkImbuementDecay"
+		);
+		g_logger().trace("Re-scheduled imbuement decay check.");
+	} else {
+		m_eventId = 0;
+		g_logger().trace("No more items to decay. Stopped imbuement decay scheduler.");
+	}
 }

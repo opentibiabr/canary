@@ -39,18 +39,18 @@ RSAManager &RSAManager::getInstance() {
 	return inject<RSAManager>();
 }
 
-void RSAManager::start() {
+void RSAManager::start(const std::string &filename) {
 	// Standard CipSoft RSA Key (p and q primes)
 	const char* p = "14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113";
 	const char* q = "7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101";
 
 	try {
-		if (!loadPEM("key.pem")) {
-			logger.error("File key.pem not found or valid... Setting standard rsa key\n");
+		if (!loadPEM(filename)) {
+			logger.error("File {} not found or valid... Setting standard rsa key\n", filename);
 			setKey(p, q);
 		}
 	} catch (const std::exception &e) {
-		logger.error("Loading RSA Key from key.pem failed with error: {}\n", e.what());
+		logger.error("Loading RSA Key from {} failed with error: {}\n", filename, e.what());
 		logger.error("Switching to a default key...");
 		setKey(p, q);
 	}

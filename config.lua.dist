@@ -89,6 +89,7 @@ maxItem = 5000
 maxContainer = 500
 maxContainerDepth = 200
 maxInboxItems = 0
+maxExivaWhitelist = 100
 
 -- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
 -- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
@@ -396,7 +397,7 @@ pushWhenAttacking = false
 -- Note: If toggleDownloadMap is set to false, the mapDownloadUrl will not be used.
 -- Note: If a map with the same name already exists in the world folder, the map will not be downloaded, even if toggleDownloadMap is set to true.
 toggleDownloadMap = true
-mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.2.0/otservbr.otbm"
+mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.4.0/otservbr.otbm"
 mapName = "otservbr"
 mapAuthor = "OpenTibiaBR"
 
@@ -465,12 +466,6 @@ inventoryGlowOnFiveBless = false
 adventurersBlessingLevel = 21
 skulledDeathLoseStoreItem = false
 experienceDisplayRates = true
--- configure attack base on Fist Fighting skill/experience
--- multiplierSpeedOnFist * 5  (multiplies the value obtained from the player fist skill and multiplies it * 5) max 25 is recommended due minTicks limits else player stop attack
--- maxSpeedOnFist 500 miliseconds  (The maximum attack speed that can be obtained no matter how high the player has the Fist Fighting skill.)
-toggleAttackSpeedOnFist = false
-multiplierSpeedOnFist = 5
-maxSpeedOnFist = 500
 disableLegacyRaids = false
 disableMonsterArmor = false
 minElementalResistance = -200
@@ -485,6 +480,7 @@ combatChainTargets = 5
 combatChainSkillFormulaAxe = 0.9
 combatChainSkillFormulaClub = 0.7
 combatChainSkillFormulaSword = 1.1
+combatChainSkillFormulaFist = 1.1
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

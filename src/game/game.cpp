@@ -10796,13 +10796,20 @@ void Game::updateForgeableMonsters() {
 }
 
 void Game::createFiendishMonsters() {
-	uint32_t created = 0;
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
+	if (fiendishMonsters.size() >= fiendishLimit) {
+		return;
+	}
+
+	uint32_t noProgressAttempts = 0;
+	uint32_t remaining = fiendishLimit - static_cast<uint32_t>(fiendishMonsters.size());
+	uint32_t maxAttemptsWithoutProgress = remaining * 4;
+	if (maxAttemptsWithoutProgress < 25) {
+		maxAttemptsWithoutProgress = 25;
+	}
+
 	while (fiendishMonsters.size() < fiendishLimit) {
-		if (fiendishMonsters.size() >= fiendishLimit) {
-			g_logger().warn("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit);
-			break;
-		}
+		const auto previousSize = fiendishMonsters.size();
 
 		if (auto ret = makeFiendishMonster();
 		    // Condition
@@ -10810,7 +10817,17 @@ void Game::createFiendishMonsters() {
 			return;
 		}
 
-		created++;
+		if (fiendishMonsters.size() > previousSize) {
+			noProgressAttempts = 0;
+			continue;
+		}
+
+		noProgressAttempts++;
+		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
+			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.",
+			                __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
+			return;
+		}
 	}
 }
 
@@ -10820,8 +10837,29 @@ void Game::createInfluencedMonsters() {
 		return;
 	}
 
+	uint32_t noProgressAttempts = 0;
+	uint32_t remaining = influencedLimit - static_cast<uint32_t>(influencedMonsters.size());
+	uint32_t maxAttemptsWithoutProgress = remaining * 4;
+	if (maxAttemptsWithoutProgress < 25) {
+		maxAttemptsWithoutProgress = 25;
+	}
+
 	while (influencedMonsters.size() < influencedLimit) {
+		const auto previousSize = influencedMonsters.size();
+
 		if (makeInfluencedMonster() == 0) {
+			return;
+		}
+
+		if (influencedMonsters.size() > previousSize) {
+			noProgressAttempts = 0;
+			continue;
+		}
+
+		noProgressAttempts++;
+		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
+			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.",
+			                __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
 			return;
 		}
 	}

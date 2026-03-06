@@ -10811,11 +10811,7 @@ void Game::createFiendishMonsters() {
 	while (fiendishMonsters.size() < fiendishLimit) {
 		const auto previousSize = fiendishMonsters.size();
 
-		if (auto ret = makeFiendishMonster();
-		    // Condition
-		    ret == 0) {
-			return;
-		}
+		makeFiendishMonster();
 
 		if (fiendishMonsters.size() > previousSize) {
 			noProgressAttempts = 0;
@@ -10847,9 +10843,7 @@ void Game::createInfluencedMonsters() {
 	while (influencedMonsters.size() < influencedLimit) {
 		const auto previousSize = influencedMonsters.size();
 
-		if (makeInfluencedMonster() == 0) {
-			return;
-		}
+		makeInfluencedMonster();
 
 		if (influencedMonsters.size() > previousSize) {
 			noProgressAttempts = 0;

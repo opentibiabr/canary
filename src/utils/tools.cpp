@@ -68,6 +68,18 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 	g_logger().error("^");
 }
 
+uint8_t undoShift(uint64_t value) {
+	if (value == 0) {
+		return 0;
+	}
+
+	auto trailingZeros = std::countr_zero(value);
+	if (trailingZeros < 2) {
+		return 0;
+	}
+	return trailingZeros - 2;
+}
+
 static uint32_t circularShift(int bits, uint32_t value) {
 	return (value << bits) | (value >> (32 - bits));
 }
@@ -1981,6 +1993,89 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 unsigned int getNumberOfCores() {
 	static auto cores = std::thread::hardware_concurrency();
 	return cores;
+}
+
+skills_t getSkillsFromCipbiaSkill(CipbiaSkills_t cipbiaSkills) {
+	using enum CipbiaSkills_t;
+
+	switch (cipbiaSkills) {
+		case MagicLevel:
+			return SKILL_MAGLEVEL;
+		case Shield:
+			return SKILL_SHIELD;
+		case Distance:
+			return SKILL_DISTANCE;
+		case Sword:
+			return SKILL_SWORD;
+		case Club:
+			return SKILL_CLUB;
+		case Axe:
+			return SKILL_AXE;
+		case Fist:
+			return SKILL_FIST;
+		case Fishing:
+			return SKILL_FISHING;
+		default:
+			return SKILL_NONE;
+	}
+}
+
+CipbiaSkills_t getCipbiaSkill(skills_t skill) {
+	using enum CipbiaSkills_t;
+
+	switch (skill) {
+		case SKILL_MAGLEVEL:
+			return MagicLevel;
+		case SKILL_SHIELD:
+			return Shield;
+		case SKILL_DISTANCE:
+			return Distance;
+		case SKILL_SWORD:
+			return Sword;
+		case SKILL_CLUB:
+			return Club;
+		case SKILL_AXE:
+			return Axe;
+		case SKILL_FIST:
+			return Fist;
+		case SKILL_FISHING:
+			return Fishing;
+		default:
+			return None;
+	}
+}
+
+CombatType_t getCombatFromCipbiaElement(Cipbia_Elementals_t cipbiaElement) {
+	switch (cipbiaElement) {
+		case CIPBIA_ELEMENTAL_PHYSICAL:
+			return COMBAT_PHYSICALDAMAGE;
+		case CIPBIA_ELEMENTAL_ENERGY:
+			return COMBAT_ENERGYDAMAGE;
+		case CIPBIA_ELEMENTAL_EARTH:
+			return COMBAT_EARTHDAMAGE;
+		case CIPBIA_ELEMENTAL_FIRE:
+			return COMBAT_FIREDAMAGE;
+		case CIPBIA_ELEMENTAL_LIFEDRAIN:
+			return COMBAT_LIFEDRAIN;
+		case CIPBIA_ELEMENTAL_HEALING:
+			return COMBAT_HEALING;
+		case CIPBIA_ELEMENTAL_DROWN:
+			return COMBAT_DROWNDAMAGE;
+		case CIPBIA_ELEMENTAL_ICE:
+			return COMBAT_ICEDAMAGE;
+		case CIPBIA_ELEMENTAL_HOLY:
+			return COMBAT_HOLYDAMAGE;
+		case CIPBIA_ELEMENTAL_DEATH:
+			return COMBAT_DEATHDAMAGE;
+		case CIPBIA_ELEMENTAL_MANADRAIN:
+			return COMBAT_MANADRAIN;
+		case CIPBIA_ELEMENTAL_AGONY:
+			return COMBAT_AGONYDAMAGE;
+		case CIPBIA_ELEMENTAL_HEALING_2:
+			return COMBAT_HEALING;
+		default:
+			return COMBAT_NONE;
+	}
 }
 
 Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {

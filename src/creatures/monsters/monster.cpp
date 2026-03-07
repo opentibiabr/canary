@@ -2357,6 +2357,9 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		return;
 	}
 
+	targetPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::LIFE, WeaponProficiencyGain_t::KILL);
+	targetPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::KILL);
+
 	auto [activeCharm, _] = g_iobestiary().getCharmFromTarget(targetPlayer, m_monsterType);
 	if (activeCharm == CHARM_CARNAGE) {
 		const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
@@ -2364,6 +2367,16 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		if (charm && charm->chance[charmTier] >= normal_random(1, 10000) / 100.0) {
 			g_iobestiary().parseCharmCombat(charm, targetPlayer, getMonster());
 		}
+	}
+
+	const auto weaponExperienceFromBoss = targetPlayer->weaponProficiency().getBosstiaryExperience(m_monsterType->info.bosstiaryRace);
+	if (weaponExperienceFromBoss > 0) {
+		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBoss);
+	}
+
+	const auto weaponExperienceFromBestiary = targetPlayer->weaponProficiency().getBestiaryExperience(m_monsterType->info.bestiaryStars);
+	if (weaponExperienceFromBestiary > 0) {
+		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBestiary);
 	}
 }
 

@@ -1012,6 +1012,8 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 	player->title().checkAndUpdateNewTitles();
 	player->cyclopedia().loadSummaryData();
 
+	player->weaponProficiency().load();
+
 	player->initializePrey();
 	player->initializeTaskHunting();
 	// Load and apply the player's Virtue from the saved spell data, if available

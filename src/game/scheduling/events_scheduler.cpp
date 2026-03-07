@@ -12,8 +12,6 @@
 #include "config/configmanager.hpp"
 #include "lua/scripts/scripts.hpp"
 
-#include <nlohmann/json.hpp>
-
 namespace {
 	bool parseDateTime(const std::string &dateStr, const std::string &timeStr, std::time_t &result) {
 		int month = 0;

@@ -9290,7 +9290,20 @@ namespace {
 		return true;
 	}
 
-	void processItemInsertion(const std::shared_ptr<Player> &recipient, uint16_t itemId, uint16_t &amount, uint8_t tier, uint64_t &totalPrice, uint32_t pricePerItem) {
+	ReturnValue queryItemInsertion(const std::shared_ptr<Player> &recipient, uint16_t itemId, uint16_t amount, uint8_t tier) {
+		uint32_t actuallyAdded = 0;
+		return recipient->addItemBatchToPaginedContainer(
+			recipient->getInbox(),
+			itemId,
+			amount,
+			actuallyAdded,
+			FLAG_NOLIMIT,
+			tier,
+			true
+		);
+	}
+
+	ReturnValue processItemInsertion(const std::shared_ptr<Player> &recipient, uint16_t itemId, uint16_t amount, uint8_t tier) {
 		uint32_t actuallyAdded = 0;
 		ReturnValue returnValue = recipient->addItemBatchToPaginedContainer(
 			recipient->getInbox(),
@@ -9301,17 +9314,29 @@ namespace {
 			tier
 		);
 		if (returnValue != RETURNVALUE_NOERROR) {
-			if (actuallyAdded == 0) {
-				recipient->sendTextMessage(MESSAGE_MARKET, fmt::format("Not enough space in your inbox."));
-			} else {
-				recipient->sendTextMessage(MESSAGE_MARKET, fmt::format("Not enough space in your inbox to all items, processed only {} items.", actuallyAdded));
-				g_logger().warn("{} - Failed to add item {} total amount {}, currently added: {} to inbox for player {}, error code: {}", __FUNCTION__, itemId, amount, actuallyAdded, recipient->getName(), getReturnMessage(returnValue));
-			}
+			g_logger().warn("{} - Failed to add item {} total amount {} to inbox for player {}, error code: {}", __FUNCTION__, itemId, amount, recipient->getName(), getReturnMessage(returnValue));
+			return returnValue;
 		}
-		if (actuallyAdded < amount) {
-			totalPrice = pricePerItem * actuallyAdded;
-			amount = actuallyAdded;
+
+		if (actuallyAdded != amount) {
+			g_logger().error("{} - Atomic inbox insertion mismatch for item {} total amount {}, currently added: {} to inbox for player {}", __FUNCTION__, itemId, amount, actuallyAdded, recipient->getName());
+			return RETURNVALUE_NOTPOSSIBLE;
 		}
+
+		return RETURNVALUE_NOERROR;
+	}
+
+	void sendInboxSpaceMessage(const std::shared_ptr<Player> &recipient) {
+		if (recipient && !recipient->isOffline()) {
+			recipient->sendTextMessage(MESSAGE_MARKET, "Not enough space in your inbox.");
+		}
+	}
+
+	void sendBuyerInboxSpaceMessage(const std::shared_ptr<Player> &seller, const std::shared_ptr<Player> &buyer) {
+		if (seller) {
+			seller->sendTextMessage(MESSAGE_MARKET, "The buyer does not have enough space in the inbox.");
+		}
+		sendInboxSpaceMessage(buyer);
 	}
 
 } // namespace
@@ -9500,7 +9525,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	const auto &playerInbox = player->getInbox();
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
 		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
@@ -9519,39 +9543,18 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			// Do not register a transaction for coins upon cancellation
 			player->getAccount()->addCoins(CoinType::Transferable, offer.amount, "");
-		} else if (it.stackable) {
-			uint16_t tmpAmount = offer.amount;
-
-			while (tmpAmount > 0) {
-				int32_t stackCount = std::min<int32_t>(it.stackSize, tmpAmount);
-				const auto &item = Item::CreateItem(it.id, stackCount);
-				if (internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-					break;
-				}
-
-				if (offerTier > 0) {
-					item->setTier(offerTier);
-				}
-
-				tmpAmount -= stackCount;
-			}
 		} else {
-			int32_t subType;
-			if (it.charges != 0) {
-				subType = it.charges;
-			} else {
-				subType = -1;
+			ReturnValue inboxCheckResult = queryItemInsertion(player, it.id, offer.amount, offerTier);
+			if (inboxCheckResult != RETURNVALUE_NOERROR) {
+				sendInboxSpaceMessage(player);
+				return;
 			}
 
-			for (uint16_t i = 0; i < offer.amount; ++i) {
-				const auto &item = Item::CreateItem(it.id, subType);
-				if (internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-					break;
-				}
-
-				if (offerTier > 0) {
-					item->setTier(offerTier);
-				}
+			ReturnValue inboxInsertResult = processItemInsertion(player, it.id, offer.amount, offerTier);
+			if (inboxInsertResult != RETURNVALUE_NOERROR) {
+				player->sendTextMessage(MESSAGE_MARKET, "There was an error returning your items, please contact the administrator.");
+				g_logger().error("{} - Failed to return cancelled offer item {} total amount {} to inbox for player {}, error code: {}", __FUNCTION__, it.id, offer.amount, player->getName(), getReturnMessage(inboxInsertResult));
+				return;
 			}
 		}
 	}
@@ -9638,7 +9641,13 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		const auto &buyerPlayerInbox = buyerPlayer->getInbox();
+		if (it.id != ITEM_STORE_COIN) {
+			ReturnValue inboxCheckResult = queryItemInsertion(buyerPlayer, it.id, amount, offerTier);
+			if (inboxCheckResult != RETURNVALUE_NOERROR) {
+				sendBuyerInboxSpaceMessage(player, buyerPlayer);
+				return;
+			}
+		}
 
 		if (it.id == ITEM_STORE_COIN) {
 			auto [transferableCoins, error] = playerAccount->getCoins(CoinType::Transferable);
@@ -9678,21 +9687,22 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
-		player->setBankBalance(player->getBankBalance() + totalPrice);
-		g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
-
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
 		} else {
-			uint16_t processedAmount = amount;
-			uint64_t effectivePrice = offer.price * processedAmount;
-			processItemInsertion(buyerPlayer, it.id, processedAmount, offer.tier, effectivePrice, offer.price);
-			amount = processedAmount;
-			totalPrice = effectivePrice;
+			ReturnValue inboxInsertResult = processItemInsertion(buyerPlayer, it.id, amount, offer.tier);
+			if (inboxInsertResult != RETURNVALUE_NOERROR) {
+				offerStatus << "Failed to add item " << it.id << " total amount " << amount << " to inbox for player " << buyerPlayer->getName() << " error: " << getReturnMessage(inboxInsertResult);
+			}
 		}
 
-		if (buyerPlayer->isOffline()) {
-			g_saveManager().savePlayer(buyerPlayer);
+		if (offerStatus.str().empty()) {
+			player->setBankBalance(player->getBankBalance() + totalPrice);
+			g_metrics().addCounter("balance_increase", totalPrice, { { "player", player->getName() }, { "context", "market_sale" } });
+
+			if (buyerPlayer->isOffline()) {
+				g_saveManager().savePlayer(buyerPlayer);
+			}
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
 		std::shared_ptr<Player> sellerPlayer = getPlayerByGUID(offer.playerId, true);
@@ -9710,6 +9720,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			return;
 		}
 
+		if (it.id != ITEM_STORE_COIN) {
+			ReturnValue inboxCheckResult = queryItemInsertion(player, it.id, amount, offerTier);
+			if (inboxCheckResult != RETURNVALUE_NOERROR) {
+				sendInboxSpaceMessage(player);
+				return;
+			}
+		}
+
 		// Have enough money on the bank
 		if (totalPrice <= player->getBankBalance()) {
 			player->setBankBalance(player->getBankBalance() - totalPrice);
@@ -9724,25 +9742,26 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (it.id == ITEM_STORE_COIN) {
 			player->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
 		} else {
-			uint16_t processedAmount = amount;
-			uint64_t effectivePrice = offer.price * processedAmount;
-			processItemInsertion(player, it.id, processedAmount, offer.tier, effectivePrice, offer.price);
-			amount = processedAmount;
-			totalPrice = effectivePrice;
+			ReturnValue inboxInsertResult = processItemInsertion(player, it.id, amount, offer.tier);
+			if (inboxInsertResult != RETURNVALUE_NOERROR) {
+				offerStatus << "Failed to add item " << it.id << " total amount " << amount << " to inbox for player " << player->getName() << " error: " << getReturnMessage(inboxInsertResult);
+			}
 		}
 
-		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
-		g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
-		if (it.id == ITEM_STORE_COIN) {
-			sellerPlayer->getAccount()->registerCoinTransaction(CoinTransactionType::Remove, CoinType::Transferable, amount, "Sold on Market");
-		}
+		if (offerStatus.str().empty()) {
+			sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
+			g_metrics().addCounter("balance_increase", totalPrice, { { "player", sellerPlayer->getName() }, { "context", "market_sale" } });
+			if (it.id == ITEM_STORE_COIN) {
+				sellerPlayer->getAccount()->registerCoinTransaction(CoinTransactionType::Remove, CoinType::Transferable, amount, "Sold on Market");
+			}
 
-		if (it.id != ITEM_STORE_COIN) {
-			player->onReceiveMail();
-		}
+			if (it.id != ITEM_STORE_COIN) {
+				player->onReceiveMail();
+			}
 
-		if (sellerPlayer->isOffline()) {
-			g_saveManager().savePlayer(sellerPlayer);
+			if (sellerPlayer->isOffline()) {
+				g_saveManager().savePlayer(sellerPlayer);
+			}
 		}
 	}
 

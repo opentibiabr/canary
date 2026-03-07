@@ -48,6 +48,7 @@
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 #include "items/items_classification.hpp"
@@ -9021,7 +9022,8 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 	uint32_t totalCount,
 	uint32_t &actuallyAdded,
 	uint32_t flags /*= 0*/,
-	uint8_t tier /*= 0*/
+	uint8_t tier /*= 0*/,
+	bool testOnly /*= false*/
 ) {
 	actuallyAdded = 0;
 
@@ -9038,7 +9040,14 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
+	uint32_t maxStackSize = itemType.stackable && itemType.stackSize > 0 ? itemType.stackSize : 1;
+	if (const auto &inbox = std::dynamic_pointer_cast<Inbox>(container)) {
+		const uint64_t chunksNeeded = (static_cast<uint64_t>(totalCount) + maxStackSize - 1) / maxStackSize;
+		if (chunksNeeded > inbox->getRemainingItemCapacity()) {
+			return RETURNVALUE_DEPOTISFULL;
+		}
+	}
+
 	uint32_t remaining = totalCount;
 	while (remaining > 0) {
 		uint32_t toStack = std::min(remaining, maxStackSize);
@@ -9062,10 +9071,15 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 			return rv;
 		}
 
-		container->addThing(newItem);
-
-		actuallyAdded += toStack;
+		if (!testOnly) {
+			container->addThing(newItem);
+			actuallyAdded += toStack;
+		}
 		remaining -= toStack;
+	}
+
+	if (testOnly) {
+		return RETURNVALUE_NOERROR;
 	}
 
 	return actuallyAdded > 0 ? RETURNVALUE_NOERROR : RETURNVALUE_NOTENOUGHROOM;

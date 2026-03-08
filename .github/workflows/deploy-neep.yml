@@ -6,10 +6,6 @@ on:
   issue_comment:
     types: [created]
 
-env:
-  TARGET_ARTIFACT_OS: ubuntu-24.04
-  TARGET_ARTIFACT_BUILD: linux-release
-
 jobs:
   deploy:
     if: |
@@ -29,11 +25,9 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       issues: write
-      discussions: write
-      actions: read
 
     steps:
       # ---------------------------------------------------------
@@ -88,7 +82,6 @@ jobs:
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             {
               echo "name=${{ steps.comment-branch.outputs.head_ref }}"
-              echo "sha=${{ steps.comment-branch.outputs.head_sha }}"
               echo "actor=${{ github.event.comment.user.login }}"
               echo "pr_number=${{ github.event.issue.number }}"
               echo "has_pr=true"
@@ -96,7 +89,6 @@ jobs:
           else
             {
               echo "name=${{ github.ref_name }}"
-              echo "sha=${{ github.sha }}"
               echo "actor=${{ github.actor }}"
               echo "pr_number=${{ steps.detect_pr.outputs.pr_number }}"
               echo "has_pr=${{ steps.detect_pr.outputs.has_pr }}"
@@ -104,94 +96,9 @@ jobs:
           fi
 
       # ---------------------------------------------------------
-      # Checkout branch
+      # Remote: checkout, build, deploy
       # ---------------------------------------------------------
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.setup.outputs.name }}
-
-      # ---------------------------------------------------------
-      # Find the build run for the target branch
-      # ---------------------------------------------------------
-      - name: Find build run for SHA
-        id: find_build
-        run: |
-          BRANCH="${{ steps.setup.outputs.name }}"
-          SHA="${{ steps.setup.outputs.sha }}"
-
-          echo "Searching for build of $SHA on branch $BRANCH"
-
-          RUN_ID=$(gh run list \
-            --workflow build-ubuntu.yml \
-            --json databaseId,headSha,status \
-            --jq "map(select(.headSha==\"$SHA\" and .status==\"completed\")) | first | .databaseId" \
-            || true)
-
-          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-            echo "No successful build for SHA $SHA on branch $BRANCH"
-            echo "found=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Found run $RUN_ID for correct SHA"
-          {
-            echo "found=true"
-            echo "run_id=$RUN_ID"
-          } >> "$GITHUB_OUTPUT"
-
-      # ---------------------------------------------------------
-      # Download artifact AND prepare deploy directory
-      # ---------------------------------------------------------
-      - name: Download and prepare deploy package
-        id: artifact_prep
-        if: steps.find_build.outputs.found == 'true'
-        env:
-          RUN_ID: ${{ steps.find_build.outputs.run_id }}
-          SHA: ${{ steps.setup.outputs.sha }}
-          OS: ${{ env.TARGET_ARTIFACT_OS }}
-          BUILD: ${{ env.TARGET_ARTIFACT_BUILD }}
-        run: |
-          mkdir -p artifact-bin
-          mkdir -p deploy
-
-          echo "Downloading artifacts from run: $RUN_ID"
-          gh run download "$RUN_ID" -D artifact-bin
-
-          echo "Looking for folder: canary-${OS}-${BUILD}-${SHA}"
-          ARTIFACT_DIR="artifact-bin/canary-${OS}-${BUILD}-${SHA}"
-
-          if [ ! -d "$ARTIFACT_DIR" ]; then
-            echo "Artifact directory not found: $ARTIFACT_DIR"
-            echo "success=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Copy binary
-          cp "$ARTIFACT_DIR/canary" deploy/
-          chmod +x deploy/canary
-
-          echo "success=true" >> $GITHUB_OUTPUT
-
-          echo "Deploy folder content:"
-          ls -l deploy
-
-      # ---------------------------------------------------------
-      # Upload to server
-      # ---------------------------------------------------------
-      - name: Upload to server
-        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
-        with:
-          host: ${{ secrets.NEEP_HOST }}
-          username: root
-          password: ${{ secrets.NEEP_PASS }}
-          source: "deploy/canary"
-          target: "/opt/canary-next-deploy"
-
-      # ---------------------------------------------------------
-      # Remote deploy
-      # ---------------------------------------------------------
-      - name: Remote deploy
+      - name: Remote build and deploy
         id: remote
         uses: appleboy/ssh-action@91f3272fc5907f4699dcf59761eb622a07342f5a
         with:
@@ -199,32 +106,42 @@ jobs:
           username: root
           password: ${{ secrets.NEEP_PASS }}
           timeout: 300s
-          command_timeout: 20m
+          command_timeout: 30m
           script: |
-            set +e
-            trap '' TERM
-
-            systemctl --no-ask-password --no-block stop canary || true
-
-            cd /opt/canary
-            git fetch origin
-            git checkout "${{ steps.setup.outputs.name }}" || git checkout -b "${{ steps.setup.outputs.name }}"
-            git reset --hard "origin/${{ steps.setup.outputs.name }}"
-
-            if [ -f "/opt/canary-next-deploy/canary" ]; then
-              mv /opt/canary-next-deploy/canary /opt/canary/canary
-              chmod +x /opt/canary/canary
-              echo "DEPLOYED_ARTIFACT=true"
-            else
-              echo "DEPLOYED_ARTIFACT=false"
-            fi
+            set -e
 
             BRANCH="${{ steps.setup.outputs.name }}"
-            ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
-            sed -i "s/We are currently running [^.]*\./We are currently running $ESCAPED_BRANCH./" config.lua
 
-            rm -rf /opt/canary-next-deploy
+            echo "=== [1/6] Checkout da branch: $BRANCH ==="
+            cd /opt/canary
+            git fetch origin
+            git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+
+            echo "=== [2/6] Preparando build ==="
+            rm -rf build
+            mkdir build
+            cd build
+
+            echo "=== [3/6] Configurando CMake ==="
+            cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release -DTOGGLE_BIN_FOLDER=ON
+
+            echo "=== [4/6] Compilando ==="
+            cmake --build linux-release
+
+            echo "=== [5/6] Deploy do binário ==="
+            systemctl stop canary || true
+
+            cp linux-release/bin/canary /opt/canary/canary
+            chmod +x /opt/canary/canary
+
+            ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
+            sed -i "s/We are currently running [^.]*\./We are currently running $ESCAPED_BRANCH./" /opt/canary/config.lua
+
+            echo "=== [6/6] Iniciando serviço ==="
             systemctl start canary
+
+            echo "DEPLOY_SUCCESS=true"
 
       # ---------------------------------------------------------
       # Success or failure comment
@@ -237,9 +154,7 @@ jobs:
           body: |
             ✅ **Deploy successful!**
             **Branch:** `${{ steps.setup.outputs.name }}`
-            **Has new build artifact:** `${{ steps.find_build.outputs.found }}`
-            **Build artifact prepared:** `${{ steps.artifact_prep.outputs.success || 'false' }}`
-            **Binary deployed:** `${{ contains(steps.remote.outputs.stdout, 'DEPLOYED_ARTIFACT=true') }}`
+            **Build:** Compiled on remote server
             *(Triggered by @${{ steps.setup.outputs.actor }})*
 
       - name: Post failure feedback

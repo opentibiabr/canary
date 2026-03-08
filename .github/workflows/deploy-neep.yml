@@ -198,11 +198,11 @@ jobs:
             	{
             		minlevel = 901,
             		maxlevel = 1000,
-            		multiplier = 10
+            		multiplier = 15
             	},
             	{
             		minlevel = 1001,
-            		multiplier = 5
+            		multiplier = 10
             	},
             }
 
@@ -257,7 +257,12 @@ jobs:
             	{
             	{
             		minlevel = 111,
+            		maxlevel = 120,
             		multiplier = 10
+            	},
+            	{
+            		minlevel = 121,
+            		multiplier = 2
             	},
             }
             EOF
@@ -431,7 +436,7 @@ jobs:
       # Success or failure comment
       # ---------------------------------------------------------
       - name: Post deploy result
-        if: steps.remote.outcome == 'success' && steps.setup.outputs.has_pr == 'true'
+        if: always() && steps.remote.outcome == 'success' && steps.setup.outputs.has_pr == 'true'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           issue-number: ${{ steps.setup.outputs.pr_number }}
@@ -442,7 +447,7 @@ jobs:
             *(Triggered by @${{ steps.setup.outputs.actor }})*
 
       - name: Post failure feedback
-        if: steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
+        if: always() && steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           issue-number: ${{ steps.setup.outputs.pr_number }}
@@ -459,14 +464,14 @@ jobs:
       # React with emojis
       # ---------------------------------------------------------
       - name: React success
-        if: github.event_name == 'issue_comment' && steps.remote.outcome == 'success'
+        if: always() && github.event_name == 'issue_comment' && steps.remote.outcome == 'success'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           comment-id: ${{ github.event.comment.id }}
           reactions: hooray
 
       - name: React failure
-        if: github.event_name == 'issue_comment' && steps.remote.outcome != 'success'
+        if: always() && github.event_name == 'issue_comment' && steps.remote.outcome != 'success'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           comment-id: ${{ github.event.comment.id }}

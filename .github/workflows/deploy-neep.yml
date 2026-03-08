@@ -85,6 +85,12 @@ jobs:
               echo "actor=${{ github.event.comment.user.login }}"
               echo "pr_number=${{ github.event.issue.number }}"
               echo "has_pr=true"
+              
+              if echo "${{ github.event.comment.body }}" | grep -iq '/deploy clean'; then
+                echo "is_clean=true"
+              else
+                echo "is_clean=false"
+              fi
             } >> "$GITHUB_OUTPUT"
           else
             {
@@ -92,6 +98,7 @@ jobs:
               echo "actor=${{ github.actor }}"
               echo "pr_number=${{ steps.detect_pr.outputs.pr_number }}"
               echo "has_pr=${{ steps.detect_pr.outputs.has_pr }}"
+              echo "is_clean=false"
             } >> "$GITHUB_OUTPUT"
           fi
 
@@ -111,6 +118,7 @@ jobs:
             set -e
 
             BRANCH="${{ steps.setup.outputs.name }}"
+            IS_CLEAN="${{ steps.setup.outputs.is_clean }}"
 
             echo "=== [1/6] Checkout da branch: $BRANCH ==="
             cd /opt/canary
@@ -120,8 +128,14 @@ jobs:
             git clean -fdx --exclude=build --exclude=config.lua
 
             echo "=== [2/6] Preparando build ==="
-            rm -rf build
-            mkdir build
+            if [ "$IS_CLEAN" = "true" ]; then
+              echo "Comando '/deploy clean' detectado. Apagando diretório build atual..."
+              rm -rf build
+            else
+              echo "Reaproveitando diretório build se existir..."
+            fi
+            
+            mkdir -p build
             cd build
 
             echo "=== [3/6] Configurando CMake ==="
@@ -254,7 +268,6 @@ jobs:
             		maxlevel = 110,
             		multiplier = 15
             	},
-            	{
             	{
             		minlevel = 111,
             		maxlevel = 120,

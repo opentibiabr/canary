@@ -117,6 +117,7 @@ jobs:
             git fetch origin
             git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
             git reset --hard "origin/$BRANCH"
+            git clean -fdx --exclude=build
 
             echo "=== [2/6] Preparando build ==="
             rm -rf build
@@ -130,7 +131,7 @@ jobs:
             cmake --build linux-release
 
             echo "=== [5/6] Deploy do binário ==="
-            systemctl stop canary || true
+            (systemctl stop canary 2>/dev/null || true) && sleep 3
 
             cp linux-release/bin/canary /opt/canary/canary
             chmod +x /opt/canary/canary
@@ -140,6 +141,12 @@ jobs:
 
             echo "=== [6/6] Iniciando serviço ==="
             systemctl start canary
+            sleep 3
+            if ! systemctl is-active --quiet canary; then
+              echo "ERRO: serviço canary não está rodando após o start!"
+              systemctl status canary --no-pager || true
+              exit 1
+            fi
 
             echo "DEPLOY_SUCCESS=true"
 

@@ -117,7 +117,7 @@ jobs:
             git fetch origin
             git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
             git reset --hard "origin/$BRANCH"
-            git clean -fdx --exclude=build
+            git clean -fdx --exclude=build --exclude=config.lua
 
             echo "=== [2/6] Preparando build ==="
             rm -rf build
@@ -137,7 +137,7 @@ jobs:
             chmod +x /opt/canary/canary
 
             ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
-            sed -i "s/We are currently running [^.]*\./We are currently running $ESCAPED_BRANCH./" /opt/canary/config.lua
+            sed -i "s/^serverMotd = \".*\"/serverMotd = \"Welcome to the Canary Test Server! Currently running branch: $ESCAPED_BRANCH\"/" /opt/canary/config.lua
 
             echo "=== [6/6] Iniciando serviço ==="
             systemctl start canary

@@ -5864,9 +5864,18 @@ void Game::playerLootNearby(uint32_t playerId) {
 	// Iterate all tiles within a 1-tile radius around the player (3x3 area)
 	for (int32_t x = -1; x <= 1; ++x) {
 		for (int32_t y = -1; y <= 1; ++y) {
+			// Compute coordinates in signed integers to avoid wraparound on cast
+			const int32_t tileX = static_cast<int32_t>(playerPos.x) + x;
+			const int32_t tileY = static_cast<int32_t>(playerPos.y) + y;
+
+			// Skip positions outside the valid uint16_t coordinate range
+			if (tileX < 0 || tileX > 0xFFFF || tileY < 0 || tileY > 0xFFFF) {
+				continue;
+			}
+
 			const std::shared_ptr<Tile> &tile = map.getTile(
-				static_cast<uint16_t>(playerPos.x + x),
-				static_cast<uint16_t>(playerPos.y + y),
+				static_cast<uint16_t>(tileX),
+				static_cast<uint16_t>(tileY),
 				playerPos.z
 			);
 			if (!tile) {

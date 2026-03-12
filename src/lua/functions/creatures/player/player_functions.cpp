@@ -373,6 +373,7 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "setLoyaltyTitle", PlayerFunctions::luaPlayerSetLoyaltyTitle);
 
 	Lua::registerMethod(L, "Player", "updateConcoction", PlayerFunctions::luaPlayerUpdateConcoction);
+	Lua::registerMethod(L, "Player", "updateFood", PlayerFunctions::luaPlayerUpdateFood);
 	Lua::registerMethod(L, "Player", "clearSpellCooldowns", PlayerFunctions::luaPlayerClearSpellCooldowns);
 
 	Lua::registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
@@ -4617,6 +4618,18 @@ int PlayerFunctions::luaPlayerUpdateConcoction(lua_State* L) {
 		return 1;
 	}
 	player->updateConcoction(Lua::getNumber<uint16_t>(L, 2), Lua::getNumber<uint16_t>(L, 3));
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpdateFood(lua_State* L) {
+	// player:updateFood(itemId, timeLeft)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	player->updateFood(Lua::getNumber<uint16_t>(L, 2), Lua::getNumber<uint32_t>(L, 3));
 	Lua::pushBoolean(L, true);
 	return 1;
 }

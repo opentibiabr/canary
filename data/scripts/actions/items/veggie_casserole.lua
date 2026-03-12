@@ -13,6 +13,7 @@ function veggieCasserole.onUse(player, item, fromPosition, target, toPosition, i
 		return true
 	end
 
+	player:updateFood(item:getId(), 3600)
 	player:addCondition(meleeCondition)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel stronger.")
 	player:say("Yum.", TALKTYPE_MONSTER_SAY)

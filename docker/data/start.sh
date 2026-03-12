@@ -42,7 +42,11 @@ if [ "$OT_SERVER_DATA" = "data-otservbr-global" ] && [ ! -f data-otservbr-global
 	echo "YES"
 
 	echo "Downloading OTBR Map..."
-	wget --no-check-certificate "$OT_SERVER_MAP" -O data-otservbr-global/world/otservbr.otbm
+# -L = follow redirects, needed for GitHub URLs
+# -k = ignore failed TLS trust issues
+# -f = fail fast with no output on HTTP errors
+# -o = write output to file
+	curl -Lk "$OT_SERVER_MAP" -o data-otservbr-global/world/otservbr.otbm
 
 	echo "Done"
 

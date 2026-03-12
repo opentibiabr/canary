@@ -9041,14 +9041,66 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 	}
 
 	uint32_t maxStackSize = itemType.stackable && itemType.stackSize > 0 ? itemType.stackSize : 1;
+	const auto canMergeWithExistingStack = [&](const std::shared_ptr<Item> &existingItem) {
+		return existingItem
+			&& itemType.stackable
+			&& existingItem->isStackable()
+			&& existingItem->getID() == itemId
+			&& existingItem->getTier() == tier
+			&& existingItem->getItemCount() < existingItem->getStackSize();
+	};
+
 	if (const auto &inbox = std::dynamic_pointer_cast<Inbox>(container)) {
-		const uint64_t chunksNeeded = (static_cast<uint64_t>(totalCount) + maxStackSize - 1) / maxStackSize;
+		uint64_t mergeableCount = 0;
+		for (const auto &existingItem : container->getItemList()) {
+			if (!canMergeWithExistingStack(existingItem)) {
+				continue;
+			}
+
+			mergeableCount += existingItem->getStackSize() - existingItem->getItemCount();
+			if (mergeableCount >= totalCount) {
+				break;
+			}
+		}
+
+		const uint64_t remainingAfterMerge = totalCount > mergeableCount ? static_cast<uint64_t>(totalCount) - mergeableCount : 0;
+		const uint64_t chunksNeeded = (remainingAfterMerge + maxStackSize - 1) / maxStackSize;
 		if (chunksNeeded > inbox->getRemainingItemCapacity()) {
 			return RETURNVALUE_DEPOTISFULL;
 		}
 	}
 
 	uint32_t remaining = totalCount;
+	if (itemType.stackable) {
+		for (const auto &existingItem : container->getItemList()) {
+			if (remaining == 0) {
+				break;
+			}
+
+			if (!canMergeWithExistingStack(existingItem)) {
+				continue;
+			}
+
+			uint32_t spaceInStack = existingItem->getStackSize() - existingItem->getItemCount();
+			uint32_t toMerge = std::min(remaining, spaceInStack);
+			if (toMerge == 0) {
+				continue;
+			}
+
+			if (!testOnly) {
+				const auto &parent = existingItem->getParent();
+				if (!parent) {
+					return RETURNVALUE_NOTPOSSIBLE;
+				}
+
+				parent->updateThing(existingItem, existingItem->getID(), existingItem->getItemCount() + toMerge);
+				actuallyAdded += toMerge;
+			}
+
+			remaining -= toMerge;
+		}
+	}
+
 	while (remaining > 0) {
 		uint32_t toStack = std::min(remaining, maxStackSize);
 

@@ -5912,8 +5912,9 @@ void Game::playerLootNearby(uint32_t playerId) {
 				}
 
 				playerQuickLootCorpse(player, corpse, corpse->getPosition());
-				++totalCorpses;
-				++totalCorpsesFound;
+				corpse->sendUpdateToClient(player);
+				+totalCorpses;
+				+totalCorpsesFound;
 
 				if (totalCorpses >= 30) {
 					break;

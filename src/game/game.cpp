@@ -5931,7 +5931,7 @@ void Game::playerLootNearby(uint32_t playerId) {
 	}
 
 	if (totalCorpsesFound == 0) {
-		player->sendCancelMessage("There are no corpses nearby to loot.");
+		player->sendCancelMessage("You cannot loot any nearby corpses.");
 	} else if (totalCorpses == 0) {
 		player->sendCancelMessage("All nearby corpses are already empty.");
 	} else if (totalCorpses > 1) {

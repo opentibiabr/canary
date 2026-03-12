@@ -34,6 +34,7 @@
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/player_icons.hpp"
+#include "enums/imbuement.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 
 void PlayerFunctions::init(lua_State* L) {
@@ -259,8 +260,10 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "forgetSpell", PlayerFunctions::luaPlayerForgetSpell);
 	Lua::registerMethod(L, "Player", "hasLearnedSpell", PlayerFunctions::luaPlayerHasLearnedSpell);
 
+	Lua::registerMethod(L, "Player", "applyImbuementScroll", PlayerFunctions::luaPlayerApplyImbuementScroll);
 	Lua::registerMethod(L, "Player", "openImbuementWindow", PlayerFunctions::luaPlayerOpenImbuementWindow);
 	Lua::registerMethod(L, "Player", "closeImbuementWindow", PlayerFunctions::luaPlayerCloseImbuementWindow);
+	Lua::registerMethod(L, "Player", "clearAllImbuements", PlayerFunctions::luaPlayerClearAllImbuements);
 
 	Lua::registerMethod(L, "Player", "sendTutorial", PlayerFunctions::luaPlayerSendTutorial);
 	Lua::registerMethod(L, "Player", "addMapMark", PlayerFunctions::luaPlayerAddMapMark);
@@ -416,6 +419,9 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "getHarmony", PlayerFunctions::luaPlayerGetHarmony);
 	Lua::registerMethod(L, "Player", "getHarmonyDamage", PlayerFunctions::luaPlayerGetHarmonyDamage);
 	Lua::registerMethod(L, "Player", "calculateFlatDamageHealing", PlayerFunctions::luaCalculateFlatDamageHealing);
+
+	Lua::registerMethod(L, "Player", "setSpeed", PlayerFunctions::luaPlayerSetSpeed);
+	Lua::registerMethod(L, "Player", "addWeaponExperience", PlayerFunctions::luaPlayerAddWeaponExperience);
 
 	// OTCR Features
 	Lua::registerMethod(L, "Player", "getMapShader", PlayerFunctions::luaPlayerGetMapShader);
@@ -3296,8 +3302,60 @@ int PlayerFunctions::luaPlayerSendTutorial(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerApplyImbuementScroll(lua_State* L) {
+	// player:applyImbuementScroll(item, scrollItem)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto &item = Lua::getUserdataShared<Item>(L, 2, "Item");
+	const auto &scrollItem = Lua::getUserdataShared<Item>(L, 3, "Item");
+	if (!item || !scrollItem) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->applyScrollImbuement(item, scrollItem);
+
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
-	// player:openImbuementWindow(item)
+	// player:openImbuementWindow([action[, item]])
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const ImbuementAction action = Lua::getNumber<ImbuementAction>(L, 2, ImbuementAction::Open);
+	const auto &item = Lua::getUserdataShared<Item>(L, 3, "Item");
+
+	player->openImbuementWindow(action, item);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerCloseImbuementWindow(lua_State* L) {
+	// player:closeImbuementWindow()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->closeImbuementWindow();
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerClearAllImbuements(lua_State* L) {
+	// player:clearAllImbuements(item)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3312,20 +3370,8 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 		return 1;
 	}
 
-	player->openImbuementWindow(item);
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerCloseImbuementWindow(lua_State* L) {
-	// player:closeImbuementWindow()
-	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		Lua::pushBoolean(L, false);
-		return 1;
-	}
-
-	player->closeImbuementWindow();
+	const bool result = player->clearAllImbuements(item);
+	Lua::pushBoolean(L, result);
 	return 1;
 }
 
@@ -5180,5 +5226,50 @@ int PlayerFunctions::luaPlayerGetVirtue(lua_State* L) {
 	}
 
 	lua_pushnumber(L, static_cast<lua_Number>(player->getVirtue()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetSpeed(lua_State* L) {
+	// player:setSpeed(speed)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const int32_t speed = Lua::getNumber<int32_t>(L, 2);
+	g_game().setCreatureSpeed(player, speed);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
+	// player:addWeaponExperience(experience, itemId)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto experience = Lua::getNumber<uint32_t>(L, 2);
+	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
+
+	if (experience == 0) {
+		Lua::pushBoolean(L, true);
+		return 1;
+	}
+
+	// Validate that the item has a valid proficiency
+	if (itemId > 0 && (itemId >= Item::items.size() || Item::items[itemId].proficiencyId == 0)) {
+		g_logger().warn("[{}] - Item ID '{}' has no proficiency assigned", __FUNCTION__, itemId);
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->weaponProficiency().addExperience(experience, itemId);
+
+	Lua::pushBoolean(L, true);
 	return 1;
 }

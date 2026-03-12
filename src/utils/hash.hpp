@@ -1,5 +1,18 @@
 #pragma once
 
+struct PairHash {
+	std::size_t operator()(const std::pair<uint16_t, uint8_t> &p) const noexcept {
+		// Simple hash combine: shift the 16-bit and add 8-bit
+		return (static_cast<std::size_t>(p.first) << 8) ^ p.second;
+	}
+};
+
+struct PairEqual {
+	bool operator()(const std::pair<uint16_t, uint8_t> &a, const std::pair<uint16_t, uint8_t> &b) const noexcept {
+		return a.first == b.first && a.second == b.second;
+	}
+};
+
 namespace stdext {
 	template <class Kty>
 	using hash = phmap::Hash<Kty>;

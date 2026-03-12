@@ -33,6 +33,7 @@
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "creatures/players/vocations/vocation.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -376,6 +377,7 @@ void CanaryServer::loadModules() {
 	logger.info("Loading modules and scripts...");
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	modulesLoadHelper(WeaponProficiency::loadFromJson(), "proficiencies.json");
 	// Load appearances.dat first
 	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
 
@@ -417,10 +419,10 @@ void CanaryServer::loadModules() {
 	g_game().logCyclopediaStats();
 }
 
-void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
-	logger.debug("Loading {}", moduleName);
+void CanaryServer::modulesLoadHelper(bool loaded, std::string_view identifier) {
+	logger.debug("Loading {}", identifier);
 	if (!loaded) {
-		throw FailedToInitializeCanary(fmt::format("Cannot load: {}", moduleName));
+		throw FailedToInitializeCanary(fmt::format("Cannot load: {}", identifier));
 	}
 }
 

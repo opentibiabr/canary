@@ -245,8 +245,10 @@ class PlayerFunctions {
 	static int luaPlayerForgetSpell(lua_State* L);
 	static int luaPlayerHasLearnedSpell(lua_State* L);
 
+	static int luaPlayerApplyImbuementScroll(lua_State* L);
 	static int luaPlayerOpenImbuementWindow(lua_State* L);
 	static int luaPlayerCloseImbuementWindow(lua_State* L);
+	static int luaPlayerClearAllImbuements(lua_State* L);
 
 	static int luaPlayerSendTutorial(lua_State* L);
 	static int luaPlayerAddMapMark(lua_State* L);
@@ -407,6 +409,9 @@ class PlayerFunctions {
 	static int luaPlayerGetHarmony(lua_State* L);
 	static int luaPlayerGetHarmonyDamage(lua_State* L);
 	static int luaCalculateFlatDamageHealing(lua_State* L);
+
+	static int luaPlayerSetSpeed(lua_State* L);
+	static int luaPlayerAddWeaponExperience(lua_State* L);
 
 	friend class CreatureFunctions;
 };

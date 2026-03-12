@@ -275,15 +275,27 @@ enum ImbuementTypes_t : int64_t {
 };
 
 enum class Augment_t : uint8_t {
-	None,
-	Base,
-	PowerfulImpact,
-	StrongImpact,
-	IncreasedDamage,
-	Cooldown,
-	CriticalExtraDamage,
-	LifeLeech,
-	ManaLeech
+	None = 0,
+	ManaCost = 1, // Not implemented to use in items.xml
+	BaseDamage = 2,
+	BaseHealing = 3,
+	DurationIncreased = 4, // Not implemented to use in items.xml
+	AdditionalTargets = 5, // Not implemented to use in items.xml
+	Cooldown = 6,
+	SecondaryGroupCooldown = 7, // Not implemented to use in items.xml
+	AffectedAreaEnlarged = 8, // Not implemented to use in items.xml
+	IncreasedDamageReduction = 9, // Not implemented to use in items.xml
+
+	EnhancedEffect = 12, // Not implemented to use in items.xml
+	IncreasedSkill = 13, // Not implemented to use in items.xml
+	LifeLeech = 14,
+	ManaLeech = 15,
+	CriticalExtraDamage = 16,
+	CriticalHitChance = 17,
+
+	PowerfulImpact = 100,
+	StrongImpact = 101,
+	IncreasedDamage = 102,
 };
 
 enum class ContainerCategory_t : uint8_t {

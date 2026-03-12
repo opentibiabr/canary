@@ -2697,12 +2697,6 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
 
-	if (uniform_random(1, 100) > baseImbuement->percent) {
-		sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
-		openImbuementWindow(ImbuementAction::PickItem, item);
-		return;
-	}
-
 	if (canAddImbuement) {
 		// Update imbuement stats item if the item is equipped
 		if (item->getParent() == thisPlayer) {

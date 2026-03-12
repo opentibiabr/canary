@@ -9303,6 +9303,50 @@ namespace {
 		);
 	}
 
+	bool rollbackInboxInsertion(const std::shared_ptr<Player> &recipient, uint16_t itemId, uint32_t amount, uint8_t tier) {
+		if (!recipient || amount == 0) {
+			return true;
+		}
+
+		const auto &recipientInbox = recipient->getInbox();
+		if (!recipientInbox) {
+			return false;
+		}
+
+		uint32_t removedCount = 0;
+		std::vector<std::shared_ptr<Item>> rollbackCandidates;
+		rollbackCandidates.reserve(recipientInbox->size());
+
+		for (const auto &inboxItem : recipientInbox->getItemList()) {
+			if (!inboxItem || inboxItem->getID() != itemId || inboxItem->getTier() != tier) {
+				continue;
+			}
+			rollbackCandidates.push_back(inboxItem);
+		}
+
+		for (const auto &rollbackItem : rollbackCandidates) {
+			if (removedCount >= amount) {
+				break;
+			}
+
+			const uint32_t toRemove = std::min<uint32_t>(amount - removedCount, rollbackItem->getItemCount());
+			const ReturnValue removeResult = recipient->removeItem(rollbackItem, toRemove);
+			if (removeResult != RETURNVALUE_NOERROR) {
+				g_logger().error("{} - Failed to rollback inbox item {} amount {} for player {}, error code: {}", __FUNCTION__, itemId, toRemove, recipient->getName(), getReturnMessage(removeResult));
+				return false;
+			}
+
+			removedCount += toRemove;
+		}
+
+		if (removedCount < amount) {
+			g_logger().error("{} - Incomplete inbox rollback for player {}, item {}, expected remove {}, removed {}", __FUNCTION__, recipient->getName(), itemId, amount, removedCount);
+			return false;
+		}
+
+		return true;
+	}
+
 	ReturnValue processItemInsertion(const std::shared_ptr<Player> &recipient, uint16_t itemId, uint16_t amount, uint8_t tier) {
 		uint32_t actuallyAdded = 0;
 		ReturnValue returnValue = recipient->addItemBatchToPaginedContainer(
@@ -9320,6 +9364,9 @@ namespace {
 
 		if (actuallyAdded != amount) {
 			g_logger().error("{} - Atomic inbox insertion mismatch for item {} total amount {}, currently added: {} to inbox for player {}", __FUNCTION__, itemId, amount, actuallyAdded, recipient->getName());
+			if (actuallyAdded > 0 && !rollbackInboxInsertion(recipient, itemId, actuallyAdded, tier)) {
+				g_logger().error("{} - Failed to rollback partial inbox insertion mismatch for item {} total amount {}, currently added: {} to inbox for player {}", __FUNCTION__, itemId, amount, actuallyAdded, recipient->getName());
+			}
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 
@@ -9339,7 +9386,7 @@ namespace {
 		sendInboxSpaceMessage(buyer);
 	}
 
-	bool isInboxCapacityError(ReturnValue returnValue) {
+	[[nodiscard]] bool isInboxCapacityError(ReturnValue returnValue) {
 		return returnValue == RETURNVALUE_DEPOTISFULL
 			|| returnValue == RETURNVALUE_CONTAINERNOTENOUGHROOM
 			|| returnValue == RETURNVALUE_NOTENOUGHROOM;
@@ -9429,13 +9476,7 @@ namespace {
 			return;
 		}
 
-		if (withdrawnFunds.bank > 0) {
-			player->setBankBalance(player->getBankBalance() + withdrawnFunds.bank);
-		}
-
-		if (withdrawnFunds.inventory > 0) {
-			g_game().addMoney(player, withdrawnFunds.inventory, FLAG_NOLIMIT);
-		}
+		player->setBankBalance(player->getBankBalance() + withdrawnFunds.total());
 	}
 
 } // namespace

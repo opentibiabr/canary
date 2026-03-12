@@ -23,6 +23,17 @@ protected:
 
 		auto &items = Item::items.getItems();
 		originalItemsSize = items.size();
+
+		if (kNonStackableItemId < originalItemsSize) {
+			hadOriginalNonStackableItem = true;
+			originalNonStackableItem = items[kNonStackableItemId];
+		}
+
+		if (kStackableItemId < originalItemsSize) {
+			hadOriginalStackableItem = true;
+			originalStackableItem = items[kStackableItemId];
+		}
+
 		if (items.size() <= kStackableItemId) {
 			items.resize(kStackableItemId + 1);
 		}
@@ -33,6 +44,15 @@ protected:
 
 	static void TearDownTestSuite() {
 		auto &items = Item::items.getItems();
+
+		if (hadOriginalNonStackableItem && kNonStackableItemId < items.size()) {
+			items[kNonStackableItemId] = originalNonStackableItem;
+		}
+
+		if (hadOriginalStackableItem && kStackableItemId < items.size()) {
+			items[kStackableItemId] = originalStackableItem;
+		}
+
 		if (items.size() > originalItemsSize) {
 			items.resize(originalItemsSize);
 		}
@@ -62,6 +82,10 @@ protected:
 
 	inline static di::extension::injector<> injector {};
 	inline static size_t originalItemsSize = 0;
+	inline static bool hadOriginalNonStackableItem = false;
+	inline static bool hadOriginalStackableItem = false;
+	inline static ItemType originalNonStackableItem {};
+	inline static ItemType originalStackableItem {};
 };
 
 TEST_F(PlayerItemBatchTest, RejectsNonStackableBatchWhenInboxWouldOverflow) {

@@ -19,7 +19,7 @@ public:
 		maxInboxItems = maxitems;
 	}
 
-	uint32_t getMaxInboxItems() const {
+	[[nodiscard]] uint32_t getMaxInboxItems() const {
 		return maxInboxItems;
 	}
 

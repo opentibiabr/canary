@@ -9050,7 +9050,7 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 			&& existingItem->getItemCount() < existingItem->getStackSize();
 	};
 
-	if (const auto &inbox = std::dynamic_pointer_cast<Inbox>(container)) {
+	if (const auto &inboxContainer = std::dynamic_pointer_cast<Inbox>(container)) {
 		uint64_t mergeableCount = 0;
 		for (const auto &existingItem : container->getItemList()) {
 			if (!canMergeWithExistingStack(existingItem)) {
@@ -9065,7 +9065,7 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 
 		const uint64_t remainingAfterMerge = totalCount > mergeableCount ? static_cast<uint64_t>(totalCount) - mergeableCount : 0;
 		const uint64_t chunksNeeded = (remainingAfterMerge + maxStackSize - 1) / maxStackSize;
-		if (chunksNeeded > inbox->getRemainingItemCapacity()) {
+		if (chunksNeeded > inboxContainer->getRemainingItemCapacity()) {
 			return RETURNVALUE_DEPOTISFULL;
 		}
 	}

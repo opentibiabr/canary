@@ -13,6 +13,7 @@ function tropicalFriedTerrorbird.onUse(player, item, fromPosition, target, toPos
 		return true
 	end
 
+	player:updateFood(item:getId(), 3600)
 	player:addCondition(magicLevelCondition)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel smarter.")
 	player:say("Chomp.", TALKTYPE_MONSTER_SAY)

@@ -13,7 +13,7 @@ INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '56'), ('m
 CREATE TABLE IF NOT EXISTS `accounts` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(32) NOT NULL,
-    `password` TEXT NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
     `email` varchar(255) NOT NULL DEFAULT '',
     `premdays` int(11) NOT NULL DEFAULT '0',
     `premdays_purchased` int(11) NOT NULL DEFAULT '0',

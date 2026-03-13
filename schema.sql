@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS `accounts` (
     `recruiter` INT(6) DEFAULT 0,
     `house_bid_id` int(11) NOT NULL DEFAULT '0',
     CONSTRAINT `accounts_pk` PRIMARY KEY (`id`),
-    CONSTRAINT `accounts_unique` UNIQUE (`name`)
+    CONSTRAINT `accounts_unique` UNIQUE (`name`),
+    INDEX `accounts_email` (`email`),
+    INDEX `accounts_password` (`password`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `coins_transactions`

@@ -734,7 +734,8 @@ public:
 		uint32_t totalCount,
 		uint32_t &actuallyAdded,
 		uint32_t flags = 0,
-		uint8_t tier = 0
+		uint8_t tier = 0,
+		bool testOnly = false
 	);
 	ReturnValue addItemBatch(
 		uint16_t itemId,

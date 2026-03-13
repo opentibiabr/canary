@@ -12122,7 +12122,7 @@ uint16_t Player::getPlayerVocationEnum() const {
 
 BidErrorMessage Player::canBidHouse(uint32_t houseId) {
 	using enum BidErrorMessage;
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house) {
 		return Internal;
 	}
@@ -12158,7 +12158,7 @@ BidErrorMessage Player::canBidHouse(uint32_t houseId) {
 
 TransferErrorMessage Player::canTransferHouse(uint32_t houseId, uint32_t newOwnerGUID) {
 	using enum TransferErrorMessage;
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house) {
 		return Internal;
 	}
@@ -12193,7 +12193,7 @@ TransferErrorMessage Player::canTransferHouse(uint32_t houseId, uint32_t newOwne
 
 AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 	using enum AcceptTransferErrorMessage;
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house) {
 		return Internal;
 	}

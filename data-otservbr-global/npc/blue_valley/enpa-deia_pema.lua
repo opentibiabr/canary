@@ -95,13 +95,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		if shrinesCount < 0 then
 			shrinesCount = 0
 		end
-		
+
 		if shrinesCount >= #TheWayOfTheMonkShrines then
 			npcHandler:say("You are a monk of the Merudri, enlightened and beyond the Three-Fold Path. You have visited all of our ancestral shrines and embraced eternity. The Enpa will see you now.", npc, creature)
 		elseif shrinesCount > 0 and shrinesCount < #TheWayOfTheMonkShrines then
 			local currentShrine = TheWayOfTheMonkShrines[shrinesCount]
 			local nextShrine = TheWayOfTheMonkShrines[shrinesCount + 1]
-			local ordinals = {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"}
+			local ordinals = { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth" }
 			local ordinal = ordinals[shrinesCount] or tostring(shrinesCount)
 			npcHandler:say(string.format("You are an initiate of the Merudri, inducted and on the Three-Fold Path. You have visited the %s of the shrines and embraced '%s'. ...", ordinal, currentShrine.name), npc, creature)
 			npcHandler:say(string.format("The next step, embracing '%s', will lead you to the south of Thais, away from the city.", nextShrine.name), npc, creature)

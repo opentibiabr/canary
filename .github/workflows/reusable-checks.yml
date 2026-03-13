@@ -63,6 +63,8 @@ jobs:
             src
             tests
             data
+            data-canary
+            data-otservbr-global
             CMakeLists.txt
             **/*.cmake
         env:

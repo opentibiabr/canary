@@ -38,14 +38,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-  packages: write
-
 jobs:
   changes:
     name: Detect Build Scope
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       compile: ${{ steps.filter.outputs.compile }}
       docker: ${{ steps.filter.outputs.docker }}
@@ -57,7 +55,7 @@ jobs:
 
       - name: Detect changed paths
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3
         with:
           filters: |
             compile:
@@ -87,12 +85,17 @@ jobs:
   checks:
     name: Fast Checks
     if: github.event_name == 'push' || github.event.pull_request.draft == false
+    permissions:
+      contents: write
+      checks: write
     uses: ./.github/workflows/reusable-checks.yml
     secrets: inherit
 
   tests-lua:
     name: Lua Tests
     if: github.event_name == 'push' || github.event.pull_request.draft == false
+    permissions:
+      contents: read
     uses: ./.github/workflows/reusable-tests-lua.yml
     secrets: inherit
 
@@ -102,6 +105,9 @@ jobs:
     name: Build - Linux
     needs: [changes, checks, tests-lua]
     if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/reusable-build-linux.yml
     secrets: inherit
 
@@ -109,6 +115,9 @@ jobs:
     name: Build - Windows
     needs: [changes, checks, tests-lua]
     if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/reusable-build-windows.yml
     secrets: inherit
 
@@ -116,6 +125,9 @@ jobs:
     name: Build - macOS
     needs: [changes, checks, tests-lua]
     if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/reusable-build-macos.yml
     secrets: inherit
 
@@ -123,5 +135,8 @@ jobs:
     name: Build - Docker
     needs: [changes, checks, tests-lua]
     if: needs.changes.outputs.docker == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || !github.event.pull_request.draft)
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/reusable-build-docker.yml
     secrets: inherit

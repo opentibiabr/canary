@@ -10,6 +10,6 @@ function onUpdateDatabase()
 	end
 
 	if not db.query("CREATE INDEX `accounts_password` ON `accounts` (`password`);") then
-		logger.error("Failed to create accounts password index."
+		logger.error("Failed to create accounts password index.")
 	end
 end

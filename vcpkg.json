@@ -22,15 +22,22 @@
     "bshoshany-thread-pool",
     "atomic-queue",
     "nlohmann-json",
-    "openssl",
-    {
-      "name": "opentelemetry-cpp",
-      "default-features": true,
-      "features": [
-        "otlp-http",
-        "prometheus"
+    "openssl"
+  ],
+  "features": {
+    "metrics": {
+      "description": "Enable OpenTelemetry metrics exporters",
+      "dependencies": [
+        {
+          "name": "opentelemetry-cpp",
+          "default-features": true,
+          "features": [
+            "otlp-http",
+            "prometheus"
+          ]
+        }
       ]
     }
-  ],
+  },
   "builtin-baseline": "66c0373dc7fca549e5803087b9487edfe3aca0a1"
 }

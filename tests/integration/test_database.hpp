@@ -8,6 +8,8 @@
 #include <string_view>
 #include <functional>
 #include <unordered_map>
+#include <thread>
+#include <chrono>
 
 #include "database/database.hpp"
 
@@ -105,6 +107,19 @@ public:
 		auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
 		std::string sock = get(env, "TEST_DB_SOCKET", "");
 
-		g_database().connect(&host, &user, &pass, &database, port, &sock);
+		int retries = 30;
+		while (retries > 0) {
+			if (g_database().connect(&host, &user, &pass, &database, port, &sock)) {
+				// Validate connection validity with a ping query
+				if (g_database().executeQuery("SELECT 1")) {
+					return;
+				}
+				g_logger().warn("Database connected but failed verification (SELECT 1). Retrying...");
+			}
+			g_logger().warn("Failed to connect to database. Retrying in 1s... ({} attempts remaining)", retries);
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+			retries--;
+		}
+		throw std::runtime_error("Failed to connect to database after multiple attempts.");
 	}
 };

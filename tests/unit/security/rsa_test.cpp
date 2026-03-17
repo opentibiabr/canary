@@ -6,11 +6,6 @@
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.com/
  */
-#include "pch.hpp"
-
-#include <filesystem>
-#include <gtest/gtest.h>
-#include <memory>
 
 #include "lib/logging/in_memory_logger.hpp"
 #include "security/rsa.hpp"
@@ -42,30 +37,14 @@ private:
 };
 
 TEST_F(RSATest, StartLogsErrorForMissingPemFile) {
-	const std::filesystem::path tempPath = std::filesystem::temp_directory_path() / "canary_rsa_test";
-	std::error_code error;
-	const auto removeResult = std::filesystem::remove_all(tempPath, error);
-	(void)removeResult;
-	const auto createResult = std::filesystem::create_directories(tempPath, error);
-	(void)createResult;
-
-	const auto previousPath = std::filesystem::current_path();
-	const auto cleanup = [previousPath, tempPath](const std::filesystem::path*) {
-		std::error_code cleanupError;
-		std::filesystem::current_path(previousPath, cleanupError);
-		const auto cleanupResult = std::filesystem::remove_all(tempPath, cleanupError);
-		(void)cleanupResult;
-	};
-	auto guard = std::unique_ptr<const std::filesystem::path, decltype(cleanup)>(nullptr, cleanup);
-	std::filesystem::current_path(tempPath);
-	DI::create<RSAManager &>().start();
+	DI::create<RSAManager &>().start("non_existent_key.pem");
 
 	auto &logger = testLogger();
 
 	ASSERT_EQ(1u, logger.logs.size());
 	EXPECT_EQ(std::string { "error" }, logger.logs[0].level);
 	EXPECT_EQ(
-		std::string { "File key.pem not found or have problem on loading... Setting standard rsa key\n" },
+		fmt::format("File non_existent_key.pem not found or valid... Setting standard rsa key\n"),
 		logger.logs[0].message
 	);
 }

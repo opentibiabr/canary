@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 This file is gradually being phased out.
 We are transitioning from this XML-based events callback system to the EventCallback system in Lua.
 Therefore, we strongly encourage avoiding the use of this file when possible, as it is on its way to deprecation.
 -->
 
-<?xml version="1.0" encoding="UTF-8"?>
 <events>
 	<!-- Creature Methods -->
 	<event class="Creature" method="onChangeOutfit" enabled="1" />

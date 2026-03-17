@@ -1,5 +1,5 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE value_wrapper.cpp
             value_wrapper_proto.cpp
             kv.cpp

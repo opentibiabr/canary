@@ -108,10 +108,10 @@ monster.loot = {
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500, condition = { type = CONDITION_FREEZING, totalDamage = 400, interval = 4000 } },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = 0, maxDamage = -250, range = 7, target = false },
-	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -550, maxDamage = -780, length = 8, spread = 0, effect = CONST_ME_ICETORNADO, target = false },
-	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -100, maxDamage = -300, length = 8, spread = 0, effect = CONST_ME_PURPLEENERGY, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = -75, maxDamage = -550, condition = { type = CONDITION_FREEZING, totalDamage = 400, interval = 4000 } },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_MANADRAIN, minDamage = -75, maxDamage = -300, range = 7, target = false },
+	{ name = "combat", interval = 1000, chance = 10, type = COMBAT_ICEDAMAGE, minDamage = -600, maxDamage = -820, length = 8, spread = 0, effect = CONST_ME_ICETORNADO, target = false },
+	{ name = "combat", interval = 2000, chance = 10, type = COMBAT_LIFEDRAIN, minDamage = -130, maxDamage = -330, length = 8, spread = 0, effect = CONST_ME_PURPLEENERGY, target = false },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = -100, radius = 1, effect = CONST_ME_MAGIC_RED, target = true, duration = 30000 },
 }
 

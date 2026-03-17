@@ -34,8 +34,359 @@
 
 Items Item::items;
 
-std::shared_ptr<Item> Item::createItemBatch(uint16_t itemId, uint32_t count, bool wrappable /* = false*/) {
+namespace {
+	using DescriptionList = std::vector<std::pair<std::string, std::string>>;
+
+	void appendProtectionDescription(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		ss.str("");
+		bool protection = false;
+		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+			if (it.abilities->absorbPercent[i] == 0) {
+				continue;
+			}
+
+			if (protection) {
+				ss << ", ";
+			}
+
+			ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
+			protection = true;
+		}
+		if (protection) {
+			descriptions.emplace_back("Protection", ss.str());
+		}
+	}
+
+	void appendSkillBoostDescription(const ItemType &it, const std::shared_ptr<Item> &item, DescriptionList &descriptions, std::ostringstream &ss) {
+		ss.str("");
+		bool skillBoost = false;
+		if (it.abilities->speed) {
+			ss << std::showpos << "speed " << (it.abilities->speed >> 1) << std::noshowpos;
+			skillBoost = true;
+		}
+
+		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+
+			if (!it.abilities->skills[i]) {
+				continue;
+			}
+
+			if (skillBoost) {
+				ss << ", ";
+			}
+
+			ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
+			skillBoost = true;
+		}
+
+		if (it.abilities->stats[STAT_MAGICPOINTS]) {
+			if (skillBoost) {
+				ss << ", ";
+			}
+
+			ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			skillBoost = true;
+		}
+
+		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
+			if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+				continue;
+			}
+
+			auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
+			if (!skill) {
+				continue;
+			}
+
+			if (skillBoost) {
+				ss << ", ";
+			}
+
+			if (i != SKILL_CRITICAL_HIT_CHANCE) {
+				ss << std::showpos;
+			}
+
+			ss << getSkillName(i) << ' ';
+			ss << skill / 100.;
+			ss << '%' << std::noshowpos;
+
+			skillBoost = true;
+		}
+
+		if (skillBoost) {
+			descriptions.emplace_back("Skill Boost", ss.str());
+		}
+	}
+
+	void appendSpecializedMagicLevelDescriptions(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		for (uint8_t i = 1; i <= 11; i++) {
+			if (it.abilities->specializedMagicLevel[i]) {
+				ss.str("");
+
+				ss << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+				std::string combatName = getCombatName(indexToCombatType(i));
+				combatName[0] = toupper(combatName[0]);
+				descriptions.emplace_back(combatName + " Magic Level", ss.str());
+			}
+		}
+	}
+
+	void appendMagicShieldCapacityDescription(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		if (!it.abilities->magicShieldCapacityFlat && !it.abilities->magicShieldCapacityPercent) {
+			return;
+		}
+
+		ss.str("");
+		ss << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+		descriptions.emplace_back("Magic Shield Capacity", ss.str());
+	}
+
+	void appendPerfectShotDescription(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		if (!it.abilities->perfectShotRange) {
+			return;
+		}
+
+		ss.str("");
+		ss << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
+		descriptions.emplace_back("Perfect Shot", ss.str());
+	}
+
+	void appendDamageReflectionDescription(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		if (!it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
+			return;
+		}
+
+		ss.str("");
+		ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
+		descriptions.emplace_back("Damage Reflection", ss.str());
+	}
+
+	void appendCleaveDescription(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		if (!it.abilities->cleavePercent) {
+			return;
+		}
+
+		ss.str("");
+		ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+		descriptions.emplace_back("Cleave", ss.str());
+	}
+
+	void appendAbilityEffects(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			ss.str("");
+			ss << "Hard Drinking";
+			descriptions.emplace_back("Effect", ss.str());
+		}
+
+		if (it.abilities->invisible) {
+			ss.str("");
+			ss << "Invisibility";
+			descriptions.emplace_back("Effect", ss.str());
+		}
+
+		if (it.abilities->regeneration) {
+			ss.str("");
+			ss << "Faster Regeneration";
+			descriptions.emplace_back("Effect", ss.str());
+		}
+
+		if (it.abilities->manaShield) {
+			ss.str("");
+			ss << "Mana Shield";
+			descriptions.emplace_back("Effect", ss.str());
+		}
+	}
+
+	void appendFieldProtectionDescription(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+			if (it.abilities->fieldAbsorbPercent[i] == 0) {
+				continue;
+			}
+
+			ss.str("");
+			ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
+			descriptions.emplace_back("Field Protection", ss.str());
+		}
+	}
+
+	void appendSkillBoostEffects(const ItemType &it, DescriptionList &descriptions, std::ostringstream &ss) {
+		if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
+			ss.str("");
+			ss << "Hard Drinking";
+			descriptions.emplace_back("Skill Boost", ss.str());
+		}
+
+		if (it.abilities->invisible) {
+			ss.str("");
+			ss << "Invisibility";
+			descriptions.emplace_back("Skill Boost", ss.str());
+		}
+
+		if (it.abilities->regeneration) {
+			ss.str("");
+			ss << "Faster Regeneration";
+			descriptions.emplace_back("Skill Boost", ss.str());
+		}
+
+		if (it.abilities->manaShield) {
+			ss.str("");
+			ss << "Mana Shield";
+			descriptions.emplace_back("Skill Boost", ss.str());
+		}
+	}
+
+	void appendAttributeSeparator(bool &begin, std::ostringstream &itemDescription) {
+		if (begin) {
+			begin = false;
+			itemDescription << " (";
+			return;
+		}
+
+		itemDescription << ", ";
+	}
+
+	void appendShowAttributesSkills(const ItemType &itemType, const std::shared_ptr<Item> &item, bool &begin, std::ostringstream &itemDescription) {
+		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+			if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+				continue;
+			}
+
+			if (!itemType.abilities->skills[i]) {
+				continue;
+			}
+
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << getSkillName(i) << ' ' << std::showpos << itemType.abilities->skills[i] << std::noshowpos;
+		}
+
+		if (itemType.abilities->stats[STAT_MAGICPOINTS]) {
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << "magic level " << std::showpos << itemType.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+		}
+
+		for (uint8_t i = 1; i <= 11; i++) {
+			if (itemType.abilities->specializedMagicLevel[i]) {
+				appendAttributeSeparator(begin, itemDescription);
+				itemDescription << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << itemType.abilities->specializedMagicLevel[i] << std::noshowpos;
+			}
+		}
+
+		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
+			if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+				continue;
+			}
+
+			const auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : itemType.getSkill(static_cast<skills_t>(i));
+			if (!skill) {
+				continue;
+			}
+
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << getSkillName(i) << ' ';
+			if (i != SKILL_CRITICAL_HIT_CHANCE) {
+				itemDescription << std::showpos;
+			}
+			itemDescription << skill / 100.;
+			if (i != SKILL_CRITICAL_HIT_CHANCE) {
+				itemDescription << std::noshowpos;
+			}
+			itemDescription << '%';
+		}
+	}
+
+	void appendShowAttributesAbilities(const ItemType &itemType, bool &begin, std::ostringstream &itemDescription) {
+		if (itemType.abilities->magicShieldCapacityFlat || itemType.abilities->magicShieldCapacityPercent) {
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << "Magic Shield Capacity " << std::showpos << itemType.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << itemType.abilities->magicShieldCapacityPercent << "%";
+		}
+
+		if (itemType.abilities->perfectShotRange) {
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << "perfect shot " << std::showpos << itemType.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(itemType.abilities->perfectShotRange);
+		}
+
+		int16_t reflectPhysical = itemType.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
+		if (reflectPhysical != 0) {
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << "damage reflection " << std::showpos << reflectPhysical << std::noshowpos;
+		}
+	}
+
+	void appendShowAttributesProtection(const ItemType &itemType, bool &begin, std::ostringstream &itemDescription) {
+		int16_t show = itemType.abilities->absorbPercent[0];
+		if (show != 0) {
+			for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+				if (itemType.abilities->absorbPercent[i] != show) {
+					show = 0;
+					break;
+				}
+			}
+		}
+
+		if (!show) {
+			bool protectionBegin = true;
+			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+				if (itemType.abilities->absorbPercent[i] == 0) {
+					continue;
+				}
+
+				if (protectionBegin) {
+					protectionBegin = false;
+					appendAttributeSeparator(begin, itemDescription);
+					itemDescription << "protection ";
+				} else {
+					itemDescription << ", ";
+				}
+				itemDescription << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->absorbPercent[i]);
+			}
+		} else {
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << fmt::format("protection all {:+}%", show);
+		}
+	}
+
+	void appendShowAttributesFieldProtection(const ItemType &itemType, bool &begin, std::ostringstream &itemDescription) {
+		int16_t show = itemType.abilities->fieldAbsorbPercent[0];
+		if (show != 0) {
+			for (size_t i = 1; i < COMBAT_COUNT; ++i) {
+				if (itemType.abilities->absorbPercent[i] != show) {
+					show = 0;
+					break;
+				}
+			}
+		}
+
+		if (!show) {
+			bool fieldProtectionBegin = true;
+
+			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+				if (itemType.abilities->fieldAbsorbPercent[i] == 0) {
+					continue;
+				}
+
+				if (fieldProtectionBegin) {
+					fieldProtectionBegin = false;
+					appendAttributeSeparator(begin, itemDescription);
+					itemDescription << "field protection ";
+				} else {
+					itemDescription << ", ";
+				}
+
+				itemDescription << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);
+			}
+		} else {
+			appendAttributeSeparator(begin, itemDescription);
+			itemDescription << fmt::format("field protection all {:+}%", show);
+		}
+	}
+}
+
+std::shared_ptr<Item> Item::createItemBatch(uint16_t itemId, uint32_t count, uint8_t subType /* 0*/, bool wrappable /* = false*/) {
 	const auto &item = Item::CreateItem(itemId, count, nullptr, wrappable, true);
+	// If it is a special item, set its subtype
+	if (item && subType > 0) {
+		item->setSubType(subType);
+	}
 	return item;
 };
 
@@ -723,6 +1074,16 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 			break;
 		}
 
+		case ATTR_MANTRA: {
+			int32_t mantra;
+			if (!propStream.read<int32_t>(mantra)) {
+				return ATTR_READ_ERROR;
+			}
+
+			setAttribute(ItemAttribute_t::MANTRA, mantra);
+			break;
+		}
+
 		case ATTR_IMBUEMENT_SLOT: {
 			int32_t imbuementSlot;
 			if (!propStream.read<int32_t>(imbuementSlot)) {
@@ -1077,6 +1438,11 @@ void Item::serializeAttr(PropWriteStream &propWriteStream) const {
 		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::EXTRADEFENSE));
 	}
 
+	if (hasAttribute(ItemAttribute_t::MANTRA)) {
+		propWriteStream.write<uint8_t>(ATTR_MANTRA);
+		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::MANTRA));
+	}
+
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
 		propWriteStream.write<int32_t>(getAttribute<int32_t>(ItemAttribute_t::IMBUEMENT_SLOT));
@@ -1386,6 +1752,10 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 			}
 
 			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+				if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+					continue;
+				}
+
 				if (!it.abilities->skills[i]) {
 					continue;
 				}
@@ -1705,6 +2075,10 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		if (it.upgradeClassification > 0) {
 			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
 		}
+
+		if (it.elementalBond != COMBAT_NONE) {
+			[[maybe_unused]] auto &[desc_key, desc_val] = descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
+		}
 	} else {
 		if (!it.description.empty()) {
 			descriptions.emplace_back("Description", it.description);
@@ -1771,177 +2145,16 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		if (it.abilities) {
-			// Protection
-			ss.str("");
-			bool protection = false;
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->absorbPercent[i] == 0) {
-					continue;
-				}
-
-				if (protection) {
-					ss << ", ";
-				}
-
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
-				protection = true;
-			}
-			if (protection) {
-				descriptions.emplace_back("Protection", ss.str());
-			}
-
-			// Skill Boost
-			ss.str("");
-			bool skillBoost = false;
-			if (it.abilities->speed) {
-				ss << std::showpos << "speed " << it.abilities->speed << std::noshowpos;
-				skillBoost = true;
-			}
-
-			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
-				if (!it.abilities->skills[i]) {
-					continue;
-				}
-
-				if (skillBoost) {
-					ss << ", ";
-				}
-
-				ss << std::showpos << getSkillName(i) << ' ' << it.abilities->skills[i] << std::noshowpos;
-				skillBoost = true;
-			}
-
-			if (it.abilities->stats[STAT_MAGICPOINTS]) {
-				if (skillBoost) {
-					ss << ", ";
-				}
-
-				ss << std::showpos << "magic level " << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-				skillBoost = true;
-			}
-
-			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
-					continue;
-				}
-
-				auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : it.getSkill(static_cast<skills_t>(i));
-				if (!skill) {
-					continue;
-				}
-
-				if (skillBoost) {
-					ss << ", ";
-				}
-
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					ss << std::showpos;
-				}
-
-				ss << getSkillName(i) << ' ';
-				// Show float
-				ss << skill / 100.;
-				ss << '%' << std::noshowpos;
-
-				skillBoost = true;
-			}
-
-			if (skillBoost) {
-				descriptions.emplace_back("Skill Boost", ss.str());
-			}
-
-			for (uint8_t i = 1; i <= 11; i++) {
-				if (it.abilities->specializedMagicLevel[i]) {
-					ss.str("");
-
-					ss << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
-					std::string combatName = getCombatName(indexToCombatType(i));
-					combatName[0] = toupper(combatName[0]);
-					descriptions.emplace_back(combatName + " Magic Level", ss.str());
-				}
-			}
-
-			if (it.abilities->magicShieldCapacityFlat || it.abilities->magicShieldCapacityPercent) {
-				ss.str("");
-				ss << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
-				descriptions.emplace_back("Magic Shield Capacity", ss.str());
-			}
-
-			if (it.abilities->perfectShotRange) {
-				ss.str("");
-				ss << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
-				descriptions.emplace_back("Perfect Shot", ss.str());
-			}
-
-			if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
-				ss.str("");
-				ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
-				descriptions.emplace_back("Damage Reflection", ss.str());
-			}
-
-			if (it.abilities->cleavePercent) {
-				ss.str("");
-				ss << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
-				descriptions.emplace_back("Cleave", ss.str());
-			}
-
-			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
-				ss.str("");
-				ss << "Hard Drinking";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->invisible) {
-				ss.str("");
-				ss << "Invisibility";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->regeneration) {
-				ss.str("");
-				ss << "Faster Regeneration";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			if (it.abilities->manaShield) {
-				ss.str("");
-				ss << "Mana Shield";
-				descriptions.emplace_back("Effect", ss.str());
-			}
-
-			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-				if (it.abilities->fieldAbsorbPercent[i] == 0) {
-					continue;
-				}
-
-				ss.str("");
-				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->fieldAbsorbPercent[i]);
-				descriptions.emplace_back("Field Protection", ss.str());
-			}
-
-			if (it.abilities->conditionSuppressions[CONDITION_DRUNK] != 0) {
-				ss.str("");
-				ss << "Hard Drinking";
-				descriptions.emplace_back("Skill Boost", ss.str());
-			}
-
-			if (it.abilities->invisible) {
-				ss.str("");
-				ss << "Invisibility";
-				descriptions.emplace_back("Skill Boost", ss.str());
-			}
-
-			if (it.abilities->regeneration) {
-				ss.str("");
-				ss << "Faster Regeneration";
-				descriptions.emplace_back("Skill Boost", ss.str());
-			}
-
-			if (it.abilities->manaShield) {
-				ss.str("");
-				ss << "Mana Shield";
-				descriptions.emplace_back("Skill Boost", ss.str());
-			}
+			appendProtectionDescription(it, descriptions, ss);
+			appendSkillBoostDescription(it, item, descriptions, ss);
+			appendSpecializedMagicLevelDescriptions(it, descriptions, ss);
+			appendMagicShieldCapacityDescription(it, descriptions, ss);
+			appendPerfectShotDescription(it, descriptions, ss);
+			appendDamageReflectionDescription(it, descriptions, ss);
+			appendCleaveDescription(it, descriptions, ss);
+			appendAbilityEffects(it, descriptions, ss);
+			appendFieldProtectionDescription(it, descriptions, ss);
+			appendSkillBoostEffects(it, descriptions, ss);
 		}
 
 		if (it.imbuementSlot > 0) {
@@ -2054,7 +2267,11 @@ Item::getDescriptions(const ItemType &it, const std::shared_ptr<Item> &item /*= 
 		}
 
 		if (it.upgradeClassification > 0) {
-			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
+			[[maybe_unused]] auto &[desc1_key, desc1_val] = descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
+		}
+
+		if (it.elementalBond != COMBAT_NONE) {
+			[[maybe_unused]] auto &[desc2_key, desc2_val] = descriptions.emplace_back("Elemental Bond", toPascalCase(getCombatName(it.elementalBond)));
 		}
 	}
 	descriptions.shrink_to_fit();
@@ -2162,7 +2379,7 @@ SoundEffect_t Item::getMovementSound(const std::shared_ptr<Cylinder> &toCylinder
 
 std::string Item::parseClassificationDescription(const std::shared_ptr<Item> &item) {
 	if (item && item->getClassification() >= 1) {
-		return fmt::format("\nClassification: {} Tier: {}", item->getClassification(), getTierEffectDescription(item));
+		return fmt::format("\nClassification: {} Tier: {}.", item->getClassification(), getTierEffectDescription(item));
 	}
 	return "";
 }
@@ -2275,196 +2492,21 @@ std::string Item::parseShowAttributesDescription(const std::shared_ptr<Item> &it
 			}
 		}
 
+		const int32_t mantra = (item ? item->getMantra() : itemType.mantra);
+		if (mantra != 0) {
+			if (begin) {
+				itemDescription << " (Mantra:" << mantra;
+				begin = false;
+			} else {
+				itemDescription << ", Mantra:" << mantra;
+			}
+		}
+
 		if (itemType.abilities) {
-			for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
-				if (!itemType.abilities->skills[i]) {
-					continue;
-				}
-
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << getSkillName(i) << ' ' << std::showpos << itemType.abilities->skills[i] << std::noshowpos;
-			}
-
-			if (itemType.abilities->stats[STAT_MAGICPOINTS]) {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << "magic level " << std::showpos << itemType.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
-			}
-
-			for (uint8_t i = 1; i <= 11; i++) {
-				if (itemType.abilities->specializedMagicLevel[i]) {
-					if (begin) {
-						begin = false;
-						itemDescription << " (";
-					} else {
-						itemDescription << ", ";
-					}
-
-					itemDescription << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << itemType.abilities->specializedMagicLevel[i] << std::noshowpos;
-				}
-			}
-
-			for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++) {
-				if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
-					continue;
-				}
-
-				const auto skill = item ? item->getSkill(static_cast<skills_t>(i)) : itemType.getSkill(static_cast<skills_t>(i));
-				if (!skill) {
-					continue;
-				}
-
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-				itemDescription << getSkillName(i) << ' ';
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					itemDescription << std::showpos;
-				}
-				// Show float
-				itemDescription << skill / 100.;
-				if (i != SKILL_CRITICAL_HIT_CHANCE) {
-					itemDescription << std::noshowpos;
-				}
-				itemDescription << '%';
-			}
-
-			if (itemType.abilities->magicShieldCapacityFlat || itemType.abilities->magicShieldCapacityPercent) {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << "Magic Shield Capacity " << std::showpos << itemType.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << itemType.abilities->magicShieldCapacityPercent << "%";
-			}
-
-			if (itemType.abilities->perfectShotRange) {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << "perfect shot " << std::showpos << itemType.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(itemType.abilities->perfectShotRange);
-			}
-
-			if (itemType.abilities->reflectFlat[0] != 0) {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << "damage reflection " << std::showpos << itemType.abilities->reflectFlat[0] << std::noshowpos;
-			}
-
-			int16_t show = itemType.abilities->absorbPercent[0];
-			if (show != 0) {
-				for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->absorbPercent[i] != show) {
-						show = 0;
-						break;
-					}
-				}
-			}
-
-			if (!show) {
-				bool protectionBegin = true;
-				for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->absorbPercent[i] == 0) {
-						continue;
-					}
-
-					if (protectionBegin) {
-						protectionBegin = false;
-
-						if (begin) {
-							begin = false;
-							itemDescription << " (";
-						} else {
-							itemDescription << ", ";
-						}
-
-						itemDescription << "protection ";
-					} else {
-						itemDescription << ", ";
-					}
-					itemDescription << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->absorbPercent[i]);
-				}
-			} else {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << fmt::format("protection all {:+}%", show);
-			}
-
-			show = itemType.abilities->fieldAbsorbPercent[0];
-			if (show != 0) {
-				for (size_t i = 1; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->absorbPercent[i] != show) {
-						show = 0;
-						break;
-					}
-				}
-			}
-
-			if (!show) {
-				bool tmp = true;
-
-				for (size_t i = 0; i < COMBAT_COUNT; ++i) {
-					if (itemType.abilities->fieldAbsorbPercent[i] == 0) {
-						continue;
-					}
-
-					if (tmp) {
-						tmp = false;
-
-						if (begin) {
-							begin = false;
-							itemDescription << " (";
-						} else {
-							itemDescription << ", ";
-						}
-
-						itemDescription << "protection ";
-					} else {
-						itemDescription << ", ";
-					}
-
-					itemDescription << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);
-				}
-			} else {
-				if (begin) {
-					begin = false;
-					itemDescription << " (";
-				} else {
-					itemDescription << ", ";
-				}
-
-				itemDescription << fmt::format("protection all fields {:+}%", show);
-			}
+			appendShowAttributesSkills(itemType, item, begin, itemDescription);
+			appendShowAttributesAbilities(itemType, begin, itemDescription);
+			appendShowAttributesProtection(itemType, begin, itemDescription);
+			appendShowAttributesFieldProtection(itemType, begin, itemDescription);
 
 			if (itemType.abilities->speed) {
 				itemDescription << parseShowDurationSpeed(itemType.abilities->speed, begin);
@@ -2579,6 +2621,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 			if (it.abilities) {
 				for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+					if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+						continue;
+					}
+
 					if (!it.abilities->skills[i]) {
 						continue;
 					}
@@ -2855,6 +2901,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 
 			if (it.abilities) {
 				for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; i++) {
+					if (i == SKILL_MANA_LEECH_CHANCE || i == SKILL_LIFE_LEECH_CHANCE) {
+						continue;
+					}
+
 					if (!it.abilities->skills[i]) {
 						continue;
 					}
@@ -3261,6 +3311,10 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 	} else if (lookDistance <= 1 && !it.description.empty()) {
 		s << std::endl
 		  << it.description;
+	}
+
+	if (it.elementalBond != COMBAT_NONE) {
+		s << fmt::format("\nElemental Bond: {}.", toPascalCase(getCombatName(it.elementalBond)));
 	}
 
 	if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {

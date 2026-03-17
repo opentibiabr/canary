@@ -16,6 +16,7 @@
 #include "game/game.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/item.hpp"
@@ -546,6 +547,8 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	player->setItemAbility(slot, true);
 
+	g_imbuementDecay().startImbuementDecay(item);
+
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
 		ImbuementInfo imbuementInfo;
@@ -622,6 +625,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	player->sendStats();
 	player->sendSkills();
+	player->updatePartyMantra();
 	return 1;
 }
 
@@ -643,6 +647,8 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 
 	const ItemType &it = Item::items[item->getID()];
 	player->setItemAbility(slot, false);
+
+	g_imbuementDecay().stopImbuementDecay(item);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
@@ -708,6 +714,7 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 
 	player->sendStats();
 	player->sendSkills();
+	player->updatePartyMantra();
 	return 1;
 }
 

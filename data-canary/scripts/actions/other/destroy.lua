@@ -245,6 +245,10 @@ local setting = {
 	31614, -- tagralt blade
 	32093, -- meat hammer
 	32616, -- phantasmal axe
+	50163, -- crude umbral katar
+	50164, -- umbral katar
+	50165, -- umbral master katar
+	50168, -- nunchaku of destruction
 }
 
 local destroy = Action()

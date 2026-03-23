@@ -124,6 +124,10 @@ bool PlayerVIP::edit(uint32_t vipGuid, const std::string &description, uint32_t 
 	return true;
 }
 
+bool PlayerVIP::exists(uint32_t vipGuid) const {
+	return vipGuids.contains(vipGuid);
+}
+
 std::shared_ptr<VIPGroup> PlayerVIP::getGroupByID(uint8_t groupId) const {
 	auto it = std::ranges::find_if(vipGroups, [groupId](const auto &vipGroup) {
 		return vipGroup->id == groupId;

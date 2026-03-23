@@ -487,8 +487,13 @@ std::vector<ProficiencyPerk> WeaponProficiency::getSelectedPerks(uint16_t weapon
 }
 
 void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
-	[[maybe_unused]] const auto &unusedProficiency = proficiency.erase(weaponId);
-	m_player.sendWeaponProficiency(weaponId);
+	if (weaponId == 0) {
+		return;
+	}
+
+	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
+		it->second.perks.clear();
+	}
 }
 
 void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {

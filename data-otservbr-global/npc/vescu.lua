@@ -105,9 +105,10 @@ local function greetCallback(npc, creature)
         npcHandler:setMessage(MESSAGE_GREET, "Hey t-there, you look like someone who enjoys a good {booze}.")
 		npcHandler:setInteraction(npc, creature)
     else
-        npcHandler:setMessage(MESSAGE_GREET, "Oh, two t-trolls. Hellooo, wittle twolls. <hicks>")
+        npcHandler:say("Oh, two t-trolls. Hellooo, wittle twolls. <hicks>", npc, creature)
 		endConversationWithDelay(npcHandler, npc, creature)
 		return false
+    end
     end
 
     return true

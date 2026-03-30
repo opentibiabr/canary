@@ -99,18 +99,23 @@ end
 
 local function greetCallback(npc, creature)
     local player = Player(creature)
-	local drunk = player:getCondition(CONDITION_DRUNK)
+    local drunk = player:getCondition(CONDITION_DRUNK)
+    local questState = player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit)
 
-    if drunk and player:getStorageValue(Storage.Quest.U7_8.AssassinOutfits.AssassinBaseOutfit) < 1 then
-        npcHandler:setMessage(MESSAGE_GREET, "Hey t-there, you look like someone who enjoys a good {booze}.")
-		npcHandler:setInteraction(npc, creature)
-    else
-        npcHandler:say("Oh, two t-trolls. Hellooo, wittle twolls. <hicks>", npc, creature)
-		endConversationWithDelay(npcHandler, npc, creature)
-		return false
-    end
+    if questState < 1 then
+        if drunk then
+            npcHandler:setMessage(MESSAGE_GREET, "Hey t-there, you look like someone who enjoys a good {booze}.")
+            npcHandler:setInteraction(npc, creature)
+            return true
+        else
+            npcHandler:say("Oh, two t-trolls. Hellooo, wittle twolls. <hicks>", npc, creature)
+            endConversationWithDelay(npcHandler, npc, creature)
+            return false
+        end
     end
 
+    npcHandler:setMessage(MESSAGE_GREET, "Ohhh it's you again! Did you bring what I asked for? <hicks>")
+    npcHandler:setInteraction(npc, creature)
     return true
 end
 

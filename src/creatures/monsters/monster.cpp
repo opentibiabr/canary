@@ -2369,14 +2369,16 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		}
 	}
 
+	const auto equippedWeaponId = targetPlayer->getWeaponId(true);
+
 	const auto weaponExperienceFromBoss = targetPlayer->weaponProficiency().getBosstiaryExperience(m_monsterType->info.bosstiaryRace);
 	if (weaponExperienceFromBoss > 0) {
-		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBoss);
+		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBoss, equippedWeaponId);
 	}
 
 	const auto weaponExperienceFromBestiary = targetPlayer->weaponProficiency().getBestiaryExperience(m_monsterType->info.bestiaryStars);
 	if (weaponExperienceFromBestiary > 0) {
-		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBestiary);
+		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBestiary, equippedWeaponId);
 	}
 }
 

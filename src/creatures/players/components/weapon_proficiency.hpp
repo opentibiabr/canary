@@ -33,6 +33,7 @@ public:
 	void load();
 	void save(uint16_t weaponId) const;
 	bool saveAll() const;
+	[[nodiscard]] std::vector<uint16_t> getTrackedWeaponIds() const;
 
 	static WeaponProficiencyData deserialize(const ValueWrapper &val);
 	static ProficiencyPerk deserializePerk(const ValueWrapper &val);
@@ -41,7 +42,7 @@ public:
 	ValueWrapper serializePerk(const ProficiencyPerk &perk) const;
 	std::vector<ValueWrapper> serializePerks(const std::vector<ProficiencyPerk> &perks) const;
 
-	void applyPerks(uint16_t weaponId);
+	void applyPerks(uint16_t weaponId, bool sendSkillUpdate = true);
 	std::vector<ProficiencyPerk> getSelectedPerks(uint16_t itemId) const;
 	void clearSelectedPerks(uint16_t weaponId);
 	void setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
@@ -121,10 +122,14 @@ public:
 	void clearAllStats();
 
 private:
+	static constexpr uint8_t TRACKED_SKILL_COUNT = static_cast<uint8_t>(SKILL_MAGLEVEL) + 1;
 	void applyCriticalBonus(const ProficiencyPerk &perk);
 	void applySkillPercentageBonus(const ProficiencyPerk &perk);
 
 	[[nodiscard]] bool isValidWeaponId(uint16_t weaponId) const;
+	[[nodiscard]] size_t getUnlockedLevelCount(uint16_t weaponId) const;
+	[[nodiscard]] std::vector<ProficiencyPerk> collectValidSelectedPerks(uint16_t weaponId) const;
+	void normalizeStoredState(uint16_t weaponId);
 
 	Player &m_player;
 
@@ -142,7 +147,7 @@ private:
 
 	std::array<uint16_t, COMBAT_COUNT + 1> m_specializedMagic = { 0 };
 
-	std::array<uint32_t, SKILL_LAST + 1> m_skills = { 0 };
+	std::array<uint32_t, TRACKED_SKILL_COUNT> m_skills = { 0 };
 
 	double_t m_powerfulFoeDamage = 0;
 

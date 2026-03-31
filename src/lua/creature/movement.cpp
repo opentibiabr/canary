@@ -625,7 +625,7 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	if (slot == CONST_SLOT_LEFT) {
 		player->weaponProficiency().clearAllStats();
-		player->weaponProficiency().applyPerks(item->getID());
+		player->weaponProficiency().applyPerks(item->getID(), false);
 		player->sendWeaponProficiency(item->getID());
 	}
 

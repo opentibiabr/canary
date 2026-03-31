@@ -797,8 +797,21 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 			spellCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::COOLDOWN, spellGrade);
 		}
 		int32_t augmentCooldownReduction = calculateAugmentSpellCooldownReduction(player);
-		g_logger().debug("[{}] spell name: {}, grade: {}, originalCooldown: {}, spellCooldown: {}, bonus: {}, augment {}", __FUNCTION__, name, spellGrade, cooldown, spellCooldown, player->wheel().getSpellBonus(name, WheelSpellBoost_t::COOLDOWN), augmentCooldownReduction);
-		spellCooldown -= player->wheel().getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
+		const auto wheelCooldownReduction = player->wheel().getSpellBonus(name, WheelSpellBoost_t::COOLDOWN);
+		const auto proficiencyCooldownReduction = player->weaponProficiency().getSpellBonus(m_spellId, WeaponProficiencySpellBoost_t::COOLDOWN);
+		g_logger().debug(
+			"[{}] spell name: {}, grade: {}, originalCooldown: {}, spellCooldown: {}, wheel bonus: {}, proficiency bonus: {}, augment {}",
+			__FUNCTION__,
+			name,
+			spellGrade,
+			cooldown,
+			spellCooldown,
+			wheelCooldownReduction,
+			proficiencyCooldownReduction,
+			augmentCooldownReduction
+		);
+		spellCooldown -= wheelCooldownReduction;
+		spellCooldown -= proficiencyCooldownReduction;
 		spellCooldown -= augmentCooldownReduction;
 		const int32_t halfBaseCooldown = cooldown / 2;
 		spellCooldown = halfBaseCooldown > spellCooldown ? halfBaseCooldown : spellCooldown; // The cooldown should never be reduced less than half (50%) of its base cooldown

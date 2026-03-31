@@ -2376,11 +2376,20 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 	}
 
 	auto action = msg.getByte();
+
+	if (action == 0x01) {
+		for (const auto weaponId : player->weaponProficiency().getTrackedWeaponIds()) {
+			sendWeaponProficiencyWindow(weaponId);
+		}
+		return;
+	}
+
 	auto weaponId = msg.get<uint16_t>();
+	const auto equippedWeaponId = player->getWeaponId(true);
+	const bool isEquippedWeapon = equippedWeaponId != 0 && weaponId == equippedWeaponId;
 
 	if (action == 0x03) {
-		const auto equippedWeaponId = player->getWeaponId(true);
-		if (equippedWeaponId != 0 && weaponId == equippedWeaponId) {
+		if (isEquippedWeapon) {
 			player->weaponProficiency().clearAllStats();
 		}
 		player->weaponProficiency().clearSelectedPerks(weaponId);
@@ -2393,13 +2402,13 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 			player->weaponProficiency().setSelectedPerk(level, perkIndex, weaponId);
 		}
 
-		if (equippedWeaponId != 0 && weaponId == equippedWeaponId) {
+		if (isEquippedWeapon) {
 			player->weaponProficiency().applyPerks(weaponId);
 		}
 	} else if (action == 0x02) {
-		const auto equippedWeaponId = player->getWeaponId(true);
-		if (equippedWeaponId != 0 && weaponId == equippedWeaponId) {
+		if (isEquippedWeapon) {
 			player->weaponProficiency().clearAllStats();
+			player->sendSkills();
 		}
 		player->weaponProficiency().clearSelectedPerks(weaponId);
 	}
@@ -7426,6 +7435,11 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		sendInventoryItem(static_cast<Slots_t>(i), player->getInventoryItem(static_cast<Slots_t>(i)));
 	}
 
+	player->weaponProficiency().clearAllStats();
+	if (const auto equippedWeaponId = player->getWeaponId(true); equippedWeaponId != 0) {
+		player->weaponProficiency().applyPerks(equippedWeaponId, false);
+	}
+
 	player->sendWeaponProficiency();
 	sendStats();
 	sendSkills();
@@ -10667,6 +10681,10 @@ void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
 		return;
 	}
 
+	if (weaponId == 0) {
+		weaponId = player->getWeaponId(true);
+	}
+
 	NetworkMessage msg;
 
 	msg.addByte(0x5C);
@@ -10681,6 +10699,10 @@ void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
 void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
 	if (!player || oldProtocol) {
 		return;
+	}
+
+	if (weaponId == 0) {
+		weaponId = player->getWeaponId(true);
 	}
 
 	NetworkMessage msg;

@@ -206,6 +206,7 @@ bool ConfigManager::load() {
 
 	loadFloatConfig(L, PLAYER_BASE_CRITICAL_CHANCE, "playerBaseCriticalChance", 0.05);
 	loadFloatConfig(L, PLAYER_BASE_CRITICAL_DAMAGE, "playerBaseCriticalDamage", 0.1);
+	loadFloatConfig(L, WEAPON_PROFICIENCY_GAIN_MULTIPLIER, "weaponProficiencyGainMultiplier", 0.33);
 
 	loadFloatConfig(L, ANIMUS_MASTERY_MAX_MONSTER_XP_MULTIPLIER, "animusMasteryMaxMonsterXpMultiplier", 4.0);
 	loadFloatConfig(L, ANIMUS_MASTERY_MONSTER_XP_MULTIPLIER, "animusMasteryMonsterXpMultiplier", 2.0);

@@ -7,6 +7,10 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <algorithm>
+#include <cmath>
+#include <limits>
+
 // Player.hpp already includes the weapon
 #include "creatures/players/player.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -31,6 +35,34 @@ namespace AugmentType {
 	constexpr uint8_t MANA_LEECH = 15;
 	constexpr uint8_t CRITICAL_DAMAGE = 16;
 	constexpr uint8_t CRITICAL_CHANCE = 17;
+}
+
+namespace {
+	constexpr int32_t MIN_TRACKED_SKILL = static_cast<int32_t>(SKILL_FIRST);
+	constexpr int32_t MAX_TRACKED_SKILL = static_cast<int32_t>(SKILL_MAGLEVEL);
+
+	bool isTrackedWeaponProficiencySkill(skills_t skill) {
+		const auto enumValue = static_cast<int32_t>(skill);
+		return enumValue >= MIN_TRACKED_SKILL && enumValue <= MAX_TRACKED_SKILL;
+	}
+
+	uint32_t scaleWeaponProficiencyExperienceGain(uint32_t experience) {
+		auto multiplier = g_configManager().getFloat(WEAPON_PROFICIENCY_GAIN_MULTIPLIER);
+		if (multiplier < 0.0f) {
+			multiplier = 0.0f;
+		}
+
+		const auto scaledExperience = static_cast<uint64_t>(std::llround(static_cast<double>(experience) * multiplier));
+		return static_cast<uint32_t>(std::min<uint64_t>(scaledExperience, std::numeric_limits<uint32_t>::max()));
+	}
+
+	bool usesKnightProficiencyTable(const ItemType &itemType) {
+		if (itemType.weaponType != WEAPON_SWORD && itemType.weaponType != WEAPON_AXE && itemType.weaponType != WEAPON_CLUB) {
+			return false;
+		}
+
+		return asLowerCaseString(itemType.vocationString).find("knight") != std::string::npos;
+	}
 }
 
 std::unordered_map<uint16_t, Proficiency> WeaponProficiency::proficiencies;
@@ -227,9 +259,13 @@ void WeaponProficiency::load() {
 			continue;
 		}
 
-		if (auto val = wp_kv->get(key); val.has_value()) {
-			proficiency[weaponId] = deserialize(val.value());
+		auto kv_it = wp_kv->get(key);
+		if (!kv_it.has_value()) {
+			continue;
 		}
+
+		proficiency[weaponId] = deserialize(kv_it.value());
+		normalizeStoredState(weaponId);
 	}
 }
 
@@ -246,6 +282,18 @@ bool WeaponProficiency::saveAll() const {
 	}
 
 	return true;
+}
+
+std::vector<uint16_t> WeaponProficiency::getTrackedWeaponIds() const {
+	std::vector<uint16_t> weaponIds;
+	weaponIds.reserve(proficiency.size());
+
+	for (const auto &[weaponId, _] : proficiency) {
+		weaponIds.push_back(weaponId);
+	}
+
+	std::sort(weaponIds.begin(), weaponIds.end());
+	return weaponIds;
 }
 
 WeaponProficiencyData WeaponProficiency::deserialize(const ValueWrapper &val) {
@@ -350,7 +398,7 @@ std::vector<ValueWrapper> WeaponProficiency::serializePerks(const std::vector<Pr
 	return arrayWrapper;
 }
 
-void WeaponProficiency::applyPerks(uint16_t weaponId) {
+void WeaponProficiency::applyPerks(uint16_t weaponId, bool sendSkillUpdate /* = true */) {
 	using enum WeaponProficiencyBonus_t;
 
 	const auto &perks = getSelectedPerks(weaponId);
@@ -366,7 +414,7 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 						augmentBonus.increase.heal = selectedPerk.value;
 						break;
 					case AugmentType::COOLDOWN:
-						augmentBonus.decrease.cooldown = std::abs(selectedPerk.value);
+						augmentBonus.decrease.cooldown = static_cast<int32_t>(std::lround(std::abs(selectedPerk.value) * 1000.0));
 						break;
 					case AugmentType::LIFE_LEECH:
 						augmentBonus.leech.life = selectedPerk.value;
@@ -427,7 +475,9 @@ void WeaponProficiency::applyPerks(uint16_t weaponId) {
 		}
 	}
 
-	m_player.sendSkills();
+	if (sendSkillUpdate) {
+		m_player.sendSkills();
+	}
 }
 
 void WeaponProficiency::applyCriticalBonus(const ProficiencyPerk &perk) {
@@ -479,11 +529,7 @@ void WeaponProficiency::applySkillPercentageBonus(const ProficiencyPerk &perk) {
 }
 
 std::vector<ProficiencyPerk> WeaponProficiency::getSelectedPerks(uint16_t weaponId) const {
-	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
-		return it->second.perks;
-	}
-
-	return {};
+	return collectValidSelectedPerks(weaponId);
 }
 
 void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
@@ -497,8 +543,6 @@ void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
 }
 
 void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
-	using enum WeaponProficiencyBonus_t;
-
 	if (weaponId == 0) {
 		weaponId = m_player.getWeaponId(true);
 	}
@@ -513,9 +557,21 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 		return;
 	}
 
+	auto playerProficiencyIt = proficiency.find(weaponId);
+	if (playerProficiencyIt == proficiency.end()) {
+		g_logger().error("{} - No stored proficiency data for weapon ID: {}", __FUNCTION__, weaponId);
+		return;
+	}
+
 	auto proficiencyId = Item::items[weaponId].proficiencyId;
 	if (!proficiencies.contains(proficiencyId)) {
 		g_logger().error("{} - Proficiency not found for weapon ID: {}", __FUNCTION__, weaponId);
+		return;
+	}
+
+	const auto unlockedLevelCount = getUnlockedLevelCount(weaponId);
+	if (level >= unlockedLevelCount) {
+		g_logger().warn("{} - Attempt to select locked proficiency level {} for weapon ID: {}", __FUNCTION__, level, weaponId);
 		return;
 	}
 
@@ -532,9 +588,15 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 	}
 	const auto &selectedPerk = selectedLevel.perks.at(perkIndex);
 
-	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
-		it->second.perks.push_back(selectedPerk);
+	const auto hasLevelSelected = std::any_of(playerProficiencyIt->second.perks.begin(), playerProficiencyIt->second.perks.end(), [level](const auto &perk) {
+		return perk.level == level;
+	});
+	if (hasLevelSelected) {
+		g_logger().warn("{} - Duplicate proficiency level {} selection ignored for weapon ID: {}", __FUNCTION__, level, weaponId);
+		return;
 	}
+
+	playerProficiencyIt->second.perks.emplace_back(selectedPerk);
 }
 
 std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> WeaponProficiency::getActiveAugments(uint16_t weaponId) {
@@ -570,8 +632,7 @@ const std::vector<uint32_t> &WeaponProficiency::getExperienceArray(uint16_t weap
 		return crossbowExperience;
 	}
 
-	const auto weaponType = itemType.weaponType;
-	if (weaponType == WEAPON_SWORD || weaponType == WEAPON_CLUB || weaponType == WEAPON_AXE) {
+	if (usesKnightProficiencyTable(itemType)) {
 		return knightExperience;
 	}
 
@@ -601,7 +662,7 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	if (proficiencyInfo.maxLevel == 0) {
 		return 0;
 	}
-	const auto maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel - 1));
+	const auto maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel));
 	for (uint8_t i = 0; i < maxExpLevels; ++i) {
 		if (playerProficiency.experience >= experienceArray[i]) {
 			continue;
@@ -631,14 +692,10 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 		return 0;
 	}
 
-	if (!proficiency.contains(weaponId)) {
-		return experienceArray.back();
-	}
-
 	if (proficiencyInfo.maxLevel == 0) {
 		return 0;
 	}
-	size_t masteryIndex = std::min<size_t>(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel - 1));
+	size_t masteryIndex = std::min<size_t>(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel));
 	if (masteryIndex > 0) {
 		return experienceArray[masteryIndex - 1];
 	}
@@ -649,6 +706,11 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	weaponId = weaponId > 0 ? weaponId : m_player.getWeaponId(true);
 
 	if (weaponId == 0) {
+		return;
+	}
+
+	experience = scaleWeaponProficiencyExperienceGain(experience);
+	if (experience == 0) {
 		return;
 	}
 
@@ -665,13 +727,13 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	uint32_t maxExperience = getMaxExperience(weaponId);
 
 	if (!proficiency.contains(weaponId)) {
-		(void)proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
+		proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
 		m_player.sendWeaponProficiency(weaponId);
 
 		return;
 	}
 
-	uint32_t newExperience = proficiency[weaponId].experience + experience;
+	const uint64_t newExperience = static_cast<uint64_t>(proficiency[weaponId].experience) + experience;
 
 	if (newExperience >= maxExperience) {
 		proficiency[weaponId].mastered = true;
@@ -681,7 +743,7 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 		return;
 	}
 
-	proficiency[weaponId].experience = newExperience;
+	proficiency[weaponId].experience = static_cast<uint32_t>(newExperience);
 
 	m_player.sendWeaponProficiency(weaponId);
 }
@@ -743,6 +805,7 @@ bool WeaponProficiency::isUpgradeAvailable(uint16_t weaponId /* = 0 */) const {
 
 	const auto &proficiencyInfo = proficiencies.at(proficiencyId);
 
+	const auto &selectedPerks = getSelectedPerks(weaponId);
 	const auto &playerProficiency = proficiency.at(weaponId);
 
 	size_t limit = std::min(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel));
@@ -751,12 +814,122 @@ bool WeaponProficiency::isUpgradeAvailable(uint16_t weaponId /* = 0 */) const {
 			break;
 		}
 
-		if (playerProficiency.perks.size() < i + 1) {
+		if (selectedPerks.size() < i + 1) {
 			return true;
 		}
 	}
 
 	return false;
+}
+
+size_t WeaponProficiency::getUnlockedLevelCount(uint16_t weaponId) const {
+	if (!isValidWeaponId(weaponId)) {
+		return 0;
+	}
+
+	const auto playerProficiencyIt = proficiency.find(weaponId);
+	if (playerProficiencyIt == proficiency.end()) {
+		return 0;
+	}
+
+	const auto profIt = proficiencies.find(Item::items[weaponId].proficiencyId);
+	if (profIt == proficiencies.end()) {
+		return 0;
+	}
+
+	const auto &experienceArray = getExperienceArray(weaponId);
+	const auto &proficiencyInfo = profIt->second;
+	if (proficiencyInfo.maxLevel == 0) {
+		return 0;
+	}
+
+	const size_t limit = std::min(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel));
+	size_t unlockedLevels = 0;
+	for (size_t i = 0; i < limit; ++i) {
+		if (playerProficiencyIt->second.experience < experienceArray[i]) {
+			break;
+		}
+
+		++unlockedLevels;
+	}
+
+	return unlockedLevels;
+}
+
+std::vector<ProficiencyPerk> WeaponProficiency::collectValidSelectedPerks(uint16_t weaponId) const {
+	if (!isValidWeaponId(weaponId)) {
+		return {};
+	}
+
+	const auto playerProficiencyIt = proficiency.find(weaponId);
+	if (playerProficiencyIt == proficiency.end()) {
+		return {};
+	}
+
+	const auto profIt = proficiencies.find(Item::items[weaponId].proficiencyId);
+	if (profIt == proficiencies.end()) {
+		return {};
+	}
+
+	const auto unlockedLevelCount = getUnlockedLevelCount(weaponId);
+	if (unlockedLevelCount == 0) {
+		return {};
+	}
+
+	const auto &storedPerks = playerProficiencyIt->second.perks;
+	const auto &proficiencyInfo = profIt->second;
+	std::vector<ProficiencyPerk> validPerks;
+	validPerks.reserve(std::min(storedPerks.size(), unlockedLevelCount));
+	std::vector<bool> usedLevels(proficiencyInfo.level.size(), false);
+
+	for (const auto &storedPerk : storedPerks) {
+		const auto level = static_cast<size_t>(storedPerk.level);
+		const auto index = static_cast<size_t>(storedPerk.index);
+
+		if (level >= unlockedLevelCount || level >= proficiencyInfo.level.size() || usedLevels[level]) {
+			continue;
+		}
+
+		const auto &levelPerks = proficiencyInfo.level[level].perks;
+		if (index >= levelPerks.size()) {
+			continue;
+		}
+
+		validPerks.push_back(levelPerks[index]);
+		usedLevels[level] = true;
+	}
+
+	std::sort(validPerks.begin(), validPerks.end(), [](const auto &lhs, const auto &rhs) {
+		if (lhs.level != rhs.level) {
+			return lhs.level < rhs.level;
+		}
+
+		return lhs.index < rhs.index;
+	});
+
+	return validPerks;
+}
+
+void WeaponProficiency::normalizeStoredState(uint16_t weaponId) {
+	if (!isValidWeaponId(weaponId)) {
+		return;
+	}
+
+	const auto playerProficiencyIt = proficiency.find(weaponId);
+	if (playerProficiencyIt == proficiency.end()) {
+		return;
+	}
+
+	const auto maxExperience = getMaxExperience(weaponId);
+	if (maxExperience > 0 && playerProficiencyIt->second.experience > maxExperience) {
+		playerProficiencyIt->second.experience = maxExperience;
+	}
+
+	if (maxExperience > 0) {
+		playerProficiencyIt->second.mastered = playerProficiencyIt->second.experience >= maxExperience;
+	}
+
+	playerProficiencyIt->second.perks = collectValidSelectedPerks(weaponId);
 }
 
 void WeaponProficiency::addStat(WeaponProficiencyBonus_t type, double_t value) {
@@ -834,22 +1007,23 @@ void WeaponProficiency::resetSpecializedMagic() {
 }
 
 uint32_t WeaponProficiency::getSkillBonus(skills_t type) const {
-	auto enumValue = static_cast<uint8_t>(type);
-	try {
-		return m_skills.at(enumValue);
-	} catch (const std::out_of_range &e) {
-		g_logger().error("[{}]. Skill type {}. Error message: {}", __FUNCTION__, enumValue, e.what());
+	const auto enumValue = static_cast<int32_t>(type);
+	if (!isTrackedWeaponProficiencySkill(type)) {
+		g_logger().error("[{}]. Skill type {} is out of range.", __FUNCTION__, enumValue);
+		return 0;
 	}
-	return 0;
+
+	return m_skills[static_cast<size_t>(enumValue)];
 }
 
 void WeaponProficiency::addSkillBonus(skills_t type, uint32_t value) {
-	auto enumValue = static_cast<uint8_t>(type);
-	try {
-		m_skills.at(enumValue) += value;
-	} catch (const std::out_of_range &e) {
-		g_logger().error("[{}]. Type {} is out of range, value {}. Error message: {}", __FUNCTION__, enumValue, value, e.what());
+	const auto enumValue = static_cast<int32_t>(type);
+	if (!isTrackedWeaponProficiencySkill(type)) {
+		g_logger().error("[{}]. Type {} is out of range, value {}.", __FUNCTION__, enumValue, value);
+		return;
 	}
+
+	m_skills[static_cast<size_t>(enumValue)] += value;
 }
 
 void WeaponProficiency::resetSkillBonuses() {
@@ -1204,8 +1378,8 @@ void WeaponProficiency::applyOn(WeaponProficiencyHealth_t healthType, WeaponProf
 
 void WeaponProficiency::applySpellAugment(CombatDamage &damage, uint16_t spellId) const {
 	if (auto it = m_spellsBonuses.find(spellId); it != m_spellsBonuses.end()) {
-		damage.damageMultiplier += it->second.increase.damage * 10000;
-		damage.healingMultiplier += it->second.increase.heal * 10000;
+		damage.damageMultiplier += static_cast<int32_t>(std::lround(it->second.increase.damage * 100));
+		damage.healingMultiplier += static_cast<int32_t>(std::lround(it->second.increase.heal * 100));
 		damage.criticalChance += it->second.increase.criticalChance * 10000;
 		damage.criticalDamage += it->second.increase.criticalDamage * 10000;
 		damage.lifeLeech += it->second.leech.life * 10000;
@@ -1215,16 +1389,26 @@ void WeaponProficiency::applySpellAugment(CombatDamage &damage, uint16_t spellId
 
 std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiariesDamage() const {
 	using enum WeaponProficiencyBonus_t;
-	std::vector<std::pair<std::string, double>> bestiariesDamage;
+	std::unordered_map<std::string, double> aggregatedBestiaries;
 
 	const auto weaponId = m_player.getWeaponId(true);
 
 	const auto &perks = getSelectedPerks(weaponId);
 	for (const auto &perk : perks) {
 		if (perk.type == WEAPON_PROFICIENCY_BESTIARY && !perk.bestiaryName.empty()) {
-			(void)bestiariesDamage.emplace_back(perk.bestiaryName, perk.value);
+			aggregatedBestiaries[perk.bestiaryName] += perk.value;
 		}
 	}
+
+	std::vector<std::pair<std::string, double>> bestiariesDamage;
+	bestiariesDamage.reserve(aggregatedBestiaries.size());
+	for (const auto &[name, value] : aggregatedBestiaries) {
+		bestiariesDamage.emplace_back(name, value);
+	}
+
+	std::sort(bestiariesDamage.begin(), bestiariesDamage.end(), [](const auto &lhs, const auto &rhs) {
+		return lhs.first < rhs.first;
+	});
 
 	return bestiariesDamage;
 }
@@ -1239,12 +1423,23 @@ std::optional<std::pair<uint8_t, double>> WeaponProficiency::getActiveElementalC
 	const auto weaponId = m_player.getWeaponId(true);
 
 	const auto &perks = getSelectedPerks(weaponId);
-	auto it = std::ranges::find_if(perks, [&](const auto &perk) {
-		return perk.type == criticalType && perk.element != COMBAT_NONE;
-	});
+	std::unordered_map<uint8_t, double> aggregatedByElement;
+	std::vector<uint8_t> displayOrder;
+	for (const auto &perk : perks) {
+		if (perk.type != criticalType || perk.element == COMBAT_NONE) {
+			continue;
+		}
 
-	if (it != perks.end()) {
-		return std::make_pair(getCipbiaElement(it->element), it->value);
+		const auto elementId = getCipbiaElement(perk.element);
+		if (!aggregatedByElement.contains(elementId)) {
+			displayOrder.push_back(elementId);
+		}
+		aggregatedByElement[elementId] += perk.value;
+	}
+
+	if (!displayOrder.empty()) {
+		const auto elementId = displayOrder.front();
+		return std::make_pair(elementId, aggregatedByElement[elementId]);
 	}
 
 	return std::nullopt;

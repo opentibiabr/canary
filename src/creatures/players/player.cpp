@@ -7154,6 +7154,7 @@ uint32_t Player::getMagicLevel() const {
 	// Wheel of destiny magic bonus
 	magic += m_wheelPlayer.getStat(WheelStat_t::MAGIC); // Regular bonus
 	magic += m_wheelPlayer.getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC); // Revelation bonus
+	magic += m_weaponProficiency.getSkillBonus(SKILL_MAGLEVEL);
 	return magic;
 }
 
@@ -7197,6 +7198,16 @@ bool Player::hasExtraSwing() {
 }
 
 uint16_t Player::getSkillLevel(skills_t skill) const {
+	if (skill == SKILL_MAGLEVEL) {
+		return static_cast<uint16_t>(std::min<uint32_t>(getMagicLevel(), std::numeric_limits<uint16_t>::max()));
+	}
+
+	const auto skillIndex = static_cast<int32_t>(skill);
+	if (skillIndex < SKILL_FIRST || skillIndex > SKILL_LAST) {
+		g_logger().error("[{}] Invalid skill type {}.", __FUNCTION__, skillIndex);
+		return 0;
+	}
+
 	auto skillLevel = getLoyaltySkill(skill);
 	skillLevel = std::max<int32_t>(0, skillLevel + varSkills[skill]);
 
@@ -7216,9 +7227,6 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel += m_wheelPlayer.getStat(WheelStat_t::DISTANCE);
 	} else if (skill == SKILL_SHIELD) {
 		skillLevel += m_wheelPlayer.getMajorStatConditional("Battle Instinct", WheelMajor_t::SHIELD);
-	} else if (skill == SKILL_MAGLEVEL) {
-		skillLevel += m_wheelPlayer.getMajorStatConditional("Positional Tactics", WheelMajor_t::MAGIC);
-		skillLevel += m_wheelPlayer.getStat(WheelStat_t::MAGIC);
 	} else if (skill == SKILL_LIFE_LEECH_AMOUNT) {
 		skillLevel += m_wheelPlayer.getStat(WheelStat_t::LIFE_LEECH);
 	} else if (skill == SKILL_MANA_LEECH_AMOUNT) {
@@ -12688,10 +12696,7 @@ const Player::ExivaRestrictions &Player::getExivaRestrictions() const {
 
 void Player::sendWeaponProficiency(uint16_t weaponId /* = 0 */) {
 	if (weaponId == 0) {
-		const auto &weapon = getWeapon(true);
-		if (weapon) {
-			weaponId = weapon->getID();
-		}
+		weaponId = getWeaponId(true);
 	}
 
 	if (client) {

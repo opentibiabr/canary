@@ -7,9 +7,7 @@ CORE_DIRECTORY = configManager.getString(configKeys.CORE_DIRECTORY)
 -- performs on every require() call when running in interpreter-only mode
 -- (macOS ARM64).
 local sep = package.config:sub(1, 1)
-package.path = package.path
-	.. ";" .. CORE_DIRECTORY .. sep .. "libs" .. sep .. "?.lua"
-	.. ";" .. CORE_DIRECTORY .. sep .. "libs" .. sep .. "?" .. sep .. "init.lua"
+package.path = package.path .. ";" .. CORE_DIRECTORY .. sep .. "libs" .. sep .. "?.lua" .. ";" .. CORE_DIRECTORY .. sep .. "libs" .. sep .. "?" .. sep .. "init.lua"
 
 dofile(CORE_DIRECTORY .. "/global.lua")
 dofile(CORE_DIRECTORY .. "/libs/libs.lua")

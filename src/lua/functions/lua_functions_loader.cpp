@@ -37,6 +37,22 @@ void Lua::load(lua_State* L) {
 
 	luaL_openlibs(L);
 
+	// Set a minimal package.path so that require() only searches the working
+	// directory.  The default path compiled into LuaJIT (plus whatever LUA_PATH
+	// adds) can contain many entries, and package.searchpath iterates through
+	// every one of them doing string operations for each require() call.
+	// On macOS ARM64 where LuaJIT runs in interpreter-only mode (JIT disabled),
+	// the cumulative cost of those string operations across 50+ nested require
+	// calls during startup causes the server to hang for minutes.
+	lua_getglobal(L, "package");
+	if (lua_istable(L, -1)) {
+		lua_pushliteral(L, "./?.lua;./?/init.lua");
+		lua_setfield(L, -2, "path");
+		lua_pushliteral(L, "");
+		lua_setfield(L, -2, "cpath");
+	}
+	lua_pop(L, 1);
+
 	CoreFunctions::init(L);
 	CreatureFunctions::init(L);
 	EventFunctions::init(L);

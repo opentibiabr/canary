@@ -1966,7 +1966,7 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 		const bool directIsStoreInbox = (containerID == ITEM_STORE_INBOX);
 		const auto fromContainer = fromCylinder->getContainer();
 		const auto fromRoot = fromContainer ? fromContainer->getRootContainer() : nullptr;
-		const bool fromIsStoreInbox = fromRoot && fromRoot->isStoreInbox();
+		const bool fromIsStoreInbox = (fromContainer && fromContainer->isStoreInbox()) || (fromRoot && fromRoot->isStoreInbox());
 		const bool toIsStoreInbox = directIsStoreInbox || topParentIsStoreInbox;
 
 		if (item->getID() == ITEM_GOLD_POUCH && !containerToStow) {

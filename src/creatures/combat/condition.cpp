@@ -2561,7 +2561,6 @@ void ConditionSpeed::addCondition(std::shared_ptr<Creature> creature, const std:
 			return;
 		}
 	}
-	// /////////Fim codigo/////////
 
 	if (ticks == -1 && addCondition->getTicks() > 0) {
 		return;

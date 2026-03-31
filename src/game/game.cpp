@@ -10820,8 +10820,7 @@ void Game::createFiendishMonsters() {
 
 		noProgressAttempts++;
 		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
-			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.",
-			                __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
+			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
 			return;
 		}
 	}
@@ -10852,8 +10851,7 @@ void Game::createInfluencedMonsters() {
 
 		noProgressAttempts++;
 		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
-			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.",
-			                __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
+			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
 			return;
 		}
 	}

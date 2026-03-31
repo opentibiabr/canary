@@ -279,6 +279,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MAX_CONTAINER_ITEM, "maxItem", 5000);
 	loadIntConfig(L, MAX_CONTAINER, "maxContainer", 500);
 	loadIntConfig(L, MAX_CONTAINER_DEPTH, "maxContainerDepth", 200);
+	loadIntConfig(L, MAX_EXIVA_WHITELIST, "maxExivaWhitelist", 100);
 	loadIntConfig(L, MAX_INBOX_ITEMS, "maxInboxItems", 0);
 	loadIntConfig(L, MAX_DAMAGE_REFLECTION, "maxDamageReflection", 200);
 	loadIntConfig(L, MAX_ELEMENTAL_RESISTANCE, "maxElementalResistance", 200);

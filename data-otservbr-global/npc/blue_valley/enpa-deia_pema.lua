@@ -102,7 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif shrinesCount > 0 and shrinesCount < monkQuestTotalShrines then
 			local currentShrine = TheWayOfTheMonkShrines[shrinesCount]
 			local nextShrine = TheWayOfTheMonkShrines[shrinesCount + 1]
-			local ordinals = {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"}
+			local ordinals = { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth" }
 			local ordinal = ordinals[shrinesCount] or tostring(shrinesCount)
 			local currentShrineName = currentShrine and currentShrine.name or "the current shrine"
 			local nextShrineName = nextShrine and nextShrine.name or "the next step"

@@ -81442,6 +81442,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
 		<attribute key="weight" value="100"/>
 	</item>
+	<item id="49161" article="a" name="stairs">
+		<attribute key="floorchange" value="down"/>
+	</item>
 	<item id="49163" article="an" name="ominous soul core">
 		<attribute key="primarytype" value="soul cores"/>
 		<attribute key="description" value="Offers a soul to the Soulpit. Combine with an exalted core to turn it into a lesser soul core."/>
@@ -82641,6 +82644,9 @@ Granted by TibiaGoals.com"/>
 	<item id="49890" article="a" name="sanctuary effect">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="5"/>
+	</item>
+	<item id="49937" article="a" name="ramp">
+		<attribute key="floorchange" value="north"/>
 	</item>
 	<item id="49995" article="a" name="dead brinebrute inferniarch">
 		<attribute key="decayTo" value="0"/>
@@ -84499,6 +84505,9 @@ Granted by TibiaGoals.com"/>
 		<attribute key="showCharges" value="1"/>
 		<attribute key="charges" value="14400"/>
 		<attribute key="weight" value="1000"/>
+	</item>
+	<item id="50296" article="a" name="skill trainer">
+		<attribute key="description" value="Use this statue to train your fist fighting and shielding skill offline."/>
 	</item>
 	<item id="50308" article="a" name="monk pedestal">
 		<attribute key="primarytype" value="artificial tiles"/>

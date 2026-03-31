@@ -23,7 +23,6 @@ npcConfig.flags = {
 	floorchange = false,
 }
 
-
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 local monkQuestTotalShrines = math.max(1, configManager.getNumber(configKeys.MONK_QUEST_TOTAL_SHRINES))
@@ -453,13 +452,12 @@ local function creatureSayCallback(npc, creature, msgType, message)
 		if not shrinesCount or type(shrinesCount) ~= "number" or shrinesCount < 0 then
 			shrinesCount = 0
 		end
-		
 		if shrinesCount >= monkQuestTotalShrines then
 			npcHandler:say("You are a monk of the Merudri, enlightened and beyond the Three-Fold Path. You have visited all of our ancestral shrines and embraced eternity. The Enpa will see you now.", npc, creature)
 		elseif shrinesCount > 0 and shrinesCount < monkQuestTotalShrines then
 			local currentShrine = TheWayOfTheMonkShrines[shrinesCount]
 			local nextShrine = TheWayOfTheMonkShrines[shrinesCount + 1]
-			local ordinals = {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth"}
+			local ordinals = { "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth" }
 			local ordinal = ordinals[shrinesCount] or tostring(shrinesCount)
 			local currentShrineName = currentShrine and currentShrine.name or "the current shrine"
 			local nextShrineName = nextShrine and nextShrine.name or "the next step"

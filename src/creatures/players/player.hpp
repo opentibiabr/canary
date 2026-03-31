@@ -156,6 +156,21 @@ public:
 		return static_self_cast<Player>();
 	}
 
+	struct ExivaRestrictions {
+		bool allowAll = false;
+		bool allowOwnGuild = true;
+		bool allowOwnParty = true;
+		bool allowVipList = true;
+		bool allowPlayerWhitelist = true;
+		bool allowGuildWhitelist = true;
+
+		std::vector<uint32_t> playerWhitelist;
+		std::vector<uint32_t> guildWhitelist;
+	};
+
+	ExivaRestrictions &getExivaRestrictions();
+	const ExivaRestrictions &getExivaRestrictions() const;
+
 	/**
 	 * @brief Gets the current virtue of the player.
 	 * @return The virtue as Virtue_t.
@@ -876,6 +891,8 @@ public:
 
 	size_t getMaxDepotItems() const;
 
+	bool canExiva(const std::string &spellParam) const;
+
 	// tile
 	// send methods
 	// tile
@@ -916,6 +933,8 @@ public:
 	void sendUpdateContainerItem(const std::shared_ptr<Container> &container, uint16_t slot, const std::shared_ptr<Item> &newItem);
 	void sendRemoveContainerItem(const std::shared_ptr<Container> &container, uint16_t slot);
 	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const;
+
+	void sendExivaRestrictions();
 
 	// Monk Update
 	void sendMonkData(MonkData_t type, uint8_t value);
@@ -1478,6 +1497,10 @@ public:
 
 	void sendSpellCooldowns();
 
+	void updateFood(uint16_t itemId, uint32_t timeLeft);
+	const std::map<uint16_t, uint32_t> &getActiveFoods() const;
+	bool isFoodActive(uint16_t itemId) const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1567,6 +1590,8 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
+
+	std::map<uint16_t, uint32_t> m_activeFoods;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
@@ -1744,6 +1769,8 @@ private:
 	Faction_t faction = FACTION_PLAYER;
 	QuickLootFilter_t quickLootFilter {};
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
+
+	ExivaRestrictions exivaRestrictions;
 
 	bool chaseMode = false;
 	bool secureMode = true;

@@ -22,7 +22,6 @@ local quest = {
 					)
 				end,
 				[2] = function(player)
-					return string.format(
 					local shrinesCount = player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount)
 					if not shrinesCount or type(shrinesCount) ~= "number" or shrinesCount < 0 then
 						shrinesCount = 0

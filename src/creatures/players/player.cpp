@@ -62,6 +62,7 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/combat/spells.hpp"
+#include "utils/tools.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -5342,6 +5343,26 @@ bool Player::isConcoctionActive(Concoction_t concotion) const {
 	return timeLeft > 0;
 }
 
+// Food system
+void Player::updateFood(uint16_t itemId, uint32_t timeLeft) {
+	if (timeLeft == 0) {
+		[[maybe_unused]] auto erased = m_activeFoods.erase(itemId);
+	} else {
+		m_activeFoods[itemId] = timeLeft;
+	}
+}
+
+const std::map<uint16_t, uint32_t> &Player::getActiveFoods() const {
+	return m_activeFoods;
+}
+
+bool Player::isFoodActive(uint16_t itemId) const {
+	if (auto it = m_activeFoods.find(itemId); it != m_activeFoods.end()) {
+		return it->second > 0;
+	}
+	return false;
+}
+
 bool Player::checkAutoLoot(bool isBoss) const {
 	if (!g_configManager().getBoolean(AUTOLOOT)) {
 		return false;
@@ -6578,6 +6599,62 @@ size_t Player::getMaxDepotItems() const {
 		return g_configManager().getNumber(PREMIUM_DEPOT_LIMIT);
 	}
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
+}
+
+bool Player::canExiva(const std::string &spellParam) const {
+	if (g_game().getWorldType() != WORLD_TYPE_NO_PVP) {
+		return true;
+	}
+
+	const auto &targetPlayer = g_game().getPlayerByName(spellParam);
+	if (!targetPlayer) {
+		return false;
+	}
+
+	const auto &targetRestrictions = targetPlayer->getExivaRestrictions();
+
+	if (targetRestrictions.allowAll) {
+		return true;
+	}
+
+	if (targetRestrictions.allowOwnGuild) {
+		const auto &sourceGuild = getGuild();
+		const auto &targetGuild = targetPlayer->getGuild();
+		if (sourceGuild && targetGuild && sourceGuild->getId() == targetGuild->getId()) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowOwnParty) {
+		const auto &sourceParty = getParty();
+		const auto &targetParty = targetPlayer->getParty();
+		if (sourceParty && targetParty && sourceParty == targetParty) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowVipList && targetPlayer->vip().exists(getGUID())) {
+		return true;
+	}
+
+	if (targetRestrictions.allowGuildWhitelist) {
+		const auto &playerGuild = getGuild();
+		if (playerGuild) {
+			auto it = std::ranges::find(targetRestrictions.guildWhitelist, playerGuild->getId());
+			if (it != targetRestrictions.guildWhitelist.end()) {
+				return true;
+			}
+		}
+	}
+
+	if (targetRestrictions.allowPlayerWhitelist) {
+		auto it = std::ranges::find(targetRestrictions.playerWhitelist, getGUID());
+		if (it != targetRestrictions.playerWhitelist.end()) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 // tile
@@ -8570,6 +8647,12 @@ void Player::sendRemoveContainerItem(const std::shared_ptr<Container> &container
 void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const {
 	if (client) {
 		client->sendContainer(cid, container, hasParent, firstIndex);
+	}
+}
+
+void Player::sendExivaRestrictions() {
+	if (client) {
+		client->sendExivaRestrictions();
 	}
 }
 
@@ -12379,4 +12462,12 @@ void Player::sendSpellCooldowns() {
 		}
 		sendSpellCooldown(spellId, ticks);
 	}
+}
+
+Player::ExivaRestrictions &Player::getExivaRestrictions() {
+	return exivaRestrictions;
+}
+
+const Player::ExivaRestrictions &Player::getExivaRestrictions() const {
+	return exivaRestrictions;
 }

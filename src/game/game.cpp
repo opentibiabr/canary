@@ -10798,18 +10798,15 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	    forgeableMonsters.size() < influencedLimit) {
-		forgeableMonsters.clear();
-		for (const auto &monster : monsters) {
-			const auto &monsterTile = monster->getTile();
-			if (!monsterTile) {
-				continue;
-			}
+	forgeableMonsters.clear();
+	for (const auto &monster : monsters) {
+		const auto &monsterTile = monster->getTile();
+		if (!monsterTile) {
+			continue;
+		}
 
-			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-				forgeableMonsters.emplace_back(monster->getID());
-			}
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+			forgeableMonsters.emplace_back(monster->getID());
 		}
 	}
 
@@ -10819,45 +10816,84 @@ void Game::updateForgeableMonsters() {
 		}
 	}
 
+	for (const auto &monsterId : getInfluencedMonsters()) {
+		if (!getMonsterByID(monsterId)) {
+			removeInfluencedMonster(monsterId, false);
+		}
+	}
+
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	if (fiendishMonsters.size() < fiendishLimit) {
 		createFiendishMonsters();
 	}
+
+	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT); // Influenced Creatures limit
+	if (influencedMonsters.size() < influencedLimit) {
+		createInfluencedMonsters();
+	}
 }
 
 void Game::createFiendishMonsters() {
-	uint32_t created = 0;
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
+	if (fiendishMonsters.size() >= fiendishLimit) {
+		return;
+	}
+
+	uint32_t noProgressAttempts = 0;
+	uint32_t remaining = fiendishLimit - static_cast<uint32_t>(fiendishMonsters.size());
+	uint32_t maxAttemptsWithoutProgress = remaining * 4;
+	if (maxAttemptsWithoutProgress < 25) {
+		maxAttemptsWithoutProgress = 25;
+	}
+
 	while (fiendishMonsters.size() < fiendishLimit) {
-		if (fiendishMonsters.size() >= fiendishLimit) {
-			g_logger().warn("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit);
-			break;
+		const auto previousSize = fiendishMonsters.size();
+
+		makeFiendishMonster();
+
+		if (fiendishMonsters.size() > previousSize) {
+			noProgressAttempts = 0;
+			continue;
 		}
 
-		if (auto ret = makeFiendishMonster();
-		    // Condition
-		    ret == 0) {
+		noProgressAttempts++;
+		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
+			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.",
+			                __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
 			return;
 		}
-
-		created++;
 	}
 }
 
 void Game::createInfluencedMonsters() {
-	uint32_t created = 0;
 	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	while (created < influencedLimit) {
-		if (influencedMonsters.size() >= influencedLimit) {
-			g_logger().warn("[{}] - Returning in creation of Influenced, size: {}, max is: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit);
-			break;
+	if (influencedMonsters.size() >= influencedLimit) {
+		return;
+	}
+
+	uint32_t noProgressAttempts = 0;
+	uint32_t remaining = influencedLimit - static_cast<uint32_t>(influencedMonsters.size());
+	uint32_t maxAttemptsWithoutProgress = remaining * 4;
+	if (maxAttemptsWithoutProgress < 25) {
+		maxAttemptsWithoutProgress = 25;
+	}
+
+	while (influencedMonsters.size() < influencedLimit) {
+		const auto previousSize = influencedMonsters.size();
+
+		makeInfluencedMonster();
+
+		if (influencedMonsters.size() > previousSize) {
+			noProgressAttempts = 0;
+			continue;
 		}
 
-		if (makeInfluencedMonster() == 0) {
+		noProgressAttempts++;
+		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
+			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.",
+			                __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
 			return;
 		}
-
-		created++;
 	}
 }
 

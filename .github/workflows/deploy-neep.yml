@@ -6,10 +6,6 @@ on:
   issue_comment:
     types: [created]
 
-env:
-  TARGET_ARTIFACT_OS: ubuntu-24.04
-  TARGET_ARTIFACT_BUILD: linux-release
-
 jobs:
   deploy:
     if: |
@@ -29,11 +25,9 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       issues: write
-      discussions: write
-      actions: read
 
     steps:
       # ---------------------------------------------------------
@@ -88,110 +82,30 @@ jobs:
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             {
               echo "name=${{ steps.comment-branch.outputs.head_ref }}"
-              echo "sha=${{ steps.comment-branch.outputs.head_sha }}"
               echo "actor=${{ github.event.comment.user.login }}"
               echo "pr_number=${{ github.event.issue.number }}"
               echo "has_pr=true"
+              
+              if echo "${{ github.event.comment.body }}" | grep -iq '/deploy clean'; then
+                echo "is_clean=true"
+              else
+                echo "is_clean=false"
+              fi
             } >> "$GITHUB_OUTPUT"
           else
             {
               echo "name=${{ github.ref_name }}"
-              echo "sha=${{ github.sha }}"
               echo "actor=${{ github.actor }}"
               echo "pr_number=${{ steps.detect_pr.outputs.pr_number }}"
               echo "has_pr=${{ steps.detect_pr.outputs.has_pr }}"
+              echo "is_clean=false"
             } >> "$GITHUB_OUTPUT"
           fi
 
       # ---------------------------------------------------------
-      # Checkout branch
+      # Remote: checkout, build, deploy
       # ---------------------------------------------------------
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.setup.outputs.name }}
-
-      # ---------------------------------------------------------
-      # Find the build run for the target branch
-      # ---------------------------------------------------------
-      - name: Find build run for SHA
-        id: find_build
-        run: |
-          BRANCH="${{ steps.setup.outputs.name }}"
-          SHA="${{ steps.setup.outputs.sha }}"
-
-          echo "Searching for build of $SHA on branch $BRANCH"
-
-          RUN_ID=$(gh run list \
-            --workflow build-ubuntu.yml \
-            --json databaseId,headSha,status \
-            --jq "map(select(.headSha==\"$SHA\" and .status==\"completed\")) | first | .databaseId" \
-            || true)
-
-          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
-            echo "No successful build for SHA $SHA on branch $BRANCH"
-            echo "found=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Found run $RUN_ID for correct SHA"
-          {
-            echo "found=true"
-            echo "run_id=$RUN_ID"
-          } >> "$GITHUB_OUTPUT"
-
-      # ---------------------------------------------------------
-      # Download artifact AND prepare deploy directory
-      # ---------------------------------------------------------
-      - name: Download and prepare deploy package
-        id: artifact_prep
-        if: steps.find_build.outputs.found == 'true'
-        env:
-          RUN_ID: ${{ steps.find_build.outputs.run_id }}
-          SHA: ${{ steps.setup.outputs.sha }}
-          OS: ${{ env.TARGET_ARTIFACT_OS }}
-          BUILD: ${{ env.TARGET_ARTIFACT_BUILD }}
-        run: |
-          mkdir -p artifact-bin
-          mkdir -p deploy
-
-          echo "Downloading artifacts from run: $RUN_ID"
-          gh run download "$RUN_ID" -D artifact-bin
-
-          echo "Looking for folder: canary-${OS}-${BUILD}-${SHA}"
-          ARTIFACT_DIR="artifact-bin/canary-${OS}-${BUILD}-${SHA}"
-
-          if [ ! -d "$ARTIFACT_DIR" ]; then
-            echo "Artifact directory not found: $ARTIFACT_DIR"
-            echo "success=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Copy binary
-          cp "$ARTIFACT_DIR/canary" deploy/
-          chmod +x deploy/canary
-
-          echo "success=true" >> $GITHUB_OUTPUT
-
-          echo "Deploy folder content:"
-          ls -l deploy
-
-      # ---------------------------------------------------------
-      # Upload to server
-      # ---------------------------------------------------------
-      - name: Upload to server
-        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345
-        with:
-          host: ${{ secrets.NEEP_HOST }}
-          username: root
-          password: ${{ secrets.NEEP_PASS }}
-          source: "deploy/canary"
-          target: "/opt/canary-next-deploy"
-
-      # ---------------------------------------------------------
-      # Remote deploy
-      # ---------------------------------------------------------
-      - name: Remote deploy
+      - name: Remote build and deploy
         id: remote
         uses: appleboy/ssh-action@91f3272fc5907f4699dcf59761eb622a07342f5a
         with:
@@ -199,51 +113,354 @@ jobs:
           username: root
           password: ${{ secrets.NEEP_PASS }}
           timeout: 300s
-          command_timeout: 20m
+          command_timeout: 30m
           script: |
-            set +e
-            trap '' TERM
-
-            systemctl --no-ask-password --no-block stop canary || true
-
-            cd /opt/canary
-            git fetch origin
-            git checkout "${{ steps.setup.outputs.name }}" || git checkout -b "${{ steps.setup.outputs.name }}"
-            git reset --hard "origin/${{ steps.setup.outputs.name }}"
-
-            if [ -f "/opt/canary-next-deploy/canary" ]; then
-              mv /opt/canary-next-deploy/canary /opt/canary/canary
-              chmod +x /opt/canary/canary
-              echo "DEPLOYED_ARTIFACT=true"
-            else
-              echo "DEPLOYED_ARTIFACT=false"
-            fi
+            set -e
 
             BRANCH="${{ steps.setup.outputs.name }}"
-            ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
-            sed -i "s/We are currently running [^.]*\./We are currently running $ESCAPED_BRANCH./" config.lua
+            IS_CLEAN="${{ steps.setup.outputs.is_clean }}"
 
-            rm -rf /opt/canary-next-deploy
+            echo "=== [1/6] Checkout da branch: $BRANCH ==="
+            cd /opt/canary
+            git fetch origin
+            git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            git clean -fdx --exclude=build --exclude=config.lua
+
+            echo "=== [2/6] Preparando build ==="
+            if [ "$IS_CLEAN" = "true" ]; then
+              echo "Comando '/deploy clean' detectado. Apagando diretório build atual..."
+              rm -rf build
+            else
+              echo "Reaproveitando diretório build se existir..."
+            fi
+            
+            mkdir -p build
+            cd build
+
+            echo "=== [3/6] Configurando CMake ==="
+            cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release -DTOGGLE_BIN_FOLDER=ON
+
+            echo "=== [4/6] Compilando ==="
+            cmake --build linux-release
+
+            echo "=== [5/6] Deploy do binário ==="
+            (systemctl stop canary 2>/dev/null || true) && sleep 3
+
+            cp linux-release/bin/canary /opt/canary/canary
+            chmod +x /opt/canary/canary
+
+            ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
+            sed -i "s/^serverMotd = \".*\"/serverMotd = \"Welcome to the Canary Test Server! Currently running branch: $ESCAPED_BRANCH\"/" /opt/canary/config.lua
+
+            echo "Atualizando /opt/canary/data/stages.lua"
+            cat << 'EOF' > /opt/canary/data/stages.lua
+            -- Minlevel and multiplier are MANDATORY
+            -- Maxlevel is OPTIONAL, but is considered infinite by default
+            -- Create a stage with minlevel 1 and no maxlevel to disable stages
+            experienceStages = {
+            	{
+            		minlevel = 1,
+            		maxlevel = 8,
+            		multiplier = 50
+            	},
+            	{
+            		minlevel = 8,
+            		maxlevel = 100,
+            		multiplier = 300
+            	},
+            	{
+            		minlevel = 101,
+            		maxlevel = 200,
+            		multiplier = 250
+            	},
+            	{
+            		minlevel = 201,
+            		maxlevel = 300,
+            		multiplier = 200
+            	},
+            	{
+            		minlevel = 301,
+            		maxlevel = 400,
+            		multiplier = 150
+            	},
+            	{
+            		minlevel = 401,
+            		maxlevel = 500,
+            		multiplier = 100
+            	},
+            	{
+            		minlevel = 501,
+            		maxlevel = 600,
+            		multiplier = 80
+            	},
+            	{
+            		minlevel = 601,
+            		maxlevel = 700,
+            		multiplier = 60
+            	},
+            	{
+            		minlevel = 701,
+            		maxlevel = 800,
+            		multiplier = 40
+            	},
+            	{
+            		minlevel = 801,
+            		maxlevel = 900,
+            		multiplier = 20
+            	},
+            	{
+            		minlevel = 901,
+            		maxlevel = 1000,
+            		multiplier = 15
+            	},
+            	{
+            		minlevel = 1001,
+            		multiplier = 10
+            	},
+            }
+
+            skillsStages = {
+            	{
+            		minlevel = 10,
+            		maxlevel = 50,
+            		multiplier = 50
+            	},
+            	{
+            		minlevel = 51,
+            		maxlevel = 80,
+            		multiplier = 40
+            	},
+            	{
+            		minlevel = 81,
+            		maxlevel = 100,
+            		multiplier = 20
+            	},
+            	{
+            		minlevel = 101,
+            		maxlevel = 110,
+            		multiplier = 15
+            	},
+            	{
+            		minlevel = 111,
+            		multiplier = 10
+            	},
+            }
+
+            magicLevelStages = {
+            	{
+            		minlevel = 0,
+            		maxlevel = 60,
+            		multiplier = 30
+            	},
+            	{
+            		minlevel = 61,
+            		maxlevel = 80,
+            		multiplier = 25
+            	},
+            	{
+            		minlevel = 81,
+            		maxlevel = 100,
+            		multiplier = 20
+            	},
+            	{
+            		minlevel = 101,
+            		maxlevel = 110,
+            		multiplier = 15
+            	},
+            	{
+            		minlevel = 111,
+            		maxlevel = 120,
+            		multiplier = 10
+            	},
+            	{
+            		minlevel = 121,
+            		multiplier = 2
+            	},
+            }
+            EOF
+
+            echo "Atualizando /opt/canary/data/XML/vocations.xml"
+            cat << 'EOF' > /opt/canary/data/XML/vocations.xml
+            <?xml version="1.0" encoding="UTF-8"?>
+            <vocations>
+            	<vocation id="0" clientid="0" baseid="0" name="None" description="none" magicshield="0" gaincap="10" gainhp="5" gainmana="5" gainhpticks="4000" gainhpamount="5" gainmanaticks="4000" gainmanaamount="5" manamultiplier="4.0" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="0">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.3" primaryShield="2.05" secondaryShield="1.25" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.5" />
+            		<skill id="1" multiplier="2.0" />
+            		<skill id="2" multiplier="2.0" />
+            		<skill id="3" multiplier="2.0" />
+            		<skill id="4" multiplier="2.0" />
+            		<skill id="5" multiplier="1.5" />
+            		<skill id="6" multiplier="1.1" />
+            	</vocation>
+            	<vocation id="1" clientid="3" baseid="1" name="Sorcerer" description="a sorcerer" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="4000" gainhpamount="5" gainmanaticks="4000" gainmanaamount="10" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="1" avatarlooktype="1595">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.26" primaryShield="2.0" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.5" />
+            		<skill id="1" multiplier="2.0" />
+            		<skill id="2" multiplier="2.0" />
+            		<skill id="3" multiplier="2.0" />
+            		<skill id="4" multiplier="2.0" />
+            		<skill id="5" multiplier="1.5" />
+            		<skill id="6" multiplier="1.1" />
+            	</vocation>
+            	<vocation id="2" clientid="4" baseid="2" name="Druid" description="a druid" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="4000" gainhpamount="5" gainmanaticks="4000" gainmanaamount="10" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="2" avatarlooktype="1596">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.26" primaryShield="2.0" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.5" />
+            		<skill id="1" multiplier="1.8" />
+            		<skill id="2" multiplier="1.8" />
+            		<skill id="3" multiplier="1.8" />
+            		<skill id="4" multiplier="1.8" />
+            		<skill id="5" multiplier="1.5" />
+            		<skill id="6" multiplier="1.1" />
+            	</vocation>
+            	<vocation id="3" clientid="2" baseid="3" name="Paladin" description="a paladin" magicshield="0" gaincap="20" gainhp="10" gainmana="15" gainhpticks="4000" gainhpamount="8" gainmanaticks="4000" gainmanaamount="8" manamultiplier="1.4" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="3" avatarlooktype="1594">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.28" primaryShield="2.08" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.2" />
+            		<skill id="1" multiplier="1.2" />
+            		<skill id="2" multiplier="1.2" />
+            		<skill id="3" multiplier="1.2" />
+            		<skill id="4" multiplier="1.1" />
+            		<skill id="5" multiplier="1.1" />
+            		<skill id="6" multiplier="1.1" />
+            	</vocation>
+            	<vocation id="4" clientid="1" baseid="4" name="Knight" description="a knight" magicshield="0" gaincap="25" gainhp="15" gainmana="5" gainhpticks="4000" gainhpamount="10" gainmanaticks="4000" gainmanaamount="5" manamultiplier="3.0" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="4" avatarlooktype="1593">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.3" primaryShield="2.05" secondaryShield="1.25" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.1" />
+            		<skill id="1" multiplier="1.1" />
+            		<skill id="2" multiplier="1.1" />
+            		<skill id="3" multiplier="1.1" />
+            		<skill id="4" multiplier="1.4" />
+            		<skill id="5" multiplier="1.1" />
+            		<skill id="6" multiplier="1.1" />
+            	</vocation>
+            	<vocation id="5" clientid="13" baseid="1" name="Master Sorcerer" description="a master sorcerer" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="3000" gainhpamount="15" gainmanaticks="2000" gainmanaamount="25" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="1" avatarlooktype="1595">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.26" primaryShield="2.0" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.5" />
+            		<skill id="1" multiplier="2.0" />
+            		<skill id="2" multiplier="2.0" />
+            		<skill id="3" multiplier="2.0" />
+            		<skill id="4" multiplier="2.0" />
+            		<skill id="5" multiplier="1.5" />
+            		<skill id="6" multiplier="1.1" />
+            		<gem quality="0" name="lesser sage gem" />
+            		<gem quality="1" name="sage gem" />
+            		<gem quality="2" name="greater sage gem" />
+            	</vocation>
+            	<vocation id="6" clientid="14" baseid="2" name="Elder Druid" description="an elder druid" magicshield="1" gaincap="10" gainhp="5" gainmana="30" gainhpticks="3000" gainhpamount="15" gainmanaticks="2000" gainmanaamount="25" manamultiplier="1.1" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="2" avatarlooktype="1596">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.26" primaryShield="2.0" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.5" />
+            		<skill id="1" multiplier="1.8" />
+            		<skill id="2" multiplier="1.8" />
+            		<skill id="3" multiplier="1.8" />
+            		<skill id="4" multiplier="1.8" />
+            		<skill id="5" multiplier="1.5" />
+            		<skill id="6" multiplier="1.1" />
+            		<gem quality="0" name="lesser mystic gem" />
+            		<gem quality="1" name="mystic gem" />
+            		<gem quality="2" name="greater mystic gem" />
+            	</vocation>
+            	<vocation id="7" clientid="12" baseid="3" name="Royal Paladin" description="a royal paladin" magicshield="0" gaincap="20" gainhp="10" gainmana="15" gainhpticks="2000" gainhpamount="20" gainmanaticks="3000" gainmanaamount="15" manamultiplier="1.4" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="3" avatarlooktype="1594">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.28" primaryShield="2.08" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.2" />
+            		<skill id="1" multiplier="1.2" />
+            		<skill id="2" multiplier="1.2" />
+            		<skill id="3" multiplier="1.2" />
+            		<skill id="4" multiplier="1.1" />
+            		<skill id="5" multiplier="1.1" />
+            		<skill id="6" multiplier="1.1" />
+            		<gem quality="0" name="lesser marksman gem" />
+            		<gem quality="1" name="marksman gem" />
+            		<gem quality="2" name="greater marksman gem" />
+            	</vocation>
+            	<vocation id="8" clientid="11" baseid="4" name="Elite Knight" description="an elite knight" magicshield="0" gaincap="25" gainhp="15" gainmana="5" gainhpticks="2000" gainhpamount="25" gainmanaticks="3000" gainmanaamount="10" manamultiplier="3.0" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="4" avatarlooktype="1593">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.3" primaryShield="2.05" secondaryShield="1.25" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.4" />
+            		<skill id="1" multiplier="1.1" />
+            		<skill id="2" multiplier="1.1" />
+            		<skill id="3" multiplier="1.1" />
+            		<skill id="4" multiplier="1.1" />
+            		<skill id="5" multiplier="1.1" />
+            		<skill id="6" multiplier="1.1" />
+            		<gem quality="0" name="lesser guardian gem" />
+            		<gem quality="1" name="guardian gem" />
+            		<gem quality="2" name="greater guardian gem" />
+            	</vocation>
+            	<vocation id="9" clientid="5" baseid="9" name="Monk" description="a monk" magicshield="0" gaincap="25" gainhp="10" gainmana="10" gainhpticks="4000" gainhpamount="8" gainmanaticks="4000" gainmanaamount="8" manamultiplier="1.3" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="9" avatarlooktype="1831">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.28" primaryShield="2.08" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.1" /> <!-- fist -->
+            		<skill id="1" multiplier="1.5" />
+            		<skill id="2" multiplier="1.5" />
+            		<skill id="3" multiplier="1.5" />
+            		<skill id="4" multiplier="2.0" />
+            		<skill id="5" multiplier="1.2" />
+            		<skill id="6" multiplier="1.1" />
+            	</vocation>
+            	<vocation id="10" clientid="15" baseid="9" name="Exalted Monk" description="an exalted monk" magicshield="0" gaincap="25" gainhp="10" gainmana="10" gainhpticks="2000" gainhpamount="15" gainmanaticks="3000" gainmanaamount="20" manamultiplier="1.3" attackspeed="2000" basespeed="110" soulmax="200" gainsoulticks="15000" fromvoc="9" avatarlooktype="1831">
+            		<formula meleeDamage="1.0" distDamage="1.0" defense="1.0" armor="1.0" />
+            		<mitigation multiplier="1.28" primaryShield="2.08" secondaryShield="1.2" />
+            		<pvp damageReceivedMultiplier="1.0" damageDealtMultiplier ="1.0"/>
+            		<skill id="0" multiplier="1.1" /> <!-- fist -->
+            		<skill id="1" multiplier="1.5" />
+            		<skill id="2" multiplier="1.5" />
+            		<skill id="3" multiplier="1.5" />
+            		<skill id="4" multiplier="2.0" />
+            		<skill id="5" multiplier="1.2" />
+            		<skill id="6" multiplier="1.1" />
+            		<gem quality="0" name="lesser spiritualist gem" />
+            		<gem quality="1" name="spiritualist gem" />
+            		<gem quality="2" name="greater spiritualist gem" />
+            	</vocation>
+            </vocations>
+            EOF
+
+            echo "=== [6/6] Iniciando serviço ==="
             systemctl start canary
+            sleep 3
+            if ! systemctl is-active --quiet canary; then
+              echo "ERRO: serviço canary não está rodando após o start!"
+              systemctl status canary --no-pager || true
+              exit 1
+            fi
+
+            echo "DEPLOY_SUCCESS=true"
 
       # ---------------------------------------------------------
       # Success or failure comment
       # ---------------------------------------------------------
       - name: Post deploy result
-        if: steps.remote.outcome == 'success' && steps.setup.outputs.has_pr == 'true'
+        if: always() && steps.remote.outcome == 'success' && steps.setup.outputs.has_pr == 'true'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           issue-number: ${{ steps.setup.outputs.pr_number }}
           body: |
             ✅ **Deploy successful!**
             **Branch:** `${{ steps.setup.outputs.name }}`
-            **Has new build artifact:** `${{ steps.find_build.outputs.found }}`
-            **Build artifact prepared:** `${{ steps.artifact_prep.outputs.success || 'false' }}`
-            **Binary deployed:** `${{ contains(steps.remote.outputs.stdout, 'DEPLOYED_ARTIFACT=true') }}`
+            **Build:** Compiled on remote server
             *(Triggered by @${{ steps.setup.outputs.actor }})*
 
       - name: Post failure feedback
-        if: steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
+        if: always() && steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           issue-number: ${{ steps.setup.outputs.pr_number }}
@@ -260,14 +477,14 @@ jobs:
       # React with emojis
       # ---------------------------------------------------------
       - name: React success
-        if: github.event_name == 'issue_comment' && steps.remote.outcome == 'success'
+        if: always() && github.event_name == 'issue_comment' && steps.remote.outcome == 'success'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           comment-id: ${{ github.event.comment.id }}
           reactions: hooray
 
       - name: React failure
-        if: github.event_name == 'issue_comment' && steps.remote.outcome != 'success'
+        if: always() && github.event_name == 'issue_comment' && steps.remote.outcome != 'success'
         uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
         with:
           comment-id: ${{ github.event.comment.id }}

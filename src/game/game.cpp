@@ -1889,12 +1889,21 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		player->stowItem(item, count, false);
 		return;
 	}
-	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+	const auto fromContainer = fromCylinder ? fromCylinder->getContainer() : nullptr;
+	const auto toContainer = toCylinder ? toCylinder->getContainer() : nullptr;
+	const auto fromRoot = fromContainer ? fromContainer->getRootContainer() : nullptr;
+	const auto toRoot = toContainer ? toContainer->getRootContainer() : nullptr;
+	const bool fromIsStoreInbox = fromContainer && (fromContainer->isStoreInbox() || (fromRoot && fromRoot->isStoreInbox()));
+	const bool toIsStoreInbox = toContainer && (toContainer->isStoreInbox() || (toRoot && toRoot->isStoreInbox()));
+	const bool isLootPouchStoreInboxReorder = item->getID() == ITEM_GOLD_POUCH && fromIsStoreInbox && toIsStoreInbox;
+
+	if ((!item->isPushable() && !isLootPouchStoreInboxReorder) || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
 
-	const auto ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
+	const uint32_t moveFlags = isLootPouchStoreInboxReorder ? FLAG_IGNORENOTMOVABLE : 0;
+	const auto ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, moveFlags, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	} else if (toCylinder->getContainer() && fromCylinder->getContainer() && fromCylinder->getContainer()->countsToLootAnalyzerBalance() && toCylinder->getContainer()->getTopParent() == player) {
@@ -1953,8 +1962,33 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 		std::shared_ptr<Container> topParentContainer = toCylinderContainer->getRootContainer();
 		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
 		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
-		if (!item->canBeMovedToStore() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
-			return RETURNVALUE_NOTBOUGHTINSTORE;
+		const bool topParentIsStoreInbox = topParentContainer && topParentContainer->isStoreInbox();
+		const bool directIsStoreInbox = (containerID == ITEM_STORE_INBOX);
+		const auto fromContainer = fromCylinder->getContainer();
+		const auto fromRoot = fromContainer ? fromContainer->getRootContainer() : nullptr;
+		const bool fromIsStoreInbox = (fromContainer && fromContainer->isStoreInbox()) || (fromRoot && fromRoot->isStoreInbox());
+		const bool toIsStoreInbox = directIsStoreInbox || topParentIsStoreInbox;
+
+		if (item->getID() == ITEM_GOLD_POUCH && !containerToStow) {
+			// Loot pouch can only be moved inside Store Inbox (internal reordering).
+			if (!(fromIsStoreInbox && toIsStoreInbox)) {
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
+			}
+		}
+
+		if (!item->canBeMovedToStore()) {
+			if (directIsStoreInbox) {
+				if (!(fromIsStoreInbox && (item->isMovable() || item->getID() == ITEM_GOLD_POUCH))) {
+					return RETURNVALUE_NOTBOUGHTINSTORE;
+				}
+			}
+
+			if (topParentIsStoreInbox) {
+				// Internal reorganization of the Store Inbox: only allow movable items, or the gold pouch, when the source is also within the Store Inbox.
+				if (!(fromIsStoreInbox && (item->isMovable() || item->getID() == ITEM_GOLD_POUCH))) {
+					return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
+				}
+			}
 		}
 
 		if (item->isStoreItem() && !containerToStow) {
@@ -1970,6 +2004,10 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 			}
 
 			if (parentContainer && (parentContainer->isDepotChest() || isStoreInbox)) {
+				isValidMoveItem = true;
+			}
+
+			if (topParentContainer && topParentContainer->isStoreInbox()) {
 				isValidMoveItem = true;
 			}
 
@@ -10820,8 +10858,7 @@ void Game::createFiendishMonsters() {
 
 		noProgressAttempts++;
 		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
-			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.",
-			                __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
+			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
 			return;
 		}
 	}
@@ -10852,8 +10889,7 @@ void Game::createInfluencedMonsters() {
 
 		noProgressAttempts++;
 		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
-			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.",
-			                __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
+			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
 			return;
 		}
 	}

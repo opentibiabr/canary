@@ -67,6 +67,14 @@
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
 
+	std::string getMarketDetailImbuementEffect(uint16_t itemId) {
+		if (const auto* imbuement = g_imbuements().getImbuementByScrollID(itemId); imbuement != nullptr) {
+			return imbuement->getDescription();
+		}
+
+		return {};
+	}
+
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
@@ -6662,6 +6670,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			msg.addString(std::to_string(it.mantra));
 		} else {
 			msg.add<uint16_t>(0x00);
+		}
+
+		if (clientVersion >= 1510) {
+			msg.addString(getMarketDetailImbuementEffect(itemId));
 		}
 
 		if (it.upgradeClassification > 0 && tier > 0) {

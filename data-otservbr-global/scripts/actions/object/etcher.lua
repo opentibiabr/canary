@@ -11,7 +11,7 @@ function etcher.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	local clearImbuements = player:clearAllImbuements(target)
 
-	if clearImbuements then 
+	if clearImbuements then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have cleared all imbuements from the item.")
 		item:remove(1)
 		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)

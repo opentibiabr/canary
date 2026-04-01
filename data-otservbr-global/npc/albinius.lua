@@ -275,7 +275,7 @@ keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, t
 
 npcConfig.shop = {
 	{ itemName = "blank imbuement scroll", clientId = 51442, buy = 25000 },
-	{ itemName = "etcher", clientId = 51443, buy = 30000 }
+	{ itemName = "etcher", clientId = 51443, buy = 30000 },
 }
 
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)

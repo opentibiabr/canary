@@ -4722,14 +4722,13 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 		msg.add<uint32_t>(duration);
 	}
 
-	// Active foods are not yet implemented (future feature)
-	uint8_t activeFoods = 0;
-	msg.addByte(activeFoods);
-	for (uint8_t i = 0; i < activeFoods; ++i) {
-		msg.add<uint16_t>(0x00); // Item ID
+	const auto &activeFoods = player->getActiveFoods();
+	msg.addByte(activeFoods.size());
+	for (const auto &[foodId, duration] : activeFoods) {
+		msg.add<uint16_t>(foodId);
 		msg.addByte(0x00);
 		msg.addByte(0x00);
-		msg.add<uint32_t>(0x00); // Time Left
+		msg.add<uint32_t>(duration);
 	}
 
 	const auto &weaponProficiencyAugments = player->weaponProficiency().getActiveAugments();

@@ -11300,7 +11300,6 @@ void Game::updatePlayersOnline() const {
 	// Function to be executed within the transaction
 	auto updateOperation = [this]() {
 		const auto &m_players = getPlayers();
-		bool changesMade = false;
 
 		// g_metrics().addUpDownCounter("players_online", 1);
 		// g_metrics().addUpDownCounter("players_online", -1);
@@ -11308,10 +11307,11 @@ void Game::updatePlayersOnline() const {
 		if (m_players.empty()) {
 			std::string query = "SELECT COUNT(*) AS count FROM players_online;";
 			auto result = g_database().storeQuery(query);
-			int count = result->getNumber<int>("count");
-			if (count > 0) {
-				g_database().executeQuery("DELETE FROM `players_online`;");
-				changesMade = true;
+			if (result) {
+				int count = result->getNumber<int>("count");
+				if (count > 0) {
+					g_database().executeQuery("DELETE FROM `players_online`;");
+				}
 			}
 		} else {
 			// Insert the current players
@@ -11322,7 +11322,6 @@ void Game::updatePlayersOnline() const {
 				stmt.addRow(playerQuery.str());
 			}
 			stmt.execute();
-			changesMade = true;
 
 			// Remove players who are no longer online
 			std::ostringstream cleanupQuery;
@@ -11335,7 +11334,7 @@ void Game::updatePlayersOnline() const {
 			g_database().executeQuery(cleanupQuery.str());
 		}
 
-		return changesMade;
+		return true;
 	};
 
 	const bool success = DBTransaction::executeWithinTransaction(updateOperation);

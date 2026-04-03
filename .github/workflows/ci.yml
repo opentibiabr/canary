@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "data/**"
+      - "data-canary/**"
+      - "data-otservbr-global/**"
+      - "cmake/**"
+      - "docker/**"
+      - "vcproj/**"
+      - "vcpkg.json"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - ".github/workflows/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "data/**"
+      - "data-canary/**"
+      - "data-otservbr-global/**"
+      - "cmake/**"
+      - "docker/**"
+      - "vcproj/**"
+      - "vcpkg.json"
+      - "CMakeLists.txt"
+      - "CMakePresets.json"
+      - ".github/workflows/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect Build Scope
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      compile: ${{ steps.filter.outputs.compile }}
+      docker: ${{ steps.filter.outputs.docker }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36  # v3
+        with:
+          filters: |
+            compile:
+              - "src/**"
+              - "tests/**"
+              - "cmake/**"
+              - "vcproj/**"
+              - "vcpkg.json"
+              - "CMakeLists.txt"
+              - "CMakePresets.json"
+              - ".github/workflows/ci.yml"
+              - ".github/workflows/reusable-build-linux.yml"
+              - ".github/workflows/reusable-build-windows.yml"
+              - ".github/workflows/reusable-build-macos.yml"
+            docker:
+              - "docker/**"
+              - "src/**"
+              - "cmake/**"
+              - "vcpkg.json"
+              - "CMakeLists.txt"
+              - "CMakePresets.json"
+              - ".github/workflows/ci.yml"
+              - ".github/workflows/reusable-build-docker.yml"
+
+  # --- Fast Checks ---
+
+  checks:
+    name: Fast Checks
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    permissions:
+      contents: write
+      checks: write
+    uses: ./.github/workflows/reusable-checks.yml
+    secrets: inherit
+
+  tests-lua:
+    name: Lua Tests
+    if: github.event_name == 'push' || github.event.pull_request.draft == false
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-tests-lua.yml
+    secrets: inherit
+
+  # --- Heavy Builds ---
+
+  build-linux:
+    name: Build - Linux
+    needs: [changes, checks, tests-lua]
+    if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-linux.yml
+    secrets: inherit
+
+  build-windows:
+    name: Build - Windows
+    needs: [changes, checks, tests-lua]
+    if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-windows.yml
+    secrets: inherit
+
+  build-macos:
+    name: Build - macOS
+    needs: [changes, checks, tests-lua]
+    if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-macos.yml
+    secrets: inherit
+
+  build-docker:
+    name: Build - Docker
+    needs: [changes, checks, tests-lua]
+    if: needs.changes.outputs.docker == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || !github.event.pull_request.draft)
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-docker.yml
+    secrets: inherit

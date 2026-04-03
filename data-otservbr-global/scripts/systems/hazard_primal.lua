@@ -84,6 +84,9 @@ end
 local spawnEvent = ZoneEvent(hazardZone)
 function spawnEvent.onSpawn(monster, position)
 	monster:registerEvent("PrimalHazardDeath")
+	if HazardMonster and HazardMonster.onSpawn then
+		HazardMonster.onSpawn(monster, position)
+	end
 end
 spawnEvent:register()
 

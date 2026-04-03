@@ -42,6 +42,7 @@ npcConfig.shop = {
 	{ name = "rod of desctruction", clientId = 27458, buy = 50 },
 	{ name = "slayer of desctruction", clientId = 27450, buy = 50 },
 	{ name = "wand of desctruction", clientId = 27457, buy = 50 },
+	{ name = "nunchaku of destruction", clientId = 50168, buy = 50 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

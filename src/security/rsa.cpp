@@ -11,309 +11,248 @@
 
 #include "lib/di/container.hpp"
 
-RSA::RSA(Logger &logger) :
+namespace {
+	// Helper for local unique_ptr managing OpenSSL objects
+	// Use a more flexible deleter type to handle both void(*)() and int(*)() functions
+	template <typename T, typename Deleter = void (*)(T*)>
+	using OpenSSLPtr = std::unique_ptr<T, Deleter>;
+
+	// BIO_free returns int, so we need a wrapper or cast if we used the strict template.
+	// But using the Deleter template parameter defaults to void(*)(T*) which works for BN_free.
+	// For BIO_free we can pass the specific type.
+}
+
+RSAManager::RSAManager(Logger &logger) :
 	logger(logger) {
-	mpz_init(n);
-	mpz_init2(d, 1024);
+	n.reset(BN_new());
+	d.reset(BN_new());
+	mont_ctx.reset(BN_MONT_CTX_new());
+
+	if (!n || !d || !mont_ctx) {
+		throw std::runtime_error("Failed to allocate OpenSSL BIGNUM/Context structures (BN_new/BN_MONT_CTX_new returned null).");
+	}
 }
 
-RSA::~RSA() {
-	mpz_clear(n);
-	mpz_clear(d);
+// Destructor is defaulted in header
+
+RSAManager &RSAManager::getInstance() {
+	return inject<RSAManager>();
 }
 
-RSA &RSA::getInstance() {
-	return inject<RSA>();
-}
+void RSAManager::start(const std::string &filename) {
+	// Standard CipSoft RSA Key (p and q primes)
+	const char* p = "14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113";
+	const char* q = "7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101";
 
-void RSA::start() {
-	const auto p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
-	const auto q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
 	try {
-		if (!loadPEM("key.pem")) {
-			// file doesn't exist - switch to base10-hardcoded keys
-			logger.error("File key.pem not found or have problem on loading... Setting standard rsa key\n");
+		if (!loadPEM(filename)) {
+			logger.error("File {} not found or valid... Setting standard rsa key\n", filename);
 			setKey(p, q);
 		}
-	} catch (const std::system_error &e) {
-		logger.error("Loading RSA Key from key.pem failed with error: {}\n", e.what());
+	} catch (const std::exception &e) {
+		logger.error("Loading RSA Key from {} failed with error: {}\n", filename, e.what());
 		logger.error("Switching to a default key...");
 		setKey(p, q);
 	}
 }
 
-void RSA::setKey(const char* pString, const char* qString, int base /* = 10*/) {
-	mpz_t p;
-	mpz_t q;
-	mpz_t e;
-	mpz_init2(p, 1024);
-	mpz_init2(q, 1024);
-	mpz_init(e);
+void RSAManager::setKey(const char* pString, const char* qString, int base /* = 10*/) {
+	// RAII Context
+	OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
+	if (!ctx) {
+		throw std::runtime_error("Failed to allocate BN_CTX in setKey");
+	}
 
-	mpz_set_str(p, pString, base);
-	mpz_set_str(q, qString, base);
-
-	// e = 65537
-	mpz_set_ui(e, 65537);
-
-	// n = p * q
-	mpz_mul(n, p, q);
-
-	// d = e^-1 mod (p - 1)(q - 1)
-	mpz_t p_1;
-	mpz_t q_1;
-	mpz_t pq_1;
-	mpz_init2(p_1, 1024);
-	mpz_init2(q_1, 1024);
-	mpz_init2(pq_1, 1024);
-
-	mpz_sub_ui(p_1, p, 1);
-	mpz_sub_ui(q_1, q, 1);
-
-	// pq_1 = (p -1)(q - 1)
-	mpz_mul(pq_1, p_1, q_1);
-
-	// d = e^-1 mod (p - 1)(q - 1)
-	mpz_invert(d, e, pq_1);
-
-	mpz_clear(p_1);
-	mpz_clear(q_1);
-	mpz_clear(pq_1);
-
-	mpz_clear(p);
-	mpz_clear(q);
-	mpz_clear(e);
-}
-
-void RSA::decrypt(char* msg) const {
-	mpz_t c;
-	mpz_t m;
-	mpz_init2(c, 1024);
-	mpz_init2(m, 1024);
-
-	mpz_import(c, 128, 1, 1, 0, 0, msg);
-
-	// m = c^d mod n
-	mpz_powm(m, c, d, n);
-
-	const size_t count = (mpz_sizeinbase(m, 2) + 7) / 8;
-	std::fill(msg, msg + (128 - count), 0);
-
-	mpz_export(msg + (128 - count), nullptr, 1, 1, 0, 0, m);
-
-	mpz_clear(c);
-	mpz_clear(m);
-}
-
-std::string RSA::base64Decrypt(const std::string &input) const {
-	auto posOfCharacter = [](const uint8_t chr) -> uint16_t {
-		if (chr >= 'A' && chr <= 'Z') {
-			return chr - 'A';
+	// Helper to check OpenSSL success returns (1 = success, 0 = failure)
+	auto check = [](int result, const char* msg) {
+		if (result == 0) {
+			throw std::runtime_error(msg);
 		}
-		if (chr >= 'a' && chr <= 'z') {
-			return chr - 'a' + ('Z' - 'A') + 1;
-		}
-		if (chr >= '0' && chr <= '9') {
-			return chr - '0' + ('Z' - 'A') + ('z' - 'a') + 2;
-		}
-		if (chr == '+' || chr == '-') {
-			return 62;
-		}
-		if (chr == '/' || chr == '_') {
-			return 63;
-		}
-		g_logger().error("[RSA::base64Decrypt] - Invalid base6409");
-		return 0;
 	};
 
-	if (input.empty()) {
-		return {};
+	// Use raw pointers for parsing to let OpenSSL allocate/manage them,
+	// then transfer ownership to RAII wrappers immediately.
+	BIGNUM* p_raw = nullptr;
+	BIGNUM* q_raw = nullptr;
+
+	try {
+		// Parse p and q
+		if (base == 10) {
+			check(BN_dec2bn(&p_raw, pString), "Failed to parse p (decimal)");
+			check(BN_dec2bn(&q_raw, qString), "Failed to parse q (decimal)");
+		} else {
+			check(BN_hex2bn(&p_raw, pString), "Failed to parse p (hex)");
+			check(BN_hex2bn(&q_raw, qString), "Failed to parse q (hex)");
+		}
+	} catch (...) {
+		// If parsing fails mid-way, we must free what was allocated
+		if (p_raw) {
+			BN_free(p_raw);
+		}
+		if (q_raw) {
+			BN_free(q_raw);
+		}
+		throw;
 	}
 
-	const size_t length = input.length();
-	size_t pos = 0;
+	// Transfer to smart pointers
+	OpenSSLPtr<BIGNUM> p(p_raw, BN_free);
+	OpenSSLPtr<BIGNUM> q(q_raw, BN_free);
 
-	std::string output;
-	output.reserve(length / 4 * 3);
-	while (pos < length) {
-		const uint16_t pos1 = posOfCharacter(input[pos + 1]);
-		output.push_back(static_cast<std::string::value_type>(((posOfCharacter(input[pos])) << 2) + ((pos1 & 0x30) >> 4)));
-		if (input[pos + 2] != '=' && input[pos + 2] != '.') {
-			const uint16_t pos2 = posOfCharacter(input[pos + 2]);
-			output.push_back(static_cast<std::string::value_type>(((pos1 & 0x0f) << 4) + ((pos2 & 0x3c) >> 2)));
-			if (input[pos + 3] != '=' && input[pos + 3] != '.') {
-				output.push_back(static_cast<std::string::value_type>(((pos2 & 0x03) << 6) + posOfCharacter(input[pos + 3])));
-			}
+	// Other variables can be allocated normally
+	auto make_bn = []() {
+		BIGNUM* ptr = BN_new();
+		if (!ptr) {
+			throw std::bad_alloc();
 		}
+		return OpenSSLPtr<BIGNUM>(ptr, BN_free);
+	};
 
-		pos += 4;
+	auto e = make_bn();
+	auto phi = make_bn();
+
+	// e = 65537
+	check(BN_set_word(e.get(), 65537), "BN_set_word failed");
+
+	// n = p * q
+	check(BN_mul(n.get(), p.get(), q.get(), ctx.get()), "BN_mul (n=p*q) failed");
+
+	// phi = (p - 1)(q - 1)
+	check(BN_sub_word(p.get(), 1), "BN_sub_word (p-1) failed");
+	check(BN_sub_word(q.get(), 1), "BN_sub_word (q-1) failed");
+	check(BN_mul(phi.get(), p.get(), q.get(), ctx.get()), "BN_mul (phi) failed");
+
+	// d = e^-1 mod phi
+	if (!BN_mod_inverse(d.get(), e.get(), phi.get(), ctx.get())) {
+		throw std::runtime_error("BN_mod_inverse failed");
 	}
 
-	return output;
-}
-
-static const std::string header_old = "-----BEGIN RSA PRIVATE KEY-----";
-static const std::string footer_old = "-----END RSA PRIVATE KEY-----";
-static const std::string header_new = "-----BEGIN PRIVATE KEY-----";
-static const std::string footer_new = "-----END PRIVATE KEY-----";
-
-enum {
-	CRYPT_RSA_ASN1_SEQUENCE = 48,
-	CRYPT_RSA_ASN1_INTEGER = 2,
-	CRYPT_RSA_ASN1_OBJECT = 6,
-	CRYPT_RSA_ASN1_BITSTRING = 3
-};
-
-uint16_t RSA::decodeLength(char*&pos) const {
-	std::array<uint8_t, 4> buffer = { 0 };
-	uint16_t length = static_cast<uint8_t>(*pos++);
-	if (length & 0x80) {
-		uint8_t numLengthBytes = length & 0x7F;
-		if (numLengthBytes > 4) {
-			g_logger().error("[RSA::decodeLength] - Invalid 'length'");
-			return 0;
-		}
-		// Adjust the copy destination to ensure it doesn't overflow
-		auto destIt = buffer.begin() + (4 - numLengthBytes);
-		if (destIt < buffer.begin() || destIt + numLengthBytes > buffer.end()) {
-			g_logger().error("[RSA::decodeLength] - Invalid copy range");
-			return 0;
-		}
-		// Copy 'numLengthBytes' bytes from 'pos' into 'buffer'
-		std::copy_n(pos, numLengthBytes, destIt);
-		pos += numLengthBytes;
-		// Reconstruct 'length' from 'buffer' (big-endian)
-		uint32_t tempLength = 0;
-		for (size_t i = 0; i < numLengthBytes; ++i) {
-			tempLength = (tempLength << 8) | buffer[4 - numLengthBytes + i];
-		}
-		if (tempLength > UINT16_MAX) {
-			g_logger().error("[RSA::decodeLength] - Length too large");
-			return 0;
-		}
-		length = static_cast<uint16_t>(tempLength);
-	}
-	return length;
-}
-
-void RSA::readHexString(char*&pos, uint16_t length, std::string &output) const {
-	output.reserve(static_cast<size_t>(length) * 2);
-	for (uint16_t i = 0; i < length; ++i) {
-		const auto hex = static_cast<uint8_t>(*pos++);
-		output.push_back("0123456789ABCDEF"[(hex >> 4) & 15]);
-		output.push_back("0123456789ABCDEF"[hex & 15]);
+	// Pre-compute Montgomery context for n
+	if (!BN_MONT_CTX_set(mont_ctx.get(), n.get(), ctx.get())) {
+		throw std::runtime_error("BN_MONT_CTX_set failed");
 	}
 }
 
-bool RSA::loadPEM(const std::string &filename) {
-	std::ifstream file { filename };
-	if (!file.is_open()) {
-		return false;
-	}
+void RSAManager::decrypt(char* msg) const {
+	// Thread-local BN_CTX. Using unique_ptr with custom deleter.
+	// Initialized once per thread.
+	static thread_local OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
 
-	std::string key;
-	std::string pString;
-	std::string qString;
-	for (std::string line; std::getline(file, line); key.append(line))
-		;
-
-	if (key.compare(0, header_old.size(), header_old) == 0) {
-		if (key.compare(key.size() - footer_old.size(), footer_old.size(), footer_old) != 0) {
-			g_logger().error("[RSA::loadPEM] - Missing RSA private key footer");
-			return false;
+	if (!ctx) {
+		// Try to recover if previous alloc failed (unlikely for thread_local static but safe)
+		ctx.reset(BN_CTX_new());
+		if (!ctx) {
+			logger.error("RSAManager::decrypt: Failed to allocate thread-local BN_CTX");
+			return;
 		}
+	}
 
-		key = base64Decrypt(key.substr(header_old.size(), key.size() - header_old.size() - footer_old.size()));
-	} else if (key.compare(0, header_new.size(), header_new) == 0) {
-		if (key.compare(key.size() - footer_new.size(), footer_new.size(), footer_new) != 0) {
-			g_logger().error("[RSA::loadPEM] - Missing RSA private key footer");
-			return false;
+	BN_CTX_start(ctx.get());
+
+	// Ensure we clean up the stack frame in BN_CTX
+	// Simple RAII for BN_CTX_start/end
+	struct BNCTXFrame {
+		BN_CTX* c;
+		explicit BNCTXFrame(BN_CTX* c) :
+			c(c) { }
+		~BNCTXFrame() {
+			BN_CTX_end(c);
 		}
+	} frame(ctx.get());
 
-		key = base64Decrypt(key.substr(header_new.size(), key.size() - header_new.size() - footer_new.size()));
-	} else {
-		g_logger().error("[RSA::loadPEM] - Missing RSA private key header");
+	BIGNUM* c = BN_CTX_get(ctx.get());
+	BIGNUM* m = BN_CTX_get(ctx.get());
+
+	if (!c || !m) {
+		logger.error("RSAManager::decrypt: BN_CTX_get failed (stack exhausted?)");
+		return;
+	}
+
+	// Convert raw bytes (128 bytes) to BIGNUM
+	if (!BN_bin2bn(reinterpret_cast<const unsigned char*>(msg), 128, c)) {
+		logger.error("RSAManager::decrypt: BN_bin2bn failed");
+		return;
+	}
+
+	// Montgomery Exponentiation: m = c^d mod n
+	if (!BN_mod_exp_mont(m, c, d.get(), n.get(), ctx.get(), mont_ctx.get())) {
+		unsigned long err = ERR_get_error();
+		logger.error("RSAManager::decrypt: BN_mod_exp_mont failed: {}", ERR_error_string(err, nullptr));
+		return;
+	}
+
+	// Convert back to bytes
+	int num_bytes = BN_num_bytes(m);
+	int padding = 128 - num_bytes;
+
+	if (padding < 0) {
+		logger.error("RSAManager::decrypt: Decrypted data length ({}) exceeds buffer (128)", num_bytes);
+		return;
+	}
+
+	// Zero out padding
+	if (padding > 0) {
+		std::memset(msg, 0, padding);
+	}
+
+	// Write key bytes
+	if (BN_bn2bin(m, reinterpret_cast<unsigned char*>(msg) + padding) != num_bytes) {
+		logger.error("RSAManager::decrypt: BN_bn2bin size mismatch");
+	}
+}
+
+bool RSAManager::loadPEM(const std::string &filename) {
+	// BIO_free returns int so we specify the deleter type explicitly
+	OpenSSLPtr<BIO, int (*)(BIO*)> bio(BIO_new_file(filename.c_str(), "r"), BIO_free);
+	if (!bio) {
+		// Not necessarily an error if file doesn't exist, we fallback
 		return false;
 	}
 
-	char* pos = &key[0];
-	if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
+	OpenSSLPtr<EVP_PKEY> pkey(
+		PEM_read_bio_PrivateKey(bio.get(), nullptr, nullptr, nullptr),
+		EVP_PKEY_free
+	);
+
+	if (!pkey) {
+		unsigned long err = ERR_get_error();
+		logger.error("RSAManager::loadPEM: OpenSSL PEM read error: {}", ERR_error_string(err, nullptr));
 		return false;
 	}
 
-	uint16_t length = decodeLength(pos);
-	if (length != key.length() - std::distance(&key[0], pos)) {
-		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
-		return false;
-	}
+	BIGNUM* n_raw = nullptr;
+	BIGNUM* d_raw = nullptr;
 
-	auto tag = static_cast<uint8_t>(*pos++);
-	if (tag == CRYPT_RSA_ASN1_INTEGER && static_cast<uint8_t>(*(pos + 0)) == 0x01 && static_cast<uint8_t>(*(pos + 1)) == 0x00 && static_cast<uint8_t>(*(pos + 2)) == 0x30) {
-		pos += 3;
-		tag = CRYPT_RSA_ASN1_SEQUENCE;
-	}
-
-	if (tag == CRYPT_RSA_ASN1_SEQUENCE) {
-		pos += decodeLength(pos);
-		tag = static_cast<uint8_t>(*pos++);
-		decodeLength(pos);
-		if (tag == CRYPT_RSA_ASN1_BITSTRING) {
-			++pos;
+	// OpenSSL 3.0+ way to get parameters
+	// If this fails (e.g. key type is not RSA), we error out.
+	if (!EVP_PKEY_get_bn_param(pkey.get(), "n", &n_raw) || !EVP_PKEY_get_bn_param(pkey.get(), "d", &d_raw)) {
+		logger.error("RSAManager::loadPEM: Failed to extract 'n' or 'd' from private key (is it RSA?)");
+		// Note: EVP_PKEY_get_bn_param allocates new BIGNUMs if successful
+		if (n_raw) {
+			BN_free(n_raw);
 		}
-		if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-			g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
-			return false;
+		if (d_raw) {
+			BN_free(d_raw);
 		}
-
-		length = decodeLength(pos);
-		if (length != key.length() - std::distance(&key[0], pos)) {
-			g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
-			return false;
-		}
-
-		tag = static_cast<uint8_t>(*pos++);
-	}
-
-	if (tag != CRYPT_RSA_ASN1_INTEGER) {
-		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
-	length = decodeLength(pos);
-	pos += length;
-	if (length != 1 || static_cast<uint8_t>(*pos) > 2) {
-		// public key - we don't have any interest in it
-		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
+	// Extract to temporaries first to ensure atomicity
+	// We use OpenSSLPtr (local type) for temporary management
+	OpenSSLPtr<BIGNUM> n_temp(n_raw, BN_free);
+	OpenSSLPtr<BIGNUM> d_temp(d_raw, BN_free);
+
+	// Re-compute Montgomery Context use n_temp
+	OpenSSLPtr<BN_CTX> ctx(BN_CTX_new(), BN_CTX_free);
+	if (!ctx || !BN_MONT_CTX_set(mont_ctx.get(), n_temp.get(), ctx.get())) {
+		logger.error("RSAManager::loadPEM: Failed to setup Montgomery Context");
 		return false;
 	}
 
-	tag = static_cast<uint8_t>(*pos++);
-	if (tag != CRYPT_RSA_ASN1_INTEGER) {
-		g_logger().error("[RSA::loadPEM] - Invalid unsupported RSA key");
-		return false;
-	}
+	// Commit all changes atomically
+	// Transfer ownership from local OpenSSLPtr (void deleter) to member BnPtr (BNDeleter)
+	n.reset(n_temp.release());
+	d.reset(d_temp.release());
 
-	length = decodeLength(pos);
-	pos += length + 1; // Modulus - we don't care
-	length = decodeLength(pos);
-	pos += length + 1; // Public Exponent - we don't care
-	length = decodeLength(pos);
-	pos += length + 1; // Private Exponent - we don't care
-	length = decodeLength(pos);
-	readHexString(pos, length, pString);
-	++pos;
-	length = decodeLength(pos);
-	readHexString(pos, length, qString);
-	++pos;
-	length = decodeLength(pos);
-	pos += length + 1; // Prime Exponent P - we don't care
-	length = decodeLength(pos);
-	pos += length + 1; // Prime Exponent Q - we don't care
-	length = decodeLength(pos);
-	pos += length + 1; // Coefficient - we don't care
-	++pos;
-
-	setKey(pString.c_str(), qString.c_str(), 16);
 	return true;
 }

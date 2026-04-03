@@ -7,15 +7,6 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "pch.hpp"
-
-#include <gtest/gtest.h>
-
-#ifndef USE_PRECOMPILED_HEADERS
-	#include <array>
-	#include <ranges>
-#endif
-
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/player_storage.hpp"
 #include "creatures/appearance/outfit/outfit.hpp"

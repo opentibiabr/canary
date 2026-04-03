@@ -90,7 +90,7 @@ std::string getFirstLine(const std::string &str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
-std::string formatTime(time_t time);
+std::string formatDateTime(int64_t ms);
 /**
  * @brief Format the enum name by replacing underscores with spaces and converting to lowercase.
  * @param name The enum name to format.
@@ -215,3 +215,26 @@ const std::map<uint8_t, uint16_t> &getMaxValuePerSkill();
 
 float calculateEquipmentLoss(uint8_t blessingAmount, bool isContainer = false);
 uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted = false);
+
+/**
+ * @brief Converts a client-side vocation ID to the internal vocation ID.
+ *
+ * This function maps the CipSoft client vocation ID to the server's internal vocation ID.
+ * If the client ID is not recognized, returns 0xFFFFFFFF.
+ *
+ * @param clientId The vocation ID as used by the client.
+ * @return The corresponding internal vocation ID, or 0xFFFFFFFF if invalid.
+ */
+uint32_t getVocationIdFromClientId(uint32_t clientId);
+
+/**
+ * @brief Gets the primary cardinal direction from one position to another.
+ *
+ * Compares the horizontal and vertical deltas to determine whether
+ * east/west or north/south is the dominant direction.
+ *
+ * @param from The starting position.
+ * @param to The destination position.
+ * @return The main direction from 'from' to 'to'.
+ */
+Direction getPrimaryDirection(const Position &from, const Position &to);

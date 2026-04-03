@@ -83,6 +83,7 @@ monster.loot = {
 	{ id = 3053, chance = 1000 }, -- time ring
 	{ name = "tower shield", chance = 620 },
 	{ name = "titan axe", chance = 1540 },
+	{ name = "jade conical hat", chance = 1150 },
 	{ name = "bonebreaker", chance = 1150 },
 	{ name = "strong health potion", chance = 14285, maxCount = 2 },
 	{ name = "strong mana potion", chance = 15000, maxCount = 2 },

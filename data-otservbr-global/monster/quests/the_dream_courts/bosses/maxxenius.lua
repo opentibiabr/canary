@@ -98,6 +98,7 @@ monster.loot = {
 	{ name = "huge chunk of crude iron", chance = 42860 },
 	{ name = "magic sulphur", chance = 3570 },
 	{ name = "mastermind potion", chance = 42860, maxCount = 6 },
+	{ name = "transcendence potion", chance = 42860, maxCount = 6 },
 	{ name = "maxxenius head", chance = 7140 },
 	{ name = "mysterious remains", chance = 85710 },
 	{ name = "ornate locket", chance = 14290 },

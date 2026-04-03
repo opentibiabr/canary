@@ -11,31 +11,43 @@
 
 class Logger;
 
-class RSA {
+class RSAManager {
 public:
-	explicit RSA(Logger &logger);
-	~RSA();
-
 	// Singleton - ensures we don't accidentally copy it
-	RSA(RSA const &) = delete;
-	void operator=(RSA const &) = delete;
+	RSAManager(const RSAManager &) = delete;
+	void operator=(const RSAManager &) = delete;
 
-	static RSA &getInstance();
+	static RSAManager &getInstance();
 
-	void start();
+	explicit RSAManager(Logger &logger);
+	~RSAManager() = default;
+
+	void start(const std::string &filename = "key.pem");
 
 	void setKey(const char* pString, const char* qString, int base = 10);
 	void decrypt(char* msg) const;
 
-	std::string base64Decrypt(const std::string &input) const;
-	uint16_t decodeLength(char*&pos) const;
-	void readHexString(char*&pos, uint16_t length, std::string &output) const;
 	bool loadPEM(const std::string &filename);
 
 private:
+	struct BNDeleter {
+		void operator()(BIGNUM* p) const {
+			BN_free(p);
+		}
+	};
+	struct BNMontCtxDeleter {
+		void operator()(BN_MONT_CTX* p) const {
+			BN_MONT_CTX_free(p);
+		}
+	};
+
+	using BnPtr = std::unique_ptr<BIGNUM, BNDeleter>;
+	using BnMontCtxPtr = std::unique_ptr<BN_MONT_CTX, BNMontCtxDeleter>;
+
 	Logger &logger;
-	mpz_t n {};
-	mpz_t d {};
+	BnPtr n;
+	BnPtr d;
+	BnMontCtxPtr mont_ctx;
 };
 
-constexpr auto g_RSA = RSA::getInstance;
+constexpr auto g_RSA = RSAManager::getInstance;

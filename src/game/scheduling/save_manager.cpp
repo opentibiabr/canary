@@ -37,7 +37,7 @@ void SaveManager::saveAll() {
 	for (const auto &[_, player] : players) {
 		if (player->isDead()) {
 			player->loginPosition = player->getTemplePosition();
-		} else {
+		} else if (player->loginPosition != player->getTemplePosition()) {
 			player->loginPosition = player->getPosition();
 		}
 

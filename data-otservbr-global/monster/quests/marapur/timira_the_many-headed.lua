@@ -67,7 +67,7 @@ monster.loot = {
 	{ name = "berserk potion", chance = 22449, maxCount = 5 },
 	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
 	{ name = "naga basin", chance = 12245 },
-	{ name = "transcendence potion", chance = 18367, maxCount = 5 },
+	{ id = 49271, chance = 18367, maxCount = 5 }, -- transcendence potion
 	{ name = "piece of timira's sensors", chance = 10204 },
 	{ name = "giant amethyst", chance = 6122 },
 	{ name = "giant ruby", chance = 4082 },

@@ -480,7 +480,7 @@ enum skills_t : int8_t {
 	SKILL_LEVEL = 14,
 
 	SKILL_FIRST = SKILL_FIST,
-	SKILL_LAST = SKILL_MANA_LEECH_AMOUNT
+	SKILL_LAST = SKILL_LEVEL
 };
 
 enum CreatureType_t : uint8_t {

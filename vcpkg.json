@@ -17,6 +17,7 @@
     "parallel-hashmap",
     "protobuf",
     "pugixml",
+    "sol2",
     "spdlog",
     "zlib",
     "bshoshany-thread-pool",

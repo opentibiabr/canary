@@ -9,6 +9,9 @@
 
 #pragma once
 
+#include "lua/scripts/luascript.hpp"
+#include <sol/sol.hpp>
+
 class Bank;
 
 class BankFunctions {
@@ -16,14 +19,5 @@ public:
 	static void init(lua_State* L);
 
 private:
-	static int luaBankCredit(lua_State* L);
-	static int luaBankDebit(lua_State* L);
-	static int luaBankBalance(lua_State* L);
-	static int luaBankHasBalance(lua_State* L);
-	static int luaBankTransfer(lua_State* L);
-	static int luaBankTransferToGuild(lua_State* L);
-	static int luaBankWithdraw(lua_State* L);
-	static int luaBankDeposit(lua_State* L);
-
-	static std::shared_ptr<Bank> getBank(lua_State* L, int32_t arg, bool isGuild = false);
+	static std::shared_ptr<Bank> getBank(sol::object arg, bool isGuild = false);
 };

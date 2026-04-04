@@ -11300,19 +11300,20 @@ void Game::updatePlayersOnline() const {
 	// Function to be executed within the transaction
 	auto updateOperation = [this]() {
 		const auto &m_players = getPlayers();
-		bool changesMade = false;
 
 		// g_metrics().addUpDownCounter("players_online", 1);
 		// g_metrics().addUpDownCounter("players_online", -1);
 
 		if (m_players.empty()) {
-			std::string query = "SELECT COUNT(*) AS count FROM players_online;";
-			auto result = g_database().storeQuery(query);
+			auto result = g_database().storeQuery("SELECT COUNT(*) AS count FROM players_online;");
+			if (!result) {
+				return false;
+			}
 			int count = result->getNumber<int>("count");
 			if (count > 0) {
-				g_database().executeQuery("DELETE FROM `players_online`;");
-				changesMade = true;
+				return g_database().executeQuery("DELETE FROM `players_online`;");
 			}
+			return true;
 		} else {
 			// Insert the current players
 			DBInsert stmt("INSERT IGNORE INTO `players_online` (player_id) VALUES ");
@@ -11321,8 +11322,9 @@ void Game::updatePlayersOnline() const {
 				playerQuery << "(" << player->getGUID() << ")";
 				stmt.addRow(playerQuery.str());
 			}
-			stmt.execute();
-			changesMade = true;
+			if (!stmt.execute()) {
+				return false;
+			}
 
 			// Remove players who are no longer online
 			std::ostringstream cleanupQuery;
@@ -11332,10 +11334,12 @@ void Game::updatePlayersOnline() const {
 			}
 			cleanupQuery.seekp(-1, std::ostringstream::cur); // Remove the last comma
 			cleanupQuery << ");";
-			g_database().executeQuery(cleanupQuery.str());
-		}
+			if (!g_database().executeQuery(cleanupQuery.str())) {
+				return false;
+			}
 
-		return changesMade;
+			return true;
+		}
 	};
 
 	const bool success = DBTransaction::executeWithinTransaction(updateOperation);

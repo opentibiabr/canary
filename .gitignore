@@ -404,5 +404,3 @@ database_backup
 # CLION
 cmake-build-*
 compile_commands.json
-/plan
-/enc_temp_folder

@@ -340,7 +340,6 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						}
 
 						imbuement.paralysisRemoveChance = static_cast<uint8_t>(chancePercent);
-
 						// Optional: deflect additional PvP paralyse attacks
 						uint32_t pvpDeflect = 0;
 						if ((attr = childNode.attribute("pvpDeflect"))) {

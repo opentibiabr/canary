@@ -35,7 +35,11 @@ void SaveManager::saveAll() {
 	logger.info("Saving {} players... (Async: {})", players.size(), asyncSave ? "Enabled" : "Disabled");
 	std::vector<std::future<void>> futures;
 	for (const auto &[_, player] : players) {
-		player->loginPosition = player->getPosition();
+		if (player->isDead()) {
+			player->loginPosition = player->getTemplePosition();
+		} else {
+			player->loginPosition = player->getPosition();
+		}
 
 		auto fut = threadPool.submit_task([this, player] {
 			doSavePlayer(player);

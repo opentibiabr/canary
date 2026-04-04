@@ -348,7 +348,6 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						}
 						imbuement.pvpParalysisDeflect = (pvpDeflect != 0);
 					}
-
 				}
 			}
 

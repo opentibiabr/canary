@@ -1,49 +1,21 @@
-local currentNamespace
-
-local function ensureQuestCatalogLoader(namespace, catalogDirectory)
-	local searchers = package.searchers or package.loaders
-	local loaderRegistryName = namespace .. ".loader"
-	if package.loaded[loaderRegistryName] then
-		return
-	end
-
-	local dirSeparator = package.config:sub(1, 1)
-	local prefix = namespace .. "."
-
-	local function questCatalogLoader(moduleName)
-		if moduleName ~= namespace and moduleName:sub(1, #prefix) ~= prefix then
-			return nil
-		end
-		local filePath
-		if moduleName == namespace then
-			filePath = catalogDirectory .. dirSeparator .. "init.lua"
-		else
-			local relative = moduleName:sub(#prefix + 1):gsub("%.", dirSeparator)
-			filePath = catalogDirectory .. dirSeparator .. relative .. ".lua"
-		end
-		local loader, errorMessage = loadfile(filePath)
-		if not loader then
-			return "\n\t" .. errorMessage
-		end
-		return loader, filePath
-	end
-
-	table.insert(searchers, 1, questCatalogLoader)
-	package.loaded[loaderRegistryName] = true
-end
-
 local function loadQuestCatalog(dataDirectory)
 	local dirSeparator = package.config:sub(1, 1)
 	local namespace = dataDirectory .. ".lib.core.quests.catalog"
-	if Quests and currentNamespace == namespace then
+	-- Guard against redundant reloads.  Since this file is loaded via dofile
+	-- (no require caching), use a global to track whether quests are already
+	-- loaded for the given namespace.
+	if Quests and _G._questCatalogNamespace == namespace then
 		return Quests
 	end
 	local catalogDirectory = table.concat({ dataDirectory, "lib", "core", "quests", "catalog" }, dirSeparator)
 
-	ensureQuestCatalogLoader(namespace, catalogDirectory)
-
-	Quests = require(namespace)
-	currentNamespace = namespace
+	-- Load init.lua directly via dofile instead of going through require's
+	-- package.searchpath machinery.  On macOS ARM64 where LuaJIT runs in
+	-- interpreter-only mode, the string operations in searchpath across many
+	-- nested require calls cause severe startup delays.
+	local initPath = catalogDirectory .. dirSeparator .. "init.lua"
+	Quests = dofile(initPath)
+	_G._questCatalogNamespace = namespace
 	return Quests
 end
 

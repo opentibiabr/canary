@@ -5857,18 +5857,31 @@ void Game::playerLootNearby(uint32_t playerId) {
 		return;
 	}
 
-	const Position &playerPos = player->getPosition();
-	uint32_t totalCorpses = 0;
-	uint32_t totalCorpsesFound = 0;
+	if (!player->canDoAction()) {
+		const uint32_t delay = player->getNextActionTime();
+		const auto &task = createPlayerTask(
+			delay,
+			[this, playerId] {
+				playerLootNearby(playerId);
+			},
+			__FUNCTION__
+		);
+		player->setNextActionTask(task);
+		return;
+	}
 
-	// Iterate all tiles within a 1-tile radius around the player (3x3 area)
+	Player::PlayerLock lock(player);
+	player->setNextActionTask(nullptr);
+
+	const Position &playerPos = player->getPosition();
+	uint32_t corpsesLooted = 0;
+	bool anyCorpseFound = false;
+
 	for (int32_t x = -1; x <= 1; ++x) {
 		for (int32_t y = -1; y <= 1; ++y) {
-			// Compute coordinates in signed integers to avoid wraparound on cast
 			const int32_t tileX = static_cast<int32_t>(playerPos.x) + x;
 			const int32_t tileY = static_cast<int32_t>(playerPos.y) + y;
 
-			// Skip positions outside the valid uint16_t coordinate range
 			if (tileX < 0 || tileX > 0xFFFF || tileY < 0 || tileY > 0xFFFF) {
 				continue;
 			}
@@ -5905,38 +5918,34 @@ void Game::playerLootNearby(uint32_t playerId) {
 					continue;
 				}
 
-				// Skip completely empty corpses to avoid spam messages
-				if (corpse->empty()) {
-					++totalCorpsesFound;
-					continue;
+				anyCorpseFound = true;
+
+				if (corpse->isRewardCorpse()) {
+					auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+					auto reward = player->getReward(rewardId, false);
+					if (reward) {
+						playerQuickLootCorpse(player, reward->getContainer(), corpse->getPosition());
+						++corpsesLooted;
+					}
+				} else {
+					if (corpse->empty()) {
+						continue;
+					}
+					playerQuickLootCorpse(player, corpse, corpse->getPosition());
+					++corpsesLooted;
 				}
 
-				playerQuickLootCorpse(player, corpse, corpse->getPosition());
-				++totalCorpses;
-				++totalCorpsesFound;
-
-				if (totalCorpses >= 30) {
-					break;
-				}
 			}
-
-			if (totalCorpses >= 30) {
-				break;
-			}
-		}
-
-		if (totalCorpses >= 30) {
-			break;
 		}
 	}
 
-	if (totalCorpsesFound == 0) {
-		player->sendCancelMessage("You cannot loot any nearby corpses.");
-	} else if (totalCorpses == 0) {
+	if (!anyCorpseFound) {
+		player->sendCancelMessage("No lootable corpses nearby.");
+	} else if (corpsesLooted == 0) {
 		player->sendCancelMessage("All nearby corpses are already empty.");
-	} else if (totalCorpses > 1) {
+	} else if (corpsesLooted > 1) {
 		std::stringstream ss;
-		ss << "You looted " << totalCorpses << " corpses.";
+		ss << "You looted " << corpsesLooted << " corpses.";
 		player->sendTextMessage(MESSAGE_LOOT, ss.str());
 	}
 }

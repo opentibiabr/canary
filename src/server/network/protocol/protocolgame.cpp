@@ -1943,8 +1943,11 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg) {
 	uint8_t variant = msg.getByte();
 
 	if (variant == 2) {
-		// Loot all nearby corpses (13.40 hotkey) - client only sends the variant byte
 		g_game().playerLootNearby(player->getID());
+		return;
+	}
+
+	if (variant > 2) {
 		return;
 	}
 

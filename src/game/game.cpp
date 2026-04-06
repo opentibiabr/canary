@@ -5873,6 +5873,8 @@ void Game::playerLootNearby(uint32_t playerId) {
 	Player::PlayerLock lock(player);
 	player->setNextActionTask(nullptr);
 
+	constexpr uint32_t MAX_NEARBY_CORPSES = 30;
+
 	const Position &playerPos = player->getPosition();
 	uint32_t corpsesLooted = 0;
 	bool anyCorpseFound = false;
@@ -5935,7 +5937,18 @@ void Game::playerLootNearby(uint32_t playerId) {
 					++corpsesLooted;
 				}
 
+				if (corpsesLooted >= MAX_NEARBY_CORPSES) {
+					break;
+				}
 			}
+
+			if (corpsesLooted >= MAX_NEARBY_CORPSES) {
+				break;
+			}
+		}
+
+		if (corpsesLooted >= MAX_NEARBY_CORPSES) {
+			break;
 		}
 	}
 

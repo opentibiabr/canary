@@ -198,6 +198,7 @@ private:
 	 * Open wheel functions helpers
 	 */
 	bool canOpenWheel() const;
+	bool hasCompletedMonkQuest() const;
 
 	/**
 	 * @brief Get the options available to the player for changing points.

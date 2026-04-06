@@ -6293,18 +6293,20 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 			return;
 		}
 
-		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		const bool blockedInProtectionZone = !g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+		if (blockedInProtectionZone) {
 			outfit.lookMount = 0;
 		} else {
 			auto deltaSpeedChange = mount->speed;
-			const auto prevMount = player->isMounted() ? mounts->getMountByID(player->getLastMount()) : nullptr;
+			const auto prevMount = player->isMounted()? mounts->getMountByID(player->getCurrentMount()): nullptr;
+
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}
-
-			player->setCurrentMount(mount->id);
 			changeSpeed(player, deltaSpeedChange);
 		}
+
+		player->setCurrentMount(mount->id);
 
 	} else if (player->isMounted()) {
 		player->dismount();

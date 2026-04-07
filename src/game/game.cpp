@@ -5965,6 +5965,7 @@ void Game::playerLootNearby(uint32_t playerId) {
 					auto reward = player->getReward(rewardId, false);
 					if (reward) {
 						playerQuickLootCorpse(player, reward->getContainer(), corpse->getPosition());
+						corpse->sendUpdateToClient(player);
 						++corpsesLooted;
 					}
 				} else {
@@ -5972,6 +5973,7 @@ void Game::playerLootNearby(uint32_t playerId) {
 						continue;
 					}
 					playerQuickLootCorpse(player, corpse, corpse->getPosition());
+					corpse->sendUpdateToClient(player);
 					++corpsesLooted;
 				}
 

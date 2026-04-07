@@ -9480,6 +9480,93 @@ namespace {
 		}
 	};
 
+	bool removeInventoryMoneyToBank(const std::shared_ptr<Player> &player, uint64_t money) {
+		if (!player) {
+			g_logger().error("[{}] player is nullptr", __FUNCTION__);
+			return false;
+		}
+
+		if (money == 0) {
+			return true;
+		}
+
+		std::vector<std::shared_ptr<Container>> containers;
+		std::multimap<uint32_t, std::shared_ptr<Item>> moneyMap;
+		uint64_t inventoryMoney = 0;
+
+		for (size_t i = player->getFirstIndex(), j = player->getLastIndex(); i < j; ++i) {
+			const std::shared_ptr<Thing> &thing = player->getThing(i);
+			if (!thing) {
+				continue;
+			}
+
+			const auto &item = thing->getItem();
+			if (!item) {
+				continue;
+			}
+
+			if (const auto &container = item->getContainer()) {
+				containers.push_back(container);
+				continue;
+			}
+
+			const uint32_t worth = item->getWorth();
+			if (worth == 0) {
+				continue;
+			}
+
+			inventoryMoney += worth;
+			moneyMap.emplace(worth, item);
+		}
+
+		size_t i = 0;
+		while (i < containers.size()) {
+			const std::shared_ptr<Container> &container = containers[i++];
+			for (const auto &item : container->getItemList()) {
+				if (const auto &subContainer = item->getContainer()) {
+					containers.push_back(subContainer);
+					continue;
+				}
+
+				const uint32_t worth = item->getWorth();
+				if (worth == 0) {
+					continue;
+				}
+
+				inventoryMoney += worth;
+				moneyMap.emplace(worth, item);
+			}
+		}
+
+		if (inventoryMoney < money) {
+			return false;
+		}
+
+		for (const auto &[worth, item] : moneyMap) {
+			if (worth < money) {
+				g_game().internalRemoveItem(item);
+				money -= worth;
+				continue;
+			}
+
+			if (worth > money) {
+				const uint32_t singleWorth = worth / item->getItemCount();
+				const uint32_t removeCount = static_cast<uint32_t>(std::ceil(money / static_cast<double>(singleWorth)));
+				const uint64_t change = static_cast<uint64_t>(singleWorth) * removeCount - money;
+				g_game().internalRemoveItem(item, removeCount);
+				if (change > 0) {
+					player->setBankBalance(player->getBankBalance() + change);
+				}
+				return true;
+			}
+
+			g_game().internalRemoveItem(item);
+			return true;
+		}
+
+		return true;
+	}
+
 	bool withdrawMarketFunds(const std::shared_ptr<Player> &player, uint64_t amount, WithdrawnFunds &withdrawnFunds) {
 		withdrawnFunds = {};
 
@@ -9497,7 +9584,7 @@ namespace {
 		}
 
 		withdrawnFunds.inventory = amount - withdrawnFunds.bank;
-		if (withdrawnFunds.inventory > 0 && !g_game().removeMoney(player, withdrawnFunds.inventory)) {
+		if (withdrawnFunds.inventory > 0 && !removeInventoryMoneyToBank(player, withdrawnFunds.inventory)) {
 			if (withdrawnFunds.bank > 0) {
 				player->setBankBalance(player->getBankBalance() + withdrawnFunds.bank);
 			}

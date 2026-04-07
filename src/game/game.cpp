@@ -5842,6 +5842,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 
 void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses) {
 	if (lootAllCorpses) {
+		const auto maxQuickLootCorpses = static_cast<uint16_t>(std::max<int32_t>(1, g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)));
 		std::shared_ptr<Tile> tile = g_game().map.getTile(pos.x, pos.y, pos.z);
 		if (!tile) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -5870,7 +5871,7 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 
 			corpses++;
 			playerQuickLootCorpse(player, tileCorpse, tileCorpse->getPosition());
-			if (corpses >= 30) {
+			if (corpses >= maxQuickLootCorpses) {
 				break;
 			}
 		}
@@ -5890,8 +5891,6 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 }
 
 namespace {
-	constexpr uint32_t MAX_NEARBY_CORPSES = 30;
-
 	struct NearbyQuickLootSnapshot {
 		uint64_t goldValue = 0;
 		uint64_t stackableAmount = 0;
@@ -5914,7 +5913,7 @@ namespace {
 			return snapshot;
 		}
 
-		const bool ignoreListItems = player->quickLootFilter == QUICKLOOTFILTER_SKIPPEDLOOT;
+		const bool ignoreListItems = player->getQuickLootFilter() == QUICKLOOTFILTER_SKIPPEDLOOT;
 		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;
 			if (!item) {
@@ -5936,23 +5935,6 @@ namespace {
 		}
 
 		return snapshot;
-	}
-
-	bool rescheduleNearbyQuickLootIfNeeded(Game &game, const std::shared_ptr<Player> &player, uint32_t playerId) {
-		if (!player || player->canDoAction()) {
-			return false;
-		}
-
-		const uint32_t delay = player->getNextActionTime();
-		const auto &task = game.createPlayerTask(
-			delay,
-			[&game, playerId] {
-				game.playerLootNearby(playerId);
-			},
-			__FUNCTION__
-		);
-		player->setNextActionTask(task);
-		return true;
 	}
 
 	const TileItemVector* getNearbyLootItems(Game &game, const Position &playerPos, int32_t xOffset, int32_t yOffset) {
@@ -6052,13 +6034,23 @@ void Game::playerLootNearby(uint32_t playerId) {
 		return;
 	}
 
-	if (rescheduleNearbyQuickLootIfNeeded(*this, player, playerId)) {
+	if (!player->canDoAction()) {
+		const uint32_t delay = player->getNextActionTime();
+		const auto &task = createPlayerTask(
+			delay,
+			[this, playerId] {
+				playerLootNearby(playerId);
+			},
+			__FUNCTION__
+		);
+		player->setNextActionTask(task);
 		return;
 	}
 
 	Player::PlayerLock lock(player);
 	player->setNextActionTask(nullptr);
 
+	const auto maxQuickLootCorpses = static_cast<uint32_t>(std::max<int32_t>(1, g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)));
 	const Position &playerPos = player->getPosition();
 	uint32_t corpsesLooted = 0;
 	bool anyCorpseFound = false;
@@ -6074,17 +6066,17 @@ void Game::playerLootNearby(uint32_t playerId) {
 				const auto outcome = tryNearbyQuickLootCorpse(*this, player, tileItem ? tileItem->getContainer() : nullptr);
 				anyCorpseFound = anyCorpseFound || outcome.foundCorpse;
 				corpsesLooted += outcome.looted ? 1U : 0U;
-				if (corpsesLooted >= MAX_NEARBY_CORPSES) {
+				if (corpsesLooted >= maxQuickLootCorpses) {
 					break;
 				}
 			}
 
-			if (corpsesLooted >= MAX_NEARBY_CORPSES) {
+			if (corpsesLooted >= maxQuickLootCorpses) {
 				break;
 			}
 		}
 
-		if (corpsesLooted >= MAX_NEARBY_CORPSES) {
+		if (corpsesLooted >= maxQuickLootCorpses) {
 			break;
 		}
 	}

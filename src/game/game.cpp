@@ -5925,8 +5925,9 @@ namespace {
 				continue;
 			}
 
-			if (item->getWorth() != 0) {
-				snapshot.goldValue += item->getWorth();
+			const auto worth = item->getWorth();
+			if (worth != 0) {
+				snapshot.goldValue += worth;
 			} else if (item->isStackable() || item->hasAttribute(ItemAttribute_t::CHARGES)) {
 				snapshot.stackableAmount += item->getItemCount();
 			} else {
@@ -6000,7 +6001,9 @@ namespace {
 		}
 
 		game.playerQuickLootCorpse(player, lootContainer, corpse->getPosition());
-		corpse->sendUpdateToClient(player);
+		if (lootContainer != corpse) {
+			corpse->sendUpdateToClient(player);
+		}
 		outcome.looted = captureNearbyQuickLootSnapshot(player, lootContainer) != lootSnapshotBefore;
 		return outcome;
 	}

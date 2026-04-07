@@ -5890,6 +5890,8 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 }
 
 namespace {
+	constexpr uint32_t MAX_NEARBY_CORPSES = 30;
+
 	struct NearbyQuickLootSnapshot {
 		uint64_t goldValue = 0;
 		uint64_t stackableAmount = 0;
@@ -5935,6 +5937,113 @@ namespace {
 
 		return snapshot;
 	}
+
+	bool rescheduleNearbyQuickLootIfNeeded(Game &game, const std::shared_ptr<Player> &player, uint32_t playerId) {
+		if (!player || player->canDoAction()) {
+			return false;
+		}
+
+		const uint32_t delay = player->getNextActionTime();
+		const auto &task = game.createPlayerTask(
+			delay,
+			[&game, playerId] {
+				game.playerLootNearby(playerId);
+			},
+			__FUNCTION__
+		);
+		player->setNextActionTask(task);
+		return true;
+	}
+
+	const TileItemVector* getNearbyLootItems(Game &game, const Position &playerPos, int32_t xOffset, int32_t yOffset) {
+		const int32_t tileX = static_cast<int32_t>(playerPos.x) + xOffset;
+		const int32_t tileY = static_cast<int32_t>(playerPos.y) + yOffset;
+		if (tileX < 0 || tileX > 0xFFFF || tileY < 0 || tileY > 0xFFFF) {
+			return nullptr;
+		}
+
+		const auto &tile = game.map.getTile(
+			static_cast<uint16_t>(tileX),
+			static_cast<uint16_t>(tileY),
+			playerPos.z
+		);
+		if (!tile) {
+			return nullptr;
+		}
+
+		return tile->getItemList();
+	}
+
+	bool isNearbyLootableCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
+		if (!player || !corpse || !corpse->isCorpse()
+		    || corpse->hasAttribute(ItemAttribute_t::UNIQUEID)
+		    || corpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
+			return false;
+		}
+
+		if (corpse->isRewardCorpse()) {
+			return true;
+		}
+
+		return corpse->getCorpseOwner() == 0 || player->canOpenCorpse(corpse->getCorpseOwner());
+	}
+
+	std::shared_ptr<Container> resolveNearbyLootContainer(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
+		if (!player || !corpse || !corpse->isRewardCorpse()) {
+			return corpse;
+		}
+
+		const auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+		const auto reward = player->getReward(rewardId, false);
+		return reward ? reward->getContainer() : nullptr;
+	}
+
+	struct NearbyQuickLootOutcome {
+		bool foundCorpse = false;
+		bool looted = false;
+	};
+
+	NearbyQuickLootOutcome tryNearbyQuickLootCorpse(Game &game, const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
+		if (!isNearbyLootableCorpse(player, corpse)) {
+			return {};
+		}
+
+		NearbyQuickLootOutcome outcome;
+		outcome.foundCorpse = true;
+
+		const auto lootContainer = resolveNearbyLootContainer(player, corpse);
+		const auto lootSnapshotBefore = captureNearbyQuickLootSnapshot(player, lootContainer);
+		if (!lootSnapshotBefore.hasLoot()) {
+			return outcome;
+		}
+
+		game.playerQuickLootCorpse(player, lootContainer, corpse->getPosition());
+		corpse->sendUpdateToClient(player);
+		outcome.looted = captureNearbyQuickLootSnapshot(player, lootContainer) != lootSnapshotBefore;
+		return outcome;
+	}
+
+	void sendNearbyQuickLootSummary(const std::shared_ptr<Player> &player, bool anyCorpseFound, uint32_t corpsesLooted) {
+		if (!player) {
+			return;
+		}
+
+		if (!anyCorpseFound) {
+			player->sendCancelMessage("No lootable corpses nearby.");
+			return;
+		}
+
+		if (corpsesLooted == 0) {
+			player->sendCancelMessage("You could not loot any nearby corpses.");
+			return;
+		}
+
+		if (corpsesLooted > 1) {
+			std::stringstream ss;
+			ss << "You looted " << corpsesLooted << " corpses.";
+			player->sendTextMessage(MESSAGE_LOOT, ss.str());
+		}
+	}
 } // namespace
 
 void Game::playerLootNearby(uint32_t playerId) {
@@ -5943,23 +6052,12 @@ void Game::playerLootNearby(uint32_t playerId) {
 		return;
 	}
 
-	if (!player->canDoAction()) {
-		const uint32_t delay = player->getNextActionTime();
-		const auto &task = createPlayerTask(
-			delay,
-			[this, playerId] {
-				playerLootNearby(playerId);
-			},
-			__FUNCTION__
-		);
-		player->setNextActionTask(task);
+	if (rescheduleNearbyQuickLootIfNeeded(*this, player, playerId)) {
 		return;
 	}
 
 	Player::PlayerLock lock(player);
 	player->setNextActionTask(nullptr);
-
-	constexpr uint32_t MAX_NEARBY_CORPSES = 30;
 
 	const Position &playerPos = player->getPosition();
 	uint32_t corpsesLooted = 0;
@@ -5967,66 +6065,15 @@ void Game::playerLootNearby(uint32_t playerId) {
 
 	for (int32_t x = -1; x <= 1; ++x) {
 		for (int32_t y = -1; y <= 1; ++y) {
-			const int32_t tileX = static_cast<int32_t>(playerPos.x) + x;
-			const int32_t tileY = static_cast<int32_t>(playerPos.y) + y;
-
-			if (tileX < 0 || tileX > 0xFFFF || tileY < 0 || tileY > 0xFFFF) {
-				continue;
-			}
-
-			const std::shared_ptr<Tile> &tile = map.getTile(
-				static_cast<uint16_t>(tileX),
-				static_cast<uint16_t>(tileY),
-				playerPos.z
-			);
-			if (!tile) {
-				continue;
-			}
-
-			const TileItemVector* itemVector = tile->getItemList();
+			const TileItemVector* itemVector = getNearbyLootItems(*this, playerPos, x, y);
 			if (!itemVector) {
 				continue;
 			}
 
 			for (const auto &tileItem : *itemVector) {
-				if (!tileItem) {
-					continue;
-				}
-
-				const auto &corpse = tileItem->getContainer();
-				if (!corpse || !corpse->isCorpse()
-				    || corpse->hasAttribute(ItemAttribute_t::UNIQUEID)
-				    || corpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
-					continue;
-				}
-
-				if (!corpse->isRewardCorpse()
-				    && corpse->getCorpseOwner() != 0
-				    && !player->canOpenCorpse(corpse->getCorpseOwner())) {
-					continue;
-				}
-
-				anyCorpseFound = true;
-
-				std::shared_ptr<Container> lootContainer = corpse;
-				if (corpse->isRewardCorpse()) {
-					auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
-					auto reward = player->getReward(rewardId, false);
-					lootContainer = reward ? reward->getContainer() : nullptr;
-				}
-
-				const auto lootSnapshotBefore = captureNearbyQuickLootSnapshot(player, lootContainer);
-				if (!lootSnapshotBefore.hasLoot()) {
-					continue;
-				}
-
-				playerQuickLootCorpse(player, lootContainer, corpse->getPosition());
-				corpse->sendUpdateToClient(player);
-
-				if (captureNearbyQuickLootSnapshot(player, lootContainer) != lootSnapshotBefore) {
-					++corpsesLooted;
-				}
-
+				const auto outcome = tryNearbyQuickLootCorpse(*this, player, tileItem ? tileItem->getContainer() : nullptr);
+				anyCorpseFound = anyCorpseFound || outcome.foundCorpse;
+				corpsesLooted += outcome.looted ? 1U : 0U;
 				if (corpsesLooted >= MAX_NEARBY_CORPSES) {
 					break;
 				}
@@ -6042,15 +6089,7 @@ void Game::playerLootNearby(uint32_t playerId) {
 		}
 	}
 
-	if (!anyCorpseFound) {
-		player->sendCancelMessage("No lootable corpses nearby.");
-	} else if (corpsesLooted == 0) {
-		player->sendCancelMessage("You could not loot any nearby corpses.");
-	} else if (corpsesLooted > 1) {
-		std::stringstream ss;
-		ss << "You looted " << corpsesLooted << " corpses.";
-		player->sendTextMessage(MESSAGE_LOOT, ss.str());
-	}
+	sendNearbyQuickLootSummary(player, anyCorpseFound, corpsesLooted);
 }
 
 void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer) {

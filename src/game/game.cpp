@@ -1889,12 +1889,21 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 		player->stowItem(item, count, false);
 		return;
 	}
-	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
+	const auto fromContainer = fromCylinder ? fromCylinder->getContainer() : nullptr;
+	const auto toContainer = toCylinder ? toCylinder->getContainer() : nullptr;
+	const auto fromRoot = fromContainer ? fromContainer->getRootContainer() : nullptr;
+	const auto toRoot = toContainer ? toContainer->getRootContainer() : nullptr;
+	const bool fromIsStoreInbox = fromContainer && (fromContainer->isStoreInbox() || (fromRoot && fromRoot->isStoreInbox()));
+	const bool toIsStoreInbox = toContainer && (toContainer->isStoreInbox() || (toRoot && toRoot->isStoreInbox()));
+	const bool isLootPouchStoreInboxReorder = item->getID() == ITEM_GOLD_POUCH && fromIsStoreInbox && toIsStoreInbox;
+
+	if ((!item->isPushable() && !isLootPouchStoreInboxReorder) || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
 		return;
 	}
 
-	const auto ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
+	const uint32_t moveFlags = isLootPouchStoreInboxReorder ? FLAG_IGNORENOTMOVABLE : 0;
+	const auto ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, moveFlags, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	} else if (toCylinder->getContainer() && fromCylinder->getContainer() && fromCylinder->getContainer()->countsToLootAnalyzerBalance() && toCylinder->getContainer()->getTopParent() == player) {
@@ -1953,8 +1962,33 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 		std::shared_ptr<Container> topParentContainer = toCylinderContainer->getRootContainer();
 		const auto parentContainer = topParentContainer->getParent() ? topParentContainer->getParent()->getContainer() : nullptr;
 		auto isStoreInbox = parentContainer && parentContainer->isStoreInbox();
-		if (!item->canBeMovedToStore() && (containerID == ITEM_STORE_INBOX || isStoreInbox)) {
-			return RETURNVALUE_NOTBOUGHTINSTORE;
+		const bool topParentIsStoreInbox = topParentContainer && topParentContainer->isStoreInbox();
+		const bool directIsStoreInbox = (containerID == ITEM_STORE_INBOX);
+		const auto fromContainer = fromCylinder->getContainer();
+		const auto fromRoot = fromContainer ? fromContainer->getRootContainer() : nullptr;
+		const bool fromIsStoreInbox = (fromContainer && fromContainer->isStoreInbox()) || (fromRoot && fromRoot->isStoreInbox());
+		const bool toIsStoreInbox = directIsStoreInbox || topParentIsStoreInbox;
+
+		if (item->getID() == ITEM_GOLD_POUCH && !containerToStow) {
+			// Loot pouch can only be moved inside Store Inbox (internal reordering).
+			if (!(fromIsStoreInbox && toIsStoreInbox)) {
+				return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
+			}
+		}
+
+		if (!item->canBeMovedToStore()) {
+			if (directIsStoreInbox) {
+				if (!(fromIsStoreInbox && (item->isMovable() || item->getID() == ITEM_GOLD_POUCH))) {
+					return RETURNVALUE_NOTBOUGHTINSTORE;
+				}
+			}
+
+			if (topParentIsStoreInbox) {
+				// Internal reorganization of the Store Inbox: only allow movable items, or the gold pouch, when the source is also within the Store Inbox.
+				if (!(fromIsStoreInbox && (item->isMovable() || item->getID() == ITEM_GOLD_POUCH))) {
+					return RETURNVALUE_ITEMCANNOTBEMOVEDTHERE;
+				}
+			}
 		}
 
 		if (item->isStoreItem() && !containerToStow) {
@@ -1970,6 +2004,10 @@ ReturnValue Game::checkMoveItemToCylinder(const std::shared_ptr<Player> &player,
 			}
 
 			if (parentContainer && (parentContainer->isDepotChest() || isStoreInbox)) {
+				isValidMoveItem = true;
+			}
+
+			if (topParentContainer && topParentContainer->isStoreInbox()) {
 				isValidMoveItem = true;
 			}
 
@@ -4543,8 +4581,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookLegs", static_cast<int64_t>(outfit.lookLegs));
 		item->setCustomAttribute("LookFeet", static_cast<int64_t>(outfit.lookFeet));
 		item->setCustomAttribute("LookAddons", static_cast<int64_t>(outfit.lookAddons));
-	} else if (auto pastLookType = item->getCustomAttribute("PastLookType");
-	           pastLookType && pastLookType->getInteger() > 0) {
+	} else if (auto pastLookType = item->getCustomAttribute("PastLookType"); pastLookType && pastLookType->getInteger() > 0) {
 		item->removeCustomAttribute("LookType");
 		item->removeCustomAttribute("PastLookType");
 	}
@@ -4555,8 +4592,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		item->setCustomAttribute("LookMountBody", static_cast<int64_t>(outfit.lookMountBody));
 		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
 		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
-	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount");
-	           pastLookMount && pastLookMount->getInteger() > 0) {
+	} else if (auto pastLookMount = item->getCustomAttribute("PastLookMount"); pastLookMount && pastLookMount->getInteger() > 0) {
 		item->removeCustomAttribute("LookMount");
 		item->removeCustomAttribute("PastLookMount");
 	}
@@ -6295,20 +6331,21 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 			return;
 		}
 
-		if (!g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		const bool blockedInProtectionZone = !g_configManager().getBoolean(TOGGLE_MOUNT_IN_PZ) && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+		if (blockedInProtectionZone) {
 			outfit.lookMount = 0;
-		}
+		} else {
+			auto deltaSpeedChange = mount->speed;
+			const auto prevMount = player->isMounted()? mounts->getMountByID(player->getCurrentMount()): nullptr;
 
-		auto deltaSpeedChange = mount->speed;
-		if (player->isMounted()) {
-			const auto prevMount = mounts->getMountByID(player->getLastMount());
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
 			}
+			changeSpeed(player, deltaSpeedChange);
 		}
 
 		player->setCurrentMount(mount->id);
-		changeSpeed(player, deltaSpeedChange);
+
 	} else if (player->isMounted()) {
 		player->dismount();
 	}
@@ -10920,18 +10957,15 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 }
 
 void Game::updateForgeableMonsters() {
-	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	    forgeableMonsters.size() < influencedLimit) {
-		forgeableMonsters.clear();
-		for (const auto &monster : monsters) {
-			const auto &monsterTile = monster->getTile();
-			if (!monsterTile) {
-				continue;
-			}
+	forgeableMonsters.clear();
+	for (const auto &monster : monsters) {
+		const auto &monsterTile = monster->getTile();
+		if (!monsterTile) {
+			continue;
+		}
 
-			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-				forgeableMonsters.emplace_back(monster->getID());
-			}
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+			forgeableMonsters.emplace_back(monster->getID());
 		}
 	}
 
@@ -10941,45 +10975,82 @@ void Game::updateForgeableMonsters() {
 		}
 	}
 
+	for (const auto &monsterId : getInfluencedMonsters()) {
+		if (!getMonsterByID(monsterId)) {
+			removeInfluencedMonster(monsterId, false);
+		}
+	}
+
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	if (fiendishMonsters.size() < fiendishLimit) {
 		createFiendishMonsters();
 	}
+
+	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT); // Influenced Creatures limit
+	if (influencedMonsters.size() < influencedLimit) {
+		createInfluencedMonsters();
+	}
 }
 
 void Game::createFiendishMonsters() {
-	uint32_t created = 0;
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
+	if (fiendishMonsters.size() >= fiendishLimit) {
+		return;
+	}
+
+	uint32_t noProgressAttempts = 0;
+	uint32_t remaining = fiendishLimit - static_cast<uint32_t>(fiendishMonsters.size());
+	uint32_t maxAttemptsWithoutProgress = remaining * 4;
+	if (maxAttemptsWithoutProgress < 25) {
+		maxAttemptsWithoutProgress = 25;
+	}
+
 	while (fiendishMonsters.size() < fiendishLimit) {
-		if (fiendishMonsters.size() >= fiendishLimit) {
-			g_logger().warn("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit);
-			break;
+		const auto previousSize = fiendishMonsters.size();
+
+		makeFiendishMonster();
+
+		if (fiendishMonsters.size() > previousSize) {
+			noProgressAttempts = 0;
+			continue;
 		}
 
-		if (auto ret = makeFiendishMonster();
-		    // Condition
-		    ret == 0) {
+		noProgressAttempts++;
+		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
+			g_logger().warn("[{}] - Aborting fiendish creation due to no progress. Size: {}, max: {}, attempts: {}.", __FUNCTION__, fiendishMonsters.size(), fiendishLimit, noProgressAttempts);
 			return;
 		}
-
-		created++;
 	}
 }
 
 void Game::createInfluencedMonsters() {
-	uint32_t created = 0;
 	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	while (created < influencedLimit) {
-		if (influencedMonsters.size() >= influencedLimit) {
-			g_logger().warn("[{}] - Returning in creation of Influenced, size: {}, max is: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit);
-			break;
+	if (influencedMonsters.size() >= influencedLimit) {
+		return;
+	}
+
+	uint32_t noProgressAttempts = 0;
+	uint32_t remaining = influencedLimit - static_cast<uint32_t>(influencedMonsters.size());
+	uint32_t maxAttemptsWithoutProgress = remaining * 4;
+	if (maxAttemptsWithoutProgress < 25) {
+		maxAttemptsWithoutProgress = 25;
+	}
+
+	while (influencedMonsters.size() < influencedLimit) {
+		const auto previousSize = influencedMonsters.size();
+
+		makeInfluencedMonster();
+
+		if (influencedMonsters.size() > previousSize) {
+			noProgressAttempts = 0;
+			continue;
 		}
 
-		if (makeInfluencedMonster() == 0) {
+		noProgressAttempts++;
+		if (noProgressAttempts >= maxAttemptsWithoutProgress) {
+			g_logger().warn("[{}] - Aborting influenced creation due to no progress. Size: {}, max: {}, attempts: {}.", __FUNCTION__, influencedMonsters.size(), influencedLimit, noProgressAttempts);
 			return;
 		}
-
-		created++;
 	}
 }
 

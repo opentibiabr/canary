@@ -9070,7 +9070,22 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 			&& existingItem->getItemCount() < existingItem->getStackSize();
 	};
 
+	bool hasReservedCapacity = false;
+	uint64_t remainingItemCapacity = 0;
+	ReturnValue capacityError = RETURNVALUE_CONTAINERISFULL;
+
 	if (const auto &inboxContainer = std::dynamic_pointer_cast<Inbox>(container)) {
+		hasReservedCapacity = true;
+		remainingItemCapacity = inboxContainer->getRemainingItemCapacity();
+		capacityError = RETURNVALUE_DEPOTISFULL;
+	} else if (container->hasPagination()) {
+		hasReservedCapacity = true;
+		const uint64_t currentItems = container->getItemHoldingCount();
+		const uint64_t maxItems = container->getMaxCapacity();
+		remainingItemCapacity = currentItems >= maxItems ? 0 : maxItems - currentItems;
+	}
+
+	if (hasReservedCapacity) {
 		uint64_t mergeableCount = 0;
 		for (const auto &existingItem : container->getItemList()) {
 			if (!canMergeWithExistingStack(existingItem)) {
@@ -9085,8 +9100,8 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 
 		const uint64_t remainingAfterMerge = totalCount > mergeableCount ? static_cast<uint64_t>(totalCount) - mergeableCount : 0;
 		const uint64_t chunksNeeded = (remainingAfterMerge + maxStackSize - 1) / maxStackSize;
-		if (chunksNeeded > inboxContainer->getRemainingItemCapacity()) {
-			return RETURNVALUE_DEPOTISFULL;
+		if (chunksNeeded > remainingItemCapacity) {
+			return capacityError;
 		}
 	}
 

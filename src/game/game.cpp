@@ -9907,6 +9907,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			if (handleBuyerInboxPrecheckFailure(player, buyerPlayer, inboxCheckResult, __FUNCTION__)) {
 				return;
 			}
+
+			// Keep a safe rollback target before removing the seller's items.
+			ReturnValue rollbackInboxCheckResult = queryItemInsertion(player, it.id, amount, offerTier);
+			if (handleInboxPrecheckFailure(player, rollbackInboxCheckResult, __FUNCTION__)) {
+				return;
+			}
 		}
 
 		if (it.id == ITEM_STORE_COIN) {

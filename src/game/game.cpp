@@ -6336,7 +6336,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 			outfit.lookMount = 0;
 		} else {
 			auto deltaSpeedChange = mount->speed;
-			const auto prevMount = player->isMounted()? mounts->getMountByID(player->getCurrentMount()): nullptr;
+			const auto prevMount = player->isMounted() ? mounts->getMountByID(player->getCurrentMount()) : nullptr;
 
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;

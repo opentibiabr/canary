@@ -8788,7 +8788,7 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 		msg.addByte(item->getImbuementSlot());
 
 		// Imbuements applied
-		for (uint8_t slotID = 0; slotID < static_cast<uint8_t>(item->getImbuementSlot()); slotID++) {
+		for (uint8_t slotID = 0; slotID < item->getImbuementSlot(); slotID++) {
 			ImbuementInfo imbuementInfo;
 			if (!item->getImbuementInfo(slotID, &imbuementInfo)) {
 				msg.addByte(0x00);
@@ -10726,7 +10726,7 @@ void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
 
 	const auto &selectedPerks = player->weaponProficiency().getSelectedPerks(weaponId);
 
-	const uint8_t perkCount = static_cast<uint8_t>(std::min<size_t>(selectedPerks.size(), std::numeric_limits<uint8_t>::max()));
+	const auto perkCount = static_cast<uint8_t>(std::min<size_t>(selectedPerks.size(), std::numeric_limits<uint8_t>::max()));
 	msg.addByte(perkCount);
 	for (size_t i = 0; i < perkCount; ++i) {
 		const auto &perk = selectedPerks[i];

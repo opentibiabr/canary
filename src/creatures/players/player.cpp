@@ -2543,7 +2543,9 @@ void Player::createScrollImbuement(const Imbuement* imbuement) {
 	for (const auto &[key, value] : items) {
 		const uint32_t inventoryItemCount = getItemTypeCount(key);
 		if (inventoryItemCount >= value) {
-			removeItemOfType(key, value, -1, true);
+			if (!removeItemOfType(key, value, -1, true)) {
+				g_logger().error("[Player::createScrollImbuement] - Failed to remove {}x item {} from player {}", value, key, getName());
+			}
 			continue;
 		}
 
@@ -2681,7 +2683,9 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 
 		const uint32_t inventoryItemCount = getItemTypeCount(key);
 		if (inventoryItemCount >= value) {
-			removeItemOfType(key, value, -1, true);
+			if (!removeItemOfType(key, value, -1, true)) {
+				g_logger().error("[Player::onApplyImbuement] - Failed to remove {}x item {} from player {}", value, key, getName());
+			}
 			continue;
 		}
 

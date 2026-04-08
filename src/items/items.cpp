@@ -139,7 +139,7 @@ bool Items::reload() {
 	return true;
 }
 
-ItemTypes_t protoItemCategoryToCpp(uint32_t protoCategory) {
+[[nodiscard]] ItemTypes_t protoItemCategoryToCpp(uint32_t protoCategory) {
 	// Protobuf enums for categories (values 1-31)
 	// We map them to our internal ItemTypes_t
 	if (protoCategory >= 1 && protoCategory <= 27) {

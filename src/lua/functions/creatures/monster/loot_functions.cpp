@@ -41,7 +41,7 @@ int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot(monsterName) will create a new loot item
 	const int argc = lua_gettop(L);
 
-	std::shared_ptr<Loot> loot = std::make_shared<Loot>();
+	auto loot = std::make_shared<Loot>();
 
 	if (argc >= 2) {
 		if (!Lua::isString(L, 2)) {

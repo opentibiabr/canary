@@ -23,6 +23,7 @@
 #include "io/io_bosstiary.hpp"
 #include "utils/tools.hpp"
 #include "utils/hash.hpp"
+#include "utils/transparent_string_hash.hpp"
 #include "kv/value_wrapper.hpp"
 
 #include "kv/kv.hpp"
@@ -41,7 +42,7 @@ namespace {
 	constexpr int32_t MIN_TRACKED_SKILL = static_cast<int32_t>(SKILL_FIRST);
 	constexpr int32_t MAX_TRACKED_SKILL = static_cast<int32_t>(SKILL_MAGLEVEL);
 
-	bool isTrackedWeaponProficiencySkill(skills_t skill) {
+	[[nodiscard]] bool isTrackedWeaponProficiencySkill(skills_t skill) {
 		const auto enumValue = static_cast<int32_t>(skill);
 		return enumValue >= MIN_TRACKED_SKILL && enumValue <= MAX_TRACKED_SKILL;
 	}
@@ -292,7 +293,7 @@ std::vector<uint16_t> WeaponProficiency::getTrackedWeaponIds() const {
 		weaponIds.push_back(weaponId);
 	}
 
-	std::sort(weaponIds.begin(), weaponIds.end());
+	std::ranges::sort(weaponIds);
 	return weaponIds;
 }
 
@@ -588,7 +589,7 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 	}
 	const auto &selectedPerk = selectedLevel.perks.at(perkIndex);
 
-	const auto hasLevelSelected = std::any_of(playerProficiencyIt->second.perks.begin(), playerProficiencyIt->second.perks.end(), [level](const auto &perk) {
+	const auto hasLevelSelected = std::ranges::any_of(playerProficiencyIt->second.perks, [level](const auto &perk) {
 		return perk.level == level;
 	});
 	if (hasLevelSelected) {
@@ -596,7 +597,7 @@ void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16
 		return;
 	}
 
-	playerProficiencyIt->second.perks.emplace_back(selectedPerk);
+	playerProficiencyIt->second.perks.push_back(selectedPerk);
 }
 
 std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> WeaponProficiency::getActiveAugments(uint16_t weaponId) {
@@ -727,7 +728,11 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	uint32_t maxExperience = getMaxExperience(weaponId);
 
 	if (!proficiency.contains(weaponId)) {
-		proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
+		const auto insertResult = proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
+		if (!insertResult.second) {
+			g_logger().warn("{} - Failed to create proficiency state for weapon ID '{}'", __FUNCTION__, weaponId);
+			return;
+		}
 		m_player.sendWeaponProficiency(weaponId);
 
 		return;
@@ -899,7 +904,7 @@ std::vector<ProficiencyPerk> WeaponProficiency::collectValidSelectedPerks(uint16
 		usedLevels[level] = true;
 	}
 
-	std::sort(validPerks.begin(), validPerks.end(), [](const auto &lhs, const auto &rhs) {
+	std::ranges::sort(validPerks, [](const auto &lhs, const auto &rhs) {
 		if (lhs.level != rhs.level) {
 			return lhs.level < rhs.level;
 		}
@@ -1389,7 +1394,7 @@ void WeaponProficiency::applySpellAugment(CombatDamage &damage, uint16_t spellId
 
 std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiariesDamage() const {
 	using enum WeaponProficiencyBonus_t;
-	std::unordered_map<std::string, double> aggregatedBestiaries;
+	std::unordered_map<std::string, double, TransparentStringHasher, std::equal_to<>> aggregatedBestiaries;
 
 	const auto weaponId = m_player.getWeaponId(true);
 
@@ -1403,10 +1408,10 @@ std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiari
 	std::vector<std::pair<std::string, double>> bestiariesDamage;
 	bestiariesDamage.reserve(aggregatedBestiaries.size());
 	for (const auto &[name, value] : aggregatedBestiaries) {
-		bestiariesDamage.emplace_back(name, value);
+		bestiariesDamage.push_back({ name, value });
 	}
 
-	std::sort(bestiariesDamage.begin(), bestiariesDamage.end(), [](const auto &lhs, const auto &rhs) {
+	std::ranges::sort(bestiariesDamage, [](const auto &lhs, const auto &rhs) {
 		return lhs.first < rhs.first;
 	});
 

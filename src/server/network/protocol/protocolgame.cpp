@@ -1948,6 +1948,7 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg) {
 	}
 
 	if (variant > 2) {
+		g_logger().debug("[{}] unsupported quick-loot variant {} from player {}", __FUNCTION__, variant, player ? player->getName() : "<null>");
 		return;
 	}
 

@@ -9490,23 +9490,11 @@ namespace {
 			return true;
 		}
 
-		std::vector<std::shared_ptr<Container>> containers;
 		std::multimap<uint32_t, std::shared_ptr<Item>> moneyMap;
 		uint64_t inventoryMoney = 0;
 
-		for (size_t i = player->getFirstIndex(), j = player->getLastIndex(); i < j; ++i) {
-			const std::shared_ptr<Thing> &thing = player->getThing(i);
-			if (!thing) {
-				continue;
-			}
-
-			const auto &item = thing->getItem();
-			if (!item) {
-				continue;
-			}
-
-			if (const auto &container = item->getContainer()) {
-				containers.push_back(container);
+		for (const auto &item : player->getAllInventoryItems()) {
+			if (!item || item->getContainer()) {
 				continue;
 			}
 
@@ -9517,25 +9505,6 @@ namespace {
 
 			inventoryMoney += worth;
 			moneyMap.emplace(worth, item);
-		}
-
-		size_t i = 0;
-		while (i < containers.size()) {
-			const std::shared_ptr<Container> &container = containers[i++];
-			for (const auto &item : container->getItemList()) {
-				if (const auto &subContainer = item->getContainer()) {
-					containers.push_back(subContainer);
-					continue;
-				}
-
-				const uint32_t worth = item->getWorth();
-				if (worth == 0) {
-					continue;
-				}
-
-				inventoryMoney += worth;
-				moneyMap.emplace(worth, item);
-			}
 		}
 
 		if (inventoryMoney < money) {

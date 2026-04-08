@@ -10,6 +10,7 @@
 #include "items/functions/item/item_parse.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/movement.hpp"
 #include "utils/pugicast.hpp"
@@ -81,6 +82,7 @@ void ItemParse::initParse(const std::string &stringValue, pugi::xml_node attribu
 	ItemParse::parseReflectDamage(stringValue, valueAttribute, itemType);
 	ItemParse::parseTransformOnUse(stringValue, valueAttribute, itemType);
 	ItemParse::parsePrimaryType(stringValue, valueAttribute, itemType);
+	ItemParse::parseProficiency(stringValue, valueAttribute, itemType);
 	ItemParse::parseHouseRelated(stringValue, valueAttribute, itemType);
 	ItemParse::parseUnscriptedItems(stringValue, attributeNode, valueAttribute, itemType);
 }
@@ -986,6 +988,26 @@ void ItemParse::parsePrimaryType(std::string_view stringValue, pugi::xml_attribu
 	if (stringValue == "primarytype") {
 		itemType.m_primaryType = asLowerCaseString(valueAttribute.as_string());
 	}
+}
+
+void ItemParse::parseProficiency(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+	if (stringValue != "proficiency") {
+		return;
+	}
+
+	const auto proficiencyId = pugi::cast<uint16_t>(valueAttribute.value());
+	if (proficiencyId == 0) {
+		g_logger().warn("[Items::parseItemNode] - Invalid Proficiency ID '{}' for item '{}'", valueAttribute.as_string(), itemType.id);
+		return;
+	}
+
+	auto &proficiencies = WeaponProficiency::getProficiencies();
+	if (!proficiencies.contains(proficiencyId)) {
+		g_logger().warn("[Items::parseItemNode] - Unknown Proficiency ID '{}'", proficiencyId);
+		return;
+	}
+
+	itemType.proficiencyId = proficiencyId;
 }
 
 void ItemParse::parseHouseRelated(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {

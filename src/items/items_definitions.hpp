@@ -639,6 +639,7 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_SCRIPT,
 	ITEM_PARSE_AUGMENT,
 	ITEM_PARSE_ELEMENTALBOND,
+	ITEM_PARSE_PROFICIENCY,
 };
 
 struct ImbuementInfo {

@@ -5894,8 +5894,8 @@ namespace {
 		uint64_t stackableAmount = 0;
 		uint32_t looseItems = 0;
 
-		bool hasLoot() const {
-			return goldValue != 0 || stackableAmount != 0 || looseItems != 0;
+		[[nodiscard]] bool hasLoot() const noexcept {
+	    return goldValue != 0 || stackableAmount != 0 || looseItems != 0;
 		}
 
 		bool operator!=(const NearbyQuickLootSnapshot &other) const {

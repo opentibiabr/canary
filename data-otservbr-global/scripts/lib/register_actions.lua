@@ -975,8 +975,6 @@ function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
 			return false
 		end
 	end
-
-	return true
 end
 
 function onUseSpikedSquelcher(player, item, fromPosition, target, toPosition, isHotkey)

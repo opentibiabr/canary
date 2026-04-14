@@ -186,6 +186,9 @@
 	<npc centerx="33027" centery="32417" centerz="4" radius="1">
 		<npc name="Samir" x="0" y="0" z="4" spawntime="60" />
 	</npc>
+	<npc centerx="32393" centery="32470" centerz="4" radius="1">
+		<npc name="Augustin" x="0" y="0" z="4" spawntime="60" />
+	</npc>
 	<npc centerx="33109" centery="32525" centerz="4" radius="1">
 		<npc name="Haroun" x="0" y="0" z="4" spawntime="60" />
 	</npc>

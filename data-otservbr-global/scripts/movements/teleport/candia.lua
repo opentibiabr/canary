@@ -14,8 +14,8 @@ function candia.onStepIn(creature, item, position, fromPosition)
 
 	for value in pairs(config) do
 		if Position(config[value].position) == player:getPosition() then
-			player:teleportTo(Position(config[value].destination))
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+			player:teleportTo(Position(config[value].destination), true)
+			player:getPosition():sendMagicEffect(CONST_ME_CANDY_FLOSS)
 			return true
 		end
 	end

@@ -2956,6 +2956,21 @@ Storage = {
 				AccessDoor = 47952,
 			},
 		},
+		U13_30 = { -- update 13.30 - Reserved Storages 47971 - 49100
+			TwentyYearsACook = {
+				QuestLine = 47971,
+				TheRestOfRathaDoor = 47953,
+				FlaskBox = 47954,
+				AxeBox = 47955,
+				GhostDustrerDamage = 47956,
+				RathaConditionsApplied = 47957,
+				DraccoonOutfits = {
+					Outfit1 = 47998,
+					Outfit2 = 47999,
+					Outfit3 = 48000,
+				},
+			},
+		},
 		U14_15 = { -- update 14.15 - Reserved Storages 49101 - 49150
 			TheWayOfTheMonk = {
 				QuestLine = 49101,

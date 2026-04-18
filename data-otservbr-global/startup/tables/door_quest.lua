@@ -891,6 +891,10 @@ QuestDoorAction = {
 			{ x = 32953, y = 31460, z = 9 },
 		},
 	},
+	[Storage.Quest.U13_30.TwentyYearsACook.TheRestOfRathaDoor] = {
+		itemId = false,
+		itemPos = { { x = 32595, y = 31938, z = 5 } },
+	},
 }
 
 QuestDoorUnique = {

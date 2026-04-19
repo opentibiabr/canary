@@ -32,7 +32,7 @@ function teleportEvent.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	for _, entrance in pairs(entrances) do
-		if entrance.position == position then
+		if entrance.position == item:getPosition() then
 			player:teleportTo(entrance.destination)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			break

@@ -86,7 +86,6 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		g_logger().warn("{} - Missing or invalid 'events' array in '{}'. Falling back to XML scheduler.", __FUNCTION__, folder);
 		return true;
 	}
-	hasConfiguredJsonEventsFlag = !eventsIt->empty();
 
 	const auto now = getTimeNow();
 
@@ -163,14 +162,24 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			loadedScripts.insert(normalizedStr);
 			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / normalizedStr;
 
+			// Try JSON path first, then fall back to XML path
 			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
-				g_logger().warn("{} - Cannot find script file '{}'", __FUNCTION__, filePath.string());
-				return false;
+				filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / normalizedStr;
+				if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
+					g_logger().warn(
+						"{} - Cannot find the file '{}' on '{}/json/eventscheduler/scripts/' or '{}/XML/events/scheduler/scripts/', skipping",
+						__FUNCTION__, normalizedStr, coreFolder, coreFolder
+					);
+					continue;
+				}
 			}
 
 			if (!g_scripts().loadEventSchedulerScripts(filePath)) {
-				g_logger().warn("{} - Cannot load the file '{}' on '{}/json/eventscheduler/scripts/'", __FUNCTION__, normalizedStr, coreFolder);
-				return false;
+				g_logger().warn(
+					"{} - Cannot load the file '{}' on '{}/json/eventscheduler/scripts/' or '{}/XML/events/scheduler/scripts/', skipping",
+					__FUNCTION__, normalizedStr, coreFolder, coreFolder
+				);
+				continue;
 			}
 		}
 
@@ -292,6 +301,9 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		eventsOnSameDay[eventName] = currentEventRates;
 		eventScheduler.emplace_back(EventScheduler { eventName, startTime, endTime });
 	}
+
+	// Set flag only if at least one event was actually registered
+	hasConfiguredJsonEventsFlag = !eventScheduler.empty();
 
 	for (const auto &event : eventScheduler) {
 		if (now >= event.startTime && now <= event.endTime) {

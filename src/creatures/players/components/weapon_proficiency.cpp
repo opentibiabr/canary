@@ -1429,8 +1429,16 @@ std::optional<std::pair<uint8_t, double>> WeaponProficiency::getActiveElementalC
 	}
 
 	if (!displayOrder.empty()) {
-		const auto elementId = displayOrder.front();
-		return std::make_pair(elementId, aggregatedByElement[elementId]);
+		auto bestElementId = displayOrder.front();
+		auto bestValue = aggregatedByElement[bestElementId];
+		for (const auto elementId : displayOrder) {
+			const auto value = aggregatedByElement[elementId];
+			if (value > bestValue) {
+				bestElementId = elementId;
+				bestValue = value;
+			}
+		}
+		return std::make_pair(bestElementId, bestValue);
 	}
 
 	return std::nullopt;

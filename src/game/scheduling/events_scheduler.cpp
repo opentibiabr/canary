@@ -409,6 +409,13 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / normalizedStr;
 			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
 				filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / normalizedStr;
+				if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
+					g_logger().warn(
+						"{} - Cannot find the file '{}' on '{}/XML/events/scheduler/scripts/' or '{}/json/eventscheduler/scripts/'",
+						__FUNCTION__, normalizedStr, coreFolder, coreFolder
+					);
+					return false;
+				}
 			}
 
 			if (!g_scripts().loadEventSchedulerScripts(filePath)) {

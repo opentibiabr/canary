@@ -7326,7 +7326,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 
 	const auto &perfectShotBonus = weaponProficiency().getPerfectShotBonus();
 	if (perfectShotBonus.range == range) {
-		result += perfectShotBonus.damage;
+		result += static_cast<int32_t>(std::lround(perfectShotBonus.damage));
 	}
 
 	for (const auto &item : getEquippedItems()) {

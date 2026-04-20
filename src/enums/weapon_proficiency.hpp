@@ -131,7 +131,7 @@ struct WeaponProficiencyBonusStat {
 
 struct WeaponProficiencyPerfectShotBonus {
 	uint8_t range = 0;
-	uint8_t damage = 0;
+	double_t damage = 0;
 };
 
 struct SkillPercentage {

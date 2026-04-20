@@ -781,7 +781,6 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 		}
 
 		attackerPlayer->weaponProficiency().applyBestiaryDamage(damage, targetMonster);
-		attackerPlayer->weaponProficiency().applyBossDamage(damage, targetMonster);
 		attackerPlayer->weaponProficiency().applyPowerfulFoeDamage(damage, targetMonster);
 
 		// Monster type onPlayerAttack event

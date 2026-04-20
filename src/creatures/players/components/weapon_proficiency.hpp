@@ -104,7 +104,6 @@ public:
 	void applyElementCritical(CombatDamage &damage) const;
 
 	void applyBestiaryDamage(CombatDamage &damage, const std::shared_ptr<Monster> &monster) const;
-	void applyBossDamage(CombatDamage &damage, const std::shared_ptr<Monster> &monster) const;
 	void applyPowerfulFoeDamage(CombatDamage &damage, const std::shared_ptr<Monster> &monster) const;
 
 	void applySkillAutoAttackPercentage(CombatDamage &damage) const;

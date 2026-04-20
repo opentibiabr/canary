@@ -1262,20 +1262,6 @@ void WeaponProficiency::applyBestiaryDamage(CombatDamage &damage, const std::sha
 	}
 }
 
-void WeaponProficiency::applyBossDamage(CombatDamage &damage, const std::shared_ptr<Monster> &monster) const {
-	using enum WeaponProficiencyBonus_t;
-	if (!monster) {
-		return;
-	}
-
-	const auto mt = monster->getMonsterType();
-	if (mt && mt->isBoss()) {
-		const auto bonusDamage = getStat(POWERFUL_FOE_BONUS);
-		damage.primary.value *= 1 + bonusDamage;
-		damage.secondary.value *= 1 + bonusDamage;
-	}
-}
-
 void WeaponProficiency::applyPowerfulFoeDamage(CombatDamage &damage, const std::shared_ptr<Monster> &monster) const {
 	using enum WeaponProficiencyBonus_t;
 	if (!monster) {

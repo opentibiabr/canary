@@ -121,13 +121,47 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		}
 
 		if (!eventScript.empty()) {
-			if (loadedScripts.contains(eventScript)) {
-				g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", __FUNCTION__, eventScript, folder);
+			// Validate path to prevent path traversal attacks
+			std::filesystem::path p(eventScript);
+
+			// Reject absolute paths
+			if (p.is_absolute()) {
+				g_logger().warn("{} - Rejecting absolute path in script: '{}'", __FUNCTION__, eventScript);
 				continue;
 			}
 
-			loadedScripts.insert(eventScript);
-			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / eventScript;
+			// Check for ".." or empty components in the path
+			bool hasInvalidComponent = false;
+			for (const auto &component : p) {
+				std::string componentStr = component.string();
+				if (componentStr == ".." || componentStr.empty()) {
+					hasInvalidComponent = true;
+					break;
+				}
+			}
+
+			if (hasInvalidComponent) {
+				g_logger().warn("{} - Rejecting path with invalid components (.. or empty) in script: '{}'", __FUNCTION__, eventScript);
+				continue;
+			}
+
+			// Normalize the path
+			std::filesystem::path normalizedPath = p.lexically_normal();
+			std::string normalizedStr = normalizedPath.string();
+
+			// Remove leading "./" prefix if present
+			if (normalizedStr.starts_with("./")) {
+				normalizedStr = normalizedStr.substr(2);
+			}
+
+			// Use normalized path for deduplication
+			if (loadedScripts.contains(normalizedStr)) {
+				g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", __FUNCTION__, normalizedStr, folder);
+				continue;
+			}
+
+			loadedScripts.insert(normalizedStr);
+			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / normalizedStr;
 
 			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
 				g_logger().warn("{} - Cannot find script file '{}'", __FUNCTION__, filePath.string());
@@ -135,7 +169,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 			}
 
 			if (!g_scripts().loadEventSchedulerScripts(filePath)) {
-				g_logger().warn("{} - Cannot load the file '{}' on '{}/json/eventscheduler/scripts/'", __FUNCTION__, eventScript, coreFolder);
+				g_logger().warn("{} - Cannot load the file '{}' on '{}/json/eventscheduler/scripts/'", __FUNCTION__, normalizedStr, coreFolder);
 				return false;
 			}
 		}
@@ -331,22 +365,56 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		}
 
 		if (!eventScript.empty()) {
-			if (loadedScripts.contains(eventScript)) {
-				g_logger().warn("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
+			// Validate path to prevent path traversal attacks
+			std::filesystem::path p(eventScript);
+
+			// Reject absolute paths
+			if (p.is_absolute()) {
+				g_logger().warn("{} - Rejecting absolute path in script: '{}'", __FUNCTION__, eventScript);
 				continue;
 			}
 
-			loadedScripts.insert(eventScript);
+			// Check for ".." or empty components in the path
+			bool hasInvalidComponent = false;
+			for (const auto &component : p) {
+				std::string componentStr = component.string();
+				if (componentStr == ".." || componentStr.empty()) {
+					hasInvalidComponent = true;
+					break;
+				}
+			}
+
+			if (hasInvalidComponent) {
+				g_logger().warn("{} - Rejecting path with invalid components (.. or empty) in script: '{}'", __FUNCTION__, eventScript);
+				continue;
+			}
+
+			// Normalize the path
+			std::filesystem::path normalizedPath = p.lexically_normal();
+			std::string normalizedStr = normalizedPath.string();
+
+			// Remove leading "./" prefix if present
+			if (normalizedStr.starts_with("./")) {
+				normalizedStr = normalizedStr.substr(2);
+			}
+
+			// Use normalized path for deduplication
+			if (loadedScripts.contains(normalizedStr)) {
+				g_logger().warn("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, normalizedStr);
+				continue;
+			}
+
+			loadedScripts.insert(normalizedStr);
 			const auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / eventScript;
+			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / normalizedStr;
 			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
-				filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / eventScript;
+				filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / normalizedStr;
 			}
 
 			if (!g_scripts().loadEventSchedulerScripts(filePath)) {
 				g_logger().warn(
 					"{} - Cannot load the file '{}' on '{}/XML/events/scheduler/scripts/' or '{}/json/eventscheduler/scripts/'",
-					__FUNCTION__, eventScript, coreFolder, coreFolder
+					__FUNCTION__, normalizedStr, coreFolder, coreFolder
 				);
 				return false;
 			}

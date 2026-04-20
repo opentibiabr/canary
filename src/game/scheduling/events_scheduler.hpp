@@ -51,6 +51,9 @@ public:
 
 	// Event schedule xml load
 	bool loadScheduleEventFromXml();
+	[[nodiscard]] bool hasConfiguredJsonEvents() const {
+		return hasConfiguredJsonEventsFlag;
+	}
 
 	// Event schedule
 	uint16_t getExpSchedule() const {
@@ -99,6 +102,7 @@ private:
 	uint32_t bossLootSchedule = 100;
 	uint16_t skillSchedule = 100;
 	uint32_t spawnMonsterSchedule = 100;
+	bool hasConfiguredJsonEventsFlag = false;
 
 	std::vector<EventScheduler> eventScheduler;
 

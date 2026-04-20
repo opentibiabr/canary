@@ -56,6 +56,7 @@ namespace {
 
 bool EventsScheduler::loadScheduleEventFromJson() {
 	reset();
+	hasConfiguredJsonEventsFlag = false;
 	g_kv().scoped("eventscheduler")->remove("forge-chance");
 	g_kv().scoped("eventscheduler")->remove("double-bestiary");
 	g_kv().scoped("eventscheduler")->remove("double-bosstiary");
@@ -67,9 +68,8 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 	auto folder = coreFolder + "/json/eventscheduler/events.json";
 	std::ifstream file(folder);
 	if (!file.is_open()) {
-		g_logger().error("{} - Unable to open file '{}'", __FUNCTION__, folder);
-		consoleHandlerExit();
-		return false;
+		g_logger().warn("{} - Unable to open file '{}'. Falling back to XML scheduler.", __FUNCTION__, folder);
+		return true;
 	}
 
 	json eventsJson;
@@ -81,12 +81,19 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		return false;
 	}
 
+	const auto eventsIt = eventsJson.find("events");
+	if (eventsIt == eventsJson.end() || !eventsIt->is_array()) {
+		g_logger().warn("{} - Missing or invalid 'events' array in '{}'. Falling back to XML scheduler.", __FUNCTION__, folder);
+		return true;
+	}
+	hasConfiguredJsonEventsFlag = !eventsIt->empty();
+
 	const auto now = getTimeNow();
 
 	phmap::flat_hash_set<std::string> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 
-	for (const auto &event : eventsJson["events"]) {
+	for (const auto &event : *eventsIt) {
 		std::string eventScript = event.contains("script") && !event["script"].is_null() ? event["script"].get<std::string>() : "";
 		std::string eventName = event.value("name", "");
 

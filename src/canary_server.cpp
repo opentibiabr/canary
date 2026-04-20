@@ -407,9 +407,15 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/monster", false, false), datapackFolder + "/monster");
 	modulesLoadHelper((g_npcs().load(false, true)), "npc");
 
-	// It needs to be loaded after the revscript is read in order to use the scripting interface
-	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
+	// It needs to be loaded after the revscript is read in order to use the scripting interface.
+	// JSON has priority when configured; XML is only used as fallback when JSON has no events.
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromJson(), "json/eventscheduler/events.json");
+	if (!g_eventsScheduler().hasConfiguredJsonEvents()) {
+		logger.debug("EventScheduler JSON has no configured events. Loading XML fallback.");
+		modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
+	} else {
+		logger.debug("EventScheduler source: JSON (XML fallback skipped).");
+	}
 
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();

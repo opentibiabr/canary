@@ -323,17 +323,26 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 			continue;
 		}
 
-		if (!eventScript.empty() && loadedScripts.contains(eventScript)) {
-			g_logger().warn("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
-			continue;
-		}
+		if (!eventScript.empty()) {
+			if (loadedScripts.contains(eventScript)) {
+				g_logger().warn("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
+				continue;
+			}
 
-		loadedScripts.insert(eventScript);
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / eventScript;
-		if (!g_scripts().loadEventSchedulerScripts(filePath)) {
-			g_logger().warn("{} - Cannot load the file '{}' on '/events/scripts/scheduler/'", __FUNCTION__, eventScript);
-			return false;
+			loadedScripts.insert(eventScript);
+			const auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+			std::filesystem::path filePath = std::filesystem::current_path() / coreFolder / "XML" / "events" / "scheduler" / "scripts" / eventScript;
+			if (!std::filesystem::exists(filePath) || !std::filesystem::is_regular_file(filePath)) {
+				filePath = std::filesystem::current_path() / coreFolder / "json" / "eventscheduler" / "scripts" / eventScript;
+			}
+
+			if (!g_scripts().loadEventSchedulerScripts(filePath)) {
+				g_logger().warn(
+					"{} - Cannot load the file '{}' on '{}/XML/events/scheduler/scripts/' or '{}/json/eventscheduler/scripts/'",
+					__FUNCTION__, eventScript, coreFolder, coreFolder
+				);
+				return false;
+			}
 		}
 
 		EventRates currentEventRates;

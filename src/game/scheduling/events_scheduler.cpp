@@ -86,6 +86,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		g_logger().warn("{} - Missing or invalid 'events' array in '{}'. Falling back to XML scheduler.", __FUNCTION__, folder);
 		return true;
 	}
+	hasConfiguredJsonEventsFlag = !eventsIt->empty();
 
 	const auto now = getTimeNow();
 
@@ -301,9 +302,6 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		eventsOnSameDay[eventName] = currentEventRates;
 		eventScheduler.emplace_back(EventScheduler { eventName, startTime, endTime });
 	}
-
-	// Set flag only if at least one event was actually registered
-	hasConfiguredJsonEventsFlag = !eventScheduler.empty();
 
 	for (const auto &event : eventScheduler) {
 		if (now >= event.startTime && now <= event.endTime) {

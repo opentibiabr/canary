@@ -12438,7 +12438,7 @@ AcceptTransferErrorMessage Player::canAcceptTransferHouse(uint32_t houseId) {
 bool Player::isFirstOnStack() const {
 	const auto &playerTile = getTile();
 	if (!playerTile) {
-		return true;
+		return false;
 	}
 
 	const auto &bottomCreature = playerTile->getBottomCreature();
@@ -12447,8 +12447,11 @@ bool Player::isFirstOnStack() const {
 		return false;
 	}
 
+	if (bottomPlayer->isInGhostMode()) {
+		return true;
+	}
+
 	if (hasCondition(CONDITION_SPELLCOOLDOWN)) {
-		g_logger().warn("[isFirstOnStack] cooldown error for player: {}", getName());
 		return false;
 	}
 

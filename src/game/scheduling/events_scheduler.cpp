@@ -58,6 +58,12 @@ namespace {
 	const std::filesystem::path jsonEventSchedulerScriptsDir = "json/eventscheduler/scripts";
 	const std::filesystem::path xmlEventSchedulerScriptsDir = "XML/events/scheduler/scripts";
 
+	struct EventSchedulerScriptSearchPaths {
+		std::filesystem::path coreFolder;
+		std::filesystem::path primaryDir;
+		std::filesystem::path fallbackDir;
+	};
+
 	std::optional<std::string> normalizeEventSchedulerScriptPath(std::string_view script, std::string_view caller) {
 		std::filesystem::path path { std::string(script) };
 
@@ -90,17 +96,16 @@ namespace {
 	}
 
 	std::optional<std::filesystem::path> resolveEventSchedulerScriptFilePath(
-		const std::string &coreFolder,
-		const std::string &normalizedScript,
-		const std::filesystem::path &primaryDir,
-		const std::filesystem::path &fallbackDir
+		const EventSchedulerScriptSearchPaths &scriptSearchPaths,
+		const std::filesystem::path &normalizedScript
 	) {
-		std::filesystem::path primaryPath = std::filesystem::current_path() / coreFolder / primaryDir / normalizedScript;
+		const std::filesystem::path basePath = std::filesystem::current_path() / scriptSearchPaths.coreFolder;
+		std::filesystem::path primaryPath = basePath / scriptSearchPaths.primaryDir / normalizedScript;
 		if (std::filesystem::exists(primaryPath) && std::filesystem::is_regular_file(primaryPath)) {
 			return primaryPath;
 		}
 
-		std::filesystem::path fallbackPath = std::filesystem::current_path() / coreFolder / fallbackDir / normalizedScript;
+		std::filesystem::path fallbackPath = basePath / scriptSearchPaths.fallbackDir / normalizedScript;
 		if (std::filesystem::exists(fallbackPath) && std::filesystem::is_regular_file(fallbackPath)) {
 			return fallbackPath;
 		}
@@ -111,11 +116,9 @@ namespace {
 	bool loadEventSchedulerScript(
 		std::string_view caller,
 		std::string_view sourceFile,
-		const std::string &eventScript,
-		const std::string &coreFolder,
 		phmap::flat_hash_set<std::string> &loadedScripts,
-		const std::filesystem::path &primaryDir,
-		const std::filesystem::path &fallbackDir,
+		const std::string &eventScript,
+		const EventSchedulerScriptSearchPaths &scriptSearchPaths,
 		bool skipOnFailure
 	) {
 		if (eventScript.empty()) {
@@ -127,21 +130,25 @@ namespace {
 			return true;
 		}
 
-		const std::string &normalizedScript = *normalizedScriptOpt;
-		if (loadedScripts.contains(normalizedScript)) {
-			g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", caller, normalizedScript, sourceFile);
+		const std::filesystem::path normalizedScript { *normalizedScriptOpt };
+		const std::string normalizedScriptKey = normalizedScript.generic_string();
+		if (loadedScripts.contains(normalizedScriptKey)) {
+			g_logger().warn("{} - Script declaration '{}' is duplicated in '{}'", caller, normalizedScriptKey, sourceFile);
 			return true;
 		}
-		loadedScripts.insert(normalizedScript);
+		loadedScripts.insert(normalizedScriptKey);
 
-		const auto scriptPathOpt = resolveEventSchedulerScriptFilePath(coreFolder, normalizedScript, primaryDir, fallbackDir);
+		const auto scriptPathOpt = resolveEventSchedulerScriptFilePath(scriptSearchPaths, normalizedScript);
+		const std::string coreFolderKey = scriptSearchPaths.coreFolder.generic_string();
+		const std::string primaryDirKey = scriptSearchPaths.primaryDir.generic_string();
+		const std::string fallbackDirKey = scriptSearchPaths.fallbackDir.generic_string();
 		if (!scriptPathOpt) {
 			g_logger().warn(
 				"{} - Cannot find the file '{}' on '{}/{}/' or '{}/{}/'{}",
 				caller,
-				normalizedScript,
-				coreFolder, primaryDir.generic_string(),
-				coreFolder, fallbackDir.generic_string(),
+				normalizedScriptKey,
+				coreFolderKey, primaryDirKey,
+				coreFolderKey, fallbackDirKey,
 				skipOnFailure ? ", skipping" : ""
 			);
 			return skipOnFailure;
@@ -151,9 +158,9 @@ namespace {
 			g_logger().warn(
 				"{} - Cannot load the file '{}' on '{}/{}/' or '{}/{}/'{}",
 				caller,
-				normalizedScript,
-				coreFolder, primaryDir.generic_string(),
-				coreFolder, fallbackDir.generic_string(),
+				normalizedScriptKey,
+				coreFolderKey, primaryDirKey,
+				coreFolderKey, fallbackDirKey,
 				skipOnFailure ? ", skipping" : ""
 			);
 			return skipOnFailure;
@@ -201,6 +208,12 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 	phmap::flat_hash_set<std::string> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
 
+	const EventSchedulerScriptSearchPaths scriptSearchPaths {
+		std::filesystem::path(coreFolder),
+		jsonEventSchedulerScriptsDir,
+		xmlEventSchedulerScriptsDir
+	};
+
 	for (const auto &event : *eventsIt) {
 		std::string eventScript = event.contains("script") && !event["script"].is_null() ? event["script"].get<std::string>() : "";
 		std::string eventName = event.value("name", "");
@@ -229,7 +242,7 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		}
 
 		{
-			if (!loadEventSchedulerScript(__FUNCTION__, folder, eventScript, coreFolder, loadedScripts, jsonEventSchedulerScriptsDir, xmlEventSchedulerScriptsDir, true)) {
+			if (!loadEventSchedulerScript(__FUNCTION__, folder, loadedScripts, eventScript, scriptSearchPaths, true)) {
 				return false;
 			}
 		}
@@ -399,6 +412,12 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 	// Keep track of loaded scripts to check for duplicates
 	phmap::flat_hash_set<std::string> loadedScripts;
 	std::map<std::string, EventRates> eventsOnSameDay;
+
+	const EventSchedulerScriptSearchPaths scriptSearchPaths {
+		std::filesystem::path(coreFolder),
+		xmlEventSchedulerScriptsDir,
+		jsonEventSchedulerScriptsDir
+	};
 	for (const auto &eventNode : doc.child("events").children()) {
 		std::string eventScript = eventNode.attribute("script").as_string();
 		std::string eventName = eventNode.attribute("name").as_string();
@@ -429,7 +448,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 		}
 
 		{
-			if (!loadEventSchedulerScript(__FUNCTION__, folder, eventScript, coreFolder, loadedScripts, xmlEventSchedulerScriptsDir, jsonEventSchedulerScriptsDir, false)) {
+			if (!loadEventSchedulerScript(__FUNCTION__, folder, loadedScripts, eventScript, scriptSearchPaths, false)) {
 				return false;
 			}
 		}

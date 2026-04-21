@@ -59,7 +59,7 @@ namespace {
 	const std::filesystem::path xmlEventSchedulerScriptsDir = "XML/events/scheduler/scripts";
 
 	std::optional<std::string> normalizeEventSchedulerScriptPath(std::string_view script, std::string_view caller) {
-		std::filesystem::path path(std::string(script));
+		std::filesystem::path path { std::string(script) };
 
 		// Reject any rooted path (absolute paths, UNC paths, drive-relative "C:foo", etc.)
 		if (path.is_absolute() || path.has_root_name() || path.has_root_directory()) {

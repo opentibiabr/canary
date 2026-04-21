@@ -243,17 +243,22 @@ void WeaponProficiency::load() {
 	auto wp_kv = m_player.kv()->scoped("weapon-proficiency");
 	for (const auto &key : wp_kv->keys()) {
 		int parsedId = 0;
-		try {
-			parsedId = std::stoi(key);
-		} catch (const std::invalid_argument &e) {
-			g_logger().error("{} - Invalid key '{}' in weapon-proficiency KV: {}", __FUNCTION__, key, e.what());
+		const auto *begin = key.data();
+		const auto *end = key.data() + key.size();
+		const auto [ptr, ec] = std::from_chars(begin, end, parsedId);
+		if (ec == std::errc::result_out_of_range) {
+			g_logger().error("{} - Out of range key '{}' in weapon-proficiency KV: parse overflow (player: {})", __FUNCTION__, key, m_player.getName());
 			continue;
-		} catch (const std::out_of_range &e) {
-			g_logger().error("{} - Out of range key '{}' in weapon-proficiency KV: {}", __FUNCTION__, key, e.what());
+		}
+		if (ec == std::errc::invalid_argument || ptr != end) {
+			g_logger().error("{} - Invalid key '{}' in weapon-proficiency KV: parse failure (player: {})", __FUNCTION__, key, m_player.getName());
+			continue;
+		}
+		if (parsedId <= 0 || parsedId > std::numeric_limits<uint16_t>::max()) {
+			g_logger().warn("{} - Skipping out of range weapon proficiency key '{}' (player: {})", __FUNCTION__, key, m_player.getName());
 			continue;
 		}
 
-		// Validate that the stored weapon ID has a valid proficiencyId
 		const auto weaponId = static_cast<uint16_t>(parsedId);
 		if (!isValidWeaponId(weaponId) || Item::items[weaponId].proficiencyId == 0) {
 			g_logger().warn("{} - Skipping invalid weapon proficiency data for weapon ID '{}' (player: {})", __FUNCTION__, parsedId, m_player.getName());
@@ -278,6 +283,23 @@ void WeaponProficiency::save(uint16_t weaponId) const {
 
 bool WeaponProficiency::saveAll() const {
 	auto wp_kv = m_player.kv()->scoped("weapon-proficiency");
+
+	for (const auto &storedKey : wp_kv->keys()) {
+		int parsedId = 0;
+		const auto *begin = storedKey.data();
+		const auto *end = storedKey.data() + storedKey.size();
+		const auto [ptr, ec] = std::from_chars(begin, end, parsedId);
+		if (ec == std::errc::invalid_argument || ec == std::errc::result_out_of_range || ptr != end || parsedId <= 0 || parsedId > std::numeric_limits<uint16_t>::max()) {
+			wp_kv->remove(storedKey);
+			continue;
+		}
+
+		const auto weaponId = static_cast<uint16_t>(parsedId);
+		if (!proficiency.contains(weaponId)) {
+			wp_kv->remove(storedKey);
+		}
+	}
+
 	for (const auto &[weaponId, weaponData] : proficiency) {
 		wp_kv->set(std::to_string(weaponId), serialize(weaponData));
 	}

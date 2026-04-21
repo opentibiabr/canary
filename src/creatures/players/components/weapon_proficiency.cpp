@@ -243,8 +243,8 @@ void WeaponProficiency::load() {
 	auto wp_kv = m_player.kv()->scoped("weapon-proficiency");
 	for (const auto &key : wp_kv->keys()) {
 		int parsedId = 0;
-		const auto *begin = key.data();
-		const auto *end = key.data() + key.size();
+		const auto* begin = key.data();
+		const auto* end = key.data() + key.size();
 		const auto [ptr, ec] = std::from_chars(begin, end, parsedId);
 		if (ec == std::errc::result_out_of_range) {
 			g_logger().error("{} - Out of range key '{}' in weapon-proficiency KV: parse overflow (player: {})", __FUNCTION__, key, m_player.getName());
@@ -286,8 +286,8 @@ bool WeaponProficiency::saveAll() const {
 
 	for (const auto &storedKey : wp_kv->keys()) {
 		int parsedId = 0;
-		const auto *begin = storedKey.data();
-		const auto *end = storedKey.data() + storedKey.size();
+		const auto* begin = storedKey.data();
+		const auto* end = storedKey.data() + storedKey.size();
 		const auto [ptr, ec] = std::from_chars(begin, end, parsedId);
 		if (ec == std::errc::invalid_argument || ec == std::errc::result_out_of_range || ptr != end || parsedId <= 0 || parsedId > std::numeric_limits<uint16_t>::max()) {
 			wp_kv->remove(storedKey);

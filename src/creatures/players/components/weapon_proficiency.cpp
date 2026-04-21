@@ -327,7 +327,14 @@ WeaponProficiencyData WeaponProficiency::deserialize(const ValueWrapper &val) {
 
 	WeaponProficiencyData weaponData;
 	if (auto expIt = map.find("experience"); expIt != map.end()) {
-		weaponData.experience = static_cast<uint32_t>(expIt->second->get<IntType>());
+		const auto storedExperience = expIt->second->get<IntType>();
+		if (storedExperience <= 0) {
+			weaponData.experience = 0;
+		} else if (storedExperience > std::numeric_limits<uint32_t>::max()) {
+			weaponData.experience = std::numeric_limits<uint32_t>::max();
+		} else {
+			weaponData.experience = static_cast<uint32_t>(storedExperience);
+		}
 	}
 	if (auto masteredIt = map.find("mastered"); masteredIt != map.end()) {
 		weaponData.mastered = masteredIt->second->get<BooleanType>();

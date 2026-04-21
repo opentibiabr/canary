@@ -165,7 +165,7 @@ namespace {
 
 bool EventsScheduler::loadScheduleEventFromJson() {
 	reset();
-	hasConfiguredJsonEventsFlag = false;
+	hasActiveJsonEventsFlag = false;
 	g_kv().scoped("eventscheduler")->remove("forge-chance");
 	g_kv().scoped("eventscheduler")->remove("double-bestiary");
 	g_kv().scoped("eventscheduler")->remove("double-bosstiary");
@@ -195,7 +195,6 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		g_logger().warn("{} - Missing or invalid 'events' array in '{}'. Falling back to XML scheduler.", __FUNCTION__, folder);
 		return true;
 	}
-	hasConfiguredJsonEventsFlag = !eventsIt->empty();
 
 	const auto now = getTimeNow();
 
@@ -353,6 +352,9 @@ bool EventsScheduler::loadScheduleEventFromJson() {
 		eventsOnSameDay[eventName] = currentEventRates;
 		eventScheduler.emplace_back(EventScheduler { eventName, startTime, endTime });
 	}
+
+	// Used by CanaryServer to decide whether XML should be loaded as fallback.
+	hasActiveJsonEventsFlag = !eventScheduler.empty();
 
 	for (const auto &event : eventScheduler) {
 		if (now >= event.startTime && now <= event.endTime) {

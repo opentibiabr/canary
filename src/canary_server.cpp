@@ -408,10 +408,10 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper((g_npcs().load(false, true)), "npc");
 
 	// It needs to be loaded after the revscript is read in order to use the scripting interface.
-	// JSON has priority when configured; XML is only used as fallback when JSON has no events.
+	// JSON has priority when it has active events; otherwise XML is used as fallback.
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromJson(), "json/eventscheduler/events.json");
-	if (!g_eventsScheduler().hasConfiguredJsonEvents()) {
-		logger.debug("EventScheduler JSON has no configured events. Loading XML fallback.");
+	if (!g_eventsScheduler().hasActiveJsonEvents()) {
+		logger.debug("EventScheduler JSON has no active events. Loading XML fallback.");
 		modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
 	} else {
 		logger.debug("EventScheduler source: JSON (XML fallback skipped).");

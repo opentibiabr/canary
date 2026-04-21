@@ -798,6 +798,11 @@ uint32_t WeaponProficiency::getBestiaryExperience(uint8_t monsterStar) const {
 }
 
 uint32_t WeaponProficiency::getExperience(uint16_t weaponId /* = 0 */) const {
+	weaponId = weaponId > 0 ? weaponId : m_player.getWeaponId(true);
+	if (weaponId == 0) {
+		return 0;
+	}
+
 	if (!proficiency.contains(weaponId)) {
 		return 0;
 	}

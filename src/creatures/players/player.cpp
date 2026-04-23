@@ -8380,38 +8380,19 @@ void Player::sendCreatureAppear(const std::shared_ptr<Creature> &creature, const
 		return;
 	}
 
-	if (client) {
-		client->sendAddCreature(creature, pos, tile->getClientIndexOfCreature(static_self_cast<Player>(), creature), isLogin);
-	}
-}
-void Player::sendCreatureAppear(const std::shared_ptr<Creature>& creature, const Position& pos, bool isLogin) const {
-	if (!creature) {
+	if (!client) {
 		return;
 	}
 
-	auto tile = creature->getTile();
-	if (!tile) {
+	int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
+	if (stackpos == -1) {
+		sendUpdateTile(tile, pos);
 		return;
 	}
 
-	if (client) {
-		int32_t stackpos = tile->getClientIndexOfCreature(
-			static_self_cast<Player>(),
-			creature
-		);
-
-		if (stackpos == -1) {
-			return;
-		}
-
-		client->sendAddCreature(
-			creature,
-			pos,
-			stackpos,
-			isLogin
-		);
-	}
+	client->sendAddCreature(creature, pos, stackpos, isLogin);
 }
+
 void Player::sendCreatureMove(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) const {
 	if (client) {
 		client->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);

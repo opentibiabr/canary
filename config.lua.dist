@@ -100,8 +100,10 @@ playerBaseCriticalDamage = 0.1
 -- Weapon Proficiency
 weaponProficiencyMaxLevels = 10
 weaponProficiencyMaxPerksPerLevel = 6
--- Values below 1.0 reduce proficiency XP gained. 0 disables gain and values above 1.0 increase it.
--- Example: 0.33 makes the full progression take roughly 3x longer.
+-- NOTE: weaponProficiencyGainMultiplier scales all Weapon Proficiency XP gain.
+-- NOTE: 1.0 = normal progression, 2.0 = 2x faster, 0.5 = half speed, 0 = disabled.
+-- NOTE: values below 1.0 reduce XP; values above 1.0 increase XP.
+-- For full documentation see: https://github.com/opentibiabr/canary/blob/main/docs/systems/weapon-proficiency.md
 weaponProficiencyGainMultiplier = 0.33
 
 -- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)

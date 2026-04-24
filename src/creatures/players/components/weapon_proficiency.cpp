@@ -41,6 +41,7 @@ namespace AugmentType {
 namespace {
 	constexpr int32_t MIN_TRACKED_SKILL = static_cast<int32_t>(SKILL_FIRST);
 	constexpr int32_t MAX_TRACKED_SKILL = static_cast<int32_t>(SKILL_MAGLEVEL);
+	constexpr size_t MASTERY_EXPERIENCE_OFFSET = 2;
 
 	[[nodiscard]] bool isTrackedWeaponProficiencySkill(skills_t skill) {
 		const auto enumValue = static_cast<int32_t>(skill);
@@ -63,6 +64,15 @@ namespace {
 		}
 
 		return asLowerCaseString(itemType.vocationString).find("knight") != std::string::npos;
+	}
+
+	size_t getMasteryExperienceTierCount(const Proficiency &proficiencyInfo, const std::vector<uint32_t> &experienceArray) {
+		if (proficiencyInfo.maxLevel == 0 || experienceArray.empty()) {
+			return 0;
+		}
+
+		const auto masteryLevels = static_cast<size_t>(proficiencyInfo.maxLevel) + MASTERY_EXPERIENCE_OFFSET;
+		return std::min(experienceArray.size(), masteryLevels);
 	}
 }
 
@@ -676,6 +686,9 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	}
 
 	const auto &experienceArray = getExperienceArray(weaponId);
+	if (experienceArray.empty()) {
+		return 0;
+	}
 
 	auto prof_it = proficiencies.find(Item::items[weaponId].proficiencyId);
 	if (prof_it == proficiencies.end()) {
@@ -689,11 +702,8 @@ uint32_t WeaponProficiency::nextLevelExperience(uint16_t weaponId) {
 	}
 
 	const auto &playerProficiency = proficiency.at(weaponId);
-	if (proficiencyInfo.maxLevel == 0) {
-		return 0;
-	}
-	const auto maxExpLevels = static_cast<uint8_t>(std::min<size_t>(experienceArray.size(), proficiencyInfo.maxLevel));
-	for (uint8_t i = 0; i < maxExpLevels; ++i) {
+	const auto maxExpLevels = getMasteryExperienceTierCount(proficiencyInfo, experienceArray);
+	for (size_t i = 0; i < maxExpLevels; ++i) {
 		if (playerProficiency.experience >= experienceArray[i]) {
 			continue;
 		}
@@ -718,16 +728,9 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 	}
 
 	const auto &proficiencyInfo = prof_it->second;
-	if (experienceArray.empty()) {
-		return 0;
-	}
-
-	if (proficiencyInfo.maxLevel == 0) {
-		return 0;
-	}
-	size_t masteryIndex = std::min<size_t>(experienceArray.size(), static_cast<size_t>(proficiencyInfo.maxLevel));
-	if (masteryIndex > 0) {
-		return experienceArray[masteryIndex - 1];
+	const auto masteryTierCount = getMasteryExperienceTierCount(proficiencyInfo, experienceArray);
+	if (masteryTierCount > 0) {
+		return experienceArray[masteryTierCount - 1];
 	}
 	return 0;
 }

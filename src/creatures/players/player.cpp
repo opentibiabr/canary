@@ -8406,9 +8406,13 @@ void Player::sendCreatureTurn(const std::shared_ptr<Creature> &creature) {
 
 	if (client && canSeeCreature(creature)) {
 		int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
-		if (stackpos != -1) {
-			client->sendCreatureTurn(creature, stackpos);
+
+		if (stackpos < 0 || stackpos >= 10) {
+			sendUpdateTile(tile, creature->getPosition());
+			return;
 		}
+
+		client->sendCreatureTurn(creature, stackpos);
 	}
 }
 

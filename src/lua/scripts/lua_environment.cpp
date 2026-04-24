@@ -51,6 +51,9 @@ bool LuaEnvironment::initState() {
 	Lua::load(luaState);
 	runningEventId = EVENT_ID_USER;
 
+	solState.emplace(luaState);
+	g_logger().info("Sol2 integration initialized in LuaEnvironment");
+
 	return true;
 }
 
@@ -83,6 +86,7 @@ bool LuaEnvironment::closeState() {
 
 	lua_close(luaState);
 	luaState = nullptr;
+	solState.reset();
 	return true;
 }
 

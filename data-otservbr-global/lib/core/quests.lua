@@ -1,1 +1,1 @@
-return require("data.lib.core.quests.loader").load(DATA_DIRECTORY)
+return dofile(CORE_DIRECTORY .. "/lib/core/quests/loader.lua").load(DATA_DIRECTORY)

@@ -25,13 +25,24 @@ local function validateStartStorage(quest, questName, owners)
 	owners[storage] = questName
 end
 
-local function buildCatalog(namespace, questModules)
+local function buildCatalog(namespace, questModules, catalogDirectory)
 	local quests = {}
 	local missionOwners = {}
 	local storageOwners = {}
+	local dirSep = package.config:sub(1, 1)
 
 	for index, moduleName in ipairs(questModules) do
-		local quest = require(namespace .. "." .. moduleName)
+		local quest
+		if catalogDirectory then
+			local filePath = catalogDirectory .. dirSep .. moduleName .. ".lua"
+			local loader, errMsg = loadfile(filePath)
+			if not loader then
+				error(string.format("Quest module %s failed to load: %s", moduleName, errMsg))
+			end
+			quest = loader()
+		else
+			quest = require(namespace .. "." .. moduleName)
+		end
 		if type(quest) ~= "table" then
 			error(string.format("Quest module %s did not return a table", moduleName))
 		end

@@ -440,7 +440,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		const int32_t stackpos = oldStackPosVector[i++];
 		if (stackpos != -1) {
 			const auto &player = spectator->getPlayer();
-			player->sendCreatureMove(creature, newPos, newTile->getStackposOfCreature(player, creature), oldPos, stackpos, teleport);
+			player->sendCreatureMove(creature, newPos, newTile->getClientIndexOfCreature(player, creature), oldPos, stackpos, teleport);
 		}
 	}
 

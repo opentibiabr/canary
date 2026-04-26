@@ -11647,7 +11647,7 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 
 			const std::string &houseTown = town->getName();
 			if (houseTown == townName) {
-				houses.emplace(house->getClientId(), house);
+				houses.emplace(house->getId(), house);
 			}
 		}
 	} else {
@@ -11657,13 +11657,13 @@ void Game::playerCyclopediaHousesByTown(uint32_t playerId, const std::string &to
 				if (!playerHouse) {
 					continue;
 				}
-				houses.emplace(playerHouse->getClientId(), playerHouse);
+				houses.emplace(playerHouse->getId(), playerHouse);
 			}
 		}
 
 		const auto house = g_game().map.houses.getHouseByBidderName(player->getName());
 		if (house) {
-			houses.emplace(house->getClientId(), house);
+			houses.emplace(house->getId(), house);
 		}
 	}
 	player->sendCyclopediaHouseList(houses);
@@ -11679,7 +11679,7 @@ void Game::playerCyclopediaHouseBid(uint32_t playerId, uint32_t houseId, uint64_
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house) {
 		return;
 	}
@@ -11745,7 +11745,7 @@ void Game::playerCyclopediaHouseMoveOut(uint32_t playerId, uint32_t houseId, uin
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house || house->getState() != CyclopediaHouseState::Rented) {
 		player->sendHouseAuctionMessage(houseId, HouseAuctionType::MoveOut, enumToValue(TransferErrorMessage::Internal));
 		return;
@@ -11774,7 +11774,7 @@ void Game::playerCyclopediaHouseCancelMoveOut(uint32_t playerId, uint32_t houseI
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house || house->getState() != CyclopediaHouseState::MoveOut) {
 		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelMoveOut, enumToValue(TransferErrorMessage::Internal));
 		return;
@@ -11809,7 +11809,7 @@ void Game::playerCyclopediaHouseTransfer(uint32_t playerId, uint32_t houseId, ui
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house || house->getState() != CyclopediaHouseState::Rented) {
 		owner->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::Internal));
 		return;
@@ -11842,7 +11842,7 @@ void Game::playerCyclopediaHouseCancelTransfer(uint32_t playerId, uint32_t house
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house || house->getState() != CyclopediaHouseState::Transfer) {
 		player->sendHouseAuctionMessage(houseId, HouseAuctionType::CancelTransfer, enumToValue(TransferErrorMessage::Internal));
 		return;
@@ -11886,7 +11886,7 @@ void Game::playerCyclopediaHouseAcceptTransfer(uint32_t playerId, uint32_t house
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house || house->getState() != CyclopediaHouseState::Transfer) {
 		player->sendHouseAuctionMessage(houseId, HouseAuctionType::AcceptTransfer, enumToValue(AcceptTransferErrorMessage::Internal));
 		return;
@@ -11920,7 +11920,7 @@ void Game::playerCyclopediaHouseRejectTransfer(uint32_t playerId, uint32_t house
 		return;
 	}
 
-	const auto house = g_game().map.houses.getHouseByClientId(houseId);
+	const auto house = g_game().map.houses.getHouse(houseId);
 	if (!house || house->getBidder() != player->getGUID() || house->getState() != CyclopediaHouseState::Transfer) {
 		player->sendHouseAuctionMessage(houseId, HouseAuctionType::Transfer, enumToValue(TransferErrorMessage::NotHouseOwner));
 		return;

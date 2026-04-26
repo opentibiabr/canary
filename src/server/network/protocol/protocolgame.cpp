@@ -66,6 +66,28 @@
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
 
+	uint32_t getCyclopediaHouseNetworkId(const std::shared_ptr<House> &house, bool isOTCR) {
+		if (!house) {
+			return 0;
+		}
+
+		if (isOTCR) {
+			return house->getId();
+		}
+
+		const uint32_t clientId = house->getClientId();
+		return clientId != 0 ? clientId : house->getId();
+	}
+
+	uint32_t resolveCyclopediaHouseInternalId(uint32_t networkHouseId, bool isOTCR) {
+		if (isOTCR) {
+			return networkHouseId;
+		}
+
+		const auto house = g_game().map.houses.getHouseByClientId(networkHouseId);
+		return house ? house->getId() : networkHouseId;
+	}
+
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
 		uint16_t totalIterationCount = 0;
@@ -10108,19 +10130,19 @@ void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 			break;
 		}
 		case 1: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			const uint64_t bidValue = msg.get<uint64_t>();
 			g_game().playerCyclopediaHouseBid(player->getID(), houseId, bidValue);
 			break;
 		}
 		case 2: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			const uint32_t timestamp = msg.get<uint32_t>();
 			g_game().playerCyclopediaHouseMoveOut(player->getID(), houseId, timestamp);
 			break;
 		}
 		case 3: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			const uint32_t timestamp = msg.get<uint32_t>();
 			const std::string &newOwner = msg.getString();
 			const uint64_t bidValue = msg.get<uint64_t>();
@@ -10128,22 +10150,22 @@ void ProtocolGame::parseCyclopediaHouseAuction(NetworkMessage &msg) {
 			break;
 		}
 		case 4: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			g_game().playerCyclopediaHouseCancelMoveOut(player->getID(), houseId);
 			break;
 		}
 		case 5: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			g_game().playerCyclopediaHouseCancelTransfer(player->getID(), houseId);
 			break;
 		}
 		case 6: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			g_game().playerCyclopediaHouseAcceptTransfer(player->getID(), houseId);
 			break;
 		}
 		case 7: {
-			const uint32_t houseId = msg.get<uint32_t>();
+			const uint32_t houseId = resolveCyclopediaHouseInternalId(msg.get<uint32_t>(), isOTCR);
 			g_game().playerCyclopediaHouseRejectTransfer(player->getID(), houseId);
 			break;
 		}
@@ -10154,8 +10176,8 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 	NetworkMessage msg;
 	msg.addByte(0xC7);
 	msg.add<uint16_t>(houses.size());
-	for (const auto &[clientId, houseData] : houses) {
-		msg.add<uint32_t>(clientId);
+	for (const auto &[houseId, houseData] : houses) {
+		msg.add<uint32_t>(getCyclopediaHouseNetworkId(houseData, isOTCR));
 		msg.addByte(0x01); // 0x00 = Renovation; 0x01 = Available
 
 		auto houseState = houseData->getState();
@@ -10165,7 +10187,7 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 			bool bidder = houseData->getBidderName() == player->getName();
 			msg.addString(houseData->getBidderName());
 			msg.addByte(bidder);
-			uint8_t disableIndex = enumToValue(player->canBidHouse(clientId));
+			uint8_t disableIndex = enumToValue(player->canBidHouse(houseId));
 			msg.addByte(disableIndex);
 
 			if (!houseData->getBidderName().empty()) {
@@ -10205,7 +10227,7 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 			bool isNewOwner = player->getName() == houseData->getBidderName();
 			msg.addByte(isNewOwner);
 			if (isNewOwner) {
-				uint8_t disableIndex = enumToValue(player->canAcceptTransferHouse(clientId));
+				uint8_t disableIndex = enumToValue(player->canAcceptTransferHouse(houseId));
 				msg.addByte(disableIndex); // Accept Transfer Error
 				msg.addByte(0); // Reject Transfer Error
 			}
@@ -10237,9 +10259,10 @@ void ProtocolGame::sendCyclopediaHouseList(HouseMap houses) {
 void ProtocolGame::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess /* = false*/) {
 	NetworkMessage msg;
 	const auto typeValue = enumToValue(type);
+	const auto house = g_game().map.houses.getHouse(houseId);
 
 	msg.addByte(0xC3);
-	msg.add<uint32_t>(houseId);
+	msg.add<uint32_t>(getCyclopediaHouseNetworkId(house, isOTCR));
 	msg.addByte(typeValue);
 	if (bidSuccess && typeValue == 1) {
 		msg.addByte(0x00);
@@ -10252,15 +10275,15 @@ void ProtocolGame::sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType ty
 void ProtocolGame::sendHousesInfo() {
 	NetworkMessage msg;
 
-	uint32_t houseClientId = 0;
+	uint32_t houseId = 0;
 	const auto accountHouseCount = g_game().map.houses.getHouseCountByAccount(player->getAccountId());
 	const auto house = g_game().map.houses.getHouseByPlayerId(player->getGUID());
 	if (house) {
-		houseClientId = house->getClientId();
+		houseId = getCyclopediaHouseNetworkId(house, isOTCR);
 	}
 
 	msg.addByte(0xC6);
-	msg.add<uint32_t>(houseClientId);
+	msg.add<uint32_t>(houseId);
 	msg.addByte(0x00);
 
 	msg.addByte(accountHouseCount); // Houses Account
@@ -10273,12 +10296,12 @@ void ProtocolGame::sendHousesInfo() {
 	msg.addByte(0x01);
 
 	msg.addByte(0x01);
-	msg.add<uint32_t>(houseClientId);
+	msg.add<uint32_t>(houseId);
 
 	const auto &housesList = g_game().map.houses.getHouses();
 	msg.add<uint16_t>(housesList.size());
 	for (const auto &it : housesList) {
-		msg.add<uint32_t>(it.second->getClientId());
+		msg.add<uint32_t>(getCyclopediaHouseNetworkId(it.second, isOTCR));
 	}
 
 	writeToOutputBuffer(msg);

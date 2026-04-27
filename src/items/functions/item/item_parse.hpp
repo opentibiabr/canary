@@ -161,6 +161,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "script", ITEM_PARSE_SCRIPT },
 	{ "augments", ITEM_PARSE_AUGMENT },
 	{ "elementalbond", ITEM_PARSE_ELEMENTALBOND },
+	{ "proficiency", ITEM_PARSE_PROFICIENCY },
 };
 
 const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -339,6 +340,7 @@ private:
 	static void parseReflectDamage(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseTransformOnUse(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parsePrimaryType(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseProficiency(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseHouseRelated(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseUnscriptedItems(std::string_view stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
 

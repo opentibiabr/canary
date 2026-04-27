@@ -34,5 +34,6 @@ target_sources(
             players/components/wheel/player_wheel.cpp
             players/components/player_vip.cpp
             players/components/wheel/wheel_gems.cpp
+            players/components/weapon_proficiency.cpp
             players/vocations/vocation.cpp
 )

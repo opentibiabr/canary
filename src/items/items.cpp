@@ -17,6 +17,7 @@
 #include "utils/pugicast.hpp"
 #include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
 
 #include <appearances.pb.h>
 
@@ -102,15 +103,13 @@ std::string ItemType::getFormattedAugmentDescription(const std::shared_ptr<Augme
 
 	char signal = augmentInfo->value > 0 ? '-' : '+';
 
+	using enum Augment_t;
 	if (Items::isAugmentWithoutValueDescription(augmentInfo->type)) {
 		return fmt::format("{} -> {}", augmentSpellNameCapitalized, augmentName);
-	} else if (augmentInfo->type == Augment_t::Cooldown) {
+	} else if (augmentInfo->type == Cooldown) {
 		return fmt::format("{} -> {}{}s {}", augmentSpellNameCapitalized, signal, augmentInfo->value / 1000, augmentName);
-	} else if (augmentInfo->type == Augment_t::Base) {
-		const auto &spell = g_spells().getSpellByName(augmentInfo->spellName);
-		if (spell) {
-			return fmt::format("{} -> {:+}% {} {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName, spell->getGroup() == SPELLGROUP_HEALING ? "healing" : "damage");
-		}
+	} else if (augmentInfo->type == BaseDamage || augmentInfo->type == BaseHealing) {
+		return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
 	}
 
 	return fmt::format("{} -> {:+}% {}", augmentSpellNameCapitalized, augmentInfo->value, augmentName);
@@ -138,6 +137,17 @@ bool Items::reload() {
 	}
 
 	return true;
+}
+
+[[nodiscard]] ItemTypes_t protoItemCategoryToCpp(uint32_t protoCategory) {
+	// Protobuf enums for categories (values 1-31)
+	// We map them to our internal ItemTypes_t
+	if (protoCategory >= 1 && protoCategory <= 27) {
+		return static_cast<ItemTypes_t>(protoCategory);
+	}
+	// Add specific mappings if protobuf categories diverge or extend beyond 27
+	// Currently, values above 27 in proto don't have exact matches in ItemTypes_t (1-27)
+	return ITEM_TYPE_OTHER;
 }
 
 void Items::loadFromProtobuf() {
@@ -206,7 +216,7 @@ void Items::loadFromProtobuf() {
 		}
 
 		if (object.flags().has_market()) {
-			iType.type = static_cast<ItemTypes_t>(object.flags().market().category());
+			iType.type = protoItemCategoryToCpp(object.flags().market().category());
 		}
 
 		iType.name = object.name();
@@ -249,6 +259,16 @@ void Items::loadFromProtobuf() {
 		iType.expireStop = object.flags().expirestop();
 		iType.isWrapKit = object.flags().wrapkit();
 		iType.isDualWielding = object.flags().dual_wielding();
+		if (object.flags().has_proficiency() && object.flags().proficiency().has_proficiency_id()) {
+			auto &proficiencies = WeaponProficiency::getProficiencies();
+			const auto proficiencyId = static_cast<uint16_t>(object.flags().proficiency().proficiency_id());
+			auto profIt = proficiencies.find(proficiencyId);
+			if (profIt == proficiencies.end()) {
+				g_logger().warn("[Items::loadFromProtobuf] - Unknown Proficiency ID '{}'", proficiencyId);
+			} else {
+				iType.proficiencyId = proficiencyId;
+			}
+		}
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({ asLowerCaseString(iType.name), iType.id });

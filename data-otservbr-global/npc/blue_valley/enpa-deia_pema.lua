@@ -40,6 +40,7 @@ npcConfig.shop = { -- Sellable items
 	{ itemName = "legs of enlightenment", clientId = 50269, buy = 40000, sell = 400 },
 	{ itemName = "nunchaku of enlightenment", clientId = 50273, buy = 50000, sell = 500 },
 	{ itemName = "plain monk robe", clientId = 50257, buy = 450 },
+	{ itemName = "simple jo staff", clientId = 50166, buy = 10 },
 	{ itemName = "robe of enlightenment", clientId = 50268, buy = 150000, sell = 150 },
 	{ itemName = "sais of enlightenment", clientId = 50272, buy = 100000, sell = 100 },
 }

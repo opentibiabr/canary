@@ -264,7 +264,7 @@ void IOWheel::initializeKnightSpells() {
 
 	m_wheelBonusData.spells.knight[2].name = "Chivalrous Challenge";
 	m_wheelBonusData.spells.knight[2].grade[1].decrease.manaCost = 20;
-	m_wheelBonusData.spells.knight[2].grade[2].increase.aditionalTarget = 1;
+	m_wheelBonusData.spells.knight[2].grade[2].increase.additionalTarget = 1;
 
 	m_wheelBonusData.spells.knight[3].name = "Intense Wound Cleansing";
 	m_wheelBonusData.spells.knight[3].grade[1].increase.heal = 125;
@@ -285,7 +285,7 @@ void IOWheel::initializePaladinSpells() {
 	m_wheelBonusData.spells.paladin[1].grade[2].increase.damage = 380;
 
 	m_wheelBonusData.spells.paladin[2].name = "Divine Dazzle";
-	m_wheelBonusData.spells.paladin[2].grade[1].increase.aditionalTarget = 1;
+	m_wheelBonusData.spells.paladin[2].grade[1].increase.additionalTarget = 1;
 	m_wheelBonusData.spells.paladin[2].grade[2].increase.duration = 4;
 	m_wheelBonusData.spells.paladin[2].grade[2].decrease.cooldown = 4;
 
@@ -334,8 +334,8 @@ void IOWheel::initializeMonkSpells() {
 
 	// Chained Penance: Grade 1 adds 1 extra target; Grade 2 adds 2 extra targets
 	m_wheelBonusData.spells.monk[2].name = "Chained Penance";
-	m_wheelBonusData.spells.monk[2].grade[1].increase.aditionalTarget = 1;
-	m_wheelBonusData.spells.monk[2].grade[2].increase.aditionalTarget = 2;
+	m_wheelBonusData.spells.monk[2].grade[1].increase.additionalTarget = 1;
+	m_wheelBonusData.spells.monk[2].grade[2].increase.additionalTarget = 2;
 
 	// Flurry of Blows: Grade 1 grants life leech; Grade 2 increases damage
 	m_wheelBonusData.spells.monk[3].name = "Flurry of Blows";

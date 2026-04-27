@@ -19,6 +19,15 @@ public:
 		maxInboxItems = maxitems;
 	}
 
+	[[nodiscard]] uint32_t getMaxInboxItems() const {
+		return maxInboxItems;
+	}
+
+	uint32_t getRemainingItemCapacity() {
+		const uint32_t currentItems = getItemHoldingCount();
+		return currentItems >= maxInboxItems ? 0 : maxInboxItems - currentItems;
+	}
+
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;
 

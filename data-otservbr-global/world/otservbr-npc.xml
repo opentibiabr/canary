@@ -97,13 +97,13 @@
 		<npc name="Sholley" x="0" y="0" z="3" spawntime="60" />
 	</npc>
 	<npc centerx="32628" centery="31921" centerz="3" radius="1">
-		<npc name="Humnog, The Guard" x="-1" y="0" z="3" spawntime="60" />
+		<npc name="Humnog, the guard" x="-1" y="0" z="3" spawntime="60" />
 	</npc>
 	<npc centerx="32625" centery="31923" centerz="3" radius="1">
 		<npc name="Emperor Kruzak" x="1" y="0" z="3" spawntime="60" />
 	</npc>
 	<npc centerx="32628" centery="31925" centerz="3" radius="1">
-		<npc name="Hemor, The Guard" x="-1" y="0" z="3" spawntime="60" />
+		<npc name="Hemor, the guard" x="-1" y="0" z="3" spawntime="60" />
 	</npc>
 	<npc centerx="32587" centery="31926" centerz="3" radius="1">
 		<npc name="Tulf" x="0" y="0" z="3" spawntime="60" />
@@ -445,7 +445,7 @@
 		<npc name="Captain Cookie" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32157" centery="31290" centerz="6" radius="1">
-		<npc name="Messenger Of Heaven" x="0" y="0" z="6" spawntime="60" />
+		<npc name="Messenger of Heaven" x="0" y="0" z="6" spawntime="60" />
 	</npc>
 	<npc centerx="32648" centery="31292" centerz="6" radius="1">
 		<npc name="Maris" x="0" y="0" z="6" spawntime="60" />
@@ -1171,7 +1171,7 @@
 		<npc name="Harlow" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33038" centery="31367" centerz="7" radius="1">
-		<npc name="Messenger Of Heaven" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Messenger of Heaven" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32224" centery="31381" centerz="7" radius="1">
 		<npc name="Buddel (Okolnir)" x="0" y="0" z="7" spawntime="60" />
@@ -1279,7 +1279,7 @@
 		<npc name="Tired Tree" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33195" centery="31646" centerz="7" radius="1">
-		<npc name="Messenger Of Heaven" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Messenger of Heaven" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33657" centery="31654" centerz="7" radius="1">
 		<npc name="Nibble" x="0" y="0" z="7" spawntime="60" />
@@ -1600,7 +1600,7 @@
 		<npc name="Willem" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32536" centery="32026" centerz="7" radius="1">
-		<npc name="Lesser Messenger Of Heaven" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Lesser Messenger of Heaven" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32076" centery="32027" centerz="7" radius="1">
 		<npc name="Neill" x="0" y="0" z="7" spawntime="60" />
@@ -1762,7 +1762,7 @@
 		<npc name="Naji" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32389" centery="32229" centerz="7" radius="1">
-		<npc name="Donald Mcronald" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Donald McRonald" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32401" centery="32232" centerz="7" radius="1">
 		<npc name="Pig" x="0" y="0" z="7" spawntime="60" />
@@ -1774,7 +1774,7 @@
 		<npc name="Maelyrra" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32391" centery="32237" centerz="7" radius="1">
-		<npc name="Sherry Mcronald" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Sherry McRonald" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33530" centery="32238" centerz="7" radius="1">
 		<npc name="Peaceful Pooka" x="0" y="0" z="7" spawntime="60" />
@@ -1984,7 +1984,7 @@
 		<npc name="Andrew Lyze" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="33172" centery="32634" centerz="7" radius="1">
-		<npc name="Messenger Of Heaven" x="0" y="0" z="7" spawntime="60" />
+		<npc name="Messenger of Heaven" x="0" y="0" z="7" spawntime="60" />
 	</npc>
 	<npc centerx="32565" centery="32651" centerz="7" radius="1">
 		<npc name="Vescu" x="0" y="0" z="7" spawntime="60" />
@@ -2350,16 +2350,16 @@
 		<npc name="A Strange Chalice" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="33361" centery="31316" centerz="9" radius="1">
-		<npc name="Oberon'S Bile" x="0" y="0" z="9" spawntime="60" />
+		<npc name="Oberon's Bile" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="33367" centery="31316" centerz="9" radius="1">
-		<npc name="Oberon'S Hate" x="0" y="0" z="9" spawntime="60" />
+		<npc name="Oberon's Hate" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="33361" centery="31320" centerz="9" radius="1">
-		<npc name="Oberon'S Spite" x="0" y="0" z="9" spawntime="60" />
+		<npc name="Oberon's Spite" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="33367" centery="31320" centerz="9" radius="1">
-		<npc name="Oberon'S Ire" x="0" y="0" z="9" spawntime="60" />
+		<npc name="Oberon's Ire" x="0" y="0" z="9" spawntime="60" />
 	</npc>
 	<npc centerx="33444" centery="31321" centerz="9" radius="1">
 		<npc name="Rock With A Soft Spot" x="0" y="0" z="9" spawntime="60" />
@@ -2831,7 +2831,7 @@
 		<npc name="Kizar" x="-1" y="0" z="14" spawntime="60" />
 	</npc>
 	<npc centerx="32207" centery="31377" centerz="14" radius="1">
-		<npc name="Messenger Of Heaven" x="0" y="0" z="14" spawntime="60" />
+		<npc name="Messenger of Heaven" x="0" y="0" z="14" spawntime="60" />
 	</npc>
 	<npc centerx="33388" centery="31411" centerz="14" radius="1">
 		<npc name="Heavenly Messenger" x="0" y="0" z="14" spawntime="60" />

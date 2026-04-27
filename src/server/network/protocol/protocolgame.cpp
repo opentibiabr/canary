@@ -4459,6 +4459,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 			}
 		} else {
 			int32_t physicalAttack = std::max<int32_t>(0, weapon->getAttack());
+			physicalAttack += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 			int32_t elementalAttack = 0;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				elementalAttack = std::max<int32_t>(0, it.abilities->elementDamage);
@@ -8612,6 +8613,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 			}
 		} else {
 			int32_t physicalAttack = std::max<int32_t>(0, weapon->getAttack());
+			physicalAttack += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 			int32_t elementalAttack = 0;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				elementalAttack = std::max<int32_t>(0, it.abilities->elementDamage);

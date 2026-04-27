@@ -22,7 +22,7 @@ Protocol::Protocol(const Connection_ptr &initConnection) :
 	zs.zalloc = Z_NULL;
 	zs.zfree = Z_NULL;
 	zs.opaque = Z_NULL;
-	if (deflateInit2(&zs, compressionLevel, Z_DEFLATED, -15, g_configManager().getNumber(COMPRESSION_LEVEL), Z_DEFAULT_STRATEGY) != Z_OK) {
+	if (deflateInit2(&zs, g_configManager().getNumber(COMPRESSION_LEVEL), Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
 		g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (zs.msg ? zs.msg : " unknown error"));
 	}
 }

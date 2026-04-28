@@ -18,17 +18,17 @@ local vortexTeleports = {
 	[14323] = { -- Anomaly
 		position = Position(32246, 31252, 14),
 		storage = 14320,
-		boss = "Anomaly"
+		boss = "Anomaly",
 	},
 	[14342] = { -- Rupture
 		position = Position(32305, 31249, 14),
 		storage = 14322,
-		boss = "Rupture"
+		boss = "Rupture",
 	},
 	[14344] = { -- Realityquake
 		position = Position(32181, 31240, 14),
 		storage = 14324,
-		boss = "Realityquake"
+		boss = "Realityquake",
 	},
 
 	[14346] = { -- Eradicator
@@ -36,18 +36,18 @@ local vortexTeleports = {
 		storage1 = 14326,
 		storage2 = 14327,
 		storage3 = 14328,
-		boss = "Eradicator"
+		boss = "Eradicator",
 	},
 	[14349] = { -- Outburst
 		position = Position(32204, 31290, 14),
 		storage1 = 14326,
 		storage2 = 14327,
 		storage3 = 14328,
-		boss = "Outburst"
+		boss = "Outburst",
 	},
 
 	[14351] = { special = "worldDevourerEnter" },
-	[14353] = { special = "worldDevourerExit" }
+	[14353] = { special = "worldDevourerExit" },
 }
 
 local function denyAndReturn(player, fromPosition, message)
@@ -76,9 +76,7 @@ function teleportHeart.onStepIn(creature, item, position, fromPosition)
 			denyAndReturn(player, fromPosition, "You don't have access to this portal.")
 		end
 	elseif data.storage1 then
-		if player:getStorageValue(data.storage1) >= 1 and
-		   player:getStorageValue(data.storage2) >= 1 and
-		   player:getStorageValue(data.storage3) >= 1 then
+		if player:getStorageValue(data.storage1) >= 1 and player:getStorageValue(data.storage2) >= 1 and player:getStorageValue(data.storage3) >= 1 then
 			if player:canFightBoss(data.boss) then
 				player:teleportTo(data.position)
 			else

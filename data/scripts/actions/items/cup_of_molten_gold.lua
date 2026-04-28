@@ -28,13 +28,13 @@ function cupOfMoltenGold.onUse(player, item, fromPosition, target, toPosition, i
 		end
 		item:remove(1)
 		player:addItem(config.goldenFirCone, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, targetId.successMsg)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, targetConfig.successMsg)
 	else
 		if target.itemid == 19111 then
 			target:remove(1)
 		end
 		item:remove(1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, targetId.failMsg)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, targetConfig.failMsg)
 	end
 return true
 end

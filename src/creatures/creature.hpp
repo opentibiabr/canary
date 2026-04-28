@@ -575,6 +575,10 @@ public:
 		return position;
 	}
 
+	const Position &getPosition() const final {
+		return position;
+	}
+
 	std::shared_ptr<Tile> getTile() final {
 		return m_tile.lock();
 	}

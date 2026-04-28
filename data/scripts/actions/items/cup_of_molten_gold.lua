@@ -13,9 +13,14 @@ local config = {
 }
 
 function cupOfMoltenGold.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local targetId = config[target.itemid]
-	if not targetId then
-			return false
+	if not target or not target.itemid then
+		return false
+	end
+
+	local targetConfig = config[target.itemid]
+	if not targetConfig then
+		return false
+	end
 	end
 
 	if math.random(100) <= 50 then

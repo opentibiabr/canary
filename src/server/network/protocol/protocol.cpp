@@ -17,7 +17,20 @@
 #include "utils/tools.hpp"
 
 Protocol::Protocol(const Connection_ptr &initConnection) :
-	connectionPtr(initConnection) { }
+	connectionPtr(initConnection)
+{
+	zs.zalloc = Z_NULL;
+	zs.zfree = Z_NULL;
+	zs.opaque = Z_NULL;
+	if (deflateInit2(&zs, g_configManager().getNumber(COMPRESSION_LEVEL), Z_DEFLATED, -15, 9, Z_FILTERED) != Z_OK) {
+		g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (zs.msg ? zs.msg : " unknown error"));
+	}
+}
+
+Protocol::~Protocol()
+{
+	deflateEnd(&zs);
+}
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
@@ -256,15 +269,12 @@ uint32_t Protocol::getIP() const {
 	return 0;
 }
 
-bool Protocol::compression(OutputMessage &outputMessage) const {
+bool Protocol::compression(OutputMessage &outputMessage) {
 	if (checksumMethod != CHECKSUM_METHOD_SEQUENCE) {
 		return false;
 	}
 
-	static thread_local auto compress_ptr = std::make_unique<ZStream>();
-	static const auto &compress = compress_ptr;
-
-	if (!compress->stream) {
+	if (!g_configManager().getBoolean(USE_SERVER_COMPRESSION)) {
 		return false;
 	}
 
@@ -274,42 +284,27 @@ bool Protocol::compression(OutputMessage &outputMessage) const {
 		return false;
 	}
 
-	compress->stream->next_in = outputMessage.getOutputBuffer();
-	compress->stream->avail_in = outputMessageSize;
-	compress->stream->next_out = reinterpret_cast<Bytef*>(compress->buffer.data());
-	compress->stream->avail_out = NETWORKMESSAGE_MAXSIZE;
+	static char outbuffer[NETWORKMESSAGE_MAXSIZE];
+	zs.next_in = outputMessage.getOutputBuffer();
+	zs.avail_in = outputMessageSize;
+	zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
+	zs.avail_out = NETWORKMESSAGE_MAXSIZE;
+	zs.total_out = 0;
 
-	const int32_t ret = deflate(compress->stream.get(), Z_FINISH);
-	if (ret != Z_OK && ret != Z_STREAM_END) {
+	const int32_t ret = deflate(&zs, Z_SYNC_FLUSH);
+	if (ret != Z_OK || zs.avail_in != 0) {
 		return false;
 	}
 
-	const auto totalSize = compress->stream->total_out;
-	deflateReset(compress->stream.get());
+	const auto totalSize = zs.total_out;
 
-	if (totalSize == 0) {
+	if (totalSize == 0 || totalSize < 4) {
 		return false;
 	}
 
 	outputMessage.reset();
-	outputMessage.addBytes(compress->buffer.data(), totalSize);
+	outputMessage.addBytes(outbuffer, totalSize - 4); // remove footer
 
 	return true;
 }
 
-Protocol::ZStream::ZStream() noexcept {
-	const int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
-	if (compressionLevel <= 0) {
-		return;
-	}
-
-	stream = std::make_unique<z_stream>();
-	stream->zalloc = nullptr;
-	stream->zfree = nullptr;
-	stream->opaque = nullptr;
-
-	if (deflateInit2(stream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
-		stream.reset();
-		g_logger().error("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (stream->msg ? stream->msg : " unknown error"));
-	}
-}

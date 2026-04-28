@@ -21,7 +21,6 @@ function cupOfMoltenGold.onUse(player, item, fromPosition, target, toPosition, i
 	if not targetConfig then
 		return false
 	end
-	end
 
 	if math.random(100) <= 50 then
 		if target.itemid == 19111 then

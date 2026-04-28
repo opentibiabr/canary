@@ -23,7 +23,7 @@ class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
 	explicit Protocol(const Connection_ptr &initConnection);
 
-	virtual ~Protocol() = default;
+	virtual ~Protocol();
 
 	// non-copyable
 	Protocol(const Protocol &) = delete;

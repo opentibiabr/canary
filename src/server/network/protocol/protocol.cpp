@@ -27,6 +27,11 @@ Protocol::Protocol(const Connection_ptr &initConnection) :
 	}
 }
 
+Protocol::~Protocol()
+{
+	deflateEnd(&zs);
+}
+
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
 		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;

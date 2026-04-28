@@ -1216,7 +1216,7 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 
 		for (const auto &spectator : playersSpectators) {
 			if (const auto &player = spectator->getPlayer()) {
-				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
+				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getClientIndexOfCreature(player, creature) : -1);
 			}
 		}
 
@@ -5895,13 +5895,13 @@ namespace {
 		uint32_t looseItems = 0;
 
 		[[nodiscard]] bool hasLoot() const noexcept {
-	    return goldValue != 0 || stackableAmount != 0 || looseItems != 0;
+			return goldValue != 0 || stackableAmount != 0 || looseItems != 0;
 		}
 
 		bool operator!=(const NearbyQuickLootSnapshot &other) const {
 			return goldValue != other.goldValue
-			    || stackableAmount != other.stackableAmount
-			    || looseItems != other.looseItems;
+				|| stackableAmount != other.stackableAmount
+				|| looseItems != other.looseItems;
 		}
 	};
 
@@ -6534,7 +6534,7 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 			outfit.lookMount = 0;
 		} else {
 			auto deltaSpeedChange = mount->speed;
-			const auto prevMount = player->isMounted()? mounts->getMountByID(player->getCurrentMount()): nullptr;
+			const auto prevMount = player->isMounted() ? mounts->getMountByID(player->getCurrentMount()) : nullptr;
 
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;

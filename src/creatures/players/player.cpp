@@ -4061,7 +4061,7 @@ void Player::despawn() {
 	size_t i = 0;
 	for (const auto &spectator : spectators) {
 		if (const auto &player = spectator->getPlayer()) {
-			oldStackPosVector.emplace_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getStackposOfCreature(player, getPlayer()) : -1);
+			oldStackPosVector.emplace_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getClientIndexOfCreature(player, getPlayer()) : -1);
 		}
 		if (const auto &player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
@@ -8376,15 +8376,18 @@ void Player::sendCreatureAppear(const std::shared_ptr<Creature> &creature, const
 	}
 
 	auto tile = creature->getTile();
-	if (!tile) {
+	if (!tile || !client) {
 		return;
 	}
 
-	if (client) {
-		client->sendAddCreature(creature, pos, tile->getStackposOfCreature(static_self_cast<Player>(), creature), isLogin);
+	int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
+	if (stackpos < 0 || stackpos >= 10) {
+		sendUpdateTile(tile, pos);
+		return;
 	}
-}
 
+	client->sendAddCreature(creature, pos, stackpos, isLogin);
+}
 void Player::sendCreatureMove(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) const {
 	if (client) {
 		client->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
@@ -8402,10 +8405,14 @@ void Player::sendCreatureTurn(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (client && canSeeCreature(creature)) {
-		int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
-		if (stackpos != -1) {
-			client->sendCreatureTurn(creature, stackpos);
+		int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
+
+		if (stackpos < 0 || stackpos >= 10) {
+			sendUpdateTile(tile, creature->getPosition());
+			return;
 		}
+
+		client->sendCreatureTurn(creature, stackpos);
 	}
 }
 
@@ -8458,12 +8465,16 @@ void Player::sendCreatureChangeVisible(const std::shared_ptr<Creature> &creature
 		if (!tile) {
 			return;
 		}
-		int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
+		int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
 		if (stackpos == -1) {
 			return;
 		}
 
 		if (visible) {
+			if (stackpos >= 10) {
+				sendUpdateTile(tile, creature->getPosition());
+				return;
+			}
 			client->sendAddCreature(creature, creature->getPosition(), stackpos, false);
 		} else {
 			client->sendRemoveTileThing(creature->getPosition(), stackpos);

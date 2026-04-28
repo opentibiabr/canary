@@ -84,17 +84,25 @@ jobs:
           git diff --binary > formatting.patch
           git diff --cached --binary >> formatting.patch
 
-      - name: Upload formatting patch
+      - name: Apply formatting with autofix.ci
+        id: autofix
         if: steps.formatting-diff.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a
+        continue-on-error: true
+        with:
+          commit-message: "style: auto-formatting (clang/stylua/cmake)"
+
+      - name: Upload formatting patch
+        if: steps.formatting-diff.outputs.has_changes == 'true' && steps.autofix.outputs.autofix_started != 'true' && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: formatting.patch
           path: formatting.patch
 
       - name: Fail on formatting changes
-        if: steps.formatting-diff.outputs.has_changes == 'true'
+        if: steps.formatting-diff.outputs.has_changes == 'true' && steps.autofix.outputs.autofix_started != 'true'
         run: |
-          echo "::error::Formatting changes are required. Apply the formatting.patch artifact or run the formatters locally and push the result."
+          echo "::error::Formatting changes are required. Install/configure autofix.ci or apply the formatting.patch artifact and push the result."
           exit 1
 
       - name: Run Analysis (Reviewdog)

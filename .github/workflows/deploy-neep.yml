@@ -78,6 +78,8 @@ jobs:
       # ---------------------------------------------------------
       - name: Setup configurations
         id: setup
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
           if [ "${{ github.event_name }}" = "issue_comment" ]; then
             {
@@ -85,8 +87,8 @@ jobs:
               echo "actor=${{ github.event.comment.user.login }}"
               echo "pr_number=${{ github.event.issue.number }}"
               echo "has_pr=true"
-              
-              if echo "${{ github.event.comment.body }}" | grep -iq '/deploy clean'; then
+
+              if printf '%s\n' "$COMMENT_BODY" | grep -Fqi -- '/deploy clean'; then
                 echo "is_clean=true"
               else
                 echo "is_clean=false"

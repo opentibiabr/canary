@@ -5779,6 +5779,9 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
+	++m_attackCheckGeneration;
+	m_pendingAttackCheckTask = false;
+
 	const auto &followCreature = getFollowCreature();
 	if (chaseMode && creature) {
 		if (followCreature != creature) {
@@ -5789,9 +5792,33 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		checkCreatureAttack();
+		scheduleAttackCheck();
 	}
 	return true;
+}
+
+void Player::scheduleAttackCheck() {
+	if (m_pendingAttackCheckTask) {
+		return;
+	}
+
+	m_pendingAttackCheckTask = true;
+	const uint32_t generation = m_attackCheckGeneration;
+
+	g_dispatcher().addEvent([self = std::weak_ptr<Player>(static_self_cast<Player>()), generation] {
+		const auto &player = self.lock();
+		if (!player) {
+			return;
+		}
+
+		if (generation != player->m_attackCheckGeneration || !player->m_pendingAttackCheckTask) {
+			return;
+		}
+
+		player->m_pendingAttackCheckTask = false;
+		player->checkCreatureAttack(true);
+	},
+	                        "Player::scheduleAttackCheck");
 }
 
 void Player::goToFollowCreature() {

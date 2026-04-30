@@ -1,4 +1,6 @@
-require("data-otservbr-global.lib.core.quests")
+-- Load quest catalog via dofile instead of require to avoid package.searchpath
+-- overhead in LuaJIT interpreter mode (macOS ARM64).
+dofile(DATA_DIRECTORY .. "/lib/core/quests.lua")
 
 if not LastQuestlogUpdate then
 	LastQuestlogUpdate = {}

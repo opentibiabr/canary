@@ -21,7 +21,7 @@
     <CANARY_LIBDEPS>
       $(CANARY_COMMON_LIBDEPS);
       libprotobuf.lib;
-      zlib.lib;
+      z.lib;
       libcurl.lib;
       fmt.lib;
       spdlog.lib;
@@ -29,7 +29,7 @@
     <CANARY_LIBDEPS_D>
       $(CANARY_COMMON_LIBDEPS);
       libprotobufd.lib;
-      zlibd.lib;
+      zd.lib;
       libcurl-d.lib;
       fmtd.lib;
       spdlogd.lib;

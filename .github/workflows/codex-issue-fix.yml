@@ -1,0 +1,339 @@
+name: Codex - Issue Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "GitHub issue number to fix"
+        required: true
+        type: string
+      base_branch:
+        description: "Base branch for the generated PR. Defaults to the repository default branch."
+        required: false
+        type: string
+        default: ""
+      model:
+        description: "Optional Codex model override. Leave empty to use the action default."
+        required: false
+        type: string
+        default: ""
+      effort:
+        description: "Codex reasoning effort"
+        required: false
+        type: choice
+        options:
+          - medium
+          - high
+          - xhigh
+        default: high
+      draft_pr:
+        description: "Open the generated pull request as a draft"
+        required: false
+        type: boolean
+        default: true
+  issue_comment:
+    types:
+      - created
+
+permissions: {}
+
+jobs:
+  authorize:
+    name: Authorize admin trigger
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, '/codex fix')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      authorized: ${{ steps.gate.outputs.authorized }}
+      issue_number: ${{ steps.gate.outputs.issue_number }}
+      base_branch: ${{ steps.gate.outputs.base_branch }}
+      model: ${{ steps.gate.outputs.model }}
+      effort: ${{ steps.gate.outputs.effort }}
+      draft_pr: ${{ steps.gate.outputs.draft_pr }}
+    steps:
+      - name: Check repository admin permission
+        id: gate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          EVENT_NAME: ${{ github.event_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          DISPATCH_ISSUE_NUMBER: ${{ inputs.issue_number || '' }}
+          DISPATCH_BASE_BRANCH: ${{ inputs.base_branch || '' }}
+          DISPATCH_MODEL: ${{ inputs.model || '' }}
+          DISPATCH_EFFORT: ${{ inputs.effort || 'high' }}
+          DISPATCH_DRAFT_PR: ${{ inputs.draft_pr }}
+          COMMENT_BODY: ${{ github.event.comment.body || '' }}
+          COMMENT_ISSUE_NUMBER: ${{ github.event.issue.number || '' }}
+        run: |
+          set -euo pipefail
+
+          echo "authorized=false" >> "$GITHUB_OUTPUT"
+
+          for user in "$ACTOR" "$TRIGGERING_ACTOR"; do
+            permission="$(gh api "repos/${REPOSITORY}/collaborators/${user}/permission" --jq '.permission' 2>/dev/null || echo "none")"
+            if [ "$permission" != "admin" ]; then
+              echo "Actor @${user} has repository permission '${permission}', not 'admin'. Skipping Codex."
+              exit 0
+            fi
+          done
+
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
+            first_line="$(printf '%s' "$COMMENT_BODY" | tr -d '\r' | sed -n '/[^[:space:]]/ { s/^[[:space:]]*//; s/[[:space:]]*$//; p; q; }')"
+            if [ "$first_line" != "/codex fix" ]; then
+              echo "Comment does not start with the exact '/codex fix' command. Skipping Codex."
+              exit 0
+            fi
+
+            issue_number="$COMMENT_ISSUE_NUMBER"
+            base_branch="$DEFAULT_BRANCH"
+            model=""
+            effort="high"
+            draft_pr="true"
+          else
+            issue_number="$DISPATCH_ISSUE_NUMBER"
+            base_branch="${DISPATCH_BASE_BRANCH:-$DEFAULT_BRANCH}"
+            model="$DISPATCH_MODEL"
+            effort="${DISPATCH_EFFORT:-high}"
+            draft_pr="${DISPATCH_DRAFT_PR:-true}"
+          fi
+
+          if ! [[ "$issue_number" =~ ^[0-9]+$ ]]; then
+            echo "Invalid issue number: ${issue_number}" >&2
+            exit 1
+          fi
+
+          if ! [[ "$base_branch" =~ ^[A-Za-z0-9._/-]+$ ]] || [[ "$base_branch" == *..* ]] || [[ "$base_branch" == /* ]] || [[ "$base_branch" == */ ]]; then
+            echo "Unsafe base branch: ${base_branch}" >&2
+            exit 1
+          fi
+
+          encoded_base_branch="${base_branch//\//%2F}"
+          gh api "repos/${REPOSITORY}/branches/${encoded_base_branch}" --jq '.name' >/dev/null
+
+          issue_state="$(gh api "repos/${REPOSITORY}/issues/${issue_number}" --jq '.state')"
+          is_pull_request="$(gh api "repos/${REPOSITORY}/issues/${issue_number}" --jq 'has("pull_request")')"
+
+          if [ "$is_pull_request" = "true" ]; then
+            echo "Issue #${issue_number} is a pull request. This workflow only handles issues." >&2
+            exit 1
+          fi
+
+          if [ "$issue_state" != "open" ]; then
+            echo "Issue #${issue_number} is not open. Skipping Codex."
+            exit 0
+          fi
+
+          case "$effort" in
+            medium|high|xhigh) ;;
+            *)
+              echo "Invalid Codex effort: ${effort}" >&2
+              exit 1
+              ;;
+          esac
+
+          if [ "$draft_pr" != "true" ] && [ "$draft_pr" != "false" ]; then
+            echo "Invalid draft_pr value: ${draft_pr}" >&2
+            exit 1
+          fi
+
+          {
+            echo "authorized=true"
+            echo "issue_number=${issue_number}"
+            echo "base_branch=${base_branch}"
+            echo "model=${model}"
+            echo "effort=${effort}"
+            echo "draft_pr=${draft_pr}"
+          } >> "$GITHUB_OUTPUT"
+
+  run-codex:
+    name: Run Codex and open draft PR
+    needs:
+      - authorize
+    if: ${{ needs.authorize.outputs.authorized == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    environment: codex-issue-bot
+    concurrency:
+      group: codex-issue-${{ github.repository }}-${{ needs.authorize.outputs.issue_number }}
+      cancel-in-progress: true
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Re-check admin permission before secret access
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          set -euo pipefail
+
+          for user in "$ACTOR" "$TRIGGERING_ACTOR"; do
+            permission="$(gh api "repos/${REPOSITORY}/collaborators/${user}/permission" --jq '.permission' 2>/dev/null || echo "none")"
+            if [ "$permission" != "admin" ]; then
+              echo "Actor @${user} has repository permission '${permission}', not 'admin'." >&2
+              exit 1
+            fi
+          done
+
+      - name: Checkout base branch
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          ref: ${{ needs.authorize.outputs.base_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Prepare Codex prompt
+        id: prep
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          branch="codex/issue-${ISSUE_NUMBER}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git switch -c "$branch"
+
+          mkdir -p .codex-runtime
+          printf '.codex-runtime/\n' >> .git/info/exclude
+
+          {
+            cat .github/codex/prompts/issue-fix.md
+            printf '\n\n# Issue Context\n\n'
+            gh issue view "$ISSUE_NUMBER" \
+              --json number,title,url,state,author,labels,body,comments \
+              --jq '
+                "Number: #" + (.number | tostring) + "\n" +
+                "Title: " + (.title // "") + "\n" +
+                "URL: " + (.url // "") + "\n" +
+                "State: " + (.state // "") + "\n" +
+                "Author: @" + (.author.login // "unknown") + "\n\n" +
+                "Labels:\n" +
+                (((.labels // []) | map("- " + .name) | join("\n")) // "(none)") +
+                "\n\n## Body\n\n" +
+                (.body // "") +
+                "\n\n## Recent Comments\n\n" +
+                (((.comments // [])[-10:] | map("### @" + (.author.login // "unknown") + "\n\n" + (.body // "")) | join("\n\n")) // "(none)")'
+          } > .codex-runtime/issue-prompt.md
+
+          gh issue comment "$ISSUE_NUMBER" --body "Codex issue bot started by @${ACTOR}: ${RUN_URL}. A draft PR will be opened if a change is produced."
+
+          {
+            echo "branch=${branch}"
+            echo "prompt_file=.codex-runtime/issue-prompt.md"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run Codex
+        id: codex
+        uses: openai/codex-action@e0fdf01220eb9a88167c4898839d273e3f2609d1 # v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: ${{ steps.prep.outputs.prompt_file }}
+          output-file: .codex-runtime/final-message.md
+          sandbox: workspace-write
+          safety-strategy: drop-sudo
+          model: ${{ needs.authorize.outputs.model }}
+          effort: ${{ needs.authorize.outputs.effort }}
+          codex-args: '["--ephemeral","--ignore-user-config"]'
+
+      - name: Commit changes and open PR
+        id: publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          BASE_BRANCH: ${{ needs.authorize.outputs.base_branch }}
+          DRAFT_PR: ${{ needs.authorize.outputs.draft_pr }}
+          BRANCH_NAME: ${{ steps.prep.outputs.branch }}
+          ACTOR: ${{ github.actor }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          trap 'git remote set-url origin "https://github.com/${REPOSITORY}.git" >/dev/null 2>&1 || true' EXIT
+
+          if [ -z "$(git status --porcelain --untracked-files=all)" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "Codex completed without producing repository changes: ${RUN_URL}."
+            exit 0
+          fi
+
+          protected_changes="$(git status --porcelain -- .github || true)"
+          if [ -n "$protected_changes" ]; then
+            gh issue comment "$ISSUE_NUMBER" --body "Codex produced changes under protected GitHub configuration paths, so no pull request was opened: ${RUN_URL}."
+            echo "$protected_changes" >&2
+            exit 1
+          fi
+
+          issue_title="$(gh issue view "$ISSUE_NUMBER" --json title --jq '.title')"
+          final_message="Codex did not write a final message."
+          if [ -s .codex-runtime/final-message.md ]; then
+            final_message="$(head -c 6000 .codex-runtime/final-message.md)"
+          fi
+
+          cat > .codex-runtime/pr-body.md <<EOF
+          Generated by the admin-gated Codex issue bot for #${ISSUE_NUMBER}.
+
+          Triggered by: @${ACTOR}
+          Workflow run: ${RUN_URL}
+
+          Codex final message:
+
+          ${final_message}
+
+          Closes #${ISSUE_NUMBER}
+          EOF
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            gh issue comment "$ISSUE_NUMBER" --body "Codex completed without staged repository changes: ${RUN_URL}."
+            exit 0
+          fi
+
+          git diff --cached --check
+
+          git commit -m "Fix issue #${ISSUE_NUMBER} with Codex"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git"
+          git push --set-upstream origin "$BRANCH_NAME"
+
+          draft_args=()
+          if [ "$DRAFT_PR" = "true" ]; then
+            draft_args+=(--draft)
+          fi
+
+          pr_url="$(gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$BRANCH_NAME" \
+            --title "Fix #${ISSUE_NUMBER}: ${issue_title}" \
+            --body-file .codex-runtime/pr-body.md \
+            "${draft_args[@]}")"
+
+          gh issue comment "$ISSUE_NUMBER" --body "Codex opened a pull request: ${pr_url}"
+
+          echo "pr_url=${pr_url}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment on failure
+        if: ${{ failure() }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh issue comment "$ISSUE_NUMBER" --body "Codex issue bot failed before opening a pull request: ${RUN_URL}."

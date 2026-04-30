@@ -1699,6 +1699,9 @@ private:
 	uint32_t actionTaskEvent = 0;
 	uint32_t actionTaskEventPush = 0;
 	uint32_t actionPotionTaskEvent = 0;
+	void scheduleAttackCheck();
+	bool m_pendingAttackCheckTask = false;
+	uint32_t m_attackCheckGeneration = 0;
 	uint32_t nextStepEvent = 0;
 	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;

@@ -1941,22 +1941,24 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg) {
 	}
 
 	uint8_t variant = msg.getByte();
-	const Position pos = msg.getPosition();
-	auto itemId = 0;
-	uint8_t stackpos = 0;
-	bool lootAllCorpses = true;
-	bool autoLoot = true;
 
 	if (variant == 2) {
-		// Loot player nearby (13.40)
-	} else {
-		itemId = msg.get<uint16_t>();
-		stackpos = msg.getByte();
-		lootAllCorpses = variant == 1;
-		autoLoot = false;
+		g_game().playerLootNearby(player->getID());
+		return;
 	}
+
+	if (variant > 2) {
+		g_logger().debug("[{}] unsupported quick-loot variant {} from player {}", __FUNCTION__, variant, player ? player->getName() : "<null>");
+		return;
+	}
+
+	const Position pos = msg.getPosition();
+	auto itemId = msg.get<uint16_t>();
+	uint8_t stackpos = msg.getByte();
+	bool lootAllCorpses = variant == 1;
+
 	g_logger().debug("[{}] variant {}, pos {}, itemId {}, stackPos {}", __FUNCTION__, variant, pos.toString(), itemId, stackpos);
-	g_game().playerQuickLoot(player->getID(), pos, itemId, stackpos, nullptr, lootAllCorpses, autoLoot);
+	g_game().playerQuickLoot(player->getID(), pos, itemId, stackpos, nullptr, lootAllCorpses, false);
 }
 
 void ProtocolGame::parseLootContainer(NetworkMessage &msg) {
@@ -4505,7 +4507,14 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 		msg.add<uint32_t>(duration);
 	}
 
-	msg.addByte(0x00);
+	const auto &activeFoods = player->getActiveFoods();
+	msg.addByte(activeFoods.size());
+	for (const auto &[foodId, duration] : activeFoods) {
+		msg.add<uint16_t>(foodId);
+		msg.addByte(0x00);
+		msg.addByte(0x00);
+		msg.add<uint32_t>(duration);
+	}
 
 	writeToOutputBuffer(msg);
 }

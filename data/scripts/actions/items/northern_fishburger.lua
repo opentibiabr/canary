@@ -13,6 +13,7 @@ function northernFishburger.onUse(player, item, fromPosition, target, toPosition
 		return true
 	end
 
+	player:updateFood(item:getId(), 3600)
 	player:addCondition(fishingCondition)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You felt fishing inspiration.")
 	player:say("Smack.", TALKTYPE_MONSTER_SAY)

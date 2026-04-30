@@ -26,6 +26,13 @@ jobs:
         id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.15
 
+      - name: Convert repository name to lowercase
+        id: repo_lower
+        run: |
+          echo "value=${REPO,,}" >> $GITHUB_OUTPUT
+        env:
+          REPO: ${{ github.repository }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -50,8 +57,8 @@ jobs:
           secrets: |
             github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
+            ghcr.io/${{ steps.repo_lower.outputs.value }}:latest
+            ghcr.io/${{ steps.repo_lower.outputs.value }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -69,6 +76,8 @@ jobs:
             VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read;nugettimeout,1200
           secrets: |
             github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+          tags: |
+            ghcr.io/${{ steps.repo_lower.outputs.value }}:pr
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

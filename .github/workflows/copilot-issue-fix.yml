@@ -66,6 +66,15 @@ jobs:
 
           echo "authorized=false" >> "$GITHUB_OUTPUT"
 
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
+            normalized_comment="$(printf '%s' "$COMMENT_BODY" | tr -d '\r')"
+            first_line="$(printf '%s\n' "$normalized_comment" | sed -n '/[^[:space:]]/ { s/^[[:space:]]*//; s/[[:space:]]*$//; p; q; }')"
+            if [ "$first_line" != "/copilot fix" ]; then
+              echo "Comment does not start with the exact '/copilot fix' command. Skipping Copilot assignment."
+              exit 0
+            fi
+          fi
+
           for user in "$ACTOR" "$TRIGGERING_ACTOR"; do
             permission="$(gh api "repos/${REPOSITORY}/collaborators/${user}/permission" --jq '.permission' 2>/dev/null || echo "none")"
             if [ "$permission" != "admin" ]; then
@@ -75,13 +84,6 @@ jobs:
           done
 
           if [ "$EVENT_NAME" = "issue_comment" ]; then
-            normalized_comment="$(printf '%s' "$COMMENT_BODY" | tr -d '\r')"
-            first_line="$(printf '%s\n' "$normalized_comment" | sed -n '/[^[:space:]]/ { s/^[[:space:]]*//; s/[[:space:]]*$//; p; q; }')"
-            if [ "$first_line" != "/copilot fix" ]; then
-              echo "Comment does not start with the exact '/copilot fix' command. Skipping Copilot assignment."
-              exit 0
-            fi
-
             issue_number="$COMMENT_ISSUE_NUMBER"
             base_branch="$DEFAULT_BRANCH"
             custom_agent="canary-bugfix"
@@ -141,7 +143,7 @@ jobs:
           fi
 
           if [ -z "$custom_instructions" ]; then
-            custom_instructions="Fix the reported issue with a narrow, reviewable change. Follow the repository Copilot instructions and use the canary-bugfix agent guidance. Add or update focused tests if practical, and explain any validation limits in the pull request."
+            custom_instructions="Fix the reported issue with a narrow, reviewable change. Follow the repository Copilot instructions and the ${custom_agent} agent guidance. Add or update focused tests if practical, and explain any validation limits in the pull request."
           fi
 
           {

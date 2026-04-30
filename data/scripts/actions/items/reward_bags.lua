@@ -5,77 +5,78 @@ local testMode = {
 
 local rewardBags = {
 	[BAG_YOU_DESIRE] = {
-		{ id = 34082, name = "soulcutter", chance = 0.05 },
-		{ id = 34083, name = "soulshredder", chance = 0.01 },
-		{ id = 34084, name = "soulbiter", chance = 0.05 },
-		{ id = 34085, name = "souleater", chance = 0.01 },
-		{ id = 34086, name = "soulcrusher", chance = 0.05 },
-		{ id = 34087, name = "soulmaimer", chance = 0.05 },
-		{ id = 34097, name = "pair of soulwalkers", chance = 0.05 },
-		{ id = 34099, name = "soulbastion", chance = 0.05 },
-		{ id = 34088, name = "soulbleeder", chance = 0.01 },
-		{ id = 34089, name = "soulpiercer", chance = 0.05 },
-		{ id = 34094, name = "soulshell", chance = 0.05 },
-		{ id = 34098, name = "pair of soulstalkers", chance = 0.05 },
-		{ id = 34090, name = "soultainter", chance = 0.01 },
-		{ id = 34092, name = "soulshanks", chance = 0.05 },
-		{ id = 34095, name = "soulmantle", chance = 0.05 },
-		{ id = 34091, name = "soulhexer", chance = 0.01 },
-		{ id = 34093, name = "soulstrider", chance = 0.05 },
-		{ id = 34096, name = "soulshroud", chance = 0.05 },
-		{ id = 50254, name = "soulgarb", chance = 0.05 },
-		{ id = 50240, name = "soulsoles", chance = 0.05 },
-		{ id = 50159, name = "soulkamas", chance = 0.01 },
+		{ id = 34082, name = "soulcutter", weight = 0.05 },
+		{ id = 34083, name = "soulshredder", weight = 0.01 },
+		{ id = 34084, name = "soulbiter", weight = 0.05 },
+		{ id = 34085, name = "souleater", weight = 0.01 },
+		{ id = 34086, name = "soulcrusher", weight = 0.05 },
+		{ id = 34087, name = "soulmaimer", weight = 0.05 },
+		{ id = 34097, name = "pair of soulwalkers", weight = 0.05 },
+		{ id = 34099, name = "soulbastion", weight = 0.05 },
+		{ id = 34088, name = "soulbleeder", weight = 0.01 },
+		{ id = 34089, name = "soulpiercer", weight = 0.05 },
+		{ id = 34094, name = "soulshell", weight = 0.05 },
+		{ id = 34098, name = "pair of soulstalkers", weight = 0.05 },
+		{ id = 34090, name = "soultainter", weight = 0.01 },
+		{ id = 34092, name = "soulshanks", weight = 0.05 },
+		{ id = 34095, name = "soulmantle", weight = 0.05 },
+		{ id = 34091, name = "soulhexer", weight = 0.01 },
+		{ id = 34093, name = "soulstrider", weight = 0.05 },
+		{ id = 34096, name = "soulshroud", weight = 0.05 },
+		{ id = 50254, name = "soulgarb", weight = 0.05 },
+		{ id = 50240, name = "soulsoles", weight = 0.05 },
+		{ id = 50159, name = "soulkamas", weight = 0.01 },
 	},
 
 	[PRIMAL_BAG] = {
-		{ id = 39147, name = "spiritthorn armor", chance = 0.01 },
-		{ id = 39148, name = "spiritthorn helmet", chance = 0.01 },
-		{ id = 39177, name = "charged spiritthorn ring", chance = 0.05 },
-		{ id = 39149, name = "alicorn headguard", chance = 0.01 },
-		{ id = 39150, name = "alicorn quiver", chance = 0.05 },
-		{ id = 39180, name = "charged alicorn ring", chance = 0.05 },
-		{ id = 39151, name = "arcanomancer regalia", chance = 0.05 },
-		{ id = 39152, name = "arcanomancer folio", chance = 0.05 },
-		{ id = 39183, name = "charged arcanomancer sigil", chance = 0.05 },
-		{ id = 39153, name = "arboreal crown", chance = 0.05 },
-		{ id = 39154, name = "arboreal tome", chance = 0.05 },
-		{ id = 39186, name = "charged arboreal ring", chance = 0.05 },
-		{ id = 50149, name = "charged ethereal ring", chance = 0.05 },
-		{ id = 50188, name = "ethereal coned hat", chance = 0.01 },
+		{ id = 39147, name = "spiritthorn armor", weight = 0.01 },
+		{ id = 39148, name = "spiritthorn helmet", weight = 0.01 },
+		{ id = 39177, name = "charged spiritthorn ring", weight = 0.05 },
+		{ id = 39149, name = "alicorn headguard", weight = 0.01 },
+		{ id = 39150, name = "alicorn quiver", weight = 0.05 },
+		{ id = 39180, name = "charged alicorn ring", weight = 0.05 },
+		{ id = 39151, name = "arcanomancer regalia", weight = 0.05 },
+		{ id = 39152, name = "arcanomancer folio", weight = 0.05 },
+		{ id = 39183, name = "charged arcanomancer sigil", weight = 0.05 },
+		{ id = 39153, name = "arboreal crown", weight = 0.05 },
+		{ id = 39154, name = "arboreal tome", weight = 0.05 },
+		{ id = 39186, name = "charged arboreal ring", weight = 0.05 },
+		{ id = 50149, name = "charged ethereal ring", weight = 0.05 },
+		{ id = 50188, name = "ethereal coned hat", weight = 0.01 },
 	},
 
 	[BAG_YOU_COVET] = {
-		{ id = 43864, name = "sanguine blade", chance = 0.05 },
-		{ id = 43866, name = "sanguine cudgel", chance = 0.05 },
-		{ id = 43868, name = "sanguine hatchet", chance = 0.05 },
-		{ id = 43870, name = "sanguine razor", chance = 0.02 },
-		{ id = 43872, name = "sanguine bludgeon", chance = 0.05 },
-		{ id = 43874, name = "sanguine battleaxe", chance = 0.05 },
-		{ id = 43876, name = "sanguine legs", chance = 0.02 },
-		{ id = 43877, name = "sanguine bow", chance = 0.01 },
-		{ id = 43879, name = "sanguine crossbow", chance = 0.05 },
-		{ id = 43881, name = "sanguine greaves", chance = 0.02 },
-		{ id = 43882, name = "sanguine coil", chance = 0.02 },
-		{ id = 43884, name = "sanguine boots", chance = 0.05 },
-		{ id = 43885, name = "sanguine rod", chance = 0.02 },
-		{ id = 43887, name = "sanguine galoshes", chance = 0.05 },
-		{ id = 43865, name = "grand sanguine blade", chance = 0.00001 },
-		{ id = 43867, name = "grand sanguine cudgel", chance = 0.00001 },
-		{ id = 43869, name = "grand sanguine hatchet", chance = 0.00001 },
-		{ id = 43871, name = "grand sanguine razor", chance = 0.00001 },
-		{ id = 43873, name = "grand sanguine bludgeon", chance = 0.00001 },
-		{ id = 43875, name = "grand sanguine battleaxe", chance = 0.00001 },
-		{ id = 43878, name = "grand sanguine bow", chance = 0.00001 },
-		{ id = 43880, name = "grand sanguine crossbow", chance = 0.00001 },
-		{ id = 43883, name = "grand sanguine coil", chance = 0.00001 },
-		{ id = 43886, name = "grand sanguine rod", chance = 0.00001 },
-		{ id = 50146, name = "sanguine trousers", chance = 0.02 },
-		{ id = 50157, name = "sanguine claws", chance = 0.02 },
+		{ id = 43864, name = "sanguine blade", weight = 0.05 },
+		{ id = 43866, name = "sanguine cudgel", weight = 0.05 },
+		{ id = 43868, name = "sanguine hatchet", weight = 0.05 },
+		{ id = 43870, name = "sanguine razor", weight = 0.02 },
+		{ id = 43872, name = "sanguine bludgeon", weight = 0.05 },
+		{ id = 43874, name = "sanguine battleaxe", weight = 0.05 },
+		{ id = 43876, name = "sanguine legs", weight = 0.02 },
+		{ id = 43877, name = "sanguine bow", weight = 0.01 },
+		{ id = 43879, name = "sanguine crossbow", weight = 0.05 },
+		{ id = 43881, name = "sanguine greaves", weight = 0.02 },
+		{ id = 43882, name = "sanguine coil", weight = 0.02 },
+		{ id = 43884, name = "sanguine boots", weight = 0.05 },
+		{ id = 43885, name = "sanguine rod", weight = 0.02 },
+		{ id = 43887, name = "sanguine galoshes", weight = 0.05 },
+		{ id = 43865, name = "grand sanguine blade", weight = 0.00001 },
+		{ id = 43867, name = "grand sanguine cudgel", weight = 0.00001 },
+		{ id = 43869, name = "grand sanguine hatchet", weight = 0.00001 },
+		{ id = 43871, name = "grand sanguine razor", weight = 0.00001 },
+		{ id = 43873, name = "grand sanguine bludgeon", weight = 0.00001 },
+		{ id = 43875, name = "grand sanguine battleaxe", weight = 0.00001 },
+		{ id = 43878, name = "grand sanguine bow", weight = 0.00001 },
+		{ id = 43880, name = "grand sanguine crossbow", weight = 0.00001 },
+		{ id = 43883, name = "grand sanguine coil", weight = 0.00001 },
+		{ id = 43886, name = "grand sanguine rod", weight = 0.00001 },
+		{ id = 50146, name = "sanguine trousers", weight = 0.02 },
+		{ id = 50157, name = "sanguine claws", weight = 0.02 },
 	},
 }
 
 local randomItems = Action()
+local warnedLegacyChanceField = false
 
 local function addRewardToPlayer(player, itemId, count)
 	local addToBackpack = player:addItem(itemId, count, false)
@@ -96,10 +97,26 @@ local function addRewardToPlayer(player, itemId, count)
 	return false, "inbox_full"
 end
 
+local function getRewardWeight(reward)
+	if reward.weight ~= nil then
+		return reward.weight
+	end
+
+	if reward.chance ~= nil then
+		if not warnedLegacyChanceField then
+			logger.warn("[reward_bags] legacy field 'chance' detected. It is treated as relative weight. Rename to 'weight' to avoid confusion.")
+			warnedLegacyChanceField = true
+		end
+		return reward.chance
+	end
+
+	return 0
+end
+
 local function selectReward(rewardBag)
 	local totalWeight = 0
 	for _, reward in ipairs(rewardBag) do
-		totalWeight = totalWeight + (reward.chance or 0)
+		totalWeight = totalWeight + getRewardWeight(reward)
 	end
 
 	if totalWeight <= 0 then
@@ -109,7 +126,7 @@ local function selectReward(rewardBag)
 	local roll = math.random() * totalWeight
 	local cumulative = 0
 	for _, reward in ipairs(rewardBag) do
-		cumulative = cumulative + (reward.chance or 0)
+		cumulative = cumulative + getRewardWeight(reward)
 		if roll <= cumulative then
 			return reward
 		end
@@ -129,44 +146,20 @@ function randomItems.onUse(player, item, fromPosition, target, toPosition, isHot
 		local openCount = math.max(1, tonumber(testMode.valueOpen) or 1)
 		local receivedSummary = {}
 		local totalItemsReceived = 0
-		local failedAdds = 0
-		local backpackAdds = 0
-		local inboxAdds = 0
 
 		for _ = 1, openCount do
 			local rewardItem = selectReward(rewardBag)
 			local rewardCount = rewardItem.count or 1
-			local success, destination, addedItem = addRewardToPlayer(player, rewardItem.id, rewardCount)
-			if success then
-				totalItemsReceived = totalItemsReceived + rewardCount
-				if destination == "backpack" then
-					backpackAdds = backpackAdds + rewardCount
-				elseif destination == "inbox" then
-					inboxAdds = inboxAdds + rewardCount
-				end
+			totalItemsReceived = totalItemsReceived + rewardCount
 
-				local current = receivedSummary[rewardItem.id]
-				if current then
-					current.count = current.count + rewardCount
-				else
-					receivedSummary[rewardItem.id] = {
-						name = rewardItem.name,
-						count = rewardCount,
-					}
-				end
-
-				if destination == "backpack" then
-					if not player:removeItem(rewardItem.id, rewardCount) then
-						logger.warn(string.format("[reward_bags][test_mode] cleanup_failed player=%s rewardId=%d rewardName=%s count=%d destination=backpack", player:getName(), rewardItem.id, rewardItem.name, rewardCount))
-					end
-				elseif destination == "inbox" then
-					if not addedItem or not addedItem:remove(rewardCount) then
-						logger.warn(string.format("[reward_bags][test_mode] cleanup_failed player=%s rewardId=%d rewardName=%s count=%d destination=inbox", player:getName(), rewardItem.id, rewardItem.name, rewardCount))
-					end
-				end
+			local current = receivedSummary[rewardItem.id]
+			if current then
+				current.count = current.count + rewardCount
 			else
-				failedAdds = failedAdds + 1
-				logger.warn(string.format("[reward_bags][test_mode] failed_add player=%s bagId=%d rewardId=%d rewardName=%s count=%d reason=%s", player:getName(), item.itemid, rewardItem.id, rewardItem.name, rewardCount, destination))
+				receivedSummary[rewardItem.id] = {
+					name = rewardItem.name,
+					count = rewardCount,
+				}
 			end
 		end
 
@@ -183,13 +176,13 @@ function randomItems.onUse(player, item, fromPosition, target, toPosition, isHot
 			return a.count > b.count
 		end)
 
-		logger.info(string.format("[reward_bags][test_mode] player=%s item=%s itemId=%d opens=%d totalItems=%d uniqueItems=%d backpackAdds=%d inboxAdds=%d failedAdds=%d", player:getName(), item:getName(), item.itemid, openCount, totalItemsReceived, #summaryList, backpackAdds, inboxAdds, failedAdds))
+		logger.info(string.format("[testmode] player=%s item=%s itemId=%d opens=%d totalItems=%d uniqueItems=%d", player:getName(), item:getName(), item.itemid, openCount, totalItemsReceived, #summaryList))
 		for _, entry in ipairs(summaryList) do
-			logger.info(string.format("[reward_bags][test_mode] reward itemId=%d name=%s count=%d", entry.itemId, entry.name, entry.count))
+			local percent = (entry.count / totalItemsReceived) * 100
+			logger.info(string.format("[testmode] reward itemId=%d name=%s count=%d normalized=%.4f%%", entry.itemId, entry.name, entry.count, percent))
 		end
 
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Test mode: opened %d reward bags, received %d total item(s) [backpack: %d, inbox: %d], failed adds: %d. Check server log for details.", openCount, totalItemsReceived, backpackAdds, inboxAdds, failedAdds))
-		item:remove(1)
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Test mode: simulated %d reward bag opens and %d total item(s). Check server log for details.", openCount, totalItemsReceived))
 		return true
 	end
 

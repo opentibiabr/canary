@@ -77,6 +77,25 @@ local rewardBags = {
 
 local randomItems = Action()
 
+local function addRewardToPlayer(player, itemId, count)
+	local addToBackpack = player:addItem(itemId, count, false)
+	if addToBackpack then
+		return true, "backpack", addToBackpack
+	end
+
+	local addToInbox = player:addItemStoreInbox(itemId, count, true, false)
+	if addToInbox then
+		return true, "inbox", addToInbox
+	end
+
+	local storeInbox = player:getStoreInbox()
+	if not storeInbox then
+		return false, "no_inbox"
+	end
+
+	return false, "inbox_full"
+end
+
 local function selectReward(rewardBag)
 	local totalWeight = 0
 	for _, reward in ipairs(rewardBag) do
@@ -110,21 +129,44 @@ function randomItems.onUse(player, item, fromPosition, target, toPosition, isHot
 		local openCount = math.max(1, tonumber(testMode.valueOpen) or 1)
 		local receivedSummary = {}
 		local totalItemsReceived = 0
+		local failedAdds = 0
+		local backpackAdds = 0
+		local inboxAdds = 0
 
 		for _ = 1, openCount do
 			local rewardItem = selectReward(rewardBag)
 			local rewardCount = rewardItem.count or 1
-			player:addItem(rewardItem.id, rewardCount)
-			totalItemsReceived = totalItemsReceived + rewardCount
+			local success, destination, addedItem = addRewardToPlayer(player, rewardItem.id, rewardCount)
+			if success then
+				totalItemsReceived = totalItemsReceived + rewardCount
+				if destination == "backpack" then
+					backpackAdds = backpackAdds + rewardCount
+				elseif destination == "inbox" then
+					inboxAdds = inboxAdds + rewardCount
+				end
 
-			local current = receivedSummary[rewardItem.id]
-			if current then
-				current.count = current.count + rewardCount
+				local current = receivedSummary[rewardItem.id]
+				if current then
+					current.count = current.count + rewardCount
+				else
+					receivedSummary[rewardItem.id] = {
+						name = rewardItem.name,
+						count = rewardCount,
+					}
+				end
+
+				if destination == "backpack" then
+					if not player:removeItem(rewardItem.id, rewardCount) then
+						logger.warn(string.format("[reward_bags][test_mode] cleanup_failed player=%s rewardId=%d rewardName=%s count=%d destination=backpack", player:getName(), rewardItem.id, rewardItem.name, rewardCount))
+					end
+				elseif destination == "inbox" then
+					if not addedItem or not addedItem:remove(rewardCount) then
+						logger.warn(string.format("[reward_bags][test_mode] cleanup_failed player=%s rewardId=%d rewardName=%s count=%d destination=inbox", player:getName(), rewardItem.id, rewardItem.name, rewardCount))
+					end
+				end
 			else
-				receivedSummary[rewardItem.id] = {
-					name = rewardItem.name,
-					count = rewardCount,
-				}
+				failedAdds = failedAdds + 1
+				logger.warn(string.format("[reward_bags][test_mode] failed_add player=%s bagId=%d rewardId=%d rewardName=%s count=%d reason=%s", player:getName(), item.itemid, rewardItem.id, rewardItem.name, rewardCount, destination))
 			end
 		end
 
@@ -141,19 +183,27 @@ function randomItems.onUse(player, item, fromPosition, target, toPosition, isHot
 			return a.count > b.count
 		end)
 
-		logger.info(string.format("[reward_bags][test_mode] player=%s item=%s itemId=%d opens=%d totalItems=%d uniqueItems=%d", player:getName(), item:getName(), item.itemid, openCount, totalItemsReceived, #summaryList))
+		logger.info(string.format("[reward_bags][test_mode] player=%s item=%s itemId=%d opens=%d totalItems=%d uniqueItems=%d backpackAdds=%d inboxAdds=%d failedAdds=%d", player:getName(), item:getName(), item.itemid, openCount, totalItemsReceived, #summaryList, backpackAdds, inboxAdds, failedAdds))
 		for _, entry in ipairs(summaryList) do
 			logger.info(string.format("[reward_bags][test_mode] reward itemId=%d name=%s count=%d", entry.itemId, entry.name, entry.count))
 		end
 
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Test mode: opened %d reward bags and received %d total item(s). Check server log for details.", openCount, totalItemsReceived))
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Test mode: opened %d reward bags, received %d total item(s) [backpack: %d, inbox: %d], failed adds: %d. Check server log for details.", openCount, totalItemsReceived, backpackAdds, inboxAdds, failedAdds))
 		item:remove(1)
 		return true
 	end
 
 	local rewardItem = selectReward(rewardBag)
-	player:addItem(rewardItem.id, 1)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received a " .. rewardItem.name .. ".")
+	local rewardCount = rewardItem.count or 1
+	local success, destination = addRewardToPlayer(player, rewardItem.id, rewardCount)
+	if not success then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no room in your backpack or store inbox to receive the reward.")
+		logger.warn(string.format("[reward_bags] failed_add player=%s bagId=%d rewardId=%d rewardName=%s count=%d reason=%s", player:getName(), item.itemid, rewardItem.id, rewardItem.name, rewardCount, destination))
+		return true
+	end
+
+	local destinationText = destination == "inbox" and " to your store inbox" or ""
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You received a " .. rewardItem.name .. destinationText .. ".")
 
 	local text = player:getName() .. " received a " .. rewardItem.name .. " from a " .. item:getName() .. "."
 	Webhook.sendMessage(":game_die: " .. player:getMarkdownLink() .. " received a **" .. rewardItem.name .. "** from a _" .. item:getName() .. "_.")

@@ -9093,14 +9093,18 @@ std::string Game::generateHighscoreQuery(
 	uint32_t vocation,
 	uint32_t playerGUID /*= 0*/
 ) {
-	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
-	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
-	std::string entriesStr = std::to_string(entriesPerPage);
-
 	if (categoryName.empty()) {
 		g_logger().error("Category name cannot be empty.");
 		return "";
 	}
+	if (entriesPerPage == 0) {
+		g_logger().warn("[{}] entriesPerPage cannot be 0.", __FUNCTION__);
+		return "";
+	}
+
+	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
+	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
+	std::string entriesStr = std::to_string(entriesPerPage);
 
 	const std::string vocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "";
 	const std::string countVocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation, " AND ") : "";
@@ -9251,7 +9255,9 @@ std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string 
 	}
 
 	std::string newQuery = generateHighscoreQuery(categoryName, page, entriesPerPage, vocation);
-	cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
+	if (!newQuery.empty()) {
+		cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
+	}
 
 	return newQuery;
 }
@@ -9269,13 +9275,19 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 	}
 
 	std::string newQuery = generateHighscoreQuery(categoryName, 0, entriesPerPage, vocation, playerGUID);
-	cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
+	if (!newQuery.empty()) {
+		cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
+	}
 
 	return newQuery;
 }
 
 void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &, uint16_t page, uint8_t entriesPerPage) {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
+		return;
+	}
+	if (entriesPerPage == 0) {
+		player->sendHighscoresNoData();
 		return;
 	}
 
@@ -9288,6 +9300,10 @@ void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType
 		query = generateHighscoreOrGetCachedQueryForEntries(categoryName, page, entriesPerPage, vocationId);
 	} else if (type == HIGHSCORE_OURRANK) {
 		query = generateHighscoreOrGetCachedQueryForOurRank(categoryName, entriesPerPage, player->getGUID(), vocationId);
+	}
+	if (query.empty()) {
+		player->sendHighscoresNoData();
+		return;
 	}
 
 	uint32_t playerID = player->getID();

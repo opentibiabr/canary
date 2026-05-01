@@ -23,6 +23,21 @@ std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
+uint32_t ProtocolStatus::getIpFilteredPlayerCount() {
+	uint32_t real = 0;
+	std::map<uint32_t, uint32_t> listIP;
+	for (const auto &[key, player] : g_game().getPlayers()) {
+		if (player->getIP() != 0) {
+			auto &count = listIP[player->getIP()];
+			if (count < 4) {
+				real++;
+			}
+			count++;
+		}
+	}
+	return real;
+}
+
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	const uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
@@ -106,23 +121,7 @@ void ProtocolStatus::sendStatusString() {
 	owner.append_attribute("email") = g_configManager().getString(OWNER_EMAIL).c_str();
 
 	pugi::xml_node players = tsqp.append_child("players");
-	uint32_t real = 0;
-	std::map<uint32_t, uint32_t> listIP;
-	for (const auto &[key, player] : g_game().getPlayers()) {
-		if (player->getIP() != 0) {
-			auto ip = listIP.find(player->getIP());
-			if (ip != listIP.end()) {
-				listIP[player->getIP()]++;
-				if (listIP[player->getIP()] < 5) {
-					real++;
-				}
-			} else {
-				listIP[player->getIP()] = 1;
-				real++;
-			}
-		}
-	}
-	players.append_attribute("online") = std::to_string(real).c_str();
+	players.append_attribute("online") = std::to_string(getIpFilteredPlayerCount()).c_str();
 	players.append_attribute("max") = std::to_string(g_configManager().getNumber(MAX_PLAYERS)).c_str();
 	players.append_attribute("peak") = std::to_string(g_game().getPlayersRecord()).c_str();
 
@@ -186,7 +185,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
 		output->addByte(0x20);
-		output->add<uint32_t>(static_cast<uint32_t>(g_game().getPlayersOnline()));
+		output->add<uint32_t>(getIpFilteredPlayerCount());
 		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
 		output->add<uint32_t>(g_game().getPlayersRecord());
 	}

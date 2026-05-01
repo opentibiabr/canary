@@ -30,6 +30,12 @@ public:
 	void sendStatusString();
 	void sendInfo(uint16_t requestedInfo, const std::string &characterName) const;
 
+	// Returns the player count filtered to at most 4 connections per IP. Both the XML
+	// status protocol and the binary protocol use this so the two reporters do not
+	// disagree (otservlist consumes the XML count and may flag servers if the binary
+	// protocol reports a higher number).
+	static uint32_t getIpFilteredPlayerCount();
+
 	static const uint64_t start;
 
 	static std::string SERVER_NAME;

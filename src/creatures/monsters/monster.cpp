@@ -2519,7 +2519,12 @@ void Monster::setNormalCreatureLight() {
 void Monster::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) {
 	Creature::drainHealth(attacker, damage);
 
-	if (damage > 0 && randomStepping) {
+	// Allow walking through harmful fields when the monster is being damaged and either
+	// has no target (random stepping) or its current target is unreachable. Without the
+	// !hasFollowPath branch, a melee monster locked onto a target it cannot path to (magic
+	// walled, behind a non-traversable field) stays unable to push through fields even
+	// while taking damage from the very fields/bombs blocking its way.
+	if (damage > 0 && (randomStepping || !hasFollowPath)) {
 		ignoreFieldDamage = true;
 	}
 

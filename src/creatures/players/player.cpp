@@ -5830,6 +5830,10 @@ void Player::scheduleAttackCheck() {
 		}
 
 		if (shouldRun) {
+			Player::PlayerLock lock(player);
+			if (generation != player->m_attackCheckGeneration) {
+				return;
+			}
 			player->checkCreatureAttack(true);
 		}
 	},

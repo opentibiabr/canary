@@ -151,10 +151,14 @@ namespace tests {
 
 			if (!detail.empty()) {
 				if (primaryCoinsRemoved > 0) {
-					registerCoinsTransaction(id, CoinTransactionType::Remove, primaryCoinsRemoved, primaryType, detail);
+					if (!registerCoinsTransaction(id, CoinTransactionType::Remove, primaryCoinsRemoved, primaryType, detail)) {
+						return Storage;
+					}
 				}
 				if (secondaryCoinsRemoved > 0) {
-					registerCoinsTransaction(id, CoinTransactionType::Remove, secondaryCoinsRemoved, secondaryType, detail);
+					if (!registerCoinsTransaction(id, CoinTransactionType::Remove, secondaryCoinsRemoved, secondaryType, detail)) {
+						return Storage;
+					}
 				}
 			}
 

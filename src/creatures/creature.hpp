@@ -500,6 +500,7 @@ public:
 	virtual void onThink(uint32_t interval);
 
 	void checkCreatureAttack(bool now = false);
+  void cancelAttackCheck();
 
 	void onAttacking(uint32_t interval);
 	virtual void onCreatureWalk();

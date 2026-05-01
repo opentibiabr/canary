@@ -234,30 +234,8 @@ local function addTransferableCoinsBalance(self, coins, update)
 end
 
 local function removeCombinedCoinsBalance(self, coins)
-	local transferableCoins = self:getTransferableCoins() or 0
-	local regularCoins = self:getTibiaCoins() or 0
-
-	if transferableCoins + regularCoins < coins then
-		return false
-	end
-
-	local transferableToUse = math.min(transferableCoins, coins)
-	local regularToUse = coins - transferableToUse
-
 	sendStoreBalanceUpdating(self:getId(), true)
-
-	if transferableToUse > 0 and self:removeTransferableCoins(transferableToUse) ~= true then
-		return false
-	end
-
-	if regularToUse > 0 and self:removeTibiaCoins(regularToUse) ~= true then
-		if transferableToUse > 0 and self:addTransferableCoins(transferableToUse) ~= true then
-			logger.error("[GameStore.makeCoinTransaction] Failed to restore {} transferable coins for account {} after regular coin deduction failed.", transferableToUse, self:getAccountId())
-		end
-		return false
-	end
-
-	return true
+	return self:removeTransferableAndTibiaCoins(coins) == true
 end
 
 local function makeCoinTransaction(self, offer, desc)

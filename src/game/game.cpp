@@ -9103,7 +9103,7 @@ std::string Game::generateHighscoreQuery(
 	}
 
 	std::string query = fmt::format(
-		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, "
+		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, @row AS `total`, "
 	);
 
 	if (playerGUID != 0) {
@@ -9182,7 +9182,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 
 	auto page = result->getNumber<uint16_t>("page");
-	auto pages = result->getNumber<uint32_t>("entries");
+	auto pages = result->getNumber<uint32_t>("total");
 	pages += entriesPerPage - 1;
 	pages /= entriesPerPage;
 

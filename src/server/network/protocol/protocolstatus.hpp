@@ -30,18 +30,6 @@ public:
 	void sendStatusString();
 	void sendInfo(uint16_t requestedInfo, const std::string &characterName) const;
 
-	struct ActivePlayerStats {
-		uint32_t online = 0; // capped at 4 connections per IP, idle players excluded
-		uint32_t uniqueIps = 0; // number of distinct IPs contributing to "online"
-	};
-
-	// Computes the otservlist-compliant active player counts: drops players idle
-	// for more than 15 minutes, caps each IP at 4 connections, and reports the
-	// number of unique IPs. Both XML and binary protocols read the same numbers
-	// so the two reporters never disagree (otservlist may flag servers whose
-	// reporters publish different totals).
-	static ActivePlayerStats getActivePlayerStats();
-
 	static const uint64_t start;
 
 	static std::string SERVER_NAME;

@@ -3048,6 +3048,7 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 
 	if (player->account->removeCoins(CoinType::Normal, Lua::getNumber<uint32_t>(L, 2)) != AccountErrors_t::Ok) {
 		Lua::reportErrorFunc("Failed to remove coins");
+		lua_pushnil(L);
 		return 1;
 	}
 

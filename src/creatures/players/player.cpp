@@ -5788,8 +5788,10 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 		setFollowCreature(nullptr);
 	}
 
-	if (creature) {
+	if (getAttackedCreature()) {
 		checkCreatureAttack();
+	} else {
+		cancelAttackCheck();
 	}
 	return true;
 }

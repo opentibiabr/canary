@@ -766,6 +766,7 @@ protected:
 	bool summoned = false;
 
 	uint64_t lastStep = 0;
+  uint64_t attackCheckEvent = 0;
 	uint32_t id = 0;
 	uint32_t scriptEventsBitField = 0;
 	uint32_t eventWalk = 0;

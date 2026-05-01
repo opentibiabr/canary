@@ -1,0 +1,36 @@
+---
+name: Copilot - Normalize PR Title
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - reopened
+
+permissions:
+  pull-requests: write
+
+jobs:
+  strip-wip-prefix:
+    name: Strip redundant WIP prefix
+    if: ${{ github.event.pull_request.user.login == 'Copilot' && startsWith(github.event.pull_request.title, '[WIP]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Remove WIP title prefix from draft Copilot PR
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -euo pipefail
+
+          clean_title="$(printf '%s' "$PR_TITLE" | sed -E 's/^\[WIP\][[:space:]]*//')"
+          if [ -z "$clean_title" ] || [ "$clean_title" = "$PR_TITLE" ]; then
+            exit 0
+          fi
+
+          gh pr edit "$PR_NUMBER" --repo "$REPOSITORY" --title "$clean_title"

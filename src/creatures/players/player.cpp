@@ -5779,8 +5779,12 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	++m_attackCheckGeneration;
-	m_pendingAttackCheckTask = false;
+	{
+		const auto &self = static_self_cast<Player>();
+		PlayerLock lock(self);
+		++m_attackCheckGeneration;
+		m_pendingAttackCheckTask = false;
+	}
 
 	const auto &followCreature = getFollowCreature();
 	if (chaseMode && creature) {
@@ -5798,12 +5802,17 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 }
 
 void Player::scheduleAttackCheck() {
-	if (m_pendingAttackCheckTask) {
-		return;
-	}
+	uint32_t generation = 0;
+	{
+		const auto &self = static_self_cast<Player>();
+		PlayerLock lock(self);
+		if (m_pendingAttackCheckTask) {
+			return;
+		}
 
-	m_pendingAttackCheckTask = true;
-	const uint32_t generation = m_attackCheckGeneration;
+		m_pendingAttackCheckTask = true;
+		generation = m_attackCheckGeneration;
+	}
 
 	g_dispatcher().addEvent([self = std::weak_ptr<Player>(static_self_cast<Player>()), generation] {
 		const auto &player = self.lock();
@@ -5811,12 +5820,18 @@ void Player::scheduleAttackCheck() {
 			return;
 		}
 
-		if (generation != player->m_attackCheckGeneration || !player->m_pendingAttackCheckTask) {
-			return;
+		bool shouldRun = false;
+		{
+			Player::PlayerLock lock(player);
+			if (generation == player->m_attackCheckGeneration && player->m_pendingAttackCheckTask) {
+				player->m_pendingAttackCheckTask = false;
+				shouldRun = true;
+			}
 		}
 
-		player->m_pendingAttackCheckTask = false;
-		player->checkCreatureAttack(true);
+		if (shouldRun) {
+			player->checkCreatureAttack(true);
+		}
 	},
 	                        "Player::scheduleAttackCheck");
 }

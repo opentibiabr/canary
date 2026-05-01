@@ -142,16 +142,32 @@ void Creature::onThink(uint32_t interval) {
 
 void Creature::checkCreatureAttack(bool now) {
 	if (now) {
+		if (attackCheckEvent != 0) {
+			g_dispatcher().stopEvent(attackCheckEvent);
+			attackCheckEvent = 0;
+		}
 		if (isAlive()) {
 			onAttacking(0);
 		}
 		return;
 	}
 
-	g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
-		if (const auto &creature = self.lock()) {
-			creature->checkCreatureAttack(true);
-		} }, "Creature::checkCreatureAttack");
+	safeCall([this] {
+		if (attackCheckEvent != 0) {
+			g_dispatcher().stopEvent(attackCheckEvent);
+			attackCheckEvent = 0;
+		}
+
+		attackCheckEvent = g_dispatcher().scheduleEvent(0, [self = std::weak_ptr<Creature>(getCreature())] {
+			if (const auto &creature = self.lock()) {
+				if (creature->isRemoved()) {
+					return;
+				}
+				creature->attackCheckEvent = 0;
+				creature->checkCreatureAttack(true);
+			}
+		}, "Creature::checkCreatureAttack");
+	});
 }
 
 void Creature::onAttacking(uint32_t interval) {

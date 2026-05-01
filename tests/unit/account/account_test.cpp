@@ -314,10 +314,10 @@ TEST_F(AccountTest, RemoveCoinsReturnsErrorIfNotYetLoaded) {
 
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfRepositoryFails) {
 	Account acc { 1 };
-	repository().failAddCoins = true;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 	expectSetCoins(repository(), 1, Normal, 100);
 
+	repository().failAddCoins = true;
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
 	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Storage));
 }

@@ -130,6 +130,9 @@ namespace tests {
 			if (accountCoins == coins_.end()) {
 				return Storage;
 			}
+			if (primaryType == secondaryType) {
+				return Storage;
+			}
 
 			auto primaryCoins = accountCoins->second.find(primaryType);
 			auto secondaryCoins = accountCoins->second.find(secondaryType);

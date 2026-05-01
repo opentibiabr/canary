@@ -156,6 +156,10 @@ AccountErrors_t AccountRepositoryDB::removeCoins(
 		g_logger().error("[{}]: invalid coin types primary:[{}], secondary:[{}]", __FUNCTION__, primaryType, secondaryType);
 		return Storage;
 	}
+	if (primaryType == secondaryType) {
+		g_logger().error("[{}]: primary and secondary coin types must be distinct. type:[{}]", __FUNCTION__, primaryType);
+		return Storage;
+	}
 
 	AccountErrors_t result = Storage;
 	const bool success = DBTransaction::executeWithinTransactionRollbackOnFailure([&]() {

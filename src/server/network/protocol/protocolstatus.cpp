@@ -23,19 +23,31 @@ std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
-uint32_t ProtocolStatus::getIpFilteredPlayerCount() {
-	uint32_t real = 0;
+ProtocolStatus::ActivePlayerStats ProtocolStatus::getActivePlayerStats() {
+	// otservlist regulations: drop players idle for more than 15 minutes, cap
+	// each IP at 4 connections counted, and report the number of unique IPs
+	// that contributed to the count. Idle players are dropped before the per-IP
+	// cap so an IP that only has idle characters logged in does not consume any
+	// of the four slots and does not register as a unique IP either.
+	// Reference: https://otland.net/threads/unique-active-player.279129/
+	constexpr int32_t IDLE_THRESHOLD_MS = 15 * 60 * 1000;
+
+	ActivePlayerStats stats;
 	std::map<uint32_t, uint32_t> listIP;
 	for (const auto &[key, player] : g_game().getPlayers()) {
-		if (player->getIP() != 0) {
-			auto &count = listIP[player->getIP()];
-			if (count < 4) {
-				real++;
-			}
-			count++;
+		if (player->getIP() == 0 || player->getIdleTime() > IDLE_THRESHOLD_MS) {
+			continue;
 		}
+		auto [it, inserted] = listIP.try_emplace(player->getIP(), 0);
+		if (inserted) {
+			stats.uniqueIps++;
+		}
+		if (it->second < 4) {
+			stats.online++;
+		}
+		it->second++;
 	}
-	return real;
+	return stats;
 }
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
@@ -121,7 +133,9 @@ void ProtocolStatus::sendStatusString() {
 	owner.append_attribute("email") = g_configManager().getString(OWNER_EMAIL).c_str();
 
 	pugi::xml_node players = tsqp.append_child("players");
-	players.append_attribute("online") = std::to_string(getIpFilteredPlayerCount()).c_str();
+	const auto activePlayerStats = getActivePlayerStats();
+	players.append_attribute("online") = std::to_string(activePlayerStats.online).c_str();
+	players.append_attribute("unique") = std::to_string(activePlayerStats.uniqueIps).c_str();
 	players.append_attribute("max") = std::to_string(g_configManager().getNumber(MAX_PLAYERS)).c_str();
 	players.append_attribute("peak") = std::to_string(g_game().getPlayersRecord()).c_str();
 
@@ -185,7 +199,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
 		output->addByte(0x20);
-		output->add<uint32_t>(getIpFilteredPlayerCount());
+		output->add<uint32_t>(getActivePlayerStats().online);
 		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
 		output->add<uint32_t>(g_game().getPlayersRecord());
 	}

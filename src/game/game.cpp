@@ -9102,8 +9102,14 @@ std::string Game::generateHighscoreQuery(
 		return "";
 	}
 
+	const std::string vocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "";
+	const std::string countVocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation, " AND ") : "";
+
 	std::string query = fmt::format(
-		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, @row AS `total`, "
+		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, "
+		"(SELECT COUNT(*) FROM `players` WHERE `group_id` < {}{}) AS `total`, ",
+		static_cast<int>(GROUP_TYPE_GAMEMASTER),
+		countVocationCondition
 	);
 
 	if (playerGUID != 0) {
@@ -9131,7 +9137,7 @@ std::string Game::generateHighscoreQuery(
 	);
 
 	if (vocation != 0xFFFFFFFF) {
-		query += generateVocationConditionHighscore(vocation);
+		query += vocationCondition;
 	}
 
 	query += ") `T` WHERE ";
@@ -9148,7 +9154,7 @@ std::string Game::generateHighscoreQuery(
 	return query;
 }
 
-std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
+std::string Game::generateVocationConditionHighscore(uint32_t vocation, const std::string &conditionPrefix) {
 	std::ostringstream queryPart;
 	bool firstVocation = true;
 
@@ -9157,12 +9163,16 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 		const auto &voc = it.second;
 		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc->getId();
+				queryPart << conditionPrefix << "(`vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
 				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
+	}
+
+	if (!firstVocation) {
+		queryPart << ")";
 	}
 
 	return queryPart.str();

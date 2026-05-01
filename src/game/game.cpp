@@ -9192,9 +9192,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 
 	auto page = result->getNumber<uint16_t>("page");
-	auto pages = result->getNumber<uint32_t>("total");
-	pages += entriesPerPage - 1;
-	pages /= entriesPerPage;
+	auto pages = calculateHighscorePages(result->getNumber<uint32_t>("total"), entriesPerPage);
 
 	uint32_t vocationId = getVocationIdFromClientId(vocationCID);
 	std::ostringstream cacheKeyStream;
@@ -9225,6 +9223,14 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 		player->sendHighscores(characters, category, vocationCID, page, static_cast<uint16_t>(pages), getTimeNow());
 		highscoreCache[cacheKey] = { characters, page, pages, now };
 	}
+}
+
+uint16_t Game::calculateHighscorePages(uint32_t totalEntries, uint8_t entriesPerPage) {
+	if (entriesPerPage == 0) {
+		return 0;
+	}
+
+	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
 }
 
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {

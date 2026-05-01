@@ -158,15 +158,18 @@ void Creature::checkCreatureAttack(bool now) {
 			attackCheckEvent = 0;
 		}
 
-		attackCheckEvent = g_dispatcher().scheduleEvent(0, [self = std::weak_ptr<Creature>(getCreature())] {
-			if (const auto &creature = self.lock()) {
-				if (creature->isRemoved()) {
-					return;
+		attackCheckEvent = g_dispatcher().scheduleEvent(
+			0, [self = std::weak_ptr<Creature>(getCreature())] {
+				if (const auto &creature = self.lock()) {
+					if (creature->isRemoved()) {
+						return;
+					}
+					creature->attackCheckEvent = 0;
+					creature->checkCreatureAttack(true);
 				}
-				creature->attackCheckEvent = 0;
-				creature->checkCreatureAttack(true);
-			}
-		}, "Creature::checkCreatureAttack");
+			},
+			"Creature::checkCreatureAttack"
+		);
 	});
 }
 

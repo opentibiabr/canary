@@ -12,7 +12,7 @@ local communicates = {
 	},
 
 	[3] = {
-		storageValue = GlobalStorage.WorldBoard.NightmareIsle.AnkhramunNorth,
+		storageValue = GlobalStorage.WorldBoard.NightmareIsle.AnkrahmunNorth,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the Ankhramun tar pits!.",
 	},
 

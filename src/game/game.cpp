@@ -711,18 +711,23 @@ void Game::loadMainMap(const std::string &filename) {
 }
 
 void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
+	g_logger().debug("[Game::loadCustomMaps] start path='{}'", customMapPath.string());
+
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 
 	namespace fs = std::filesystem;
 
 	if (!fs::exists(customMapPath) && !fs::create_directory(customMapPath)) {
+		g_logger().error("[Game::loadCustomMaps] failed to create custom map directory '{}'", customMapPath.string());
 		throw std::ios_base::failure(fmt::format("Failed to create custom map directory {}", customMapPath.string()));
 	}
 
 	int customMapIndex = 0;
 	for (const auto &entry : fs::directory_iterator(customMapPath)) {
 		const auto &realPath = entry.path();
+
+		g_logger().debug("[Game::loadCustomMaps] inspect file='{}'", realPath.string());
 
 		if (realPath.extension() != ".otbm") {
 			continue;
@@ -738,7 +743,7 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 
 		// Filenames that start with a # are ignored.
 		if (filename.at(0) == '#') {
-			g_logger().info("Custom map {} [disabled]", filename);
+			g_logger().debug("Custom map {} [disabled]", filename);
 			continue;
 		}
 
@@ -748,7 +753,10 @@ void Game::loadCustomMaps(const std::filesystem::path &customMapPath) {
 			continue;
 		}
 
-		map.loadMapCustom(filename, true, true, true, true, customMapIndex);
+		const auto mapFilePath = realPath.string();
+		g_logger().debug("[Game::loadCustomMaps] loading map '{}' at index {}", filename, customMapIndex);
+		map.loadMapCustom(mapFilePath, true, true, true, true, customMapIndex);
+		g_logger().debug("[Game::loadCustomMaps] loaded map '{}' at index {}", filename, customMapIndex);
 
 		customMapIndex++;
 	}

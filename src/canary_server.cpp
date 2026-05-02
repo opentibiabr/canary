@@ -21,6 +21,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "game/zones/zone.hpp"
+#include "lua/global/globalevent.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
@@ -199,6 +200,8 @@ void CanaryServer::setWorldType() {
 void CanaryServer::loadMaps() const {
 	try {
 		g_game().loadMainMap(g_configManager().getString(MAP_NAME));
+
+		g_globalEvents().customMapStartup();
 
 		// If "mapCustomEnabled" is true on config.lua, then load the custom map
 		if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {

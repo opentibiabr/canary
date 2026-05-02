@@ -22,11 +22,13 @@ void GlobalEventFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "GlobalEvent", "interval", GlobalEventFunctions::luaGlobalEventInterval);
 	Lua::registerMethod(L, "GlobalEvent", "onThink", GlobalEventFunctions::luaGlobalEventOnCallback);
 	Lua::registerMethod(L, "GlobalEvent", "onTime", GlobalEventFunctions::luaGlobalEventOnCallback);
+	Lua::registerMethod(L, "GlobalEvent", "onCustomMapStartup", GlobalEventFunctions::luaGlobalEventOnCallback);
 	Lua::registerMethod(L, "GlobalEvent", "onStartup", GlobalEventFunctions::luaGlobalEventOnCallback);
 	Lua::registerMethod(L, "GlobalEvent", "onShutdown", GlobalEventFunctions::luaGlobalEventOnCallback);
 	Lua::registerMethod(L, "GlobalEvent", "onRecord", GlobalEventFunctions::luaGlobalEventOnCallback);
 	Lua::registerMethod(L, "GlobalEvent", "onPeriodChange", GlobalEventFunctions::luaGlobalEventOnCallback);
 	Lua::registerMethod(L, "GlobalEvent", "onSave", GlobalEventFunctions::luaGlobalEventOnCallback);
+	Lua::registerMethod(L, "GlobalEvent", "onGlobalServerSave", GlobalEventFunctions::luaGlobalEventOnCallback);
 }
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
@@ -46,6 +48,8 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 		const std::string tmpStr = asLowerCaseString(typeName);
 		if (tmpStr == "startup") {
 			global->setEventType(GLOBALEVENT_STARTUP);
+		} else if (tmpStr == "custommapstartup") {
+			global->setEventType(GLOBALEVENT_CUSTOMMAP_STARTUP);
 		} else if (tmpStr == "shutdown") {
 			global->setEventType(GLOBALEVENT_SHUTDOWN);
 		} else if (tmpStr == "record") {
@@ -56,6 +60,8 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 			global->setEventType(GLOBALEVENT_ON_THINK);
 		} else if (tmpStr == "save") {
 			global->setEventType(GLOBALEVENT_SAVE);
+		} else if (tmpStr == "globalserversave") {
+			global->setEventType(GLOBALEVENT_GLOBAL_SERVER_SAVE);
 		} else {
 			g_logger().error("[GlobalEventFunctions::luaGlobalEventType] - "
 			                 "Invalid type for global event: {}");

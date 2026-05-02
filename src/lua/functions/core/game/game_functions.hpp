@@ -25,6 +25,7 @@ private:
 
 	static int luaGameGetPlayers(lua_State* L);
 	static int luaGameLoadMap(lua_State* L);
+	static int luaGameLoadCustomMaps(lua_State* L);
 	static int luaGameloadMapChunk(lua_State* L);
 
 	static int luaGameGetExperienceForLevel(lua_State* L);
@@ -38,6 +39,7 @@ private:
 
 	static int luaGameGetGameState(lua_State* L);
 	static int luaGameSetGameState(lua_State* L);
+	static int luaGameGlobalServerSave(lua_State* L);
 
 	static int luaGameGetWorldType(lua_State* L);
 	static int luaGameSetWorldType(lua_State* L);

@@ -18,6 +18,8 @@ local function ServerSave()
 		raid.kv:set("checks-today", 0)
 		raid.kv:set("last-check-date", os.date("%Y%m%d"))
 	end
+
+	Game.globalServerSave()
 end
 
 local function ServerSaveWarning(time)

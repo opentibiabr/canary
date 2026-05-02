@@ -53,7 +53,7 @@ monster.flags = {
 }
 
 monster.events = {
-	"Wyda",
+	"GiantSpiderWyda",
 }
 
 monster.light = {

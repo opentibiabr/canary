@@ -12,7 +12,7 @@ local communicates = {
 	},
 
 	[3] = {
-		storageValue = GlobalStorage.WorldBoard.NightmareIsle.AnkrahmunNorth,
+		storageValue = GlobalStorage.WorldBoard.NightmareIsle.AnkhramunNorth,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the Ankhramun tar pits!.",
 	},
 
@@ -25,11 +25,31 @@ local communicates = {
 		storageValue = GlobalStorage.WorldBoard.NightmareIsle.DarashiaWest,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the river near Drefia!",
 	},
+
+	[6] = {
+		kv = KV.scoped("worldchanges"):scoped("bored"),
+		kvKey = "active",
+		communicate = "Sharpen your sword! The witch Wyda seems to be bored so pay her a visit!",
+	},
 }
 
+local function isCommunicateActive(value)
+	if value.storageValue ~= nil then
+		return Game.getStorageValue(value.storageValue) > 0
+	end
+
+	if value.kv ~= nil then
+		local kvKey = value.kvKey or "active"
+		local kvValue = value.kv:get(kvKey)
+		return kvValue == true or kvValue == 1
+	end
+
+	return false
+end
+
 function worldBoard.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	for index, value in pairs(communicates) do
-		if Game.getStorageValue(value.storageValue) > 0 then
+	for _, value in pairs(communicates) do
+		if isCommunicateActive(value) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, value.communicate)
 		end
 	end

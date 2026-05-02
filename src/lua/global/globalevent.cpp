@@ -67,6 +67,10 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 	return false;
 }
 
+void GlobalEvents::customMapStartup() const {
+	execute(GLOBALEVENT_CUSTOMMAP_STARTUP);
+}
+
 void GlobalEvents::startup() const {
 	execute(GLOBALEVENT_STARTUP);
 }
@@ -77,6 +81,10 @@ void GlobalEvents::shutdown() const {
 
 void GlobalEvents::save() const {
 	execute(GLOBALEVENT_SAVE);
+}
+
+void GlobalEvents::globalServerSave() const {
+	execute(GLOBALEVENT_GLOBAL_SERVER_SAVE);
 }
 
 void GlobalEvents::timer() {
@@ -172,11 +180,13 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 			return thinkMap;
 		case GLOBALEVENT_TIMER:
 			return timerMap;
+		case GLOBALEVENT_CUSTOMMAP_STARTUP:
 		case GLOBALEVENT_PERIODCHANGE:
 		case GLOBALEVENT_STARTUP:
 		case GLOBALEVENT_SHUTDOWN:
 		case GLOBALEVENT_RECORD:
-		case GLOBALEVENT_SAVE: {
+		case GLOBALEVENT_SAVE:
+		case GLOBALEVENT_GLOBAL_SERVER_SAVE: {
 			GlobalEventMap retMap;
 			for (const auto &it : serverMap) {
 				if (it.second->getEventType() == type) {
@@ -219,8 +229,10 @@ bool GlobalEvent::isLoadedScriptId() const {
 	return m_scriptId != 0;
 }
 
-std::string GlobalEvent::getScriptTypeName() const {
+	std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {
+		case GLOBALEVENT_CUSTOMMAP_STARTUP:
+			return "onCustomMapStartup";
 		case GLOBALEVENT_STARTUP:
 			return "onStartup";
 		case GLOBALEVENT_SHUTDOWN:
@@ -235,6 +247,8 @@ std::string GlobalEvent::getScriptTypeName() const {
 			return "onThink";
 		case GLOBALEVENT_SAVE:
 			return "onSave";
+		case GLOBALEVENT_GLOBAL_SERVER_SAVE:
+			return "onGlobalServerSave";
 		default:
 			g_logger().error("[GlobalEvent::getScriptTypeName] - Invalid event type");
 			return {};

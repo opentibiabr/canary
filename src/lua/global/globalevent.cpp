@@ -229,7 +229,7 @@ bool GlobalEvent::isLoadedScriptId() const {
 	return m_scriptId != 0;
 }
 
-	std::string GlobalEvent::getScriptTypeName() const {
+std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {
 		case GLOBALEVENT_CUSTOMMAP_STARTUP:
 			return "onCustomMapStartup";

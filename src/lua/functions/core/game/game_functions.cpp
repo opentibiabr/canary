@@ -17,6 +17,7 @@
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lua/global/globalevent.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
 #include "items/item.hpp"
@@ -43,6 +44,7 @@ void GameFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Game", "getPlayers", GameFunctions::luaGameGetPlayers);
 	Lua::registerMethod(L, "Game", "loadMap", GameFunctions::luaGameLoadMap);
+	Lua::registerMethod(L, "Game", "loadCustomMaps", GameFunctions::luaGameLoadCustomMaps);
 	Lua::registerMethod(L, "Game", "loadMapChunk", GameFunctions::luaGameloadMapChunk);
 
 	Lua::registerMethod(L, "Game", "getExperienceForLevel", GameFunctions::luaGameGetExperienceForLevel);
@@ -56,6 +58,7 @@ void GameFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Game", "getGameState", GameFunctions::luaGameGetGameState);
 	Lua::registerMethod(L, "Game", "setGameState", GameFunctions::luaGameSetGameState);
+	Lua::registerMethod(L, "Game", "globalServerSave", GameFunctions::luaGameGlobalServerSave);
 
 	Lua::registerMethod(L, "Game", "getWorldType", GameFunctions::luaGameGetWorldType);
 	Lua::registerMethod(L, "Game", "setWorldType", GameFunctions::luaGameSetWorldType);
@@ -286,6 +289,13 @@ int GameFunctions::luaGameLoadMap(lua_State* L) {
 	return 0;
 }
 
+int GameFunctions::luaGameLoadCustomMaps(lua_State* L) {
+	// Game.loadCustomMaps(path)
+	const std::string &path = Lua::getString(L, 1);
+	g_game().loadCustomMaps(path);
+	return 0;
+}
+
 int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	// Game.loadMapChunk(path, position, remove)
 	const std::string &path = Lua::getString(L, 1);
@@ -374,6 +384,13 @@ int GameFunctions::luaGameSetGameState(lua_State* L) {
 	// Game.setGameState(state)
 	const GameState_t state = Lua::getNumber<GameState_t>(L, 1);
 	g_game().setGameState(state);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int GameFunctions::luaGameGlobalServerSave(lua_State* L) {
+	// Game.globalServerSave()
+	g_globalEvents().globalServerSave();
 	Lua::pushBoolean(L, true);
 	return 1;
 }

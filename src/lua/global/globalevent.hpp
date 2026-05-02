@@ -31,9 +31,11 @@ public:
 
 	static GlobalEvents &getInstance();
 
+	void customMapStartup() const;
 	void startup() const;
 	void shutdown() const;
 	void save() const;
+	void globalServerSave() const;
 
 	void timer();
 	void think();

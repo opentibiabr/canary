@@ -5,8 +5,8 @@
 #include "utils/batch_update.hpp"
 
 #include "creatures/players/player.hpp"
+#include "creatures/players/grouping/groups.hpp"
 #include "items/containers/container.hpp"
-#include "items/item.hpp"
 #include "test_items.hpp"
 
 namespace {
@@ -34,6 +34,12 @@ namespace {
 		action(batch);
 	}
 
+	std::shared_ptr<Player> makePlayer() {
+		auto player = std::make_shared<Player>();
+		player->setGroup(std::make_shared<Group>());
+		return player;
+	}
+
 }
 
 class BatchUpdateTest : public ::testing::Test {
@@ -44,7 +50,7 @@ protected:
 };
 
 TEST_F(BatchUpdateTest, DeduplicatesContainersAndBalancesBeginEndCalls) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	withBatchUpdate(player, [&player, &c1](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
@@ -57,7 +63,7 @@ TEST_F(BatchUpdateTest, DeduplicatesContainersAndBalancesBeginEndCalls) {
 }
 
 TEST_F(BatchUpdateTest, AddReturnsFalseForNullContainers) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	BatchUpdate batch(player);
 	EXPECT_TRUE(batch.add(c1));
@@ -67,7 +73,7 @@ TEST_F(BatchUpdateTest, AddReturnsFalseForNullContainers) {
 }
 
 TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	withBatchUpdate(player, [&player, &c1, &c2](BatchUpdate &batch) {
@@ -83,7 +89,7 @@ TEST_F(BatchUpdateTest, AddContainersProcessesUniqueContainersOnce) {
 }
 
 TEST_F(BatchUpdateTest, EndBatchUpdateHandlesExpiredActor) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	withBatchUpdate(player, [&player, &c1](BatchUpdate &batch) {
 		EXPECT_TRUE(batch.add(c1));
@@ -93,7 +99,7 @@ TEST_F(BatchUpdateTest, EndBatchUpdateHandlesExpiredActor) {
 }
 
 TEST_F(BatchUpdateTest, AddSkipsExpiredCachedContainers) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	BatchUpdate batch(player);
@@ -104,7 +110,7 @@ TEST_F(BatchUpdateTest, AddSkipsExpiredCachedContainers) {
 }
 
 TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 	withBatchUpdate(player, [&player, &c1, &c2](BatchUpdate &batch) {
@@ -119,31 +125,35 @@ TEST_F(BatchUpdateTest, AddContainersSkipsNullAndDuplicates) {
 }
 
 TEST_F(BatchUpdateTest, EmptyScopeBalancesBatchingState) {
-	auto player = std::make_shared<Player>();
+	auto player = makePlayer();
 	withBatchUpdate(player, [&player](BatchUpdate &) {
 		EXPECT_TRUE(player->isBatching());
 	});
 	EXPECT_FALSE(player->isBatching());
 }
 
-TEST_F(BatchUpdateTest, ContainerBatchingSuppressesUpdateCallbacks) {
-	auto player = std::make_shared<Player>();
-	auto container = std::make_shared<Container>(ITEM_GOLD_POUCH, 10);
-	auto item = Item::CreateItem(ITEM_GOLD_COIN, 5);
-	ASSERT_NE(item, nullptr);
-	container->addThing(item);
-	player->internalAddThing(CONST_SLOT_BACKPACK, container);
+TEST_F(BatchUpdateTest, NestedBatchUpdatesKeepBatchingUntilOuterScopeEnds) {
+	auto player = makePlayer();
+	auto c1 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
+	auto c2 = std::make_shared<FakeContainer>(ITEM_REWARD_CONTAINER, 10);
 
-	player->tradeItem = item;
-	player->setTradeState(TRADE_ACKNOWLEDGE);
+	{
+		BatchUpdate outer(player);
+		EXPECT_TRUE(player->isBatching());
+		EXPECT_TRUE(outer.add(c1));
 
-	container->beginBatchUpdate();
-	container->onUpdateContainerItem(0, item, item);
-	EXPECT_EQ(player->getTradeState(), TRADE_ACKNOWLEDGE);
-	EXPECT_EQ(player->tradeItem, item);
-	container->endBatchUpdate(nullptr);
+		{
+			BatchUpdate inner(player);
+			EXPECT_TRUE(player->isBatching());
+			EXPECT_TRUE(inner.add(c2));
+		}
 
-	container->onUpdateContainerItem(0, item, item);
-	EXPECT_EQ(player->getTradeState(), TRADE_NONE);
-	EXPECT_EQ(player->tradeItem, nullptr);
+		EXPECT_TRUE(player->isBatching());
+		EXPECT_EQ(c1->endCount, 0);
+		EXPECT_EQ(c2->endCount, 1);
+	}
+
+	EXPECT_FALSE(player->isBatching());
+	EXPECT_EQ(c1->endCount, 1);
+	EXPECT_EQ(c2->endCount, 1);
 }

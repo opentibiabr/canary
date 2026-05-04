@@ -9,7 +9,6 @@
 
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/players/player.hpp"
-#include "config/configmanager.hpp"
 #include "game/game.hpp"
 
 #include <appearances.pb.h>
@@ -30,9 +29,6 @@ TEST(RandomMountOutfitRegressionTest, InvalidRandomMountIdResolvesToNoMount) {
 }
 
 TEST(RandomMountOutfitRegressionTest, PlayerChangeOutfitWithoutMountClearsMountedAndRandomState) {
-	g_configManager().setConfigFileLua("config.lua.dist");
-	ASSERT_TRUE(g_configManager().load());
-
 	auto player = std::make_shared<Player>();
 
 	Outfit_t currentOutfit;

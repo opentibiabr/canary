@@ -407,8 +407,7 @@ void CanaryServer::loadModules() {
 	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/monster", false, false), datapackFolder + "/monster");
 	modulesLoadHelper((g_npcs().load(false, true)), "npc");
 
-	// It needs to be loaded after the revscript is read in order to use the scripting interface
-	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(), "XML/events.xml");
+	// It needs to be loaded after the revscript is read in order to use the scripting interface.
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromJson(), "json/eventscheduler/events.json");
 
 	g_game().loadBoostedCreature();

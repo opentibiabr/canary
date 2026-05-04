@@ -9,6 +9,7 @@ jobs:
   update-baseline-on-main:
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       pull-requests: write
     if: github.ref == 'refs/heads/main'
@@ -63,6 +64,11 @@ jobs:
         run: |
           BRANCH_NAME="chore/update-vcpkg-baseline"
 
+          trigger_ci() {
+            echo "Dispatching CI workflow for ${BRANCH_NAME}"
+            gh workflow run ci.yml --ref "${BRANCH_NAME}"
+          }
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -78,6 +84,7 @@ jobs:
 
             if [ "$CURRENT_IN_BRANCH" == "${NEW_BASELINE}" ]; then
               echo "PR #${EXISTING_PR} already has baseline ${NEW_BASELINE}"
+              trigger_ci
               exit 0
             fi
 
@@ -96,6 +103,7 @@ jobs:
               "${RELEASE_TAG}" "${CURRENT_IN_BRANCH}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
             gh pr comment ${EXISTING_PR} --body "${COMMENT_BODY}"
+            trigger_ci
 
             echo "Successfully updated PR #${EXISTING_PR}"
           else
@@ -126,107 +134,6 @@ jobs:
               --base main \
               --head ${BRANCH_NAME}
 
+            trigger_ci
             echo "Created new baseline PR"
           fi
-
-  update-existing-prs:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    needs: update-baseline-on-main
-    if: always()
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Get latest vcpkg release
-        id: vcpkg
-        run: |
-          if [ "${{ needs.update-baseline-on-main.outputs.baseline }}" != "" ]; then
-            LATEST_TAG="${{ needs.update-baseline-on-main.outputs.tag }}"
-            LATEST_BASELINE="${{ needs.update-baseline-on-main.outputs.baseline }}"
-            echo "Using baseline from previous job"
-          else
-            LATEST_TAG=$(curl -s https://api.github.com/repos/microsoft/vcpkg/releases/latest | jq -r '.tag_name')
-            echo "Latest tag: $LATEST_TAG"
-
-            LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git "refs/tags/${LATEST_TAG}^{}" | awk '{print $1}')
-
-            if [ -z "$LATEST_BASELINE" ]; then
-              LATEST_BASELINE=$(git ls-remote https://github.com/microsoft/vcpkg.git "refs/tags/${LATEST_TAG}" | awk '{print $1}')
-            fi
-          fi
-
-          echo "Baseline SHA: $LATEST_BASELINE"
-
-          if [ -z "$LATEST_BASELINE" ] || [ "$LATEST_BASELINE" == "null" ]; then
-            echo "Error: Invalid baseline detected"
-            exit 1
-          fi
-
-          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-          echo "baseline=$LATEST_BASELINE" >> $GITHUB_OUTPUT
-
-      - name: Update all open PRs
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.vcpkg.outputs.tag }}
-          NEW_BASELINE: ${{ steps.vcpkg.outputs.baseline }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          gh pr list --state open --json number,headRefName --jq '.[] | "\(.number) \(.headRefName)"' | while read pr_number branch_name; do
-            if [ "$branch_name" == "chore/update-vcpkg-baseline" ]; then
-              echo "Skipping baseline PR #${pr_number}"
-              continue
-            fi
-
-            echo "Processing PR #${pr_number} on branch ${branch_name}"
-
-            git checkout main 2>/dev/null || true
-            git reset --hard origin/main 2>/dev/null || true
-
-            git fetch origin ${branch_name}
-            git checkout ${branch_name}
-
-            if [ ! -f "vcpkg.json" ]; then
-              echo "No vcpkg.json found in PR #${pr_number}, skipping"
-              continue
-            fi
-
-            CURRENT=$(jq -r '."builtin-baseline" // empty' vcpkg.json 2>/dev/null)
-
-            if [ -z "$CURRENT" ]; then
-              echo "Could not read baseline from PR #${pr_number}, skipping"
-              continue
-            fi
-
-            if [ "$CURRENT" != "${NEW_BASELINE}" ]; then
-              echo "Updating PR #${pr_number} from ${CURRENT} to ${NEW_BASELINE}"
-
-              jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
-              mv vcpkg.json.tmp vcpkg.json
-
-              git add vcpkg.json
-
-              if git diff --staged --quiet; then
-                echo "No changes needed for PR #${pr_number}"
-                continue
-              fi
-
-              git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
-
-              if git push origin ${branch_name}; then
-                gh pr comment ${pr_number} --body "✅ Updated vcpkg baseline to **${RELEASE_TAG}** (\`${NEW_BASELINE}\`)"
-                echo "Successfully updated PR #${pr_number}"
-              else
-                echo "Failed to push to PR #${pr_number}"
-              fi
-            else
-              echo "PR #${pr_number} already up to date with ${NEW_BASELINE}"
-            fi
-          done

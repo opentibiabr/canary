@@ -70,6 +70,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check formatting diff
+        id: formatting-diff
+        shell: bash
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          git status --short
+          git diff --binary > formatting.patch
+          git diff --cached --binary >> formatting.patch
+
+      - name: Upload formatting patch
+        if: steps.formatting-diff.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatting.patch
+          path: formatting.patch
+
+      - name: Fail on formatting changes
+        if: steps.formatting-diff.outputs.has_changes == 'true'
+        run: |
+          echo "::error::Formatting changes are required. The autofix.ci workflow should push a formatter commit automatically; if it cannot, apply the formatting.patch artifact or run the formatters locally and push the result."
+          exit 1
+
       - name: Run Analysis (Reviewdog)
         if: github.event_name == 'pull_request'
         env:

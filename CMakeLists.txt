@@ -34,7 +34,10 @@ endif()
 set(VCPKG_FEATURE_FLAGS
     "versions"
 )
-if(NOT DEFINED VCPKG_BUILD_TYPE)
+if(NOT
+   DEFINED
+   VCPKG_BUILD_TYPE
+)
     set(VCPKG_BUILD_TYPE
         "release"
     )
@@ -59,7 +62,10 @@ if(CANARY_BUILD_TESTS)
         "tests"
         _CANARY_TESTS_FEATURE_INDEX
     )
-    if(_CANARY_TESTS_FEATURE_INDEX EQUAL -1)
+    if(_CANARY_TESTS_FEATURE_INDEX
+       EQUAL
+       -1
+    )
         list(
             APPEND
             VCPKG_MANIFEST_FEATURES

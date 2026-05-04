@@ -108,6 +108,7 @@ jobs:
         if: matrix.buildtype == 'linux-debug'
         env:
           TEST_DB_PASSWORD: root
+          TEST_DB_NAME: otservbr-global
         run: ctest --test-dir build/${{ matrix.buildtype }} --output-on-failure --parallel 2
 
       - name: Upload artifacts

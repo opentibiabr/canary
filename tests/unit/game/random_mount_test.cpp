@@ -12,22 +12,26 @@
 
 #include <appearances.pb.h>
 
+namespace {
+	void addOutfitFrameGroup(Canary::protobuf::appearances::Appearance &appearance, Canary::protobuf::appearances::FixedFrameGroup fixedFrameGroup, uint32_t patternDepth) {
+		auto &frameGroup = *appearance.add_frame_group();
+		frameGroup.set_fixed_frame_group(fixedFrameGroup);
+		frameGroup.mutable_sprite_info()->set_pattern_depth(patternDepth);
+	}
+}
+
 TEST(RandomMountOutfitRegressionTest, InvalidRandomMountIdResolvesToNoMount) {
 	Mounts mounts;
+	constexpr uint8_t nonExistentRandomMountId = 42;
 
-	EXPECT_EQ(0, Game::resolveRandomMountClientId(mounts, 42));
+	EXPECT_EQ(0, Game::resolveRandomMountClientId(mounts, nonExistentRandomMountId));
 }
 
 TEST(RandomMountOutfitRegressionTest, OutfitWithoutMountedPatternDepthRejectsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
-	auto &idleFrameGroup = *appearance.add_frame_group();
-	idleFrameGroup.set_fixed_frame_group(Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE);
-	idleFrameGroup.mutable_sprite_info()->set_pattern_depth(1);
-
-	auto &movingFrameGroup = *appearance.add_frame_group();
-	movingFrameGroup.set_fixed_frame_group(Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING);
-	movingFrameGroup.mutable_sprite_info()->set_pattern_depth(1);
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 1);
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING, 1);
 
 	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }
@@ -35,13 +39,29 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithoutMountedPatternDepthRejectsMou
 TEST(RandomMountOutfitRegressionTest, OutfitWithMountedPatternDepthAllowsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
-	auto &idleFrameGroup = *appearance.add_frame_group();
-	idleFrameGroup.set_fixed_frame_group(Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE);
-	idleFrameGroup.mutable_sprite_info()->set_pattern_depth(2);
-
-	auto &movingFrameGroup = *appearance.add_frame_group();
-	movingFrameGroup.set_fixed_frame_group(Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING);
-	movingFrameGroup.mutable_sprite_info()->set_pattern_depth(2);
+	// pattern_depth == 2 encodes the mounted/unmounted sprite-variant axis.
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 2);
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING, 2);
 
 	EXPECT_TRUE(Game::outfitAppearanceSupportsMount(appearance));
+}
+
+TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleMountedPatternDepthRejectsMount) {
+	Canary::protobuf::appearances::Appearance appearance;
+
+	// Both outfit frame groups need the mounted/unmounted sprite-variant axis.
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 2);
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING, 1);
+
+	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
+}
+
+TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingMountedPatternDepthRejectsMount) {
+	Canary::protobuf::appearances::Appearance appearance;
+
+	// Both outfit frame groups need the mounted/unmounted sprite-variant axis.
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 1);
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING, 2);
+
+	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }

@@ -915,11 +915,8 @@ local function hasLaterMissionStarted(player, questId, missionIndex)
 
 	for index = missionIndex + 1, #quest.missions do
 		local nextMission = quest.missions[index]
-		if nextMission and nextMission.hideWhenNextStarted and nextMission.storageId then
-			local value = player:getStorageValue(nextMission.storageId)
-			if value ~= -1 and value >= nextMission.startValue and (nextMission.ignoreendvalue or value <= nextMission.endValue) then
-				return true
-			end
+		if nextMission and player:missionIsStarted(questId, index) then
+			return true
 		end
 	end
 
@@ -934,7 +931,7 @@ function Player.missionIsStarted(self, questId, missionId)
 			return false
 		end
 
-		if self:missionIsCompleted(questId, missionId) and hasLaterMissionStarted(self, questId, missionId) then
+		if mission.hideWhenNextStarted and self:missionIsCompleted(questId, missionId) and hasLaterMissionStarted(self, questId, missionId) then
 			return false
 		end
 

@@ -13,7 +13,7 @@
 #include <appearances.pb.h>
 
 namespace {
-	void addOutfitFrameGroup(Canary::protobuf::appearances::Appearance &appearance, Canary::protobuf::appearances::FixedFrameGroup fixedFrameGroup, uint32_t patternDepth) {
+	void addOutfitFrameGroup(Canary::protobuf::appearances::Appearance &appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP fixedFrameGroup, uint32_t patternDepth) {
 		auto &frameGroup = *appearance.add_frame_group();
 		frameGroup.set_fixed_frame_group(fixedFrameGroup);
 		frameGroup.mutable_sprite_info()->set_pattern_depth(patternDepth);

@@ -109,7 +109,7 @@ foreach(
                fmt::fmt
                magic_enum::magic_enum
                mio::mio
-               protobuf::libprotobuf
+               protobuf::libprotobuf-lite
                pugixml::pugixml
                spdlog::spdlog
                unofficial::argon2::libargon2

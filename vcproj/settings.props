@@ -20,7 +20,7 @@
     </CANARY_COMMON_LIBDEPS>
     <CANARY_LIBDEPS>
       $(CANARY_COMMON_LIBDEPS);
-      libprotobuf.lib;
+      libprotobuf-lite.lib;
       z.lib;
       libcurl.lib;
       fmt.lib;
@@ -28,7 +28,7 @@
     </CANARY_LIBDEPS>
     <CANARY_LIBDEPS_D>
       $(CANARY_COMMON_LIBDEPS);
-      libprotobufd.lib;
+      libprotobuf-lited.lib;
       zd.lib;
       libcurl-d.lib;
       fmtd.lib;
@@ -55,7 +55,7 @@
       iphlpapi.lib;
     </CANARY_COMMON_LIBDEPS>
     <CANARY_PROTOBUF_STATIC_LIBDEPS>
-      libprotobuf.lib;
+      libprotobuf-lite.lib;
       utf8_validity.lib;
       absl_log_internal_check_op.lib;
       absl_die_if_null.lib;

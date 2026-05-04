@@ -9,7 +9,6 @@
     "bext-ut",
     "curl",
     "eventpp",
-    "gtest",
     "libmariadb",
     "luajit",
     "magic-enum",
@@ -25,6 +24,12 @@
     "openssl"
   ],
   "features": {
+    "tests": {
+      "description": "Dependencies required to build tests.",
+      "dependencies": [
+        "gtest"
+      ]
+    },
     "metrics": {
       "description": "Enable OpenTelemetry metrics exporters",
       "dependencies": [

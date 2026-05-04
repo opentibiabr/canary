@@ -1323,6 +1323,13 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
 
+	outfitMountSupportedLookTypes.clear();
+	for (const auto &appearance : m_appearancesPtr->outfit()) {
+		if (outfitAppearanceSupportsMount(appearance)) {
+			outfitMountSupportedLookTypes.emplace(static_cast<uint16_t>(appearance.id()));
+		}
+	}
+
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
 		// Registering distance effects
@@ -9271,13 +9278,7 @@ bool Game::outfitSupportsMount(uint16_t lookType) const {
 		return true;
 	}
 
-	for (const auto &appearance : m_appearancesPtr->outfit()) {
-		if (appearance.id() == lookType) {
-			return outfitAppearanceSupportsMount(appearance);
-		}
-	}
-
-	return false;
+	return outfitMountSupportedLookTypes.contains(lookType);
 }
 
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {

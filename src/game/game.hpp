@@ -826,6 +826,7 @@ private:
 	std::vector<uint16_t> registeredMagicEffects;
 	std::vector<uint16_t> registeredDistanceEffects;
 	std::vector<uint16_t> registeredLookTypes;
+	phmap::flat_hash_set<uint16_t> outfitMountSupportedLookTypes;
 
 	size_t lastBucket = 0;
 	size_t lastImbuedBucket = 0;

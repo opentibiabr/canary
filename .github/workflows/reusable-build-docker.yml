@@ -41,7 +41,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build and push (main)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -53,9 +53,9 @@ jobs:
           build-args: |
             VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
             VCPKG_FEED_USERNAME=${{ github.repository_owner }}
-            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read;nugettimeout,1200
+            VCPKG_BINARY_CACHE_MODE=readwrite
           secrets: |
-            github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+            github_token=${{ github.token }}
           tags: |
             ghcr.io/${{ steps.repo_lower.outputs.value }}:latest
             ghcr.io/${{ steps.repo_lower.outputs.value }}:${{ steps.gitversion.outputs.semVer }}
@@ -73,9 +73,9 @@ jobs:
           build-args: |
             VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
             VCPKG_FEED_USERNAME=${{ github.repository_owner }}
-            VCPKG_BINARY_SOURCES=clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read;nugettimeout,1200
+            VCPKG_BINARY_CACHE_MODE=read
           secrets: |
-            github_token=${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+            github_token=${{ github.token }}
           tags: |
             ghcr.io/${{ steps.repo_lower.outputs.value }}:pr
           cache-from: type=gha

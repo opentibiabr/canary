@@ -5050,11 +5050,19 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 		return false;
 	}
 
+	BatchUpdate batchUpdate(getPlayer());
 	uint32_t amountToRemove = itemAmount;
 	// Check items from inventory
 	for (const auto &item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
+		}
+
+		if (const auto &parent = item->getParent()) {
+			if (const auto &container = parent->getContainer()) {
+				const auto addResult = batchUpdate.add(container);
+				(void)addResult;
+			}
 		}
 
 		// If the item quantity is already needed, remove the quantity and stop the loop
@@ -5064,8 +5072,9 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 		}
 
 		// If not, we continue removing items and checking the next slot.
+		const auto removedAmount = item->getItemAmount();
 		g_game().internalRemoveItem(item);
-		amountToRemove -= item->getItemAmount();
+		amountToRemove -= removedAmount;
 	}
 
 	// If there are not enough items in the inventory, we will remove the remaining from stash
@@ -8919,6 +8928,8 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 
 	uint32_t addedItemCount = 0;
 	uint32_t remainingToRetrieve = finalRetrievable;
+	BatchUpdate batchUpdate(getPlayer());
+	batchUpdate.addContainers(containersCache);
 
 	if (itemType.stackable) {
 		while (remainingToRetrieve > 0 && availableCapacity >= itemWeight) {

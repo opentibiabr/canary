@@ -34,11 +34,43 @@ endif()
 set(VCPKG_FEATURE_FLAGS
     "versions"
 )
+if(NOT DEFINED VCPKG_BUILD_TYPE)
+    set(VCPKG_BUILD_TYPE
+        "release"
+    )
+endif()
 set(VCPKG_BUILD_TYPE
-    "release"
+    "${VCPKG_BUILD_TYPE}"
+    CACHE STRING "vcpkg build type"
 )
 set(CMAKE_EXPORT_COMPILE_COMMANDS
     ON
+)
+
+option(
+    CANARY_BUILD_TESTS
+    "Build unit tests"
+    OFF
+)
+if(CANARY_BUILD_TESTS)
+    list(
+        FIND
+        VCPKG_MANIFEST_FEATURES
+        "tests"
+        _CANARY_TESTS_FEATURE_INDEX
+    )
+    if(_CANARY_TESTS_FEATURE_INDEX EQUAL -1)
+        list(
+            APPEND
+            VCPKG_MANIFEST_FEATURES
+            "tests"
+        )
+    endif()
+    unset(_CANARY_TESTS_FEATURE_INDEX)
+endif()
+set(VCPKG_MANIFEST_FEATURES
+    "${VCPKG_MANIFEST_FEATURES}"
+    CACHE STRING "vcpkg manifest features"
 )
 
 # *****************************************************************************
@@ -182,12 +214,6 @@ option(
     "Build server executable"
     ON
 )
-option(
-    CANARY_BUILD_TESTS
-    "Build unit tests"
-    ON
-)
-
 if(CANARY_BUILD_TESTS)
     enable_testing()
 endif()

@@ -50,30 +50,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS
     ON
 )
 
-option(
-    CANARY_BUILD_TESTS
-    "Build unit tests"
-    OFF
-)
-if(CANARY_BUILD_TESTS)
-    list(
-        FIND
-        VCPKG_MANIFEST_FEATURES
-        "tests"
-        _CANARY_TESTS_FEATURE_INDEX
-    )
-    if(_CANARY_TESTS_FEATURE_INDEX
-       EQUAL
-       -1
-    )
-        list(
-            APPEND
-            VCPKG_MANIFEST_FEATURES
-            "tests"
-        )
-    endif()
-    unset(_CANARY_TESTS_FEATURE_INDEX)
-endif()
 set(VCPKG_MANIFEST_FEATURES
     "${VCPKG_MANIFEST_FEATURES}"
     CACHE STRING "vcpkg manifest features"
@@ -216,11 +192,22 @@ endif()
 # Options for Targets
 # *****************************************************************************
 option(
+    CANARY_BUILD_TESTS
+    "Build unit tests"
+    OFF
+)
+option(
     CANARY_BUILD_SERVER
     "Build server executable"
     ON
 )
 if(CANARY_BUILD_TESTS)
+    if(NOT "tests" IN_LIST VCPKG_MANIFEST_FEATURES)
+        message(
+            FATAL_ERROR
+            "CANARY_BUILD_TESTS requires the vcpkg manifest feature 'tests'. Use a test preset or configure with -DVCPKG_MANIFEST_FEATURES=tests."
+        )
+    endif()
     enable_testing()
 endif()
 

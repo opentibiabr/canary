@@ -63,9 +63,9 @@
         "ASAN_ENABLED": "ON",
         "DEBUG_LOG": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-test",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-test-release",
         "VCPKG_HOST_TRIPLET": "x64-windows",
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-test",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-test-release",
         "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
@@ -81,9 +81,9 @@
         "ASAN_ENABLED": "OFF",
         "BUILD_STATIC_LIBRARY": "OFF",
         "SPEED_UP_BUILD_UNITY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-test",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-test-debug",
         "VCPKG_HOST_TRIPLET": "x64-windows",
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-test",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-test-debug",
         "VCPKG_MANIFEST_FEATURES": "tests",
         "VCPKG_BUILD_TYPE": "debug",
         "CANARY_BUILD_TESTS": "ON"
@@ -117,7 +117,7 @@
       "displayName": "Linux - Release (Enabled Tests)",
       "description": "Release build with CANARY_BUILD_TESTS enabled",
       "cacheVariables": {
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests-release",
         "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
@@ -133,7 +133,7 @@
         "DEBUG_LOG": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
         "VCPKG_HOST_TRIPLET": "x64-linux",
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests-debug",
         "VCPKG_BUILD_TYPE": "debug",
         "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
@@ -150,7 +150,7 @@
         "ASAN_ENABLED": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
         "VCPKG_HOST_TRIPLET": "x64-linux",
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests-debug",
         "VCPKG_BUILD_TYPE": "debug",
         "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"

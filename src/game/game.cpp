@@ -2454,6 +2454,7 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	const auto &player = toCylinder->getPlayer();
+	BatchUpdate batchUpdate(player);
 	bool dropping = false;
 	auto setupDestination = [&]() -> std::shared_ptr<Cylinder> {
 		if (autoContainerId == 0) {
@@ -2463,6 +2464,10 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 		if (!autoContainer) {
 			g_logger().error("[{}] Failed to create auto container", __FUNCTION__);
 			return toCylinder;
+		}
+		if (const auto &container = toCylinder->getContainer()) {
+			const auto addResult = batchUpdate.add(container);
+			(void)addResult;
 		}
 		if (internalAddItem(toCylinder, autoContainer, CONST_SLOT_WHEREEVER, flags) != RETURNVALUE_NOERROR) {
 			if (internalAddItem(toCylinder->getTile(), autoContainer, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
@@ -2490,6 +2495,10 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 			bool addedToAutoContainer = false;
 			// First, try adding to the autoContainer, if it is set
 			if (autoContainerId != 0) {
+				if (auto container = destination->getContainer()) {
+					const auto addResult = batchUpdate.add(container);
+					(void)addResult;
+				}
 				ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
 				if (ret == RETURNVALUE_NOERROR) {
 					addedToAutoContainer = true;
@@ -2500,6 +2509,10 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 				ret = internalCollectManagedItems(player, item, g_game().getObjectCategory(item), false);
 				// If it can't place in the player's backpacks, add normally
 				if (ret != RETURNVALUE_NOERROR) {
+					if (auto container = destination->getContainer()) {
+						const auto addResult = batchUpdate.add(container);
+						(void)addResult;
+					}
 					ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
 				}
 			}
@@ -3193,6 +3206,13 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
 	if (batchUpdate) {
+		if (const auto &parent = item->getParent()) {
+			if (const auto &sourceContainer = parent->getContainer()) {
+				const auto addSourceResult = batchUpdate->add(sourceContainer);
+				(void)addSourceResult;
+			}
+		}
+
 		const auto addResult = batchUpdate->add(lootContainer);
 		(void)addResult;
 	}
@@ -6352,8 +6372,13 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	player->setRandomMount(isMountRandomized);
 
 	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		auto randomMount = mounts->getMountByID(player->getRandomMountId());
-		outfit.lookMount = randomMount->clientId;
+		const auto randomMountId = player->getRandomMountId();
+		const auto randomMount = randomMountId != 0 ? mounts->getMountByID(randomMountId) : nullptr;
+		if (!randomMount) {
+			outfit.lookMount = 0;
+		} else {
+			outfit.lookMount = randomMount->clientId;
+		}
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);

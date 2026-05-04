@@ -53,6 +53,7 @@
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/batch_update.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
 #include "lua/creature/creatureevent.hpp"
@@ -9121,6 +9122,10 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	BatchUpdate batchUpdate(getPlayer());
+	const auto addResult = batchUpdate.add(container);
+	(void)addResult;
+
 	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
 	uint32_t remaining = totalCount;
 	while (remaining > 0) {
@@ -9204,6 +9209,7 @@ ReturnValue Player::addItemBatch(
 	}
 
 	const auto &thisPlayer = getPlayer();
+	BatchUpdate batchUpdate(thisPlayer);
 
 	std::vector<std::shared_ptr<Container>> containersCache;
 	// If the item is a shopping bag, we need to find the correct container to add the items to obtain container
@@ -9276,6 +9282,8 @@ ReturnValue Player::addItemBatch(
 			const auto &itemParent = existingItem->getParent();
 			const auto &itemParentContainer = itemParent ? itemParent->getContainer() : nullptr;
 			if (itemParentContainer) {
+				const auto addResult = batchUpdate.add(itemParentContainer);
+				(void)addResult;
 				itemParentContainer->updateThing(
 					existingItem,
 					existingItem->getID(),
@@ -9391,6 +9399,8 @@ ReturnValue Player::addItemBatch(
 				return false;
 			}
 
+			const auto addResult = batchUpdate.add(container);
+			(void)addResult;
 			container->addThing(newItem);
 			state.actuallyAdded += toStack;
 			state.remaining -= toStack;
@@ -9433,6 +9443,8 @@ ReturnValue Player::addItemBatch(
 								   FLAG_IGNORENOTMOVABLE
 							   ) == RETURNVALUE_NOERROR;
 						if (addedBackpack) {
+							const auto addResult = batchUpdate.add(container);
+							(void)addResult;
 							container->addThing(currentBackpack);
 							containersCache.push_back(currentBackpack);
 							break;
@@ -9466,6 +9478,8 @@ ReturnValue Player::addItemBatch(
 				return false;
 			}
 
+			const auto addResult = batchUpdate.add(currentBackpack);
+			(void)addResult;
 			currentBackpack->addItem(newItem);
 			state.remaining -= itemsToAdd;
 			state.actuallyAdded += itemsToAdd;

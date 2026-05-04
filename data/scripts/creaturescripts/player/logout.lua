@@ -11,6 +11,10 @@ function playerLogout.onLogout(player)
 		LastQuestlogUpdate[playerId] = nil
 	end
 
+	if PlayerTrackedMissionRemovalEvents and PlayerTrackedMissionRemovalEvents[playerId] and player.flushTrackedMissionRemovalEvents then
+		player:flushTrackedMissionRemovalEvents(false)
+	end
+
 	if PlayerTrackedMissionsData then
 		if PlayerTrackedMissionsData[playerId] and player.saveTrackedMissions then
 			player:saveTrackedMissions()

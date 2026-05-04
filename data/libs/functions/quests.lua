@@ -136,6 +136,37 @@ local function removeCompletedTrackedMission(playerId, questId, missionId, sendU
 	return true
 end
 
+function Player.flushTrackedMissionRemovalEvents(self, sendUpdate)
+	local playerId = self:getId()
+	local pendingRemovals = PlayerTrackedMissionRemovalEvents[playerId]
+	if not pendingRemovals then
+		return false
+	end
+
+	local removals = {}
+	for key, eventId in pairs(pendingRemovals) do
+		removals[#removals + 1] = { key = key, eventId = eventId }
+	end
+
+	local removed = false
+	for i = 1, #removals do
+		local removal = removals[i]
+		if removal.eventId then
+			stopEvent(removal.eventId)
+		end
+
+		local questId, missionId = tostring(removal.key):match("^([^:]+):([^:]+)$")
+		questId = tonumber(questId)
+		missionId = tonumber(missionId)
+		if questId and missionId and removeCompletedTrackedMission(playerId, questId, missionId, sendUpdate) then
+			removed = true
+		end
+	end
+
+	PlayerTrackedMissionRemovalEvents[playerId] = nil
+	return removed
+end
+
 -- Game functions
 
 function Player.hasTrackingQuest(self, questId, missionId)
@@ -876,7 +907,7 @@ function Player.questIsStarted(self, questId)
 	return value ~= -1 and value >= quest.startStorageValue
 end
 
-local function hasLaterMissionStarted(player, questId, missionIndex, storageId)
+local function hasLaterMissionStarted(player, questId, missionIndex)
 	local quest = Game.getQuest(questId)
 	if not quest or not quest.missions then
 		return false
@@ -884,7 +915,7 @@ local function hasLaterMissionStarted(player, questId, missionIndex, storageId)
 
 	for index = missionIndex + 1, #quest.missions do
 		local nextMission = quest.missions[index]
-		if nextMission and nextMission.storageId == storageId then
+		if nextMission and nextMission.hideWhenNextStarted and nextMission.storageId then
 			local value = player:getStorageValue(nextMission.storageId)
 			if value ~= -1 and value >= nextMission.startValue and (nextMission.ignoreendvalue or value <= nextMission.endValue) then
 				return true
@@ -903,7 +934,7 @@ function Player.missionIsStarted(self, questId, missionId)
 			return false
 		end
 
-		if mission.hideWhenNextStarted and self:missionIsCompleted(questId, missionId) and hasLaterMissionStarted(self, questId, missionId, mission.storageId) then
+		if self:missionIsCompleted(questId, missionId) and hasLaterMissionStarted(self, questId, missionId) then
 			return false
 		end
 

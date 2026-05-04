@@ -31,18 +31,18 @@ function onRecvbyte(player, msg, byte)
 		logger.debug("[QuestTracker] reconciled initial client cache player='{}' missions={} autoTrack={} autoUntrack={} extra={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false", extra)
 	else
 		player:resetTrackedMissions(trackedMissions)
-	end
 
-	if player.setQuestTrackerOption then
-		player:setQuestTrackerOption("autoTrackNewQuests", autoTrackNewQuests)
-		player:setQuestTrackerOption("autoUntrackCompletedQuests", autoUntrackCompletedQuests)
-	end
+		if player.setQuestTrackerOption then
+			player:setQuestTrackerOption("autoTrackNewQuests", autoTrackNewQuests)
+			player:setQuestTrackerOption("autoUntrackCompletedQuests", autoUntrackCompletedQuests)
+		end
 
-	-- Importante:
-	-- Quando o player liga "Automatically track new quests",
-	-- marca as quests atuais como conhecidas para não adicionar tudo no tracker.
-	if autoTrackNewQuests and not oldAutoTrackNewQuests and player.updateQuestTrackerKnownQuests then
-		player:updateQuestTrackerKnownQuests(false)
+		-- Importante:
+		-- Quando o player liga "Automatically track new quests",
+		-- marca as quests atuais como conhecidas para não adicionar tudo no tracker.
+		if autoTrackNewQuests and not oldAutoTrackNewQuests and player.updateQuestTrackerKnownQuests then
+			player:updateQuestTrackerKnownQuests(false)
+		end
 	end
 
 	-- Não chame processAutomaticQuestTracker aqui.

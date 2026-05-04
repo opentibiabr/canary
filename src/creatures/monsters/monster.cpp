@@ -756,7 +756,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	// exclude it so a reachable alternative can be chosen instead of repeatedly picking
 	// the same unreachable creature as "nearest".
 	const auto &currentAttacked = getAttackedCreature();
-	const bool skipCurrentUnreachable = currentAttacked && static_self_cast<Monster>()->targetDistance == 1 && !hasFollowPath;
+	const bool skipCurrentUnreachable = currentAttacked && static_self_cast<Monster>()->targetDistance <= 1 && !hasFollowPath;
 
 	for (const auto &cref : targetList) {
 		const auto &creature = cref.lock();
@@ -2524,7 +2524,7 @@ void Monster::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t dam
 	// !hasFollowPath branch, a melee monster locked onto a target it cannot path to (magic
 	// walled, behind a non-traversable field) stays unable to push through fields even
 	// while taking damage from the very fields/bombs blocking its way.
-	if (damage > 0 && (randomStepping || !hasFollowPath)) {
+	if (damage > 0 && (randomStepping || (!hasFollowPath && getFollowCreature()))) {
 		ignoreFieldDamage = true;
 	}
 

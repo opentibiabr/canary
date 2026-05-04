@@ -149,8 +149,8 @@ function playerLoginGlobal.onLogin(player)
 
 	-- Change support outfit to a normal outfit to open customize character without crashes
 	local playerOutfit = player:getOutfit()
-	if table.contains({ 75, 266, 302 }, playerOutfit.lookType) then
-		playerOutfit.lookType = 136
+	if table.contains({ 75, 266, 302 }, playerOutfit.lookType) and not player:getGroup():getAccess() then
+		playerOutfit.lookType = player:getSex() == PLAYERSEX_FEMALE and 136 or 128
 		playerOutfit.lookAddons = 0
 		player:setOutfit(playerOutfit)
 	end

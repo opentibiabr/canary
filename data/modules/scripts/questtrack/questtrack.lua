@@ -17,11 +17,9 @@ function onRecvbyte(player, msg, byte)
 	local extra = msg:getByte()
 
 	local oldAutoTrackNewQuests = false
-	local oldAutoUntrackCompletedQuests = false
 
 	if player.getQuestTrackerOption then
 		oldAutoTrackNewQuests = player:getQuestTrackerOption("autoTrackNewQuests")
-		oldAutoUntrackCompletedQuests = player:getQuestTrackerOption("autoUntrackCompletedQuests")
 	end
 
 	local isInitialSync = player.isQuestTrackerInitialSync and player:isQuestTrackerInitialSync()

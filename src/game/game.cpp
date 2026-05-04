@@ -6513,6 +6513,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 	if (isMountRandomized && setMount && player->hasAnyMount()) {
 		outfit.lookMount = resolveRandomMountClientId(*mounts, player->getRandomMountId());
+		if (outfit.lookMount == 0) {
+			isMountRandomized = 0;
+			player->setRandomMount(0);
+		}
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);

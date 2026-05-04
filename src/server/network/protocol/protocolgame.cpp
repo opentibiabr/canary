@@ -7713,7 +7713,7 @@ void ProtocolGame::sendOutfitWindow() {
 	msg.addByte(mounted ? 0x01 : 0x00);
 
 	// Version 12.81 - Random mount 'bool'
-	msg.addByte(isSupportOutfit ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
+	msg.addByte(isSupportOutfit || !currentOutfitSupportsMount ? 0x00 : (player->isRandomMounted() ? 0x01 : 0x00));
 
 	if (isOTCR) {
 		sendOutfitWindowCustomOTCR(msg); // g_game.enableFeature(GameWingsAurasEffectsShader)

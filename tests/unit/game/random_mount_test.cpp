@@ -8,6 +8,8 @@
  */
 
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/players/player.hpp"
+#include "config/configmanager.hpp"
 #include "game/game.hpp"
 
 #include <appearances.pb.h>
@@ -25,6 +27,27 @@ TEST(RandomMountOutfitRegressionTest, InvalidRandomMountIdResolvesToNoMount) {
 	constexpr uint8_t nonExistentRandomMountId = 42;
 
 	EXPECT_EQ(0, Game::resolveRandomMountClientId(mounts, nonExistentRandomMountId));
+}
+
+TEST(RandomMountOutfitRegressionTest, PlayerChangeOutfitWithoutMountClearsMountedAndRandomState) {
+	g_configManager().setConfigFileLua("config.lua.dist");
+	ASSERT_TRUE(g_configManager().load());
+
+	auto player = std::make_shared<Player>();
+
+	Outfit_t currentOutfit;
+	currentOutfit.lookType = 128;
+	currentOutfit.lookMount = 1;
+	player->setDefaultOutfit(currentOutfit);
+	player->setRandomMount(1);
+
+	Outfit_t requestedOutfit = currentOutfit;
+	requestedOutfit.lookMount = 1;
+
+	g_game().playerChangeOutfit(player, requestedOutfit, false, 1);
+
+	EXPECT_FALSE(player->isMounted());
+	EXPECT_EQ(0, player->isRandomMounted());
 }
 
 TEST(RandomMountOutfitRegressionTest, OutfitWithoutMountedPatternDepthRejectsMount) {

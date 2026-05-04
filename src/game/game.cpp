@@ -6493,12 +6493,12 @@ void Game::playerToggleMount(uint32_t playerId, bool mount) {
 }
 
 void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount, uint8_t isMountRandomized /* = 0*/) {
-	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
-		return;
-	}
-
 	const auto &player = getPlayerByID(playerId);
-	if (!player) {
+	playerChangeOutfit(player, outfit, setMount, isMountRandomized);
+}
+
+void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t outfit, bool setMount, uint8_t isMountRandomized /* = 0*/) {
+	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT) || !player) {
 		return;
 	}
 
@@ -6520,6 +6520,8 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit || !setMount) {
 		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
 	}
 
 	if (outfit.lookMount != 0 && !outfitSupportsMount(outfit.lookType)) {

@@ -7541,6 +7541,7 @@ bool Player::toggleMount(bool mount) {
 
 	if (mount) {
 		if (!g_game().outfitSupportsMount(defaultOutfit.lookType)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return false;
 		}
 

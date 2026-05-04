@@ -10486,6 +10486,19 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 	history.success = success;
 	history.tierLoss = reduceTierLoss;
 
+	const auto &firstForgingItem = getForgeItemFromId(firstItemId, tier);
+	if (!firstForgingItem) {
+		g_logger().error("[Log 1] Player with name {} failed to fuse item with id {}", getName(), firstItemId);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
+	const auto &secondForgingItem = getForgeItemFromId(secondItemId, tier);
+	if (!secondForgingItem) {
+		g_logger().error("[Log 2] Player with name {} failed to fuse item with id {}", getName(), secondItemId);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
+
 	// Reserve room for the exaltation chest BEFORE removing the forging items.
 	// getFreeBackpackSlots() can return non-zero while internalAddItem still
 	// fails (capacity, weight, parent layout); doing the add up front means a
@@ -10511,22 +10524,10 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 		return;
 	}
 
-	const auto &firstForgingItem = getForgeItemFromId(firstItemId, tier);
-	if (!firstForgingItem) {
-		g_logger().error("[Log 1] Player with name {} failed to fuse item with id {}", getName(), firstItemId);
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
 	if (returnValue = g_game().internalRemoveItem(firstForgingItem, 1);
 	    returnValue != RETURNVALUE_NOERROR) {
 		g_logger().error("[Log 1] Failed to remove forge item {} from player with name {}", firstItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
-	const auto &secondForgingItem = getForgeItemFromId(secondItemId, tier);
-	if (!secondForgingItem) {
-		g_logger().error("[Log 2] Player with name {} failed to fuse item with id {}", getName(), secondItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
@@ -10732,6 +10733,20 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 	history.tier = tier;
 	history.success = true;
 
+	const auto &donorItem = getForgeItemFromId(donorItemId, tier);
+	if (!donorItem) {
+		g_logger().error("[Log 1] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
+
+	const auto &receiveItem = getForgeItemFromId(receiveItemId, 0);
+	if (!receiveItem) {
+		g_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
+
 	// Same reasoning as forgeFuseItems: place the exaltation chest in the
 	// player's inventory before removing the donor/receive items so a failure
 	// to add the chest does not destroy the player's items.
@@ -10756,12 +10771,6 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	const auto &donorItem = getForgeItemFromId(donorItemId, tier);
-	if (!donorItem) {
-		g_logger().error("[Log 1] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
 	if (returnValue = g_game().internalRemoveItem(donorItem, 1);
 	    returnValue != RETURNVALUE_NOERROR) {
 		g_logger().error("[Log 1] Failed to remove transfer item {} from player with name {}", donorItemId, getName());
@@ -10770,12 +10779,6 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	const auto &receiveItem = getForgeItemFromId(receiveItemId, 0);
-	if (!receiveItem) {
-		g_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
-		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
-		return;
-	}
 	if (returnValue = g_game().internalRemoveItem(receiveItem, 1);
 	    returnValue != RETURNVALUE_NOERROR) {
 		g_logger().error("[Log 2] Failed to remove transfer item {} from player with name {}", receiveItemId, getName());

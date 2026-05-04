@@ -116,9 +116,10 @@ function(
     gtest_discover_tests(
         ${TARGET_NAME}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
+        DISCOVERY_TIMEOUT 60
+        DISCOVERY_MODE PRE_TEST
         PROPERTIES
         TIMEOUT 120
-                DISCOVERY_MODE PRE_TEST
     )
 endfunction()
 

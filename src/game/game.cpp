@@ -1313,17 +1313,18 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	outfitMountSupportedLookTypes.clear();
 	m_appearancesPtr = std::make_unique<Appearances>();
 	if (!m_appearancesPtr->ParseFromIstream(&fileStream)) {
 		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
+		m_appearancesPtr.reset();
 		return ERROR_NOT_OPEN;
 	}
 
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
 
-	outfitMountSupportedLookTypes.clear();
 	for (const auto &appearance : m_appearancesPtr->outfit()) {
 		if (outfitAppearanceSupportsMount(appearance)) {
 			outfitMountSupportedLookTypes.emplace(static_cast<uint16_t>(appearance.id()));
@@ -1349,9 +1350,6 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	fileStream.close();
-
-	// Disposing allocated objects.
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }
@@ -9253,7 +9251,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
 }
 
-[[nodiscard]] uint16_t Game::resolveRandomMountClientId(Mounts &mounts, uint8_t randomMountId) {
+[[nodiscard]] uint16_t Game::resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId) {
 	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
 	return randomMount ? randomMount->clientId : 0;
 }

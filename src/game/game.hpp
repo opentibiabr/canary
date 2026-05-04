@@ -291,7 +291,7 @@ public:
 
 	void playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 	[[nodiscard]] static uint16_t calculateHighscorePages(uint32_t totalEntries, uint8_t entriesPerPage);
-	[[nodiscard]] static uint16_t resolveRandomMountClientId(Mounts &mounts, uint8_t randomMountId);
+	[[nodiscard]] static uint16_t resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId);
 	[[nodiscard]] static bool outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance);
 	static std::string getSkillNameById(uint8_t &skill);
 

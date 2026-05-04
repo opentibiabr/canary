@@ -30,7 +30,6 @@
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows-static-release",
         "VCPKG_HOST_TRIPLET": "x64-windows",
-        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
         "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-static-release",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF",

@@ -26,7 +26,6 @@ local function evaluateText(value, player)
 	return tostring(value)
 end
 
-
 -- Quest tracker server-side automation / persistence
 QuestTrackerServerConfig = QuestTrackerServerConfig or {
 	kvScope = "quest-tracker",
@@ -206,7 +205,6 @@ function Player.resetTrackedMissions(self, missions)
 	self:sendTrackedQuests(maxAllowed - #PlayerTrackedMissionsData[self:getId()], PlayerTrackedMissionsData[self:getId()])
 	self:saveTrackedMissions()
 end
-
 
 function Player.getQuestTrackerOption(self, option)
 	if option ~= "autoTrackNewQuests" and option ~= "autoUntrackCompletedQuests" then
@@ -539,14 +537,7 @@ function Player.removeCompletedTrackedMissions(self, sendUpdate)
 		if mission and mission.questId and self:questIsCompleted(mission.questId) then
 			local key = makeTrackedMissionKey(mission.questId, mission.missionId)
 			if not pendingRemovals[key] then
-				pendingRemovals[key] = addEvent(
-					removeCompletedTrackedMission,
-					delay,
-					playerId,
-					mission.questId,
-					mission.missionId,
-					sendUpdate ~= false
-				)
+				pendingRemovals[key] = addEvent(removeCompletedTrackedMission, delay, playerId, mission.questId, mission.missionId, sendUpdate ~= false)
 				scheduled = true
 			end
 		end
@@ -811,7 +802,6 @@ function Game.isQuestStorage(key, value, oldValue)
 	end
 	return false
 end
-
 
 function Game.isQuestStorageKey(key)
 	for questId, quest in pairs(Quests) do

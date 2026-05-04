@@ -17,11 +17,9 @@ function onRecvbyte(player, msg, byte)
 	local extra = msg:getByte()
 
 	local oldAutoTrackNewQuests = false
-	local oldAutoUntrackCompletedQuests = false
 
 	if player.getQuestTrackerOption then
 		oldAutoTrackNewQuests = player:getQuestTrackerOption("autoTrackNewQuests")
-		oldAutoUntrackCompletedQuests = player:getQuestTrackerOption("autoUntrackCompletedQuests")
 	end
 
 	local isInitialSync = player.isQuestTrackerInitialSync and player:isQuestTrackerInitialSync()
@@ -30,14 +28,7 @@ function onRecvbyte(player, msg, byte)
 			player:reconcileInitialTrackedMissions(trackedMissions)
 		end
 
-		logger.debug(
-			"[QuestTracker] reconciled initial client cache player='{}' missions={} autoTrack={} autoUntrack={} extra={}",
-			player:getName(),
-			missionCount,
-			autoTrackNewQuests and "true" or "false",
-			autoUntrackCompletedQuests and "true" or "false",
-			extra
-		)
+		logger.debug("[QuestTracker] reconciled initial client cache player='{}' missions={} autoTrack={} autoUntrack={} extra={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false", extra)
 	else
 		player:resetTrackedMissions(trackedMissions)
 	end
@@ -57,12 +48,5 @@ function onRecvbyte(player, msg, byte)
 	-- Não chame processAutomaticQuestTracker aqui.
 	-- Essa função deve rodar apenas quando storage de quest muda,
 	-- dentro de Player.updateStorage.
-	logger.debug(
-		"[QuestTracker] player='{}' missions={} autoTrack={} autoUntrack={} extra={}",
-		player:getName(),
-		missionCount,
-		autoTrackNewQuests and "true" or "false",
-		autoUntrackCompletedQuests and "true" or "false",
-		extra
-	)
+	logger.debug("[QuestTracker] player='{}' missions={} autoTrack={} autoUntrack={} extra={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false", extra)
 end

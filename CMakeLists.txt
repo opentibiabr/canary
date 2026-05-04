@@ -202,10 +202,14 @@ option(
     ON
 )
 if(CANARY_BUILD_TESTS)
-    if(NOT "tests" IN_LIST VCPKG_MANIFEST_FEATURES)
+    if(NOT
+       "tests"
+       IN_LIST
+       VCPKG_MANIFEST_FEATURES
+    )
         message(
             FATAL_ERROR
-            "CANARY_BUILD_TESTS requires the vcpkg manifest feature 'tests'. Use a test preset or configure with -DVCPKG_MANIFEST_FEATURES=tests."
+                "CANARY_BUILD_TESTS requires the vcpkg manifest feature 'tests'. Use a test preset or configure with -DVCPKG_MANIFEST_FEATURES=tests."
         )
     endif()
     enable_testing()

@@ -1112,14 +1112,19 @@ ContainerIterator Container::iterator() const {
 }
 
 void Container::beginBatchUpdate() {
-	m_batching = true;
+	++m_batching;
 }
 
 void Container::endBatchUpdate(Player* actor) {
 	if (!m_batching) {
 		return;
 	}
-	m_batching = false;
+
+	--m_batching;
+	if (m_batching > 0) {
+		return;
+	}
+
 	if (actor) {
 		actor->sendBatchUpdateContainer(this, true, getFirstIndex());
 	}

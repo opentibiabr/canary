@@ -76,6 +76,14 @@ namespace {
 		return kShoppingBagPrice * static_cast<uint64_t>(slotsNeeded);
 	}
 
+	std::string getSaleCurrencyName(uint16_t currency) {
+		if (currency == ITEM_GOLD_COIN) {
+			return "gold";
+		}
+
+		return Item::items.getItemType(currency).name;
+	}
+
 	bool hasInsufficientFunds(const std::shared_ptr<Player> &player, uint16_t itemId, const std::string &npcName, uint16_t currency, uint64_t totalCost, uint64_t bagsCost) {
 		if (currency == ITEM_GOLD_COIN) {
 			const uint64_t totalRequired = totalCost + bagsCost;
@@ -89,7 +97,8 @@ namespace {
 		}
 
 		const Cylinder* cylinder = player.get();
-		if (cylinder->getItemTypeCount(currency) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost)) {
+		const uint64_t availableCurrency = cylinder->getItemTypeCount(currency);
+		if (availableCurrency < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost)) {
 			g_logger().error("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npcName);
 			g_logger().debug("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, npcName, player->getPosition().toString());
 			return true;
@@ -130,6 +139,63 @@ namespace {
 		}
 
 		return 0;
+	}
+
+	uint32_t countSellableItemsFromLootPouch(const std::shared_ptr<Container> &lootPouch, uint16_t itemId, uint32_t amount) {
+		if (!lootPouch || amount == 0) {
+			return 0;
+		}
+
+		uint32_t found = 0;
+		uint32_t remaining = amount;
+		for (size_t i = lootPouch->size(); i-- > 0 && remaining > 0;) {
+			const auto &list = lootPouch->getItemList();
+			const auto &item = list[i];
+			if (!item || item->getID() != itemId || item->getTier() > 0 || item->hasImbuements()) {
+				continue;
+			}
+
+			const auto itemAmount = static_cast<uint32_t>(item->getItemAmount());
+			const auto count = std::min<uint32_t>(remaining, itemAmount);
+			remaining -= count;
+			found += count;
+		}
+
+		return found;
+	}
+
+	uint32_t countSellableItemsFromInventory(const std::shared_ptr<Player> &player, uint16_t itemId, bool ignore, uint32_t amount) {
+		if (!player || amount == 0) {
+			return 0;
+		}
+
+		auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
+		uint32_t found = 0;
+		uint32_t remaining = amount;
+		for (const auto &item : inventoryItems) {
+			if (remaining == 0) {
+				break;
+			}
+
+			if (!item || item->getTier() > 0 || item->hasImbuements()) {
+				continue;
+			}
+
+			const auto &cylinder = item->getParent();
+			if (!cylinder) {
+				continue;
+			}
+
+			const auto count = std::min<uint32_t>(remaining, static_cast<uint32_t>(item->getItemCount()));
+			if (cylinder->queryRemove(item, count, FLAG_IGNORENOTMOVABLE) != RETURNVALUE_NOERROR) {
+				continue;
+			}
+
+			remaining -= count;
+			found += count;
+		}
+
+		return found;
 	}
 
 	uint32_t removeItemsFromLootPouch(const std::shared_ptr<Container> &lootPouch, uint16_t itemId, uint32_t amount, BatchUpdate* batchUpdate) {
@@ -661,9 +727,9 @@ void Npc::onPlayerBuyItem(const std::shared_ptr<Player> &player, uint16_t itemId
 		}
 	}
 
-	const uint32_t totalCost = buyPrice * amount;
-	const uint32_t bagsCost = calculateBagsCost(itemType, amount, inBackpacks);
-	const uint64_t totalRequired = static_cast<uint64_t>(totalCost) + bagsCost;
+	const uint64_t totalCost = static_cast<uint64_t>(buyPrice) * amount;
+	const uint64_t bagsCost = calculateBagsCost(itemType, amount, inBackpacks);
+	const uint64_t totalRequired = totalCost + bagsCost;
 	if (hasInsufficientFunds(player, itemId, getName(), getCurrency(), totalCost, bagsCost)) {
 		return;
 	}
@@ -761,6 +827,8 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 	std::string log;
 	log.reserve(saleData.size() * 64); // Median of 64 bytes per line
 	uint32_t totalItemsSold = 0;
+	uint64_t pendingTotalPrice = 0;
+	const auto currencyName = getSaleCurrencyName(getCurrency());
 	for (const auto &[itemId, data] : saleData) {
 		if (data.amount == 0) {
 			continue;
@@ -771,15 +839,15 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 			continue;
 		}
 
-		totalPrice += totalCost;
+		pendingTotalPrice += totalCost;
 
 		const auto &itemName = Item::items.getItemType(itemId).name;
-		log += fmt::format("Sold {}x {} for {} gold.\n", data.amount, itemName, totalCost);
+		log += fmt::format("Sold {}x {} for {} {}.\n", data.amount, itemName, totalCost, currencyName);
 		totalItemsSold += data.amount;
 	}
 
-	if (totalPrice > 0) {
-		if (!applySaleProceedsForLoot(player, getCurrency(), totalPrice, getName())) {
+	if (pendingTotalPrice > 0) {
+		if (!applySaleProceedsForLoot(player, getCurrency(), pendingTotalPrice, getName())) {
 			return;
 		}
 
@@ -790,20 +858,21 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 			removeItemsFromLootPouch(lootPouch, itemId, data.amount, &batching);
 		}
+		totalPrice += pendingTotalPrice;
 	}
 
 	std::string finalMessage;
-	if (totalPrice == 0) {
+	if (pendingTotalPrice == 0) {
 		const auto &appendResult = finalMessage.append("You have no items in your loot pouch.");
 		(void)appendResult;
 	} else {
-		finalMessage = fmt::format("You sold {} item{} from your loot pouch for {} gold. A letter with the full list has been sent to your store inbox.", totalItemsSold, (totalItemsSold == 1 ? "" : "s"), totalPrice);
+		finalMessage = fmt::format("You sold {} item{} from your loot pouch for {} {}. A letter with the full list has been sent to your store inbox.", totalItemsSold, (totalItemsSold == 1 ? "" : "s"), pendingTotalPrice, currencyName);
 	}
 
 	player->sendTextMessage(MESSAGE_TRANSACTION, finalMessage);
 	g_logger().debug("Npc::onPlayerSellItem Finished npc sell items");
 
-	sendSaleLetterIfNeeded(player, batching, log, totalPrice, getName());
+	sendSaleLetterIfNeeded(player, batching, log, pendingTotalPrice, getName());
 }
 
 void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemId, uint8_t subType, uint32_t amount, bool ignore, const SellItemContext &context) {
@@ -825,21 +894,48 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		return;
 	}
 
-	const auto removed = context.lootPouch
-		? removeItemsFromLootPouch(context.lootPouch, itemId, amount, context.batchUpdate)
-		: removeItemsFromInventory(player, itemId, ignore, amount, context.batchUpdate, getName());
+	const auto currency = getCurrency();
+	uint32_t soldAmount = 0;
+	uint64_t totalCost = 0;
+	if (currency == ITEM_GOLD_COIN) {
+		soldAmount = context.lootPouch
+			? removeItemsFromLootPouch(context.lootPouch, itemId, amount, context.batchUpdate)
+			: removeItemsFromInventory(player, itemId, ignore, amount, context.batchUpdate, getName());
 
-	if (removed == 0) {
-		if (!context.lootPouch) {
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no items to sell.");
+		if (soldAmount == 0) {
+			if (!context.lootPouch) {
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no items to sell.");
+			}
+			return;
 		}
-		return;
-	}
 
-	auto totalCost = static_cast<uint64_t>(sellPrice) * removed;
+		totalCost = static_cast<uint64_t>(sellPrice) * soldAmount;
+		if (!applySaleProceedsForItem(player, currency, totalCost, getName(), context)) {
+			return;
+		}
+	} else {
+		soldAmount = context.lootPouch
+			? countSellableItemsFromLootPouch(context.lootPouch, itemId, amount)
+			: countSellableItemsFromInventory(player, itemId, ignore, amount);
 
-	if (!applySaleProceedsForItem(player, getCurrency(), totalCost, getName(), context)) {
-		return;
+		if (soldAmount == 0) {
+			if (!context.lootPouch) {
+				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have no items to sell.");
+			}
+			return;
+		}
+
+		totalCost = static_cast<uint64_t>(sellPrice) * soldAmount;
+		if (!applySaleProceedsForItem(player, currency, totalCost, getName(), context)) {
+			return;
+		}
+
+		const auto removed = context.lootPouch
+			? removeItemsFromLootPouch(context.lootPouch, itemId, soldAmount, context.batchUpdate)
+			: removeItemsFromInventory(player, itemId, ignore, soldAmount, context.batchUpdate, getName());
+		if (removed != soldAmount) {
+			g_logger().error("[Npc::onPlayerSellItem] - Player {} custom currency sale removed {} of {} item {} after proceeds were applied for npc {}", player->getName(), removed, soldAmount, itemId, getName());
+		}
 	}
 
 	if (context.lootPouch) {
@@ -853,7 +949,7 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 		callback.pushCreature(player);
 		callback.pushNumber(itemType.id);
 		callback.pushNumber(subType);
-		callback.pushNumber(removed);
+		callback.pushNumber(soldAmount);
 		callback.pushBoolean(ignore);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);

@@ -406,7 +406,7 @@ protected:
 
 	void updateItemCountCache();
 
-	bool m_batching = false;
+	uint32_t m_batching = 0;
 
 	friend class ContainerIterator;
 	friend class IOMapSerialize;

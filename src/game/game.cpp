@@ -3107,7 +3107,7 @@ std::shared_ptr<Container> Game::findManagedContainer(
 
 	std::shared_ptr<Container> result = nullptr;
 	if (candidate) {
-		if (player->isHoldingItem(candidate)) {
+		if (candidate->getHoldingPlayer() == player) {
 			result = candidate;
 		} else {
 			player->checkLootContainers(candidate);
@@ -3269,9 +3269,13 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 }
 
 ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player, uint32_t maxMoveItems /* = 0*/) {
+	if (!player) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	// Check if have item on player reward chest
 	std::shared_ptr<RewardChest> rewardChest = player->getRewardChest();
-	if (rewardChest->empty()) {
+	if (!rewardChest || rewardChest->empty()) {
 		g_logger().debug("Reward chest is empty");
 		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
@@ -3326,7 +3330,7 @@ ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player,
 			lootedItemsMessage = fmt::format("You can only collect {} items at a time. {} of {} objects were picked up.", maxMoveItems, movedRewardItems, rewardCount);
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
 			// Already send message here
-			return RETURNVALUE_NOTPOSSIBLE;
+			return RETURNVALUE_NOERROR;
 		}
 
 		bool fallbackConsumed = false;

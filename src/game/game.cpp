@@ -6504,14 +6504,8 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 	player->setRandomMount(isMountRandomized);
 
-	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		const auto randomMountId = player->getRandomMountId();
-		const auto randomMount = randomMountId != 0 ? mounts->getMountByID(randomMountId) : nullptr;
-		if (!randomMount) {
-			outfit.lookMount = 0;
-		} else {
-			outfit.lookMount = randomMount->clientId;
-		}
+	if (isMountRandomized && setMount && player->hasAnyMount()) {
+		outfit.lookMount = resolveRandomMountClientId(*mounts, player->getRandomMountId());
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
@@ -9240,6 +9234,11 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 
 	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
+}
+
+[[nodiscard]] uint16_t Game::resolveRandomMountClientId(Mounts &mounts, uint8_t randomMountId) {
+	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
+	return randomMount ? randomMount->clientId : 0;
 }
 
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {

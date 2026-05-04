@@ -18,6 +18,10 @@ function playerLogout.onLogout(player)
 		PlayerTrackedMissionsData[playerId] = nil
 	end
 
+	if PlayerTrackedMissionRemovalEvents then
+		PlayerTrackedMissionRemovalEvents[playerId] = nil
+	end
+
 	if PlayerQuestTrackerInitialSync then
 		PlayerQuestTrackerInitialSync[playerId] = nil
 	end

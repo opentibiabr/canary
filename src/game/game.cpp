@@ -9259,20 +9259,26 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 [[nodiscard]] bool Game::outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance) {
 	using namespace Canary::protobuf::appearances;
 
-	bool hasOutfitFrameGroup = false;
+	bool hasIdleFrameGroup = false;
+	bool hasMovingFrameGroup = false;
 	for (const auto &frameGroup : appearance.frame_group()) {
 		const auto fixedFrameGroup = frameGroup.fixed_frame_group();
 		if (fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_IDLE && fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_MOVING) {
 			continue;
 		}
 
-		hasOutfitFrameGroup = true;
+		if (fixedFrameGroup == FIXED_FRAME_GROUP_OUTFIT_IDLE) {
+			hasIdleFrameGroup = true;
+		} else {
+			hasMovingFrameGroup = true;
+		}
+
 		if (!frameGroup.has_sprite_info() || frameGroup.sprite_info().pattern_depth() <= 1) {
 			return false;
 		}
 	}
 
-	return hasOutfitFrameGroup;
+	return hasIdleFrameGroup && hasMovingFrameGroup;
 }
 
 bool Game::outfitSupportsMount(uint16_t lookType) const {

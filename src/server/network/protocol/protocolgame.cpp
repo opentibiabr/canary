@@ -7494,9 +7494,10 @@ void ProtocolGame::sendOutfitWindow() {
 
 	Outfit_t currentOutfit = player->getDefaultOutfit();
 	auto isSupportOutfit = player->isWearingSupportOutfit();
+	const auto currentOutfitSupportsMount = g_game().outfitSupportsMount(currentOutfit.lookType);
 	bool mounted = false;
 
-	if (!isSupportOutfit) {
+	if (!isSupportOutfit && currentOutfitSupportsMount) {
 		const auto currentMount = g_game().mounts->getMountByID(player->getLastMount());
 		if (currentMount) {
 			mounted = (currentOutfit.lookMount == currentMount->clientId);
@@ -7575,10 +7576,10 @@ void ProtocolGame::sendOutfitWindow() {
 	}
 
 	if (currentOutfit.lookMount == 0) {
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountHead);
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountBody);
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountLegs);
-		msg.addByte(isSupportOutfit ? 0 : currentOutfit.lookMountFeet);
+		msg.addByte(isSupportOutfit || !currentOutfitSupportsMount ? 0 : currentOutfit.lookMountHead);
+		msg.addByte(isSupportOutfit || !currentOutfitSupportsMount ? 0 : currentOutfit.lookMountBody);
+		msg.addByte(isSupportOutfit || !currentOutfitSupportsMount ? 0 : currentOutfit.lookMountLegs);
+		msg.addByte(isSupportOutfit || !currentOutfitSupportsMount ? 0 : currentOutfit.lookMountFeet);
 	}
 	msg.add<uint16_t>(currentOutfit.lookFamiliarsType);
 

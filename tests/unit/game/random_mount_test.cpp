@@ -65,3 +65,19 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingMountedPatternDepthRej
 
 	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }
+
+TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleFrameGroupRejectsMount) {
+	Canary::protobuf::appearances::Appearance appearance;
+
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 2);
+
+	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
+}
+
+TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingFrameGroupRejectsMount) {
+	Canary::protobuf::appearances::Appearance appearance;
+
+	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING, 2);
+
+	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
+}

@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <openssl/bn.h>
+
 class Logger;
 
 class RSAManager {

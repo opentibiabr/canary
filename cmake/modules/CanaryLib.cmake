@@ -116,7 +116,7 @@ foreach(
                unofficial::libmariadb
                nlohmann_json::nlohmann_json
                protobuf
-               OpenSSL::SSL
+               OpenSSL::Crypto
     )
 
     if(FEATURE_METRICS)

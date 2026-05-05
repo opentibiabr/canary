@@ -41,12 +41,24 @@ Breaking any of these rules can make login incompatible even when cryptographic 
 Mbed TLS is the active and only RSA backend in the current branch. The implementation uses:
 
 - `mbedtls_pk_parse_keyfile` for `loadPEM`.
-- `mbedtls_rsa_private` for fixed-width raw RSA private operations.
+- `mbedtls_rsa_private` for fixed-width raw RSA private operations without padding.
 - `mbedtls_mpi_read_string`, `mbedtls_rsa_import`, `mbedtls_rsa_complete`, and `mbedtls_rsa_check_privkey` for the `setKey(p, q, base)` fallback.
+- Atomic active-key replacement so failed PEM loads or invalid fallback keys do not disrupt an already working key.
 
 Do not replace the raw RSA operation with `mbedtls_pk_decrypt`. That API can apply or remove padding and may change the 128-byte login block contract.
 
 Mbed TLS must keep passing byte-for-byte tests that prove the raw 128-byte login behavior did not change.
+
+## Benchmark and link audit
+
+The current PR description and review discussion treat performance and linkage as validation work, not as a measured claim. Keep that distinction in future updates:
+
+- Do not claim executable size reduction or link reduction without a fresh link audit for the exact preset.
+- Use release-like builds for timing comparisons; debug, ASan, and test presets are useful for correctness but not for performance conclusions.
+- Benchmark the RSA login operation with fixed 128-byte ciphertext samples and a loaded `key.pem`, then compare against the previous baseline only when both builds use equivalent compiler flags and dependency triplets.
+- Prefer Canary's existing `Benchmark` helper or a focused standalone harness that repeatedly calls `RSAManager::decrypt` after one-time key loading. Do not include PEM parsing time unless the benchmark is explicitly about startup/key-loading cost.
+- Record minimum, maximum, average, iteration count, platform, compiler, preset, and vcpkg triplet with the benchmark result.
+- Repeat the link audit before making statements about `libcrypto`, `libssl`, `mbedtls`, `mbedx509`, or `mbedcrypto` in the final artifact.
 
 ## How to build
 
@@ -85,6 +97,7 @@ Validation should focus on behavior, not only successful compilation:
 - Verify that fallback `setKey(p, q, base)` produces deterministic decrypt output.
 - Keep byte-for-byte RSA test vectors for encrypted 128-byte samples.
 - Check that decrypted output preserves leading zeros and remains 128 bytes.
+- Keep integration coverage for `key.pem` loading through `RSAManager::start`.
 - Run login smoke tests with the supported clients and protocol versions.
 - Repeat link audit before making claims about `libcrypto`, `libssl`, or executable size.
 
@@ -99,6 +112,6 @@ The Mbed TLS backend currently targets Canary's existing raw RSA login contract.
 Potential follow-up work:
 
 - Add explicit test vectors that assert exact 128-byte output, including leading zero cases.
-- Add integration coverage for `key.pem` loading and fallback `p/q` initialization.
+- Add more integration coverage for `key.pem` loading and fallback `p/q` initialization.
 - Record link audit commands and expected linked libraries per preset.
 - Evaluate Botan as a plan B, wolfSSL only after license review, LibTomCrypt as a more manual implementation option, and BCrypt/NCrypt only as an optional Windows-specific backend.

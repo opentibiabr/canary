@@ -96,14 +96,6 @@ namespace {
 			return &mpi;
 		}
 
-		void copyFrom(const mbedtls_mpi &other) {
-			checkMbedTls(mbedtls_mpi_copy(&mpi, &other), "mbedtls_mpi_copy failed");
-		}
-
-		[[nodiscard]] int tryCopyFrom(const mbedtls_mpi &other) {
-			return mbedtls_mpi_copy(&mpi, &other);
-		}
-
 	private:
 		mbedtls_mpi mpi;
 	};
@@ -159,116 +151,39 @@ namespace {
 
 	class MbedTlsRawRsaKey {
 	public:
-		void loadFrom(const mbedtls_rsa_context &source) {
-			MbedTlsMpi newN;
-			MbedTlsMpi newP;
-			MbedTlsMpi newQ;
-			MbedTlsMpi newDP;
-			MbedTlsMpi newDQ;
-			MbedTlsMpi newQP;
+		MbedTlsRawRsaKey() {
+			initRsa(rsa);
 
-			checkMbedTls(mbedtls_rsa_export(&source, newN.get(), newP.get(), newQ.get(), nullptr, nullptr), "mbedtls_rsa_export failed");
-			checkMbedTls(mbedtls_rsa_export_crt(&source, newDP.get(), newDQ.get(), newQP.get()), "mbedtls_rsa_export_crt failed");
-			loadFrom(*newN.get(), *newP.get(), *newQ.get(), *newDP.get(), *newDQ.get(), *newQP.get());
+			try {
+				checkMbedTls(setRsaPadding(rsa), "mbedtls_rsa_set_padding failed");
+			} catch (...) {
+				mbedtls_rsa_free(&rsa);
+				throw;
+			}
 		}
 
-		void loadFrom(const mbedtls_mpi &newN, const mbedtls_mpi &newP, const mbedtls_mpi &newQ, const mbedtls_mpi &newDP, const mbedtls_mpi &newDQ, const mbedtls_mpi &newQP) {
-			if (mbedtls_mpi_size(&newN) != RsaBlockSize) {
+		~MbedTlsRawRsaKey() {
+			mbedtls_rsa_free(&rsa);
+		}
+
+		MbedTlsRawRsaKey(const MbedTlsRawRsaKey &) = delete;
+		void operator=(const MbedTlsRawRsaKey &) = delete;
+
+		void loadFrom(const mbedtls_rsa_context &source) {
+			if (mbedtls_rsa_get_len(&source) != RsaBlockSize) {
 				throw MbedTlsRsaError("RSA key must be 128 bytes");
 			}
 
-			p.copyFrom(newP);
-			q.copyFrom(newQ);
-			dp.copyFrom(newDP);
-			dq.copyFrom(newDQ);
-			qp.copyFrom(newQP);
-			precomputeMontgomeryReduction(*p.get(), pMontgomeryRR);
-			precomputeMontgomeryReduction(*q.get(), qMontgomeryRR);
+			checkMbedTls(mbedtls_rsa_copy(&rsa, &source), "mbedtls_rsa_copy failed");
+			checkMbedTls(setRsaPadding(rsa), "mbedtls_rsa_set_padding failed");
 		}
 
-		[[nodiscard]] int decrypt(const unsigned char* input, unsigned char* output) const {
-			MbedTlsMpi encrypted;
-			MbedTlsMpi pResult;
-			MbedTlsMpi qResult;
-			MbedTlsMpi difference;
-			MbedTlsMpi product;
-			MbedTlsMpi factor;
-			MbedTlsMpi decrypted;
-			MbedTlsMpi localPMontgomeryRR;
-			MbedTlsMpi localQMontgomeryRR;
-
-			int result = mbedtls_mpi_read_binary(encrypted.get(), input, RsaBlockSize);
-			if (result != 0) {
-				return result;
-			}
-
-			result = localPMontgomeryRR.tryCopyFrom(*pMontgomeryRR.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = localQMontgomeryRR.tryCopyFrom(*qMontgomeryRR.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = mbedtls_mpi_exp_mod(pResult.get(), encrypted.get(), dp.get(), p.get(), localPMontgomeryRR.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = mbedtls_mpi_exp_mod(qResult.get(), encrypted.get(), dq.get(), q.get(), localQMontgomeryRR.get());
-			if (result != 0) {
-				return result;
-			}
-
-			// CRT recombination: m = qResult + (((pResult - qResult) * Q^-1 mod P) * Q).
-			result = mbedtls_mpi_sub_mpi(difference.get(), pResult.get(), qResult.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = mbedtls_mpi_mul_mpi(product.get(), difference.get(), qp.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = mbedtls_mpi_mod_mpi(factor.get(), product.get(), p.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = mbedtls_mpi_mul_mpi(product.get(), factor.get(), q.get());
-			if (result != 0) {
-				return result;
-			}
-
-			result = mbedtls_mpi_add_mpi(decrypted.get(), qResult.get(), product.get());
-			if (result != 0) {
-				return result;
-			}
-
-			return mbedtls_mpi_write_binary(decrypted.get(), output, RsaBlockSize);
+		[[nodiscard]] int decrypt(const unsigned char* input, unsigned char* output, mbedtls_ctr_drbg_context &ctrDrbg) {
+			return mbedtls_rsa_private(&rsa, mbedtls_ctr_drbg_random, &ctrDrbg, input, output);
 		}
 
 	private:
-		void precomputeMontgomeryReduction(const mbedtls_mpi &modulus, MbedTlsMpi &reduction) {
-			MbedTlsMpi one;
-			MbedTlsMpi exponent;
-			MbedTlsMpi scratch;
-
-			checkMbedTls(mbedtls_mpi_lset(one.get(), 1), "mbedtls_mpi_lset failed");
-			checkMbedTls(mbedtls_mpi_lset(exponent.get(), 1), "mbedtls_mpi_lset failed");
-			checkMbedTls(mbedtls_mpi_exp_mod(scratch.get(), one.get(), exponent.get(), &modulus, reduction.get()), "mbedtls_mpi_exp_mod failed");
-		}
-
-		MbedTlsMpi p;
-		MbedTlsMpi q;
-		MbedTlsMpi dp;
-		MbedTlsMpi dq;
-		MbedTlsMpi qp;
-		MbedTlsMpi pMontgomeryRR;
-		MbedTlsMpi qMontgomeryRR;
+		mbedtls_rsa_context rsa;
 	};
 }
 
@@ -365,13 +280,13 @@ public:
 	}
 
 	void decrypt(char* msg) const override {
-		const auto key = getActiveKey();
-		if (!key) {
+		std::scoped_lock lock(mutex);
+		if (!activeKey) {
 			return;
 		}
 
 		std::array<unsigned char, RsaBlockSize> out {};
-		const auto result = key->decrypt(reinterpret_cast<const unsigned char*>(msg), out.data());
+		const auto result = activeKey->decrypt(reinterpret_cast<const unsigned char*>(msg), out.data(), ctrDrbg);
 		if (result != 0) {
 			logger.error("RSAManager::decrypt: {}", getMbedTlsError(result, "MbedTLS raw RSA decrypt failed"));
 			return;
@@ -381,12 +296,7 @@ public:
 	}
 
 private:
-	[[nodiscard]] std::shared_ptr<const MbedTlsRawRsaKey> getActiveKey() const {
-		std::scoped_lock lock(mutex);
-		return activeKey;
-	}
-
-	void setActiveKey(std::shared_ptr<const MbedTlsRawRsaKey> newKey) {
+	void setActiveKey(std::shared_ptr<MbedTlsRawRsaKey> newKey) {
 		std::scoped_lock lock(mutex);
 		activeKey = std::move(newKey);
 	}
@@ -394,7 +304,7 @@ private:
 	Logger &logger;
 	mbedtls_entropy_context entropy;
 	mutable mbedtls_ctr_drbg_context ctrDrbg;
-	std::shared_ptr<const MbedTlsRawRsaKey> activeKey;
+	std::shared_ptr<MbedTlsRawRsaKey> activeKey;
 	mutable std::mutex mutex;
 };
 

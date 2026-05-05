@@ -51,6 +51,8 @@ if(VCPKG_TARGET_IS_UWP
       STREQUAL
       "${HOST_TRIPLET}"
 )
+    # Canary overlay intent: keep libprotoc/protoc as host tooling and avoid
+    # building libprotoc/libupb for target triplets.
     set(protobuf_BUILD_LIBPROTOC
         OFF
     )

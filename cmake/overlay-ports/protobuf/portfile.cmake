@@ -109,24 +109,11 @@ if(protobuf_BUILD_PROTOC_BINARIES)
             AUTO_CLEAN
         )
     else()
-        string(
-            REPLACE "."
-                    ";"
-                    VERSION_LIST
-                    ${VERSION}
-        )
-        list(
-            GET
-            VERSION_LIST
-            1
-            VERSION_MINOR
-        )
-        list(
-            GET
-            VERSION_LIST
-            2
-            VERSION_PATCH
-        )
+        if(NOT VERSION MATCHES "^([0-9]+)\\.([0-9]+)\\.([0-9]+)([-+].*)?$")
+            message(FATAL_ERROR "protobuf port VERSION '${VERSION}' must use major.minor.patch format to copy the versioned protoc tool")
+        endif()
+        set(VERSION_MINOR "${CMAKE_MATCH_2}")
+        set(VERSION_PATCH "${CMAKE_MATCH_3}")
         vcpkg_copy_tools(
             TOOL_NAMES
             protoc

@@ -18,6 +18,17 @@
 #include <mbedtls/rsa.h>
 #include <mbedtls/version.h>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <cstddef>
+	#include <cstring>
+	#include <memory>
+	#include <mutex>
+	#include <stdexcept>
+	#include <string>
+	#include <utility>
+#endif
+
 namespace {
 	constexpr size_t RsaBlockSize = 128;
 	constexpr std::array<unsigned char, 10> RsaPersonalization = { 'c', 'a', 'n', 'a', 'r', 'y', '-', 'r', 's', 'a' };

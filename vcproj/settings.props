@@ -8,15 +8,18 @@
         _WIN32_WINNT=0x0501;
         BUILD_TYPE="RelWithDebInfo";
     </PREPROCESSOR_DEFS>
-    <CANARY_COMMON_LIBDEPS>
+    <CANARY_COMMON_LIBDEPS_BASE>
       comctl32.lib;
       User32.lib;
       WS2_32.lib;
       pugixml.lib;
       lua51.lib;
+      argon2.lib;
+    </CANARY_COMMON_LIBDEPS_BASE>
+    <CANARY_COMMON_LIBDEPS>
+      $(CANARY_COMMON_LIBDEPS_BASE);
       libmariadb.lib;
       abseil_dll.lib;
-      argon2.lib;
     </CANARY_COMMON_LIBDEPS>
     <CANARY_LIBDEPS>
       $(CANARY_COMMON_LIBDEPS);
@@ -39,13 +42,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <CANARY_COMMON_LIBDEPS>
-      comctl32.lib;
-      User32.lib;
-      WS2_32.lib;
-      pugixml.lib;
-      lua51.lib;
+      $(CANARY_COMMON_LIBDEPS_BASE);
       mariadbclient.lib;
-      argon2.lib;
       advapi32.lib;
       kernel32.lib;
       shlwapi.lib;
@@ -54,6 +52,7 @@
       secur32.lib;
       iphlpapi.lib;
     </CANARY_COMMON_LIBDEPS>
+    <!-- Keep explicit static protobuf transitive libs until linkage is fully target-driven across generators. -->
     <CANARY_PROTOBUF_STATIC_LIBDEPS>
       libprotobuf-lite.lib;
       utf8_validity.lib;

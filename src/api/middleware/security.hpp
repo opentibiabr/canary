@@ -1,8 +1,12 @@
 #pragma once
 
 #include <crow.h>
-#include <string>
+#include <algorithm>
+#include <array>
+#include <cctype>
 #include <regex>
+#include <string>
+#include <string_view>
 #include <unordered_set>
 #include "../models/responses.hpp"
 
@@ -61,34 +65,44 @@ private:
 		res.add_header("Referrer-Policy", "strict-origin-when-cross-origin");
 	}
 
+	// Defense-in-depth filter for XSS-shaped payloads. The API itself returns JSON, but
+	// downstream consumers (e.g. an admin web panel) may render fields as HTML, so we
+	// reject obviously hostile inputs at the boundary.
+	//
+	// Cheap substrings are matched case-insensitively without regex; only the <script>
+	// pair, which needs grouping, uses a single statically-compiled std::regex.
 	bool sanitizeInput(const crow::request &req) const {
 		try {
-			// Lista de caracteres e padrões maliciosos
-			static const std::vector<std::string> xssPatterns = {
-				"<script[^>]*>.*?</script>",
+			static const std::regex scriptTagRe(R"(<script[^>]*>.*?</script>)", std::regex::icase | std::regex::optimize);
+			static constexpr std::array<std::string_view, 4> substrPatterns {
 				"javascript:",
 				"onload=",
 				"onerror=",
-				"onclick="
+				"onclick=",
 			};
 
-			// Verifica o body se for POST/PUT
-			if (req.method == crow::HTTPMethod::Post || req.method == crow::HTTPMethod::Put) {
-				const std::string &body = req.body;
-				for (const auto &pattern : xssPatterns) {
-					if (std::regex_search(body, std::regex(pattern, std::regex::icase))) {
-						return false;
+			const auto containsHostile = [](const std::string &input) {
+				if (input.empty()) {
+					return false;
+				}
+				for (const auto pat : substrPatterns) {
+					if (containsCaseInsensitive(input, pat)) {
+						return true;
 					}
+				}
+				return std::regex_search(input, scriptTagRe);
+			};
+
+			if (req.method == crow::HTTPMethod::Post || req.method == crow::HTTPMethod::Put) {
+				if (containsHostile(req.body)) {
+					return false;
 				}
 			}
 
-			// Verifica parâmetros da URL
 			for (const auto &param : req.url_params.keys()) {
 				const std::string &value = req.url_params.get(param);
-				for (const auto &pattern : xssPatterns) {
-					if (std::regex_search(value, std::regex(pattern, std::regex::icase))) {
-						return false;
-					}
+				if (containsHostile(value)) {
+					return false;
 				}
 			}
 
@@ -96,6 +110,18 @@ private:
 		} catch (const std::exception &) {
 			return false;
 		}
+	}
+
+	static bool containsCaseInsensitive(const std::string &haystack, std::string_view needle) {
+		if (needle.size() > haystack.size()) {
+			return false;
+		}
+		const auto it = std::search(
+			haystack.begin(), haystack.end(),
+			needle.begin(), needle.end(),
+			[](unsigned char a, unsigned char b) { return std::tolower(a) == std::tolower(b); }
+		);
+		return it != haystack.end();
 	}
 
 	bool validateContentType(const crow::request &req) const {

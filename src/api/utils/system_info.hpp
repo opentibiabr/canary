@@ -9,11 +9,9 @@ private:
 	static constexpr size_t SYSTEM_AVERAGE_WINDOW = 3;
 	static std::deque<double> cpuHistory;
 	static std::deque<double> systemCpuHistory;
-	#ifdef _WIN32
+#ifdef _WIN32
 	static ULARGE_INTEGER lastSystemKernel, lastSystemUser, lastSystemIdle;
-	#endif
+#endif
 	static std::string getCpuName();
 	static bool firstCall;
-
-	
 };

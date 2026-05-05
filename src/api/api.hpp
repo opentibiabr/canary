@@ -11,44 +11,44 @@
 class ThreadPool;
 
 struct VersionInfo {
-    std::string version;
-    std::string url;
-    std::string changelog;
-    bool required;
+	std::string version;
+	std::string url;
+	std::string changelog;
+	bool required;
 };
 
 class APIServer {
 public:
-    explicit APIServer(ThreadPool &threadPool);
+	explicit APIServer(ThreadPool &threadPool);
 
-    ~APIServer() = default;
-    APIServer(const APIServer &) = delete;
-    APIServer &operator=(const APIServer &) = delete;
+	~APIServer() = default;
+	APIServer(const APIServer &) = delete;
+	APIServer &operator=(const APIServer &) = delete;
 
-    static APIServer &getInstance();
+	static APIServer &getInstance();
 
-    void initialize(uint16_t port = 8081);
-    void start();
-    void stop();
+	void initialize(uint16_t port = 8081);
+	void start();
+	void stop();
 
 private:
-    crow::App<
-        crow::CORSHandler,
-        SecurityMiddleware,
-        AuthMiddleware,
-        LoggingMiddleware,
-        RateLimitMiddleware,
-        ValidationMiddleware>
-        app {};
+	crow::App<
+		crow::CORSHandler,
+		SecurityMiddleware,
+		AuthMiddleware,
+		LoggingMiddleware,
+		RateLimitMiddleware,
+		ValidationMiddleware>
+		app {};
 
 	ThreadPool &threadPool;
-    std::atomic<bool> running{false};
-    static std::mutex shutdownMutex;
+	std::atomic<bool> running { false };
+	static std::mutex shutdownMutex;
 
-    void setupRoutes();
-    void setupWebSocket();
-    void setupValidators();
-	[[nodiscard]] static bool isNewerVersion(const std::string &current, const std::string &new_version) ;
+	void setupRoutes();
+	void setupWebSocket();
+	void setupValidators();
+	[[nodiscard]] static bool isNewerVersion(const std::string &current, const std::string &new_version);
 	static std::map<std::string, std::vector<VersionInfo>> availableVersions;
 };
 

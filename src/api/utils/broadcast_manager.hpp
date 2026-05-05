@@ -2,22 +2,22 @@
 
 class BroadcastManager {
 public:
-    static BroadcastManager &getInstance();
+	static BroadcastManager &getInstance();
 
 	void start();
 	void stop();
 
-    static void broadcastChatMessage(const std::string &playerName, uint32_t level, const std::string &message, const std::string &channel);
-	static void broadcastChatMessageHistory() ;
+	static void broadcastChatMessage(const std::string &playerName, uint32_t level, const std::string &message, const std::string &channel);
+	static void broadcastChatMessageHistory();
 
 private:
-    BroadcastManager();
-    ~BroadcastManager();
+	BroadcastManager();
+	~BroadcastManager();
 
 	static void broadcastSystemResources();
 	static void broadcastServerStatus();
 
 	static std::atomic<bool> running;
-    std::jthread broadcastThread;
+	std::jthread broadcastThread;
 	static std::mutex shutdownMutex;
 };

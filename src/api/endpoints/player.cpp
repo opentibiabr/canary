@@ -167,7 +167,7 @@ crow::response PlayerEndpoints::getBanHistory(const crow::request &req) {
 }
 
 crow::response PlayerEndpoints::getBannedPlayers(const crow::request &req) {
-	Database& db = Database::getInstance();
+	Database &db = Database::getInstance();
 	const auto &bans = db.storeQuery(
 		"SELECT ab.account_id, ab.reason, ab.banned_at, ab.expires_at, ab.banned_by, p.name "
 		"FROM account_bans ab "

@@ -117,7 +117,7 @@ public:
 
 	uint64_t asyncScheduleEvent(uint32_t delay, std::function<void(void)> &&f, const std::string &taskName, TaskGroup group = TaskGroup::GenericParallel) {
 		return scheduleEvent(
-			delay, [this, f = std::move(f), taskName, group] { asyncEvent([f] { f(); }, taskName,group); }, dispacherContext.taskName, false, false
+			delay, [this, f = std::move(f), taskName, group] { asyncEvent([f] { f(); }, taskName, group); }, dispacherContext.taskName, false, false
 		);
 	}
 

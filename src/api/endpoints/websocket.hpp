@@ -239,7 +239,7 @@ private:
 				return;
 			}
 
-			const auto& data = json["data"];
+			const auto &data = json["data"];
 			if (!data.contains("message") || !data.contains("channel")) {
 				sendError(conn, "Campos 'message' e 'channel' são obrigatórios");
 				return;
@@ -279,7 +279,7 @@ private:
 					}
 				}
 			}
-		} catch (const std::exception& e) {
+		} catch (const std::exception &e) {
 			sendError(conn, "Erro ao processar mensagem de chat: " + std::string(e.what()));
 		}
 	}

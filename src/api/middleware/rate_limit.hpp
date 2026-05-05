@@ -32,7 +32,7 @@ public:
 	// Método para configurar limites específicos por rota
 	void setRouteLimit(const std::string &route, int maxRequests, int windowSeconds) {
 		std::lock_guard lock(configMtx);
-		routeLimits[route] = RateLimit{maxRequests, windowSeconds};
+		routeLimits[route] = RateLimit { maxRequests, windowSeconds };
 	}
 
 private:
@@ -56,7 +56,7 @@ private:
 		if (it != routeLimits.end()) {
 			return it->second;
 		}
-		return RateLimit{DEFAULT_MAX_REQUESTS, DEFAULT_WINDOW_SECONDS};
+		return RateLimit { DEFAULT_MAX_REQUESTS, DEFAULT_WINDOW_SECONDS };
 	}
 
 	bool isRateLimited(const std::string &ip, const std::string &route) {
@@ -71,8 +71,9 @@ private:
 
 		auto &info = it->second;
 		const auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
-			now - info.lastReset
-		).count();
+								 now - info.lastReset
+		)
+								 .count();
 
 		auto [requests, windowSeconds] = getRouteLimit(route);
 
@@ -93,13 +94,14 @@ private:
 
 		auto [requests, windowSeconds] = getRouteLimit(route);
 		const auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
-			now - info.lastReset
-		).count();
+								 now - info.lastReset
+		)
+								 .count();
 
 		if (elapsed >= windowSeconds) {
-			info = RateInfo{now, {}};
+			info = RateInfo { now, {} };
 		}
-		
+
 		info.routeCounts[route]++;
 	}
 };

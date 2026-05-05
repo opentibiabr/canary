@@ -1,6 +1,5 @@
 #pragma once
 
-
 using json = nlohmann::json;
 
 class APIResponse {

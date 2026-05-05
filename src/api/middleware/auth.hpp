@@ -44,7 +44,7 @@ private:
 
 			// Verificação do token
 			jwt::verify()
-				.allow_algorithm(jwt::algorithm::hs256{key})
+				.allow_algorithm(jwt::algorithm::hs256 { key })
 				.with_issuer("meu_issuer") // Verifica se o emissor é válido
 				.with_audience("meu_audience") // Verifica se o público é válido
 				.with_subject(decoded.get_subject()) // Verifica se o subject é igual ao esperado
@@ -56,14 +56,14 @@ private:
 		}
 	}
 
-	static std::string generateToken(const std::string& username) {
+	static std::string generateToken(const std::string &username) {
 		const std::string key = "3x@mpl3S3cr3tK3y!Th1sIsS3cur3"; // Chave secreta
 		auto token = jwt::create()
-			.set_issuer("meu_issuer") // O mesmo emissor
-			.set_audience("meu_audience") // O mesmo público
-			.set_subject(username)
-			.set_expires_at(std::chrono::system_clock::now() + std::chrono::hours(1))
-			.sign(jwt::algorithm::hs256{key});
+						 .set_issuer("meu_issuer") // O mesmo emissor
+						 .set_audience("meu_audience") // O mesmo público
+						 .set_subject(username)
+						 .set_expires_at(std::chrono::system_clock::now() + std::chrono::hours(1))
+						 .sign(jwt::algorithm::hs256 { key });
 
 		return token;
 	}

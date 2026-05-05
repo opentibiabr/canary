@@ -49,7 +49,7 @@ void APIServer::initialize(uint16_t port) {
 
 void APIServer::start() {
 	running = true;
-	
+
 	// Usa o thread pool para executar a API em background
 	threadPool.detach_task([this]() {
 		app.run();
@@ -152,7 +152,7 @@ void APIServer::setupRoutes() {
 			}
 		});
 
-		// Rota para listar todos os jogadores banidos
+	// Rota para listar todos os jogadores banidos
 	CROW_ROUTE(app, "/api/v1/players/banned")
 		.methods("GET"_method)([](const crow::request &req) {
 			return PlayerEndpoints::getBannedPlayers(req);

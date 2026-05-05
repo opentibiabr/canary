@@ -1,10 +1,9 @@
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <array>
 	#include <gtest/gtest.h>
-
-	#include "lib/di/container.hpp"
 #endif
 
+#include "lib/di/container.hpp"
 #include "security/rsa.hpp"
 
 namespace {

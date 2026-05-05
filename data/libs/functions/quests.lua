@@ -76,23 +76,34 @@ local function sendTrackedMissionsUpdate(player)
 	player:saveTrackedMissions()
 end
 
-local function hasTrackedMissionForQuest(player, questId)
-	local trackedMissions = PlayerTrackedMissionsData[player:getId()]
-	if not trackedMissions then
-		return false
-	end
-
-	for i = 1, #trackedMissions do
-		local mission = trackedMissions[i]
-		if mission and mission.questId == questId then
-			return true
-		end
-	end
-	return false
-end
 
 local questHasMissionId
 local buildMissionTrackerData
+
+local function getMissionIndexByTrackedMissionId(questId, trackedMissionId)
+	local quest = Game.getQuest(questId)
+	if not quest or not quest.missions then
+		return nil
+	end
+
+	for missionIndex = 1, #quest.missions do
+		local mission = quest.missions[missionIndex]
+		if mission and mission.missionId == trackedMissionId then
+			return missionIndex
+		end
+	end
+
+	return nil
+end
+
+local function trackedMissionIsCompleted(player, questId, trackedMissionId)
+	local missionIndex = getMissionIndexByTrackedMissionId(questId, trackedMissionId)
+	if not missionIndex then
+		return false
+	end
+
+	return player:missionIsCompleted(questId, missionIndex)
+end
 
 local function removeCompletedTrackedMission(playerId, questId, missionId, sendUpdate)
 	local pendingRemovals = PlayerTrackedMissionRemovalEvents[playerId]
@@ -104,7 +115,7 @@ local function removeCompletedTrackedMission(playerId, questId, missionId, sendU
 	end
 
 	local player = Player(playerId)
-	if not player or not player:questIsCompleted(questId) then
+	if not player or not trackedMissionIsCompleted(player, questId, missionId) then
 		return false
 	end
 
@@ -243,7 +254,7 @@ function Player.getQuestTrackerOption(self, option)
 	end
 
 	local kvKey = option == "autoTrackNewQuests" and QuestTrackerServerConfig.autoTrackNewQuestsKey or QuestTrackerServerConfig.autoUntrackCompletedQuestsKey
-	return getQuestTrackerKV(self):get(kvKey) == true
+	return normalizeBoolean(getQuestTrackerKV(self):get(kvKey))
 end
 
 function Player.setQuestTrackerOption(self, option, enabled, _silent)
@@ -397,24 +408,50 @@ function Player.loadTrackedMissions(self, sendUpdate)
 	return true
 end
 
-local function readKnownQuestIds(player)
+local getActiveMissionEntriesForQuest
+
+local function readKnownMissionEntries(player)
 	local list = getQuestTrackerKV(player):get(QuestTrackerServerConfig.knownQuestsKey)
 	local known = {}
+
 	if type(list) == "table" then
 		for i = 1, #list do
-			local questId = tonumber(list[i])
-			if questId then
-				known[questId] = true
+			local entry = list[i]
+			if type(entry) == "table" then
+				local questId = tonumber(entry.questId)
+				local missionId = tonumber(entry.missionId)
+				if questId and missionId then
+					known[makeTrackedMissionKey(questId, missionId)] = true
+				end
+			else
+				local key = tostring(entry)
+				if key:match("^%d+:%d+$") then
+					known[key] = true
+			else
+					-- Backward compatibility with the first implementation, which stored only questId.
+					-- Convert an old quest-level entry into all currently open mission entries.
+					local questId = tonumber(entry)
+					if questId and getActiveMissionEntriesForQuest then
+						local activeMissions = getActiveMissionEntriesForQuest(player, questId)
+						for j = 1, #activeMissions do
+							local mission = activeMissions[j]
+							known[makeTrackedMissionKey(mission.questId, mission.missionId)] = true
+						end
+					end
+				end
 			end
 		end
 	end
+
 	return known
 end
 
-local function saveKnownQuestIds(player, known)
+local function saveKnownMissionEntries(player, known)
 	local list = {}
-	for questId in pairs(known) do
-		list[#list + 1] = questId
+	for key in pairs(known) do
+		if tostring(key):match("^%d+:%d+$") then
+			list[#list + 1] = tostring(key)
+		end
 	end
 	table.sort(list)
 
@@ -422,21 +459,52 @@ local function saveKnownQuestIds(player, known)
 	return true
 end
 
+getActiveMissionEntriesForQuest = function(player, questId)
+	local missions = {}
+	if not questId or player:questIsCompleted(questId) then
+		return missions
+	end
+
+	local quest = Game.getQuest(questId)
+	if not quest or not quest.missions then
+		return missions
+	end
+
+	local added = {}
+	for missionIndex = 1, #quest.missions do
+		if player:missionIsStarted(questId, missionIndex) and not player:missionIsCompleted(questId, missionIndex) then
+			local mission = buildMissionTrackerData(player, questId, missionIndex)
+			if mission and mission.questId and mission.missionId then
+				local key = makeTrackedMissionKey(mission.questId, mission.missionId)
+				if not added[key] then
+					missions[#missions + 1] = mission
+					added[key] = true
+				end
+			end
+		end
+	end
+
+	return missions
+end
+
 function Player.updateQuestTrackerKnownQuests(self, _autoTrackNew)
-	local known = readKnownQuestIds(self)
+	local known = readKnownMissionEntries(self)
 	local changedKnown = false
 
 	for questId in pairs(Quests) do
-		if self:questIsStarted(questId) then
-			if not known[questId] then
-				known[questId] = true
+		local activeMissions = getActiveMissionEntriesForQuest(self, questId)
+		for i = 1, #activeMissions do
+			local mission = activeMissions[i]
+			local key = makeTrackedMissionKey(mission.questId, mission.missionId)
+			if not known[key] then
+				known[key] = true
 				changedKnown = true
 			end
 		end
 	end
 
 	if changedKnown then
-		saveKnownQuestIds(self, known)
+		saveKnownMissionEntries(self, known)
 	end
 
 	return changedKnown
@@ -468,7 +536,7 @@ function Player.addTrackedMissionData(self, data, sendUpdate)
 end
 
 function Player.addCurrentQuestMissionToTracker(self, questId, sendUpdate)
-	if not questId or self:questIsCompleted(questId) or hasTrackedMissionForQuest(self, questId) then
+	if not questId or self:questIsCompleted(questId) then
 		return false
 	end
 
@@ -486,31 +554,68 @@ function Player.addCurrentQuestMissionToTracker(self, questId, sendUpdate)
 	return false
 end
 
-local function questWasStartedByStorage(quest, key, value, oldValue)
-	local startStorageId = tonumber(quest.startStorageId)
-	local startStorageValue = tonumber(quest.startStorageValue)
+local function questUsesStorageKey(quest, key)
 	key = tonumber(key)
-	value = tonumber(value)
-	oldValue = tonumber(oldValue) or -1
-
-	if not startStorageId or not startStorageValue or not key or not value then
+	if not quest or not key then
 		return false
 	end
 
-	return startStorageId == key and value ~= -1 and value >= startStorageValue and (oldValue == -1 or oldValue < startStorageValue)
+	if tonumber(quest.startStorageId) == key or tonumber(quest.endStorageId) == key then
+		return true
+	end
+
+	if quest.missions then
+		for missionIndex = 1, #quest.missions do
+			local mission = quest.missions[missionIndex]
+			if mission and tonumber(mission.storageId) == key then
+				return true
+			end
+		end
+	end
+
+	return false
 end
 
-local function retryAutoTrackStartedQuest(playerId, questId)
+local function retryAutoTrackCurrentQuestMissions(playerId, questId)
 	local player = Player(playerId)
 	if not player or not player:getQuestTrackerOption("autoTrackNewQuests") then
 		return false
 	end
 
-	if player:addCurrentQuestMissionToTracker(questId, false) then
-		sendTrackedMissionsUpdate(player)
-		return true
+	local activeMissions = getActiveMissionEntriesForQuest(player, questId)
+	if #activeMissions == 0 then
+		return false
 	end
-	return false
+
+	local known = readKnownMissionEntries(player)
+	local changedKnown = false
+	local changedTracker = false
+
+	for i = 1, #activeMissions do
+		local mission = activeMissions[i]
+		local missionKey = makeTrackedMissionKey(mission.questId, mission.missionId)
+
+		if not known[missionKey] then
+			if player:hasTrackingQuest(mission.questId, mission.missionId) then
+				known[missionKey] = true
+				changedKnown = true
+			elseif player:addTrackedMissionData(mission, false) then
+				known[missionKey] = true
+				changedKnown = true
+				changedTracker = true
+			end
+		end
+	end
+
+	if changedKnown then
+		saveKnownMissionEntries(player, known)
+	end
+
+	if changedTracker then
+		sendTrackedMissionsUpdate(player)
+	end
+
+	return changedKnown or changedTracker
 end
 
 function Player.autoTrackStartedQuestByStorage(self, key, value, oldValue)
@@ -518,27 +623,41 @@ function Player.autoTrackStartedQuestByStorage(self, key, value, oldValue)
 		return false
 	end
 
-	local known = readKnownQuestIds(self)
+	local known = readKnownMissionEntries(self)
 	local changedKnown = false
 	local changedTracker = false
 	local playerId = self:getId()
 
 	for questId in pairs(Quests) do
 		local quest = Game.getQuest(questId)
-		if quest and questWasStartedByStorage(quest, key, value, oldValue) and not known[questId] then
-			known[questId] = true
-			changedKnown = true
-
-			if self:addCurrentQuestMissionToTracker(questId, false) then
-				changedTracker = true
+		if quest and questUsesStorageKey(quest, key) and self:questIsStarted(questId) and not self:questIsCompleted(questId) then
+			local activeMissions = getActiveMissionEntriesForQuest(self, questId)
+			if #activeMissions == 0 then
+				addEvent(retryAutoTrackCurrentQuestMissions, 100, playerId, questId)
 			else
-				addEvent(retryAutoTrackStartedQuest, 100, playerId, questId)
+				for i = 1, #activeMissions do
+					local mission = activeMissions[i]
+					local missionKey = makeTrackedMissionKey(mission.questId, mission.missionId)
+
+					if not known[missionKey] then
+						if self:hasTrackingQuest(mission.questId, mission.missionId) then
+							known[missionKey] = true
+							changedKnown = true
+						elseif self:addTrackedMissionData(mission, false) then
+							known[missionKey] = true
+							changedKnown = true
+							changedTracker = true
+						else
+							addEvent(retryAutoTrackCurrentQuestMissions, 100, playerId, questId)
+						end
+					end
+				end
 			end
 		end
 	end
 
 	if changedKnown then
-		saveKnownQuestIds(self, known)
+		saveKnownMissionEntries(self, known)
 	end
 
 	if changedTracker then
@@ -565,7 +684,7 @@ function Player.removeCompletedTrackedMissions(self, sendUpdate)
 	local scheduled = false
 	for i = 1, #trackedMissions do
 		local mission = trackedMissions[i]
-		if mission and mission.questId and self:questIsCompleted(mission.questId) then
+		if mission and mission.questId and mission.missionId and trackedMissionIsCompleted(self, mission.questId, mission.missionId) then
 			local key = makeTrackedMissionKey(mission.questId, mission.missionId)
 			if not pendingRemovals[key] then
 				pendingRemovals[key] = addEvent(removeCompletedTrackedMission, delay, playerId, mission.questId, mission.missionId, sendUpdate ~= false)
@@ -704,34 +823,16 @@ function Player.getTrackedMissionDataByIds(self, questId, trackedMissionId)
 		return nil
 	end
 
-	local trackedMissionIndex = nil
-	for missionIndex = 1, #quest.missions do
-		local mission = quest.missions[missionIndex]
-		if mission and mission.missionId == trackedMissionId then
-			trackedMissionIndex = missionIndex
-			break
-		end
-	end
-
+	local trackedMissionIndex = getMissionIndexByTrackedMissionId(questId, trackedMissionId)
 	if not trackedMissionIndex then
 		return nil
 	end
 
-	-- Normal progression support: when the tracked mission advances,
-	-- keep the tracker following the next current mission of this quest.
-	local lastCompletedMission = nil
-	for missionIndex = trackedMissionIndex, #quest.missions do
-		if self:missionIsStarted(questId, missionIndex) then
-			local data = buildMissionTrackerData(self, questId, missionIndex)
-			if not self:missionIsCompleted(questId, missionIndex) then
-				return data
-			end
-			lastCompletedMission = data
-		end
-	end
-
-	if lastCompletedMission then
-		return lastCompletedMission
+	-- Keep the tracked entry tied to its own questId:missionId.
+	-- The mission text can still refresh through catalog/storage changes, including
+	-- the final completed state before auto-untrack removes it after the delay.
+	if self:missionIsStarted(questId, trackedMissionIndex) or self:missionIsCompleted(questId, trackedMissionIndex) then
+		return buildMissionTrackerData(self, questId, trackedMissionIndex)
 	end
 
 	-- GM/admin regression support: if storage was moved backwards,

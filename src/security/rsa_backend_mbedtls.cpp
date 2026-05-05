@@ -20,6 +20,7 @@
 
 namespace {
 	constexpr size_t RsaBlockSize = 128;
+	constexpr std::array<unsigned char, 10> RsaPersonalization = { 'c', 'a', 'n', 'a', 'r', 'y', '-', 'r', 's', 'a' };
 
 	void initRsa(mbedtls_rsa_context &rsa) {
 #if MBEDTLS_VERSION_NUMBER >= 0x03000000
@@ -126,10 +127,9 @@ public:
 		mbedtls_entropy_init(&entropy);
 		mbedtls_ctr_drbg_init(&ctrDrbg);
 
-		const char* pers = "canary-rsa";
 		try {
 			checkMbedTls(
-				mbedtls_ctr_drbg_seed(&ctrDrbg, mbedtls_entropy_func, &entropy, reinterpret_cast<const unsigned char*>(pers), std::strlen(pers)),
+				mbedtls_ctr_drbg_seed(&ctrDrbg, mbedtls_entropy_func, &entropy, RsaPersonalization.data(), RsaPersonalization.size()),
 				"mbedtls_ctr_drbg_seed failed"
 			);
 		} catch (...) {

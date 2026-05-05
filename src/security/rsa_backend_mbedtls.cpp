@@ -22,12 +22,36 @@ namespace {
 	constexpr size_t RsaBlockSize = 128;
 	constexpr std::array<unsigned char, 10> RsaPersonalization = { 'c', 'a', 'n', 'a', 'r', 'y', '-', 'r', 's', 'a' };
 
+	class MbedTlsRsaError final : public std::runtime_error {
+	public:
+		using std::runtime_error::runtime_error;
+	};
+
+	std::string getMbedTlsError(int result, const char* message) {
+		std::array<char, 256> error {};
+		mbedtls_strerror(result, error.data(), error.size());
+		return fmt::format("{}: {} ({})", message, error.data(), result);
+	}
+
+	void checkMbedTls(int result, const char* message) {
+		if (result != 0) {
+			throw MbedTlsRsaError(getMbedTlsError(result, message));
+		}
+	}
+
 	void initRsa(mbedtls_rsa_context &rsa) {
 #if MBEDTLS_VERSION_NUMBER >= 0x03000000
 		mbedtls_rsa_init(&rsa);
-		mbedtls_rsa_set_padding(&rsa, MBEDTLS_RSA_PKCS_V15, MBEDTLS_MD_NONE);
 #else
 		mbedtls_rsa_init(&rsa, MBEDTLS_RSA_PKCS_V15, 0);
+#endif
+	}
+
+	int setRsaPadding(mbedtls_rsa_context &rsa) {
+#if MBEDTLS_VERSION_NUMBER >= 0x03000000
+		return mbedtls_rsa_set_padding(&rsa, MBEDTLS_RSA_PKCS_V15, MBEDTLS_MD_NONE);
+#else
+		return 0;
 #endif
 	}
 
@@ -52,7 +76,7 @@ namespace {
 		MbedTlsMpi(const MbedTlsMpi &) = delete;
 		void operator=(const MbedTlsMpi &) = delete;
 
-		mbedtls_mpi* get() {
+		[[nodiscard]] mbedtls_mpi* get() {
 			return &mpi;
 		}
 
@@ -73,7 +97,7 @@ namespace {
 		MbedTlsPk(const MbedTlsPk &) = delete;
 		void operator=(const MbedTlsPk &) = delete;
 
-		mbedtls_pk_context* get() {
+		[[nodiscard]] mbedtls_pk_context* get() {
 			return &pk;
 		}
 
@@ -85,6 +109,13 @@ namespace {
 	public:
 		MbedTlsRsa() {
 			initRsa(rsa);
+
+			try {
+				checkMbedTls(setRsaPadding(rsa), "mbedtls_rsa_set_padding failed");
+			} catch (...) {
+				mbedtls_rsa_free(&rsa);
+				throw;
+			}
 		}
 
 		~MbedTlsRsa() {
@@ -94,7 +125,7 @@ namespace {
 		MbedTlsRsa(const MbedTlsRsa &) = delete;
 		void operator=(const MbedTlsRsa &) = delete;
 
-		mbedtls_rsa_context* get() {
+		[[nodiscard]] mbedtls_rsa_context* get() {
 			return &rsa;
 		}
 
@@ -105,18 +136,6 @@ namespace {
 	private:
 		mbedtls_rsa_context rsa;
 	};
-
-	std::string getMbedTlsError(int result, const char* message) {
-		std::array<char, 256> error {};
-		mbedtls_strerror(result, error.data(), error.size());
-		return fmt::format("{}: {} ({})", message, error.data(), result);
-	}
-
-	void checkMbedTls(int result, const char* message) {
-		if (result != 0) {
-			throw std::runtime_error(getMbedTlsError(result, message));
-		}
-	}
 }
 
 class MbedTlsRsaBackend final : public RsaBackend {
@@ -128,6 +147,7 @@ public:
 		mbedtls_ctr_drbg_init(&ctrDrbg);
 
 		try {
+			checkMbedTls(setRsaPadding(rsa), "mbedtls_rsa_set_padding failed");
 			checkMbedTls(
 				mbedtls_ctr_drbg_seed(&ctrDrbg, mbedtls_entropy_func, &entropy, RsaPersonalization.data(), RsaPersonalization.size()),
 				"mbedtls_ctr_drbg_seed failed"
@@ -150,7 +170,7 @@ public:
 		std::scoped_lock lock(mutex);
 		MbedTlsPk newPk;
 
-		if (parseKeyFile(*newPk.get(), filename, ctrDrbg) != 0) {
+		if (parseKeyFile(*newPk.get(), filename, ctrDrg) != 0) {
 			return false;
 		}
 
@@ -198,7 +218,7 @@ public:
 		checkMbedTls(mbedtls_rsa_check_privkey(newRsa.get()), "mbedtls_rsa_check_privkey failed");
 
 		if (mbedtls_rsa_get_len(newRsa.get()) != RsaBlockSize) {
-			throw std::runtime_error("RSA key must be 128 bytes");
+			throw MbedTlsRsaError("RSA key must be 128 bytes");
 		}
 
 		newRsa.swapWith(rsa);

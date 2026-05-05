@@ -613,7 +613,7 @@
     <Error Text="vcpkg MSBuild targets were not found. Set VCPKG_ROOT or pass /p:VcpkgRoot=... so manifest dependencies can be installed before protobuf generation."
            Condition="'$(CanaryVcpkgManifestInstallTarget)'=='' and !Exists('$(ProtocPath)')" />
   </Target>
-  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies">
+  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" Condition="'$(RunProtoCompile)'=='true'" DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies">
     <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; &quot;%(ProtoFiles.Identity)&quot;" />
     <ItemGroup>
       <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">

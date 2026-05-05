@@ -116,8 +116,11 @@ foreach(
                unofficial::libmariadb
                nlohmann_json::nlohmann_json
                protobuf
-               MbedTLS::mbedtls
-               MbedTLS::mbedcrypto
+    )
+
+    target_link_libraries(
+        ${core_target}
+        PRIVATE MbedTLS::mbedcrypto
     )
 
     if(FEATURE_METRICS)

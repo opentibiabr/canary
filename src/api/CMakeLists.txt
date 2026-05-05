@@ -6,4 +6,5 @@ target_sources(
             utils/broadcast_manager.cpp
             utils/chat_history.cpp
             utils/system_info.cpp
+            utils/version_store.cpp
 )

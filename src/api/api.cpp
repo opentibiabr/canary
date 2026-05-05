@@ -7,6 +7,7 @@
 #include "lib/thread/thread_pool.hpp"
 #include "utils/validators.hpp"
 #include "utils/broadcast_manager.hpp"
+#include "utils/version_store.hpp"
 #include "account/account.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_type.hpp"
@@ -33,6 +34,7 @@ void APIServer::initialize(uint16_t port) {
 	auto &rateLimiter = app.get_middleware<RateLimitMiddleware>();
 	// Anti-bruteforce on auth
 	rateLimiter.setRouteLimit("/api/v1/login", 5, 60);
+	rateLimiter.setRouteLimit("/api/v1/check-update", 30, 60);
 	// Read-only public endpoints
 	rateLimiter.setRouteLimit("/api/v1/server/status", 60, 60);
 	rateLimiter.setRouteLimit("/api/v1/server/resources", 60, 60);
@@ -50,6 +52,8 @@ void APIServer::initialize(uint16_t port) {
 	rateLimiter.setRouteLimit("/ws", 30, 60);
 
 	setupValidators();
+
+	VersionStore::getInstance().loadFromFile("data/api_versions.json");
 
 	app.loglevel(crow::LogLevel::Warning);
 	app.port(port).use_compression(crow::compression::DEFLATE).multithreaded();
@@ -156,6 +160,27 @@ void APIServer::setupRoutes() {
 	CROW_ROUTE(app, "/api/v1/server/motd")
 		.methods("GET"_method)([](const crow::request &) {
 			return ServerEndpoints::getMotd();
+		});
+
+	// Client update check — looks up data/api_versions.json (loaded at startup).
+	// Empty/missing file simply returns hasUpdate=false.
+	CROW_ROUTE(app, "/api/v1/check-update")
+		.methods("POST"_method)([](const crow::request &req) {
+			const auto body = crow::json::load(req.body);
+			if (!body || !body.has("currentVersion") || !body.has("platform")) {
+				return APIResponse::badRequest("Campos 'currentVersion' e 'platform' são obrigatórios");
+			}
+			const std::string currentVersion = body["currentVersion"].s();
+			const std::string platform = body["platform"].s();
+
+			const auto found = VersionStore::getInstance().findUpdate(platform, currentVersion);
+			if (!found) {
+				return crow::response(json { { "hasUpdate", false } }.dump());
+			}
+			return crow::response(json {
+				{ "hasUpdate", true },
+				{ "updateInfo", { { "version", found->version }, { "url", found->url }, { "changelog", found->changelog }, { "required", found->required } } }
+			}.dump());
 		});
 
 	// Rota para listar todos os jogadores banidos

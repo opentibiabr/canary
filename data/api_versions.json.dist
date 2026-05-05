@@ -1,0 +1,15 @@
+{
+  "_comment": "Copy this file to data/api_versions.json and edit. Each platform gets a list of releases ordered however you like — the API returns the first entry whose 'version' is strictly newer than the client's currentVersion. Versions are dotted numerics (e.g. \"1.2.3\"). Empty file or missing platform = check-update returns hasUpdate=false.",
+  "platforms": {
+    "android": [
+      {
+        "version": "1.0.0",
+        "url": "https://example.com/myserver-android-1.0.0.apk",
+        "changelog": "First release.",
+        "required": false
+      }
+    ],
+    "ios": [],
+    "windows": []
+  }
+}

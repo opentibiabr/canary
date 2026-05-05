@@ -1313,15 +1313,23 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	outfitMountSupportedLookTypes.clear();
 	m_appearancesPtr = std::make_unique<Appearances>();
 	if (!m_appearancesPtr->ParseFromIstream(&fileStream)) {
 		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
+		m_appearancesPtr.reset();
 		return ERROR_NOT_OPEN;
 	}
 
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
+
+	for (const auto &appearance : m_appearancesPtr->outfit()) {
+		if (outfitAppearanceSupportsMount(appearance)) {
+			outfitMountSupportedLookTypes.emplace(static_cast<uint16_t>(appearance.id()));
+		}
+	}
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
@@ -1342,9 +1350,6 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	fileStream.close();
-
-	// Disposing allocated objects.
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }
@@ -6493,6 +6498,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	}
 
 	const auto &player = getPlayerByID(playerId);
+	playerChangeOutfit(player, outfit, setMount, isMountRandomized);
+}
+
+void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t outfit, bool setMount, uint8_t isMountRandomized /* = 0*/) {
 	if (!player) {
 		return;
 	}
@@ -6504,14 +6513,25 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 	player->setRandomMount(isMountRandomized);
 
-	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		auto randomMount = mounts->getMountByID(player->getRandomMountId());
-		outfit.lookMount = randomMount->clientId;
+	if (isMountRandomized && setMount && player->hasAnyMount()) {
+		outfit.lookMount = resolveRandomMountClientId(*mounts, player->getRandomMountId());
+		if (outfit.lookMount == 0) {
+			isMountRandomized = 0;
+			player->setRandomMount(0);
+		}
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit || !setMount) {
 		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
+	}
+
+	if (outfit.lookMount != 0 && !outfitSupportsMount(outfit.lookType)) {
+		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
 	}
 
 	if (outfit.lookMount != 0) {
@@ -9235,6 +9255,44 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 
 	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
+}
+
+[[nodiscard]] uint16_t Game::resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId) {
+	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
+	return randomMount ? randomMount->clientId : 0;
+}
+
+[[nodiscard]] bool Game::outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance) {
+	using namespace Canary::protobuf::appearances;
+
+	bool hasIdleFrameGroup = false;
+	bool hasMovingFrameGroup = false;
+	for (const auto &frameGroup : appearance.frame_group()) {
+		const auto fixedFrameGroup = frameGroup.fixed_frame_group();
+		if (fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_IDLE && fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_MOVING) {
+			continue;
+		}
+
+		if (fixedFrameGroup == FIXED_FRAME_GROUP_OUTFIT_IDLE) {
+			hasIdleFrameGroup = true;
+		} else {
+			hasMovingFrameGroup = true;
+		}
+
+		if (!frameGroup.has_sprite_info() || frameGroup.sprite_info().pattern_depth() <= 1) {
+			return false;
+		}
+	}
+
+	return hasIdleFrameGroup && hasMovingFrameGroup;
+}
+
+bool Game::outfitSupportsMount(uint16_t lookType) const {
+	if (!m_appearancesPtr) {
+		return true;
+	}
+
+	return outfitMountSupportedLookTypes.contains(lookType);
 }
 
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {

@@ -13,6 +13,7 @@
 
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/entropy.h>
+#include <mbedtls/error.h>
 #include <mbedtls/pk.h>
 #include <mbedtls/rsa.h>
 #include <mbedtls/version.h>
@@ -58,9 +59,61 @@ namespace {
 		mbedtls_mpi mpi;
 	};
 
+	class MbedTlsPk {
+	public:
+		MbedTlsPk() {
+			mbedtls_pk_init(&pk);
+		}
+
+		~MbedTlsPk() {
+			mbedtls_pk_free(&pk);
+		}
+
+		MbedTlsPk(const MbedTlsPk &) = delete;
+		void operator=(const MbedTlsPk &) = delete;
+
+		mbedtls_pk_context* get() {
+			return &pk;
+		}
+
+	private:
+		mbedtls_pk_context pk;
+	};
+
+	class MbedTlsRsa {
+	public:
+		MbedTlsRsa() {
+			initRsa(rsa);
+		}
+
+		~MbedTlsRsa() {
+			mbedtls_rsa_free(&rsa);
+		}
+
+		MbedTlsRsa(const MbedTlsRsa &) = delete;
+		void operator=(const MbedTlsRsa &) = delete;
+
+		mbedtls_rsa_context* get() {
+			return &rsa;
+		}
+
+		void swapWith(mbedtls_rsa_context &other) {
+			std::swap(rsa, other);
+		}
+
+	private:
+		mbedtls_rsa_context rsa;
+	};
+
+	std::string getMbedTlsError(int result, const char* message) {
+		std::array<char, 256> error {};
+		mbedtls_strerror(result, error.data(), error.size());
+		return fmt::format("{}: {} ({})", message, error.data(), result);
+	}
+
 	void checkMbedTls(int result, const char* message) {
 		if (result != 0) {
-			throw std::runtime_error(message);
+			throw std::runtime_error(getMbedTlsError(result, message));
 		}
 	}
 }
@@ -69,46 +122,54 @@ class MbedTlsRsaBackend final : public RsaBackend {
 public:
 	explicit MbedTlsRsaBackend(Logger &logger) :
 		logger(logger) {
-		mbedtls_pk_init(&pk);
 		initRsa(rsa);
 		mbedtls_entropy_init(&entropy);
 		mbedtls_ctr_drbg_init(&ctrDrbg);
 
 		const char* pers = "canary-rsa";
-		checkMbedTls(
-			mbedtls_ctr_drbg_seed(&ctrDrbg, mbedtls_entropy_func, &entropy, reinterpret_cast<const unsigned char*>(pers), std::strlen(pers)),
-			"mbedtls_ctr_drbg_seed failed"
-		);
+		try {
+			checkMbedTls(
+				mbedtls_ctr_drbg_seed(&ctrDrbg, mbedtls_entropy_func, &entropy, reinterpret_cast<const unsigned char*>(pers), std::strlen(pers)),
+				"mbedtls_ctr_drbg_seed failed"
+			);
+		} catch (...) {
+			mbedtls_ctr_drbg_free(&ctrDrbg);
+			mbedtls_entropy_free(&entropy);
+			mbedtls_rsa_free(&rsa);
+			throw;
+		}
 	}
 
 	~MbedTlsRsaBackend() override {
 		mbedtls_ctr_drbg_free(&ctrDrbg);
 		mbedtls_entropy_free(&entropy);
 		mbedtls_rsa_free(&rsa);
-		mbedtls_pk_free(&pk);
 	}
 
 	bool loadPEM(const std::string &filename) override {
 		std::scoped_lock lock(mutex);
-		mbedtls_pk_free(&pk);
-		mbedtls_pk_init(&pk);
+		MbedTlsPk newPk;
 
-		if (parseKeyFile(pk, filename, ctrDrbg) != 0) {
+		if (parseKeyFile(*newPk.get(), filename, ctrDrbg) != 0) {
 			return false;
 		}
 
-		if (!mbedtls_pk_can_do(&pk, MBEDTLS_PK_RSA)) {
+		if (!mbedtls_pk_can_do(newPk.get(), MBEDTLS_PK_RSA)) {
 			return false;
 		}
 
-		const mbedtls_rsa_context* rsaFromPk = mbedtls_pk_rsa(pk);
-		mbedtls_rsa_free(&rsa);
-		initRsa(rsa);
-		if (mbedtls_rsa_copy(&rsa, rsaFromPk) != 0) {
+		const mbedtls_rsa_context* rsaFromPk = mbedtls_pk_rsa(*newPk.get());
+		MbedTlsRsa newRsa;
+		if (mbedtls_rsa_copy(newRsa.get(), rsaFromPk) != 0) {
 			return false;
 		}
 
-		return mbedtls_rsa_get_len(&rsa) == RsaBlockSize;
+		if (mbedtls_rsa_get_len(newRsa.get()) != RsaBlockSize) {
+			return false;
+		}
+
+		newRsa.swapWith(rsa);
+		return true;
 	}
 
 	void setKey(const char* pString, const char* qString, int base) override {
@@ -131,11 +192,16 @@ public:
 		checkMbedTls(mbedtls_mpi_lset(e.get(), 65537), "mbedtls_mpi_lset failed");
 		checkMbedTls(mbedtls_mpi_inv_mod(d.get(), e.get(), phi.get()), "mbedtls_mpi_inv_mod failed");
 
-		mbedtls_rsa_free(&rsa);
-		initRsa(rsa);
-		checkMbedTls(mbedtls_rsa_import(&rsa, n.get(), p.get(), q.get(), d.get(), e.get()), "mbedtls_rsa_import failed");
-		checkMbedTls(mbedtls_rsa_complete(&rsa), "mbedtls_rsa_complete failed");
-		checkMbedTls(mbedtls_rsa_check_privkey(&rsa), "mbedtls_rsa_check_privkey failed");
+		MbedTlsRsa newRsa;
+		checkMbedTls(mbedtls_rsa_import(newRsa.get(), n.get(), p.get(), q.get(), d.get(), e.get()), "mbedtls_rsa_import failed");
+		checkMbedTls(mbedtls_rsa_complete(newRsa.get()), "mbedtls_rsa_complete failed");
+		checkMbedTls(mbedtls_rsa_check_privkey(newRsa.get()), "mbedtls_rsa_check_privkey failed");
+
+		if (mbedtls_rsa_get_len(newRsa.get()) != RsaBlockSize) {
+			throw std::runtime_error("RSA key must be 128 bytes");
+		}
+
+		newRsa.swapWith(rsa);
 	}
 
 	void decrypt(char* msg) const override {
@@ -145,8 +211,9 @@ public:
 			return;
 		}
 
-		if (mbedtls_rsa_private(&rsa, mbedtls_ctr_drbg_random, const_cast<mbedtls_ctr_drbg_context*>(&ctrDrbg), reinterpret_cast<const unsigned char*>(msg), out.data()) != 0) {
-			logger.error("RSAManager::decrypt: mbedtls_rsa_private failed");
+		const auto result = mbedtls_rsa_private(&rsa, mbedtls_ctr_drbg_random, &ctrDrbg, reinterpret_cast<const unsigned char*>(msg), out.data());
+		if (result != 0) {
+			logger.error("RSAManager::decrypt: {}", getMbedTlsError(result, "mbedtls_rsa_private failed"));
 			return;
 		}
 
@@ -155,7 +222,6 @@ public:
 
 private:
 	Logger &logger;
-	mbedtls_pk_context pk;
 	mutable mbedtls_rsa_context rsa;
 	mbedtls_entropy_context entropy;
 	mutable mbedtls_ctr_drbg_context ctrDrbg;

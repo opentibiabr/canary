@@ -9,6 +9,11 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+	#include <string>
+#endif
+
 class Logger;
 
 class RsaBackend {

@@ -12,24 +12,24 @@
 #include "server/network/message/networkmessage.hpp"
 
 namespace {
-struct LuaNetworkMessageTestState {
-	std::unique_ptr<lua_State, decltype(&lua_close)> L { luaL_newstate(), &lua_close };
+	struct LuaNetworkMessageTestState {
+		std::unique_ptr<lua_State, decltype(&lua_close)> L { luaL_newstate(), &lua_close };
 
-	LuaNetworkMessageTestState() {
-		NetworkMessageFunctions::init(L.get());
+		LuaNetworkMessageTestState() {
+			NetworkMessageFunctions::init(L.get());
+		}
+	};
+
+	void pushNetworkMessage(lua_State* L, const std::shared_ptr<NetworkMessage> &message) {
+		Lua::pushUserdata<NetworkMessage>(L, message);
+		Lua::setMetatable(L, -1, "NetworkMessage");
 	}
-};
 
-void pushNetworkMessage(lua_State* L, const std::shared_ptr<NetworkMessage> &message) {
-	Lua::pushUserdata<NetworkMessage>(L, message);
-	Lua::setMetatable(L, -1, "NetworkMessage");
-}
-
-void pushGetUnreadBytesFunction(lua_State* L) {
-	lua_getglobal(L, "NetworkMessage");
-	lua_getfield(L, -1, "getUnreadBytes");
-	lua_remove(L, -2);
-}
+	void pushGetUnreadBytesFunction(lua_State* L) {
+		lua_getglobal(L, "NetworkMessage");
+		lua_getfield(L, -1, "getUnreadBytes");
+		lua_remove(L, -2);
+	}
 } // namespace
 
 TEST(NetworkMessageFunctionsTest, GetUnreadBytesReturnsRemainingPayloadBytes) {

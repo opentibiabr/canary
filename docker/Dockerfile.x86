@@ -98,7 +98,7 @@ WORKDIR /srv
 COPY --from=dependencies /opt/vcpkg_installed /srv/vcpkg_installed
 
 RUN export VCPKG_ROOT=/opt/vcpkg/ && \
-    cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DVCPKG_MANIFEST_INSTALL=OFF -DVCPKG_INSTALLED_DIR=/srv/vcpkg_installed && \
+    cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON -DVCPKG_MANIFEST_INSTALL=OFF -DVCPKG_INSTALLED_DIR=/srv/vcpkg_installed/x64-linux && \
     cmake --build --preset linux-release
 
 # Stage 3: load data and execute

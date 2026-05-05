@@ -5,6 +5,8 @@
     "abseil",
     "argon2",
     "asio",
+    "bext-di",
+    "bext-ut",
     "curl",
     "eventpp",
     "libmariadb",

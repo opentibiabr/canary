@@ -112,10 +112,16 @@ int CanaryServer::run() {
 					g_webhook().sendMessage(":green_circle: Server is now **online**");
 				}
 
-				// Inicializa e inicia a API REST
-				APIServer::getInstance().initialize(8081);
-				APIServer::getInstance().start();
-				logger.info("REST API initialized on port 8081");
+				if (g_configManager().getBoolean(API_ENABLED)) {
+					if (g_configManager().getString(API_JWT_SECRET).empty()) {
+						logger.error("REST API enabled but apiJwtSecret is empty in config.lua. Refusing to start API.");
+					} else {
+						const auto apiPort = static_cast<uint16_t>(g_configManager().getNumber(API_PORT));
+						APIServer::getInstance().initialize(apiPort);
+						APIServer::getInstance().start();
+						logger.info("REST API initialized on port {}", apiPort);
+					}
+				}
 
 				{
 					std::scoped_lock lock(loaderMutex);
@@ -430,7 +436,9 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void CanaryServer::shutdown() {
-	APIServer::getInstance().stop();
+	if (g_configManager().getBoolean(API_ENABLED)) {
+		APIServer::getInstance().stop();
+	}
 	g_database().createDatabaseBackup(true);
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();

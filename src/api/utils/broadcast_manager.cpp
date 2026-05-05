@@ -1,6 +1,7 @@
 #include "pch.hpp"
 #include "api/utils/broadcast_manager.hpp"
 #include "api/utils/chat_history.hpp"
+#include "api/utils/dispatcher_sync.hpp"
 #include "api/utils/system_info.hpp"
 
 std::mutex BroadcastManager::shutdownMutex;
@@ -149,24 +150,23 @@ void BroadcastManager::broadcastSystemResources() {
 
 void BroadcastManager::broadcastServerStatus() {
 	try {
-		// Verifica se ainda estamos em execução
 		if (!running) {
 			return;
 		}
 
-		auto gameState = ServerEndpoints::getGameStateString(g_game().getGameState());
-		auto playersOnline = g_game().getPlayersOnline();
-		auto maxPlayers = g_configManager().getNumber(MAX_PLAYERS);
-		auto uptime = (OTSYS_TIME(true) - ProtocolStatus::start) / 1000;
+		// Snapshot game state on the dispatcher thread to avoid races with the game loop.
+		auto status = runOnDispatcher(
+			[]() -> nlohmann::json {
+				return {
+					{ "status", ServerEndpoints::getGameStateString(g_game().getGameState()) },
+					{ "uptime", (OTSYS_TIME(true) - ProtocolStatus::start) / 1000 },
+					{ "players_online", g_game().getPlayersOnline() },
+					{ "max_players", g_configManager().getNumber(MAX_PLAYERS) }
+				};
+			},
+			__FUNCTION__
+		);
 
-		const nlohmann::json status = {
-			{ "status", gameState },
-			{ "uptime", uptime },
-			{ "players_online", playersOnline },
-			{ "max_players", maxPlayers }
-		};
-
-		// Verifica novamente se ainda estamos em execução antes de fazer o broadcast
 		if (running) {
 			WebSocketHandler::getInstance().broadcast(WebSocketEvents::SERVER_STATUS, status);
 		}

@@ -63,6 +63,19 @@ bindOnlyGlobalAddress = false
 loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
+
+-- HTTP/WebSocket REST API for external monitoring/admin clients (e.g. Beats Monitor).
+-- Disabled by default. Set apiJwtSecret to a long random string before enabling — the
+-- server will refuse to start the API if it is empty. apiMinAdminType is the minimum
+-- AccountType allowed to call destructive endpoints (kick/ban/broadcast/state):
+--   2=Tutor, 3=SeniorTutor, 4=Gamemaster, 5=CommunityManager, 6=God
+-- apiCorsOrigin: exact origin string allowed by CORS (e.g. "https://my.app").
+-- Empty = no CORS header (recommended when client is native/mobile).
+apiEnabled = false
+apiPort = 8081
+apiJwtSecret = ""
+apiMinAdminType = 5
+apiCorsOrigin = ""
 maxPlayers = 0
 serverName = "OTServBR-Global"
 serverMotd = "Welcome to the OTServBR-Global!"

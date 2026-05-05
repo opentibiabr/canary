@@ -10,13 +10,6 @@
 
 class ThreadPool;
 
-struct VersionInfo {
-	std::string version;
-	std::string url;
-	std::string changelog;
-	bool required;
-};
-
 class APIServer {
 public:
 	explicit APIServer(ThreadPool &threadPool);
@@ -48,8 +41,6 @@ private:
 	void setupRoutes();
 	void setupWebSocket();
 	void setupValidators();
-	[[nodiscard]] static bool isNewerVersion(const std::string &current, const std::string &new_version);
-	static std::map<std::string, std::vector<VersionInfo>> availableVersions;
 };
 
 constexpr auto g_api = APIServer::getInstance;

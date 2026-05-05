@@ -62,6 +62,11 @@ bool ConfigManager::load() {
 		loadIntConfig(L, SQL_PORT, "mysqlPort", 3306);
 		loadIntConfig(L, STATUS_PORT, "statusProtocolPort", 7171);
 
+		loadBoolConfig(L, API_ENABLED, "apiEnabled", false);
+		loadIntConfig(L, API_PORT, "apiPort", 8081);
+		loadIntConfig(L, API_MIN_ADMIN_TYPE, "apiMinAdminType", 5);
+		loadStringConfig(L, API_JWT_SECRET, "apiJwtSecret", "");
+		loadStringConfig(L, API_CORS_ORIGIN, "apiCorsOrigin", "");
 		loadStringConfig(L, AUTH_TYPE, "authType", "password");
 		loadStringConfig(L, HOUSE_RENT_PERIOD, "houseRentPeriod", "never");
 		loadStringConfig(L, IP, "ip", "127.0.0.1");

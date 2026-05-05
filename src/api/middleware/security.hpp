@@ -12,24 +12,16 @@ public:
 
 	void before_handle(crow::request &req, crow::response &res, context &) const {
 		try {
-			// Adiciona headers de segurança
 			addSecurityHeaders(res);
 
-			// Verifica CSRF
-			if (isMethodRequiringCSRFCheck(req.method)) {
-				if (!validateCSRFToken(req)) {
-					res = APIResponse::forbidden("Token CSRF inválido ou ausente");
-					return;
-				}
-			}
+			// CSRF protection is unnecessary here: this API uses Bearer tokens, which are
+			// not sent automatically by browsers. SameSite-cookie attacks don't apply.
 
-			// Sanitiza input para prevenir XSS
 			if (!sanitizeInput(req)) {
 				res = APIResponse::badRequest("Dados de entrada contêm caracteres não permitidos");
 				return;
 			}
 
-			// Valida Content-Type para prevenir MIME sniffing attacks
 			if (!validateContentType(req)) {
 				res = APIResponse::badRequest("Content-Type inválido");
 			}
@@ -67,16 +59,6 @@ private:
 
 		// Referrer Policy
 		res.add_header("Referrer-Policy", "strict-origin-when-cross-origin");
-	}
-
-	bool validateCSRFToken(const crow::request &req) const {
-		// Em desenvolvimento, vamos aceitar qualquer token
-		const auto csrfToken = req.get_header_value("X-CSRF-Token");
-		return !csrfToken.empty();
-	}
-
-	bool isMethodRequiringCSRFCheck(const crow::HTTPMethod method) const {
-		return method != crow::HTTPMethod::Get && method != crow::HTTPMethod::Head && method != crow::HTTPMethod::Options;
 	}
 
 	bool sanitizeInput(const crow::request &req) const {

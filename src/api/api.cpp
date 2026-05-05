@@ -7,6 +7,9 @@
 #include "lib/thread/thread_pool.hpp"
 #include "utils/validators.hpp"
 #include "utils/broadcast_manager.hpp"
+#include "account/account.hpp"
+#include "enums/account_errors.hpp"
+#include "enums/account_type.hpp"
 
 std::mutex APIServer::shutdownMutex;
 
@@ -18,28 +21,36 @@ APIServer &APIServer::getInstance() {
 }
 
 void APIServer::initialize(uint16_t port) {
-	// Configuração do CORS
 	auto &cors = app.get_middleware<crow::CORSHandler>();
-	cors.global()
+	const std::string corsOrigin = g_configManager().getString(API_CORS_ORIGIN);
+	auto &corsRule = cors.global()
 		.headers("Content-Type", "Authorization")
-		.methods("POST"_method, "GET"_method)
-		.origin("*");
+		.methods("POST"_method, "GET"_method);
+	if (!corsOrigin.empty()) {
+		corsRule.origin(corsOrigin);
+	}
 
-	// Configuração do Rate Limit por rota
 	auto &rateLimiter = app.get_middleware<RateLimitMiddleware>();
-	// Rotas mais sensíveis com limite mais restrito
-	rateLimiter.setRouteLimit("/api/v1/server/status", 100000000, 60); // 30 req/min
-	rateLimiter.setRouteLimit("/api/v1/server/motd", 100000000, 60); // 20 req/min
-	// Rotas de jogador com limite moderado
-	rateLimiter.setRouteLimit("/api/v1/players/online", 100000000, 60); // 50 req/min
-	rateLimiter.setRouteLimit("/api/v1/players/<string>", 100000000, 60); // 50 req/min
-	// WebSocket com limite mais permissivo
-	rateLimiter.setRouteLimit("/ws", 100000000, 60); // 200 req/min
+	// Anti-bruteforce on auth
+	rateLimiter.setRouteLimit("/api/v1/login", 5, 60);
+	// Read-only public endpoints
+	rateLimiter.setRouteLimit("/api/v1/server/status", 60, 60);
+	rateLimiter.setRouteLimit("/api/v1/server/resources", 60, 60);
+	rateLimiter.setRouteLimit("/api/v1/server/motd", 30, 60);
+	rateLimiter.setRouteLimit("/api/v1/playersOnline", 60, 60);
+	rateLimiter.setRouteLimit("/api/v1/players/<string>", 60, 60);
+	rateLimiter.setRouteLimit("/api/v1/players/banned", 30, 60);
+	rateLimiter.setRouteLimit("/api/v1/players/ban/history", 30, 60);
+	// Destructive admin endpoints
+	rateLimiter.setRouteLimit("/api/v1/players/kick", 10, 60);
+	rateLimiter.setRouteLimit("/api/v1/players/ban", 10, 60);
+	rateLimiter.setRouteLimit("/api/v1/server/state", 5, 60);
+	rateLimiter.setRouteLimit("/api/v1/server/broadcast", 10, 60);
+	// WebSocket connect attempts
+	rateLimiter.setRouteLimit("/ws", 30, 60);
 
-	// Configuração dos validadores
 	setupValidators();
 
-	// Configuração básica do servidor
 	app.loglevel(crow::LogLevel::Warning);
 	app.port(port).use_compression(crow::compression::DEFLATE).multithreaded();
 
@@ -88,28 +99,39 @@ void APIServer::stop() {
 }
 
 void APIServer::setupRoutes() {
-	// Rota de status do servidor
+	// Login: validates against the accounts table (argon2 / SHA1 fallback) and returns a JWT.
 	CROW_ROUTE(app, "/api/v1/login")
 		.methods("POST"_method)([](const crow::request &req) {
-			// Extraia os dados do corpo da requisição
 			const auto json = crow::json::load(req.body);
-			if (!json) {
-				return crow::response(400, "Invalid JSON");
+			if (!json || !json.has("username") || !json.has("password")) {
+				return APIResponse::badRequest("Campos 'username' e 'password' são obrigatórios");
 			}
 
 			const std::string username = json["username"].s();
 			const std::string password = json["password"].s();
-
-			if (username == "beats" && password == "1234") { // Exemplo de validação
-				const std::string token = AuthMiddleware::generateToken(username); // Chama a função para gerar o token
-
-				crow::json::wvalue response_json;
-				response_json["token"] = token;
-
-				return crow::response { response_json };
-			} else {
-				return crow::response(401, "Unauthorized");
+			if (username.empty() || password.empty()) {
+				return APIResponse::badRequest("Credenciais não podem ser vazias");
 			}
+
+			Account account(username);
+			if (account.load() != AccountErrors_t::Ok) {
+				return APIResponse::unauthorized("Credenciais inválidas");
+			}
+			if (!account.authenticate(password)) {
+				return APIResponse::unauthorized("Credenciais inválidas");
+			}
+
+			const uint32_t accountId = account.getID();
+			if (accountId == 0) {
+				return APIResponse::internalError("Falha ao carregar conta");
+			}
+			const uint8_t accountType = static_cast<uint8_t>(account.getAccountType());
+
+			const std::string token = AuthMiddleware::generateToken(accountId, accountType);
+			crow::json::wvalue body;
+			body["token"] = token;
+			body["account_type"] = accountType;
+			return crow::response { body };
 		});
 
 	// Rota de status do servidor
@@ -134,22 +156,6 @@ void APIServer::setupRoutes() {
 	CROW_ROUTE(app, "/api/v1/server/motd")
 		.methods("GET"_method)([](const crow::request &) {
 			return ServerEndpoints::getMotd();
-		});
-
-	// Rota de teste para players (apenas para desenvolvimento)
-	CROW_ROUTE(app, "/api/v1/players")
-		.methods("POST"_method)([](const crow::request &req) {
-			try {
-				const auto json = nlohmann::json::parse(req.body);
-				if (!json.contains("name")) {
-					return APIResponse::badRequest("Campo obrigatório ausente: name");
-				}
-				return crow::response(200, R"({"mensagem":"Endpoint de teste","sucesso":true})");
-			} catch (const nlohmann::json::parse_error &e) {
-				return APIResponse::badRequest("JSON inválido: " + std::string(e.what()));
-			} catch (const std::exception &e) {
-				return APIResponse::internalError("Erro interno: " + std::string(e.what()));
-			}
 		});
 
 	// Rota para listar todos os jogadores banidos
@@ -191,40 +197,6 @@ void APIServer::setupRoutes() {
 			} catch (const std::exception &e) {
 				return APIResponse::internalError("Erro ao listar jogadores: " + std::string(e.what()));
 			}
-		});
-
-	CROW_ROUTE(app, "/api/v1/check-update")
-		.methods("POST"_method)([this](const crow::request &req) {
-			const auto body = crow::json::load(req.body);
-			if (!body) {
-				return crow::response(400, "Invalid JSON body");
-			}
-
-			const std::string currentVersion = body["currentVersion"].s();
-			const std::string platform = body["platform"].s();
-
-			// Verifica se a plataforma é suportada
-			if (!availableVersions.contains(platform)) {
-				return crow::response(400, "Unsupported platform");
-			}
-
-			// Procura por uma atualização disponível
-			const auto &versions = availableVersions[platform];
-			for (const auto &[version, url, changelog, required] : versions) {
-				if (isNewerVersion(currentVersion, version)) {
-					const json response = {
-						{ "hasUpdate", true },
-						{ "updateInfo", { { "version", version }, { "url", url }, { "changelog", changelog }, { "required", required } } }
-					};
-					return crow::response(response.dump());
-				}
-			}
-
-			// Nenhuma atualização encontrada
-			const json response = {
-				{ "hasUpdate", false }
-			};
-			return crow::response(response.dump());
 		});
 
 	// Rota de broadcast para GMs
@@ -277,79 +249,14 @@ void APIServer::setupWebSocket() {
 void APIServer::setupValidators() {
 	auto &validator = app.get_middleware<ValidationMiddleware>();
 
-	// Validação para endpoints de jogador
+	// Validação central para endpoints de jogador (player path param vem do URL).
+	// O handler ainda re-decodifica o nome e revalida — defesa em profundidade.
 	validator.setValidator("/api/v1/players/<string>", [](const crow::request &req) -> std::optional<std::string> {
-		const auto playerId = req.url_params.get("playerId");
-		if (playerId) {
-			return Validators::validatePlayerId(playerId);
-		}
-		return Validators::validatePlayerName(req.url_params.get("playerName"));
+		// Path params do Crow não são acessíveis aqui; a validação real ocorre no handler.
+		return std::nullopt;
 	});
 
-	// Validação para listagem de jogadores online
 	validator.setValidator("/api/v1/playersOnline", [](const crow::request &req) -> std::optional<std::string> {
 		return Validators::validatePagination(req);
 	});
-
-	// Validação para criação/atualização de jogador
-	validator.setValidator("/api/v1/players", [](const crow::request &req) -> std::optional<std::string> {
-		if (req.method == "POST"_method || req.method == "PUT"_method) {
-			auto jsonError = Validators::validateJson(req);
-			if (jsonError) {
-				return jsonError;
-			}
-
-			// Valida campos obrigatórios
-			for (const auto &field : { "name", "vocation", "level" }) {
-				auto fieldError = Validators::validateJsonField(req, field);
-				if (fieldError) {
-					return fieldError;
-				}
-			}
-
-			// Valida o nome do jogador
-			try {
-				auto json = nlohmann::json::parse(req.body);
-				return Validators::validatePlayerName(json["name"].get<std::string>());
-			} catch (...) {
-				return std::optional<std::string>("Erro ao processar dados do jogador");
-			}
-		}
-		return std::nullopt;
-	});
 }
-
-// Função para comparar versões
-bool APIServer::isNewerVersion(const std::string &current, const std::string &new_version) {
-	std::vector<int> curr_parts;
-	std::vector<int> new_parts;
-
-	// Split versions into parts
-	std::stringstream ss_curr(current);
-	std::stringstream ss_new(new_version);
-	std::string part;
-
-	while (getline(ss_curr, part, '.')) {
-		curr_parts.push_back(std::stoi(part));
-	}
-	while (getline(ss_new, part, '.')) {
-		new_parts.push_back(std::stoi(part));
-	}
-
-	// Compare each part
-	for (size_t i = 0; i < 3; i++) {
-		if (new_parts[i] > curr_parts[i]) {
-			return true;
-		}
-		if (new_parts[i] < curr_parts[i]) {
-			return false;
-		}
-	}
-
-	return false;
-}
-
-// Mapa de versões disponíveis por plataforma
-std::map<std::string, std::vector<VersionInfo>> APIServer::availableVersions = {
-	{ "android", { { "1.1.0", "https://github.com/beats-dh/canary/releases/download/v1.4.2/app-release.apk", "- Melhorias na interface\n- Correção de bugs de conexão\n- Novo sistema de atualização\n- Fixs em varias extruturas", false } } }
-};

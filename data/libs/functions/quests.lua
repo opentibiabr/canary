@@ -76,7 +76,6 @@ local function sendTrackedMissionsUpdate(player)
 	player:saveTrackedMissions()
 end
 
-
 local questHasMissionId
 local buildMissionTrackerData
 
@@ -427,7 +426,7 @@ local function readKnownMissionEntries(player)
 				local key = tostring(entry)
 				if key:match("^%d+:%d+$") then
 					known[key] = true
-			else
+				else
 					-- Backward compatibility with the first implementation, which stored only questId.
 					-- Convert an old quest-level entry into all currently open mission entries.
 					local questId = tonumber(entry)

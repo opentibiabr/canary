@@ -13,13 +13,7 @@ function onRecvbyte(player, msg, byte)
 	local requiredBytes = (missionCount * 2) + 3
 
 	if msg:getUnreadBytes() < requiredBytes then
-		logger.debug(
-			"[QuestTracker] ignored malformed 0xD0 packet from player='{}': missions={} remaining={} required={}",
-			player:getName(),
-			missionCount,
-			msg:getUnreadBytes(),
-			requiredBytes
-		)
+		logger.debug("[QuestTracker] ignored malformed 0xD0 packet from player='{}': missions={} remaining={} required={}", player:getName(), missionCount, msg:getUnreadBytes(), requiredBytes)
 		return
 	end
 

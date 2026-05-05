@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <string>
+
 class Argon2 {
 public:
 	Argon2() = default;

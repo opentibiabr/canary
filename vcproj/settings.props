@@ -140,8 +140,11 @@
       $(CANARY_PROTOBUF_STATIC_LIBDEPS);
       zs.lib;
       libcurl.lib;
-      libssl.lib;
-      libcrypto.lib;
+      mbedtls.lib;
+      mbedx509.lib;
+      mbedcrypto.lib;
+      everest.lib;
+      p256m.lib;
       fmt.lib;
       spdlog.lib;
     </CANARY_LIBDEPS>

@@ -170,7 +170,7 @@ public:
 		std::scoped_lock lock(mutex);
 		MbedTlsPk newPk;
 
-		if (parseKeyFile(*newPk.get(), filename, ctrDrg) != 0) {
+		if (parseKeyFile(*newPk.get(), filename, ctrDrbg) != 0) {
 			return false;
 		}
 

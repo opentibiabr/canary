@@ -191,7 +191,8 @@ jobs:
       - name: Assign Copilot cloud agent
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || github.token }}
+          ASSIGN_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || github.token }}
+          COMMENT_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
           BASE_BRANCH: ${{ needs.authorize.outputs.base_branch }}
@@ -219,7 +220,7 @@ jobs:
             }' > "$payload_file"
 
           set +e
-          assign_output="$(gh api \
+          assign_output="$(GH_TOKEN="$ASSIGN_TOKEN" gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
@@ -229,9 +230,10 @@ jobs:
           set -e
 
           if [ "$assign_status" -ne 0 ]; then
-            gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Copilot assignment was authorized, but GitHub rejected the automated assignment from this workflow: ${RUN_URL}. Use the issue sidebar to assign Copilot manually. If maintainers want the slash command to assign automatically, add a narrowly scoped GitHub user token as the repository secret \`COPILOT_ASSIGN_TOKEN\`."
+            echo "::error::Copilot assignment API request failed. Verify that COPILOT_ASSIGN_TOKEN is a GitHub user token scoped to this repository with read/write access to Actions, Contents, Issues, and Pull requests."
             echo "$assign_output" >&2
+            GH_TOKEN="$COMMENT_TOKEN" gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Copilot assignment was authorized, but GitHub rejected the automated assignment from this workflow: ${RUN_URL}. Verify that \`COPILOT_ASSIGN_TOKEN\` is a GitHub user token scoped to this repository with read/write access to Actions, Contents, Issues, and Pull requests." || true
             exit "$assign_status"
           fi
 
-          gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Assigned this issue to Copilot cloud agent via admin-gated workflow: ${RUN_URL}."
+          GH_TOKEN="$COMMENT_TOKEN" gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Assigned this issue to Copilot cloud agent via admin-gated workflow: ${RUN_URL}."

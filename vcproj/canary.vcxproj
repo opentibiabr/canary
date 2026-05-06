@@ -212,6 +212,7 @@
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
     <ClInclude Include="..\src\map\utils\mapsector.hpp" />
+    <ClInclude Include="..\src\security\rsa_backend.hpp" />
     <ClInclude Include="..\src\security\rsa.hpp" />
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
@@ -410,6 +411,7 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
     <ClCompile Include="..\src\security\argon.cpp" />
+    <ClCompile Include="..\src\security\rsa_backend_mbedtls.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />
     <ClCompile Include="..\src\server\network\message\networkmessage.cpp" />
@@ -497,8 +499,13 @@
     <TargetName>$(ProjectName)-sln</TargetName>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
+    <VcpkgRoot Condition="'$(VcpkgRoot)'=='' and '$(VCPKG_ROOT)'!=''">$(VCPKG_ROOT)</VcpkgRoot>
+    <VcpkgRoot Condition="'$(VcpkgRoot)'=='' and Exists('$(MSBuildProjectDirectory)\..\vcpkg\scripts\buildsystems\msbuild\vcpkg.targets')">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\vcpkg'))</VcpkgRoot>
+    <VcpkgManifestRoot Condition="'$(VcpkgManifestRoot)'==''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), vcpkg.json))</VcpkgManifestRoot>
+    <CanaryVcpkgManifestInstallTarget Condition="'$(VcpkgRoot)'!='' and Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets')">VcpkgInstallManifestDependencies</CanaryVcpkgManifestInstallTarget>
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
     <VcpkgAutoLink>true</VcpkgAutoLink>
+    <VcpkgHostTriplet>x64-windows</VcpkgHostTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
@@ -507,7 +514,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
-    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    <VcpkgTriplet>x64-windows-static-release</VcpkgTriplet>
     <VcpkgUseStatic>false</VcpkgUseStatic>
     <VcpkgUseMD>false</VcpkgUseMD>
   </PropertyGroup>
@@ -589,20 +596,21 @@
   <PropertyGroup>
     <RunProtoCompile>true</RunProtoCompile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(GITHUB_WORKSPACE)' != ''">
-    <RunProtoCompile>false</RunProtoCompile>
-  </PropertyGroup>
   <Target Name="DisplayRunProtoCompileValue" BeforeTargets="ProtoCompile">
     <Message Text="RunProtoCompile value: $(RunProtoCompile)" Importance="high" />
   </Target>
   <PropertyGroup>
-    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgTriplet)\tools\protobuf\protoc.exe</ProtocPath>
+    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgHostTriplet)\tools\protobuf\protoc.exe</ProtocPath>
     <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>
   <ItemGroup>
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
   </ItemGroup>
-  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" DependsOnTargets="VcpkgInstallManifestDependencies">
+  <Target Name="ValidateProtoCompileDependencies" BeforeTargets="ProtoCompile" Condition="'$(RunProtoCompile)'=='true'">
+    <Error Text="vcpkg MSBuild targets were not found. Set VCPKG_ROOT or pass /p:VcpkgRoot=... so manifest dependencies can be installed before protobuf generation."
+           Condition="'$(CanaryVcpkgManifestInstallTarget)'=='' and !Exists('$(ProtocPath)')" />
+  </Target>
+  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" Condition="'$(RunProtoCompile)'=='true'" DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies">
     <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; &quot;%(ProtoFiles.Identity)&quot;" />
     <ItemGroup>
       <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">
@@ -617,6 +625,6 @@
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VcpkgRoot)\\scripts\\buildsystems\\msbuild\\vcpkg.targets" Condition="Exists('$(VcpkgRoot)\\scripts\\buildsystems\\msbuild\\vcpkg.targets')" />
+    <Import Project="$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets" Condition="'$(VcpkgRoot)'!='' and Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets')" />
   </ImportGroup>
 </Project>

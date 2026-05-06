@@ -1313,15 +1313,23 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	outfitMountSupportedLookTypes.clear();
 	m_appearancesPtr = std::make_unique<Appearances>();
 	if (!m_appearancesPtr->ParseFromIstream(&fileStream)) {
 		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
+		m_appearancesPtr.reset();
 		return ERROR_NOT_OPEN;
 	}
 
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
+
+	for (const auto &appearance : m_appearancesPtr->outfit()) {
+		if (outfitAppearanceSupportsMount(appearance)) {
+			outfitMountSupportedLookTypes.emplace(static_cast<uint16_t>(appearance.id()));
+		}
+	}
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
@@ -1342,9 +1350,6 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	fileStream.close();
-
-	// Disposing allocated objects.
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }
@@ -6493,6 +6498,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	}
 
 	const auto &player = getPlayerByID(playerId);
+	playerChangeOutfit(player, outfit, setMount, isMountRandomized);
+}
+
+void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t outfit, bool setMount, uint8_t isMountRandomized /* = 0*/) {
 	if (!player) {
 		return;
 	}
@@ -6504,14 +6513,25 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 	player->setRandomMount(isMountRandomized);
 
-	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		auto randomMount = mounts->getMountByID(player->getRandomMountId());
-		outfit.lookMount = randomMount->clientId;
+	if (isMountRandomized && setMount && player->hasAnyMount()) {
+		outfit.lookMount = resolveRandomMountClientId(*mounts, player->getRandomMountId());
+		if (outfit.lookMount == 0) {
+			isMountRandomized = 0;
+			player->setRandomMount(0);
+		}
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit || !setMount) {
 		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
+	}
+
+	if (outfit.lookMount != 0 && !outfitSupportsMount(outfit.lookType)) {
+		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
 	}
 
 	if (outfit.lookMount != 0) {
@@ -9093,17 +9113,27 @@ std::string Game::generateHighscoreQuery(
 	uint32_t vocation,
 	uint32_t playerGUID /*= 0*/
 ) {
-	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
-	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
-	std::string entriesStr = std::to_string(entriesPerPage);
-
 	if (categoryName.empty()) {
 		g_logger().error("Category name cannot be empty.");
 		return "";
 	}
+	if (entriesPerPage == 0) {
+		g_logger().warn("[{}] entriesPerPage cannot be 0.", __FUNCTION__);
+		return "";
+	}
+
+	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
+	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
+	std::string entriesStr = std::to_string(entriesPerPage);
+
+	const std::string vocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "";
+	const std::string countVocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation, " AND ") : "";
 
 	std::string query = fmt::format(
 		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, "
+		"(SELECT COUNT(*) FROM `players` WHERE `group_id` < {}{}) AS `total`, ",
+		static_cast<int>(GROUP_TYPE_GAMEMASTER),
+		countVocationCondition
 	);
 
 	if (playerGUID != 0) {
@@ -9131,7 +9161,7 @@ std::string Game::generateHighscoreQuery(
 	);
 
 	if (vocation != 0xFFFFFFFF) {
-		query += generateVocationConditionHighscore(vocation);
+		query += vocationCondition;
 	}
 
 	query += ") `T` WHERE ";
@@ -9148,7 +9178,7 @@ std::string Game::generateHighscoreQuery(
 	return query;
 }
 
-std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
+std::string Game::generateVocationConditionHighscore(uint32_t vocation, const std::string &conditionPrefix) {
 	std::ostringstream queryPart;
 	bool firstVocation = true;
 
@@ -9157,12 +9187,16 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 		const auto &voc = it.second;
 		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc->getId();
+				queryPart << conditionPrefix << "(`vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
 				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
+	}
+
+	if (!firstVocation) {
+		queryPart << ")";
 	}
 
 	return queryPart.str();
@@ -9182,9 +9216,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 
 	auto page = result->getNumber<uint16_t>("page");
-	auto pages = result->getNumber<uint32_t>("entries");
-	pages += entriesPerPage - 1;
-	pages /= entriesPerPage;
+	auto pages = calculateHighscorePages(result->getNumber<uint32_t>("total"), entriesPerPage);
 
 	uint32_t vocationId = getVocationIdFromClientId(vocationCID);
 	std::ostringstream cacheKeyStream;
@@ -9217,6 +9249,52 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 }
 
+[[nodiscard]] uint16_t Game::calculateHighscorePages(uint32_t totalEntries, uint8_t entriesPerPage) {
+	if (entriesPerPage == 0) {
+		return 0;
+	}
+
+	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
+}
+
+[[nodiscard]] uint16_t Game::resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId) {
+	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
+	return randomMount ? randomMount->clientId : 0;
+}
+
+[[nodiscard]] bool Game::outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance) {
+	using namespace Canary::protobuf::appearances;
+
+	bool hasIdleFrameGroup = false;
+	bool hasMovingFrameGroup = false;
+	for (const auto &frameGroup : appearance.frame_group()) {
+		const auto fixedFrameGroup = frameGroup.fixed_frame_group();
+		if (fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_IDLE && fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_MOVING) {
+			continue;
+		}
+
+		if (fixedFrameGroup == FIXED_FRAME_GROUP_OUTFIT_IDLE) {
+			hasIdleFrameGroup = true;
+		} else {
+			hasMovingFrameGroup = true;
+		}
+
+		if (!frameGroup.has_sprite_info() || frameGroup.sprite_info().pattern_depth() <= 1) {
+			return false;
+		}
+	}
+
+	return hasIdleFrameGroup && hasMovingFrameGroup;
+}
+
+bool Game::outfitSupportsMount(uint16_t lookType) const {
+	if (!m_appearancesPtr) {
+		return true;
+	}
+
+	return outfitMountSupportedLookTypes.contains(lookType);
+}
+
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {
 	QueryHighscoreCacheEntry queryEntry { query, page, entriesPerPage, std::chrono::steady_clock::now() };
 	queryCache[key] = queryEntry;
@@ -9235,7 +9313,9 @@ std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string 
 	}
 
 	std::string newQuery = generateHighscoreQuery(categoryName, page, entriesPerPage, vocation);
-	cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
+	if (!newQuery.empty()) {
+		cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
+	}
 
 	return newQuery;
 }
@@ -9253,13 +9333,19 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 	}
 
 	std::string newQuery = generateHighscoreQuery(categoryName, 0, entriesPerPage, vocation, playerGUID);
-	cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
+	if (!newQuery.empty()) {
+		cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
+	}
 
 	return newQuery;
 }
 
 void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &, uint16_t page, uint8_t entriesPerPage) {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
+		return;
+	}
+	if (entriesPerPage == 0) {
+		player->sendHighscoresNoData();
 		return;
 	}
 
@@ -9272,6 +9358,10 @@ void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType
 		query = generateHighscoreOrGetCachedQueryForEntries(categoryName, page, entriesPerPage, vocationId);
 	} else if (type == HIGHSCORE_OURRANK) {
 		query = generateHighscoreOrGetCachedQueryForOurRank(categoryName, entriesPerPage, player->getGUID(), vocationId);
+	}
+	if (query.empty()) {
+		player->sendHighscoresNoData();
+		return;
 	}
 
 	uint32_t playerID = player->getID();

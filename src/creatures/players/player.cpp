@@ -9836,6 +9836,11 @@ void Player::disconnect() const {
 }
 
 uint32_t Player::getIP() const {
+#ifdef BUILD_TESTS
+	if (testIP != 0) {
+		return testIP;
+	}
+#endif
 	return client ? client->getIP() : 0;
 }
 

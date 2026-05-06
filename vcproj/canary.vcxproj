@@ -596,9 +596,6 @@
   <PropertyGroup>
     <RunProtoCompile>true</RunProtoCompile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(GITHUB_WORKSPACE)' != ''">
-    <RunProtoCompile>false</RunProtoCompile>
-  </PropertyGroup>
   <Target Name="DisplayRunProtoCompileValue" BeforeTargets="ProtoCompile">
     <Message Text="RunProtoCompile value: $(RunProtoCompile)" Importance="high" />
   </Target>

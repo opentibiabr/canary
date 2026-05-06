@@ -5,5 +5,5 @@ target_sources(
 
 target_compile_definitions(
     canary_it
-    PRIVATE RSA_TEST_KEY="${CMAKE_SOURCE_DIR}/tests/fixture/security/key.pem"
+    PRIVATE RSA_TEST_KEY="${PROJECT_SOURCE_DIR}/tests/fixture/security/key.pem"
 )

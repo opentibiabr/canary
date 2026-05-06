@@ -26,7 +26,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: otservbr-global
+          MYSQL_DATABASE: canary_test
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -100,14 +100,17 @@ jobs:
         if: matrix.buildtype == 'linux-debug'
         run: |
           sudo apt-get update && sudo apt-get install -y mysql-client
-          mysql -h 127.0.0.1 -u root -proot otservbr-global < schema.sql
-          mysql -h 127.0.0.1 -u root -proot otservbr-global < docker/data/01-test_account.sql
-          mysql -h 127.0.0.1 -u root -proot otservbr-global < docker/data/02-test_account_players.sql
+          mysql -h 127.0.0.1 -u root -proot canary_test < schema.sql
+          mysql -h 127.0.0.1 -u root -proot canary_test < docker/data/01-test_account.sql
+          mysql -h 127.0.0.1 -u root -proot canary_test < docker/data/02-test_account_players.sql
 
       - name: Run Tests
         if: matrix.buildtype == 'linux-debug'
         env:
+          TEST_DB_USER: root
           TEST_DB_PASSWORD: root
+          TEST_DB_NAME: canary_test
+          TEST_DB_ALLOW_RESET: "1"
         run: ctest --test-dir build/${{ matrix.buildtype }} --output-on-failure --parallel 2
 
       - name: Upload artifacts

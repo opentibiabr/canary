@@ -23,6 +23,14 @@ ctest --preset linux-debug -VV
 
 Replace `linux-debug` with `macos-debug` or `windows-debug` for other platforms.
 
+### Integration test database
+
+Integration tests use the database configured by `tests/test.env` unless `TEST_ENV_FILE` points to another env file. The default database is `canary_test`, which is intended to be disposable.
+
+When `TEST_DB_ALLOW_RESET=1`, the integration test executable checks the schema before connecting. If the schema differs from the expected `schema.sql` shape, it drops and recreates the test database, then imports `schema.sql` using the `mysql` client. This reset is only allowed for database names that look like test databases.
+
+Set `TEST_DB_SCHEMA` if the test executable cannot find `schema.sql` through the CMake-provided default path.
+
 #### Direct executable access
 
 You can also run test executables directly if needed:

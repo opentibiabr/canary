@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <gtest/gtest.h>
+
 #include "creatures/players/player.hpp"
 #include "lib/di/container.hpp"
 #include "lib/logging/in_memory_logger.hpp"
@@ -98,47 +100,6 @@ TEST_F(ForgePlayerTest, HasItemCountById_StashNotCheckedWhenFlagFalse) {
 	player->addItemOnStash(ITEM_FORGE_CORE, 10);
 	// checkStash = false: stash items must be ignored.
 	EXPECT_FALSE(player->hasItemCountById(ITEM_FORGE_CORE, 1, false));
-}
-
-// ---------------------------------------------------------------------------
-// Pre-validation dust check logic (direct player state)
-//
-// These tests mirror the condition:
-//   (convergence || !success || bonus != 1) && getForgeDusts() < dustCost
-// which guards the dust deduction before any inventory mutation.
-// ---------------------------------------------------------------------------
-
-TEST_F(ForgePlayerTest, DustPreCheck_InsufficientDust_ConditionHolds) {
-	auto player = std::make_shared<Player>();
-	player->setForgeDusts(10);
-	const uint64_t dustCost = 100;
-	// Simulate convergence path: always needs dust.
-	const bool convergence = true;
-	const bool success = false;
-	const uint8_t bonus = 0;
-	EXPECT_TRUE((convergence || !success || bonus != 1) && player->getForgeDusts() < dustCost);
-}
-
-TEST_F(ForgePlayerTest, DustPreCheck_SufficientDust_ConditionFalse) {
-	auto player = std::make_shared<Player>();
-	player->setForgeDusts(200);
-	const uint64_t dustCost = 100;
-	const bool convergence = true;
-	const bool success = false;
-	const uint8_t bonus = 0;
-	EXPECT_FALSE((convergence || !success || bonus != 1) && player->getForgeDusts() < dustCost);
-}
-
-TEST_F(ForgePlayerTest, DustPreCheck_Bonus1SkipsDust) {
-	auto player = std::make_shared<Player>();
-	player->setForgeDusts(0); // no dust
-	const uint64_t dustCost = 100;
-	// Non-convergence + success + bonus == 1: dust is not spent.
-	const bool convergence = false;
-	const bool success = true;
-	const uint8_t bonus = 1;
-	// Condition should be false (no dust check needed).
-	EXPECT_FALSE((convergence || !success || bonus != 1) && player->getForgeDusts() < dustCost);
 }
 
 // ---------------------------------------------------------------------------

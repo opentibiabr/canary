@@ -183,7 +183,7 @@ function playerLoginGlobal.onLogin(player)
 		if loginPlayer.updateQuestTrackerKnownQuests then
 			loginPlayer:updateQuestTrackerKnownQuests(false)
 		end
-	end, 500, playerId)
+	end, QuestTrackerServerConfig.loginLoadDelay, playerId)
 
 	-- Safety fallback: keep a short window where empty client cache packets
 	-- cannot wipe the server-side tracker loaded from KV.
@@ -195,7 +195,7 @@ function playerLoginGlobal.onLogin(player)
 		if loginPlayer.finishQuestTrackerInitialSync then
 			loginPlayer:finishQuestTrackerInitialSync()
 		end
-	end, 3000, playerId)
+	end, QuestTrackerServerConfig.initialSyncWindow, playerId)
 
 	if vocation and vocation:getBaseId() == VOCATION.BASE_ID.MONK then
 		local kv = player:kv()

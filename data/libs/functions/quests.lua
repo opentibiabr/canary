@@ -34,6 +34,8 @@ QuestTrackerServerConfig = QuestTrackerServerConfig or {
 	autoTrackNewQuestsKey = "auto-track-new-quests",
 	autoUntrackCompletedQuestsKey = "auto-untrack-completed-quests",
 	completedMissionRemovalDelay = 5 * 1000,
+	loginLoadDelay = 500,
+	initialSyncWindow = 3000,
 }
 
 local function getQuestTrackerKV(player)
@@ -114,7 +116,7 @@ local function removeCompletedTrackedMission(playerId, questId, missionId, sendU
 	end
 
 	local player = Player(playerId)
-	if not player or not trackedMissionIsCompleted(player, questId, missionId) then
+	if not player or not player:getQuestTrackerOption("autoUntrackCompletedQuests") or not trackedMissionIsCompleted(player, questId, missionId) then
 		return false
 	end
 
@@ -262,7 +264,7 @@ function Player.setQuestTrackerOption(self, option, enabled, _silent)
 	end
 
 	local oldEnabled = self:getQuestTrackerOption(option)
-	local newEnabled = enabled == true
+	local newEnabled = normalizeBoolean(enabled)
 	local kvKey = option == "autoTrackNewQuests" and QuestTrackerServerConfig.autoTrackNewQuestsKey or QuestTrackerServerConfig.autoUntrackCompletedQuestsKey
 	getQuestTrackerKV(self):set(kvKey, newEnabled)
 
@@ -712,8 +714,6 @@ function Player.processAutomaticQuestTracker(self, key, value, oldValue)
 		if self:autoTrackStartedQuestByStorage(key, value, oldValue) then
 			changed = true
 		end
-	else
-		self:updateQuestTrackerKnownQuests(false)
 	end
 
 	return changed

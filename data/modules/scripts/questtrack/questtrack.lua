@@ -27,12 +27,6 @@ function onRecvbyte(player, msg, byte)
 	local autoUntrackCompletedQuests = msg:getByte() == 1
 	local extra = msg:getByte()
 
-	local oldAutoTrackNewQuests = false
-
-	if player.getQuestTrackerOption then
-		oldAutoTrackNewQuests = player:getQuestTrackerOption("autoTrackNewQuests")
-	end
-
 	local isInitialSync = player.isQuestTrackerInitialSync and player:isQuestTrackerInitialSync()
 	if isInitialSync then
 		if player.reconcileInitialTrackedMissions then
@@ -46,13 +40,6 @@ function onRecvbyte(player, msg, byte)
 		if player.setQuestTrackerOption then
 			player:setQuestTrackerOption("autoTrackNewQuests", autoTrackNewQuests)
 			player:setQuestTrackerOption("autoUntrackCompletedQuests", autoUntrackCompletedQuests)
-		end
-
-		-- Importante:
-		-- Quando o player liga "Automatically track new quests",
-		-- marca as quests atuais como conhecidas para não adicionar tudo no tracker.
-		if autoTrackNewQuests and not oldAutoTrackNewQuests and player.updateQuestTrackerKnownQuests then
-			player:updateQuestTrackerKnownQuests(false)
 		end
 	end
 

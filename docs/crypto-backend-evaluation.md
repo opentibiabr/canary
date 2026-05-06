@@ -74,9 +74,10 @@ cmake --build --preset windows-release
 ### Tests
 
 ```powershell
-cmake --preset windows-debug
-cmake --build --preset windows-debug
-ctest --preset windows-debug
+cmake --preset windows-release-enabled-tests
+cmake --build --preset windows-release-enabled-tests
+.\build\windows-release-enabled-tests\tests\unit\canary_ut.exe
+.\build\windows-release-enabled-tests\tests\integration\canary_it.exe
 ```
 
 For Linux, use the matching debug preset:
@@ -98,6 +99,7 @@ Validation should focus on behavior, not only successful compilation:
 - Keep byte-for-byte RSA test vectors for encrypted 128-byte samples.
 - Check that decrypted output preserves leading zeros and remains 128 bytes.
 - Keep integration coverage for `key.pem` loading through `RSAManager::start`.
+- Keep integration test database reset behavior aligned with `schema.sql` when schema sentinel checks change.
 - Run login smoke tests with the supported clients and protocol versions.
 - Repeat link audit before making claims about `libcrypto`, `libssl`, or executable size.
 
@@ -111,7 +113,7 @@ The Mbed TLS backend currently targets Canary's existing raw RSA login contract.
 
 Potential follow-up work:
 
-- Add explicit test vectors that assert exact 128-byte output, including leading zero cases.
-- Add more integration coverage for `key.pem` loading and fallback `p/q` initialization.
+- Add more RSA vectors if new supported key sizes or protocol variants are introduced.
+- Add more integration coverage if the login handshake is exercised beyond direct `RSAManager::start` and decrypt calls.
 - Record link audit commands and expected linked libraries per preset.
 - Evaluate Botan as a plan B, wolfSSL only after license review, LibTomCrypt as a more manual implementation option, and BCrypt/NCrypt only as an optional Windows-specific backend.

@@ -25,7 +25,7 @@
 // Full flow tests (chest reservation failure, successful forge, late
 // precondition failure) require g_game() infrastructure (internalAddItem,
 // internalRemoveItem, item classification data, config values) and therefore
-// belong in an integration test.  The scenarios are documented as TODOs below.
+// belong in an integration test.  The scenarios are documented as follow-up
 // ---------------------------------------------------------------------------
 
 class ForgePlayerTest : public ::testing::Test {
@@ -102,25 +102,3 @@ TEST_F(ForgePlayerTest, HasItemCountById_StashNotCheckedWhenFlagFalse) {
 	EXPECT_FALSE(player->hasItemCountById(ITEM_FORGE_CORE, 1, false));
 }
 
-// ---------------------------------------------------------------------------
-// TODO: Integration tests requiring g_game() / full item database
-//
-// The following scenarios cannot be exercised with pure unit tests because
-// they depend on g_game().internalAddItem(), Item::CreateItem() with real
-// item type data, and g_configManager() forge cost values.  They should be
-// added to tests/integration/game/ once that infrastructure is available:
-//
-//  1. forgeFuseItems — chest reservation failure (internalAddItem fails for
-//     ITEM_EXALTATION_CHEST): verify that the forging items remain in the
-//     player's inventory and no dust/cores/gold are deducted.
-//
-//  2. forgeFuseItems — successful flow with minimal free space: after the
-//     chest is added to the last open slot, the forged item ends up inside
-//     the chest with correct tier, and resources are deducted exactly once.
-//
-//  3. forgeFuseItems — late precondition failure after chest is reserved
-//     (e.g. insufficient dust): verify items are not removed, the chest is
-//     the only thing added to the player's inventory.
-//
-//  4. forgeTransferItemTier — equivalent scenarios for all three cases above.
-// ---------------------------------------------------------------------------

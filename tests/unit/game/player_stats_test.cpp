@@ -37,11 +37,12 @@ TEST(GamePlayerStatsTest, FiltersInactivePlayersAndCapsPerIpOnlineCount) {
 	game.addPlayer(createTestPlayer(5, kActiveIPGroupA, 0)); // 5
 	game.addPlayer(createTestPlayer(6, kActiveIPGroupA, 0)); // 6 => cap at 4
 	game.addPlayer(createTestPlayer(7, kActiveIPGroupB, 0)); // contributes as second unique IP
+	game.addPlayer(createTestPlayer(10, kActiveIPGroupB, kIdleThresholdMs)); // boundary: still counted (<= threshold)
 	game.addPlayer(createTestPlayer(8, kActiveIPGroupB, kIdleThresholdMs + 1)); // idle threshold breached
 	game.addPlayer(createTestPlayer(9, kZeroIP, 0)); // zero IP excluded
 
 	const auto playerStats = game.getPlayerStats();
 
-	EXPECT_EQ(5u, playerStats.filteredOnlinePlayers);
+	EXPECT_EQ(6u, playerStats.filteredOnlinePlayers);
 	EXPECT_EQ(2u, playerStats.totalUniqueIPs);
 }

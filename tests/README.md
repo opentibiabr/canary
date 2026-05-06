@@ -40,6 +40,8 @@ When `TEST_DB_ALLOW_RESET=1`, the integration test executable checks schema sent
 
 Set `TEST_DB_SCHEMA` if the test executable cannot find `schema.sql` through the CMake-provided default path.
 
+Persistent databases are updated through Lua migrations under `data/scripts/migrations`; the test reset path is only for disposable integration databases.
+
 #### Direct executable access
 
 You can also run test executables directly if needed:

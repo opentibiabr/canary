@@ -499,6 +499,7 @@
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
     <VcpkgAutoLink>true</VcpkgAutoLink>
+    <VcpkgHostTriplet>x64-windows</VcpkgHostTriplet>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
@@ -507,7 +508,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
     <VcpkgInstalledDir>vcpkg_installed</VcpkgInstalledDir>
-    <VcpkgTriplet>x64-windows</VcpkgTriplet>
+    <VcpkgTriplet>x64-windows-static-release</VcpkgTriplet>
     <VcpkgUseStatic>false</VcpkgUseStatic>
     <VcpkgUseMD>false</VcpkgUseMD>
   </PropertyGroup>
@@ -596,7 +597,7 @@
     <Message Text="RunProtoCompile value: $(RunProtoCompile)" Importance="high" />
   </Target>
   <PropertyGroup>
-    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgTriplet)\tools\protobuf\protoc.exe</ProtocPath>
+    <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgHostTriplet)\tools\protobuf\protoc.exe</ProtocPath>
     <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
   </PropertyGroup>
   <ItemGroup>

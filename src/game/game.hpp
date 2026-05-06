@@ -87,7 +87,7 @@ struct HighscoreCacheEntry {
 };
 
 struct PlayerStats {
-	uint32_t totalPlayers = 0;
+	uint32_t filteredOnlinePlayers = 0;
 	uint32_t totalUniqueIPs = 0;
 };
 
@@ -699,7 +699,7 @@ public:
 	// Returns counts compliant with the otservlist.org regulations: drops
 	// players idle for more than 15 minutes, caps each IP at 4 connections,
 	// and reports the number of unique IPs that contributed to the count.
-	PlayerStats getPlayerStats() const;
+	[[nodiscard]] PlayerStats getPlayerStats() const;
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
@@ -956,7 +956,7 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
-	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
+	[[nodiscard]] std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
 };
 
 constexpr auto g_game = Game::getInstance;

@@ -12001,11 +12001,11 @@ PlayerStats Game::getPlayerStats() const {
 
 	PlayerStats stats;
 	stats.totalUniqueIPs = static_cast<uint32_t>(groupedPlayers.size());
-	for (const auto &players : groupedPlayers | std::views::values) {
+	for (const auto &groupedPlayersByIp : groupedPlayers | std::views::values) {
 		// otservlist regulation: cap each IP at 4 connections counted toward
 		// the public online total, regardless of how many characters from
 		// that IP are actually logged in.
-		stats.totalPlayers += std::min<uint32_t>(static_cast<uint32_t>(players.size()), 4);
+		stats.filteredOnlinePlayers += std::min<uint32_t>(static_cast<uint32_t>(groupedPlayersByIp.size()), 4);
 	}
 	return stats;
 }

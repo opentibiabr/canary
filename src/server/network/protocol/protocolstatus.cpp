@@ -107,7 +107,7 @@ void ProtocolStatus::sendStatusString() {
 
 	pugi::xml_node players = tsqp.append_child("players");
 	const auto playerStats = g_game().getPlayerStats();
-	players.append_attribute("online") = std::to_string(playerStats.totalPlayers).c_str();
+	players.append_attribute("online") = std::to_string(playerStats.filteredOnlinePlayers).c_str();
 	players.append_attribute("unique") = std::to_string(playerStats.totalUniqueIPs).c_str();
 	players.append_attribute("max") = std::to_string(g_configManager().getNumber(MAX_PLAYERS)).c_str();
 	players.append_attribute("peak") = std::to_string(g_game().getPlayersRecord()).c_str();
@@ -172,7 +172,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string &charact
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
 		output->addByte(0x20);
-		output->add<uint32_t>(g_game().getPlayerStats().totalPlayers);
+		output->add<uint32_t>(g_game().getPlayerStats().filteredOnlinePlayers);
 		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
 		output->add<uint32_t>(g_game().getPlayersRecord());
 	}

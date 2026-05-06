@@ -39,8 +39,9 @@ find_package(
     REQUIRED
 )
 find_package(
-    OpenSSL REQUIRED
-    COMPONENTS Crypto
+    MbedTLS
+    CONFIG
+    REQUIRED
 )
 find_package(LuaJIT REQUIRED)
 find_package(MySQL REQUIRED)

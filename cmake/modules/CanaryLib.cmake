@@ -116,7 +116,11 @@ foreach(
                unofficial::libmariadb
                nlohmann_json::nlohmann_json
                protobuf
-               OpenSSL::SSL
+    )
+
+    target_link_libraries(
+        ${core_target}
+        PRIVATE MbedTLS::mbedcrypto
     )
 
     if(FEATURE_METRICS)

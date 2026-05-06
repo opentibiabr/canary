@@ -49,20 +49,20 @@ private:
 
 TEST_F(ForgePlayerTest, ForgeDusts_InitiallyZero) {
 	auto player = std::make_shared<Player>();
-	EXPECT_EQ(uint64_t { 0 }, player->getForgeDusts());
+	EXPECT_EQ(0u, player->getForgeDusts());
 }
 
 TEST_F(ForgePlayerTest, SetForgeDusts_UpdatesValue) {
 	auto player = std::make_shared<Player>();
 	player->setForgeDusts(500);
-	EXPECT_EQ(uint64_t { 500 }, player->getForgeDusts());
+	EXPECT_EQ(500u, player->getForgeDusts());
 }
 
 TEST_F(ForgePlayerTest, SetForgeDusts_OverwritesPreviousValue) {
 	auto player = std::make_shared<Player>();
 	player->setForgeDusts(100);
 	player->setForgeDusts(250);
-	EXPECT_EQ(uint64_t { 250 }, player->getForgeDusts());
+	EXPECT_EQ(250u, player->getForgeDusts());
 }
 
 // ---------------------------------------------------------------------------
@@ -89,7 +89,7 @@ TEST_F(ForgePlayerTest, HasItemCountById_NotEnoughInStash_ReturnsFalse) {
 TEST_F(ForgePlayerTest, HasItemCountById_ZeroRequired_AlwaysTrue) {
 	auto player = std::make_shared<Player>();
 	// Zero requirement must pass even with an empty inventory — matches the
-	// behaviour of removeItemCountById(id, 0) which succeeds immediately.
+	// behavior of removeItemCountById(id, 0) which succeeds immediately.
 	EXPECT_TRUE(player->hasItemCountById(ITEM_FORGE_CORE, 0, true));
 }
 

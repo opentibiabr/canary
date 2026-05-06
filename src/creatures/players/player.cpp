@@ -10528,11 +10528,11 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 	// All parameters (convergence, success, bonus, coreCount, tier) are already
 	// known, so we can compute expected costs and abort before removing anything.
 	{
-		const auto preConfigKey = convergence ? FORGE_CONVERGENCE_FUSION_DUST_COST : FORGE_FUSION_DUST_COST;
-		const auto preDustCost = static_cast<uint64_t>(g_configManager().getNumber(preConfigKey));
+		const auto configKey = convergence ? FORGE_CONVERGENCE_FUSION_DUST_COST : FORGE_FUSION_DUST_COST;
+		const auto dustCost = static_cast<uint64_t>(g_configManager().getNumber(configKey));
 
 		// Dust check: convergence always spends dust; success skips only on bonus 1.
-		if ((convergence || !success || bonus != 1) && getForgeDusts() < preDustCost) {
+		if ((convergence || !success || bonus != 1) && getForgeDusts() < dustCost) {
 			g_logger().error("[{}] Not enough dust to forge for player {}", __FUNCTION__, getName());
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
@@ -10820,7 +10820,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 	auto configKey = convergence ? FORGE_CONVERGENCE_TRANSFER_DUST_COST : FORGE_TRANSFER_DUST_COST;
 	auto dustCost = static_cast<uint64_t>(g_configManager().getNumber(configKey));
 	if (getForgeDusts() < dustCost) {
-		g_logger().error("[Log 8] Failed to remove transfer dusts from player with name {}", getName());
+		g_logger().error("[{}] Insufficient transfer dust for player with name {}", __FUNCTION__, getName());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}

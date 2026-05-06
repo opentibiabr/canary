@@ -101,4 +101,3 @@ TEST_F(ForgePlayerTest, HasItemCountById_StashNotCheckedWhenFlagFalse) {
 	// checkStash = false: stash items must be ignored.
 	EXPECT_FALSE(player->hasItemCountById(ITEM_FORGE_CORE, 1, false));
 }
-

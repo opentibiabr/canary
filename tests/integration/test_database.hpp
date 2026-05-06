@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <functional>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -118,8 +119,9 @@ class TestDatabase final {
 	static std::string shellQuote(const std::string &value) {
 		std::string quoted = "\"";
 		for (const auto ch : value) {
-			if (ch == '"') {
-				quoted += "\\\"";
+			if (ch == '"' || ch == '\\' || ch == '$' || ch == '`') {
+				quoted += '\\';
+				quoted += ch;
 			} else {
 				quoted += ch;
 			}
@@ -183,23 +185,21 @@ class TestDatabase final {
 	}
 
 	static bool schemaNeedsReset(const DbConfig &config) {
-		MYSQL* handle = connectServer(config);
-		const auto escapedDatabase = escapeSqlString(handle, config.database);
+		std::unique_ptr<MYSQL, decltype(&mysql_close)> handle(connectServer(config), mysql_close);
+		const auto escapedDatabase = escapeSqlString(handle.get(), config.database);
 
-		const auto databaseExists = queryHasRows(handle, fmt::format("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '{}'", escapedDatabase));
+		const auto databaseExists = queryHasRows(handle.get(), fmt::format("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '{}'", escapedDatabase));
 		if (!databaseExists) {
-			mysql_close(handle);
 			return true;
 		}
 
-		const auto hasPlayerComment = queryHasRows(handle, fmt::format("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{}' AND TABLE_NAME = 'players' AND COLUMN_NAME = 'comment' AND COLUMN_TYPE = 'varchar(255)' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT = ''", escapedDatabase));
+		const auto hasPlayerComment = queryHasRows(handle.get(), fmt::format("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{}' AND TABLE_NAME = 'players' AND COLUMN_NAME = 'comment' AND COLUMN_TYPE = 'varchar(255)' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT = ''", escapedDatabase));
 
-		mysql_close(handle);
 		return !hasPlayerComment;
 	}
 
 	static std::filesystem::path writeMysqlDefaultsFile(const DbConfig &config) {
-		auto path = std::filesystem::temp_directory_path() / fmt::format("canary-test-mysql-{}.cnf", std::chrono::steady_clock::now().time_since_epoch().count());
+		auto path = std::filesystem::current_path() / fmt::format(".canary-test-mysql-{}.cnf", std::chrono::steady_clock::now().time_since_epoch().count());
 		std::ofstream file(path);
 		if (!file) {
 			throw TestEnvError("Failed to create temporary MySQL defaults file.");
@@ -213,18 +213,12 @@ class TestDatabase final {
 		if (!config.sock.empty()) {
 			file << "socket=" << config.sock << "\n";
 		}
-		return path;
-	}
-
-	static std::filesystem::path writeResetSqlFile(const DbConfig &config) {
-		auto path = std::filesystem::temp_directory_path() / fmt::format("canary-test-reset-{}.sql", std::chrono::steady_clock::now().time_since_epoch().count());
-		std::ofstream file(path);
-		if (!file) {
-			throw TestEnvError("Failed to create temporary test database reset SQL file.");
-		}
-
-		file << "DROP DATABASE IF EXISTS `" << config.database << "`;\n";
-		file << "CREATE DATABASE `" << config.database << "` CHARACTER SET utf8;\n";
+		file.close();
+		std::filesystem::permissions(
+			path,
+			std::filesystem::perms::owner_read | std::filesystem::perms::owner_write,
+			std::filesystem::perm_options::replace
+		);
 		return path;
 	}
 
@@ -246,19 +240,23 @@ class TestDatabase final {
 			throw TestEnvError("schema.sql not found for test database reset: " + config.schemaPath);
 		}
 
-		const auto defaultsFile = writeMysqlDefaultsFile(config);
-		const auto resetSqlFile = writeResetSqlFile(config);
+		std::filesystem::path defaultsFile;
 		try {
-			runCommand(fmt::format("mysql --defaults-extra-file={} < {}", shellQuote(defaultsFile.string()), shellQuote(resetSqlFile.string())));
+			defaultsFile = writeMysqlDefaultsFile(config);
+			runCommand(fmt::format(
+				"mysql --defaults-extra-file={} --execute={}",
+				shellQuote(defaultsFile.string()),
+				shellQuote(fmt::format("DROP DATABASE IF EXISTS `{}`; CREATE DATABASE `{}` CHARACTER SET utf8;", config.database, config.database))
+			));
 			runCommand(fmt::format("mysql --defaults-extra-file={} {} < {}", shellQuote(defaultsFile.string()), shellQuote(config.database), shellQuote(config.schemaPath)));
 		} catch (...) {
-			std::filesystem::remove(defaultsFile);
-			std::filesystem::remove(resetSqlFile);
+			if (!defaultsFile.empty()) {
+				std::filesystem::remove(defaultsFile);
+			}
 			throw;
 		}
 
 		std::filesystem::remove(defaultsFile);
-		std::filesystem::remove(resetSqlFile);
 	}
 
 public:

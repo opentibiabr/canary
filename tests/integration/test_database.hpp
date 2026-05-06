@@ -186,19 +186,13 @@ class TestDatabase final {
 		MYSQL* handle = connectServer(config);
 		const auto escapedDatabase = escapeSqlString(handle, config.database);
 
-		const auto databaseExists = queryHasRows(handle, fmt::format(
-			"SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '{}'",
-			escapedDatabase
-		));
+		const auto databaseExists = queryHasRows(handle, fmt::format("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '{}'", escapedDatabase));
 		if (!databaseExists) {
 			mysql_close(handle);
 			return true;
 		}
 
-		const auto hasPlayerComment = queryHasRows(handle, fmt::format(
-			"SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{}' AND TABLE_NAME = 'players' AND COLUMN_NAME = 'comment' AND COLUMN_TYPE = 'varchar(255)' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT = ''",
-			escapedDatabase
-		));
+		const auto hasPlayerComment = queryHasRows(handle, fmt::format("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{}' AND TABLE_NAME = 'players' AND COLUMN_NAME = 'comment' AND COLUMN_TYPE = 'varchar(255)' AND IS_NULLABLE = 'NO' AND COLUMN_DEFAULT = ''", escapedDatabase));
 
 		mysql_close(handle);
 		return !hasPlayerComment;

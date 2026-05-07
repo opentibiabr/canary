@@ -5546,11 +5546,16 @@ std::vector<std::shared_ptr<Item>> Player::getAllInventoryItems(bool ignoreEquip
 		}
 		if (const auto &container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if (ignoreItemWithTier && (*it)->getTier() > 0) {
+				const auto &containedItem = *it;
+				if (!containedItem) {
 					continue;
 				}
 
-				itemVector.emplace_back(*it);
+				if (ignoreItemWithTier && containedItem->getTier() > 0) {
+					continue;
+				}
+
+				itemVector.emplace_back(containedItem);
 			}
 		}
 	}
@@ -5653,6 +5658,9 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMa
 
 std::shared_ptr<Item> Player::getForgeItemFromId(uint16_t itemId, uint8_t tier) const {
 	for (const auto &item : getAllInventoryItems(true)) {
+		if (!item) {
+			continue;
+		}
 		if (item->hasImbuements()) {
 			continue;
 		}
@@ -5672,10 +5680,12 @@ std::shared_ptr<Thing> Player::getThing(size_t index) const {
 	return nullptr;
 }
 
-// TODO: review this function
 bool Player::updateSaleShopList(const std::shared_ptr<Item> &item) {
+	if (!item) {
+		return true;
+	}
 	const uint16_t itemId = item->getID();
-	if (!itemId || !item) {
+	if (!itemId) {
 		return true;
 	}
 
@@ -10527,7 +10537,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 			bool hasMatchingClassification = false;
 			uint64_t preGoldCost = 0;
 			for (const auto* itemClassification : g_game().getItemsClassifications()) {
-				if (itemClassification->id != firstForgingItem->getClassification()) {
+				if (!itemClassification || itemClassification->id != firstForgingItem->getClassification()) {
 					continue;
 				}
 				hasMatchingClassification = true;
@@ -10611,7 +10621,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 
 		uint64_t cost = 0;
 		for (const auto* itemClassification : g_game().getItemsClassifications()) {
-			if (itemClassification->id != firstForgingItem->getClassification()) {
+			if (!itemClassification || itemClassification->id != firstForgingItem->getClassification()) {
 				continue;
 			}
 
@@ -10666,7 +10676,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 			if (bonus != 3) {
 				uint64_t cost = 0;
 				for (const auto* itemClassification : g_game().getItemsClassifications()) {
-					if (itemClassification->id != firstForgedItem->getClassification()) {
+					if (!itemClassification || itemClassification->id != firstForgedItem->getClassification()) {
 						continue;
 					}
 					if (!itemClassification->tiers.contains(firstForgedItem->getTier())) {
@@ -10739,7 +10749,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 
 			uint64_t cost = 0;
 			for (const auto* itemClassification : g_game().getItemsClassifications()) {
-				if (itemClassification->id != firstForgingItem->getClassification()) {
+				if (!itemClassification || itemClassification->id != firstForgingItem->getClassification()) {
 					continue;
 				}
 				if (!itemClassification->tiers.contains(firstForgingItem->getTier() + 1)) {
@@ -10808,8 +10818,8 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 	uint8_t coresAmount = 0;
 	uint64_t cost = 0;
 	bool hasMatchingClassification = false;
-	for (const auto &itemClassification : g_game().getItemsClassifications()) {
-		if (itemClassification->id != donorItem->getClassification()) {
+	for (const auto* itemClassification : g_game().getItemsClassifications()) {
+		if (!itemClassification || itemClassification->id != donorItem->getClassification()) {
 			continue;
 		}
 		hasMatchingClassification = true;

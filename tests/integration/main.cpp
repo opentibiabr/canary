@@ -8,6 +8,7 @@
 #include "lua/test_lua_environment.hpp"
 #include "test_database.hpp"
 
+#include <cstdlib>
 #include <filesystem>
 
 namespace {
@@ -91,5 +92,5 @@ int main(int argc, char** argv) {
 
 	const auto result = RUN_ALL_TESTS();
 	std::filesystem::current_path(previousPath);
-	return result;
+	std::_Exit(result);
 }

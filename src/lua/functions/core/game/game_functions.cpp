@@ -811,7 +811,8 @@ int GameFunctions::luaGameGetNormalizedGuildName(lua_State* L) {
 }
 
 int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
-	// Game.addInfluencedMonster(monster)
+	// Game.addInfluencedMonster(monster[, stack])
+	const auto stack = Lua::getNumber<uint16_t>(L, 2, 0);
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (!monster) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
@@ -819,7 +820,7 @@ int GameFunctions::luaGameAddInfluencedMonster(lua_State* L) {
 		return 0;
 	}
 
-	lua_pushboolean(L, g_game().addInfluencedMonster(monster));
+	lua_pushboolean(L, g_game().addInfluencedMonster(monster, stack));
 	return 1;
 }
 

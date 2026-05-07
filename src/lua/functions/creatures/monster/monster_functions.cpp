@@ -558,7 +558,8 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State* L) {
 }
 
 int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State* L) {
-	// monster:configureForgeSystem()
+	// monster:configureForgeSystem([stack])
+	const auto stack = Lua::getNumber<uint16_t>(L, 2, 0);
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (!monster) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
@@ -566,7 +567,7 @@ int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State* L) {
 		return 0;
 	}
 
-	monster->configureForgeSystem();
+	monster->configureForgeSystem(stack);
 	return 1;
 }
 

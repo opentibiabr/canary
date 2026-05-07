@@ -648,7 +648,7 @@ public:
 	uint32_t makeFiendishMonster(uint32_t forgeableMonsterId = 0, bool createForgeableMonsters = false);
 	uint32_t makeInfluencedMonster();
 
-	bool addInfluencedMonster(const std::shared_ptr<Monster> &monster);
+	bool addInfluencedMonster(const std::shared_ptr<Monster> &monster, uint16_t stack = 0);
 	void sendUpdateCreature(const std::shared_ptr<Creature> &creature);
 	std::shared_ptr<Item> wrapItem(const std::shared_ptr<Item> &item, const std::shared_ptr<House> &house);
 

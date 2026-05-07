@@ -20,151 +20,151 @@
 #include "utils/utils_definitions.hpp"
 
 namespace {
-constexpr char kTestPathSuffix1[] = "\\tests\\integration\\game\\forge_it.cpp";
-constexpr char kTestPathSuffix2[] = "/tests/integration/game/forge_it.cpp";
+	constexpr char kTestPathSuffix1[] = "\\tests\\integration\\game\\forge_it.cpp";
+	constexpr char kTestPathSuffix2[] = "/tests/integration/game/forge_it.cpp";
 
-std::string detectRepoRoot() {
-	std::string filePath = __FILE__;
-	const auto markerPos1 = filePath.find(kTestPathSuffix1);
-	if (markerPos1 != std::string::npos) {
-		return filePath.substr(0, markerPos1);
-	}
-
-	const auto markerPos2 = filePath.find(kTestPathSuffix2);
-	if (markerPos2 != std::string::npos) {
-		return filePath.substr(0, markerPos2);
-	}
-
-	auto repoMarkerPos = filePath.find("\\tests\\");
-	if (repoMarkerPos != std::string::npos) {
-		return filePath.substr(0, repoMarkerPos);
-	}
-
-	repoMarkerPos = filePath.find("/tests/");
-	if (repoMarkerPos != std::string::npos) {
-		return filePath.substr(0, repoMarkerPos);
-	}
-	return {};
-}
-
-bool hasItem(const Player &player, uint16_t itemId, uint8_t tier = 0) {
-	for (const auto &item : player.getAllInventoryItems(false)) {
-		if (!item) {
-			continue;
+	std::string detectRepoRoot() {
+		std::string filePath = __FILE__;
+		const auto markerPos1 = filePath.find(kTestPathSuffix1);
+		if (markerPos1 != std::string::npos) {
+			return filePath.substr(0, markerPos1);
 		}
-		if (item->getID() == itemId && item->getTier() == tier) {
-			return true;
+
+		const auto markerPos2 = filePath.find(kTestPathSuffix2);
+		if (markerPos2 != std::string::npos) {
+			return filePath.substr(0, markerPos2);
 		}
-	}
-	return false;
-}
 
-size_t countItem(const Player &player, uint16_t itemId, uint8_t tier = 0) {
-	size_t total = 0;
-	for (const auto &item : player.getAllInventoryItems(false)) {
-		if (!item) {
-			continue;
+		auto repoMarkerPos = filePath.find("\\tests\\");
+		if (repoMarkerPos != std::string::npos) {
+			return filePath.substr(0, repoMarkerPos);
 		}
-		if (item->getID() == itemId && item->getTier() == tier) {
-			++total;
+
+		repoMarkerPos = filePath.find("/tests/");
+		if (repoMarkerPos != std::string::npos) {
+			return filePath.substr(0, repoMarkerPos);
 		}
-	}
-	return total;
-}
-
-struct ForgeIntegrationState {
-	ForgeIntegrationState() {
-		originalItemTypeSize = Item::items.getItems().size();
-
-		firstForgeItemId = static_cast<uint16_t>(originalItemTypeSize + 10);
-		secondForgeItemId = static_cast<uint16_t>(firstForgeItemId + 1);
-		donorItemId = static_cast<uint16_t>(firstForgeItemId + 2);
-		receiveItemId = static_cast<uint16_t>(firstForgeItemId + 3);
-
-		auto &items = Item::items.getItems();
-		items.resize(firstForgeItemId + 20);
-
-		classificationId = pickAvailableClassificationId();
-		auto *classification = g_game().getItemsClassification(classificationId, true);
-		if (classification == nullptr) {
-			ready = false;
-			return;
-		}
-		classification->addTier(1, 3, 200, 140, 120);
-		classification->addTier(2, 4, 320, 160, 140);
-
-		setupItemType(firstForgeItemId);
-		setupItemType(secondForgeItemId);
-		setupItemType(donorItemId);
-		setupItemType(receiveItemId);
-		ready = true;
+		return {};
 	}
 
-	~ForgeIntegrationState() {
-		auto &items = Item::items.getItems();
-		if (items.size() > originalItemTypeSize) {
-			items.resize(originalItemTypeSize);
+	bool hasItem(const Player &player, uint16_t itemId, uint8_t tier = 0) {
+		for (const auto &item : player.getAllInventoryItems(false)) {
+			if (!item) {
+				continue;
+			}
+			if (item->getID() == itemId && item->getTier() == tier) {
+				return true;
+			}
 		}
+		return false;
 	}
 
-	[[nodiscard]] const ItemClassification *getClassification() const {
-		if (!ready) {
-			return nullptr;
+	size_t countItem(const Player &player, uint16_t itemId, uint8_t tier = 0) {
+		size_t total = 0;
+		for (const auto &item : player.getAllInventoryItems(false)) {
+			if (!item) {
+				continue;
+			}
+			if (item->getID() == itemId && item->getTier() == tier) {
+				++total;
+			}
 		}
-		return g_game().getItemsClassification(classificationId, true);
+		return total;
 	}
 
-	[[nodiscard]] bool isReady() const {
-		return ready;
-	}
+	struct ForgeIntegrationState {
+		ForgeIntegrationState() {
+			originalItemTypeSize = Item::items.getItems().size();
 
-	[[nodiscard]] uint16_t fusionCostForTier(uint8_t tier) const {
-		const auto *classification = getClassification();
-		if (!classification || !classification->tiers.contains(tier)) {
-			return 0;
+			firstForgeItemId = static_cast<uint16_t>(originalItemTypeSize + 10);
+			secondForgeItemId = static_cast<uint16_t>(firstForgeItemId + 1);
+			donorItemId = static_cast<uint16_t>(firstForgeItemId + 2);
+			receiveItemId = static_cast<uint16_t>(firstForgeItemId + 3);
+
+			auto &items = Item::items.getItems();
+			items.resize(firstForgeItemId + 20);
+
+			classificationId = pickAvailableClassificationId();
+			auto* classification = g_game().getItemsClassification(classificationId, true);
+			if (classification == nullptr) {
+				ready = false;
+				return;
+			}
+			classification->addTier(1, 3, 200, 140, 120);
+			classification->addTier(2, 4, 320, 160, 140);
+
+			setupItemType(firstForgeItemId);
+			setupItemType(secondForgeItemId);
+			setupItemType(donorItemId);
+			setupItemType(receiveItemId);
+			ready = true;
 		}
-		return static_cast<uint16_t>(classification->tiers.at(tier).regularPrice);
-	}
 
-	uint16_t firstForgeItemId {};
-	uint16_t secondForgeItemId {};
-	uint16_t donorItemId {};
-	uint16_t receiveItemId {};
-	uint8_t classificationId {};
-	bool ready = false;
+		~ForgeIntegrationState() {
+			auto &items = Item::items.getItems();
+			if (items.size() > originalItemTypeSize) {
+				items.resize(originalItemTypeSize);
+			}
+		}
 
-private:
-	size_t originalItemTypeSize {};
+		[[nodiscard]] const ItemClassification* getClassification() const {
+			if (!ready) {
+				return nullptr;
+			}
+			return g_game().getItemsClassification(classificationId, true);
+		}
 
-	[[nodiscard]] uint8_t pickAvailableClassificationId() const {
-		const auto &classifications = g_game().getItemsClassifications();
-		for (uint16_t id = 1; id <= 255; ++id) {
-			bool exists = false;
-			for (const auto *classification : classifications) {
-				if (classification && classification->id == static_cast<uint8_t>(id)) {
-					exists = true;
-					break;
+		[[nodiscard]] bool isReady() const {
+			return ready;
+		}
+
+		[[nodiscard]] uint16_t fusionCostForTier(uint8_t tier) const {
+			const auto* classification = getClassification();
+			if (!classification || !classification->tiers.contains(tier)) {
+				return 0;
+			}
+			return static_cast<uint16_t>(classification->tiers.at(tier).regularPrice);
+		}
+
+		uint16_t firstForgeItemId {};
+		uint16_t secondForgeItemId {};
+		uint16_t donorItemId {};
+		uint16_t receiveItemId {};
+		uint8_t classificationId {};
+		bool ready = false;
+
+	private:
+		size_t originalItemTypeSize {};
+
+		[[nodiscard]] uint8_t pickAvailableClassificationId() const {
+			const auto &classifications = g_game().getItemsClassifications();
+			for (uint16_t id = 1; id <= 255; ++id) {
+				bool exists = false;
+				for (const auto* classification : classifications) {
+					if (classification && classification->id == static_cast<uint8_t>(id)) {
+						exists = true;
+						break;
+					}
+				}
+				if (!exists) {
+					return static_cast<uint8_t>(id);
 				}
 			}
-			if (!exists) {
-				return static_cast<uint8_t>(id);
-			}
+			return 1;
 		}
-		return 1;
-	}
 
-	void setupItemType(uint16_t itemId) const {
-		auto &itemType = Item::items.getItemType(itemId);
-		itemType = ItemType {};
-		itemType.id = itemId;
-		itemType.name = "Forge test item";
-		itemType.pickupable = true;
-		itemType.movable = true;
-		itemType.slotPosition = 0;
-		itemType.type = ITEM_TYPE_TOOLS;
-		itemType.upgradeClassification = classificationId;
-	}
-};
+		void setupItemType(uint16_t itemId) const {
+			auto &itemType = Item::items.getItemType(itemId);
+			itemType = ItemType {};
+			itemType.id = itemId;
+			itemType.name = "Forge test item";
+			itemType.pickupable = true;
+			itemType.movable = true;
+			itemType.slotPosition = 0;
+			itemType.type = ITEM_TYPE_TOOLS;
+			itemType.upgradeClassification = classificationId;
+		}
+	};
 
 } // namespace
 
@@ -301,7 +301,7 @@ TEST_F(ForgeIntegrationTest, ForgeTransferItemTierViaGameFlowTransfersHigherTier
 
 	const uint8_t transferToTier = 1;
 	const uint8_t transferFromTier = 2;
-	const auto *classification = fixture.getClassification();
+	const auto* classification = fixture.getClassification();
 	ASSERT_NE(nullptr, classification);
 	const auto transferCoreCost = classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0;
 	const auto transferGoldCost = fixture.fusionCostForTier(transferToTier);

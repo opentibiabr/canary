@@ -27,6 +27,15 @@ namespace {
 		}
 		return {};
 	}
+
+	bool isGtestListMode(int argc, char** argv) {
+		for (int i = 1; i < argc; ++i) {
+			if (argv[i] != nullptr && std::string_view(argv[i]) == "--gtest_list_tests") {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 int main(int argc, char** argv) {
@@ -37,6 +46,14 @@ int main(int argc, char** argv) {
 	KVMemory::install(*injector);
 	TestLuaEnvironment::install(*injector);
 	DI::setTestContainer(injector.get());
+
+	// gtest_discover_tests invokes the binary with --gtest_list_tests.
+	// Keep discovery mode side-effect free: no DB bootstrap, no config reloads.
+	if (isGtestListMode(argc, argv)) {
+		const auto result = RUN_ALL_TESTS();
+		DI::setTestContainer(nullptr);
+		return result;
+	}
 
 	TestDatabase::init();
 	(void)g_logger();

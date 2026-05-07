@@ -39,21 +39,20 @@ namespace {
 }
 
 int main(int argc, char** argv) {
+	const bool gtestListMode = isGtestListMode(argc, argv);
 	::testing::InitGoogleTest(&argc, argv);
+
+	// gtest_discover_tests invokes the binary with --gtest_list_tests.
+	// Keep discovery mode side-effect free.
+	if (gtestListMode) {
+		return RUN_ALL_TESTS();
+	}
 
 	static auto injector = std::make_unique<di::extension::injector<>>();
 	InMemoryLogger::install(*injector);
 	KVMemory::install(*injector);
 	TestLuaEnvironment::install(*injector);
 	DI::setTestContainer(injector.get());
-
-	// gtest_discover_tests invokes the binary with --gtest_list_tests.
-	// Keep discovery mode side-effect free: no DB bootstrap, no config reloads.
-	if (isGtestListMode(argc, argv)) {
-		const auto result = RUN_ALL_TESTS();
-		DI::setTestContainer(nullptr);
-		return result;
-	}
 
 	TestDatabase::init();
 	(void)g_logger();

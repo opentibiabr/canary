@@ -48,11 +48,16 @@ int main(int argc, char** argv) {
 		return RUN_ALL_TESTS();
 	}
 
-	static auto injector = std::make_unique<di::extension::injector<>>();
+	// Keep the test injector alive until process termination.
+	// Some static/global teardown paths still resolve services through DI
+	// (e.g. LuaEnvironment from Game/LuaScriptInterface destructors).
+	// Destroying the injector during shutdown can invalidate its provider map
+	// while those destructors are still running, causing exit-time crashes.
+	static auto* injector = new di::extension::injector<>();
 	InMemoryLogger::install(*injector);
 	KVMemory::install(*injector);
 	TestLuaEnvironment::install(*injector);
-	DI::setTestContainer(injector.get());
+	DI::setTestContainer(injector);
 
 	TestDatabase::init();
 	(void)g_logger();
@@ -86,6 +91,5 @@ int main(int argc, char** argv) {
 
 	const auto result = RUN_ALL_TESTS();
 	std::filesystem::current_path(previousPath);
-	DI::setTestContainer(nullptr);
 	return result;
 }

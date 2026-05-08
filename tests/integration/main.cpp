@@ -49,6 +49,8 @@ int main(int argc, char** argv) {
 	if (gtestListMode) {
 		return RUN_ALL_TESTS();
 	}
+	std::fprintf(stderr, "[integration main] start\n");
+	std::fflush(stderr);
 
 	// Keep the test injector alive until process termination.
 	// Some static/global teardown paths still resolve services through DI
@@ -70,12 +72,16 @@ int main(int argc, char** argv) {
 	if (!repoRoot.empty()) {
 		std::filesystem::current_path(repoRoot);
 	}
+	std::fprintf(stderr, "[integration main] repoRoot=%s\n", std::filesystem::current_path().string().c_str());
+	std::fflush(stderr);
 
 	auto &config = g_configManager();
 	config.setConfigFileLua("config.lua");
 	if (!config.reload()) {
 		g_logger().error("[integration main] failed to reload config.lua");
 	}
+	std::fprintf(stderr, "[integration main] config reload done\n");
+	std::fflush(stderr);
 
 	if (!g_game().groups.load()) {
 		g_logger().warn("[integration main] failed to load groups");
@@ -89,9 +95,15 @@ int main(int argc, char** argv) {
 	if (!Item::items.reload()) {
 		g_logger().warn("[integration main] failed to reload items.xml");
 	}
+	std::fprintf(stderr, "[integration main] assets load done\n");
+	std::fflush(stderr);
 
 	try {
+		std::fprintf(stderr, "[integration main] TestDatabase::init begin\n");
+		std::fflush(stderr);
 		TestDatabase::init();
+		std::fprintf(stderr, "[integration main] TestDatabase::init done\n");
+		std::fflush(stderr);
 	} catch (const std::exception &e) {
 		std::fprintf(stderr, "[integration main] TestDatabase::init failed: %s\n", e.what());
 		std::fflush(stderr);

@@ -90,7 +90,13 @@ int main(int argc, char** argv) {
 		g_logger().warn("[integration main] failed to reload items.xml");
 	}
 
-	TestDatabase::init();
+	try {
+		TestDatabase::init();
+	} catch (const std::exception &e) {
+		std::fprintf(stderr, "[integration main] TestDatabase::init failed: %s\n", e.what());
+		std::fflush(stderr);
+		return EXIT_FAILURE;
+	}
 
 	const auto result = RUN_ALL_TESTS();
 	std::filesystem::current_path(previousPath);

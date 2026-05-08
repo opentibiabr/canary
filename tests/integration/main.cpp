@@ -6,6 +6,7 @@
 #include "lib/logging/in_memory_logger.hpp"
 #include "kv/in_memory_kv.hpp"
 #include "lua/test_lua_environment.hpp"
+#include "test_database.hpp"
 
 #include <cstdlib>
 #include <filesystem>
@@ -88,7 +89,10 @@ int main(int argc, char** argv) {
 		g_logger().warn("[integration main] failed to reload items.xml");
 	}
 
+	TestDatabase::init();
+
 	const auto result = RUN_ALL_TESTS();
 	std::filesystem::current_path(previousPath);
+	std::fflush(nullptr);
 	std::_Exit(result);
 }

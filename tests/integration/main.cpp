@@ -10,6 +10,7 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <iostream>
 
 namespace {
 	std::filesystem::path detectRepoRoot(std::filesystem::path start) {
@@ -93,6 +94,8 @@ int main(int argc, char** argv) {
 
 	const auto result = RUN_ALL_TESTS();
 	std::filesystem::current_path(previousPath);
+	std::cout << std::flush;
+	std::cerr << std::flush;
 	std::fflush(nullptr);
 	std::_Exit(result);
 }

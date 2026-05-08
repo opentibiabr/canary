@@ -6,6 +6,7 @@ set -euo pipefail
 VCPKG_PATH=${1:-"$HOME"}
 VCPKG_PATH=$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake
 BUILD_TYPE=${2:-"linux-release"}
+EXTRA_CMAKE_ARGS=("${@:3}")
 ARCHITECTURE=$(uname -m)
 ARCHITECTUREVALUE=0
 
@@ -47,7 +48,7 @@ build_canary() {
 	if [[ $ARCHITECTUREVALUE == 1 ]]; then
 		export VCPKG_FORCE_SYSTEM_BINARIES=1
 	fi
-	cmake -DCMAKE_TOOLCHAIN_FILE="$VCPKG_PATH" .. --preset "$BUILD_TYPE" >cmake_log.txt 2>&1 || {
+	cmake -DCMAKE_TOOLCHAIN_FILE="$VCPKG_PATH" "${EXTRA_CMAKE_ARGS[@]}" .. --preset "$BUILD_TYPE" >cmake_log.txt 2>&1 || {
 		cat cmake_log.txt
 		return 1
 	}

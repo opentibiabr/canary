@@ -2933,6 +2933,17 @@ void Player::setWalkExhaust(int64_t value) {
 	lastWalking = OTSYS_TIME() + value;
 }
 
+void Player::updateParalyzeWalkExhaust() {
+	if (!hasCondition(CONDITION_PARALYZE)) {
+		return;
+	}
+
+	const int32_t walkDelay = getWalkDelay();
+	if (walkDelay > 0) {
+		setWalkExhaust(walkDelay);
+	}
+}
+
 const std::map<uint8_t, OpenContainer> &Player::getOpenContainers() const {
 	return openContainers;
 }
@@ -5940,6 +5951,10 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 void Player::onAddCondition(ConditionType_t type) {
 	Creature::onAddCondition(type);
 
+	if (type == CONDITION_PARALYZE) {
+		updateParalyzeWalkExhaust();
+	}
+
 	if (type == CONDITION_OUTFIT && isMounted()) {
 		dismount();
 		wasMounted = true;
@@ -5969,6 +5984,10 @@ void Player::onCleanseCondition(ConditionType_t type) const {
 }
 
 void Player::onAddCombatCondition(ConditionType_t type) {
+	if (type == CONDITION_PARALYZE) {
+		updateParalyzeWalkExhaust();
+	}
+
 	if (IsConditionSuppressible(type)) {
 		updateLastConditionTime(type);
 	}
@@ -6939,7 +6958,7 @@ uint32_t Player::getAttackSpeed() const {
 
 double Player::getLostPercent() const {
 	int32_t blessingCount = 0;
-	const uint8_t maxBlessing = (operatingSystem == CLIENTOS_NEW_WINDOWS || operatingSystem == CLIENTOS_NEW_MAC) ? 8 : 6;
+	const uint8_t maxBlessing = 8;
 	for (int i = 2; i <= maxBlessing; i++) {
 		if (hasBlessing(i)) {
 			blessingCount++;
@@ -7550,6 +7569,11 @@ bool Player::toggleMount(bool mount) {
 	}
 
 	if (mount) {
+		if (!g_game().outfitSupportsMount(defaultOutfit.lookType)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
 		if (isMounted()) {
 			return false;
 		}
@@ -9841,6 +9865,11 @@ void Player::disconnect() const {
 }
 
 uint32_t Player::getIP() const {
+#ifdef BUILD_TESTS
+	if (testIP != 0) {
+		return testIP;
+	}
+#endif
 	return client ? client->getIP() : 0;
 }
 
@@ -11565,6 +11594,10 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 
 	if (creature != getPlayer()) {
 		return;
+	}
+
+	if (!teleport && oldPos.z == newPos.z) {
+		updateParalyzeWalkExhaust();
 	}
 
 	if (tradeState != TRADE_TRANSFER) {

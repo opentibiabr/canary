@@ -25,6 +25,7 @@ void NetworkMessageFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "NetworkMessage", "getU64", NetworkMessageFunctions::luaNetworkMessageGetU64);
 	Lua::registerMethod(L, "NetworkMessage", "getString", NetworkMessageFunctions::luaNetworkMessageGetString);
 	Lua::registerMethod(L, "NetworkMessage", "getPosition", NetworkMessageFunctions::luaNetworkMessageGetPosition);
+	Lua::registerMethod(L, "NetworkMessage", "getUnreadBytes", NetworkMessageFunctions::luaNetworkMessageGetUnreadBytes);
 
 	Lua::registerMethod(L, "NetworkMessage", "addByte", NetworkMessageFunctions::luaNetworkMessageAddByte);
 	Lua::registerMethod(L, "NetworkMessage", "addU16", NetworkMessageFunctions::luaNetworkMessageAddU16);
@@ -111,6 +112,20 @@ int NetworkMessageFunctions::luaNetworkMessageGetPosition(lua_State* L) {
 	const auto &message = Lua::getUserdataShared<NetworkMessage>(L, 1, "NetworkMessage");
 	if (message) {
 		Lua::pushPosition(L, message->getPosition());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NetworkMessageFunctions::luaNetworkMessageGetUnreadBytes(lua_State* L) {
+	// networkMessage:getUnreadBytes()
+	const auto &message = Lua::getUserdataShared<NetworkMessage>(L, 1, "NetworkMessage");
+	if (message) {
+		const auto bufferPosition = message->getBufferPosition();
+		const auto consumedBytes = bufferPosition >= NetworkMessage::INITIAL_BUFFER_POSITION ? bufferPosition - NetworkMessage::INITIAL_BUFFER_POSITION : 0;
+		const auto unreadBytes = message->getLength() >= consumedBytes ? message->getLength() - consumedBytes : 0;
+		lua_pushnumber(L, unreadBytes);
 	} else {
 		lua_pushnil(L);
 	}

@@ -14,6 +14,7 @@ our [customized tools](https://docs.opentibiabr.com/opentibiabr/downloads/tools)
 
 - [Gitbook](https://docs.opentibiabr.com/opentibiabr/projects/canary).
 - [Wiki](https://github.com/opentibiabr/canary/wiki).
+- [Crypto backend evaluation](docs/crypto-backend-evaluation.md).
 
 ## Running Tests
 

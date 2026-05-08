@@ -451,6 +451,16 @@ public:
 		return getIP() == 0;
 	}
 
+#ifdef BUILD_TESTS
+	void setTestIP(uint32_t testIpAddress) {
+		testIP = testIpAddress;
+	}
+
+	void setTestIdleTime(int32_t testIdleTimeInMs) {
+		idleTime = testIdleTimeInMs;
+	}
+#endif
+
 	void addContainer(uint8_t cid, const std::shared_ptr<Container> &container);
 	void closeContainer(uint8_t cid);
 	void setContainerIndex(uint8_t cid, uint16_t index);
@@ -1157,6 +1167,7 @@ public:
 	bool walkExhausted() const;
 
 	void setWalkExhaust(int64_t value);
+	void updateParalyzeWalkExhaust();
 
 	const std::map<uint8_t, OpenContainer> &getOpenContainers() const;
 
@@ -1685,6 +1696,9 @@ private:
 	std::shared_ptr<Town> town;
 	std::shared_ptr<Vocation> vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
+#ifdef BUILD_TESTS
+	uint32_t testIP = 0;
+#endif
 
 	uint32_t inventoryWeight = 0;
 	uint32_t capacity = 40000;

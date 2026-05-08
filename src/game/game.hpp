@@ -23,6 +23,7 @@
 namespace Canary {
 	namespace protobuf {
 		namespace appearances {
+			class Appearance;
 			class Appearances;
 		} // namespace appearances
 	} // namespace protobuf
@@ -84,6 +85,11 @@ struct HighscoreCacheEntry {
 	uint32_t page;
 	uint32_t entriesPerPage;
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
+};
+
+struct PlayerStats {
+	uint32_t filteredOnlinePlayers = 0;
+	uint32_t totalUniqueIPs = 0;
 };
 
 class Game {
@@ -289,6 +295,9 @@ public:
 	void playerCyclopediaCharacterInfo(const std::shared_ptr<Player> &player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
 	void playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
+	[[nodiscard]] static uint16_t calculateHighscorePages(uint32_t totalEntries, uint8_t entriesPerPage);
+	[[nodiscard]] static uint16_t resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId);
+	[[nodiscard]] static bool outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance);
 	static std::string getSkillNameById(uint8_t &skill);
 
 	// House Auction
@@ -389,6 +398,7 @@ public:
 	void playerShowQuestLog(uint32_t playerId);
 	void playerShowQuestLine(uint32_t playerId, uint16_t questId);
 	void playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text);
+	void playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t outfit, bool setMount, uint8_t isMountRandomized = 0);
 	void playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount, uint8_t isMountRandomized = 0);
 	void playerInviteToParty(uint32_t playerId, uint32_t invitedId);
 	void playerJoinParty(uint32_t playerId, uint32_t leaderId);
@@ -613,6 +623,7 @@ public:
 	bool isLookTypeRegistered(uint16_t type) const {
 		return std::ranges::find(registeredLookTypes, type) != registeredLookTypes.end();
 	}
+	bool outfitSupportsMount(uint16_t lookType) const;
 
 	void setCreateLuaItems(Position position, uint16_t itemId) {
 		mapLuaItemsStored[position] = itemId;
@@ -690,6 +701,11 @@ public:
 
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+
+	// Returns counts compliant with the otservlist.org regulations: drops
+	// players idle for more than 15 minutes, caps each IP at 4 connections,
+	// and reports the number of unique IPs that contributed to the count.
+	[[nodiscard]] PlayerStats getPlayerStats() const;
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
@@ -821,6 +837,7 @@ private:
 	std::vector<uint16_t> registeredMagicEffects;
 	std::vector<uint16_t> registeredDistanceEffects;
 	std::vector<uint16_t> registeredLookTypes;
+	phmap::flat_hash_set<uint16_t> outfitMountSupportedLookTypes;
 
 	size_t lastBucket = 0;
 	size_t lastImbuedBucket = 0;
@@ -934,7 +951,7 @@ private:
 	void cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage);
 	void processHighscoreResults(const DBResult_ptr &result, uint32_t playerID, uint8_t category, uint32_t vocation, uint8_t entriesPerPage);
 
-	std::string generateVocationConditionHighscore(uint32_t vocation);
+	std::string generateVocationConditionHighscore(uint32_t vocation, const std::string &conditionPrefix = " WHERE ");
 	std::string generateHighscoreQuery(
 		const std::string &categoryName,
 		uint32_t page,
@@ -946,6 +963,7 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
+	[[nodiscard]] std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
 };
 
 constexpr auto g_game = Game::getInstance;

@@ -121,6 +121,12 @@ jobs:
             --gtest_filter=PlayerStorageRepositoryDBTest.Upsert \
             --gtest_also_run_disabled_tests \
             2>&1 | tee build/${{ matrix.buildtype }}/test-logs/canary-it-smoke.log
+          echo "=== Focused bootstrap smoke (raw canary_it) ==="
+          GTEST_OUTPUT="xml:build/${{ matrix.buildtype }}/test-logs/gtest-bootstrap-smoke/" \
+            build/${{ matrix.buildtype }}/tests/integration/canary_it \
+            --gtest_filter=RsaIntegrationTest.StartLoadsPemAndDecryptsFallbackCompatibleBlock \
+            --gtest_also_run_disabled_tests \
+            2>&1 | tee build/${{ matrix.buildtype }}/test-logs/canary-it-bootstrap-smoke.log
           ctest --test-dir build/${{ matrix.buildtype }} -N
           ctest --test-dir build/${{ matrix.buildtype }} \
             --output-on-failure \
@@ -138,6 +144,7 @@ jobs:
           candidates = [
               Path("build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log"),
               Path("build/${{ matrix.buildtype }}/test-logs/canary-it-smoke.log"),
+              Path("build/${{ matrix.buildtype }}/test-logs/canary-it-bootstrap-smoke.log"),
               Path("build/${{ matrix.buildtype }}/test-logs/ctest-linux-debug.log"),
           ]
           parts = []

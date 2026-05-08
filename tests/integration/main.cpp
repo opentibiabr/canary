@@ -72,7 +72,7 @@ namespace {
 		if (fileExists(repoRoot / "config.lua.dist")) {
 			return "config.lua.dist";
 		}
-		return "config.lua";
+		return {};
 	}
 }
 
@@ -107,14 +107,22 @@ int main(int argc, char** argv) {
 
 	const auto previousPath = std::filesystem::current_path();
 	const auto repoRoot = detectRepoRoot(previousPath);
-	if (!repoRoot.empty()) {
-		std::filesystem::current_path(repoRoot);
+	if (repoRoot.empty()) {
+		std::fprintf(stderr, "[integration main] repo root not found from %s\n", previousPath.string().c_str());
+		std::fflush(stderr);
+		return EXIT_FAILURE;
 	}
+	std::filesystem::current_path(repoRoot);
 	std::fprintf(stderr, "[integration main] repoRoot=%s\n", std::filesystem::current_path().string().c_str());
 	std::fflush(stderr);
 
 	auto &config = g_configManager();
 	const auto configFile = detectConfigFile(std::filesystem::current_path());
+	if (configFile.empty()) {
+		std::fprintf(stderr, "[integration main] no config file found (expected config.lua or config.lua.dist)\n");
+		std::fflush(stderr);
+		return EXIT_FAILURE;
+	}
 	config.setConfigFileLua(configFile);
 	std::fprintf(stderr, "[integration main] config file=%s\n", configFile.c_str());
 	std::fflush(stderr);
@@ -129,16 +137,22 @@ int main(int argc, char** argv) {
 
 	if (!dbOnlyFilter) {
 		if (!g_game().groups.load()) {
-			g_logger().warn("[integration main] failed to load groups");
+			std::fprintf(stderr, "[integration main] failed to load groups\n");
+			std::fflush(stderr);
+			return EXIT_FAILURE;
 		}
 
 		const auto appearancePath = (std::filesystem::path(config.getString(CORE_DIRECTORY)) / "items/appearances.dat").lexically_normal().string();
 		if (g_game().loadAppearanceProtobuf(appearancePath) != ERROR_NONE) {
-			g_logger().warn("[integration main] failed to load appearances.dat from {}", appearancePath);
+			std::fprintf(stderr, "[integration main] failed to load appearances.dat from %s\n", appearancePath.c_str());
+			std::fflush(stderr);
+			return EXIT_FAILURE;
 		}
 
 		if (!Item::items.reload()) {
-			g_logger().warn("[integration main] failed to reload items.xml");
+			std::fprintf(stderr, "[integration main] failed to reload items.xml\n");
+			std::fflush(stderr);
+			return EXIT_FAILURE;
 		}
 		std::fprintf(stderr, "[integration main] assets load done\n");
 	} else {

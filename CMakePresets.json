@@ -90,6 +90,28 @@
       }
     },
     {
+      "name": "linux-release-arm",
+      "inherits": "base",
+      "displayName": "Linux - Release (ARM)",
+      "description": "Linux ARM64 Release Build",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": {
+          "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+          "type": "FILEPATH"
+        },
+        "VCPKG_TARGET_TRIPLET": "arm64-linux",
+        "VCPKG_HOST_TRIPLET": "arm64-linux",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/arm64-linux",
+        "VCPKG_BUILD_TYPE": "release",
+        "CANARY_BUILD_TESTS": "OFF"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
       "name": "linux-release",
       "inherits": "base",
       "displayName": "Linux - Release",
@@ -230,6 +252,10 @@
     }
   ],
   "buildPresets": [
+    {
+      "name": "linux-release-arm",
+      "configurePreset": "linux-release-arm"
+    },
     {
       "name": "linux-release",
       "configurePreset": "linux-release"

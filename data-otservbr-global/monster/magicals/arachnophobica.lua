@@ -35,7 +35,7 @@ monster.manaCost = 0
 
 monster.changeTarget = {
 	interval = 4000,
-	chance = 10,
+	chance = 0,
 }
 
 monster.strategiesTarget = {

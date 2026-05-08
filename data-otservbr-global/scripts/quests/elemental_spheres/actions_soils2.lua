@@ -1,8 +1,8 @@
 local spheres = {
-	[8300] = VOCATION.BASE_ID.PALADIN,
-	[8304] = VOCATION.BASE_ID.SORCERER,
-	[8305] = VOCATION.BASE_ID.DRUID,
-	[8306] = VOCATION.BASE_ID.KNIGHT,
+	[942] = VOCATION.BASE_ID.PALADIN,
+	[946] = VOCATION.BASE_ID.SORCERER,
+	[947] = VOCATION.BASE_ID.DRUID,
+	[948] = VOCATION.BASE_ID.KNIGHT,
 }
 
 local globalTable = {
@@ -14,7 +14,7 @@ local globalTable = {
 
 local elementalSpheresSoils2 = Action()
 function elementalSpheresSoils2.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if not table.contains({ 7917, 7918, 7913, 7914 }, target.itemid) then
+	if not table.contains({ 842, 843, 844, 845, 846, 847, 848, 849 }, target.itemid) then
 		return false
 	end
 
@@ -22,20 +22,20 @@ function elementalSpheresSoils2.onUse(player, item, fromPosition, target, toPosi
 		return false
 	end
 
-	if not table.contains(spheres[item.itemid], player:getVocation():getBaseId()) then
+	if spheres[item.itemid] ~= player:getVocation():getBaseId() then
 		return false
 	end
 
-	if table.contains({ 7917, 7918 }, target.itemid) then
+	if table.contains({ 846, 847, 848, 849 }, target.itemid) then
 		player:say("Turn off the machine first.", TALKTYPE_MONSTER_SAY)
 		return true
 	end
 
 	toPosition:sendMagicEffect(CONST_ME_PURPLEENERGY)
-	Game.setStorageValue(globalTable[player:getVocation():getBase():getId()], 1)
+	Game.setStorageValue(globalTable[player:getVocation():getBaseId()], 1)
 	item:remove(1)
 	return true
 end
 
-elementalSpheresSoils2:id(8300, 8304, 8305, 8306)
+elementalSpheresSoils2:id(942, 946, 947, 948)
 elementalSpheresSoils2:register()

@@ -62,6 +62,7 @@
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "creatures/combat/spells.hpp"
 #include "utils/definitions.hpp"
+#include "utils/tools.hpp"
 
 MuteCountMap Player::muteCountMap;
 
@@ -2969,6 +2970,10 @@ uint16_t Player::getXpBoostPercent() const {
 }
 
 uint16_t Player::getDisplayXpBoostPercent() const {
+	if (xpBoostTime == 0) {
+		return 0;
+	}
+
 	return std::clamp<uint16_t>(xpBoostPercent * (baseXpGain / 100), 0, std::numeric_limits<uint16_t>::max());
 }
 
@@ -2986,12 +2991,18 @@ void Player::setStaminaXpBoost(uint16_t value) {
 }
 
 void Player::setXpBoostTime(uint16_t timeLeft) {
+	const bool hadXpBoost = xpBoostTime > 0;
+
 	// only allow time boosts of 12 hours or less
 	if (timeLeft > 12 * 3600) {
 		xpBoostTime = 12 * 3600;
-		return;
+	} else {
+		xpBoostTime = timeLeft;
 	}
-	xpBoostTime = timeLeft;
+
+	if (hadXpBoost != (xpBoostTime > 0)) {
+		sendStats();
+	}
 }
 
 uint16_t Player::getXpBoostTime() const {
@@ -4050,7 +4061,7 @@ void Player::despawn() {
 	size_t i = 0;
 	for (const auto &spectator : spectators) {
 		if (const auto &player = spectator->getPlayer()) {
-			oldStackPosVector.emplace_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getStackposOfCreature(player, getPlayer()) : -1);
+			oldStackPosVector.emplace_back(player->canSeeCreature(static_self_cast<Player>()) ? tile->getClientIndexOfCreature(player, getPlayer()) : -1);
 		}
 		if (const auto &player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
@@ -5332,6 +5343,26 @@ bool Player::isConcoctionActive(Concoction_t concotion) const {
 	return timeLeft > 0;
 }
 
+// Food system
+void Player::updateFood(uint16_t itemId, uint32_t timeLeft) {
+	if (timeLeft == 0) {
+		[[maybe_unused]] auto erased = m_activeFoods.erase(itemId);
+	} else {
+		m_activeFoods[itemId] = timeLeft;
+	}
+}
+
+const std::map<uint16_t, uint32_t> &Player::getActiveFoods() const {
+	return m_activeFoods;
+}
+
+bool Player::isFoodActive(uint16_t itemId) const {
+	if (auto it = m_activeFoods.find(itemId); it != m_activeFoods.end()) {
+		return it->second > 0;
+	}
+	return false;
+}
+
 bool Player::checkAutoLoot(bool isBoss) const {
 	if (!g_configManager().getBoolean(AUTOLOOT)) {
 		return false;
@@ -6134,6 +6165,7 @@ void Player::onPlacedCreature() {
 			}
 		}
 		g_logger().info("[{}] Active EventScheduler: {}", getName(), eventsList);
+		sendTextMessage(MESSAGE_BOOSTED_CREATURE, fmt::format("Active EventScheduler: {}", eventsList));
 	}
 }
 
@@ -6570,6 +6602,62 @@ size_t Player::getMaxDepotItems() const {
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
+bool Player::canExiva(const std::string &spellParam) const {
+	if (g_game().getWorldType() != WORLD_TYPE_NO_PVP) {
+		return true;
+	}
+
+	const auto &targetPlayer = g_game().getPlayerByName(spellParam);
+	if (!targetPlayer) {
+		return false;
+	}
+
+	const auto &targetRestrictions = targetPlayer->getExivaRestrictions();
+
+	if (targetRestrictions.allowAll) {
+		return true;
+	}
+
+	if (targetRestrictions.allowOwnGuild) {
+		const auto &sourceGuild = getGuild();
+		const auto &targetGuild = targetPlayer->getGuild();
+		if (sourceGuild && targetGuild && sourceGuild->getId() == targetGuild->getId()) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowOwnParty) {
+		const auto &sourceParty = getParty();
+		const auto &targetParty = targetPlayer->getParty();
+		if (sourceParty && targetParty && sourceParty == targetParty) {
+			return true;
+		}
+	}
+
+	if (targetRestrictions.allowVipList && targetPlayer->vip().exists(getGUID())) {
+		return true;
+	}
+
+	if (targetRestrictions.allowGuildWhitelist) {
+		const auto &playerGuild = getGuild();
+		if (playerGuild) {
+			auto it = std::ranges::find(targetRestrictions.guildWhitelist, playerGuild->getId());
+			if (it != targetRestrictions.guildWhitelist.end()) {
+				return true;
+			}
+		}
+	}
+
+	if (targetRestrictions.allowPlayerWhitelist) {
+		auto it = std::ranges::find(targetRestrictions.playerWhitelist, getGUID());
+		if (it != targetRestrictions.playerWhitelist.end()) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // tile
 // send methods
 // tile
@@ -6841,7 +6929,7 @@ uint32_t Player::getAttackSpeed() const {
 
 double Player::getLostPercent() const {
 	int32_t blessingCount = 0;
-	const uint8_t maxBlessing = (operatingSystem == CLIENTOS_NEW_WINDOWS || operatingSystem == CLIENTOS_NEW_MAC) ? 8 : 6;
+	const uint8_t maxBlessing = 8;
 	for (int i = 2; i <= maxBlessing; i++) {
 		if (hasBlessing(i)) {
 			blessingCount++;
@@ -7452,6 +7540,11 @@ bool Player::toggleMount(bool mount) {
 	}
 
 	if (mount) {
+		if (!g_game().outfitSupportsMount(defaultOutfit.lookType)) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
 		if (isMounted()) {
 			return false;
 		}
@@ -8291,15 +8384,18 @@ void Player::sendCreatureAppear(const std::shared_ptr<Creature> &creature, const
 	}
 
 	auto tile = creature->getTile();
-	if (!tile) {
+	if (!tile || !client) {
 		return;
 	}
 
-	if (client) {
-		client->sendAddCreature(creature, pos, tile->getStackposOfCreature(static_self_cast<Player>(), creature), isLogin);
+	int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
+	if (stackpos < 0 || stackpos >= 10) {
+		sendUpdateTile(tile, pos);
+		return;
 	}
-}
 
+	client->sendAddCreature(creature, pos, stackpos, isLogin);
+}
 void Player::sendCreatureMove(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport) const {
 	if (client) {
 		client->sendMoveCreature(creature, newPos, newStackPos, oldPos, oldStackPos, teleport);
@@ -8317,10 +8413,14 @@ void Player::sendCreatureTurn(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (client && canSeeCreature(creature)) {
-		int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
-		if (stackpos != -1) {
-			client->sendCreatureTurn(creature, stackpos);
+		int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
+
+		if (stackpos < 0 || stackpos >= 10) {
+			sendUpdateTile(tile, creature->getPosition());
+			return;
 		}
+
+		client->sendCreatureTurn(creature, stackpos);
 	}
 }
 
@@ -8373,12 +8473,16 @@ void Player::sendCreatureChangeVisible(const std::shared_ptr<Creature> &creature
 		if (!tile) {
 			return;
 		}
-		int32_t stackpos = tile->getStackposOfCreature(static_self_cast<Player>(), creature);
+		int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
 		if (stackpos == -1) {
 			return;
 		}
 
 		if (visible) {
+			if (stackpos >= 10) {
+				sendUpdateTile(tile, creature->getPosition());
+				return;
+			}
 			client->sendAddCreature(creature, creature->getPosition(), stackpos, false);
 		} else {
 			client->sendRemoveTileThing(creature->getPosition(), stackpos);
@@ -8568,6 +8672,12 @@ void Player::sendRemoveContainerItem(const std::shared_ptr<Container> &container
 void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const {
 	if (client) {
 		client->sendContainer(cid, container, hasParent, firstIndex);
+	}
+}
+
+void Player::sendExivaRestrictions() {
+	if (client) {
+		client->sendExivaRestrictions();
 	}
 }
 
@@ -9736,6 +9846,11 @@ void Player::disconnect() const {
 }
 
 uint32_t Player::getIP() const {
+#ifdef BUILD_TESTS
+	if (testIP != 0) {
+		return testIP;
+	}
+#endif
 	return client ? client->getIP() : 0;
 }
 
@@ -11342,7 +11457,11 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 				guild->removeMember(player);
 			}
 
-			loginPosition = getPosition();
+			if (isDead()) {
+				loginPosition = getTemplePosition();
+			} else {
+				loginPosition = getPosition();
+			}
 			lastLogout = time(nullptr);
 			g_logger().info("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(player);
@@ -12379,4 +12498,12 @@ void Player::sendSpellCooldowns() {
 		}
 		sendSpellCooldown(spellId, ticks);
 	}
+}
+
+Player::ExivaRestrictions &Player::getExivaRestrictions() {
+	return exivaRestrictions;
+}
+
+const Player::ExivaRestrictions &Player::getExivaRestrictions() const {
+	return exivaRestrictions;
 }

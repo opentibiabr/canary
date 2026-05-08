@@ -48,6 +48,7 @@ function hirelingFoods.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	if dish.condition then
+		player:updateFood(item:getId(), 3600)
 		player:addCondition(dish.condition)
 	elseif dish.healing then
 		player:addHealth(player:getMaxHealth() * 0.3)

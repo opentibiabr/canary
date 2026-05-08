@@ -8,10 +8,10 @@ function actions_asura_mirror.onUse(player, item, fromPosition, itemEx, toPositi
 			player:teleportTo(goPos)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		else
-			player:sendCancelMessage("You do not have enough level.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You do not have enough level.")
 		end
 	else
-		player:sendCancelMessage("You do not have permission.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You do not have permission.")
 	end
 end
 

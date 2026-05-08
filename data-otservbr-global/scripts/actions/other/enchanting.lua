@@ -52,7 +52,7 @@ function enchanting.onUse(player, item, fromPosition, target, toPosition, isHotk
 	if table.contains({ 33268, 33269 }, toPosition.x) and toPosition.y == 31830 and toPosition.z == 10 and player:getStorageValue(Storage.Quest.U8_2.ElementalSpheres.QuestLine) > 0 then
 		if not table.contains(spheres[item.itemid], player:getVocation():getBaseId()) then
 			return false
-		elseif table.contains({ 842, 843 }, target.itemid) then
+		elseif table.contains({ 846, 847 }, target.itemid) then
 			player:say("Turn off the machine first.", TALKTYPE_MONSTER_SAY)
 			return true
 		else

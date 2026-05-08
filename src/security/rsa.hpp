@@ -9,45 +9,32 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+	#include <string>
+#endif
+
 class Logger;
+class RsaBackend;
 
 class RSAManager {
 public:
-	// Singleton - ensures we don't accidentally copy it
 	RSAManager(const RSAManager &) = delete;
 	void operator=(const RSAManager &) = delete;
 
 	static RSAManager &getInstance();
 
 	explicit RSAManager(Logger &logger);
-	~RSAManager() = default;
+	~RSAManager();
 
 	void start(const std::string &filename = "key.pem");
-
 	void setKey(const char* pString, const char* qString, int base = 10);
 	void decrypt(char* msg) const;
-
 	bool loadPEM(const std::string &filename);
 
 private:
-	struct BNDeleter {
-		void operator()(BIGNUM* p) const {
-			BN_free(p);
-		}
-	};
-	struct BNMontCtxDeleter {
-		void operator()(BN_MONT_CTX* p) const {
-			BN_MONT_CTX_free(p);
-		}
-	};
-
-	using BnPtr = std::unique_ptr<BIGNUM, BNDeleter>;
-	using BnMontCtxPtr = std::unique_ptr<BN_MONT_CTX, BNMontCtxDeleter>;
-
 	Logger &logger;
-	BnPtr n;
-	BnPtr d;
-	BnMontCtxPtr mont_ctx;
+	std::unique_ptr<RsaBackend> backend;
 };
 
 constexpr auto g_RSA = RSAManager::getInstance;

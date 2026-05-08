@@ -572,7 +572,6 @@ private:
 	bool acceptPackets = false;
 
 	bool loggedIn = false;
-	bool shouldAddExivaRestrictions = false;
 
 	bool oldProtocol = false;
 	bool isOTC = false;
@@ -604,4 +603,13 @@ private:
 	void resetPlayerDeathTime() {
 		m_playerDeathTime = 0;
 	}
+
+	void parseExivaRestrictions(NetworkMessage &msg);
+	void sendExivaRestrictions(
+		bool isLogin = false,
+		const std::vector<std::string> &addedPlayerNames = {},
+		const std::vector<std::string> &removedPlayerNames = {},
+		const std::vector<std::string> &addedGuildNames = {},
+		const std::vector<std::string> &removedGuildNames = {}
+	);
 };

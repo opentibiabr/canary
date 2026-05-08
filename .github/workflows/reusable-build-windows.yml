@@ -16,8 +16,10 @@ jobs:
         type: [CMake, Solution]
     runs-on: windows-2025
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
-      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+      # Use GitHub Packages as a read-only vcpkg cache for PRs.
+      # Only push/write binary cache on direct pushes to main, where GITHUB_TOKEN can have packages: write.
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'readwrite' || 'read' }};nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ github.token }}
       SCCACHE_DIR: ${{ github.workspace }}\.sccache
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
@@ -70,11 +72,12 @@ jobs:
           restore-keys: |
             ccache-windows
 
-      # IMPORTANT: configure the nuget.exe that MSBuild/vcpkg.targets actually uses (Chocolatey)
+      # IMPORTANT: configure the nuget.exe that MSBuild/vcpkg.targets actually uses (Chocolatey).
+      # Use github.token directly so a stale or invalid VCPKG_PACKAGES_TOKEN secret cannot override it.
       - name: Setup NuGet source for GitHub Packages (for MSBuild/vcpkg.targets)
         shell: pwsh
         env:
-          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+          NUGET_AUTH_TOKEN: ${{ github.token }}
         run: |
           $feed = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
@@ -134,7 +137,7 @@ jobs:
             /p:GITHUB_WORKSPACE="${{ github.workspace }}"
 
       - name: Verify vcpkg binary cache push
-        if: matrix.type == 'CMake' && success() && (github.event_name == 'push' || (github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository))
+        if: matrix.type == 'CMake' && success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: pwsh
         run: |
           $logs = Get-ChildItem -Path . -Recurse -Filter vcpkg-manifest-install.log -ErrorAction SilentlyContinue

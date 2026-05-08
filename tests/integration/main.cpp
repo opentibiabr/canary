@@ -1,3 +1,4 @@
+#include "account/account_repository_db.hpp"
 #include "config/configmanager.hpp"
 #include "database/database.hpp"
 #include "lib/di/container.hpp"
@@ -11,6 +12,7 @@ int main(int argc, char** argv) {
 
 	static auto injector = std::make_unique<di::extension::injector<>>();
 	InMemoryLogger::install(*injector);
+	injector->install(di::bind<AccountRepository>.to<AccountRepositoryDB>().in(di::singleton));
 	KVMemory::install(*injector);
 	TestLuaEnvironment::install(*injector);
 	DI::setTestContainer(injector.get());

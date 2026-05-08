@@ -12,9 +12,9 @@ function iptest.onSay(player, words, param)
 	local isIPv6 = player:isIpV6()
 
 	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] Player: %s", player:getName()))
-	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] Current IP: %s", ipAddress))
+	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] Current IP: %s", tostring(ipAddress)))
 	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] getIpString(): %s", ipString))
-	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] getIpFamily(): %s", ipFamily))
+	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] getIpFamily(): %s", tostring(ipFamily)))
 	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] isIpV4(): %s", boolText(isIPv4)))
 	player:sendTextMessage(MESSAGE_HEALED, string.format("[IP TEST] isIpV6(): %s", boolText(isIPv6)))
 

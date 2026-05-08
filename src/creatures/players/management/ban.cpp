@@ -13,10 +13,18 @@
 #include "database/databasetasks.hpp"
 #include "utils/tools.hpp"
 
+#include <string_view>
+
 namespace {
+
 	uint8_t getIpFamily(const std::string &ipAddress) {
 		return ipAddress.find(':') != std::string::npos ? 6 : 4;
 	}
+
+uint8_t getIpFamily(std::string_view ipAddress) {
+	return ipAddress.find(':') != std::string_view::npos ? 6 : 4;
+}
+
 }
 
 bool Ban::acceptConnection(const std::string &clientIP) {

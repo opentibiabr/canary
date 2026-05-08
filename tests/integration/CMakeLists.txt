@@ -8,6 +8,7 @@ target_compile_definitions(
 
 add_subdirectory(account)
 add_subdirectory(player_storage)
+add_subdirectory(players)
 add_subdirectory(event_callbacks)
 add_subdirectory(game)
 add_subdirectory(security)

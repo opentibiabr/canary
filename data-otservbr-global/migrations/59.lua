@@ -40,13 +40,9 @@ function onUpdateDatabase()
 		return true
 	end
 
-	if not db.query("ALTER TABLE `ip_bans` DROP PRIMARY KEY;") then
-		logger.error("Failed to drop ip_bans primary key.")
-		return false
-	end
-
-	if not db.query("ALTER TABLE `ip_bans` ADD PRIMARY KEY (`ip_family`, `ip_address`);") then
-		logger.error("Failed to add ip_bans composite primary key.")
+	-- Atomic: either both happen or neither, avoiding a temporary state without a primary key.
+	if not db.query("ALTER TABLE `ip_bans` DROP PRIMARY KEY, ADD PRIMARY KEY (`ip_family`, `ip_address`);") then
+		logger.error("Failed to migrate ip_bans to composite primary key (ip_family, ip_address).")
 		return false
 	end
 

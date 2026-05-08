@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "lib/metrics/metrics.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/signals.hpp"
@@ -77,6 +79,11 @@ public:
 private:
 	void accept(ServicePortNetwork_t networkProtocol);
 	asio::ip::tcp::acceptor* getAcceptor(ServicePortNetwork_t networkProtocol) const;
+	void closeAcceptor(ServicePortNetwork_t networkProtocol) const;
+	bool open(ServicePortNetwork_t networkProtocol);
+	bool openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, bool &retryOpen);
+	bool openNetworkAcceptor(ServicePortNetwork_t networkProtocol, const asio::ip::tcp::endpoint &endpoint);
+	static void openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port, ServicePortNetwork_t networkProtocol);
 
 	asio::io_service &io_service;
 	std::unique_ptr<asio::ip::tcp::acceptor> ipv4Acceptor;

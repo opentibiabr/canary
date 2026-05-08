@@ -71,6 +71,10 @@ public:
 	uint32_t getIP();
 	std::string getIPString();
 
+#ifdef BUILD_TESTS
+	void setTestRemoteAddress(const asio::ip::address &address);
+#endif
+
 private:
 	void parseProxyIdentification(const std::error_code &error);
 	void parseHeader(const std::error_code &error);

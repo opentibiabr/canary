@@ -9856,6 +9856,9 @@ void Player::disconnect() const {
 
 uint32_t Player::getIP() const {
 #ifdef BUILD_TESTS
+	if (!testIPString.empty()) {
+		return 0;
+	}
 	if (testIP != 0) {
 		return testIP;
 	}
@@ -9865,6 +9868,9 @@ uint32_t Player::getIP() const {
 
 std::string Player::getIPString() const {
 #ifdef BUILD_TESTS
+	if (!testIPString.empty()) {
+		return testIPString;
+	}
 	if (testIP != 0) {
 		return convertIPToString(testIP);
 	}

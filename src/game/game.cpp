@@ -12076,13 +12076,13 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 	return true;
 }
 
-std::map<std::string, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() const {
+std::map<std::string, std::vector<std::shared_ptr<Player>>, std::less<>> Game::groupPlayersByIP() const {
 	// Reference: https://otland.net/threads/unique-active-player.279129/
 	// Players idle for more than 15 minutes (900000 ms) are excluded so an IP
 	// whose only logged-in characters are idle does not register at all.
 	constexpr int32_t IDLE_THRESHOLD_MS = 15 * 60 * 1000;
 
-	std::map<std::string, std::vector<std::shared_ptr<Player>>> groupedPlayers;
+	std::map<std::string, std::vector<std::shared_ptr<Player>>, std::less<>> groupedPlayers;
 	for (const auto &player : getPlayers() | std::views::values) {
 		const std::string ip = player->getIPString();
 		if (!ip.empty() && player->getIdleTime() <= IDLE_THRESHOLD_MS) {

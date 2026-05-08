@@ -19,6 +19,12 @@
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 
+namespace {
+uint32_t getLegacyIPv4Value(const asio::ip::address &address) {
+	return address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
+}
+} // namespace
+
 ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
@@ -366,12 +372,20 @@ uint32_t Connection::getIP() {
 		} else {
 			const auto address = endpoint.address();
 			ipString = address.to_string();
-			ip = address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
+			ip = getLegacyIPv4Value(address);
 		}
 	}
 	return ip;
 }
 
+#ifdef BUILD_TESTS
+void Connection::setTestRemoteAddress(const asio::ip::address &address) {
+	std::scoped_lock lock(connectionLock);
+	ipString = address.to_string();
+	ip = getLegacyIPv4Value(address);
+}
+
+#endif
 std::string Connection::getIPString() {
 	std::scoped_lock lock(connectionLock);
 
@@ -387,7 +401,7 @@ std::string Connection::getIPString() {
 		const auto address = endpoint.address();
 		ipString = address.to_string();
 		if (ip == 1) {
-			ip = address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
+			ip = getLegacyIPv4Value(address);
 		}
 	}
 	return ipString;

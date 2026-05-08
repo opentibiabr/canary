@@ -86,6 +86,35 @@ asio::ip::tcp::acceptor* ServicePort::getAcceptor(ServicePortNetwork_t networkPr
 	return networkProtocol == ServicePortNetwork_t::IPv4 ? ipv4Acceptor.get() : ipv6Acceptor.get();
 }
 
+void ServicePort::closeAcceptor(ServicePortNetwork_t networkProtocol) const {
+	if (auto* serviceAcceptor = getAcceptor(networkProtocol); serviceAcceptor && serviceAcceptor->is_open()) {
+		std::error_code error;
+		serviceAcceptor->close(error);
+	}
+}
+
+bool ServicePort::openNetworkAcceptor(ServicePortNetwork_t networkProtocol, const asio::ip::tcp::endpoint &endpoint) {
+	auto &serviceAcceptor = networkProtocol == ServicePortNetwork_t::IPv4 ? ipv4Acceptor : ipv6Acceptor;
+	try {
+		serviceAcceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service);
+		serviceAcceptor->open(endpoint.protocol());
+		if (endpoint.address().is_v6()) {
+			serviceAcceptor->set_option(asio::ip::v6_only(true));
+		}
+		serviceAcceptor->set_option(asio::socket_base::reuse_address(true));
+		serviceAcceptor->bind(endpoint);
+		serviceAcceptor->listen();
+		serviceAcceptor->set_option(asio::ip::tcp::no_delay(true));
+
+		accept(networkProtocol);
+		return true;
+	} catch (const std::system_error &e) {
+		g_logger().warn("[ServicePort::open] - Failed to open {} listener on {}:{}: {}", endpoint.address().is_v4() ? "IPv4" : "IPv6", endpoint.address().to_string(), serverPort, e.what());
+		serviceAcceptor.reset();
+		return false;
+	}
+}
+
 void ServicePort::accept(ServicePortNetwork_t networkProtocol) {
 	auto* serviceAcceptor = getAcceptor(networkProtocol);
 	if (!serviceAcceptor) {
@@ -119,10 +148,12 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 		accept(networkProtocol);
 	} else if (error != asio::error::operation_aborted) {
 		if (!pendingStart) {
-			close();
+			closeAcceptor(networkProtocol);
 			pendingStart = true;
 			g_dispatcher().scheduleEvent(
-				15000, [self = shared_from_this(), serverPort = serverPort] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort); }, "ServicePort::openAcceptor"
+				15000,
+				[self = shared_from_this(), serverPort = serverPort, networkProtocol] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort, networkProtocol); },
+				"ServicePort::openAcceptor"
 			);
 		}
 	}
@@ -152,6 +183,129 @@ void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, u
 	}
 }
 
+void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port, ServicePortNetwork_t networkProtocol) {
+	if (const auto service = weak_service.lock()) {
+		service->serverPort = port;
+		service->open(networkProtocol);
+	}
+}
+
+bool ServicePort::open(ServicePortNetwork_t networkProtocol) {
+	bool retryOpen = true;
+	const bool opened = openConfiguredAcceptors(networkProtocol, retryOpen);
+	if (!opened && retryOpen) {
+		pendingStart = true;
+		g_dispatcher().scheduleEvent(
+			15000,
+			[self = shared_from_this(), port = serverPort, networkProtocol] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port, networkProtocol); },
+			"ServicePort::openAcceptor"
+		);
+		return false;
+	}
+
+	pendingStart = false;
+	return opened;
+}
+
+bool ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, bool &retryOpen) {
+	const bool ipv4Enabled = g_configManager().getBoolean(IPV4);
+	const bool ipv6Enabled = g_configManager().getBoolean(IPV6);
+	if (!ipv4Enabled && !ipv6Enabled) {
+		g_logger().error("[ServicePort::open] - Both IPV4 and IPV6 are disabled for port {}", serverPort);
+		retryOpen = false;
+		return false;
+	}
+
+	auto shouldOpenProtocol = [&](ServicePortNetwork_t currentProtocol) {
+		if (networkProtocol && *networkProtocol != currentProtocol) {
+			return false;
+		}
+
+		return currentProtocol == ServicePortNetwork_t::IPv4 ? ipv4Enabled : ipv6Enabled;
+	};
+
+	if (networkProtocol && !shouldOpenProtocol(*networkProtocol)) {
+		retryOpen = false;
+		return false;
+	}
+
+	bool opened = false;
+	if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
+		const auto configuredBindAddress = g_configManager().getString(IP);
+		std::vector<asio::ip::address> bindAddresses;
+
+		auto addResolvedBindAddress = [&](const asio::ip::address &address) {
+			if (address.is_v4()) {
+				if (shouldOpenProtocol(ServicePortNetwork_t::IPv4) && std::ranges::none_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v4(); })) {
+					bindAddresses.emplace_back(address);
+				}
+			} else if (address.is_v6()) {
+				if (shouldOpenProtocol(ServicePortNetwork_t::IPv6) && std::ranges::none_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v6(); })) {
+					bindAddresses.emplace_back(address);
+				}
+			}
+		};
+
+		std::error_code parseError;
+		const auto literalAddress = asio::ip::address::from_string(configuredBindAddress, parseError);
+
+		std::error_code resolveError;
+		asio::ip::tcp::resolver resolver(io_service);
+		const auto resolvedEndpoints = resolver.resolve(configuredBindAddress, std::to_string(serverPort), resolveError);
+		if (!resolveError) {
+			for (const auto &entry : resolvedEndpoints) {
+				addResolvedBindAddress(entry.endpoint().address());
+			}
+		} else if (!parseError) {
+			addResolvedBindAddress(literalAddress);
+		} else {
+			g_logger().warn("[ServicePort::open] - Failed to resolve bind address '{}' for port {}: {}; literal parse error: {}", configuredBindAddress, serverPort, resolveError.message(), parseError.message());
+		}
+
+		if (bindAddresses.empty()) {
+			g_logger().warn("[ServicePort::open] - No bind address found for '{}' on port {} with IPV4={} and IPV6={}", configuredBindAddress, serverPort, ipv4Enabled, ipv6Enabled);
+			retryOpen = false;
+			return false;
+		}
+
+		const bool hasIPv4BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v4(); });
+		const bool hasIPv6BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v6(); });
+
+		if (shouldOpenProtocol(ServicePortNetwork_t::IPv4) && !hasIPv4BindAddress) {
+			if (!parseError) {
+				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but IPV4 is enabled - IPv4 will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6");
+			} else {
+				g_logger().warn("[ServicePort::open] - Configured bind address '{}' did not resolve to an IPv4 address, but IPV4 is enabled - IPv4 will not be bound", configuredBindAddress);
+			}
+		}
+
+		if (shouldOpenProtocol(ServicePortNetwork_t::IPv6) && !hasIPv6BindAddress) {
+			if (!parseError) {
+				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but IPV6 is enabled - IPv6 will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6");
+			} else {
+				g_logger().warn("[ServicePort::open] - Configured bind address '{}' did not resolve to an IPv6 address, but IPV6 is enabled - IPv6 will not be bound", configuredBindAddress);
+			}
+		}
+
+		for (const auto &bindAddress : bindAddresses) {
+			if (bindAddress.is_v4()) {
+				opened = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened;
+			} else if (bindAddress.is_v6()) {
+				opened = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened;
+			}
+		}
+	} else {
+		if (shouldOpenProtocol(ServicePortNetwork_t::IPv4)) {
+			opened = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort)) || opened;
+		}
+		if (shouldOpenProtocol(ServicePortNetwork_t::IPv6)) {
+			opened = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort)) || opened;
+		}
+	}
+
+	return opened;
+}
+
 void ServicePort::open(uint16_t port) {
 	close();
 	ipv4Acceptor.reset();
@@ -160,67 +314,9 @@ void ServicePort::open(uint16_t port) {
 	serverPort = port;
 	pendingStart = false;
 
-	const bool ipv4Enabled = g_configManager().getBoolean(IPV4);
-	const bool ipv6Enabled = g_configManager().getBoolean(IPV6);
-	if (!ipv4Enabled && !ipv6Enabled) {
-		g_logger().error("[ServicePort::open] - Both IPV4 and IPV6 are disabled for port {}", serverPort);
-		return;
-	}
-
-	auto openNetworkAcceptor = [this](ServicePortNetwork_t networkProtocol, const asio::ip::tcp::endpoint &endpoint) -> bool {
-		auto &serviceAcceptor = networkProtocol == ServicePortNetwork_t::IPv4 ? ipv4Acceptor : ipv6Acceptor;
-		try {
-			serviceAcceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service);
-			serviceAcceptor->open(endpoint.protocol());
-			if (endpoint.address().is_v6()) {
-				serviceAcceptor->set_option(asio::ip::v6_only(true));
-			}
-			serviceAcceptor->set_option(asio::socket_base::reuse_address(true));
-			serviceAcceptor->bind(endpoint);
-			serviceAcceptor->listen();
-			serviceAcceptor->set_option(asio::ip::tcp::no_delay(true));
-
-			accept(networkProtocol);
-			return true;
-		} catch (const std::system_error &e) {
-			g_logger().warn(
-				"[ServicePort::open] - Failed to open {} listener on {}:{}: {}",
-				endpoint.address().is_v4() ? "IPv4" : "IPv6", endpoint.address().to_string(), serverPort, e.what()
-			);
-			serviceAcceptor.reset();
-			return false;
-		}
-	};
-
-	bool opened = false;
-	if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-		std::error_code error;
-		const auto bindAddress = asio::ip::address::from_string(g_configManager().getString(IP), error);
-		if (error) {
-			g_logger().warn("[ServicePort::open] - Invalid bind address '{}': {}", g_configManager().getString(IP), error.message());
-		} else if (bindAddress.is_v4()) {
-			if (ipv4Enabled) {
-				opened = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(bindAddress, serverPort));
-			} else {
-				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is IPv4, but IPV4 is disabled", bindAddress.to_string());
-			}
-		} else if (bindAddress.is_v6()) {
-			if (ipv6Enabled) {
-				opened = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(bindAddress, serverPort));
-			} else {
-				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is IPv6, but IPV6 is disabled", bindAddress.to_string());
-			}
-		}
-	} else {
-		if (ipv4Enabled) {
-			opened = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort)) || opened;
-		}
-		if (ipv6Enabled) {
-			opened = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort)) || opened;
-		}
-	}
-
-	if (!opened) {
+	bool retryOpen = true;
+	const bool opened = openConfiguredAcceptors(std::nullopt, retryOpen);
+	if (!opened && retryOpen) {
 		pendingStart = true;
 		g_dispatcher().scheduleEvent(
 			15000,

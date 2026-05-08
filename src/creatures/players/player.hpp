@@ -459,6 +459,12 @@ public:
 #ifdef BUILD_TESTS
 	void setTestIP(uint32_t testIpAddress) {
 		testIP = testIpAddress;
+		testIPString.clear();
+	}
+
+	void setTestIPString(std::string testIpAddress) {
+		testIP = 0;
+		testIPString = std::move(testIpAddress);
 	}
 
 	void setTestIdleTime(int32_t testIdleTimeInMs) {
@@ -1703,6 +1709,7 @@ private:
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
 #ifdef BUILD_TESTS
 	uint32_t testIP = 0;
+	std::string testIPString;
 #endif
 
 	uint32_t inventoryWeight = 0;

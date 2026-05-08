@@ -4,6 +4,10 @@ local function getLegacyIpAddressExpression(columnName)
 	return "CONCAT((`" .. columnName .. "` & 255), '.', ((`" .. columnName .. "` >> 8) & 255), '.', ((`" .. columnName .. "` >> 16) & 255), '.', ((`" .. columnName .. "` >> 24) & 255))"
 end
 
+local function getIpFamily(ipAddress)
+	return ipAddress:find(":", 1, true) and 6 or 4
+end
+
 function unban.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
@@ -26,9 +30,9 @@ function unban.onSay(player, words, param)
 
 	db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. accountId)
 	if lastIpAddress ~= "" then
-		db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip_address` = " .. db.escapeString(lastIpAddress))
+		db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip_family` = " .. getIpFamily(lastIpAddress) .. " AND `ip_address` = " .. db.escapeString(lastIpAddress))
 	elseif lastIp ~= 0 then
-		db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip` = " .. lastIp)
+		db.asyncQuery("DELETE FROM `ip_bans` WHERE `ip_family` = 4 AND `ip` = " .. lastIp)
 	end
 
 	local text = param .. " has been unbanned."

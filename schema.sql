@@ -502,13 +502,14 @@ CREATE TABLE IF NOT EXISTS `house_lists` (
 CREATE TABLE IF NOT EXISTS `ip_bans` (
     `ip` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `ip_address` varchar(45) NOT NULL,
+    `ip_family` tinyint(3) UNSIGNED NOT NULL DEFAULT '4',
     `reason` varchar(255) NOT NULL,
     `banned_at` bigint(20) NOT NULL,
     `expires_at` bigint(20) NOT NULL,
     `banned_by` int(11) NOT NULL,
     INDEX `ip_bans_ip` (`ip`),
     INDEX `banned_by` (`banned_by`),
-    CONSTRAINT `ip_bans_pk` PRIMARY KEY (`ip_address`),
+    CONSTRAINT `ip_bans_pk` PRIMARY KEY (`ip_family`, `ip_address`),
     CONSTRAINT `ip_bans_players_fk`
         FOREIGN KEY (`banned_by`) REFERENCES `players` (`id`)
         ON DELETE CASCADE

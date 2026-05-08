@@ -93,14 +93,13 @@
       "name": "linux-release-arm",
       "inherits": "base",
       "displayName": "Linux - Release (ARM)",
-      "description": "Linux ARM64 Release Build",
+      "description": "Linux ARM64 Release Build for native ARM64 hosts only. Does NOT support cross-compilation from x64 hosts. Note: arm64-linux is a community triplet and may be untested.",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": {
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
         "VCPKG_TARGET_TRIPLET": "arm64-linux",
-        "VCPKG_HOST_TRIPLET": "arm64-linux",
         "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/arm64-linux",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF"

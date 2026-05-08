@@ -121,6 +121,35 @@ jobs:
             --parallel 2 \
             2>&1 | tee build/${{ matrix.buildtype }}/test-logs/ctest-linux-debug.log
 
+      - name: Summarize test failure
+        if: matrix.buildtype == 'linux-debug' && failure()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          candidates = [
+              Path("build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log"),
+              Path("build/${{ matrix.buildtype }}/test-logs/ctest-linux-debug.log"),
+          ]
+          parts = []
+          for path in candidates:
+              if not path.exists():
+                  continue
+              text = path.read_text(errors="replace")
+              lines = text.splitlines()
+              failed = [line for line in lines if "***Failed" in line or "[  FAILED  ]" in line or "FAILED TEST" in line]
+              tail = lines[-120:]
+              parts.append(f"## {path}\n")
+              if failed:
+                  parts.append("Failed lines:\n" + "\n".join(failed[-40:]) + "\n")
+              parts.append("Tail:\n" + "\n".join(tail))
+
+          message = "\n\n".join(parts) if parts else "CTest failed, but no CTest log files were found."
+          message = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=CTest linux-debug failure::{message}")
+          PY
+
       - name: Upload test logs
         if: matrix.buildtype == 'linux-debug' && always()
         uses: actions/upload-artifact@v4

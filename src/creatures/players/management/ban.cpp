@@ -14,9 +14,9 @@
 #include "utils/tools.hpp"
 
 namespace {
-uint8_t getIpFamily(const std::string &ipAddress) {
-	return ipAddress.find(':') != std::string::npos ? 6 : 4;
-}
+	uint8_t getIpFamily(const std::string &ipAddress) {
+		return ipAddress.find(':') != std::string::npos ? 6 : 4;
+	}
 }
 
 bool Ban::acceptConnection(const std::string &clientIP) {

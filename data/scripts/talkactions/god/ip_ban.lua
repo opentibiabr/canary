@@ -2,6 +2,10 @@ local ipBanDays = 7
 
 local ipBan = TalkAction("/ipban")
 
+local function getLegacyIpAddressExpression(columnName)
+	return "CONCAT((`" .. columnName .. "` & 255), '.', ((`" .. columnName .. "` >> 8) & 255), '.', ((`" .. columnName .. "` >> 16) & 255), '.', ((`" .. columnName .. "` >> 24) & 255))"
+end
+
 function ipBan.onSay(player, words, param)
 	-- create log
 	logCommand(player, words, param)
@@ -11,35 +15,38 @@ function ipBan.onSay(player, words, param)
 		return true
 	end
 
-	local resultId = db.storeQuery("SELECT `name`, `lastip` FROM `players` WHERE `name` = " .. db.escapeString(param))
+	local query = "SELECT `name`, `lastip`, CASE WHEN `lastip_address` != '' THEN `lastip_address` WHEN `lastip` != 0 THEN " .. getLegacyIpAddressExpression("lastip") .. " ELSE '' END AS `lastip_address` FROM `players` WHERE `name` = " .. db.escapeString(param)
+	local resultId = db.storeQuery(query)
 	if resultId == false then
 		return true
 	end
 
 	local targetName = Result.getString(resultId, "name")
 	local targetIp = Result.getNumber(resultId, "lastip")
+	local targetIpAddress = Result.getString(resultId, "lastip_address")
 	Result.free(resultId)
 
 	local targetPlayer = Player(param)
 	if targetPlayer then
 		targetIp = targetPlayer:getIp()
+		targetIpAddress = targetPlayer:getIpString()
 		targetPlayer:remove()
 	end
 
-	if targetIp == 0 then
+	if targetIpAddress == "" then
 		return true
 	end
 
-	resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = " .. targetIp)
+	resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip_address` = " .. db.escapeString(targetIpAddress))
 	if resultId ~= false then
-		player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  is already IP banned.")
+		player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. " is already IP banned.")
 		Result.free(resultId)
 		return true
 	end
 
 	local timeNow = os.time()
-	db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. targetIp .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
-	player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. "  has been IP banned.")
+	db.query("INSERT INTO `ip_bans` (`ip`, `ip_address`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" .. targetIp .. ", " .. db.escapeString(targetIpAddress) .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
+	player:sendTextMessage(MESSAGE_ADMINISTRATOR, targetName .. " has been IP banned.")
 	return true
 end
 

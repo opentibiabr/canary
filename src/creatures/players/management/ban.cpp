@@ -81,10 +81,18 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo &banInfo) {
 		return false;
 	}
 
+	return isIpBanned(convertIPToString(clientIP), banInfo);
+}
+
+bool IOBan::isIpBanned(const std::string &clientIP, BanInfo &banInfo) {
+	if (clientIP.empty()) {
+		return false;
+	}
+
 	Database &db = Database::getInstance();
 
 	std::ostringstream query;
-	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip` = " << clientIP;
+	query << "SELECT `reason`, `expires_at`, (SELECT `name` FROM `players` WHERE `id` = `banned_by`) AS `name` FROM `ip_bans` WHERE `ip_address` = " << db.escapeString(clientIP);
 
 	const DBResult_ptr result = db.storeQuery(query.str());
 	if (!result) {
@@ -94,7 +102,7 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo &banInfo) {
 	const auto expiresAt = result->getNumber<int64_t>("expires_at");
 	if (expiresAt != 0 && time(nullptr) > expiresAt) {
 		query.str(std::string());
-		query << "DELETE FROM `ip_bans` WHERE `ip` = " << clientIP;
+		query << "DELETE FROM `ip_bans` WHERE `ip_address` = " << db.escapeString(clientIP);
 		g_databaseTasks().execute(query.str());
 		return false;
 	}

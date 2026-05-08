@@ -690,6 +690,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->lastIP = player->getIP();
+		player->lastIPString = player->getIPString();
 		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 		player->loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
 		acceptPackets = true;
@@ -742,6 +743,7 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
+	player->lastIPString = player->getIPString();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	if (player->isProtected()) {
 		player->setProtection(false);
@@ -926,7 +928,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	BanInfo banInfo;
 	const auto ipv4 = getIP();
-	if (ipv4 != 0 && IOBan::isIpBanned(ipv4, banInfo)) {
+	if (IOBan::isIpBanned(getIPString(), banInfo)) {
 		if (banInfo.reason.empty()) {
 			banInfo.reason = "(none)";
 		}

@@ -180,9 +180,15 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		return false;
 	}
 
+	const auto lastIpAddress = !player->lastIPString.empty() ? player->lastIPString : player->getIPString();
+
 	if (result->getNumber<uint16_t>("save") == 0) {
 		query.str("");
-		query << "UPDATE `players` SET `lastlogin` = " << player->lastLoginSaved << ", `lastip` = " << player->lastIP << " WHERE `id` = " << player->getGUID();
+		query << "UPDATE `players` SET `lastlogin` = " << player->lastLoginSaved << ", `lastip` = " << player->lastIP;
+		if (!lastIpAddress.empty()) {
+			query << ", `lastip_address` = " << db.escapeString(lastIpAddress);
+		}
+		query << " WHERE `id` = " << player->getGUID();
 		return db.executeQuery(query.str());
 	}
 
@@ -238,6 +244,9 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	if (player->lastIP != 0) {
 		query << "`lastip` = " << player->lastIP << ",";
+	}
+	if (!lastIpAddress.empty()) {
+		query << "`lastip_address` = " << db.escapeString(lastIpAddress) << ",";
 	}
 
 	// serialize conditions

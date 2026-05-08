@@ -1718,6 +1718,7 @@ private:
 	uint32_t walkTaskEvent = 0;
 	uint32_t MessageBufferTicks = 0;
 	uint32_t lastIP = 0;
+	std::string lastIPString;
 	uint32_t guid = 0;
 	uint32_t loyaltyPoints = 0;
 	uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;

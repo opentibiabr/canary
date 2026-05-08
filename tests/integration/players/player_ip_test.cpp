@@ -7,14 +7,16 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include <gtest/gtest.h>
+
 #include "creatures/players/player.hpp"
 
 TEST(PlayerIPTest, DetectsIPv4AddressFamily) {
 	Player player;
-	player.setTestIPString("1.2.3.4");
+	player.setTestIPString("192.0.2.1");
 
-	EXPECT_EQ("1.2.3.4", player.getIPString());
-	EXPECT_EQ("1.2.3.4", player.getIPAddress());
+	EXPECT_EQ("192.0.2.1", player.getIPString());
+	EXPECT_EQ("192.0.2.1", player.getIPAddress());
 	EXPECT_EQ(4, player.getIPFamily());
 	EXPECT_TRUE(player.isIPv4());
 	EXPECT_FALSE(player.isIPv6());
@@ -43,11 +45,11 @@ TEST(PlayerIPTest, ReturnsEmptyFamilyWithoutClientOrTestAddress) {
 
 TEST(PlayerIPTest, LegacyTestIPv4OverrideFeedsStringAndFamilyHelpers) {
 	Player player;
-	player.setTestIP(0x04030201u);
+	player.setTestIP(0x010200C0u);
 
-	EXPECT_EQ(0x04030201u, player.getIP());
-	EXPECT_EQ("1.2.3.4", player.getIPString());
-	EXPECT_EQ("1.2.3.4", player.getIPAddress());
+	EXPECT_EQ(0x010200C0u, player.getIP());
+	EXPECT_EQ("192.0.2.1", player.getIPString());
+	EXPECT_EQ("192.0.2.1", player.getIPAddress());
 	EXPECT_EQ(4, player.getIPFamily());
 	EXPECT_TRUE(player.isIPv4());
 	EXPECT_FALSE(player.isIPv6());

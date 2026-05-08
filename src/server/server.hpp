@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <array>
 #include <optional>
 
 #include "lib/metrics/metrics.hpp"
@@ -76,13 +77,27 @@ public:
 	void onStopServer() const;
 	void onAccept(const Connection_ptr &connection, const std::error_code &error, ServicePortNetwork_t networkProtocol);
 
+#ifdef BUILD_TESTS
+	void setEnabledNetworksForTest(bool ipv4Enabled, bool ipv6Enabled);
+	void setBindOnlyGlobalAddressForTest(bool bindOnlyGlobalAddress);
+	void setOpenNetworkAcceptorFailureForTest(std::optional<ServicePortNetwork_t> networkProtocol);
+	[[nodiscard]] bool hasPendingStartForTest(ServicePortNetwork_t networkProtocol) const;
+	[[nodiscard]] bool isAcceptorOpenForTest(ServicePortNetwork_t networkProtocol) const;
+	[[nodiscard]] uint64_t getPendingStartEventForTest(ServicePortNetwork_t networkProtocol) const;
+#endif
+
 private:
 	void accept(ServicePortNetwork_t networkProtocol);
 	asio::ip::tcp::acceptor* getAcceptor(ServicePortNetwork_t networkProtocol) const;
 	void closeAcceptor(ServicePortNetwork_t networkProtocol) const;
 	bool open(ServicePortNetwork_t networkProtocol);
-	bool openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, bool &retryOpen);
+	std::array<bool, 2> openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, std::array<bool, 2> &retryOpen);
 	bool openNetworkAcceptor(ServicePortNetwork_t networkProtocol, const asio::ip::tcp::endpoint &endpoint);
+	bool isNetworkEnabled(ServicePortNetwork_t networkProtocol) const;
+	bool isBindOnlyGlobalAddress() const;
+	bool isPendingStart(ServicePortNetwork_t networkProtocol) const;
+	void setPendingStart(ServicePortNetwork_t networkProtocol, bool pending);
+	void scheduleOpenRetry(ServicePortNetwork_t networkProtocol);
 	static void openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port, ServicePortNetwork_t networkProtocol);
 
 	asio::io_service &io_service;
@@ -91,7 +106,14 @@ private:
 	std::vector<Service_ptr> services;
 
 	uint16_t serverPort = 0;
-	bool pendingStart = false;
+	std::array<bool, 2> pendingStart {};
+	std::array<uint64_t, 2> pendingStartEvents {};
+
+#ifdef BUILD_TESTS
+	std::optional<std::array<bool, 2>> enabledNetworksForTest;
+	std::optional<bool> bindOnlyGlobalAddressForTest;
+	std::optional<ServicePortNetwork_t> failedOpenNetworkProtocolForTest;
+#endif
 };
 
 class ServiceManager {

@@ -12,7 +12,9 @@
 #include <cstdint>
 #include <ctime>
 #include <string>
+#include <system_error>
 
+#include <asio/ip/address.hpp>
 #include <fmt/format.h>
 #include <gtest/gtest.h>
 
@@ -53,10 +55,22 @@ namespace it_ip_ban {
 			return accountInserted && playerInserted;
 		}
 
+		uint32_t legacyIPv4ForIpBan(const std::string &ipAddress, uint8_t ipFamily) {
+			if (ipFamily != 4) {
+				return 0;
+			}
+
+			std::error_code error;
+			const auto address = asio::ip::make_address(ipAddress, error);
+			return !error && address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
+		}
+
 		bool insertIpBan(Database &db, const std::string &ipAddress, uint8_t ipFamily, const TestIds &ids, const std::string &reason) {
 			const auto now = static_cast<int64_t>(std::time(nullptr));
+			const auto legacyIp = legacyIPv4ForIpBan(ipAddress, ipFamily);
 			return db.executeQuery(fmt::format(
-				"INSERT INTO `ip_bans` (`ip`, `ip_address`, `ip_family`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (0, {}, {}, {}, {}, {}, {})",
+				"INSERT INTO `ip_bans` (`ip`, `ip_address`, `ip_family`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ({}, {}, {}, {}, {}, {}, {})",
+				legacyIp,
 				db.escapeString(ipAddress),
 				static_cast<uint16_t>(ipFamily),
 				db.escapeString(reason),
@@ -68,7 +82,8 @@ namespace it_ip_ban {
 
 		bool ipBanRowExists(Database &db, const std::string &ipAddress, uint8_t ipFamily) {
 			const auto result = db.storeQuery(fmt::format(
-				"SELECT 1 FROM `ip_bans` WHERE `ip_family` = {} AND `ip_address` = {}",
+				"SELECT 1 FROM `ip_bans` WHERE `ip` = {} AND `ip_family` = {} AND `ip_address` = {}",
+				legacyIPv4ForIpBan(ipAddress, ipFamily),
 				static_cast<uint16_t>(ipFamily),
 				db.escapeString(ipAddress)
 			));

@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <ctime>
 #include <string>
+#include <utility>
 
 #include <asio/ip/address.hpp>
 #include <fmt/format.h>
@@ -77,8 +78,10 @@ namespace it_protocolgame_ip_login {
 
 		bool insertIpBan(Database &db, const std::string &ipAddress, uint8_t ipFamily, const TestLoginIds &ids) {
 			const auto now = static_cast<int64_t>(std::time(nullptr));
+			const auto legacyIp = ipFamily == 4 ? legacyIPv4ForProtocol(ipAddress) : 0;
 			return db.executeQuery(fmt::format(
-				"INSERT INTO `ip_bans` (`ip`, `ip_address`, `ip_family`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (0, {}, {}, 'ProtocolGame login ban regression', {}, {}, {})",
+				"INSERT INTO `ip_bans` (`ip`, `ip_address`, `ip_family`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ({}, {}, {}, 'ProtocolGame login ban regression', {}, {}, {})",
+				legacyIp,
 				db.escapeString(ipAddress),
 				static_cast<uint16_t>(ipFamily),
 				now,

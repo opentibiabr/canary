@@ -14,6 +14,18 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
 
+namespace {
+	constexpr auto retryOpenDelay = 15000;
+	constexpr std::array<ServicePortNetwork_t, 2> networkProtocols {
+		ServicePortNetwork_t::IPv4,
+		ServicePortNetwork_t::IPv6
+	};
+
+	constexpr size_t networkIndex(ServicePortNetwork_t networkProtocol) {
+		return static_cast<size_t>(networkProtocol);
+	}
+} // namespace
+
 ServiceManager::~ServiceManager() {
 	try {
 		stop();
@@ -86,6 +98,51 @@ asio::ip::tcp::acceptor* ServicePort::getAcceptor(ServicePortNetwork_t networkPr
 	return networkProtocol == ServicePortNetwork_t::IPv4 ? ipv4Acceptor.get() : ipv6Acceptor.get();
 }
 
+bool ServicePort::isNetworkEnabled(ServicePortNetwork_t networkProtocol) const {
+#ifdef BUILD_TESTS
+	if (enabledNetworksForTest) {
+		return (*enabledNetworksForTest)[networkIndex(networkProtocol)];
+	}
+#endif
+
+	return networkProtocol == ServicePortNetwork_t::IPv4 ? g_configManager().getBoolean(IPV4) : g_configManager().getBoolean(IPV6);
+}
+
+bool ServicePort::isBindOnlyGlobalAddress() const {
+#ifdef BUILD_TESTS
+	if (bindOnlyGlobalAddressForTest) {
+		return *bindOnlyGlobalAddressForTest;
+	}
+#endif
+
+	return g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS);
+}
+
+bool ServicePort::isPendingStart(ServicePortNetwork_t networkProtocol) const {
+	return pendingStart[networkIndex(networkProtocol)];
+}
+
+void ServicePort::setPendingStart(ServicePortNetwork_t networkProtocol, bool pending) {
+	const auto index = networkIndex(networkProtocol);
+	pendingStart[index] = pending;
+	if (!pending) {
+		pendingStartEvents[index] = 0;
+	}
+}
+
+void ServicePort::scheduleOpenRetry(ServicePortNetwork_t networkProtocol) {
+	if (isPendingStart(networkProtocol)) {
+		return;
+	}
+
+	setPendingStart(networkProtocol, true);
+	pendingStartEvents[networkIndex(networkProtocol)] = g_dispatcher().scheduleEvent(
+		retryOpenDelay,
+		[self = shared_from_this(), port = serverPort, networkProtocol] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port, networkProtocol); },
+		"ServicePort::openAcceptor"
+	);
+}
+
 void ServicePort::closeAcceptor(ServicePortNetwork_t networkProtocol) const {
 	if (auto* serviceAcceptor = getAcceptor(networkProtocol); serviceAcceptor && serviceAcceptor->is_open()) {
 		std::error_code error;
@@ -95,6 +152,13 @@ void ServicePort::closeAcceptor(ServicePortNetwork_t networkProtocol) const {
 
 bool ServicePort::openNetworkAcceptor(ServicePortNetwork_t networkProtocol, const asio::ip::tcp::endpoint &endpoint) {
 	auto &serviceAcceptor = networkProtocol == ServicePortNetwork_t::IPv4 ? ipv4Acceptor : ipv6Acceptor;
+#ifdef BUILD_TESTS
+	if (failedOpenNetworkProtocolForTest && *failedOpenNetworkProtocolForTest == networkProtocol) {
+		serviceAcceptor.reset();
+		return false;
+	}
+#endif
+
 	try {
 		serviceAcceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service);
 		serviceAcceptor->open(endpoint.protocol());
@@ -147,14 +211,9 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 
 		accept(networkProtocol);
 	} else if (error != asio::error::operation_aborted) {
-		if (!pendingStart) {
+		if (!isPendingStart(networkProtocol)) {
 			closeAcceptor(networkProtocol);
-			pendingStart = true;
-			g_dispatcher().scheduleEvent(
-				15000,
-				[self = shared_from_this(), serverPort = serverPort, networkProtocol] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort, networkProtocol); },
-				"ServicePort::openAcceptor"
-			);
+			scheduleOpenRetry(networkProtocol);
 		}
 	}
 }
@@ -191,29 +250,29 @@ void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, u
 }
 
 bool ServicePort::open(ServicePortNetwork_t networkProtocol) {
-	bool retryOpen = true;
-	const bool opened = openConfiguredAcceptors(networkProtocol, retryOpen);
-	if (!opened && retryOpen) {
-		pendingStart = true;
-		g_dispatcher().scheduleEvent(
-			15000,
-			[self = shared_from_this(), port = serverPort, networkProtocol] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port, networkProtocol); },
-			"ServicePort::openAcceptor"
-		);
+	setPendingStart(networkProtocol, false);
+
+	std::array<bool, 2> retryOpen {};
+	const auto opened = openConfiguredAcceptors(networkProtocol, retryOpen);
+	const auto index = networkIndex(networkProtocol);
+	if (!opened[index] && retryOpen[index]) {
+		scheduleOpenRetry(networkProtocol);
 		return false;
 	}
 
-	pendingStart = false;
-	return opened;
+	setPendingStart(networkProtocol, false);
+	return opened[index];
 }
 
-bool ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, bool &retryOpen) {
-	const bool ipv4Enabled = g_configManager().getBoolean(IPV4);
-	const bool ipv6Enabled = g_configManager().getBoolean(IPV6);
+std::array<bool, 2> ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, std::array<bool, 2> &retryOpen) {
+	std::array<bool, 2> opened {};
+	retryOpen = {};
+
+	const bool ipv4Enabled = isNetworkEnabled(ServicePortNetwork_t::IPv4);
+	const bool ipv6Enabled = isNetworkEnabled(ServicePortNetwork_t::IPv6);
 	if (!ipv4Enabled && !ipv6Enabled) {
 		g_logger().error("[ServicePort::open] - Both IPV4 and IPV6 are disabled for port {}", serverPort);
-		retryOpen = false;
-		return false;
+		return opened;
 	}
 
 	auto shouldOpenProtocol = [&](ServicePortNetwork_t currentProtocol) {
@@ -224,13 +283,23 @@ bool ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> ne
 		return currentProtocol == ServicePortNetwork_t::IPv4 ? ipv4Enabled : ipv6Enabled;
 	};
 
-	if (networkProtocol && !shouldOpenProtocol(*networkProtocol)) {
-		retryOpen = false;
-		return false;
+	for (const auto currentProtocol : networkProtocols) {
+		retryOpen[networkIndex(currentProtocol)] = shouldOpenProtocol(currentProtocol);
 	}
 
-	bool opened = false;
-	if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
+	if (networkProtocol && !shouldOpenProtocol(*networkProtocol)) {
+		return opened;
+	}
+
+	auto disableRetryForSelectedProtocols = [&] {
+		for (const auto currentProtocol : networkProtocols) {
+			if (shouldOpenProtocol(currentProtocol)) {
+				retryOpen[networkIndex(currentProtocol)] = false;
+			}
+		}
+	};
+
+	if (isBindOnlyGlobalAddress()) {
 		const auto configuredBindAddress = g_configManager().getString(IP);
 		std::vector<asio::ip::address> bindAddresses;
 
@@ -264,14 +333,15 @@ bool ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> ne
 
 		if (bindAddresses.empty()) {
 			g_logger().warn("[ServicePort::open] - No bind address found for '{}' on port {} with IPV4={} and IPV6={}", configuredBindAddress, serverPort, ipv4Enabled, ipv6Enabled);
-			retryOpen = false;
-			return false;
+			disableRetryForSelectedProtocols();
+			return opened;
 		}
 
 		const bool hasIPv4BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v4(); });
 		const bool hasIPv6BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v6(); });
 
 		if (shouldOpenProtocol(ServicePortNetwork_t::IPv4) && !hasIPv4BindAddress) {
+			retryOpen[networkIndex(ServicePortNetwork_t::IPv4)] = false;
 			if (!parseError) {
 				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but IPV4 is enabled - IPv4 will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6");
 			} else {
@@ -280,6 +350,7 @@ bool ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> ne
 		}
 
 		if (shouldOpenProtocol(ServicePortNetwork_t::IPv6) && !hasIPv6BindAddress) {
+			retryOpen[networkIndex(ServicePortNetwork_t::IPv6)] = false;
 			if (!parseError) {
 				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but IPV6 is enabled - IPv6 will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6");
 			} else {
@@ -289,17 +360,17 @@ bool ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> ne
 
 		for (const auto &bindAddress : bindAddresses) {
 			if (bindAddress.is_v4()) {
-				opened = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened;
+				opened[networkIndex(ServicePortNetwork_t::IPv4)] = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened[networkIndex(ServicePortNetwork_t::IPv4)];
 			} else if (bindAddress.is_v6()) {
-				opened = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened;
+				opened[networkIndex(ServicePortNetwork_t::IPv6)] = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened[networkIndex(ServicePortNetwork_t::IPv6)];
 			}
 		}
 	} else {
 		if (shouldOpenProtocol(ServicePortNetwork_t::IPv4)) {
-			opened = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort)) || opened;
+			opened[networkIndex(ServicePortNetwork_t::IPv4)] = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort));
 		}
 		if (shouldOpenProtocol(ServicePortNetwork_t::IPv6)) {
-			opened = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort)) || opened;
+			opened[networkIndex(ServicePortNetwork_t::IPv6)] = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort));
 		}
 	}
 
@@ -312,16 +383,16 @@ void ServicePort::open(uint16_t port) {
 	ipv6Acceptor.reset();
 
 	serverPort = port;
-	pendingStart = false;
+	pendingStart.fill(false);
+	pendingStartEvents.fill(0);
 
-	bool retryOpen = true;
-	const bool opened = openConfiguredAcceptors(std::nullopt, retryOpen);
-	if (!opened && retryOpen) {
-		pendingStart = true;
-		g_dispatcher().scheduleEvent(
-			15000,
-			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor"
-		);
+	std::array<bool, 2> retryOpen {};
+	const auto opened = openConfiguredAcceptors(std::nullopt, retryOpen);
+	for (const auto networkProtocol : networkProtocols) {
+		const auto index = networkIndex(networkProtocol);
+		if (!opened[index] && retryOpen[index]) {
+			scheduleOpenRetry(networkProtocol);
+		}
 	}
 }
 
@@ -342,3 +413,30 @@ bool ServicePort::add_service(const Service_ptr &new_svc) {
 	services.emplace_back(new_svc);
 	return true;
 }
+
+#ifdef BUILD_TESTS
+void ServicePort::setEnabledNetworksForTest(bool ipv4Enabled, bool ipv6Enabled) {
+	enabledNetworksForTest = std::array<bool, 2> { ipv4Enabled, ipv6Enabled };
+}
+
+void ServicePort::setBindOnlyGlobalAddressForTest(bool bindOnlyGlobalAddress) {
+	bindOnlyGlobalAddressForTest = bindOnlyGlobalAddress;
+}
+
+void ServicePort::setOpenNetworkAcceptorFailureForTest(std::optional<ServicePortNetwork_t> networkProtocol) {
+	failedOpenNetworkProtocolForTest = networkProtocol;
+}
+
+bool ServicePort::hasPendingStartForTest(ServicePortNetwork_t networkProtocol) const {
+	return isPendingStart(networkProtocol);
+}
+
+bool ServicePort::isAcceptorOpenForTest(ServicePortNetwork_t networkProtocol) const {
+	const auto* serviceAcceptor = getAcceptor(networkProtocol);
+	return serviceAcceptor && serviceAcceptor->is_open();
+}
+
+uint64_t ServicePort::getPendingStartEventForTest(ServicePortNetwork_t networkProtocol) const {
+	return pendingStartEvents[networkIndex(networkProtocol)];
+}
+#endif

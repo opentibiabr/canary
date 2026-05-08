@@ -5,10 +5,14 @@ set -euo pipefail
 # Variáveis
 VCPKG_PATH=${1:-"$HOME"}
 VCPKG_PATH=$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake
-BUILD_TYPE=${2:-"linux-release"}
-EXTRA_CMAKE_ARGS=("${@:3}")
 ARCHITECTURE=$(uname -m)
-ARCHITECTUREVALUE=0
+DEFAULT_BUILD_TYPE="linux-release"
+if [[ "$ARCHITECTURE" == "aarch64"* ]]; then
+	DEFAULT_BUILD_TYPE="linux-release-arm"
+fi
+BUILD_TYPE=${2:-"$DEFAULT_BUILD_TYPE"}
+EXTRA_CMAKE_ARGS=("${@:3}")
+IS_ARM64=0
 
 # Function to print information messages
 info() {
@@ -25,8 +29,8 @@ check_command() {
 
 check_architecture() {
 	if [[ $ARCHITECTURE == "aarch64"* ]]; then
-		info "its architecture is $ARCHITECTURE (ARM)"
-		ARCHITECTUREVALUE=1
+		info "its architecture is $ARCHITECTURE (ARM64)"
+		IS_ARM64=1
 	else
 		info "its architecture is $ARCHITECTURE"
 	fi

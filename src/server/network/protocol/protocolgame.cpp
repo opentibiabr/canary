@@ -10707,7 +10707,7 @@ void ProtocolGame::sendMonkState(MonkData_t type, uint8_t value) {
 	NetworkMessage msg;
 	msg.addByte(0xC1);
 
-	msg.addByte(enumToValue(type));	// mechanic to update (harmony, virtue, serenity)
+	msg.addByte(enumToValue(type)); // mechanic to update (harmony, virtue, serenity)
 	msg.addByte(value); // current state of the mechanic
 
 	writeToOutputBuffer(msg);

@@ -38,10 +38,35 @@ namespace {
 		}
 		return false;
 	}
+
+	std::string getGtestFilter(int argc, char** argv) {
+		constexpr std::string_view key = "--gtest_filter=";
+		for (int i = 1; i < argc; ++i) {
+			if (argv[i] == nullptr) {
+				continue;
+			}
+			const std::string_view arg { argv[i] };
+			if (arg.rfind(key, 0) == 0) {
+				return std::string { arg.substr(key.size()) };
+			}
+		}
+		return {};
+	}
+
+	bool isDbOnlyFilter(const std::string &filter) {
+		if (filter.empty()) {
+			return false;
+		}
+		return filter.find("RepositoryDBTest") != std::string::npos
+			|| filter.find("AccountRepositoryDBTest") != std::string::npos
+			|| filter.find("PlayerStorageRepositoryDBTest") != std::string::npos;
+	}
 }
 
 int main(int argc, char** argv) {
 	const bool gtestListMode = isGtestListMode(argc, argv);
+	const auto gtestFilter = getGtestFilter(argc, argv);
+	const bool dbOnlyFilter = isDbOnlyFilter(gtestFilter);
 	::testing::InitGoogleTest(&argc, argv);
 
 	// gtest_discover_tests invokes the binary with --gtest_list_tests.
@@ -83,19 +108,23 @@ int main(int argc, char** argv) {
 	std::fprintf(stderr, "[integration main] config reload done\n");
 	std::fflush(stderr);
 
-	if (!g_game().groups.load()) {
-		g_logger().warn("[integration main] failed to load groups");
-	}
+	if (!dbOnlyFilter) {
+		if (!g_game().groups.load()) {
+			g_logger().warn("[integration main] failed to load groups");
+		}
 
-	const auto appearancePath = (std::filesystem::path(config.getString(CORE_DIRECTORY)) / "items/appearances.dat").lexically_normal().string();
-	if (g_game().loadAppearanceProtobuf(appearancePath) != ERROR_NONE) {
-		g_logger().warn("[integration main] failed to load appearances.dat from {}", appearancePath);
-	}
+		const auto appearancePath = (std::filesystem::path(config.getString(CORE_DIRECTORY)) / "items/appearances.dat").lexically_normal().string();
+		if (g_game().loadAppearanceProtobuf(appearancePath) != ERROR_NONE) {
+			g_logger().warn("[integration main] failed to load appearances.dat from {}", appearancePath);
+		}
 
-	if (!Item::items.reload()) {
-		g_logger().warn("[integration main] failed to reload items.xml");
+		if (!Item::items.reload()) {
+			g_logger().warn("[integration main] failed to reload items.xml");
+		}
+		std::fprintf(stderr, "[integration main] assets load done\n");
+	} else {
+		std::fprintf(stderr, "[integration main] db-only filter detected (%s), skipping asset bootstrap\n", gtestFilter.c_str());
 	}
-	std::fprintf(stderr, "[integration main] assets load done\n");
 	std::fflush(stderr);
 
 	try {

@@ -2933,6 +2933,17 @@ void Player::setWalkExhaust(int64_t value) {
 	lastWalking = OTSYS_TIME() + value;
 }
 
+void Player::updateParalyzeWalkExhaust() {
+	if (!hasCondition(CONDITION_PARALYZE)) {
+		return;
+	}
+
+	const int32_t walkDelay = getWalkDelay();
+	if (walkDelay > 0) {
+		setWalkExhaust(walkDelay);
+	}
+}
+
 const std::map<uint8_t, OpenContainer> &Player::getOpenContainers() const {
 	return openContainers;
 }
@@ -5930,6 +5941,10 @@ void Player::updateItemsLight(bool internal /*=false*/) {
 void Player::onAddCondition(ConditionType_t type) {
 	Creature::onAddCondition(type);
 
+	if (type == CONDITION_PARALYZE) {
+		updateParalyzeWalkExhaust();
+	}
+
 	if (type == CONDITION_OUTFIT && isMounted()) {
 		dismount();
 		wasMounted = true;
@@ -5959,6 +5974,10 @@ void Player::onCleanseCondition(ConditionType_t type) const {
 }
 
 void Player::onAddCombatCondition(ConditionType_t type) {
+	if (type == CONDITION_PARALYZE) {
+		updateParalyzeWalkExhaust();
+	}
+
 	if (IsConditionSuppressible(type)) {
 		updateLastConditionTime(type);
 	}
@@ -11488,6 +11507,10 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 
 	if (creature != getPlayer()) {
 		return;
+	}
+
+	if (!teleport && oldPos.z == newPos.z) {
+		updateParalyzeWalkExhaust();
 	}
 
 	if (tradeState != TRADE_TRANSFER) {

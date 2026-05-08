@@ -1167,6 +1167,7 @@ public:
 	bool walkExhausted() const;
 
 	void setWalkExhaust(int64_t value);
+	void updateParalyzeWalkExhaust();
 
 	const std::map<uint8_t, OpenContainer> &getOpenContainers() const;
 

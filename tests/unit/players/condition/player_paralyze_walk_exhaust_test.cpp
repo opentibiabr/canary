@@ -12,6 +12,24 @@
 #include "items/tile.hpp"
 #include "utils/tools.hpp"
 
+namespace {
+	class TestParalyzeCondition final : public Condition {
+	public:
+		explicit TestParalyzeCondition(ConditionId_t conditionId, int32_t ticks = 5000) :
+			Condition(conditionId, CONDITION_PARALYZE, ticks) { }
+
+		void endCondition(std::shared_ptr<Creature>) override { }
+
+		void addCondition(std::shared_ptr<Creature>, std::shared_ptr<Condition> condition) override {
+			setTicks(condition->getTicks());
+		}
+
+		std::shared_ptr<Condition> clone() const override {
+			return std::make_shared<TestParalyzeCondition>(getId(), getTicks());
+		}
+	};
+}
+
 class PlayerParalyzeWalkExhaustTest : public ::testing::Test {
 protected:
 	void SetUp() override {
@@ -19,7 +37,7 @@ protected:
 	}
 
 	static std::shared_ptr<Condition> createParalyzeCondition(ConditionId_t conditionId = CONDITIONID_DEFAULT) {
-		auto condition = Condition::createCondition(conditionId, CONDITION_PARALYZE, 5000, -1000);
+		auto condition = std::make_shared<TestParalyzeCondition>(conditionId);
 		EXPECT_NE(nullptr, condition);
 		return condition;
 	}

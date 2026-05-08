@@ -447,6 +447,10 @@ public:
 
 	uint32_t getIP() const;
 	std::string getIPString() const;
+	std::string getIPAddress() const;
+	uint8_t getIPFamily() const;
+	bool isIPv4() const;
+	bool isIPv6() const;
 
 	bool isDisconnected() const {
 		return getIPString().empty();

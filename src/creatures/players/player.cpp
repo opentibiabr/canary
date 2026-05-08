@@ -9872,6 +9872,27 @@ std::string Player::getIPString() const {
 	return client ? client->getIPString() : std::string();
 }
 
+std::string Player::getIPAddress() const {
+	return getIPString();
+}
+
+uint8_t Player::getIPFamily() const {
+	const auto ipAddress = getIPAddress();
+	if (ipAddress.empty()) {
+		return 0;
+	}
+
+	return ipAddress.find(':') != std::string::npos ? 6 : 4;
+}
+
+bool Player::isIPv4() const {
+	return getIPFamily() == 4;
+}
+
+bool Player::isIPv6() const {
+	return getIPFamily() == 6;
+}
+
 void Player::reloadTaskSlot(PreySlot_t slotid) {
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
 		client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));

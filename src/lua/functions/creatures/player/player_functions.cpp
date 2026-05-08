@@ -52,6 +52,10 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "getGuid", PlayerFunctions::luaPlayerGetGuid);
 	Lua::registerMethod(L, "Player", "getIp", PlayerFunctions::luaPlayerGetIp);
 	Lua::registerMethod(L, "Player", "getIpString", PlayerFunctions::luaPlayerGetIpString);
+	Lua::registerMethod(L, "Player", "getIpAddress", PlayerFunctions::luaPlayerGetIpAddress);
+	Lua::registerMethod(L, "Player", "getIpFamily", PlayerFunctions::luaPlayerGetIpFamily);
+	Lua::registerMethod(L, "Player", "isIpV4", PlayerFunctions::luaPlayerIsIpV4);
+	Lua::registerMethod(L, "Player", "isIpV6", PlayerFunctions::luaPlayerIsIpV6);
 	Lua::registerMethod(L, "Player", "getAccountId", PlayerFunctions::luaPlayerGetAccountId);
 	Lua::registerMethod(L, "Player", "getLastLoginSaved", PlayerFunctions::luaPlayerGetLastLoginSaved);
 	Lua::registerMethod(L, "Player", "getLastLogout", PlayerFunctions::luaPlayerGetLastLogout);
@@ -701,6 +705,56 @@ int PlayerFunctions::luaPlayerGetIpString(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetIpAddress(lua_State* L) {
+	// player:getIpAddress()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto ipAddress = player->getIPAddress();
+	if (ipAddress.empty()) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Lua::pushString(L, ipAddress);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetIpFamily(lua_State* L) {
+	// player:getIpFamily()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto ipFamily = player->getIPFamily();
+	if (ipFamily == 0) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, ipFamily);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsIpV4(lua_State* L) {
+	// player:isIpV4()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	Lua::pushBoolean(L, player && player->isIPv4());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsIpV6(lua_State* L) {
+	// player:isIpV6()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	Lua::pushBoolean(L, player && player->isIPv6());
 	return 1;
 }
 

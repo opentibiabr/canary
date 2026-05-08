@@ -33,11 +33,11 @@ function ipBan.onSay(player, words, param)
 	local targetPlayer = Player(param)
 	if targetPlayer then
 		targetIp = targetPlayer:getIp()
-		targetIpAddress = targetPlayer:getIpString()
+		targetIpAddress = targetPlayer:getIpAddress() or targetPlayer:getIpString()
 		targetPlayer:remove()
 	end
 
-	if targetIpAddress == "" then
+	if targetIpAddress == nil or targetIpAddress == "" then
 		return true
 	end
 

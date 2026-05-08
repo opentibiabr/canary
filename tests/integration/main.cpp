@@ -13,13 +13,16 @@
 #include <iostream>
 
 namespace {
+	bool fileExists(const std::filesystem::path &path) {
+		std::error_code ec;
+		return std::filesystem::exists(path, ec) && !ec;
+	}
+
 	std::filesystem::path detectRepoRoot(std::filesystem::path start) {
 		while (!start.empty()) {
-			std::error_code ec1;
-			std::error_code ec2;
-			const bool hasConfig = std::filesystem::exists(start / "config.lua", ec1);
-			const bool hasItems = std::filesystem::exists(start / "data/items/items.xml", ec2);
-			if (!ec1 && !ec2 && hasConfig && hasItems) {
+			const bool hasConfig = fileExists(start / "config.lua") || fileExists(start / "config.lua.dist");
+			const bool hasItems = fileExists(start / "data/items/items.xml");
+			if (hasConfig && hasItems) {
 				return start;
 			}
 			if (!start.has_parent_path() || start.parent_path() == start) {
@@ -61,6 +64,16 @@ namespace {
 			|| filter.find("AccountRepositoryDBTest") != std::string::npos
 			|| filter.find("PlayerStorageRepositoryDBTest") != std::string::npos;
 	}
+
+	std::string detectConfigFile(const std::filesystem::path &repoRoot) {
+		if (fileExists(repoRoot / "config.lua")) {
+			return "config.lua";
+		}
+		if (fileExists(repoRoot / "config.lua.dist")) {
+			return "config.lua.dist";
+		}
+		return "config.lua";
+	}
 }
 
 int main(int argc, char** argv) {
@@ -101,9 +114,15 @@ int main(int argc, char** argv) {
 	std::fflush(stderr);
 
 	auto &config = g_configManager();
-	config.setConfigFileLua("config.lua");
+	const auto configFile = detectConfigFile(std::filesystem::current_path());
+	config.setConfigFileLua(configFile);
+	std::fprintf(stderr, "[integration main] config file=%s\n", configFile.c_str());
+	std::fflush(stderr);
 	if (!config.reload()) {
-		g_logger().error("[integration main] failed to reload config.lua");
+		g_logger().error("[integration main] failed to reload {}", configFile);
+		std::fprintf(stderr, "[integration main] failed to reload %s\n", configFile.c_str());
+		std::fflush(stderr);
+		return EXIT_FAILURE;
 	}
 	std::fprintf(stderr, "[integration main] config reload done\n");
 	std::fflush(stderr);

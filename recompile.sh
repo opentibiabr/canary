@@ -29,8 +29,8 @@ check_command() {
 
 check_architecture() {
 	if [[ $ARCHITECTURE == "aarch64"* ]]; then
-		info "its architecture is $ARCHITECTURE (ARM64)"
-		IS_ARM64=1
+		info "its architecture is $ARCHITECTURE (ARM)"
+		ARCHITECTUREVALUE=1
 	else
 		info "its architecture is $ARCHITECTURE"
 	fi
@@ -96,24 +96,21 @@ build_canary() {
 # Function to move the generated executable
 move_executable() {
 	local executable_name="canary"
-	cd ..
 	if [ -e "$executable_name" ]; then
 		info "Saving old build"
 		mv ./"$executable_name" ./"$executable_name".old
-	fi
-	info "Moving the generated executable to the canary folder directory..."
-	cp ./build/"$BUILD_TYPE"/bin/"$executable_name" ./"$executable_name"
-	info "Build completed successfully!"
+	fi	
 }
 
 # Main function
 main() {
 	check_command "cmake"
 	check_architecture
+	move_executable
 	setup_canary
 
 	if build_canary; then
-		move_executable
+		info "Build completed successfully!"
 	else
 		echo -e "\033[31m[ERROR]\033[0m Build failed..."
 		exit 1

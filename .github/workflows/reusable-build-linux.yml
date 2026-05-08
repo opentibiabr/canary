@@ -111,7 +111,24 @@ jobs:
           TEST_DB_PASSWORD: root
           TEST_DB_NAME: canary_test
           TEST_DB_ALLOW_RESET: "1"
-        run: ctest --test-dir build/${{ matrix.buildtype }} --output-on-failure --parallel 2
+        run: |
+          set -o pipefail
+          mkdir -p build/${{ matrix.buildtype }}/test-logs
+          ctest --test-dir build/${{ matrix.buildtype }} -N
+          ctest --test-dir build/${{ matrix.buildtype }} \
+            --output-on-failure \
+            --verbose \
+            --parallel 2 \
+            2>&1 | tee build/${{ matrix.buildtype }}/test-logs/ctest-linux-debug.log
+
+      - name: Upload test logs
+        if: matrix.buildtype == 'linux-debug' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-debug-test-logs
+          path: |
+            build/${{ matrix.buildtype }}/test-logs/
+            build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

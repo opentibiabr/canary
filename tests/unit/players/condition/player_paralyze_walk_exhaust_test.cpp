@@ -93,6 +93,8 @@ TEST_F(PlayerParalyzeWalkExhaustTest, CombatParalyzeRefreshDuringActiveStepBlock
 	auto player = createPlayerAt(oldTile);
 
 	ASSERT_TRUE(player->addCombatCondition(createParalyzeCondition(CONDITIONID_COMBAT)));
+	EXPECT_FALSE(player->walkExhausted()); // idle combat paralyze must not block
+
 	expireWalkExhaust(player);
 	EXPECT_FALSE(player->walkExhausted());
 

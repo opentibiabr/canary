@@ -11196,15 +11196,17 @@ bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster, uint16_
 			return getMonsterByID(monsterId) == nullptr;
 		});
 
+		const auto monsterId = monster->getID();
+		const bool alreadyInfluenced = influencedMonsters.contains(monsterId);
 		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT));
 		    // If condition
-		    (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
+		    !alreadyInfluenced && (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
 			return false;
 		}
 
 		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
 		monster->configureForgeSystem(stack);
-		influencedMonsters.emplace(monster->getID());
+		influencedMonsters.emplace(monsterId);
 		return true;
 	}
 	return false;

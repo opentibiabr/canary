@@ -564,10 +564,11 @@ int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State* L) {
 	if (!monster) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		Lua::pushBoolean(L, false);
-		return 0;
+		return 1;
 	}
 
 	monster->configureForgeSystem(stack);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

@@ -63,6 +63,25 @@ cleanProtectionZones = false
 -- NOTE: bindOnlyGlobalAddress = false binds listeners to all available addresses: 0.0.0.0 for IPv4 and :: for IPv6.
 -- NOTE: bindOnlyGlobalAddress = true binds only to the address configured in `ip`; use a hostname/IP that matches the enabled protocol.
 -- NOTE: If only IPV6 is enabled, `ip` should be a hostname resolving to IPv6, or a valid IPv6 address if your client supports it.
+-- Public DNS examples for real deployments:
+-- IPv4 only:
+--   DNS A     game.example.com -> 203.0.113.10
+--   ip = "game.example.com"
+--   IPV4 = true
+--   IPV6 = false
+-- IPv6 only:
+--   DNS AAAA  game.example.com -> 2001:db8::10
+--   ip = "game.example.com"
+--   IPV4 = false
+--   IPV6 = true
+-- Dual-stack:
+--   DNS A     game.example.com -> 203.0.113.10
+--   DNS AAAA  game.example.com -> 2001:db8::10
+--   ip = "game.example.com"
+--   IPV4 = true
+--   IPV6 = true
+-- NOTE: HTTP URLs using literal IPv6 require brackets, for example http://[2001:db8::10]/login.php.
+-- NOTE: Game world hosts should prefer hostnames, for example game.example.com, instead of literal IPv6 addresses.
 ip = "127.0.0.1"
 allowOldProtocol = false
 IPV4 = true

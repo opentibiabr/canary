@@ -10,14 +10,12 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
 #include "items/tile.hpp"
-
-#include "lib/logging/in_memory_logger.hpp"
+#include "utils/tools.hpp"
 
 class PlayerParalyzeWalkExhaustTest : public ::testing::Test {
 protected:
-	static void SetUpTestSuite() {
-		InMemoryLogger::install(injector);
-		DI::setTestContainer(&injector);
+	void SetUp() override {
+		UPDATE_OTSYS_TIME();
 	}
 
 	static std::shared_ptr<Condition> createParalyzeCondition(ConditionId_t conditionId = CONDITIONID_DEFAULT) {
@@ -43,9 +41,6 @@ protected:
 	static void expireWalkExhaust(const std::shared_ptr<Player> &player) {
 		player->setWalkExhaust(-1);
 	}
-
-private:
-	inline static di::extension::injector<> injector {};
 };
 
 TEST_F(PlayerParalyzeWalkExhaustTest, IdleParalyzeDoesNotBlockPlayerActions) {

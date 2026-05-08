@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
 #include "database/database.hpp"
 
@@ -96,30 +97,33 @@ class TestDatabase final {
 
 public:
 	static void init() {
-		const auto envPath = pickEnvPath();
-		const auto env = loadEnvFile(envPath);
+		static std::once_flag initOnce;
+		std::call_once(initOnce, [] {
+			const auto envPath = pickEnvPath();
+			const auto env = loadEnvFile(envPath);
 
-		std::string host = get(env, "TEST_DB_HOST", "127.0.0.1");
-		std::string user = get(env, "TEST_DB_USER", "root");
-		std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
-		std::string database = get(env, "TEST_DB_NAME", "otservbr-global");
-		std::string portStr = get(env, "TEST_DB_PORT", "3306");
-		auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
-		std::string sock = get(env, "TEST_DB_SOCKET", "");
+			std::string host = get(env, "TEST_DB_HOST", "127.0.0.1");
+			std::string user = get(env, "TEST_DB_USER", "root");
+			std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
+			std::string database = get(env, "TEST_DB_NAME", "otservbr-global");
+			std::string portStr = get(env, "TEST_DB_PORT", "3306");
+			auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
+			std::string sock = get(env, "TEST_DB_SOCKET", "");
 
-		int retries = 30;
-		while (retries > 0) {
-			if (g_database().connect(&host, &user, &pass, &database, port, &sock)) {
-				// Validate connection validity with a ping query
-				if (g_database().executeQuery("SELECT 1")) {
-					return;
+			int retries = 30;
+			while (retries > 0) {
+				if (g_database().connect(&host, &user, &pass, &database, port, &sock)) {
+					// Validate connection validity with a ping query
+					if (g_database().executeQuery("SELECT 1")) {
+						return;
+					}
+					g_logger().warn("Database connected but failed verification (SELECT 1). Retrying...");
 				}
-				g_logger().warn("Database connected but failed verification (SELECT 1). Retrying...");
+				g_logger().warn("Failed to connect to database. Retrying in 1s... ({} attempts remaining)", retries);
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+				retries--;
 			}
-			g_logger().warn("Failed to connect to database. Retrying in 1s... ({} attempts remaining)", retries);
-			std::this_thread::sleep_for(std::chrono::seconds(1));
-			retries--;
-		}
-		throw std::runtime_error("Failed to connect to database after multiple attempts.");
+			throw std::runtime_error("Failed to connect to database after multiple attempts.");
+		});
 	}
 };

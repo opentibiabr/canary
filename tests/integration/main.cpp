@@ -6,7 +6,6 @@
 #include "lib/logging/in_memory_logger.hpp"
 #include "kv/in_memory_kv.hpp"
 #include "lua/test_lua_environment.hpp"
-#include "test_database.hpp"
 
 #include <cstdlib>
 #include <filesystem>
@@ -60,7 +59,6 @@ int main(int argc, char** argv) {
 	TestLuaEnvironment::install(*injector);
 	DI::setTestContainer(injector);
 
-	TestDatabase::init();
 	(void)g_logger();
 	(void)g_game();
 	(void)g_database();

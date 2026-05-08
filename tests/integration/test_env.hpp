@@ -4,9 +4,11 @@
 #include <functional>
 
 #include "database/database.hpp"
+#include "test_database.hpp"
 
 inline auto databaseTest(Database &db, const std::function<void(void)> &load) {
 	return [&db, load] {
+		TestDatabase::init();
 		db.executeQuery("BEGIN");
 
 		std::exception_ptr ep {};

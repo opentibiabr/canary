@@ -1,6 +1,6 @@
 target_sources(
-	canary_ut
-	PRIVATE player_ip_test.cpp
+    canary_ut
+    PRIVATE player_ip_test.cpp
 )
 
 add_subdirectory(components)

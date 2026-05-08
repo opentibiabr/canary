@@ -11,15 +11,15 @@
 #include "game/game.hpp"
 
 namespace {
-std::shared_ptr<Player> makeGroupedIpTestPlayer(uint32_t guid, std::string ipAddress, int32_t idleTime) {
-	auto player = std::make_shared<Player>();
-	player->setName(std::string("GroupedIpPlayer") + std::to_string(guid));
-	player->setGUID(guid);
-	player->setID();
-	player->setTestIPString(std::move(ipAddress));
-	player->setTestIdleTime(idleTime);
-	return player;
-}
+	std::shared_ptr<Player> makeGroupedIpTestPlayer(uint32_t guid, std::string ipAddress, int32_t idleTime) {
+		auto player = std::make_shared<Player>();
+		player->setName(std::string("GroupedIpPlayer") + std::to_string(guid));
+		player->setGUID(guid);
+		player->setID();
+		player->setTestIPString(std::move(ipAddress));
+		player->setTestIdleTime(idleTime);
+		return player;
+	}
 } // namespace
 
 TEST(GameGroupPlayersByIPTest, GroupsIPv4AndIPv6AndSkipsEmptyOrIdlePlayers) {

@@ -33,7 +33,9 @@ namespace it_protocolgame_ip_login {
 			std::string playerName;
 		};
 
-		enum class LoginGateResult : uint8_t { Banned, Authenticated, AuthFailed };
+		enum class LoginGateResult : uint8_t { Banned,
+			                                   Authenticated,
+			                                   AuthFailed };
 
 		TestLoginIds getTestLoginIds() {
 			static std::atomic<uint32_t> counter { 1 };

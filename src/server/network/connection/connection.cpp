@@ -20,9 +20,9 @@
 #include "utils/tools.hpp"
 
 namespace {
-uint32_t getLegacyIPv4Value(const asio::ip::address &address) {
-	return address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
-}
+	uint32_t getLegacyIPv4Value(const asio::ip::address &address) {
+		return address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
+	}
 } // namespace
 
 ConnectionManager &ConnectionManager::getInstance() {

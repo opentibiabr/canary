@@ -63,6 +63,7 @@ void Connection::close(bool force) {
 
 	std::scoped_lock lock(connectionLock);
 	ip = 0;
+	ipString.clear();
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
 		return;
@@ -199,7 +200,7 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
-		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
+		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", getIPString());
 		close();
 		return;
 	}
@@ -363,10 +364,33 @@ uint32_t Connection::getIP() {
 			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
 			ip = 0;
 		} else {
-			ip = htonl(endpoint.address().to_v4().to_uint());
+			const auto address = endpoint.address();
+			ipString = address.to_string();
+			ip = address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
 		}
 	}
 	return ip;
+}
+
+std::string Connection::getIPString() {
+	std::scoped_lock lock(connectionLock);
+
+	if (ipString.empty()) {
+		std::error_code error;
+		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+		if (error) {
+			g_logger().error("[Connection::getIPString] - Failed to get remote endpoint: {}", error.message());
+			ip = 0;
+			return {};
+		}
+
+		const auto address = endpoint.address();
+		ipString = address.to_string();
+		if (ip == 1) {
+			ip = address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
+		}
+	}
+	return ipString;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
@@ -412,9 +436,9 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 
 	if (auto connection = connectionWeak.lock()) {
 		if (!error) {
-			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout, IP: {}", connection->getIPString());
 		} else {
-			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), connection->getIPString());
 		}
 		connection->close(FORCE_CLOSE);
 	}

@@ -24,11 +24,11 @@ struct ConnectBlock {
 	uint32_t count {};
 };
 
-using IpConnectMap = std::map<uint32_t, ConnectBlock>;
+using IpConnectMap = std::map<std::string, ConnectBlock>;
 
 class Ban {
 public:
-	bool acceptConnection(uint32_t clientIP);
+	bool acceptConnection(const std::string &clientIP);
 
 private:
 	IpConnectMap ipConnectMap;

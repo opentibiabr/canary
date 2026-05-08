@@ -11250,7 +11250,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 		return;
 	}
 
-	if (player->getIP() == 0) {
+	if (player->getIPString().empty()) {
 		g_game().removeDeadPlayer(playerName);
 		g_logger().info("Player with name '{}' has logged out due to exited in death screen", player->getName());
 		player->disconnect();
@@ -12076,16 +12076,16 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 	return true;
 }
 
-std::map<uint32_t, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() const {
+std::map<std::string, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() const {
 	// Reference: https://otland.net/threads/unique-active-player.279129/
 	// Players idle for more than 15 minutes (900000 ms) are excluded so an IP
 	// whose only logged-in characters are idle does not register at all.
 	constexpr int32_t IDLE_THRESHOLD_MS = 15 * 60 * 1000;
 
-	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupedPlayers;
+	std::map<std::string, std::vector<std::shared_ptr<Player>>> groupedPlayers;
 	for (const auto &player : getPlayers() | std::views::values) {
-		const uint32_t ip = player->getIP();
-		if (ip != 0 && player->getIdleTime() <= IDLE_THRESHOLD_MS) {
+		const std::string ip = player->getIPString();
+		if (!ip.empty() && player->getIdleTime() <= IDLE_THRESHOLD_MS) {
 			groupedPlayers[ip].emplace_back(player);
 		}
 	}

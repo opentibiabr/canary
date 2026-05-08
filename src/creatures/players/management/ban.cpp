@@ -13,7 +13,7 @@
 #include "database/databasetasks.hpp"
 #include "utils/tools.hpp"
 
-bool Ban::acceptConnection(uint32_t clientIP) {
+bool Ban::acceptConnection(const std::string &clientIP) {
 	std::scoped_lock<std::recursive_mutex> lockClass(lock);
 
 	const uint64_t currentTime = OTSYS_TIME();

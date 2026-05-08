@@ -148,7 +148,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	if (IOBan::isIpBanned(curConnection->getIP(), banInfo)) {
+	const auto ipv4 = curConnection->getIP();
+	if (ipv4 != 0 && IOBan::isIpBanned(ipv4, banInfo)) {
 		if (banInfo.reason.empty()) {
 			banInfo.reason = "(none)";
 		}

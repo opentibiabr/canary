@@ -41,6 +41,8 @@ bool ConfigManager::load() {
 	// Info that must be loaded one time (unless we reset the modules involved)
 	if (!loaded) {
 		loadBoolConfig(L, BIND_ONLY_GLOBAL_ADDRESS, "bindOnlyGlobalAddress", false);
+		loadBoolConfig(L, IPV4, "IPV4", true);
+		loadBoolConfig(L, IPV6, "IPV6", false);
 		loadBoolConfig(L, DISABLE_LEGACY_RAIDS, "disableLegacyRaids", false);
 		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
 		loadBoolConfig(L, OPTIMIZE_DATABASE, "startupDatabaseOptimization", true);

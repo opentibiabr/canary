@@ -963,7 +963,7 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
-	[[nodiscard]] std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
+	[[nodiscard]] std::map<std::string, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
 };
 
 constexpr auto g_game = Game::getInstance;

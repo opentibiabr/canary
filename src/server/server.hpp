@@ -47,6 +47,11 @@ public:
 	}
 };
 
+enum class ServicePortNetwork_t : uint8_t {
+	IPv4,
+	IPv6,
+};
+
 class ServicePort : public std::enable_shared_from_this<ServicePort> {
 public:
 	explicit ServicePort(asio::io_service &init_io_service) :
@@ -67,13 +72,15 @@ public:
 	Protocol_ptr make_protocol(bool checksummed, NetworkMessage &msg, const Connection_ptr &connection) const;
 
 	void onStopServer() const;
-	void onAccept(const Connection_ptr &connection, const std::error_code &error);
+	void onAccept(const Connection_ptr &connection, const std::error_code &error, ServicePortNetwork_t networkProtocol);
 
 private:
-	void accept();
+	void accept(ServicePortNetwork_t networkProtocol);
+	asio::ip::tcp::acceptor* getAcceptor(ServicePortNetwork_t networkProtocol) const;
 
 	asio::io_service &io_service;
-	std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
+	std::unique_ptr<asio::ip::tcp::acceptor> ipv4Acceptor;
+	std::unique_ptr<asio::ip::tcp::acceptor> ipv6Acceptor;
 	std::vector<Service_ptr> services;
 
 	uint16_t serverPort = 0;

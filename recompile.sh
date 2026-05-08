@@ -98,7 +98,7 @@ move_executable() {
 		mv ./"$executable_name" ./"$executable_name".old
 	fi
 	info "Moving the generated executable to the canary folder directory..."
-	cp ./build/linux-release/bin/"$executable_name" ./"$executable_name"
+	cp ./build/"$BUILD_TYPE"/bin/"$executable_name" ./"$executable_name"
 	info "Build completed successfully!"
 }
 

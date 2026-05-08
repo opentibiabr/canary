@@ -33,10 +33,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
               core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -58,7 +58,7 @@ jobs:
           ninja --version
 
       - name: CCache
-        uses: hendrikmuhs/ccache-action@v1.2.20
+        uses: hendrikmuhs/ccache-action@v1.2.23
         with:
           max-size: "1G"
           key: ccache-linux-${{ matrix.buildtype }}
@@ -177,7 +177,7 @@ jobs:
 
       - name: Upload test logs
         if: matrix.buildtype == 'linux-debug' && always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-debug-test-logs
           path: |
@@ -185,7 +185,7 @@ jobs:
             build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.buildtype }}
           path: build/${{ matrix.buildtype }}/bin/

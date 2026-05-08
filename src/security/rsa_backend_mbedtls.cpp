@@ -185,8 +185,6 @@ namespace {
 	private:
 		mbedtls_rsa_context rsa;
 	};
-}
-
 class MbedTlsRsaBackend final : public RsaBackend {
 public:
 	explicit MbedTlsRsaBackend(Logger &logger) :
@@ -307,6 +305,7 @@ private:
 	std::shared_ptr<MbedTlsRawRsaKey> activeKey;
 	mutable std::mutex mutex;
 };
+}
 
 std::unique_ptr<RsaBackend> createMbedTlsRsaBackend(Logger &logger) {
 	return std::make_unique<MbedTlsRsaBackend>(logger);

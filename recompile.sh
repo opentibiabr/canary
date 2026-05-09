@@ -5,14 +5,10 @@ set -euo pipefail
 # Variáveis
 VCPKG_PATH=${1:-"$HOME"}
 VCPKG_PATH=$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake
-ARCHITECTURE=$(uname -m)
-DEFAULT_BUILD_TYPE="linux-release"
-if [[ "$ARCHITECTURE" == "aarch64"* ]]; then
-	DEFAULT_BUILD_TYPE="linux-release-arm"
-fi
-BUILD_TYPE=${2:-"$DEFAULT_BUILD_TYPE"}
+BUILD_TYPE=${2:-"linux-release"}
 EXTRA_CMAKE_ARGS=("${@:3}")
-IS_ARM64=0
+ARCHITECTURE=$(uname -m)
+ARCHITECTUREVALUE=0
 
 # Function to print information messages
 info() {
@@ -96,21 +92,24 @@ build_canary() {
 # Function to move the generated executable
 move_executable() {
 	local executable_name="canary"
+	cd ..
 	if [ -e "$executable_name" ]; then
 		info "Saving old build"
 		mv ./"$executable_name" ./"$executable_name".old
-	fi	
+	fi
+	info "Moving the generated executable to the canary folder directory..."
+	cp ./build/linux-release/bin/"$executable_name" ./"$executable_name"
+	info "Build completed successfully!"
 }
 
 # Main function
 main() {
 	check_command "cmake"
 	check_architecture
-	move_executable
 	setup_canary
 
 	if build_canary; then
-		info "Build completed successfully!"
+		move_executable
 	else
 		echo -e "\033[31m[ERROR]\033[0m Build failed..."
 		exit 1

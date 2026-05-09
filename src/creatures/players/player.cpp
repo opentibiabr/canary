@@ -3754,10 +3754,15 @@ void Player::doAttacking(uint32_t interval) {
 			result = Weapon::useFist(static_self_cast<Player>(), attackedCreature);
 		}
 
+		const uint32_t generation = m_attackCheckGeneration;
 		const auto &task = createPlayerTask(
-			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Creature>(getCreature())] {
-				if (const auto &creature = self.lock()) {
-					creature->checkCreatureAttack(true);
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Player>(getPlayer()), generation] {
+				if (const auto &player = self.lock()) {
+					if (generation != player->m_attackCheckGeneration) {
+						return;
+					}
+
+					player->checkCreatureAttack(true);
 				} }, __FUNCTION__
 		);
 
@@ -5829,6 +5834,7 @@ void Player::requestAttackCheck() {
 	m_hasPendingAttackCheck = true;
 	const auto weakPlayer = std::weak_ptr<Player>(getPlayer());
 	m_pendingAttackCheckEventId = g_dispatcher().scheduleEvent(
+		0,
 		[weakPlayer, generation] {
 			const auto &player = weakPlayer.lock();
 			if (!player) {
@@ -5844,8 +5850,7 @@ void Player::requestAttackCheck() {
 			player->m_hasPendingAttackCheck = false;
 			player->checkCreatureAttack(true);
 		},
-		0, "Player::requestAttackCheck"
-	);
+		"Player::requestAttackCheck");
 }
 
 void Player::goToFollowCreature() {

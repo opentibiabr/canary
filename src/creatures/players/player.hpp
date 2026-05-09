@@ -720,7 +720,7 @@ public:
 	void setFaction(Faction_t factionId);
 	// combat functions
 	bool setAttackedCreature(const std::shared_ptr<Creature> &creature) override;
-	void requestAttackCheck();
+	void requestAttackCheck(uint32_t delay = 0);
 	bool isImmune(CombatType_t type) const override;
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;

@@ -8,6 +8,7 @@
 #include <fstream>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -41,6 +42,7 @@ class TestDatabase final {
 		uint32_t port;
 		std::string sock;
 		std::string schemaPath;
+		std::string clientPath;
 		bool allowReset;
 	};
 
@@ -128,6 +130,33 @@ class TestDatabase final {
 		}
 		quoted += '"';
 		return quoted;
+	}
+
+	static std::string resolveMysqlClient(const EnvMap &env) {
+		if (auto configured = get(env, "TEST_DB_CLIENT", ""); !configured.empty()) {
+			return configured;
+		}
+
+		const auto pathValue = std::getenv("PATH") ? std::string { std::getenv("PATH") } : std::string {};
+		for (const auto name : { "mysql", "mariadb" }) {
+			std::string::size_type begin = 0;
+			while (begin <= pathValue.size()) {
+				const auto end = pathValue.find(':', begin);
+				const auto directory = pathValue.substr(begin, end == std::string::npos ? std::string::npos : end - begin);
+				if (!directory.empty()) {
+					const auto candidate = std::filesystem::path(directory) / name;
+					if (std::filesystem::exists(candidate)) {
+						return candidate.string();
+					}
+				}
+				if (end == std::string::npos) {
+					break;
+				}
+				begin = end + 1;
+			}
+		}
+
+		return "mysql";
 	}
 
 	static bool isSafeTestDatabaseName(std::string_view database) {
@@ -244,11 +273,12 @@ class TestDatabase final {
 		try {
 			defaultsFile = writeMysqlDefaultsFile(config);
 			runCommand(fmt::format(
-				"mysql --defaults-extra-file={} --execute={}",
+				"{} --defaults-extra-file={} --execute={}",
+				shellQuote(config.clientPath),
 				shellQuote(defaultsFile.string()),
 				shellQuote(fmt::format("DROP DATABASE IF EXISTS `{}`; CREATE DATABASE `{}` CHARACTER SET utf8;", config.database, config.database))
 			));
-			runCommand(fmt::format("mysql --defaults-extra-file={} {} < {}", shellQuote(defaultsFile.string()), shellQuote(config.database), shellQuote(config.schemaPath)));
+			runCommand(fmt::format("{} --defaults-extra-file={} {} < {}", shellQuote(config.clientPath), shellQuote(defaultsFile.string()), shellQuote(config.database), shellQuote(config.schemaPath)));
 		} catch (...) {
 			if (!defaultsFile.empty()) {
 				std::filesystem::remove(defaultsFile);
@@ -261,63 +291,67 @@ class TestDatabase final {
 
 public:
 	static void init() {
-		const auto envPath = pickEnvPath();
-		const auto env = loadEnvFile(envPath);
+		static std::once_flag initOnce;
+		std::call_once(initOnce, [] {
+			const auto envPath = pickEnvPath();
+			const auto env = loadEnvFile(envPath);
 
-		std::string host = get(env, "TEST_DB_HOST", "127.0.0.1");
-		std::string user = get(env, "TEST_DB_USER", "root");
-		std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
-		std::string database = get(env, "TEST_DB_NAME", "canary_test");
-		std::string portStr = get(env, "TEST_DB_PORT", "3306");
-		auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
-		std::string sock = get(env, "TEST_DB_SOCKET", "");
-		std::string schemaPath = get(env, "TEST_DB_SCHEMA", nullptr);
+			std::string host = get(env, "TEST_DB_HOST", "127.0.0.1");
+			std::string user = get(env, "TEST_DB_USER", "root");
+			std::string pass = get(env, "TEST_DB_PASSWORD", nullptr, /*required=*/true);
+			std::string database = get(env, "TEST_DB_NAME", "canary_test");
+			std::string portStr = get(env, "TEST_DB_PORT", "3306");
+			auto port = static_cast<uint32_t>(std::strtoul(portStr.c_str(), nullptr, 10));
+			std::string sock = get(env, "TEST_DB_SOCKET", "");
+			std::string schemaPath = get(env, "TEST_DB_SCHEMA", nullptr);
 #ifdef TESTS_SCHEMA_DEFAULT
-		if (schemaPath.empty()) {
-			schemaPath = TESTS_SCHEMA_DEFAULT;
-		}
+			if (schemaPath.empty()) {
+				schemaPath = TESTS_SCHEMA_DEFAULT;
+			}
 #endif
 
-		const DbConfig config {
-			.host = host,
-			.user = user,
-			.pass = pass,
-			.database = database,
-			.port = port,
-			.sock = sock,
-			.schemaPath = schemaPath,
-			.allowReset = getBool(env, "TEST_DB_ALLOW_RESET", false),
-		};
+			const DbConfig config {
+				.host = host,
+				.user = user,
+				.pass = pass,
+				.database = database,
+				.port = port,
+				.sock = sock,
+				.schemaPath = schemaPath,
+				.clientPath = resolveMysqlClient(env),
+				.allowReset = getBool(env, "TEST_DB_ALLOW_RESET", false),
+			};
 
-		int schemaRetries = 30;
-		while (schemaRetries > 0) {
-			try {
-				if (schemaNeedsReset(config)) {
-					resetDatabase(config);
+			int schemaRetries = 30;
+			while (schemaRetries > 0) {
+				try {
+					if (schemaNeedsReset(config)) {
+						resetDatabase(config);
+					}
+					break;
+				} catch (const TestEnvError &error) {
+					schemaRetries--;
+					if (schemaRetries <= 0) {
+						throw;
+					}
+					g_logger().warn("Failed to validate or reset test database schema: {}. Retrying in 1s... ({} attempts remaining)", error.what(), schemaRetries);
+					std::this_thread::sleep_for(std::chrono::seconds(1));
 				}
-				break;
-			} catch (const TestEnvError &error) {
-				schemaRetries--;
-				if (schemaRetries <= 0) {
-					throw;
+			}
+
+			int retries = 30;
+			while (retries > 0) {
+				if (g_database().connect(&host, &user, &pass, &database, port, &sock)) {
+					if (g_database().executeQuery("SELECT 1")) {
+						return;
+					}
+					g_logger().warn("Database connected but failed verification (SELECT 1). Retrying...");
 				}
-				g_logger().warn("Failed to validate or reset test database schema: {}. Retrying in 1s... ({} attempts remaining)", error.what(), schemaRetries);
+				g_logger().warn("Failed to connect to database. Retrying in 1s... ({} attempts remaining)", retries);
 				std::this_thread::sleep_for(std::chrono::seconds(1));
+				retries--;
 			}
-		}
-
-		int retries = 30;
-		while (retries > 0) {
-			if (g_database().connect(&host, &user, &pass, &database, port, &sock)) {
-				if (g_database().executeQuery("SELECT 1")) {
-					return;
-				}
-				g_logger().warn("Database connected but failed verification (SELECT 1). Retrying...");
-			}
-			g_logger().warn("Failed to connect to database. Retrying in 1s... ({} attempts remaining)", retries);
-			std::this_thread::sleep_for(std::chrono::seconds(1));
-			retries--;
-		}
-		throw std::runtime_error("Failed to connect to database after multiple attempts.");
+			throw std::runtime_error("Failed to connect to database after multiple attempts.");
+		});
 	}
 };

@@ -5785,6 +5785,16 @@ bool Player::setFollowCreature(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
+	// Every target transition gets a new generation; older scheduled checks
+	// are considered stale and must not execute.
+	++m_attackCheckGeneration;
+	if (m_pendingAttackCheckEventId != 0) {
+		g_dispatcher().stopEvent(m_pendingAttackCheckEventId);
+		m_pendingAttackCheckEventId = 0;
+	}
+	// Reset pending state for the new generation.
+	m_hasPendingAttackCheck = false;
+
 	if (!Creature::setAttackedCreature(creature)) {
 		sendCancelTarget();
 		return false;
@@ -5800,9 +5810,41 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		checkCreatureAttack();
+		requestAttackCheck();
 	}
 	return true;
+}
+
+void Player::requestAttackCheck() {
+	if (!getAttackedCreature()) {
+		return;
+	}
+
+	// Debounce: one pending attack-check event per player at a time.
+	if (m_pendingAttackCheckEventId != 0 || m_hasPendingAttackCheck) {
+		return;
+	}
+
+	const uint32_t generation = m_attackCheckGeneration;
+	m_hasPendingAttackCheck = true;
+	const auto weakPlayer = std::weak_ptr<Player>(getPlayer());
+	m_pendingAttackCheckEventId = g_dispatcher().scheduleEvent(
+		[weakPlayer, generation] {
+			const auto &player = weakPlayer.lock();
+			if (!player) {
+				return;
+			}
+
+			player->m_pendingAttackCheckEventId = 0;
+			// Drop stale callbacks from older generations or already-cleared state.
+			if (!player->m_hasPendingAttackCheck || generation != player->m_attackCheckGeneration) {
+				return;
+			}
+
+			player->m_hasPendingAttackCheck = false;
+			player->checkCreatureAttack(true);
+		},
+		0, "Player::requestAttackCheck");
 }
 
 void Player::goToFollowCreature() {

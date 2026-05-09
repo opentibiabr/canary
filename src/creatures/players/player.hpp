@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <mutex>
+
 #include "creatures/creature.hpp"
 #include "enums/forge_conversion.hpp"
 #include "game/bank/bank.hpp"
@@ -1812,6 +1814,7 @@ private:
 	uint64_t m_pendingAttackCheckEventId = 0;
 	uint32_t m_attackCheckGeneration = 0;
 	bool m_hasPendingAttackCheck = false;
+	mutable std::mutex m_attackCheckMutex;
 	bool shouldForceLogout = true;
 	bool connProtected = false;
 

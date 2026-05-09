@@ -50,6 +50,7 @@ public:
 	 * @return AccountErrors_t AccountErrors_t::Ok(0) Success, otherwise Fail.
 	 */
 	AccountErrors_t removeCoins(CoinType type, const uint32_t &amount, const std::string &detail = "REMOVE Coins");
+	AccountErrors_t removeCoins(CoinType primaryType, CoinType secondaryType, const uint32_t &amount, const std::string &detail = "REMOVE Coins");
 
 	/**
 	 * @brief Registers a coin transaction.

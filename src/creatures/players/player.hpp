@@ -720,6 +720,7 @@ public:
 	void setFaction(Faction_t factionId);
 	// combat functions
 	bool setAttackedCreature(const std::shared_ptr<Creature> &creature) override;
+	void requestAttackCheck(uint32_t delay = 0);
 	bool isImmune(CombatType_t type) const override;
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;
@@ -1808,6 +1809,9 @@ private:
 	mutable int64_t m_lastImbuementTrackerUpdate = 0;
 	mutable bool m_hasPendingImbuementTrackerUpdate = false;
 	mutable uint64_t m_pendingImbuementTrackerEventId = 0;
+	uint64_t m_pendingAttackCheckEventId = 0;
+	uint32_t m_attackCheckGeneration = 0;
+	bool m_hasPendingAttackCheck = false;
 	bool shouldForceLogout = true;
 	bool connProtected = false;
 

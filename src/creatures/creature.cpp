@@ -148,6 +148,13 @@ void Creature::checkCreatureAttack(bool now) {
 		return;
 	}
 
+	// Player attack checks are debounced in Player::requestAttackCheck()
+	// to avoid duplicate/stale dispatcher events when targets change rapidly.
+	if (const auto &player = getPlayer()) {
+		player->requestAttackCheck();
+		return;
+	}
+
 	g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
 		if (const auto &creature = self.lock()) {
 			creature->checkCreatureAttack(true);

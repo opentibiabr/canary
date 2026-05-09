@@ -3754,10 +3754,15 @@ void Player::doAttacking(uint32_t interval) {
 			result = Weapon::useFist(static_self_cast<Player>(), attackedCreature);
 		}
 
+		const uint32_t generation = m_attackCheckGeneration;
 		const auto &task = createPlayerTask(
-			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Creature>(getCreature())] {
-				if (const auto &creature = self.lock()) {
-					creature->checkCreatureAttack(true);
+			std::max<uint32_t>(SCHEDULER_MINTICKS, delay), [self = std::weak_ptr<Player>(getPlayer()), generation] {
+				if (const auto &player = self.lock()) {
+					if (generation != player->m_attackCheckGeneration) {
+						return;
+					}
+
+					player->checkCreatureAttack(true);
 				} }, __FUNCTION__
 		);
 
@@ -5785,6 +5790,13 @@ bool Player::setFollowCreature(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
+	++m_attackCheckGeneration;
+	if (m_pendingAttackCheckEventId != 0) {
+		g_dispatcher().stopEvent(m_pendingAttackCheckEventId);
+		m_pendingAttackCheckEventId = 0;
+	}
+	m_hasPendingAttackCheck = false;
+
 	if (!Creature::setAttackedCreature(creature)) {
 		sendCancelTarget();
 		return false;
@@ -5800,9 +5812,55 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		checkCreatureAttack();
+		uint32_t delay = 0;
+		if (lastAttack != 0) {
+			const uint32_t elapsed = OTSYS_TIME() - lastAttack;
+			const uint32_t attackSpeed = getAttackSpeed();
+			if (elapsed < attackSpeed) {
+				delay = std::max<uint32_t>(SCHEDULER_MINTICKS, attackSpeed - elapsed);
+			}
+		}
+
+		requestAttackCheck(delay);
 	}
 	return true;
+}
+
+void Player::requestAttackCheck(uint32_t delay) {
+	if (!getAttackedCreature()) {
+		return;
+	}
+
+	// Debounce: one pending attack-check event per player at a time.
+	if (m_pendingAttackCheckEventId != 0 || m_hasPendingAttackCheck) {
+		return;
+	}
+
+	const uint32_t generation = m_attackCheckGeneration;
+	m_hasPendingAttackCheck = true;
+	const auto weakPlayer = std::weak_ptr<Player>(getPlayer());
+	m_pendingAttackCheckEventId = g_dispatcher().scheduleEvent(
+		delay,
+		[weakPlayer, generation] {
+			const auto &player = weakPlayer.lock();
+			if (!player) {
+				return;
+			}
+
+			// Drop stale callbacks from older generations or already-cleared state.
+			if (!player->m_hasPendingAttackCheck || generation != player->m_attackCheckGeneration) {
+				return;
+			}
+
+			player->m_pendingAttackCheckEventId = 0;
+			player->m_hasPendingAttackCheck = false;
+			player->checkCreatureAttack(true);
+		},
+		"Player::requestAttackCheck");
+
+	if (m_pendingAttackCheckEventId == 0) {
+		m_hasPendingAttackCheck = false;
+	}
 }
 
 void Player::goToFollowCreature() {

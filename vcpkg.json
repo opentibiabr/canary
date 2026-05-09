@@ -6,7 +6,6 @@
     "argon2",
     "asio",
     "bext-di",
-    "bext-ut",
     "curl",
     "eventpp",
     "libmariadb",
@@ -21,7 +20,7 @@
     "bshoshany-thread-pool",
     "atomic-queue",
     "nlohmann-json",
-    "openssl"
+    "mbedtls"
   ],
   "features": {
     "tests": {

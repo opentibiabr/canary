@@ -11190,17 +11190,23 @@ void Game::checkForgeEventId(uint32_t monsterId) {
 	}
 }
 
-bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster) {
+bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster, uint16_t stack /* = 0 */) {
 	if (monster && monster->canBeForgeMonster()) {
+		std::erase_if(influencedMonsters, [this](const auto monsterId) {
+			return getMonsterByID(monsterId) == nullptr;
+		});
+
+		const auto monsterId = monster->getID();
+		const bool alreadyInfluenced = influencedMonsters.contains(monsterId);
 		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT));
 		    // If condition
-		    (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
+		    !alreadyInfluenced && (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
 			return false;
 		}
 
 		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
-		monster->configureForgeSystem();
-		influencedMonsters.emplace(monster->getID());
+		monster->configureForgeSystem(stack);
+		influencedMonsters.emplace(monsterId);
 		return true;
 	}
 	return false;
@@ -12068,4 +12074,34 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 	}
 
 	return true;
+}
+
+std::map<uint32_t, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() const {
+	// Reference: https://otland.net/threads/unique-active-player.279129/
+	// Players idle for more than 15 minutes (900000 ms) are excluded so an IP
+	// whose only logged-in characters are idle does not register at all.
+	constexpr int32_t IDLE_THRESHOLD_MS = 15 * 60 * 1000;
+
+	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupedPlayers;
+	for (const auto &player : getPlayers() | std::views::values) {
+		const uint32_t ip = player->getIP();
+		if (ip != 0 && player->getIdleTime() <= IDLE_THRESHOLD_MS) {
+			groupedPlayers[ip].emplace_back(player);
+		}
+	}
+	return groupedPlayers;
+}
+
+PlayerStats Game::getPlayerStats() const {
+	const auto groupedPlayers = groupPlayersByIP();
+
+	PlayerStats stats;
+	stats.totalUniqueIPs = static_cast<uint32_t>(groupedPlayers.size());
+	for (const auto &groupedPlayersByIp : groupedPlayers | std::views::values) {
+		// otservlist regulation: cap each IP at 4 connections counted toward
+		// the public online total, regardless of how many characters from
+		// that IP are actually logged in.
+		stats.filteredOnlinePlayers += std::min<uint32_t>(static_cast<uint32_t>(groupedPlayersByIp.size()), 4);
+	}
+	return stats;
 }

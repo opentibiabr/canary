@@ -2687,7 +2687,7 @@ void Monster::applyStacks() {
 	health = newHealth;
 }
 
-void Monster::configureForgeSystem() {
+void Monster::configureForgeSystem(uint16_t stack /* = 0 */) {
 	if (!canBeForgeMonster()) {
 		return;
 	}
@@ -2697,7 +2697,9 @@ void Monster::configureForgeSystem() {
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
-		auto stack = static_cast<uint16_t>(normal_random(1, 5));
+		if (stack == 0) {
+			stack = static_cast<uint16_t>(normal_random(1, 5));
+		}
 		setForgeStack(stack);
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());

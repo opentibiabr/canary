@@ -87,6 +87,11 @@ struct HighscoreCacheEntry {
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 };
 
+struct PlayerStats {
+	uint32_t filteredOnlinePlayers = 0;
+	uint32_t totalUniqueIPs = 0;
+};
+
 class Game {
 public:
 	Game();
@@ -643,7 +648,7 @@ public:
 	uint32_t makeFiendishMonster(uint32_t forgeableMonsterId = 0, bool createForgeableMonsters = false);
 	uint32_t makeInfluencedMonster();
 
-	bool addInfluencedMonster(const std::shared_ptr<Monster> &monster);
+	bool addInfluencedMonster(const std::shared_ptr<Monster> &monster, uint16_t stack = 0);
 	void sendUpdateCreature(const std::shared_ptr<Creature> &creature);
 	std::shared_ptr<Item> wrapItem(const std::shared_ptr<Item> &item, const std::shared_ptr<House> &house);
 
@@ -696,6 +701,11 @@ public:
 
 	const std::unordered_map<uint16_t, std::string> &getHirelingSkills();
 	const std::unordered_map<uint16_t, std::string> &getHirelingOutfits();
+
+	// Returns counts compliant with the otservlist.org regulations: drops
+	// players idle for more than 15 minutes, caps each IP at 4 connections,
+	// and reports the number of unique IPs that contributed to the count.
+	[[nodiscard]] PlayerStats getPlayerStats() const;
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void updateCreatureShader(const std::shared_ptr<Creature> &creature);
@@ -953,6 +963,7 @@ private:
 	std::string generateHighscoreOrGetCachedQueryForOurRank(const std::string &categoryName, uint8_t entriesPerPage, uint32_t playerGUID, uint32_t vocation);
 
 	void updatePlayersOnline() const;
+	[[nodiscard]] std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
 };
 
 constexpr auto g_game = Game::getInstance;

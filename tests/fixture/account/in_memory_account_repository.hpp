@@ -8,6 +8,7 @@
  */
 #pragma once
 
+#include <algorithm>
 #include <vector>
 #include <string>
 #include <utility>
@@ -16,6 +17,7 @@
 #include "lib/di/container.hpp"
 
 #include "enums/account_coins.hpp"
+#include "enums/account_errors.hpp"
 #include "account/account_info.hpp"
 #include "account/account_repository.hpp"
 
@@ -104,6 +106,63 @@ namespace tests {
 
 			coins_[id][type] = amount;
 			return !failAddCoins;
+		}
+
+		AccountErrors_t removeCoins(
+			const uint32_t &id,
+			CoinType primaryType,
+			CoinType secondaryType,
+			const uint32_t &amount,
+			const std::string &detail,
+			uint32_t &primaryCoinsRemoved,
+			uint32_t &secondaryCoinsRemoved
+		) final {
+			using enum AccountErrors_t;
+
+			primaryCoinsRemoved = 0;
+			secondaryCoinsRemoved = 0;
+
+			if (failAddCoins) {
+				return Storage;
+			}
+
+			auto accountCoins = coins_.find(id);
+			if (accountCoins == coins_.end()) {
+				return Storage;
+			}
+			if (primaryType == secondaryType) {
+				return Storage;
+			}
+
+			auto primaryCoins = accountCoins->second.find(primaryType);
+			auto secondaryCoins = accountCoins->second.find(secondaryType);
+			if (primaryCoins == accountCoins->second.end() || secondaryCoins == accountCoins->second.end()) {
+				return Storage;
+			}
+
+			if (static_cast<uint64_t>(primaryCoins->second) + static_cast<uint64_t>(secondaryCoins->second) < amount) {
+				return RemoveCoins;
+			}
+
+			primaryCoinsRemoved = std::min(primaryCoins->second, amount);
+			secondaryCoinsRemoved = amount - primaryCoinsRemoved;
+			primaryCoins->second -= primaryCoinsRemoved;
+			secondaryCoins->second -= secondaryCoinsRemoved;
+
+			if (!detail.empty()) {
+				if (primaryCoinsRemoved > 0) {
+					if (!registerCoinsTransaction(id, CoinTransactionType::Remove, primaryCoinsRemoved, primaryType, detail)) {
+						return Storage;
+					}
+				}
+				if (secondaryCoinsRemoved > 0) {
+					if (!registerCoinsTransaction(id, CoinTransactionType::Remove, secondaryCoinsRemoved, secondaryType, detail)) {
+						return Storage;
+					}
+				}
+			}
+
+			return Ok;
 		}
 
 		bool registerCoinsTransaction(

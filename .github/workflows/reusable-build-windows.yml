@@ -30,16 +30,16 @@ jobs:
 
       - name: Setup MSBuild.exe
         if: matrix.type == 'Solution'
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
         with:
           vs-prerelease: true
           vs-version: "latest"
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -64,7 +64,7 @@ jobs:
 
       - name: CCache
         if: matrix.type == 'CMake'
-        uses: hendrikmuhs/ccache-action@v1.2.20
+        uses: hendrikmuhs/ccache-action@v1.2.23
         with:
           max-size: "1G"
           variant: "sccache"
@@ -114,7 +114,7 @@ jobs:
 
       - name: Upload artifacts (CMake)
         if: matrix.type == 'CMake'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-cmake-release
           path: build/windows-release/bin/
@@ -154,7 +154,7 @@ jobs:
 
       - name: Upload artifacts
         if: matrix.type == 'Solution'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-solution-debug
           path: artifacts/

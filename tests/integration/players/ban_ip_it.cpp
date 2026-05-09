@@ -10,7 +10,6 @@
 #include <atomic>
 #include <chrono>
 #include <cstdint>
-#include <ctime>
 #include <string>
 #include <system_error>
 
@@ -65,8 +64,12 @@ namespace it_ip_ban {
 			return !error && address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
 		}
 
+		[[nodiscard]] int64_t unixNowSeconds() {
+			return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		}
+
 		bool insertIpBan(Database &db, const std::string &ipAddress, uint8_t ipFamily, const TestIds &ids, const std::string &reason) {
-			const auto now = static_cast<int64_t>(std::time(nullptr));
+			const auto now = unixNowSeconds();
 			const auto legacyIp = legacyIPv4ForIpBan(ipAddress, ipFamily);
 			return db.executeQuery(fmt::format(
 				"INSERT INTO `ip_bans` (`ip`, `ip_address`, `ip_family`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ({}, {}, {}, {}, {}, {}, {})",

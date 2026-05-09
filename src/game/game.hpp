@@ -706,6 +706,7 @@ public:
 	// players idle for more than 15 minutes, caps each IP at 4 connections,
 	// and reports the number of unique IPs that contributed to the count.
 	[[nodiscard]] PlayerStats getPlayerStats() const;
+
 	void sendAttachedEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void sendDetachEffect(const std::shared_ptr<Creature> &creature, uint16_t effectId);
 	void updateCreatureShader(const std::shared_ptr<Creature> &creature);

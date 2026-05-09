@@ -27,7 +27,7 @@ TEST(ServicePortTest, RetriesIPv6IndependentlyWhenIPv4Opens) {
 	EXPECT_TRUE(servicePort->hasPendingStartForTest(ServicePortNetwork_t::IPv6));
 
 	const auto retryEvent = servicePort->getPendingStartEventForTest(ServicePortNetwork_t::IPv6);
-	EXPECT_NE(0, retryEvent);
+	ASSERT_NE(0, retryEvent);
 	g_dispatcher().stopEvent(retryEvent);
 
 	servicePort->close();

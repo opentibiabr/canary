@@ -23,6 +23,12 @@
 #include "io/player_storage_repository.hpp"
 #include "kv/kv.hpp"
 
+namespace {
+	[[nodiscard]] Skulls_t getSerializableSkull(Skulls_t skull) {
+		return (skull == SKULL_RED || skull == SKULL_BLACK) ? skull : SKULL_NONE;
+	}
+} // namespace
+
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
@@ -281,13 +287,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 		query << "`skulltime` = " << skullTime << ",";
 
-		Skulls_t skull = SKULL_NONE;
-		if (player->skull == SKULL_RED) {
-			skull = SKULL_RED;
-		} else if (player->skull == SKULL_BLACK) {
-			skull = SKULL_BLACK;
-		}
-		query << "`skull` = " << static_cast<int64_t>(skull) << ",";
+		query << "`skull` = " << static_cast<int64_t>(getSerializableSkull(player->skull)) << ",";
 	}
 
 	query << "`lastlogout` = " << player->getLastLogout() << ",";

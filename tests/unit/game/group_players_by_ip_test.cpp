@@ -10,10 +10,12 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 
+#include <format>
+
 namespace {
 	std::shared_ptr<Player> makeGroupedIpTestPlayer(uint32_t guid, std::string ipAddress, int32_t idleTime) {
 		auto player = std::make_shared<Player>();
-		player->setName(std::string("GroupedIpPlayer") + std::to_string(guid));
+		player->setName(std::format("GroupedIpPlayer{}", guid));
 		player->setGUID(guid);
 		player->setID();
 		player->setTestIPString(std::move(ipAddress));
@@ -32,7 +34,7 @@ TEST(GameGroupPlayersByIPTest, GroupsIPv4AndIPv6AndSkipsEmptyOrIdlePlayers) {
 	game.addPlayer(makeGroupedIpTestPlayer(4, "", 0));
 	game.addPlayer(makeGroupedIpTestPlayer(5, "198.51.100.10", idleThresholdMs + 1));
 
-	const auto groupedPlayers = game.groupPlayersByIP();
+	const auto groupedPlayers = game.groupPlayersByIPForTest();
 
 	ASSERT_EQ(2u, groupedPlayers.size());
 	ASSERT_TRUE(groupedPlayers.contains("192.0.2.10"));

@@ -24,7 +24,7 @@ struct ConnectBlock {
 	uint32_t count {};
 };
 
-using IpConnectMap = std::map<std::string, ConnectBlock>;
+using IpConnectMap = std::map<std::string, ConnectBlock, std::less<>>;
 
 class Ban {
 public:

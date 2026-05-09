@@ -11,6 +11,8 @@
 
 #include <array>
 #include <optional>
+#include <string>
+#include <vector>
 
 #include "lib/metrics/metrics.hpp"
 #include "server/network/connection/connection.hpp"
@@ -92,6 +94,14 @@ private:
 	void closeAcceptor(ServicePortNetwork_t networkProtocol) const;
 	bool open(ServicePortNetwork_t networkProtocol);
 	std::array<bool, 2> openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, std::array<bool, 2> &retryOpen);
+	[[nodiscard]] bool shouldOpenProtocol(ServicePortNetwork_t currentProtocol, std::optional<ServicePortNetwork_t> selectedProtocol, bool ipv4Enabled, bool ipv6Enabled) const;
+	void setInitialRetryOpen(std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled, std::array<bool, 2> &retryOpen) const;
+	void disableRetryForSelectedProtocols(std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled, std::array<bool, 2> &retryOpen) const;
+	void addBindAddress(std::vector<asio::ip::address> &bindAddresses, const asio::ip::address &address, std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled) const;
+	[[nodiscard]] std::vector<asio::ip::address> resolveBindAddresses(const std::string &configuredBindAddress, std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled) const;
+	void updateRetryForMissingBindFamilies(const std::string &configuredBindAddress, const std::vector<asio::ip::address> &bindAddresses, std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled, std::array<bool, 2> &retryOpen) const;
+	[[nodiscard]] std::array<bool, 2> openBindAddresses(const std::vector<asio::ip::address> &bindAddresses);
+	[[nodiscard]] std::array<bool, 2> openWildcardAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled);
 	bool openNetworkAcceptor(ServicePortNetwork_t networkProtocol, const asio::ip::tcp::endpoint &endpoint);
 	bool isNetworkEnabled(ServicePortNetwork_t networkProtocol) const;
 	bool isBindOnlyGlobalAddress() const;

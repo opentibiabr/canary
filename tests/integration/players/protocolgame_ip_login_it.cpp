@@ -13,6 +13,10 @@
 #include <ctime>
 #include <string>
 #include <utility>
+#include <cstdint>
+#include <string>
+#include <utility>
+
 
 #include <asio/ip/address.hpp>
 #include <fmt/format.h>
@@ -37,6 +41,7 @@ namespace it_protocolgame_ip_login {
 		enum class LoginGateResult : uint8_t { Banned,
 			                                   Authenticated,
 			                                   AuthFailed };
+		using enum LoginGateResult;
 
 		TestLoginIds getTestLoginIds() {
 			static std::atomic<uint32_t> counter { 1 };
@@ -58,6 +63,10 @@ namespace it_protocolgame_ip_login {
 			return address.is_v4() ? htonl(address.to_v4().to_uint()) : 0;
 		}
 
+		[[nodiscard]] int64_t unixNowSeconds() {
+			return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		}
+
 		bool createLoginAccount(Database &db, const TestLoginIds &ids, const std::string &password) {
 			const auto accountInserted = db.executeQuery(fmt::format(
 				"INSERT INTO `accounts` (`id`, `name`, `password`, `email`) VALUES ({}, {}, {}, {})",
@@ -77,7 +86,7 @@ namespace it_protocolgame_ip_login {
 		}
 
 		bool insertIpBan(Database &db, const std::string &ipAddress, uint8_t ipFamily, const TestLoginIds &ids) {
-			const auto now = static_cast<int64_t>(std::time(nullptr));
+			const auto now = unixNowSeconds();
 			const auto legacyIp = ipFamily == 4 ? legacyIPv4ForProtocol(ipAddress) : 0;
 			return db.executeQuery(fmt::format(
 				"INSERT INTO `ip_bans` (`ip`, `ip_address`, `ip_family`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES ({}, {}, {}, 'ProtocolGame login ban regression', {}, {}, {})",
@@ -85,6 +94,7 @@ namespace it_protocolgame_ip_login {
 				db.escapeString(ipAddress),
 				static_cast<uint16_t>(ipFamily),
 				now,
+
 				now + 3600,
 				ids.playerId
 			));
@@ -93,14 +103,14 @@ namespace it_protocolgame_ip_login {
 		LoginGateResult runProtocolGameLoginGateWithLegacyIPv4(const std::string &ipAddress, uint32_t legacyIPv4, const std::string &accountDescriptor, const std::string &password, std::string characterName, uint32_t &accountId) {
 			BanInfo banInfo;
 			if (IOBan::isIpBanned(ipAddress, banInfo)) {
-				return LoginGateResult::Banned;
+				return Banned;
 			}
 
 			if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, false, legacyIPv4)) {
-				return LoginGateResult::AuthFailed;
+				return AuthFailed;
 			}
 
-			return LoginGateResult::Authenticated;
+			return Authenticated;
 		}
 
 		LoginGateResult runProtocolGameLoginGate(const std::string &ipAddress, const std::string &accountDescriptor, const std::string &password, std::string characterName, uint32_t &accountId) {
@@ -121,7 +131,7 @@ namespace it_protocolgame_ip_login {
 			ASSERT_TRUE(createLoginAccount(db, ids, password));
 			ASSERT_TRUE(insertIpBan(db, ipAddress, 4, ids));
 
-			EXPECT_EQ(LoginGateResult::Banned, runProtocolGameLoginGate(ipAddress, ids.email, password, ids.playerName, accountId));
+			EXPECT_EQ(Banned, runProtocolGameLoginGate(ipAddress, ids.email, password, ids.playerName, accountId));
 			EXPECT_EQ(0u, accountId);
 		})();
 	}
@@ -135,7 +145,7 @@ namespace it_protocolgame_ip_login {
 
 			ASSERT_TRUE(createLoginAccount(db, ids, password));
 
-			EXPECT_EQ(LoginGateResult::Authenticated, runProtocolGameLoginGate("192.0.2.56", ids.email, password, ids.playerName, accountId));
+			EXPECT_EQ(Authenticated, runProtocolGameLoginGate("192.0.2.56", ids.email, password, ids.playerName, accountId));
 			EXPECT_EQ(ids.accountId, accountId);
 		})();
 	}
@@ -151,7 +161,7 @@ namespace it_protocolgame_ip_login {
 			ASSERT_TRUE(createLoginAccount(db, ids, password));
 			ASSERT_TRUE(insertIpBan(db, ipAddress, 6, ids));
 
-			EXPECT_EQ(LoginGateResult::Banned, runProtocolGameLoginGate(ipAddress, ids.email, password, ids.playerName, accountId));
+			EXPECT_EQ(Banned, runProtocolGameLoginGate(ipAddress, ids.email, password, ids.playerName, accountId));
 			EXPECT_EQ(0u, accountId);
 		})();
 	}
@@ -166,7 +176,7 @@ namespace it_protocolgame_ip_login {
 			ASSERT_TRUE(createLoginAccount(db, ids, password));
 			EXPECT_EQ(0u, legacyIPv4ForProtocol("2001:db8::56"));
 
-			EXPECT_EQ(LoginGateResult::Authenticated, runProtocolGameLoginGate("2001:db8::56", ids.email, password, ids.playerName, accountId));
+			EXPECT_EQ(Authenticated, runProtocolGameLoginGate("2001:db8::56", ids.email, password, ids.playerName, accountId));
 			EXPECT_EQ(ids.accountId, accountId);
 		})();
 	}
@@ -182,7 +192,7 @@ namespace it_protocolgame_ip_login {
 			ASSERT_TRUE(createLoginAccount(db, ids, password));
 			ASSERT_NE(0u, legacyIPv4);
 
-			EXPECT_EQ(LoginGateResult::Authenticated, runProtocolGameLoginGateWithLegacyIPv4("2001:db8::57", legacyIPv4, ids.email, password, ids.playerName, accountId));
+			EXPECT_EQ(Authenticated, runProtocolGameLoginGateWithLegacyIPv4("2001:db8::57", legacyIPv4, ids.email, password, ids.playerName, accountId));
 			EXPECT_EQ(ids.accountId, accountId);
 		})();
 	}

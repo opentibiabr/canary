@@ -14,6 +14,8 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
 
+#include <string_view>
+
 namespace {
 	constexpr auto retryOpenDelay = 15000;
 	constexpr std::array<ServicePortNetwork_t, 2> networkProtocols {
@@ -21,7 +23,7 @@ namespace {
 		ServicePortNetwork_t::IPv6
 	};
 
-	constexpr size_t networkIndex(ServicePortNetwork_t networkProtocol) {
+	[[nodiscard]] constexpr size_t networkIndex(ServicePortNetwork_t networkProtocol) {
 		return static_cast<size_t>(networkProtocol);
 	}
 } // namespace
@@ -245,7 +247,9 @@ void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, u
 void ServicePort::openAcceptor(const std::weak_ptr<ServicePort> &weak_service, uint16_t port, ServicePortNetwork_t networkProtocol) {
 	if (const auto service = weak_service.lock()) {
 		service->serverPort = port;
-		service->open(networkProtocol);
+		if (!service->open(networkProtocol)) {
+			return;
+		}
 	}
 }
 
@@ -264,6 +268,131 @@ bool ServicePort::open(ServicePortNetwork_t networkProtocol) {
 	return opened[index];
 }
 
+[[nodiscard]] bool ServicePort::shouldOpenProtocol(ServicePortNetwork_t currentProtocol, std::optional<ServicePortNetwork_t> selectedProtocol, bool ipv4Enabled, bool ipv6Enabled) const {
+	if (selectedProtocol && *selectedProtocol != currentProtocol) {
+		return false;
+	}
+
+	return currentProtocol == ServicePortNetwork_t::IPv4 ? ipv4Enabled : ipv6Enabled;
+}
+
+void ServicePort::setInitialRetryOpen(std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled, std::array<bool, 2> &retryOpen) const {
+	for (const auto currentProtocol : networkProtocols) {
+		retryOpen[networkIndex(currentProtocol)] = shouldOpenProtocol(currentProtocol, networkProtocol, ipv4Enabled, ipv6Enabled);
+	}
+}
+
+void ServicePort::disableRetryForSelectedProtocols(std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled, std::array<bool, 2> &retryOpen) const {
+	for (const auto currentProtocol : networkProtocols) {
+		if (shouldOpenProtocol(currentProtocol, networkProtocol, ipv4Enabled, ipv6Enabled)) {
+			retryOpen[networkIndex(currentProtocol)] = false;
+		}
+	}
+}
+
+void ServicePort::addBindAddress(std::vector<asio::ip::address> &bindAddresses, const asio::ip::address &address, std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled) const {
+	ServicePortNetwork_t addressProtocol;
+	if (address.is_v4()) {
+		addressProtocol = ServicePortNetwork_t::IPv4;
+	} else if (address.is_v6()) {
+		addressProtocol = ServicePortNetwork_t::IPv6;
+	} else {
+		return;
+	}
+
+	if (!shouldOpenProtocol(addressProtocol, networkProtocol, ipv4Enabled, ipv6Enabled)) {
+		return;
+	}
+
+	const auto hasAddressForProtocol = std::ranges::any_of(bindAddresses, [addressProtocol](const asio::ip::address &bindAddress) {
+		return addressProtocol == ServicePortNetwork_t::IPv4 ? bindAddress.is_v4() : bindAddress.is_v6();
+	});
+	if (!hasAddressForProtocol) {
+		bindAddresses.emplace_back(address);
+	}
+}
+
+[[nodiscard]] std::vector<asio::ip::address> ServicePort::resolveBindAddresses(const std::string &configuredBindAddress, std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled) const {
+	std::vector<asio::ip::address> bindAddresses;
+
+	std::error_code parseError;
+	const auto literalAddress = asio::ip::address::from_string(configuredBindAddress, parseError);
+
+	std::error_code resolveError;
+	asio::ip::tcp::resolver resolver(io_service);
+	const auto resolvedEndpoints = resolver.resolve(configuredBindAddress, std::to_string(serverPort), resolveError);
+	if (!resolveError) {
+		for (const auto &entry : resolvedEndpoints) {
+			addBindAddress(bindAddresses, entry.endpoint().address(), networkProtocol, ipv4Enabled, ipv6Enabled);
+		}
+		return bindAddresses;
+	}
+
+	if (!parseError) {
+		addBindAddress(bindAddresses, literalAddress, networkProtocol, ipv4Enabled, ipv6Enabled);
+		return bindAddresses;
+	}
+
+	g_logger().warn("[ServicePort::open] - Failed to resolve bind address '{}' for port {}: {}; literal parse error: {}", configuredBindAddress, serverPort, resolveError.message(), parseError.message());
+	return bindAddresses;
+}
+
+void ServicePort::updateRetryForMissingBindFamilies(const std::string &configuredBindAddress, const std::vector<asio::ip::address> &bindAddresses, std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled, std::array<bool, 2> &retryOpen) const {
+	const bool hasIPv4BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v4(); });
+	const bool hasIPv6BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v6(); });
+
+	std::error_code parseError;
+	const auto literalAddress = asio::ip::address::from_string(configuredBindAddress, parseError);
+
+	auto disableRetryIfMissing = [&](ServicePortNetwork_t currentProtocol, bool hasBindAddress, std::string_view protocolName, std::string_view configName) {
+		if (!shouldOpenProtocol(currentProtocol, networkProtocol, ipv4Enabled, ipv6Enabled) || hasBindAddress) {
+			return;
+		}
+
+		retryOpen[networkIndex(currentProtocol)] = false;
+		if (!parseError) {
+			g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but {} is enabled - {} will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6", configName, protocolName);
+			return;
+		}
+
+		g_logger().warn("[ServicePort::open] - Configured bind address '{}' did not resolve to an {} address, but {} is enabled - {} will not be bound", configuredBindAddress, protocolName, configName, protocolName);
+	};
+
+	disableRetryIfMissing(ServicePortNetwork_t::IPv4, hasIPv4BindAddress, "IPv4", "IPV4");
+	disableRetryIfMissing(ServicePortNetwork_t::IPv6, hasIPv6BindAddress, "IPv6", "IPV6");
+}
+
+[[nodiscard]] std::array<bool, 2> ServicePort::openBindAddresses(const std::vector<asio::ip::address> &bindAddresses) {
+	std::array<bool, 2> opened {};
+	for (const auto &bindAddress : bindAddresses) {
+		ServicePortNetwork_t networkProtocol;
+		if (bindAddress.is_v4()) {
+			networkProtocol = ServicePortNetwork_t::IPv4;
+		} else if (bindAddress.is_v6()) {
+			networkProtocol = ServicePortNetwork_t::IPv6;
+		} else {
+			continue;
+		}
+
+		const auto index = networkIndex(networkProtocol);
+		opened[index] = openNetworkAcceptor(networkProtocol, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened[index];
+	}
+
+	return opened;
+}
+
+[[nodiscard]] std::array<bool, 2> ServicePort::openWildcardAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, bool ipv4Enabled, bool ipv6Enabled) {
+	std::array<bool, 2> opened {};
+	if (shouldOpenProtocol(ServicePortNetwork_t::IPv4, networkProtocol, ipv4Enabled, ipv6Enabled)) {
+		opened[networkIndex(ServicePortNetwork_t::IPv4)] = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort));
+	}
+	if (shouldOpenProtocol(ServicePortNetwork_t::IPv6, networkProtocol, ipv4Enabled, ipv6Enabled)) {
+		opened[networkIndex(ServicePortNetwork_t::IPv6)] = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort));
+	}
+
+	return opened;
+}
+
 std::array<bool, 2> ServicePort::openConfiguredAcceptors(std::optional<ServicePortNetwork_t> networkProtocol, std::array<bool, 2> &retryOpen) {
 	std::array<bool, 2> opened {};
 	retryOpen = {};
@@ -275,106 +404,25 @@ std::array<bool, 2> ServicePort::openConfiguredAcceptors(std::optional<ServicePo
 		return opened;
 	}
 
-	auto shouldOpenProtocol = [&](ServicePortNetwork_t currentProtocol) {
-		if (networkProtocol && *networkProtocol != currentProtocol) {
-			return false;
-		}
-
-		return currentProtocol == ServicePortNetwork_t::IPv4 ? ipv4Enabled : ipv6Enabled;
-	};
-
-	for (const auto currentProtocol : networkProtocols) {
-		retryOpen[networkIndex(currentProtocol)] = shouldOpenProtocol(currentProtocol);
-	}
-
-	if (networkProtocol && !shouldOpenProtocol(*networkProtocol)) {
+	setInitialRetryOpen(networkProtocol, ipv4Enabled, ipv6Enabled, retryOpen);
+	if (networkProtocol && !shouldOpenProtocol(*networkProtocol, networkProtocol, ipv4Enabled, ipv6Enabled)) {
 		return opened;
 	}
 
-	auto disableRetryForSelectedProtocols = [&] {
-		for (const auto currentProtocol : networkProtocols) {
-			if (shouldOpenProtocol(currentProtocol)) {
-				retryOpen[networkIndex(currentProtocol)] = false;
-			}
-		}
-	};
-
 	if (isBindOnlyGlobalAddress()) {
 		const auto configuredBindAddress = g_configManager().getString(IP);
-		std::vector<asio::ip::address> bindAddresses;
-
-		auto addResolvedBindAddress = [&](const asio::ip::address &address) {
-			if (address.is_v4()) {
-				if (shouldOpenProtocol(ServicePortNetwork_t::IPv4) && std::ranges::none_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v4(); })) {
-					bindAddresses.emplace_back(address);
-				}
-			} else if (address.is_v6()) {
-				if (shouldOpenProtocol(ServicePortNetwork_t::IPv6) && std::ranges::none_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v6(); })) {
-					bindAddresses.emplace_back(address);
-				}
-			}
-		};
-
-		std::error_code parseError;
-		const auto literalAddress = asio::ip::address::from_string(configuredBindAddress, parseError);
-
-		std::error_code resolveError;
-		asio::ip::tcp::resolver resolver(io_service);
-		const auto resolvedEndpoints = resolver.resolve(configuredBindAddress, std::to_string(serverPort), resolveError);
-		if (!resolveError) {
-			for (const auto &entry : resolvedEndpoints) {
-				addResolvedBindAddress(entry.endpoint().address());
-			}
-		} else if (!parseError) {
-			addResolvedBindAddress(literalAddress);
-		} else {
-			g_logger().warn("[ServicePort::open] - Failed to resolve bind address '{}' for port {}: {}; literal parse error: {}", configuredBindAddress, serverPort, resolveError.message(), parseError.message());
-		}
-
+		const auto bindAddresses = resolveBindAddresses(configuredBindAddress, networkProtocol, ipv4Enabled, ipv6Enabled);
 		if (bindAddresses.empty()) {
 			g_logger().warn("[ServicePort::open] - No bind address found for '{}' on port {} with IPV4={} and IPV6={}", configuredBindAddress, serverPort, ipv4Enabled, ipv6Enabled);
-			disableRetryForSelectedProtocols();
+			disableRetryForSelectedProtocols(networkProtocol, ipv4Enabled, ipv6Enabled, retryOpen);
 			return opened;
 		}
 
-		const bool hasIPv4BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v4(); });
-		const bool hasIPv6BindAddress = std::ranges::any_of(bindAddresses, [](const asio::ip::address &bindAddress) { return bindAddress.is_v6(); });
-
-		if (shouldOpenProtocol(ServicePortNetwork_t::IPv4) && !hasIPv4BindAddress) {
-			retryOpen[networkIndex(ServicePortNetwork_t::IPv4)] = false;
-			if (!parseError) {
-				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but IPV4 is enabled - IPv4 will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6");
-			} else {
-				g_logger().warn("[ServicePort::open] - Configured bind address '{}' did not resolve to an IPv4 address, but IPV4 is enabled - IPv4 will not be bound", configuredBindAddress);
-			}
-		}
-
-		if (shouldOpenProtocol(ServicePortNetwork_t::IPv6) && !hasIPv6BindAddress) {
-			retryOpen[networkIndex(ServicePortNetwork_t::IPv6)] = false;
-			if (!parseError) {
-				g_logger().warn("[ServicePort::open] - Configured bind address '{}' is {}, but IPV6 is enabled - IPv6 will not be bound", configuredBindAddress, literalAddress.is_v4() ? "IPv4" : "IPv6");
-			} else {
-				g_logger().warn("[ServicePort::open] - Configured bind address '{}' did not resolve to an IPv6 address, but IPV6 is enabled - IPv6 will not be bound", configuredBindAddress);
-			}
-		}
-
-		for (const auto &bindAddress : bindAddresses) {
-			if (bindAddress.is_v4()) {
-				opened[networkIndex(ServicePortNetwork_t::IPv4)] = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened[networkIndex(ServicePortNetwork_t::IPv4)];
-			} else if (bindAddress.is_v6()) {
-				opened[networkIndex(ServicePortNetwork_t::IPv6)] = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(bindAddress, serverPort)) || opened[networkIndex(ServicePortNetwork_t::IPv6)];
-			}
-		}
-	} else {
-		if (shouldOpenProtocol(ServicePortNetwork_t::IPv4)) {
-			opened[networkIndex(ServicePortNetwork_t::IPv4)] = openNetworkAcceptor(ServicePortNetwork_t::IPv4, asio::ip::tcp::endpoint(asio::ip::address_v4::any(), serverPort));
-		}
-		if (shouldOpenProtocol(ServicePortNetwork_t::IPv6)) {
-			opened[networkIndex(ServicePortNetwork_t::IPv6)] = openNetworkAcceptor(ServicePortNetwork_t::IPv6, asio::ip::tcp::endpoint(asio::ip::address_v6::any(), serverPort));
-		}
+		updateRetryForMissingBindFamilies(configuredBindAddress, bindAddresses, networkProtocol, ipv4Enabled, ipv6Enabled, retryOpen);
+		return openBindAddresses(bindAddresses);
 	}
 
-	return opened;
+	return openWildcardAcceptors(networkProtocol, ipv4Enabled, ipv6Enabled);
 }
 
 void ServicePort::open(uint16_t port) {

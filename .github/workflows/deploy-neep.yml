@@ -135,37 +135,37 @@ jobs:
             export VCPKG_ROOT="$VCPKG_DIR"
             export PATH="$VCPKG_DIR:$PATH"
 
-            echo "=== [1/7] Checkout da branch: $BRANCH ==="
+            echo "=== [1/7] Checking out branch: $BRANCH ==="
             cd "$CANARY_DIR"
             git fetch origin
             git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
             git reset --hard "origin/$BRANCH"
             git clean -fdx --exclude=build --exclude=config.lua
 
-            echo "=== [2/7] Atualizando vcpkg ==="
+            echo "=== [2/7] Updating vcpkg ==="
             if [ ! -d "$VCPKG_DIR/.git" ]; then
-              echo "ERRO: $VCPKG_DIR não é um clone git do vcpkg"
+              echo "ERROR: $VCPKG_DIR is not a git clone of vcpkg"
               exit 1
             fi
             git -C "$VCPKG_DIR" fetch --tags origin
             git -C "$VCPKG_DIR" reset --hard origin/master
             "$VCPKG_DIR/bootstrap-vcpkg.sh" -disableMetrics
 
-            echo "=== [3/7] Preparando build ==="
+            echo "=== [3/7] Preparing build ==="
             if [ "$IS_CLEAN" = "true" ]; then
-              echo "Comando '/deploy clean' detectado. Apagando $BUILD_DIR..."
+              echo "'/deploy clean' command detected. Removing $BUILD_DIR..."
               rm -rf "$BUILD_DIR"
             else
-              echo "Reaproveitando $BUILD_DIR se existir..."
+              echo "Reusing $BUILD_DIR if it exists..."
             fi
 
-            echo "=== [4/7] Configurando CMake ==="
+            echo "=== [4/7] Configuring CMake ==="
             cmake --preset "$BUILD_PRESET" -DTOGGLE_BIN_FOLDER=ON
 
-            echo "=== [5/7] Compilando ==="
+            echo "=== [5/7] Compiling ==="
             cmake --build --preset "$BUILD_PRESET"
 
-            echo "=== [6/7] Deploy do binário ==="
+            echo "=== [6/7] Deploying binary ==="
             stopped_canary=false
             restore_canary() {
               if [ "$stopped_canary" = "true" ]; then
@@ -180,7 +180,7 @@ jobs:
             fi
             sleep 3
             if systemctl is-active --quiet canary; then
-              echo "ERRO: serviço canary ainda está rodando após o stop!"
+              echo "ERROR: canary service is still running after stop!"
               exit 1
             fi
             install -m 0755 "$BUILD_DIR/bin/canary" "$CANARY_DIR/canary"
@@ -188,9 +188,9 @@ jobs:
             ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
             sed -i "s/^serverMotd = \".*\"/serverMotd = \"Welcome to the Canary Test Server! Currently running branch: $ESCAPED_BRANCH\"/" "$CANARY_DIR/config.lua"
 
-            echo "=== [7/7] Atualizando configs e iniciando serviço ==="
+            echo "=== [7/7] Updating configs and starting service ==="
 
-            echo "Atualizando $CANARY_DIR/data/stages.lua"
+            echo "Updating $CANARY_DIR/data/stages.lua"
             cat << 'EOF' > "$CANARY_DIR/data/stages.lua"
             -- Minlevel and multiplier are MANDATORY
             -- Maxlevel is OPTIONAL, but is considered infinite by default
@@ -317,7 +317,7 @@ jobs:
             }
             EOF
 
-            echo "Atualizando $CANARY_DIR/data/XML/vocations.xml"
+            echo "Updating $CANARY_DIR/data/XML/vocations.xml"
             cat << 'EOF' > "$CANARY_DIR/data/XML/vocations.xml"
             <?xml version="1.0" encoding="UTF-8"?>
             <vocations>
@@ -474,7 +474,7 @@ jobs:
             systemctl start canary
             sleep 3
             if ! systemctl is-active --quiet canary; then
-              echo "ERRO: serviço canary não está rodando após o start!"
+              echo "ERROR: canary service is not running after start!"
               systemctl status canary --no-pager || true
               exit 1
             fi

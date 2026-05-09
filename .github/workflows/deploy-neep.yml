@@ -120,10 +120,10 @@ jobs:
           password: ${{ secrets.NEEP_PASS }}
           timeout: 300s
           command_timeout: 30m
-          capture_stdout: true
           script: |
             set -euo pipefail
-            exec 2>&1
+            : > /tmp/canary-deploy.log
+            exec > >(tee /tmp/canary-deploy.log) 2>&1
 
             CANARY_DIR=/opt/canary
             VCPKG_DIR="$HOME/vcpkg"
@@ -483,25 +483,23 @@ jobs:
             echo "DEPLOY_SUCCESS=true"
 
       # ---------------------------------------------------------
-      # Truncate captured remote output for use in PR comments.
-      # GitHub comment body limit is ~65k chars; keep the tail.
+      # On failure, fetch the tail of the remote deploy log over a
+      # second SSH session. This keeps the captured output small
+      # (well under ARG_MAX and under GitHub's ~65k comment limit)
+      # without piping the full multi-MB build log through env vars.
       # ---------------------------------------------------------
-      - name: Truncate remote output for comment
-        if: always()
-        id: trim_output
-        env:
-          REMOTE_LOG: ${{ steps.remote.outputs.stdout }}
-        run: |
-          {
-            echo "log<<__END_LOG__"
-            if [ -n "$REMOTE_LOG" ]; then
-              printf '%s' "$REMOTE_LOG" | tail -c 50000
-              echo
-            else
-              echo "(remote step produced no captured output)"
-            fi
-            echo "__END_LOG__"
-          } >> "$GITHUB_OUTPUT"
+      - name: Fetch remote deploy log tail
+        if: always() && steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
+        id: fetch_log
+        uses: appleboy/ssh-action@91f3272fc5907f4699dcf59761eb622a07342f5a
+        with:
+          host: ${{ secrets.NEEP_HOST }}
+          username: root
+          password: ${{ secrets.NEEP_PASS }}
+          timeout: 60s
+          command_timeout: 60s
+          capture_stdout: true
+          script: tail -c 50000 /tmp/canary-deploy.log 2>/dev/null || echo "(no deploy log on remote)"
 
       # ---------------------------------------------------------
       # Success or failure comment
@@ -530,7 +528,7 @@ jobs:
             <details><summary>Click to expand</summary>
 
             ````
-            ${{ steps.trim_output.outputs.log }}
+            ${{ steps.fetch_log.outputs.stdout }}
             ````
 
             </details>

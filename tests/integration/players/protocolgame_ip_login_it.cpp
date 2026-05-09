@@ -17,7 +17,6 @@
 #include <string>
 #include <utility>
 
-
 #include <asio/ip/address.hpp>
 #include <fmt/format.h>
 #include <gtest/gtest.h>

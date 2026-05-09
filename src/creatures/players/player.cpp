@@ -5856,7 +5856,8 @@ void Player::requestAttackCheck(uint32_t delay) {
 			player->m_hasPendingAttackCheck = false;
 			player->checkCreatureAttack(true);
 		},
-		"Player::requestAttackCheck");
+		"Player::requestAttackCheck"
+	);
 
 	if (m_pendingAttackCheckEventId == 0) {
 		m_hasPendingAttackCheck = false;

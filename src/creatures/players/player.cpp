@@ -5824,15 +5824,15 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 		setFollowCreature(nullptr);
 	}
 
-		if (creature) {
-			uint32_t delay = 0;
-			if (lastAttack != 0) {
-				const uint64_t elapsed = OTSYS_TIME() - lastAttack;
-				const uint32_t attackSpeed = getAttackSpeed();
-				if (elapsed < attackSpeed) {
-					delay = std::max<uint32_t>(SCHEDULER_MINTICKS, static_cast<uint32_t>(attackSpeed - elapsed));
-				}
+	if (creature) {
+		uint32_t delay = 0;
+		if (lastAttack != 0) {
+			const uint64_t elapsed = OTSYS_TIME() - lastAttack;
+			const uint32_t attackSpeed = getAttackSpeed();
+			if (elapsed < attackSpeed) {
+				delay = std::max<uint32_t>(SCHEDULER_MINTICKS, static_cast<uint32_t>(attackSpeed - elapsed));
 			}
+		}
 
 		requestAttackCheck(delay);
 	}
@@ -5895,7 +5895,8 @@ void Player::requestAttackCheck(uint32_t delay) {
 			}
 			player->checkCreatureAttack(true);
 		},
-		"Player::requestAttackCheck");
+		"Player::requestAttackCheck"
+	);
 
 	uint64_t eventIdToCancel = 0;
 	{

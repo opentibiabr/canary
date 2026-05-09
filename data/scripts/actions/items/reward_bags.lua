@@ -1,8 +1,3 @@
-local testMode = {
-	active = false,
-	valueOpen = 100,
-}
-
 local rewardBags = {
 	[BAG_YOU_DESIRE] = {
 		{ id = 34082, name = "soulcutter", weight = 0.05 },
@@ -77,11 +72,41 @@ local rewardBags = {
 
 local randomItems = Action()
 local warnedLegacyChanceField = false
+_G.RewardBagSystem = _G.RewardBagSystem or {}
+_G.RewardBagSystem.rewardBags = rewardBags
+
+local function canAddItemToBackpackSilently(player, itemId, count)
+	local backpack = player:getSlotItem(CONST_SLOT_BACKPACK)
+	if not backpack then
+		return false
+	end
+
+	local itemType = ItemType(itemId)
+	if not itemType then
+		return false
+	end
+
+	local itemWeight = itemType:getWeight(count) / 100
+	if (player:getFreeCapacity() / 100) < itemWeight then
+		return false
+	end
+
+	local emptySlots = backpack:getEmptySlots(true)
+	if itemType:isStackable() then
+		local stackSize = itemType:getStackSize()
+		local requiredSlots = math.max(1, math.ceil(count / stackSize))
+		return emptySlots >= requiredSlots
+	end
+
+	return emptySlots >= count
+end
 
 local function addRewardToPlayer(player, itemId, count)
-	local addToBackpack = player:addItem(itemId, count, false)
-	if addToBackpack then
-		return true, "backpack", addToBackpack
+	if canAddItemToBackpackSilently(player, itemId, count) then
+		local addToBackpack = player:addItem(itemId, count, false)
+		if addToBackpack then
+			return true, "backpack", addToBackpack
+		end
 	end
 
 	local addToInbox = player:addItemStoreInbox(itemId, count, true, false)
@@ -134,56 +159,12 @@ local function selectReward(rewardBag)
 
 	return rewardBag[#rewardBag]
 end
+_G.RewardBagSystem.selectReward = selectReward
 
 function randomItems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local rewardBag = rewardBags[item.itemid]
 	if not rewardBag then
 		return false
-	end
-
-	local isTestMode = testMode and testMode.active
-	if isTestMode then
-		local openCount = math.max(1, tonumber(testMode.valueOpen) or 1)
-		local receivedSummary = {}
-		local totalItemsReceived = 0
-
-		for _ = 1, openCount do
-			local rewardItem = selectReward(rewardBag)
-			local rewardCount = rewardItem.count or 1
-			totalItemsReceived = totalItemsReceived + rewardCount
-
-			local current = receivedSummary[rewardItem.id]
-			if current then
-				current.count = current.count + rewardCount
-			else
-				receivedSummary[rewardItem.id] = {
-					name = rewardItem.name,
-					count = rewardCount,
-				}
-			end
-		end
-
-		local summaryList = {}
-		for itemId, summary in pairs(receivedSummary) do
-			summaryList[#summaryList + 1] = {
-				itemId = itemId,
-				name = summary.name,
-				count = summary.count,
-			}
-		end
-
-		table.sort(summaryList, function(a, b)
-			return a.count > b.count
-		end)
-
-		logger.info(string.format("[testmode] player=%s item=%s itemId=%d opens=%d totalItems=%d uniqueItems=%d", player:getName(), item:getName(), item.itemid, openCount, totalItemsReceived, #summaryList))
-		for _, entry in ipairs(summaryList) do
-			local percent = (entry.count / totalItemsReceived) * 100
-			logger.info(string.format("[testmode] reward itemId=%d name=%s count=%d normalized=%.4f%%", entry.itemId, entry.name, entry.count, percent))
-		end
-
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Test mode: simulated %d reward bag opens and %d total item(s). Check server log for details.", openCount, totalItemsReceived))
-		return true
 	end
 
 	local rewardItem = selectReward(rewardBag)

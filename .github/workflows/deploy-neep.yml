@@ -166,8 +166,23 @@ jobs:
             cmake --build --preset "$BUILD_PRESET"
 
             echo "=== [6/7] Deploy do binário ==="
-            systemctl stop canary 2>/dev/null || true
+            stopped_canary=false
+            restore_canary() {
+              if [ "$stopped_canary" = "true" ]; then
+                systemctl start canary || true
+              fi
+            }
+            trap restore_canary EXIT
+
+            if systemctl is-active --quiet canary; then
+              systemctl stop canary
+              stopped_canary=true
+            fi
             sleep 3
+            if systemctl is-active --quiet canary; then
+              echo "ERRO: serviço canary ainda está rodando após o stop!"
+              exit 1
+            fi
             install -m 0755 "$BUILD_DIR/bin/canary" "$CANARY_DIR/canary"
 
             ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
@@ -463,6 +478,7 @@ jobs:
               systemctl status canary --no-pager || true
               exit 1
             fi
+            trap - EXIT
 
             echo "DEPLOY_SUCCESS=true"
 

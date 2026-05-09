@@ -76,6 +76,10 @@ _G.RewardBagSystem = _G.RewardBagSystem or {}
 _G.RewardBagSystem.rewardBags = rewardBags
 
 local function canAddItemToBackpackSilently(player, itemId, count)
+	if type(count) ~= "number" or count < 1 or count ~= math.floor(count) then
+		return false
+	end
+
 	local backpack = player:getSlotItem(CONST_SLOT_BACKPACK)
 	if not backpack then
 		return false

@@ -9,14 +9,14 @@ jobs:
     steps:
       - name: Checkout repository (PR head branch for same-repo PRs)
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
 
       - name: Checkout repository (default ref)
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -41,7 +41,7 @@ jobs:
           clangFormatVersion: 17
           inplace: true
 
-      - uses: JohnnyMorganz/stylua-action@v3
+      - uses: JohnnyMorganz/stylua-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
@@ -54,7 +54,7 @@ jobs:
 
       - name: Commit formatting changes
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           author_name: GitHub Actions
           author_email: github-actions[bot]@users.noreply.github.com
@@ -86,7 +86,7 @@ jobs:
 
       - name: Upload formatting patch
         if: steps.formatting-diff.outputs.has_changes == 'true' && github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: formatting.patch
           path: formatting.patch

@@ -33,10 +33,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
               core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -58,7 +58,7 @@ jobs:
           ninja --version
 
       - name: CCache
-        uses: hendrikmuhs/ccache-action@v1.2.20
+        uses: hendrikmuhs/ccache-action@v1.2.23
         with:
           max-size: "1G"
           key: ccache-linux-${{ matrix.buildtype }}
@@ -111,10 +111,81 @@ jobs:
           TEST_DB_PASSWORD: root
           TEST_DB_NAME: canary_test
           TEST_DB_ALLOW_RESET: "1"
-        run: ctest --test-dir build/${{ matrix.buildtype }} --output-on-failure --parallel 2
+          GTEST_OUTPUT: xml:build/${{ matrix.buildtype }}/test-logs/gtest/
+        run: |
+          set -o pipefail
+          mkdir -p build/${{ matrix.buildtype }}/test-logs
+          echo "=== Focused DB smoke (raw canary_it) ==="
+          GTEST_OUTPUT="xml:build/${{ matrix.buildtype }}/test-logs/gtest-smoke/" \
+            build/${{ matrix.buildtype }}/tests/integration/canary_it \
+            --gtest_filter=PlayerStorageRepositoryDBTest.Upsert \
+            --gtest_also_run_disabled_tests \
+            2>&1 | tee build/${{ matrix.buildtype }}/test-logs/canary-it-smoke.log
+          echo "=== Focused bootstrap smoke (raw canary_it) ==="
+          GTEST_OUTPUT="xml:build/${{ matrix.buildtype }}/test-logs/gtest-bootstrap-smoke/" \
+            build/${{ matrix.buildtype }}/tests/integration/canary_it \
+            --gtest_filter=RsaIntegrationTest.StartLoadsPemAndDecryptsFallbackCompatibleBlock \
+            --gtest_also_run_disabled_tests \
+            2>&1 | tee build/${{ matrix.buildtype }}/test-logs/canary-it-bootstrap-smoke.log
+          ctest --test-dir build/${{ matrix.buildtype }} -N
+          ctest --test-dir build/${{ matrix.buildtype }} \
+            --output-on-failure \
+            --verbose \
+            --parallel 2 \
+            2>&1 | tee build/${{ matrix.buildtype }}/test-logs/ctest-linux-debug.log
+
+      - name: Summarize test failure
+        if: matrix.buildtype == 'linux-debug' && failure()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          candidates = [
+              Path("build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log"),
+              Path("build/${{ matrix.buildtype }}/test-logs/canary-it-smoke.log"),
+              Path("build/${{ matrix.buildtype }}/test-logs/canary-it-bootstrap-smoke.log"),
+              Path("build/${{ matrix.buildtype }}/test-logs/ctest-linux-debug.log"),
+          ]
+          parts = []
+          for path in candidates:
+              if not path.exists():
+                  continue
+              text = path.read_text(errors="replace")
+              lines = text.splitlines()
+              failed = [line for line in lines if "***Failed" in line or "[  FAILED  ]" in line or "FAILED TEST" in line]
+              tail = lines[-120:]
+              parts.append(f"## {path}\n")
+              if failed:
+                  parts.append("Failed lines:\n" + "\n".join(failed[-40:]) + "\n")
+              parts.append("Tail:\n" + "\n".join(tail))
+
+          gtest_dir = Path("build/${{ matrix.buildtype }}/test-logs/gtest")
+          if gtest_dir.exists():
+              failures = []
+              for path in sorted(gtest_dir.rglob("*.xml")):
+                  text = path.read_text(errors="replace")
+                  if "<failure" in text or 'failures="0"' not in text:
+                      failures.append(f"## {path}\n{text[:4000]}")
+              if failures:
+                  parts.append("GoogleTest XML failures:\n" + "\n\n".join(failures[:10]))
+
+          message = "\n\n".join(parts) if parts else "CTest failed, but no CTest log files were found."
+          message = message.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=CTest linux-debug failure::{message}")
+          PY
+
+      - name: Upload test logs
+        if: matrix.buildtype == 'linux-debug' && always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-debug-test-logs
+          path: |
+            build/${{ matrix.buildtype }}/test-logs/
+            build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.buildtype }}
           path: build/${{ matrix.buildtype }}/bin/

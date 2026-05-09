@@ -5844,7 +5844,8 @@ void Player::requestAttackCheck() {
 			player->m_hasPendingAttackCheck = false;
 			player->checkCreatureAttack(true);
 		},
-		0, "Player::requestAttackCheck");
+		0, "Player::requestAttackCheck"
+	);
 }
 
 void Player::goToFollowCreature() {

@@ -131,6 +131,8 @@ jobs:
             BUILD_DIR="$CANARY_DIR/build/$BUILD_PRESET"
             BRANCH="${{ steps.setup.outputs.name }}"
             IS_CLEAN="${{ steps.setup.outputs.is_clean }}"
+            HAS_PR="${{ steps.setup.outputs.has_pr }}"
+            PR_NUMBER="${{ steps.setup.outputs.pr_number }}"
 
             export VCPKG_ROOT="$VCPKG_DIR"
             export PATH="$VCPKG_DIR:$PATH"
@@ -138,8 +140,16 @@ jobs:
             echo "=== [1/7] Checking out branch: $BRANCH ==="
             cd "$CANARY_DIR"
             git fetch origin
-            git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
-            git reset --hard "origin/$BRANCH"
+            if [ "$HAS_PR" = "true" ] && [ -n "$PR_NUMBER" ]; then
+              # PR head may live in a fork; use the GitHub PR ref so this works
+              # for both same-repo and fork PRs.
+              git fetch origin "+refs/pull/${PR_NUMBER}/head:refs/remotes/pr/${PR_NUMBER}"
+              git checkout -B "$BRANCH" "refs/remotes/pr/${PR_NUMBER}"
+              git reset --hard "refs/remotes/pr/${PR_NUMBER}"
+            else
+              git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
+              git reset --hard "origin/$BRANCH"
+            fi
             git clean -fdx --exclude=build --exclude=config.lua
 
             echo "=== [2/7] Updating vcpkg ==="

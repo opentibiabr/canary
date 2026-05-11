@@ -7,9 +7,6 @@
   },
   "configurePresets": [
     {
-      "name": "base",
-      "hidden": true,
-      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
@@ -19,7 +16,13 @@
         "OPTIONS_ENABLE_SCCACHE": "ON",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CANARY_BUILD_TESTS": "OFF"
-      }
+      },
+      "environment": {
+        "VSLANG": "1033"
+      },
+      "generator": "Ninja",
+      "hidden": true,
+      "name": "base"
     },
     {
       "name": "windows-release",

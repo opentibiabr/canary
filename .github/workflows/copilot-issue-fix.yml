@@ -1,0 +1,239 @@
+---
+name: Copilot - Issue Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "GitHub issue number to assign to Copilot"
+        required: true
+        type: string
+      base_branch:
+        description: "Base branch for Copilot's generated PR. Defaults to the repository default branch."
+        required: false
+        type: string
+        default: ""
+      custom_agent:
+        description: "Repository custom agent to use"
+        required: false
+        type: string
+        default: "canary-bugfix"
+      custom_instructions:
+        description: "Additional instructions for Copilot"
+        required: false
+        type: string
+        default: ""
+  issue_comment:
+    types:
+      - created
+
+permissions: {}
+
+jobs:
+  authorize:
+    name: Authorize admin trigger
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'issue_comment' && github.event.issue.pull_request == null && startsWith(github.event.comment.body, '/copilot fix')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      authorized: ${{ steps.gate.outputs.authorized }}
+      issue_number: ${{ steps.gate.outputs.issue_number }}
+      base_branch: ${{ steps.gate.outputs.base_branch }}
+      custom_agent: ${{ steps.gate.outputs.custom_agent }}
+      custom_instructions: ${{ steps.gate.outputs.custom_instructions }}
+    steps:
+      - name: Check repository admin permission
+        id: gate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          EVENT_NAME: ${{ github.event_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          DISPATCH_ISSUE_NUMBER: ${{ inputs.issue_number || '' }}
+          DISPATCH_BASE_BRANCH: ${{ inputs.base_branch || '' }}
+          DISPATCH_CUSTOM_AGENT: ${{ inputs.custom_agent || 'canary-bugfix' }}
+          DISPATCH_CUSTOM_INSTRUCTIONS: ${{ inputs.custom_instructions || '' }}
+          COMMENT_BODY: ${{ github.event.comment.body || '' }}
+          COMMENT_ISSUE_NUMBER: ${{ github.event.issue.number || '' }}
+        run: |
+          set -euo pipefail
+
+          echo "authorized=false" >> "$GITHUB_OUTPUT"
+
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
+            normalized_comment="$(printf '%s' "$COMMENT_BODY" | tr -d '\r')"
+            first_line="$(printf '%s\n' "$normalized_comment" | sed -n '/[^[:space:]]/ { s/^[[:space:]]*//; s/[[:space:]]*$//; p; q; }')"
+            if [ "$first_line" != "/copilot fix" ]; then
+              echo "Comment does not start with the exact '/copilot fix' command. Skipping Copilot assignment."
+              exit 0
+            fi
+          fi
+
+          for user in "$ACTOR" "$TRIGGERING_ACTOR"; do
+            permission="$(gh api "repos/${REPOSITORY}/collaborators/${user}/permission" --jq '.permission' 2>/dev/null || echo "none")"
+            if [ "$permission" != "admin" ]; then
+              echo "Actor @${user} has repository permission '${permission}', not 'admin'. Skipping Copilot assignment."
+              exit 0
+            fi
+          done
+
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
+            issue_number="$COMMENT_ISSUE_NUMBER"
+            base_branch="$DEFAULT_BRANCH"
+            custom_agent="canary-bugfix"
+            custom_instructions="$(printf '%s\n' "$normalized_comment" | awk '
+              BEGIN { seen_command = 0 }
+              {
+                line = $0
+                trimmed = line
+                gsub(/^[[:space:]]+|[[:space:]]+$/, "", trimmed)
+                if (!seen_command && trimmed == "") {
+                  next
+                }
+                if (!seen_command) {
+                  seen_command = 1
+                  next
+                }
+                print line
+              }
+            ')"
+          else
+            issue_number="$DISPATCH_ISSUE_NUMBER"
+            base_branch="${DISPATCH_BASE_BRANCH:-$DEFAULT_BRANCH}"
+            custom_agent="${DISPATCH_CUSTOM_AGENT:-canary-bugfix}"
+            custom_instructions="$DISPATCH_CUSTOM_INSTRUCTIONS"
+          fi
+
+          if ! [[ "$issue_number" =~ ^[0-9]+$ ]]; then
+            echo "Invalid issue number: ${issue_number}" >&2
+            exit 1
+          fi
+
+          if ! [[ "$base_branch" =~ ^[A-Za-z0-9._/-]+$ ]] || [[ "$base_branch" == *..* ]] || [[ "$base_branch" == /* ]] || [[ "$base_branch" == */ ]]; then
+            echo "Unsafe base branch: ${base_branch}" >&2
+            exit 1
+          fi
+
+          if ! [[ "$custom_agent" =~ ^[A-Za-z0-9._-]+$ ]]; then
+            echo "Unsafe custom agent name: ${custom_agent}" >&2
+            exit 1
+          fi
+
+          encoded_base_branch="${base_branch//\//%2F}"
+          gh api "repos/${REPOSITORY}/branches/${encoded_base_branch}" --jq '.name' >/dev/null
+
+          issue_json="$(gh api "repos/${REPOSITORY}/issues/${issue_number}")"
+          issue_state="$(jq -r '.state' <<< "$issue_json")"
+          is_pull_request="$(jq -r 'has("pull_request")' <<< "$issue_json")"
+
+          if [ "$is_pull_request" = "true" ]; then
+            echo "Issue #${issue_number} is a pull request. This workflow only handles issues." >&2
+            exit 1
+          fi
+
+          if [ "$issue_state" != "open" ]; then
+            echo "Issue #${issue_number} is not open. Skipping Copilot assignment."
+            exit 0
+          fi
+
+          if [ -z "$custom_instructions" ]; then
+            custom_instructions="Fix the reported issue with a narrow, reviewable change. Follow the repository Copilot instructions and the ${custom_agent} agent guidance. Add or update focused tests if practical, and explain any validation limits in the pull request."
+          fi
+
+          {
+            echo "authorized=true"
+            echo "issue_number=${issue_number}"
+            echo "base_branch=${base_branch}"
+            echo "custom_agent=${custom_agent}"
+            delimiter="CUSTOM_INSTRUCTIONS_$(date +%s%N)"
+            echo "custom_instructions<<${delimiter}"
+            printf '%s\n' "$custom_instructions"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+
+  assign-copilot:
+    name: Assign issue to Copilot
+    needs:
+      - authorize
+    if: ${{ needs.authorize.outputs.authorized == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      actions: write
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Re-check admin permission
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          set -euo pipefail
+
+          for user in "$ACTOR" "$TRIGGERING_ACTOR"; do
+            permission="$(gh api "repos/${REPOSITORY}/collaborators/${user}/permission" --jq '.permission' 2>/dev/null || echo "none")"
+            if [ "$permission" != "admin" ]; then
+              echo "Actor @${user} has repository permission '${permission}', not 'admin'." >&2
+              exit 1
+            fi
+          done
+
+      - name: Assign Copilot cloud agent
+        shell: bash
+        env:
+          ASSIGN_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || github.token }}
+          COMMENT_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ needs.authorize.outputs.issue_number }}
+          BASE_BRANCH: ${{ needs.authorize.outputs.base_branch }}
+          CUSTOM_AGENT: ${{ needs.authorize.outputs.custom_agent }}
+          CUSTOM_INSTRUCTIONS: ${{ needs.authorize.outputs.custom_instructions }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          payload_file="$(mktemp)"
+          jq -n \
+            --arg repository "$REPOSITORY" \
+            --arg base_branch "$BASE_BRANCH" \
+            --arg custom_agent "$CUSTOM_AGENT" \
+            --arg custom_instructions "$CUSTOM_INSTRUCTIONS" \
+            '{
+              assignees: ["copilot-swe-agent[bot]"],
+              agent_assignment: {
+                target_repo: $repository,
+                base_branch: $base_branch,
+                custom_instructions: $custom_instructions,
+                custom_agent: $custom_agent,
+                model: ""
+              }
+            }' > "$payload_file"
+
+          set +e
+          assign_output="$(GH_TOKEN="$ASSIGN_TOKEN" gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPOSITORY}/issues/${ISSUE_NUMBER}/assignees" \
+            --input "$payload_file" 2>&1)"
+          assign_status=$?
+          set -e
+
+          if [ "$assign_status" -ne 0 ]; then
+            echo "::error::Copilot assignment API request failed. Verify that COPILOT_ASSIGN_TOKEN is a GitHub user token scoped to this repository with read/write access to Actions, Contents, Issues, and Pull requests."
+            echo "$assign_output" >&2
+            GH_TOKEN="$COMMENT_TOKEN" gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Copilot assignment was authorized, but GitHub rejected the automated assignment from this workflow: ${RUN_URL}. Verify that \`COPILOT_ASSIGN_TOKEN\` is a GitHub user token scoped to this repository with read/write access to Actions, Contents, Issues, and Pull requests." || true
+            exit "$assign_status"
+          fi
+
+          GH_TOKEN="$COMMENT_TOKEN" gh issue comment "$ISSUE_NUMBER" --repo "$REPOSITORY" --body "Assigned this issue to Copilot cloud agent via admin-gated workflow: ${RUN_URL}."

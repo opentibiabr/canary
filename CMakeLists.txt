@@ -7,7 +7,7 @@ cmake_minimum_required(
 # -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake
 # .. Needed libs are in file vcpkg.json Windows required libs: .\vcpkg install
 # --triplet x64-windows asio pugixml spdlog curl protobuf parallel-hashmap
-# magic-enum mio luajit libmariadb openssl abseil bshoshany-thread-pool
+# magic-enum mio luajit libmariadb mbedtls abseil bshoshany-thread-pool
 
 if(DEFINED ENV{VCPKG_ROOT}
    AND NOT
@@ -34,11 +34,25 @@ endif()
 set(VCPKG_FEATURE_FLAGS
     "versions"
 )
+if(NOT
+   DEFINED
+   VCPKG_BUILD_TYPE
+)
+    set(VCPKG_BUILD_TYPE
+        "release"
+    )
+endif()
 set(VCPKG_BUILD_TYPE
-    "release"
+    "${VCPKG_BUILD_TYPE}"
+    CACHE STRING "vcpkg build type"
 )
 set(CMAKE_EXPORT_COMPILE_COMMANDS
     ON
+)
+
+set(VCPKG_MANIFEST_FEATURES
+    "${VCPKG_MANIFEST_FEATURES}"
+    CACHE STRING "vcpkg manifest features"
 )
 
 # *****************************************************************************
@@ -178,17 +192,26 @@ endif()
 # Options for Targets
 # *****************************************************************************
 option(
+    CANARY_BUILD_TESTS
+    "Build unit tests"
+    OFF
+)
+option(
     CANARY_BUILD_SERVER
     "Build server executable"
     ON
 )
-option(
-    CANARY_BUILD_TESTS
-    "Build unit tests"
-    ON
-)
-
 if(CANARY_BUILD_TESTS)
+    if(NOT
+       "tests"
+       IN_LIST
+       VCPKG_MANIFEST_FEATURES
+    )
+        message(
+            FATAL_ERROR
+                "CANARY_BUILD_TESTS requires the vcpkg manifest feature 'tests'. Use a test preset or configure with -DVCPKG_MANIFEST_FEATURES=tests."
+        )
+    endif()
     enable_testing()
 endif()
 

@@ -16,8 +16,10 @@ jobs:
         type: [CMake, Solution]
     runs-on: windows-2025
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
-      VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+      # Use GitHub Packages as a read-only vcpkg cache for PRs.
+      # Only push/write binary cache on direct pushes to main, where GITHUB_TOKEN can have packages: write.
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'readwrite' || 'read' }};nugettimeout,600"
+      VCPKG_NUGET_API_KEY: ${{ github.token }}
       SCCACHE_DIR: ${{ github.workspace }}\.sccache
     steps:
       - name: Install VS 2026 Build Tools (v145 toolset)
@@ -28,16 +30,16 @@ jobs:
 
       - name: Setup MSBuild.exe
         if: matrix.type == 'Solution'
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
         with:
           vs-prerelease: true
           vs-version: "latest"
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -62,7 +64,7 @@ jobs:
 
       - name: CCache
         if: matrix.type == 'CMake'
-        uses: hendrikmuhs/ccache-action@v1.2.20
+        uses: hendrikmuhs/ccache-action@v1.2.23
         with:
           max-size: "1G"
           variant: "sccache"
@@ -70,11 +72,12 @@ jobs:
           restore-keys: |
             ccache-windows
 
-      # IMPORTANT: configure the nuget.exe that MSBuild/vcpkg.targets actually uses (Chocolatey)
+      # IMPORTANT: configure the nuget.exe that MSBuild/vcpkg.targets actually uses (Chocolatey).
+      # Use github.token directly so a stale or invalid VCPKG_PACKAGES_TOKEN secret cannot override it.
       - name: Setup NuGet source for GitHub Packages (for MSBuild/vcpkg.targets)
         shell: pwsh
         env:
-          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+          NUGET_AUTH_TOKEN: ${{ github.token }}
         run: |
           $feed = "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
 
@@ -111,7 +114,7 @@ jobs:
 
       - name: Upload artifacts (CMake)
         if: matrix.type == 'CMake'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-cmake-release
           path: build/windows-release/bin/
@@ -134,7 +137,7 @@ jobs:
             /p:GITHUB_WORKSPACE="${{ github.workspace }}"
 
       - name: Verify vcpkg binary cache push
-        if: matrix.type == 'CMake' && success() && (github.event_name == 'push' || (github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository))
+        if: matrix.type == 'CMake' && success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: pwsh
         run: |
           $logs = Get-ChildItem -Path . -Recurse -Filter vcpkg-manifest-install.log -ErrorAction SilentlyContinue
@@ -151,7 +154,7 @@ jobs:
 
       - name: Upload artifacts
         if: matrix.type == 'Solution'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-solution-debug
           path: artifacts/

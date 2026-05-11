@@ -1216,7 +1216,7 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 
 		for (const auto &spectator : playersSpectators) {
 			if (const auto &player = spectator->getPlayer()) {
-				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getStackposOfCreature(player, creature) : -1);
+				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getClientIndexOfCreature(player, creature) : -1);
 			}
 		}
 
@@ -1313,15 +1313,23 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	outfitMountSupportedLookTypes.clear();
 	m_appearancesPtr = std::make_unique<Appearances>();
 	if (!m_appearancesPtr->ParseFromIstream(&fileStream)) {
 		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
+		m_appearancesPtr.reset();
 		return ERROR_NOT_OPEN;
 	}
 
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
+
+	for (const auto &appearance : m_appearancesPtr->outfit()) {
+		if (outfitAppearanceSupportsMount(appearance)) {
+			outfitMountSupportedLookTypes.emplace(static_cast<uint16_t>(appearance.id()));
+		}
+	}
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
@@ -1342,9 +1350,6 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	fileStream.close();
-
-	// Disposing allocated objects.
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }
@@ -5840,6 +5845,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 
 void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses) {
 	if (lootAllCorpses) {
+		const auto maxQuickLootCorpses = static_cast<uint16_t>(std::max<int32_t>(1, g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)));
 		std::shared_ptr<Tile> tile = g_game().map.getTile(pos.x, pos.y, pos.z);
 		if (!tile) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -5868,7 +5874,7 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 
 			corpses++;
 			playerQuickLootCorpse(player, tileCorpse, tileCorpse->getPosition());
-			if (corpses >= 30) {
+			if (corpses >= maxQuickLootCorpses) {
 				break;
 			}
 		}
@@ -5885,6 +5891,203 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 	}
 
 	browseField = false;
+}
+
+namespace {
+	struct NearbyQuickLootSnapshot {
+		uint64_t goldValue = 0;
+		uint64_t stackableAmount = 0;
+		uint32_t looseItems = 0;
+
+		[[nodiscard]] bool hasLoot() const noexcept {
+			return goldValue != 0 || stackableAmount != 0 || looseItems != 0;
+		}
+
+		bool operator!=(const NearbyQuickLootSnapshot &other) const {
+			return goldValue != other.goldValue
+				|| stackableAmount != other.stackableAmount
+				|| looseItems != other.looseItems;
+		}
+	};
+
+	NearbyQuickLootSnapshot captureNearbyQuickLootSnapshot(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &container) {
+		NearbyQuickLootSnapshot snapshot;
+		if (!player || !container) {
+			return snapshot;
+		}
+
+		const bool ignoreListItems = player->getQuickLootFilter() == QUICKLOOTFILTER_SKIPPEDLOOT;
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			const auto &item = *it;
+			if (!item) {
+				continue;
+			}
+
+			const bool listed = player->isQuickLootListedItem(item);
+			if ((listed && ignoreListItems) || (!listed && !ignoreListItems)) {
+				continue;
+			}
+
+			const auto worth = item->getWorth();
+			if (worth != 0) {
+				snapshot.goldValue += worth;
+			} else if (item->isStackable() || item->hasAttribute(ItemAttribute_t::CHARGES)) {
+				snapshot.stackableAmount += item->getItemCount();
+			} else {
+				++snapshot.looseItems;
+			}
+		}
+
+		return snapshot;
+	}
+
+	const TileItemVector* getNearbyLootItems(Game &game, const Position &playerPos, int32_t xOffset, int32_t yOffset) {
+		const int32_t tileX = static_cast<int32_t>(playerPos.x) + xOffset;
+		const int32_t tileY = static_cast<int32_t>(playerPos.y) + yOffset;
+		if (tileX < 0 || tileX > 0xFFFF || tileY < 0 || tileY > 0xFFFF) {
+			return nullptr;
+		}
+
+		const auto &tile = game.map.getTile(
+			static_cast<uint16_t>(tileX),
+			static_cast<uint16_t>(tileY),
+			playerPos.z
+		);
+		if (!tile) {
+			return nullptr;
+		}
+
+		return tile->getItemList();
+	}
+
+	bool isNearbyLootableCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
+		if (!player || !corpse || !corpse->isCorpse()
+		    || corpse->hasAttribute(ItemAttribute_t::UNIQUEID)
+		    || corpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
+			return false;
+		}
+
+		if (corpse->isRewardCorpse()) {
+			return true;
+		}
+
+		return corpse->getCorpseOwner() == 0 || player->canOpenCorpse(corpse->getCorpseOwner());
+	}
+
+	std::shared_ptr<Container> resolveNearbyLootContainer(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
+		if (!player || !corpse || !corpse->isRewardCorpse()) {
+			return corpse;
+		}
+
+		const auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+		const auto reward = player->getReward(rewardId, false);
+		return reward ? reward->getContainer() : nullptr;
+	}
+
+	struct NearbyQuickLootOutcome {
+		bool foundCorpse = false;
+		bool looted = false;
+	};
+
+	NearbyQuickLootOutcome tryNearbyQuickLootCorpse(Game &game, const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
+		if (!isNearbyLootableCorpse(player, corpse)) {
+			return {};
+		}
+
+		NearbyQuickLootOutcome outcome;
+		outcome.foundCorpse = true;
+
+		const auto lootContainer = resolveNearbyLootContainer(player, corpse);
+		const auto lootSnapshotBefore = captureNearbyQuickLootSnapshot(player, lootContainer);
+		if (!lootSnapshotBefore.hasLoot()) {
+			return outcome;
+		}
+
+		game.playerQuickLootCorpse(player, lootContainer, corpse->getPosition());
+		if (lootContainer != corpse) {
+			corpse->sendUpdateToClient(player);
+		}
+		outcome.looted = captureNearbyQuickLootSnapshot(player, lootContainer) != lootSnapshotBefore;
+		return outcome;
+	}
+
+	void sendNearbyQuickLootSummary(const std::shared_ptr<Player> &player, bool anyCorpseFound, uint32_t corpsesLooted) {
+		if (!player) {
+			return;
+		}
+
+		if (!anyCorpseFound) {
+			player->sendCancelMessage("No lootable corpses nearby.");
+			return;
+		}
+
+		if (corpsesLooted == 0) {
+			player->sendCancelMessage("You could not loot any nearby corpses.");
+			return;
+		}
+
+		if (corpsesLooted > 1) {
+			std::stringstream ss;
+			ss << "You looted " << corpsesLooted << " corpses.";
+			player->sendTextMessage(MESSAGE_LOOT, ss.str());
+		}
+	}
+} // namespace
+
+void Game::playerLootNearby(uint32_t playerId) {
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (!player->canDoAction()) {
+		const uint32_t delay = player->getNextActionTime();
+		const auto &task = createPlayerTask(
+			delay,
+			[this, playerId] {
+				playerLootNearby(playerId);
+			},
+			__FUNCTION__
+		);
+		player->setNextActionTask(task);
+		return;
+	}
+
+	Player::PlayerLock lock(player);
+	player->setNextActionTask(nullptr);
+
+	const auto maxQuickLootCorpses = static_cast<uint32_t>(std::max<int32_t>(1, g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)));
+	const Position &playerPos = player->getPosition();
+	uint32_t corpsesLooted = 0;
+	bool anyCorpseFound = false;
+
+	for (int32_t x = -1; x <= 1; ++x) {
+		for (int32_t y = -1; y <= 1; ++y) {
+			const TileItemVector* itemVector = getNearbyLootItems(*this, playerPos, x, y);
+			if (!itemVector) {
+				continue;
+			}
+
+			for (const auto &tileItem : *itemVector) {
+				const auto outcome = tryNearbyQuickLootCorpse(*this, player, tileItem ? tileItem->getContainer() : nullptr);
+				anyCorpseFound = anyCorpseFound || outcome.foundCorpse;
+				corpsesLooted += outcome.looted ? 1U : 0U;
+				if (corpsesLooted >= maxQuickLootCorpses) {
+					break;
+				}
+			}
+
+			if (corpsesLooted >= maxQuickLootCorpses) {
+				break;
+			}
+		}
+
+		if (corpsesLooted >= maxQuickLootCorpses) {
+			break;
+		}
+	}
+
+	sendNearbyQuickLootSummary(player, anyCorpseFound, corpsesLooted);
 }
 
 void Game::playerSetManagedContainer(uint32_t playerId, ObjectCategory_t category, const Position &pos, uint16_t itemId, uint8_t stackPos, bool isLootContainer) {
@@ -6295,6 +6498,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	}
 
 	const auto &player = getPlayerByID(playerId);
+	playerChangeOutfit(player, outfit, setMount, isMountRandomized);
+}
+
+void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t outfit, bool setMount, uint8_t isMountRandomized /* = 0*/) {
 	if (!player) {
 		return;
 	}
@@ -6306,14 +6513,25 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 	player->setRandomMount(isMountRandomized);
 
-	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		auto randomMount = mounts->getMountByID(player->getRandomMountId());
-		outfit.lookMount = randomMount->clientId;
+	if (isMountRandomized && setMount && player->hasAnyMount()) {
+		outfit.lookMount = resolveRandomMountClientId(*mounts, player->getRandomMountId());
+		if (outfit.lookMount == 0) {
+			isMountRandomized = 0;
+			player->setRandomMount(0);
+		}
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit || !setMount) {
 		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
+	}
+
+	if (outfit.lookMount != 0 && !outfitSupportsMount(outfit.lookType)) {
+		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
 	}
 
 	if (outfit.lookMount != 0) {
@@ -8895,17 +9113,27 @@ std::string Game::generateHighscoreQuery(
 	uint32_t vocation,
 	uint32_t playerGUID /*= 0*/
 ) {
-	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
-	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
-	std::string entriesStr = std::to_string(entriesPerPage);
-
 	if (categoryName.empty()) {
 		g_logger().error("Category name cannot be empty.");
 		return "";
 	}
+	if (entriesPerPage == 0) {
+		g_logger().warn("[{}] entriesPerPage cannot be 0.", __FUNCTION__);
+		return "";
+	}
+
+	uint32_t startPage = (page - 1) * static_cast<uint32_t>(entriesPerPage);
+	uint32_t endPage = startPage + static_cast<uint32_t>(entriesPerPage);
+	std::string entriesStr = std::to_string(entriesPerPage);
+
+	const std::string vocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation) : "";
+	const std::string countVocationCondition = vocation != 0xFFFFFFFF ? generateVocationConditionHighscore(vocation, " AND ") : "";
 
 	std::string query = fmt::format(
 		"SELECT `id`, `name`, `level`, `vocation`, `points`, `rank`, `rn` AS `entries`, "
+		"(SELECT COUNT(*) FROM `players` WHERE `group_id` < {}{}) AS `total`, ",
+		static_cast<int>(GROUP_TYPE_GAMEMASTER),
+		countVocationCondition
 	);
 
 	if (playerGUID != 0) {
@@ -8933,7 +9161,7 @@ std::string Game::generateHighscoreQuery(
 	);
 
 	if (vocation != 0xFFFFFFFF) {
-		query += generateVocationConditionHighscore(vocation);
+		query += vocationCondition;
 	}
 
 	query += ") `T` WHERE ";
@@ -8950,7 +9178,7 @@ std::string Game::generateHighscoreQuery(
 	return query;
 }
 
-std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
+std::string Game::generateVocationConditionHighscore(uint32_t vocation, const std::string &conditionPrefix) {
 	std::ostringstream queryPart;
 	bool firstVocation = true;
 
@@ -8959,12 +9187,16 @@ std::string Game::generateVocationConditionHighscore(uint32_t vocation) {
 		const auto &voc = it.second;
 		if (voc->getFromVocation() == vocation) {
 			if (firstVocation) {
-				queryPart << " WHERE `vocation` = " << voc->getId();
+				queryPart << conditionPrefix << "(`vocation` = " << voc->getId();
 				firstVocation = false;
 			} else {
 				queryPart << " OR `vocation` = " << voc->getId();
 			}
 		}
+	}
+
+	if (!firstVocation) {
+		queryPart << ")";
 	}
 
 	return queryPart.str();
@@ -8984,9 +9216,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 
 	auto page = result->getNumber<uint16_t>("page");
-	auto pages = result->getNumber<uint32_t>("entries");
-	pages += entriesPerPage - 1;
-	pages /= entriesPerPage;
+	auto pages = calculateHighscorePages(result->getNumber<uint32_t>("total"), entriesPerPage);
 
 	uint32_t vocationId = getVocationIdFromClientId(vocationCID);
 	std::ostringstream cacheKeyStream;
@@ -9019,6 +9249,52 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	}
 }
 
+[[nodiscard]] uint16_t Game::calculateHighscorePages(uint32_t totalEntries, uint8_t entriesPerPage) {
+	if (entriesPerPage == 0) {
+		return 0;
+	}
+
+	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
+}
+
+[[nodiscard]] uint16_t Game::resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId) {
+	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
+	return randomMount ? randomMount->clientId : 0;
+}
+
+[[nodiscard]] bool Game::outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance) {
+	using namespace Canary::protobuf::appearances;
+
+	bool hasIdleFrameGroup = false;
+	bool hasMovingFrameGroup = false;
+	for (const auto &frameGroup : appearance.frame_group()) {
+		const auto fixedFrameGroup = frameGroup.fixed_frame_group();
+		if (fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_IDLE && fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_MOVING) {
+			continue;
+		}
+
+		if (fixedFrameGroup == FIXED_FRAME_GROUP_OUTFIT_IDLE) {
+			hasIdleFrameGroup = true;
+		} else {
+			hasMovingFrameGroup = true;
+		}
+
+		if (!frameGroup.has_sprite_info() || frameGroup.sprite_info().pattern_depth() <= 1) {
+			return false;
+		}
+	}
+
+	return hasIdleFrameGroup && hasMovingFrameGroup;
+}
+
+bool Game::outfitSupportsMount(uint16_t lookType) const {
+	if (!m_appearancesPtr) {
+		return true;
+	}
+
+	return outfitMountSupportedLookTypes.contains(lookType);
+}
+
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {
 	QueryHighscoreCacheEntry queryEntry { query, page, entriesPerPage, std::chrono::steady_clock::now() };
 	queryCache[key] = queryEntry;
@@ -9037,7 +9313,9 @@ std::string Game::generateHighscoreOrGetCachedQueryForEntries(const std::string 
 	}
 
 	std::string newQuery = generateHighscoreQuery(categoryName, page, entriesPerPage, vocation);
-	cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
+	if (!newQuery.empty()) {
+		cacheQueryHighscore(cacheKey, newQuery, page, entriesPerPage);
+	}
 
 	return newQuery;
 }
@@ -9055,13 +9333,19 @@ std::string Game::generateHighscoreOrGetCachedQueryForOurRank(const std::string 
 	}
 
 	std::string newQuery = generateHighscoreQuery(categoryName, 0, entriesPerPage, vocation, playerGUID);
-	cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
+	if (!newQuery.empty()) {
+		cacheQueryHighscore(cacheKey, newQuery, entriesPerPage, entriesPerPage);
+	}
 
 	return newQuery;
 }
 
 void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &, uint16_t page, uint8_t entriesPerPage) {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
+		return;
+	}
+	if (entriesPerPage == 0) {
+		player->sendHighscoresNoData();
 		return;
 	}
 
@@ -9074,6 +9358,10 @@ void Game::playerHighscores(const std::shared_ptr<Player> &player, HighscoreType
 		query = generateHighscoreOrGetCachedQueryForEntries(categoryName, page, entriesPerPage, vocationId);
 	} else if (type == HIGHSCORE_OURRANK) {
 		query = generateHighscoreOrGetCachedQueryForOurRank(categoryName, entriesPerPage, player->getGUID(), vocationId);
+	}
+	if (query.empty()) {
+		player->sendHighscoresNoData();
+		return;
 	}
 
 	uint32_t playerID = player->getID();
@@ -11124,17 +11412,23 @@ void Game::checkForgeEventId(uint32_t monsterId) {
 	}
 }
 
-bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster) {
+bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster, uint16_t stack /* = 0 */) {
 	if (monster && monster->canBeForgeMonster()) {
+		std::erase_if(influencedMonsters, [this](const auto monsterId) {
+			return getMonsterByID(monsterId) == nullptr;
+		});
+
+		const auto monsterId = monster->getID();
+		const bool alreadyInfluenced = influencedMonsters.contains(monsterId);
 		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT));
 		    // If condition
-		    (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
+		    !alreadyInfluenced && (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
 			return false;
 		}
 
 		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
-		monster->configureForgeSystem();
-		influencedMonsters.emplace(monster->getID());
+		monster->configureForgeSystem(stack);
+		influencedMonsters.emplace(monsterId);
 		return true;
 	}
 	return false;
@@ -12002,4 +12296,34 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 	}
 
 	return true;
+}
+
+std::map<uint32_t, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() const {
+	// Reference: https://otland.net/threads/unique-active-player.279129/
+	// Players idle for more than 15 minutes (900000 ms) are excluded so an IP
+	// whose only logged-in characters are idle does not register at all.
+	constexpr int32_t IDLE_THRESHOLD_MS = 15 * 60 * 1000;
+
+	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupedPlayers;
+	for (const auto &player : getPlayers() | std::views::values) {
+		const uint32_t ip = player->getIP();
+		if (ip != 0 && player->getIdleTime() <= IDLE_THRESHOLD_MS) {
+			groupedPlayers[ip].emplace_back(player);
+		}
+	}
+	return groupedPlayers;
+}
+
+PlayerStats Game::getPlayerStats() const {
+	const auto groupedPlayers = groupPlayersByIP();
+
+	PlayerStats stats;
+	stats.totalUniqueIPs = static_cast<uint32_t>(groupedPlayers.size());
+	for (const auto &groupedPlayersByIp : groupedPlayers | std::views::values) {
+		// otservlist regulation: cap each IP at 4 connections counted toward
+		// the public online total, regardless of how many characters from
+		// that IP are actually logged in.
+		stats.filteredOnlinePlayers += std::min<uint32_t>(static_cast<uint32_t>(groupedPlayersByIp.size()), 4);
+	}
+	return stats;
 }

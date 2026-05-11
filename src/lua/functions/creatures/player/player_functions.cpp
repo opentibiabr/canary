@@ -247,6 +247,7 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "getTransferableCoins", PlayerFunctions::luaPlayerGetTransferableCoins);
 	Lua::registerMethod(L, "Player", "addTransferableCoins", PlayerFunctions::luaPlayerAddTransferableCoins);
 	Lua::registerMethod(L, "Player", "removeTransferableCoins", PlayerFunctions::luaPlayerRemoveTransferableCoins);
+	Lua::registerMethod(L, "Player", "removeTransferableAndTibiaCoins", PlayerFunctions::luaPlayerRemoveTransferableAndTibiaCoins);
 
 	Lua::registerMethod(L, "Player", "sendBlessStatus", PlayerFunctions::luaPlayerSendBlessStatus);
 	Lua::registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
@@ -373,6 +374,7 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "setLoyaltyTitle", PlayerFunctions::luaPlayerSetLoyaltyTitle);
 
 	Lua::registerMethod(L, "Player", "updateConcoction", PlayerFunctions::luaPlayerUpdateConcoction);
+	Lua::registerMethod(L, "Player", "updateFood", PlayerFunctions::luaPlayerUpdateFood);
 	Lua::registerMethod(L, "Player", "clearSpellCooldowns", PlayerFunctions::luaPlayerClearSpellCooldowns);
 
 	Lua::registerMethod(L, "Player", "isVip", PlayerFunctions::luaPlayerIsVip);
@@ -3052,6 +3054,7 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 
 	if (player->account->removeCoins(CoinType::Normal, Lua::getNumber<uint32_t>(L, 2)) != AccountErrors_t::Ok) {
 		Lua::reportErrorFunc("Failed to remove coins");
+		lua_pushnil(L);
 		return 1;
 	}
 
@@ -3127,6 +3130,26 @@ int PlayerFunctions::luaPlayerRemoveTransferableCoins(lua_State* L) {
 
 	if (player->getAccount()->save() != AccountErrors_t::Ok) {
 		Lua::reportErrorFunc("failed to save account");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, true);
+
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveTransferableAndTibiaCoins(lua_State* L) {
+	// player:removeTransferableAndTibiaCoins(coins)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player || !player->getAccount()) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (player->account->removeCoins(CoinType::Transferable, CoinType::Normal, Lua::getNumber<uint32_t>(L, 2)) != AccountErrors_t::Ok) {
+		Lua::reportErrorFunc("failed to remove transferable and regular coins");
 		lua_pushnil(L);
 		return 1;
 	}
@@ -3481,7 +3504,7 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 		const auto &tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer != player && !tmpPlayer->isAccessPlayer()) {
 			if (enabled) {
-				tmpPlayer->sendRemoveTileThing(position, tile->getStackposOfCreature(tmpPlayer, player));
+				tmpPlayer->sendRemoveTileThing(position, tile->getClientIndexOfCreature(tmpPlayer, player));
 			} else {
 				tmpPlayer->sendCreatureAppear(player, position, true);
 			}
@@ -4622,6 +4645,18 @@ int PlayerFunctions::luaPlayerUpdateConcoction(lua_State* L) {
 		return 1;
 	}
 	player->updateConcoction(Lua::getNumber<uint16_t>(L, 2), Lua::getNumber<uint16_t>(L, 3));
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerUpdateFood(lua_State* L) {
+	// player:updateFood(itemId, timeLeft)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	player->updateFood(Lua::getNumber<uint16_t>(L, 2), Lua::getNumber<uint32_t>(L, 3));
 	Lua::pushBoolean(L, true);
 	return 1;
 }

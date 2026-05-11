@@ -7,6 +7,29 @@ function playerLogout.onLogout(player)
 		_G.NextUseStaminaTime[playerId] = nil
 	end
 
+	if LastQuestlogUpdate then
+		LastQuestlogUpdate[playerId] = nil
+	end
+
+	if PlayerTrackedMissionRemovalEvents and PlayerTrackedMissionRemovalEvents[playerId] and player.flushTrackedMissionRemovalEvents then
+		player:flushTrackedMissionRemovalEvents(false)
+	end
+
+	if PlayerTrackedMissionsData then
+		if PlayerTrackedMissionsData[playerId] and player.saveTrackedMissions then
+			player:saveTrackedMissions()
+		end
+		PlayerTrackedMissionsData[playerId] = nil
+	end
+
+	if PlayerTrackedMissionRemovalEvents then
+		PlayerTrackedMissionRemovalEvents[playerId] = nil
+	end
+
+	if PlayerQuestTrackerInitialSync then
+		PlayerQuestTrackerInitialSync[playerId] = nil
+	end
+
 	local stats = player:inBossFight()
 	if stats then
 		local boss = Monster(stats.bossId)

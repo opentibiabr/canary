@@ -47,12 +47,15 @@ function demonicCandyBall.onUse(player, item, fromPosition, target, toPosition, 
 	local randomConditionIndex = math.random(1, 4)
 
 	if randomConditionIndex == 1 then
+		player:updateFood(item:getId(), 3600)
 		player:addCondition(availableConditions[math.random(1, #availableConditions)])
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel stronger, but you have no idea what was increased.")
 	elseif randomConditionIndex == 2 then
+		player:updateFood(item:getId(), 3600)
 		player:addCondition(lightCondition)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You feel enlightened.")
 	elseif randomConditionIndex == 3 then
+		player:updateFood(item:getId(), 3600)
 		player:addCondition(condition_i)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You became invisible.")
 	elseif randomConditionIndex == 4 then

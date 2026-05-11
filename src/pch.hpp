@@ -93,12 +93,6 @@ format_as(E e) {
 	return static_cast<std::underlying_type_t<E>>(e);
 }
 
-// OpenSSL
-#include <openssl/bn.h>
-#include <openssl/rsa.h>
-#include <openssl/pem.h>
-#include <openssl/err.h>
-
 // LUA
 #if __has_include("luajit/lua.hpp")
 	#include <luajit/lua.hpp>

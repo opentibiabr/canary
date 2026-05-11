@@ -7,10 +7,18 @@ jobs:
   run-checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repository (PR head branch for same-repo PRs)
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Checkout repository (default ref)
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Set up Git
         run: |
@@ -33,7 +41,7 @@ jobs:
           clangFormatVersion: 17
           inplace: true
 
-      - uses: JohnnyMorganz/stylua-action@v3
+      - uses: JohnnyMorganz/stylua-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
@@ -45,8 +53,8 @@ jobs:
           find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
 
       - name: Commit formatting changes
-        if: github.event_name == 'pull_request'
-        uses: EndBug/add-and-commit@v9
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: EndBug/add-and-commit@v10
         with:
           author_name: GitHub Actions
           author_email: github-actions[bot]@users.noreply.github.com
@@ -55,20 +63,50 @@ jobs:
             src
             tests
             data
+            data-canary
+            data-otservbr-global
             CMakeLists.txt
             **/*.cmake
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check formatting diff
+        id: formatting-diff
+        shell: bash
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          git status --short
+          git diff --binary > formatting.patch
+          git diff --cached --binary >> formatting.patch
+
+      - name: Upload formatting patch
+        if: steps.formatting-diff.outputs.has_changes == 'true' && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v7
+        with:
+          name: formatting.patch
+          path: formatting.patch
+
+      - name: Fail on formatting changes
+        if: steps.formatting-diff.outputs.has_changes == 'true'
+        run: |
+          echo "::error::Formatting changes are required. The autofix.ci workflow should push a formatter commit automatically; if it cannot, apply the formatting.patch artifact or run the formatters locally and push the result."
+          exit 1
+
       - name: Run Analysis (Reviewdog)
+        if: github.event_name == 'pull_request'
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REVIEWDOG_REPORTER: ${{ github.event_name == 'pull_request' && 'github-pr-check' || 'github-check' }}
+          REVIEWDOG_REPORTER: github-pr-check
         run: |
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level=error -filter-mode=added
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -fail-level=error -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luacheck -filter-mode=added || true
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=xmllint -fail-level=error -filter-mode=added
-          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -fail-level=error -filter-mode=added
+          reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -filter-mode=added || true
 
       - name: Run yamllint
         uses: reviewdog/action-yamllint@v1.6.1

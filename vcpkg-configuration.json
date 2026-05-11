@@ -1,0 +1,8 @@
+{
+  "overlay-ports": [
+    "./cmake/overlay-ports"
+  ],
+  "overlay-triplets": [
+    "./cmake/triplets"
+  ]
+}

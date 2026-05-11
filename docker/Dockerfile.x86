@@ -8,8 +8,7 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
 ENV TZ=Etc/UTC
 ARG VCPKG_FEED_URL
 ARG VCPKG_FEED_USERNAME
-ARG VCPKG_BINARY_SOURCES
-ENV VCPKG_BINARY_SOURCES=${VCPKG_BINARY_SOURCES}
+ARG VCPKG_BINARY_CACHE_MODE=read
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -45,6 +44,18 @@ RUN --mount=type=secret,id=github_token \
 			echo "Missing /run/secrets/github_token" >&2; \
 			exit 1; \
 		fi; \
+		if [ -z "${VCPKG_FEED_URL:-}" ]; then \
+			echo "Missing VCPKG_FEED_URL build arg" >&2; \
+			exit 1; \
+		fi; \
+		if [ -z "${VCPKG_FEED_USERNAME:-}" ]; then \
+			echo "Missing VCPKG_FEED_USERNAME build arg" >&2; \
+			exit 1; \
+		fi; \
+		case "${VCPKG_BINARY_CACHE_MODE}" in \
+			read|write|readwrite) ;; \
+			*) echo "Invalid VCPKG_BINARY_CACHE_MODE: ${VCPKG_BINARY_CACHE_MODE}" >&2; exit 1 ;; \
+		esac; \
 		NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token); \
 		NUGET_CONFIG=/tmp/nuget.config; \
 		printf "%s\n" \
@@ -64,8 +75,15 @@ RUN --mount=type=secret,id=github_token \
 			"  </config>" \
 			"</configuration>" \
 			> "${NUGET_CONFIG}"; \
+		NUGET_EXE=$(/opt/vcpkg/vcpkg fetch nuget | tail -n 1 | tr -d "\r"); \
+		if [ ! -f "${NUGET_EXE}" ]; then \
+			echo "nuget.exe not found: ${NUGET_EXE}" >&2; \
+			exit 1; \
+		fi; \
+		mono "${NUGET_EXE}" setapikey "${NUGET_AUTH_TOKEN}" -Source "${VCPKG_FEED_URL}" -ConfigFile "${NUGET_CONFIG}"; \
 		export VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}"; \
-		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,1200"; \
+		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},${VCPKG_BINARY_CACHE_MODE};nugettimeout,1200"; \
+		echo "Using vcpkg binary cache mode: ${VCPKG_BINARY_CACHE_MODE}"; \
 		/opt/vcpkg/vcpkg install --x-manifest-root=/opt/vcpkg_manifest --x-install-root=/opt/vcpkg_installed --triplet=x64-linux --host-triplet=x64-linux; \
 		rm -f "${NUGET_CONFIG}"; \
 		unset NUGET_AUTH_TOKEN'

@@ -232,6 +232,7 @@ class PlayerFunctions {
 	static int luaPlayerGetTransferableCoins(lua_State* L);
 	static int luaPlayerAddTransferableCoins(lua_State* L);
 	static int luaPlayerRemoveTransferableCoins(lua_State* L);
+	static int luaPlayerRemoveTransferableAndTibiaCoins(lua_State* L);
 
 	static int luaPlayerSendBlessStatus(lua_State* L);
 	static int luaPlayerHasBlessing(lua_State* L);
@@ -361,6 +362,10 @@ class PlayerFunctions {
 
 	// Concoction system
 	static int luaPlayerUpdateConcoction(lua_State* L);
+
+	// Food system
+	static int luaPlayerUpdateFood(lua_State* L);
+
 	static int luaPlayerClearSpellCooldowns(lua_State* L);
 
 	static int luaPlayerIsVip(lua_State* L);

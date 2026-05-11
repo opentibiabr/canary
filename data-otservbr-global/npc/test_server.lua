@@ -62,7 +62,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to Test Server")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Please come back from time to time.")
 
@@ -306,7 +305,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return true
 	end
 
-	if messageHasKeyword(message, "remove tibia coin") or messageHasKeyword(message, "remove tibia coins") then
+	if messageHasKeyword(message, "remove tibia coin") then
 		local currentCoins = player:getTransferableCoins()
 		if currentCoins <= 0 then
 			npcHandler:say("You do not have Tibia Coins to remove.", npc, creature)
@@ -320,7 +319,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return true
 	end
 
-	if messageHasKeyword(message, "tibia coin") or messageHasKeyword(message, "tibia coins") then
+	if messageHasKeyword(message, "tibia coin") then
 		local currentCoins = player:getTransferableCoins()
 		if currentCoins >= testConfig.maxTibiaCoins then
 			npcHandler:say(string.format("You already have the maximum of %d Tibia Coins.", testConfig.maxTibiaCoins), npc, creature)
@@ -466,7 +465,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		local hasToF = player:hasBlessing(1) or true
+		local hasToF = not Blessings.Config.HasToF or player:hasBlessing(1)
 		local donthavefilter = function(p, b)
 			return not p:hasBlessing(b)
 		end
@@ -479,7 +478,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			return true
 		end
 
-		local missingBless = player:getBlessings(nil, donthavefilter)
 		for _, v in ipairs(missingBless) do
 			player:addBlessing(v.id, 1)
 		end
@@ -495,8 +493,14 @@ end
 
 npcConfig.shop = buildEquipmentShopFromItemsXml()
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500}).")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000.")
+npcHandler:setMessage(
+	MESSAGE_GREET,
+	"Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500})."
+)
+npcHandler:setMessage(
+	MESSAGE_SENDTRADE,
+	"Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000."
+)
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

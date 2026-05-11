@@ -231,7 +231,12 @@ local function messageHasKeyword(message, keyword)
 end
 
 local function getExperienceForLevel(level)
-	return ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
+	if level <= 1 then
+		return 0
+	end
+
+	local previousLevel = level - 1
+	return ((50 * previousLevel * previousLevel * previousLevel) - (150 * previousLevel * previousLevel) + (400 * previousLevel)) / 3
 end
 
 local function setAllSkills(player, skillLevel, magicLevel)
@@ -344,7 +349,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return true
 	end
 
-	local requestedLevel = message:match("[Ll][Ee][Vv][Ee][Ll]%s*(%d+)") or message:match("[Ee][Xx][Pp]%s*(%d+)")
+	local requestedLevel = message:match("[Ll][Ee][Vv][Ee][Ll]%s*(%d+)")
 	if requestedLevel then
 		local targetLevel = tonumber(requestedLevel)
 		if not targetLevel or targetLevel < testConfig.minLevel or targetLevel > testConfig.maxLevel then
@@ -365,8 +370,28 @@ local function creatureSayCallback(npc, creature, type, message)
 		return true
 	end
 
+	local requestedExperience = message:match("[Ee][Xx][Pp]%s*(%d+)")
+	if requestedExperience then
+		local targetExperience = tonumber(requestedExperience)
+		if not targetExperience or targetExperience < 0 then
+			npcHandler:say("Choose a valid experience value.", npc, creature)
+			return true
+		end
+
+		local currentExperience = player:getExperience()
+		if targetExperience > currentExperience then
+			player:addExperience(targetExperience - currentExperience, true, true)
+		elseif targetExperience < currentExperience then
+			player:removeExperience(currentExperience - targetExperience)
+		end
+
+		npcHandler:say(string.format("Done, |PLAYERNAME|. You now have %d experience.", targetExperience), npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+		return true
+	end
+
 	if messageHasKeyword(message, "exp") or messageHasKeyword(message, "experience") then
-		npcHandler:say(string.format("Use {level X} between %d and %d. Example: {level 500}.", testConfig.minLevel, testConfig.maxLevel), npc, creature)
+		npcHandler:say(string.format("Use {level X} between %d and %d (example: {level 500}) or set raw experience with {exp X}.", testConfig.minLevel, testConfig.maxLevel), npc, creature)
 		return true
 	end
 
@@ -461,8 +486,14 @@ end
 
 npcConfig.shop = buildEquipmentShopFromItemsXml()
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500}).")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000.")
+npcHandler:setMessage(
+	MESSAGE_GREET,
+	"Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500})."
+)
+npcHandler:setMessage(
+	MESSAGE_SENDTRADE,
+	"Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000."
+)
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

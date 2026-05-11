@@ -9638,12 +9638,20 @@ namespace {
 			return false;
 		}
 
+		auto rollbackProbeItem = Item::createItemBatch(itemId, 1, 0);
+		if (!rollbackProbeItem) {
+			return false;
+		}
+		if (tier > 0) {
+			rollbackProbeItem->setTier(tier);
+		}
+
 		uint32_t removedCount = 0;
 		std::vector<std::shared_ptr<Item>> rollbackCandidates;
 		rollbackCandidates.reserve(recipientInbox->size());
 
 		for (const auto &inboxItem : recipientInbox->getItemList()) {
-			if (!inboxItem || inboxItem->getID() != itemId || inboxItem->getTier() != tier) {
+			if (!inboxItem || !inboxItem->equals(rollbackProbeItem)) {
 				continue;
 			}
 			rollbackCandidates.push_back(inboxItem);
@@ -10165,11 +10173,17 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				return;
 			}
 
-			// Keep a safe rollback target before removing the seller's items.
-			ReturnValue rollbackInboxCheckResult = queryItemInsertion(player, it.id, amount, offerTier);
-			if (handleInboxPrecheckFailure(player, rollbackInboxCheckResult, __FUNCTION__)) {
-				return;
+			ReturnValue inboxInsertResult = processItemInsertion(buyerPlayer, it.id, amount, offerTier);
+			if (inboxInsertResult != RETURNVALUE_NOERROR) {
+				offerStatus << "Failed to add item " << it.id << " total amount " << amount << " to inbox for player " << buyerPlayer->getName() << " error: " << getReturnMessage(inboxInsertResult);
 			}
+		}
+
+		if (!offerStatus.str().empty()) {
+			player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+			g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+			player->sendMarketEnter(player->getLastDepotId());
+			return;
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
@@ -10192,39 +10206,31 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			);
 		} else {
 			if (!removeOfferItems(player, depotLocker, it, amount, offerTier, offerStatus)) {
+				ReturnValue rollbackResult = rollbackInboxInsertion(buyerPlayer, it.id, amount, offerTier) ? RETURNVALUE_NOERROR : RETURNVALUE_NOTPOSSIBLE;
+				if (rollbackResult != RETURNVALUE_NOERROR) {
+					offerStatus << "; rollback from buyer inbox failed: " << getReturnMessage(rollbackResult);
+					g_logger().error("{} - Failed to rollback delivered market items {} amount {} from buyer {} inbox after seller removal error, rollback code: {}", __FUNCTION__, it.id, amount, buyerPlayer->getName(), getReturnMessage(rollbackResult));
+				} else {
+					g_logger().warn("{} - Rolled back delivered market items {} amount {} from buyer {} inbox after seller removal error", __FUNCTION__, it.id, amount, buyerPlayer->getName());
+				}
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
-				return;
 			}
 		}
 
 		// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
-		// The player may lose the item as it will have already been removed, but will not clone
 		if (!offerStatus.str().empty()) {
 			if (offerStatus.str() == "The item you tried to market is not correct. Check the item again.") {
 				player->sendTextMessage(MESSAGE_MARKET, offerStatus.str());
 			} else {
 				player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 			}
-			g_logger().error("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
+			g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 			player->sendMarketEnter(player->getLastDepotId());
 			return;
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
 			buyerPlayer->getAccount()->addCoins(CoinType::Transferable, amount, "Purchased on Market");
-		} else {
-			ReturnValue inboxInsertResult = processItemInsertion(buyerPlayer, it.id, amount, offer.tier);
-			if (inboxInsertResult != RETURNVALUE_NOERROR) {
-				offerStatus << "Failed to add item " << it.id << " total amount " << amount << " to inbox for player " << buyerPlayer->getName() << " error: " << getReturnMessage(inboxInsertResult);
-
-				ReturnValue rollbackResult = processItemInsertion(player, it.id, amount, offer.tier);
-				if (rollbackResult != RETURNVALUE_NOERROR) {
-					offerStatus << "; rollback to seller inbox failed: " << getReturnMessage(rollbackResult);
-					g_logger().error("{} - Failed to rollback removed market items {} amount {} to seller {} inbox after buyer insertion error, rollback code: {}", __FUNCTION__, it.id, amount, player->getName(), getReturnMessage(rollbackResult));
-				} else {
-					g_logger().warn("{} - Rolled back removed market items {} amount {} to seller {} inbox after buyer insertion error", __FUNCTION__, it.id, amount, player->getName());
-				}
-			}
 		}
 
 		if (offerStatus.str().empty()) {

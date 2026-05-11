@@ -212,3 +212,31 @@ TEST_F(PlayerItemBatchTest, ReusesExistingInboxStackBeforeConsumingNewSlot) {
 	EXPECT_EQ(kStackableItemId, item->getID());
 	EXPECT_EQ(100, item->getItemCount());
 }
+
+TEST_F(PlayerItemBatchTest, DoesNotMergeStacksWithDifferentOwnership) {
+	auto player = makePlayer();
+	ASSERT_NE(player, nullptr);
+	auto inbox = player->getInbox();
+	ASSERT_NE(inbox, nullptr);
+	auto container = std::static_pointer_cast<Container>(inbox);
+
+	inbox->setMaxInboxItems(1);
+
+	const auto existingStack = Item::createItemBatch(kStackableItemId, 60, 0);
+	ASSERT_NE(existingStack, nullptr);
+	existingStack->setOwner(42);
+	inbox->addThing(existingStack);
+
+	uint32_t actuallyAdded = 0;
+	ReturnValue result = player->addItemBatchToPaginedContainer(container, kStackableItemId, 40, actuallyAdded, FLAG_NOLIMIT);
+
+	EXPECT_EQ(RETURNVALUE_DEPOTISFULL, result);
+	EXPECT_EQ(0U, actuallyAdded);
+	ASSERT_EQ(1U, inbox->size());
+
+	const auto &item = inbox->getItemByIndex(0);
+	ASSERT_NE(item, nullptr);
+	EXPECT_EQ(kStackableItemId, item->getID());
+	EXPECT_EQ(60, item->getItemCount());
+	EXPECT_EQ(42U, item->getOwnerId());
+}

@@ -459,25 +459,34 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if messageHasKeyword(message, "bless") then
-		local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
-		local missingBlessings = player:getBlessings(nil, function(p, blessing)
-			return not p:hasBlessing(blessing)
-		end)
-		local missingBlessCount = #missingBlessings + (hasToF and 0 or 1)
+		if not Tile(player:getPosition()):hasFlag(TILESTATE_PROTECTIONZONE) and (player:isPzLocked() or player:getCondition(CONDITION_INFIGHT, CONDITIONID_DEFAULT)) then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can't buy bless while in battle.")
+			player:getPosition():sendMagicEffect(CONST_ME_POFF)
+			npcHandler:say("I cannot bless you during battle.", npc, creature)
+			return true
+		end
 
-		if missingBlessCount == 0 then
-			player:sendTextMessage(MESSAGE_STATUS, "You are already blessed.")
+		local hasToF = player:hasBlessing(1) or true
+		local donthavefilter = function(p, b)
+			return not p:hasBlessing(b)
+		end
+		local missingBless = player:getBlessings(nil, donthavefilter)
+		local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
+
+		if missingBlessAmt == 0 then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are already blessed.")
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return true
 		end
 
-		for _, blessing in ipairs(missingBlessings) do
-			player:addBlessing(blessing.id, 1)
+		local missingBless = player:getBlessings(nil, donthavefilter)
+		for _, v in ipairs(missingBless) do
+			player:addBlessing(v.id, 1)
 		end
 
-		npcHandler:say("You have been blessed, |PLAYERNAME|.", npc, creature)
-		player:sendTextMessage(MESSAGE_STATUS, string.format("You received the remaining %d blessings.", missingBlessCount))
 		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
+		npcHandler:say("You have been blessed, |PLAYERNAME|.", npc, creature)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("You received the remaining %d blessings.", missingBlessAmt))
 		return true
 	end
 
@@ -486,8 +495,14 @@ end
 
 npcConfig.shop = buildEquipmentShopFromItemsXml()
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500}).")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000.")
+npcHandler:setMessage(
+	MESSAGE_GREET,
+	"Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500})."
+)
+npcHandler:setMessage(
+	MESSAGE_SENDTRADE,
+	"Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000."
+)
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

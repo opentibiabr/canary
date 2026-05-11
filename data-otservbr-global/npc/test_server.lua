@@ -1,6 +1,18 @@
 local internalNpcName = "Test Server"
 local npcType = Game.createNpcType(internalNpcName)
 local npcConfig = {}
+local testConfig = {
+	amountMoney = 100,
+	amountTibiaCoin = 100000,
+	maxTibiaCoins = 100000,
+	minLevel = 1,
+	maxLevel = 3000,
+	resetLevel = 8,
+	resetExperience = 4200,
+	resetHealth = 185,
+	resetMana = 185,
+	defaultSkillLevel = 10,
+}
 
 npcConfig.name = internalNpcName
 npcConfig.description = internalNpcName
@@ -158,7 +170,306 @@ local function buildEquipmentShopFromItemsXml()
 	return entries
 end
 
+local function buildOutfitIdsFromXml()
+	local xmlPath = "data/XML/outfits.xml"
+	local file = io.open(xmlPath, "r")
+	if not file then
+		print(string.format("[Test Server NPC] Could not open %s", xmlPath))
+		return {}
+	end
+
+	local xmlContent = file:read("*a")
+	file:close()
+
+	local entries = {}
+	local seen = {}
+	for attributes in xmlContent:gmatch("<outfit%s+([^>]-)/>") do
+		local paddedAttributes = " " .. attributes
+		local enabled = paddedAttributes:match('%senabled="([^"]+)"')
+		local lookType = tonumber(paddedAttributes:match('%slooktype="(%d+)"'))
+		if lookType and enabled ~= "no" and not seen[lookType] then
+			seen[lookType] = true
+			entries[#entries + 1] = lookType
+		end
+	end
+
+	table.sort(entries)
+	return entries
+end
+
+local function buildMountIdsFromXml()
+	local xmlPath = "data/XML/mounts.xml"
+	local file = io.open(xmlPath, "r")
+	if not file then
+		print(string.format("[Test Server NPC] Could not open %s", xmlPath))
+		return {}
+	end
+
+	local xmlContent = file:read("*a")
+	file:close()
+
+	local entries = {}
+	local seen = {}
+	for attributes in xmlContent:gmatch("<mount%s+([^>]-)/>") do
+		local paddedAttributes = " " .. attributes
+		local mountId = tonumber(paddedAttributes:match('%sid="(%d+)"'))
+		if mountId and not seen[mountId] then
+			seen[mountId] = true
+			entries[#entries + 1] = mountId
+		end
+	end
+
+	table.sort(entries)
+	return entries
+end
+
+local outfitIds = buildOutfitIdsFromXml()
+local mountIds = buildMountIdsFromXml()
+
+local function messageHasKeyword(message, keyword)
+	return message:lower():find(keyword:lower(), 1, true) ~= nil
+end
+
+local function getExperienceForLevel(level)
+	return ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
+end
+
+local function setAllSkills(player, skillLevel, magicLevel)
+	player:setMagicLevel(magicLevel)
+	player:setSkillLevel(SKILL_FIST, skillLevel)
+	player:setSkillLevel(SKILL_CLUB, skillLevel)
+	player:setSkillLevel(SKILL_SWORD, skillLevel)
+	player:setSkillLevel(SKILL_AXE, skillLevel)
+	player:setSkillLevel(SKILL_DISTANCE, skillLevel)
+	player:setSkillLevel(SKILL_SHIELD, skillLevel)
+	player:setSkillLevel(SKILL_FISHING, skillLevel)
+end
+
+local function setSkillsByVocation(player)
+	setAllSkills(player, testConfig.defaultSkillLevel, testConfig.defaultSkillLevel)
+
+	local baseVocationId = player:getVocation():getBase():getId()
+	if baseVocationId == VOCATION.BASE_ID.KNIGHT then
+		player:setMagicLevel(15)
+		player:setSkillLevel(SKILL_AXE, 100)
+		player:setSkillLevel(SKILL_CLUB, 100)
+		player:setSkillLevel(SKILL_SWORD, 100)
+		player:setSkillLevel(SKILL_SHIELD, 100)
+	elseif baseVocationId == VOCATION.BASE_ID.SORCERER or baseVocationId == VOCATION.BASE_ID.DRUID then
+		player:setMagicLevel(100)
+		player:setSkillLevel(SKILL_SHIELD, 100)
+	elseif baseVocationId == VOCATION.BASE_ID.PALADIN then
+		player:setMagicLevel(30)
+		player:setSkillLevel(SKILL_DISTANCE, 100)
+		player:setSkillLevel(SKILL_SHIELD, 100)
+	elseif baseVocationId == VOCATION.BASE_ID.MONK then
+		player:setMagicLevel(50)
+		player:setSkillLevel(SKILL_FIST, 100)
+		player:setSkillLevel(SKILL_AXE, 50)
+		player:setSkillLevel(SKILL_CLUB, 50)
+		player:setSkillLevel(SKILL_SWORD, 50)
+		player:setSkillLevel(SKILL_SHIELD, 100)
+	end
+end
+
+local function creatureSayCallback(npc, creature, type, message)
+	local player = Player(creature)
+	if not player then
+		return false
+	end
+
+	if not npcHandler:checkInteraction(npc, creature) then
+		return false
+	end
+
+	if messageHasKeyword(message, "promot") then
+		local vocation = player:getVocation()
+		local promotedVocation = vocation and vocation:getPromotion()
+		if not promotedVocation then
+			npcHandler:say("Your vocation has no promotion.", npc, creature)
+			return true
+		end
+
+		if player:getVocation():getId() == promotedVocation:getId() then
+			npcHandler:say("You are already promoted.", npc, creature)
+			return true
+		end
+
+		player:setVocation(promotedVocation)
+		npcHandler:say("Congratulations! You are now promoted.", npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+		return true
+	end
+
+	if messageHasKeyword(message, "remove tibia coin") or messageHasKeyword(message, "remove tibia coins") then
+		local currentCoins = player:getTransferableCoins()
+		if currentCoins <= 0 then
+			npcHandler:say("You do not have Tibia Coins to remove.", npc, creature)
+			return true
+		end
+
+		local removeAmount = math.min(testConfig.amountTibiaCoin, currentCoins)
+		player:removeTransferableCoins(removeAmount)
+		npcHandler:say("Done, |PLAYERNAME|.", npc, creature)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("Removed %d Tibia Coins. Current balance: %d.", removeAmount, player:getTransferableCoins()))
+		return true
+	end
+
+	if messageHasKeyword(message, "tibia coin") or messageHasKeyword(message, "tibia coins") then
+		local currentCoins = player:getTransferableCoins()
+		if currentCoins >= testConfig.maxTibiaCoins then
+			npcHandler:say(string.format("You already have the maximum of %d Tibia Coins.", testConfig.maxTibiaCoins), npc, creature)
+			return true
+		end
+
+		local addAmount = math.min(testConfig.amountTibiaCoin, testConfig.maxTibiaCoins - currentCoins)
+		player:addTransferableCoins(addAmount)
+		npcHandler:say("Here you are, |PLAYERNAME|.", npc, creature)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("Added %d Tibia Coins. Current balance: %d.", addAmount, player:getTransferableCoins()))
+		return true
+	end
+
+	if messageHasKeyword(message, "money") or messageHasKeyword(message, "gold") then
+		player:addItem(3043, testConfig.amountMoney)
+		npcHandler:say("Here you are, |PLAYERNAME|.", npc, creature)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("You received %d crystal coins.", testConfig.amountMoney))
+		return true
+	end
+
+	if messageHasKeyword(message, "skill") then
+		setSkillsByVocation(player)
+		npcHandler:say("Here you are, |PLAYERNAME|.", npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+		player:sendTextMessage(MESSAGE_STATUS, "Your skills were adjusted according to your vocation.")
+		return true
+	end
+
+	local requestedLevel = message:match("[Ll][Ee][Vv][Ee][Ll]%s*(%d+)")
+		or message:match("[Ee][Xx][Pp]%s*(%d+)")
+	if requestedLevel then
+		local targetLevel = tonumber(requestedLevel)
+		if not targetLevel or targetLevel < testConfig.minLevel or targetLevel > testConfig.maxLevel then
+			npcHandler:say(string.format("Choose a level between %d and %d.", testConfig.minLevel, testConfig.maxLevel), npc, creature)
+			return true
+		end
+
+		local targetExperience = getExperienceForLevel(targetLevel)
+		local currentExperience = player:getExperience()
+		if targetExperience > currentExperience then
+			player:addExperience(targetExperience - currentExperience, true, true)
+		elseif targetExperience < currentExperience then
+			player:removeExperience(currentExperience - targetExperience)
+		end
+
+		npcHandler:say(string.format("Done, |PLAYERNAME|. You are now level %d.", targetLevel), npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+		return true
+	end
+
+	if messageHasKeyword(message, "exp") or messageHasKeyword(message, "experience") then
+		npcHandler:say(string.format("Use {level X} between %d and %d. Example: {level 500}.", testConfig.minLevel, testConfig.maxLevel), npc, creature)
+		return true
+	end
+
+	if messageHasKeyword(message, "reset") then
+		local resetExperience = testConfig.resetExperience
+		local currentExperience = player:getExperience()
+		if currentExperience > resetExperience then
+			player:removeExperience(currentExperience - resetExperience)
+		elseif currentExperience < resetExperience then
+			player:addExperience(resetExperience - currentExperience, true, true)
+		end
+
+		setAllSkills(player, testConfig.defaultSkillLevel, testConfig.defaultSkillLevel)
+		player:setMaxHealth(testConfig.resetHealth)
+		player:setMaxMana(testConfig.resetMana)
+		player:addHealth(testConfig.resetHealth)
+		player:addMana(testConfig.resetMana)
+		npcHandler:say(string.format("Character reset complete. Level %d, %d experience, health/mana %d/%d and skills %d.", testConfig.resetLevel, testConfig.resetExperience, testConfig.resetHealth, testConfig.resetMana, testConfig.defaultSkillLevel), npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+		return true
+	end
+
+	if messageHasKeyword(message, "outfit") then
+		if #outfitIds == 0 then
+			npcHandler:say("I could not load outfits right now.", npc, creature)
+			return true
+		end
+
+		local outfitsAdded = 0
+		for _, outfitId in ipairs(outfitIds) do
+			if not player:hasOutfit(outfitId, 3) then
+				if not player:hasOutfit(outfitId, 0) then
+					player:addOutfit(outfitId)
+				end
+				player:addOutfitAddon(outfitId, 1)
+				player:addOutfitAddon(outfitId, 2)
+				outfitsAdded = outfitsAdded + 1
+			end
+		end
+
+		npcHandler:say("Here you are, |PLAYERNAME|.", npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("Added/updated %d outfits with full addons.", outfitsAdded))
+		return true
+	end
+
+	if messageHasKeyword(message, "mount") then
+		if #mountIds == 0 then
+			npcHandler:say("I could not load mounts right now.", npc, creature)
+			return true
+		end
+
+		local mountsAdded = 0
+		for _, mountId in ipairs(mountIds) do
+			if not player:hasMount(mountId) then
+				player:addMount(mountId)
+				mountsAdded = mountsAdded + 1
+			end
+		end
+
+		npcHandler:say("Here you are, |PLAYERNAME|.", npc, creature)
+		player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("Added %d new mounts.", mountsAdded))
+		return true
+	end
+
+	if messageHasKeyword(message, "bless") then
+		local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
+		local missingBlessings = player:getBlessings(nil, function(p, blessing)
+			return not p:hasBlessing(blessing)
+		end)
+		local missingBlessCount = #missingBlessings + (hasToF and 0 or 1)
+
+		if missingBlessCount == 0 then
+			player:sendTextMessage(MESSAGE_STATUS, "You are already blessed.")
+			player:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return true
+		end
+
+		for _, blessing in ipairs(missingBlessings) do
+			player:addBlessing(blessing.id, 1)
+		end
+
+		npcHandler:say("You have been blessed, |PLAYERNAME|.", npc, creature)
+		player:sendTextMessage(MESSAGE_STATUS, string.format("You received the remaining %d blessings.", missingBlessCount))
+		player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
+		return true
+	end
+
+	return true
+end
+
 npcConfig.shop = buildEquipmentShopFromItemsXml()
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setMessage(
+	MESSAGE_GREET,
+	"Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500})."
+)
+npcHandler:setMessage(
+	MESSAGE_SENDTRADE,
+	"Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000."
+)
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

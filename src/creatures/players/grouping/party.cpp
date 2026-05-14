@@ -46,10 +46,15 @@ std::shared_ptr<Player> Party::getMantraHolder() const {
 
 std::vector<std::shared_ptr<Player>> Party::getPlayers() const {
 	std::vector<std::shared_ptr<Player>> players;
-	for (auto &member : memberList) {
-		players.push_back(member);
+	players.reserve(memberList.size() + 1);
+	for (const auto &member : memberList) {
+		if (member) {
+			players.push_back(member);
+		}
 	}
-	players.push_back(getLeader());
+	if (const auto &leader = getLeader()) {
+		players.push_back(leader);
+	}
 	return players;
 }
 
@@ -89,29 +94,29 @@ uint8_t Party::getUniqueVocationsCount() const {
 }
 
 void Party::disband() {
-	if (!g_events().eventPartyOnDisband(getParty())) {
-		return;
-	}
-
-	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, getParty())) {
-		return;
-	}
-
 	const auto &currentLeader = getLeader();
-	if (!currentLeader) {
-		return;
+	if (currentLeader) {
+		if (!g_events().eventPartyOnDisband(getParty())) {
+			return;
+		}
+
+		if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, getParty())) {
+			return;
+		}
 	}
 
 	m_leader.reset();
 	m_mantraHolder.reset();
 
-	currentLeader->resetBuff(BUFF_MANTRA);
-	currentLeader->setParty(nullptr);
-	currentLeader->sendClosePrivate(CHANNEL_PARTY);
-	g_game().updatePlayerShield(currentLeader);
-	g_game().updatePlayerHelpers(currentLeader);
-	currentLeader->sendCreatureSkull(currentLeader);
-	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
+	if (currentLeader) {
+		currentLeader->resetBuff(BUFF_MANTRA);
+		currentLeader->setParty(nullptr);
+		currentLeader->sendClosePrivate(CHANNEL_PARTY);
+		g_game().updatePlayerShield(currentLeader);
+		g_game().updatePlayerHelpers(currentLeader);
+		currentLeader->sendCreatureSkull(currentLeader);
+		currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
+	}
 
 	for (const auto &invitee : getInvitees()) {
 		invitee->removePartyInvitation(getParty());

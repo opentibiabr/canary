@@ -84,6 +84,7 @@ monster.loot = {
 	{ name = "plate armor", chance = 1000 },
 	{ name = "templar scytheblade", chance = 500 },
 	{ name = "salamander shield", chance = 110 },
+	{ name = "zaoan monk robe", chance = 100 },
 	{ name = "lizard leather", chance = 880 },
 	{ name = "lizard scale", chance = 990 },
 	{ name = "health potion", chance = 890 },

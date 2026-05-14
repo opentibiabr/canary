@@ -21,6 +21,7 @@
 #include "items/containers/rewards/reward.hpp"
 #include "creatures/players/player.hpp"
 #include "io/player_storage_repository.hpp"
+#include "kv/kv.hpp"
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
@@ -164,6 +165,10 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	if (player->getHealth() <= 0) {
 		player->changeHealth(1);
 	}
+
+	savePlayerSystems(player);
+
+	savePlayerExivaRestrictions(player);
 
 	Database &db = Database::getInstance();
 
@@ -628,7 +633,7 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 					  << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propPreyStream;
-				std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
+				[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
 					propPreyStream.write<uint16_t>(raceId);
 				});
 
@@ -681,7 +686,7 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 				query << slot->freeRerollTimeStamp << ", ";
 
 				PropWriteStream propTaskHuntingStream;
-				std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
+				[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
 					propTaskHuntingStream.write<uint16_t>(raceId);
 				});
 
@@ -784,4 +789,52 @@ bool IOLoginDataSave::savePlayerStorage(const std::shared_ptr<Player> &player) {
 
 	storage.clearDirty();
 	return true;
+}
+
+void IOLoginDataSave::savePlayerSystems(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return;
+	}
+
+	// Save the player's Virtue to persistent storage if it's set
+	auto virtue = player->getVirtue();
+	if (virtue > Virtue_t::None) {
+		player->kv()->scoped("spells")->set("virtue", static_cast<uint8_t>(virtue));
+	}
+
+	auto harmony = player->getHarmony();
+	if (harmony > 0) {
+		player->kv()->scoped("spells")->set("harmony", harmony);
+	}
+}
+
+void IOLoginDataSave::savePlayerExivaRestrictions(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return;
+	}
+
+	const auto &restrictions = player->getExivaRestrictions();
+
+	const auto &scope = player->kv()->scoped("exiva-restrictions");
+
+	scope->set("allowAll", restrictions.allowAll);
+	scope->set("allowOwnGuild", restrictions.allowOwnGuild);
+	scope->set("allowOwnParty", restrictions.allowOwnParty);
+	scope->set("allowVipList", restrictions.allowVipList);
+	scope->set("allowPlayerWhitelist", restrictions.allowPlayerWhitelist);
+	scope->set("allowGuildWhitelist", restrictions.allowGuildWhitelist);
+
+	ArrayType playerArrayWrapper;
+	for (const auto &playerGuid : restrictions.playerWhitelist) {
+		playerArrayWrapper.push_back(ValueWrapper(static_cast<int>(playerGuid)));
+	}
+
+	scope->set("playerWhitelist", ValueWrapper(playerArrayWrapper));
+
+	ArrayType guildArrayWrapper;
+	for (const auto &guildId : restrictions.guildWhitelist) {
+		guildArrayWrapper.push_back(ValueWrapper(static_cast<int>(guildId)));
+	}
+
+	scope->set("guildWhitelist", ValueWrapper(guildArrayWrapper));
 }

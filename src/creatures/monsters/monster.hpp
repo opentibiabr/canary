@@ -194,7 +194,7 @@ public:
 
 	void applyStacks();
 
-	void configureForgeSystem();
+	void configureForgeSystem(uint16_t stack = 0);
 
 	bool canBeForgeMonster() const;
 

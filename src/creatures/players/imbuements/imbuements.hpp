@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
+#include "items/items_definitions.hpp"
 
 class Player;
 class Item;
@@ -102,6 +103,13 @@ public:
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t speed = 0;
 	uint32_t capacity = 0;
+
+	/////////Imbuement Vibrancy/////////
+	// Chance (0-100) to remove paralysis when a paralysis condition would be applied
+	uint8_t paralysisRemoveChance = 0;
+	// If true: when receiving additional PvP paralyse attacks while already paralyzed, the new paralyse is deflected (ignored)
+	bool pvpParalysisDeflect = false;
+
 	int16_t absorbPercent[COMBAT_COUNT] = {};
 	int16_t elementDamage = 0;
 	SoundEffect_t soundEffect = SoundEffect_t::SILENCE;
@@ -124,3 +132,32 @@ private:
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };
+
+class ImbuementDecay {
+public:
+	// ImbuementDecay tracks timer persistence for items that currently have active imbuements.
+	ImbuementDecay() = default;
+
+	// Non-copyable
+	ImbuementDecay(const ImbuementDecay &) = delete;
+	ImbuementDecay &operator=(const ImbuementDecay &) = delete;
+
+	static ImbuementDecay &getInstance();
+
+	void startImbuementDecay(const std::shared_ptr<Item> &item);
+	void stopImbuementDecay(const std::shared_ptr<Item> &item);
+	void checkImbuementDecay();
+
+private:
+	struct TrackedImbuementItem {
+		std::weak_ptr<Item> item;
+		int64_t lastUpdate = 0;
+	};
+
+	bool canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const;
+
+	std::unordered_map<Item*, TrackedImbuementItem> m_itemsToDecay;
+	uint32_t m_eventId { 0 };
+};
+
+constexpr auto g_imbuementDecay = ImbuementDecay::getInstance;

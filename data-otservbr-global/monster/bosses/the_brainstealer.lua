@@ -60,6 +60,7 @@ monster.loot = {
 	{ name = "crystal coin", mincount = 1, maxcount = 5, chance = 100000 },
 	{ name = "violet gem", chance = 50000 },
 	{ name = "mastermind potion", chance = 50000 },
+	{ name = "transcendence potion", chance = 50000 },
 	{ name = "moonstone", chance = 50000 },
 	{ name = "ultimate spirit potion", chance = 50000 },
 	{ name = "white gem", chance = 50000 },
@@ -67,6 +68,7 @@ monster.loot = {
 	{ name = "brainstealer's brain", chance = 5000 },
 	{ name = "brainstealer's brainwave", chance = 2500 },
 	{ name = "eldritch breeches", chance = 180 },
+	{ name = "eldritch monk boots", chance = 180 },
 	{ name = "eldritch cowl", chance = 240 },
 	{ name = "eldritch hood", chance = 225 },
 	{ name = "eldritch bow", chance = 210 },
@@ -74,6 +76,7 @@ monster.loot = {
 	{ name = "eldritch claymore", chance = 130 },
 	{ name = "eldritch greataxe", chance = 110 },
 	{ name = "eldritch warmace", chance = 320 },
+	{ name = "eldritch crescent moon spade", chance = 150 },
 	{ name = "eldritch shield", chance = 180 },
 	{ name = "eldritch cuirass", chance = 160 },
 	{ name = "eldritch folio", chance = 170 },
@@ -86,6 +89,7 @@ monster.loot = {
 	{ name = "gilded eldritch wand", chance = 80 },
 	{ name = "gilded eldritch rod", chance = 60 },
 	{ name = "gilded eldritch bow", chance = 50 },
+	{ name = "gilded eldritch crescent moon spade", chance = 60 },
 	{ name = "eldritch crystal", chance = 30 },
 }
 

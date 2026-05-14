@@ -1,5 +1,5 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE appearance/mounts/mounts.cpp
             appearance/outfit/outfit.cpp
             appearance/attached_effects/attached_effects.cpp

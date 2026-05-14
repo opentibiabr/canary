@@ -95,7 +95,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.TheIceMusic, 62)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.QuestLine, 62)
 			player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.IceMusicDoor, 1)
-		elseif player:getStorageValue(Storage.TheIceIslands.Questline) == 32 then
+		elseif player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) == 32 then
 			npcHandler:say({
 				"You are the one who became an honorary barbarian! The one who made friends with the grim local musher and helped the shamans of Nibelor! The one they call old bearhugg ... erm ... I mean indeed I might have a mission for someone like you ...",
 				"We are trying to find out what is happening in the raider camps. Through our connection to the shamans we could get a covered contact in their majorcamp far to the south. We equipped our contact with a memory crystal so he could report all he knew ...",

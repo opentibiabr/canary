@@ -119,6 +119,10 @@ local IDS = {
 	CRUDE_UMBRAL_SPELLBOOK = 20088,
 	UMBRAL_SPELLBOOK = 20089,
 	UMBRAL_MASTER_SPELLBOOK = 20090,
+
+	CRUDE_UMBRAL_KATAR = 50163,
+	UMBRAL_KATAR = 50164,
+	UMBRAL_MASTER_KATAR = 50165,
 }
 
 local TYPES = {
@@ -128,6 +132,7 @@ local TYPES = {
 	BOW = 4,
 	CROSSBOW = 5,
 	SPELLBOOK = 6,
+	KATAR = 7,
 }
 
 local SUB_TYPES = {
@@ -140,6 +145,7 @@ local SUB_TYPES = {
 	BOW = 7,
 	CROSSBOW = 8,
 	SPELLBOOK = 9,
+	KATAR = 10,
 }
 
 local ACTION = {
@@ -228,15 +234,15 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "create") then
-		npcHandler:say("You can try to create {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)
+		npcHandler:say("You can try to create {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s, {spellbook}s and {katar}s.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		action[playerId] = ACTION.CREATE
 	elseif MsgContains(message, "improve") then
-		npcHandler:say("The raw object is nothing but a pale of shadow of its potential. As unsafe and unpredictable the imporvement is, it might boot the powers of your item immensely. You can try to improve {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)
+		npcHandler:say("The raw object is nothing but a pale of shadow of its potential. As unsafe and unpredictable the imporvement is, it might boot the powers of your item immensely. You can try to improve {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s, {spellbook}s and {katar}s.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		action[playerId] = ACTION.IMPROVE
 	elseif MsgContains(message, "transform") then
-		npcHandler:say("From time to time fate smiles upon those who take great risks and have strong dreams! If you have the {ingredients}, we can try to give the ultimate refinement to {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s and {spellbook}s.", npc, creature)
+		npcHandler:say("From time to time fate smiles upon those who take great risks and have strong dreams! If you have the {ingredients}, we can try to give the ultimate refinement to {sword}s, {axe}s, {club}s, {bow}s, {crossbow}s, {spellbook}s and {katar}s.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
 		action[playerId] = ACTION.TRANSFORM
 	elseif MsgContains(message, "sword") and npcHandler:getTopic(playerId) == 1 then
@@ -347,6 +353,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Do you want to spend your umbral spellbook with " .. (Config.Transform.Clusters > 1 and "those" or "your") .. " " .. Config.Transform.Clusters .. " clusters of {solace} and give it a shot. {Yes} or {no}?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
+	elseif MsgContains(message, "katar") and npcHandler:getTopic(playerId) == 1 then
+		weapon[playerId] = TYPES.KATAR
+		if action[playerId] == ACTION.CREATE then
+			npcHandler:say("Do you want to spend your dream matter with " .. (Config.Create.Clusters > 1 and "those" or "your") .. " " .. Config.Create.Clusters .. " clusters of {solace} and give a shot. {Yes} or {no}", npc, creature)
+			npcHandler:setTopic(playerId, 3)
+		elseif action[playerId] == ACTION.IMPROVE then
+			npcHandler:say("Do you want to spend your crude umbral katar with " .. (Config.Improve.Clusters > 1 and "those" or "your") .. " " .. Config.Improve.Clusters .. " clusters of {solace} and give a shot. {Yes} or {no}?", npc, creature)
+			npcHandler:setTopic(playerId, 3)
+		elseif action[playerId] == ACTION.TRANSFORM then
+			npcHandler:say("Do you want to spend your umbral katar with " .. (Config.Transform.Clusters > 1 and "those" or "your") .. " " .. Config.Transform.Clusters .. " clusters of {solace} and give it a shot. {Yes} or {no}?", npc, creature)
+			npcHandler:setTopic(playerId, 3)
+		end
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 then
 		if action[playerId] == ACTION.CREATE then --create
 			if player:getItemCount(IDS.DREAM_MATTER) >= 1 and player:getItemCount(IDS.CLUSTER_OF_SOLACE) >= Config.Create.Clusters then
@@ -358,6 +376,7 @@ local function creatureSayCallback(npc, creature, type, message)
 						or weapon[playerId] == TYPES.BOW and IDS.CRUDE_UMBRAL_BOW
 						or weapon[playerId] == TYPES.CROSSBOW and IDS.CRUDE_UMBRAL_CROSSBOW
 						or weapon[playerId] == TYPES.SPELLBOOK and IDS.CRUDE_UMBRAL_SPELLBOOK
+						or weapon[playerId] == TYPES.KATAR and IDS.CRUDE_UMBRAL_KATAR
 						or false
 					)
 					if newItemId then
@@ -383,6 +402,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				or weapon[playerId] == TYPES.BOW and IDS.CRUDE_UMBRAL_BOW
 				or weapon[playerId] == TYPES.CROSSBOW and IDS.CRUDE_UMBRAL_CROSSBOW
 				or weapon[playerId] == TYPES.SPELLBOOK and IDS.CRUDE_UMBRAL_SPELLBOOK
+				or weapon[playerId] == TYPES.KATAR and IDS.CRUDE_UMBRAL_KATAR
 				or false
 			)
 			local newItemId = (oldItemId and oldItemId + 1 or false)
@@ -414,6 +434,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				or weapon[playerId] == TYPES.BOW and IDS.UMBRAL_BOW
 				or weapon[playerId] == TYPES.CROSSBOW and IDS.UMBRAL_CROSSBOW
 				or weapon[playerId] == TYPES.SPELLBOOK and IDS.UMBRAL_SPELLBOOK
+				or weapon[playerId] == TYPES.KATAR and IDS.UMBRAL_KATAR
 				or false
 			)
 			local newItemId = (oldItemId and oldItemId + 1 or false)

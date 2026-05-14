@@ -1,5 +1,5 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE combat/combat_functions.cpp
             combat/condition_functions.cpp
             combat/spell_functions.cpp

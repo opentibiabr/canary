@@ -1,11 +1,3 @@
-#include <gtest/gtest.h>
-#include <magic_enum/magic_enum.hpp>
-#include <functional>
-#include <memory>
-#include <string>
-#include <vector>
-#include <lua.hpp>
-
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/callbacks/event_callback.hpp"
 #include "lua/scripts/luascript.hpp"

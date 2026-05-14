@@ -21,7 +21,7 @@ end
 spell:name("Intense Healing")
 spell:words("exura gran")
 spell:group("healing")
-spell:vocation("druid;true", "elder druid;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true")
+spell:vocation("druid;true", "elder druid;true", "paladin;true", "royal paladin;true", "sorcerer;true", "master sorcerer;true", "monk;true", "exalted monk;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_INTENSE_HEALING)
 spell:id(2)
 spell:cooldown(1000)

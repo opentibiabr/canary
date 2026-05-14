@@ -1,6 +1,8 @@
- syntax = "proto3";
+syntax = "proto3";
 
 package Canary.protobuf.kv;
+
+option optimize_for = LITE_RUNTIME;
 
 // Define a message for the ValueWrapper type
 message ValueWrapper {

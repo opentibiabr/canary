@@ -57,7 +57,7 @@ TEST(QuickLootAutoBatchMessageTest, SummaryHelperCanRepresentNoLoot) {
 TEST(QuickLootAutoBatchMessageTest, CapacityFailureUsesSingleBatchWarning) {
 	EXPECT_EQ(
 		"Attention! The loot you are trying to pick up is too heavy for you to carry.",
-		Game::getAutoLootBatchFailureMessage(true, false, ObjectCategory_t{})
+		Game::getAutoLootBatchFailureMessage(true, false, ObjectCategory_t {})
 	);
 }
 

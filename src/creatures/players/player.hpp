@@ -1952,7 +1952,7 @@ private:
 		bool missedSomething = false;
 		bool capacityBlocked = false;
 		bool hasNotEnoughRoomCategory = false;
-		ObjectCategory_t notEnoughRoomCategory = ObjectCategory_t{};
+		ObjectCategory_t notEnoughRoomCategory = ObjectCategory_t {};
 	};
 
 	struct PendingAutoLootCorpse {

@@ -3029,7 +3029,8 @@ void Game::schedulePendingPlayerAutoLootCorpses(const std::shared_ptr<Player> &p
 		}
 
 		g_game().playerAutoLootCorpses(currentPlayer);
-	}, "Game::playerAutoLootCorpses");
+	},
+	                        "Game::playerAutoLootCorpses");
 }
 
 void Game::schedulePlayerAutoLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position) {
@@ -3297,7 +3298,7 @@ Game::QuickLootResult Game::playerQuickLootCorpseInternal(const std::shared_ptr<
 
 	if (shouldNotifyCapacity) {
 		ss.str(std::string());
-		ss << getAutoLootBatchFailureMessage(true, false, ObjectCategory_t{});
+		ss << getAutoLootBatchFailureMessage(true, false, ObjectCategory_t {});
 	} else if (shouldNotifyNotEnoughRoom != OBJECTCATEGORY_NONE) {
 		ss.str(std::string());
 		ss << getAutoLootBatchFailureMessage(false, true, shouldNotifyNotEnoughRoom);
@@ -6177,7 +6178,6 @@ namespace {
 		const auto reward = player->getReward(rewardId, false);
 		return reward ? reward->getContainer() : nullptr;
 	}
-
 
 	void sendNearbyQuickLootSummary(const std::shared_ptr<Player> &player, bool anyCorpseFound, uint32_t corpsesLooted) {
 		if (!player) {

@@ -371,7 +371,37 @@ public:
 	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 	void playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos);
 	void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
+	/**
+	 * @brief Queues a corpse for automatic quick-loot processing by the owning player.
+	 *
+	 * The queued corpses are drained in bounded batches to avoid one dispatcher task per corpse
+	 * and to keep client refreshes aggregated during burst auto-loot scenarios.
+	 */
+	void schedulePlayerAutoLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position);
 	void playerQuickLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position);
+	/**
+	 * @brief Calculates how many pending auto-loot corpses may be processed in one drain pass.
+	 *
+	 * @param pendingCorpses Number of queued corpses waiting for automatic quick-loot. When this
+	 * value is zero, the function returns zero immediately regardless of configuration.
+	 * @param configuredMaxCorpses Configured maximum from quickLootMaxCorpses. When corpses are
+	 * pending, values less than one are intentionally clamped to one before conversion to size_t so
+	 * a bad config cannot create an empty drain loop or an unsigned overflow.
+	 * @return Zero when no corpses are pending; otherwise the bounded batch size, clamped to at
+	 * least one for invalid non-positive configuration values.
+	 */
+	static size_t resolveAutoLootCorpseBatchSize(size_t pendingCorpses, int32_t configuredMaxCorpses);
+	/**
+	 * @brief Builds the loot-neutral summary message emitted after an automatic quick-loot batch finishes.
+	 *
+	 * @return A player-facing summary describing whether the batch looted everything, some loot,
+	 * none of the loot, or had no loot to collect.
+	 */
+	static std::string getAutoLootBatchSummaryMessage(bool lootedSomething, bool missedSomething);
+	/**
+	 * @brief Builds the single warning message emitted after an automatic quick-loot batch hits capacity or container limits.
+	 */
+	static std::string getAutoLootBatchFailureMessage(bool capacityBlocked, bool hasNotEnoughRoomCategory, ObjectCategory_t notEnoughRoomCategory);
 	void playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t itemId, uint8_t stackPos, const std::shared_ptr<Item> &defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 	void playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses);
 	void playerLootNearby(uint32_t playerId);
@@ -771,6 +801,19 @@ private:
 	 * @return True if fallback logic was handled, false otherwise.
 	 */
 	bool handleFallbackLogic(const std::shared_ptr<Player> &player, std::shared_ptr<Container> &lootContainer, ContainerIterator &containerIterator, const bool &fallbackConsumed);
+	void schedulePendingPlayerAutoLootCorpses(const std::shared_ptr<Player> &player);
+	void playerAutoLootCorpses(const std::shared_ptr<Player> &player);
+	struct QuickLootResult {
+		bool hasResult = false;
+		bool lootedSomething = false;
+		bool missedSomething = false;
+		bool capacityBlocked = false;
+		bool hasNotEnoughRoomCategory = false;
+		ObjectCategory_t notEnoughRoomCategory = ObjectCategory_t{};
+	};
+
+	void sendPlayerAutoLootSummary(const std::shared_ptr<Player> &player);
+	QuickLootResult playerQuickLootCorpseInternal(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position, bool sendResultMessage = true);
 
 	/**
 	 * @brief Processes the movement or addition of an item to a loot container.

@@ -2977,9 +2977,173 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 	return RETURNVALUE_NOTPOSSIBLE;
 }
 
+size_t Game::resolveAutoLootCorpseBatchSize(size_t pendingCorpses, int32_t configuredMaxCorpses) {
+	if (pendingCorpses == 0) {
+		return 0;
+	}
+
+	const int32_t clampedMaxCorpses = std::max<int32_t>(1, configuredMaxCorpses);
+	const auto maxQuickLootCorpses = static_cast<size_t>(clampedMaxCorpses);
+	return std::min(pendingCorpses, maxQuickLootCorpses);
+}
+
+std::string Game::getAutoLootBatchSummaryMessage(bool lootedSomething, bool missedSomething) {
+	if (lootedSomething && !missedSomething) {
+		return "You looted everything.";
+	}
+
+	if (lootedSomething) {
+		return "You looted some of the loot.";
+	}
+
+	if (missedSomething) {
+		return "You looted none of the loot.";
+	}
+
+	return "No loot.";
+}
+
+std::string Game::getAutoLootBatchFailureMessage(bool capacityBlocked, bool hasNotEnoughRoomCategory, ObjectCategory_t notEnoughRoomCategory) {
+	if (capacityBlocked) {
+		return "Attention! The loot you are trying to pick up is too heavy for you to carry.";
+	}
+
+	if (hasNotEnoughRoomCategory) {
+		return fmt::format("Attention! The container assigned to category {} is full.", getObjectCategoryName(notEnoughRoomCategory));
+	}
+
+	return {};
+}
+
+void Game::schedulePendingPlayerAutoLootCorpses(const std::shared_ptr<Player> &player) {
+	if (!player || player->autoLootCorpseEventScheduled || player->pendingAutoLootCorpses.empty()) {
+		return;
+	}
+
+	player->autoLootCorpseEventScheduled = true;
+	const uint32_t playerId = player->getID();
+	g_dispatcher().addEvent([playerId] {
+		const auto currentPlayer = g_game().getPlayerByID(playerId);
+		if (!currentPlayer) {
+			return;
+		}
+
+		g_game().playerAutoLootCorpses(currentPlayer);
+	}, "Game::playerAutoLootCorpses");
+}
+
+void Game::schedulePlayerAutoLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position) {
+	if (!player || !corpse || !player->isPremium()) {
+		return;
+	}
+
+	Player::PlayerLock lock(player);
+	if (player->pendingAutoLootCorpses.empty() && !player->autoLootCorpseEventScheduled) {
+		player->autoLootMessageState = {};
+	}
+
+	player->pendingAutoLootCorpses.push_back(Player::PendingAutoLootCorpse { corpse, position });
+	schedulePendingPlayerAutoLootCorpses(player);
+}
+
+void Game::playerAutoLootCorpses(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return;
+	}
+
+	Player::PlayerLock lock(player);
+	player->autoLootCorpseEventScheduled = false;
+	const auto batchSize = resolveAutoLootCorpseBatchSize(
+		player->pendingAutoLootCorpses.size(),
+		g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)
+	);
+	if (batchSize == 0) {
+		return;
+	}
+
+	std::vector<Player::PendingAutoLootCorpse> autoLootCorpses;
+	autoLootCorpses.reserve(batchSize);
+	for (size_t i = 0; i < batchSize; ++i) {
+		autoLootCorpses.emplace_back(std::move(player->pendingAutoLootCorpses[i]));
+	}
+	player->pendingAutoLootCorpses.erase(player->pendingAutoLootCorpses.begin(), player->pendingAutoLootCorpses.begin() + batchSize);
+
+	{
+		Player::QuickLootClientRefreshGuard refreshGuard(*player);
+		for (const auto &pendingCorpse : autoLootCorpses) {
+			const auto &corpse = pendingCorpse.corpse;
+			const auto &tile = corpse ? corpse->getTile() : nullptr;
+			if (!corpse || corpse->isRemoved() || !tile || corpse->getParent() != tile || tile->getPosition() != pendingCorpse.position) {
+				continue;
+			}
+
+			std::shared_ptr<Container> lootContainer = corpse;
+			if (corpse->isRewardCorpse()) {
+				const auto rewardId = corpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+				const auto reward = player->getReward(rewardId, false);
+				lootContainer = reward ? reward->getContainer() : nullptr;
+			}
+			if (!lootContainer) {
+				continue;
+			}
+
+			const auto result = playerQuickLootCorpseInternal(player, lootContainer, pendingCorpse.position, false);
+			corpse->sendUpdateToClient(player);
+			if (!result.hasResult) {
+				continue;
+			}
+
+			player->autoLootMessageState.pending = true;
+			player->autoLootMessageState.lootedSomething = player->autoLootMessageState.lootedSomething || result.lootedSomething;
+			player->autoLootMessageState.missedSomething = player->autoLootMessageState.missedSomething || result.missedSomething;
+			player->autoLootMessageState.capacityBlocked = player->autoLootMessageState.capacityBlocked || result.capacityBlocked;
+			if (!player->autoLootMessageState.hasNotEnoughRoomCategory && result.hasNotEnoughRoomCategory) {
+				player->autoLootMessageState.hasNotEnoughRoomCategory = true;
+				player->autoLootMessageState.notEnoughRoomCategory = result.notEnoughRoomCategory;
+			}
+		}
+	}
+
+	if (player->pendingAutoLootCorpses.empty()) {
+		sendPlayerAutoLootSummary(player);
+		return;
+	}
+
+	schedulePendingPlayerAutoLootCorpses(player);
+}
+
+void Game::sendPlayerAutoLootSummary(const std::shared_ptr<Player> &player) {
+	if (!player || !player->autoLootMessageState.pending) {
+		return;
+	}
+
+	const auto failureMessage = getAutoLootBatchFailureMessage(player->autoLootMessageState.capacityBlocked, player->autoLootMessageState.hasNotEnoughRoomCategory, player->autoLootMessageState.notEnoughRoomCategory);
+	player->sendTextMessage(MESSAGE_STATUS, getAutoLootBatchSummaryMessage(player->autoLootMessageState.lootedSomething, player->autoLootMessageState.missedSomething));
+	if (!failureMessage.empty()) {
+		if (player->lastQuickLootNotification + 15000 < OTSYS_TIME()) {
+			player->sendTextMessage(MESSAGE_GAME_HIGHLIGHT, failureMessage);
+		} else {
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, failureMessage);
+		}
+
+		player->lastQuickLootNotification = OTSYS_TIME();
+	}
+
+	player->autoLootMessageState = {};
+}
+
 void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position) {
 	if (!player || !corpse) {
 		return;
+	}
+
+	Player::QuickLootClientRefreshGuard refreshGuard(*player);
+	playerQuickLootCorpseInternal(player, corpse, position, true);
+}
+
+Game::QuickLootResult Game::playerQuickLootCorpseInternal(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position, bool sendResultMessage) {
+	if (!player || !corpse) {
+		return {};
 	}
 
 	std::vector<std::shared_ptr<Item>> itemList;
@@ -3059,72 +3223,86 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 		corpse->clearLootHighlight(player);
 	}
 
-	std::stringstream ss;
-	if (totalLootedGold != 0 || missedAnyGold || totalLootedItems != 0 || missedAnyItem) {
-		bool lootedAllGold = totalLootedGold != 0 && !missedAnyGold;
-		bool lootedAllItems = totalLootedItems != 0 && !missedAnyItem;
-		if (lootedAllGold) {
-			if (totalLootedItems != 0 || missedAnyItem) {
-				ss << "You looted the complete " << totalLootedGold << " gold";
+	QuickLootResult result;
+	result.hasResult = totalLootedGold != 0 || missedAnyGold || totalLootedItems != 0 || missedAnyItem;
+	result.lootedSomething = totalLootedGold != 0 || totalLootedItems != 0;
+	result.missedSomething = missedAnyGold || missedAnyItem;
+	result.capacityBlocked = shouldNotifyCapacity;
+	result.hasNotEnoughRoomCategory = shouldNotifyNotEnoughRoom != OBJECTCATEGORY_NONE;
+	result.notEnoughRoomCategory = shouldNotifyNotEnoughRoom;
 
-				if (lootedAllItems) {
-					ss << " and all dropped items";
-				} else if (totalLootedItems != 0) {
-					ss << ", but you only looted some of the items";
+	std::stringstream ss;
+	if (sendResultMessage) {
+		if (totalLootedGold != 0 || missedAnyGold || totalLootedItems != 0 || missedAnyItem) {
+			bool lootedAllGold = totalLootedGold != 0 && !missedAnyGold;
+			bool lootedAllItems = totalLootedItems != 0 && !missedAnyItem;
+			if (lootedAllGold) {
+				if (totalLootedItems != 0 || missedAnyItem) {
+					ss << "You looted the complete " << totalLootedGold << " gold";
+
+					if (lootedAllItems) {
+						ss << " and all dropped items";
+					} else if (totalLootedItems != 0) {
+						ss << ", but you only looted some of the items";
+					} else if (missedAnyItem) {
+						ss << " but none of the dropped items";
+					}
+				} else {
+					ss << "You looted " << totalLootedGold << " gold";
+				}
+			} else if (lootedAllItems) {
+				if (totalLootedItems == 1) {
+					ss << "You looted 1 item";
+				} else if (totalLootedGold != 0 || missedAnyGold) {
+					ss << "You looted all of the dropped items";
+				} else {
+					ss << "You looted all items";
+				}
+
+				if (totalLootedGold != 0) {
+					ss << ", but you only looted " << totalLootedGold << " of the dropped gold";
+				} else if (missedAnyGold) {
+					ss << " but none of the dropped gold";
+				}
+			} else if (totalLootedGold != 0) {
+				ss << "You only looted " << totalLootedGold << " of the dropped gold";
+				if (totalLootedItems != 0) {
+					ss << " and some of the dropped items";
 				} else if (missedAnyItem) {
 					ss << " but none of the dropped items";
 				}
-			} else {
-				ss << "You looted " << totalLootedGold << " gold";
-			}
-		} else if (lootedAllItems) {
-			if (totalLootedItems == 1) {
-				ss << "You looted 1 item";
-			} else if (totalLootedGold != 0 || missedAnyGold) {
-				ss << "You looted all of the dropped items";
-			} else {
-				ss << "You looted all items";
-			}
-
-			if (totalLootedGold != 0) {
-				ss << ", but you only looted " << totalLootedGold << " of the dropped gold";
+			} else if (totalLootedItems != 0) {
+				ss << "You looted some of the dropped items";
+				if (missedAnyGold) {
+					ss << " but none of the dropped gold";
+				}
 			} else if (missedAnyGold) {
-				ss << " but none of the dropped gold";
-			}
-		} else if (totalLootedGold != 0) {
-			ss << "You only looted " << totalLootedGold << " of the dropped gold";
-			if (totalLootedItems != 0) {
-				ss << " and some of the dropped items";
+				ss << "You looted none of the dropped gold";
+				if (missedAnyItem) {
+					ss << " and none of the items";
+				}
 			} else if (missedAnyItem) {
-				ss << " but none of the dropped items";
+				ss << "You looted none of the dropped items";
 			}
-		} else if (totalLootedItems != 0) {
-			ss << "You looted some of the dropped items";
-			if (missedAnyGold) {
-				ss << " but none of the dropped gold";
-			}
-		} else if (missedAnyGold) {
-			ss << "You looted none of the dropped gold";
-			if (missedAnyItem) {
-				ss << " and none of the items";
-			}
-		} else if (missedAnyItem) {
-			ss << "You looted none of the dropped items";
+		} else {
+			ss << "No loot";
 		}
-	} else {
-		ss << "No loot";
+		ss << ".";
+		player->sendTextMessage(MESSAGE_STATUS, ss.str());
 	}
-	ss << ".";
-	player->sendTextMessage(MESSAGE_STATUS, ss.str());
+
+	if (!sendResultMessage) {
+		return result;
+	}
 
 	if (shouldNotifyCapacity) {
 		ss.str(std::string());
-		ss << "Attention! The loot you are trying to pick up is too heavy for you to carry.";
+		ss << getAutoLootBatchFailureMessage(true, false, ObjectCategory_t{});
 	} else if (shouldNotifyNotEnoughRoom != OBJECTCATEGORY_NONE) {
 		ss.str(std::string());
-		ss << "Attention! The container assigned to category " << getObjectCategoryName(shouldNotifyNotEnoughRoom) << " is full.";
+		ss << getAutoLootBatchFailureMessage(false, true, shouldNotifyNotEnoughRoom);
 	} else {
-		return;
+		return result;
 	}
 
 	if (player->lastQuickLootNotification + 15000 < OTSYS_TIME()) {
@@ -3133,9 +3311,8 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 		player->sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
 	}
 
-	corpse->sendUpdateToClient(player);
-
 	player->lastQuickLootNotification = OTSYS_TIME();
+	return result;
 }
 
 std::shared_ptr<Container> Game::findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer) {
@@ -5836,6 +6013,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 				playerQuickLootCorpse(player, corpse, corpse->getPosition());
 			} else {
 				playerLootAllCorpses(player, pos, lootAllCorpses);
+				return;
 			}
 		}
 	}
@@ -5853,7 +6031,9 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 		}
 
 		const TileItemVector* itemVector = tile->getItemList();
-		uint16_t corpses = 0;
+		Player::QuickLootClientRefreshGuard refreshGuard(*player);
+		uint16_t processedCorpses = 0;
+		uint16_t lootedCorpses = 0;
 		for (auto &tileItem : *itemVector) {
 			if (!tileItem) {
 				continue;
@@ -5872,17 +6052,31 @@ void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Pos
 				continue;
 			}
 
-			corpses++;
-			playerQuickLootCorpse(player, tileCorpse, tileCorpse->getPosition());
-			if (corpses >= maxQuickLootCorpses) {
+			std::shared_ptr<Container> lootContainer = tileCorpse;
+			if (tileCorpse->isRewardCorpse()) {
+				const auto rewardId = tileCorpse->getAttribute<time_t>(ItemAttribute_t::DATE);
+				const auto reward = player->getReward(rewardId, false);
+				lootContainer = reward ? reward->getContainer() : nullptr;
+			}
+			if (!lootContainer) {
+				continue;
+			}
+
+			const auto result = playerQuickLootCorpseInternal(player, lootContainer, tileCorpse->getPosition(), true);
+			tileCorpse->sendUpdateToClient(player);
+			++processedCorpses;
+			if (result.lootedSomething) {
+				++lootedCorpses;
+			}
+			if (processedCorpses >= maxQuickLootCorpses) {
 				break;
 			}
 		}
 
-		if (corpses > 0) {
-			if (corpses > 1) {
+		if (lootedCorpses > 0) {
+			if (lootedCorpses > 1) {
 				std::stringstream string;
-				string << "You looted " << corpses << " corpses.";
+				string << "You looted " << lootedCorpses << " corpses.";
 				player->sendTextMessage(MESSAGE_LOOT, string.str());
 			}
 
@@ -5984,32 +6178,6 @@ namespace {
 		return reward ? reward->getContainer() : nullptr;
 	}
 
-	struct NearbyQuickLootOutcome {
-		bool foundCorpse = false;
-		bool looted = false;
-	};
-
-	NearbyQuickLootOutcome tryNearbyQuickLootCorpse(Game &game, const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse) {
-		if (!isNearbyLootableCorpse(player, corpse)) {
-			return {};
-		}
-
-		NearbyQuickLootOutcome outcome;
-		outcome.foundCorpse = true;
-
-		const auto lootContainer = resolveNearbyLootContainer(player, corpse);
-		const auto lootSnapshotBefore = captureNearbyQuickLootSnapshot(player, lootContainer);
-		if (!lootSnapshotBefore.hasLoot()) {
-			return outcome;
-		}
-
-		game.playerQuickLootCorpse(player, lootContainer, corpse->getPosition());
-		if (lootContainer != corpse) {
-			corpse->sendUpdateToClient(player);
-		}
-		outcome.looted = captureNearbyQuickLootSnapshot(player, lootContainer) != lootSnapshotBefore;
-		return outcome;
-	}
 
 	void sendNearbyQuickLootSummary(const std::shared_ptr<Player> &player, bool anyCorpseFound, uint32_t corpsesLooted) {
 		if (!player) {
@@ -6058,6 +6226,8 @@ void Game::playerLootNearby(uint32_t playerId) {
 
 	const auto maxQuickLootCorpses = static_cast<uint32_t>(std::max<int32_t>(1, g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)));
 	const Position &playerPos = player->getPosition();
+	Player::QuickLootClientRefreshGuard refreshGuard(*player);
+	uint32_t processedCorpses = 0;
 	uint32_t corpsesLooted = 0;
 	bool anyCorpseFound = false;
 
@@ -6069,20 +6239,33 @@ void Game::playerLootNearby(uint32_t playerId) {
 			}
 
 			for (const auto &tileItem : *itemVector) {
-				const auto outcome = tryNearbyQuickLootCorpse(*this, player, tileItem ? tileItem->getContainer() : nullptr);
-				anyCorpseFound = anyCorpseFound || outcome.foundCorpse;
-				corpsesLooted += outcome.looted ? 1U : 0U;
-				if (corpsesLooted >= maxQuickLootCorpses) {
+				const auto corpse = tileItem ? tileItem->getContainer() : nullptr;
+				if (!isNearbyLootableCorpse(player, corpse)) {
+					continue;
+				}
+
+				anyCorpseFound = true;
+				const auto lootContainer = resolveNearbyLootContainer(player, corpse);
+				const auto lootSnapshotBefore = captureNearbyQuickLootSnapshot(player, lootContainer);
+				if (!lootSnapshotBefore.hasLoot()) {
+					continue;
+				}
+
+				const auto result = playerQuickLootCorpseInternal(player, lootContainer, corpse->getPosition(), true);
+				corpse->sendUpdateToClient(player);
+				++processedCorpses;
+				corpsesLooted += result.lootedSomething ? 1U : 0U;
+				if (processedCorpses >= maxQuickLootCorpses) {
 					break;
 				}
 			}
 
-			if (corpsesLooted >= maxQuickLootCorpses) {
+			if (processedCorpses >= maxQuickLootCorpses) {
 				break;
 			}
 		}
 
-		if (corpsesLooted >= maxQuickLootCorpses) {
+		if (processedCorpses >= maxQuickLootCorpses) {
 			break;
 		}
 	}

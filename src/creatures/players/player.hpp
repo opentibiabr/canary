@@ -938,6 +938,13 @@ public:
 
 	// container
 	void closeAllExternalContainers();
+	/**
+	 * @brief Calculates the first visible index after a deferred quick-loot container shrink.
+	 *
+	 * The helper keeps page-collapse behavior testable without forcing tests/unit to build a
+	 * full Player, Container, client protocol or item registry runtime.
+	 */
+	static uint16_t getDeferredQuickLootContainerFirstIndex(uint16_t firstIndex, uint32_t size, uint16_t pageSize);
 	// container
 	void sendAddContainerItem(const std::shared_ptr<Container> &container, std::shared_ptr<Item> item);
 	void sendUpdateContainerItem(const std::shared_ptr<Container> &container, uint16_t slot, const std::shared_ptr<Item> &newItem);
@@ -1890,7 +1897,82 @@ private:
 	PlayerStorage m_storage;
 	PlayerForgeHistory m_forgeHistoryPlayer;
 
+	/**
+	 * @brief Starts deferring quick-loot client refreshes until the matching flush call.
+	 */
+	void beginQuickLootClientRefresh();
+	/**
+	 * @brief Flushes deferred quick-loot container, inventory and stats refreshes when the outermost guard ends.
+	 */
+	void flushQuickLootClientRefresh();
+	/**
+	 * @brief Defers a full container refresh while quick-loot refresh batching is active.
+	 * @return True when the refresh was deferred, false when it must be sent immediately.
+	 */
+	bool deferQuickLootContainerRefresh(const std::shared_ptr<Container> &container);
+	/**
+	 * @brief Defers an inventory slot refresh while quick-loot refresh batching is active.
+	 * @return True when the refresh was deferred, false when it must be sent immediately.
+	 */
+	bool deferQuickLootInventoryItem(Slots_t slot) const;
+	/**
+	 * @brief Defers the inventory id refresh while quick-loot refresh batching is active.
+	 * @return True when the refresh was deferred, false when it must be sent immediately.
+	 */
+	bool deferQuickLootInventoryIds() const;
+	/**
+	 * @brief Defers the stats refresh while quick-loot refresh batching is active.
+	 * @return True when the refresh was deferred, false when it must be sent immediately.
+	 */
+	bool deferQuickLootStats() const;
+
+	/**
+	 * @brief RAII guard that pairs beginQuickLootClientRefresh and flushQuickLootClientRefresh.
+	 *
+	 * The guard only controls client refresh deferral. It does not acquire quickLootMutex; callers
+	 * must use the same PlayerLock/action locking rules as the surrounding quick-loot flow.
+	 */
+	class QuickLootClientRefreshGuard {
+	public:
+		explicit QuickLootClientRefreshGuard(Player &player);
+		~QuickLootClientRefreshGuard();
+
+		QuickLootClientRefreshGuard(const QuickLootClientRefreshGuard &) = delete;
+		QuickLootClientRefreshGuard &operator=(const QuickLootClientRefreshGuard &) = delete;
+		QuickLootClientRefreshGuard(QuickLootClientRefreshGuard &&) = delete;
+		QuickLootClientRefreshGuard &operator=(QuickLootClientRefreshGuard &&) = delete;
+
+	private:
+		Player &player;
+	};
+
+	struct AutoLootMessageState {
+		bool pending = false;
+		bool lootedSomething = false;
+		bool missedSomething = false;
+		bool capacityBlocked = false;
+		bool hasNotEnoughRoomCategory = false;
+		ObjectCategory_t notEnoughRoomCategory = ObjectCategory_t{};
+	};
+
+	struct PendingAutoLootCorpse {
+		std::shared_ptr<Container> corpse;
+		Position position;
+	};
+
+	// quickLootMutex/PlayerLock protects queued auto-loot corpse scheduling and message state.
+	// Client refresh deferral queues are dispatcher-thread batching state; QuickLootClientRefreshGuard
+	// controls their depth/flush lifecycle but deliberately does not acquire this mutex.
 	std::mutex quickLootMutex;
+	std::vector<PendingAutoLootCorpse> pendingAutoLootCorpses;
+	std::vector<std::shared_ptr<Container>> quickLootDirtyContainers;
+	// These mutable members are deferred client refresh queues updated from const send* methods.
+	mutable std::vector<Slots_t> quickLootDirtyInventorySlots;
+	mutable bool quickLootInventoryIdsDirty = false;
+	mutable bool quickLootStatsDirty = false;
+	uint16_t quickLootClientRefreshDepth = 0;
+	bool autoLootCorpseEventScheduled = false;
+	AutoLootMessageState autoLootMessageState;
 
 	std::shared_ptr<Account> account;
 	bool online = true;

@@ -725,11 +725,8 @@ bool Creature::dropCorpse(const std::shared_ptr<Creature> &lastHitCreature, cons
 				std::vector<Direction> dirList;
 				auto isReachable = g_game().map.getPathMatching(player->getPosition(), dirList, FrozenPathingConditionCall(corpse->getPosition()), fpp);
 
-				if (player->checkAutoLoot(monster->isRewardBoss()) && isReachable) {
-					g_dispatcher().addEvent([player, corpseContainer, corpsePosition = corpse->getPosition()] {
-						g_game().playerQuickLootCorpse(player, corpseContainer, corpsePosition);
-					},
-					                        "Game::playerQuickLootCorpse");
+				if (monster && player->checkAutoLoot(monster->isRewardBoss()) && isReachable) {
+					g_game().schedulePlayerAutoLootCorpse(player, corpseContainer, corpse->getPosition());
 				}
 
 				corpse->sendUpdateToClient(player);

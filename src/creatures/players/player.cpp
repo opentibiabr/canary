@@ -39,6 +39,9 @@
 
 #include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/task.hpp"
+
+#include <cassert>
+#include <limits>
 #include "grouping/familiars.hpp"
 #include "grouping/guild.hpp"
 #include "io/iobestiary.hpp"
@@ -2230,6 +2233,10 @@ void Player::sendPingBack() const {
 }
 
 void Player::sendStats() {
+	if (deferQuickLootStats()) {
+		return;
+	}
+
 	if (client) {
 		client->sendStats();
 		lastStatsTrainingTime = getOfflineTrainingTime() / 60 / 1000;
@@ -8610,6 +8617,111 @@ void Player::closeAllExternalContainers() {
 	}
 }
 
+Player::QuickLootClientRefreshGuard::QuickLootClientRefreshGuard(Player &player) :
+	player(player) {
+	player.beginQuickLootClientRefresh();
+}
+
+Player::QuickLootClientRefreshGuard::~QuickLootClientRefreshGuard() {
+	player.flushQuickLootClientRefresh();
+}
+
+void Player::beginQuickLootClientRefresh() {
+	assert(quickLootClientRefreshDepth < std::numeric_limits<uint16_t>::max());
+	++quickLootClientRefreshDepth;
+}
+
+void Player::flushQuickLootClientRefresh() {
+	if (quickLootClientRefreshDepth == 0) {
+		return;
+	}
+
+	--quickLootClientRefreshDepth;
+	if (quickLootClientRefreshDepth != 0) {
+		return;
+	}
+
+	auto dirtyContainers = std::move(quickLootDirtyContainers);
+	auto dirtyInventorySlots = std::move(quickLootDirtyInventorySlots);
+	const bool shouldSendInventoryIds = quickLootInventoryIdsDirty;
+	const bool shouldSendStats = quickLootStatsDirty;
+
+	quickLootDirtyContainers.clear();
+	quickLootDirtyInventorySlots.clear();
+	quickLootInventoryIdsDirty = false;
+	quickLootStatsDirty = false;
+
+	for (const auto &container : dirtyContainers) {
+		onSendContainer(container);
+	}
+
+	for (const Slots_t slot : dirtyInventorySlots) {
+		sendInventoryItem(slot, getInventoryItem(slot));
+	}
+
+	if (shouldSendInventoryIds) {
+		sendInventoryIds();
+	}
+
+	if (shouldSendStats) {
+		sendStats();
+	}
+}
+
+bool Player::deferQuickLootContainerRefresh(const std::shared_ptr<Container> &container) {
+	if (quickLootClientRefreshDepth == 0 || !container) {
+		return false;
+	}
+
+	if (std::ranges::find(quickLootDirtyContainers, container) == quickLootDirtyContainers.end()) {
+		quickLootDirtyContainers.push_back(container);
+	}
+
+	return true;
+}
+
+bool Player::deferQuickLootInventoryItem(Slots_t slot) const {
+	if (quickLootClientRefreshDepth == 0) {
+		return false;
+	}
+
+	if (std::ranges::find(quickLootDirtyInventorySlots, slot) == quickLootDirtyInventorySlots.end()) {
+		quickLootDirtyInventorySlots.push_back(slot);
+	}
+
+	return true;
+}
+
+bool Player::deferQuickLootInventoryIds() const {
+	if (quickLootClientRefreshDepth == 0) {
+		return false;
+	}
+
+	quickLootInventoryIdsDirty = true;
+	return true;
+}
+
+bool Player::deferQuickLootStats() const {
+	if (quickLootClientRefreshDepth == 0) {
+		return false;
+	}
+
+	quickLootStatsDirty = true;
+	return true;
+}
+
+uint16_t Player::getDeferredQuickLootContainerFirstIndex(uint16_t firstIndex, uint32_t size, uint16_t pageSize) {
+	if (size == 0 || pageSize == 0) {
+		return 0;
+	}
+
+	if (firstIndex > 0 && firstIndex >= size - 1) {
+		return firstIndex > pageSize ? static_cast<uint16_t>(firstIndex - pageSize) : 0;
+	}
+
+	return firstIndex;
+}
+
 // container
 
 void Player::sendAddContainerItem(const std::shared_ptr<Container> &container, std::shared_ptr<Item> item) {
@@ -8618,6 +8730,10 @@ void Player::sendAddContainerItem(const std::shared_ptr<Container> &container, s
 	}
 
 	if (!container) {
+		return;
+	}
+
+	if (deferQuickLootContainerRefresh(container)) {
 		return;
 	}
 
@@ -8648,6 +8764,10 @@ void Player::sendUpdateContainerItem(const std::shared_ptr<Container> &container
 		return;
 	}
 
+	if (deferQuickLootContainerRefresh(container)) {
+		return;
+	}
+
 	for (const auto &[containerId, containerInfo] : openContainers) {
 		if (containerInfo.container != container) {
 			continue;
@@ -8672,6 +8792,21 @@ void Player::sendRemoveContainerItem(const std::shared_ptr<Container> &container
 	}
 
 	if (!container) {
+		return;
+	}
+
+	if (quickLootClientRefreshDepth != 0) {
+		for (auto &entry : openContainers) {
+			auto &containerInfo = entry.second;
+			if (containerInfo.container != container) {
+				continue;
+			}
+
+			uint16_t &firstIndex = containerInfo.index;
+			firstIndex = getDeferredQuickLootContainerFirstIndex(firstIndex, container->size(), container->capacity());
+		}
+
+		deferQuickLootContainerRefresh(container);
 		return;
 	}
 
@@ -8736,12 +8871,20 @@ void Player::sendCoinBalance() const {
 }
 
 void Player::sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &item) const {
+	if (deferQuickLootInventoryItem(slot)) {
+		return;
+	}
+
 	if (client) {
 		client->sendInventoryItem(slot, item);
 	}
 }
 
 void Player::sendInventoryIds() const {
+	if (deferQuickLootInventoryIds()) {
+		return;
+	}
+
 	if (client) {
 		client->sendInventoryIds();
 	}
@@ -11721,6 +11864,10 @@ void Player::onCloseContainer(const std::shared_ptr<Container> &container) {
 
 void Player::onSendContainer(const std::shared_ptr<Container> &container) {
 	if (!client || !container) {
+		return;
+	}
+
+	if (deferQuickLootContainerRefresh(container)) {
 		return;
 	}
 

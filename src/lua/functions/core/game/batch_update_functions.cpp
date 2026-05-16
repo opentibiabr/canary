@@ -16,7 +16,6 @@
 void BatchUpdateFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "BatchUpdate", "", luaBatchUpdateCreate);
 	Lua::registerMethod(L, "BatchUpdate", "delete", Lua::luaGarbageCollection);
-	Lua::registerMetaMethod(L, "BatchUpdate", "__gc", Lua::luaGarbageCollection);
 	Lua::registerMethod(L, "BatchUpdate", "add", luaBatchUpdateAdd);
 }
 

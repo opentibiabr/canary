@@ -40,17 +40,16 @@ bool BatchUpdate::add(const std::shared_ptr<Container> &container) {
 		return false;
 	}
 
-	for (auto it = m_state.cached.begin(); it != m_state.cached.end();) {
-		if (auto existing = it->lock()) {
-			if (existing.get() == container.get()) {
-				return false;
-			}
-			++it;
-		} else {
-			it = m_state.cached.erase(it);
+	const auto cached = m_state.cachedLookup.find(container.get());
+	if (cached != m_state.cachedLookup.end()) {
+		if (!cached->second.expired()) {
+			return false;
 		}
+
+		m_state.cachedLookup.erase(cached);
 	}
 
+	m_state.cachedLookup.emplace(container.get(), container);
 	m_state.cached.emplace_back(container);
 	container->beginBatchUpdate();
 	return true;

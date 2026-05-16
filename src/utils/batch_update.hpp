@@ -11,6 +11,7 @@
 
 #ifndef PRECOMPILED_HEADERS
 	#include <memory>
+	#include <parallel_hashmap/phmap.h>
 	#include <vector>
 #endif
 
@@ -40,6 +41,7 @@ private:
 
 		std::weak_ptr<Player> actor;
 		std::vector<std::weak_ptr<Container>> cached;
+		phmap::flat_hash_map<const Container*, std::weak_ptr<Container>> cachedLookup;
 	};
 
 	State m_state;

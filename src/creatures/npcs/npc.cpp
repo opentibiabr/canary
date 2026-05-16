@@ -131,6 +131,16 @@ namespace {
 		return true;
 	}
 
+	[[nodiscard]] bool isInvalidItemForNpcSell(const std::shared_ptr<Item> &item, uint16_t itemId) {
+		return !item || item->getID() != itemId || item->getTier() > 0 || item->hasImbuements();
+	}
+
+	[[nodiscard]] uint32_t consumeSellableAmount(uint32_t &remaining, uint32_t itemAmount) {
+		const auto count = std::min<uint32_t>(remaining, itemAmount);
+		remaining -= count;
+		return count;
+	}
+
 	[[nodiscard]] uint32_t getSellPriceForItem(const std::vector<ShopBlock> &shopVector, uint16_t itemId) {
 		for (const ShopBlock &shopBlock : shopVector) {
 			if (itemId == shopBlock.itemId && shopBlock.itemSellPrice != 0) {
@@ -151,13 +161,11 @@ namespace {
 		for (size_t i = lootPouch->size(); i-- > 0 && remaining > 0;) {
 			const auto &list = lootPouch->getItemList();
 			const auto &item = list[i];
-			if (!item || item->getID() != itemId || item->getTier() > 0 || item->hasImbuements()) {
+			if (isInvalidItemForNpcSell(item, itemId)) {
 				continue;
 			}
 
-			const auto itemAmount = static_cast<uint32_t>(item->getItemAmount());
-			const auto count = std::min<uint32_t>(remaining, itemAmount);
-			remaining -= count;
+			const auto count = consumeSellableAmount(remaining, static_cast<uint32_t>(item->getItemAmount()));
 			found += count;
 		}
 
@@ -177,7 +185,7 @@ namespace {
 				break;
 			}
 
-			if (!item || item->getTier() > 0 || item->hasImbuements()) {
+			if (isInvalidItemForNpcSell(item, itemId)) {
 				continue;
 			}
 
@@ -212,14 +220,13 @@ namespace {
 		for (size_t i = lootPouch->size(); i-- > 0 && toRemove > 0;) {
 			const auto &list = lootPouch->getItemList();
 			const auto &item = list[i];
-			if (!item || item->getID() != itemId || item->getTier() > 0 || item->hasImbuements()) {
+			if (isInvalidItemForNpcSell(item, itemId)) {
 				continue;
 			}
 
-			const auto removeCount = std::min<uint32_t>(toRemove, static_cast<uint32_t>(item->getItemAmount()));
+			const auto removeCount = consumeSellableAmount(toRemove, static_cast<uint32_t>(item->getItemAmount()));
 			lootPouch->removeItemByIndex(i, removeCount);
 
-			toRemove -= removeCount;
 			removed += removeCount;
 		}
 
@@ -235,7 +242,7 @@ namespace {
 				break;
 			}
 
-			if (!item || item->getTier() > 0 || item->hasImbuements()) {
+			if (isInvalidItemForNpcSell(item, itemId)) {
 				continue;
 			}
 

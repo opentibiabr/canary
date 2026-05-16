@@ -6,6 +6,10 @@ on:
   issue_comment:
     types: [created]
 
+concurrency:
+  group: deploy-neep
+  cancel-in-progress: false
+
 jobs:
   deploy:
     if: |
@@ -117,46 +121,87 @@ jobs:
           timeout: 300s
           command_timeout: 30m
           script: |
-            set -e
+            set -euo pipefail
+            : > /tmp/canary-deploy.log
+            exec > >(tee /tmp/canary-deploy.log) 2>&1
 
+            CANARY_DIR=/opt/canary
+            VCPKG_DIR="$HOME/vcpkg"
+            BUILD_PRESET=linux-release
+            BUILD_DIR="$CANARY_DIR/build/$BUILD_PRESET"
             BRANCH="${{ steps.setup.outputs.name }}"
             IS_CLEAN="${{ steps.setup.outputs.is_clean }}"
+            HAS_PR="${{ steps.setup.outputs.has_pr }}"
+            PR_NUMBER="${{ steps.setup.outputs.pr_number }}"
 
-            echo "=== [1/6] Checkout da branch: $BRANCH ==="
-            cd /opt/canary
+            export VCPKG_ROOT="$VCPKG_DIR"
+            export PATH="$VCPKG_DIR:$PATH"
+
+            echo "=== [1/7] Checking out branch: $BRANCH ==="
+            cd "$CANARY_DIR"
             git fetch origin
-            git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
-            git reset --hard "origin/$BRANCH"
+            if [ "$HAS_PR" = "true" ] && [ -n "$PR_NUMBER" ]; then
+              # PR head may live in a fork; use the GitHub PR ref so this works
+              # for both same-repo and fork PRs.
+              git fetch origin "+refs/pull/${PR_NUMBER}/head:refs/remotes/pr/${PR_NUMBER}"
+              git checkout -B "$BRANCH" "refs/remotes/pr/${PR_NUMBER}"
+              git reset --hard "refs/remotes/pr/${PR_NUMBER}"
+            else
+              git checkout "$BRANCH" 2>/dev/null || git checkout -b "$BRANCH"
+              git reset --hard "origin/$BRANCH"
+            fi
             git clean -fdx --exclude=build --exclude=config.lua
 
-            echo "=== [2/6] Preparando build ==="
-            if [ "$IS_CLEAN" = "true" ]; then
-              echo "Comando '/deploy clean' detectado. Apagando diretório build atual..."
-              rm -rf build
-            else
-              echo "Reaproveitando diretório build se existir..."
+            echo "=== [2/7] Updating vcpkg ==="
+            if [ ! -d "$VCPKG_DIR/.git" ]; then
+              echo "ERROR: $VCPKG_DIR is not a git clone of vcpkg"
+              exit 1
             fi
-            
-            mkdir -p build
-            cd build
+            git -C "$VCPKG_DIR" fetch --tags origin
+            git -C "$VCPKG_DIR" reset --hard origin/master
+            "$VCPKG_DIR/bootstrap-vcpkg.sh" -disableMetrics
 
-            echo "=== [3/6] Configurando CMake ==="
-            cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release -DTOGGLE_BIN_FOLDER=ON
+            echo "=== [3/7] Preparing build ==="
+            if [ "$IS_CLEAN" = "true" ]; then
+              echo "'/deploy clean' command detected. Removing $BUILD_DIR..."
+              rm -rf "$BUILD_DIR"
+            else
+              echo "Reusing $BUILD_DIR if it exists..."
+            fi
 
-            echo "=== [4/6] Compilando ==="
-            cmake --build linux-release
+            echo "=== [4/7] Configuring CMake ==="
+            cmake --preset "$BUILD_PRESET" -DTOGGLE_BIN_FOLDER=ON
 
-            echo "=== [5/6] Deploy do binário ==="
-            (systemctl stop canary 2>/dev/null || true) && sleep 3
+            echo "=== [5/7] Compiling ==="
+            cmake --build --preset "$BUILD_PRESET"
 
-            cp linux-release/bin/canary /opt/canary/canary
-            chmod +x /opt/canary/canary
+            echo "=== [6/7] Deploying binary ==="
+            stopped_canary=false
+            restore_canary() {
+              if [ "$stopped_canary" = "true" ]; then
+                systemctl start canary || true
+              fi
+            }
+            trap restore_canary EXIT
+
+            if systemctl is-active --quiet canary; then
+              systemctl stop canary
+              stopped_canary=true
+            fi
+            sleep 3
+            if systemctl is-active --quiet canary; then
+              echo "ERROR: canary service is still running after stop!"
+              exit 1
+            fi
+            install -m 0755 "$BUILD_DIR/bin/canary" "$CANARY_DIR/canary"
 
             ESCAPED_BRANCH="$(printf '%s\n' "$BRANCH" | sed 's/[\/&]/\\&/g')"
-            sed -i "s/^serverMotd = \".*\"/serverMotd = \"Welcome to the Canary Test Server! Currently running branch: $ESCAPED_BRANCH\"/" /opt/canary/config.lua
+            sed -i "s/^serverMotd = \".*\"/serverMotd = \"Welcome to the Canary Test Server! Currently running branch: $ESCAPED_BRANCH\"/" "$CANARY_DIR/config.lua"
 
-            echo "Atualizando /opt/canary/data/stages.lua"
-            cat << 'EOF' > /opt/canary/data/stages.lua
+            echo "=== [7/7] Updating configs and starting service ==="
+
+            echo "Updating $CANARY_DIR/data/stages.lua"
+            cat << 'EOF' > "$CANARY_DIR/data/stages.lua"
             -- Minlevel and multiplier are MANDATORY
             -- Maxlevel is OPTIONAL, but is considered infinite by default
             -- Create a stage with minlevel 1 and no maxlevel to disable stages
@@ -282,8 +327,8 @@ jobs:
             }
             EOF
 
-            echo "Atualizando /opt/canary/data/XML/vocations.xml"
-            cat << 'EOF' > /opt/canary/data/XML/vocations.xml
+            echo "Updating $CANARY_DIR/data/XML/vocations.xml"
+            cat << 'EOF' > "$CANARY_DIR/data/XML/vocations.xml"
             <?xml version="1.0" encoding="UTF-8"?>
             <vocations>
             	<vocation id="0" clientid="0" baseid="0" name="None" description="none" magicshield="0" gaincap="10" gainhp="5" gainmana="5" gainhpticks="4000" gainhpamount="5" gainmanaticks="4000" gainmanaamount="5" manamultiplier="4.0" attackspeed="2000" basespeed="110" soulmax="100" gainsoulticks="120000" fromvoc="0">
@@ -436,16 +481,35 @@ jobs:
             </vocations>
             EOF
 
-            echo "=== [6/6] Iniciando serviço ==="
             systemctl start canary
             sleep 3
             if ! systemctl is-active --quiet canary; then
-              echo "ERRO: serviço canary não está rodando após o start!"
+              echo "ERROR: canary service is not running after start!"
               systemctl status canary --no-pager || true
               exit 1
             fi
+            trap - EXIT
 
             echo "DEPLOY_SUCCESS=true"
+
+      # ---------------------------------------------------------
+      # On failure, fetch the tail of the remote deploy log over a
+      # second SSH session. This keeps the captured output small
+      # (well under ARG_MAX and under GitHub's ~65k comment limit)
+      # without piping the full multi-MB build log through env vars.
+      # ---------------------------------------------------------
+      - name: Fetch remote deploy log tail
+        if: always() && steps.remote.outcome != 'success' && steps.setup.outputs.has_pr == 'true'
+        id: fetch_log
+        uses: appleboy/ssh-action@91f3272fc5907f4699dcf59761eb622a07342f5a
+        with:
+          host: ${{ secrets.NEEP_HOST }}
+          username: root
+          password: ${{ secrets.NEEP_PASS }}
+          timeout: 60s
+          command_timeout: 60s
+          capture_stdout: true
+          script: tail -c 50000 /tmp/canary-deploy.log 2>/dev/null || echo "(no deploy log on remote)"
 
       # ---------------------------------------------------------
       # Success or failure comment
@@ -469,10 +533,16 @@ jobs:
           body: |
             ❌ **Deploy failed!**
             **Branch:** `${{ steps.setup.outputs.name }}`
-            **Error output:**
-            ```
-            ${{ steps.remote.outputs.stderr }}
-            ```
+            **Last build output (tail, max 50KB):**
+
+            <details><summary>Click to expand</summary>
+
+            ````
+            ${{ steps.fetch_log.outputs.stdout }}
+            ````
+
+            </details>
+
             *(Triggered by @${{ steps.setup.outputs.actor }})*
 
       # ---------------------------------------------------------

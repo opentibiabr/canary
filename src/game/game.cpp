@@ -59,7 +59,6 @@
 #include "utils/wildcardtree.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
-#include "utils/batch_update.hpp"
 
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
@@ -1314,15 +1313,23 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	outfitMountSupportedLookTypes.clear();
 	m_appearancesPtr = std::make_unique<Appearances>();
 	if (!m_appearancesPtr->ParseFromIstream(&fileStream)) {
 		g_logger().error("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		fileStream.close();
+		m_appearancesPtr.reset();
 		return ERROR_NOT_OPEN;
 	}
 
 	// Parsing all items into ItemType
 	Item::items.loadFromProtobuf();
+
+	for (const auto &appearance : m_appearancesPtr->outfit()) {
+		if (outfitAppearanceSupportsMount(appearance)) {
+			outfitMountSupportedLookTypes.emplace(static_cast<uint16_t>(appearance.id()));
+		}
+	}
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
@@ -1343,9 +1350,6 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string &file) {
 	}
 
 	fileStream.close();
-
-	// Disposing allocated objects.
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }
@@ -2492,7 +2496,6 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	const auto &player = toCylinder->getPlayer();
-	BatchUpdate batchUpdate(player);
 	bool dropping = false;
 	auto setupDestination = [&]() -> std::shared_ptr<Cylinder> {
 		if (autoContainerId == 0) {
@@ -2502,10 +2505,6 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 		if (!autoContainer) {
 			g_logger().error("[{}] Failed to create auto container", __FUNCTION__);
 			return toCylinder;
-		}
-		if (const auto &container = toCylinder->getContainer()) {
-			const auto addResult = batchUpdate.add(container);
-			(void)addResult;
 		}
 		if (internalAddItem(toCylinder, autoContainer, CONST_SLOT_WHEREEVER, flags) != RETURNVALUE_NOERROR) {
 			if (internalAddItem(toCylinder->getTile(), autoContainer, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
@@ -2533,10 +2532,6 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 			bool addedToAutoContainer = false;
 			// First, try adding to the autoContainer, if it is set
 			if (autoContainerId != 0) {
-				if (auto container = destination->getContainer()) {
-					const auto addResult = batchUpdate.add(container);
-					(void)addResult;
-				}
 				ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
 				if (ret == RETURNVALUE_NOERROR) {
 					addedToAutoContainer = true;
@@ -2547,10 +2542,6 @@ std::tuple<ReturnValue, uint32_t, uint32_t> Game::addItemBatch(const std::shared
 				ret = internalCollectManagedItems(player, item, g_game().getObjectCategory(item), false);
 				// If it can't place in the player's backpacks, add normally
 				if (ret != RETURNVALUE_NOERROR) {
-					if (auto container = destination->getContainer()) {
-						const auto addResult = batchUpdate.add(container);
-						(void)addResult;
-					}
 					ret = internalAddItem(destination, item, CONST_SLOT_WHEREEVER, flags, false, remainderCount);
 				}
 			}
@@ -2794,8 +2785,7 @@ void Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, u
 
 			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
 			if (ret != RETURNVALUE_NOERROR) {
-				const auto fallbackResult = internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
-				(void)fallbackResult;
+				internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			}
 
 			count -= createCount;
@@ -3148,37 +3138,21 @@ void Game::playerQuickLootCorpse(const std::shared_ptr<Player> &player, const st
 	player->lastQuickLootNotification = OTSYS_TIME();
 }
 
-std::shared_ptr<Container> Game::findManagedContainer(
-	const std::shared_ptr<Player> &player,
-	bool &fallbackConsumed,
-	ObjectCategory_t category,
-	bool isLootContainer
-) {
-	const auto candidate = player->getManagedContainer(category, isLootContainer);
+std::shared_ptr<Container> Game::findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer) {
+	auto lootContainer = player->getManagedContainer(category, isLootContainer);
+	if (!lootContainer && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
+		auto fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+		auto mainBackpack = fallbackItem ? fallbackItem->getContainer() : nullptr;
 
-	std::shared_ptr<Container> result = nullptr;
-	if (candidate) {
-		if (candidate->getHoldingPlayer() == player) {
-			result = candidate;
-		} else {
-			player->checkLootContainers(candidate);
-			player->sendLootContainers();
-		}
-	}
-
-	if (!result && player->quickLootFallbackToMainContainer && !fallbackConsumed) {
-		const auto fbItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-		const auto mainBp = fbItem ? fbItem->getContainer() : nullptr;
-		if (mainBp) {
-			const auto previousContainer = player->refreshManagedContainer(OBJECTCATEGORY_DEFAULT, mainBp, isLootContainer);
-			(void)previousContainer;
+		if (mainBackpack) {
+			player->refreshManagedContainer(OBJECTCATEGORY_DEFAULT, mainBackpack, isLootContainer);
 			player->sendInventoryItem(CONST_SLOT_BACKPACK, player->getInventoryItem(CONST_SLOT_BACKPACK));
-			result = mainBp;
+			lootContainer = mainBackpack;
 			fallbackConsumed = true;
 		}
 	}
 
-	return result;
+	return lootContainer;
 }
 
 std::shared_ptr<Container> Game::findNextAvailableContainer(ContainerIterator &containerIterator, std::shared_ptr<Container> &lootContainer, std::shared_ptr<Container> &lastSubContainer) {
@@ -3210,28 +3184,24 @@ bool Game::handleFallbackLogic(const std::shared_ptr<Player> &player, std::share
 		return false;
 	}
 
-	std::shared_ptr<Item> fallbackItem = player->getBackpack();
+	std::shared_ptr<Item> fallbackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	if (!fallbackItem || !fallbackItem->getContainer()) {
 		return false;
 	}
 
 	lootContainer = fallbackItem->getContainer();
+	containerIterator = lootContainer->iterator();
 
 	return true;
 }
 
 ReturnValue Game::processMoveOrAddItemToLootContainer(const std::shared_ptr<Item> &item, const std::shared_ptr<Container> &lootContainer, uint32_t &remainderCount, const std::shared_ptr<Player> &player) {
-	if (!lootContainer || !item) {
-		return RETURNVALUE_NOTPOSSIBLE;
-	}
-
 	std::shared_ptr<Item> moveItem = nullptr;
 	ReturnValue ret;
-	uint32_t flags = lootContainer->getID() == ITEM_GOLD_POUCH ? FLAG_LOOTPOUCH : 0;
 	if (item->getParent()) {
-		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags, player, nullptr, false);
+		ret = internalMoveItem(item->getParent(), lootContainer, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, 0, player, nullptr, false);
 	} else {
-		ret = internalAddItem(lootContainer, item, INDEX_WHEREEVER, flags);
+		ret = internalAddItem(lootContainer, item, INDEX_WHEREEVER);
 	}
 	if (moveItem) {
 		remainderCount -= moveItem->getItemCount();
@@ -3239,21 +3209,10 @@ ReturnValue Game::processMoveOrAddItemToLootContainer(const std::shared_ptr<Item
 	return ret;
 }
 
-ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, const std::shared_ptr<Item> &item, bool &fallbackConsumed, BatchUpdate* batchUpdate) {
+ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::shared_ptr<Container> lootContainer, const std::shared_ptr<Item> &item, bool &fallbackConsumed) {
 	std::shared_ptr<Container> lastSubContainer = nullptr;
 	uint32_t remainderCount = item->getItemCount();
 	ContainerIterator containerIterator = lootContainer->iterator();
-	if (batchUpdate) {
-		if (const auto &parent = item->getParent()) {
-			if (const auto &sourceContainer = parent->getContainer()) {
-				const auto addSourceResult = batchUpdate->add(sourceContainer);
-				(void)addSourceResult;
-			}
-		}
-
-		const auto addResult = batchUpdate->add(lootContainer);
-		(void)addResult;
-	}
 
 	ReturnValue ret;
 	do {
@@ -3266,17 +3225,13 @@ ReturnValue Game::processLootItems(const std::shared_ptr<Player> &player, std::s
 		if (!nextContainer && !handleFallbackLogic(player, lootContainer, containerIterator, fallbackConsumed)) {
 			break;
 		}
-		if (batchUpdate) {
-			const auto addResult = batchUpdate->add(lootContainer);
-			(void)addResult;
-		}
 		fallbackConsumed = fallbackConsumed || (nextContainer == nullptr);
 	} while (remainderCount != 0);
 
 	return ret;
 }
 
-ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category, bool isLootContainer) {
+ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, ObjectCategory_t category, bool isLootContainer /* = true*/) {
 	if (!player || !item) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -3321,96 +3276,45 @@ ReturnValue Game::internalCollectManagedItems(const std::shared_ptr<Player> &pla
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	BatchUpdate batchUpdate(player);
-	auto returnValue = processLootItems(player, lootContainer, item, fallbackConsumed, &batchUpdate);
-	return returnValue;
+	return processLootItems(player, lootContainer, item, fallbackConsumed);
 }
 
 ReturnValue Game::collectRewardChestItems(const std::shared_ptr<Player> &player, uint32_t maxMoveItems /* = 0*/) {
-	if (!player) {
-		return RETURNVALUE_NOTPOSSIBLE;
-	}
-
 	// Check if have item on player reward chest
-	std::shared_ptr<RewardChest> rewardChest = player->getRewardChest();
-	if (!rewardChest || rewardChest->empty()) {
+	const std::shared_ptr<RewardChest> &rewardChest = player->getRewardChest();
+	if (rewardChest->empty()) {
 		g_logger().debug("Reward chest is empty");
 		return RETURNVALUE_REWARDCHESTISEMPTY;
 	}
 
-	auto rewardItemsVector = player->getRewardsFromContainer(rewardChest->getContainer());
+	const auto &container = rewardChest->getContainer();
+	if (!container) {
+		return RETURNVALUE_REWARDCHESTISEMPTY;
+	}
+
+	auto rewardItemsVector = player->getRewardsFromContainer(container);
 	auto rewardCount = rewardItemsVector.size();
 	uint32_t movedRewardItems = 0;
 	std::string lootedItemsMessage;
-
-	BatchUpdate batchUpdate(player);
 	for (const auto &item : rewardItemsVector) {
-		if (!item) {
-			continue;
-		}
-		const auto &parent = item->getParent();
-		if (!parent) {
-			continue;
-		}
-		const auto &container = parent->getContainer();
-		if (!container) {
-			continue;
+		// Stop if player not have free capacity
+		if (item && player->getCapacity() < item->getWeight()) {
+			player->sendCancelMessage(RETURNVALUE_NOTENOUGHCAPACITY);
+			break;
 		}
 
-		batchUpdate.add(container);
-	}
-
-	const auto &quickList = player->quickLootListItemIds;
-	auto filterMode = player->quickLootFilter;
-
-	// Process items
-	for (const auto &item : rewardItemsVector) {
-		if (!item) {
-			continue;
-		}
-
-		uint16_t itemId = item->getID();
-		bool inList = std::ranges::find(quickList, itemId) != quickList.end();
-
-		if (!quickList.empty()) {
-			if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_ACCEPTEDLOOT && !inList) {
-				continue;
-			} else if (filterMode == QuickLootFilter_t::QUICKLOOTFILTER_SKIPPEDLOOT && inList) {
-				continue;
-			}
-		}
-
-		if (player->getCapacity() < item->getWeight()) {
-			return RETURNVALUE_NOTENOUGHCAPACITY;
-		}
-
-		if (maxMoveItems && movedRewardItems == maxMoveItems) {
+		// Limit the collect count if the "maxMoveItems" is not "0"
+		auto limitMove = maxMoveItems != 0 && movedRewardItems == maxMoveItems;
+		if (limitMove) {
 			lootedItemsMessage = fmt::format("You can only collect {} items at a time. {} of {} objects were picked up.", maxMoveItems, movedRewardItems, rewardCount);
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lootedItemsMessage);
-			// Already send message here
 			return RETURNVALUE_NOERROR;
 		}
 
-		bool fallbackConsumed = false;
-		auto category = getObjectCategory(item);
-		auto toContainer = findManagedContainer(player, fallbackConsumed, category, true);
-		if (!toContainer) {
-			player->sendCancelMessage("No managed loot container configured to receive the items.");
-			return RETURNVALUE_NOERROR;
+		ObjectCategory_t category = getObjectCategory(item);
+		if (internalCollectManagedItems(player, item, category) == RETURNVALUE_NOERROR) {
+			movedRewardItems++;
 		}
-
-		batchUpdate.add(toContainer);
-
-		ReturnValue ret = processLootItems(player, toContainer, item, fallbackConsumed, &batchUpdate);
-		if (ret == RETURNVALUE_CONTAINERNOTENOUGHROOM) {
-			player->sendCancelMessage(ret);
-			continue;
-		} else if (ret != RETURNVALUE_NOERROR) {
-			return ret;
-		}
-
-		player->sendLootStats(item, item->getItemCount());
-		++movedRewardItems;
 	}
 
 	lootedItemsMessage = fmt::format("{} of {} objects were picked up.", movedRewardItems, rewardCount);
@@ -6594,6 +6498,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 	}
 
 	const auto &player = getPlayerByID(playerId);
+	playerChangeOutfit(player, outfit, setMount, isMountRandomized);
+}
+
+void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t outfit, bool setMount, uint8_t isMountRandomized /* = 0*/) {
 	if (!player) {
 		return;
 	}
@@ -6605,19 +6513,25 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, bool setMount,
 
 	player->setRandomMount(isMountRandomized);
 
-	if (isMountRandomized && outfit.lookMount != 0 && player->hasAnyMount()) {
-		const auto randomMountId = player->getRandomMountId();
-		const auto randomMount = randomMountId != 0 ? mounts->getMountByID(randomMountId) : nullptr;
-		if (!randomMount) {
-			outfit.lookMount = 0;
-		} else {
-			outfit.lookMount = randomMount->clientId;
+	if (isMountRandomized && setMount && player->hasAnyMount()) {
+		outfit.lookMount = resolveRandomMountClientId(*mounts, player->getRandomMountId());
+		if (outfit.lookMount == 0) {
+			isMountRandomized = 0;
+			player->setRandomMount(0);
 		}
 	}
 
 	const auto playerOutfit = Outfits::getInstance().getOutfitByLookType(player, outfit.lookType);
 	if (!playerOutfit || !setMount) {
 		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
+	}
+
+	if (outfit.lookMount != 0 && !outfitSupportsMount(outfit.lookType)) {
+		outfit.lookMount = 0;
+		isMountRandomized = 0;
+		player->setRandomMount(0);
 	}
 
 	if (outfit.lookMount != 0) {
@@ -7448,8 +7362,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 			}
 
 			if (splash) {
-				const auto addResult = internalAddItem(target->getTile(), splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
-				(void)addResult;
+				internalAddItem(target->getTile(), splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				splash->startDecaying();
 			}
 
@@ -9344,6 +9257,44 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 	return static_cast<uint16_t>((totalEntries + entriesPerPage - 1) / entriesPerPage);
 }
 
+[[nodiscard]] uint16_t Game::resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId) {
+	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
+	return randomMount ? randomMount->clientId : 0;
+}
+
+[[nodiscard]] bool Game::outfitAppearanceSupportsMount(const Canary::protobuf::appearances::Appearance &appearance) {
+	using namespace Canary::protobuf::appearances;
+
+	bool hasIdleFrameGroup = false;
+	bool hasMovingFrameGroup = false;
+	for (const auto &frameGroup : appearance.frame_group()) {
+		const auto fixedFrameGroup = frameGroup.fixed_frame_group();
+		if (fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_IDLE && fixedFrameGroup != FIXED_FRAME_GROUP_OUTFIT_MOVING) {
+			continue;
+		}
+
+		if (fixedFrameGroup == FIXED_FRAME_GROUP_OUTFIT_IDLE) {
+			hasIdleFrameGroup = true;
+		} else {
+			hasMovingFrameGroup = true;
+		}
+
+		if (!frameGroup.has_sprite_info() || frameGroup.sprite_info().pattern_depth() <= 1) {
+			return false;
+		}
+	}
+
+	return hasIdleFrameGroup && hasMovingFrameGroup;
+}
+
+bool Game::outfitSupportsMount(uint16_t lookType) const {
+	if (!m_appearancesPtr) {
+		return true;
+	}
+
+	return outfitMountSupportedLookTypes.contains(lookType);
+}
+
 void Game::cacheQueryHighscore(const std::string &key, const std::string &query, uint32_t page, uint8_t entriesPerPage) {
 	QueryHighscoreCacheEntry queryEntry { query, page, entriesPerPage, std::chrono::steady_clock::now() };
 	queryCache[key] = queryEntry;
@@ -10978,8 +10929,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			// If the fiendish is no longer on the map, we remove it from the vector
 			auto monster = getMonsterByID(monsterId);
 			if (!monster) {
-				const auto removed = removeFiendishMonster(monsterId);
-				(void)removed;
+				removeFiendishMonster(monsterId);
 				continue;
 			}
 
@@ -10988,8 +10938,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			    // Condition
 			    getFiendishMonsters().size() >= fiendishLimit) {
 				monster->clearFiendishStatus();
-				const auto removed = removeFiendishMonster(monsterId);
-				(void)removed;
+				removeFiendishMonster(monsterId);
 				break;
 			}
 		}
@@ -11085,15 +11034,13 @@ void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &mo
 	}
 
 	monster->clearFiendishStatus();
-	const auto removed = removeFiendishMonster(monsterId, false);
-	(void)removed;
+	removeFiendishMonster(monsterId, false);
 	makeFiendishMonster();
 }
 
 bool Game::removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create) {
 	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER) {
-		const auto removed = removeFiendishMonster(id, create);
-		(void)removed;
+		removeFiendishMonster(id, create);
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
 		removeInfluencedMonster(id, create);
 	}
@@ -11105,8 +11052,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 	if (auto find = influencedMonsters.find(id);
 	    // Condition
 	    find != influencedMonsters.end()) {
-		const auto erased = influencedMonsters.erase(find);
-		(void)erased;
+		influencedMonsters.erase(find);
 
 		if (create) {
 			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
@@ -11123,8 +11069,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 	if (auto find = fiendishMonsters.find(id);
 	    // Condition
 	    find != fiendishMonsters.end()) {
-		const auto erased = fiendishMonsters.erase(find);
-		(void)erased;
+		fiendishMonsters.erase(find);
 		checkForgeEventId(id);
 
 		if (create) {
@@ -11154,8 +11099,7 @@ void Game::updateForgeableMonsters() {
 
 	for (const auto &monsterId : getFiendishMonsters()) {
 		if (!getMonsterByID(monsterId)) {
-			const auto removed = removeFiendishMonster(monsterId);
-			(void)removed;
+			removeFiendishMonster(monsterId);
 		}
 	}
 
@@ -11246,17 +11190,23 @@ void Game::checkForgeEventId(uint32_t monsterId) {
 	}
 }
 
-bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster) {
+bool Game::addInfluencedMonster(const std::shared_ptr<Monster> &monster, uint16_t stack /* = 0 */) {
 	if (monster && monster->canBeForgeMonster()) {
+		std::erase_if(influencedMonsters, [this](const auto monsterId) {
+			return getMonsterByID(monsterId) == nullptr;
+		});
+
+		const auto monsterId = monster->getID();
+		const bool alreadyInfluenced = influencedMonsters.contains(monsterId);
 		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT));
 		    // If condition
-		    (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
+		    !alreadyInfluenced && (influencedMonsters.size() + 1) > maxInfluencedMonsters) {
 			return false;
 		}
 
 		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
-		monster->configureForgeSystem();
-		influencedMonsters.emplace(monster->getID());
+		monster->configureForgeSystem(stack);
+		influencedMonsters.emplace(monsterId);
 		return true;
 	}
 	return false;
@@ -12124,4 +12074,34 @@ bool Game::processBankAuction(std::shared_ptr<Player> player, const std::shared_
 	}
 
 	return true;
+}
+
+std::map<uint32_t, std::vector<std::shared_ptr<Player>>> Game::groupPlayersByIP() const {
+	// Reference: https://otland.net/threads/unique-active-player.279129/
+	// Players idle for more than 15 minutes (900000 ms) are excluded so an IP
+	// whose only logged-in characters are idle does not register at all.
+	constexpr int32_t IDLE_THRESHOLD_MS = 15 * 60 * 1000;
+
+	std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupedPlayers;
+	for (const auto &player : getPlayers() | std::views::values) {
+		const uint32_t ip = player->getIP();
+		if (ip != 0 && player->getIdleTime() <= IDLE_THRESHOLD_MS) {
+			groupedPlayers[ip].emplace_back(player);
+		}
+	}
+	return groupedPlayers;
+}
+
+PlayerStats Game::getPlayerStats() const {
+	const auto groupedPlayers = groupPlayersByIP();
+
+	PlayerStats stats;
+	stats.totalUniqueIPs = static_cast<uint32_t>(groupedPlayers.size());
+	for (const auto &groupedPlayersByIp : groupedPlayers | std::views::values) {
+		// otservlist regulation: cap each IP at 4 connections counted toward
+		// the public online total, regardless of how many characters from
+		// that IP are actually logged in.
+		stats.filteredOnlinePlayers += std::min<uint32_t>(static_cast<uint32_t>(groupedPlayersByIp.size()), 4);
+	}
+	return stats;
 }

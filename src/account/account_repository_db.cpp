@@ -9,8 +9,11 @@
 
 #include "account/account_repository_db.hpp"
 
+#include <algorithm>
+
 #include "database/database.hpp"
 #include "enums/account_coins.hpp"
+#include "enums/account_errors.hpp"
 #include "utils/definitions.hpp"
 #include "utils/tools.hpp"
 
@@ -132,6 +135,94 @@ bool AccountRepositoryDB::setCoins(const uint32_t &id, CoinType coinType, const 
 
 	return successful;
 };
+
+AccountErrors_t AccountRepositoryDB::removeCoins(
+	const uint32_t &id,
+	CoinType primaryType,
+	CoinType secondaryType,
+	const uint32_t &amount,
+	const std::string &detail,
+	uint32_t &primaryCoinsRemoved,
+	uint32_t &secondaryCoinsRemoved
+) {
+	using enum AccountErrors_t;
+
+	primaryCoinsRemoved = 0;
+	secondaryCoinsRemoved = 0;
+
+	const auto primaryColumn = coinTypeToColumn.find(primaryType);
+	const auto secondaryColumn = coinTypeToColumn.find(secondaryType);
+	if (primaryColumn == coinTypeToColumn.end() || secondaryColumn == coinTypeToColumn.end()) {
+		g_logger().error("[{}]: invalid coin types primary:[{}], secondary:[{}]", __FUNCTION__, primaryType, secondaryType);
+		return Storage;
+	}
+	if (primaryType == secondaryType) {
+		g_logger().error("[{}]: primary and secondary coin types must be distinct. type:[{}]", __FUNCTION__, primaryType);
+		return Storage;
+	}
+
+	AccountErrors_t result = Storage;
+	const bool success = DBTransaction::executeWithinTransactionRollbackOnFailure([&]() {
+		const auto accountCoins = g_database().storeQuery(fmt::format(
+			"SELECT `{}`, `{}` FROM `accounts` WHERE `id` = {} FOR UPDATE",
+			primaryColumn->second,
+			secondaryColumn->second,
+			id
+		));
+
+		if (!accountCoins) {
+			result = Storage;
+			return false;
+		}
+
+		const auto primaryCoins = accountCoins->getNumber<uint32_t>(primaryColumn->second);
+		const auto secondaryCoins = accountCoins->getNumber<uint32_t>(secondaryColumn->second);
+		if (static_cast<uint64_t>(primaryCoins) + static_cast<uint64_t>(secondaryCoins) < amount) {
+			result = RemoveCoins;
+			return false;
+		}
+
+		primaryCoinsRemoved = std::min(primaryCoins, amount);
+		secondaryCoinsRemoved = amount - primaryCoinsRemoved;
+
+		const bool updated = g_database().executeQuery(fmt::format(
+			"UPDATE `accounts` SET `{}` = {}, `{}` = {} WHERE `id` = {}",
+			primaryColumn->second,
+			primaryCoins - primaryCoinsRemoved,
+			secondaryColumn->second,
+			secondaryCoins - secondaryCoinsRemoved,
+			id
+		));
+
+		if (!updated) {
+			result = Storage;
+			return false;
+		}
+
+		if (!detail.empty() && primaryCoinsRemoved > 0 && !registerCoinsTransaction(id, CoinTransactionType::Remove, primaryCoinsRemoved, primaryType, detail)) {
+			result = Storage;
+			return false;
+		}
+
+		if (!detail.empty() && secondaryCoinsRemoved > 0 && !registerCoinsTransaction(id, CoinTransactionType::Remove, secondaryCoinsRemoved, secondaryType, detail)) {
+			result = Storage;
+			return false;
+		}
+
+		result = Ok;
+		return true;
+	});
+
+	if (!success) {
+		primaryCoinsRemoved = 0;
+		secondaryCoinsRemoved = 0;
+		if (result == Ok) {
+			return Storage;
+		}
+	}
+
+	return result;
+}
 
 bool AccountRepositoryDB::registerCoinsTransaction(
 	const uint32_t &id,

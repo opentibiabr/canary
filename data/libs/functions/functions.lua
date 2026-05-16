@@ -898,8 +898,11 @@ function SetInfluenced(monsterType, monster, player, influencedLevel)
 			Game.removeInfluencedMonster(influencedMonster:getId())
 		end
 	end
-	Game.addInfluencedMonster(monster)
-	monster:setForgeStack(influencedLevel)
+	if not Game.addInfluencedMonster(monster, influencedLevel) then
+		player:sendCancelMessage("Could not add influenced monster.")
+		return false
+	end
+	return true
 end
 
 function ReloadDataEvent(cid)

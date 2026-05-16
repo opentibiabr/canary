@@ -19,7 +19,7 @@ jobs:
       needs_update: ${{ steps.vcpkg.outputs.needs_update }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
 

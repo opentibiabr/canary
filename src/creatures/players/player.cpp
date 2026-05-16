@@ -8687,6 +8687,7 @@ void Player::endBatchUpdate() {
 	}
 
 	updateState();
+	closeContainersOutOfRange();
 }
 
 void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
@@ -8697,6 +8698,7 @@ void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
 
 	if (!m_batching) {
 		updateState();
+		closeContainersOutOfRange();
 	}
 
 	for (const auto &[cid, containerInfo] : openContainers) {
@@ -8709,8 +8711,6 @@ void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
 		client->sendContainer(cid, sharedContainer, hasParent, containerInfo.index);
 		g_logger().debug("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
 	}
-
-	closeContainersOutOfRange();
 }
 
 void Player::closeContainersOutOfRange() {

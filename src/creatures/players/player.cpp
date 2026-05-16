@@ -8689,7 +8689,7 @@ void Player::endBatchUpdate() {
 	updateState();
 }
 
-void Player::sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t /*firstIndex*/) {
+void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
 	if (!container || !client) {
 		g_logger().warn("Player::sendBatchUpdateContainer - Invalid container or client for player {}.", getName());
 		return;

@@ -728,7 +728,7 @@ public:
 	bool isAttackable() const override;
 	void beginBatchUpdate();
 	void endBatchUpdate();
-	void sendBatchUpdateContainer(Container* container, bool hasParent, uint16_t firstIndex = 0);
+	void sendBatchUpdateContainer(Container* container, bool hasParent);
 	bool isBatching() const {
 		return m_batching > 0;
 	}

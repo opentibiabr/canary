@@ -1120,7 +1120,7 @@ void Container::endBatchUpdate(Player* actor) {
 	}
 
 	if (actor) {
-		actor->sendBatchUpdateContainer(this, true, getFirstIndex());
+		actor->sendBatchUpdateContainer(this, true);
 	}
 }
 

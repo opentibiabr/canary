@@ -19,7 +19,7 @@ local function processItemPurchase(player, offerId, offerCount, movable, setOwne
 	end
 
 	for t = 1, offerCount do
-		player:addItemStoreInbox(offerId, offerCount or 1, movable, setOwner)
+		player:addItemStoreInbox(offerId, 1, movable, setOwner)
 	end
 
 	if batchUpdate then

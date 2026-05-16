@@ -69,16 +69,16 @@ public:
 	size_t getCurrentIndex() const;
 
 private:
-		/**
-	     * @brief Represents the state of the iterator at a given point in time.
-	     *
-	     * This structure is used to keep track of the current container,
-	     * the index of the current item within that container, and the depth
-	     * of traversal for nested containers. It is primarily used in the
-	     * ContainerIterator to manage the state of the iteration as it traverses
-	     * through containers and their sub-containers.
-	     */
-		struct IteratorState {
+	/**
+	 * @brief Represents the state of the iterator at a given point in time.
+	 *
+	 * This structure is used to keep track of the current container,
+	 * the index of the current item within that container, and the depth
+	 * of traversal for nested containers. It is primarily used in the
+	 * ContainerIterator to manage the state of the iteration as it traverses
+	 * through containers and their sub-containers.
+	 */
+	struct IteratorState {
 		/**
 		 * @brief The container being iterated over.
 		 */
@@ -347,8 +347,7 @@ protected:
 	friend class MapCache;
 
 private:
-
-		uint32_t m_cachedContainerCount {};
+	uint32_t m_cachedContainerCount {};
 	uint32_t m_cachedItemCount {};
 
 	void onAddContainerItem(const std::shared_ptr<Item> &item);

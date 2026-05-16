@@ -16,5 +16,4 @@ public:
 private:
 	static int luaBatchUpdateCreate(lua_State* L);
 	static int luaBatchUpdateAdd(lua_State* L);
-	static int luaBatchUpdateExecute(lua_State* L);
 };

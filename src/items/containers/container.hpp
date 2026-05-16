@@ -22,12 +22,6 @@ class RewardChest;
 class Reward;
 class Player;
 
-#ifdef BUILD_TESTS
-	#define PRIVATE_FOR_TESTS public
-#else
-	#define PRIVATE_FOR_TESTS private
-#endif
-
 class ContainerIterator {
 public:
 	/**
@@ -74,7 +68,7 @@ public:
 
 	size_t getCurrentIndex() const;
 
-	PRIVATE_FOR_TESTS :
+private:
 		/**
 	     * @brief Represents the state of the iterator at a given point in time.
 	     *
@@ -352,7 +346,7 @@ protected:
 
 	friend class MapCache;
 
-	PRIVATE_FOR_TESTS :
+private:
 
 		uint32_t m_cachedContainerCount {};
 	uint32_t m_cachedItemCount {};

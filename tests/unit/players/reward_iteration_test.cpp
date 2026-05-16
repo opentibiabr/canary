@@ -42,11 +42,9 @@ TEST_F(PlayerRewardIterationTest, ForEachRewardItemSkipsRewardContainersAndVisit
 	std::vector<uint16_t> ids;
 	ids.reserve(rewards.size());
 	for (const auto &item : rewards) {
-		const auto &added = ids.emplace_back(item->getID());
-		(void)added;
+		ids.emplace_back(item->getID());
 	}
-	const auto sortResult = std::ranges::sort(ids);
-	(void)sortResult;
+	std::ranges::sort(ids);
 	EXPECT_EQ(ids, (std::vector<uint16_t> { 100, 101, 102, 1987 }));
 }
 
@@ -70,10 +68,8 @@ TEST_F(PlayerRewardIterationTest, ForEachRewardItemTraversesNestedNormalContaine
 	std::vector<uint16_t> visited;
 	visited.reserve(rewards.size());
 	for (const auto &item : rewards) {
-		const auto &added = visited.emplace_back(item->getID());
-		(void)added;
+		visited.emplace_back(item->getID());
 	}
-	const auto sortResult = std::ranges::sort(visited);
-	(void)sortResult;
+	std::ranges::sort(visited);
 	EXPECT_EQ(visited, (std::vector<uint16_t> { 105, 1987 }));
 }

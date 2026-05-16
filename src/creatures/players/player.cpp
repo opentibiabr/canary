@@ -9186,8 +9186,7 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 	}
 
 	BatchUpdate batchUpdate(getPlayer());
-	const auto addResult = batchUpdate.add(container);
-	(void)addResult;
+	batchUpdate.add(container);
 
 	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
 	uint32_t remaining = totalCount;
@@ -9345,8 +9344,7 @@ ReturnValue Player::addItemBatch(
 			const auto &itemParent = existingItem->getParent();
 			const auto &itemParentContainer = itemParent ? itemParent->getContainer() : nullptr;
 			if (itemParentContainer) {
-				const auto addResult = batchUpdate.add(itemParentContainer);
-				(void)addResult;
+				batchUpdate.add(itemParentContainer);
 				itemParentContainer->updateThing(
 					existingItem,
 					existingItem->getID(),
@@ -9462,8 +9460,7 @@ ReturnValue Player::addItemBatch(
 				return false;
 			}
 
-			const auto addResult = batchUpdate.add(container);
-			(void)addResult;
+			batchUpdate.add(container);
 			container->addThing(newItem);
 			state.actuallyAdded += toStack;
 			state.remaining -= toStack;
@@ -9506,8 +9503,7 @@ ReturnValue Player::addItemBatch(
 								   FLAG_IGNORENOTMOVABLE
 							   ) == RETURNVALUE_NOERROR;
 						if (addedBackpack) {
-							const auto addResult = batchUpdate.add(container);
-							(void)addResult;
+							batchUpdate.add(container);
 							container->addThing(currentBackpack);
 							containersCache.push_back(currentBackpack);
 							break;
@@ -9541,8 +9537,7 @@ ReturnValue Player::addItemBatch(
 				return false;
 			}
 
-			const auto addResult = batchUpdate.add(currentBackpack);
-			(void)addResult;
+			batchUpdate.add(currentBackpack);
 			currentBackpack->addItem(newItem);
 			state.remaining -= itemsToAdd;
 			state.actuallyAdded += itemsToAdd;

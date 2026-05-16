@@ -1221,8 +1221,7 @@ ContainerIterator::ContainerIterator(const std::shared_ptr<const Container> &con
 		const auto &items = container->getItemList();
 
 		states.emplace_back(container, items, 0, 1);
-		const auto insertResult = visitedContainers.insert(container.get());
-		(void)insertResult;
+		visitedContainers.insert(container.get());
 	}
 }
 

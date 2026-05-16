@@ -51,15 +51,13 @@ bool BatchUpdate::add(const std::shared_ptr<Container> &container) {
 		}
 	}
 
-	const auto &added = m_state.cached.emplace_back(container);
-	(void)added;
+	m_state.cached.emplace_back(container);
 	container->beginBatchUpdate();
 	return true;
 }
 
 void BatchUpdate::addContainers(const std::vector<std::shared_ptr<Container>> &containers) {
 	for (const auto &container : containers) {
-		const auto addResult = add(container);
-		(void)addResult;
+		add(container);
 	}
 }

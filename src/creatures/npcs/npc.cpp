@@ -204,8 +204,7 @@ namespace {
 		}
 
 		if (batchUpdate) {
-			const auto addResult = batchUpdate->add(lootPouch);
-			(void)addResult;
+			batchUpdate->add(lootPouch);
 		}
 
 		uint32_t removed = 0;
@@ -243,8 +242,7 @@ namespace {
 			const auto &itemParent = item->getParent();
 			auto container = itemParent ? itemParent->getContainer() : nullptr;
 			if (batchUpdate && container) {
-				const auto addResult = batchUpdate->add(container);
-				(void)addResult;
+				batchUpdate->add(container);
 			}
 
 			const auto removeCount = std::min<uint32_t>(toRemove, static_cast<uint32_t>(item->getItemCount()));
@@ -356,8 +354,7 @@ namespace {
 			return;
 		}
 
-		const auto addResult = batching.add(storeInbox);
-		(void)addResult;
+		batching.add(storeInbox);
 
 		auto letter = Item::CreateItem(ITEM_LETTER_STAMPED);
 		if (!letter) {
@@ -790,8 +787,7 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 	BatchUpdate batching(player);
 	if (!saleData.empty()) {
-		const auto addResult = batching.add(lootPouch);
-		(void)addResult;
+		batching.add(lootPouch);
 	}
 
 	for (size_t index = lootPouch->size(); index > 0;) {
@@ -863,8 +859,7 @@ void Npc::onPlayerSellAllLoot(const std::shared_ptr<Player> &player, bool ignore
 
 	std::string finalMessage;
 	if (pendingTotalPrice == 0) {
-		const auto &appendResult = finalMessage.append("You have no items in your loot pouch.");
-		(void)appendResult;
+		finalMessage = "You have no items in your loot pouch.";
 	} else {
 		finalMessage = fmt::format("You sold {} item{} from your loot pouch for {} {}. A letter with the full list has been sent to your store inbox.", totalItemsSold, (totalItemsSold == 1 ? "" : "s"), pendingTotalPrice, currencyName);
 	}

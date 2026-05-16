@@ -217,7 +217,7 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 
 		addItem(item);
 	}
-	return removed == count;
+	return true;
 }
 
 bool Container::countsToLootAnalyzerBalance() const {
@@ -970,7 +970,7 @@ bool Container::removeItemById(uint16_t itemId, uint32_t count, int32_t subType 
 		}
 	}
 
-	return true;
+	return removed == count;
 }
 
 int32_t Container::getThingIndex(const std::shared_ptr<Thing> &thing) const {

@@ -5062,6 +5062,7 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 	}
 
 	BatchUpdate batchUpdate(getPlayer());
+	std::unordered_set<Container*> batchedContainers;
 	uint32_t amountToRemove = itemAmount;
 	// Check items from inventory
 	for (const auto &item : getAllInventoryItems()) {
@@ -5071,8 +5072,9 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 
 		if (const auto &parent = item->getParent()) {
 			if (const auto &container = parent->getContainer()) {
-				const auto addResult = batchUpdate.add(container);
-				(void)addResult;
+				if (batchedContainers.emplace(container.get()).second) {
+					batchUpdate.add(container);
+				}
 			}
 		}
 

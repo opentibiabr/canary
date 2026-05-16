@@ -26,8 +26,8 @@ const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
 	const uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
-		const std::string ipStr = convertIPToString(ip);
-		if (ipStr != g_configManager().getString(IP)) {
+		const std::string ipStr = getIPString();
+		if (ipStr != g_configManager().getString(IP) && ipStr != "::1") {
 			const auto it = ipConnectMap.find(ip);
 			if (it != ipConnectMap.end() && (OTSYS_TIME() < (it->second + g_configManager().getNumber(STATUSQUERY_TIMEOUT)))) {
 				disconnect();

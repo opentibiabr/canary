@@ -152,11 +152,33 @@ void ServicePort::open(uint16_t port) {
 	pendingStart = false;
 
 	try {
+		// Dual-stack IPv6 listener: accepts both IPv4 (as v4-mapped) and IPv6 clients
+		// on a single socket. Falling back to IPv4 only if the platform refuses v6_only=false
+		// keeps the server reachable on environments where IPv6 is disabled at the OS level.
+		asio::ip::tcp::endpoint endpoint;
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4::from_string(g_configManager().getString(IP))), serverPort));
+			std::error_code parseError;
+			const auto configured = asio::ip::make_address(g_configManager().getString(IP), parseError);
+			if (parseError) {
+				throw std::system_error(parseError, "invalid 'ip' config value");
+			}
+			endpoint = asio::ip::tcp::endpoint(configured, serverPort);
 		} else {
-			acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service, asio::ip::tcp::endpoint(asio::ip::address(asio::ip::address_v4(INADDR_ANY)), serverPort));
+			endpoint = asio::ip::tcp::endpoint(asio::ip::tcp::v6(), serverPort);
 		}
+
+		acceptor = std::make_unique<asio::ip::tcp::acceptor>(io_service);
+		acceptor->open(endpoint.protocol());
+		acceptor->set_option(asio::ip::tcp::acceptor::reuse_address(true));
+		if (endpoint.protocol() == asio::ip::tcp::v6()) {
+			std::error_code v6Error;
+			acceptor->set_option(asio::ip::v6_only(false), v6Error);
+			if (v6Error) {
+				g_logger().warn("[ServicePort::open] - Could not enable dual-stack on IPv6 socket: {}", v6Error.message());
+			}
+		}
+		acceptor->bind(endpoint);
+		acceptor->listen();
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
 

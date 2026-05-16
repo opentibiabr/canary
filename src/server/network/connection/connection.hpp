@@ -69,8 +69,11 @@ public:
 	void send(const OutputMessage_ptr &outputMessage);
 
 	uint32_t getIP();
+	const std::string &getIPString();
 
 private:
+	void resolveRemoteAddress();
+
 	void parseProxyIdentification(const std::error_code &error);
 	void parseHeader(const std::error_code &error);
 	void parsePacket(const std::error_code &error);
@@ -104,6 +107,8 @@ private:
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
 	uint32_t ip = 1;
+	std::string ipString;
+	bool addressResolved = false;
 
 	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
 	bool receivedFirst = false;

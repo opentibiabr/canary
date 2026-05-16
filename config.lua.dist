@@ -57,6 +57,10 @@ cleanProtectionZones = false
 -- NOTE: maxPlayers set to 0 means no limit
 -- NOTE: MaxPacketsPerSeconds if you change you will be subject to bugs by WPE, keep the default value of 25,
 -- It's recommended to use a range like min 50 in this function, otherwise you will be disconnected after equipping two-handed distance weapons.
+-- NOTE: The server listens on a dual-stack IPv6 socket and accepts both IPv4 and IPv6 clients
+-- on the same ports. The 'ip' value is announced to the client in the character list and is
+-- used as the bind address when bindOnlyGlobalAddress is true; it may be an IPv4 literal
+-- (e.g. "127.0.0.1"), an IPv6 literal (e.g. "::1"), or a hostname that resolves on the client side.
 ip = "127.0.0.1"
 allowOldProtocol = false
 bindOnlyGlobalAddress = false

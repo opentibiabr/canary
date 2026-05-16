@@ -199,7 +199,7 @@ void Connection::parseHeader(const std::error_code &error) {
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
-		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
+		g_logger().warn("[Connection::parseHeader] - {} disconnected for exceeding packet per second limit.", getIPString());
 		close();
 		return;
 	}
@@ -353,20 +353,62 @@ void Connection::internalWorker() {
 	internalSend(outputMessage);
 }
 
-uint32_t Connection::getIP() {
-	std::scoped_lock lock(connectionLock);
+void Connection::resolveRemoteAddress() {
+	if (addressResolved) {
+		return;
+	}
+	addressResolved = true;
 
-	if (ip == 1) {
-		std::error_code error;
-		asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
-		if (error) {
-			g_logger().error("[Connection::getIP] - Failed to get remote endpoint: {}", error.message());
-			ip = 0;
-		} else {
-			ip = htonl(endpoint.address().to_v4().to_uint());
+	std::error_code error;
+	const asio::ip::tcp::endpoint endpoint = socket.remote_endpoint(error);
+	if (error) {
+		g_logger().error("[Connection::resolveRemoteAddress] - Failed to get remote endpoint: {}", error.message());
+		ip = 0;
+		return;
+	}
+
+	asio::ip::address address = endpoint.address();
+	// Dual-stack listeners report IPv4 peers as v4-mapped IPv6. Unmap so the
+	// legacy 32-bit IP path keeps working unchanged for the IPv4 majority.
+	if (address.is_v6()) {
+		const auto v6 = address.to_v6();
+		if (v6.is_v4_mapped()) {
+			address = v6.to_v4();
 		}
 	}
+
+	ipString = address.to_string();
+
+	if (address.is_v4()) {
+		ip = htonl(address.to_v4().to_uint());
+		return;
+	}
+
+	// Pure IPv6 peer: fold the 128-bit address into a 32-bit value so existing
+	// uint32_t consumers (rate-limit buckets, lua scripts, lastip column) keep
+	// functioning. The hash is not unique across the v6 space — proper IPv6 ban
+	// and persistence require schema-level changes tracked as a follow-up.
+	const auto bytes = address.to_v6().to_bytes();
+	uint32_t hash = 0;
+	for (size_t i = 0; i + 4 <= bytes.size(); i += 4) {
+		uint32_t chunk = 0;
+		std::memcpy(&chunk, &bytes[i], sizeof(chunk));
+		hash ^= chunk;
+	}
+	// Reserve 0 (unknown) and 1 (unresolved sentinel) so callers can keep using them.
+	ip = (hash == 0 || hash == 1) ? 2 : hash;
+}
+
+uint32_t Connection::getIP() {
+	std::scoped_lock lock(connectionLock);
+	resolveRemoteAddress();
 	return ip;
+}
+
+const std::string &Connection::getIPString() {
+	std::scoped_lock lock(connectionLock);
+	resolveRemoteAddress();
+	return ipString;
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
@@ -412,9 +454,9 @@ void Connection::handleTimeout(ConnectionWeak_ptr connectionWeak, const std::err
 
 	if (auto connection = connectionWeak.lock()) {
 		if (!error) {
-			g_logger().debug("Connection Timeout, IP: {}", convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout, IP: {}", connection->getIPString());
 		} else {
-			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), convertIPToString(connection->getIP()));
+			g_logger().debug("Connection Timeout or error: {}, IP: {}", error.message(), connection->getIPString());
 		}
 		connection->close(FORCE_CLOSE);
 	}

@@ -9873,6 +9873,10 @@ uint32_t Player::getIP() const {
 	return client ? client->getIP() : 0;
 }
 
+std::string Player::getIPString() const {
+	return client ? client->getIPString() : std::string {};
+}
+
 void Player::reloadTaskSlot(PreySlot_t slotid) {
 	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
 		client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));

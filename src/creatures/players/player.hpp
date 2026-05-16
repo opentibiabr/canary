@@ -446,6 +446,7 @@ public:
 	void disconnect() const;
 
 	uint32_t getIP() const;
+	std::string getIPString() const;
 
 	bool isDisconnected() const {
 		return getIP() == 0;

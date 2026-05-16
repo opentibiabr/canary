@@ -8291,7 +8291,6 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 
 	if (const auto &item = thing->getItem()) {
 		if (const auto &container = item->getContainer()) {
-			checkLootContainers(container);
 			onSendContainer(container);
 		}
 
@@ -8346,7 +8345,9 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 
 	if (const auto &item = copyThing->getItem()) {
 		if (const auto &container = item->getContainer()) {
-			checkLootContainers(container);
+			if (container->getTopParent() != thisPlayer) {
+				checkLootContainers(container);
+			}
 			if (shouldCloseContainer(container)) {
 				autoCloseContainers(container);
 			} else {

@@ -217,7 +217,7 @@ bool Container::unserializeItemNode(OTB::Loader &loader, const OTB::Node &node, 
 
 		addItem(item);
 	}
-	return true;
+	return removed == count;
 }
 
 bool Container::countsToLootAnalyzerBalance() const {

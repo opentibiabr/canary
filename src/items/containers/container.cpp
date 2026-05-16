@@ -902,7 +902,6 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 		return;
 	}
 
-	// Use copy to avoid aliasing after swap
 	auto removed = itemlist[index];
 	if (!removed) {
 		return;
@@ -930,15 +929,10 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 		removed->stopDecaying();
 		removed->onRemoved();
 
-		if (m_batching) {
-			if (index == itemlist.size() - 1) {
-				itemlist.pop_back();
-			} else {
-				itemlist.erase(itemlist.begin() + static_cast<std::ptrdiff_t>(index));
-			}
-			removed->resetParent();
+		removed->resetParent();
+		if (index + 1 == itemlist.size()) {
+			itemlist.pop_back();
 		} else {
-			removed->resetParent();
 			itemlist.erase(itemlist.begin() + static_cast<std::ptrdiff_t>(index));
 		}
 

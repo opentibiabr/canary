@@ -1080,6 +1080,7 @@ void Container::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) 
 	}
 
 	item->setParent(getContainer());
+	// Preserve deserialized child order by inserting loaded items at the front.
 	itemlist.push_front(item);
 	updateItemWeight(item->getWeight());
 	updateCacheOnAdd(item);

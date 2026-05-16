@@ -915,14 +915,14 @@ void Container::removeItemByIndex(size_t index, uint32_t count) {
 		removed->setItemCount(newCount);
 		weightDiff = -oldWeight + removed->getWeight();
 
-		if (!m_batching && getParent()) {
+		if (getParent()) {
 			onUpdateContainerItem(static_cast<uint32_t>(index), removed, removed);
 		}
 	} else {
 		weightDiff = -static_cast<int32_t>(removed->getWeight());
 		updateCacheOnRemove(removed);
 
-		if (!m_batching && getParent()) {
+		if (getParent()) {
 			onRemoveContainerItem(static_cast<uint32_t>(index), removed);
 		}
 

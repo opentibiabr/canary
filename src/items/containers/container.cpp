@@ -1128,9 +1128,9 @@ uint32_t Container::removeAllItems(const std::shared_ptr<Player> &actor, bool is
 	beginBatchUpdate();
 
 	uint32_t removedCount = 0;
-	std::vector<std::shared_ptr<Item>> itemsToRemove;
 
 	if (isRecursive) {
+		std::vector<std::shared_ptr<Item>> itemsToRemove;
 		for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
 			const auto &item = *it;
 			if (!item) {
@@ -1138,19 +1138,23 @@ uint32_t Container::removeAllItems(const std::shared_ptr<Player> &actor, bool is
 			}
 			itemsToRemove.push_back(item);
 		}
-	} else {
-		const auto &itemList = getItemList();
-		for (const auto &item : itemList) {
+
+		for (const auto &item : itemsToRemove) {
 			if (!item) {
 				continue;
 			}
-			itemsToRemove.push_back(item);
+			removeThing(item, item->getItemCount());
+			++removedCount;
 		}
-	}
-
-	for (const auto &item : itemsToRemove) {
-		removeThing(item, item->getItemCount());
-		++removedCount;
+	} else {
+		for (size_t index = itemlist.size(); index-- > 0;) {
+			const auto &item = itemlist[index];
+			if (!item) {
+				continue;
+			}
+			removeItemByIndex(index, item->getItemCount());
+			++removedCount;
+		}
 	}
 
 	endBatchUpdate(actor.get());

@@ -9031,7 +9031,9 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 					}
 
 					targetContainer->addThing(newItem);
-					onSendContainer(targetContainer);
+					if (!isBatching()) {
+						onSendContainer(targetContainer);
+					}
 					addedItemCount += toCreate;
 					availableCapacity -= toCreate * itemWeight;
 					addValue -= toCreate;
@@ -9066,7 +9068,9 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 				}
 
 				targetContainer->addThing(newItem);
-				onSendContainer(targetContainer);
+				if (!isBatching()) {
+					onSendContainer(targetContainer);
+				}
 				addedItemCount += 1;
 				finalRetrievable -= 1;
 			}

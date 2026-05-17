@@ -120,11 +120,7 @@ local function buildEquipmentShopFromItemsXml()
 		local itemId = paddedAttributes:match('%sid="(%d+)"')
 		local itemName = paddedAttributes:match('%sname="([^"]+)"')
 		if itemId and itemName then
-			local hasStat = itemBody:find('key="armor"')
-				or itemBody:find('key="attack"')
-				or itemBody:find('key="defense"')
-				or itemBody:find('key="fromDamage"')
-				or itemBody:find('key="toDamage"')
+			local hasStat = itemBody:find('key="armor"') or itemBody:find('key="attack"') or itemBody:find('key="defense"') or itemBody:find('key="fromDamage"') or itemBody:find('key="toDamage"')
 			local hasWeaponData = itemBody:find('key="weaponType"') ~= nil
 			if hasStat or hasWeaponData then
 				local selectedSlot = nil
@@ -515,14 +511,8 @@ end
 
 npcConfig.shop = buildEquipmentShopFromItemsXml()
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(
-	MESSAGE_GREET,
-	"Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500})."
-)
-npcHandler:setMessage(
-	MESSAGE_SENDTRADE,
-	"Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000."
-)
+npcHandler:setMessage(MESSAGE_GREET, "Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500}).")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000.")
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

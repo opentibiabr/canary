@@ -85,6 +85,8 @@ local function buildEquipmentShopFromItemsXml()
 		feet = true, -- boots
 		ring = true, -- rings
 		necklace = true, -- amulets
+		hand = true, -- weapons (sword/axe/club/bow/crossbow/wand/rod)
+		["two-handed"] = true, -- bows/crossbows and other 2h weapons defined by slotType
 		shield = true, -- shields
 		ammo = true, -- trinkets
 	}
@@ -96,8 +98,10 @@ local function buildEquipmentShopFromItemsXml()
 		feet = 4,
 		ring = 5,
 		necklace = 6,
-		shield = 7,
-		ammo = 8,
+		hand = 7,
+		["two-handed"] = 7,
+		shield = 8,
+		ammo = 9,
 	}
 
 	local entries = {}
@@ -116,13 +120,25 @@ local function buildEquipmentShopFromItemsXml()
 		local itemId = paddedAttributes:match('%sid="(%d+)"')
 		local itemName = paddedAttributes:match('%sname="([^"]+)"')
 		if itemId and itemName then
-			local hasStat = itemBody:find('key="armor"') or itemBody:find('key="attack"') or itemBody:find('key="defense"')
-			if hasStat then
+			local hasStat = itemBody:find('key="armor"')
+				or itemBody:find('key="attack"')
+				or itemBody:find('key="defense"')
+				or itemBody:find('key="fromDamage"')
+				or itemBody:find('key="toDamage"')
+			local hasWeaponData = itemBody:find('key="weaponType"') ~= nil
+			if hasStat or hasWeaponData then
 				local selectedSlot = nil
 				for slot in itemBody:gmatch('<attribute%s+key="slot"%s+value="([^"]+)"[^>]*>') do
 					if validSlots[slot] then
 						selectedSlot = slot
 						break
+					end
+				end
+
+				if not selectedSlot then
+					local slotType = itemBody:match('<attribute%s+key="slotType"%s+value="([^"]+)"[^>]*>')
+					if validSlots[slotType] then
+						selectedSlot = slotType
 					end
 				end
 
@@ -134,6 +150,7 @@ local function buildEquipmentShopFromItemsXml()
 						clientId = tonumber(itemId),
 						buy = 1,
 						_slotOrder = slotOrder[selectedSlot] or 99,
+						_isWeapon = hasWeaponData,
 					}
 				end
 			end
@@ -156,6 +173,10 @@ local function buildEquipmentShopFromItemsXml()
 	end
 
 	table.sort(entries, function(a, b)
+		if a._slotOrder == b._slotOrder and a._isWeapon ~= b._isWeapon then
+			return a._isWeapon
+		end
+
 		if a._slotOrder == b._slotOrder then
 			return a.itemName < b.itemName
 		end
@@ -164,6 +185,7 @@ local function buildEquipmentShopFromItemsXml()
 
 	for index = 1, #entries do
 		entries[index]._slotOrder = nil
+		entries[index]._isWeapon = nil
 	end
 
 	return entries
@@ -493,8 +515,14 @@ end
 
 npcConfig.shop = buildEquipmentShopFromItemsXml()
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
-npcHandler:setMessage(MESSAGE_GREET, "Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500}).")
-npcHandler:setMessage(MESSAGE_SENDTRADE, "Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000.")
+npcHandler:setMessage(
+	MESSAGE_GREET,
+	"Welcome to Test Server. I can give {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000 (example: {level 500})."
+)
+npcHandler:setMessage(
+	MESSAGE_SENDTRADE,
+	"Trade is open. You can also ask for {outfit}, {mount}, {bless}, {promotion}, {money}, {tibia coins}, {remove tibia coins}, {skill}, {reset}, and {exp}. Use {level X} from 1 to 3000."
+)
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

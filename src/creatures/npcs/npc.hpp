@@ -125,7 +125,7 @@ private:
 	std::unordered_map<uint32_t, std::vector<ShopBlock>> shopPlayers;
 
 	std::shared_ptr<NpcType> npcType;
-	std::shared_ptr<SpawnNpc> spawnNpc;
+	std::weak_ptr<SpawnNpc> spawnNpc;
 
 	uint8_t speechBubble {};
 
@@ -135,7 +135,7 @@ private:
 
 	bool ignoreHeight {};
 
-	phmap::flat_hash_set<std::shared_ptr<Player>> playerSpectators;
+	phmap::flat_hash_set<uint32_t> playerSpectators;
 	Position masterPos;
 
 	friend class LuaScriptInterface;

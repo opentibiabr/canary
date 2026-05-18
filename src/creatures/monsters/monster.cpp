@@ -341,29 +341,26 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 			g_logger().error("[Monster::onCreatureDisappear - Monster {} creature {}] "
 			                 "Call stack overflow. Too many lua script calls being nested.",
 			                 getName(), creature->getName());
-			return;
-		}
+		} else {
+			ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
+			env->setScriptId(m_monsterType->info.creatureDisappearEvent, scriptInterface);
 
-		ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
-		env->setScriptId(m_monsterType->info.creatureDisappearEvent, scriptInterface);
+			lua_State* L = scriptInterface->getLuaState();
+			scriptInterface->pushFunction(m_monsterType->info.creatureDisappearEvent);
 
-		lua_State* L = scriptInterface->getLuaState();
-		scriptInterface->pushFunction(m_monsterType->info.creatureDisappearEvent);
+			LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
+			LuaScriptInterface::setMetatable(L, -1, "Monster");
 
-		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
-		LuaScriptInterface::setMetatable(L, -1, "Monster");
+			LuaScriptInterface::pushUserdata<Creature>(L, creature);
+			LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
-		LuaScriptInterface::pushUserdata<Creature>(L, creature);
-		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-
-		if (scriptInterface->callFunction(2)) {
-			return;
+			scriptInterface->callFunction(2);
 		}
 	}
 
 	if (creature.get() == this) {
-		if (spawnMonster) {
-			spawnMonster->startSpawnMonsterCheck();
+		if (const auto &spawn = spawnMonster.lock()) {
+			spawn->startSpawnMonsterCheck();
 		}
 
 		setIdle(true);
@@ -1030,7 +1027,7 @@ bool Monster::getIdleStatus() const {
 }
 
 bool Monster::isInSpawnLocation() const {
-	if (!spawnMonster) {
+	if (spawnMonster.expired()) {
 		return true;
 	}
 	return position == masterPos || masterPos == Position();
@@ -2397,7 +2394,7 @@ std::shared_ptr<Item> Monster::getCorpse(const std::shared_ptr<Creature> &lastHi
 }
 
 bool Monster::isInSpawnRange(const Position &pos) const {
-	if (!spawnMonster) {
+	if (spawnMonster.expired()) {
 		return true;
 	}
 

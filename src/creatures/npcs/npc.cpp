@@ -219,17 +219,15 @@ void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLog
 		callback.pushCreature(creature);
 	}
 
-	if (callback.persistLuaState()) {
-		return;
-	}
+	callback.persistLuaState();
 
 	if (const auto &player = creature->getPlayer()) {
 		removeShopPlayer(player->getGUID());
 		onPlayerDisappear(player);
 	}
 
-	if (spawnNpc) {
-		spawnNpc->startSpawnNpcCheck();
+	if (const auto &spawn = spawnNpc.lock()) {
+		spawn->startSpawnNpcCheck();
 	}
 }
 
@@ -245,9 +243,7 @@ void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::s
 		callback.pushPosition(newPos);
 	}
 
-	if (callback.persistLuaState()) {
-		return;
-	}
+	callback.persistLuaState();
 
 	if (creature == getNpc() && !canInteract(oldPos)) {
 		resetPlayerInteractions();
@@ -268,17 +264,19 @@ void Npc::manageIdle() {
 }
 
 void Npc::onPlayerAppear(const std::shared_ptr<Player> &player) {
-	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
+	const uint32_t playerId = player->getID();
+	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(playerId)) {
 		return;
 	}
-	playerSpectators.emplace(player);
+	playerSpectators.emplace(playerId);
 	manageIdle();
 }
 
 void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
 	removePlayerInteraction(player);
-	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
-		playerSpectators.erase(player);
+	const uint32_t playerId = player->getID();
+	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(playerId)) {
+		playerSpectators.erase(playerId);
 		manageIdle();
 	}
 }
@@ -612,9 +610,7 @@ void Npc::onPlayerCloseChannel(const std::shared_ptr<Creature> &creature) {
 		callback.pushCreature(player);
 	}
 
-	if (callback.persistLuaState()) {
-		return;
-	}
+	callback.persistLuaState();
 
 	removePlayerInteraction(player);
 }
@@ -669,7 +665,10 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	phmap::erase_if(playerSpectators, [this](uint32_t playerId) {
+		const auto &player = g_game().getPlayerByID(playerId);
+		return !player || !this->canSee(player->getPosition());
+	});
 }
 
 void Npc::onPlacedCreature() {
@@ -679,14 +678,15 @@ void Npc::onPlacedCreature() {
 void Npc::loadPlayerSpectators() {
 	const auto &spec = Spectators().find<Player>(position, true);
 	for (const auto &creature : spec) {
-		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.emplace(creature->getPlayer());
+		const auto &player = creature->getPlayer();
+		if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+			playerSpectators.emplace(player->getID());
 		}
 	}
 }
 
 bool Npc::isInSpawnRange(const Position &pos) const {
-	if (!spawnNpc) {
+	if (spawnNpc.expired()) {
 		return true;
 	}
 
@@ -809,7 +809,10 @@ void Npc::removeShopPlayer(uint32_t playerGUID) {
 
 void Npc::closeAllShopWindows() {
 	for (auto it = shopPlayers.begin(); it != shopPlayers.end();) {
-		const auto &player = g_game().getPlayerByGUID(it->first);
+		const auto playerGuid = it->first;
+		++it;
+
+		const auto &player = g_game().getPlayerByGUID(playerGuid);
 		if (player) {
 			player->closeShopWindow();
 		}

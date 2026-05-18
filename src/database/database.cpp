@@ -286,6 +286,10 @@ std::string Database::escapeString(const std::string &s) const {
 }
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
+	metrics::lock_latency measureLock("database");
+	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
+
 	size_t maxLength = (length * 2) + 1;
 
 	std::string escaped;
@@ -392,13 +396,13 @@ DBInsert::DBInsert(std::string insertQuery) :
 
 bool DBInsert::addRow(std::string_view row) {
 	const size_t rowLength = row.length();
-	length += rowLength;
 	auto max_packet_size = Database::getInstance().getMaxPacketSize();
 
-	if (length > max_packet_size && !execute()) {
+	if (!values.empty() && length + rowLength > max_packet_size && !execute()) {
 		return false;
 	}
 
+	length += rowLength;
 	if (values.empty()) {
 		values.reserve(rowLength + 2);
 		values.push_back('(');
@@ -470,5 +474,7 @@ bool DBInsert::execute() {
 		}
 	}
 
+	values.clear();
+	length = query.length();
 	return true;
 }

@@ -83,7 +83,7 @@ private:
 	static bool isRecoverableError(unsigned int error);
 
 	MYSQL* handle = nullptr;
-	std::recursive_mutex databaseLock;
+	mutable std::recursive_mutex databaseLock;
 	uint64_t maxPacketSize = 1048576;
 
 	friend class DBTransaction;

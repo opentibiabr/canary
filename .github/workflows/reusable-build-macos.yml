@@ -15,10 +15,10 @@ jobs:
       VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -41,7 +41,7 @@ jobs:
           ninja --version
 
       - name: CCache
-        uses: hendrikmuhs/ccache-action@v1.2.20
+        uses: hendrikmuhs/ccache-action@v1.2.23
         with:
           max-size: "1G"
           key: ccache-macos-release
@@ -95,7 +95,7 @@ jobs:
           cmake --build --preset macos-release
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macos-release
           path: build/macos-release

@@ -752,9 +752,18 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	std::vector<std::shared_ptr<Creature>> resultList;
 	const Position &myPos = getPosition();
 
+	// When the current melee target is path-blocked (magic wall, untraversable field),
+	// exclude it so a reachable alternative can be chosen instead of repeatedly picking
+	// the same unreachable creature as "nearest".
+	const auto &currentAttacked = getAttackedCreature();
+	const bool skipCurrentUnreachable = currentAttacked && static_self_cast<Monster>()->targetDistance <= 1 && !hasFollowPath;
+
 	for (const auto &cref : targetList) {
 		const auto &creature = cref.lock();
 		if (creature && isTarget(creature)) {
+			if (skipCurrentUnreachable && creature == currentAttacked) {
+				continue;
+			}
 			if ((static_self_cast<Monster>()->targetDistance == 1) || canUseAttack(myPos, creature)) {
 				resultList.emplace_back(creature);
 			}
@@ -867,7 +876,10 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	}
 
 	// lets just pick the first target in the list
-	return std::ranges::any_of(getTargetList(), [this](const std::shared_ptr<Creature> &creature) {
+	return std::ranges::any_of(getTargetList(), [this, skipCurrentUnreachable, &currentAttacked](const std::shared_ptr<Creature> &creature) {
+		if (skipCurrentUnreachable && creature == currentAttacked) {
+			return false;
+		}
 		return selectTarget(creature);
 	});
 }
@@ -2522,7 +2534,12 @@ void Monster::setNormalCreatureLight() {
 void Monster::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) {
 	Creature::drainHealth(attacker, damage);
 
-	if (damage > 0 && randomStepping) {
+	// Allow walking through harmful fields when the monster is being damaged and either
+	// has no target (random stepping) or its current target is unreachable. Without the
+	// !hasFollowPath branch, a melee monster locked onto a target it cannot path to (magic
+	// walled, behind a non-traversable field) stays unable to push through fields even
+	// while taking damage from the very fields/bombs blocking its way.
+	if (damage > 0 && (randomStepping || (!hasFollowPath && getFollowCreature()))) {
 		ignoreFieldDamage = true;
 	}
 
@@ -2685,7 +2702,7 @@ void Monster::applyStacks() {
 	health = newHealth;
 }
 
-void Monster::configureForgeSystem() {
+void Monster::configureForgeSystem(uint16_t stack /* = 0 */) {
 	if (!canBeForgeMonster()) {
 		return;
 	}
@@ -2695,7 +2712,9 @@ void Monster::configureForgeSystem() {
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Fiendish, 0 /* don't show stacks on fiends */));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());
 	} else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER) {
-		auto stack = static_cast<uint16_t>(normal_random(1, 5));
+		if (stack == 0) {
+			stack = static_cast<uint16_t>(normal_random(1, 5));
+		}
 		setForgeStack(stack);
 		setIcon("forge", CreatureIcon(CreatureIconModifications_t::Influenced, stack));
 		g_game().updateCreatureIcon(static_self_cast<Monster>());

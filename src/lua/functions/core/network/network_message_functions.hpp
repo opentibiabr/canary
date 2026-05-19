@@ -22,6 +22,7 @@ private:
 	static int luaNetworkMessageGetU64(lua_State* L);
 	static int luaNetworkMessageGetString(lua_State* L);
 	static int luaNetworkMessageGetPosition(lua_State* L);
+	static int luaNetworkMessageGetUnreadBytes(lua_State* L);
 
 	static int luaNetworkMessageAddByte(lua_State* L);
 	static int luaNetworkMessageAddU16(lua_State* L);

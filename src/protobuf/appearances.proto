@@ -2,6 +2,8 @@ syntax = "proto2";
 
 package Canary.protobuf.appearances;
 
+option optimize_for = LITE_RUNTIME;
+
 message Coordinate {
 	optional uint32 x = 1;
 	optional uint32 y = 2;

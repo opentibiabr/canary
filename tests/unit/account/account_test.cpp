@@ -314,10 +314,10 @@ TEST_F(AccountTest, RemoveCoinsReturnsErrorIfNotYetLoaded) {
 
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfRepositoryFails) {
 	Account acc { 1 };
-	repository().failAddCoins = true;
 	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
 	expectSetCoins(repository(), 1, Normal, 100);
 
+	repository().failAddCoins = true;
 	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
 	EXPECT_TRUE(eqEnum(acc.removeCoins(Normal, 100), AccountErrors_t::Storage));
 }
@@ -388,6 +388,82 @@ TEST_F(AccountTest, RemoveCoinsRemovesCoinsForSpecifiedCoinTypeOnly) {
 	EXPECT_TRUE(eqEnum(coinType, Normal));
 	EXPECT_TRUE(eqEnum(type, CoinTransactionType::Remove));
 	EXPECT_EQ(string { "REMOVE Coins" }, description);
+}
+
+TEST_F(AccountTest, RemoveCoinsRemovesFromPrimaryThenSecondaryCoinBalance) {
+	Account acc { 1 };
+	repository().failAddCoins = false;
+	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
+	expectSetCoins(repository(), 1, Transferable, 80);
+	expectSetCoins(repository(), 1, Normal, 100);
+
+	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Transferable, Normal, 130), AccountErrors_t::Ok));
+
+	auto [transferableCoins, transferableError] = acc.getCoins(Transferable);
+	EXPECT_EQ(0, transferableCoins);
+	EXPECT_TRUE(eqEnum(transferableError, AccountErrors_t::Ok));
+
+	auto [normalCoins, normalError] = acc.getCoins(Normal);
+	EXPECT_EQ(50, normalCoins);
+	EXPECT_TRUE(eqEnum(normalError, AccountErrors_t::Ok));
+
+	ASSERT_EQ(1u, repository().coinsTransactions_.size());
+	ASSERT_EQ(2u, repository().coinsTransactions_[1].size());
+
+	const auto &[transferableType, transferableAmount, transferableCoinType, transferableDescription] = repository().coinsTransactions_[1][0];
+	EXPECT_TRUE(eqEnum(transferableType, CoinTransactionType::Remove));
+	EXPECT_EQ(80u, transferableAmount);
+	EXPECT_TRUE(eqEnum(transferableCoinType, Transferable));
+	EXPECT_EQ(string { "REMOVE Coins" }, transferableDescription);
+
+	const auto &[normalType, normalAmount, normalCoinType, normalDescription] = repository().coinsTransactions_[1][1];
+	EXPECT_TRUE(eqEnum(normalType, CoinTransactionType::Remove));
+	EXPECT_EQ(50u, normalAmount);
+	EXPECT_TRUE(eqEnum(normalCoinType, Normal));
+	EXPECT_EQ(string { "REMOVE Coins" }, normalDescription);
+}
+
+TEST_F(AccountTest, RemoveCoinsDoesNotChangeCombinedBalanceIfInsufficient) {
+	Account acc { 1 };
+	repository().failAddCoins = false;
+	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
+	expectSetCoins(repository(), 1, Transferable, 40);
+	expectSetCoins(repository(), 1, Normal, 50);
+
+	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Transferable, Normal, 100), AccountErrors_t::RemoveCoins));
+
+	auto [transferableCoins, transferableError] = acc.getCoins(Transferable);
+	EXPECT_EQ(40, transferableCoins);
+	EXPECT_TRUE(eqEnum(transferableError, AccountErrors_t::Ok));
+
+	auto [normalCoins, normalError] = acc.getCoins(Normal);
+	EXPECT_EQ(50, normalCoins);
+	EXPECT_TRUE(eqEnum(normalError, AccountErrors_t::Ok));
+
+	EXPECT_TRUE(repository().coinsTransactions_.empty());
+}
+
+TEST_F(AccountTest, RemoveCoinsDoesNotChangeCombinedBalanceIfRepositoryFails) {
+	Account acc { 1 };
+	repository().addAccount("canary@test.com", AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD });
+	expectSetCoins(repository(), 1, Transferable, 80);
+	expectSetCoins(repository(), 1, Normal, 100);
+	repository().failAddCoins = true;
+
+	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
+	EXPECT_TRUE(eqEnum(acc.removeCoins(Transferable, Normal, 130), AccountErrors_t::Storage));
+
+	auto [transferableCoins, transferableError] = acc.getCoins(Transferable);
+	EXPECT_EQ(80, transferableCoins);
+	EXPECT_TRUE(eqEnum(transferableError, AccountErrors_t::Ok));
+
+	auto [normalCoins, normalError] = acc.getCoins(Normal);
+	EXPECT_EQ(100, normalCoins);
+	EXPECT_TRUE(eqEnum(normalError, AccountErrors_t::Ok));
+
+	EXPECT_TRUE(repository().coinsTransactions_.empty());
 }
 
 TEST_F(AccountTest, RemoveCoinsReturnsErrorIfNotEnoughCoins) {

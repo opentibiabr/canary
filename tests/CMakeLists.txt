@@ -116,7 +116,12 @@ function(
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
         PROPERTIES
         TIMEOUT 120
-                DISCOVERY_MODE PRE_TEST
+                RESOURCE_LOCK
+                ${TARGET_NAME}_resource_lock
+                RUN_SERIAL
+                TRUE
+                DISCOVERY_MODE
+                PRE_TEST
     )
 endfunction()
 

@@ -94,16 +94,15 @@ uint8_t Party::getUniqueVocationsCount() const {
 }
 
 void Party::disband() {
-	const auto &currentLeader = getLeader();
-	if (currentLeader) {
-		if (!g_events().eventPartyOnDisband(getParty())) {
-			return;
-		}
-
-		if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, getParty())) {
-			return;
-		}
+	if (!g_events().eventPartyOnDisband(getParty())) {
+		return;
 	}
+
+	if (!g_callbacks().checkCallback(EventCallback_t::partyOnDisband, getParty())) {
+		return;
+	}
+
+	const auto &currentLeader = getLeader();
 
 	m_leader.reset();
 	m_mantraHolder.reset();
@@ -120,7 +119,9 @@ void Party::disband() {
 
 	for (const auto &invitee : getInvitees()) {
 		invitee->removePartyInvitation(getParty());
-		currentLeader->sendCreatureShield(invitee);
+		if (currentLeader) {
+			currentLeader->sendCreatureShield(invitee);
+		}
 	}
 	inviteList.clear();
 
@@ -139,8 +140,10 @@ void Party::disband() {
 			otherMember->sendCreatureSkull(member);
 		}
 
-		member->sendCreatureSkull(currentLeader);
-		currentLeader->sendCreatureSkull(member);
+		if (currentLeader) {
+			member->sendCreatureSkull(currentLeader);
+			currentLeader->sendCreatureSkull(member);
+		}
 		g_game().updatePlayerHelpers(member);
 	}
 	memberList.clear();

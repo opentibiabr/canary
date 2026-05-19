@@ -12544,7 +12544,7 @@ void Player::healFromHarmony(uint8_t charges /* = 1 */) {
 	// Check if the player is in a party
 	if (const auto &party = getParty()) {
 		for (const auto &partyMember : party->getPlayers()) {
-			if (!partyMember) {
+			if (!partyMember || partyMember->isRemoved() || partyMember->isDead()) {
 				continue;
 			}
 

@@ -679,6 +679,10 @@ void Npc::loadPlayerSpectators() {
 	const auto &spec = Spectators().find<Player>(position, true);
 	for (const auto &creature : spec) {
 		const auto &player = creature->getPlayer();
+		if (!player) {
+			continue;
+		}
+
 		if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
 			playerSpectators.emplace(player->getID());
 		}

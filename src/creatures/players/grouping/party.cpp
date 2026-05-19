@@ -118,6 +118,10 @@ void Party::disband() {
 	}
 
 	for (const auto &invitee : getInvitees()) {
+		if (!invitee) {
+			continue;
+		}
+
 		invitee->removePartyInvitation(getParty());
 		if (currentLeader) {
 			currentLeader->sendCreatureShield(invitee);
@@ -127,6 +131,10 @@ void Party::disband() {
 
 	const auto &members = getMembers();
 	for (const auto &member : members) {
+		if (!member) {
+			continue;
+		}
+
 		member->resetBuff(BUFF_MANTRA);
 		member->setParty(nullptr);
 		member->sendClosePrivate(CHANNEL_PARTY);
@@ -134,9 +142,17 @@ void Party::disband() {
 	}
 
 	for (const auto &member : members) {
+		if (!member) {
+			continue;
+		}
+
 		g_game().updatePlayerShield(member);
 
 		for (const auto &otherMember : members) {
+			if (!otherMember) {
+				continue;
+			}
+
 			otherMember->sendCreatureSkull(member);
 		}
 

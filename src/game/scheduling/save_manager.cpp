@@ -30,8 +30,13 @@ void SaveManager::saveAll() {
 	logger.info("Saving server...");
 	Benchmark bm_players;
 	const auto &players = game.getPlayers();
-	const auto asyncSave = g_configManager().getBoolean(TOGGLE_SAVE_ASYNC);
-	logger.info("Saving {} players... (Async: {})", players.size(), asyncSave ? "Enabled" : "Disabled");
+	const bool savePlayersInParallel = threadPool.get_thread_count() > 1 && players.size() > 1;
+	std::vector<std::pair<std::future<void>, std::string>> pending;
+	logger.info("Saving {} players...", players.size());
+	if (savePlayersInParallel) {
+		pending.reserve(players.size());
+	}
+
 	for (const auto &[_, player] : players) {
 		if (player->isDead()) {
 			player->loginPosition = player->getTemplePosition();
@@ -39,10 +44,25 @@ void SaveManager::saveAll() {
 			player->loginPosition = player->getPosition();
 		}
 
+		if (savePlayersInParallel) {
+			auto fut = threadPool.submit_task([this, player] {
+				doSavePlayer(player);
+			});
+			pending.emplace_back(std::move(fut), player->getName());
+		} else {
+			try {
+				doSavePlayer(player);
+			} catch (const std::exception &e) {
+				logger.error("Failed to save player {}: {}", player->getName(), e.what());
+			}
+		}
+	}
+
+	for (auto &[future, name] : pending) {
 		try {
-			doSavePlayer(player);
+			future.get();
 		} catch (const std::exception &e) {
-			logger.error("Failed to save player {}: {}", player->getName(), e.what());
+			logger.error("Failed to save player {}: {}", name, e.what());
 		}
 	}
 

@@ -219,7 +219,9 @@ void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLog
 		callback.pushCreature(creature);
 	}
 
-	callback.persistLuaState();
+	if (callback.persistLuaState()) {
+		return;
+	}
 
 	if (const auto &player = creature->getPlayer()) {
 		removeShopPlayer(player->getGUID());
@@ -243,7 +245,9 @@ void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::s
 		callback.pushPosition(newPos);
 	}
 
-	callback.persistLuaState();
+	if (callback.persistLuaState()) {
+		return;
+	}
 
 	if (creature == getNpc() && !canInteract(oldPos)) {
 		resetPlayerInteractions();
@@ -268,15 +272,13 @@ void Npc::onPlayerAppear(const std::shared_ptr<Player> &player) {
 	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(playerId)) {
 		return;
 	}
-	playerSpectators.emplace(playerId);
+	playerSpectators.emplace(playerId, player);
 	manageIdle();
 }
 
 void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
 	removePlayerInteraction(player);
-	const uint32_t playerId = player->getID();
-	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(playerId)) {
-		playerSpectators.erase(playerId);
+	if (playerSpectators.erase(player->getID()) != 0) {
 		manageIdle();
 	}
 }
@@ -610,7 +612,9 @@ void Npc::onPlayerCloseChannel(const std::shared_ptr<Creature> &creature) {
 		callback.pushCreature(player);
 	}
 
-	callback.persistLuaState();
+	if (callback.persistLuaState()) {
+		return;
+	}
 
 	removePlayerInteraction(player);
 }
@@ -665,8 +669,8 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	phmap::erase_if(playerSpectators, [this](uint32_t playerId) {
-		const auto &player = g_game().getPlayerByID(playerId);
+	std::erase_if(playerSpectators, [this](const auto &entry) {
+		const auto &player = entry.second.lock();
 		return !player || !this->canSee(player->getPosition());
 	});
 }
@@ -684,7 +688,7 @@ void Npc::loadPlayerSpectators() {
 		}
 
 		if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.emplace(player->getID());
+			playerSpectators.emplace(player->getID(), player);
 		}
 	}
 }

@@ -397,12 +397,20 @@ DBInsert::DBInsert(std::string insertQuery) :
 bool DBInsert::addRow(std::string_view row) {
 	const size_t rowLength = row.length();
 	auto max_packet_size = Database::getInstance().getMaxPacketSize();
+	size_t addedLength = values.empty() ? rowLength + 2 : rowLength + 3;
 
-	if (!values.empty() && length + rowLength > max_packet_size && !execute()) {
-		return false;
+	if (length + addedLength > max_packet_size) {
+		if (values.empty() || !execute()) {
+			return false;
+		}
+
+		addedLength = rowLength + 2;
+		if (length + addedLength > max_packet_size) {
+			return false;
+		}
 	}
 
-	length += rowLength;
+	length += addedLength;
 	if (values.empty()) {
 		values.reserve(rowLength + 2);
 		values.push_back('(');

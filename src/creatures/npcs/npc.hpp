@@ -135,7 +135,7 @@ private:
 
 	bool ignoreHeight {};
 
-	phmap::flat_hash_set<uint32_t> playerSpectators;
+	std::unordered_map<uint32_t, std::weak_ptr<Player>> playerSpectators;
 	Position masterPos;
 
 	friend class LuaScriptInterface;

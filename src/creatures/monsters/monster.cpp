@@ -341,20 +341,23 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 			g_logger().error("[Monster::onCreatureDisappear - Monster {} creature {}] "
 			                 "Call stack overflow. Too many lua script calls being nested.",
 			                 getName(), creature->getName());
-		} else {
-			ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
-			env->setScriptId(m_monsterType->info.creatureDisappearEvent, scriptInterface);
+			return;
+		}
 
-			lua_State* L = scriptInterface->getLuaState();
-			scriptInterface->pushFunction(m_monsterType->info.creatureDisappearEvent);
+		ScriptEnvironment* env = LuaScriptInterface::getScriptEnv();
+		env->setScriptId(m_monsterType->info.creatureDisappearEvent, scriptInterface);
 
-			LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
-			LuaScriptInterface::setMetatable(L, -1, "Monster");
+		lua_State* L = scriptInterface->getLuaState();
+		scriptInterface->pushFunction(m_monsterType->info.creatureDisappearEvent);
 
-			LuaScriptInterface::pushUserdata<Creature>(L, creature);
-			LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+		LuaScriptInterface::pushUserdata<Monster>(L, getMonster());
+		LuaScriptInterface::setMetatable(L, -1, "Monster");
 
-			scriptInterface->callFunction(2);
+		LuaScriptInterface::pushUserdata<Creature>(L, creature);
+		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+
+		if (scriptInterface->callFunction(2)) {
+			return;
 		}
 	}
 

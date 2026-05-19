@@ -6056,24 +6056,24 @@ void ProtocolGame::sendForgeResult(ForgeAction_t actionType, uint16_t leftItemId
 }
 
 void ProtocolGame::sendForgeHistory(uint8_t page) {
-	page = page + 1;
+	static constexpr size_t entriesPerPage = 9;
+	const auto requestedPage = static_cast<size_t>(page) + 1;
 	const auto &historyVector = player->forgeHistory().get();
-	auto historyVectorLen = historyVector.size();
+	const auto historyVectorLen = historyVector.size();
 
 	uint16_t currentPage = 1;
 	uint16_t lastPage = 1;
-	uint16_t pageFirstEntry = 0;
-	uint16_t pageLastEntry = 0;
 
 	std::vector<ForgeHistory> historyPerPage;
 	if (historyVectorLen > 0) {
-		lastPage = std::clamp<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1, 0, std::numeric_limits<uint16_t>::max());
-		currentPage = (lastPage < page) ? lastPage : page;
+		const auto lastPageCount = ((historyVectorLen - 1) / entriesPerPage) + 1;
+		lastPage = static_cast<uint16_t>(std::min<size_t>(lastPageCount, std::numeric_limits<uint16_t>::max()));
+		currentPage = static_cast<uint16_t>(std::min(requestedPage, static_cast<size_t>(lastPage)));
 
-		pageFirstEntry = std::clamp<uint16_t>(historyVectorLen - (currentPage - 1) * 9, 0, std::numeric_limits<uint16_t>::max());
-		pageLastEntry = historyVectorLen > currentPage * 9 ? std::clamp<uint16_t>(historyVectorLen - currentPage * 9, 0, std::numeric_limits<uint16_t>::max()) : 0;
+		const auto pageFirstEntry = historyVectorLen - (static_cast<size_t>(currentPage) - 1) * entriesPerPage;
+		const auto pageLastEntry = historyVectorLen > static_cast<size_t>(currentPage) * entriesPerPage ? historyVectorLen - static_cast<size_t>(currentPage) * entriesPerPage : 0;
 
-		for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
+		for (auto entry = pageFirstEntry; entry > pageLastEntry; --entry) {
 			[[maybe_unused]] auto &history_ref = historyPerPage.emplace_back(historyVector[entry - 1]);
 		}
 	}

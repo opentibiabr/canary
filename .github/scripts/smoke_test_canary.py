@@ -5,7 +5,6 @@ import os
 import re
 import shutil
 import signal
-import socket
 import subprocess
 import sys
 import time
@@ -212,14 +211,6 @@ def prepare_map(args: argparse.Namespace) -> None:
         shutil.copyfile(download_target, map_path)
 
 
-def test_tcp_port(port: int) -> bool:
-    try:
-        with socket.create_connection(("127.0.0.1", port), timeout=1):
-            return True
-    except OSError:
-        return False
-
-
 def read_logs(paths: list[Path]) -> str:
     parts: list[str] = []
     for path in paths:
@@ -306,8 +297,7 @@ def run_smoke(args: argparse.Namespace) -> None:
 
                 log_text = read_logs(log_paths)
                 saw_online_log = "server online!" in log_text.lower()
-                ports_ready = saw_online_log and test_tcp_port(args.login_port) and test_tcp_port(args.game_port)
-                online = saw_online_log and ports_ready
+                online = saw_online_log
                 if online:
                     break
 

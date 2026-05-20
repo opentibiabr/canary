@@ -8,14 +8,8 @@ set -euo pipefail
 
 VCPKG_PATH=${1:-"$HOME"}
 VCPKG_PATH="$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake"
+BUILD_TYPE=${2:-"linux-release"}
 ARCHITECTURE=$(uname -m)
-
-DEFAULT_BUILD_TYPE="linux-release"
-if [[ "$ARCHITECTURE" == "aarch64"* ]]; then
-	DEFAULT_BUILD_TYPE="linux-release-arm"
-fi
-
-BUILD_TYPE=${2:-"$DEFAULT_BUILD_TYPE"}
 EXTRA_CMAKE_ARGS=("${@:3}")
 IS_ARM64=0
 

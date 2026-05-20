@@ -91,7 +91,7 @@ jobs:
         run: |
           set -euo pipefail
           unset VCPKG_FORCE_SYSTEM_BINARIES
-          cmake --preset macos-release -DTOGGLE_BIN_FOLDER=ON
+          cmake --preset macos-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_CCACHE=ON -DOPTIONS_ENABLE_SCCACHE=OFF
 
       - name: Build (CMake preset)
         shell: bash
@@ -160,14 +160,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          logs=$(find . -name "vcpkg-manifest-install.log" -print0)
-          if [[ -z "${logs}" ]]; then
+          mapfile -d '' logs < <(find . -name "vcpkg-manifest-install.log" -print0)
+          if [[ ${#logs[@]} -eq 0 ]]; then
             echo "No vcpkg manifest logs found." >&2
             exit 1
           fi
-          while IFS= read -r -d '' log; do
+          for log in "${logs[@]}"; do
             if grep -q "to 0 binary cache(s)" -- "$log"; then
               echo "Binary cache push reported 0 caches." >&2
               exit 1
             fi
-          done <<< "${logs}"
+          done

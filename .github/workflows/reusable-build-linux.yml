@@ -110,7 +110,7 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
-          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON','-DOPTIONS_ENABLE_CCACHE=ON','-DOPTIONS_ENABLE_SCCACHE=OFF']"
 
       - name: Smoke test Canary datapack runtime
         if: inputs.run_canary_smoke
@@ -155,7 +155,7 @@ jobs:
       - name: Restore global map cache
         if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke
         id: restore-global-map
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/canary-maps/otservbr.otbm
           key: ${{ steps.global-map.outputs.key }}
@@ -182,7 +182,7 @@ jobs:
 
       - name: Save global map cache
         if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke && steps.restore-global-map.outputs.cache-hit != 'true'
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
         with:
           path: .cache/canary-maps/otservbr.otbm
           key: ${{ steps.global-map.outputs.key }}
@@ -294,14 +294,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          logs=$(find . -name "vcpkg-manifest-install.log" -print0)
-          if [[ -z "${logs}" ]]; then
+          mapfile -d '' logs < <(find . -name "vcpkg-manifest-install.log" -print0)
+          if [[ ${#logs[@]} -eq 0 ]]; then
             echo "No vcpkg manifest logs found." >&2
             exit 1
           fi
-          while IFS= read -r -d '' log; do
+          for log in "${logs[@]}"; do
             if grep -q "to 0 binary cache(s)" -- "$log"; then
               echo "Binary cache push reported 0 caches." >&2
               exit 1
             fi
-          done <<< "${logs}"
+          done

@@ -52,7 +52,7 @@ jobs:
       - name: Install Linux Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ccache ninja-build gcc-13 g++-13
+          sudo apt-get install -y ccache ninja-build gcc-13 g++-13 mysql-client
           # Ensure ninja is in the path and named correctly
           sudo ln -sf /usr/bin/ninja /usr/bin/ninja-build
           ninja --version
@@ -95,6 +95,73 @@ jobs:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+
+      - name: Smoke test Canary datapack runtime
+        run: |
+          python3 .github/scripts/smoke_test_canary.py \
+            --binary-path build/${{ matrix.buildtype }}/bin/canary \
+            --data-pack data-canary \
+            --map-name canary \
+            --db-host 127.0.0.1 \
+            --db-port 3306 \
+            --db-user root \
+            --db-password root \
+            --db-name canary_smoke_${{ matrix.buildtype }}_canary \
+            --login-port 7271 \
+            --game-port 7272 \
+            --status-port 7271 \
+            --startup-timeout-seconds 420 \
+            --fail-on-warnings
+
+      - name: Detect global map cache key
+        if: matrix.buildtype == 'linux-release'
+        id: global-map
+        shell: bash
+        run: |
+          set -euo pipefail
+          map_url="$(grep -E '^mapDownloadUrl[[:space:]]*=' config.lua.dist | sed -E 's/.*"([^"]+)".*/\1/')"
+          if [[ -z "${map_url}" ]]; then
+            echo "mapDownloadUrl not found in config.lua.dist" >&2
+            exit 1
+          fi
+          map_hash="$(printf '%s' "${map_url}" | sha256sum | cut -c1-16)"
+          echo "url=${map_url}" >> "$GITHUB_OUTPUT"
+          echo "key=canary-global-map-${map_hash}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore global map cache
+        if: matrix.buildtype == 'linux-release'
+        id: restore-global-map
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/canary-maps/otservbr.otbm
+          key: ${{ steps.global-map.outputs.key }}
+
+      - name: Smoke test Global datapack runtime
+        if: matrix.buildtype == 'linux-release'
+        run: |
+          python3 .github/scripts/smoke_test_canary.py \
+            --binary-path build/${{ matrix.buildtype }}/bin/canary \
+            --data-pack data-otservbr-global \
+            --map-name otservbr \
+            --map-download-url "${{ steps.global-map.outputs.url }}" \
+            --map-cache-path .cache/canary-maps/otservbr.otbm \
+            --db-host 127.0.0.1 \
+            --db-port 3306 \
+            --db-user root \
+            --db-password root \
+            --db-name canary_smoke_${{ matrix.buildtype }}_global \
+            --login-port 7371 \
+            --game-port 7372 \
+            --status-port 7371 \
+            --startup-timeout-seconds 900 \
+            --fail-on-warnings
+
+      - name: Save global map cache
+        if: matrix.buildtype == 'linux-release' && steps.restore-global-map.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/canary-maps/otservbr.otbm
+          key: ${{ steps.global-map.outputs.key }}
 
       - name: Import Database Schema
         if: matrix.buildtype == 'linux-debug'
@@ -183,6 +250,14 @@ jobs:
           path: |
             build/${{ matrix.buildtype }}/test-logs/
             build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log
+
+      - name: Upload runtime smoke logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-${{ matrix.buildtype }}-runtime-smoke-logs
+          path: build/runtime-smoke-logs/
+          if-no-files-found: ignore
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7

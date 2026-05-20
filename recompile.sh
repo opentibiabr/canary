@@ -50,7 +50,7 @@ check_architecture() {
 }
 
 check_vcpkg() {
-	if [ ! -f "$VCPKG_PATH" ]; then
+	if [[ ! -f "$VCPKG_PATH" ]]; then
 		error "vcpkg toolchain not found at: $VCPKG_PATH"
 		error "Pass the vcpkg parent directory as the first argument, or install vcpkg in \$HOME."
 		exit 1
@@ -91,7 +91,7 @@ run_with_progress() {
 	# Tail the log in parallel; auto-exits when cmd_pid dies
 	(
 		# Small wait so the log file definitely exists
-		while [ ! -s "$log_file" ] && kill -0 "$cmd_pid" 2>/dev/null; do
+		while [[ ! -s "$log_file" ]] && kill -0 "$cmd_pid" 2>/dev/null; do
 			sleep 0.1
 		done
 
@@ -140,7 +140,7 @@ setup_canary() {
 
 move_executable() {
 	local executable_name="canary"
-	if [ -e "build/$executable_name" ]; then
+	if [[ -e "build/$executable_name" ]]; then
 		info "Saving previous build as ${executable_name}.old"
 		mv "build/$executable_name" "build/${executable_name}.old"
 	fi

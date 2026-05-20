@@ -36,7 +36,7 @@ jobs:
         run: |
           set -euo pipefail
           brew update
-          brew install ccache ninja pkg-config mono
+          brew install ccache ninja pkg-config mono mysql
           which ninja
           ninja --version
 
@@ -93,6 +93,46 @@ jobs:
           set -euo pipefail
           unset VCPKG_FORCE_SYSTEM_BINARIES
           cmake --build --preset macos-release
+
+      - name: Start MySQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew services start mysql || mysql.server start
+          for _ in {1..60}; do
+            if mysqladmin ping -uroot --silent >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 2
+          done
+          mysqladmin ping -uroot --silent
+
+      - name: Smoke test Canary datapack runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/smoke_test_canary.py \
+            --binary-path build/macos-release/bin/canary \
+            --data-pack data-canary \
+            --map-name canary \
+            --db-host 127.0.0.1 \
+            --db-port 3306 \
+            --db-user root \
+            --db-password "" \
+            --db-name canary_smoke_macos_canary \
+            --login-port 7471 \
+            --game-port 7472 \
+            --status-port 7471 \
+            --startup-timeout-seconds 420 \
+            --fail-on-warnings
+
+      - name: Upload runtime smoke logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-runtime-smoke-logs
+          path: build/runtime-smoke-logs/
+          if-no-files-found: ignore
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7

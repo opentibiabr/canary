@@ -58,25 +58,31 @@ def mysql_args(args: argparse.Namespace, database: str | None = None) -> list[st
         "--protocol=tcp",
         "--default-character-set=utf8mb4",
     ]
-    if args.db_password:
-        command.append(f"--password={args.db_password}")
     if database:
         command.append(f"--database={database}")
     return command
 
 
+def mysql_env(args: argparse.Namespace) -> dict[str, str]:
+    env = os.environ.copy()
+    if args.db_password:
+        env["MYSQL_PWD"] = args.db_password
+    return env
+
+
 def run_mysql(args: argparse.Namespace, query: str | None = None, input_file: Path | None = None, database: str | None = None) -> None:
     command = mysql_args(args, database)
+    env = mysql_env(args)
     if query is not None:
         command.extend(["--execute", query])
-        result = subprocess.run(command, cwd=REPO_ROOT, text=True)
+        result = subprocess.run(command, cwd=REPO_ROOT, text=True, env=env)
         if result.returncode != 0:
             raise RuntimeError(f"mysql query failed with exit code {result.returncode}")
         return
 
     if input_file is not None:
         with input_file.open("rb") as input_stream:
-            result = subprocess.run(command, cwd=REPO_ROOT, stdin=input_stream)
+            result = subprocess.run(command, cwd=REPO_ROOT, stdin=input_stream, env=env)
         if result.returncode != 0:
             raise RuntimeError(f"mysql import failed for '{input_file}' with exit code {result.returncode}")
         return
@@ -128,7 +134,7 @@ def set_lua_value(content: str, name: str, value_literal: str) -> str:
     pattern = re.compile(rf"^{re.escape(name)}\s*=.*$", re.MULTILINE)
     if not pattern.search(content):
         raise RuntimeError(f"Config key '{name}' was not found in config.lua.dist")
-    return pattern.sub(f"{name} = {value_literal}", content)
+    return pattern.sub(lambda _: f"{name} = {value_literal}", content)
 
 
 def write_smoke_config(args: argparse.Namespace) -> None:
@@ -143,6 +149,8 @@ def write_smoke_config(args: argparse.Namespace) -> None:
         "startupDatabaseOptimization": "false",
         "mysqlDatabaseBackup": "false",
         "toggleSaveInterval": "false",
+        "forgeInfluencedLimit": "0",
+        "forgeFiendishLimit": "0",
         "ip": lua_string("127.0.0.1"),
         "loginProtocolPort": str(args.login_port),
         "gameProtocolPort": str(args.game_port),
@@ -177,7 +185,11 @@ def prepare_map(args: argparse.Namespace) -> None:
     if args.map_cache_path:
         cache_path = repo_path(args.map_cache_path)
         if cache_path.exists():
+            if cache_path.stat().st_size <= 0:
+                raise RuntimeError(f"Cached map '{cache_path}' exists but is empty")
             shutil.copyfile(cache_path, map_path)
+            if map_path.stat().st_size <= 0:
+                raise RuntimeError(f"Copied map '{map_path}' is empty")
             return
 
     if not args.map_download_url:
@@ -214,7 +226,27 @@ def test_status_protocol(port: int) -> bool:
                 sock.settimeout(2)
                 packet = struct.pack("<H", len(payload)) + payload
                 sock.sendall(packet)
-                data = sock.recv(8192)
+                try:
+                    sock.shutdown(socket.SHUT_WR)
+                except OSError:
+                    pass
+
+                chunks: list[bytes] = []
+                deadline = time.time() + 2
+                while time.time() < deadline:
+                    sock.settimeout(max(0.1, deadline - time.time()))
+                    try:
+                        chunk = sock.recv(8192)
+                    except socket.timeout:
+                        break
+                    if not chunk:
+                        break
+                    chunks.append(chunk)
+                    data = b"".join(chunks)
+                    if b"<tsqp" in data and b"serverinfo" in data:
+                        deadline = min(deadline, time.time() + 1)
+
+                data = b"".join(chunks)
                 if b"<tsqp" in data and b"serverinfo" in data:
                     return True
         except OSError:
@@ -246,6 +278,17 @@ def stop_process(process: subprocess.Popen) -> None:
         process.wait(timeout=10)
 
 
+def restore_config(config_path: Path, existed: bool, previous_content: bytes | None) -> None:
+    if existed and previous_content is not None:
+        config_path.write_bytes(previous_content)
+        return
+
+    try:
+        config_path.unlink()
+    except FileNotFoundError:
+        pass
+
+
 def assert_clean_log(log_text: str, fail_on_warnings: bool) -> None:
     if not log_text.strip():
         raise RuntimeError("Canary produced no runtime log output")
@@ -266,53 +309,59 @@ def run_smoke(args: argparse.Namespace) -> None:
     if os.name != "nt":
         binary.chmod(binary.stat().st_mode | 0o111)
 
-    prepare_map(args)
-    initialize_database(args)
-    write_smoke_config(args)
-
-    log_dir = REPO_ROOT / "build/runtime-smoke-logs"
-    log_dir.mkdir(parents=True, exist_ok=True)
-    label = f"{args.data_pack}-{args.map_name}-{uuid.uuid4().hex[:8]}"
-    stdout_path = log_dir / f"{label}.stdout.log"
-    stderr_path = log_dir / f"{label}.stderr.log"
-
-    print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} binary={binary}")
-    with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
-        process = subprocess.Popen([str(binary)], cwd=REPO_ROOT, stdout=stdout_file, stderr=stderr_file)
-
-    log_paths = [stdout_path, stderr_path]
+    config_path = REPO_ROOT / "config.lua"
+    config_existed = config_path.exists()
+    previous_config = config_path.read_bytes() if config_existed else None
     try:
-        deadline = time.time() + args.startup_timeout_seconds
-        online = False
-        while time.time() < deadline:
-            time.sleep(2)
-            if process.poll() is not None:
+        prepare_map(args)
+        initialize_database(args)
+        write_smoke_config(args)
+
+        log_dir = REPO_ROOT / "build/runtime-smoke-logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        label = f"{args.data_pack}-{args.map_name}-{uuid.uuid4().hex[:8]}"
+        stdout_path = log_dir / f"{label}.stdout.log"
+        stderr_path = log_dir / f"{label}.stderr.log"
+
+        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} binary={binary}")
+        with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
+            process = subprocess.Popen([str(binary)], cwd=REPO_ROOT, stdout=stdout_file, stderr=stderr_file)
+
+        log_paths = [stdout_path, stderr_path]
+        try:
+            deadline = time.time() + args.startup_timeout_seconds
+            online = False
+            while time.time() < deadline:
+                time.sleep(2)
+                if process.poll() is not None:
+                    log_text = read_logs(log_paths)
+                    print(log_text)
+                    raise RuntimeError(f"Canary exited before becoming online with exit code {process.returncode}")
+
+                log_text = read_logs(log_paths)
+                saw_online_log = "server online!" in log_text.lower()
+                ports_ready = test_tcp_port(args.login_port) and test_tcp_port(args.game_port)
+                status_ready = test_status_protocol(args.status_port)
+                online = saw_online_log and ports_ready and status_ready
+                if online:
+                    break
+
+            if not online:
                 log_text = read_logs(log_paths)
                 print(log_text)
-                raise RuntimeError(f"Canary exited before becoming online with exit code {process.returncode}")
+                raise RuntimeError("Canary did not become ready before timeout")
 
-            log_text = read_logs(log_paths)
-            saw_online_log = "server online!" in log_text
-            ports_ready = test_tcp_port(args.login_port) and test_tcp_port(args.game_port)
-            status_ready = test_status_protocol(args.status_port)
-            online = saw_online_log and ports_ready and status_ready
-            if online:
-                break
+            time.sleep(5)
+        finally:
+            stop_process(process)
 
-        if not online:
-            log_text = read_logs(log_paths)
-            print(log_text)
-            raise RuntimeError("Canary did not become ready before timeout")
-
-        time.sleep(5)
+        time.sleep(1)
+        runtime_log = read_logs(log_paths)
+        print(runtime_log)
+        assert_clean_log(runtime_log, args.fail_on_warnings)
+        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name}.")
     finally:
-        stop_process(process)
-
-    time.sleep(1)
-    runtime_log = read_logs(log_paths)
-    print(runtime_log)
-    assert_clean_log(runtime_log, args.fail_on_warnings)
-    print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name}.")
+        restore_config(config_path, config_existed, previous_config)
 
 
 def parse_args() -> argparse.Namespace:

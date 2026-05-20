@@ -101,11 +101,18 @@ jobs:
           brew services start mysql || mysql.server start
           for _ in {1..60}; do
             if mysqladmin ping -uroot --silent >/dev/null 2>&1; then
-              exit 0
+              break
             fi
             sleep 2
           done
           mysqladmin ping -uroot --silent
+          mysql -uroot -e "
+            CREATE USER IF NOT EXISTS 'canary_ci'@'localhost' IDENTIFIED BY 'root';
+            CREATE USER IF NOT EXISTS 'canary_ci'@'127.0.0.1' IDENTIFIED BY 'root';
+            GRANT ALL PRIVILEGES ON *.* TO 'canary_ci'@'localhost';
+            GRANT ALL PRIVILEGES ON *.* TO 'canary_ci'@'127.0.0.1';
+            FLUSH PRIVILEGES;
+          "
 
       - name: Smoke test Canary datapack runtime
         shell: bash
@@ -117,8 +124,8 @@ jobs:
             --map-name canary \
             --db-host 127.0.0.1 \
             --db-port 3306 \
-            --db-user root \
-            --db-password "" \
+            --db-user canary_ci \
+            --db-password root \
             --db-name canary_smoke_macos_canary \
             --login-port 7471 \
             --game-port 7472 \
@@ -128,7 +135,7 @@ jobs:
 
       - name: Upload runtime smoke logs
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: macos-runtime-smoke-logs
           path: build/runtime-smoke-logs/

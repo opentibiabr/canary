@@ -294,14 +294,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -d '' logs < <(find . -name "vcpkg-manifest-install.log" -print0)
-          if [[ ${#logs[@]} -eq 0 ]]; then
-            echo "No vcpkg manifest logs found." >&2
-            exit 1
-          fi
-          for log in "${logs[@]}"; do
+          found_logs=false
+          while IFS= read -r -d '' log; do
+            found_logs=true
             if grep -q "to 0 binary cache(s)" -- "$log"; then
               echo "Binary cache push reported 0 caches." >&2
               exit 1
             fi
-          done
+          done < <(find . -name "vcpkg-manifest-install.log" -print0)
+
+          if [[ "${found_logs}" != true ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi

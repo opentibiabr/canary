@@ -132,9 +132,12 @@ def lua_string(value: str) -> str:
 
 def set_lua_value(content: str, name: str, value_literal: str) -> str:
     pattern = re.compile(rf"^{re.escape(name)}\s*=.*$", re.MULTILINE)
-    if not pattern.search(content):
+    matches = list(pattern.finditer(content))
+    if not matches:
         raise RuntimeError(f"Config key '{name}' was not found in config.lua.dist")
-    return pattern.sub(lambda _: f"{name} = {value_literal}", content)
+    if len(matches) > 1:
+        raise RuntimeError(f"Config key '{name}' appeared {len(matches)} times in config.lua.dist")
+    return pattern.sub(lambda _: f"{name} = {value_literal}", content, count=1)
 
 
 def write_smoke_config(args: argparse.Namespace) -> None:
@@ -219,38 +222,28 @@ def test_tcp_port(port: int) -> bool:
 
 
 def test_status_protocol(port: int) -> bool:
-    payloads = [b"\xff\xffinfo", b"\xffinfo"]
-    for payload in payloads:
-        try:
-            with socket.create_connection(("127.0.0.1", port), timeout=2) as sock:
-                sock.settimeout(2)
-                packet = struct.pack("<H", len(payload)) + payload
-                sock.sendall(packet)
+    payload = b"\xff\xffinfo"
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=5) as sock:
+            packet = struct.pack("<H", len(payload)) + payload
+            sock.sendall(packet)
+
+            chunks: list[bytes] = []
+            deadline = time.time() + 10
+            while time.time() < deadline:
+                sock.settimeout(max(0.1, deadline - time.time()))
                 try:
-                    sock.shutdown(socket.SHUT_WR)
-                except OSError:
-                    pass
-
-                chunks: list[bytes] = []
-                deadline = time.time() + 2
-                while time.time() < deadline:
-                    sock.settimeout(max(0.1, deadline - time.time()))
-                    try:
-                        chunk = sock.recv(8192)
-                    except socket.timeout:
-                        break
-                    if not chunk:
-                        break
-                    chunks.append(chunk)
-                    data = b"".join(chunks)
-                    if b"<tsqp" in data and b"serverinfo" in data:
-                        deadline = min(deadline, time.time() + 1)
-
+                    chunk = sock.recv(8192)
+                except socket.timeout:
+                    break
+                if not chunk:
+                    break
+                chunks.append(chunk)
                 data = b"".join(chunks)
                 if b"<tsqp" in data and b"serverinfo" in data:
                     return True
-        except OSError:
-            continue
+    except OSError:
+        return False
     return False
 
 
@@ -340,8 +333,8 @@ def run_smoke(args: argparse.Namespace) -> None:
 
                 log_text = read_logs(log_paths)
                 saw_online_log = "server online!" in log_text.lower()
-                ports_ready = test_tcp_port(args.login_port) and test_tcp_port(args.game_port)
-                status_ready = test_status_protocol(args.status_port)
+                ports_ready = saw_online_log and test_tcp_port(args.login_port) and test_tcp_port(args.game_port)
+                status_ready = ports_ready and test_status_protocol(args.status_port)
                 online = saw_online_log and ports_ready and status_ready
                 if online:
                     break
@@ -352,6 +345,12 @@ def run_smoke(args: argparse.Namespace) -> None:
                 raise RuntimeError("Canary did not become ready before timeout")
 
             time.sleep(5)
+            if process.poll() is not None:
+                log_text = read_logs(log_paths)
+                print(log_text)
+                raise RuntimeError(
+                    f"Canary exited shortly after becoming online with exit code {process.returncode}"
+                )
         finally:
             stop_process(process)
 

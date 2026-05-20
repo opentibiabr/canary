@@ -18,15 +18,18 @@ IS_ARM64=0
 # ============================================================================
 
 info() {
-	echo -e "\033[1;34m[INFO]\033[0m $1"
+	local message_info=$1
+	echo -e "\033[1;34m[INFO]\033[0m $message_info"
 }
 
 success() {
-	echo -e "\033[1;32m[OK]\033[0m $1"
+	local message_success=$1
+	echo -e "\033[1;32m[OK]\033[0m $message_success"
 }
 
 error() {
-	echo -e "\033[1;31m[ERROR]\033[0m $1" >&2
+	local message_error=$1
+	echo -e "\033[1;31m[ERROR]\033[0m $message_error" >&2
 }
 
 # ============================================================================
@@ -34,8 +37,9 @@ error() {
 # ============================================================================
 
 check_command() {
-	if ! command -v "$1" >/dev/null; then
-		error "The command '$1' is not available. Please install it and try again."
+	local command_name=$1
+	if ! command -v "$command_name" >/dev/null; then
+		error "The command '$command_name' is not available. Please install it and try again."
 		exit 1
 	fi
 }

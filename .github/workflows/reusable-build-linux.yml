@@ -2,6 +2,22 @@ name: Reusable Linux Build
 
 on:
   workflow_call:
+    inputs:
+      buildtypes:
+        description: JSON array of Linux build presets to compile.
+        required: false
+        type: string
+        default: '["linux-release","linux-debug"]'
+      run_canary_smoke:
+        description: Run the data-canary runtime smoke test.
+        required: false
+        type: boolean
+        default: true
+      run_global_smoke:
+        description: Run the data-otservbr-global runtime smoke test.
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -13,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        buildtype: [linux-release, linux-debug]
+        buildtype: ${{ fromJSON(inputs.buildtypes) }}
     runs-on: ubuntu-24.04
     env:
       CC: gcc-13
@@ -52,7 +68,7 @@ jobs:
       - name: Install Linux Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ccache ninja-build gcc-13 g++-13
+          sudo apt-get install -y ccache ninja-build gcc-13 g++-13 mysql-client
           # Ensure ninja is in the path and named correctly
           sudo ln -sf /usr/bin/ninja /usr/bin/ninja-build
           ninja --version
@@ -94,7 +110,82 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
-          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+          configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON','-DOPTIONS_ENABLE_CCACHE=ON','-DOPTIONS_ENABLE_SCCACHE=OFF']"
+
+      - name: Smoke test Canary datapack runtime
+        if: inputs.run_canary_smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          binary_path="build/${{ matrix.buildtype }}/bin/canary"
+          if [[ "${{ matrix.buildtype }}" == "linux-debug" ]]; then
+            binary_path="build/${{ matrix.buildtype }}/bin/canary-debug"
+          fi
+
+          python3 .github/scripts/smoke_test_canary.py \
+            --binary-path "${binary_path}" \
+            --data-pack data-canary \
+            --map-name canary \
+            --db-host 127.0.0.1 \
+            --db-port 3306 \
+            --db-user root \
+            --db-password root \
+            --db-name canary_smoke_${{ matrix.buildtype }}_canary \
+            --login-port 7271 \
+            --game-port 7272 \
+            --status-port 7271 \
+            --startup-timeout-seconds 420 \
+            --fail-on-warnings
+
+      - name: Detect global map cache key
+        if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke
+        id: global-map
+        shell: bash
+        run: |
+          set -euo pipefail
+          map_url="$(grep -E '^mapDownloadUrl[[:space:]]*=' config.lua.dist | sed -E 's/.*"([^"]+)".*/\1/')"
+          if [[ -z "${map_url}" ]]; then
+            echo "mapDownloadUrl not found in config.lua.dist" >&2
+            exit 1
+          fi
+          map_hash="$(printf '%s' "${map_url}" | sha256sum | cut -c1-16)"
+          echo "url=${map_url}" >> "$GITHUB_OUTPUT"
+          echo "key=canary-global-map-${map_hash}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore global map cache
+        if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke
+        id: restore-global-map
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        with:
+          path: .cache/canary-maps/otservbr.otbm
+          key: ${{ steps.global-map.outputs.key }}
+
+      - name: Smoke test Global datapack runtime
+        if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke
+        run: |
+          python3 .github/scripts/smoke_test_canary.py \
+            --binary-path build/${{ matrix.buildtype }}/bin/canary \
+            --data-pack data-otservbr-global \
+            --map-name otservbr \
+            --map-download-url "${{ steps.global-map.outputs.url }}" \
+            --map-cache-path .cache/canary-maps/otservbr.otbm \
+            --db-host 127.0.0.1 \
+            --db-port 3306 \
+            --db-user root \
+            --db-password root \
+            --db-name canary_smoke_${{ matrix.buildtype }}_global \
+            --login-port 7371 \
+            --game-port 7372 \
+            --status-port 7371 \
+            --startup-timeout-seconds 900 \
+            --fail-on-warnings
+
+      - name: Save global map cache
+        if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke && steps.restore-global-map.outputs.cache-hit != 'true'
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        with:
+          path: .cache/canary-maps/otservbr.otbm
+          key: ${{ steps.global-map.outputs.key }}
 
       - name: Import Database Schema
         if: matrix.buildtype == 'linux-debug'
@@ -184,6 +275,14 @@ jobs:
             build/${{ matrix.buildtype }}/test-logs/
             build/${{ matrix.buildtype }}/Testing/Temporary/LastTest.log
 
+      - name: Upload runtime smoke logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: linux-${{ matrix.buildtype }}-runtime-smoke-logs
+          path: build/runtime-smoke-logs/
+          if-no-files-found: ignore
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -195,14 +294,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          logs=$(find . -name "vcpkg-manifest-install.log" -print0)
-          if [[ -z "${logs}" ]]; then
-            echo "No vcpkg manifest logs found." >&2
-            exit 1
-          fi
+          found_logs=false
           while IFS= read -r -d '' log; do
+            found_logs=true
             if grep -q "to 0 binary cache(s)" -- "$log"; then
               echo "Binary cache push reported 0 caches." >&2
               exit 1
             fi
-          done <<< "${logs}"
+          done < <(find . -name "vcpkg-manifest-install.log" -print0)
+
+          if [[ "${found_logs}" != true ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi

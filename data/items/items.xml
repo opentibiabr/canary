@@ -77275,6 +77275,22 @@ Granted by TibiaGoals.com"/>
 	<item id="45160" article="a" name="ramp">
 		<attribute key="floorchange" value="south"/>
 	</item>
+	<item id="45394" article="a" name="ramp"/>
+	<item id="45395" article="a" name="ramp">
+		<attribute key="floorchange" value="north"/>
+	</item>
+	<item id="45396" article="a" name="ramp"/>
+	<item id="45397" article="a" name="ramp">
+		<attribute key="floorchange" value="west"/>
+	</item>
+	<item id="45398" article="a" name="ramp"/>
+	<item id="45399" article="a" name="ramp">
+		<attribute key="floorchange" value="east"/>
+	</item>
+	<item id="45400" article="a" name="ramp"/>
+	<item id="45401" article="a" name="ramp">
+		<attribute key="floorchange" value="south"/>
+	</item>
 	<item id="45639" article="a" name="cocoa grimoire">
 		<attribute key="weaponType" value="spellbook"/>
 		<attribute key="description" value="This spellbook was made from rich dark chocolate and is filled with powerful knowledge."/>

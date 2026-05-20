@@ -2,6 +2,12 @@ name: Reusable macOS Build
 
 on:
   workflow_call:
+    inputs:
+      run_canary_smoke:
+        description: Run the data-canary runtime smoke test.
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -95,6 +101,7 @@ jobs:
           cmake --build --preset macos-release
 
       - name: Start MySQL
+        if: inputs.run_canary_smoke
         shell: bash
         run: |
           set -euo pipefail
@@ -115,6 +122,7 @@ jobs:
           "
 
       - name: Smoke test Canary datapack runtime
+        if: inputs.run_canary_smoke
         shell: bash
         run: |
           set -euo pipefail

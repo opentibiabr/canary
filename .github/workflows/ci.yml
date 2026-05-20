@@ -47,7 +47,10 @@ jobs:
     permissions:
       contents: read
     outputs:
-      compile: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.compile }}
+      linux: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.canary_datapack == 'true' || steps.filter.outputs.global_datapack == 'true' }}
+      full_matrix: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' }}
+      run_canary_smoke: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.canary_datapack == 'true' }}
+      run_global_smoke: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.global_datapack == 'true' }}
       docker: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.docker }}
     steps:
       - name: Checkout repository
@@ -61,7 +64,7 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           filters: |
-            compile:
+            engine:
               - "src/**"
               - "tests/**"
               - "cmake/**"
@@ -74,6 +77,12 @@ jobs:
               - ".github/workflows/reusable-build-windows.yml"
               - ".github/workflows/reusable-build-macos.yml"
               - ".github/scripts/**"
+            shared_datapack:
+              - "data/**"
+            canary_datapack:
+              - "data-canary/**"
+            global_datapack:
+              - "data-otservbr-global/**"
             docker:
               - "docker/**"
               - "src/**"
@@ -109,31 +118,39 @@ jobs:
   build-linux:
     name: Build - Linux
     needs: [changes, checks, tests-lua]
-    if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
+    if: needs.changes.outputs.linux == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/reusable-build-linux.yml
+    with:
+      buildtypes: ${{ needs.changes.outputs.full_matrix == 'true' && '["linux-release","linux-debug"]' || '["linux-release"]' }}
+      run_canary_smoke: ${{ needs.changes.outputs.run_canary_smoke == 'true' }}
+      run_global_smoke: ${{ needs.changes.outputs.run_global_smoke == 'true' }}
     secrets: inherit
 
   build-windows:
     name: Build - Windows
     needs: [changes, checks, tests-lua]
-    if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
+    if: needs.changes.outputs.full_matrix == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/reusable-build-windows.yml
+    with:
+      run_canary_smoke: ${{ needs.changes.outputs.run_canary_smoke == 'true' }}
     secrets: inherit
 
   build-macos:
     name: Build - macOS
     needs: [changes, checks, tests-lua]
-    if: needs.changes.outputs.compile == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
+    if: needs.changes.outputs.full_matrix == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/reusable-build-macos.yml
+    with:
+      run_canary_smoke: ${{ needs.changes.outputs.run_canary_smoke == 'true' }}
     secrets: inherit
 
   build-docker:

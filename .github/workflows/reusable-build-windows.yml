@@ -2,6 +2,12 @@ name: Reusable Windows Build
 
 on:
   workflow_call:
+    inputs:
+      run_canary_smoke:
+        description: Run the data-canary runtime smoke test.
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -113,7 +119,7 @@ jobs:
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
 
       - name: Install MariaDB for smoke test
-        if: matrix.type == 'CMake'
+        if: matrix.type == 'CMake' && inputs.run_canary_smoke
         shell: pwsh
         run: |
           choco install mariadb.install --version=12.2.2 --yes --no-progress --install-arguments="'SERVICENAME=MariaDB PASSWORD=root PORT=3306 UTF8=1'"
@@ -139,7 +145,7 @@ jobs:
           throw "MariaDB did not become reachable"
 
       - name: Smoke test Canary datapack runtime
-        if: matrix.type == 'CMake'
+        if: matrix.type == 'CMake' && inputs.run_canary_smoke
         shell: pwsh
         run: |
           python .github/scripts/smoke_test_canary.py `

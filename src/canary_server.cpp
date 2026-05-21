@@ -378,6 +378,13 @@ void CanaryServer::loadModules() {
 	logger.info("Loading modules and scripts...");
 	const auto startupLoadTelemetry = g_configManager().getBoolean(LUA_STARTUP_LOAD_TELEMETRY);
 	const auto timedLoad = [this, startupLoadTelemetry](std::string moduleName, const auto &loader) {
+		if (!startupLoadTelemetry) {
+			if (!loader()) {
+				modulesLoadHelper(false, std::move(moduleName));
+			}
+			return;
+		}
+
 		Benchmark benchmark;
 		const bool loaded = loader();
 		const auto duration = benchmark.duration();
@@ -385,9 +392,7 @@ void CanaryServer::loadModules() {
 			modulesLoadHelper(false, moduleName);
 		}
 
-		if (startupLoadTelemetry) {
-			logger.info("Loaded {} in {:.3f} ms", moduleName, duration);
-		}
+		logger.info("Loaded {} in {:.3f} ms", moduleName, duration);
 	};
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);

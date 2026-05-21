@@ -58,6 +58,33 @@ The broad profile progression was:
 
 Representative post-optimization profiles showed map parsing around half of sampled startup CPU, tile cache construction around one fifth, and spawn startup below the earlier double-digit sample share. These ratios vary by run, so use them as direction, not as fixed performance claims.
 
+## Measured before/after
+
+The captures are sampling profiles, so percentages represent share of sampled CPU in each run. They are useful for comparing where startup time is being spent, but repeated runs can move a few percentage points because of filesystem cache state, antivirus activity, database timing, CPU frequency, and background load.
+
+The best observed post-change startup log showed `Loaded modules and scripts` at `1.516s`. A later capture from the same profiling round showed `2.997s`, which still remained far below the original baseline.
+
+| Area | Before | After | Result |
+| --- | ---: | ---: | --- |
+| `Loaded modules and scripts` wall time | ~54s | 1.516s best observed, 2.997s latest capture | About 94-97% less wall time |
+| `Scripts::loadScripts` | 17.60% | 9.31-15.00% across later captures | Lua loader no longer primary startup bottleneck |
+| `LuaScriptInterface::loadFile` | 18.20% | 11.83-19.06% across later captures | File loading cost reduced, remaining share varies with profile noise and workload |
+| `luaL_loadfile` | hot in the original profile | 1.60-2.80% | Raw file parsing is no longer the dominant Lua cost |
+| `getLuaBytecodeCacheEntry` | not present | ~0.49-0.51% | Cache lookup is cheap compared to the old file-load path |
+| `CanaryServer::loadMaps` | 65.59% after Lua improved | 57.68% latest capture | Map loading remains the largest hotspot, but lower than the post-Lua baseline |
+| `IOMap::parseTileArea` | 59.58% | 53.87% | Tile area parsing reduced, still the main map cost |
+| `MapCache::setBasicTile` | 24.96% | 20.50% | Lower tile cache insertion/setup overhead |
+| `phmap::try_emplace` for cached basic tiles | 7.25% | 0.99% | Generic hash-map insertion pressure greatly reduced |
+| `MapSector::createFloor` | 7.17% | 5.76% | Less sector/floor growth and lookup overhead |
+| `SpawnMonster::startup` | 11.74% | 9.56% | Spawn startup cost reduced after tile reuse and zone-copy changes |
+| `SpawnMonster::spawnMonster` | 10.64% | 9.13% | Spawn placement path reduced without changing behavior |
+
+Latest startup log sample after the changes:
+
+```text
+Loaded modules and scripts in 1-2 seconds.
+```
+
 ## Lua startup changes
 
 The first profiling pass showed heavy cost in `Scripts::loadScripts`, `LuaScriptInterface::loadFile`, `luaL_loadfile`, filesystem metadata queries, and script loader telemetry.

@@ -175,7 +175,8 @@ protected:
 	std::unordered_map<uint32_t, MapSector> mapSectors;
 
 private:
-	void retainBasicTile(const std::shared_ptr<BasicTile> &tile);
+	const BasicTile* getOrCreateBasicTileFromCache(const BasicTile &basicTile);
+	const BasicTile* retainBasicTile(const std::shared_ptr<BasicTile> &tile);
 	void parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const;
 	std::shared_ptr<Item> createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position);
 

@@ -9,7 +9,6 @@
 To compile on Windows, you will need to download and install:
 - [Git](https://git-scm.com/download/win)
 - [Visual Studio 2026 Community](https://visualstudio.microsoft.com/vs/) (compiler and english language pack)
-- [vcpkg](https://github.com/Microsoft/vcpkg) (package manager)
 
 You must install **Visual Studio 2026** with the "Desktop development with C++" workload selecting the following components:
 
@@ -26,9 +25,7 @@ You must also install the **English** language pack.
 
 ## 2. Set up vcpkg
 
-Make sure to follow full installation of `vcpkg`, per [Official Quickstart](https://github.com/Microsoft/vcpkg#quick-start) execute the following in _Powershell_:
-
-To open Powershell navigate to your desired directory e.g. `C:\` and choose `Open PowerShell window here` (shift + right click).
+To open _Powershell_, navigate to your desired directory e.g. `C:\` and choose `Open PowerShell window here` (shift + right click).
 
 Then you can safely proceed with configuring vcpkg:
 

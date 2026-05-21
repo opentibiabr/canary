@@ -10,7 +10,12 @@
 #include "lua/scripts/luascript.hpp"
 
 #include "lua/scripts/lua_environment.hpp"
+#include "config/configmanager.hpp"
 #include "lib/metrics/metrics.hpp"
+
+#include <fstream>
+#include <optional>
+#include <string_view>
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
@@ -18,6 +23,115 @@ std::multimap<ScriptEnvironment*, std::shared_ptr<Item>> ScriptEnvironment::temp
 
 ScriptEnvironment Lua::scriptEnv[16];
 int32_t Lua::scriptEnvIndex = -1;
+
+namespace {
+constexpr std::string_view LuaBytecodeCacheFallbackPath = "cache/lua-bytecode";
+
+#if defined(LUAJIT_VERSION)
+constexpr std::string_view LuaBytecodeCacheVersion = LUAJIT_VERSION;
+#else
+constexpr std::string_view LuaBytecodeCacheVersion = LUA_RELEASE;
+#endif
+
+uint64_t fnv1a64(std::string_view value) noexcept {
+	uint64_t hash = 14695981039346656037ULL;
+	for (const auto character : value) {
+		hash ^= static_cast<uint8_t>(character);
+		hash *= 1099511628211ULL;
+	}
+	return hash;
+}
+
+int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputStream) {
+	auto &output = *static_cast<std::ofstream*>(outputStream);
+	output.write(static_cast<const char*>(data), static_cast<std::streamsize>(size));
+	return output.good() ? 0 : 1;
+}
+
+std::filesystem::path getLuaBytecodeCacheDirectory() {
+	auto configuredPath = g_configManager().getString(LUA_SCRIPT_BYTECODE_CACHE_PATH);
+	if (configuredPath.empty()) {
+		configuredPath = std::string(LuaBytecodeCacheFallbackPath);
+	}
+
+	std::filesystem::path cacheDirectory(configuredPath);
+	if (cacheDirectory.is_relative()) {
+		cacheDirectory = std::filesystem::current_path() / cacheDirectory;
+	}
+	return cacheDirectory;
+}
+
+std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &file) {
+	std::error_code error;
+	auto sourcePath = std::filesystem::weakly_canonical(file, error);
+	if (error) {
+		error.clear();
+		sourcePath = std::filesystem::absolute(file, error);
+	}
+	if (error) {
+		return std::nullopt;
+	}
+
+	const auto sourceSize = std::filesystem::file_size(sourcePath, error);
+	if (error) {
+		return std::nullopt;
+	}
+
+	const auto sourceWriteTime = std::filesystem::last_write_time(sourcePath, error);
+	if (error) {
+		return std::nullopt;
+	}
+
+	const auto cacheKey = fmt::format(
+		"{}:{}:{}:{}:{}",
+		LuaBytecodeCacheVersion,
+		sizeof(void*),
+		sourcePath.generic_string(),
+		sourceSize,
+		sourceWriteTime.time_since_epoch().count()
+	);
+
+	return getLuaBytecodeCacheDirectory() / fmt::format("{:016x}.luac", fnv1a64(cacheKey));
+}
+
+void writeLuaBytecodeCache(lua_State* luaState, const std::filesystem::path &cacheFile) {
+	std::error_code error;
+	std::filesystem::create_directories(cacheFile.parent_path(), error);
+	if (error) {
+		g_logger().debug("Could not create Lua bytecode cache directory '{}': {}", cacheFile.parent_path().string(), error.message());
+		return;
+	}
+
+	const auto temporaryFile = cacheFile.string() + ".tmp";
+	std::ofstream output(temporaryFile, std::ios::binary | std::ios::trunc);
+	if (!output.is_open()) {
+		g_logger().debug("Could not write Lua bytecode cache file '{}'", temporaryFile);
+		return;
+	}
+
+#if LUA_VERSION_NUM >= 503
+	const int dumpResult = lua_dump(luaState, luaBytecodeWriter, &output, 0);
+#else
+	const int dumpResult = lua_dump(luaState, luaBytecodeWriter, &output);
+#endif
+
+	output.close();
+	if (dumpResult != 0 || !output.good()) {
+		std::filesystem::remove(temporaryFile, error);
+		return;
+	}
+
+	error.clear();
+	std::filesystem::remove(cacheFile, error);
+
+	error.clear();
+	std::filesystem::rename(temporaryFile, cacheFile, error);
+	if (error) {
+		g_logger().debug("Could not publish Lua bytecode cache file '{}': {}", cacheFile.string(), error.message());
+		std::filesystem::remove(temporaryFile, error);
+	}
+}
+}
 
 LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) :
 	interfaceName(std::move(initInterfaceName)) {
@@ -37,7 +151,22 @@ bool LuaScriptInterface::reInitState() {
 /// Same as lua_pcall, but adds stack trace to error strings in called function.
 int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string &scriptName) {
 	// loads file as a chunk at stack top
-	int ret = luaL_loadfile(luaState, file.c_str());
+	int ret = -1;
+	const auto bytecodeCacheFile = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheFile(file) : std::nullopt;
+	if (bytecodeCacheFile && std::filesystem::exists(*bytecodeCacheFile)) {
+		ret = luaL_loadfile(luaState, bytecodeCacheFile->string().c_str());
+		if (ret != 0) {
+			lua_pop(luaState, 1);
+			std::error_code error;
+			std::filesystem::remove(*bytecodeCacheFile, error);
+		}
+	}
+
+	const bool loadedFromBytecodeCache = ret == 0;
+	if (!loadedFromBytecodeCache) {
+		ret = luaL_loadfile(luaState, file.c_str());
+	}
+
 	if (ret != 0) {
 		lastLuaError = popString(luaState);
 		return -1;
@@ -46,6 +175,10 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 	// check that it is loaded as a function
 	if (!isFunction(luaState, -1)) {
 		return -1;
+	}
+
+	if (bytecodeCacheFile && !loadedFromBytecodeCache) {
+		writeLuaBytecodeCache(luaState, *bytecodeCacheFile);
 	}
 
 	loadingFile = file;

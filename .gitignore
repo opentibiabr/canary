@@ -402,6 +402,7 @@ vcpkg_installed
 
 # DB Backups
 database_backup
+cache/lua-bytecode/
 
 # CLION
 cmake-build-*

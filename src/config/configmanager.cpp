@@ -101,6 +101,7 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, HOUSE_PURSHASED_SHOW_PRICE, "housePurchasedShowPrice", false);
 	loadBoolConfig(L, INVENTORY_GLOW, "inventoryGlowOnFiveBless", false);
 	loadBoolConfig(L, LOYALTY_ENABLED, "loyaltyEnabled", true);
+	loadBoolConfig(L, LUA_SCRIPT_BYTECODE_CACHE, "luaScriptBytecodeCache", true);
 	loadBoolConfig(L, LUA_SCRIPT_DEBUG_HOOK, "luaScriptDebugHook", false);
 	loadBoolConfig(L, LUA_STARTUP_LOAD_TELEMETRY, "luaStartupLoadTelemetry", false);
 	loadBoolConfig(L, MARKET_PREMIUM, "premiumToCreateMarketOffer", true);
@@ -371,6 +372,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, LOCATION, "location", "");
 	loadStringConfig(L, M_CONST, "memoryConst", "1<<16");
 	loadStringConfig(L, METRICS_PROMETHEUS_ADDRESS, "metricsPrometheusAddress", "localhost:9464");
+	loadStringConfig(L, LUA_SCRIPT_BYTECODE_CACHE_PATH, "luaScriptBytecodeCachePath", "cache/lua-bytecode");
 	loadStringConfig(L, OWNER_EMAIL, "ownerEmail", "");
 	loadStringConfig(L, OWNER_NAME, "ownerName", "");
 	loadStringConfig(L, SAVE_INTERVAL_TYPE, "saveIntervalType", "");

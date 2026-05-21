@@ -164,18 +164,15 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				const auto &iType = Item::items[id];
 
 				if (!tile->isHouse() || !iType.isBed()) {
-					const auto item = std::make_shared<BasicItem>();
-					item->id = id;
-
 					if (tile->isHouse() && iType.movable) {
 						g_logger().warn("[IOMap::loadMap] - "
 						                "Movable item with ID: {}, in house: {}, "
 						                "at position: x {}, y {}, z {}",
 						                id, tile->houseId, x, y, z);
 					} else if (iType.isGroundTile()) {
-						tile->ground = map.tryReplaceItemFromCache(item);
+						tile->ground = map.getBasicItemFromCache(id);
 					} else {
-						tile->items.emplace_back(map.tryReplaceItemFromCache(item));
+						tile->items.emplace_back(map.getBasicItemFromCache(id));
 					}
 				}
 			}
@@ -201,9 +198,11 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 							                "at position: x {}, y {}, z {}",
 							                id, tile->houseId, x, y, z);
 						} else if (iType.isGroundTile()) {
-							tile->ground = map.tryReplaceItemFromCache(item);
+							const auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
+							tile->ground = cachedItem;
 						} else {
-							tile->items.emplace_back(map.tryReplaceItemFromCache(item));
+							const auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
+							tile->items.emplace_back(cachedItem);
 						}
 					} break;
 					case OTBM_TILE_ZONE: {

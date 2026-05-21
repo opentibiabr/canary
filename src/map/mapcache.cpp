@@ -21,9 +21,21 @@
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;
+static phmap::flat_hash_map<uint16_t, std::shared_ptr<BasicItem>> simpleItems;
 
 std::shared_ptr<BasicItem> static_tryGetItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
+}
+
+std::shared_ptr<BasicItem> static_getBasicItemFromCache(uint16_t id) {
+	auto [it, inserted] = simpleItems.try_emplace(id);
+	if (inserted) {
+		auto item = std::make_shared<BasicItem>();
+		item->id = id;
+		it->second = static_tryGetItemFromCache(item);
+	}
+
+	return it->second;
 }
 
 std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<BasicTile> &ref) {
@@ -33,6 +45,7 @@ std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<Basi
 void MapCache::flush() const {
 	items.clear();
 	tiles.clear();
+	simpleItems.clear();
 }
 
 void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const {
@@ -185,6 +198,10 @@ std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_p
 	return static_tryGetItemFromCache(ref);
 }
 
+std::shared_ptr<BasicItem> MapCache::getBasicItemFromCache(uint16_t id) const {
+	return static_getBasicItemFromCache(id);
+}
+
 MapSector* MapCache::createMapSector(const uint32_t x, const uint32_t y) {
 	const uint32_t index = x / SECTOR_SIZE | y / SECTOR_SIZE << 16;
 	const auto it = mapSectors.find(index);
@@ -234,13 +251,13 @@ void BasicTile::hash(size_t &h) const {
 	}
 
 	if (ground != nullptr) {
-		ground->hash(h);
+		stdext::hash_combine(h, ground->hash());
 	}
 
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
 		for (const auto &item : items) {
-			item->hash(h);
+			stdext::hash_combine(h, item->hash());
 		}
 	}
 }
@@ -260,7 +277,7 @@ void BasicItem::hash(size_t &h) const {
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
 		for (const auto &item : items) {
-			item->hash(h);
+			stdext::hash_combine(h, item->hash());
 		}
 	}
 }
@@ -287,7 +304,7 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 		}
 
-		items.emplace_back(static_tryGetItemFromCache(item));
+		items.emplace_back(item->isSimple() ? static_getBasicItemFromCache(streamId) : static_tryGetItemFromCache(item));
 
 		if (!stream.endNode()) {
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));

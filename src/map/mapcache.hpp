@@ -37,14 +37,35 @@ struct BasicItem {
 	bool unserializeItemNode(FileStream &propStream, uint16_t x, uint16_t y, uint8_t z);
 	void readAttr(FileStream &propStream);
 
+	bool isSimple() const {
+		return charges == 0
+			&& actionId == 0
+			&& uniqueId == 0
+			&& destX == 0
+			&& destY == 0
+			&& destZ == 0
+			&& doorOrDepotId == 0
+			&& text.empty()
+			&& items.empty();
+	}
+
 	size_t hash() const {
+		if (cachedHashValid) {
+			return cachedHash;
+		}
+
 		size_t h = 0;
 		hash(h);
-		return h;
+		cachedHash = h;
+		cachedHashValid = true;
+		return cachedHash;
 	}
 
 private:
 	void hash(size_t &h) const;
+
+	mutable size_t cachedHash { 0 };
+	mutable bool cachedHashValid { false };
 
 	friend struct BasicTile;
 };
@@ -67,13 +88,22 @@ struct BasicTile {
 	}
 
 	size_t hash() const {
+		if (cachedHashValid) {
+			return cachedHash;
+		}
+
 		size_t h = 0;
 		hash(h);
-		return h;
+		cachedHash = h;
+		cachedHashValid = true;
+		return cachedHash;
 	}
 
 private:
 	void hash(size_t &h) const;
+
+	mutable size_t cachedHash { 0 };
+	mutable bool cachedHashValid { false };
 };
 
 class MapCache {
@@ -82,6 +112,7 @@ public:
 
 	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &BasicTile);
 
+	std::shared_ptr<BasicItem> getBasicItemFromCache(uint16_t id) const;
 	std::shared_ptr<BasicItem> tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) const;
 
 	void flush() const;

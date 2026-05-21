@@ -35,6 +35,7 @@
 #include "enums/account_coins.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/player_icons.hpp"
+#include "enums/imbuement.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 
 namespace {
@@ -274,6 +275,7 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "addItem", PlayerFunctions::luaPlayerAddItem);
 	Lua::registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
+	Lua::registerMethod(L, "Player", "addItemBatchToPaginedContainer", PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer);
 	Lua::registerMethod(L, "Player", "addItemStash", PlayerFunctions::luaPlayerAddItemStash);
 	Lua::registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 	Lua::registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
@@ -293,6 +295,8 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "openChannel", PlayerFunctions::luaPlayerOpenChannel);
 
 	Lua::registerMethod(L, "Player", "getSlotItem", PlayerFunctions::luaPlayerGetSlotItem);
+	Lua::registerMethod(L, "Player", "getBackpack", PlayerFunctions::luaPlayerGetBackpack);
+	Lua::registerMethod(L, "Player", "getLootPouch", PlayerFunctions::luaPlayerGetLootPouch);
 
 	Lua::registerMethod(L, "Player", "getParty", PlayerFunctions::luaPlayerGetParty);
 
@@ -337,8 +341,10 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "forgetSpell", PlayerFunctions::luaPlayerForgetSpell);
 	Lua::registerMethod(L, "Player", "hasLearnedSpell", PlayerFunctions::luaPlayerHasLearnedSpell);
 
+	Lua::registerMethod(L, "Player", "applyImbuementScroll", PlayerFunctions::luaPlayerApplyImbuementScroll);
 	Lua::registerMethod(L, "Player", "openImbuementWindow", PlayerFunctions::luaPlayerOpenImbuementWindow);
 	Lua::registerMethod(L, "Player", "closeImbuementWindow", PlayerFunctions::luaPlayerCloseImbuementWindow);
+	Lua::registerMethod(L, "Player", "clearAllImbuements", PlayerFunctions::luaPlayerClearAllImbuements);
 
 	Lua::registerMethod(L, "Player", "sendTutorial", PlayerFunctions::luaPlayerSendTutorial);
 	Lua::registerMethod(L, "Player", "addMapMark", PlayerFunctions::luaPlayerAddMapMark);
@@ -500,6 +506,9 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "getHarmony", PlayerFunctions::luaPlayerGetHarmony);
 	Lua::registerMethod(L, "Player", "getHarmonyDamage", PlayerFunctions::luaPlayerGetHarmonyDamage);
 	Lua::registerMethod(L, "Player", "calculateFlatDamageHealing", PlayerFunctions::luaCalculateFlatDamageHealing);
+
+	Lua::registerMethod(L, "Player", "setSpeed", PlayerFunctions::luaPlayerSetSpeed);
+	Lua::registerMethod(L, "Player", "addWeaponExperience", PlayerFunctions::luaPlayerAddWeaponExperience);
 
 	// OTCR Features
 	Lua::registerMethod(L, "Player", "getMapShader", PlayerFunctions::luaPlayerGetMapShader);
@@ -2441,6 +2450,42 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerAddItemBatchToPaginedContainer(lua_State* L) {
+	// player:addItemBatchToPaginedContainer(container, itemId, count = 1, tier = 0, flags = 0)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &container = Lua::getUserdataShared<Container>(L, 2, "Container");
+	if (!container || !container->hasPagination()) {
+		player->sendCancelMessage("Invalid or non-paginated container.");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
+
+	const auto itemId = Lua::getNumber<uint16_t>(L, 3);
+	if (itemId == 0) {
+		player->sendCancelMessage("Invalid item id.");
+		lua_pushnumber(L, 0);
+		return 1;
+	}
+	const auto count = Lua::getNumber<uint32_t>(L, 4, 1);
+	const auto tier = Lua::getNumber<uint8_t>(L, 5, 0);
+	const auto flags = Lua::getNumber<uint32_t>(L, 6, 0);
+
+	uint32_t actuallyAdded = 0;
+	const auto ret = player->addItemBatchToPaginedContainer(container, itemId, count, actuallyAdded, flags, tier);
+
+	if (ret != RETURNVALUE_NOERROR) {
+		player->sendCancelMessage(ret);
+	}
+
+	lua_pushnumber(L, actuallyAdded);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddItemStash(lua_State* L) {
 	// player:addItemStash(itemId, count = 1)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -2563,16 +2608,21 @@ int PlayerFunctions::luaPlayerGetMoney(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
-	// player:addMoney(money)
+	// player:addMoney(money[, flags = 0]) -> success, addedMoney, returnValue
 	const uint64_t money = Lua::getNumber<uint64_t>(L, 2);
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		g_game().addMoney(player, money);
-		Lua::pushBoolean(L, true);
+		const auto flags = Lua::getNumber<uint32_t>(L, 3, 0);
+		auto [addedMoney, returnValue] = g_game().addMoney(player, money, flags);
+		Lua::pushBoolean(L, addedMoney == money);
+		lua_pushinteger(L, addedMoney);
+		lua_pushinteger(L, static_cast<int>(returnValue));
 	} else {
 		lua_pushnil(L);
+		lua_pushnil(L);
+		lua_pushnil(L);
 	}
-	return 1;
+	return 3;
 }
 
 int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {
@@ -2766,6 +2816,42 @@ int PlayerFunctions::luaPlayerGetSlotItem(lua_State* L) {
 	if (item) {
 		Lua::pushUserdata<Item>(L, item);
 		Lua::setItemMetatable(L, -1, item);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBackpack(lua_State* L) {
+	// player:getBackpack()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &backpack = player->getBackpack();
+	if (backpack) {
+		Lua::pushUserdata<Container>(L, backpack);
+		Lua::setItemMetatable(L, -1, backpack);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLootPouch(lua_State* L) {
+	// player:getLootPouch()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &lootPouch = player->getLootPouch();
+	if (lootPouch) {
+		Lua::pushUserdata<Container>(L, lootPouch);
+		Lua::setItemMetatable(L, -1, lootPouch);
 	} else {
 		lua_pushnil(L);
 	}
@@ -3401,8 +3487,60 @@ int PlayerFunctions::luaPlayerSendTutorial(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerApplyImbuementScroll(lua_State* L) {
+	// player:applyImbuementScroll(item, scrollItem)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto &item = Lua::getUserdataShared<Item>(L, 2, "Item");
+	const auto &scrollItem = Lua::getUserdataShared<Item>(L, 3, "Item");
+	if (!item || !scrollItem) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->applyScrollImbuement(item, scrollItem);
+
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
-	// player:openImbuementWindow(item)
+	// player:openImbuementWindow([action[, item]])
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const ImbuementAction action = Lua::getNumber<ImbuementAction>(L, 2, ImbuementAction::Open);
+	const auto &item = Lua::getUserdataShared<Item>(L, 3, "Item");
+
+	player->openImbuementWindow(action, item);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerCloseImbuementWindow(lua_State* L) {
+	// player:closeImbuementWindow()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->closeImbuementWindow();
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerClearAllImbuements(lua_State* L) {
+	// player:clearAllImbuements(item)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3417,20 +3555,8 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 		return 1;
 	}
 
-	player->openImbuementWindow(item);
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerCloseImbuementWindow(lua_State* L) {
-	// player:closeImbuementWindow()
-	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		Lua::pushBoolean(L, false);
-		return 1;
-	}
-
-	player->closeImbuementWindow();
+	const bool result = player->clearAllImbuements(item);
+	Lua::pushBoolean(L, result);
 	return 1;
 }
 
@@ -5415,5 +5541,50 @@ int PlayerFunctions::luaPlayerIsLivestreamViewer(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, g_livestream().isViewer(player->getClient()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetSpeed(lua_State* L) {
+	// player:setSpeed(speed)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const int32_t speed = Lua::getNumber<int32_t>(L, 2);
+	g_game().setCreatureSpeed(player, speed);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
+	// player:addWeaponExperience(experience, itemId)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto experience = Lua::getNumber<uint32_t>(L, 2);
+	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
+
+	if (experience == 0) {
+		Lua::pushBoolean(L, true);
+		return 1;
+	}
+
+	// Validate that the item has a valid proficiency
+	if (itemId > 0 && (itemId >= Item::items.size() || Item::items[itemId].proficiencyId == 0)) {
+		g_logger().warn("[{}] - Item ID '{}' has no proficiency assigned", __FUNCTION__, itemId);
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->weaponProficiency().addExperience(experience, itemId);
+
+	Lua::pushBoolean(L, true);
 	return 1;
 }

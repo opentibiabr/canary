@@ -181,6 +181,7 @@ class PlayerFunctions {
 
 	static int luaPlayerAddItem(lua_State* L);
 	static int luaPlayerAddItemEx(lua_State* L);
+	static int luaPlayerAddItemBatchToPaginedContainer(lua_State* L);
 	static int luaPlayerAddItemStash(lua_State* L);
 	static int luaPlayerRemoveStashItem(lua_State* L);
 	static int luaPlayerRemoveItem(lua_State* L);
@@ -201,6 +202,8 @@ class PlayerFunctions {
 	static int luaPlayerOpenChannel(lua_State* L);
 
 	static int luaPlayerGetSlotItem(lua_State* L);
+	static int luaPlayerGetBackpack(lua_State* L);
+	static int luaPlayerGetLootPouch(lua_State* L);
 
 	static int luaPlayerGetParty(lua_State* L);
 
@@ -246,8 +249,10 @@ class PlayerFunctions {
 	static int luaPlayerForgetSpell(lua_State* L);
 	static int luaPlayerHasLearnedSpell(lua_State* L);
 
+	static int luaPlayerApplyImbuementScroll(lua_State* L);
 	static int luaPlayerOpenImbuementWindow(lua_State* L);
 	static int luaPlayerCloseImbuementWindow(lua_State* L);
+	static int luaPlayerClearAllImbuements(lua_State* L);
 
 	static int luaPlayerSendTutorial(lua_State* L);
 	static int luaPlayerAddMapMark(lua_State* L);
@@ -417,6 +422,9 @@ class PlayerFunctions {
 	static int luaPlayerGetHarmony(lua_State* L);
 	static int luaPlayerGetHarmonyDamage(lua_State* L);
 	static int luaCalculateFlatDamageHealing(lua_State* L);
+
+	static int luaPlayerSetSpeed(lua_State* L);
+	static int luaPlayerAddWeaponExperience(lua_State* L);
 
 	friend class CreatureFunctions;
 };

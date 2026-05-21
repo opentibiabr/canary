@@ -61,7 +61,7 @@ namespace {
 		}
 	}
 
-	[[nodiscard]] bool advanceSpeakMetadata(const ProtocolGame_ptr &owner, const uint8_t* buffer, size_t end, uint32_t statementId, size_t &pos) {
+	[[nodiscard]] bool advanceSpeakMetadata(bool oldProtocol, const uint8_t* buffer, size_t end, uint32_t statementId, size_t &pos) {
 		if (pos + 2 > end) {
 			return true;
 		}
@@ -69,7 +69,7 @@ namespace {
 		const auto nameLength = readU16(buffer, pos);
 		if (nameLength <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH && pos + 2 + nameLength <= end) {
 			pos += 2 + nameLength;
-			if (!owner->oldProtocol && statementId != 0) {
+			if (!oldProtocol && statementId != 0) {
 				++pos;
 			}
 			if (pos + 2 > end) {
@@ -83,7 +83,7 @@ namespace {
 			return false;
 		}
 		pos += 4;
-		if (!owner->oldProtocol && statementId != 0) {
+		if (!oldProtocol && statementId != 0) {
 			++pos;
 		}
 		return true;
@@ -610,7 +610,7 @@ bool LivestreamManager::isForwardableSpeakPacket(const ProtocolGame_ptr &owner, 
 		return false;
 	}
 
-	if (!advanceSpeakMetadata(owner, buffer, end, statementId, pos)) {
+	if (!advanceSpeakMetadata(owner->oldProtocol, buffer, end, statementId, pos)) {
 		return false;
 	}
 

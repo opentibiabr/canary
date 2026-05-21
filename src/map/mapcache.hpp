@@ -80,6 +80,18 @@ struct BasicTile {
 
 	bool isStatic { false };
 
+	void reset() {
+		ground.reset();
+		items.clear();
+		flags = 0;
+		houseId = 0;
+		type = TILESTATE_NONE;
+		isStatic = false;
+		retainedByMapCacheOwner = nullptr;
+		cachedHash = 0;
+		cachedHashValid = false;
+	}
+
 	bool isEmpty(bool ignoreFlag = false) const {
 		return (ignoreFlag || flags == 0) && ground == nullptr && items.empty();
 	}

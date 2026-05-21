@@ -132,6 +132,14 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		const uint16_t base_y = stream.getU16();
 		const uint8_t base_z = stream.getU8();
 		MapCacheFloorCursor floorCursor;
+		BasicTile tile;
+		auto addTileItem = [&tile](std::shared_ptr<BasicItem> item) {
+			if (tile.items.size() == 1 && tile.items.capacity() < kInitialParsedTileItemReserve) {
+				tile.items.reserve(kInitialParsedTileItemReserve);
+			}
+
+			tile.items.emplace_back(std::move(item));
+		};
 
 		while (stream.startNode()) {
 			const uint8_t tileType = stream.getU8();
@@ -139,15 +147,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				throw IOMapException("Could not read tile type node.");
 			}
 
-			BasicTile tile;
-			auto addTileItem = [&tile](std::shared_ptr<BasicItem> item) {
-				if (tile.items.size() == 1 && tile.items.capacity() < kInitialParsedTileItemReserve) {
-					tile.items.reserve(kInitialParsedTileItemReserve);
-				}
-
-				tile.items.emplace_back(std::move(item));
-			};
-
+			tile.reset();
 			const uint8_t tileCoordsX = stream.getU8();
 			const uint8_t tileCoordsY = stream.getU8();
 

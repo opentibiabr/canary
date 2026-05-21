@@ -25,7 +25,7 @@ namespace {
 	size_t writeResponseBody(void* contents, size_t size, size_t nmemb, void* userp) {
 		const size_t realSize = size * nmemb;
 		auto* responseBody = static_cast<std::string*>(userp);
-		responseBody->append(static_cast<char*>(contents), realSize);
+		static_cast<void>(responseBody->append(static_cast<char*>(contents), realSize));
 		return realSize;
 	}
 

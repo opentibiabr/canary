@@ -140,6 +140,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\batch_update_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="..\src\server\server_definitions.hpp" />
     <ClInclude Include="..\src\server\signals.hpp" />
     <ClInclude Include="..\src\utils\arraylist.hpp" />
+    <ClInclude Include="..\src\utils\batch_update.hpp" />
     <ClInclude Include="..\src\utils\benchmark.hpp" />
     <ClInclude Include="..\src\utils\const.hpp" />
     <ClInclude Include="..\src\utils\definitions.hpp" />
@@ -342,6 +344,7 @@
     <ClCompile Include="..\src\lua\creature\movement.cpp" />
     <ClCompile Include="..\src\lua\creature\raids.cpp" />
     <ClCompile Include="..\src\lua\creature\talkaction.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\batch_update_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
@@ -423,6 +426,7 @@
     <ClCompile Include="..\src\server\network\webhook\webhook.cpp" />
     <ClCompile Include="..\src\server\server.cpp" />
     <ClCompile Include="..\src\server\signals.cpp" />
+    <ClCompile Include="..\src\utils\batch_update.cpp" />
     <ClCompile Include="..\src\utils\benchmark.cpp" />
     <ClCompile Include="..\src\utils\counter_pointer.cpp" />
     <ClCompile Include="..\src\utils\pugicast.cpp" />

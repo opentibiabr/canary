@@ -469,7 +469,7 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 		}
 
-		if (items.empty()) {
+		if (items.size() == 1 && items.capacity() < kInitialParsedContainerItemReserve) {
 			items.reserve(kInitialParsedContainerItemReserve);
 		}
 

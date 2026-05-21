@@ -139,7 +139,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 
 			BasicTile tile;
 			auto addTileItem = [&tile](std::shared_ptr<BasicItem> item) {
-				if (tile.items.empty()) {
+				if (tile.items.size() == 1 && tile.items.capacity() < kInitialParsedTileItemReserve) {
 					tile.items.reserve(kInitialParsedTileItemReserve);
 				}
 

@@ -75,19 +75,23 @@ function getLootRandom(modifier)
 	return randomValue * 100 / multi
 end
 
-local start = os.time()
-local linecount = 0
-debug.sethook(function(event, line)
-	linecount = linecount + 1
-	if systemTime() - start >= 1 then
-		if linecount >= 30000 then
-			logger.warn("[debug.sethook] - Possible infinite loop in file [{}] near line [{}]", debug.getinfo(2).source, line)
+if configManager.getBoolean(configKeys.LUA_SCRIPT_DEBUG_HOOK) then
+	local start = systemTime()
+	local instructionInterval = math.max(1000, configManager.getNumber(configKeys.LUA_SCRIPT_DEBUG_HOOK_INTERVAL))
+
+	debug.sethook(function()
+		local now = systemTime()
+		if now - start >= 1000 then
+			local info = debug.getinfo(2, "Sl") or {}
+			logger.warn(
+				"[debug.sethook] - Possible long-running Lua script in file [{}] near line [{}]",
+				info.source or "unknown",
+				info.currentline or 0
+			)
 			debug.sethook()
 		end
-		linecount = 0
-		start = os.time()
-	end
-end, "l")
+	end, "", instructionInterval)
+end
 
 -- OTServBr-Global functions
 function getJackLastMissionState(player)

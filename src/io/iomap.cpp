@@ -42,7 +42,7 @@
 */
 
 namespace {
-constexpr size_t kInitialParsedTileItemReserve = 2;
+	constexpr size_t kInitialParsedTileItemReserve = 2;
 }
 
 void IOMap::loadMap(Map* map, const Position &pos) {

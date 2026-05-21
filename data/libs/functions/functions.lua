@@ -83,11 +83,7 @@ if configManager.getBoolean(configKeys.LUA_SCRIPT_DEBUG_HOOK) then
 		local now = systemTime()
 		if now - start >= 1000 then
 			local info = debug.getinfo(2, "Sl") or {}
-			logger.warn(
-				"[debug.sethook] - Possible long-running Lua script in file [{}] near line [{}]",
-				info.source or "unknown",
-				info.currentline or 0
-			)
+			logger.warn("[debug.sethook] - Possible long-running Lua script in file [{}] near line [{}]", info.source or "unknown", info.currentline or 0)
 			debug.sethook()
 		end
 	end, "", instructionInterval)

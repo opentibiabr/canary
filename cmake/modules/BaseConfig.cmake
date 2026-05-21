@@ -424,17 +424,27 @@ function(setup_target TARGET_NAME)
             PRIVATE $<$<CONFIG:RelWithDebInfo>:/Zi>
         )
 
-        get_target_property(target_type ${TARGET_NAME} TYPE)
-        if(target_type STREQUAL "EXECUTABLE"
-           OR target_type STREQUAL "SHARED_LIBRARY"
-           OR target_type STREQUAL "MODULE_LIBRARY"
+        get_target_property(
+            target_type
+            ${TARGET_NAME}
+            TYPE
+        )
+        if(target_type
+           STREQUAL
+           "EXECUTABLE"
+           OR target_type
+              STREQUAL
+              "SHARED_LIBRARY"
+           OR target_type
+              STREQUAL
+              "MODULE_LIBRARY"
         )
             target_link_options(
                 ${TARGET_NAME}
                 PRIVATE
-                    $<$<CONFIG:RelWithDebInfo>:/DEBUG:FULL>
-                    $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:/OPT:REF>
-                    $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:/OPT:ICF>
+                $<$<CONFIG:RelWithDebInfo>:/DEBUG:FULL>
+                $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:/OPT:REF>
+                $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:/OPT:ICF>
             )
         endif()
     endif()

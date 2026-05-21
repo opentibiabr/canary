@@ -268,13 +268,43 @@ namespace {
 	void applyGoldSaleProceeds(const std::shared_ptr<Player> &player, uint64_t totalCost, bool notifyBankTransfer) {
 		if (g_configManager().getBoolean(AUTOBANK)) {
 			player->setBankBalance(player->getBankBalance() + totalCost);
+			player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
 			if (notifyBankTransfer) {
 				player->sendTextMessage(MESSAGE_EVENT_ADVANCE, fmt::format("{} gold coins transferred to your bank.", totalCost));
 			}
-		} else {
-			g_game().addMoney(player, totalCost);
+			g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
+			return;
 		}
-		g_metrics().addCounter("balance_increase", totalCost, { { "player", player->getName() }, { "context", "npc_sale" } });
+
+		auto [addedMoney, returnValue] = g_game().addMoney(player, totalCost, 0);
+		if (addedMoney > 0) {
+			g_metrics().addCounter("balance_increase", addedMoney, { { "player", player->getName() }, { "context", "npc_sale" } });
+		}
+
+		if (addedMoney < totalCost) {
+			const uint64_t refund = totalCost - addedMoney;
+			player->setBankBalance(player->getBankBalance() + refund);
+			player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+			g_logger().warn(
+				"[Npc::onPlayerSellItem] - Only delivered {} of {} gold to player {}. Refunded {} gold to bank. Reason: {}",
+				addedMoney, totalCost, player->getName(), refund, getReturnMessage(returnValue)
+			);
+
+			if (notifyBankTransfer) {
+				player->sendTextMessage(
+					MESSAGE_EVENT_ADVANCE,
+					fmt::format(
+						"Only {} of {} gold coins were delivered to your inventory. The remaining {} was deposited in your bank. {}",
+						addedMoney,
+						totalCost,
+						refund,
+						getReturnMessage(returnValue)
+					)
+				);
+			}
+
+			g_metrics().addCounter("balance_increase", refund, { { "player", player->getName() }, { "context", "npc_sale_refund" } });
+		}
 	}
 
 	struct CustomSaleContext {

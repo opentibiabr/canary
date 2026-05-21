@@ -22,7 +22,7 @@
 #include "utils/vectorsort.hpp"
 
 // --------------------
-// STL Includes
+// Standard STL Includes
 // --------------------
 
 #include <bitset>
@@ -50,6 +50,8 @@
 #include <source_location>
 #include <span>
 #include <compare>
+#include <string>
+#include <iostream>
 
 // --------------------
 // System Includes
@@ -139,6 +141,8 @@ format_as(E e) {
 
 #include <boost/di.hpp>
 
+#include <nlohmann/json.hpp>
+
 // -------------------------
 // GIT Metadata Includes
 // -------------------------
@@ -146,13 +150,6 @@ format_as(E e) {
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
 #endif
-
-// ---------------------
-// Standard STL Includes
-// ---------------------
-
-#include <string>
-#include <iostream>
 
 /**
  * Static custom libraries that can be pre-compiled like DI and messaging

@@ -91,6 +91,21 @@ maxContainerDepth = 200
 maxInboxItems = 0
 maxExivaWhitelist = 100
 
+-- Player base critical
+-- NOTE: 0.05 means 5%
+playerBaseCriticalChance = 0.05
+-- NOTE: 0.1 means 10%
+playerBaseCriticalDamage = 0.1
+
+-- Weapon Proficiency
+weaponProficiencyMaxLevels = 10
+weaponProficiencyMaxPerksPerLevel = 6
+-- NOTE: weaponProficiencyGainMultiplier scales all Weapon Proficiency XP gain.
+-- NOTE: 1.0 = normal progression, 2.0 = 2x faster, 0.5 = half speed, 0 = disabled.
+-- NOTE: values below 1.0 reduce XP; values above 1.0 increase XP.
+-- For full documentation see: https://github.com/opentibiabr/canary/blob/main/docs/systems/weapon-proficiency.md
+weaponProficiencyGainMultiplier = 0.33
+
 -- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
 -- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
 -- NOTE: animusMasteryMonsterXpMultiplier is the monster experience multiplier that has the animus mastery unlocked.

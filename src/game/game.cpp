@@ -2687,122 +2687,344 @@ std::shared_ptr<Item> Game::findItemOfType(const std::shared_ptr<Cylinder> &cyli
 	return nullptr;
 }
 
+namespace {
+
+	struct MoneyCollection {
+		uint64_t total = 0;
+		std::multimap<uint32_t, std::shared_ptr<Item>> moneyMap;
+	};
+
+	void collectMoneyFromItem(
+		const std::shared_ptr<Item> &item,
+		std::vector<std::shared_ptr<Container>> &containers,
+		MoneyCollection &collection
+	) {
+		if (!item) {
+			return;
+		}
+
+		if (const auto &container = item->getContainer()) {
+			containers.push_back(container);
+			return;
+		}
+
+		const uint32_t worth = item->getWorth();
+		if (worth != 0) {
+			const auto it = collection.moneyMap.emplace(worth, item);
+			collection.total += it->first;
+		}
+	}
+
+	MoneyCollection collectMoney(const std::shared_ptr<Cylinder> &cylinder) {
+		MoneyCollection collection;
+		std::vector<std::shared_ptr<Container>> containers;
+
+		for (size_t i = cylinder->getFirstIndex(), j = cylinder->getLastIndex(); i < j; ++i) {
+			const auto &thing = cylinder->getThing(i);
+			if (!thing) {
+				continue;
+			}
+
+			collectMoneyFromItem(thing->getItem(), containers, collection);
+		}
+
+		size_t i = 0;
+		while (i < containers.size()) {
+			const auto &container = containers[i];
+			++i;
+			for (const auto &item : container->getItemList()) {
+				collectMoneyFromItem(item, containers, collection);
+			}
+		}
+
+		return collection;
+	}
+
+	bool removeItemFromOwner(
+		Game &game,
+		const std::shared_ptr<Player> &player,
+		const std::shared_ptr<Item> &item,
+		uint32_t count
+	) {
+		const auto removeCount = count == 0 ? -1 : static_cast<int32_t>(count);
+		const auto ret = player
+			? player->removeItem(item, count)
+			: game.internalRemoveItem(item, removeCount);
+		if (ret != RETURNVALUE_NOERROR) {
+			g_logger().error(
+				"Game::removeMoney: failed to remove item {} from {} (reason {}).",
+				item ? item->getID() : 0,
+				player ? player->getName() : "cylinder",
+				getReturnMessage(ret)
+			);
+			return false;
+		}
+		return true;
+	}
+
+	bool deliverChange(
+		Game &game,
+		const std::shared_ptr<Cylinder> &cylinder,
+		uint64_t expectedChange,
+		uint32_t flags,
+		const std::string &playerName
+	) {
+		auto [addedMoney, returnValue] = game.addMoney(cylinder, expectedChange, flags);
+		if (addedMoney < expectedChange
+		    && (flags & FLAG_DROPONMAP) == 0
+		    && (returnValue == RETURNVALUE_NOTENOUGHCAPACITY
+		        || returnValue == RETURNVALUE_NOTENOUGHROOM
+		        || returnValue == RETURNVALUE_CONTAINERNOTENOUGHROOM)) {
+			std::tie(addedMoney, returnValue) = game.addMoney(cylinder, expectedChange, flags | FLAG_DROPONMAP);
+		}
+
+		if (addedMoney < expectedChange) {
+			g_logger().error(
+				"Game::removeMoney: INCONSISTENT STATE — could not deliver full change to player {}. "
+				"Expected change: {}, added: {}. Aborting transaction.",
+				playerName, expectedChange, addedMoney
+			);
+			return false;
+		}
+
+		return true;
+	}
+
+	enum class MoneyRemovalOutcome {
+		Continue,
+		Done,
+		Failed
+	};
+
+	MoneyRemovalOutcome processMoneyEntry(
+		Game &game,
+		const std::shared_ptr<Player> &player,
+		const std::shared_ptr<Cylinder> &cylinder,
+		const std::shared_ptr<Item> &item,
+		uint32_t worth,
+		uint64_t &money,
+		uint32_t flags
+	) {
+		using enum MoneyRemovalOutcome;
+		if (worth < money) {
+			if (!removeItemFromOwner(game, player, item, 0)) {
+				return Failed;
+			}
+			money -= worth;
+			return Continue;
+		}
+
+		if (worth > money) {
+			const uint64_t unitWorth = worth / item->getItemCount();
+			const auto removeCount = static_cast<uint32_t>((money + unitWorth - 1) / unitWorth);
+			const uint64_t expectedChange = (unitWorth * removeCount) - money;
+
+			if (expectedChange > 0 && !deliverChange(game, cylinder, expectedChange, flags, player ? player->getName() : "unknown")) {
+				return Failed;
+			}
+
+			if (!removeItemFromOwner(game, player, item, removeCount)) {
+				return Failed;
+			}
+
+			money = 0;
+			return Done;
+		}
+
+		if (!removeItemFromOwner(game, player, item, 0)) {
+			return Failed;
+		}
+		money = 0;
+		return Done;
+	}
+
+	struct AddItemOutcome {
+		uint32_t placed = 0;
+		uint32_t remainder = 0;
+		ReturnValue ret = RETURNVALUE_NOERROR;
+	};
+
+	AddItemOutcome addItemToCylinder(
+		Game &game,
+		const std::shared_ptr<Cylinder> &cylinder,
+		uint16_t itemId,
+		uint16_t count,
+		uint32_t flags
+	) {
+		AddItemOutcome outcome;
+		const auto &item = Item::CreateItem(itemId, count);
+		outcome.ret = game.internalAddItem(cylinder, item, INDEX_WHEREEVER, flags, false, outcome.remainder);
+		if (outcome.ret == RETURNVALUE_NOERROR) {
+			outcome.placed = count - outcome.remainder;
+		}
+		return outcome;
+	}
+
+	ReturnValue addCoinStack(
+		Game &game,
+		const std::shared_ptr<Cylinder> &cylinder,
+		uint16_t itemId,
+		uint16_t count,
+		uint64_t unitValue,
+		uint32_t flags,
+		uint64_t &totalAdded
+	) {
+		auto outcome = addItemToCylinder(game, cylinder, itemId, count, flags);
+		if (outcome.placed > 0) {
+			totalAdded += static_cast<uint64_t>(outcome.placed) * unitValue;
+		}
+
+		const bool fullyPlaced = outcome.ret == RETURNVALUE_NOERROR && outcome.remainder == 0;
+		if (fullyPlaced) {
+			return RETURNVALUE_NOERROR;
+		}
+
+		if ((flags & FLAG_DROPONMAP) == 0 || !cylinder->getTile()) {
+			return outcome.ret != RETURNVALUE_NOERROR ? outcome.ret : RETURNVALUE_NOTENOUGHROOM;
+		}
+
+		const auto dropCount = static_cast<uint16_t>(count - outcome.placed);
+		if (dropCount == 0) {
+			return outcome.ret != RETURNVALUE_NOERROR ? outcome.ret : RETURNVALUE_NOTENOUGHROOM;
+		}
+
+		auto dropOutcome = addItemToCylinder(game, cylinder->getTile(), itemId, dropCount, FLAG_NOLIMIT);
+		if (dropOutcome.placed > 0) {
+			totalAdded += static_cast<uint64_t>(dropOutcome.placed) * unitValue;
+		}
+		if (dropOutcome.ret != RETURNVALUE_NOERROR) {
+			return dropOutcome.ret;
+		}
+		if (dropOutcome.remainder != 0) {
+			return outcome.ret != RETURNVALUE_NOERROR ? outcome.ret : RETURNVALUE_NOTENOUGHROOM;
+		}
+
+		return RETURNVALUE_NOERROR;
+	}
+
+	ReturnValue addCoins(
+		Game &game,
+		const std::shared_ptr<Cylinder> &cylinder,
+		uint16_t itemId,
+		uint64_t count,
+		uint64_t unitValue,
+		uint32_t flags,
+		uint64_t &totalAdded
+	) {
+		while (count > 0) {
+			const auto createCount = static_cast<uint16_t>(std::min<uint64_t>(100, count));
+			const auto ret = addCoinStack(game, cylinder, itemId, createCount, unitValue, flags, totalAdded);
+			if (ret != RETURNVALUE_NOERROR) {
+				return ret;
+			}
+			count -= createCount;
+		}
+
+		return RETURNVALUE_NOERROR;
+	}
+
+} // namespace
+
 bool Game::removeMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, uint32_t flags /*= 0*/, bool useBalance /*= false*/) {
 	if (cylinder == nullptr) {
 		g_logger().error("[{}] cylinder is nullptr", __FUNCTION__);
 		return false;
 	}
+
 	if (money == 0) {
 		return true;
 	}
-	std::vector<std::shared_ptr<Container>> containers;
-	std::multimap<uint32_t, std::shared_ptr<Item>> moneyMap;
-	uint64_t moneyCount = 0;
-	for (size_t i = cylinder->getFirstIndex(), j = cylinder->getLastIndex(); i < j; ++i) {
-		const std::shared_ptr<Thing> &thing = cylinder->getThing(i);
-		if (!thing) {
-			continue;
-		}
-		const auto &item = thing->getItem();
-		if (!item) {
-			continue;
-		}
-		const std::shared_ptr<Container> &container = item->getContainer();
-		if (container) {
-			containers.push_back(container);
-		} else {
-			const uint32_t worth = item->getWorth();
-			if (worth != 0) {
-				moneyCount += worth;
-				moneyMap.emplace(worth, item);
-			}
-		}
-	}
-	size_t i = 0;
-	while (i < containers.size()) {
-		const std::shared_ptr<Container> &container = containers[i++];
-		for (const std::shared_ptr<Item> &item : container->getItemList()) {
-			const std::shared_ptr<Container> &tmpContainer = item->getContainer();
-			if (tmpContainer) {
-				containers.push_back(tmpContainer);
-			} else {
-				const uint32_t worth = item->getWorth();
-				if (worth != 0) {
-					moneyCount += worth;
-					moneyMap.emplace(worth, item);
-				}
-			}
-		}
-	}
 
-	const auto &player = useBalance ? std::dynamic_pointer_cast<Player>(cylinder) : nullptr;
-	uint64_t balance = 0;
-	if (useBalance && player) {
-		balance = player->getBankBalance();
-	}
+	const auto collection = collectMoney(cylinder);
+	const auto &player = std::dynamic_pointer_cast<Player>(cylinder);
+	const uint64_t balance = (useBalance && player) ? player->getBankBalance() : 0;
 
-	if (moneyCount + balance < money) {
+	if (collection.total + balance < money) {
 		return false;
 	}
 
-	for (const auto &moneyEntry : moneyMap) {
-		const std::shared_ptr<Item> &item = moneyEntry.second;
-		if (moneyEntry.first < money) {
-			internalRemoveItem(item);
-			money -= moneyEntry.first;
-		} else if (moneyEntry.first > money) {
-			const uint32_t worth = moneyEntry.first / item->getItemCount();
-			const uint32_t removeCount = std::ceil(money / static_cast<double>(worth));
-			addMoney(cylinder, (worth * removeCount) - money, flags);
-			internalRemoveItem(item, removeCount);
-			return true;
-		} else {
-			internalRemoveItem(item);
-			return true;
+	using enum MoneyRemovalOutcome;
+	bool removedItems = false;
+	for (const auto &[worth, item] : collection.moneyMap) {
+		const auto outcome = processMoneyEntry(*this, player, cylinder, item, worth, money, flags);
+		if (outcome == Failed) {
+			if (player && removedItems) {
+				player->updateState();
+			}
+			return false;
+		}
+		if (outcome == Done) {
+			removedItems = true;
+			break;
+		}
+		if (outcome == Continue) {
+			removedItems = true;
 		}
 	}
 
+	if (player && removedItems) {
+		player->updateState();
+	}
+
+	if (money == 0) {
+		return true;
+	}
+
 	if (useBalance && player && player->getBankBalance() >= money) {
-		player->setBankBalance(player->getBankBalance() - money);
+		uint64_t oldBalance = player->getBankBalance();
+		player->setBankBalance(oldBalance - money);
+		player->sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+		uint64_t newBalance = player->getBankBalance();
+
+		const uint64_t expectedBalance = oldBalance - money;
+		if (newBalance != expectedBalance) {
+			g_logger().error(
+				"Game::removeMoney: inconsistent bank debit for player {}. Old balance: {}, expected: {}, got: {}.",
+				player->getName(), oldBalance, expectedBalance, newBalance
+			);
+		} else {
+			g_logger().debug(
+				"Game::removeMoney: debited {} gold from player {}'s bank. Old balance: {}, new balance: {}.",
+				money, player->getName(), oldBalance, newBalance
+			);
+		}
 	}
 
 	return true;
 }
 
-void Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, uint32_t flags /*= 0*/) {
+std::pair<uint64_t, ReturnValue> Game::addMoney(const std::shared_ptr<Cylinder> &cylinder, uint64_t money, uint32_t flags /*= 0*/) {
 	if (cylinder == nullptr) {
 		g_logger().error("[{}] cylinder is nullptr", __FUNCTION__);
-		return;
+		return std::make_pair(0, RETURNVALUE_NOTPOSSIBLE);
 	}
+
 	if (money == 0) {
-		return;
+		return std::make_pair(0, RETURNVALUE_NOERROR);
 	}
 
-	auto addCoins = [&](uint16_t itemId, uint32_t count) {
-		while (count > 0) {
-			const uint16_t createCount = std::min<uint32_t>(100, count);
-			const std::shared_ptr<Item> &remaindItem = Item::CreateItem(itemId, createCount);
+	ReturnValue returnValue = RETURNVALUE_NOERROR;
+	uint64_t totalAdded = 0;
 
-			ReturnValue ret = internalAddItem(cylinder, remaindItem, INDEX_WHEREEVER, flags);
-			if (ret != RETURNVALUE_NOERROR) {
-				internalAddItem(cylinder->getTile(), remaindItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
-			}
-
-			count -= createCount;
-		}
-	};
-
-	uint32_t crystalCoins = money / 10000;
+	uint64_t crystalCoins = money / 10000;
 	money -= crystalCoins * 10000;
-	addCoins(ITEM_CRYSTAL_COIN, crystalCoins);
+	returnValue = addCoins(*this, cylinder, ITEM_CRYSTAL_COIN, crystalCoins, 10000, flags, totalAdded);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		return std::make_pair(totalAdded, returnValue);
+	}
 
-	uint16_t platinumCoins = money / 100;
+	uint64_t platinumCoins = money / 100;
 	money -= platinumCoins * 100;
-	addCoins(ITEM_PLATINUM_COIN, platinumCoins);
+	returnValue = addCoins(*this, cylinder, ITEM_PLATINUM_COIN, platinumCoins, 100, flags, totalAdded);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		return std::make_pair(totalAdded, returnValue);
+	}
 
 	if (money > 0) {
-		addCoins(ITEM_GOLD_COIN, money);
+		returnValue = addCoins(*this, cylinder, ITEM_GOLD_COIN, money, 1, flags, totalAdded);
 	}
+
+	return std::make_pair(totalAdded, returnValue);
 }
 
 std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t newId, int32_t newCount /*= -1*/) {
@@ -3565,7 +3787,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 				[this, playerId, itemId, hasTier, tier] {
 					playerEquipItem(playerId, itemId, hasTier, tier);
 				},
-				__FUNCTION__
+				fmt::format("{} - Player::setNextActionTask ", __FUNCTION__)
 			);
 			player->setNextActionTask(task);
 		}
@@ -6381,7 +6603,7 @@ void Game::playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::str
 	player->vip().edit(guid, description, icon, notify, vipGroupsId);
 }
 
-void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm) {
+void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -6394,12 +6616,13 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 
 	player->updateUIExhausted();
 
-	if (!player->hasImbuingItem()) {
+	Imbuement* imbuement = g_imbuements().getImbuement(imbuementid);
+	if (!imbuement) {
 		return;
 	}
 
-	Imbuement* imbuement = g_imbuements().getImbuement(imbuementid);
-	if (!imbuement) {
+	if (!player->hasImbuingItem()) {
+		player->createScrollImbuement(imbuement);
 		return;
 	}
 
@@ -6414,7 +6637,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t
 		return;
 	}
 
-	player->onApplyImbuement(imbuement, item, slot, protectionCharm);
+	player->onApplyImbuement(imbuement, item, slot);
 }
 
 void Game::playerClearImbuement(uint32_t playerid, uint8_t slot) {
@@ -7741,7 +7964,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY, true);
 				const auto &item = attackerPlayer->getWeapon();
 				if (item && item->getWeaponType() == WEAPON_DISTANCE) {
-					std::shared_ptr<Item> quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
+					const auto &quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
 					if (quiver && quiver->getWeaponType()) {
 						if (quiver->getPerfectShotRange() == distanceX) {
 							damageX -= quiver->getPerfectShotDamage();
@@ -8239,19 +8462,18 @@ void Game::applyManaLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	// Wheel of destiny bonus - mana leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_CHANCE);
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
-
-	uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE) + wheelLeechChance + damage.manaLeechChance;
 	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
-	if (normal_random(0, 100) >= manaChance) {
-		return;
-	}
+
 	// Void charm rune
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
 			manaSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VOID)] * 100;
 		}
+	}
+
+	if (manaSkill == 0) {
+		return;
 	}
 
 	CombatParams tmpParams;
@@ -8270,17 +8492,17 @@ void Game::applyLifeLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	// Wheel of destiny bonus - life leech chance and amount
-	auto wheelLeechChance = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_CHANCE);
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE) + wheelLeechChance + damage.lifeLeechChance;
 	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
-	if (normal_random(0, 100) >= lifeChance) {
-		return;
-	}
+
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 			lifeSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VAMP)] * 100;
 		}
+	}
+
+	if (lifeSkill == 0) {
+		return;
 	}
 
 	CombatParams tmpParams;

@@ -180,7 +180,7 @@ public:
 	void addZone(const std::shared_ptr<Zone> &zone);
 	void clearZones();
 
-	auto getZones() const {
+	const std::unordered_set<std::shared_ptr<Zone>> &getZones() const {
 		return zones;
 	}
 

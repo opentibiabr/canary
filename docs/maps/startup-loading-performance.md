@@ -31,7 +31,7 @@ The `windows-release` preset emits symbols so profiler call trees can resolve Ca
 When reading Visual Studio CPU Usage results:
 
 - `Total CPU` is inclusive time. It includes child calls and is useful for finding expensive paths.
-- `CPU propria` or self time is exclusive time. It is useful for finding the function that directly burns CPU.
+- `Self CPU`, also called exclusive CPU time, measures time spent directly in the function itself. It is useful for finding the function that directly burns CPU.
 - `ntdll`, `kernelbase`, and other external frames are often just the outer sampled frame. Expand the Canary children before drawing conclusions.
 - Compare repeated captures. Startup measurements are sensitive to filesystem cache state, antivirus activity, database timing, CPU frequency, and background load.
 - Prefer comparing sample counts and call shape across captures, not only percentages. The denominator changes when other startup phases get faster or slower.

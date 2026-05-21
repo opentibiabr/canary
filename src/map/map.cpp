@@ -17,6 +17,7 @@
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/map_download.hpp"
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
 
@@ -35,6 +36,10 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			g_logger().warn("Map download URL in config.lua is empty, download disabled");
+		}
+
+		if (!mapDownloadUrl.empty()) {
+			MapDownload::warnIfOutdatedMapDownloadUrl(mapDownloadUrl);
 		}
 
 		if (CURL* curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {

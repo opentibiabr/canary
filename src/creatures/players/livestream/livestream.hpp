@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <string_view>
+
 #include "server/network/protocol/protocolgame.hpp"
 
 class NetworkMessage;
@@ -32,7 +34,7 @@ struct LivestreamState {
 
 class LivestreamManager {
 public:
-	static LivestreamManager &getInstance();
+	[[nodiscard]] static LivestreamManager &getInstance();
 
 	[[nodiscard]] bool isBroadcasting(const std::shared_ptr<Player> &caster) const;
 	[[nodiscard]] bool isViewer(const ProtocolGame_ptr &client) const;
@@ -42,9 +44,9 @@ public:
 	[[nodiscard]] std::string getPassword(const std::shared_ptr<Player> &caster) const;
 	[[nodiscard]] std::string getDescription(const std::shared_ptr<Player> &caster) const;
 	[[nodiscard]] std::string getBroadcastTimeString(const std::shared_ptr<Player> &caster) const;
-	[[nodiscard]] std::vector<std::shared_ptr<Player>> getBroadcastingCasters(const std::string &password = "") const;
+	[[nodiscard]] std::vector<std::shared_ptr<Player>> getBroadcastingCasters(std::string_view password = "") const;
 
-	void setInitialState(const std::shared_ptr<Player> &caster, const std::string &password, const std::string &description, uint32_t liveRecord);
+	void setInitialState(const std::shared_ptr<Player> &caster, std::string_view password, std::string_view description, uint32_t liveRecord);
 	void applyState(const std::shared_ptr<Player> &caster, const LivestreamState &state);
 	void stopBroadcast(const std::shared_ptr<Player> &caster, bool clearAll);
 	bool canWatch(const std::shared_ptr<Player> &caster, const ProtocolGame_ptr &viewer, const std::string &password, std::string &reason) const;
@@ -82,14 +84,14 @@ private:
 	void disconnectViewers(Session &session, bool clearMutes);
 	void kickViewers(Session &session, const std::vector<std::string> &names);
 	void setBans(Session &session, const std::vector<std::string> &bans);
-	void sendChannelMessage(Session &session, const std::string &author, const std::string &text, SpeakClasses type);
-	void sendChannelEvent(Session &session, const std::string &viewerName, ChannelEvent_t event);
+	void sendChannelMessage(const Session &session, const std::string &author, const std::string &text, SpeakClasses type);
+	void sendChannelEvent(const Session &session, const std::string &viewerName, ChannelEvent_t event);
 	void showViewers(const ProtocolGame_ptr &client, const Session &session) const;
 	void changeViewerName(const ProtocolGame_ptr &client, Session &session, LivestreamViewerInfo &viewer, const std::vector<std::string> &params);
-	void handleViewerMessage(const ProtocolGame_ptr &client, Session &session, LivestreamViewerInfo &viewer, const std::string &text);
+	void handleViewerMessage(const ProtocolGame_ptr &client, const Session &session, const LivestreamViewerInfo &viewer, const std::string &text);
 
 	std::unordered_map<uint32_t, Session> sessions;
 	std::unordered_map<ProtocolGame*, uint32_t> viewerToCaster;
 };
 
-LivestreamManager &g_livestream();
+[[nodiscard]] LivestreamManager &g_livestream();

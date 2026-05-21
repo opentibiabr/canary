@@ -26,15 +26,15 @@ namespace {
 	constexpr size_t MIN_VIEWER_NAME_LENGTH = 3;
 	constexpr size_t MAX_VIEWER_NAME_LENGTH = NETWORKMESSAGE_PLAYERNAME_MAXLENGTH;
 
-	uint16_t readU16(const uint8_t* buffer, size_t pos) {
+	[[nodiscard]] uint16_t readU16(const uint8_t* buffer, size_t pos) {
 		return static_cast<uint16_t>(buffer[pos] | (buffer[pos + 1] << 8));
 	}
 
-	uint32_t readU32(const uint8_t* buffer, size_t pos) {
+	[[nodiscard]] uint32_t readU32(const uint8_t* buffer, size_t pos) {
 		return static_cast<uint32_t>(buffer[pos] | (buffer[pos + 1] << 8) | (buffer[pos + 2] << 16) | (buffer[pos + 3] << 24));
 	}
 
-	bool isPrivateSpeakType(uint8_t type) {
+	[[nodiscard]] bool isPrivateSpeakType(uint8_t type) {
 		switch (static_cast<SpeakClasses>(type)) {
 			case TALKTYPE_PRIVATE_FROM:
 			case TALKTYPE_PRIVATE_TO:
@@ -48,7 +48,7 @@ namespace {
 		}
 	}
 
-	bool isChannelSpeakType(SpeakClasses type) {
+	[[nodiscard]] bool isChannelSpeakType(SpeakClasses type) {
 		switch (type) {
 			case TALKTYPE_CHANNEL_MANAGER:
 			case TALKTYPE_CHANNEL_Y:
@@ -60,14 +60,42 @@ namespace {
 				return false;
 		}
 	}
+
+	[[nodiscard]] bool advanceSpeakMetadata(const ProtocolGame_ptr &owner, const uint8_t* buffer, size_t end, uint32_t statementId, size_t &pos) {
+		if (pos + 2 > end) {
+			return true;
+		}
+
+		const auto nameLength = readU16(buffer, pos);
+		if (nameLength <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH && pos + 2 + nameLength <= end) {
+			pos += 2 + nameLength;
+			if (!owner->oldProtocol && statementId != 0) {
+				++pos;
+			}
+			if (pos + 2 > end) {
+				return false;
+			}
+			pos += 2;
+			return true;
+		}
+
+		if (pos + 4 > end) {
+			return false;
+		}
+		pos += 4;
+		if (!owner->oldProtocol && statementId != 0) {
+			++pos;
+		}
+		return true;
+	}
 }
 
-LivestreamManager &LivestreamManager::getInstance() {
+[[nodiscard]] LivestreamManager &LivestreamManager::getInstance() {
 	static LivestreamManager instance;
 	return instance;
 }
 
-LivestreamManager &g_livestream() {
+[[nodiscard]] LivestreamManager &g_livestream() {
 	return LivestreamManager::getInstance();
 }
 
@@ -145,13 +173,13 @@ LivestreamState LivestreamManager::getState(const std::shared_ptr<Player> &caste
 
 	state.names.reserve(session->viewers.size());
 	for (const auto &[_, viewer] : session->viewers) {
-		state.names.emplace_back(viewer.name);
+		(void)state.names.emplace_back(viewer.name);
 	}
 
 	state.mutes = session->mutes;
 	state.bans.reserve(session->bans.size());
 	for (const auto &[name, _] : session->bans) {
-		state.bans.emplace_back(name);
+		(void)state.bans.emplace_back(name);
 	}
 
 	return state;
@@ -185,7 +213,7 @@ std::string LivestreamManager::getBroadcastTimeString(const std::shared_ptr<Play
 	return fmt::format("{} hours, {} minutes and {} seconds", hour, minute, second);
 }
 
-std::vector<std::shared_ptr<Player>> LivestreamManager::getBroadcastingCasters(const std::string &password) const {
+std::vector<std::shared_ptr<Player>> LivestreamManager::getBroadcastingCasters(std::string_view password) const {
 	std::vector<std::shared_ptr<Player>> casters;
 	for (const auto &[_, session] : sessions) {
 		auto caster = session.caster.lock();
@@ -193,27 +221,27 @@ std::vector<std::shared_ptr<Player>> LivestreamManager::getBroadcastingCasters(c
 			continue;
 		}
 
-		if (!password.empty() && session.password != password) {
+		if (!password.empty() && std::string_view(session.password) != password) {
 			continue;
 		}
 
-		casters.emplace_back(std::move(caster));
+		(void)casters.emplace_back(std::move(caster));
 	}
 
-	std::ranges::sort(casters, [this](const auto &lhs, const auto &rhs) {
+	(void)std::ranges::sort(casters, [this](const auto &lhs, const auto &rhs) {
 		return getViewerCount(lhs) > getViewerCount(rhs);
 	});
 	return casters;
 }
 
-void LivestreamManager::setInitialState(const std::shared_ptr<Player> &caster, const std::string &password, const std::string &description, uint32_t liveRecord) {
+void LivestreamManager::setInitialState(const std::shared_ptr<Player> &caster, std::string_view password, std::string_view description, uint32_t liveRecord) {
 	if (!caster) {
 		return;
 	}
 
 	auto &session = ensureSession(caster);
-	session.password = password;
-	session.description = description;
+	session.password.assign(password.begin(), password.end());
+	session.description.assign(description.begin(), description.end());
 	session.liveRecord = liveRecord;
 }
 
@@ -237,7 +265,7 @@ void LivestreamManager::applyState(const std::shared_ptr<Player> &caster, const 
 	session.mutes.clear();
 	session.mutes.reserve(state.mutes.size());
 	for (const auto &mute : state.mutes) {
-		session.mutes.emplace_back(normalizeViewerName(mute));
+		(void)session.mutes.emplace_back(normalizeViewerName(mute));
 	}
 	setBans(session, state.bans);
 
@@ -257,7 +285,7 @@ void LivestreamManager::applyState(const std::shared_ptr<Player> &caster, const 
 	}
 
 	if (!session.broadcasting && session.viewers.empty() && session.password.empty() && session.description.empty()) {
-		sessions.erase(getCasterGuid(caster));
+		(void)sessions.erase(getCasterGuid(caster));
 	}
 }
 
@@ -358,7 +386,7 @@ void LivestreamManager::addViewer(const std::shared_ptr<Player> &caster, const P
 
 	++session.viewerCounter;
 	auto viewerName = fmt::format("Viewer-{}", session.viewerCounter);
-	session.viewers.emplace(viewer, LivestreamViewerInfo { viewerName, session.viewerCounter, viewer->getIP() });
+	(void)session.viewers.try_emplace(viewer, LivestreamViewerInfo { viewerName, session.viewerCounter, viewer->getIP() });
 	viewerToCaster[viewer.get()] = caster->getGUID();
 
 	if (spy) {
@@ -389,21 +417,21 @@ void LivestreamManager::removeViewer(const ProtocolGame_ptr &viewer, bool spy) {
 
 	const auto sessionIt = sessions.find(indexIt->second);
 	if (sessionIt == sessions.end()) {
-		viewerToCaster.erase(indexIt);
+		(void)viewerToCaster.erase(indexIt);
 		return;
 	}
 
 	auto &session = sessionIt->second;
 	auto viewerIt = session.viewers.find(viewer);
 	if (viewerIt == session.viewers.end()) {
-		viewerToCaster.erase(indexIt);
+		(void)viewerToCaster.erase(indexIt);
 		return;
 	}
 
 	const auto viewerName = viewerIt->second.name;
-	std::erase(session.mutes, normalizeViewerName(viewerName));
-	session.viewers.erase(viewerIt);
-	viewerToCaster.erase(indexIt);
+	(void)std::erase(session.mutes, normalizeViewerName(viewerName));
+	(void)session.viewers.erase(viewerIt);
+	(void)viewerToCaster.erase(indexIt);
 
 	if (!spy) {
 		sendChannelEvent(session, viewerName, CHANNELEVENT_LEAVE);
@@ -472,17 +500,19 @@ void LivestreamManager::broadcastPacket(const std::shared_ptr<Player> &caster, c
 	}
 
 	for (const auto &[viewer, _] : session->viewers) {
-		if (viewer) {
-			if (refreshMap) {
-				viewer->sendMapDescription(caster->getPosition());
-				if (!viewer->oldProtocol) {
-					std::unordered_set<PlayerIcon> iconSet;
-					iconSet.insert(PlayerIcon::Rooted);
-					viewer->sendIcons(iconSet, IconBakragore::None);
-				}
-			} else {
-				viewer->writeToOutputBuffer(message);
-			}
+		if (!viewer) {
+			continue;
+		}
+
+		if (!refreshMap) {
+			viewer->writeToOutputBuffer(message);
+			continue;
+		}
+
+		viewer->sendMapDescription(caster->getPosition());
+		if (!viewer->oldProtocol) {
+			const std::unordered_set<PlayerIcon> iconSet { PlayerIcon::Rooted };
+			viewer->sendIcons(iconSet, IconBakragore::None);
 		}
 	}
 }
@@ -505,12 +535,7 @@ void LivestreamManager::updateViewerStorage(const std::shared_ptr<Player> &caste
 }
 
 bool LivestreamManager::isMapRefreshPacket(uint8_t opcode) {
-	switch (opcode) {
-		case 0x64: // Full map
-			return true;
-		default:
-			return false;
-	}
+	return opcode == 0x64; // Full map
 }
 
 bool LivestreamManager::isForwardablePacket(const ProtocolGame_ptr &owner, const NetworkMessage &message) {
@@ -585,26 +610,8 @@ bool LivestreamManager::isForwardableSpeakPacket(const ProtocolGame_ptr &owner, 
 		return false;
 	}
 
-	if (pos + 2 <= end) {
-		const auto nameLength = readU16(buffer, pos);
-		if (nameLength <= NETWORKMESSAGE_PLAYERNAME_MAXLENGTH && pos + 2 + nameLength <= end) {
-			pos += 2 + nameLength;
-			if (!owner->oldProtocol && statementId != 0) {
-				++pos;
-			}
-			if (pos + 2 > end) {
-				return false;
-			}
-			pos += 2;
-		} else {
-			if (pos + 4 > end) {
-				return false;
-			}
-			pos += 4;
-			if (!owner->oldProtocol && statementId != 0) {
-				++pos;
-			}
-		}
+	if (!advanceSpeakMetadata(owner, buffer, end, statementId, pos)) {
+		return false;
 	}
 
 	if (pos >= end) {
@@ -654,7 +661,7 @@ void LivestreamManager::disconnectViewers(Session &session, bool clearMutes) {
 	for (const auto &[viewer, _] : session.viewers) {
 		if (viewer) {
 			viewer->sendSessionEndInformation(SESSION_END_LOGOUT);
-			viewerToCaster.erase(viewer.get());
+			(void)viewerToCaster.erase(viewer.get());
 		}
 	}
 
@@ -667,32 +674,33 @@ void LivestreamManager::disconnectViewers(Session &session, bool clearMutes) {
 void LivestreamManager::kickViewers(Session &session, const std::vector<std::string> &names) {
 	for (const auto &name : names) {
 		const auto lowerName = normalizeViewerName(name);
-		for (auto it = session.viewers.begin(); it != session.viewers.end();) {
-			if (normalizeViewerName(it->second.name) == lowerName) {
-				if (it->first) {
-					it->first->sendSessionEndInformation(SESSION_END_LOGOUT);
-					viewerToCaster.erase(it->first.get());
-				}
-				it = session.viewers.erase(it);
-			} else {
-				++it;
+		(void)std::erase_if(session.viewers, [this, &lowerName](const auto &entry) {
+			if (normalizeViewerName(entry.second.name) != lowerName) {
+				return false;
 			}
-		}
+
+			if (entry.first) {
+				entry.first->sendSessionEndInformation(SESSION_END_LOGOUT);
+				(void)viewerToCaster.erase(entry.first.get());
+			}
+
+			return true;
+		});
 	}
 }
 
 void LivestreamManager::setBans(Session &session, const std::vector<std::string> &bans) {
-	std::set<std::string> normalizedBans;
+	std::set<std::string, std::less<>> normalizedBans;
 	for (const auto &ban : bans) {
-		normalizedBans.emplace(normalizeViewerName(ban));
+		(void)normalizedBans.emplace(normalizeViewerName(ban));
 	}
 
-	std::erase_if(session.bans, [&normalizedBans](const auto &ban) {
+	(void)std::erase_if(session.bans, [&normalizedBans](const auto &ban) {
 		return !normalizedBans.contains(ban.first);
 	});
 
 	for (const auto &ban : normalizedBans) {
-		session.bans.try_emplace(ban, 0);
+		(void)session.bans.try_emplace(ban, 0);
 	}
 
 	for (auto it = session.viewers.begin(); it != session.viewers.end();) {
@@ -702,16 +710,16 @@ void LivestreamManager::setBans(Session &session, const std::vector<std::string>
 			continue;
 		}
 
-		session.bans.insert_or_assign(normalizedViewerName, it->second.ip);
+		(void)session.bans.insert_or_assign(normalizedViewerName, it->second.ip);
 		if (it->first) {
 			it->first->sendSessionEndInformation(SESSION_END_LOGOUT);
-			viewerToCaster.erase(it->first.get());
+			(void)viewerToCaster.erase(it->first.get());
 		}
 		it = session.viewers.erase(it);
 	}
 }
 
-void LivestreamManager::sendChannelMessage(Session &session, const std::string &author, const std::string &text, SpeakClasses type) {
+void LivestreamManager::sendChannelMessage(const Session &session, const std::string &author, const std::string &text, SpeakClasses type) {
 	if (auto owner = session.owner.lock()) {
 		owner->sendChannelMessage(author, text, type, CHANNEL_LIVESTREAM);
 	}
@@ -723,7 +731,7 @@ void LivestreamManager::sendChannelMessage(Session &session, const std::string &
 	}
 }
 
-void LivestreamManager::sendChannelEvent(Session &session, const std::string &viewerName, ChannelEvent_t event) {
+void LivestreamManager::sendChannelEvent(const Session &session, const std::string &viewerName, ChannelEvent_t event) {
 	if (auto owner = session.owner.lock()) {
 		owner->sendChannelEvent(CHANNEL_LIVESTREAM, viewerName, event);
 	}
@@ -739,7 +747,7 @@ void LivestreamManager::showViewers(const ProtocolGame_ptr &client, const Sessio
 	std::vector<std::string> names;
 	names.reserve(session.viewers.size());
 	for (const auto &[_, viewer] : session.viewers) {
-		names.emplace_back(viewer.name);
+		(void)names.emplace_back(viewer.name);
 	}
 
 	client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("{} spectator{}, {}.", names.size(), names.size() == 1 ? "" : "s", fmt::join(names, ", "))));
@@ -787,7 +795,7 @@ void LivestreamManager::changeViewerName(const ProtocolGame_ptr &client, Session
 	client->sendTextMessage(TextMessage(MESSAGE_STATUS, fmt::format("Name changed to '{}'.", newName)));
 }
 
-void LivestreamManager::handleViewerMessage(const ProtocolGame_ptr &client, Session &session, LivestreamViewerInfo &viewer, const std::string &text) {
+void LivestreamManager::handleViewerMessage(const ProtocolGame_ptr &client, const Session &session, const LivestreamViewerInfo &viewer, const std::string &text) {
 	const auto now = OTSYS_TIME();
 	if (client->m_livestreamMessageCooldownTime + MESSAGE_COOLDOWN_MS < now) {
 		client->m_livestreamMessageCooldownTime = now;

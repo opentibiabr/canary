@@ -10543,8 +10543,7 @@ void ProtocolGame::sendLivestreamViewerAppear(const std::shared_ptr<Player> &fou
 	}
 
 	if (!oldProtocol) {
-		std::unordered_set<PlayerIcon> iconSet;
-		iconSet.insert(PlayerIcon::Rooted);
+		const std::unordered_set<PlayerIcon> iconSet { PlayerIcon::Rooted };
 		sendIcons(iconSet, IconBakragore::None);
 	}
 

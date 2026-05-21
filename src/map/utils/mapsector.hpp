@@ -21,20 +21,20 @@ struct Floor {
 
 	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
-		return tiles[x & SECTOR_MASK][y & SECTOR_MASK].first;
+		return tiles[x & SECTOR_MASK][y & SECTOR_MASK];
 	}
 
 	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
-		tiles[x & SECTOR_MASK][y & SECTOR_MASK].first = std::move(tile);
+		tiles[x & SECTOR_MASK][y & SECTOR_MASK] = std::move(tile);
 	}
 
 	const BasicTile* getTileCache(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
-		return tiles[x & SECTOR_MASK][y & SECTOR_MASK].second;
+		return tileCache[x & SECTOR_MASK][y & SECTOR_MASK];
 	}
 
 	void setTileCache(uint16_t x, uint16_t y, const BasicTile* newTile) {
-		tiles[x & SECTOR_MASK][y & SECTOR_MASK].second = newTile;
+		tileCache[x & SECTOR_MASK][y & SECTOR_MASK] = newTile;
 	}
 
 	const auto &getTiles() const {
@@ -51,7 +51,8 @@ struct Floor {
 	}
 
 private:
-	std::pair<std::shared_ptr<Tile>, const BasicTile*> tiles[SECTOR_SIZE][SECTOR_SIZE] = {};
+	std::shared_ptr<Tile> tiles[SECTOR_SIZE][SECTOR_SIZE] = {};
+	const BasicTile* tileCache[SECTOR_SIZE][SECTOR_SIZE] = {};
 
 	mutable std::shared_mutex mutex;
 

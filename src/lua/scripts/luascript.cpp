@@ -48,45 +48,98 @@ int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputStr
 	return output.good() ? 0 : 1;
 }
 
-std::filesystem::path getLuaBytecodeCacheDirectory() {
-	auto configuredPath = g_configManager().getString(LUA_SCRIPT_BYTECODE_CACHE_PATH);
-	if (configuredPath.empty()) {
-		configuredPath = std::string(LuaBytecodeCacheFallbackPath);
+bool ensureLuaBytecodeCacheDirectory(const std::filesystem::path &cacheDirectory) {
+	static std::mutex mutex;
+	static bool directoryReady = false;
+
+	if (directoryReady) {
+		return true;
 	}
 
-	std::filesystem::path cacheDirectory(configuredPath);
-	if (cacheDirectory.is_relative()) {
-		cacheDirectory = std::filesystem::current_path() / cacheDirectory;
+	std::scoped_lock lock(mutex);
+	if (directoryReady) {
+		return true;
 	}
+
+	std::error_code error;
+	std::filesystem::create_directories(cacheDirectory, error);
+	if (error) {
+		g_logger().debug("Could not create Lua bytecode cache directory '{}': {}", cacheDirectory.string(), error.message());
+		return false;
+	}
+
+	directoryReady = true;
+	return true;
+}
+
+const std::filesystem::path &getLuaBytecodeCacheDirectory() {
+	static const auto cacheDirectory = [] {
+		auto configuredPath = g_configManager().getString(LUA_SCRIPT_BYTECODE_CACHE_PATH);
+		if (configuredPath.empty()) {
+			configuredPath = std::string(LuaBytecodeCacheFallbackPath);
+		}
+
+		std::filesystem::path directory(configuredPath);
+		if (directory.is_relative()) {
+			std::error_code error;
+			const auto currentPath = std::filesystem::current_path(error);
+			if (!error) {
+				directory = currentPath / directory;
+			}
+		}
+
+		return directory.lexically_normal();
+	}();
+
 	return cacheDirectory;
+}
+
+const std::filesystem::path &getLuaStartupWorkingDirectory() {
+	static const auto workingDirectory = [] {
+		std::error_code error;
+		auto directory = std::filesystem::current_path(error);
+		if (error) {
+			return std::filesystem::path();
+		}
+
+		return directory.lexically_normal();
+	}();
+
+	return workingDirectory;
+}
+
+std::string getLuaBytecodeSourceIdentity(const std::string &file) {
+	std::filesystem::path sourcePath(file);
+	if (sourcePath.is_relative()) {
+		sourcePath = getLuaStartupWorkingDirectory() / sourcePath;
+	}
+
+	return sourcePath.lexically_normal().generic_string();
 }
 
 std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &file) {
 	std::error_code error;
-	auto sourcePath = std::filesystem::weakly_canonical(file, error);
-	if (error) {
-		error.clear();
-		sourcePath = std::filesystem::absolute(file, error);
-	}
+	const std::filesystem::directory_entry sourceEntry(file, error);
 	if (error) {
 		return std::nullopt;
 	}
 
-	const auto sourceSize = std::filesystem::file_size(sourcePath, error);
+	const auto sourceSize = sourceEntry.file_size(error);
 	if (error) {
 		return std::nullopt;
 	}
 
-	const auto sourceWriteTime = std::filesystem::last_write_time(sourcePath, error);
+	const auto sourceWriteTime = sourceEntry.last_write_time(error);
 	if (error) {
 		return std::nullopt;
 	}
 
+	const auto sourceIdentity = getLuaBytecodeSourceIdentity(file);
 	const auto cacheKey = fmt::format(
 		"{}:{}:{}:{}:{}",
 		LuaBytecodeCacheVersion,
 		sizeof(void*),
-		sourcePath.generic_string(),
+		sourceIdentity,
 		sourceSize,
 		sourceWriteTime.time_since_epoch().count()
 	);
@@ -95,10 +148,7 @@ std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &
 }
 
 void writeLuaBytecodeCache(lua_State* luaState, const std::filesystem::path &cacheFile) {
-	std::error_code error;
-	std::filesystem::create_directories(cacheFile.parent_path(), error);
-	if (error) {
-		g_logger().debug("Could not create Lua bytecode cache directory '{}': {}", cacheFile.parent_path().string(), error.message());
+	if (!ensureLuaBytecodeCacheDirectory(cacheFile.parent_path())) {
 		return;
 	}
 
@@ -117,10 +167,12 @@ void writeLuaBytecodeCache(lua_State* luaState, const std::filesystem::path &cac
 
 	output.close();
 	if (dumpResult != 0 || !output.good()) {
+		std::error_code error;
 		std::filesystem::remove(temporaryFile, error);
 		return;
 	}
 
+	std::error_code error;
 	error.clear();
 	std::filesystem::remove(cacheFile, error);
 
@@ -153,7 +205,7 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 	// loads file as a chunk at stack top
 	int ret = -1;
 	const auto bytecodeCacheFile = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheFile(file) : std::nullopt;
-	if (bytecodeCacheFile && std::filesystem::exists(*bytecodeCacheFile)) {
+	if (bytecodeCacheFile) {
 		ret = luaL_loadfile(luaState, bytecodeCacheFile->string().c_str());
 		if (ret != 0) {
 			lua_pop(luaState, 1);

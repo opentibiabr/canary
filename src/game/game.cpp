@@ -4373,7 +4373,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 }
 
 void Game::playerUpdateContainer(uint32_t playerId, uint8_t cid) {
-	const auto &player = getPlayerByID(playerId);
+	const auto &player = getPlayerByGUID(playerId);
 	if (!player) {
 		return;
 	}

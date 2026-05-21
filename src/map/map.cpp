@@ -231,7 +231,13 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile>
 	}
 }
 
-bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
+bool Map::placeCreature(
+	const Position &centerPos,
+	const std::shared_ptr<Creature> &creature,
+	bool extendedPos /* = false*/,
+	bool forceLogin /* = false*/,
+	const std::shared_ptr<Tile> &centerTile /* = nullptr */
+) {
 	const auto &monster = creature ? creature->getMonster() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
@@ -240,7 +246,7 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 	bool foundTile;
 	bool placeInPZ;
 
-	auto tile = getTile(centerPos.x, centerPos.y, centerPos.z);
+	auto tile = centerTile ? centerTile : getTile(centerPos.x, centerPos.y, centerPos.z);
 	if (tile) {
 		placeInPZ = tile->hasFlag(TILESTATE_PROTECTIONZONE);
 		ReturnValue ret = tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);

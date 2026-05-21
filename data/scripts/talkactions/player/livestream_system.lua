@@ -127,12 +127,6 @@ function talkaction.onSay(player, words, param)
 		return false
 	end
 
-	local maximumViewers = configManager.getNumber(configKeys.LIVESTREAM_MAXIMUM_VIEWERS)
-	if maximumViewers == 0 and not player:isPremium() then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to be a premium account to use this command.")
-		return false
-	end
-
 	local split = param:splitTrimmed(",")
 	local command = (split[1] or "help"):lower()
 	local value = split[2]

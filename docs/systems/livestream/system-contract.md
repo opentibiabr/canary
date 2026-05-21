@@ -238,8 +238,15 @@ stylua --check data/scripts/talkactions/player/livestream_system.lua
 cmake --build --preset windows-release --target canary
 ```
 
-For Linux or CI-only changes, validate the relevant Linux preset or the failing
-GitHub Actions job as well.
+For Linux or CI-only changes, also validate the relevant Linux preset or the
+failing GitHub Actions job:
+
+```bash
+git diff --check
+clang-format --dry-run --Werror <changed C++ files>
+stylua --check data/scripts/talkactions/player/livestream_system.lua
+cmake --build --preset linux-release --target canary
+```
 
 Runtime validation should cover:
 

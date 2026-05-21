@@ -539,6 +539,9 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
+	void sendWeaponProficiency(uint16_t weaponId);
+	void sendWeaponProficiencyWindow(uint16_t weaponId);
+
 	void sendClientLoginPreamble(OperatingSystem_t operatingSystem);
 	void castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem);
 	void sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer);
@@ -628,7 +631,4 @@ private:
 		const std::vector<std::string> &addedGuildNames = {},
 		const std::vector<std::string> &removedGuildNames = {}
 	);
-
-	void sendWeaponProficiency(uint16_t weaponId);
-	void sendWeaponProficiencyWindow(uint16_t weaponId);
 };

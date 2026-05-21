@@ -10759,6 +10759,54 @@ void ProtocolGame::sendExivaRestrictions(
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	if (weaponId == 0) {
+		weaponId = player->getWeaponId(true);
+	}
+
+	NetworkMessage msg;
+
+	msg.addByte(0x5C);
+
+	msg.add<uint16_t>(weaponId);
+	msg.add<uint32_t>(weaponId > 0 ? player->weaponProficiency().getExperience(weaponId) : 0);
+	msg.addByte(weaponId > 0 && player->weaponProficiency().isUpgradeAvailable(weaponId) ? 0x01 : 0x00);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	if (weaponId == 0) {
+		weaponId = player->getWeaponId(true);
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xC4);
+
+	msg.add<uint16_t>(weaponId);
+	msg.add<uint32_t>(player->weaponProficiency().getExperience(weaponId));
+
+	const auto &selectedPerks = player->weaponProficiency().getSelectedPerks(weaponId);
+
+	const auto perkCount = static_cast<uint8_t>(std::min<size_t>(selectedPerks.size(), std::numeric_limits<uint8_t>::max()));
+	msg.addByte(perkCount);
+	for (size_t i = 0; i < perkCount; ++i) {
+		const auto &perk = selectedPerks[i];
+		msg.addByte(perk.level);
+		msg.addByte(perk.index);
+	}
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendClientLoginPreamble(OperatingSystem_t operatingSystem) {
 	if (otclientV8 > 0) {
 		sendFeatures();
@@ -10860,52 +10908,4 @@ void ProtocolGame::resendLivestreamViewerContainer(NetworkMessage &msg) {
 	}
 
 	sendContainer(cid, it->second.container, it->second.container->hasParent(), it->second.index);
-}
-
-void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
-	if (!player || oldProtocol) {
-		return;
-	}
-
-	if (weaponId == 0) {
-		weaponId = player->getWeaponId(true);
-	}
-
-	NetworkMessage msg;
-
-	msg.addByte(0x5C);
-
-	msg.add<uint16_t>(weaponId);
-	msg.add<uint32_t>(weaponId > 0 ? player->weaponProficiency().getExperience(weaponId) : 0);
-	msg.addByte(weaponId > 0 && player->weaponProficiency().isUpgradeAvailable(weaponId) ? 0x01 : 0x00);
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
-	if (!player || oldProtocol) {
-		return;
-	}
-
-	if (weaponId == 0) {
-		weaponId = player->getWeaponId(true);
-	}
-
-	NetworkMessage msg;
-	msg.addByte(0xC4);
-
-	msg.add<uint16_t>(weaponId);
-	msg.add<uint32_t>(player->weaponProficiency().getExperience(weaponId));
-
-	const auto &selectedPerks = player->weaponProficiency().getSelectedPerks(weaponId);
-
-	const auto perkCount = static_cast<uint8_t>(std::min<size_t>(selectedPerks.size(), std::numeric_limits<uint8_t>::max()));
-	msg.addByte(perkCount);
-	for (size_t i = 0; i < perkCount; ++i) {
-		const auto &perk = selectedPerks[i];
-		msg.addByte(perk.level);
-		msg.addByte(perk.index);
-	}
-
-	writeToOutputBuffer(msg);
 }

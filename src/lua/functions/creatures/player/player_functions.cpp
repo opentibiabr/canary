@@ -474,11 +474,6 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
 	Lua::registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
 
-	Lua::registerMethod(L, "Player", "getLivestreamViewersCount", PlayerFunctions::luaPlayerGetLivestreamViewersCount);
-	Lua::registerMethod(L, "Player", "getLivestreamViewers", PlayerFunctions::luaPlayerGetLivestreamViewers);
-	Lua::registerMethod(L, "Player", "setLivestreamViewers", PlayerFunctions::luaPlayerSetLivestreamViewers);
-	Lua::registerMethod(L, "Player", "isLivestreamViewer", PlayerFunctions::luaPlayerIsLivestreamViewer);
-
 	// Badge Functions
 	Lua::registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
 
@@ -509,6 +504,11 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "setSpeed", PlayerFunctions::luaPlayerSetSpeed);
 	Lua::registerMethod(L, "Player", "addWeaponExperience", PlayerFunctions::luaPlayerAddWeaponExperience);
+
+	Lua::registerMethod(L, "Player", "getLivestreamViewersCount", PlayerFunctions::luaPlayerGetLivestreamViewersCount);
+	Lua::registerMethod(L, "Player", "getLivestreamViewers", PlayerFunctions::luaPlayerGetLivestreamViewers);
+	Lua::registerMethod(L, "Player", "setLivestreamViewers", PlayerFunctions::luaPlayerSetLivestreamViewers);
+	Lua::registerMethod(L, "Player", "isLivestreamViewer", PlayerFunctions::luaPlayerIsLivestreamViewer);
 
 	// OTCR Features
 	Lua::registerMethod(L, "Player", "getMapShader", PlayerFunctions::luaPlayerGetMapShader);
@@ -5426,6 +5426,51 @@ int PlayerFunctions::luaPlayerGetVirtue(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSetSpeed(lua_State* L) {
+	// player:setSpeed(speed)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const int32_t speed = Lua::getNumber<int32_t>(L, 2);
+	g_game().setCreatureSpeed(player, speed);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
+	// player:addWeaponExperience(experience, itemId)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto experience = Lua::getNumber<uint32_t>(L, 2);
+	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
+
+	if (experience == 0) {
+		Lua::pushBoolean(L, true);
+		return 1;
+	}
+
+	// Validate that the item has a valid proficiency
+	if (itemId > 0 && (itemId >= Item::items.size() || Item::items[itemId].proficiencyId == 0)) {
+		g_logger().warn("[{}] - Item ID '{}' has no proficiency assigned", __FUNCTION__, itemId);
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	player->weaponProficiency().addExperience(experience, itemId);
+
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetLivestreamViewersCount(lua_State* L) {
 	// player:getLivestreamViewersCount()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -5541,50 +5586,5 @@ int PlayerFunctions::luaPlayerIsLivestreamViewer(lua_State* L) {
 	}
 
 	Lua::pushBoolean(L, g_livestream().isViewer(player->getClient()));
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetSpeed(lua_State* L) {
-	// player:setSpeed(speed)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		Lua::pushBoolean(L, false);
-		return 1;
-	}
-
-	const int32_t speed = Lua::getNumber<int32_t>(L, 2);
-	g_game().setCreatureSpeed(player, speed);
-	Lua::pushBoolean(L, true);
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
-	// player:addWeaponExperience(experience, itemId)
-	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
-	if (!player) {
-		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
-		Lua::pushBoolean(L, false);
-		return 1;
-	}
-
-	const auto experience = Lua::getNumber<uint32_t>(L, 2);
-	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
-
-	if (experience == 0) {
-		Lua::pushBoolean(L, true);
-		return 1;
-	}
-
-	// Validate that the item has a valid proficiency
-	if (itemId > 0 && (itemId >= Item::items.size() || Item::items[itemId].proficiencyId == 0)) {
-		g_logger().warn("[{}] - Item ID '{}' has no proficiency assigned", __FUNCTION__, itemId);
-		Lua::pushBoolean(L, false);
-		return 1;
-	}
-
-	player->weaponProficiency().addExperience(experience, itemId);
-
-	Lua::pushBoolean(L, true);
 	return 1;
 }

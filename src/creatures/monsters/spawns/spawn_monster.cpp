@@ -474,13 +474,15 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 		}
 		totalWeight += weight;
 	}
+	if (totalWeight == 0) {
+		return nullptr;
+	}
+
 	uint32_t randomWeight = uniform_random(0, totalWeight - 1);
-	// order monsters by weight DESC
-	std::vector<std::pair<std::shared_ptr<MonsterType>, uint32_t>> orderedMonsterTypes(monsterTypes.begin(), monsterTypes.end());
-	std::ranges::sort(orderedMonsterTypes, [](const auto &a, const auto &b) {
-		return a.second > b.second;
-	});
-	for (const auto &[mType, weight] : orderedMonsterTypes) {
+	for (const auto &[mType, weight] : monsterTypes) {
+		if (!mType) {
+			continue;
+		}
 		if (randomWeight < weight) {
 			return mType;
 		}

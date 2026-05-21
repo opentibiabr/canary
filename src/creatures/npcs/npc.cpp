@@ -582,8 +582,8 @@ void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLog
 		onPlayerDisappear(player);
 	}
 
-	if (spawnNpc) {
-		spawnNpc->startSpawnNpcCheck();
+	if (const auto &spawn = spawnNpc.lock()) {
+		spawn->startSpawnNpcCheck();
 	}
 }
 
@@ -622,17 +622,17 @@ void Npc::manageIdle() {
 }
 
 void Npc::onPlayerAppear(const std::shared_ptr<Player> &player) {
-	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(player)) {
+	const uint32_t playerId = player->getID();
+	if (player->hasFlag(PlayerFlags_t::IgnoredByNpcs) || playerSpectators.contains(playerId)) {
 		return;
 	}
-	playerSpectators.emplace(player);
+	playerSpectators.emplace(playerId, player);
 	manageIdle();
 }
 
 void Npc::onPlayerDisappear(const std::shared_ptr<Player> &player) {
 	removePlayerInteraction(player);
-	if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs) && playerSpectators.contains(player)) {
-		playerSpectators.erase(player);
+	if (playerSpectators.erase(player->getID()) != 0) {
 		manageIdle();
 	}
 }
@@ -1061,7 +1061,10 @@ void Npc::onThinkWalk(uint32_t interval) {
 
 void Npc::onCreatureWalk() {
 	Creature::onCreatureWalk();
-	phmap::erase_if(playerSpectators, [this](const auto &creature) { return !this->canSee(creature->getPosition()); });
+	std::erase_if(playerSpectators, [this](const auto &entry) {
+		const auto &player = entry.second.lock();
+		return !player || !this->canSee(player->getPosition());
+	});
 }
 
 void Npc::onPlacedCreature() {
@@ -1071,14 +1074,19 @@ void Npc::onPlacedCreature() {
 void Npc::loadPlayerSpectators() {
 	const auto &spec = Spectators().find<Player>(position, true);
 	for (const auto &creature : spec) {
-		if (!creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
-			playerSpectators.emplace(creature->getPlayer());
+		const auto &player = creature->getPlayer();
+		if (!player) {
+			continue;
+		}
+
+		if (!player->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
+			playerSpectators.emplace(player->getID(), player);
 		}
 	}
 }
 
 bool Npc::isInSpawnRange(const Position &pos) const {
-	if (!spawnNpc) {
+	if (spawnNpc.expired()) {
 		return true;
 	}
 
@@ -1201,7 +1209,10 @@ void Npc::removeShopPlayer(uint32_t playerGUID) {
 
 void Npc::closeAllShopWindows() {
 	for (auto it = shopPlayers.begin(); it != shopPlayers.end();) {
-		const auto &player = g_game().getPlayerByGUID(it->first);
+		const auto playerGuid = it->first;
+		++it;
+
+		const auto &player = g_game().getPlayerByGUID(playerGuid);
 		if (player) {
 			player->closeShopWindow();
 		}

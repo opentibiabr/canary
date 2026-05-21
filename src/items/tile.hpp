@@ -180,11 +180,11 @@ public:
 	void addZone(const std::shared_ptr<Zone> &zone);
 	void clearZones();
 
-	const std::unordered_set<std::shared_ptr<Zone>> &getZones() const {
+	[[nodiscard]] const std::unordered_set<std::shared_ptr<Zone>> &getZones() const {
 		return zones;
 	}
 
-	ZoneType_t getZoneType() const {
+	[[nodiscard]] ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {

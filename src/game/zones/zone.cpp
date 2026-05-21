@@ -110,12 +110,10 @@ void Zone::unindexPosition(const Position &position) {
 	}
 
 	auto &zonesAtPosition = it->second;
-	zonesAtPosition.erase(
-		std::remove_if(zonesAtPosition.begin(), zonesAtPosition.end(), [this](const auto &zone) {
-			return !zone || zone.get() == this;
-		}),
-		zonesAtPosition.end()
-	);
+	const auto removed = std::ranges::remove_if(zonesAtPosition, [this](const auto &zone) {
+		return !zone || zone.get() == this;
+	});
+	zonesAtPosition.erase(removed.begin(), removed.end());
 
 	if (zonesAtPosition.empty()) {
 		zonesByPosition.erase(it);

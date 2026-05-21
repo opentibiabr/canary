@@ -401,72 +401,72 @@ void CanaryServer::loadModules() {
 		return WeaponProficiency::loadFromJson();
 	});
 	// Load appearances.dat first
-	timedLoad("appearances.dat", [&] {
+	timedLoad("appearances.dat", [&coreFolder] {
 		return g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE;
 	});
 
 	// Load XML folder dependencies (order matters)
-	timedLoad("XML/vocations.xml", [&] {
+	timedLoad("XML/vocations.xml", [] {
 		return g_vocations().loadFromXml();
 	});
-	timedLoad("XML/outfits.xml", [&] {
+	timedLoad("XML/outfits.xml", [] {
 		return Outfits::getInstance().loadFromXml();
 	});
-	timedLoad("XML/familiars.xml", [&] {
+	timedLoad("XML/familiars.xml", [] {
 		return Familiars::getInstance().loadFromXml();
 	});
-	timedLoad("XML/imbuements.xml", [&] {
+	timedLoad("XML/imbuements.xml", [] {
 		return g_imbuements().loadFromXml();
 	});
-	timedLoad("XML/storages.xml", [&] {
+	timedLoad("XML/storages.xml", [] {
 		return g_storages().loadFromXML();
 	});
 
-	timedLoad("items.xml", [&] {
+	timedLoad("items.xml", [] {
 		return Item::items.loadFromXml();
 	});
 
 	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	logger.info("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
-	timedLoad("core.lua", [&] {
+	timedLoad("core.lua", [&coreFolder] {
 		return g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
 	});
-	timedLoad(coreFolder + "/scripts/libs", [&] {
+	timedLoad(coreFolder + "/scripts/libs", [&coreFolder] {
 		return g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
 	});
-	timedLoad(coreFolder + "/scripts", [&] {
+	timedLoad(coreFolder + "/scripts", [&coreFolder] {
 		return g_scripts().loadScripts(coreFolder + "/scripts", false, false);
 	});
-	timedLoad("npclib", [&] {
+	timedLoad("npclib", [] {
 		return g_npcs().load(true, false);
 	});
 
-	timedLoad("events/events.xml", [&] {
+	timedLoad("events/events.xml", [] {
 		return g_events().loadFromXml();
 	});
-	timedLoad("modules/modules.xml", [&] {
+	timedLoad("modules/modules.xml", [] {
 		return g_modules().loadFromXml();
 	});
 
 	logger.info("Loading datapack scripts on folder: {}/", datapackFolder);
-	timedLoad(datapackFolder + "/scripts/libs", [&] {
+	timedLoad(datapackFolder + "/scripts/libs", [&datapackFolder] {
 		return g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false);
 	});
 	// Load scripts
-	timedLoad(datapackFolder + "/scripts", [&] {
+	timedLoad(datapackFolder + "/scripts", [&datapackFolder] {
 		return g_scripts().loadScripts(datapackFolder + "/scripts", false, false);
 	});
 	// Load monsters
-	timedLoad(datapackFolder + "/monster", [&] {
+	timedLoad(datapackFolder + "/monster", [&datapackFolder] {
 		return g_scripts().loadScripts(datapackFolder + "/monster", false, false);
 	});
-	timedLoad("npc", [&] {
+	timedLoad("npc", [] {
 		return g_npcs().load(false, true);
 	});
 
 	// It needs to be loaded after the revscript is read in order to use the scripting interface.
-	timedLoad("json/eventscheduler/events.json", [&] {
+	timedLoad("json/eventscheduler/events.json", [] {
 		return g_eventsScheduler().loadScheduleEventFromJson();
 	});
 

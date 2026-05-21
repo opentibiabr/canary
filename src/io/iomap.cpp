@@ -138,7 +138,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				tile.items.reserve(kInitialParsedTileItemReserve);
 			}
 
-			tile.items.emplace_back(std::move(item));
+			tile.items.push_back(std::move(item));
 		};
 
 		while (stream.startNode()) {

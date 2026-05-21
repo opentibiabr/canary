@@ -488,7 +488,7 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 		orderedMonsterTypes.emplace_back(mType, weight);
 	}
 
-	std::ranges::sort(orderedMonsterTypes, [](const auto &lhs, const auto &rhs) {
+	std::sort(orderedMonsterTypes.begin(), orderedMonsterTypes.end(), [](const auto &lhs, const auto &rhs) {
 		return lhs.second > rhs.second;
 	});
 

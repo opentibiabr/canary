@@ -12,6 +12,10 @@
 #include "items/items_definitions.hpp"
 #include "utils/mapsector.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+#endif
+
 class Map;
 class MapCache;
 class Tile;
@@ -100,7 +104,7 @@ struct BasicTile {
 		return houseId != 0;
 	}
 
-	bool isCacheShareable() const {
+	[[nodiscard]] bool isCacheShareable() const {
 		if (isHouse()) {
 			return false;
 		}
@@ -109,13 +113,9 @@ struct BasicTile {
 			return false;
 		}
 
-		for (const auto &item : items) {
-			if (item && !item->isSimple()) {
-				return false;
-			}
-		}
-
-		return true;
+		return std::ranges::none_of(items, [](const auto &item) {
+			return item && !item->isSimple();
+		});
 	}
 
 	size_t hash() const {

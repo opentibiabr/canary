@@ -76,17 +76,36 @@ function getLootRandom(modifier)
 end
 
 if configManager.getBoolean(configKeys.LUA_SCRIPT_DEBUG_HOOK) then
-	local start = systemTime()
 	local instructionInterval = math.max(1000, configManager.getNumber(configKeys.LUA_SCRIPT_DEBUG_HOOK_INTERVAL))
+	local callStarts = {}
 
-	debug.sethook(function()
+	debug.sethook(function(event)
+		if event == "call" then
+			callStarts[#callStarts + 1] = systemTime()
+			return
+		end
+
+		if event == "return" or event == "tail return" then
+			callStarts[#callStarts] = nil
+			return
+		end
+
+		if event ~= "count" then
+			return
+		end
+
+		local start = callStarts[#callStarts]
+		if not start then
+			return
+		end
+
 		local now = systemTime()
 		if now - start >= 1000 then
 			local info = debug.getinfo(2, "Sl") or {}
 			logger.warn("[debug.sethook] - Possible long-running Lua script in file [{}] near line [{}]", info.source or "unknown", info.currentline or 0)
-			debug.sethook()
+			callStarts[#callStarts] = now
 		end
-	end, "", instructionInterval)
+	end, "cr", instructionInterval)
 end
 
 -- OTServBr-Global functions

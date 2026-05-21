@@ -9,6 +9,9 @@
 
 #include "map/mapcache.hpp"
 
+#include <array>
+#include <limits>
+
 #include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
@@ -21,21 +24,20 @@
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;
-static phmap::flat_hash_map<uint16_t, std::shared_ptr<BasicItem>> simpleItems;
+static std::array<std::shared_ptr<BasicItem>, std::numeric_limits<uint16_t>::max() + 1> simpleItems;
 
 std::shared_ptr<BasicItem> static_tryGetItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
 std::shared_ptr<BasicItem> static_getBasicItemFromCache(uint16_t id) {
-	auto [it, inserted] = simpleItems.try_emplace(id);
-	if (inserted) {
-		auto item = std::make_shared<BasicItem>();
-		item->id = id;
-		it->second = static_tryGetItemFromCache(item);
+	auto &cachedItem = simpleItems[id];
+	if (!cachedItem) {
+		cachedItem = std::make_shared<BasicItem>();
+		cachedItem->id = id;
 	}
 
-	return it->second;
+	return cachedItem;
 }
 
 std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<BasicTile> &ref) {
@@ -45,7 +47,9 @@ std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<Basi
 void MapCache::flush() const {
 	items.clear();
 	tiles.clear();
-	simpleItems.clear();
+	for (auto &item : simpleItems) {
+		item.reset();
+	}
 }
 
 void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const {

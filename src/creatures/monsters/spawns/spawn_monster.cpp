@@ -456,6 +456,11 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 	if (monsterTypes.empty()) {
 		return nullptr;
 	}
+
+	if (monsterTypes.size() == 1) {
+		return monsterTypes.begin()->first;
+	}
+
 	uint32_t totalWeight = 0;
 	for (const auto &[mType, weight] : monsterTypes) {
 		if (!mType) {

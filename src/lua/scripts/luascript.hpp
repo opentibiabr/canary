@@ -14,9 +14,22 @@
 
 #include <filesystem>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstdint>
+#endif
+
 struct LuaScriptFileMetadata {
 	uintmax_t size = 0;
 	std::filesystem::file_time_type lastWriteTime {};
+};
+
+struct LuaBytecodeCacheStats {
+	uint64_t packHits = 0;
+	uint64_t fileHits = 0;
+	uint64_t misses = 0;
+	uint64_t writes = 0;
+	uint64_t packInvalidations = 0;
+	uint64_t fileInvalidations = 0;
 };
 
 class LuaScriptInterface : public Lua {
@@ -32,6 +45,7 @@ public:
 	virtual bool reInitState();
 
 	int32_t loadFile(const std::string &file, const std::string &scriptName, const LuaScriptFileMetadata* sourceMetadata = nullptr);
+	[[nodiscard]] static LuaBytecodeCacheStats getBytecodeCacheStats();
 
 	const std::string &getFileById(int32_t scriptId);
 	int32_t getEvent(const std::string &eventName);

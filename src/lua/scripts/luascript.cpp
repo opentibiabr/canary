@@ -21,6 +21,7 @@
 #include <unordered_set>
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <atomic>
 	#include <exception>
 #endif
 
@@ -66,6 +67,24 @@ namespace {
 		bool loaded = false;
 		std::unordered_map<std::string, std::string> chunks;
 	};
+
+	struct AtomicLuaBytecodeCacheStats {
+		std::atomic<uint64_t> packHits = 0;
+		std::atomic<uint64_t> fileHits = 0;
+		std::atomic<uint64_t> misses = 0;
+		std::atomic<uint64_t> writes = 0;
+		std::atomic<uint64_t> packInvalidations = 0;
+		std::atomic<uint64_t> fileInvalidations = 0;
+	};
+
+	AtomicLuaBytecodeCacheStats &getMutableLuaBytecodeCacheStats() {
+		static AtomicLuaBytecodeCacheStats stats;
+		return stats;
+	}
+
+	void incrementLuaBytecodeCacheCounter(std::atomic<uint64_t> &counter) noexcept {
+		counter.fetch_add(1, std::memory_order_relaxed);
+	}
 
 	int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputBuffer) {
 		auto &output = *static_cast<std::string*>(outputBuffer);
@@ -304,6 +323,7 @@ namespace {
 		if (!writeMagic && !luaBytecodePackHasValidMagic(cacheEntry.packFile)) {
 			error.clear();
 			static_cast<void>(std::filesystem::remove(cacheEntry.packFile, error));
+			incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().packInvalidations);
 			writeMagic = true;
 		}
 
@@ -425,6 +445,7 @@ namespace {
 			return;
 		}
 
+		incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().writes);
 		appendLuaBytecodePack(cacheEntry, bytecode);
 	}
 }
@@ -444,6 +465,18 @@ bool LuaScriptInterface::reInitState() {
 	return initState();
 }
 
+LuaBytecodeCacheStats LuaScriptInterface::getBytecodeCacheStats() {
+	const auto &stats = getMutableLuaBytecodeCacheStats();
+	return LuaBytecodeCacheStats {
+		.packHits = stats.packHits.load(std::memory_order_relaxed),
+		.fileHits = stats.fileHits.load(std::memory_order_relaxed),
+		.misses = stats.misses.load(std::memory_order_relaxed),
+		.writes = stats.writes.load(std::memory_order_relaxed),
+		.packInvalidations = stats.packInvalidations.load(std::memory_order_relaxed),
+		.fileInvalidations = stats.fileInvalidations.load(std::memory_order_relaxed),
+	};
+}
+
 /// Same as lua_pcall, but adds stack trace to error strings in called function.
 int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string &scriptName, const LuaScriptFileMetadata* sourceMetadata) {
 	// loads file as a chunk at stack top
@@ -455,8 +488,11 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 			ret = luaL_loadbuffer(luaState, packedBytecode->data(), packedBytecode->size(), chunkName.c_str());
 			if (ret != 0) {
 				lua_pop(luaState, 1);
+				incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().packInvalidations);
 				invalidateLuaBytecodePack(bytecodeCacheEntry->packFile);
 				ret = -1;
+			} else {
+				incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().packHits);
 			}
 		}
 
@@ -465,11 +501,13 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 			if (cacheLoadResult) {
 				ret = cacheLoadResult->status;
 				if (ret == 0) {
+					incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().fileHits);
 					appendLuaBytecodePack(*bytecodeCacheEntry, cacheLoadResult->buffer);
 				} else {
 					lua_pop(luaState, 1);
 					std::error_code error;
-					std::filesystem::remove(bytecodeCacheEntry->file, error);
+					static_cast<void>(std::filesystem::remove(bytecodeCacheEntry->file, error));
+					incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().fileInvalidations);
 				}
 			}
 		}
@@ -477,6 +515,9 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 
 	const bool loadedFromBytecodeCache = ret == 0;
 	if (!loadedFromBytecodeCache) {
+		if (bytecodeCacheEntry) {
+			incrementLuaBytecodeCacheCounter(getMutableLuaBytecodeCacheStats().misses);
+		}
 		const auto sourceLoadResult = loadLuaChunkFromFileBuffer(luaState, file, "@" + file);
 		ret = sourceLoadResult ? sourceLoadResult->status : luaL_loadfile(luaState, file.c_str());
 	}

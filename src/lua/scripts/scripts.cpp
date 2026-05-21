@@ -22,6 +22,19 @@
 
 #include <optional>
 
+namespace {
+	LuaBytecodeCacheStats subtractLuaBytecodeCacheStats(const LuaBytecodeCacheStats &after, const LuaBytecodeCacheStats &before) {
+		return LuaBytecodeCacheStats {
+			.packHits = after.packHits - before.packHits,
+			.fileHits = after.fileHits - before.fileHits,
+			.misses = after.misses - before.misses,
+			.writes = after.writes - before.writes,
+			.packInvalidations = after.packInvalidations - before.packInvalidations,
+			.fileInvalidations = after.fileInvalidations - before.fileInvalidations,
+		};
+	}
+}
+
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
 	scriptInterface.initState();
@@ -68,6 +81,7 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 	const auto startupLoadTelemetry = g_configManager().getBoolean(LUA_STARTUP_LOAD_TELEMETRY);
 	const auto scriptsConsoleLogs = g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS);
 	const auto bytecodeCacheEnabled = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE);
+	const auto bytecodeStatsBefore = startupLoadTelemetry && bytecodeCacheEnabled ? LuaScriptInterface::getBytecodeCacheStats() : LuaBytecodeCacheStats {};
 
 	// Checks if the folder exists and is really a folder
 	if (!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
@@ -186,6 +200,20 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 			failedFiles,
 			luaBytes
 		);
+
+		if (bytecodeCacheEnabled) {
+			const auto bytecodeStats = subtractLuaBytecodeCacheStats(LuaScriptInterface::getBytecodeCacheStats(), bytecodeStatsBefore);
+			g_logger().info(
+				"Lua bytecode cache for '{}': pack hits: {}, file hits: {}, misses: {}, writes: {}, pack invalidations: {}, file invalidations: {}",
+				folderName,
+				bytecodeStats.packHits,
+				bytecodeStats.fileHits,
+				bytecodeStats.misses,
+				bytecodeStats.writes,
+				bytecodeStats.packInvalidations,
+				bytecodeStats.fileInvalidations
+			);
+		}
 	}
 
 	return true;

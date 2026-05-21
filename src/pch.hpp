@@ -25,8 +25,10 @@
 // Standard STL Includes
 // --------------------
 
+#include <atomic>
 #include <bitset>
 #include <charconv>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>

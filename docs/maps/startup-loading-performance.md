@@ -113,6 +113,35 @@ luaScriptDebugHookInterval = 30000
 
 Enable `luaStartupLoadTelemetry` only when measuring startup. Keeping it off avoids extra logging cost and noisy production logs.
 
+When both `luaStartupLoadTelemetry` and `luaScriptBytecodeCache` are enabled, each script folder load also logs bytecode cache counters:
+
+```text
+Lua bytecode cache for 'data/scripts': pack hits: 0, file hits: 0, misses: 499, writes: 499, pack invalidations: 0, file invalidations: 0
+```
+
+Use these counters to verify cache behavior during repeated startup or reload tests:
+
+- `pack hits` means a script chunk was loaded from the packed `.luapack` cache.
+- `file hits` means a script chunk was loaded from an individual `.luac` cache file and then repacked.
+- `misses` means the source `.lua` was loaded because no valid bytecode cache entry was available.
+- `writes` means new bytecode was generated from a source `.lua` chunk and published to the cache.
+- `pack invalidations` means a packed cache file was removed because it was invalid or failed to load.
+- `file invalidations` means an individual `.luac` file was removed because it failed to load.
+
+Reload behavior follows the normal script directory scan. The loader does not scan `cache/lua-bytecode` looking for standalone scripts. If a `.lua` file is removed from the datapack, it is not discovered by `Scripts::loadScripts`, so its old bytecode is not executed. The old cache entry can still remain on disk or inside an append-only pack, but without a matching source file in the scan it is unreachable.
+
+The bytecode cache key intentionally uses a fast validation identity:
+
+```text
+Lua or LuaJIT version
+process pointer size
+normalized source path
+source file size
+source file last-write timestamp
+```
+
+This avoids reading every Lua file just to hash content during startup. The tradeoff is that a deployment system that preserves both file size and timestamp while changing content could theoretically reuse stale bytecode. Normal edits, rebuilds, syncs, and reloads update at least the timestamp, so this is an acceptable default for the startup path.
+
 ## Map loading changes
 
 After the Lua path improved, profiling showed the hot path moving to:
@@ -209,6 +238,24 @@ The current profile shape still tends to show these as the next relevant areas:
 The next low-to-medium risk improvement would likely be another compact lookup cache for common simple tile keys before falling back to the generic `phmap` path.
 
 The higher-risk improvement would be changing `Floor` storage to avoid initializing full tile-pointer grids for floors that remain sparse. That touches central map storage and should be treated as a separate design change, not a small profiling patch.
+
+## Deferred Lua cache work
+
+These Lua cache improvements were intentionally left out of this profiling PR:
+
+- Manual cache clearing: useful for operators, but it touches command or startup-option behavior rather than the measured startup hot path. It should be added separately with clear permissions and logging.
+- Cache pruning or garbage collection: safe for loose `.luac` files, but packed `.luapack` files are append-only and need a rebuild step to remove stale chunks. Doing that during every reload would add I/O to the path this PR is trying to keep fast.
+- Strict content-hash validation: stronger than size and timestamp, but it requires reading every source file to hash it before cache lookup. That would trade away part of the startup gain and is better as an explicit opt-in mode if deployments need it.
+- Automated reload/cache tests: the expected scenarios are documented below, but a robust test harness needs isolated temporary datapacks, cache directories, reload calls, and corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
+
+Useful future test scenarios:
+
+- First load misses cache and writes bytecode.
+- Reload without source changes reuses bytecode.
+- Editing a source file changes the cache key and writes fresh bytecode.
+- Removing a source file prevents the old bytecode from being loaded.
+- Corrupting a `.luac` file invalidates it and recompiles from source.
+- Corrupting a `.luapack` file invalidates or bypasses the pack and falls back to `.luac` or source.
 
 ## Invariants to preserve
 
